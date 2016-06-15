@@ -1,17 +1,20 @@
-From: Chemsi Mehdi <chmsmehdi@gmail.com>
-Subject: How does ALSALIB commuciates with low level kernel API
-Date: Wed, 15 Jun 2016 00:12:24 +0100
-Message-ID: <CAHkWnPYuUgrARoMDHjg-0vSKVfz7x6tfh9cpzoEHzvEs+cvUKA@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 06/10] ctl: deprecate APIs to add an
+ element set with a single element
+Date: Wed, 15 Jun 2016 15:57:09 +0900
+Message-ID: <5760FC45.6060000@sakamocchi.jp>
+References: <1465719371-27721-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1465719371-27721-7-git-send-email-o-takashi@sakamocchi.jp>
+ <s5heg815k1q.wl-tiwai@suse.de> <575FE99C.2090103@sakamocchi.jp>
+ <s5hoa742dt0.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f66.google.com (mail-qg0-f66.google.com
- [209.85.192.66])
- by alsa0.perex.cz (Postfix) with ESMTP id DED65265232
- for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 01:12:25 +0200 (CEST)
-Received: by mail-qg0-f66.google.com with SMTP id t106so414063qgt.2
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2016 16:12:25 -0700 (PDT)
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 59C0A260524
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 08:57:12 +0200 (CEST)
+In-Reply-To: <s5hoa742dt0.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,19 +24,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear experts,
-
-I am too new in ALSA, trying to read a little bit and understand.
-I want to underatnd how ALSA userspace API calls kernel space code ?
-for example when I call  snd_pcm_open() which code is called in kernel
-sound code ?
-and how the link is made ? via IOCTL/write ?
-
-Please clarify
-
-Thanks a lot in advance.
-
-Mehdi
+T24gMjAxNuW5tDA25pyIMTTml6UgMjA6NDYsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBUdWUs
+IDE0IEp1biAyMDE2IDEzOjI1OjE2ICswMjAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
+Cj4+IEhpLAo+Pgo+PiBPbiBKdW4gMTMgMjAxNiAyMTo1MSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+
+Pj4gT24gU3VuLCAxMiBKdW4gMjAxNiAxMDoxNjowNyArMDIwMCwKPj4+IFRha2FzaGkgU2FrYW1v
+dG8gd3JvdGU6Cj4+Pj4KPj4+PiBXaGVuIGNvbXBhcmluZyBvbGQgQVBJcyAodG8gYWRkIGEgc2lu
+Z2xlIGVsZW1lbnQpIHdpdGggbmV3IEFQSXMgKHRvIGFkZAo+Pj4+IGFuIGVsZW1lbnQgc2V0KSwg
+dGhlIGxhdHRlciBoYXMgYW4gYmVuZWZpdCB0byBnZXQgZnVsbCBpZGVudGljYWwKPj4+PiBpbmZv
+cm1hdGlvbiBmb3IgYSBmaXJzdCBlbGVtZW50IGluIHRoZSBlbGVtZW50IHNldC4gRnVydGhlcm1v
+cmUsIGluCj4+Pj4gcHJldmlvdXMgY29tbWl0LCB0aGUgb2xkIEFQSXMgYmVjb21lIHNpbXBsZSB3
+cmFwcGVycyB0byB0aGUgbmV3IEFQSXMuCj4+Pj4gVGhlcmVmb3JlLCB0aGVyZSdzIGZldyBpbnRl
+bnRpb25zIHRvIHVzZSB0aGUgb2xkIEFQSXMuCj4+Pj4KPj4+PiBUaGlzIGNvbW1pdCBkZXByZWNh
+dGVzIHRoZSBvbGQgQVBJcyB0byBlbmNvdXJhZ2UgdGhlIHVzYWdlIG9mIG5ldyBBUElzLgo+Pj4K
+Pj4+IEluIGdlbmVyYWwsIGl0J3MgYSBiYWQgaWRlYSB0byBkZXByZWNhdGUgYW4gQVBJIHRoYXQg
+aGFzIGJlZW4gYWN0dWFsbHkKPj4+IHVzZWQsIGFuZCBldmVuIGEgd29yc2UgaWRlYSB0byBnaXZl
+IGEgbGluayB3YXJuaW5nLiAgV2UndmUgZG9uZQo+Pj4gZGVwcmVjYXRpb24gZm9yIHNvbWUgQVBJ
+IGZ1bmN0aW9ucyBpbiB0aGUgcGFzdCwgYW5kIGl0IHdhc24ndCBhIHJlYWxseQo+Pj4gc21hcnQg
+bW92ZS4gIEJ1dCBpdCB3YXMgc3RpbGwganVzdGlmaWVkIHRoYXQgdGhleSB3ZXJlIHJlYWxseSB1
+bnVzZWQKPj4+IEFQSSBmdW5jdGlvbnMuICBJbiB0aGlzIGNhc2UsIGhvd2V2ZXIsIGl0J3MgY29t
+bW9ubHkgdXNlZCBBUEkuICBUaGF0J3MKPj4+IGEgYmlnIGRpZmZlcmVuY2UuCj4+Pgo+Pj4gSSBr
+bm93IHNldmVyYWwgc3lzdGVtIGxpYnJhcmllcyBsaWtlIEd0aysgb2Z0ZW4gZGVwcmVjYXRpbmcg
+QVBJCj4+PiBmdW5jdGlvbnMuICBCdXQgaXQncyBtb3JlIGFubm95aW5nIHRoYW4gdXNlZnVsIGZv
+ciBkZXZlbG9wZXJzIGFuZAo+Pj4gdXNlcnMuICBVbmxlc3MgeW91IGFyZSBtYXNvY2hpc3RpYywg
+dGhlIGxpa2VseSBmaXJzdCByZWFjdGlvbiBhZnRlcgo+Pj4gc2VlaW5nIHN1Y2ggYSB3YXJuaW5n
+IGlzOiAidXBzdHJlYW0gc3Vja3MgYWdhaW4iLgo+Pgo+PiBJIGp1c3QgYWRkZWQgdGhlIGxpbmtf
+d2FybmluZygpIGJ5IGltbWl0YXRpbmcgdGhlc2Ugb2xkIEFQSXMgc3VjaCBhcwo+PiBzbmRfcGNt
+X2h3c3luYygpLiBJbiBzaG9ydCwgSSBhc3N1bWVkIHRoYXQgaXQncyBhIGZhc2hpb24gb2YgdGhp
+cwo+PiB1c2Vyc3BhY2UgbGlicmFyeSB0byB1c2UgY29tcGlsZXIvbGlua2VyIGZ1bmN0aW9uYWxp
+dGllcyBldmVuIGlmIGl0J3MKPj4gYWdhaW5zdCB1c3VhbCB3YXlzIHRvIG1haW50YWluIEFQSXMg
+aW4gdXNlcnNwYWNlIGxpYnJhcmllcy4KPgo+IFllcywgd2UgaGF2ZSBoYWQgc3VjaCB0aGluZ3Ms
+IGFuZCBhcyBtZW50aW9uZWQsIGl0IHdhcyBhIGJhZCBpZGVhLAo+IGFmdGVyIGFsbC4gIFRoZSBk
+ZXByZWNhdGlvbiBkb2Vzbid0IGhlbHAgbWFpbnRhaW5pbmcgdGhlIHN0dWZmLgo+IFlvdSBkb24n
+dCBuZWVkIHRvIGZvbGxvdyBvdXIgb3duIGJhZCBhdHRpdHVkZSBhZ2Fpbi4KPgo+PiAoSSdtIG5v
+dCBzbyBzdHJhbmdlIGRldmVsb3BlciwganVzdCBmb3JlaWduZXIgdG8gdGhpcyBwcm9qZWN0IHdp
+dGhvdXQKPj4gZW5vdWdoIGRvY3VtZW50YXRpb25zLikKPj4KPj4gRm9yIHRoZSBkZXByZWNhdGlv
+biwgSSBiYXNpY2FsbHkgYWdyZWUgd2l0aCB5b3UuIEJ1dCB0aGVyZSBtaWdodCBiZQo+PiBleGFn
+Z2VyYXRpb24gYWJvdXQgdXNhZ2Ugb2YgdGhlc2UgQVBJcy4gVGhleSdyZSByYXJlbHkgdXNlZCwg
+SQo+PiB0aGluay4gSWYgeW91IGtub3cgYWN0dWFsIGFwcGxpY2F0aW9uIHByb2dyYW1zIHRvIHVz
+ZSB0aGVtLCBwbGVhc2UKPj4gaW5mb3JtIHRoZW0gdG8gbWUuIEJ1dCBJIGtub3cgZGlzY3Vzc2lv
+bnMgYWJvdXQgdGhlIHBvcHVsYXRpb24gb2YKPj4gdGhlc2UgQVBJcyBhcmUgbm90IGEgZ29vZCBk
+aXJlY3Rpb24gaW4gdGhpcyBjYXNlLgo+Cj4gUmlnaHQsIGl0J3Mgbm90IHRoZSBvbmx5IGluZGlj
+YXRpb24uCj4KPj4gTXkgbWFpbiBpbnRlbnRpb24gb2YgdGhpcyBwYXRjaHNldCBpcyB0byBhZGQg
+dGhlIG5ldyBBUElzLiBUaGVzZSBBUElzCj4+IGFyZSBjb21wbGV0ZWx5IHVwcGVyIGNvbXBhdGli
+bGUgdG8gdGhlIG9sZCBBUElzLCBhbmQgaGF2ZSBiZW5lZml0cyBJCj4+IGRlc2NyaWJlZC4gSW4g
+ZmFjdCwgZGVsZXRpbmcgcHVibGljIEFQSXMgaXMgbm90IHByZWZlcmFibGUsIGJ1dAo+PiBkZXBy
+ZWNhdGluZyB0aGVtIGFuZCBzdGlsbCBtYWludGFpbmluZyBzb21ldGltZXMgaGFzIGFkdmFudGFn
+ZXMgdG8KPj4gbW90aXZhdGUgdXNlcnMgdG8gc3RhcnQgdXNpbmcgdGhlIG5ldyBvbmVzLiBGb3Ig
+dGhpcyBwdXJwb3NlLCBJIHRoaW5rCj4+IGl0IGJldHRlciB0byBhZGQgJ2RlcHJlY2F0ZWQnIGNv
+bW1lbnQgaW50byBkb2N1bWVudGF0aW9ucyBvZiBvbGQgQVBJcy4KPgo+IEl0IGRlcGVuZHMuICBU
+aGUgZGVwcmVjYXRpb24gYW5kIHRoZSByZWNvbW1lbmRhdGlvbiBhcmUgZGlmZmVyZW50Cj4gYmVo
+YXZpb3IuICBUaGUgZm9ybWVyIGlzIG5lZWRlZCBvbmx5IHdoZW4gdGhlIG9sZCBBUEkgaXMgcmVh
+bGx5Cj4gaGFybWZ1bCBvciBkb2Vzbid0IHdvcmsgYW55IGxvbmdlci4gIEluIHN1Y2ggYSBjYXNl
+LCBnaXZpbmcgYSBsaW5rCj4gd2FybmluZyBpcyBoZWxwZnVsIHNvIHRoYXQgdXNlciBjYW4ga25v
+dyBvZiBpdC4KPgo+IE1lYW53aGlsZSwgdGhlIGxhdHRlciBpcyBkb25lIGV2ZXJ5d2hlcmUuICBJ
+dCdzIGEgcHJvZ3JhbW1pbmcKPiBwcmFjdGljZSwgYW5kIGxldCB1c2VycyBjaG9vc2UgYSBiZXR0
+ZXIgb25lLiAgVGhhdCBiZWluZyBzYWlkLCBpdCdkIGJlCj4gZ29vZCB0byBhZGQgcmVjb21tZW5k
+YXRpb24gZm9yIGEgYmV0dGVyIEFQSSBpbiB0aGUgZG9jdW1lbnRhdGlvbi4gQnV0Cj4gaXQncyBu
+ZXZlciBtZWFudCB0byBkZXByZWNhdGUgc29tZSBvbGQgQVBJIGZ1bmN0aW9uLgo+Cj4gQWdhaW4s
+IGRlcHJlY2F0aW9uIGRvZXNuJ3QgaGVscCBtdWNoIGZyb20gbWFpbnRlbmFuY2UgUE9WLiAgSSBj
+YW4KPiBqdWRnZSBpdCBmcm9tIG15IGxvbmcgZXhwZXJpZW5jZXMgaW4gYm90aCB1cHN0cmVhbSBt
+YWludGFpbmVyIGFuZAo+IGRvd25zdHJlYW0gcGFja2FnZXIgc2lkZXMuICBJdCBtYXkgaGVscCBo
+YXJkZW5pbmcgc29tZSBzZXJpb3VzIGVycm9ycwo+IGlmIHRoZSBvbGQgQVBJIHdlcmUgcmVhbGx5
+IGJhZC4gIEJ1dCB0aGF0J3MgYWxsLgoKT0suIEkgcmVzcGVjdCB5b3VyIGxvbmcgd29yayBmb3Ig
+TGludXggc3lzdGVtIGFuZCBjYW4gYWdyZWUgd2l0aCB0aGUgCmp1ZGdtZW50LiBMZXQgbWUgZHJv
+cCB0aGlzIHBhdGNoIGZyb20gcGF0Y2hzZXQgSSdsbCBwb3N0IHRvbmlnaHQuIEluIHRoZSAKcGF0
+Y2hzZXQsIHNvbWUgY29tbWVudHMgYXJlIG5ld2x5IGFkZGVkIHRvIGluZGljYXRlIHRoZSByZWNv
+bW1lbmRhdGlvbi4KCkFuZCBob3cgYWJvdXQgdGhlIG90aGVyIHBhcnRzPyBBcmUgdGhlcmUgYW55
+IGluYXBwcm9wcmlhdGUgY29kZXMgb3IgCmNvbW1lbnRzPwoKClRoYW5rcwoKVGFrYXNoaSBTYWth
+bW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
