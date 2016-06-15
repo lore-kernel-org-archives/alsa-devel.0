@@ -1,85 +1,67 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH RFC 6/6] ASoC: samsung: Add DT bindings documentation for
- TM2 sound subsystem
-Date: Tue, 14 Jun 2016 18:32:24 -0500
-Message-ID: <20160614233224.GA4477@rob-hp-laptop>
-References: <1465815160-28504-1-git-send-email-s.nawrocki@samsung.com>
- <1465815160-28504-7-git-send-email-s.nawrocki@samsung.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 1/6] ASoC: sgtl5000: Fix regulator support
+Date: Tue, 14 Jun 2016 23:12:03 -0300
+Message-ID: <CAOMZO5D5ZhGUTViDRyEwJKxRbjOBvv+Pf+MWxgOAPhewVGghUQ@mail.gmail.com>
+References: <20160606231453.19377-1-clemens.gruber@pqgruber.com>
+ <20160606231453.19377-2-clemens.gruber@pqgruber.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1465815160-28504-7-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, ideal.song@samsung.com, beomho.seo@samsung.com, inki.dae@samsung.com, k.kozlowski@samsung.com, b.zolnierkie@samsung.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f66.google.com (mail-it0-f66.google.com
+ [209.85.214.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43AB5261490
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 04:12:05 +0200 (CEST)
+Received: by mail-it0-f66.google.com with SMTP id e5so1453986ith.2
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2016 19:12:05 -0700 (PDT)
+In-Reply-To: <20160606231453.19377-2-clemens.gruber@pqgruber.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc: Eric Nelson <eric@nelint.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 13, 2016 at 12:52:40PM +0200, Sylwester Nawrocki wrote:
-> This patch adds DT binding documentation for Exnos5433 based TM2
-> and TM2E boards sound subsystem.
-> 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
->  .../bindings/sound/samsung,tm2-wm5110.txt          | 39 ++++++++++++++++++++++
->  1 file changed, 39 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/samsung,tm2-wm5110.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/samsung,tm2-wm5110.txt b/Documentation/devicetree/bindings/sound/samsung,tm2-wm5110.txt
-> new file mode 100644
-> index 0000000..32f69fcc
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/samsung,tm2-wm5110.txt
-> @@ -0,0 +1,39 @@
-> +Samsung Exynos5433 TM2(E) audio complex with WM5110 codec
-> +
-> +Required properties:
-> +
-> + - compatible : "samsung,tm2-audio"
+On Mon, Jun 6, 2016 at 8:14 PM, Clemens Gruber
+<clemens.gruber@pqgruber.com> wrote:
+> From: Eric Nelson <eric@nelint.com>
+>
+> Regulator support on SGTL5000 is broken because the VDDIO and
+> VDDA and VDDD should be powered on before enabling MCLK as
+> shown in Figure 4 of [1]. This requires moving control of the
+> regulators from the codec block to the I2C block of the driver.
+>
+> The bulk of this patch consists of swapping the codec device with
+> the i2c client. The new field num_supplies in struct sgtl5000_priv
+> is used instead of ARRAY_SIZE(supplies) to handle the special case
+> when the internal LDO is used instead of external VDDD.
+>
+> Note that ER1 in the SGTL5000 Errata document [2] suggests that
+> all designs should use external VDDD.
+>
+> Since the internal LDO can only be enabled after I2C is available,
+> there's no benefit in treating it as a regulator, so this patch
+> removes the regulator structure surrounding it.
+>
+> Instead, a single block of code in sgtl5000_i2c_probe() performs
+> the initialization sequence in section 2.2.1.1 of [3] and page
+> 26 of [1].
+>
+> References:
+> [1] SGTL5000 data sheet
+>     http://cache.nxp.com/files/analog/doc/data_sheet/SGTL5000.pdf
+> [2] SGTL5000 errata
+>     http://cache.nxp.com/files/analog/doc/errata/SGTL5000ER.pdf
+> [3] SGTL5000 Initialization and programming app note
+>     http://cache.nxp.com/files/analog/doc/app_note/AN3663.pdf
+>
+> Signed-off-by: Eric Nelson <eric@nelint.com>
+> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
 
-SoC specific compatible string please.
-
-> + - samsung,model : the user-visible name of this sound complex
-
-I think we have a standard property for this.
-
-> + - clocks : must contain an entry for each entry in clock-names,
-> +   see ../clocks/clock-bindings.txt for details
-> + - clock-names : must include the following entries:
-> +   "mclk1", "mclk2"
-
-> + - samsung,i2s-controller : the phandle of the I2S controller
-> + - samsung,speaker-amplifier : the phandle of the MAX98504 amplifier
-
-We should have standard properties for these. 2nd ones I've seen today.
-
-> + - samsung,audio-routing : a list of the connections between audio
-> +   components;  each entry is a pair of strings, the first being the
-> +   connection's sink, the second being the connection's source;
-> +   valid names for sources and sinks are the WM5110's and MAX98504's
-> +   pins and the jacks on the board:
-> +   HP, SPK, Main Mic, Sub Mic, Third Mic, Headset Mic.
-> + - mic-bias-gpios : GPIO pin that enables the Main Mic bias regulator
-> +
-> +Example:
-> +
-> +sound {
-> +	compatible = "samsung,tm2-audio";
-> +	clocks = <&pmu_system_controller 0>, <&s2mps13_osc 2>;
-> +	clock-names = "mclk1", "mclk2";
-> +	samsung,i2s-controller = <&i2s0>;
-> +	samsung,speaker-amplifier = <&max98504>;
-> +	samsung,model = "wm5110";
-> +	mic-bias-gpios = <&gpr3 2 0>;
-> +	samsung,audio-routing =
-> +		"HP", "HPOUT1L",
-> +		"HP", "HPOUT1R",
-> +		"SPK", "SPKOUT",
-> +		"SPKOUT", "HPOUT2L",
-> +		"SPKOUT", "HPOUT2R",
-> +		"Main Mic", "MICBIAS2",
-> +		"IN1R", "Main Mic";
-> +};
-> -- 
-> 1.9.1
-> 
+Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
