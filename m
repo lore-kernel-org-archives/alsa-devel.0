@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sgtl5000: Disable internal PLL early"
+Subject: Applied "ASoC: sgtl5000: Write all default registers"
 	to the asoc tree
-Date: Wed, 15 Jun 2016 15:38:26 +0100
-Message-ID: <E1bDBxa-0006vK-6n@finisterre>
-References: <1424991273-10081-6-git-send-email-eric.nelson@boundarydevices.com>
+Date: Wed, 15 Jun 2016 15:38:33 +0100
+Message-ID: <E1bDBxh-0006xN-O0@finisterre>
+References: <1424991273-10081-3-git-send-email-eric.nelson@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B68D265546
- for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 16:38:43 +0200 (CEST)
-In-Reply-To: <1424991273-10081-6-git-send-email-eric.nelson@boundarydevices.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 13D772657ED
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 16:38:46 +0200 (CEST)
+In-Reply-To: <1424991273-10081-3-git-send-email-eric.nelson@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sgtl5000: Disable internal PLL early
+   ASoC: sgtl5000: Write all default registers
 
 has been applied to the asoc tree at
 
@@ -53,63 +53,65 @@ to this mail.
 Thanks,
 Mark
 
->From 08dea16e0960ea5caf7876045b747145cb677096 Mon Sep 17 00:00:00 2001
+>From f219b16959ee3df2fd49f09493b3f6b28487c416 Mon Sep 17 00:00:00 2001
 From: Eric Nelson <eric@nelint.com>
-Date: Tue, 7 Jun 2016 01:14:51 +0200
-Subject: [PATCH] ASoC: sgtl5000: Disable internal PLL early
+Date: Tue, 7 Jun 2016 01:14:49 +0200
+Subject: [PATCH] ASoC: sgtl5000: Write all default registers
 
-To handle the soft reboot case, the internal PLL must be
-disabled in SGTL5000_CHIP_CLK_CTRL before clearing bits
-SGTL5000_VCOAMP_POWERUP and SGTL5000_PLL_POWERUP in
-register SGTL5000_CHIP_ANA_POWER.
+If an error occurs writing defaults, produce an error message but
+continue writing other registers. The failure of a single write should
+not cause catastrophic device failure.
+
+In at least one occurrence, I2C writes of CHIP_ANA_POWER were nacked,
+though continuing allowed the device to operate properly.
 
 Signed-off-by: Eric Nelson <eric@nelint.com>
 Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
 Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sgtl5000.c | 9 ++++++++-
- sound/soc/codecs/sgtl5000.h | 1 +
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ sound/soc/codecs/sgtl5000.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 42f2eb62664e..0916bb46ccf2 100644
+index 77bdd1daa322..56d61a212083 100644
 --- a/sound/soc/codecs/sgtl5000.c
 +++ b/sound/soc/codecs/sgtl5000.c
-@@ -38,7 +38,6 @@
- /* default value of sgtl5000 registers */
- static const struct reg_default sgtl5000_reg_defaults[] = {
- 	{ SGTL5000_CHIP_DIG_POWER,		0x0000 },
--	{ SGTL5000_CHIP_CLK_CTRL,		0x0008 },
- 	{ SGTL5000_CHIP_I2S_CTRL,		0x0010 },
- 	{ SGTL5000_CHIP_SSS_CTRL,		0x0010 },
- 	{ SGTL5000_CHIP_ADCDAC_CTRL,		0x020c },
-@@ -1279,6 +1278,14 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 	dev_info(&client->dev, "sgtl5000 revision 0x%x\n", rev);
- 	sgtl5000->revision = rev;
- 
-+	/* reconfigure the clocks in case we're using the PLL */
-+	ret = regmap_write(sgtl5000->regmap,
-+			   SGTL5000_CHIP_CLK_CTRL,
-+			   SGTL5000_CHIP_CLK_CTRL_DEFAULT);
-+	if (ret)
-+		dev_err(&client->dev,
-+			"Error %d initializing CHIP_CLK_CTRL\n", ret);
-+
- 	/* Follow section 2.2.1.1 of AN3663 */
- 	ana_pwr = SGTL5000_ANA_POWER_DEFAULT;
- 	if (sgtl5000->num_supplies <= VDDD) {
-diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
-index 1be82379c689..22f3442af982 100644
---- a/sound/soc/codecs/sgtl5000.h
-+++ b/sound/soc/codecs/sgtl5000.h
-@@ -92,6 +92,7 @@
- /*
-  * SGTL5000_CHIP_CLK_CTRL
+@@ -1219,8 +1219,9 @@ static const struct regmap_config sgtl5000_regmap = {
+  * and avoid problems like, not being able to probe after an audio playback
+  * followed by a system reset or a 'reboot' command in Linux
   */
-+#define SGTL5000_CHIP_CLK_CTRL_DEFAULT		0x0008
- #define SGTL5000_RATE_MODE_MASK			0x0030
- #define SGTL5000_RATE_MODE_SHIFT		4
- #define SGTL5000_RATE_MODE_WIDTH		2
+-static int sgtl5000_fill_defaults(struct sgtl5000_priv *sgtl5000)
++static void sgtl5000_fill_defaults(struct i2c_client *client)
+ {
++	struct sgtl5000_priv *sgtl5000 = i2c_get_clientdata(client);
+ 	int i, ret, val, index;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(sgtl5000_reg_defaults); i++) {
+@@ -1228,10 +1229,10 @@ static int sgtl5000_fill_defaults(struct sgtl5000_priv *sgtl5000)
+ 		index = sgtl5000_reg_defaults[i].reg;
+ 		ret = regmap_write(sgtl5000->regmap, index, val);
+ 		if (ret)
+-			return ret;
++			dev_err(&client->dev,
++				"%s: error %d setting reg 0x%02x to 0x%04x\n",
++				__func__, ret, index, val);
+ 	}
+-
+-	return 0;
+ }
+ 
+ static int sgtl5000_i2c_probe(struct i2c_client *client,
+@@ -1364,9 +1365,7 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+ 	}
+ 
+ 	/* Ensure sgtl5000 will start with sane register values */
+-	ret = sgtl5000_fill_defaults(sgtl5000);
+-	if (ret)
+-		goto disable_clk;
++	sgtl5000_fill_defaults(client);
+ 
+ 	ret = snd_soc_register_codec(&client->dev,
+ 			&sgtl5000_driver, &sgtl5000_dai, 1);
 -- 
 2.8.1
