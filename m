@@ -1,21 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 06/10] ctl: deprecate APIs to add an
- element set with a single element
-Date: Wed, 15 Jun 2016 16:23:03 +0900
-Message-ID: <57610257.7070804@sakamocchi.jp>
-References: <1465719371-27721-1-git-send-email-o-takashi@sakamocchi.jp>
- <1465719371-27721-7-git-send-email-o-takashi@sakamocchi.jp>
- <s5heg815k1q.wl-tiwai@suse.de> <575FE99C.2090103@sakamocchi.jp>
- <s5hoa742dt0.wl-tiwai@suse.de> <5760FC45.6060000@sakamocchi.jp>
- <s5hziqnndil.wl-tiwai@suse.de>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Support Dell headset mode for ALC891
+Date: Wed, 15 Jun 2016 07:45:43 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A3F00B@RTITMBSV09.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A17A3EBF3@RTITMBSV09.realtek.com.tw>
+ <s5hlh2ec2h2.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A3EE49@RTITMBSV09.realtek.com.tw>
+ <s5ha8ip7diq.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id C0BED260524
- for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 09:23:06 +0200 (CEST)
-In-Reply-To: <s5hziqnndil.wl-tiwai@suse.de>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id D3D26260524
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 09:45:50 +0200 (CEST)
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,83 +23,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Kailang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxNuW5tDA25pyIMTXml6UgMTU6NTksIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBXZWQs
-IDE1IEp1biAyMDE2IDA4OjU3OjA5ICswMjAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
-Cj4+IE9uIDIwMTblubQwNuaciDE05pelIDIwOjQ2LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+PiBP
-biBUdWUsIDE0IEp1biAyMDE2IDEzOjI1OjE2ICswMjAwLAo+Pj4gVGFrYXNoaSBTYWthbW90byB3
-cm90ZToKPj4+Pgo+Pj4+IEhpLAo+Pj4+Cj4+Pj4gT24gSnVuIDEzIDIwMTYgMjE6NTEsIFRha2Fz
-aGkgSXdhaSB3cm90ZToKPj4+Pj4gT24gU3VuLCAxMiBKdW4gMjAxNiAxMDoxNjowNyArMDIwMCwK
-Pj4+Pj4gVGFrYXNoaSBTYWthbW90byB3cm90ZToKPj4+Pj4+Cj4+Pj4+PiBXaGVuIGNvbXBhcmlu
-ZyBvbGQgQVBJcyAodG8gYWRkIGEgc2luZ2xlIGVsZW1lbnQpIHdpdGggbmV3IEFQSXMgKHRvIGFk
-ZAo+Pj4+Pj4gYW4gZWxlbWVudCBzZXQpLCB0aGUgbGF0dGVyIGhhcyBhbiBiZW5lZml0IHRvIGdl
-dCBmdWxsIGlkZW50aWNhbAo+Pj4+Pj4gaW5mb3JtYXRpb24gZm9yIGEgZmlyc3QgZWxlbWVudCBp
-biB0aGUgZWxlbWVudCBzZXQuIEZ1cnRoZXJtb3JlLCBpbgo+Pj4+Pj4gcHJldmlvdXMgY29tbWl0
-LCB0aGUgb2xkIEFQSXMgYmVjb21lIHNpbXBsZSB3cmFwcGVycyB0byB0aGUgbmV3IEFQSXMuCj4+
-Pj4+PiBUaGVyZWZvcmUsIHRoZXJlJ3MgZmV3IGludGVudGlvbnMgdG8gdXNlIHRoZSBvbGQgQVBJ
-cy4KPj4+Pj4+Cj4+Pj4+PiBUaGlzIGNvbW1pdCBkZXByZWNhdGVzIHRoZSBvbGQgQVBJcyB0byBl
-bmNvdXJhZ2UgdGhlIHVzYWdlIG9mIG5ldyBBUElzLgo+Pj4+Pgo+Pj4+PiBJbiBnZW5lcmFsLCBp
-dCdzIGEgYmFkIGlkZWEgdG8gZGVwcmVjYXRlIGFuIEFQSSB0aGF0IGhhcyBiZWVuIGFjdHVhbGx5
-Cj4+Pj4+IHVzZWQsIGFuZCBldmVuIGEgd29yc2UgaWRlYSB0byBnaXZlIGEgbGluayB3YXJuaW5n
-LiAgV2UndmUgZG9uZQo+Pj4+PiBkZXByZWNhdGlvbiBmb3Igc29tZSBBUEkgZnVuY3Rpb25zIGlu
-IHRoZSBwYXN0LCBhbmQgaXQgd2Fzbid0IGEgcmVhbGx5Cj4+Pj4+IHNtYXJ0IG1vdmUuICBCdXQg
-aXQgd2FzIHN0aWxsIGp1c3RpZmllZCB0aGF0IHRoZXkgd2VyZSByZWFsbHkgdW51c2VkCj4+Pj4+
-IEFQSSBmdW5jdGlvbnMuICBJbiB0aGlzIGNhc2UsIGhvd2V2ZXIsIGl0J3MgY29tbW9ubHkgdXNl
-ZCBBUEkuICBUaGF0J3MKPj4+Pj4gYSBiaWcgZGlmZmVyZW5jZS4KPj4+Pj4KPj4+Pj4gSSBrbm93
-IHNldmVyYWwgc3lzdGVtIGxpYnJhcmllcyBsaWtlIEd0aysgb2Z0ZW4gZGVwcmVjYXRpbmcgQVBJ
-Cj4+Pj4+IGZ1bmN0aW9ucy4gIEJ1dCBpdCdzIG1vcmUgYW5ub3lpbmcgdGhhbiB1c2VmdWwgZm9y
-IGRldmVsb3BlcnMgYW5kCj4+Pj4+IHVzZXJzLiAgVW5sZXNzIHlvdSBhcmUgbWFzb2NoaXN0aWMs
-IHRoZSBsaWtlbHkgZmlyc3QgcmVhY3Rpb24gYWZ0ZXIKPj4+Pj4gc2VlaW5nIHN1Y2ggYSB3YXJu
-aW5nIGlzOiAidXBzdHJlYW0gc3Vja3MgYWdhaW4iLgo+Pj4+Cj4+Pj4gSSBqdXN0IGFkZGVkIHRo
-ZSBsaW5rX3dhcm5pbmcoKSBieSBpbW1pdGF0aW5nIHRoZXNlIG9sZCBBUElzIHN1Y2ggYXMKPj4+
-PiBzbmRfcGNtX2h3c3luYygpLiBJbiBzaG9ydCwgSSBhc3N1bWVkIHRoYXQgaXQncyBhIGZhc2hp
-b24gb2YgdGhpcwo+Pj4+IHVzZXJzcGFjZSBsaWJyYXJ5IHRvIHVzZSBjb21waWxlci9saW5rZXIg
-ZnVuY3Rpb25hbGl0aWVzIGV2ZW4gaWYgaXQncwo+Pj4+IGFnYWluc3QgdXN1YWwgd2F5cyB0byBt
-YWludGFpbiBBUElzIGluIHVzZXJzcGFjZSBsaWJyYXJpZXMuCj4+Pgo+Pj4gWWVzLCB3ZSBoYXZl
-IGhhZCBzdWNoIHRoaW5ncywgYW5kIGFzIG1lbnRpb25lZCwgaXQgd2FzIGEgYmFkIGlkZWEsCj4+
-PiBhZnRlciBhbGwuICBUaGUgZGVwcmVjYXRpb24gZG9lc24ndCBoZWxwIG1haW50YWluaW5nIHRo
-ZSBzdHVmZi4KPj4+IFlvdSBkb24ndCBuZWVkIHRvIGZvbGxvdyBvdXIgb3duIGJhZCBhdHRpdHVk
-ZSBhZ2Fpbi4KPj4+Cj4+Pj4gKEknbSBub3Qgc28gc3RyYW5nZSBkZXZlbG9wZXIsIGp1c3QgZm9y
-ZWlnbmVyIHRvIHRoaXMgcHJvamVjdCB3aXRob3V0Cj4+Pj4gZW5vdWdoIGRvY3VtZW50YXRpb25z
-LikKPj4+Pgo+Pj4+IEZvciB0aGUgZGVwcmVjYXRpb24sIEkgYmFzaWNhbGx5IGFncmVlIHdpdGgg
-eW91LiBCdXQgdGhlcmUgbWlnaHQgYmUKPj4+PiBleGFnZ2VyYXRpb24gYWJvdXQgdXNhZ2Ugb2Yg
-dGhlc2UgQVBJcy4gVGhleSdyZSByYXJlbHkgdXNlZCwgSQo+Pj4+IHRoaW5rLiBJZiB5b3Uga25v
-dyBhY3R1YWwgYXBwbGljYXRpb24gcHJvZ3JhbXMgdG8gdXNlIHRoZW0sIHBsZWFzZQo+Pj4+IGlu
-Zm9ybSB0aGVtIHRvIG1lLiBCdXQgSSBrbm93IGRpc2N1c3Npb25zIGFib3V0IHRoZSBwb3B1bGF0
-aW9uIG9mCj4+Pj4gdGhlc2UgQVBJcyBhcmUgbm90IGEgZ29vZCBkaXJlY3Rpb24gaW4gdGhpcyBj
-YXNlLgo+Pj4KPj4+IFJpZ2h0LCBpdCdzIG5vdCB0aGUgb25seSBpbmRpY2F0aW9uLgo+Pj4KPj4+
-PiBNeSBtYWluIGludGVudGlvbiBvZiB0aGlzIHBhdGNoc2V0IGlzIHRvIGFkZCB0aGUgbmV3IEFQ
-SXMuIFRoZXNlIEFQSXMKPj4+PiBhcmUgY29tcGxldGVseSB1cHBlciBjb21wYXRpYmxlIHRvIHRo
-ZSBvbGQgQVBJcywgYW5kIGhhdmUgYmVuZWZpdHMgSQo+Pj4+IGRlc2NyaWJlZC4gSW4gZmFjdCwg
-ZGVsZXRpbmcgcHVibGljIEFQSXMgaXMgbm90IHByZWZlcmFibGUsIGJ1dAo+Pj4+IGRlcHJlY2F0
-aW5nIHRoZW0gYW5kIHN0aWxsIG1haW50YWluaW5nIHNvbWV0aW1lcyBoYXMgYWR2YW50YWdlcyB0
-bwo+Pj4+IG1vdGl2YXRlIHVzZXJzIHRvIHN0YXJ0IHVzaW5nIHRoZSBuZXcgb25lcy4gRm9yIHRo
-aXMgcHVycG9zZSwgSSB0aGluawo+Pj4+IGl0IGJldHRlciB0byBhZGQgJ2RlcHJlY2F0ZWQnIGNv
-bW1lbnQgaW50byBkb2N1bWVudGF0aW9ucyBvZiBvbGQgQVBJcy4KPj4+Cj4+PiBJdCBkZXBlbmRz
-LiAgVGhlIGRlcHJlY2F0aW9uIGFuZCB0aGUgcmVjb21tZW5kYXRpb24gYXJlIGRpZmZlcmVudAo+
-Pj4gYmVoYXZpb3IuICBUaGUgZm9ybWVyIGlzIG5lZWRlZCBvbmx5IHdoZW4gdGhlIG9sZCBBUEkg
-aXMgcmVhbGx5Cj4+PiBoYXJtZnVsIG9yIGRvZXNuJ3Qgd29yayBhbnkgbG9uZ2VyLiAgSW4gc3Vj
-aCBhIGNhc2UsIGdpdmluZyBhIGxpbmsKPj4+IHdhcm5pbmcgaXMgaGVscGZ1bCBzbyB0aGF0IHVz
-ZXIgY2FuIGtub3cgb2YgaXQuCj4+Pgo+Pj4gTWVhbndoaWxlLCB0aGUgbGF0dGVyIGlzIGRvbmUg
-ZXZlcnl3aGVyZS4gIEl0J3MgYSBwcm9ncmFtbWluZwo+Pj4gcHJhY3RpY2UsIGFuZCBsZXQgdXNl
-cnMgY2hvb3NlIGEgYmV0dGVyIG9uZS4gIFRoYXQgYmVpbmcgc2FpZCwgaXQnZCBiZQo+Pj4gZ29v
-ZCB0byBhZGQgcmVjb21tZW5kYXRpb24gZm9yIGEgYmV0dGVyIEFQSSBpbiB0aGUgZG9jdW1lbnRh
-dGlvbi4gQnV0Cj4+PiBpdCdzIG5ldmVyIG1lYW50IHRvIGRlcHJlY2F0ZSBzb21lIG9sZCBBUEkg
-ZnVuY3Rpb24uCj4+Pgo+Pj4gQWdhaW4sIGRlcHJlY2F0aW9uIGRvZXNuJ3QgaGVscCBtdWNoIGZy
-b20gbWFpbnRlbmFuY2UgUE9WLiAgSSBjYW4KPj4+IGp1ZGdlIGl0IGZyb20gbXkgbG9uZyBleHBl
-cmllbmNlcyBpbiBib3RoIHVwc3RyZWFtIG1haW50YWluZXIgYW5kCj4+PiBkb3duc3RyZWFtIHBh
-Y2thZ2VyIHNpZGVzLiAgSXQgbWF5IGhlbHAgaGFyZGVuaW5nIHNvbWUgc2VyaW91cyBlcnJvcnMK
-Pj4+IGlmIHRoZSBvbGQgQVBJIHdlcmUgcmVhbGx5IGJhZC4gIEJ1dCB0aGF0J3MgYWxsLgo+Pgo+
-PiBPSy4gSSByZXNwZWN0IHlvdXIgbG9uZyB3b3JrIGZvciBMaW51eCBzeXN0ZW0gYW5kIGNhbiBh
-Z3JlZSB3aXRoIHRoZQo+PiBqdWRnbWVudC4gTGV0IG1lIGRyb3AgdGhpcyBwYXRjaCBmcm9tIHBh
-dGNoc2V0IEknbGwgcG9zdCB0b25pZ2h0LiBJbgo+PiB0aGUgcGF0Y2hzZXQsIHNvbWUgY29tbWVu
-dHMgYXJlIG5ld2x5IGFkZGVkIHRvIGluZGljYXRlIHRoZQo+PiByZWNvbW1lbmRhdGlvbi4KPgo+
-IEdyZWF0LCB0aGF0J3MgYXBwcmVjaWF0ZWQuCj4KPj4gQW5kIGhvdyBhYm91dCB0aGUgb3RoZXIg
-cGFydHM/IEFyZSB0aGVyZSBhbnkgaW5hcHByb3ByaWF0ZSBjb2RlcyBvcgo+PiBjb21tZW50cz8K
-Pgo+IFRoZXkgYXJlIGdvb2QuICBMZXQncyBrZWVwIHRoZW0uCgpHbGFkIDspCgoKVGFrYXNoaSBT
-YWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Takashi,
+
+Could this apply to upstream?
+
+Many Thanks.
+
+BR,
+Kailang 
+
+> -----Original Message-----
+> From: Kailang 
+> Sent: Monday, June 13, 2016 3:36 PM
+> To: 'Takashi Iwai'
+> Cc: (alsa-devel@alsa-project.org)
+> Subject: RE: Support Dell headset mode for ALC891
+> 
+> 
+> 
+> > -----Original Message-----
+> > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > Sent: Monday, June 13, 2016 3:29 PM
+> > To: Kailang
+> > Cc: (alsa-devel@alsa-project.org)
+> > Subject: Re: Support Dell headset mode for ALC891
+> > 
+> > On Mon, 13 Jun 2016 09:24:45 +0200,
+> > Kailang wrote:
+> > > 
+> > >  
+> > > 
+> > > > -----Original Message-----
+> > > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > Sent: Thursday, June 09, 2016 2:15 PM
+> > > > To: Kailang
+> > > > Cc: (alsa-devel@alsa-project.org)
+> > > > Subject: Re: Support Dell headset mode for ALC891
+> > > > 
+> > > > On Wed, 08 Jun 2016 09:17:12 +0200, Kailang wrote:
+> > > > > 
+> > > > > Hi Takashi,
+> > > > > 
+> > > > > This patch is supported Dell headset mode for ALC891.
+> > > > > It is only support I-phone type headset.
+> > > > > I think this function is only support for DELL.
+> > > > > So, headset mode and platform support is merged.
+> > > > > 
+> > > > > This patch is test passed by Ubuntu team.
+> > > > > 
+> > > > > Many Thanks.
+> > > > (snip)
+> > > > > Date: Tue, 7 Jun 2016 11:31:34 +0800
+> > > > > Subject: [PATCH] ALSA: hda/realtek - ALC891 headset
+> > mode for Dell
+> > > > >
+> > > > > New headset mode of ALC891 for Dell.
+> > > > > 
+> > > > > Signed-off-by: Kailang Yang <kailang@realtek.com>
+> > > > 
+> > > > Could you put more comments in the changelog, as what 
+> you gave in 
+> > > > the mail?
+> > > > 
+> > >        OK.
+> > > > 
+> > > > > diff --git a/sound/pci/hda/patch_realtek.c 
+> > > > > b/sound/pci/hda/patch_realtek.c index 7960316..9dc641e 100644
+> > > > > --- a/sound/pci/hda/patch_realtek.c
+> > > > > +++ b/sound/pci/hda/patch_realtek.c
+> > > > > @@ -3718,6 +3718,9 @@ static void
+> > > > alc_headset_mode_unplugged(struct hda_codec *codec)
+> > > > >  	case 0x10ec0295:
+> > > > >  		alc_process_coef_fw(codec, coef0225);
+> > > > >  		break;
+> > > > > +	case 0x10ec0867:
+> > > > > +		alc_update_coefex_idx(codec, 0x57, 0x5,
+> > 1<<14, 0);
+> > > > > +		break;
+> > > > >  	}
+> > > > >  	codec_dbg(codec, "Headset jack set to unplugged
+> > > > mode.\n");  } @@
+> > > > > -3805,6 +3808,8 @@ static void
+> > > > alc_headset_mode_mic_in(struct hda_codec *codec, 
+> hda_nid_t hp_pin,
+> > > > >  		alc_process_coef_fw(codec, coef0293);
+> > > > >  		snd_hda_set_pin_ctl_cache(codec,
+> > mic_pin, PIN_VREF50);
+> > > > >  		break;
+> > > > > +	case 0x10ec0867:
+> > > > > +		alc_update_coefex_idx(codec, 0x57, 0x5,
+> > 0, 1<<14);
+> > > > > 	case 0x10ec0662:
+> > > > 
+> > > > No break between 0867 and 0662?
+> > > 
+> > > Yes, no break. ^^
+> > > It is only more one line difference for 0x0867.
+> > 
+> > Then please put a comment indicating it's a fall-through, e.g.
+> > 
+> > 	case 0x10ec0867:
+> > 		alc_update_coefex_idx(codec, 0x57, 0x5, 0, 1<<14);
+> > 		/* fallthru */
+> >  	case 0x10ec0662:
+> > 		....
+> 
+> OK. Thanks. ^^
+> 
+> > 
+> > 
+> > Takashi
+> > 
+> > ------Please consider the environment before printing this e-mail.
+> > 
