@@ -1,7 +1,7 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Date: Wed, 15 Jun 2016 09:04:41 +0200
+Date: Wed, 15 Jun 2016 09:11:53 +0200
 From: Richard Cochran <richardcochran@gmail.com>
-Message-ID: <20160615070441.GB2919@netboy>
+Message-ID: <20160615071153.GC2919@netboy>
 References: <1465686096-22156-1-git-send-email-henrik@austad.us>
  <20160613114713.GA9544@localhost.localdomain>
  <20160613130059.GA20320@sisyphus.home.austad.us>
@@ -29,11 +29,15 @@ Cc: alsa-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel
 List-ID: <alsa-devel@alsa-project.org>
 
 On Tue, Jun 14, 2016 at 10:38:10PM +0200, Henrik Austad wrote:
-> Whereas I want to do 
-> 
-> aplay some_song.wav
+> Where is your media-application in this?
 
-Can you please explain how your patches accomplish this?
+Um, that *is* a media application.  It plays music on the sound card.
+
+> You only loop the audio from 
+> network to the dsp, is the media-application attached to the dsp-device?
+
+Sorry, I thought the old OSS API would be familiar and easy to
+understand.  The /dev/dsp is the sound card.
 
 Thanks,
 Richard
