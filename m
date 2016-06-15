@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/9] ctl: add an overview for design of ALSA
-	control interface
-Date: Wed, 15 Jun 2016 23:57:37 +0900
-Message-ID: <1466002665-30048-2-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/9] ctl: improve comments for API to add an
+	element of IEC958 type
+Date: Wed, 15 Jun 2016 23:57:40 +0900
+Message-ID: <1466002665-30048-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1466002665-30048-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id B308126689D
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id B1F932657ED
  for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 16:57:51 +0200 (CEST)
 In-Reply-To: <1466002665-30048-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,50 +25,67 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a description about the design of ALSA control interface
-for  developers to understand a few components of low level.
+In ALSA control core, it's not allowed to an element set of IEC 958 type
+to have several elements. Therefore, consecutive patchset doesn't touch an
+API to add an element of IEC958 type. However, it's better to supplement
+comments for the API.
+
+This commit do it.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/control/control.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
+ src/control/control.c | 32 ++++++++++++++++++++++++++++----
+ 1 file changed, 28 insertions(+), 4 deletions(-)
 
 diff --git a/src/control/control.c b/src/control/control.c
-index ae78843..504da1f 100644
+index 48b0080..9fad0c0 100644
 --- a/src/control/control.c
 +++ b/src/control/control.c
-@@ -35,9 +35,29 @@ also interface notifying about control and structure changes.
+@@ -842,10 +842,33 @@ int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ }
  
- \section control_general_overview General overview
- 
--The primitive controls can be integer, inter64, boolean, enumerators, bytes
--and IEC958 structure.
--
-+In ALSA control feature, each sound card can have control elements. The elements
-+are managed according to below model.
-+
-+ - element set
-+   - A set of elements with the same attribute (i.e. name, get/put operations).
-+     Some element sets can be added to a sound card by drivers in kernel and
-+     userspace applications.
-+ - element
-+   - An element can be identified by userspace applications. Each element has
-+     own identical information.
-+ - member
-+   - An element includes some members to have a value. The value of each member
-+     can be changed by both of userspace applications and drivers in kernel.
-+
-+Each element can be identified by two ways; a combination of name and index, or
-+numerical number (numid).
-+
-+The type of element set is one of integer, integerr64, boolean, enumerators,
-+bytes and IEC958 structure. This indicates the type of value for each member in
-+elements included in the element set.
-+
-+When the value of member is changed, corresponding events are transferred to
-+userspace applications. The applications should subscribe any events in advance.
- */
- 
- #include <stdio.h>
+ /**
+- * \brief Create and add an user IEC958 CTL element
+- * \param ctl CTL handle
+- * \param id CTL element info to add
+- * \return 0 on success otherwise a negative error code
++ * \brief Create and add a user-defined control element of IEC958 type.
++ * \param[in] ctl A handle of backend module for control interface.
++ * \param[in,out] id ID of the new control element.
++ *
++ * This function creates an user element with IEC958 type. This element is not
++ * controlled by device drivers in kernel. It can be operated by the same way as
++ * usual elements added by the device drivers.
++ *
++ * The name field of \a id must be set with unique value to identify a new
++ * control element. After returning, all fields of \a id are filled. A element
++ * can be identified by the combination of name and index, or by numid.
++ *
++ * A member in the new element is locked and filled with zero.
++ *
++ * \par Errors:
++ * <dl>
++ * <dt>-EBUSY
++ * <dd>A control element with ID \a id already exists.
++ * <dt>-EINVAL
++ * <dd>ID has no name.
++ * <dt>-ENOMEM
++ * <dd>Out of memory, or there are too many user elements.
++ * <dt>-ENXIO
++ * <dd>This backend module does not support user elements of IEC958 type.
++ * <dt>-ENODEV
++ * <dd>Device unplugged.
++ * </dl>
+  */
+ int snd_ctl_elem_add_iec958(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id)
+ {
+@@ -855,6 +878,7 @@ int snd_ctl_elem_add_iec958(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id)
+ 	snd_ctl_elem_info_alloca(&info);
+ 	info->id = *id;
+ 	info->type = SND_CTL_ELEM_TYPE_IEC958;
++	info->owner = 1;
+ 	info->count = 1;
+ 	return ctl->ops->element_add(ctl, info);
+ }
 -- 
 2.7.4
