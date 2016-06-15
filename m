@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sgtl5000: Do not disable regulators in SND_SOC_BIAS_OFF" to the asoc tree
-Date: Wed, 15 Jun 2016 15:38:22 +0100
-Message-ID: <E1bDBxW-0006uF-QB@finisterre>
-References: <20160606231453.19377-6-clemens.gruber@pqgruber.com>
+Subject: Applied "ASoC: sgtl5000: Remove misleading comment" to the asoc tree
+Date: Wed, 15 Jun 2016 15:38:40 +0100
+Message-ID: <E1bDBxo-0006z7-T5@finisterre>
+References: <20160606231453.19377-7-clemens.gruber@pqgruber.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160606231453.19377-6-clemens.gruber@pqgruber.com>
+In-Reply-To: <20160606231453.19377-7-clemens.gruber@pqgruber.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Eric Nelson <eric@nelint.com>
-Cc: Clemens Gruber <clemens.gruber@pqgruber.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.orgClemens Gruber <clemens.gruber@pqgruber.com>Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, linux-kernel@vger.kernel.org
+To: Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Eric Nelson <eric@nelint.com>Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sgtl5000: Do not disable regulators in SND_SOC_BIAS_OFF
+   ASoC: sgtl5000: Remove misleading comment
 
 has been applied to the asoc tree at
 
@@ -37,77 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From 8419caa7270291e26f8b34b12b29680586c85d30 Mon Sep 17 00:00:00 2001
-From: Eric Nelson <eric@nelint.com>
-Date: Tue, 7 Jun 2016 01:14:52 +0200
-Subject: [PATCH] ASoC: sgtl5000: Do not disable regulators in SND_SOC_BIAS_OFF
+>From 7e74436410a9a74f41f3be9cc45b504e83544f60 Mon Sep 17 00:00:00 2001
+From: Clemens Gruber <clemens.gruber@pqgruber.com>
+Date: Tue, 7 Jun 2016 01:14:53 +0200
+Subject: [PATCH] ASoC: sgtl5000: Remove misleading comment
 
-Disabling the SGTL5000 through regulators would certainly save more
-power than simply disabling the reference voltages as described in the
-data sheet, but won't properly restore things on resume.
+All new designs should use external VDDD according to official
+documentation. See ER1 in errata sheet:
+http://cache.nxp.com/files/analog/doc/errata/SGTL5000ER.pdf
 
-This driver does not support active regulators. So we simply disable the
-reference bias currents.
-
-Signed-off-by: Eric Nelson <eric@nelint.com>
 Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
+Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sgtl5000.c | 35 +++++------------------------------
- 1 file changed, 5 insertions(+), 30 deletions(-)
+ sound/soc/codecs/sgtl5000.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 0916bb46ccf2..39a178a88b36 100644
+index 08b40460663c..23766bc4f8e8 100644
 --- a/sound/soc/codecs/sgtl5000.c
 +++ b/sound/soc/codecs/sgtl5000.c
-@@ -761,42 +761,17 @@ static int sgtl5000_pcm_hw_params(struct snd_pcm_substream *substream,
- static int sgtl5000_set_bias_level(struct snd_soc_codec *codec,
- 				   enum snd_soc_bias_level level)
+@@ -1113,7 +1113,6 @@ static const u8 vol_quot_table[] = {
+  * and should be set according to:
+  * 1. vddd provided by external or not
+  * 2. vdda and vddio voltage value. > 3.1v or not
+- * 3. chip revision >=0x11 or not. If >=0x11, not use external vddd.
+  */
+ static int sgtl5000_set_power_regs(struct snd_soc_codec *codec)
  {
--	int ret;
--	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
--
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
- 	case SND_SOC_BIAS_PREPARE:
--		break;
- 	case SND_SOC_BIAS_STANDBY:
--		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
--			ret = regulator_bulk_enable(
--						sgtl5000->num_supplies,
--						sgtl5000->supplies);
--			if (ret)
--				return ret;
--			udelay(10);
--
--			regcache_cache_only(sgtl5000->regmap, false);
--
--			ret = regcache_sync(sgtl5000->regmap);
--			if (ret != 0) {
--				dev_err(codec->dev,
--					"Failed to restore cache: %d\n", ret);
--
--				regcache_cache_only(sgtl5000->regmap, true);
--				regulator_bulk_disable(sgtl5000->num_supplies,
--						       sgtl5000->supplies);
--
--				return ret;
--			}
--		}
--
-+		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
-+				    SGTL5000_REFTOP_POWERUP,
-+				    SGTL5000_REFTOP_POWERUP);
- 		break;
- 	case SND_SOC_BIAS_OFF:
--		regcache_cache_only(sgtl5000->regmap, true);
--		regulator_bulk_disable(sgtl5000->num_supplies,
--				       sgtl5000->supplies);
-+		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
-+				    SGTL5000_REFTOP_POWERUP, 0);
- 		break;
- 	}
- 
 -- 
 2.8.1
