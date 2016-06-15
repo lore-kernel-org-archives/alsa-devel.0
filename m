@@ -1,26 +1,25 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: Wolfson 5102 on Beaglebone Black using ALSA
-Date: Wed, 15 Jun 2016 17:50:04 +0100
-Message-ID: <20160615165004.GA1552@localhost.localdomain>
-References: <4BEB79E8-7315-48DF-BBB6-E944114621BF@gmail.com>
- <47b8f68c-12be-adb5-1e29-7ca19feac581@ti.com>
- <F5EE3526-E76D-485C-BB9C-B3A7B0DBA1F1@gmail.com>
- <20160522131854.GT1646@localhost.localdomain>
- <685DDADE-5203-4557-9AD3-54856B718938@gmail.com>
- <20160530083544.GG20422@localhost.localdomain>
- <83AF028C-B629-4E67-875C-5971DEDDAF77@gmail.com>
- <20160530171928.GH20422@localhost.localdomain>
- <72898395-848F-45F1-937F-B3B49254C9FB@gmail.com>
+Subject: Re: [PATCH 2/2] ASoc: wm8731: add normal mode with
+ 12MHz XTAL
+Date: Wed, 15 Jun 2016 17:56:19 +0100
+Message-ID: <20160615165619.GB1552@localhost.localdomain>
+References: <1465517516-1917-1-git-send-email-flatmax@flatmax.org>
+ <1465517516-1917-2-git-send-email-flatmax@flatmax.org>
+ <575BD6F2.70600@flatmax.org> <575CD572.2040700@flatmax.org>
+ <20160613083714.GU20422@localhost.localdomain>
+ <575E80B2.3040309@flatmax.org>
+ <20160613115910.GV20422@localhost.localdomain>
+ <575EA97A.7050207@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id D8F77265363
- for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 18:49:56 +0200 (CEST)
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id A53A426572D
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 18:56:10 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <72898395-848F-45F1-937F-B3B49254C9FB@gmail.com>
+In-Reply-To: <575EA97A.7050207@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,55 +29,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clark Dunson <cdunson@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBKdW4gMTUsIDIwMTYgYXQgMDk6MTQ6MzlBTSAtMDcwMCwgQ2xhcmsgRHVuc29uIHdy
-b3RlOgo+IEhlbGxvIENoYXJsZXMsIFBldGVyLCBhbmQgTWFyawo+IAo+IEFub3RoZXIgcHJvZ3Jl
-c3MgcmVwb3J0LCBzb21lIGZlZWRiYWNrLCBhbmQgYSBxdWVzdGlvbi4KPgo+IFdlIGhhdmUgZXZl
-cnl0aGluZyBwcmV0dHkgbXVjaCB3b3JraW5nIG5vdy4KPgo+IFRoZSBjbG9ja2luZyBjb25maWd1
-cmF0aW9uIEkgaWRlbnRpZmllZCBpbiBhbiBlYXJsaWVyIHBvc3QsCj4gKGllLiBNQ0xLMSBiZWdp
-biBmZWQgZnJvbSBCQkIgTWNBU1AwIDI0LjU3NiBNSHosIGFuZCBCQ0xLCj4gYmVpbmcgZGVyaXZl
-ZCBmcm9tIGl0KSB3b3JrcywgdGhvdWdoIHdlIHN0aWxsIGhhdmUgYSBwYXRjaCB0bwo+IGFyaXpv
-bmEtY29yZS5jIHRvIG1ha2UgaXQgc28uICBSZWFkeSBmb3IgYW55IGlucHV0cyBvbiBob3cgd2UK
-PiBjYW4gbWFrZSB0aGlzIGNoYW5nZSBzbyB3ZSBjYW4gdXBzdHJlYW0gaXQuCj4KClRoaXMgd2Vl
-ayBpcyB2ZXJ5IGJ1c3kgZm9yIG1lIGxldCBtZSBwdXQgdG9nZXRoZXIgc29tZSBzdHVmZiBhbmQK
-Z2V0IGJhY2sgdG8geW91IG5leHQgd2VlayBvbiB0aGlzIG9uZS4gSSBoYXZlIHNvbWUgY2hhbmdl
-cyB0aGF0CmFkZCB0aGUgc3R1ZmYgcmVxdWlyZWQgYnV0IGl0IHByb2JhYmx5IG5lZWRzIHRvIGJl
-IHJlc2h1ZmZsZWQgc28Kd2UgY2FuIGdldCBpdCB1cHN0cmVhbSBpbiBhIHJlYXNvbmFibGUgdGlt
-ZSBmcmFtZS4KCj4gU2VsZWN0aW5nIHNpbmdsZS1lbmRlZCBtb2RlIHZzLiBkaWZmZXJlbnRpYWwg
-bW9kZSBiZWluZyBhCj4gcGFpcndpc2UgY2hvaWNlIChpZS4gb25lIHNlbGVjdGlvbiBmb3IgSU4x
-LCBub3QgaW5kZXBlbmRlbnRseQo+IGZvciBML1IpLCBjYXVnaHQgdXMgYnkgc3VycHJpc2UgYW5k
-IHJlcXVpcmVkIGEgaGFycm93aW5nCj4gRUNPLiAgKFRoaXMgc2VsZWN0aW9uIGFwcGVhcnMgdG8g
-YWxzbyBub3QgYmUgc3VwcG9ydGVkIGJ5IHRoZQo+IGRyaXZlcikgSW4gdGhlIGVuZCB3ZSBoYWQg
-dG8gYWJhbmRvbiBzaW5nbGUtZW5kZWQgbW9kZSwgYXMKClRoZSB3bGYsaW5tb2RlIGRldmljZSB0
-cmVlIGVudHJ5IGxldHMgeW91IHNlbGVjdCBiZXR3ZWVuCmRpZmZlcmVuY2lhbCBhbmQgc2luZ2xl
-IGVuZGVkLgoKPiB0aGUgUEdBIGFjdGVkIGluIGEgbWFubmVyIHRoYXQgZGVmaWVkIG91ciB1bmRl
-cnN0YW5kaW5nLiAgVG8KPiB3aXQ6ICBJZiB3ZSBoYWQgYSBzaWduYWwgY29ubmVjdGVkIHRvIElO
-MkxQLCAoQUMgdGhyb3VnaCAxdUYKPiBjYXBhY2l0b3IpLCB0aGVuIHdoYXQgd2UgZGlkIHdpdGgg
-SU4yTE4gd2FzIHBpdm90YWwuICBJZiB3ZQo+IGNvbm5lY3RlZCBJMkxOIHRvIGdyb3VuZCwgdGhl
-IHNpZ25hbCB3b3VsZCBoYXZlIGxhcmdlIHBvc2l0aXZlCj4gb2Zmc2V0cywgZWcuICswLjUgb24g
-V0FWIHNjYWxlIG9mIDEuMCB0byArMS4wLCB3aXRoIHVuaXR5Cj4gZ2FpbiBzZXQgb24gUEdBLCBE
-aWdpdGFsIFZvbHVtZSwgYW5kIG1peGVyLiAgQ3JhbmtpbmcgdGhlIFBHQQo+IGdhaW4gd291bGQg
-cmFpbCB0aGUgc2lnbmFsIGluIGEgcG9zaXRpdmUgZGlyZWN0aW9uIGJlZm9yZSB3ZQo+IGhhZCBh
-ZGVxdWF0ZSBnYWluLiAgSWYgd2UgbGVmdCBJTjJMTiBmbG9hdGluZywgd2UgZ290IGNsb3Nlcgo+
-IHRvIHplcm8tY2VudGVyZWQsIGJ1dCB3aGVuIHdlIHNldCBQR0EgdG8gKzZkQiwgd2UgZ290IGh1
-Z2UKPiBuZWdhdGl2ZSBvZmZzZXRzICgtMC42IG9uIFdBViBzY2FsZSkgYW5kIHN0aWxsIHdlIHdl
-cmUgZGVhZCBpbgo+IHRoZSB3YXRlci4gIEZpbmFsbHkgd2UgY29ubmVjdGVkIGEgMXVGIGNhcGFj
-aXRvciB0byAxTjJMTiwgYW5kCj4gc2V0IGJhY2sgdG8gZGlmZmVyZW50aWFsIG1vZGUgKGRlZmF1
-bHQpLiAgTGlmZSBpcyBiZXR0ZXIgbm93LgoKQWxhcyBJIGFtIGFmcmFpZCB5b3UgaGF2ZSBleGNl
-ZWRlZCBteSB1bmRlcnN0YW5kaW5nIG9mCmVsZWN0cm9uaWNzIGhlcmUsIHlvdSB3b3VsZCBuZWVk
-IHRvIGRpc2N1c3MgdGhpcyB3aXRoIG9uZSBvZiBvdXIKaGFyZHdhcmUgRkFFcy4gSSBkbyBrbm93
-IHdlIGhhdmUgdXNlZCBib3RoIHNpbmdsZSBlbmRlZCBhbmQKZGlmZmVyZW5jaWFsIGluIHRoZSBw
-YXN0LCBidXQgSSBhbSBhdCBhIGxvc3MgdG8gZXhwbGFpbiB3aGF0IHlvdQphcmUgc2VlaW5nIHRo
-ZXJlLgoKPgo+IEluIG91ciBzdGF0dXMgbWVldGluZyB5ZXN0ZXJkYXksIHdlIGNvbmNsdWRlZCB0
-aGF0IG91ciBtb3ZpbmcKPiBmb3J3YXJkIHdpdGggdGhvdXNhbmRzIG9mIHVuaXRzIHdvdWxkIGJl
-IGJlbmVmaXRlZCBib3RoIG9uCj4gb3VyIHNpZGUgYW5kIFdvbGZzb27igJlzIGJ5IGFuIEZBRSBh
-cyBhIGdvIGJldHdlZW4uICBJcyB5b3VyCj4gQ3VwZXJ0aW5vIG9mZmljZSBzdGlsbCBhbGl2ZSAo
-d2UgYXJlIGluIEJheSBhcmVhKSwgb3IgY2FuIHdlCj4gZ2V0IGEgcG9pbnQgb2YgY29udGFjdD8g
-IElzIGl0IEpvYW8/CgpZZXMgSm9hbyBpcyBwcm9iYWJseSBhIGdvb2QgcGxhY2UgdG8gc3RhcnQs
-IGFuZCB3ZSBkbyBzdGlsbCBoYXZlCnRoZSBDdXBlcnRpbm8gb2ZmaWNlLgoKVGhhbmtzLApDaGFy
-bGVzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Jun 13, 2016 at 10:39:22PM +1000, Matt Flax wrote:
+> OK - I will look into that futher. Thanks for the info.
+> 
+> Is it possible to look at patch 1/2 in this series ?
+> 
+
+I can't seem to see patch 1/2 on the list, you may have to resend
+that one.
+
+Thanks,
+Charles
