@@ -1,86 +1,76 @@
-From: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Subject: [PATCH] ALSA: seq_oss: Change structure initialisation
-	to C99 style
-Date: Wed, 15 Jun 2016 13:33:31 +0530
-Message-ID: <20160615080331.GA17884@amitoj-Inspiron-3542>
+From: Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Wed, 15 Jun 2016 10:06:02 +0200
+Message-ID: <20160615080602.GA13555@localhost.localdomain>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <20160613114713.GA9544@localhost.localdomain>
+ <20160613195136.GC2441@netboy>
+ <20160614121844.54a125a5@lxorguk.ukuu.org.uk>
+ <5760C84C.40408@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f195.google.com (mail-pf0-f195.google.com
- [209.85.192.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 232C82608B3
- for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 10:03:36 +0200 (CEST)
-Received: by mail-pf0-f195.google.com with SMTP id 62so1237201pfd.3
- for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 01:03:36 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: julia.lawall@lip6.fr, michael.leibowitz@intel.com, keescook@chromium.org
+In-Reply-To: <5760C84C.40408@sakamocchi.jp>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, netdev@vger.kernel.org, Henrik Austad <henrik@austad.us>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Replace the in order struct initialisation style with explicit field
-style.
+On Wed, Jun 15, 2016 at 12:15:24PM +0900, Takashi Sakamoto wrote:
+> > On Mon, Jun 13, 2016 at 01:47:13PM +0200, Richard Cochran wrote:
+> >> I have seen audio PLL/multiplier chips that will take, for example, a
+> >> 10 kHz input and produce your 48 kHz media clock.  With the right HW
+> >> design, you can tell your PTP Hardware Clock to produce a 10000 PPS,
+> >> and you will have a synchronized AVB endpoint.  The software is all
+> >> there already.  Somebody should tell the ALSA guys about it.
+> 
+> Just from my curiosity, could I ask you more explanation for it in ALSA
+> side?
 
-The Coccinelle semantic patch used to make this change is as follows:
+(Disclaimer: I really don't know too much about ALSA, expect that is
+fairly big and complex ;)
 
-@decl@
-identifier i1,fld;
-type T;
-field list[n] fs;
-@@
+Here is what I think ALSA should provide:
 
-struct i1 {
- fs
- T fld;
- ...};
+- The DA and AD clocks should appear as attributes of the HW device.
 
-@@
-identifier decl.i1,i2,decl.fld;
-expression e;
-position bad.p, bad.fix;
-@@
+- There should be a method for measuring the DA/AD clock rate with
+  respect to both the system time and the PTP Hardware Clock (PHC)
+  time.
 
-struct i1 i2@p = { ...,
-+ .fld = e
-- e@fix
- ,...};
+- There should be a method for adjusting the DA/AD clock rate if
+  possible.  If not, then ALSA should fall back to sample rate
+  conversion.
 
-Also, removed some unnecessary comments.
+- There should be a method to determine the time delay from the point
+  when the audio data are enqueued into ALSA until they pass through
+  the D/A converter.  If this cannot be known precisely, then the
+  library should provide an estimate with an error bound.
 
-Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
----
- sound/core/seq/oss/seq_oss_synth.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+- I think some AVB use cases will need to know the time delay from A/D
+  until the data are available to the local application.  (Distributed
+  microphones?  I'm not too sure about that.)
 
-diff --git a/sound/core/seq/oss/seq_oss_synth.c b/sound/core/seq/oss/seq_oss_synth.c
-index b16dbef..cd0e0eb 100644
---- a/sound/core/seq/oss/seq_oss_synth.c
-+++ b/sound/core/seq/oss/seq_oss_synth.c
-@@ -70,11 +70,11 @@ struct seq_oss_synth {
- static int max_synth_devs;
- static struct seq_oss_synth *synth_devs[SNDRV_SEQ_OSS_MAX_SYNTH_DEVS];
- static struct seq_oss_synth midi_synth_dev = {
--	-1, /* seq_device */
--	SYNTH_TYPE_MIDI, /* synth_type */
--	0, /* synth_subtype */
--	16, /* nr_voices */
--	"MIDI", /* name */
-+	.seq_device = -1,
-+	.synth_type = SYNTH_TYPE_MIDI,
-+	.synth_subtype = 0,
-+	.nr_voices = 16,
-+	.name = "MIDI",
- };
- 
- static DEFINE_SPINLOCK(register_lock);
--- 
-1.9.1
+- If the DA/AD clocks are connected to other clock devices in HW,
+  there should be a way to find this out in SW.  For example, if SW
+  can see the PTP-PHC-PLL-DA relationship from the above example, then
+  it knows how to synchronize the DA clock using the network.
+
+  [ Implementing this point involves other subsystems beyond ALSA.  It
+    isn't really necessary for people designing AVB systems, since
+    they know their designs, but it would be nice to have for writing
+    generic applications that can deal with any kind of HW setup. ]
+
+> In ALSA, sampling rate conversion should be in userspace, not in kernel
+> land. In alsa-lib, sampling rate conversion is implemented in shared object.
+> When userspace applications start playbacking/capturing, depending on PCM
+> node to access, these applications load the shared object and convert PCM
+> frames from buffer in userspace to mmapped DMA-buffer, then commit them.
+
+The AVB use case places an additional requirement on the rate
+conversion.  You will need to adjust the frequency on the fly, as the
+stream is playing.  I would guess that ALSA doesn't have that option?
+
+Thanks,
+Richard
