@@ -1,19 +1,13 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Date: Wed, 15 Jun 2016 13:41:47 +0200
+Date: Wed, 15 Jun 2016 13:49:08 +0200
 From: Richard Cochran <richardcochran@gmail.com>
-Message-ID: <20160615114147.GA31281@localhost.localdomain>
+Message-ID: <20160615114908.GB31281@localhost.localdomain>
 References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <20160613114713.GA9544@localhost.localdomain>
- <20160613130059.GA20320@sisyphus.home.austad.us>
- <20160613193208.GA2441@netboy>
- <20160614093000.GB21689@sisyphus.home.austad.us>
- <20160614182615.GA2741@netboy>
- <20160614203810.GC21689@sisyphus.home.austad.us>
- <20160615070441.GB2919@netboy>
+ <1465686096-22156-8-git-send-email-henrik@austad.us>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20160615070441.GB2919@netboy>
-Subject: Re: [alsa-devel] [very-RFC 0/8] TSN driver for the kernel
+In-Reply-To: <1465686096-22156-8-git-send-email-henrik@austad.us>
+Subject: Re: [alsa-devel] [very-RFC 7/8] AVB ALSA - Add ALSA shim for TSN
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,21 +20,35 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: alsa-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
+Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, henrk@austad.us, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Henrik Austad <haustad@cisco.com>, netdev@vger.kernel.org, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
 List-ID: <alsa-devel@alsa-project.org>
 
-On Wed, Jun 15, 2016 at 09:04:41AM +0200, Richard Cochran wrote:
-> On Tue, Jun 14, 2016 at 10:38:10PM +0200, Henrik Austad wrote:
-> > Whereas I want to do 
-> > 
-> > aplay some_song.wav
-> 
-> Can you please explain how your patches accomplish this?
+Now that I understand better...
 
-Never mind.  Looking back, I found it in patch #7.
+On Sun, Jun 12, 2016 at 01:01:35AM +0200, Henrik Austad wrote:
+> Userspace is supposed to reserve bandwidth, find StreamID etc.
+> 
+> To use as a Talker:
+> 
+> mkdir /config/tsn/test/eth0/talker
+> cd /config/tsn/test/eth0/talker
+> echo 65535 > buffer_size
+> echo 08:00:27:08:9f:c3 > remote_mac
+> echo 42 > stream_id
+> echo alsa > enabled
+
+This is exactly why configfs is the wrong interface.  If you implement
+the AVB device in alsa-lib user space, then you can handle the
+reservations, configuration, UDP sockets, etc, in a way transparent to
+the aplay program.
+
+Heck, if done properly, your layer could discover the AVB nodes in the
+network and present each one as a separate device...
 
 Thanks,
 Richard
+
+
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
 
