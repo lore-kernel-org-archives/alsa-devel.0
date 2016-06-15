@@ -1,12 +1,12 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 3/6] ASoC: sgtl5000: Initialize CHIP_ANA_POWER to power-on defaults
-Date: Tue, 14 Jun 2016 23:13:03 -0300
-Message-ID: <CAOMZO5CELpSu65J3NuJEXXmvHpTRJF-2mNRyNmij_f+1rAWu+w@mail.gmail.com>
-References: <20160606231453.19377-1-clemens.gruber@pqgruber.com> <20160606231453.19377-4-clemens.gruber@pqgruber.com>
+Subject: Re: [PATCH 4/6] ASoC: sgtl5000: Disable internal PLL early
+Date: Tue, 14 Jun 2016 23:13:28 -0300
+Message-ID: <CAOMZO5CP3-WdFWj5BbBuAYtzCATRx4mTx4gC9jjJQ66eduDpVw@mail.gmail.com>
+References: <20160606231453.19377-1-clemens.gruber@pqgruber.com> <20160606231453.19377-5-clemens.gruber@pqgruber.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160606231453.19377-4-clemens.gruber@pqgruber.com>
+In-Reply-To: <20160606231453.19377-5-clemens.gruber@pqgruber.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Clemens Gruber <clemens.gruber@pqgruber.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Eric Nelson <eric@nelint.com>, linux-kernel <linux-kernel@vger.kernel.org>
@@ -16,16 +16,10 @@ On Mon, Jun 6, 2016 at 8:14 PM, Clemens Gruber
 <clemens.gruber@pqgruber.com> wrote:
 > From: Eric Nelson <eric@nelint.com>
 >
-> Initialize CHIP_ANA_POWER to match power on defaults, which disables
-> ADC, DAC, and charge pumps.
->
-> In the process, remove references to the following register/bitfields
-> from the sgtl5000_set_power_regs routine:
->         CHIP_ANA_POWER/LINREG_SIMPLE_POWERUP and
->         CHIP_LINREG_CTRL/LINREG_VDD_MASK
->
-> And remove CHIP_ANA_POWER and CHIP_LINREG_CTRL from the set of default
-> registers so they don't get clobbered by sgtl5000_fill_defaults().
+> To handle the soft reboot case, the internal PLL must be
+> disabled in SGTL5000_CHIP_CLK_CTRL before clearing bits
+> SGTL5000_VCOAMP_POWERUP and SGTL5000_PLL_POWERUP in
+> register SGTL5000_CHIP_ANA_POWER.
 >
 > Signed-off-by: Eric Nelson <eric@nelint.com>
 > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
