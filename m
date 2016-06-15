@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-lib][PATCH 0/9 v3] ctl: add APIs for control
-	element set
-Date: Wed, 15 Jun 2016 23:57:36 +0900
-Message-ID: <1466002665-30048-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 7/9] ctl: add explanation about threshold level
+	feature
+Date: Wed, 15 Jun 2016 23:57:43 +0900
+Message-ID: <1466002665-30048-8-git-send-email-o-takashi@sakamocchi.jp>
+References: <1466002665-30048-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id B62482668BC
- for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 16:57:51 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 19C50266AEA
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 16:57:53 +0200 (CEST)
+In-Reply-To: <1466002665-30048-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,45 +25,48 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+ALSA ctl feature includes threshold level feature. This is introduced in
+2006, and there's little resources about it.
 
-This patchset is a revised version of below one:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-June/109041.html
+This commit adds a simple explanation about the feature.
 
-Changes:
- - Drop a patch for deprecating old APIs.
-  - In detail, see our discussion:
-    http://mailman.alsa-project.org/pipermail/alsa-devel/2016-June/109117.html
- - Revise comments for TLV feature.
-  - I realized it better to use vendor-neutral representation, after reading
-    this discussion:
-    http://mailman.alsa-project.org/pipermail/alsa-devel/2013-November/069483.html
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ src/control/control.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-Again, ALSA developers in PulseAudio side, test program in the last patch
-causes an abort to pulseaudio process as a result of kicking assertion of
-hcontrol in alsa-lib. In detail, please refer to my previous patchset.
-
-
-Regards
-
-Takashi Sakamoto (9):
-  ctl: add an overview for design of ALSA control interface
-  ctl: improve comments for handling element data
-  ctl: add functions to add an element set
-  ctl: improve comments for API to add an element of IEC958 type
-  ctl: change former APIs as wrapper functions of element set APIs
-  pcm: use new APIs to add a control element set for softvol plugin
-  ctl: add explanation about threshold level feature
-  ctl: improve API documentation for threshold level operations
-  ctl: add test program for control element set
-
- include/control.h           |  21 ++
- src/control/control.c       | 813 ++++++++++++++++++++++++++++++++------------
- src/pcm/pcm_softvol.c       |   7 +-
- test/Makefile.am            |   5 +-
- test/user-ctl-element-set.c | 561 ++++++++++++++++++++++++++++++
- 5 files changed, 1189 insertions(+), 218 deletions(-)
- create mode 100644 test/user-ctl-element-set.c
-
+diff --git a/src/control/control.c b/src/control/control.c
+index 38700bb..a1d7098 100644
+--- a/src/control/control.c
++++ b/src/control/control.c
+@@ -58,6 +58,28 @@ elements included in the element set.
+ 
+ When the value of member is changed, corresponding events are transferred to
+ userspace applications. The applications should subscribe any events in advance.
++
++\section tlv_blob Thredshold level and arbitrary data
++
++TLV feature is designed to transfer data about threshold level between a driver
++and any userspace applications. The data is for an element set.
++
++At first, this feature was implemented to add pre-defined data readable to
++userspace applications. Soon, it was extended to handle several operations;
++read, write and command. The original implementation remains as the read
++operation. The command operation allows drivers to have own implementations
++against requests from userspace applications. As of 2016, simple write operation
++is not supported yet.
++
++This feature was introduced to ALSA control feature in 2006, at commit
++c7a0708a2362, corresponding to a series of work for Linux kernel (42750b04c5ba
++and 8aa9b586e420).
++
++This feature can transfer arbitrary data in a shape of an array with members of
++unsigned int type, therefore it can be used to deliver quite large arbitrary
++data from userspace to in-kernel drivers via ALSA control character device.
++Focusing on this nature, some in-kernel implementations utilize this feature for
++I/O operations.
+ */
+ 
+ #include <stdio.h>
 -- 
 2.7.4
