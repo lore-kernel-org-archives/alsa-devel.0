@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sgtl5000: Fix regulator support" to the asoc tree
-Date: Wed, 15 Jun 2016 15:38:37 +0100
-Message-ID: <E1bDBxl-0006yG-9d@finisterre>
-References: <20160606231453.19377-2-clemens.gruber@pqgruber.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160606231453.19377-2-clemens.gruber@pqgruber.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Eric Nelson <eric@nelint.com>
-Cc: Clemens Gruber <clemens.gruber@pqgruber.com>, Fabio Estevam <fabio.estevam@nxp.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.orgClemens Gruber <clemens.gruber@pqgruber.com>Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Applied "ASoC: adau17x1: Add support for specifying
+	the MCLK using the CCF" to the asoc tree
+Date: Wed, 15 Jun 2016 15:38:19 +0100
+Message-ID: <E1bDBxT-0006tO-4f@finisterre>
+References: <1465996047-8762-1-git-send-email-lars@metafoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72AEE2657ED
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 16:38:40 +0200 (CEST)
+In-Reply-To: <1465996047-8762-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sgtl5000: Fix regulator support
+   ASoC: adau17x1: Add support for specifying the MCLK using the CCF
 
 has been applied to the asoc tree at
 
@@ -37,543 +53,437 @@ to this mail.
 Thanks,
 Mark
 
->From 940adb280d23512965409c1fd6b42cc796ce6eb8 Mon Sep 17 00:00:00 2001
-From: Eric Nelson <eric@nelint.com>
-Date: Tue, 7 Jun 2016 01:14:48 +0200
-Subject: [PATCH] ASoC: sgtl5000: Fix regulator support
+>From 5d76de61dd8cb89b7189ef7456fba921c547c398 Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Wed, 15 Jun 2016 15:07:27 +0200
+Subject: [PATCH] ASoC: adau17x1: Add support for specifying the MCLK using the
+ CCF
 
-Regulator support on SGTL5000 is broken because the VDDIO and
-VDDA and VDDD should be powered on before enabling MCLK as
-shown in Figure 4 of [1]. This requires moving control of the
-regulators from the codec block to the I2C block of the driver.
+The devices from the ADAU17X1 family all have a MCLK clock input which
+supplies the master clock for the device. The master clock is used as the
+input clock for the PLL. Currently the MCLK rate as well as the desired PLL
+output frequency need to be supplied by calling snd_soc_dai_set_pll() form
+a machine driver.
 
-The bulk of this patch consists of swapping the codec device with
-the i2c client. The new field num_supplies in struct sgtl5000_priv
-is used instead of ARRAY_SIZE(supplies) to handle the special case
-when the internal LDO is used instead of external VDDD.
+Add support for specifying the MCLK using the common clock framework. In
+addition to that also automatically configure the PLL to a suitable rate
+if the master clock was provided using the CCW. This allows to use the
+CODEC driver without any special configuration requirements from the
+machine driver.
 
-Note that ER1 in the SGTL5000 Errata document [2] suggests that
-all designs should use external VDDD.
+While the PLL output frequency can be configured over a (more or less)
+continuous range the narrowness of the range and the other constraints of
+the clocking tree usually only result in two output frequencies that will
+actually be chosen. One for 44.1kHz based rates and one for 48kHz based
+rates, these are the rates that the automatic PLL configuration will use.
+For the rare case where a non-standard setup is required a machine driver
+can disable the auto-configuration and configure a custom frequency using
+the existing mechanisms.
 
-Since the internal LDO can only be enabled after I2C is available,
-there's no benefit in treating it as a regulator, so this patch
-removes the regulator structure surrounding it.
+If the common clock framework is not enabled clk_get() will return NULL and
+the driver will function as before and the clock rate needs to be
+configured manually.
 
-Instead, a single block of code in sgtl5000_i2c_probe() performs
-the initialization sequence in section 2.2.1.1 of [3] and page
-26 of [1].
-
-References:
-[1] SGTL5000 data sheet
-    http://cache.nxp.com/files/analog/doc/data_sheet/SGTL5000.pdf
-[2] SGTL5000 errata
-    http://cache.nxp.com/files/analog/doc/errata/SGTL5000ER.pdf
-[3] SGTL5000 Initialization and programming app note
-    http://cache.nxp.com/files/analog/doc/app_note/AN3663.pdf
-
-Signed-off-by: Eric Nelson <eric@nelint.com>
-Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sgtl5000.c | 343 ++++++++++----------------------------------
- 1 file changed, 78 insertions(+), 265 deletions(-)
+ .../devicetree/bindings/sound/adi,adau17x1.txt     |   8 +
+ sound/soc/codecs/adau1761-i2c.c                    |   2 +-
+ sound/soc/codecs/adau1761-spi.c                    |   2 +-
+ sound/soc/codecs/adau1781-i2c.c                    |   2 +-
+ sound/soc/codecs/adau1781-spi.c                    |   2 +-
+ sound/soc/codecs/adau17x1.c                        | 219 +++++++++++++++------
+ sound/soc/codecs/adau17x1.h                        |   6 +
+ 7 files changed, 179 insertions(+), 62 deletions(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 23766bc4f8e8..77bdd1daa322 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -92,36 +92,8 @@ static const char *supply_names[SGTL5000_SUPPLY_NUM] = {
- 	"VDDD"
- };
+diff --git a/Documentation/devicetree/bindings/sound/adi,adau17x1.txt b/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
+index 8dbce0e18dda..1447dec28125 100644
+--- a/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
++++ b/Documentation/devicetree/bindings/sound/adi,adau17x1.txt
+@@ -13,6 +13,11 @@ Required properties:
+  - reg:			The i2c address. Value depends on the state of ADDR0
+ 			and ADDR1, as wired in hardware.
  
--#define LDO_CONSUMER_NAME	"VDDD_LDO"
- #define LDO_VOLTAGE		1200000
- 
--static struct regulator_consumer_supply ldo_consumer[] = {
--	REGULATOR_SUPPLY(LDO_CONSUMER_NAME, NULL),
--};
--
--static struct regulator_init_data ldo_init_data = {
--	.constraints = {
--		.min_uV                 = 1200000,
--		.max_uV                 = 1200000,
--		.valid_modes_mask       = REGULATOR_MODE_NORMAL,
--		.valid_ops_mask         = REGULATOR_CHANGE_STATUS,
--	},
--	.num_consumer_supplies = 1,
--	.consumer_supplies = &ldo_consumer[0],
--};
--
--/*
-- * sgtl5000 internal ldo regulator,
-- * enabled when VDDD not provided
-- */
--struct ldo_regulator {
--	struct regulator_desc desc;
--	struct regulator_dev *dev;
--	int voltage;
--	void *codec_data;
--	bool enabled;
--};
--
- enum sgtl5000_micbias_resistor {
- 	SGTL5000_MICBIAS_OFF = 0,
- 	SGTL5000_MICBIAS_2K = 2,
-@@ -135,7 +107,7 @@ struct sgtl5000_priv {
- 	int master;	/* i2s master or not */
- 	int fmt;	/* i2s data format */
- 	struct regulator_bulk_data supplies[SGTL5000_SUPPLY_NUM];
--	struct ldo_regulator *ldo;
-+	int num_supplies;
- 	struct regmap *regmap;
- 	struct clk *mclk;
- 	int revision;
-@@ -778,155 +750,6 @@ static int sgtl5000_pcm_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--#ifdef CONFIG_REGULATOR
--static int ldo_regulator_is_enabled(struct regulator_dev *dev)
--{
--	struct ldo_regulator *ldo = rdev_get_drvdata(dev);
--
--	return ldo->enabled;
--}
--
--static int ldo_regulator_enable(struct regulator_dev *dev)
--{
--	struct ldo_regulator *ldo = rdev_get_drvdata(dev);
--	struct snd_soc_codec *codec = (struct snd_soc_codec *)ldo->codec_data;
--	int reg;
--
--	if (ldo_regulator_is_enabled(dev))
--		return 0;
--
--	/* set regulator value firstly */
--	reg = (1600 - ldo->voltage / 1000) / 50;
--	reg = clamp(reg, 0x0, 0xf);
--
--	/* amend the voltage value, unit: uV */
--	ldo->voltage = (1600 - reg * 50) * 1000;
--
--	/* set voltage to register */
--	snd_soc_update_bits(codec, SGTL5000_CHIP_LINREG_CTRL,
--				SGTL5000_LINREG_VDDD_MASK, reg);
--
--	snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
--				SGTL5000_LINEREG_D_POWERUP,
--				SGTL5000_LINEREG_D_POWERUP);
--
--	/* when internal ldo is enabled, simple digital power can be disabled */
--	snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
--				SGTL5000_LINREG_SIMPLE_POWERUP,
--				0);
--
--	ldo->enabled = 1;
--	return 0;
--}
--
--static int ldo_regulator_disable(struct regulator_dev *dev)
--{
--	struct ldo_regulator *ldo = rdev_get_drvdata(dev);
--	struct snd_soc_codec *codec = (struct snd_soc_codec *)ldo->codec_data;
--
--	snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
--				SGTL5000_LINEREG_D_POWERUP,
--				0);
--
--	/* clear voltage info */
--	snd_soc_update_bits(codec, SGTL5000_CHIP_LINREG_CTRL,
--				SGTL5000_LINREG_VDDD_MASK, 0);
--
--	ldo->enabled = 0;
--
--	return 0;
--}
--
--static int ldo_regulator_get_voltage(struct regulator_dev *dev)
--{
--	struct ldo_regulator *ldo = rdev_get_drvdata(dev);
--
--	return ldo->voltage;
--}
--
--static struct regulator_ops ldo_regulator_ops = {
--	.is_enabled = ldo_regulator_is_enabled,
--	.enable = ldo_regulator_enable,
--	.disable = ldo_regulator_disable,
--	.get_voltage = ldo_regulator_get_voltage,
--};
--
--static int ldo_regulator_register(struct snd_soc_codec *codec,
--				struct regulator_init_data *init_data,
--				int voltage)
--{
--	struct ldo_regulator *ldo;
--	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
--	struct regulator_config config = { };
--
--	ldo = kzalloc(sizeof(struct ldo_regulator), GFP_KERNEL);
--
--	if (!ldo)
--		return -ENOMEM;
--
--	ldo->desc.name = kstrdup(dev_name(codec->dev), GFP_KERNEL);
--	if (!ldo->desc.name) {
--		kfree(ldo);
--		dev_err(codec->dev, "failed to allocate decs name memory\n");
--		return -ENOMEM;
--	}
--
--	ldo->desc.type  = REGULATOR_VOLTAGE;
--	ldo->desc.owner = THIS_MODULE;
--	ldo->desc.ops   = &ldo_regulator_ops;
--	ldo->desc.n_voltages = 1;
--
--	ldo->codec_data = codec;
--	ldo->voltage = voltage;
--
--	config.dev = codec->dev;
--	config.driver_data = ldo;
--	config.init_data = init_data;
--
--	ldo->dev = regulator_register(&ldo->desc, &config);
--	if (IS_ERR(ldo->dev)) {
--		int ret = PTR_ERR(ldo->dev);
--
--		dev_err(codec->dev, "failed to register regulator\n");
--		kfree(ldo->desc.name);
--		kfree(ldo);
--
--		return ret;
--	}
--	sgtl5000->ldo = ldo;
--
--	return 0;
--}
--
--static int ldo_regulator_remove(struct snd_soc_codec *codec)
--{
--	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
--	struct ldo_regulator *ldo = sgtl5000->ldo;
--
--	if (!ldo)
--		return 0;
--
--	regulator_unregister(ldo->dev);
--	kfree(ldo->desc.name);
--	kfree(ldo);
--
--	return 0;
--}
--#else
--static int ldo_regulator_register(struct snd_soc_codec *codec,
--				struct regulator_init_data *init_data,
--				int voltage)
--{
--	dev_err(codec->dev, "this setup needs regulator support in the kernel\n");
--	return -EINVAL;
--}
--
--static int ldo_regulator_remove(struct snd_soc_codec *codec)
--{
--	return 0;
--}
--#endif
--
- /*
-  * set dac bias
-  * common state changes:
-@@ -950,7 +773,7 @@ static int sgtl5000_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_STANDBY:
- 		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
- 			ret = regulator_bulk_enable(
--						ARRAY_SIZE(sgtl5000->supplies),
-+						sgtl5000->num_supplies,
- 						sgtl5000->supplies);
- 			if (ret)
- 				return ret;
-@@ -964,7 +787,7 @@ static int sgtl5000_set_bias_level(struct snd_soc_codec *codec,
- 					"Failed to restore cache: %d\n", ret);
- 
- 				regcache_cache_only(sgtl5000->regmap, true);
--				regulator_bulk_disable(ARRAY_SIZE(sgtl5000->supplies),
-+				regulator_bulk_disable(sgtl5000->num_supplies,
- 						       sgtl5000->supplies);
- 
- 				return ret;
-@@ -974,8 +797,8 @@ static int sgtl5000_set_bias_level(struct snd_soc_codec *codec,
- 		break;
- 	case SND_SOC_BIAS_OFF:
- 		regcache_cache_only(sgtl5000->regmap, true);
--		regulator_bulk_disable(ARRAY_SIZE(sgtl5000->supplies),
--					sgtl5000->supplies);
-+		regulator_bulk_disable(sgtl5000->num_supplies,
-+				       sgtl5000->supplies);
- 		break;
- 	}
- 
-@@ -1130,7 +953,9 @@ static int sgtl5000_set_power_regs(struct snd_soc_codec *codec)
- 
- 	vdda  = regulator_get_voltage(sgtl5000->supplies[VDDA].consumer);
- 	vddio = regulator_get_voltage(sgtl5000->supplies[VDDIO].consumer);
--	vddd  = regulator_get_voltage(sgtl5000->supplies[VDDD].consumer);
-+	vddd  = (sgtl5000->num_supplies > VDDD)
-+		? regulator_get_voltage(sgtl5000->supplies[VDDD].consumer)
-+		: LDO_VOLTAGE;
- 
- 	vdda  = vdda / 1000;
- 	vddio = vddio / 1000;
-@@ -1255,78 +1080,43 @@ static int sgtl5000_set_power_regs(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
--static int sgtl5000_replace_vddd_with_ldo(struct snd_soc_codec *codec)
--{
--	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
--	int ret;
--
--	/* set internal ldo to 1.2v */
--	ret = ldo_regulator_register(codec, &ldo_init_data, LDO_VOLTAGE);
--	if (ret) {
--		dev_err(codec->dev,
--			"Failed to register vddd internal supplies: %d\n", ret);
--		return ret;
--	}
--
--	sgtl5000->supplies[VDDD].supply = LDO_CONSUMER_NAME;
--
--	dev_info(codec->dev, "Using internal LDO instead of VDDD\n");
--	return 0;
--}
--
--static int sgtl5000_enable_regulators(struct snd_soc_codec *codec)
-+static int sgtl5000_enable_regulators(struct i2c_client *client)
- {
- 	int ret;
- 	int i;
- 	int external_vddd = 0;
--	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
- 	struct regulator *vddd;
-+	struct sgtl5000_priv *sgtl5000 = i2c_get_clientdata(client);
- 
- 	for (i = 0; i < ARRAY_SIZE(sgtl5000->supplies); i++)
- 		sgtl5000->supplies[i].supply = supply_names[i];
- 
--	/* External VDDD only works before revision 0x11 */
--	if (sgtl5000->revision < 0x11) {
--		vddd = regulator_get_optional(codec->dev, "VDDD");
--		if (IS_ERR(vddd)) {
--			/* See if it's just not registered yet */
--			if (PTR_ERR(vddd) == -EPROBE_DEFER)
--				return -EPROBE_DEFER;
--		} else {
--			external_vddd = 1;
--			regulator_put(vddd);
--		}
--	}
--
--	if (!external_vddd) {
--		ret = sgtl5000_replace_vddd_with_ldo(codec);
--		if (ret)
--			return ret;
-+	vddd = regulator_get_optional(&client->dev, "VDDD");
-+	if (IS_ERR(vddd)) {
-+		/* See if it's just not registered yet */
-+		if (PTR_ERR(vddd) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+	} else {
-+		external_vddd = 1;
-+		regulator_put(vddd);
- 	}
- 
--	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(sgtl5000->supplies),
-+	sgtl5000->num_supplies = ARRAY_SIZE(sgtl5000->supplies)
-+				 - 1 + external_vddd;
-+	ret = regulator_bulk_get(&client->dev, sgtl5000->num_supplies,
- 				 sgtl5000->supplies);
- 	if (ret)
--		goto err_ldo_remove;
--
--	ret = regulator_bulk_enable(ARRAY_SIZE(sgtl5000->supplies),
--					sgtl5000->supplies);
--	if (ret)
--		goto err_regulator_free;
--
--	/* wait for all power rails bring up */
--	udelay(10);
-+		return ret;
- 
--	return 0;
-+	ret = regulator_bulk_enable(sgtl5000->num_supplies,
-+				    sgtl5000->supplies);
-+	if (!ret)
-+		usleep_range(10, 20);
-+	else
-+		regulator_bulk_free(sgtl5000->num_supplies,
-+				    sgtl5000->supplies);
- 
--err_regulator_free:
--	regulator_bulk_free(ARRAY_SIZE(sgtl5000->supplies),
--				sgtl5000->supplies);
--err_ldo_remove:
--	if (!external_vddd)
--		ldo_regulator_remove(codec);
- 	return ret;
--
- }
- 
- static int sgtl5000_probe(struct snd_soc_codec *codec)
-@@ -1334,10 +1124,6 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- 	int ret;
- 	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
- 
--	ret = sgtl5000_enable_regulators(codec);
--	if (ret)
--		return ret;
--
- 	/* power up sgtl5000 */
- 	ret = sgtl5000_set_power_regs(codec);
- 	if (ret)
-@@ -1388,25 +1174,11 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- 	return 0;
- 
- err:
--	regulator_bulk_disable(ARRAY_SIZE(sgtl5000->supplies),
--						sgtl5000->supplies);
--	regulator_bulk_free(ARRAY_SIZE(sgtl5000->supplies),
--				sgtl5000->supplies);
--	ldo_regulator_remove(codec);
--
- 	return ret;
- }
- 
- static int sgtl5000_remove(struct snd_soc_codec *codec)
- {
--	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
--
--	regulator_bulk_disable(ARRAY_SIZE(sgtl5000->supplies),
--						sgtl5000->supplies);
--	regulator_bulk_free(ARRAY_SIZE(sgtl5000->supplies),
--				sgtl5000->supplies);
--	ldo_regulator_remove(codec);
--
- 	return 0;
- }
- 
-@@ -1474,11 +1246,17 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 	if (!sgtl5000)
- 		return -ENOMEM;
- 
-+	i2c_set_clientdata(client, sgtl5000);
++Optional properties:
++ - clock-names:		If provided must be "mclk".
++ - clocks:		phandle + clock-specifiers for the clock that provides
++			the audio master clock for the device.
 +
-+	ret = sgtl5000_enable_regulators(client);
+ Examples:
+ #include <dt-bindings/sound/adau17x1.h>
+ 
+@@ -20,5 +25,8 @@ Examples:
+ 		adau1361@38 {
+ 			compatible = "adi,adau1761";
+ 			reg = <0x38>;
++
++			clock-names = "mclk";
++			clocks = <&audio_clock>;
+ 		};
+ 	};
+diff --git a/sound/soc/codecs/adau1761-i2c.c b/sound/soc/codecs/adau1761-i2c.c
+index 8de010f758cd..9e7f257f17f8 100644
+--- a/sound/soc/codecs/adau1761-i2c.c
++++ b/sound/soc/codecs/adau1761-i2c.c
+@@ -31,7 +31,7 @@ static int adau1761_i2c_probe(struct i2c_client *client,
+ 
+ static int adau1761_i2c_remove(struct i2c_client *client)
+ {
+-	snd_soc_unregister_codec(&client->dev);
++	adau17x1_remove(&client->dev);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/adau1761-spi.c b/sound/soc/codecs/adau1761-spi.c
+index d9171245bd9f..a0b214be759a 100644
+--- a/sound/soc/codecs/adau1761-spi.c
++++ b/sound/soc/codecs/adau1761-spi.c
+@@ -48,7 +48,7 @@ static int adau1761_spi_probe(struct spi_device *spi)
+ 
+ static int adau1761_spi_remove(struct spi_device *spi)
+ {
+-	snd_soc_unregister_codec(&spi->dev);
++	adau17x1_remove(&spi->dev);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/adau1781-i2c.c b/sound/soc/codecs/adau1781-i2c.c
+index 06cbca84cf02..7b9d1802d159 100644
+--- a/sound/soc/codecs/adau1781-i2c.c
++++ b/sound/soc/codecs/adau1781-i2c.c
+@@ -31,7 +31,7 @@ static int adau1781_i2c_probe(struct i2c_client *client,
+ 
+ static int adau1781_i2c_remove(struct i2c_client *client)
+ {
+-	snd_soc_unregister_codec(&client->dev);
++	adau17x1_remove(&client->dev);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/adau1781-spi.c b/sound/soc/codecs/adau1781-spi.c
+index 3d965a01b99c..9b233544d2e8 100644
+--- a/sound/soc/codecs/adau1781-spi.c
++++ b/sound/soc/codecs/adau1781-spi.c
+@@ -48,7 +48,7 @@ static int adau1781_spi_probe(struct spi_device *spi)
+ 
+ static int adau1781_spi_remove(struct spi_device *spi)
+ {
+-	snd_soc_unregister_codec(&spi->dev);
++	adau17x1_remove(&spi->dev);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index 66a6e061923d..439aa3ff1f99 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -9,6 +9,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/init.h>
++#include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+@@ -303,6 +304,116 @@ bool adau17x1_has_dsp(struct adau *adau)
+ }
+ EXPORT_SYMBOL_GPL(adau17x1_has_dsp);
+ 
++static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
++	int source, unsigned int freq_in, unsigned int freq_out)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct adau *adau = snd_soc_codec_get_drvdata(codec);
++	int ret;
++
++	if (freq_in < 8000000 || freq_in > 27000000)
++		return -EINVAL;
++
++	ret = adau_calc_pll_cfg(freq_in, freq_out, adau->pll_regs);
++	if (ret < 0)
++		return ret;
++
++	/* The PLL register is 6 bytes long and can only be written at once. */
++	ret = regmap_raw_write(adau->regmap, ADAU17X1_PLL_CONTROL,
++			adau->pll_regs, ARRAY_SIZE(adau->pll_regs));
 +	if (ret)
 +		return ret;
 +
- 	sgtl5000->regmap = devm_regmap_init_i2c(client, &sgtl5000_regmap);
- 	if (IS_ERR(sgtl5000->regmap)) {
- 		ret = PTR_ERR(sgtl5000->regmap);
- 		dev_err(&client->dev, "Failed to allocate regmap: %d\n", ret);
--		return ret;
-+		goto disable_regs;
- 	}
- 
- 	sgtl5000->mclk = devm_clk_get(&client->dev, NULL);
-@@ -1487,21 +1265,25 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 		dev_err(&client->dev, "Failed to get mclock: %d\n", ret);
- 		/* Defer the probe to see if the clk will be provided later */
- 		if (ret == -ENOENT)
--			return -EPROBE_DEFER;
--		return ret;
-+			ret = -EPROBE_DEFER;
-+		goto disable_regs;
- 	}
- 
- 	ret = clk_prepare_enable(sgtl5000->mclk);
--	if (ret)
--		return ret;
-+	if (ret) {
-+		dev_err(&client->dev, "Error enabling clock %d\n", ret);
-+		goto disable_regs;
-+	}
- 
- 	/* Need 8 clocks before I2C accesses */
- 	udelay(1);
- 
- 	/* read chip information */
- 	ret = regmap_read(sgtl5000->regmap, SGTL5000_CHIP_ID, &reg);
--	if (ret)
-+	if (ret) {
-+		dev_err(&client->dev, "Error reading chip id %d\n", ret);
- 		goto disable_clk;
-+	}
- 
- 	if (((reg & SGTL5000_PARTID_MASK) >> SGTL5000_PARTID_SHIFT) !=
- 	    SGTL5000_PARTID_PART_ID) {
-@@ -1515,6 +1297,31 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 	dev_info(&client->dev, "sgtl5000 revision 0x%x\n", rev);
- 	sgtl5000->revision = rev;
- 
-+	/* Follow section 2.2.1.1 of AN3663 */
-+	if (sgtl5000->num_supplies <= VDDD) {
-+		/* internal VDDD at 1.2V */
-+		regmap_update_bits(sgtl5000->regmap,
-+				   SGTL5000_CHIP_LINREG_CTRL,
-+				   SGTL5000_LINREG_VDDD_MASK, 8);
-+		regmap_update_bits(sgtl5000->regmap,
-+				   SGTL5000_CHIP_ANA_POWER,
-+				   SGTL5000_LINEREG_D_POWERUP
-+				   | SGTL5000_LINREG_SIMPLE_POWERUP,
-+				   SGTL5000_LINEREG_D_POWERUP);
-+		dev_info(&client->dev, "Using internal LDO instead of VDDD: check ER1\n");
-+	} else {
-+		/* using external LDO for VDDD
-+		 * Clear startup powerup and simple powerup
-+		 * bits to save power
-+		 */
-+		regmap_update_bits(sgtl5000->regmap,
-+				   SGTL5000_CHIP_ANA_POWER,
-+				   SGTL5000_STARTUP_POWERUP
-+				   | SGTL5000_LINREG_SIMPLE_POWERUP,
-+				   0);
-+		dev_dbg(&client->dev, "Using external VDDD\n");
++	adau->pll_freq = freq_out;
++
++	return 0;
++}
++
++static int adau17x1_set_dai_sysclk(struct snd_soc_dai *dai,
++		int clk_id, unsigned int freq, int dir)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(dai->codec);
++	struct adau *adau = snd_soc_codec_get_drvdata(dai->codec);
++	bool is_pll;
++	bool was_pll;
++
++	switch (clk_id) {
++	case ADAU17X1_CLK_SRC_MCLK:
++		is_pll = false;
++		break;
++	case ADAU17X1_CLK_SRC_PLL_AUTO:
++		if (!adau->mclk)
++			return -EINVAL;
++		/* Fall-through */
++	case ADAU17X1_CLK_SRC_PLL:
++		is_pll = true;
++		break;
++	default:
++		return -EINVAL;
 +	}
 +
- 	if (np) {
- 		if (!of_property_read_u32(np,
- 			"micbias-resistor-k-ohms", &value)) {
-@@ -1556,8 +1363,6 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 		}
- 	}
++	switch (adau->clk_src) {
++	case ADAU17X1_CLK_SRC_MCLK:
++		was_pll = false;
++		break;
++	case ADAU17X1_CLK_SRC_PLL:
++	case ADAU17X1_CLK_SRC_PLL_AUTO:
++		was_pll = true;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	adau->sysclk = freq;
++
++	if (is_pll != was_pll) {
++		if (is_pll) {
++			snd_soc_dapm_add_routes(dapm,
++				&adau17x1_dapm_pll_route, 1);
++		} else {
++			snd_soc_dapm_del_routes(dapm,
++				&adau17x1_dapm_pll_route, 1);
++		}
++	}
++
++	adau->clk_src = clk_id;
++
++	return 0;
++}
++
++static int adau17x1_auto_pll(struct snd_soc_dai *dai,
++	struct snd_pcm_hw_params *params)
++{
++	struct adau *adau = snd_soc_dai_get_drvdata(dai);
++	unsigned int pll_rate;
++
++	switch (params_rate(params)) {
++	case 48000:
++	case 8000:
++	case 12000:
++	case 16000:
++	case 24000:
++	case 32000:
++	case 96000:
++		pll_rate = 48000 * 1024;
++		break;
++	case 44100:
++	case 7350:
++	case 11025:
++	case 14700:
++	case 22050:
++	case 29400:
++	case 88200:
++		pll_rate = 44100 * 1024;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return adau17x1_set_dai_pll(dai, ADAU17X1_PLL, ADAU17X1_PLL_SRC_MCLK,
++		clk_get_rate(adau->mclk), pll_rate);
++}
++
+ static int adau17x1_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+@@ -312,10 +423,19 @@ static int adau17x1_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int freq;
+ 	int ret;
  
--	i2c_set_clientdata(client, sgtl5000);
+-	if (adau->clk_src == ADAU17X1_CLK_SRC_PLL)
++	switch (adau->clk_src) {
++	case ADAU17X1_CLK_SRC_PLL_AUTO:
++		ret = adau17x1_auto_pll(dai, params);
++		if (ret)
++			return ret;
++		/* Fall-through */
++	case ADAU17X1_CLK_SRC_PLL:
+ 		freq = adau->pll_freq;
+-	else
++		break;
++	default:
+ 		freq = adau->sysclk;
++		break;
++	}
+ 
+ 	if (freq % params_rate(params) != 0)
+ 		return -EINVAL;
+@@ -387,62 +507,6 @@ static int adau17x1_hw_params(struct snd_pcm_substream *substream,
+ 			ADAU17X1_SERIAL_PORT1_DELAY_MASK, val);
+ }
+ 
+-static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
+-	int source, unsigned int freq_in, unsigned int freq_out)
+-{
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct adau *adau = snd_soc_codec_get_drvdata(codec);
+-	int ret;
 -
- 	/* Ensure sgtl5000 will start with sane register values */
- 	ret = sgtl5000_fill_defaults(sgtl5000);
- 	if (ret)
-@@ -1572,6 +1377,11 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 
- disable_clk:
- 	clk_disable_unprepare(sgtl5000->mclk);
+-	if (freq_in < 8000000 || freq_in > 27000000)
+-		return -EINVAL;
+-
+-	ret = adau_calc_pll_cfg(freq_in, freq_out, adau->pll_regs);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* The PLL register is 6 bytes long and can only be written at once. */
+-	ret = regmap_raw_write(adau->regmap, ADAU17X1_PLL_CONTROL,
+-			adau->pll_regs, ARRAY_SIZE(adau->pll_regs));
+-	if (ret)
+-		return ret;
+-
+-	adau->pll_freq = freq_out;
+-
+-	return 0;
+-}
+-
+-static int adau17x1_set_dai_sysclk(struct snd_soc_dai *dai,
+-		int clk_id, unsigned int freq, int dir)
+-{
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(dai->codec);
+-	struct adau *adau = snd_soc_codec_get_drvdata(dai->codec);
+-
+-	switch (clk_id) {
+-	case ADAU17X1_CLK_SRC_MCLK:
+-	case ADAU17X1_CLK_SRC_PLL:
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	adau->sysclk = freq;
+-
+-	if (adau->clk_src != clk_id) {
+-		if (clk_id == ADAU17X1_CLK_SRC_PLL) {
+-			snd_soc_dapm_add_routes(dapm,
+-				&adau17x1_dapm_pll_route, 1);
+-		} else {
+-			snd_soc_dapm_del_routes(dapm,
+-				&adau17x1_dapm_pll_route, 1);
+-		}
+-	}
+-
+-	adau->clk_src = clk_id;
+-
+-	return 0;
+-}
+-
+ static int adau17x1_set_dai_fmt(struct snd_soc_dai *dai,
+ 		unsigned int fmt)
+ {
+@@ -827,6 +891,10 @@ int adau17x1_add_routes(struct snd_soc_codec *codec)
+ 		ret = snd_soc_dapm_add_routes(dapm, adau17x1_no_dsp_dapm_routes,
+ 			ARRAY_SIZE(adau17x1_no_dsp_dapm_routes));
+ 	}
 +
-+disable_regs:
-+	regulator_bulk_disable(sgtl5000->num_supplies, sgtl5000->supplies);
-+	regulator_bulk_free(sgtl5000->num_supplies, sgtl5000->supplies);
++	if (adau->clk_src != ADAU17X1_CLK_SRC_MCLK)
++		snd_soc_dapm_add_routes(dapm, &adau17x1_dapm_pll_route, 1);
 +
  	return ret;
  }
+ EXPORT_SYMBOL_GPL(adau17x1_add_routes);
+@@ -849,6 +917,7 @@ int adau17x1_probe(struct device *dev, struct regmap *regmap,
+ 	const char *firmware_name)
+ {
+ 	struct adau *adau;
++	int ret;
  
-@@ -1581,6 +1391,9 @@ static int sgtl5000_i2c_remove(struct i2c_client *client)
+ 	if (IS_ERR(regmap))
+ 		return PTR_ERR(regmap);
+@@ -857,6 +926,30 @@ int adau17x1_probe(struct device *dev, struct regmap *regmap,
+ 	if (!adau)
+ 		return -ENOMEM;
  
- 	snd_soc_unregister_codec(&client->dev);
- 	clk_disable_unprepare(sgtl5000->mclk);
-+	regulator_bulk_disable(sgtl5000->num_supplies, sgtl5000->supplies);
-+	regulator_bulk_free(sgtl5000->num_supplies, sgtl5000->supplies);
++	adau->mclk = devm_clk_get(dev, "mclk");
++	if (IS_ERR(adau->mclk)) {
++		if (PTR_ERR(adau->mclk) != -ENOENT)
++			return PTR_ERR(adau->mclk);
++		/* Clock is optional (for the driver) */
++		adau->mclk = NULL;
++	} else if (adau->mclk) {
++		adau->clk_src = ADAU17X1_CLK_SRC_PLL_AUTO;
 +
- 	return 0;
++		/*
++		 * Any valid PLL output rate will work at this point, use one
++		 * that is likely to be chosen later as well. The register will
++		 * be written when the PLL is powered up for the first time.
++		 */
++		ret = adau_calc_pll_cfg(clk_get_rate(adau->mclk), 48000 * 1024,
++				adau->pll_regs);
++		if (ret < 0)
++			return ret;
++
++		ret = clk_prepare_enable(adau->mclk);
++		if (ret)
++			return ret;
++	}
++
+ 	adau->regmap = regmap;
+ 	adau->switch_mode = switch_mode;
+ 	adau->type = type;
+@@ -880,6 +973,16 @@ int adau17x1_probe(struct device *dev, struct regmap *regmap,
  }
+ EXPORT_SYMBOL_GPL(adau17x1_probe);
  
++void adau17x1_remove(struct device *dev)
++{
++	struct adau *adau = dev_get_drvdata(dev);
++
++	snd_soc_unregister_codec(dev);
++	if (adau->mclk)
++		clk_disable_unprepare(adau->mclk);
++}
++EXPORT_SYMBOL_GPL(adau17x1_remove);
++
+ MODULE_DESCRIPTION("ASoC ADAU1X61/ADAU1X81 common code");
+ MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
+index 5ae87a084d97..bf04b7efee40 100644
+--- a/sound/soc/codecs/adau17x1.h
++++ b/sound/soc/codecs/adau17x1.h
+@@ -22,13 +22,18 @@ enum adau17x1_pll_src {
+ };
+ 
+ enum adau17x1_clk_src {
++	/* Automatically configure PLL based on the sample rate */
++	ADAU17X1_CLK_SRC_PLL_AUTO,
+ 	ADAU17X1_CLK_SRC_MCLK,
+ 	ADAU17X1_CLK_SRC_PLL,
+ };
+ 
++struct clk;
++
+ struct adau {
+ 	unsigned int sysclk;
+ 	unsigned int pll_freq;
++	struct clk *mclk;
+ 
+ 	enum adau17x1_clk_src clk_src;
+ 	enum adau17x1_type type;
+@@ -52,6 +57,7 @@ int adau17x1_add_routes(struct snd_soc_codec *codec);
+ int adau17x1_probe(struct device *dev, struct regmap *regmap,
+ 	enum adau17x1_type type, void (*switch_mode)(struct device *dev),
+ 	const char *firmware_name);
++void adau17x1_remove(struct device *dev);
+ int adau17x1_set_micbias_voltage(struct snd_soc_codec *codec,
+ 	enum adau17x1_micbias_voltage micbias);
+ bool adau17x1_readable_register(struct device *dev, unsigned int reg);
 -- 
 2.8.1
