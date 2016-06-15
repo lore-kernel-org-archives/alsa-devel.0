@@ -1,17 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: How does ALSALIB commuciates with low level
-	kernel	API
-Date: Wed, 15 Jun 2016 09:00:01 +0200
-Message-ID: <aaf09bd5-826e-e895-b99e-822f9f03b0ec@ladisch.de>
-References: <CAHkWnPYuUgrARoMDHjg-0vSKVfz7x6tfh9cpzoEHzvEs+cvUKA@mail.gmail.com>
+From: Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Wed, 15 Jun 2016 09:04:41 +0200
+Message-ID: <20160615070441.GB2919__39778.431345667$1465974348$gmane$org@netboy>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <20160613114713.GA9544@localhost.localdomain>
+ <20160613130059.GA20320@sisyphus.home.austad.us>
+ <20160613193208.GA2441@netboy>
+ <20160614093000.GB21689@sisyphus.home.austad.us>
+ <20160614182615.GA2741@netboy>
+ <20160614203810.GC21689@sisyphus.home.austad.us>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id B7B5C2608EA
- for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 09:00:03 +0200 (CEST)
-In-Reply-To: <CAHkWnPYuUgrARoMDHjg-0vSKVfz7x6tfh9cpzoEHzvEs+cvUKA@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <20160614203810.GC21689@sisyphus.home.austad.us>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,23 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Chemsi Mehdi <chmsmehdi@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: alsa-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Chemsi Mehdi wrote:
-> I want to underatnd how ALSA userspace API calls kernel space code ?
-> for example when I call  snd_pcm_open() which code is called in kernel
-> sound code ?
+On Tue, Jun 14, 2016 at 10:38:10PM +0200, Henrik Austad wrote:
+> Whereas I want to do 
+> 
+> aplay some_song.wav
 
-The generic PCM code in alsa-lib/src/pcm/pcm.c calls some plugin.
-The "hw" plugin (in pcm_hw.c) handles communication with the kernel.
+Can you please explain how your patches accomplish this?
 
-The kernel code is in sound/core/.
-
-> and how the link is made ? via IOCTL/write ?
-
-Yes.
-
-
-Regards,
-Clemens
+Thanks,
+Richard
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
