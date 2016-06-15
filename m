@@ -1,16 +1,17 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ASoC: nau8825: cross talk suppression measurement
-	function
-Date: Wed, 15 Jun 2016 15:33:52 +0300
-Message-ID: <20160615123352.GA7136@mwanda>
+From: Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [very-RFC 7/8] AVB ALSA - Add ALSA shim for TSN
+Date: Wed, 15 Jun 2016 14:43:41 +0200
+Message-ID: <20160615124341.GA2405__22007.3353885256$1465994687$gmane$org@localhost.localdomain>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <1465686096-22156-8-git-send-email-henrik@austad.us>
+ <20160615114908.GB31281@localhost.localdomain>
+ <20160615121303.GB5950@sisyphus.home.austad.us>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
- by alsa0.perex.cz (Postfix) with ESMTP id ACB3B261561
- for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 14:34:06 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <20160615121303.GB5950@sisyphus.home.austad.us>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: KCHSU0@nuvoton.com
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, henrk@austad.us, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Henrik Austad <haustad@cisco.com>, netdev@vger.kernel.org, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello John Hsu,
+On Wed, Jun 15, 2016 at 02:13:03PM +0200, Henrik Austad wrote:
+> On Wed, Jun 15, 2016 at 01:49:08PM +0200, Richard Cochran wrote:
+> And how would v4l2 benefit from this being in alsalib? Should we require 
+> both V4L and ALSA to implement the same, or should we place it in a common 
+> place for all.
 
-The patch b50455fab459: "ASoC: nau8825: cross talk suppression
-measurement function" from Jun 7, 2016, leads to the following static
-checker warning:
+I don't require V4L to implement anything.  You were the one wanting
+AVB "devices".  Go ahead and do that, but in user space please.  We
+don't want to have kernel code that sends arbitrary Layer2 and UDP
+media packets.
 
-	sound/soc/codecs/nau8825.c:265 nau8825_sema_acquire()
-	warn: 'sem:&nau8825->xtalk_sem' is sometimes locked here and sometimes unlocked.
+The example you present of using aplay over the network is a cute
+idea, but after all it is a trivial application.  I have nothing
+against creating virtual ALSA devices (if done properly), but that
+model won't work for more realistic AVB networks.
 
+> And what about those systems that want to use TSN but is not a 
+> media-device, they should be given a raw-socket to send traffic over, 
+> should they also implement something in a library?
 
-sound/soc/codecs/nau8825.c
-   240  /**
-   241   * nau8825_sema_acquire - acquire the semaphore of nau88l25
-   242   * @nau8825:  component to register the codec private data with
-   243   * @timeout: how long in jiffies to wait before failure or zero to wait
-   244   * until release
-   245   *
-   246   * Attempts to acquire the semaphore with number of jiffies. If no more
-   247   * tasks are allowed to acquire the semaphore, calling this function will
-   248   * put the task to sleep. If the semaphore is not released within the
-   249   * specified number of jiffies, this function returns.
-   250   * Acquires the semaphore without jiffies. If no more tasks are allowed
-   251   * to acquire the semaphore, calling this function will put the task to
-   252   * sleep until the semaphore is released.
-   253   * It returns if the semaphore was acquired.
+A raw socket is the way to do it, yes.
 
-Sometimes it returns without the lock held.
+Since TSN is about bandwidth reservation and time triggered Ethernet,
+decoupled from the contents of the streams, each new TSN application
+will have to see what works best.  If common ground is found, then a
+library makes sense to do.
 
-   254   */
-   255  static void nau8825_sema_acquire(struct nau8825 *nau8825, long timeout)
-   256  {
-   257          int ret;
-   258  
-   259          if (timeout)
-   260                  ret = down_timeout(&nau8825->xtalk_sem, timeout);
-   261          else
-   262                  ret = down_interruptible(&nau8825->xtalk_sem);
-   263  
-   264          if (ret < 0)
-   265                  dev_warn(nau8825->dev, "Acquire semaphone fail\n");
+At this point, it is way too early to guess how that will look.  But
+media packet formats clearly belong in user space.
 
-This function makes me sad.  Warn and corrupt is my least favourite
-anti-pattern.
+> So no, here I think configfs is an apt choice.
+> 
+> > Heck, if done properly, your layer could discover the AVB nodes in the
+> > network and present each one as a separate device...
+> 
+> No, you definately do not want the kernel to automagically add devices 
+> whenever something pops up on the network, for this you need userspace to 
+> be in control. 1722.1 should not be handled in-kernel.
 
-   266  }
+The layer should be in user space.  Alsa-lib *is* user space.
 
-regards,
-dan carpenter
+Thanks,
+Richard
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
