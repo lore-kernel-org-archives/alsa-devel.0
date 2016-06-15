@@ -1,72 +1,44 @@
-From: Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [very-RFC 7/8] AVB ALSA - Add ALSA shim for TSN
-Date: Wed, 15 Jun 2016 14:43:41 +0200
-Message-ID: <20160615124341.GA2405__22007.3353885256$1465994687$gmane$org@localhost.localdomain>
-References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <1465686096-22156-8-git-send-email-henrik@austad.us>
- <20160615114908.GB31281@localhost.localdomain>
- <20160615121303.GB5950@sisyphus.home.austad.us>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v5] ASoC: rockchip: Add machine driver for RK3399 GRU Boards
+Date: Wed, 15 Jun 2016 07:44:32 -0500
+Message-ID: <CAL_JsqKEDw14HmbW=78_4P03nFDfmT7kOn4RsTF-PrBi+jWr0g@mail.gmail.com>
+References: <1465807339-1100-1-git-send-email-zhengxing@rock-chips.com>
+ <20160614223810.GA7925@rob-hp-laptop> <20160615095312.GY2282@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <20160615121303.GB5950@sisyphus.home.austad.us>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, henrk@austad.us, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Henrik Austad <haustad@cisco.com>, netdev@vger.kernel.org, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160615095312.GY2282@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Xing Zheng <zhengxing@rock-chips.com>, "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>, Doug Anderson <dianders@chromium.org>, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 15, 2016 at 02:13:03PM +0200, Henrik Austad wrote:
-> On Wed, Jun 15, 2016 at 01:49:08PM +0200, Richard Cochran wrote:
-> And how would v4l2 benefit from this being in alsalib? Should we require 
-> both V4L and ALSA to implement the same, or should we place it in a common 
-> place for all.
+On Wed, Jun 15, 2016 at 4:53 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Jun 14, 2016 at 05:38:10PM -0500, Rob Herring wrote:
+>> On Mon, Jun 13, 2016 at 04:42:18PM +0800, Xing Zheng wrote:
+>
+>> > +sound {
+>> > +   compatible = "rockchip,rk3399-gru-sound";
+>> > +   rockchip,cpu = <&i2s0>;
+>> > +   rockchip,codec = <&max98357a &rt5514 &da7219>;
+>
+>> These seem fairly standard though a variety of versions in the bindings.
+>> Can we use audio-codec and audio-cpu (or cpu or audio-dai) here? Mark?
+>
+> Well, the roles aren't actually that standard (the fact that there's
+> multiple CODECs and one CPU DAI here is really odd and definitely needs
+> a very system specific interpretation).  If they were standard we
+> already have the simple-card binding that things should be using.
+> There's no point in standard property names if the interpretation has to
+> be non-standard.
 
-I don't require V4L to implement anything.  You were the one wanting
-AVB "devices".  Go ahead and do that, but in user space please.  We
-don't want to have kernel code that sends arbitrary Layer2 and UDP
-media packets.
+Okay, I agree with the system specific interpretation part. However, I
+don't think using simple-card or not determines using common
+properties.
 
-The example you present of using aplay over the network is a cute
-idea, but after all it is a trivial application.  I have nothing
-against creating virtual ALSA devices (if done properly), but that
-model won't work for more realistic AVB networks.
+> The vendor specific prefixes are there because all bindings are supposed
+> to add prefixes to property names.
 
-> And what about those systems that want to use TSN but is not a 
-> media-device, they should be given a raw-socket to send traffic over, 
-> should they also implement something in a library?
+...unless they are common.
 
-A raw socket is the way to do it, yes.
-
-Since TSN is about bandwidth reservation and time triggered Ethernet,
-decoupled from the contents of the streams, each new TSN application
-will have to see what works best.  If common ground is found, then a
-library makes sense to do.
-
-At this point, it is way too early to guess how that will look.  But
-media packet formats clearly belong in user space.
-
-> So no, here I think configfs is an apt choice.
-> 
-> > Heck, if done properly, your layer could discover the AVB nodes in the
-> > network and present each one as a separate device...
-> 
-> No, you definately do not want the kernel to automagically add devices 
-> whenever something pops up on the network, for this you need userspace to 
-> be in control. 1722.1 should not be handled in-kernel.
-
-The layer should be in user space.  Alsa-lib *is* user space.
-
-Thanks,
-Richard
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+Rob
