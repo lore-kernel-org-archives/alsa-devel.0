@@ -1,66 +1,149 @@
-From: Ben Zhang <benzh@chromium.org>
-Subject: Re: [alsa-devel] [PATCH v5] ASoC: rockchip: Add machine driver for
- RK3399 GRU Boards
-Date: Wed, 15 Jun 2016 19:36:17 -0700
-Message-ID: <CAOV7By+hU3c0CVzW0_V+g6iwpzVk_A4GMR5ie6afkhLO9Lv0tQ@mail.gmail.com>
-References: <1465807339-1100-1-git-send-email-zhengxing@rock-chips.com>
- <20160614223810.GA7925@rob-hp-laptop> <20160615095312.GY2282@sirena.org.uk> <CAL_JsqKEDw14HmbW=78_4P03nFDfmT7kOn4RsTF-PrBi+jWr0g@mail.gmail.com>
+From: libin.yang@linux.intel.com
+Subject: [PATCH] ALSA: hda: fix some klockwork scan warnings
+Date: Thu, 16 Jun 2016 11:13:25 +0800
+Message-ID: <1466046805-42594-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAL_JsqKEDw14HmbW=78_4P03nFDfmT7kOn4RsTF-PrBi+jWr0g@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Rob Herring <robh@kernel.org>, Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Xing Zheng <zhengxing@rock-chips.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Doug Anderson <dianders@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>, Kumar Gala <galak@codeaurora.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, smbarber@chromium.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 15C662668B8
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2016 05:15:22 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 15, 2016 at 5:44 AM, Rob Herring <robh@kernel.org> wrote:
-> On Wed, Jun 15, 2016 at 4:53 AM, Mark Brown <broonie@kernel.org> wrote:
->> On Tue, Jun 14, 2016 at 05:38:10PM -0500, Rob Herring wrote:
->>> On Mon, Jun 13, 2016 at 04:42:18PM +0800, Xing Zheng wrote:
->>
->>> > +sound {
->>> > +   compatible = "rockchip,rk3399-gru-sound";
->>> > +   rockchip,cpu = <&i2s0>;
->>> > +   rockchip,codec = <&max98357a &rt5514 &da7219>;
->>
->>> These seem fairly standard though a variety of versions in the bindings.
->>> Can we use audio-codec and audio-cpu (or cpu or audio-dai) here? Mark?
->>
->> Well, the roles aren't actually that standard (the fact that there's
->> multiple CODECs and one CPU DAI here is really odd and definitely needs
->> a very system specific interpretation).  If they were standard we
->> already have the simple-card binding that things should be using.
->> There's no point in standard property names if the interpretation has to
->> be non-standard.
->
-> Okay, I agree with the system specific interpretation part. However, I
-> don't think using simple-card or not determines using common
-> properties.
->
+From: Libin Yang <libin.yang@linux.intel.com>
 
-Hi Mark, I have a question for the one CPU DAI + multiple CODECs
-setup. The machine driver defines 3 DAI links, connecting the same CPU
-DAI to 3 different CODEC DAIs. Does ASoC/DAPM support
-enabling/disabling an individual DAI link based on the status of the
-endpoint widget (e.g. DAPM_SPK) connected to the corresponding CODEC?
+This patch fixes some warnings from klockwork.
 
-The goal is to let user select either headphone(da7219) or
-speaker(max98357a) as output. max98357a driver does not expose a
-kcontrol for mute. It sets a shutdown GPIO on PCM_TRIGGER_START/STOP.
-And it seems soc_pcm_trigger calls the trigger op of all 3 CODEC DAIs,
-even when the DAPM_SPK widget is disabled by its pin switch.
+These warnings are not the real issues. The patch
+adds the sanity check.
 
->> The vendor specific prefixes are there because all bindings are supposed
->> to add prefixes to property names.
->
-> ...unless they are common.
->
-> Rob
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+---
+ sound/hda/hdmi_chmap.c     | 28 +++++++++++++++++++++++++---
+ sound/pci/hda/hda_codec.c  |  8 +++++++-
+ sound/pci/hda/patch_hdmi.c |  5 +++++
+ 3 files changed, 37 insertions(+), 4 deletions(-)
 
-Thanks,
-Ben
+diff --git a/sound/hda/hdmi_chmap.c b/sound/hda/hdmi_chmap.c
+index c6c75e7..81acc20 100644
+--- a/sound/hda/hdmi_chmap.c
++++ b/sound/hda/hdmi_chmap.c
+@@ -353,7 +353,8 @@ static void hdmi_std_setup_channel_mapping(struct hdac_chmap *chmap,
+ 		int hdmi_slot = 0;
+ 		/* fill actual channel mappings in ALSA channel (i) order */
+ 		for (i = 0; i < ch_alloc->channels; i++) {
+-			while (!ch_alloc->speakers[7 - hdmi_slot] && !WARN_ON(hdmi_slot >= 8))
++			while (!WARN_ON(hdmi_slot >= 8) &&
++			       !ch_alloc->speakers[7 - hdmi_slot])
+ 				hdmi_slot++; /* skip zero slots */
+ 
+ 			hdmi_channel_mapping[ca][i] = (i << 4) | hdmi_slot++;
+@@ -430,6 +431,12 @@ static int to_cea_slot(int ordered_ca, unsigned char pos)
+ 	int mask = snd_hdac_chmap_to_spk_mask(pos);
+ 	int i;
+ 
++	/* Add sanity check to pass klockwork check.
++	 * This should never happen.
++	 */
++	if (ordered_ca >= ARRAY_SIZE(channel_allocations))
++		return -1;
++
+ 	if (mask) {
+ 		for (i = 0; i < 8; i++) {
+ 			if (channel_allocations[ordered_ca].speakers[7 - i] == mask)
+@@ -456,7 +463,15 @@ EXPORT_SYMBOL_GPL(snd_hdac_spk_to_chmap);
+ /* from CEA slot to ALSA API channel position */
+ static int from_cea_slot(int ordered_ca, unsigned char slot)
+ {
+-	int mask = channel_allocations[ordered_ca].speakers[7 - slot];
++	int mask;
++
++	/* Add sanity check to pass klockwork check.
++	 * This should never happen.
++	 */
++	if (slot >= 8)
++		return 0;
++
++	mask = channel_allocations[ordered_ca].speakers[7 - slot];
+ 
+ 	return snd_hdac_spk_to_chmap(mask);
+ }
+@@ -523,7 +538,8 @@ static void hdmi_setup_fake_chmap(unsigned char *map, int ca)
+ 	int ordered_ca = get_channel_allocation_order(ca);
+ 
+ 	for (i = 0; i < 8; i++) {
+-		if (i < channel_allocations[ordered_ca].channels)
++		if (ordered_ca < ARRAY_SIZE(channel_allocations) &&
++		    i < channel_allocations[ordered_ca].channels)
+ 			map[i] = from_cea_slot(ordered_ca, hdmi_channel_mapping[ca][i] & 0x0f);
+ 		else
+ 			map[i] = 0;
+@@ -551,6 +567,12 @@ int snd_hdac_get_active_channels(int ca)
+ {
+ 	int ordered_ca = get_channel_allocation_order(ca);
+ 
++	/* Add sanity check to pass klockwork check.
++	 * This should never happen.
++	 */
++	if (ordered_ca >= ARRAY_SIZE(channel_allocations))
++		ordered_ca = 0;
++
+ 	return channel_allocations[ordered_ca].channels;
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_get_active_channels);
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 8374188..9913be8 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3584,6 +3584,12 @@ static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
+ 	bool reset;
+ 
+ 	spdif = snd_hda_spdif_out_of_nid(codec, nid);
++	/* Add sanity check to pass klockwork check.
++	 * This should never happen.
++	 */
++	if (WARN_ON(spdif == NULL))
++		return;
++
+ 	curr_fmt = snd_hda_codec_read(codec, nid, 0,
+ 				      AC_VERB_GET_STREAM_FORMAT, 0);
+ 	reset = codec->spdif_status_reset &&
+@@ -3768,7 +3774,7 @@ int snd_hda_multi_out_analog_prepare(struct hda_codec *codec,
+ 	spdif = snd_hda_spdif_out_of_nid(codec, mout->dig_out_nid);
+ 	if (mout->dig_out_nid && mout->share_spdif &&
+ 	    mout->dig_out_used != HDA_DIG_EXCLUSIVE) {
+-		if (chs == 2 &&
++		if (chs == 2 && spdif != NULL &&
+ 		    snd_hda_is_supported_format(codec, mout->dig_out_nid,
+ 						format) &&
+ 		    !(spdif->status & IEC958_AES0_NONAUDIO)) {
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index d0d5ad8..56e5204 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1680,6 +1680,11 @@ static bool check_non_pcm_per_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
+ 
+ 	mutex_lock(&codec->spdif_mutex);
+ 	spdif = snd_hda_spdif_out_of_nid(codec, cvt_nid);
++	/* Add sanity check to pass klockwork check.
++	 * This should never happen.
++	 */
++	if (WARN_ON(spdif == NULL))
++		return true;
+ 	non_pcm = !!(spdif->status & IEC958_AES0_NONAUDIO);
+ 	mutex_unlock(&codec->spdif_mutex);
+ 	return non_pcm;
+-- 
+1.9.1
