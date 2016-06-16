@@ -1,89 +1,36 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [alsa-lib][PATCH 0/9 v3] ctl: add APIs for control
-	element set
-Date: Fri, 17 Jun 2016 00:44:00 +0900
-Message-ID: <5762C940.20401@sakamocchi.jp>
-References: <1466002665-30048-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5h60t99r3o.wl-tiwai@suse.de>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH RFC 2/6] ASoC: samsung: Add DT bindings documentation for
+ LPASS
+Date: Thu, 16 Jun 2016 18:13:14 +0200
+Message-ID: <5762D01A.2050802@samsung.com>
+References: <1465815160-28504-1-git-send-email-s.nawrocki@samsung.com>
+ <1465815160-28504-3-git-send-email-s.nawrocki@samsung.com>
+ <20160614232856.GA3240@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 739CA2669F9
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2016 17:44:08 +0200 (CEST)
-In-Reply-To: <s5h60t99r3o.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <20160614232856.GA3240@rob-hp-laptop>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Rob Herring <robh@kernel.org>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, ideal.song@samsung.com, beomho.seo@samsung.com, inki.dae@samsung.com, k.kozlowski@samsung.com, b.zolnierkie@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Jun 16 2016 22:54, Takashi Iwai wrote:
-> On Wed, 15 Jun 2016 16:57:36 +0200,
-> Takashi Sakamoto wrote:
->>
->> Hi,
->>
->> This patchset is a revised version of below one:
->> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-June/109041.html
->>
->> Changes:
->>  - Drop a patch for deprecating old APIs.
->>   - In detail, see our discussion:
->>     http://mailman.alsa-project.org/pipermail/alsa-devel/2016-June/109117.html
->>  - Revise comments for TLV feature.
->>   - I realized it better to use vendor-neutral representation, after reading
->>     this discussion:
->>     http://mailman.alsa-project.org/pipermail/alsa-devel/2013-November/069483.html
+On 06/15/2016 01:28 AM, Rob Herring wrote:
+> On Mon, Jun 13, 2016 at 12:52:36PM +0200, Sylwester Nawrocki wrote:
+>> > This patch add documentation of the DT bindings for the Samsung
+>> > Exynos SoC Low Power Audio Subsystem.
+>> > 
+>> > Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+>> > ---
+>> >  .../devicetree/bindings/sound/samsung,exynos5433-lpass.txt        | 8 ++++++++
+>> >  1 file changed, 8 insertions(+)
+>> >  create mode 100644 Documentation/devicetree/bindings/sound/samsung,exynos5433-lpass.txt
+> Seems kind of incomplete, but for what's here:
 > 
-> Thanks, now applied but patch 9.
-> For the patch 9, please resubmit just after reformatting.
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Thanks. I'll post the reformatted version tomorrow (it's late night, zzz).
-
-Near future, this feature will be used for IPC mechanism between ALSA
-ctl/hctl/mixer applications and control server in userspace for audio
-and music units on IEEE 1394 bus. The control server will run according
-to udev signal to listen to the added units. The server continue to
-communicate to the units even if any bus-reset occurs on the bus; i.e.
-new units are added to the bus. This cannot be achieved by FFADO
-library, which has a defection to lost communication when any bus-resets
-occur[1].
-
-But I've not decided which userspace implementation to use as an I/O
-library; alsa-lib or alsa-gi, because it's convenience to program with
-Python 3 and GObject Introspection. There're few helps for this work,
-according to my experience in recent years.  I'd like to choose
-programming language with which I can write prototypes as soon as possible.
-
->> Again, ALSA developers in PulseAudio side, test program in the last patch
->> causes an abort to pulseaudio process as a result of kicking assertion of
->> hcontrol in alsa-lib. In detail, please refer to my previous patchset.
-> 
-> The assert() line there is nonsense (although it's a bit strange to
-> catch it -- possibly it's because of some races.  But it's no urgent
-> point to abort the program).  Care to submit a patch to remove the
-> assert line?
-
-OK. But for safe I'll read codes of PulseAudio, so need a bit time.
-
-(For this kind of work I use my private time, thus it takes longer time
-than the other full time developers.)
-
-
-[1] https://sourceforge.net/p/ffado/mailman/message/35069619/
-[2] http://marc.info/?l=linux-kernel&m=146568442828312&w=2
-
-Regards
-
-Takashi Sakamoto
+Thanks, it's indeed a bit incomplete. Most of the functionality is
+already covered by existing bindings of sub-IPs like I2S, DMAC, UART.
+I'd expect more detailed binding be specified for newer SoCs and that
+would be a different compatible string.
