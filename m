@@ -1,89 +1,109 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: rt5514-spi: Convert to use devm_* API
-Date: Thu, 16 Jun 2016 08:58:20 +0800
-Message-ID: <1466038700.8790.1.camel@ingics.com>
+From: Xing Zheng <zhengxing@rock-chips.com>
+Subject: Re: [PATCH v5] ASoC: rockchip: Add machine driver for RK3399 GRU
+ Boards
+Date: Thu, 16 Jun 2016 09:15:22 +0800
+Message-ID: <5761FDAA.1070802@rock-chips.com>
+References: <1465807339-1100-1-git-send-email-zhengxing@rock-chips.com> <CADR9n49m7anZpDbbb3=ZGBaacOuXc4F=Yid0eyMey1LfEJx8Pw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
- [209.85.192.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D2882656F5
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2016 02:58:27 +0200 (CEST)
-Received: by mail-pf0-f196.google.com with SMTP id c74so2742669pfb.0
- for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2016 17:58:26 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CADR9n49m7anZpDbbb3=ZGBaacOuXc4F=Yid0eyMey1LfEJx8Pw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Steve Barber <smbarber@google.com>, Adam Thomson <Adam.Thomson@diasemi.com>
+Cc: linux-rockchip@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Douglas Anderson <dianders@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org, =?UTF-8?B?SGVpa28gU3TDvGJuZXI=?= <heiko@sntech.de>
 List-Id: alsa-devel@alsa-project.org
 
-Use devm_* API to simplify the code.
-This patch also fixes the return value in probe error paths.
+// + Adam,
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/rt5514-spi.c | 25 ++++++-------------------
- 1 file changed, 6 insertions(+), 19 deletions(-)
+On 2016=E5=B9=B406=E6=9C=8816=E6=97=A5 03:43, Steve Barber wrote:
+> On Mon, Jun 13, 2016 at 1:42 AM, Xing Zheng<zhengxing@rock-chips.com>=
+  wrote:
+>> +
+>> +static int rockchip_sound_da7219_hw_params(struct snd_pcm_substream=
+ *substream,
+>> +                            struct snd_pcm_hw_params *params)
+>> +{
+>> +       struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
+>> +       struct snd_soc_dai *cpu_dai =3D rtd->cpu_dai;
+>> +       struct snd_soc_dai *codec_dai =3D rtd->codec_dai;
+>> +       struct snd_soc_dapm_context *dapm =3D&rtd->card->dapm;
+>> +       int mclk, ret;
+>> +
+>> +       snd_soc_dapm_disable_pin(dapm, "Speakers");
+>> +       snd_soc_dapm_disable_pin(dapm, "Int Mic");
+>> +       snd_soc_dapm_enable_pin(dapm, "Headphones");
+>> +       snd_soc_dapm_enable_pin(dapm, "Headset Mic");
+>> +       snd_soc_dapm_sync(dapm);
+>> +
+>> +       /* in bypass mode, the mclk has to be one of the frequencies=
+ below */
+>> +       switch (params_rate(params)) {
+>> +       case 8000:
+>> +       case 16000:
+>> +       case 24000:
+>> +       case 32000:
+>> +       case 48000:
+>> +       case 64000:
+>> +       case 96000:
+>> +               mclk =3D 12288000;
+>> +               break;
+>> +       case 11025:
+>> +       case 22050:
+>> +       case 44100:
+>> +       case 88200:
+>> +               mclk =3D 11289600;
+>> +               break;
+>> +       default:
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       ret =3D snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
+>> +                                    SND_SOC_CLOCK_OUT);
+>> +       if (ret<  0) {
+>> +               dev_err(codec_dai->dev, "Can't set cpu clock out %d\=
+n", ret);
+>> +               return ret;
+>> +       }
+>> +
+>> +       ret =3D snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
+>> +                                    SND_SOC_CLOCK_IN);
+>> +       if (ret<  0) {
+>> +               dev_err(codec_dai->dev, "Can't set codec clock in %d=
+\n", ret);
+>> +               return ret;
+>> +       }
+>> +
+>> +       ret =3D snd_soc_dai_set_pll(codec_dai, 0, DA7219_SYSCLK_MCLK=
+, 0, 0);
+>> +       if (ret<  0) {
+>> +               dev_err(codec_dai->dev, "Can't set pll sysclk mclk %=
+d\n", ret);
+>> +               return ret;
+>> +       }
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *r=
+td)
+>> +{
+>> +       struct snd_soc_codec *codec =3D rtd->codec_dais[0]->codec;
+>> +       int ret;
+>> +
+>> +       /* Enable Headset and 4 Buttons Jack detection */
+>> +       ret =3D snd_soc_card_jack_new(rtd->card, "Headset Jack",
+>> +                                   SND_JACK_HEADSET |
+> Should this also include SND_JACK_LINEOUT? da7219 differentiates
+> between the two so not including lineout means, for example, we can
+> miss jack insertion/removal events.
+>
+Hi Adam,
 
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 8a9382e..e1b326d 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -409,33 +409,21 @@ static int rt5514_spi_probe(struct spi_device *spi)
- 
- 	rt5514_spi = spi;
- 
--	ret = snd_soc_register_platform(&spi->dev, &rt5514_spi_platform);
-+	ret = devm_snd_soc_register_platform(&spi->dev, &rt5514_spi_platform);
- 	if (ret < 0) {
- 		dev_err(&spi->dev, "Failed to register platform.\n");
--		goto err_plat;
-+		return ret;
- 	}
- 
--	ret = snd_soc_register_component(&spi->dev, &rt5514_spi_dai_component,
--					 &rt5514_spi_dai, 1);
-+	ret = devm_snd_soc_register_component(&spi->dev,
-+					      &rt5514_spi_dai_component,
-+					      &rt5514_spi_dai, 1);
- 	if (ret < 0) {
- 		dev_err(&spi->dev, "Failed to register component.\n");
--		goto err_comp;
-+		return ret;
- 	}
- 
- 	return 0;
--err_comp:
--	snd_soc_unregister_platform(&spi->dev);
--err_plat:
--
--	return 0;
--}
--
--static int rt5514_spi_remove(struct spi_device *spi)
--{
--	snd_soc_unregister_component(&spi->dev);
--	snd_soc_unregister_platform(&spi->dev);
--
--	return 0;
- }
- 
- static const struct of_device_id rt5514_of_match[] = {
-@@ -450,7 +438,6 @@ static struct spi_driver rt5514_spi_driver = {
- 		.of_match_table = of_match_ptr(rt5514_of_match),
- 	},
- 	.probe = rt5514_spi_probe,
--	.remove = rt5514_spi_remove,
- };
- module_spi_driver(rt5514_spi_driver);
- 
--- 
-2.5.0
+Could you please confirm Steve says that about SND_JACK_LINEOUT?
+
+Thanks.
+
+--=20
+- Xing Zheng
