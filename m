@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 2/3] ASoC: ak4613: Implement suspend callback
-Date: Thu, 16 Jun 2016 14:34:31 +0200
-Message-ID: <1466080472-9817-3-git-send-email-geert+renesas@glider.be>
+Subject: [PATCH 1/3] ASoC: ak4613: Enable cache usage to fix crashes on resume
+Date: Thu, 16 Jun 2016 14:34:30 +0200
+Message-ID: <1466080472-9817-2-git-send-email-geert+renesas@glider.be>
 References: <1466080472-9817-1-git-send-email-geert+renesas@glider.be>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
 In-Reply-To: <1466080472-9817-1-git-send-email-geert+renesas@glider.be>
@@ -10,48 +10,37 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, patches@opensource.wolfsonmicro.com, linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>
 List-Id: alsa-devel@alsa-project.org
 
-Add the suspend callback to accompany the existing resume operation.
-With the suspend/resume callbacks the regmap (regcache) state handling
-can follow the recommended sequence.
+During system resume:
 
-Based on commit a2ebd58627e9aa48 ("ASoC: ak4642: Implement suspend
-callback") by Peter Ujfalusi <peter.ujfalusi@ti.com>.
+    kernel BUG at drivers/base/regmap/regcache.c:347!
+    ...
+    PC is at regcache_sync+0x1c/0x128
+    LR is at ak4613_resume+0x28/0x34
+
+The ak4613 driver is using a regmap cache sync to restore the
+configuration of the chip on resume but does not actually define a
+register cache which means that the resume is never going to work and we
+trigger asserts in regmap.  Fix this by enabling caching.
+
+Based on commit d3030d11961a8c10 ("ASoC: ak4642: Enable cache usage to
+fix crashes on resume") by Mark Brown <broonie@kernel.org>.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- sound/soc/codecs/ak4613.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/codecs/ak4613.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
-index 5013d2ba0c10a968..97798d250f08689e 100644
+index 33d2f2e10e2419d8..5013d2ba0c10a968 100644
 --- a/sound/soc/codecs/ak4613.c
 +++ b/sound/soc/codecs/ak4613.c
-@@ -437,15 +437,25 @@ static struct snd_soc_dai_driver ak4613_dai = {
- 	.symmetric_rates = 1,
+@@ -146,6 +146,7 @@ static const struct regmap_config ak4613_regmap_cfg = {
+ 	.max_register		= 0x16,
+ 	.reg_defaults		= ak4613_reg,
+ 	.num_reg_defaults	= ARRAY_SIZE(ak4613_reg),
++	.cache_type		= REGCACHE_RBTREE,
  };
  
--static int ak4613_resume(struct snd_soc_codec *codec)
-+static int ak4613_suspend(struct snd_soc_codec *codec)
- {
- 	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
- 
-+	regcache_cache_only(regmap, true);
- 	regcache_mark_dirty(regmap);
-+	return 0;
-+}
-+
-+static int ak4613_resume(struct snd_soc_codec *codec)
-+{
-+	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
-+
-+	regcache_cache_only(regmap, false);
- 	return regcache_sync(regmap);
- }
- 
- static struct snd_soc_codec_driver soc_codec_dev_ak4613 = {
-+	.suspend		= ak4613_suspend,
- 	.resume			= ak4613_resume,
- 	.set_bias_level		= ak4613_set_bias_level,
- 	.controls		= ak4613_snd_controls,
+ static const struct of_device_id ak4613_of_match[] = {
 -- 
 1.9.1
