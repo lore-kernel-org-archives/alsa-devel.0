@@ -1,48 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] snd: soc: cx20442 codec: set tty->receiver_room in
- v253_open
-Date: Fri, 17 Jun 2016 12:40:09 +0100
-Message-ID: <20160617114009.GJ26099@sirena.org.uk>
+Subject: Applied "ASoC: cx20442: set tty->receiver_room in v253_open" to the asoc tree
+Date: Fri, 17 Jun 2016 12:43:15 +0100
+Message-ID: <E1bDsB9-00023E-E4@debutante>
 References: <1466107475-9747-1-git-send-email-jmkrzyszt@gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mFHiwr52TKrxpkjc"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
 In-Reply-To: <1466107475-9747-1-git-send-email-jmkrzyszt@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---mFHiwr52TKrxpkjc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: cx20442: set tty->receiver_room in v253_open
 
-On Thu, Jun 16, 2016 at 10:04:35PM +0200, Janusz Krzysztofik wrote:
-> Commit 79901317ce80 ("n_tty: Don't flush buffer when closing ldisc"),
-> introduced in v3.10, revealed a bug in the cx20442 codec driver
-> which has never been setting tty->receive_room on line discipline
-> open as it should from the beginning. Fix it.
+has been applied to the asoc tree at
 
-Please submit patches using subject lines reflecting the style for the
-subsystem.  This makes it easier for people to identify relevant
-patches.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
---mFHiwr52TKrxpkjc
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEcBAEBCAAGBQJXY+GZAAoJECTWi3JdVIfQFO0H/3GBzAzgPFbsOTu9hfJ/Mgoq
-PT8iTAFjA8uqivFA30TeLYS9eTg6btLrx2XvajRp/ZNCG0qqX8QWW1nJ02n9312z
-xAdzVzTBDAbXeGxQYEAGH+XycULG4MwIbYVycGUQU3R/PIF1uAYN5OF36/wu+TVG
-YPcc84EYl8NO4hfqCOrOLkQPY5fo8wNZUwY2rPJ6tlxfbGxfv+tWkf1bqFX9O7tv
-ebiXRtKKUjDbLzwIJHzF4LUh4UE1k3o9kedTJdjV0Bxwz6KTv/Yx7oKFyEMb29G+
-9e+/TpSclYWMV051RnCcDKpbVlu/bthlfyAfHLPTb68cbx6Bp8gkxRM2164SeiY=
-=T1a7
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---mFHiwr52TKrxpkjc--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 86c0ae7cde7a8699116b365a5e3016753f0cd92a Mon Sep 17 00:00:00 2001
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Date: Thu, 16 Jun 2016 22:04:35 +0200
+Subject: [PATCH] ASoC: cx20442: set tty->receiver_room in v253_open
+
+Commit 79901317ce80 ("n_tty: Don't flush buffer when closing ldisc"),
+introduced in v3.10, revealed a bug in the cx20442 codec driver
+which has never been setting tty->receive_room on line discipline
+open as it should from the beginning. Fix it.
+
+Created and tested on Amstrad Delta against Linux-4.7-rc3
+
+Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/cx20442.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
+index d6f4abbbf8a7..fb3885fe0afb 100644
+--- a/sound/soc/codecs/cx20442.c
++++ b/sound/soc/codecs/cx20442.c
+@@ -226,6 +226,7 @@ static int v253_open(struct tty_struct *tty)
+ 	if (!tty->disc_data)
+ 		return -ENODEV;
+ 
++	tty->receive_room = 16;
+ 	if (tty->ops->write(tty, v253_init, len) != len) {
+ 		ret = -EIO;
+ 		goto err;
+-- 
+2.8.1
