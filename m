@@ -1,17 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: Intel: Add support for PM ops in
- bxt-da7219_max98357a
-Date: Fri, 17 Jun 2016 13:18:10 +0200
-Message-ID: <5763DC72.1060200@metafoo.de>
-References: <1466138010-27740-1-git-send-email-vinod.koul@intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH] ALSA: hdac_regmap - fix the register access
+	for runtime PM
+Date: Fri, 17 Jun 2016 13:35:56 +0200
+Message-ID: <1466163356-28195-1-git-send-email-perex@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 724F62655DE
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 13:18:11 +0200 (CEST)
-In-Reply-To: <1466138010-27740-1-git-send-email-vinod.koul@intel.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id F280A26154F
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 13:36:29 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,12 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/17/2016 06:33 AM, Vinod Koul wrote:
-> We need card to be early suspended and late resumed, so use
-> prepare and complete for card suspend and resume.
+Call path:
 
-Why and why is this something that other cards do not need to do?
+  1) snd_hdac_power_up_pm()
+  2) snd_hdac_power_up()
+  3) pm_runtime_get_sync()
+  4) __pm_runtime_resume()
+  5) rpm_resume()
+
+The rpm_resume() returns 1 when the device is already active.
+Because the return value is unmodified, the hdac regmap read/write
+functions should allow this value for the retry I/O operation, too.
+
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+---
+ sound/hda/hdac_regmap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/hda/hdac_regmap.c b/sound/hda/hdac_regmap.c
+index 87041dd..47a358f 100644
+--- a/sound/hda/hdac_regmap.c
++++ b/sound/hda/hdac_regmap.c
+@@ -444,7 +444,7 @@ int snd_hdac_regmap_write_raw(struct hdac_device *codec, unsigned int reg,
+ 	err = reg_raw_write(codec, reg, val);
+ 	if (err == -EAGAIN) {
+ 		err = snd_hdac_power_up_pm(codec);
+-		if (!err)
++		if (err >= 0)
+ 			err = reg_raw_write(codec, reg, val);
+ 		snd_hdac_power_down_pm(codec);
+ 	}
+@@ -470,7 +470,7 @@ static int __snd_hdac_regmap_read_raw(struct hdac_device *codec,
+ 	err = reg_raw_read(codec, reg, val, uncached);
+ 	if (err == -EAGAIN) {
+ 		err = snd_hdac_power_up_pm(codec);
+-		if (!err)
++		if (err >= 0)
+ 			err = reg_raw_read(codec, reg, val, uncached);
+ 		snd_hdac_power_down_pm(codec);
+ 	}
+-- 
+2.5.5
