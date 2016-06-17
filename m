@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4613: Implement suspend callback" to the asoc tree
-Date: Fri, 17 Jun 2016 12:43:21 +0100
-Message-ID: <E1bDsBF-000258-9s@debutante>
-References: <1466080472-9817-3-git-send-email-geert+renesas@glider.be>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <1466080472-9817-3-git-send-email-geert+renesas@glider.be>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, patches@opensource.wolfsonmicro.com, Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Applied "ASoC fix up SND_SOC_WM8985 dependency" to the asoc tree
+Date: Fri, 17 Jun 2016 12:43:30 +0100
+Message-ID: <E1bDsBO-00027u-0D@debutante>
+References: <20160617101230.2052826-1-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160617101230.2052826-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4613: Implement suspend callback
+   ASoC fix up SND_SOC_WM8985 dependency
 
 has been applied to the asoc tree at
 
@@ -37,54 +37,36 @@ to this mail.
 Thanks,
 Mark
 
->From f9ae17ba97e0fd134f7c0108c70e708313a07063 Mon Sep 17 00:00:00 2001
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-Date: Thu, 16 Jun 2016 14:34:31 +0200
-Subject: [PATCH] ASoC: ak4613: Implement suspend callback
+>From b82d67f4cf320b7ebe97799ffb0aa85e0172ab40 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 17 Jun 2016 12:12:00 +0200
+Subject: [PATCH] ASoC fix up SND_SOC_WM8985 dependency
 
-Add the suspend callback to accompany the existing resume operation.
-With the suspend/resume callbacks the regmap (regcache) state handling
-can follow the recommended sequence.
+I just added an I2C dependency to the wm8985 driver to work around
+a build failure, but it turns out that was premature: we actually
+need to depend on SND_SOC_I2C_AND_SPI, as the driver can work with either
+of the two, and we only need to prevent a configuration that has
+I2C=m and SND_SOC_WM8985=y.
 
-Based on commit a2ebd58627e9aa48 ("ASoC: ak4642: Implement suspend
-callback") by Peter Ujfalusi <peter.ujfalusi@ti.com>.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 05252513fbb9 ("ASoC: wm8985: add i2c dependency")
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4613.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/codecs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
-index 5013d2ba0c10..97798d250f08 100644
---- a/sound/soc/codecs/ak4613.c
-+++ b/sound/soc/codecs/ak4613.c
-@@ -437,15 +437,25 @@ static struct snd_soc_dai_driver ak4613_dai = {
- 	.symmetric_rates = 1,
- };
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index f8f6dc6c6a98..cf6d401fc823 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -945,7 +945,7 @@ config SND_SOC_WM8983
  
--static int ak4613_resume(struct snd_soc_codec *codec)
-+static int ak4613_suspend(struct snd_soc_codec *codec)
- {
- 	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
+ config SND_SOC_WM8985
+ 	tristate "Wolfson Microelectronics WM8985 and WM8758 codec driver"
+-	depends on I2C
++	depends on SND_SOC_I2C_AND_SPI
  
-+	regcache_cache_only(regmap, true);
- 	regcache_mark_dirty(regmap);
-+	return 0;
-+}
-+
-+static int ak4613_resume(struct snd_soc_codec *codec)
-+{
-+	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
-+
-+	regcache_cache_only(regmap, false);
- 	return regcache_sync(regmap);
- }
- 
- static struct snd_soc_codec_driver soc_codec_dev_ak4613 = {
-+	.suspend		= ak4613_suspend,
- 	.resume			= ak4613_resume,
- 	.set_bias_level		= ak4613_set_bias_level,
- 	.controls		= ak4613_snd_controls,
+ config SND_SOC_WM8988
+ 	tristate
 -- 
 2.8.1
