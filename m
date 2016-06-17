@@ -1,15 +1,14 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] ASoC: Intel: Add support for PM ops in
-	bxt-da7219_max98357a
-Date: Fri, 17 Jun 2016 10:03:30 +0530
-Message-ID: <1466138010-27740-1-git-send-email-vinod.koul@intel.com>
+From: Matt Flax <flatmax@flatmax.org>
+Subject: [PATCH] ASoc: wm8731: add 32bit mode.
+Date: Fri, 17 Jun 2016 14:48:16 +1000
+Message-ID: <1466138896-19739-1-git-send-email-flatmax@flatmax.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 8403F2605E1
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 06:27:10 +0200 (CEST)
+Received: from nskntmtas03p.mx.bigpond.com (nskntmtas03p.mx.bigpond.com
+ [61.9.168.143]) by alsa0.perex.cz (Postfix) with ESMTP id 3503826582C
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 06:48:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,54 +18,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
+To: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Matt Flax <flatmax@flatmax.org>
 List-Id: alsa-devel@alsa-project.org
 
-We need card to be early suspended and late resumed, so use
-prepare and complete for card suspend and resume.
+This patch adds 32 bit word capability to the wm8731 driver. The wm8731
+codec is capable of handling 32 bit word sizes, however that has not
+previously been activated in the codec driver.
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Tested-by: Harsha Priya <harshapriya.n@intel.com>
+Signed-off-by: Matt Flax <flatmax@flatmax.org>
 ---
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm8731.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 3774b117d365..df5f269a9b67 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -441,11 +441,30 @@ static int broxton_audio_probe(struct platform_device *pdev)
- 	return devm_snd_soc_register_card(&pdev->dev, &broxton_audio_card);
- }
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 4bcf5f8..d18261a 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -358,6 +358,9 @@ static int wm8731_hw_params(struct snd_pcm_substream *substream,
+ 	case 24:
+ 		iface |= 0x0008;
+ 		break;
++	case 32:
++		iface |= 0x000c;
++		break;
+ 	}
  
-+#ifdef CONFIG_PM_SLEEP
-+
-+static void broxton_complete(struct device *dev)
-+{
-+	snd_soc_resume(dev);
-+}
-+
-+#else
-+#define broxton_complete NULL
-+#endif
-+
-+static const struct dev_pm_ops broxton_pm_ops = {
-+	.prepare = snd_soc_suspend,
-+	.complete = broxton_complete,
-+	.freeze = snd_soc_suspend,
-+	.thaw = snd_soc_resume,
-+	.poweroff = snd_soc_poweroff,
-+	.restore = snd_soc_resume,
-+};
- static struct platform_driver broxton_audio = {
- 	.probe = broxton_audio_probe,
- 	.driver = {
- 		.name = "bxt_da7219_max98357a_i2s",
--		.pm = &snd_soc_pm_ops,
-+		.pm = &broxton_pm_ops,
- 	},
- };
- module_platform_driver(broxton_audio)
+ 	wm8731_set_deemph(codec);
+@@ -541,7 +544,7 @@ static int wm8731_startup(struct snd_pcm_substream *substream,
+ #define WM8731_RATES SNDRV_PCM_RATE_8000_96000
+ 
+ #define WM8731_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+-	SNDRV_PCM_FMTBIT_S24_LE)
++	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ static const struct snd_soc_dai_ops wm8731_dai_ops = {
+ 	.startup	= wm8731_startup,
 -- 
-1.9.1
+2.7.4
