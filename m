@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cx20442: set tty->receiver_room in v253_open" to the asoc tree
-Date: Fri, 17 Jun 2016 12:43:15 +0100
-Message-ID: <E1bDsB9-00023E-E4@debutante>
-References: <1466107475-9747-1-git-send-email-jmkrzyszt@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1466107475-9747-1-git-send-email-jmkrzyszt@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Subject: Applied "ASoC: wm8940: Enable cache usage to fix crashes on resume" to the asoc tree
+Date: Fri, 17 Jun 2016 12:43:24 +0100
+Message-ID: <E1bDsBI-000269-6C@debutante>
+References: <1466080472-9817-4-git-send-email-geert+renesas@glider.be>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <1466080472-9817-4-git-send-email-geert+renesas@glider.be>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, patches@opensource.wolfsonmicro.com, Peter Ujfalusi <peter.ujfalusi@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cx20442: set tty->receiver_room in v253_open
+   ASoC: wm8940: Enable cache usage to fix crashes on resume
 
 has been applied to the asoc tree at
 
@@ -37,35 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From 86c0ae7cde7a8699116b365a5e3016753f0cd92a Mon Sep 17 00:00:00 2001
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Date: Thu, 16 Jun 2016 22:04:35 +0200
-Subject: [PATCH] ASoC: cx20442: set tty->receiver_room in v253_open
+>From 50c7a0ef2d97e56c7ce2f1ea5fe1d8e25aadc1bb Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Date: Thu, 16 Jun 2016 14:34:32 +0200
+Subject: [PATCH] ASoC: wm8940: Enable cache usage to fix crashes on resume
 
-Commit 79901317ce80 ("n_tty: Don't flush buffer when closing ldisc"),
-introduced in v3.10, revealed a bug in the cx20442 codec driver
-which has never been setting tty->receive_room on line discipline
-open as it should from the beginning. Fix it.
+The wm8940 driver is using a regmap cache sync to restore the
+configuration of the chip when switching from OFF to STANDBY, but does
+not actually define a register cache which means that the restore is
+never going to work and we trigger asserts in regmap.  Fix this by
+enabling caching.
 
-Created and tested on Amstrad Delta against Linux-4.7-rc3
+Based on commit d3030d11961a8c10 ("ASoC: ak4642: Enable cache usage to
+fix crashes on resume") by Mark Brown <broonie@kernel.org>.
 
-Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cx20442.c | 1 +
+ sound/soc/codecs/wm8940.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
-index d6f4abbbf8a7..fb3885fe0afb 100644
---- a/sound/soc/codecs/cx20442.c
-+++ b/sound/soc/codecs/cx20442.c
-@@ -226,6 +226,7 @@ static int v253_open(struct tty_struct *tty)
- 	if (!tty->disc_data)
- 		return -ENODEV;
+diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
+index f6f9395ea38e..1c600819f768 100644
+--- a/sound/soc/codecs/wm8940.c
++++ b/sound/soc/codecs/wm8940.c
+@@ -743,6 +743,7 @@ static const struct regmap_config wm8940_regmap = {
+ 	.max_register = WM8940_MONOMIX,
+ 	.reg_defaults = wm8940_reg_defaults,
+ 	.num_reg_defaults = ARRAY_SIZE(wm8940_reg_defaults),
++	.cache_type = REGCACHE_RBTREE,
  
-+	tty->receive_room = 16;
- 	if (tty->ops->write(tty, v253_init, len) != len) {
- 		ret = -EIO;
- 		goto err;
+ 	.readable_reg = wm8940_readable_register,
+ 	.volatile_reg = wm8940_volatile_register,
 -- 
 2.8.1
