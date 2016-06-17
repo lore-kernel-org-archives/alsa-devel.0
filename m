@@ -1,68 +1,28 @@
-From: Mark Hills <mark@xwax.org>
-Subject: S/PDIF and track markers (echo3g)
-Date: Fri, 17 Jun 2016 14:29:43 +0100 (BST)
-Message-ID: <1606171339510.3384@stax.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from jazz.pogo.org.uk (jazz.pogo.org.uk [213.138.114.167])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E698265C99
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 15:29:44 +0200 (CEST)
-Received: from cpc93782-hari17-2-0-cust1854.20-2.cable.virginm.net
- ([82.34.71.63] helo=stax.localdomain)
- by jazz.pogo.org.uk with esmtps (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
- (Exim 4.86 (FreeBSD)) (envelope-from <mark@xwax.org>)
- id 1bDtqB-0006kk-Rx
- for alsa-devel@alsa-project.org; Fri, 17 Jun 2016 14:29:44 +0100
-Received: from mark (helo=localhost)
- by stax.localdomain with local-esmtp (Exim 4.84)
- (envelope-from <mark@xwax.org>) id 1bDtqB-00014e-If
- for alsa-devel@alsa-project.org; Fri, 17 Jun 2016 14:29:43 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: [PATCH] ASoC: max9867: Fix unix permissions for source files.
+Date: Fri, 17 Jun 2016 16:24:43 +0200
+Message-ID: <1466173483-20147-1-git-send-email-enric.balletbo@collabora.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Change file permissions of source files max9867.c/h from 0755 to 0644.
 
-Is there any provision in ALSA (either within the kernel or libasound) for 
-extracting track marker information from S/PDIF?
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
+ sound/soc/codecs/max9867.c | 0
+ sound/soc/codecs/max9867.h | 0
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ mode change 100755 => 100644 sound/soc/codecs/max9867.c
+ mode change 100755 => 100644 sound/soc/codecs/max9867.h
 
-I have a large number of MiniDisc recordings to preserve as FLAC format.
-
-Losing track markers would be a huge inconvenience, though I don't care 
-for the rest of the metadata (track names etc..)
-
-There's enough recordings to be worth developing specific software for the 
-archival if it can access this information.
-
-I don't really know which path is likely to be successful:
-
-* An ALSA API to access the information; though I can't see anything
-  specific to track markers
-
-* Whether a timecode could be used to detect track change; but I can't see 
-  any in /proc/asound/Layla3G/status
-
-* Does ALSA provide access to raw AES streams, so I could decode it in 
-  userland? I'm un-sure if this relates to hardware AC3 decoding.
-
-* Maybe this sort of status is only available to the firmware of the 
-  interface and never makes it to userland (in my case, echo3g); though I 
-  can see some constants relating to 'non audio' S/PDIF.
-
-The hardware I have here is Echo Layla 3G (snd-echo3g) and a Pioneer 
-MJ-D707 MiniDisc recorder.
-
-Any advice appreciated -- many thanks.
-
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+old mode 100755
+new mode 100644
+diff --git a/sound/soc/codecs/max9867.h b/sound/soc/codecs/max9867.h
+old mode 100755
+new mode 100644
 -- 
-Mark
+2.1.0
