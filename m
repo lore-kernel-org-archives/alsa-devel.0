@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC fix up SND_SOC_WM8985 dependency" to the asoc tree
-Date: Fri, 17 Jun 2016 12:43:30 +0100
-Message-ID: <E1bDsBO-00027u-0D@debutante>
-References: <20160617101230.2052826-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160617101230.2052826-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Applied "ASoc: wm8731: add 32bit mode." to the asoc
+	tree
+Date: Fri, 17 Jun 2016 12:43:27 +0100
+Message-ID: <E1bDsBL-000272-3X@debutante>
+References: <1466138896-19739-1-git-send-email-flatmax@flatmax.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CDCCA265CB5
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 13:43:35 +0200 (CEST)
+In-Reply-To: <1466138896-19739-1-git-send-email-flatmax@flatmax.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Matt Flax <flatmax@flatmax.org>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, broonie@kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC fix up SND_SOC_WM8985 dependency
+   ASoc: wm8731: add 32bit mode.
 
 has been applied to the asoc tree at
 
@@ -37,36 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From b82d67f4cf320b7ebe97799ffb0aa85e0172ab40 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 17 Jun 2016 12:12:00 +0200
-Subject: [PATCH] ASoC fix up SND_SOC_WM8985 dependency
+>From cf5ef3a299ba32f6ac24c3c6ba18c1b7f1b5475f Mon Sep 17 00:00:00 2001
+From: Matt Flax <flatmax@flatmax.org>
+Date: Fri, 17 Jun 2016 14:48:16 +1000
+Subject: [PATCH] ASoc: wm8731: add 32bit mode.
 
-I just added an I2C dependency to the wm8985 driver to work around
-a build failure, but it turns out that was premature: we actually
-need to depend on SND_SOC_I2C_AND_SPI, as the driver can work with either
-of the two, and we only need to prevent a configuration that has
-I2C=m and SND_SOC_WM8985=y.
+This patch adds 32 bit word capability to the wm8731 driver. The wm8731
+codec is capable of handling 32 bit word sizes, however that has not
+previously been activated in the codec driver.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: 05252513fbb9 ("ASoC: wm8985: add i2c dependency")
+Signed-off-by: Matt Flax <flatmax@flatmax.org>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm8731.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index f8f6dc6c6a98..cf6d401fc823 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -945,7 +945,7 @@ config SND_SOC_WM8983
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 4bcf5f8ece50..d18261a44256 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -358,6 +358,9 @@ static int wm8731_hw_params(struct snd_pcm_substream *substream,
+ 	case 24:
+ 		iface |= 0x0008;
+ 		break;
++	case 32:
++		iface |= 0x000c;
++		break;
+ 	}
  
- config SND_SOC_WM8985
- 	tristate "Wolfson Microelectronics WM8985 and WM8758 codec driver"
--	depends on I2C
-+	depends on SND_SOC_I2C_AND_SPI
+ 	wm8731_set_deemph(codec);
+@@ -541,7 +544,7 @@ static int wm8731_startup(struct snd_pcm_substream *substream,
+ #define WM8731_RATES SNDRV_PCM_RATE_8000_96000
  
- config SND_SOC_WM8988
- 	tristate
+ #define WM8731_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+-	SNDRV_PCM_FMTBIT_S24_LE)
++	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ static const struct snd_soc_dai_ops wm8731_dai_ops = {
+ 	.startup	= wm8731_startup,
 -- 
 2.8.1
