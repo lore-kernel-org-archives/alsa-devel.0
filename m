@@ -1,66 +1,48 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH] ALSA: hdac_regmap - fix the register access
-	for runtime PM
-Date: Fri, 17 Jun 2016 13:35:56 +0200
-Message-ID: <1466163356-28195-1-git-send-email-perex@perex.cz>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] snd: soc: cx20442 codec: set tty->receiver_room in
+ v253_open
+Date: Fri, 17 Jun 2016 12:40:09 +0100
+Message-ID: <20160617114009.GJ26099@sirena.org.uk>
+References: <1466107475-9747-1-git-send-email-jmkrzyszt@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id F280A26154F
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 13:36:29 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="mFHiwr52TKrxpkjc"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1466107475-9747-1-git-send-email-jmkrzyszt@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Call path:
 
-  1) snd_hdac_power_up_pm()
-  2) snd_hdac_power_up()
-  3) pm_runtime_get_sync()
-  4) __pm_runtime_resume()
-  5) rpm_resume()
+--mFHiwr52TKrxpkjc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The rpm_resume() returns 1 when the device is already active.
-Because the return value is unmodified, the hdac regmap read/write
-functions should allow this value for the retry I/O operation, too.
+On Thu, Jun 16, 2016 at 10:04:35PM +0200, Janusz Krzysztofik wrote:
+> Commit 79901317ce80 ("n_tty: Don't flush buffer when closing ldisc"),
+> introduced in v3.10, revealed a bug in the cx20442 codec driver
+> which has never been setting tty->receive_room on line discipline
+> open as it should from the beginning. Fix it.
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
----
- sound/hda/hdac_regmap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Please submit patches using subject lines reflecting the style for the
+subsystem.  This makes it easier for people to identify relevant
+patches.
 
-diff --git a/sound/hda/hdac_regmap.c b/sound/hda/hdac_regmap.c
-index 87041dd..47a358f 100644
---- a/sound/hda/hdac_regmap.c
-+++ b/sound/hda/hdac_regmap.c
-@@ -444,7 +444,7 @@ int snd_hdac_regmap_write_raw(struct hdac_device *codec, unsigned int reg,
- 	err = reg_raw_write(codec, reg, val);
- 	if (err == -EAGAIN) {
- 		err = snd_hdac_power_up_pm(codec);
--		if (!err)
-+		if (err >= 0)
- 			err = reg_raw_write(codec, reg, val);
- 		snd_hdac_power_down_pm(codec);
- 	}
-@@ -470,7 +470,7 @@ static int __snd_hdac_regmap_read_raw(struct hdac_device *codec,
- 	err = reg_raw_read(codec, reg, val, uncached);
- 	if (err == -EAGAIN) {
- 		err = snd_hdac_power_up_pm(codec);
--		if (!err)
-+		if (err >= 0)
- 			err = reg_raw_read(codec, reg, val, uncached);
- 		snd_hdac_power_down_pm(codec);
- 	}
--- 
-2.5.5
+--mFHiwr52TKrxpkjc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXY+GZAAoJECTWi3JdVIfQFO0H/3GBzAzgPFbsOTu9hfJ/Mgoq
+PT8iTAFjA8uqivFA30TeLYS9eTg6btLrx2XvajRp/ZNCG0qqX8QWW1nJ02n9312z
+xAdzVzTBDAbXeGxQYEAGH+XycULG4MwIbYVycGUQU3R/PIF1uAYN5OF36/wu+TVG
+YPcc84EYl8NO4hfqCOrOLkQPY5fo8wNZUwY2rPJ6tlxfbGxfv+tWkf1bqFX9O7tv
+ebiXRtKKUjDbLzwIJHzF4LUh4UE1k3o9kedTJdjV0Bxwz6KTv/Yx7oKFyEMb29G+
+9e+/TpSclYWMV051RnCcDKpbVlu/bthlfyAfHLPTb68cbx6Bp8gkxRM2164SeiY=
+=T1a7
+-----END PGP SIGNATURE-----
+
+--mFHiwr52TKrxpkjc--
