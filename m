@@ -1,73 +1,79 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [alsa-devel] [PATCH -next] ASoC: cs53l30: Fix non static symbol
- warnings
-Date: Fri, 17 Jun 2016 10:35:02 -0700
-Message-ID: <20160617173501.GA21670@Asurada-Nvidia>
-References: <1466184120-13062-1-git-send-email-weiyj_lk@163.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: S/PDIF and track markers (echo3g)
+Date: Fri, 17 Jun 2016 20:43:22 +0300
+Message-ID: <576436BA.4090104@iki.fi>
+References: <1606171339510.3384@stax.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1466184120-13062-1-git-send-email-weiyj_lk@163.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: weiyj_lk@163.com
-Cc: Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail3.ippnet.fi (mail3.ippnet.fi [62.197.168.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62EE6265192
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 19:43:25 +0200 (CEST)
+In-Reply-To: <1606171339510.3384@stax.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Hills <mark@xwax.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 17, 2016 at 05:22:00PM +0000, weiyj_lk@163.com wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-> 
-> Fixes the following sparse warnings:
-> 
-> sound/soc/codecs/cs53l30.c:182:20: warning:
->  symbol 'input1_sel_values' was not declared. Should it be static?
-> sound/soc/codecs/cs53l30.c:202:20: warning:
->  symbol 'input2_sel_values' was not declared. Should it be static?
-> sound/soc/codecs/cs53l30.c:734:20: warning:
->  symbol 'cs53l30_src_rates' was not declared. Should it be static?
-> 
-> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+17.06.2016, 16:29, Mark Hills kirjoitti:
+> Hi,
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Hi,
 
-> ---
->  sound/soc/codecs/cs53l30.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> Is there any provision in ALSA (either within the kernel or libasound) for 
+> extracting track marker information from S/PDIF?
+
+I don't know what track marker data looks like, but see below.
+
+> I have a large number of MiniDisc recordings to preserve as FLAC format.
 > 
-> diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-> index 714e579..a9949ad 100644
-> --- a/sound/soc/codecs/cs53l30.c
-> +++ b/sound/soc/codecs/cs53l30.c
-> @@ -179,7 +179,7 @@ static const char * const input1_sel_text[] = {
->  	"DMIC1 Off ADC1 Off",
->  };
->  
-> -unsigned int const input1_sel_values[] = {
-> +static unsigned int const input1_sel_values[] = {
->  	CS53L30_CH_TYPE,
->  	CS53L30_ADCxB_PDN | CS53L30_CH_TYPE,
->  	CS53L30_ADCxA_PDN | CS53L30_CH_TYPE,
-> @@ -199,7 +199,7 @@ static const char * const input2_sel_text[] = {
->  	"DMIC2 Off ADC2 Off",
->  };
->  
-> -unsigned int const input2_sel_values[] = {
-> +static unsigned int const input2_sel_values[] = {
->  	0x0,
->  	CS53L30_ADCxB_PDN,
->  	CS53L30_ADCxA_PDN,
-> @@ -731,7 +731,7 @@ static int cs53l30_set_tristate(struct snd_soc_dai *dai, int tristate)
->  				  CS53L30_ASP_3ST_MASK, val);
->  }
->  
-> -unsigned int const cs53l30_src_rates[] = {
-> +static unsigned int const cs53l30_src_rates[] = {
->  	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000
->  };
+> Losing track markers would be a huge inconvenience, though I don't care 
+> for the rest of the metadata (track names etc..)
 > 
+> There's enough recordings to be worth developing specific software for the 
+> archival if it can access this information.
 > 
+> I don't really know which path is likely to be successful:
 > 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> * An ALSA API to access the information; though I can't see anything
+>   specific to track markers
+> 
+> * Whether a timecode could be used to detect track change; but I can't see 
+>   any in /proc/asound/Layla3G/status
+> 
+> * Does ALSA provide access to raw AES streams, so I could decode it in 
+>   userland? I'm un-sure if this relates to hardware AC3 decoding.
+
+ALSA does provide access to the raw stream with drivers that support
+that. You'll need to record with IEC958_SUBFRAME_LE or
+IEC958_SUBFRAME_BE sample formats.
+
+> * Maybe this sort of status is only available to the firmware of the 
+>   interface and never makes it to userland (in my case, echo3g); though I 
+>   can see some constants relating to 'non audio' S/PDIF.
+
+Unfortunately the echo3g driver doesn't seem to support
+IEC958_SUBFRAME_* sample formats.
+
+The HDA driver, used for most mainboard/laptop integrated audio, does
+support that format if the hardware is capable. I'm not sure if the
+hardware commonly supports that format or not, though.
+
+> The hardware I have here is Echo Layla 3G (snd-echo3g) and a Pioneer 
+> MJ-D707 MiniDisc recorder.
+> 
+> Any advice appreciated -- many thanks.
+> 
+
+
+-- 
+Anssi Hannula
