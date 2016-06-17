@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: Intel: Add support for PM ops in
  bxt-da7219_max98357a
-Date: Fri, 17 Jun 2016 13:31:56 +0100
-Message-ID: <20160617123156.GO26099@sirena.org.uk>
+Date: Fri, 17 Jun 2016 13:35:23 +0100
+Message-ID: <20160617123523.GP26099@sirena.org.uk>
 References: <1466138010-27740-1-git-send-email-vinod.koul@intel.com>
- <5763DC72.1060200@metafoo.de> <20160617121548.GI16910@localhost>
+ <20160617111407.GE26099@sirena.org.uk>
+ <20160617121359.GH16910@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8535041423312275796=="
+Content-Type: multipart/mixed; boundary="===============5397374504924683706=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C055265AE4
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 14:32:50 +0200 (CEST)
-In-Reply-To: <20160617121548.GI16910@localhost>
+ by alsa0.perex.cz (Postfix) with ESMTP id AEB9D265B94
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 14:35:28 +0200 (CEST)
+In-Reply-To: <20160617121359.GH16910@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,57 +24,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8535041423312275796==
+--===============5397374504924683706==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="R+Rs1qz93vBJxC1z"
+	protocol="application/pgp-signature"; boundary="QKpLca3blcvhMJ0W"
 Content-Disposition: inline
 
 
---R+Rs1qz93vBJxC1z
+--QKpLca3blcvhMJ0W
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jun 17, 2016 at 05:45:48PM +0530, Vinod Koul wrote:
-> On Fri, Jun 17, 2016 at 01:18:10PM +0200, Lars-Peter Clausen wrote:
+On Fri, Jun 17, 2016 at 05:44:00PM +0530, Vinod Koul wrote:
+> On Fri, Jun 17, 2016 at 12:14:07PM +0100, Mark Brown wrote:
 
-> > Why and why is this something that other cards do not need to do?
+> > Just use snd_soc_resume() directly.
 
-> When card suspends, the DAPM suspend closes the widgets, which translates to
-> we sending IPC to DSP for tearing down the pipelines.
+> Nope, that leads to warnings.
 
-> So we need the platform to be suspended last and resume first. This way the
-> snd_soc_suspend will tear down pipelines and snd_soc_resume restore those
-> back.
+> .complete is the only callback that expects void return whereas
+> snd_soc_resume like other returns int.
 
-That doesn't answer the question - this applies to any control
-mechanism.
+This is possibly an indication that you're abusing things then - this is
+a very unusual interface to use as well...  the patch just looks very
+fishy as is, and as we were talking about in the other thread Lars
+started it seems like this is bodging around something rather than
+solving the right problem.
 
---R+Rs1qz93vBJxC1z
+--QKpLca3blcvhMJ0W
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXY+27AAoJECTWi3JdVIfQYDcH/3YCKQZlGxq7oDZDR+JGHqNz
-wmp9B4ATHEphMDGI+QOxEPFq3pfic4A7+rUNGcfN96cHNTpYDqnchVxEYszZJQ5r
-RXNwreRmkZKgeOCs2QGyKXNu0be+XAZi0INhBf4qIH/JmTZIle6HOzHDdQP4wZ4j
-ZrdNhDDesi2MCfmm3rUXbuHr7m6Wlp0zbe5t3o/d3KIKIASAPjQCnv70MmiWlX7f
-pRZgfJwK8n2vhrIKfUR1iATaK8P+75sQXIM1PnjVI3zoQXNgCj5lMSXofZHZtgJ7
-boe3494d6tQQEff2rcCaJMvN8KudPmoTKBc4K4Z1SMrA3F7A9H+Wh4qU5ilYZcE=
-=8SiX
+iQEcBAEBCAAGBQJXY+6KAAoJECTWi3JdVIfQSQ0H/1Oxd8RHEPpSagqowYBscij2
+kj87k7mZ9Kk3DBR8NEEL4Sntz5ft8kBZQVHVvMHbTAtDeG0OYUZaZuJ/Ob4qu8OH
+XF2XFrHJVHOkCETJIrsQw/IUKtSQEIw6fejINbqxRB1TEW2wM2LQJPWZjIbGNTpY
+fOtuqE+JxBkGFHAJO1rY99qgmuhSfAFYQ2HbvfKdGZXin1fotxnZU+2tfYKq0Iby
+w+8s9HSXCBsDcAr/3VZBBg8syhZVT7EEpa98VgzgcZFu0zDnq9W3pKv05sSyeAGg
+Djn0UJ31yHSZJinOkdMe+HhN6M6RmWnZx33v7mM9N8GGCRhy8Mu/LfsOE0gFNGU=
+=nEde
 -----END PGP SIGNATURE-----
 
---R+Rs1qz93vBJxC1z--
+--QKpLca3blcvhMJ0W--
 
---===============8535041423312275796==
+--===============5397374504924683706==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8535041423312275796==--
+--===============5397374504924683706==--
