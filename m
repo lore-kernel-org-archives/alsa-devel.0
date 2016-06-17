@@ -1,14 +1,15 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt5670: patch reg-0x8a
-Date: Fri, 17 Jun 2016 12:08:02 +0800
-Message-ID: <1466136482-21944-1-git-send-email-bardliao@realtek.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH] ASoC: Intel: Add support for PM ops in
+	bxt-da7219_max98357a
+Date: Fri, 17 Jun 2016 10:03:30 +0530
+Message-ID: <1466138010-27740-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id D64F22604EB
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 06:08:17 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8403F2605E1
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 06:27:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,41 +19,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-reg-8a assign the tracking source for each ASRC tracker. The default
-value is 0x0000 which means all ASRC trackers will track LRCK1. But
-in most case, we wish each ASRC tracker track the corresponding LRCK.
-i.e. ASRC1 tracks LRCK1, ASRC2 tracks LRCK2 and so on. So, we rewrite
-reg-8a as 0x0123.
+We need card to be early suspended and late resumed, so use
+prepare and complete for card suspend and resume.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Tested-by: Harsha Priya <harshapriya.n@intel.com>
 ---
- sound/soc/codecs/rt5670.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 0af5ddb..8ef467f 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -55,6 +55,7 @@ static const struct reg_sequence init_list[] = {
- 	{ RT5670_PR_BASE + 0x14, 0x9a8a },
- 	{ RT5670_PR_BASE + 0x38, 0x3ba1 },
- 	{ RT5670_PR_BASE + 0x3d, 0x3640 },
-+	{ 0x8a, 0x0123 },
- };
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index 3774b117d365..df5f269a9b67 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -441,11 +441,30 @@ static int broxton_audio_probe(struct platform_device *pdev)
+ 	return devm_snd_soc_register_card(&pdev->dev, &broxton_audio_card);
+ }
  
- static const struct reg_default rt5670_reg[] = {
-@@ -131,7 +132,7 @@ static const struct reg_default rt5670_reg[] = {
- 	{ 0x87, 0x0000 },
- 	{ 0x88, 0x0000 },
- 	{ 0x89, 0x0000 },
--	{ 0x8a, 0x0000 },
-+	{ 0x8a, 0x0123 },
- 	{ 0x8b, 0x0000 },
- 	{ 0x8c, 0x0003 },
- 	{ 0x8d, 0x0000 },
++#ifdef CONFIG_PM_SLEEP
++
++static void broxton_complete(struct device *dev)
++{
++	snd_soc_resume(dev);
++}
++
++#else
++#define broxton_complete NULL
++#endif
++
++static const struct dev_pm_ops broxton_pm_ops = {
++	.prepare = snd_soc_suspend,
++	.complete = broxton_complete,
++	.freeze = snd_soc_suspend,
++	.thaw = snd_soc_resume,
++	.poweroff = snd_soc_poweroff,
++	.restore = snd_soc_resume,
++};
+ static struct platform_driver broxton_audio = {
+ 	.probe = broxton_audio_probe,
+ 	.driver = {
+ 		.name = "bxt_da7219_max98357a_i2s",
+-		.pm = &snd_soc_pm_ops,
++		.pm = &broxton_pm_ops,
+ 	},
+ };
+ module_platform_driver(broxton_audio)
 -- 
-1.8.1.1.439.g50a6b54
+1.9.1
