@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoc: wm8731: add 32bit mode." to the asoc
-	tree
-Date: Fri, 17 Jun 2016 12:43:27 +0100
-Message-ID: <E1bDsBL-000272-3X@debutante>
-References: <1466138896-19739-1-git-send-email-flatmax@flatmax.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Add support for PM ops in
+ bxt-da7219_max98357a
+Date: Fri, 17 Jun 2016 17:44:00 +0530
+Message-ID: <20160617121359.GH16910@localhost>
+References: <1466138010-27740-1-git-send-email-vinod.koul@intel.com>
+ <20160617111407.GE26099@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7127818778503857434=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CDCCA265CB5
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 13:43:35 +0200 (CEST)
-In-Reply-To: <1466138896-19739-1-git-send-email-flatmax@flatmax.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCC7426582C
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2016 14:07:16 +0200 (CEST)
+In-Reply-To: <20160617111407.GE26099@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,75 +21,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, broonie@kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoc: wm8731: add 32bit mode.
+--===============7127818778503857434==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="90KBcPA0h13nTGdQ"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--90KBcPA0h13nTGdQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Jun 17, 2016 at 12:14:07PM +0100, Mark Brown wrote:
+> On Fri, Jun 17, 2016 at 10:03:30AM +0530, Vinod Koul wrote:
+>=20
+> > +static void broxton_complete(struct device *dev)
+> > +{
+> > +	snd_soc_resume(dev);
+> > +}
+> > +
+> > +#else
+> > +#define broxton_complete NULL
+> > +#endif
+>=20
+> Just use snd_soc_resume() directly.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Nope, that leads to warnings.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+=2Ecomplete is the only callback that expects void return whereas
+snd_soc_resume like other returns int.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+struct dev_pm_ops {
+        int (*prepare)(struct device *dev);
+        void (*complete)(struct device *dev);
+        int (*suspend)(struct device *dev);
+        int (*resume)(struct device *dev);
+	...
+}
 
-Thanks,
-Mark
+Thanks
+--=20
+~Vinod
 
->From cf5ef3a299ba32f6ac24c3c6ba18c1b7f1b5475f Mon Sep 17 00:00:00 2001
-From: Matt Flax <flatmax@flatmax.org>
-Date: Fri, 17 Jun 2016 14:48:16 +1000
-Subject: [PATCH] ASoc: wm8731: add 32bit mode.
+--90KBcPA0h13nTGdQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-This patch adds 32 bit word capability to the wm8731 driver. The wm8731
-codec is capable of handling 32 bit word sizes, however that has not
-previously been activated in the codec driver.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-Signed-off-by: Matt Flax <flatmax@flatmax.org>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm8731.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+iQIcBAEBAgAGBQJXY+mHAAoJEHwUBw8lI4NHcpAQAJkTbUcuGjxby+wR5Q7cepdg
+kNaZ/NK3bm6ip+tERC3gvae4T7mNOsggccrcMB3CTF9UUrRpH6joSDWqb1MXYSGV
+aMmMMt0JuRtqfYcss9GhaDnySBeqU9fLGiK0vGYSnujjJR5eDZeK+F8O1110axZB
+85dJCzAMe5vHHvvpwpPuTM5u+GMMk5N07MsB8BzxY2iR1Yf6Em0slJv/YpTPusIG
+JKxjpSvF/GE0BCmBG4pNUUxeQhol90uEC+deVvSrbMi0XijVOEfaWpaDSdznAjDC
+qANm4gwmwcYLwGwRBMw65L7ogOaMQGZmfK858Tx81bpsXYphcgGfxGk2BzAYr2H8
+fcmXwo9Tt4/jN4yrNi6f7a2pMvkD94xoGmqgIF+LFyDUZI9rHzU9qcJEPgW2BykD
+VLDJUKjzU5U4gMobSN599tXF1Akrb94nOfQznVTZNfy5QRd6KVHN5Mq0F8kaSLuT
+Py67XhaYD/hJrVio9wgG6ZPF1NEWnpEetLwolOaHA/RUCUdWakXCjcCWI+AZdD1k
+rn3DWZlV4kRNWUnKjjV0UiKPyt8q3GpBlQaYfPfGsvUBmiEL/vYfflSnqmChkaaB
+nSgCJT4Bbx4zU0gnvK0lUhBagLdSxf1av1KSqDyOiJmbHPQn/KPfDjAKzmwaHgoF
+VIm5nzYQobjd+Y+mPGQ5
+=QbdQ
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 4bcf5f8ece50..d18261a44256 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -358,6 +358,9 @@ static int wm8731_hw_params(struct snd_pcm_substream *substream,
- 	case 24:
- 		iface |= 0x0008;
- 		break;
-+	case 32:
-+		iface |= 0x000c;
-+		break;
- 	}
- 
- 	wm8731_set_deemph(codec);
-@@ -541,7 +544,7 @@ static int wm8731_startup(struct snd_pcm_substream *substream,
- #define WM8731_RATES SNDRV_PCM_RATE_8000_96000
- 
- #define WM8731_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
--	SNDRV_PCM_FMTBIT_S24_LE)
-+	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
- 
- static const struct snd_soc_dai_ops wm8731_dai_ops = {
- 	.startup	= wm8731_startup,
--- 
-2.8.1
+--90KBcPA0h13nTGdQ--
+
+--===============7127818778503857434==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7127818778503857434==--
