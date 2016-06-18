@@ -1,129 +1,204 @@
 From: Sebastian Reichel <sre@kernel.org>
-Subject: Re: [PATCH 0/4] ASoC: tpa6130a2: Add support for
-	multiple instances
-Date: Sat, 18 Jun 2016 23:33:47 +0200
-Message-ID: <20160618213346.GB5510@earth>
+Subject: Re: [PATCH 1/4] ASoC: tpa6130a2: Register component
+Date: Sun, 19 Jun 2016 00:28:36 +0200
+Message-ID: <20160618222836.GC5510@earth>
 References: <cover.1466218805.git.helen.koike@collabora.co.uk>
- <20160618104038.GB31665@earth>
+ <ab4a503a44da58b65c3d56bf86e8e2949a4d3cab.1466218805.git.helen.koike@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1758155730589654205=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B719261A06
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2016 23:33:56 +0200 (CEST)
-In-Reply-To: <20160618104038.GB31665@earth>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="DSayHWYpDlRfCAAQ"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <ab4a503a44da58b65c3d56bf86e8e2949a4d3cab.1466218805.git.helen.koike@collabora.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Helen Koike <helen.koike@collabora.co.uk>
-Cc: k.kozlowski@samsung.com, lars@metafoo.de, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, peter.ujfalusi@ti.com, broonie@kernel.org, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
+Cc: lgirdwood@gmail.com, broonie@kernel.org, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, lars@metafoo.de, k.kozlowski@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1758155730589654205==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rS8CxjVDS/+yyDmU"
-Content-Disposition: inline
-
-
---rS8CxjVDS/+yyDmU
+--DSayHWYpDlRfCAAQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi Helen,
 
-On Sat, Jun 18, 2016 at 12:40:38PM +0200, Sebastian Reichel wrote:
-> On Sat, Jun 18, 2016 at 12:26:27AM -0300, Helen Koike wrote:
-> > The current tpa6130a2 driver supports only a single instance.
-> > This patch series add support for multiple instances by removing
-> > the global variable that holds the instance. This is performed by
-> > using the component API, regmap, the snd_soc_{info,put,get}_volsw
-> > API and DAPM.
+On Sat, Jun 18, 2016 at 12:26:28AM -0300, Helen Koike wrote:
+> Add tpa6130a2 controls by the component API and update rx51 accordingly
 >=20
-> yay! *stroking cleanup of the driver from my todo list*
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> [koike: port for upstream]
+> Signed-off-by: Helen Koike <helen.koike@collabora.co.uk>
+> ---
+>  sound/soc/codecs/tpa6130a2.c | 26 +++++++++++++-------------
+>  sound/soc/codecs/tpa6130a2.h |  1 -
+>  sound/soc/omap/rx51.c        | 23 ++++++++++++-----------
+>  3 files changed, 25 insertions(+), 25 deletions(-)
 >=20
-> > This patch series also touches code from the Nokia RX51 which I
-> > didn't tested (as I am testing the tpa6130a2 in another board, that
-> > is not upstream). I would appreciate is if someone who possesses
-> > the Nokia RX51 (n900) could please test the code.
->=20
-> I had a look at the rx51 parts and will test later/tomorrow.
+> diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+> index 11d85c5..f700d92 100644
+> --- a/sound/soc/codecs/tpa6130a2.c
+> +++ b/sound/soc/codecs/tpa6130a2.c
+> @@ -348,23 +348,22 @@ int tpa6130a2_stereo_enable(struct snd_soc_codec *c=
+odec, int enable)
+>  }
+>  EXPORT_SYMBOL_GPL(tpa6130a2_stereo_enable);
+> =20
+> -int tpa6130a2_add_controls(struct snd_soc_codec *codec)
+> +static int tpa6130a2_component_probe(struct snd_soc_component *component)
+>  {
+> -	struct	tpa6130a2_data *data;
+> -
+> -	if (tpa6130a2_client =3D=3D NULL)
+> -		return -ENODEV;
+> -
+> -	data =3D i2c_get_clientdata(tpa6130a2_client);
+> +	struct tpa6130a2_data *data =3D snd_soc_component_get_drvdata(component=
+);
+> =20
+>  	if (data->id =3D=3D TPA6140A2)
+> -		return snd_soc_add_codec_controls(codec, tpa6140a2_controls,
+> -						ARRAY_SIZE(tpa6140a2_controls));
+> +		return snd_soc_add_component_controls(component,
+> +			tpa6140a2_controls, ARRAY_SIZE(tpa6140a2_controls));
+>  	else
+> -		return snd_soc_add_codec_controls(codec, tpa6130a2_controls,
+> -						ARRAY_SIZE(tpa6130a2_controls));
+> +		return snd_soc_add_component_controls(component,
+> +			tpa6130a2_controls, ARRAY_SIZE(tpa6130a2_controls));
+>  }
+> -EXPORT_SYMBOL_GPL(tpa6130a2_add_controls);
+> +
+> +struct snd_soc_component_driver tpa6130a2_component_driver =3D {
+> +	.name =3D "tpa6130a2",
+> +	.probe =3D tpa6130a2_component_probe,
+> +};
+> =20
+>  static int tpa6130a2_probe(struct i2c_client *client,
+>  			   const struct i2c_device_id *id)
+> @@ -451,7 +450,8 @@ static int tpa6130a2_probe(struct i2c_client *client,
+>  	if (ret !=3D 0)
+>  		goto err_gpio;
+> =20
+> -	return 0;
+> +	return devm_snd_soc_register_component(&client->dev,
+> +			&tpa6130a2_component_driver, NULL, 0);
+> =20
+>  err_gpio:
+>  	tpa6130a2_client =3D NULL;
+> diff --git a/sound/soc/codecs/tpa6130a2.h b/sound/soc/codecs/tpa6130a2.h
+> index 4174440..78ee723 100644
+> --- a/sound/soc/codecs/tpa6130a2.h
+> +++ b/sound/soc/codecs/tpa6130a2.h
+> @@ -56,7 +56,6 @@
+>  /* TPA6130A2_REG_VERSION (0x04) */
+>  #define TPA6130A2_VERSION_MASK		(0x0f)
+> =20
+> -extern int tpa6130a2_add_controls(struct snd_soc_codec *codec);
+>  extern int tpa6130a2_stereo_enable(struct snd_soc_codec *codec, int enab=
+le);
+> =20
+>  #endif /* __TPA6130A2_H__ */
+> diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+> index 5494924..b59cf89 100644
+> --- a/sound/soc/omap/rx51.c
+> +++ b/sound/soc/omap/rx51.c
+> @@ -286,16 +286,10 @@ static const struct snd_kcontrol_new aic34_rx51_con=
+trols[] =3D {
+> =20
+>  static int rx51_aic34_init(struct snd_soc_pcm_runtime *rtd)
+>  {
+> -	struct snd_soc_codec *codec =3D rtd->codec;
+>  	struct snd_soc_card *card =3D rtd->card;
+>  	struct rx51_audio_pdata *pdata =3D snd_soc_card_get_drvdata(card);
+>  	int err;
+> =20
+> -	err =3D tpa6130a2_add_controls(codec);
+> -	if (err < 0) {
+> -		dev_err(card->dev, "Failed to add TPA6130A2 controls\n");
+> -		return err;
+> -	}
+>  	snd_soc_limit_volume(card, "TPA6130A2 Headphone Playback Volume", 42);
+> =20
+>  	err =3D omap_mcbsp_st_add_controls(rtd, 2);
+> @@ -357,6 +351,10 @@ static struct snd_soc_aux_dev rx51_aux_dev[] =3D {
+>  		.name =3D "TLV320AIC34b",
+>  		.codec_name =3D "tlv320aic3x-codec.2-0019",
+>  	},
+> +	{
+> +		.name =3D "TPA61320A2",
+> +		.codec_name =3D "tpa6130a2.2-0060",
+> +	},
+>  };
+> =20
+>  static struct snd_soc_codec_conf rx51_codec_conf[] =3D {
+> @@ -364,6 +362,10 @@ static struct snd_soc_codec_conf rx51_codec_conf[] =
+=3D {
+>  		.dev_name =3D "tlv320aic3x-codec.2-0019",
+>  		.name_prefix =3D "b",
+>  	},
+> +	{
+> +		.dev_name =3D "tpa6130a2.2-0060",
+> +		.name_prefix =3D "TPA6130A2",
 
-Ok, here are some notes (I used the git branch you provided). First
-of all kernel messages contain:
+This results in the control being named "TPA6130A2 TPA6130A2
+Headphone Playback Volume", which is too long, so its shortened to
+"TPA6130A2 TPA6130A2 Headphone Playback Volu".  That in turn results
+in incorrect detection making it playback + capture and the
+snd_soc_limit_volume() from above does not work.
 
-[    4.217163] ALSA: Control name 'TPA6130A2 TPA6130A2 Headphone Playback V=
-olum' truncated to 'TPA6130A2 TPA6130A2 Headphone Playback Volu'
+I suggest to keep the name_prefix here and remove it in the codec
+instead, so that other boards (esp. those with more than one TPA)
+can choose another prefix.
 
-Next here is a amixer output diff:
+> +	},
+>  };
+> =20
+>  /* Audio card */
+> @@ -435,11 +437,10 @@ static int rx51_soc_probe(struct platform_device *p=
+dev)
+>  			dev_err(&pdev->dev, "Headphone amplifier node is not provided\n");
+>  			return -EINVAL;
+>  		}
+> -
+> -		/* TODO: tpa6130a2a driver supports only a single instance, so
+> -		 * this driver ignores the headphone-amplifier node for now.
+> -		 * It's already mandatory in the DT binding to be future proof.
+> -		 */
+> +		rx51_aux_dev[1].codec_name =3D NULL;
+> +		rx51_aux_dev[1].codec_of_node =3D dai_node;
+> +		rx51_codec_conf[1].dev_name =3D NULL;
+> +		rx51_codec_conf[1].of_node =3D dai_node;
+>  	}
+> =20
+>  	pdata =3D devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
 
-root@n900:~# amixer > amixer.old (v4.7-rc [without your patches])
-root@n900:~# amixer > amixer.new
-root@n900:~# diff -u amixer.old amixer.new
---- amixer.old	2016-06-18 23:08:57.478027343 +0200
-+++ amixer.new	2016-06-18 22:26:13.878102558 +0200
-@@ -480,11 +480,12 @@
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
--Simple mixer control 'TPA6130A2 Headphone',0
--  Capabilities: pvolume pvolume-joined
-+Simple mixer control 'TPA6130A2 TPA6130A2 Headphone Playback Volu',0
-+  Capabilities: volume volume-joined
-   Playback channels: Mono
--  Limits: Playback 0 - 42
--  Mono: Playback 0 [0%] [-59.50dB]
-+  Capture channels: Mono
-+  Limits: 0 - 63
-+  Mono: 0 [0%]
- Simple mixer control 'b ADC HPF Cut-off',0
-   Capabilities: enum
-   Items: 'Disabled' '0.0045xFs' '0.0125xFs' '0.025xFs'
+If you fix the double prefix the patch is
 
-If I remember correctly, the reduced playback limit up to 42 is
-important on N900, since hardware can be destroyed. It may have been
-another control, though. Also the capture channel looks wrong.
-
-Last but not least: Audio output doesn't work, but works on a kernel
-without these changes.
+Tested-By: Sebastian Reichel <sre@kernel.org>
+Reviewed-By: Sebastian Reichel <sre@kernel.org>
 
 -- Sebastian
 
---rS8CxjVDS/+yyDmU
+--DSayHWYpDlRfCAAQ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBCgAGBQJXZb44AAoJENju1/PIO/qa/lYQAJg5iDIh5yLOK78gjkeE9lrX
-65DmD6qhVdYnhVJ3UzGsInk4K74aPMXhA2RCRFY4XhIkKoiuvl1HlXyVV8SU/W+h
-+cE0K4MEJQKksfuoTZBvS0AWTYM3KitM4jwsY3ExL2YtDk01qibvi13QekREdl6A
-ugLPHT5/oky70AkIeMUB5TNP8MqYoBDe60DlvyNXCpXoC41uMBCoqyt78ZA3DRM0
-v4ihkQLCaBceKdy4uFuGmYzMNKLn36IWHV65yUQVF3Z+QSy5Dr4wkVWHKltYxNlX
-d8zdmTjPI69mxscUcprVthFBKgPn6JJ5iSSbZ7A2a9b2M4hW6kBKJqWbDdp6Dl60
-X9x4elyZ7C2UdIEs5Kmg0r8BkIOatjZHzwr8mABB3IomVUG3RkXOa74OENkYg+VB
-ZvX2RLt3ymyXn+eXfXiptjwBS26Iycc00lEt4HuqTrl75rdRPqP5oPML2eWcrLit
-9DafRYcY8mgl4i6NIcfLc2tN7RgKkLsrEqgDyi51mSTwxnRkx8B5dQCdnsZrG1hU
-L1dScDC90i8+cFyFfjN3h318leXW7odP7JN7DXAsFDh5VTE0uvVkIHNHYLEZr9ot
-leyo/e96hcUk7zl/KI4Zz4/w9WWpzhiRI/EO3u2USaSssk8vQURxpPBE8QIf1ihm
-/Tk1dm2LyZORyf6N9ICm
-=i8Lm
+iQIcBAEBCgAGBQJXZcsSAAoJENju1/PIO/qaqM8P/iN7rA3S5cvk9elvwvDyA8K7
+u2I3roQLojEljKjskwhXXAy7xOaXV47BiZjxaYLlLg37SV1ShQ0pe4wia+ljMJqy
+SP06d4XsHJdPH+vn1F7EigR5iKJgrwjvhHGo1tgXHZSrwiqLmOhtvBL7fcjQJu+f
+gI/Ll/SvE5LjMVjveQfcE76/NOQYZM5ZUkAASL3AKncXqseC7UqnKYl87mSh/WVQ
+HTjSuNj4XnYoWWUkATtPsUW5AAfxDMrJ7COEBUHvdW87BgM/kmrfQn4kgxK2zeaA
+Bs+rt0k+BO33QfT1EfTOOrnTcNuL1lT19aOV5PftWYc8cEA1BfOd2G5Oua/qpLgj
+mMF5zDIdeAlCnDgWbsq/87vjw2EI4ZhSTEeM01eBV8lugiaVFxw4zr9r7h7tXVn/
+24ckOtj+T1tiqXy1t+1g6twRI6j5MxPFvCbnPrpEhkZV3PEEhxpfKKNY3FQ2jNMw
+26G2PD5vzylZlLvqg/thWtF4ICwwUC2zbyP88JEt24qgEOjAqkfr/W7/TUhlw+qK
+UVR64z7Xds+i3SiTY/YbhNwPiPKnQFG+8oJgjIdQJ1asOpuwsroRsHGox57jbjxe
+1jnl8imX0QyUMX/Jk4UXixOkSE+zQLHydM3BVrrjovhiAjtmKS2oXIDWv2zhbD8h
+BeNWNizWnBW6lldk9Lgs
+=5TEW
 -----END PGP SIGNATURE-----
 
---rS8CxjVDS/+yyDmU--
-
---===============1758155730589654205==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1758155730589654205==--
+--DSayHWYpDlRfCAAQ--
