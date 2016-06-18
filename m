@@ -1,151 +1,85 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [very-RFC 0/8] TSN driver for the kernel
-Date: Sat, 18 Jun 2016 14:22:13 +0900
-Message-ID: <5764DA85.3050801@sakamocchi.jp>
-References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <20160613114713.GA9544@localhost.localdomain> <20160613195136.GC2441@netboy>
- <20160614121844.54a125a5@lxorguk.ukuu.org.uk> <5760C84C.40408@sakamocchi.jp>
- <20160615080602.GA13555@localhost.localdomain>
+From: Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH 0/4] ASoC: tpa6130a2: Add support for multiple instances
+Date: Sat, 18 Jun 2016 12:40:38 +0200
+Message-ID: <20160618104038.GB31665@earth>
+References: <cover.1466218805.git.helen.koike@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 3A9252614E3
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2016 07:22:19 +0200 (CEST)
-In-Reply-To: <20160615080602.GA13555@localhost.localdomain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Cochran <richardcochran@gmail.com>, alsa-devel@alsa-project.org
-Cc: netdev@vger.kernel.org, Henrik Austad <henrik@austad.us>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="U+BazGySraz5kW0T"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <cover.1466218805.git.helen.koike@collabora.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Helen Koike <helen.koike@collabora.co.uk>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, lars@metafoo.de, k.kozlowski@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
+
+
+--U+BazGySraz5kW0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-Sorry to be late. In this weekday, I have little time for this thread
-because working for alsa-lib[1]. Besides, I'm not full-time developer
-for this kind of work. In short, I use my limited private time for this
-discussion.
+On Sat, Jun 18, 2016 at 12:26:27AM -0300, Helen Koike wrote:
+> The current tpa6130a2 driver supports only a single instance.
+> This patch series add support for multiple instances by removing
+> the global variable that holds the instance. This is performed by
+> using the component API, regmap, the snd_soc_{info,put,get}_volsw
+> API and DAPM.
 
-On Jun 15 2016 17:06, Richard Cochran wrote:
-> On Wed, Jun 15, 2016 at 12:15:24PM +0900, Takashi Sakamoto wrote:
->>> On Mon, Jun 13, 2016 at 01:47:13PM +0200, Richard Cochran wrote:
->>>> I have seen audio PLL/multiplier chips that will take, for example, a
->>>> 10 kHz input and produce your 48 kHz media clock.  With the right HW
->>>> design, you can tell your PTP Hardware Clock to produce a 10000 PPS,
->>>> and you will have a synchronized AVB endpoint.  The software is all
->>>> there already.  Somebody should tell the ALSA guys about it.
->>
->> Just from my curiosity, could I ask you more explanation for it in ALSA
->> side?
-> 
-> (Disclaimer: I really don't know too much about ALSA, expect that is
-> fairly big and complex ;)
+yay! *stroking cleanup of the driver from my todo list*
 
-In this morning, I read IEEE 1722:2011 and realized that it quite
-roughly refers to IEC 61883-1/6 and includes much ambiguities to end
-applications.
+> This patch series also touches code from the Nokia RX51 which I
+> didn't tested (as I am testing the tpa6130a2 in another board, that
+> is not upstream). I would appreciate is if someone who possesses
+> the Nokia RX51 (n900) could please test the code.
 
-(In my opinion, the author just focuses on packet with timestamps,
-without enough considering about how to implement endpoint applications
-which perform semi-real sampling, fetching and queueing and so on, so as
-you. They're satisfied just by handling packet with timestamp, without
-enough consideration about actual hardware/software applications.)
+I had a look at the rx51 parts and will test later/tomorrow.
+=46rom looking at the source code: You can also remove the
+"../codecs/tpa6130a2.h" include from rx51.c.
 
-> Here is what I think ALSA should provide:
-> 
-> - The DA and AD clocks should appear as attributes of the HW device.
-> 
-> - There should be a method for measuring the DA/AD clock rate with
->   respect to both the system time and the PTP Hardware Clock (PHC)
->   time.
-> 
-> - There should be a method for adjusting the DA/AD clock rate if
->   possible.  If not, then ALSA should fall back to sample rate
->   conversion.
-> 
-> - There should be a method to determine the time delay from the point
->   when the audio data are enqueued into ALSA until they pass through
->   the D/A converter.  If this cannot be known precisely, then the
->   library should provide an estimate with an error bound.
-> 
-> - I think some AVB use cases will need to know the time delay from A/D
->   until the data are available to the local application.  (Distributed
->   microphones?  I'm not too sure about that.)
-> 
-> - If the DA/AD clocks are connected to other clock devices in HW,
->   there should be a way to find this out in SW.  For example, if SW
->   can see the PTP-PHC-PLL-DA relationship from the above example, then
->   it knows how to synchronize the DA clock using the network.
-> 
->   [ Implementing this point involves other subsystems beyond ALSA.  It
->     isn't really necessary for people designing AVB systems, since
->     they know their designs, but it would be nice to have for writing
->     generic applications that can deal with any kind of HW setup. ]
+> This patch series is based on git://git.kernel.org/pub/scm/linux/kernel/g=
+it/broonie/sound.git for-next
+> Available at https://git.collabora.com/cgit/user/koike/linux.git/log/?h=
+=3Dsound/review/tpa6130a2
+>=20
+> Helen Koike (4):
+>   ASoC: tpa6130a2: Register component
+>   ASoC: tap6130a2: Use regmap
+>   ASoC: tpa6130a2: Use snd soc volsw functions
+>   ASoC: tpa6130a2: Add DAPM support
+>=20
+>  sound/soc/codecs/tpa6130a2.c | 382 ++++++++++++-------------------------=
+------
+>  sound/soc/codecs/tpa6130a2.h |  14 +-
+>  sound/soc/omap/rx51.c        |  45 ++---
+>  3 files changed, 130 insertions(+), 311 deletions(-)
 
-Depends on which subsystem decides "AVTP presentation time"[3]. This
-value is dominant to the number of events included in an IEC 61883-1
-packet. If this TSN subsystem decides it, most of these items don't need
-to be in ALSA.
+nice stats :)
 
-As long as I know, the number of AVTPDU per second seems not to be
-fixed. So each application is not allowed to calculate the timestamp by
-its own way unless TSN implementation gives the information to each
-applications.
+-- Sebastian
 
-For your information, in current ALSA implementation of IEC 61883-1/6 on
-IEEE 1394 bus, the presentation timestamp is decided in ALSA side. The
-number of isochronous packet transmitted per second is fixed by 8,000 in
-IEEE 1394, and the number of data blocks in an IEC 61883-1 packet is
-deterministic according to 'sampling transfer frequency' in IEC 61883-6
-and isochronous cycle count passed from Linux FireWire subsystem.
+--U+BazGySraz5kW0T
+Content-Type: application/pgp-signature; name="signature.asc"
 
-In the TSN subsystem, like FireWire subsystem, callback for filling
-payload should have information of 'when the packet is scheduled to be
-transmitted'. With the information, each application can calculate the
-number of event in the packet and presentation timestamp. Of cource,
-this timestamp should be handled as 'avtp_timestamp' in packet queueing.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
->> In ALSA, sampling rate conversion should be in userspace, not in kernel
->> land. In alsa-lib, sampling rate conversion is implemented in shared object.
->> When userspace applications start playbacking/capturing, depending on PCM
->> node to access, these applications load the shared object and convert PCM
->> frames from buffer in userspace to mmapped DMA-buffer, then commit them.
-> 
-> The AVB use case places an additional requirement on the rate
-> conversion.  You will need to adjust the frequency on the fly, as the
-> stream is playing.  I would guess that ALSA doesn't have that option?
+iQIcBAEBCgAGBQJXZSUjAAoJENju1/PIO/qam3IP/1m/wVEaBe2E0FQQibN9ytaV
+aJlo1vcyC+1p2hKRg+arNHTEBTAQkls3yAzKurhN3YUfvrvpCgw5YInUZgWi/btc
+mhvZsTjgs6iMrq1gmWOh3LmvLNbXCbmz1E20gFYVMlEfC3zKAb8bvZ/qgiiAN65N
+WnN07pw08o8tGTbTlw77Aktj/9vYjtMQMSqCnrUNFFTKsltZGBS1jFwx5vY2yQJN
+0yZg09l9Jac2t4R0xGJ4r3dSfnxQozydji7zM6DX00uUX4hvCsllVOx0qdwNtnKq
+BSMQUWcVtfvspOVMhz0j7kaoZGOWNrLYNjTMNCGZi52BCHRkuWRsHg5MX7oxIjab
+ahTG+EFMgMM0VfK4mhjaG7VWAaBSEn+D2fXZ0hpdlpZ9bcYgiQjlr+X7qGCwNs0t
+Ubiq/2b8NnPxhQ+5p4kp2N4mOJsMOsarzzTUKeW46x3FoEe00EePVH8L2xhDzRxx
+VNIshJ9ecHdESCmzIwJFmOkS6HJpXWPWIgn8FxsW0YveWGjHa4MGLIvCh8SdU/VX
+2f9Hg241wDildf3pfhMkIuwnV1LI9CmtdaSuGcAH4xLwGGC6nPfHzvVUEehG/ewO
+4CZQye8kDSKven4s5yp6/4bbTx+EMaITDp7m9NRjKKtq0e6cGXCjBhG7q5Vmxjco
+hp0W9aGydvqMatH4Fwg/
+=z4RN
+-----END PGP SIGNATURE-----
 
-In ALSA kernel/userspace interfaces , the specification cannot be
-supported, at all.
-
-Please explain about this requirement, where it comes from, which
-specification and clause describe it (802.1AS or 802.1Q?). As long as I
-read IEEE 1722, I cannot find such a requirement.
-
-(When considering about actual hardware codecs, on-board serial bus such
-as Inter-IC Sound, corresponding controller, immediate change of
-sampling rate is something imaginary for semi-realtime applications. And
-the idea has no meaning for typical playback/capture softwares.)
-
-
-[1] [alsa-lib][PATCH 0/9 v3] ctl: add APIs for control element set
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-June/109274.html
-[2] IEEE 1722-2011
-http://ieeexplore.ieee.org/servlet/opac?punumber=5764873
-[3] 5.5 Timing and Synchronization
-op. cit.
-[4] 1394 Open Host Controller Interface Specification
-http://download.microsoft.com/download/1/6/1/161ba512-40e2-4cc9-843a-923143f3456c/ohci_11.pdf
-
-
-Regards
-
-Takashi Sakamoto
+--U+BazGySraz5kW0T--
