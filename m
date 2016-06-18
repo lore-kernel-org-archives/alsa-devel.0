@@ -1,336 +1,151 @@
-From: Helen Koike <helen.koike@collabora.co.uk>
-Subject: [PATCH 2/4] ASoC: tap6130a2: Use regmap
-Date: Sat, 18 Jun 2016 00:26:29 -0300
-Message-ID: <fe75f8da1580cd37309a566eb515598ffb148add.1466218805.git.helen.koike@collabora.co.uk>
-References: <cover.1466218805.git.helen.koike@collabora.co.uk>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1466218805.git.helen.koike@collabora.co.uk>
-In-Reply-To: <cover.1466218805.git.helen.koike@collabora.co.uk>
-References: <cover.1466218805.git.helen.koike@collabora.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, lars@metafoo.de, k.kozlowski@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: Helen Koike <helen.koike@collabora.co.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Sat, 18 Jun 2016 14:22:13 +0900
+Message-ID: <5764DA85.3050801@sakamocchi.jp>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <20160613114713.GA9544@localhost.localdomain> <20160613195136.GC2441@netboy>
+ <20160614121844.54a125a5@lxorguk.ukuu.org.uk> <5760C84C.40408@sakamocchi.jp>
+ <20160615080602.GA13555@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 3A9252614E3
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2016 07:22:19 +0200 (CEST)
+In-Reply-To: <20160615080602.GA13555@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Richard Cochran <richardcochran@gmail.com>, alsa-devel@alsa-project.org
+Cc: netdev@vger.kernel.org, Henrik Austad <henrik@austad.us>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use regmap instead of open-coding IO access and caching
+Hi,
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-[koike: port for upstream]
-Signed-off-by: Helen Koike <helen.koike@collabora.co.uk>
----
- sound/soc/codecs/tpa6130a2.c | 166 ++++++++++++-------------------------------
- sound/soc/codecs/tpa6130a2.h |   2 -
- 2 files changed, 46 insertions(+), 122 deletions(-)
+Sorry to be late. In this weekday, I have little time for this thread
+because working for alsa-lib[1]. Besides, I'm not full-time developer
+for this kind of work. In short, I use my limited private time for this
+discussion.
 
-diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
-index f700d92..0be70a4 100644
---- a/sound/soc/codecs/tpa6130a2.c
-+++ b/sound/soc/codecs/tpa6130a2.c
-@@ -32,6 +32,7 @@
- #include <sound/tlv.h>
- #include <linux/of.h>
- #include <linux/of_gpio.h>
-+#include <linux/regmap.h>
- 
- #include "tpa6130a2.h"
- 
-@@ -45,92 +46,16 @@ static struct i2c_client *tpa6130a2_client;
- /* This struct is used to save the context */
- struct tpa6130a2_data {
- 	struct mutex mutex;
--	unsigned char regs[TPA6130A2_CACHEREGNUM];
-+	struct regmap *regmap;
- 	struct regulator *supply;
- 	int power_gpio;
- 	u8 power_state:1;
- 	enum tpa_model id;
- };
- 
--static int tpa6130a2_i2c_read(int reg)
--{
--	struct tpa6130a2_data *data;
--	int val;
--
--	if (WARN_ON(!tpa6130a2_client))
--		return -EINVAL;
--	data = i2c_get_clientdata(tpa6130a2_client);
--
--	/* If powered off, return the cached value */
--	if (data->power_state) {
--		val = i2c_smbus_read_byte_data(tpa6130a2_client, reg);
--		if (val < 0)
--			dev_err(&tpa6130a2_client->dev, "Read failed\n");
--		else
--			data->regs[reg] = val;
--	} else {
--		val = data->regs[reg];
--	}
--
--	return val;
--}
--
--static int tpa6130a2_i2c_write(int reg, u8 value)
--{
--	struct tpa6130a2_data *data;
--	int val = 0;
--
--	if (WARN_ON(!tpa6130a2_client))
--		return -EINVAL;
--	data = i2c_get_clientdata(tpa6130a2_client);
--
--	if (data->power_state) {
--		val = i2c_smbus_write_byte_data(tpa6130a2_client, reg, value);
--		if (val < 0) {
--			dev_err(&tpa6130a2_client->dev, "Write failed\n");
--			return val;
--		}
--	}
--
--	/* Either powered on or off, we save the context */
--	data->regs[reg] = value;
--
--	return val;
--}
--
--static u8 tpa6130a2_read(int reg)
--{
--	struct tpa6130a2_data *data;
--
--	if (WARN_ON(!tpa6130a2_client))
--		return 0;
--	data = i2c_get_clientdata(tpa6130a2_client);
--
--	return data->regs[reg];
--}
--
--static int tpa6130a2_initialize(void)
--{
--	struct tpa6130a2_data *data;
--	int i, ret = 0;
--
--	if (WARN_ON(!tpa6130a2_client))
--		return -EINVAL;
--	data = i2c_get_clientdata(tpa6130a2_client);
--
--	for (i = 1; i < TPA6130A2_REG_VERSION; i++) {
--		ret = tpa6130a2_i2c_write(i, data->regs[i]);
--		if (ret < 0)
--			break;
--	}
--
--	return ret;
--}
--
- static int tpa6130a2_power(u8 power)
- {
- 	struct	tpa6130a2_data *data;
--	u8	val;
- 	int	ret = 0;
- 
- 	if (WARN_ON(!tpa6130a2_client))
-@@ -153,7 +78,7 @@ static int tpa6130a2_power(u8 power)
- 			gpio_set_value(data->power_gpio, 1);
- 
- 		data->power_state = 1;
--		ret = tpa6130a2_initialize();
-+		ret = regcache_sync(data->regmap);
- 		if (ret < 0) {
- 			dev_err(&tpa6130a2_client->dev,
- 				"Failed to initialize chip\n");
-@@ -165,9 +90,8 @@ static int tpa6130a2_power(u8 power)
- 		}
- 	} else {
- 		/* set SWS */
--		val = tpa6130a2_read(TPA6130A2_REG_CONTROL);
--		val |= TPA6130A2_SWS;
--		tpa6130a2_i2c_write(TPA6130A2_REG_CONTROL, val);
-+		regmap_update_bits(data->regmap, TPA6130A2_REG_CONTROL,
-+			TPA6130A2_SWS, TPA6130A2_SWS);
- 
- 		/* Power off */
- 		if (data->power_gpio >= 0)
-@@ -181,6 +105,8 @@ static int tpa6130a2_power(u8 power)
- 		}
- 
- 		data->power_state = 0;
-+		/* device regs does not match the cache state anymore */
-+		regcache_mark_dirty(data->regmap);
- 	}
- 
- exit:
-@@ -196,7 +122,7 @@ static int tpa6130a2_get_volsw(struct snd_kcontrol *kcontrol,
- 	struct tpa6130a2_data *data;
- 	unsigned int reg = mc->reg;
- 	unsigned int shift = mc->shift;
--	int max = mc->max;
-+	int max = mc->max, val;
- 	unsigned int mask = (1 << fls(max)) - 1;
- 	unsigned int invert = mc->invert;
- 
-@@ -206,8 +132,8 @@ static int tpa6130a2_get_volsw(struct snd_kcontrol *kcontrol,
- 
- 	mutex_lock(&data->mutex);
- 
--	ucontrol->value.integer.value[0] =
--		(tpa6130a2_read(reg) >> shift) & mask;
-+	regmap_read(data->regmap, reg, &val);
-+	ucontrol->value.integer.value[0] = (val >> shift) & mask;
- 
- 	if (invert)
- 		ucontrol->value.integer.value[0] =
-@@ -229,7 +155,7 @@ static int tpa6130a2_put_volsw(struct snd_kcontrol *kcontrol,
- 	unsigned int mask = (1 << fls(max)) - 1;
- 	unsigned int invert = mc->invert;
- 	unsigned int val = (ucontrol->value.integer.value[0] & mask);
--	unsigned int val_reg;
-+	bool change;
- 
- 	if (WARN_ON(!tpa6130a2_client))
- 		return -EINVAL;
-@@ -239,20 +165,11 @@ static int tpa6130a2_put_volsw(struct snd_kcontrol *kcontrol,
- 		val = max - val;
- 
- 	mutex_lock(&data->mutex);
--
--	val_reg = tpa6130a2_read(reg);
--	if (((val_reg >> shift) & mask) == val) {
--		mutex_unlock(&data->mutex);
--		return 0;
--	}
--
--	val_reg &= ~(mask << shift);
--	val_reg |= val << shift;
--	tpa6130a2_i2c_write(reg, val_reg);
--
-+	regmap_update_bits_check(data->regmap, reg, mask << shift, val << shift,
-+				 &change);
- 	mutex_unlock(&data->mutex);
- 
--	return 1;
-+	return change;
- }
- 
- /*
-@@ -301,31 +218,26 @@ static const struct snd_kcontrol_new tpa6140a2_controls[] = {
-  */
- static void tpa6130a2_channel_enable(u8 channel, int enable)
- {
--	u8	val;
-+	struct tpa6130a2_data *data = i2c_get_clientdata(tpa6130a2_client);
- 
- 	if (enable) {
- 		/* Enable channel */
- 		/* Enable amplifier */
--		val = tpa6130a2_read(TPA6130A2_REG_CONTROL);
--		val |= channel;
--		val &= ~TPA6130A2_SWS;
--		tpa6130a2_i2c_write(TPA6130A2_REG_CONTROL, val);
-+		regmap_update_bits(data->regmap, TPA6130A2_REG_CONTROL,
-+			channel | TPA6130A2_SWS, channel & ~TPA6130A2_SWS);
- 
- 		/* Unmute channel */
--		val = tpa6130a2_read(TPA6130A2_REG_VOL_MUTE);
--		val &= ~channel;
--		tpa6130a2_i2c_write(TPA6130A2_REG_VOL_MUTE, val);
-+		regmap_update_bits(data->regmap, TPA6130A2_REG_VOL_MUTE,
-+				   channel, 0);
- 	} else {
- 		/* Disable channel */
- 		/* Mute channel */
--		val = tpa6130a2_read(TPA6130A2_REG_VOL_MUTE);
--		val |= channel;
--		tpa6130a2_i2c_write(TPA6130A2_REG_VOL_MUTE, val);
-+		regmap_update_bits(data->regmap, TPA6130A2_REG_VOL_MUTE,
-+				   channel, channel);
- 
- 		/* Disable amplifier */
--		val = tpa6130a2_read(TPA6130A2_REG_CONTROL);
--		val &= ~channel;
--		tpa6130a2_i2c_write(TPA6130A2_REG_CONTROL, val);
-+		regmap_update_bits(data->regmap, TPA6130A2_REG_CONTROL,
-+				   channel, 0);
- 	}
- }
- 
-@@ -365,6 +277,20 @@ struct snd_soc_component_driver tpa6130a2_component_driver = {
- 	.probe = tpa6130a2_component_probe,
- };
- 
-+static const struct reg_default tpa6130a2_reg_defaults[] = {
-+	{ TPA6130A2_REG_CONTROL, TPA6130A2_SWS },
-+	{ TPA6130A2_REG_VOL_MUTE, TPA6130A2_MUTE_R | TPA6130A2_MUTE_L },
-+};
-+
-+static const struct regmap_config tpa6130a2_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.max_register = TPA6130A2_REG_VERSION,
-+	.reg_defaults = tpa6130a2_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(tpa6130a2_reg_defaults),
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+
- static int tpa6130a2_probe(struct i2c_client *client,
- 			   const struct i2c_device_id *id)
- {
-@@ -373,6 +299,7 @@ static int tpa6130a2_probe(struct i2c_client *client,
- 	struct tpa6130a2_platform_data *pdata = client->dev.platform_data;
- 	struct device_node *np = client->dev.of_node;
- 	const char *regulator;
-+	unsigned int version;
- 	int ret;
- 
- 	dev = &client->dev;
-@@ -381,6 +308,10 @@ static int tpa6130a2_probe(struct i2c_client *client,
- 	if (!data)
- 		return -ENOMEM;
- 
-+	data->regmap = devm_regmap_init_i2c(client, &tpa6130a2_regmap_config);
-+	if (IS_ERR(data->regmap))
-+		return PTR_ERR(data->regmap);
-+
- 	if (pdata) {
- 		data->power_gpio = pdata->power_gpio;
- 	} else if (np) {
-@@ -399,11 +330,6 @@ static int tpa6130a2_probe(struct i2c_client *client,
- 
- 	mutex_init(&data->mutex);
- 
--	/* Set default register values */
--	data->regs[TPA6130A2_REG_CONTROL] =	TPA6130A2_SWS;
--	data->regs[TPA6130A2_REG_VOL_MUTE] =	TPA6130A2_MUTE_R |
--						TPA6130A2_MUTE_L;
--
- 	if (data->power_gpio >= 0) {
- 		ret = devm_gpio_request(dev, data->power_gpio,
- 					"tpa6130a2 enable");
-@@ -440,10 +366,10 @@ static int tpa6130a2_probe(struct i2c_client *client,
- 
- 
- 	/* Read version */
--	ret = tpa6130a2_i2c_read(TPA6130A2_REG_VERSION) &
--				 TPA6130A2_VERSION_MASK;
--	if ((ret != 1) && (ret != 2))
--		dev_warn(dev, "UNTESTED version detected (%d)\n", ret);
-+	regmap_read(data->regmap, TPA6130A2_REG_VERSION, &version);
-+	version &= TPA6130A2_VERSION_MASK;
-+	if ((version != 1) && (version != 2))
-+		dev_warn(dev, "UNTESTED version detected (%d)\n", version);
- 
- 	/* Disable the chip */
- 	ret = tpa6130a2_power(0);
-diff --git a/sound/soc/codecs/tpa6130a2.h b/sound/soc/codecs/tpa6130a2.h
-index 78ee723..ef05a3f 100644
---- a/sound/soc/codecs/tpa6130a2.h
-+++ b/sound/soc/codecs/tpa6130a2.h
-@@ -30,8 +30,6 @@
- #define TPA6130A2_REG_OUT_IMPEDANCE	0x03
- #define TPA6130A2_REG_VERSION		0x04
- 
--#define TPA6130A2_CACHEREGNUM	(TPA6130A2_REG_VERSION + 1)
--
- /* Register bits */
- /* TPA6130A2_REG_CONTROL (0x01) */
- #define TPA6130A2_SWS			(0x01 << 0)
--- 
-1.9.1
+On Jun 15 2016 17:06, Richard Cochran wrote:
+> On Wed, Jun 15, 2016 at 12:15:24PM +0900, Takashi Sakamoto wrote:
+>>> On Mon, Jun 13, 2016 at 01:47:13PM +0200, Richard Cochran wrote:
+>>>> I have seen audio PLL/multiplier chips that will take, for example, a
+>>>> 10 kHz input and produce your 48 kHz media clock.  With the right HW
+>>>> design, you can tell your PTP Hardware Clock to produce a 10000 PPS,
+>>>> and you will have a synchronized AVB endpoint.  The software is all
+>>>> there already.  Somebody should tell the ALSA guys about it.
+>>
+>> Just from my curiosity, could I ask you more explanation for it in ALSA
+>> side?
+> 
+> (Disclaimer: I really don't know too much about ALSA, expect that is
+> fairly big and complex ;)
+
+In this morning, I read IEEE 1722:2011 and realized that it quite
+roughly refers to IEC 61883-1/6 and includes much ambiguities to end
+applications.
+
+(In my opinion, the author just focuses on packet with timestamps,
+without enough considering about how to implement endpoint applications
+which perform semi-real sampling, fetching and queueing and so on, so as
+you. They're satisfied just by handling packet with timestamp, without
+enough consideration about actual hardware/software applications.)
+
+> Here is what I think ALSA should provide:
+> 
+> - The DA and AD clocks should appear as attributes of the HW device.
+> 
+> - There should be a method for measuring the DA/AD clock rate with
+>   respect to both the system time and the PTP Hardware Clock (PHC)
+>   time.
+> 
+> - There should be a method for adjusting the DA/AD clock rate if
+>   possible.  If not, then ALSA should fall back to sample rate
+>   conversion.
+> 
+> - There should be a method to determine the time delay from the point
+>   when the audio data are enqueued into ALSA until they pass through
+>   the D/A converter.  If this cannot be known precisely, then the
+>   library should provide an estimate with an error bound.
+> 
+> - I think some AVB use cases will need to know the time delay from A/D
+>   until the data are available to the local application.  (Distributed
+>   microphones?  I'm not too sure about that.)
+> 
+> - If the DA/AD clocks are connected to other clock devices in HW,
+>   there should be a way to find this out in SW.  For example, if SW
+>   can see the PTP-PHC-PLL-DA relationship from the above example, then
+>   it knows how to synchronize the DA clock using the network.
+> 
+>   [ Implementing this point involves other subsystems beyond ALSA.  It
+>     isn't really necessary for people designing AVB systems, since
+>     they know their designs, but it would be nice to have for writing
+>     generic applications that can deal with any kind of HW setup. ]
+
+Depends on which subsystem decides "AVTP presentation time"[3]. This
+value is dominant to the number of events included in an IEC 61883-1
+packet. If this TSN subsystem decides it, most of these items don't need
+to be in ALSA.
+
+As long as I know, the number of AVTPDU per second seems not to be
+fixed. So each application is not allowed to calculate the timestamp by
+its own way unless TSN implementation gives the information to each
+applications.
+
+For your information, in current ALSA implementation of IEC 61883-1/6 on
+IEEE 1394 bus, the presentation timestamp is decided in ALSA side. The
+number of isochronous packet transmitted per second is fixed by 8,000 in
+IEEE 1394, and the number of data blocks in an IEC 61883-1 packet is
+deterministic according to 'sampling transfer frequency' in IEC 61883-6
+and isochronous cycle count passed from Linux FireWire subsystem.
+
+In the TSN subsystem, like FireWire subsystem, callback for filling
+payload should have information of 'when the packet is scheduled to be
+transmitted'. With the information, each application can calculate the
+number of event in the packet and presentation timestamp. Of cource,
+this timestamp should be handled as 'avtp_timestamp' in packet queueing.
+
+>> In ALSA, sampling rate conversion should be in userspace, not in kernel
+>> land. In alsa-lib, sampling rate conversion is implemented in shared object.
+>> When userspace applications start playbacking/capturing, depending on PCM
+>> node to access, these applications load the shared object and convert PCM
+>> frames from buffer in userspace to mmapped DMA-buffer, then commit them.
+> 
+> The AVB use case places an additional requirement on the rate
+> conversion.  You will need to adjust the frequency on the fly, as the
+> stream is playing.  I would guess that ALSA doesn't have that option?
+
+In ALSA kernel/userspace interfaces , the specification cannot be
+supported, at all.
+
+Please explain about this requirement, where it comes from, which
+specification and clause describe it (802.1AS or 802.1Q?). As long as I
+read IEEE 1722, I cannot find such a requirement.
+
+(When considering about actual hardware codecs, on-board serial bus such
+as Inter-IC Sound, corresponding controller, immediate change of
+sampling rate is something imaginary for semi-realtime applications. And
+the idea has no meaning for typical playback/capture softwares.)
+
+
+[1] [alsa-lib][PATCH 0/9 v3] ctl: add APIs for control element set
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-June/109274.html
+[2] IEEE 1722-2011
+http://ieeexplore.ieee.org/servlet/opac?punumber=5764873
+[3] 5.5 Timing and Synchronization
+op. cit.
+[4] 1394 Open Host Controller Interface Specification
+http://download.microsoft.com/download/1/6/1/161ba512-40e2-4cc9-843a-923143f3456c/ohci_11.pdf
+
+
+Regards
+
+Takashi Sakamoto
