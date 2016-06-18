@@ -1,14 +1,16 @@
-From: Alexander Shiyan <shc_work@mail.ru>
-Subject: [PATCH] ASoC: codecs: Allow user to select WM9713 codec
-Date: Sat, 18 Jun 2016 20:04:08 +0300
-Message-ID: <1466269448-8445-1-git-send-email-shc_work@mail.ru>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: core: Remove selects of regmap buses
+Date: Sat, 18 Jun 2016 19:43:10 +0200
+Message-ID: <5765882E.1020809@metafoo.de>
+References: <1466168669-13140-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp43.i.mail.ru (smtp43.i.mail.ru [94.100.177.103])
- by alsa0.perex.cz (Postfix) with ESMTP id C713A261A06
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2016 19:04:21 +0200 (CEST)
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id CDD0E261685
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2016 19:43:16 +0200 (CEST)
+In-Reply-To: <1466168669-13140-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,32 +20,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Alexander Shiyan <shc_work@mail.ru>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add simple description and necessary options to allow to select
-Wolfson WM9713 codec.
+On 06/17/2016 03:04 PM, Mark Brown wrote:
+> We used to have code wrapping the regmap I2C and SPI buses as part of
+> the conversion of ASoC drivers from using the ASoC level I/O to the
+> regmap level I/O.  Since all drivers have now been converted and the
+> core code removed we can remove the per-bus selects and instead just
+> select the regmap core.
 
-Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
----
- sound/soc/codecs/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 4d82a58..6721427 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -1010,8 +1010,9 @@ config SND_SOC_WM9712
- 	tristate
- 
- config SND_SOC_WM9713
--	tristate
-+	tristate "Wolfson Microelectronics WM9713 codec"
- 	select REGMAP_AC97
-+	select SND_SOC_AC97_BUS
- 
- # Amp
- config SND_SOC_LM4857
--- 
-2.4.9
+I think there is a fair amount of CODEC drivers that don't yet select
+REGMAP_{SPI,I2C} even though they use it. Merging this as is would break
+them I'd assume.
