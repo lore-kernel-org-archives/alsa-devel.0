@@ -1,94 +1,79 @@
-From: Clive Messer <clive.messer@digitaldreamtime.co.uk>
-Subject: [PATCH 1/1] ASoC: pcm5102a: Support 352k8 and 384k
-	sample rates
-Date: Sun, 19 Jun 2016 18:52:48 +0100
-Message-ID: <1466358768-31787-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
+From: Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH 4/4] ASoC: tpa6130a2: Add DAPM support
+Date: Sun, 19 Jun 2016 22:03:01 +0200
+Message-ID: <20160619200300.GB15429@earth>
+References: <cover.1466218805.git.helen.koike@collabora.co.uk>
+ <2aed60529eea206f2192a7236f2d80386a73f2ee.1466218805.git.helen.koike@collabora.co.uk>
+ <20160618232131.GF5510@earth>
+ <57666843.2020604@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dreamtime.org (barcelona.digitaldreamtime.co.uk
- [85.158.46.130])
- by alsa0.perex.cz (Postfix) with ESMTP id DB69C26621A
- for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2016 19:52:59 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Clive Messer <clive.messer@digitaldreamtime.co.uk>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="hQiwHBbRI9kgIhsi"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <57666843.2020604@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Helen Koike <helen.koike@collabora.co.uk>, lgirdwood@gmail.com, broonie@kernel.org, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, k.kozlowski@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Add support for 352k8 and 384k samples rates to pcm5102a codec
-driver, with SNDRV_PCM_RATE_KNOT and a constraint list.
 
-Signed-off-by: Clive Messer <clive.messer@digitaldreamtime.co.uk>
----
- sound/soc/codecs/pcm5102a.c | 38 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
+--hQiwHBbRI9kgIhsi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/codecs/pcm5102a.c b/sound/soc/codecs/pcm5102a.c
-index ed51567..53dfc99 100644
---- a/sound/soc/codecs/pcm5102a.c
-+++ b/sound/soc/codecs/pcm5102a.c
-@@ -20,16 +20,52 @@
- 
- #include <sound/soc.h>
- 
-+static const u32 pcm5102a_rates[] = {
-+	8000, 16000, 32000, 44100, 48000, 88200, 96000, 176400, 192000,
-+	352800, 384000,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list pcm5102a_constraint_rates = {
-+	.count = ARRAY_SIZE(pcm5102a_rates),
-+	.list = pcm5102a_rates,
-+};
-+
-+static int pcm5102a_dai_startup(struct snd_pcm_substream *substream,
-+	struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct pcm5102a_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+
-+	dev_dbg(codec->dev, "%s: set rates (8k-384k) constraint\n", __func__);
-+
-+	ret = snd_pcm_hw_constraint_list(substream->runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_RATE,
-+					 &pcm5102a_constraint_rates);
-+	if (ret != 0) {
-+		dev_err(codec->dev, "%s: Failed to set rates constraint: %d\n",
-+			__func__, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops pcm5102a_dai_ops = {
-+	.startup = pcm5102a_dai_startup,
-+};
-+
- static struct snd_soc_dai_driver pcm5102a_dai = {
- 	.name = "pcm5102a-hifi",
- 	.playback = {
- 		.channels_min = 2,
- 		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.rates = SNDRV_PCM_RATE_KNOT,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 			   SNDRV_PCM_FMTBIT_S24_LE |
- 			   SNDRV_PCM_FMTBIT_S32_LE
- 	},
-+	.ops = &pcm5102a_dai_ops,
- };
- 
- static struct snd_soc_codec_driver soc_codec_dev_pcm5102a;
--- 
-2.5.5
+Hi,
+
+On Sun, Jun 19, 2016 at 11:39:15AM +0200, Lars-Peter Clausen wrote:
+> On 06/19/2016 01:21 AM, Sebastian Reichel wrote:
+> > On Sat, Jun 18, 2016 at 12:26:31AM -0300, Helen Koike wrote:
+> >> Add DAPM support and updated rx51 accordingly.
+> >> As a consequence:
+> >> - the exported function tpa6130a2_stereo_enable is not needed anymore
+> >> - the mutex is dealt in the DAPM
+> >> - the power state is tracked by the DAPM
+> >=20
+> > This breaks headphone on N900. So far I only checked, that
+> > tpa6130a2_power_event() is not called. I guess the DAPM
+> > graph is wrong.
+>=20
+> Can you try with
+>=20
+> +	{"TPA6130A2 HPLEFT", NULL, "LLOUT"},
+> +	{"TPA6130A2 HPRIGHT", NULL, "RLOUT"}
+>=20
+> being replaced with
+>=20
+> +       {"TPA6130A2 LEFTIN", NULL, "LLOUT"},
+> +       {"TPA6130A2 RIGHTIN", NULL, "RLOUT"},
+
+With that change:
+
+Tested-By: Sebastian Reichel <sre@kernel.org>
+Reviewed-By: Sebastian Reichel <sre@kernel.org>
+
+-- Sebastian
+
+--hQiwHBbRI9kgIhsi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBCgAGBQJXZvpxAAoJENju1/PIO/qa//sP/0j3KQo+iJIXi1E4UvAVtd5N
+Ws50Def3HIwcHy0W4D01zaLIH+lnmUbnuSws7Zr7l/83ojZnkX7GMODWRfBK1f43
+nyTzlO9vhVJSeRV9t916ya88gtSlkc/RR+v0wWvXvnjR78YCvIp29s/OMuZBS/rT
+7CGZWHjrFZC8apv4jTFEwGkE4XZEsK2JaL0SbSKtJ4PRLaNmRIXZjS9fcD+JGYLP
+ibCwfLX7oGNOf1pfqUJApHo6Teaahq6jmL3YoBICxjOujpuV/SaDhL7RHGKUL+aO
+kDuKLpOgCwXS+Gax3sQYVMBST61y3hvYPX6n8RuzVoujrYlP6NjEXe5YMOkRaRjX
+j3Iv6hLd37T8MmU0sfSbgWePuN/OG8z0uAWuuxSx4a0OWDZCU14dsxvkVacqWb7y
+g3IRtwV5D9jIt1cAfgo9gvxwVEt4ILrkXV7uklmNB97MdR6kaXeuXtQebxFDysdo
+3nZ77u6w1VR0xnPBGU7ctgoiQtX89hIA9+X+2n2va9sgvvs7ZqOOa0pdOxhXNzFn
+wWv6SKhb0hvtdWsNmDZnma3TWKVkaCuelsMpuOAA9fUC5HRKFxdR8VLv7UwT+8li
+NzwpcVUQZDQXvGG2hEOj88gXkWjbF+jDAbjM433viLScBlnasoyEZ+FNC+f04nB8
+dIuaKhXPooD3FJSq1ZmR
+=mU+9
+-----END PGP SIGNATURE-----
+
+--hQiwHBbRI9kgIhsi--
