@@ -1,59 +1,63 @@
-From: Sebastian Reichel <sre@kernel.org>
-Subject: Re: [PATCH 4/4] ASoC: tpa6130a2: Add DAPM support
-Date: Sun, 19 Jun 2016 01:21:31 +0200
-Message-ID: <20160618232131.GF5510@earth>
-References: <cover.1466218805.git.helen.koike@collabora.co.uk>
- <2aed60529eea206f2192a7236f2d80386a73f2ee.1466218805.git.helen.koike@collabora.co.uk>
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Subject: [PATCH v4 0/3] ASoC/ARM: tegra: apalis t30/tk1/colibri t30: sgtl5000
+ audio
+Date: Sun, 19 Jun 2016 02:59:59 +0200
+Message-ID: <1466298002-12576-1-git-send-email-marcel.ziswiler@toradex.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="1Y7d0dPL928TPQbc"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2aed60529eea206f2192a7236f2d80386a73f2ee.1466218805.git.helen.koike@collabora.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Helen Koike <helen.koike@collabora.co.uk>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, lars@metafoo.de, k.kozlowski@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, perex@perex.cz, tiwai@suse.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: linux-tegra@vger.kernel.org
+Cc: Prarit Bhargava <prarit@redhat.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Thierry Reding <thierry.reding@gmail.com>, Tuomas Tynkkynen <ttynkkynen@nvidia.com>, Mark Rutland <mark.rutland@arm.com>, Russell King <linux@armlinux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, Alexandre Courbot <gnurou@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---1Y7d0dPL928TPQbc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This series adds/integrates Freescale SGTL5000 analogue audio codec
+support.
 
-Hi,
+Changes in v4:
+- simple-audio-card does still not allow for more advanced use cases
+  like Tegra SoCs
+- further platform drivers have been accepted since my last attempt
+  (e.g. rt5677 one)
+- relevance for one further board the new Toradex Apalis TK1
+- drop unused sound/jack.h include
+- in tegra_sgtl5000_driver_remove() pass return value of
+  snd_soc_unregister_card() on to caller
+- no longer set owner property in platform_driver to THIS_MODULE
+- re-based/resend
 
-On Sat, Jun 18, 2016 at 12:26:31AM -0300, Helen Koike wrote:
-> Add DAPM support and updated rx51 accordingly.
-> As a consequence:
-> - the exported function tpa6130a2_stereo_enable is not needed anymore
-> - the mutex is dealt in the DAPM
-> - the power state is tracked by the DAPM
+Changes in v3:
+- revert to not using simple-audio-card being incompatible with tegra
+- rebased to for-next
 
-This breaks headphone on N900. So far I only checked, that
-tpa6130a2_power_event() is not called. I guess the DAPM
-graph is wrong.
+Changes in v2:
+- using simple-audio-card as suggested by Fabio
 
--- Sebastian
+Marcel Ziswiler (3):
+  ASoC: tegra: add tegra sgtl5000 machine driver
+  ARM: tegra: apalis/colibri t30: integrate audio
+  ARM: tegra: enable sgtl5000 audio
 
---1Y7d0dPL928TPQbc
-Content-Type: application/pgp-signature; name="signature.asc"
+ .../bindings/sound/nvidia,tegra-audio-sgtl5000.txt |  42 ++++
+ arch/arm/boot/dts/tegra30-apalis.dtsi              |  49 +++++
+ arch/arm/boot/dts/tegra30-colibri.dtsi             |  49 +++++
+ arch/arm/configs/tegra_defconfig                   |   1 +
+ sound/soc/tegra/Kconfig                            |  11 ++
+ sound/soc/tegra/Makefile                           |   2 +
+ sound/soc/tegra/tegra_sgtl5000.c                   | 212 +++++++++++++++++++++
+ 7 files changed, 366 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-sgtl5000.txt
+ create mode 100644 sound/soc/tegra/tegra_sgtl5000.c
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBCgAGBQJXZdd4AAoJENju1/PIO/qa6SwP/1mVFmKCisiccYDwyV4+wJY4
-G7Kwiis2ogYzPbYm1ukYD6JjjhNio1/A6yUujEzS07V+B/XWgWQ0/gIX9ySYFhXZ
-YBrxLhPUQhXjWuJSiXQT8FzUxIdQ2td6zXn34xs498XsRniupvIkb9p2u1l5LZp7
-km/JhAVJgluuo0Sp+3a+62Yf7m5T4Ry/j24hEG3IlFMeYU8s5BIsT3042//45F3k
-jvGfxMe5Ua3ytYVpJje0WF/u12GiI6ro69d/x8/pZDN4OZ1ZgHZqXvxYKmCTv2w1
-QYdCkk6M5C85J1wqx1HAJsR0g+BRqhcqvyYJsRIK1CvAgzoAVYmS6jfyYZ4X/H8+
-v0nd/C5t8trApk0diFB2/euc+R8yQBYkYt8EEEIOuJl9OilJq5x1yd0UT3K1tJwb
-jcBMq2HpRc83RUKYwOu0B4kwwMJLefUt/CxKUJD+a4Kt6GCRzXveTclmRK2cMfp2
-bQ8A/9S93CgBcjaD8pmYzcyVkTCBpdLuAdo0LYp4/PEcoqwV5TQqSXhft7Lk+K6m
-oWzKSo6FiIH7xDPO7+uDaCXCSl9u0CPVsxQOryV2QOu/zhgU5IM+1u0OKVDSwPtG
-SVwq10LtDkkd3KOQ70oz3l+9VixfE79lL20qFsDUgb5S7eVvpFdn1y174p9hn0OS
-B1TZ+z3L9tRa2c/OBYn9
-=bGow
------END PGP SIGNATURE-----
-
---1Y7d0dPL928TPQbc--
+-- 
+2.5.5
