@@ -1,18 +1,22 @@
-From: Clive Messer <clive.messer@digitaldreamtime.co.uk>
-Subject: [PATCH V2 1/1] ASoC: pcm5102a: Support 352k8 and 384k
-	sample rates
-Date: Sun, 19 Jun 2016 21:42:02 +0100
-Message-ID: <1466368922-6555-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
-References: <1466358768-31787-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
+From: Rob Calhoun <rcalhoun@gmail.com>
+Subject: Re: [PATCH 2/2] ASoc: wm8731: add normal mode with
+	12MHz XTAL
+Date: Sun, 19 Jun 2016 17:46:02 -0400
+Message-ID: <CAMv2zM8txnDEPh9Gebbt7KC7YuvEyOFxTomnnaRdu8SLyme5bw@mail.gmail.com>
+References: <1465517516-1917-1-git-send-email-flatmax@flatmax.org>
+ <1465517516-1917-2-git-send-email-flatmax@flatmax.org>
+ <575BD6F2.70600@flatmax.org> <575CD572.2040700@flatmax.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dreamtime.org (barcelona.digitaldreamtime.co.uk
- [85.158.46.130])
- by alsa0.perex.cz (Postfix) with ESMTP id 636872625FE
- for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2016 22:42:14 +0200 (CEST)
-In-Reply-To: <1466358768-31787-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
+Received: from mail-qk0-f194.google.com (mail-qk0-f194.google.com
+ [209.85.220.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7DECD264F45
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2016 23:46:06 +0200 (CEST)
+Received: by mail-qk0-f194.google.com with SMTP id b136so20574470qkg.2
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2016 14:46:06 -0700 (PDT)
+In-Reply-To: <575CD572.2040700@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +26,163 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Clive Messer <clive.messer@digitaldreamtime.co.uk>
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Add support for 352k8 and 384k samples rates to pcm5102a codec
-driver, with SNDRV_PCM_RATE_KNOT and a constraint list.
+Hi Matt,
 
-Signed-off-by: Clive Messer <clive.messer@digitaldreamtime.co.uk>
----
- sound/soc/codecs/pcm5102a.c | 38 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
+Based on my experience with the WM8737, the bitclock will always run
+at 12 MHz on these devices in USB mode. While the carrying capacity of
+the channel is always 12 Mbps, the data put on the wire by the codec
+depend on the sample rate, number of channels, and bit depth. This
+leaves some unused capacity in the channel. It is the responsibility
+of the receiving digital audio interface to pull off the appropriate
+number of bits every time the LRCLK/frameclock fires and ignore the
+rest of it. For example in I2S mode, 2-channel, 32-bit, the DAI should
+pull off the first 32 bits following each LRCLK transition.
 
-diff --git a/sound/soc/codecs/pcm5102a.c b/sound/soc/codecs/pcm5102a.c
-index ed51567..53dfc99 100644
---- a/sound/soc/codecs/pcm5102a.c
-+++ b/sound/soc/codecs/pcm5102a.c
-@@ -21,16 +21,51 @@
- 
- #include <sound/soc.h>
- 
-+static const u32 pcm5102a_rates[] = {
-+	8000, 16000, 32000, 44100, 48000, 88200, 96000, 176400, 192000,
-+	352800, 384000,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list pcm5102a_constraint_rates = {
-+	.count = ARRAY_SIZE(pcm5102a_rates),
-+	.list = pcm5102a_rates,
-+};
-+
-+static int pcm5102a_dai_startup(struct snd_pcm_substream *substream,
-+	struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	int ret;
-+
-+	dev_dbg(codec->dev, "%s: set rates (8k-384k) constraint\n", __func__);
-+
-+	ret = snd_pcm_hw_constraint_list(substream->runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_RATE,
-+					 &pcm5102a_constraint_rates);
-+	if (ret != 0) {
-+		dev_err(codec->dev, "%s: Failed to set rates constraint: %d\n",
-+			__func__, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops pcm5102a_dai_ops = {
-+	.startup = pcm5102a_dai_startup,
-+};
-+
- static struct snd_soc_dai_driver pcm5102a_dai = {
- 	.name = "pcm5102a-hifi",
- 	.playback = {
- 		.channels_min = 2,
- 		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.rates = SNDRV_PCM_RATE_KNOT,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 			   SNDRV_PCM_FMTBIT_S24_LE |
- 			   SNDRV_PCM_FMTBIT_S32_LE
- 	},
-+	.ops = &pcm5102a_dai_ops,
- };
- 
- static struct snd_soc_codec_driver soc_codec_dev_pcm5102a;
--- 
-2.5.5
+Whether you can use USB mode or not depends on the capabilities of the
+receiving digital audio interface. For example, we tried to use WM8737
+USB mode on a TI AM335x-based board because the AM335x has a 24 MHz
+master clock. This will not work because the MCASP unit on AM335x has
+a hard limit of 32 bits per "slot" (thus 64 bits per frame with
+two-channel acquisition) and there are 128 bits per frame at 96 kHz,
+which is as fast as the WM8737 will go. (Oddly the MCASP would be fine
+192 kHz x 2 or 96 KHz x 4 ; the limit is based on the size of the
+XRBUF register MCASP uses to swizzle data, not the speed of the
+interface.)
+
+12.288 MHz (or 24.576 MHz) are much more commonly used a master clock
+frequencies in the audio world than 12 MHz, so unless you are trying
+to squeeze the last dollar out of your board BOM cost you will
+probably find it easier to get everything working if you switch to a
+12.288 MHz master clock.
+
+Best regards,
+
+Rob Calhoun
+
+On Sat, Jun 11, 2016 at 11:22 PM, Matt Flax <flatmax@flatmax.org> wrote:
+> It appears that my logic here is flawed.
+> From what I can tell, it isn't possible to get a suitable bit clock out of
+> the codec when using a 12 MHz crystal. For that reason, in my hardware I
+> will change crystals from 12 MHz.
+>
+> I just want to check ... are there any versions of this codec which output
+> the bit clock when in USB mode on the BCLK pin ?
+>
+> thanks
+> Matt
+>
+> On 11/06/16 19:16, Matt Flax wrote:
+>>
+>> I have realised that this second patch may not be necessary. It is also
+>> likely that it will skew the actual sample rate.
+>>
+>> Charles, can you please advise me on the following...
+>>
+>> I notice that I can probably get the correct sample rates by spoofing the
+>> crystal frequencies in my machine driver. For example ...
+>> The ratio between the USB and Normal mode fs multipliers with BOSR=0 is :
+>> 250/256 = 0.97656
+>> Similarly, I can match this with the following crystal frequency ratio
+>> (crystal f in MHz) :
+>> 12/12.288 = 0.97656
+>> By induction, I assume that I can spoof a 12.288 clock with BOSR=0 for
+>> sample rate = 48kHz, 96 kHz when using a 12 MHz crystal.
+>>
+>> Again, I can match ratios between the following crystal frequecies (in
+>> MHz) :
+>> 12/16.9344 = 0.70862
+>> With BOSR = 1, I assume that can get 44.1 kHz and 88.2 kHz because the fs
+>> ratio between normal and usb mode is :
+>> 272/384 = 0.70833
+>>
+>> Now these two ratios are skew by 0.41% which is equvalent to the skew in
+>> 12 MHz USB mode clocks of 44.1kHz to 44.118kHz as reported in the  wm8731
+>> datasheet.
+>>
+>> Can you advise me whether my idea of spoofing clocks in the machine driver
+>> is perhaps a better way of acquiring the correct sample rates, rather then
+>> this patch ?
+>>
+>> thanks
+>> Matt
+>>
+>> On 10/06/16 10:11, Matt Flax wrote:
+>>>
+>>> This patch allows a machine to set normal mode when using a
+>>> 12 MHz crystal. In USB_MODE the 12 MHz crystal signal is output on
+>>> the BCLK pin. In NORMAL_MODE the bit clock is output on the BCLK pin.
+>>> The previously ignored direction variable input to the
+>>> wm8731_set_dai_sysclk function is used to indicate whether crystal
+>>> or bit clock is output on the BCLK codec pin.
+>>> I have ensured that this does not effect the db1200.c machine driver
+>>> (the only other driver to use a 12 MHz crystal in USB_MODE). It also
+>>> does not effect the other machine drivers which use the wm8731 codec
+>>> as they don't use USB_MODE nor 12 MHz crystals.
+>>>
+>>> When driving the wm8731 in normal mode with a 12 MHz crystal, the
+>>> DSP filters are expected to be effected. If the filters are activated
+>>> then it is expected that the filter cut offs are shifted by 2.3% at
+>>> 250 fs and 29.1% at 272 fs. The assumption is that the filters are
+>>> linear, which implies a linear shift in rate scaling effects the
+>>> filter cut off frequencies linearly. If the filters are not active,
+>>> there will be no effects.
+>>>
+>>> Signed-off-by: Matt Flax <flatmax@flatmax.org>
+>>> ---
+>>>   sound/soc/codecs/wm8731.c | 14 ++++++++++++--
+>>>   1 file changed, 12 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+>>> index d18261a..ec98d5a 100644
+>>> --- a/sound/soc/codecs/wm8731.c
+>>> +++ b/sound/soc/codecs/wm8731.c
+>>> @@ -5,6 +5,7 @@
+>>>    * Copyright 2006-12 Wolfson Microelectronics, plc
+>>>    *
+>>>    * Author: Richard Purdie <richard@openedhand.com>
+>>> + * Author: Matt Flax <flatmax@flatmax.com> 12Mhz XTAL normal mode and
+>>> 32bit mode.
+>>>    *
+>>>    * Based on wm8753.c by Liam Girdwood
+>>>    *
+>>> @@ -53,6 +54,7 @@ struct wm8731_priv {
+>>>       int sysclk_type;
+>>>       int playback_fs;
+>>>       bool deemph;
+>>> +    bool bclk_12_mhz;
+>>>         struct mutex lock;
+>>>   };
+>>> @@ -341,8 +343,11 @@ static int wm8731_hw_params(struct snd_pcm_substream
+>>> *substream,
+>>>       struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
+>>>       u16 iface = snd_soc_read(codec, WM8731_IFACE) & 0xfff3;
+>>>       int i = get_coeff(wm8731->sysclk, params_rate(params));
+>>> -    u16 srate = (coeff_div[i].sr << 2) |
+>>> -        (coeff_div[i].bosr << 1) | coeff_div[i].usb;
+>>> +    u16 srate = (coeff_div[i].sr << 2) | (coeff_div[i].bosr << 1);
+>>> +
+>>> +    /* this determines whether to output bit or crystal clk */
+>>> +    if (wm8731->bclk_12_mhz)
+>>> +        srate |= coeff_div[i].usb;
+>>>         wm8731->playback_fs = params_rate(params);
+>>>   @@ -420,6 +425,11 @@ static int wm8731_set_dai_sysclk(struct
+>>> snd_soc_dai *codec_dai,
+>>>         wm8731->sysclk = freq;
+>>>   +    if (dir == SND_SOC_CLOCK_IN) /* output the 12 MHz clock */
+>>> +        wm8731->bclk_12_mhz = 1;
+>>> +    else /* SND_SOC_CLOCK_OUT, output the bit clock */
+>>> +        wm8731->bclk_12_mhz = 0;
+>>> +
+>>>       snd_soc_dapm_sync(dapm);
+>>>         return 0;
+>>
+>>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
