@@ -1,47 +1,62 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [very-RFC 0/8] TSN driver for the kernel
-Date: Sun, 19 Jun 2016 23:45:47 +0900
-Message-ID: <5766B01B.9070903@sakamocchi.jp>
-References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <20160613114713.GA9544@localhost.localdomain> <20160613195136.GC2441@netboy>
- <20160614121844.54a125a5@lxorguk.ukuu.org.uk> <5760C84C.40408@sakamocchi.jp>
- <20160615080602.GA13555@localhost.localdomain>
- <5764DA85.3050801@sakamocchi.jp>
- <20160618224549.GF32724@icarus.home.austad.us>
+From: Clive Messer <clive.messer@digitaldreamtime.co.uk>
+Subject: [PATCH 1/1] ASoC: bcm2835-i2s: Support 384k sample rate
+Date: Sun, 19 Jun 2016 18:52:19 +0100
+Message-ID: <1466358739-31669-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20160618224549.GF32724@icarus.home.austad.us>
-Sender: netdev-owner@vger.kernel.org
-To: Henrik Austad <henrik@austad.us>
-Cc: Richard Cochran <richardcochran@gmail.com>, alsa-devel@alsa-project.org, netdev@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.dreamtime.org (barcelona.digitaldreamtime.co.uk
+ [85.158.46.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id 097BD261A2F
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2016 19:52:37 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-rpi-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Clive Messer <clive.messer@digitaldreamtime.co.uk>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-(remove C.C. to lkml. This is not so major feature.)
+Add support for sample rates up to 384k to bcm2835-i2s driver,
+with SNDRV_PCM_RATE_CONTINUOUS and specifying 8k min and 384k max,
+for both playback and capture.
 
-On Jun 19 2916 07:45, Henrik Austad wrote:
-> snip
->
-> 802.1Q gives you low latency through the network, but more importantly, no
-> dropped frames. gPTP gives you a central reference to time.
+Signed-off-by: Clive Messer <clive.messer@digitaldreamtime.co.uk>
+---
+ sound/soc/bcm/bcm2835-i2s.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-When such a long message is required, it means that we don't have enough 
-premises for this discussion.
-
-You have just interests in gPTP and transferring AVTPDUs, while no 
-interests in the others such as "what the basic ideas of TSN come from" 
-and "the reason that IEEE 1722 refers to IEC 61883 series which is 
-originally designed for IEEE 1394 bus" and "the reason that I was 
-motivated to join in this discussion even though not a netdev developer".
-
-Here, could I ask you a question? Do you know a role of cycle start 
-packet of IEEE Std 1394?
-
-If you think it's not related to this discussion, please tell it to me. 
-Then I'll drop out from this thread.
-
-
-History Repeats itself.
-
-Takashi Sakamoto
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index 6ba2049..4a67db2 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -578,7 +578,9 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
+ 	.playback = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+-		.rates =	SNDRV_PCM_RATE_8000_192000,
++		.rates =	SNDRV_PCM_RATE_CONTINUOUS,
++		.rate_min =	8000,
++		.rate_max =	384000,
+ 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
+ 				| SNDRV_PCM_FMTBIT_S24_LE
+ 				| SNDRV_PCM_FMTBIT_S32_LE
+@@ -586,7 +588,9 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
+ 	.capture = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+-		.rates =	SNDRV_PCM_RATE_8000_192000,
++		.rates =	SNDRV_PCM_RATE_CONTINUOUS,
++		.rate_min =	8000,
++		.rate_max =	384000,
+ 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
+ 				| SNDRV_PCM_FMTBIT_S24_LE
+ 				| SNDRV_PCM_FMTBIT_S32_LE
+-- 
+2.5.5
