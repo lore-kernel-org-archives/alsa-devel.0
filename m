@@ -1,100 +1,52 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 4/4] ASoC: tpa6130a2: Add DAPM support
-Date: Sun, 19 Jun 2016 11:39:15 +0200
-Message-ID: <57666843.2020604@metafoo.de>
-References: <cover.1466218805.git.helen.koike@collabora.co.uk>
- <2aed60529eea206f2192a7236f2d80386a73f2ee.1466218805.git.helen.koike@collabora.co.uk>
- <20160618232131.GF5510@earth>
+From: Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Sun, 19 Jun 2016 11:46:29 +0200
+Message-ID: <20160619094629.GC5853@netboy>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <20160613114713.GA9544@localhost.localdomain>
+ <20160613195136.GC2441@netboy>
+ <20160614121844.54a125a5@lxorguk.ukuu.org.uk>
+ <5760C84C.40408@sakamocchi.jp>
+ <20160615080602.GA13555@localhost.localdomain>
+ <5764DA85.3050801@sakamocchi.jp>
+ <20160618224549.GF32724@icarus.home.austad.us>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7265928433589657001=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id CC2D7261536
- for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2016 11:39:35 +0200 (CEST)
-In-Reply-To: <20160618232131.GF5510@earth>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Reichel <sre@kernel.org>, Helen Koike <helen.koike@collabora.co.uk>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, k.kozlowski@samsung.com, lgirdwood@gmail.com, peter.ujfalusi@ti.com, broonie@kernel.org, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20160618224549.GF32724@icarus.home.austad.us>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Henrik Austad <henrik@austad.us>
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============7265928433589657001==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ECqn3XmgfkV6ebxCSNkUbkHE6Xcw6eBDp"
+On Sun, Jun 19, 2016 at 12:45:50AM +0200, Henrik Austad wrote:
+> edit: this turned out to be a somewhat lengthy answer. I have tried to 
+> shorten it down somewhere. it is getting late and I'm getting increasingly 
+> incoherent (Richard probably knows what I'm talking about ;) so I'll stop 
+> for now.
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ECqn3XmgfkV6ebxCSNkUbkHE6Xcw6eBDp
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+Thanks for your responses, Henrik.  I think your explanations are on spot.
 
-On 06/19/2016 01:21 AM, Sebastian Reichel wrote:
-> Hi,
->=20
-> On Sat, Jun 18, 2016 at 12:26:31AM -0300, Helen Koike wrote:
->> Add DAPM support and updated rx51 accordingly.
->> As a consequence:
->> - the exported function tpa6130a2_stereo_enable is not needed anymore
->> - the mutex is dealt in the DAPM
->> - the power state is tracked by the DAPM
->=20
-> This breaks headphone on N900. So far I only checked, that
-> tpa6130a2_power_event() is not called. I guess the DAPM
-> graph is wrong.
+> note that an adjustable sample-clock is not a *requirement* but in general 
+> you'd want to avoid resampling in software.
 
-Can you try with
+Yes, but..
 
-+	{"TPA6130A2 HPLEFT", NULL, "LLOUT"},
-+	{"TPA6130A2 HPRIGHT", NULL, "RLOUT"}
+Adjusting the local clock rate to match the AVB network rate is
+essential.  You must be able to *continuously* adjust the rate in
+order to compensate drift.  Again, there are exactly two ways to do
+it, namely in hardware (think VCO) or in software (dynamic
+resampling).
 
-being replaced with
+What you cannot do is simply buffer the AV data and play it out
+blindly at the local clock rate.
 
-+       {"TPA6130A2 LEFTIN", NULL, "LLOUT"},
-+       {"TPA6130A2 RIGHTIN", NULL, "RLOUT"},
+Regarding the media clock, if I understand correctly, there the talker
+has two possibilities.  Either the talker samples the stream at the
+gPTP rate, or the talker must tell the listeners the relationship
+(phase offset and frequency ratio) between the media clock and the
+gPTP time.  Please correct me if I got the wrong impression...
 
 Thanks,
-- Lars
-
-
-
---ECqn3XmgfkV6ebxCSNkUbkHE6Xcw6eBDp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJXZmhKAAoJEOj3aLScRbOZ1+EP/jwQj/N9qQZA7KJ1xETgzWn8
-MVhRgzAok3jw+Xnf3gQTLd5CphAuQYlT+V0/muzuvV1ohJXyojgehRKB+MwwMdI7
-bOrhvXwW5WeLnWvlaAc0Ux/Ae2jetQsnqkh7cpXojPKHTL+n7obsgeJD3I59rQYI
-B9Nbf1bllx+JEfp8bHqkMUL3Xo4eZSPQS63OqpBYDIkqXx6A1p2Dw7O0Rn1EGtEZ
-Idq4dl11gkcwUFgg9FBVzfCcIYjC3e7GuxYOCY5IIR6IHltrDD47im/umDoyLKMR
-Oee8VCO5vq5N04agemgLVLaHymosTki/CQYONRxofmzmY+PYO5qgQL0ZUMLJoosE
-K9lxJP81yBpo7Yh2PZWtm4RVQ6ukQZkjBtoDOocrmS8VxK4LhIk6wIZC8QaOl4eS
-UdPb1/roYBw13U7hT6LObaYP1VADezdAi8EVYuQ3LD+QD68bRgxS62djUDaOiAJ7
-HHsDDzfDxFm5cA2J5mcxXzGzS7riUIHz3oowAbwG+vgEOXRCyPf/U7rdEA30EiFm
-3iOPXscctHpJLK1zgCeVH+6WlKATsis5mz6ZkFTl31aYQoqvLZmi9pNh1X0fpsh+
-Pf4G09ewMR49du5OVnpovCadIbaIxoyR6mHkwZyXTbCPl3AsYLQdiMxlh19CuGfg
-BTw1Nuw05GWAcM+fkTSF
-=Q/7I
------END PGP SIGNATURE-----
-
---ECqn3XmgfkV6ebxCSNkUbkHE6Xcw6eBDp--
-
---===============7265928433589657001==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7265928433589657001==--
+Richard
