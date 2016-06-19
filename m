@@ -1,16 +1,18 @@
-From: Sebastian Reichel <sre@kernel.org>
-Subject: Re: [PATCH 0/4] ASoC: tpa6130a2: Add support for
-	multiple instances
-Date: Sun, 19 Jun 2016 22:14:14 +0200
-Message-ID: <20160619201413.GC15429@earth>
-References: <cover.1466218805.git.helen.koike@collabora.co.uk>
+From: Clive Messer <clive.messer@digitaldreamtime.co.uk>
+Subject: [PATCH V2 1/1] ASoC: pcm5102a: Support 352k8 and 384k
+	sample rates
+Date: Sun, 19 Jun 2016 21:42:02 +0100
+Message-ID: <1466368922-6555-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
+References: <1466358768-31787-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2272149252706949631=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C526261A8E
- for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2016 22:14:20 +0200 (CEST)
-In-Reply-To: <cover.1466218805.git.helen.koike@collabora.co.uk>
+Received: from mail.dreamtime.org (barcelona.digitaldreamtime.co.uk
+ [85.158.46.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id 636872625FE
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2016 22:42:14 +0200 (CEST)
+In-Reply-To: <1466358768-31787-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,82 +22,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Helen Koike <helen.koike@collabora.co.uk>
-Cc: k.kozlowski@samsung.com, lars@metafoo.de, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, peter.ujfalusi@ti.com, broonie@kernel.org, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
+To: alsa-devel@alsa-project.org
+Cc: Clive Messer <clive.messer@digitaldreamtime.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+Add support for 352k8 and 384k samples rates to pcm5102a codec
+driver, with SNDRV_PCM_RATE_KNOT and a constraint list.
 
---===============2272149252706949631==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5QAgd0e35j3NYeGe"
-Content-Disposition: inline
+Signed-off-by: Clive Messer <clive.messer@digitaldreamtime.co.uk>
+---
+ sound/soc/codecs/pcm5102a.c | 38 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 37 insertions(+), 1 deletion(-)
 
-
---5QAgd0e35j3NYeGe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Sat, Jun 18, 2016 at 12:26:27AM -0300, Helen Koike wrote:
-> The current tpa6130a2 driver supports only a single instance.
-> This patch series add support for multiple instances by removing the glob=
-al
-> variable that holds the instance.
-> This is performed by using the component API, regmap, the
-> snd_soc_{info,put,get}_volsw API and DAPM.
->=20
-> This patch series also touches code from the Nokia RX51 which I didn't te=
-sted (as
-> I am testing the tpa6130a2 in another board that is not upstream).
-> I would appreciate is if someone who possesses the Nokia RX51 (n900) coul=
-d please
-> test the code.
->=20
-> This patch series is based on git://git.kernel.org/pub/scm/linux/kernel/g=
-it/broonie/sound.git for-next
-> Available at https://git.collabora.com/cgit/user/koike/linux.git/log/?h=
-=3Dsound/review/tpa6130a2
-
-Locking at the resulting tpa6130a2.c I suggest to add a patch
-removing the useless "goto err_gpio" in tpa6130a2_probe().
-
-Also switching to gpiod_get() safes some more lines of code.
-It may make sense to postpone this to 4.9, though (this change
-involves removing the gpio from the platform data and the rx51
-will become DT only in 4.8).
-
--- Sebastian
-
---5QAgd0e35j3NYeGe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBCgAGBQJXZv0NAAoJENju1/PIO/qafIcP/3zx1X1jmNrwh3LOukvBS4EW
-tcCs/kMXXxG7U+6yxOrXmbUmnz5BzQ4Dzs2fxmt/NfyS9GMqUo6PptYHQQLnc6gX
-CA0HZDdoQS7tjPsgMPPeLO0Oiosh5YVXAAc1DrS7pW5RQrRvMwFe8kBThP9kYovH
-JppnH7iLJ0ehPm4Q//HVkUsIOvc4mHds2pqAIS2hZbc7fySWCXENLfFi8ZpkJpv4
-Pu6trR1RQ/elmrCz1xEiln2StePh4dIlhFDaGJp2UbpjrWEX29M/iF9p2ExQZIb6
-nKKzrbwGfxOQMA0ooQrbgXlB6mMUDIH7TcoHtZCKQqnxduvWNsNtRCsKr/SCqNs9
-0coHQ2o723pwh2IdfrFZlSi/hk/Wi3N4EyWUTcGijRMMibU0UZpjoFHB7j5tVZb8
-0ResxlVvdqwRp2G8O7WVUNfqNTKQH5GYe6lzhFfL0LwP3KmCF0P3SS+RTuq1ZBtC
-8wwpOlkCO4Y4HGtuSilGIU6cztmfZVcRQRKVJabU9R/3oQf/A/Fbyo/aDuvpTe0+
-YPurBsCEU6V7Jv9n9F0aoVxcKkNBaDFDyN5nQNMU+9c3Struvg1rGNc+ELM6jEXo
-XkLgY4cjkkKK/OAgKd47+eHKheP2o03CqmGLYReuGEs+7MqvLiKrPZJUvMEkXeLL
-RgQMa1fgOU9Be0F9xJxu
-=ZCaa
------END PGP SIGNATURE-----
-
---5QAgd0e35j3NYeGe--
-
---===============2272149252706949631==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2272149252706949631==--
+diff --git a/sound/soc/codecs/pcm5102a.c b/sound/soc/codecs/pcm5102a.c
+index ed51567..53dfc99 100644
+--- a/sound/soc/codecs/pcm5102a.c
++++ b/sound/soc/codecs/pcm5102a.c
+@@ -21,16 +21,51 @@
+ 
+ #include <sound/soc.h>
+ 
++static const u32 pcm5102a_rates[] = {
++	8000, 16000, 32000, 44100, 48000, 88200, 96000, 176400, 192000,
++	352800, 384000,
++};
++
++static const struct snd_pcm_hw_constraint_list pcm5102a_constraint_rates = {
++	.count = ARRAY_SIZE(pcm5102a_rates),
++	.list = pcm5102a_rates,
++};
++
++static int pcm5102a_dai_startup(struct snd_pcm_substream *substream,
++	struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	int ret;
++
++	dev_dbg(codec->dev, "%s: set rates (8k-384k) constraint\n", __func__);
++
++	ret = snd_pcm_hw_constraint_list(substream->runtime, 0,
++					 SNDRV_PCM_HW_PARAM_RATE,
++					 &pcm5102a_constraint_rates);
++	if (ret != 0) {
++		dev_err(codec->dev, "%s: Failed to set rates constraint: %d\n",
++			__func__, ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops pcm5102a_dai_ops = {
++	.startup = pcm5102a_dai_startup,
++};
++
+ static struct snd_soc_dai_driver pcm5102a_dai = {
+ 	.name = "pcm5102a-hifi",
+ 	.playback = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+-		.rates = SNDRV_PCM_RATE_8000_192000,
++		.rates = SNDRV_PCM_RATE_KNOT,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 			   SNDRV_PCM_FMTBIT_S24_LE |
+ 			   SNDRV_PCM_FMTBIT_S32_LE
+ 	},
++	.ops = &pcm5102a_dai_ops,
+ };
+ 
+ static struct snd_soc_codec_driver soc_codec_dev_pcm5102a;
+-- 
+2.5.5
