@@ -1,45 +1,20 @@
-From: Michel Normand <normand@linux.vnet.ibm.com>
-Subject: [PATCH] alsa-tools gcc6 narrowing error
-Date: Mon, 20 Jun 2016 15:26:05 +0200
-Message-ID: <1466429166-2201-1-git-send-email-normand@linux.vnet.ibm.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: Add support for PM ops in
+ bxt-da7219_max98357a
+Date: Mon, 20 Jun 2016 14:26:40 +0100
+Message-ID: <20160620132640.GT26099@sirena.org.uk>
+References: <1466138010-27740-1-git-send-email-vinod.koul@intel.com>
+ <5763DC72.1060200@metafoo.de> <20160617121548.GI16910@localhost>
+ <20160617123156.GO26099@sirena.org.uk>
+ <20160620114429.GP16910@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0854657191045606841=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- by alsa0.perex.cz (Postfix) with ESMTP id BF99F2654BE
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 15:26:21 +0200 (CEST)
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.11/8.16.0.11) with SMTP id
- u5KDDeAF096744
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 09:26:20 -0400
-Received: from e06smtp12.uk.ibm.com (e06smtp12.uk.ibm.com [195.75.94.108])
- by mx0a-001b2d01.pphosted.com with ESMTP id 23n0mdvxpm-1
- (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=NOT)
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 09:26:19 -0400
-Received: from localhost
- by e06smtp12.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <alsa-devel@alsa-project.org> from <normand@linux.vnet.ibm.com>;
- Mon, 20 Jun 2016 14:26:17 +0100
-Received: from b06cxnps4075.portsmouth.uk.ibm.com
- (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
- by d06dlp01.portsmouth.uk.ibm.com (Postfix) with ESMTP id 1380C17D805A
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 14:27:29 +0100 (BST)
-Received: from d06av09.portsmouth.uk.ibm.com (d06av09.portsmouth.uk.ibm.com
- [9.149.37.250])
- by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- u5KDQDcm3277060
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 13:26:13 GMT
-Received: from d06av09.portsmouth.uk.ibm.com (localhost [127.0.0.1])
- by d06av09.portsmouth.uk.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
- u5KDQCXM007787
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 07:26:12 -0600
-Received: from mnow541.ibm.com (sig-9-83-70-219.evts.uk.ibm.com [9.83.70.219])
- by d06av09.portsmouth.uk.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with
- ESMTP id u5KDQ8Si007578
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 07:26:09 -0600
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7F9C266631
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 15:26:48 +0200 (CEST)
+In-Reply-To: <20160620114429.GP16910@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -49,19 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Trying to build alsa-tools with gcc6 for PowerPC architecture.
-It failed as detailed in proposed patch of next mail
+
+--===============0854657191045606841==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="K0M4iRgkWWXhiQ9N"
+Content-Disposition: inline
 
 
-Michel Normand (1):
-  gcc6 narrowing error
+--K0M4iRgkWWXhiQ9N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- hdspmixer/src/channelmap.cxx | 158 +++++++++++++++++++++----------------------
- us428control/Cus428Midi.cc   |  30 ++++----
- 2 files changed, 94 insertions(+), 94 deletions(-)
+On Mon, Jun 20, 2016 at 05:14:29PM +0530, Vinod Koul wrote:
+> On Fri, Jun 17, 2016 at 01:31:56PM +0100, Mark Brown wrote:
+> > On Fri, Jun 17, 2016 at 05:45:48PM +0530, Vinod Koul wrote:
+> > > On Fri, Jun 17, 2016 at 01:18:10PM +0200, Lars-Peter Clausen wrote:
 
--- 
-1.9.1
+> > > > Why and why is this something that other cards do not need to do?
+
+> Other systems do not have a DSP sitting and need to redownload code which
+> takes time and results in card being resumed even when the platform is not
+> ready.
+
+So what you're actually trying to do here is serialize the resume - this
+isn't just a thing with DSPs, it's also a thing with I2C, regulators and
+so on.  A quick glance suggests that disabling async suspend might help
+here.
+
+--K0M4iRgkWWXhiQ9N
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXZ+8OAAoJECTWi3JdVIfQM74H/iTklCqEi7fGMSr38IEZDZH/
+WzM/EXkg0+JUDyhmyBsRWTOKstv9bJdKWC2eBRmmqJ59YctyflkKkpFukluJlAQQ
+UqM0ty/OdWBQqCQ1IH1kBzTpTN7MHPLvzCvzjFLq4w0TlZ0aXX2xM+SKqfggk3mK
+DKEtNs9SEA6/aFRJfxu0QHIRVpFoJohUHpJGBgII4ec5DpBMRI3kj5XbrOO0LCFL
+e+i9HKQka2C5lOQ7sHmEY5frb3csg5nCHTCaH+Q+eh9OmmFO8Rb6F8GMgRLAjE3a
+QbJgMLUYdWWC90oElHZqyLvqiuAj9vPZIuiuBQc+c3Jjs9rslCm/PRT6vvJdqac=
+=tmrR
+-----END PGP SIGNATURE-----
+
+--K0M4iRgkWWXhiQ9N--
+
+--===============0854657191045606841==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0854657191045606841==--
