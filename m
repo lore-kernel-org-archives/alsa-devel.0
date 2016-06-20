@@ -1,22 +1,21 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoc: wm8731: add normal mode with
- 12MHz XTAL
-Date: Mon, 20 Jun 2016 11:55:40 +0100
-Message-ID: <20160620105540.GI1552@localhost.localdomain>
-References: <1465517516-1917-1-git-send-email-flatmax@flatmax.org>
- <1465517516-1917-2-git-send-email-flatmax@flatmax.org>
- <575BD6F2.70600@flatmax.org> <575CD572.2040700@flatmax.org>
- <CAMv2zM8txnDEPh9Gebbt7KC7YuvEyOFxTomnnaRdu8SLyme5bw@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Mon, 20 Jun 2016 13:08:27 +0200
+Message-ID: <9a5abd48-4da3-945d-53c9-b6d37010ab0d@linux.intel.com>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <20160613114713.GA9544@localhost.localdomain> <20160613195136.GC2441@netboy>
+ <20160614121844.54a125a5@lxorguk.ukuu.org.uk> <5760C84C.40408@sakamocchi.jp>
+ <20160615080602.GA13555@localhost.localdomain>
+ <5764DA85.3050801@sakamocchi.jp>
+ <20160618224549.GF32724@icarus.home.austad.us>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C0C026507F
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 12:55:31 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAMv2zM8txnDEPh9Gebbt7KC7YuvEyOFxTomnnaRdu8SLyme5bw@mail.gmail.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EF6F26507F
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 13:08:16 +0200 (CEST)
+In-Reply-To: <20160618224549.GF32724@icarus.home.austad.us>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,26 +25,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Calhoun <rcalhoun@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, Matt Flax <flatmax@flatmax.org>
+To: Henrik Austad <henrik@austad.us>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, netdev@vger.kernel.org, Richard Cochran <richardcochran@gmail.com>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jun 19, 2016 at 05:46:02PM -0400, Rob Calhoun wrote:
-> Hi Matt,
-> 
-> Based on my experience with the WM8737, the bitclock will always run
-> at 12 MHz on these devices in USB mode. While the carrying capacity of
-> the channel is always 12 Mbps, the data put on the wire by the codec
-> depend on the sample rate, number of channels, and bit depth. This
-> leaves some unused capacity in the channel. It is the responsibility
-> of the receiving digital audio interface to pull off the appropriate
-> number of bits every time the LRCLK/frameclock fires and ignore the
-> rest of it. For example in I2S mode, 2-channel, 32-bit, the DAI should
-> pull off the first 32 bits following each LRCLK transition.
 
-Thanks very much for adding this, sounds like this is basically
-how the part operates then. Although I feel the datasheet could
-have been more clear, apologies for that.
+> Presentation time is either set by
+> a) Local sound card performing capture (in which case it will be 'capture
+>    time')
+> b) Local media application sending a stream accross the network
+>    (time when the sample should be played out remotely)
+> c) Remote media application streaming data *to* host, in which case it will
+>    be local presentation time on local  soundcard
+>
+>> This value is dominant to the number of events included in an IEC 61883-1
+>> packet. If this TSN subsystem decides it, most of these items don't need
+>> to be in ALSA.
+>
+> Not sure if I understand this correctly.
+>
+> TSN should have a reference to the timing-domain of each *local*
+> sound-device (for local capture or playback) as well as the shared
+> time-reference provided by gPTP.
+>
+> Unless an End-station acts as GrandMaster for the gPTP-domain, time set
+> forth by gPTP is inmutable and cannot be adjusted. It follows that the
+> sample-frequency of the local audio-devices must be adjusted, or the
+> audio-streams to/from said devices must be resampled.
 
-Thanks,
-Charles
+The ALSA API provides support for 'audio' timestamps (playback/capture 
+rate defined by audio subsystem) and 'system' timestamps (typically 
+linked to TSC/ART) with one option to take synchronized timestamps 
+should the hardware support them.
+The intent was that the 'audio' timestamps are translated to a shared 
+time reference managed in userspace by gPTP, which in turn would define 
+if (adaptive) audio sample rate conversion is needed. There is no 
+support at the moment for a 'play_at' function in ALSA, only means to 
+control a feedback loop.
