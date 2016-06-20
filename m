@@ -1,19 +1,26 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Add support for PM ops in
- bxt-da7219_max98357a
-Date: Mon, 20 Jun 2016 17:17:42 +0530
-Message-ID: <20160620114742.GQ16910@localhost>
-References: <1466138010-27740-1-git-send-email-vinod.koul@intel.com>
- <20160617111407.GE26099@sirena.org.uk>
- <20160617121359.GH16910@localhost>
- <20160617123523.GP26099@sirena.org.uk>
+From: Henrik Austad <henrik@austad.us>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Mon, 20 Jun 2016 13:49:24 +0200
+Message-ID: <20160620114924.GA8971@sisyphus.home.austad.us>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <20160613114713.GA9544@localhost.localdomain>
+ <20160613195136.GC2441@netboy>
+ <20160614121844.54a125a5@lxorguk.ukuu.org.uk>
+ <5760C84C.40408@sakamocchi.jp>
+ <20160615080602.GA13555@localhost.localdomain>
+ <5764DA85.3050801@sakamocchi.jp>
+ <20160618224549.GF32724@icarus.home.austad.us>
+ <9a5abd48-4da3-945d-53c9-b6d37010ab0d@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4149239087806730595=="
+Content-Type: multipart/mixed; boundary="===============1943340164621468105=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 23873266613
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 13:40:52 +0200 (CEST)
-In-Reply-To: <20160617123523.GP26099@sirena.org.uk>
+Received: from mail-lf0-f65.google.com (mail-lf0-f65.google.com
+ [209.85.215.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5148926520A
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 13:49:29 +0200 (CEST)
+Received: by mail-lf0-f65.google.com with SMTP id a2so5193306lfe.3
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 04:49:29 -0700 (PDT)
+In-Reply-To: <9a5abd48-4da3-945d-53c9-b6d37010ab0d@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,79 +30,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, netdev@vger.kernel.org, Richard Cochran <richardcochran@gmail.com>, linux-kernel@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4149239087806730595==
+--===============1943340164621468105==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="80Ds8Z/hZmemMosa"
+	protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
 Content-Disposition: inline
 
 
---80Ds8Z/hZmemMosa
+--mP3DRpeJDSE+ciuQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 17, 2016 at 01:35:23PM +0100, Mark Brown wrote:
-> On Fri, Jun 17, 2016 at 05:44:00PM +0530, Vinod Koul wrote:
-> > On Fri, Jun 17, 2016 at 12:14:07PM +0100, Mark Brown wrote:
+On Mon, Jun 20, 2016 at 01:08:27PM +0200, Pierre-Louis Bossart wrote:
 >=20
-> > > Just use snd_soc_resume() directly.
+> >Presentation time is either set by
+> >a) Local sound card performing capture (in which case it will be 'capture
+> >   time')
+> >b) Local media application sending a stream accross the network
+> >   (time when the sample should be played out remotely)
+> >c) Remote media application streaming data *to* host, in which case it w=
+ill
+> >   be local presentation time on local  soundcard
+> >
+> >>This value is dominant to the number of events included in an IEC 61883=
+-1
+> >>packet. If this TSN subsystem decides it, most of these items don't need
+> >>to be in ALSA.
+> >
+> >Not sure if I understand this correctly.
+> >
+> >TSN should have a reference to the timing-domain of each *local*
+> >sound-device (for local capture or playback) as well as the shared
+> >time-reference provided by gPTP.
+> >
+> >Unless an End-station acts as GrandMaster for the gPTP-domain, time set
+> >forth by gPTP is inmutable and cannot be adjusted. It follows that the
+> >sample-frequency of the local audio-devices must be adjusted, or the
+> >audio-streams to/from said devices must be resampled.
 >=20
-> > Nope, that leads to warnings.
->=20
-> > .complete is the only callback that expects void return whereas
-> > snd_soc_resume like other returns int.
->=20
-> This is possibly an indication that you're abusing things then - this is
-> a very unusual interface to use as well...  the patch just looks very
-> fishy as is, and as we were talking about in the other thread Lars
-> started it seems like this is bodging around something rather than
-> solving the right problem.
+> The ALSA API provides support for 'audio' timestamps
+> (playback/capture rate defined by audio subsystem) and 'system'
+> timestamps (typically linked to TSC/ART) with one option to take
+> synchronized timestamps should the hardware support them.
 
-In the hindsight, I do agree that instead of this, we should move platform
-to do suspend_late and resume_early. That way the dependency between card
-and platform is taken care in a much bteer fashion.
+Ok, this sounds promising, and very much in line with what AVB would need.
 
-The problem is two components racing and need of the resume being in serial
-fashion.
+> The intent was that the 'audio' timestamps are translated to a
+> shared time reference managed in userspace by gPTP, which in turn
+> would define if (adaptive) audio sample rate conversion is needed.
+> There is no support at the moment for a 'play_at' function in ALSA,
+> only means to control a feedback loop.
 
-Thanks
+Ok, I understand that the 'play_at' is difficult to obtain, but it sounds=
+=20
+like it is doable to achieve something useful.
+
+Looks like I will be looking into what to put in the .trigger-handler in=20
+the ALSA shim and experimenting with this to see how it make sense to=20
+connect it from the TSN-stream.
+
+Thanks!
+
 --=20
-~Vinod
+Henrik Austad
 
---80Ds8Z/hZmemMosa
+--mP3DRpeJDSE+ciuQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJXZ9feAAoJEHwUBw8lI4NH0w4P/2SNFqLzFwwYrf3MWPBmq0mY
-q2xk8yt76Lmxv8u2mLLaltFhpRw5Fi7AzNih+ICppslVZIzaVO9M/TxHgyKBTAzu
-pBydlwJlOx6qRb5/57bCwqLhNxCvxR6Wmqv4LM3kq0zIhqaGp24tSvAUIYmsE21t
-f83Gss1PuhCzgbjFJsOuy/WhegM50mxryNjrPFLyViVvUgAeSjJQgH+P44fXIR4I
-XFxeXthnpSnA696NqLyQAG7VaZGq0bvmNaBqe98F4nXW8wDPksRxeFDr29A0hxmU
-dMkpfyvLUGiaS5SnFV4lbFOwRcDYMn/Rn0FcJs28T9m0VuahTCKQ8ejdSMRIWIVb
-olAPKm1JeacA7I/FMPw/NomUh58liyebDnSGbC1YbSzgv42sdX0ZUgFQgN3WXPmq
-LZzowKYg2OShTrS3UDR015M91t6Wj382wiHeoiaubxe1m6UQR/zabDgBwf1TJlm6
-4HjcUJp4Pam2aPc3j5selpxi9FrUpfI6D26tfQk9l3u/zPnrAaCn4W1K3zVU6ntO
-DUVy1BFFOENP+VBW/guFQAWYA/lAY/s2Yo0mHB5rOqyDj3hIykUQYKM7iS3jiWhh
-+TNrA+YEIVbumNvOCer+pkrRuWeWMUNktTWbyq4ld+ma7gWctKBHp50+v+vcbbj5
-Oe6sG+Zu+T6Scerh83Bi
-=3W5h
+iEYEARECAAYFAldn2EQACgkQ6k5VT6v45lmUdgCg719YnKINnt32mXLLlC3WGGd2
+CZAAoJNPHDA3nfk8NumL7HmqCipmeIQl
+=gNYw
 -----END PGP SIGNATURE-----
 
---80Ds8Z/hZmemMosa--
+--mP3DRpeJDSE+ciuQ--
 
---===============4149239087806730595==
+--===============1943340164621468105==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4149239087806730595==--
+--===============1943340164621468105==--
