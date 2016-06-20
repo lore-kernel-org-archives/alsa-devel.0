@@ -1,17 +1,28 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [GIT PULL]: Skylake audio firmware update
-Date: Mon, 20 Jun 2016 10:57:50 -0400
-Message-ID: <20160620145750.GS9173@merlin.infradead.org>
-References: <20160617083936.GF16910@localhost>
+From: Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Mon, 20 Jun 2016 17:21:26 +0200
+Message-ID: <20160620152126.GA12638@localhost.localdomain>
+References: <20160613114713.GA9544@localhost.localdomain>
+ <20160613195136.GC2441@netboy>
+ <20160614121844.54a125a5@lxorguk.ukuu.org.uk>
+ <5760C84C.40408@sakamocchi.jp>
+ <20160615080602.GA13555@localhost.localdomain>
+ <5764DA85.3050801@sakamocchi.jp>
+ <20160618224549.GF32724@icarus.home.austad.us>
+ <9a5abd48-4da3-945d-53c9-b6d37010ab0d@linux.intel.com>
+ <20160620121838.GA5257@localhost.localdomain>
+ <20160620123148.GA5846@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 07F6826545F
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 16:57:52 +0200 (CEST)
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id E06982654B7
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 17:21:30 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id a66so9810053wme.2
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 08:21:30 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <20160617083936.GF16910@localhost>
+In-Reply-To: <20160620123148.GA5846@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,42 +32,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, linux-firmware@kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, netdev@vger.kernel.org, Henrik Austad <henrik@austad.us>, linux-kernel@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 17, 2016 at 02:09:36PM +0530, Vinod Koul wrote:
-> Hi,
-> 
-> Please PULL to receive the latest Skylake audio firmware.
-> 
-> The following changes since commit a4bbc8112cc04fcc0e0861e8b72197b6cb83ab83:
-> 
->   linux-firmware: Update firmware file for Intel Bluetooth 8260 (2016-06-09 08:11:22 -0400)
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git skl
-> 
+On Mon, Jun 20, 2016 at 02:31:48PM +0200, Richard Cochran wrote:
+> Where is this "audio_time" program of which you speak?
 
-Pulled, thanks Vinod.
+Never mind, found it in alsa-lib.
 
---Kyle
-
-> for you to fetch changes up to 80aae2270140807c4d8e304c39def1fe9f93edb9:
-> 
->   linux-firmware: intel: Update Skylake audio firmware (2016-06-17 14:01:52 +0530)
-> 
-> ----------------------------------------------------------------
-> Vinod Koul (1):
->       linux-firmware: intel: Update Skylake audio firmware
-> 
->  WHENCE                        |   4 ++--
->  intel/dsp_fw_release.bin      |   2 +-
->  intel/dsp_fw_release_v948.bin | Bin 0 -> 221184 bytes
->  3 files changed, 3 insertions(+), 3 deletions(-)
->  create mode 100644 intel/dsp_fw_release_v948.bin
-> 
-> Thanks
-> -- 
-> ~Vinod
+I still would appreciate an answer to my other questions, though...
+ 
+Thanks,
+Richard
