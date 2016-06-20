@@ -1,38 +1,73 @@
-From: kbuild test robot <lkp-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v7 1/2] ASoC: cs35l33: Initial commit of the
- cs35l33 CODEC driver.
-Date: Tue, 21 Jun 2016 01:41:25 +0800
-Message-ID: <201606210144.zjahjxY4%fengguang.wu@intel.com>
-References: <1466441119-8488-1-git-send-email-Paul.Handrigan@cirrus.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH RFC 6/6] ASoC: samsung: Add DT bindings
+ documentation for TM2 sound subsystem
+Date: Mon, 20 Jun 2016 12:49:31 -0500
+Message-ID: <CAL_Jsq+=EGo+6PkwjCSUavm+DyvjuXDx2XzteY6xXSP+0u+Z+g@mail.gmail.com>
+References: <1465815160-28504-1-git-send-email-s.nawrocki@samsung.com>
+ <1465815160-28504-7-git-send-email-s.nawrocki@samsung.com>
+ <20160614233224.GA4477@rob-hp-laptop> <20160615094730.GX2282@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1466441119-8488-1-git-send-email-Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: kbuild-all-JC7UmRfGjtg@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id B82AE266631
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 19:49:54 +0200 (CEST)
+Received: from mail.kernel.org (localhost [127.0.0.1])
+ by mail.kernel.org (Postfix) with ESMTP id 10958200EC
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 17:49:53 +0000 (UTC)
+Received: from mail-yw0-f173.google.com (mail-yw0-f173.google.com
+ [209.85.161.173])
+ (using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id C5C5B20125
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 17:49:51 +0000 (UTC)
+Received: by mail-yw0-f173.google.com with SMTP id b72so19192810ywa.3
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 10:49:51 -0700 (PDT)
+In-Reply-To: <20160615094730.GX2282@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, =?UTF-8?Q?Krzysztof_Koz=C5=82owski?= <k.kozlowski@samsung.com>, InKi Dae <inki.dae@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Beomho Seo <beomho.seo@samsung.com>, Inha Song <ideal.song@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, Jun 15, 2016 at 4:47 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Jun 14, 2016 at 06:32:24PM -0500, Rob Herring wrote:
+>> On Mon, Jun 13, 2016 at 12:52:40PM +0200, Sylwester Nawrocki wrote:
+>
+>> > +Samsung Exynos5433 TM2(E) audio complex with WM5110 codec
+>
+>> > +Required properties:
+>
+>> > + - compatible : "samsung,tm2-audio"
+>
+>> SoC specific compatible string please.
+>
+> No, this isn't a SoC IP - this is a binding for a board called TM2(E)
+> which has a bunch of chips on it including this.
 
-[auto build test WARNING on asoc/for-next]
-[also build test WARNING on v4.7-rc4 next-20160620]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+Okay, good.
 
-url:    https://github.com/0day-ci/linux/commits/Paul-Handrigan-cirrus-com/ASoC-cs35l33-Initial-commit-of-the-cs35l33-CODEC-driver/20160621-004829
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+>
+>> > + - samsung,i2s-controller : the phandle of the I2S controller
+>> > + - samsung,speaker-amplifier : the phandle of the MAX98504 amplifier
+>
+>> We should have standard properties for these. 2nd ones I've seen today.
+>
+> No, these aren't fixed roles in a system, you couldn't have standard
+> handling for them.
 
+What do you mean? It is silly for us to put vendor prefixes on all of
+these. There are dozens of examples in the binding docs of
+<vendor>,i2s-controller and <vendor>,audio-codec. Yes, dropping just
+the vendor prefix doesn't buy much (maybe some string space), but it
+certainly adds nothing.
 
-coccinelle warnings: (new ones prefixed by >>)
-
->> sound/soc/codecs/cs35l33.c:1301:3-8: No need to set .owner here. The core will do it.
-
-Please review and possibly fold the followup patch.
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Rob
