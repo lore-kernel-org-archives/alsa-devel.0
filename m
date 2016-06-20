@@ -1,16 +1,19 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [RESEND PATCH v3 0/2] ASoC: da7219: Convert driver to
-	use generic FW functions
-Date: Mon, 20 Jun 2016 12:38:57 +0100
-Message-ID: <cover.1466421714.git.Adam.Thomson.Opensource@diasemi.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Add support for PM ops in
+ bxt-da7219_max98357a
+Date: Mon, 20 Jun 2016 17:17:42 +0530
+Message-ID: <20160620114742.GQ16910@localhost>
+References: <1466138010-27740-1-git-send-email-vinod.koul@intel.com>
+ <20160617111407.GE26099@sirena.org.uk>
+ <20160617121359.GH16910@localhost>
+ <20160617123523.GP26099@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4149239087806730595=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
- [195.245.230.169])
- by alsa0.perex.cz (Postfix) with ESMTP id C671526520A
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 13:39:01 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23873266613
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 13:40:52 +0200 (CEST)
+In-Reply-To: <20160617123523.GP26099@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,45 +23,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Moore <robert.moore@intel.com>, Lv Zheng <lv.zheng@intel.com>, "Rafael J.Wysocki" <rafael.j.wysocki@intel.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Len Brown <lenb@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch set converts the da7219 codec driver to use device/fwnode functions
-to access properties, instead of the DT only of_* functions, allowing ACPI
-to be used as well.
 
-The DT bindings for da7219 have a device node for the main codec properties,
-and a named child node (da7219_aad), which contains all of the accessory
-detection related properties for the device. ACPI also supports this kind of
-FW hierarchy (data only sub-nodes), but some support in the kernel needs to be
-added to take make use of this in driver code.
+--===============4149239087806730595==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="80Ds8Z/hZmemMosa"
+Content-Disposition: inline
 
-The first patch adds functions to allow searching for a named child node of a
-device, for both DT and ACPI, and the second patch updates the codec driver to
-use the standard device/fwnode calls, including this new function.
 
-These changes are based on the v4.7-rc3 kernel.
+--80Ds8Z/hZmemMosa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Changes in v3:
- - Use of_node_cmp() in device_get_named_child_node() to match DT node.
+On Fri, Jun 17, 2016 at 01:35:23PM +0100, Mark Brown wrote:
+> On Fri, Jun 17, 2016 at 05:44:00PM +0530, Vinod Koul wrote:
+> > On Fri, Jun 17, 2016 at 12:14:07PM +0100, Mark Brown wrote:
+>=20
+> > > Just use snd_soc_resume() directly.
+>=20
+> > Nope, that leads to warnings.
+>=20
+> > .complete is the only callback that expects void return whereas
+> > snd_soc_resume like other returns int.
+>=20
+> This is possibly an indication that you're abusing things then - this is
+> a very unusual interface to use as well...  the patch just looks very
+> fishy as is, and as we were talking about in the other thread Lars
+> started it seems like this is bodging around something rather than
+> solving the right problem.
 
-Changes in v2:
- - Rebase to v4.7-rc1
- - Small updates to codec patch based on previous reviewer comments
+In the hindsight, I do agree that instead of this, we should move platform
+to do suspend_late and resume_early. That way the dependency between card
+and platform is taken care in a much bteer fashion.
 
-Adam Thomson (2):
-  device property: Add function to search for named child of device
-  ASoC: da7219: Convert driver to use generic device/fwnode functions
+The problem is two components racing and need of the resume being in serial
+fashion.
 
- drivers/base/property.c       |  28 ++++++++++++
- include/acpi/acpi_bus.h       |   7 +++
- include/linux/acpi.h          |   6 +++
- include/linux/of.h            |  14 +++---
- include/linux/property.h      |   3 ++
- sound/soc/codecs/da7219-aad.c | 103 +++++++++++++++++++++---------------------
- sound/soc/codecs/da7219.c     |  34 +++++++-------
- 7 files changed, 119 insertions(+), 76 deletions(-)
+Thanks
+--=20
+~Vinod
 
---
-1.9.3
+--80Ds8Z/hZmemMosa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJXZ9feAAoJEHwUBw8lI4NH0w4P/2SNFqLzFwwYrf3MWPBmq0mY
+q2xk8yt76Lmxv8u2mLLaltFhpRw5Fi7AzNih+ICppslVZIzaVO9M/TxHgyKBTAzu
+pBydlwJlOx6qRb5/57bCwqLhNxCvxR6Wmqv4LM3kq0zIhqaGp24tSvAUIYmsE21t
+f83Gss1PuhCzgbjFJsOuy/WhegM50mxryNjrPFLyViVvUgAeSjJQgH+P44fXIR4I
+XFxeXthnpSnA696NqLyQAG7VaZGq0bvmNaBqe98F4nXW8wDPksRxeFDr29A0hxmU
+dMkpfyvLUGiaS5SnFV4lbFOwRcDYMn/Rn0FcJs28T9m0VuahTCKQ8ejdSMRIWIVb
+olAPKm1JeacA7I/FMPw/NomUh58liyebDnSGbC1YbSzgv42sdX0ZUgFQgN3WXPmq
+LZzowKYg2OShTrS3UDR015M91t6Wj382wiHeoiaubxe1m6UQR/zabDgBwf1TJlm6
+4HjcUJp4Pam2aPc3j5selpxi9FrUpfI6D26tfQk9l3u/zPnrAaCn4W1K3zVU6ntO
+DUVy1BFFOENP+VBW/guFQAWYA/lAY/s2Yo0mHB5rOqyDj3hIykUQYKM7iS3jiWhh
++TNrA+YEIVbumNvOCer+pkrRuWeWMUNktTWbyq4ld+ma7gWctKBHp50+v+vcbbj5
+Oe6sG+Zu+T6Scerh83Bi
+=3W5h
+-----END PGP SIGNATURE-----
+
+--80Ds8Z/hZmemMosa--
+
+--===============4149239087806730595==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4149239087806730595==--
