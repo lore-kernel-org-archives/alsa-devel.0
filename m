@@ -1,38 +1,45 @@
-From: Helen Koike <helen.koike@collabora.co.uk>
-Subject: [PATCH] ALSA: hda - Remove compilation warning
-Date: Mon, 20 Jun 2016 16:42:31 -0300
-Message-ID: <1466451751-8013-1-git-send-email-helen.koike@collabora.co.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 4/5] ASoC: tpa6130a2: Add DAPM support
+Date: Mon, 20 Jun 2016 21:44:21 +0200
+Message-ID: <57684795.8050705@metafoo.de>
+References: <20160618104038.GB31665@earth>
+ <cover.1466441036.git.helen.koike@collabora.co.uk>
+ <bbddafe634bde1d12288862e02622d15c9b7c25c.1466441036.git.helen.koike@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org, trivial@kernel.org
-Cc: Helen Koike <helen.koike@collabora.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22E0E266631
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 21:44:36 +0200 (CEST)
+In-Reply-To: <bbddafe634bde1d12288862e02622d15c9b7c25c.1466441036.git.helen.koike@collabora.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Helen Koike <helen.koike@collabora.co.uk>, Sebastian Reichel <sre@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, k.kozlowski@samsung.com, lgirdwood@gmail.com, peter.ujfalusi@ti.com, broonie@kernel.org, cphealy@gmail.com, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
-Remove the warning:
-warning: =E2=80=98err=E2=80=99 may be used uninitialized in this functi=
-on [-Wmaybe-uninitialized]
+> +	/* before widget power up */
+> +	if (SND_SOC_DAPM_EVENT_ON(event)) {
+> +		/* Turn on the chip */
+> +		tpa6130a2_power(data, true);
+> +		/* Sync the registers */
+> +		ret = regcache_sync(data->regmap);
+> +		if (ret < 0) {
+> +			dev_err(c->dev, "Failed to initialize chip\n");
+> +			tpa6130a2_power(data, false);
+> +			return ret;
+> +		}
+> +	/* after widget power down */
+> +	} else
+> +		tpa6130a2_power(data, false);
 
-Signed-off-by: Helen Koike <helen.koike@collabora.co.uk>
----
- sound/hda/hdac_regmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/hda/hdac_regmap.c b/sound/hda/hdac_regmap.c
-index 87041dd..7be6ca1 100644
---- a/sound/hda/hdac_regmap.c
-+++ b/sound/hda/hdac_regmap.c
-@@ -279,7 +279,7 @@ static int hda_reg_write(void *context, unsigned in=
-t reg, unsigned int val)
- {
- 	struct hdac_device *codec =3D context;
- 	unsigned int verb;
--	int i, bytes, err;
-+	int i, bytes, err =3D 0;
- 	int pm_lock =3D 0;
-=20
- 	if (codec->caps_overwriting)
---=20
-1.9.1
+checkpatch.pl should complain about this. Kernel code style is if one branch
+has branches the other has to have it as well.
