@@ -1,18 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Add support for PM ops in
- bxt-da7219_max98357a
-Date: Mon, 20 Jun 2016 17:14:29 +0530
-Message-ID: <20160620114429.GP16910@localhost>
-References: <1466138010-27740-1-git-send-email-vinod.koul@intel.com>
- <5763DC72.1060200@metafoo.de> <20160617121548.GI16910@localhost>
- <20160617123156.GO26099@sirena.org.uk>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [RESEND PATCH v3 1/2] device property: Add function to
+ search for named child of device
+Date: Mon, 20 Jun 2016 12:38:58 +0100
+Message-ID: <866c9edccdd89805f6a0c0aa92f8a78ae616ed61.1466421714.git.Adam.Thomson.Opensource@diasemi.com>
+References: <cover.1466421714.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4933449780604757965=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A80C26507F
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 13:37:55 +0200 (CEST)
-In-Reply-To: <20160617123156.GO26099@sirena.org.uk>
+Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
+ [195.245.231.141])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92692265779
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 13:39:00 +0200 (CEST)
+In-Reply-To: <cover.1466421714.git.Adam.Thomson.Opensource@diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,84 +22,165 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Robert Moore <robert.moore@intel.com>, Lv Zheng <lv.zheng@intel.com>, "Rafael J.Wysocki" <rafael.j.wysocki@intel.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Len Brown <lenb@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+For device nodes in both DT and ACPI, it possible to have named
+child nodes which contain properties (an existing example being
+gpio-leds). This adds a function to find a named child node for
+a device which can be used by drivers for property retrieval.
 
---===============4933449780604757965==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="E1BPhOSoTthPQdPL"
-Content-Disposition: inline
+For DT data node name matching, of_node_cmp() and similar functions
+are made available outside of CONFIG_OF block so the new function
+can reference these for DT and non-DT builds.
 
+For ACPI data node name matching, a helper function is also added
+which returns false if CONFIG_ACPI is not set, otherwise it
+performs a string comparison on the data node name. This avoids
+using the acpi_data_node struct for non CONFIG_ACPI builds,
+which would otherwise cause a build failure.
 
---E1BPhOSoTthPQdPL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Tested-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
 
-On Fri, Jun 17, 2016 at 01:31:56PM +0100, Mark Brown wrote:
-> On Fri, Jun 17, 2016 at 05:45:48PM +0530, Vinod Koul wrote:
-> > On Fri, Jun 17, 2016 at 01:18:10PM +0200, Lars-Peter Clausen wrote:
->=20
-> > > Why and why is this something that other cards do not need to do?
+Changes in v3:
+ - Move of_*_cmp() functions in of.h outside of CONFIG_OF block so they are
+   available for non-DT builds
+ - In device_get_named_child_node(), use of_node_cmp() helper macro instead of
+   strcasecmp() (node names not alway case insensitive, depending on platform).
 
-Other systems do not have a DSP sitting and need to redownload code which
-takes time and results in card being resumed even when the platform is not
-ready.
+Changes in v2:
+ - Rebase to v4.7-rc1
 
-The logs are indicating the snd_soc_resume() is triggered even before the
-platform resume has returned which needs to be avoided.
+ drivers/base/property.c  | 28 ++++++++++++++++++++++++++++
+ include/acpi/acpi_bus.h  |  7 +++++++
+ include/linux/acpi.h     |  6 ++++++
+ include/linux/of.h       | 14 +++++++-------
+ include/linux/property.h |  3 +++
+ 5 files changed, 51 insertions(+), 7 deletions(-)
 
-One of the ways to ensure a dependency for PM is resolved, we tinker with PM
-callbacks here to ensure the platform is ready before resume is inoked here
+diff --git a/drivers/base/property.c b/drivers/base/property.c
+index f38c21d..43a36d6 100644
+--- a/drivers/base/property.c
++++ b/drivers/base/property.c
+@@ -888,6 +888,34 @@ struct fwnode_handle *device_get_next_child_node(struct device *dev,
+ EXPORT_SYMBOL_GPL(device_get_next_child_node);
 
-> > When card suspends, the DAPM suspend closes the widgets, which translat=
-es to
-> > we sending IPC to DSP for tearing down the pipelines.
->=20
-> > So we need the platform to be suspended last and resume first. This way=
- the
-> > snd_soc_suspend will tear down pipelines and snd_soc_resume restore tho=
-se
-> > back.
->=20
-> That doesn't answer the question - this applies to any control
-> mechanism.
+ /**
++ * device_get_named_child_node - Return first matching named child node handle
++ * @dev: Device to find the named child node for.
++ * @childname: String to match child node name against.
++ */
++struct fwnode_handle *device_get_named_child_node(struct device *dev,
++						  const char *childname)
++{
++	struct fwnode_handle *child;
++
++	/*
++	 * Find first matching named child node of this device.
++	 * For ACPI this will be a data only sub-node.
++	 */
++	device_for_each_child_node(dev, child) {
++		if (is_of_node(child)) {
++			if (!of_node_cmp(to_of_node(child)->name, childname))
++				return child;
++		} else if (is_acpi_data_node(child)) {
++			if (acpi_data_node_match(child, childname))
++				return child;
++		}
++	}
++
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(device_get_named_child_node);
++
++/**
+  * fwnode_handle_put - Drop reference to a device node
+  * @fwnode: Pointer to the device node to drop the reference to.
+  *
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index 788c6c3..993bdd0 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -420,6 +420,13 @@ static inline struct acpi_data_node *to_acpi_data_node(struct fwnode_handle *fwn
+ 		container_of(fwnode, struct acpi_data_node, fwnode) : NULL;
+ }
 
-Thanks
---=20
-~Vinod
++static inline bool acpi_data_node_match(struct fwnode_handle *fwnode,
++					const char *name)
++{
++	return is_acpi_data_node(fwnode) ?
++		(!strcasecmp(to_acpi_data_node(fwnode)->name, name)) : false;
++}
++
+ static inline struct fwnode_handle *acpi_fwnode_handle(struct acpi_device *adev)
+ {
+ 	return &adev->fwnode;
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 288fac5..03039c4 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -568,6 +568,12 @@ static inline struct acpi_data_node *to_acpi_data_node(struct fwnode_handle *fwn
+ 	return NULL;
+ }
 
---E1BPhOSoTthPQdPL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
++static inline bool acpi_data_node_match(struct fwnode_handle *fwnode,
++					const char *name)
++{
++	return false;
++}
++
+ static inline struct fwnode_handle *acpi_fwnode_handle(struct acpi_device *adev)
+ {
+ 	return NULL;
+diff --git a/include/linux/of.h b/include/linux/of.h
+index 74eb28c..310e32f 100644
+--- a/include/linux/of.h
++++ b/include/linux/of.h
+@@ -238,13 +238,6 @@ static inline unsigned long of_read_ulong(const __be32 *cell, int size)
+ #define OF_ROOT_NODE_SIZE_CELLS_DEFAULT 1
+ #endif
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+-/* Default string compare functions, Allow arch asm/prom.h to override */
+-#if !defined(of_compat_cmp)
+-#define of_compat_cmp(s1, s2, l)	strcasecmp((s1), (s2))
+-#define of_prop_cmp(s1, s2)		strcmp((s1), (s2))
+-#define of_node_cmp(s1, s2)		strcasecmp((s1), (s2))
+-#endif
+-
+ #define OF_IS_DYNAMIC(x) test_bit(OF_DYNAMIC, &x->_flags)
+ #define OF_MARK_DYNAMIC(x) set_bit(OF_DYNAMIC, &x->_flags)
 
-iQIcBAEBAgAGBQJXZ9cdAAoJEHwUBw8lI4NH5mwP/2TThz7CYtj+z5tZFvzmQbkC
-MtivVXa7ze+VEyfcX810sOc2amvUV4CUQCtsbA6XswJukF/eFJ52EeugFWZYS4nO
-pv1M+I7Ix38F5rF8YV7rgWpbvDaa74Y8efvrgnsAnikUxnSoo2G0g/K5oDQ0//Dh
-DKjfDikZvZazQPlJ3tQwD/bdkqVl5jQXcZTB7/hUXIURNb6jtC28kzjDFBO0yRgf
-WQWD80ABopk+7GyiCuyuIm6MEfQepcbTmr98kXWJHNx04F4vcoqP8UEmUicU5g6p
-8pzllb/087c3sT8GcHqktzLf3Du9oN0X0njhsmqBnyhEIx2Sc7zwHlsTRebjn0Sk
-XDn5h8Q1c5EJrheeeJbUFdDV+qqrw7XDvp5+at7mcOQlen7M3AgSgN9vNbtFORY2
-l2yPJRVNnlVORNH/Z/AcmzKR+Ks4dLt0Z+YhnDaUe5vE2agT1JnSOb+YvNPyqix7
-DFdUAGMCBgXtyrp149MS23XMRqPrTDyFxD4p4lnfT9WC6CTdM74mgQWPSDRncgi3
-YwMp+VIEfVNhdTmy2jLTGG9hCwlR8sYn6sXPPayeAtU+6AvcW6TPuQGT27kbohtQ
-PdoDLcHXdV2DP3kLwoNNjvoPxS9FVCybEX5JXk5as86Q57ZFX+jkv3lLju+Pubtx
-pUpKkYO55ogs8RDhZajJ
-=Qr/7
------END PGP SIGNATURE-----
+@@ -726,6 +719,13 @@ static inline void of_property_clear_flag(struct property *p, unsigned long flag
+ #define of_match_node(_matches, _node)	NULL
+ #endif /* CONFIG_OF */
 
---E1BPhOSoTthPQdPL--
++/* Default string compare functions, Allow arch asm/prom.h to override */
++#if !defined(of_compat_cmp)
++#define of_compat_cmp(s1, s2, l)	strcasecmp((s1), (s2))
++#define of_prop_cmp(s1, s2)		strcmp((s1), (s2))
++#define of_node_cmp(s1, s2)		strcasecmp((s1), (s2))
++#endif
++
+ #if defined(CONFIG_OF) && defined(CONFIG_NUMA)
+ extern int of_node_to_nid(struct device_node *np);
+ #else
+diff --git a/include/linux/property.h b/include/linux/property.h
+index ecab11e..3a2f9ae 100644
+--- a/include/linux/property.h
++++ b/include/linux/property.h
+@@ -77,6 +77,9 @@ struct fwnode_handle *device_get_next_child_node(struct device *dev,
+ 	for (child = device_get_next_child_node(dev, NULL); child;	\
+ 	     child = device_get_next_child_node(dev, child))
 
---===============4933449780604757965==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
++struct fwnode_handle *device_get_named_child_node(struct device *dev,
++						  const char *childname);
++
+ void fwnode_handle_put(struct fwnode_handle *fwnode);
 
-
---===============4933449780604757965==--
+ unsigned int device_get_child_node_count(struct device *dev);
+--
+1.9.3
