@@ -1,16 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 2/2] ASoC: Intel: Kconfig: formatting update
-Date: Tue, 21 Jun 2016 09:33:04 +0530
-Message-ID: <1466481784-3651-2-git-send-email-vinod.koul@intel.com>
-References: <1466481784-3651-1-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: intel: fix build when ACPI is not
+ enabled
+Date: Tue, 21 Jun 2016 09:43:45 +0530
+Message-ID: <20160621041345.GW16910@localhost>
+References: <575A0362.2080604@infradead.org> <20160613042233.GX16910@localhost>
+ <575ECB6C.7050102@infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 80F562657B0
- for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 05:56:25 +0200 (CEST)
-In-Reply-To: <1466481784-3651-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B7E552656F5
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 06:06:56 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <575ECB6C.7050102@infradead.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,151 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Randy Dunlap <rdunlap@infradead.org>, Vinod Koul <vinod.koul@intel.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Kconfig help texts were missing periods as suggested by Randy.
+On Mon, Jun 13, 2016 at 08:04:12AM -0700, Randy Dunlap wrote:
+> On 06/12/16 21:22, Vinod Koul wrote:
+> > On Thu, Jun 09, 2016 at 05:01:38PM -0700, Randy Dunlap wrote:
+> >> From: Randy Dunlap <rdunlap@infradead.org>
+> >>
+> >> kconfig tools generate the following warning when CONFIG_ACPI is not
+> >> enabled:
+> >>
+> >> warning: (SND_SOC_INTEL_BYTCR_RT5640_MACH && SND_SOC_INTEL_BYTCR_RT5651_MACH && SND_SOC_INTEL_CHT_BSW_RT5672_MACH && SND_SOC_INTEL_CHT_BSW_RT5645_MACH && SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) selects SND_SST_IPC_ACPI which has unmet direct dependencies (SOUND && !M68K && !UML && SND && SND_SOC && ACPI)
+> >>
+> >> causing these build errors:
+> >>
+> >> In file included from ../sound/soc/intel/atom/sst/sst_acpi.c:40:0:
+> >> ../include/acpi/acpi_bus.h:65:20: error: conflicting types for 'acpi_evaluate_dsm'
+> >>  union acpi_object *acpi_evaluate_dsm(acpi_handle handle, const u8 *uuid,
+> >> In file included from ../sound/soc/intel/atom/sst/sst_acpi.c:31:0:
+> >> ../include/linux/acpi.h:676:34: note: previous definition of 'acpi_evaluate_dsm' was here
+> >>  static inline union acpi_object *acpi_evaluate_dsm(acpi_handle handle,
+> >>
+> >> I am told that ACPI is a requirement for these drivers, so make that
+> >> explicit. Also end help text sentences with a period.
+> >>
+> >> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> >> Cc:	Jie Yang <yang.jie@linux.intel.com>
+> >> Cc:	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> >> Cc:	alsa-devel@alsa-project.org
+> >> ---
+> >>  sound/soc/intel/Kconfig |   12 ++++++------
+> >>  1 file changed, 6 insertions(+), 6 deletions(-)
+> >>
+> >> Should SND_SOC_INTEL_SST and possibly other similar drivers get this
+> >> same change?
+> > 
+> > The SND_SST_IPC_ACPI has depends on ACPI.
+> > 
+> > Can you send me your config for this.
+> 
+> Attached.
 
-Also fix the alignment on a block of help text to be consistent
-with rest.
+Thanks,
 
-Suggested-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/Kconfig | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+I was able to test this and tried few things. The SND_SST_IPC_ACPI has
+depends but someone can still selecta ACPI machine and cause these errors so
+I have moved the onus on machines and thus removed the depends and moved to
+all the ACPI machines. The PCI ones don't care about this so they are okay.
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 63e4c14ebe9f..9c86459d0fc3 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -7,7 +7,7 @@ config SND_MFLD_MACHINE
- 	help
-           This adds support for ASoC machine driver for Intel(R) MID Medfield platform
-           used as alsa device in audio substem in Intel(R) MID devices
--          Say Y if you have such a device
-+          Say Y if you have such a device.
-           If unsure select "N".
- 
- config SND_SST_MFLD_PLATFORM
-@@ -54,7 +54,7 @@ config SND_SOC_INTEL_HASWELL_MACH
- 	help
- 	  This adds support for the Lynxpoint Audio DSP on Intel(R) Haswell
- 	  Ultrabook platforms.
--	  Say Y if you have such a device
-+	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
- config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
-@@ -70,7 +70,7 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- 	help
- 	   This adds support for ASoC machine driver for Broxton-P platforms
- 	   with DA7219 + MAX98357A I2S audio codec.
--	   Say Y if you have such a device
-+	   Say Y if you have such a device.
- 	   If unsure select "N".
- 
- config SND_SOC_INTEL_BXT_RT298_MACH
-@@ -85,7 +85,7 @@ config SND_SOC_INTEL_BXT_RT298_MACH
- 	help
- 	   This adds support for ASoC machine driver for Broxton platforms
- 	   with RT286 I2S audio codec.
--	   Say Y if you have such a device
-+	   Say Y if you have such a device.
- 	   If unsure select "N".
- 
- config SND_SOC_INTEL_BYT_RT5640_MACH
-@@ -98,7 +98,7 @@ config SND_SOC_INTEL_BYT_RT5640_MACH
- 	help
- 	  This adds audio driver for Intel Baytrail platform based boards
- 	  with the RT5640 audio codec. This driver is deprecated, use
--	  SND_SOC_INTEL_BYTCR_RT5640_MACH instead for better functionality
-+	  SND_SOC_INTEL_BYTCR_RT5640_MACH instead for better functionality.
- 
- config SND_SOC_INTEL_BYT_MAX98090_MACH
- 	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
-@@ -122,7 +122,7 @@ config SND_SOC_INTEL_BROADWELL_MACH
- 	help
- 	  This adds support for the Wilcatpoint Audio DSP on Intel(R) Broadwell
- 	  Ultrabook platforms.
--	  Say Y if you have such a device
-+	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
- config SND_SOC_INTEL_BYTCR_RT5640_MACH
-@@ -135,7 +135,7 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
- 	help
-           This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
-           platforms with RT5640 audio codec.
--          Say Y if you have such a device
-+          Say Y if you have such a device.
-           If unsure select "N".
- 
- config SND_SOC_INTEL_BYTCR_RT5651_MACH
-@@ -148,7 +148,7 @@ config SND_SOC_INTEL_BYTCR_RT5651_MACH
- 	help
-           This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
-           platforms with RT5651 audio codec.
--          Say Y if you have such a device
-+          Say Y if you have such a device.
-           If unsure select "N".
- 
- config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
-@@ -161,7 +161,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
-         help
-           This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
-           platforms with RT5672 audio codec.
--          Say Y if you have such a device
-+          Say Y if you have such a device.
-           If unsure select "N".
- 
- config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
-@@ -178,16 +178,16 @@ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
- 
- config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
- 	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with MAX98090 & TI codec"
--	depends on X86_INTEL_LPSS && I2C
-+	depends on X86_INTEL_LPSS && I2C && ACPI
- 	select SND_SOC_MAX98090
- 	select SND_SOC_TS3A227E
- 	select SND_SST_MFLD_PLATFORM
- 	select SND_SST_IPC_ACPI
- 	select SND_SOC_INTEL_SST_MATCH if ACPI
- 	help
--      This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
--      platforms with MAX98090 audio codec it also can support TI jack chip as aux device.
--      If unsure select "N".
-+	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
-+	  platforms with MAX98090 audio codec it also can support TI jack chip as aux device.
-+	  If unsure select "N".
- 
- config SND_SOC_INTEL_SKYLAKE
- 	tristate
-@@ -207,7 +207,7 @@ config SND_SOC_INTEL_SKL_RT286_MACH
- 	help
- 	   This adds support for ASoC machine driver for Skylake platforms
- 	   with RT286 I2S audio codec.
--	   Say Y if you have such a device
-+	   Say Y if you have such a device.
- 	   If unsure select "N".
- 
- config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
-@@ -222,7 +222,7 @@ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
- 	help
- 	  This adds support for ASoC Onboard Codec I2S machine driver. This will
- 	  create an alsa sound card for NAU88L25 + SSM4567.
--	  Say Y if you have such a device
-+	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
- config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
-@@ -237,5 +237,5 @@ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
- 	help
- 	  This adds support for ASoC Onboard Codec I2S machine driver. This will
- 	  create an alsa sound card for NAU88L25 + MAX98357A.
--	  Say Y if you have such a device
-+	  Say Y if you have such a device.
- 	  If unsure select "N".
+Thanks for reporting, patches are posted now.
+
 -- 
-1.9.1
+~Vinod
