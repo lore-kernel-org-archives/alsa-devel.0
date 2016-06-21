@@ -1,17 +1,17 @@
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH v4 1/2] device property: Add function to search
- for named child of device
-Date: Tue, 21 Jun 2016 18:50:20 +0100
-Message-ID: <a3dca0b22f9cfabdac6b8e9de0a349aa18721d9f.1466523027.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH v4 2/2] ASoC: da7219: Convert driver to use
+ generic device/fwnode functions
+Date: Tue, 21 Jun 2016 18:50:21 +0100
+Message-ID: <fe52fc8951c961391c75907e670cad5348e460ff.1466523027.git.Adam.Thomson.Opensource@diasemi.com>
 References: <cover.1466523027.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta14.messagelabs.com (mail1.bemta14.messagelabs.com
- [193.109.254.117])
- by alsa0.perex.cz (Postfix) with ESMTP id C18E1266C6C
- for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 19:50:22 +0200 (CEST)
+Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
+ [195.245.231.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id 16ACD266C6E
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 19:50:23 +0200 (CEST)
 In-Reply-To: <cover.1466523027.git.Adam.Thomson.Opensource@diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,166 +26,375 @@ To: Robert Moore <robert.moore@intel.com>, Lv Zheng <lv.zheng@intel.com>, "Rafae
 Cc: devicetree <devicetree@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, Support Opensource <support.opensource@diasemi.com>, linux-kernel <linux-kernel@vger.kernel.org>, linux-acpi <linux-acpi@vger.kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-For device nodes in both DT and ACPI, it possible to have named
-child nodes which contain properties (an existing example being
-gpio-leds). This adds a function to find a named child node for
-a device which can be used by drivers for property retrieval.
-
-For DT data node name matching, of_node_cmp() and similar functions
-are made available outside of CONFIG_OF block so the new function
-can reference these for DT and non-DT builds.
-
-For ACPI data node name matching, a helper function is also added
-which returns false if CONFIG_ACPI is not set, otherwise it
-performs a string comparison on the data node name. This avoids
-using the acpi_data_node struct for non CONFIG_ACPI builds,
-which would otherwise cause a build failure.
+This change converts the driver from using the of_* functions to using
+the device_* and fwnode_* functions for accssing FW related data.
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Acked-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
 
 Changes in v4:
  - Rebase to v4.7-rc4
- - Use strcmp() in acpi_data_node_match() for matching ACPI data node strings,
-   as expected by ACPI specification.
 
 Changes in v3:
- - Move of_*_cmp() functions in of.h outside of CONFIG_OF block so they are
-   available for non-DT builds
- - In device_get_named_child_node(), use of_node_cmp() helper macro instead of
-   strcasecmp() (node names not alway case insensitive, depending on platform).
+ - Rebase to v4.7-rc1
+ - Remove unnecesary brackets in if statement for AAD pdata checking.
+ - Move assignment of add_np to be immediately prior to NULL check, for ease of
+   reading.
 
 Changes in v2:
- - Rebase to v4.7-rc1
+ - Rename functions to use _fw_ instead of _of_, to align with generic access.
+ - Use new device property function to find named child, rather than local
+   function.
+ - Remove checking for DT/ACPI fwnode types, and perform FW reading if platform
+   data not already provided.
+ - Remove ACPI and OF includes for AAD code, as no longer needed.
+ - Restore accidentally removed blank line.
 
- drivers/base/property.c  | 28 ++++++++++++++++++++++++++++
- include/acpi/acpi_bus.h  |  7 +++++++
- include/linux/acpi.h     |  6 ++++++
- include/linux/of.h       | 14 +++++++-------
- include/linux/property.h |  3 +++
- 5 files changed, 51 insertions(+), 7 deletions(-)
+ sound/soc/codecs/da7219-aad.c | 103 +++++++++++++++++++++---------------------
+ sound/soc/codecs/da7219.c     |  34 +++++++-------
+ 2 files changed, 68 insertions(+), 69 deletions(-)
 
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index f38c21d..43a36d6 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -888,6 +888,34 @@ struct fwnode_handle *device_get_next_child_node(struct device *dev,
- EXPORT_SYMBOL_GPL(device_get_next_child_node);
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index 9459593..f0057cd 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -13,8 +13,8 @@
 
- /**
-+ * device_get_named_child_node - Return first matching named child node handle
-+ * @dev: Device to find the named child node for.
-+ * @childname: String to match child node name against.
-+ */
-+struct fwnode_handle *device_get_named_child_node(struct device *dev,
-+						  const char *childname)
-+{
-+	struct fwnode_handle *child;
-+
-+	/*
-+	 * Find first matching named child node of this device.
-+	 * For ACPI this will be a data only sub-node.
-+	 */
-+	device_for_each_child_node(dev, child) {
-+		if (is_of_node(child)) {
-+			if (!of_node_cmp(to_of_node(child)->name, childname))
-+				return child;
-+		} else if (is_acpi_data_node(child)) {
-+			if (acpi_data_node_match(child, childname))
-+				return child;
-+		}
-+	}
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(device_get_named_child_node);
-+
-+/**
-  * fwnode_handle_put - Drop reference to a device node
-  * @fwnode: Pointer to the device node to drop the reference to.
-  *
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 788c6c3..c1a524d 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -420,6 +420,13 @@ static inline struct acpi_data_node *to_acpi_data_node(struct fwnode_handle *fwn
- 		container_of(fwnode, struct acpi_data_node, fwnode) : NULL;
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+-#include <linux/of_device.h>
+-#include <linux/of_irq.h>
++#include <linux/i2c.h>
++#include <linux/property.h>
+ #include <linux/pm_wakeirq.h>
+ #include <linux/slab.h>
+ #include <linux/delay.h>
+@@ -382,11 +382,11 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
  }
 
-+static inline bool acpi_data_node_match(struct fwnode_handle *fwnode,
-+					const char *name)
-+{
-+	return is_acpi_data_node(fwnode) ?
-+		(!strcmp(to_acpi_data_node(fwnode)->name, name)) : false;
-+}
-+
- static inline struct fwnode_handle *acpi_fwnode_handle(struct acpi_device *adev)
+ /*
+- * DT to pdata conversion
++ * DT/ACPI to pdata conversion
+  */
+
+ static enum da7219_aad_micbias_pulse_lvl
+-	da7219_aad_of_micbias_pulse_lvl(struct snd_soc_codec *codec, u32 val)
++	da7219_aad_fw_micbias_pulse_lvl(struct snd_soc_codec *codec, u32 val)
  {
- 	return &adev->fwnode;
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 288fac5..03039c4 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -568,6 +568,12 @@ static inline struct acpi_data_node *to_acpi_data_node(struct fwnode_handle *fwn
- 	return NULL;
+ 	switch (val) {
+ 	case 2800:
+@@ -400,7 +400,7 @@ static enum da7219_aad_micbias_pulse_lvl
  }
 
-+static inline bool acpi_data_node_match(struct fwnode_handle *fwnode,
-+					const char *name)
-+{
-+	return false;
-+}
-+
- static inline struct fwnode_handle *acpi_fwnode_handle(struct acpi_device *adev)
+ static enum da7219_aad_btn_cfg
+-	da7219_aad_of_btn_cfg(struct snd_soc_codec *codec, u32 val)
++	da7219_aad_fw_btn_cfg(struct snd_soc_codec *codec, u32 val)
  {
- 	return NULL;
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 74eb28c..310e32f 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -238,13 +238,6 @@ static inline unsigned long of_read_ulong(const __be32 *cell, int size)
- #define OF_ROOT_NODE_SIZE_CELLS_DEFAULT 1
- #endif
+ 	switch (val) {
+ 	case 2:
+@@ -424,7 +424,7 @@ static enum da7219_aad_btn_cfg
+ }
 
--/* Default string compare functions, Allow arch asm/prom.h to override */
--#if !defined(of_compat_cmp)
--#define of_compat_cmp(s1, s2, l)	strcasecmp((s1), (s2))
--#define of_prop_cmp(s1, s2)		strcmp((s1), (s2))
--#define of_node_cmp(s1, s2)		strcasecmp((s1), (s2))
--#endif
+ static enum da7219_aad_mic_det_thr
+-	da7219_aad_of_mic_det_thr(struct snd_soc_codec *codec, u32 val)
++	da7219_aad_fw_mic_det_thr(struct snd_soc_codec *codec, u32 val)
+ {
+ 	switch (val) {
+ 	case 200:
+@@ -442,7 +442,7 @@ static enum da7219_aad_mic_det_thr
+ }
+
+ static enum da7219_aad_jack_ins_deb
+-	da7219_aad_of_jack_ins_deb(struct snd_soc_codec *codec, u32 val)
++	da7219_aad_fw_jack_ins_deb(struct snd_soc_codec *codec, u32 val)
+ {
+ 	switch (val) {
+ 	case 5:
+@@ -468,7 +468,7 @@ static enum da7219_aad_jack_ins_deb
+ }
+
+ static enum da7219_aad_jack_det_rate
+-	da7219_aad_of_jack_det_rate(struct snd_soc_codec *codec, const char *str)
++	da7219_aad_fw_jack_det_rate(struct snd_soc_codec *codec, const char *str)
+ {
+ 	if (!strcmp(str, "32ms_64ms")) {
+ 		return DA7219_AAD_JACK_DET_RATE_32_64MS;
+@@ -485,7 +485,7 @@ static enum da7219_aad_jack_det_rate
+ }
+
+ static enum da7219_aad_jack_rem_deb
+-	da7219_aad_of_jack_rem_deb(struct snd_soc_codec *codec, u32 val)
++	da7219_aad_fw_jack_rem_deb(struct snd_soc_codec *codec, u32 val)
+ {
+ 	switch (val) {
+ 	case 1:
+@@ -503,7 +503,7 @@ static enum da7219_aad_jack_rem_deb
+ }
+
+ static enum da7219_aad_btn_avg
+-	da7219_aad_of_btn_avg(struct snd_soc_codec *codec, u32 val)
++	da7219_aad_fw_btn_avg(struct snd_soc_codec *codec, u32 val)
+ {
+ 	switch (val) {
+ 	case 1:
+@@ -521,7 +521,7 @@ static enum da7219_aad_btn_avg
+ }
+
+ static enum da7219_aad_adc_1bit_rpt
+-	da7219_aad_of_adc_1bit_rpt(struct snd_soc_codec *codec, u32 val)
++	da7219_aad_fw_adc_1bit_rpt(struct snd_soc_codec *codec, u32 val)
+ {
+ 	switch (val) {
+ 	case 1:
+@@ -538,97 +538,96 @@ static enum da7219_aad_adc_1bit_rpt
+ 	}
+ }
+
+-static struct da7219_aad_pdata *da7219_aad_of_to_pdata(struct snd_soc_codec *codec)
++static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct snd_soc_codec *codec)
+ {
+-	struct device_node *np = codec->dev->of_node;
+-	struct device_node *aad_np = of_find_node_by_name(np, "da7219_aad");
++	struct device *dev = codec->dev;
++	struct i2c_client *i2c = to_i2c_client(dev);
++	struct fwnode_handle *aad_np;
+ 	struct da7219_aad_pdata *aad_pdata;
+-	const char *of_str;
+-	u32 of_val32;
++	const char *fw_str;
++	u32 fw_val32;
+
++	aad_np = device_get_named_child_node(dev, "da7219_aad");
+ 	if (!aad_np)
+ 		return NULL;
+
+ 	aad_pdata = devm_kzalloc(codec->dev, sizeof(*aad_pdata), GFP_KERNEL);
+ 	if (!aad_pdata)
+-		goto out;
++		return NULL;
+
+-	aad_pdata->irq = irq_of_parse_and_map(np, 0);
++	aad_pdata->irq = i2c->irq;
+
+-	if (of_property_read_u32(aad_np, "dlg,micbias-pulse-lvl",
+-				 &of_val32) >= 0)
++	if (fwnode_property_read_u32(aad_np, "dlg,micbias-pulse-lvl",
++				     &fw_val32) >= 0)
+ 		aad_pdata->micbias_pulse_lvl =
+-			da7219_aad_of_micbias_pulse_lvl(codec, of_val32);
++			da7219_aad_fw_micbias_pulse_lvl(codec, fw_val32);
+ 	else
+ 		aad_pdata->micbias_pulse_lvl = DA7219_AAD_MICBIAS_PULSE_LVL_OFF;
+
+-	if (of_property_read_u32(aad_np, "dlg,micbias-pulse-time",
+-				 &of_val32) >= 0)
+-		aad_pdata->micbias_pulse_time = of_val32;
++	if (fwnode_property_read_u32(aad_np, "dlg,micbias-pulse-time",
++				     &fw_val32) >= 0)
++		aad_pdata->micbias_pulse_time = fw_val32;
+
+-	if (of_property_read_u32(aad_np, "dlg,btn-cfg", &of_val32) >= 0)
+-		aad_pdata->btn_cfg = da7219_aad_of_btn_cfg(codec, of_val32);
++	if (fwnode_property_read_u32(aad_np, "dlg,btn-cfg", &fw_val32) >= 0)
++		aad_pdata->btn_cfg = da7219_aad_fw_btn_cfg(codec, fw_val32);
+ 	else
+ 		aad_pdata->btn_cfg = DA7219_AAD_BTN_CFG_10MS;
+
+-	if (of_property_read_u32(aad_np, "dlg,mic-det-thr", &of_val32) >= 0)
++	if (fwnode_property_read_u32(aad_np, "dlg,mic-det-thr", &fw_val32) >= 0)
+ 		aad_pdata->mic_det_thr =
+-			da7219_aad_of_mic_det_thr(codec, of_val32);
++			da7219_aad_fw_mic_det_thr(codec, fw_val32);
+ 	else
+ 		aad_pdata->mic_det_thr = DA7219_AAD_MIC_DET_THR_500_OHMS;
+
+-	if (of_property_read_u32(aad_np, "dlg,jack-ins-deb", &of_val32) >= 0)
++	if (fwnode_property_read_u32(aad_np, "dlg,jack-ins-deb", &fw_val32) >= 0)
+ 		aad_pdata->jack_ins_deb =
+-			da7219_aad_of_jack_ins_deb(codec, of_val32);
++			da7219_aad_fw_jack_ins_deb(codec, fw_val32);
+ 	else
+ 		aad_pdata->jack_ins_deb = DA7219_AAD_JACK_INS_DEB_20MS;
+
+-	if (!of_property_read_string(aad_np, "dlg,jack-det-rate", &of_str))
++	if (!fwnode_property_read_string(aad_np, "dlg,jack-det-rate", &fw_str))
+ 		aad_pdata->jack_det_rate =
+-			da7219_aad_of_jack_det_rate(codec, of_str);
++			da7219_aad_fw_jack_det_rate(codec, fw_str);
+ 	else
+ 		aad_pdata->jack_det_rate = DA7219_AAD_JACK_DET_RATE_256_512MS;
+
+-	if (of_property_read_u32(aad_np, "dlg,jack-rem-deb", &of_val32) >= 0)
++	if (fwnode_property_read_u32(aad_np, "dlg,jack-rem-deb", &fw_val32) >= 0)
+ 		aad_pdata->jack_rem_deb =
+-			da7219_aad_of_jack_rem_deb(codec, of_val32);
++			da7219_aad_fw_jack_rem_deb(codec, fw_val32);
+ 	else
+ 		aad_pdata->jack_rem_deb = DA7219_AAD_JACK_REM_DEB_1MS;
+
+-	if (of_property_read_u32(aad_np, "dlg,a-d-btn-thr", &of_val32) >= 0)
+-		aad_pdata->a_d_btn_thr = (u8) of_val32;
++	if (fwnode_property_read_u32(aad_np, "dlg,a-d-btn-thr", &fw_val32) >= 0)
++		aad_pdata->a_d_btn_thr = (u8) fw_val32;
+ 	else
+ 		aad_pdata->a_d_btn_thr = 0xA;
+
+-	if (of_property_read_u32(aad_np, "dlg,d-b-btn-thr", &of_val32) >= 0)
+-		aad_pdata->d_b_btn_thr = (u8) of_val32;
++	if (fwnode_property_read_u32(aad_np, "dlg,d-b-btn-thr", &fw_val32) >= 0)
++		aad_pdata->d_b_btn_thr = (u8) fw_val32;
+ 	else
+ 		aad_pdata->d_b_btn_thr = 0x16;
+
+-	if (of_property_read_u32(aad_np, "dlg,b-c-btn-thr", &of_val32) >= 0)
+-		aad_pdata->b_c_btn_thr = (u8) of_val32;
++	if (fwnode_property_read_u32(aad_np, "dlg,b-c-btn-thr", &fw_val32) >= 0)
++		aad_pdata->b_c_btn_thr = (u8) fw_val32;
+ 	else
+ 		aad_pdata->b_c_btn_thr = 0x21;
+
+-	if (of_property_read_u32(aad_np, "dlg,c-mic-btn-thr", &of_val32) >= 0)
+-		aad_pdata->c_mic_btn_thr = (u8) of_val32;
++	if (fwnode_property_read_u32(aad_np, "dlg,c-mic-btn-thr", &fw_val32) >= 0)
++		aad_pdata->c_mic_btn_thr = (u8) fw_val32;
+ 	else
+ 		aad_pdata->c_mic_btn_thr = 0x3E;
+
+-	if (of_property_read_u32(aad_np, "dlg,btn-avg", &of_val32) >= 0)
+-		aad_pdata->btn_avg = da7219_aad_of_btn_avg(codec, of_val32);
++	if (fwnode_property_read_u32(aad_np, "dlg,btn-avg", &fw_val32) >= 0)
++		aad_pdata->btn_avg = da7219_aad_fw_btn_avg(codec, fw_val32);
+ 	else
+ 		aad_pdata->btn_avg = DA7219_AAD_BTN_AVG_2;
+
+-	if (of_property_read_u32(aad_np, "dlg,adc-1bit-rpt", &of_val32) >= 0)
++	if (fwnode_property_read_u32(aad_np, "dlg,adc-1bit-rpt", &fw_val32) >= 0)
+ 		aad_pdata->adc_1bit_rpt =
+-			da7219_aad_of_adc_1bit_rpt(codec, of_val32);
++			da7219_aad_fw_adc_1bit_rpt(codec, fw_val32);
+ 	else
+ 		aad_pdata->adc_1bit_rpt = DA7219_AAD_ADC_1BIT_RPT_1;
+
+-out:
+-	of_node_put(aad_np);
 -
- #define OF_IS_DYNAMIC(x) test_bit(OF_DYNAMIC, &x->_flags)
- #define OF_MARK_DYNAMIC(x) set_bit(OF_DYNAMIC, &x->_flags)
+ 	return aad_pdata;
+ }
 
-@@ -726,6 +719,13 @@ static inline void of_property_clear_flag(struct property *p, unsigned long flag
- #define of_match_node(_matches, _node)	NULL
- #endif /* CONFIG_OF */
+@@ -769,9 +768,9 @@ int da7219_aad_init(struct snd_soc_codec *codec)
+ 	da7219->aad = da7219_aad;
+ 	da7219_aad->codec = codec;
 
-+/* Default string compare functions, Allow arch asm/prom.h to override */
-+#if !defined(of_compat_cmp)
-+#define of_compat_cmp(s1, s2, l)	strcasecmp((s1), (s2))
-+#define of_prop_cmp(s1, s2)		strcmp((s1), (s2))
-+#define of_node_cmp(s1, s2)		strcasecmp((s1), (s2))
-+#endif
-+
- #if defined(CONFIG_OF) && defined(CONFIG_NUMA)
- extern int of_node_to_nid(struct device_node *np);
- #else
-diff --git a/include/linux/property.h b/include/linux/property.h
-index ecab11e..3a2f9ae 100644
---- a/include/linux/property.h
-+++ b/include/linux/property.h
-@@ -77,6 +77,9 @@ struct fwnode_handle *device_get_next_child_node(struct device *dev,
- 	for (child = device_get_next_child_node(dev, NULL); child;	\
- 	     child = device_get_next_child_node(dev, child))
+-	/* Handle any DT/platform data */
+-	if ((codec->dev->of_node) && (da7219->pdata))
+-		da7219->pdata->aad_pdata = da7219_aad_of_to_pdata(codec);
++	/* Handle any DT/ACPI/platform data */
++	if (da7219->pdata && !da7219->pdata->aad_pdata)
++		da7219->pdata->aad_pdata = da7219_aad_fw_to_pdata(codec);
 
-+struct fwnode_handle *device_get_named_child_node(struct device *dev,
-+						  const char *childname);
-+
- void fwnode_handle_put(struct fwnode_handle *fwnode);
+ 	da7219_aad_handle_pdata(codec);
 
- unsigned int device_get_child_node_count(struct device *dev);
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 5c93899..50ea943 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -15,6 +15,7 @@
+ #include <linux/clk.h>
+ #include <linux/i2c.h>
+ #include <linux/of_device.h>
++#include <linux/property.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+ #include <linux/pm.h>
+@@ -1418,7 +1419,7 @@ static struct snd_soc_dai_driver da7219_dai = {
+
+
+ /*
+- * DT
++ * DT/ACPI
+  */
+
+ static const struct of_device_id da7219_of_match[] = {
+@@ -1434,7 +1435,7 @@ static const struct acpi_device_id da7219_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, da7219_acpi_match);
+
+ static enum da7219_micbias_voltage
+-	da7219_of_micbias_lvl(struct snd_soc_codec *codec, u32 val)
++	da7219_fw_micbias_lvl(struct device *dev, u32 val)
+ {
+ 	switch (val) {
+ 	case 1600:
+@@ -1450,13 +1451,13 @@ static enum da7219_micbias_voltage
+ 	case 2600:
+ 		return DA7219_MICBIAS_2_6V;
+ 	default:
+-		dev_warn(codec->dev, "Invalid micbias level");
++		dev_warn(dev, "Invalid micbias level");
+ 		return DA7219_MICBIAS_2_2V;
+ 	}
+ }
+
+ static enum da7219_mic_amp_in_sel
+-	da7219_of_mic_amp_in_sel(struct snd_soc_codec *codec, const char *str)
++	da7219_fw_mic_amp_in_sel(struct device *dev, const char *str)
+ {
+ 	if (!strcmp(str, "diff")) {
+ 		return DA7219_MIC_AMP_IN_SEL_DIFF;
+@@ -1465,29 +1466,29 @@ static enum da7219_mic_amp_in_sel
+ 	} else if (!strcmp(str, "se_n")) {
+ 		return DA7219_MIC_AMP_IN_SEL_SE_N;
+ 	} else {
+-		dev_warn(codec->dev, "Invalid mic input type selection");
++		dev_warn(dev, "Invalid mic input type selection");
+ 		return DA7219_MIC_AMP_IN_SEL_DIFF;
+ 	}
+ }
+
+-static struct da7219_pdata *da7219_of_to_pdata(struct snd_soc_codec *codec)
++static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_codec *codec)
+ {
+-	struct device_node *np = codec->dev->of_node;
++	struct device *dev = codec->dev;
+ 	struct da7219_pdata *pdata;
+ 	const char *of_str;
+ 	u32 of_val32;
+
+-	pdata = devm_kzalloc(codec->dev, sizeof(*pdata), GFP_KERNEL);
++	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+ 	if (!pdata)
+ 		return NULL;
+
+-	if (of_property_read_u32(np, "dlg,micbias-lvl", &of_val32) >= 0)
+-		pdata->micbias_lvl = da7219_of_micbias_lvl(codec, of_val32);
++	if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) >= 0)
++		pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
+ 	else
+ 		pdata->micbias_lvl = DA7219_MICBIAS_2_2V;
+
+-	if (!of_property_read_string(np, "dlg,mic-amp-in-sel", &of_str))
+-		pdata->mic_amp_in_sel = da7219_of_mic_amp_in_sel(codec, of_str);
++	if (!device_property_read_string(dev, "dlg,mic-amp-in-sel", &of_str))
++		pdata->mic_amp_in_sel = da7219_fw_mic_amp_in_sel(dev, of_str);
+ 	else
+ 		pdata->mic_amp_in_sel = DA7219_MIC_AMP_IN_SEL_DIFF;
+
+@@ -1662,11 +1663,10 @@ static int da7219_probe(struct snd_soc_codec *codec)
+ 		break;
+ 	}
+
+-	/* Handle DT/Platform data */
+-	if (codec->dev->of_node)
+-		da7219->pdata = da7219_of_to_pdata(codec);
+-	else
+-		da7219->pdata = dev_get_platdata(codec->dev);
++	/* Handle DT/ACPI/Platform data */
++	da7219->pdata = dev_get_platdata(codec->dev);
++	if (!da7219->pdata)
++		da7219->pdata = da7219_fw_to_pdata(codec);
+
+ 	da7219_handle_pdata(codec);
+
 --
 1.9.3
