@@ -1,94 +1,68 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5670: patch reg-0x8a" to the asoc tree
-Date: Tue, 21 Jun 2016 19:52:36 +0100
-Message-ID: <E1bFQmq-0008LE-3Y@debutante>
-References: <1466136482-21944-1-git-send-email-bardliao@realtek.com>
+From: "Rafael J. Wysocki" <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v4 0/2] ASoC: da7219: Convert driver to use generic FW
+ functions
+Date: Wed, 22 Jun 2016 00:30:06 +0200
+Message-ID: <6274a042-da99-e3e6-20f2-37ce2651645c@intel.com>
+References: <cover.1466523027.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FC86267DD5
- for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 20:52:49 +0200 (CEST)
-In-Reply-To: <1466136482-21944-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, flove@realtek.com
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <cover.1466523027.git.Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Cc: Robert Moore <robert.moore-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Lv Zheng <lv.zheng-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Heikki Krogerus <heikki.krogerus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Len Brown <lenb-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Andy Shevchenko <andriy.shevchenko-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-acpi <linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Support Opensource <support.opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>, Sathyanarayana Nujella <sathyanarayana.nujella-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 6/21/2016 7:50 PM, Adam Thomson wrote:
+> This patch set converts the da7219 codec driver to use device/fwnode functions
+> to access properties, instead of the DT only of_* functions, allowing ACPI
+> to be used as well.
+>
+> The DT bindings for da7219 have a device node for the main codec properties,
+> and a named child node (da7219_aad), which contains all of the accessory
+> detection related properties for the device. ACPI also supports this kind of
+> FW hierarchy (data only sub-nodes), but some support in the kernel needs to be
+> added to take make use of this in driver code.
+>
+> The first patch adds functions to allow searching for a named child node of a
+> device, for both DT and ACPI, and the second patch updates the codec driver to
+> use the standard device/fwnode calls, including this new function.
+>
+> These changes are based on the v4.7-rc4 kernel.
+>
+> Changes in v4:
+>   - Rebase to v4.7-rc4
+>   - Use strcmp() in acpi_data_node_match() for matching ACPI data nodes.
+>
+> Changes in v3:
+>   - Use of_node_cmp() in device_get_named_child_node() to match DT node.
+>
+> Changes in v2:
+>   - Rebase to v4.7-rc1
+>   - Small updates to codec patch based on previous reviewer comments
+>
+> Adam Thomson (2):
+>    device property: Add function to search for named child of device
+>    ASoC: da7219: Convert driver to use generic device/fwnode functions
+>
+>   drivers/base/property.c       |  28 ++++++++++++
+>   include/acpi/acpi_bus.h       |   7 +++
+>   include/linux/acpi.h          |   6 +++
+>   include/linux/of.h            |  14 +++---
+>   include/linux/property.h      |   3 ++
+>   sound/soc/codecs/da7219-aad.c | 103 +++++++++++++++++++++---------------------
+>   sound/soc/codecs/da7219.c     |  34 +++++++-------
+>   7 files changed, 119 insertions(+), 76 deletions(-)
+>
+> --
+> 1.9.3
+>
+I'm fine with the first patch and the second one carries a couple of 
+ACKs already, so do you want me to apply them both?
 
-   ASoC: rt5670: patch reg-0x8a
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 874352a763ba2df55093d2651158be40999e9cbe Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Fri, 17 Jun 2016 12:08:02 +0800
-Subject: [PATCH] ASoC: rt5670: patch reg-0x8a
-
-reg-8a assign the tracking source for each ASRC tracker. The default
-value is 0x0000 which means all ASRC trackers will track LRCK1. But
-in most case, we wish each ASRC tracker track the corresponding LRCK.
-i.e. ASRC1 tracks LRCK1, ASRC2 tracks LRCK2 and so on. So, we rewrite
-reg-8a as 0x0123.
-
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5670.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 0af5ddbef1da..8ef467f64f03 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -55,6 +55,7 @@ static const struct reg_sequence init_list[] = {
- 	{ RT5670_PR_BASE + 0x14, 0x9a8a },
- 	{ RT5670_PR_BASE + 0x38, 0x3ba1 },
- 	{ RT5670_PR_BASE + 0x3d, 0x3640 },
-+	{ 0x8a, 0x0123 },
- };
- 
- static const struct reg_default rt5670_reg[] = {
-@@ -131,7 +132,7 @@ static const struct reg_default rt5670_reg[] = {
- 	{ 0x87, 0x0000 },
- 	{ 0x88, 0x0000 },
- 	{ 0x89, 0x0000 },
--	{ 0x8a, 0x0000 },
-+	{ 0x8a, 0x0123 },
- 	{ 0x8b, 0x0000 },
- 	{ 0x8c, 0x0003 },
- 	{ 0x8d, 0x0000 },
--- 
-2.8.1
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
