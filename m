@@ -1,59 +1,64 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: sound: use-after-free in hrtimer_cancel
-Date: Tue, 21 Jun 2016 19:41:28 +0200
-Message-ID: <CACT4Y+baYcM256_rdnqa0pow_-VgMxavMJtcdLU2HgjiKwFuyA@mail.gmail.com>
-References: <CACT4Y+Z-iJ6QyzyaJZk_oWmBKCjYecSynfsW3OdH5_bfarH=DQ@mail.gmail.com>
- <CACT4Y+b1YEr5suLfUQVd_U+AU1fJ38DmGWbrLxaNay42-nAxYQ@mail.gmail.com>
- <s5hoa7emmpy.wl-tiwai@suse.de> <CACT4Y+ZQn21O6YMphSQs9kM9KREST_MWXOyAbxNiLP7BREJqfg@mail.gmail.com>
- <s5h1t4ae0gq.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [very-RFC 0/8] TSN driver for the kernel
+Date: Tue, 21 Jun 2016 10:45:18 -0700
+Message-ID: <07283da9-f6d1-c3b1-7989-a6fce7ca0ee6@linux.intel.com>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <20160613114713.GA9544@localhost.localdomain> <20160613195136.GC2441@netboy>
+ <20160614121844.54a125a5@lxorguk.ukuu.org.uk> <5760C84C.40408@sakamocchi.jp>
+ <20160615080602.GA13555@localhost.localdomain>
+ <5764DA85.3050801@sakamocchi.jp>
+ <20160618224549.GF32724@icarus.home.austad.us>
+ <9a5abd48-4da3-945d-53c9-b6d37010ab0d@linux.intel.com>
+ <20160620121838.GA5257@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h1t4ae0gq.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Sasha Levin <sasha.levin@oracle.com>, Alexander Potapenko <glider@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20160620121838.GA5257@localhost.localdomain>
+Sender: netdev-owner@vger.kernel.org
+To: Richard Cochran <richardcochran@gmail.com>
+Cc: alsa-devel@alsa-project.org, netdev@vger.kernel.org, Henrik Austad <henrik@austad.us>, linux-kernel@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 6, 2016 at 6:39 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Mon, 06 Jun 2016 18:29:25 +0200,
-> Dmitry Vyukov wrote:
->>
->> On Mon, Jun 6, 2016 at 4:11 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > On Sat, 04 Jun 2016 20:27:50 +0200,
->> > Dmitry Vyukov wrote:
->> >>
->> >> On Sat, Jun 4, 2016 at 8:00 PM, Dmitry Vyukov <dvyukov@google.com> wrote:
->> >> > Hello,
->> >> >
->> >> > The following program triggers use-after-free:
->> >>
->> >> Forget to mention that you need to run it in a tight parallel loop. It
->> >> takes around 5 minutes to reproduce for me.
->> >
->> > Hmm, this again is a bug that is difficult to trigger...  At least, I
->> > couldn't reproduce locally.  How many processes are you running with
->> > stress program?
->>
->> I use a VM with 4 cores and use 20 parallel test processes.
->>
->> > It seems that there is nothing more than opening /dev/audio and does
->> > some mmap in the job.  Is there any other relevant thing there?
->>
->>
->> I think poll with timeout is related. It is poll who sets hrtimer, right?
+On 6/20/16 5:18 AM, Richard Cochran wrote:
+> On Mon, Jun 20, 2016 at 01:08:27PM +0200, Pierre-Louis Bossart wrote:
+>> The ALSA API provides support for 'audio' timestamps (playback/capture rate
+>> defined by audio subsystem) and 'system' timestamps (typically linked to
+>> TSC/ART) with one option to take synchronized timestamps should the hardware
+>> support them.
 >
-> If it's about snd-dummy driver, hrtimer is created at open, and
-> started/stopped at PCM trigger, and removed at close.
+> Thanks for the info.  I just skimmed Documentation/sound/alsa/timestamping.txt.
 >
-> Is there any good way to decode which syscalls are executed in the
-> test code?
+> That is fairly new, only since v4.1.  Are then any apps in the wild
+> that I can look at?  AFAICT, OpenAVB, gstreamer, etc, don't use the
+> new API.
 
-What do you mean?
-Here are the syscalls in the program:
+The ALSA API supports a generic .get_time_info callback, its 
+implementation is for now limited to a regular 'DMA' or 'link' timestamp 
+for HDaudio - the difference being which counters are used and how close 
+they are to the link serializer. The synchronized part is still WIP but 
+should come 'soon'
 
-    r[2] = syscall(SYS_open, "/dev/audio", 0xa40ul, 0, 0, 0);
-    // r[2] is in the descriptor passed to SYS_poll
-    r[15] = syscall(SYS_poll, 0x2001dde8ul, 0x4ul, 0x8ul, 0, 0, 0);
-    r[18] = syscall(SYS_readv, r[2], 0x20dc13c0ul, 0x1ul, 0, 0, 0);
-    r[19] = syscall(SYS_read, r[2], 0x20dbefe0ul, 0x20ul, 0, 0, 0);
+>
+>> The intent was that the 'audio' timestamps are translated to a shared time
+>> reference managed in userspace by gPTP, which in turn would define if
+>> (adaptive) audio sample rate conversion is needed. There is no support at
+>> the moment for a 'play_at' function in ALSA, only means to control a
+>> feedback loop.
+>
+> Documentation/sound/alsa/timestamping.txt says:
+>
+>   If supported in hardware, the absolute link time could also be used
+>   to define a precise start time (patches WIP)
+>
+> Two questions:
+>
+> 1. Where are the patches?  (If some are coming, I would appreciate
+>    being on CC!)
+>
+> 2. Can you mention specific HW that would support this?
+
+You can experiment with the 'dma' and 'link' timestamps today on any 
+HDaudio-based device. Like I said the synchronized part has not been 
+upstreamed yet (delays + dependency on ART-to-TSC conversions that made 
+it in the kernel recently)
