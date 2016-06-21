@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9860: fix non static symbol warnings" to the asoc tree
-Date: Tue, 21 Jun 2016 19:52:47 +0100
-Message-ID: <E1bFQn1-0008Ou-Sw@debutante>
-References: <1466184111-12667-1-git-send-email-weiyj_lk@163.com>
+Subject: Applied "ASoC: dwc: make pcm support built-in when necessary" to the asoc tree
+Date: Tue, 21 Jun 2016 19:52:39 +0100
+Message-ID: <E1bFQmt-0008M4-24@debutante>
+References: <20160620160131.2565092-1-arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1466184111-12667-1-git-send-email-weiyj_lk@163.com>
+In-Reply-To: <20160620160131.2565092-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-Cc: Mark Brown <broonie@kernel.org>, Peter Rosin <peda@axentia.se>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Jose Abreu <Jose.Abreu@synopsys.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9860: fix non static symbol warnings
+   ASoC: dwc: make pcm support built-in when necessary
 
 has been applied to the asoc tree at
 
@@ -37,45 +37,43 @@ to this mail.
 Thanks,
 Mark
 
->From 716540fdd3d2461a00005cc1d9de067a27535ce2 Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-Date: Fri, 17 Jun 2016 17:21:51 +0000
-Subject: [PATCH] ASoC: max9860: fix non static symbol warnings
+>From 3276d0aa0bf475cc6cfb505487b2a2f3f762aebb Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 20 Jun 2016 18:01:19 +0200
+Subject: [PATCH] ASoC: dwc: make pcm support built-in when necessary
 
-Fixes the following sparse warnings:
+The new PIO mode for the dwc audio driver causes a link failure
+when it is built as a loadable module but the audio driver is built-in:
 
-sound/soc/codecs/max9860.c:120:28: warning:
- symbol 'max9860_regmap' was not declared. Should it be static?
-sound/soc/codecs/max9860.c:596:25: warning:
- symbol 'max9860_pm_ops' was not declared. Should it be static?
+sound/built-in.o: In function `i2s_irq_handler':
+:(.text+0x58c64): undefined reference to `dw_pcm_push_tx'
+sound/built-in.o: In function `dw_i2s_probe':
+:(.text+0x593dc): undefined reference to `dw_pcm_register'
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+We could link both into a single module, but apparently the
+author intended them to be separate, so this instead changes
+the Makefile to force the pcm module to be built-in if the
+base module is. This is a bit hacky but not as bad as trying
+to work around it in Kconfig language.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 79361b2b98b7 ("ASoC: dwc: Add PIO PCM extension")
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9860.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/dwc/Makefile | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max9860.c b/sound/soc/codecs/max9860.c
-index 2b0dd6a18dad..68074c92a7c0 100644
---- a/sound/soc/codecs/max9860.c
-+++ b/sound/soc/codecs/max9860.c
-@@ -117,7 +117,7 @@ static bool max9860_precious(struct device *dev, unsigned int reg)
- 	return false;
- }
- 
--const struct regmap_config max9860_regmap = {
-+static const struct regmap_config max9860_regmap = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
- 
-@@ -593,7 +593,7 @@ static int max9860_resume(struct device *dev)
- }
- #endif
- 
--const struct dev_pm_ops max9860_pm_ops = {
-+static const struct dev_pm_ops max9860_pm_ops = {
- 	SET_RUNTIME_PM_OPS(max9860_suspend, max9860_resume, NULL)
- };
- 
+diff --git a/sound/soc/dwc/Makefile b/sound/soc/dwc/Makefile
+index 1b48bcccbc51..38f1ca31c5fa 100644
+--- a/sound/soc/dwc/Makefile
++++ b/sound/soc/dwc/Makefile
+@@ -1,4 +1,5 @@
+ # SYNOPSYS Platform Support
+ obj-$(CONFIG_SND_DESIGNWARE_I2S) += designware_i2s.o
+-obj-$(CONFIG_SND_DESIGNWARE_PCM) += designware_pcm.o
+-
++ifdef CONFIG_SND_DESIGNWARE_PCM
++obj-$(CONFIG_SND_DESIGNWARE_I2S) += designware_pcm.o
++endif
 -- 
 2.8.1
