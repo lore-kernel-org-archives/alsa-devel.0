@@ -1,46 +1,45 @@
-From: fgao@ikuai8.com
-Subject: [PATCH 1/1] sound: Fix one compile error of seq_device.c
-Date: Tue, 21 Jun 2016 17:32:26 +0800
-Message-ID: <1466501546-30094-1-git-send-email-fgao@ikuai8.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: gfree.wind@gmail.com, Gao Feng <fgao@ikuai8.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH RFC 6/6] ASoC: samsung: Add DT bindings documentation for
+ TM2 sound subsystem
+Date: Tue, 21 Jun 2016 11:48:11 +0200
+Message-ID: <57690D5B.2020504@samsung.com>
+References: <1465815160-28504-1-git-send-email-s.nawrocki@samsung.com>
+ <1465815160-28504-7-git-send-email-s.nawrocki@samsung.com>
+ <20160614233224.GA4477@rob-hp-laptop> <20160615094730.GX2282@sirena.org.uk>
+ <CAL_Jsq+=EGo+6PkwjCSUavm+DyvjuXDx2XzteY6xXSP+0u+Z+g@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <CAL_Jsq+=EGo+6PkwjCSUavm+DyvjuXDx2XzteY6xXSP+0u+Z+g@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, Inha Song <ideal.song@samsung.com>, Beomho Seo <beomho.seo@samsung.com>, InKi Dae <inki.dae@samsung.com>, =?UTF-8?Q?Krzysztof_Koz=c5=82owski?= <k.kozlowski@samsung.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Gao Feng <fgao@ikuai8.com>
+On 06/20/2016 07:49 PM, Rob Herring wrote:
+>>>> + - samsung,i2s-controller : the phandle of the I2S controller
+>>>> + - samsung,speaker-amplifier : the phandle of the MAX98504 amplifier
 
-The gcc reports the following compile error on CentOS7.
-include/linux/init.h:216:2: error: expected ',' or ';' before 'static'
-  static exitcall_t __exitcall_##fn __exit_call = fn
-  ^
-include/linux/init.h:279:24: note: in expansion of macro '__exitcall'
- #define module_exit(x) __exitcall(x);
-                        ^
-sound/core/seq/seq_device.c:315:1: note: in expansion of macro 'module_exit'
- module_exit(alsa_seq_device_exit)
- ^
-make[3]: *** [sound/core/seq/seq_device.o] Error 1
-make[2]: *** [sound/core/seq] Error 2
-make[1]: *** [sound/core] Error 2
-make: *** [sound] Error 2
+I'm considering changing this to a more generic (samsung,?)audio-amplifier
+in next iteration. Or maybe just listing MAX98504 as second entry of the
+(samsung,)audio-codec(s) property value, since capabilities and functionality 
+of the device in the system is not limited to just simple audio power 
+amplification. It accepts analogue audio signal on its input and is 
+transmitting digital audio data stream in the feedback path to the WM5110 
+codec's DSP.
 
-Signed-off-by: Gao Feng <fgao@ikuai8.com>
----
- sound/core/seq/seq_device.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+>>> >> We should have standard properties for these. 2nd ones I've seen today.
+>> >
+>> > No, these aren't fixed roles in a system, you couldn't have standard
+>> > handling for them.
+>
+> What do you mean? It is silly for us to put vendor prefixes on all of
+> these. There are dozens of examples in the binding docs of
+> <vendor>,i2s-controller and <vendor>,audio-codec. Yes, dropping just
+> the vendor prefix doesn't buy much (maybe some string space), but it
+> certainly adds nothing.
 
-diff --git a/sound/core/seq/seq_device.c b/sound/core/seq/seq_device.c
-index c4acf17..4e859e4 100644
---- a/sound/core/seq/seq_device.c
-+++ b/sound/core/seq/seq_device.c
-@@ -311,5 +311,5 @@ static void __exit alsa_seq_device_exit(void)
- 	bus_unregister(&snd_seq_bus_type);
- }
- 
--subsys_initcall(alsa_seq_device_init)
--module_exit(alsa_seq_device_exit)
-+subsys_initcall(alsa_seq_device_init);
-+module_exit(alsa_seq_device_exit);
--- 
-1.9.1
+It also looked unnecessary to me to at first sight to be adding
+vendor prefixes to those properties. We could look at the compatible
+string in the pointed node for handling any differences.
