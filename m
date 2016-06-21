@@ -1,22 +1,11 @@
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [RESEND PATCH v3 1/2] device property: Add
- function to search for named child of device
-Date: Tue, 21 Jun 2016 14:59:47 +0300
-Message-ID: <20160621115947.GZ1739@lahna.fi.intel.com>
-References: <cover.1466421714.git.Adam.Thomson.Opensource@diasemi.com>
- <866c9edccdd89805f6a0c0aa92f8a78ae616ed61.1466421714.git.Adam.Thomson.Opensource@diasemi.com>
- <20160621111126.GX1739@lahna.fi.intel.com>
- <28758107.YROb1rVtm6@vostro.rjw.lan>
- <2E89032DDAA8B9408CB92943514A0337D46442AB@SW-EX-MBX01.diasemi.com>
+From: Henrik Austad <henrik@austad.us>
+Subject: [PATCH] INSTALL: update text and drop reference to Hg
+Date: Tue, 21 Jun 2016 14:19:26 +0200
+Message-ID: <1466511566-2942-1-git-send-email-henrik@austad.us>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id D8C3A2608EA
- for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 13:59:55 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D46442AB@SW-EX-MBX01.diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,34 +15,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Support Opensource <Support.Opensource@diasemi.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, "Rafael J.Wysocki" <rafael.j.wysocki@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Robert Moore <robert.moore@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Lv Zheng <lv.zheng@intel.com>, Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Frank Rowand <frowand.list@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Len Brown <lenb@kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: Henrik Austad <henrik@austad.us>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 21, 2016 at 11:50:01AM +0000, Opensource [Adam Thomson] wrote:
-> 21 June 2016 12:42, Rafael J. Wysocki wrote:
-> 
-> > > > +static inline bool acpi_data_node_match(struct fwnode_handle *fwnode,
-> > > > +					const char *name)
-> > > > +{
-> > > > +	return is_acpi_data_node(fwnode) ?
-> > > > +		(!strcasecmp(to_acpi_data_node(fwnode)->name, name)) : false;
-> > > > +}
-> > >
-> > > Looks fine to me.
-> > >
-> > > One question - is it expected that matching ACPI data nodes is always
-> > > case insensitive?
-> > 
-> > That would not be a correct expectation in theory, although I don't think it
-> > really matters in practice.
-> 
-> From my reading of the Hierarchical Data Extension and ACPI Spec, I thought
-> that was the case (section 19.3.1 ASL Names - ASL names are not case-sensitive
-> and will be converted to upper case). Am I misreading the documents/missing
-> something else?
+This is really just nitpick, but it annoyed me for a few seconds, so I thought
+I'd just fix it.
 
-Those are names in the ASL code itself.
+In d7534b2ceec7 (hgcompile -> gitcompile) the filename was updated but
+INSTALL was not, leaving outdated docs.
 
-What we are talking here are actually just string values (name of the
-data node).
+Signed-off-by: Henrik Austad <henrik@austad.us>
+---
+ INSTALL | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/INSTALL b/INSTALL
+index 47086e3..64f3d09 100644
+--- a/INSTALL
++++ b/INSTALL
+@@ -11,13 +11,19 @@ For installation you can use these commands:
+ 	make install
+ 
+ 
+-Compilation from HG sources
++Compilation from Git-sources
+ ---------------------------
+ 
+-You need also GNU packages automake and libtool installed in your system
+-to compile HG (Mercurial) sources of alsa-lib package.
++Requirements:
++	* automake
++	* libtool
+ 
+-For compilation you can use these commands:
++To compile alsa-lib from source:
++
++	./gitcompile
++
++If you do not want to use the supplied gitcompile-script, you can
++compile alsa-lib manually by using these steps:
+ 
+ 	libtoolize --force --copy --automake
+ 	aclocal
+@@ -27,7 +33,6 @@ For compilation you can use these commands:
+ 	./configure
+ 	make
+ 
+-The included hgcompile script does this job for you.
+ 
+ Note: Some automake packages have missing aclocal program. Use newer version
+       in the case.
+-- 
+2.1.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
