@@ -1,94 +1,94 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs53l30: Fix non static symbol warnings" to the asoc tree
-Date: Tue, 21 Jun 2016 19:52:44 +0100
-Message-ID: <E1bFQmy-0008Nz-Tn@debutante>
-References: <1466184120-13062-1-git-send-email-weiyj_lk@163.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1466184120-13062-1-git-send-email-weiyj_lk@163.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>, Brian Austin <brian.austin@cirrus.com>Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v7 2/2] ASoC: cs35l33: Add device tree bindings file for
+ cs35l33
+Date: Tue, 21 Jun 2016 14:21:37 -0500
+Message-ID: <20160621192137.GA11832@rob-hp-laptop>
+References: <1466441119-8488-1-git-send-email-Paul.Handrigan@cirrus.com>
+ <1466441119-8488-2-git-send-email-Paul.Handrigan@cirrus.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1466441119-8488-2-git-send-email-Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Mon, Jun 20, 2016 at 11:45:19AM -0500, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org wrote:
+> From: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+> 
+> Add device tree bindings file for the cs35l33 8V boosted
+> class D amplifier.
+> 
+> Signed-off-by: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+> ---
+>  .../devicetree/bindings/sound/cs35l33.txt          | 118 +++++++++++++++++++++
+>  1 file changed, 118 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/cs35l33.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/cs35l33.txt b/Documentation/devicetree/bindings/sound/cs35l33.txt
+> new file mode 100644
+> index 0000000..bea6de7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/cs35l33.txt
+> @@ -0,0 +1,118 @@
+> +CS35L33 Speaker Amplifier
+> +
+> +Required properties:
+> +
+> +  - compatible : "cirrus,cs35l33"
+> +
+> +  - reg : the I2C address of the device for I2C
+> +
+> +  - VA-supply, VP-supply : power supplies for the device,
+> +    as covered in
+> +    Documentation/devicetree/bindings/regulator/regulator.txt.
+> +
+> +Optional properties:
+> +
+> +  - reset-gpios : gpio used to reset the amplifier
+> +
+> +  - interrupt-parent : Specifies the phandle of the interrupt controller to
+> +    which the IRQs from CS35L33 are delivered to.
+> + -  interrupts : IRQ line info CS35L33.
+> +    (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
+> +    for further information relating to interrupt properties)
+> +
+> +  - cirrus,boost-ctl : Booster voltage use to supply the amp. If the value is
+> +    0, then VBST = VP. If greater than 0, the boost voltage will be 3300mV with
+> +    a value of 1 and will increase at a step size of 100mV until a maximum of
+> +    8000mV.
+> +
+> +  - cirrus,ramp-rate : On power up, it affects the time from when the power
+> +    up sequence begins to the time the audio reaches a full-scale output.
+> +    On power down, it affects the time from when the power-down sequence
+> +    begins to when the amplifier disables the PWM outputs. If this property
+> +    is not set then soft ramping will be disabled and ramp time would be
+> +    20ms. If this property is set to 0,1,2,3 then ramp times would be 40ms,
+> +    60ms,100ms,175ms respectively for 48KHz sample rate.
+> +
+> +  - cirrus,boost-ipk : The maximum current allowed for the boost converter.
+> +    The range starts at 1850000uA and goes to a maximum of 3600000uA
+> +    with a step size of 15625uA. The default is 2500000uA.
+> +
+> +  - cirrus,imon-adc-scale : Configures the scaling of data bits from the IMON
+> +    ADC data word. This property can be set as a value of 0 for bits 15 down
+> +    to 0, 6 for 21 down to 6, 7, for 22 down to 7, 8 for 23 down to 8.
+> +
+> +  - cirrus,hg-algo : Parameters for internal Class H/G algorithm that
+> +    controls the amplifier supplies.
 
-   ASoC: cs53l30: Fix non static symbol warnings
+It is not clear that this is a node not a property, and everything 
+below is part of the sub-node. The example is not the binding 
+documentation. I should be able to write the example or validate the 
+binding based on the documentation.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From ee85be8c9b5277a50bf6491c30b2736a5562331b Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-Date: Fri, 17 Jun 2016 17:22:00 +0000
-Subject: [PATCH] ASoC: cs53l30: Fix non static symbol warnings
-
-Fixes the following sparse warnings:
-
-sound/soc/codecs/cs53l30.c:182:20: warning:
- symbol 'input1_sel_values' was not declared. Should it be static?
-sound/soc/codecs/cs53l30.c:202:20: warning:
- symbol 'input2_sel_values' was not declared. Should it be static?
-sound/soc/codecs/cs53l30.c:734:20: warning:
- symbol 'cs53l30_src_rates' was not declared. Should it be static?
-
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/cs53l30.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index 384a3f79f1c5..a5976f3b589a 100644
---- a/sound/soc/codecs/cs53l30.c
-+++ b/sound/soc/codecs/cs53l30.c
-@@ -180,7 +180,7 @@ static const char * const input1_sel_text[] = {
- 	"DMIC1 Off ADC1 Off",
- };
- 
--unsigned int const input1_sel_values[] = {
-+static unsigned int const input1_sel_values[] = {
- 	CS53L30_CH_TYPE,
- 	CS53L30_ADCxB_PDN | CS53L30_CH_TYPE,
- 	CS53L30_ADCxA_PDN | CS53L30_CH_TYPE,
-@@ -200,7 +200,7 @@ static const char * const input2_sel_text[] = {
- 	"DMIC2 Off ADC2 Off",
- };
- 
--unsigned int const input2_sel_values[] = {
-+static unsigned int const input2_sel_values[] = {
- 	0x0,
- 	CS53L30_ADCxB_PDN,
- 	CS53L30_ADCxA_PDN,
-@@ -738,7 +738,7 @@ static int cs53l30_set_tristate(struct snd_soc_dai *dai, int tristate)
- 				  CS53L30_ASP_3ST_MASK, val);
- }
- 
--unsigned int const cs53l30_src_rates[] = {
-+static unsigned int const cs53l30_src_rates[] = {
- 	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000
- };
- 
--- 
-2.8.1
+> +
+> +  - cirrus,mem-depth : Memory depth for the Class H/G algorithm measured in
+> +    LRCLK cycles. If this property is set to 0, 1, 2, or 3 then the memory
+> +    depths will be 1, 4, 8, 16 LRCLK cycles.  The default is 16 LRCLK cycles.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
