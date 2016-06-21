@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs53l30: Set idle_bias_off true" to the asoc tree
-Date: Tue, 21 Jun 2016 19:52:41 +0100
-Message-ID: <E1bFQmv-0008Mx-Vo@debutante>
-References: <1466213517-18523-1-git-send-email-nicoleotsuka@gmail.com>
+Subject: Applied "ASoC: max9860: fix non static symbol warnings" to the asoc tree
+Date: Tue, 21 Jun 2016 19:52:47 +0100
+Message-ID: <E1bFQn1-0008Ou-Sw@debutante>
+References: <1466184111-12667-1-git-send-email-weiyj_lk@163.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1466213517-18523-1-git-send-email-nicoleotsuka@gmail.com>
+In-Reply-To: <1466184111-12667-1-git-send-email-weiyj_lk@163.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, linux-kernel@vger.kernel.org
+To: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Cc: Mark Brown <broonie@kernel.org>, Peter Rosin <peda@axentia.se>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs53l30: Set idle_bias_off true
+   ASoC: max9860: fix non static symbol warnings
 
 has been applied to the asoc tree at
 
@@ -37,34 +37,45 @@ to this mail.
 Thanks,
 Mark
 
->From b0e71c0ddda4e1540b38658cac705222a648c756 Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Fri, 17 Jun 2016 18:31:57 -0700
-Subject: [PATCH] ASoC: cs53l30: Set idle_bias_off true
+>From 716540fdd3d2461a00005cc1d9de067a27535ce2 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Date: Fri, 17 Jun 2016 17:21:51 +0000
+Subject: [PATCH] ASoC: max9860: fix non static symbol warnings
 
-The driver is using the set_bias_level to control the power on and
-off so it should get SND_SOC_BIAS_OFF in order to proceed normal
-powering sequences. This patch enables the idle_bias_off option so
-the DAPM core will set the bias level to SND_SOC_BIAS_OFF instead
-of stopping at SND_SOC_BIAS_STANDBY.
+Fixes the following sparse warnings:
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+sound/soc/codecs/max9860.c:120:28: warning:
+ symbol 'max9860_regmap' was not declared. Should it be static?
+sound/soc/codecs/max9860.c:596:25: warning:
+ symbol 'max9860_pm_ops' was not declared. Should it be static?
+
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs53l30.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/max9860.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index a5976f3b589a..b0a64a19a045 100644
---- a/sound/soc/codecs/cs53l30.c
-+++ b/sound/soc/codecs/cs53l30.c
-@@ -879,6 +879,7 @@ static int cs53l30_codec_probe(struct snd_soc_codec *codec)
- static struct snd_soc_codec_driver cs53l30_driver = {
- 	.probe = cs53l30_codec_probe,
- 	.set_bias_level = cs53l30_set_bias_level,
-+	.idle_bias_off = true,
+diff --git a/sound/soc/codecs/max9860.c b/sound/soc/codecs/max9860.c
+index 2b0dd6a18dad..68074c92a7c0 100644
+--- a/sound/soc/codecs/max9860.c
++++ b/sound/soc/codecs/max9860.c
+@@ -117,7 +117,7 @@ static bool max9860_precious(struct device *dev, unsigned int reg)
+ 	return false;
+ }
  
- 	.dapm_widgets = cs53l30_dapm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(cs53l30_dapm_widgets),
+-const struct regmap_config max9860_regmap = {
++static const struct regmap_config max9860_regmap = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+ 
+@@ -593,7 +593,7 @@ static int max9860_resume(struct device *dev)
+ }
+ #endif
+ 
+-const struct dev_pm_ops max9860_pm_ops = {
++static const struct dev_pm_ops max9860_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(max9860_suspend, max9860_resume, NULL)
+ };
+ 
 -- 
 2.8.1
