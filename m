@@ -1,80 +1,120 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 0/2] ASoC: da7219: Convert driver to use
- generic FW functions
-Date: Wed, 22 Jun 2016 00:21:16 +0100
-Message-ID: <20160621232116.GG28202@sirena.org.uk>
-References: <cover.1466523027.git.Adam.Thomson.Opensource@diasemi.com>
- <6274a042-da99-e3e6-20f2-37ce2651645c@intel.com>
- <2E89032DDAA8B9408CB92943514A0337D4644644@SW-EX-MBX01.diasemi.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1550405484819894160=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B41F6261561
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 01:21:32 +0200 (CEST)
-In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D4644644@SW-EX-MBX01.diasemi.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Cc: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, devicetree <devicetree@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Support Opensource <Support.Opensource@diasemi.com>, Frank Rowand <frowand.list@gmail.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Robert Moore <robert.moore@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-acpi <linux-acpi@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Lv Zheng <lv.zheng@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, linux-kernel <linux-kernel@vger.kernel.org>, Len Brown <lenb@kernel.org>
+From: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH v2] ASoC: cs53l30: Add MUTE pin control support via GPIO
+Date: Tue, 21 Jun 2016 16:50:13 -0700
+Message-ID: <1466553013-15154-1-git-send-email-nicoleotsuka@gmail.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+The codec chip has a physical MUTE pin to let users control it via
+GPIO. So this patch add a mute control support to the driver.
 
---===============1550405484819894160==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="XRI2XbIfl/05pQwm"
-Content-Disposition: inline
+Signed-off-by: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+---
+Changelog:
+v1->v2
+ * Revise the DT binding part regarding the active state of the mute pin
 
+ .../devicetree/bindings/sound/cs53l30.txt          |  4 +++
+ sound/soc/codecs/cs53l30.c                         | 30 ++++++++++++++++++++++
+ sound/soc/codecs/cs53l30.h                         |  1 +
+ 3 files changed, 35 insertions(+)
 
---XRI2XbIfl/05pQwm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+diff --git a/Documentation/devicetree/bindings/sound/cs53l30.txt b/Documentation/devicetree/bindings/sound/cs53l30.txt
+index 18d6b99..4dbfb82 100644
+--- a/Documentation/devicetree/bindings/sound/cs53l30.txt
++++ b/Documentation/devicetree/bindings/sound/cs53l30.txt
+@@ -13,6 +13,10 @@ Optional properties:
+ 
+   - reset-gpios : a GPIO spec for the reset pin.
+ 
++  - mute-gpios : a GPIO spec for the MUTE pin. The active state can be either
++		 GPIO_ACTIVE_HIGH or GPIO_ACTIVE_LOW, which would be handled
++		 by the driver automatically.
++
+   - cirrus,micbias-lvl : Set the output voltage level on the MICBIAS Pin.
+ 			 0 = Hi-Z
+ 			 1 = 1.80 V
+diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
+index 384a3f7..e46b7de 100644
+--- a/sound/soc/codecs/cs53l30.c
++++ b/sound/soc/codecs/cs53l30.c
+@@ -35,6 +35,7 @@ struct cs53l30_private {
+ 	struct regulator_bulk_data	supplies[CS53L30_NUM_SUPPLIES];
+ 	struct regmap			*regmap;
+ 	struct gpio_desc		*reset_gpio;
++	struct gpio_desc		*mute_gpio;
+ 	struct clk			*mclk;
+ 	bool				use_sdout2;
+ 	u32				mclk_rate;
+@@ -833,6 +834,16 @@ static int cs53l30_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ 	return 0;
+ }
+ 
++static int cs53l30_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
++{
++	struct cs53l30_private *priv = snd_soc_codec_get_drvdata(dai->codec);
++
++	if (priv->mute_gpio)
++		gpiod_set_value_cansleep(priv->mute_gpio, mute);
++
++	return 0;
++}
++
+ /* SNDRV_PCM_RATE_KNOT -> 12000, 24000 Hz, limit with constraint list */
+ #define CS53L30_RATES (SNDRV_PCM_RATE_8000_48000 | SNDRV_PCM_RATE_KNOT)
+ 
+@@ -846,6 +857,7 @@ static const struct snd_soc_dai_ops cs53l30_ops = {
+ 	.set_sysclk = cs53l30_set_sysclk,
+ 	.set_tristate = cs53l30_set_tristate,
+ 	.set_tdm_slot = cs53l30_set_dai_tdm_slot,
++	.mute_stream = cs53l30_mute_stream,
+ };
+ 
+ static struct snd_soc_dai_driver cs53l30_dai = {
+@@ -990,6 +1002,24 @@ static int cs53l30_i2c_probe(struct i2c_client *client,
+ 		cs53l30->mclk = NULL;
+ 	}
+ 
++	/* Fetch the MUTE control */
++	cs53l30->mute_gpio = devm_gpiod_get_optional(dev, "mute",
++						     GPIOD_OUT_HIGH);
++	if (IS_ERR(cs53l30->mute_gpio)) {
++		ret = PTR_ERR(cs53l30->mute_gpio);
++		goto error;
++	}
++
++	if (cs53l30->mute_gpio) {
++		/* Enable MUTE controls via MUTE pin */
++		regmap_write(cs53l30->regmap, CS53L30_MUTEP_CTL1,
++			     CS53L30_MUTEP_CTL1_MUTEALL);
++		/* Flip the polarity of MUTE pin */
++		if (gpiod_is_active_low(cs53l30->mute_gpio))
++			regmap_update_bits(cs53l30->regmap, CS53L30_MUTEP_CTL2,
++					   CS53L30_MUTE_PIN_POLARITY, 0);
++	}
++
+ 	if (!of_property_read_u8(np, "cirrus,micbias-lvl", &val))
+ 		regmap_update_bits(cs53l30->regmap, CS53L30_MICBIAS_CTL,
+ 				   CS53L30_MIC_BIAS_CTRL_MASK, val);
+diff --git a/sound/soc/codecs/cs53l30.h b/sound/soc/codecs/cs53l30.h
+index 0dd4afb..5e39da5 100644
+--- a/sound/soc/codecs/cs53l30.h
++++ b/sound/soc/codecs/cs53l30.h
+@@ -253,6 +253,7 @@
+ #define CS53L30_MUTE_MB_ALL_PDN_MASK	(1 << CS53L30_MUTE_MB_ALL_PDN_SHIFT)
+ #define CS53L30_MUTE_MB_ALL_PDN		(1 << CS53L30_MUTE_MB_ALL_PDN_SHIFT)
+ 
++#define CS53L30_MUTEP_CTL1_MUTEALL	(0xdf)
+ #define CS53L30_MUTEP_CTL1_DEFAULT	(0)
+ 
+ /* R32 (0x20) CS53L30_MUTEP_CTL2 - MUTE Pin Control 2 */
+-- 
+2.1.4
 
-On Tue, Jun 21, 2016 at 10:54:39PM +0000, Opensource [Adam Thomson] wrote:
-> On 21 June 2016 23:30, Rafael J. Wysocki wrote:
-
-> > I'm fine with the first patch and the second one carries a couple of
-> > ACKs already, so do you want me to apply them both?
-
-None of whom are from anyone who works on the subsystem at all!  I've
-not looked at the patch yet.
-
-> Thanks Rafael. I think we still need Mark's Ack for the ASoC codec changes
-> though before we can proceed.
-
-Probably the easiest thing would be a tag for the core change that I can
-pull.
-
---XRI2XbIfl/05pQwm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXacvrAAoJECTWi3JdVIfQJ0gH/1Xq4MRqO/W6mePzXOH4ThPL
-RSfBji5Ji5t+cv1FtWU0f453fDro7QRsQP6FVb65JzNRCKlZOS9FcsJQ631Lzb7S
-LpqrCQfr1jdwGZMknAAcZVl98k8GarBFIfr2YnAcXZ549vYm2z92GozUlE9TO4ur
-AcOVC5hEW5ThjFfImqzzTQGCd+XIELJAOZVb6zHgGc7glES23fmeIfnCRcR/LY/h
-y6dZA+d5WW3+tZa3nTUf2J/TNtKo+vXPV0cexSt8Blpi/QOZDhTJI/oyXUvCVRu4
-htQ4j8nfgB7+/nLwbGExmz78J+S+K2uIIK7eR90Bzm8xcdPoyYiTLttVzdGr/EA=
-=e9EC
------END PGP SIGNATURE-----
-
---XRI2XbIfl/05pQwm--
-
---===============1550405484819894160==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1550405484819894160==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
