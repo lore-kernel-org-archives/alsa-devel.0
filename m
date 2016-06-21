@@ -1,196 +1,131 @@
-From: =?UTF-8?B?6auY5bOw?= <fgao@ikuai8.com>
-Subject: =?UTF-8?Q?=E7=AD=94=E5=A4=8D:_=E7=AD=94=E5=A4=8D:_=E7=AD=94=E5=A4=8D:?=
-	=?UTF-8?Q?_=E7=AD=94=E5=A4=8D:_=5BPATCH_1/1=5D_sound:_Fix_comp?=
-	=?UTF-8?Q?ile_error_of_seq=5Fdevice.c?=
-Date: Tue, 21 Jun 2016 18:11:42 +0800
-Message-ID: <002401d1cba5$4f631170$ee293450$@ikuai8.com>
-References: <1466498065-29692-1-git-send-email-fgao@ikuai8.com>	<s5h4m8nx765.wl-tiwai@suse.de>	<000901d1cb99$b0f36130$12da2390$@ikuai8.com>	<s5hy45yvqzg.wl-tiwai@suse.de>	<001101d1cba0$481bc380$d8534a80$@ikuai8.com>	<s5htwgmvpel.wl-tiwai@suse.de>	<001c01d1cba3$53b6ed20$fb24c760$@ikuai8.com> <s5hporavovt.wl-tiwai@suse.de>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [RESEND PATCH v3 1/2] device property: Add
+	function to search for named child of device
+Date: Tue, 21 Jun 2016 13:42:16 +0200
+Message-ID: <28758107.YROb1rVtm6@vostro.rjw.lan>
+References: <cover.1466421714.git.Adam.Thomson.Opensource@diasemi.com>
+ <866c9edccdd89805f6a0c0aa92f8a78ae616ed61.1466421714.git.Adam.Thomson.Opensource@diasemi.com>
+ <20160621111126.GX1739@lahna.fi.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hporavovt.wl-tiwai@suse.de>
-Content-Language: zh-cn
-Sender: linux-kernel-owner@vger.kernel.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, perex@perex.cz, linux-kernel@vger.kernel.org, gfree.wind@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cloudserver094114.home.net.pl (cloudserver094114.home.net.pl
+ [79.96.170.134]) by alsa0.perex.cz (Postfix) with SMTP id B72712608EA
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 13:37:58 +0200 (CEST)
+In-Reply-To: <20160621111126.GX1739@lahna.fi.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Support Opensource <support.opensource@diasemi.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, "Rafael J.Wysocki" <rafael.j.wysocki@intel.com>, Robert Moore <robert.moore@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-acpi@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Lv Zheng <lv.zheng@intel.com>, Takashi Iwai <tiwai@suse.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Frank Rowand <frowand.list@gmail.com>, linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-OK.
-It is good news that there is no real issue on upstream.
+On Tuesday, June 21, 2016 02:11:26 PM Mika Westerberg wrote:
+> On Mon, Jun 20, 2016 at 12:38:58PM +0100, Adam Thomson wrote:
+> > For device nodes in both DT and ACPI, it possible to have named
+> > child nodes which contain properties (an existing example being
+> > gpio-leds). This adds a function to find a named child node for
+> > a device which can be used by drivers for property retrieval.
+> > 
+> > For DT data node name matching, of_node_cmp() and similar functions
+> > are made available outside of CONFIG_OF block so the new function
+> > can reference these for DT and non-DT builds.
+> > 
+> > For ACPI data node name matching, a helper function is also added
+> > which returns false if CONFIG_ACPI is not set, otherwise it
+> > performs a string comparison on the data node name. This avoids
+> > using the acpi_data_node struct for non CONFIG_ACPI builds,
+> > which would otherwise cause a build failure.
+> > 
+> > Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+> > Tested-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > ---
+> > 
+> > Changes in v3:
+> >  - Move of_*_cmp() functions in of.h outside of CONFIG_OF block so they are
+> >    available for non-DT builds
+> >  - In device_get_named_child_node(), use of_node_cmp() helper macro instead of
+> >    strcasecmp() (node names not alway case insensitive, depending on platform).
+> > 
+> > Changes in v2:
+> >  - Rebase to v4.7-rc1
+> > 
+> >  drivers/base/property.c  | 28 ++++++++++++++++++++++++++++
+> >  include/acpi/acpi_bus.h  |  7 +++++++
+> >  include/linux/acpi.h     |  6 ++++++
+> >  include/linux/of.h       | 14 +++++++-------
+> >  include/linux/property.h |  3 +++
+> >  5 files changed, 51 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/base/property.c b/drivers/base/property.c
+> > index f38c21d..43a36d6 100644
+> > --- a/drivers/base/property.c
+> > +++ b/drivers/base/property.c
+> > @@ -888,6 +888,34 @@ struct fwnode_handle *device_get_next_child_node(struct device *dev,
+> >  EXPORT_SYMBOL_GPL(device_get_next_child_node);
+> > 
+> >  /**
+> > + * device_get_named_child_node - Return first matching named child node handle
+> > + * @dev: Device to find the named child node for.
+> > + * @childname: String to match child node name against.
+> > + */
+> > +struct fwnode_handle *device_get_named_child_node(struct device *dev,
+> > +						  const char *childname)
+> > +{
+> > +	struct fwnode_handle *child;
+> > +
+> > +	/*
+> > +	 * Find first matching named child node of this device.
+> > +	 * For ACPI this will be a data only sub-node.
+> > +	 */
+> > +	device_for_each_child_node(dev, child) {
+> > +		if (is_of_node(child)) {
+> > +			if (!of_node_cmp(to_of_node(child)->name, childname))
+> > +				return child;
+> > +		} else if (is_acpi_data_node(child)) {
+> > +			if (acpi_data_node_match(child, childname))
+> > +				return child;
+> > +		}
+> > +	}
+> > +
+> > +	return NULL;
+> > +}
+> > +EXPORT_SYMBOL_GPL(device_get_named_child_node);
+> > +
+> > +/**
+> >   * fwnode_handle_put - Drop reference to a device node
+> >   * @fwnode: Pointer to the device node to drop the reference to.
+> >   *
+> > diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> > index 788c6c3..993bdd0 100644
+> > --- a/include/acpi/acpi_bus.h
+> > +++ b/include/acpi/acpi_bus.h
+> > @@ -420,6 +420,13 @@ static inline struct acpi_data_node *to_acpi_data_node(struct fwnode_handle *fwn
+> >  		container_of(fwnode, struct acpi_data_node, fwnode) : NULL;
+> >  }
+> > 
+> > +static inline bool acpi_data_node_match(struct fwnode_handle *fwnode,
+> > +					const char *name)
+> > +{
+> > +	return is_acpi_data_node(fwnode) ?
+> > +		(!strcasecmp(to_acpi_data_node(fwnode)->name, name)) : false;
+> > +}
+> 
+> Looks fine to me.
+> 
+> One question - is it expected that matching ACPI data nodes is always
+> case insensitive?
 
-But it is bad news that my commit would not be accepted :)
+That would not be a correct expectation in theory, although I don't think it
+really matters in practice.
 
-Best Regards
-=46eng
-
------=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
-=E5=8F=91=E4=BB=B6=E4=BA=BA: Takashi Iwai [mailto:tiwai@suse.de]=20
-=E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2016=E5=B9=B46=E6=9C=8821=E6=97=A5=
- 18:05
-=E6=94=B6=E4=BB=B6=E4=BA=BA: =E9=AB=98=E5=B3=B0 <fgao@ikuai8.com>
-=E6=8A=84=E9=80=81: alsa-devel@alsa-project.org; perex@perex.cz; linux-=
-kernel@vger.kernel.org; gfree.wind@gmail.com
-=E4=B8=BB=E9=A2=98: Re: =E7=AD=94=E5=A4=8D: =E7=AD=94=E5=A4=8D: =E7=AD=94=
-=E5=A4=8D: [PATCH 1/1] sound: Fix compile error of seq_device.c
-
-On Tue, 21 Jun 2016 11:57:28 +0200,
-=E9=AB=98=E5=B3=B0 wrote:
->=20
-> Oh, I get it.
->=20
-> I met the compile error when compile the kernel 3.10 on CentOS7 and f=
-ix it, then I find the seq_device of upstream is same.
-> So I thought it should be fixed.
->=20
-> OK. Let me compile the upstream codes on CentOS7 again.
-
-Well, I see a potential problem even in the upstream, but it's only whe=
-n CONFIG_LTO is set.  However, CONFIG_LTO isn't used any other places (=
-or even set) in the upstream tree yet, so the issue must not happen the=
-re.
-
-And yet, even if CONFIG_LTO is enabled, the first place to be fixed is =
-rather in include/linux/init.h, not each code calling module_init() wit=
-hout a terminator semicolon.  There are lots of such codes in the tree,=
- and calls of init/exit without semicolon are official ways.
-
-Though, having semicolons looks nicer nowadays, so it'd make sense to a=
-dd semicolons in the end.  If so, we may fix all of them in a shot by a=
- script.
-
-
-Takashi
-
->=20
-> -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
-> =E5=8F=91=E4=BB=B6=E4=BA=BA: Takashi Iwai [mailto:tiwai@suse.de]
-> =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2016=E5=B9=B46=E6=9C=8821=E6=97=
-=A5 17:54
-> =E6=94=B6=E4=BB=B6=E4=BA=BA: =E9=AB=98=E5=B3=B0 <fgao@ikuai8.com>
-> =E6=8A=84=E9=80=81: alsa-devel@alsa-project.org; perex@perex.cz;=20
-> linux-kernel@vger.kernel.org; gfree.wind@gmail.com
-> =E4=B8=BB=E9=A2=98: Re: =E7=AD=94=E5=A4=8D: =E7=AD=94=E5=A4=8D: [PATC=
-H 1/1] sound: Fix compile error of seq_device.c
->=20
-> On Tue, 21 Jun 2016 11:35:39 +0200,
-> =E9=AB=98=E5=B3=B0 wrote:
-> >=20
-> > I have sent the new commit with the compile errors.
-> > Is it ok now?
-> >=20
-> > BTW, I think the compile error is caused by that "subsys_initcall" =
-statement losts the semicolon.=20
->=20
-> Does this happen with the latest upstream kernel code at all...?
->=20
->=20
-> Takashi
->=20
-> >=20
-> > -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
-> > =E5=8F=91=E4=BB=B6=E4=BA=BA: Takashi Iwai [mailto:tiwai@suse.de]
-> > =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2016=E5=B9=B46=E6=9C=8821=E6=97=
-=A5 17:20
-> > =E6=94=B6=E4=BB=B6=E4=BA=BA: =E9=AB=98=E5=B3=B0 <fgao@ikuai8.com>
-> > =E6=8A=84=E9=80=81: alsa-devel@alsa-project.org; perex@perex.cz;=20
-> > linux-kernel@vger.kernel.org; gfree.wind@gmail.com
-> > =E4=B8=BB=E9=A2=98: Re: =E7=AD=94=E5=A4=8D: [PATCH 1/1] sound: Fix =
-compile error of seq_device.c
-> >=20
-> > On Tue, 21 Jun 2016 10:48:30 +0200,
-> > =E9=AB=98=E5=B3=B0 wrote:
-> > >=20
-> > > The lastest CentOS7 platform, and the gcc version is gcc version
-> > > 4.8.5
-> > > 20150623 (Red Hat 4.8.5-4) (GCC).
-> > > It could pass compilation after append the lost semicolon.=20
-> > >=20
-> > > from sound/core/seq/seq_device.c:39:
-> > > include/linux/init.h:216:2: error: expected =E2=80=98,=E2=80=99 o=
-r =E2=80=98;=E2=80=99 before =E2=80=98static=E2=80=99
-> > >   static exitcall_t __exitcall_##fn __exit_call =3D fn
-> > >   ^
-> > > include/linux/init.h:279:24: note: in expansion of macro =E2=80=98=
-__exitcall=E2=80=99
-> > >  #define module_exit(x) __exitcall(x);
-> > >                         ^
-> > > sound/core/seq/seq_device.c:315:1: note: in expansion of macro=20
-> > > =E2=80=98module_exit=E2=80=99
-> > >  module_exit(alsa_seq_device_exit)  ^
-> > > make[3]: *** [sound/core/seq/seq_device.o] Error 1
-> > > make[2]: *** [sound/core/seq] Error 2
-> > > make[1]: *** [sound/core] Error 2
-> > > make: *** [sound] Error 2
-> >=20
-> > It's a RH specific issue.  The upstream code has a different defini=
-tion of module_init(), thus no such an error would occur.
-> >=20
-> > Note that I'm fine to apply the patch, it's a trivial change.
-> > But you need to give the clear reason why to apply it.  In this cas=
-e, it's no fault of the upstream code.  But if it would make someone's =
-life a bit easier, it's OK to apply such a change.
-> >=20
-> > That being said, please resubmit the patch with a more explanation.
-> >=20
-> >=20
-> > thanks,
-> >=20
-> > Takashi
-> >=20
-> > >=20
-> > > -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
-> > > =E5=8F=91=E4=BB=B6=E4=BA=BA: Takashi Iwai [mailto:tiwai@suse.de]
-> > > =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2016=E5=B9=B46=E6=9C=8821=E6=
-=97=A5 16:45
-> > > =E6=94=B6=E4=BB=B6=E4=BA=BA: fgao@ikuai8.com
-> > > =E6=8A=84=E9=80=81: alsa-devel@alsa-project.org; perex@perex.cz; =
-linux-kernel@vger.kernel.
-> > > org; gfree.wind@gmail.com
-> > > =E4=B8=BB=E9=A2=98: Re: [PATCH 1/1] sound: Fix compile error of s=
-eq_device.c
-> > >=20
-> > > On Tue, 21 Jun 2016 10:34:25 +0200, <fgao@ikuai8.com> wrote:
-> > > >=20
-> > > > From: Gao Feng <fgao@ikuai8.com>
-> > > >=20
-> > > > Signed-off-by: Gao Feng <fgao@ikuai8.com>
-> > >=20
-> > > What compile error did you get?
-> > >=20
-> > >=20
-> > > Takashi
-> > >=20
-> > > > ---
-> > > >  sound/core/seq/seq_device.c | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > >=20
-> > > > diff --git a/sound/core/seq/seq_device.c=20
-> > > > b/sound/core/seq/seq_device.c index c4acf17..4e859e4 100644
-> > > > --- a/sound/core/seq/seq_device.c
-> > > > +++ b/sound/core/seq/seq_device.c
-> > > > @@ -311,5 +311,5 @@ static void __exit alsa_seq_device_exit(voi=
-d)
-> > > >  	bus_unregister(&snd_seq_bus_type);
-> > > >  }
-> > > > =20
-> > > > -subsys_initcall(alsa_seq_device_init)
-> > > > -module_exit(alsa_seq_device_exit)
-> > > > +subsys_initcall(alsa_seq_device_init);
-> > > > +module_exit(alsa_seq_device_exit);
-> > > > --
-> > > > 1.9.1
-> > > >=20
-> > > >=20
-> > > >=20
-> > > >=20
-> > > >=20
-> > >=20
-> > >=20
-> > >=20
-> >=20
-> >=20
-> >=20
->=20
->=20
->=20
+Thanks,
+Rafael
