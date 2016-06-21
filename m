@@ -1,94 +1,139 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v7 2/2] ASoC: cs35l33: Add device tree bindings file for
- cs35l33
-Date: Tue, 21 Jun 2016 14:21:37 -0500
-Message-ID: <20160621192137.GA11832@rob-hp-laptop>
-References: <1466441119-8488-1-git-send-email-Paul.Handrigan@cirrus.com>
- <1466441119-8488-2-git-send-email-Paul.Handrigan@cirrus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1466441119-8488-2-git-send-email-Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+From: Ben Dooks <ben.dooks-4yDnlxn2s6sWdaTGBSpHTA@public.gmane.org>
+Subject: [PATCH] ALSA: hda/tegra: iomem fixups for sparse warnings
+Date: Tue, 21 Jun 2016 19:18:32 +0100
+Message-ID: <1466533112-3262-1-git-send-email-ben.dooks@codethink.co.uk>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-kernel-81qHHgoATdFT9dQujB1mzip2UmYkHbXO@public.gmane.org
+Cc: Ben Dooks <ben.dooks-4yDnlxn2s6sWdaTGBSpHTA@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 20, 2016 at 11:45:19AM -0500, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org wrote:
-> From: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-> 
-> Add device tree bindings file for the cs35l33 8V boosted
-> class D amplifier.
-> 
-> Signed-off-by: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/cs35l33.txt          | 118 +++++++++++++++++++++
->  1 file changed, 118 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/cs35l33.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/cs35l33.txt b/Documentation/devicetree/bindings/sound/cs35l33.txt
-> new file mode 100644
-> index 0000000..bea6de7
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/cs35l33.txt
-> @@ -0,0 +1,118 @@
-> +CS35L33 Speaker Amplifier
-> +
-> +Required properties:
-> +
-> +  - compatible : "cirrus,cs35l33"
-> +
-> +  - reg : the I2C address of the device for I2C
-> +
-> +  - VA-supply, VP-supply : power supplies for the device,
-> +    as covered in
-> +    Documentation/devicetree/bindings/regulator/regulator.txt.
-> +
-> +Optional properties:
-> +
-> +  - reset-gpios : gpio used to reset the amplifier
-> +
-> +  - interrupt-parent : Specifies the phandle of the interrupt controller to
-> +    which the IRQs from CS35L33 are delivered to.
-> + -  interrupts : IRQ line info CS35L33.
-> +    (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
-> +    for further information relating to interrupt properties)
-> +
-> +  - cirrus,boost-ctl : Booster voltage use to supply the amp. If the value is
-> +    0, then VBST = VP. If greater than 0, the boost voltage will be 3300mV with
-> +    a value of 1 and will increase at a step size of 100mV until a maximum of
-> +    8000mV.
-> +
-> +  - cirrus,ramp-rate : On power up, it affects the time from when the power
-> +    up sequence begins to the time the audio reaches a full-scale output.
-> +    On power down, it affects the time from when the power-down sequence
-> +    begins to when the amplifier disables the PWM outputs. If this property
-> +    is not set then soft ramping will be disabled and ramp time would be
-> +    20ms. If this property is set to 0,1,2,3 then ramp times would be 40ms,
-> +    60ms,100ms,175ms respectively for 48KHz sample rate.
-> +
-> +  - cirrus,boost-ipk : The maximum current allowed for the boost converter.
-> +    The range starts at 1850000uA and goes to a maximum of 3600000uA
-> +    with a step size of 15625uA. The default is 2500000uA.
-> +
-> +  - cirrus,imon-adc-scale : Configures the scaling of data bits from the IMON
-> +    ADC data word. This property can be set as a value of 0 for bits 15 down
-> +    to 0, 6 for 21 down to 6, 7, for 22 down to 7, 8 for 23 down to 8.
-> +
-> +  - cirrus,hg-algo : Parameters for internal Class H/G algorithm that
-> +    controls the amplifier supplies.
+The readl/writel are not being passed __iomem annotated
+variables, so fix the following sparse warnings by adding
+__iomem in:
 
-It is not clear that this is a node not a property, and everything 
-below is part of the sub-node. The example is not the binding 
-documentation. I should be able to write the example or validate the 
-binding based on the documentation.
+sound/pci/hda/hda_tegra.c:120:9: warning: incorrect type in argument 2 (different address spaces)
+sound/pci/hda/hda_tegra.c:120:9:    expected void volatile [noderef] <asn:2>*addr
+sound/pci/hda/hda_tegra.c:120:9:    got unsigned int [usertype] *addr
+sound/pci/hda/hda_tegra.c:125:16: warning: incorrect type in argument 1 (different address spaces)
+sound/pci/hda/hda_tegra.c:125:16:    expected void const volatile [noderef] <asn:2>*addr
+sound/pci/hda/hda_tegra.c:125:16:    got unsigned int [usertype] *addr
+sound/pci/hda/hda_tegra.c:134:13: warning: incorrect type in argument 1 (different address spaces)
+sound/pci/hda/hda_tegra.c:134:13:    expected void const volatile [noderef] <asn:2>*addr
+sound/pci/hda/hda_tegra.c:134:13:    got void *dword_addr
+sound/pci/hda/hda_tegra.c:137:9: warning: incorrect type in argument 2 (different address spaces)
+sound/pci/hda/hda_tegra.c:137:9:    expected void volatile [noderef] <asn:2>*addr
+sound/pci/hda/hda_tegra.c:137:9:    got void *dword_addr
+sound/pci/hda/hda_tegra.c:146:13: warning: incorrect type in argument 1 (different address spaces)
+sound/pci/hda/hda_tegra.c:146:13:    expected void const volatile [noderef] <asn:2>*addr
+sound/pci/hda/hda_tegra.c:146:13:    got void *dword_addr
+sound/pci/hda/hda_tegra.c:156:13: warning: incorrect type in argument 1 (different address spaces)
+sound/pci/hda/hda_tegra.c:156:13:    expected void const volatile [noderef] <asn:2>*addr
+sound/pci/hda/hda_tegra.c:156:13:    got void *dword_addr
+sound/pci/hda/hda_tegra.c:159:9: warning: incorrect type in argument 2 (different address spaces)
+sound/pci/hda/hda_tegra.c:159:9:    expected void volatile [noderef] <asn:2>*addr
+sound/pci/hda/hda_tegra.c:159:9:    got void *dword_addr
+sound/pci/hda/hda_tegra.c:168:13: warning: incorrect type in argument 1 (different address spaces)
+sound/pci/hda/hda_tegra.c:168:13:    expected void const volatile [noderef] <asn:2>*addr
+sound/pci/hda/hda_tegra.c:168:13:    got void *dword_addr
+sound/pci/hda/hda_tegra.c:173:23: warning: incorrect type in initializer (incompatible argument 2 (different address spaces))
+sound/pci/hda/hda_tegra.c:173:23:    expected void ( *reg_writel )( ... )
+sound/pci/hda/hda_tegra.c:173:23:    got void ( static [toplevel] *<noident> )( ... )
+sound/pci/hda/hda_tegra.c:174:22: warning: incorrect type in initializer (incompatible argument 1 (different address spaces))
+sound/pci/hda/hda_tegra.c:174:22:    expected unsigned int ( *reg_readl )( ... )
+sound/pci/hda/hda_tegra.c:174:22:    got unsigned int ( static [toplevel] *<noident> )( ... )
+sound/pci/hda/hda_tegra.c:175:23: warning: incorrect type in initializer (incompatible argument 2 (different address spaces))
+sound/pci/hda/hda_tegra.c:175:23:    expected void ( *reg_writew )( ... )
+sound/pci/hda/hda_tegra.c:175:23:    got void ( static [toplevel] *<noident> )( ... )
+sound/pci/hda/hda_tegra.c:176:22: warning: incorrect type in initializer (incompatible argument 1 (different address spaces))
+sound/pci/hda/hda_tegra.c:176:22:    expected unsigned short ( *reg_readw )( ... )
+sound/pci/hda/hda_tegra.c:176:22:    got unsigned short ( static [toplevel] *<noident> )( ... )
+sound/pci/hda/hda_tegra.c:177:23: warning: incorrect type in initializer (incompatible argument 2 (different address spaces))
+sound/pci/hda/hda_tegra.c:177:23:    expected void ( *reg_writeb )( ... )
+sound/pci/hda/hda_tegra.c:177:23:    got void ( static [toplevel] *<noident> )( ... )
+sound/pci/hda/hda_tegra.c:178:22: warning: incorrect type in initializer (incompatible argument 1 (different address spaces))
+sound/pci/hda/hda_tegra.c:178:22:    expected unsigned char ( *reg_readb )( ... )
+sound/pci/hda/hda_tegra.c:178:22:    got unsigned char ( static [toplevel] *<noident> )( ... )
 
-> +
-> +  - cirrus,mem-depth : Memory depth for the Class H/G algorithm measured in
-> +    LRCLK cycles. If this property is set to 0, 1, 2, or 3 then the memory
-> +    depths will be 1, 4, 8, 16 LRCLK cycles.  The default is 16 LRCLK cycles.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Ben Dooks <ben.dooks-4yDnlxn2s6sWdaTGBSpHTA@public.gmane.org>
+---
+Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
+Cc: Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+---
+ sound/pci/hda/hda_tegra.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index 17fd817..0621920 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -115,20 +115,20 @@ static int substream_free_pages(struct azx *chip,
+ /*
+  * Register access ops. Tegra HDA register access is DWORD only.
+  */
+-static void hda_tegra_writel(u32 value, u32 *addr)
++static void hda_tegra_writel(u32 value, u32 __iomem *addr)
+ {
+ 	writel(value, addr);
+ }
+ 
+-static u32 hda_tegra_readl(u32 *addr)
++static u32 hda_tegra_readl(u32 __iomem *addr)
+ {
+ 	return readl(addr);
+ }
+ 
+-static void hda_tegra_writew(u16 value, u16 *addr)
++static void hda_tegra_writew(u16 value, u16 __iomem  *addr)
+ {
+ 	unsigned int shift = ((unsigned long)(addr) & 0x3) << 3;
+-	void *dword_addr = (void *)((unsigned long)(addr) & ~0x3);
++	void __iomem *dword_addr = (void __iomem *)((unsigned long)(addr) & ~0x3);
+ 	u32 v;
+ 
+ 	v = readl(dword_addr);
+@@ -137,20 +137,20 @@ static void hda_tegra_writew(u16 value, u16 *addr)
+ 	writel(v, dword_addr);
+ }
+ 
+-static u16 hda_tegra_readw(u16 *addr)
++static u16 hda_tegra_readw(u16 __iomem *addr)
+ {
+ 	unsigned int shift = ((unsigned long)(addr) & 0x3) << 3;
+-	void *dword_addr = (void *)((unsigned long)(addr) & ~0x3);
++	void __iomem *dword_addr = (void __iomem *)((unsigned long)(addr) & ~0x3);
+ 	u32 v;
+ 
+ 	v = readl(dword_addr);
+ 	return (v >> shift) & 0xffff;
+ }
+ 
+-static void hda_tegra_writeb(u8 value, u8 *addr)
++static void hda_tegra_writeb(u8 value, u8 __iomem *addr)
+ {
+ 	unsigned int shift = ((unsigned long)(addr) & 0x3) << 3;
+-	void *dword_addr = (void *)((unsigned long)(addr) & ~0x3);
++	void __iomem *dword_addr = (void __iomem *)((unsigned long)(addr) & ~0x3);
+ 	u32 v;
+ 
+ 	v = readl(dword_addr);
+@@ -159,10 +159,10 @@ static void hda_tegra_writeb(u8 value, u8 *addr)
+ 	writel(v, dword_addr);
+ }
+ 
+-static u8 hda_tegra_readb(u8 *addr)
++static u8 hda_tegra_readb(u8 __iomem *addr)
+ {
+ 	unsigned int shift = ((unsigned long)(addr) & 0x3) << 3;
+-	void *dword_addr = (void *)((unsigned long)(addr) & ~0x3);
++	void __iomem *dword_addr = (void __iomem *)((unsigned long)(addr) & ~0x3);
+ 	u32 v;
+ 
+ 	v = readl(dword_addr);
+-- 
+2.8.1
