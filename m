@@ -1,64 +1,70 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: sound: use-after-free in hrtimer_cancel
-Date: Tue, 21 Jun 2016 20:26:48 +0200
-Message-ID: <CACT4Y+ZHL_P+E31k1e4Gb7Mp0vYoKtr4iytHRjU=WGHHoD=kmA@mail.gmail.com>
-References: <CACT4Y+Z-iJ6QyzyaJZk_oWmBKCjYecSynfsW3OdH5_bfarH=DQ@mail.gmail.com>
- <CACT4Y+b1YEr5suLfUQVd_U+AU1fJ38DmGWbrLxaNay42-nAxYQ@mail.gmail.com> <s5hoa7emmpy.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: cs53l30: Set idle_bias_off true" to the asoc tree
+Date: Tue, 21 Jun 2016 19:52:41 +0100
+Message-ID: <E1bFQmv-0008Mx-Vo@debutante>
+References: <1466213517-18523-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hoa7emmpy.wl-tiwai@suse.de>
+In-Reply-To: <1466213517-18523-1-git-send-email-nicoleotsuka@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Sasha Levin <sasha.levin@oracle.com>, Alexander Potapenko <glider@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 6, 2016 at 4:11 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Sat, 04 Jun 2016 20:27:50 +0200,
-> Dmitry Vyukov wrote:
->>
->> On Sat, Jun 4, 2016 at 8:00 PM, Dmitry Vyukov <dvyukov@google.com> wrote:
->> > Hello,
->> >
->> > The following program triggers use-after-free:
->>
->> Forget to mention that you need to run it in a tight parallel loop. It
->> takes around 5 minutes to reproduce for me.
->
-> Hmm, this again is a bug that is difficult to trigger...  At least, I
-> couldn't reproduce locally.  How many processes are you running with
-> stress program?
->
-> It seems that there is nothing more than opening /dev/audio and does
-> some mmap in the job.  Is there any other relevant thing there?
->
-> Also, this assumes that the first sound card is Dummy driver, right?
-> Check /proc/asound/cards.
->
-> If it's about snd-dummy driver, one blind shot would be a patch like
-> below.  But even if it would fix, it doesn't explain why it's
-> triggered in that way...
->
->
-> thanks,
->
-> Takashi
->
-> ---
-> diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-> index c0f8f613f1f1..172dacd925f5 100644
-> --- a/sound/drivers/dummy.c
-> +++ b/sound/drivers/dummy.c
-> @@ -420,6 +420,7 @@ static int dummy_hrtimer_stop(struct snd_pcm_substream *substream)
->
->  static inline void dummy_hrtimer_sync(struct dummy_hrtimer_pcm *dpcm)
->  {
-> +       hrtimer_cancel(&dpcm->timer);
->         tasklet_kill(&dpcm->tasklet);
->  }
+The patch
 
+   ASoC: cs53l30: Set idle_bias_off true
 
-Yes, this seems to fix it. I've stressed it for an hour with several
-reproducers. If I am not mistaken, it also makes test cases run 15%
-faster.
-Please mail a patch.
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From b0e71c0ddda4e1540b38658cac705222a648c756 Mon Sep 17 00:00:00 2001
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Date: Fri, 17 Jun 2016 18:31:57 -0700
+Subject: [PATCH] ASoC: cs53l30: Set idle_bias_off true
+
+The driver is using the set_bias_level to control the power on and
+off so it should get SND_SOC_BIAS_OFF in order to proceed normal
+powering sequences. This patch enables the idle_bias_off option so
+the DAPM core will set the bias level to SND_SOC_BIAS_OFF instead
+of stopping at SND_SOC_BIAS_STANDBY.
+
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/cs53l30.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
+index a5976f3b589a..b0a64a19a045 100644
+--- a/sound/soc/codecs/cs53l30.c
++++ b/sound/soc/codecs/cs53l30.c
+@@ -879,6 +879,7 @@ static int cs53l30_codec_probe(struct snd_soc_codec *codec)
+ static struct snd_soc_codec_driver cs53l30_driver = {
+ 	.probe = cs53l30_codec_probe,
+ 	.set_bias_level = cs53l30_set_bias_level,
++	.idle_bias_off = true,
+ 
+ 	.dapm_widgets = cs53l30_dapm_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(cs53l30_dapm_widgets),
+-- 
+2.8.1
