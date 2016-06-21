@@ -1,23 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [very-RFC 0/8] TSN driver for the kernel
-Date: Tue, 21 Jun 2016 11:22:18 +0900
-Message-ID: <5768A4DA.1030809@sakamocchi.jp>
-References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <20160613114713.GA9544@localhost.localdomain> <20160613195136.GC2441@netboy>
- <20160614121844.54a125a5@lxorguk.ukuu.org.uk> <5760C84C.40408@sakamocchi.jp>
- <20160615080602.GA13555@localhost.localdomain>
- <5764DA85.3050801@sakamocchi.jp>
- <20160618224549.GF32724@icarus.home.austad.us>
- <5766B01B.9070903@sakamocchi.jp>
- <20160620090656.GB8011@sisyphus.home.austad.us>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 1/2] ASoC: Intel: Kconfig: fix build when ACPI
+	is not enabled
+Date: Tue, 21 Jun 2016 09:33:03 +0530
+Message-ID: <1466481784-3651-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 307FA2656F5
- for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 04:22:20 +0200 (CEST)
-In-Reply-To: <20160620090656.GB8011@sisyphus.home.austad.us>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id D3C862656F5
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 05:56:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,64 +19,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Henrik Austad <henrik@austad.us>
-Cc: netdev@vger.kernel.org, Richard Cochran <richardcochran@gmail.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@linaro.org>
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Randy Dunlap <rdunlap@infradead.org>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxNuW5tDA25pyIMjDml6UgMTg6MDYsIEhlbnJpayBBdXN0YWQgd3JvdGU6Cj4gT24gU3Vu
-LCBKdW4gMTksIDIwMTYgYXQgMTE6NDU6NDdQTSArMDkwMCwgVGFrYXNoaSBTYWthbW90byB3cm90
-ZToKPj4gKHJlbW92ZSBDLkMuIHRvIGxrbWwuIFRoaXMgaXMgbm90IHNvIG1ham9yIGZlYXR1cmUu
-KQo+Pgo+PiBPbiBKdW4gMTkgMjkxNiAwNzo0NSwgSGVucmlrIEF1c3RhZCB3cm90ZToKPj4+IHNu
-aXAKPj4+Cj4+PiA4MDIuMVEgZ2l2ZXMgeW91IGxvdyBsYXRlbmN5IHRocm91Z2ggdGhlIG5ldHdv
-cmssIGJ1dCBtb3JlIGltcG9ydGFudGx5LCBubwo+Pj4gZHJvcHBlZCBmcmFtZXMuIGdQVFAgZ2l2
-ZXMgeW91IGEgY2VudHJhbCByZWZlcmVuY2UgdG8gdGltZS4KPj4KPj4gV2hlbiBzdWNoIGEgbG9u
-ZyBtZXNzYWdlIGlzIHJlcXVpcmVkLCBpdCBtZWFucyB0aGF0IHdlIGRvbid0IGhhdmUKPj4gZW5v
-dWdoIHByZW1pc2VzIGZvciB0aGlzIGRpc2N1c3Npb24uCj4KPiBJc24ndCBhIGRpc2N1c3Npb24g
-cGFydCBvZiBob3cgaW5mb3JtYXRpb24gaXMgY29udmV5ZWQgYW5kIGZpbmRpbmcgcGFydHMKPiB0
-aGF0IHJlcXVpcmUgbW9yZSBrbm93bGVkZ2U/Cj4KPj4gWW91IGhhdmUganVzdCBpbnRlcmVzdHMg
-aW4gZ1BUUCBhbmQgdHJhbnNmZXJyaW5nIEFWVFBEVXMsIHdoaWxlIG5vCj4+IGludGVyZXN0cyBp
-biB0aGUgb3RoZXJzIHN1Y2ggYXMgIndoYXQgdGhlIGJhc2ljIGlkZWFzIG9mIFRTTiBjb21lCj4+
-IGZyb20iIGFuZCAidGhlIHJlYXNvbiB0aGF0IElFRUUgMTcyMiByZWZlcnMgdG8gSUVDIDYxODgz
-IHNlcmllcwo+PiB3aGljaCBpcyBvcmlnaW5hbGx5IGRlc2lnbmVkIGZvciBJRUVFIDEzOTQgYnVz
-IiBhbmQgInRoZSByZWFzb24gdGhhdAo+PiBJIHdhcyBtb3RpdmF0ZWQgdG8gam9pbiBpbiB0aGlz
-IGRpc2N1c3Npb24gZXZlbiB0aG91Z2ggbm90IGEgbmV0ZGV2Cj4+IGRldmVsb3BlciIuCj4KPiBJ
-J20gc29ycnksIEknbSBub3Qgc3VyZSBJIGZvbGxvdyB5b3UgaGVyZS4gV2hhdCBkbyB5b3UgbWVh
-biBJIGRvbid0IGhhdmUKPiBhbnkgaW50ZXJlc3QgaW4gd2hlcmUgVFNOIGNvbWVzIGZyb20/IG9y
-IHRoZSByZWFzb24gd2h5IDE3MjIgdXNlIElFQyA2MTg4Mz8KPiBXaGF0IGFib3V0ICJ0aGV5IHBp
-Y2tlZCA2MTg4MyBiZWNhdXNlIGl0IG1hZGUgc2Vuc2U/Igo+Cj4gZ1BUUCBpdHNlbGYgaXMgKm5v
-dCogYWJvdXQgdHJhbnNmZmVyaW5nIGF1ZGlvLWRhdGEsIGl0IGlzIGFib3V0IGFncmVlaW5nIG9u
-Cj4gYSBjb21tb24gdGltZSBzbyB0aGF0IHdoZW4geW91ICpkbyogdHJhbnNmZXIgYXVkaW8tZGF0
-YSwgdGhlIHNhbXBsZXJhdGUKPiBhY3R1YWxseSBtZWFucyBzb21ldGhpbmcuCj4KPiBMZXQgbWUg
-YXNrIHlvdSB0aGlzOyBpZiB5b3UgaGF2ZSAyIHNvdW5kLWNhcmRzIGluIHlvdXIgY29tcHV0ZXIg
-YW5kIHlvdQo+IHdhbnQgdG8gYXR0YWNoIGEgbWljIHRvIG9uZSBhbmQgc3BlYWtlcnMgdG8gdGhl
-IG90aGVyLCBob3cgZG8geW91IHNvbHZlCj4gc3RyZWFtaW5nIG9mIGF1ZGlvIGZyb20gdGhlIG1p
-YyB0byB0aGUgc3BlYWtlciBJZiB5b3UgYW5zd2VyIGRvZXMgbm90Cj4gY29udGFpbiBzb21ldGhp
-bmcgYWtpbiB0byAiZGlmZmVyZW50IHRpbWluZy1kb21haW4gaXNzdWVzIiwgSSdkIGJlIHZlcnkK
-PiBzdXJwcmlzZWQuCj4KPiBJZiB5b3UgYXJlIGludGVyZXN0ZWQgaW4gVFNOIGZvciB0cmFuc2Zl
-cnJpbmcgKmFueXRoaW5nKiwgX2luY2x1ZGluZ18KPiBhdWRpbywgeW91ICpoYXZlKiB0byB0YWtl
-IGdQVFAgaW50byBjb25zaWRlcmF0aW9uLiBKdXN0IGFzIHlvdSBoYXZlIHRvCj4gdGhpbmsgYWJv
-dXQgc3RyZWFtIHJlc2VydmF0aW9uLCBjb21wbGlhbnQgaGFyZHdhcmUgYW5kIGFsbCB0aGUgZGlm
-ZmVyZW50Cj4gc3Vic3lzdGVtcyB5b3UgYXJlIGdvaW5nIHRvIHJ1biBpbnRvLCBlaXRoZXIgdmlh
-IGtlcm5lbCBvciB2aWEgdXNlcnNwYWNlLgo+Cj4+IEhlcmUsIGNvdWxkIEkgYXNrIHlvdSBhIHF1
-ZXN0aW9uPyBEbyB5b3Uga25vdyBhIHJvbGUgb2YgY3ljbGUgc3RhcnQKPj4gcGFja2V0IG9mIElF
-RUUgU3RkIDEzOTQ/Cj4KPiBObywgSSBkbyBub3QuCj4KPiBJIGhhdmUgb25seSBwYXNzaW5nIGtu
-b3dsZWRnZSBvZiB0aGUgZmlyZXdpcmUgc3RhbmRhcmQsIEkndmUgbG9va2VkIGF0IHRoZQo+IGVu
-Y29kaW5nIGRlc2NyaWJlZCBpbiAxNzIyIGFuZCBhZGRlZCB0aGF0IHRvIHRoZSBhbHNhIHNoaW0g
-YXMgYW4gZXhhbXBsZSBvZgo+IGhvdyB0byB1c2UgVFNOLiBBcyBJIHN0YXRlZCwgdGhpcyB3YXMg
-YSAqdmVyeSogZWFybHkgdmVyc2lvbiBhbmQgSSB3b3VsZAo+IGxpa2UgdG8gdXNlIFRTTiBmb3Ig
-YXVkaW8gLSBhbmQgbW9yZSB3b3JrIGlzIG5lZWRlZC4KPgo+PiBJZiB5b3UgdGhpbmsgaXQncyBu
-b3QgcmVsYXRlZCB0byB0aGlzIGRpc2N1c3Npb24sIHBsZWFzZSB0ZWxsIGl0IHRvCj4+IG1lLiBU
-aGVuIEknbGwgZHJvcCBvdXQgZnJvbSB0aGlzIHRocmVhZC4KPgo+IFRoZXJlIGFyZSB0b25zIG9m
-IGRldGFpbHMgbGVmdCBhbmQgcmlnaHQsIGFuZCBhcyBJIHNhaWQsIEknbSBub3QgIGFsbCB0bwo+
-IGZhbWlsaWFyIHdpdGggZmlyZXdpcmUuIEkga25vdyB0aGF0IG9uZSBvZiB0aGUgYXV0aG9ycyBi
-ZWhpbmQgdGhlIGZpcmV3aXJlCj4gc3RhbmRhcmQgaGFwcGVuZWQgdG8gYmUgcGFydCBvZiAxNzIy
-IHN0YW5kYXJkLgo+Cj4gSSBhbSBjdXJyZW50bHkgd29ya2luZyBteSB3YXkgdGhyb3VnaCB0aGUg
-ZmlyZXdpcmUtc3RhayBwYXBlciB5b3UndmUKPiB3cml0dGVuLCBhbmQgSSBoYXZlIGdvdHRlbiBh
-IGxvdCBvZiBwb2ludGVycyB0byBvdGhlciBhcmVhcyBJIG5lZWQgdG8gZGlnCj4gaW50byBzbyBJ
-IHNob3VsZCBiZSBidXN5IGZvciBhIHdoaWxlLgo+Cj4gVGhhdCBiZWluZyBzYWlkLCBSaWNoYXJk
-J3MgcG9pbnQgYWJvdXQgYSB3YXkgdG8gZmluZCBzYW1wbGUtcmF0ZSBvZiBhCj4gaGFyZHdhcmUg
-ZGV2aWNlIGFuZCB3YXlzIHRvIGluZmx1ZW5jZSB0aGF0LCBpcyBpbXBvcnRhbnQgZm9yIEFWQi9U
-U04uCj4KPj4gSGlzdG9yeSBSZXBlYXRzIGl0c2VsZi4KPgo+ID8KCk9LLiBCeWUuCgoKVGFrYXNo
-aSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Randy reported following error when ACPI is not enabled:
+
+warning: (SND_SOC_INTEL_BYTCR_RT5640_MACH && SND_SOC_INTEL_BYTCR_RT5651_MACH
+&& SND_SOC_INTEL_CHT_BSW_RT5672_MACH && SND_SOC_INTEL_CHT_BSW_RT5645_MACH &&
+SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) selects SND_SST_IPC_ACPI
++which has unmet direct dependencies (SOUND && !M68K && !UML && SND &&
+SND_SOC && ACPI)
+
+causing these build errors:
+
+In file included from ../sound/soc/intel/atom/sst/sst_acpi.c:40:0:
+../include/acpi/acpi_bus.h:65:20: error: conflicting types for
+'acpi_evaluate_dsm'
+ union acpi_object *acpi_evaluate_dsm(acpi_handle handle, const u8 *uuid,
+In file included from ../sound/soc/intel/atom/sst/sst_acpi.c:31:0:
+../include/linux/acpi.h:676:34: note: previous definition of
+'acpi_evaluate_dsm' was here
+ static inline union acpi_object *acpi_evaluate_dsm(acpi_handle handle,
+
+CONFIG_SND_SST_IPC_ACPI was already dependent upon ACPI, but that was not
+solving it. So move the depends up to machine drivers and remove from
+CONFIG_SND_SST_IPC_ACPI.
+
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/Kconfig | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 3875425a9693..63e4c14ebe9f 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -25,7 +25,6 @@ config SND_SST_IPC_ACPI
+ 	tristate
+ 	select SND_SST_IPC
+ 	select SND_SOC_INTEL_SST
+-	depends on ACPI
+ 
+ config SND_SOC_INTEL_SST
+ 	tristate
+@@ -128,7 +127,7 @@ config SND_SOC_INTEL_BROADWELL_MACH
+ 
+ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+         tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
+-	depends on X86 && I2C
++	depends on X86 && I2C && ACPI
+ 	select SND_SOC_RT5640
+ 	select SND_SST_MFLD_PLATFORM
+ 	select SND_SST_IPC_ACPI
+@@ -141,7 +140,7 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+ 
+ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+         tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
+-	depends on X86 && I2C
++	depends on X86 && I2C && ACPI
+ 	select SND_SOC_RT5651
+ 	select SND_SST_MFLD_PLATFORM
+ 	select SND_SST_IPC_ACPI
+@@ -154,7 +153,7 @@ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+ 
+ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+         tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
+-        depends on X86_INTEL_LPSS && I2C
++        depends on X86_INTEL_LPSS && I2C && ACPI
+         select SND_SOC_RT5670
+         select SND_SST_MFLD_PLATFORM
+         select SND_SST_IPC_ACPI
+@@ -167,7 +166,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+ 
+ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+ 	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5645/5650 codec"
+-	depends on X86_INTEL_LPSS && I2C
++	depends on X86_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_RT5645
+ 	select SND_SST_MFLD_PLATFORM
+ 	select SND_SST_IPC_ACPI
+-- 
+1.9.1
