@@ -1,18 +1,23 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH] ASoC: cs53l30: Add MUTE pin control support
-	via GPIO
-Date: Mon, 20 Jun 2016 18:54:44 -0700
-Message-ID: <1466474084-6775-1-git-send-email-nicoleotsuka@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Tue, 21 Jun 2016 11:22:18 +0900
+Message-ID: <5768A4DA.1030809@sakamocchi.jp>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <20160613114713.GA9544@localhost.localdomain> <20160613195136.GC2441@netboy>
+ <20160614121844.54a125a5@lxorguk.ukuu.org.uk> <5760C84C.40408@sakamocchi.jp>
+ <20160615080602.GA13555@localhost.localdomain>
+ <5764DA85.3050801@sakamocchi.jp>
+ <20160618224549.GF32724@icarus.home.austad.us>
+ <5766B01B.9070903@sakamocchi.jp>
+ <20160620090656.GB8011@sisyphus.home.austad.us>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
- [209.85.192.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B81726666D
- for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 03:54:58 +0200 (CEST)
-Received: by mail-pf0-f196.google.com with SMTP id c74so175929pfb.0
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 18:54:58 -0700 (PDT)
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 307FA2656F5
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 04:22:20 +0200 (CEST)
+In-Reply-To: <20160620090656.GB8011@sisyphus.home.austad.us>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,106 +27,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, brian.austin@cirrus.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, robh+dt@kernel.org
+To: Henrik Austad <henrik@austad.us>
+Cc: netdev@vger.kernel.org, Richard Cochran <richardcochran@gmail.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-The codec chip has a physical MUTE pin to let users control it via
-GPIO. So this patch add a mute control support to the driver.
-
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- .../devicetree/bindings/sound/cs53l30.txt          |  2 ++
- sound/soc/codecs/cs53l30.c                         | 30 ++++++++++++++++++++++
- sound/soc/codecs/cs53l30.h                         |  1 +
- 3 files changed, 33 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/cs53l30.txt b/Documentation/devicetree/bindings/sound/cs53l30.txt
-index 18d6b99..6f7d3c8 100644
---- a/Documentation/devicetree/bindings/sound/cs53l30.txt
-+++ b/Documentation/devicetree/bindings/sound/cs53l30.txt
-@@ -13,6 +13,8 @@ Optional properties:
- 
-   - reset-gpios : a GPIO spec for the reset pin.
- 
-+  - mute-gpios : a GPIO spec for the MUTE pin.
-+
-   - cirrus,micbias-lvl : Set the output voltage level on the MICBIAS Pin.
- 			 0 = Hi-Z
- 			 1 = 1.80 V
-diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index b0a64a1..5988b5c 100644
---- a/sound/soc/codecs/cs53l30.c
-+++ b/sound/soc/codecs/cs53l30.c
-@@ -35,6 +35,7 @@ struct cs53l30_private {
- 	struct regulator_bulk_data	supplies[CS53L30_NUM_SUPPLIES];
- 	struct regmap			*regmap;
- 	struct gpio_desc		*reset_gpio;
-+	struct gpio_desc		*mute_gpio;
- 	struct clk			*mclk;
- 	bool				use_sdout2;
- 	u32				mclk_rate;
-@@ -833,6 +834,16 @@ static int cs53l30_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
-+static int cs53l30_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
-+{
-+	struct cs53l30_private *priv = snd_soc_codec_get_drvdata(dai->codec);
-+
-+	if (priv->mute_gpio)
-+		gpiod_set_value_cansleep(priv->mute_gpio, mute);
-+
-+	return 0;
-+}
-+
- /* SNDRV_PCM_RATE_KNOT -> 12000, 24000 Hz, limit with constraint list */
- #define CS53L30_RATES (SNDRV_PCM_RATE_8000_48000 | SNDRV_PCM_RATE_KNOT)
- 
-@@ -846,6 +857,7 @@ static const struct snd_soc_dai_ops cs53l30_ops = {
- 	.set_sysclk = cs53l30_set_sysclk,
- 	.set_tristate = cs53l30_set_tristate,
- 	.set_tdm_slot = cs53l30_set_dai_tdm_slot,
-+	.mute_stream = cs53l30_mute_stream,
- };
- 
- static struct snd_soc_dai_driver cs53l30_dai = {
-@@ -991,6 +1003,24 @@ static int cs53l30_i2c_probe(struct i2c_client *client,
- 		cs53l30->mclk = NULL;
- 	}
- 
-+	/* Fetch the MUTE control */
-+	cs53l30->mute_gpio = devm_gpiod_get_optional(dev, "mute",
-+						     GPIOD_OUT_HIGH);
-+	if (IS_ERR(cs53l30->mute_gpio)) {
-+		ret = PTR_ERR(cs53l30->mute_gpio);
-+		goto error;
-+	}
-+
-+	if (cs53l30->mute_gpio) {
-+		/* Enable MUTE controls via MUTE pin */
-+		regmap_write(cs53l30->regmap, CS53L30_MUTEP_CTL1,
-+			     CS53L30_MUTEP_CTL1_MUTEALL);
-+		/* Flip the polarity of MUTE pin */
-+		if (gpiod_is_active_low(cs53l30->mute_gpio))
-+			regmap_update_bits(cs53l30->regmap, CS53L30_MUTEP_CTL2,
-+					   CS53L30_MUTE_PIN_POLARITY, 0);
-+	}
-+
- 	if (!of_property_read_u8(np, "cirrus,micbias-lvl", &val))
- 		regmap_update_bits(cs53l30->regmap, CS53L30_MICBIAS_CTL,
- 				   CS53L30_MIC_BIAS_CTRL_MASK, val);
-diff --git a/sound/soc/codecs/cs53l30.h b/sound/soc/codecs/cs53l30.h
-index 0dd4afb..5e39da5 100644
---- a/sound/soc/codecs/cs53l30.h
-+++ b/sound/soc/codecs/cs53l30.h
-@@ -253,6 +253,7 @@
- #define CS53L30_MUTE_MB_ALL_PDN_MASK	(1 << CS53L30_MUTE_MB_ALL_PDN_SHIFT)
- #define CS53L30_MUTE_MB_ALL_PDN		(1 << CS53L30_MUTE_MB_ALL_PDN_SHIFT)
- 
-+#define CS53L30_MUTEP_CTL1_MUTEALL	(0xdf)
- #define CS53L30_MUTEP_CTL1_DEFAULT	(0)
- 
- /* R32 (0x20) CS53L30_MUTEP_CTL2 - MUTE Pin Control 2 */
--- 
-2.1.4
+T24gMjAxNuW5tDA25pyIMjDml6UgMTg6MDYsIEhlbnJpayBBdXN0YWQgd3JvdGU6Cj4gT24gU3Vu
+LCBKdW4gMTksIDIwMTYgYXQgMTE6NDU6NDdQTSArMDkwMCwgVGFrYXNoaSBTYWthbW90byB3cm90
+ZToKPj4gKHJlbW92ZSBDLkMuIHRvIGxrbWwuIFRoaXMgaXMgbm90IHNvIG1ham9yIGZlYXR1cmUu
+KQo+Pgo+PiBPbiBKdW4gMTkgMjkxNiAwNzo0NSwgSGVucmlrIEF1c3RhZCB3cm90ZToKPj4+IHNu
+aXAKPj4+Cj4+PiA4MDIuMVEgZ2l2ZXMgeW91IGxvdyBsYXRlbmN5IHRocm91Z2ggdGhlIG5ldHdv
+cmssIGJ1dCBtb3JlIGltcG9ydGFudGx5LCBubwo+Pj4gZHJvcHBlZCBmcmFtZXMuIGdQVFAgZ2l2
+ZXMgeW91IGEgY2VudHJhbCByZWZlcmVuY2UgdG8gdGltZS4KPj4KPj4gV2hlbiBzdWNoIGEgbG9u
+ZyBtZXNzYWdlIGlzIHJlcXVpcmVkLCBpdCBtZWFucyB0aGF0IHdlIGRvbid0IGhhdmUKPj4gZW5v
+dWdoIHByZW1pc2VzIGZvciB0aGlzIGRpc2N1c3Npb24uCj4KPiBJc24ndCBhIGRpc2N1c3Npb24g
+cGFydCBvZiBob3cgaW5mb3JtYXRpb24gaXMgY29udmV5ZWQgYW5kIGZpbmRpbmcgcGFydHMKPiB0
+aGF0IHJlcXVpcmUgbW9yZSBrbm93bGVkZ2U/Cj4KPj4gWW91IGhhdmUganVzdCBpbnRlcmVzdHMg
+aW4gZ1BUUCBhbmQgdHJhbnNmZXJyaW5nIEFWVFBEVXMsIHdoaWxlIG5vCj4+IGludGVyZXN0cyBp
+biB0aGUgb3RoZXJzIHN1Y2ggYXMgIndoYXQgdGhlIGJhc2ljIGlkZWFzIG9mIFRTTiBjb21lCj4+
+IGZyb20iIGFuZCAidGhlIHJlYXNvbiB0aGF0IElFRUUgMTcyMiByZWZlcnMgdG8gSUVDIDYxODgz
+IHNlcmllcwo+PiB3aGljaCBpcyBvcmlnaW5hbGx5IGRlc2lnbmVkIGZvciBJRUVFIDEzOTQgYnVz
+IiBhbmQgInRoZSByZWFzb24gdGhhdAo+PiBJIHdhcyBtb3RpdmF0ZWQgdG8gam9pbiBpbiB0aGlz
+IGRpc2N1c3Npb24gZXZlbiB0aG91Z2ggbm90IGEgbmV0ZGV2Cj4+IGRldmVsb3BlciIuCj4KPiBJ
+J20gc29ycnksIEknbSBub3Qgc3VyZSBJIGZvbGxvdyB5b3UgaGVyZS4gV2hhdCBkbyB5b3UgbWVh
+biBJIGRvbid0IGhhdmUKPiBhbnkgaW50ZXJlc3QgaW4gd2hlcmUgVFNOIGNvbWVzIGZyb20/IG9y
+IHRoZSByZWFzb24gd2h5IDE3MjIgdXNlIElFQyA2MTg4Mz8KPiBXaGF0IGFib3V0ICJ0aGV5IHBp
+Y2tlZCA2MTg4MyBiZWNhdXNlIGl0IG1hZGUgc2Vuc2U/Igo+Cj4gZ1BUUCBpdHNlbGYgaXMgKm5v
+dCogYWJvdXQgdHJhbnNmZmVyaW5nIGF1ZGlvLWRhdGEsIGl0IGlzIGFib3V0IGFncmVlaW5nIG9u
+Cj4gYSBjb21tb24gdGltZSBzbyB0aGF0IHdoZW4geW91ICpkbyogdHJhbnNmZXIgYXVkaW8tZGF0
+YSwgdGhlIHNhbXBsZXJhdGUKPiBhY3R1YWxseSBtZWFucyBzb21ldGhpbmcuCj4KPiBMZXQgbWUg
+YXNrIHlvdSB0aGlzOyBpZiB5b3UgaGF2ZSAyIHNvdW5kLWNhcmRzIGluIHlvdXIgY29tcHV0ZXIg
+YW5kIHlvdQo+IHdhbnQgdG8gYXR0YWNoIGEgbWljIHRvIG9uZSBhbmQgc3BlYWtlcnMgdG8gdGhl
+IG90aGVyLCBob3cgZG8geW91IHNvbHZlCj4gc3RyZWFtaW5nIG9mIGF1ZGlvIGZyb20gdGhlIG1p
+YyB0byB0aGUgc3BlYWtlciBJZiB5b3UgYW5zd2VyIGRvZXMgbm90Cj4gY29udGFpbiBzb21ldGhp
+bmcgYWtpbiB0byAiZGlmZmVyZW50IHRpbWluZy1kb21haW4gaXNzdWVzIiwgSSdkIGJlIHZlcnkK
+PiBzdXJwcmlzZWQuCj4KPiBJZiB5b3UgYXJlIGludGVyZXN0ZWQgaW4gVFNOIGZvciB0cmFuc2Zl
+cnJpbmcgKmFueXRoaW5nKiwgX2luY2x1ZGluZ18KPiBhdWRpbywgeW91ICpoYXZlKiB0byB0YWtl
+IGdQVFAgaW50byBjb25zaWRlcmF0aW9uLiBKdXN0IGFzIHlvdSBoYXZlIHRvCj4gdGhpbmsgYWJv
+dXQgc3RyZWFtIHJlc2VydmF0aW9uLCBjb21wbGlhbnQgaGFyZHdhcmUgYW5kIGFsbCB0aGUgZGlm
+ZmVyZW50Cj4gc3Vic3lzdGVtcyB5b3UgYXJlIGdvaW5nIHRvIHJ1biBpbnRvLCBlaXRoZXIgdmlh
+IGtlcm5lbCBvciB2aWEgdXNlcnNwYWNlLgo+Cj4+IEhlcmUsIGNvdWxkIEkgYXNrIHlvdSBhIHF1
+ZXN0aW9uPyBEbyB5b3Uga25vdyBhIHJvbGUgb2YgY3ljbGUgc3RhcnQKPj4gcGFja2V0IG9mIElF
+RUUgU3RkIDEzOTQ/Cj4KPiBObywgSSBkbyBub3QuCj4KPiBJIGhhdmUgb25seSBwYXNzaW5nIGtu
+b3dsZWRnZSBvZiB0aGUgZmlyZXdpcmUgc3RhbmRhcmQsIEkndmUgbG9va2VkIGF0IHRoZQo+IGVu
+Y29kaW5nIGRlc2NyaWJlZCBpbiAxNzIyIGFuZCBhZGRlZCB0aGF0IHRvIHRoZSBhbHNhIHNoaW0g
+YXMgYW4gZXhhbXBsZSBvZgo+IGhvdyB0byB1c2UgVFNOLiBBcyBJIHN0YXRlZCwgdGhpcyB3YXMg
+YSAqdmVyeSogZWFybHkgdmVyc2lvbiBhbmQgSSB3b3VsZAo+IGxpa2UgdG8gdXNlIFRTTiBmb3Ig
+YXVkaW8gLSBhbmQgbW9yZSB3b3JrIGlzIG5lZWRlZC4KPgo+PiBJZiB5b3UgdGhpbmsgaXQncyBu
+b3QgcmVsYXRlZCB0byB0aGlzIGRpc2N1c3Npb24sIHBsZWFzZSB0ZWxsIGl0IHRvCj4+IG1lLiBU
+aGVuIEknbGwgZHJvcCBvdXQgZnJvbSB0aGlzIHRocmVhZC4KPgo+IFRoZXJlIGFyZSB0b25zIG9m
+IGRldGFpbHMgbGVmdCBhbmQgcmlnaHQsIGFuZCBhcyBJIHNhaWQsIEknbSBub3QgIGFsbCB0bwo+
+IGZhbWlsaWFyIHdpdGggZmlyZXdpcmUuIEkga25vdyB0aGF0IG9uZSBvZiB0aGUgYXV0aG9ycyBi
+ZWhpbmQgdGhlIGZpcmV3aXJlCj4gc3RhbmRhcmQgaGFwcGVuZWQgdG8gYmUgcGFydCBvZiAxNzIy
+IHN0YW5kYXJkLgo+Cj4gSSBhbSBjdXJyZW50bHkgd29ya2luZyBteSB3YXkgdGhyb3VnaCB0aGUg
+ZmlyZXdpcmUtc3RhayBwYXBlciB5b3UndmUKPiB3cml0dGVuLCBhbmQgSSBoYXZlIGdvdHRlbiBh
+IGxvdCBvZiBwb2ludGVycyB0byBvdGhlciBhcmVhcyBJIG5lZWQgdG8gZGlnCj4gaW50byBzbyBJ
+IHNob3VsZCBiZSBidXN5IGZvciBhIHdoaWxlLgo+Cj4gVGhhdCBiZWluZyBzYWlkLCBSaWNoYXJk
+J3MgcG9pbnQgYWJvdXQgYSB3YXkgdG8gZmluZCBzYW1wbGUtcmF0ZSBvZiBhCj4gaGFyZHdhcmUg
+ZGV2aWNlIGFuZCB3YXlzIHRvIGluZmx1ZW5jZSB0aGF0LCBpcyBpbXBvcnRhbnQgZm9yIEFWQi9U
+U04uCj4KPj4gSGlzdG9yeSBSZXBlYXRzIGl0c2VsZi4KPgo+ID8KCk9LLiBCeWUuCgoKVGFrYXNo
+aSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
