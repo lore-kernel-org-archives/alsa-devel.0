@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dwc: make pcm support built-in when necessary" to the asoc tree
-Date: Tue, 21 Jun 2016 19:52:39 +0100
-Message-ID: <E1bFQmt-0008M4-24@debutante>
-References: <20160620160131.2565092-1-arnd@arndb.de>
+Subject: Applied "ASoC: cs53l30: Fix non static symbol warnings" to the asoc tree
+Date: Tue, 21 Jun 2016 19:52:44 +0100
+Message-ID: <E1bFQmy-0008Nz-Tn@debutante>
+References: <1466184120-13062-1-git-send-email-weiyj_lk@163.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160620160131.2565092-1-arnd@arndb.de>
+In-Reply-To: <1466184120-13062-1-git-send-email-weiyj_lk@163.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Jose Abreu <Jose.Abreu@synopsys.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+To: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>, Brian Austin <brian.austin@cirrus.com>Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dwc: make pcm support built-in when necessary
+   ASoC: cs53l30: Fix non static symbol warnings
 
 has been applied to the asoc tree at
 
@@ -37,43 +37,58 @@ to this mail.
 Thanks,
 Mark
 
->From 3276d0aa0bf475cc6cfb505487b2a2f3f762aebb Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 20 Jun 2016 18:01:19 +0200
-Subject: [PATCH] ASoC: dwc: make pcm support built-in when necessary
+>From ee85be8c9b5277a50bf6491c30b2736a5562331b Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Date: Fri, 17 Jun 2016 17:22:00 +0000
+Subject: [PATCH] ASoC: cs53l30: Fix non static symbol warnings
 
-The new PIO mode for the dwc audio driver causes a link failure
-when it is built as a loadable module but the audio driver is built-in:
+Fixes the following sparse warnings:
 
-sound/built-in.o: In function `i2s_irq_handler':
-:(.text+0x58c64): undefined reference to `dw_pcm_push_tx'
-sound/built-in.o: In function `dw_i2s_probe':
-:(.text+0x593dc): undefined reference to `dw_pcm_register'
+sound/soc/codecs/cs53l30.c:182:20: warning:
+ symbol 'input1_sel_values' was not declared. Should it be static?
+sound/soc/codecs/cs53l30.c:202:20: warning:
+ symbol 'input2_sel_values' was not declared. Should it be static?
+sound/soc/codecs/cs53l30.c:734:20: warning:
+ symbol 'cs53l30_src_rates' was not declared. Should it be static?
 
-We could link both into a single module, but apparently the
-author intended them to be separate, so this instead changes
-the Makefile to force the pcm module to be built-in if the
-base module is. This is a bit hacky but not as bad as trying
-to work around it in Kconfig language.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: 79361b2b98b7 ("ASoC: dwc: Add PIO PCM extension")
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/dwc/Makefile | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs53l30.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/dwc/Makefile b/sound/soc/dwc/Makefile
-index 1b48bcccbc51..38f1ca31c5fa 100644
---- a/sound/soc/dwc/Makefile
-+++ b/sound/soc/dwc/Makefile
-@@ -1,4 +1,5 @@
- # SYNOPSYS Platform Support
- obj-$(CONFIG_SND_DESIGNWARE_I2S) += designware_i2s.o
--obj-$(CONFIG_SND_DESIGNWARE_PCM) += designware_pcm.o
--
-+ifdef CONFIG_SND_DESIGNWARE_PCM
-+obj-$(CONFIG_SND_DESIGNWARE_I2S) += designware_pcm.o
-+endif
+diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
+index 384a3f79f1c5..a5976f3b589a 100644
+--- a/sound/soc/codecs/cs53l30.c
++++ b/sound/soc/codecs/cs53l30.c
+@@ -180,7 +180,7 @@ static const char * const input1_sel_text[] = {
+ 	"DMIC1 Off ADC1 Off",
+ };
+ 
+-unsigned int const input1_sel_values[] = {
++static unsigned int const input1_sel_values[] = {
+ 	CS53L30_CH_TYPE,
+ 	CS53L30_ADCxB_PDN | CS53L30_CH_TYPE,
+ 	CS53L30_ADCxA_PDN | CS53L30_CH_TYPE,
+@@ -200,7 +200,7 @@ static const char * const input2_sel_text[] = {
+ 	"DMIC2 Off ADC2 Off",
+ };
+ 
+-unsigned int const input2_sel_values[] = {
++static unsigned int const input2_sel_values[] = {
+ 	0x0,
+ 	CS53L30_ADCxB_PDN,
+ 	CS53L30_ADCxA_PDN,
+@@ -738,7 +738,7 @@ static int cs53l30_set_tristate(struct snd_soc_dai *dai, int tristate)
+ 				  CS53L30_ASP_3ST_MASK, val);
+ }
+ 
+-unsigned int const cs53l30_src_rates[] = {
++static unsigned int const cs53l30_src_rates[] = {
+ 	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000
+ };
+ 
 -- 
 2.8.1
