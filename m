@@ -1,49 +1,46 @@
-From: "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>
-Subject: Re: [RESEND PATCH v3 1/2] device property: Add function to search for named child of device
-Date: Tue, 21 Jun 2016 17:11:41 +0200
-Message-ID: <1688032.bsOGLjkyBG@vostro.rjw.lan>
-References: <cover.1466421714.git.Adam.Thomson.Opensource@diasemi.com> <28758107.YROb1rVtm6@vostro.rjw.lan> <2E89032DDAA8B9408CB92943514A0337D46442AB@SW-EX-MBX01.diasemi.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Tue, 21 Jun 2016 10:18:30 -0700
+Message-ID: <8a0e9fad-846a-5924-3e6b-348c2d6c2aec@linux.intel.com>
+References: <1465686096-22156-1-git-send-email-henrik@austad.us>
+ <20160613114713.GA9544@localhost.localdomain> <20160613195136.GC2441@netboy>
+ <20160614121844.54a125a5@lxorguk.ukuu.org.uk> <5760C84C.40408@sakamocchi.jp>
+ <20160615080602.GA13555@localhost.localdomain>
+ <5764DA85.3050801@sakamocchi.jp>
+ <20160618224549.GF32724@icarus.home.austad.us>
+ <9a5abd48-4da3-945d-53c9-b6d37010ab0d@linux.intel.com>
+ <20160620121838.GA5257@localhost.localdomain>
+ <20160620123148.GA5846@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7Bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <2E89032DDAA8B9408CB92943514A0337D46442AB-68WUHU125fLLPO1uwJ3ImwLouzNaz+3S@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Cc: Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Robert Moore <robert.moore-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Lv Zheng <lv.zheng-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, "Rafael J.Wysocki" <rafael.j.wysocki-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Heikki Krogerus <heikki.krogerus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Len Brown <lenb-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Andy Shevchenko <andriy.shevchenko-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, "linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Support Opensource <Support.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>, Sathyanarayana
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 574922608EA
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 19:18:34 +0200 (CEST)
+In-Reply-To: <20160620123148.GA5846@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Richard Cochran <richardcochran@gmail.com>
+Cc: alsa-devel@alsa-project.org, netdev@vger.kernel.org, Henrik Austad <henrik@austad.us>, linux-kernel@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday, June 21, 2016 11:50:01 AM Opensource [Adam Thomson] wrote:
-> 21 June 2016 12:42, Rafael J. Wysocki wrote:
-> 
-> > > > +static inline bool acpi_data_node_match(struct fwnode_handle *fwnode,
-> > > > +					const char *name)
-> > > > +{
-> > > > +	return is_acpi_data_node(fwnode) ?
-> > > > +		(!strcasecmp(to_acpi_data_node(fwnode)->name, name)) : false;
-> > > > +}
-> > >
-> > > Looks fine to me.
-> > >
-> > > One question - is it expected that matching ACPI data nodes is always
-> > > case insensitive?
-> > 
-> > That would not be a correct expectation in theory, although I don't think it
-> > really matters in practice.
-> 
-> From my reading of the Hierarchical Data Extension and ACPI Spec, I thought
-> that was the case (section 19.3.1 ASL Names - ASL names are not case-sensitive
-> and will be converted to upper case).
+On 6/20/16 5:31 AM, Richard Cochran wrote:
+> On Mon, Jun 20, 2016 at 02:18:38PM +0200, Richard Cochran wrote:
+>> Documentation/sound/alsa/timestamping.txt says:
+>
+>    Examples of typestamping with HDaudio:
+>
+>    1. DMA timestamp, no compensation for DMA+analog delay
+>    $ ./audio_time  -p --ts_type=1
+>
+> Where is this "audio_time" program of which you speak?
 
-Section 19.3.1 is applicable to object names and not to the data returned
-by those objects.  The link names in the Hierarchical Data Extension are
-data returned by _DSD (or other objects related to it).  They are general ACPI
-strings and those are case-sensitive.
-
-Thanks,
-Rafael
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+alsa-lib/test
