@@ -1,18 +1,18 @@
-From: Sebastian Reichel <sre@kernel.org>
-Subject: Re: [PATCH v2 4/5] ASoC: tpa6130a2: Add DAPM support
-Date: Tue, 21 Jun 2016 03:45:26 +0200
-Message-ID: <20160621014526.GE17167@earth>
-References: <20160618104038.GB31665@earth>
- <cover.1466441036.git.helen.koike@collabora.co.uk>
- <bbddafe634bde1d12288862e02622d15c9b7c25c.1466441036.git.helen.koike@collabora.co.uk>
- <57683EA2.70602@collabora.co.uk>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH] ASoC: cs53l30: Add MUTE pin control support
+	via GPIO
+Date: Mon, 20 Jun 2016 18:54:44 -0700
+Message-ID: <1466474084-6775-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3335375349654466704=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 1125D26605E
- for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 03:45:31 +0200 (CEST)
-In-Reply-To: <57683EA2.70602@collabora.co.uk>
+Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
+ [209.85.192.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B81726666D
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2016 03:54:58 +0200 (CEST)
+Received: by mail-pf0-f196.google.com with SMTP id c74so175929pfb.0
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2016 18:54:58 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,60 +22,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Helen Koike <helen.koike@collabora.co.uk>
-Cc: k.kozlowski@samsung.com, lars@metafoo.de, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, peter.ujfalusi@ti.com, broonie@kernel.org, cphealy@gmail.com, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
+To: broonie@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, brian.austin@cirrus.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The codec chip has a physical MUTE pin to let users control it via
+GPIO. So this patch add a mute control support to the driver.
 
---===============3335375349654466704==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4Epv4kl9IRBfg3rk"
-Content-Disposition: inline
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
+ .../devicetree/bindings/sound/cs53l30.txt          |  2 ++
+ sound/soc/codecs/cs53l30.c                         | 30 ++++++++++++++++++++++
+ sound/soc/codecs/cs53l30.h                         |  1 +
+ 3 files changed, 33 insertions(+)
 
-
---4Epv4kl9IRBfg3rk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi Helen,
-
-On Mon, Jun 20, 2016 at 04:06:10PM -0300, Helen Koike wrote:
-> I added these changes above and kept your tested-by and reviewed-by, could
-> you please confirm that I can keep them? As I changed more things then you
-> suggested.
-
-The changes look fine to me, the new patchset works on N900.
-
--- Sebastian
-
---4Epv4kl9IRBfg3rk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBCgAGBQJXaJw2AAoJENju1/PIO/qasScP/jDhOJa5YM+YpVjFmDOrNnqs
-KmYjypJ158LWD+zYrpK6/kjCoCNNDdNPOUJ+X1cvsoUHMr2TChjppVk4JgeWxPBy
-LsUMFU2IgNI4jadoaBbBRbCBvlmLnJdr6fHs8i4y1FTpVrTE7ZUJAjdaaq6iL+/T
-juLKxfV8NgSlaIzH4s5Jt39IFspqh7jMfhzGJdskkHyjFnwoAPX9Xce3h5q9CCY0
-4Xes4hlzMr6aTcgrwquwaBNrh7AbpjGrT3awc5sKU299yUC+jl3fX7m4JdeYIDF5
-n9Fb686JrUnwsMT89YI+eE/18ju40UDAdlCwPGdRb6mFKz8excwyd8TiNZ9nnDk0
-lJBLT4JtEqBlk7HlfTEOtpMf36Txo30P2L1ha0Z7X+PM2ahG1Bkb7mxtg/fErtna
-3Z1AcSwJWWEEmWKvB2MTuLhnfapkcyhhYcgSuSSIpBJ/k6uQnbQhlvjdnpmUeISe
-cQCoGHSBxc19TPdpdRpcxqzw4Jdg2e7BWSqXr5vazDdqDdJSd1kVZ9eKZbVFDo2P
-nz+e4AfUl4T7cPa0rjvKZscwhQ1AiK24CbMHu+4Rh2vZk0X0cdgCoBVaTGvJZm5S
-9heQDTJfkGIEseKfjhr3WAKCjJzBq9SbkvXAMnsE1fFEiShO1PbHvFuYmiq1nJqj
-hoOaJfmkldNBP+IixW5w
-=jbIb
------END PGP SIGNATURE-----
-
---4Epv4kl9IRBfg3rk--
-
---===============3335375349654466704==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3335375349654466704==--
+diff --git a/Documentation/devicetree/bindings/sound/cs53l30.txt b/Documentation/devicetree/bindings/sound/cs53l30.txt
+index 18d6b99..6f7d3c8 100644
+--- a/Documentation/devicetree/bindings/sound/cs53l30.txt
++++ b/Documentation/devicetree/bindings/sound/cs53l30.txt
+@@ -13,6 +13,8 @@ Optional properties:
+ 
+   - reset-gpios : a GPIO spec for the reset pin.
+ 
++  - mute-gpios : a GPIO spec for the MUTE pin.
++
+   - cirrus,micbias-lvl : Set the output voltage level on the MICBIAS Pin.
+ 			 0 = Hi-Z
+ 			 1 = 1.80 V
+diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
+index b0a64a1..5988b5c 100644
+--- a/sound/soc/codecs/cs53l30.c
++++ b/sound/soc/codecs/cs53l30.c
+@@ -35,6 +35,7 @@ struct cs53l30_private {
+ 	struct regulator_bulk_data	supplies[CS53L30_NUM_SUPPLIES];
+ 	struct regmap			*regmap;
+ 	struct gpio_desc		*reset_gpio;
++	struct gpio_desc		*mute_gpio;
+ 	struct clk			*mclk;
+ 	bool				use_sdout2;
+ 	u32				mclk_rate;
+@@ -833,6 +834,16 @@ static int cs53l30_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ 	return 0;
+ }
+ 
++static int cs53l30_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
++{
++	struct cs53l30_private *priv = snd_soc_codec_get_drvdata(dai->codec);
++
++	if (priv->mute_gpio)
++		gpiod_set_value_cansleep(priv->mute_gpio, mute);
++
++	return 0;
++}
++
+ /* SNDRV_PCM_RATE_KNOT -> 12000, 24000 Hz, limit with constraint list */
+ #define CS53L30_RATES (SNDRV_PCM_RATE_8000_48000 | SNDRV_PCM_RATE_KNOT)
+ 
+@@ -846,6 +857,7 @@ static const struct snd_soc_dai_ops cs53l30_ops = {
+ 	.set_sysclk = cs53l30_set_sysclk,
+ 	.set_tristate = cs53l30_set_tristate,
+ 	.set_tdm_slot = cs53l30_set_dai_tdm_slot,
++	.mute_stream = cs53l30_mute_stream,
+ };
+ 
+ static struct snd_soc_dai_driver cs53l30_dai = {
+@@ -991,6 +1003,24 @@ static int cs53l30_i2c_probe(struct i2c_client *client,
+ 		cs53l30->mclk = NULL;
+ 	}
+ 
++	/* Fetch the MUTE control */
++	cs53l30->mute_gpio = devm_gpiod_get_optional(dev, "mute",
++						     GPIOD_OUT_HIGH);
++	if (IS_ERR(cs53l30->mute_gpio)) {
++		ret = PTR_ERR(cs53l30->mute_gpio);
++		goto error;
++	}
++
++	if (cs53l30->mute_gpio) {
++		/* Enable MUTE controls via MUTE pin */
++		regmap_write(cs53l30->regmap, CS53L30_MUTEP_CTL1,
++			     CS53L30_MUTEP_CTL1_MUTEALL);
++		/* Flip the polarity of MUTE pin */
++		if (gpiod_is_active_low(cs53l30->mute_gpio))
++			regmap_update_bits(cs53l30->regmap, CS53L30_MUTEP_CTL2,
++					   CS53L30_MUTE_PIN_POLARITY, 0);
++	}
++
+ 	if (!of_property_read_u8(np, "cirrus,micbias-lvl", &val))
+ 		regmap_update_bits(cs53l30->regmap, CS53L30_MICBIAS_CTL,
+ 				   CS53L30_MIC_BIAS_CTRL_MASK, val);
+diff --git a/sound/soc/codecs/cs53l30.h b/sound/soc/codecs/cs53l30.h
+index 0dd4afb..5e39da5 100644
+--- a/sound/soc/codecs/cs53l30.h
++++ b/sound/soc/codecs/cs53l30.h
+@@ -253,6 +253,7 @@
+ #define CS53L30_MUTE_MB_ALL_PDN_MASK	(1 << CS53L30_MUTE_MB_ALL_PDN_SHIFT)
+ #define CS53L30_MUTE_MB_ALL_PDN		(1 << CS53L30_MUTE_MB_ALL_PDN_SHIFT)
+ 
++#define CS53L30_MUTEP_CTL1_MUTEALL	(0xdf)
+ #define CS53L30_MUTEP_CTL1_DEFAULT	(0)
+ 
+ /* R32 (0x20) CS53L30_MUTEP_CTL2 - MUTE Pin Control 2 */
+-- 
+2.1.4
