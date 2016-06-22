@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Kconfig: fix build when ACPI is
-	not enabled" to the asoc tree
-Date: Wed, 22 Jun 2016 16:28:44 +0100
-Message-ID: <E1bFk56-0002LJ-My@debutante>
-References: <1466481784-3651-1-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: compress: Pass error out of
+	soc_compr_pointer" to the asoc tree
+Date: Wed, 22 Jun 2016 16:29:25 +0100
+Message-ID: <E1bFk5l-0002dU-Qf@debutante>
+References: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 29918268043
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 17:28:50 +0200 (CEST)
-In-Reply-To: <1466481784-3651-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 56582268054
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 17:29:34 +0200 (CEST)
+In-Reply-To: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Randy Dunlap <rdunlap@infradead.org>, alsa-devel@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Kconfig: fix build when ACPI is not enabled
+   ASoC: compress: Pass error out of soc_compr_pointer
 
 has been applied to the asoc tree at
 
@@ -53,88 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 3493d4a86457c7de9f1e602b4267c9b0f9ec1c9f Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Tue, 21 Jun 2016 09:33:03 +0530
-Subject: [PATCH] ASoC: Intel: Kconfig: fix build when ACPI is not enabled
+>From 7c9190f7e7428487cd67839f9a547efcc9ec3b9b Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Mon, 20 Jun 2016 09:51:32 +0100
+Subject: [PATCH] ASoC: compress: Pass error out of soc_compr_pointer
 
-Randy reported following error when ACPI is not enabled:
+Both soc_compr_pointer and the platform driver pointer callback return
+ints but current soc_compr_pointer always returns 0. Update this so we
+return the actual value from the platform driver callback. This doesn't
+fix any issues simply makes the code more consistent.
 
-warning: (SND_SOC_INTEL_BYTCR_RT5640_MACH && SND_SOC_INTEL_BYTCR_RT5651_MACH
-&& SND_SOC_INTEL_CHT_BSW_RT5672_MACH && SND_SOC_INTEL_CHT_BSW_RT5645_MACH &&
-SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) selects SND_SST_IPC_ACPI
-+which has unmet direct dependencies (SOUND && !M68K && !UML && SND &&
-SND_SOC && ACPI)
-
-causing these build errors:
-
-In file included from ../sound/soc/intel/atom/sst/sst_acpi.c:40:0:
-../include/acpi/acpi_bus.h:65:20: error: conflicting types for
-'acpi_evaluate_dsm'
- union acpi_object *acpi_evaluate_dsm(acpi_handle handle, const u8 *uuid,
-In file included from ../sound/soc/intel/atom/sst/sst_acpi.c:31:0:
-../include/linux/acpi.h:676:34: note: previous definition of
-'acpi_evaluate_dsm' was here
- static inline union acpi_object *acpi_evaluate_dsm(acpi_handle handle,
-
-CONFIG_SND_SST_IPC_ACPI was already dependent upon ACPI, but that was not
-solving it. So move the depends up to machine drivers and remove from
-CONFIG_SND_SST_IPC_ACPI.
-
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/Kconfig | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ sound/soc/soc-compress.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 3875425a9693..63e4c14ebe9f 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -25,7 +25,6 @@ config SND_SST_IPC_ACPI
- 	tristate
- 	select SND_SST_IPC
- 	select SND_SOC_INTEL_SST
--	depends on ACPI
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 875733c52953..d2df46c14c68 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -530,14 +530,15 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_platform *platform = rtd->platform;
++	int ret = 0;
  
- config SND_SOC_INTEL_SST
- 	tristate
-@@ -128,7 +127,7 @@ config SND_SOC_INTEL_BROADWELL_MACH
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
  
- config SND_SOC_INTEL_BYTCR_RT5640_MACH
-         tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
--	depends on X86 && I2C
-+	depends on X86 && I2C && ACPI
- 	select SND_SOC_RT5640
- 	select SND_SST_MFLD_PLATFORM
- 	select SND_SST_IPC_ACPI
-@@ -141,7 +140,7 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+ 	if (platform->driver->compr_ops && platform->driver->compr_ops->pointer)
+-		 platform->driver->compr_ops->pointer(cstream, tstamp);
++		ret = platform->driver->compr_ops->pointer(cstream, tstamp);
  
- config SND_SOC_INTEL_BYTCR_RT5651_MACH
-         tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
--	depends on X86 && I2C
-+	depends on X86 && I2C && ACPI
- 	select SND_SOC_RT5651
- 	select SND_SST_MFLD_PLATFORM
- 	select SND_SST_IPC_ACPI
-@@ -154,7 +153,7 @@ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+ 	mutex_unlock(&rtd->pcm_mutex);
+-	return 0;
++	return ret;
+ }
  
- config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
-         tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
--        depends on X86_INTEL_LPSS && I2C
-+        depends on X86_INTEL_LPSS && I2C && ACPI
-         select SND_SOC_RT5670
-         select SND_SST_MFLD_PLATFORM
-         select SND_SST_IPC_ACPI
-@@ -167,7 +166,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
- 
- config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
- 	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5645/5650 codec"
--	depends on X86_INTEL_LPSS && I2C
-+	depends on X86_INTEL_LPSS && I2C && ACPI
- 	select SND_SOC_RT5645
- 	select SND_SST_MFLD_PLATFORM
- 	select SND_SST_IPC_ACPI
+ static int soc_compr_copy(struct snd_compr_stream *cstream,
 -- 
 2.8.1
