@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Add the MCLK handling" to the
-	asoc tree
-Date: Wed, 22 Jun 2016 16:28:38 +0100
-Message-ID: <E1bFk50-0002Iu-Pb@debutante>
-References: <1466132544-22916-2-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: Intel: Kconfig: formatting update" to
+	the asoc tree
+Date: Wed, 22 Jun 2016 16:28:41 +0100
+Message-ID: <E1bFk53-0002KR-PR@debutante>
+References: <1466481784-3651-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D7D7266A12
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 17:28:46 +0200 (CEST)
-In-Reply-To: <1466132544-22916-2-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CF61268042
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 17:28:49 +0200 (CEST)
+In-Reply-To: <1466481784-3651-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Randy Dunlap <rdunlap@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: Add the MCLK handling
+   ASoC: Intel: Kconfig: formatting update
 
 has been applied to the asoc tree at
 
@@ -53,111 +53,153 @@ to this mail.
 Thanks,
 Mark
 
->From c9506bb84b62917ae88087545ccb756d35655397 Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Fri, 17 Jun 2016 11:02:24 +0800
-Subject: [PATCH] ASoC: rt5514: Add the MCLK handling
+>From c3f2fe621af70ee5e52803eb779c7eca29fad0d0 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Tue, 21 Jun 2016 09:33:04 +0530
+Subject: [PATCH] ASoC: Intel: Kconfig: formatting update
 
-The patch adds the control of MCLK that depends on the status of DAPM.
+Kconfig help texts were missing periods as suggested by Randy.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Also fix the alignment on a block of help text to be consistent
+with rest.
+
+Suggested-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rt5514.txt |  5 ++++
- sound/soc/codecs/rt5514.c                          | 32 ++++++++++++++++++++++
- sound/soc/codecs/rt5514.h                          |  3 ++
- 3 files changed, 40 insertions(+)
+ sound/soc/intel/Kconfig | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
-index e24436fc5ea9..9cabfc18cb57 100644
---- a/Documentation/devicetree/bindings/sound/rt5514.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5514.txt
-@@ -8,6 +8,11 @@ Required properties:
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 63e4c14ebe9f..9c86459d0fc3 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -7,7 +7,7 @@ config SND_MFLD_MACHINE
+ 	help
+           This adds support for ASoC machine driver for Intel(R) MID Medfield platform
+           used as alsa device in audio substem in Intel(R) MID devices
+-          Say Y if you have such a device
++          Say Y if you have such a device.
+           If unsure select "N".
  
- - reg : The I2C address of the device.
+ config SND_SST_MFLD_PLATFORM
+@@ -54,7 +54,7 @@ config SND_SOC_INTEL_HASWELL_MACH
+ 	help
+ 	  This adds support for the Lynxpoint Audio DSP on Intel(R) Haswell
+ 	  Ultrabook platforms.
+-	  Say Y if you have such a device
++	  Say Y if you have such a device.
+ 	  If unsure select "N".
  
-+Optional properties:
-+
-+- clocks: The phandle of the master clock to the CODEC
-+- clock-names: Should be "mclk"
-+
- Pins on the device (for linking into audio routes) for RT5514:
+ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+@@ -70,7 +70,7 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+ 	help
+ 	   This adds support for ASoC machine driver for Broxton-P platforms
+ 	   with DA7219 + MAX98357A I2S audio codec.
+-	   Say Y if you have such a device
++	   Say Y if you have such a device.
+ 	   If unsure select "N".
  
-   * DMIC1L
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index 879bf60f4965..e6ae2309e5f8 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -799,10 +799,41 @@ static int rt5514_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 	return 0;
- }
+ config SND_SOC_INTEL_BXT_RT298_MACH
+@@ -85,7 +85,7 @@ config SND_SOC_INTEL_BXT_RT298_MACH
+ 	help
+ 	   This adds support for ASoC machine driver for Broxton platforms
+ 	   with RT286 I2S audio codec.
+-	   Say Y if you have such a device
++	   Say Y if you have such a device.
+ 	   If unsure select "N".
  
-+static int rt5514_set_bias_level(struct snd_soc_codec *codec,
-+			enum snd_soc_bias_level level)
-+{
-+	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_PREPARE:
-+		if (IS_ERR(rt5514->mclk))
-+			break;
-+
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_ON) {
-+			clk_disable_unprepare(rt5514->mclk);
-+		} else {
-+			ret = clk_prepare_enable(rt5514->mclk);
-+			if (ret)
-+				return ret;
-+		}
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
- static int rt5514_probe(struct snd_soc_codec *codec)
- {
- 	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
+ config SND_SOC_INTEL_BYT_RT5640_MACH
+@@ -98,7 +98,7 @@ config SND_SOC_INTEL_BYT_RT5640_MACH
+ 	help
+ 	  This adds audio driver for Intel Baytrail platform based boards
+ 	  with the RT5640 audio codec. This driver is deprecated, use
+-	  SND_SOC_INTEL_BYTCR_RT5640_MACH instead for better functionality
++	  SND_SOC_INTEL_BYTCR_RT5640_MACH instead for better functionality.
  
-+	rt5514->mclk = devm_clk_get(codec->dev, "mclk");
-+	if (PTR_ERR(rt5514->mclk) == -EPROBE_DEFER)
-+		return -EPROBE_DEFER;
-+
- 	rt5514->codec = codec;
+ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
+@@ -122,7 +122,7 @@ config SND_SOC_INTEL_BROADWELL_MACH
+ 	help
+ 	  This adds support for the Wilcatpoint Audio DSP on Intel(R) Broadwell
+ 	  Ultrabook platforms.
+-	  Say Y if you have such a device
++	  Say Y if you have such a device.
+ 	  If unsure select "N".
  
- 	return 0;
-@@ -858,6 +889,7 @@ struct snd_soc_dai_driver rt5514_dai[] = {
- static struct snd_soc_codec_driver soc_codec_dev_rt5514 = {
- 	.probe = rt5514_probe,
- 	.idle_bias_off = true,
-+	.set_bias_level = rt5514_set_bias_level,
- 	.controls = rt5514_snd_controls,
- 	.num_controls = ARRAY_SIZE(rt5514_snd_controls),
- 	.dapm_widgets = rt5514_dapm_widgets,
-diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
-index 6ad8a612f659..766f5a666ebe 100644
---- a/sound/soc/codecs/rt5514.h
-+++ b/sound/soc/codecs/rt5514.h
-@@ -12,6 +12,8 @@
- #ifndef __RT5514_H__
- #define __RT5514_H__
+ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+@@ -135,7 +135,7 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+ 	help
+           This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+           platforms with RT5640 audio codec.
+-          Say Y if you have such a device
++          Say Y if you have such a device.
+           If unsure select "N".
  
-+#include <linux/clk.h>
-+
- #define RT5514_DEVICE_ID			0x10ec5514
+ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+@@ -148,7 +148,7 @@ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+ 	help
+           This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+           platforms with RT5651 audio codec.
+-          Say Y if you have such a device
++          Say Y if you have such a device.
+           If unsure select "N".
  
- #define RT5514_RESET				0x2000
-@@ -240,6 +242,7 @@ enum {
- struct rt5514_priv {
- 	struct snd_soc_codec *codec;
- 	struct regmap *i2c_regmap, *regmap;
-+	struct clk *mclk;
- 	int sysclk;
- 	int sysclk_src;
- 	int lrck;
+ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+@@ -161,7 +161,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+         help
+           This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+           platforms with RT5672 audio codec.
+-          Say Y if you have such a device
++          Say Y if you have such a device.
+           If unsure select "N".
+ 
+ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+@@ -178,16 +178,16 @@ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+ 
+ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+ 	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with MAX98090 & TI codec"
+-	depends on X86_INTEL_LPSS && I2C
++	depends on X86_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_MAX98090
+ 	select SND_SOC_TS3A227E
+ 	select SND_SST_MFLD_PLATFORM
+ 	select SND_SST_IPC_ACPI
+ 	select SND_SOC_INTEL_SST_MATCH if ACPI
+ 	help
+-      This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+-      platforms with MAX98090 audio codec it also can support TI jack chip as aux device.
+-      If unsure select "N".
++	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
++	  platforms with MAX98090 audio codec it also can support TI jack chip as aux device.
++	  If unsure select "N".
+ 
+ config SND_SOC_INTEL_SKYLAKE
+ 	tristate
+@@ -207,7 +207,7 @@ config SND_SOC_INTEL_SKL_RT286_MACH
+ 	help
+ 	   This adds support for ASoC machine driver for Skylake platforms
+ 	   with RT286 I2S audio codec.
+-	   Say Y if you have such a device
++	   Say Y if you have such a device.
+ 	   If unsure select "N".
+ 
+ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+@@ -222,7 +222,7 @@ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+ 	help
+ 	  This adds support for ASoC Onboard Codec I2S machine driver. This will
+ 	  create an alsa sound card for NAU88L25 + SSM4567.
+-	  Say Y if you have such a device
++	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+@@ -237,5 +237,5 @@ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+ 	help
+ 	  This adds support for ASoC Onboard Codec I2S machine driver. This will
+ 	  create an alsa sound card for NAU88L25 + MAX98357A.
+-	  Say Y if you have such a device
++	  Say Y if you have such a device.
+ 	  If unsure select "N".
 -- 
 2.8.1
