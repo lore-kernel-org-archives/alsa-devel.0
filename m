@@ -1,136 +1,65 @@
-From: "Handrigan, Paul" <Paul.Handrigan@cirrus.com>
-Subject: Re: [PATCH v2] ASoC: cs53l30: Add MUTE pin control support via GPIO
-Date: Wed, 22 Jun 2016 15:18:21 +0000
-Message-ID: <D390164D.14E1A%Paul.Handrigan@cirrus.com>
-References: <1466553013-15154-1-git-send-email-nicoleotsuka@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: max9877: Remove unused function declaration" to the asoc tree
+Date: Wed, 22 Jun 2016 16:28:21 +0100
+Message-ID: <E1bFk4j-0002De-8K@debutante>
+References: <1466450966-30768-1-git-send-email-helen.koike@collabora.co.uk>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1466553013-15154-1-git-send-email-nicoleotsuka@gmail.com>
-Content-Language: en-US
-Content-ID: <0D61BF437E426A479D9D2B357529EB5F@ad.cirrus.com>
+In-Reply-To: <1466450966-30768-1-git-send-email-helen.koike@collabora.co.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Austin, Brian" <Brian.Austin@cirrus.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>
+To: Helen Koike <helen.koike@collabora.co.uk>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgbroonie@kernel.org, broonie@linaro.org, trivial@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
+   ASoC: max9877: Remove unused function declaration
 
-On 6/21/16, 6:50 PM, "Nicolin Chen" <nicoleotsuka@gmail.com> wrote:
+has been applied to the asoc tree at
 
->The codec chip has a physical MUTE pin to let users control it via
->GPIO. So this patch add a mute control support to the driver.
->
->Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
->---
->Changelog:
->v1->v2
-> * Revise the DT binding part regarding the active state of the mute pin
->
-> .../devicetree/bindings/sound/cs53l30.txt          |  4 +++
-> sound/soc/codecs/cs53l30.c                         | 30
->++++++++++++++++++++++
-> sound/soc/codecs/cs53l30.h                         |  1 +
-> 3 files changed, 35 insertions(+)
->
->diff --git a/Documentation/devicetree/bindings/sound/cs53l30.txt
->b/Documentation/devicetree/bindings/sound/cs53l30.txt
->index 18d6b99..4dbfb82 100644
->--- a/Documentation/devicetree/bindings/sound/cs53l30.txt
->+++ b/Documentation/devicetree/bindings/sound/cs53l30.txt
->@@ -13,6 +13,10 @@ Optional properties:
-> 
->   - reset-gpios : a GPIO spec for the reset pin.
-> 
->+  - mute-gpios : a GPIO spec for the MUTE pin. The active state can be
->either
->+		 GPIO_ACTIVE_HIGH or GPIO_ACTIVE_LOW, which would be handled
->+		 by the driver automatically.
->+
->   - cirrus,micbias-lvl : Set the output voltage level on the MICBIAS Pin.
-> 			 0 = Hi-Z
-> 			 1 = 1.80 V
->diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
->index 384a3f7..e46b7de 100644
->--- a/sound/soc/codecs/cs53l30.c
->+++ b/sound/soc/codecs/cs53l30.c
->@@ -35,6 +35,7 @@ struct cs53l30_private {
-> 	struct regulator_bulk_data	supplies[CS53L30_NUM_SUPPLIES];
-> 	struct regmap			*regmap;
-> 	struct gpio_desc		*reset_gpio;
->+	struct gpio_desc		*mute_gpio;
-> 	struct clk			*mclk;
-> 	bool				use_sdout2;
-> 	u32				mclk_rate;
->@@ -833,6 +834,16 @@ static int cs53l30_set_dai_tdm_slot(struct
->snd_soc_dai *dai,
-> 	return 0;
-> }
-> 
->+static int cs53l30_mute_stream(struct snd_soc_dai *dai, int mute, int
->stream)
->+{
->+	struct cs53l30_private *priv = snd_soc_codec_get_drvdata(dai->codec);
->+
->+	if (priv->mute_gpio)
->+		gpiod_set_value_cansleep(priv->mute_gpio, mute);
->+
->+	return 0;
->+}
->+
-> /* SNDRV_PCM_RATE_KNOT -> 12000, 24000 Hz, limit with constraint list */
-> #define CS53L30_RATES (SNDRV_PCM_RATE_8000_48000 | SNDRV_PCM_RATE_KNOT)
-> 
->@@ -846,6 +857,7 @@ static const struct snd_soc_dai_ops cs53l30_ops = {
-> 	.set_sysclk = cs53l30_set_sysclk,
-> 	.set_tristate = cs53l30_set_tristate,
-> 	.set_tdm_slot = cs53l30_set_dai_tdm_slot,
->+	.mute_stream = cs53l30_mute_stream,
-> };
-> 
-> static struct snd_soc_dai_driver cs53l30_dai = {
->@@ -990,6 +1002,24 @@ static int cs53l30_i2c_probe(struct i2c_client
->*client,
-> 		cs53l30->mclk = NULL;
-> 	}
-> 
->+	/* Fetch the MUTE control */
->+	cs53l30->mute_gpio = devm_gpiod_get_optional(dev, "mute",
->+						     GPIOD_OUT_HIGH);
->+	if (IS_ERR(cs53l30->mute_gpio)) {
->+		ret = PTR_ERR(cs53l30->mute_gpio);
->+		goto error;
->+	}
->+
->+	if (cs53l30->mute_gpio) {
->+		/* Enable MUTE controls via MUTE pin */
->+		regmap_write(cs53l30->regmap, CS53L30_MUTEP_CTL1,
->+			     CS53L30_MUTEP_CTL1_MUTEALL);
->+		/* Flip the polarity of MUTE pin */
->+		if (gpiod_is_active_low(cs53l30->mute_gpio))
->+			regmap_update_bits(cs53l30->regmap, CS53L30_MUTEP_CTL2,
->+					   CS53L30_MUTE_PIN_POLARITY, 0);
->+	}
->+
-> 	if (!of_property_read_u8(np, "cirrus,micbias-lvl", &val))
-> 		regmap_update_bits(cs53l30->regmap, CS53L30_MICBIAS_CTL,
-> 				   CS53L30_MIC_BIAS_CTRL_MASK, val);
->diff --git a/sound/soc/codecs/cs53l30.h b/sound/soc/codecs/cs53l30.h
->index 0dd4afb..5e39da5 100644
->--- a/sound/soc/codecs/cs53l30.h
->+++ b/sound/soc/codecs/cs53l30.h
->@@ -253,6 +253,7 @@
-> #define CS53L30_MUTE_MB_ALL_PDN_MASK	(1 << CS53L30_MUTE_MB_ALL_PDN_SHIFT)
-> #define CS53L30_MUTE_MB_ALL_PDN		(1 << CS53L30_MUTE_MB_ALL_PDN_SHIFT)
-> 
->+#define CS53L30_MUTEP_CTL1_MUTEALL	(0xdf)
-> #define CS53L30_MUTEP_CTL1_DEFAULT	(0)
-> 
-> /* R32 (0x20) CS53L30_MUTEP_CTL2 - MUTE Pin Control 2 */
->-- 
->2.1.4
-Thanks!
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
->
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 49220e9b454e60774c4e65a2c7ad624fb22c9180 Mon Sep 17 00:00:00 2001
+From: Helen Koike <helen.koike@collabora.co.uk>
+Date: Mon, 20 Jun 2016 16:29:26 -0300
+Subject: [PATCH] ASoC: max9877: Remove unused function declaration
+
+Remove unused function declaration from header
+
+Signed-off-by: Helen Koike <helen.koike@collabora.co.uk>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/max9877.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/soc/codecs/max9877.h b/sound/soc/codecs/max9877.h
+index 6da72290ac58..368343f29dd0 100644
+--- a/sound/soc/codecs/max9877.h
++++ b/sound/soc/codecs/max9877.h
+@@ -32,6 +32,4 @@
+ #define MAX9877_BYPASS			(1 << 6)
+ #define MAX9877_SHDN			(1 << 7)
+ 
+-extern int max9877_add_controls(struct snd_soc_codec *codec);
+-
+ #endif
+-- 
+2.8.1
