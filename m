@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add pm ops for
-	broxton-rt298 machine" to the asoc tree
-Date: Wed, 22 Jun 2016 16:28:29 +0100
-Message-ID: <E1bFk4r-0002GN-Vm@debutante>
-References: <1466604861-24288-4-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Disable async suspend"
+	to the asoc tree
+Date: Wed, 22 Jun 2016 16:28:32 +0100
+Message-ID: <E1bFk4u-0002HC-UN@debutante>
+References: <1466604861-24288-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AD834266D05
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 17:28:35 +0200 (CEST)
-In-Reply-To: <1466604861-24288-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A36AB268040
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 17:28:37 +0200 (CEST)
+In-Reply-To: <1466604861-24288-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add pm ops for broxton-rt298 machine
+   ASoC: Intel: Skylake: Disable async suspend
 
 has been applied to the asoc tree at
 
@@ -53,28 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From f749a78a5433bb571d2c39f4cec8bb08307fa0e9 Mon Sep 17 00:00:00 2001
+>From 2e9dc2b645f72dcd528edbad7e35fa34d7204020 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Wed, 22 Jun 2016 19:44:20 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add pm ops for broxton-rt298 machine
+Date: Wed, 22 Jun 2016 19:44:19 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Disable async suspend
+
+We do not support async suspend due to dependency with rest of
+card and require suspend/resume be executed synchronously, mark
+the device accordingly.
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bxt_rt298.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/skylake/skl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index 8b956500414b..253d7bfbf511 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -458,6 +458,7 @@ static struct platform_driver broxton_audio = {
- 	.probe = broxton_audio_probe,
- 	.driver = {
- 		.name = "bxt_alc298s_i2s",
-+		.pm = &snd_soc_pm_ops,
- 	},
- };
- module_platform_driver(broxton_audio)
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 734072c79205..720efb9fd995 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -668,6 +668,8 @@ static int skl_probe(struct pci_dev *pci,
+ 
+ 	skl->pci_id = pci->device;
+ 
++	device_disable_async_suspend(bus->dev);
++
+ 	skl->nhlt = skl_nhlt_init(bus->dev);
+ 
+ 	if (skl->nhlt == NULL)
 -- 
 2.8.1
