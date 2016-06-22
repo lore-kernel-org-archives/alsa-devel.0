@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Revert "ASoC: Intel: Add support
-	for PM ops in bxt-rt298"" to the asoc tree
-Date: Wed, 22 Jun 2016 16:28:35 +0100
-Message-ID: <E1bFk4x-0002I0-Rd@debutante>
-References: <1466604861-24288-2-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: rt5514: Add the MCLK handling" to the
+	asoc tree
+Date: Wed, 22 Jun 2016 16:28:38 +0100
+Message-ID: <E1bFk50-0002Iu-Pb@debutante>
+References: <1466132544-22916-2-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 209E1266939
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 17:28:41 +0200 (CEST)
-In-Reply-To: <1466604861-24288-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D7D7266A12
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 17:28:46 +0200 (CEST)
+In-Reply-To: <1466132544-22916-2-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Revert "ASoC: Intel: Add support for PM ops in bxt-rt298"
+   ASoC: rt5514: Add the MCLK handling
 
 has been applied to the asoc tree at
 
@@ -53,59 +53,111 @@ to this mail.
 Thanks,
 Mark
 
->From 45a9e0753153907b1a5141377295daf5483805b7 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Wed, 22 Jun 2016 19:44:18 +0530
-Subject: [PATCH] ASoC: Intel: Revert "ASoC: Intel: Add support for PM ops in
- bxt-rt298"
+>From c9506bb84b62917ae88087545ccb756d35655397 Mon Sep 17 00:00:00 2001
+From: Oder Chiou <oder_chiou@realtek.com>
+Date: Fri, 17 Jun 2016 11:02:24 +0800
+Subject: [PATCH] ASoC: rt5514: Add the MCLK handling
 
-This reverts commit 3513798ca4bc ("ASoC: Intel: Add support for
-PM ops in bxt-rt298") as the right way to fix this is to disable
-async suspend
+The patch adds the control of MCLK that depends on the status of DAPM.
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bxt_rt298.c | 23 -----------------------
- 1 file changed, 23 deletions(-)
+ Documentation/devicetree/bindings/sound/rt5514.txt |  5 ++++
+ sound/soc/codecs/rt5514.c                          | 32 ++++++++++++++++++++++
+ sound/soc/codecs/rt5514.h                          |  3 ++
+ 3 files changed, 40 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index 2ef33b113bb5..8b956500414b 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -454,33 +454,10 @@ static int broxton_audio_probe(struct platform_device *pdev)
- 	return devm_snd_soc_register_card(&pdev->dev, &broxton_rt298);
+diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
+index e24436fc5ea9..9cabfc18cb57 100644
+--- a/Documentation/devicetree/bindings/sound/rt5514.txt
++++ b/Documentation/devicetree/bindings/sound/rt5514.txt
+@@ -8,6 +8,11 @@ Required properties:
+ 
+ - reg : The I2C address of the device.
+ 
++Optional properties:
++
++- clocks: The phandle of the master clock to the CODEC
++- clock-names: Should be "mclk"
++
+ Pins on the device (for linking into audio routes) for RT5514:
+ 
+   * DMIC1L
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 879bf60f4965..e6ae2309e5f8 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -799,10 +799,41 @@ static int rt5514_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 	return 0;
  }
  
--/*
-- * we want the card to be suspend first and then platform driver. This
-- * allows the DAPM to tear down pipelines on suspend and then platform shuts
-- * down the DSP. For this use .prepare for suspending card
-- *
-- * Similarly, use complete to let DSP download firmware first and then sync
-- * DAPM and restore pipelines to DSP
-- */
--static void broxton_rt298_complete(struct device *dev)
--{
--	snd_soc_resume(dev);
--}
--
--static const struct dev_pm_ops broxton_pm_ops = {
--	.prepare = snd_soc_suspend,
--	.complete = broxton_rt298_complete,
--	.freeze = snd_soc_suspend,
--	.thaw = snd_soc_resume,
--	.poweroff = snd_soc_poweroff,
--	.restore = snd_soc_resume,
--};
--
- static struct platform_driver broxton_audio = {
- 	.probe = broxton_audio_probe,
- 	.driver = {
- 		.name = "bxt_alc298s_i2s",
--		.pm = &broxton_pm_ops,
- 	},
- };
- module_platform_driver(broxton_audio)
++static int rt5514_set_bias_level(struct snd_soc_codec *codec,
++			enum snd_soc_bias_level level)
++{
++	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
++	int ret;
++
++	switch (level) {
++	case SND_SOC_BIAS_PREPARE:
++		if (IS_ERR(rt5514->mclk))
++			break;
++
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_ON) {
++			clk_disable_unprepare(rt5514->mclk);
++		} else {
++			ret = clk_prepare_enable(rt5514->mclk);
++			if (ret)
++				return ret;
++		}
++		break;
++
++	default:
++		break;
++	}
++
++	return 0;
++}
++
+ static int rt5514_probe(struct snd_soc_codec *codec)
+ {
+ 	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
+ 
++	rt5514->mclk = devm_clk_get(codec->dev, "mclk");
++	if (PTR_ERR(rt5514->mclk) == -EPROBE_DEFER)
++		return -EPROBE_DEFER;
++
+ 	rt5514->codec = codec;
+ 
+ 	return 0;
+@@ -858,6 +889,7 @@ struct snd_soc_dai_driver rt5514_dai[] = {
+ static struct snd_soc_codec_driver soc_codec_dev_rt5514 = {
+ 	.probe = rt5514_probe,
+ 	.idle_bias_off = true,
++	.set_bias_level = rt5514_set_bias_level,
+ 	.controls = rt5514_snd_controls,
+ 	.num_controls = ARRAY_SIZE(rt5514_snd_controls),
+ 	.dapm_widgets = rt5514_dapm_widgets,
+diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
+index 6ad8a612f659..766f5a666ebe 100644
+--- a/sound/soc/codecs/rt5514.h
++++ b/sound/soc/codecs/rt5514.h
+@@ -12,6 +12,8 @@
+ #ifndef __RT5514_H__
+ #define __RT5514_H__
+ 
++#include <linux/clk.h>
++
+ #define RT5514_DEVICE_ID			0x10ec5514
+ 
+ #define RT5514_RESET				0x2000
+@@ -240,6 +242,7 @@ enum {
+ struct rt5514_priv {
+ 	struct snd_soc_codec *codec;
+ 	struct regmap *i2c_regmap, *regmap;
++	struct clk *mclk;
+ 	int sysclk;
+ 	int sysclk_src;
+ 	int lrck;
 -- 
 2.8.1
