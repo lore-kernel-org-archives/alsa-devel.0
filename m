@@ -1,140 +1,52 @@
-From: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] ALSA: hda/tegra: iomem fixups for sparse warnings
-Date: Wed, 22 Jun 2016 14:35:51 +0200
-Message-ID: <20160622123551.GE26943@ulmo.ba.sec>
-References: <1466533112-3262-1-git-send-email-ben.dooks@codethink.co.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [very-RFC 0/8] TSN driver for the kernel
+Date: Wed, 22 Jun 2016 05:36:42 -0700
+Message-ID: <04675515-ff64-0acc-f0f0-7714e20c1485@linux.intel.com>
+References: <20160613114713.GA9544@localhost.localdomain>
+ <20160613195136.GC2441@netboy> <20160614121844.54a125a5@lxorguk.ukuu.org.uk>
+ <5760C84C.40408@sakamocchi.jp> <20160615080602.GA13555@localhost.localdomain>
+ <5764DA85.3050801@sakamocchi.jp>
+ <20160618224549.GF32724@icarus.home.austad.us>
+ <9a5abd48-4da3-945d-53c9-b6d37010ab0d@linux.intel.com>
+ <20160620121838.GA5257@localhost.localdomain>
+ <07283da9-f6d1-c3b1-7989-a6fce7ca0ee6@linux.intel.com>
+ <20160621194001.GB2489@netboy>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qFgkTsE6LiHkLPZw"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1466533112-3262-1-git-send-email-ben.dooks-4yDnlxn2s6sWdaTGBSpHTA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Ben Dooks <ben.dooks-4yDnlxn2s6sWdaTGBSpHTA@public.gmane.org>
-Cc: linux-kernel-81qHHgoATdFT9dQujB1mzip2UmYkHbXO@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58B2D265873
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 14:36:44 +0200 (CEST)
+In-Reply-To: <20160621194001.GB2489@netboy>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Richard Cochran <richardcochran@gmail.com>
+Cc: alsa-devel@alsa-project.org, netdev@vger.kernel.org, Henrik Austad <henrik@austad.us>, linux-kernel@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 6/21/16 12:40 PM, Richard Cochran wrote:
+> On Tue, Jun 21, 2016 at 10:45:18AM -0700, Pierre-Louis Bossart wrote:
+>> You can experiment with the 'dma' and 'link' timestamps today on any
+>> HDaudio-based device. Like I said the synchronized part has not been
+>> upstreamed yet (delays + dependency on ART-to-TSC conversions that made it
+>> in the kernel recently)
+>
+> Can you point me to any open source apps using the dma/link
+> timestamps?
 
---qFgkTsE6LiHkLPZw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jun 21, 2016 at 07:18:32PM +0100, Ben Dooks wrote:
-> The readl/writel are not being passed __iomem annotated
-> variables, so fix the following sparse warnings by adding
-> __iomem in:
->=20
-> sound/pci/hda/hda_tegra.c:120:9: warning: incorrect type in argument 2 (d=
-ifferent address spaces)
-> sound/pci/hda/hda_tegra.c:120:9:    expected void volatile [noderef] <asn=
-:2>*addr
-> sound/pci/hda/hda_tegra.c:120:9:    got unsigned int [usertype] *addr
-> sound/pci/hda/hda_tegra.c:125:16: warning: incorrect type in argument 1 (=
-different address spaces)
-> sound/pci/hda/hda_tegra.c:125:16:    expected void const volatile [nodere=
-f] <asn:2>*addr
-> sound/pci/hda/hda_tegra.c:125:16:    got unsigned int [usertype] *addr
-> sound/pci/hda/hda_tegra.c:134:13: warning: incorrect type in argument 1 (=
-different address spaces)
-> sound/pci/hda/hda_tegra.c:134:13:    expected void const volatile [nodere=
-f] <asn:2>*addr
-> sound/pci/hda/hda_tegra.c:134:13:    got void *dword_addr
-> sound/pci/hda/hda_tegra.c:137:9: warning: incorrect type in argument 2 (d=
-ifferent address spaces)
-> sound/pci/hda/hda_tegra.c:137:9:    expected void volatile [noderef] <asn=
-:2>*addr
-> sound/pci/hda/hda_tegra.c:137:9:    got void *dword_addr
-> sound/pci/hda/hda_tegra.c:146:13: warning: incorrect type in argument 1 (=
-different address spaces)
-> sound/pci/hda/hda_tegra.c:146:13:    expected void const volatile [nodere=
-f] <asn:2>*addr
-> sound/pci/hda/hda_tegra.c:146:13:    got void *dword_addr
-> sound/pci/hda/hda_tegra.c:156:13: warning: incorrect type in argument 1 (=
-different address spaces)
-> sound/pci/hda/hda_tegra.c:156:13:    expected void const volatile [nodere=
-f] <asn:2>*addr
-> sound/pci/hda/hda_tegra.c:156:13:    got void *dword_addr
-> sound/pci/hda/hda_tegra.c:159:9: warning: incorrect type in argument 2 (d=
-ifferent address spaces)
-> sound/pci/hda/hda_tegra.c:159:9:    expected void volatile [noderef] <asn=
-:2>*addr
-> sound/pci/hda/hda_tegra.c:159:9:    got void *dword_addr
-> sound/pci/hda/hda_tegra.c:168:13: warning: incorrect type in argument 1 (=
-different address spaces)
-> sound/pci/hda/hda_tegra.c:168:13:    expected void const volatile [nodere=
-f] <asn:2>*addr
-> sound/pci/hda/hda_tegra.c:168:13:    got void *dword_addr
-> sound/pci/hda/hda_tegra.c:173:23: warning: incorrect type in initializer =
-(incompatible argument 2 (different address spaces))
-> sound/pci/hda/hda_tegra.c:173:23:    expected void ( *reg_writel )( ... )
-> sound/pci/hda/hda_tegra.c:173:23:    got void ( static [toplevel] *<noide=
-nt> )( ... )
-> sound/pci/hda/hda_tegra.c:174:22: warning: incorrect type in initializer =
-(incompatible argument 1 (different address spaces))
-> sound/pci/hda/hda_tegra.c:174:22:    expected unsigned int ( *reg_readl )=
-( ... )
-> sound/pci/hda/hda_tegra.c:174:22:    got unsigned int ( static [toplevel]=
- *<noident> )( ... )
-> sound/pci/hda/hda_tegra.c:175:23: warning: incorrect type in initializer =
-(incompatible argument 2 (different address spaces))
-> sound/pci/hda/hda_tegra.c:175:23:    expected void ( *reg_writew )( ... )
-> sound/pci/hda/hda_tegra.c:175:23:    got void ( static [toplevel] *<noide=
-nt> )( ... )
-> sound/pci/hda/hda_tegra.c:176:22: warning: incorrect type in initializer =
-(incompatible argument 1 (different address spaces))
-> sound/pci/hda/hda_tegra.c:176:22:    expected unsigned short ( *reg_readw=
- )( ... )
-> sound/pci/hda/hda_tegra.c:176:22:    got unsigned short ( static [topleve=
-l] *<noident> )( ... )
-> sound/pci/hda/hda_tegra.c:177:23: warning: incorrect type in initializer =
-(incompatible argument 2 (different address spaces))
-> sound/pci/hda/hda_tegra.c:177:23:    expected void ( *reg_writeb )( ... )
-> sound/pci/hda/hda_tegra.c:177:23:    got void ( static [toplevel] *<noide=
-nt> )( ... )
-> sound/pci/hda/hda_tegra.c:178:22: warning: incorrect type in initializer =
-(incompatible argument 1 (different address spaces))
-> sound/pci/hda/hda_tegra.c:178:22:    expected unsigned char ( *reg_readb =
-)( ... )
-> sound/pci/hda/hda_tegra.c:178:22:    got unsigned char ( static [toplevel=
-] *<noident> )( ... )
->=20
-> Signed-off-by: Ben Dooks <ben.dooks-4yDnlxn2s6sWdaTGBSpHTA@public.gmane.org>
-> ---
-> Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
-> Cc: Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
-> Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-> Cc: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> Cc: Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-> Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> ---
->  sound/pci/hda/hda_tegra.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
-
-Takashi's already applid it, but fwiw:
-
-Acked-by: Thierry Reding <treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-
---qFgkTsE6LiHkLPZw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAABCAAGBQJXaoYnAAoJEN0jrNd/PrOhnuIP+wcSaHHdqCWiSHYwJA2WCvDI
-OKP3ecIShN+cEnd228Xl/Hf9yhkOzQ+ypkQkaNfb1Y1B4yUd+5C2Yu6dI8/cgrGd
-ZOsSxfOinVCxil5FdzAaNUzBWi+EBlGtnAHOm3iD3e/ZJPTRXNxjFmOh6ZQQmFiU
-Bu15Yz/DZDWrhHifMyPqej88DIr8Ad7l8xvkkivScekk/BC0+0nMoY43jHAqGC6g
-r7DJjA3hzAcL7yO3jzM6pFpAE2A1C5SWtnWPtkU27TZkczSXqrfiroEFkoiMYM1G
-qh3C4wGDK8nuO1bjNwcDG4/zA/rlM3/6v/Zsoj2tNPNd97csDV/m4mdKv2233AY7
-r2sWxvtuFT5rCR5AisR7+t2wlxacs0m9rmPssOgH6RZnHkEtKCwU/VXomQvQQi9z
-c4lAjUQRkWOZPWJHz3dJQ6eHzSGAYQy/sCvw1x5vC9dbs3epgbRBigrT3qoGLhy1
-mgxvgkF15s3oFtSJs9rD7g5Ed6f7f4MIIruJ/fIPkmbdhMbwVaZQoaoqUQtfCPSI
-1+BakZ6/SQ+8ybzWjnLy/V+Y3GuvvVaeSjmOVL/oYK0nAoS2iMHjh7NcQXymABrW
-I5lnm9xvRAiDkg1LmcsM+zfSKP/i6EIDmsoh96rl9wmfkdvuIOWF+vgSdpUaUYFX
-Y78hGuUfN1X3t/uE/Arl
-=9CvR
------END PGP SIGNATURE-----
-
---qFgkTsE6LiHkLPZw--
+Those timestamps are only used in custom applications at the moment, not 
+'mainstream' open source.
+It takes time for new kernel capabilities to trickle into userspace, 
+applications usually align on the lowest hardware common denominator. In 
+addition, most applications don't access the kernel directly but go 
+through an audio server or HAL which needs to be updated as well so it's 
+a two-level dependency. These timestamps can be directly mappped to the 
+Android AudioTrack.getTimeStamp API though.
