@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: Intel: Skylake: Support multi-core in
-	Broxton" to the asoc tree
-Date: Wed, 22 Jun 2016 16:28:12 +0100
-Message-ID: <E1bFk4a-0002Aw-D6@debutante>
-References: <1466431812-9046-4-git-send-email-vinod.koul@intel.com>
+	Skylake" to the asoc tree
+Date: Wed, 22 Jun 2016 16:28:15 +0100
+Message-ID: <E1bFk4d-0002Bo-9q@debutante>
+References: <1466431812-9046-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D07C266CFA
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CFB3266CF7
  for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 17:28:22 +0200 (CEST)
-In-Reply-To: <1466431812-9046-4-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1466431812-9046-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Support multi-core in Broxton
+   ASoC: Intel: Skylake: Support multi-core in Skylake
 
 has been applied to the asoc tree at
 
@@ -53,256 +53,129 @@ to this mail.
 Thanks,
 Mark
 
->From e68aca08d77e75c43850187a1cf8203fc53179de Mon Sep 17 00:00:00 2001
+>From 40a166039a84da15a6d01a7a997398eb4a0d3c1e Mon Sep 17 00:00:00 2001
 From: Jayachandran B <jayachandran.b@intel.com>
-Date: Tue, 21 Jun 2016 10:17:43 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Support multi-core in Broxton
+Date: Tue, 21 Jun 2016 10:17:42 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Support multi-core in Skylake
 
-Add multicore DSP support in Broxton DSP operations.
+Add multicore DSP support in Skylake DSP operations.
 
 Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c | 144 +++++++++++++++++++++++++++-----------
- 1 file changed, 103 insertions(+), 41 deletions(-)
+ sound/soc/intel/skylake/skl-sst.c | 77 ++++++++++++++++++++++++---------------
+ 1 file changed, 48 insertions(+), 29 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index c6cc1cfd04c8..9c3750f49c21 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -37,11 +37,19 @@
- 
- #define BXT_ADSP_SRAM1_BASE	0xA0000
- 
-+#define BXT_INSTANCE_ID 0
-+#define BXT_BASE_FW_MODULE_ID 0
-+
- static unsigned int bxt_get_errorcode(struct sst_dsp *ctx)
- {
- 	 return sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE);
- }
- 
-+/*
-+ * First boot sequence has some extra steps. Core 0 waits for power
-+ * status on core 1, so power up core 1 also momentarily, keep it in
-+ * reset/stall and then turn it off
-+ */
- static int sst_bxt_prepare_fw(struct sst_dsp *ctx,
- 			const void *fwdata, u32 fwsize)
- {
-@@ -49,7 +57,7 @@ static int sst_bxt_prepare_fw(struct sst_dsp *ctx,
- 	u32 reg;
- 
- 	stream_tag = ctx->dsp_ops.prepare(ctx->dev, 0x40, fwsize, &ctx->dmab);
--	if (stream_tag < 0) {
-+	if (stream_tag <= 0) {
- 		dev_err(ctx->dev, "Failed to prepare DMA FW loading err: %x\n",
- 				stream_tag);
- 		return stream_tag;
-@@ -58,16 +66,19 @@ static int sst_bxt_prepare_fw(struct sst_dsp *ctx,
- 	ctx->dsp_ops.stream_tag = stream_tag;
- 	memcpy(ctx->dmab.area, fwdata, fwsize);
- 
--	ret = skl_dsp_core_power_up(ctx, SKL_DSP_CORE0_MASK);
-+	/* Step 1: Power up core 0 and core1 */
-+	ret = skl_dsp_core_power_up(ctx, SKL_DSP_CORE0_MASK |
-+				SKL_DSP_CORE_MASK(1));
- 	if (ret < 0) {
--		dev_err(ctx->dev, "Boot dsp core failed ret: %d\n", ret);
-+		dev_err(ctx->dev, "dsp core0/1 power up failed\n");
- 		goto base_fw_load_failed;
- 	}
- 
--	/* Purge FW request */
-+	/* Step 2: Purge FW request */
- 	sst_dsp_shim_write(ctx, SKL_ADSP_REG_HIPCI, SKL_ADSP_REG_HIPCI_BUSY |
- 				(BXT_IPC_PURGE_FW | ((stream_tag - 1) << 9)));
- 
-+	/* Step 3: Unset core0 reset state & unstall/run core0 */
- 	ret = skl_dsp_start_core(ctx, SKL_DSP_CORE0_MASK);
- 	if (ret < 0) {
- 		dev_err(ctx->dev, "Start dsp core failed ret: %d\n", ret);
-@@ -75,6 +86,7 @@ static int sst_bxt_prepare_fw(struct sst_dsp *ctx,
- 		goto base_fw_load_failed;
- 	}
- 
-+	/* Step 4: Wait for DONE Bit */
- 	for (i = BXT_INIT_TIMEOUT; i > 0; --i) {
- 		reg = sst_dsp_shim_read(ctx, SKL_ADSP_REG_HIPCIE);
- 
-@@ -94,10 +106,18 @@ static int sst_bxt_prepare_fw(struct sst_dsp *ctx,
- 				SKL_ADSP_REG_HIPCIE_DONE);
- 	}
- 
--	/* enable Interrupt */
-+	/* Step 5: power down core1 */
-+	ret = skl_dsp_core_power_down(ctx, SKL_DSP_CORE_MASK(1));
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "dsp core1 power down failed\n");
-+		goto base_fw_load_failed;
-+	}
-+
-+	/* Step 6: Enable Interrupt */
- 	skl_ipc_int_enable(ctx);
- 	skl_ipc_op_int_enable(ctx);
- 
-+	/* Step 7: Wait for ROM init */
- 	for (i = BXT_INIT_TIMEOUT; i > 0; --i) {
- 		if (SKL_FW_INIT ==
- 				(sst_dsp_shim_read(ctx, BXT_ADSP_FW_STATUS) &
-@@ -194,7 +214,6 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
- 			skl_dsp_disable_core(ctx, SKL_DSP_CORE0_MASK);
- 			ret = -EIO;
- 		} else {
--			skl_dsp_set_state_locked(ctx, SKL_DSP_RUNNING);
- 			ret = 0;
- 			skl->fw_loaded = true;
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index ecaca94d2a96..588f899ceb65 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -150,7 +150,6 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
  		}
-@@ -209,67 +228,110 @@ static int bxt_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
+ 
+ 		dev_dbg(ctx->dev, "Download firmware successful%d\n", ret);
+-		skl_dsp_set_state_locked(ctx, SKL_DSP_RUNNING);
+ 		skl->fw_loaded = true;
+ 	}
+ 	return 0;
+@@ -166,14 +165,41 @@ skl_load_base_firmware_failed:
+ static int skl_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
  {
- 	struct skl_sst *skl = ctx->thread_context;
  	int ret;
--
--	skl->boot_complete = false;
 +	struct skl_ipc_dxstate_info dx;
++	struct skl_sst *skl = ctx->thread_context;
 +	unsigned int core_mask = SKL_DSP_CORE_MASK(core_id);
  
- 	if (skl->fw_loaded == false) {
--		dev_dbg(ctx->dev, "Re-loading fw\n");
- 		ret = bxt_load_base_firmware(ctx);
- 		if (ret < 0)
- 			dev_err(ctx->dev, "reload fw failed: %d\n", ret);
- 		return ret;
- 	}
- 
--	ret = skl_dsp_enable_core(ctx, SKL_DSP_CORE0_MASK);
+-	ret = skl_load_base_firmware(ctx);
 -	if (ret < 0) {
--		dev_err(ctx->dev, "enable dsp core failed ret: %d\n", ret);
+-		dev_err(ctx->dev, "unable to load firmware\n");
 -		return ret;
-+	/* If core 0 is being turned on, turn on core 1 as well */
-+	if (core_id == SKL_DSP_CORE0_ID)
-+		ret = skl_dsp_core_power_up(ctx, core_mask |
-+				SKL_DSP_CORE_MASK(1));
-+	else
-+		ret = skl_dsp_core_power_up(ctx, core_mask);
-+
-+	if (ret < 0)
-+		goto err;
-+
++	/* If core0 is being turned on, we need to load the FW */
 +	if (core_id == SKL_DSP_CORE0_ID) {
-+
-+		/*
-+		 * Enable interrupt after SPA is set and before
-+		 * DSP is unstalled
-+		 */
-+		skl_ipc_int_enable(ctx);
-+		skl_ipc_op_int_enable(ctx);
-+		skl->boot_complete = false;
- 	}
- 
--	/* enable interrupt */
--	skl_ipc_int_enable(ctx);
--	skl_ipc_op_int_enable(ctx);
-+	ret = skl_dsp_start_core(ctx, core_mask);
-+	if (ret < 0)
-+		goto err;
- 
--	ret = wait_event_timeout(skl->boot_wait, skl->boot_complete,
--					msecs_to_jiffies(SKL_IPC_BOOT_MSECS));
--	if (ret == 0) {
--		dev_err(ctx->dev, "ipc: error DSP boot timeout\n");
--		dev_err(ctx->dev, "Error code=0x%x: FW status=0x%x\n",
--			sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE),
--			sst_dsp_shim_read(ctx, BXT_ADSP_FW_STATUS));
--		return -EIO;
-+	if (core_id == SKL_DSP_CORE0_ID) {
-+		ret = wait_event_timeout(skl->boot_wait,
-+				skl->boot_complete,
-+				msecs_to_jiffies(SKL_IPC_BOOT_MSECS));
-+
-+	/* If core 1 was turned on for booting core 0, turn it off */
-+		skl_dsp_core_power_down(ctx, SKL_DSP_CORE_MASK(1));
-+		if (ret == 0) {
-+			dev_err(ctx->dev, "%s: DSP boot timeout\n", __func__);
-+			dev_err(ctx->dev, "Error code=0x%x: FW status=0x%x\n",
-+				sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE),
-+				sst_dsp_shim_read(ctx, BXT_ADSP_FW_STATUS));
-+			dev_err(ctx->dev, "Failed to set core0 to D0 state\n");
-+			ret = -EIO;
-+			goto err;
++		ret = skl_load_base_firmware(ctx);
++		if (ret < 0) {
++			dev_err(ctx->dev, "unable to load firmware\n");
++			return ret;
 +		}
 +	}
 +
-+	/* Tell FW if additional core in now On */
-+
++	/*
++	 * If any core other than core 0 is being moved to D0, enable the
++	 * core and send the set dx IPC for the core.
++	 */
 +	if (core_id != SKL_DSP_CORE0_ID) {
++		ret = skl_dsp_enable_core(ctx, core_mask);
++		if (ret < 0)
++			return ret;
++
 +		dx.core_mask = core_mask;
 +		dx.dx_mask = core_mask;
 +
-+		ret = skl_ipc_set_dx(&skl->ipc, BXT_INSTANCE_ID,
-+					BXT_BASE_FW_MODULE_ID, &dx);
++		ret = skl_ipc_set_dx(&skl->ipc, SKL_INSTANCE_ID,
++					SKL_BASE_FW_MODULE_ID, &dx);
 +		if (ret < 0) {
-+			dev_err(ctx->dev, "IPC set_dx for core %d fail: %d\n",
-+								core_id, ret);
-+			goto err;
++			dev_err(ctx->dev, "Failed to set dsp to D0:core id= %d\n",
++					core_id);
++			skl_dsp_disable_core(ctx, core_mask);
 +		}
  	}
  
 -	skl_dsp_set_state_locked(ctx, SKL_DSP_RUNNING);
 +	skl->cores.state[core_id] = SKL_DSP_RUNNING;
- 	return 0;
-+err:
-+	if (core_id == SKL_DSP_CORE0_ID)
-+		core_mask |= SKL_DSP_CORE_MASK(1);
-+	skl_dsp_disable_core(ctx, core_mask);
-+
-+	return ret;
- }
  
- static int bxt_set_dsp_D3(struct sst_dsp *ctx, unsigned int core_id)
- {
-+	int ret;
+ 	return ret;
+ }
+@@ -183,35 +209,28 @@ static int skl_set_dsp_D3(struct sst_dsp *ctx, unsigned int core_id)
+ 	int ret;
  	struct skl_ipc_dxstate_info dx;
  	struct skl_sst *skl = ctx->thread_context;
--	int ret = 0;
--
--	if (!is_skl_dsp_running(ctx))
--		return ret;
 +	unsigned int core_mask = SKL_DSP_CORE_MASK(core_id);
  
+-	dev_dbg(ctx->dev, "In %s:\n", __func__);
+-	mutex_lock(&ctx->mutex);
+-	if (!is_skl_dsp_running(ctx)) {
+-		mutex_unlock(&ctx->mutex);
+-		return 0;
+-	}
+-	mutex_unlock(&ctx->mutex);
+-
 -	dx.core_mask = SKL_DSP_CORE0_MASK;
 +	dx.core_mask = core_mask;
  	dx.dx_mask = SKL_IPC_D3_MASK;
- 
--	ret = skl_ipc_set_dx(&skl->ipc, SKL_INSTANCE_ID,
--				SKL_BASE_FW_MODULE_ID, &dx);
--	if (ret < 0) {
--		dev_err(ctx->dev, "Failed to set DSP to D3 state: %d\n", ret);
--		return ret;
--	}
-+	dev_dbg(ctx->dev, "core mask=%x dx_mask=%x\n",
-+			dx.core_mask, dx.dx_mask);
- 
--	ret = skl_dsp_disable_core(ctx, SKL_DSP_CORE0_MASK);
-+	ret = skl_ipc_set_dx(&skl->ipc, BXT_INSTANCE_ID,
-+				BXT_BASE_FW_MODULE_ID, &dx);
-+	if (ret < 0)
-+		dev_err(ctx->dev,
-+		"Failed to set DSP to D3:core id = %d;Continue reset\n",
-+		core_id);
 +
-+	ret = skl_dsp_disable_core(ctx, core_mask);
- 	if (ret < 0) {
--		dev_err(ctx->dev, "disbale dsp core failed: %d\n", ret);
--		ret = -EIO;
-+		dev_err(ctx->dev, "Failed to disable core %d", ret);
-+		return ret;
- 	}
+ 	ret = skl_ipc_set_dx(&skl->ipc, SKL_INSTANCE_ID, SKL_BASE_FW_MODULE_ID, &dx);
+ 	if (ret < 0)
+-		dev_err(ctx->dev,
+-			"D3 request to FW failed, continuing reset: %d", ret);
 -
+-	/* disable Interrupt */
+-	ctx->cl_dev.ops.cl_cleanup_controller(ctx);
+-	skl_cldma_int_disable(ctx);
+-	skl_ipc_op_int_disable(ctx);
+-	skl_ipc_int_disable(ctx);
+-
+-	ret = skl_dsp_disable_core(ctx, core_id);
+-	if (ret < 0) {
+-		dev_err(ctx->dev, "disable dsp core failed ret: %d\n", ret);
+-		ret = -EIO;
++		dev_err(ctx->dev, "set Dx core %d fail: %d\n", core_id, ret);
++
++	if (core_id == SKL_DSP_CORE0_ID) {
++		/* disable Interrupt */
++		ctx->cl_dev.ops.cl_cleanup_controller(ctx);
++		skl_cldma_int_disable(ctx);
++		skl_ipc_op_int_disable(ctx);
++		skl_ipc_int_disable(ctx);
+ 	}
 -	skl_dsp_set_state_locked(ctx, SKL_DSP_RESET);
+ 
++	ret = skl_dsp_disable_core(ctx, core_mask);
++	if (ret < 0)
++		return ret;
++
 +	skl->cores.state[core_id] = SKL_DSP_RESET;
- 	return 0;
+ 	return ret;
  }
  
 -- 
