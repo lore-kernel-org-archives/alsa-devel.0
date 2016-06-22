@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Fix the issue that the variable
-	dereferenced before checking" to the asoc tree
-Date: Wed, 22 Jun 2016 16:28:24 +0100
-Message-ID: <E1bFk4m-0002Ed-5a@debutante>
-References: <1466132544-22916-1-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: Intel: Skylake: Update comment style"
+	to the asoc tree
+Date: Wed, 22 Jun 2016 16:28:27 +0100
+Message-ID: <E1bFk4p-0002FY-2p@debutante>
+References: <1466604861-24288-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ED625266967
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 17:28:30 +0200 (CEST)
-In-Reply-To: <1466132544-22916-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A3D7A266CFE
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 17:28:32 +0200 (CEST)
+In-Reply-To: <1466604861-24288-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: Fix the issue that the variable dereferenced before checking
+   ASoC: Intel: Skylake: Update comment style
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From b63d4d13ac7b8f947407a7eb44fdc40fadc8c5b8 Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Fri, 17 Jun 2016 11:02:23 +0800
-Subject: [PATCH] ASoC: rt5514: Fix the issue that the variable dereferenced
- before checking
+>From 957427d94a82459b080a99cc7e9f4d5b8c067410 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Wed, 22 Jun 2016 19:44:21 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Update comment style
 
-The patch fixes the issue that variable dereferenced before checking
-'rt5514_dsp->substream'. Move the assignment to after the variable
-checking of 'rt5514_dsp->substream'.
+Noticed a style inconsistency in a comment, so update that
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514-spi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 8a9382e9787a..743f509d48b7 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -80,7 +80,7 @@ static void rt5514_spi_copy_work(struct work_struct *work)
- {
- 	struct rt5514_dsp *rt5514_dsp =
- 		container_of(work, struct rt5514_dsp, copy_work.work);
--	struct snd_pcm_runtime *runtime = rt5514_dsp->substream->runtime;
-+	struct snd_pcm_runtime *runtime;
- 	size_t period_bytes, truncated_bytes = 0;
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 720efb9fd995..d5d7c53e07bc 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -728,7 +728,7 @@ static int skl_probe(struct pci_dev *pci,
+ 	list_for_each_entry(hlink, &ebus->hlink_list, list)
+ 		snd_hdac_ext_bus_link_put(ebus, hlink);
  
- 	mutex_lock(&rt5514_dsp->dma_lock);
-@@ -89,6 +89,7 @@ static void rt5514_spi_copy_work(struct work_struct *work)
- 		goto done;
- 	}
+-	/*configure PM */
++	/* configure PM */
+ 	pm_runtime_put_noidle(bus->dev);
+ 	pm_runtime_allow(bus->dev);
  
-+	runtime = rt5514_dsp->substream->runtime;
- 	period_bytes = snd_pcm_lib_period_bytes(rt5514_dsp->substream);
- 
- 	if (rt5514_dsp->buf_size - rt5514_dsp->dsp_offset <  period_bytes)
 -- 
 2.8.1
