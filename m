@@ -1,38 +1,214 @@
-From: Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [alsa-devel] [very-RFC 0/8] TSN driver for the kernel
-Date: Thu, 23 Jun 2016 15:28:05 +0200
-Message-ID: <20160623132805.GC7122@localhost.localdomain>
-References: <20160613195136.GC2441@netboy>
- <20160614121844.54a125a5@lxorguk.ukuu.org.uk>
- <5760C84C.40408@sakamocchi.jp>
- <20160615080602.GA13555@localhost.localdomain>
- <5764DA85.3050801@sakamocchi.jp>
- <20160618224549.GF32724@icarus.home.austad.us>
- <9a5abd48-4da3-945d-53c9-b6d37010ab0d@linux.intel.com>
- <20160620121838.GA5257@localhost.localdomain>
- <07283da9-f6d1-c3b1-7989-a6fce7ca0ee6@linux.intel.com>
- <20160623103848.GG32724@icarus.home.austad.us>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: tpa6130a2: Register component" to the
+	asoc tree
+Date: Thu, 23 Jun 2016 15:38:11 +0100
+Message-ID: <E1bG5lj-000461-S1@debutante>
+References: <139032aca71410fa9df608ea34ecb8046439c626.1466441036.git.helen.koike@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160623103848.GG32724@icarus.home.austad.us>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Henrik Austad <henrik@austad.us>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CA3B265361
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2016 16:38:22 +0200 (CEST)
+In-Reply-To: <139032aca71410fa9df608ea34ecb8046439c626.1466441036.git.helen.koike@collabora.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Helen Koike <helen.koike@collabora.co.uk>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, k.kozlowski@samsung.com, tiwai@suse.com, Sebastian Reichel <sre@kernel.org>, peter.ujfalusi@ti.com, broonie@kernel.org, jarkko.nikula@bitmer.com, linux-omap@vger.kernel.org, cphealy@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 23, 2016 at 12:38:48PM +0200, Henrik Austad wrote:
-> Richard: is it fair to assume that if ptp4l is running and is part of a PTP 
-> domain, ktime_get() will return PTP-adjusted time for the system?
+The patch
 
-No.
+   ASoC: tpa6130a2: Register component
 
-> Or do I also need to run phc2sys in order to sync the system-time
-> to PTP-time?
+has been applied to the asoc tree at
 
-Yes, unless you are using SW time stamping, in which case ptp4l will
-steer the system clock directly.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-HTH,
-Richard
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From cb7e62256e99d285e415cf75db67558f0f8bb107 Mon Sep 17 00:00:00 2001
+From: Helen Koike <helen.koike@collabora.co.uk>
+Date: Mon, 20 Jun 2016 14:12:29 -0300
+Subject: [PATCH] ASoC: tpa6130a2: Register component
+
+Add tpa6130a2 controls by the component API and update rx51 accordingly
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+[koike: port for upstream]
+Signed-off-by: Helen Koike <helen.koike@collabora.co.uk>
+Tested-By: Sebastian Reichel <sre@kernel.org>
+Reviewed-By: Sebastian Reichel <sre@kernel.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/tpa6130a2.c | 30 +++++++++++++++---------------
+ sound/soc/codecs/tpa6130a2.h |  1 -
+ sound/soc/omap/rx51.c        | 23 ++++++++++++-----------
+ 3 files changed, 27 insertions(+), 27 deletions(-)
+
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 11d85c5c787a..f31326a332fb 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -273,7 +273,7 @@ static const DECLARE_TLV_DB_RANGE(tpa6130_tlv,
+ );
+ 
+ static const struct snd_kcontrol_new tpa6130a2_controls[] = {
+-	SOC_SINGLE_EXT_TLV("TPA6130A2 Headphone Playback Volume",
++	SOC_SINGLE_EXT_TLV("Headphone Playback Volume",
+ 		       TPA6130A2_REG_VOL_MUTE, 0, 0x3f, 0,
+ 		       tpa6130a2_get_volsw, tpa6130a2_put_volsw,
+ 		       tpa6130_tlv),
+@@ -286,7 +286,7 @@ static const DECLARE_TLV_DB_RANGE(tpa6140_tlv,
+ );
+ 
+ static const struct snd_kcontrol_new tpa6140a2_controls[] = {
+-	SOC_SINGLE_EXT_TLV("TPA6140A2 Headphone Playback Volume",
++	SOC_SINGLE_EXT_TLV("Headphone Playback Volume",
+ 		       TPA6130A2_REG_VOL_MUTE, 1, 0x1f, 0,
+ 		       tpa6130a2_get_volsw, tpa6130a2_put_volsw,
+ 		       tpa6140_tlv),
+@@ -348,23 +348,22 @@ int tpa6130a2_stereo_enable(struct snd_soc_codec *codec, int enable)
+ }
+ EXPORT_SYMBOL_GPL(tpa6130a2_stereo_enable);
+ 
+-int tpa6130a2_add_controls(struct snd_soc_codec *codec)
++static int tpa6130a2_component_probe(struct snd_soc_component *component)
+ {
+-	struct	tpa6130a2_data *data;
+-
+-	if (tpa6130a2_client == NULL)
+-		return -ENODEV;
+-
+-	data = i2c_get_clientdata(tpa6130a2_client);
++	struct tpa6130a2_data *data = snd_soc_component_get_drvdata(component);
+ 
+ 	if (data->id == TPA6140A2)
+-		return snd_soc_add_codec_controls(codec, tpa6140a2_controls,
+-						ARRAY_SIZE(tpa6140a2_controls));
++		return snd_soc_add_component_controls(component,
++			tpa6140a2_controls, ARRAY_SIZE(tpa6140a2_controls));
+ 	else
+-		return snd_soc_add_codec_controls(codec, tpa6130a2_controls,
+-						ARRAY_SIZE(tpa6130a2_controls));
++		return snd_soc_add_component_controls(component,
++			tpa6130a2_controls, ARRAY_SIZE(tpa6130a2_controls));
+ }
+-EXPORT_SYMBOL_GPL(tpa6130a2_add_controls);
++
++struct snd_soc_component_driver tpa6130a2_component_driver = {
++	.name = "tpa6130a2",
++	.probe = tpa6130a2_component_probe,
++};
+ 
+ static int tpa6130a2_probe(struct i2c_client *client,
+ 			   const struct i2c_device_id *id)
+@@ -451,7 +450,8 @@ static int tpa6130a2_probe(struct i2c_client *client,
+ 	if (ret != 0)
+ 		goto err_gpio;
+ 
+-	return 0;
++	return devm_snd_soc_register_component(&client->dev,
++			&tpa6130a2_component_driver, NULL, 0);
+ 
+ err_gpio:
+ 	tpa6130a2_client = NULL;
+diff --git a/sound/soc/codecs/tpa6130a2.h b/sound/soc/codecs/tpa6130a2.h
+index 417444020ba6..78ee7237568b 100644
+--- a/sound/soc/codecs/tpa6130a2.h
++++ b/sound/soc/codecs/tpa6130a2.h
+@@ -56,7 +56,6 @@
+ /* TPA6130A2_REG_VERSION (0x04) */
+ #define TPA6130A2_VERSION_MASK		(0x0f)
+ 
+-extern int tpa6130a2_add_controls(struct snd_soc_codec *codec);
+ extern int tpa6130a2_stereo_enable(struct snd_soc_codec *codec, int enable);
+ 
+ #endif /* __TPA6130A2_H__ */
+diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+index 54949242bc70..b59cf89c5cab 100644
+--- a/sound/soc/omap/rx51.c
++++ b/sound/soc/omap/rx51.c
+@@ -286,16 +286,10 @@ static const struct snd_kcontrol_new aic34_rx51_controls[] = {
+ 
+ static int rx51_aic34_init(struct snd_soc_pcm_runtime *rtd)
+ {
+-	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct rx51_audio_pdata *pdata = snd_soc_card_get_drvdata(card);
+ 	int err;
+ 
+-	err = tpa6130a2_add_controls(codec);
+-	if (err < 0) {
+-		dev_err(card->dev, "Failed to add TPA6130A2 controls\n");
+-		return err;
+-	}
+ 	snd_soc_limit_volume(card, "TPA6130A2 Headphone Playback Volume", 42);
+ 
+ 	err = omap_mcbsp_st_add_controls(rtd, 2);
+@@ -357,6 +351,10 @@ static struct snd_soc_aux_dev rx51_aux_dev[] = {
+ 		.name = "TLV320AIC34b",
+ 		.codec_name = "tlv320aic3x-codec.2-0019",
+ 	},
++	{
++		.name = "TPA61320A2",
++		.codec_name = "tpa6130a2.2-0060",
++	},
+ };
+ 
+ static struct snd_soc_codec_conf rx51_codec_conf[] = {
+@@ -364,6 +362,10 @@ static struct snd_soc_codec_conf rx51_codec_conf[] = {
+ 		.dev_name = "tlv320aic3x-codec.2-0019",
+ 		.name_prefix = "b",
+ 	},
++	{
++		.dev_name = "tpa6130a2.2-0060",
++		.name_prefix = "TPA6130A2",
++	},
+ };
+ 
+ /* Audio card */
+@@ -435,11 +437,10 @@ static int rx51_soc_probe(struct platform_device *pdev)
+ 			dev_err(&pdev->dev, "Headphone amplifier node is not provided\n");
+ 			return -EINVAL;
+ 		}
+-
+-		/* TODO: tpa6130a2a driver supports only a single instance, so
+-		 * this driver ignores the headphone-amplifier node for now.
+-		 * It's already mandatory in the DT binding to be future proof.
+-		 */
++		rx51_aux_dev[1].codec_name = NULL;
++		rx51_aux_dev[1].codec_of_node = dai_node;
++		rx51_codec_conf[1].dev_name = NULL;
++		rx51_codec_conf[1].of_node = dai_node;
+ 	}
+ 
+ 	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+-- 
+2.8.1
