@@ -1,282 +1,53 @@
 From: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCH v2 2/6] ASoC: samsung: Add Samsung Low Power Audio Subsystem
- driver
-Date: Thu, 23 Jun 2016 12:45:11 +0200
-Message-ID: <1466678715-19962-3-git-send-email-s.nawrocki@samsung.com>
-References: <1466678715-19962-1-git-send-email-s.nawrocki@samsung.com>
+Subject: [PATCH v2 0/6] Sound support for Exynos5433 TM2(E) boards
+Date: Thu, 23 Jun 2016 12:45:09 +0200
+Message-ID: <1466678715-19962-1-git-send-email-s.nawrocki@samsung.com>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-reply-to: <1466678715-19962-1-git-send-email-s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, Beomho Seo <beomho.seo-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Cc: robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+This patch series adds sound supoort for the Exynos 5433 based TM2 and
+TM2E board.  It includes minimal drivers for the Low Power Audio Subsystem
+(LPASS) and the MAX98504 class D speaker amplifier as well as the actual
+asoc machine driver.
+The changes are listed in individual patches, there were only v1 3/6,
+4/6 patches (max98504), for others I skipped from RFC to v2.
 
-This patch adds LPASS driver. The LPASS (Low Power Audio Subsystem)
-is a special subsystem that supports audio playback with low power
-consumption. This is a minimal driver which prepares resources for
-IP blocks like I2S, audio DMA and UART.
-Also system power ops are added to ensure the Audio Subsystem is
-operational after system suspend/resume cycle.
+Inha Song (2):
+  ASoC: samsung: Add Samsung Low Power Audio Subsystem driver
+  ASoC: samsung: Add machine driver for Exynos5433 based TM2 board
 
-Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Signed-off-by: Beomho Seo <beomho.seo-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Signed-off-by: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Acked-by: Krzysztof Kozlowski <k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
----
-Changes since initial version:
- - none.
----
- sound/soc/samsung/Makefile |   2 +
- sound/soc/samsung/lpass.c  | 162 +++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/samsung/lpass.h  |  47 +++++++++++++
- 3 files changed, 211 insertions(+)
+Sylwester Nawrocki (4):
+  ASoC: samsung: Add DT bindings documentation for LPASS
+  ASoC: Add DT bindings documentation for max98504 amplifier
+  ASoC: max98504: Add max98504 speaker amplifier driver
+  ASoC: samsung: Add DT bindings documentation for TM2 sound subsystem
+
+ .../devicetree/bindings/sound/max98504.txt         |  26 +
+ .../bindings/sound/samsung,exynos5433-lpass.txt    |   8 +
+ .../bindings/sound/samsung,tm2-audio.txt           |  36 ++
+ sound/soc/codecs/Kconfig                           |   4 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/max98504.c                        | 356 +++++++++++++
+ sound/soc/codecs/max98504.h                        |  76 +++
+ sound/soc/samsung/Kconfig                          |  13 +
+ sound/soc/samsung/Makefile                         |   4 +
+ sound/soc/samsung/lpass.c                          | 162 ++++++
+ sound/soc/samsung/lpass.h                          |  47 ++
+ sound/soc/samsung/tm2_wm5110.c                     | 579 +++++++++++++++++++++
+ 12 files changed, 1313 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/max98504.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,exynos5433-lpass.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
+ create mode 100644 sound/soc/codecs/max98504.c
+ create mode 100644 sound/soc/codecs/max98504.h
  create mode 100644 sound/soc/samsung/lpass.c
  create mode 100644 sound/soc/samsung/lpass.h
+ create mode 100644 sound/soc/samsung/tm2_wm5110.c
 
-diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
-index 5d03f5c..2b919d5 100644
---- a/sound/soc/samsung/Makefile
-+++ b/sound/soc/samsung/Makefile
-@@ -8,6 +8,7 @@ snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
- snd-soc-samsung-spdif-objs := spdif.o
- snd-soc-pcm-objs := pcm.o
- snd-soc-i2s-objs := i2s.o
-+snd-soc-lpass-objs := lpass.o
- 
- obj-$(CONFIG_SND_SOC_SAMSUNG) += snd-soc-s3c-dma.o
- obj-$(CONFIG_SND_S3C24XX_I2S) += snd-soc-s3c24xx-i2s.o
-@@ -18,6 +19,7 @@ obj-$(CONFIG_SND_SAMSUNG_SPDIF) += snd-soc-samsung-spdif.o
- obj-$(CONFIG_SND_SAMSUNG_PCM) += snd-soc-pcm.o
- obj-$(CONFIG_SND_SAMSUNG_I2S) += snd-soc-i2s.o
- obj-$(CONFIG_SND_SAMSUNG_I2S) += snd-soc-idma.o
-+obj-$(CONFIG_SND_SAMSUNG_AUDSS) += snd-soc-lpass.o
- 
- # S3C24XX Machine Support
- snd-soc-jive-wm8750-objs := jive_wm8750.o
-diff --git a/sound/soc/samsung/lpass.c b/sound/soc/samsung/lpass.c
-new file mode 100644
-index 0000000..57198cf
---- /dev/null
-+++ b/sound/soc/samsung/lpass.c
-@@ -0,0 +1,162 @@
-+/*
-+ * Copyright (C) 2015 - 2016 Samsung Electronics Co., Ltd.
-+ * 	Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-+ *
-+ * Low Power Audio Subsystem driver for Samsung Exynos
-+ *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <sound/soc.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/regmap.h>
-+
-+#include "lpass.h"
-+
-+#define EXYNOS5433_PAD_RETENTION_AUD_OPTION_OFFSET	0x3028
-+#define EXYNOS5433_INITIATE_WAKEUP_FROM_LOWPWR_MASK	BIT(28)
-+
-+struct lpass_info {
-+	struct platform_device	*pdev;
-+	void __iomem		*reg_sfr;
-+	struct regmap		*reg_pmu;
-+};
-+
-+static void lpass_core_sw_reset(struct lpass_info *lpass, int bit)
-+{
-+	unsigned int val;
-+
-+	val = readl(lpass->reg_sfr + SFR_LPASS_CORE_SW_RESET);
-+
-+	val &= ~(1 << bit);
-+	writel(val, lpass->reg_sfr + SFR_LPASS_CORE_SW_RESET);
-+
-+	udelay(100);
-+
-+	val |= 1 << bit;
-+	writel(val, lpass->reg_sfr + SFR_LPASS_CORE_SW_RESET);
-+}
-+
-+static void lpass_enable(struct lpass_info *lpass)
-+{
-+	if (!lpass->reg_pmu)
-+		return;
-+
-+	/* Unmasks SFR, DMA, I2S Interrupt */
-+	writel(LPASS_INTR_SFR | LPASS_INTR_DMA | LPASS_INTR_I2S,
-+	       lpass->reg_sfr + SFR_LPASS_INTR_CA5_MASK);
-+
-+	writel(LPASS_INTR_DMA | LPASS_INTR_I2S | LPASS_INTR_SFR
-+			| LPASS_INTR_UART,
-+	       lpass->reg_sfr + SFR_LPASS_INTR_CPU_MASK);
-+
-+	/* Activate related PADs from retention state */
-+	regmap_write(lpass->reg_pmu,
-+		     EXYNOS5433_PAD_RETENTION_AUD_OPTION_OFFSET,
-+		     EXYNOS5433_INITIATE_WAKEUP_FROM_LOWPWR_MASK);
-+
-+	lpass_core_sw_reset(lpass, SW_RESET_I2S);
-+	lpass_core_sw_reset(lpass, SW_RESET_DMA);
-+	lpass_core_sw_reset(lpass, SW_RESET_MEM);
-+}
-+
-+static void lpass_disable(struct lpass_info *lpass)
-+{
-+	if (!lpass->reg_pmu)
-+		return;
-+
-+	/* Masks SFR, DMA, I2S Interrupt */
-+	writel(0, lpass->reg_sfr + SFR_LPASS_INTR_CA5_MASK);
-+
-+	writel(0, lpass->reg_sfr + SFR_LPASS_INTR_CPU_MASK);
-+
-+	/* Deactivate related PADs from retention state */
-+	regmap_write(lpass->reg_pmu,
-+		     EXYNOS5433_PAD_RETENTION_AUD_OPTION_OFFSET, 0);
-+}
-+
-+static int lpass_probe(struct platform_device *pdev)
-+{
-+	struct lpass_info *lpass;
-+	struct device *dev = &pdev->dev;
-+	struct resource *res;
-+
-+	if (!dev->of_node) {
-+		dev_err(dev, "Failed to get DT node\n");
-+		return -ENODEV;
-+	}
-+
-+	lpass = devm_kzalloc(dev, sizeof(*lpass), GFP_KERNEL);
-+	if (!lpass)
-+		return -ENOMEM;
-+
-+	lpass->pdev = pdev;
-+	platform_set_drvdata(pdev, lpass);
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	lpass->reg_sfr = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(lpass->reg_sfr))
-+		return PTR_ERR(lpass->reg_sfr);
-+
-+	lpass->reg_pmu = syscon_regmap_lookup_by_phandle(dev->of_node,
-+						"samsung,pmu-syscon");
-+	if (IS_ERR(lpass->reg_pmu)) {
-+		dev_err(dev, "Failed to lookup PMU regmap\n");
-+		return PTR_ERR(lpass->reg_pmu);
-+	}
-+
-+	lpass_enable(lpass);
-+
-+	return 0;
-+}
-+
-+static int lpass_suspend(struct device *dev)
-+{
-+	struct lpass_info *lpass = dev_get_drvdata(dev);
-+
-+	lpass_disable(lpass);
-+
-+	return 0;
-+}
-+
-+static int lpass_resume(struct device *dev)
-+{
-+	struct lpass_info *lpass = dev_get_drvdata(dev);
-+
-+	lpass_enable(lpass);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id lpass_of_match[] = {
-+	{ .compatible	= "samsung,exynos5433-lpass", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, lpass_of_match);
-+
-+static const struct dev_pm_ops lpass_pm_ops = {
-+	.suspend	= lpass_suspend,
-+	.resume		= lpass_resume,
-+};
-+
-+static struct platform_driver lpass_driver = {
-+	.driver = {
-+		.name		= "samsung-lpass",
-+		.pm		= &lpass_pm_ops,
-+		.of_match_table	= lpass_of_match,
-+	},
-+	.probe	= lpass_probe,
-+};
-+
-+module_platform_driver(lpass_driver);
-+
-+MODULE_AUTHOR("Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>");
-+MODULE_DESCRIPTION("Samsung Low Power Audio Subsystem (LPASS) driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/samsung/lpass.h b/sound/soc/samsung/lpass.h
-new file mode 100644
-index 0000000..59179d6
---- /dev/null
-+++ b/sound/soc/samsung/lpass.h
-@@ -0,0 +1,47 @@
-+/*
-+ * Copyright (C) 2015 - 2016 Samsung Electronics Co., Ltd.
-+ *	Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-+ *
-+ * Low Power Audio Subsystem driver for Samsung Exynos
-+ *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
-+ */
-+#ifndef SND_SOC_SAMSUNG_LPASS_H_
-+#define SND_SOC_SAMSUNG_LPASS_H_
-+
-+/* SFR */
-+#define SFR_LPASS_CORE_SW_RESET	(0x08)
-+#define SFR_LPASS_INTR_CA5_MASK	(0x48)
-+#define SFR_LPASS_INTR_CPU_MASK	(0x58)
-+
-+/* SW_RESET */
-+#define LPASS_SW_RESET_CA5	(1 << 0)
-+#define LPASS_SW_RESET_SB	(1 << 11)
-+
-+/* Interrupt mask */
-+#define LPASS_INTR_APM		(1 << 9)
-+#define LPASS_INTR_MIF		(1 << 8)
-+#define LPASS_INTR_TIMER	(1 << 7)
-+#define LPASS_INTR_DMA		(1 << 6)
-+#define LPASS_INTR_GPIO		(1 << 5)
-+#define LPASS_INTR_I2S		(1 << 4)
-+#define LPASS_INTR_PCM		(1 << 3)
-+#define LPASS_INTR_SB		(1 << 2)
-+#define LPASS_INTR_UART		(1 << 1)
-+#define LPASS_INTR_SFR		(1 << 0)
-+
-+/* SW Reset bit */
-+enum {
-+	SW_RESET_DMA = 0,
-+	SW_RESET_MEM,
-+	SW_RESET_TIMER,
-+	SW_RESET_I2S = 8,
-+	SW_RESET_PCM,
-+	SW_RESET_UART,
-+	SW_RESET_SLIMBUS,
-+};
-+
-+#endif /* SND_SOC_SAMSUNG_LPASS_H_ */
--- 
+--
 1.9.1
 
 --
