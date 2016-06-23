@@ -1,15 +1,16 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] ASoC: Intel: atom: fix missing breaks that
-	would cause the wrong operation to execute
-Date: Thu, 23 Jun 2016 22:07:03 +0530
-Message-ID: <1466699823-27891-1-git-send-email-vinod.koul@intel.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: Samsung: s3c-i2s-v2: fix spelling
+	mistake: "unknwon" -> "unknown"
+Date: Thu, 23 Jun 2016 18:37:58 +0100
+Message-ID: <1466703478-9034-1-git-send-email-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 4BBD9265361
- for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2016 18:30:30 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5085265361
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2016 19:38:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,55 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Alan Cox <alan@linux.intel.com>
+To: Krzysztof Kozlowski <k.kozlowski@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Alan Cox <alan@linux.intel.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-Now we correctly error an attempt to execute an unsupported operation.
+trivial fix to spelling mistake in pr_err message
 
-Signed-off-by: Alan Cox <alan@linux.intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/soc/intel/atom/sst-mfld-platform-compress.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/samsung/s3c-i2s-v2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-compress.c b/sound/soc/intel/atom/sst-mfld-platform-compress.c
-index 395168986462..1bead81bb510 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-compress.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-compress.c
-@@ -182,24 +182,29 @@ static int sst_platform_compr_trigger(struct snd_compr_stream *cstream, int cmd)
- 	case SNDRV_PCM_TRIGGER_START:
- 		if (stream->compr_ops->stream_start)
- 			return stream->compr_ops->stream_start(sst->dev, stream->id);
-+		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		if (stream->compr_ops->stream_drop)
- 			return stream->compr_ops->stream_drop(sst->dev, stream->id);
-+		break;
- 	case SND_COMPR_TRIGGER_DRAIN:
- 		if (stream->compr_ops->stream_drain)
- 			return stream->compr_ops->stream_drain(sst->dev, stream->id);
-+		break;
- 	case SND_COMPR_TRIGGER_PARTIAL_DRAIN:
- 		if (stream->compr_ops->stream_partial_drain)
- 			return stream->compr_ops->stream_partial_drain(sst->dev, stream->id);
-+		break;
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		if (stream->compr_ops->stream_pause)
- 			return stream->compr_ops->stream_pause(sst->dev, stream->id);
-+		break;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		if (stream->compr_ops->stream_pause_release)
- 			return stream->compr_ops->stream_pause_release(sst->dev, stream->id);
--	default:
--		return -EINVAL;
-+		break;
+diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+index b6ab3fc..bf8ae79 100644
+--- a/sound/soc/samsung/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -268,7 +268,7 @@ static int s3c2412_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		iismod &= ~S3C2412_IISMOD_SLAVE;
+ 		break;
+ 	default:
+-		pr_err("unknwon master/slave format\n");
++		pr_err("unknown master/slave format\n");
+ 		return -EINVAL;
  	}
-+	return -EINVAL;
- }
  
- static int sst_platform_compr_pointer(struct snd_compr_stream *cstream,
 -- 
-1.9.1
+2.8.1
