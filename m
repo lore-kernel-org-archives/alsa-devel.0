@@ -1,1680 +1,438 @@
-From: <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH v8 1/2] ASoC: cs35l33: Initial commit of the cs35l33 CODEC driver.
-Date: Thu, 23 Jun 2016 13:30:01 -0500
-Message-ID: <1466706602-20899-1-git-send-email-Paul.Handrigan@cirrus.com>
-Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+From: Helen Koike <helen.koike@collabora.co.uk>
+Subject: [PATCH v3 1/2] ASoC: tpa6130a2: Add DAPM support
+Date: Thu, 23 Jun 2016 16:23:13 -0300
+Message-ID: <9946402f404892d0bacb3666a82aba8e07374068.1466709086.git.helen.koike@collabora.co.uk>
+References: <cover.1466441036.git.helen.koike@collabora.co.uk>
+ <cover.1466709086.git.helen.koike@collabora.co.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1466709086.git.helen.koike@collabora.co.uk>
+In-Reply-To: <cover.1466709086.git.helen.koike@collabora.co.uk>
+References: <cover.1466709086.git.helen.koike@collabora.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sebastian Reichel <sre@kernel.org>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, lars@metafoo.de, k.kozlowski@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, perex@perex.cz, tiwai@suse.com, cphealy@gmail.com, Helen Koike <helen.koike@collabora.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-From: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Add DAPM support and updated rx51 accordingly.
+As a consequence:
+- the exported function tpa6130a2_stereo_enable is not needed anymore
+- the mutex is dealt in the DAPM
+- the power state is tracked by the DAPM
 
-Initial commit of the Cirrus Logic cs35l33 8V boosted class D
-amplifier.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+[koike: port for upstream]
+Signed-off-by: Helen Koike <helen.koike@collabora.co.uk>
+Tested-by: Sebastian Reichel <sre@kernel.org>
+Reviewed-by: Sebastian Reichel <sre@kernel.org>
 
-Signed-off-by: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 ---
- include/sound/cs35l33.h    |   48 ++
- sound/soc/codecs/Kconfig   |    5 +
- sound/soc/codecs/Makefile  |    2 +
- sound/soc/codecs/cs35l33.c | 1314 ++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/cs35l33.h |  221 ++++++++
- 5 files changed, 1590 insertions(+)
- create mode 100644 include/sound/cs35l33.h
- create mode 100644 sound/soc/codecs/cs35l33.c
- create mode 100644 sound/soc/codecs/cs35l33.h
+Changes since v1:
+- Replace
+	+	{"TPA6130A2 HPLEFT", NULL, "LLOUT"},
+	+	{"TPA6130A2 HPRIGHT", NULL, "RLOUT"}
 
-diff --git a/include/sound/cs35l33.h b/include/sound/cs35l33.h
-new file mode 100644
-index 0000000..b6eadce
---- /dev/null
-+++ b/include/sound/cs35l33.h
-@@ -0,0 +1,48 @@
-+/*
-+ * linux/sound/cs35l33.h -- Platform data for CS35l33
-+ *
-+ * Copyright (c) 2016 Cirrus Logic Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __CS35L33_H
-+#define __CS35L33_H
-+
-+struct cs35l33_hg {
-+	bool enable_hg_algo;
-+	unsigned int mem_depth;
-+	unsigned int release_rate;
-+	unsigned int hd_rm;
-+	unsigned int ldo_thld;
-+	unsigned int ldo_path_disable;
-+	unsigned int ldo_entry_delay;
-+	bool vp_hg_auto;
-+	unsigned int vp_hg;
-+	unsigned int vp_hg_rate;
-+	unsigned int vp_hg_va;
-+};
-+
-+struct cs35l33_pdata {
-+	/* Boost Controller Voltage Setting */
-+	unsigned int boost_ctl;
-+
-+	/* Boost Controller Peak Current */
-+	unsigned int boost_ipk;
-+
-+	/* Amplifier Drive Select */
-+	unsigned int amp_drv_sel;
-+
-+	/* soft volume ramp */
-+	unsigned int ramp_rate;
-+
-+	/* IMON adc scale */
-+	unsigned int imon_adc_scale;
-+
-+	/* H/G algo configuration */
-+	struct cs35l33_hg hg_config;
-+};
-+
-+#endif /* __CS35L33_H */
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 60f8f13..02d2084 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -47,6 +47,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_BT_SCO
- 	select SND_SOC_CQ0093VC if MFD_DAVINCI_VOICECODEC
- 	select SND_SOC_CS35L32 if I2C
-+	select SND_SOC_CS35L33 if I2C
- 	select SND_SOC_CS42L51_I2C if I2C
- 	select SND_SOC_CS42L52 if I2C && INPUT
- 	select SND_SOC_CS42L56 if I2C && INPUT
-@@ -391,6 +392,10 @@ config SND_SOC_CS35L32
- 	tristate "Cirrus Logic CS35L32 CODEC"
- 	depends on I2C
+	by
+
+	+       {"TPA6130A2 LEFTIN", NULL, "LLOUT"},
+	+       {"TPA6130A2 RIGHTIN", NULL, "RLOUT"},
+- Add tested-by and reviewed-by from Sebastian
+- Add struct device dev* in struct tpa6130a2_data and pass data instead
+of dev to tpa6130a2_power function
+- remove #include "../codecs/tpa6130a2.h" in rx51.c
+
+Changes since v2:
+- Add braces around else statement in tpa6130a2_power_event
+
+ sound/soc/codecs/tpa6130a2.c | 185 ++++++++++++++++++-------------------------
+ sound/soc/codecs/tpa6130a2.h |  11 +--
+ sound/soc/omap/rx51.c        |  23 ++----
+ 3 files changed, 89 insertions(+), 130 deletions(-)
+
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 81bf584..9da1dd1 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -41,79 +41,74 @@ enum tpa_model {
+ 	TPA6140A2,
+ };
  
-+config SND_SOC_CS35L33
-+	tristate "Cirrus Logic CS35L33 CODEC"
-+	depends on I2C
-+
- config SND_SOC_CS42L51
- 	tristate
+-static struct i2c_client *tpa6130a2_client;
+-
+ /* This struct is used to save the context */
+ struct tpa6130a2_data {
+-	struct mutex mutex;
++	struct device *dev;
+ 	struct regmap *regmap;
+ 	struct regulator *supply;
+ 	int power_gpio;
+-	u8 power_state:1;
+ 	enum tpa_model id;
+ };
  
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 1264fa4..abf2126 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -37,6 +37,7 @@ snd-soc-arizona-objs := arizona.o
- snd-soc-bt-sco-objs := bt-sco.o
- snd-soc-cq93vc-objs := cq93vc.o
- snd-soc-cs35l32-objs := cs35l32.o
-+snd-soc-cs35l33-objs := cs35l33.o
- snd-soc-cs42l51-objs := cs42l51.o
- snd-soc-cs42l51-i2c-objs := cs42l51-i2c.o
- snd-soc-cs42l52-objs := cs42l52.o
-@@ -257,6 +258,7 @@ obj-$(CONFIG_SND_SOC_ARIZONA)	+= snd-soc-arizona.o
- obj-$(CONFIG_SND_SOC_BT_SCO)	+= snd-soc-bt-sco.o
- obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
- obj-$(CONFIG_SND_SOC_CS35L32)	+= snd-soc-cs35l32.o
-+obj-$(CONFIG_SND_SOC_CS35L33)	+= snd-soc-cs35l33.o
- obj-$(CONFIG_SND_SOC_CS42L51)	+= snd-soc-cs42l51.o
- obj-$(CONFIG_SND_SOC_CS42L51_I2C)	+= snd-soc-cs42l51-i2c.o
- obj-$(CONFIG_SND_SOC_CS42L52)	+= snd-soc-cs42l52.o
-diff --git a/sound/soc/codecs/cs35l33.c b/sound/soc/codecs/cs35l33.c
-new file mode 100644
-index 0000000..55c1f75
---- /dev/null
-+++ b/sound/soc/codecs/cs35l33.c
-@@ -0,0 +1,1314 @@
-+/*
-+ * cs35l33.c -- CS35L33 ALSA SoC audio driver
-+ *
-+ * Copyright 2016 Cirrus Logic, Inc.
-+ *
-+ * Author: Paul Handrigan <paul.handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/version.h>
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/i2c.h>
-+#include <linux/slab.h>
-+#include <linux/workqueue.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/initval.h>
-+#include <sound/tlv.h>
-+#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
-+#include <sound/cs35l33.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/regulator/machine.h>
-+#include <linux/of_gpio.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/of_irq.h>
-+
-+#include "cs35l33.h"
-+
-+#define CS35L33_BOOT_DELAY	50
-+
-+struct cs35l33_private {
-+	struct snd_soc_codec *codec;
-+	struct cs35l33_pdata pdata;
-+	struct regmap *regmap;
-+	struct gpio_desc *reset_gpio;
-+	bool amp_cal;
-+	int mclk_int;
-+	struct regulator_bulk_data core_supplies[2];
-+	int num_core_supplies;
-+	bool is_tdm_mode;
-+	bool enable_soft_ramp;
-+};
-+
-+static const struct reg_default cs35l33_reg[] = {
-+	{CS35L33_PWRCTL1, 0x85},
-+	{CS35L33_PWRCTL2, 0xFE},
-+	{CS35L33_CLK_CTL, 0x0C},
-+	{CS35L33_BST_PEAK_CTL, 0x90},
-+	{CS35L33_PROTECT_CTL, 0x55},
-+	{CS35L33_BST_CTL1, 0x00},
-+	{CS35L33_BST_CTL2, 0x01},
-+	{CS35L33_ADSP_CTL, 0x00},
-+	{CS35L33_ADC_CTL, 0xC8},
-+	{CS35L33_DAC_CTL, 0x14},
-+	{CS35L33_DIG_VOL_CTL, 0x00},
-+	{CS35L33_CLASSD_CTL, 0x04},
-+	{CS35L33_AMP_CTL, 0x90},
-+	{CS35L33_INT_MASK_1, 0xFF},
-+	{CS35L33_INT_MASK_2, 0xFF},
-+	{CS35L33_DIAG_LOCK, 0x00},
-+	{CS35L33_DIAG_CTRL_1, 0x40},
-+	{CS35L33_DIAG_CTRL_2, 0x00},
-+	{CS35L33_HG_MEMLDO_CTL, 0x62},
-+	{CS35L33_HG_REL_RATE, 0x03},
-+	{CS35L33_LDO_DEL, 0x12},
-+	{CS35L33_HG_HEAD, 0x0A},
-+	{CS35L33_HG_EN, 0x05},
-+	{CS35L33_TX_VMON, 0x00},
-+	{CS35L33_TX_IMON, 0x03},
-+	{CS35L33_TX_VPMON, 0x02},
-+	{CS35L33_TX_VBSTMON, 0x05},
-+	{CS35L33_TX_FLAG, 0x06},
-+	{CS35L33_TX_EN1, 0x00},
-+	{CS35L33_TX_EN2, 0x00},
-+	{CS35L33_TX_EN3, 0x00},
-+	{CS35L33_TX_EN4, 0x00},
-+	{CS35L33_RX_AUD, 0x40},
-+	{CS35L33_RX_SPLY, 0x03},
-+	{CS35L33_RX_ALIVE, 0x04},
-+	{CS35L33_BST_CTL4, 0x63},
-+};
-+
-+static const struct reg_sequence cs35l33_patch[] = {
-+	{ 0x00,  0x99, 0 },
-+	{ 0x59,  0x02, 0 },
-+	{ 0x52,  0x30, 0 },
-+	{ 0x39,  0x45, 0 },
-+	{ 0x57,  0x30, 0 },
-+	{ 0x2C,  0x68, 0 },
-+	{ 0x00,  0x00, 0 },
-+};
-+
-+static bool cs35l33_volatile_register(struct device *dev, unsigned int reg)
+-static int tpa6130a2_power(u8 power)
++static int tpa6130a2_power(struct tpa6130a2_data *data, bool enable)
+ {
+-	struct	tpa6130a2_data *data;
+-	int	ret = 0;
+-
+-	if (WARN_ON(!tpa6130a2_client))
+-		return -EINVAL;
+-	data = i2c_get_clientdata(tpa6130a2_client);
+-
+-	mutex_lock(&data->mutex);
+-	if (power == data->power_state)
+-		goto exit;
++	int ret;
+ 
+-	if (power) {
++	if (enable) {
+ 		ret = regulator_enable(data->supply);
+ 		if (ret != 0) {
+-			dev_err(&tpa6130a2_client->dev,
++			dev_err(data->dev,
+ 				"Failed to enable supply: %d\n", ret);
+-			goto exit;
++			return ret;
+ 		}
+ 		/* Power on */
+ 		if (data->power_gpio >= 0)
+ 			gpio_set_value(data->power_gpio, 1);
+-
+-		data->power_state = 1;
+-		ret = regcache_sync(data->regmap);
+-		if (ret < 0) {
+-			dev_err(&tpa6130a2_client->dev,
+-				"Failed to initialize chip\n");
+-			if (data->power_gpio >= 0)
+-				gpio_set_value(data->power_gpio, 0);
+-			regulator_disable(data->supply);
+-			data->power_state = 0;
+-			goto exit;
+-		}
+ 	} else {
+-		/* set SWS */
+-		regmap_update_bits(data->regmap, TPA6130A2_REG_CONTROL,
+-			TPA6130A2_SWS, TPA6130A2_SWS);
+-
+ 		/* Power off */
+ 		if (data->power_gpio >= 0)
+ 			gpio_set_value(data->power_gpio, 0);
+ 
+ 		ret = regulator_disable(data->supply);
+ 		if (ret != 0) {
+-			dev_err(&tpa6130a2_client->dev,
++			dev_err(data->dev,
+ 				"Failed to disable supply: %d\n", ret);
+-			goto exit;
++			return ret;
+ 		}
+ 
+-		data->power_state = 0;
+ 		/* device regs does not match the cache state anymore */
+ 		regcache_mark_dirty(data->regmap);
+ 	}
+ 
+-exit:
+-	mutex_unlock(&data->mutex);
+ 	return ret;
+ }
+ 
++static int tpa6130a2_power_event(struct snd_soc_dapm_widget *w,
++				 struct snd_kcontrol *kctrl, int event)
 +{
-+	switch (reg) {
-+	case CS35L33_DEVID_AB:
-+	case CS35L33_DEVID_CD:
-+	case CS35L33_DEVID_E:
-+	case CS35L33_REV_ID:
-+	case CS35L33_INT_STATUS_1:
-+	case CS35L33_INT_STATUS_2:
-+	case CS35L33_HG_STATUS:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool cs35l33_writeable_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	/* these are read only registers */
-+	case CS35L33_DEVID_AB:
-+	case CS35L33_DEVID_CD:
-+	case CS35L33_DEVID_E:
-+	case CS35L33_REV_ID:
-+	case CS35L33_INT_STATUS_1:
-+	case CS35L33_INT_STATUS_2:
-+	case CS35L33_HG_STATUS:
-+		return false;
-+	default:
-+		return true;
-+	}
-+}
-+
-+static bool cs35l33_readable_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case CS35L33_DEVID_AB:
-+	case CS35L33_DEVID_CD:
-+	case CS35L33_DEVID_E:
-+	case CS35L33_REV_ID:
-+	case CS35L33_PWRCTL1:
-+	case CS35L33_PWRCTL2:
-+	case CS35L33_CLK_CTL:
-+	case CS35L33_BST_PEAK_CTL:
-+	case CS35L33_PROTECT_CTL:
-+	case CS35L33_BST_CTL1:
-+	case CS35L33_BST_CTL2:
-+	case CS35L33_ADSP_CTL:
-+	case CS35L33_ADC_CTL:
-+	case CS35L33_DAC_CTL:
-+	case CS35L33_DIG_VOL_CTL:
-+	case CS35L33_CLASSD_CTL:
-+	case CS35L33_AMP_CTL:
-+	case CS35L33_INT_MASK_1:
-+	case CS35L33_INT_MASK_2:
-+	case CS35L33_INT_STATUS_1:
-+	case CS35L33_INT_STATUS_2:
-+	case CS35L33_DIAG_LOCK:
-+	case CS35L33_DIAG_CTRL_1:
-+	case CS35L33_DIAG_CTRL_2:
-+	case CS35L33_HG_MEMLDO_CTL:
-+	case CS35L33_HG_REL_RATE:
-+	case CS35L33_LDO_DEL:
-+	case CS35L33_HG_HEAD:
-+	case CS35L33_HG_EN:
-+	case CS35L33_TX_VMON:
-+	case CS35L33_TX_IMON:
-+	case CS35L33_TX_VPMON:
-+	case CS35L33_TX_VBSTMON:
-+	case CS35L33_TX_FLAG:
-+	case CS35L33_TX_EN1:
-+	case CS35L33_TX_EN2:
-+	case CS35L33_TX_EN3:
-+	case CS35L33_TX_EN4:
-+	case CS35L33_RX_AUD:
-+	case CS35L33_RX_SPLY:
-+	case CS35L33_RX_ALIVE:
-+	case CS35L33_BST_CTL4:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static DECLARE_TLV_DB_SCALE(classd_ctl_tlv, 900, 100, 0);
-+static DECLARE_TLV_DB_SCALE(dac_tlv, -10200, 50, 0);
-+
-+static const struct snd_kcontrol_new cs35l33_snd_controls[] = {
-+
-+	SOC_SINGLE_TLV("SPK Amp Volume", CS35L33_AMP_CTL,
-+		       4, 0x09, 0, classd_ctl_tlv),
-+	SOC_SINGLE_SX_TLV("DAC Volume", CS35L33_DIG_VOL_CTL,
-+			0, 0x34, 0xE4, dac_tlv),
-+};
-+
-+static int cs35l33_spkrdrv_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct cs35l33_private *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		if (!priv->amp_cal) {
-+			usleep_range(8000, 9000);
-+			priv->amp_cal = true;
-+			regmap_update_bits(priv->regmap, CS35L33_CLASSD_CTL,
-+				    CS35L33_AMP_CAL, 0);
-+			dev_dbg(codec->dev, "Amp calibration done\n");
-+		}
-+		dev_dbg(codec->dev, "Amp turned on\n");
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		dev_dbg(codec->dev, "Amp turned off\n");
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid event = 0x%x\n", event);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int cs35l33_sdin_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct cs35l33_private *priv = snd_soc_codec_get_drvdata(codec);
-+	unsigned int val;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		regmap_update_bits(priv->regmap, CS35L33_PWRCTL1,
-+				    CS35L33_PDN_BST, 0);
-+		val = priv->is_tdm_mode ? 0 : CS35L33_PDN_TDM;
-+		regmap_update_bits(priv->regmap, CS35L33_PWRCTL2,
-+				    CS35L33_PDN_TDM, val);
-+		dev_dbg(codec->dev, "BST turned on\n");
-+		break;
-+	case SND_SOC_DAPM_POST_PMU:
-+		dev_dbg(codec->dev, "SDIN turned on\n");
-+		if (!priv->amp_cal) {
-+			regmap_update_bits(priv->regmap, CS35L33_CLASSD_CTL,
-+				    CS35L33_AMP_CAL, CS35L33_AMP_CAL);
-+			dev_dbg(codec->dev, "Amp calibration started\n");
-+			usleep_range(10000, 11000);
-+		}
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		regmap_update_bits(priv->regmap, CS35L33_PWRCTL2,
-+				    CS35L33_PDN_TDM, CS35L33_PDN_TDM);
-+		usleep_range(4000, 4100);
-+		regmap_update_bits(priv->regmap, CS35L33_PWRCTL1,
-+				    CS35L33_PDN_BST, CS35L33_PDN_BST);
-+		dev_dbg(codec->dev, "BST and SDIN turned off\n");
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid event = 0x%x\n", event);
-+
-+	}
-+
-+	return 0;
-+}
-+
-+static int cs35l33_sdout_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct cs35l33_private *priv = snd_soc_codec_get_drvdata(codec);
-+	unsigned int mask = CS35L33_SDOUT_3ST_I2S | CS35L33_PDN_TDM;
-+	unsigned int mask2 = CS35L33_SDOUT_3ST_TDM;
-+	unsigned int val, val2;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		if (priv->is_tdm_mode) {
-+			/* set sdout_3st_i2s and reset pdn_tdm */
-+			val = CS35L33_SDOUT_3ST_I2S;
-+			/* reset sdout_3st_tdm */
-+			val2 = 0;
-+		} else {
-+			/* reset sdout_3st_i2s and set pdn_tdm */
-+			val = CS35L33_PDN_TDM;
-+			/* set sdout_3st_tdm */
-+			val2 = CS35L33_SDOUT_3ST_TDM;
-+		}
-+		dev_dbg(codec->dev, "SDOUT turned on\n");
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		val = CS35L33_SDOUT_3ST_I2S | CS35L33_PDN_TDM;
-+		val2 = CS35L33_SDOUT_3ST_TDM;
-+		dev_dbg(codec->dev, "SDOUT turned off\n");
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid event = 0x%x\n", event);
-+		return 0;
-+	}
-+
-+	regmap_update_bits(priv->regmap, CS35L33_PWRCTL2,
-+		mask, val);
-+	regmap_update_bits(priv->regmap, CS35L33_CLK_CTL,
-+		mask2, val2);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget cs35l33_dapm_widgets[] = {
-+
-+	SND_SOC_DAPM_OUTPUT("SPK"),
-+	SND_SOC_DAPM_OUT_DRV_E("SPKDRV", CS35L33_PWRCTL1, 7, 1, NULL, 0,
-+		cs35l33_spkrdrv_event,
-+		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_AIF_IN_E("SDIN", NULL, 0, CS35L33_PWRCTL2,
-+		2, 1, cs35l33_sdin_event, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_INPUT("MON"),
-+
-+	SND_SOC_DAPM_ADC("VMON", NULL,
-+		CS35L33_PWRCTL2, CS35L33_PDN_VMON_SHIFT, 1),
-+	SND_SOC_DAPM_ADC("IMON", NULL,
-+		CS35L33_PWRCTL2, CS35L33_PDN_IMON_SHIFT, 1),
-+	SND_SOC_DAPM_ADC("VPMON", NULL,
-+		CS35L33_PWRCTL2, CS35L33_PDN_VPMON_SHIFT, 1),
-+	SND_SOC_DAPM_ADC("VBSTMON", NULL,
-+		CS35L33_PWRCTL2, CS35L33_PDN_VBSTMON_SHIFT, 1),
-+
-+	SND_SOC_DAPM_AIF_OUT_E("SDOUT", NULL, 0, SND_SOC_NOPM, 0, 0,
-+		cs35l33_sdout_event, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_PRE_PMD),
-+};
-+
-+static const struct snd_soc_dapm_route cs35l33_audio_map[] = {
-+	{"SDIN", NULL, "CS35L33 Playback"},
-+	{"SPKDRV", NULL, "SDIN"},
-+	{"SPK", NULL, "SPKDRV"},
-+
-+	{"VMON", NULL, "MON"},
-+	{"IMON", NULL, "MON"},
-+
-+	{"SDOUT", NULL, "VMON"},
-+	{"SDOUT", NULL, "IMON"},
-+	{"CS35L33 Capture", NULL, "SDOUT"},
-+};
-+
-+static const struct snd_soc_dapm_route cs35l33_vphg_auto_route[] = {
-+	{"SPKDRV", NULL, "VPMON"},
-+	{"VPMON", NULL, "CS35L33 Playback"},
-+};
-+
-+static const struct snd_soc_dapm_route cs35l33_vp_vbst_mon_route[] = {
-+	{"SDOUT", NULL, "VPMON"},
-+	{"VPMON", NULL, "MON"},
-+	{"SDOUT", NULL, "VBSTMON"},
-+	{"VBSTMON", NULL, "MON"},
-+};
-+
-+static int cs35l33_set_bias_level(struct snd_soc_codec *codec,
-+				  enum snd_soc_bias_level level)
-+{
-+	unsigned int val;
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	struct cs35l33_private *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_ON:
-+		break;
-+	case SND_SOC_BIAS_PREPARE:
-+		regmap_update_bits(priv->regmap, CS35L33_PWRCTL1,
-+				    CS35L33_PDN_ALL, 0);
-+		regmap_update_bits(priv->regmap, CS35L33_CLK_CTL,
-+				    CS35L33_MCLKDIS, 0);
-+		break;
-+	case SND_SOC_BIAS_STANDBY:
-+		regmap_update_bits(priv->regmap, CS35L33_PWRCTL1,
-+				    CS35L33_PDN_ALL, CS35L33_PDN_ALL);
-+		regmap_read(priv->regmap, CS35L33_INT_STATUS_2, &val);
-+		usleep_range(1000, 1100);
-+		if (val & CS35L33_PDN_DONE)
-+			regmap_update_bits(priv->regmap, CS35L33_CLK_CTL,
-+					    CS35L33_MCLKDIS, CS35L33_MCLKDIS);
-+		break;
-+	case SND_SOC_BIAS_OFF:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	dapm->bias_level = level;
-+
-+	return 0;
-+}
-+
-+struct cs35l33_mclk_div {
-+	int mclk;
-+	int srate;
-+	u8 adsp_rate;
-+	u8 int_fs_ratio;
-+};
-+
-+static const struct cs35l33_mclk_div cs35l33_mclk_coeffs[] = {
-+	/* MCLK, Sample Rate, adsp_rate, int_fs_ratio */
-+	{5644800, 11025, 0x4, CS35L33_INT_FS_RATE},
-+	{5644800, 22050, 0x8, CS35L33_INT_FS_RATE},
-+	{5644800, 44100, 0xC, CS35L33_INT_FS_RATE},
-+
-+	{6000000,  8000, 0x1, 0},
-+	{6000000, 11025, 0x2, 0},
-+	{6000000, 11029, 0x3, 0},
-+	{6000000, 12000, 0x4, 0},
-+	{6000000, 16000, 0x5, 0},
-+	{6000000, 22050, 0x6, 0},
-+	{6000000, 22059, 0x7, 0},
-+	{6000000, 24000, 0x8, 0},
-+	{6000000, 32000, 0x9, 0},
-+	{6000000, 44100, 0xA, 0},
-+	{6000000, 44118, 0xB, 0},
-+	{6000000, 48000, 0xC, 0},
-+
-+	{6144000,  8000, 0x1, CS35L33_INT_FS_RATE},
-+	{6144000, 12000, 0x4, CS35L33_INT_FS_RATE},
-+	{6144000, 16000, 0x5, CS35L33_INT_FS_RATE},
-+	{6144000, 24000, 0x8, CS35L33_INT_FS_RATE},
-+	{6144000, 32000, 0x9, CS35L33_INT_FS_RATE},
-+	{6144000, 48000, 0xC, CS35L33_INT_FS_RATE},
-+};
-+
-+static int cs35l33_get_mclk_coeff(int mclk, int srate)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(cs35l33_mclk_coeffs); i++) {
-+		if (cs35l33_mclk_coeffs[i].mclk == mclk &&
-+			cs35l33_mclk_coeffs[i].srate == srate)
-+			return i;
-+	}
-+	return -EINVAL;
-+}
-+
-+static int cs35l33_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct cs35l33_private *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		regmap_update_bits(priv->regmap, CS35L33_ADSP_CTL,
-+			CS35L33_MS_MASK, CS35L33_MS_MASK);
-+		dev_dbg(codec->dev, "Audio port in master mode\n");
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		regmap_update_bits(priv->regmap, CS35L33_ADSP_CTL,
-+			CS35L33_MS_MASK, 0);
-+		dev_dbg(codec->dev, "Audio port in slave mode\n");
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_DSP_A:
-+		/*
-+		 * tdm mode in cs35l33 resembles dsp-a mode very
-+		 * closely, it is dsp-a with fsync shifted left by half bclk
-+		 */
-+		priv->is_tdm_mode = true;
-+		dev_dbg(codec->dev, "Audio port in TDM mode\n");
-+		break;
-+	case SND_SOC_DAIFMT_I2S:
-+		priv->is_tdm_mode = false;
-+		dev_dbg(codec->dev, "Audio port in I2S mode\n");
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int cs35l33_pcm_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct cs35l33_private *priv = snd_soc_codec_get_drvdata(codec);
-+	int sample_size = params_width(params);
-+	int coeff = cs35l33_get_mclk_coeff(priv->mclk_int, params_rate(params));
-+
-+	if (coeff < 0)
-+		return coeff;
-+
-+	regmap_update_bits(priv->regmap, CS35L33_CLK_CTL,
-+		CS35L33_ADSP_FS | CS35L33_INT_FS_RATE,
-+		cs35l33_mclk_coeffs[coeff].int_fs_ratio
-+		| cs35l33_mclk_coeffs[coeff].adsp_rate);
-+
-+	if (priv->is_tdm_mode) {
-+		sample_size = (sample_size / 8) - 1;
-+		if (sample_size > 2)
-+			sample_size = 2;
-+		regmap_update_bits(priv->regmap, CS35L33_RX_AUD,
-+			CS35L33_AUDIN_RX_DEPTH,
-+			sample_size << CS35L33_AUDIN_RX_DEPTH_SHIFT);
-+	}
-+
-+	dev_dbg(codec->dev, "sample rate=%d, bits per sample=%d\n",
-+		params_rate(params), params_width(params));
-+
-+	return 0;
-+}
-+
-+static const unsigned int cs35l33_src_rates[] = {
-+	8000, 11025, 11029, 12000, 16000, 22050,
-+	22059, 24000, 32000, 44100, 44118, 48000
-+};
-+
-+static const struct snd_pcm_hw_constraint_list cs35l33_constraints = {
-+	.count  = ARRAY_SIZE(cs35l33_src_rates),
-+	.list   = cs35l33_src_rates,
-+};
-+
-+static int cs35l33_pcm_startup(struct snd_pcm_substream *substream,
-+			       struct snd_soc_dai *dai)
-+{
-+	snd_pcm_hw_constraint_list(substream->runtime, 0,
-+					SNDRV_PCM_HW_PARAM_RATE,
-+					&cs35l33_constraints);
-+	return 0;
-+}
-+
-+static int cs35l33_set_tristate(struct snd_soc_dai *dai, int tristate)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct cs35l33_private *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	if (tristate) {
-+		regmap_update_bits(priv->regmap, CS35L33_PWRCTL2,
-+			CS35L33_SDOUT_3ST_I2S, CS35L33_SDOUT_3ST_I2S);
-+		regmap_update_bits(priv->regmap, CS35L33_CLK_CTL,
-+			CS35L33_SDOUT_3ST_TDM, CS35L33_SDOUT_3ST_TDM);
-+	} else {
-+		regmap_update_bits(priv->regmap, CS35L33_PWRCTL2,
-+			CS35L33_SDOUT_3ST_I2S, 0);
-+		regmap_update_bits(priv->regmap, CS35L33_CLK_CTL,
-+			CS35L33_SDOUT_3ST_TDM, 0);
-+	}
-+
-+	return 0;
-+}
-+
-+static int cs35l33_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
-+				unsigned int rx_mask, int slots, int slot_width)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	struct cs35l33_private *priv = snd_soc_codec_get_drvdata(codec);
-+	unsigned int reg, bit_pos, i;
-+	int slot, slot_num;
-+
-+	if (slot_width != 8)
-+		return -EINVAL;
-+
-+	/* scan rx_mask for aud slot */
-+	slot = ffs(rx_mask) - 1;
-+	if (slot >= 0) {
-+		regmap_update_bits(priv->regmap, CS35L33_RX_AUD,
-+			CS35L33_X_LOC, slot);
-+		dev_dbg(codec->dev, "Audio starts from slots %d", slot);
-+	}
-+
-+	/*
-+	 * scan tx_mask: vmon(2 slots); imon (2 slots);
-+	 * vpmon (1 slot) vbstmon (1 slot)
-+	 */
-+	slot = ffs(tx_mask) - 1;
-+	slot_num = 0;
-+
-+	for (i = 0; i < 2 ; i++) {
-+		/* disable vpmon/vbstmon: enable later if set in tx_mask */
-+		regmap_update_bits(priv->regmap, CS35L33_TX_VPMON + i,
-+			CS35L33_X_STATE | CS35L33_X_LOC, CS35L33_X_STATE
-+			| CS35L33_X_LOC);
-+	}
-+
-+	/* disconnect {vp,vbst}_mon routes: eanble later if set in tx_mask*/
-+	snd_soc_dapm_del_routes(dapm, cs35l33_vp_vbst_mon_route,
-+		ARRAY_SIZE(cs35l33_vp_vbst_mon_route));
-+
-+	while (slot >= 0) {
-+		/* configure VMON_TX_LOC */
-+		if (slot_num == 0) {
-+			regmap_update_bits(priv->regmap, CS35L33_TX_VMON,
-+				CS35L33_X_STATE | CS35L33_X_LOC, slot);
-+			dev_dbg(codec->dev, "VMON enabled in slots %d-%d",
-+				slot, slot + 1);
-+		}
-+
-+		/* configure IMON_TX_LOC */
-+		if (slot_num == 3) {
-+			regmap_update_bits(priv->regmap, CS35L33_TX_IMON,
-+				CS35L33_X_STATE | CS35L33_X_LOC, slot);
-+			dev_dbg(codec->dev, "IMON enabled in slots %d-%d",
-+				slot, slot + 1);
-+		}
-+
-+		/* configure VPMON_TX_LOC */
-+		if (slot_num == 4) {
-+			regmap_update_bits(priv->regmap, CS35L33_TX_VPMON,
-+				CS35L33_X_STATE | CS35L33_X_LOC, slot);
-+			snd_soc_dapm_add_routes(dapm,
-+				&cs35l33_vp_vbst_mon_route[0], 2);
-+			dev_dbg(codec->dev, "VPMON enabled in slots %d", slot);
-+		}
-+
-+		/* configure VBSTMON_TX_LOC */
-+		if (slot_num == 5) {
-+			regmap_update_bits(priv->regmap, CS35L33_TX_VBSTMON,
-+				CS35L33_X_STATE | CS35L33_X_LOC, slot);
-+			snd_soc_dapm_add_routes(dapm,
-+				&cs35l33_vp_vbst_mon_route[2], 2);
-+			dev_dbg(codec->dev,
-+				"VBSTMON enabled in slots %d", slot);
-+		}
-+
-+		/* Enable the relevant tx slot */
-+		reg = CS35L33_TX_EN4 - (slot/8);
-+		bit_pos = slot - ((slot / 8) * (8));
-+		regmap_update_bits(priv->regmap, reg,
-+			1 << bit_pos, 1 << bit_pos);
-+
-+		tx_mask &= ~(1 << slot);
-+		slot = ffs(tx_mask) - 1;
-+		slot_num++;
-+	}
-+
-+	return 0;
-+}
-+
-+static int cs35l33_codec_set_sysclk(struct snd_soc_codec *codec,
-+		int clk_id, int source, unsigned int freq, int dir)
-+{
-+	struct cs35l33_private *cs35l33 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (freq) {
-+	case CS35L33_MCLK_5644:
-+	case CS35L33_MCLK_6:
-+	case CS35L33_MCLK_6144:
-+		regmap_update_bits(cs35l33->regmap, CS35L33_CLK_CTL,
-+			CS35L33_MCLKDIV2, 0);
-+		cs35l33->mclk_int = freq;
-+		break;
-+	case CS35L33_MCLK_11289:
-+	case CS35L33_MCLK_12:
-+	case CS35L33_MCLK_12288:
-+		regmap_update_bits(cs35l33->regmap, CS35L33_CLK_CTL,
-+			CS35L33_MCLKDIV2, CS35L33_MCLKDIV2);
-+		cs35l33->mclk_int = freq/2;
-+		break;
-+	default:
-+		cs35l33->mclk_int = 0;
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(codec->dev, "external mclk freq=%d, internal mclk freq=%d\n",
-+		freq, cs35l33->mclk_int);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops cs35l33_ops = {
-+	.startup = cs35l33_pcm_startup,
-+	.set_tristate = cs35l33_set_tristate,
-+	.set_fmt = cs35l33_set_dai_fmt,
-+	.hw_params = cs35l33_pcm_hw_params,
-+	.set_tdm_slot = cs35l33_set_tdm_slot,
-+};
-+
-+static struct snd_soc_dai_driver cs35l33_dai = {
-+		.name = "cs35l33-dai",
-+		.id = 0,
-+		.playback = {
-+			.stream_name = "CS35L33 Playback",
-+			.channels_min = 1,
-+			.channels_max = 1,
-+			.rates = CS35L33_RATES,
-+			.formats = CS35L33_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "CS35L33 Capture",
-+			.channels_min = 2,
-+			.channels_max = 2,
-+			.rates = CS35L33_RATES,
-+			.formats = CS35L33_FORMATS,
-+		},
-+		.ops = &cs35l33_ops,
-+		.symmetric_rates = 1,
-+};
-+
-+static int cs35l33_set_hg_data(struct snd_soc_codec *codec,
-+			       struct cs35l33_pdata *pdata)
-+{
-+	struct cs35l33_hg *hg_config = &pdata->hg_config;
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	struct cs35l33_private *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	if (hg_config->enable_hg_algo) {
-+		regmap_update_bits(priv->regmap, CS35L33_HG_MEMLDO_CTL,
-+			CS35L33_MEM_DEPTH_MASK,
-+			hg_config->mem_depth << CS35L33_MEM_DEPTH_SHIFT);
-+		regmap_write(priv->regmap, CS35L33_HG_REL_RATE,
-+			hg_config->release_rate);
-+		regmap_update_bits(priv->regmap, CS35L33_HG_HEAD,
-+			CS35L33_HD_RM_MASK,
-+			hg_config->hd_rm << CS35L33_HD_RM_SHIFT);
-+		regmap_update_bits(priv->regmap, CS35L33_HG_MEMLDO_CTL,
-+			CS35L33_LDO_THLD_MASK,
-+			hg_config->ldo_thld << CS35L33_LDO_THLD_SHIFT);
-+		regmap_update_bits(priv->regmap, CS35L33_HG_MEMLDO_CTL,
-+			CS35L33_LDO_DISABLE_MASK,
-+			hg_config->ldo_path_disable <<
-+				CS35L33_LDO_DISABLE_SHIFT);
-+		regmap_update_bits(priv->regmap, CS35L33_LDO_DEL,
-+			CS35L33_LDO_ENTRY_DELAY_MASK,
-+			hg_config->ldo_entry_delay <<
-+				CS35L33_LDO_ENTRY_DELAY_SHIFT);
-+		if (hg_config->vp_hg_auto) {
-+			regmap_update_bits(priv->regmap, CS35L33_HG_EN,
-+				CS35L33_VP_HG_AUTO_MASK,
-+				CS35L33_VP_HG_AUTO_MASK);
-+			snd_soc_dapm_add_routes(dapm, cs35l33_vphg_auto_route,
-+				ARRAY_SIZE(cs35l33_vphg_auto_route));
-+		}
-+		regmap_update_bits(priv->regmap, CS35L33_HG_EN,
-+			CS35L33_VP_HG_MASK,
-+			hg_config->vp_hg << CS35L33_VP_HG_SHIFT);
-+		regmap_update_bits(priv->regmap, CS35L33_LDO_DEL,
-+			CS35L33_VP_HG_RATE_MASK,
-+			hg_config->vp_hg_rate << CS35L33_VP_HG_RATE_SHIFT);
-+		regmap_update_bits(priv->regmap, CS35L33_LDO_DEL,
-+			CS35L33_VP_HG_VA_MASK,
-+			hg_config->vp_hg_va << CS35L33_VP_HG_VA_SHIFT);
-+		regmap_update_bits(priv->regmap, CS35L33_HG_EN,
-+			CS35L33_CLASS_HG_EN_MASK, CS35L33_CLASS_HG_EN_MASK);
-+	}
-+	return 0;
-+}
-+
-+static int cs35l33_set_bst_ipk(struct snd_soc_codec *codec, unsigned int bst)
-+{
-+	struct cs35l33_private *cs35l33 = snd_soc_codec_get_drvdata(codec);
-+	int ret = 0, steps = 0;
-+
-+	/* Boost current in uA */
-+	if (bst > 3600000 || bst < 1850000) {
-+		dev_err(codec->dev, "Invalid boost current %d\n", bst);
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	if (bst % 15625) {
-+		dev_err(codec->dev, "Current not a multiple of 15625uA (%d)\n",
-+			bst);
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	while (bst > 1850000) {
-+		bst -= 15625;
-+		steps++;
-+	}
-+
-+	regmap_write(cs35l33->regmap, CS35L33_BST_PEAK_CTL,
-+		steps+0x70);
-+
-+err:
-+	return ret;
-+}
-+
-+static int cs35l33_probe(struct snd_soc_codec *codec)
-+{
-+	struct cs35l33_private *cs35l33 = snd_soc_codec_get_drvdata(codec);
-+
-+	cs35l33->codec = codec;
-+	pm_runtime_get_sync(codec->dev);
-+
-+	regmap_update_bits(cs35l33->regmap, CS35L33_PROTECT_CTL,
-+		CS35L33_ALIVE_WD_DIS, 0x8);
-+	regmap_update_bits(cs35l33->regmap, CS35L33_BST_CTL2,
-+				CS35L33_ALIVE_WD_DIS2,
-+				CS35L33_ALIVE_WD_DIS2);
-+
-+	/* Set Platform Data */
-+	regmap_update_bits(cs35l33->regmap, CS35L33_BST_CTL1,
-+		CS35L33_BST_CTL_MASK, cs35l33->pdata.boost_ctl);
-+	regmap_update_bits(cs35l33->regmap, CS35L33_CLASSD_CTL,
-+		CS35L33_AMP_DRV_SEL_MASK,
-+		cs35l33->pdata.amp_drv_sel << CS35L33_AMP_DRV_SEL_SHIFT);
-+
-+	if (cs35l33->pdata.boost_ipk)
-+		cs35l33_set_bst_ipk(codec, cs35l33->pdata.boost_ipk);
-+
-+	if (cs35l33->enable_soft_ramp) {
-+		snd_soc_update_bits(codec, CS35L33_DAC_CTL,
-+			CS35L33_DIGSFT, CS35L33_DIGSFT);
-+		snd_soc_update_bits(codec, CS35L33_DAC_CTL,
-+			CS35L33_DSR_RATE, cs35l33->pdata.ramp_rate);
-+	} else {
-+		snd_soc_update_bits(codec, CS35L33_DAC_CTL,
-+			CS35L33_DIGSFT, 0);
-+	}
-+
-+	/* update IMON scaling rate if different from default of 0x8 */
-+	if (cs35l33->pdata.imon_adc_scale != 0x8)
-+		snd_soc_update_bits(codec, CS35L33_ADC_CTL,
-+			CS35L33_IMON_SCALE, cs35l33->pdata.imon_adc_scale);
-+
-+	cs35l33_set_hg_data(codec, &(cs35l33->pdata));
-+
-+	/*
-+	 * unmask important interrupts that causes the chip to enter
-+	 * speaker safe mode and hence deserves user attention
-+	 */
-+	regmap_update_bits(cs35l33->regmap, CS35L33_INT_MASK_1,
-+		CS35L33_M_OTE | CS35L33_M_OTW | CS35L33_M_AMP_SHORT |
-+		CS35L33_M_CAL_ERR, 0);
-+
-+	pm_runtime_put_sync(codec->dev);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_codec_driver soc_codec_dev_cs35l33 = {
-+	.probe = cs35l33_probe,
-+
-+	.set_bias_level = cs35l33_set_bias_level,
-+	.set_sysclk = cs35l33_codec_set_sysclk,
-+
-+	.dapm_widgets = cs35l33_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(cs35l33_dapm_widgets),
-+	.dapm_routes = cs35l33_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(cs35l33_audio_map),
-+	.controls = cs35l33_snd_controls,
-+	.num_controls = ARRAY_SIZE(cs35l33_snd_controls),
-+
-+	.idle_bias_off = true,
-+};
-+
-+static const struct regmap_config cs35l33_regmap = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+
-+	.max_register = CS35L33_MAX_REGISTER,
-+	.reg_defaults = cs35l33_reg,
-+	.num_reg_defaults = ARRAY_SIZE(cs35l33_reg),
-+	.volatile_reg = cs35l33_volatile_register,
-+	.readable_reg = cs35l33_readable_register,
-+	.writeable_reg = cs35l33_writeable_register,
-+	.cache_type = REGCACHE_RBTREE,
-+	.use_single_rw = true,
-+};
-+
-+static int cs35l33_runtime_resume(struct device *dev)
-+{
-+	struct cs35l33_private *cs35l33 = dev_get_drvdata(dev);
++	struct snd_soc_component *c = snd_soc_dapm_to_component(w->dapm);
++	struct tpa6130a2_data *data = snd_soc_component_get_drvdata(c);
 +	int ret;
 +
-+	dev_dbg(dev, "%s\n", __func__);
-+
-+	if (cs35l33->reset_gpio)
-+		gpiod_set_value_cansleep(cs35l33->reset_gpio, 0);
-+
-+	ret = regulator_bulk_enable(cs35l33->num_core_supplies,
-+		cs35l33->core_supplies);
-+	if (ret != 0) {
-+		dev_err(dev, "Failed to enable core supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	regcache_cache_only(cs35l33->regmap, false);
-+
-+	if (cs35l33->reset_gpio)
-+		gpiod_set_value_cansleep(cs35l33->reset_gpio, 1);
-+
-+	msleep(CS35L33_BOOT_DELAY);
-+
-+	ret = regcache_sync(cs35l33->regmap);
-+	if (ret != 0) {
-+		dev_err(dev, "Failed to restore register cache\n");
-+		goto err;
-+	}
-+
-+	return 0;
-+
-+err:
-+	regcache_cache_only(cs35l33->regmap, true);
-+	regulator_bulk_disable(cs35l33->num_core_supplies,
-+		cs35l33->core_supplies);
-+
-+	return ret;
-+}
-+
-+static int cs35l33_runtime_suspend(struct device *dev)
-+{
-+	struct cs35l33_private *cs35l33 = dev_get_drvdata(dev);
-+
-+	dev_dbg(dev, "%s\n", __func__);
-+
-+	/* redo the calibration in next power up */
-+	cs35l33->amp_cal = false;
-+
-+	regcache_cache_only(cs35l33->regmap, true);
-+	regcache_mark_dirty(cs35l33->regmap);
-+	regulator_bulk_disable(cs35l33->num_core_supplies,
-+		cs35l33->core_supplies);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops cs35l33_pm_ops = {
-+	SET_RUNTIME_PM_OPS(cs35l33_runtime_suspend,
-+			   cs35l33_runtime_resume,
-+			   NULL)
-+};
-+
-+static int cs35l33_get_hg_data(const struct device_node *np,
-+			       struct cs35l33_pdata *pdata)
-+{
-+	struct device_node *hg;
-+	struct cs35l33_hg *hg_config = &pdata->hg_config;
-+	u32 val32;
-+
-+	hg = of_get_child_by_name(np, "cirrus,hg-algo");
-+	hg_config->enable_hg_algo = hg ? true : false;
-+
-+	if (hg_config->enable_hg_algo) {
-+		if (of_property_read_u32(hg, "cirrus,mem-depth", &val32) >= 0)
-+			hg_config->mem_depth = val32;
-+		if (of_property_read_u32(hg, "cirrus,release-rate",
-+				&val32) >= 0)
-+			hg_config->release_rate = val32;
-+		if (of_property_read_u32(hg, "cirrus,ldo-thld", &val32) >= 0)
-+			hg_config->ldo_thld = val32;
-+		if (of_property_read_u32(hg, "cirrus,ldo-path-disable",
-+				&val32) >= 0)
-+			hg_config->ldo_path_disable = val32;
-+		if (of_property_read_u32(hg, "cirrus,ldo-entry-delay",
-+				&val32) >= 0)
-+			hg_config->ldo_entry_delay = val32;
-+
-+		hg_config->vp_hg_auto = of_property_read_bool(hg,
-+			"cirrus,vp-hg-auto");
-+
-+		if (of_property_read_u32(hg, "cirrus,vp-hg", &val32) >= 0)
-+			hg_config->vp_hg = val32;
-+		if (of_property_read_u32(hg, "cirrus,vp-hg-rate", &val32) >= 0)
-+			hg_config->vp_hg_rate = val32;
-+		if (of_property_read_u32(hg, "cirrus,vp-hg-va", &val32) >= 0)
-+			hg_config->vp_hg_va = val32;
-+	}
-+
-+	of_node_put(hg);
-+
-+	return 0;
-+}
-+
-+static irqreturn_t cs35l33_irq_thread(int irq, void *data)
-+{
-+	struct cs35l33_private *cs35l33 = data;
-+	struct snd_soc_codec *codec = cs35l33->codec;
-+	unsigned int sticky_val1, sticky_val2, current_val, mask1, mask2;
-+
-+	regmap_read(cs35l33->regmap, CS35L33_INT_STATUS_2,
-+		&sticky_val2);
-+	regmap_read(cs35l33->regmap, CS35L33_INT_STATUS_1,
-+		&sticky_val1);
-+	regmap_read(cs35l33->regmap, CS35L33_INT_MASK_2, &mask2);
-+	regmap_read(cs35l33->regmap, CS35L33_INT_MASK_1, &mask1);
-+
-+	/* Check to see if the unmasked bits are active,
-+	 *  if not then exit.
-+	 */
-+	if (!(sticky_val1 & ~mask1) && !(sticky_val2 & ~mask2))
-+		return IRQ_NONE;
-+
-+	regmap_read(cs35l33->regmap, CS35L33_INT_STATUS_1,
-+		&current_val);
-+
-+	/* handle the interrupts */
-+
-+	if (sticky_val1 & CS35L33_AMP_SHORT) {
-+		dev_crit(codec->dev, "Amp short error\n");
-+		if (!(current_val & CS35L33_AMP_SHORT)) {
-+			dev_dbg(codec->dev,
-+				"Amp short error release\n");
-+			regmap_update_bits(cs35l33->regmap,
-+				CS35L33_AMP_CTL,
-+				CS35L33_AMP_SHORT_RLS, 0);
-+			regmap_update_bits(cs35l33->regmap,
-+				CS35L33_AMP_CTL,
-+				CS35L33_AMP_SHORT_RLS,
-+				CS35L33_AMP_SHORT_RLS);
-+			regmap_update_bits(cs35l33->regmap,
-+				CS35L33_AMP_CTL, CS35L33_AMP_SHORT_RLS,
-+				0);
++	/* before widget power up */
++	if (SND_SOC_DAPM_EVENT_ON(event)) {
++		/* Turn on the chip */
++		tpa6130a2_power(data, true);
++		/* Sync the registers */
++		ret = regcache_sync(data->regmap);
++		if (ret < 0) {
++			dev_err(c->dev, "Failed to initialize chip\n");
++			tpa6130a2_power(data, false);
++			return ret;
 +		}
-+	}
-+
-+	if (sticky_val1 & CS35L33_CAL_ERR) {
-+		dev_err(codec->dev, "Cal error\n");
-+
-+		/* redo the calibration in next power up */
-+		cs35l33->amp_cal = false;
-+
-+		if (!(current_val & CS35L33_CAL_ERR)) {
-+			dev_dbg(codec->dev, "Cal error release\n");
-+			regmap_update_bits(cs35l33->regmap,
-+				CS35L33_AMP_CTL, CS35L33_CAL_ERR_RLS,
-+				0);
-+			regmap_update_bits(cs35l33->regmap,
-+				CS35L33_AMP_CTL, CS35L33_CAL_ERR_RLS,
-+				CS35L33_CAL_ERR_RLS);
-+			regmap_update_bits(cs35l33->regmap,
-+				CS35L33_AMP_CTL, CS35L33_CAL_ERR_RLS,
-+				0);
-+		}
-+	}
-+
-+	if (sticky_val1 & CS35L33_OTE) {
-+		dev_crit(codec->dev, "Over temperature error\n");
-+		if (!(current_val & CS35L33_OTE)) {
-+			dev_dbg(codec->dev,
-+				"Over temperature error release\n");
-+			regmap_update_bits(cs35l33->regmap,
-+				CS35L33_AMP_CTL, CS35L33_OTE_RLS, 0);
-+			regmap_update_bits(cs35l33->regmap,
-+				CS35L33_AMP_CTL, CS35L33_OTE_RLS,
-+				CS35L33_OTE_RLS);
-+			regmap_update_bits(cs35l33->regmap,
-+				CS35L33_AMP_CTL, CS35L33_OTE_RLS, 0);
-+		}
-+	}
-+
-+	if (sticky_val1 & CS35L33_OTW) {
-+		dev_err(codec->dev, "Over temperature warning\n");
-+		if (!(current_val & CS35L33_OTW)) {
-+			dev_dbg(codec->dev,
-+				"Over temperature warning release\n");
-+			regmap_update_bits(cs35l33->regmap,
-+				CS35L33_AMP_CTL, CS35L33_OTW_RLS, 0);
-+			regmap_update_bits(cs35l33->regmap,
-+				CS35L33_AMP_CTL, CS35L33_OTW_RLS,
-+				CS35L33_OTW_RLS);
-+			regmap_update_bits(cs35l33->regmap,
-+				CS35L33_AMP_CTL, CS35L33_OTW_RLS, 0);
-+		}
-+	}
-+	if (CS35L33_ALIVE_ERR & sticky_val1)
-+		dev_err(codec->dev, "ERROR: ADSPCLK Interrupt\n");
-+
-+	if (CS35L33_MCLK_ERR & sticky_val1)
-+		dev_err(codec->dev, "ERROR: MCLK Interrupt\n");
-+
-+	if (CS35L33_VMON_OVFL & sticky_val2)
-+		dev_err(codec->dev,
-+			"ERROR: VMON Overflow Interrupt\n");
-+
-+	if (CS35L33_IMON_OVFL & sticky_val2)
-+		dev_err(codec->dev,
-+			"ERROR: IMON Overflow Interrupt\n");
-+
-+	if (CS35L33_VPMON_OVFL & sticky_val2)
-+		dev_err(codec->dev,
-+			"ERROR: VPMON Overflow Interrupt\n");
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static const char * const cs35l33_core_supplies[] = {
-+	"VA",
-+	"VP",
-+};
-+
-+static int cs35l33_of_get_pdata(struct device *dev,
-+				struct cs35l33_private *cs35l33)
-+{
-+	struct device_node *np = dev->of_node;
-+	struct cs35l33_pdata *pdata = &cs35l33->pdata;
-+	u32 val32;
-+
-+	if (!np)
-+		return 0;
-+
-+	if (of_property_read_u32(np, "cirrus,boost-ctl", &val32) >= 0) {
-+		pdata->boost_ctl = val32;
-+		pdata->amp_drv_sel = 1;
-+	}
-+
-+	if (of_property_read_u32(np, "cirrus,ramp-rate", &val32) >= 0) {
-+		pdata->ramp_rate = val32;
-+		cs35l33->enable_soft_ramp = true;
-+	}
-+
-+	if (of_property_read_u32(np, "cirrus,boost-ipk", &val32) >= 0)
-+		pdata->boost_ipk = val32;
-+
-+	if (of_property_read_u32(np, "cirrus,imon-adc-scale", &val32) >= 0) {
-+		if ((val32 == 0x0) || (val32 == 0x7) || (val32 == 0x6))
-+			pdata->imon_adc_scale = val32;
-+		else
-+			/* use default value */
-+			pdata->imon_adc_scale = 0x8;
++	/* after widget power down */
 +	} else {
-+		/* use default value */
-+		pdata->imon_adc_scale = 0x8;
++		tpa6130a2_power(data, false);
 +	}
-+
-+	cs35l33_get_hg_data(np, pdata);
 +
 +	return 0;
 +}
 +
-+static int cs35l33_i2c_probe(struct i2c_client *i2c_client,
-+				       const struct i2c_device_id *id)
-+{
-+	struct cs35l33_private *cs35l33;
-+	struct cs35l33_pdata *pdata = dev_get_platdata(&i2c_client->dev);
-+	int ret, devid, i;
-+	unsigned int reg;
+ /*
+  * TPA6130 volume. From -59.5 to 4 dB with increasing step size when going
+  * down in gain.
+@@ -149,57 +144,6 @@ static const struct snd_kcontrol_new tpa6140a2_controls[] = {
+ 		       tpa6140_tlv),
+ };
+ 
+-/*
+- * Enable or disable channel (left or right)
+- * The bit number for mute and amplifier are the same per channel:
+- * bit 6: Right channel
+- * bit 7: Left channel
+- * in both registers.
+- */
+-static void tpa6130a2_channel_enable(u8 channel, int enable)
+-{
+-	struct tpa6130a2_data *data = i2c_get_clientdata(tpa6130a2_client);
+-
+-	if (enable) {
+-		/* Enable channel */
+-		/* Enable amplifier */
+-		regmap_update_bits(data->regmap, TPA6130A2_REG_CONTROL,
+-			channel | TPA6130A2_SWS, channel & ~TPA6130A2_SWS);
+-
+-		/* Unmute channel */
+-		regmap_update_bits(data->regmap, TPA6130A2_REG_VOL_MUTE,
+-				   channel, 0);
+-	} else {
+-		/* Disable channel */
+-		/* Mute channel */
+-		regmap_update_bits(data->regmap, TPA6130A2_REG_VOL_MUTE,
+-				   channel, channel);
+-
+-		/* Disable amplifier */
+-		regmap_update_bits(data->regmap, TPA6130A2_REG_CONTROL,
+-				   channel, 0);
+-	}
+-}
+-
+-int tpa6130a2_stereo_enable(struct snd_soc_codec *codec, int enable)
+-{
+-	int ret = 0;
+-	if (enable) {
+-		ret = tpa6130a2_power(1);
+-		if (ret < 0)
+-			return ret;
+-		tpa6130a2_channel_enable(TPA6130A2_HP_EN_R | TPA6130A2_HP_EN_L,
+-					 1);
+-	} else {
+-		tpa6130a2_channel_enable(TPA6130A2_HP_EN_R | TPA6130A2_HP_EN_L,
+-					 0);
+-		ret = tpa6130a2_power(0);
+-	}
+-
+-	return ret;
+-}
+-EXPORT_SYMBOL_GPL(tpa6130a2_stereo_enable);
+-
+ static int tpa6130a2_component_probe(struct snd_soc_component *component)
+ {
+ 	struct tpa6130a2_data *data = snd_soc_component_get_drvdata(component);
+@@ -212,9 +156,47 @@ static int tpa6130a2_component_probe(struct snd_soc_component *component)
+ 			tpa6130a2_controls, ARRAY_SIZE(tpa6130a2_controls));
+ }
+ 
++static const struct snd_soc_dapm_widget tpa6130a2_dapm_widgets[] = {
++	SND_SOC_DAPM_INPUT("LEFTIN"),
++	SND_SOC_DAPM_INPUT("RIGHTIN"),
++	SND_SOC_DAPM_OUTPUT("HPLEFT"),
++	SND_SOC_DAPM_OUTPUT("HPRIGHT"),
 +
-+	cs35l33 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs35l33_private),
-+			       GFP_KERNEL);
-+	if (!cs35l33)
-+		return -ENOMEM;
++	SND_SOC_DAPM_PGA("Left Mute", TPA6130A2_REG_VOL_MUTE,
++			 TPA6130A2_HP_EN_L_SHIFT, 1, NULL, 0),
++	SND_SOC_DAPM_PGA("Right Mute", TPA6130A2_REG_VOL_MUTE,
++			 TPA6130A2_HP_EN_R_SHIFT, 1, NULL, 0),
++	SND_SOC_DAPM_PGA("Left PGA", TPA6130A2_REG_CONTROL,
++			 TPA6130A2_HP_EN_L_SHIFT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Right PGA", TPA6130A2_REG_CONTROL,
++			 TPA6130A2_HP_EN_R_SHIFT, 0, NULL, 0),
 +
-+	i2c_set_clientdata(i2c_client, cs35l33);
-+	cs35l33->regmap = devm_regmap_init_i2c(i2c_client, &cs35l33_regmap);
-+	if (IS_ERR(cs35l33->regmap)) {
-+		ret = PTR_ERR(cs35l33->regmap);
-+		dev_err(&i2c_client->dev, "regmap_init() failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	regcache_cache_only(cs35l33->regmap, true);
-+
-+	for (i = 0; i < ARRAY_SIZE(cs35l33_core_supplies); i++)
-+		cs35l33->core_supplies[i].supply
-+			= cs35l33_core_supplies[i];
-+	cs35l33->num_core_supplies = ARRAY_SIZE(cs35l33_core_supplies);
-+
-+	ret = devm_regulator_bulk_get(&i2c_client->dev,
-+			cs35l33->num_core_supplies,
-+			cs35l33->core_supplies);
-+	if (ret != 0) {
-+		dev_err(&i2c_client->dev,
-+			"Failed to request core supplies: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	if (pdata) {
-+		cs35l33->pdata = *pdata;
-+	} else {
-+		cs35l33_of_get_pdata(&i2c_client->dev, cs35l33);
-+		pdata = &cs35l33->pdata;
-+	}
-+
-+	ret = devm_request_threaded_irq(&i2c_client->dev, i2c_client->irq, NULL,
-+			cs35l33_irq_thread, IRQF_ONESHOT | IRQF_TRIGGER_LOW,
-+			"cs35l33", cs35l33);
-+	if (ret != 0)
-+		dev_warn(&i2c_client->dev, "Failed to request IRQ: %d\n", ret);
-+
-+	/* We could issue !RST or skip it based on AMP topology */
-+	cs35l33->reset_gpio = devm_gpiod_get_optional(&i2c_client->dev,
-+			"reset-gpios", GPIOD_OUT_HIGH);
-+
-+	if (PTR_ERR(cs35l33->reset_gpio) == -ENOENT) {
-+		dev_warn(&i2c_client->dev,
-+			"%s WARNING: No reset gpio assigned\n", __func__);
-+	} else if (IS_ERR(cs35l33->reset_gpio)) {
-+		dev_err(&i2c_client->dev, "%s ERROR: Can't get reset GPIO\n",
-+			__func__);
-+		return PTR_ERR(cs35l33->reset_gpio);
-+	}
-+
-+	ret = regulator_bulk_enable(cs35l33->num_core_supplies,
-+					cs35l33->core_supplies);
-+	if (ret != 0) {
-+		dev_err(&i2c_client->dev,
-+			"Failed to enable core supplies: %d\n",
-+			ret);
-+		goto err_irq;
-+	}
-+
-+	if (cs35l33->reset_gpio)
-+		gpiod_set_value_cansleep(cs35l33->reset_gpio, 1);
-+
-+	msleep(CS35L33_BOOT_DELAY);
-+	regcache_cache_only(cs35l33->regmap, false);
-+
-+	/* initialize codec */
-+	ret = regmap_read(cs35l33->regmap, CS35L33_DEVID_AB, &reg);
-+	devid = (reg & 0xFF) << 12;
-+	ret = regmap_read(cs35l33->regmap, CS35L33_DEVID_CD, &reg);
-+	devid |= (reg & 0xFF) << 4;
-+	ret = regmap_read(cs35l33->regmap, CS35L33_DEVID_E, &reg);
-+	devid |= (reg & 0xF0) >> 4;
-+
-+	if (devid != CS35L33_CHIP_ID) {
-+		dev_err(&i2c_client->dev,
-+			"CS35L33 Device ID (%X). Expected ID %X\n",
-+			devid, CS35L33_CHIP_ID);
-+		goto err_enable;
-+	}
-+
-+	ret = regmap_read(cs35l33->regmap, CS35L33_REV_ID, &reg);
-+	if (ret < 0) {
-+		dev_err(&i2c_client->dev, "Get Revision ID failed\n");
-+		goto err_enable;
-+	}
-+
-+	dev_info(&i2c_client->dev,
-+		 "Cirrus Logic CS35L33, Revision: %02X\n", ret & 0xFF);
-+
-+	ret = regmap_register_patch(cs35l33->regmap,
-+			cs35l33_patch, ARRAY_SIZE(cs35l33_patch));
-+	if (ret < 0) {
-+		dev_err(&i2c_client->dev,
-+			"Error in applying regmap patch: %d\n", ret);
-+		goto err_enable;
-+	}
-+
-+	/* disable mclk and tdm */
-+	regmap_update_bits(cs35l33->regmap, CS35L33_CLK_CTL,
-+		CS35L33_MCLKDIS | CS35L33_SDOUT_3ST_TDM,
-+		CS35L33_MCLKDIS | CS35L33_SDOUT_3ST_TDM);
-+
-+	pm_runtime_set_autosuspend_delay(&i2c_client->dev, 100);
-+	pm_runtime_use_autosuspend(&i2c_client->dev);
-+	pm_runtime_set_active(&i2c_client->dev);
-+	pm_runtime_enable(&i2c_client->dev);
-+
-+	ret =  snd_soc_register_codec(&i2c_client->dev,
-+			&soc_codec_dev_cs35l33, &cs35l33_dai, 1);
-+	if (ret < 0) {
-+		dev_err(&i2c_client->dev, "%s: Register codec failed\n",
-+			__func__);
-+		goto err_irq;
-+	}
-+
-+	return 0;
-+
-+err_enable:
-+	regulator_bulk_disable(cs35l33->num_core_supplies,
-+			       cs35l33->core_supplies);
-+err_irq:
-+	free_irq(i2c_client->irq, cs35l33);
-+
-+	return ret;
-+}
-+
-+static int cs35l33_i2c_remove(struct i2c_client *client)
-+{
-+	struct cs35l33_private *cs35l33 = i2c_get_clientdata(client);
-+
-+	snd_soc_unregister_codec(&client->dev);
-+
-+	if (cs35l33->reset_gpio)
-+		gpiod_set_value_cansleep(cs35l33->reset_gpio, 0);
-+
-+	pm_runtime_disable(&client->dev);
-+	regulator_bulk_disable(cs35l33->num_core_supplies,
-+		cs35l33->core_supplies);
-+	free_irq(client->irq, cs35l33);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id cs35l33_of_match[] = {
-+	{ .compatible = "cirrus,cs35l33", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, cs35l33_of_match);
-+
-+static const struct i2c_device_id cs35l33_id[] = {
-+	{"cs35l33", 0},
-+	{}
++	SND_SOC_DAPM_SUPPLY("Power", TPA6130A2_REG_CONTROL,
++			    TPA6130A2_SWS_SHIFT, 1, tpa6130a2_power_event,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
 +};
 +
-+MODULE_DEVICE_TABLE(i2c, cs35l33_id);
++static const struct snd_soc_dapm_route tpa6130a2_dapm_routes[] = {
++	{ "Left PGA", NULL, "LEFTIN" },
++	{ "Right PGA", NULL, "RIGHTIN" },
 +
-+static struct i2c_driver cs35l33_i2c_driver = {
-+	.driver = {
-+		.name = "cs35l33",
-+		.pm = &cs35l33_pm_ops,
-+		.of_match_table = cs35l33_of_match,
++	{ "Left Mute", NULL, "Left PGA" },
++	{ "Right Mute", NULL, "Right PGA" },
 +
-+		},
-+	.id_table = cs35l33_id,
-+	.probe = cs35l33_i2c_probe,
-+	.remove = cs35l33_i2c_remove,
++	{ "HPLEFT", NULL, "Left Mute" },
++	{ "HPRIGHT", NULL, "Right Mute" },
 +
++	{ "Left PGA", NULL, "Power" },
++	{ "Right PGA", NULL, "Power" },
 +};
-+module_i2c_driver(cs35l33_i2c_driver);
 +
-+MODULE_DESCRIPTION("ASoC CS35L33 driver");
-+MODULE_AUTHOR("Paul Handrigan, Cirrus Logic Inc, <paul.handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/cs35l33.h b/sound/soc/codecs/cs35l33.h
-new file mode 100644
-index 0000000..c045737
---- /dev/null
-+++ b/sound/soc/codecs/cs35l33.h
-@@ -0,0 +1,221 @@
-+/*
-+ * cs35l33.h -- CS35L33 ALSA SoC audio driver
-+ *
-+ * Copyright 2016 Cirrus Logic, Inc.
-+ *
-+ * Author: Paul Handrigan <paul.handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
+ struct snd_soc_component_driver tpa6130a2_component_driver = {
+ 	.name = "tpa6130a2",
+ 	.probe = tpa6130a2_component_probe,
++	.dapm_widgets = tpa6130a2_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(tpa6130a2_dapm_widgets),
++	.dapm_routes = tpa6130a2_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(tpa6130a2_dapm_routes),
+ };
+ 
+ static const struct reg_default tpa6130a2_reg_defaults[] = {
+@@ -248,6 +230,8 @@ static int tpa6130a2_probe(struct i2c_client *client,
+ 	if (!data)
+ 		return -ENOMEM;
+ 
++	data->dev = dev;
 +
-+#ifndef __CS35L33_H__
-+#define __CS35L33_H__
+ 	data->regmap = devm_regmap_init_i2c(client, &tpa6130a2_regmap_config);
+ 	if (IS_ERR(data->regmap))
+ 		return PTR_ERR(data->regmap);
+@@ -262,14 +246,10 @@ static int tpa6130a2_probe(struct i2c_client *client,
+ 		return -ENODEV;
+ 	}
+ 
+-	tpa6130a2_client = client;
+-
+-	i2c_set_clientdata(tpa6130a2_client, data);
++	i2c_set_clientdata(client, data);
+ 
+ 	data->id = id->driver_data;
+ 
+-	mutex_init(&data->mutex);
+-
+ 	if (data->power_gpio >= 0) {
+ 		ret = devm_gpio_request(dev, data->power_gpio,
+ 					"tpa6130a2 enable");
+@@ -300,7 +280,7 @@ static int tpa6130a2_probe(struct i2c_client *client,
+ 		goto err_gpio;
+ 	}
+ 
+-	ret = tpa6130a2_power(1);
++	ret = tpa6130a2_power(data, true);
+ 	if (ret != 0)
+ 		goto err_gpio;
+ 
+@@ -312,7 +292,7 @@ static int tpa6130a2_probe(struct i2c_client *client,
+ 		dev_warn(dev, "UNTESTED version detected (%d)\n", version);
+ 
+ 	/* Disable the chip */
+-	ret = tpa6130a2_power(0);
++	ret = tpa6130a2_power(data, false);
+ 	if (ret != 0)
+ 		goto err_gpio;
+ 
+@@ -320,19 +300,9 @@ static int tpa6130a2_probe(struct i2c_client *client,
+ 			&tpa6130a2_component_driver, NULL, 0);
+ 
+ err_gpio:
+-	tpa6130a2_client = NULL;
+-
+ 	return ret;
+ }
+ 
+-static int tpa6130a2_remove(struct i2c_client *client)
+-{
+-	tpa6130a2_power(0);
+-	tpa6130a2_client = NULL;
+-
+-	return 0;
+-}
+-
+ static const struct i2c_device_id tpa6130a2_id[] = {
+ 	{ "tpa6130a2", TPA6130A2 },
+ 	{ "tpa6140a2", TPA6140A2 },
+@@ -355,7 +325,6 @@ static struct i2c_driver tpa6130a2_i2c_driver = {
+ 		.of_match_table = of_match_ptr(tpa6130a2_of_match),
+ 	},
+ 	.probe = tpa6130a2_probe,
+-	.remove = tpa6130a2_remove,
+ 	.id_table = tpa6130a2_id,
+ };
+ 
+diff --git a/sound/soc/codecs/tpa6130a2.h b/sound/soc/codecs/tpa6130a2.h
+index ef05a3f..f19cad5 100644
+--- a/sound/soc/codecs/tpa6130a2.h
++++ b/sound/soc/codecs/tpa6130a2.h
+@@ -32,15 +32,18 @@
+ 
+ /* Register bits */
+ /* TPA6130A2_REG_CONTROL (0x01) */
+-#define TPA6130A2_SWS			(0x01 << 0)
++#define TPA6130A2_SWS_SHIFT		0
++#define TPA6130A2_SWS			(0x01 << TPA6130A2_SWS_SHIFT)
+ #define TPA6130A2_TERMAL		(0x01 << 1)
+ #define TPA6130A2_MODE(x)		(x << 4)
+ #define TPA6130A2_MODE_STEREO		(0x00)
+ #define TPA6130A2_MODE_DUAL_MONO	(0x01)
+ #define TPA6130A2_MODE_BRIDGE		(0x02)
+ #define TPA6130A2_MODE_MASK		(0x03)
+-#define TPA6130A2_HP_EN_R		(0x01 << 6)
+-#define TPA6130A2_HP_EN_L		(0x01 << 7)
++#define TPA6130A2_HP_EN_R_SHIFT		6
++#define TPA6130A2_HP_EN_R		(0x01 << TPA6130A2_HP_EN_R_SHIFT)
++#define TPA6130A2_HP_EN_L_SHIFT		7
++#define TPA6130A2_HP_EN_L		(0x01 << TPA6130A2_HP_EN_L_SHIFT)
+ 
+ /* TPA6130A2_REG_VOL_MUTE (0x02) */
+ #define TPA6130A2_VOLUME(x)		((x & 0x3f) << 0)
+@@ -54,6 +57,4 @@
+ /* TPA6130A2_REG_VERSION (0x04) */
+ #define TPA6130A2_VERSION_MASK		(0x0f)
+ 
+-extern int tpa6130a2_stereo_enable(struct snd_soc_codec *codec, int enable);
+-
+ #endif /* __TPA6130A2_H__ */
+diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+index b59cf89..a768457 100644
+--- a/sound/soc/omap/rx51.c
++++ b/sound/soc/omap/rx51.c
+@@ -33,7 +33,6 @@
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+ #include <linux/platform_data/asoc-ti-mcbsp.h>
+-#include "../codecs/tpa6130a2.h"
+ 
+ #include <asm/mach-types.h>
+ 
+@@ -164,19 +163,6 @@ static int rx51_spk_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
+-static int rx51_hp_event(struct snd_soc_dapm_widget *w,
+-			 struct snd_kcontrol *k, int event)
+-{
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-
+-	if (SND_SOC_DAPM_EVENT_ON(event))
+-		tpa6130a2_stereo_enable(codec, 1);
+-	else
+-		tpa6130a2_stereo_enable(codec, 0);
+-
+-	return 0;
+-}
+-
+ static int rx51_get_input(struct snd_kcontrol *kcontrol,
+ 			  struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -235,7 +221,7 @@ static struct snd_soc_jack_gpio rx51_av_jack_gpios[] = {
+ static const struct snd_soc_dapm_widget aic34_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SPK("Ext Spk", rx51_spk_event),
+ 	SND_SOC_DAPM_MIC("DMic", NULL),
+-	SND_SOC_DAPM_HP("Headphone Jack", rx51_hp_event),
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+ 	SND_SOC_DAPM_MIC("HS Mic", NULL),
+ 	SND_SOC_DAPM_LINE("FM Transmitter", NULL),
+ 	SND_SOC_DAPM_SPK("Earphone", NULL),
+@@ -246,11 +232,14 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"Ext Spk", NULL, "HPROUT"},
+ 	{"Ext Spk", NULL, "HPLCOM"},
+ 	{"Ext Spk", NULL, "HPRCOM"},
+-	{"Headphone Jack", NULL, "LLOUT"},
+-	{"Headphone Jack", NULL, "RLOUT"},
+ 	{"FM Transmitter", NULL, "LLOUT"},
+ 	{"FM Transmitter", NULL, "RLOUT"},
+ 
++	{"Headphone Jack", NULL, "TPA6130A2 HPLEFT"},
++	{"Headphone Jack", NULL, "TPA6130A2 HPRIGHT"},
++	{"TPA6130A2 LEFTIN", NULL, "LLOUT"},
++	{"TPA6130A2 RIGHTIN", NULL, "RLOUT"},
 +
-+#define CS35L33_CHIP_ID		0x00035A33
-+#define CS35L33_DEVID_AB	0x01	/* Device ID A & B [RO] */
-+#define CS35L33_DEVID_CD	0x02	/* Device ID C & D [RO] */
-+#define CS35L33_DEVID_E		0x03	/* Device ID E [RO] */
-+#define CS35L33_FAB_ID		0x04	/* Fab ID [RO] */
-+#define CS35L33_REV_ID		0x05	/* Revision ID [RO] */
-+#define CS35L33_PWRCTL1		0x06	/* Power Ctl 1 */
-+#define CS35L33_PWRCTL2		0x07	/* Power Ctl 2 */
-+#define CS35L33_CLK_CTL		0x08	/* Clock Ctl */
-+#define CS35L33_BST_PEAK_CTL	0x09	/* Max Current for Boost */
-+#define CS35L33_PROTECT_CTL	0x0A	/* Amp Protection Parameters */
-+#define CS35L33_BST_CTL1	0x0B	/* Boost Converter CTL1 */
-+#define CS35L33_BST_CTL2	0x0C	/* Boost Converter CTL2 */
-+#define CS35L33_ADSP_CTL	0x0D	/* Serial Port Control */
-+#define CS35L33_ADC_CTL		0x0E	/* ADC Control */
-+#define CS35L33_DAC_CTL		0x0F	/* DAC Control */
-+#define CS35L33_DIG_VOL_CTL	0x10	/* Digital Volume CTL */
-+#define CS35L33_CLASSD_CTL	0x11	/* Class D Amp CTL */
-+#define CS35L33_AMP_CTL		0x12	/* Amp Gain/Protecton Release CTL */
-+#define CS35L33_INT_MASK_1	0x13	/* Interrupt Mask 1 */
-+#define CS35L33_INT_MASK_2	0x14	/* Interrupt Mask 2 */
-+#define CS35L33_INT_STATUS_1	0x15	/* Interrupt Status 1 [RO] */
-+#define CS35L33_INT_STATUS_2	0x16	/* Interrupt Status 2 [RO] */
-+#define CS35L33_DIAG_LOCK	0x17	/* Diagnostic Mode Register Lock */
-+#define CS35L33_DIAG_CTRL_1	0x18	/* Diagnostic Mode Register Control */
-+#define CS35L33_DIAG_CTRL_2	0x19	/* Diagnostic Mode Register Control 2 */
-+#define CS35L33_HG_MEMLDO_CTL	0x23	/* H/G Memory/LDO CTL */
-+#define CS35L33_HG_REL_RATE	0x24	/* H/G Release Rate */
-+#define CS35L33_LDO_DEL		0x25	/* LDO Entry Delay/VPhg Control 1 */
-+#define CS35L33_HG_HEAD		0x29	/* H/G Headroom */
-+#define CS35L33_HG_EN		0x2A	/* H/G Enable/VPhg CNT2 */
-+#define CS35L33_TX_VMON		0x2D	/* TDM TX Control 1 (VMON) */
-+#define CS35L33_TX_IMON		0x2E	/* TDM TX Control 2 (IMON) */
-+#define CS35L33_TX_VPMON	0x2F	/* TDM TX Control 3 (VPMON) */
-+#define CS35L33_TX_VBSTMON	0x30	/* TDM TX Control 4 (VBSTMON) */
-+#define CS35L33_TX_FLAG		0x31	/* TDM TX Control 5 (FLAG) */
-+#define CS35L33_TX_EN1		0x32	/* TDM TX Enable 1 */
-+#define CS35L33_TX_EN2		0x33	/* TDM TX Enable 2 */
-+#define CS35L33_TX_EN3		0x34	/* TDM TX Enable 3 */
-+#define CS35L33_TX_EN4		0x35	/* TDM TX Enable 4 */
-+#define CS35L33_RX_AUD		0x36	/* TDM RX Control 1 */
-+#define CS35L33_RX_SPLY		0x37	/* TDM RX Control 2 */
-+#define CS35L33_RX_ALIVE	0x38	/* TDM RX Control 3 */
-+#define CS35L33_BST_CTL4	0x39	/* Boost Converter Control 4 */
-+#define CS35L33_HG_STATUS	0x3F	/* H/G Status */
-+#define CS35L33_MAX_REGISTER	0x59
-+
-+#define CS35L33_MCLK_5644	5644800
-+#define CS35L33_MCLK_6144	6144000
-+#define CS35L33_MCLK_6		6000000
-+#define CS35L33_MCLK_11289	11289600
-+#define CS35L33_MCLK_12		12000000
-+#define CS35L33_MCLK_12288	12288000
-+
-+/* CS35L33_PWRCTL1 */
-+#define CS35L33_PDN_AMP			(1 << 7)
-+#define CS35L33_PDN_BST			(1 << 2)
-+#define CS35L33_PDN_ALL			1
-+
-+/* CS35L33_PWRCTL2 */
-+#define CS35L33_PDN_VMON_SHIFT		7
-+#define CS35L33_PDN_VMON		(1 << CS35L33_PDN_VMON_SHIFT)
-+#define CS35L33_PDN_IMON_SHIFT		6
-+#define CS35L33_PDN_IMON		(1 << CS35L33_PDN_IMON_SHIFT)
-+#define CS35L33_PDN_VPMON_SHIFT		5
-+#define CS35L33_PDN_VPMON		(1 << CS35L33_PDN_VPMON_SHIFT)
-+#define CS35L33_PDN_VBSTMON_SHIFT	4
-+#define CS35L33_PDN_VBSTMON		(1 << CS35L33_PDN_VBSTMON_SHIFT)
-+#define CS35L33_SDOUT_3ST_I2S_SHIFT	3
-+#define CS35L33_SDOUT_3ST_I2S		(1 << CS35L33_SDOUT_3ST_I2S_SHIFT)
-+#define CS35L33_PDN_SDIN_SHIFT		2
-+#define CS35L33_PDN_SDIN		(1 << CS35L33_PDN_SDIN_SHIFT)
-+#define CS35L33_PDN_TDM_SHIFT		1
-+#define CS35L33_PDN_TDM			(1 << CS35L33_PDN_TDM_SHIFT)
-+
-+/* CS35L33_CLK_CTL */
-+#define CS35L33_MCLKDIS			(1 << 7)
-+#define CS35L33_MCLKDIV2		(1 << 6)
-+#define CS35L33_SDOUT_3ST_TDM		(1 << 5)
-+#define CS35L33_INT_FS_RATE		(1 << 4)
-+#define CS35L33_ADSP_FS			0xF
-+
-+/* CS35L33_PROTECT_CTL */
-+#define CS35L33_ALIVE_WD_DIS		(3 << 2)
-+
-+/* CS35L33_BST_CTL1 */
-+#define CS35L33_BST_CTL_SRC		(1 << 6)
-+#define CS35L33_BST_CTL_SHIFT		(1 << 5)
-+#define CS35L33_BST_CTL_MASK		0x3F
-+
-+/* CS35L33_BST_CTL2 */
-+#define CS35L33_TDM_WD_SEL		(1 << 4)
-+#define CS35L33_ALIVE_WD_DIS2		(1 << 3)
-+#define CS35L33_VBST_SR_STEP		0x3
-+
-+/* CS35L33_ADSP_CTL */
-+#define CS35L33_ADSP_DRIVE		(1 << 7)
-+#define CS35L33_MS_MASK			(1 << 6)
-+#define CS35L33_SDIN_LOC		(3 << 4)
-+#define CS35L33_ALIVE_RATE		0x3
-+
-+/* CS35L33_ADC_CTL */
-+#define CS35L33_INV_VMON		(1 << 7)
-+#define CS35L33_INV_IMON		(1 << 6)
-+#define CS35L33_ADC_NOTCH_DIS		(1 << 5)
-+#define CS35L33_IMON_SCALE		0xF
-+
-+/* CS35L33_DAC_CTL */
-+#define CS35L33_INV_DAC			(1 << 7)
-+#define CS35L33_DAC_NOTCH_DIS		(1 << 5)
-+#define CS35L33_DIGSFT			(1 << 4)
-+#define CS35L33_DSR_RATE		0xF
-+
-+/* CS35L33_CLASSD_CTL */
-+#define CS35L33_AMP_SD			(1 << 6)
-+#define CS35L33_AMP_DRV_SEL_SRC		(1 << 5)
-+#define CS35L33_AMP_DRV_SEL_MASK	0x10
-+#define CS35L33_AMP_DRV_SEL_SHIFT	4
-+#define CS35L33_AMP_CAL			(1 << 3)
-+#define CS35L33_GAIN_CHG_ZC_MASK	0x04
-+#define CS35L33_GAIN_CHG_ZC_SHIFT	2
-+#define CS35L33_CLASS_D_CTL_MASK	0x3F
-+
-+/* CS35L33_AMP_CTL */
-+#define CS35L33_AMP_GAIN		0xF0
-+#define CS35L33_CAL_ERR_RLS		(1 << 3)
-+#define CS35L33_AMP_SHORT_RLS		(1 << 2)
-+#define CS35L33_OTW_RLS			(1 << 1)
-+#define CS35L33_OTE_RLS			1
-+
-+/* CS35L33_INT_MASK_1 */
-+#define CS35L33_M_CAL_ERR_SHIFT		6
-+#define CS35L33_M_CAL_ERR		(1 << CS35L33_M_CAL_ERR_SHIFT)
-+#define CS35L33_M_ALIVE_ERR_SHIFT	5
-+#define CS35L33_M_ALIVE_ERR		(1 << CS35L33_M_ALIVE_ERR_SHIFT)
-+#define CS35L33_M_AMP_SHORT_SHIFT	2
-+#define CS35L33_M_AMP_SHORT		(1 << CS35L33_M_AMP_SHORT_SHIFT)
-+#define CS35L33_M_OTW_SHIFT		1
-+#define CS35L33_M_OTW			(1 << CS35L33_M_OTW_SHIFT)
-+#define CS35L33_M_OTE_SHIFT		0
-+#define CS35L33_M_OTE			(1 << CS35L33_M_OTE_SHIFT)
-+
-+/* CS35L33_INT_STATUS_1 */
-+#define CS35L33_CAL_ERR			(1 << 6)
-+#define CS35L33_ALIVE_ERR		(1 << 5)
-+#define CS35L33_ADSPCLK_ERR		(1 << 4)
-+#define CS35L33_MCLK_ERR		(1 << 3)
-+#define CS35L33_AMP_SHORT		(1 << 2)
-+#define CS35L33_OTW			(1 << 1)
-+#define CS35L33_OTE			(1 << 0)
-+
-+/* CS35L33_INT_STATUS_2 */
-+#define CS35L33_VMON_OVFL		(1 << 7)
-+#define CS35L33_IMON_OVFL		(1 << 6)
-+#define CS35L33_VPMON_OVFL		(1 << 5)
-+#define CS35L33_VBSTMON_OVFL		(1 << 4)
-+#define CS35L33_PDN_DONE		1
-+
-+/* CS35L33_BST_CTL4 */
-+#define CS35L33_BST_RGS			0x70
-+#define CS35L33_BST_COEFF3		0xF
-+
-+/* CS35L33_HG_MEMLDO_CTL */
-+#define CS35L33_MEM_DEPTH_SHIFT		5
-+#define CS35L33_MEM_DEPTH_MASK		(0x3 << CS35L33_MEM_DEPTH_SHIFT)
-+#define CS35L33_LDO_THLD_SHIFT		1
-+#define CS35L33_LDO_THLD_MASK		(0xF << CS35L33_LDO_THLD_SHIFT)
-+#define CS35L33_LDO_DISABLE_SHIFT	0
-+#define CS35L33_LDO_DISABLE_MASK	(0x1 << CS35L33_LDO_DISABLE_SHIFT)
-+
-+/* CS35L33_LDO_DEL */
-+#define CS35L33_VP_HG_VA_SHIFT		5
-+#define CS35L33_VP_HG_VA_MASK		(0x7 << CS35L33_VP_HG_VA_SHIFT)
-+#define CS35L33_LDO_ENTRY_DELAY_SHIFT	2
-+#define CS35L33_LDO_ENTRY_DELAY_MASK	(0x7 << CS35L33_LDO_ENTRY_DELAY_SHIFT)
-+#define CS35L33_VP_HG_RATE_SHIFT	0
-+#define CS35L33_VP_HG_RATE_MASK		(0x3 << CS35L33_VP_HG_RATE_SHIFT)
-+
-+/* CS35L33_HG_HEAD */
-+#define CS35L33_HD_RM_SHIFT		0
-+#define CS35L33_HD_RM_MASK		(0x7F << CS35L33_HD_RM_SHIFT)
-+
-+/* CS35L33_HG_EN */
-+#define CS35L33_CLASS_HG_ENA_SHIFT	7
-+#define CS35L33_CLASS_HG_EN_MASK	(0x1 << CS35L33_CLASS_HG_ENA_SHIFT)
-+#define CS35L33_VP_HG_AUTO_SHIFT	6
-+#define CS35L33_VP_HG_AUTO_MASK		(0x1 << 6)
-+#define CS35L33_VP_HG_SHIFT		0
-+#define CS35L33_VP_HG_MASK		(0x1F << CS35L33_VP_HG_SHIFT)
-+
-+#define CS35L33_RATES (SNDRV_PCM_RATE_8000_48000)
-+#define CS35L33_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
-+			SNDRV_PCM_FMTBIT_S24_LE)
-+
-+/* CS35L33_{RX,TX}_X */
-+#define CS35L33_X_STATE_SHIFT		7
-+#define CS35L33_X_STATE			(1 << CS35L33_X_STATE_SHIFT)
-+#define CS35L33_X_LOC_SHIFT		0
-+#define CS35L33_X_LOC			(0x1F << CS35L33_X_LOC_SHIFT)
-+
-+/* CS35L33_RX_AUD */
-+#define CS35L33_AUDIN_RX_DEPTH_SHIFT	5
-+#define CS35L33_AUDIN_RX_DEPTH		(0x7 << CS35L33_AUDIN_RX_DEPTH_SHIFT)
-+
-+#endif
+ 	{"DMic Rate 64", NULL, "DMic"},
+ 	{"DMic", NULL, "Mic Bias"},
+ 
 -- 
 1.9.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
