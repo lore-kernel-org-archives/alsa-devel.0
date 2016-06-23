@@ -1,96 +1,54 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: compress: Pass error out of
-	soc_compr_pointer" to the asoc tree
-Date: Wed, 22 Jun 2016 16:29:25 +0100
-Message-ID: <E1bFk5l-0002dU-Qf@debutante>
-References: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v4 0/2] ASoC: da7219: Convert driver to use generic FW
+ functions
+Date: Thu, 23 Jun 2016 11:01:48 +0100
+Message-ID: <20160623100148.GV28202@sirena.org.uk>
+References: <cover.1466523027.git.Adam.Thomson.Opensource@diasemi.com>
+ <6274a042-da99-e3e6-20f2-37ce2651645c@intel.com>
+ <2E89032DDAA8B9408CB92943514A0337D4644644@SW-EX-MBX01.diasemi.com>
+ <20160621232116.GG28202@sirena.org.uk>
+ <CAJZ5v0g47+igo+Z+gZZE9sOix8oCs7Jy+H-i=HcBUB+RVib3+g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 56582268054
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2016 17:29:34 +0200 (CEST)
-In-Reply-To: <1457606694-10985-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="e+JRL32uBeeWnrD4"
+Return-path: <linux-acpi-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0g47+igo+Z+gZZE9sOix8oCs7Jy+H-i=HcBUB+RVib3+g@mail.gmail.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Robert Moore <robert.moore@intel.com>, Lv Zheng <lv.zheng@intel.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Len Brown <lenb@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-acpi <linux-acpi@vger.kernel.org>, devicetree <devicetree@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: compress: Pass error out of soc_compr_pointer
+--e+JRL32uBeeWnrD4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Wed, Jun 22, 2016 at 03:05:26AM +0200, Rafael J. Wysocki wrote:
+> On Wed, Jun 22, 2016 at 1:21 AM, Mark Brown <broonie@kernel.org> wrote:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> > Probably the easiest thing would be a tag for the core change that I can
+> > pull.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> Or you can apply them both if that helps (please consider the first
+> one as ACKed in that case).
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+That works too, if I do that I'll make a tag in case it needs to get
+pulled elsewhere.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--e+JRL32uBeeWnrD4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Thanks,
-Mark
+iQEcBAEBCAAGBQJXa7OLAAoJECTWi3JdVIfQEZYH/iBFpV9Hg8cfJAuLwDD+XYpc
+JK0TSiVIhLZTEORKAmOdcgWUijdoZ0bG/X6t9yOPGixlYWRH3TiLeRgaTfPQnJ89
+DxmRhkCv/GZNXo/5CK3y+XH7yuscFITsYjIEGk937whJ/W8k6xqnWyygYENFz+CS
+2aeemxCoNoEFS2V4AcroA86yNfuBOWIGOoQ1fj00scKzplTvzCv0/XA6BOAS1i7k
+91mAxshX3SX413to+pW7TQROI4D76wxkK3bNWUqhE8gfSXY3uBtsMOQau5tx/cS7
++UXsGmJpBVnL9nvTtZ/oTZX6ZwTsnbiMkldx6q+SgE9hyHzF4Tc9oep0+uuezpc=
+=GcsV
+-----END PGP SIGNATURE-----
 
->From 7c9190f7e7428487cd67839f9a547efcc9ec3b9b Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Mon, 20 Jun 2016 09:51:32 +0100
-Subject: [PATCH] ASoC: compress: Pass error out of soc_compr_pointer
-
-Both soc_compr_pointer and the platform driver pointer callback return
-ints but current soc_compr_pointer always returns 0. Update this so we
-return the actual value from the platform driver callback. This doesn't
-fix any issues simply makes the code more consistent.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-compress.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 875733c52953..d2df46c14c68 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -530,14 +530,15 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_platform *platform = rtd->platform;
-+	int ret = 0;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
- 	if (platform->driver->compr_ops && platform->driver->compr_ops->pointer)
--		 platform->driver->compr_ops->pointer(cstream, tstamp);
-+		ret = platform->driver->compr_ops->pointer(cstream, tstamp);
- 
- 	mutex_unlock(&rtd->pcm_mutex);
--	return 0;
-+	return ret;
- }
- 
- static int soc_compr_copy(struct snd_compr_stream *cstream,
--- 
-2.8.1
+--e+JRL32uBeeWnrD4--
