@@ -1,31 +1,38 @@
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v4 0/2] ASoC: da7219: Convert driver to use generic FW functions
-Date: Thu, 23 Jun 2016 14:57:35 +0200
-Message-ID: <CAJZ5v0hjQ=j+KOV8PMR47vx+=LLZMHqGdrVBZtDsF6WhFGkcQw@mail.gmail.com>
-References: <cover.1466523027.git.Adam.Thomson.Opensource@diasemi.com>
- <6274a042-da99-e3e6-20f2-37ce2651645c@intel.com> <2E89032DDAA8B9408CB92943514A0337D4644644@SW-EX-MBX01.diasemi.com>
- <20160621232116.GG28202@sirena.org.uk> <CAJZ5v0g47+igo+Z+gZZE9sOix8oCs7Jy+H-i=HcBUB+RVib3+g@mail.gmail.com>
- <20160623100148.GV28202@sirena.org.uk>
+From: Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [alsa-devel] [very-RFC 0/8] TSN driver for the kernel
+Date: Thu, 23 Jun 2016 15:28:05 +0200
+Message-ID: <20160623132805.GC7122@localhost.localdomain>
+References: <20160613195136.GC2441@netboy>
+ <20160614121844.54a125a5@lxorguk.ukuu.org.uk>
+ <5760C84C.40408@sakamocchi.jp>
+ <20160615080602.GA13555@localhost.localdomain>
+ <5764DA85.3050801@sakamocchi.jp>
+ <20160618224549.GF32724@icarus.home.austad.us>
+ <9a5abd48-4da3-945d-53c9-b6d37010ab0d@linux.intel.com>
+ <20160620121838.GA5257@localhost.localdomain>
+ <07283da9-f6d1-c3b1-7989-a6fce7ca0ee6@linux.intel.com>
+ <20160623103848.GG32724@icarus.home.austad.us>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20160623100148.GV28202@sirena.org.uk>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Robert Moore <robert.moore@intel.com>, Lv Zheng <lv.zheng@intel.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Len Brown <lenb@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-acpi <linux-acpi@vger.kernel.org>, devicetree <devicetree@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20160623103848.GG32724@icarus.home.austad.us>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Henrik Austad <henrik@austad.us>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@linaro.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 23, 2016 at 12:01 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Jun 22, 2016 at 03:05:26AM +0200, Rafael J. Wysocki wrote:
->> On Wed, Jun 22, 2016 at 1:21 AM, Mark Brown <broonie@kernel.org> wrote:
->
->> > Probably the easiest thing would be a tag for the core change that I can
->> > pull.
->
->> Or you can apply them both if that helps (please consider the first
->> one as ACKed in that case).
->
-> That works too, if I do that I'll make a tag in case it needs to get
-> pulled elsewhere.
+On Thu, Jun 23, 2016 at 12:38:48PM +0200, Henrik Austad wrote:
+> Richard: is it fair to assume that if ptp4l is running and is part of a PTP 
+> domain, ktime_get() will return PTP-adjusted time for the system?
 
-Sounds good, thanks!
+No.
+
+> Or do I also need to run phc2sys in order to sync the system-time
+> to PTP-time?
+
+Yes, unless you are using SW time stamping, in which case ptp4l will
+steer the system clock directly.
+
+HTH,
+Richard
