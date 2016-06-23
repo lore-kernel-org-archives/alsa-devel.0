@@ -1,8 +1,8 @@
 From: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCH v2 3/6] ASoC: Add DT bindings documentation for max98504
- amplifier
-Date: Thu, 23 Jun 2016 12:45:12 +0200
-Message-ID: <1466678715-19962-4-git-send-email-s.nawrocki@samsung.com>
+Subject: [PATCH v2 5/6] ASoC: samsung: Add DT bindings documentation for TM2
+ sound subsystem
+Date: Thu, 23 Jun 2016 12:45:14 +0200
+Message-ID: <1466678715-19962-6-git-send-email-s.nawrocki@samsung.com>
 References: <1466678715-19962-1-git-send-email-s.nawrocki@samsung.com>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-reply-to: <1466678715-19962-1-git-send-email-s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
@@ -11,49 +11,63 @@ To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Cc: robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds DT bindings documentation for Maxim MAX98504
-speaker amplifier.
+This patch adds DT binding documentation for Exnos5433 based TM2
+and TM2E boards sound subsystem.
 
 Signed-off-by: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 ---
-Changes since v1:
- - added 'interrupts' property.
+Changes since initial version:
+ - dropped clocks, clock-names properties, instead properties from
+   the CODEC node will be used,
+ - property renames: 'samsung,model' -> 'model', 'samsung,i2s-controller'
+   -> 'i2s-controller', 'samsung,speaker-amplifier' -> 'audio-amplifier',
+ - added 'audio-codec' property.
 ---
- .../devicetree/bindings/sound/max98504.txt         | 26 ++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/max98504.txt
+ .../bindings/sound/samsung,tm2-audio.txt           | 36 ++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/max98504.txt b/Documentation/devicetree/bindings/sound/max98504.txt
+diff --git a/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt b/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
 new file mode 100644
-index 0000000..254c92e
+index 0000000..3ae56f3
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/max98504.txt
-@@ -0,0 +1,26 @@
-+Maxim MAX98504 class D mono speaker amplifier
-+
-+This device supports I2C control interface and an IRQ output signal. It features
-+a PCM and PDM digital audio interface (DAI) and a differential analog input.
++++ b/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
+@@ -0,0 +1,36 @@
++Samsung Exynos5433 TM2(E) audio complex with WM5110 codec
 +
 +Required properties:
 +
-+ - compatible : "maxim,max98504"
-+ - reg : should contain the I2C slave device address
-+ - DVDD-supply, DIOVDD-supply, PVDD-supply: power supplies for the device,
-+   as covered in ../regulator/regulator.txt
-+ - interrupts : should specify the interrupt the device is connected to,
-+   as described in ../interrupt-controller/interrupts.txt
++ - compatible : "samsung,tm2-audio"
++ - model : the user-visible name of this sound complex
++ - audio-codec: the phandle of the wm5110 audio codec node,
++   as described in Documentation/devicetree/bindings/mfd/arizona.txt
++ - i2s-controller : the phandle of the I2S controller
++ - audio-amplifier : the phandle of the MAX98504 amplifier
++ - samsung,audio-routing : a list of the connections between audio
++   components;  each entry is a pair of strings, the first being the
++   connection's sink, the second being the connection's source;
++   valid names for sources and sinks are the WM5110's and MAX98504's
++   pins and the jacks on the board:
++   HP, SPK, Main Mic, Sub Mic, Third Mic, Headset Mic.
++ - mic-bias-gpios : GPIO pin that enables the Main Mic bias regulator
 +
 +Example:
 +
-+ max98504@31 {
-+	compatible = "maxim,max98504";
-+	reg = <0x31>;
-+	interrupt-parent = <&gpio_bank_0>;
-+	interrupts = <2 0>;
-+
-+	DVDD-supply = <&regulator>;
-+	DIOVDD-supply = <&regulator>;
-+	PVDD-supply = <&regulator>;
++sound {
++	compatible = "samsung,tm2-audio";
++	audio-codec = <&wm5110>;
++	i2s-controller = <&i2s0>;
++	audio-amplifier = <&max98504>;
++	mic-bias-gpios = <&gpr3 2 0>;
++	model = "wm5110";
++	samsung,audio-routing =
++		"HP", "HPOUT1L",
++		"HP", "HPOUT1R",
++		"SPK", "SPKOUT",
++		"SPKOUT", "HPOUT2L",
++		"SPKOUT", "HPOUT2R",
++		"Main Mic", "MICBIAS2",
++		"IN1R", "Main Mic";
 +};
 -- 
 1.9.1
