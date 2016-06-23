@@ -1,50 +1,164 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: Samsung: s3c-i2s-v2: fix spelling
-	mistake: "unknwon" -> "unknown"
-Date: Thu, 23 Jun 2016 18:37:58 +0100
-Message-ID: <1466703478-9034-1-git-send-email-colin.king@canonical.com>
+From: <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v8 2/2] ASoC: cs35l33: Add device tree bindings file for cs35l33
+Date: Thu, 23 Jun 2016 13:30:02 -0500
+Message-ID: <1466706602-20899-2-git-send-email-Paul.Handrigan@cirrus.com>
+References: <1466706602-20899-1-git-send-email-Paul.Handrigan@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id B5085265361
- for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2016 19:38:14 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Kozlowski <k.kozlowski@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1466706602-20899-1-git-send-email-Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 
-trivial fix to spelling mistake in pr_err message
+Add device tree bindings file for the cs35l33 8V boosted
+class D amplifier.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 ---
- sound/soc/samsung/s3c-i2s-v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/cs35l33.txt          | 126 +++++++++++++++++++++
+ 1 file changed, 126 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs35l33.txt
 
-diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-index b6ab3fc..bf8ae79 100644
---- a/sound/soc/samsung/s3c-i2s-v2.c
-+++ b/sound/soc/samsung/s3c-i2s-v2.c
-@@ -268,7 +268,7 @@ static int s3c2412_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		iismod &= ~S3C2412_IISMOD_SLAVE;
- 		break;
- 	default:
--		pr_err("unknwon master/slave format\n");
-+		pr_err("unknown master/slave format\n");
- 		return -EINVAL;
- 	}
- 
+diff --git a/Documentation/devicetree/bindings/sound/cs35l33.txt b/Documentation/devicetree/bindings/sound/cs35l33.txt
+new file mode 100644
+index 0000000..acfb475
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs35l33.txt
+@@ -0,0 +1,126 @@
++CS35L33 Speaker Amplifier
++
++Required properties:
++
++  - compatible : "cirrus,cs35l33"
++
++  - reg : the I2C address of the device for I2C
++
++  - VA-supply, VP-supply : power supplies for the device,
++    as covered in
++    Documentation/devicetree/bindings/regulator/regulator.txt.
++
++Optional properties:
++
++  - reset-gpios : gpio used to reset the amplifier
++
++  - interrupt-parent : Specifies the phandle of the interrupt controller to
++    which the IRQs from CS35L33 are delivered to.
++ -  interrupts : IRQ line info CS35L33.
++    (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
++    for further information relating to interrupt properties)
++
++  - cirrus,boost-ctl : Booster voltage use to supply the amp. If the value is
++    0, then VBST = VP. If greater than 0, the boost voltage will be 3300mV with
++    a value of 1 and will increase at a step size of 100mV until a maximum of
++    8000mV.
++
++  - cirrus,ramp-rate : On power up, it affects the time from when the power
++    up sequence begins to the time the audio reaches a full-scale output.
++    On power down, it affects the time from when the power-down sequence
++    begins to when the amplifier disables the PWM outputs. If this property
++    is not set then soft ramping will be disabled and ramp time would be
++    20ms. If this property is set to 0,1,2,3 then ramp times would be 40ms,
++    60ms,100ms,175ms respectively for 48KHz sample rate.
++
++  - cirrus,boost-ipk : The maximum current allowed for the boost converter.
++    The range starts at 1850000uA and goes to a maximum of 3600000uA
++    with a step size of 15625uA. The default is 2500000uA.
++
++  - cirrus,imon-adc-scale : Configures the scaling of data bits from the IMON
++    ADC data word. This property can be set as a value of 0 for bits 15 down
++    to 0, 6 for 21 down to 6, 7, for 22 down to 7, 8 for 23 down to 8.
++
++
++Optional H/G Algorithm sub-node:
++
++The cs35l33 node can have a single "cirrus,hg-algo" sub-node that will enable
++the internal H/G Algorithm.
++
++  - cirrus,hg-algo : Sub-node for internal Class H/G algorithm that
++    controls the amplifier supplies.
++
++Optional properties for the "cirrus,hg-algo" sub-node:
++
++  - cirrus,mem-depth : Memory depth for the Class H/G algorithm measured in
++    LRCLK cycles. If this property is set to 0, 1, 2, or 3 then the memory
++    depths will be 1, 4, 8, 16 LRCLK cycles.  The default is 16 LRCLK cycles.
++
++    cirrus,release-rate : The number of consecutive LRCLK periods before
++    allowing release condition tracking updates. The number of LRCLK periods
++    start at 3 to a maximum of 255.
++
++  - cirrus,ldo-thld : Configures the signal threshold at which the PWM output
++    stage enters LDO operation. Starts as a default value of 50mV for a value
++    of 1 and increases with a step size of 50mV to a maximum of 750mV (value of
++    0xF).
++
++  - cirrus,ldo-path-disable : This is a boolean property. If present, the H/G
++    algorithm uses the max detection path.  If not present, the LDO
++    detection path is used.
++
++  - cirrus,ldo-entry-delay : The LDO entry delay in milliseconds before the H/G
++    algorithm switches to the LDO voltage.  This property can be set to values
++    from 0 to 7 for delays of 5ms, 10ms, 50ms, 100ms, 200ms, 500ms, 1000ms.
++    The default is 100ms.
++
++  - cirrus,vp-hg-auto : This is a boolean property.  When set, class H/G VPhg
++    automatic updating is enabled.
++
++  - cirrus,vp-hg :  Class H/G algorithm VPhg.  Controls the H/G algorithm's
++    reference to the VP voltage for when to start generating a boosted VBST.
++    The reference voltage starts at 3000mV with a value of 0x3 and is increased
++    by 100mV per step to a maximum of 5500mV.
++
++  - cirrus,vp-hg-rate : The rate (number of LRCLK periods) at which the VPhg is
++    allowed to increase to a higher voltage when using VPhg automatic
++    tracking. This property can be set to values from 0 to 3 with rates of 128
++    periods, 2048 periods, 32768 periods, and 524288 periods.
++    The default is 32768 periods.
++
++  - cirrus,vp-hg-va : VA calculation reference for automatic VPhg tracking
++    using VPMON. This property can be set to values from 0 to 6 starting at
++    1800mV with a step size of 50mV up to a maximum value of 1750mV.
++    Default is 1800mV.
++
++Example:
++
++cs35l33: cs35l33@40 {
++	compatible = "cirrus,cs35l33";
++	reg = <0x40>;
++
++	VA-supply = <&ldo5_reg>;
++	VP-supply = <&ldo5_reg>;
++
++	interrupt-parent = <&gpio8>;
++	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
++
++	reset-gpios = <&cs47l91 34 0>;
++
++	cirrus,ramp-rate = <0x0>;
++	cirrus,boost-ctl = <0x30>;  /* VBST = 8000mV */
++	cirrus,boost-ipk = <0xE0>; /* 3600mA */
++	cirrus,imon-adc-scale = <0> /* Bits 15 down to 0 */
++
++	cirrus,hg-algo {
++		cirrus,mem-depth = <0x3>;
++		cirrus,release-rate = <0x3>;
++		cirrus,ldo-thld = <0x1>;
++		cirrus,ldo-path-disable = <0x0>;
++		cirrus,ldo-entry-delay=<0x4>;
++		cirrus,vp-hg-auto;
++		cirrus,vp-hg=<0xF>;
++		cirrus,vp-hg-rate=<0x2>;
++		cirrus,vp-hg-va=<0x0>;
++	};
++};
 -- 
-2.8.1
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
