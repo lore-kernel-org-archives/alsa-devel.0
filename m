@@ -1,45 +1,42 @@
-From: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Subject: [PATCH] ASOC: wm8753: Remove unneeded header file
-Date: Fri, 24 Jun 2016 11:51:36 +0530
-Message-ID: <20160624062135.GA23457@amitoj-Inspiron-3542>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: julia.lawall@lip6.fr
+From: woodrow.shen@canonical.com
+Subject: [alsa-devel][PATCH] ALSA: hda - Fix the headset mic jack detection on Dell machine
+Date: Fri, 24 Jun 2016 15:58:34 +0800
+Message-ID: <1466755114-18477-1-git-send-email-woodrow.shen@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Drop redundant include of moduleparam.h
+From: Woodrow Shen <woodrow.shen@gmail.com>
 
-The Coccinelle semantic patch used to make this change is as follows:
-@ includesmodule @
-@@
+The new Dell laptop with codec 3246 can't detect headset mic when
+headset was inserted on the machine. So adding pin configurations
+into quirk table makes headset mic work correctly.
 
-#include <linux/module.h>
+Codec: Realtek ALC3246
+Vendor Id: 0x10ec0256
+Subsystem Id: 0x10280781
 
-@ depends on includesmodule @
-@@
-
-- #include <linux/moduleparam.h>
-
-Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
+Signed-off-by: Woodrow Shen <woodrow.shen@canonical.com>
 ---
- sound/soc/codecs/wm8753.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index 6f1024f..b4e6893 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -32,7 +32,6 @@
-  */
- 
- #include <linux/module.h>
--#include <linux/moduleparam.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 1f652ca1..ac0d5bf 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5847,6 +5847,10 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x14, 0x90170120},
+ 		{0x21, 0x02211030}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		{0x12, 0x90a60170},
++		{0x14, 0x90170120},
++		{0x21, 0x02211030}),
++	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		ALC256_STANDARD_PINS),
+ 	SND_HDA_PIN_QUIRK(0x10ec0280, 0x103c, "HP", ALC280_FIXUP_HP_GPIO4,
+ 		{0x12, 0x90a60130},
 -- 
-1.9.1
+2.7.4
