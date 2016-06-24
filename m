@@ -1,74 +1,49 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: Re: [PATCH v2 0/4] ASoC: sunxi: Add i2s controller support
-Date: Fri, 24 Jun 2016 16:00:00 +0800
-Message-ID: <CAGb2v64=15sv8GKDKDMA4VOkdE35=TwuX0D0m5JDpVbw6RYn_w@mail.gmail.com>
-References: <20160615211123.31068-1-maxime.ripard@free-electrons.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASOC: wm8753: Remove unneeded header file
+Date: Fri, 24 Jun 2016 09:05:58 +0100
+Message-ID: <20160624080558.GW1552@localhost.localdomain>
+References: <20160624062135.GA23457@amitoj-Inspiron-3542>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20160615211123.31068-1-maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Andrea Venturi <ennesimamail.av-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, gianfranco-25KmuZRQ+wx0ubjbjo6WXg@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85B67261A06
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2016 10:05:50 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20160624062135.GA23457@amitoj-Inspiron-3542>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Amitoj Kaur Chawla <amitoj1606@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, tiwai@suse.com, lgirdwood@gmail.com, julia.lawall@lip6.fr, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 16, 2016 at 5:11 AM, Maxime Ripard
-<maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
-> Hi everyone,
->
-> This is the second version of the I2S support for the controller foun=
-d
-> in the Allwinner A10 and later SoCs.
->
-> Playback has been tested with an UDA1380 on an A20-Olinuxino. Capture
-> is not implemented yet, but will come eventually.
->
-> Let me know what you think,
-> Maxime
->
-> Changes from v1:
->   - Fixed bogus indentation and spurious whitespaces / newlines
->   - Moved the device initialisation in the probe to the startup funct=
-ion
->   - Disabled the device in shutdown
->   - Removed function to get wss and sr to inline them in hw_params
->   - Changed the way to access the divider array
->   - Checked clk_set_rate return code
->   - Fixed condition for invalid bclk and mclk dividers
->   - Added sound-dai-cells to the bindings documentation required prop=
-erties
->
-> Emilio L=C3=B3pez (1):
->   ARM: sun7i: Add mod1 clock nodes
->
-> Maxime Ripard (3):
->   ASoC: sunxi: Add A10 I2S controller binding documentation
->   ASoC: sunxi: Add Allwinner A10 Digital Audio driver
->   ARM: sun7i: Add DAI nodes
->
->  .../devicetree/bindings/sound/sun4i-i2s.txt        |  34 +
->  arch/arm/boot/dts/sun7i-a20.dtsi                   |  87 ++-
->  sound/soc/sunxi/Kconfig                            |   9 +
->  sound/soc/sunxi/Makefile                           |   2 +-
->  sound/soc/sunxi/sun4i-i2s.c                        | 703 +++++++++++=
-++++++++++
->  5 files changed, 832 insertions(+), 3 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/sun4i-i2s=
-=2Etxt
->  create mode 100644 sound/soc/sunxi/sun4i-i2s.c
+On Fri, Jun 24, 2016 at 11:51:36AM +0530, Amitoj Kaur Chawla wrote:
+> Drop redundant include of moduleparam.h
+> 
+> The Coccinelle semantic patch used to make this change is as follows:
+> @ includesmodule @
+> @@
+> 
+> #include <linux/module.h>
+> 
+> @ depends on includesmodule @
+> @@
+> 
+> - #include <linux/moduleparam.h>
+> 
+> Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
+> ---
 
-Tested-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-on a BPI-M1+ with a TI PCM5122-based PiFi DAC+ v2.0, a Raspberry Pi B+
-compatible DAC shield.
-
-I kept getting low but audible pops though. Not sure if it's the
-ad-hoc setup or some other factor.
-
-ChenYu
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Charles
