@@ -1,39 +1,34 @@
-From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [alsa-devel][PATCH] ALSA: hda - Fix the headset mic jack
- detection on Dell machine
-Date: Fri, 24 Jun 2016 08:35:24 -0700
-Message-ID: <20160624153524.GA3285@kroah.com>
-References: <1466755114-18477-1-git-send-email-woodrow.shen@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1466755114-18477-1-git-send-email-woodrow.shen@canonical.com>
-Sender: stable-owner@vger.kernel.org
-To: woodrow.shen@canonical.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, stable@vger.kernel.org
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] SoC: dwc:  trivial fix of spelling mistake "unsuppted" -> "unsupported"
+Date: Fri, 24 Jun 2016 18:14:53 +0100
+Message-ID: <1466788493-17392-1-git-send-email-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jiri Kosina <trivial@kernel.org>, Alex Deucher <alexander.deucher@amd.com>, Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>, Yitian Bu <buyitian@gmail.com>, Jose Abreu <Jose.Abreu@synopsys.com>, Jon Medhurst <tixy@linaro.org>, yitian <yitian.bu@tangramtek.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 24, 2016 at 03:58:34PM +0800, woodrow.shen@canonical.com wrote:
-> From: Woodrow Shen <woodrow.shen@gmail.com>
-> 
-> The new Dell laptop with codec 3246 can't detect headset mic when
-> headset was inserted on the machine. So adding pin configurations
-> into quirk table makes headset mic work correctly.
-> 
-> Codec: Realtek ALC3246
-> Vendor Id: 0x10ec0256
-> Subsystem Id: 0x10280781
-> 
-> Signed-off-by: Woodrow Shen <woodrow.shen@canonical.com>
-> ---
->  sound/pci/hda/patch_realtek.c | 4 ++++
->  1 file changed, 4 insertions(+)
+From: Colin Ian King <colin.king@canonical.com>
 
-<formletter>
+trivial fix to spelling mistake in dev_err message
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read Documentation/stable_kernel_rules.txt
-for how to do this properly.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/dwc/designware_i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-</formletter>
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index 0db69b7..1223ba6 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -278,7 +278,7 @@ static int dw_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 
+ 	default:
+-		dev_err(dev->dev, "designware-i2s: unsuppted PCM fmt");
++		dev_err(dev->dev, "designware-i2s: unsupported PCM fmt");
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.8.1
