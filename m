@@ -1,82 +1,34 @@
-From: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/7] Documentation: of: add type property
-Date: Fri, 24 Jun 2016 12:41:39 -0500
-Message-ID: <CAL_JsqKxYUXJoAmYQOiSVdodKmrEPqVgm84ZVhhEw=FuJQhZTw@mail.gmail.com>
-References: <87fus3xr2q.wl%kuninori.morimoto.gx@renesas.com> <87eg7nxr00.wl%kuninori.morimoto.gx@renesas.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v8 2/2] ASoC: cs35l33: Add device tree bindings file for
+ cs35l33
+Date: Fri, 24 Jun 2016 14:28:41 -0500
+Message-ID: <20160624192841.GA31199@rob-hp-laptop>
+References: <1466706602-20899-1-git-send-email-Paul.Handrigan@cirrus.com>
+ <1466706602-20899-2-git-send-email-Paul.Handrigan@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87eg7nxr00.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@linaro.org>, Mark Brown <broonie@kernel.org>, Laurent <laurent.pinchart@ideasonboard.com>, Guennadi <g.liakhovetski@gmx.de>, Grant Likely <grant.likely@linaro.org>, Frank Rowand <frowand.list@gmail.com>, Linux-Kernel <linux-kernel@vger.kernel.org>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1466706602-20899-2-git-send-email-Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 23, 2016 at 9:32 PM, Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
->
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->
-> OF graph is used mainly from V4L2, but ALSA needs to use it too.
-> Then, ALSA needs to know each port/endpoint type, otherwise it
-> can't detect ALSA port/endpoint correctly.
-
-Bindings should be defined in terms of hardware, not Linux subsystems.
-
-> This patch enables to use type property on OF graph.
->
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+On Thu, Jun 23, 2016 at 01:30:02PM -0500, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org wrote:
+> From: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+> 
+> Add device tree bindings file for the cs35l33 8V boosted
+> class D amplifier.
+> 
+> Signed-off-by: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 > ---
->  Documentation/devicetree/bindings/graph.txt | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/graph.txt b/Documentation/devicetree/bindings/graph.txt
-> index fcb1c6a..b5b9040 100644
-> --- a/Documentation/devicetree/bindings/graph.txt
-> +++ b/Documentation/devicetree/bindings/graph.txt
-> @@ -110,6 +110,32 @@ device-2 {
->          };
->  };
->
-> +port / endpoint type
-> +--------------------
-> +
-> +Each ports / port / endpoint can have its type if needed.
+>  .../devicetree/bindings/sound/cs35l33.txt          | 126 +++++++++++++++++++++
+>  1 file changed, 126 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/cs35l33.txt
 
-I think type should only apply to a port. ports is only a grouping for
-multiple ports. endpoints are just the connection. A port is a single
-data flow, so 2 endpoints on a port reflect 2 possible connections for
-that data flow.
-
-> +child node can take over parent node type. below example indicates
-> +device0 type is "typeA" && "typeB",
-> +device1 type is "typeA" && "typeB" && "typeC".
-
-This does not make sense to me. A concrete example perhaps using HDMI
-audio would be helpful.
-
-> +
-> +device {
-> +       ports {
-> +               type = "typeA";
-> +
-> +               port@0 {
-> +                       type = "typeB";
-> +
-> +                       device0: endpoint@0 {
-> +                       };
-> +
-> +                       device1: endpoint@1 {
-> +                               type = "typeC";
-> +                       };
-> +               };
-> +               ...
-> +       };
-> +};
-> +
->
->  Required properties
->  -------------------
-> --
-> 1.9.1
->
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
