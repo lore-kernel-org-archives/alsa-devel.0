@@ -1,18 +1,14 @@
-From: vedang.patel@intel.com
-Subject: [REPOST REPOST PATCH v3 2/3] ASoC: Intel: common:
-	increase the loglevel of "FW Poll Status".
-Date: Fri, 24 Jun 2016 17:37:10 -0700
-Message-ID: <1466815031-31922-3-git-send-email-vedang.patel@intel.com>
-References: <1461711790-7277-4-git-send-email-vedang.patel@intel.com>
- <1466815031-31922-1-git-send-email-vedang.patel@intel.com>
+From: Alexander Shiyan <shc_work@mail.ru>
+Subject: [PATCH 1/2] ASoC: codecs: wm8753: Replace magic number
+Date: Sat, 25 Jun 2016 07:58:09 +0300
+Message-ID: <1466830689-31587-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 97DAC2650FA
- for <alsa-devel@alsa-project.org>; Sat, 25 Jun 2016 02:37:23 +0200 (CEST)
-In-Reply-To: <1466815031-31922-1-git-send-email-vedang.patel@intel.com>
+Received: from smtp41.i.mail.ru (smtp41.i.mail.ru [94.100.177.101])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6287B261B01
+ for <alsa-devel@alsa-project.org>; Sat, 25 Jun 2016 06:58:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,31 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, marc.herbert@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com, Vedang Patel <vedang.patel@intel.com>
+Cc: Alexander Shiyan <shc_work@mail.ru>, patches@opensource.wolfsonmicro.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vedang Patel <vedang.patel@intel.com>
+Use SND_SOC_NOPM constant, instead of -1.
 
-For consistency with other log statements, change dev_info to dev_dbg
-for a kernel print which is frequently printed by the driver.
-
-Signed-off-by: Vedang Patel <vedang.patel@intel.com>
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 ---
- sound/soc/intel/common/sst-dsp.c |    2 +-
+ sound/soc/codecs/wm8753.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
-index b5bbdf4..ff2196e 100644
---- a/sound/soc/intel/common/sst-dsp.c
-+++ b/sound/soc/intel/common/sst-dsp.c
-@@ -285,7 +285,7 @@ int sst_dsp_register_poll(struct sst_dsp *ctx, u32 offset, u32 mask,
- 	}
- 
- 	reg = sst_dsp_shim_read_unlocked(ctx, offset);
--	dev_info(ctx->dev, "FW Poll Status: reg=%#x %s %s\n", reg, operation,
-+	dev_dbg(ctx->dev, "FW Poll Status: reg=%#x %s %s\n", reg, operation,
- 			(time < timeout) ? "successful" : "timedout");
- 	ret = time < timeout ? 0 : -ETIME;
- 
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index 6f1024f..9f851b8 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -486,7 +486,7 @@ SND_SOC_DAPM_DAC("Voice DAC", "Voice Playback", WM8753_PWR1, 4, 0),
+ SND_SOC_DAPM_OUTPUT("MONO1"),
+ SND_SOC_DAPM_MUX("Mono 2 Mux", SND_SOC_NOPM, 0, 0, &wm8753_mono2_controls),
+ SND_SOC_DAPM_OUTPUT("MONO2"),
+-SND_SOC_DAPM_MIXER("Out3 Left + Right", -1, 0, 0, NULL, 0),
++SND_SOC_DAPM_MIXER("Out3 Left + Right", SND_SOC_NOPM, 0, 0, NULL, 0),
+ SND_SOC_DAPM_MUX("Out3 Mux", SND_SOC_NOPM, 0, 0, &wm8753_out3_controls),
+ SND_SOC_DAPM_PGA("Out 3", WM8753_PWR3, 4, 0, NULL, 0),
+ SND_SOC_DAPM_OUTPUT("OUT3"),
 -- 
-1.7.9.5
+2.4.9
