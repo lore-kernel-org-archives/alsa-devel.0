@@ -1,34 +1,54 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v8 2/2] ASoC: cs35l33: Add device tree bindings file for
- cs35l33
-Date: Fri, 24 Jun 2016 14:28:41 -0500
-Message-ID: <20160624192841.GA31199@rob-hp-laptop>
-References: <1466706602-20899-1-git-send-email-Paul.Handrigan@cirrus.com>
- <1466706602-20899-2-git-send-email-Paul.Handrigan@cirrus.com>
+From: vedang.patel@intel.com
+Subject: [REPOST REPOST PATCH v3 0/3] ASoC: Reduce audio
+	related kernel spew.
+Date: Fri, 24 Jun 2016 17:37:08 -0700
+Message-ID: <1466815031-31922-1-git-send-email-vedang.patel@intel.com>
+References: <1461711790-7277-4-git-send-email-vedang.patel@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1466706602-20899-2-git-send-email-Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 429CA261ADC
+ for <alsa-devel@alsa-project.org>; Sat, 25 Jun 2016 02:37:22 +0200 (CEST)
+In-Reply-To: <1461711790-7277-4-git-send-email-vedang.patel@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, marc.herbert@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com, Vedang Patel <vedang.patel@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 23, 2016 at 01:30:02PM -0500, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org wrote:
-> From: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-> 
-> Add device tree bindings file for the cs35l33 8V boosted
-> class D amplifier.
-> 
-> Signed-off-by: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/cs35l33.txt          | 126 +++++++++++++++++++++
->  1 file changed, 126 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/cs35l33.txt
+From: Vedang Patel <vedang.patel@intel.com>
 
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+There have been complaints regarding audio related kernel messages flooding
+dmesg. This series tries to address those complaints.
+
+Also, I have created 3 different patches for this because they touch different
+drivers. But, I can combine those to reduce the number of patches.
+
+v2 Changes:
+- Use print_hex_dump_debug instead of #ifdef DEBUG
+
+v3 Changes:
+- Remove Change-Id from all the patches.
+
+Vedang Patel (3):
+  ASoC: hdac_hdmi: Increase loglevel of hex dump printed
+  ASoC: Intel: common: increase the loglevel of "FW Poll Status".
+  ASoC: Intel: Skylake: Increase loglevel of debug messages.
+
+ sound/soc/codecs/hdac_hdmi.c           |    6 ++++--
+ sound/soc/intel/common/sst-dsp.c       |    2 +-
+ sound/soc/intel/skylake/skl-messages.c |    2 +-
+ sound/soc/intel/skylake/skl-sst-ipc.c  |    4 ++--
+ 4 files changed, 8 insertions(+), 6 deletions(-)
+
+-- 
+1.7.9.5
