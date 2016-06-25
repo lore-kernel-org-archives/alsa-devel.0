@@ -1,8 +1,8 @@
 From: vedang.patel@intel.com
-Subject: [REPOST REPOST PATCH v3 3/3] ASoC: Intel: Skylake:
-	Increase loglevel of debug messages.
-Date: Fri, 24 Jun 2016 17:37:11 -0700
-Message-ID: <1466815031-31922-4-git-send-email-vedang.patel@intel.com>
+Subject: [REPOST REPOST PATCH v3 2/3] ASoC: Intel: common:
+	increase the loglevel of "FW Poll Status".
+Date: Fri, 24 Jun 2016 17:37:10 -0700
+Message-ID: <1466815031-31922-3-git-send-email-vedang.patel@intel.com>
 References: <1461711790-7277-4-git-send-email-vedang.patel@intel.com>
  <1466815031-31922-1-git-send-email-vedang.patel@intel.com>
 Mime-Version: 1.0
@@ -10,7 +10,7 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id DC9FC265191
+ by alsa0.perex.cz (Postfix) with ESMTP id 97DAC2650FA
  for <alsa-devel@alsa-project.org>; Sat, 25 Jun 2016 02:37:23 +0200 (CEST)
 In-Reply-To: <1466815031-31922-1-git-send-email-vedang.patel@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,56 +28,26 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vedang Patel <vedang.patel@intel.com>
 
-There is log spam while doing playback, record or reloading the
-audio firmware.
-
-print_hex_dump uses printk(KERN_DEBUG,... which is different from
-dev_dbg used elsewhere in the driver: it's always enabled at
-compile-time. Change it to print_hex_dump_debug for logging consistency.
-
 For consistency with other log statements, change dev_info to dev_dbg
 for a kernel print which is frequently printed by the driver.
 
 Signed-off-by: Vedang Patel <vedang.patel@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c |    2 +-
- sound/soc/intel/skylake/skl-sst-ipc.c  |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/common/sst-dsp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 226db84..81224de 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -730,7 +730,7 @@ static int skl_set_module_format(struct skl_sst *ctx,
+diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
+index b5bbdf4..ff2196e 100644
+--- a/sound/soc/intel/common/sst-dsp.c
++++ b/sound/soc/intel/common/sst-dsp.c
+@@ -285,7 +285,7 @@ int sst_dsp_register_poll(struct sst_dsp *ctx, u32 offset, u32 mask,
+ 	}
  
- 	dev_dbg(ctx->dev, "Module type=%d config size: %d bytes\n",
- 			module_config->id.module_id, param_size);
--	print_hex_dump(KERN_DEBUG, "Module params:", DUMP_PREFIX_OFFSET, 8, 4,
-+	print_hex_dump_debug("Module params:", DUMP_PREFIX_OFFSET, 8, 4,
- 			*param_data, param_size, false);
- 	return 0;
- }
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 5434602..c141f24 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -363,7 +363,7 @@ static void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
- 	/* first process the header */
- 	switch (reply) {
- 	case IPC_GLB_REPLY_SUCCESS:
--		dev_info(ipc->dev, "ipc FW reply %x: success\n", header.primary);
-+		dev_dbg(ipc->dev, "ipc FW reply %x: success\n", header.primary);
- 		/* copy the rx data from the mailbox */
- 		sst_dsp_inbox_read(ipc->dsp, msg->rx_data, msg->rx_size);
- 		break;
-@@ -692,7 +692,7 @@ int skl_ipc_init_instance(struct sst_generic_ipc *ipc,
- 	 /* param_block_size must be in dwords */
- 	u16 param_block_size = msg->param_data_size / sizeof(u32);
+ 	reg = sst_dsp_shim_read_unlocked(ctx, offset);
+-	dev_info(ctx->dev, "FW Poll Status: reg=%#x %s %s\n", reg, operation,
++	dev_dbg(ctx->dev, "FW Poll Status: reg=%#x %s %s\n", reg, operation,
+ 			(time < timeout) ? "successful" : "timedout");
+ 	ret = time < timeout ? 0 : -ETIME;
  
--	print_hex_dump(KERN_DEBUG, NULL, DUMP_PREFIX_NONE,
-+	print_hex_dump_debug(NULL, DUMP_PREFIX_NONE,
- 		16, 4, buffer, param_block_size, false);
- 
- 	header.primary = IPC_MSG_TARGET(IPC_MOD_MSG);
 -- 
 1.7.9.5
