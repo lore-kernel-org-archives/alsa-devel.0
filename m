@@ -1,12 +1,18 @@
-From: =?UTF-8?B?Sm/Dq2wgS3LDpGhlbWFubg==?= <jkraehemann@gmail.com>
-Subject: snd_pcm_open() leaks error
-Date: Fri, 24 Jun 2016 22:10:10 +0000
-Message-ID: <CA+Owze77fTR_tv30QaQGRRgZVySgoNt9Xm3rvQhBp_-XTr6RAg@mail.gmail.com>
-Reply-To: jkraehemann-guest@users.alioth.debian.org
+From: Bob Copeland <me@bobcopeland.com>
+Subject: UBSAN bug in hda_generic.c
+Date: Sat, 25 Jun 2016 07:08:02 -0400
+Message-ID: <20160625110802.GA14579@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-io0-f196.google.com (mail-io0-f196.google.com
+ [209.85.223.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id F24DB2650DA
+ for <alsa-devel@alsa-project.org>; Sat, 25 Jun 2016 13:08:09 +0200 (CEST)
+Received: by mail-io0-f196.google.com with SMTP id s63so19309637ioi.3
+ for <alsa-devel@alsa-project.org>; Sat, 25 Jun 2016 04:08:09 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,16 +22,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgYWxsCgpJIGhhdmUgc29tZSBpc3N1ZXMgYXMgb3BlbmluZyBzb3VuZGNhcmQgbXVsdGlwbGUg
-dGltZXMgdGhlIGVycm9yIGlzCmhhbmRsZWQgYnV0IGl0IGxlYWtzIG1lbW9yeToKCmh0dHA6Ly9w
-YXN0ZWJpbi5jb20vYVFmQVFWMnEKClRoZSBwcm9ibGVtYXRpYyBmdW5jdGlvbiBpcyBzbmRfcGNt
-X29wZW4oKSBidXQgSSB0aGluayBpdCBkb2Vzbid0IGhhdmUKYW55IHBlcmZvcm1hbmNlIGltcGFj
-dCBvbiDMgGdzZXF1ZW5jZXJgCgpodHRwOi8vd3d3Lm5vbmdudS5vcmcvZ3NlcXVlbmNlci8KCkJl
-c3RzLApKb8OrbAotLQpUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGlu
-ZSAidW5zdWJzY3JpYmUgYWxzYS1kZXZlbCIgaW4KCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi,
+
+I have UBSAN reporting an out-of-bounds array access (see below) on my
+machine.  The following patch fixes the warning for me, but not sure if
+that is just papering over some other bug.  Thanks in advance for looking!
+
+>From 551e904f7a7aea9e9c03c439e554100643239c5c Mon Sep 17 00:00:00 2001
+From: Bob Copeland <me@bobcopeland.com>
+Date: Sat, 25 Jun 2016 06:53:44 -0400
+Subject: [PATCH] ALSA: hda - fix read before array start
+
+UBSAN reports the following warning from accessing path->path[-1]
+in set_path_power():
+
+[   16.078040] ================================================================================
+[   16.078124] UBSAN: Undefined behaviour in sound/pci/hda/hda_generic.c:3981:17
+[   16.078198] index -1 is out of range for type 'hda_nid_t [10]'
+[   16.078270] CPU: 2 PID: 1738 Comm: modprobe Not tainted 4.7.0-rc1-wt+ #47
+[   16.078274] Hardware name: LENOVO 3443CTO/3443CTO, BIOS G6ET23WW (1.02 ) 08/14/2012
+[   16.078278]  ffff8800cb246000 ffff8800cb3638b8 ffffffff815c4fe3 0000000000000032
+[   16.078286]  ffff8800cb3638e0 ffffffffffffffff ffff8800cb3638d0 ffffffff8162443d
+[   16.078294]  ffffffffa0894200 ffff8800cb363920 ffffffff81624af7 0000000000000292
+[   16.078302] Call Trace:
+[   16.078311]  [<ffffffff815c4fe3>] dump_stack+0x86/0xd3
+[   16.078317]  [<ffffffff8162443d>] ubsan_epilogue+0xd/0x40
+[   16.078324]  [<ffffffff81624af7>] __ubsan_handle_out_of_bounds+0x67/0x70
+[   16.078335]  [<ffffffffa087665f>] set_path_power+0x1bf/0x230 [snd_hda_codec_generic]
+[   16.078344]  [<ffffffffa087880d>] add_pin_power_ctls+0x8d/0xc0 [snd_hda_codec_generic]
+[   16.078352]  [<ffffffffa087f190>] ? pin_power_down_callback+0x20/0x20 [snd_hda_codec_generic]
+[   16.078360]  [<ffffffffa0878947>] add_all_pin_power_ctls+0x107/0x150 [snd_hda_codec_generic]
+[   16.078370]  [<ffffffffa08842b3>] snd_hda_gen_parse_auto_config+0x2d73/0x49e0 [snd_hda_codec_generic]
+[   16.078376]  [<ffffffff81173360>] ? trace_hardirqs_on_caller+0x1b0/0x2c0
+[   16.078390]  [<ffffffffa089df27>] alc_parse_auto_config+0x147/0x310 [snd_hda_codec_realtek]
+[   16.078402]  [<ffffffffa08a332a>] patch_alc269+0x23a/0x560 [snd_hda_codec_realtek]
+[   16.078417]  [<ffffffffa0838644>] hda_codec_driver_probe+0xa4/0x1a0 [snd_hda_codec]
+[   16.078424]  [<ffffffff817bbac1>] driver_probe_device+0x101/0x380
+[   16.078430]  [<ffffffff817bbdf9>] __driver_attach+0xb9/0x100
+[   16.078438]  [<ffffffff817bbd40>] ? driver_probe_device+0x380/0x380
+[   16.078444]  [<ffffffff817b8d20>] bus_for_each_dev+0x70/0xc0
+[   16.078449]  [<ffffffff817bb087>] driver_attach+0x27/0x50
+[   16.078454]  [<ffffffff817ba956>] bus_add_driver+0x166/0x2c0
+[   16.078460]  [<ffffffffa0369000>] ? 0xffffffffa0369000
+[   16.078465]  [<ffffffff817bd13d>] driver_register+0x7d/0x130
+[   16.078477]  [<ffffffffa083816f>] __hda_codec_driver_register+0x6f/0x90 [snd_hda_codec]
+[   16.078488]  [<ffffffffa036901e>] realtek_driver_init+0x1e/0x1000 [snd_hda_codec_realtek]
+[   16.078493]  [<ffffffff8100215e>] do_one_initcall+0x4e/0x1d0
+[   16.078499]  [<ffffffff8119f54d>] ? rcu_read_lock_sched_held+0x6d/0x80
+[   16.078504]  [<ffffffff813701b1>] ? kmem_cache_alloc_trace+0x391/0x560
+[   16.078510]  [<ffffffff812bb314>] ? do_init_module+0x28/0x273
+[   16.078515]  [<ffffffff812bb387>] do_init_module+0x9b/0x273
+[   16.078522]  [<ffffffff811e3782>] load_module+0x20b2/0x3410
+[   16.078527]  [<ffffffff811df140>] ? m_show+0x210/0x210
+[   16.078533]  [<ffffffff813b2b26>] ? kernel_read+0x66/0xe0
+[   16.078541]  [<ffffffff811e4cfa>] SYSC_finit_module+0xba/0xc0
+[   16.078547]  [<ffffffff811e4d1e>] SyS_finit_module+0xe/0x10
+[   16.078552]  [<ffffffff81a860fc>] entry_SYSCALL_64_fastpath+0x1f/0xbd
+[   16.078556] ================================================================================
+
+Fix by checking path->depth before use.
+
+Signed-off-by: Bob Copeland <me@bobcopeland.com>
+---
+ sound/pci/hda/hda_generic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 320445f3bf73..bc23a9d8e7b3 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -3978,7 +3978,7 @@ static hda_nid_t set_path_power(struct hda_codec *codec, hda_nid_t nid,
+ 	for (n = 0; n < spec->paths.used; n++) {
+ 		path = snd_array_elem(&spec->paths, n);
+ 		if (path->path[0] == nid ||
+-		    path->path[path->depth - 1] == nid) {
++		    (path->depth > 0 && path->path[path->depth - 1] == nid)) {
+ 			bool pin_old = path->pin_enabled;
+ 			bool stream_old = path->stream_enabled;
+ 
+-- 
+2.6.1
+
+
+
+-- 
+Bob Copeland %% http://bobcopeland.com/
