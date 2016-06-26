@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "SoC: dwc: trivial fix of spelling mistake "unsuppted" -> "unsupported"" to the asoc tree
-Date: Sun, 26 Jun 2016 13:02:48 +0100
-Message-ID: <E1bH8m0-0002SP-1k@debutante>
-References: <1466788493-17392-1-git-send-email-colin.king@canonical.com>
+Subject: Applied "ASoC: wm8753: Remove unneeded header file" to the asoc tree
+Date: Sun, 26 Jun 2016 13:02:56 +0100
+Message-ID: <E1bH8m8-0002VJ-RS@debutante>
+References: <20160624062135.GA23457@amitoj-Inspiron-3542>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1466788493-17392-1-git-send-email-colin.king@canonical.com>
+In-Reply-To: <20160624062135.GA23457@amitoj-Inspiron-3542>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jiri Kosina <trivial@kernel.org>, Alex Deucher <alexander.deucher@amd.com>, Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>, Yitian Bu <buyitian@gmail.com>, Jose Abreu <Jose.Abreu@synopsys.com>, Jon Medhurst <tixy@linaro.org>, yitian <yitian.bu@tangramtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Amitoj Kaur Chawla <amitoj1606@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, julia.lawall@lip6.fr
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   SoC: dwc: trivial fix of spelling mistake "unsuppted" -> "unsupported"
+   ASoC: wm8753: Remove unneeded header file
 
 has been applied to the asoc tree at
 
@@ -37,32 +37,40 @@ to this mail.
 Thanks,
 Mark
 
->From 57072ae122178416f84304fa54c4d0204c6cec1a Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 24 Jun 2016 18:14:53 +0100
-Subject: [PATCH] SoC: dwc: trivial fix of spelling mistake "unsuppted" ->
- "unsupported"
+>From 34c5cdbcbdfe8575ece87a48e04208fbcd0ad16f Mon Sep 17 00:00:00 2001
+From: Amitoj Kaur Chawla <amitoj1606@gmail.com>
+Date: Fri, 24 Jun 2016 11:51:36 +0530
+Subject: [PATCH] ASoC: wm8753: Remove unneeded header file
 
-trivial fix to spelling mistake in dev_err message
+Drop redundant include of moduleparam.h
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+The Coccinelle semantic patch used to make this change is as follows:
+@ includesmodule @
+@@
+
+@ depends on includesmodule @
+@@
+
+- #include <linux/moduleparam.h>
+
+Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/dwc/designware_i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm8753.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index 591854e97190..dc97f4349e66 100644
---- a/sound/soc/dwc/designware_i2s.c
-+++ b/sound/soc/dwc/designware_i2s.c
-@@ -255,7 +255,7 @@ static int dw_i2s_hw_params(struct snd_pcm_substream *substream,
- 		break;
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index 6f1024f48b19..b4e6893f5e3d 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -32,7 +32,6 @@
+  */
  
- 	default:
--		dev_err(dev->dev, "designware-i2s: unsuppted PCM fmt");
-+		dev_err(dev->dev, "designware-i2s: unsupported PCM fmt");
- 		return -EINVAL;
- 	}
- 
+ #include <linux/module.h>
+-#include <linux/moduleparam.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
 -- 
 2.8.1
