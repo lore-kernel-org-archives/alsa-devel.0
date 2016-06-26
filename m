@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8753: Remove unneeded header file" to the asoc tree
-Date: Sun, 26 Jun 2016 13:02:56 +0100
-Message-ID: <E1bH8m8-0002VJ-RS@debutante>
-References: <20160624062135.GA23457@amitoj-Inspiron-3542>
+Subject: Applied "ASoC: tpa6130a2: Remove goto err_gpio" to the asoc tree
+Date: Sun, 26 Jun 2016 13:02:42 +0100
+Message-ID: <E1bH8lu-0002Pt-2f@debutante>
+References: <903012887a1b2f8f59e44b1cfb472c9362fd964f.1466441036.git.helen.koike@collabora.co.uk>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160624062135.GA23457@amitoj-Inspiron-3542>
+In-Reply-To: <903012887a1b2f8f59e44b1cfb472c9362fd964f.1466441036.git.helen.koike@collabora.co.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, julia.lawall@lip6.fr
+To: Helen Koike <helen.koike@collabora.co.uk>
+Cc: Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>Sebastian Reichel <sre@kernel.org>, k.kozlowski@samsung.com, lars@metafoo.de, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, peter.ujfalusi@ti.combroonie@kernel.org, cphealy@gmail.com, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8753: Remove unneeded header file
+   ASoC: tpa6130a2: Remove goto err_gpio
 
 has been applied to the asoc tree at
 
@@ -37,40 +37,63 @@ to this mail.
 Thanks,
 Mark
 
->From 34c5cdbcbdfe8575ece87a48e04208fbcd0ad16f Mon Sep 17 00:00:00 2001
-From: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Date: Fri, 24 Jun 2016 11:51:36 +0530
-Subject: [PATCH] ASoC: wm8753: Remove unneeded header file
+>From 39088c251c69d3b7b288e30228aed06e1d339da5 Mon Sep 17 00:00:00 2001
+From: Helen Koike <helen.koike@collabora.co.uk>
+Date: Thu, 23 Jun 2016 16:23:14 -0300
+Subject: [PATCH] ASoC: tpa6130a2: Remove goto err_gpio
 
-Drop redundant include of moduleparam.h
+Replace goto err_gpio by return ret
 
-The Coccinelle semantic patch used to make this change is as follows:
-@ includesmodule @
-@@
-
-@ depends on includesmodule @
-@@
-
-- #include <linux/moduleparam.h>
-
-Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Helen Koike <helen.koike@collabora.co.uk>
+Tested-by: Sebastian Reichel <sre@kernel.org>
+Reviewed-by: Sebastian Reichel <sre@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8753.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/tpa6130a2.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index 6f1024f48b19..b4e6893f5e3d 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -32,7 +32,6 @@
-  */
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 9da1dd12f839..f1ea052a822e 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -256,7 +256,7 @@ static int tpa6130a2_probe(struct i2c_client *client,
+ 		if (ret < 0) {
+ 			dev_err(dev, "Failed to request power GPIO (%d)\n",
+ 				data->power_gpio);
+-			goto err_gpio;
++			return ret;
+ 		}
+ 		gpio_direction_output(data->power_gpio, 0);
+ 	}
+@@ -277,12 +277,12 @@ static int tpa6130a2_probe(struct i2c_client *client,
+ 	if (IS_ERR(data->supply)) {
+ 		ret = PTR_ERR(data->supply);
+ 		dev_err(dev, "Failed to request supply: %d\n", ret);
+-		goto err_gpio;
++		return ret;
+ 	}
  
- #include <linux/module.h>
--#include <linux/moduleparam.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
+ 	ret = tpa6130a2_power(data, true);
+ 	if (ret != 0)
+-		goto err_gpio;
++		return ret;
+ 
+ 
+ 	/* Read version */
+@@ -294,13 +294,10 @@ static int tpa6130a2_probe(struct i2c_client *client,
+ 	/* Disable the chip */
+ 	ret = tpa6130a2_power(data, false);
+ 	if (ret != 0)
+-		goto err_gpio;
++		return ret;
+ 
+ 	return devm_snd_soc_register_component(&client->dev,
+ 			&tpa6130a2_component_driver, NULL, 0);
+-
+-err_gpio:
+-	return ret;
+ }
+ 
+ static const struct i2c_device_id tpa6130a2_id[] = {
 -- 
 2.8.1
