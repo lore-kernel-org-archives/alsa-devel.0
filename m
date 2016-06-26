@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: fix spelling mistake: "unknwon" -> "unknown"" to the asoc tree
-Date: Sun, 26 Jun 2016 13:02:36 +0100
-Message-ID: <E1bH8lo-0002Nu-9B@debutante>
-References: <1466703478-9034-1-git-send-email-colin.king@canonical.com>
+Subject: Applied "SoC: dwc: trivial fix of spelling mistake "unsuppted" -> "unsupported"" to the asoc tree
+Date: Sun, 26 Jun 2016 13:02:48 +0100
+Message-ID: <E1bH8m0-0002SP-1k@debutante>
+References: <1466788493-17392-1-git-send-email-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1466703478-9034-1-git-send-email-colin.king@canonical.com>
+In-Reply-To: <1466788493-17392-1-git-send-email-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jiri Kosina <trivial@kernel.org>, Alex Deucher <alexander.deucher@amd.com>, Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>, Yitian Bu <buyitian@gmail.com>, Jose Abreu <Jose.Abreu@synopsys.com>, Jon Medhurst <tixy@linaro.org>, yitian <yitian.bu@tangramtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: fix spelling mistake: "unknwon" -> "unknown"
+   SoC: dwc: trivial fix of spelling mistake "unsuppted" -> "unsupported"
 
 has been applied to the asoc tree at
 
@@ -37,29 +37,30 @@ to this mail.
 Thanks,
 Mark
 
->From 48b418d7fd359fe1d9845507bdbecf151e0a0dd9 Mon Sep 17 00:00:00 2001
+>From 57072ae122178416f84304fa54c4d0204c6cec1a Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.king@canonical.com>
-Date: Thu, 23 Jun 2016 18:37:58 +0100
-Subject: [PATCH] ASoC: samsung: fix spelling mistake: "unknwon" -> "unknown"
+Date: Fri, 24 Jun 2016 18:14:53 +0100
+Subject: [PATCH] SoC: dwc: trivial fix of spelling mistake "unsuppted" ->
+ "unsupported"
 
-trivial fix to spelling mistake in pr_err message
+trivial fix to spelling mistake in dev_err message
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/s3c-i2s-v2.c | 2 +-
+ sound/soc/dwc/designware_i2s.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-index b6ab3fc5789e..bf8ae79b0fd2 100644
---- a/sound/soc/samsung/s3c-i2s-v2.c
-+++ b/sound/soc/samsung/s3c-i2s-v2.c
-@@ -268,7 +268,7 @@ static int s3c2412_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		iismod &= ~S3C2412_IISMOD_SLAVE;
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index 591854e97190..dc97f4349e66 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -255,7 +255,7 @@ static int dw_i2s_hw_params(struct snd_pcm_substream *substream,
  		break;
+ 
  	default:
--		pr_err("unknwon master/slave format\n");
-+		pr_err("unknown master/slave format\n");
+-		dev_err(dev->dev, "designware-i2s: unsuppted PCM fmt");
++		dev_err(dev->dev, "designware-i2s: unsupported PCM fmt");
  		return -EINVAL;
  	}
  
