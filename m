@@ -1,96 +1,81 @@
-From: Bob Copeland <me@bobcopeland.com>
-Subject: [PATCH] ALSA: hda - fix read before array start
-Date: Sat, 25 Jun 2016 07:58:45 -0400
-Message-ID: <1466855925-4404-1-git-send-email-me@bobcopeland.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 0/2] ASoC: da7219: Convert driver to use generic FW
+ functions
+Date: Sun, 26 Jun 2016 12:42:06 +0100
+Message-ID: <20160626114206.GM28202@sirena.org.uk>
+References: <cover.1466523027.git.Adam.Thomson.Opensource@diasemi.com>
+ <6274a042-da99-e3e6-20f2-37ce2651645c@intel.com>
+ <2E89032DDAA8B9408CB92943514A0337D4644644@SW-EX-MBX01.diasemi.com>
+ <20160621232116.GG28202@sirena.org.uk>
+ <CAJZ5v0g47+igo+Z+gZZE9sOix8oCs7Jy+H-i=HcBUB+RVib3+g@mail.gmail.com>
+ <20160623100148.GV28202@sirena.org.uk>
+ <CAJZ5v0hjQ=j+KOV8PMR47vx+=LLZMHqGdrVBZtDsF6WhFGkcQw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f196.google.com (mail-qk0-f196.google.com
- [209.85.220.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E595265134
- for <alsa-devel@alsa-project.org>; Sat, 25 Jun 2016 13:59:01 +0200 (CEST)
-Received: by mail-qk0-f196.google.com with SMTP id b136so24371024qkg.2
- for <alsa-devel@alsa-project.org>; Sat, 25 Jun 2016 04:59:01 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, Bob Copeland <me@bobcopeland.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="PoUpPrJlcBv0qM6G"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hjQ=j+KOV8PMR47vx+=LLZMHqGdrVBZtDsF6WhFGkcQw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Robert Moore <robert.moore@intel.com>, Lv Zheng <lv.zheng@intel.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Len Brown <lenb@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-acpi <linux-acpi@vger.kernel.org>, devicetree <devicetree@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-UBSAN reports the following warning from accessing path->path[-1]
-in set_path_power():
 
-[   16.078040] ================================================================================
-[   16.078124] UBSAN: Undefined behaviour in sound/pci/hda/hda_generic.c:3981:17
-[   16.078198] index -1 is out of range for type 'hda_nid_t [10]'
-[   16.078270] CPU: 2 PID: 1738 Comm: modprobe Not tainted 4.7.0-rc1-wt+ #47
-[   16.078274] Hardware name: LENOVO 3443CTO/3443CTO, BIOS G6ET23WW (1.02 ) 08/14/2012
-[   16.078278]  ffff8800cb246000 ffff8800cb3638b8 ffffffff815c4fe3 0000000000000032
-[   16.078286]  ffff8800cb3638e0 ffffffffffffffff ffff8800cb3638d0 ffffffff8162443d
-[   16.078294]  ffffffffa0894200 ffff8800cb363920 ffffffff81624af7 0000000000000292
-[   16.078302] Call Trace:
-[   16.078311]  [<ffffffff815c4fe3>] dump_stack+0x86/0xd3
-[   16.078317]  [<ffffffff8162443d>] ubsan_epilogue+0xd/0x40
-[   16.078324]  [<ffffffff81624af7>] __ubsan_handle_out_of_bounds+0x67/0x70
-[   16.078335]  [<ffffffffa087665f>] set_path_power+0x1bf/0x230 [snd_hda_codec_generic]
-[   16.078344]  [<ffffffffa087880d>] add_pin_power_ctls+0x8d/0xc0 [snd_hda_codec_generic]
-[   16.078352]  [<ffffffffa087f190>] ? pin_power_down_callback+0x20/0x20 [snd_hda_codec_generic]
-[   16.078360]  [<ffffffffa0878947>] add_all_pin_power_ctls+0x107/0x150 [snd_hda_codec_generic]
-[   16.078370]  [<ffffffffa08842b3>] snd_hda_gen_parse_auto_config+0x2d73/0x49e0 [snd_hda_codec_generic]
-[   16.078376]  [<ffffffff81173360>] ? trace_hardirqs_on_caller+0x1b0/0x2c0
-[   16.078390]  [<ffffffffa089df27>] alc_parse_auto_config+0x147/0x310 [snd_hda_codec_realtek]
-[   16.078402]  [<ffffffffa08a332a>] patch_alc269+0x23a/0x560 [snd_hda_codec_realtek]
-[   16.078417]  [<ffffffffa0838644>] hda_codec_driver_probe+0xa4/0x1a0 [snd_hda_codec]
-[   16.078424]  [<ffffffff817bbac1>] driver_probe_device+0x101/0x380
-[   16.078430]  [<ffffffff817bbdf9>] __driver_attach+0xb9/0x100
-[   16.078438]  [<ffffffff817bbd40>] ? driver_probe_device+0x380/0x380
-[   16.078444]  [<ffffffff817b8d20>] bus_for_each_dev+0x70/0xc0
-[   16.078449]  [<ffffffff817bb087>] driver_attach+0x27/0x50
-[   16.078454]  [<ffffffff817ba956>] bus_add_driver+0x166/0x2c0
-[   16.078460]  [<ffffffffa0369000>] ? 0xffffffffa0369000
-[   16.078465]  [<ffffffff817bd13d>] driver_register+0x7d/0x130
-[   16.078477]  [<ffffffffa083816f>] __hda_codec_driver_register+0x6f/0x90 [snd_hda_codec]
-[   16.078488]  [<ffffffffa036901e>] realtek_driver_init+0x1e/0x1000 [snd_hda_codec_realtek]
-[   16.078493]  [<ffffffff8100215e>] do_one_initcall+0x4e/0x1d0
-[   16.078499]  [<ffffffff8119f54d>] ? rcu_read_lock_sched_held+0x6d/0x80
-[   16.078504]  [<ffffffff813701b1>] ? kmem_cache_alloc_trace+0x391/0x560
-[   16.078510]  [<ffffffff812bb314>] ? do_init_module+0x28/0x273
-[   16.078515]  [<ffffffff812bb387>] do_init_module+0x9b/0x273
-[   16.078522]  [<ffffffff811e3782>] load_module+0x20b2/0x3410
-[   16.078527]  [<ffffffff811df140>] ? m_show+0x210/0x210
-[   16.078533]  [<ffffffff813b2b26>] ? kernel_read+0x66/0xe0
-[   16.078541]  [<ffffffff811e4cfa>] SYSC_finit_module+0xba/0xc0
-[   16.078547]  [<ffffffff811e4d1e>] SyS_finit_module+0xe/0x10
-[   16.078552]  [<ffffffff81a860fc>] entry_SYSCALL_64_fastpath+0x1f/0xbd
-[   16.078556] ================================================================================
+--PoUpPrJlcBv0qM6G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fix by checking path->depth before use.
+On Thu, Jun 23, 2016 at 02:57:35PM +0200, Rafael J. Wysocki wrote:
+> On Thu, Jun 23, 2016 at 12:01 PM, Mark Brown <broonie@kernel.org> wrote:
 
-Signed-off-by: Bob Copeland <me@bobcopeland.com>
----
- sound/pci/hda/hda_generic.c | 2 ++
- 1 file changed, 2 insertions(+)
+> > That works too, if I do that I'll make a tag in case it needs to get
+> > pulled elsewhere.
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 320445f3bf73..79c7b340acc2 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -3977,6 +3977,8 @@ static hda_nid_t set_path_power(struct hda_codec *codec, hda_nid_t nid,
- 
- 	for (n = 0; n < spec->paths.used; n++) {
- 		path = snd_array_elem(&spec->paths, n);
-+		if (!path->depth)
-+			continue;
- 		if (path->path[0] == nid ||
- 		    path->path[path->depth - 1] == nid) {
- 			bool pin_old = path->pin_enabled;
--- 
-2.6.1
+> Sounds good, thanks!
+
+The following changes since commit 1a695a905c18548062509178b98bc91e67510864:
+
+  Linux 4.7-rc1 (2016-05-29 09:29:24 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/dev-prop-named-child
+
+for you to fetch changes up to 613e97218ccbd7f33895cad4525d861810a9d5d5:
+
+  device property: Add function to search for named child of device (2016-06-26 12:39:03 +0100)
+
+----------------------------------------------------------------
+device property: Add function to search for named child of device
+
+This adds a function to the device property API allowing us to look up
+the named child of a device.
+
+----------------------------------------------------------------
+Adam Thomson (1):
+      device property: Add function to search for named child of device
+
+ drivers/base/property.c  | 28 ++++++++++++++++++++++++++++
+ include/acpi/acpi_bus.h  |  7 +++++++
+ include/linux/acpi.h     |  6 ++++++
+ include/linux/of.h       | 14 +++++++-------
+ include/linux/property.h |  3 +++
+ 5 files changed, 51 insertions(+), 7 deletions(-)
+
+--PoUpPrJlcBv0qM6G
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXb7+LAAoJECTWi3JdVIfQGOwH/irmsQV2M9wEm6hToXlbABV4
+ViP4eMVAOo3ltNWL+y0vmwQoy1JNUR5HhO2sLE3ybO2LpScK8F0oYybg4izaNoEV
+z7pFB1Cdiv1szC9UG+upXRwgoSG0Z3gnItzNc8u9vtxX0n+UHQ2AYTYqaqjkGDrE
+gwcrzUo066eOr3fY90c/Pgyqe8Fv6pTYEG9JxjuZjvltc9AHWhKqtyeBdHvd9hML
+BUVntyH6Bk+Ld2vORS129hESSonAypkQSB9kr5fn+3BCAIXa/qUOfPS2afjLFUUl
+JkmomWgRVoaeFgpETtIqYGD2OF+SVA/fKWebdE+OGdaEliXpglGkCw8BskUoE0o=
+=Slty
+-----END PGP SIGNATURE-----
+
+--PoUpPrJlcBv0qM6G--
