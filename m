@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: atom: fix missing breaks that
-	would cause the wrong operation to execute" to the asoc tree
-Date: Sun, 26 Jun 2016 13:02:53 +0100
-Message-ID: <E1bH8m5-0002UE-U0@debutante>
-References: <1466699823-27891-1-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: wm8753: Replace magic number" to the
+	asoc tree
+Date: Sun, 26 Jun 2016 13:02:50 +0100
+Message-ID: <E1bH8m2-0002TM-Vs@debutante>
+References: <1466830689-31587-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B8062650FA
- for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2016 14:02:58 +0200 (CEST)
-In-Reply-To: <1466699823-27891-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id ACB112650DA
+ for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2016 14:02:56 +0200 (CEST)
+In-Reply-To: <1466830689-31587-1-git-send-email-shc_work@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Cox <alan@linux.intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, patches@opensource.wolfsonmicro.com, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: atom: fix missing breaks that would cause the wrong operation to execute
+   ASoC: wm8753: Replace magic number
 
 has been applied to the asoc tree at
 
@@ -53,56 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 9c4639ec959f3618b5f7a7ea977ed09396c869c3 Mon Sep 17 00:00:00 2001
-From: Alan Cox <alan@linux.intel.com>
-Date: Thu, 23 Jun 2016 22:07:03 +0530
-Subject: [PATCH] ASoC: Intel: atom: fix missing breaks that would cause the
- wrong operation to execute
+>From eb87f9e2b3212c84498c6972b529e207e4e95e6a Mon Sep 17 00:00:00 2001
+From: Alexander Shiyan <shc_work@mail.ru>
+Date: Sat, 25 Jun 2016 07:58:09 +0300
+Subject: [PATCH] ASoC: wm8753: Replace magic number
 
-Now we correctly error an attempt to execute an unsupported operation.
+Use SND_SOC_NOPM constant, instead of -1.
 
-Signed-off-by: Alan Cox <alan@linux.intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst-mfld-platform-compress.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8753.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-compress.c b/sound/soc/intel/atom/sst-mfld-platform-compress.c
-index 395168986462..1bead81bb510 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-compress.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-compress.c
-@@ -182,24 +182,29 @@ static int sst_platform_compr_trigger(struct snd_compr_stream *cstream, int cmd)
- 	case SNDRV_PCM_TRIGGER_START:
- 		if (stream->compr_ops->stream_start)
- 			return stream->compr_ops->stream_start(sst->dev, stream->id);
-+		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		if (stream->compr_ops->stream_drop)
- 			return stream->compr_ops->stream_drop(sst->dev, stream->id);
-+		break;
- 	case SND_COMPR_TRIGGER_DRAIN:
- 		if (stream->compr_ops->stream_drain)
- 			return stream->compr_ops->stream_drain(sst->dev, stream->id);
-+		break;
- 	case SND_COMPR_TRIGGER_PARTIAL_DRAIN:
- 		if (stream->compr_ops->stream_partial_drain)
- 			return stream->compr_ops->stream_partial_drain(sst->dev, stream->id);
-+		break;
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		if (stream->compr_ops->stream_pause)
- 			return stream->compr_ops->stream_pause(sst->dev, stream->id);
-+		break;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		if (stream->compr_ops->stream_pause_release)
- 			return stream->compr_ops->stream_pause_release(sst->dev, stream->id);
--	default:
--		return -EINVAL;
-+		break;
- 	}
-+	return -EINVAL;
- }
- 
- static int sst_platform_compr_pointer(struct snd_compr_stream *cstream,
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index b4e6893f5e3d..cdcc91282e8a 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -485,7 +485,7 @@ SND_SOC_DAPM_DAC("Voice DAC", "Voice Playback", WM8753_PWR1, 4, 0),
+ SND_SOC_DAPM_OUTPUT("MONO1"),
+ SND_SOC_DAPM_MUX("Mono 2 Mux", SND_SOC_NOPM, 0, 0, &wm8753_mono2_controls),
+ SND_SOC_DAPM_OUTPUT("MONO2"),
+-SND_SOC_DAPM_MIXER("Out3 Left + Right", -1, 0, 0, NULL, 0),
++SND_SOC_DAPM_MIXER("Out3 Left + Right", SND_SOC_NOPM, 0, 0, NULL, 0),
+ SND_SOC_DAPM_MUX("Out3 Mux", SND_SOC_NOPM, 0, 0, &wm8753_out3_controls),
+ SND_SOC_DAPM_PGA("Out 3", WM8753_PWR3, 4, 0, NULL, 0),
+ SND_SOC_DAPM_OUTPUT("OUT3"),
 -- 
 2.8.1
