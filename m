@@ -1,81 +1,108 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 0/2] ASoC: da7219: Convert driver to use generic FW
- functions
-Date: Sun, 26 Jun 2016 12:42:06 +0100
-Message-ID: <20160626114206.GM28202@sirena.org.uk>
-References: <cover.1466523027.git.Adam.Thomson.Opensource@diasemi.com>
- <6274a042-da99-e3e6-20f2-37ce2651645c@intel.com>
- <2E89032DDAA8B9408CB92943514A0337D4644644@SW-EX-MBX01.diasemi.com>
- <20160621232116.GG28202@sirena.org.uk>
- <CAJZ5v0g47+igo+Z+gZZE9sOix8oCs7Jy+H-i=HcBUB+RVib3+g@mail.gmail.com>
- <20160623100148.GV28202@sirena.org.uk>
- <CAJZ5v0hjQ=j+KOV8PMR47vx+=LLZMHqGdrVBZtDsF6WhFGkcQw@mail.gmail.com>
+Subject: Applied "ASoC: Intel: atom: fix missing breaks that
+	would cause the wrong operation to execute" to the asoc tree
+Date: Sun, 26 Jun 2016 13:02:39 +0100
+Message-ID: <E1bH8lr-0002Om-6X@debutante>
+References: <1466699823-27891-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="PoUpPrJlcBv0qM6G"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hjQ=j+KOV8PMR47vx+=LLZMHqGdrVBZtDsF6WhFGkcQw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Robert Moore <robert.moore@intel.com>, Lv Zheng <lv.zheng@intel.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Len Brown <lenb@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-acpi <linux-acpi@vger.kernel.org>, devicetree <devicetree@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Support Opensource <Support.Opensource@diasemi.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDEBB26055E
+ for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2016 14:02:44 +0200 (CEST)
+In-Reply-To: <1466699823-27891-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alan Cox <alan@linux.intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---PoUpPrJlcBv0qM6G
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: Intel: atom: fix missing breaks that would cause the wrong operation to execute
 
-On Thu, Jun 23, 2016 at 02:57:35PM +0200, Rafael J. Wysocki wrote:
-> On Thu, Jun 23, 2016 at 12:01 PM, Mark Brown <broonie@kernel.org> wrote:
+has been applied to the asoc tree at
 
-> > That works too, if I do that I'll make a tag in case it needs to get
-> > pulled elsewhere.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> Sounds good, thanks!
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-The following changes since commit 1a695a905c18548062509178b98bc91e67510864:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-  Linux 4.7-rc1 (2016-05-29 09:29:24 -0700)
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-are available in the git repository at:
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/dev-prop-named-child
+Thanks,
+Mark
 
-for you to fetch changes up to 613e97218ccbd7f33895cad4525d861810a9d5d5:
+>From 18f5839932e5c8c019f394d433dc5efcd6ae737a Mon Sep 17 00:00:00 2001
+From: Alan Cox <alan@linux.intel.com>
+Date: Thu, 23 Jun 2016 22:07:03 +0530
+Subject: [PATCH] ASoC: Intel: atom: fix missing breaks that would cause the
+ wrong operation to execute
 
-  device property: Add function to search for named child of device (2016-06-26 12:39:03 +0100)
+Now we correctly error an attempt to execute an unsupported operation.
 
-----------------------------------------------------------------
-device property: Add function to search for named child of device
+Signed-off-by: Alan Cox <alan@linux.intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/atom/sst-mfld-platform-compress.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-This adds a function to the device property API allowing us to look up
-the named child of a device.
-
-----------------------------------------------------------------
-Adam Thomson (1):
-      device property: Add function to search for named child of device
-
- drivers/base/property.c  | 28 ++++++++++++++++++++++++++++
- include/acpi/acpi_bus.h  |  7 +++++++
- include/linux/acpi.h     |  6 ++++++
- include/linux/of.h       | 14 +++++++-------
- include/linux/property.h |  3 +++
- 5 files changed, 51 insertions(+), 7 deletions(-)
-
---PoUpPrJlcBv0qM6G
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXb7+LAAoJECTWi3JdVIfQGOwH/irmsQV2M9wEm6hToXlbABV4
-ViP4eMVAOo3ltNWL+y0vmwQoy1JNUR5HhO2sLE3ybO2LpScK8F0oYybg4izaNoEV
-z7pFB1Cdiv1szC9UG+upXRwgoSG0Z3gnItzNc8u9vtxX0n+UHQ2AYTYqaqjkGDrE
-gwcrzUo066eOr3fY90c/Pgyqe8Fv6pTYEG9JxjuZjvltc9AHWhKqtyeBdHvd9hML
-BUVntyH6Bk+Ld2vORS129hESSonAypkQSB9kr5fn+3BCAIXa/qUOfPS2afjLFUUl
-JkmomWgRVoaeFgpETtIqYGD2OF+SVA/fKWebdE+OGdaEliXpglGkCw8BskUoE0o=
-=Slty
------END PGP SIGNATURE-----
-
---PoUpPrJlcBv0qM6G--
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-compress.c b/sound/soc/intel/atom/sst-mfld-platform-compress.c
+index 395168986462..1bead81bb510 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-compress.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-compress.c
+@@ -182,24 +182,29 @@ static int sst_platform_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_START:
+ 		if (stream->compr_ops->stream_start)
+ 			return stream->compr_ops->stream_start(sst->dev, stream->id);
++		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		if (stream->compr_ops->stream_drop)
+ 			return stream->compr_ops->stream_drop(sst->dev, stream->id);
++		break;
+ 	case SND_COMPR_TRIGGER_DRAIN:
+ 		if (stream->compr_ops->stream_drain)
+ 			return stream->compr_ops->stream_drain(sst->dev, stream->id);
++		break;
+ 	case SND_COMPR_TRIGGER_PARTIAL_DRAIN:
+ 		if (stream->compr_ops->stream_partial_drain)
+ 			return stream->compr_ops->stream_partial_drain(sst->dev, stream->id);
++		break;
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		if (stream->compr_ops->stream_pause)
+ 			return stream->compr_ops->stream_pause(sst->dev, stream->id);
++		break;
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		if (stream->compr_ops->stream_pause_release)
+ 			return stream->compr_ops->stream_pause_release(sst->dev, stream->id);
+-	default:
+-		return -EINVAL;
++		break;
+ 	}
++	return -EINVAL;
+ }
+ 
+ static int sst_platform_compr_pointer(struct snd_compr_stream *cstream,
+-- 
+2.8.1
