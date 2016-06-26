@@ -1,61 +1,70 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/39 v2][RESEND] ASoC: add simple-card-core and
- standardize "simple" card
-Date: Sun, 26 Jun 2016 02:06:43 +0100
-Message-ID: <20160626010643.GC28202@sirena.org.uk>
-References: <87wplfxumi.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 1/2] ASoC: codecs: wm8753: Replace magic
+	number
+Date: Sun, 26 Jun 2016 02:18:24 +0100
+Message-ID: <20160626011824.GH28202@sirena.org.uk>
+References: <1466830689-31587-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="MR0szId23pLNtImL"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87wplfxumi.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============9111884236901690228=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E21C82651C7
+ for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2016 03:18:32 +0200 (CEST)
+In-Reply-To: <1466830689-31587-1-git-send-email-shc_work@mail.ru>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---MR0szId23pLNtImL
+--===============9111884236901690228==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/xevKuQXtvXNcizp"
+Content-Disposition: inline
+
+
+--/xevKuQXtvXNcizp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 24, 2016 at 01:13:55AM +0000, Kuninori Morimoto wrote:
+On Sat, Jun 25, 2016 at 07:58:09AM +0300, Alexander Shiyan wrote:
+> Use SND_SOC_NOPM constant, instead of -1.
 
-> These are resend of v2 of simple-card cleanup patches.
+Please submit patches using subject lines reflecting the style for the
+subsystem.  This makes it easier for people to identify relevant
+patches.
 
-You last sent these (and more serieses) on Monday - this is *way* too
-soon to be resending them, especially such a large series.
-
-> Because of this stagnation, I already have almost
-> 90 patches for simple-card + graph driver in locally...
-> I would like to post them as soon as possible.
-
-> OTOH, I know you don't like super big patchset,=20
-> Thus, I will post small batch patch set only today.
-> I will post next small batch patch set if 1st batch was accepted.
-
-They're already in my queue to review, resending another jumbo series is
-just going to slow things down even further.  I'm getting through things
-as fast as I can but I've been busy for the past little while and I do
-tend to prioritise patch sets that are easier to review and where
-there's broad and visible interest.  These are the same things I was
-telling the Intel people when they were sending lots of driver serieses.
-
---MR0szId23pLNtImL
+--/xevKuQXtvXNcizp
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXbyqiAAoJECTWi3JdVIfQX+UH/29Pf/FibAhAGoB+3dP6ERdn
-kctCDisE1Si28HSiw7pou347nDb899cwuNY7wVTFro9s8JRbw0U2qJvbCLbtrnEk
-UHvLcskehi6dp18TFYxOm3FY4HBPqyNOqRs2EPG451pkChZPMMINNZq1tLpX0SQL
-ljqh/sug6+iEDki0+naA6Gfu+8N1nhVz+A5qJWROC6/y76hdeKQHWKQEXpeAhlbZ
-RRT9zhvCrEP6HICjvoMx1zIlqHPhodn55e0nH57Hgco+ZNjBIQpIdA0o4eVHiAW9
-DwOxO1mtNuqVyKfq0RtiqwT0DUlasr3rYLKAg3/Hj7sJbX23ofsK9U/I5ddW4q0=
-=L0OJ
+iQEcBAEBCAAGBQJXby1fAAoJECTWi3JdVIfQKEsH/Ajeq/rhlG126OFgcXS9wy95
+0J82gFX3zS6HSuhs82fxG3yOcb66Ac39aHVxNknLNv0G5wXDRxUFfCVaHtP3rGZr
+jq/Z2vIqse3bq8C9wfOSjC9HO0oEzU8MS7c4XgdYPTSKwZQb1Tw9xI3JF/In9Qlo
+Khgq6xKCTVRTZC1sOgVbEZ5HnoiHnlp0Kg65GmgDUe2nbgEVuf9gfmG2wK/tZ+SR
+CsBRJ3hVyl6Y9DytPV1PtNVUhvYoFNqEfwOKBxTjK43JamVEoeTaRRUW1QIorq7M
+DJFzXKKcZbfbEG7HNZCDCSKlGnwJv8CCCxPPMoc7nnsycZVjXjBB1wDUr3EtNjE=
+=GNa3
 -----END PGP SIGNATURE-----
 
---MR0szId23pLNtImL--
+--/xevKuQXtvXNcizp--
+
+--===============9111884236901690228==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9111884236901690228==--
