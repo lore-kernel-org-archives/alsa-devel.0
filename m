@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: common: increase the loglevel of
-	"FW Poll Status"." to the asoc tree
-Date: Mon, 27 Jun 2016 17:40:24 +0100
-Message-ID: <E1bHZaC-0005Da-BT@debutante>
-References: <1460498902-30454-3-git-send-email-vedang.patel@intel.com>
+Subject: Applied "ASoC: hdac_hdmi: Increase loglevel of hex
+	dump printed" to the asoc tree
+Date: Mon, 27 Jun 2016 17:40:27 +0100
+Message-ID: <E1bHZaF-0005EU-99@debutante>
+References: <1464743701-14931-2-git-send-email-vedang.patel@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C9E18266E79
- for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2016 18:40:29 +0200 (CEST)
-In-Reply-To: <1460498902-30454-3-git-send-email-vedang.patel@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C9C4266E7C
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2016 18:40:32 +0200 (CEST)
+In-Reply-To: <1464743701-14931-2-git-send-email-vedang.patel@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: common: increase the loglevel of "FW Poll Status".
+   ASoC: hdac_hdmi: Increase loglevel of hex dump printed
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From ef06b6f3912f4438f9275922dae17c11360ceefc Mon Sep 17 00:00:00 2001
+>From 3cb7cec14415ff8544ae702f396f913cd9008e7e Mon Sep 17 00:00:00 2001
 From: Vedang Patel <vedang.patel@intel.com>
-Date: Fri, 24 Jun 2016 17:37:10 -0700
-Subject: [PATCH] ASoC: Intel: common: increase the loglevel of "FW Poll
- Status".
+Date: Fri, 24 Jun 2016 17:37:09 -0700
+Subject: [PATCH] ASoC: hdac_hdmi: Increase loglevel of hex dump printed
 
-For consistency with other log statements, change dev_info to dev_dbg
-for a kernel print which is frequently printed by the driver.
+The hdac_hdmi codec driver prints the ELD information everytime an
+external monitor is connected. Make it so that the information is only
+printed when someone trying to debug the driver explicitly enables it.
+
+print_hex_dump_bytes (which just calls print_hex_dump) uses
+printk(KERN_DEBUG,... which is different from dev_dbg used elsewhere in
+the driver: it's always enabled at compile-time. Change it to
+print_hex_dump_debug for logging consistency.
 
 Signed-off-by: Vedang Patel <vedang.patel@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/sst-dsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/hdac_hdmi.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
-index b5bbdf4fe93a..ff2196ef359f 100644
---- a/sound/soc/intel/common/sst-dsp.c
-+++ b/sound/soc/intel/common/sst-dsp.c
-@@ -285,7 +285,7 @@ int sst_dsp_register_poll(struct sst_dsp *ctx, u32 offset, u32 mask,
- 	}
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 181cd3bf0b92..62d21812b9b8 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1124,8 +1124,10 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
+ 			}
+ 			hdac_hdmi_parse_eld(edev, pin);
  
- 	reg = sst_dsp_shim_read_unlocked(ctx, offset);
--	dev_info(ctx->dev, "FW Poll Status: reg=%#x %s %s\n", reg, operation,
-+	dev_dbg(ctx->dev, "FW Poll Status: reg=%#x %s %s\n", reg, operation,
- 			(time < timeout) ? "successful" : "timedout");
- 	ret = time < timeout ? 0 : -ETIME;
- 
+-			print_hex_dump_bytes("ELD: ", DUMP_PREFIX_OFFSET,
+-					pin->eld.eld_buffer, pin->eld.eld_size);
++			print_hex_dump_debug("ELD: ",
++					DUMP_PREFIX_OFFSET, 16, 1,
++					pin->eld.eld_buffer, pin->eld.eld_size,
++					true);
+ 		} else {
+ 			pin->eld.monitor_present = false;
+ 			pin->eld.eld_valid = false;
 -- 
 2.8.1
