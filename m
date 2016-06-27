@@ -1,63 +1,184 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 4/6] ASoC: max98504: Add max98504 speaker amplifier
- driver
-Date: Mon, 27 Jun 2016 17:33:12 +0100
-Message-ID: <20160627163312.GB17217@sirena.org.uk>
-References: <1466678715-19962-1-git-send-email-s.nawrocki@samsung.com>
- <1466678715-19962-5-git-send-email-s.nawrocki@samsung.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="R3G7APHDIzY6R/pk"
+Subject: Applied "ASoC: cs35l33: Add device tree bindings file for cs35l33" to the asoc tree
+Date: Mon, 27 Jun 2016 17:40:15 +0100
+Message-ID: <E1bHZa3-0005Ao-0c@debutante>
+References: <1466441119-8488-2-git-send-email-Paul.Handrigan@cirrus.com>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1466678715-19962-5-git-send-email-s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+In-Reply-To: <1466441119-8488-2-git-send-email-Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Cc: robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, Krzysztof Kozlowski <k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+To: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.orgbroonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---R3G7APHDIzY6R/pk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: cs35l33: Add device tree bindings file for cs35l33
 
-On Thu, Jun 23, 2016 at 12:45:13PM +0200, Sylwester Nawrocki wrote:
+has been applied to the asoc tree at
 
-> +	/* Select analog input by default */
-> +	regmap_write(map, MAX98504_REG_SPEAKER_SOURCE_SELECT, 0x1);
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-This should be done by userspace configuration, just leave the chip at
-power on defaults.  This is policy so that we don't have people trying
-to patch their configurations into the kernel.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +	/* Brownout protection enable */
-> +	regmap_write(map, MAX98504_REG_PVDD_BROWNOUT_ENABLE, 0x1);
-> +	/* Threshold 2.9V, 3dB speaker attenuation*/
-> +	regmap_write(map, MAX98504_REG_PVDD_BROWNOUT_CONFIG(1), 0x33);
-> +	/* Attack hold time 10 ms */
-> +	regmap_write(map, MAX98504_REG_PVDD_BROWNOUT_CONFIG(2), 0x0a);
-> +	/* Brownout hold time 255 ms, brownout release time 255 ms */
-> +	regmap_write(map, MAX98504_REG_PVDD_BROWNOUT_CONFIG(3), 0xff);
-> +	regmap_write(map, MAX98504_REG_PVDD_BROWNOUT_CONFIG(4), 0xff);
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Should these be DT properties?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---R3G7APHDIzY6R/pk
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Thanks,
+Mark
 
-iQEcBAEBCAAGBQJXcVVHAAoJECTWi3JdVIfQbaMH/0DhY1a5e1xSY6ha+04KNm2V
-tTO3HF6X8qcMQuPn7nrF2K69lr9vO0Pd5z0v0lNf3Fk719uEuP+L4X9GWRgp7JgI
-VbFTgwqA5Sd9hy1hWu9P1R52EHcvxJf3I9gMyDY2wyuXvlPRq9jNfJrYSKPbuJU3
-pJp1Oo8gfy6TnIAL7T8dm/YrjWWcA590rgmVd3ELklf1fTMTkStUkaY78DHijN4G
-0BUmE5/sc1a30onom/CMO6jJnr5GFgynGTyHhHPZuKqosJFz1/btjqtj7nX5w1FW
-jcexU1vbbu4ijBsvstcQmBC26gZH4BgKTG7UkwF58NwkooCkVJAk1I4QjXdVKpQ=
-=8xJo
------END PGP SIGNATURE-----
+>From 28bbb33250ad8680c5cbf366770fdd9966b2a793 Mon Sep 17 00:00:00 2001
+From: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Date: Mon, 20 Jun 2016 11:45:19 -0500
+Subject: [PATCH] ASoC: cs35l33: Add device tree bindings file for cs35l33
 
---R3G7APHDIzY6R/pk--
+Add device tree bindings file for the cs35l33 8V boosted
+class D amplifier.
+
+Signed-off-by: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+---
+ .../devicetree/bindings/sound/cs35l33.txt          | 118 +++++++++++++++++++++
+ 1 file changed, 118 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs35l33.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/cs35l33.txt b/Documentation/devicetree/bindings/sound/cs35l33.txt
+new file mode 100644
+index 000000000000..bea6de7f8658
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs35l33.txt
+@@ -0,0 +1,118 @@
++CS35L33 Speaker Amplifier
++
++Required properties:
++
++  - compatible : "cirrus,cs35l33"
++
++  - reg : the I2C address of the device for I2C
++
++  - VA-supply, VP-supply : power supplies for the device,
++    as covered in
++    Documentation/devicetree/bindings/regulator/regulator.txt.
++
++Optional properties:
++
++  - reset-gpios : gpio used to reset the amplifier
++
++  - interrupt-parent : Specifies the phandle of the interrupt controller to
++    which the IRQs from CS35L33 are delivered to.
++ -  interrupts : IRQ line info CS35L33.
++    (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
++    for further information relating to interrupt properties)
++
++  - cirrus,boost-ctl : Booster voltage use to supply the amp. If the value is
++    0, then VBST = VP. If greater than 0, the boost voltage will be 3300mV with
++    a value of 1 and will increase at a step size of 100mV until a maximum of
++    8000mV.
++
++  - cirrus,ramp-rate : On power up, it affects the time from when the power
++    up sequence begins to the time the audio reaches a full-scale output.
++    On power down, it affects the time from when the power-down sequence
++    begins to when the amplifier disables the PWM outputs. If this property
++    is not set then soft ramping will be disabled and ramp time would be
++    20ms. If this property is set to 0,1,2,3 then ramp times would be 40ms,
++    60ms,100ms,175ms respectively for 48KHz sample rate.
++
++  - cirrus,boost-ipk : The maximum current allowed for the boost converter.
++    The range starts at 1850000uA and goes to a maximum of 3600000uA
++    with a step size of 15625uA. The default is 2500000uA.
++
++  - cirrus,imon-adc-scale : Configures the scaling of data bits from the IMON
++    ADC data word. This property can be set as a value of 0 for bits 15 down
++    to 0, 6 for 21 down to 6, 7, for 22 down to 7, 8 for 23 down to 8.
++
++  - cirrus,hg-algo : Parameters for internal Class H/G algorithm that
++    controls the amplifier supplies.
++
++  - cirrus,mem-depth : Memory depth for the Class H/G algorithm measured in
++    LRCLK cycles. If this property is set to 0, 1, 2, or 3 then the memory
++    depths will be 1, 4, 8, 16 LRCLK cycles.  The default is 16 LRCLK cycles.
++
++    cirrus,release-rate : The number of consecutive LRCLK periods before
++    allowing release condition tracking updates. The number of LRCLK periods
++    start at 3 to a maximum of 255.
++
++  - cirrus,ldo-thld : Configures the signal threshold at which the PWM output
++    stage enters LDO operation. Starts as a default value of 50mV for a value
++    of 1 and increases with a step size of 50mV to a maximum of 750mV (value of
++    0xF).
++
++  - cirrus,ldo-path-disable : This is a boolean property. If present, the H/G
++    algorithm uses the max detection path.  If not present, the LDO
++    detection path is used.
++
++  - cirrus,ldo-entry-delay : The LDO entry delay in milliseconds before the H/G
++    algorithm switches to the LDO voltage.  This property can be set to values
++    from 0 to 7 for delays of 5ms, 10ms, 50ms, 100ms, 200ms, 500ms, 1000ms.
++    The default is 100ms.
++
++  - cirrus,vp-hg-auto : This is a boolean property.  When set, class H/G VPhg
++    automatic updating is enabled.
++
++  - cirrus,vp-hg :  Class H/G algorithm VPhg.  Controls the H/G algorithm's
++    reference to the VP voltage for when to start generating a boosted VBST.
++    The reference voltage starts at 3000mV with a value of 0x3 and is increased
++    by 100mV per step to a maximum of 5500mV.
++
++  - cirrus,vp-hg-rate : The rate (number of LRCLK periods) at which the VPhg is
++    allowed to increase to a higher voltage when using VPhg automatic
++    tracking. This property can be set to values from 0 to 3 with rates of 128
++    periods, 2048 periods, 32768 periods, and 524288 periods.
++    The default is 32768 periods.
++
++  - cirrus,vp-hg-va : VA calculation reference for automatic VPhg tracking
++    using VPMON. This property can be set to values from 0 to 6 starting at
++    1800mV with a step size of 50mV up to a maximum value of 1750mV.
++    Default is 1800mV.
++
++Example:
++
++cs35l33: cs35l33@40 {
++	compatible = "cirrus,cs35l33";
++	reg = <0x40>;
++
++	VA-supply = <&ldo5_reg>;
++	VP-supply = <&ldo5_reg>;
++
++	interrupt-parent = <&gpio8>;
++	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
++
++	reset-gpios = <&cs47l91 34 0>;
++
++	cirrus,ramp-rate = <0x0>;
++	cirrus,boost-ctl = <0x30>;  /* VBST = 8000mV */
++	cirrus,boost-ipk = <0xE0>; /* 3600mA */
++	cirrus,imon-adc-scale = <0> /* Bits 15 down to 0 */
++
++	cirrus,hg-algo {
++		cirrus,mem-depth = <0x3>;
++		cirrus,release-rate = <0x3>;
++		cirrus,ldo-thld = <0x1>;
++		cirrus,ldo-path-disable = <0x0>;
++		cirrus,ldo-entry-delay=<0x4>;
++		cirrus,vp-hg-auto;
++		cirrus,vp-hg=<0xF>;
++		cirrus,vp-hg-rate=<0x2>;
++		cirrus,vp-hg-va=<0x0>;
++	};
++};
+-- 
+2.8.1
+
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
