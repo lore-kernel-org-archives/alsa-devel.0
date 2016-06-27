@@ -1,68 +1,42 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH v2 0/4] ASoC: sunxi: Add i2s controller support
-Date: Mon, 27 Jun 2016 20:32:38 +0200
-Message-ID: <20160627183238.GW4000@lukather>
-References: <20160615211123.31068-1-maxime.ripard@free-electrons.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ulNsWUvGrZAj8PMr"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160615211123.31068-1-maxime.ripard@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Andrea Venturi <ennesimamail.av@gmail.com>, Code Kipper <codekipper@gmail.com>, gianfranco@moddevices.com
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] ALSA: echoaudio: Fix memory allocation
+Date: Mon, 27 Jun 2016 21:06:51 +0200
+Message-ID: <1467054411-19752-1-git-send-email-christophe.jaillet@wanadoo.fr>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 List-Id: alsa-devel@alsa-project.org
 
+'commpage_bak' is allocated with 'sizeof(struct echoaudio)' bytes.
+We then copy 'sizeof(struct comm_page)' bytes in it.
+On my system, smatch complains because one is 2960 and the other is 3072.
 
---ulNsWUvGrZAj8PMr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This would result in memory corruption or a oops.
 
-Hi Mark,
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ sound/pci/echoaudio/echoaudio.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Wed, Jun 15, 2016 at 11:11:19PM +0200, Maxime Ripard wrote:
-> Hi everyone,
->=20
-> This is the second version of the I2S support for the controller found
-> in the Allwinner A10 and later SoCs.
->=20
-> Playback has been tested with an UDA1380 on an A20-Olinuxino. Capture
-> is not implemented yet, but will come eventually.
->=20
-> Let me know what you think,
-> Maxime
+diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+index 1cb85ae..286f5e3 100644
+--- a/sound/pci/echoaudio/echoaudio.c
++++ b/sound/pci/echoaudio/echoaudio.c
+@@ -2200,11 +2200,11 @@ static int snd_echo_resume(struct device *dev)
+ 	u32 pipe_alloc_mask;
+ 	int err;
+ 
+-	commpage_bak = kmalloc(sizeof(struct echoaudio), GFP_KERNEL);
++	commpage_bak = kmalloc(sizeof(*commpage), GFP_KERNEL);
+ 	if (commpage_bak == NULL)
+ 		return -ENOMEM;
+ 	commpage = chip->comm_page;
+-	memcpy(commpage_bak, commpage, sizeof(struct comm_page));
++	memcpy(commpage_bak, commpage, sizeof(*commpage));
+ 
+ 	err = init_hw(chip, chip->pci->device, chip->pci->subsystem_device);
+ 	if (err < 0) {
+-- 
+2.7.4
 
-Any comments on this one?
-
-Thanks,
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
-
---ulNsWUvGrZAj8PMr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJXcXFGAAoJEBx+YmzsjxAgXEgP/jct/b40Gd+FoW6BQBbDKbtN
-BScNUiMuxtg4EoF1frdtfH88oPM+6o1/5/xaVpXrlW8vAclF+BZHeu2f9OPgGuRn
-CmaWA1WqKRLb68XI0pymfAMT7htoehfqg5PKcwAuDw8rn3ZFfFgJAB4UvVfXcSg/
-S60LvjKNADTbGkICYkwmpJKAVuBt87eI5WyHj53QqU4z+ft4cG+EfTTeIbF3NSJG
-iQ2hYSuKVpwh5hMO1Jqc2RcnSnC80pbqaE/dO6iU71PgmjUteP5YSPayFcRg0yfX
-uUzTbc2ibzImHEnTEltqwIKxu8dqMvYpWGHvdFRvtVXEMhEZO2tdrTSq5jNsNFhO
-Lh7tPHIsCFhKhHDGDj/LQVG+KXSntxmIAW/4jOseO1gP/hxiV8Qa3NTJeh9BY3Bb
-mnvHe3Nq9A72GBGSpYphNLR4IYTJih9sFFcxm92qEMVuAsLtZHEFcKQ7SewbF4pJ
-WDbHACwjsAZD0IxNYtTTznP5VnQM4RI5nnoyg2qSpKw2CM44rdXkIqd7sQzq/9Vi
-nZCqp8y893/bvE3SJ9SM4A86to3ZuSf7aImbRuyhBzCZPdZxkO8LhnYoQEg+e302
-+VlQ9zYgohU3NEZNG9W7+uvODzsHeixvse1it+og+0lhygz4phwRGch4MByGoYLH
-ucwuMNTGPi4yCukTsaFE
-=LeZS
------END PGP SIGNATURE-----
-
---ulNsWUvGrZAj8PMr--
