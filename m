@@ -1,15 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [RFC 02/11] ASoC: Add dai_ops to set the stream tag.
-Date: Mon, 27 Jun 2016 09:17:55 +0530
-Message-ID: <1466999284-14782-3-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [RFC 04/11] ASoC: hdac: Add a generic hdac driver
+	framework
+Date: Mon, 27 Jun 2016 09:17:57 +0530
+Message-ID: <1466999284-14782-5-git-send-email-subhransu.s.prusty@intel.com>
 References: <1466999284-14782-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id E73482650DA
- for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2016 05:51:33 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 17FB2261ADC
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2016 05:51:39 +0200 (CEST)
 In-Reply-To: <1466999284-14782-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,99 +22,523 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Hardik T Shah <hardik.t.shah@intel.com>
+This patch adds support to register the hdac driver with the HDA
+bus and enumerate the driver if a device is found.
 
-Stream tag is unique stream identifier for each HDA stream. It's
-programmed in both host and codec to identify link the stream is
-transported.  The platform driver allocates the stream and calls
-this ops to program the stream tag in the codec dai.
+It uses the hdac core helper APIs to parse the HDA widgets and
+identifies the number of mapping dapm widgets to be created.
+Based on the ADCs and DACs queries the codec dais are allocated
+and registers with asoc.
 
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
+The AFG node is power managed through set_bias_level callback and
+hw_params, program_stream_tag callback support are added in the
+dai_ops to program the stream parameters.
+
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/soc-dai.h | 12 ++++++++++++
- sound/soc/soc-core.c    | 35 +++++++++++++++++++++++++++++++++++
- 2 files changed, 47 insertions(+)
+ sound/soc/codecs/Kconfig        |   5 +
+ sound/soc/codecs/Makefile       |   2 +
+ sound/soc/codecs/hdac_generic.c | 412 ++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/hdac_generic.h |  25 +++
+ 4 files changed, 444 insertions(+)
+ create mode 100644 sound/soc/codecs/hdac_generic.c
+ create mode 100644 sound/soc/codecs/hdac_generic.h
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 964b7de..52e52b4 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -140,6 +140,11 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 907c804..101eb3f 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -68,6 +68,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_ES8328_SPI if SPI_MASTER
+ 	select SND_SOC_ES8328_I2C if I2C
+ 	select SND_SOC_GTM601
++	select SND_SOC_HDAC_GENERIC
+ 	select SND_SOC_HDAC_HDMI
+ 	select SND_SOC_ICS43432
+ 	select SND_SOC_INNO_RK3036
+@@ -491,6 +492,10 @@ config SND_SOC_ES8328_SPI
+ config SND_SOC_GTM601
+ 	tristate 'GTM601 UMTS modem audio codec'
  
- int snd_soc_dai_is_dummy(struct snd_soc_dai *dai);
- 
++config SND_SOC_HDAC_GENERIC
++	tristate
++	select SND_HDA_EXT_CORE
 +
-+/* Stream tag programming for codec and cpu dai */
-+int snd_soc_dai_program_stream_tag(struct snd_soc_pcm_runtime *rtd,
-+						int stream_tag);
+ config SND_SOC_HDAC_HDMI
+ 	tristate
+ 	select SND_HDA_EXT_CORE
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 185a712..547e8c2 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -61,6 +61,7 @@ snd-soc-es8328-objs := es8328.o
+ snd-soc-es8328-i2c-objs := es8328-i2c.o
+ snd-soc-es8328-spi-objs := es8328-spi.o
+ snd-soc-gtm601-objs := gtm601.o
++snd-soc-hdac-generic-objs := hdac_generic.o
+ snd-soc-hdac-hdmi-objs := hdac_hdmi.o
+ snd-soc-ics43432-objs := ics43432.o
+ snd-soc-inno-rk3036-objs := inno_rk3036.o
+@@ -270,6 +271,7 @@ obj-$(CONFIG_SND_SOC_ES8328)	+= snd-soc-es8328.o
+ obj-$(CONFIG_SND_SOC_ES8328_I2C)+= snd-soc-es8328-i2c.o
+ obj-$(CONFIG_SND_SOC_ES8328_SPI)+= snd-soc-es8328-spi.o
+ obj-$(CONFIG_SND_SOC_GTM601)    += snd-soc-gtm601.o
++obj-$(CONFIG_SND_SOC_HDAC_GENERIC) += snd-soc-hdac-generic.o
+ obj-$(CONFIG_SND_SOC_HDAC_HDMI) += snd-soc-hdac-hdmi.o
+ obj-$(CONFIG_SND_SOC_ICS43432)	+= snd-soc-ics43432.o
+ obj-$(CONFIG_SND_SOC_INNO_RK3036)	+= snd-soc-inno-rk3036.o
+diff --git a/sound/soc/codecs/hdac_generic.c b/sound/soc/codecs/hdac_generic.c
+new file mode 100644
+index 0000000..79db501
+--- /dev/null
++++ b/sound/soc/codecs/hdac_generic.c
+@@ -0,0 +1,412 @@
++/*
++ *  hdac_generic.c - ASoc HDA generic codec driver
++ *
++ *  Copyright (C) 2016-2017 Intel Corp
++ *  Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ */
 +
- struct snd_soc_dai_ops {
- 	/*
- 	 * DAI clocking configuration, all optional.
-@@ -175,6 +180,13 @@ struct snd_soc_dai_ops {
- 	int (*mute_stream)(struct snd_soc_dai *dai, int mute, int stream);
- 
- 	/*
-+	 * stream_tag - optional
-+	 * Can be used by to program same stream tag for both cpu dai
-+	 * and codec dai.
-+	 */
-+	int (*program_stream_tag)(struct snd_soc_dai *, int);
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <sound/soc.h>
++#include <sound/pcm_params.h>
++#include <sound/hdaudio_ext.h>
++#include <sound/hda_regmap.h>
++#include "../../hda/local.h"
++#include "../../hda/ext/hdac_codec.h"
++#include "hdac_generic.h"
++
++#define HDA_MAX_CVTS	10
++
++struct hdac_generic_dai_map {
++	struct hdac_codec_widget *cvt;
++};
++
++struct hdac_generic_priv {
++	struct hdac_generic_dai_map dai_map[HDA_MAX_CVTS];
++	unsigned int num_pins;
++	unsigned int num_adcs;
++	unsigned int num_dacs;
++	unsigned int num_dapm_widgets;
++};
++
++static void hdac_generic_calc_dapm_widgets(struct hdac_ext_device *edev)
++{
++	struct hdac_generic_priv *hdac_priv = edev->private_data;
++	struct hdac_codec_widget *wid;
++
++	if (list_empty(&edev->hdac.widget_list))
++		return;
 +
 +	/*
- 	 * ALSA PCM audio operations - all optional.
- 	 * Called by soc-core during audio PCM operations.
- 	 */
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d2e62b15..b096a2f 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2528,6 +2528,41 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
- EXPORT_SYMBOL_GPL(snd_soc_dai_set_tdm_slot);
- 
- /**
-+ * snd_soc_dai_program_stream_tag - used to program same stream tag for both
-+ *				cpu dai and codec dai.
-+ * @rtd: The runtime for which the DAI link format should be changed
-+ * @stream_tag: Stream tag to be programmed.
-+ *
-+ * Returns 0 on success, otherwise a negative error code.
-+ */
-+int snd_soc_dai_program_stream_tag(struct snd_soc_pcm_runtime *rtd,
-+						int stream_tag)
-+{
-+	int i;
-+	const struct snd_soc_dai_ops *codec_dai_ops;
-+	struct snd_soc_dai *codec_dai;
-+	int ret = 0;
++	 * PIN widget with output capable are represented with an additional
++	 * virtual mux widgets.
++	 */
++	list_for_each_entry(wid, &edev->hdac.widget_list, head) {
++		switch (wid->type) {
++		case AC_WID_AUD_IN:
++			hdac_priv->num_dapm_widgets++;
++			hdac_priv->num_adcs++;
++			break;
 +
-+	for (i = 0; i < rtd->num_codecs; i++) {
-+		codec_dai = rtd->codec_dais[i];
-+		if (!codec_dai->driver)
++		case AC_WID_AUD_OUT:
++			hdac_priv->num_dapm_widgets++;
++			hdac_priv->num_dacs++;
++			break;
++
++		case AC_WID_PIN:
++			hdac_priv->num_pins++;
++			/*
++			 * PIN widgets are represented with dapm_pga and
++			 * dapm_output.
++			 */
++			hdac_priv->num_dapm_widgets += 2;
++
++			if (is_input_pin(&edev->hdac, wid->nid))
++				continue;
++
++			/*
++			 * PIN widget with output capable are represented
++			 * with an additional virtual mux widgets.
++			 */
++			if (wid->num_inputs > 1)
++				hdac_priv->num_dapm_widgets++;
++
++			break;
++
++		case AC_WID_AUD_MIX:
++			hdac_priv->num_dapm_widgets++;
++			break;
++
++		case AC_WID_AUD_SEL:
++			hdac_priv->num_dapm_widgets++;
++			break;
++
++		case AC_WID_POWER:
++			hdac_priv->num_dapm_widgets++;
++			break;
++
++		case AC_WID_BEEP:
++			/*
++			 * Beep widgets are represented with a siggen and
++			 * pga dapm widgets
++			 */
++			hdac_priv->num_dapm_widgets += 2;
++			break;
++
++		default:
++			break;
++		}
++	}
++}
++
++static int hdac_generic_set_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *hparams, struct snd_soc_dai *dai)
++{
++	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
++	struct hdac_generic_priv *hdac_priv = edev->private_data;
++	struct hdac_generic_dai_map *dai_map = &hdac_priv->dai_map[dai->id];
++	u32 format;
++
++	format = snd_hdac_calc_stream_format(params_rate(hparams),
++			params_channels(hparams), params_format(hparams),
++			24, 0);
++
++	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
++				AC_VERB_SET_STREAM_FORMAT, format);
++
++	return 0;
++}
++
++static int hdac_generic_program_stream_tag(struct snd_soc_dai *dai,
++						int strm_tag)
++{
++	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
++	struct hdac_generic_priv *hdac_priv = edev->private_data;
++	struct hdac_generic_dai_map *dai_map = &hdac_priv->dai_map[dai->id];
++	int val;
++
++	val = snd_hdac_codec_read(&edev->hdac, dai_map->cvt->nid, 0,
++					AC_VERB_GET_CONV, 0);
++	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
++				AC_VERB_SET_CHANNEL_STREAMID,
++				(val & 0xf0) | (strm_tag << 4));
++
++	return 0;
++}
++
++static int hdac_codec_set_bias_level(struct snd_soc_codec *codec,
++			enum snd_soc_bias_level level)
++{
++	struct hdac_ext_device *edev = snd_soc_codec_get_drvdata(codec);
++	struct hdac_device *hdac = &edev->hdac;
++
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++	case SND_SOC_BIAS_PREPARE:
++		snd_hdac_codec_read(hdac, hdac->afg, 0,
++			AC_VERB_SET_POWER_STATE, AC_PWRST_D0);
++		break;
++
++	case SND_SOC_BIAS_OFF:
++		snd_hdac_codec_read(hdac, hdac->afg, 0,
++				AC_VERB_SET_POWER_STATE, AC_PWRST_D3);
++		break;
++
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int hdac_codec_probe(struct snd_soc_codec *codec)
++{
++	struct hdac_ext_device *edev = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(&codec->component);
++
++	edev->scodec = codec;
++
++	/* TODO: create widget, route and controls */
++	/* TODO: jack sense */
++
++	/* Imp: Store the card pointer in hda_codec */
++	edev->card = dapm->card->snd_card;
++
++	/* TODO: runtime PM */
++	return 0;
++}
++
++static int hdac_codec_remove(struct snd_soc_codec *codec)
++{
++	/* TODO: disable runtime pm */
++	return 0;
++}
++
++static struct snd_soc_codec_driver hdac_generic_codec = {
++	.probe		= hdac_codec_probe,
++	.remove		= hdac_codec_remove,
++	.set_bias_level = hdac_codec_set_bias_level,
++};
++
++static struct snd_soc_dai_ops hdac_generic_ops = {
++	.hw_params = hdac_generic_set_hw_params,
++	.program_stream_tag = hdac_generic_program_stream_tag,
++};
++
++static int hdac_generic_create_dais(struct hdac_ext_device *edev,
++		struct snd_soc_dai_driver **dais, int num_dais)
++{
++	struct hdac_device *hdac = &edev->hdac;
++	struct hdac_generic_priv *hdac_priv = edev->private_data;
++	struct snd_soc_dai_driver *codec_dais;
++	char stream_name[HDAC_GENERIC_NAME_SIZE];
++	char dai_name[HDAC_GENERIC_NAME_SIZE];
++	struct hdac_codec_widget *widget;
++	int i = 0;
++	u32 rates, bps;
++	unsigned int rate_max = 192000, rate_min = 8000;
++	u64 formats;
++	int ret;
++
++	codec_dais = devm_kzalloc(&hdac->dev,
++			(sizeof(*codec_dais) * num_dais),
++			GFP_KERNEL);
++	if (!codec_dais)
++		return -ENOMEM;
++
++	/* Iterate over the input cvt list (adc) and create capture DAIs */
++	list_for_each_entry(widget, &edev->hdac.widget_list, head) {
++
++		if ((widget->type != AC_WID_AUD_IN) &&
++				(widget->type != AC_WID_AUD_OUT))
 +			continue;
 +
-+		codec_dai_ops = codec_dai->driver->ops;
-+		if (codec_dai_ops->program_stream_tag) {
-+			ret = codec_dai_ops->program_stream_tag(
-+					codec_dai, stream_tag);
-+			if (ret)
-+				return ret;
++		ret = snd_hdac_query_supported_pcm(hdac, widget->nid,
++				&rates,	&formats, &bps);
++		if (ret)
++			return ret;
++
++		sprintf(dai_name, "%x-aif%d", hdac->vendor_id, i+1);
++
++		codec_dais[i].name = devm_kstrdup(&hdac->dev, dai_name,
++							GFP_KERNEL);
++		if (!codec_dais[i].name)
++			return -ENOMEM;
++
++		codec_dais[i].ops = &hdac_generic_ops;
++		codec_dais[i].dobj.private = widget;
++		hdac_priv->dai_map[i].cvt = widget;
++
++		switch (widget->type) {
++		case AC_WID_AUD_IN:
++			snprintf(stream_name, sizeof(stream_name),
++					"Analog Capture-%d", widget->nid);
++			codec_dais[i].capture.stream_name =
++					devm_kstrdup(&hdac->dev, stream_name,
++								GFP_KERNEL);
++			if (!codec_dais[i].capture.stream_name)
++				return -ENOMEM;
++
++			 /*
++			  * Set caps based on capability queried from the
++			  * converter.
++			  */
++			codec_dais[i].capture.formats = formats;
++			codec_dais[i].capture.rates = rates;
++			codec_dais[i].capture.rate_max = rate_max;
++			codec_dais[i].capture.rate_min = rate_min;
++			codec_dais[i].capture.channels_min = 2;
++			codec_dais[i].capture.channels_max = 2;
++
++			i++;
++			break;
++
++		case AC_WID_AUD_OUT:
++			if (widget->caps & AC_WCAP_DIGITAL)
++				snprintf(stream_name, sizeof(stream_name),
++					"Digital Playback-%d", widget->nid);
++			else
++				snprintf(stream_name, sizeof(stream_name),
++					"Analog Playback-%d", widget->nid);
++
++			codec_dais[i].playback.stream_name =
++					devm_kstrdup(&hdac->dev, stream_name,
++								GFP_KERNEL);
++			if (!codec_dais[i].playback.stream_name)
++				return -ENOMEM;
++
++			/*
++			 * Set caps based on capability queried from the
++			 * converter.
++			 */
++			codec_dais[i].playback.formats = formats;
++			codec_dais[i].playback.rates = rates;
++			codec_dais[i].playback.rate_max = rate_max;
++			codec_dais[i].playback.rate_min = rate_min;
++			codec_dais[i].playback.channels_min = 2;
++			codec_dais[i].playback.channels_max = 2;
++
++			i++;
++
++			break;
++		default:
++			break;
 +		}
 +	}
 +
-+	return ret;
++	*dais = codec_dais;
 +
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_dai_program_stream_tag);
 +
-+/**
-  * snd_soc_dai_set_channel_map - configure DAI audio channel map
-  * @dai: DAI
-  * @tx_num: how many TX channels
++static int hdac_generic_dev_probe(struct hdac_ext_device *edev)
++{
++	struct hdac_device *codec = &edev->hdac;
++	struct hdac_generic_priv *hdac_priv;
++	struct snd_soc_dai_driver *codec_dais = NULL;
++	int num_dais = 0;
++	int ret = 0;
++
++	hdac_priv = devm_kzalloc(&codec->dev, sizeof(*hdac_priv), GFP_KERNEL);
++	if (hdac_priv == NULL)
++		return -ENOMEM;
++
++	ret = snd_hdac_codec_init(codec);
++	if (ret < 0)
++		return ret;
++
++	edev->private_data = hdac_priv;
++	dev_set_drvdata(&codec->dev, edev);
++
++	ret = snd_hdac_parse_widgets(codec);
++	if (ret < 0) {
++		dev_err(&codec->dev, "Failed to parse widgets with err: %d\n",
++							ret);
++		return ret;
++	}
++
++	hdac_generic_calc_dapm_widgets(edev);
++
++	if (!hdac_priv->num_pins || ((!hdac_priv->num_adcs) &&
++					 (!hdac_priv->num_dacs))) {
++
++		dev_err(&codec->dev, "No port widgets or cvt widgets");
++		return -EIO;
++	}
++
++	num_dais = hdac_priv->num_adcs + hdac_priv->num_dacs;
++
++	ret = hdac_generic_create_dais(edev, &codec_dais, num_dais);
++	if (ret < 0) {
++		dev_err(&codec->dev, "Failed to create dais with err: %d\n",
++							ret);
++		return ret;
++	}
++
++	/* ASoC specific initialization */
++	return snd_soc_register_codec(&codec->dev, &hdac_generic_codec,
++			codec_dais, num_dais);
++}
++
++static int hdac_generic_dev_remove(struct hdac_ext_device *edev)
++{
++	snd_hdac_codec_cleanup(&edev->hdac);
++	return 0;
++}
++
++/*
++ * TODO:
++ * Driver_data will be used to perform any vendor specific init, register
++ * specific dai ops.
++ * Driver will implement it's own match function to retrieve driver data.
++ */
++static const struct hda_device_id codec_list[] = {
++	HDA_CODEC_EXT_ENTRY(0x10ec0286, 0x100002, "ALC286", 0),
++	{}
++};
++
++MODULE_DEVICE_TABLE(hdaudio, codec_list);
++
++static struct hdac_ext_driver hdac_codec_driver = {
++	. hdac = {
++		.driver = {
++			.name   = "HDA ASoC Codec",
++			/* Add PM */
++		},
++		.id_table       = codec_list,
++	},
++	.probe          = hdac_generic_dev_probe,
++	.remove         = hdac_generic_dev_remove,
++};
++
++static int __init hdac_generic_init(void)
++{
++	return snd_hda_ext_driver_register(&hdac_codec_driver);
++}
++
++static void __exit hdac_generic_exit(void)
++{
++	snd_hda_ext_driver_unregister(&hdac_codec_driver);
++}
++
++module_init(hdac_generic_init);
++module_exit(hdac_generic_exit);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("HDA ASoC codec");
++MODULE_AUTHOR("Subhransu S. Prusty<subhransu.s.prusty@intel.com>");
+diff --git a/sound/soc/codecs/hdac_generic.h b/sound/soc/codecs/hdac_generic.h
+new file mode 100644
+index 0000000..5a4cd36
+--- /dev/null
++++ b/sound/soc/codecs/hdac_generic.h
+@@ -0,0 +1,25 @@
++/*
++ *  hdac_generic.h - ASoc HDA generic codec driver
++ *
++ *  Copyright (C) 2016-2017 Intel Corp
++ *  Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ */
++
++#ifndef __HDAC_GENERIC_H__
++#define __HDAC_GENERIC_H__
++
++#define HDAC_GENERIC_NAME_SIZE	32
++
++#endif /* __HDAC_GENERIC_H__ */
 -- 
 1.9.1
