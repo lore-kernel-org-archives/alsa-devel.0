@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hdmi: Increase loglevel of hex
-	dump printed" to the asoc tree
-Date: Mon, 27 Jun 2016 17:40:27 +0100
-Message-ID: <E1bHZaF-0005EU-99@debutante>
-References: <1464743701-14931-2-git-send-email-vedang.patel@intel.com>
+Subject: Re: [PATCH] ASoC: nau8810: Add driver for Nuvoton
+	codec chip NAU88C10
+Date: Mon, 27 Jun 2016 18:15:46 +0100
+Message-ID: <20160627171546.GE17217@sirena.org.uk>
+References: <1466152834-29615-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0865337710486129795=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C9C4266E7C
- for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2016 18:40:32 +0200 (CEST)
-In-Reply-To: <1464743701-14931-2-git-send-email-vedang.patel@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 043A8266F37
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2016 19:15:54 +0200 (CEST)
+In-Reply-To: <1466152834-29615-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +21,123 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vedang Patel <vedang.patel@intel.com>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, marc.herbert@intel.com, Mark Brown <broonie@kernel.org>, liam.r.girdwood@intel.com, jeeja.kp@intel.com, subhransu.s.prusty@intel.com
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: hdac_hdmi: Increase loglevel of hex dump printed
+--===============0865337710486129795==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="YkJPYEFdoxh/AXLE"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--YkJPYEFdoxh/AXLE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Jun 17, 2016 at 04:40:34PM +0800, John Hsu wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +static int nau8810_reg_write(void *context, unsigned int reg,
+> +			      unsigned int value)
+> +{
+> +	struct i2c_client *client = context;
+> +	uint8_t buf[2];
+> +	__be16 *out = (void *)buf;
+> +	int ret;
+> +
+> +	*out = cpu_to_be16((reg << 9) | value);
+> +	ret = i2c_master_send(client, buf, sizeof(buf));
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+...
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +	reg_buf = (uint8_t)(reg << 1);
+> +	xfer[0].addr = client->addr;
+> +	xfer[0].len = sizeof(reg_buf);
+> +	xfer[0].buf = &reg_buf;
+> +	xfer[0].flags = 0;
+> +
+> +	xfer[1].addr = client->addr;
+> +	xfer[1].len = sizeof(val_buf);
+> +	xfer[1].buf = (uint8_t *)&val_buf;
+> +	xfer[1].flags = I2C_M_RD;
 
-Thanks,
-Mark
+This looks like a regmap with 7 bit registers and 9 bit value.  Why
+aren't we just using the standard regmap support for this?
 
->From 3cb7cec14415ff8544ae702f396f913cd9008e7e Mon Sep 17 00:00:00 2001
-From: Vedang Patel <vedang.patel@intel.com>
-Date: Fri, 24 Jun 2016 17:37:09 -0700
-Subject: [PATCH] ASoC: hdac_hdmi: Increase loglevel of hex dump printed
+> +static const struct soc_enum nau8810_enum[] = {
+> +	SOC_ENUM_SINGLE(NAU8810_REG_COMP, NAU8810_ADCCM_SFT,
+> +		ARRAY_SIZE(nau8810_companding), nau8810_companding),
 
-The hdac_hdmi codec driver prints the ELD information everytime an
-external monitor is connected. Make it so that the information is only
-printed when someone trying to debug the driver explicitly enables it.
+Don't define a big array of enums, this makes the code both hard to read
+and error prone when we index into the array by hard coded raw numbers.
+Just define each enum as a variable and then reference it by address
+like we do for enums in other drivers.
 
-print_hex_dump_bytes (which just calls print_hex_dump) uses
-printk(KERN_DEBUG,... which is different from dev_dbg used elsewhere in
-the driver: it's always enabled at compile-time. Change it to
-print_hex_dump_debug for logging consistency.
+> +	SOC_SINGLE("Digital Loopback Switch", NAU8810_REG_COMP,
+> +		NAU8810_ADDAP_SFT, 1, 0),
 
-Signed-off-by: Vedang Patel <vedang.patel@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/hdac_hdmi.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+This looks like it should be a DAPM control.
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 181cd3bf0b92..62d21812b9b8 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -1124,8 +1124,10 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
- 			}
- 			hdac_hdmi_parse_eld(edev, pin);
- 
--			print_hex_dump_bytes("ELD: ", DUMP_PREFIX_OFFSET,
--					pin->eld.eld_buffer, pin->eld.eld_size);
-+			print_hex_dump_debug("ELD: ",
-+					DUMP_PREFIX_OFFSET, 16, 1,
-+					pin->eld.eld_buffer, pin->eld.eld_size,
-+					true);
- 		} else {
- 			pin->eld.monitor_present = false;
- 			pin->eld.eld_valid = false;
--- 
-2.8.1
+> +	SOC_SINGLE_TLV("Playback Gain", NAU8810_REG_DACGAIN,
+> +		NAU8810_DACGAIN_SFT, 0xff, 0, digital_tlv),
+
+All volume controls should have names ending in Volume so that userspace
+tools can know how to presen them.
+
+> +static int nau8810_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
+> +	int ret = 0;
+> +
+> +	nau8810->div_id = div_id;
+> +	if (div_id != NAU8810_MCLK_DIV_MCLK)
+> +		/* Defer the master clock prescaler configuration to DAI
+> +		 * hardware parameter if master clock from MCLK because
+> +		 * it needs runtime fs information to get the proper div.
+> +		 */
+> +		ret = nau8810_config_clkdiv(nau8810, div, 0);
+> +
+> +	return ret;
+> +}
+
+You shouldn't be implementing new set_clkdiv() operations, there's no
+point in having each machine driver figure out the internal clocking of
+the device.  Just specify the clocks coming into the device and have
+the driver figure out what to do with them.
+
+> +static int nau8810_probe(struct snd_soc_codec *codec)
+> +{
+> +	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
+> +
+> +	regmap_write(nau8810->regmap, NAU8810_REG_RESET, 0x00);
+
+This will break the regmap cache if the driver is ever rebound to a
+card, do this once on I2C probe.
+
+--YkJPYEFdoxh/AXLE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXcV9BAAoJECTWi3JdVIfQOM8H/2CzskemOaG3J9AB87RVSsx4
+Cchd4wiJhp6oTWd1miG6z1jaemluuPVzdPmRYC+Ip5zBpd5stfPXnEZfvUOLci6B
+uwjoGcvuM8CytNxAuxOvnLoQ9By6ZeWM03KIQZH/guiIQ+iI9EvFUV0tGaksG3jE
++6J71APhAHS8RSOlc87U1IZbpiV7/0t5NKDflU2YK2jEPHKnOy6XoVKi5oBK9slW
+9Fhak+6ER9QTAE0N8seDwr35illuMJBGO83AMoNZPPczv1hGCYlZ8zfNGjqhtZV9
+16GuSdFGWoivFZx+yCz+xzmR8Wo3mNel2PtMabX2XiR0fQVKbjocXIXC8VsCmTE=
+=adOG
+-----END PGP SIGNATURE-----
+
+--YkJPYEFdoxh/AXLE--
+
+--===============0865337710486129795==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0865337710486129795==--
