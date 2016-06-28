@@ -1,20 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 02/11] ASoC: Add dai_ops to set the stream
-	tag.
-Date: Tue, 28 Jun 2016 12:15:20 +0100
-Message-ID: <20160628111520.GL17217@sirena.org.uk>
-References: <1466999284-14782-1-git-send-email-subhransu.s.prusty@intel.com>
- <1466999284-14782-3-git-send-email-subhransu.s.prusty@intel.com>
- <20160627173009.GF17217@sirena.org.uk>
- <20160628052138.GI14022@subhransu-desktop>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ctl: use consistent name for second argument
+	of snd_ctl_elem_read/write
+Date: Tue, 28 Jun 2016 22:39:50 +0900
+Message-ID: <1467121190-17992-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8544202245698825418=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7520A266E50
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2016 13:15:30 +0200 (CEST)
-In-Reply-To: <20160628052138.GI14022@subhransu-desktop>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 6E7E9266FE9
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2016 15:39:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,54 +19,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, Vinod Koul <vinod.koul@intel.com>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Second argument of these functions has three different names in
+documentation/header/code (obj/control/value). This easily causes users'
+confusion.
 
---===============8544202245698825418==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="eMP3JyRexyk9c0Bv"
-Content-Disposition: inline
+This commit applies consistent names for the arguments.
 
+Fixes: 90020c05f886 ('ctl: improve comments for handling element data')
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ include/control.h     |  4 ++--
+ src/control/control.c | 16 ++++++++--------
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
---eMP3JyRexyk9c0Bv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jun 28, 2016 at 10:51:38AM +0530, Subhransu S. Prusty wrote:
-> On Mon, Jun 27, 2016 at 06:30:09PM +0100, Mark Brown wrote:
-
-> > This seems incredibly HDMI specific...  what are these tags, can we
-> > represent this as TDM (which seems to be what this is really)?
-
-> This is HDA specific and the tag is to support use of same DMA channel by
-> both host and codec.
-
-What is a "DMA channel"?
-
---eMP3JyRexyk9c0Bv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXclxHAAoJECTWi3JdVIfQVB4H/A1ByMBqNwE1C5JZfTJAx5U9
-b3xW4JvzBYuL7pfiA/Y+eqaxEPcHmDTXbWgT87EyuMhyrXFEhul8k/fOTUGzGLi5
-zI6ga0jKVPG1WFgWVk85/tPPClnBC8TE4KCrcjinIr35Ilu7BdLwBXhtVvA5lb5O
-wykEjzG3U02SEiD0Yxlexlp/yz44nl+hFmxWN4xsHnPQHOn/DRTJWNCzexV48uUN
-OqUYPUWuQbXxjZ2LKtiwO5wurrmkwrruZQGx6YItsAi1vHnqLTD71D8jPgXauBDS
-MjahIGDboxrXVj4wE1aRDXinEGO1cQDsXvvXJwNYbE7Xvq9VQ0lXGArfwJiGCr8=
-=GIZq
------END PGP SIGNATURE-----
-
---eMP3JyRexyk9c0Bv--
-
---===============8544202245698825418==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8544202245698825418==--
+diff --git a/include/control.h b/include/control.h
+index 0d4ae86..6931b1f 100644
+--- a/include/control.h
++++ b/include/control.h
+@@ -245,8 +245,8 @@ int snd_ctl_subscribe_events(snd_ctl_t *ctl, int subscribe);
+ int snd_ctl_card_info(snd_ctl_t *ctl, snd_ctl_card_info_t *info);
+ int snd_ctl_elem_list(snd_ctl_t *ctl, snd_ctl_elem_list_t *list);
+ int snd_ctl_elem_info(snd_ctl_t *ctl, snd_ctl_elem_info_t *info);
+-int snd_ctl_elem_read(snd_ctl_t *ctl, snd_ctl_elem_value_t *value);
+-int snd_ctl_elem_write(snd_ctl_t *ctl, snd_ctl_elem_value_t *value);
++int snd_ctl_elem_read(snd_ctl_t *ctl, snd_ctl_elem_value_t *data);
++int snd_ctl_elem_write(snd_ctl_t *ctl, snd_ctl_elem_value_t *data);
+ int snd_ctl_elem_lock(snd_ctl_t *ctl, snd_ctl_elem_id_t *id);
+ int snd_ctl_elem_unlock(snd_ctl_t *ctl, snd_ctl_elem_id_t *id);
+ int snd_ctl_elem_tlv_read(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+diff --git a/src/control/control.c b/src/control/control.c
+index 6090abd..bbb5a78 100644
+--- a/src/control/control.c
++++ b/src/control/control.c
+@@ -803,27 +803,27 @@ int snd_ctl_elem_remove(snd_ctl_t *ctl, snd_ctl_elem_id_t *id)
+ /**
+  * \brief Get CTL element value
+  * \param ctl CTL handle
+- * \param obj Data of an element.
++ * \param data Data of an element.
+  * \return 0 on success otherwise a negative error code
+  */
+-int snd_ctl_elem_read(snd_ctl_t *ctl, snd_ctl_elem_value_t *control)
++int snd_ctl_elem_read(snd_ctl_t *ctl, snd_ctl_elem_value_t *data)
+ {
+-	assert(ctl && control && (control->id.name[0] || control->id.numid));
+-	return ctl->ops->element_read(ctl, control);
++	assert(ctl && data && (data->id.name[0] || data->id.numid));
++	return ctl->ops->element_read(ctl, data);
+ }
+ 
+ /**
+  * \brief Set CTL element value
+  * \param ctl CTL handle
+- * \param obj Data of an element.
++ * \param data Data of an element.
+  * \retval 0 on success
+  * \retval >0 on success when value was changed
+  * \retval <0 a negative error code
+  */
+-int snd_ctl_elem_write(snd_ctl_t *ctl, snd_ctl_elem_value_t *control)
++int snd_ctl_elem_write(snd_ctl_t *ctl, snd_ctl_elem_value_t *data)
+ {
+-	assert(ctl && control && (control->id.name[0] || control->id.numid));
+-	return ctl->ops->element_write(ctl, control);
++	assert(ctl && data && (data->id.name[0] || data->id.numid));
++	return ctl->ops->element_write(ctl, data);
+ }
+ 
+ static int snd_ctl_tlv_do(snd_ctl_t *ctl, int op_flag,
+-- 
+2.7.4
