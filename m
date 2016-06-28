@@ -1,52 +1,93 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: Applied "ASoC: cs35l33: Add device tree bindings file for
- cs35l33" to the asoc tree
-Date: Tue, 28 Jun 2016 22:45:07 +0100
-Message-ID: <20160628214507.GF17217@sirena.org.uk>
-References: <1466441119-8488-2-git-send-email-Paul.Handrigan@cirrus.com>
- <E1bHZa3-0005Ao-0c@debutante>
- <20160628205717.GV3737@rob-hp-laptop>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: cs35l33: Remove setting
+	dapm->bias_level in cs35l33_set_bias_level" to the asoc tree
+Date: Tue, 28 Jun 2016 20:56:20 +0100
+Message-ID: <E1bHz7M-0005Xg-TX@debutante>
+References: <1467110219.1638.1.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="A9k63Mnmpo23fVdx"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20160628205717.GV3737@rob-hp-laptop>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4EEA2673A7
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2016 21:56:31 +0200 (CEST)
+In-Reply-To: <1467110219.1638.1.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---A9k63Mnmpo23fVdx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: cs35l33: Remove setting dapm->bias_level in cs35l33_set_bias_level
 
-On Tue, Jun 28, 2016 at 03:57:17PM -0500, Rob Herring wrote:
+has been applied to the asoc tree at
 
-> This version has comments from me and there's a newer version that I=20
-> acked. On a plane, so I don't have a link handy.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Please submit incremental patches for anything that's missing.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---A9k63Mnmpo23fVdx
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEcBAEBCAAGBQJXcu/iAAoJECTWi3JdVIfQzS0H/2K+or9rkZqwCg9USaBKFCGL
-1WapFGjKSiA5fhSf0Vgicq/H6igTx7Tunaq04CpAhmHLUguM+0Wb0uP05srWE7Sb
-Ad9fxdxXDundsOJVDs2z6w9kkkFI+Y+WWReGl5k47G7x2Rb3EqG6QnsZ4HWjQkY5
-LztqOL66n5zbh5vyUibD05OQHpw7D/IpeHRYUhfvOI1kCbF2L2y74suSm3JS1yl/
-duBtycZ1dshwcZefIh/XkuE8MsO7hQWlCFUf98UlTSE8eGBwOyXZJH3hLEwTr3lu
-XPROVrTHoziyUYkb0qUnAqTsmPenO1bgivOkElBfnH2Gb/BfUMJVh+cjacREz+k=
-=Lths
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---A9k63Mnmpo23fVdx--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Mark
+
+>From 262329fccad4914dbf4b49634cbe140dfb353c25 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Tue, 28 Jun 2016 18:36:59 +0800
+Subject: [PATCH] ASoC: cs35l33: Remove setting dapm->bias_level in
+ cs35l33_set_bias_level
+
+This is done by ASoC core now.
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/cs35l33.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/sound/soc/codecs/cs35l33.c b/sound/soc/codecs/cs35l33.c
+index 90dc743a8378..622a1111b21c 100644
+--- a/sound/soc/codecs/cs35l33.c
++++ b/sound/soc/codecs/cs35l33.c
+@@ -365,7 +365,6 @@ static int cs35l33_set_bias_level(struct snd_soc_codec *codec,
+ 				  enum snd_soc_bias_level level)
+ {
+ 	unsigned int val;
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+ 	struct cs35l33_private *priv = snd_soc_codec_get_drvdata(codec);
+ 
+ 	switch (level) {
+@@ -392,8 +391,6 @@ static int cs35l33_set_bias_level(struct snd_soc_codec *codec,
+ 		return -EINVAL;
+ 	}
+ 
+-	dapm->bias_level = level;
+-
+ 	return 0;
+ }
+ 
+-- 
+2.8.1
