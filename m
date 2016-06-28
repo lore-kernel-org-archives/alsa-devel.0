@@ -1,46 +1,58 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_spdif: fix spelling mistake: "receivce" ->
- "receive"
-Date: Tue, 28 Jun 2016 15:57:38 +0100
-Message-ID: <20160628145738.GN17217@sirena.org.uk>
-References: <1467118079-8652-1-git-send-email-colin.king@canonical.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: cs35l33: Remove setting dapm->bias_level
+ in cs35l33_set_bias_level
+Date: Tue, 28 Jun 2016 18:36:59 +0800
+Message-ID: <1467110219.1638.1.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="FX+Db2fp7WJhXKrW"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1467118079-8652-1-git-send-email-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin King <colin.king@canonical.com>
-Cc: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
+ [209.85.192.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B371267E6B
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2016 12:37:05 +0200 (CEST)
+Received: by mail-pf0-f196.google.com with SMTP id c74so1470928pfb.0
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2016 03:37:05 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
+This is done by ASoC core now.
 
---FX+Db2fp7WJhXKrW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/cs35l33.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-On Tue, Jun 28, 2016 at 01:47:59PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-
-Please fix things so that your mail configuration matches your git
-configuration, it makes things harder to review since it looks like
-you've got a non-author signoff with a missing signed off by from
-someone.
-
---FX+Db2fp7WJhXKrW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXcpBhAAoJECTWi3JdVIfQjHYH/jfpZkJ578RFdT0bAUWG2I8H
-KyWakn3dhj5htAUW9uG3C7HpiRCCg7HoAP7fmw2UKT2TqPFtVm4tP60sH37nb8D3
-An9P2OTG0w4DBxAEevWaGFg018NvovSQQAWRQOR+bWoISpmwSGBsFvb/8liesZwI
-ria5YqwYkMH3ElX7AEoAi82qUM6zAuLQEtom8OH7IFJqA7naj6J6y1rBwN2m36vr
-LTRyf208BPm3MtJ2ZCaPU53kXddgxE9x9NqSGvOgUdKQKTz1W7dpy2LBS5KcqgeO
-cqPRAjyrpeTa7WX81MUPK87GpiZJuYX/tQiACOBmOWntiufW6vKOulYa7U71gUw=
-=rjSD
------END PGP SIGNATURE-----
-
---FX+Db2fp7WJhXKrW--
+diff --git a/sound/soc/codecs/cs35l33.c b/sound/soc/codecs/cs35l33.c
+index 90dc743..622a111 100644
+--- a/sound/soc/codecs/cs35l33.c
++++ b/sound/soc/codecs/cs35l33.c
+@@ -365,7 +365,6 @@ static int cs35l33_set_bias_level(struct snd_soc_codec *codec,
+ 				  enum snd_soc_bias_level level)
+ {
+ 	unsigned int val;
+-	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+ 	struct cs35l33_private *priv = snd_soc_codec_get_drvdata(codec);
+ 
+ 	switch (level) {
+@@ -392,8 +391,6 @@ static int cs35l33_set_bias_level(struct snd_soc_codec *codec,
+ 		return -EINVAL;
+ 	}
+ 
+-	dapm->bias_level = level;
+-
+ 	return 0;
+ }
+ 
+-- 
+2.5.0
