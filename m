@@ -1,25 +1,21 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH v2 4/6] ASoC: max98504: Add max98504
- speaker amplifier driver
-Date: Tue, 28 Jun 2016 19:59:35 +0200
-Message-ID: <5772BB07.4000609@samsung.com>
-References: <1466678715-19962-1-git-send-email-s.nawrocki@samsung.com>
- <1466678715-19962-5-git-send-email-s.nawrocki@samsung.com>
- <20160627163312.GB17217@sirena.org.uk>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: fsl_ssi: Fix number of words per
+ frame for I2S-slave mode
+Date: Tue, 28 Jun 2016 11:20:54 -0700
+Message-ID: <20160628182053.GA21603@Asurada-Nvidia>
+References: <1466830762-31646-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.w1.samsung.com (mailout3.w1.samsung.com
- [210.118.77.13])
- by alsa0.perex.cz (Postfix) with ESMTP id D8B852657BE
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2016 19:59:43 +0200 (CEST)
-Received: from eucpsbgm1.samsung.com (unknown [203.254.199.244])
- by mailout3.w1.samsung.com
- (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
- with ESMTP id <0O9H00C30TZH2IC0@mailout3.w1.samsung.com> for
- alsa-devel@alsa-project.org; Tue, 28 Jun 2016 18:59:41 +0100 (BST)
-In-reply-to: <20160627163312.GB17217@sirena.org.uk>
+Received: from mail-pa0-f67.google.com (mail-pa0-f67.google.com
+ [209.85.220.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 962D92657BE
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2016 20:20:59 +0200 (CEST)
+Received: by mail-pa0-f67.google.com with SMTP id us13so2257390pab.1
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2016 11:20:59 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1466830762-31646-1-git-send-email-shc_work@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,56 +25,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, b.zolnierkie@samsung.com, Krzysztof Kozlowski <k.kozlowski@samsung.com>, inki.dae@samsung.com, ideal.song@samsung.com
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/27/2016 06:33 PM, Mark Brown wrote:
-> On Thu, Jun 23, 2016 at 12:45:13PM +0200, Sylwester Nawrocki wrote:
+On Sat, Jun 25, 2016 at 07:59:22AM +0300, Alexander Shiyan wrote:
+> The i.MX51 datasheet says:
+> Chapter 56.1.2.4 I2S Mode
+> ...
+> When I2S modes are entered (I2S master (01) or I2S slave (10)),
+> the following settings are recommended:
+> ...
+> - TX Frame Rate should be 2 i.e. (STCCR[12:8] = 1)
+> - RX Frame Rate should be 2 i.e. (SRCCR[12:8] = 1)
 > 
->> > +	/* Select analog input by default */
->> > +	regmap_write(map, MAX98504_REG_SPEAKER_SOURCE_SELECT, 0x1);
->
-> This should be done by userspace configuration, just leave the chip at
-> power on defaults.  This is policy so that we don't have people trying
-> to patch their configurations into the kernel.
+> Chapter 56.3.3.12 SSI Transmit and Receive Clock Control Registers (STCCR & SRCCR)
+> ...
+> Bits 12-8 DC4-DC0
+> Frame Rate Divider Control. These bits are used to control the divide ratio
+> for the programmable frame rate dividers. The divide ratio works on the word
+> clock. In Normal mode, this ratio determines the word transfer rate.
+> In Network mode, this ratio sets the number of words per frame. The divide
+> ratio ranges from 1 to 32 in Normal mode and from 2 to 32 in Network mode.
+> In Normal mode, a divide ratio of 1 (DC=00000) provides continuous periodic
+> data word transfer. A bit-length frame sync must be used in this case.
+> 
+> Function fsl_ssi_hw_params() setup Normal mode for MONO output,
+> so with DC=0, SSI enters to continuous periodic data word transfer.
+> To fix this, setup DC for any I2S mode.
 
-OK, I will remove this and update the UCM configuration files instead.
+The change looks fine and didn't show any problem when I tested it.
+But I am wondering what's the failed user case here so we need this
+patch to fix? (The mono playback works without this patch as well.)
 
->> > +	/* Brownout protection enable */
->> > +	regmap_write(map, MAX98504_REG_PVDD_BROWNOUT_ENABLE, 0x1);
->> > +	/* Threshold 2.9V, 3dB speaker attenuation*/
->> > +	regmap_write(map, MAX98504_REG_PVDD_BROWNOUT_CONFIG(1), 0x33);
->> > +	/* Attack hold time 10 ms */
->> > +	regmap_write(map, MAX98504_REG_PVDD_BROWNOUT_CONFIG(2), 0x0a);
->> > +	/* Brownout hold time 255 ms, brownout release time 255 ms */
->> > +	regmap_write(map, MAX98504_REG_PVDD_BROWNOUT_CONFIG(3), 0xff);
->> > +	regmap_write(map, MAX98504_REG_PVDD_BROWNOUT_CONFIG(4), 0xff);
->
-> Should these be DT properties?
-
-I'm not sure, these properties define the speaker gain decrease pattern
-during VBAT brownout, it seems a system integration detail and will most
-likely differ from board to board.  I'd assume it's acceptable to put
-these in DT, looking at other bindings.  I've prepared something like
-this:
-
-------8<--------
-Optional properties:
-
-- maxim,brownout-threshold - the VBAT brownout threshold, the value must be
-  from 0, 1...21 range, corresponding to 2.6V, 2.65V...3.65V voltage range
-- maxim,brownout-attenuation - the brownout attenuation to the speaker gain
-  applied during the "attack hold" and "timed hold" phase, the value must be
-  from 0...6 (dB) range
-- maxim,brownout-attack-hold-ms - the brownout attack hold phase time in ms,
-  0...255 (VBATBROWN_ATTK_HOLD, register 0x0018)
-- maxim,brownout-timed-hold-ms - the brownout timed hold phase time in ms,
-  0...255 (VBATBROWN_TIME_HOLD, register 0x0019)
-- maxim,brownout-release-rate-ms - the brownout release phase step time in ms,
-  0...255 (VBATBROWN_RELEASE, register 0x001A)
-
-The default value when the above properties are not specified is 0,
-the maxim,brownout-level property must be specified to actually enable
-the VBAT brownout protection.
-------8<--------
+Thanks
+Nicolin
