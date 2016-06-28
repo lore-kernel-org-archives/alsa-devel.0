@@ -1,68 +1,39 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_spdif: fix spelling mistake: "receivce" -> "receive"" to the asoc tree
-Date: Tue, 28 Jun 2016 20:36:24 +0100
-Message-ID: <E1bHyo4-0004Sx-11@debutante>
-References: <1467118079-8652-1-git-send-email-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1467118079-8652-1-git-send-email-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 5/6] ASoC: samsung: Add DT bindings documentation for
+ TM2 sound subsystem
+Date: Tue, 28 Jun 2016 15:55:08 -0500
+Message-ID: <20160628205508.GD3737@rob-hp-laptop>
+References: <1466678715-19962-1-git-send-email-s.nawrocki@samsung.com>
+ <1466678715-19962-6-git-send-email-s.nawrocki@samsung.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1466678715-19962-6-git-send-email-s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Thu, Jun 23, 2016 at 12:45:14PM +0200, Sylwester Nawrocki wrote:
+> This patch adds DT binding documentation for Exnos5433 based TM2
+> and TM2E boards sound subsystem.
+> 
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+> ---
+> Changes since initial version:
+>  - dropped clocks, clock-names properties, instead properties from
+>    the CODEC node will be used,
+>  - property renames: 'samsung,model' -> 'model', 'samsung,i2s-controller'
+>    -> 'i2s-controller', 'samsung,speaker-amplifier' -> 'audio-amplifier',
+>  - added 'audio-codec' property.
+> ---
+>  .../bindings/sound/samsung,tm2-audio.txt           | 36 ++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
 
-   ASoC: fsl_spdif: fix spelling mistake: "receivce" -> "receive"
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From d93c5066e85e936765af29bf47ec78885d55ad02 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Tue, 28 Jun 2016 13:47:59 +0100
-Subject: [PATCH] ASoC: fsl_spdif: fix spelling mistake: "receivce" ->
- "receive"
-
-trivial fix to spelling mistake in dev_err message
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/fsl_spdif.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 151849f79863..beec7934a265 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -172,7 +172,7 @@ static void spdif_irq_uqrx_full(struct fsl_spdif_priv *spdif_priv, char name)
- 	if (*pos >= size * 2) {
- 		*pos = 0;
- 	} else if (unlikely((*pos % size) + 3 > size)) {
--		dev_err(&pdev->dev, "User bit receivce buffer overflow\n");
-+		dev_err(&pdev->dev, "User bit receive buffer overflow\n");
- 		return;
- 	}
- 
--- 
-2.8.1
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
