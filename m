@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs35l33: Remove unnecessary free_irq
-	call" to the asoc tree
-Date: Tue, 28 Jun 2016 20:56:23 +0100
-Message-ID: <E1bHz7P-0005YY-Ug@debutante>
-References: <1467103218.25747.1.camel@ingics.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: fsl_ssi: Fix number of words per
+ frame for I2S-slave mode
+Date: Tue, 28 Jun 2016 15:02:36 -0700
+Message-ID: <20160628220235.GA378@Asurada-Nvidia>
+References: <1466830762-31646-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 627572673AB
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2016 21:56:35 +0200 (CEST)
-In-Reply-To: <1467103218.25747.1.camel@ingics.com>
+Received: from mail-pa0-f68.google.com (mail-pa0-f68.google.com
+ [209.85.220.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3785F266CED
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 00:02:46 +0200 (CEST)
+Received: by mail-pa0-f68.google.com with SMTP id us13so2665448pab.1
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2016 15:02:46 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1466830762-31646-1-git-send-email-shc_work@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,90 +25,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Sat, Jun 25, 2016 at 07:59:22AM +0300, Alexander Shiyan wrote:
+> The i.MX51 datasheet says:
+> Chapter 56.1.2.4 I2S Mode
+> ...
+> When I2S modes are entered (I2S master (01) or I2S slave (10)),
+> the following settings are recommended:
+> ...
+> - TX Frame Rate should be 2 i.e. (STCCR[12:8] = 1)
+> - RX Frame Rate should be 2 i.e. (SRCCR[12:8] = 1)
+> 
+> Chapter 56.3.3.12 SSI Transmit and Receive Clock Control Registers (STCCR & SRCCR)
+> ...
+> Bits 12-8 DC4-DC0
+> Frame Rate Divider Control. These bits are used to control the divide ratio
+> for the programmable frame rate dividers. The divide ratio works on the word
+> clock. In Normal mode, this ratio determines the word transfer rate.
+> In Network mode, this ratio sets the number of words per frame. The divide
+> ratio ranges from 1 to 32 in Normal mode and from 2 to 32 in Network mode.
+> In Normal mode, a divide ratio of 1 (DC=00000) provides continuous periodic
+> data word transfer. A bit-length frame sync must be used in this case.
+> 
+> Function fsl_ssi_hw_params() setup Normal mode for MONO output,
+> so with DC=0, SSI enters to continuous periodic data word transfer.
+> To fix this, setup DC for any I2S mode.
+> Patch has tested on custom board based on Digi CCMX-51 module (i.MX51).
+> 
+> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 
-   ASoC: cs35l33: Remove unnecessary free_irq call
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 
-has been applied to the asoc tree at
+Thank you
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From beefe4a9f45a745d8518872596e8e3271dbf426b Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Tue, 28 Jun 2016 16:40:18 +0800
-Subject: [PATCH] ASoC: cs35l33: Remove unnecessary free_irq call
-
-Current code uses devm_request_threaded_irq() so it does not need to
-explicitly call free_irq() in .probe error path and .remove.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/cs35l33.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/codecs/cs35l33.c b/sound/soc/codecs/cs35l33.c
-index 55c1f758c110..90dc743a8378 100644
---- a/sound/soc/codecs/cs35l33.c
-+++ b/sound/soc/codecs/cs35l33.c
-@@ -1195,7 +1195,7 @@ static int cs35l33_i2c_probe(struct i2c_client *i2c_client,
- 		dev_err(&i2c_client->dev,
- 			"Failed to enable core supplies: %d\n",
- 			ret);
--		goto err_irq;
-+		return ret;
- 	}
- 
- 	if (cs35l33->reset_gpio)
-@@ -1251,7 +1251,7 @@ static int cs35l33_i2c_probe(struct i2c_client *i2c_client,
- 	if (ret < 0) {
- 		dev_err(&i2c_client->dev, "%s: Register codec failed\n",
- 			__func__);
--		goto err_irq;
-+		goto err_enable;
- 	}
- 
- 	return 0;
-@@ -1259,8 +1259,6 @@ static int cs35l33_i2c_probe(struct i2c_client *i2c_client,
- err_enable:
- 	regulator_bulk_disable(cs35l33->num_core_supplies,
- 			       cs35l33->core_supplies);
--err_irq:
--	free_irq(i2c_client->irq, cs35l33);
- 
- 	return ret;
- }
-@@ -1277,7 +1275,6 @@ static int cs35l33_i2c_remove(struct i2c_client *client)
- 	pm_runtime_disable(&client->dev);
- 	regulator_bulk_disable(cs35l33->num_core_supplies,
- 		cs35l33->core_supplies);
--	free_irq(client->irq, cs35l33);
- 
- 	return 0;
- }
--- 
-2.8.1
+> ---
+>  sound/soc/fsl/fsl_ssi.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 632ecc0..bedec4a 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -952,16 +952,16 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+>  	ssi_private->i2s_mode = CCSR_SSI_SCR_NET;
+>  	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+>  	case SND_SOC_DAIFMT_I2S:
+> +		regmap_update_bits(regs, CCSR_SSI_STCCR,
+> +				   CCSR_SSI_SxCCR_DC_MASK,
+> +				   CCSR_SSI_SxCCR_DC(2));
+> +		regmap_update_bits(regs, CCSR_SSI_SRCCR,
+> +				   CCSR_SSI_SxCCR_DC_MASK,
+> +				   CCSR_SSI_SxCCR_DC(2));
+>  		switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+>  		case SND_SOC_DAIFMT_CBM_CFS:
+>  		case SND_SOC_DAIFMT_CBS_CFS:
+>  			ssi_private->i2s_mode |= CCSR_SSI_SCR_I2S_MODE_MASTER;
+> -			regmap_update_bits(regs, CCSR_SSI_STCCR,
+> -					CCSR_SSI_SxCCR_DC_MASK,
+> -					CCSR_SSI_SxCCR_DC(2));
+> -			regmap_update_bits(regs, CCSR_SSI_SRCCR,
+> -					CCSR_SSI_SxCCR_DC_MASK,
+> -					CCSR_SSI_SxCCR_DC(2));
+>  			break;
+>  		case SND_SOC_DAIFMT_CBM_CFM:
+>  			ssi_private->i2s_mode |= CCSR_SSI_SCR_I2S_MODE_SLAVE;
+> -- 
+> 2.4.9
+> 
