@@ -1,48 +1,53 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [RFC 06/11] ASoC: dapm: Create API to add a single
-	route element
-Date: Tue, 28 Jun 2016 10:52:45 +0530
-Message-ID: <20160628052244.GJ14022@subhransu-desktop>
-References: <1466999284-14782-1-git-send-email-subhransu.s.prusty@intel.com>
- <1466999284-14782-7-git-send-email-subhransu.s.prusty@intel.com>
- <20160627180206.GG17217@sirena.org.uk>
+From: walter harms <wharms@bfs.de>
+Subject: Re: [PATCH] ALSA: echoaudio: Fix memory allocation
+Date: Tue, 28 Jun 2016 09:13:25 +0200
+Message-ID: <57722395.8080706@bfs.de>
+References: <1467054411-19752-1-git-send-email-christophe.jaillet@wanadoo.fr>
+Reply-To: wharms@bfs.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 74B532651E3
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2016 07:26:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20160627180206.GG17217@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <1467054411-19752-1-git-send-email-christophe.jaillet@wanadoo.fr>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 27, 2016 at 07:02:06PM +0100, Mark Brown wrote:
-> On Mon, Jun 27, 2016 at 09:17:59AM +0530, Subhransu S. Prusty wrote:
+
+
+Am 27.06.2016 21:06, schrieb Christophe JAILLET:
+> 'commpage_bak' is allocated with 'sizeof(struct echoaudio)' bytes.
+> We then copy 'sizeof(struct comm_page)' bytes in it.
+> On my system, smatch complains because one is 2960 and the other is 3072.
 > 
-> >  int snd_soc_dapm_add_routes(struct snd_soc_dapm_context *dapm,
-> >  			    const struct snd_soc_dapm_route *route, int num);
-> > +int snd_soc_dapm_add_route_single(struct snd_soc_dapm_context *dapm,
-> > +			    const struct snd_soc_dapm_route *route);
+> This would result in memory corruption or a oops.
 > 
-> Just snd_soc_dapm_add_route() and rename the existing internal function.
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  sound/pci/echoaudio/echoaudio.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+> index 1cb85ae..286f5e3 100644
+> --- a/sound/pci/echoaudio/echoaudio.c
+> +++ b/sound/pci/echoaudio/echoaudio.c
+> @@ -2200,11 +2200,11 @@ static int snd_echo_resume(struct device *dev)
+>  	u32 pipe_alloc_mask;
+>  	int err;
+>  
+> -	commpage_bak = kmalloc(sizeof(struct echoaudio), GFP_KERNEL);
+> +	commpage_bak = kmalloc(sizeof(*commpage), GFP_KERNEL);
+>  	if (commpage_bak == NULL)
+>  		return -ENOMEM;
+>  	commpage = chip->comm_page;
+> -	memcpy(commpage_bak, commpage, sizeof(struct comm_page));
+> +	memcpy(commpage_bak, commpage, sizeof(*commpage));
+>  
+>  	err = init_hw(chip, chip->pci->device, chip->pci->subsystem_device);
+>  	if (err < 0) {
 
-Sure.
+perhaps you can use here kmemdup() ?
 
-Thanks
-Subhransu
-
-
-
--- 
+re,
+ wh
