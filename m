@@ -1,85 +1,54 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] drm: mediatek: fix prototypes after API change
-Date: Wed, 29 Jun 2016 16:51:29 +0200
-Message-ID: <20160629145129.315931-1-arnd@arndb.de>
+From: Amitoj Kaur Chawla <amitoj1606@gmail.com>
+Subject: [PATCH] ALSA: riptide: Use DIV_ROUND_UP
+Date: Wed, 29 Jun 2016 20:26:28 +0530
+Message-ID: <20160629145628.GA13915@amitoj-Inspiron-3542>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: David Airlie <airlied@linux.ie>, Mark Brown <broonie@kernel.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Junzhi Zhao <junzhi.zhao@mediatek.com>, Jie Qiu <jie.qiu@mediatek.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Arnd Bergmann <arnd@arndb.de>, Matthias Brugger <matthias.bgg@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: julia.lawall@lip6.fr
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIG5ld2x5IGFkZGVkIG1lZGlhdGVrIEhETUkgZHJpdmVyIGNsYXNoZXMgd2l0aCBhbiBBUEkg
-Y2hhbmdlCmZvciBzdHJ1Y3QgaGRtaV9jb2RlY19vcHMsIGNhdXNpbmcgYW4gJ2FsbG1vZGNvbmZp
-ZycgYnVpbGQgdG8gZmFpbDoKCmRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfaGRtaS5jOjE2
-NTM6MTU6IGVycm9yOiBpbml0aWFsaXphdGlvbiBmcm9tIGluY29tcGF0aWJsZSBwb2ludGVyIHR5
-cGUgWy1XZXJyb3I9aW5jb21wYXRpYmxlLXBvaW50ZXItdHlwZXNdCmRyaXZlcnMvZ3B1L2RybS9t
-ZWRpYXRlay9tdGtfaGRtaS5jOjE2NTQ6MTk6IGVycm9yOiBpbml0aWFsaXphdGlvbiBmcm9tIGlu
-Y29tcGF0aWJsZSBwb2ludGVyIHR5cGUgWy1XZXJyb3I9aW5jb21wYXRpYmxlLXBvaW50ZXItdHlw
-ZXNdCmRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfaGRtaS5jOjE2NTU6MjA6IGVycm9yOiBp
-bml0aWFsaXphdGlvbiBmcm9tIGluY29tcGF0aWJsZSBwb2ludGVyIHR5cGUgWy1XZXJyb3I9aW5j
-b21wYXRpYmxlLXBvaW50ZXItdHlwZXNdCmRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfaGRt
-aS5jOjE2NTY6MTg6IGVycm9yOiBpbml0aWFsaXphdGlvbiBmcm9tIGluY29tcGF0aWJsZSBwb2lu
-dGVyIHR5cGUgWy1XZXJyb3I9aW5jb21wYXRpYmxlLXBvaW50ZXItdHlwZXNdCmRyaXZlcnMvZ3B1
-L2RybS9tZWRpYXRlay9tdGtfaGRtaS5jOjE2NTc6MTM6IGVycm9yOiBpbml0aWFsaXphdGlvbiBm
-cm9tIGluY29tcGF0aWJsZSBwb2ludGVyIHR5cGUgWy1XZXJyb3I9aW5jb21wYXRpYmxlLXBvaW50
-ZXItdHlwZXNdCgpUaGlzIGNoYW5nZXMgdGhlIEFQSSBhY2NvcmRpbmdseSBmb3IgdGhlIG1lZGlh
-dGVrIGRyaXZlci4KClNpZ25lZC1vZmYtYnk6IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+
-CkZpeGVzOiA4ZjgzZjI2ODkxZTEgKCJkcm0vbWVkaWF0ZWs6IEFkZCBIRE1JIHN1cHBvcnQiKQpG
-aXhlczogZWZjOTE5NGJjZmY4ICgiQVNvQzogaGRtaS1jb2RlYzogY2FsbGJhY2sgZnVuY3Rpb24g
-d2lsbCBiZSBjYWxsZWQgd2l0aCBwcml2YXRlIGRhdGEiKQotLS0KVGhlIG5ldyBkcml2ZXIgaXMg
-Y3VycmVudGx5IHBhcnQgb2YgRGF2ZSBBaXJsaWUncyBkcm0tbmV4dCB0cmVlLAp3aGlsZSB0aGUg
-QVBJIGNoYW5nZSBpcyBpbiBNYXJrIEJyb3duJ3MgYXNvYy1uZXh0IHRyZWUsIHNvIG15CmZpeCBo
-YXMgdG8gYmUgZG9uZSBvbiB0b3Agb2YgYm90aC4KCkkgY2FuIHNlZSB0d28gd2F5cyBvdXQgb2Yg
-dGhpczoKCmEpIFN0ZXBoZW4gUm90aHdlbGwgY291bGQgYWRkIG15IGZpeHVwIG9uIHRvcCBvZiBs
-aW51eC1uZXh0CiAgIGFzIGEgbWVyZ2UgZml4LCBhbmQgdGhlIGZpeCBnZXRzIHNlbnQgdG8gTGlu
-dXMgVG9ydmFsZHMgYWxvbmcKICAgd2l0aCB0aGUgc2Vjb25kIG9mIHRoZSB0d28gYnJhbmNoZXMK
-CmIpIGVmYzkxOTRiY2ZmOCBnZXRzIG1lcmdlZCBpbnRvIGRybS1uZXh0IGFsb25nIHdpdGggbXkg
-Y2hhbmdlCiAgIGluIHRoZSBtZXJnZSBjb21taXQuIEl0IGlzIGN1cnJlbnRseSBhIHN0YW5kYWxv
-bmUgcGF0Y2gKICAgaW4gaXRzIG93biBicmFuY2ggaW4gdGhlIEFTb0MgdHJlZS4KLS0tCiBkcml2
-ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2hkbWkuYyB8IDEwICsrKysrLS0tLS0KIDEgZmlsZSBj
-aGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9ncHUvZHJtL21lZGlhdGVrL210a19oZG1pLmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0
-ZWsvbXRrX2hkbWkuYwppbmRleCBiYTgxMmVmMmM5ZDEuLjMzNDU2MmQwNjczMSAxMDA2NDQKLS0t
-IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19oZG1pLmMKKysrIGIvZHJpdmVycy9ncHUv
-ZHJtL21lZGlhdGVrL210a19oZG1pLmMKQEAgLTE1MzUsNyArMTUzNSw3IEBAIHN0YXRpYyBpbnQg
-bXRrX2hkbWlfZHRfcGFyc2VfcGRhdGEoc3RydWN0IG10a19oZG1pICpoZG1pLAogICogSERNSSBh
-dWRpbyBjb2RlYyBjYWxsYmFja3MKICAqLwogCi1zdGF0aWMgaW50IG10a19oZG1pX2F1ZGlvX2h3
-X3BhcmFtcyhzdHJ1Y3QgZGV2aWNlICpkZXYsCitzdGF0aWMgaW50IG10a19oZG1pX2F1ZGlvX2h3
-X3BhcmFtcyhzdHJ1Y3QgZGV2aWNlICpkZXYsIHZvaWQgKmRhdGEsCiAJCQkJICAgIHN0cnVjdCBo
-ZG1pX2NvZGVjX2RhaWZtdCAqZGFpZm10LAogCQkJCSAgICBzdHJ1Y3QgaGRtaV9jb2RlY19wYXJh
-bXMgKnBhcmFtcykKIHsKQEAgLTE2MDQsNyArMTYwNCw3IEBAIHN0YXRpYyBpbnQgbXRrX2hkbWlf
-YXVkaW9faHdfcGFyYW1zKHN0cnVjdCBkZXZpY2UgKmRldiwKIAlyZXR1cm4gMDsKIH0KIAotc3Rh
-dGljIGludCBtdGtfaGRtaV9hdWRpb19zdGFydHVwKHN0cnVjdCBkZXZpY2UgKmRldikKK3N0YXRp
-YyBpbnQgbXRrX2hkbWlfYXVkaW9fc3RhcnR1cChzdHJ1Y3QgZGV2aWNlICpkZXYsIHZvaWQgKmRh
-dGEpCiB7CiAJc3RydWN0IG10a19oZG1pICpoZG1pID0gZGV2X2dldF9kcnZkYXRhKGRldik7CiAK
-QEAgLTE2MTUsNyArMTYxNSw3IEBAIHN0YXRpYyBpbnQgbXRrX2hkbWlfYXVkaW9fc3RhcnR1cChz
-dHJ1Y3QgZGV2aWNlICpkZXYpCiAJcmV0dXJuIDA7CiB9CiAKLXN0YXRpYyB2b2lkIG10a19oZG1p
-X2F1ZGlvX3NodXRkb3duKHN0cnVjdCBkZXZpY2UgKmRldikKK3N0YXRpYyB2b2lkIG10a19oZG1p
-X2F1ZGlvX3NodXRkb3duKHN0cnVjdCBkZXZpY2UgKmRldiwgdm9pZCAqZGF0YSkKIHsKIAlzdHJ1
-Y3QgbXRrX2hkbWkgKmhkbWkgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsKIApAQCAtMTYyNCw3ICsx
-NjI0LDcgQEAgc3RhdGljIHZvaWQgbXRrX2hkbWlfYXVkaW9fc2h1dGRvd24oc3RydWN0IGRldmlj
-ZSAqZGV2KQogCW10a19oZG1pX2F1ZGlvX2Rpc2FibGUoaGRtaSk7CiB9CiAKLWludCBtdGtfaGRt
-aV9hdWRpb19kaWdpdGFsX211dGUoc3RydWN0IGRldmljZSAqZGV2LCBib29sIGVuYWJsZSkKK2lu
-dCBtdGtfaGRtaV9hdWRpb19kaWdpdGFsX211dGUoc3RydWN0IGRldmljZSAqZGV2LCB2b2lkICpk
-YXRhLCBib29sIGVuYWJsZSkKIHsKIAlzdHJ1Y3QgbXRrX2hkbWkgKmhkbWkgPSBkZXZfZ2V0X2Ry
-dmRhdGEoZGV2KTsKIApAQCAtMTYzOCw3ICsxNjM4LDcgQEAgaW50IG10a19oZG1pX2F1ZGlvX2Rp
-Z2l0YWxfbXV0ZShzdHJ1Y3QgZGV2aWNlICpkZXYsIGJvb2wgZW5hYmxlKQogCXJldHVybiAwOwog
-fQogCi1zdGF0aWMgaW50IG10a19oZG1pX2F1ZGlvX2dldF9lbGQoc3RydWN0IGRldmljZSAqZGV2
-LCB1aW50OF90ICpidWYsIHNpemVfdCBsZW4pCitzdGF0aWMgaW50IG10a19oZG1pX2F1ZGlvX2dl
-dF9lbGQoc3RydWN0IGRldmljZSAqZGV2LCB2b2lkICpkYXRhLCB1aW50OF90ICpidWYsIHNpemVf
-dCBsZW4pCiB7CiAJc3RydWN0IG10a19oZG1pICpoZG1pID0gZGV2X2dldF9kcnZkYXRhKGRldik7
-CiAKLS0gCjIuOS4wCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5v
-cmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2
-ZWwK
+The kernel.h macro DIV_ROUND_UP performs the computation
+(((n) + (d) - 1) /(d)) but is perhaps more readable.
+
+The Coccinelle script used to make this change is as follows:
+@haskernel@
+@@
+
+#include <linux/kernel.h>
+
+@depends on haskernel@
+expression n,d;
+@@
+
+(
+- (n + d - 1) / d
++ DIV_ROUND_UP(n,d)
+|
+- (n + (d - 1)) / d
++ DIV_ROUND_UP(n,d)
+)
+
+Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
+---
+ sound/pci/riptide/riptide.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
+index 94639d6..067a912 100644
+--- a/sound/pci/riptide/riptide.c
++++ b/sound/pci/riptide/riptide.c
+@@ -1496,7 +1496,7 @@ static int snd_riptide_prepare(struct snd_pcm_substream *substream)
+ 		f = PAGE_SIZE;
+ 		while ((size + (f >> 1) - 1) <= (f << 7) && (f << 1) > period)
+ 			f = f >> 1;
+-		pages = (size + f - 1) / f;
++		pages = DIV_ROUND_UP(size, f);
+ 		data->size = size;
+ 		data->pages = pages;
+ 		snd_printdd
+-- 
+1.9.1
