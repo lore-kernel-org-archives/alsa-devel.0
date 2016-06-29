@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/5] ctl: optimize a test for user-defined
-	element set to older kernels
-Date: Wed, 29 Jun 2016 22:43:01 +0900
-Message-ID: <1467207783-19792-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/5] ctl: add an API to set dimension levels to
+	element information
+Date: Wed, 29 Jun 2016 22:43:00 +0900
+Message-ID: <1467207783-19792-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1467207783-19792-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 23DA9266D8F
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 22C55266D8E
  for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 15:43:08 +0200 (CEST)
 In-Reply-To: <1467207783-19792-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,86 +25,76 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In Linux 4.0 or former, call of ioctl(2) with SNDRV_CTL_IOCTL_ELEM_ADD
-doesn't fill all of identical information in an argument; i.e. numid.
-With the kernel, a test of user-defined element set fails.
+In a former commit, 'struct snd_ctl_elem_info' is used as a 'container' to
+transfer extra fields of element information for APIs to add an element
+set. The extra fields should be filled in advance of call of the APIs.
+Currently, dimension level is in the extra fields and no APIs to set it.
 
-This commit fixes the bug. The 'numid' field in identical information
-is always zero when adding an element set, therefore zero check has an
-effect.
+This commit adds an API to set dimension level to the information
+structure. This API is expected to be used in advance of usage of APIs
+to add an element set, for nothing others. When the information structure
+is extended in future, then the similar APIs shall be added for the new
+feature.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- test/user-ctl-element-set.c | 31 ++++++++++++++++++++-----------
- 1 file changed, 20 insertions(+), 11 deletions(-)
+ include/control.h     |  2 ++
+ src/control/control.c | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+)
 
-diff --git a/test/user-ctl-element-set.c b/test/user-ctl-element-set.c
-index 09c7929..bfb11d7 100644
---- a/test/user-ctl-element-set.c
-+++ b/test/user-ctl-element-set.c
-@@ -279,6 +279,7 @@ static int check_elem_set_props(struct elem_set_trial *trial)
- 	snd_ctl_elem_id_t *id;
- 	snd_ctl_elem_info_t *info;
- 	unsigned int numid;
-+	unsigned int index;
- 	unsigned int i;
- 	int err;
+diff --git a/include/control.h b/include/control.h
+index b14edee..cd60d90 100644
+--- a/include/control.h
++++ b/include/control.h
+@@ -408,6 +408,8 @@ void snd_ctl_elem_info_set_item(snd_ctl_elem_info_t *obj, unsigned int val);
+ const char *snd_ctl_elem_info_get_item_name(const snd_ctl_elem_info_t *obj);
+ int snd_ctl_elem_info_get_dimensions(const snd_ctl_elem_info_t *obj);
+ int snd_ctl_elem_info_get_dimension(const snd_ctl_elem_info_t *obj, unsigned int idx);
++int snd_ctl_elem_info_set_dimension(snd_ctl_elem_info_t *info,
++				    const int dimension[4]);
+ void snd_ctl_elem_info_get_id(const snd_ctl_elem_info_t *obj, snd_ctl_elem_id_t *ptr);
+ unsigned int snd_ctl_elem_info_get_numid(const snd_ctl_elem_info_t *obj);
+ snd_ctl_elem_iface_t snd_ctl_elem_info_get_interface(const snd_ctl_elem_info_t *obj);
+diff --git a/src/control/control.c b/src/control/control.c
+index 70b166b..2ad3e0d 100644
+--- a/src/control/control.c
++++ b/src/control/control.c
+@@ -2458,6 +2458,36 @@ int snd_ctl_elem_info_get_dimension(const snd_ctl_elem_info_t *obj, unsigned int
+ use_default_symbol_version(__snd_ctl_elem_info_get_dimension, snd_ctl_elem_info_get_dimension, ALSA_0.9.3);
  
-@@ -286,10 +287,18 @@ static int check_elem_set_props(struct elem_set_trial *trial)
- 	snd_ctl_elem_info_alloca(&info);
- 
- 	snd_ctl_elem_info_set_id(info, trial->id);
--	numid = snd_ctl_elem_info_get_numid(info);
-+	numid = snd_ctl_elem_id_get_numid(trial->id);
-+	index = snd_ctl_elem_id_get_index(trial->id);
- 
- 	for (i = 0; i < trial->element_count; ++i) {
--		snd_ctl_elem_info_set_numid(info, numid + i);
-+		snd_ctl_elem_info_set_index(info, index + i);
+ /**
++ * \brief Set width to a specified dimension level of given element information.
++ * \param info Information of an element.
++ * \param dimension Dimension width for each level by member unit.
++ * \return Zero on success, otherwise a negative error code.
++ *
++ * \par Errors:
++ * <dl>
++ * <dt>-EINVAL
++ * <dd>Invalid arguments are given as parameters.
++ * </dl>
++ */
++int snd_ctl_elem_info_set_dimension(snd_ctl_elem_info_t *info,
++				    const int dimension[4])
++{
++	unsigned int i;
 +
-+		/*
-+		 * In Linux 4.0 or former, ioctl(SNDRV_CTL_IOCTL_ELEM_ADD)
-+		 * doesn't fill all of fields for identification.
-+		 */
-+		if (numid > 0)
-+			snd_ctl_elem_info_set_numid(info, numid + i);
- 
- 		err = snd_ctl_elem_info(trial->handle, info);
- 		if (err < 0)
-@@ -335,25 +344,25 @@ static int check_elems(struct elem_set_trial *trial)
- {
- 	snd_ctl_elem_value_t *data;
- 	unsigned int numid;
-+	unsigned int index;
- 	unsigned int i;
- 	int err;
- 
- 	snd_ctl_elem_value_alloca(&data);
- 
- 	snd_ctl_elem_value_set_id(data, trial->id);
--
--	/*
--	 * Get the value of numid field in identical information for the first
--	 * element of this element set.
--	 */
--	numid = snd_ctl_elem_value_get_numid(data);
-+	numid = snd_ctl_elem_id_get_numid(trial->id);
-+	index = snd_ctl_elem_id_get_index(trial->id);
- 
- 	for (i = 0; i < trial->element_count; ++i) {
-+		snd_ctl_elem_value_set_index(data, index + i);
++	if (info == NULL)
++		return -EINVAL;
 +
- 		/*
--		 * Here, I increment numid, while we can also increment offset
--		 * to enumerate each element in this element set.
-+		 * In Linux 4.0 or former, ioctl(SNDRV_CTL_IOCTL_ELEM_ADD)
-+		 * doesn't fill all of fields for identification.
- 		 */
--		snd_ctl_elem_value_set_numid(data, numid + i);
-+		if (numid > 0)
-+			snd_ctl_elem_value_set_numid(data, numid + i);
- 
- 		err = snd_ctl_elem_read(trial->handle, data);
- 		if (err < 0)
++	for (i = 0; i < ARRAY_SIZE(info->dimen.d); i++) {
++		if (dimension[i] < 0)
++			return -EINVAL;
++
++		info->dimen.d[i] = dimension[i];
++	}
++
++	return 0;
++}
++
++/**
+  * \brief Get CTL element identifier of a CTL element id/info
+  * \param obj CTL element id/info
+  * \param ptr Pointer to returned CTL element identifier
 -- 
 2.7.4
