@@ -1,68 +1,106 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [RFC 02/11] ASoC: Add dai_ops to set the stream
-	tag.
-Date: Thu, 30 Jun 2016 14:29:07 +0530
-Message-ID: <20160630085907.GO14022@subhransu-desktop>
-References: <1466999284-14782-1-git-send-email-subhransu.s.prusty@intel.com>
- <1466999284-14782-3-git-send-email-subhransu.s.prusty@intel.com>
- <20160627173009.GF17217@sirena.org.uk>
- <20160628052138.GI14022@subhransu-desktop>
- <20160628111520.GL17217@sirena.org.uk>
- <20160629040810.GN14022@subhransu-desktop>
- <20160629185023.GQ6247@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 8035026578F
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2016 11:02:38 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20160629185023.GQ6247@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, Vinod Koul <vinod.koul@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Add DT bindings documentation for max98504 amplifier" to the asoc tree
+Date: Wed, 29 Jun 2016 20:23:18 +0100
+Message-ID: <E1bIL4w-00085G-0O@finisterre>
+References: <1467199599-6892-4-git-send-email-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1467199599-6892-4-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, robh@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, inki.dae@samsung.com, devicetree@vger.kernel.org, ideal.song@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 29, 2016 at 07:50:23PM +0100, Mark Brown wrote:
-> On Wed, Jun 29, 2016 at 09:38:11AM +0530, Subhransu S. Prusty wrote:
-> > On Tue, Jun 28, 2016 at 12:15:20PM +0100, Mark Brown wrote:
-> > > On Tue, Jun 28, 2016 at 10:51:38AM +0530, Subhransu S. Prusty wrote:
-> 
-> > > > This is HDA specific and the tag is to support use of same DMA channel by
-> > > > both host and codec.
-> 
-> > > What is a "DMA channel"?
-> 
-> > Ok. I agree this looks like TDM and we should model it like that :)
-> 
-> > Now, the issue is how? The current TDM API doesn't seem so intutive to
-> > invoke for this case. What do you suggest...
-> 
-> Without knowing what tags and DMA channels are it's hard to make
-> suggestions...
+The patch
 
-Hi Mark,
+   ASoC: Add DT bindings documentation for max98504 amplifier
 
-Sure. Let me explain more.
+has been applied to the asoc tree at
 
-Each DMA channel can be mapped to a stream in HDA. Each stream is mapped
-uniquely with a stream tag. The stream is programmed in both host and
-codec. In host the DMA is programmed with this stream tag and based on this
-DMA picks data from host buffer and puts it onto the link. Similarly the
-codec converter is programmed with the same stream tag and codec receives
-packet from the link associated with the stream tag.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Regards,
-Subhransu
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 51ded0fbc18c5c05782c1c7eba30264b524added Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Wed, 29 Jun 2016 13:26:36 +0200
+Subject: [PATCH] ASoC: Add DT bindings documentation for max98504 amplifier
+
+This patch adds DT bindings documentation for Maxim MAX98504
+speaker amplifier.
+
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../devicetree/bindings/sound/max98504.txt         | 44 ++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/max98504.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/max98504.txt b/Documentation/devicetree/bindings/sound/max98504.txt
+new file mode 100644
+index 000000000000..583ed5fdfb28
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/max98504.txt
+@@ -0,0 +1,44 @@
++Maxim MAX98504 class D mono speaker amplifier
++
++This device supports I2C control interface and an IRQ output signal. It features
++a PCM and PDM digital audio interface (DAI) and a differential analog input.
++
++Required properties:
++
++ - compatible : "maxim,max98504"
++ - reg : should contain the I2C slave device address
++ - DVDD-supply, DIOVDD-supply, PVDD-supply: power supplies for the device,
++   as covered in ../regulator/regulator.txt
++ - interrupts : should specify the interrupt line the device is connected to,
++   as described in ../interrupt-controller/interrupts.txt
++
++Optional properties:
++
++ - maxim,brownout-threshold - the PVDD brownout threshold, the value must be
++   from 0, 1...21 range, corresponding to 2.6V, 2.65V...3.65V voltage range
++ - maxim,brownout-attenuation - the brownout attenuation to the speaker gain
++   applied during the "attack hold" and "timed hold" phase, the value must be
++   from 0...6 (dB) range
++ - maxim,brownout-attack-hold-ms - the brownout attack hold phase time in ms,
++   0...255 (VBATBROWN_ATTK_HOLD, register 0x0018)
++ - maxim,brownout-timed-hold-ms - the brownout timed hold phase time in ms,
++   0...255 (VBATBROWN_TIME_HOLD, register 0x0019)
++ - maxim,brownout-release-rate-ms - the brownout release phase step time in ms,
++   0...255 (VBATBROWN_RELEASE, register 0x001A)
++
++The default value when the above properties are not specified is 0,
++the maxim,brownout-threshold property must be specified to actually enable
++the PVDD brownout protection.
++
++Example:
++
++ max98504@31 {
++	compatible = "maxim,max98504";
++	reg = <0x31>;
++	interrupt-parent = <&gpio_bank_0>;
++	interrupts = <2 0>;
++
++	DVDD-supply = <&regulator>;
++	DIOVDD-supply = <&regulator>;
++	PVDD-supply = <&regulator>;
++};
 -- 
+2.8.1
