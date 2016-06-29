@@ -1,54 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 10/39 v2] ASoC: simple-card-utils: add
- asoc_simple_card_parse_endpoint()
-Date: Wed, 29 Jun 2016 19:34:53 +0100
-Message-ID: <20160629183453.GP6247@sirena.org.uk>
-References: <87fusysjam.wl%kuninori.morimoto.gx@renesas.com>
- <871t4isj0b.wl%kuninori.morimoto.gx@renesas.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: fsl_ssi: Fix number of words per
+ frame for I2S-slave mode
+Date: Wed, 29 Jun 2016 11:26:10 -0700
+Message-ID: <20160629182609.GA17986@Asurada-Nvidia>
+References: <1466830762-31646-1-git-send-email-shc_work@mail.ru>
+ <1467143972.433375523@f318.i.mail.ru>
+ <20160628220641.GB378@Asurada-Nvidia>
+ <1467186721.688218396@f75.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="iq/fWD14IMVFWBCD"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
+ [209.85.192.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 146162668B0
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 20:26:15 +0200 (CEST)
+Received: by mail-pf0-f196.google.com with SMTP id i123so5118336pfg.3
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 11:26:14 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <871t4isj0b.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
+In-Reply-To: <1467186721.688218396@f75.i.mail.ru>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Jun 29, 2016 at 10:52:01AM +0300, Alexander Shiyan wrote:
 
---iq/fWD14IMVFWBCD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >your failed case. Could you please tell me what were the FSclk,
+> >BITclk and size of your case?
+ 
+> Here is my oscillograms with/without patch:
+> Bclk=12 MHz, sound is just a "cat /dev/urandom > /dev/dsp", i.e. FS=8 KHz, MONO.
+> Upper (yellow) line is TXDATA, Lower (blue) is FS.
+> 
+> Measurement without patch: https://cloud.mail.ru/public/Rcsv/xr88V5Sa1
+> Measurement with patch: https://cloud.mail.ru/public/NCwn/DQnzioQEL
 
-On Tue, May 31, 2016 at 09:03:00AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> simple-card needs to get its dai name and endpoint node.
-> This patch makes it simple style standard
-
-I'm finding these descriptions very clear and hard to follow, and the
-lack of any changes to the simple-card code is a bit unclear.  Can I
-suggest that future versions of this should have patches that move code
-out of simple-card to helper functions as a single patch rather than
-adding the helper in one and (I presume) the use in another?
-
-In this case I'm not entirely clear what an endpoint is.
-
---iq/fWD14IMVFWBCD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXdBTMAAoJECTWi3JdVIfQ7TAIAIIUqmyFB4QxGCa11Q9tOtpJ
-FYSbhiU5uRiWHzDIN9WoZQlCiHDB4hZvNFhs6Zh3Ym6/riatkN7I5ZCaTtmZu9Oz
-yG3aLJZD61qR7Y9MDg0OUXvnejX51qwobFAy7eACZszDcPs/UUn8Ew/Ln+vbv2E+
-TBRJp3J0OpSjSm5rZlZ+IvWB8T6Yjx+UMiie2jPRsOjD0geGQ2+D9OhoxIAtOZO6
-ZaoUzyynCUrX/GHUsZxU2y87VIAR72FG80rFnkLBsHlducg320L6e/sHVBNQJe/E
-hvqzIirtnldYJd8D4HNmFvJ5U8EY+/nxRH5KVJ7S7ttDOlDPsXUhPgxB3VqrWOM=
-=nxV0
------END PGP SIGNATURE-----
-
---iq/fWD14IMVFWBCD--
+Thanks for the reply. So in the case without patch, it looks like
+SSI just sent the data ignoring the slot size right?
