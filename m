@@ -1,24 +1,22 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: fsl_ssi: Fix number of words per
- frame for I2S-slave mode
-Date: Wed, 29 Jun 2016 11:26:10 -0700
-Message-ID: <20160629182609.GA17986@Asurada-Nvidia>
-References: <1466830762-31646-1-git-send-email-shc_work@mail.ru>
- <1467143972.433375523@f318.i.mail.ru>
- <20160628220641.GB378@Asurada-Nvidia>
- <1467186721.688218396@f75.i.mail.ru>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC 02/11] ASoC: Add dai_ops to set the stream
+	tag.
+Date: Wed, 29 Jun 2016 19:50:23 +0100
+Message-ID: <20160629185023.GQ6247@sirena.org.uk>
+References: <1466999284-14782-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1466999284-14782-3-git-send-email-subhransu.s.prusty@intel.com>
+ <20160627173009.GF17217@sirena.org.uk>
+ <20160628052138.GI14022@subhransu-desktop>
+ <20160628111520.GL17217@sirena.org.uk>
+ <20160629040810.GN14022@subhransu-desktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1237366508345608445=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
- [209.85.192.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 146162668B0
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 20:26:15 +0200 (CEST)
-Received: by mail-pf0-f196.google.com with SMTP id i123so5118336pfg.3
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 11:26:14 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1467186721.688218396@f75.i.mail.ru>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2A6926575E
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 20:50:44 +0200 (CEST)
+In-Reply-To: <20160629040810.GN14022@subhransu-desktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,21 +26,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 29, 2016 at 10:52:01AM +0300, Alexander Shiyan wrote:
 
-> >your failed case. Could you please tell me what were the FSclk,
-> >BITclk and size of your case?
- 
-> Here is my oscillograms with/without patch:
-> Bclk=12 MHz, sound is just a "cat /dev/urandom > /dev/dsp", i.e. FS=8 KHz, MONO.
-> Upper (yellow) line is TXDATA, Lower (blue) is FS.
-> 
-> Measurement without patch: https://cloud.mail.ru/public/Rcsv/xr88V5Sa1
-> Measurement with patch: https://cloud.mail.ru/public/NCwn/DQnzioQEL
+--===============1237366508345608445==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="dUqh8vgUBVXHzm9w"
+Content-Disposition: inline
 
-Thanks for the reply. So in the case without patch, it looks like
-SSI just sent the data ignoring the slot size right?
+
+--dUqh8vgUBVXHzm9w
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jun 29, 2016 at 09:38:11AM +0530, Subhransu S. Prusty wrote:
+> On Tue, Jun 28, 2016 at 12:15:20PM +0100, Mark Brown wrote:
+> > On Tue, Jun 28, 2016 at 10:51:38AM +0530, Subhransu S. Prusty wrote:
+
+> > > This is HDA specific and the tag is to support use of same DMA channel by
+> > > both host and codec.
+
+> > What is a "DMA channel"?
+
+> Ok. I agree this looks like TDM and we should model it like that :)
+
+> Now, the issue is how? The current TDM API doesn't seem so intutive to
+> invoke for this case. What do you suggest...
+
+Without knowing what tags and DMA channels are it's hard to make
+suggestions...
+
+--dUqh8vgUBVXHzm9w
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXdBhtAAoJECTWi3JdVIfQvZ0H/0mGzF0h1NV3Yoj3G4TGg3vt
+YljvWrZ1VoUMoVTug5Cx+hXj+iAV6a8iJXJZeQsCFEt7+RMxnXNe6uLgS0ZpXQkz
+VsgQ2KSFV7LaJzXv6f4TeetKn0gdpe0zUUx+Udmexu1lkDMP6Ry/KYcmo2tMpaIm
+JmvGHD26rfU8XczfpwAeByXLIugUnvME2pZZi9Ph9RBi9/KX2cJGa+CkxjKJIgJT
+8O9j7qlyQZ0KQsnQYz7cUP34JBzYgGPocom4D5x13ME5/d0pxsIsOrpNVjmLn0bH
+U/BMI+pKsNwMyo32BXnsxh/ECd9PwRdh34NrilhRuWdZpR1cgL34wTZFb9kYfL4=
+=t0Q9
+-----END PGP SIGNATURE-----
+
+--dUqh8vgUBVXHzm9w--
+
+--===============1237366508345608445==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1237366508345608445==--
