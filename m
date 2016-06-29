@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/5] ctl: support extra information to
+Subject: [PATCH 5/5] ctl: support dimension test for
 	user-defined element set
-Date: Wed, 29 Jun 2016 22:42:59 +0900
-Message-ID: <1467207783-19792-2-git-send-email-o-takashi@sakamocchi.jp>
+Date: Wed, 29 Jun 2016 22:43:03 +0900
+Message-ID: <1467207783-19792-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1467207783-19792-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 212DE266D8B
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 15:43:08 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 90309266D90
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 15:43:10 +0200 (CEST)
 In-Reply-To: <1467207783-19792-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,455 +25,137 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In ALSA control feature, information of an element includes extra fields
-to type-specific parameters; i.e. dimension. The fields can be extended in
-future.
+In former commits, APIs to add an element set are extended to support extra
+fields to information structure. Currently, the fields are mainly used to
+describe dimension level.
 
-Meanwhile, current APIs to add user-defined element set can not support
-such an extended fields. This may cause inconveniences in future.
-
-This commit supports the fields, by changing APIs for element set.
+This commit adds tests to check the dimension level.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/control.h     |  10 +--
- src/control/control.c | 189 ++++++++++++++++++++++----------------------------
- src/pcm/pcm_softvol.c |  10 +--
- 3 files changed, 94 insertions(+), 115 deletions(-)
+ test/user-ctl-element-set.c | 39 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 38 insertions(+), 1 deletion(-)
 
-diff --git a/include/control.h b/include/control.h
-index 13b0d4e..b14edee 100644
---- a/include/control.h
-+++ b/include/control.h
-@@ -423,24 +423,24 @@ void snd_ctl_elem_info_set_subdevice(snd_ctl_elem_info_t *obj, unsigned int val)
- void snd_ctl_elem_info_set_name(snd_ctl_elem_info_t *obj, const char *val);
- void snd_ctl_elem_info_set_index(snd_ctl_elem_info_t *obj, unsigned int val);
+diff --git a/test/user-ctl-element-set.c b/test/user-ctl-element-set.c
+index 51e850c..c346e03 100644
+--- a/test/user-ctl-element-set.c
++++ b/test/user-ctl-element-set.c
+@@ -17,6 +17,7 @@ struct elem_set_trial {
+ 	unsigned int element_count;
  
--int snd_ctl_elem_add_integer_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+int snd_ctl_elem_add_integer_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 				 unsigned int element_count,
- 				 unsigned int member_count,
- 				 long min, long max, long step);
--int snd_ctl_elem_add_integer64_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+int snd_ctl_elem_add_integer64_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 				   unsigned int element_count,
- 				   unsigned int member_count,
- 				   long long min, long long max,
- 				   long long step);
--int snd_ctl_elem_add_boolean_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+int snd_ctl_elem_add_boolean_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 				 unsigned int element_count,
- 				 unsigned int member_count);
--int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 				    unsigned int element_count,
- 				    unsigned int member_count,
- 				    unsigned int items,
- 				    const char *const labels[]);
--int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 			       unsigned int element_count,
- 			       unsigned int member_count);
+ 	snd_ctl_elem_id_t *id;
++	int dimension[4];
  
-diff --git a/src/control/control.c b/src/control/control.c
-index c7fcbd2..70b166b 100644
---- a/src/control/control.c
-+++ b/src/control/control.c
-@@ -305,7 +305,8 @@ int snd_ctl_elem_info(snd_ctl_t *ctl, snd_ctl_elem_info_t *info)
- /**
-  * \brief Create and add some user-defined control elements of integer type.
-  * \param ctl A handle of backend module for control interface.
-- * \param id ID of the first new element.
-+ * \param info Common iformation for a new element set, with ID of the first new
-+ *	       element.
-  * \param element_count The number of elements added by this operation.
-  * \param member_count The number of members which a element has to
-  *			   represent its states.
-@@ -342,38 +343,36 @@ int snd_ctl_elem_info(snd_ctl_t *ctl, snd_ctl_elem_info_t *info)
-  * \par Compatibility:
-  * This function is added in version 1.1.2.
-  */
--int snd_ctl_elem_add_integer_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+int snd_ctl_elem_add_integer_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 				 unsigned int element_count,
- 				 unsigned int member_count,
- 				 long min, long max, long step)
+ 	int (*add_elem_set)(struct elem_set_trial *trial,
+ 			    snd_ctl_elem_info_t *info);
+@@ -229,6 +230,7 @@ static int add_elem_set(struct elem_set_trial *trial)
  {
--	snd_ctl_elem_info_t info = {0};
- 	snd_ctl_elem_value_t data = {0};
- 	unsigned int i;
- 	unsigned int j;
- 	unsigned int numid;
- 	int err;
+ 	snd_ctl_elem_info_t *info;
+ 	char name[64] = {0};
++	int err;
  
--	assert(ctl && id && id->name[0]);
-+	assert(ctl && info && info->id.name[0]);
- 
--	info.id = *id;
--	info.type = SND_CTL_ELEM_TYPE_INTEGER;
--	info.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
--	              SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
--	              SNDRV_CTL_ELEM_ACCESS_USER;
--	info.owner = element_count;
--	info.count = member_count;
--	info.value.integer.min = min;
--	info.value.integer.max = max;
--	info.value.integer.step = step;
--
--	err = ctl->ops->element_add(ctl, &info);
-+	info->type = SND_CTL_ELEM_TYPE_INTEGER;
-+	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_USER;
-+	info->owner = element_count;
-+	info->count = member_count;
-+	info->value.integer.min = min;
-+	info->value.integer.max = max;
-+	info->value.integer.step = step;
+ 	snprintf(name, 64, "userspace-control-element-%s",
+ 		 snd_ctl_elem_type_name(trial->type));
+@@ -236,8 +238,13 @@ static int add_elem_set(struct elem_set_trial *trial)
+ 	snd_ctl_elem_info_alloca(&info);
+ 	snd_ctl_elem_info_set_interface(info, SND_CTL_ELEM_IFACE_MIXER);
+ 	snd_ctl_elem_info_set_name(info, name);
++	snd_ctl_elem_info_set_dimension(info, trial->dimension);
 +
-+	err = ctl->ops->element_add(ctl, info);
- 	if (err < 0)
- 		return err;
--	numid = snd_ctl_elem_id_get_numid(&info.id);
-+	numid = snd_ctl_elem_id_get_numid(&info->id);
++	err = trial->add_elem_set(trial, info);
++	if (err >= 0)
++		snd_ctl_elem_info_get_id(info, trial->id);
  
- 	/* Set initial value to all of members in all of added elements. */
--	data.id = info.id;
-+	data.id = info->id;
- 	for (i = 0; i < element_count; i++) {
- 		snd_ctl_elem_id_set_numid(&data.id, numid + i);
- 
-@@ -385,14 +384,14 @@ int snd_ctl_elem_add_integer_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
- 			return err;
- 	}
- 
--	*id = info.id;
- 	return 0;
+-	return trial->add_elem_set(trial, info);
++	return err;
  }
  
- /**
-  * \brief Create and add some user-defined control elements of integer64 type.
-  * \param ctl A handle of backend module for control interface.
-- * \param id ID of the first new control element.
-+ * \param info Common iformation for a new element set, with ID of the first new
-+ *	       element.
-  * \param element_count The number of elements added by this operation.
-  * \param member_count The number of members which a element has to
-  *	    	   represent its states.
-@@ -429,38 +428,36 @@ int snd_ctl_elem_add_integer_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-  * \par Compatibility:
-  * This function is added in version 1.1.2.
-  */
--int snd_ctl_elem_add_integer64_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+int snd_ctl_elem_add_integer64_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 				   unsigned int element_count,
- 				   unsigned int member_count,
- 				   long long min, long long max, long long step)
- {
--	snd_ctl_elem_info_t info = {0};
- 	snd_ctl_elem_value_t data = {0};
- 	unsigned int i;
- 	unsigned int j;
+ static int check_event(struct elem_set_trial *trial, unsigned int mask,
+@@ -301,6 +308,7 @@ static int check_elem_set_props(struct elem_set_trial *trial)
  	unsigned int numid;
+ 	unsigned int index;
+ 	unsigned int i;
++	unsigned int j;
  	int err;
  
--	assert(ctl && id && id->name[0]);
-+	assert(ctl && info && info->id.name[0]);
+ 	snd_ctl_elem_id_alloca(&id);
+@@ -329,6 +337,11 @@ static int check_elem_set_props(struct elem_set_trial *trial)
+ 			return -EIO;
+ 		if (snd_ctl_elem_info_get_count(info) != trial->member_count)
+ 			return -EIO;
++		for (j = 0; j < 4; ++j) {
++			if (snd_ctl_elem_info_get_dimension(info, j) !=
++							trial->dimension[j])
++				return -EIO;
++		}
  
--	info.id = *id;
--	info.type = SND_CTL_ELEM_TYPE_INTEGER64;
--	info.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
--		      SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
--		      SNDRV_CTL_ELEM_ACCESS_USER;
--	info.owner = element_count;
--	info.count = member_count;
--	info.value.integer64.min = min;
--	info.value.integer64.max = max;
--	info.value.integer64.step = step;
--
--	err = ctl->ops->element_add(ctl, &info);
-+	info->type = SND_CTL_ELEM_TYPE_INTEGER64;
-+	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_USER;
-+	info->owner = element_count;
-+	info->count = member_count;
-+	info->value.integer64.min = min;
-+	info->value.integer64.max = max;
-+	info->value.integer64.step = step;
-+
-+	err = ctl->ops->element_add(ctl, info);
- 	if (err < 0)
- 		return err;
--	numid = snd_ctl_elem_id_get_numid(&info.id);
-+	numid = snd_ctl_elem_id_get_numid(&info->id);
- 
- 	/* Set initial value to all of members in all of added elements. */
--	data.id = info.id;
-+	data.id = info->id;
- 	for (i = 0; i < element_count; i++) {
- 		snd_ctl_elem_id_set_numid(&data.id, numid + i);
- 
-@@ -472,14 +469,14 @@ int snd_ctl_elem_add_integer64_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
- 			return err;
- 	}
- 
--	*id = info.id;
- 	return 0;
- }
- 
- /**
-  * \brief Create and add some user-defined control elements of boolean type.
-  * \param ctl A handle of backend module for control interface.
-- * \param id ID of the new control element.
-+ * \param info Common iformation for a new element set, with ID of the first new
-+ *	       element.
-  * \param element_count The number of elements added by this operation.
-  * \param member_count The number of members which a element has to
-  *			   represent its states.
-@@ -512,36 +509,29 @@ int snd_ctl_elem_add_integer64_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-  * \par Compatibility:
-  * This function is added in version 1.1.2.
-  */
--int snd_ctl_elem_add_boolean_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+int snd_ctl_elem_add_boolean_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 				 unsigned int element_count,
- 				 unsigned int member_count)
- {
--	snd_ctl_elem_info_t info = {0};
--	int err;
--
--	assert(ctl && id && id->name[0]);
-+	assert(ctl && info && info->id.name[0]);
- 
--	info.id = *id;
--	info.type = SND_CTL_ELEM_TYPE_BOOLEAN;
--	info.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
--		      SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
--		      SNDRV_CTL_ELEM_ACCESS_USER;
--	info.owner = element_count;
--	info.count = member_count;
--	info.value.integer.min = 0;
--	info.value.integer.max = 1;
--
--	err = ctl->ops->element_add(ctl, &info);
--	if (err >= 0)
--		*id = info.id;
-+	info->type = SND_CTL_ELEM_TYPE_BOOLEAN;
-+	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_USER;
-+	info->owner = element_count;
-+	info->count = member_count;
-+	info->value.integer.min = 0;
-+	info->value.integer.max = 1;
- 
--	return err;
-+	return ctl->ops->element_add(ctl, info);
- }
- 
- /**
-  * \brief Create and add some user-defined control elements of enumerated type.
-  * \param ctl A handle of backend module for control interface.
-- * \param id ID of the first new element.
-+ * \param info Common iformation for a new element set, with ID of the first new
-+ *	       element.
-  * \param element_count The number of elements added by this operation.
-  * \param member_count The number of members which a element has to
-  *	    	   represent its states.
-@@ -579,27 +569,25 @@ int snd_ctl_elem_add_boolean_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-  * \par Compatibility:
-  * This function is added in version 1.1.2.
-  */
--int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 				    unsigned int element_count,
- 				    unsigned int member_count,
- 				    unsigned int items,
- 				    const char *const labels[])
- {
--	snd_ctl_elem_info_t info = {0};
- 	unsigned int i, bytes;
- 	char *buf, *p;
- 	int err;
- 
--	assert(ctl && id && id->name[0] && labels);
-+	assert(ctl && info && info->id.name[0] && labels);
- 
--	info.id = *id;
--	info.type = SND_CTL_ELEM_TYPE_ENUMERATED;
--	info.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
--		      SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
--		      SNDRV_CTL_ELEM_ACCESS_USER;
--	info.owner = element_count;
--	info.count = member_count;
--	info.value.enumerated.items = items;
-+	info->type = SND_CTL_ELEM_TYPE_ENUMERATED;
-+	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_USER;
-+	info->owner = element_count;
-+	info->count = member_count;
-+	info->value.enumerated.items = items;
- 
- 	bytes = 0;
- 	for (i = 0; i < items; ++i)
-@@ -609,17 +597,15 @@ int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
- 	buf = malloc(bytes);
- 	if (buf == NULL)
- 		return -ENOMEM;
--	info.value.enumerated.names_ptr = (uintptr_t)buf;
--	info.value.enumerated.names_length = bytes;
-+	info->value.enumerated.names_ptr = (uintptr_t)buf;
-+	info->value.enumerated.names_length = bytes;
- 	p = buf;
- 	for (i = 0; i < items; ++i) {
- 		strcpy(p, labels[i]);
- 		p += strlen(labels[i]) + 1;
- 	}
- 
--	err = ctl->ops->element_add(ctl, &info);
--	if (err >= 0)
--		*id = info.id;
-+	err = ctl->ops->element_add(ctl, info);
- 
- 	free(buf);
- 
-@@ -629,7 +615,8 @@ int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
- /**
-  * \brief Create and add some user-defined control elements of bytes type.
-  * \param ctl A handle of backend module for control interface.
-- * \param id ID of the first new element.
-+ * \param info Common iformation for a new element set, with ID of the first new
-+ *	       element.
-  * \param element_count The number of elements added by this operation.
-  * \param member_count The number of members which a element has to
-  *			   represent its states.
-@@ -663,28 +650,20 @@ int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-  * \par Compatibility:
-  * This function is added in version 1.1.2.
-  */
--int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_id_t *id,
-+int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 			       unsigned int element_count,
- 			       unsigned int member_count)
- {
--	snd_ctl_elem_info_t info = {0};
--	int err;
--
--	assert(ctl && id && id->name[0]);
-+	assert(ctl && info && info->id.name[0]);
- 
--	info.id = *id;
--	info.type = SND_CTL_ELEM_TYPE_BYTES;
--	info.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
--		      SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
--		      SNDRV_CTL_ELEM_ACCESS_USER;
--	info.owner = element_count;
--	info.count = member_count;
--
--	err = ctl->ops->element_add(ctl, &info);
--	if (err >= 0)
--		*id = info.id;
-+	info->type = SND_CTL_ELEM_TYPE_BYTES;
-+	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
-+		       SNDRV_CTL_ELEM_ACCESS_USER;
-+	info->owner = element_count;
-+	info->count = member_count;
- 
--	return err;
-+	return ctl->ops->element_add(ctl, info);
- }
- 
- /**
-@@ -698,11 +677,11 @@ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 			     unsigned int member_count,
- 			     long min, long max, long step)
- {
--	snd_ctl_elem_id_t local_id = {0};
-+	snd_ctl_elem_info_t info = {0};
- 
--	local_id = *id;
-+	info.id = *id;
- 
--	return snd_ctl_elem_add_integer_set(ctl, &local_id, 1, member_count,
-+	return snd_ctl_elem_add_integer_set(ctl, &info, 1, member_count,
- 					    min, max, step);
- }
- 
-@@ -717,11 +696,11 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 			       unsigned int member_count,
- 			       long long min, long long max, long long step)
- {
--	snd_ctl_elem_id_t local_id = {0};
-+	snd_ctl_elem_info_t info = {0};
- 
--	local_id = *id;
-+	info.id = *id;
- 
--	return snd_ctl_elem_add_integer64_set(ctl, &local_id, 1, member_count,
-+	return snd_ctl_elem_add_integer64_set(ctl, &info, 1, member_count,
- 					      min, max, step);
- }
- 
-@@ -735,11 +714,11 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 			     unsigned int member_count)
- {
--	snd_ctl_elem_id_t local_id = {0};
-+	snd_ctl_elem_info_t info = {0};
- 
--	local_id = *id;
-+	info.id = *id;
- 
--	return snd_ctl_elem_add_boolean_set(ctl, &local_id, 1, member_count);
-+	return snd_ctl_elem_add_boolean_set(ctl, &info, 1, member_count);
- }
- 
- /**
-@@ -755,11 +734,11 @@ int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 				unsigned int member_count, unsigned int items,
- 				const char *const labels[])
- {
--	snd_ctl_elem_id_t local_id = {0};
-+	snd_ctl_elem_info_t info = {0};
- 
--	local_id = *id;
-+	info.id = *id;
- 
--	return snd_ctl_elem_add_enumerated_set(ctl, &local_id, 1, member_count,
-+	return snd_ctl_elem_add_enumerated_set(ctl, &info, 1, member_count,
- 					       items, labels);
- }
- 
-diff --git a/src/pcm/pcm_softvol.c b/src/pcm/pcm_softvol.c
-index 459ff8e..a667c85 100644
---- a/src/pcm/pcm_softvol.c
-+++ b/src/pcm/pcm_softvol.c
-@@ -663,18 +663,18 @@ static int add_tlv_info(snd_pcm_softvol_t *svol, snd_ctl_elem_info_t *cinfo)
- 	return snd_ctl_elem_tlv_write(svol->ctl, &cinfo->id, tlv);
- }
- 
--static int add_user_ctl(snd_pcm_softvol_t *svol, snd_ctl_elem_info_t *cinfo, int count)
-+static int add_user_ctl(snd_pcm_softvol_t *svol, snd_ctl_elem_info_t *cinfo,
-+			int count)
- {
- 	int err;
- 	int i;
- 	unsigned int def_val;
- 	
- 	if (svol->max_val == 1)
--		err = snd_ctl_elem_add_boolean_set(svol->ctl, &cinfo->id, 1,
--						   count);
-+		err = snd_ctl_elem_add_boolean_set(svol->ctl, cinfo, 1, count);
- 	else
--		err = snd_ctl_elem_add_integer_set(svol->ctl, &cinfo->id, 1,
--						   count, 0, svol->max_val, 0);
-+		err = snd_ctl_elem_add_integer_set(svol->ctl, cinfo, 1, count,
-+						   0, svol->max_val, 0);
- 	if (err < 0)
- 		return err;
- 	if (svol->max_val == 1)
+ 		/*
+ 		 * In a case of IPC, this is the others. But in this case,
+@@ -464,6 +477,10 @@ int main(void)
+ 		case SND_CTL_ELEM_TYPE_BOOLEAN:
+ 			trial.element_count = 900;
+ 			trial.member_count = 128;
++			trial.dimension[0] = 4;
++			trial.dimension[1] = 4;
++			trial.dimension[2] = 8;
++			trial.dimension[3] = 0;
+ 			trial.add_elem_set = add_bool_elem_set;
+ 			trial.check_elem_props = NULL;
+ 			trial.change_elem_members = change_bool_elem_members;
+@@ -471,6 +488,10 @@ int main(void)
+ 		case SND_CTL_ELEM_TYPE_INTEGER:
+ 			trial.element_count = 900;
+ 			trial.member_count = 128;
++			trial.dimension[0] = 128;
++			trial.dimension[1] = 0;
++			trial.dimension[2] = 0;
++			trial.dimension[3] = 0;
+ 			trial.add_elem_set = add_int_elem_set;
+ 			trial.check_elem_props = check_int_elem_props;
+ 			trial.change_elem_members = change_int_elem_members;
+@@ -478,6 +499,10 @@ int main(void)
+ 		case SND_CTL_ELEM_TYPE_ENUMERATED:
+ 			trial.element_count = 900;
+ 			trial.member_count = 128;
++			trial.dimension[0] = 16;
++			trial.dimension[1] = 8;
++			trial.dimension[2] = 0;
++			trial.dimension[3] = 0;
+ 			trial.add_elem_set = add_enum_elem_set;
+ 			trial.check_elem_props = check_enum_elem_props;
+ 			trial.change_elem_members = change_enum_elem_members;
+@@ -485,6 +510,10 @@ int main(void)
+ 		case SND_CTL_ELEM_TYPE_BYTES:
+ 			trial.element_count = 900;
+ 			trial.member_count = 512;
++			trial.dimension[0] = 8;
++			trial.dimension[1] = 4;
++			trial.dimension[2] = 8;
++			trial.dimension[3] = 4;
+ 			trial.add_elem_set = add_bytes_elem_set;
+ 			trial.check_elem_props = NULL;
+ 			trial.change_elem_members = change_bytes_elem_members;
+@@ -492,6 +521,10 @@ int main(void)
+ 		case SND_CTL_ELEM_TYPE_IEC958:
+ 			trial.element_count = 1;
+ 			trial.member_count = 1;
++			trial.dimension[0] = 0;
++			trial.dimension[1] = 0;
++			trial.dimension[2] = 0;
++			trial.dimension[3] = 0;
+ 			trial.add_elem_set = add_iec958_elem_set;
+ 			trial.check_elem_props = NULL;
+ 			trial.change_elem_members = change_iec958_elem_members;
+@@ -500,6 +533,10 @@ int main(void)
+ 		default:
+ 			trial.element_count = 900;
+ 			trial.member_count = 64;
++			trial.dimension[0] = 0;
++			trial.dimension[1] = 0;
++			trial.dimension[2] = 0;
++			trial.dimension[3] = 0;
+ 			trial.add_elem_set = add_int64_elem_set;
+ 			trial.check_elem_props = check_int64_elem_props;
+ 			trial.change_elem_members = change_int64_elem_members;
 -- 
 2.7.4
