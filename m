@@ -1,78 +1,63 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: DPCM: skip DAPM_STREAM_STOP event to BE,
- if still used by other FE
-Date: Wed, 29 Jun 2016 20:08:16 +0100
-Message-ID: <20160629190816.GS6247@sirena.org.uk>
-References: <1465109939.29781.2.camel@mtkswgap22>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 2/6] ASoC: samsung: Add Samsung Low Power Audio
+ Subsystem driver
+Date: Wed, 29 Jun 2016 22:57:57 +0100
+Message-ID: <20160629215757.GX6247@sirena.org.uk>
+References: <1466678715-19962-1-git-send-email-s.nawrocki@samsung.com>
+ <1466678715-19962-3-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2595212733881556902=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 33A482652C2
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2016 14:15:59 +0200 (CEST)
-In-Reply-To: <1465109939.29781.2.camel@mtkswgap22>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, chipeng.chang@mediatek.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="D+UG5SQJKkIYNVx0"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1466678715-19962-3-git-send-email-s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Cc: robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, Beomho Seo <beomho.seo-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2595212733881556902==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="kVhvBuyIzNBvw9vr"
-Content-Disposition: inline
-
-
---kVhvBuyIzNBvw9vr
+--D+UG5SQJKkIYNVx0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jun 05, 2016 at 02:58:59PM +0800, Kai Chieh Chuang wrote:
+On Thu, Jun 23, 2016 at 12:45:11PM +0200, Sylwester Nawrocki wrote:
+> From: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+>=20
+> This patch adds LPASS driver. The LPASS (Low Power Audio Subsystem)
+> is a special subsystem that supports audio playback with low power
+> consumption. This is a minimal driver which prepares resources for
+> IP blocks like I2S, audio DMA and UART.
+> Also system power ops are added to ensure the Audio Subsystem is
+> operational after system suspend/resume cycle.
 
-> The BE receiving SND_SOC_DAPM_STREAM_STOP event, while still used by a
-> FE who is in STREAM_START state. The DAPM will just inactive BE related
-> widget/dai without checking. This just doesn't seems right.
+This is so trivial that I'm wondering why you even need it, it does
+essentially nothing except for manage power on and off, and that isn't
+synced up with the rest of the audio subsystem in any discernable way.
+Previous Samsung SoCs have quite happily ignored their LPASS subsystems
+in mainline.  As things stand I'm concerned that systems may get broken
+if more functionality is added without the joining up with the rest of
+the audio hardware via a card, there's not even the hooks which would
+allow that.
 
-Why not?  The backend is still active and running, why would it expect
-to be stopped unless it's supposed to actually stop?
-
-> Actually, i trace the log, when one of the FE sent stop event to "still
-> in use BE", the BE power state will not be changed. Until the system
-
-Sure, until all the users stop using it it should stay running.  What
-would you expect it to do?
-
---kVhvBuyIzNBvw9vr
+--D+UG5SQJKkIYNVx0
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXdByfAAoJECTWi3JdVIfQC78IAIY2GlB8ibplEkDPU/EbgtbR
-1kZ81GG6cvIbA8kycyZzvbEcXI9AifJXNqB61jOGdG2voxmNUmcs9KfHIqsWP3W1
-HDQ9n0lB3TXAtqQ6xvP1885PD14Ni8HCsT//IxGT969Epmo6U6qOeleIwC1VR0rZ
-UUVCNT2wbRXqrB/pSuEPifr/nXNXgGYg9Mo/TG8AhTzQD/Vd8PKI/ubr9XxmcxrC
-yM4F9mZI3EY5Ay23lYEw+oNDqYL5wQOvOCmWNvV2L8pYqZ+sZ1ojslxyvvfEzQ1j
-OJfTvZLX1nSiAZYpEYyti1ITMJ8GoES1N3tcRASWZxUMPFkiRsFiYhudYHzIv10=
-=uiUL
+iQEcBAEBCAAGBQJXdERhAAoJECTWi3JdVIfQfWsH/29+iYUNoubXsom5XgKcZ8bj
+DSNjjNBHgRtC2hiK2wRJ44vs6TVWOrStxZW8qsMvQ3w6/Rk1v2v6orGqKF5Bgu8e
+rHR64iBpaL1/UNhf0WLwyYxwJxYP6u5AYthjwDYUQWjNrBzI5jbq7Ev6cgWNhhRL
+OyfKzFQKEk7U7iER/W+f1TVczEs8K2IYIlmN0SzFRJtVFo8eCeDDE+rWwKOThLZq
+/BW9jelT++qzWolXR4q/XAxMxTmiP8YgrKwSm8Hn3NAMBxyKrvMgrZN+QL7K9JWV
+zyMrsZ1FCsnQBSrIRsSmZj8U6HeF/1emcA0g01hXljQCC5vU/kyr84V2AAMaqiY=
+=AdRV
 -----END PGP SIGNATURE-----
 
---kVhvBuyIzNBvw9vr--
-
---===============2595212733881556902==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2595212733881556902==--
+--D+UG5SQJKkIYNVx0--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
