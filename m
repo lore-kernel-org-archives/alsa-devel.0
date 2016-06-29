@@ -1,17 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/5] ctl: optimize a test for user-defined
-	element set to changes of APIs
-Date: Wed, 29 Jun 2016 22:43:02 +0900
-Message-ID: <1467207783-19792-5-git-send-email-o-takashi@sakamocchi.jp>
-References: <1467207783-19792-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Baptiste Jonglez <baptiste@bitsofnetworks.org>
+Subject: Re: Assertion failure in alsa-lib crashing
+ applications (snd_pcm_area_copy: Assertion `dst < src || dst >= src +
+ bytes' failed)
+Date: Wed, 29 Jun 2016 15:59:59 +0200
+Message-ID: <20160629135959.GA2159@lud.polynome.dn42>
+References: <20160607172935.GC25444@lud.polynome.dn42>
+ <20160614210221.GB5107@lud.polynome.dn42>
+ <20160614223939.GB3039@lud.polynome.dn42>
+ <20160626182832.GA29321@lud.polynome.dn42>
+ <s5hfurwdsh2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2956482306171549995=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 2150C266D8D
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 15:43:08 +0200 (CEST)
-In-Reply-To: <1467207783-19792-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mails.bitsofnetworks.org (rezine.polyno.me [193.33.56.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id 66B57266EC8
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 16:00:03 +0200 (CEST)
+In-Reply-To: <s5hfurwdsh2.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,145 +25,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In former commits, APIs to add an element set are changed, while a test
-program for user-defined element set doesn't follow them.
 
-This commit add support the change.
+--===============2956482306171549995==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
+Content-Disposition: inline
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- test/user-ctl-element-set.c | 54 +++++++++++++++++++++++++++++++--------------
- 1 file changed, 37 insertions(+), 17 deletions(-)
 
-diff --git a/test/user-ctl-element-set.c b/test/user-ctl-element-set.c
-index bfb11d7..51e850c 100644
---- a/test/user-ctl-element-set.c
-+++ b/test/user-ctl-element-set.c
-@@ -18,7 +18,8 @@ struct elem_set_trial {
- 
- 	snd_ctl_elem_id_t *id;
- 
--	int (*add_elem_set)(struct elem_set_trial *trial);
-+	int (*add_elem_set)(struct elem_set_trial *trial,
-+			    snd_ctl_elem_info_t *info);
- 	int (*check_elem_props)(struct elem_set_trial *trial,
- 				snd_ctl_elem_info_t *info);
- 	void (*change_elem_members)(struct elem_set_trial *trial,
-@@ -26,9 +27,10 @@ struct elem_set_trial {
- };
- 
- /* Operations for elements in an element set with boolean type. */
--static int add_bool_elem_set(struct elem_set_trial *trial)
-+static int add_bool_elem_set(struct elem_set_trial *trial,
-+			     snd_ctl_elem_info_t *info)
- {
--	return snd_ctl_elem_add_boolean_set(trial->handle, trial->id,
-+	return snd_ctl_elem_add_boolean_set(trial->handle, info,
- 				trial->element_count, trial->member_count);
- }
- 
-@@ -45,9 +47,10 @@ static void change_bool_elem_members(struct elem_set_trial *trial,
- }
- 
- /* Operations for elements in an element set with integer type. */
--static int add_int_elem_set(struct elem_set_trial *trial)
-+static int add_int_elem_set(struct elem_set_trial *trial,
-+			    snd_ctl_elem_info_t *info)
- {
--	return snd_ctl_elem_add_integer_set(trial->handle, trial->id,
-+	return snd_ctl_elem_add_integer_set(trial->handle, info,
- 				trial->element_count, trial->member_count,
- 				0, 99, 1);
- }
-@@ -86,9 +89,10 @@ static const char *const labels[] = {
- 	"xenial",
- };
- 
--static int add_enum_elem_set(struct elem_set_trial *trial)
-+static int add_enum_elem_set(struct elem_set_trial *trial,
-+			     snd_ctl_elem_info_t *info)
- {
--	return snd_ctl_elem_add_enumerated_set(trial->handle, trial->id,
-+	return snd_ctl_elem_add_enumerated_set(trial->handle, info,
- 				trial->element_count, trial->member_count,
- 				sizeof(labels) / sizeof(labels[0]),
- 				labels);
-@@ -134,9 +138,10 @@ static void change_enum_elem_members(struct elem_set_trial *trial,
- }
- 
- /* Operations for elements in an element set with bytes type. */
--static int add_bytes_elem_set(struct elem_set_trial *trial)
-+static int add_bytes_elem_set(struct elem_set_trial *trial,
-+			      snd_ctl_elem_info_t *info)
- {
--	return snd_ctl_elem_add_bytes_set(trial->handle, trial->id,
-+	return snd_ctl_elem_add_bytes_set(trial->handle, info,
- 				trial->element_count, trial->member_count);
- }
- 
-@@ -153,9 +158,22 @@ static void change_bytes_elem_members(struct elem_set_trial *trial,
- }
- 
- /* Operations for elements in an element set with iec958 type. */
--static int add_iec958_elem_set(struct elem_set_trial *trial)
-+static int add_iec958_elem_set(struct elem_set_trial *trial,
-+			       snd_ctl_elem_info_t *info)
- {
--	return snd_ctl_elem_add_iec958(trial->handle, trial->id);
-+	int err;
-+
-+	snd_ctl_elem_info_get_id(info, trial->id);
-+
-+	err = snd_ctl_elem_add_iec958(trial->handle, trial->id);
-+	if (err < 0)
-+	        return err;
-+
-+	/*
-+	 * In historical reason, the above API is not allowed to fill all of
-+	 * fields in identification data.
-+	 */
-+	return snd_ctl_elem_info(trial->handle, info);
- }
- 
- static void change_iec958_elem_members(struct elem_set_trial *trial,
-@@ -173,9 +191,10 @@ static void change_iec958_elem_members(struct elem_set_trial *trial,
- }
- 
- /* Operations for elements in an element set with integer64 type. */
--static int add_int64_elem_set(struct elem_set_trial *trial)
-+static int add_int64_elem_set(struct elem_set_trial *trial,
-+			      snd_ctl_elem_info_t *info)
- {
--	return snd_ctl_elem_add_integer64_set(trial->handle, trial->id,
-+	return snd_ctl_elem_add_integer64_set(trial->handle, info,
- 				trial->element_count, trial->member_count,
- 				100, 10000, 30);
- }
-@@ -208,16 +227,17 @@ static void change_int64_elem_members(struct elem_set_trial *trial,
- /* Common operations. */
- static int add_elem_set(struct elem_set_trial *trial)
- {
-+	snd_ctl_elem_info_t *info;
- 	char name[64] = {0};
- 
- 	snprintf(name, 64, "userspace-control-element-%s",
- 		 snd_ctl_elem_type_name(trial->type));
- 
--	memset(trial->id, 0, snd_ctl_elem_id_sizeof());
--	snd_ctl_elem_id_set_interface(trial->id, SND_CTL_ELEM_IFACE_MIXER);
--	snd_ctl_elem_id_set_name(trial->id, name);
-+	snd_ctl_elem_info_alloca(&info);
-+	snd_ctl_elem_info_set_interface(info, SND_CTL_ELEM_IFACE_MIXER);
-+	snd_ctl_elem_info_set_name(info, name);
- 
--	return trial->add_elem_set(trial);
-+	return trial->add_elem_set(trial, info);
- }
- 
- static int check_event(struct elem_set_trial *trial, unsigned int mask,
--- 
-2.7.4
+--tThc/1wpZn/ma/RB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Takashi,
+
+On Wed, Jun 29, 2016 at 03:39:37PM +0200, Takashi Iwai wrote:
+> > Do you think the problem is likely to come from an incorrect API usage
+> > from the application?  Knowing this would significantly narrow down the
+> > search, because the problem could also come from within alsa itself.
+> >=20
+> > The callling code from the application is quite complex, see here:
+> >=20
+> >   https://github.com/savoirfairelinux/ring-daemon/blob/master/src/media=
+/audio/alsa/alsalayer.cpp
+> >=20
+> > In particular, the assertion is triggered by the call to
+> > snd_pcm_avail_update() at line 694 (see the stack trace below).
+>=20
+> I have too little time to investigate on this issue, but judging from
+> the fact that there has been no such a report until now, I guess it's
+> specific to your code.  But I can't say sure, of course.
+
+Well, I did find other projects having this issue:
+
+https://aur.archlinux.org/packages/zoom/#comment-544696
+http://ubuntuforums.org/showthread.php?t=3D2248373
+https://github.com/js-platform/node-webrtc/issues/110
+https://fedorahosted.org/fldigi/ticket/70
+
+Although in most of these cases, the issue seems 100% reproducible
+(e.g. crash at startup).  In our case, the assertion failure only happens
+when there is significant CPU load.
+
+> Is the relevant code path accessed concurrently?  The possible race is
+> the first suspect I'd always think of in such a case.
+
+Good idea, I will check.  Given it happens when the CPU is loaded, my
+guess is that "something" is done too late, which means that it works on
+"invalidated" data (this is all very vague, sorry).
+
+Would you know a simple program using alsa-lib for sound capture, with
+which I could try to reproduce?
+
+Baptiste
+
+--tThc/1wpZn/ma/RB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJXc9RZAAoJEL4B7CKgTi5GXNwP/2Jy1nDoMZzX4Nyq5njSgqLe
+aUjN386piUDAMSeiIb7i6D0zEUry5I614Cc7RhYl+nJO1Toa2CrflZrUpZkJga3Q
+jYScrYm07xXgBIdzdd0unN7BzL7t9MX2jqvyId8RCnZSaqzOE0j5OXaaWTS5lHk6
+3OhMhS4CIfMo76cKugG9m3/5ywBKUw94vbn4wkRo72mWT/Uk8YDIvQTZtflAtvjV
+NZa6+g0bFDfX5pTOeOtJmlNGIW1n2f0cUgYMctn/jlR215lhEIA9q5Hh5HWucnES
+hcFnR5yHxV+hDv7gYSMTsNfwKZmcGgByHdLSpKnm9s4KSoiGahcYzeH1m79oA2Wu
+6u7MPoCJ8JtiEferASCPjzFDP6MhY9wY+cGFhsypC95Q2QA2z7DNosWArBQvoQwL
+oceniGqslucNZfPW+hwf+2s16HCjAV5/uHav9ZyTq1FIKbVUIVTU3Ne1V0paZ154
+WPLfpdZAVNcO/62cDy66GwhYAgczWWP9TpeYvVwUSLguAUOsUseHyS4NkDNnaooh
+C1cTZRRRkV6Dbgpdic7exwE31iU6VlgHhf//RtlHS54FTi0zuPe74eqRdFEHXVmr
+QgKP2uPUykNLCZhU9SGaFPm8HXctlwlF7A2g8i11H5YDcdZvNhNGL852YqYTDB0+
+D/FC+ELB3oQNKKgu+qVS
+=ThJc
+-----END PGP SIGNATURE-----
+
+--tThc/1wpZn/ma/RB--
+
+--===============2956482306171549995==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2956482306171549995==--
