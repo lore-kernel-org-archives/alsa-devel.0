@@ -1,76 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: DPCM: skip DAPM_STREAM_STOP event to BE,
- if still used by other FE
-Date: Wed, 29 Jun 2016 20:04:34 +0100
-Message-ID: <20160629190434.GA25669@sirena.org.uk>
-References: <1465109939.29781.2.camel@mtkswgap22>
- <1466749294.16718.1.camel@mtkswgap22>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH] drm: mediatek: fix prototypes after API change
+Date: Thu, 30 Jun 2016 07:36:44 +1000
+Message-ID: <20160630073644.0623b607@canb.auug.org.au>
+References: <20160629145129.315931-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4681159506602088146=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A14BD2654E0
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 21:04:45 +0200 (CEST)
-In-Reply-To: <1466749294.16718.1.camel@mtkswgap22>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Cc: alsa-devel@alsa-project.org, kaichiehc0412@gmail.com, lgirdwood@gmail.com, chipeng.chang@mediatek.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20160629145129.315931-1-arnd@arndb.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Junzhi Zhao <junzhi.zhao@mediatek.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Jie Qiu <jie.qiu@mediatek.com>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4681159506602088146==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="y0ulUmNC+osPPQO6"
-Content-Disposition: inline
-
-
---y0ulUmNC+osPPQO6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jun 24, 2016 at 02:21:34PM +0800, KaiChieh Chuang wrote:
-
-> Is there any comment on this?
-
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  Sending content
-free pings just adds to the mail volume (if they are seen at all) and if=20
-something has gone wrong you'll have to resend the patches anyway.
-
---y0ulUmNC+osPPQO6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXdBvBAAoJECTWi3JdVIfQgbcH+wV2AqVykfkrT0WZgB5t2dbf
-g7WFRHaAONh6i3hxaO6e1ou0MlSiOjsAaIvCm4fy7cuiJwTMwzsEe58qV0jykeCz
-h1qvYIORqftLSE0LvbImv/UGEunkicE242epxiAJrysezPvwfzzdMQE9ikvRUuif
-W9daA0+zFCyuhPyddHm7F0/uvoR3kYn3kcL+Y+LeiMTtCwTKRxOB1U/jlqtWoBlN
-Ge4L4G0ak6QH+uWgl6tXTVkmcmdJJm6GX9v+yNrFlWOK0qiKuS/eQeBNHxfCvj6e
-yvTn9Fywcv/AUXeOtVAaTz8LbigAcI3uthwGZUuMZ3iGF3Re3jXQBxZ09rwKEcw=
-=1bUb
------END PGP SIGNATURE-----
-
---y0ulUmNC+osPPQO6--
-
---===============4681159506602088146==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4681159506602088146==--
+SGkgQXJuZCwKCk9uIFdlZCwgMjkgSnVuIDIwMTYgMTY6NTE6MjkgKzAyMDAgQXJuZCBCZXJnbWFu
+biA8YXJuZEBhcm5kYi5kZT4gd3JvdGU6Cj4KPiBUaGUgbmV3bHkgYWRkZWQgbWVkaWF0ZWsgSERN
+SSBkcml2ZXIgY2xhc2hlcyB3aXRoIGFuIEFQSSBjaGFuZ2UKPiBmb3Igc3RydWN0IGhkbWlfY29k
+ZWNfb3BzLCBjYXVzaW5nIGFuICdhbGxtb2Rjb25maWcnIGJ1aWxkIHRvIGZhaWw6Cj4gCj4gZHJp
+dmVycy9ncHUvZHJtL21lZGlhdGVrL210a19oZG1pLmM6MTY1MzoxNTogZXJyb3I6IGluaXRpYWxp
+emF0aW9uIGZyb20gaW5jb21wYXRpYmxlIHBvaW50ZXIgdHlwZSBbLVdlcnJvcj1pbmNvbXBhdGli
+bGUtcG9pbnRlci10eXBlc10KPiBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2hkbWkuYzox
+NjU0OjE5OiBlcnJvcjogaW5pdGlhbGl6YXRpb24gZnJvbSBpbmNvbXBhdGlibGUgcG9pbnRlciB0
+eXBlIFstV2Vycm9yPWluY29tcGF0aWJsZS1wb2ludGVyLXR5cGVzXQo+IGRyaXZlcnMvZ3B1L2Ry
+bS9tZWRpYXRlay9tdGtfaGRtaS5jOjE2NTU6MjA6IGVycm9yOiBpbml0aWFsaXphdGlvbiBmcm9t
+IGluY29tcGF0aWJsZSBwb2ludGVyIHR5cGUgWy1XZXJyb3I9aW5jb21wYXRpYmxlLXBvaW50ZXIt
+dHlwZXNdCj4gZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19oZG1pLmM6MTY1NjoxODogZXJy
+b3I6IGluaXRpYWxpemF0aW9uIGZyb20gaW5jb21wYXRpYmxlIHBvaW50ZXIgdHlwZSBbLVdlcnJv
+cj1pbmNvbXBhdGlibGUtcG9pbnRlci10eXBlc10KPiBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsv
+bXRrX2hkbWkuYzoxNjU3OjEzOiBlcnJvcjogaW5pdGlhbGl6YXRpb24gZnJvbSBpbmNvbXBhdGli
+bGUgcG9pbnRlciB0eXBlIFstV2Vycm9yPWluY29tcGF0aWJsZS1wb2ludGVyLXR5cGVzXQo+IAo+
+IFRoaXMgY2hhbmdlcyB0aGUgQVBJIGFjY29yZGluZ2x5IGZvciB0aGUgbWVkaWF0ZWsgZHJpdmVy
+Lgo+IAo+IFNpZ25lZC1vZmYtYnk6IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+Cj4gRml4
+ZXM6IDhmODNmMjY4OTFlMSAoImRybS9tZWRpYXRlazogQWRkIEhETUkgc3VwcG9ydCIpCj4gRml4
+ZXM6IGVmYzkxOTRiY2ZmOCAoIkFTb0M6IGhkbWktY29kZWM6IGNhbGxiYWNrIGZ1bmN0aW9uIHdp
+bGwgYmUgY2FsbGVkIHdpdGggcHJpdmF0ZSBkYXRhIikKPiAtLS0KPiBUaGUgbmV3IGRyaXZlciBp
+cyBjdXJyZW50bHkgcGFydCBvZiBEYXZlIEFpcmxpZSdzIGRybS1uZXh0IHRyZWUsCj4gd2hpbGUg
+dGhlIEFQSSBjaGFuZ2UgaXMgaW4gTWFyayBCcm93bidzIGFzb2MtbmV4dCB0cmVlLCBzbyBteQo+
+IGZpeCBoYXMgdG8gYmUgZG9uZSBvbiB0b3Agb2YgYm90aC4KClRoYW5rcyBmb3Igc29ydGluZyB0
+aGlzIG91dC4KCj4gSSBjYW4gc2VlIHR3byB3YXlzIG91dCBvZiB0aGlzOgo+IAo+IGEpIFN0ZXBo
+ZW4gUm90aHdlbGwgY291bGQgYWRkIG15IGZpeHVwIG9uIHRvcCBvZiBsaW51eC1uZXh0Cj4gICAg
+YXMgYSBtZXJnZSBmaXgsIGFuZCB0aGUgZml4IGdldHMgc2VudCB0byBMaW51cyBUb3J2YWxkcyBh
+bG9uZwo+ICAgIHdpdGggdGhlIHNlY29uZCBvZiB0aGUgdHdvIGJyYW5jaGVzCgpJJ2xsIGRvIHRo
+aXMgdG9kYXksIHVubGVzcyBzb21lb25lIGRvZXMgdGhlIG90aGVyLgoKLS0gCkNoZWVycywKU3Rl
+cGhlbiBSb3Rod2VsbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5v
+cmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2
+ZWwK
