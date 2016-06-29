@@ -1,34 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sunxi: Add Allwinner A10 Digital Audio
-	driver" to the asoc tree
-Date: Thu, 30 Jun 2016 13:15:21 +0100
-Message-ID: <E1bIasL-00011H-F4@finisterre>
-References: <20160615211123.31068-3-maxime.ripard@free-electrons.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: mediatek: implement mediatek common structure" to the
+ asoc tree
+Date: Wed, 29 Jun 2016 20:16:36 +0100
+Message-ID: <E1bIKyS-0007E7-4H@finisterre>
+References: <1465802806-19197-3-git-send-email-garlic.tseng@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B21EE265205
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2016 14:15:47 +0200 (CEST)
-In-Reply-To: <20160615211123.31068-3-maxime.ripard@free-electrons.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, gianfranco@moddevices.com, Andrea Venturi <ennesimamail.av@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Code Kipper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1465802806-19197-3-git-send-email-garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ir.lian-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, PC.Liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sunxi: Add Allwinner A10 Digital Audio driver
+   ASoC: mediatek: implement mediatek common structure
 
 has been applied to the asoc tree at
 
@@ -53,763 +48,699 @@ to this mail.
 Thanks,
 Mark
 
->From fa7c0d13cb26216f6dec5ef19e028e68b300530d Mon Sep 17 00:00:00 2001
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Date: Wed, 15 Jun 2016 23:11:21 +0200
-Subject: [PATCH] ASoC: sunxi: Add Allwinner A10 Digital Audio driver
+>From 283b612429a279b4c8f5a90f38d26c80bf8ec628 Mon Sep 17 00:00:00 2001
+From: Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Date: Fri, 17 Jun 2016 15:43:53 +0800
+Subject: [PATCH] ASoC: mediatek: implement mediatek common structure
 
-The Allwinner A10 and later come with a hardware block that used for the
-PCM and I2S interfaces.
+implement mediatek basic structure, include common private data,
+afe fe dai operator and afe platform driver.
 
-Add a driver for it in ASoC.
-
-Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
-Tested-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/sunxi/Kconfig     |   9 +
- sound/soc/sunxi/Makefile    |   2 +-
- sound/soc/sunxi/sun4i-i2s.c | 703 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 713 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/sunxi/sun4i-i2s.c
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c         | 379 +++++++++++++++++++++
+ sound/soc/mediatek/common/mtk-afe-fe-dai.h         |  45 +++
+ .../soc/mediatek/common/mtk-afe-platform-driver.c  |  90 +++++
+ .../soc/mediatek/common/mtk-afe-platform-driver.h  |  23 ++
+ sound/soc/mediatek/common/mtk-base-afe.h           | 104 ++++++
+ 5 files changed, 641 insertions(+)
+ create mode 100644 sound/soc/mediatek/common/mtk-afe-fe-dai.c
+ create mode 100644 sound/soc/mediatek/common/mtk-afe-fe-dai.h
+ create mode 100644 sound/soc/mediatek/common/mtk-afe-platform-driver.c
+ create mode 100644 sound/soc/mediatek/common/mtk-afe-platform-driver.h
+ create mode 100644 sound/soc/mediatek/common/mtk-base-afe.h
 
-diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-index ae42294ef688..2a954bd01fd8 100644
---- a/sound/soc/sunxi/Kconfig
-+++ b/sound/soc/sunxi/Kconfig
-@@ -8,6 +8,15 @@ config SND_SUN4I_CODEC
- 	  Select Y or M to add support for the Codec embedded in the Allwinner
- 	  A10 and affiliated SoCs.
- 
-+config SND_SUN4I_I2S
-+	tristate "Allwinner A10 I2S Support"
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	select REGMAP_MMIO
-+	help
-+	  Say Y or M if you want to add support for codecs attached to
-+	  the Allwinner A10 I2S. You will also need to select the
-+	  individual machine drivers to support below.
-+
- config SND_SUN4I_SPDIF
- 	tristate "Allwinner A10 SPDIF Support"
- 	depends on OF
-diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
-index 8f5e889667f1..604c7b842837 100644
---- a/sound/soc/sunxi/Makefile
-+++ b/sound/soc/sunxi/Makefile
-@@ -1,3 +1,3 @@
- obj-$(CONFIG_SND_SUN4I_CODEC) += sun4i-codec.o
--
-+obj-$(CONFIG_SND_SUN4I_I2S) += sun4i-i2s.o
- obj-$(CONFIG_SND_SUN4I_SPDIF) += sun4i-spdif.o
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
 new file mode 100644
-index 000000000000..72ed2b8a93e7
+index 000000000000..b788791b0a35
 --- /dev/null
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -0,0 +1,703 @@
++++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
+@@ -0,0 +1,379 @@
 +/*
-+ * Copyright (C) 2015 Andrea Venturi
-+ * Andrea Venturi <be17068@iperbole.bo.it>
++ * mtk-afe-fe-dais.c  --  Mediatek afe fe dai operator
 + *
-+ * Copyright (C) 2016 Maxime Ripard
-+ * Maxime Ripard <maxime.ripard@free-electrons.com>
++ * Copyright (c) 2016 MediaTek Inc.
++ * Author: Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 + *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
 + */
 +
-+#include <linux/clk.h>
-+#include <linux/dmaengine.h>
 +#include <linux/module.h>
-+#include <linux/platform_device.h>
 +#include <linux/pm_runtime.h>
 +#include <linux/regmap.h>
-+
-+#include <sound/dmaengine_pcm.h>
-+#include <sound/pcm_params.h>
 +#include <sound/soc.h>
-+#include <sound/soc-dai.h>
++#include "mtk-afe-fe-dai.h"
++#include "mtk-base-afe.h"
 +
-+#define SUN4I_I2S_CTRL_REG		0x00
-+#define SUN4I_I2S_CTRL_SDO_EN_MASK		GENMASK(11, 8)
-+#define SUN4I_I2S_CTRL_SDO_EN(sdo)			BIT(8 + (sdo))
-+#define SUN4I_I2S_CTRL_MODE_MASK		BIT(5)
-+#define SUN4I_I2S_CTRL_MODE_SLAVE			(1 << 5)
-+#define SUN4I_I2S_CTRL_MODE_MASTER			(0 << 5)
-+#define SUN4I_I2S_CTRL_TX_EN			BIT(2)
-+#define SUN4I_I2S_CTRL_RX_EN			BIT(1)
-+#define SUN4I_I2S_CTRL_GL_EN			BIT(0)
++#define AFE_BASE_END_OFFSET 8
 +
-+#define SUN4I_I2S_FMT0_REG		0x04
-+#define SUN4I_I2S_FMT0_LRCLK_POLARITY_MASK	BIT(7)
-+#define SUN4I_I2S_FMT0_LRCLK_POLARITY_INVERTED		(1 << 7)
-+#define SUN4I_I2S_FMT0_LRCLK_POLARITY_NORMAL		(0 << 7)
-+#define SUN4I_I2S_FMT0_BCLK_POLARITY_MASK	BIT(6)
-+#define SUN4I_I2S_FMT0_BCLK_POLARITY_INVERTED		(1 << 6)
-+#define SUN4I_I2S_FMT0_BCLK_POLARITY_NORMAL		(0 << 6)
-+#define SUN4I_I2S_FMT0_SR_MASK			GENMASK(5, 4)
-+#define SUN4I_I2S_FMT0_SR(sr)				((sr) << 4)
-+#define SUN4I_I2S_FMT0_WSS_MASK			GENMASK(3, 2)
-+#define SUN4I_I2S_FMT0_WSS(wss)				((wss) << 2)
-+#define SUN4I_I2S_FMT0_FMT_MASK			GENMASK(1, 0)
-+#define SUN4I_I2S_FMT0_FMT_RIGHT_J			(2 << 0)
-+#define SUN4I_I2S_FMT0_FMT_LEFT_J			(1 << 0)
-+#define SUN4I_I2S_FMT0_FMT_I2S				(0 << 0)
-+
-+#define SUN4I_I2S_FMT1_REG		0x08
-+#define SUN4I_I2S_FIFO_TX_REG		0x0c
-+#define SUN4I_I2S_FIFO_RX_REG		0x10
-+
-+#define SUN4I_I2S_FIFO_CTRL_REG		0x14
-+#define SUN4I_I2S_FIFO_CTRL_FLUSH_TX		BIT(25)
-+#define SUN4I_I2S_FIFO_CTRL_FLUSH_RX		BIT(24)
-+#define SUN4I_I2S_FIFO_CTRL_TX_MODE_MASK	BIT(2)
-+#define SUN4I_I2S_FIFO_CTRL_TX_MODE(mode)		((mode) << 2)
-+#define SUN4I_I2S_FIFO_CTRL_RX_MODE_MASK	GENMASK(1, 0)
-+#define SUN4I_I2S_FIFO_CTRL_RX_MODE(mode)		(mode)
-+
-+#define SUN4I_I2S_FIFO_STA_REG		0x18
-+
-+#define SUN4I_I2S_DMA_INT_CTRL_REG	0x1c
-+#define SUN4I_I2S_DMA_INT_CTRL_TX_DRQ_EN	BIT(7)
-+#define SUN4I_I2S_DMA_INT_CTRL_RX_DRQ_EN	BIT(3)
-+
-+#define SUN4I_I2S_INT_STA_REG		0x20
-+
-+#define SUN4I_I2S_CLK_DIV_REG		0x24
-+#define SUN4I_I2S_CLK_DIV_MCLK_EN		BIT(7)
-+#define SUN4I_I2S_CLK_DIV_BCLK_MASK		GENMASK(6, 4)
-+#define SUN4I_I2S_CLK_DIV_BCLK(bclk)			((bclk) << 4)
-+#define SUN4I_I2S_CLK_DIV_MCLK_MASK		GENMASK(3, 0)
-+#define SUN4I_I2S_CLK_DIV_MCLK(mclk)			((mclk) << 0)
-+
-+#define SUN4I_I2S_RX_CNT_REG		0x28
-+#define SUN4I_I2S_TX_CNT_REG		0x2c
-+
-+#define SUN4I_I2S_TX_CHAN_SEL_REG	0x30
-+#define SUN4I_I2S_TX_CHAN_SEL(num_chan)		(((num_chan) - 1) << 0)
-+
-+#define SUN4I_I2S_TX_CHAN_MAP_REG	0x34
-+#define SUN4I_I2S_TX_CHAN_MAP(chan, sample)	((sample) << (chan << 2))
-+
-+#define SUN4I_I2S_RX_CHAN_SEL_REG	0x38
-+#define SUN4I_I2S_RX_CHAN_MAP_REG	0x3c
-+
-+struct sun4i_i2s {
-+	struct clk	*bus_clk;
-+	struct clk	*mod_clk;
-+	struct regmap	*regmap;
-+
-+	struct snd_dmaengine_dai_dma_data	playback_dma_data;
-+};
-+
-+struct sun4i_i2s_clk_div {
-+	u8	div;
-+	u8	val;
-+};
-+
-+static const struct sun4i_i2s_clk_div sun4i_i2s_bclk_div[] = {
-+	{ .div = 2, .val = 0 },
-+	{ .div = 4, .val = 1 },
-+	{ .div = 6, .val = 2 },
-+	{ .div = 8, .val = 3 },
-+	{ .div = 12, .val = 4 },
-+	{ .div = 16, .val = 5 },
-+};
-+
-+static const struct sun4i_i2s_clk_div sun4i_i2s_mclk_div[] = {
-+	{ .div = 1, .val = 0 },
-+	{ .div = 2, .val = 1 },
-+	{ .div = 4, .val = 2 },
-+	{ .div = 6, .val = 3 },
-+	{ .div = 8, .val = 4 },
-+	{ .div = 12, .val = 5 },
-+	{ .div = 16, .val = 6 },
-+	{ .div = 24, .val = 7 },
-+};
-+
-+static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
-+				  unsigned int oversample_rate,
-+				  unsigned int word_size)
++int mtk_regmap_update_bits(struct regmap *map, int reg, unsigned int mask,
++			   unsigned int val)
 +{
-+	int div = oversample_rate / word_size / 2;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(sun4i_i2s_bclk_div); i++) {
-+		const struct sun4i_i2s_clk_div *bdiv = &sun4i_i2s_bclk_div[i];
-+
-+		if (bdiv->div == div)
-+			return bdiv->val;
-+	}
-+
-+	return -EINVAL;
++	if (reg < 0)
++		return 0;
++	return regmap_update_bits(map, reg, mask, val);
 +}
 +
-+static int sun4i_i2s_get_mclk_div(struct sun4i_i2s *i2s,
-+				  unsigned int oversample_rate,
-+				  unsigned int module_rate,
-+				  unsigned int sampling_rate)
++int mtk_regmap_write(struct regmap *map, int reg, unsigned int val)
 +{
-+	int div = module_rate / sampling_rate / oversample_rate;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(sun4i_i2s_mclk_div); i++) {
-+		const struct sun4i_i2s_clk_div *mdiv = &sun4i_i2s_mclk_div[i];
-+
-+		if (mdiv->div == div)
-+			return mdiv->val;
-+	}
-+
-+	return -EINVAL;
++	if (reg < 0)
++		return 0;
++	return regmap_write(map, reg, val);
 +}
 +
-+static int sun4i_i2s_oversample_rates[] = { 128, 192, 256, 384, 512, 768 };
-+
-+static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
-+				  unsigned int rate,
-+				  unsigned int word_size)
++int mtk_afe_fe_startup(struct snd_pcm_substream *substream,
++		       struct snd_soc_dai *dai)
 +{
-+	unsigned int clk_rate;
-+	int bclk_div, mclk_div;
-+	int ret, i;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mtk_base_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int memif_num = rtd->cpu_dai->id;
++	struct mtk_base_afe_memif *memif = &afe->memif[memif_num];
++	const struct snd_pcm_hardware *mtk_afe_hardware = afe->mtk_afe_hardware;
++	int ret;
 +
-+	switch (rate) {
-+	case 176400:
-+	case 88200:
-+	case 44100:
-+	case 22050:
-+	case 11025:
-+		clk_rate = 22579200;
-+		break;
++	memif->substream = substream;
 +
-+	case 192000:
-+	case 128000:
-+	case 96000:
-+	case 64000:
-+	case 48000:
-+	case 32000:
-+	case 24000:
-+	case 16000:
-+	case 12000:
-+	case 8000:
-+		clk_rate = 24576000;
-+		break;
++	snd_pcm_hw_constraint_step(substream->runtime, 0,
++				   SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 16);
++	/* enable agent */
++	mtk_regmap_update_bits(afe->regmap, memif->data->agent_disable_reg,
++			       1 << memif->data->agent_disable_shift,
++			       0 << memif->data->agent_disable_shift);
 +
-+	default:
-+		return -EINVAL;
++	snd_soc_set_runtime_hwparams(substream, mtk_afe_hardware);
++
++	/*
++	 * Capture cannot use ping-pong buffer since hw_ptr at IRQ may be
++	 * smaller than period_size due to AFE's internal buffer.
++	 * This easily leads to overrun when avail_min is period_size.
++	 * One more period can hold the possible unread buffer.
++	 */
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		int periods_max = mtk_afe_hardware->periods_max;
++
++		ret = snd_pcm_hw_constraint_minmax(runtime,
++						   SNDRV_PCM_HW_PARAM_PERIODS,
++						   3, periods_max);
++		if (ret < 0) {
++			dev_err(afe->dev, "hw_constraint_minmax failed\n");
++			return ret;
++		}
 +	}
 +
-+	ret = clk_set_rate(i2s->mod_clk, clk_rate);
-+	if (ret)
++	ret = snd_pcm_hw_constraint_integer(runtime,
++					    SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0)
++		dev_err(afe->dev, "snd_pcm_hw_constraint_integer failed\n");
++
++	/* dynamic allocate irq to memif */
++	if (memif->irq_usage < 0) {
++		int irq_id = mtk_dynamic_irq_acquire(afe);
++
++		if (irq_id != afe->irqs_size) {
++			/* link */
++			memif->irq_usage = irq_id;
++		} else {
++			dev_err(afe->dev, "%s() error: no more asys irq\n",
++				__func__);
++			ret = -EBUSY;
++		}
++	}
++	return ret;
++}
++EXPORT_SYMBOL_GPL(mtk_afe_fe_startup);
++
++void mtk_afe_fe_shutdown(struct snd_pcm_substream *substream,
++			 struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mtk_base_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
++	int irq_id;
++
++	irq_id = memif->irq_usage;
++
++	mtk_regmap_update_bits(afe->regmap, memif->data->agent_disable_reg,
++			       1 << memif->data->agent_disable_shift,
++			       1 << memif->data->agent_disable_shift);
++
++	if (!memif->const_irq) {
++		mtk_dynamic_irq_release(afe, irq_id);
++		memif->irq_usage = -1;
++		memif->substream = NULL;
++	}
++}
++EXPORT_SYMBOL_GPL(mtk_afe_fe_shutdown);
++
++int mtk_afe_fe_hw_params(struct snd_pcm_substream *substream,
++			 struct snd_pcm_hw_params *params,
++			 struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mtk_base_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
++	int msb_at_bit33 = 0;
++	int ret, fs = 0;
++
++	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
++	if (ret < 0)
 +		return ret;
 +
-+	/* Always favor the highest oversampling rate */
-+	for (i = (ARRAY_SIZE(sun4i_i2s_oversample_rates) - 1); i >= 0; i--) {
-+		unsigned int oversample_rate = sun4i_i2s_oversample_rates[i];
++	msb_at_bit33 = upper_32_bits(substream->runtime->dma_addr) ? 1 : 0;
++	memif->phys_buf_addr = lower_32_bits(substream->runtime->dma_addr);
++	memif->buffer_size = substream->runtime->dma_bytes;
 +
-+		bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
-+						  word_size);
-+		mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
-+						  clk_rate,
-+						  rate);
++	/* start */
++	mtk_regmap_write(afe->regmap, memif->data->reg_ofs_base,
++			 memif->phys_buf_addr);
++	/* end */
++	mtk_regmap_write(afe->regmap,
++			 memif->data->reg_ofs_base + AFE_BASE_END_OFFSET,
++			 memif->phys_buf_addr + memif->buffer_size - 1);
 +
-+		if ((bclk_div >= 0) && (mclk_div >= 0))
-+			break;
++	/* set MSB to 33-bit */
++	mtk_regmap_update_bits(afe->regmap, memif->data->msb_reg,
++			       1 << memif->data->msb_shift,
++			       msb_at_bit33 << memif->data->msb_shift);
++
++	/* set channel */
++	if (memif->data->mono_shift >= 0) {
++		unsigned int mono = (params_channels(params) == 1) ? 1 : 0;
++
++		mtk_regmap_update_bits(afe->regmap, memif->data->mono_reg,
++				       1 << memif->data->mono_shift,
++				       mono << memif->data->mono_shift);
 +	}
 +
-+	if ((bclk_div < 0) || (mclk_div < 0))
++	/* set rate */
++	if (memif->data->fs_shift < 0)
++		return 0;
++
++	fs = afe->memif_fs(substream, params_rate(params));
++
++	if (fs < 0)
 +		return -EINVAL;
 +
-+	regmap_write(i2s->regmap, SUN4I_I2S_CLK_DIV_REG,
-+		     SUN4I_I2S_CLK_DIV_BCLK(bclk_div) |
-+		     SUN4I_I2S_CLK_DIV_MCLK(mclk_div) |
-+		     SUN4I_I2S_CLK_DIV_MCLK_EN);
++	mtk_regmap_update_bits(afe->regmap, memif->data->fs_reg,
++			       memif->data->fs_maskbit << memif->data->fs_shift,
++			       fs << memif->data->fs_shift);
 +
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(mtk_afe_fe_hw_params);
 +
-+static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
-+			       struct snd_pcm_hw_params *params,
-+			       struct snd_soc_dai *dai)
++int mtk_afe_fe_hw_free(struct snd_pcm_substream *substream,
++		       struct snd_soc_dai *dai)
 +{
-+	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+	int sr, wss;
-+	u32 width;
-+
-+	if (params_channels(params) != 2)
-+		return -EINVAL;
-+
-+	switch (params_physical_width(params)) {
-+	case 16:
-+		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	i2s->playback_dma_data.addr_width = width;
-+
-+	switch (params_width(params)) {
-+	case 16:
-+		sr = 0;
-+		wss = 0;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
-+			   SUN4I_I2S_FMT0_WSS_MASK | SUN4I_I2S_FMT0_SR_MASK,
-+			   SUN4I_I2S_FMT0_WSS(wss) | SUN4I_I2S_FMT0_SR(sr));
-+
-+	return sun4i_i2s_set_clk_rate(i2s, params_rate(params),
-+				      params_width(params));
++	return snd_pcm_lib_free_pages(substream);
 +}
++EXPORT_SYMBOL_GPL(mtk_afe_fe_hw_free);
 +
-+static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++int mtk_afe_fe_trigger(struct snd_pcm_substream *substream, int cmd,
++		       struct snd_soc_dai *dai)
 +{
-+	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+	u32 val;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_pcm_runtime * const runtime = substream->runtime;
++	struct mtk_base_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
++	struct mtk_base_afe_irq *irqs = &afe->irqs[memif->irq_usage];
++	const struct mtk_base_irq_data *irq_data = irqs->irq_data;
++	unsigned int counter = runtime->period_size;
++	int fs;
 +
-+	/* DAI Mode */
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		val = SUN4I_I2S_FMT0_FMT_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		val = SUN4I_I2S_FMT0_FMT_LEFT_J;
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		val = SUN4I_I2S_FMT0_FMT_RIGHT_J;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
-+			   SUN4I_I2S_FMT0_FMT_MASK,
-+			   val);
-+
-+	/* DAI clock polarity */
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_IB_IF:
-+		/* Invert both clocks */
-+		val = SUN4I_I2S_FMT0_BCLK_POLARITY_INVERTED |
-+			SUN4I_I2S_FMT0_LRCLK_POLARITY_INVERTED;
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		/* Invert bit clock */
-+		val = SUN4I_I2S_FMT0_BCLK_POLARITY_INVERTED |
-+			SUN4I_I2S_FMT0_LRCLK_POLARITY_NORMAL;
-+		break;
-+	case SND_SOC_DAIFMT_NB_IF:
-+		/* Invert frame clock */
-+		val = SUN4I_I2S_FMT0_LRCLK_POLARITY_INVERTED |
-+			SUN4I_I2S_FMT0_BCLK_POLARITY_NORMAL;
-+		break;
-+	case SND_SOC_DAIFMT_NB_NF:
-+		/* Nothing to do for both normal cases */
-+		val = SUN4I_I2S_FMT0_BCLK_POLARITY_NORMAL |
-+			SUN4I_I2S_FMT0_LRCLK_POLARITY_NORMAL;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
-+			   SUN4I_I2S_FMT0_BCLK_POLARITY_MASK |
-+			   SUN4I_I2S_FMT0_LRCLK_POLARITY_MASK,
-+			   val);
-+
-+	/* DAI clock master masks */
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		/* BCLK and LRCLK master */
-+		val = SUN4I_I2S_CTRL_MODE_MASTER;
-+		break;
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		/* BCLK and LRCLK slave */
-+		val = SUN4I_I2S_CTRL_MODE_SLAVE;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-+			   SUN4I_I2S_CTRL_MODE_MASK,
-+			   val);
-+
-+	/* Set significant bits in our FIFOs */
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
-+			   SUN4I_I2S_FIFO_CTRL_TX_MODE_MASK |
-+			   SUN4I_I2S_FIFO_CTRL_RX_MODE_MASK,
-+			   SUN4I_I2S_FIFO_CTRL_TX_MODE(1) |
-+			   SUN4I_I2S_FIFO_CTRL_RX_MODE(1));
-+	return 0;
-+}
-+
-+static void sun4i_i2s_start_playback(struct sun4i_i2s *i2s)
-+{
-+	/* Flush TX FIFO */
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
-+			   SUN4I_I2S_FIFO_CTRL_FLUSH_TX,
-+			   SUN4I_I2S_FIFO_CTRL_FLUSH_TX);
-+
-+	/* Clear TX counter */
-+	regmap_write(i2s->regmap, SUN4I_I2S_TX_CNT_REG, 0);
-+
-+	/* Enable TX Block */
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-+			   SUN4I_I2S_CTRL_TX_EN,
-+			   SUN4I_I2S_CTRL_TX_EN);
-+
-+	/* Enable TX DRQ */
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_DMA_INT_CTRL_REG,
-+			   SUN4I_I2S_DMA_INT_CTRL_TX_DRQ_EN,
-+			   SUN4I_I2S_DMA_INT_CTRL_TX_DRQ_EN);
-+}
-+
-+
-+static void sun4i_i2s_stop_playback(struct sun4i_i2s *i2s)
-+{
-+	/* Disable TX Block */
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-+			   SUN4I_I2S_CTRL_TX_EN,
-+			   0);
-+
-+	/* Disable TX DRQ */
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_DMA_INT_CTRL_REG,
-+			   SUN4I_I2S_DMA_INT_CTRL_TX_DRQ_EN,
-+			   0);
-+}
-+
-+static int sun4i_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++	dev_dbg(afe->dev, "%s %s cmd=%d\n", __func__, memif->data->name, cmd);
 +
 +	switch (cmd) {
 +	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 +	case SNDRV_PCM_TRIGGER_RESUME:
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			sun4i_i2s_start_playback(i2s);
-+		else
-+			return -EINVAL;
-+		break;
++		if (memif->data->enable_shift >= 0)
++			mtk_regmap_update_bits(afe->regmap,
++					       memif->data->enable_reg,
++					       1 << memif->data->enable_shift,
++					       1 << memif->data->enable_shift);
 +
++		/* set irq counter */
++		mtk_regmap_update_bits(afe->regmap, irq_data->irq_cnt_reg,
++				       irq_data->irq_cnt_maskbit
++				       << irq_data->irq_cnt_shift,
++				       counter << irq_data->irq_cnt_shift);
++
++		/* set irq fs */
++		fs = afe->irq_fs(substream, runtime->rate);
++
++		if (fs < 0)
++			return -EINVAL;
++
++		mtk_regmap_update_bits(afe->regmap, irq_data->irq_fs_reg,
++				       irq_data->irq_fs_maskbit
++				       << irq_data->irq_fs_shift,
++				       fs << irq_data->irq_fs_shift);
++
++		/* enable interrupt */
++		mtk_regmap_update_bits(afe->regmap, irq_data->irq_en_reg,
++				       1 << irq_data->irq_en_shift,
++				       1 << irq_data->irq_en_shift);
++
++		return 0;
 +	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
 +	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			sun4i_i2s_stop_playback(i2s);
-+		else
-+			return -EINVAL;
-+		break;
-+
++		mtk_regmap_update_bits(afe->regmap, memif->data->enable_reg,
++				       1 << memif->data->enable_shift, 0);
++		/* disable interrupt */
++		mtk_regmap_update_bits(afe->regmap, irq_data->irq_en_reg,
++				       1 << irq_data->irq_en_shift,
++				       0 << irq_data->irq_en_shift);
++		/* and clear pending IRQ */
++		mtk_regmap_write(afe->regmap, irq_data->irq_clr_reg,
++				 1 << irq_data->irq_clr_shift);
++		return 0;
 +	default:
 +		return -EINVAL;
 +	}
-+
-+	return 0;
 +}
++EXPORT_SYMBOL_GPL(mtk_afe_fe_trigger);
 +
-+static int sun4i_i2s_startup(struct snd_pcm_substream *substream,
-+			     struct snd_soc_dai *dai)
++int mtk_afe_fe_prepare(struct snd_pcm_substream *substream,
++		       struct snd_soc_dai *dai)
 +{
-+	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++	struct snd_soc_pcm_runtime *rtd  = substream->private_data;
++	struct mtk_base_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
++	int hd_audio = 0;
 +
-+	/* Enable the whole hardware block */
-+	regmap_write(i2s->regmap, SUN4I_I2S_CTRL_REG,
-+		     SUN4I_I2S_CTRL_GL_EN);
-+
-+	/* Enable the first output line */
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-+			   SUN4I_I2S_CTRL_SDO_EN_MASK,
-+			   SUN4I_I2S_CTRL_SDO_EN(0));
-+
-+	/* Enable the first two channels */
-+	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_SEL_REG,
-+		     SUN4I_I2S_TX_CHAN_SEL(2));
-+
-+	/* Map them to the two first samples coming in */
-+	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG,
-+		     SUN4I_I2S_TX_CHAN_MAP(0, 0) | SUN4I_I2S_TX_CHAN_MAP(1, 1));
-+
-+	return clk_prepare_enable(i2s->mod_clk);
-+}
-+
-+static void sun4i_i2s_shutdown(struct snd_pcm_substream *substream,
-+			       struct snd_soc_dai *dai)
-+{
-+	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+
-+	clk_disable_unprepare(i2s->mod_clk);
-+
-+	/* Disable our output lines */
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-+			   SUN4I_I2S_CTRL_SDO_EN_MASK, 0);
-+
-+	/* Disable the whole hardware block */
-+	regmap_write(i2s->regmap, SUN4I_I2S_CTRL_REG, 0);
-+}
-+
-+static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
-+	.hw_params	= sun4i_i2s_hw_params,
-+	.set_fmt	= sun4i_i2s_set_fmt,
-+	.shutdown	= sun4i_i2s_shutdown,
-+	.startup	= sun4i_i2s_startup,
-+	.trigger	= sun4i_i2s_trigger,
-+};
-+
-+static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+
-+	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data, NULL);
-+
-+	snd_soc_dai_set_drvdata(dai, i2s);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_driver sun4i_i2s_dai = {
-+	.probe = sun4i_i2s_dai_probe,
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.ops = &sun4i_i2s_dai_ops,
-+	.symmetric_rates = 1,
-+};
-+
-+static const struct snd_soc_component_driver sun4i_i2s_component = {
-+	.name	= "sun4i-dai",
-+};
-+
-+static bool sun4i_i2s_rd_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case SUN4I_I2S_FIFO_TX_REG:
-+		return false;
-+
++	/* set hd mode */
++	switch (substream->runtime->format) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		hd_audio = 0;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		hd_audio = 1;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		hd_audio = 1;
++		break;
 +	default:
-+		return true;
-+	}
-+}
-+
-+static bool sun4i_i2s_wr_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case SUN4I_I2S_FIFO_RX_REG:
-+	case SUN4I_I2S_FIFO_STA_REG:
-+		return false;
-+
-+	default:
-+		return true;
-+	}
-+}
-+
-+static bool sun4i_i2s_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case SUN4I_I2S_FIFO_RX_REG:
-+	case SUN4I_I2S_INT_STA_REG:
-+	case SUN4I_I2S_RX_CNT_REG:
-+	case SUN4I_I2S_TX_CNT_REG:
-+		return true;
-+
-+	default:
-+		return false;
-+	}
-+}
-+
-+static const struct reg_default sun4i_i2s_reg_defaults[] = {
-+	{ SUN4I_I2S_CTRL_REG, 0x00000000 },
-+	{ SUN4I_I2S_FMT0_REG, 0x0000000c },
-+	{ SUN4I_I2S_FMT1_REG, 0x00004020 },
-+	{ SUN4I_I2S_FIFO_CTRL_REG, 0x000400f0 },
-+	{ SUN4I_I2S_DMA_INT_CTRL_REG, 0x00000000 },
-+	{ SUN4I_I2S_CLK_DIV_REG, 0x00000000 },
-+	{ SUN4I_I2S_TX_CHAN_SEL_REG, 0x00000001 },
-+	{ SUN4I_I2S_TX_CHAN_MAP_REG, 0x76543210 },
-+	{ SUN4I_I2S_RX_CHAN_SEL_REG, 0x00000001 },
-+	{ SUN4I_I2S_RX_CHAN_MAP_REG, 0x00003210 },
-+};
-+
-+static const struct regmap_config sun4i_i2s_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= SUN4I_I2S_RX_CHAN_MAP_REG,
-+
-+	.cache_type	= REGCACHE_FLAT,
-+	.reg_defaults	= sun4i_i2s_reg_defaults,
-+	.num_reg_defaults	= ARRAY_SIZE(sun4i_i2s_reg_defaults),
-+	.writeable_reg	= sun4i_i2s_wr_reg,
-+	.readable_reg	= sun4i_i2s_rd_reg,
-+	.volatile_reg	= sun4i_i2s_volatile_reg,
-+};
-+
-+static int sun4i_i2s_runtime_resume(struct device *dev)
-+{
-+	struct sun4i_i2s *i2s = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = clk_prepare_enable(i2s->bus_clk);
-+	if (ret) {
-+		dev_err(dev, "Failed to enable bus clock\n");
-+		return ret;
++		dev_err(afe->dev, "%s() error: unsupported format %d\n",
++			__func__, substream->runtime->format);
++		break;
 +	}
 +
-+	regcache_cache_only(i2s->regmap, false);
-+	regcache_mark_dirty(i2s->regmap);
-+
-+	ret = regcache_sync(i2s->regmap);
-+	if (ret) {
-+		dev_err(dev, "Failed to sync regmap cache\n");
-+		goto err_disable_clk;
-+	}
-+
-+	return 0;
-+
-+err_disable_clk:
-+	clk_disable_unprepare(i2s->bus_clk);
-+	return ret;
-+}
-+
-+static int sun4i_i2s_runtime_suspend(struct device *dev)
-+{
-+	struct sun4i_i2s *i2s = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(i2s->regmap, true);
-+
-+	clk_disable_unprepare(i2s->bus_clk);
++	mtk_regmap_update_bits(afe->regmap, memif->data->hd_reg,
++			       1 << memif->data->hd_shift,
++			       hd_audio << memif->data->hd_shift);
 +
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(mtk_afe_fe_prepare);
 +
-+static int sun4i_i2s_probe(struct platform_device *pdev)
++const struct snd_soc_dai_ops mtk_afe_fe_ops = {
++	.startup	= mtk_afe_fe_startup,
++	.shutdown	= mtk_afe_fe_shutdown,
++	.hw_params	= mtk_afe_fe_hw_params,
++	.hw_free	= mtk_afe_fe_hw_free,
++	.prepare	= mtk_afe_fe_prepare,
++	.trigger	= mtk_afe_fe_trigger,
++};
++EXPORT_SYMBOL_GPL(mtk_afe_fe_ops);
++
++static DEFINE_MUTEX(irqs_lock);
++int mtk_dynamic_irq_acquire(struct mtk_base_afe *afe)
 +{
-+	struct sun4i_i2s *i2s;
-+	struct resource *res;
-+	void __iomem *regs;
-+	int irq, ret;
++	int i;
 +
-+	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
-+	if (!i2s)
-+		return -ENOMEM;
-+	platform_set_drvdata(pdev, i2s);
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	regs = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(regs)) {
-+		dev_err(&pdev->dev, "Can't request IO region\n");
-+		return PTR_ERR(regs);
++	mutex_lock(&afe->irq_alloc_lock);
++	for (i = 0; i < afe->irqs_size; ++i) {
++		if (afe->irqs[i].irq_occupyed == 0) {
++			afe->irqs[i].irq_occupyed = 1;
++			mutex_unlock(&afe->irq_alloc_lock);
++			return i;
++		}
 +	}
-+
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0) {
-+		dev_err(&pdev->dev, "Can't retrieve our interrupt\n");
-+		return irq;
-+	}
-+
-+	i2s->bus_clk = devm_clk_get(&pdev->dev, "apb");
-+	if (IS_ERR(i2s->bus_clk)) {
-+		dev_err(&pdev->dev, "Can't get our bus clock\n");
-+		return PTR_ERR(i2s->bus_clk);
-+	}
-+
-+	i2s->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
-+					    &sun4i_i2s_regmap_config);
-+	if (IS_ERR(i2s->regmap)) {
-+		dev_err(&pdev->dev, "Regmap initialisation failed\n");
-+		return PTR_ERR(i2s->regmap);
-+	};
-+
-+	i2s->mod_clk = devm_clk_get(&pdev->dev, "mod");
-+	if (IS_ERR(i2s->mod_clk)) {
-+		dev_err(&pdev->dev, "Can't get our mod clock\n");
-+		return PTR_ERR(i2s->mod_clk);
-+	}
-+	
-+	i2s->playback_dma_data.addr = res->start + SUN4I_I2S_FIFO_TX_REG;
-+	i2s->playback_dma_data.maxburst = 4;
-+
-+	pm_runtime_enable(&pdev->dev);
-+	if (!pm_runtime_enabled(&pdev->dev)) {
-+		ret = sun4i_i2s_runtime_resume(&pdev->dev);
-+		if (ret)
-+			goto err_pm_disable;
-+	}
-+
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+					      &sun4i_i2s_component,
-+					      &sun4i_i2s_dai, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Could not register DAI\n");
-+		goto err_suspend;
-+	}
-+
-+	ret = snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Could not register PCM\n");
-+		goto err_suspend;
-+	}
-+
-+	return 0;
-+
-+err_suspend:
-+	if (!pm_runtime_status_suspended(&pdev->dev))
-+		sun4i_i2s_runtime_suspend(&pdev->dev);
-+err_pm_disable:
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return ret;
++	mutex_unlock(&afe->irq_alloc_lock);
++	return afe->irqs_size;
 +}
++EXPORT_SYMBOL_GPL(mtk_dynamic_irq_acquire);
 +
-+static int sun4i_i2s_remove(struct platform_device *pdev)
++int mtk_dynamic_irq_release(struct mtk_base_afe *afe, int irq_id)
 +{
-+	snd_dmaengine_pcm_unregister(&pdev->dev);
++	mutex_lock(&afe->irq_alloc_lock);
++	if (irq_id >= 0 && irq_id < afe->irqs_size) {
++		afe->irqs[irq_id].irq_occupyed = 0;
++		mutex_unlock(&afe->irq_alloc_lock);
++		return 0;
++	}
++	mutex_unlock(&afe->irq_alloc_lock);
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(mtk_dynamic_irq_release);
 +
-+	pm_runtime_disable(&pdev->dev);
-+	if (!pm_runtime_status_suspended(&pdev->dev))
-+		sun4i_i2s_runtime_suspend(&pdev->dev);
++int mtk_afe_dai_suspend(struct snd_soc_dai *dai)
++{
++	struct mtk_base_afe *afe = dev_get_drvdata(dai->dev);
++	struct device *dev = afe->dev;
++	struct regmap *regmap = afe->regmap;
++	int i;
 +
++	if (pm_runtime_status_suspended(dev) || afe->suspended)
++		return 0;
++
++	if (!afe->reg_back_up)
++		afe->reg_back_up =
++			devm_kcalloc(dev, afe->reg_back_up_list_num,
++				     sizeof(unsigned int), GFP_KERNEL);
++
++	for (i = 0; i < afe->reg_back_up_list_num; i++)
++		regmap_read(regmap, afe->reg_back_up_list[i],
++			    &afe->reg_back_up[i]);
++
++	afe->suspended = true;
++	afe->runtime_suspend(dev);
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(mtk_afe_dai_suspend);
 +
-+static const struct of_device_id sun4i_i2s_match[] = {
-+	{ .compatible = "allwinner,sun4i-a10-i2s", },
-+	{}
++int mtk_afe_dai_resume(struct snd_soc_dai *dai)
++{
++	struct mtk_base_afe *afe = dev_get_drvdata(dai->dev);
++	struct device *dev = afe->dev;
++	struct regmap *regmap = afe->regmap;
++	int i = 0;
++
++	if (pm_runtime_status_suspended(dev) || !afe->suspended)
++		return 0;
++
++	afe->runtime_resume(dev);
++
++	if (!afe->reg_back_up)
++		dev_dbg(dev, "%s no reg_backup\n", __func__);
++
++	for (i = 0; i < afe->reg_back_up_list_num; i++)
++		mtk_regmap_write(regmap, afe->reg_back_up_list[i],
++				 afe->reg_back_up[i]);
++
++	afe->suspended = false;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(mtk_afe_dai_resume);
++
++MODULE_DESCRIPTION("Mediatek simple fe dai operator");
++MODULE_AUTHOR("Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>");
++MODULE_LICENSE("GPL v2");
++
+diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.h b/sound/soc/mediatek/common/mtk-afe-fe-dai.h
+new file mode 100644
+index 000000000000..28cb17854da1
+--- /dev/null
++++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.h
+@@ -0,0 +1,45 @@
++/*
++ * mtk-afe-fe-dais.h  --  Mediatek afe fe dai operator definition
++ *
++ * Copyright (c) 2016 MediaTek Inc.
++ * Author: Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#ifndef _MTK_AFE_FE_DAI_H_
++#define _MTK_AFE_FE_DAI_H_
++
++struct snd_soc_dai_ops;
++struct mtk_base_afe;
++struct mtk_base_afe_memif;
++
++int mtk_afe_fe_startup(struct snd_pcm_substream *substream,
++		       struct snd_soc_dai *dai);
++void mtk_afe_fe_shutdown(struct snd_pcm_substream *substream,
++			 struct snd_soc_dai *dai);
++int mtk_afe_fe_hw_params(struct snd_pcm_substream *substream,
++			 struct snd_pcm_hw_params *params,
++			 struct snd_soc_dai *dai);
++int mtk_afe_fe_hw_free(struct snd_pcm_substream *substream,
++		       struct snd_soc_dai *dai);
++int mtk_afe_fe_prepare(struct snd_pcm_substream *substream,
++		       struct snd_soc_dai *dai);
++int mtk_afe_fe_trigger(struct snd_pcm_substream *substream, int cmd,
++		       struct snd_soc_dai *dai);
++
++extern const struct snd_soc_dai_ops mtk_afe_fe_ops;
++
++int mtk_dynamic_irq_acquire(struct mtk_base_afe *afe);
++int mtk_dynamic_irq_release(struct mtk_base_afe *afe, int irq_id);
++int mtk_afe_dai_suspend(struct snd_soc_dai *dai);
++int mtk_afe_dai_resume(struct snd_soc_dai *dai);
++
++#endif
+diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+new file mode 100644
+index 000000000000..82d439c15f4e
+--- /dev/null
++++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+@@ -0,0 +1,90 @@
++/*
++ * mtk-afe-platform-driver.c  --  Mediatek afe platform driver
++ *
++ * Copyright (c) 2016 MediaTek Inc.
++ * Author: Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/module.h>
++#include <linux/dma-mapping.h>
++#include <sound/soc.h>
++
++#include "mtk-afe-platform-driver.h"
++#include "mtk-base-afe.h"
++
++static snd_pcm_uframes_t mtk_afe_pcm_pointer
++			 (struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mtk_base_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
++	const struct mtk_base_memif_data *memif_data = memif->data;
++	struct regmap *regmap = afe->regmap;
++	struct device *dev = afe->dev;
++	int reg_ofs_base = memif_data->reg_ofs_base;
++	int reg_ofs_cur = memif_data->reg_ofs_cur;
++	unsigned int hw_ptr = 0, hw_base = 0;
++	int ret, pcm_ptr_bytes;
++
++	ret = regmap_read(regmap, reg_ofs_cur, &hw_ptr);
++	if (ret || hw_ptr == 0) {
++		dev_err(dev, "%s hw_ptr err\n", __func__);
++		pcm_ptr_bytes = 0;
++		goto POINTER_RETURN_FRAMES;
++	}
++
++	ret = regmap_read(regmap, reg_ofs_base, &hw_base);
++	if (ret || hw_base == 0) {
++		dev_err(dev, "%s hw_ptr err\n", __func__);
++		pcm_ptr_bytes = 0;
++		goto POINTER_RETURN_FRAMES;
++	}
++
++	pcm_ptr_bytes = hw_ptr - hw_base;
++
++POINTER_RETURN_FRAMES:
++	return bytes_to_frames(substream->runtime, pcm_ptr_bytes);
++}
++
++static const struct snd_pcm_ops mtk_afe_pcm_ops = {
++	.ioctl = snd_pcm_lib_ioctl,
++	.pointer = mtk_afe_pcm_pointer,
 +};
-+MODULE_DEVICE_TABLE(of, sun4i_i2s_match);
 +
-+static const struct dev_pm_ops sun4i_i2s_pm_ops = {
-+	.runtime_resume		= sun4i_i2s_runtime_resume,
-+	.runtime_suspend	= sun4i_i2s_runtime_suspend,
++static int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
++{
++	size_t size;
++	struct snd_card *card = rtd->card->snd_card;
++	struct snd_pcm *pcm = rtd->pcm;
++	struct mtk_base_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
++
++	size = afe->mtk_afe_hardware->buffer_bytes_max;
++	return snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
++						     card->dev, size, size);
++}
++
++static void mtk_afe_pcm_free(struct snd_pcm *pcm)
++{
++	snd_pcm_lib_preallocate_free_for_all(pcm);
++}
++
++const struct snd_soc_platform_driver mtk_afe_pcm_platform = {
++	.ops = &mtk_afe_pcm_ops,
++	.pcm_new = mtk_afe_pcm_new,
++	.pcm_free = mtk_afe_pcm_free,
++};
++EXPORT_SYMBOL_GPL(mtk_afe_pcm_platform);
++
++MODULE_DESCRIPTION("Mediatek simple platform driver");
++MODULE_AUTHOR("Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>");
++MODULE_LICENSE("GPL v2");
++
+diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.h b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
+new file mode 100644
+index 000000000000..a973fc9253b4
+--- /dev/null
++++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
+@@ -0,0 +1,23 @@
++/*
++ * mtk-afe-platform-driver.h  --  Mediatek afe platform driver definition
++ *
++ * Copyright (c) 2016 MediaTek Inc.
++ * Author: Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#ifndef _MTK_AFE_PLATFORM_DRIVER_H_
++#define _MTK_AFE_PLATFORM_DRIVER_H_
++
++extern const struct snd_soc_platform_driver mtk_afe_pcm_platform;
++
++#endif
++
+diff --git a/sound/soc/mediatek/common/mtk-base-afe.h b/sound/soc/mediatek/common/mtk-base-afe.h
+new file mode 100644
+index 000000000000..3a78f6f17195
+--- /dev/null
++++ b/sound/soc/mediatek/common/mtk-base-afe.h
+@@ -0,0 +1,104 @@
++/*
++ * mtk-base-afe.h  --  Mediatek base afe structure
++ *
++ * Copyright (c) 2016 MediaTek Inc.
++ * Author: Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#ifndef _MTK_BASE_AFE_H_
++#define _MTK_BASE_AFE_H_
++
++struct mtk_base_memif_data {
++	int id;
++	const char *name;
++	int reg_ofs_base;
++	int reg_ofs_cur;
++	int fs_reg;
++	int fs_shift;
++	int fs_maskbit;
++	int mono_reg;
++	int mono_shift;
++	int enable_reg;
++	int enable_shift;
++	int hd_reg;
++	int hd_shift;
++	int msb_reg;
++	int msb_shift;
++	int agent_disable_reg;
++	int agent_disable_shift;
 +};
 +
-+static struct platform_driver sun4i_i2s_driver = {
-+	.probe	= sun4i_i2s_probe,
-+	.remove	= sun4i_i2s_remove,
-+	.driver	= {
-+		.name		= "sun4i-i2s",
-+		.of_match_table	= sun4i_i2s_match,
-+		.pm		= &sun4i_i2s_pm_ops,
-+	},
++struct mtk_base_irq_data {
++	int id;
++	int irq_cnt_reg;
++	int irq_cnt_shift;
++	int irq_cnt_maskbit;
++	int irq_fs_reg;
++	int irq_fs_shift;
++	int irq_fs_maskbit;
++	int irq_en_reg;
++	int irq_en_shift;
++	int irq_clr_reg;
++	int irq_clr_shift;
 +};
-+module_platform_driver(sun4i_i2s_driver);
 +
-+MODULE_AUTHOR("Andrea Venturi <be17068@iperbole.bo.it>");
-+MODULE_AUTHOR("Maxime Ripard <maxime.ripard@free-electrons.com>");
-+MODULE_DESCRIPTION("Allwinner A10 I2S driver");
-+MODULE_LICENSE("GPL");
++struct device;
++struct mtk_base_afe_memif;
++struct mtk_base_afe_irq;
++struct regmap;
++struct snd_pcm_substream;
++struct snd_soc_dai;
++
++struct mtk_base_afe {
++	void __iomem *base_addr;
++	struct device *dev;
++	struct regmap *regmap;
++	struct mutex irq_alloc_lock; /* dynamic alloc irq lock */
++
++	unsigned int const *reg_back_up_list;
++	unsigned int *reg_back_up;
++	unsigned int reg_back_up_list_num;
++
++	int (*runtime_suspend)(struct device *dev);
++	int (*runtime_resume)(struct device *dev);
++	bool suspended;
++
++	struct mtk_base_afe_memif *memif;
++	int memif_size;
++	struct mtk_base_afe_irq *irqs;
++	int irqs_size;
++
++	const struct snd_pcm_hardware *mtk_afe_hardware;
++	int (*memif_fs)(struct snd_pcm_substream *substream,
++			unsigned int rate);
++	int (*irq_fs)(struct snd_pcm_substream *substream,
++		      unsigned int rate);
++
++	void *platform_priv;
++};
++
++struct mtk_base_afe_memif {
++	unsigned int phys_buf_addr;
++	int buffer_size;
++	struct snd_pcm_substream *substream;
++	const struct mtk_base_memif_data *data;
++	int irq_usage;
++	int const_irq;
++};
++
++struct mtk_base_afe_irq {
++	const struct mtk_base_irq_data *irq_data;
++	int irq_occupyed;
++};
++
++#endif
++
 -- 
 2.8.1
