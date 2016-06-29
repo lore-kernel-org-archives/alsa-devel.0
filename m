@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add new simple-card-utils.c" to the asoc tree
-Date: Wed, 29 Jun 2016 19:20:48 +0100
-Message-ID: <E1bIK6S-0004hf-4U@finisterre>
-References: <87a8j6sj4w.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card: add new asoc_simple_jack and use it" to the asoc tree
+Date: Wed, 29 Jun 2016 19:20:52 +0100
+Message-ID: <E1bIK6W-0004iT-6S@finisterre>
+References: <87bn3msj5o.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87a8j6sj4w.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87bn3msj5o.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: add new simple-card-utils.c
+   ASoC: simple-card: add new asoc_simple_jack and use it
 
 has been applied to the asoc tree at
 
@@ -37,142 +37,241 @@ to this mail.
 Thanks,
 Mark
 
->From abd3147e69481caade441e8d8296fa3f541aea03 Mon Sep 17 00:00:00 2001
+>From 9eac361877b3c96c8f68dffd7a7a3e92a2b85d0b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 31 May 2016 09:00:14 +0000
-Subject: [PATCH] ASoC: add new simple-card-utils.c
+Date: Tue, 31 May 2016 08:59:46 +0000
+Subject: [PATCH] ASoC: simple-card: add new asoc_simple_jack and use it
 
-Current ALSA SoC has simple-card driver which is supporting both
-platform and DT probe.
-Now, some sound cards driver are created based on simple-card.
-They have similar feature or function, but implemented separately
-on each drivers. This is a waste of code.
-OTOH, merging these driver into same driver is highly risk,
-because it will be very difficult to keep compatibility.
-More over, ALSA SoC want to have graph base of DT feature in the
-future. Maybe it want to use simple-card like feature / function.
-Because of these background, this patch creates simple-card
-helper utils, and provides common function to each drivers.
-1st is asoc_simple_card_parse_daifmt()
+Current simple-card supports snd_soc_jack/pin/gpio.
+These code are very similar, but driver has verbosity code.
+So, this patch adds new snd_soc_jack and cleanups code
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/simple_card_utils.h     | 21 ++++++++++++++
- sound/soc/generic/Kconfig             |  3 ++
- sound/soc/generic/Makefile            |  2 ++
- sound/soc/generic/simple-card-utils.c | 54 +++++++++++++++++++++++++++++++++++
- 4 files changed, 80 insertions(+)
- create mode 100644 include/sound/simple_card_utils.h
- create mode 100644 sound/soc/generic/simple-card-utils.c
+ sound/soc/generic/simple-card.c | 153 ++++++++++++++++++++--------------------
+ 1 file changed, 78 insertions(+), 75 deletions(-)
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-new file mode 100644
-index 000000000000..7acc798016e0
---- /dev/null
-+++ b/include/sound/simple_card_utils.h
-@@ -0,0 +1,21 @@
-+/*
-+ * simple_card_core.h
-+ *
-+ * Copyright (c) 2016 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+#ifndef __SIMPLE_CARD_CORE_H
-+#define __SIMPLE_CARD_CORE_H
-+
-+#include <sound/soc.h>
-+
-+int asoc_simple_card_parse_daifmt(struct device *dev,
-+				  struct device_node *node,
-+				  struct device_node *codec,
-+				  char *prefix,
-+				  unsigned int *retfmt);
-+
-+#endif /* __SIMPLE_CARD_CORE_H */
-diff --git a/sound/soc/generic/Kconfig b/sound/soc/generic/Kconfig
-index 610f61251640..26c2fe6a0b93 100644
---- a/sound/soc/generic/Kconfig
-+++ b/sound/soc/generic/Kconfig
-@@ -1,3 +1,6 @@
-+config SND_SIMPLE_CARD_UTILS
-+       tristate
-+
- config SND_SIMPLE_CARD
- 	tristate "ASoC Simple sound card support"
- 	help
-diff --git a/sound/soc/generic/Makefile b/sound/soc/generic/Makefile
-index 9c3b246792bf..45602ca8536e 100644
---- a/sound/soc/generic/Makefile
-+++ b/sound/soc/generic/Makefile
-@@ -1,3 +1,5 @@
-+obj-$(CONFIG_SND_SIMPLE_CARD_UTILS) := simple-card-utils.o
-+
- snd-soc-simple-card-objs	:= simple-card.o
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index b6e6d9a12ec2..8d0311ceded1 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -21,6 +21,12 @@
+ #include <sound/soc-dai.h>
+ #include <sound/soc.h>
  
- obj-$(CONFIG_SND_SIMPLE_CARD)	+= snd-soc-simple-card.o
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-new file mode 100644
-index 000000000000..3f6b72526f71
---- /dev/null
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -0,0 +1,54 @@
-+/*
-+ * simple-card-core.c
-+ *
-+ * Copyright (c) 2016 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+#include <linux/of.h>
-+#include <sound/simple_card_utils.h>
++struct asoc_simple_jack {
++	struct snd_soc_jack jack;
++	struct snd_soc_jack_pin pin;
++	struct snd_soc_jack_gpio gpio;
++};
 +
-+int asoc_simple_card_parse_daifmt(struct device *dev,
-+				  struct device_node *node,
-+				  struct device_node *codec,
-+				  char *prefix,
-+				  unsigned int *retfmt)
+ struct simple_card_data {
+ 	struct snd_soc_card snd_card;
+ 	struct simple_dai_props {
+@@ -29,10 +35,8 @@ struct simple_card_data {
+ 		unsigned int mclk_fs;
+ 	} *dai_props;
+ 	unsigned int mclk_fs;
+-	int gpio_hp_det;
+-	int gpio_hp_det_invert;
+-	int gpio_mic_det;
+-	int gpio_mic_det_invert;
++	struct asoc_simple_jack hp_jack;
++	struct asoc_simple_jack mic_jack;
+ 	struct snd_soc_dai_link dai_link[];	/* dynamically allocated */
+ };
+ 
+@@ -42,6 +46,67 @@ struct simple_card_data {
+ 
+ #define PREFIX	"simple-audio-card,"
+ 
++#define asoc_simple_card_init_hp(card, sjack, prefix)\
++	asoc_simple_card_init_jack(card, sjack, 1, prefix)
++#define asoc_simple_card_init_mic(card, sjack, prefix)\
++	asoc_simple_card_init_jack(card, sjack, 0, prefix)
++static int asoc_simple_card_init_jack(struct snd_soc_card *card,
++				      struct asoc_simple_jack *sjack,
++				      int is_hp, char *prefix)
 +{
-+	struct device_node *bitclkmaster = NULL;
-+	struct device_node *framemaster = NULL;
-+	int prefix_len = prefix ? strlen(prefix) : 0;
-+	unsigned int daifmt;
++	struct device *dev = card->dev;
++	enum of_gpio_flags flags;
++	char prop[128];
++	char *pin_name;
++	char *gpio_name;
++	int mask;
++	int det;
 +
-+	daifmt = snd_soc_of_parse_daifmt(node, prefix,
-+					 &bitclkmaster, &framemaster);
-+	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
++	sjack->gpio.gpio = -ENOENT;
 +
-+	if (prefix_len && !bitclkmaster && !framemaster) {
-+		/*
-+		 * No dai-link level and master setting was not found from
-+		 * sound node level, revert back to legacy DT parsing and
-+		 * take the settings from codec node.
-+		 */
-+		dev_dbg(dev, "Revert to legacy daifmt parsing\n");
-+
-+		daifmt = snd_soc_of_parse_daifmt(codec, NULL, NULL, NULL) |
-+			(daifmt & ~SND_SOC_DAIFMT_CLOCK_MASK);
++	if (is_hp) {
++		snprintf(prop, sizeof(prop), "%shp-det-gpio", prefix);
++		pin_name	= "Headphones";
++		gpio_name	= "Headphone detection";
++		mask		= SND_JACK_HEADPHONE;
 +	} else {
-+		if (codec == bitclkmaster)
-+			daifmt |= (codec == framemaster) ?
-+				SND_SOC_DAIFMT_CBM_CFM : SND_SOC_DAIFMT_CBM_CFS;
-+		else
-+			daifmt |= (codec == framemaster) ?
-+				SND_SOC_DAIFMT_CBS_CFM : SND_SOC_DAIFMT_CBS_CFS;
++		snprintf(prop, sizeof(prop), "%smic-det-gpio", prefix);
++		pin_name	= "Mic Jack";
++		gpio_name	= "Mic detection";
++		mask		= SND_JACK_MICROPHONE;
 +	}
 +
-+	of_node_put(bitclkmaster);
-+	of_node_put(framemaster);
++	det = of_get_named_gpio_flags(dev->of_node, prop, 0, &flags);
++	if (det == -EPROBE_DEFER)
++		return -EPROBE_DEFER;
 +
-+	*retfmt = daifmt;
++	if (gpio_is_valid(det)) {
++		sjack->pin.pin		= pin_name;
++		sjack->pin.mask		= mask;
++
++		sjack->gpio.name	= gpio_name;
++		sjack->gpio.report	= mask;
++		sjack->gpio.gpio	= det;
++		sjack->gpio.invert	= !!(flags & OF_GPIO_ACTIVE_LOW);
++		sjack->gpio.debounce_time = 150;
++
++		snd_soc_card_jack_new(card, pin_name, mask,
++				      &sjack->jack,
++				      &sjack->pin, 1);
++
++		snd_soc_jack_add_gpios(&sjack->jack, 1,
++				       &sjack->gpio);
++	}
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(asoc_simple_card_parse_daifmt);
++
++static void asoc_simple_card_remove_jack(struct asoc_simple_jack *sjack)
++{
++	if (gpio_is_valid(sjack->gpio.gpio))
++		snd_soc_jack_free_gpios(&sjack->jack, 1, &sjack->gpio);
++}
++
+ static int asoc_simple_card_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+@@ -112,32 +177,6 @@ static struct snd_soc_ops asoc_simple_card_ops = {
+ 	.hw_params = asoc_simple_card_hw_params,
+ };
+ 
+-static struct snd_soc_jack simple_card_hp_jack;
+-static struct snd_soc_jack_pin simple_card_hp_jack_pins[] = {
+-	{
+-		.pin = "Headphones",
+-		.mask = SND_JACK_HEADPHONE,
+-	},
+-};
+-static struct snd_soc_jack_gpio simple_card_hp_jack_gpio = {
+-	.name = "Headphone detection",
+-	.report = SND_JACK_HEADPHONE,
+-	.debounce_time = 150,
+-};
+-
+-static struct snd_soc_jack simple_card_mic_jack;
+-static struct snd_soc_jack_pin simple_card_mic_jack_pins[] = {
+-	{
+-		.pin = "Mic Jack",
+-		.mask = SND_JACK_MICROPHONE,
+-	},
+-};
+-static struct snd_soc_jack_gpio simple_card_mic_jack_gpio = {
+-	.name = "Mic detection",
+-	.report = SND_JACK_MICROPHONE,
+-	.debounce_time = 150,
+-};
+-
+ static int __asoc_simple_card_dai_init(struct snd_soc_dai *dai,
+ 				       struct asoc_simple_dai *set)
+ {
+@@ -186,30 +225,14 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (gpio_is_valid(priv->gpio_hp_det)) {
+-		snd_soc_card_jack_new(rtd->card, "Headphones",
+-				      SND_JACK_HEADPHONE,
+-				      &simple_card_hp_jack,
+-				      simple_card_hp_jack_pins,
+-				      ARRAY_SIZE(simple_card_hp_jack_pins));
+-
+-		simple_card_hp_jack_gpio.gpio = priv->gpio_hp_det;
+-		simple_card_hp_jack_gpio.invert = priv->gpio_hp_det_invert;
+-		snd_soc_jack_add_gpios(&simple_card_hp_jack, 1,
+-				       &simple_card_hp_jack_gpio);
+-	}
++	ret = asoc_simple_card_init_hp(rtd->card, &priv->hp_jack, PREFIX);
++	if (ret < 0)
++		return ret;
++
++	ret = asoc_simple_card_init_mic(rtd->card, &priv->hp_jack, PREFIX);
++	if (ret < 0)
++		return ret;
+ 
+-	if (gpio_is_valid(priv->gpio_mic_det)) {
+-		snd_soc_card_jack_new(rtd->card, "Mic Jack",
+-				      SND_JACK_MICROPHONE,
+-				      &simple_card_mic_jack,
+-				      simple_card_mic_jack_pins,
+-				      ARRAY_SIZE(simple_card_mic_jack_pins));
+-		simple_card_mic_jack_gpio.gpio = priv->gpio_mic_det;
+-		simple_card_mic_jack_gpio.invert = priv->gpio_mic_det_invert;
+-		snd_soc_jack_add_gpios(&simple_card_mic_jack, 1,
+-				       &simple_card_mic_jack_gpio);
+-	}
+ 	return 0;
+ }
+ 
+@@ -447,7 +470,6 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 				     struct simple_card_data *priv)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+-	enum of_gpio_flags flags;
+ 	u32 val;
+ 	int ret;
+ 
+@@ -503,18 +525,6 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 			return ret;
+ 	}
+ 
+-	priv->gpio_hp_det = of_get_named_gpio_flags(node,
+-				PREFIX "hp-det-gpio", 0, &flags);
+-	priv->gpio_hp_det_invert = !!(flags & OF_GPIO_ACTIVE_LOW);
+-	if (priv->gpio_hp_det == -EPROBE_DEFER)
+-		return -EPROBE_DEFER;
+-
+-	priv->gpio_mic_det = of_get_named_gpio_flags(node,
+-				PREFIX "mic-det-gpio", 0, &flags);
+-	priv->gpio_mic_det_invert = !!(flags & OF_GPIO_ACTIVE_LOW);
+-	if (priv->gpio_mic_det == -EPROBE_DEFER)
+-		return -EPROBE_DEFER;
+-
+ 	if (!priv->snd_card.name)
+ 		priv->snd_card.name = priv->snd_card.dai_link->name;
+ 
+@@ -564,9 +574,6 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	priv->snd_card.dai_link = dai_link;
+ 	priv->snd_card.num_links = num_links;
+ 
+-	priv->gpio_hp_det = -ENOENT;
+-	priv->gpio_mic_det = -ENOENT;
+-
+ 	/* Get room for the other properties */
+ 	priv->dai_props = devm_kzalloc(dev,
+ 			sizeof(*priv->dai_props) * num_links,
+@@ -633,12 +640,8 @@ static int asoc_simple_card_remove(struct platform_device *pdev)
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 	struct simple_card_data *priv = snd_soc_card_get_drvdata(card);
+ 
+-	if (gpio_is_valid(priv->gpio_hp_det))
+-		snd_soc_jack_free_gpios(&simple_card_hp_jack, 1,
+-					&simple_card_hp_jack_gpio);
+-	if (gpio_is_valid(priv->gpio_mic_det))
+-		snd_soc_jack_free_gpios(&simple_card_mic_jack, 1,
+-					&simple_card_mic_jack_gpio);
++	asoc_simple_card_remove_jack(&priv->hp_jack);
++	asoc_simple_card_remove_jack(&priv->mic_jack);
+ 
+ 	return asoc_simple_card_unref(card);
+ }
 -- 
 2.8.1
