@@ -1,20 +1,22 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: Re: [PATCH] ASoC: nau8825: jack connection decision
- with different insertion logic
-Date: Tue, 28 Jun 2016 20:45:53 -0700
-Message-ID: <CAOMFOmUhvWrm6ivTs4Ujp2_A8o81A12L0gPUDay0Bv9PVAkbug@mail.gmail.com>
-References: <1467170438-5157-1-git-send-email-KCHSU0@nuvoton.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [RFC 02/11] ASoC: Add dai_ops to set the stream
+	tag.
+Date: Wed, 29 Jun 2016 09:38:11 +0530
+Message-ID: <20160629040810.GN14022@subhransu-desktop>
+References: <1466999284-14782-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1466999284-14782-3-git-send-email-subhransu.s.prusty@intel.com>
+ <20160627173009.GF17217@sirena.org.uk>
+ <20160628052138.GI14022@subhransu-desktop>
+ <20160628111520.GL17217@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f193.google.com (mail-ob0-f193.google.com
- [209.85.214.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E2952605D3
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 05:45:55 +0200 (CEST)
-Received: by mail-ob0-f193.google.com with SMTP id s7so981940obo.1
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2016 20:45:55 -0700 (PDT)
-In-Reply-To: <1467170438-5157-1-git-send-email-KCHSU0@nuvoton.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81A962605D3
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2016 06:11:38 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20160628111520.GL17217@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,59 +26,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, YHCHuang@nuvoton.com, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, Yong Zhi <yong.zhi@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On Tue, Jun 28, 2016 at 12:15:20PM +0100, Mark Brown wrote:
+> On Tue, Jun 28, 2016 at 10:51:38AM +0530, Subhransu S. Prusty wrote:
+> > On Mon, Jun 27, 2016 at 06:30:09PM +0100, Mark Brown wrote:
+> 
+> > > This seems incredibly HDMI specific...  what are these tags, can we
+> > > represent this as TDM (which seems to be what this is really)?
+> 
+> > This is HDA specific and the tag is to support use of same DMA channel by
+> > both host and codec.
+> 
+> What is a "DMA channel"?
 
-On Tue, Jun 28, 2016 at 8:20 PM, John Hsu <KCHSU0@nuvoton.com> wrote:
-> The original design only covers the jack insertion logic is active low.
-> Add more condition to cover no matter the logic is active low and high.
->
-> Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
-> ---
->  sound/soc/codecs/nau8825.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-> index 3f30e6e..a2f0d03 100644
-> --- a/sound/soc/codecs/nau8825.c
-> +++ b/sound/soc/codecs/nau8825.c
-> @@ -1345,10 +1345,18 @@ EXPORT_SYMBOL_GPL(nau8825_enable_jack_detect);
->
->  static bool nau8825_is_jack_inserted(struct regmap *regmap)
->  {
-> -       int status;
-> +       int status, jkdet, res;
->
->         regmap_read(regmap, NAU8825_REG_I2C_DEVICE_ID, &status);
-> -       return !(status & NAU8825_GPIO2JD1);
-> +       regmap_read(regmap, NAU8825_REG_JACK_DET_CTRL, &jkdet);
-> +
-> +       /* return jack connection status according to jack insertion logic
-> +        * active high or active low.
-> +        */
-> +       res = !(status & NAU8825_GPIO2JD1) * !(jkdet & NAU8825_JACK_POLARITY) +
-> +               (status & NAU8825_GPIO2JD1) * (jkdet & NAU8825_JACK_POLARITY);
+Ok. I agree this looks like TDM and we should model it like that :)
 
-It makes more sense to use a more boolean-like expression. Something like
+Now, the issue is how? The current TDM API doesn't seem so intutive to
+invoke for this case. What do you suggest...
 
-      return !!(status & NAU8825_GPIO2JD1) == !!(jkdet & NAU8825_JACK_POLARITY);
-(hope I translated expression above correctly)
-
-or even better to introduce readable bool flags:
-      bool active_high = !!(jkdet & NAU8825_JACK_POLARITY);
-      bool is_high = !!(status & NAU8825_GPIO2JD1);
-      return active_high == is_high;
+Regards,
+Subhransu
 
 
 
-> +
-> +       return res ? true : false;
->  }
->
->  static void nau8825_restart_jack_detection(struct regmap *regmap)
-> --
-> 2.6.4
->
+-- 
