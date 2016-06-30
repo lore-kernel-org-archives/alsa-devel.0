@@ -1,69 +1,62 @@
-From: Garlic Tseng <garlic.tseng@mediatek.com>
-Subject: Re: [PATCH v5 6/9] ASoC: mediatek: add mt2701 platform
- driver implementation.
-Date: Thu, 30 Jun 2016 21:39:41 +0800
-Message-ID: <1467293981.17087.18.camel@mtksdaap41>
-References: <1466149440-23889-1-git-send-email-garlic.tseng@mediatek.com>
- <1466149440-23889-7-git-send-email-garlic.tseng@mediatek.com>
- <20160629191322.GT6247@sirena.org.uk>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v4 1/3] ASoC: tegra: add tegra sgtl5000 machine driver
+Date: Thu, 30 Jun 2016 08:46:23 -0500
+Message-ID: <20160630134623.GA12979@rob-hp-laptop>
+References: <1466298002-12576-1-git-send-email-marcel.ziswiler@toradex.com>
+ <1466298002-12576-2-git-send-email-marcel.ziswiler@toradex.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 010682651DB
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2016 15:40:04 +0200 (CEST)
-In-Reply-To: <20160629191322.GT6247@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, ir.lian@mediatek.com, srv_heupstream@mediatek.com, tiwai@suse.de, koro.chen@mediatek.com, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1466298002-12576-2-git-send-email-marcel.ziswiler-2KBjVHiyJgBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Marcel Ziswiler <marcel.ziswiler-2KBjVHiyJgBBDgjK7y7TUQ@public.gmane.org>
+Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Marcel Ziswiler <marcel-mitwqZ+T+m9Wk0Htik3J/w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2016-06-29 at 20:13 +0100, Mark Brown wrote:
-> On Fri, Jun 17, 2016 at 03:43:57PM +0800, Garlic Tseng wrote:
+On Sun, Jun 19, 2016 at 03:00:00AM +0200, Marcel Ziswiler wrote:
+> This binding and driver describe/support playback to headphones, and
+> capture from line-in and microphone.
 > 
-> > +static int mt2701_afe_i2s_set_clkdiv(struct snd_soc_dai *dai, int div_id,
-> > +				     int div)
-> > +{
+> This driver is useful for the Toradex Apalis T30, Apalis TK1 and
+> Colibri T30 modules.
 > 
-> Why are we adding a set_clkdiv() operation?  I would expect the driver
-> to be able to figure things out automatically.
+> Signed-off-by: Marcel Ziswiler <marcel-mitwqZ+T+m9Wk0Htik3J/w@public.gmane.org>
+> Reviewed-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 > 
-> > +	case DIV_ID_MCLK_TO_BCK:
-> > +		afe_priv->i2s_path[i2s_num].div_mclk_to_bck = div;
-> > +		break;
-> > +	case DIV_ID_BCK_TO_LRCK:
-> > +		afe_priv->i2s_path[i2s_num].div_bck_to_lrck = div;
-> > +		break;
+> Signed-off-by: Marcel Ziswiler <marcel.ziswiler-2KBjVHiyJgBBDgjK7y7TUQ@public.gmane.org>
+> ---
 > 
-> Especially in the case where we're configuring LRCLK, that's trivial
-> when we know the sample rate which we have to know anyway.
+> Changes in v4:
+> - simple-audio-card does still not allow for more advanced use cases
+>   like Tegra SoCs
+> - further platform drivers have been accepted since my last attempt
+>   (e.g. rt5677 one)
+> - relevance for one further board the new Toradex Apalis TK1
+> - drop unused sound/jack.h include
+> - in tegra_sgtl5000_driver_remove() pass return value of
+>   snd_soc_unregister_card() on to caller
+> - no longer set owner property in platform_driver to THIS_MODULE
+> - re-based/resend
+> 
+> Changes in v3:
+> - revert to not using simple-audio-card being incompatible with tegra
+> - rebased to for-next
+> 
+> Changes in v2:
+> - using simple-audio-card as suggested by Fabio
+> 
+>  .../bindings/sound/nvidia,tegra-audio-sgtl5000.txt |  42 ++++
 
-Oh... actually I want to say 'div_mclk_over_bck' and 'div_bck_over_lrck'
-I'll fix the naming if we decide to reserve the set_clkdiv() operation.
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 
-For div_bck_over_lrck, yes we only support bck = 64fs now so I'll remove
-it. Maybe in the future we'll allow bck = 32fs for some board and I'll
-send patch on that time.
-
-For div_mclk_over_bck, mt2635 can offer 128fs and 256fs mclk to codec,
-and it depends on the board so I tend to let machine driver configure
-it. However, maybe changing it to div_mclk_over_lrck will be better.
-I'll do the change.
-
-BTW, some patch is applied for the patchset so I need not to send the
-new version but send another patchset, right?
-
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>  sound/soc/tegra/Kconfig                            |  11 ++
+>  sound/soc/tegra/Makefile                           |   2 +
+>  sound/soc/tegra/tegra_sgtl5000.c                   | 212 +++++++++++++++++++++
+>  4 files changed, 267 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-sgtl5000.txt
+>  create mode 100644 sound/soc/tegra/tegra_sgtl5000.c
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
