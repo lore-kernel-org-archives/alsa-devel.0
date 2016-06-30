@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/3] ALSA: control: add dimension validator for
-	userspace element
-Date: Thu, 30 Jun 2016 23:04:44 +0900
-Message-ID: <1467295485-5335-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/3] ALSA: control: add dimension validator for
+	kernel driver
+Date: Thu, 30 Jun 2016 23:04:45 +0900
+Message-ID: <1467295485-5335-4-git-send-email-o-takashi@sakamocchi.jp>
 References: <1467295485-5335-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 1C5672652C3
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 18A3E2651DB
  for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2016 16:04:53 +0200 (CEST)
 In-Reply-To: <1467295485-5335-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,73 +25,88 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-The 'dimen' field in struct snd_ctl_elem_info is used to compose all of
-members in the element as multi-dimensional matrix. The field has four
-members. Each member represents the width in each dimension level by
-element member unit. For example, if the members consist of typical
-two dimensional matrix, the dimen[0] represents the number of rows
-and dimen[1] represents the number of columns (or vise-versa).
+Currently, kernel drivers are allowed to set arbitrary dimension
+information to elements. The total number of members calculated by the
+dimension information should be within the number of members in the
+element, while there's no validator. When userspace applications have quite
+simple implementation, this can cause buffer-over-run over
+'struct snd_ctl_elem_value' data.
 
-The total members in the matrix should be within the number of members in
-the element, while current implementation has no validator of this
-information. In a view of userspace applications, the information must be
-valid so that it cannot cause any bugs such as buffer-over-run.
+This commit adds the validation. Unfortunately, the dimension information
+is set at runtime, thus the validation cannot run in advance.
 
-This commit adds a validator of dimension information for userspace
-applications which add new element sets. When they add the element sets
-with wrong dimension information, they receive -EINVAL.
+As of Linux 4.7, there's no drivers to use the dimen information
+except for Echo Audio PCI cards.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ sound/core/control.c | 48 ++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 32 insertions(+), 16 deletions(-)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index a85d455..af167ff 100644
+index af167ff..4dbff2a 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -805,6 +805,33 @@ static int snd_ctl_elem_list(struct snd_card *card,
- 	return 0;
+@@ -844,28 +844,44 @@ static int snd_ctl_elem_info(struct snd_ctl_file *ctl,
+ 	down_read(&card->controls_rwsem);
+ 	kctl = snd_ctl_find_id(card, &info->id);
+ 	if (kctl == NULL) {
+-		up_read(&card->controls_rwsem);
+-		return -ENOENT;
++		result = -ENOENT;
++		goto end;
+ 	}
+ #ifdef CONFIG_SND_DEBUG
+ 	info->access = 0;
+ #endif
+ 	result = kctl->info(kctl, info);
+-	if (result >= 0) {
+-		snd_BUG_ON(info->access);
+-		index_offset = snd_ctl_get_ioff(kctl, &info->id);
+-		vd = &kctl->vd[index_offset];
+-		snd_ctl_build_ioff(&info->id, kctl, index_offset);
+-		info->access = vd->access;
+-		if (vd->owner) {
+-			info->access |= SNDRV_CTL_ELEM_ACCESS_LOCK;
+-			if (vd->owner == ctl)
+-				info->access |= SNDRV_CTL_ELEM_ACCESS_OWNER;
+-			info->owner = pid_vnr(vd->owner->pid);
+-		} else {
+-			info->owner = -1;
+-		}
++	if (result < 0)
++		goto end;
++
++	snd_BUG_ON(info->access);
++
++	/* This is a driver bug. */
++	if (!validate_dimension(info)) {
++		dev_err(card->dev,
++			"This module has a bug of invalid dimention info.\n");
++		result = -ENODATA;
++		goto end;
+ 	}
++
++	index_offset = snd_ctl_get_ioff(kctl, &info->id);
++	vd = &kctl->vd[index_offset];
++	snd_ctl_build_ioff(&info->id, kctl, index_offset);
++	info->access = vd->access;
++
++	/* This element is not locked by any processes. */
++	if (vd->owner == NULL) {
++		info->owner = -1;
++		goto end;
++	}
++
++	info->owner = pid_vnr(vd->owner->pid);
++	info->access |= SNDRV_CTL_ELEM_ACCESS_LOCK;
++
++	/* This element is locked by this process. */
++	if (vd->owner == ctl)
++		info->access |= SNDRV_CTL_ELEM_ACCESS_OWNER;
++end:
+ 	up_read(&card->controls_rwsem);
+ 	return result;
  }
- 
-+static bool validate_dimension(struct snd_ctl_elem_info *info)
-+{
-+	unsigned int elements;
-+	unsigned int i;
-+
-+	/*
-+	 * When drivers don't use dimen field, this value is zero and pass the
-+	 * validation. Else, calculated number of elements is validated.
-+	 */
-+	elements = info->dimen.d[0];
-+	for (i = 1; i < ARRAY_SIZE(info->dimen.d); ++i) {
-+		if (info->dimen.d[i] == 0)
-+			break;
-+		if (info->dimen.d[i] < 0)
-+			return false;
-+		elements *= info->dimen.d[i];
-+	}
-+
-+	/* The rest of level should be zero. */
-+	for (++i; i < ARRAY_SIZE(info->dimen.d); ++i) {
-+		if (info->dimen.d[i] != 0)
-+			return false;
-+	}
-+
-+	return elements <= info->count;
-+}
-+
- static int snd_ctl_elem_info(struct snd_ctl_file *ctl,
- 			     struct snd_ctl_elem_info *info)
- {
-@@ -1272,6 +1299,8 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	if (info->count < 1 ||
- 	    info->count > max_value_counts[info->type])
- 		return -EINVAL;
-+	if (!validate_dimension(info))
-+		return -EINVAL;
- 	private_size = value_sizes[info->type] * info->count;
- 
- 	/*
 -- 
 2.7.4
