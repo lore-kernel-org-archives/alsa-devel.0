@@ -1,25 +1,17 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH v2 2/6] ASoC: samsung: Add Samsung Low
- Power Audio Subsystem driver
-Date: Thu, 30 Jun 2016 19:16:46 +0200
-Message-ID: <577553FE.6080803@samsung.com>
-References: <1466678715-19962-1-git-send-email-s.nawrocki@samsung.com>
- <1466678715-19962-3-git-send-email-s.nawrocki@samsung.com>
- <20160629215757.GX6247@sirena.org.uk>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH] ASoC: sunxi: fix semicolon.cocci warnings
+Date: Thu, 30 Jun 2016 20:45:52 +0200
+Message-ID: <20160630184552.GA5485@lukather>
+References: <201606302240.066JRFze%fengguang.wu@intel.com>
+ <20160630142810.GA12218@lkp-nex05>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8423289621729348967=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com
- [210.118.77.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 286BA265300
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2016 19:16:59 +0200 (CEST)
-Received: from eucpsbgm1.samsung.com (unknown [203.254.199.244])
- by mailout1.w1.samsung.com
- (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
- with ESMTP id <0O9L007PKHC6N290@mailout1.w1.samsung.com> for
- alsa-devel@alsa-project.org; Thu, 30 Jun 2016 18:16:54 +0100 (BST)
-In-reply-to: <20160629215757.GX6247@sirena.org.uk>
+Received: from mail.free-electrons.com (down.free-electrons.com
+ [37.187.137.238])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9BAC2651DB
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2016 20:45:53 +0200 (CEST)
+In-Reply-To: <20160630142810.GA12218@lkp-nex05>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,45 +21,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, b.zolnierkie@samsung.com, inki.dae@samsung.com, Beomho Seo <beomho.seo@samsung.com>, ideal.song@samsung.com
+To: kbuild test robot <fengguang.wu@intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/29/2016 11:57 PM, Mark Brown wrote:
-> On Thu, Jun 23, 2016 at 12:45:11PM +0200, Sylwester Nawrocki wrote:
-...
->> > This patch adds LPASS driver. The LPASS (Low Power Audio Subsystem)
->> > is a special subsystem that supports audio playback with low power
->> > consumption. This is a minimal driver which prepares resources for
->> > IP blocks like I2S, audio DMA and UART.
->> > Also system power ops are added to ensure the Audio Subsystem is
->> > operational after system suspend/resume cycle.
->
-> This is so trivial that I'm wondering why you even need it, it does
-> essentially nothing except for manage power on and off, and that isn't
-> synced up with the rest of the audio subsystem in any discernable way.
-> Previous Samsung SoCs have quite happily ignored their LPASS subsystems
-> in mainline.  As things stand I'm concerned that systems may get broken
-> if more functionality is added without the joining up with the rest of
-> the audio hardware via a card, there's not even the hooks which would
-> allow that.
 
-Sorry, I didn't notice this e-mail earlier.  With previous Exynos versions
-the LPASS (or AudioSS) was mainly about the embedded audio DSP processor
-(at least WRT to SFRs), which was not required for boards supported in 
-the mainline kernel. Since e.g. Exynos5433 the LPASS SFR region contains 
-also entries related to other IP blocks, like I2S or DMAC.  Even though 
-functionality covered by these registers is still rather trivial, like 
-SW resets and unmasking interrupts, it's essential for the whole audio 
-subsystem operation. The intention was to have in future the LPASS driver 
-covering any functionality provided by the embedded audio dedicated MCU.
-I'm afraid we have to handle those power sequences in central place to
-ensure proper SoC operation. I would also rather avoid adding any exynos 
-quirks to the PL330 DMAC driver. 
+--===============8423289621729348967==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
+Content-Disposition: inline
 
-I agree this driver is currently detached from the rest, while it would
-be good at the card to ensure the required resources are prepared.
-How about making LPASS registering a component and then adding it at
-the card as aux_dev? I would move some parts to the component's probe()
-callback and with component's probe_order specified a proper 
-initialization sequence could be ensured.
+
+--opJtzjQTFsWo+cga
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+1;4205;0c
+On Thu, Jun 30, 2016 at 10:28:10PM +0800, kbuild test robot wrote:
+> sound/soc/sunxi/sun4i-i2s.c:624:2-3: Unneeded semicolon
+>=20
+>=20
+>  Remove unneeded semicolon.
+>=20
+> Generated by: scripts/coccinelle/misc/semicolon.cocci
+>=20
+> CC: Maxime Ripard <maxime.ripard@free-electrons.com>
+> Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+
+Thanks,
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+
+--opJtzjQTFsWo+cga
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJXdWjgAAoJEBx+YmzsjxAgxYsP/iSq0U0EcJcPrXhJh+WW0jrF
+Z4E7Y9H0kozjxAcRI/am9B5Mw8HUxUQ/OeDYex2UHVAhYTM7zC1pjCuf7hHi/t0x
+JeSfjFNvmNfl1hqCigeWaewuSr4RoPw81bWVRJDF+fDa3D8ZWbBRyH75B+ftuCZl
+tdX3s2TuNoPRNfbg2Hn/EnDRVBEvgEEBDY+s5eKb4fK738TSDBMacgVkHCzvIz49
+SjYcbVc64K3EaEwiAeEnIU2FCUM5f5yiip5ORtp6CppO49hSXCxKYlOJxlhrZuDr
+VxVpUtgy0ZTIYz8m1qqy8HkNLsTe1Bd581R5NXGmXO6LiOD1xnqUGBUdp2Bsn1l0
+fbS/95yaob7sDGGFOkcvbH+BFfAbeR3uVxLfXJg/bQ6583vIED0I6cJRvPAX+9a1
+aNTg22r1/G18iqQfC05eTIPvYYQpuEwdqadvYK4bKOOJiVf2uUwBZ3uSZBbNZXQw
+I42pfJ8pS0RDo4YXNR9cDW+S20+ciqB5rI7ILCcskDBeZ8nA01pq9+5dKb1sY4/L
+ypDf4W/Kq6ndEl5dc/lBH20ebPoUisHP/FZHnYVno+G601JnX2IL8QZyuZ/PrLnl
+HASOwjZML/+YFnE5Qy5lE9GqlbK1io4FqEfQBDXxC9QGEMIXmFEG019T4tdamoOk
+bZbkqr3VVNY9KhLnD5/Z
+=WK1i
+-----END PGP SIGNATURE-----
+
+--opJtzjQTFsWo+cga--
+
+--===============8423289621729348967==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8423289621729348967==--
