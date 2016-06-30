@@ -1,62 +1,91 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 1/3] ASoC: tegra: add tegra sgtl5000 machine driver
-Date: Thu, 30 Jun 2016 08:46:23 -0500
-Message-ID: <20160630134623.GA12979@rob-hp-laptop>
-References: <1466298002-12576-1-git-send-email-marcel.ziswiler@toradex.com>
- <1466298002-12576-2-git-send-email-marcel.ziswiler@toradex.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/3] ALSA: echoaudio: purge contradictions
+	between dimension matrix members and total number of members
+Date: Thu, 30 Jun 2016 23:04:43 +0900
+Message-ID: <1467295485-5335-2-git-send-email-o-takashi@sakamocchi.jp>
+References: <1467295485-5335-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1466298002-12576-2-git-send-email-marcel.ziswiler-2KBjVHiyJgBBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Marcel Ziswiler <marcel.ziswiler-2KBjVHiyJgBBDgjK7y7TUQ@public.gmane.org>
-Cc: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Marcel Ziswiler <marcel-mitwqZ+T+m9Wk0Htik3J/w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 1D6C4265300
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2016 16:04:53 +0200 (CEST)
+In-Reply-To: <1467295485-5335-1-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jun 19, 2016 at 03:00:00AM +0200, Marcel Ziswiler wrote:
-> This binding and driver describe/support playback to headphones, and
-> capture from line-in and microphone.
-> 
-> This driver is useful for the Toradex Apalis T30, Apalis TK1 and
-> Colibri T30 modules.
-> 
-> Signed-off-by: Marcel Ziswiler <marcel-mitwqZ+T+m9Wk0Htik3J/w@public.gmane.org>
-> Reviewed-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-> 
-> Signed-off-by: Marcel Ziswiler <marcel.ziswiler-2KBjVHiyJgBBDgjK7y7TUQ@public.gmane.org>
-> ---
-> 
-> Changes in v4:
-> - simple-audio-card does still not allow for more advanced use cases
->   like Tegra SoCs
-> - further platform drivers have been accepted since my last attempt
->   (e.g. rt5677 one)
-> - relevance for one further board the new Toradex Apalis TK1
-> - drop unused sound/jack.h include
-> - in tegra_sgtl5000_driver_remove() pass return value of
->   snd_soc_unregister_card() on to caller
-> - no longer set owner property in platform_driver to THIS_MODULE
-> - re-based/resend
-> 
-> Changes in v3:
-> - revert to not using simple-audio-card being incompatible with tegra
-> - rebased to for-next
-> 
-> Changes in v2:
-> - using simple-audio-card as suggested by Fabio
-> 
->  .../bindings/sound/nvidia,tegra-audio-sgtl5000.txt |  42 ++++
+Currently, sound device drivers for PCI cards produced by Echo Audio
+support dimension parameter of element information. But the information
+has contradictions to the number of members of each element. I guess that
+this comes from the assumption that these sound cards are used only by
+'echomixer' in userspace. But ideally, they should be used with usual ALSA
+control applications.
 
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+This commit removes the contradiction. As a result, 'Monitor Mixer Volume'
+and 'VMixer Volume' elements are shown in usual ALSA control applications
+such as 'amixer' and 'alsamixer' in series.
 
->  sound/soc/tegra/Kconfig                            |  11 ++
->  sound/soc/tegra/Makefile                           |   2 +
->  sound/soc/tegra/tegra_sgtl5000.c                   | 212 +++++++++++++++++++++
->  4 files changed, 267 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-sgtl5000.txt
->  create mode 100644 sound/soc/tegra/tegra_sgtl5000.c
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/pci/echoaudio/echoaudio.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+index 1cb85ae..3a8e8d5 100644
+--- a/sound/pci/echoaudio/echoaudio.c
++++ b/sound/pci/echoaudio/echoaudio.c
+@@ -1272,11 +1272,11 @@ static int snd_echo_mixer_info(struct snd_kcontrol *kcontrol,
+ 
+ 	chip = snd_kcontrol_chip(kcontrol);
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = 1;
+ 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
+ 	uinfo->value.integer.max = ECHOGAIN_MAXOUT;
+ 	uinfo->dimen.d[0] = num_busses_out(chip);
+ 	uinfo->dimen.d[1] = num_busses_in(chip);
++	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1];
+ 	return 0;
+ }
+ 
+@@ -1344,11 +1344,11 @@ static int snd_echo_vmixer_info(struct snd_kcontrol *kcontrol,
+ 
+ 	chip = snd_kcontrol_chip(kcontrol);
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = 1;
+ 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
+ 	uinfo->value.integer.max = ECHOGAIN_MAXOUT;
+ 	uinfo->dimen.d[0] = num_busses_out(chip);
+ 	uinfo->dimen.d[1] = num_pipes_out(chip);
++	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1];
+ 	return 0;
+ }
+ 
+@@ -1728,7 +1728,6 @@ static int snd_echo_vumeters_info(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_info *uinfo)
+ {
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = 96;
+ 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
+ 	uinfo->value.integer.max = 0;
+ #ifdef ECHOCARD_HAS_VMIXER
+@@ -1738,6 +1737,7 @@ static int snd_echo_vumeters_info(struct snd_kcontrol *kcontrol,
+ #endif
+ 	uinfo->dimen.d[1] = 16;	/* 16 channels */
+ 	uinfo->dimen.d[2] = 2;	/* 0=level, 1=peak */
++	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1] * uinfo->dimen.d[2];
+ 	return 0;
+ }
+ 
+-- 
+2.7.4
