@@ -1,17 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: add documents for mt2701" to the asoc tree
-Date: Wed, 29 Jun 2016 20:16:13 +0100
-Message-ID: <E1bIKy5-0007Bm-Ix@finisterre>
-References: <1464929784-5489-5-git-send-email-garlic.tseng@mediatek.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1464929784-5489-5-git-send-email-garlic.tseng@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, tiwai@suse.de, alsa-devel@alsa-project.org, ir.lian@mediatek.com, srv_heupstream@mediatek.com, garlic.tseng@mediatek.com, linux-kernel@vger.kernel.org, koro.chen@mediatek.com, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.com, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: sunxi: Add Allwinner A10 Digital Audio
+	driver" to the asoc tree
+Date: Thu, 30 Jun 2016 13:15:21 +0100
+Message-ID: <E1bIasL-00011H-F4@finisterre>
+References: <20160615211123.31068-3-maxime.ripard@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B21EE265205
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2016 14:15:47 +0200 (CEST)
+In-Reply-To: <20160615211123.31068-3-maxime.ripard@free-electrons.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, gianfranco@moddevices.com, Andrea Venturi <ennesimamail.av@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Code Kipper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: add documents for mt2701
+   ASoC: sunxi: Add Allwinner A10 Digital Audio driver
 
 has been applied to the asoc tree at
 
@@ -36,226 +53,763 @@ to this mail.
 Thanks,
 Mark
 
->From d3986650647d5e5478b4c64c1b01098628577ac1 Mon Sep 17 00:00:00 2001
-From: Garlic Tseng <garlic.tseng@mediatek.com>
-Date: Fri, 17 Jun 2016 15:43:55 +0800
-Subject: [PATCH] ASoC: mediatek: add documents for mt2701
+>From fa7c0d13cb26216f6dec5ef19e028e68b300530d Mon Sep 17 00:00:00 2001
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Date: Wed, 15 Jun 2016 23:11:21 +0200
+Subject: [PATCH] ASoC: sunxi: Add Allwinner A10 Digital Audio driver
 
-add mt2701-afe-pcm.txt and mt2701-cs42448.txt for mt2701
+The Allwinner A10 and later come with a hardware block that used for the
+PCM and I2S interfaces.
 
-Signed-off-by: Garlic Tseng <garlic.tseng@mediatek.com>
+Add a driver for it in ASoC.
+
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Tested-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/mt2701-afe-pcm.txt   | 150 +++++++++++++++++++++
- .../devicetree/bindings/sound/mt2701-cs42448.txt   |  43 ++++++
- 2 files changed, 193 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
- create mode 100644 Documentation/devicetree/bindings/sound/mt2701-cs42448.txt
+ sound/soc/sunxi/Kconfig     |   9 +
+ sound/soc/sunxi/Makefile    |   2 +-
+ sound/soc/sunxi/sun4i-i2s.c | 703 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 713 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/sunxi/sun4i-i2s.c
 
-diff --git a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
+diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+index ae42294ef688..2a954bd01fd8 100644
+--- a/sound/soc/sunxi/Kconfig
++++ b/sound/soc/sunxi/Kconfig
+@@ -8,6 +8,15 @@ config SND_SUN4I_CODEC
+ 	  Select Y or M to add support for the Codec embedded in the Allwinner
+ 	  A10 and affiliated SoCs.
+ 
++config SND_SUN4I_I2S
++	tristate "Allwinner A10 I2S Support"
++	select SND_SOC_GENERIC_DMAENGINE_PCM
++	select REGMAP_MMIO
++	help
++	  Say Y or M if you want to add support for codecs attached to
++	  the Allwinner A10 I2S. You will also need to select the
++	  individual machine drivers to support below.
++
+ config SND_SUN4I_SPDIF
+ 	tristate "Allwinner A10 SPDIF Support"
+ 	depends on OF
+diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
+index 8f5e889667f1..604c7b842837 100644
+--- a/sound/soc/sunxi/Makefile
++++ b/sound/soc/sunxi/Makefile
+@@ -1,3 +1,3 @@
+ obj-$(CONFIG_SND_SUN4I_CODEC) += sun4i-codec.o
+-
++obj-$(CONFIG_SND_SUN4I_I2S) += sun4i-i2s.o
+ obj-$(CONFIG_SND_SUN4I_SPDIF) += sun4i-spdif.o
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
 new file mode 100644
-index 000000000000..3e623a724e55
+index 000000000000..72ed2b8a93e7
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-@@ -0,0 +1,150 @@
-+Mediatek AFE PCM controller for mt2701
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -0,0 +1,703 @@
++/*
++ * Copyright (C) 2015 Andrea Venturi
++ * Andrea Venturi <be17068@iperbole.bo.it>
++ *
++ * Copyright (C) 2016 Maxime Ripard
++ * Maxime Ripard <maxime.ripard@free-electrons.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ */
 +
-+Required properties:
-+- compatible = "mediatek,mt2701-audio";
-+- reg: register location and size
-+- interrupts: Should contain AFE interrupt
-+- clock-names: should have these clock names:
-+		"infra_sys_audio_clk",
-+		"top_audio_mux1_sel",
-+		"top_audio_mux2_sel",
-+		"top_audio_mux1_div",
-+		"top_audio_mux2_div",
-+		"top_audio_48k_timing",
-+		"top_audio_44k_timing",
-+		"top_audpll_mux_sel",
-+		"top_apll_sel",
-+		"top_aud1_pll_98M",
-+		"top_aud2_pll_90M",
-+		"top_hadds2_pll_98M",
-+		"top_hadds2_pll_294M",
-+		"top_audpll",
-+		"top_audpll_d4",
-+		"top_audpll_d8",
-+		"top_audpll_d16",
-+		"top_audpll_d24",
-+		"top_audintbus_sel",
-+		"clk_26m",
-+		"top_syspll1_d4",
-+		"top_aud_k1_src_sel",
-+		"top_aud_k2_src_sel",
-+		"top_aud_k3_src_sel",
-+		"top_aud_k4_src_sel",
-+		"top_aud_k5_src_sel",
-+		"top_aud_k6_src_sel",
-+		"top_aud_k1_src_div",
-+		"top_aud_k2_src_div",
-+		"top_aud_k3_src_div",
-+		"top_aud_k4_src_div",
-+		"top_aud_k5_src_div",
-+		"top_aud_k6_src_div",
-+		"top_aud_i2s1_mclk",
-+		"top_aud_i2s2_mclk",
-+		"top_aud_i2s3_mclk",
-+		"top_aud_i2s4_mclk",
-+		"top_aud_i2s5_mclk",
-+		"top_aud_i2s6_mclk",
-+		"top_asm_m_sel",
-+		"top_asm_h_sel",
-+		"top_univpll2_d4",
-+		"top_univpll2_d2",
-+		"top_syspll_d5";
++#include <linux/clk.h>
++#include <linux/dmaengine.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
++#include <linux/regmap.h>
 +
-+Example:
++#include <sound/dmaengine_pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-dai.h>
 +
-+	afe: mt2701-afe-pcm@11220000 {
-+		compatible = "mediatek,mt2701-audio";
-+		reg = <0 0x11220000 0 0x2000>,
-+		      <0 0x112A0000 0 0x20000>;
-+		interrupts = <GIC_SPI 104 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
-+		clocks = <&infracfg CLK_INFRA_AUDIO>,
-+			 <&topckgen CLK_TOP_AUD_MUX1_SEL>,
-+			 <&topckgen CLK_TOP_AUD_MUX2_SEL>,
-+			 <&topckgen CLK_TOP_AUD_MUX1_DIV>,
-+			 <&topckgen CLK_TOP_AUD_MUX2_DIV>,
-+			 <&topckgen CLK_TOP_AUD_48K_TIMING>,
-+			 <&topckgen CLK_TOP_AUD_44K_TIMING>,
-+			 <&topckgen CLK_TOP_AUDPLL_MUX_SEL>,
-+			 <&topckgen CLK_TOP_APLL_SEL>,
-+			 <&topckgen CLK_TOP_AUD1PLL_98M>,
-+			 <&topckgen CLK_TOP_AUD2PLL_90M>,
-+			 <&topckgen CLK_TOP_HADDS2PLL_98M>,
-+			 <&topckgen CLK_TOP_HADDS2PLL_294M>,
-+			 <&topckgen CLK_TOP_AUDPLL>,
-+			 <&topckgen CLK_TOP_AUDPLL_D4>,
-+			 <&topckgen CLK_TOP_AUDPLL_D8>,
-+			 <&topckgen CLK_TOP_AUDPLL_D16>,
-+			 <&topckgen CLK_TOP_AUDPLL_D24>,
-+			 <&topckgen CLK_TOP_AUDINTBUS_SEL>,
-+			 <&clk26m>,
-+			 <&topckgen CLK_TOP_SYSPLL1_D4>,
-+			 <&topckgen CLK_TOP_AUD_K1_SRC_SEL>,
-+			 <&topckgen CLK_TOP_AUD_K2_SRC_SEL>,
-+			 <&topckgen CLK_TOP_AUD_K3_SRC_SEL>,
-+			 <&topckgen CLK_TOP_AUD_K4_SRC_SEL>,
-+			 <&topckgen CLK_TOP_AUD_K5_SRC_SEL>,
-+			 <&topckgen CLK_TOP_AUD_K6_SRC_SEL>,
-+			 <&topckgen CLK_TOP_AUD_K1_SRC_DIV>,
-+			 <&topckgen CLK_TOP_AUD_K2_SRC_DIV>,
-+			 <&topckgen CLK_TOP_AUD_K3_SRC_DIV>,
-+			 <&topckgen CLK_TOP_AUD_K4_SRC_DIV>,
-+			 <&topckgen CLK_TOP_AUD_K5_SRC_DIV>,
-+			 <&topckgen CLK_TOP_AUD_K6_SRC_DIV>,
-+			 <&topckgen CLK_TOP_AUD_I2S1_MCLK>,
-+			 <&topckgen CLK_TOP_AUD_I2S2_MCLK>,
-+			 <&topckgen CLK_TOP_AUD_I2S3_MCLK>,
-+			 <&topckgen CLK_TOP_AUD_I2S4_MCLK>,
-+			 <&topckgen CLK_TOP_AUD_I2S5_MCLK>,
-+			 <&topckgen CLK_TOP_AUD_I2S6_MCLK>,
-+			 <&topckgen CLK_TOP_ASM_M_SEL>,
-+			 <&topckgen CLK_TOP_ASM_H_SEL>,
-+			 <&topckgen CLK_TOP_UNIVPLL2_D4>,
-+			 <&topckgen CLK_TOP_UNIVPLL2_D2>,
-+			 <&topckgen CLK_TOP_SYSPLL_D5>;
++#define SUN4I_I2S_CTRL_REG		0x00
++#define SUN4I_I2S_CTRL_SDO_EN_MASK		GENMASK(11, 8)
++#define SUN4I_I2S_CTRL_SDO_EN(sdo)			BIT(8 + (sdo))
++#define SUN4I_I2S_CTRL_MODE_MASK		BIT(5)
++#define SUN4I_I2S_CTRL_MODE_SLAVE			(1 << 5)
++#define SUN4I_I2S_CTRL_MODE_MASTER			(0 << 5)
++#define SUN4I_I2S_CTRL_TX_EN			BIT(2)
++#define SUN4I_I2S_CTRL_RX_EN			BIT(1)
++#define SUN4I_I2S_CTRL_GL_EN			BIT(0)
 +
-+		clock-names = "infra_sys_audio_clk",
-+			      "top_audio_mux1_sel",
-+			      "top_audio_mux2_sel",
-+			      "top_audio_mux1_div",
-+			      "top_audio_mux2_div",
-+			      "top_audio_48k_timing",
-+			      "top_audio_44k_timing",
-+			      "top_audpll_mux_sel",
-+			      "top_apll_sel",
-+			      "top_aud1_pll_98M",
-+			      "top_aud2_pll_90M",
-+			      "top_hadds2_pll_98M",
-+			      "top_hadds2_pll_294M",
-+			      "top_audpll",
-+			      "top_audpll_d4",
-+			      "top_audpll_d8",
-+			      "top_audpll_d16",
-+			      "top_audpll_d24",
-+			      "top_audintbus_sel",
-+			      "clk_26m",
-+			      "top_syspll1_d4",
-+			      "top_aud_k1_src_sel",
-+			      "top_aud_k2_src_sel",
-+			      "top_aud_k3_src_sel",
-+			      "top_aud_k4_src_sel",
-+			      "top_aud_k5_src_sel",
-+			      "top_aud_k6_src_sel",
-+			      "top_aud_k1_src_div",
-+			      "top_aud_k2_src_div",
-+			      "top_aud_k3_src_div",
-+			      "top_aud_k4_src_div",
-+			      "top_aud_k5_src_div",
-+			      "top_aud_k6_src_div",
-+			      "top_aud_i2s1_mclk",
-+			      "top_aud_i2s2_mclk",
-+			      "top_aud_i2s3_mclk",
-+			      "top_aud_i2s4_mclk",
-+			      "top_aud_i2s5_mclk",
-+			      "top_aud_i2s6_mclk",
-+			      "top_asm_m_sel",
-+			      "top_asm_h_sel",
-+			      "top_univpll2_d4",
-+			      "top_univpll2_d2",
-+			      "top_syspll_d5";
++#define SUN4I_I2S_FMT0_REG		0x04
++#define SUN4I_I2S_FMT0_LRCLK_POLARITY_MASK	BIT(7)
++#define SUN4I_I2S_FMT0_LRCLK_POLARITY_INVERTED		(1 << 7)
++#define SUN4I_I2S_FMT0_LRCLK_POLARITY_NORMAL		(0 << 7)
++#define SUN4I_I2S_FMT0_BCLK_POLARITY_MASK	BIT(6)
++#define SUN4I_I2S_FMT0_BCLK_POLARITY_INVERTED		(1 << 6)
++#define SUN4I_I2S_FMT0_BCLK_POLARITY_NORMAL		(0 << 6)
++#define SUN4I_I2S_FMT0_SR_MASK			GENMASK(5, 4)
++#define SUN4I_I2S_FMT0_SR(sr)				((sr) << 4)
++#define SUN4I_I2S_FMT0_WSS_MASK			GENMASK(3, 2)
++#define SUN4I_I2S_FMT0_WSS(wss)				((wss) << 2)
++#define SUN4I_I2S_FMT0_FMT_MASK			GENMASK(1, 0)
++#define SUN4I_I2S_FMT0_FMT_RIGHT_J			(2 << 0)
++#define SUN4I_I2S_FMT0_FMT_LEFT_J			(1 << 0)
++#define SUN4I_I2S_FMT0_FMT_I2S				(0 << 0)
++
++#define SUN4I_I2S_FMT1_REG		0x08
++#define SUN4I_I2S_FIFO_TX_REG		0x0c
++#define SUN4I_I2S_FIFO_RX_REG		0x10
++
++#define SUN4I_I2S_FIFO_CTRL_REG		0x14
++#define SUN4I_I2S_FIFO_CTRL_FLUSH_TX		BIT(25)
++#define SUN4I_I2S_FIFO_CTRL_FLUSH_RX		BIT(24)
++#define SUN4I_I2S_FIFO_CTRL_TX_MODE_MASK	BIT(2)
++#define SUN4I_I2S_FIFO_CTRL_TX_MODE(mode)		((mode) << 2)
++#define SUN4I_I2S_FIFO_CTRL_RX_MODE_MASK	GENMASK(1, 0)
++#define SUN4I_I2S_FIFO_CTRL_RX_MODE(mode)		(mode)
++
++#define SUN4I_I2S_FIFO_STA_REG		0x18
++
++#define SUN4I_I2S_DMA_INT_CTRL_REG	0x1c
++#define SUN4I_I2S_DMA_INT_CTRL_TX_DRQ_EN	BIT(7)
++#define SUN4I_I2S_DMA_INT_CTRL_RX_DRQ_EN	BIT(3)
++
++#define SUN4I_I2S_INT_STA_REG		0x20
++
++#define SUN4I_I2S_CLK_DIV_REG		0x24
++#define SUN4I_I2S_CLK_DIV_MCLK_EN		BIT(7)
++#define SUN4I_I2S_CLK_DIV_BCLK_MASK		GENMASK(6, 4)
++#define SUN4I_I2S_CLK_DIV_BCLK(bclk)			((bclk) << 4)
++#define SUN4I_I2S_CLK_DIV_MCLK_MASK		GENMASK(3, 0)
++#define SUN4I_I2S_CLK_DIV_MCLK(mclk)			((mclk) << 0)
++
++#define SUN4I_I2S_RX_CNT_REG		0x28
++#define SUN4I_I2S_TX_CNT_REG		0x2c
++
++#define SUN4I_I2S_TX_CHAN_SEL_REG	0x30
++#define SUN4I_I2S_TX_CHAN_SEL(num_chan)		(((num_chan) - 1) << 0)
++
++#define SUN4I_I2S_TX_CHAN_MAP_REG	0x34
++#define SUN4I_I2S_TX_CHAN_MAP(chan, sample)	((sample) << (chan << 2))
++
++#define SUN4I_I2S_RX_CHAN_SEL_REG	0x38
++#define SUN4I_I2S_RX_CHAN_MAP_REG	0x3c
++
++struct sun4i_i2s {
++	struct clk	*bus_clk;
++	struct clk	*mod_clk;
++	struct regmap	*regmap;
++
++	struct snd_dmaengine_dai_dma_data	playback_dma_data;
++};
++
++struct sun4i_i2s_clk_div {
++	u8	div;
++	u8	val;
++};
++
++static const struct sun4i_i2s_clk_div sun4i_i2s_bclk_div[] = {
++	{ .div = 2, .val = 0 },
++	{ .div = 4, .val = 1 },
++	{ .div = 6, .val = 2 },
++	{ .div = 8, .val = 3 },
++	{ .div = 12, .val = 4 },
++	{ .div = 16, .val = 5 },
++};
++
++static const struct sun4i_i2s_clk_div sun4i_i2s_mclk_div[] = {
++	{ .div = 1, .val = 0 },
++	{ .div = 2, .val = 1 },
++	{ .div = 4, .val = 2 },
++	{ .div = 6, .val = 3 },
++	{ .div = 8, .val = 4 },
++	{ .div = 12, .val = 5 },
++	{ .div = 16, .val = 6 },
++	{ .div = 24, .val = 7 },
++};
++
++static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
++				  unsigned int oversample_rate,
++				  unsigned int word_size)
++{
++	int div = oversample_rate / word_size / 2;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(sun4i_i2s_bclk_div); i++) {
++		const struct sun4i_i2s_clk_div *bdiv = &sun4i_i2s_bclk_div[i];
++
++		if (bdiv->div == div)
++			return bdiv->val;
++	}
++
++	return -EINVAL;
++}
++
++static int sun4i_i2s_get_mclk_div(struct sun4i_i2s *i2s,
++				  unsigned int oversample_rate,
++				  unsigned int module_rate,
++				  unsigned int sampling_rate)
++{
++	int div = module_rate / sampling_rate / oversample_rate;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(sun4i_i2s_mclk_div); i++) {
++		const struct sun4i_i2s_clk_div *mdiv = &sun4i_i2s_mclk_div[i];
++
++		if (mdiv->div == div)
++			return mdiv->val;
++	}
++
++	return -EINVAL;
++}
++
++static int sun4i_i2s_oversample_rates[] = { 128, 192, 256, 384, 512, 768 };
++
++static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
++				  unsigned int rate,
++				  unsigned int word_size)
++{
++	unsigned int clk_rate;
++	int bclk_div, mclk_div;
++	int ret, i;
++
++	switch (rate) {
++	case 176400:
++	case 88200:
++	case 44100:
++	case 22050:
++	case 11025:
++		clk_rate = 22579200;
++		break;
++
++	case 192000:
++	case 128000:
++	case 96000:
++	case 64000:
++	case 48000:
++	case 32000:
++	case 24000:
++	case 16000:
++	case 12000:
++	case 8000:
++		clk_rate = 24576000;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	ret = clk_set_rate(i2s->mod_clk, clk_rate);
++	if (ret)
++		return ret;
++
++	/* Always favor the highest oversampling rate */
++	for (i = (ARRAY_SIZE(sun4i_i2s_oversample_rates) - 1); i >= 0; i--) {
++		unsigned int oversample_rate = sun4i_i2s_oversample_rates[i];
++
++		bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
++						  word_size);
++		mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
++						  clk_rate,
++						  rate);
++
++		if ((bclk_div >= 0) && (mclk_div >= 0))
++			break;
++	}
++
++	if ((bclk_div < 0) || (mclk_div < 0))
++		return -EINVAL;
++
++	regmap_write(i2s->regmap, SUN4I_I2S_CLK_DIV_REG,
++		     SUN4I_I2S_CLK_DIV_BCLK(bclk_div) |
++		     SUN4I_I2S_CLK_DIV_MCLK(mclk_div) |
++		     SUN4I_I2S_CLK_DIV_MCLK_EN);
++
++	return 0;
++}
++
++static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
++			       struct snd_pcm_hw_params *params,
++			       struct snd_soc_dai *dai)
++{
++	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++	int sr, wss;
++	u32 width;
++
++	if (params_channels(params) != 2)
++		return -EINVAL;
++
++	switch (params_physical_width(params)) {
++	case 16:
++		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++		break;
++	default:
++		return -EINVAL;
++	}
++	i2s->playback_dma_data.addr_width = width;
++
++	switch (params_width(params)) {
++	case 16:
++		sr = 0;
++		wss = 0;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
++			   SUN4I_I2S_FMT0_WSS_MASK | SUN4I_I2S_FMT0_SR_MASK,
++			   SUN4I_I2S_FMT0_WSS(wss) | SUN4I_I2S_FMT0_SR(sr));
++
++	return sun4i_i2s_set_clk_rate(i2s, params_rate(params),
++				      params_width(params));
++}
++
++static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++	u32 val;
++
++	/* DAI Mode */
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		val = SUN4I_I2S_FMT0_FMT_I2S;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		val = SUN4I_I2S_FMT0_FMT_LEFT_J;
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		val = SUN4I_I2S_FMT0_FMT_RIGHT_J;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
++			   SUN4I_I2S_FMT0_FMT_MASK,
++			   val);
++
++	/* DAI clock polarity */
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_IB_IF:
++		/* Invert both clocks */
++		val = SUN4I_I2S_FMT0_BCLK_POLARITY_INVERTED |
++			SUN4I_I2S_FMT0_LRCLK_POLARITY_INVERTED;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		/* Invert bit clock */
++		val = SUN4I_I2S_FMT0_BCLK_POLARITY_INVERTED |
++			SUN4I_I2S_FMT0_LRCLK_POLARITY_NORMAL;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		/* Invert frame clock */
++		val = SUN4I_I2S_FMT0_LRCLK_POLARITY_INVERTED |
++			SUN4I_I2S_FMT0_BCLK_POLARITY_NORMAL;
++		break;
++	case SND_SOC_DAIFMT_NB_NF:
++		/* Nothing to do for both normal cases */
++		val = SUN4I_I2S_FMT0_BCLK_POLARITY_NORMAL |
++			SUN4I_I2S_FMT0_LRCLK_POLARITY_NORMAL;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
++			   SUN4I_I2S_FMT0_BCLK_POLARITY_MASK |
++			   SUN4I_I2S_FMT0_LRCLK_POLARITY_MASK,
++			   val);
++
++	/* DAI clock master masks */
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++		/* BCLK and LRCLK master */
++		val = SUN4I_I2S_CTRL_MODE_MASTER;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFM:
++		/* BCLK and LRCLK slave */
++		val = SUN4I_I2S_CTRL_MODE_SLAVE;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
++			   SUN4I_I2S_CTRL_MODE_MASK,
++			   val);
++
++	/* Set significant bits in our FIFOs */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
++			   SUN4I_I2S_FIFO_CTRL_TX_MODE_MASK |
++			   SUN4I_I2S_FIFO_CTRL_RX_MODE_MASK,
++			   SUN4I_I2S_FIFO_CTRL_TX_MODE(1) |
++			   SUN4I_I2S_FIFO_CTRL_RX_MODE(1));
++	return 0;
++}
++
++static void sun4i_i2s_start_playback(struct sun4i_i2s *i2s)
++{
++	/* Flush TX FIFO */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
++			   SUN4I_I2S_FIFO_CTRL_FLUSH_TX,
++			   SUN4I_I2S_FIFO_CTRL_FLUSH_TX);
++
++	/* Clear TX counter */
++	regmap_write(i2s->regmap, SUN4I_I2S_TX_CNT_REG, 0);
++
++	/* Enable TX Block */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
++			   SUN4I_I2S_CTRL_TX_EN,
++			   SUN4I_I2S_CTRL_TX_EN);
++
++	/* Enable TX DRQ */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_DMA_INT_CTRL_REG,
++			   SUN4I_I2S_DMA_INT_CTRL_TX_DRQ_EN,
++			   SUN4I_I2S_DMA_INT_CTRL_TX_DRQ_EN);
++}
++
++
++static void sun4i_i2s_stop_playback(struct sun4i_i2s *i2s)
++{
++	/* Disable TX Block */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
++			   SUN4I_I2S_CTRL_TX_EN,
++			   0);
++
++	/* Disable TX DRQ */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_DMA_INT_CTRL_REG,
++			   SUN4I_I2S_DMA_INT_CTRL_TX_DRQ_EN,
++			   0);
++}
++
++static int sun4i_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
++			     struct snd_soc_dai *dai)
++{
++	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			sun4i_i2s_start_playback(i2s);
++		else
++			return -EINVAL;
++		break;
++
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			sun4i_i2s_stop_playback(i2s);
++		else
++			return -EINVAL;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int sun4i_i2s_startup(struct snd_pcm_substream *substream,
++			     struct snd_soc_dai *dai)
++{
++	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++
++	/* Enable the whole hardware block */
++	regmap_write(i2s->regmap, SUN4I_I2S_CTRL_REG,
++		     SUN4I_I2S_CTRL_GL_EN);
++
++	/* Enable the first output line */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
++			   SUN4I_I2S_CTRL_SDO_EN_MASK,
++			   SUN4I_I2S_CTRL_SDO_EN(0));
++
++	/* Enable the first two channels */
++	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_SEL_REG,
++		     SUN4I_I2S_TX_CHAN_SEL(2));
++
++	/* Map them to the two first samples coming in */
++	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG,
++		     SUN4I_I2S_TX_CHAN_MAP(0, 0) | SUN4I_I2S_TX_CHAN_MAP(1, 1));
++
++	return clk_prepare_enable(i2s->mod_clk);
++}
++
++static void sun4i_i2s_shutdown(struct snd_pcm_substream *substream,
++			       struct snd_soc_dai *dai)
++{
++	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++
++	clk_disable_unprepare(i2s->mod_clk);
++
++	/* Disable our output lines */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
++			   SUN4I_I2S_CTRL_SDO_EN_MASK, 0);
++
++	/* Disable the whole hardware block */
++	regmap_write(i2s->regmap, SUN4I_I2S_CTRL_REG, 0);
++}
++
++static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
++	.hw_params	= sun4i_i2s_hw_params,
++	.set_fmt	= sun4i_i2s_set_fmt,
++	.shutdown	= sun4i_i2s_shutdown,
++	.startup	= sun4i_i2s_startup,
++	.trigger	= sun4i_i2s_trigger,
++};
++
++static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
++{
++	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++
++	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data, NULL);
++
++	snd_soc_dai_set_drvdata(dai, i2s);
++
++	return 0;
++}
++
++static struct snd_soc_dai_driver sun4i_i2s_dai = {
++	.probe = sun4i_i2s_dai_probe,
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.ops = &sun4i_i2s_dai_ops,
++	.symmetric_rates = 1,
++};
++
++static const struct snd_soc_component_driver sun4i_i2s_component = {
++	.name	= "sun4i-dai",
++};
++
++static bool sun4i_i2s_rd_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case SUN4I_I2S_FIFO_TX_REG:
++		return false;
++
++	default:
++		return true;
++	}
++}
++
++static bool sun4i_i2s_wr_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case SUN4I_I2S_FIFO_RX_REG:
++	case SUN4I_I2S_FIFO_STA_REG:
++		return false;
++
++	default:
++		return true;
++	}
++}
++
++static bool sun4i_i2s_volatile_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case SUN4I_I2S_FIFO_RX_REG:
++	case SUN4I_I2S_INT_STA_REG:
++	case SUN4I_I2S_RX_CNT_REG:
++	case SUN4I_I2S_TX_CNT_REG:
++		return true;
++
++	default:
++		return false;
++	}
++}
++
++static const struct reg_default sun4i_i2s_reg_defaults[] = {
++	{ SUN4I_I2S_CTRL_REG, 0x00000000 },
++	{ SUN4I_I2S_FMT0_REG, 0x0000000c },
++	{ SUN4I_I2S_FMT1_REG, 0x00004020 },
++	{ SUN4I_I2S_FIFO_CTRL_REG, 0x000400f0 },
++	{ SUN4I_I2S_DMA_INT_CTRL_REG, 0x00000000 },
++	{ SUN4I_I2S_CLK_DIV_REG, 0x00000000 },
++	{ SUN4I_I2S_TX_CHAN_SEL_REG, 0x00000001 },
++	{ SUN4I_I2S_TX_CHAN_MAP_REG, 0x76543210 },
++	{ SUN4I_I2S_RX_CHAN_SEL_REG, 0x00000001 },
++	{ SUN4I_I2S_RX_CHAN_MAP_REG, 0x00003210 },
++};
++
++static const struct regmap_config sun4i_i2s_regmap_config = {
++	.reg_bits	= 32,
++	.reg_stride	= 4,
++	.val_bits	= 32,
++	.max_register	= SUN4I_I2S_RX_CHAN_MAP_REG,
++
++	.cache_type	= REGCACHE_FLAT,
++	.reg_defaults	= sun4i_i2s_reg_defaults,
++	.num_reg_defaults	= ARRAY_SIZE(sun4i_i2s_reg_defaults),
++	.writeable_reg	= sun4i_i2s_wr_reg,
++	.readable_reg	= sun4i_i2s_rd_reg,
++	.volatile_reg	= sun4i_i2s_volatile_reg,
++};
++
++static int sun4i_i2s_runtime_resume(struct device *dev)
++{
++	struct sun4i_i2s *i2s = dev_get_drvdata(dev);
++	int ret;
++
++	ret = clk_prepare_enable(i2s->bus_clk);
++	if (ret) {
++		dev_err(dev, "Failed to enable bus clock\n");
++		return ret;
++	}
++
++	regcache_cache_only(i2s->regmap, false);
++	regcache_mark_dirty(i2s->regmap);
++
++	ret = regcache_sync(i2s->regmap);
++	if (ret) {
++		dev_err(dev, "Failed to sync regmap cache\n");
++		goto err_disable_clk;
++	}
++
++	return 0;
++
++err_disable_clk:
++	clk_disable_unprepare(i2s->bus_clk);
++	return ret;
++}
++
++static int sun4i_i2s_runtime_suspend(struct device *dev)
++{
++	struct sun4i_i2s *i2s = dev_get_drvdata(dev);
++
++	regcache_cache_only(i2s->regmap, true);
++
++	clk_disable_unprepare(i2s->bus_clk);
++
++	return 0;
++}
++
++static int sun4i_i2s_probe(struct platform_device *pdev)
++{
++	struct sun4i_i2s *i2s;
++	struct resource *res;
++	void __iomem *regs;
++	int irq, ret;
++
++	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
++	if (!i2s)
++		return -ENOMEM;
++	platform_set_drvdata(pdev, i2s);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	regs = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(regs)) {
++		dev_err(&pdev->dev, "Can't request IO region\n");
++		return PTR_ERR(regs);
++	}
++
++	irq = platform_get_irq(pdev, 0);
++	if (irq < 0) {
++		dev_err(&pdev->dev, "Can't retrieve our interrupt\n");
++		return irq;
++	}
++
++	i2s->bus_clk = devm_clk_get(&pdev->dev, "apb");
++	if (IS_ERR(i2s->bus_clk)) {
++		dev_err(&pdev->dev, "Can't get our bus clock\n");
++		return PTR_ERR(i2s->bus_clk);
++	}
++
++	i2s->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
++					    &sun4i_i2s_regmap_config);
++	if (IS_ERR(i2s->regmap)) {
++		dev_err(&pdev->dev, "Regmap initialisation failed\n");
++		return PTR_ERR(i2s->regmap);
 +	};
-diff --git a/Documentation/devicetree/bindings/sound/mt2701-cs42448.txt b/Documentation/devicetree/bindings/sound/mt2701-cs42448.txt
-new file mode 100644
-index 000000000000..05574446ceb6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt2701-cs42448.txt
-@@ -0,0 +1,43 @@
-+MT2701 with CS42448 CODEC
 +
-+Required properties:
-+- compatible: "mediatek,mt2701-cs42448-machine"
-+- mediatek,platform: the phandle of MT2701 ASoC platform
-+- audio-routing: a list of the connections between audio
-+- mediatek,audio-codec: the phandles of cs42448 codec
-+- mediatek,audio-codec-bt-mrg the phandles of bt-sco dummy codec
-+- pinctrl-names: Should contain only one value - "default"
-+- pinctrl-0: Should specify pin control groups used for this controller.
-+- i2s1-in-sel-gpio1, i2s1-in-sel-gpio2: Should specify two gpio pins to
-+					control I2S1-in mux.
++	i2s->mod_clk = devm_clk_get(&pdev->dev, "mod");
++	if (IS_ERR(i2s->mod_clk)) {
++		dev_err(&pdev->dev, "Can't get our mod clock\n");
++		return PTR_ERR(i2s->mod_clk);
++	}
++	
++	i2s->playback_dma_data.addr = res->start + SUN4I_I2S_FIFO_TX_REG;
++	i2s->playback_dma_data.maxburst = 4;
 +
-+Example:
++	pm_runtime_enable(&pdev->dev);
++	if (!pm_runtime_enabled(&pdev->dev)) {
++		ret = sun4i_i2s_runtime_resume(&pdev->dev);
++		if (ret)
++			goto err_pm_disable;
++	}
 +
-+	sound:sound {
-+		compatible = "mediatek,mt2701-cs42448-machine";
-+		mediatek,platform = <&afe>;
-+		/* CS42448 Machine name */
-+		audio-routing =
-+			"Line Out Jack", "AOUT1L",
-+			"Line Out Jack", "AOUT1R",
-+			"Line Out Jack", "AOUT2L",
-+			"Line Out Jack", "AOUT2R",
-+			"Line Out Jack", "AOUT3L",
-+			"Line Out Jack", "AOUT3R",
-+			"Line Out Jack", "AOUT4L",
-+			"Line Out Jack", "AOUT4R",
-+			"AIN1L", "AMIC",
-+			"AIN1R", "AMIC",
-+			"AIN2L", "Tuner In",
-+			"AIN2R", "Tuner In",
-+			"AIN3L", "Satellite Tuner In",
-+			"AIN3R", "Satellite Tuner In",
-+			"AIN3L", "AUX In",
-+			"AIN3R", "AUX In";
-+		mediatek,audio-codec = <&cs42448>;
-+		mediatek,audio-codec-bt-mrg = <&bt_sco_codec>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&aud_pins_default>;
-+		i2s1-in-sel-gpio1 = <&pio 53 0>;
-+		i2s1-in-sel-gpio2 = <&pio 54 0>;
-+	};
++	ret = devm_snd_soc_register_component(&pdev->dev,
++					      &sun4i_i2s_component,
++					      &sun4i_i2s_dai, 1);
++	if (ret) {
++		dev_err(&pdev->dev, "Could not register DAI\n");
++		goto err_suspend;
++	}
++
++	ret = snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	if (ret) {
++		dev_err(&pdev->dev, "Could not register PCM\n");
++		goto err_suspend;
++	}
++
++	return 0;
++
++err_suspend:
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		sun4i_i2s_runtime_suspend(&pdev->dev);
++err_pm_disable:
++	pm_runtime_disable(&pdev->dev);
++
++	return ret;
++}
++
++static int sun4i_i2s_remove(struct platform_device *pdev)
++{
++	snd_dmaengine_pcm_unregister(&pdev->dev);
++
++	pm_runtime_disable(&pdev->dev);
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		sun4i_i2s_runtime_suspend(&pdev->dev);
++
++	return 0;
++}
++
++static const struct of_device_id sun4i_i2s_match[] = {
++	{ .compatible = "allwinner,sun4i-a10-i2s", },
++	{}
++};
++MODULE_DEVICE_TABLE(of, sun4i_i2s_match);
++
++static const struct dev_pm_ops sun4i_i2s_pm_ops = {
++	.runtime_resume		= sun4i_i2s_runtime_resume,
++	.runtime_suspend	= sun4i_i2s_runtime_suspend,
++};
++
++static struct platform_driver sun4i_i2s_driver = {
++	.probe	= sun4i_i2s_probe,
++	.remove	= sun4i_i2s_remove,
++	.driver	= {
++		.name		= "sun4i-i2s",
++		.of_match_table	= sun4i_i2s_match,
++		.pm		= &sun4i_i2s_pm_ops,
++	},
++};
++module_platform_driver(sun4i_i2s_driver);
++
++MODULE_AUTHOR("Andrea Venturi <be17068@iperbole.bo.it>");
++MODULE_AUTHOR("Maxime Ripard <maxime.ripard@free-electrons.com>");
++MODULE_DESCRIPTION("Allwinner A10 I2S driver");
++MODULE_LICENSE("GPL");
 -- 
 2.8.1
