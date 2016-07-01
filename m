@@ -1,76 +1,84 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8825: jack connection decision
- with different insertion logic
-Date: Fri, 1 Jul 2016 17:57:34 +0200
-Message-ID: <20160701155734.GV6247@sirena.org.uk>
-References: <1467170438-5157-1-git-send-email-KCHSU0@nuvoton.com>
- <CAOMFOmUhvWrm6ivTs4Ujp2_A8o81A12L0gPUDay0Bv9PVAkbug@mail.gmail.com>
- <5774CF97.4010203@nuvoton.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v5 7/9] ASoC: bt-sco: extend rate and add a
+ general compatible string
+Date: Fri, 1 Jul 2016 18:11:05 +0200
+Message-ID: <20160701161105.GY6247@sirena.org.uk>
+References: <1466149440-23889-1-git-send-email-garlic.tseng@mediatek.com>
+ <1466149440-23889-8-git-send-email-garlic.tseng@mediatek.com>
+ <20160629191500.GU6247@sirena.org.uk>
+ <1467291345.11091.16.camel@mtksdaap41>
+ <1467341386.21689.6.camel@mtksdaap41>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0384065141695487095=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6ADA0264F45
- for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2016 18:03:45 +0200 (CEST)
-In-Reply-To: <5774CF97.4010203@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, Anatol Pomozov <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, Yong Zhi <yong.zhi@intel.com>
+Content-Type: multipart/mixed; boundary="===============6022995759774739053=="
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1467341386.21689.6.camel@mtksdaap41>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ir.lian-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, PC.Liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0384065141695487095==
+--===============6022995759774739053==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="V8Y3+xXnhQGsvjWT"
+	protocol="application/pgp-signature"; boundary="Lv0dYwq55yjFwMRW"
 Content-Disposition: inline
 
 
---V8Y3+xXnhQGsvjWT
+--Lv0dYwq55yjFwMRW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jun 30, 2016 at 03:51:51PM +0800, John Hsu wrote:
+On Fri, Jul 01, 2016 at 10:49:46AM +0800, Garlic Tseng wrote:
+> On Thu, 2016-06-30 at 20:55 +0800, Garlic Tseng wrote:
 
-> Yes, it'll be more readable. I have a question. Why to add !! in
-> front of bit wise operation? What does it mean?
+> > If you worry about some potential risk (I don't see any) maybe we have
+> > to develop another dummy bt-sco codec driver which support both 8k and
+> > 16k?
 
-It's redundant in almost all cases.  It translates an integer value
-into a 0/1 value (so if you've got a value of 2 it'll end up as 1) by
-doing a double not.  This very rarely matters unless you're storing the
-value in an integer and comparing it to 1 to check for truth, otherwise
-C will translate any non-zero value into true in any logic context.
+> Ah! If someone whose bluetooth modules only support 8k use the driver,
+> they might be broken, right? Maybe we can add another snd_soc_dai_driver
+> which can support both 8k and 16k.
+> (Actually I found the issue is discussed before
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-November/084687.html )
 
---V8Y3+xXnhQGsvjWT
+Yes, that'd be fine - it could be the same driver and register different
+parameters depending on config/compatible.
+
+--Lv0dYwq55yjFwMRW
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXdpLoAAoJECTWi3JdVIfQR/gH/3Q2B5pS1ZqSfFxCCAhcrRU+
-/gqH0I1Z5eFpEoyhGIdJF3smixY5G729iAjUbunrQ920I141fK9P7qQ+aC21hgGY
-esKJLZfOH9Ntbpl/8UecwBoAXMzjQraZ97qLp/jO9e4Xw9QwtG1d5wsd4OxzLpab
-hMVbttvv3m4fZ5GU8kWmslr/2i6KGOe/gQ61sPEWk94BXAUpTTtIMWsokK+Frrkj
-7DmbQXKli7E0U0n1GxMeDQkksgnvgzU8QaxMkf90BSLWnPJTKKzwvYfXvxfLqLuR
-ZD61hRknDHpRTiSMPZWOorXVyM85L8wl+7eK1TQXCNZPev5vnrODXokj3/EV94o=
-=eM5p
+iQEcBAEBCAAGBQJXdpYYAAoJECTWi3JdVIfQWP0H/0jfVKrYIiZ3HxbJRJCtBIoR
+blm2B9V/DaUCicehfw7bOj09DvvF3N+0t/0IVm1g+xspLKGKAElmhgWf5yeuMijZ
+5/Zibh75b2wMVl7w9krEMmL9Fa2U+owU3lg6ovO0vYMFxEWvGWkdx7oyNZRU08q+
+DDDv7nv/zLuJF0eFcvmXc0OxqXT441H23w5HOOwpCNKv6EKt+nE1ub96qc0xaR96
+9fawFfLQDWkr1uOBEUhXvWKV9F/bn/iibq2jNvhf6rmtwAW20ZgjN9x6SHZ6XV8S
+kSbAUpDfFeJh7PNxH1fsrPNjZNrXck1/hHhokZsbkPmJa0x6I8fw440Q75J/trA=
+=X8hJ
 -----END PGP SIGNATURE-----
 
---V8Y3+xXnhQGsvjWT--
+--Lv0dYwq55yjFwMRW--
 
---===============0384065141695487095==
+
+--===============6022995759774739053==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+_______________________________________________
+Linux-mediatek mailing list
+Linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+http://lists.infradead.org/mailman/listinfo/linux-mediatek
 
---===============0384065141695487095==--
+--===============6022995759774739053==--
