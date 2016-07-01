@@ -1,15 +1,14 @@
-Return-Path: <alsa-devel-bounces@alsa-project.org>
-Date: Wed, 15 Jun 2016 14:43:41 +0200
-From: Richard Cochran <richardcochran@gmail.com>
-Message-ID: <20160615124341.GA2405@localhost.localdomain>
-References: <1465686096-22156-1-git-send-email-henrik@austad.us>
- <1465686096-22156-8-git-send-email-henrik@austad.us>
- <20160615114908.GB31281@localhost.localdomain>
- <20160615121303.GB5950@sisyphus.home.austad.us>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20160615121303.GB5950@sisyphus.home.austad.us>
-Subject: Re: [alsa-devel] [very-RFC 7/8] AVB ALSA - Add ALSA shim for TSN
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH v2 1/2] ASoC: rt5645: fix reg-2f default value.
+Date: Fri, 1 Jul 2016 09:49:05 +0800
+Message-ID: <1467337746-3900-1-git-send-email-bardliao@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BAB62651DB
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2016 03:49:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,61 +16,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, henrk@austad.us, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Henrik Austad <haustad@cisco.com>, netdev@vger.kernel.org, alsa-devel@vger.kernel.org, linux-media@vger.kernel.org
-List-ID: <alsa-devel@alsa-project.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, koro.chen@mediatek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 15, 2016 at 02:13:03PM +0200, Henrik Austad wrote:
-> On Wed, Jun 15, 2016 at 01:49:08PM +0200, Richard Cochran wrote:
-> And how would v4l2 benefit from this being in alsalib? Should we require 
-> both V4L and ALSA to implement the same, or should we place it in a common 
-> place for all.
+The default value of reg-2f in codec rt5650 is 0x5002, not 0x1002.
 
-I don't require V4L to implement anything.  You were the one wanting
-AVB "devices".  Go ahead and do that, but in user space please.  We
-don't want to have kernel code that sends arbitrary Layer2 and UDP
-media packets.
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5645.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The example you present of using aplay over the network is a cute
-idea, but after all it is a trivial application.  I have nothing
-against creating virtual ALSA devices (if done properly), but that
-model won't work for more realistic AVB networks.
-
-> And what about those systems that want to use TSN but is not a 
-> media-device, they should be given a raw-socket to send traffic over, 
-> should they also implement something in a library?
-
-A raw socket is the way to do it, yes.
-
-Since TSN is about bandwidth reservation and time triggered Ethernet,
-decoupled from the contents of the streams, each new TSN application
-will have to see what works best.  If common ground is found, then a
-library makes sense to do.
-
-At this point, it is way too early to guess how that will look.  But
-media packet formats clearly belong in user space.
-
-> So no, here I think configfs is an apt choice.
-> 
-> > Heck, if done properly, your layer could discover the AVB nodes in the
-> > network and present each one as a separate device...
-> 
-> No, you definately do not want the kernel to automagically add devices 
-> whenever something pops up on the network, for this you need userspace to 
-> be in control. 1722.1 should not be handled in-kernel.
-
-The layer should be in user space.  Alsa-lib *is* user space.
-
-Thanks,
-Richard
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 3c6594d..d70847c 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -253,7 +253,7 @@ static const struct reg_default rt5650_reg[] = {
+ 	{ 0x2b, 0x5454 },
+ 	{ 0x2c, 0xaaa0 },
+ 	{ 0x2d, 0x0000 },
+-	{ 0x2f, 0x1002 },
++	{ 0x2f, 0x5002 },
+ 	{ 0x31, 0x5000 },
+ 	{ 0x32, 0x0000 },
+ 	{ 0x33, 0x0000 },
+-- 
+1.8.1.1.439.g50a6b54
