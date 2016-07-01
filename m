@@ -1,18 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/3] ALSA: control: add dimension validator
- for userspace element
-Date: Fri, 1 Jul 2016 21:29:37 +0900
-Message-ID: <57766231.6060304@sakamocchi.jp>
-References: <1467371413-16895-1-git-send-email-o-takashi@sakamocchi.jp>
- <1467371413-16895-3-git-send-email-o-takashi@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 2/6] ASoC: samsung: Add Samsung Low
+ Power Audio Subsystem driver
+Date: Fri, 1 Jul 2016 17:07:09 +0200
+Message-ID: <20160701150709.GT6247@sirena.org.uk>
+References: <1466678715-19962-1-git-send-email-s.nawrocki@samsung.com>
+ <1466678715-19962-3-git-send-email-s.nawrocki@samsung.com>
+ <20160629215757.GX6247@sirena.org.uk>
+ <577553FE.6080803@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7153767638174936463=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 9D8E42608EC
- for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2016 14:29:44 +0200 (CEST)
-In-Reply-To: <1467371413-16895-3-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 219502614E3
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2016 17:07:25 +0200 (CEST)
+In-Reply-To: <577553FE.6080803@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,93 +24,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, b.zolnierkie@samsung.com, inki.dae@samsung.com, Beomho Seo <beomho.seo@samsung.com>, ideal.song@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Jul 1 2016 20:10, Takashi Sakamoto wrote:
-> The 'dimen' field in struct snd_ctl_elem_info is used to compose all of
-> members in the element as multi-dimensional matrix. The field has four
-> members. Each member represents the width in each dimension level by
-> element member unit. For example, if the members consist of typical
-> two dimensional matrix, the dimen[0] represents the number of rows
-> and dimen[1] represents the number of columns (or vise-versa).
-> 
-> The total members in the matrix should be within the number of members in
-> the element, while current implementation has no validator of this
-> information. In a view of userspace applications, the information must be
-> valid so that it cannot cause any bugs such as buffer-over-run.
-> 
-> This commit adds a validator of dimension information for userspace
-> applications which add new element sets. When they add the element sets
-> with wrong dimension information, they receive -EINVAL.
-> 
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> ---
->  sound/core/control.c | 30 ++++++++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
-> 
-> diff --git a/sound/core/control.c b/sound/core/control.c
-> index a85d455..54da910 100644
-> --- a/sound/core/control.c
-> +++ b/sound/core/control.c
-> @@ -805,6 +805,34 @@ static int snd_ctl_elem_list(struct snd_card *card,
->  	return 0;
->  }
->  
-> +static bool validate_element_member_dimension(struct snd_ctl_elem_info *info)
-> +{
-> +	unsigned int members;
-> +	unsigned int i = 0;
-> +
-> +	if (info->dimen.d[0] == 0)
-> +		return true;
-> +
-> +	members = 1;
-> +	for (i = 0; i < ARRAY_SIZE(info->dimen.d); ++i) {
-> +		if (info->dimen.d[i] < 0)
-> +			return false;
 
-Mmm... info->dimen.d is declared with 'unsigned short' type. Thus,
-negative value check is needless...
+--===============7153767638174936463==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="8c7vHYlrYOebzgj6"
+Content-Disposition: inline
 
-struct snd_ctl_elem_info {
-    ...
-    union {
-        unsigned short d[4];
-        ..
-    };
-    ...
-};
 
-Please abandon this patchset. I'll post new one tomorrow.
+--8c7vHYlrYOebzgj6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +		if (info->dimen.d[i] == 0)
-> +			break;
-> +
-> +		members *= info->dimen.d[i];
-> +		if (members > info->count)
-> +			return false;
-> +	}
-> +
-> +	for (++i; i < ARRAY_SIZE(info->dimen.d); ++i) {
-> +		if (info->dimen.d[i] != 0)
-> +			return false;
-> +	}
-> +
-> +	return true;
-> +}
-> +
->  static int snd_ctl_elem_info(struct snd_ctl_file *ctl,
->  			     struct snd_ctl_elem_info *info)
->  {
-> @@ -1272,6 +1300,8 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
->  	if (info->count < 1 ||
->  	    info->count > max_value_counts[info->type])
->  		return -EINVAL;
-> +	if (!validate_element_member_dimension(info))
-> +		return -EINVAL;
->  	private_size = value_sizes[info->type] * info->count;
->  
->  	/*
-> 
+On Thu, Jun 30, 2016 at 07:16:46PM +0200, Sylwester Nawrocki wrote:
+
+> Sorry, I didn't notice this e-mail earlier.  With previous Exynos versions
+> the LPASS (or AudioSS) was mainly about the embedded audio DSP processor
+> (at least WRT to SFRs), which was not required for boards supported in=20
+> the mainline kernel. Since e.g. Exynos5433 the LPASS SFR region contains=
+=20
+> also entries related to other IP blocks, like I2S or DMAC.  Even though=
+=20
+> functionality covered by these registers is still rather trivial, like=20
+> SW resets and unmasking interrupts, it's essential for the whole audio=20
+> subsystem operation. The intention was to have in future the LPASS driver=
+=20
+> covering any functionality provided by the embedded audio dedicated MCU.
+> I'm afraid we have to handle those power sequences in central place to
+> ensure proper SoC operation. I would also rather avoid adding any exynos=
+=20
+> quirks to the PL330 DMAC driver.=20
+
+Hrm.  This is sounding a bit like a combination of a power domain and
+an interrupt controller, would something like that fit in perhaps?
+Depends on how many of these trivial bits there are I think...
+
+--8c7vHYlrYOebzgj6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXdoccAAoJECTWi3JdVIfQh+kH/i9aFuoU8o+j/zXrUtjiGEJZ
+8z+D4pLohJPf48YHDeqZ0TZYxjHjJh9Z2Qu+uc5cfGF95MTKOzwMhFExub6b9fz/
+b7bWjibkMaj1sKQCGkOSb9+sR3dvqJYhwmsHDbL8nmCq7+hHYCz7+D7Mp8SOe7K4
+6k46pf71cj/Ugo1U0BFcFqSgao3DxwALqjD5YDxpBQCTMkZ0aCBAA77CV42UHsmk
+h4wR2busVxyFY+2VEGHQIN7BmSWngzowRCys6Rc2UAZSSKWxeBBYsd1qjZTyTe+e
+9Zrs7QIcCNS6CJBY81We/d2+xFxAR75yQwT5ByAMdVQwTVYd3S+z79xDXiAjKzQ=
+=2Zer
+-----END PGP SIGNATURE-----
+
+--8c7vHYlrYOebzgj6--
+
+--===============7153767638174936463==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7153767638174936463==--
