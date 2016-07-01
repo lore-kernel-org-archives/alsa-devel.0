@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs35l33: Fix display revision id" to
-	the asoc tree
-Date: Fri, 01 Jul 2016 11:54:40 +0200
-Message-ID: <E1bIv9k-0003mc-9C@finisterre>
-References: <1467245670.7105.3.camel@ingics.com>
+Subject: Applied "ASoC: cs35l33: Fix testing return value of
+	devm_gpiod_get_optional" to the asoc tree
+Date: Fri, 01 Jul 2016 11:54:45 +0200
+Message-ID: <E1bIv9p-0003nS-SK@finisterre>
+References: <1467245614.7105.2.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D787A2614A7
- for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2016 11:54:55 +0200 (CEST)
-In-Reply-To: <1467245670.7105.3.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 13B392614FD
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2016 11:54:56 +0200 (CEST)
+In-Reply-To: <1467245614.7105.2.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs35l33: Fix display revision id
+   ASoC: cs35l33: Fix testing return value of devm_gpiod_get_optional
 
 has been applied to the asoc tree at
 
@@ -53,30 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From 5d78b027c0d22589d535b3657700e7ff6499d3ed Mon Sep 17 00:00:00 2001
+>From 410fe39c6d2116aa5584083cbcbb7b3796e09f5d Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Thu, 30 Jun 2016 08:14:30 +0800
-Subject: [PATCH] ASoC: cs35l33: Fix display revision id
+Date: Thu, 30 Jun 2016 08:13:34 +0800
+Subject: [PATCH] ASoC: cs35l33: Fix testing return value of
+ devm_gpiod_get_optional
+
+devm_gpiod_get_optional() returns NULL when the gpio is not assigned.
+So the if (PTR_ERR(cs35l33->reset_gpio) == -ENOENT) test is always false.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs35l33.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/cs35l33.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/cs35l33.c b/sound/soc/codecs/cs35l33.c
-index 689c3598bf3d..a4cbb16d68ad 100644
+index d8b5fc3fc45d..689c3598bf3d 100644
 --- a/sound/soc/codecs/cs35l33.c
 +++ b/sound/soc/codecs/cs35l33.c
-@@ -1219,7 +1219,7 @@ static int cs35l33_i2c_probe(struct i2c_client *i2c_client,
- 	}
- 
- 	dev_info(&i2c_client->dev,
--		 "Cirrus Logic CS35L33, Revision: %02X\n", ret & 0xFF);
-+		 "Cirrus Logic CS35L33, Revision: %02X\n", reg & 0xFF);
- 
- 	ret = regmap_register_patch(cs35l33->regmap,
- 			cs35l33_patch, ARRAY_SIZE(cs35l33_patch));
+@@ -1176,11 +1176,7 @@ static int cs35l33_i2c_probe(struct i2c_client *i2c_client,
+ 	/* We could issue !RST or skip it based on AMP topology */
+ 	cs35l33->reset_gpio = devm_gpiod_get_optional(&i2c_client->dev,
+ 			"reset-gpios", GPIOD_OUT_HIGH);
+-
+-	if (PTR_ERR(cs35l33->reset_gpio) == -ENOENT) {
+-		dev_warn(&i2c_client->dev,
+-			"%s WARNING: No reset gpio assigned\n", __func__);
+-	} else if (IS_ERR(cs35l33->reset_gpio)) {
++	if (IS_ERR(cs35l33->reset_gpio)) {
+ 		dev_err(&i2c_client->dev, "%s ERROR: Can't get reset GPIO\n",
+ 			__func__);
+ 		return PTR_ERR(cs35l33->reset_gpio);
 -- 
 2.8.1
