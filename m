@@ -1,82 +1,79 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sunxi: fix semicolon.cocci warnings" to the asoc tree
-Date: Fri, 01 Jul 2016 11:54:52 +0200
-Message-ID: <E1bIv9w-0003oV-2R@finisterre>
-References: <20160630142810.GA12218@lkp-nex05>
+Subject: Re: [PATCH 09/39 v2] ASoC: simple-card-utils: add
+ asoc_simple_card_parse_clk()
+Date: Fri, 1 Jul 2016 11:55:21 +0200
+Message-ID: <20160701095521.GK6247@sirena.org.uk>
+References: <87fusysjam.wl%kuninori.morimoto.gx@renesas.com>
+ <8737oysj1d.wl%kuninori.morimoto.gx@renesas.com>
+ <20160629181843.GM6247@sirena.org.uk>
+ <87bn2jbkck.wl%kuninori.morimoto.gx@renesas.com>
+ <87a8i3bjp2.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20160630142810.GA12218@lkp-nex05>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Maxime Ripard <maxime.ripard@free-electrons.com>, Fengguang Wu <fengguang.wu@intel.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============7382202793359411681=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 689AA261615
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2016 11:55:29 +0200 (CEST)
+In-Reply-To: <87a8i3bjp2.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: sunxi: fix semicolon.cocci warnings
+--===============7382202793359411681==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Tw5XVHq4jmAOFG53"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--Tw5XVHq4jmAOFG53
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Jun 30, 2016 at 12:39:12AM +0000, Kuninori Morimoto wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Oops, of_clk_get() doesn't have devm_of_clk_get() ?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Perhaps add it?=20
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> (and no of_clk_put() ... )
+> I will keep above as-is in v3. We can fix it incrementally (?)
 
-Thanks,
-Mark
+You can just use regular clk_put() with of_clk_get().
 
->From dcf7d1992b943192856ccf453375b158e3afd0a3 Mon Sep 17 00:00:00 2001
-From: kbuild test robot <fengguang.wu@intel.com>
-Date: Thu, 30 Jun 2016 22:28:10 +0800
-Subject: [PATCH] ASoC: sunxi: fix semicolon.cocci warnings
+--Tw5XVHq4jmAOFG53
+Content-Type: application/pgp-signature; name="signature.asc"
 
-sound/soc/sunxi/sun4i-i2s.c:624:2-3: Unneeded semicolon
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
- Remove unneeded semicolon.
+iQEcBAEBCAAGBQJXdj4IAAoJECTWi3JdVIfQiVoH/2got0uwBxyaKrxROnFB8mli
+qKNPgGipvxjJC1YFMXTopGmG18xImL97fIgtC4evHmjVmjrxpfzl/q2fqesw4UzB
+9up7TiC0wM/oeDrXsbHM1Tgx9EBOXdiAk5g19CsWE6PgkR8DPeYCD/nS5sS//GkJ
+7x5+k+nxgKsWHMGkTQ70vA/lDq5pUvhCR4nBTEvJtomxetD44HgWdtjB8F4rt8K2
+83CZTLyf7hMC/496nLd2cCLJ6io9YjGCb0M0EVKxyAXefUfYY94g41Y1iMDxNdwf
+aO7TCi6zrd3xNjHH/GtyzAdSODYM1VVSeIiLGYjhXOCaRdHMJTUmewPrR1YCdwI=
+=sfv0
+-----END PGP SIGNATURE-----
 
-Generated by: scripts/coccinelle/misc/semicolon.cocci
+--Tw5XVHq4jmAOFG53--
 
-Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
-Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sunxi/sun4i-i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--===============7382202793359411681==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 72ed2b8a93e7..fab52347c6d7 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -621,7 +621,7 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 	if (IS_ERR(i2s->regmap)) {
- 		dev_err(&pdev->dev, "Regmap initialisation failed\n");
- 		return PTR_ERR(i2s->regmap);
--	};
-+	}
- 
- 	i2s->mod_clk = devm_clk_get(&pdev->dev, "mod");
- 	if (IS_ERR(i2s->mod_clk)) {
--- 
-2.8.1
+
+--===============7382202793359411681==--
