@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8810: Add driver for Nuvoton
-	codec chip NAU88C10
-Date: Fri, 1 Jul 2016 12:04:23 +0200
-Message-ID: <20160701100423.GM6247@sirena.org.uk>
-References: <1466152834-29615-1-git-send-email-KCHSU0@nuvoton.com>
- <20160627171546.GE17217@sirena.org.uk>
- <5775E4C7.5010303@nuvoton.com>
+Subject: Applied "ASoC: rt5645: fix reg-2f default value." to
+	the asoc tree
+Date: Fri, 01 Jul 2016 12:04:41 +0200
+Message-ID: <E1bIvJR-0004Uq-Pq@finisterre>
+References: <1467289764-2659-2-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1557053914337269725=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C287C2614A7
- for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2016 12:04:31 +0200 (CEST)
-In-Reply-To: <5775E4C7.5010303@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BB7D426646C
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2016 12:04:53 +0200 (CEST)
+In-Reply-To: <1467289764-2659-2-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,94 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, koro.chen@mediatek.com, broonie@kernel.org, PC.Liao@mediatek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1557053914337269725==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="KQSGybwJm5+gcNx6"
-Content-Disposition: inline
+   ASoC: rt5645: fix reg-2f default value.
 
+has been applied to the asoc tree at
 
---KQSGybwJm5+gcNx6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Jul 01, 2016 at 11:34:31AM +0800, John Hsu wrote:
-> On 6/28/2016 1:15 AM, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > This looks like a regmap with 7 bit registers and 9 bit value.  Why
-> > aren't we just using the standard regmap support for this?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Yes, that is the i2c format of this codec. The format is not common,
-> and the register map only supports write but not supports read.
-> The driver only can read information from cache, but it can't read
-> the read-only register. Thus, we need to have our own read and write
-> function for codec.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-No, you don't - this is entirely normal for 7x9 regmaps, I've never seen
-such a device that supported readback.  Look at devices like wm8731 for
-examples.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> > > +	SOC_SINGLE("Digital Loopback Switch", NAU8810_REG_COMP,
-> > > +		NAU8810_ADDAP_SFT, 1, 0),
+Thanks,
+Mark
 
-> > This looks like it should be a DAPM control.
+>From fdfe3b32db70aa49d1d60a1ddd2280099174bddb Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Fri, 1 Jul 2016 09:49:05 +0800
+Subject: [PATCH] ASoC: rt5645: fix reg-2f default value.
 
-> The function is only for debug normally. The playback and capture
-> shouldn't enable the function. Thus, we only put it in the user
-> control.
+The default value of reg-2f in codec rt5650 is 0x5002, not 0x1002.
 
-If it's for routing it should go into DAPM, someone might find a use for
-it and it'll stop confusion.
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5645.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > > +	nau8810->div_id = div_id;
-> > > +	if (div_id != NAU8810_MCLK_DIV_MCLK)
-> > > +		/* Defer the master clock prescaler configuration to DAI
-> > > +		 * hardware parameter if master clock from MCLK because
-> > > +		 * it needs runtime fs information to get the proper div.
-> > > +		 */
-> > > +		ret = nau8810_config_clkdiv(nau8810, div, 0);
-> > > +
-> > > +	return ret;
-> > > +}
-
-> > You shouldn't be implementing new set_clkdiv() operations, there's no
-> > point in having each machine driver figure out the internal clocking of
-> > the device.  Just specify the clocks coming into the device and have
-> > the driver figure out what to do with them.
-
-> We want to calculate the proper divide for MCLK as clock source.
-> The design needs sampling rate information for the calculation.
-> In the application sequence, there is no rate information in this
-> stage and it should defer until codec hardware parameter.
-
-That should be fine, you can do this in your hw_params() can't you?
-
---KQSGybwJm5+gcNx6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXdkAkAAoJECTWi3JdVIfQWugH/jO2gCpPhear0809wvFcPHIp
-JEeLBax8z2vtUVvztoivXI2vhxcoVK3xCgC6WyWSDAKRe19qeivqoAno/tgP4XjT
-/ITjVGEgEcYmIRiBg1qxVPSiexjn9PubOLUMSQ2T7/GDi5G5dHXh3AUyW0F/THHl
-yrFgMMrAaxWq/h7gUrh7IniZfSpjaOA6J0QpzmZVqmp3N64MrnNLdwGLyP/by6M4
-o+4+3fNVof5cfKZfdnM52NuTsDOPdC+0rUuNvFIFyCmTKD46zc5z8FmdUsEfR7ms
-mxIm+yWJzzZU5sOPu5aSqPcsYhxT689bMPTRfH7wxrVD610SikD5xAI2iALjVgk=
-=1HDx
------END PGP SIGNATURE-----
-
---KQSGybwJm5+gcNx6--
-
---===============1557053914337269725==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1557053914337269725==--
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 3c6594da6c9c..d70847c9eeb0 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -253,7 +253,7 @@ static const struct reg_default rt5650_reg[] = {
+ 	{ 0x2b, 0x5454 },
+ 	{ 0x2c, 0xaaa0 },
+ 	{ 0x2d, 0x0000 },
+-	{ 0x2f, 0x1002 },
++	{ 0x2f, 0x5002 },
+ 	{ 0x31, 0x5000 },
+ 	{ 0x32, 0x0000 },
+ 	{ 0x33, 0x0000 },
+-- 
+2.8.1
