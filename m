@@ -1,55 +1,82 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 07/39 v2] ASoC: simple-card-utils: add
- asoc_simple_card_parse_card_name()
-Date: Fri, 1 Jul 2016 11:52:49 +0200
-Message-ID: <20160701095249.GJ6247@sirena.org.uk>
-References: <87fusysjam.wl%kuninori.morimoto.gx@renesas.com>
- <8760tusj2q.wl%kuninori.morimoto.gx@renesas.com>
- <20160629181555.GJ6247@sirena.org.uk>
- <874m8bbdei.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: cs35l33: Fix display revision id" to
+	the asoc tree
+Date: Fri, 01 Jul 2016 11:54:40 +0200
+Message-ID: <E1bIv9k-0003mc-9C@finisterre>
+References: <1467245670.7105.3.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="D85EWoRcDXv1uhH1"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <874m8bbdei.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D787A2614A7
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2016 11:54:55 +0200 (CEST)
+In-Reply-To: <1467245670.7105.3.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---D85EWoRcDXv1uhH1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: cs35l33: Fix display revision id
 
-On Thu, Jun 30, 2016 at 02:55:06AM +0000, Kuninori Morimoto wrote:
+has been applied to the asoc tree at
 
-> > > +	if (!card->name)
-> > > +		card->name = card->dai_link->name;
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> > This will unconditionally defererence dai_link but it's optional - we
-> > can have analogue only cards.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> This is not new feature. Current simple-card already has it.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Right, but simple-card does need DAIs IIRC while this is intended to be
-more general.  All it needs is a check before the dereference to be safe
-so it's trivial to handle.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---D85EWoRcDXv1uhH1
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Thanks,
+Mark
 
-iQEcBAEBCAAGBQJXdj1vAAoJECTWi3JdVIfQTqsH/jCfCs8imQ75dgsRDjAJTiKJ
-1Smd/XtGaIfT+O5vEPwcWQsPpczOH076IvZ2hjVPElNlQL2fwryjzHUoiGBTmOXl
-tWiHkAPVqnchjvi9YTxORBuuMX557IPty1LySQSRkl8KDZoP3YulEU8S3g1DP6bg
-Agkef9EmdMTr/9m+o32pkcLsKijvNcT5VzmDdvas4azUWY9MtxGYpW6iCgVS+G0R
-HqfsyKOCZpv7tN6yPhFO8CEdjT1qL9SRFfIf+KQfyLSF2q9SNY6HtmYue9Q2s+ug
-Wfi4RNABb0cyCilcGfpWMWA9bGua8+BQ3zCGwV04orpcWOyRioPUiGIGpkcufsw=
-=aMJw
------END PGP SIGNATURE-----
+>From 5d78b027c0d22589d535b3657700e7ff6499d3ed Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Thu, 30 Jun 2016 08:14:30 +0800
+Subject: [PATCH] ASoC: cs35l33: Fix display revision id
 
---D85EWoRcDXv1uhH1--
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/cs35l33.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/cs35l33.c b/sound/soc/codecs/cs35l33.c
+index 689c3598bf3d..a4cbb16d68ad 100644
+--- a/sound/soc/codecs/cs35l33.c
++++ b/sound/soc/codecs/cs35l33.c
+@@ -1219,7 +1219,7 @@ static int cs35l33_i2c_probe(struct i2c_client *i2c_client,
+ 	}
+ 
+ 	dev_info(&i2c_client->dev,
+-		 "Cirrus Logic CS35L33, Revision: %02X\n", ret & 0xFF);
++		 "Cirrus Logic CS35L33, Revision: %02X\n", reg & 0xFF);
+ 
+ 	ret = regmap_register_patch(cs35l33->regmap,
+ 			cs35l33_patch, ARRAY_SIZE(cs35l33_patch));
+-- 
+2.8.1
