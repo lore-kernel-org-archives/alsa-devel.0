@@ -1,62 +1,135 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [GIT PULL] Broxton fw update
-Date: Fri, 1 Jul 2016 11:52:15 -0400
-Message-ID: <20160701155215.GB8680@merlin.infradead.org>
-References: <20160701041751.GS14945@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 685B82614FD
- for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2016 17:52:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20160701041751.GS14945@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, linux-firmware@kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsrc-card: use asoc_simple_card_parse_daifmt()" to the asoc tree
+Date: Fri, 01 Jul 2016 17:59:36 +0200
+Message-ID: <E1bJ0qu-0006Uz-4G@finisterre>
+References: <87fusyr45m.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87fusyr45m.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 01, 2016 at 09:47:52AM +0530, Vinod Koul wrote:
-> 
-> Please PULL to receive the latest Broxton fw.
-> 
-> The following changes since commit 3ef7857d511ce6a91c5ce609da76c4702651cfa5:
-> 
->   amdgpu: update polaris ucode (2016-06-28 14:31:11 -0400)
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git apl
+The patch
 
-Pulled and pushed. Thanks Vinod.
+   ASoC: rsrc-card: use asoc_simple_card_parse_daifmt()
 
-cheers,
---Kyle
+has been applied to the asoc tree at
 
-> 
-> for you to fetch changes up to 040c24514b94fcdbd6308d986d1bde59a704a21a:
-> 
->   linux-firmware: intel: Update Broxton audio firmware (2016-06-29 14:20:20 +0530)
-> 
-> ----------------------------------------------------------------
-> Vinod Koul (1):
->       linux-firmware: intel: Update Broxton audio firmware
-> 
->  WHENCE                     |   4 ++--
->  intel/dsp_fw_bxtn.bin      |   2 +-
->  intel/dsp_fw_bxtn_v702.bin | Bin 0 -> 505608 bytes
->  3 files changed, 3 insertions(+), 3 deletions(-)
->  create mode 100644 intel/dsp_fw_bxtn_v702.bin
-> 
-> Thanks
-> -- 
-> ~Vinod
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From d6a4a9a45d072e3a27ea6e5f98192d78be621a9c Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 30 Jun 2016 06:03:13 +0000
+Subject: [PATCH] ASoC: rsrc-card: use asoc_simple_card_parse_daifmt()
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/Kconfig          |  1 +
+ sound/soc/sh/rcar/rsrc-card.c | 38 ++++----------------------------------
+ 2 files changed, 5 insertions(+), 34 deletions(-)
+
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index c9902a6d6fa0..9311f119feb5 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -44,6 +44,7 @@ config SND_SOC_RCAR
+ 
+ config SND_SOC_RSRC_CARD
+ 	tristate "Renesas Sampling Rate Convert Sound Card"
++	select SND_SIMPLE_CARD_UTILS
+ 	help
+ 	  This option enables simple sound if you need sampling rate convert
+ 
+diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
+index 1bc7ecfc42a9..984d8fed0dbd 100644
+--- a/sound/soc/sh/rcar/rsrc-card.c
++++ b/sound/soc/sh/rcar/rsrc-card.c
+@@ -20,6 +20,7 @@
+ #include <sound/jack.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dai.h>
++#include <sound/simple_card_utils.h>
+ 
+ struct rsrc_card_of_data {
+ 	const char *prefix;
+@@ -159,38 +160,6 @@ static int rsrc_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
+ 
+-static int rsrc_card_parse_daifmt(struct device_node *node,
+-				  struct device_node *codec,
+-				  struct rsrc_card_priv *priv,
+-				  struct snd_soc_dai_link *dai_link,
+-				  unsigned int *retfmt)
+-{
+-	struct device_node *bitclkmaster = NULL;
+-	struct device_node *framemaster = NULL;
+-	unsigned int daifmt;
+-
+-	daifmt = snd_soc_of_parse_daifmt(node, NULL,
+-					 &bitclkmaster, &framemaster);
+-	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
+-
+-	if (!bitclkmaster && !framemaster)
+-		return -EINVAL;
+-
+-	if (codec == bitclkmaster)
+-		daifmt |= (codec == framemaster) ?
+-			SND_SOC_DAIFMT_CBM_CFM : SND_SOC_DAIFMT_CBM_CFS;
+-	else
+-		daifmt |= (codec == framemaster) ?
+-			SND_SOC_DAIFMT_CBS_CFM : SND_SOC_DAIFMT_CBS_CFS;
+-
+-	of_node_put(bitclkmaster);
+-	of_node_put(framemaster);
+-
+-	*retfmt = daifmt;
+-
+-	return 0;
+-}
+-
+ static int rsrc_card_parse_links(struct device_node *np,
+ 				 struct rsrc_card_priv *priv,
+ 				 int idx, bool is_fe)
+@@ -358,6 +327,7 @@ static int rsrc_card_dai_sub_link_of(struct device_node *node,
+ static int rsrc_card_dai_link_of(struct device_node *node,
+ 				 struct rsrc_card_priv *priv)
+ {
++	struct device *dev = rsrc_priv_to_dev(priv);
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct device_node *np;
+ 	unsigned int daifmt = 0;
+@@ -370,8 +340,8 @@ static int rsrc_card_dai_link_of(struct device_node *node,
+ 		dai_link = rsrc_priv_to_link(priv, i);
+ 
+ 		if (strcmp(np->name, "codec") == 0) {
+-			ret = rsrc_card_parse_daifmt(node, np, priv,
+-						     dai_link, &daifmt);
++			ret = asoc_simple_card_parse_daifmt(dev, node, np,
++							    NULL, &daifmt);
+ 			if (ret < 0)
+ 				return ret;
+ 			break;
+-- 
+2.8.1
