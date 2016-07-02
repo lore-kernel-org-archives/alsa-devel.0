@@ -1,94 +1,60 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] drm: mediatek: fix prototypes after API change
-Date: Sat, 2 Jul 2016 10:25:03 +0200
-Message-ID: <20160702082503.GE6247@sirena.org.uk>
-References: <20160629145129.315931-1-arnd@arndb.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 2/6] ASoC: samsung: Add Samsung Low Power
+ Audio Subsystem driver
+Date: Sat, 2 Jul 2016 10:25:48 +0200
+Message-ID: <20160702082548.GF6247@sirena.org.uk>
+References: <1466678715-19962-1-git-send-email-s.nawrocki@samsung.com>
+ <1466678715-19962-3-git-send-email-s.nawrocki@samsung.com>
+ <20160629215757.GX6247@sirena.org.uk>
+ <577553FE.6080803@samsung.com>
+ <20160701150709.GT6247@sirena.org.uk>
+ <57769AE5.4050407@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0235943499=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20160629145129.315931-1-arnd@arndb.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Junzhi Zhao <junzhi.zhao@mediatek.com>, Jie Qiu <jie.qiu@mediatek.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Matthias Brugger <matthias.bgg@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="BRF4e1IEQp0HoEFj"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <57769AE5.4050407-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Cc: robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Beomho Seo <beomho.seo-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0235943499==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="NWFdL9cNbHaIJHRV"
-Content-Disposition: inline
-
-
---NWFdL9cNbHaIJHRV
+--BRF4e1IEQp0HoEFj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 29, 2016 at 04:51:29PM +0200, Arnd Bergmann wrote:
+On Fri, Jul 01, 2016 at 06:31:33PM +0200, Sylwester Nawrocki wrote:
 
-> b) efc9194bcff8 gets merged into drm-next along with my change
->    in the merge commit. It is currently a standalone patch
->    in its own branch in the ASoC tree.
+> In the SoC there is a dedicated power domain for the whole audio subsyste=
+m=20
+> and LPASS also contains a VIC itself. We could try to decompose the LPASS=
+=20
+> top block into various subsystems but I seriously doubt it's a good way
+> forward. I think LPASS should rather be some top level SoC platform entit=
+y.
 
-This would be the ideal thing obviously:
+So a MFD then?
 
-The following changes since commit 1a695a905c18548062509178b98bc91e67510864:
-
-  Linux 4.7-rc1 (2016-05-29 09:29:24 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-hdmi-codec-pdata
-
-for you to fetch changes up to efc9194bcff84666832c6493bafa92029ac6634c:
-
-  ASoC: hdmi-codec: callback function will be called with private data (2016-06-27 18:53:15 +0100)
-
-----------------------------------------------------------------
-ASoC: Add private data for HDMI CODEC callbacks
-
-Allow the HDMI CODECs to get private data passed in in callbacks.
-
-----------------------------------------------------------------
-Kuninori Morimoto (1):
-      ASoC: hdmi-codec: callback function will be called with private data
-
- include/sound/hdmi-codec.h    | 13 ++++++++-----
- sound/soc/codecs/hdmi-codec.c | 15 ++++++++-------
- 2 files changed, 16 insertions(+), 12 deletions(-)
-
---NWFdL9cNbHaIJHRV
+--BRF4e1IEQp0HoEFj
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXd3pdAAoJECTWi3JdVIfQgbEH/0ZKLyBJqcvvrURVppUvpgr8
-pQ0qEtXNHLzOfY3TqfbkbbuWrGGVcA6awazID7EYDBL/iQpo9xw5ZSanGl4pumyj
-gRi+9GMKy6Zy/VA+WzN+8BxJ9sgTLsoV5nspcx4lA7mE8nLEhENwT8CnCaO2Rbi1
-ESQn43ASukue/fLhFzijuBG9CRCbFLwerhyv2kKxK/w+trDDm5se6+tizA6M1aX/
-ZaAw80eWlVdHHE7y8xbL7wSu85pgWYK0Hjgd0oyde0pQ1Bp/g2jgauykIqJTimY/
-VM6PIuCKoGZPYZI5TzdZ/bRyTToZvHy4cvB1Dy0OCZPrazxJwn64AGvqrE5fybo=
-=+b8A
+iQEcBAEBCAAGBQJXd3qLAAoJECTWi3JdVIfQfE8H/04hZD+uFb7+sVT2M7aGLflZ
+EUQPE1YeFAhn0zmb+kZrj93TfyfWeaXg1Gzwc4qtPuVzOQl711FDe3KA4PwDmHNp
+NPT4CI5+ZYOfFoUvKCh36lD1QSqEBzFKJdWP4MKmG+0DOqzDRP1VJq1C+BhiHqp5
+2yEc1eT/CFBYZrdWfz4UVtN8jlrcMZ3Oiij100rK6+9WRcrjz/W/gr78GpDGuG1R
+tBmjAzlkjnIvzRvexrMxLqjcV3tCkrL6b7wHkJuEr3PFgj/wbTZ0A9FPIqK1FpxE
+rLwusgwdvGWrtq9S50CnGJO8OXv9UI+NoSoO5U4KA3TH5cfAXwTzkaT+tkvUv6g=
+=trv5
 -----END PGP SIGNATURE-----
 
---NWFdL9cNbHaIJHRV--
-
---===============0235943499==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
-
---===============0235943499==--
+--BRF4e1IEQp0HoEFj--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
