@@ -1,57 +1,65 @@
-From: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Subject: [PATCH] ASOC: atmel-pdmic: Simplify use of devm_ioremap_resource
-Date: Mon, 4 Jul 2016 18:37:06 +0530
-Message-ID: <20160704130706.GA16942@amitoj-Inspiron-3542>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] drm: sti: fix prototypes after API change
+Date: Mon,  4 Jul 2016 15:16:51 +0200
+Message-ID: <20160704131651.1083630-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: nicolas.ferre@atmel.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: julia.lawall@lip6.fr
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: David Airlie <airlied@linux.ie>, Mark Brown <broonie@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, kernel@stlinux.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-Remove unneeded error handling on the result of a call to
-platform_get_resource when the value is passed to
-devm_ioremap_resource.
-
-The Coccinelle semantic patch that makes this change is as follows:
-
-// <smpl>
-@@
-expression pdev,res,n,e,e1;
-expression ret != 0;
-identifier l;
-@@
-
-- res = platform_get_resource(pdev, IORESOURCE_MEM, n);
-  ... when != res
-- if (res == NULL) { ... \(goto l;\|return ret;\) }
-  ... when != res
-+ res = platform_get_resource(pdev, IORESOURCE_MEM, n);
-  e = devm_ioremap_resource(e1, res);
-// </smpl>
-
-Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
----
- sound/soc/atmel/atmel-pdmic.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
-index aee4787..5f56da6 100644
---- a/sound/soc/atmel/atmel-pdmic.c
-+++ b/sound/soc/atmel/atmel-pdmic.c
-@@ -624,11 +624,6 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
- 	}
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res) {
--		dev_err(dev, "no memory resource\n");
--		return -ENXIO;
--	}
--
- 	io_base = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(io_base)) {
- 		ret = PTR_ERR(io_base);
--- 
-1.9.1
+TGlrZSB0aGUgbWVkaWF0ZWsgaGRtaSBkcml2ZXIsIHRoZSBzdGkgZHJpdmVyIG5vdyBzdWZmZXJz
+IGZyb20KYW4gQVBJIGNoYW5nZSBpbiBsaW51eC1uZXh0OgoKZHJpdmVycy9ncHUvZHJtL3N0aS9z
+dGlfaGRtaS5jOjEyNTA6MTU6IGVycm9yOiBpbml0aWFsaXphdGlvbiBmcm9tIGluY29tcGF0aWJs
+ZSBwb2ludGVyIHR5cGUgWy1XZXJyb3I9aW5jb21wYXRpYmxlLXBvaW50ZXItdHlwZXNdCiAgLmh3
+X3BhcmFtcyA9IGhkbWlfYXVkaW9faHdfcGFyYW1zLAogICAgICAgICAgICAgICBefn5+fn5+fn5+
+fn5+fn5+fn5+fgpkcml2ZXJzL2dwdS9kcm0vc3RpL3N0aV9oZG1pLmM6MTI1MDoxNTogbm90ZTog
+KG5lYXIgaW5pdGlhbGl6YXRpb24gZm9yICdhdWRpb19jb2RlY19vcHMuaHdfcGFyYW1zJykKClRo
+aXMgZm9sbG93cyB0aGUgQVBJIGNoYW5nZSwgYWRkaW5nIHRoZSBleHRyYSBmdW5jdGlvbiBhcmd1
+bWVudHMuCkkgc3VwcG9zZSB3ZSB3YW50IHRoaXMgdG8gYmUgcGFydCBvZiB0aGUgQVNvQyBtZXJn
+ZSBpbiBsaW51eC1uZXh0CmZvciBub3cgdG9vLgoKU2lnbmVkLW9mZi1ieTogQXJuZCBCZXJnbWFu
+biA8YXJuZEBhcm5kYi5kZT4KRml4ZXM6IDJjMzQ4ZTUwNTMyOCAoImRybTogc3RpOiBBZGQgQVNv
+QyBnZW5lcmljIGhkbWkgY29kZWMgc3VwcG9ydC4iKQpGaXhlczogZWZjOTE5NGJjZmY4ICgiQVNv
+QzogaGRtaS1jb2RlYzogY2FsbGJhY2sgZnVuY3Rpb24gd2lsbCBiZSBjYWxsZWQgd2l0aCBwcml2
+YXRlIGRhdGEiKQpMaW5rOiBodHRwczovL2xrbWwub3JnL2xrbWwvMjAxNi82LzI5LzQ0MQotLS0K
+IGRyaXZlcnMvZ3B1L2RybS9zdGkvc3RpX2hkbWkuYyB8IDcgKysrKy0tLQogMSBmaWxlIGNoYW5n
+ZWQsIDQgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJz
+L2dwdS9kcm0vc3RpL3N0aV9oZG1pLmMgYi9kcml2ZXJzL2dwdS9kcm0vc3RpL3N0aV9oZG1pLmMK
+aW5kZXggOTI3ZTJiMmU1YWYyLi5mZWRjMTdmOThkOWIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1
+L2RybS9zdGkvc3RpX2hkbWkuYworKysgYi9kcml2ZXJzL2dwdS9kcm0vc3RpL3N0aV9oZG1pLmMK
+QEAgLTExNjksNyArMTE2OSw3IEBAIHN0YXRpYyBpbnQgaGRtaV9hdWRpb19jb25maWd1cmUoc3Ry
+dWN0IHN0aV9oZG1pICpoZG1pLAogCXJldHVybiBoZG1pX2F1ZGlvX2luZm9mcmFtZV9jb25maWco
+aGRtaSk7CiB9CiAKLXN0YXRpYyB2b2lkIGhkbWlfYXVkaW9fc2h1dGRvd24oc3RydWN0IGRldmlj
+ZSAqZGV2KQorc3RhdGljIHZvaWQgaGRtaV9hdWRpb19zaHV0ZG93bihzdHJ1Y3QgZGV2aWNlICpk
+ZXYsIHZvaWQgKmRhdGEpCiB7CiAJc3RydWN0IHN0aV9oZG1pICpoZG1pID0gZGV2X2dldF9kcnZk
+YXRhKGRldik7CiAJaW50IGF1ZGlvX2NmZzsKQEAgLTExODYsNiArMTE4Niw3IEBAIHN0YXRpYyB2
+b2lkIGhkbWlfYXVkaW9fc2h1dGRvd24oc3RydWN0IGRldmljZSAqZGV2KQogfQogCiBzdGF0aWMg
+aW50IGhkbWlfYXVkaW9faHdfcGFyYW1zKHN0cnVjdCBkZXZpY2UgKmRldiwKKwkJCQl2b2lkICpk
+YXRhLAogCQkJCXN0cnVjdCBoZG1pX2NvZGVjX2RhaWZtdCAqZGFpZm10LAogCQkJCXN0cnVjdCBo
+ZG1pX2NvZGVjX3BhcmFtcyAqcGFyYW1zKQogewpAQCAtMTIyMSw3ICsxMjIyLDcgQEAgc3RhdGlj
+IGludCBoZG1pX2F1ZGlvX2h3X3BhcmFtcyhzdHJ1Y3QgZGV2aWNlICpkZXYsCiAJcmV0dXJuIDA7
+CiB9CiAKLXN0YXRpYyBpbnQgaGRtaV9hdWRpb19kaWdpdGFsX211dGUoc3RydWN0IGRldmljZSAq
+ZGV2LCBib29sIGVuYWJsZSkKK3N0YXRpYyBpbnQgaGRtaV9hdWRpb19kaWdpdGFsX211dGUoc3Ry
+dWN0IGRldmljZSAqZGV2LCB2b2lkICpkYXRhLCBib29sIGVuYWJsZSkKIHsKIAlzdHJ1Y3Qgc3Rp
+X2hkbWkgKmhkbWkgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsKIApAQCAtMTIzNSw3ICsxMjM2LDcg
+QEAgc3RhdGljIGludCBoZG1pX2F1ZGlvX2RpZ2l0YWxfbXV0ZShzdHJ1Y3QgZGV2aWNlICpkZXYs
+IGJvb2wgZW5hYmxlKQogCXJldHVybiAwOwogfQogCi1zdGF0aWMgaW50IGhkbWlfYXVkaW9fZ2V0
+X2VsZChzdHJ1Y3QgZGV2aWNlICpkZXYsIHVpbnQ4X3QgKmJ1Ziwgc2l6ZV90IGxlbikKK3N0YXRp
+YyBpbnQgaGRtaV9hdWRpb19nZXRfZWxkKHN0cnVjdCBkZXZpY2UgKmRldiwgdm9pZCAqZGF0YSwg
+dWludDhfdCAqYnVmLCBzaXplX3QgbGVuKQogewogCXN0cnVjdCBzdGlfaGRtaSAqaGRtaSA9IGRl
+dl9nZXRfZHJ2ZGF0YShkZXYpOwogCXN0cnVjdCBkcm1fY29ubmVjdG9yICpjb25uZWN0b3IgPSBo
+ZG1pLT5kcm1fY29ubmVjdG9yOwotLSAKMi45LjAKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxp
+c3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2RyaS1kZXZlbAo=
