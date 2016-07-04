@@ -1,37 +1,39 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH] ASOC: Atmel: ClassD: Simplify use of
- devm_ioremap_resource
-Date: Mon, 4 Jul 2016 17:01:53 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1607041701120.3790@hadrien>
-References: <20160704130352.GA16886@amitoj-Inspiron-3542> <20160704141533.GG6247@sirena.org.uk> <alpine.DEB.2.10.1607041651380.3790@hadrien> <20160704145959.GI6247@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ALSA: ppc/awacs: shut up maybe-uninitialized warning
+Date: Mon,  4 Jul 2016 17:07:45 +0200
+Message-ID: <20160704150759.2909708-1-arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160704145959.GI6247@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Amitoj Kaur Chawla <amitoj1606@gmail.com>, nicolas.ferre@atmel.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The awacs sound driver produces a false-positive warning in ppc64_defconfig:
 
+sound/ppc/awacs.c: In function 'snd_pmac_awacs_init':
+include/sound/control.h:219:9: warning: 'master_vol' may be used uninitialized in this function [-Wmaybe-uninitialized]
 
-On Mon, 4 Jul 2016, Mark Brown wrote:
+I haven't come up with a good way to rewrite the code to avoid the
+warning, so here is a bad one: I initialize the variable before
+the conditionall initialization so gcc no longer has to worry about
+it.
 
-> On Mon, Jul 04, 2016 at 04:52:43PM +0200, Julia Lawall wrote:
-> > On Mon, 4 Jul 2016, Mark Brown wrote:
->
-> > > Please use subject lines matching the style for the subsystem.  This
-> > > makes it easier for people to identify relevant patches.
->
-> > The point is that ASOC should be ASoC?  Ther aren't many patches on this
-> > file, and two of the three have the same subject line as the above, but
-> > with ASoC rather than ASOC.
->
-> Yes, that's the case here (this is one of my pre-canned responses and I
-> didn't yet figure out a sensible way to make it parameterized yet,
-> should add a bit about trawling git log though).
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/ppc/awacs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-OK, thanks.  With all the capital letters it looks odd overall, so that is
-why I was wondering.
-
-julia
+diff --git a/sound/ppc/awacs.c b/sound/ppc/awacs.c
+index 09da7b52bc2e..1468e4b7bf93 100644
+--- a/sound/ppc/awacs.c
++++ b/sound/ppc/awacs.c
+@@ -991,6 +991,7 @@ snd_pmac_awacs_init(struct snd_pmac *chip)
+ 		if (err < 0)
+ 			return err;
+ 	}
++	master_vol = NULL;
+ 	if (pm7500)
+ 		err = build_mixers(chip,
+ 				   ARRAY_SIZE(snd_pmac_awacs_mixers_pmac7500),
+-- 
+2.9.0
