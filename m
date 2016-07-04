@@ -1,7 +1,7 @@
 From: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Subject: [PATCH] ASOC: Atmel: ClassD: Simplify use of devm_ioremap_resource
-Date: Mon, 4 Jul 2016 18:33:52 +0530
-Message-ID: <20160704130352.GA16886@amitoj-Inspiron-3542>
+Subject: [PATCH] ASOC: atmel-pdmic: Simplify use of devm_ioremap_resource
+Date: Mon, 4 Jul 2016 18:37:06 +0530
+Message-ID: <20160704130706.GA16942@amitoj-Inspiron-3542>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -34,14 +34,14 @@ identifier l;
 
 Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
 ---
- sound/soc/atmel/atmel-classd.c | 5 -----
+ sound/soc/atmel/atmel-pdmic.c | 5 -----
  1 file changed, 5 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-index 6107de9..6d9b8b4 100644
---- a/sound/soc/atmel/atmel-classd.c
-+++ b/sound/soc/atmel/atmel-classd.c
-@@ -593,11 +593,6 @@ static int atmel_classd_probe(struct platform_device *pdev)
+diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
+index aee4787..5f56da6 100644
+--- a/sound/soc/atmel/atmel-pdmic.c
++++ b/sound/soc/atmel/atmel-pdmic.c
+@@ -624,11 +624,6 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
  	}
  
  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -52,6 +52,6 @@ index 6107de9..6d9b8b4 100644
 -
  	io_base = devm_ioremap_resource(dev, res);
  	if (IS_ERR(io_base)) {
- 		ret =  PTR_ERR(io_base);
+ 		ret = PTR_ERR(io_base);
 -- 
 1.9.1
