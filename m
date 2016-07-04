@@ -1,14 +1,17 @@
-From: Stephen Just <stephenjust@gmail.com>
-Subject: [PATCH 2/3] ASoC: Intel: Atom: add quirk for CHT w/
-	RT5645
-Date: Sun,  3 Jul 2016 23:06:06 -0600
-Message-ID: <20160704050607.32213-3-stephenjust@gmail.com>
-References: <20160704045655.31198-1-stephenjust@gmail.com>
+From: Detlef Urban <onkel@paraair.de>
+Subject: Alsa driver for Tascam US-16x08
+Date: Mon, 4 Jul 2016 19:25:08 +0200
+Message-ID: <577A9BF4.90304@paraair.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20160704045655.31198-1-stephenjust@gmail.com>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB5A5265AB9
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2016 19:25:13 +0200 (CEST)
+Received: from [192.168.178.38] ([93.130.114.84]) by mrelayeu.kundenserver.de
+ (mreue102) with ESMTPSA (Nemesis) id 0MeSdD-1awnAe1uZD-00QBSq for
+ <alsa-devel@alsa-project.org>; Mon, 04 Jul 2016 19:25:11 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,104 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Stephen Just <stephenjust@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The Surface 3 uses an RT5645 audio codec, but the ACPI
-identifier used is that for the RT5640. Use a DMI match
-to override the driver_data provided by ACPI to workaround
-ID conflict.
+Hi,
 
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Stephen Just <stephenjust@gmail.com>
----
- sound/soc/intel/atom/sst/sst_acpi.c     | 29 ++++++++++++++++++++++++++++-
- sound/soc/intel/boards/cht_bsw_rt5645.c |  1 +
- 2 files changed, 29 insertions(+), 1 deletion(-)
+I'm a former application developer at a big IT company.
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 3bc4b63..ef40608 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -19,6 +19,7 @@
-  */
- 
- #include <linux/module.h>
-+#include <linux/dmi.h>
- #include <linux/fs.h>
- #include <linux/interrupt.h>
- #include <linux/slab.h>
-@@ -131,6 +132,8 @@ static struct sst_platform_info chv_platform_data = {
- 	.platform = "sst-mfld-platform",
- };
- 
-+static const struct dmi_system_id dmi_platform_quirk_table[];
-+
- static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- {
- 	struct resource *rsrc;
-@@ -224,6 +227,7 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 	struct platform_device *mdev;
- 	struct platform_device *plat_dev;
- 	struct sst_platform_info *pdata;
-+	const struct dmi_system_id *dmi_match;
- 	unsigned int dev_id;
- 
- 	id = acpi_match_device(dev->driver->acpi_match_table, dev);
-@@ -231,7 +235,13 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	dev_dbg(dev, "for %s", id->id);
- 
--	mach = (struct sst_acpi_mach *)id->driver_data;
-+	/* check for quirk when getting driver_data */
-+	dmi_match = dmi_first_match(dmi_platform_quirk_table);
-+	if (dmi_match)
-+		mach = (struct sst_acpi_mach *)dmi_match->driver_data;
-+	else
-+		mach = (struct sst_acpi_mach *)id->driver_data;
-+
- 	mach = sst_acpi_find_machine(mach);
- 	if (mach == NULL) {
- 		dev_err(dev, "No matching machine driver found\n");
-@@ -345,7 +355,24 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
- 	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
- 	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", NULL,
- 						&chv_platform_data },
-+	{},
-+};
- 
-+static struct sst_acpi_mach sst_acpi_chv_quirk[] = {
-+	/* some CHT-T platforms rely on RT5645 but use the ID from RT5640 */
-+	{"10EC5640", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
-+						&chv_platform_data },
-+	{},
-+};
-+
-+static const struct dmi_system_id dmi_platform_quirk_table[] = {
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Surface 3"),
-+		},
-+		.driver_data = (unsigned long *) &sst_acpi_chv_quirk,
-+	},
- 	{},
- };
- 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index d7ef292..bf99efb 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -340,6 +340,7 @@ static struct snd_soc_card snd_soc_card_chtrt5650 = {
- };
- 
- static struct cht_acpi_card snd_soc_cards[] = {
-+	{"10EC5640", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
- 	{"10EC5645", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
- 	{"10EC5650", CODEC_TYPE_RT5650, &snd_soc_card_chtrt5650},
- };
--- 
-2.7.4
+Most of my private time I spend with semi-professional studio recording 
+using Ubuntu Studio (Ardour).
+I bought a nice external sound device from Tascam called US-16x08 and it 
+works very well.
+This device also contains some signal processing capabilities like a 
+compressor and a parametric equalizer. But unfortunately there was no 
+Linux driver available from the manufacturer and so I cant use there 
+functionalities.
+So I started with a nightmare of re-engineering by monitoring USB 
+communication via usbmon and wireshark.
+
+Now after 3-4 weeks I'm able to completely control this device with a 
+customized snd-usb-audio kernel module.
+Additionally I developed a tiny GUI mixer application to test my driver.
+But I'm not very familiar with non-coding aspects of driver deployment 
+(documentation, deployment etc.).
+
+Can some please help me with some hints/links, so that other users can 
+benefit of my work?
+
+regards
+Detlef
