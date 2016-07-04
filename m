@@ -1,39 +1,49 @@
-From: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Subject: Re: [PATCH] ASOC: Atmel: ClassD: Simplify use of devm_ioremap_resource
-Date: Mon, 4 Jul 2016 20:37:19 +0530
-Message-ID: <CA+5yK5EJtZvPgJa1jSAxg_8ODrF3Pc8ZZ8BZePjD1tB__aeEyg@mail.gmail.com>
-References: <20160704130352.GA16886@amitoj-Inspiron-3542> <20160704141533.GG6247@sirena.org.uk>
- <alpine.DEB.2.10.1607041651380.3790@hadrien> <20160704145959.GI6247@sirena.org.uk>
- <CA+5yK5E7Mz-2ZfXQkkY6TtKP_8+x46bSAOjqZ8JXS1dLrYUz8g@mail.gmail.com>
+From: weiyj_lk@163.com
+Subject: [PATCH -next] ASoC: sunxi: remove redundant dev_err call in
+ sun4i_i2s_probe()
+Date: Mon,  4 Jul 2016 15:08:07 +0000
+Message-ID: <1467644887-10796-1-git-send-email-weiyj_lk@163.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CA+5yK5E7Mz-2ZfXQkkY6TtKP_8+x46bSAOjqZ8JXS1dLrYUz8g@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Julia Lawall <julia.lawall@lip6.fr>, nicolas.ferre@atmel.com, Liam Girdwood <lgirdwood@gmail.com>, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>
+Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 4, 2016 at 8:36 PM, Amitoj Kaur Chawla <amitoj1606@gmail.com> wrote:
-> On Mon, Jul 4, 2016 at 8:29 PM, Mark Brown <broonie@kernel.org> wrote:
->> On Mon, Jul 04, 2016 at 04:52:43PM +0200, Julia Lawall wrote:
->>> On Mon, 4 Jul 2016, Mark Brown wrote:
->>
->>> > Please use subject lines matching the style for the subsystem.  This
->>> > makes it easier for people to identify relevant patches.
->>
->>> The point is that ASOC should be ASoC?  Ther aren't many patches on this
->>> file, and two of the three have the same subject line as the above, but
->>> with ASoC rather than ASOC.
->>
->> Yes, that's the case here (this is one of my pre-canned responses and I
->> didn't yet figure out a sensible way to make it parameterized yet,
->> should add a bit about trawling git log though).
->
-> Sorry for the error. I'll send a v2.
->
-> Amitoj
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-I see the patch has already been applied with the corrected subject line.
+There is a error message within devm_ioremap_resource
+already, so remove the dev_err call to avoid redundant
+error message.
 
-Amitoj
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ sound/soc/sunxi/sun4i-i2s.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index fab5234..687a8f8 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -599,10 +599,8 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	regs = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(regs)) {
+-		dev_err(&pdev->dev, "Can't request IO region\n");
++	if (IS_ERR(regs))
+ 		return PTR_ERR(regs);
+-	}
+ 
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
