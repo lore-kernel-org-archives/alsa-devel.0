@@ -1,49 +1,53 @@
-From: weiyj_lk@163.com
-Subject: [PATCH -next] ASoC: sunxi: remove redundant dev_err call in
- sun4i_i2s_probe()
-Date: Mon,  4 Jul 2016 15:08:07 +0000
-Message-ID: <1467644887-10796-1-git-send-email-weiyj_lk@163.com>
+From: Enric Balletbo Serra <eballetbo@gmail.com>
+Subject: Re: Applied "ASoC: rockchip-max98090: Fix NULL pointer dereference
+ while accessing to jack." to the asoc tree
+Date: Mon, 4 Jul 2016 17:13:05 +0200
+Message-ID: <CAFqH_52bVUgUgeHWTo8mcQh16c1W7uPMRqQ-RpgMdGusk=p=Og@mail.gmail.com>
+References: <1462435421-21205-4-git-send-email-enric.balletbo@collabora.com>
+ <E1b0CjK-00007p-Fj@debutante> <CAFqH_53jTEG7NvWt+9NBV_BVk28PZFdNSm89_DCqZvDBV+o9ng@mail.gmail.com>
+ <20160704084735.GR6247@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>
-Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160704084735.GR6247@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+2016-07-04 10:47 GMT+02:00 Mark Brown <broonie@kernel.org>:
+> On Mon, Jul 04, 2016 at 09:24:12AM +0200, Enric Balletbo Serra wrote:
+>
+>> I just saw that these patches and the others in the patch series were
+>> not applied yet. As are fixes and were accepted since middle May, I
+>
+> No, they are actually applied like the e-mail said - please see my git.
+>
+>> expected see the patches merged in this release cycle, but we're at
+>
+> In general if you think a fix needs to go in urgently it's best to
+> specifically identify this.  If nothing is specifically said and it's
+> not obviously related to something done recently then the tendency will
+> be to assume that the issue was recently introduced and is a fix for a
+> development version.
+>
+>> rc6 so I suppose I'll need to wait to see them merged for 4.8 merge
+>> window. Please can you coordinate with Heiko and make sure that these
+>> patches were merged before he merges the patches to enable the audio
+>> on Veyron? Otherwise we will break Veyron support for a while. I'd
+>> really like have audio working on Veyron.
+>
+> As things stand they'll be merged in the next merge window.  They're
+> buried in the middle of a branch with other things so I can't just send
+> the branch as-is.  If these new patches you're talking about are going
+> to get merged in the merge window as well so we're presumably mostly
+> fine?
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+Yeah it's fine as long as the patches will be merged in next merge
+window before the rockchip DTS updates.
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- sound/soc/sunxi/sun4i-i2s.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+It's only that I expected see them merged, but probably was only
+something that I assumed wrongly.
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index fab5234..687a8f8 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -599,10 +599,8 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	regs = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(regs)) {
--		dev_err(&pdev->dev, "Can't request IO region\n");
-+	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
--	}
- 
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
+Thanks,
+ Enric
