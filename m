@@ -1,46 +1,57 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASOC: Atmel: ClassD: Simplify use of
- devm_ioremap_resource
-Date: Mon, 4 Jul 2016 16:15:33 +0200
-Message-ID: <20160704141533.GG6247@sirena.org.uk>
-References: <20160704130352.GA16886@amitoj-Inspiron-3542>
+Subject: Re: [alsa-devel] [PATCH 3/4] ASoC: mediatek: add BT implementation
+Date: Mon, 4 Jul 2016 16:44:06 +0200
+Message-ID: <20160704144406.GH6247@sirena.org.uk>
+References: <1467629788-14411-1-git-send-email-garlic.tseng@mediatek.com>
+ <1467629788-14411-4-git-send-email-garlic.tseng@mediatek.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="IiH5iyEqjK6f5lUg"
+	protocol="application/pgp-signature"; boundary="ltihE5wS63FR6l1A"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20160704130352.GA16886@amitoj-Inspiron-3542>
+In-Reply-To: <1467629788-14411-4-git-send-email-garlic.tseng@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Cc: nicolas.ferre@atmel.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, julia.lawall@lip6.fr
+To: Garlic Tseng <garlic.tseng@mediatek.com>
+Cc: tiwai@suse.de, srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC.Liao@mediatek.com, ir.lian@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---IiH5iyEqjK6f5lUg
+--ltihE5wS63FR6l1A
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jul 04, 2016 at 06:33:52PM +0530, Amitoj Kaur Chawla wrote:
-> Remove unneeded error handling on the result of a call to
-> platform_get_resource when the value is passed to
-> devm_ioremap_resource.
+On Mon, Jul 04, 2016 at 06:56:27PM +0800, Garlic Tseng wrote:
 
-Please use subject lines matching the style for the subsystem.  This
-makes it easier for people to identify relevant patches.
+> +static int mt2701_btmrg_startup(struct snd_pcm_substream *substream,
+> +				struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct mtk_base_afe *afe = snd_soc_platform_get_drvdata(rtd->platform);
+> +	struct mt2701_afe_private *afe_priv = afe->platform_priv;
+> +
+> +	regmap_update_bits(afe->regmap, AUDIO_TOP_CON4,
+> +			   AUDIO_TOP_CON4_PDN_MRGIF, 0);
 
---IiH5iyEqjK6f5lUg
+We really shouldn't be writing the registers or other internal data of
+the device.  Instead we should be getting the driver for the relevant
+hardware component to do it.  If we just write to registers that makes
+the interoperation with the real driver for the device more fragile than
+it should be, people might update the main driver without noticing the
+external driver.
+
+--ltihE5wS63FR6l1A
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXem9WAAoJECTWi3JdVIfQCI4H/i/TwsSBbfxV8WtRQ3hNnKtj
-AqqG0caQtTYWdsEUQTpMHMaR/JZ4hDa6JF5o2JmKXcrNPt3yPFmHH68RwPqAjOSj
-mwLAyZs0Sf50SDjilHtiAshtQPvyt9YKRzzfbmopDgWQc16ywbryKeT+kC2F1pod
-n+Jt1P6RPdLLh/F1RzXamDdztUo/4FhziorTsmfeZa1ikeZ/O4rCKHSPibt/nO+B
-5pGBdV3Etu4LlZCLljRWFrufyoJ/3YjQ81IGqdEoRzDQ4YW40eKKGmS4ecpMgPhF
-ZWz22QP8lqnqw9K6IJtbCXYDGgbzg5CfoXQsIFR50DkZxJC9cxSGzIgBzMaAXhA=
-=kLKx
+iQEcBAEBCAAGBQJXenYyAAoJECTWi3JdVIfQfhQH/i32VCtEXJSzzqgf/YAROy99
+Gur05jgRgUGNFVWGF/gO2QraA2lgOvfB3NeBP6j5hoUyVmKGVH0MHrTpxkODEoss
+xrj3b8x5QqfN43PjQxk/GHfZLb+RYI5QtabSPQyquBNfVhTrm8SGkLfoEIEUGZHM
+W9wZK8Mkol0qfainp5TtJuzQIwnlDiDZuDcJSVsUvpr4CcM1FotOatjmf+FPUGYJ
+GjvBkXu8R7oMhzVN8v15gQysSooPn2o+5wSkfJHAZO6DdBR7boqcm1hPFqHcVA07
+rG5/OTN0lfRJRErAAfnUbI2vYYbaDZ1/Oldn5iOLeD9hcEPIVpxtgnh5ET4zMxY=
+=yi46
 -----END PGP SIGNATURE-----
 
---IiH5iyEqjK6f5lUg--
+--ltihE5wS63FR6l1A--
