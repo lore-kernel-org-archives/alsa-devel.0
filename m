@@ -1,64 +1,57 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: timer: Fix negative queue usage by racy
-	accesses
-Date: Mon,  4 Jul 2016 14:06:49 +0200
-Message-ID: <20160704120649.14694-1-tiwai@suse.de>
+From: Amitoj Kaur Chawla <amitoj1606@gmail.com>
+Subject: [PATCH] ASOC: Atmel: ClassD: Simplify use of devm_ioremap_resource
+Date: Mon, 4 Jul 2016 18:33:52 +0530
+Message-ID: <20160704130352.GA16886@amitoj-Inspiron-3542>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D400F265611
- for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2016 14:06:50 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 4DC1BAAF4
- for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2016 12:06:50 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: nicolas.ferre@atmel.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: julia.lawall@lip6.fr
 List-Id: alsa-devel@alsa-project.org
 
-The user timer tu->qused counter may go to a negative value when
-multiple concurrent reads are performed since both the check and the
-decrement of tu->qused are done in two individual locked contexts.
-This results in bogus read outs, and the endless loop in the
-user-space side.
+Remove unneeded error handling on the result of a call to
+platform_get_resource when the value is passed to
+devm_ioremap_resource.
 
-The fix is to move the decrement of the tu->qused counter into the
-same spinlock context as the zero-check of the counter.
+The Coccinelle semantic patch that makes this change is as follows:
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+// <smpl>
+@@
+expression pdev,res,n,e,e1;
+expression ret != 0;
+identifier l;
+@@
+
+- res = platform_get_resource(pdev, IORESOURCE_MEM, n);
+  ... when != res
+- if (res == NULL) { ... \(goto l;\|return ret;\) }
+  ... when != res
++ res = platform_get_resource(pdev, IORESOURCE_MEM, n);
+  e = devm_ioremap_resource(e1, res);
+// </smpl>
+
+Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
 ---
- sound/core/timer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/atmel/atmel-classd.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index e722022d325d..9a6157ea6881 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -1955,6 +1955,7 @@ static ssize_t snd_timer_user_read(struct file *file, char __user *buffer,
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index 6107de9..6d9b8b4 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -593,11 +593,6 @@ static int atmel_classd_probe(struct platform_device *pdev)
+ 	}
  
- 		qhead = tu->qhead++;
- 		tu->qhead %= tu->queue_size;
-+		tu->qused--;
- 		spin_unlock_irq(&tu->qlock);
- 
- 		if (tu->tread) {
-@@ -1968,7 +1969,6 @@ static ssize_t snd_timer_user_read(struct file *file, char __user *buffer,
- 		}
- 
- 		spin_lock_irq(&tu->qlock);
--		tu->qused--;
- 		if (err < 0)
- 			goto _error;
- 		result += unit;
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res) {
+-		dev_err(dev, "no memory resource\n");
+-		return -ENXIO;
+-	}
+-
+ 	io_base = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(io_base)) {
+ 		ret =  PTR_ERR(io_base);
 -- 
-2.9.0
+1.9.1
