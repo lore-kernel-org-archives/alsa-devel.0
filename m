@@ -1,52 +1,37 @@
-From: Mark Brown <broonie@kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
 Subject: Re: [PATCH] drm: sti: fix prototypes after API change
-Date: Mon, 4 Jul 2016 15:38:10 +0200
-Message-ID: <20160704133810.GF6247@sirena.org.uk>
+Date: Mon, 04 Jul 2016 15:36:57 +0200
+Message-ID: <6436978.7TJhubtDTK@wuerfel>
 References: <20160704131651.1083630-1-arnd@arndb.de>
  <20160704132230.GD6247@sirena.org.uk>
- <6436978.7TJhubtDTK@wuerfel>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="11IAkegDWp8TRrA/"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <6436978.7TJhubtDTK@wuerfel>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: David Airlie <airlied@linux.ie>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, kernel@stlinux.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20160704132230.GD6247@sirena.org.uk>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, kernel@stlinux.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-
---11IAkegDWp8TRrA/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jul 04, 2016 at 03:36:57PM +0200, Arnd Bergmann wrote:
-> On Monday, July 4, 2016 3:22:30 PM CEST Mark Brown wrote:
-
-> > I sent a pull request for the API change to the DRM people which might
-> > be easier given that it's a single commit topic branch rather than the
-> > whole of DRM.
-
-> Agreed, that is probably the best way forward. Does your pull request
-> also contain an equivalent of my two patches?
-
-No, I just sent a pull request for the API change - I don't have the new
-patches in my tree.
-
---11IAkegDWp8TRrA/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXembBAAoJECTWi3JdVIfQrJMH/iCzkrn0UMtLOAuD2/uqNCOR
-B2WGzbFO1RU5uO2RwJtU/fbsB1WX8We2idms1jxhe4BpjEY0HNjCzJ5MuAA/FvqD
-XwxOLnhcRQC26jHQeH36Mjcy2wStkTdQ00i0StOjrNSjQ97isQ+wvWcGnBCdccUX
-G8IIvvItslkznFXtDp4Jvhp2dSHqlAO8vwz0K8rplhQuiV+RBd+4upeFDegtwJOy
-poWr2zRaYx2mUY4RyQmU/DEvzAlCWp4+RLfm2Tb++mBElLNoXuCrImARYQPTDI39
-8vUSZXb57ZtqkqId2N7AuL5MYqd4CpRSGykczFxpQGTpFnSG1p7nVn1jpTGuruU=
-=GGEG
------END PGP SIGNATURE-----
-
---11IAkegDWp8TRrA/--
+T24gTW9uZGF5LCBKdWx5IDQsIDIwMTYgMzoyMjozMCBQTSBDRVNUIE1hcmsgQnJvd24gd3JvdGU6
+Cj4gT24gTW9uLCBKdWwgMDQsIDIwMTYgYXQgMDM6MTY6NTFQTSArMDIwMCwgQXJuZCBCZXJnbWFu
+biB3cm90ZToKPiAKPiA+IFRoaXMgZm9sbG93cyB0aGUgQVBJIGNoYW5nZSwgYWRkaW5nIHRoZSBl
+eHRyYSBmdW5jdGlvbiBhcmd1bWVudHMuCj4gPiBJIHN1cHBvc2Ugd2Ugd2FudCB0aGlzIHRvIGJl
+IHBhcnQgb2YgdGhlIEFTb0MgbWVyZ2UgaW4gbGludXgtbmV4dAo+ID4gZm9yIG5vdyB0b28uCj4g
+Cj4gSSBzZW50IGEgcHVsbCByZXF1ZXN0IGZvciB0aGUgQVBJIGNoYW5nZSB0byB0aGUgRFJNIHBl
+b3BsZSB3aGljaCBtaWdodAo+IGJlIGVhc2llciBnaXZlbiB0aGF0IGl0J3MgYSBzaW5nbGUgY29t
+bWl0IHRvcGljIGJyYW5jaCByYXRoZXIgdGhhbiB0aGUKPiB3aG9sZSBvZiBEUk0uCgpBZ3JlZWQs
+IHRoYXQgaXMgcHJvYmFibHkgdGhlIGJlc3Qgd2F5IGZvcndhcmQuIERvZXMgeW91ciBwdWxsIHJl
+cXVlc3QKYWxzbyBjb250YWluIGFuIGVxdWl2YWxlbnQgb2YgbXkgdHdvIHBhdGNoZXM/CgoJQXJu
+ZApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2
+ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9s
+aXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
