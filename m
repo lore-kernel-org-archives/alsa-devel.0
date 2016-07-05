@@ -1,83 +1,49 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 07/39 v2] ASoC: simple-card-utils: add
- asoc_simple_card_parse_card_name()
-Date: Tue, 5 Jul 2016 14:10:52 +0200
-Message-ID: <20160705121052.GQ6247@sirena.org.uk>
-References: <87fusysjam.wl%kuninori.morimoto.gx@renesas.com>
- <8760tusj2q.wl%kuninori.morimoto.gx@renesas.com>
- <20160629181555.GJ6247@sirena.org.uk>
- <874m8bbdei.wl%kuninori.morimoto.gx@renesas.com>
- <20160701095249.GJ6247@sirena.org.uk>
- <874m861dzi.wl%kuninori.morimoto.gx@renesas.com>
- <871t3a1crg.wl%kuninori.morimoto.gx@renesas.com>
- <20160704085003.GS6247@sirena.org.uk>
- <87lh1hzsww.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 3/6] ASoC: simple-card-utils: add
+ asoc_simple_card_parse_dailink_name()
+Date: Tue, 5 Jul 2016 14:35:02 +0200
+Message-ID: <20160705123502.GR6247@sirena.org.uk>
+References: <87wpl79q79.wl%kuninori.morimoto.gx@renesas.com>
+ <87shvv9q3q.wl%kuninori.morimoto.gx@renesas.com>
+ <87vb0l3plf.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8780404543486767105=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6857E2665F4
- for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2016 14:11:17 +0200 (CEST)
-In-Reply-To: <87lh1hzsww.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1trTh7oBgAEAEHeG"
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87vb0l3plf.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8780404543486767105==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="LDTYQ/yPU1fZltPS"
-Content-Disposition: inline
-
-
---LDTYQ/yPU1fZltPS
+--1trTh7oBgAEAEHeG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jul 04, 2016 at 08:59:53AM +0000, Kuninori Morimoto wrote:
+On Tue, Jul 05, 2016 at 12:24:54AM +0000, Kuninori Morimoto wrote:
 
-> > If we try to dereference card->dai_link without checking to see if it's
-> > set then we'll crash.
+> Please let me know if your favored style is name format should be
+> handled on each sound card, not in utils.c
+> I can arrange it.
 
-> Ahh, do you mean we need like this ?
+I'd definitely prefer to limit the usage of DPCM in generic code so
+keeping it in the card seems safer.
 
-> if (!card->name && card->dai_link)
-> 	card->name = card->dai_link->name;
-
-Yes, exactly.
-
---LDTYQ/yPU1fZltPS
+--1trTh7oBgAEAEHeG
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXe6PCAAoJECTWi3JdVIfQAXYH/iIJzDKppXiH2TVvEiAQd8JB
-77rn2rZB13lJTFdMr4PnB5SYkJHVwJZMyX8+Af2bsXfElQ3e7csQMFfg+JzRN08O
-k4c1vIzGH56Is1qTpTCa/r2rkMmd73S/slffwJsCxnttqWok0TB9LaEODU2q0U86
-avKak5E5mE72r9aweHAMyeUctvCK1DnhJEcM6s+kBfXycieSl4rOrJh0naCmnyEm
-DUEBYfQjsmaflWCZljq8qX+1UivVeS3R9706xRZC5251DTCqQfxHITqfh/fuMPEz
-Vt5xP5JOlbJun8zz8Sm2x0QOcAmREEu+v53IDTdMf6edqFx+uOxc3lbBR2pyofs=
-=S3mA
+iQEcBAEBCAAGBQJXe6l1AAoJECTWi3JdVIfQDjAH/3UPqJSaEW7mJo3Rb0414hJF
+GAx4yZMfwuBz2A0DOxdbX77MTgfWWqLOd9wKxc4oB75vHvbzXIvZP8oZJDFtB6H3
+nvYBQpn6e105aOuFuxxjZ6qz8jXuWS3kATzwM6/lf6NpsmFJpHXaeolXGksvRJff
+C24EpHTAqquqj4fedbhjgrX24dEA7PRt/6abJ9vDWan1/sKz4C00UrMKbVDBuCWF
+b5sGwenYJ264yQELxAzMDATDzaGPT9SzzxopTLps1cYEUdOPO3JRI1S8EYhoNwCG
+n+8iSKXwj4/rElGfll98P5C435aSm8YaBgvgD6QMOmxQsZrysJJpZboh/m+/Fuo=
+=k3GL
 -----END PGP SIGNATURE-----
 
---LDTYQ/yPU1fZltPS--
-
---===============8780404543486767105==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8780404543486767105==--
+--1trTh7oBgAEAEHeG--
