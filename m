@@ -1,35 +1,57 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH] drm: sti: fix prototypes after API change
-Date: Tue, 5 Jul 2016 10:29:04 +1000
-Message-ID: <20160705102904.6f2100f3@canb.auug.org.au>
-References: <20160704131651.1083630-1-arnd@arndb.de>
- <20160704132230.GD6247@sirena.org.uk> <6436978.7TJhubtDTK@wuerfel>
- <20160704133810.GF6247@sirena.org.uk>
- <20160705094637.5076b8a0@canb.auug.org.au>
- <CAPM=9tzjJZ_PCv-TT8xR0GEYOny9W6J72v-FLRDQrHr3phQRDg@mail.gmail.com>
+From: "Wu, Songjun" <songjun.wu@atmel.com>
+Subject: Re: atmel_ssc_dai.c, use of dai->id
+Date: Tue, 5 Jul 2016 09:12:44 +0800
+Message-ID: <b50d70ac-a07f-2db5-7cc7-2cf7a23479f9@atmel.com>
+References: <alpine.DEB.2.02.1607041956420.11824@pmeerw.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <CAPM=9tzjJZ_PCv-TT8xR0GEYOny9W6J72v-FLRDQrHr3phQRDg@mail.gmail.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Dave Airlie <airlied@gmail.com>
-Cc: alsa-devel@alsa-project.org, kernel@stlinux.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, LKML <linux-kernel@vger.kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>, Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ussmtp01.atmel.com (nasmtp01.atmel.com [192.199.1.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8342C265AB9
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2016 03:12:55 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1607041956420.11824@pmeerw.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgRGF2ZSwKCk9uIFR1ZSwgNSBKdWwgMjAxNiAwOTo1OToxNiArMTAwMCBEYXZlIEFpcmxpZSA8
-YWlybGllZEBnbWFpbC5jb20+IHdyb3RlOgo+Cj4gSSB0aGluayBJJ3ZlIGRvbmUgaXQgY29ycmVj
-dGx5LCBJJ3ZlIGp1c3QgcHVzaGVkIG91dCBkcm0tbmV4dCB3aXRoIHRoZQo+IHB1bGwgYW5kIHRo
-ZQo+IHR3byBjaGFuZ2VzIGFtZW5kZWQgaW50byB0aGUgbWVyZ2UuCgpMb29rcyBncmVhdCwgdGhh
-bmtzLgoKLS0gCkNoZWVycywKU3RlcGhlbiBSb3Rod2VsbApfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZl
-bEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+
+
+On 7/5/2016 03:00, Peter Meerwald-Stadler wrote:
+> Hello,
+>
+> I am trying to use SSC1 (not SSC0 which might work) on a SAMA5D4-Xplained
+> board (4.1 kernel, but close to mainline)
+>
+> c706f2e5 ASoC: atmel_ssc_dai: distinguish the different SSC
+> fixes an issue with cpu_dai id being always 0, while the ssc id should
+> have been used (or the platform_device id)
+>
+> I think there is a remaining issue with DMA parameters in
+> atmel_ssc_startup():
+>
+> line 324:
+> dma_params = &ssc_dma_params[dai->id][dir];
+>
+> I think it should be
+> dma_params = &ssc_dma_params[pdev->id][dir];
+>
+> I am new to this platform, please comment
+> I can submit a formal patch later-on of course
+>
+Hi Peter,
+
+Yes, you are right. It should be fixed in atmel_ssc_startup().
+Thank you.
+
+> thanks, regards, p.
+>
