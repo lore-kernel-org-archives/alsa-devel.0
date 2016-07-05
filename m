@@ -1,58 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 3/4] ASoC: mediatek: add BT implementation
-Date: Tue, 5 Jul 2016 10:12:32 +0200
-Message-ID: <20160705081232.GL6247@sirena.org.uk>
-References: <1467629788-14411-1-git-send-email-garlic.tseng@mediatek.com>
- <1467629788-14411-4-git-send-email-garlic.tseng@mediatek.com>
- <20160704144406.GH6247@sirena.org.uk>
- <1467683533.4212.16.camel@mtksdaap41>
+Subject: Re: [PATCH] ASoC: rt5645: disable soft volume control
+Date: Tue, 5 Jul 2016 10:34:22 +0200
+Message-ID: <20160705083422.GN6247@sirena.org.uk>
+References: <1467696235-31566-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="j5abB2DrWbqmv6QP"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1467683533.4212.16.camel@mtksdaap41>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Garlic Tseng <garlic.tseng@mediatek.com>
-Cc: tiwai@suse.de, srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, koro.chen@mediatek.com, PC.Liao@mediatek.com, ir.lian@mediatek.com
+Content-Type: multipart/mixed; boundary="===============4177001868599591359=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 642C626061B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2016 10:34:48 +0200 (CEST)
+In-Reply-To: <1467696235-31566-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, koro.chen@mediatek.com, PC.Liao@mediatek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---j5abB2DrWbqmv6QP
+--===============4177001868599591359==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="YVi6Gft925wFjdem"
+Content-Disposition: inline
+
+
+--YVi6Gft925wFjdem
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 05, 2016 at 09:52:13AM +0800, Garlic Tseng wrote:
-> On Mon, 2016-07-04 at 16:44 +0200, Mark Brown wrote:
+On Tue, Jul 05, 2016 at 01:23:55PM +0800, Bard Liao wrote:
+> With soft volume control function, rt5645/rt5650 will start with 0dB
+> volume and take a little time to adjust volume to given value. And it
+> will cause a bad user experience. This patch disable it.
 
-> > We really shouldn't be writing the registers or other internal data of
-> > the device.  Instead we should be getting the driver for the relevant
-> > hardware component to do it.  If we just write to registers that makes
-> > the interoperation with the real driver for the device more fragile than
-> > it should be, people might update the main driver without noticing the
-> > external driver.
+This seems like something that it'd be better to give users control over
+- some users will be annoyed by a soft ramp but there will be others who
+welcome it.
 
-> The AUDIO_TOP_CON4 is a reg of the ASoC hw module. All the registers
-> which are set in the btmrg operator belong to ASoC hardware. The reg
-> writing you mention above is to power up the MRG interface in the ASoC
-> module.
-
-The problem is that this is the machine driver, not a driver for the
-chip that's being controlled.
-
---j5abB2DrWbqmv6QP
+--YVi6Gft925wFjdem
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXe2vvAAoJECTWi3JdVIfQ5qsH/RaA11ZXK3IffV7aONXWE5z+
-h1emJa6Y1j7Yw8iHd2HuU0uJKeRBMXXrnPE5+YZzHhA4uA7gj63Lqq4RzDnJ0dnN
-aYnwBXWsAnzEuQPhGaY2GLlN42+UOJwRzd43DuFQ2DOys589Vogy8Yl7wvOF/YR0
-KUuJ3tyAxjIRn24zcvOxkcgTi+5LlP2GeVomA/URqGBf5am1AZ37cOAw0PXHsCTx
-rZIUOKq9qO41gkz7LwmvT4y9XKHj6ilPdeUz/s6KjAguwPSOA4MGRyrIEKxp5O+L
-MVD8zWOVNjCUs1593blK7TRs0kuzdXRFUimykenjozXLpz4VkM5xjh8FdmB74aM=
-=SNd4
+iQEcBAEBCAAGBQJXe3ENAAoJECTWi3JdVIfQicoH/RHYQ9+yFLvFoZhPM+fZsXnn
+eEXxCj53PVKXp2+i91wQjXSkpVcSX7x4VBNI9qzZzoy0BViqvxAwIDoDZ/Vt6CdY
+moel+b5o0cLMdIp4N6F9I3nU+L/GvqdyfkulO5vAwgvYvrvRfAgyHU9gQesViu39
+iP9jEcHnEK6YFFgYQL+2TnjK9D7ubAPAxKPn2dTaVkRto2CTj//rX/06r69ZH5fD
+n4zik0LHsnAbhgpktaqZqUwKubpntq5EZptoH+FCq/YFAn5FkcqYDzzSu2/hyN/e
+GuSkXgD53H4PgmPD4WeX+YnJo63AN66mep30/oJZVDPmz2q8IB9v2Wx2TRHX7Tw=
+=s3dr
 -----END PGP SIGNATURE-----
 
---j5abB2DrWbqmv6QP--
+--YVi6Gft925wFjdem--
+
+--===============4177001868599591359==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4177001868599591359==--
