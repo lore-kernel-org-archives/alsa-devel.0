@@ -1,98 +1,43 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Export snd_soc_dapm_new_control"
-	to the asoc tree
-Date: Tue, 05 Jul 2016 16:57:43 +0200
-Message-ID: <E1bKRnD-0006Lk-Db@finisterre>
-References: <1466999284-14782-11-git-send-email-subhransu.s.prusty@intel.com>
+From: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 2/6] ASoC: samsung: Add Samsung Low Power
+ Audio Subsystem driver
+Date: Tue, 05 Jul 2016 16:58:39 +0200
+Message-ID: <577BCB1F.3000008@samsung.com>
+References: <1466678715-19962-1-git-send-email-s.nawrocki@samsung.com>
+ <1466678715-19962-3-git-send-email-s.nawrocki@samsung.com>
+ <20160629215757.GX6247@sirena.org.uk> <577553FE.6080803@samsung.com>
+ <20160701150709.GT6247@sirena.org.uk> <57769AE5.4050407@samsung.com>
+ <20160702082548.GF6247@sirena.org.uk> <577A8BF7.8090900@samsung.com>
+ <20160705142524.GW6247@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B72652651A3
- for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2016 16:58:12 +0200 (CEST)
-In-Reply-To: <1466999284-14782-11-git-send-email-subhransu.s.prusty@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-reply-to: <20160705142524.GW6247-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, Beomho Seo <beomho.seo-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 07/05/2016 04:25 PM, Mark Brown wrote:
+> There should be nothing in principle that stops you registering AMBA
+> devices like MFDs currently register platform devices, or you could
+> perhaps add platform device registration in the PL330 to let it be
+> registered with either platform or AMBA?
 
-   ASoC: dapm: Export snd_soc_dapm_new_control
+As it turned out of_platform_populate() handles properly AMBA devices
+by looking at the compatible string. If compatible contains
+"arm,primecell" then an amba device instead of a platform device
+is created for a DT node.
 
-has been applied to the asoc tree at
+I used of_platform_populate() instead of mfd_add_devices() in the MFD
+driver's probe(). Additionally I had to rearrange exynos5433.dtsi
+and to make the LPASS devices specified as sub-nodes of the LPASS node.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+It all seems to work fine, I will post v4 so we can continue commenting
+on the actual patches.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From a5d5639f812f24f10c7affaf0d537c204fdea986 Mon Sep 17 00:00:00 2001
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Mon, 27 Jun 2016 09:18:03 +0530
-Subject: [PATCH] ASoC: dapm: Export snd_soc_dapm_new_control
-
-This is useful outside the core, when one dapm element is added
-at a time.
-
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/soc-dapm.h | 3 +++
- sound/soc/soc-dapm.c     | 1 +
- 2 files changed, 4 insertions(+)
-
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 3101d53468aa..0efeb38ae059 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -382,6 +382,9 @@ int snd_soc_dapm_put_pin_switch(struct snd_kcontrol *kcontrol,
- int snd_soc_dapm_new_controls(struct snd_soc_dapm_context *dapm,
- 	const struct snd_soc_dapm_widget *widget,
- 	int num);
-+struct snd_soc_dapm_widget *snd_soc_dapm_new_control(
-+		struct snd_soc_dapm_context *dapm,
-+		const struct snd_soc_dapm_widget *widget);
- int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- 				 struct snd_soc_dai *dai);
- int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card);
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index c4464858bf01..cc8f480251e7 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3282,6 +3282,7 @@ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
- 	mutex_unlock(&dapm->card->dapm_mutex);
- 	return w;
- }
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_new_control);
- 
- struct snd_soc_dapm_widget *
- snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
--- 
-2.8.1
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
