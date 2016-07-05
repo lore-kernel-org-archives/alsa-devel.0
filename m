@@ -1,49 +1,82 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/6] ASoC: simple-card-utils: add
- asoc_simple_card_parse_dailink_name()
-Date: Tue, 5 Jul 2016 14:35:02 +0200
-Message-ID: <20160705123502.GR6247@sirena.org.uk>
-References: <87wpl79q79.wl%kuninori.morimoto.gx@renesas.com>
- <87shvv9q3q.wl%kuninori.morimoto.gx@renesas.com>
- <87vb0l3plf.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [RFC 02/11] ASoC: Add dai_ops to set the stream
+	tag.
+Date: Tue, 5 Jul 2016 14:54:03 +0200
+Message-ID: <20160705125403.GS6247@sirena.org.uk>
+References: <1466999284-14782-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1466999284-14782-3-git-send-email-subhransu.s.prusty@intel.com>
+ <20160627173009.GF17217@sirena.org.uk>
+ <20160628052138.GI14022@subhransu-desktop>
+ <20160628111520.GL17217@sirena.org.uk>
+ <20160629040810.GN14022@subhransu-desktop>
+ <20160629185023.GQ6247@sirena.org.uk>
+ <20160630085907.GO14022@subhransu-desktop>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="1trTh7oBgAEAEHeG"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87vb0l3plf.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4718629905204431497=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6049B265312
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2016 14:54:28 +0200 (CEST)
+In-Reply-To: <20160630085907.GO14022@subhransu-desktop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---1trTh7oBgAEAEHeG
+--===============4718629905204431497==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="wlyKXzxas35Msh2M"
+Content-Disposition: inline
+
+
+--wlyKXzxas35Msh2M
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 05, 2016 at 12:24:54AM +0000, Kuninori Morimoto wrote:
+On Thu, Jun 30, 2016 at 02:29:07PM +0530, Subhransu S. Prusty wrote:
 
-> Please let me know if your favored style is name format should be
-> handled on each sound card, not in utils.c
-> I can arrange it.
+> Each DMA channel can be mapped to a stream in HDA. Each stream is mapped
+> uniquely with a stream tag. The stream is programmed in both host and
+> codec. In host the DMA is programmed with this stream tag and based on this
+> DMA picks data from host buffer and puts it onto the link. Similarly the
+> codec converter is programmed with the same stream tag and codec receives
+> packet from the link associated with the stream tag.
 
-I'd definitely prefer to limit the usage of DPCM in generic code so
-keeping it in the card seems safer.
+Are these arbatrary tags?  If so why not just pick tags that look like
+normal TDM timeslots?
 
---1trTh7oBgAEAEHeG
+--wlyKXzxas35Msh2M
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXe6l1AAoJECTWi3JdVIfQDjAH/3UPqJSaEW7mJo3Rb0414hJF
-GAx4yZMfwuBz2A0DOxdbX77MTgfWWqLOd9wKxc4oB75vHvbzXIvZP8oZJDFtB6H3
-nvYBQpn6e105aOuFuxxjZ6qz8jXuWS3kATzwM6/lf6NpsmFJpHXaeolXGksvRJff
-C24EpHTAqquqj4fedbhjgrX24dEA7PRt/6abJ9vDWan1/sKz4C00UrMKbVDBuCWF
-b5sGwenYJ264yQELxAzMDATDzaGPT9SzzxopTLps1cYEUdOPO3JRI1S8EYhoNwCG
-n+8iSKXwj4/rElGfll98P5C435aSm8YaBgvgD6QMOmxQsZrysJJpZboh/m+/Fuo=
-=k3GL
+iQEcBAEBCAAGBQJXe63qAAoJECTWi3JdVIfQxiAH/2myBERMunNsuj07Glyek4wk
+dJIeiJBYgax1ILzwfz0v8FVx9vh1yCt9XBVAjQ4rXPVa/7FPD16TAhRNHqwm1R2d
+XoNfDNTgjy1JcNBhyb3HC9py1o5Wu7jsm/OfE4bfjS2tvRhbhm3Wy0jxdEalGV/T
+SiTte/X37L+OU8Zh7OcFd1pmeO8ZVeMOAD/3PTs+jSepKNykE+sR5i2hpQ7fRUyD
+Kz3OgxOCL9NdxOp1So5v2idUCtoHfqkWAgmfyoJAXCFyCzNnQmz3tlsD74QafjLh
+JSOg8Hu8Xh7EECpT4zC+rjbvhgAGBztKrzn11UvcoeMsaG72QMU/skxbFg4j4wQ=
+=4POY
 -----END PGP SIGNATURE-----
 
---1trTh7oBgAEAEHeG--
+--wlyKXzxas35Msh2M--
+
+--===============4718629905204431497==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4718629905204431497==--
