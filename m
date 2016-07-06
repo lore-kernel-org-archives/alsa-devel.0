@@ -1,64 +1,54 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: Re: [PATCH] ASoC: nau8825: jack connection decision
- with different insertion logic
-Date: Tue, 5 Jul 2016 19:54:46 -0700
-Message-ID: <CAOMFOmUpZOM9+vOZi29jxsdV8zaCH+z4036dot37-yynPu8L3g@mail.gmail.com>
-References: <1467170438-5157-1-git-send-email-KCHSU0@nuvoton.com>
- <CAOMFOmUhvWrm6ivTs4Ujp2_A8o81A12L0gPUDay0Bv9PVAkbug@mail.gmail.com>
- <5774CF97.4010203@nuvoton.com> <20160701155734.GV6247@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
- [209.85.218.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 24517261A3D
- for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2016 04:54:48 +0200 (CEST)
-Received: by mail-oi0-f45.google.com with SMTP id u201so254620144oie.0
- for <alsa-devel@alsa-project.org>; Tue, 05 Jul 2016 19:54:48 -0700 (PDT)
-In-Reply-To: <20160701155734.GV6247@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, AC30 YHChuang <YHCHuang@nuvoton.com>, John Hsu <KCHSU0@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, Yong Zhi <yong.zhi@intel.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda/realtek - add new pin definition in alc225 pin quirk table
+Date: Wed,  6 Jul 2016 11:49:26 +0800
+Message-ID: <1467776966-24215-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+We have some Dell laptops which can't detect headset mic, the machines
+use the codec ALC225, they have some new pin configuration values,
+after adding them in the alc225 pin quirk table, they work well.
 
-On Fri, Jul 1, 2016 at 8:57 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Thu, Jun 30, 2016 at 03:51:51PM +0800, John Hsu wrote:
->
->> Yes, it'll be more readable. I have a question. Why to add !! in
->> front of bit wise operation? What does it mean?
->
-> It's redundant in almost all cases.  It translates an integer value
-> into a 0/1 value (so if you've got a value of 2 it'll end up as 1) by
-> doing a double not.  This very rarely matters unless you're storing the
-> value in an integer and comparing it to 1 to check for truth, otherwise
-> C will translate any non-zero value into true in any logic context.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-Thanks Mark for the comment. I added "!!" by following my muscle
-memory. That how I used to convert non-bools to bool.
-
-But your comment forced me to research this question. C99 and C11
-standards clarify this issue
-http://port70.net/~nsz/c/c11/n1570.html#6.3.1.2p1
-
-..<QUOTE>..
-  When any scalar value is converted to _Bool, the result is 0 if the
-value compares equal to 0; otherwise, the result is 1
-
-
-It is safe to drop "!!" idiom completely - compiler will take care of
-converting the result of bitmask to a proper bool value. My example
-above can be overwritten as
-      bool active_high = jkdet & NAU8825_JACK_POLARITY;
-      bool is_high = status & NAU8825_GPIO2JD1;
-      return active_high == is_high;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 45d4dc1..e25ef2b 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5753,7 +5753,6 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{}
+ };
+ #define ALC225_STANDARD_PINS \
+-	{0x12, 0xb7a60130}, \
+ 	{0x21, 0x04211020}
+ 
+ #define ALC256_STANDARD_PINS \
+@@ -5778,9 +5777,19 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 	SND_HDA_PIN_QUIRK(0x10ec0225, 0x1028, "Dell", ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		ALC225_STANDARD_PINS,
++		{0x12, 0xb7a60130},
+ 		{0x14, 0x901701a0}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0225, 0x1028, "Dell", ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		ALC225_STANDARD_PINS,
++		{0x12, 0xb7a60130},
++		{0x14, 0x901701b0}),
++	SND_HDA_PIN_QUIRK(0x10ec0225, 0x1028, "Dell", ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
++		ALC225_STANDARD_PINS,
++		{0x12, 0xb7a60150},
++		{0x14, 0x901701a0}),
++	SND_HDA_PIN_QUIRK(0x10ec0225, 0x1028, "Dell", ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
++		ALC225_STANDARD_PINS,
++		{0x12, 0xb7a60150},
+ 		{0x14, 0x901701b0}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL2_MIC_NO_PRESENCE,
+ 		{0x14, 0x90170110},
+-- 
+1.9.1
