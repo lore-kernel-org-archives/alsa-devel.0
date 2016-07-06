@@ -1,15 +1,22 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: nau8825: jack connection decision with
-	different insertion logic
-Date: Wed, 6 Jul 2016 10:09:35 +0800
-Message-ID: <1467770975-11351-1-git-send-email-KCHSU0@nuvoton.com>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: Re: [PATCH] ASoC: nau8825: jack connection decision
+ with different insertion logic
+Date: Tue, 5 Jul 2016 19:54:46 -0700
+Message-ID: <CAOMFOmUpZOM9+vOZi29jxsdV8zaCH+z4036dot37-yynPu8L3g@mail.gmail.com>
+References: <1467170438-5157-1-git-send-email-KCHSU0@nuvoton.com>
+ <CAOMFOmUhvWrm6ivTs4Ujp2_A8o81A12L0gPUDay0Bv9PVAkbug@mail.gmail.com>
+ <5774CF97.4010203@nuvoton.com> <20160701155734.GV6247@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B723C261A3D
- for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2016 04:07:36 +0200 (CEST)
+Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
+ [209.85.218.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24517261A3D
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2016 04:54:48 +0200 (CEST)
+Received: by mail-oi0-f45.google.com with SMTP id u201so254620144oie.0
+ for <alsa-devel@alsa-project.org>; Tue, 05 Jul 2016 19:54:48 -0700 (PDT)
+In-Reply-To: <20160701155734.GV6247@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,41 +26,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+To: Mark Brown <broonie@kernel.org>
+Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, AC30 YHChuang <YHCHuang@nuvoton.com>, John Hsu <KCHSU0@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The original design only covers the jack insertion logic is active low.
-Add more condition to cover no matter the logic is active low and high.
+Hi
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- sound/soc/codecs/nau8825.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+On Fri, Jul 1, 2016 at 8:57 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Thu, Jun 30, 2016 at 03:51:51PM +0800, John Hsu wrote:
+>
+>> Yes, it'll be more readable. I have a question. Why to add !! in
+>> front of bit wise operation? What does it mean?
+>
+> It's redundant in almost all cases.  It translates an integer value
+> into a 0/1 value (so if you've got a value of 2 it'll end up as 1) by
+> doing a double not.  This very rarely matters unless you're storing the
+> value in an integer and comparing it to 1 to check for truth, otherwise
+> C will translate any non-zero value into true in any logic context.
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 3f30e6e..a97418d 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -1345,10 +1345,17 @@ EXPORT_SYMBOL_GPL(nau8825_enable_jack_detect);
- 
- static bool nau8825_is_jack_inserted(struct regmap *regmap)
- {
--	int status;
-+	bool active_high, is_high;
-+	int status, jkdet;
- 
-+	regmap_read(regmap, NAU8825_REG_JACK_DET_CTRL, &jkdet);
-+	active_high = !!(jkdet & NAU8825_JACK_POLARITY);
- 	regmap_read(regmap, NAU8825_REG_I2C_DEVICE_ID, &status);
--	return !(status & NAU8825_GPIO2JD1);
-+	is_high = !!(status & NAU8825_GPIO2JD1);
-+	/* return jack connection status according to jack insertion logic
-+	 * active high or active low.
-+	 */
-+	return active_high == is_high;
- }
- 
- static void nau8825_restart_jack_detection(struct regmap *regmap)
--- 
-2.6.4
+Thanks Mark for the comment. I added "!!" by following my muscle
+memory. That how I used to convert non-bools to bool.
+
+But your comment forced me to research this question. C99 and C11
+standards clarify this issue
+http://port70.net/~nsz/c/c11/n1570.html#6.3.1.2p1
+
+..<QUOTE>..
+  When any scalar value is converted to _Bool, the result is 0 if the
+value compares equal to 0; otherwise, the result is 1
+
+
+It is safe to drop "!!" idiom completely - compiler will take care of
+converting the result of bitmask to a proper bool value. My example
+above can be overwritten as
+      bool active_high = jkdet & NAU8825_JACK_POLARITY;
+      bool is_high = status & NAU8825_GPIO2JD1;
+      return active_high == is_high;
