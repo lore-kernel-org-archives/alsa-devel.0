@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: mt2701: fix some error handling in probe" to the asoc tree
-Date: Thu, 07 Jul 2016 12:01:08 +0200
-Message-ID: <E1bL67I-0000ii-Ks@finisterre>
-References: <20160707081404.GB16645@mwanda>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20160707081404.GB16645@mwanda>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Garlic Tseng <garlic.tseng@mediatek.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Garlic Tseng <garlic.tseng@mediatek.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: atmel_ssc_dai: Fix DMA params for
+	different SSC" to the asoc tree
+Date: Thu, 07 Jul 2016 12:00:58 +0200
+Message-ID: <E1bL678-0000gj-2j@finisterre>
+References: <20160705094629.5326-1-pmeerw@pmeerw.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7324265262
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2016 12:01:31 +0200 (CEST)
+In-Reply-To: <20160705094629.5326-1-pmeerw@pmeerw.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Peter Meerwald-Stadler <p.meerwald@bct-electronic.com>, Mark Brown <broonie@kernel.org>, "Wu, , Songjun" <songjun.wu@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt2701: fix some error handling in probe
+   ASoC: atmel_ssc_dai: Fix DMA params for different SSC
 
 has been applied to the asoc tree at
 
@@ -37,42 +52,35 @@ to this mail.
 Thanks,
 Mark
 
->From b02c5cc7239b8f58ba5da24092288dd7a9a56acc Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Thu, 7 Jul 2016 11:14:04 +0300
-Subject: [PATCH] ASoC: mediatek: mt2701: fix some error handling in probe
+>From e401029e514b6ba94d21212a957de6010581f17a Mon Sep 17 00:00:00 2001
+From: Peter Meerwald <p.meerwald@bct-electronic.com>
+Date: Tue, 5 Jul 2016 11:46:29 +0200
+Subject: [PATCH] ASoC: atmel_ssc_dai: Fix DMA params for different SSC
 
-The check for if the "afe" allocation failed was too late and there
-wasn't a check for "afe->platform_priv".
+follow-up patch from c706f2e55f ASoC: atmel_ssc_dai: distinguish the
+different SSC
 
-Fixes: 43a6a7e71063 ('ASoC: mediatek: add mt2701 platform driver implementation.')
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Garlic Tseng <garlic.tseng@mediatek.com>
+cpu_dai id is always 0, use platform_device id to distinguish DMA
+parameters of SSCs
+
+Signed-off-by: Peter Meerwald-Stadler <p.meerwald@bct-electronic.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/atmel/atmel_ssc_dai.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-index 6c14d686bfa1..15522c08a967 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-@@ -1489,11 +1489,13 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 1267e1af0fae..54c09acd3fed 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -321,7 +321,7 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
  
- 	ret = 0;
- 	afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
-+	if (!afe)
-+		return -ENOMEM;
- 	afe->platform_priv = devm_kzalloc(&pdev->dev, sizeof(*afe_priv),
- 					  GFP_KERNEL);
--	afe_priv = afe->platform_priv;
--	if (!afe)
-+	if (!afe->platform_priv)
- 		return -ENOMEM;
-+	afe_priv = afe->platform_priv;
+-	dma_params = &ssc_dma_params[dai->id][dir];
++	dma_params = &ssc_dma_params[pdev->id][dir];
+ 	dma_params->ssc = ssc_p->ssc;
+ 	dma_params->substream = substream;
  
- 	afe->dev = &pdev->dev;
- 	dev = afe->dev;
 -- 
 2.8.1
-
