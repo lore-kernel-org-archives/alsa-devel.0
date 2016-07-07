@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel_ssc_dai: Fix DMA params for
-	different SSC" to the asoc tree
-Date: Thu, 07 Jul 2016 12:00:58 +0200
-Message-ID: <E1bL678-0000gj-2j@finisterre>
-References: <20160705094629.5326-1-pmeerw@pmeerw.net>
+Subject: Applied "ASoC: rt5645: set RT5645_PRIV_INDEX as
+	volatile" to the asoc tree
+Date: Thu, 07 Jul 2016 12:01:03 +0200
+Message-ID: <E1bL67D-0000hj-Cz@finisterre>
+References: <1467770115-16706-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A7324265262
- for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2016 12:01:31 +0200 (CEST)
-In-Reply-To: <20160705094629.5326-1-pmeerw@pmeerw.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id 27DA8265329
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2016 12:01:33 +0200 (CEST)
+In-Reply-To: <1467770115-16706-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Peter Meerwald-Stadler <p.meerwald@bct-electronic.com>, Mark Brown <broonie@kernel.org>, "Wu, , Songjun" <songjun.wu@atmel.com>, linux-arm-kernel@lists.infradead.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, koro.chen@mediatek.com, broonie@kernel.org, PC.Liao@mediatek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel_ssc_dai: Fix DMA params for different SSC
+   ASoC: rt5645: set RT5645_PRIV_INDEX as volatile
 
 has been applied to the asoc tree at
 
@@ -52,35 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From e401029e514b6ba94d21212a957de6010581f17a Mon Sep 17 00:00:00 2001
-From: Peter Meerwald <p.meerwald@bct-electronic.com>
-Date: Tue, 5 Jul 2016 11:46:29 +0200
-Subject: [PATCH] ASoC: atmel_ssc_dai: Fix DMA params for different SSC
+>From 81467efcc88298ecd821c26fab04ce1b2c9d1b65 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Wed, 6 Jul 2016 09:55:14 +0800
+Subject: [PATCH] ASoC: rt5645: set RT5645_PRIV_INDEX as volatile
 
-follow-up patch from c706f2e55f ASoC: atmel_ssc_dai: distinguish the
-different SSC
+RT5645_PRIV_INDEX(0x6a) indicate the address of PR- registers. So,
+it should be volatile.
 
-cpu_dai id is always 0, use platform_device id to distinguish DMA
-parameters of SSCs
-
-Signed-off-by: Peter Meerwald-Stadler <p.meerwald@bct-electronic.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel_ssc_dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5645.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 1267e1af0fae..54c09acd3fed 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -321,7 +321,7 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 3c6594da6c9c..c0438e4e045b 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -440,6 +440,7 @@ static bool rt5645_volatile_register(struct device *dev, unsigned int reg)
  
--	dma_params = &ssc_dma_params[dai->id][dir];
-+	dma_params = &ssc_dma_params[pdev->id][dir];
- 	dma_params->ssc = ssc_p->ssc;
- 	dma_params->substream = substream;
- 
+ 	switch (reg) {
+ 	case RT5645_RESET:
++	case RT5645_PRIV_INDEX:
+ 	case RT5645_PRIV_DATA:
+ 	case RT5645_IN1_CTRL1:
+ 	case RT5645_IN1_CTRL2:
 -- 
 2.8.1
