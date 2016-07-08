@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht: fix uninit variable
-	warning" to the asoc tree
-Date: Fri, 08 Jul 2016 16:37:25 +0200
-Message-ID: <E1bLWuD-0008TZ-1r@finisterre>
-References: <1467982818-4528-1-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: atom: statify cht_quirk" to the
+	asoc tree
+Date: Fri, 08 Jul 2016 16:37:19 +0200
+Message-ID: <E1bLWu7-0008Sk-PE@finisterre>
+References: <1467982818-4528-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C0569265B65
+ by alsa0.perex.cz (Postfix) with ESMTP id DA625265D85
  for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2016 16:37:52 +0200 (CEST)
-In-Reply-To: <1467982818-4528-1-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1467982818-4528-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht: fix uninit variable warning
+   ASoC: Intel: atom: statify cht_quirk
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 5d554ea4f287665b839975ecb11bd29d49a5c9b5 Mon Sep 17 00:00:00 2001
+>From 24dad509ed5528bbbe31ff17f9fb39c0473ec8f4 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Fri, 8 Jul 2016 18:30:17 +0530
-Subject: [PATCH] ASoC: Intel: cht: fix uninit variable warning
+Date: Fri, 8 Jul 2016 18:30:18 +0530
+Subject: [PATCH] ASoC: Intel: atom: statify cht_quirk
 
-Kbuild bot reports that we might use dai_index uninitialized.
+Sparse rightly warns:
+sound/soc/intel/atom/sst/sst_acpi.c:353:22: warning: symbol 'cht_quirk' was not declared. Should it be static?
 
-sound/soc/intel/boards/cht_bsw_rt5645.c:391:37: warning: 'dai_index' may be used uninitialized in this function [-Wmaybe-uninitialized]
-
-Since it is theoretically possible, set it while initializing.
+So statify this
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 2 +-
+ sound/soc/intel/atom/sst/sst_acpi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index f26c7b8545ae..56056ed7fcfd 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -357,7 +357,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	char codec_name[16];
- 	struct sst_acpi_mach *mach;
- 	const char *i2c_name = NULL;
--	int dai_index;
-+	int dai_index = 0;
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 82a374d885a7..4d3184971227 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -350,7 +350,7 @@ static struct sst_acpi_mach cht_surface_mach = {
+ 	"10EC5640", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+ 								&chv_platform_data };
  
- 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
- 	if (!drv)
+-struct sst_acpi_mach *cht_quirk(void *arg)
++static struct sst_acpi_mach *cht_quirk(void *arg)
+ {
+ 	struct sst_acpi_mach *mach = arg;
+ 
 -- 
 2.8.1
