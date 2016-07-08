@@ -1,16 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 3/3] ASoC: Intel: Add surface3 entry in
-	CHT-RT5645 machine
-Date: Fri,  8 Jul 2016 15:39:51 +0530
-Message-ID: <1467972591-29175-4-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 1/3] ASoC: Intel: Atom: Add quirk for Surface 3
+Date: Fri,  8 Jul 2016 15:39:49 +0530
+Message-ID: <1467972591-29175-2-git-send-email-vinod.koul@intel.com>
 References: <1467972591-29175-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 92E7626595B
- for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2016 12:03:09 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id AF9C5265930
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2016 12:03:08 +0200 (CEST)
 In-Reply-To: <1467972591-29175-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,76 +24,106 @@ To: alsa-devel@alsa-project.org
 Cc: Stephen Just <stephenjust@gmail.com>, patches.audio@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, apterix@gmail.com, broonie@kernel.org, Sachin Mokashi <sachinx.mokashi@intel.com>, Vinod Koul <vinod.koul@intel.com>, bugzilla@hadess.net
 List-Id: alsa-devel@alsa-project.org
 
-Surface3 device is a CHT machine, so add entry for it.
-Also update the HID from BIOS.
+Surface 3 is CHT based device which shows up with RT5645 codec. But the
+BIOS reports ACPI ID as 5640!
+
+To solve this, add a DMI overide for cht-5640 machine.
 
 Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=98001
 Signed-off-by: Sachin Mokashi <sachinx.mokashi@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ sound/soc/intel/atom/sst/sst_acpi.c | 44 ++++++++++++++++++++++++++++++++++++-
+ sound/soc/intel/common/sst-acpi.h   |  2 +-
+ 2 files changed, 44 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index d7ef292c402d..f26c7b8545ae 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -30,6 +30,7 @@
- #include <sound/jack.h>
- #include "../../codecs/rt5645.h"
- #include "../atom/sst-atom-controls.h"
-+#include "../common/sst-acpi.h"
- 
- #define CHT_PLAT_CLK_3_HZ	19200000
- #define CHT_CODEC_DAI	"rt5645-aif1"
-@@ -340,10 +341,13 @@ static struct snd_soc_card snd_soc_card_chtrt5650 = {
- };
- 
- static struct cht_acpi_card snd_soc_cards[] = {
-+	{"10EC5640", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
- 	{"10EC5645", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
- 	{"10EC5650", CODEC_TYPE_RT5650, &snd_soc_card_chtrt5650},
- };
- 
-+static char cht_rt5640_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
-+
- static int snd_cht_mc_probe(struct platform_device *pdev)
- {
- 	int ret_val = 0;
-@@ -351,6 +355,9 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	struct cht_mc_private *drv;
- 	struct snd_soc_card *card = snd_soc_cards[0].soc_card;
- 	char codec_name[16];
-+	struct sst_acpi_mach *mach;
-+	const char *i2c_name = NULL;
-+	int dai_index;
- 
- 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
- 	if (!drv)
-@@ -366,12 +373,23 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 		}
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 3bc4b63b2f9d..82a374d885a7 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -28,6 +28,7 @@
+ #include <linux/firmware.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/pm_qos.h>
++#include <linux/dmi.h>
+ #include <linux/acpi.h>
+ #include <asm/platform_sst_audio.h>
+ #include <sound/core.h>
+@@ -237,6 +238,9 @@ static int sst_acpi_probe(struct platform_device *pdev)
+ 		dev_err(dev, "No matching machine driver found\n");
+ 		return -ENODEV;
  	}
- 	card->dev = &pdev->dev;
-+	mach = card->dev->platform_data;
- 	sprintf(codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
- 
- 	/* set correct codec name */
- 	for (i = 0; i < ARRAY_SIZE(cht_dailink); i++)
--		if (!strcmp(card->dai_link[i].codec_name, "i2c-10EC5645:00"))
-+		if (!strcmp(card->dai_link[i].codec_name, "i2c-10EC5645:00")) {
- 			card->dai_link[i].codec_name = kstrdup(codec_name, GFP_KERNEL);
-+			dai_index = i;
-+		}
++	if (mach->machine_quirk)
++		mach = mach->machine_quirk(mach);
 +
-+	/* fixup codec name based on HID */
-+	i2c_name = sst_acpi_find_name_from_hid(mach->id);
-+	if (i2c_name != NULL) {
-+		snprintf(cht_rt5640_codec_name, sizeof(cht_rt5640_codec_name),
-+			"%s%s", "i2c-", i2c_name);
-+		cht_dailink[dai_index].codec_name = cht_rt5640_codec_name;
-+	}
+ 	pdata = mach->pdata;
  
- 	snd_soc_card_set_drvdata(card, drv);
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, card);
+ 	ret = kstrtouint(id->id, 16, &dev_id);
+@@ -320,6 +324,44 @@ static int sst_acpi_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static unsigned long cht_machine_id;
++
++#define CHT_SURFACE_MACH 1
++
++static int cht_surface_quirk_cb(const struct dmi_system_id *id)
++{
++	cht_machine_id = CHT_SURFACE_MACH;
++	return 1;
++}
++
++
++static const struct dmi_system_id cht_table[] = {
++	{
++		.callback = cht_surface_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Surface 3"),
++		},
++	},
++};
++
++
++static struct sst_acpi_mach cht_surface_mach = {
++	"10EC5640", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
++								&chv_platform_data };
++
++struct sst_acpi_mach *cht_quirk(void *arg)
++{
++	struct sst_acpi_mach *mach = arg;
++
++	dmi_check_system(cht_table);
++
++	if (cht_machine_id == CHT_SURFACE_MACH)
++		return &cht_surface_mach;
++	else
++		return mach;
++}
++
+ static struct sst_acpi_mach sst_acpi_bytcr[] = {
+ 	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
+ 						&byt_rvp_platform_data },
+@@ -343,7 +385,7 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
+ 	{"193C9890", "cht-bsw-max98090", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+ 						&chv_platform_data },
+ 	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
+-	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", NULL,
++	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", cht_quirk,
+ 						&chv_platform_data },
+ 
+ 	{},
+diff --git a/sound/soc/intel/common/sst-acpi.h b/sound/soc/intel/common/sst-acpi.h
+index 8398cb227ba9..504b0e4fedd4 100644
+--- a/sound/soc/intel/common/sst-acpi.h
++++ b/sound/soc/intel/common/sst-acpi.h
+@@ -40,6 +40,6 @@ struct sst_acpi_mach {
+ 
+ 	/* board name */
+ 	const char *board;
+-	void (*machine_quirk)(void);
++	struct sst_acpi_mach * (*machine_quirk)(void *arg);
+ 	void *pdata;
+ };
 -- 
 1.9.1
