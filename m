@@ -1,15 +1,17 @@
 From: weiyj_lk@163.com
-Subject: [PATCH -next] ASoC: mediatek: mt2701: cHECK-fix non
+Subject: [PATCH -next v2] ASoC: mediatek: mt2701: fix non
 	static symbol warning
-Date: Fri,  8 Jul 2016 13:41:33 +0000
-Message-ID: <1467985293-9041-1-git-send-email-weiyj_lk@163.com>
+Date: Fri,  8 Jul 2016 13:47:01 +0000
+Message-ID: <1467985621-13755-1-git-send-email-weiyj_lk@163.com>
+References: <1467985293-9041-1-git-send-email-weiyj_lk@163.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m12-16.163.com (m12-16.163.com [220.181.12.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A169265B65
- for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2016 15:41:38 +0200 (CEST)
+Received: from m12-15.163.com (m12-15.163.com [220.181.12.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7D1B265B65
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2016 15:47:04 +0200 (CEST)
+In-Reply-To: <1467985293-9041-1-git-send-email-weiyj_lk@163.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,7 +21,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias Brugger <matthias.bgg@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Matthias Brugger <matthias.bgg@gmail.com>
 Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
@@ -47,4 +49,3 @@ index 15522c0..34a6123 100644
 +static int mt2701_dai_num_to_i2s(struct mtk_base_afe *afe, int num)
  {
  	int val = num - MT2701_IO_I2S;
- 
