@@ -1,23 +1,17 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [RFC 00/11] ASoC: hdac: Add hdac generic driver
-Date: Fri, 8 Jul 2016 14:19:23 +0530
-Message-ID: <20160708084914.GA15601@subhransu-desktop>
-References: <1466999284-14782-1-git-send-email-subhransu.s.prusty@intel.com>
- <s5hziq7qfg4.wl-tiwai@suse.de>
- <20160628051347.GH14022@subhransu-desktop>
- <20160708073348.GB15209@subhransu-desktop>
- <s5hr3b4k1lq.wl-tiwai@suse.de>
- <20160708082135.GA15524@subhransu-desktop>
- <s5hmvlsjzj7.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Potential Audio miniconference at LPC/KS
+Date: Fri, 8 Jul 2016 10:54:47 +0200
+Message-ID: <20160708085447.GU6247@sirena.org.uk>
+References: <20160701155438.GU6247@sirena.org.uk>
+ <20160708085903.GT12591@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0966987501023597632=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A93C265930
- for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2016 10:53:07 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hmvlsjzj7.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F98B2658CD
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2016 10:55:14 +0200 (CEST)
+In-Reply-To: <20160708085903.GT12591@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,85 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girgwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 08, 2016 at 10:37:48AM +0200, Takashi Iwai wrote:
-> On Fri, 08 Jul 2016 10:21:39 +0200,
-> Subhransu S. Prusty wrote:
-> > 
-> > On Fri, Jul 08, 2016 at 09:53:05AM +0200, Takashi Iwai wrote:
-> > > On Fri, 08 Jul 2016 09:33:48 +0200,
-> > > Subhransu S. Prusty wrote:
-> > > > 
-> > > > On Tue, Jun 28, 2016 at 10:43:47AM +0530, Subhransu S. Prusty wrote:
-> > > > > On Mon, Jun 27, 2016 at 09:05:47AM +0200, Takashi Iwai wrote:
-> > > > > > On Mon, 27 Jun 2016 05:47:53 +0200,
-> > > > > > Subhransu S. Prusty wrote:
-> > > > > > > 
-> > > > > > > HDA devices generically can be modelled with DAPM in ASoC. This
-> > > > > > > series adds a framework in ASoC to model HDA devices. HDA widgets
-> > > > > > > are enumerated and one or multiple DAPM widget(s) are created.
-> > > > > > > Connection list is queried for each widget to identify the
-> > > > > > > connection between two endpoints and modelled using DAPM graph.
-> > > > > > > 
-> > > > > > > Set of event handlers are defined for each widget type. Based on
-> > > > > > > DAPM events required verbs are sent to program codec.
-> > > > > > > 
-> > > > > > > Finally a function is exported to query for the device endpoint
-> > > > > > > configuration to create machine controls.
-> > > > > > 
-> > > > > > Well...  This is really a hard way to go.  The generic codec support
-> > > > > > is good, but only if it can cover most of stuff.  That is, you'll have
-> > > > > > to think of the exceptions from the beginning, because the majority of
-> > > > > > HD-audio devices are exceptional, i.e. don't follow the standard
-> > > > > 
-> > > > > Hi Takashi,
-> > > > > 
-> > > > > Thanks for review.
-> > > > > 
-> > > > > I think, more detail in the cover letter would have been helpful here. Sorry
-> > > > > for missing out. Let me explain more.
-> > > > > 
-> > > > > Intention here is to create a framework for the HDA devices in ASoC. This
-> > > > > will follow standard. This will be registered as generic "virtual" class
-> > > > > device. If there is no match found for vendor id and device id, then the
-> > > > > class driver will be loaded. For vendor specific devices, a match function
-> > > > > will be provided. With the help of this, the vendor quirks will be
-> > > > > registered. Additional widgets, controls and route will be created in a
-> > > > > vendor specific way through vendor ops. So its similar to patch files in
-> > > > > legacy HDA driver.
-> > > > > 
-> > > > > Vendor specific quirks patch series will follow after the framework is
-> > > > > merged.
-> > > > 
-> > > > Hi Takashi,
-> > > > 
-> > > > Any more feedback or looking for more details?
-> > > 
-> > > Sorry I haven't looked at the patchset much, as they are mostly for
-> > > ASoC specific.  BTW, what about EAPD and pin vref?  Are they set up
-> > > and configurable?
-> > 
-> > EAPD can be configured as an widget if capability available.  vref can
-> > be alsa control to the user to set the percentage value.
-> 
-> Were these implemented in your patchset, or mean as a plan?
 
-This is not implemented in this patchset. But yes it's already in our plan.
-This series only programs the required verbs. We will add optional features,
-jack detection, vendor specific quirks and other features after the basic
-drivers is merged.
+--===============0966987501023597632==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ZZTOI0WqqOZ0yWqI"
+Content-Disposition: inline
 
-Regards,
-Subhransu
-> 
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
--- 
+--ZZTOI0WqqOZ0yWqI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jul 08, 2016 at 02:29:03PM +0530, Vinod Koul wrote:
+
+> I was looking up the topics list, I do not see anywhere to capture
+> attendees. Should we add that as well or..
+
+Yeah, there wasn't anything in the template miniconf for the wifi so I'm
+not clear what they're looking for there.  We could.
+
+--ZZTOI0WqqOZ0yWqI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXf2pWAAoJECTWi3JdVIfQCM8IAIBIWAIWFvyGturg3/CM61c2
+Hw/beJ6g7kBzmnaheqOMwlPS3dR3zgW/Xt+x+7mfwNwOf+7Cqx0wkWSj+wqNGu7L
+5yTpXTvoRvDzAOAT5Qhivg9uJHUDnrVYcMiaPL1cOr+uCgcf7jVD2YhUOxfuKoXG
+B7MnfCKdMskPiAvfOI+PEVI2BYbngykfpcv/yEK0hcN6Zet5Z5QMkK2layibN//Y
+qaonSaSNGEJH3uvL+dap/dOQR+2R897rfju8dVQ1RUm4VH6kKoUYma86WJ7I5lsh
+6qpuMAW3O/t76DCByU21SsYaaFn3letw4wodf75ov54StbP2MQrbbsR2NbMRw4A=
+=rSNk
+-----END PGP SIGNATURE-----
+
+--ZZTOI0WqqOZ0yWqI--
+
+--===============0966987501023597632==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0966987501023597632==--
