@@ -1,16 +1,19 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 2/4] ASoC: hdac_hdmi: Add device id for Kabylake
-Date: Mon, 11 Jul 2016 22:02:09 +0530
-Message-ID: <1468254731-15394-3-git-send-email-vinod.koul@intel.com>
-References: <1468254731-15394-1-git-send-email-vinod.koul@intel.com>
+From: Peter Wu <peter@lekensteyn.nl>
+Subject: Re: [PATCH] snd/hda: fix use-after-free after module
+	unload
+Date: Mon, 11 Jul 2016 19:32:05 +0200
+Message-ID: <20160711173205.GA4475@al>
+References: <20160709143857.12044-1-peter@lekensteyn.nl>
+ <s5h37ngv4ks.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 33A26265A28
- for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 18:25:11 +0200 (CEST)
-In-Reply-To: <1468254731-15394-1-git-send-email-vinod.koul@intel.com>
+Received: from lekensteyn.nl (lekensteyn.nl [178.21.112.251])
+ by alsa0.perex.cz (Postfix) with ESMTP id B052F26573C
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 19:32:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5h37ngv4ks.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,31 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Shreyas NC <shreyas.nc@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Shreyas NC <shreyas.nc@intel.com>
+On Mon, Jul 11, 2016 at 12:42:27PM +0200, Takashi Iwai wrote:
+> On Sat, 09 Jul 2016 16:38:57 +0200,
+> Peter Wu wrote:
+> > 
+> > register_vga_switcheroo() sets the PM ops from the hda structure which
+> > is freed later in azx_free. Make sure that these ops are cleared.
+> > 
+> > Caught by KASAN.
+> > 
+> > Fixes: 246efa4a072f ("snd/hda: add runtime suspend/resume on optimus support (v4)")
+> > Signed-off-by: Peter Wu <peter@lekensteyn.nl>
+> > ---
+> >  sound/pci/hda/hda_intel.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> > index 94089fc..a339066 100644
+> > --- a/sound/pci/hda/hda_intel.c
+> > +++ b/sound/pci/hda/hda_intel.c
+> > @@ -1219,6 +1219,7 @@ static int azx_free(struct azx *chip)
+> >  			snd_hda_unlock_devices(&chip->bus);
+> >  		if (hda->vga_switcheroo_registered)
+> >  			vga_switcheroo_unregister_client(chip->pci);
+> > +        vga_switcheroo_fini_domain_pm_ops(chip->card->dev);
+> 
+> The domain pm ops is set only when hda->vga_switcheroo_registered flag
+> is set.  So the call should be in the previous if block.
 
-Kabylake platform is similar to Skylake. So, add the device id.
+Yes that would be cleaner, will do that.
 
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c | 1 +
- 1 file changed, 1 insertion(+)
+> Also, the indentation looks wrong.  Please use the correct
+> indentation.
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 62d21812b9b8..a38e8f56003d 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -1798,6 +1798,7 @@ static const struct dev_pm_ops hdac_hdmi_pm = {
- static const struct hda_device_id hdmi_list[] = {
- 	HDA_CODEC_EXT_ENTRY(0x80862809, 0x100000, "Skylake HDMI", 0),
- 	HDA_CODEC_EXT_ENTRY(0x8086280a, 0x100000, "Broxton HDMI", 0),
-+	HDA_CODEC_EXT_ENTRY(0x8086280b, 0x100000, "Kabylake HDMI", 0),
- 	{}
- };
- 
+Noticed too late that the editor config was wrong on the testing
+machine.
+
+> Could you resubmit with these fixes?
+
+I will, thanks for the feedback!
 -- 
-1.9.1
+Kind regards,
+Peter Wu
+https://lekensteyn.nl
