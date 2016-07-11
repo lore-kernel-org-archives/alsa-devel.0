@@ -1,59 +1,102 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: Problem getting USB DAC to work
-Date: Mon, 11 Jul 2016 16:42:13 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1607111639100.17766-100000@netrider.rowland.org>
-References: <loom.20160711T211905-595@post.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: board: add kabylake machine id"
+	to the asoc tree
+Date: Mon, 11 Jul 2016 22:21:02 +0100
+Message-ID: <E1bMidS-0003sP-PQ@debutante>
+References: <1468254731-15394-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <loom.20160711T211905-595-eS7Uydv5nfjZ+VzJOa5vwg@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: John Westwood <westwood.1976-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B66CE26524F
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 23:21:12 +0200 (CEST)
+In-Reply-To: <1468254731-15394-5-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 11 Jul 2016, John Westwood wrote:
+The patch
 
-> I think the MTP stuff is a red herring. I checked syslog when I use a DAC that
-> works (Audiolab MDAC) and that has the MTP lines too, but it doesn't have the
-> warning line about Unlikely big volume range.
-> 
-> In addition, the working DAC has the following lines which are not present the
-> non-working DAC:
-> 
-> Jul 11 19:56:35 atlas kernel: [83940.049124] input: Lakewest Audio Audiolab
-> M-DAC as /devices/pci0000:00/0000:00:1d.1/usb7/7-2/7-2:1.0/0003:0451:
-> ADAC.0002/input/input12
-> Jul 11 19:56:35 atlas kernel: [83940.104367] hid-generic 0003:0451:ADAC.0002:
-> input,hiddev0,hidraw1: USB HID v1.11 Device [Lakewest Audio Audiolab M-DAC] on
-> usb-0000:00:1d.1-2/input0
-> 
-> With the non-working DAC I get these lines instead:
-> 
-> Jul 11 19:56:25 atlas kernel: [83930.079063] usb 7-2: Warning! Unlikely big
-> volume range (=65535), cval->res is probably wrong.
-> Jul 11 19:56:25 atlas kernel: [83930.079067] usb 7-2: [2] FU [PCM Playback
-> Volume] ch = 1, val = -32768/32767/1
-> 
-> 
-> I think maybe the problem is similar to this one:
-> 
-> https://groups.google.com/forum/#!topic/linux.debian.kernel/HwwkRkbL5aY
-> 
-> Is my problem a bug in snd-usb-audio? Or am I doing something wrong? I would
-> really appreciate some thoughts on this, I feel like I'm talking to myself :-(
+   ASoC: Intel: board: add kabylake machine id
 
-Considering that you're not really doing anything, you're probably not 
-doing something wrong.  :-)
+has been applied to the asoc tree at
 
-On the other hand, you're likely to get more of a response if you 
-direct your questions to the person who solved the problem mentioned in 
-that Debian bug report, and if you CC: the sound developers' mailing 
-list rather than the general USB list.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Alan Stern
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 894a16db293c5383f1d9c819909a27bd6738efde Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Mon, 11 Jul 2016 22:02:11 +0530
+Subject: [PATCH] ASoC: Intel: board: add kabylake machine id
+
+Kabylake platform is similar to Skylake. So, add machine id.
+Since same machine driver supports both, add these in id table.
+
+Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/skl_rt286.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
+index 426b48233fdb..88c61e8cb87f 100644
+--- a/sound/soc/intel/boards/skl_rt286.c
++++ b/sound/soc/intel/boards/skl_rt286.c
+@@ -505,12 +505,20 @@ static int skylake_audio_probe(struct platform_device *pdev)
+ 	return devm_snd_soc_register_card(&pdev->dev, &skylake_rt286);
+ }
+ 
++static const struct platform_device_id skl_board_ids[] = {
++	{ .name = "skl_alc286s_i2s" },
++	{ .name = "kbl_alc286s_i2s" },
++	{ }
++};
++
+ static struct platform_driver skylake_audio = {
+ 	.probe = skylake_audio_probe,
+ 	.driver = {
+ 		.name = "skl_alc286s_i2s",
+ 		.pm = &snd_soc_pm_ops,
+ 	},
++	.id_table = skl_board_ids,
++
+ };
+ 
+ module_platform_driver(skylake_audio)
+@@ -520,3 +528,4 @@ MODULE_AUTHOR("Omair Mohammed Abdullah <omair.m.abdullah@intel.com>");
+ MODULE_DESCRIPTION("Intel SST Audio for Skylake");
+ MODULE_LICENSE("GPL v2");
+ MODULE_ALIAS("platform:skl_alc286s_i2s");
++MODULE_ALIAS("platform:kbl_alc286s_i2s");
+-- 
+2.8.1
