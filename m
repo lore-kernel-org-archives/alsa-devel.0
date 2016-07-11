@@ -1,103 +1,59 @@
-From: Rob Nertney <rob@rob-otics.com>
-Subject: Re: Verification of settings
-Date: Mon, 11 Jul 2016 12:33:54 -0700
-Message-ID: <CALAeOVM_+ddYsPmoFMHzHHz145HeVmsjwawjnPaYJS12Wmbx=g@mail.gmail.com>
-References: <CALAeOVO6D1m1JkRqWXgxvVg5pVtZpFRKuEfwGfX5eENtjiZaYQ@mail.gmail.com>
- <5783F389.3000903@metafoo.de>
+From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Subject: Re: Problem getting USB DAC to work
+Date: Mon, 11 Jul 2016 16:42:13 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1607111639100.17766-100000@netrider.rowland.org>
+References: <loom.20160711T211905-595@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f68.google.com (mail-vk0-f68.google.com
- [209.85.213.68])
- by alsa0.perex.cz (Postfix) with ESMTP id C88E8265779
- for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 21:33:56 +0200 (CEST)
-Received: by mail-vk0-f68.google.com with SMTP id v6so15572521vkb.1
- for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 12:33:56 -0700 (PDT)
-In-Reply-To: <5783F389.3000903@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <loom.20160711T211905-595-eS7Uydv5nfjZ+VzJOa5vwg@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: John Westwood <westwood.1976-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Lars.
+On Mon, 11 Jul 2016, John Westwood wrote:
 
-My problem with the DMA is that it doesn't support cyclic mode, but does
-support SG mode. I have to create a new descriptor every time, and
-requeue/resubmit it. I don't want to drop any frames, so PONG is being
-received while PING is being copied and resubmitted to the Linux queue.
+> I think the MTP stuff is a red herring. I checked syslog when I use a DAC that
+> works (Audiolab MDAC) and that has the MTP lines too, but it doesn't have the
+> warning line about Unlikely big volume range.
+> 
+> In addition, the working DAC has the following lines which are not present the
+> non-working DAC:
+> 
+> Jul 11 19:56:35 atlas kernel: [83940.049124] input: Lakewest Audio Audiolab
+> M-DAC as /devices/pci0000:00/0000:00:1d.1/usb7/7-2/7-2:1.0/0003:0451:
+> ADAC.0002/input/input12
+> Jul 11 19:56:35 atlas kernel: [83940.104367] hid-generic 0003:0451:ADAC.0002:
+> input,hiddev0,hidraw1: USB HID v1.11 Device [Lakewest Audio Audiolab M-DAC] on
+> usb-0000:00:1d.1-2/input0
+> 
+> With the non-working DAC I get these lines instead:
+> 
+> Jul 11 19:56:25 atlas kernel: [83930.079063] usb 7-2: Warning! Unlikely big
+> volume range (=65535), cval->res is probably wrong.
+> Jul 11 19:56:25 atlas kernel: [83930.079067] usb 7-2: [2] FU [PCM Playback
+> Volume] ch = 1, val = -32768/32767/1
+> 
+> 
+> I think maybe the problem is similar to this one:
+> 
+> https://groups.google.com/forum/#!topic/linux.debian.kernel/HwwkRkbL5aY
+> 
+> Is my problem a bug in snd-usb-audio? Or am I doing something wrong? I would
+> really appreciate some thoughts on this, I feel like I'm talking to myself :-(
 
-On Mon, Jul 11, 2016 at 12:29 PM, Lars-Peter Clausen <lars@metafoo.de>
-wrote:
+Considering that you're not really doing anything, you're probably not 
+doing something wrong.  :-)
 
-> On 07/11/2016 09:10 PM, Rob Nertney wrote:
-> > Hi all,
-> >
-> > Could I please get a sanity check on my hw_params?
-> >
-> > I have a DMA which is providing between 1-16 channels of 4 bytes/ch worth
-> > of data as a frame. I get an interrupt to my driver every frame's worth
-> of
-> > data (64 Bytes). The data is S32_LE, 16000Hz.
-> >
-> > My DMA has 2 buffers, PING and PONG. Each receives an IRQ on a frame
-> > length, and these local buffers are the size of a frame length (64Bytes).
-> >
-> > #define MAX_BUFFER (64 * 2)
-> > static struct snd_pcm_hardware my_pcm_hw =
-> > {
-> >   .info = (SNDRV_PCM_INFO_MMAP |
-> >       SNDRV_PCM_INFO_INTERLEAVED |
-> >       SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> >       SNDRV_PCM_INFO_MMAP_VALID),
-> >   .formats          = SNDRV_PCM_FMTBIT_S32,
-> >   .rates            = SNDRV_PCM_RATE_16000,
-> >   .rate_min         = 16000,
-> >   .rate_max         = 16000,
-> >   .channels_min     = 1,
-> >   .channels_max     = NUM_CHANNELS,
-> >   .buffer_bytes_max = MAX_BUFFER,
-> >   .period_bytes_min = 4,
-> >   .period_bytes_max = 64,
-> >   .periods_min      = 2,
-> >   .periods_max      = 2,
-> > };
-> >
-> >
-> > My understanding is that the MAX_BUFFER needs to be at least twice the
-> size
-> > of a period so I don't underrun. .periods_max means the maximum number of
-> > periods in a the alsa dma_area buffer, right?
-> >
-> > So when my DMA fires its ISR, I copy from its local PING buffer to the
-> > dma_area at offset 0, increment the buf_pos by the frame_length
-> (64Bytes),
-> > and call snd_pcm_period_elapsed.
-> >
-> > My DMA fires its ISR for its local PONG buffer, copies to the
-> > dma_area+buf_pos, increments buf_pos (now back to 0, since buffer only
-> > holds 2 frames/periods), and I call snd_pcm_period_elapsed again,
-> correct?
->
-> Hi,
->
-> In principle sounds OK. But there is not much of a point to use a
-> ping-pong buffer if you give the real buffer the same restrictions. You
-> might as well use the dma_area buffer as the target of the DMA in that
-> case. But since in your case the DMA is very restrictive in what it can
-> support it makes more sense to use the ping-pong buffer and broaden the
-> restrictions on the real buffer. Allow larger period sizes (only call
-> snd_pcm_period_elapsed() every N interrupts), allow more than two
-> periods and so on.
->
-> - Lars
->
->
+On the other hand, you're likely to get more of a response if you 
+direct your questions to the person who solved the problem mentioned in 
+that Debian bug report, and if you CC: the sound developers' mailing 
+list rather than the general USB list.
+
+Alan Stern
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
