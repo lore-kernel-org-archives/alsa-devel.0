@@ -1,42 +1,47 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v4 1/4] mfd: Add DT bindings documentation for Samsung
- Exynos LPASS
-Date: Mon, 11 Jul 2016 09:32:34 -0500
-Message-ID: <20160711143234.GA7163@rob-hp-laptop>
-References: <1467738785-31410-1-git-send-email-s.nawrocki@samsung.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 0/4]  ASoC: Intel: Add support for KBL
+Date: Mon, 11 Jul 2016 22:02:07 +0530
+Message-ID: <1468254731-15394-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1467738785-31410-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: lee.jones@linaro.org, broonie@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, ideal.song@samsung.com, inki.dae@samsung.com, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CB7B26573C
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 18:25:09 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 05, 2016 at 07:13:05PM +0200, Sylwester Nawrocki wrote:
-> This patch adds documentation of the DT bindings for the Samsung
-> Exynos SoC Low Power Audio Subsystem.
-> 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
-> 
-> There were few rather significant additions since v3 and I had to drop tags:
->  Acked-by: Rob Herring <robh@kernel.org>
->  Acked-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-> 
-> Changes since v3:
->  - moved to Documentation/devicetree/bindings/mfd,
->  - added #address-cells, #size-cells, ranges as required
->    properties,
->  - added description of the IP block subnodes and links
->    to their binding's documentation.
-> 
-> Changes since v2:
->  - none.
-> ---
->  .../bindings/mfd/samsung,exynos5433-lpass.txt       | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/samsung,exynos5433-lpass.txt
+Kabylake is next generation Intel SoC which also sports a DSP. This
+controller is quite similar to Skylake.
 
-Acked-by: Rob Herring <robh@kernel.org>
+This patch series add KBL IDs to SKL driver, hdmi driver, sets combo jack
+for rt286 codec and finally adds entry to skl machine driver
+
+Shreyas NC (1):
+  ASoC: hdac_hdmi: Add device id for Kabylake
+
+Vinod Koul (3):
+  ASoC: Intel: add kablake device IDs
+  ASoC: rt286: set combo jack for Kabylake
+  ASoC: Intel: board: add kabylake machine id
+
+ sound/soc/codecs/hdac_hdmi.c           | 1 +
+ sound/soc/codecs/rt286.c               | 7 +++++++
+ sound/soc/intel/boards/skl_rt286.c     | 9 +++++++++
+ sound/soc/intel/skylake/skl-messages.c | 6 ++++++
+ sound/soc/intel/skylake/skl.c          | 8 ++++++++
+ 5 files changed, 31 insertions(+)
+
+-- 
+1.9.1
