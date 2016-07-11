@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: board: add kabylake machine id"
-	to the asoc tree
-Date: Mon, 11 Jul 2016 22:21:02 +0100
-Message-ID: <E1bMidS-0003sP-PQ@debutante>
-References: <1468254731-15394-5-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: rt286: set combo jack for Kabylake" to
+	the asoc tree
+Date: Mon, 11 Jul 2016 22:21:05 +0100
+Message-ID: <E1bMidV-0003tH-Oy@debutante>
+References: <1468254731-15394-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B66CE26524F
+ by alsa0.perex.cz (Postfix) with ESMTP id A4C50261615
  for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 23:21:12 +0200 (CEST)
-In-Reply-To: <1468254731-15394-5-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1468254731-15394-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Shreyas NC <shreyas.nc@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: board: add kabylake machine id
+   ASoC: rt286: set combo jack for Kabylake
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From 894a16db293c5383f1d9c819909a27bd6738efde Mon Sep 17 00:00:00 2001
+>From d06de6d9f113bfdb62ce7b9dfe33a0709122dec2 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Mon, 11 Jul 2016 22:02:11 +0530
-Subject: [PATCH] ASoC: Intel: board: add kabylake machine id
+Date: Mon, 11 Jul 2016 22:02:10 +0530
+Subject: [PATCH] ASoC: rt286: set combo jack for Kabylake
 
-Kabylake platform is similar to Skylake. So, add machine id.
-Since same machine driver supports both, add these in id table.
+Like in Skylake, Kabylake also uses combo jack so add Kabylake to
+DMI match for combo jack configuration.
 
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_rt286.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/codecs/rt286.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index 426b48233fdb..88c61e8cb87f 100644
---- a/sound/soc/intel/boards/skl_rt286.c
-+++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -505,12 +505,20 @@ static int skylake_audio_probe(struct platform_device *pdev)
- 	return devm_snd_soc_register_card(&pdev->dev, &skylake_rt286);
- }
- 
-+static const struct platform_device_id skl_board_ids[] = {
-+	{ .name = "skl_alc286s_i2s" },
-+	{ .name = "kbl_alc286s_i2s" },
-+	{ }
-+};
-+
- static struct platform_driver skylake_audio = {
- 	.probe = skylake_audio_probe,
- 	.driver = {
- 		.name = "skl_alc286s_i2s",
- 		.pm = &snd_soc_pm_ops,
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 1bd31644a782..74c0e4eb3788 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -1100,6 +1100,13 @@ static const struct dmi_system_id force_combo_jack_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Skylake Client platform")
+ 		}
  	},
-+	.id_table = skl_board_ids,
++	{
++		.ident = "Intel Kabylake RVP",
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Kabylake Client platform")
++		}
++	},
 +
+ 	{ }
  };
  
- module_platform_driver(skylake_audio)
-@@ -520,3 +528,4 @@ MODULE_AUTHOR("Omair Mohammed Abdullah <omair.m.abdullah@intel.com>");
- MODULE_DESCRIPTION("Intel SST Audio for Skylake");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("platform:skl_alc286s_i2s");
-+MODULE_ALIAS("platform:kbl_alc286s_i2s");
 -- 
 2.8.1
