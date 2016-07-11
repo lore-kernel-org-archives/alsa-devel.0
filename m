@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: add kablake device IDs" to the
-	asoc tree
-Date: Mon, 11 Jul 2016 22:21:11 +0100
-Message-ID: <E1bMidb-0003v8-N0@debutante>
-References: <1468254731-15394-2-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: hdac_hdmi: Add device id for Kabylake"
+	to the asoc tree
+Date: Mon, 11 Jul 2016 22:21:08 +0100
+Message-ID: <E1bMidY-0003uG-My@debutante>
+References: <1468254731-15394-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 32BD9265451
- for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 23:21:16 +0200 (CEST)
-In-Reply-To: <1468254731-15394-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 37C2F26533F
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 23:21:13 +0200 (CEST)
+In-Reply-To: <1468254731-15394-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: Shreyas NC <shreyas.nc@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: add kablake device IDs
+   ASoC: hdac_hdmi: Add device id for Kabylake
 
 has been applied to the asoc tree at
 
@@ -53,64 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 451dfb5f82c7ed5f691be5f6409637e03d5f9c65 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Mon, 11 Jul 2016 22:02:08 +0530
-Subject: [PATCH] ASoC: Intel: add kablake device IDs
+>From cc21688703ee5090a6f1204b501c55034152c65e Mon Sep 17 00:00:00 2001
+From: Shreyas NC <shreyas.nc@intel.com>
+Date: Mon, 11 Jul 2016 22:02:09 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Add device id for Kabylake
 
-Kabylake is next generation Intel platform which has similar
-audio controller to Skylake, so add the ID and driver data in
-SKL driver.
+Kabylake platform is similar to Skylake. So, add the device id.
 
+Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c | 6 ++++++
- sound/soc/intel/skylake/skl.c          | 8 ++++++++
- 2 files changed, 14 insertions(+)
+ sound/soc/codecs/hdac_hdmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 6902020df946..44ab595ce21a 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -206,6 +206,12 @@ static const struct skl_dsp_ops dsp_ops[] = {
- 		.cleanup = skl_sst_dsp_cleanup
- 	},
- 	{
-+		.id = 0x9d71,
-+		.loader_ops = skl_get_loader_ops,
-+		.init = skl_sst_dsp_init,
-+		.cleanup = skl_sst_dsp_cleanup
-+	},
-+	{
- 		.id = 0x5a98,
- 		.loader_ops = bxt_get_loader_ops,
- 		.init = bxt_sst_dsp_init,
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index d5d7c53e07bc..4e30effc5469 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -813,6 +813,11 @@ static struct sst_acpi_mach sst_bxtp_devdata[] = {
- 	{ "DLGS7219", "bxt_da7219_max98357a_i2s", "intel/dsp_fw_bxtn.bin", NULL, NULL, NULL },
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 62d21812b9b8..a38e8f56003d 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1798,6 +1798,7 @@ static const struct dev_pm_ops hdac_hdmi_pm = {
+ static const struct hda_device_id hdmi_list[] = {
+ 	HDA_CODEC_EXT_ENTRY(0x80862809, 0x100000, "Skylake HDMI", 0),
+ 	HDA_CODEC_EXT_ENTRY(0x8086280a, 0x100000, "Broxton HDMI", 0),
++	HDA_CODEC_EXT_ENTRY(0x8086280b, 0x100000, "Kabylake HDMI", 0),
+ 	{}
  };
  
-+static struct sst_acpi_mach sst_kbl_devdata[] = {
-+	{ "INT343A", "kbl_alc286s_i2s", "intel/dsp_fw_kbl.bin", NULL, NULL, NULL },
-+	{}
-+};
-+
- /* PCI IDs */
- static const struct pci_device_id skl_ids[] = {
- 	/* Sunrise Point-LP */
-@@ -821,6 +826,9 @@ static const struct pci_device_id skl_ids[] = {
- 	/* BXT-P */
- 	{ PCI_DEVICE(0x8086, 0x5a98),
- 		.driver_data = (unsigned long)&sst_bxtp_devdata},
-+	/* KBL */
-+	{ PCI_DEVICE(0x8086, 0x9D71),
-+		.driver_data = (unsigned long)&sst_kbl_devdata},
- 	{ 0, }
- };
- MODULE_DEVICE_TABLE(pci, skl_ids);
 -- 
 2.8.1
