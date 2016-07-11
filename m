@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt286: set combo jack for Kabylake" to
-	the asoc tree
-Date: Mon, 11 Jul 2016 22:21:05 +0100
-Message-ID: <E1bMidV-0003tH-Oy@debutante>
-References: <1468254731-15394-4-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: add kablake device IDs" to the
+	asoc tree
+Date: Mon, 11 Jul 2016 22:21:11 +0100
+Message-ID: <E1bMidb-0003v8-N0@debutante>
+References: <1468254731-15394-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A4C50261615
- for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 23:21:12 +0200 (CEST)
-In-Reply-To: <1468254731-15394-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 32BD9265451
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 23:21:16 +0200 (CEST)
+In-Reply-To: <1468254731-15394-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt286: set combo jack for Kabylake
+   ASoC: Intel: add kablake device IDs
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,64 @@ to this mail.
 Thanks,
 Mark
 
->From d06de6d9f113bfdb62ce7b9dfe33a0709122dec2 Mon Sep 17 00:00:00 2001
+>From 451dfb5f82c7ed5f691be5f6409637e03d5f9c65 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Mon, 11 Jul 2016 22:02:10 +0530
-Subject: [PATCH] ASoC: rt286: set combo jack for Kabylake
+Date: Mon, 11 Jul 2016 22:02:08 +0530
+Subject: [PATCH] ASoC: Intel: add kablake device IDs
 
-Like in Skylake, Kabylake also uses combo jack so add Kabylake to
-DMI match for combo jack configuration.
+Kabylake is next generation Intel platform which has similar
+audio controller to Skylake, so add the ID and driver data in
+SKL driver.
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt286.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/intel/skylake/skl-messages.c | 6 ++++++
+ sound/soc/intel/skylake/skl.c          | 8 ++++++++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 1bd31644a782..74c0e4eb3788 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1100,6 +1100,13 @@ static const struct dmi_system_id force_combo_jack_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Skylake Client platform")
- 		}
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 6902020df946..44ab595ce21a 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -206,6 +206,12 @@ static const struct skl_dsp_ops dsp_ops[] = {
+ 		.cleanup = skl_sst_dsp_cleanup
  	},
-+	{
-+		.ident = "Intel Kabylake RVP",
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Kabylake Client platform")
-+		}
+ 	{
++		.id = 0x9d71,
++		.loader_ops = skl_get_loader_ops,
++		.init = skl_sst_dsp_init,
++		.cleanup = skl_sst_dsp_cleanup
 +	},
-+
- 	{ }
++	{
+ 		.id = 0x5a98,
+ 		.loader_ops = bxt_get_loader_ops,
+ 		.init = bxt_sst_dsp_init,
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index d5d7c53e07bc..4e30effc5469 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -813,6 +813,11 @@ static struct sst_acpi_mach sst_bxtp_devdata[] = {
+ 	{ "DLGS7219", "bxt_da7219_max98357a_i2s", "intel/dsp_fw_bxtn.bin", NULL, NULL, NULL },
  };
  
++static struct sst_acpi_mach sst_kbl_devdata[] = {
++	{ "INT343A", "kbl_alc286s_i2s", "intel/dsp_fw_kbl.bin", NULL, NULL, NULL },
++	{}
++};
++
+ /* PCI IDs */
+ static const struct pci_device_id skl_ids[] = {
+ 	/* Sunrise Point-LP */
+@@ -821,6 +826,9 @@ static const struct pci_device_id skl_ids[] = {
+ 	/* BXT-P */
+ 	{ PCI_DEVICE(0x8086, 0x5a98),
+ 		.driver_data = (unsigned long)&sst_bxtp_devdata},
++	/* KBL */
++	{ PCI_DEVICE(0x8086, 0x9D71),
++		.driver_data = (unsigned long)&sst_kbl_devdata},
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, skl_ids);
 -- 
 2.8.1
