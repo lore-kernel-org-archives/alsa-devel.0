@@ -1,19 +1,14 @@
-From: b_lkasam@codeaurora.org
-Subject: Re: ALSA sound core device deinit crash
-Date: Mon, 11 Jul 2016 12:15:20 +0530
-Message-ID: <42e44fd3c5bd0881dd36c79c7c00aa51@codeaurora.org>
-References: <d0842a7adf8b3b29252fdabe5c1c8958@codeaurora.org>
- <s5hinwglmv3.wl-tiwai@suse.de>
- <075f5f6f919170ebb646d475a0e36f02@codeaurora.org>
- <s5heg74llpq.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ASoC: intel: Fix sst-dsp dependency on dw stuff
+Date: Mon, 11 Jul 2016 10:39:11 +0200
+Message-ID: <20160711083911.5412-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id 919D326549C
- for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 08:45:22 +0200 (CEST)
-In-Reply-To: <s5heg74llpq.wl-tiwai@suse.de>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1043726549C
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 10:39:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,151 +18,309 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxNi0wNy0wOCAxMToyMywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IChQbGVhc2UgZG9uJ3Qg
-ZHJvcCBDYyB0byBNTCkKPiAKPiBPbiBGcmksIDA4IEp1bCAyMDE2IDA3OjM1OjM3ICswMjAwLAo+
-IGJfbGthc2FtQGNvZGVhdXJvcmEub3JnIHdyb3RlOgo+PiAKPj4gT24gMjAxNi0wNy0wOCAxMDo1
-OCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+PiA+IE9uIEZyaSwgMDggSnVsIDIwMTYgMDc6MTk6MDUg
-KzAyMDAsCj4+ID4gYl9sa2FzYW1AY29kZWF1cm9yYS5vcmcgd3JvdGU6Cj4+ID4+Cj4+ID4+IEhp
-IEFsc2EgdGVhbSwKPj4gPj4gVGhlcmUgaXMga2VybmVsIGNyYXNoIG9ic2VydmVkIHdoZW4gc291
-bmRjYXJkIHJlZ2lzdGVyIGZhaWx1cmUgY2FzZSBhcwo+PiA+PiBiZWxvdyAtPgo+PiA+Pgo+PiA+
-PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NvYy1jb3JlLmMgYi9zb3VuZC9zb2Mvc29jLWNvcmUu
-YyBvbGQgbW9kZQo+PiA+PiAxMDA2NDQgbmV3IG1vZGUgMTAwNzU1IGluZGV4IDA0OTU4OTAuLjYw
-YTFlYjAKPj4gPj4gLS0tIGEvc291bmQvc29jL3NvYy1jb3JlLmMKPj4gPj4gKysrIGIvc291bmQv
-c29jL3NvYy1jb3JlLmMKPj4gPj4gQEAgLTEzODIsNiArMTM4Miw3IEBAIHN0YXRpYyBpbnQgc29j
-X3Byb2JlX2xpbmtfZGFpcyhzdHJ1Y3QKPj4gPj4gc25kX3NvY19jYXJkICpjYXJkLCBpbnQgbnVt
-LCBpbnQgb3JkZXIpCj4+ID4+IC8qIGRvIG1hY2hpbmUgc3BlY2lmaWMgaW5pdGlhbGl6YXRpb24g
-Ki8gaWYgKGRhaV9saW5rLT5pbml0KSB7IHJldCA9Cj4+ID4+IGRhaV9saW5rLT5pbml0KHJ0ZCk7
-Cj4+ID4+ICsgcmV0ID0gLUVOT0RFVjsgLy8gIC0+IHdlIGNhbiBmb3JjZSBlcnJvciBoZXJlIHRv
-IHJlcHJvZHVjZSBjcmFzaAo+PiA+PiBlYXNpbHkuCj4+ID4+IGlmIChyZXQgPCAwKSB7Cj4+ID4+
-IGRldl9lcnIoY2FyZC0+ZGV2LCAiQVNvQzogZmFpbGVkIHRvIGluaXQgJXM6ICVkXG4iLCBkYWlf
-bGluay0+bmFtZSwKPj4gPj4gcmV0KTsKPj4gPj4KPj4gPj4gSWYgc291bmQgY2FyZCBmYWlscyBh
-dCBpbml0aWFsaXplIGF0IGFib3ZlLCBpdCBpcyBjcmFzaGluZyBpbgo+PiA+PiBwY21fY2htYXBf
-Y3RsX3ByaXZhdGVfZnJlZSgpLgo+PiA+Pgo+PiA+PiA8MT5bICAgNDAuNjQ2NjQyXSBbMDEtMDEt
-MjAxNiAwMDowNzoxNiBDUFU6MHgzXSBVbmFibGUgdG8gaGFuZGxlCj4+ID4+IGtlcm5lbAo+PiA+
-PiBwYWdpbmcgcmVxdWVzdCBhdCB2aXJ0dWFsIGFkZHJlc3MgZmZmZmZmYzBkYTY0NGI2OAo+PiA+
-PiA8MT5bICAgNDAuNjQ2NjY0XSBbMDEtMDEtMjAxNiAwMDowNzoxNiBDUFU6MHgzXSBwZ2QgPSBm
-ZmZmZmZjMDAxZDI4MDAwCj4+ID4+IDwxPlsgICA0MC42NDY2NzNdIFswMS0wMS0yMDE2IDAwOjA3
-OjE2IENQVToweDNdIFtmZmZmZmZjMGRhNjQ0YjY4XQo+PiA+PiAqcGdkPTAwMDAwMDAwODU3ZmMw
-MDMsICpwdWQ9MDAwMDAwMDA4NTdmYzAwMywgKnBtZD0wMDAwMDAwMTdkZGQ4MDAzLAo+PiA+PiAq
-cHRlPTAwYzAwMDAxNWE2NDQ3OTMKPj4gPj4gPDA+WyAgIDQwLjY0NjY5N10gWzAxLTAxLTIwMTYg
-MDA6MDc6MTYgQ1BVOjB4M10gSW50ZXJuYWwgZXJyb3I6IE9vcHM6Cj4+ID4+IDk2MDAwMDRmIFsj
-MV0gUFJFRU1QVCBTTVAKPj4gPj4gPDY+WyAgIDQwLjY0NjcwOF0gWzAxLTAxLTIwMTYgMDA6MDc6
-MTYgQ1BVOjB4M10gTW9kdWxlcyBsaW5rZWQgaW46Cj4+ID4+IGJyY21fYnRfZHJ2IGZtX2RydiBi
-cmNtX2hjaV9sZGlzYyB0ZXhmYXQoUE8pCj4+ID4+IDw2PlsgICA0MC42NDY3MzVdIFswMS0wMS0y
-MDE2IDAwOjA3OjE2IENQVToweDNdIENQVTogMyBQSUQ6IDI5OSBDb21tOgo+PiA+PiBrd29ya2Vy
-L3U4OjggVGFpbnRlZDogUCAgICAgICAgICAgTyAgIDMuMTguMjQtZzQxYjJkZGEyLTAwMDAyLWdi
-ZTI1YTc0Cj4+ID4+ICMxCj4+ID4+IDw2PlsgICA0MC42NDY3NDRdIFswMS0wMS0yMDE2IDAwOjA3
-OjE2IENQVToweDNdIEhhcmR3YXJlIG5hbWU6Cj4+ID4+IFF1YWxjb21tCj4+ID4+IFRlY2hub2xv
-Z2llcywgSW5jLiBNU00gODk5NiB2My54ICsgUE1JODk5NiBNVFAgKERUKQo+PiA+PiA8Nj5bICAg
-NDAuNjQ2NzYzXSBbMDEtMDEtMjAxNiAwMDowNzoxNiBDUFU6MHgzXSBXb3JrcXVldWU6IGRlZmVy
-d3EKPj4gPj4gZGVmZXJyZWRfcHJvYmVfd29ya19mdW5jCj4+ID4+IDw2PlsgICA0MC42NDY3NzNd
-IFswMS0wMS0yMDE2IDAwOjA3OjE2IENQVToweDNdIHRhc2s6IGZmZmZmZmMwZTk1MWM4ODAKPj4g
-Pj4gdGk6IGZmZmZmZmMwMzM2OGMwMDAgdGFzay50aTogZmZmZmZmYzAzMzY4YzAwMAo+PiA+PiA8
-Nj5bICAgNDAuNjQ2Nzg3XSBbMDEtMDEtMjAxNiAwMDowNzoxNiBDUFU6MHgzXSBQQyBpcyBhdAo+
-PiA+PiBwY21fY2htYXBfY3RsX3ByaXZhdGVfZnJlZSsweDFjLzB4MmMKPj4gPj4gPDY+WyAgIDQw
-LjY0Njc5OF0gWzAxLTAxLTIwMTYgMDA6MDc6MTYgQ1BVOjB4M10gTFIgaXMgYXQKPj4gPj4gc25k
-X2N0bF9mcmVlX29uZSsweDIwLzB4MzQKPj4gPj4KPj4gPj4KPj4gPj4gRklYOgo+PiA+Pgo+PiA+
-PiBDYW4geW91IGxvb2sgYXQgdGhlIGNoYW5nZSBiZWxvdyBhbmQgc2hhcmUgeW91ciBjb21tZW50
-cyBvbiB0aGlzPwo+PiA+PiBkaWZmIC0tZ2l0IGEvc291bmQvY29yZS9kZXZpY2UuYyBiL3NvdW5k
-L2NvcmUvZGV2aWNlLmMgb2xkIG1vZGUgMTAwNjQ0Cj4+ID4+IG5ldyBtb2RlIDEwMDc1NSBpbmRl
-eCA0MWJlYzMwLi5lYWZmZGUxCj4+ID4+IC0tLSBhL3NvdW5kL2NvcmUvZGV2aWNlLmMKPj4gPj4g
-KysrIGIvc291bmQvY29yZS9kZXZpY2UuYwo+PiA+PiBAQCAtMjE5LDYgKzIxOSw3IEBAIHZvaWQg
-c25kX2RldmljZV9mcmVlX2FsbChzdHJ1Y3Qgc25kX2NhcmQgKmNhcmQpCj4+ID4+Cj4+ID4+ICAg
-ICAgICAgICBpZiAoc25kX0JVR19PTighY2FyZCkpCj4+ID4+ICAgICAgICAgICAgICAgICAgIHJl
-dHVybjsKPj4gPj4gLSAgICAgICBsaXN0X2Zvcl9lYWNoX2VudHJ5X3NhZmVfcmV2ZXJzZShkZXYs
-IG5leHQsICZjYXJkLT5kZXZpY2VzLAo+PiA+PiBsaXN0KQo+PiA+PiArICAgICAgICAgICAgICAg
-bGlzdF9mb3JfZWFjaF9lbnRyeV9zYWZlKGRldiwgbmV4dCwgJmNhcmQtPmRldmljZXMsCj4+ID4+
-IGxpc3QpCj4+ID4+ICAgICAgICAgICAgICAgICAgIF9fc25kX2RldmljZV9mcmVlKGRldik7IH0K
-Pj4gPj4KPj4gPj4KPj4gPj4gU2luY2UgY29udHJvbCBzb3VuZCBkZXZpY2UgaGFzIHRoZSBsb3dl
-c3QgdHlwZSB2YWx1ZQo+PiA+PiAoU05EUlZfREVWX0NPTlRST0wpLCBpdCB3aWxsIGJlIHRoZSBm
-aXJzdCBlbnRyeSBsaW5rZWQgaW4gdGhlCj4+ID4+IGNhcmQtPmRldmljZXMgbGlua2VkIGxpc3Qg
-aGVhZCBhbmQgd2lsbCBiZSB0aGUgbGFzdCBvbmUgdG8gYmUgZnJlZWQuCj4+ID4+Cj4+ID4+IFRo
-aXMgaXNzdWUgc2VlbXMgdG8gYmUgcmVzb2x2ZWQgYnkgbW9kaWZ5aW5nIHRoZSBzZXF1ZW5jZSB0
-aGUgc291bmQKPj4gPj4gZGV2aWNlcyBpbiB0aGUgY2FyZC0+ZGV2aWNlcyBsaXN0IGFyZSBmcmVl
-ZCBhcyBzaG93biBiZWxvdyAoZnJvbQo+PiA+PiDigJxwcmV24oCdCj4+ID4+IGRpcmVjdGlvbiB0
-byDigJxuZXh04oCdIGRpcmVjdGlvbikgYnV0IEnigJltIG5vdCBzdXJlIGlmIHRoaXMgaXMgYSBy
-aWdodAo+PiA+PiBhcHByb2FjaCBmcm9tIEFMU0EgcGVyc3BlY3RpdmUuCj4+ID4KPj4gPiBUaGlz
-IGRvZXNuJ3QgbG9vayBjb3JyZWN0LiAgVGhlIHN0cmFuZ2UgdGhpbmcgaXMgdGhhdCB0aGlzIGVy
-cm9yCj4+ID4gc2hvdWxkbid0IGhhcHBlbiBubyBtYXR0ZXIgd2hpY2ggZnJlZSBsb29wIGRpcmVj
-dGlvbiBpcy4gIFRoZSBjaG1hcAo+PiA+IGN0bCBzaG91bGQgaGF2ZSBiZWVuIGFscmVhZHkgcmVt
-b3ZlZCBieSB0aGUgZGlzY29ubmVjdGlvbiBiZWZvcmUKPj4gPiBmcmVlaW5nLiAgSXQgbWVhbnMg
-dGhhdCBlaXRoZXIgdGhlIGRpc2Nvbm5lY3Rpb24gaXNuJ3QgZG9uZSBwcm9wZXJseQo+PiA+IG9y
-IHNvbWV0aGluZyBlbHNlIGlzIG1pc3NpbmcuCj4+ID4KPj4gPiBDb3VsZCB5b3UgZ2l2ZSB0aGUg
-ZnVsbCBzdGFjayB0cmFjZT8gIEl0J3MgaW1wb3J0YW50IHRvIGtub3cgd2hpY2gKPj4gPiBjb2Rl
-IHBhdGggdHJpZ2dlcnMgaXQuCj4+ID4KPj4gPgo+PiA+IHRoYW5rcywKPj4gPgo+PiA+IFRha2Fz
-aGkKPj4gCj4+IAo+PiBIaSBUYWthc2hpLAo+PiAKPj4gSGVyZSBpcyBmdWxsIHN0YWNrIHRyYWNl
-IC0tPgo+PiAKPj4gCj4+IFtDYWxsc3RhY2tdCj4+IDogKHN0cnVjdCBzbmRfcGNtX2NobWFwICop
-aW5mbyA9IDB4RkZGRkZGQzBEQTZBNTIwMAo+PiA6IChzdHJ1Y3Qgc25kX3BjbSAqKXBjbSA9IDB4
-RkZGRkZGQzBEQTY0NEE4MCAvL3BhcnQgb2YgYnVkZHkgcGFnZSwKPj4gcmVhZC1vbmx5Cj4+IDog
-aW5mby0+c3RyZWFtID0gMAo+PiA6IHNuZF9jYXJkX2ZyZWUoKSB3YXMgY2FsbGVkCj4+IAo+PiAt
-MDEyfHBjbV9jaG1hcF9jdGxfcHJpdmF0ZV9mcmVlKCkKPj4gLy9pbmZvLT5wY20tPnN0cmVhbXNb
-aW5mby0+c3RyZWFtXS5jaG1hcF9rY3RsID0gTlVMTAo+PiAtMDEzfHNuZF9jdGxfZnJlZV9vbmUo
-KQo+PiAtMDE0fHNuZF9jdGxfcmVtb3ZlKCkKPj4gLTAxNXxzbmRfY3RsX2Rldl9mcmVlKCkKPj4g
-LTAxNnxfX3NuZF9kZXZpY2VfZnJlZSgpCj4+IC0wMTd8c25kX2RldmljZV9mcmVlX2FsbCgpCj4+
-IC0wMTh8c25kX2NhcmRfZG9fZnJlZShpbmxpbmUpCj4+IC0wMTh8cmVsZWFzZV9jYXJkX2Rldmlj
-ZSgpCj4+IC0wMTl8ZGV2aWNlX3JlbGVhc2UoKQo+PiAtMDIwfGtvYmplY3RfY2xlYW51cChpbmxp
-bmUpCj4+IC0wMjB8a29iamVjdF9yZWxlYXNlKCkKPj4gLTAyMXxrb2JqZWN0X3B1dCgpCj4+IC0w
-MjJ8cHV0X2RldmljZSgpCj4+IC0wMjN8c25kX2NhcmRfZnJlZV93aGVuX2Nsb3NlZCgpCj4+IC0w
-MjR8c25kX2NhcmRfZnJlZSgpCj4+IC0wMjV8c25kX3NvY19pbnN0YW50aWF0ZV9jYXJkKGlubGlu
-ZSkgLT4gLy9IZXJlIGluc3RhbnRpYXRlIGNhcmQKPj4gZmFpbGVkIGZvciBzb21lIHJlYXNvbiwg
-dGhlbiB0cmlnZ2VycyBzbmRfY2FyZF9mcmVlCj4+IC0wMjV8c25kX3NvY19yZWdpc3Rlcl9jYXJk
-KCkKPj4gLTAyNnxtc204OTk2X2Fzb2NfbWFjaGluZV9wcm9iZSgpCj4+IC0wMjd8cGxhdGZvcm1f
-ZHJ2X3Byb2JlKCkKPj4gLTAyOHxyZWFsbHlfcHJvYmUoaW5saW5lKQo+PiAtMDI4fGRyaXZlcl9w
-cm9iZV9kZXZpY2UoKQo+PiAtMDI5fF9fZGV2aWNlX2F0dGFjaCgpCj4+IC0wMzB8YnVzX2Zvcl9l
-YWNoX2RydigpCj4+IC0wMzF8ZGV2aWNlX2F0dGFjaCgpCj4+IC0wMzJ8YnVzX3Byb2JlX2Rldmlj
-ZSgpCj4+IC0wMzN8ZGVmZXJyZWRfcHJvYmVfd29ya19mdW5jKCkKPj4gLTAzNHxzdGF0aWNfa2V5
-X2NvdW50KGlubGluZSkKPj4gLTAzNHxzdGF0aWNfa2V5X2ZhbHNlKGlubGluZSkKPj4gLTAzNHx0
-cmFjZV93b3JrcXVldWVfZXhlY3V0ZV9lbmQoaW5saW5lKQo+PiAtMDM0fHByb2Nlc3Nfb25lX3dv
-cmsoKQo+PiAtMDM1fHdvcmtlcl90aHJlYWQoKQo+PiAtMDM2fGt0aHJlYWQoKQo+PiAtMDM3fHJl
-dF9mcm9tX2ZvcmsoYXNtKQo+PiAtLS18ZW5kIG9mIGZyYW1lCj4+IAo+PiAKPj4gLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0KPj4gdHJpZ2dlciBwb2ludCBpbiBzb2MtY29yZS5jCj4+IGluIEFQSSBz
-bmRfc29jX2luc3RhbnRpYXRlX2NhcmQoKSwKPj4gCj4+ICAgICAgICAgY2FyZF9wcm9iZV9lcnJv
-cjoKPj4gICAgICAgICAgICAgICAgICBpZiAoY2FyZC0+cmVtb3ZlKQo+PiAgICAgICAgICAgICAg
-ICAgICAgICAgICBjYXJkLT5yZW1vdmUoY2FyZCk7Cj4+IAo+PiAgICAgICAgICAgICAgICAgIHNu
-ZF9jYXJkX2ZyZWUoY2FyZC0+c25kX2NhcmQpOyAtPiB0aGlzIGlzCj4+IHNuZF9jYXJkX2ZyZWUg
-d2hpY2ggaW50ZXJuYWxseSBsZWFkcyB0byBhYm92ZSBmdW5jdGlvbiBjYWxsLgo+PiAtLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiAKPiBPSywgdGhhbmtzLiAgU28g
-dGhpcyBpcyB0aGUgY2FzZSB3aGVyZSBpdCBmcmVlcyBiZWZvcmUgcmVnaXN0ZXJpbmcsCj4gYW5k
-IGluZGVlZCB0aGVyZSBpcyBhIGJ1ZyBpbiB0aGUgUENNIGNobWFwIGNvZGUuICBJdCdzIGZyZWVk
-IGF0Cj4gZGlzY29ubmVjdGlvbiBidXQgdGhlIGRpc2Nvbm5lY3QgaXMgY2FsbGVkIG9ubHkgd2hl
-biBpdCB3YXMKPiByZWdpc3RlcmVkLgo+IAo+IEJlbG93IGlzIGEgcXVpY2sgZml4LiAgR2l2ZSBp
-dCBhIHRyeS4KPiAKPiAKPiB0aGFua3MsCj4gCj4gVGFrYXNoaQo+IAo+IC0tLQo+IGRpZmYgLS1n
-aXQgYS9zb3VuZC9jb3JlL2NvbnRyb2wuYyBiL3NvdW5kL2NvcmUvY29udHJvbC5jCj4gaW5kZXgg
-OWZmMDgxY2QwM2Y0Li5mYjA5NmNiMjBhODAgMTAwNjQ0Cj4gLS0tIGEvc291bmQvY29yZS9jb250
-cm9sLmMKPiArKysgYi9zb3VuZC9jb3JlL2NvbnRyb2wuYwo+IEBAIC0xNjAsNiArMTYwLDggQEAg
-dm9pZCBzbmRfY3RsX25vdGlmeShzdHJ1Y3Qgc25kX2NhcmQgKmNhcmQsCj4gdW5zaWduZWQgaW50
-IG1hc2ssCj4gCj4gIAlpZiAoc25kX0JVR19PTighY2FyZCB8fCAhaWQpKQo+ICAJCXJldHVybjsK
-PiArCWlmIChjYXJkLT5zaHV0ZG93bikKPiArCQlyZXR1cm47Cj4gIAlyZWFkX2xvY2soJmNhcmQt
-PmN0bF9maWxlc19yd2xvY2spOwo+ICAjaWYgSVNfRU5BQkxFRChDT05GSUdfU05EX01JWEVSX09T
-UykKPiAgCWNhcmQtPm1peGVyX29zc19jaGFuZ2VfY291bnQrKzsKPiBkaWZmIC0tZ2l0IGEvc291
-bmQvY29yZS9wY20uYyBiL3NvdW5kL2NvcmUvcGNtLmMKPiBpbmRleCAzMDhjOWVjZjczZGIuLjhl
-OTgwYWE2NzhkMCAxMDA2NDQKPiAtLS0gYS9zb3VuZC9jb3JlL3BjbS5jCj4gKysrIGIvc291bmQv
-Y29yZS9wY20uYwo+IEBAIC04NDksNiArODQ5LDE0IEBAIGludCBzbmRfcGNtX25ld19pbnRlcm5h
-bChzdHJ1Y3Qgc25kX2NhcmQgKmNhcmQsCj4gY29uc3QgY2hhciAqaWQsIGludCBkZXZpY2UsCj4g
-IH0KPiAgRVhQT1JUX1NZTUJPTChzbmRfcGNtX25ld19pbnRlcm5hbCk7Cj4gCj4gK3N0YXRpYyB2
-b2lkIGZyZWVfY2htYXAoc3RydWN0IHNuZF9wY21fc3RyICpwc3RyKQo+ICt7Cj4gKwlpZiAocHN0
-ci0+Y2htYXBfa2N0bCkgewo+ICsJCXNuZF9jdGxfcmVtb3ZlKHBzdHItPnBjbS0+Y2FyZCwgcHN0
-ci0+Y2htYXBfa2N0bCk7Cj4gKwkJcHN0ci0+Y2htYXBfa2N0bCA9IE5VTEw7Cj4gKwl9Cj4gK30K
-PiArCj4gIHN0YXRpYyB2b2lkIHNuZF9wY21fZnJlZV9zdHJlYW0oc3RydWN0IHNuZF9wY21fc3Ry
-ICogcHN0cikKPiAgewo+ICAJc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sICpz
-dWJzdHJlYW1fbmV4dDsKPiBAQCAtODcxLDYgKzg3OSw3IEBAIHN0YXRpYyB2b2lkIHNuZF9wY21f
-ZnJlZV9zdHJlYW0oc3RydWN0IHNuZF9wY21fc3RyIAo+ICogcHN0cikKPiAgCQlrZnJlZShzZXR1
-cCk7Cj4gIAl9Cj4gICNlbmRpZgo+ICsJZnJlZV9jaG1hcChwc3RyKTsKPiAgCWlmIChwc3RyLT5z
-dWJzdHJlYW1fY291bnQpCj4gIAkJcHV0X2RldmljZSgmcHN0ci0+ZGV2KTsKPiAgfQo+IEBAIC0x
-MTM1LDEwICsxMTQ0LDcgQEAgc3RhdGljIGludCBzbmRfcGNtX2Rldl9kaXNjb25uZWN0KHN0cnVj
-dAo+IHNuZF9kZXZpY2UgKmRldmljZSkKPiAgCWZvciAoY2lkeCA9IDA7IGNpZHggPCAyOyBjaWR4
-KyspIHsKPiAgCQlpZiAoIXBjbS0+aW50ZXJuYWwpCj4gIAkJCXNuZF91bnJlZ2lzdGVyX2Rldmlj
-ZSgmcGNtLT5zdHJlYW1zW2NpZHhdLmRldik7Cj4gLQkJaWYgKHBjbS0+c3RyZWFtc1tjaWR4XS5j
-aG1hcF9rY3RsKSB7Cj4gLQkJCXNuZF9jdGxfcmVtb3ZlKHBjbS0+Y2FyZCwgcGNtLT5zdHJlYW1z
-W2NpZHhdLmNobWFwX2tjdGwpOwo+IC0JCQlwY20tPnN0cmVhbXNbY2lkeF0uY2htYXBfa2N0bCA9
-IE5VTEw7Cj4gLQkJfQo+ICsJCWZyZWVfY2htYXAoJnBjbS0+c3RyZWFtc1tjaWR4XSk7Cj4gIAl9
-Cj4gIAltdXRleF91bmxvY2soJnBjbS0+b3Blbl9tdXRleCk7Cj4gIAltdXRleF91bmxvY2soJnJl
-Z2lzdGVyX211dGV4KTsKCgpoaSBUYWthc2hpLApUaGFua3MgZm9yIHRoZSBwYXRjaC4KCkl0IGlz
-IHdvcmtpbmcgZmluZSBhZnRlciBhYm92ZSBwYXRjaC4KCnRoYW5rcwpLYXNhbQpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The recent commit [a92ea59b74e2: ASoC: Intel: sst: only select
+sst-firmware when DW DMAC is built-in] introduced more strict kconfig
+dependency (depends on DW_DMAC_CORE=y) for avoiding the build failures
+due to dependency messes in intel-sst.  This makes, however, it
+impossible to use this driver with the modularized systems,
+i.e. typically on Linux distros.
+
+The problem addressed in the commit above is that sst_dsp_new() and
+sst_dsp_free() includes the firmware init / finish that call dw_*()
+functions.  Thus building it as built-in with DW_DMAC_CORE module
+results in the missing symbols.
+
+However, these sst_dsp functions are basically called only from the
+drivers that depend on DW_DMAC_CORE already.  That is, once when these
+functions are split out, the rest can be independent from dw stuff.
+
+This patch attempts to solve the issue by the following:
+- Split sst-dsp stuff into two modules: snd-soc-sst-dsp and
+  snd-soc-sst-firmware.
+- Move sst_dsp_new() and sst_dsp_free() to the latter module so that
+  the former module can be independent from DW_DMAC_CORE.
+- Add a new kconfig SND_SOC_INTEL_SST_FIRMWARE to select the latter
+  module by machine drivers.
+
+One only remaining pitfall is that each machine driver has to select
+SND_SOC_INTEL_SST_FIRMWARE carefully depending on DW_DMAC_CORE.
+This can't be done cleanly due to the restriction of the current
+kbuild.
+
+Bugzilla: https://bugzilla.opensuse.org/show_bug.cgi?id=988117
+Fixes: a92ea59b74e2 ('ASoC: Intel: sst: only select sst-firmware when DW DMAC is built-in')
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/intel/Kconfig               | 18 +++++++---
+ sound/soc/intel/common/Makefile       |  4 +--
+ sound/soc/intel/common/sst-dsp-priv.h |  4 ---
+ sound/soc/intel/common/sst-dsp.c      | 67 ----------------------------------
+ sound/soc/intel/common/sst-dsp.h      |  2 +-
+ sound/soc/intel/common/sst-firmware.c | 68 +++++++++++++++++++++++++++++++++++
+ 6 files changed, 85 insertions(+), 78 deletions(-)
+
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 9c86459d0fc3..a20c3dfbcb5d 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -32,6 +32,12 @@ config SND_SOC_INTEL_SST
+ 	select SND_SOC_INTEL_SST_MATCH if ACPI
+ 	depends on (X86 || COMPILE_TEST)
+ 
++# firmware stuff depends DW_DMAC_CORE; since there is no depends-on from
++# the reverse selection, each machine driver needs to select
++# SND_SOC_INTEL_SST_FIRMWARE carefully depending on DW_DMAC_CORE
++config SND_SOC_INTEL_SST_FIRMWARE
++	tristate
++
+ config SND_SOC_INTEL_SST_ACPI
+ 	tristate
+ 
+@@ -47,8 +53,9 @@ config SND_SOC_INTEL_BAYTRAIL
+ config SND_SOC_INTEL_HASWELL_MACH
+ 	tristate "ASoC Audio DSP support for Intel Haswell Lynxpoint"
+ 	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
+-	depends on DW_DMAC_CORE=y
++	depends on DW_DMAC_CORE
+ 	select SND_SOC_INTEL_SST
++	select SND_SOC_INTEL_SST_FIRMWARE
+ 	select SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT5640
+ 	help
+@@ -91,8 +98,9 @@ config SND_SOC_INTEL_BXT_RT298_MACH
+ config SND_SOC_INTEL_BYT_RT5640_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with RT5640 codec"
+ 	depends on X86_INTEL_LPSS && I2C
+-	depends on DW_DMAC_CORE=y && (SND_SST_IPC_ACPI = n)
++	depends on DW_DMAC_CORE && (SND_SST_IPC_ACPI = n)
+ 	select SND_SOC_INTEL_SST
++	select SND_SOC_INTEL_SST_FIRMWARE
+ 	select SND_SOC_INTEL_BAYTRAIL
+ 	select SND_SOC_RT5640
+ 	help
+@@ -103,8 +111,9 @@ config SND_SOC_INTEL_BYT_RT5640_MACH
+ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
+ 	depends on X86_INTEL_LPSS && I2C
+-	depends on DW_DMAC_CORE=y && (SND_SST_IPC_ACPI = n)
++	depends on DW_DMAC_CORE && (SND_SST_IPC_ACPI = n)
+ 	select SND_SOC_INTEL_SST
++	select SND_SOC_INTEL_SST_FIRMWARE
+ 	select SND_SOC_INTEL_BAYTRAIL
+ 	select SND_SOC_MAX98090
+ 	help
+@@ -115,8 +124,9 @@ config SND_SOC_INTEL_BROADWELL_MACH
+ 	tristate "ASoC Audio DSP support for Intel Broadwell Wildcatpoint"
+ 	depends on X86_INTEL_LPSS && I2C && DW_DMAC && \
+ 		   I2C_DESIGNWARE_PLATFORM
+-	depends on DW_DMAC_CORE=y
++	depends on DW_DMAC_CORE
+ 	select SND_SOC_INTEL_SST
++	select SND_SOC_INTEL_SST_FIRMWARE
+ 	select SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT286
+ 	help
+diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
+index fbbb25c2ceed..1a35149bcad7 100644
+--- a/sound/soc/intel/common/Makefile
++++ b/sound/soc/intel/common/Makefile
+@@ -2,9 +2,9 @@ snd-soc-sst-dsp-objs := sst-dsp.o
+ snd-soc-sst-acpi-objs := sst-acpi.o
+ snd-soc-sst-match-objs := sst-match-acpi.o
+ snd-soc-sst-ipc-objs := sst-ipc.o
+-
+-snd-soc-sst-dsp-$(CONFIG_DW_DMAC_CORE) += sst-firmware.o
++snd-soc-sst-firmware-objs := sst-firmware.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
+ obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
+ obj-$(CONFIG_SND_SOC_INTEL_SST_MATCH) += snd-soc-sst-match.o
++obj-$(CONFIG_SND_SOC_INTEL_SST_FIRMWARE) += snd-soc-sst-firmware.o
+diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
+index 97dc1ae05e69..d13c84364c3c 100644
+--- a/sound/soc/intel/common/sst-dsp-priv.h
++++ b/sound/soc/intel/common/sst-dsp-priv.h
+@@ -383,10 +383,6 @@ struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
+ 	u32 index, void *private);
+ void sst_mem_block_unregister_all(struct sst_dsp *dsp);
+ 
+-/* Create/Free DMA resources */
+-int sst_dma_new(struct sst_dsp *sst);
+-void sst_dma_free(struct sst_dma *dma);
+-
+ u32 sst_dsp_get_offset(struct sst_dsp *dsp, u32 offset,
+ 	enum sst_mem_type type);
+ #endif
+diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
+index ff2196ef359f..c00ede4ea4d7 100644
+--- a/sound/soc/intel/common/sst-dsp.c
++++ b/sound/soc/intel/common/sst-dsp.c
+@@ -420,73 +420,6 @@ void sst_dsp_inbox_read(struct sst_dsp *sst, void *message, size_t bytes)
+ }
+ EXPORT_SYMBOL_GPL(sst_dsp_inbox_read);
+ 
+-#ifdef CONFIG_DW_DMAC_CORE
+-struct sst_dsp *sst_dsp_new(struct device *dev,
+-	struct sst_dsp_device *sst_dev, struct sst_pdata *pdata)
+-{
+-	struct sst_dsp *sst;
+-	int err;
+-
+-	dev_dbg(dev, "initialising audio DSP id 0x%x\n", pdata->id);
+-
+-	sst = devm_kzalloc(dev, sizeof(*sst), GFP_KERNEL);
+-	if (sst == NULL)
+-		return NULL;
+-
+-	spin_lock_init(&sst->spinlock);
+-	mutex_init(&sst->mutex);
+-	sst->dev = dev;
+-	sst->dma_dev = pdata->dma_dev;
+-	sst->thread_context = sst_dev->thread_context;
+-	sst->sst_dev = sst_dev;
+-	sst->id = pdata->id;
+-	sst->irq = pdata->irq;
+-	sst->ops = sst_dev->ops;
+-	sst->pdata = pdata;
+-	INIT_LIST_HEAD(&sst->used_block_list);
+-	INIT_LIST_HEAD(&sst->free_block_list);
+-	INIT_LIST_HEAD(&sst->module_list);
+-	INIT_LIST_HEAD(&sst->fw_list);
+-	INIT_LIST_HEAD(&sst->scratch_block_list);
+-
+-	/* Initialise SST Audio DSP */
+-	if (sst->ops->init) {
+-		err = sst->ops->init(sst, pdata);
+-		if (err < 0)
+-			return NULL;
+-	}
+-
+-	/* Register the ISR */
+-	err = request_threaded_irq(sst->irq, sst->ops->irq_handler,
+-		sst_dev->thread, IRQF_SHARED, "AudioDSP", sst);
+-	if (err)
+-		goto irq_err;
+-
+-	err = sst_dma_new(sst);
+-	if (err)
+-		dev_warn(dev, "sst_dma_new failed %d\n", err);
+-
+-	return sst;
+-
+-irq_err:
+-	if (sst->ops->free)
+-		sst->ops->free(sst);
+-
+-	return NULL;
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_new);
+-
+-void sst_dsp_free(struct sst_dsp *sst)
+-{
+-	free_irq(sst->irq, sst);
+-	if (sst->ops->free)
+-		sst->ops->free(sst);
+-
+-	sst_dma_free(sst->dma);
+-}
+-EXPORT_SYMBOL_GPL(sst_dsp_free);
+-#endif
+-
+ /* Module information */
+ MODULE_AUTHOR("Liam Girdwood");
+ MODULE_DESCRIPTION("Intel SST Core");
+diff --git a/sound/soc/intel/common/sst-dsp.h b/sound/soc/intel/common/sst-dsp.h
+index 0b84c719ec48..859f0de00339 100644
+--- a/sound/soc/intel/common/sst-dsp.h
++++ b/sound/soc/intel/common/sst-dsp.h
+@@ -216,7 +216,7 @@ struct sst_pdata {
+ 	void *dsp;
+ };
+ 
+-#ifdef CONFIG_DW_DMAC_CORE
++#if IS_ENABLED(CONFIG_DW_DMAC_CORE)
+ /* Initialization */
+ struct sst_dsp *sst_dsp_new(struct device *dev,
+ 	struct sst_dsp_device *sst_dev, struct sst_pdata *pdata);
+diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
+index 25993527370b..a086c35f91bb 100644
+--- a/sound/soc/intel/common/sst-firmware.c
++++ b/sound/soc/intel/common/sst-firmware.c
+@@ -1211,3 +1211,71 @@ u32 sst_dsp_get_offset(struct sst_dsp *dsp, u32 offset,
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(sst_dsp_get_offset);
++
++struct sst_dsp *sst_dsp_new(struct device *dev,
++	struct sst_dsp_device *sst_dev, struct sst_pdata *pdata)
++{
++	struct sst_dsp *sst;
++	int err;
++
++	dev_dbg(dev, "initialising audio DSP id 0x%x\n", pdata->id);
++
++	sst = devm_kzalloc(dev, sizeof(*sst), GFP_KERNEL);
++	if (sst == NULL)
++		return NULL;
++
++	spin_lock_init(&sst->spinlock);
++	mutex_init(&sst->mutex);
++	sst->dev = dev;
++	sst->dma_dev = pdata->dma_dev;
++	sst->thread_context = sst_dev->thread_context;
++	sst->sst_dev = sst_dev;
++	sst->id = pdata->id;
++	sst->irq = pdata->irq;
++	sst->ops = sst_dev->ops;
++	sst->pdata = pdata;
++	INIT_LIST_HEAD(&sst->used_block_list);
++	INIT_LIST_HEAD(&sst->free_block_list);
++	INIT_LIST_HEAD(&sst->module_list);
++	INIT_LIST_HEAD(&sst->fw_list);
++	INIT_LIST_HEAD(&sst->scratch_block_list);
++
++	/* Initialise SST Audio DSP */
++	if (sst->ops->init) {
++		err = sst->ops->init(sst, pdata);
++		if (err < 0)
++			return NULL;
++	}
++
++	/* Register the ISR */
++	err = request_threaded_irq(sst->irq, sst->ops->irq_handler,
++		sst_dev->thread, IRQF_SHARED, "AudioDSP", sst);
++	if (err)
++		goto irq_err;
++
++	err = sst_dma_new(sst);
++	if (err)
++		dev_warn(dev, "sst_dma_new failed %d\n", err);
++
++	return sst;
++
++irq_err:
++	if (sst->ops->free)
++		sst->ops->free(sst);
++
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(sst_dsp_new);
++
++void sst_dsp_free(struct sst_dsp *sst)
++{
++	free_irq(sst->irq, sst);
++	if (sst->ops->free)
++		sst->ops->free(sst);
++
++	sst_dma_free(sst->dma);
++}
++EXPORT_SYMBOL_GPL(sst_dsp_free);
++
++MODULE_DESCRIPTION("Intel SST Firmware Loader");
++MODULE_LICENSE("GPL v2");
+-- 
+2.9.0
