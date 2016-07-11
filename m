@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Initialize module list
-	for Broxton" to the asoc tree
-Date: Mon, 11 Jul 2016 18:41:59 +0100
-Message-ID: <E1bMfDT-0007dq-4H@debutante>
-References: <1465920225-11131-1-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: hdac_hdmi: Fix potential NULL
+	dereference" to the asoc tree
+Date: Mon, 11 Jul 2016 18:42:02 +0100
+Message-ID: <E1bMfDW-0007eo-Rv@debutante>
+References: <1464701995-23452-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A4DF6265A28
- for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 19:42:05 +0200 (CEST)
-In-Reply-To: <1465920225-11131-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B27E9265D2B
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2016 19:42:07 +0200 (CEST)
+In-Reply-To: <1464701995-23452-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Initialize module list for Broxton
+   ASoC: hdac_hdmi: Fix potential NULL dereference
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,75 @@ to this mail.
 Thanks,
 Mark
 
->From 25f3d86b1d26d5ab5a508c0162a2d192e1bd1c97 Mon Sep 17 00:00:00 2001
+>From 7edf4db15899214867fe60bd31102309f2cc5ede Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Tue, 14 Jun 2016 21:33:44 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Initialize module list for Broxton
+Date: Tue, 31 May 2016 19:09:55 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Fix potential NULL dereference
 
-The module list was not initialized for Broxton DSP code, so
-initialize it.
+Static checker warns:
+Pointer 'hlink' returned from call to function 'snd_hdac_ext_bus_get_link'
+at line may be NULL and will be dereferenced"
+
+So we should always check the return of snd_hdac_ext_bus_get_link() before
+referencing the link pointer
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/hdac_hdmi.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 965ce40ce752..8b95e09e23e8 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -291,6 +291,7 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
- 	sst_dsp_mailbox_init(sst, (BXT_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
- 			SKL_ADSP_W0_UP_SZ, BXT_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 181cd3bf0b92..2abb742fc47b 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1474,6 +1474,11 @@ static int hdmi_codec_probe(struct snd_soc_codec *codec)
+ 	 * exit, we call pm_runtime_suspend() so that will do for us
+ 	 */
+ 	hlink = snd_hdac_ext_bus_get_link(edev->ebus, dev_name(&edev->hdac.dev));
++	if (!hlink) {
++		dev_err(&edev->hdac.dev, "hdac link not found\n");
++		return -EIO;
++	}
++
+ 	snd_hdac_ext_bus_link_get(edev->ebus, hlink);
  
-+	INIT_LIST_HEAD(&sst->module_list);
- 	ret = skl_ipc_init(dev, skl);
- 	if (ret)
- 		return ret;
+ 	ret = create_fill_widget_route_map(dapm);
+@@ -1634,6 +1639,11 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
+ 
+ 	/* hold the ref while we probe */
+ 	hlink = snd_hdac_ext_bus_get_link(edev->ebus, dev_name(&edev->hdac.dev));
++	if (!hlink) {
++		dev_err(&edev->hdac.dev, "hdac link not found\n");
++		return -EIO;
++	}
++
+ 	snd_hdac_ext_bus_link_get(edev->ebus, hlink);
+ 
+ 	hdmi_priv = devm_kzalloc(&codec->dev, sizeof(*hdmi_priv), GFP_KERNEL);
+@@ -1744,6 +1754,11 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 	}
+ 
+ 	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
++	if (!hlink) {
++		dev_err(dev, "hdac link not found\n");
++		return -EIO;
++	}
++
+ 	snd_hdac_ext_bus_link_put(ebus, hlink);
+ 
+ 	return 0;
+@@ -1765,6 +1780,11 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
+ 		return 0;
+ 
+ 	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
++	if (!hlink) {
++		dev_err(dev, "hdac link not found\n");
++		return -EIO;
++	}
++
+ 	snd_hdac_ext_bus_link_get(ebus, hlink);
+ 
+ 	err = snd_hdac_display_power(bus, true);
 -- 
 2.8.1
