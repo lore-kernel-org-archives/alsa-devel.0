@@ -1,14 +1,15 @@
-From: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Subject: da7213 questions
-Date: Wed, 13 Jul 2016 15:33:10 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1607131354390.10743@pmeerw.net>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] pcm: fix missing return value of
+	snd_pcm_status()
+Date: Wed, 13 Jul 2016 23:15:12 +0900
+Message-ID: <1468419312-15413-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pmeerw.net (ns.pmeerw.net [84.19.176.92])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A2BE2666EC
- for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2016 15:33:13 +0200 (CEST)
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 6420426680C
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2016 16:15:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,34 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: alsa-devel@alsa-project.org, support.opensource@diasemi.com
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+In former commits for thread-safe PCM APIs, snd_pcm_status() lost its
+return value.
 
-I have a couple of questions/comments regarding the da7213 driver in 
-mainline:
+This commit regain it.
 
-(1) the da7213 driver enables mclk in BIAS_SUSPEND, so essentially the 
-clock is always running (since idle_bias_off is not set); at least on my 
-platform, clk_set_rate() fails when the clock is already enabled
+Fixes: 54931e5a5455('pcm: Add thread-safety to PCM API')
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ src/pcm/pcm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-(2) da7213's srm_en variable is redundant and can be removed
-
-(3) for 32 kHz PLL mode (DAI master), section 13.28 of the datasheet 
-indicates that PLL_SRM_EN should be asserted; the da7213 drivers goesn't
-
-(4) is only S16_LE actually supported?
-#define DA7213_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
-			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
-but in da7213_set_dai_fmt() we have
-	/* By default only 32 BCLK per WCLK is supported */
-	dai_clk_mode |= DA7213_DAI_BCLKS_PER_WCLK_32;
-
-thanks, regards, p.
-
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index a66e8af..6c34719 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -953,6 +953,8 @@ int snd_pcm_status(snd_pcm_t *pcm, snd_pcm_status_t *status)
+ 	snd_pcm_lock(pcm);
+ 	err = pcm->fast_ops->status(pcm->fast_op_arg, status);
+ 	snd_pcm_unlock(pcm);
++
++	return err;
+ }
+ 
+ /**
 -- 
-
-Peter Meerwald-Stadler
-+43-664-2444418 (mobile)
+2.7.4
