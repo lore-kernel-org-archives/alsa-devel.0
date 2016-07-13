@@ -1,16 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 4/5] topology: Parse vendor private data for
-	manifest
-Date: Wed, 13 Jul 2016 16:45:02 +0800
-Message-ID: <5e5337dd75d6291b6f12e678adc9c5ea0f62138f.1468397702.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 5/5] topology: Tuple type can have an extenstion
+Date: Wed, 13 Jul 2016 16:45:10 +0800
+Message-ID: <b2c2ef51db1502a6f029257da9d95aafe01b7d35.1468397702.git.mengdong.lin@linux.intel.com>
 References: <cover.1468397702.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F9802663DF
- for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2016 10:40:08 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B7C8A266569
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2016 10:40:19 +0200 (CEST)
 In-Reply-To: <cover.1468397702.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,291 +26,77 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-In text conf file, user can define a manifest section and let it refer
-to private data sections, in the same syntax as other element types.
+After the type specific string ("uuid", "string", "byte", "short" and
+"word"), users may append a string, like  "uuidxxx". The topology parser
+will check the first few characters to get the tuple type.
 
-The text conf file can have at most 1 manifest section.
+This can allow users to put multiple tuples of the same type into one
+vendor tuple section (SectionVendorTuples), e.g. parameters of multiple
+firmware modules.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
 diff --git a/include/topology.h b/include/topology.h
-index 89bed6c..644e548 100644
+index 644e548..0675b52 100644
 --- a/include/topology.h
 +++ b/include/topology.h
-@@ -586,6 +586,20 @@ extern "C" {
+@@ -302,6 +302,29 @@ extern "C" {
+  *	}
   * }
   * </pre>
-  *
-+ * <h4>Manifest Private Data</h4>
-+ * Manfiest may have private data. Users need to define a manifest section
-+ * and add the references to 1 or multiple data sections. Please refer to
-+ * section 'How to define an element with private data'. <br>
-+ * And the text conf file can have at most 1 manifest section. <br><br>
-+ *
-+ * Manifest section is defined as follows :-
-+ *
++ * To define multiple vendor tuples of same type, please append some
++ * characters after the type string ("string", "uuid", "bool", "byte", "short"
++ * or "word"), to avoid ID duplication in the SectionVendorTuples.<br>
++ * The parser will check the first few characters in ID to get the tuple type.
++ * Here is an example:
 + * <pre>
-+ * SectionManifest"name" {
++ * SectionVendorTuples."id of the vendor tuples" {
++ *    ...
++ *	tuples."word.module0" {
++ *		VENDOR_TOKEN_PARAM_ID1 "0x00112233"
++ *		VENDOR_TOKEN_PARAM_ID2 "0x44556677"
++ *		...
++ *	}
 + *
-+ *	data "name"			# optional private data
++ *	tuples."word.module2" {
++ *		VENDOR_TOKEN_PARAM_ID1 "0x11223344"
++ *		VENDOR_TOKEN_PARAM_ID2 "0x55667788"
++ *		...
++ *	}
++ *	...
 + * }
++ *
 + * </pre>
-  */
- 
- /** Maximum number of channels supported in one control */
+  *
+  * <h5>Mixer Controls</h5>
+  * A mixer control is defined as a new section that can include channel mapping,
 diff --git a/src/topology/data.c b/src/topology/data.c
-index 65054d7..f04544b 100644
+index f04544b..fb45d6a 100644
 --- a/src/topology/data.c
 +++ b/src/topology/data.c
-@@ -26,6 +26,10 @@ struct snd_soc_tplg_private *get_priv_data(struct tplg_elem *elem)
- 	struct snd_soc_tplg_private *priv = NULL;
+@@ -536,17 +536,17 @@ static int parse_tuple_set(snd_tplg_t *tplg, snd_config_t *cfg,
  
- 	switch (elem->type) {
-+	case SND_TPLG_TYPE_MANIFEST:
-+		priv = &elem->manifest->priv;
-+		break;
-+
- 	case SND_TPLG_TYPE_MIXER:
- 		priv = &elem->mixer_ctrl->priv;
- 		break;
-@@ -835,6 +839,101 @@ void tplg_free_tuples(void *obj)
- 	free(tuples->set);
- }
+ 	snd_config_get_id(cfg, &id);
  
-+/* Parse manifest's data references
-+ */
-+int tplg_parse_manifest_data(snd_tplg_t *tplg, snd_config_t *cfg,
-+	void *private ATTRIBUTE_UNUSED)
-+{
-+	struct snd_soc_tplg_manifest *manifest;
-+	struct tplg_elem *elem;
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	const char *id, *val = NULL;
-+	int err;
-+
-+	if (!list_empty(&tplg->manifest_list)) {
-+		SNDERR("error: already has manifest data\n");
-+		return -EINVAL;
-+	}
-+
-+	elem = tplg_elem_new_common(tplg, cfg, NULL, SND_TPLG_TYPE_MANIFEST);
-+	if (!elem)
-+		return -ENOMEM;
-+
-+	manifest = elem->manifest;
-+	manifest->size = elem->size;
-+
-+	tplg_dbg(" Manifest: %s\n", elem->id);
-+
-+	snd_config_for_each(i, next, cfg) {
-+		n = snd_config_iterator_entry(i);
-+		if (snd_config_get_id(n, &id) < 0)
-+			continue;
-+
-+		/* skip comments */
-+		if (strcmp(id, "comment") == 0)
-+			continue;
-+		if (id[0] == '#')
-+			continue;
-+
-+
-+		if (strcmp(id, "data") == 0) {
-+			err = tplg_parse_data_refs(tplg, n, elem);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+	}
-+}
-+
-+/* merge private data of manifest */
-+int tplg_build_manifest_data(snd_tplg_t *tplg)
-+{
-+	struct list_head *base, *pos;
-+	struct tplg_elem *elem = NULL;
-+	struct tplg_ref *ref;
-+	struct snd_soc_tplg_manifest *manifest;
-+	int err = 0;
-+
-+	base = &tplg->manifest_list;
-+	list_for_each(pos, base) {
-+
-+		elem = list_entry(pos, struct tplg_elem, list);
-+		break;
-+	}
-+
-+	if (!elem) /* no manifest data */
-+		return 0;
-+
-+	base = &elem->ref_list;
-+
-+	/* for each ref in this manifest elem */
-+	list_for_each(pos, base) {
-+
-+		ref = list_entry(pos, struct tplg_ref, list);
-+		if (ref->id == NULL || ref->elem)
-+			continue;
-+
-+		if (ref->type == SND_TPLG_TYPE_DATA) {
-+			err = tplg_copy_data(tplg, elem, ref);
-+			if (err < 0)
-+				return err;
-+		}
-+	}
-+
-+	manifest = elem->manifest;
-+	if (!manifest->priv.size) /* no manifest data */
-+		return 0;
-+
-+	tplg->manifest_pdata = malloc(manifest->priv.size);
-+	if (!tplg->manifest_pdata)
-+		return -ENOMEM;
-+
-+	tplg->manifest.priv.size = manifest->priv.size;
-+	memcpy(tplg->manifest_pdata, manifest->priv.data, manifest->priv.size);
-+	return 0;
-+}
-+
- /* Parse Private data.
-  *
-  * Object private data can either be from file or defined as bytes, shorts,
-diff --git a/src/topology/elem.c b/src/topology/elem.c
-index 50414f0..029c9ab 100644
---- a/src/topology/elem.c
-+++ b/src/topology/elem.c
-@@ -150,6 +150,10 @@ struct tplg_elem* tplg_elem_new_common(snd_tplg_t *tplg,
- 	case SND_TPLG_TYPE_DATA:
- 		list_add_tail(&elem->list, &tplg->pdata_list);
- 		break;
-+	case SND_TPLG_TYPE_MANIFEST:
-+		list_add_tail(&elem->list, &tplg->manifest_list);
-+		obj_size = sizeof(struct snd_soc_tplg_manifest);
-+		break;
- 	case SND_TPLG_TYPE_TEXT:
- 		list_add_tail(&elem->list, &tplg->text_list);
- 		break;
-diff --git a/src/topology/parser.c b/src/topology/parser.c
-index f6fc944..3ab64f4 100644
---- a/src/topology/parser.c
-+++ b/src/topology/parser.c
-@@ -189,6 +189,15 @@ static int tplg_parse_config(snd_tplg_t *tplg, snd_config_t *cfg)
- 			continue;
- 		}
- 
-+		if (strcmp(id, "SectionManifest") == 0) {
-+			err = tplg_parse_compound(tplg, n,
-+						  tplg_parse_manifest_data,
-+				NULL);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
- 		SNDERR("error: unknown section %s\n", id);
- 	}
- 	return 0;
-@@ -246,6 +255,10 @@ static int tplg_build_integ(snd_tplg_t *tplg)
- 	if (err <  0)
- 		return err;
- 
-+	err = tplg_build_manifest_data(tplg);
-+	if (err <  0)
-+		return err;
-+
- 	err = tplg_build_controls(tplg);
- 	if (err <  0)
- 		return err;
-@@ -374,8 +387,16 @@ out:
- 
- int snd_tplg_set_manifest_data(snd_tplg_t *tplg, const void *data, int len)
- {
-+	if (len <= 0)
-+		return 0;
-+
- 	tplg->manifest.priv.size = len;
--	tplg->manifest_pdata = data;
-+
-+	tplg->manifest_pdata = malloc(len);
-+	if (!tplg->manifest_pdata)
-+		return -ENOMEM;
-+
-+	memcpy(tplg->manifest_pdata, data, len);
- 	return 0;
- }
- 
-@@ -423,6 +444,7 @@ snd_tplg_t *snd_tplg_new(void)
- 	INIT_LIST_HEAD(&tplg->cc_list);
- 	INIT_LIST_HEAD(&tplg->route_list);
- 	INIT_LIST_HEAD(&tplg->pdata_list);
-+	INIT_LIST_HEAD(&tplg->manifest_list);
- 	INIT_LIST_HEAD(&tplg->text_list);
- 	INIT_LIST_HEAD(&tplg->pcm_config_list);
- 	INIT_LIST_HEAD(&tplg->pcm_caps_list);
-@@ -437,6 +459,9 @@ snd_tplg_t *snd_tplg_new(void)
- 
- void snd_tplg_free(snd_tplg_t *tplg)
- {
-+	if (tplg->manifest_pdata)
-+		free(tplg->manifest_pdata);
-+
- 	tplg_elem_free_list(&tplg->tlv_list);
- 	tplg_elem_free_list(&tplg->widget_list);
- 	tplg_elem_free_list(&tplg->pcm_list);
-@@ -444,6 +469,7 @@ void snd_tplg_free(snd_tplg_t *tplg)
- 	tplg_elem_free_list(&tplg->cc_list);
- 	tplg_elem_free_list(&tplg->route_list);
- 	tplg_elem_free_list(&tplg->pdata_list);
-+	tplg_elem_free_list(&tplg->manifest_list);
- 	tplg_elem_free_list(&tplg->text_list);
- 	tplg_elem_free_list(&tplg->pcm_config_list);
- 	tplg_elem_free_list(&tplg->pcm_caps_list);
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index c93429a..5e3235b 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -58,7 +58,7 @@ struct snd_tplg {
- 
- 	/* manifest */
- 	struct snd_soc_tplg_manifest manifest;
--	const void *manifest_pdata;	/* copied by builder at file write */
-+	void *manifest_pdata;	/* copied by builder at file write */
- 
- 	/* list of each element type */
- 	struct list_head tlv_list;
-@@ -71,6 +71,7 @@ struct snd_tplg {
- 	struct list_head pdata_list;
- 	struct list_head token_list;
- 	struct list_head tuple_list;
-+	struct list_head manifest_list;
- 	struct list_head pcm_config_list;
- 	struct list_head pcm_caps_list;
- 
-@@ -154,6 +155,7 @@ struct tplg_elem {
- 		struct snd_soc_tplg_private *data;
- 		struct tplg_vendor_tokens *tokens;
- 		struct tplg_vendor_tuples *tuples;
-+		struct snd_soc_tplg_manifest *manifest;
- 	};
- 
- 	/* an element may refer to other elements:
-@@ -195,6 +197,9 @@ int tplg_parse_tuples(snd_tplg_t *tplg, snd_config_t *cfg,
- 
- void tplg_free_tuples(void *obj);
- 
-+int tplg_parse_manifest_data(snd_tplg_t *tplg, snd_config_t *cfg,
-+	void *private ATTRIBUTE_UNUSED);
-+
- int tplg_parse_control_bytes(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
- 
-@@ -223,6 +228,7 @@ int tplg_parse_cc(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
- 
- int tplg_build_data(snd_tplg_t *tplg);
-+int tplg_build_manifest_data(snd_tplg_t *tplg);
- int tplg_build_controls(snd_tplg_t *tplg);
- int tplg_build_widgets(snd_tplg_t *tplg);
- int tplg_build_routes(snd_tplg_t *tplg);
+-	if (strcmp(id, "uuid") == 0)
++	if (strncmp(id, "uuid", 4) == 0)
+ 		type = SND_SOC_TPLG_TUPLE_TYPE_UUID;
+-	else if (strcmp(id, "string") == 0)
++	else if (strncmp(id, "string", 5) == 0)
+ 		type = SND_SOC_TPLG_TUPLE_TYPE_STRING;
+-	else if (strcmp(id, "bool") == 0)
++	else if (strncmp(id, "bool", 4) == 0)
+ 		type = SND_SOC_TPLG_TUPLE_TYPE_BOOL;
+-	else if (strcmp(id, "byte") == 0)
++	else if (strncmp(id, "byte", 4) == 0)
+ 		type = SND_SOC_TPLG_TUPLE_TYPE_BYTE;
+-	else if (strcmp(id, "short") == 0)
++	else if (strncmp(id, "short", 5) == 0)
+ 		type = SND_SOC_TPLG_TUPLE_TYPE_SHORT;
+-	else if (strcmp(id, "word") == 0)
++	else if (strncmp(id, "word", 4) == 0)
+ 		type = SND_SOC_TPLG_TUPLE_TYPE_WORD;
+ 	else {
+ 		SNDERR("error: invalid tuple type '%s'\n", id);
 -- 
 2.5.0
