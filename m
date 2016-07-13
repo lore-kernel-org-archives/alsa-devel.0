@@ -1,14 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 5/5] topology: Tuple type can have an extenstion
-Date: Wed, 13 Jul 2016 16:45:10 +0800
-Message-ID: <b2c2ef51db1502a6f029257da9d95aafe01b7d35.1468397702.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 3/5] topology: Change uuid value to 16 separate
+	characters in text conf file
+Date: Wed, 13 Jul 2016 16:44:54 +0800
+Message-ID: <d3cf452fd17a9ae3b2346ad3a75c8f07e28124c4.1468397702.git.mengdong.lin@linux.intel.com>
 References: <cover.1468397702.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id B7C8A266569
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id F18EF26656A
  for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2016 10:40:19 +0200 (CEST)
 In-Reply-To: <cover.1468397702.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,77 +27,96 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-After the type specific string ("uuid", "string", "byte", "short" and
-"word"), users may append a string, like  "uuidxxx". The topology parser
-will check the first few characters to get the tuple type.
-
-This can allow users to put multiple tuples of the same type into one
-vendor tuple section (SectionVendorTuples), e.g. parameters of multiple
-firmware modules.
+Previously in text conf file, the uuid value of vendor tuples is a
+16-characer string. Now change it to 16 characters separated by commas,
+easier for users to edit it manually.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
 diff --git a/include/topology.h b/include/topology.h
-index 644e548..0675b52 100644
+index d666505..89bed6c 100644
 --- a/include/topology.h
 +++ b/include/topology.h
-@@ -302,6 +302,29 @@ extern "C" {
+@@ -273,8 +273,8 @@ extern "C" {
+  *		...
   *	}
-  * }
-  * </pre>
-+ * To define multiple vendor tuples of same type, please append some
-+ * characters after the type string ("string", "uuid", "bool", "byte", "short"
-+ * or "word"), to avoid ID duplication in the SectionVendorTuples.<br>
-+ * The parser will check the first few characters in ID to get the tuple type.
-+ * Here is an example:
-+ * <pre>
-+ * SectionVendorTuples."id of the vendor tuples" {
-+ *    ...
-+ *	tuples."word.module0" {
-+ *		VENDOR_TOKEN_PARAM_ID1 "0x00112233"
-+ *		VENDOR_TOKEN_PARAM_ID2 "0x44556677"
-+ *		...
-+ *	}
-+ *
-+ *	tuples."word.module2" {
-+ *		VENDOR_TOKEN_PARAM_ID1 "0x11223344"
-+ *		VENDOR_TOKEN_PARAM_ID2 "0x55667788"
-+ *		...
-+ *	}
-+ *	...
-+ * }
-+ *
-+ * </pre>
   *
-  * <h5>Mixer Controls</h5>
-  * A mixer control is defined as a new section that can include channel mapping,
+- *	tuples."uuid" {
+- *		VENDOR_TOKEN_ID2 "16 character uuid"
++ *	tuples."uuid" {			# 16 characters separated by commas
++ *		VENDOR_TOKEN_ID2 "0x01,0x02,...,0x0f"
+  *		...
+  *	}
+  *
 diff --git a/src/topology/data.c b/src/topology/data.c
-index f04544b..fb45d6a 100644
+index 7ff178f..65054d7 100644
 --- a/src/topology/data.c
 +++ b/src/topology/data.c
-@@ -536,17 +536,17 @@ static int parse_tuple_set(snd_tplg_t *tplg, snd_config_t *cfg,
+@@ -176,6 +176,49 @@ static int get_hex_num(const char *str)
+ 	return values;
+ }
  
- 	snd_config_get_id(cfg, &id);
++/* get uuid from a string made by 16 characters separated by commas */
++static int get_uuid(const char *str, unsigned char *uuid_le)
++{
++	unsigned long int  val;
++	char *tmp, *s = NULL;
++	int values = 0, ret = 0;
++
++	tmp = strdup(str);
++	if (tmp == NULL)
++		return -ENOMEM;
++
++	s = strtok(tmp, ",");
++
++	while (s != NULL) {
++		errno = 0;
++		val = strtoul(s, NULL, 0);
++		if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
++			|| (errno != 0 && val == 0)
++			|| (val > UCHAR_MAX)) {
++			SNDERR("error: invalid value for uuid\n");
++			ret = -EINVAL;
++			goto out;
++		}
++
++		 *(uuid_le + values) = (unsigned char)val;
++
++		values++;
++		if (values >= 16)
++			break;
++
++		s = strtok(NULL, ",");
++	}
++
++	if (values < 16) {
++		SNDERR("error: less than 16 integers for uuid\n");
++		ret = -EINVAL;
++	}
++
++out:
++	free(tmp);
++	return ret;
++}
++
+ static int write_hex(char *buf, char *str, int width)
+ {
+ 	long val;
+@@ -536,14 +579,8 @@ static int parse_tuple_set(snd_tplg_t *tplg, snd_config_t *cfg,
  
--	if (strcmp(id, "uuid") == 0)
-+	if (strncmp(id, "uuid", 4) == 0)
- 		type = SND_SOC_TPLG_TUPLE_TYPE_UUID;
--	else if (strcmp(id, "string") == 0)
-+	else if (strncmp(id, "string", 5) == 0)
- 		type = SND_SOC_TPLG_TUPLE_TYPE_STRING;
--	else if (strcmp(id, "bool") == 0)
-+	else if (strncmp(id, "bool", 4) == 0)
- 		type = SND_SOC_TPLG_TUPLE_TYPE_BOOL;
--	else if (strcmp(id, "byte") == 0)
-+	else if (strncmp(id, "byte", 4) == 0)
- 		type = SND_SOC_TPLG_TUPLE_TYPE_BYTE;
--	else if (strcmp(id, "short") == 0)
-+	else if (strncmp(id, "short", 5) == 0)
- 		type = SND_SOC_TPLG_TUPLE_TYPE_SHORT;
--	else if (strcmp(id, "word") == 0)
-+	else if (strncmp(id, "word", 4) == 0)
- 		type = SND_SOC_TPLG_TUPLE_TYPE_WORD;
- 	else {
- 		SNDERR("error: invalid tuple type '%s'\n", id);
+ 		switch (type) {
+ 		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
+-			len = strlen(value);
+-			if (len > 16 || len == 0) {
+-				SNDERR("error: tuple %s: invalid uuid\n", id);
++			if (get_uuid(value, tuple->uuid) < 0)
+ 				goto err;
+-			}
+-
+-			memcpy(tuple->uuid, value, len);
+-			tplg_dbg("\t\t%s = %s\n", tuple->token, tuple->uuid);
+ 			break;
+ 
+ 		case SND_SOC_TPLG_TUPLE_TYPE_STRING:
 -- 
 2.5.0
