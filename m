@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 15/34] pcm: remove alloca() from
-	snd_pcm_hw_get_chmap()
-Date: Thu, 14 Jul 2016 23:07:32 +0900
-Message-ID: <1468505271-5769-16-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 24/34] conf: remove alloca() from
+	snd_func_card_id()
+Date: Thu, 14 Jul 2016 23:07:41 +0900
+Message-ID: <1468505271-5769-25-git-send-email-o-takashi@sakamocchi.jp>
 References: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id AB0C8265A73
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id C29B7265D3C
  for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 16:08:09 +0200 (CEST)
 In-Reply-To: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -34,47 +34,40 @@ This commit obsolete usages of alloca() with automatic variables.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/pcm/pcm_hw.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ src/confmisc.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index e7a2393..20c233b 100644
---- a/src/pcm/pcm_hw.c
-+++ b/src/pcm/pcm_hw.c
-@@ -1206,8 +1206,8 @@ static snd_pcm_chmap_t *snd_pcm_hw_get_chmap(snd_pcm_t *pcm)
- 	snd_pcm_hw_t *hw = pcm->private_data;
- 	snd_pcm_chmap_t *map;
- 	snd_ctl_t *ctl;
--	snd_ctl_elem_id_t *id;
--	snd_ctl_elem_value_t *val;
-+	snd_ctl_elem_id_t id = {0};
-+	snd_ctl_elem_value_t val = {0};
- 	unsigned int i;
- 	int ret;
- 
-@@ -1241,11 +1241,9 @@ static snd_pcm_chmap_t *snd_pcm_hw_get_chmap(snd_pcm_t *pcm)
- 		chmap_caps_set_error(hw, CHMAP_CTL_GET);
- 		return NULL;
+diff --git a/src/confmisc.c b/src/confmisc.c
+index 3f12e34..7763511 100644
+--- a/src/confmisc.c
++++ b/src/confmisc.c
+@@ -862,7 +862,7 @@ int snd_func_card_id(snd_config_t **dst, snd_config_t *root, snd_config_t *src,
+ 		     snd_config_t *private_data)
+ {
+ 	snd_ctl_t *ctl = NULL;
+-	snd_ctl_card_info_t *info;
++	snd_ctl_card_info_t info = {0};
+ 	const char *id;
+ 	int card, err;
+ 	
+@@ -874,8 +874,7 @@ int snd_func_card_id(snd_config_t **dst, snd_config_t *root, snd_config_t *src,
+ 		SNDERR("could not open control for card %i", card);
+ 		goto __error;
  	}
--	snd_ctl_elem_value_alloca(&val);
--	snd_ctl_elem_id_alloca(&id);
--	fill_chmap_ctl_id(pcm, id);
--	snd_ctl_elem_value_set_id(val, id);
--	ret = snd_ctl_elem_read(ctl, val);
-+	fill_chmap_ctl_id(pcm, &id);
-+	snd_ctl_elem_value_set_id(&val, &id);
-+	ret = snd_ctl_elem_read(ctl, &val);
- 	snd_ctl_close(ctl);
- 	if (ret < 0) {
- 		free(map);
-@@ -1254,7 +1252,7 @@ static snd_pcm_chmap_t *snd_pcm_hw_get_chmap(snd_pcm_t *pcm)
- 		return NULL;
- 	}
- 	for (i = 0; i < pcm->channels; i++)
--		map->pos[i] = snd_ctl_elem_value_get_integer(val, i);
-+		map->pos[i] = snd_ctl_elem_value_get_integer(&val, i);
- 	chmap_caps_set_ok(hw, CHMAP_CTL_GET);
- 	return map;
- }
+-	snd_ctl_card_info_alloca(&info);
+-	err = snd_ctl_card_info(ctl, info);
++	err = snd_ctl_card_info(ctl, &info);
+ 	if (err < 0) {
+ 		SNDERR("snd_ctl_card_info error: %s", snd_strerror(err));
+ 		goto __error;
+@@ -883,7 +882,7 @@ int snd_func_card_id(snd_config_t **dst, snd_config_t *root, snd_config_t *src,
+ 	err = snd_config_get_id(src, &id);
+ 	if (err >= 0)
+ 		err = snd_config_imake_string(dst, id,
+-					      snd_ctl_card_info_get_id(info));
++					      snd_ctl_card_info_get_id(&info));
+       __error:
+       	if (ctl)
+       		snd_ctl_close(ctl);
 -- 
 2.7.4
