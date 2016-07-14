@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 22/34] pcm: remove alloca() from
-	_snd_pcm_softvol_open()
-Date: Thu, 14 Jul 2016 23:07:39 +0900
-Message-ID: <1468505271-5769-23-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 26/34] conf: remove alloca() from
+	snd_func_pcm_id()
+Date: Thu, 14 Jul 2016 23:07:43 +0900
+Message-ID: <1468505271-5769-27-git-send-email-o-takashi@sakamocchi.jp>
 References: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id DA1AB26659F
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id D477B2664FB
  for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 16:08:09 +0200 (CEST)
 In-Reply-To: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -34,45 +34,44 @@ This commit obsolete usages of alloca() with automatic variables.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/pcm/pcm_softvol.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ src/confmisc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/src/pcm/pcm_softvol.c b/src/pcm/pcm_softvol.c
-index e2345b3..6135778 100644
---- a/src/pcm/pcm_softvol.c
-+++ b/src/pcm/pcm_softvol.c
-@@ -995,7 +995,7 @@ int _snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
- 	snd_config_t *slave = NULL, *sconf;
- 	snd_config_t *control = NULL;
- 	snd_pcm_format_t sformat = SND_PCM_FORMAT_UNKNOWN;
--	snd_ctl_elem_id_t *ctl_id;
-+	snd_ctl_elem_id_t ctl_id = {0};
- 	int resolution = PRESET_RESOLUTION;
- 	double min_dB = PRESET_MIN_DB;
- 	double max_dB = ZERO_DB;
-@@ -1074,7 +1074,6 @@ int _snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
- 					       mode, conf);
- 		snd_config_delete(sconf);
- 	} else {
--		snd_ctl_elem_id_alloca(&ctl_id);
- 		err = snd_pcm_slave_conf(root, slave, &sconf, 1,
- 					 SND_PCM_HW_PARAM_FORMAT, 0, &sformat);
- 		if (err < 0)
-@@ -1093,13 +1092,13 @@ int _snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
- 		snd_config_delete(sconf);
- 		if (err < 0)
- 			return err;
--		err = snd_pcm_parse_control_id(control, ctl_id, &card,
-+		err = snd_pcm_parse_control_id(control, &ctl_id, &card,
- 					       &cchannels, NULL);
- 		if (err < 0) {
- 			snd_pcm_close(spcm);
- 			return err;
- 		}
--		err = snd_pcm_softvol_open(pcmp, name, sformat, card, ctl_id,
-+		err = snd_pcm_softvol_open(pcmp, name, sformat, card, &ctl_id,
- 					   cchannels, min_dB, max_dB,
- 					   resolution, spcm, 1);
- 		if (err < 0)
+diff --git a/src/confmisc.c b/src/confmisc.c
+index fd10b34..2275ccd 100644
+--- a/src/confmisc.c
++++ b/src/confmisc.c
+@@ -969,7 +969,7 @@ int snd_func_pcm_id(snd_config_t **dst, snd_config_t *root, snd_config_t *src, v
+ {
+ 	snd_config_t *n;
+ 	snd_ctl_t *ctl = NULL;
+-	snd_pcm_info_t *info;
++	snd_pcm_info_t info = {0};
+ 	const char *id;
+ 	long card, device, subdevice = 0;
+ 	int err;
+@@ -1009,17 +1009,17 @@ int snd_func_pcm_id(snd_config_t **dst, snd_config_t *root, snd_config_t *src, v
+ 		SNDERR("could not open control for card %li", card);
+ 		goto __error;
+ 	}
+-	snd_pcm_info_alloca(&info);
+-	snd_pcm_info_set_device(info, device);
+-	snd_pcm_info_set_subdevice(info, subdevice);
+-	err = snd_ctl_pcm_info(ctl, info);
++	snd_pcm_info_set_device(&info, device);
++	snd_pcm_info_set_subdevice(&info, subdevice);
++	err = snd_ctl_pcm_info(ctl, &info);
+ 	if (err < 0) {
+ 		SNDERR("snd_ctl_pcm_info error: %s", snd_strerror(err));
+ 		goto __error;
+ 	}
+ 	err = snd_config_get_id(src, &id);
+ 	if (err >= 0)
+-		err = snd_config_imake_string(dst, id, snd_pcm_info_get_id(info));
++		err = snd_config_imake_string(dst, id,
++						snd_pcm_info_get_id(&info));
+       __error:
+       	if (ctl)
+       		snd_ctl_close(ctl);
 -- 
 2.7.4
