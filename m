@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: reduce machine name for
-	skl_nau88l25_ssm4567" to the asoc tree
-Date: Thu, 14 Jul 2016 17:32:24 +0100
-Message-ID: <E1bNjYm-0001Yh-Nu@debutante>
-References: <1468428227-8239-2-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: rt5514-spi: Convert to use devm_* API"
+	to the asoc tree
+Date: Thu, 14 Jul 2016 17:32:30 +0100
+Message-ID: <E1bNjYs-0001ac-IG@debutante>
+References: <1466038700.8790.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 49D5E2666FE
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 18:32:29 +0200 (CEST)
-In-Reply-To: <1468428227-8239-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C7B38266738
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 18:32:42 +0200 (CEST)
+In-Reply-To: <1466038700.8790.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: reduce machine name for skl_nau88l25_ssm4567
+   ASoC: rt5514-spi: Convert to use devm_* API
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,71 @@ to this mail.
 Thanks,
 Mark
 
->From 400ada0c766b86b60313a68a3ad419558f1cbc5b Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Wed, 13 Jul 2016 22:13:43 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: reduce machine name for
- skl_nau88l25_ssm4567
+>From e9802c579399904bfef828e1a77b777b96ea33db Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Thu, 14 Jul 2016 16:57:05 +0800
+Subject: [PATCH] ASoC: rt5514-spi: Convert to use devm_* API
 
-The platform device id table expects names to be less that
-20chars, so truncate the name in skl id table and
-skl_nau88l25_ssm4567 machine.
+Use devm_* API to simplify the code.
+This patch also fixes the return value in probe error paths.
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 4 ++--
- sound/soc/intel/skylake/skl.c                 | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rt5514-spi.c | 25 ++++++-------------------
+ 1 file changed, 6 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 22f2e9d84e72..3e67d7b31e28 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -711,7 +711,7 @@ static int skylake_audio_probe(struct platform_device *pdev)
- static struct platform_driver skylake_audio = {
- 	.probe = skylake_audio_probe,
- 	.driver = {
--		.name = "skl_nau88l25_ssm4567_i2s",
-+		.name = "skl_n88l25_s4567",
- 		.pm = &snd_soc_pm_ops,
- 	},
- };
-@@ -726,4 +726,4 @@ MODULE_AUTHOR("Sathya Prakash M R <sathya.prakash.m.r@intel.com>");
- MODULE_AUTHOR("Yong Zhi <yong.zhi@intel.com>");
- MODULE_DESCRIPTION("Intel Audio Machine driver for SKL with NAU88L25 and SSM4567 in I2S Mode");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:skl_nau88l25_ssm4567_i2s");
-+MODULE_ALIAS("platform:skl_n88l25_s4567");
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 4e30effc5469..0c46ee5f31db 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -801,7 +801,7 @@ static void skl_remove(struct pci_dev *pci)
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 743f509d48b7..77ff8ebe6dfb 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -410,33 +410,21 @@ static int rt5514_spi_probe(struct spi_device *spi)
  
- static struct sst_acpi_mach sst_skl_devdata[] = {
- 	{ "INT343A", "skl_alc286s_i2s", "intel/dsp_fw_release.bin", NULL, NULL, NULL },
--	{ "INT343B", "skl_nau88l25_ssm4567_i2s", "intel/dsp_fw_release.bin",
-+	{ "INT343B", "skl_n88l25_s4567", "intel/dsp_fw_release.bin",
- 				NULL, NULL, &skl_dmic_data },
- 	{ "MX98357A", "skl_nau88l25_max98357a_i2s", "intel/dsp_fw_release.bin",
- 				NULL, NULL, &skl_dmic_data },
+ 	rt5514_spi = spi;
+ 
+-	ret = snd_soc_register_platform(&spi->dev, &rt5514_spi_platform);
++	ret = devm_snd_soc_register_platform(&spi->dev, &rt5514_spi_platform);
+ 	if (ret < 0) {
+ 		dev_err(&spi->dev, "Failed to register platform.\n");
+-		goto err_plat;
++		return ret;
+ 	}
+ 
+-	ret = snd_soc_register_component(&spi->dev, &rt5514_spi_dai_component,
+-					 &rt5514_spi_dai, 1);
++	ret = devm_snd_soc_register_component(&spi->dev,
++					      &rt5514_spi_dai_component,
++					      &rt5514_spi_dai, 1);
+ 	if (ret < 0) {
+ 		dev_err(&spi->dev, "Failed to register component.\n");
+-		goto err_comp;
++		return ret;
+ 	}
+ 
+ 	return 0;
+-err_comp:
+-	snd_soc_unregister_platform(&spi->dev);
+-err_plat:
+-
+-	return 0;
+-}
+-
+-static int rt5514_spi_remove(struct spi_device *spi)
+-{
+-	snd_soc_unregister_component(&spi->dev);
+-	snd_soc_unregister_platform(&spi->dev);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id rt5514_of_match[] = {
+@@ -451,7 +439,6 @@ static struct spi_driver rt5514_spi_driver = {
+ 		.of_match_table = of_match_ptr(rt5514_of_match),
+ 	},
+ 	.probe = rt5514_spi_probe,
+-	.remove = rt5514_spi_remove,
+ };
+ module_spi_driver(rt5514_spi_driver);
+ 
 -- 
 2.8.1
