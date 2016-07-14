@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 30/34] alisp: remove alloca() from
-	FA_hctl_find_elem()
-Date: Thu, 14 Jul 2016 23:07:47 +0900
-Message-ID: <1468505271-5769-31-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 22/34] pcm: remove alloca() from
+	_snd_pcm_softvol_open()
+Date: Thu, 14 Jul 2016 23:07:39 +0900
+Message-ID: <1468505271-5769-23-git-send-email-o-takashi@sakamocchi.jp>
 References: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E9D02266687
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id DA1AB26659F
  for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 16:08:09 +0200 (CEST)
 In-Reply-To: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -34,38 +34,45 @@ This commit obsolete usages of alloca() with automatic variables.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/alisp/alisp_snd.c | 7 +++----
+ src/pcm/pcm_softvol.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/src/alisp/alisp_snd.c b/src/alisp/alisp_snd.c
-index e622035..e9c3573 100644
---- a/src/alisp/alisp_snd.c
-+++ b/src/alisp/alisp_snd.c
-@@ -522,7 +522,7 @@ static int parse_ctl_elem_id(struct alisp_instance * instance,
- static struct alisp_object * FA_hctl_find_elem(struct alisp_instance * instance, struct acall_table * item, struct alisp_object * args)
- {
- 	snd_hctl_t *handle;
--	snd_ctl_elem_id_t *id;
-+	snd_ctl_elem_id_t id = {0};
- 	struct alisp_object *p1;
- 
- 	handle = (snd_hctl_t *)get_ptr(instance, car(args), item->prefix);
-@@ -531,14 +531,13 @@ static struct alisp_object * FA_hctl_find_elem(struct alisp_instance * instance,
- 		delete_object(instance, args);
- 		return &alsa_lisp_nil;
- 	}
--	snd_ctl_elem_id_alloca(&id);
- 	p1 = car(cdr(args));
- 	delete_tree(instance, cdr(cdr(args)));
- 	delete_object(instance, cdr(args));
- 	delete_object(instance, args);
--	if (parse_ctl_elem_id(instance, eval(instance, p1), id) < 0)
-+	if (parse_ctl_elem_id(instance, eval(instance, p1), &id) < 0)
- 		return &alsa_lisp_nil;
--	return new_cons_pointer(instance, "hctl_elem", snd_hctl_find_elem(handle, id));
-+	return new_cons_pointer(instance, "hctl_elem", snd_hctl_find_elem(handle, &id));
- }
- 
- static struct alisp_object * FA_hctl_elem_info(struct alisp_instance * instance, struct acall_table * item, struct alisp_object * args)
+diff --git a/src/pcm/pcm_softvol.c b/src/pcm/pcm_softvol.c
+index e2345b3..6135778 100644
+--- a/src/pcm/pcm_softvol.c
++++ b/src/pcm/pcm_softvol.c
+@@ -995,7 +995,7 @@ int _snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
+ 	snd_config_t *slave = NULL, *sconf;
+ 	snd_config_t *control = NULL;
+ 	snd_pcm_format_t sformat = SND_PCM_FORMAT_UNKNOWN;
+-	snd_ctl_elem_id_t *ctl_id;
++	snd_ctl_elem_id_t ctl_id = {0};
+ 	int resolution = PRESET_RESOLUTION;
+ 	double min_dB = PRESET_MIN_DB;
+ 	double max_dB = ZERO_DB;
+@@ -1074,7 +1074,6 @@ int _snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
+ 					       mode, conf);
+ 		snd_config_delete(sconf);
+ 	} else {
+-		snd_ctl_elem_id_alloca(&ctl_id);
+ 		err = snd_pcm_slave_conf(root, slave, &sconf, 1,
+ 					 SND_PCM_HW_PARAM_FORMAT, 0, &sformat);
+ 		if (err < 0)
+@@ -1093,13 +1092,13 @@ int _snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
+ 		snd_config_delete(sconf);
+ 		if (err < 0)
+ 			return err;
+-		err = snd_pcm_parse_control_id(control, ctl_id, &card,
++		err = snd_pcm_parse_control_id(control, &ctl_id, &card,
+ 					       &cchannels, NULL);
+ 		if (err < 0) {
+ 			snd_pcm_close(spcm);
+ 			return err;
+ 		}
+-		err = snd_pcm_softvol_open(pcmp, name, sformat, card, ctl_id,
++		err = snd_pcm_softvol_open(pcmp, name, sformat, card, &ctl_id,
+ 					   cchannels, min_dB, max_dB,
+ 					   resolution, spcm, 1);
+ 		if (err < 0)
 -- 
 2.7.4
