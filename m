@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514-spi: Convert to use devm_* API"
-	to the asoc tree
-Date: Thu, 14 Jul 2016 17:32:30 +0100
-Message-ID: <E1bNjYs-0001ac-IG@debutante>
-References: <1466038700.8790.1.camel@ingics.com>
+Subject: Applied "ASoC: nau8825: jack connection decision with
+	different insertion logic" to the asoc tree
+Date: Thu, 14 Jul 2016 17:33:33 +0100
+Message-ID: <E1bNjZt-00021I-KX@debutante>
+References: <1467770975-11351-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C7B38266738
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 18:32:42 +0200 (CEST)
-In-Reply-To: <1466038700.8790.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1212B266849
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 18:33:38 +0200 (CEST)
+In-Reply-To: <1467770975-11351-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com, yong.zhi@intel.com, mhkuo@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514-spi: Convert to use devm_* API
+   ASoC: nau8825: jack connection decision with different insertion logic
 
 has been applied to the asoc tree at
 
@@ -53,71 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From e9802c579399904bfef828e1a77b777b96ea33db Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Thu, 14 Jul 2016 16:57:05 +0800
-Subject: [PATCH] ASoC: rt5514-spi: Convert to use devm_* API
+>From bff03e81502cb9ac99daeeb47b4d0e779cc48fde Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Wed, 6 Jul 2016 10:09:35 +0800
+Subject: [PATCH] ASoC: nau8825: jack connection decision with different
+ insertion logic
 
-Use devm_* API to simplify the code.
-This patch also fixes the return value in probe error paths.
+The original design only covers the jack insertion logic is active low.
+Add more condition to cover no matter the logic is active low and high.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514-spi.c | 25 ++++++-------------------
- 1 file changed, 6 insertions(+), 19 deletions(-)
+ sound/soc/codecs/nau8825.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 743f509d48b7..77ff8ebe6dfb 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -410,33 +410,21 @@ static int rt5514_spi_probe(struct spi_device *spi)
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 3f30e6ed210c..a97418deb034 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -1345,10 +1345,17 @@ EXPORT_SYMBOL_GPL(nau8825_enable_jack_detect);
  
- 	rt5514_spi = spi;
+ static bool nau8825_is_jack_inserted(struct regmap *regmap)
+ {
+-	int status;
++	bool active_high, is_high;
++	int status, jkdet;
  
--	ret = snd_soc_register_platform(&spi->dev, &rt5514_spi_platform);
-+	ret = devm_snd_soc_register_platform(&spi->dev, &rt5514_spi_platform);
- 	if (ret < 0) {
- 		dev_err(&spi->dev, "Failed to register platform.\n");
--		goto err_plat;
-+		return ret;
- 	}
- 
--	ret = snd_soc_register_component(&spi->dev, &rt5514_spi_dai_component,
--					 &rt5514_spi_dai, 1);
-+	ret = devm_snd_soc_register_component(&spi->dev,
-+					      &rt5514_spi_dai_component,
-+					      &rt5514_spi_dai, 1);
- 	if (ret < 0) {
- 		dev_err(&spi->dev, "Failed to register component.\n");
--		goto err_comp;
-+		return ret;
- 	}
- 
- 	return 0;
--err_comp:
--	snd_soc_unregister_platform(&spi->dev);
--err_plat:
--
--	return 0;
--}
--
--static int rt5514_spi_remove(struct spi_device *spi)
--{
--	snd_soc_unregister_component(&spi->dev);
--	snd_soc_unregister_platform(&spi->dev);
--
--	return 0;
++	regmap_read(regmap, NAU8825_REG_JACK_DET_CTRL, &jkdet);
++	active_high = !!(jkdet & NAU8825_JACK_POLARITY);
+ 	regmap_read(regmap, NAU8825_REG_I2C_DEVICE_ID, &status);
+-	return !(status & NAU8825_GPIO2JD1);
++	is_high = !!(status & NAU8825_GPIO2JD1);
++	/* return jack connection status according to jack insertion logic
++	 * active high or active low.
++	 */
++	return active_high == is_high;
  }
  
- static const struct of_device_id rt5514_of_match[] = {
-@@ -451,7 +439,6 @@ static struct spi_driver rt5514_spi_driver = {
- 		.of_match_table = of_match_ptr(rt5514_of_match),
- 	},
- 	.probe = rt5514_spi_probe,
--	.remove = rt5514_spi_remove,
- };
- module_spi_driver(rt5514_spi_driver);
- 
+ static void nau8825_restart_jack_detection(struct regmap *regmap)
 -- 
 2.8.1
