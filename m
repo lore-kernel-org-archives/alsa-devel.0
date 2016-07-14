@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: board: add kabylake
-	nau88l25_max98357a machine id" to the asoc tree
-Date: Thu, 14 Jul 2016 17:32:16 +0100
-Message-ID: <E1bNjYe-0001Vb-10@debutante>
-References: <1468428227-8239-5-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Kbl: add kabylake additional
+	machine entries" to the asoc tree
+Date: Thu, 14 Jul 2016 17:32:18 +0100
+Message-ID: <E1bNjYg-0001WS-Tz@debutante>
+References: <1468428227-8239-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 77DBE2658D4
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 18:32:21 +0200 (CEST)
-In-Reply-To: <1468428227-8239-5-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 965C126582F
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 18:32:23 +0200 (CEST)
+In-Reply-To: <1468428227-8239-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: board: add kabylake nau88l25_max98357a machine id
+   ASoC: Intel: Kbl: add kabylake additional machine entries
 
 has been applied to the asoc tree at
 
@@ -53,49 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 2ca972da5ac8ac03dce005f4b71d9198a408b068 Mon Sep 17 00:00:00 2001
+>From 156a071b9c7d0bd6917bbddd736e47de94265f03 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Wed, 13 Jul 2016 22:13:46 +0530
-Subject: [PATCH] ASoC: Intel: board: add kabylake nau88l25_max98357a machine
- id
+Date: Wed, 13 Jul 2016 22:13:45 +0530
+Subject: [PATCH] ASoC: Intel: Kbl: add kabylake additional machine entries
 
-Like SKL we have skl_nau88l25_max98357a machine for KBL,
-so add the ID for this machine too.
+Like SKL, we have two more machines for KBL, so add these IDs
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/intel/skylake/skl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index 80efe5e32291..25db5be7fdfa 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -656,12 +656,19 @@ static int skylake_audio_probe(struct platform_device *pdev)
- 	return devm_snd_soc_register_card(&pdev->dev, &skylake_audio_card);
- }
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 9f6733d72bde..2337748ffead 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -815,6 +815,8 @@ static struct sst_acpi_mach sst_bxtp_devdata[] = {
  
-+static const struct platform_device_id skl_board_ids[] = {
-+	{ .name = "skl_n88l25_m98357a" },
-+	{ .name = "kbl_n88l25_m98357a" },
-+	{ }
-+};
-+
- static struct platform_driver skylake_audio = {
- 	.probe = skylake_audio_probe,
- 	.driver = {
- 		.name = "skl_n88l25_m98357a",
- 		.pm = &snd_soc_pm_ops,
- 	},
-+	.id_table = skl_board_ids,
+ static struct sst_acpi_mach sst_kbl_devdata[] = {
+ 	{ "INT343A", "kbl_alc286s_i2s", "intel/dsp_fw_kbl.bin", NULL, NULL, NULL },
++	{ "INT343B", "kbl_n88l25_s4567", "intel/dsp_fw_kbl.bin", NULL, NULL, &skl_dmic_data },
++	{ "MX98357A", "kbl_n88l25_m98357a", "intel/dsp_fw_kbl.bin", NULL, NULL, &skl_dmic_data },
+ 	{}
  };
  
- module_platform_driver(skylake_audio)
-@@ -671,3 +678,4 @@ MODULE_DESCRIPTION("Audio Machine driver-NAU88L25 & MAX98357A in I2S mode");
- MODULE_AUTHOR("Rohit Ainapure <rohit.m.ainapure@intel.com");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("platform:skl_n88l25_m98357a");
-+MODULE_ALIAS("platform:kbl_n88l25_m98357a");
 -- 
 2.8.1
