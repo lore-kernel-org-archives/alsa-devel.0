@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 29/34] alisp: remove alloca() from
-	FA_card_info()
-Date: Thu, 14 Jul 2016 23:07:46 +0900
-Message-ID: <1468505271-5769-30-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 18/34] pcm: remove alloca() from
+	snd_spcm_init_duplex()
+Date: Thu, 14 Jul 2016 23:07:35 +0900
+Message-ID: <1468505271-5769-19-git-send-email-o-takashi@sakamocchi.jp>
 References: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 531892659FF
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id B92CE265BA3
  for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 16:08:09 +0200 (CEST)
 In-Reply-To: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -34,46 +34,49 @@ This commit obsolete usages of alloca() with automatic variables.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/alisp/alisp_snd.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ src/pcm/pcm_simple.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/src/alisp/alisp_snd.c b/src/alisp/alisp_snd.c
-index 0a1a3b4..e622035 100644
---- a/src/alisp/alisp_snd.c
-+++ b/src/alisp/alisp_snd.c
-@@ -444,7 +444,7 @@ static struct alisp_object * FA_card_info(struct alisp_instance * instance, stru
+diff --git a/src/pcm/pcm_simple.c b/src/pcm/pcm_simple.c
+index 3ae24ff..8985987 100644
+--- a/src/pcm/pcm_simple.c
++++ b/src/pcm/pcm_simple.c
+@@ -218,16 +218,13 @@ int snd_spcm_init_duplex(snd_pcm_t *playback_pcm,
+ 			 snd_spcm_duplex_type_t duplex_type)
  {
- 	snd_ctl_t *handle;
- 	struct alisp_object * lexpr, * p1;
--	snd_ctl_card_info_t * info;
-+	snd_ctl_card_info_t info = {0};
- 	int err;
+ 	int err, i;
+-	snd_pcm_hw_params_t *hw_params;
+-	snd_pcm_sw_params_t *sw_params;
++	snd_pcm_hw_params_t hw_params = {0};
++	snd_pcm_sw_params_t sw_params = {0};
+ 	unsigned int rrate;
+ 	unsigned int xbuffer_time, buffer_time[2];
+ 	unsigned int period_time[2];
+ 	snd_pcm_t *pcms[2];
  
- 	p1 = eval(instance, car(args));
-@@ -453,17 +453,16 @@ static struct alisp_object * FA_card_info(struct alisp_instance * instance, stru
- 	handle = (snd_ctl_t *)get_ptr(instance, p1, item->prefix);
- 	if (handle == NULL)
- 		return &alsa_lisp_nil;
--	snd_ctl_card_info_alloca(&info);
--	err = snd_ctl_card_info(handle, info);
-+	err = snd_ctl_card_info(handle, &info);
- 	lexpr = new_lexpr(instance, err);
- 	if (err < 0)
- 		return lexpr;
--	p1 = add_cons(instance, lexpr->value.c.cdr, 0, "id", new_string(instance, snd_ctl_card_info_get_id(info)));
--	p1 = add_cons(instance, p1, 1, "driver", new_string(instance, snd_ctl_card_info_get_driver(info)));
--	p1 = add_cons(instance, p1, 1, "name", new_string(instance, snd_ctl_card_info_get_name(info)));
--	p1 = add_cons(instance, p1, 1, "longname", new_string(instance, snd_ctl_card_info_get_longname(info)));
--	p1 = add_cons(instance, p1, 1, "mixername", new_string(instance, snd_ctl_card_info_get_mixername(info)));
--	p1 = add_cons(instance, p1, 1, "components", new_string(instance, snd_ctl_card_info_get_components(info)));
-+	p1 = add_cons(instance, lexpr->value.c.cdr, 0, "id", new_string(instance, snd_ctl_card_info_get_id(&info)));
-+	p1 = add_cons(instance, p1, 1, "driver", new_string(instance, snd_ctl_card_info_get_driver(&info)));
-+	p1 = add_cons(instance, p1, 1, "name", new_string(instance, snd_ctl_card_info_get_name(&info)));
-+	p1 = add_cons(instance, p1, 1, "longname", new_string(instance, snd_ctl_card_info_get_longname(&info)));
-+	p1 = add_cons(instance, p1, 1, "mixername", new_string(instance, snd_ctl_card_info_get_mixername(&info)));
-+	p1 = add_cons(instance, p1, 1, "components", new_string(instance, snd_ctl_card_info_get_components(&info)));
- 	if (p1 == NULL) {
- 		delete_tree(instance, lexpr);
- 		return NULL;
+-	snd_pcm_hw_params_alloca(&hw_params);
+-	snd_pcm_sw_params_alloca(&sw_params);
+-
+ 	assert(playback_pcm);
+ 	assert(capture_pcm);
+ 	assert(rate >= 5000 && rate <= 192000);
+@@ -247,7 +244,7 @@ int snd_spcm_init_duplex(snd_pcm_t *playback_pcm,
+ 		buffer_time[i] = xbuffer_time;
+ 		period_time[i] = i > 0 ? period_time[0] : 0;
+ 		rrate = rate;
+-		err = set_hw_params(pcms[i], hw_params,
++		err = set_hw_params(pcms[i], &hw_params,
+ 				    &rrate, channels, format, subformat,
+ 				    &buffer_time[i], &period_time[i], access);
+ 		if (err < 0)
+@@ -266,7 +263,7 @@ int snd_spcm_init_duplex(snd_pcm_t *playback_pcm,
+ 	 */
+       __sw_params:
+ 	for (i = 0; i < 2; i++) {
+-		err = set_sw_params(pcms[i], sw_params, xrun_type);
++		err = set_sw_params(pcms[i], &sw_params, xrun_type);
+ 		if (err < 0)
+ 			return err;
+ 	}
 -- 
 2.7.4
