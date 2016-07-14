@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Fix conflicting pcm dev drvdata
-	on haswell" to the asoc tree
-Date: Thu, 14 Jul 2016 17:32:10 +0100
-Message-ID: <E1bNjYY-0001TX-7a@debutante>
-References: <1467942896-40785-1-git-send-email-benzh@chromium.org>
+Subject: Applied "ASoC: Intel: board: add kabylake
+	nau88l25_ssm4567 machine id" to the asoc tree
+Date: Thu, 14 Jul 2016 17:32:13 +0100
+Message-ID: <E1bNjYb-0001UZ-3n@debutante>
+References: <1468428227-8239-6-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 05B7426582F
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 18:32:16 +0200 (CEST)
-In-Reply-To: <1467942896-40785-1-git-send-email-benzh@chromium.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id C628B265873
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 18:32:18 +0200 (CEST)
+In-Reply-To: <1468428227-8239-6-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ben Zhang <benzh@chromium.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Dylan Reid <dgreid@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Fix conflicting pcm dev drvdata on haswell
+   ASoC: Intel: board: add kabylake nau88l25_ssm4567 machine id
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From c999675b04c146aa57f6e853a3746de979427fad Mon Sep 17 00:00:00 2001
-From: Ben Zhang <benzh@chromium.org>
-Date: Thu, 7 Jul 2016 18:54:56 -0700
-Subject: [PATCH] ASoC: Intel: Fix conflicting pcm dev drvdata on haswell
+>From 9dc201cf75e04fd2d753a1d01ed9d03f4253e32f Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Wed, 13 Jul 2016 22:13:47 +0530
+Subject: [PATCH] ASoC: Intel: board: add kabylake nau88l25_ssm4567 machine id
 
-soc-core sets the snd_soc_pcm_runtime->dev drvdata to
-snd_soc_pcm_runtime in soc_post_component_init, and access
-it in places like codec_reg_show.
+Like SKL we have skl_nau88l25_ssm4567 machine for KBL,
+so add the ID for this machine too.
 
-hsw_pcm_open overwrites the drvdata to point to hsw_pcm_data,
-confusing soc-core, and causing crashes when cat
-/sys/devices/pci0000:00/INT3438:00/.../System PCM/codec_reg
-
-This patch removes the set in hsw_pcm_open since it's no longer
-used. commit 7ff9d6714a5c ("ASoC: Intel: Split hsw_pcm_data for
-playback and capture") already removed all calls to
-snd_soc_pcm_get_drvdata(rtd).
-
-Signed-off-by: Ben Zhang <benzh@chromium.org>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/haswell/sst-haswell-pcm.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
-index 994256b39b9c..3154525c2b83 100644
---- a/sound/soc/intel/haswell/sst-haswell-pcm.c
-+++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
-@@ -819,7 +819,6 @@ static int hsw_pcm_open(struct snd_pcm_substream *substream)
- 	mutex_lock(&pcm_data->mutex);
- 	pm_runtime_get_sync(pdata->dev);
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index 3e67d7b31e28..69c5d5da4e86 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -708,12 +708,19 @@ static int skylake_audio_probe(struct platform_device *pdev)
+ 	return devm_snd_soc_register_card(&pdev->dev, &skylake_audio_card);
+ }
  
--	snd_soc_pcm_set_drvdata(rtd, pcm_data);
- 	pcm_data->substream = substream;
++static const struct platform_device_id skl_board_ids[] = {
++	{ .name = "skl_n88l25_s4567" },
++	{ .name = "kbl_n88l25_s4567" },
++	{ }
++};
++
+ static struct platform_driver skylake_audio = {
+ 	.probe = skylake_audio_probe,
+ 	.driver = {
+ 		.name = "skl_n88l25_s4567",
+ 		.pm = &snd_soc_pm_ops,
+ 	},
++	.id_table = skl_board_ids,
+ };
  
- 	snd_soc_set_runtime_hwparams(substream, &hsw_pcm_hardware);
+ module_platform_driver(skylake_audio)
+@@ -727,3 +734,4 @@ MODULE_AUTHOR("Yong Zhi <yong.zhi@intel.com>");
+ MODULE_DESCRIPTION("Intel Audio Machine driver for SKL with NAU88L25 and SSM4567 in I2S Mode");
+ MODULE_LICENSE("GPL v2");
+ MODULE_ALIAS("platform:skl_n88l25_s4567");
++MODULE_ALIAS("platform:kbl_n88l25_s4567");
 -- 
 2.8.1
