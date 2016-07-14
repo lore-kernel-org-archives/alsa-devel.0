@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 21/34] pcm: change code formatting for
-	_snd_pcm_softvol_open()
-Date: Thu, 14 Jul 2016 23:07:38 +0900
-Message-ID: <1468505271-5769-22-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 25/34] conf: remove alloca() from
+	snd_func_card_name()
+Date: Thu, 14 Jul 2016 23:07:42 +0900
+Message-ID: <1468505271-5769-26-git-send-email-o-takashi@sakamocchi.jp>
 References: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 45CA72659DD
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 4804E2659EF
  for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 16:08:09 +0200 (CEST)
 In-Reply-To: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,46 +25,49 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit applies code format according to typical and moderate rule,
-for _snd_pcm_softvol_open().
+Both of alloca() and automatic variables keeps storages on stack, while
+the former generates more instructions than the latter. It's better to use
+the latter if the size of storage is computable at pre-compile or compile
+time; i.e. just for structures.
+
+This commit obsolete usages of alloca() with automatic variables.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/pcm/pcm_softvol.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ src/confmisc.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/src/pcm/pcm_softvol.c b/src/pcm/pcm_softvol.c
-index fc45d6d..e2345b3 100644
---- a/src/pcm/pcm_softvol.c
-+++ b/src/pcm/pcm_softvol.c
-@@ -1085,8 +1085,7 @@ int _snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
- 		    sformat != SND_PCM_FORMAT_S24_3LE && 
- 		    sformat != SND_PCM_FORMAT_S32_LE &&
- 		    sformat != SND_PCM_FORMAT_S32_BE) {
--			SNDERR("only S16_LE, S16_BE, S24_3LE, S32_LE or S32_BE format "
--			       "is supported");
-+			SNDERR("only S16_LE, S16_BE, S24_3LE, S32_LE or S32_BE format is supported");
- 			snd_config_delete(sconf);
- 			return -EINVAL;
- 		}
-@@ -1094,12 +1093,15 @@ int _snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
- 		snd_config_delete(sconf);
- 		if (err < 0)
- 			return err;
--		if ((err = snd_pcm_parse_control_id(control, ctl_id, &card, &cchannels, NULL)) < 0) {
-+		err = snd_pcm_parse_control_id(control, ctl_id, &card,
-+					       &cchannels, NULL);
-+		if (err < 0) {
- 			snd_pcm_close(spcm);
- 			return err;
- 		}
--		err = snd_pcm_softvol_open(pcmp, name, sformat, card, ctl_id, cchannels,
--					   min_dB, max_dB, resolution, spcm, 1);
-+		err = snd_pcm_softvol_open(pcmp, name, sformat, card, ctl_id,
-+					   cchannels, min_dB, max_dB,
-+					   resolution, spcm, 1);
- 		if (err < 0)
- 			snd_pcm_close(spcm);
+diff --git a/src/confmisc.c b/src/confmisc.c
+index 7763511..fd10b34 100644
+--- a/src/confmisc.c
++++ b/src/confmisc.c
+@@ -913,7 +913,7 @@ int snd_func_card_name(snd_config_t **dst, snd_config_t *root,
+ 		       snd_config_t *src, snd_config_t *private_data)
+ {
+ 	snd_ctl_t *ctl = NULL;
+-	snd_ctl_card_info_t *info;
++	snd_ctl_card_info_t info = {0};
+ 	const char *id;
+ 	int card, err;
+ 	
+@@ -925,8 +925,7 @@ int snd_func_card_name(snd_config_t **dst, snd_config_t *root,
+ 		SNDERR("could not open control for card %i", card);
+ 		goto __error;
  	}
+-	snd_ctl_card_info_alloca(&info);
+-	err = snd_ctl_card_info(ctl, info);
++	err = snd_ctl_card_info(ctl, &info);
+ 	if (err < 0) {
+ 		SNDERR("snd_ctl_card_info error: %s", snd_strerror(err));
+ 		goto __error;
+@@ -934,7 +933,7 @@ int snd_func_card_name(snd_config_t **dst, snd_config_t *root,
+ 	err = snd_config_get_id(src, &id);
+ 	if (err >= 0)
+ 		err = snd_config_imake_safe_string(dst, id,
+-					      snd_ctl_card_info_get_name(info));
++					snd_ctl_card_info_get_name(&info));
+       __error:
+       	if (ctl)
+       		snd_ctl_close(ctl);
 -- 
 2.7.4
