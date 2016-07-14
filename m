@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 31/34] alisp: remove alloca() from
-	FA_hctl_elem_info()
-Date: Thu, 14 Jul 2016 23:07:48 +0900
-Message-ID: <1468505271-5769-32-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 20/34] pcm: remove alloca() from
+	softvol_load_control()
+Date: Thu, 14 Jul 2016 23:07:37 +0900
+Message-ID: <1468505271-5769-21-git-send-email-o-takashi@sakamocchi.jp>
 References: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E4FEB266672
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id B7788265AE8
  for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 16:08:09 +0200 (CEST)
 In-Reply-To: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -34,108 +34,95 @@ This commit obsolete usages of alloca() with automatic variables.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/alisp/alisp_snd.c | 54 +++++++++++++++++++++++++--------------------------
- 1 file changed, 26 insertions(+), 28 deletions(-)
+ src/pcm/pcm_softvol.c | 38 ++++++++++++++++++--------------------
+ 1 file changed, 18 insertions(+), 20 deletions(-)
 
-diff --git a/src/alisp/alisp_snd.c b/src/alisp/alisp_snd.c
-index e9c3573..c63806b 100644
---- a/src/alisp/alisp_snd.c
-+++ b/src/alisp/alisp_snd.c
-@@ -544,8 +544,8 @@ static struct alisp_object * FA_hctl_elem_info(struct alisp_instance * instance,
+diff --git a/src/pcm/pcm_softvol.c b/src/pcm/pcm_softvol.c
+index 4d2c62a..fc45d6d 100644
+--- a/src/pcm/pcm_softvol.c
++++ b/src/pcm/pcm_softvol.c
+@@ -702,17 +702,16 @@ static int softvol_load_control(snd_pcm_t *pcm, snd_pcm_softvol_t *svol,
+ 				int resolution)
  {
- 	snd_hctl_elem_t *handle;
- 	struct alisp_object * lexpr, * p1, * p2;
--	snd_ctl_elem_info_t *info;
--	snd_ctl_elem_id_t *id;
-+	snd_ctl_elem_info_t info = {0};
-+	snd_ctl_elem_id_t id = {0};
- 	snd_ctl_elem_type_t type;
+ 	char tmp_name[32];
+-	snd_pcm_info_t *info;
+-	snd_ctl_elem_info_t *cinfo;
++	snd_pcm_info_t info = {0};
++	snd_ctl_elem_info_t cinfo = {0};
  	int err;
+ 	unsigned int i;
  
-@@ -555,60 +555,58 @@ static struct alisp_object * FA_hctl_elem_info(struct alisp_instance * instance,
- 	handle = (snd_hctl_elem_t *)get_ptr(instance, p1, item->prefix);
- 	if (handle == NULL)
- 		return &alsa_lisp_nil;
--	snd_ctl_elem_info_alloca(&info);
--	snd_ctl_elem_id_alloca(&id);
--	err = snd_hctl_elem_info(handle, info);
-+	err = snd_hctl_elem_info(handle, &info);
- 	lexpr = new_lexpr(instance, err);
- 	if (err < 0)
- 		return lexpr;
--	type = snd_ctl_elem_info_get_type(info);
-+	type = snd_ctl_elem_info_get_type(&info);
- 	p1 = add_cons(instance, lexpr->value.c.cdr, 0, "id", p2 = new_object(instance, ALISP_OBJ_CONS));
--	snd_ctl_elem_info_get_id(info, id);
--	if (create_ctl_elem_id(instance, id, p2) == NULL) {
-+	snd_ctl_elem_info_get_id(&info, &id);
-+	if (create_ctl_elem_id(instance, &id, p2) == NULL) {
- 		delete_tree(instance, lexpr);
- 		return NULL;
- 	}
- 	p1 = add_cons(instance, p1, 1, "type", new_string(instance, snd_ctl_elem_type_name(type)));
--	p1 = add_cons(instance, p1, 1, "readable", new_integer(instance, snd_ctl_elem_info_is_readable(info)));
--	p1 = add_cons(instance, p1, 1, "writable", new_integer(instance, snd_ctl_elem_info_is_writable(info)));
--	p1 = add_cons(instance, p1, 1, "volatile", new_integer(instance, snd_ctl_elem_info_is_volatile(info)));
--	p1 = add_cons(instance, p1, 1, "inactive", new_integer(instance, snd_ctl_elem_info_is_inactive(info)));
--	p1 = add_cons(instance, p1, 1, "locked", new_integer(instance, snd_ctl_elem_info_is_locked(info)));
--	p1 = add_cons(instance, p1, 1, "isowner", new_integer(instance, snd_ctl_elem_info_is_owner(info)));
--	p1 = add_cons(instance, p1, 1, "owner", new_integer(instance, snd_ctl_elem_info_get_owner(info)));
--	p1 = add_cons(instance, p1, 1, "count", new_integer(instance, snd_ctl_elem_info_get_count(info)));
--	err = snd_ctl_elem_info_get_dimensions(info);
-+	p1 = add_cons(instance, p1, 1, "readable", new_integer(instance, snd_ctl_elem_info_is_readable(&info)));
-+	p1 = add_cons(instance, p1, 1, "writable", new_integer(instance, snd_ctl_elem_info_is_writable(&info)));
-+	p1 = add_cons(instance, p1, 1, "volatile", new_integer(instance, snd_ctl_elem_info_is_volatile(&info)));
-+	p1 = add_cons(instance, p1, 1, "inactive", new_integer(instance, snd_ctl_elem_info_is_inactive(&info)));
-+	p1 = add_cons(instance, p1, 1, "locked", new_integer(instance, snd_ctl_elem_info_is_locked(&info)));
-+	p1 = add_cons(instance, p1, 1, "isowner", new_integer(instance, snd_ctl_elem_info_is_owner(&info)));
-+	p1 = add_cons(instance, p1, 1, "owner", new_integer(instance, snd_ctl_elem_info_get_owner(&info)));
-+	p1 = add_cons(instance, p1, 1, "count", new_integer(instance, snd_ctl_elem_info_get_count(&info)));
-+	err = snd_ctl_elem_info_get_dimensions(&info);
- 	if (err > 0) {
- 		int idx;
- 		p1 = add_cons(instance, p1, 1, "dimensions", p2 = new_object(instance, ALISP_OBJ_CONS));
- 		for (idx = 0; idx < err; idx++)
--			p2 = add_cons2(instance, p2, idx > 0, new_integer(instance, snd_ctl_elem_info_get_dimension(info, idx)));
-+			p2 = add_cons2(instance, p2, idx > 0, new_integer(instance, snd_ctl_elem_info_get_dimension(&info, idx)));
- 	}
- 	switch (type) {
- 	case SND_CTL_ELEM_TYPE_ENUMERATED: {
- 		unsigned int items, item;
--		items = snd_ctl_elem_info_get_items(info);
-+		items = snd_ctl_elem_info_get_items(&info);
- 		p1 = add_cons(instance, p1, 1, "items", p2 = new_object(instance, ALISP_OBJ_CONS));
- 		for (item = 0; item < items; item++) {
--			snd_ctl_elem_info_set_item(info, item);
--			err = snd_hctl_elem_info(handle, info);
-+			snd_ctl_elem_info_set_item(&info, item);
-+			err = snd_hctl_elem_info(handle, &info);
- 			if (err < 0) {
- 				p2 = add_cons2(instance, p2, item, &alsa_lisp_nil);
- 			} else {
--				p2 = add_cons2(instance, p2, item, new_string(instance, snd_ctl_elem_info_get_item_name(info)));
-+				p2 = add_cons2(instance, p2, item, new_string(instance, snd_ctl_elem_info_get_item_name(&info)));
- 			}
+ 	if (ctl_card < 0) {
+-		snd_pcm_info_alloca(&info);
+-		err = snd_pcm_info(pcm, info);
++		err = snd_pcm_info(pcm, &info);
+ 		if (err < 0)
+ 			return err;
+-		ctl_card = snd_pcm_info_get_card(info);
++		ctl_card = snd_pcm_info_get_card(&info);
+ 		if (ctl_card < 0) {
+ 			SNDERR("No card defined for softvol control");
+ 			return -EINVAL;
+@@ -737,46 +736,45 @@ static int softvol_load_control(snd_pcm_t *pcm, snd_pcm_softvol_t *svol,
+ 		svol->zero_dB_val = (min_dB / (min_dB - max_dB)) *
+ 								svol->max_val;
+ 		
+-	snd_ctl_elem_info_alloca(&cinfo);
+-	snd_ctl_elem_info_set_id(cinfo, ctl_id);
+-	if ((err = snd_ctl_elem_info(svol->ctl, cinfo)) < 0) {
++	snd_ctl_elem_info_set_id(&cinfo, ctl_id);
++	if ((err = snd_ctl_elem_info(svol->ctl, &cinfo)) < 0) {
+ 		if (err != -ENOENT) {
+ 			SNDERR("Cannot get info for CTL %s", tmp_name);
+ 			return err;
  		}
- 		break;
+-		err = add_user_ctl(svol, cinfo, cchannels);
++		err = add_user_ctl(svol, &cinfo, cchannels);
+ 		if (err < 0) {
+ 			SNDERR("Cannot add a control");
+ 			return err;
+ 		}
+ 	} else {
+-		if (! (cinfo->access & SNDRV_CTL_ELEM_ACCESS_USER)) {
++		if (! (cinfo.access & SNDRV_CTL_ELEM_ACCESS_USER)) {
+ 			/* hardware control exists */
+ 			return 1; /* notify */
+ 
+-		} else if ((cinfo->type != SND_CTL_ELEM_TYPE_INTEGER &&
+-			    cinfo->type != SND_CTL_ELEM_TYPE_BOOLEAN) ||
+-			   cinfo->count != (unsigned int)cchannels ||
+-			   cinfo->value.integer.min != 0 ||
+-			   cinfo->value.integer.max != resolution - 1) {
+-			err = snd_ctl_elem_remove(svol->ctl, &cinfo->id);
++		} else if ((cinfo.type != SND_CTL_ELEM_TYPE_INTEGER &&
++			    cinfo.type != SND_CTL_ELEM_TYPE_BOOLEAN) ||
++			   cinfo.count != (unsigned int)cchannels ||
++			   cinfo.value.integer.min != 0 ||
++			   cinfo.value.integer.max != resolution - 1) {
++			err = snd_ctl_elem_remove(svol->ctl, &cinfo.id);
+ 			if (err < 0) {
+ 				SNDERR("Control %s mismatch", tmp_name);
+ 				return err;
+ 			}
+ 			/* reset numid */
+-			snd_ctl_elem_info_set_id(cinfo, ctl_id);
+-			if ((err = add_user_ctl(svol, cinfo, cchannels)) < 0) {
++			snd_ctl_elem_info_set_id(&cinfo, ctl_id);
++			if ((err = add_user_ctl(svol, &cinfo, cchannels)) < 0) {
+ 				SNDERR("Cannot add a control");
+ 				return err;
+ 			}
+ 		} else if (svol->max_val > 1) {
+ 			/* check TLV availability */
+ 			unsigned int tlv[4];
+-			err = snd_ctl_elem_tlv_read(svol->ctl, &cinfo->id, tlv,
++			err = snd_ctl_elem_tlv_read(svol->ctl, &cinfo.id, tlv,
+ 						    sizeof(tlv));
+ 			if (err < 0)
+-				add_tlv_info(svol, cinfo);
++				add_tlv_info(svol, &cinfo);
+ 		}
  	}
- 	case SND_CTL_ELEM_TYPE_INTEGER:
--		p1 = add_cons(instance, p1, 1, "min", new_integer(instance, snd_ctl_elem_info_get_min(info)));
--		p1 = add_cons(instance, p1, 1, "max", new_integer(instance, snd_ctl_elem_info_get_max(info)));
--		p1 = add_cons(instance, p1, 1, "step", new_integer(instance, snd_ctl_elem_info_get_step(info)));
-+		p1 = add_cons(instance, p1, 1, "min", new_integer(instance, snd_ctl_elem_info_get_min(&info)));
-+		p1 = add_cons(instance, p1, 1, "max", new_integer(instance, snd_ctl_elem_info_get_max(&info)));
-+		p1 = add_cons(instance, p1, 1, "step", new_integer(instance, snd_ctl_elem_info_get_step(&info)));
- 		break;
- 	case SND_CTL_ELEM_TYPE_INTEGER64:
--		p1 = add_cons(instance, p1, 1, "min64", new_float(instance, snd_ctl_elem_info_get_min64(info)));
--		p1 = add_cons(instance, p1, 1, "max64", new_float(instance, snd_ctl_elem_info_get_max64(info)));
--		p1 = add_cons(instance, p1, 1, "step64", new_float(instance, snd_ctl_elem_info_get_step64(info)));
-+		p1 = add_cons(instance, p1, 1, "min64", new_float(instance, snd_ctl_elem_info_get_min64(&info)));
-+		p1 = add_cons(instance, p1, 1, "max64", new_float(instance, snd_ctl_elem_info_get_max64(&info)));
-+		p1 = add_cons(instance, p1, 1, "step64", new_float(instance, snd_ctl_elem_info_get_step64(&info)));
- 		break;
- 	default:
- 		break;
+ 
 -- 
 2.7.4
