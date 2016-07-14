@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 26/34] conf: remove alloca() from
-	snd_func_pcm_id()
-Date: Thu, 14 Jul 2016 23:07:43 +0900
-Message-ID: <1468505271-5769-27-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 31/34] alisp: remove alloca() from
+	FA_hctl_elem_info()
+Date: Thu, 14 Jul 2016 23:07:48 +0900
+Message-ID: <1468505271-5769-32-git-send-email-o-takashi@sakamocchi.jp>
 References: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id D477B2664FB
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E4FEB266672
  for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 16:08:09 +0200 (CEST)
 In-Reply-To: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -34,44 +34,108 @@ This commit obsolete usages of alloca() with automatic variables.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/confmisc.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ src/alisp/alisp_snd.c | 54 +++++++++++++++++++++++++--------------------------
+ 1 file changed, 26 insertions(+), 28 deletions(-)
 
-diff --git a/src/confmisc.c b/src/confmisc.c
-index fd10b34..2275ccd 100644
---- a/src/confmisc.c
-+++ b/src/confmisc.c
-@@ -969,7 +969,7 @@ int snd_func_pcm_id(snd_config_t **dst, snd_config_t *root, snd_config_t *src, v
+diff --git a/src/alisp/alisp_snd.c b/src/alisp/alisp_snd.c
+index e9c3573..c63806b 100644
+--- a/src/alisp/alisp_snd.c
++++ b/src/alisp/alisp_snd.c
+@@ -544,8 +544,8 @@ static struct alisp_object * FA_hctl_elem_info(struct alisp_instance * instance,
  {
- 	snd_config_t *n;
- 	snd_ctl_t *ctl = NULL;
--	snd_pcm_info_t *info;
-+	snd_pcm_info_t info = {0};
- 	const char *id;
- 	long card, device, subdevice = 0;
+ 	snd_hctl_elem_t *handle;
+ 	struct alisp_object * lexpr, * p1, * p2;
+-	snd_ctl_elem_info_t *info;
+-	snd_ctl_elem_id_t *id;
++	snd_ctl_elem_info_t info = {0};
++	snd_ctl_elem_id_t id = {0};
+ 	snd_ctl_elem_type_t type;
  	int err;
-@@ -1009,17 +1009,17 @@ int snd_func_pcm_id(snd_config_t **dst, snd_config_t *root, snd_config_t *src, v
- 		SNDERR("could not open control for card %li", card);
- 		goto __error;
+ 
+@@ -555,60 +555,58 @@ static struct alisp_object * FA_hctl_elem_info(struct alisp_instance * instance,
+ 	handle = (snd_hctl_elem_t *)get_ptr(instance, p1, item->prefix);
+ 	if (handle == NULL)
+ 		return &alsa_lisp_nil;
+-	snd_ctl_elem_info_alloca(&info);
+-	snd_ctl_elem_id_alloca(&id);
+-	err = snd_hctl_elem_info(handle, info);
++	err = snd_hctl_elem_info(handle, &info);
+ 	lexpr = new_lexpr(instance, err);
+ 	if (err < 0)
+ 		return lexpr;
+-	type = snd_ctl_elem_info_get_type(info);
++	type = snd_ctl_elem_info_get_type(&info);
+ 	p1 = add_cons(instance, lexpr->value.c.cdr, 0, "id", p2 = new_object(instance, ALISP_OBJ_CONS));
+-	snd_ctl_elem_info_get_id(info, id);
+-	if (create_ctl_elem_id(instance, id, p2) == NULL) {
++	snd_ctl_elem_info_get_id(&info, &id);
++	if (create_ctl_elem_id(instance, &id, p2) == NULL) {
+ 		delete_tree(instance, lexpr);
+ 		return NULL;
  	}
--	snd_pcm_info_alloca(&info);
--	snd_pcm_info_set_device(info, device);
--	snd_pcm_info_set_subdevice(info, subdevice);
--	err = snd_ctl_pcm_info(ctl, info);
-+	snd_pcm_info_set_device(&info, device);
-+	snd_pcm_info_set_subdevice(&info, subdevice);
-+	err = snd_ctl_pcm_info(ctl, &info);
- 	if (err < 0) {
- 		SNDERR("snd_ctl_pcm_info error: %s", snd_strerror(err));
- 		goto __error;
+ 	p1 = add_cons(instance, p1, 1, "type", new_string(instance, snd_ctl_elem_type_name(type)));
+-	p1 = add_cons(instance, p1, 1, "readable", new_integer(instance, snd_ctl_elem_info_is_readable(info)));
+-	p1 = add_cons(instance, p1, 1, "writable", new_integer(instance, snd_ctl_elem_info_is_writable(info)));
+-	p1 = add_cons(instance, p1, 1, "volatile", new_integer(instance, snd_ctl_elem_info_is_volatile(info)));
+-	p1 = add_cons(instance, p1, 1, "inactive", new_integer(instance, snd_ctl_elem_info_is_inactive(info)));
+-	p1 = add_cons(instance, p1, 1, "locked", new_integer(instance, snd_ctl_elem_info_is_locked(info)));
+-	p1 = add_cons(instance, p1, 1, "isowner", new_integer(instance, snd_ctl_elem_info_is_owner(info)));
+-	p1 = add_cons(instance, p1, 1, "owner", new_integer(instance, snd_ctl_elem_info_get_owner(info)));
+-	p1 = add_cons(instance, p1, 1, "count", new_integer(instance, snd_ctl_elem_info_get_count(info)));
+-	err = snd_ctl_elem_info_get_dimensions(info);
++	p1 = add_cons(instance, p1, 1, "readable", new_integer(instance, snd_ctl_elem_info_is_readable(&info)));
++	p1 = add_cons(instance, p1, 1, "writable", new_integer(instance, snd_ctl_elem_info_is_writable(&info)));
++	p1 = add_cons(instance, p1, 1, "volatile", new_integer(instance, snd_ctl_elem_info_is_volatile(&info)));
++	p1 = add_cons(instance, p1, 1, "inactive", new_integer(instance, snd_ctl_elem_info_is_inactive(&info)));
++	p1 = add_cons(instance, p1, 1, "locked", new_integer(instance, snd_ctl_elem_info_is_locked(&info)));
++	p1 = add_cons(instance, p1, 1, "isowner", new_integer(instance, snd_ctl_elem_info_is_owner(&info)));
++	p1 = add_cons(instance, p1, 1, "owner", new_integer(instance, snd_ctl_elem_info_get_owner(&info)));
++	p1 = add_cons(instance, p1, 1, "count", new_integer(instance, snd_ctl_elem_info_get_count(&info)));
++	err = snd_ctl_elem_info_get_dimensions(&info);
+ 	if (err > 0) {
+ 		int idx;
+ 		p1 = add_cons(instance, p1, 1, "dimensions", p2 = new_object(instance, ALISP_OBJ_CONS));
+ 		for (idx = 0; idx < err; idx++)
+-			p2 = add_cons2(instance, p2, idx > 0, new_integer(instance, snd_ctl_elem_info_get_dimension(info, idx)));
++			p2 = add_cons2(instance, p2, idx > 0, new_integer(instance, snd_ctl_elem_info_get_dimension(&info, idx)));
  	}
- 	err = snd_config_get_id(src, &id);
- 	if (err >= 0)
--		err = snd_config_imake_string(dst, id, snd_pcm_info_get_id(info));
-+		err = snd_config_imake_string(dst, id,
-+						snd_pcm_info_get_id(&info));
-       __error:
-       	if (ctl)
-       		snd_ctl_close(ctl);
+ 	switch (type) {
+ 	case SND_CTL_ELEM_TYPE_ENUMERATED: {
+ 		unsigned int items, item;
+-		items = snd_ctl_elem_info_get_items(info);
++		items = snd_ctl_elem_info_get_items(&info);
+ 		p1 = add_cons(instance, p1, 1, "items", p2 = new_object(instance, ALISP_OBJ_CONS));
+ 		for (item = 0; item < items; item++) {
+-			snd_ctl_elem_info_set_item(info, item);
+-			err = snd_hctl_elem_info(handle, info);
++			snd_ctl_elem_info_set_item(&info, item);
++			err = snd_hctl_elem_info(handle, &info);
+ 			if (err < 0) {
+ 				p2 = add_cons2(instance, p2, item, &alsa_lisp_nil);
+ 			} else {
+-				p2 = add_cons2(instance, p2, item, new_string(instance, snd_ctl_elem_info_get_item_name(info)));
++				p2 = add_cons2(instance, p2, item, new_string(instance, snd_ctl_elem_info_get_item_name(&info)));
+ 			}
+ 		}
+ 		break;
+ 	}
+ 	case SND_CTL_ELEM_TYPE_INTEGER:
+-		p1 = add_cons(instance, p1, 1, "min", new_integer(instance, snd_ctl_elem_info_get_min(info)));
+-		p1 = add_cons(instance, p1, 1, "max", new_integer(instance, snd_ctl_elem_info_get_max(info)));
+-		p1 = add_cons(instance, p1, 1, "step", new_integer(instance, snd_ctl_elem_info_get_step(info)));
++		p1 = add_cons(instance, p1, 1, "min", new_integer(instance, snd_ctl_elem_info_get_min(&info)));
++		p1 = add_cons(instance, p1, 1, "max", new_integer(instance, snd_ctl_elem_info_get_max(&info)));
++		p1 = add_cons(instance, p1, 1, "step", new_integer(instance, snd_ctl_elem_info_get_step(&info)));
+ 		break;
+ 	case SND_CTL_ELEM_TYPE_INTEGER64:
+-		p1 = add_cons(instance, p1, 1, "min64", new_float(instance, snd_ctl_elem_info_get_min64(info)));
+-		p1 = add_cons(instance, p1, 1, "max64", new_float(instance, snd_ctl_elem_info_get_max64(info)));
+-		p1 = add_cons(instance, p1, 1, "step64", new_float(instance, snd_ctl_elem_info_get_step64(info)));
++		p1 = add_cons(instance, p1, 1, "min64", new_float(instance, snd_ctl_elem_info_get_min64(&info)));
++		p1 = add_cons(instance, p1, 1, "max64", new_float(instance, snd_ctl_elem_info_get_max64(&info)));
++		p1 = add_cons(instance, p1, 1, "step64", new_float(instance, snd_ctl_elem_info_get_step64(&info)));
+ 		break;
+ 	default:
+ 		break;
 -- 
 2.7.4
