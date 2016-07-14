@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 28/34] conf: remove alloca() from
-	snd_func_private_pcm_subdevice()
-Date: Thu, 14 Jul 2016 23:07:45 +0900
-Message-ID: <1468505271-5769-29-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 30/34] alisp: remove alloca() from
+	FA_hctl_find_elem()
+Date: Thu, 14 Jul 2016 23:07:47 +0900
+Message-ID: <1468505271-5769-31-git-send-email-o-takashi@sakamocchi.jp>
 References: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id D84FE26658C
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E9D02266687
  for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 16:08:09 +0200 (CEST)
 In-Reply-To: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -34,40 +34,38 @@ This commit obsolete usages of alloca() with automatic variables.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/confmisc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ src/alisp/alisp_snd.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/src/confmisc.c b/src/confmisc.c
-index 99be48b..a985f14 100644
---- a/src/confmisc.c
-+++ b/src/confmisc.c
-@@ -1162,7 +1162,7 @@ SND_DLSYM_BUILD_VERSION(snd_func_pcm_args_by_class, SND_CONFIG_DLSYM_VERSION_EVA
- int snd_func_private_pcm_subdevice(snd_config_t **dst, snd_config_t *root ATTRIBUTE_UNUSED,
- 				   snd_config_t *src, snd_config_t *private_data)
+diff --git a/src/alisp/alisp_snd.c b/src/alisp/alisp_snd.c
+index e622035..e9c3573 100644
+--- a/src/alisp/alisp_snd.c
++++ b/src/alisp/alisp_snd.c
+@@ -522,7 +522,7 @@ static int parse_ctl_elem_id(struct alisp_instance * instance,
+ static struct alisp_object * FA_hctl_find_elem(struct alisp_instance * instance, struct acall_table * item, struct alisp_object * args)
  {
--	snd_pcm_info_t *info;
-+	snd_pcm_info_t info = {0};
- 	const char *id;
- 	const void *data;
- 	snd_pcm_t *pcm;
-@@ -1181,15 +1181,15 @@ int snd_func_private_pcm_subdevice(snd_config_t **dst, snd_config_t *root ATTRIB
- 		SNDERR("field pcm_handle is not a pointer");
- 		return err;
+ 	snd_hctl_t *handle;
+-	snd_ctl_elem_id_t *id;
++	snd_ctl_elem_id_t id = {0};
+ 	struct alisp_object *p1;
+ 
+ 	handle = (snd_hctl_t *)get_ptr(instance, car(args), item->prefix);
+@@ -531,14 +531,13 @@ static struct alisp_object * FA_hctl_find_elem(struct alisp_instance * instance,
+ 		delete_object(instance, args);
+ 		return &alsa_lisp_nil;
  	}
--	snd_pcm_info_alloca(&info);
--	err = snd_pcm_info(pcm, info);
-+	err = snd_pcm_info(pcm, &info);
- 	if (err < 0) {
- 		SNDERR("snd_ctl_pcm_info error: %s", snd_strerror(err));
- 		return err;
- 	}
- 	err = snd_config_get_id(src, &id);
- 	if (err >= 0)
--		err = snd_config_imake_integer(dst, id, snd_pcm_info_get_subdevice(info));
-+		err = snd_config_imake_integer(dst, id,
-+					snd_pcm_info_get_subdevice(&info));
- 	return err;
+-	snd_ctl_elem_id_alloca(&id);
+ 	p1 = car(cdr(args));
+ 	delete_tree(instance, cdr(cdr(args)));
+ 	delete_object(instance, cdr(args));
+ 	delete_object(instance, args);
+-	if (parse_ctl_elem_id(instance, eval(instance, p1), id) < 0)
++	if (parse_ctl_elem_id(instance, eval(instance, p1), &id) < 0)
+ 		return &alsa_lisp_nil;
+-	return new_cons_pointer(instance, "hctl_elem", snd_hctl_find_elem(handle, id));
++	return new_cons_pointer(instance, "hctl_elem", snd_hctl_find_elem(handle, &id));
  }
- #ifndef DOC_HIDDEN
+ 
+ static struct alisp_object * FA_hctl_elem_info(struct alisp_instance * instance, struct acall_table * item, struct alisp_object * args)
 -- 
 2.7.4
