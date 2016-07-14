@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 32/34] alisp: remove alloca() from
-	FA_hctl_elem_read()
-Date: Thu, 14 Jul 2016 23:07:49 +0900
-Message-ID: <1468505271-5769-33-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 29/34] alisp: remove alloca() from
+	FA_card_info()
+Date: Thu, 14 Jul 2016 23:07:46 +0900
+Message-ID: <1468505271-5769-30-git-send-email-o-takashi@sakamocchi.jp>
 References: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 6F6D3265A10
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 531892659FF
  for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2016 16:08:09 +0200 (CEST)
 In-Reply-To: <1468505271-5769-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -34,69 +34,46 @@ This commit obsolete usages of alloca() with automatic variables.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/alisp/alisp_snd.c | 24 +++++++++++-------------
- 1 file changed, 11 insertions(+), 13 deletions(-)
+ src/alisp/alisp_snd.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/src/alisp/alisp_snd.c b/src/alisp/alisp_snd.c
-index c63806b..6d5018a 100644
+index 0a1a3b4..e622035 100644
 --- a/src/alisp/alisp_snd.c
 +++ b/src/alisp/alisp_snd.c
-@@ -622,8 +622,8 @@ static struct alisp_object * FA_hctl_elem_read(struct alisp_instance * instance,
+@@ -444,7 +444,7 @@ static struct alisp_object * FA_card_info(struct alisp_instance * instance, stru
  {
- 	snd_hctl_elem_t *handle;
- 	struct alisp_object * lexpr, * p1 = NULL, * obj;
--	snd_ctl_elem_info_t *info;
--	snd_ctl_elem_value_t *value;
-+	snd_ctl_elem_info_t info = {0};
-+	snd_ctl_elem_value_t value = {0};
- 	snd_ctl_elem_type_t type;
- 	unsigned int idx, count;
+ 	snd_ctl_t *handle;
+ 	struct alisp_object * lexpr, * p1;
+-	snd_ctl_card_info_t * info;
++	snd_ctl_card_info_t info = {0};
  	int err;
-@@ -634,16 +634,14 @@ static struct alisp_object * FA_hctl_elem_read(struct alisp_instance * instance,
- 	handle = (snd_hctl_elem_t *)get_ptr(instance, p1, item->prefix);
+ 
+ 	p1 = eval(instance, car(args));
+@@ -453,17 +453,16 @@ static struct alisp_object * FA_card_info(struct alisp_instance * instance, stru
+ 	handle = (snd_ctl_t *)get_ptr(instance, p1, item->prefix);
  	if (handle == NULL)
  		return &alsa_lisp_nil;
--	snd_ctl_elem_info_alloca(&info);
--	snd_ctl_elem_value_alloca(&value);
--	err = snd_hctl_elem_info(handle, info);
-+	err = snd_hctl_elem_info(handle, &info);
- 	if (err >= 0)
--		err = snd_hctl_elem_read(handle, value);
-+		err = snd_hctl_elem_read(handle, &value);
+-	snd_ctl_card_info_alloca(&info);
+-	err = snd_ctl_card_info(handle, info);
++	err = snd_ctl_card_info(handle, &info);
  	lexpr = new_lexpr(instance, err);
  	if (err < 0)
  		return lexpr;
--	type = snd_ctl_elem_info_get_type(info);
--	count = snd_ctl_elem_info_get_count(info);
-+	type = snd_ctl_elem_info_get_type(&info);
-+	count = snd_ctl_elem_info_get_count(&info);
- 	if (type == SND_CTL_ELEM_TYPE_IEC958) {
- 		count = sizeof(snd_aes_iec958_t);
- 		type = SND_CTL_ELEM_TYPE_BYTES;
-@@ -651,19 +649,19 @@ static struct alisp_object * FA_hctl_elem_read(struct alisp_instance * instance,
- 	for (idx = 0; idx < count; idx++) {
- 		switch (type) {
- 		case SND_CTL_ELEM_TYPE_BOOLEAN:
--			obj = new_integer(instance, snd_ctl_elem_value_get_boolean(value, idx));
-+			obj = new_integer(instance, snd_ctl_elem_value_get_boolean(&value, idx));
- 			break;
- 		case SND_CTL_ELEM_TYPE_INTEGER:
--			obj = new_integer(instance, snd_ctl_elem_value_get_integer(value, idx));
-+			obj = new_integer(instance, snd_ctl_elem_value_get_integer(&value, idx));
- 			break;
- 		case SND_CTL_ELEM_TYPE_INTEGER64:
--			obj = new_integer(instance, snd_ctl_elem_value_get_integer64(value, idx));
-+			obj = new_integer(instance, snd_ctl_elem_value_get_integer64(&value, idx));
- 			break;
- 		case SND_CTL_ELEM_TYPE_ENUMERATED:
--			obj = new_integer(instance, snd_ctl_elem_value_get_enumerated(value, idx));
-+			obj = new_integer(instance, snd_ctl_elem_value_get_enumerated(&value, idx));
- 			break;
- 		case SND_CTL_ELEM_TYPE_BYTES:
--			obj = new_integer(instance, snd_ctl_elem_value_get_byte(value, idx));
-+			obj = new_integer(instance, snd_ctl_elem_value_get_byte(&value, idx));
- 			break;
- 		default:
- 			obj = NULL;
+-	p1 = add_cons(instance, lexpr->value.c.cdr, 0, "id", new_string(instance, snd_ctl_card_info_get_id(info)));
+-	p1 = add_cons(instance, p1, 1, "driver", new_string(instance, snd_ctl_card_info_get_driver(info)));
+-	p1 = add_cons(instance, p1, 1, "name", new_string(instance, snd_ctl_card_info_get_name(info)));
+-	p1 = add_cons(instance, p1, 1, "longname", new_string(instance, snd_ctl_card_info_get_longname(info)));
+-	p1 = add_cons(instance, p1, 1, "mixername", new_string(instance, snd_ctl_card_info_get_mixername(info)));
+-	p1 = add_cons(instance, p1, 1, "components", new_string(instance, snd_ctl_card_info_get_components(info)));
++	p1 = add_cons(instance, lexpr->value.c.cdr, 0, "id", new_string(instance, snd_ctl_card_info_get_id(&info)));
++	p1 = add_cons(instance, p1, 1, "driver", new_string(instance, snd_ctl_card_info_get_driver(&info)));
++	p1 = add_cons(instance, p1, 1, "name", new_string(instance, snd_ctl_card_info_get_name(&info)));
++	p1 = add_cons(instance, p1, 1, "longname", new_string(instance, snd_ctl_card_info_get_longname(&info)));
++	p1 = add_cons(instance, p1, 1, "mixername", new_string(instance, snd_ctl_card_info_get_mixername(&info)));
++	p1 = add_cons(instance, p1, 1, "components", new_string(instance, snd_ctl_card_info_get_components(&info)));
+ 	if (p1 == NULL) {
+ 		delete_tree(instance, lexpr);
+ 		return NULL;
 -- 
 2.7.4
