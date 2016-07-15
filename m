@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 03/29] mixer: remove alloca() from
-	elem_read_volume()
-Date: Fri, 15 Jul 2016 09:23:07 +0900
-Message-ID: <1468542213-24880-4-git-send-email-o-takashi@sakamocchi.jp>
-References: <1468542213-24880-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [alsa-lib][PATCH 00/29] mixer: replace usage of
+	alloca() with automatic variables
+Date: Fri, 15 Jul 2016 09:23:04 +0900
+Message-ID: <1468542213-24880-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 32E932658D4
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 2AF2C26582F
  for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2016 02:23:38 +0200 (CEST)
-In-Reply-To: <1468542213-24880-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,66 +23,52 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Both of alloca() and automatic variables keep storages on stack, while
-the former generates more instructions than the latter. It's better to use
-the latter if the size of storage is computable at pre-compile or compile
-time; i.e. just for structures.
-
-This commit obsolete usages of alloca() with automatic variables.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- src/mixer/simple_none.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/src/mixer/simple_none.c b/src/mixer/simple_none.c
-index a90ee84..0f23a06 100644
---- a/src/mixer/simple_none.c
-+++ b/src/mixer/simple_none.c
-@@ -234,12 +234,11 @@ static long from_user(selem_none_t *s, int dir, selem_ctl_t *c, long value)
- 
- static int elem_read_volume(selem_none_t *s, int dir, selem_ctl_type_t type)
- {
--	snd_ctl_elem_value_t *ctl;
-+	snd_ctl_elem_value_t ctl = {0};
- 	unsigned int idx;
- 	int err;
- 	selem_ctl_t *c = &s->ctls[type];
--	snd_ctl_elem_value_alloca(&ctl);
--	if ((err = snd_hctl_elem_read(c->elem, ctl)) < 0)
-+	if ((err = snd_hctl_elem_read(c->elem, &ctl)) < 0)
- 		return err;
- 	for (idx = 0; idx < s->str[dir].channels; idx++) {
- 		unsigned int idx1 = idx;
-@@ -247,25 +246,24 @@ static int elem_read_volume(selem_none_t *s, int dir, selem_ctl_type_t type)
- 			idx1 = 0;
- 		s->str[dir].vol[idx] =
- 			to_user(s, dir, c,
--				snd_ctl_elem_value_get_integer(ctl, idx1));
-+				snd_ctl_elem_value_get_integer(&ctl, idx1));
- 	}
- 	return 0;
- }
- 
- static int elem_read_switch(selem_none_t *s, int dir, selem_ctl_type_t type)
- {
--	snd_ctl_elem_value_t *ctl;
-+	snd_ctl_elem_value_t ctl = {0};
- 	unsigned int idx;
- 	int err;
- 	selem_ctl_t *c = &s->ctls[type];
--	snd_ctl_elem_value_alloca(&ctl);
--	if ((err = snd_hctl_elem_read(c->elem, ctl)) < 0)
-+	if ((err = snd_hctl_elem_read(c->elem, &ctl)) < 0)
- 		return err;
- 	for (idx = 0; idx < s->str[dir].channels; idx++) {
- 		unsigned int idx1 = idx;
- 		if (idx >= c->values)
- 			idx1 = 0;
--		if (!snd_ctl_elem_value_get_integer(ctl, idx1))
-+		if (!snd_ctl_elem_value_get_integer(&ctl, idx1))
- 			s->str[dir].sw &= ~(1 << idx);
- 	}
- 	return 0;
--- 
-2.7.4
+SGksCgpBIGJhdGNoIG9mIHRoaXMgcGF0Y2hzZXQgaXMgdG8gYXBwbHkgdGhlIHNhbWUgaWRlYSB0
+byBtaXhlciBmZWF0dXJlIGFzIEkKcG9zdGVkIGluIHRoaXMgdGhyZWFkLgpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTYtSnVseS8xMTAxOTYu
+aHRtbAoKSW4gc2hvcnQsIHJlcGxhY2VtZW50IG9mIGFsbG9jYSgpIHdpdGggYXV0b21hdGljIHZh
+cmlhYmxlcyBicmluZ3MgdXMgc29tZQphZHZhbnRhZ2VzOyBiZXR0ZXIgZXhlY3V0aW9uIHBlcmZv
+cm1hbmNlIGFuZCBzYXZpbmcgbG9jYWwgc3RvcmFnZXMganVzdCBmb3IKYSBsaXR0bGUuCgpJIGNh
+biBzZWUgYmVsb3cgZWZmZWN0IG9uIG15IGVudmlyb25tZW50IChVYnVudHUgMTYuMDQsIGFtZDY0
+KQokIGdpdCBjaGVja291dCBtYXN0ZXIKJCBnaXQgc2hvdyBIRUFECmNvbW1pdCAzM2U5NDZmZGQz
+MmRhMmI5MThlODg3NTBmY2ZkNzgwMTRhZTNlMDc5Ci4uLgokIC4vZ2l0Y29tcGlsZSAtLXdpdGgt
+cGx1Z2luZGlyPS91c3IvbGliL3g4Nl82NC1saW51eC1nbnUvYWxzYS1saWIvCi4uLgokIGxzIC1s
+IHNyYy8ubGlicy9saWJhc291bmQuc28uMi4wLjAgCi1yd3hyd3hyLXggMSBtb2NjaGkgbW9jY2hp
+IDQ3ODMwODAgIDfmnIggMTUgMDk6MDggc3JjLy5saWJzL2xpYmFzb3VuZC5zby4yLjAuMAokIGdp
+dCBjaGVja291dCByZW1vdmUtYWxsb2NhLW1peGVyCiQgbWFrZQouLi4KJCBscyAtbCBzcmMvLmxp
+YnMvbGliYXNvdW5kLnNvLjIuMC4wIAotcnd4cnd4ci14IDEgbW9jY2hpIG1vY2NoaSA0NzgwMTUy
+ICA35pyIIDE1IDA5OjA5IHNyYy8ubGlicy9saWJhc291bmQuc28uMi4wLjAKJCBnY2MgLXYKLi4u
+CmdjYyB2ZXJzaW9uIDUuNC4wIDIwMTYwNjA5IChVYnVudHUgNS40LjAtNnVidW50dTF+MTYuMDQu
+MSkKCgpUYWthc2hpIFNha2Ftb3RvICgyOSk6CiAgbWl4ZXI6IGluY2x1ZGUgbGlicmFyeSBsb2Nh
+bCBoZWFkZXIgdG8gZmluZCBsYXlvdXQgb2Ygc3RydWN0dXJlcwogIG1peGVyOiBjaGFuZ2UgY29k
+ZSBmb3JtYXR0aW5nIGZvciBlbGVtX3JlYWRfdm9sdW1lKCkKICBtaXhlcjogcmVtb3ZlIGFsbG9j
+YSgpIGZyb20gZWxlbV9yZWFkX3ZvbHVtZSgpCiAgbWl4ZXI6IGNoYW5nZSBjb2RlIGZvcm1hdHRp
+bmcgZm9yIGVsZW1fcmVhZF9yb3V0ZSgpCiAgbWl4ZXI6IHJlbW92ZSBhbGxvY2EoKSBmcm9tIGVs
+ZW1fcmVhZF9yb3V0ZSgpCiAgbWl4ZXI6IGNoYW5nZSBjb2RlIGZvcm1hdHRpbmcgZm9yIGVsZW1f
+cmVhZF9lbnVtKCkKICBtaXhlcjogcmVtb3ZlIGFsbG9jYSgpIGZyb20gZWxlbV9yZWFkX2VudW0o
+KQogIG1peGVyOiBjaGFuZ2UgY29kZSBmb3JtYXR0aW5nIGZvciBzZWxlbV9yZWFkKCkKICBtaXhl
+cjogcmVtb3ZlIGFsbG9jYSgpIGZyb20gc2VsZW1fcmVhZCgpCiAgbWl4ZXI6IGNoYW5nZSBjb2Rl
+IGZvcm1hdHRpbmcgZm9yIGVsZW1fd3JpdGVfdm9sdW1lKCkKICBtaXhlcjogcmVtb3ZlIGFsbG9j
+YSgpIGZyb20gZWxlbV93cml0ZV92b2x1bWUoKQogIG1peGVyOiBjaGFuZ2UgY29kZSBmb3JtYXR0
+aW5nIGZvciBlbGVtX3dyaXRlX3N3aXRjaCgpCiAgbWl4ZXI6IHJlbW92ZSBhbGxvY2EoKSBmcm9t
+IGVsZW1fd3JpdGVfc3dpdGNoKCkKICBtaXhlcjogcmVtb3ZlIGFsbG9jYSgpIGZyb20gZWxlbV93
+cml0ZV9zd2l0Y2hfY29uc3RhbnQoKQogIG1peGVyOiBjaGFuZ2UgY29kZSBmb3JtYXR0aW5nIGZv
+ciBlbGVtX3dyaXRlX2VudW0oKQogIG1peGVyOiByZW1vdmUgYWxsb2NhKCkgZnJvbSBlbGVtX3dy
+aXRlX2VudW0oKQogIG1peGVyOiBjaGFuZ2UgY29kZSBmb3JtYXR0aW5nIGZvciBlbGVtX3dyaXRl
+X3JvdXRlKCkKICBtaXhlcjogcmVtb3ZlIGFsbG9jYSgpIGZyb20gZWxlbV93cml0ZV9yb3V0ZSgp
+CiAgbWl4ZXI6IGNoYW5nZSBjb2RlIGZvcm1hdHRpbmcgZm9yIHNlbGVtX3dyaXRlX21haW4oKQog
+IG1peGVyOiByZW1vdmUgYWxsb2NhKCkgZnJvbSBzZWxlbV93cml0ZV9tYWluKCkKICBtaXhlcjog
+Y2hhbmdlIGNvZGUgZm9ybWF0dGluZyBmb3IgaW5pdF9kYl9yYW5nZSgpCiAgbWl4ZXI6IHJlbW92
+ZSBhbGxvY2EoKSBmcm9tIGluaXRfZGJfcmFuZ2UoKQogIG1peGVyOiByZW1vdmUgYWxsb2NhKCkg
+ZnJvbSBlbnVtX2l0ZW1fbmFtZV9vcHMoKQogIG1peGVyOiByZW1vdmUgYWxsb2NhKCkgZnJvbSBn
+ZXRfZW51bV9pdGVtX29wcygpCiAgbWl4ZXI6IHJlbW92ZSBhbGxvY2EoKSBmcm9tIHNldF9lbnVt
+X2l0ZW1fb3BzKCkKICBtaXhlcjogY2hhbmdlIGNvZGUgZm9ybWF0dGluZyBmb3Igc2ltcGxlX2Fk
+ZDEoKQogIG1peGVyOiByZW1vdmUgYWxsb2NhKCkgZnJvbSBzaW1wbGVfYWRkMSgpCiAgbWl4ZXI6
+IGNoYW5nZSBjb2RlIGZvcm1hdHRpbmcgZm9yIHNpbXBsZV9ldmVudF9hZGQoKQogIG1peGVyOiBy
+ZW1vdmUgYWxsb2NhKCkgZnJvbSBzaW1wbGVfZXZlbnRfYWRkKCkKCiBzcmMvbWl4ZXIvc2ltcGxl
+X25vbmUuYyB8IDIwOCArKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAxMDYgaW5zZXJ0aW9ucygrKSwgMTAyIGRlbGV0aW9ucygt
+KQoKLS0gCjIuNy40CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
