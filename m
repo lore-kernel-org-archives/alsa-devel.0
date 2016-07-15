@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 18/29] mixer: remove alloca() from
-	elem_write_route()
-Date: Fri, 15 Jul 2016 09:23:22 +0900
-Message-ID: <1468542213-24880-19-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 26/29] mixer: change code formatting for
+	simple_add1()
+Date: Fri, 15 Jul 2016 09:23:30 +0900
+Message-ID: <1468542213-24880-27-git-send-email-o-takashi@sakamocchi.jp>
 References: <1468542213-24880-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id E31882666D9
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 0026F266703
  for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2016 02:23:41 +0200 (CEST)
 In-Reply-To: <1468542213-24880-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,46 +25,60 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Both of alloca() and automatic variables keep storages on stack, while
-the former generates more instructions than the latter. It's better to use
-the latter if the size of storage is computable at pre-compile or compile
-time; i.e. just for structures.
-
-This commit obsolete usages of alloca() with automatic variables.
+This commit applies code format according to typical and moderate rule.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/mixer/simple_none.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ src/mixer/simple_none.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
 diff --git a/src/mixer/simple_none.c b/src/mixer/simple_none.c
-index 0ebaf5e..d0e8963 100644
+index 3ee1168..1ccccc4 100644
 --- a/src/mixer/simple_none.c
 +++ b/src/mixer/simple_none.c
-@@ -514,19 +514,18 @@ static int elem_write_switch_constant(selem_none_t *s, selem_ctl_type_t type, in
- 
- static int elem_write_route(selem_none_t *s, int dir, selem_ctl_type_t type)
- {
--	snd_ctl_elem_value_t *ctl;
-+	snd_ctl_elem_value_t ctl = {0};
- 	unsigned int idx;
- 	int err;
- 	selem_ctl_t *c = &s->ctls[type];
--	snd_ctl_elem_value_alloca(&ctl);
--	if ((err = snd_hctl_elem_read(c->elem, ctl)) < 0)
-+	if ((err = snd_hctl_elem_read(c->elem, &ctl)) < 0)
- 		return err;
- 	for (idx = 0; idx < c->values * c->values; idx++)
--		snd_ctl_elem_value_set_integer(ctl, idx, 0);
-+		snd_ctl_elem_value_set_integer(&ctl, idx, 0);
- 	for (idx = 0; idx < c->values; idx++)
--		snd_ctl_elem_value_set_integer(ctl, idx * c->values + idx,
-+		snd_ctl_elem_value_set_integer(&ctl, idx * c->values + idx,
- 					       !!(s->str[dir].sw & (1 << idx)));
--	if ((err = snd_hctl_elem_write(c->elem, ctl)) < 0)
-+	if ((err = snd_hctl_elem_write(c->elem, &ctl)) < 0)
- 		return err;
- 	return 0;
- }
+@@ -1527,8 +1527,10 @@ static int simple_add1(snd_mixer_class_t *class, const char *name,
+ 		simple->selem.id = id;
+ 		simple->selem.ops = &simple_none_ops;
+ 		err = snd_mixer_elem_new(&melem, SND_MIXER_ELEM_SIMPLE,
+-					 get_compare_weight(snd_mixer_selem_id_get_name(simple->selem.id), snd_mixer_selem_id_get_index(simple->selem.id)),
+-					 simple, selem_free);
++			get_compare_weight(
++				snd_mixer_selem_id_get_name(simple->selem.id),
++				snd_mixer_selem_id_get_index(simple->selem.id)),
++			simple, selem_free);
+ 		if (err < 0) {
+ 			snd_mixer_selem_id_free(id);
+ 			free(simple);
+@@ -1541,11 +1543,12 @@ static int simple_add1(snd_mixer_class_t *class, const char *name,
+ 	}
+ 	if (simple->ctls[type].elem) {
+ 		SNDERR("helem (%s,'%s',%u,%u,%u) appears twice or more",
+-				snd_ctl_elem_iface_name(snd_hctl_elem_get_interface(helem)),
+-				snd_hctl_elem_get_name(helem),
+-				snd_hctl_elem_get_index(helem),
+-				snd_hctl_elem_get_device(helem),
+-				snd_hctl_elem_get_subdevice(helem));
++		       snd_ctl_elem_iface_name(
++				snd_hctl_elem_get_interface(helem)),
++		       snd_hctl_elem_get_name(helem),
++		       snd_hctl_elem_get_index(helem),
++		       snd_hctl_elem_get_device(helem),
++		       snd_hctl_elem_get_subdevice(helem));
+ 		err = -EINVAL;
+ 		goto __error;
+ 	}
+@@ -1560,8 +1563,10 @@ static int simple_add1(snd_mixer_class_t *class, const char *name,
+ 		simple->ctls[type].max = snd_ctl_elem_info_get_items(info);
+ 	} else {
+ 		if (ctype == SND_CTL_ELEM_TYPE_INTEGER) {
+-			simple->ctls[type].min = snd_ctl_elem_info_get_min(info);
+-			simple->ctls[type].max = snd_ctl_elem_info_get_max(info);
++			simple->ctls[type].min =
++					snd_ctl_elem_info_get_min(info);
++			simple->ctls[type].max =
++					snd_ctl_elem_info_get_max(info);
+ 		}
+ 	}
+ 	switch (type) {
 -- 
 2.7.4
