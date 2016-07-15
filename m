@@ -1,61 +1,95 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 0/4] Qualcomm IPQ4019 Audio driver addition
-Date: Fri, 15 Jul 2016 13:56:43 +0100
-Message-ID: <20160715125643.GK30372@sirena.org.uk>
-References: <1468566426-19598-1-git-send-email-njaigane@codeaurora.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: nau8825: drop redundant idiom when
+	converting integer to boolean" to the asoc tree
+Date: Fri, 15 Jul 2016 12:56:37 +0100
+Message-ID: <E1bO1jR-0006pZ-77@debutante>
+References: <1468548377-9269-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rwbb4r/vLufKlfJs"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1468566426-19598-1-git-send-email-njaigane-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: njaigane-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
-Cc: linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-A+ZNKFmMK5xy9aJCnZT0Uw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, twp-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, andy.gross-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, david.brown-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, bjorn.andersson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, varada-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, pradeepb-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, snlakshm-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, bselvara-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C0192668AB
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2016 13:56:49 +0200 (CEST)
+In-Reply-To: <1468548377-9269-1-git-send-email-KCHSU0@nuvoton.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com, yong.zhi@intel.com, mhkuo@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---rwbb4r/vLufKlfJs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: nau8825: drop redundant idiom when converting integer to boolean
 
-On Fri, Jul 15, 2016 at 12:37:02PM +0530, njaigane-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org wrote:
-> From: Jaiganesh Narayanan <njaigane-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
->=20
-> These patches add the support for Qualcomm IPQ4019 ASoC
-> with the ALSA based audio drivers. The patches are broken
->=20
-> 1. Device Tree support
-> 2. Audio clock driver support
-> 3. TLMM / Pinctrl support
-> 4. ALSA based audio drivers
+has been applied to the asoc tree at
 
-You need to completely rework how you're posting this so it can be
-reviewed, probably splitting it into separate patch serieses - please
-see SubmittingPatches for an overview of what people are expecting, and
-as I said in reply to one of the patches looking at git can also be
-helpful.  I'd suggest sending the drivers for each subsystem as a
-separate patch series, there will be some interdependency in terms of
-getting things running but not in terms of getting the patches applied.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
---rwbb4r/vLufKlfJs
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEcBAEBCAAGBQJXiN2LAAoJECTWi3JdVIfQ3JIH/37/lIH1kHbO9kE/nWm3km1l
-nvCEq8vPeuzcb09Q7knbhU16bcLq2UMmCwsjWBON+RGdr6QI+JNVIEt2Perk3KZF
-cxZb3ULPRxMOetxrVfngyhTWWmiyvHEqXpV2zqUTU7ed4B3KvITPvIh4AOqUIhYT
-HDURwkORAzl6VFVtmQ7NlqvODlEWIMTZJBzmO/3acavW5GQ55W93G/AR8zCYSWQZ
-62khTWrCG4Hz/KBq/ROYMv22Tk+o9Tv2V1V+q9SjMWrWBFlbHKr8p0eVrAqG3M1q
-1HxJnwHfrYu1ktJfQc75PIHgwtVP7wqDjpE4vcp528TfeNj8Z0Q+y5MiYCbo+HA=
-=kxnM
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---rwbb4r/vLufKlfJs--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 308e3e0bfa9ec9d1dc8c415e8a68ad4efd0fddfd Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Fri, 15 Jul 2016 10:06:17 +0800
+Subject: [PATCH] ASoC: nau8825: drop redundant idiom when converting integer
+ to boolean
+
+Thanks Mark and Anatol for the discussion. According to the result,
+the standard C will translate any non-zero value into true, or
+false otherwise.
+QUOTE:
+"6.3.1.2 Boolean type
+When any scalar value is converted to _Bool, the result is 0 if the
+value compares equal to 0; otherwise, the result is 1
+"
+Thus, the "!!" idiom is removed.
+
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/nau8825.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index a97418deb034..5c9707ac4bbf 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -1349,9 +1349,9 @@ static bool nau8825_is_jack_inserted(struct regmap *regmap)
+ 	int status, jkdet;
+ 
+ 	regmap_read(regmap, NAU8825_REG_JACK_DET_CTRL, &jkdet);
+-	active_high = !!(jkdet & NAU8825_JACK_POLARITY);
++	active_high = jkdet & NAU8825_JACK_POLARITY;
+ 	regmap_read(regmap, NAU8825_REG_I2C_DEVICE_ID, &status);
+-	is_high = !!(status & NAU8825_GPIO2JD1);
++	is_high = status & NAU8825_GPIO2JD1;
+ 	/* return jack connection status according to jack insertion logic
+ 	 * active high or active low.
+ 	 */
+-- 
+2.8.1
