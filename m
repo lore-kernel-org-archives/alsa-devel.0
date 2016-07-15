@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 15/29] mixer: change code formatting for
-	elem_write_enum()
-Date: Fri, 15 Jul 2016 09:23:19 +0900
-Message-ID: <1468542213-24880-16-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 17/29] mixer: change code formatting for
+	elem_write_route()
+Date: Fri, 15 Jul 2016 09:23:21 +0900
+Message-ID: <1468542213-24880-18-git-send-email-o-takashi@sakamocchi.jp>
 References: <1468542213-24880-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 55749265D3C
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 5D48F26659F
  for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2016 02:23:41 +0200 (CEST)
 In-Reply-To: <1468542213-24880-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,30 +29,20 @@ This commit applies code format according to typical and moderate rule.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/mixer/simple_none.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ src/mixer/simple_none.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/src/mixer/simple_none.c b/src/mixer/simple_none.c
-index 13666b5..5ae94d9 100644
+index cf57ea5..0ebaf5e 100644
 --- a/src/mixer/simple_none.c
 +++ b/src/mixer/simple_none.c
-@@ -538,7 +538,8 @@ static int elem_write_enum(selem_none_t *s)
- 	int type;
- 	selem_ctl_t *c;
- 	type = CTL_GLOBAL_ENUM;
--	if ( (s->selem.caps & (SM_CAP_CENUM | SM_CAP_PENUM) ) == (SM_CAP_CENUM | SM_CAP_PENUM) )
-+	if ((s->selem.caps & (SM_CAP_CENUM | SM_CAP_PENUM)) ==
-+						(SM_CAP_CENUM | SM_CAP_PENUM))
- 		type = CTL_GLOBAL_ENUM;
- 	else if (s->selem.caps & SM_CAP_PENUM)
- 		type = CTL_PLAYBACK_ENUM;
-@@ -549,7 +550,8 @@ static int elem_write_enum(selem_none_t *s)
- 	if ((err = snd_hctl_elem_read(c->elem, ctl)) < 0)
- 		return err;
+@@ -524,7 +524,8 @@ static int elem_write_route(selem_none_t *s, int dir, selem_ctl_type_t type)
+ 	for (idx = 0; idx < c->values * c->values; idx++)
+ 		snd_ctl_elem_value_set_integer(ctl, idx, 0);
  	for (idx = 0; idx < c->values; idx++)
--		snd_ctl_elem_value_set_enumerated(ctl, idx, (unsigned int)s->str[0].vol[idx]);
-+		snd_ctl_elem_value_set_enumerated(ctl, idx,
-+					(unsigned int)s->str[0].vol[idx]);
+-		snd_ctl_elem_value_set_integer(ctl, idx * c->values + idx, !!(s->str[dir].sw & (1 << idx)));
++		snd_ctl_elem_value_set_integer(ctl, idx * c->values + idx,
++					       !!(s->str[dir].sw & (1 << idx)));
  	if ((err = snd_hctl_elem_write(c->elem, ctl)) < 0)
  		return err;
  	return 0;
