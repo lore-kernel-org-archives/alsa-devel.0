@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 24/29] mixer: remove alloca() from
-	get_enum_item_ops()
-Date: Fri, 15 Jul 2016 09:23:28 +0900
-Message-ID: <1468542213-24880-25-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 22/29] mixer: remove alloca() from
+	init_db_range()
+Date: Fri, 15 Jul 2016 09:23:26 +0900
+Message-ID: <1468542213-24880-23-git-send-email-o-takashi@sakamocchi.jp>
 References: <1468542213-24880-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id EE2302666F8
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id F1CB62666FE
  for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2016 02:23:41 +0200 (CEST)
 In-Reply-To: <1468542213-24880-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,30 +38,30 @@ Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
  1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/src/mixer/simple_none.c b/src/mixer/simple_none.c
-index ab2b151..3362f82 100644
+index 05dde41..0799ceb 100644
 --- a/src/mixer/simple_none.c
 +++ b/src/mixer/simple_none.c
-@@ -1342,7 +1342,7 @@ static int get_enum_item_ops(snd_mixer_elem_t *elem,
- 			     unsigned int *itemp)
+@@ -1098,7 +1098,7 @@ static int convert_to_dB(snd_hctl_elem_t *ctl, struct selem_str *rec,
+  */
+ static int init_db_range(snd_hctl_elem_t *ctl, struct selem_str *rec)
  {
- 	selem_none_t *s = snd_mixer_elem_get_private(elem);
--	snd_ctl_elem_value_t *ctl;
-+	snd_ctl_elem_value_t ctl = {0};
- 	snd_hctl_elem_t *helem;
- 	int err;
+-	snd_ctl_elem_info_t *info;
++	snd_ctl_elem_info_t info = {0};
+ 	unsigned int *tlv = NULL;
+ 	const unsigned int tlv_size = 4096;
+ 	unsigned int *dbrec;
+@@ -1109,10 +1109,9 @@ static int init_db_range(snd_hctl_elem_t *ctl, struct selem_str *rec)
+ 	if (rec->db_initialized)
+ 		return 0;
  
-@@ -1352,10 +1352,9 @@ static int get_enum_item_ops(snd_mixer_elem_t *elem,
- 	if (!helem) helem = s->ctls[CTL_PLAYBACK_ENUM].elem;
- 	if (!helem) helem = s->ctls[CTL_CAPTURE_ENUM].elem;
- 	assert(helem);
--	snd_ctl_elem_value_alloca(&ctl);
--	err = snd_hctl_elem_read(helem, ctl);
-+	err = snd_hctl_elem_read(helem, &ctl);
- 	if (! err)
--		*itemp = snd_ctl_elem_value_get_enumerated(ctl, channel);
-+		*itemp = snd_ctl_elem_value_get_enumerated(&ctl, channel);
- 	return err;
- }
- 
+-	snd_ctl_elem_info_alloca(&info);
+-	if (snd_hctl_elem_info(ctl, info) < 0)
++	if (snd_hctl_elem_info(ctl, &info) < 0)
+ 		goto error;
+-	if (!snd_ctl_elem_info_is_tlv_readable(info))
++	if (!snd_ctl_elem_info_is_tlv_readable(&info))
+ 		goto error;
+ 	tlv = malloc(tlv_size);
+ 	if (!tlv)
 -- 
 2.7.4
