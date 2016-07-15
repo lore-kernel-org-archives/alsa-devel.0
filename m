@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 3/5] topology: Change uuid value to 16
-	separate characters in text conf file
-Date: Fri, 15 Jul 2016 20:18:59 +0800
-Message-ID: <46db82640cbbedcb13fb6fbc382772a9d66f139d.1468583255.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v2 2/5] topology: Merge lookup for data
+	reference into tplg_copy_data()
+Date: Fri, 15 Jul 2016 20:18:11 +0800
+Message-ID: <c6dc081280f9a97d74d8ad94d15b898212e1d529.1468583255.git.mengdong.lin@linux.intel.com>
 References: <cover.1468583255.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 50F9F266A83
- for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2016 14:14:02 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A9CC266A80
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2016 14:13:13 +0200 (CEST)
 In-Reply-To: <cover.1468583255.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,153 +27,168 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Previously in text conf file, the uuid value of vendor tuples is a
-16-characer string. Now change it to 16 characters separated by commas,
-easier for users to edit it manually.
+Code refactor to reduce function calls. Now tplg_copy_data() can look up
+a referenced data element and merge its data.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/topology.h b/include/topology.h
-index d666505..89bed6c 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -273,8 +273,8 @@ extern "C" {
-  *		...
-  *	}
-  *
-- *	tuples."uuid" {
-- *		VENDOR_TOKEN_ID2 "16 character uuid"
-+ *	tuples."uuid" {			# 16 characters separated by commas
-+ *		VENDOR_TOKEN_ID2 "0x01,0x02,...,0x0f"
-  *		...
-  *	}
-  *
+diff --git a/src/topology/ctl.c b/src/topology/ctl.c
+index 7ded0a4..592dded 100644
+--- a/src/topology/ctl.c
++++ b/src/topology/ctl.c
+@@ -140,9 +140,9 @@ static int tplg_build_mixer_control(snd_tplg_t *tplg,
+ 				 err = copy_tlv(elem, ref->elem);
+ 
+ 		} else if (ref->type == SND_TPLG_TYPE_DATA) {
+-			ref->elem = tplg_elem_lookup(&tplg->pdata_list,
+-						ref->id, SND_TPLG_TYPE_DATA);
+-			 err = tplg_copy_data(elem, ref->elem);
++			err = tplg_copy_data(tplg, elem, ref);
++			if (err < 0)
++				return err;
+ 		}
+ 
+ 		if (!ref->elem) {
+@@ -188,9 +188,9 @@ static int tplg_build_enum_control(snd_tplg_t *tplg,
+ 				copy_enum_texts(elem, ref->elem);
+ 
+ 		} else if (ref->type == SND_TPLG_TYPE_DATA) {
+-			ref->elem = tplg_elem_lookup(&tplg->pdata_list,
+-						ref->id, SND_TPLG_TYPE_DATA);
+-			err = tplg_copy_data(elem, ref->elem);
++			err = tplg_copy_data(tplg, elem, ref);
++			if (err < 0)
++				return err;
+ 		}
+ 		if (!ref->elem) {
+ 			SNDERR("error: cannot find '%s' referenced by"
+@@ -208,6 +208,7 @@ static int tplg_build_bytes_control(snd_tplg_t *tplg, struct tplg_elem *elem)
+ {
+ 	struct tplg_ref *ref;
+ 	struct list_head *base, *pos;
++	int err;
+ 
+ 	base = &elem->ref_list;
+ 
+@@ -217,18 +218,11 @@ static int tplg_build_bytes_control(snd_tplg_t *tplg, struct tplg_elem *elem)
+ 		if (ref->id == NULL || ref->elem)
+ 			continue;
+ 
+-		/* bytes control only reference one private data section */
+-		ref->elem = tplg_elem_lookup(&tplg->pdata_list,
+-			ref->id, SND_TPLG_TYPE_DATA);
+-		if (!ref->elem) {
+-			SNDERR("error: cannot find data '%s'"
+-				" referenced by control '%s'\n",
+-				ref->id, elem->id);
+-			return -EINVAL;
++		 if (ref->type == SND_TPLG_TYPE_DATA) {
++			err = tplg_copy_data(tplg, elem, ref);
++			if (err < 0)
++				return err;
+ 		}
+-
+-		/* copy texts to enum elem */
+-		return tplg_copy_data(elem, ref->elem);
+ 	}
+ 
+ 	return 0;
+diff --git a/src/topology/dapm.c b/src/topology/dapm.c
+index d8eb10c..4d343b2 100644
+--- a/src/topology/dapm.c
++++ b/src/topology/dapm.c
+@@ -191,12 +191,11 @@ static int tplg_build_widget(snd_tplg_t *tplg,
+ 			break;
+ 
+ 		case SND_TPLG_TYPE_DATA:
+-			if (!ref->elem)
+-				ref->elem = tplg_elem_lookup(&tplg->pdata_list,
+-						ref->id, SND_TPLG_TYPE_DATA);
+-			if (ref->elem)
+-				err = tplg_copy_data(elem, ref->elem);
++			err = tplg_copy_data(tplg, elem, ref);
++			if (err < 0)
++				return err;
+ 			break;
++
+ 		default:
+ 			break;
+ 		}
 diff --git a/src/topology/data.c b/src/topology/data.c
-index e60114e..a0c5ea2 100644
+index 0c5469a..e60114e 100644
 --- a/src/topology/data.c
 +++ b/src/topology/data.c
-@@ -176,6 +176,49 @@ static int get_hex_num(const char *str)
- 	return values;
+@@ -889,22 +889,30 @@ int tplg_parse_data(snd_tplg_t *tplg, snd_config_t *cfg,
+ 	return err;
  }
  
-+/* get uuid from a string made by 16 characters separated by commas */
-+static int get_uuid(const char *str, unsigned char *uuid_le)
-+{
-+	unsigned long int  val;
-+	char *tmp, *s = NULL;
-+	int values = 0, ret = 0;
-+
-+	tmp = strdup(str);
-+	if (tmp == NULL)
-+		return -ENOMEM;
-+
-+	s = strtok(tmp, ",");
-+
-+	while (s != NULL) {
-+		errno = 0;
-+		val = strtoul(s, NULL, 0);
-+		if ((errno == ERANGE && val == ULONG_MAX)
-+			|| (errno != 0 && val == 0)
-+			|| (val > UCHAR_MAX)) {
-+			SNDERR("error: invalid value for uuid\n");
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
-+		 *(uuid_le + values) = (unsigned char)val;
-+
-+		values++;
-+		if (values >= 16)
-+			break;
-+
-+		s = strtok(NULL, ",");
-+	}
-+
-+	if (values < 16) {
-+		SNDERR("error: less than 16 integers for uuid\n");
-+		ret = -EINVAL;
-+	}
-+
-+out:
-+	free(tmp);
-+	return ret;
-+}
-+
- static int write_hex(char *buf, char *str, int width)
+-/* Merge data from a referenced data element to the parent element's
+- * private data buffer.
++/* Find a referenced data element and copy its data to the parent
++ * element's private data buffer.
+  * An element can refer to multiple data sections. Data of these sections
+  * will be merged in the their reference order.
+  */
+-int tplg_copy_data(struct tplg_elem *elem, struct tplg_elem *ref)
++int tplg_copy_data(snd_tplg_t *tplg, struct tplg_elem *elem,
++		   struct tplg_ref *ref)
  {
- 	long val;
-@@ -474,7 +517,7 @@ static int build_tuples(snd_tplg_t *tplg, struct tplg_elem *elem)
++	struct tplg_elem *ref_elem;
+ 	struct snd_soc_tplg_private *priv, *old_priv;
+ 	int priv_data_size, old_priv_data_size;
+ 	void *obj;
+ 
+-	if (!ref)
++	ref_elem = tplg_elem_lookup(&tplg->pdata_list,
++				     ref->id, SND_TPLG_TYPE_DATA);
++	if (!ref_elem) {
++		SNDERR("error: cannot find data '%s' referenced by"
++		" element '%s'\n", ref->id, elem->id);
+ 		return -EINVAL;
++	}
+ 
+ 	tplg_dbg("Data '%s' used by '%s'\n", ref->id, elem->id);
+-	if (!ref->data || !ref->data->size) /* overlook empty private data */
++	/* overlook empty private data */
++	if (!ref_elem->data || !ref_elem->data->size)
+ 		return 0;
+ 
+ 	old_priv = get_priv_data(elem);
+@@ -912,7 +920,7 @@ int tplg_copy_data(struct tplg_elem *elem, struct tplg_elem *ref)
+ 		return -EINVAL;
+ 	old_priv_data_size = old_priv->size;
+ 
+-	priv_data_size = ref->data->size;
++	priv_data_size = ref_elem->data->size;
+ 	obj = realloc(elem->obj,
+ 			elem->size + priv_data_size);
+ 	if (!obj)
+@@ -926,9 +934,9 @@ int tplg_copy_data(struct tplg_elem *elem, struct tplg_elem *ref)
+ 	/* merge the new data block */
+ 	elem->size += priv_data_size;
+ 	priv->size = priv_data_size + old_priv_data_size;
+-	ref->compound_elem = 1;
++	ref_elem->compound_elem = 1;
+ 	memcpy(priv->data + old_priv_data_size,
+-	       ref->data->data, priv_data_size);
++	       ref_elem->data->data, priv_data_size);
  	return 0;
  }
  
--static int parse_tuple_set(snd_tplg_t *tplg, snd_config_t *cfg,
-+static int parse_tuple_set(snd_config_t *cfg,
- 	struct tplg_tuple_set **s)
- {
- 	snd_config_iterator_t i, next;
-@@ -484,7 +527,6 @@ static int parse_tuple_set(snd_tplg_t *tplg, snd_config_t *cfg,
- 	unsigned int type, num_tuples = 0;
- 	struct tplg_tuple *tuple;
- 	unsigned long int tuple_val;
--	int len;
- 
- 	snd_config_get_id(cfg, &id);
- 
-@@ -535,14 +577,8 @@ static int parse_tuple_set(snd_tplg_t *tplg, snd_config_t *cfg,
- 
- 		switch (type) {
- 		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
--			len = strlen(value);
--			if (len > 16 || len == 0) {
--				SNDERR("error: tuple %s: invalid uuid\n", id);
-+			if (get_uuid(value, tuple->uuid) < 0)
- 				goto err;
--			}
--
--			memcpy(tuple->uuid, value, len);
--			tplg_dbg("\t\t%s = %s\n", tuple->token, tuple->uuid);
- 			break;
- 
- 		case SND_SOC_TPLG_TUPLE_TYPE_STRING:
-@@ -598,7 +634,7 @@ err:
- 	return -EINVAL;
- }
- 
--static int parse_tuple_sets(snd_tplg_t *tplg, snd_config_t *cfg,
-+static int parse_tuple_sets(snd_config_t *cfg,
- 	struct tplg_vendor_tuples *tuples)
- {
- 	snd_config_iterator_t i, next;
-@@ -632,7 +668,7 @@ static int parse_tuple_sets(snd_tplg_t *tplg, snd_config_t *cfg,
- 			return -EINVAL;
- 		}
- 
--		err = parse_tuple_set(tplg, n, &tuples->set[tuples->num_sets]);
-+		err = parse_tuple_set(n, &tuples->set[tuples->num_sets]);
- 		if (err < 0)
- 			return err;
- 
-@@ -774,7 +810,7 @@ int tplg_parse_tuples(snd_tplg_t *tplg, snd_config_t *cfg,
- 		}
- 
- 		if (strcmp(id, "tuples") == 0) {
--			err = parse_tuple_sets(tplg, n, tuples);
-+			err = parse_tuple_sets(n, tuples);
- 			if (err < 0)
- 				return err;
- 		}
 diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index 518b81e..48db813 100644
+index 4daa540..518b81e 100644
 --- a/src/topology/tplg_local.h
 +++ b/src/topology/tplg_local.h
-@@ -104,7 +104,7 @@ struct tplg_tuple {
- 	char token[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	union {
- 		char string[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
--		char uuid[16];
-+		unsigned char uuid[16];
- 		unsigned int value;
- 	};
- };
+@@ -228,7 +228,9 @@ int tplg_build_widgets(snd_tplg_t *tplg);
+ int tplg_build_routes(snd_tplg_t *tplg);
+ int tplg_build_pcm_dai(snd_tplg_t *tplg, unsigned int type);
+ 
+-int tplg_copy_data(struct tplg_elem *elem, struct tplg_elem *ref);
++int tplg_copy_data(snd_tplg_t *tplg, struct tplg_elem *elem,
++		   struct tplg_ref *ref);
++
+ int tplg_parse_data_refs(snd_config_t *cfg, struct tplg_elem *elem);
+ 
+ int tplg_ref_add(struct tplg_elem *elem, int type, const char* id);
 -- 
 2.5.0
