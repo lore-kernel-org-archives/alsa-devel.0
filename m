@@ -1,17 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 22/29] mixer: remove alloca() from
-	init_db_range()
-Date: Fri, 15 Jul 2016 09:23:26 +0900
-Message-ID: <1468542213-24880-23-git-send-email-o-takashi@sakamocchi.jp>
-References: <1468542213-24880-1-git-send-email-o-takashi@sakamocchi.jp>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: [PATCH] ASoC: nau8825: drop redundant idiom when
+	converting integer to boolean
+Date: Fri, 15 Jul 2016 10:06:17 +0800
+Message-ID: <1468548377-9269-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id F1CB62666FE
- for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2016 02:23:41 +0200 (CEST)
-In-Reply-To: <1468542213-24880-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D075265873
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2016 04:04:05 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,47 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Both of alloca() and automatic variables keep storages on stack, while
-the former generates more instructions than the latter. It's better to use
-the latter if the size of storage is computable at pre-compile or compile
-time; i.e. just for structures.
+Thanks Mark and Anatol for the discussion. According to the result, 
+the standard C will translate any non-zero value into true, or 
+false otherwise.
+QUOTE:
+"6.3.1.2 Boolean type
+When any scalar value is converted to _Bool, the result is 0 if the 
+value compares equal to 0; otherwise, the result is 1
+"
+Thus, the "!!" idiom is removed.
 
-This commit obsolete usages of alloca() with automatic variables.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 ---
- src/mixer/simple_none.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/codecs/nau8825.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/src/mixer/simple_none.c b/src/mixer/simple_none.c
-index 05dde41..0799ceb 100644
---- a/src/mixer/simple_none.c
-+++ b/src/mixer/simple_none.c
-@@ -1098,7 +1098,7 @@ static int convert_to_dB(snd_hctl_elem_t *ctl, struct selem_str *rec,
-  */
- static int init_db_range(snd_hctl_elem_t *ctl, struct selem_str *rec)
- {
--	snd_ctl_elem_info_t *info;
-+	snd_ctl_elem_info_t info = {0};
- 	unsigned int *tlv = NULL;
- 	const unsigned int tlv_size = 4096;
- 	unsigned int *dbrec;
-@@ -1109,10 +1109,9 @@ static int init_db_range(snd_hctl_elem_t *ctl, struct selem_str *rec)
- 	if (rec->db_initialized)
- 		return 0;
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index a97418d..5c9707a 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -1349,9 +1349,9 @@ static bool nau8825_is_jack_inserted(struct regmap *regmap)
+ 	int status, jkdet;
  
--	snd_ctl_elem_info_alloca(&info);
--	if (snd_hctl_elem_info(ctl, info) < 0)
-+	if (snd_hctl_elem_info(ctl, &info) < 0)
- 		goto error;
--	if (!snd_ctl_elem_info_is_tlv_readable(info))
-+	if (!snd_ctl_elem_info_is_tlv_readable(&info))
- 		goto error;
- 	tlv = malloc(tlv_size);
- 	if (!tlv)
+ 	regmap_read(regmap, NAU8825_REG_JACK_DET_CTRL, &jkdet);
+-	active_high = !!(jkdet & NAU8825_JACK_POLARITY);
++	active_high = jkdet & NAU8825_JACK_POLARITY;
+ 	regmap_read(regmap, NAU8825_REG_I2C_DEVICE_ID, &status);
+-	is_high = !!(status & NAU8825_GPIO2JD1);
++	is_high = status & NAU8825_GPIO2JD1;
+ 	/* return jack connection status according to jack insertion logic
+ 	 * active high or active low.
+ 	 */
 -- 
-2.7.4
+2.6.4
