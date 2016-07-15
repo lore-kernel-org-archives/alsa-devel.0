@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8825: drop redundant idiom when
-	converting integer to boolean" to the asoc tree
-Date: Fri, 15 Jul 2016 12:56:37 +0100
-Message-ID: <E1bO1jR-0006pZ-77@debutante>
-References: <1468548377-9269-1-git-send-email-KCHSU0@nuvoton.com>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v2 0/5] topology: Enhance support for private
+	data
+Date: Fri, 15 Jul 2016 20:17:21 +0800
+Message-ID: <cover.1468583255.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C0192668AB
- for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2016 13:56:49 +0200 (CEST)
-In-Reply-To: <1468548377-9269-1-git-send-email-KCHSU0@nuvoton.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20C3E266A7C
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2016 14:12:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com, yong.zhi@intel.com, mhkuo@nuvoton.com
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, o-takashi@sakamocchi.jp, liam.r.girdwood@intel.com, shreyas.nc@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-   ASoC: nau8825: drop redundant idiom when converting integer to boolean
+There is no ABI change in this series.
 
-has been applied to the asoc tree at
+We finished verification on latest Intel platforms. There will be 4 or 5
+series. Later series will come with some ABI update for topology. The size
+check on ABI objects in current ASoC kernel will detect possible ABI
+version mismatch between user space and kernel
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+History:
+v2: fix compiler warnings. There are 2 warnings left in topology/pcm.c
+    that are not caused by this series and will be fixed in later patches.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Mengdong Lin (5):
+  topology: An element can refer to multipe data sections in text conf
+    file
+  topology: Merge lookup for data reference into tplg_copy_data()
+  topology: Change uuid value to 16 separate characters in text conf
+    file
+  topology: Parse vendor private data for manifest
+  topology: Tuple type can have an extenstion
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+ include/topology.h        |  69 ++++++++++-
+ src/topology/ctl.c        |  52 +++-----
+ src/topology/dapm.c       |  17 ++-
+ src/topology/data.c       | 307 ++++++++++++++++++++++++++++++++++++++--------
+ src/topology/elem.c       |   4 +
+ src/topology/parser.c     |  28 ++++-
+ src/topology/tplg_local.h |  15 ++-
+ 7 files changed, 395 insertions(+), 97 deletions(-)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 308e3e0bfa9ec9d1dc8c415e8a68ad4efd0fddfd Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Fri, 15 Jul 2016 10:06:17 +0800
-Subject: [PATCH] ASoC: nau8825: drop redundant idiom when converting integer
- to boolean
-
-Thanks Mark and Anatol for the discussion. According to the result,
-the standard C will translate any non-zero value into true, or
-false otherwise.
-QUOTE:
-"6.3.1.2 Boolean type
-When any scalar value is converted to _Bool, the result is 0 if the
-value compares equal to 0; otherwise, the result is 1
-"
-Thus, the "!!" idiom is removed.
-
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/nau8825.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index a97418deb034..5c9707ac4bbf 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -1349,9 +1349,9 @@ static bool nau8825_is_jack_inserted(struct regmap *regmap)
- 	int status, jkdet;
- 
- 	regmap_read(regmap, NAU8825_REG_JACK_DET_CTRL, &jkdet);
--	active_high = !!(jkdet & NAU8825_JACK_POLARITY);
-+	active_high = jkdet & NAU8825_JACK_POLARITY;
- 	regmap_read(regmap, NAU8825_REG_I2C_DEVICE_ID, &status);
--	is_high = !!(status & NAU8825_GPIO2JD1);
-+	is_high = status & NAU8825_GPIO2JD1;
- 	/* return jack connection status according to jack insertion logic
- 	 * active high or active low.
- 	 */
 -- 
-2.8.1
+2.5.0
