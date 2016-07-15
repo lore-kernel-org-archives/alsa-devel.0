@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/29] mixer: remove alloca() from
-	elem_write_switch_constant()
-Date: Fri, 15 Jul 2016 09:23:18 +0900
-Message-ID: <1468542213-24880-15-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 13/29] mixer: remove alloca() from
+	elem_write_switch()
+Date: Fri, 15 Jul 2016 09:23:17 +0900
+Message-ID: <1468542213-24880-14-git-send-email-o-takashi@sakamocchi.jp>
 References: <1468542213-24880-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 972862659EF
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 95D092659DD
  for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2016 02:23:40 +0200 (CEST)
 In-Reply-To: <1468542213-24880-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,12 +38,12 @@ Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
  1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/src/mixer/simple_none.c b/src/mixer/simple_none.c
-index c1f2b29..13666b5 100644
+index d0e800e..c1f2b29 100644
 --- a/src/mixer/simple_none.c
 +++ b/src/mixer/simple_none.c
-@@ -499,16 +499,15 @@ static int elem_write_switch(selem_none_t *s, int dir, selem_ctl_type_t type)
+@@ -483,17 +483,16 @@ static int elem_write_volume(selem_none_t *s, int dir, selem_ctl_type_t type)
  
- static int elem_write_switch_constant(selem_none_t *s, selem_ctl_type_t type, int val)
+ static int elem_write_switch(selem_none_t *s, int dir, selem_ctl_type_t type)
  {
 -	snd_ctl_elem_value_t *ctl;
 +	snd_ctl_elem_value_t ctl = {0};
@@ -55,9 +55,10 @@ index c1f2b29..13666b5 100644
 +	if ((err = snd_hctl_elem_read(c->elem, &ctl)) < 0)
  		return err;
  	for (idx = 0; idx < c->values; idx++)
--		snd_ctl_elem_value_set_integer(ctl, idx, !!val);
+-		snd_ctl_elem_value_set_integer(ctl, idx,
++		snd_ctl_elem_value_set_integer(&ctl, idx,
+ 					!!(s->str[dir].sw & (1 << idx)));
 -	if ((err = snd_hctl_elem_write(c->elem, ctl)) < 0)
-+		snd_ctl_elem_value_set_integer(&ctl, idx, !!val);
 +	if ((err = snd_hctl_elem_write(c->elem, &ctl)) < 0)
  		return err;
  	return 0;
