@@ -1,62 +1,59 @@
-From: Andy Gross <andy.gross@linaro.org>
-Subject: Re: [PATCH 3/4] qcom: ipq4019: ASoC tlmm/pinctrl support
-Date: Fri, 15 Jul 2016 15:23:13 -0500
-Message-ID: <20160715202313.GA3509@hector.attlocal.net>
-References: <1468566426-19598-1-git-send-email-njaigane@codeaurora.org>
- <1468566426-19598-4-git-send-email-njaigane@codeaurora.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Improving status timestamp accuracy
+Date: Fri, 15 Jul 2016 15:13:48 -0500
+Message-ID: <93b0b35f-5b8d-6ba3-c7db-fb534e66d31c@linux.intel.com>
+References: <5752A005.2050309@gmail.com>
+ <CAN8cciZN=Gjq3Za+Qz31EYoCsTuTNp4au_Upxq8ZvvEJqNdw9w@mail.gmail.com>
+ <5753FFF0.3050200@gmail.com> <s5hwpm2n2bq.wl-tiwai@suse.de>
+ <57554591.20103@gmail.com>
+ <51c7887a-db2f-ee88-8290-2f2d21d6435d@linux.intel.com>
+ <57566D64.1050400@gmail.com> <577FC0C4.1060508@IEE.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1468566426-19598-4-git-send-email-njaigane@codeaurora.org>
-Sender: linux-clk-owner@vger.kernel.org
-To: njaigane@codeaurora.org
-Cc: linux-arm-msm@vger.kernel.org, linux@qca.qualcomm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, twp@codeaurora.org, david.brown@linaro.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@armlinux.org.uk, mturquette@baylibre.com, sboyd@codeaurora.org, linus.walleij@linaro.org, plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, bjorn.andersson@linaro.org, varada@codeaurora.org, pradeepb@codeaurora.org, snlakshm@codeaurora.org, linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, bselvara@codeaurora.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E14E267E1D
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2016 22:13:51 +0200 (CEST)
+In-Reply-To: <577FC0C4.1060508@IEE.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alan Young <Alan.Young@IEE.org>, Takashi Iwai <tiwai@suse.de>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 15, 2016 at 12:37:05PM +0530, njaigane@codeaurora.org wrote:
-> From: Jaiganesh Narayanan <njaigane@codeaurora.org>
-> 
-> This patch adds the tlmm/pinctrl support for IPQ4019 ASoC.
-> 
-> Signed-off-by: Jaiganesh Narayanan <njaigane@codeaurora.org>
-> ---
->  drivers/pinctrl/qcom/pinctrl-ipq4019.c | 116 +++++++++++++++++++++++++--------
->  1 file changed, 88 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-ipq4019.c b/drivers/pinctrl/qcom/pinctrl-ipq4019.c
-> index b68ae42..bc22597 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-ipq4019.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-ipq4019.c
-> @@ -1,5 +1,5 @@
->  /*
-> - * Copyright (c) 2015, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2015-2016, The Linux Foundation. All rights reserved.
->   *
->   * This program is free software; you can redistribute it and/or modify
->   * it under the terms of the GNU General Public License version 2 and
-> @@ -283,6 +283,18 @@ enum ipq4019_functions {
->  	qca_mux_blsp_uart0,
->  	qca_mux_blsp_spi1,
->  	qca_mux_blsp_spi0,
-> +	qca_mux_i2s_rx_mclk,
-> +	qca_mux_i2s_rx_bclk,
-> +	qca_mux_i2s_rx_fsync,
-> +	qca_mux_i2s_rxd,
-> +	qca_mux_i2s_tx_mclk,
-> +	qca_mux_i2s_tx_bclk,
-> +	qca_mux_i2s_tx_fsync,
-> +	qca_mux_i2s_txd1,
-> +	qca_mux_i2s_txd2,
-> +	qca_mux_i2s_txd3,
-> +	qca_mux_i2s_spdif_out,
-> +	qca_mux_i2s_spdif_in,
+On 7/8/16 10:03 AM, Alan Young wrote:
+> On 07/06/16 07:44, Alan Young wrote:
+>> I'll work on developing and testing a patch for consideration before
+>> coming back to the last. It will be easier to discuss the merits or
+>> otherwise of my proposal with a concrete, working patch to consider.
+>
+>
+> Well, it has been a few weeks but this is what I have come up with.
+>
+> It is not perfect because of the issue noted in the comments but so far
+> I have not been able to discover any downside. It many (most) cases, the
+> reported delay (and audio_tstamp) is more accurate than it was before.
+> In other cases there is no change.
 
-You'll also need to add all of these to the
-Documentation/devicetree/bindings/pinctrl/qcom,ipq4019-pinctrl.txt
+I just looked at the code and I am probably missing something.
 
-I was also going to suggest just using qca_i2s and having a single function, but
-it seems like there is at least 1 pin that supports more than one i2s mode.
+in update_delay() you apply a delta between the last timestamp and the 
+current one and modify the runtime->delay.
 
-Regards,
-Andy
+Immediately after, in update_audio_tstamp() runtime->delay is used as 
+well to compute audio_frames which in turn is used to find the 
+audio_tstamp, on which another delta between current tstamp and last 
+timestamp is applied.
+
+Overall it looks like you are correcting twice for the same delay?
+
+Even if this was correct, you would want to make sure the delta is 
+positive to keep audio timestamps monotonous.
