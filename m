@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: use asoc_simple_card_parse_card_name()" to the asoc tree
-Date: Sat, 16 Jul 2016 13:03:20 +0100
-Message-ID: <E1bOOJU-0004sJ-Fp@debutante>
-References: <87oa7mr49t.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card-utils: add asoc_simple_card_parse_card_name()" to the asoc tree
+Date: Sat, 16 Jul 2016 13:04:20 +0100
+Message-ID: <E1bOOKS-0004u1-Uk@debutante>
+References: <87shvnlgrh.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87oa7mr49t.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87shvnlgrh.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: use asoc_simple_card_parse_card_name()
+   ASoC: simple-card-utils: add asoc_simple_card_parse_card_name()
 
 has been applied to the asoc tree at
 
@@ -37,52 +37,61 @@ to this mail.
 Thanks,
 Mark
 
->From 3527d85b85e65401b7d93073b3ab4e687cdd2521 Mon Sep 17 00:00:00 2001
+>From fc55c9b5a2ea794c4b6be937522bcfe98be4770a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 11 Jul 2016 23:59:40 +0000
-Subject: [PATCH] ASoC: simple-card: use asoc_simple_card_parse_card_name()
+Date: Mon, 11 Jul 2016 23:59:16 +0000
+Subject: [PATCH] ASoC: simple-card-utils: add
+ asoc_simple_card_parse_card_name()
+
+simple-card needs to get its card name.
+This patch makes this method simple style standard.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ include/sound/simple_card_utils.h     |  2 ++
+ sound/soc/generic/simple-card-utils.c | 20 ++++++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 07469cd9272c..43295f024982 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -427,9 +427,6 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	if (!node)
- 		return -EINVAL;
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index b88a8dcfe4ba..86088aed9002 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -30,5 +30,7 @@ int asoc_simple_card_parse_daifmt(struct device *dev,
+ int asoc_simple_card_set_dailink_name(struct device *dev,
+ 				      struct snd_soc_dai_link *dai_link,
+ 				      const char *fmt, ...);
++int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
++				     char *prefix);
  
--	/* Parse the card name from DT */
--	snd_soc_of_parse_card_name(&priv->snd_card, PREFIX "name");
--
- 	/* The off-codec widgets */
- 	if (of_property_read_bool(node, PREFIX "widgets")) {
- 		ret = snd_soc_of_parse_audio_simple_widgets(&priv->snd_card,
-@@ -451,9 +448,6 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	if (ret == 0)
- 		priv->mclk_fs = val;
- 
--	dev_dbg(dev, "New simple-card: %s\n", priv->snd_card.name ?
--		priv->snd_card.name : "");
--
- 	/* Single/Muti DAI link(s) & New style of DT node */
- 	if (of_get_child_by_name(node, PREFIX "dai-link")) {
- 		struct device_node *np = NULL;
-@@ -476,8 +470,9 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 			return ret;
- 	}
- 
--	if (!priv->snd_card.name)
--		priv->snd_card.name = priv->snd_card.dai_link->name;
-+	ret = asoc_simple_card_parse_card_name(&priv->snd_card, PREFIX);
-+	if (ret)
-+		return ret;
- 
- 	return 0;
+ #endif /* __SIMPLE_CARD_CORE_H */
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 48c73660b66a..d89a9a1b2471 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -75,3 +75,23 @@ int asoc_simple_card_set_dailink_name(struct device *dev,
+ 	return ret;
  }
+ EXPORT_SYMBOL_GPL(asoc_simple_card_set_dailink_name);
++
++int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
++				     char *prefix)
++{
++	char prop[128];
++	int ret;
++
++	snprintf(prop, sizeof(prop), "%sname", prefix);
++
++	/* Parse the card name from DT */
++	ret = snd_soc_of_parse_card_name(card, prop);
++	if (ret < 0)
++		return ret;
++
++	if (!card->name && card->dai_link)
++		card->name = card->dai_link->name;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(asoc_simple_card_parse_card_name);
 -- 
 2.8.1
