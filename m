@@ -1,217 +1,88 @@
-From: arv <arvindhandroidin@gmail.com>
-Subject: =?utf-8?q?USB_audio_=28AOAv2=29_-_retire=5Fcapture?=
-	=?utf-8?q?=5Furb_messages?=
-Date: Sat, 16 Jul 2016 05:28:18 +0000 (UTC)
-Message-ID: <loom.20160716T071512-118@post.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id DF886261615
- for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2016 07:30:06 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1bOIAu-00023x-8m
- for alsa-devel@alsa-project.org; Sat, 16 Jul 2016 07:30:04 +0200
-Received: from unknown.maxonline.com.sg ([unknown.maxonline.com.sg])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2016 07:30:04 +0200
-Received: from arvindhandroidin by unknown.maxonline.com.sg with local (Gmexim
- 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2016 07:30:04 +0200
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: simple-card: use asoc_simple_card_parse_card_name()" to the asoc tree
+Date: Sat, 16 Jul 2016 13:03:20 +0100
+Message-ID: <E1bOOJU-0004sJ-Fp@debutante>
+References: <87oa7mr49t.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87oa7mr49t.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
+The patch
 
+   ASoC: simple-card: use asoc_simple_card_parse_card_name()
 
-I am trying to playback audio from Android phone using USB AOAv2. (PCM
-audio, 16bit, 44.1 KHz, stereo) on a Wandboard Quad (i.MX6) board running
-Ubuntu 14.04.
+has been applied to the asoc tree at
 
-The detection of phone is fine and playback via alsa commands/gstreamer is
-successful.
-But during playback, there are distortions in the sound. 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-dmesg prints as follows,
-retire_capture_urb: x callbacks suppressed ----->[x is around 41 to 300]
-retire_capture_urb: x callbacks suppressed
-retire_capture_urb: x callbacks suppressed
-retire_capture_urb: x callbacks suppressed
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-arecord command prints underrun occurred.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-So each time, retire_capture_urb is printed, there is a distortion.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-I tried the same program on different machines.
-Following are the results,
-On Wandboard, the distortions happen each 40 seconds or so.
-On a Linux server PC running Ubuntu 14.04 the audio breaks are more frequent.
-On a Linux PC running Ubuntu 12.02 the audio breaks are less frequent.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Could anyone guide me on how retire_capture_urb be prevented or how can a
-smooth playback be achieved ? 
+Thanks,
+Mark
 
-Should there be any special configurations done at USB driver ?
+>From 3527d85b85e65401b7d93073b3ab4e687cdd2521 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 11 Jul 2016 23:59:40 +0000
+Subject: [PATCH] ASoC: simple-card: use asoc_simple_card_parse_card_name()
 
-lsusb -v print is as follows, The synch type for the endpoint appears to be
-enumerated as Synchronous. Could the synch type be modified using libusb, is
-this the cause of underrun?
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/generic/simple-card.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-Bus 001 Device 004: ID 18d1:2d02 Google Inc.
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0
-  bDeviceProtocol         0
-  bMaxPacketSize0        64
-  idVendor           0x18d1 Google Inc.
-  idProduct          0x2d02
-  bcdDevice           ff.ff
-  iManufacturer           1 motorola
-  iProduct                2 MotoG3-TE
-  iSerial                 3 ZY222WB7TT
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          110
-    bNumInterfaces          2
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0x80
-      (Bus Powered)
-    MaxPower              500mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           40
-        bInCollection           2
-        baInterfaceNr( 0)       0
-        baInterfaceNr( 1)       1
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             1
-        wTerminalType      0x0201 Microphone
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             3
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          2
-        bSourceID               2
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      6 (FEATURE_UNIT)
-        bUnitID                 2
-        bSourceID               1
-        bControlSize            2
-        bmaControls( 0)      0x00
-        bmaControls( 0)      0x00
-        iFeature                0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           1
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                11
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            1 Discrete
-        tSamFreq[ 0]        44100
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           13
-          Transfer Type            Isochronous
-          Synch Type               Synchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0100  1x 256 bytes
-        bInterval               4
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         1 Milliseconds
-          wLockDelay              1 Milliseconds
-Device Qualifier (for other device speed):
-  bLength                10
-  bDescriptorType         6
-  bcdUSB               2.00
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0
-  bDeviceProtocol         0
-  bMaxPacketSize0        64
-  bNumConfigurations      1
-Device Status:     0x0000
-  (Bus Powered)
-
-Thanks for the help..
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 07469cd9272c..43295f024982 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -427,9 +427,6 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 	if (!node)
+ 		return -EINVAL;
+ 
+-	/* Parse the card name from DT */
+-	snd_soc_of_parse_card_name(&priv->snd_card, PREFIX "name");
+-
+ 	/* The off-codec widgets */
+ 	if (of_property_read_bool(node, PREFIX "widgets")) {
+ 		ret = snd_soc_of_parse_audio_simple_widgets(&priv->snd_card,
+@@ -451,9 +448,6 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 	if (ret == 0)
+ 		priv->mclk_fs = val;
+ 
+-	dev_dbg(dev, "New simple-card: %s\n", priv->snd_card.name ?
+-		priv->snd_card.name : "");
+-
+ 	/* Single/Muti DAI link(s) & New style of DT node */
+ 	if (of_get_child_by_name(node, PREFIX "dai-link")) {
+ 		struct device_node *np = NULL;
+@@ -476,8 +470,9 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 			return ret;
+ 	}
+ 
+-	if (!priv->snd_card.name)
+-		priv->snd_card.name = priv->snd_card.dai_link->name;
++	ret = asoc_simple_card_parse_card_name(&priv->snd_card, PREFIX);
++	if (ret)
++		return ret;
+ 
+ 	return 0;
+ }
+-- 
+2.8.1
