@@ -1,89 +1,126 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2] ALSA: echoaudio: purge contradictions
-	between dimension matrix members and total number of members
-Date: Sat, 16 Jul 2016 22:24:32 +0900
-Message-ID: <1468675472-32282-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 1/2] ASoC: atmel-i2s: add DT bindings for I2S
+ controller
+Date: Sat, 16 Jul 2016 17:43:31 -0500
+Message-ID: <20160716224331.GA19101@rob-hp-laptop>
+References: <cover.1468405019.git.cyrille.pitchen@atmel.com>
+ <901eec0b7edfa488ff735e7057fbc25ea8dc59f7.1468405019.git.cyrille.pitchen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 6FE9026509E
- for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2016 15:24:37 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <901eec0b7edfa488ff735e7057fbc25ea8dc59f7.1468405019.git.cyrille.pitchen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Cyrille Pitchen <cyrille.pitchen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Cc: nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently, sound device drivers for PCI cards produced by Echo Audio
-support dimension parameter of element information. But the information
-has contradictions to the number of members of each element. I guess that
-this comes from the assumption that these sound cards are used only by
-'echomixer' in userspace. But ideally, they should be used with usual ALSA
-control applications.
+On Wed, Jul 13, 2016 at 12:25:38PM +0200, Cyrille Pitchen wrote:
+> This patch adds DT bindings for the new Atmel I2S controller embedded
+> inside sama5d2x SoCs.
+> 
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+> ---
+>  .../devicetree/bindings/sound/atmel-i2s.txt        | 87 ++++++++++++++++++++++
+>  1 file changed, 87 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/atmel-i2s.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/atmel-i2s.txt b/Documentation/devicetree/bindings/sound/atmel-i2s.txt
+> new file mode 100644
+> index 000000000000..25dcb32314bf
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/atmel-i2s.txt
+> @@ -0,0 +1,87 @@
+> +* Atmel I2S controller
+> +
+> +Required properties:
+> +- compatible:     Should be "atmel,sama5d2-i2s".
+> +- reg:            Should be the physical base address of the controller and the
+> +                  length of memory mapped region.
+> +- interrupts:     Should contain the interrupt for the controller.
+> +- dmas:           Should be a list of pairs of DMA controller phandle and flags.
 
-This commit removes the contradiction. As a result, 'Monitor Mixer Volume'
-and 'VMixer Volume' elements are shown in usual ALSA control applications
-such as 'amixer' and 'alsamixer' in series.
+How many?
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/pci/echoaudio/echoaudio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> +- dma-names:      Should be a list of DMA channel name among "rx", "tx" or
+> +                  "rx-tx".
 
-diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
-index 1cb85ae..3a8e8d5 100644
---- a/sound/pci/echoaudio/echoaudio.c
-+++ b/sound/pci/echoaudio/echoaudio.c
-@@ -1272,11 +1272,11 @@ static int snd_echo_mixer_info(struct snd_kcontrol *kcontrol,
- 
- 	chip = snd_kcontrol_chip(kcontrol);
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
--	uinfo->count = 1;
- 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
- 	uinfo->value.integer.max = ECHOGAIN_MAXOUT;
- 	uinfo->dimen.d[0] = num_busses_out(chip);
- 	uinfo->dimen.d[1] = num_busses_in(chip);
-+	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1];
- 	return 0;
- }
- 
-@@ -1344,11 +1344,11 @@ static int snd_echo_vmixer_info(struct snd_kcontrol *kcontrol,
- 
- 	chip = snd_kcontrol_chip(kcontrol);
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
--	uinfo->count = 1;
- 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
- 	uinfo->value.integer.max = ECHOGAIN_MAXOUT;
- 	uinfo->dimen.d[0] = num_busses_out(chip);
- 	uinfo->dimen.d[1] = num_pipes_out(chip);
-+	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1];
- 	return 0;
- }
- 
-@@ -1728,7 +1728,6 @@ static int snd_echo_vumeters_info(struct snd_kcontrol *kcontrol,
- 				  struct snd_ctl_elem_info *uinfo)
- {
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
--	uinfo->count = 96;
- 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
- 	uinfo->value.integer.max = 0;
- #ifdef ECHOCARD_HAS_VMIXER
-@@ -1738,6 +1737,7 @@ static int snd_echo_vumeters_info(struct snd_kcontrol *kcontrol,
- #endif
- 	uinfo->dimen.d[1] = 16;	/* 16 channels */
- 	uinfo->dimen.d[2] = 2;	/* 0=level, 1=peak */
-+	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1] * uinfo->dimen.d[2];
- 	return 0;
- }
- 
--- 
-2.7.4
+When is rx-tx used? Seems like there may need to be more than 1 
+compatible string if there is variation here.
+
+> +- clocks:         Should be a list of phandles of clocks used by the controller
+> +                  (1).
+
+This should be a specific number for each compatible string.
+
+> +- clock-names:    Should be a list matching the clocks phandles list:
+> +                  - "pclk" (peripheral clock) Required.
+> +                  - "gclk" (generated clock) Optional (1).
+> +                  - "aclk" (Audio PLL clock) Optional (1).
+> +
+> +Optional properties:
+> +- pinctrl-0:      Should specify pin control groups used for this controller.
+> +- princtrl-names: Should contain only one value - "default".
+> +
+> +
+> +(1) : Only the peripheral clock is required. The generated clock and the Audio
+> +      PLL clock are optional and should only be set together.
+> +
+> +Example:
+> +
+> +	i2s@f8050000 {
+> +		compatible = "atmel,sama5d2-i2s";
+> +		reg = <0xf8050000 0x300>;
+> +		interrupts = <54 IRQ_TYPE_LEVEL_HIGH 7>;
+> +		dmas = <&dma0
+> +			(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
+> +			 AT91_XDMAC_DT_PERID(31))>,
+> +		       <&dma0
+> +			(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
+> +			 AT91_XDMAC_DT_PERID(32))>;
+> +		dma-names = "tx", "rx";
+> +		clocks = <&i2s0_clk>, <&i2s0_gclk>, <&audio_pll_pmc>;
+> +		clock-names = "pclk", "gclk", "aclk";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_i2s0_default>;
+> +	};
+> +
+> +
+> +sama5d2 SoCs only:
+
+That's the only SoC documented here...
+
+> +
+> +When the I2S controller is configured as a master, it generates the master,
+> +bitrate and frame clocks from a PMC input clock. This PMC input clock can be
+> +either the I2S peripheral clock or the I2S generated clock.
+> +The generated clock can reach higher frequencies and is more suited for audio
+> +applications hence should be preferred to the peripheral clock.
+> +The I2SCLKSEL register of the Special Function Register (SFR) is used to select
+> +the relevant PMC input clock: bit0 selects the input clock for I2S controller 0
+> +whereas bit1 selects the input clock for I2S controller 1.
+
+This seems like all internal details of the block.
+
+> +Aliases are used in the device-tree to retrieve the index of each I2S controller
+> +so the right bit can be updated in the I2SCLKSEL register.
+
+I'd prefer aliases not be used for this.
+
+> +
+> +Finally, the SFR itself is handled by the generic syscon driver.
+> +Its "compatible" DT property must contain the "atmel,sama5d2-sfr" string so the
+> +I2S controller driver (and likely other drivers) can find the SFR node when
+> +needed.
+
+Typically we would have a phandle to the syscon with a cell to give the 
+bit position.
+
+If this is all just for clock control, then it seems like you need a 
+proper clock driver for this clock control bit.
+
+Rob
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
