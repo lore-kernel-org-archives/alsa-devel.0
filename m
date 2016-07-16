@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card-utils: add asoc_simple_card_parse_card_name()" to the asoc tree
-Date: Sat, 16 Jul 2016 13:04:20 +0100
-Message-ID: <E1bOOKS-0004u1-Uk@debutante>
-References: <87shvnlgrh.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card-utils: add asoc_simple_card_set_dailink_name()" to the asoc tree
+Date: Sat, 16 Jul 2016 13:04:26 +0100
+Message-ID: <E1bOOKY-0004vm-Px@debutante>
+References: <87eg6zn3a5.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87shvnlgrh.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87eg6zn3a5.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card-utils: add asoc_simple_card_parse_card_name()
+   ASoC: simple-card-utils: add asoc_simple_card_set_dailink_name()
 
 has been applied to the asoc tree at
 
@@ -37,61 +37,68 @@ to this mail.
 Thanks,
 Mark
 
->From fc55c9b5a2ea794c4b6be937522bcfe98be4770a Mon Sep 17 00:00:00 2001
+>From 1db3312e3ab1a776ae8f414640dd7c180ce38a75 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 11 Jul 2016 23:59:16 +0000
+Date: Mon, 11 Jul 2016 23:57:14 +0000
 Subject: [PATCH] ASoC: simple-card-utils: add
- asoc_simple_card_parse_card_name()
+ asoc_simple_card_set_dailink_name()
 
-simple-card needs to get its card name.
-This patch makes this method simple style standard.
+Current simple-card is creating dai_link->name / dai_link->stream_name.
+These are based on CPU + Codec name, or "fe.CPU" or "be.Codec" if it
+was DPCM.
+This patch adds asoc_simple_card_set_dailink_name() and set dailink
+name as common method.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/simple_card_utils.h     |  2 ++
- sound/soc/generic/simple-card-utils.c | 20 ++++++++++++++++++++
- 2 files changed, 22 insertions(+)
+ include/sound/simple_card_utils.h     |  3 +++
+ sound/soc/generic/simple-card-utils.c | 23 +++++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
 
 diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index b88a8dcfe4ba..86088aed9002 100644
+index 50aa7b22a94c..b88a8dcfe4ba 100644
 --- a/include/sound/simple_card_utils.h
 +++ b/include/sound/simple_card_utils.h
-@@ -30,5 +30,7 @@ int asoc_simple_card_parse_daifmt(struct device *dev,
- int asoc_simple_card_set_dailink_name(struct device *dev,
- 				      struct snd_soc_dai_link *dai_link,
- 				      const char *fmt, ...);
-+int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
-+				     char *prefix);
+@@ -27,5 +27,8 @@ int asoc_simple_card_parse_daifmt(struct device *dev,
+ 				  struct device_node *codec,
+ 				  char *prefix,
+ 				  unsigned int *retfmt);
++int asoc_simple_card_set_dailink_name(struct device *dev,
++				      struct snd_soc_dai_link *dai_link,
++				      const char *fmt, ...);
  
  #endif /* __SIMPLE_CARD_CORE_H */
 diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 48c73660b66a..d89a9a1b2471 100644
+index 3f6b72526f71..48c73660b66a 100644
 --- a/sound/soc/generic/simple-card-utils.c
 +++ b/sound/soc/generic/simple-card-utils.c
-@@ -75,3 +75,23 @@ int asoc_simple_card_set_dailink_name(struct device *dev,
- 	return ret;
+@@ -52,3 +52,26 @@ int asoc_simple_card_parse_daifmt(struct device *dev,
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(asoc_simple_card_set_dailink_name);
+ EXPORT_SYMBOL_GPL(asoc_simple_card_parse_daifmt);
 +
-+int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
-+				     char *prefix)
++int asoc_simple_card_set_dailink_name(struct device *dev,
++				      struct snd_soc_dai_link *dai_link,
++				      const char *fmt, ...)
 +{
-+	char prop[128];
-+	int ret;
++	va_list ap;
++	char *name = NULL;
++	int ret = -ENOMEM;
 +
-+	snprintf(prop, sizeof(prop), "%sname", prefix);
++	va_start(ap, fmt);
++	name = devm_kvasprintf(dev, GFP_KERNEL, fmt, ap);
++	va_end(ap);
 +
-+	/* Parse the card name from DT */
-+	ret = snd_soc_of_parse_card_name(card, prop);
-+	if (ret < 0)
-+		return ret;
++	if (name) {
++		ret = 0;
 +
-+	if (!card->name && card->dai_link)
-+		card->name = card->dai_link->name;
++		dai_link->name		= name;
++		dai_link->stream_name	= name;
++	}
 +
-+	return 0;
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(asoc_simple_card_parse_card_name);
++EXPORT_SYMBOL_GPL(asoc_simple_card_set_dailink_name);
 -- 
 2.8.1
