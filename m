@@ -1,144 +1,269 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsrc-card: use asoc_simple_card_parse_dailink_name()" to the asoc tree
-Date: Sat, 16 Jul 2016 13:05:33 +0100
-Message-ID: <E1bOOLd-0005GR-F8@debutante>
-References: <87vb0jlgt7.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87vb0jlgt7.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [alsa-lib][PATCH] ctl: rename APIs to add an element
+	set so that their names are appropriate
+Date: Sat, 16 Jul 2016 22:20:01 +0900
+Message-ID: <1468675201-31693-1-git-send-email-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 4680726509E
+ for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2016 15:20:06 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+In this development period, some APIs have already been added. Most of
+them are to add an element set, while their names are not so appropriate
+against their feature. This is due to following to names of old APIs.
 
-   ASoC: rsrc-card: use asoc_simple_card_parse_dailink_name()
+This commit renames them.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 8a99a6bd7f410e1b889c8cc59538009f40507aac Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 11 Jul 2016 23:58:25 +0000
-Subject: [PATCH] ASoC: rsrc-card: use asoc_simple_card_parse_dailink_name()
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/sh/rcar/rsrc-card.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ include/control.h           | 10 +++++-----
+ src/control/control.c       | 34 +++++++++++++++++-----------------
+ src/pcm/pcm_softvol.c       |  4 ++--
+ test/user-ctl-element-set.c | 10 +++++-----
+ 4 files changed, 29 insertions(+), 29 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
-index c065a6df0680..81914ca56f00 100644
---- a/sound/soc/sh/rcar/rsrc-card.c
-+++ b/sound/soc/sh/rcar/rsrc-card.c
-@@ -47,7 +47,6 @@ static const struct of_device_id rsrc_card_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, rsrc_card_of_match);
+diff --git a/include/control.h b/include/control.h
+index cd60d90..1d4bfcb 100644
+--- a/include/control.h
++++ b/include/control.h
+@@ -425,24 +425,24 @@ void snd_ctl_elem_info_set_subdevice(snd_ctl_elem_info_t *obj, unsigned int val)
+ void snd_ctl_elem_info_set_name(snd_ctl_elem_info_t *obj, const char *val);
+ void snd_ctl_elem_info_set_index(snd_ctl_elem_info_t *obj, unsigned int val);
  
--#define DAI_NAME_NUM	32
- struct rsrc_card_dai {
- 	unsigned int sysclk;
- 	unsigned int tx_slot_mask;
-@@ -55,7 +54,6 @@ struct rsrc_card_dai {
- 	int slots;
- 	int slot_width;
- 	struct clk *clk;
--	char dai_name[DAI_NAME_NUM];
- };
+-int snd_ctl_elem_add_integer_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
++int snd_ctl_add_integer_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+ 				 unsigned int element_count,
+ 				 unsigned int member_count,
+ 				 long min, long max, long step);
+-int snd_ctl_elem_add_integer64_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
++int snd_ctl_add_integer64_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+ 				   unsigned int element_count,
+ 				   unsigned int member_count,
+ 				   long long min, long long max,
+ 				   long long step);
+-int snd_ctl_elem_add_boolean_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
++int snd_ctl_add_boolean_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+ 				 unsigned int element_count,
+ 				 unsigned int member_count);
+-int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
++int snd_ctl_add_enumerated_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+ 				    unsigned int element_count,
+ 				    unsigned int member_count,
+ 				    unsigned int items,
+ 				    const char *const labels[]);
+-int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
++int snd_ctl_add_bytes_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+ 			       unsigned int element_count,
+ 			       unsigned int member_count);
  
- #define IDX_CPU		0
-@@ -163,6 +161,7 @@ static int rsrc_card_parse_links(struct device_node *np,
- 				 struct rsrc_card_priv *priv,
- 				 int idx, bool is_fe)
+diff --git a/src/control/control.c b/src/control/control.c
+index a48ba9d..aa05130 100644
+--- a/src/control/control.c
++++ b/src/control/control.c
+@@ -371,7 +371,7 @@ static bool validate_element_member_dimension(snd_ctl_elem_info_t *info)
+  * \par Compatibility:
+  * This function is added in version 1.1.2.
+  */
+-int snd_ctl_elem_add_integer_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
++int snd_ctl_add_integer_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+ 				 unsigned int element_count,
+ 				 unsigned int member_count,
+ 				 long min, long max, long step)
+@@ -460,7 +460,7 @@ int snd_ctl_elem_add_integer_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+  * \par Compatibility:
+  * This function is added in version 1.1.2.
+  */
+-int snd_ctl_elem_add_integer64_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
++int snd_ctl_add_integer64_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+ 				   unsigned int element_count,
+ 				   unsigned int member_count,
+ 				   long long min, long long max, long long step)
+@@ -545,7 +545,7 @@ int snd_ctl_elem_add_integer64_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+  * \par Compatibility:
+  * This function is added in version 1.1.2.
+  */
+-int snd_ctl_elem_add_boolean_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
++int snd_ctl_add_boolean_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+ 				 unsigned int element_count,
+ 				 unsigned int member_count)
  {
-+	struct device *dev = rsrc_priv_to_dev(priv);
- 	struct snd_soc_dai_link *dai_link = rsrc_priv_to_link(priv, idx);
- 	struct rsrc_card_dai *dai_props = rsrc_priv_to_props(priv, idx);
- 	struct of_phandle_args args;
-@@ -200,9 +199,11 @@ static int rsrc_card_parse_links(struct device_node *np,
- 		if (ret < 0)
- 			return ret;
+@@ -609,7 +609,7 @@ int snd_ctl_elem_add_boolean_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+  * \par Compatibility:
+  * This function is added in version 1.1.2.
+  */
+-int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
++int snd_ctl_add_enumerated_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+ 				    unsigned int element_count,
+ 				    unsigned int member_count,
+ 				    unsigned int items,
+@@ -694,7 +694,7 @@ int snd_ctl_elem_add_enumerated_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+  * \par Compatibility:
+  * This function is added in version 1.1.2.
+  */
+-int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
++int snd_ctl_add_bytes_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+ 			       unsigned int element_count,
+ 			       unsigned int member_count)
+ {
+@@ -716,9 +716,9 @@ int snd_ctl_elem_add_bytes_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
+ /**
+  * \brief Create and add an user-defined control element of integer type.
+  *
+- * This is a wrapper function to snd_ctl_elem_add_integer_set() for a control
++ * This is a wrapper function to snd_ctl_add_integer_elem_set() for a control
+  * element. This doesn't fill the id data with full information, thus it's
+- * recommended to use snd_ctl_elem_add_integer_set(), instead.
++ * recommended to use snd_ctl_add_integer_elem_set(), instead.
+  */
+ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 			     unsigned int member_count,
+@@ -728,16 +728,16 @@ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
  
--		/* set dai_name */
--		snprintf(dai_props->dai_name, DAI_NAME_NUM, "fe.%s",
--			 dai_link->cpu_dai_name);
-+		ret = asoc_simple_card_set_dailink_name(dev, dai_link,
-+							"fe.%s",
-+							dai_link->cpu_dai_name);
-+		if (ret < 0)
-+			return ret;
+ 	info.id = *id;
  
- 		/*
- 		 * In soc_bind_dai_link() will check cpu name after
-@@ -216,7 +217,6 @@ static int rsrc_card_parse_links(struct device_node *np,
- 		if (!args.args_count)
- 			dai_link->cpu_dai_name = NULL;
- 	} else {
--		struct device *dev = rsrc_priv_to_dev(priv);
- 		const struct rsrc_card_of_data *of_data;
+-	return snd_ctl_elem_add_integer_set(ctl, &info, 1, member_count,
++	return snd_ctl_add_integer_elem_set(ctl, &info, 1, member_count,
+ 					    min, max, step);
+ }
  
- 		of_data = of_device_get_match_data(dev);
-@@ -234,6 +234,12 @@ static int rsrc_card_parse_links(struct device_node *np,
- 		if (ret < 0)
- 			return ret;
+ /**
+  * \brief Create and add an user-defined control element of integer64 type.
+  *
+- * This is a wrapper function to snd_ctl_elem_add_integer64_set() for a single
++ * This is a wrapper function to snd_ctl_add_integer64_elem_set() for a single
+  * control element. This doesn't fill the id data with full information, thus
+- * it's recommended to use snd_ctl_elem_add_integer64_set(), instead.
++ * it's recommended to use snd_ctl_add_integer64_elem_set(), instead.
+  */
+ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 			       unsigned int member_count,
+@@ -747,16 +747,16 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
  
-+		ret = asoc_simple_card_set_dailink_name(dev, dai_link,
-+							"be.%s",
-+							dai_link->codec_dai_name);
-+		if (ret < 0)
-+			return ret;
-+
- 		/* additional name prefix */
- 		if (of_data) {
- 			priv->codec_conf.of_node = dai_link->codec_of_node;
-@@ -244,18 +250,12 @@ static int rsrc_card_parse_links(struct device_node *np,
- 						      dai_link->codec_of_node,
- 						      "audio-prefix");
- 		}
--
--		/* set dai_name */
--		snprintf(dai_props->dai_name, DAI_NAME_NUM, "be.%s",
--			 dai_link->codec_dai_name);
- 	}
+ 	info.id = *id;
  
- 	/* Simple Card assumes platform == cpu */
- 	dai_link->platform_of_node	= dai_link->cpu_of_node;
- 	dai_link->dpcm_playback		= 1;
- 	dai_link->dpcm_capture		= 1;
--	dai_link->name			= dai_props->dai_name;
--	dai_link->stream_name		= dai_props->dai_name;
- 	dai_link->ops			= &rsrc_card_ops;
- 	dai_link->init			= rsrc_card_dai_init;
+-	return snd_ctl_elem_add_integer64_set(ctl, &info, 1, member_count,
++	return snd_ctl_add_integer64_elem_set(ctl, &info, 1, member_count,
+ 					      min, max, step);
+ }
  
-@@ -316,7 +316,7 @@ static int rsrc_card_dai_sub_link_of(struct device_node *node,
- 		return ret;
+ /**
+  * \brief Create and add an user-defined control element of boolean type.
+  *
+- * This is a wrapper function to snd_ctl_elem_add_boolean_set() for a single
++ * This is a wrapper function to snd_ctl_add_boolean_elem_set() for a single
+  * control element. This doesn't fill the id data with full information, thus
+- * it's recommended to use snd_ctl_elem_add_boolean_set(), instead.
++ * it's recommended to use snd_ctl_add_boolean_elem_set(), instead.
+  */
+ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 			     unsigned int member_count)
+@@ -765,15 +765,15 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
  
- 	dev_dbg(dev, "\t%s / %04x / %d\n",
--		dai_props->dai_name,
-+		dai_link->name,
- 		dai_link->dai_fmt,
- 		dai_props->sysclk);
+ 	info.id = *id;
  
+-	return snd_ctl_elem_add_boolean_set(ctl, &info, 1, member_count);
++	return snd_ctl_add_boolean_elem_set(ctl, &info, 1, member_count);
+ }
+ 
+ /**
+  * \brief Create and add a user-defined control element of enumerated type.
+  *
+- * This is a wrapper function to snd_ctl_elem_add_enumerated_set() for a single
++ * This is a wrapper function to snd_ctl_add_enumerated_elem_set() for a single
+  * control element. This doesn't fill the id data with full information, thus
+- * it's recommended to use snd_ctl_elem_add_enumerated_set(), instead.
++ * it's recommended to use snd_ctl_add_enumerated_elem_set(), instead.
+  *
+  * This function is added in version 1.0.25.
+  */
+@@ -785,7 +785,7 @@ int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 
+ 	info.id = *id;
+ 
+-	return snd_ctl_elem_add_enumerated_set(ctl, &info, 1, member_count,
++	return snd_ctl_add_enumerated_elem_set(ctl, &info, 1, member_count,
+ 					       items, labels);
+ }
+ 
+diff --git a/src/pcm/pcm_softvol.c b/src/pcm/pcm_softvol.c
+index 6135778..1fe5784 100644
+--- a/src/pcm/pcm_softvol.c
++++ b/src/pcm/pcm_softvol.c
+@@ -671,9 +671,9 @@ static int add_user_ctl(snd_pcm_softvol_t *svol, snd_ctl_elem_info_t *cinfo,
+ 	unsigned int def_val;
+ 	
+ 	if (svol->max_val == 1)
+-		err = snd_ctl_elem_add_boolean_set(svol->ctl, cinfo, 1, count);
++		err = snd_ctl_add_boolean_elem_set(svol->ctl, cinfo, 1, count);
+ 	else
+-		err = snd_ctl_elem_add_integer_set(svol->ctl, cinfo, 1, count,
++		err = snd_ctl_add_integer_elem_set(svol->ctl, cinfo, 1, count,
+ 						   0, svol->max_val, 0);
+ 	if (err < 0)
+ 		return err;
+diff --git a/test/user-ctl-element-set.c b/test/user-ctl-element-set.c
+index 0481300..9b9dc59 100644
+--- a/test/user-ctl-element-set.c
++++ b/test/user-ctl-element-set.c
+@@ -31,7 +31,7 @@ struct elem_set_trial {
+ static int add_bool_elem_set(struct elem_set_trial *trial,
+ 			     snd_ctl_elem_info_t *info)
+ {
+-	return snd_ctl_elem_add_boolean_set(trial->handle, info,
++	return snd_ctl_add_boolean_elem_set(trial->handle, info,
+ 				trial->element_count, trial->member_count);
+ }
+ 
+@@ -51,7 +51,7 @@ static void change_bool_elem_members(struct elem_set_trial *trial,
+ static int add_int_elem_set(struct elem_set_trial *trial,
+ 			    snd_ctl_elem_info_t *info)
+ {
+-	return snd_ctl_elem_add_integer_set(trial->handle, info,
++	return snd_ctl_add_integer_elem_set(trial->handle, info,
+ 				trial->element_count, trial->member_count,
+ 				0, 99, 1);
+ }
+@@ -93,7 +93,7 @@ static const char *const labels[] = {
+ static int add_enum_elem_set(struct elem_set_trial *trial,
+ 			     snd_ctl_elem_info_t *info)
+ {
+-	return snd_ctl_elem_add_enumerated_set(trial->handle, info,
++	return snd_ctl_add_enumerated_elem_set(trial->handle, info,
+ 				trial->element_count, trial->member_count,
+ 				sizeof(labels) / sizeof(labels[0]),
+ 				labels);
+@@ -142,7 +142,7 @@ static void change_enum_elem_members(struct elem_set_trial *trial,
+ static int add_bytes_elem_set(struct elem_set_trial *trial,
+ 			      snd_ctl_elem_info_t *info)
+ {
+-	return snd_ctl_elem_add_bytes_set(trial->handle, info,
++	return snd_ctl_add_bytes_elem_set(trial->handle, info,
+ 				trial->element_count, trial->member_count);
+ }
+ 
+@@ -195,7 +195,7 @@ static void change_iec958_elem_members(struct elem_set_trial *trial,
+ static int add_int64_elem_set(struct elem_set_trial *trial,
+ 			      snd_ctl_elem_info_t *info)
+ {
+-	return snd_ctl_elem_add_integer64_set(trial->handle, info,
++	return snd_ctl_add_integer64_elem_set(trial->handle, info,
+ 				trial->element_count, trial->member_count,
+ 				100, 10000, 30);
+ }
 -- 
-2.8.1
+2.7.4
