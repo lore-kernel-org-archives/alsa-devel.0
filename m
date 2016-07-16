@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v2 0/5] topology: Enhance support for
-	private data
-Date: Sat, 16 Jul 2016 21:58:27 +0900
-Message-ID: <578A2F73.8080508@sakamocchi.jp>
-References: <cover.1468583255.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v2] ALSA: echoaudio: purge contradictions
+	between dimension matrix members and total number of members
+Date: Sat, 16 Jul 2016 22:24:32 +0900
+Message-ID: <1468675472-32282-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 49FE52614E3
- for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2016 14:58:34 +0200 (CEST)
-In-Reply-To: <cover.1468583255.git.mengdong.lin@linux.intel.com>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 6FE9026509E
+ for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2016 15:24:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +19,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@intel.com, shreyas.nc@intel.com
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Jul 15 2016 21:17, mengdong.lin@linux.intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
-> 
-> There is no ABI change in this series.
-> 
-> We finished verification on latest Intel platforms. There will be 4 or 5
-> series. Later series will come with some ABI update for topology. The size
-> check on ABI objects in current ASoC kernel will detect possible ABI
-> version mismatch between user space and kernel
-> 
-> History:
-> v2: fix compiler warnings. There are 2 warnings left in topology/pcm.c
->     that are not caused by this series and will be fixed in later patches.
-> 
-> Mengdong Lin (5):
->   topology: An element can refer to multipe data sections in text conf
->     file
->   topology: Merge lookup for data reference into tplg_copy_data()
->   topology: Change uuid value to 16 separate characters in text conf
->     file
->   topology: Parse vendor private data for manifest
->   topology: Tuple type can have an extenstion
-> 
->  include/topology.h        |  69 ++++++++++-
->  src/topology/ctl.c        |  52 +++-----
->  src/topology/dapm.c       |  17 ++-
->  src/topology/data.c       | 307 ++++++++++++++++++++++++++++++++++++++--------
->  src/topology/elem.c       |   4 +
->  src/topology/parser.c     |  28 ++++-
->  src/topology/tplg_local.h |  15 ++-
->  7 files changed, 395 insertions(+), 97 deletions(-)
+Currently, sound device drivers for PCI cards produced by Echo Audio
+support dimension parameter of element information. But the information
+has contradictions to the number of members of each element. I guess that
+this comes from the assumption that these sound cards are used only by
+'echomixer' in userspace. But ideally, they should be used with usual ALSA
+control applications.
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+This commit removes the contradiction. As a result, 'Monitor Mixer Volume'
+and 'VMixer Volume' elements are shown in usual ALSA control applications
+such as 'amixer' and 'alsamixer' in series.
 
-Current implementation of ALSA SoC part in kernel has no call
-corresponding to sys_ioctl(SNDRV_CTL_IOCTL_ELEM_ADD) or something like
-that, thus I recommend you to drop this line by an additional patch:
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/topology/ctl.c;h=b948ac021ceecc116bc1087075743243e4b14055;hb=HEAD#l44
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/pci/echoaudio/echoaudio.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-
-Regards
-
-Takashi Sakamoto
+diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+index 1cb85ae..3a8e8d5 100644
+--- a/sound/pci/echoaudio/echoaudio.c
++++ b/sound/pci/echoaudio/echoaudio.c
+@@ -1272,11 +1272,11 @@ static int snd_echo_mixer_info(struct snd_kcontrol *kcontrol,
+ 
+ 	chip = snd_kcontrol_chip(kcontrol);
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = 1;
+ 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
+ 	uinfo->value.integer.max = ECHOGAIN_MAXOUT;
+ 	uinfo->dimen.d[0] = num_busses_out(chip);
+ 	uinfo->dimen.d[1] = num_busses_in(chip);
++	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1];
+ 	return 0;
+ }
+ 
+@@ -1344,11 +1344,11 @@ static int snd_echo_vmixer_info(struct snd_kcontrol *kcontrol,
+ 
+ 	chip = snd_kcontrol_chip(kcontrol);
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = 1;
+ 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
+ 	uinfo->value.integer.max = ECHOGAIN_MAXOUT;
+ 	uinfo->dimen.d[0] = num_busses_out(chip);
+ 	uinfo->dimen.d[1] = num_pipes_out(chip);
++	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1];
+ 	return 0;
+ }
+ 
+@@ -1728,7 +1728,6 @@ static int snd_echo_vumeters_info(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_info *uinfo)
+ {
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = 96;
+ 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
+ 	uinfo->value.integer.max = 0;
+ #ifdef ECHOCARD_HAS_VMIXER
+@@ -1738,6 +1737,7 @@ static int snd_echo_vumeters_info(struct snd_kcontrol *kcontrol,
+ #endif
+ 	uinfo->dimen.d[1] = 16;	/* 16 channels */
+ 	uinfo->dimen.d[2] = 2;	/* 0=level, 1=peak */
++	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1] * uinfo->dimen.d[2];
+ 	return 0;
+ }
+ 
+-- 
+2.7.4
