@@ -1,97 +1,51 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix quirks code is not
-	called
-Date: Mon, 18 Jul 2016 14:35:05 +0900
-Message-ID: <578C6A89.6000008@sakamocchi.jp>
-References: <20160717161615.2399-1-k@oikw.org>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH v4 4/4] ASoC: samsung: Add machine driver for Exynos5433
+ based TM2 board
+Date: Mon, 18 Jul 2016 12:41:37 +0200
+Message-ID: <578CB261.60507@samsung.com>
+References: <CGME20160705171538epcas1p14f034567982b67aad091c50e5adcec9c@epcas1p1.samsung.com>
+ <1467738877-31555-1-git-send-email-s.nawrocki@samsung.com>
+ <5788721B.7010602@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id CC160265721
- for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2016 07:35:10 +0200 (CEST)
-In-Reply-To: <20160717161615.2399-1-k@oikw.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kazuki Oikawa <k@oikw.org>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, nekomatu+linux@gmail.com
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <5788721B.7010602@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Chanwoo Choi <cw00.choi@samsung.com>
+Cc: broonie@kernel.org, robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, ideal.song@samsung.com, inki.dae@samsung.com, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Krzysztof Kozlowski <k.kozlowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Chanwoo,
 
-On Jul 18 2016 01:16, Kazuki Oikawa wrote:
-> snd_usb_{set_interface,ctl_msg}_quirk checks chip->usb_id to need
-> calling a quirks code. But existed code path that not calling
-> dev_set_drvdata in usb_audio_probe.
+On 07/15/2016 07:18 AM, Chanwoo Choi wrote:
+>> +static int tm2_probe(struct platform_device *pdev)
+>> +{
+>> +	struct device *dev = &pdev->dev;
+
+>> +	codec_dai_node = of_parse_phandle(dev->of_node, "audio-codec", 0);
+>> +	if (!codec_dai_node) {
+>> +		dev_err(dev, "audio-codec property invalid or missing\n");
+>> +		ret = -EINVAL;
+>> +		goto err_put_cpu_dai;
+>> +	}
+
+>> +	priv->codec_mclk1 = of_clk_get_by_name(codec_dai_node, "mclk1");
+>> +	if (IS_ERR(priv->codec_mclk1)) {
+>> +		dev_err(dev, "Failed to get mclk1 clock\n");
+>> +		ret = PTR_ERR(priv->codec_mclk1);
+>> +		goto err_put_codec_dai;
+>> +	}
 > 
-> Signed-off-by: Kazuki Oikawa <k@oikw.org>
-> Fixes: 79289e24194a ("ALSA: usb-audio: Refer to chip->usb_id for quirks and MIDI creation")
-> ---
->  sound/usb/card.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I think that you better to use the devm_clk_get() instead of of_clk_get_by_name()
+> because you don't need to handle the clk_put() when error happen and remove the 
+> this driver.
 > 
-> diff --git a/sound/usb/card.c b/sound/usb/card.c
-> index 3fc63583a537..2d493501b7f6 100644
-> --- a/sound/usb/card.c
-> +++ b/sound/usb/card.c
-> @@ -552,7 +552,6 @@ static int usb_audio_probe(struct usb_interface *intf,
->  				goto __error;
->  			}
->  			chip = usb_chip[i];
-> -			dev_set_drvdata(&dev->dev, chip);
->  			atomic_inc(&chip->active); /* avoid autopm */
->  			break;
->  		}
-> @@ -578,6 +577,7 @@ static int usb_audio_probe(struct usb_interface *intf,
->  			goto __error;
->  		}
->  	}
-> +	dev_set_drvdata(&dev->dev, chip);
->  
->  	/*
->  	 * For devices with more than one control interface, we assume the
+> 	priv->codec_mclk1 = devm_clk_get(dev, "mclk1");
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Tested-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+The clocks are from the CODEC DT node, for which we don't have struct
+device pointer here, that's why I used of_clk_get_by_name().
 
-Let me describe supplemental comments.
-
-This bug affects all of USB devices which take USB subsystem to call an
-implementation of struct usb_driver.probe() in snd-usb-audio
-(=usb_audio_probe()) just one time. In this case, dev_set_drvdata() is
-not called at first call of usb_audio_probe(), then dev_get_drvdata()
-returns NULL.
-
-As a result, some quirks are not handled. snd_usb_set_interface_quirk()
-and snd_usb_set_interface_quirk() returns immediately without enough
-operations. This brings regressions to some models.
-
-As long as I asked to Mr.Oikawa in this morning, below models are affected.
- * Playback Design
- * TEAC
- * Marantz
- * Denon
- * Zoom R16/24
-
-I tested with EMU 0404 USB. This model has no quirks related to above
-functions, but it brings just one call of usb_audio_probe(). Then,
-without this patch, I can see dev_get_drvdata() always returns NULL
-whole lifetime of usb device instance.
-(But even with this patch, in a call of snd_usb_audio_free(),
-dev_get_drvdata() returns NULL before a call of dev_set_devdata(NULL),
-against my expectation. I don't know why...)
-
-This patch should go for 4.8 merge window.
-
-
-Regards
-
-Takashi Sakamoto
+--
+Thanks,
+Sylwester
