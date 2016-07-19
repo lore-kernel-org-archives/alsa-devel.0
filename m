@@ -1,19 +1,20 @@
-From: Bastien Nocera <hadess@hadess.net>
-Subject: Re: [PATCH 3/3] ASoC: Intel: Add surface3 entry in
- CHT-RT5645 machine
-Date: Tue, 19 Jul 2016 16:56:24 +0200
-Message-ID: <1468940184.6761.36.camel@hadess.net>
-References: <1467972591-29175-1-git-send-email-vinod.koul@intel.com>
- <1467972591-29175-4-git-send-email-vinod.koul@intel.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH 3/3] topology: Check address and length
+ before string copy
+Date: Tue, 19 Jul 2016 15:10:30 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F84BA85170@shsmsx102.ccr.corp.intel.com>
+References: <cover.1468917665.git.mengdong.lin@linux.intel.com>
+ <d19561c620efa5ed81692a7441b8fa7354a800d4.1468917665.git.mengdong.lin@linux.intel.com>
+ <578DF6A7.5050806@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net
- [217.70.183.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C3C2267C15
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 16:56:30 +0200 (CEST)
-In-Reply-To: <1467972591-29175-4-git-send-email-vinod.koul@intel.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 072C22691C3
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 17:11:07 +0200 (CEST)
+In-Reply-To: <578DF6A7.5050806@sakamocchi.jp>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,65 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
-Cc: Stephen Just <stephenjust@gmail.com>, patches.audio@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, apterix@gmail.com, broonie@kernel.org, Sachin Mokashi <sachinx.mokashi@intel.com>, bugzilla@hadess.net
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyMDE2LTA3LTA4IGF0IDE1OjM5ICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOgo+IFN1
-cmZhY2UzIGRldmljZSBpcyBhIENIVCBtYWNoaW5lLCBzbyBhZGQgZW50cnkgZm9yIGl0Lgo+IEFs
-c28gdXBkYXRlIHRoZSBISUQgZnJvbSBCSU9TLgo+IAo+IEJ1Z3ppbGxhOiBodHRwczovL2J1Z3pp
-bGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTk4MDAxCj4gU2lnbmVkLW9mZi1ieTogU2Fj
-aGluIE1va2FzaGkgPHNhY2hpbngubW9rYXNoaUBpbnRlbC5jb20+Cj4gU2lnbmVkLW9mZi1ieTog
-Vmlub2QgS291bCA8dmlub2Qua291bEBpbnRlbC5jb20+Cj4gLS0tCj4gwqBzb3VuZC9zb2MvaW50
-ZWwvYm9hcmRzL2NodF9ic3dfcnQ1NjQ1LmMgfCAyMCArKysrKysrKysrKysrKysrKysrLQo+IMKg
-MSBmaWxlIGNoYW5nZWQsIDE5IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiAKPiBkaWZm
-IC0tZ2l0IGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9jaHRfYnN3X3J0NTY0NS5jIGIvc291bmQv
-c29jL2ludGVsL2JvYXJkcy9jaHRfYnN3X3J0NTY0NS5jCj4gaW5kZXggZDdlZjI5MmM0MDJkLi5m
-MjZjN2I4NTQ1YWUgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9jaHRfYnN3
-X3J0NTY0NS5jCj4gKysrIGIvc291bmQvc29jL2ludGVsL2JvYXJkcy9jaHRfYnN3X3J0NTY0NS5j
-Cj4gQEAgLTMwLDYgKzMwLDcgQEAKPiDCoCNpbmNsdWRlIAo+IMKgI2luY2x1ZGUgIi4uLy4uL2Nv
-ZGVjcy9ydDU2NDUuaCIKPiDCoCNpbmNsdWRlICIuLi9hdG9tL3NzdC1hdG9tLWNvbnRyb2xzLmgi
-Cj4gKyNpbmNsdWRlICIuLi9jb21tb24vc3N0LWFjcGkuaCIKPiDCoAo+IMKgI2RlZmluZSBDSFRf
-UExBVF9DTEtfM19IWgkxOTIwMDAwMAo+IMKgI2RlZmluZSBDSFRfQ09ERUNfREFJCSJydDU2NDUt
-YWlmMSIKPiBAQCAtMzQwLDEwICszNDEsMTMgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2NhcmQg
-c25kX3NvY19jYXJkX2NodHJ0NTY1MCA9IHsKPiDCoH07Cj4gwqAKPiDCoHN0YXRpYyBzdHJ1Y3Qg
-Y2h0X2FjcGlfY2FyZCBzbmRfc29jX2NhcmRzW10gPSB7Cj4gKwl7IjEwRUM1NjQwIiwgQ09ERUNf
-VFlQRV9SVDU2NDUsICZzbmRfc29jX2NhcmRfY2h0cnQ1NjQ1fSwKPiDCoAl7IjEwRUM1NjQ1Iiwg
-Q09ERUNfVFlQRV9SVDU2NDUsICZzbmRfc29jX2NhcmRfY2h0cnQ1NjQ1fSwKPiDCoAl7IjEwRUM1
-NjUwIiwgQ09ERUNfVFlQRV9SVDU2NTAsICZzbmRfc29jX2NhcmRfY2h0cnQ1NjUwfSwKPiDCoH07
-Cj4gwqAKPiArc3RhdGljIGNoYXIgY2h0X3J0NTY0MF9jb2RlY19uYW1lWzE2XTsgLyogaTJjLTow
-MCB3aXRoIEhJRCBiZWluZyA4IGNoYXJzICovCj4gKwo+IMKgc3RhdGljIGludCBzbmRfY2h0X21j
-X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gwqB7Cj4gwqAJaW50IHJldF92
-YWwgPSAwOwo+IEBAIC0zNTEsNiArMzU1LDkgQEAgc3RhdGljIGludCBzbmRfY2h0X21jX3Byb2Jl
-KHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gwqAJc3RydWN0IGNodF9tY19wcml2YXRl
-ICpkcnY7Cj4gwqAJc3RydWN0IHNuZF9zb2NfY2FyZCAqY2FyZCA9IHNuZF9zb2NfY2FyZHNbMF0u
-c29jX2NhcmQ7Cj4gwqAJY2hhciBjb2RlY19uYW1lWzE2XTsKPiArCXN0cnVjdCBzc3RfYWNwaV9t
-YWNoICptYWNoOwo+ICsJY29uc3QgY2hhciAqaTJjX25hbWUgPSBOVUxMOwo+ICsJaW50IGRhaV9p
-bmRleDsKPiDCoAo+IMKgCWRydiA9IGRldm1fa3phbGxvYygmcGRldi0+ZGV2LCBzaXplb2YoKmRy
-diksIEdGUF9BVE9NSUMpOwo+IMKgCWlmICghZHJ2KQo+IEBAIC0zNjYsMTIgKzM3MywyMyBAQCBz
-dGF0aWMgaW50IHNuZF9jaHRfbWNfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikK
-PiDCoAkJfQo+IMKgCX0KPiDCoAljYXJkLT5kZXYgPSAmcGRldi0+ZGV2Owo+ICsJbWFjaCA9IGNh
-cmQtPmRldi0+cGxhdGZvcm1fZGF0YTsKPiDCoAlzcHJpbnRmKGNvZGVjX25hbWUsICJpMmMtJXM6
-MDAiLCBkcnYtPmFjcGlfY2FyZC0+Y29kZWNfaWQpOwo+IMKgCj4gwqAJLyogc2V0IGNvcnJlY3Qg
-Y29kZWMgbmFtZSAqLwo+IMKgCWZvciAoaSA9IDA7IGkgPCBBUlJBWV9TSVpFKGNodF9kYWlsaW5r
-KTsgaSsrKQo+IC0JCWlmICghc3RyY21wKGNhcmQtPmRhaV9saW5rW2ldLmNvZGVjX25hbWUsICJp
-MmMtMTBFQzU2NDU6MDAiKSkKPiArCQlpZiAoIXN0cmNtcChjYXJkLT5kYWlfbGlua1tpXS5jb2Rl
-Y19uYW1lLCAiaTJjLTEwRUM1NjQ1OjAwIikpIHsKPiDCoAkJCWNhcmQtPmRhaV9saW5rW2ldLmNv
-ZGVjX25hbWUgPSBrc3RyZHVwKGNvZGVjX25hbWUsIEdGUF9LRVJORUwpOwo+ICsJCQlkYWlfaW5k
-ZXggPSBpOwo+ICsJCX0KPiArCj4gKwkvKiBmaXh1cCBjb2RlYyBuYW1lIGJhc2VkIG9uIEhJRCAq
-Lwo+ICsJaTJjX25hbWUgPSBzc3RfYWNwaV9maW5kX25hbWVfZnJvbV9oaWQobWFjaC0+aWQpOwo+
-ICsJaWYgKGkyY19uYW1lICE9IE5VTEwpIHsKPiArCQlzbnByaW50ZihjaHRfcnQ1NjQwX2NvZGVj
-X25hbWUsIHNpemVvZihjaHRfcnQ1NjQwX2NvZGVjX25hbWUpLAo+ICsJCQkiJXMlcyIsICJpMmMt
-IiwgaTJjX25hbWUpOwo+ICsJCWNodF9kYWlsaW5rW2RhaV9pbmRleF0uY29kZWNfbmFtZSA9IGNo
-dF9ydDU2NDBfY29kZWNfbmFtZTsKCkZXSVcsIEkgZ2V0Ogpzb3VuZC9zb2MvaW50ZWwvYm9hcmRz
-L2NodF9ic3dfcnQ1NjQ1LmM6IEluIGZ1bmN0aW9uICdzbmRfY2h0X21jX3Byb2JlJzoKc291bmQv
-c29jL2ludGVsL2JvYXJkcy9jaHRfYnN3X3J0NTY0NS5jOjM5MTozNzogd2FybmluZzogJ2RhaV9p
-bmRleCcgbWF5IGJlIHVzZWQgdW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0aW9uIFstV21heWJl
-LXVuaW5pdGlhbGl6ZWRdCsKgwqDCoGNodF9kYWlsaW5rW2RhaV9pbmRleF0uY29kZWNfbmFtZSA9
-IGNodF9ydDU2NDBfY29kZWNfbmFtZTsKwqDCoMKgfn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
-fn5+fn5+fl5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+Cgo+ICsJfQo+IMKgCj4gwqAJc25kX3NvY19j
-YXJkX3NldF9kcnZkYXRhKGNhcmQsIGRydik7Cj4gwqAJcmV0X3ZhbCA9IGRldm1fc25kX3NvY19y
-ZWdpc3Rlcl9jYXJkKCZwZGV2LT5kZXYsIGNhcmQpOwpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+> -----Original Message-----
+> From: Takashi Sakamoto [mailto:o-takashi@sakamocchi.jp]
+> Sent: Tuesday, July 19, 2016 5:45 PM
+> To: mengdong.lin@linux.intel.com; alsa-devel@alsa-project.org;
+> broonie@kernel.org
+> Cc: tiwai@suse.de; Girdwood, Liam R; Lin, Mengdong
+> Subject: Re: [PATCH 3/3] topology: Check address and length before string
+> copy
+> 
+> Hi,
+> 
+> On Jul 19 2016 17:52, mengdong.lin@linux.intel.com wrote:
+> > From: Mengdong Lin <mengdong.lin@linux.intel.com>
+> >
+> > Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+> 
+> The cover letter addresses this patch fixes a compiler warning. In this case,
+> it's better to write the message in commit message, I think. Like:
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-July/110097.ht
+> ml
+> 
+> This is not just from my taste. Maintainers prefer. At least, blank commit
+> messages are not preferrable in general.
+
+Yes, that would be better. I'll fix this in v2 tomorrow.
+
+Thanks
+Mengdong
+
+> 
+> > diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+> > index 4d79aa7..cfde4cc 100644
+> > --- a/src/topology/tplg_local.h
+> > +++ b/src/topology/tplg_local.h
+> > @@ -253,6 +253,9 @@ struct tplg_elem*
+> tplg_elem_new_common(snd_tplg_t
+> > *tplg,
+> >
+> >   static inline void elem_copy_text(char *dest, const char *src, int len)
+> >   {
+> > +	if (!dest || !src || !len)
+> > +		return;
+> > +
+> >   	strncpy(dest, src, len);
+> >   	dest[len - 1] = 0;
+> >   }
+> 
+> 
+> Regards
+> 
+> Takashi Sakamoto
