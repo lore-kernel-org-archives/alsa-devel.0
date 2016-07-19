@@ -1,16 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 1/3] topology: Remove support for control flag
-	SNDRV_CTL_ELEM_ACCESS_USER
-Date: Tue, 19 Jul 2016 16:51:57 +0800
-Message-ID: <58d24952d9582a9894c9e946033da6d84fd528bb.1468917665.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 2/3] topology: Fix compiler warnings
+Date: Tue, 19 Jul 2016 16:52:23 +0800
+Message-ID: <e5db3473240b493641d8a3112b0c1257f84a1382.1468917665.git.mengdong.lin@linux.intel.com>
 References: <cover.1468917665.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id CAB43266C94
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 10:46:52 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27FB32664CF
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 10:47:21 +0200 (CEST)
 In-Reply-To: <cover.1468917665.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,24 +26,36 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-This access flag is used to add controls from user space by ioctl.
-But topology only configures controls in user space and these controls
-will still be created by ASoC in kernel, so topology should not support
-this flag.
+Append ATTRIBUTE_UNUSED to the unused parameter, which need to be kept
+to share the same functions proto type with others.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/src/topology/ctl.c b/src/topology/ctl.c
-index 592dded..54f8e44 100644
---- a/src/topology/ctl.c
-+++ b/src/topology/ctl.c
-@@ -41,7 +41,6 @@ static const struct ctl_access_elem ctl_access[] = {
- 	{"lock", SNDRV_CTL_ELEM_ACCESS_LOCK},
- 	{"owner", SNDRV_CTL_ELEM_ACCESS_OWNER},
- 	{"tlv_callback", SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK},
--	{"user", SNDRV_CTL_ELEM_ACCESS_USER},
- };
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index 281e6ef..0a90cb9 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -259,8 +259,8 @@ int tplg_parse_stream_caps(snd_tplg_t *tplg,
+ }
  
- /* find CTL access strings and conver to values */
+ /* Parse the caps and config of a pcm stream */
+-static int tplg_parse_streams(snd_tplg_t *tplg, snd_config_t *cfg,
+-	void *private)
++static int tplg_parse_streams(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
++			      snd_config_t *cfg, void *private)
+ {
+ 	snd_config_iterator_t i, next;
+ 	snd_config_t *n;
+@@ -321,8 +321,8 @@ static int tplg_parse_streams(snd_tplg_t *tplg, snd_config_t *cfg,
+ }
+ 
+ /* Parse name and id of a front-end DAI (ie. cpu dai of a FE DAI link) */
+-static int tplg_parse_fe_dai(snd_tplg_t *tplg, snd_config_t *cfg,
+-	void *private)
++static int tplg_parse_fe_dai(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
++			     snd_config_t *cfg, void *private)
+ {
+ 	struct tplg_elem *elem = private;
+ 	struct snd_soc_tplg_pcm *pcm = elem->pcm;
 -- 
 2.5.0
