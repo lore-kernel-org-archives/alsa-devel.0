@@ -1,20 +1,22 @@
-From: Chemsi Mehdi <chmsmehdi@gmail.com>
-Subject: Re: Alsa Soc details
-Date: Tue, 19 Jul 2016 10:02:00 +0200
-Message-ID: <CAHkWnPa4Tjxsu=pcqKJXH_+rTVBrb0KPFtMpv+J6rsFkLwJPZQ@mail.gmail.com>
-References: <CAHkWnPb+3P6P6qFOVcy=hh6z-v8Ry4FLZnP8qYrZkik10Et3aA@mail.gmail.com>
- <20160719035449.GB9681@localhost>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v2 0/5] topology: Enhance support for
+ private data
+Date: Tue, 19 Jul 2016 08:44:35 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F84BA84B71@shsmsx102.ccr.corp.intel.com>
+References: <cover.1468583255.git.mengdong.lin@linux.intel.com>
+ <578A2F73.8080508@sakamocchi.jp> <578C4352.1040804@linux.intel.com>
+ <578C5057.7020708@sakamocchi.jp>
+ <F46914AEC2663F4A9BB62374E5EEF8F84BA8441C@shsmsx102.ccr.corp.intel.com>
+ <20160719035950.GC9681@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f193.google.com (mail-qt0-f193.google.com
- [209.85.216.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B90172657B1
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 10:02:01 +0200 (CEST)
-Received: by mail-qt0-f193.google.com with SMTP id u25so502704qtb.3
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 01:02:01 -0700 (PDT)
-In-Reply-To: <20160719035449.GB9681@localhost>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB3F1266B43
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 10:44:40 +0200 (CEST)
+In-Reply-To: <20160719035950.GC9681@localhost>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,61 +26,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mengdong Lin <mengdong.lin@linux.intel.com>, "tiwai@suse.de" <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>, "Nc,
+ Shreyas" <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Great thanks Vinod for your reactivity.
-Always helpful
-
-2016-07-19 5:54 GMT+02:00 Vinod Koul <vinod.koul@intel.com>:
-
-> On Thu, Jul 14, 2016 at 03:07:20PM +0200, Chemsi Mehdi wrote:
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org
+> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Vinod Koul
+> Sent: Tuesday, July 19, 2016 12:00 PM
+> To: Lin, Mengdong
+> Cc: alsa-devel@alsa-project.org; Mengdong Lin; tiwai@suse.de; Takashi
+> Sakamoto; broonie@kernel.org; Girdwood, Liam R; Nc, Shreyas
+> Subject: Re: [alsa-devel] [PATCH v2 0/5] topology: Enhance support for
+> private data
+> 
+> On Mon, Jul 18, 2016 at 03:06:24PM +0000, Lin, Mengdong wrote:
 > >
-> >    Why codec driver of ASOC are always I2C based ?, is codec driver role
-> is
-> >    only control of audio hardware(set/reset registers only)?
->
-> That is not true, there are few SPI based and one i wrote which was a
-> different method altogether. Mostly the audio embedded industry uses I2C
-> codecs so they are very common
->
-> >    There should be three drivers : machine driver, platform driver and
-> >    codec driver , all of them have .probe and . remove , what is relation
-> >    between all the probes? removes ?
->
-> All of these have two probes :)
->
-> First one in hardware probe. Nothing unusual here.
-> Second is the ASoC probe. Each of these registers a component. The ASoC
-> core
-> will create the sound card only when all of these components are present.
-> At
-> that time the ASoC probe in invoked signalling card creation to driver
->
->
-> >    As far I know McBSP is source of audio coming from host and I2C/ McBSP
-> >    have no direct relation so why we connect platform driver (McBSP) with
-> >    codec driver(I2C) Via DAI ?
->
-> You will have to ask driver authors that, pls cc them
->
->
-> >    When calling snd_pcm_open from userspace which kernel API is called ?
-> >    snd_pcm_lib_ioctl or  snd_stm_spdif_player_open ? if
-> >    snd_stm_spdif_player_open so when called snd_pcm_lib_ioctl ?
->
-> system call open()
->
-> >    How ALSA KERNELAPI is connected to ALSA SOC CORE, via which
-> >    calls/mechanism ?
->
-> The alsa provides driver callbacks. See struct snd_pcm_ops. ASoC provides
-> the same to asoc driver as well! Additionally we have dai_ops as well.
->
-> ASoC has its own ops for card and then it invokes platform, codec pcm and
-> dai_ops. See sound/soc/soc-pcm.c
->
+> > > -----Original Message-----
+> > > From: Takashi Sakamoto [mailto:o-takashi@sakamocchi.jp]
+> > > Sent: Monday, July 18, 2016 11:43 AM
+> >
+> > > I know all of what you explained. Therefore, You misunderstand about
+> > > my suggestion.
+> > >
+> > > What I suggested is to drop a support of
+> SNDRV_CTL_ELEM_ACCESS_USER
+> > > flag from current topology implementation in userspace library,
+> > > because current implementation of ALSA SoC part doesn't support it.
+> > >
+> > > In ALSA SoC part, snd_ctl_new1() is called to add a control element
+> > > set as a result of parsing binary blob generated by topology
+> implementation.
+> > >
+> > > In snd_ctl_new1(), SNDRV_CTL_ELEM_ACCESS_USER flag is dropped, in
+> > > these
+> > > lines:
+> > > http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sou
+> > > nd/core/c
+> > > ontrol.c#n263
+> > >
+> > > Totally, the flag cannot be supported by current implementation of
+> > > topology in kernel. Thus, in userspace, we should drop this line to
+> > > prevent users from
+> > > confusions:
+> > > http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/topology/ct
+> > > l.c;h=b94
+> > > 8ac021ceecc116bc1087075743243e4b14055;hb=HEAD#l44
+> > >
+> > > That's all what I mentioned. If something unclear, please tell it to me.
+> >
+> > Yes, you're right. snd_ctl_new1() dropped
+> SNDRV_CTL_ELEM_ACCESS_USER flag.
+> > I'll remove this from the topology user space tool to avoid confusion.
+> 
+> Oh no, that won't be a good idea.
+
+Hi Vinod,
+
+I think topology will drop support for only one flag "SNDRV_CTL_ELEM_ACCESS_USER". All other access flags are still supported.
+
+Thanks
+Mengdong
+
+> 
+> We would like to specify the access for controls from topology. Some controls
+> can be read only and some write only :)
+> 
+> For example, any VU-meter controls should be read-only. Similarly if we have
+> some user data being sent to some modules which can do do all fancy audio
+> detection then these controls should be write-only.
+> 
+> Yes it seems to be broken by this, but we should fix it rather than remove.
+> 
 > --
 > ~Vinod
->
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
