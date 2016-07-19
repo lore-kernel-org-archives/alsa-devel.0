@@ -1,21 +1,16 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v2 0/5] topology: Enhance support for
-	private data
-Date: Tue, 19 Jul 2016 14:14:12 +0900
-Message-ID: <578DB724.8040204@sakamocchi.jp>
-References: <cover.1468583255.git.mengdong.lin@linux.intel.com>
- <578A2F73.8080508@sakamocchi.jp> <578C4352.1040804@linux.intel.com>
- <578C5057.7020708@sakamocchi.jp>
- <F46914AEC2663F4A9BB62374E5EEF8F84BA8441C@shsmsx102.ccr.corp.intel.com>
- <20160719035950.GC9681@localhost>
+From: Shahram Shabpareh <shabpareh.shahram.7@gmail.com>
+Subject: problem with copy function
+Date: Tue, 19 Jul 2016 12:26:06 +0430
+Message-ID: <CAFJxsaei2DCb8T0JBbKLdpxUvM5BrYyRXUGFF7tam9-0DsfX5g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 74888265546
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 07:14:15 +0200 (CEST)
-In-Reply-To: <20160719035950.GC9681@localhost>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8665C2657B1
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 09:56:07 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id o80so1880883wme.0
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 00:56:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,49 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mengdong Lin <mengdong.lin@linux.intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Nc, Shreyas" <shreyas.nc@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Jul 19 2016 12:59, Vinod Koul wrote:
->> Yes, you're right. snd_ctl_new1() dropped SNDRV_CTL_ELEM_ACCESS_USER flag.
->> I'll remove this from the topology user space tool to avoid confusion.
->
-> Oh no, that won't be a good idea.
->
-> We would like to specify the access for controls from topology. Some
-> controls can be read only and some write only :)
->
-> For example, any VU-meter controls should be read-only. Similarly if we have
-> some user data being sent to some modules which can do do all fancy audio
-> detection then these controls should be write-only.
+Hi
+I have a board with ti am3358 processor. it has a sound port called McASP
+and I've used IDT821034 as codec. The Linux kernel source package that is
+included by board company is 3.2.0 and I wrote a basic driver for IDT821034
+codec and changed the code of davinci-mcasp.c . Now the basic functionality
+of system is ok and i have signals on oscilloscope. Another thing is i have
+to setup a specific configuration for this system. the target system must
+have 32 tdm slots in each frame and 32 PCM channels and each slot is 8
+bits. this is also done in kernel source code. currently the problem is i
+want that data of channel 1 be mapped to slot 1, channel 2 be mapped to
+slot 2, .... and channel 32 be mapped to slot 32. but when i run aplay to
+send to only channel 1, data will be send to all slots! i want that all
+slots be 0 except slot 1. How can i do that?
 
-?
+I searched in source tree and found the function that i need to override
+this behaviour is copy that is defined in snd_pcm_ops structure. I defined
+a function called davinci_pcm_copy in davinci-pcm.c file and added the
+function to structure like below:
 
-I just suggested to remove 'user' from topology implementation in 
-userspace library. You can still control access rights of control 
-elements by adding enough flags; 'read' or 'write' 
-(SNDRV_CTL_ELEM_ACCESS_READ or SNDRV_CTL_ELEM_ACCESS_WRITE). 
-SNDRV_CTL_ELEM_ACCESS_USER has no relationship to your purposes.
+static struct snd_pcm_ops davinci_pcm_ops = {
+    ....
+    .copy = davinci_pcm_copy,
+};
 
-When a control element has SNDRV_CTL_ELEM_ACCESS_USER flag, a control 
-element set including the element has below operations;
-  - struct snd_kcontrol.info = snd_ctl_elem_user_enum_info or
-                               snd_ctl_elem_user_info
-  - struct snd_kcontrol.get = snd_ctl_elem_user_get
-  - struct snd_kcontrol.put = snd_ctl_elem_user_put
-  - struct snd_kcontrol.tlv.c = snd_ctl_elem_user_tlv
+the problem is, this copy function is not called at all by kernel pcm
+subsystem.
 
-When userland applications call ioctl(2) with SNDRV_CTL_IOCTL_ELEM_ADD, 
-then ALSA ctl core adds new control element set. The 'USER' flag is used 
-only for this case.
+Again i searched the kernel code and found that copy function has a calling
+path as below:
 
-I think it better for you to read 'sound/core/control.c' or my test 
-program in alsa-lib source.
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=test/user-ctl-element-set.c
+alsa-lib -> snd_pcm_playback_ioctl -> snd_pcm_playback_ioctl1 ->
+snd_pcm_lib_write -> snd_pcm_lib_write1 -> snd_pcm_lib_write_transfer ->
+copy
 
+but my calling path is:
 
-Regards
+alsa-lib -> snd_pcm_playback_ioctl -> snd_pcm_playback_ioctl1 ->
+snd_pcm_common_ioctl1 -> snd_pcm_sync_ptr
 
-Takashi Sakamoto
+I created a wav file from a mp3 file with this command:
+
+ffmpeg -i file.mp3 -ac 1 -ar 8000 -ab 64k -f u8 file.wav
+
+and played with this command:
+
+aplay -vv -c 1 file.wav
+
+Strange thing is when i run this aplay command in my PC the first calling
+path is executed but when i run the same aplay with same file in my board
+the second calling path is executed. Is it related to software and hardware
+params of sound devices? if yes, what should i do to copy function being
+called in my board?
+
+thanks
