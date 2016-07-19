@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 1/2] ALSA - hda: Add support for parsing new
-	HDA capabilities
-Date: Tue, 19 Jul 2016 16:16:41 +0530
-Message-ID: <1468925202-29445-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 2/2] ALSA - hda: Add support for link audio
+	time reporting
+Date: Tue, 19 Jul 2016 16:16:42 +0530
+Message-ID: <1468925202-29445-3-git-send-email-vinod.koul@intel.com>
 References: <1468925202-29445-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 31B4D265FF5
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 12:39:36 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id F13C3266052
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 12:39:38 +0200 (CEST)
 In-Reply-To: <1468925202-29445-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,200 +25,132 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-
-Skylake onwards HDA controller supports new capabilities like
-Global Time Stamping (GTS) capability. So add support to parse
-these new capabilities.
-
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- include/sound/hda_register.h   | 23 ++++++++++++++++++++
- sound/pci/hda/hda_controller.c | 49 ++++++++++++++++++++++++++++++++++++++++++
- sound/pci/hda/hda_controller.h | 27 +++++++++++++++++++++++
- sound/pci/hda/hda_intel.c      | 12 +++++++++++
- 4 files changed, 111 insertions(+)
-
-diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
-index ff1aecf325e8..e4178328e8c8 100644
---- a/include/sound/hda_register.h
-+++ b/include/sound/hda_register.h
-@@ -242,6 +242,29 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
- /* Interval used to calculate the iterating register offset */
- #define AZX_DRSM_INTERVAL		0x08
- 
-+/* Global time synchronization registers */
-+#define GTSCC_TSCCD_MASK		0x80000000
-+#define GTSCC_TSCCD_SHIFT		31
-+#define GTSCC_TSCCI_MASK		0x20
-+#define GTSCC_CDMAS_DMA_DIR_SHIFT	4
-+
-+#define WALFCC_CIF_MASK			0x1FF
-+#define WALFCC_FN_SHIFT			9
-+#define HDA_CLK_CYCLES_PER_FRAME	512
-+
-+/*
-+ * An error occurs near frame "rollover". The clocks in frame value indicates
-+ * whether this error may have occurred. Here we use the value of 10. Please
-+ * see the errata for the right number [<10]
-+ */
-+#define HDA_MAX_CYCLE_VALUE		499
-+#define HDA_MAX_CYCLE_OFFSET		10
-+#define HDA_MAX_CYCLE_READ_RETRY	10
-+
-+#define TSCCU_CCU_SHIFT			32
-+#define LLPC_CCU_SHIFT			32
-+
-+
- /*
-  * helpers to read the stream position
-  */
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 27de8015717d..7e5e4c261e51 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -393,6 +393,50 @@ static struct snd_pcm_hardware azx_pcm_hw = {
- 	.fifo_size =		0,
- };
- 
-+#define AZX_MAX_CAPS 10
-+
-+/**
-+ * azx_parse_capabilities - parse the additional HDA capabilities for HDA
-+ * controller. HDA controller defines capabilities as link list which can be
-+ * parsed to find the controller support.
-+ *
-+ * @chip: azx controller
-+ */
-+void azx_parse_capabilities(struct azx *chip)
-+{
-+	unsigned int cur_cap;
-+	unsigned int offset; unsigned int counter = 0;
-+
-+	offset = azx_readl(chip, LLCH);
-+
-+	/* Lets walk the linked capabilities list */
-+	do {
-+		cur_cap = _snd_hdac_chip_read(l, azx_bus(chip), offset);
-+
-+		switch ((cur_cap & CAP_HDR_ID_MASK) >> CAP_HDR_ID_OFF) {
-+		case GTS_CAP_ID:
-+			dev_dbg(chip->card->dev, "Found GTS capability");
-+			chip->gts_present = 1;
-+			break;
-+
-+		default:
-+			break;
-+		}
-+
-+		counter++;
-+
-+		if (counter > AZX_MAX_CAPS) {
-+			dev_err(chip->card->dev, "We exceeded azx capabilities!!!\n");
-+			break;
-+		}
-+
-+		/* read the offset of next capabiity */
-+		offset = cur_cap & CAP_HDR_NXT_PTR_MASK;
-+
-+	} while (offset);
-+}
-+EXPORT_SYMBOL_GPL(azx_parse_capabilities);
-+
- static int azx_pcm_open(struct snd_pcm_substream *substream)
- {
- 	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
-@@ -412,6 +456,11 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
- 		goto unlock;
- 	}
- 	runtime->private_data = azx_dev;
-+
-+	if (chip->gts_present)
-+		azx_pcm_hw.info = azx_pcm_hw.info |
-+			SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME;
-+
- 	runtime->hw = azx_pcm_hw;
- 	runtime->hw.channels_min = hinfo->channels_min;
- 	runtime->hw.channels_max = hinfo->channels_max;
-diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
-index ec63bbf1ec6d..fc57eef9fd88 100644
---- a/sound/pci/hda/hda_controller.h
-+++ b/sound/pci/hda/hda_controller.h
-@@ -159,9 +159,14 @@ struct azx {
- 	unsigned int region_requested:1;
- 	unsigned int disabled:1; /* disabled by vga_switcheroo */
- 
-+	/* GTS present */
-+	unsigned int gts_present:1;
-+
- #ifdef CONFIG_SND_HDA_DSP_LOADER
- 	struct azx_dev saved_azx_dev;
- #endif
-+	unsigned int link_count;
-+	unsigned int mlcap_offset;
- };
- 
- #define azx_bus(chip)	(&(chip)->bus.core)
-@@ -173,6 +178,27 @@ struct azx {
- #define azx_snoop(chip)		true
- #endif
- 
-+#define AZX_REG_LLCH 0x14
-+
-+#define AZX_REG_GTS_BASE 0x520
-+
-+#define AZX_REG_GTSCC	(AZX_REG_GTS_BASE + 0x00)
-+#define AZX_REG_WALFCC	(AZX_REG_GTS_BASE + 0x04)
-+#define AZX_REG_TSCCL	(AZX_REG_GTS_BASE + 0x08)
-+#define AZX_REG_TSCCU	(AZX_REG_GTS_BASE + 0x0C)
-+#define AZX_REG_LLPFOC	(AZX_REG_GTS_BASE + 0x14)
-+#define AZX_REG_LLPCL	(AZX_REG_GTS_BASE + 0x18)
-+#define AZX_REG_LLPCU	(AZX_REG_GTS_BASE + 0x1C)
-+
-+#define CAP_HDR_VER_OFF                 28
-+#define CAP_HDR_VER_MASK                (0xF << CAP_HDR_VER_OFF)
-+
-+#define CAP_HDR_ID_OFF                  16
-+#define CAP_HDR_ID_MASK                 (0xFFF << CAP_HDR_ID_OFF)
-+
-+#define GTS_CAP_ID                 0x1
-+#define CAP_HDR_NXT_PTR_MASK    0xFFFF
-+
- /*
-  * macros for easy use
-  */
-@@ -201,6 +227,7 @@ static inline struct azx_dev *get_azx_dev(struct snd_pcm_substream *substream)
- unsigned int azx_get_position(struct azx *chip, struct azx_dev *azx_dev);
- unsigned int azx_get_pos_lpib(struct azx *chip, struct azx_dev *azx_dev);
- unsigned int azx_get_pos_posbuf(struct azx *chip, struct azx_dev *azx_dev);
-+void azx_parse_capabilities(struct azx *chip);
- 
- /* Stream control. */
- void azx_stop_all_streams(struct azx *chip);
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 6f8ea13323c1..bd392183fbc1 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1655,6 +1655,18 @@ static int azx_first_init(struct azx *chip)
- 		return -ENXIO;
- 	}
- 
-+	if (IS_SKL_PLUS(pci))
-+		azx_parse_capabilities(chip);
-+
-+	/*
-+	 * Some Intel CPUs has always running timer (ART) feature and
-+	 * controller may have Global time sync reporting capability, so
-+	 * check both of these before declaring synchronized time reporting
-+	 * capability SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME
-+	 */
-+	if (!(chip->gts_present && boot_cpu_has(X86_FEATURE_ART)))
-+		chip->gts_present = false;
-+
- 	if (chip->msi) {
- 		if (chip->driver_caps & AZX_DCAPS_NO_MSI64) {
- 			dev_dbg(card->dev, "Disabling 64bit MSI\n");
--- 
-1.9.1
+RnJvbTogR3VuZXNod29yIFNpbmdoIDxndW5lc2h3b3Iuby5zaW5naEBpbnRlbC5jb20+CgpUaGUg
+SERBIGNvbnRyb2xsZXIgZnJvbSBTS0wgb253YXJkcyBzdXBwb3J0IGFkZGl0aW9uYWwgdGltZXN0
+YW1wCnJlcG9ydGluZyBvZiB0aGUgbGluayB0aW1lLiBUaGUgbGluayB0aW1lIGlzIHJlYWQgZnJv
+bSBIVwpyZWdpc3RlcnMgYW5kIGNvbnZlcnRlZCB0byBhdWRpbyB2YWx1ZXMuCgpTaWduZWQtb2Zm
+LWJ5OiBHdW5lc2h3b3IgU2luZ2ggPGd1bmVzaHdvci5vLnNpbmdoQGludGVsLmNvbT4KU2lnbmVk
+LW9mZi1ieTogSGFyZGlrIFQgU2hhaCA8aGFyZGlrLnQuc2hhaEBpbnRlbC5jb20+ClNpZ25lZC1v
+ZmYtYnk6IFZpbm9kIEtvdWwgPHZpbm9kLmtvdWxAaW50ZWwuY29tPgotLS0KIHNvdW5kL3BjaS9o
+ZGEvaGRhX2NvbnRyb2xsZXIuYyB8IDE5NSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrLQogMSBmaWxlIGNoYW5nZWQsIDE5NCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9u
+KC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9oZGFfY29udHJvbGxlci5jIGIvc291bmQv
+cGNpL2hkYS9oZGFfY29udHJvbGxlci5jCmluZGV4IDdlNWU0YzI2MWU1MS4uOWFlNjljMDAwYTEz
+IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL2hkYV9jb250cm9sbGVyLmMKKysrIGIvc291bmQv
+cGNpL2hkYS9oZGFfY29udHJvbGxlci5jCkBAIC0yNyw2ICsyNywxMiBAQAogI2luY2x1ZGUgPGxp
+bnV4L21vZHVsZS5oPgogI2luY2x1ZGUgPGxpbnV4L3BtX3J1bnRpbWUuaD4KICNpbmNsdWRlIDxs
+aW51eC9zbGFiLmg+CisKKyNpZmRlZiBDT05GSUdfWDg2CisvKiBmb3IgYXJ0LXRzYyBjb252ZXJz
+aW9uICovCisjaW5jbHVkZSA8YXNtL3RzYy5oPgorI2VuZGlmCisKICNpbmNsdWRlIDxzb3VuZC9j
+b3JlLmg+CiAjaW5jbHVkZSA8c291bmQvaW5pdHZhbC5oPgogI2luY2x1ZGUgImhkYV9jb250cm9s
+bGVyLmgiCkBAIC0zMzcsMTIgKzM0MywxNjkgQEAgc3RhdGljIHNuZF9wY21fdWZyYW1lc190IGF6
+eF9wY21fcG9pbnRlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKIAkJCSAg
+ICAgICBhenhfZ2V0X3Bvc2l0aW9uKGNoaXAsIGF6eF9kZXYpKTsKIH0KIAorLyoKKyAqIGF6eF9z
+Y2FsZTY0OiBTY2FsZSBiYXNlIGJ5IG11bHQvZGl2IHdoaWxlIG5vdCBvdmVyZmxvd2luZyBzYW5l
+bHkKKyAqCisgKiBEZXJpdmVkIGZyb20gc2NhbGU2NF9jaGVja19vdmVyZmxvdyBpbiBrZXJuZWwv
+dGltZS90aW1la2VlcGluZy5jCisgKgorICogVGhlIHRtZXN0YW1wcyBmb3IgYSA0OEtoeiBzdHJl
+YW0gY2FuIG92ZXJmbG93IGFmdGVyICgyXjY0LzEwXjkpLzQ4SyB3aGljaAorICogaXMgYWJvdXQg
+Mzg0MzA3IGllIH40LjUgZGF5cy4KKyAqCisgKiBUaGlzIHNjYWxlcyB0aGUgY2FsY3VsYXRpb24g
+c28gdGhhdCBvdmVyZmxvdyB3aWxsIGhhcHBlbiBidXQgYWZ0ZXIgMl42NCAvCisgKiA0ODAwMCBz
+ZWNzLCB3aGljaCBpcyBwcmV0dHkgbGFyZ2UhCisgKgorICogSW4gY2FsbiBiZWxvdzoKKyAqCWJh
+c2UgbWF5IG92ZXJmbG93LCBidXQgc2luY2UgdGhlcmUgaXNu4oCZdCBhbnkgYWRkaXRpb25hbCBk
+aXZpc2lvbgorICoJcGVyZm9ybWVkIG9uIGJhc2UgaXTigJlzIE9LCisgKglyZW0gY2Fu4oCZdCBv
+dmVyZmxvdyBiZWNhdXNlIGJvdGggYXJlIDMyLWJpdCB2YWx1ZXMKKyAqLworCisjaWZkZWYgQ09O
+RklHX1g4Ngorc3RhdGljIHU2NCBhenhfc2NhbGU2NCh1NjQgYmFzZSwgdTMyIG51bSwgdTMyIGRl
+bikKK3sKKwl1NjQgcmVtOworCisJcmVtID0gZG9fZGl2KGJhc2UsIGRlbik7CisKKwliYXNlICo9
+IG51bTsKKwlyZW0gKj0gbnVtOworCisJZG9fZGl2KHJlbSwgZGVuKTsKKworCXJldHVybiBiYXNl
+ICsgcmVtOworfQorCitzdGF0aWMgaW50IGF6eF9nZXRfc3luY190aW1lKGt0aW1lX3QgKmRldmlj
+ZSwKKwkJc3RydWN0IHN5c3RlbV9jb3VudGVydmFsX3QgKnN5c3RlbSwgdm9pZCAqY3R4KQorewor
+CXN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtID0gKHN0cnVjdCBzbmRfcGNtX3N1
+YnN0cmVhbSAqKWN0eDsKKwlzdHJ1Y3QgYXp4X2RldiAqYXp4X2RldiA9IGdldF9henhfZGV2KHN1
+YnN0cmVhbSk7CisJc3RydWN0IGF6eF9wY20gKmFwY20gPSBzbmRfcGNtX3N1YnN0cmVhbV9jaGlw
+KHN1YnN0cmVhbSk7CisJc3RydWN0IGF6eCAqY2hpcCA9IGFwY20tPmNoaXA7CisJc3RydWN0IHNu
+ZF9wY21fcnVudGltZSAqcnVudGltZTsKKwl1NjQgbGxfY291bnRlciwgbGxfY291bnRlcl9sLCBs
+bF9jb3VudGVyX2g7CisJdTY0IHRzY19jb3VudGVyLCB0c2NfY291bnRlcl9sLCB0c2NfY291bnRl
+cl9oOworCXUzMiB3YWxsY2xrX2N0ciwgd2FsbGNsa19jeWNsZXM7CisJYm9vbCBkaXJlY3Rpb247
+CisJdTMyIGRtYV9zZWxlY3Q7CisJdTMyIHRpbWVvdXQgPSAyMDA7CisJdTMyIHJldHJ5X2NvdW50
+ID0gMDsKKworCXJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7CisKKwlpZiAoc3Vic3RyZWFt
+LT5zdHJlYW0gPT0gU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDSykKKwkJZGlyZWN0aW9uID0gMTsK
+KwllbHNlCisJCWRpcmVjdGlvbiA9IDA7CisKKwkvKiAwdGggc3RyZWFtIHRhZyBpcyBub3QgdXNl
+ZCwgc28gRE1BIGNoIDAgaXMgZm9yIDFzdCBzdHJlYW0gdGFnICovCisJZG8geworCQl0aW1lb3V0
+ID0gMTAwOworCQlkbWFfc2VsZWN0ID0gKGRpcmVjdGlvbiA8PCBHVFNDQ19DRE1BU19ETUFfRElS
+X1NISUZUKSB8CisJCQkJCShhenhfZGV2LT5jb3JlLnN0cmVhbV90YWcgLSAxKTsKKwkJX3NuZF9o
+ZGFjX2NoaXBfd3JpdGUobCwgYXp4X2J1cyhjaGlwKSwgQVpYX1JFR19HVFNDQywKKwkJCQkJCWRt
+YV9zZWxlY3QpOworCQkvKiBFbmFibGUgdGhlIGNhcHR1cmUgKi8KKwkJX3NuZF9oZGFjX2NoaXBf
+d3JpdGUobCwgYXp4X2J1cyhjaGlwKSwgQVpYX1JFR19HVFNDQywKKwkJCQkgICAgIF9zbmRfaGRh
+Y19jaGlwX3JlYWQobCwgYXp4X2J1cyhjaGlwKSwKKwkJCQkJQVpYX1JFR19HVFNDQykgfCBHVFND
+Q19UU0NDSV9NQVNLKTsKKworCQl3aGlsZSAodGltZW91dCkgeworCQkJaWYgKF9zbmRfaGRhY19j
+aGlwX3JlYWQobCwgYXp4X2J1cyhjaGlwKSwKKwkJCQlBWlhfUkVHX0dUU0NDKSAmIEdUU0NDX1RT
+Q0NEX01BU0spCisJCQkJYnJlYWs7CisJCQl0aW1lb3V0LS07CisJCX0KKworCQlpZiAoIXRpbWVv
+dXQpIHsKKwkJCWRldl9lcnIoY2hpcC0+Y2FyZC0+ZGV2LCAiR1RTQ0MgY2FwdHVyZSBUaW1lZG91
+dCFcbiIpOworCQkJcmV0dXJuIC1FSU87CisJCX0KKworCQkvKiBSZWFkIHdhbGwgY2xvY2sgY291
+bnRlciAqLworCQl3YWxsY2xrX2N0ciA9IF9zbmRfaGRhY19jaGlwX3JlYWQobCwgYXp4X2J1cyhj
+aGlwKSwKKwkJCQkJCSAgQVpYX1JFR19XQUxGQ0MpOworCisJCS8qIFJlYWQgVFNDIGNvdW50ZXIg
+Ki8KKwkJdHNjX2NvdW50ZXJfbCA9IF9zbmRfaGRhY19jaGlwX3JlYWQobCwgYXp4X2J1cyhjaGlw
+KSwKKwkJCQkJCSAgICBBWlhfUkVHX1RTQ0NMKTsKKwkJdHNjX2NvdW50ZXJfaCA9IF9zbmRfaGRh
+Y19jaGlwX3JlYWQobCwgYXp4X2J1cyhjaGlwKSwKKwkJCQkJCSAgICBBWlhfUkVHX1RTQ0NVKTsK
+KworCQkvKiBSZWFkIExpbmsgY291bnRlciAqLworCQlsbF9jb3VudGVyX2wgPSBfc25kX2hkYWNf
+Y2hpcF9yZWFkKGwsIGF6eF9idXMoY2hpcCksCisJCQkJCQkgICBBWlhfUkVHX0xMUENMKTsKKwkJ
+bGxfY291bnRlcl9oID0gX3NuZF9oZGFjX2NoaXBfcmVhZChsLCBhenhfYnVzKGNoaXApLAorCQkJ
+CQkJICAgQVpYX1JFR19MTFBDVSk7CisKKwkJLyogQWNrOiByZWdpc3RlcnMgcmVhZCBkb25lICov
+CisJCV9zbmRfaGRhY19jaGlwX3dyaXRlKGwsIGF6eF9idXMoY2hpcCksCisJCQkJICAgICBBWlhf
+UkVHX0dUU0NDLAorCQkJCSAgICAgKDB4MSA8PCBHVFNDQ19UU0NDRF9TSElGVCkpOworCisJCXRz
+Y19jb3VudGVyID0gKHRzY19jb3VudGVyX2ggPDwgVFNDQ1VfQ0NVX1NISUZUKSB8CisJCQkJCQl0
+c2NfY291bnRlcl9sOworCisJCWxsX2NvdW50ZXIgPSAobGxfY291bnRlcl9oIDw8IExMUENfQ0NV
+X1NISUZUKSB8CWxsX2NvdW50ZXJfbDsKKwkJd2FsbGNsa19jeWNsZXMgPSB3YWxsY2xrX2N0ciAm
+IFdBTEZDQ19DSUZfTUFTSzsKKworCQkvKgorCQkgKiBBbiBlcnJvciBvY2N1cnMgbmVhciBmcmFt
+ZSAicm9sbG92ZXIiLiBUaGUgY2xvY2tzIGluCisJCSAqIGZyYW1lIHZhbHVlIGluZGljYXRlcyB3
+aGV0aGVyIHRoaXMgZXJyb3IgbWF5IGhhdmUKKwkJICogb2NjdXJyZWQuIEhlcmUgd2UgdXNlIHRo
+ZSB2YWx1ZSBvZiAxMCBpLmUuLAorCQkgKiBIREFfTUFYX0NZQ0xFX09GRlNFVAorCQkgKi8KKwkJ
+aWYgKHdhbGxjbGtfY3ljbGVzIDwgSERBX01BWF9DWUNMRV9WQUxVRSAtIEhEQV9NQVhfQ1lDTEVf
+T0ZGU0VUCisJCSAgICAmJiB3YWxsY2xrX2N5Y2xlcyA+IEhEQV9NQVhfQ1lDTEVfT0ZGU0VUKQor
+CQkJYnJlYWs7CisKKwkJLyoKKwkJICogU2xlZXAgYmVmb3JlIHdlIHJlYWQgYWdhaW4sIGVsc2Ug
+d2UgbWF5IGFnYWluIGdldAorCQkgKiB2YWx1ZSBuZWFyIHRvIE1BWF9DWUNMRS4gVHJ5IHRvIHNs
+ZWVwIGZvciBkaWZmZXJlbnQKKwkJICogYW1vdW50IG9mIHRpbWUgc28gd2UgZG9udCBoaXQgdGhl
+IHNhbWUgbnVtYmVyIGFnYWluCisJCSAqLworCQl1ZGVsYXkocmV0cnlfY291bnQrKyk7CisKKwl9
+IHdoaWxlIChyZXRyeV9jb3VudCAhPSBIREFfTUFYX0NZQ0xFX1JFQURfUkVUUlkpOworCisJaWYg
+KHJldHJ5X2NvdW50ID09IEhEQV9NQVhfQ1lDTEVfUkVBRF9SRVRSWSkgeworCQlkZXZfZXJyKGNo
+aXAtPmNhcmQtPmRldiwgIkVycm9yIGluIFdBTEZDQyBjeWNsZSBjb3VudFxuIik7CisJCXJldHVy
+biAtRUlPOworCX0KKworCSpkZXZpY2UgPSBuc190b19rdGltZShhenhfc2NhbGU2NChsbF9jb3Vu
+dGVyLAorCQkJCU5TRUNfUEVSX1NFQywgcnVudGltZS0+cmF0ZSkpOworCSpkZXZpY2UgPSBrdGlt
+ZV9hZGRfbnMoKmRldmljZSwgKHdhbGxjbGtfY3ljbGVzICogTlNFQ19QRVJfU0VDKSAvCisJCQkg
+ICAgICAgKChIREFfTUFYX0NZQ0xFX1ZBTFVFICsgMSkgKiBydW50aW1lLT5yYXRlKSk7CisKKwkq
+c3lzdGVtID0gY29udmVydF9hcnRfdG9fdHNjKHRzY19jb3VudGVyKTsKKworCXJldHVybiAwOwor
+fQorCisjZWxzZQorc3RhdGljIGludCBhenhfZ2V0X3N5bmNfdGltZShrdGltZV90ICpkZXZpY2Us
+CisJCXN0cnVjdCBzeXN0ZW1fY291bnRlcnZhbF90ICpzeXN0ZW0sIHZvaWQgKmN0eCkKK3sKKwly
+ZXR1cm4gLUVOWElPOworfQorI2VuZGlmCisKK3N0YXRpYyBpbnQgYXp4X2dldF9jcm9zc3RzdGFt
+cChzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKKwkJCSAgICAgIHN0cnVjdCBz
+eXN0ZW1fZGV2aWNlX2Nyb3NzdHN0YW1wICp4dHN0YW1wKQoreworCXJldHVybiBnZXRfZGV2aWNl
+X3N5c3RlbV9jcm9zc3RzdGFtcChhenhfZ2V0X3N5bmNfdGltZSwKKwkJCQkJc3Vic3RyZWFtLCBO
+VUxMLCB4dHN0YW1wKTsKK30KKwogc3RhdGljIGludCBhenhfZ2V0X3RpbWVfaW5mbyhzdHJ1Y3Qg
+c25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAkJCXN0cnVjdCB0aW1lc3BlYyAqc3lzdGVt
+X3RzLCBzdHJ1Y3QgdGltZXNwZWMgKmF1ZGlvX3RzLAogCQkJc3RydWN0IHNuZF9wY21fYXVkaW9f
+dHN0YW1wX2NvbmZpZyAqYXVkaW9fdHN0YW1wX2NvbmZpZywKIAkJCXN0cnVjdCBzbmRfcGNtX2F1
+ZGlvX3RzdGFtcF9yZXBvcnQgKmF1ZGlvX3RzdGFtcF9yZXBvcnQpCiB7CiAJc3RydWN0IGF6eF9k
+ZXYgKmF6eF9kZXYgPSBnZXRfYXp4X2RldihzdWJzdHJlYW0pOworCXN0cnVjdCBzbmRfcGNtX3J1
+bnRpbWUgKnJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7CisJc3RydWN0IHN5c3RlbV9kZXZp
+Y2VfY3Jvc3N0c3RhbXAgeHRzdGFtcDsKIAl1NjQgbnNlYzsKIAogCWlmICgoc3Vic3RyZWFtLT5y
+dW50aW1lLT5ody5pbmZvICYgU05EUlZfUENNX0lORk9fSEFTX0xJTktfQVRJTUUpICYmCkBAIC0z
+NjEsOCArNTI0LDM4IEBAIHN0YXRpYyBpbnQgYXp4X2dldF90aW1lX2luZm8oc3RydWN0IHNuZF9w
+Y21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCiAJCWF1ZGlvX3RzdGFtcF9yZXBvcnQtPmFjY3VyYWN5
+X3JlcG9ydCA9IDE7IC8qIHJlc3Qgb2Ygc3RydWN0dXJlIGlzIHZhbGlkICovCiAJCWF1ZGlvX3Rz
+dGFtcF9yZXBvcnQtPmFjY3VyYWN5ID0gNDI7IC8qIDI0IE1IeiBXYWxsQ2xvY2sgPT0gNDJucyBy
+ZXNvbHV0aW9uICovCiAKLQl9IGVsc2UKKwl9IGVsc2UgaWYgKChydW50aW1lLT5ody5pbmZvICYK
+KwkJCVNORFJWX1BDTV9JTkZPX0hBU19MSU5LX1NZTkNIUk9OSVpFRF9BVElNRSkgJiYKKwkJCShh
+dWRpb190c3RhbXBfY29uZmlnLT50eXBlX3JlcXVlc3RlZCA9PQorCQkJU05EUlZfUENNX0FVRElP
+X1RTVEFNUF9UWVBFX0xJTktfU1lOQ0hST05JWkVEKSkgeworCisJCWF6eF9nZXRfY3Jvc3N0c3Rh
+bXAoc3Vic3RyZWFtLCAmeHRzdGFtcCk7CisKKwkJc3dpdGNoIChydW50aW1lLT50c3RhbXBfdHlw
+ZSkgeworCQljYXNlIFNORFJWX1BDTV9UU1RBTVBfVFlQRV9NT05PVE9OSUM6CisJCQlyZXR1cm4g
+LUVJTlZBTDsKKworCQljYXNlIFNORFJWX1BDTV9UU1RBTVBfVFlQRV9NT05PVE9OSUNfUkFXOgor
+CQkJKnN5c3RlbV90cyA9IGt0aW1lX3RvX3RpbWVzcGVjKHh0c3RhbXAuc3lzX21vbm9yYXcpOwor
+CQkJYnJlYWs7CisKKwkJZGVmYXVsdDoKKwkJCSpzeXN0ZW1fdHMgPSBrdGltZV90b190aW1lc3Bl
+Yyh4dHN0YW1wLnN5c19yZWFsdGltZSk7CisJCQlicmVhazsKKworCQl9CisKKwkJKmF1ZGlvX3Rz
+ID0ga3RpbWVfdG9fdGltZXNwZWMoeHRzdGFtcC5kZXZpY2UpOworCisJCWF1ZGlvX3RzdGFtcF9y
+ZXBvcnQtPmFjdHVhbF90eXBlID0KKwkJCVNORFJWX1BDTV9BVURJT19UU1RBTVBfVFlQRV9MSU5L
+X1NZTkNIUk9OSVpFRDsKKwkJYXVkaW9fdHN0YW1wX3JlcG9ydC0+YWNjdXJhY3lfcmVwb3J0ID0g
+MTsKKwkJLyogMjQgTUh6IFdhbGxDbG9jayA9PSA0Mm5zIHJlc29sdXRpb24gKi8KKwkJYXVkaW9f
+dHN0YW1wX3JlcG9ydC0+YWNjdXJhY3kgPSA0MjsKKworCX0gZWxzZSB7CiAJCWF1ZGlvX3RzdGFt
+cF9yZXBvcnQtPmFjdHVhbF90eXBlID0gU05EUlZfUENNX0FVRElPX1RTVEFNUF9UWVBFX0RFRkFV
+TFQ7CisJfQogCiAJcmV0dXJuIDA7CiB9Ci0tIAoxLjkuMQoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
