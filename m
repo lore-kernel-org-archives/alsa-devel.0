@@ -1,15 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 2/3] topology: Fix compiler warnings
-Date: Tue, 19 Jul 2016 16:52:23 +0800
-Message-ID: <e5db3473240b493641d8a3112b0c1257f84a1382.1468917665.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 3/3] topology: Check address and length before
+	string copy
+Date: Tue, 19 Jul 2016 16:52:48 +0800
+Message-ID: <d19561c620efa5ed81692a7441b8fa7354a800d4.1468917665.git.mengdong.lin@linux.intel.com>
 References: <cover.1468917665.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 27FB32664CF
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 10:47:21 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7299266D0D
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 10:47:44 +0200 (CEST)
 In-Reply-To: <cover.1468917665.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,36 +27,21 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Append ATTRIBUTE_UNUSED to the unused parameter, which need to be kept
-to share the same functions proto type with others.
-
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 281e6ef..0a90cb9 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -259,8 +259,8 @@ int tplg_parse_stream_caps(snd_tplg_t *tplg,
- }
+diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+index 4d79aa7..cfde4cc 100644
+--- a/src/topology/tplg_local.h
++++ b/src/topology/tplg_local.h
+@@ -253,6 +253,9 @@ struct tplg_elem* tplg_elem_new_common(snd_tplg_t *tplg,
  
- /* Parse the caps and config of a pcm stream */
--static int tplg_parse_streams(snd_tplg_t *tplg, snd_config_t *cfg,
--	void *private)
-+static int tplg_parse_streams(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
-+			      snd_config_t *cfg, void *private)
+ static inline void elem_copy_text(char *dest, const char *src, int len)
  {
- 	snd_config_iterator_t i, next;
- 	snd_config_t *n;
-@@ -321,8 +321,8 @@ static int tplg_parse_streams(snd_tplg_t *tplg, snd_config_t *cfg,
++	if (!dest || !src || !len)
++		return;
++
+ 	strncpy(dest, src, len);
+ 	dest[len - 1] = 0;
  }
- 
- /* Parse name and id of a front-end DAI (ie. cpu dai of a FE DAI link) */
--static int tplg_parse_fe_dai(snd_tplg_t *tplg, snd_config_t *cfg,
--	void *private)
-+static int tplg_parse_fe_dai(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
-+			     snd_config_t *cfg, void *private)
- {
- 	struct tplg_elem *elem = private;
- 	struct snd_soc_tplg_pcm *pcm = elem->pcm;
 -- 
 2.5.0
