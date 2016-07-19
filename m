@@ -1,16 +1,20 @@
-From: Shahram Shabpareh <shabpareh.shahram.7@gmail.com>
-Subject: problem with copy function
-Date: Tue, 19 Jul 2016 12:26:06 +0430
-Message-ID: <CAFJxsaei2DCb8T0JBbKLdpxUvM5BrYyRXUGFF7tam9-0DsfX5g@mail.gmail.com>
+From: Chemsi Mehdi <chmsmehdi@gmail.com>
+Subject: Re: Alsa Soc details
+Date: Tue, 19 Jul 2016 10:02:00 +0200
+Message-ID: <CAHkWnPa4Tjxsu=pcqKJXH_+rTVBrb0KPFtMpv+J6rsFkLwJPZQ@mail.gmail.com>
+References: <CAHkWnPb+3P6P6qFOVcy=hh6z-v8Ry4FLZnP8qYrZkik10Et3aA@mail.gmail.com>
+ <20160719035449.GB9681@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 8665C2657B1
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 09:56:07 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id o80so1880883wme.0
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 00:56:07 -0700 (PDT)
+Received: from mail-qt0-f193.google.com (mail-qt0-f193.google.com
+ [209.85.216.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B90172657B1
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 10:02:01 +0200 (CEST)
+Received: by mail-qt0-f193.google.com with SMTP id u25so502704qtb.3
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2016 01:02:01 -0700 (PDT)
+In-Reply-To: <20160719035449.GB9681@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +24,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-I have a board with ti am3358 processor. it has a sound port called McASP
-and I've used IDT821034 as codec. The Linux kernel source package that is
-included by board company is 3.2.0 and I wrote a basic driver for IDT821034
-codec and changed the code of davinci-mcasp.c . Now the basic functionality
-of system is ok and i have signals on oscilloscope. Another thing is i have
-to setup a specific configuration for this system. the target system must
-have 32 tdm slots in each frame and 32 PCM channels and each slot is 8
-bits. this is also done in kernel source code. currently the problem is i
-want that data of channel 1 be mapped to slot 1, channel 2 be mapped to
-slot 2, .... and channel 32 be mapped to slot 32. but when i run aplay to
-send to only channel 1, data will be send to all slots! i want that all
-slots be 0 except slot 1. How can i do that?
+Great thanks Vinod for your reactivity.
+Always helpful
 
-I searched in source tree and found the function that i need to override
-this behaviour is copy that is defined in snd_pcm_ops structure. I defined
-a function called davinci_pcm_copy in davinci-pcm.c file and added the
-function to structure like below:
+2016-07-19 5:54 GMT+02:00 Vinod Koul <vinod.koul@intel.com>:
 
-static struct snd_pcm_ops davinci_pcm_ops = {
-    ....
-    .copy = davinci_pcm_copy,
-};
-
-the problem is, this copy function is not called at all by kernel pcm
-subsystem.
-
-Again i searched the kernel code and found that copy function has a calling
-path as below:
-
-alsa-lib -> snd_pcm_playback_ioctl -> snd_pcm_playback_ioctl1 ->
-snd_pcm_lib_write -> snd_pcm_lib_write1 -> snd_pcm_lib_write_transfer ->
-copy
-
-but my calling path is:
-
-alsa-lib -> snd_pcm_playback_ioctl -> snd_pcm_playback_ioctl1 ->
-snd_pcm_common_ioctl1 -> snd_pcm_sync_ptr
-
-I created a wav file from a mp3 file with this command:
-
-ffmpeg -i file.mp3 -ac 1 -ar 8000 -ab 64k -f u8 file.wav
-
-and played with this command:
-
-aplay -vv -c 1 file.wav
-
-Strange thing is when i run this aplay command in my PC the first calling
-path is executed but when i run the same aplay with same file in my board
-the second calling path is executed. Is it related to software and hardware
-params of sound devices? if yes, what should i do to copy function being
-called in my board?
-
-thanks
+> On Thu, Jul 14, 2016 at 03:07:20PM +0200, Chemsi Mehdi wrote:
+> >
+> >    Why codec driver of ASOC are always I2C based ?, is codec driver role
+> is
+> >    only control of audio hardware(set/reset registers only)?
+>
+> That is not true, there are few SPI based and one i wrote which was a
+> different method altogether. Mostly the audio embedded industry uses I2C
+> codecs so they are very common
+>
+> >    There should be three drivers : machine driver, platform driver and
+> >    codec driver , all of them have .probe and . remove , what is relation
+> >    between all the probes? removes ?
+>
+> All of these have two probes :)
+>
+> First one in hardware probe. Nothing unusual here.
+> Second is the ASoC probe. Each of these registers a component. The ASoC
+> core
+> will create the sound card only when all of these components are present.
+> At
+> that time the ASoC probe in invoked signalling card creation to driver
+>
+>
+> >    As far I know McBSP is source of audio coming from host and I2C/ McBSP
+> >    have no direct relation so why we connect platform driver (McBSP) with
+> >    codec driver(I2C) Via DAI ?
+>
+> You will have to ask driver authors that, pls cc them
+>
+>
+> >    When calling snd_pcm_open from userspace which kernel API is called ?
+> >    snd_pcm_lib_ioctl or  snd_stm_spdif_player_open ? if
+> >    snd_stm_spdif_player_open so when called snd_pcm_lib_ioctl ?
+>
+> system call open()
+>
+> >    How ALSA KERNELAPI is connected to ALSA SOC CORE, via which
+> >    calls/mechanism ?
+>
+> The alsa provides driver callbacks. See struct snd_pcm_ops. ASoC provides
+> the same to asoc driver as well! Additionally we have dai_ops as well.
+>
+> ASoC has its own ops for card and then it invokes platform, codec pcm and
+> dai_ops. See sound/soc/soc-pcm.c
+>
+> --
+> ~Vinod
+>
