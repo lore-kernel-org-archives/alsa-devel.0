@@ -1,15 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-lib][PATCH] ctl: use condition statements
-	instead of assert() for new APIs to add an element set
-Date: Wed, 20 Jul 2016 18:58:52 +0900
-Message-ID: <1469008732-9166-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Bastien Nocera <hadess@hadess.net>
+Subject: Re: [PATCH 3/3] ASoC: Intel: Add surface3 entry in
+ CHT-RT5645 machine
+Date: Wed, 20 Jul 2016 13:27:12 +0200
+Message-ID: <1469014032.6761.43.camel@hadess.net>
+References: <1467972591-29175-1-git-send-email-vinod.koul@intel.com>	
+ <1467972591-29175-4-git-send-email-vinod.koul@intel.com>	
+ <1468940184.6761.36.camel@hadess.net> <20160720035834.GH9681@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 722FD2659DD
- for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2016 11:59:07 +0200 (CEST)
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
+ [217.70.183.197])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5EA1266716
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2016 13:27:31 +0200 (CEST)
+In-Reply-To: <20160720035834.GH9681@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,113 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Stephen Just <stephenjust@gmail.com>, patches.audio@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, apterix@gmail.com, broonie@kernel.org, Sachin Mokashi <sachinx.mokashi@intel.com>, bugzilla@hadess.net
 List-Id: alsa-devel@alsa-project.org
 
-Usage of assert() is not better practice of programming as shared library
-APIs. They should return appropriate error code to promote applications to
-handle error state.
-
-This commit applies condition statements with return value of -EINVAL,
-instead of assert(). As a backward compatibility for existent applications,
-old APIs still call assert().
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- src/control/control.c | 24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
-
-diff --git a/src/control/control.c b/src/control/control.c
-index aa05130..6c00b8e 100644
---- a/src/control/control.c
-+++ b/src/control/control.c
-@@ -382,7 +382,8 @@ int snd_ctl_add_integer_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 	unsigned int numid;
- 	int err;
- 
--	assert(ctl && info && info->id.name[0]);
-+	if (ctl == NULL || info == NULL || info->id.name[0] == '\0')
-+		return -EINVAL;
- 
- 	info->type = SND_CTL_ELEM_TYPE_INTEGER;
- 	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-@@ -471,7 +472,8 @@ int snd_ctl_add_integer64_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 	unsigned int numid;
- 	int err;
- 
--	assert(ctl && info && info->id.name[0]);
-+	if (ctl == NULL || info == NULL || info->id.name[0] == '\0')
-+		return -EINVAL;
- 
- 	info->type = SND_CTL_ELEM_TYPE_INTEGER64;
- 	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-@@ -549,7 +551,8 @@ int snd_ctl_add_boolean_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 				 unsigned int element_count,
- 				 unsigned int member_count)
- {
--	assert(ctl && info && info->id.name[0]);
-+	if (ctl == NULL || info == NULL || info->id.name[0] == '\0')
-+		return -EINVAL;
- 
- 	info->type = SND_CTL_ELEM_TYPE_BOOLEAN;
- 	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-@@ -619,7 +622,9 @@ int snd_ctl_add_enumerated_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 	char *buf, *p;
- 	int err;
- 
--	assert(ctl && info && info->id.name[0] && labels);
-+	if (ctl == NULL || info == NULL || info->id.name[0] == '\0' ||
-+	    labels == NULL)
-+		return -EINVAL;
- 
- 	info->type = SND_CTL_ELEM_TYPE_ENUMERATED;
- 	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-@@ -698,7 +703,8 @@ int snd_ctl_add_bytes_elem_set(snd_ctl_t *ctl, snd_ctl_elem_info_t *info,
- 			       unsigned int element_count,
- 			       unsigned int member_count)
- {
--	assert(ctl && info && info->id.name[0]);
-+	if (ctl == NULL || info == NULL || info->id.name[0] == '\0')
-+		return -EINVAL;
- 
- 	info->type = SND_CTL_ELEM_TYPE_BYTES;
- 	info->access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-@@ -726,6 +732,8 @@ int snd_ctl_elem_add_integer(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- {
- 	snd_ctl_elem_info_t info = {0};
- 
-+	assert(ctl && id && id->name[0]);
-+
- 	info.id = *id;
- 
- 	return snd_ctl_add_integer_elem_set(ctl, &info, 1, member_count,
-@@ -745,6 +753,8 @@ int snd_ctl_elem_add_integer64(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- {
- 	snd_ctl_elem_info_t info = {0};
- 
-+	assert(ctl && id && id->name[0]);
-+
- 	info.id = *id;
- 
- 	return snd_ctl_add_integer64_elem_set(ctl, &info, 1, member_count,
-@@ -763,6 +773,8 @@ int snd_ctl_elem_add_boolean(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- {
- 	snd_ctl_elem_info_t info = {0};
- 
-+	assert(ctl && id && id->name[0]);
-+
- 	info.id = *id;
- 
- 	return snd_ctl_add_boolean_elem_set(ctl, &info, 1, member_count);
-@@ -783,6 +795,8 @@ int snd_ctl_elem_add_enumerated(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- {
- 	snd_ctl_elem_info_t info = {0};
- 
-+	assert(ctl && id && id->name[0] && labels);
-+
- 	info.id = *id;
- 
- 	return snd_ctl_add_enumerated_elem_set(ctl, &info, 1, member_count,
--- 
-2.7.4
+T24gV2VkLCAyMDE2LTA3LTIwIGF0IDA5OjI4ICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOgo+IE9u
+IFR1ZSwgSnVsIDE5LCAyMDE2IGF0IDA0OjU2OjI0UE0gKzAyMDAsIEJhc3RpZW4gTm9jZXJhIHdy
+b3RlOgo+ID4gPiArCS8qIGZpeHVwIGNvZGVjIG5hbWUgYmFzZWQgb24gSElEICovCj4gPiA+ICsJ
+aTJjX25hbWUgPSBzc3RfYWNwaV9maW5kX25hbWVfZnJvbV9oaWQobWFjaC0+aWQpOwo+ID4gPiAr
+CWlmIChpMmNfbmFtZSAhPSBOVUxMKSB7Cj4gPiA+ICsJCXNucHJpbnRmKGNodF9ydDU2NDBfY29k
+ZWNfbmFtZSwKPiA+ID4gc2l6ZW9mKGNodF9ydDU2NDBfY29kZWNfbmFtZSksCj4gPiA+ICsJCQki
+JXMlcyIsICJpMmMtIiwgaTJjX25hbWUpOwo+ID4gPiArCQljaHRfZGFpbGlua1tkYWlfaW5kZXhd
+LmNvZGVjX25hbWUgPQo+ID4gPiBjaHRfcnQ1NjQwX2NvZGVjX25hbWU7Cj4gPiAKPiA+IEZXSVcs
+IEkgZ2V0Ogo+ID4gc291bmQvc29jL2ludGVsL2JvYXJkcy9jaHRfYnN3X3J0NTY0NS5jOiBJbiBm
+dW5jdGlvbgo+ID4gJ3NuZF9jaHRfbWNfcHJvYmUnOgo+ID4gc291bmQvc29jL2ludGVsL2JvYXJk
+cy9jaHRfYnN3X3J0NTY0NS5jOjM5MTozNzogd2FybmluZzoKPiA+ICdkYWlfaW5kZXgnIG1heSBi
+ZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbiBbLVdtYXliZS0KPiA+IHVuaW5p
+dGlhbGl6ZWRdCj4gPiDCoMKgwqBjaHRfZGFpbGlua1tkYWlfaW5kZXhdLmNvZGVjX25hbWUgPSBj
+aHRfcnQ1NjQwX2NvZGVjX25hbWU7Cj4gPiDCoMKgwqB+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+Xn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4KPiAKPiBZZWFoIEkgbm90aWNlIHRoZW0g
+YSBiaXQgbGF0ZXIuIFRoZSBmaXhlcyBhcmUgYWxyZWFkeSBpbiBtYXJrJ3MtbmV4dC4KCkNhcmUg
+dG8gYmUgYSBiaXQgbW9yZSBzcGVjaWZpYy4gS2luZCBvZiBoYXJkIHRvIGtub3cgd2hpY2ggTWFy
+ayB5b3UncmUKdGFsa2luZyBhYm91dCB3aGVuIHRoZXJlJ3Mgbm8gb25lIG9mIHRoYXQgbmFtZSBp
+biB0aGUgQ0M6IGxpc3QgYWJvdmUuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
