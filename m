@@ -1,18 +1,21 @@
-From: Bastien Nocera <hadess@hadess.net>
+From: Stephen J <stephenjust@gmail.com>
 Subject: Re: [PATCH 0/3] ASoC: Intel: Add support for surface3
 	tablet
-Date: Wed, 20 Jul 2016 16:47:54 +0200
-Message-ID: <1469026074.6761.63.camel@hadess.net>
+Date: Wed, 20 Jul 2016 09:05:46 -0600
+Message-ID: <CAOvWGzj1sk2L5VYy7GVR-KNmimRmfexmejC1+E2zsAO196TB7w@mail.gmail.com>
 References: <1467972591-29175-1-git-send-email-vinod.koul@intel.com>
+ <1469026074.6761.63.camel@hadess.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
- [217.70.183.197])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F0652658EB
- for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2016 16:48:31 +0200 (CEST)
-In-Reply-To: <1467972591-29175-1-git-send-email-vinod.koul@intel.com>
+Received: from mail-it0-f66.google.com (mail-it0-f66.google.com
+ [209.85.214.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78A8B261490
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2016 17:05:48 +0200 (CEST)
+Received: by mail-it0-f66.google.com with SMTP id d65so3678684ith.0
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2016 08:05:48 -0700 (PDT)
+In-Reply-To: <1469026074.6761.63.camel@hadess.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,46 +25,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
-Cc: Stephen Just <stephenjust@gmail.com>, patches.audio@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, apterix@gmail.com, broonie@kernel.org, bugzilla@hadess.net
+To: Bastien Nocera <hadess@hadess.net>
+Cc: alsa-devel@alsa-project.org, apterix@gmail.com, Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, bugzilla@hadess.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyMDE2LTA3LTA4IGF0IDE1OjM5ICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOgo+IFN1
-cmZhY2UzIHRhYmxldCBpcyBDSFQgYmFzZWQgZGV2aWNlIHdoaWNoIHVzZWQgUlQ1NjQ1IGNvZGVj
-LiBCdXQgdGhlCj4gQUNQSSBJRAo+IGlzIDEwRUM1NjQwIHdoaWNoIGJlbG9uZyB0byBSVDU2NDAg
-Y29kZWMgOigKPiBTbyB3ZSBhZGQgcXVpcmsgc3VwcG9ydCB0byBsb2FkIGNodC1tYWNoaW5lIGRy
-aXZlciBmb3Igc3VyZmFjZSB0YWJsZXQKPiBjb21iaW5hdGlvbiwgYWRkIHRoZSBBQ1BJIGlkIGFu
-ZCBETUkgZml4IGZvciBqYWNrIGRldGVjdCBpbiBjb2RlYyBhbmQKPiBmaW5hbGx5IG1hY2hpbmUg
-dXBkYXRlLgo+IAo+IFRoaXMgZml4ZXMgQnVnemlsbGE6IGh0dHBzOi8vYnVnemlsbGEua2VybmVs
-Lm9yZy9zaG93X2J1Zy5jZ2k/aWQ9OTgwMAo+IDEKPiBQbGVhc2UgdmVyaWZ5IGFuZCBzZW5kIHlv
-dXIgdGVzdGVkLWJ5LgoKCkRpZCBhbnlvbmUgdGVzdCB0aGlzPwoKSSBnZXQgdGhpcyBvdXRwdXQ6
-Ckp1bCAyMCAxNjoyMDozMiBzdXJmYWNlIGtlcm5lbDogcnQ1NjQwIGkyYy0xMEVDNTY0MDowMDog
-RGV2aWNlIHdpdGggSUQgcmVnaXN0ZXIgMHg2MzA4IGlzIG5vdCBydDU2NDAvMzkKSnVsIDIwIDE2
-OjIwOjM0IHN1cmZhY2Uga2VybmVsOiBjaHQtYnN3LXJ0NTY0NSBjaHQtYnN3LXJ0NTY0NTogc25k
-LXNvYy1kdW1teS1kYWkgPC0+IG1lZGlhLWNwdS1kYWkgbWFwcGluZyBvawpKdWwgMjAgMTY6MjA6
-MzQgc3VyZmFjZSBrZXJuZWw6IGNodC1ic3ctcnQ1NjQ1IGNodC1ic3ctcnQ1NjQ1OiBzbmQtc29j
-LWR1bW15LWRhaSA8LT4gZGVlcGJ1ZmZlci1jcHUtZGFpIG1hcHBpbmcgb2sKSnVsIDIwIDE2OjIw
-OjM0IHN1cmZhY2Uga2VybmVsOiBjb21wcmVzcyBhc29jOiBzbmQtc29jLWR1bW15LWRhaSA8LT4g
-Y29tcHJlc3MtY3B1LWRhaSBtYXBwaW5nIG9rCkp1bCAyMCAxNjoyMDozNCBzdXJmYWNlIGtlcm5l
-bDogY2h0LWJzdy1ydDU2NDUgY2h0LWJzdy1ydDU2NDU6IHJ0NTY0NS1haWYxIDwtPiBzc3AyLXBv
-cnQgbWFwcGluZyBvawpKdWwgMjAgMTY6MjA6MzQgc3VyZmFjZSBrZXJuZWw6IGlucHV0OiBjaHRy
-dDU2NDUgSGVhZHNldCBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzgwODYyMkE4OjAwL2NodC1ic3ct
-cnQ1NjQ1L3NvdW5kL2NhcmQwL2lucHV0MjUKCldpdGggdGhlIGVhcmx5IHdhcm5pbmcgdGVsbGlu
-ZyBtZSBpdCdzIHByb2JhYmx5IG5vdCBnb2luZyB0aHJvdWdoIHRoZQpxdWlya3MsIHRob3VnaCB0
-aGUgcmVzdCBvZiB0aGUgb3V0cHV0IG1ha2VzIG1lIHRoaW5rIG90aGVyd2lzZS4KCkFmdGVyIFB1
-bHNlQXVkaW8gc3RhcnRzIEkgZ2V0OgpKdWwgMjAgMTY6MjA6NDAgc3VyZmFjZSBwdWxzZWF1ZGlv
-WzEzMTVdOiBbcHVsc2VhdWRpb10gbW9kdWxlLWFsc2EtY2FyZC5jOiBGYWlsZWQgdG8gZmluZCBh
-IHdvcmtpbmcgcHJvZmlsZS4KSnVsIDIwIDE2OjQxOjMyIHN1cmZhY2UgcHVsc2VhdWRpb1sxMzE1
-XTogW3B1bHNlYXVkaW9dIG1vZHVsZS5jOiBGYWlsZWQgdG8gbG9hZCBtb2R1bGUgIm1vZHVsZS1h
-bHNhLWNhcmQiIChhcmd1bWVudDogImRldmljZV9pZD0iMCIgbmFtZT0icGxhdGZvcm0tY2h0LWJz
-dy1ydDU2NDUiIGNhcmRfbmFtZT0iYWxzYV9jYXJkLnBsYXRmb3JtLWNodC1ic3ctcnQ1NjQ1IiBu
-YW1lcmVnX2ZhaWw9ZmFsc2UgdHNjaGVkPXllcyBmaXhlZF9sYXRlbmN5X3JhbmdlPW5vIGlnbm9y
-ZV9kQj1ubyBkZWZlcnJlZF92b2x1bWU9eWVzIHVzZV91Y209eWVzIGNhcmRfcHJvcGVydGllcz0i
-bW9kdWxlLXVkZXYtZGV0ZWN0LmRpc2NvdmVyZWQ9MSIiKTogaW5pdGlhbGl6YXRpb24gZmFpbGVk
-LgpKdWwgMjAgMTY6MjA6NDAgc3VyZmFjZSBrZXJuZWw6wqDCoEF1ZGlvIFBvcnQ6IEFTb0M6IG5v
-IGJhY2tlbmQgREFJcyBlbmFibGVkIGZvciBBdWRpbyBQb3J0ClthbmQgcGxlbnR5IG1vcmUgb2Yg
-dGhhdCBsYXN0IGxpbmVdCgokIGpvdXJuYWxjdGwgLWIgfCBncmVwICJBdWRpbyBQb3J0OiBBU29D
-OiBubyBiYWNrZW5kIERBSXMgZW5hYmxlZCBmb3IgQXVkaW8gUG9ydCIgfCB3YyAtbAoxODAyCgpJ
-ZGVhcz8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Jul 20, 2016 8:48 AM, "Bastien Nocera" <hadess@hadess.net> wrote:
+>
+> On Fri, 2016-07-08 at 15:39 +0530, Vinod Koul wrote:
+> > Surface3 tablet is CHT based device which used RT5645 codec. But the
+> > ACPI ID
+> > is 10EC5640 which belong to RT5640 codec :(
+> > So we add quirk support to load cht-machine driver for surface tablet
+> > combination, add the ACPI id and DMI fix for jack detect in codec and
+> > finally machine update.
+> >
+> > This fixes Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=9800
+> > 1
+> > Please verify and send your tested-by.
+>
+>
+> Did anyone test this?
+At least I did
+
+> I get this output:
+> Jul 20 16:20:32 surface kernel: rt5640 i2c-10EC5640:00: Device with ID
+register 0x6308 is not rt5640/39
+> Jul 20 16:20:34 surface kernel: cht-bsw-rt5645 cht-bsw-rt5645:
+snd-soc-dummy-dai <-> media-cpu-dai mapping ok
+> Jul 20 16:20:34 surface kernel: cht-bsw-rt5645 cht-bsw-rt5645:
+snd-soc-dummy-dai <-> deepbuffer-cpu-dai mapping ok
+> Jul 20 16:20:34 surface kernel: compress asoc: snd-soc-dummy-dai <->
+compress-cpu-dai mapping ok
+> Jul 20 16:20:34 surface kernel: cht-bsw-rt5645 cht-bsw-rt5645:
+rt5645-aif1 <-> ssp2-port mapping ok
+> Jul 20 16:20:34 surface kernel: input: chtrt5645 Headset as
+/devices/pci0000:00/808622A8:00/cht-bsw-rt5645/sound/card0/input25
+>
+> With the early warning telling me it's probably not going through the
+> quirks, though the rest of the output makes me think otherwise.
+
+Both rt5640 and rt5645 drivers pick up the sound chip, but only the correct
+one succeeds.
+
+>
+> After PulseAudio starts I get:
+> Jul 20 16:20:40 surface pulseaudio[1315]: [pulseaudio]
+module-alsa-card.c: Failed to find a working profile.
+> Jul 20 16:41:32 surface pulseaudio[1315]: [pulseaudio] module.c: Failed
+to load module "module-alsa-card" (argument: "device_id="0"
+name="platform-cht-bsw-rt5645"
+card_name="alsa_card.platform-cht-bsw-rt5645" namereg_fail=false tsched=yes
+fixed_latency_range=no ignore_dB=no deferred_volume=yes use_ucm=yes
+card_properties="module-udev-detect.discovered=1""): initialization failed.
+> Jul 20 16:20:40 surface kernel:  Audio Port: ASoC: no backend DAIs
+enabled for Audio Port
+> [and plenty more of that last line]
+>
+> $ journalctl -b | grep "Audio Port: ASoC: no backend DAIs enabled for
+Audio Port" | wc -l
+> 1802
+>
+> Ideas?
+
+Are you using the alsa-lib patch to add UCM configuration too [1]?
+Pulseaudio needs it to initialize properly (without other manual
+intervention described in the bugzilla ticket for these patches).
+
+[1]
+http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=b6c69d7067a1818e53da774bdbdc3023f299d579
