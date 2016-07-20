@@ -1,17 +1,19 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 3/3] topology: Check address and length
-	before string copy
-Date: Wed, 20 Jul 2016 09:53:12 +0800
-Message-ID: <4a022caadf29e0066cfaca1abe7039ac63777921.1468979281.git.mengdong.lin@linux.intel.com>
-References: <cover.1468979281.git.mengdong.lin@linux.intel.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [Question][ASoC][Topology] Question about ASoC
+	Topology
+Date: Wed, 20 Jul 2016 11:16:57 +0800
+Message-ID: <578EED29.40704@linux.intel.com>
+References: <CGME20160718050715epcms2p6c0d66b95436919fe581a1a1ca2f0626b@epcms2p6>
+ <20160718050715epcms2p6c0d66b95436919fe581a1a1ca2f0626b@epcms2p6>
+ <578C8301.7030505@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DE8A2660C7
- for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2016 03:48:06 +0200 (CEST)
-In-Reply-To: <cover.1468979281.git.mengdong.lin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 356AE2657B1
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2016 05:11:52 +0200 (CEST)
+In-Reply-To: <578C8301.7030505@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,31 +23,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, mengdong.lin@intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, liam.r.girdwood@intel.com, o-takashi@sakamocchi.jp
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, gt82.lee@samsung.com
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, ALSA development <alsa-devel@alsa-project.org>, Vedang Patel <vedang.patel@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-
-elem_copy_text() is widely used for string copy in topology. Because some
-name fields are not mandatory for users, sometimes the source can be
-invalid and we should not do the copy. So we add check here.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index 4d79aa7..cfde4cc 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -253,6 +253,9 @@ struct tplg_elem* tplg_elem_new_common(snd_tplg_t *tplg,
- 
- static inline void elem_copy_text(char *dest, const char *src, int len)
- {
-+	if (!dest || !src || !len)
-+		return;
-+
- 	strncpy(dest, src, len);
- 	dest[len - 1] = 0;
- }
--- 
-2.5.0
+SGkgVGFrYXNoaSwKClRoYW5rcyBmb3IgeW91ciBleHBsYW5hdGlvbiBvbiBob3cgdG9wb2xvZ3kg
+d29ya3MhIEkgY2MgdGhlIE1MIHNpbmNlIApwb3RlbnRpYWwgdXNlcnMgbWF5IGFsc28gYmVuZWZp
+dCBmcm9tIHRoaXMgaW5mby4KCkhpIExlZSwKCk5vdyBJbnRlbCBTS0wgKFNreWxha2UpIGF1ZGlv
+IGRyaXZlciBpcyB1c2luZyB0b3BvbG9neSwgd2hpY2ggbWlnaHQgYmUgYSAKcmVmZXJlbmNlIGZv
+ciB5b3UuCgpGb3IgdGhlIHRleHQgY29uZiBmaWxlIGluIHVzZXIgc3BhY2UsIHBsZWFzZSBzZWUg
+CmFsc2EtbGliL3NyYy9jb25mL3RvcG9sb2d5L3NrbHJ0Mjg2L3NrbF9pMnMuY29uZi4gVGhlIHRv
+cG9sb2d5IHVzZXIgCnNwYWNlIHRvb2wgYWxzYXRwbGcgd2lsbCBnZW5lcmF0ZSB0aGUgU0tMIHRv
+cG9sb2d5IGJpbmFyeSBmaWxlIGZvciBrZXJuZWwuClRoZSBkb3h5Z2VuIGRvYyBhbHNvIGludHJv
+ZHVjZXMgdGhlIHN5bnRheC4KCkJlc2lkZXMgdGhlIHRleHQgY29uZiBmaWxlLCB5b3UgbWF5IGFs
+c28gZGVmaW5lIHRvcG9sb2d5IG9iamVjdHMgYnkgQyAKQVBJLCBkZWNsYXJlZCBpbiBhbHNhLWxp
+Yi9pbmNsdWRlL3RvcG9sb2d5LmgKCkZvciBob3cgdGhlIFNLTCBwbGF0Zm9ybSBkcml2ZXIgbG9h
+ZHMgdGhlIHRvcGxvZ3kgYmluYXJ5IGZpbGUsIHBsZWFzZSAKc2VlIHRoZSBrZXJuZWwgc3JjIGNv
+ZGU6IHNvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC10b3BvbG9neS5jLCB3aGVyZSAKc25kX3Nv
+Y190cGxnX2NvbXBvbmVudF9sb2FkKCkgaXMgY2FsbGVkIHRvIGxvYWQgdGhlIHRvcG9sb2d5IGlu
+Zm8gYW5kIAp0cmlnZ2VyIG9wcyBiaW5kaW5nIGluIGtlcm5lbC4KCk5vdyB0aGUgdXBzdHJlYW1l
+ZCB0b3BvbG9neSBjb2RlIHN1cHBvcnQ6IGNvbnRyb2xzLCB3aWRnZXRzLCByb3V0ZXMgYW5kIApQ
+Q00gKEZyb250LWVuZHMgREFJICYgREFJIGxpbmtzKS4KCkFuZCBub3cgd2UncmUgdXBzdHJlYW1p
+bmcgc3VwcG9ydCBmb3IgQmFjay1lbmQgREFJcyBhbmQgQkUgbGlua3MuIFRoaXMgCm1heSBiZSBi
+cmluZyBzb21lIEFCSSB1cGRhdGUgYW5kIGxhc3QgZm9yIHNldmVyYWwgd2Vla3MuIFlvdSBtYXkg
+dHJ5IAp1c2luZyB0b3BvbG9neSBhdG0sIGJ1dCB5b3UnbGwgbmVlZCB0byByZWJ1aWxkIHlvdXIg
+dG9wb2xvZ3kgYmluYXJ5IGluZm8gCmFmdGVyIHRoZSBBQkkgdXBkYXRlLiBJJ2xsIGtlZXAgeW91
+IHVwZGF0ZWQgd2hlbiBpdCdzIGRvbmUuCgpJZiB5b3UgaGF2ZSBhbnkgZnVydGhlciBxdWVzdGlv
+bnMsIHBsZWFzZSBsZXQgdXMga25vdy4KClRoYW5rcwpNZW5nZG9uZwoKT24gMDcvMTgvMjAxNiAw
+MzoxOSBQTSwgVGFrYXNoaSBTYWthbW90byB3cm90ZToKPiBIaSwKPgo+IChDLkMuZWQgdG8gSW50
+ZWwgZGV2ZWxvcGVycywgd2hvIGNvbW1pdHRlZCB0byBBTFNBIHRvcG9sb2d5IGZlYXR1cmUuKQo+
+Cj4gT24gSnVsIDE4IDIwMTYgMTQ6MDcsIOydtOqyve2DnSB3cm90ZToKPj4gQXQgZmlyc3QsIHNv
+cnJ5IGFib3V0IGludGVycnVwdGluZyB5b3UgYW5kIHRoYW5rIHlvdSBmb3IgZ2l2aW5nIHlvdXIK
+Pj4gYXR0ZW50aW9uIHRvIGFuIGVtYWlsIGZyb20gc3RyYW5nZXIuCj4KPiBObyB3b3JyeS4KPgo+
+PiBJJ20gYSBzb2Z0d2FyZSBlbmdpbmVlciBpbiBTYW1zdW5nIGFuZCB3cml0aW5nIGEgZGV2aWNl
+IGRyaXZlciBmb3IKPj4gb3VyIGF1ZGlvLgo+Pgo+PiBJbiByZWNlbnQga2VybmVsIHNvdXJjZSBj
+b2RlKHZlcnNpb24gNC40KSwgSSBmb3VuZCBvdXQgdGhlcmUgaXMgYSBuZXcKPj4gZmVhdHVyZSBj
+YWxsZWQgdG9wb2xvZ3kuCj4+Cj4+IEkgdGhvdWdodCB0aGF0IGl0IGlzIGEgZnJhbWV3b3JrIGZv
+ciBzZXBlcmF0aW5nIGRhdGEgYW5kIGxvZ2ljIG9mIGF1ZGlvCj4+IGRyaXZlcnMsCj4+Cj4+IHNv
+IEkgd2FudGVkIHRvIHdyaXRlIG15IGRyaXZlciBvbiB0aGF0IGZyYW1ld29yay4KPj4KPj4gQnV0
+LCBpdCBpcyBoYXJkIHRvIGZpbmQgb3V0IGEgc3RhcnRpbmcgcG9pbnQuIChleGFtcGxlLCBkb2N1
+bWVudGF0aW9uLAo+PiAuLi4uLi4pCj4+Cj4+IElmIHlvdSBnaXZlIG1lIGFuIHN0YXJ0aW5nIHBv
+aW50LCBpdCB3b3VsZCBiZSB2ZXJ5IGhlbHBmdWwgdG8gbWUuCj4KPiBUaGUgZmVhdHVyZSBvZiAn
+dG9wb2xvZ3knIHdhcyBvcmlnaW5hbGx5IGRldmVsb3BlZCBieSBJbnRlbCBkZXZlbG9wZXJzLgo+
+IFNvIEkgdGhpbmsgaXQgYmV0dGVyIHRvIGFzayB5b3VyIHF1ZXN0aW9ucyB0byB0aGVtLgo+Cj4K
+PiBBcyBsb25nIGFzIEkga25vdywgdGhlIG9yaWdpbmFsIGdvYWwgb2YgdGhpcyBmZWF0dXJlIGlz
+IHRvIHdyaXRlCj4gcGFyc2FibGUgYmxvYnMgZm9yIG5ldyBIREEgZHJpdmVyIHRvIFBDSCBpbiBT
+a3lsYWtlIGFyY2hpdGVjdHVyZQo+IChTa3lsYWtlLCBLYWJ5bGFrZSwgZXRjKS4KPgo+IFRoZSBu
+ZXcgSERBIGRyaXZlciAoc25kLXNvYy1za2wpIGRvZXNuJ3QgZGlyZWN0bHkgZW51bWVyYXRlIHdp
+ZGdldHMgaW4KPiBIREEgY29kZWNzIGF0IGFsbC4gSW5zdGVhZCwgdGhlIHBhcnNhYmxlIGJsb2Ig
+cmVwcmVzZW50cyB0aGUgY29kZWMKPiBpbnRlcm5hbC4gQXMgYSByZXN1bHQgb2YgcGFyc2luZyB0
+aGUgYmxvYiwgc29tZSBjb250cm9sIGVsZW1lbnRzLCBzb21lCj4gREFJIGxpbmtzIGFuZCBzbyBv
+biBhcmUgYWRkZWQuIFdoZW4geW91J3JlIGludGVyZXN0ZWQgaW4gdGhlIGZ1bmN0aW9ucwo+IHRv
+IGFkZCB0aGVtLCBwbGVhc2Ugc3RhcnQgYXQgc29jX3RwbGdfbG9hZF9oZWFkZXIoKS4KPiBodHRw
+Oi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdC90
+cmVlL3NvdW5kL3NvYy9zb2MtdG9wb2xvZ3kuYyNuMTc3Mgo+Cj4gSW4ga2VybmVsIGRyaXZlciBz
+aWRlLCB0aGUgYmxvYnMgYXJlIGxvYWRlZCBieSB1c3VhbCB3YXk7Cj4gcmVxdWVzdF9maXJtd2Fy
+ZSgpLgo+IGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcvZG9jL0RvY3VtZW50YXRpb24vZmlybXdhcmVf
+Y2xhc3MvUkVBRE1FCj4KPiBUaGVuLCBlYWNoIGtlcm5lbCBkcml2ZXJzIHBhcnNlIHRoZSBpbWFn
+ZSBieSBzbmRfc29jX3RwbGdfY29tcG9uZW50X2xvYWQoKS4KPiBodHRwOi8vZ2l0Lmtlcm5lbC5v
+cmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdC90cmVlL3NvdW5kL3NvYy9z
+b2MtdG9wb2xvZ3kuYyNuMTg2NAo+Cj4gT2YgY291cmNlLCB5b3UgbmVlZCB0byBwdXQgdGhlIGJs
+b2JzIHRvIHR5cGljYWwgZmlsZSBwYXRoOyAvbGliL2Zpcm13YXJlLgo+Cj4KPiBXaGVuIHdyaXRp
+bmcgZmlsZXMgdG8gZ2VuZXJhdGUgdGhlIGJsb2IsIHlvdSBuZWVkIHRvIGNoZWNrIHR3byBpdGVt
+czsKPiBvbmUgaXMgVUFQSSBvZiBBU29DIChpbmNsdWRlL3VhcGkvc291bmQvYXNvYy5oKSBhbmQg
+YW5vdGhlciBpcyBydW50aW1lCj4gY29uZmlndXJhdGlvbiBvZiBBTFNBIHVzZXJzcGFjZSBsaWJy
+YXJ5Lgo+Cj4gV2hhdCB5b3UgY2FuIGRvIHZpYSB0b3BvbG9neSBmZWF0dXJlIGlzIGRlZmluZWQg
+aW4gdGhlIFVBUEkgaGVhZGVyLiBUaGUKPiB3YXkgdG8gZGVzY3JpYmUgdGhlbSB0byBmaWxlcyBp
+cyB0aGUgc2FtZSB3YXkgYXMgcnVudGltZSBjb25maWd1cmF0aW9uCj4gb2YgQUxTQSB1c2Vyc3Bh
+Y2UgbGlicmFyeS4KPiBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvYWxzYS1kb2MvYWxzYS1s
+aWIvY29uZi5odG1sCj4KPiBXaGVuIHlvdSB3cml0ZSB0aGUgZmlsZXMsIHlvdSBjYW4gZ2VuZXJh
+dGUgdGhlIGJsb2JzIGJ5ICdhbHNhdHBsZycgdXRpbHMKPiBpbiBhbHNhLXV0aWxzLmdpdC4gSSBi
+ZWxpZXZlIGl0IGNhbiBkZXRlY3QgcGFyc2UgZXJyb3JzLgo+IGh0dHA6Ly9naXQuYWxzYS1wcm9q
+ZWN0Lm9yZy8/cD1hbHNhLXV0aWxzLmdpdDthPXRyZWU7Zj10b3BvbG9neQo+Cj4gVGhhdCdzIGFs
+bCBvZiB3aGF0IEkga25vdy4gSSBob3BlIHRoaXMgd2lsbCBoZWxwIHlvdSBvciB5b3UgY2FuIGdl
+dAo+IGVub3VnaCBzdXBwb3J0IGFib3V0IHRoZSBuZXcgZmVhdHVyZSBmcm9tIEludGVsIGRldmVs
+b3BlcnMuCj4KPiBwLnMuIEknbSBjb21taXR0aW5nIHRvIEFMU0EgaW4gbXkgcHJpdmF0ZSB0aW1l
+LCBzbyBJIHNvbWV0aW1lcyBuZWVkIHRvCj4gc3RvcCBkaXNjdXNzaW9ucyBiZWNhdXNlIG9mIG15
+IGxpbWl0ZWQgdGltZS4gSSdtIG5vdCBhIGRldmVsb3BlciBiZWxvbmdzCj4gdG8gc2VtaS1jb25k
+dWN0b3JzIG9yIGhhcmR3YXJlIHZlbmRvcnMgYW5kIGhhdmUgcGFpZCB3b3JrIGZvciBteSBsaWZl
+Lgo+Cj4KPiBSZWdhcmRzCj4KPiBUYWthc2hpIFNha2Ftb3RvCj4KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
