@@ -1,88 +1,94 @@
-From: Bastien Nocera <hadess@hadess.net>
-Subject: Re: [PATCH 0/3] ASoC: Intel: Add support for surface3
-	tablet
-Date: Wed, 20 Jul 2016 18:12:49 +0200
-Message-ID: <1469031169.6761.67.camel@hadess.net>
-References: <1467972591-29175-1-git-send-email-vinod.koul@intel.com>	
- <1469026074.6761.63.camel@hadess.net>
- <CAOvWGzj1sk2L5VYy7GVR-KNmimRmfexmejC1+E2zsAO196TB7w@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
- [217.70.183.195])
- by alsa0.perex.cz (Postfix) with ESMTP id A2B4C2665D0
- for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2016 18:12:55 +0200 (CEST)
-In-Reply-To: <CAOvWGzj1sk2L5VYy7GVR-KNmimRmfexmejC1+E2zsAO196TB7w@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen J <stephenjust@gmail.com>
-Cc: alsa-devel@alsa-project.org, apterix@gmail.com, Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, bugzilla@hadess.net
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rockchip: correct the spdif clk" to the asoc tree
+Date: Wed, 20 Jul 2016 17:43:40 +0100
+Message-ID: <E1bPuay-0002iL-Ap@debutante>
+References: <1468852474-15735-1-git-send-email-zyw@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1468852474-15735-1-git-send-email-zyw@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chris Zhong <zyw@rock-chips.com>
+Cc: Mark Brown <broonie@kernel.org>, heiko@sntech.de, dianders@chromium.org, sugar.zhang@rock-chips.com, alsa-devel@alsa-project.org, zhengxing@rock-chips.com, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.orgMark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAyMDE2LTA3LTIwIGF0IDA5OjA1IC0wNjAwLCBTdGVwaGVuIEogd3JvdGU6Cj4gT24g
-SnVsIDIwLCAyMDE2IDg6NDggQU0sICJCYXN0aWVuIE5vY2VyYSIgPGhhZGVzc0BoYWRlc3MubmV0
-PiB3cm90ZToKPiA+Cj4gPiBPbiBGcmksIDIwMTYtMDctMDggYXQgMTU6MzkgKzA1MzAsIFZpbm9k
-IEtvdWwgd3JvdGU6Cj4gPiA+IFN1cmZhY2UzIHRhYmxldCBpcyBDSFQgYmFzZWQgZGV2aWNlIHdo
-aWNoIHVzZWQgUlQ1NjQ1IGNvZGVjLiBCdXQKPiB0aGUKPiA+ID4gQUNQSSBJRAo+ID4gPiBpcyAx
-MEVDNTY0MCB3aGljaCBiZWxvbmcgdG8gUlQ1NjQwIGNvZGVjIDooCj4gPiA+IFNvIHdlIGFkZCBx
-dWlyayBzdXBwb3J0IHRvIGxvYWQgY2h0LW1hY2hpbmUgZHJpdmVyIGZvciBzdXJmYWNlCj4gdGFi
-bGV0Cj4gPiA+IGNvbWJpbmF0aW9uLCBhZGQgdGhlIEFDUEkgaWQgYW5kIERNSSBmaXggZm9yIGph
-Y2sgZGV0ZWN0IGluIGNvZGVjCj4gYW5kCj4gPiA+IGZpbmFsbHkgbWFjaGluZSB1cGRhdGUuCj4g
-PiA+Cj4gPiA+IFRoaXMgZml4ZXMgQnVnemlsbGE6IGh0dHBzOi8vYnVnemlsbGEua2VybmVsLm9y
-Zy9zaG93X2J1Zy5jZ2k/aWQ9Cj4gOTgwMAo+ID4gPiAxCj4gPiA+IFBsZWFzZSB2ZXJpZnkgYW5k
-IHNlbmQgeW91ciB0ZXN0ZWQtYnkuCj4gPgo+ID4KPiA+IERpZCBhbnlvbmUgdGVzdCB0aGlzPwo+
-IEF0IGxlYXN0IEkgZGlkCgpGYWlyIGVub3VnaC4KCj4gPiBJIGdldCB0aGlzIG91dHB1dDoKPiA+
-IEp1bCAyMCAxNjoyMDozMiBzdXJmYWNlIGtlcm5lbDogcnQ1NjQwIGkyYy0xMEVDNTY0MDowMDog
-RGV2aWNlIHdpdGgKPiBJRCByZWdpc3RlciAweDYzMDggaXMgbm90IHJ0NTY0MC8zOQo+ID4gSnVs
-IDIwIDE2OjIwOjM0IHN1cmZhY2Uga2VybmVsOiBjaHQtYnN3LXJ0NTY0NSBjaHQtYnN3LXJ0NTY0
-NTogc25kLQo+IHNvYy1kdW1teS1kYWkgPC0+IG1lZGlhLWNwdS1kYWkgbWFwcGluZyBvawo+ID4g
-SnVsIDIwIDE2OjIwOjM0IHN1cmZhY2Uga2VybmVsOiBjaHQtYnN3LXJ0NTY0NSBjaHQtYnN3LXJ0
-NTY0NTogc25kLQo+IHNvYy1kdW1teS1kYWkgPC0+IGRlZXBidWZmZXItY3B1LWRhaSBtYXBwaW5n
-IG9rCj4gPiBKdWwgMjAgMTY6MjA6MzQgc3VyZmFjZSBrZXJuZWw6IGNvbXByZXNzIGFzb2M6IHNu
-ZC1zb2MtZHVtbXktZGFpIDwtCj4gPiBjb21wcmVzcy1jcHUtZGFpIG1hcHBpbmcgb2sKPiA+IEp1
-bCAyMCAxNjoyMDozNCBzdXJmYWNlIGtlcm5lbDogY2h0LWJzdy1ydDU2NDUgY2h0LWJzdy1ydDU2
-NDU6Cj4gcnQ1NjQ1LWFpZjEgPC0+IHNzcDItcG9ydCBtYXBwaW5nIG9rCj4gPiBKdWwgMjAgMTY6
-MjA6MzQgc3VyZmFjZSBrZXJuZWw6IGlucHV0OiBjaHRydDU2NDUgSGVhZHNldCBhcwo+IC9kZXZp
-Y2VzL3BjaTAwMDA6MDAvODA4NjIyQTg6MDAvY2h0LWJzdy1ydDU2NDUvc291bmQvY2FyZDAvaW5w
-dXQyNQo+ID4KPiA+IFdpdGggdGhlIGVhcmx5IHdhcm5pbmcgdGVsbGluZyBtZSBpdCdzIHByb2Jh
-Ymx5IG5vdCBnb2luZyB0aHJvdWdoCj4gdGhlCj4gPiBxdWlya3MsIHRob3VnaCB0aGUgcmVzdCBv
-ZiB0aGUgb3V0cHV0IG1ha2VzIG1lIHRoaW5rIG90aGVyd2lzZS4KPiBCb3RoIHJ0NTY0MCBhbmQg
-cnQ1NjQ1IGRyaXZlcnMgcGljayB1cCB0aGUgc291bmQgY2hpcCwgYnV0IG9ubHkgdGhlCj4gY29y
-cmVjdCBvbmUgc3VjY2VlZHMuCgpHb29kIHRoZW4uCgo+ID4KPiA+IEFmdGVyIFB1bHNlQXVkaW8g
-c3RhcnRzIEkgZ2V0Ogo+ID4gSnVsIDIwIDE2OjIwOjQwIHN1cmZhY2UgcHVsc2VhdWRpb1sxMzE1
-XTogW3B1bHNlYXVkaW9dIG1vZHVsZS1hbHNhLQo+IGNhcmQuYzogRmFpbGVkIHRvIGZpbmQgYSB3
-b3JraW5nIHByb2ZpbGUuCj4gPiBKdWwgMjAgMTY6NDE6MzIgc3VyZmFjZSBwdWxzZWF1ZGlvWzEz
-MTVdOiBbcHVsc2VhdWRpb10gbW9kdWxlLmM6Cj4gRmFpbGVkIHRvIGxvYWQgbW9kdWxlICJtb2R1
-bGUtYWxzYS1jYXJkIiAoYXJndW1lbnQ6ICJkZXZpY2VfaWQ9IjAiCj4gbmFtZT0icGxhdGZvcm0t
-Y2h0LWJzdy1ydDU2NDUiIGNhcmRfbmFtZT0iYWxzYV9jYXJkLnBsYXRmb3JtLWNodC1ic3ctCj4g
-cnQ1NjQ1IiBuYW1lcmVnX2ZhaWw9ZmFsc2UgdHNjaGVkPXllcyBmaXhlZF9sYXRlbmN5X3Jhbmdl
-PW5vCj4gaWdub3JlX2RCPW5vIGRlZmVycmVkX3ZvbHVtZT15ZXMgdXNlX3VjbT15ZXMgY2FyZF9w
-cm9wZXJ0aWVzPSJtb2R1bGUtCj4gdWRldi1kZXRlY3QuZGlzY292ZXJlZD0xIiIpOiBpbml0aWFs
-aXphdGlvbiBmYWlsZWQuCj4gPiBKdWwgMjAgMTY6MjA6NDAgc3VyZmFjZSBrZXJuZWw6wqDCoEF1
-ZGlvIFBvcnQ6IEFTb0M6IG5vIGJhY2tlbmQgREFJcwo+IGVuYWJsZWQgZm9yIEF1ZGlvIFBvcnQK
-PiA+IFthbmQgcGxlbnR5IG1vcmUgb2YgdGhhdCBsYXN0IGxpbmVdCj4gPgo+ID4gJCBqb3VybmFs
-Y3RsIC1iIHwgZ3JlcCAiQXVkaW8gUG9ydDogQVNvQzogbm8gYmFja2VuZCBEQUlzIGVuYWJsZWQK
-PiBmb3IgQXVkaW8gUG9ydCIgfCB3YyAtbAo+ID4gMTgwMgo+ID4KPiA+IElkZWFzPwo+IEFyZSB5
-b3UgdXNpbmcgdGhlIGFsc2EtbGliIHBhdGNoIHRvIGFkZCBVQ00gY29uZmlndXJhdGlvbiB0b28g
-WzFdPwo+IFB1bHNlYXVkaW8gbmVlZHMgaXQgdG8gaW5pdGlhbGl6ZSBwcm9wZXJseSAod2l0aG91
-dCBvdGhlciBtYW51YWwKPiBpbnRlcnZlbnRpb24gZGVzY3JpYmVkIGluIHRoZSBidWd6aWxsYSB0
-aWNrZXQgZm9yIHRoZXNlIHBhdGNoZXMpLgo+IFsxXSBodHRwOi8vZ2l0LmFsc2EtcHJvamVjdC5v
-cmcvP3A9YWxzYS1saWIuZ2l0O2E9Y29tbWl0O2g9YjZjNjlkNzA2Nwo+IGExODE4ZTUzZGE3NzRi
-ZGJkYzMwMjNmMjk5ZDU3OQoKTG9va3MgbGlrZSBJIGNvY2tlZCB1cCB0aGUgcGF0Y2ggYXBwbGlj
-YXRpb24gaW4gbXkgdXBkYXRlZCBhbHNhLXVjbQpwYWNrYWdlLiBJdCB3b3JrcyBjb3JyZWN0bHkg
-YWZ0ZXJ3YXJkcywgaW5jbHVkaW5nIHRoZSBpbnRlcm5hbAptaWNyb3Bob25lIGFuZCBzcGVha2Vy
-cywgYW5kIGhlYWRzZXQgb3V0cHV0IChtaWMgKyBoZWFkcGhvbmVzKS4KCkkgYWxzbyBub3RpY2Vk
-IHRoYXQgYWxzYS11Y20gaXNuJ3QgaW4gdGhlIGRlZmF1bHQgRmVkb3JhIHBhY2thZ2Ugc2V0LgoK
-U29ycnkgYWJvdXQgdGhlIHNwYW0uCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+The patch
+
+   ASoC: rockchip: correct the spdif clk
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 46dd2e28a90e48fbf1b7e253933fa3b7242e9b1b Mon Sep 17 00:00:00 2001
+From: Chris Zhong <zyw@rock-chips.com>
+Date: Mon, 18 Jul 2016 22:34:34 +0800
+Subject: [PATCH] ASoC: rockchip: correct the spdif clk
+
+The spdif mclk should be 128 times of sample rate, and there is a
+internal divider, the real rate of spdif mclk is mclk / (div + 1).
+Hence, the original driver always get the good frequency for
+48000/96000/44100/192000. But for 32000, the mclk is incorrect,
+it should be 32000*128, but get 48000*128. Do not use the internal
+divider here, just set all mclk to 128 * sample rate directly.
+
+Signed-off-by: Chris Zhong <zyw@rock-chips.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/rockchip/rockchip_spdif.c | 17 +----------------
+ 1 file changed, 1 insertion(+), 16 deletions(-)
+
+diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
+index 100781e37848..4ca265737eda 100644
+--- a/sound/soc/rockchip/rockchip_spdif.c
++++ b/sound/soc/rockchip/rockchip_spdif.c
+@@ -101,21 +101,7 @@ static int rk_spdif_hw_params(struct snd_pcm_substream *substream,
+ 	int ret;
+ 
+ 	srate = params_rate(params);
+-	switch (srate) {
+-	case 32000:
+-	case 48000:
+-	case 96000:
+-		mclk = 96000 * 128; /* 12288000 hz */
+-		break;
+-	case 44100:
+-		mclk = 44100 * 256; /* 11289600 hz */
+-		break;
+-	case 192000:
+-		mclk = 192000 * 128; /* 24576000 hz */
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
++	mclk = srate * 128;
+ 
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+@@ -139,7 +125,6 @@ static int rk_spdif_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
+ 
+-	val |= SPDIF_CFGR_CLK_DIV(mclk/(srate * 256));
+ 	ret = regmap_update_bits(spdif->regmap, SPDIF_CFGR,
+ 		SPDIF_CFGR_CLK_DIV_MASK | SPDIF_CFGR_HALFWORD_ENABLE |
+ 		SDPIF_CFGR_VDW_MASK,
+-- 
+2.8.1
