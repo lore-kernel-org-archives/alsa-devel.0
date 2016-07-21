@@ -1,124 +1,77 @@
-From: Chanwoo Choi <cw00.choi@samsung.com>
-Subject: Re: [PATCH v4 4/4] ASoC: samsung: Add machine driver for Exynos5433
- based TM2 board
-Date: Thu, 21 Jul 2016 19:28:32 +0900
-Message-ID: <5790A3D0.4070500@samsung.com>
-References: <CGME20160705171538epcas1p14f034567982b67aad091c50e5adcec9c@epcas1p1.samsung.com>
- <1467738877-31555-1-git-send-email-s.nawrocki@samsung.com>
- <5788721B.7010602@samsung.com> <578CB261.60507@samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: cs53l30: Fix bit shift issue of TDM mode" to the asoc tree
+Date: Thu, 21 Jul 2016 12:08:20 +0100
+Message-ID: <E1bQBq0-0001nQ-9S@debutante>
+References: <1468967774-18621-2-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <578CB261.60507@samsung.com>
+In-Reply-To: <1468967774-18621-2-git-send-email-nicoleotsuka@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: broonie@kernel.org, robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, ideal.song@samsung.com, inki.dae@samsung.com, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Krzysztof Kozlowski <k.kozlowski@samsung.com>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sylwester,
+The patch
 
-On 2016=EB=85=84 07=EC=9B=94 18=EC=9D=BC 19:41, Sylwester Nawrocki wrot=
-e:
-> Hi Chanwoo,
->=20
-> On 07/15/2016 07:18 AM, Chanwoo Choi wrote:
->>> +static int tm2_probe(struct platform_device *pdev)
->>> +{
->>> +	struct device *dev =3D &pdev->dev;
->=20
->>> +	codec_dai_node =3D of_parse_phandle(dev->of_node, "audio-codec", =
-0);
->>> +	if (!codec_dai_node) {
->>> +		dev_err(dev, "audio-codec property invalid or missing\n");
->>> +		ret =3D -EINVAL;
->>> +		goto err_put_cpu_dai;
->>> +	}
->=20
->>> +	priv->codec_mclk1 =3D of_clk_get_by_name(codec_dai_node, "mclk1")=
-;
->>> +	if (IS_ERR(priv->codec_mclk1)) {
->>> +		dev_err(dev, "Failed to get mclk1 clock\n");
->>> +		ret =3D PTR_ERR(priv->codec_mclk1);
->>> +		goto err_put_codec_dai;
->>> +	}
->>
->> I think that you better to use the devm_clk_get() instead of of_clk_=
-get_by_name()
->> because you don't need to handle the clk_put() when error happen and=
- remove the=20
->> this driver.
->>
->> 	priv->codec_mclk1 =3D devm_clk_get(dev, "mclk1");
->=20
-> The clocks are from the CODEC DT node, for which we don't have struct
-> device pointer here, that's why I used of_clk_get_by_name().
+   ASoC: cs53l30: Fix bit shift issue of TDM mode
 
-When I test it, I can get the clock pointer by devm_clk_get() as follow=
-ing:
+has been applied to the asoc tree at
 
-diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5=
-110.c
-index 9728b3c5927f..5de4fc554aec 100644
---- a/sound/soc/samsung/tm2_wm5110.c
-+++ b/sound/soc/samsung/tm2_wm5110.c
-@@ -500,7 +500,7 @@ static int tm2_probe(struct platform_device *pdev)
-                card->dai_link[i].platform_of_node =3D cpu_dai_node;
-        }
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
--       priv->codec_mclk1 =3D of_clk_get_by_name(codec_dai_node, "mclk1=
-");
-+       priv->codec_mclk1 =3D devm_clk_get(dev, "mclk1");
-        if (IS_ERR(priv->codec_mclk1)) {
-                dev_err(dev, "Failed to get mclk1 clock\n");
-                ret =3D PTR_ERR(priv->codec_mclk1);
-@@ -508,7 +508,7 @@ static int tm2_probe(struct platform_device *pdev)
-        }
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-        /* mclk2 is optional */
--       priv->codec_mclk2 =3D of_clk_get_by_name(codec_dai_node, "mclk2=
-");
-+       priv->codec_mclk2 =3D devm_clk_get(dev, "mclk2");
-        if (IS_ERR(priv->codec_mclk2))
-                dev_info(dev, "Not using mclk2 clock\n");
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-@@ -516,21 +516,17 @@ static int tm2_probe(struct platform_device *pdev=
-)
-                                tm2_ext_dai, ARRAY_SIZE(tm2_ext_dai));
-        if (ret < 0) {
-                dev_err(dev, "Failed to register component: %d\n", ret)=
-;
--               goto err_put_mclk;
-+               goto err_put_codec_dai;
-        }
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-        ret =3D devm_snd_soc_register_card(dev, card);
-        if (ret < 0) {
-                dev_err(dev, "Failed to register card: %d\n", ret);
--               goto err_put_mclk;
-+               goto err_put_codec_dai;
-        }
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-        return 0;
+Thanks,
+Mark
 
--err_put_mclk:
--       clk_put(priv->codec_mclk1);
--       if (!IS_ERR(priv->codec_mclk2))
--               clk_put(priv->codec_mclk2);
- err_put_codec_dai:
-        of_node_put(codec_dai_node);
- err_put_cpu_dai:
-@@ -543,11 +539,6 @@ err_put_amp:
- static int tm2_remove(struct platform_device *pdev)
- {
-        struct snd_soc_card *card =3D &tm2_card;
--       struct tm2_machine_priv *priv =3D snd_soc_card_get_drvdata(card=
-);
--
--       clk_put(priv->codec_mclk1);
--       if (!IS_ERR(priv->codec_mclk2))
--               clk_put(priv->codec_mclk2);
+>From 1708796fc1053eae3dcf648669f552967c210bd2 Mon Sep 17 00:00:00 2001
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Date: Tue, 19 Jul 2016 15:36:14 -0700
+Subject: [PATCH] ASoC: cs53l30: Fix bit shift issue of TDM mode
 
+The TDM mode using PCM format now has two-bit right shift due to the
+format configuration in the driver. According to Figure 4-13 in the
+CS53L30 datasheet, using ASP_SCLK_INV = 0 and SHIFT_LEFT = 1 should
+be the correct combination to create one-bit right shift for the DSP
+type A format.
 
-Regards,
-Chanwoo Choi
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/cs53l30.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
+index fd5502e3aa34..2c0d9c430a8c 100644
+--- a/sound/soc/codecs/cs53l30.c
++++ b/sound/soc/codecs/cs53l30.c
+@@ -592,8 +592,12 @@ static int cs53l30_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		aspctl1 |= CS53L30_ASP_TDM_PDN;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_A:
+-		/* Clear TDM_PDN and SHIFT_LEFT, invert SCLK */
+-		aspcfg |= CS53L30_ASP_SCLK_INV;
++		/*
++		 * Clear TDM_PDN to turn on TDM mode; Use ASP_SCLK_INV = 0
++		 * with SHIFT_LEFT = 1 combination as Figure 4-13 shows in
++		 * the CS53L30 datasheet
++		 */
++		aspctl1 |= CS53L30_SHIFT_LEFT;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+-- 
+2.8.1
