@@ -1,62 +1,124 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH] topology: Fix the missing referenced elem ptr
-	when merging private data
-Date: Thu, 21 Jul 2016 15:00:47 +0800
-Message-ID: <1469084447-30740-1-git-send-email-mengdong.lin@linux.intel.com>
+From: Chanwoo Choi <cw00.choi@samsung.com>
+Subject: Re: [PATCH v4 4/4] ASoC: samsung: Add machine driver for Exynos5433
+ based TM2 board
+Date: Thu, 21 Jul 2016 19:28:32 +0900
+Message-ID: <5790A3D0.4070500@samsung.com>
+References: <CGME20160705171538epcas1p14f034567982b67aad091c50e5adcec9c@epcas1p1.samsung.com>
+ <1467738877-31555-1-git-send-email-s.nawrocki@samsung.com>
+ <5788721B.7010602@samsung.com> <578CB261.60507@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id C198B2614E3
- for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2016 08:55:41 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, mengdong.lin@intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, liam.r.girdwood@intel.com, shreyas.nc@intel.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <578CB261.60507@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: broonie@kernel.org, robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, ideal.song@samsung.com, inki.dae@samsung.com, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Krzysztof Kozlowski <k.kozlowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Hi Sylwester,
 
-tplg_copy_data() should set the valid referenced data element pointer.
-The caller will double check this pointer for all kinds of references,
-including TLV, controls, text and data.
+On 2016=EB=85=84 07=EC=9B=94 18=EC=9D=BC 19:41, Sylwester Nawrocki wrot=
+e:
+> Hi Chanwoo,
+>=20
+> On 07/15/2016 07:18 AM, Chanwoo Choi wrote:
+>>> +static int tm2_probe(struct platform_device *pdev)
+>>> +{
+>>> +	struct device *dev =3D &pdev->dev;
+>=20
+>>> +	codec_dai_node =3D of_parse_phandle(dev->of_node, "audio-codec", =
+0);
+>>> +	if (!codec_dai_node) {
+>>> +		dev_err(dev, "audio-codec property invalid or missing\n");
+>>> +		ret =3D -EINVAL;
+>>> +		goto err_put_cpu_dai;
+>>> +	}
+>=20
+>>> +	priv->codec_mclk1 =3D of_clk_get_by_name(codec_dai_node, "mclk1")=
+;
+>>> +	if (IS_ERR(priv->codec_mclk1)) {
+>>> +		dev_err(dev, "Failed to get mclk1 clock\n");
+>>> +		ret =3D PTR_ERR(priv->codec_mclk1);
+>>> +		goto err_put_codec_dai;
+>>> +	}
+>>
+>> I think that you better to use the devm_clk_get() instead of of_clk_=
+get_by_name()
+>> because you don't need to handle the clk_put() when error happen and=
+ remove the=20
+>> this driver.
+>>
+>> 	priv->codec_mclk1 =3D devm_clk_get(dev, "mclk1");
+>=20
+> The clocks are from the CODEC DT node, for which we don't have struct
+> device pointer here, that's why I used of_clk_get_by_name().
 
-Also fix an inaccurate dmesg.
+When I test it, I can get the clock pointer by devm_clk_get() as follow=
+ing:
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5=
+110.c
+index 9728b3c5927f..5de4fc554aec 100644
+--- a/sound/soc/samsung/tm2_wm5110.c
++++ b/sound/soc/samsung/tm2_wm5110.c
+@@ -500,7 +500,7 @@ static int tm2_probe(struct platform_device *pdev)
+                card->dai_link[i].platform_of_node =3D cpu_dai_node;
+        }
 
-diff --git a/src/topology/dapm.c b/src/topology/dapm.c
-index 4d343b2..e3c90d8 100644
---- a/src/topology/dapm.c
-+++ b/src/topology/dapm.c
-@@ -201,7 +201,7 @@ static int tplg_build_widget(snd_tplg_t *tplg,
- 		}
- 
- 		if (!ref->elem) {
--			SNDERR("error: cannot find control '%s'"
-+			SNDERR("error: cannot find '%s'"
- 				" referenced by widget '%s'\n",
- 				ref->id, elem->id);
- 			return -EINVAL;
-diff --git a/src/topology/data.c b/src/topology/data.c
-index 768fc27..397f6a5 100644
---- a/src/topology/data.c
-+++ b/src/topology/data.c
-@@ -1050,6 +1050,7 @@ int tplg_copy_data(snd_tplg_t *tplg, struct tplg_elem *elem,
- 		" element '%s'\n", ref->id, elem->id);
- 		return -EINVAL;
- 	}
-+	ref->elem = ref_elem;
- 
- 	tplg_dbg("Data '%s' used by '%s'\n", ref->id, elem->id);
- 	/* overlook empty private data */
--- 
-2.5.0
+-       priv->codec_mclk1 =3D of_clk_get_by_name(codec_dai_node, "mclk1=
+");
++       priv->codec_mclk1 =3D devm_clk_get(dev, "mclk1");
+        if (IS_ERR(priv->codec_mclk1)) {
+                dev_err(dev, "Failed to get mclk1 clock\n");
+                ret =3D PTR_ERR(priv->codec_mclk1);
+@@ -508,7 +508,7 @@ static int tm2_probe(struct platform_device *pdev)
+        }
+
+        /* mclk2 is optional */
+-       priv->codec_mclk2 =3D of_clk_get_by_name(codec_dai_node, "mclk2=
+");
++       priv->codec_mclk2 =3D devm_clk_get(dev, "mclk2");
+        if (IS_ERR(priv->codec_mclk2))
+                dev_info(dev, "Not using mclk2 clock\n");
+
+@@ -516,21 +516,17 @@ static int tm2_probe(struct platform_device *pdev=
+)
+                                tm2_ext_dai, ARRAY_SIZE(tm2_ext_dai));
+        if (ret < 0) {
+                dev_err(dev, "Failed to register component: %d\n", ret)=
+;
+-               goto err_put_mclk;
++               goto err_put_codec_dai;
+        }
+
+        ret =3D devm_snd_soc_register_card(dev, card);
+        if (ret < 0) {
+                dev_err(dev, "Failed to register card: %d\n", ret);
+-               goto err_put_mclk;
++               goto err_put_codec_dai;
+        }
+
+        return 0;
+
+-err_put_mclk:
+-       clk_put(priv->codec_mclk1);
+-       if (!IS_ERR(priv->codec_mclk2))
+-               clk_put(priv->codec_mclk2);
+ err_put_codec_dai:
+        of_node_put(codec_dai_node);
+ err_put_cpu_dai:
+@@ -543,11 +539,6 @@ err_put_amp:
+ static int tm2_remove(struct platform_device *pdev)
+ {
+        struct snd_soc_card *card =3D &tm2_card;
+-       struct tm2_machine_priv *priv =3D snd_soc_card_get_drvdata(card=
+);
+-
+-       clk_put(priv->codec_mclk1);
+-       if (!IS_ERR(priv->codec_mclk2))
+-               clk_put(priv->codec_mclk2);
+
+
+Regards,
+Chanwoo Choi
