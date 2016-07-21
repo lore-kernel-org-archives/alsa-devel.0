@@ -1,73 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs53l30: Fix a bug for TDM slot location validation" to the asoc tree
-Date: Thu, 21 Jul 2016 12:08:23 +0100
-Message-ID: <E1bQBq3-0001oi-6W@debutante>
-References: <1468967774-18621-1-git-send-email-nicoleotsuka@gmail.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v4 2/4] mfd: Add Samsung Exynos Low Power Audio Subsystem
+ driver
+Date: Thu, 21 Jul 2016 13:11:27 +0100
+Message-ID: <20160721121127.GD14925@dell>
+References: <1467738804-31460-1-git-send-email-s.nawrocki@samsung.com>
+ <578F9495.9090502@samsung.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1468967774-18621-1-git-send-email-nicoleotsuka@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <578F9495.9090502@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, linux-kernel@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: broonie@kernel.org, robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, ideal.song@samsung.com, inki.dae@samsung.com, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Beomho Seo <beomho.seo@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, 20 Jul 2016, Sylwester Nawrocki wrote:
 
-   ASoC: cs53l30: Fix a bug for TDM slot location validation
+> On 07/05/2016 07:13 PM, Sylwester Nawrocki wrote:
+> > This patch adds common driver for the Top block of the Samsung Exyn=
+os
+> > SoC Low Power Audio Subsystem. This is a minimal driver which prepa=
+res
+> > resources for IP blocks like I2S, audio DMA and UART and exposes a =
+regmap
+> > for the Top block registers. Also system power ops are added to ens=
+ure
+> > the Audio Subsystem is operational after system suspend/resume cycl=
+e.
+> >=20
+> > Signed-off-by: Inha Song <ideal.song@samsung.com>
+> > Signed-off-by: Beomho Seo <beomho.seo@samsung.com>
+> > Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> > ---
+>=20
+> Lee, is this patch good enough for your tree? Are you going to have
+> any review comments ?
 
-has been applied to the asoc tree at
+Please don't sent contentless pings.  If you think the patch has been
+dropped (it hasn't) then just send a [RESEND] patch.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+The merge window is about to open.  I will not be taking any patches
+for the next couple of weeks.  Your patch is marked as to-review in my
+Inbox, so please bear with me and I'll get around to it.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 622019373c87e335cf926d30ad26b37b9efb27dc Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Tue, 19 Jul 2016 15:36:13 -0700
-Subject: [PATCH] ASoC: cs53l30: Fix a bug for TDM slot location validation
-
-The maximum slot number of CS53L30 is 4 while it should support
-the situation that's less than 4 channels based on the rx_mask.
-
-So when the driver validates the last slot location, it should
-check the last active slot instead of always the 4th one.
-
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/cs53l30.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index 5988b5c672fe..fd5502e3aa34 100644
---- a/sound/soc/codecs/cs53l30.c
-+++ b/sound/soc/codecs/cs53l30.c
-@@ -809,8 +809,8 @@ static int cs53l30_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 		return -EINVAL;
- 	}
- 
--	/* Validate the last CS53L30 slot */
--	slot_next = loc[CS53L30_TDM_SLOT_MAX - 1] + slot_step - 1;
-+	/* Validate the last active CS53L30 slot */
-+	slot_next = loc[i - 1] + slot_step - 1;
- 	if (slot_next > 47) {
- 		dev_err(dai->dev, "slot selection out of bounds: %u\n",
- 			slot_next);
--- 
-2.8.1
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
