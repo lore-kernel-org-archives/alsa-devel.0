@@ -1,17 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] topology: Fix the missing referenced elem
- ptr when merging private data
-Date: Fri, 22 Jul 2016 05:37:07 +0900
-Message-ID: <57913273.7010507@sakamocchi.jp>
-References: <1469084447-30740-1-git-send-email-mengdong.lin@linux.intel.com>
+Subject: Re: Could I put a patch to 4.7 final?
+Date: Fri, 22 Jul 2016 05:48:43 +0900
+Message-ID: <5791352B.70307@sakamocchi.jp>
+References: <57903D8A.5010106@sakamocchi.jp> <s5hzipbefp9.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 9052026662D
- for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2016 22:37:14 +0200 (CEST)
-In-Reply-To: <1469084447-30740-1-git-send-email-mengdong.lin@linux.intel.com>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 557AE2666F9
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2016 22:48:51 +0200 (CEST)
+In-Reply-To: <s5hzipbefp9.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +20,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@intel.com, shreyas.nc@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, saobannion@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On Jul 21 2016 16:00, mengdong.lin@linux.intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+On Jul 21 2016 14:13, Takashi Iwai wrote:
+> On Thu, 21 Jul 2016 05:12:10 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> Iwai-san,
+>>
+>> Yesterday, I found an user of additional OXFW device, and we're under
+>> testing a patch to support it.
+>> https://sourceforge.net/p/ffado/mailman/message/35229260/
+>>
+>> I need one day more to post corresponding patch. The prototype is:
+>> https://github.com/takaswie/snd-firewire-improve/commit/690a2419fc95766826c8d2c0964f6f099f9d65bd
+>>
+>> This week is final week for 4.7, but do I have a rest to add the patch
+>> to it in time of your work for mainline?
 > 
-> tplg_copy_data() should set the valid referenced data element pointer.
-> The caller will double check this pointer for all kinds of references,
-> including TLV, controls, text and data.
-> 
-> Also fix an inaccurate dmesg.
-> 
-> Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-> 
-> diff --git a/src/topology/dapm.c b/src/topology/dapm.c
-> index 4d343b2..e3c90d8 100644
-> --- a/src/topology/dapm.c
-> +++ b/src/topology/dapm.c
-> @@ -201,7 +201,7 @@ static int tplg_build_widget(snd_tplg_t *tplg,
->  		}
->  
->  		if (!ref->elem) {
-> -			SNDERR("error: cannot find control '%s'"
-> +			SNDERR("error: cannot find '%s'"
->  				" referenced by widget '%s'\n",
->  				ref->id, elem->id);
->  			return -EINVAL;
+> If the patch is a regression fix or a stable fix, I can queue it for
+> 4.7-final.  Others will go to 4.8-rc1.
 
-It's better to split to two patches for the different aims. Accumulating
-patches to log history is preferable, as long as you have concrete wills
-to improve codes, I believe.
+We have similar issue before.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-January/103167.html
 
-> diff --git a/src/topology/data.c b/src/topology/data.c
-> index 768fc27..397f6a5 100644
-> --- a/src/topology/data.c
-> +++ b/src/topology/data.c
-> @@ -1050,6 +1050,7 @@ int tplg_copy_data(snd_tplg_t *tplg, struct tplg_elem *elem,
->  		" element '%s'\n", ref->id, elem->id);
->  		return -EINVAL;
->  	}
-> +	ref->elem = ref_elem;
->  
->  	tplg_dbg("Data '%s' used by '%s'\n", ref->id, elem->id);
->  	/* overlook empty private data */
+I think this is a case of the 'simple addition of device IDs'.
 
-I wonder why the assignment is done in this line. This function still
-includes some codes to return errors. In this case, it's better to code
-the assignment in last part of the function.
+> I'm going to send a pull request tomorrow, so please submit in time.
 
-This is a public API. It's better not to touch application's objects in
-invalid cases.
+OK.
+
+Probably, the model has unique quirk to lose quality of PCM substream of
+current ALSA OXFW driver and I predict the patch is not in time of your
+work.
+
+Anyway, today, I wait for the tester's report.
 
 
-Regards
+Thanks
 
 Takashi Sakamoto
