@@ -1,52 +1,59 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v4 2/4] mfd: Add Samsung Exynos Low Power Audio Subsystem
- driver
-Date: Thu, 21 Jul 2016 13:11:27 +0100
-Message-ID: <20160721121127.GD14925@dell>
-References: <1467738804-31460-1-git-send-email-s.nawrocki@samsung.com>
- <578F9495.9090502@samsung.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH v4 4/4] ASoC: samsung: Add machine driver
+ for Exynos5433 based TM2 board
+Date: Thu, 21 Jul 2016 17:12:16 +0200
+Message-ID: <5790E650.609@samsung.com>
+References: <CGME20160705171538epcas1p14f034567982b67aad091c50e5adcec9c@epcas1p1.samsung.com>
+ <1467738877-31555-1-git-send-email-s.nawrocki@samsung.com>
+ <5788721B.7010602@samsung.com> <578CB261.60507@samsung.com>
+ <5790A3D0.4070500@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <578F9495.9090502@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: broonie@kernel.org, robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, ideal.song@samsung.com, inki.dae@samsung.com, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Beomho Seo <beomho.seo@samsung.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com
+ [210.118.77.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2659626530D
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2016 17:12:22 +0200 (CEST)
+Received: from eucpsbgm2.samsung.com (unknown [203.254.199.245])
+ by mailout2.w1.samsung.com
+ (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
+ with ESMTP id <0OAO00L7Y7KIKC10@mailout2.w1.samsung.com> for
+ alsa-devel@alsa-project.org; Thu, 21 Jul 2016 16:12:18 +0100 (BST)
+In-reply-to: <5790A3D0.4070500@samsung.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Chanwoo Choi <cw00.choi@samsung.com>
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, Krzysztof Kozlowski <k.kozlowski@samsung.com>, linux-kernel@vger.kernel.org, inki.dae@samsung.com, devicetree@vger.kernel.org, broonie@kernel.org, ideal.song@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 20 Jul 2016, Sylwester Nawrocki wrote:
+On 07/21/2016 12:28 PM, Chanwoo Choi wrote:
+> When I test it, I can get the clock pointer by devm_clk_get() as following:
+> 
+> diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
+> index 9728b3c5927f..5de4fc554aec 100644
+> --- a/sound/soc/samsung/tm2_wm5110.c
+> +++ b/sound/soc/samsung/tm2_wm5110.c
+> @@ -500,7 +500,7 @@ static int tm2_probe(struct platform_device *pdev)
+>                 card->dai_link[i].platform_of_node = cpu_dai_node;
+>         }
+> 
+> -       priv->codec_mclk1 = of_clk_get_by_name(codec_dai_node, "mclk1");
+> +       priv->codec_mclk1 = devm_clk_get(dev, "mclk1");
 
-> On 07/05/2016 07:13 PM, Sylwester Nawrocki wrote:
-> > This patch adds common driver for the Top block of the Samsung Exyn=
-os
-> > SoC Low Power Audio Subsystem. This is a minimal driver which prepa=
-res
-> > resources for IP blocks like I2S, audio DMA and UART and exposes a =
-regmap
-> > for the Top block registers. Also system power ops are added to ens=
-ure
-> > the Audio Subsystem is operational after system suspend/resume cycl=
-e.
-> >=20
-> > Signed-off-by: Inha Song <ideal.song@samsung.com>
-> > Signed-off-by: Beomho Seo <beomho.seo@samsung.com>
-> > Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> > ---
->=20
-> Lee, is this patch good enough for your tree? Are you going to have
-> any review comments ?
+I guess you have and old dts where clock/clock-names are in the sound
+node.  Instead the clock/clock-names properties should be specified
+in the CODEC's node, the related binding's documentation can be found
+in Documentation/devicetree/bindings/mfd/arizona.txt. Also please see
+patch 3/4, there is no clock properties in the sound card's DT binding.
 
-Please don't sent contentless pings.  If you think the patch has been
-dropped (it hasn't) then just send a [RESEND] patch.
-
-The merge window is about to open.  I will not be taking any patches
-for the next couple of weeks.  Your patch is marked as to-review in my
-Inbox, so please bear with me and I'll get around to it.
-
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+--
+Thanks,
+Sylwester
