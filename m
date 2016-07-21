@@ -1,94 +1,87 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: correct the spdif clk" to the asoc tree
-Date: Wed, 20 Jul 2016 17:43:40 +0100
-Message-ID: <E1bPuay-0002iL-Ap@debutante>
-References: <1468852474-15735-1-git-send-email-zyw@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1468852474-15735-1-git-send-email-zyw@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chris Zhong <zyw@rock-chips.com>
-Cc: Mark Brown <broonie@kernel.org>, heiko@sntech.de, dianders@chromium.org, sugar.zhang@rock-chips.com, alsa-devel@alsa-project.org, zhengxing@rock-chips.com, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.orgMark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v2 1/2] ALSA - hda: Add support for parsing
+ new HDA capabilities
+Date: Thu, 21 Jul 2016 09:54:26 +0530
+Message-ID: <20160721042426.GK9681@localhost>
+References: <1468925202-29445-1-git-send-email-vinod.koul@intel.com>
+ <1468925202-29445-2-git-send-email-vinod.koul@intel.com>
+ <s5hlh0w98pm.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23F68265873
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2016 06:17:15 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hlh0w98pm.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, Hardik T Shah <hardik.t.shah@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, liam.r.girdwood@linux.intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, Jul 20, 2016 at 07:31:17AM +0200, Takashi Iwai wrote:
 
-   ASoC: rockchip: correct the spdif clk
+> > +	unsigned int offset; unsigned int counter = 0;
+> 
+> Need a line break.
 
-has been applied to the asoc tree at
+arghh, will fix..
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> > +	offset = azx_readl(chip, LLCH);
+> > +
+> > +	/* Lets walk the linked capabilities list */
+> > +	do {
+> > +		cur_cap = _snd_hdac_chip_read(l, azx_bus(chip), offset);
+> > +
+> > +		switch ((cur_cap & CAP_HDR_ID_MASK) >> CAP_HDR_ID_OFF) {
+> > +		case GTS_CAP_ID:
+> > +			dev_dbg(chip->card->dev, "Found GTS capability");
+> > +			chip->gts_present = 1;
+> > +			break;
+> > +
+> > +		default:
+> > +			break;
+> > +		}
+> > +
+> > +		counter++;
+> > +
+> > +		if (counter > AZX_MAX_CAPS) {
+> > +			dev_err(chip->card->dev, "We exceeded azx capabilities!!!\n");
+> > +			break;
+> > +		}
+> > +
+> > +		/* read the offset of next capabiity */
+> > +		offset = cur_cap & CAP_HDR_NXT_PTR_MASK;
+> > +
+> > +	} while (offset);
+> 
+> Wouldn't it be safer to use a normal while () {} loop?
+> The first LLCH read might be zero, in theory.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Then in that case first read will give error. But yes I see the benifits.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Btw this is same as snd_hdac_ext_bus_parse_capabilities()
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Should we move this to hdac and use for both. Ofcourse many new capablities
+do not make sense to legacy driver, so we would have to ignore them.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> > +	if (!(chip->gts_present && boot_cpu_has(X86_FEATURE_ART)))
+> > +		chip->gts_present = false;
+> 
+> Need #ifdef CONFIG_X86 guard here, too.
+> Also, the inclusion of <asm/cpufeature.h> isn't needed?  (Again
+> X86-only.)
 
-Thanks,
-Mark
+This is intel.c :) I did compile it for ARM before sending.
 
->From 46dd2e28a90e48fbf1b7e253933fa3b7242e9b1b Mon Sep 17 00:00:00 2001
-From: Chris Zhong <zyw@rock-chips.com>
-Date: Mon, 18 Jul 2016 22:34:34 +0800
-Subject: [PATCH] ASoC: rockchip: correct the spdif clk
-
-The spdif mclk should be 128 times of sample rate, and there is a
-internal divider, the real rate of spdif mclk is mclk / (div + 1).
-Hence, the original driver always get the good frequency for
-48000/96000/44100/192000. But for 32000, the mclk is incorrect,
-it should be 32000*128, but get 48000*128. Do not use the internal
-divider here, just set all mclk to 128 * sample rate directly.
-
-Signed-off-by: Chris Zhong <zyw@rock-chips.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/rockchip/rockchip_spdif.c | 17 +----------------
- 1 file changed, 1 insertion(+), 16 deletions(-)
-
-diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
-index 100781e37848..4ca265737eda 100644
---- a/sound/soc/rockchip/rockchip_spdif.c
-+++ b/sound/soc/rockchip/rockchip_spdif.c
-@@ -101,21 +101,7 @@ static int rk_spdif_hw_params(struct snd_pcm_substream *substream,
- 	int ret;
- 
- 	srate = params_rate(params);
--	switch (srate) {
--	case 32000:
--	case 48000:
--	case 96000:
--		mclk = 96000 * 128; /* 12288000 hz */
--		break;
--	case 44100:
--		mclk = 44100 * 256; /* 11289600 hz */
--		break;
--	case 192000:
--		mclk = 192000 * 128; /* 24576000 hz */
--		break;
--	default:
--		return -EINVAL;
--	}
-+	mclk = srate * 128;
- 
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
-@@ -139,7 +125,6 @@ static int rk_spdif_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
--	val |= SPDIF_CFGR_CLK_DIV(mclk/(srate * 256));
- 	ret = regmap_update_bits(spdif->regmap, SPDIF_CFGR,
- 		SPDIF_CFGR_CLK_DIV_MASK | SPDIF_CFGR_HALFWORD_ENABLE |
- 		SDPIF_CFGR_VDW_MASK,
 -- 
-2.8.1
+~Vinod
