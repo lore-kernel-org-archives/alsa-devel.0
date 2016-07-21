@@ -1,59 +1,44 @@
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH v4 4/4] ASoC: samsung: Add machine driver
- for Exynos5433 based TM2 board
-Date: Thu, 21 Jul 2016 17:12:16 +0200
-Message-ID: <5790E650.609@samsung.com>
-References: <CGME20160705171538epcas1p14f034567982b67aad091c50e5adcec9c@epcas1p1.samsung.com>
- <1467738877-31555-1-git-send-email-s.nawrocki@samsung.com>
- <5788721B.7010602@samsung.com> <578CB261.60507@samsung.com>
- <5790A3D0.4070500@samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com
- [210.118.77.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 2659626530D
- for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2016 17:12:22 +0200 (CEST)
-Received: from eucpsbgm2.samsung.com (unknown [203.254.199.245])
- by mailout2.w1.samsung.com
- (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
- with ESMTP id <0OAO00L7Y7KIKC10@mailout2.w1.samsung.com> for
- alsa-devel@alsa-project.org; Thu, 21 Jul 2016 16:12:18 +0100 (BST)
-In-reply-to: <5790A3D0.4070500@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Chanwoo Choi <cw00.choi@samsung.com>
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, Krzysztof Kozlowski <k.kozlowski@samsung.com>, linux-kernel@vger.kernel.org, inki.dae@samsung.com, devicetree@vger.kernel.org, broonie@kernel.org, ideal.song@samsung.com
+Subject: [PATCH 0/2] ASoC: samsung: Deferred probing support fixes
+Date: Thu, 21 Jul 2016 20:03:48 +0200
+Message-ID: <1469124230-8583-1-git-send-email-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, k.kozlowski@samsung.com, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/21/2016 12:28 PM, Chanwoo Choi wrote:
-> When I test it, I can get the clock pointer by devm_clk_get() as following:
-> 
-> diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
-> index 9728b3c5927f..5de4fc554aec 100644
-> --- a/sound/soc/samsung/tm2_wm5110.c
-> +++ b/sound/soc/samsung/tm2_wm5110.c
-> @@ -500,7 +500,7 @@ static int tm2_probe(struct platform_device *pdev)
->                 card->dai_link[i].platform_of_node = cpu_dai_node;
->         }
-> 
-> -       priv->codec_mclk1 = of_clk_get_by_name(codec_dai_node, "mclk1");
-> +       priv->codec_mclk1 = devm_clk_get(dev, "mclk1");
+This patch series is an attempt to fix sound card initialization isssues
+observed in Odroid XU3 board after conversion of the AUDSS clock controller
+driver to proper loadable module.  Related patch can be found here:
+https://patchwork.kernel.org/patch/9221051, it's also already in -next.
 
-I guess you have and old dts where clock/clock-names are in the sound
-node.  Instead the clock/clock-names properties should be specified
-in the CODEC's node, the related binding's documentation can be found
-in Documentation/devicetree/bindings/mfd/arizona.txt. Also please see
-patch 3/4, there is no clock properties in the sound card's DT binding.
+It would be good to have these two patches merged in 4.8-rc cycle so as
+to avoid regressions on on boards using ADMA. The sound breakage happens
+only when ADMA is used, as ADMA gets apb_pclk clock from the AUDSS clock
+controller.  Previously the clock controller was initialized early in
+core_initcall which ensured the ADMA PL330 driver initialization before
+the I2S probe.
+
+Probably as a followup the SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME could
+be dropped and it's usage replaced with struct snd_dmaengine_pcm_config
+::dma_names, I didn't want to make too invasive changes for a bug fix patch
+and don't have the older s3c non-dt boards for testing.
+
+Sylwester Nawrocki (2):
+  ASoC: samsung: Fix error paths in the I2S driver's probe()
+  ASoC: samsung: Specify DMA channels through struct
+    snd_dmaengine_pcm_config
+
+ sound/soc/samsung/ac97.c        |  3 ++-
+ sound/soc/samsung/dma.h         |  9 ++++++---
+ sound/soc/samsung/dmaengine.c   | 31 ++++++++++++++++++++-----------
+ sound/soc/samsung/i2s.c         | 28 ++++++++++++++++++++++------
+ sound/soc/samsung/pcm.c         |  3 ++-
+ sound/soc/samsung/s3c2412-i2s.c |  3 ++-
+ sound/soc/samsung/s3c24xx-i2s.c |  3 ++-
+ sound/soc/samsung/spdif.c       |  3 ++-
+ 8 files changed, 58 insertions(+), 25 deletions(-)
 
 --
-Thanks,
-Sylwester
+1.9.1
