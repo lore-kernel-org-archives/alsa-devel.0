@@ -1,62 +1,61 @@
-From: Yann COLLETTE <ycollette.nospam@free.fr>
-Subject: Re: M-Audio Fast track problem
-Date: Fri, 22 Jul 2016 16:16:30 +0200
-Message-ID: <150a9f89-1dfb-0c4d-9714-5066ba5cff7a@free.fr>
-References: <e1010d1f-8265-7a29-2c49-279a6fceab9f@free.fr>
- <f6c5384c-695c-1ea2-8ce4-a7ca0189dce0@ladisch.de>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] ASoC: Intel: Skylake: Delete an unnecessary check before the
+ function call "release_firmware"
+Date: Fri, 22 Jul 2016 19:07:04 +0200
+Message-ID: <2c4f9e3a-96d7-36e1-379e-282353ea09b2@users.sourceforge.net>
+References: <5307CAA2.8060406@users.sourceforge.net>
+ <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
+ <530A086E.8010901@users.sourceforge.net>
+ <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6>
+ <530A72AA.3000601@users.sourceforge.net>
+ <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6>
+ <530B5FB6.6010207@users.sourceforge.net>
+ <alpine.DEB.2.10.1402241710370.2074@hadrien>
+ <530C5E18.1020800@users.sourceforge.net>
+ <alpine.DEB.2.10.1402251014170.2080@hadrien>
+ <530CD2C4.4050903@users.sourceforge.net>
+ <alpine.DEB.2.10.1402251840450.7035@hadrien>
+ <530CF8FF.8080600@users.sourceforge.net>
+ <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
+ <530DD06F.4090703@users.sourceforge.net>
+ <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
+ <5317A59D.4@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
- by alsa0.perex.cz (Postfix) with ESMTP id 23545265713
- for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2016 16:16:32 +0200 (CEST)
-Received: from [192.168.0.44] (unknown [82.241.14.88])
- by smtp1-g21.free.fr (Postfix) with ESMTP id 74E32B0054C
- for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2016 14:14:26 +0200 (CEST)
-In-Reply-To: <f6c5384c-695c-1ea2-8ce4-a7ca0189dce0@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
-So, my question is: what is a control wrt to alsamixer ?
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 22 Jul 2016 18:58:14 +0200
 
-I hoped it should be possible to control the volume of this usb sound =
+The release_firmware() function tests whether its argument is NULL and then
+returns immediately. Thus the test around the call is not needed.
 
-card with alsamixer ...
-There is also a line out but absolutely no sound comes from this output.
-I used it via jack without problem, but I can't use the line out output.
-I thought this was due to a volume level set to  0 for the line out and =
+This issue was detected by using the Coccinelle software.
 
-I tried to set it via alsamixer  ... without success.
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/soc/intel/skylake/skl.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-
-Le 22/07/2016 =E0 14:44, Clemens Ladisch a =E9crit :
-> Yann Collette wrote:
->> I've got a M-Audio fast track.
->>
->> If I open alsamixer and select the fast track sound card, alsamixer just=
- displays the message
->>
->> "This device has no command"
-> The actual message is "This sound device does not have any controls."
-> (Apparently, the translation is somewhat off.)
->
->> Is it a bug or a normal behavior ?
-> It were a bug only if that device actually had some control.
->
->
-> Regards,
-> Clemens
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 2337748..cd59536 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -781,8 +781,7 @@ static void skl_remove(struct pci_dev *pci)
+ 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
+ 	struct skl *skl = ebus_to_skl(ebus);
+ 
+-	if (skl->tplg)
+-		release_firmware(skl->tplg);
++	release_firmware(skl->tplg);
+ 
+ 	if (pci_dev_run_wake(pci))
+ 		pm_runtime_get_noresume(&pci->dev);
+-- 
+2.9.2
