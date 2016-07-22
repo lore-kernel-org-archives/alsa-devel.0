@@ -1,16 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 2/3] ASoC: topology: Add support for
-	configuring existing BE DAIs
-Date: Fri, 22 Jul 2016 13:59:40 +0800
-Message-ID: <a57c9b685be05e5d860f6fe2693169aa0b005279.1469165422.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: topology: Able to create BE DAIs
+Date: Fri, 22 Jul 2016 13:59:50 +0800
+Message-ID: <001ecaeba478e2ef863a232c89412b09d4b6de11.1469165422.git.mengdong.lin@linux.intel.com>
 References: <cover.1469165422.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 087C5266745
- for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2016 07:54:32 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id D17E5265913
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2016 07:54:43 +0200 (CEST)
 In-Reply-To: <cover.1469165422.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,59 +26,122 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-The platform driver may just specify the BE (Back End) DAI name and ID.
-And topology will find the existing BE DAI by its name and ID, and then
-configure its stream caps and flags.
+Topology will check with ASoC if a BE DAI already exists by checking
+its name. If the BE DAI doesn't exist, topology will create a new one
+and the dai_load ops will be called for device specific init.
 
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
+diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+index b897b9d..c7aa6e2 100644
+--- a/include/sound/soc-topology.h
++++ b/include/sound/soc-topology.h
+@@ -39,6 +39,7 @@ enum snd_soc_dobj_type {
+ 	SND_SOC_DOBJ_ENUM,
+ 	SND_SOC_DOBJ_BYTES,
+ 	SND_SOC_DOBJ_PCM,
++	SND_SOC_DOBJ_BE_DAI,
+ 	SND_SOC_DOBJ_DAI_LINK,
+ 	SND_SOC_DOBJ_CODEC_LINK,
+ 	SND_SOC_DOBJ_WIDGET,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 16369ca..c0ee988 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2872,7 +2872,8 @@ int snd_soc_register_dai(struct snd_soc_component *component,
+ 	struct snd_soc_dai *dai;
+ 	int ret;
+ 
+-	if (dai_drv->dobj.type != SND_SOC_DOBJ_PCM) {
++	if (!(dai_drv->dobj.type == SND_SOC_DOBJ_PCM ||
++	    dai_drv->dobj.type == SND_SOC_DOBJ_BE_DAI)) {
+ 		dev_err(component->dev, "Invalid dai type %d\n",
+ 			dai_drv->dobj.type);
+ 		return -EINVAL;
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index ee7f15a..05a18f6 100644
+index 05a18f6..924f370 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -48,9 +48,10 @@
- #define SOC_TPLG_PASS_PCM_DAI		4
- #define SOC_TPLG_PASS_GRAPH		5
- #define SOC_TPLG_PASS_PINS		6
-+#define SOC_TPLG_PASS_BE_DAI		7
- 
- #define SOC_TPLG_PASS_START	SOC_TPLG_PASS_MANIFEST
--#define SOC_TPLG_PASS_END	SOC_TPLG_PASS_PINS
-+#define SOC_TPLG_PASS_END	SOC_TPLG_PASS_BE_DAI
- 
- struct soc_tplg {
- 	const struct firmware *fw;
-@@ -1556,6 +1557,24 @@ static void set_stream_info(struct snd_soc_pcm_stream *stream,
- 	stream->formats = caps->formats;
- }
- 
-+static void set_dai_flags(struct snd_soc_dai_driver *dai_drv,
-+			  unsigned int flag_mask, unsigned int flags)
-+{
-+	if (flag_mask & SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_RATES)
-+		dai_drv->symmetric_rates =
-+			flags & SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_RATES ? 1 : 0;
-+
-+	if (flag_mask & SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS)
-+		dai_drv->symmetric_channels =
-+			flags & SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS ?
-+			1 : 0;
-+
-+	if (flag_mask & SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS)
-+		dai_drv->symmetric_samplebits =
-+			flags & SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS ?
-+			1 : 0;
-+}
-+
- static int soc_tplg_dai_create(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_pcm *pcm)
- {
-@@ -1690,8 +1709,96 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
+@@ -1709,42 +1709,14 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
  	return 0;
  }
  
+-/* *
+- * soc_tplg_be_dai_config - Find and configure an existing BE DAI.
+- * @tplg: topology context
+- * @be: topology BE DAI configs.
+- *
+- * The BE dai should already be registered by the platform driver. The
+- * platform driver should specify the BE DAI name and ID for matching.
+- */
+-static int soc_tplg_be_dai_config(struct soc_tplg *tplg,
++static int config_be_dai(struct soc_tplg *tplg,
++				  struct snd_soc_dai_driver *dai_drv,
+ 				  struct snd_soc_tplg_be_dai *be)
+ {
+-	struct snd_soc_dai_link_component dai_component = {0};
+-	struct snd_soc_dai *dai;
+-	struct snd_soc_dai_driver *dai_drv;
+ 	struct snd_soc_pcm_stream *stream;
+ 	struct snd_soc_tplg_stream_caps *caps;
+ 	int ret;
+ 
+-	dai_component.dai_name = be->dai_name;
+-	dai = snd_soc_find_dai(&dai_component);
+-	if (!dai) {
+-		dev_err(tplg->dev, "ASoC: BE DAI %s not registered\n",
+-			be->dai_name);
+-		return -EINVAL;
+-	}
+-
+-	if (be->dai_id != dai->id) {
+-		dev_err(tplg->dev, "ASoC: BE DAI %s id mismatch\n",
+-			be->dai_name);
+-		return -EINVAL;
+-	}
+-
+-	dai_drv = dai->driver;
+-	if (!dai_drv)
+-		return -EINVAL;
+-
+ 	if (be->playback) {
+ 		stream = &dai_drv->playback;
+ 		caps = &be->caps[SND_SOC_TPLG_STREAM_PLAYBACK];
+@@ -1770,6 +1742,74 @@ static int soc_tplg_be_dai_config(struct soc_tplg *tplg,
+ 	return 0;
+ }
+ 
++static int soc_tplg_be_dai_create(struct soc_tplg *tplg,
++				  struct snd_soc_tplg_be_dai *be)
++{
++	struct snd_soc_dai_driver *dai_drv;
++	int ret;
++
++	dai_drv = kzalloc(sizeof(struct snd_soc_dai_driver), GFP_KERNEL);
++	if (dai_drv == NULL)
++		return -ENOMEM;
++
++	dai_drv->name = be->dai_name;
++	dai_drv->id = be->dai_id;
++
++	ret = config_be_dai(tplg, dai_drv, be);
++	if (ret < 0) {
++		kfree(dai_drv);
++		return ret;
++	}
++
++	dai_drv->dobj.index = tplg->index;
++	dai_drv->dobj.ops = tplg->ops;
++	dai_drv->dobj.type = SND_SOC_DOBJ_BE_DAI;
++	list_add(&dai_drv->dobj.list, &tplg->comp->dobj_list);
++
++	/* register the DAI to the component */
++	return snd_soc_register_dai(tplg->comp, dai_drv);
++}
++
 +/* *
-+ * soc_tplg_be_dai_config - Find and configure an existing BE DAI.
++ * soc_tplg_be_dai_config - Create a new BE DAI or configure an existing one.
 + * @tplg: topology context
 + * @be: topology BE DAI configs.
 + *
@@ -92,18 +154,19 @@ index ee7f15a..05a18f6 100644
 +	struct snd_soc_dai_link_component dai_component = {0};
 +	struct snd_soc_dai *dai;
 +	struct snd_soc_dai_driver *dai_drv;
-+	struct snd_soc_pcm_stream *stream;
-+	struct snd_soc_tplg_stream_caps *caps;
-+	int ret;
 +
-+	dai_component.dai_name = be->dai_name;
-+	dai = snd_soc_find_dai(&dai_component);
-+	if (!dai) {
-+		dev_err(tplg->dev, "ASoC: BE DAI %s not registered\n",
++	if (!strlen(be->dai_name)) {
++		dev_err(tplg->dev, "ASoC: Invalid BE DAI name\n",
 +			be->dai_name);
 +		return -EINVAL;
 +	}
 +
++	dai_component.dai_name = be->dai_name;
++	dai = snd_soc_find_dai(&dai_component);
++	if (!dai) /* BE DAI doesn't exist, create it */
++		return soc_tplg_be_dai_create(tplg, be);
++
++	/* configure an existing BE DAI */
 +	if (be->dai_id != dai->id) {
 +		dev_err(tplg->dev, "ASoC: BE DAI %s id mismatch\n",
 +			be->dai_name);
@@ -114,72 +177,21 @@ index ee7f15a..05a18f6 100644
 +	if (!dai_drv)
 +		return -EINVAL;
 +
-+	if (be->playback) {
-+		stream = &dai_drv->playback;
-+		caps = &be->caps[SND_SOC_TPLG_STREAM_PLAYBACK];
-+		set_stream_info(stream, caps);
-+	}
-+
-+	if (be->capture) {
-+		stream = &dai_drv->capture;
-+		caps = &be->caps[SND_SOC_TPLG_STREAM_CAPTURE];
-+		set_stream_info(stream, caps);
-+	}
-+
-+	if (be->flag_mask)
-+		set_dai_flags(dai_drv, be->flag_mask, be->flags);
-+
-+	/* pass control to component driver for optional further init */
-+	ret = soc_tplg_dai_load(tplg, dai_drv);
-+	if (ret < 0) {
-+		dev_err(tplg->comp->dev, "ASoC: DAI loading failed\n");
-+		return ret;
-+	}
-+
-+	return 0;
++	return config_be_dai(tplg, dai_drv, be);
 +}
 +
-+static int soc_tplg_be_dai_elems_load(struct soc_tplg *tplg,
-+				      struct snd_soc_tplg_hdr *hdr)
-+{
-+	struct snd_soc_tplg_be_dai *be;
-+	int count = hdr->count;
-+	int i;
-+
-+	if (tplg->pass != SOC_TPLG_PASS_BE_DAI)
-+		return 0;
-+
-+	/* config the existing BE DAIs */
-+	for (i = 0; i < count; i++) {
-+		be = (struct snd_soc_tplg_be_dai *)tplg->pos;
-+		if (be->size != sizeof(*be)) {
-+			dev_err(tplg->dev, "ASoC: invalid BE DAI size\n");
-+			return -EINVAL;
-+		}
-+
-+		soc_tplg_be_dai_config(tplg, be);
-+		tplg->pos += (sizeof(*be) + be->priv.size);
-+	}
-+
-+	dev_dbg(tplg->dev, "ASoC: Configure %d BE DAIs\n", count);
-+	return 0;
-+}
-+
-+
- static int soc_tplg_manifest_load(struct soc_tplg *tplg,
--	struct snd_soc_tplg_hdr *hdr)
-+				  struct snd_soc_tplg_hdr *hdr)
+ static int soc_tplg_be_dai_elems_load(struct soc_tplg *tplg,
+ 				      struct snd_soc_tplg_hdr *hdr)
  {
- 	struct snd_soc_tplg_manifest *manifest;
- 
-@@ -1793,6 +1900,8 @@ static int soc_tplg_load_header(struct soc_tplg *tplg,
- 		return soc_tplg_dapm_widget_elems_load(tplg, hdr);
- 	case SND_SOC_TPLG_TYPE_PCM:
- 		return soc_tplg_pcm_elems_load(tplg, hdr);
-+	case SND_SOC_TPLG_TYPE_BE_DAI:
-+		return soc_tplg_be_dai_elems_load(tplg, hdr);
- 	case SND_SOC_TPLG_TYPE_MANIFEST:
- 		return soc_tplg_manifest_load(tplg, hdr);
- 	default:
+@@ -2061,6 +2101,9 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
+ 			case SND_SOC_DOBJ_PCM:
+ 				remove_dai(comp, dobj, pass);
+ 				break;
++			case SND_SOC_DOBJ_BE_DAI:
++				remove_dai(comp, dobj, pass);
++				break;
+ 			case SND_SOC_DOBJ_DAI_LINK:
+ 				remove_link(comp, dobj, pass);
+ 				break;
 -- 
 2.5.0
