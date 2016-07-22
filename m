@@ -1,17 +1,14 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v3 2/2] topology: Fix the missing referenced
-	elem ptr when merging private data
-Date: Fri, 22 Jul 2016 13:12:54 +0800
-Message-ID: <49ac654e701ef70abfc525af3cf48fd87d067596.1469163116.git.mengdong.lin@linux.intel.com>
-References: <cover.1469163116.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 0/3] ASoC: topology: Add support for BE DAIs
+Date: Fri, 22 Jul 2016 13:58:03 +0800
+Message-ID: <cover.1469165422.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F907265713
- for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2016 07:07:46 +0200 (CEST)
-In-Reply-To: <cover.1469163116.git.mengdong.lin@linux.intel.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90BED265713
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2016 07:52:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, mengdong.lin@intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, liam.r.girdwood@intel.com, shreyas.nc@intel.com
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-tplg_copy_data() should set the valid referenced data element pointer
-on success. The caller will double check this pointer for all kinds of
-references, including controls and data.
+There is topology ABI udpate in this series. Topology core can check size
+of each ABI objects to detect version mismatch between user space and
+kernel.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+This series adds support for BE (Back End) DAIs:
+- Define the type and ABI struct for Backend DAIs.
+- The topology core can configure an existing BE DAI or create new BE
+  DAIs.
 
-diff --git a/src/topology/data.c b/src/topology/data.c
-index 768fc27..4798086 100644
---- a/src/topology/data.c
-+++ b/src/topology/data.c
-@@ -1053,8 +1053,10 @@ int tplg_copy_data(snd_tplg_t *tplg, struct tplg_elem *elem,
- 
- 	tplg_dbg("Data '%s' used by '%s'\n", ref->id, elem->id);
- 	/* overlook empty private data */
--	if (!ref_elem->data || !ref_elem->data->size)
-+	if (!ref_elem->data || !ref_elem->data->size) {
-+		ref->elem = ref_elem;
- 		return 0;
-+	}
- 
- 	old_priv = get_priv_data(elem);
- 	if (!old_priv)
-@@ -1078,6 +1080,8 @@ int tplg_copy_data(snd_tplg_t *tplg, struct tplg_elem *elem,
- 	ref_elem->compound_elem = 1;
- 	memcpy(priv->data + old_priv_data_size,
- 	       ref_elem->data->data, priv_data_size);
-+
-+	ref->elem = ref_elem;
- 	return 0;
- }
- 
+
+The user space series "topology: Add support for BE DAIs" is also
+submitted.
+
+Is it possible to meet the timeline of v4.8?
+There will be 2 pairs of kernel & user space series for PCM & BE links
+later.
+
+Mengdong Lin (3):
+  ASoC: topology: ABI - Add the types for BE DAI
+  ASoC: topology: Add support for configuring existing BE DAIs
+  ASoC: topology: Able to create BE DAIs
+
+ include/sound/soc-topology.h |   1 +
+ include/uapi/sound/asoc.h    |  34 +++++++++-
+ sound/soc/soc-core.c         |   3 +-
+ sound/soc/soc-topology.c     | 156 ++++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 189 insertions(+), 5 deletions(-)
+
 -- 
 2.5.0
