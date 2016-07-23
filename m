@@ -1,61 +1,53 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ASoC: Intel: Skylake: Delete an unnecessary check before the
- function call "release_firmware"
-Date: Fri, 22 Jul 2016 19:07:04 +0200
-Message-ID: <2c4f9e3a-96d7-36e1-379e-282353ea09b2@users.sourceforge.net>
-References: <5307CAA2.8060406@users.sourceforge.net>
- <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
- <530A086E.8010901@users.sourceforge.net>
- <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6>
- <530A72AA.3000601@users.sourceforge.net>
- <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6>
- <530B5FB6.6010207@users.sourceforge.net>
- <alpine.DEB.2.10.1402241710370.2074@hadrien>
- <530C5E18.1020800@users.sourceforge.net>
- <alpine.DEB.2.10.1402251014170.2080@hadrien>
- <530CD2C4.4050903@users.sourceforge.net>
- <alpine.DEB.2.10.1402251840450.7035@hadrien>
- <530CF8FF.8080600@users.sourceforge.net>
- <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
- <530DD06F.4090703@users.sourceforge.net>
- <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
- <5317A59D.4@users.sourceforge.net>
+From: vedang.patel@intel.com
+Subject: [PATCH] ASoC: Intel: Skylake: Fix NULL Pointer
+	exception in dynamic_debug.
+Date: Fri, 22 Jul 2016 17:17:23 -0700
+Message-ID: <1469233043-91023-1-git-send-email-vedang.patel@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5317A59D.4@users.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69B8D265713
+ for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2016 02:17:28 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, jeeja.kp@intel.com, broonie@kernel.org, Vedang Patel <vedang.patel@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 22 Jul 2016 18:58:14 +0200
+From: Vedang Patel <vedang.patel@intel.com>
 
-The release_firmware() function tests whether its argument is NULL and then
-returns immediately. Thus the test around the call is not needed.
+The following bug was reported by sometime back:
 
-This issue was detected by using the Coccinelle software.
+https://lkml.org/lkml/2016/6/29/795
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+This commit fixes this bug by setting value for the prefix string.
+
+Signed-off-by: Vedang Patel <vedang.patel@intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-sst-ipc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 2337748..cd59536 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -781,8 +781,7 @@ static void skl_remove(struct pci_dev *pci)
- 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
- 	struct skl *skl = ebus_to_skl(ebus);
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index c141f24cae05..96f2f6889b18 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -692,7 +692,7 @@ int skl_ipc_init_instance(struct sst_generic_ipc *ipc,
+ 	 /* param_block_size must be in dwords */
+ 	u16 param_block_size = msg->param_data_size / sizeof(u32);
  
--	if (skl->tplg)
--		release_firmware(skl->tplg);
-+	release_firmware(skl->tplg);
+-	print_hex_dump_debug(NULL, DUMP_PREFIX_NONE,
++	print_hex_dump_debug("Param data:", DUMP_PREFIX_NONE,
+ 		16, 4, buffer, param_block_size, false);
  
- 	if (pci_dev_run_wake(pci))
- 		pm_runtime_get_noresume(&pci->dev);
+ 	header.primary = IPC_MSG_TARGET(IPC_MOD_MSG);
 -- 
-2.9.2
+2.6.6
