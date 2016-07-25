@@ -1,19 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: ycollette.nospam@free.fr
 Subject: Re: M-Audio Fast track problem
-Date: Mon, 25 Jul 2016 13:30:30 +0200
-Message-ID: <a589536c-b63f-cf0b-cb8e-65cef7bb4a19@ladisch.de>
-References: <1358315066.431498292.1469444639714.JavaMail.root@zimbra35-e6.priv.proxad.net>
+Date: Mon, 25 Jul 2016 13:41:50 +0200 (CEST)
+Message-ID: <571714765.431592774.1469446910126.JavaMail.root@zimbra35-e6.priv.proxad.net>
+References: <a589536c-b63f-cf0b-cb8e-65cef7bb4a19@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id EB4F22659BF
- for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2016 13:32:08 +0200 (CEST)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by dehamd003.servertools24.de (Postfix) with ESMTPSA id 8D311F520061
- for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2016 13:30:31 +0200 (CEST)
-In-Reply-To: <1358315066.431498292.1469444639714.JavaMail.root@zimbra35-e6.priv.proxad.net>
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id B55B7265AC9
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2016 13:41:54 +0200 (CEST)
+In-Reply-To: <a589536c-b63f-cf0b-cb8e-65cef7bb4a19@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,14 +20,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ycollette.nospam@free.fr wrote:
-> So, it's not possible to set the volume of the Fast track sound card with alsamixer ?
-
-Apparently, this device does not have any volume control that is accessible by software.
-
-
-Regards,
-Clemens
+T0ssIHRoYW5rcyBmb3IgdGhpcyBpbmZvcm1hdGlvbi4KCkJlc3QgcmVnYXJkcywKCllDCgotLS0t
+LSBNYWlsIG9yaWdpbmFsIC0tLS0tCkRlOiAiQ2xlbWVucyBMYWRpc2NoIiA8Y2xlbWVuc0BsYWRp
+c2NoLmRlPgrDgDogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCkVudm95w6k6IEx1bmRpIDI1
+IEp1aWxsZXQgMjAxNiAxMzozMDozMApPYmpldDogUmU6IFthbHNhLWRldmVsXSBNLUF1ZGlvIEZh
+c3QgdHJhY2sgcHJvYmxlbQoKeWNvbGxldHRlLm5vc3BhbUBmcmVlLmZyIHdyb3RlOgo+IFNvLCBp
+dCdzIG5vdCBwb3NzaWJsZSB0byBzZXQgdGhlIHZvbHVtZSBvZiB0aGUgRmFzdCB0cmFjayBzb3Vu
+ZCBjYXJkIHdpdGggYWxzYW1peGVyID8KCkFwcGFyZW50bHksIHRoaXMgZGV2aWNlIGRvZXMgbm90
+IGhhdmUgYW55IHZvbHVtZSBjb250cm9sIHRoYXQgaXMgYWNjZXNzaWJsZSBieSBzb2Z0d2FyZS4K
+CgpSZWdhcmRzLApDbGVtZW5zCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
