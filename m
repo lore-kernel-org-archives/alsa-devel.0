@@ -1,81 +1,174 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH v3 2/2] topology: Fix the missing
- referenced elem ptr when merging private data
-Date: Mon, 25 Jul 2016 14:17:16 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F84BA8A003@shsmsx102.ccr.corp.intel.com>
-References: <cover.1469163116.git.mengdong.lin@linux.intel.com>
- <49ac654e701ef70abfc525af3cf48fd87d067596.1469163116.git.mengdong.lin@linux.intel.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [alsa-devel] [PATCH v4 4/4] ASoC: samsung: Add machine driver for
+ Exynos5433 based TM2 board
+Date: Mon, 25 Jul 2016 16:20:18 +0200
+Message-ID: <57962022.6020808@samsung.com>
+References: <1467738877-31555-1-git-send-email-s.nawrocki@samsung.com>
+ <20160722095115.GB8680@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 01EFE265926
- for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2016 16:17:32 +0200 (CEST)
-In-Reply-To: <49ac654e701ef70abfc525af3cf48fd87d067596.1469163116.git.mengdong.lin@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "tiwai@suse.de" <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <20160722095115.GB8680@localhost.localdomain>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, Krzysztof Kozlowski <k.kozlowski@samsung.com>, linux-kernel@vger.kernel.org, inki.dae@samsung.com, devicetree@vger.kernel.org, broonie@kernel.org, ideal.song@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Sorry to interrupt you. Does this patch look good now?
-This alsa-lib patch is a bug fix without any ABI changes. And it's not part of the other 2 series for BE DAI support.
+On 07/22/2016 11:51 AM, Charles Keepax wrote:
+> On Tue, Jul 05, 2016 at 07:14:37PM +0200, Sylwester Nawrocki wrote:
+>> This patch adds the sound machine driver for TM2 and TM2E board.
+>> Speaker and headphone playback, Main Mic capture, Bluetooth,
+>> Voice call and external accessory are supported.
+>>
+>> Signed-off-by: Inha Song <ideal.song@samsung.com>
+>> [k.kozlowski: rebased on 4.1]
+>> Signed-off-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+>> [s.nawrocki: rebased to 4.7, adjustment to the ASoC core changes,
+>>  removed unused ops and direct calls to the max98504 function,
+>>  added parsing of "audio-amplifier" and "audio-codec"
+>>  properties, added TDM API calls, switched to gpiod API]
+>> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-Thanks
-Mengdong
+> 
+> Apologies for my late response I had missed this.
 
-> -----Original Message-----
-> From: mengdong.lin@linux.intel.com [mailto:mengdong.lin@linux.intel.com]
-> Sent: Friday, July 22, 2016 1:13 PM
-> To: alsa-devel@alsa-project.org; broonie@kernel.org
-> Cc: tiwai@suse.de; Girdwood, Liam R; Lin, Mengdong; Nc, Shreyas;
-> Mengdong Lin
-> Subject: [PATCH v3 2/2] topology: Fix the missing referenced elem ptr when
-> merging private data
+Thanks a lot for your comments, this missed the 4.8 merge window
+anyway.
+
+> <snip>
+>> +static int tm2_start_sysclk(struct snd_soc_card *card)
+>> +{
+>> +	struct tm2_machine_priv *priv = snd_soc_card_get_drvdata(card);
+>> +	struct snd_soc_codec *codec = priv->codec;
+>> +	unsigned long mclk_rate = clk_get_rate(priv->codec_mclk1);
+>> +	int ret;
+>> +
+>> +	ret = clk_prepare_enable(priv->codec_mclk1);
+>> +	if (ret < 0) {
+>> +		dev_err(card->dev, "Failed to enable mclk: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = snd_soc_codec_set_pll(codec, WM5110_FLL1,
+>> +				    ARIZONA_FLL_SRC_MCLK1,
+>> +				    mclk_rate,
+>> +				    priv->sysclk_rate);
+>> +	if (ret < 0) {
+>> +		dev_err(codec->dev, "Failed to start FLL: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = snd_soc_codec_set_pll(codec, WM5110_FLL1_REFCLK,
+>> +				    ARIZONA_FLL_SRC_MCLK1,
+>> +				    mclk_rate,
+>> +				    priv->sysclk_rate);
+>> +	if (ret < 0) {
+>> +		dev_err(codec->dev, "Failed to set FLL1 Source: %d\n", ret);
+>> +		return ret;
+>> +	}
 > 
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+> It would be better to set the REFCLK first. Setting WM5110_FLL1
+> actually enables the FLL, where as setting WM5110_FLL1_REFCKL
+> doesn't. So doing it this way round the first time you bring
+> up the FLL it will enable it then reconfigure the reference
+> path. Doing it the other way round it will always enable first
+> time with the correct settings.
+
+OK, thanks for the hint, I will reorder this.
+
+
+>> +static int tm2_aif1_hw_params(struct snd_pcm_substream *substream,
+>> +				struct snd_pcm_hw_params *params)
+>> +{
+
+>> +
+>> +	ret = snd_soc_dai_set_sysclk(codec_dai, ARIZONA_CLK_SYSCLK, 0, 0);
+>> +	if (ret < 0) {
+>> +		dev_err(codec_dai->dev, "Failed to set SYSCLK: %d\n", ret);
+>> +		return ret;
+>> +	}
 > 
-> tplg_copy_data() should set the valid referenced data element pointer on
-> success. The caller will double check this pointer for all kinds of references,
-> including controls and data.
+> If there is no intention to change which clocking domain the DAI
+> is attached to I would put this in late probe, although it does
+> no harm here and if that might get added in the future then here
+> is better.
+
+If the clocking arrangement ever needs to be changed the call could
+be added here again, I will move it to late_probe.
+
+>> +	return tm2_start_sysclk(rtd->card);
+>> +}
+>> +
+>> +static struct snd_soc_ops tm2_aif1_ops = {
+>> +	.hw_params = tm2_aif1_hw_params,
+>> +};
+>> +
+>> +static int tm2_aif2_hw_params(struct snd_pcm_substream *substream,
+>> +				struct snd_pcm_hw_params *params)
+>> +{
+
+>> +	ret = snd_soc_codec_set_pll(codec, WM5110_FLL2,
+>> +				    ARIZONA_FLL_SRC_MCLK1,
+>> +				    mclk_rate,
+>> +				    asyncclk_rate);
+>> +	if (ret < 0) {
+>> +		dev_err(codec->dev, "Failed to start FLL: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = snd_soc_codec_set_pll(codec, WM5110_FLL2_REFCLK,
+>> +				    ARIZONA_FLL_SRC_MCLK1,
+>> +				    mclk_rate,
+>> +				    asyncclk_rate);
+>> +	if (ret < 0) {
+>> +		dev_err(codec->dev, "Failed to set FLL1 Source: %d\n", ret);
+>> +		return ret;
+>> +	}
 > 
-> Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+> Again as before I would set the REFCLK path first on the FLL.
 > 
-> diff --git a/src/topology/data.c b/src/topology/data.c index
-> 768fc27..4798086 100644
-> --- a/src/topology/data.c
-> +++ b/src/topology/data.c
-> @@ -1053,8 +1053,10 @@ int tplg_copy_data(snd_tplg_t *tplg, struct
-> tplg_elem *elem,
+> Also nothing ever turns FLL2 off again here. I would either turn
+> it off again in set_bias level or add a free callback into
+> tm2_aif2_ops, probably adding a free callback matches the usage
+> of this clock better I would guess.
+
+hw_free sounds like a good option, I'll add it to ensure the WM5110_FLL2
+clock is disabled when not in use.
+
+>> +static int tm2_set_bias_level(struct snd_soc_card *card,
+>> +				struct snd_soc_dapm_context *dapm,
+>> +				enum snd_soc_bias_level level)
+>> +{
+
+>> +
+>> +	card->dapm.bias_level = level;
 > 
->  	tplg_dbg("Data '%s' used by '%s'\n", ref->id, elem->id);
->  	/* overlook empty private data */
-> -	if (!ref_elem->data || !ref_elem->data->size)
-> +	if (!ref_elem->data || !ref_elem->data->size) {
-> +		ref->elem = ref_elem;
->  		return 0;
-> +	}
+> I believe the core does this for you these days.
+
+Indeed, I had missed that, I'll drop this assignment.
+
+>> +static int tm2_suspend_post(struct snd_soc_card *card)
+>> +{
+>> +	return tm2_stop_sysclk(card);
 > 
->  	old_priv = get_priv_data(elem);
->  	if (!old_priv)
-> @@ -1078,6 +1080,8 @@ int tplg_copy_data(snd_tplg_t *tplg, struct
-> tplg_elem *elem,
->  	ref_elem->compound_elem = 1;
->  	memcpy(priv->data + old_priv_data_size,
->  	       ref_elem->data->data, priv_data_size);
-> +
-> +	ref->elem = ref_elem;
->  	return 0;
->  }
+> I think you can't really do this from these callbacks, the
+> trouble is suspend_post is called from snd_soc_suspend which is
+> set as the suspend callback in snd_soc_pm_ops. So when this is
+> called you don't actually know if the SPI has already suspended
+> or not, if it hasn't things will work but if the SPI has already
+> suspended then this falls over.
 > 
-> --
-> 2.5.0
+> A better solution would be to define a local copy of
+> snd_soc_pm_ops with this functions set as the prepare and
+> complete callbacks the other callbacks set as snd_soc_pm_ops sets
+> them. These callback will run before anything is suspended and
+> after everything has been resumed.
+
+Agreed, dependency on the SPI controller seems to be not modelled and
+it looks like it is working by chance now.  I will try to use prepare/
+complete callback until better options are available.
+
+-- 
+Thanks,
+Sylwester
