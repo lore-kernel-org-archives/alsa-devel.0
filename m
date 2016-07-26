@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 10/12] ASoC: Intel: Skylake: Add library
-	loading support
-Date: Tue, 26 Jul 2016 18:06:48 +0530
-Message-ID: <1469536610-27606-11-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 12/12] ASoC: Intel: Skylake: Add module
+	processing domain support
+Date: Tue, 26 Jul 2016 18:06:50 +0530
+Message-ID: <1469536610-27606-13-git-send-email-vinod.koul@intel.com>
 References: <1469536610-27606-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B43A2669D8
- for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2016 14:30:25 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 12BA52669DC
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2016 14:30:27 +0200 (CEST)
 In-Reply-To: <1469536610-27606-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,178 +22,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Kranthi G <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, Ramesh Babu <ramesh.babu@intel.com>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Ramesh Babu <ramesh.babu@intel.com>
+From: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 
-The library load is added as one of the ops in skl_dsp_fw_ops().
+A module can be scheduled in deferent processing domains in DSP. Topology
+specifies the module domain.
 
-The manifest load gives the files to be loaded which are loaded during
-the fw_init()
-
-Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
-Signed-off-by: Kranthi G <gudishax.kranthikumar@intel.com>
+Signed-off-by: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/bxt-sst.c     | 86 +++++++++++++++++++++++++++++++++--
- sound/soc/intel/skylake/skl-sst-dsp.h |  2 +
- 2 files changed, 85 insertions(+), 3 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c       | 1 +
+ sound/soc/intel/skylake/skl-sst-ipc.c        | 6 ++++++
+ sound/soc/intel/skylake/skl-sst-ipc.h        | 1 +
+ sound/soc/intel/skylake/skl-topology.c       | 1 +
+ sound/soc/intel/skylake/skl-tplg-interface.h | 3 ++-
+ 5 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 90702cef8b64..48a4ae583dd9 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -23,6 +23,7 @@
- #include "../common/sst-dsp.h"
- #include "../common/sst-dsp-priv.h"
- #include "skl-sst-ipc.h"
-+#include "skl-tplg-interface.h"
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 2199a91d90d6..8a750b67273f 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -870,6 +870,7 @@ int skl_init_module(struct skl_sst *ctx,
+ 	msg.ppl_instance_id = mconfig->pipe->ppl_id;
+ 	msg.param_data_size = module_config_size;
+ 	msg.core_id = mconfig->core_id;
++	msg.domain = mconfig->domain;
  
- #define BXT_BASEFW_TIMEOUT	3000
- #define BXT_INIT_TIMEOUT	500
-@@ -40,11 +41,73 @@
- #define BXT_INSTANCE_ID 0
- #define BXT_BASE_FW_MODULE_ID 0
+ 	ret = skl_ipc_init_instance(&ctx->ipc, &msg, param_data);
+ 	if (ret < 0) {
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 04c1b123aadf..b8baa9aaf6c4 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -114,6 +114,11 @@
+ #define IPC_CORE_ID(x)			(((x) & IPC_CORE_ID_MASK) \
+ 					<< IPC_CORE_ID_SHIFT)
  
-+#define BXT_ADSP_FW_BIN_HDR_OFFSET 0x2000
++#define IPC_DOMAIN_SHIFT                28
++#define IPC_DOMAIN_MASK                 0x1
++#define IPC_DOMAIN(x)                   (((x) & IPC_DOMAIN_MASK) \
++					<< IPC_DOMAIN_SHIFT)
 +
- static unsigned int bxt_get_errorcode(struct sst_dsp *ctx)
- {
- 	 return sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE);
- }
+ /* Bind/Unbind message extension register */
+ #define IPC_DST_MOD_ID_SHIFT		0
+ #define IPC_DST_MOD_ID(x)		(((x) & IPC_MOD_ID_MASK) \
+@@ -705,6 +710,7 @@ int skl_ipc_init_instance(struct sst_generic_ipc *ipc,
+ 	header.extension = IPC_CORE_ID(msg->core_id);
+ 	header.extension |= IPC_PPL_INSTANCE_ID(msg->ppl_instance_id);
+ 	header.extension |= IPC_PARAM_BLOCK_SIZE(param_block_size);
++	header.extension |= IPC_DOMAIN(msg->domain);
  
-+static int
-+bxt_load_library(struct sst_dsp *ctx, struct skl_dfw_manifest *minfo)
-+{
-+	struct snd_dma_buffer dmab;
-+	struct skl_sst *skl = ctx->thread_context;
-+	const struct firmware *fw = NULL;
-+	struct firmware stripped_fw;
-+	int ret = 0, i, dma_id, stream_tag;
-+
-+	/* library indices start from 1 to N. 0 represents base FW */
-+	for (i = 1; i < minfo->lib_count; i++) {
-+		ret = request_firmware(&fw, minfo->lib[i].name, ctx->dev);
-+		if (ret < 0) {
-+			dev_err(ctx->dev, "Request lib %s failed:%d\n",
-+					minfo->lib[i].name, ret);
-+			return ret;
-+		}
-+
-+		if (skl->is_first_boot) {
-+			ret = snd_skl_parse_uuids(ctx, fw,
-+					BXT_ADSP_FW_BIN_HDR_OFFSET, i);
-+			if (ret < 0)
-+				goto load_library_failed;
-+		}
-+
-+		stripped_fw.data = fw->data;
-+		stripped_fw.size = fw->size;
-+		skl_dsp_strip_extended_manifest(&stripped_fw);
-+
-+		stream_tag = ctx->dsp_ops.prepare(ctx->dev, 0x40,
-+					stripped_fw.size, &dmab);
-+		if (stream_tag <= 0) {
-+			dev_err(ctx->dev, "Lib prepare DMA err: %x\n",
-+					stream_tag);
-+			ret = stream_tag;
-+			goto load_library_failed;
-+		}
-+
-+		dma_id = stream_tag - 1;
-+		memcpy(dmab.area, stripped_fw.data, stripped_fw.size);
-+
-+		ctx->dsp_ops.trigger(ctx->dev, true, stream_tag);
-+		ret = skl_sst_ipc_load_library(&skl->ipc, dma_id, i);
-+		if (ret < 0)
-+			dev_err(ctx->dev, "IPC Load Lib for %s fail: %d\n",
-+					minfo->lib[i].name, ret);
-+
-+		ctx->dsp_ops.trigger(ctx->dev, false, stream_tag);
-+		ctx->dsp_ops.cleanup(ctx->dev, &dmab, stream_tag);
-+		release_firmware(fw);
-+		fw = NULL;
-+	}
-+
-+	return ret;
-+
-+load_library_failed:
-+	release_firmware(fw);
-+	return ret;
-+}
-+
- /*
-  * First boot sequence has some extra steps. Core 0 waits for power
-  * status on core 1, so power up core 1 also momentarily, keep it in
-@@ -157,8 +220,6 @@ static int sst_transfer_fw_host_dma(struct sst_dsp *ctx)
- 	return ret;
- }
- 
--#define BXT_ADSP_FW_BIN_HDR_OFFSET 0x2000
--
- static int bxt_load_base_firmware(struct sst_dsp *ctx)
- {
- 	struct firmware stripped_fw;
-@@ -233,12 +294,23 @@ static int bxt_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
- 	int ret;
- 	struct skl_ipc_dxstate_info dx;
- 	unsigned int core_mask = SKL_DSP_CORE_MASK(core_id);
-+	struct skl_dfw_manifest *minfo = &skl->manifest;
- 
- 	if (skl->fw_loaded == false) {
- 		skl->boot_complete = false;
- 		ret = bxt_load_base_firmware(ctx);
--		if (ret < 0)
-+		if (ret < 0) {
- 			dev_err(ctx->dev, "reload fw failed: %d\n", ret);
-+			return ret;
-+		}
-+
-+		if (minfo->lib_count > 1) {
-+			ret = bxt_load_library(ctx, minfo);
-+			if (ret < 0) {
-+				dev_err(ctx->dev, "reload libs failed: %d\n", ret);
-+				return ret;
-+			}
-+		}
- 		return ret;
- 	}
- 
-@@ -344,6 +416,7 @@ static struct skl_dsp_fw_ops bxt_fw_ops = {
- 	.set_state_D3 = bxt_set_dsp_D3,
- 	.load_fw = bxt_load_base_firmware,
- 	.get_fw_errcode = bxt_get_errorcode,
-+	.load_library = bxt_load_library,
+ 	dev_dbg(ipc->dev, "In %s primary =%x ext=%x\n", __func__,
+ 			 header.primary, header.extension);
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index aad527d5fc52..0334ed4af031 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -91,6 +91,7 @@ struct skl_ipc_init_instance_msg {
+ 	u16 param_data_size;
+ 	u8 ppl_instance_id;
+ 	u8 core_id;
++	u8 domain;
  };
  
- static struct sst_ops skl_ops = {
-@@ -422,6 +495,13 @@ int bxt_sst_init_fw(struct device *dev, struct skl_sst *ctx)
+ struct skl_ipc_bind_unbind_msg {
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index a1d9f84d9674..1ef2c92d1944 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1656,6 +1656,7 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
+ 	mconfig->max_in_queue = dfw_config->max_in_queue;
+ 	mconfig->max_out_queue = dfw_config->max_out_queue;
+ 	mconfig->is_loadable = dfw_config->is_loadable;
++	mconfig->domain = dfw_config->proc_domain;
+ 	skl_tplg_fill_fmt(mconfig->in_fmt, dfw_config->in_fmt,
+ 						MODULE_MAX_IN_PINS);
+ 	skl_tplg_fill_fmt(mconfig->out_fmt, dfw_config->out_fmt,
+diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
+index 1b531c165a91..bd8b4ae43557 100644
+--- a/sound/soc/intel/skylake/skl-tplg-interface.h
++++ b/sound/soc/intel/skylake/skl-tplg-interface.h
+@@ -210,7 +210,8 @@ struct skl_dfw_module {
+ 	u32 is_dynamic_in_pin:1;
+ 	u32 is_dynamic_out_pin:1;
+ 	u32 is_loadable:1;
+-	u32 rsvd3:11;
++	u32 proc_domain:1;
++	u32 rsvd3:10;
  
- 	skl_dsp_init_core_state(sst);
- 
-+	if (ctx->manifest.lib_count > 1) {
-+		ret = sst->fw_ops.load_library(sst, &ctx->manifest);
-+		if (ret < 0) {
-+			dev_err(dev, "Load Library failed : %x", ret);
-+			return ret;
-+		}
-+	}
- 	ctx->is_first_boot = false;
- 
- 	return 0;
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index 5bc77e1941a5..fa053c039203 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -133,6 +133,8 @@ enum skl_dsp_states {
- struct skl_dsp_fw_ops {
- 	int (*load_fw)(struct sst_dsp  *ctx);
- 	/* FW module parser/loader */
-+	int (*load_library)(struct sst_dsp *ctx,
-+		struct skl_dfw_manifest *minfo);
- 	int (*parse_fw)(struct sst_dsp *ctx);
- 	int (*set_state_D0)(struct sst_dsp *ctx, unsigned int core_id);
- 	int (*set_state_D3)(struct sst_dsp *ctx, unsigned int core_id);
+ 	struct skl_dfw_pipe pipe;
+ 	struct skl_dfw_module_fmt in_fmt[MAX_IN_QUEUE];
 -- 
 1.9.1
