@@ -1,13 +1,17 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 0/3] ASoC: topology: Add support for BE DAIs
-Date: Tue, 26 Jul 2016 14:31:28 +0800
-Message-ID: <cover.1469514328.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v2 1/3] ASoC: topology: ABI - Add the types for
+	BE DAI
+Date: Tue, 26 Jul 2016 14:32:18 +0800
+Message-ID: <7cdbc67cce9c208dbf35145da86c5a2571dfcbfc.1469514328.git.mengdong.lin@linux.intel.com>
+References: <cover.1469514328.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6774253742514217413=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id AF010261B01
- for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2016 08:26:26 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 479DE265B5B
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2016 08:27:05 +0200 (CEST)
+In-Reply-To: <cover.1469514328.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +25,89 @@ To: alsa-devel@alsa-project.org, broonie@kernel.org
 Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
---===============6774253742514217413==
-Content-Type: text/plain; charset=y
-Content-Transfer-Encoding: quoted-printable
-
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-There is topology ABI udpate in this series. Topology core can check size
-of each ABI objects to detect version mismatch between user space and
-kernel.
+Define the type and ABI struct for Backend DAIs. Add the number of BE DAIs
+to manifest, and some reserved fields for future extensions.
 
-This series adds support for BE (Back End) DAIs:
-- Define the type and ABI struct for Backend DAIs.
-- The topology core can configure an existing BE DAI or create new BE
-  DAIs.
+Pump the version number to 5.
 
-The user space series "topology: Add support for BE DAIs" is also
-submitted.
+Topology core will check size of ABI objects to detect version mismatch
+between user space and kernel.
 
-There will be 2 pairs of kernel & user space series for PCM & BE links
-later.
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-History:
-v2: Remove unused argument to fix the compiler warning.
-    sound/soc/soc-topology.c: In function =E2=80=98soc_tplg_be_dai_config=
-=E2=80=99:
-    sound/soc/soc-topology.c:1789:22: warning: too many arguments for for=
-mat [-Wformat-extra-args]
-    dev_err(tplg->dev, "ASoC: Invalid BE DAI name\n",
-
-
-Mengdong Lin (3):
-  ASoC: topology: ABI - Add the types for BE DAI
-  ASoC: topology: Add support for configuring existing BE DAIs
-  ASoC: topology: Able to create BE DAIs
-
- include/sound/soc-topology.h |   1 +
- include/uapi/sound/asoc.h    |  34 +++++++++-
- sound/soc/soc-core.c         |   3 +-
- sound/soc/soc-topology.c     | 155 +++++++++++++++++++++++++++++++++++++=
-+++++-
- 4 files changed, 188 insertions(+), 5 deletions(-)
-
---=20
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index e4701a3..f734bea 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -83,7 +83,7 @@
+ #define SND_SOC_TPLG_NUM_TEXTS		16
+ 
+ /* ABI version */
+-#define SND_SOC_TPLG_ABI_VERSION	0x4
++#define SND_SOC_TPLG_ABI_VERSION	0x5
+ 
+ /* Max size of TLV data */
+ #define SND_SOC_TPLG_TLV_SIZE		32
+@@ -105,7 +105,8 @@
+ #define SND_SOC_TPLG_TYPE_CODEC_LINK	9
+ #define SND_SOC_TPLG_TYPE_BACKEND_LINK	10
+ #define SND_SOC_TPLG_TYPE_PDATA		11
+-#define SND_SOC_TPLG_TYPE_MAX	SND_SOC_TPLG_TYPE_PDATA
++#define SND_SOC_TPLG_TYPE_BE_DAI	12
++#define SND_SOC_TPLG_TYPE_MAX		SND_SOC_TPLG_TYPE_BE_DAI
+ 
+ /* vendor block IDs - please add new vendor types to end */
+ #define SND_SOC_TPLG_TYPE_VENDOR_FW	1000
+@@ -124,6 +125,11 @@
+ #define SND_SOC_TPLG_TUPLE_TYPE_WORD	4
+ #define SND_SOC_TPLG_TUPLE_TYPE_SHORT	5
+ 
++/* BE DAI flags */
++#define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_RATES         (1 << 0)
++#define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
++#define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
++
+ /*
+  * Block Header.
+  * This header precedes all object and object arrays below.
+@@ -285,6 +291,8 @@ struct snd_soc_tplg_manifest {
+ 	__le32 graph_elems;	/* number of graph elements */
+ 	__le32 pcm_elems;	/* number of PCM elements */
+ 	__le32 dai_link_elems;	/* number of DAI link elements */
++	__le32 be_dai_elems;	/* number of BE DAI elements */
++	__le32 reserved[20];	/* reserved for new ABI element types */
+ 	struct snd_soc_tplg_private priv;
+ } __attribute__((packed));
+ 
+@@ -450,4 +458,26 @@ struct snd_soc_tplg_link_config {
+ 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback and captrure */
+ 	__le32 num_streams;     /* number of streams */
+ } __attribute__((packed));
++
++/*
++ * Describes SW/FW specific features of BE DAI.
++ *
++ * File block representation for BE DAI :-
++ * +-----------------------------------+-----+
++ * | struct snd_soc_tplg_hdr           |  1  |
++ * +-----------------------------------+-----+
++ * | struct snd_soc_tplg_be_dai        |  N  |
++ * +-----------------------------------+-----+
++ */
++struct snd_soc_tplg_be_dai {
++	__le32 size;            /* in bytes of this structure */
++	char dai_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* name - used to match */
++	__le32 dai_id;          /* unique ID - used to match */
++	__le32 playback;        /* supports playback mode */
++	__le32 capture;         /* supports capture mode */
++	struct snd_soc_tplg_stream_caps caps[2]; /* playback and capture for DAI */
++	__le32 flag_mask;       /* bitmask of flags to configure */
++	__le32 flags;           /* SND_SOC_TPLG_DAI_FLGBIT_* */
++	struct snd_soc_tplg_private priv;
++} __attribute__((packed));
+ #endif
+-- 
 2.5.0
-
-
---===============6774253742514217413==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6774253742514217413==--
