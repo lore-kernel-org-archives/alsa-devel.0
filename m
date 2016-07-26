@@ -1,17 +1,15 @@
-From: =?UTF-8?q?Stefan=20M=C3=BCller-Klieser?= <s.mueller-klieser@phytec.de>
-Subject: [PATCH] ASoC: davinci-mcasp: Add clocking option
-Date: Tue, 26 Jul 2016 14:05:10 +0200
-Message-ID: <1469534710-4006-1-git-send-email-s.mueller-klieser@phytec.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 00/12] ASoC: Intel: Skylake: Add support for
+	library load
+Date: Tue, 26 Jul 2016 18:06:38 +0530
+Message-ID: <1469536610-27606-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from root.phytec.de (mail.tricorecenter.de [217.6.246.34])
- by alsa0.perex.cz (Postfix) with ESMTP id 70A50266014
- for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2016 14:05:13 +0200 (CEST)
-Received: from idefix.phytec.de (idefix.phytec.de [172.16.0.10])
- by root.phytec.de (Postfix) with ESMTP id 2A0D1A0058D
- for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2016 14:06:32 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC6BC266990
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2016 14:29:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,68 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIEFIQ0xLWCBjbG9jayBvdXRwdXQgb2YgdGhlIE1jQVNQIGNhbiBiZSB1c2VkIGFzIGF1ZGlv
-IE1DTEssIGV2ZW4KaWYgdGhlIE1jQVNQIHJ1bnMgaW4gc2xhdmUgbW9kZS4gQWRkIGEgRFQgYmlu
-ZGluZyB0byBtYWtlIHRoaXMgb3B0aW9uCmF2YWlsYWJsZSBpbiBhIHNpbXBsZS1jYXJkIHNldHVw
-LgoKU2lnbmVkLW9mZi1ieTogU3RlZmFuIE3DvGxsZXItS2xpZXNlciA8cy5tdWVsbGVyLWtsaWVz
-ZXJAcGh5dGVjLmRlPgotLS0KIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3Vu
-ZC9kYXZpbmNpLW1jYXNwLWF1ZGlvLnR4dCB8IDQgKysrKwogaW5jbHVkZS9saW51eC9wbGF0Zm9y
-bV9kYXRhL2RhdmluY2lfYXNwLmggICAgICAgICAgICAgICAgICAgICAgIHwgNSArKysrKwogc291
-bmQvc29jL2RhdmluY2kvZGF2aW5jaS1tY2FzcC5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgOCArKysrKysrKwogMyBmaWxlcyBjaGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspCgpkaWZm
-IC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2RhdmluY2kt
-bWNhc3AtYXVkaW8udHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5k
-L2RhdmluY2ktbWNhc3AtYXVkaW8udHh0CmluZGV4IDQ2YmM5ODIuLjk2ZDYyNDQgMTAwNjQ0Ci0t
-LSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9kYXZpbmNpLW1jYXNw
-LWF1ZGlvLnR4dAorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQv
-ZGF2aW5jaS1tY2FzcC1hdWRpby50eHQKQEAgLTM5LDYgKzM5LDEwIEBAIE9wdGlvbmFsIHByb3Bl
-cnRpZXM6CiAgIAkJIHBsZWFzZSByZWZlciB0byBwaW5jdHJsLWJpbmRpbmdzLnR4dAogLSBmY2tf
-cGFyZW50IDogU2hvdWxkIGNvbnRhaW4gYSB2YWxpZCBjbG9jayBuYW1lIHdoaWNoIHdpbGwgYmUg
-dXNlZCBhcyBwYXJlbnQKIAkgICAgICAgZm9yIHRoZSBNY0FTUCBmY2sKKy0gYWhjbGt4LWVuOiBJ
-biBjYXNlIHRoZSBNQ0FTUCBydW5zIGluIHNsYXZlIG1vZGUsIGUuZy4gaTJzIFNDSyBhbmQgV1Mg
-c2xhdmUsCisgICAgICAgICAgICAgd2UgY2FuIHN0aWxsIHByb3ZpZGUgdGhlIE1DTEsgdG8gYSBj
-b2RlYyBQTEwgdXNpbmcgdGhlIEFIQ0xLWAorICAgICAgICAgICAgIHRyYW5zbWl0IGNsb2NrIG91
-dHB1dC4gVGhpcyBzZXR1cCBjYW4gYmUgYWN0aXZhdGVkIGJ5IHVzaW5nIHRoaXMKKyAgICAgICAg
-ICAgICBwcm9wZXJ0eS4gQ2xvY2sgbWFzdGVyIG1vZGUgcmVtYWlucyB1bmFmZmVjdGVkLgogCiBF
-eGFtcGxlOgogCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3BsYXRmb3JtX2RhdGEvZGF2aW5j
-aV9hc3AuaCBiL2luY2x1ZGUvbGludXgvcGxhdGZvcm1fZGF0YS9kYXZpbmNpX2FzcC5oCmluZGV4
-IDg1YWQ2OGYuLmM4Nzg4MzYgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvcGxhdGZvcm1fZGF0
-YS9kYXZpbmNpX2FzcC5oCisrKyBiL2luY2x1ZGUvbGludXgvcGxhdGZvcm1fZGF0YS9kYXZpbmNp
-X2FzcC5oCkBAIC00NCw2ICs0NCwxMSBAQCBzdHJ1Y3QgZGF2aW5jaV9tY2FzcF9wZGF0YSB7CiAJ
-aW50IGNsa19pbnB1dF9waW47CiAKIAkvKgorCSAqIEFjdGl2YXRlIEFIQ0xLWCBjbG9jayBvdXRw
-dXQgaW4gc2xhdmUgbW9kZS4KKwkgKi8KKwlib29sIGFoY2xreF9lbjsKKworCS8qCiAJICogVGhp
-cyBmbGFnIHdvcmtzIHdoZW4gYm90aCBjbG9jayBhbmQgRlMgYXJlIG91dHB1dHMgZm9yIHRoZSBj
-cHUKIAkgKiBhbmQgbWFrZXMgY2xvY2sgbW9yZSBhY2N1cmF0ZSAoRlMgaXMgbm90IHN5bW1ldHJp
-Y2FsIGFuZCB0aGUKIAkgKiBjbG9jayBpcyB2ZXJ5IGZhc3QuCmRpZmYgLS1naXQgYS9zb3VuZC9z
-b2MvZGF2aW5jaS9kYXZpbmNpLW1jYXNwLmMgYi9zb3VuZC9zb2MvZGF2aW5jaS9kYXZpbmNpLW1j
-YXNwLmMKaW5kZXggMjM3ZGM2Ny4uYWJhODg4ZSAxMDA2NDQKLS0tIGEvc291bmQvc29jL2Rhdmlu
-Y2kvZGF2aW5jaS1tY2FzcC5jCisrKyBiL3NvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktbWNhc3Au
-YwpAQCAtOTQsNiArOTQsNyBAQCBzdHJ1Y3QgZGF2aW5jaV9tY2FzcCB7CiAKIAlpbnQJc3lzY2xr
-X2ZyZXE7CiAJYm9vbAliY2xrX21hc3RlcjsKKwlib29sICAgIGFoY2xreF9lbjsKIAogCS8qIE1j
-QVNQIEZJRk8gcmVsYXRlZCAqLwogCXU4CXR4bnVtZXZ0OwpAQCAtNjA1LDYgKzYwNiwxMCBAQCBz
-dGF0aWMgaW50IGRhdmluY2lfbWNhc3Bfc2V0X3N5c2NsayhzdHJ1Y3Qgc25kX3NvY19kYWkgKmRh
-aSwgaW50IGNsa19pZCwKIAkJbWNhc3Bfc2V0X2JpdHMobWNhc3AsIERBVklOQ0lfTUNBU1BfQUhD
-TEtYQ1RMX1JFRywgQUhDTEtYRSk7CiAJCW1jYXNwX3NldF9iaXRzKG1jYXNwLCBEQVZJTkNJX01D
-QVNQX0FIQ0xLUkNUTF9SRUcsIEFIQ0xLUkUpOwogCQltY2FzcF9zZXRfYml0cyhtY2FzcCwgREFW
-SU5DSV9NQ0FTUF9QRElSX1JFRywgQUhDTEtYKTsKKwl9IGVsc2UgaWYgKG1jYXNwLT5haGNsa3hf
-ZW4pIHsKKwkJbWNhc3BfY2xyX2JpdHMobWNhc3AsIERBVklOQ0lfTUNBU1BfQUhDTEtSQ1RMX1JF
-RywgQUhDTEtSRSk7CisJCW1jYXNwX3NldF9iaXRzKG1jYXNwLCBEQVZJTkNJX01DQVNQX0FIQ0xL
-WENUTF9SRUcsIEFIQ0xLWEUpOworCQltY2FzcF9zZXRfYml0cyhtY2FzcCwgREFWSU5DSV9NQ0FT
-UF9QRElSX1JFRywgQUhDTEtYKTsKIAl9IGVsc2UgewogCQltY2FzcF9jbHJfYml0cyhtY2FzcCwg
-REFWSU5DSV9NQ0FTUF9BSENMS1hDVExfUkVHLCBBSENMS1hFKTsKIAkJbWNhc3BfY2xyX2JpdHMo
-bWNhc3AsIERBVklOQ0lfTUNBU1BfQUhDTEtSQ1RMX1JFRywgQUhDTEtSRSk7CkBAIC0xNjEwLDYg
-KzE2MTUsOCBAQCBzdGF0aWMgc3RydWN0IGRhdmluY2lfbWNhc3BfcGRhdGEgKmRhdmluY2lfbWNh
-c3Bfc2V0X3BkYXRhX2Zyb21fb2YoCiAJaWYgKHJldCA+PSAwKQogCQlwZGF0YS0+b3BfbW9kZSA9
-IHZhbDsKIAorCXBkYXRhLT5haGNsa3hfZW4gPSBvZl9wcm9wZXJ0eV9yZWFkX2Jvb2wobnAsICJh
-aGNsa3gtZW4iKTsKKwogCXJldCA9IG9mX3Byb3BlcnR5X3JlYWRfdTMyKG5wLCAidGRtLXNsb3Rz
-IiwgJnZhbCk7CiAJaWYgKHJldCA+PSAwKSB7CiAJCWlmICh2YWwgPCAyIHx8IHZhbCA+IDMyKSB7
-CkBAIC0xODUxLDYgKzE4NTgsNyBAQCBzdGF0aWMgaW50IGRhdmluY2lfbWNhc3BfcHJvYmUoc3Ry
-dWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIAltY2FzcC0+dmVyc2lvbiA9IHBkYXRhLT52ZXJz
-aW9uOwogCW1jYXNwLT50eG51bWV2dCA9IHBkYXRhLT50eG51bWV2dDsKIAltY2FzcC0+cnhudW1l
-dnQgPSBwZGF0YS0+cnhudW1ldnQ7CisJbWNhc3AtPmFoY2xreF9lbiA9IHBkYXRhLT5haGNsa3hf
-ZW47CiAKIAltY2FzcC0+ZGV2ID0gJnBkZXYtPmRldjsKIAotLSAKMS45LjEKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This patch series adds support for library loading. A module maybe part
+of base firmware or in a different library. A library may have one or
+more modules. The names of library to be loaded are passed as topology
+manifest data. The library list is loaded after base FW during dsp init.
+So we add support library load IPC and the usage in broxton ops for
+loading libs.
+
+To load a list of lib(s) coming from topology, we need to split DSP
+init, into object creation and fw_init. The fw_init is invoked from
+soc-probe after topology is initialized. Now fw is initialized later,
+so module UUID query was move to runtime as the firmware is not available
+at topology initialization.
+
+While at it, also fix the parsing UUIDs only once for SKL and BXT ops
+and one comment code style.
+
+Lastly this series adds support for specifying processing domain for
+modules.
+
+Kranthi G (1):
+  ASoC: Intel: Skylake: add support for tplg manifest load
+
+Ramesh Babu (2):
+  ASoC: Intel: Skylake: Add library loading IPCs
+  ASoC: Intel: Skylake: Add library loading support
+
+Senthilnathan Veppur (2):
+  ASoC: Intel: Skylake: add additional args to module parsing
+  ASoC: Intel: Skylake: Add module processing domain support
+
+Vinod Koul (7):
+  ASoC: Intel: Skylake: Check list empty while getting module info
+  ASoC: Intel: Skylake: Move modules query to runtime
+  ASoC: Intel: Skylake: modify skl_get_dsp_ops()
+  ASoC: Intel: Skylake: split fw and dsp initialization
+  ASoC: Intel: Skylake: Parse UUIDs once
+  ASoC: Intel: Bxt: Parse UUIDs once
+  ASoC: Intel: Skylake: Fix a comment style
+
+ sound/soc/intel/skylake/bxt-sst.c            | 114 ++++++++++++++++++++++++---
+ sound/soc/intel/skylake/skl-messages.c       |  39 +++++----
+ sound/soc/intel/skylake/skl-pcm.c            |  20 +++++
+ sound/soc/intel/skylake/skl-sst-dsp.h        |   7 +-
+ sound/soc/intel/skylake/skl-sst-ipc.c        |  29 +++++++
+ sound/soc/intel/skylake/skl-sst-ipc.h        |  12 ++-
+ sound/soc/intel/skylake/skl-sst-utils.c      |  14 +++-
+ sound/soc/intel/skylake/skl-sst.c            |  43 ++++++----
+ sound/soc/intel/skylake/skl-topology.c       |  55 +++++++++++--
+ sound/soc/intel/skylake/skl-topology.h       |   2 +-
+ sound/soc/intel/skylake/skl-tplg-interface.h |  15 +++-
+ sound/soc/intel/skylake/skl.h                |   2 +
+ 12 files changed, 297 insertions(+), 55 deletions(-)
+
+-- 
+1.9.1
