@@ -1,17 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/5] ALSA: soc-sst-bxt-da7219_max98357a: fix
-	obsoleted initializers for array
-Date: Tue, 26 Jul 2016 22:41:55 +0900
-Message-ID: <1469540517-32466-4-git-send-email-o-takashi@sakamocchi.jp>
-References: <1469540517-32466-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/5] ALSA: soc: fix sparse warnings
+Date: Tue, 26 Jul 2016 22:41:52 +0900
+Message-ID: <1469540517-32466-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id EA033268137
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id EA4C426813A
  for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2016 15:42:02 +0200 (CEST)
-In-Reply-To: <1469540517-32466-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,83 +19,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sparse reports below warnings.
+Hi,
 
-bxt_da7219_max98357a.c:250:9: warning: obsolete array initializer, use C99 syntax
-bxt_da7219_max98357a.c:275:9: warning: obsolete array initializer, use C99 syntax
-bxt_da7219_max98357a.c:290:9: warning: obsolete array initializer, use C99 syntax
-bxt_da7219_max98357a.c:304:9: warning: obsolete array initializer, use C99 syntax
-bxt_da7219_max98357a.c:317:9: warning: obsolete array initializer, use C99 syntax
+This patchset is to fix some sparse warnings in ALSA SoC part. Below items
+are going to be fixed:
+ * fix a condition statement with a logical operation
+ * purge old way to initialize array
+ * missing 'static' qualifier for file local symbols
 
-There's no need to use obsoleted way. This commit fixes it.
+Although I got many warnings from Intel SST drivers due to confusions of
+address spaces (__iomem and __kernel), I still left them as they are,
+because they require more codes to fix. I hope Intel developers will
+do additional work for them...
 
-Fixes: 723bad3fef8b ('ASoC: Intel: Add Broxton-P Dialog Maxim machine driver')
-CC: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
+
+Takashi Sakamoto (5):
+  ALSA: soc-da7219: fix inappropriate condition statement
+  ALSA: soc-sst-bxt-rt298: fix obsoleted initializers for array
+  ALSA: soc-sst-bxt-da7219_max98357a: fix obsoleted initializers for
+    array
+  ALSA: soc-rt5616: add static qualifier for file local symbols
+  ALSA: soc-tpa6130a2: add static qualifier for file local symbols
+
+ sound/soc/codecs/da7219.c                     |  2 +-
+ sound/soc/codecs/rt5616.c                     |  4 ++--
+ sound/soc/codecs/tpa6130a2.c                  |  2 +-
  sound/soc/intel/boards/bxt_da7219_max98357a.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/bxt_rt298.c            | 14 +++++++-------
+ 5 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 3774b11..49b65d4 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -255,7 +255,7 @@ static struct snd_soc_ops broxton_da7219_ops = {
- /* broxton digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link broxton_dais[] = {
- 	/* Front End DAI links */
--	[BXT_DPCM_AUDIO_PB]
-+	[BXT_DPCM_AUDIO_PB] =
- 	{
- 		.name = "Bxt Audio Port",
- 		.stream_name = "Audio",
-@@ -271,7 +271,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.dpcm_playback = 1,
- 		.ops = &broxton_da7219_fe_ops,
- 	},
--	[BXT_DPCM_AUDIO_CP]
-+	[BXT_DPCM_AUDIO_CP] =
- 	{
- 		.name = "Bxt Audio Capture Port",
- 		.stream_name = "Audio Record",
-@@ -286,7 +286,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.dpcm_capture = 1,
- 		.ops = &broxton_da7219_fe_ops,
- 	},
--	[BXT_DPCM_AUDIO_REF_CP]
-+	[BXT_DPCM_AUDIO_REF_CP] =
- 	{
- 		.name = "Bxt Audio Reference cap",
- 		.stream_name = "Refcap",
-@@ -300,7 +300,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 	},
--	[BXT_DPCM_AUDIO_HDMI1_PB]
-+	[BXT_DPCM_AUDIO_HDMI1_PB] =
- 	{
- 		.name = "Bxt HDMI Port1",
- 		.stream_name = "Hdmi1",
-@@ -313,7 +313,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 	},
--	[BXT_DPCM_AUDIO_HDMI2_PB]
-+	[BXT_DPCM_AUDIO_HDMI2_PB] =
- 	{
- 		.name = "Bxt HDMI Port2",
- 		.stream_name = "Hdmi2",
-@@ -326,7 +326,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 	},
--	[BXT_DPCM_AUDIO_HDMI3_PB]
-+	[BXT_DPCM_AUDIO_HDMI3_PB] =
- 	{
- 		.name = "Bxt HDMI Port3",
- 		.stream_name = "Hdmi3",
 -- 
 2.7.4
