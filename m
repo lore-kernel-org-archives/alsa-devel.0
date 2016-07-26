@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 05/12] ASoC: Intel: Skylake: add support for
-	tplg manifest load
-Date: Tue, 26 Jul 2016 18:06:43 +0530
-Message-ID: <1469536610-27606-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 06/12] ASoC: Intel: Skylake: add additional
+	args to module parsing
+Date: Tue, 26 Jul 2016 18:06:44 +0530
+Message-ID: <1469536610-27606-7-git-send-email-vinod.koul@intel.com>
 References: <1469536610-27606-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BDF926699C
- for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2016 14:29:49 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 66EE32669C4
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2016 14:30:17 +0200 (CEST)
 In-Reply-To: <1469536610-27606-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,97 +22,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Kranthi G <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, Ramesh Babu <ramesh.babu@intel.com>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Kranthi G <gudishax.kranthikumar@intel.com>
+From: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 
-Topology manifest gives information about the libraries to be
-loaded. Implement the topology manifest load callback to get
-this.
+For additional library parsing, we need to pass firmware to be
+loaded and not use the pointer in context. Also, Library module
+IDs are combination of library index and module ID in manifest.
 
-Signed-off-by: Kranthi G <gudishax.kranthikumar@intel.com>
+So add the additional arguments of firmware and library offset to
+snd_skl_parse_uuids().
+
 Signed-off-by: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
-Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-sst-ipc.h        |  3 +++
- sound/soc/intel/skylake/skl-topology.c       | 22 ++++++++++++++++++++++
- sound/soc/intel/skylake/skl-tplg-interface.h | 12 ++++++++++++
- 3 files changed, 37 insertions(+)
+ sound/soc/intel/skylake/bxt-sst.c       | 2 +-
+ sound/soc/intel/skylake/skl-sst-dsp.h   | 3 ++-
+ sound/soc/intel/skylake/skl-sst-utils.c | 9 +++++----
+ sound/soc/intel/skylake/skl-sst.c       | 2 +-
+ 4 files changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index 0a0d09cde99d..31e5bc356aa2 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -80,6 +80,9 @@ struct skl_sst {
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index eb68258b653d..d6bf32405b3b 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -175,7 +175,7 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
+ 	if (ctx->fw == NULL)
+ 		goto sst_load_base_firmware_failed;
  
- 	/* multi-core */
- 	struct skl_dsp_cores cores;
-+
-+	/* tplg manifest */
-+	struct skl_dfw_manifest manifest;
- };
+-	ret = snd_skl_parse_uuids(ctx, BXT_ADSP_FW_BIN_HDR_OFFSET);
++	ret = snd_skl_parse_uuids(ctx, ctx->fw, BXT_ADSP_FW_BIN_HDR_OFFSET, 0);
+ 	if (ret < 0)
+ 		goto sst_load_base_firmware_failed;
  
- struct skl_ipc_init_instance_msg {
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 904103056d62..a1d9f84d9674 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1789,11 +1789,33 @@ static int skl_tplg_control_load(struct snd_soc_component *cmpnt,
- 	return 0;
- }
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index 7e994688d8a0..5bc77e1941a5 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -210,7 +210,8 @@ void bxt_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx);
  
-+static int skl_manifest_load(struct snd_soc_component *cmpnt,
-+				struct snd_soc_tplg_manifest *manifest)
-+{
-+	struct skl_dfw_manifest *minfo;
-+	struct hdac_ext_bus *ebus = snd_soc_component_get_drvdata(cmpnt);
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct skl *skl = ebus_to_skl(ebus);
-+	int ret = 0;
-+
-+	minfo = &skl->skl_sst->manifest;
-+	memcpy(minfo, manifest->priv.data, sizeof(struct skl_dfw_manifest));
-+
-+	if (minfo->lib_count > HDA_MAX_LIB) {
-+		dev_err(bus->dev, "Exceeding max Library count. Got:%d\n",
-+					minfo->lib_count);
-+		ret = -EINVAL;
-+	}
-+
-+	return ret;
-+}
-+
- static struct snd_soc_tplg_ops skl_tplg_ops  = {
- 	.widget_load = skl_tplg_widget_load,
- 	.control_load = skl_tplg_control_load,
- 	.bytes_ext_ops = skl_tlv_ops,
- 	.bytes_ext_ops_count = ARRAY_SIZE(skl_tlv_ops),
-+	.manifest = skl_manifest_load,
- };
+ int snd_skl_get_module_info(struct skl_sst *ctx, u8 *uuid,
+ 		struct skl_dfw_module *dfw_config);
+-int snd_skl_parse_uuids(struct sst_dsp *ctx, unsigned int offset);
++int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
++		unsigned int offset, int index);
+ void skl_freeup_uuid_list(struct skl_sst *ctx);
  
- /*
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index a32e5e9cc530..1b531c165a91 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -228,4 +228,16 @@ struct skl_dfw_algo_data {
- 	char params[0];
- } __packed;
+ int skl_dsp_strip_extended_manifest(struct firmware *fw);
+diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
+index ddcb52a51854..fe36e0cf391c 100644
+--- a/sound/soc/intel/skylake/skl-sst-utils.c
++++ b/sound/soc/intel/skylake/skl-sst-utils.c
+@@ -145,7 +145,8 @@ EXPORT_SYMBOL_GPL(snd_skl_get_module_info);
+  * Parse the firmware binary to get the UUID, module id
+  * and loadable flags
+  */
+-int snd_skl_parse_uuids(struct sst_dsp *ctx, unsigned int offset)
++int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
++			unsigned int offset, int index)
+ {
+ 	struct adsp_fw_hdr *adsp_hdr;
+ 	struct adsp_module_entry *mod_entry;
+@@ -158,8 +159,8 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, unsigned int offset)
+ 	unsigned int safe_file;
  
-+#define LIB_NAME_LENGTH	128
-+#define HDA_MAX_LIB	16
-+
-+struct lib_info {
-+	char name[LIB_NAME_LENGTH];
-+} __packed;
-+
-+struct skl_dfw_manifest {
-+	u32 lib_count;
-+	struct lib_info lib[HDA_MAX_LIB];
-+} __packed;
-+
- #endif
+ 	/* Get the FW pointer to derive ADSP header */
+-	stripped_fw.data = ctx->fw->data;
+-	stripped_fw.size = ctx->fw->size;
++	stripped_fw.data = fw->data;
++	stripped_fw.size = fw->size;
+ 
+ 	skl_dsp_strip_extended_manifest(&stripped_fw);
+ 
+@@ -210,7 +211,7 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, unsigned int offset)
+ 		uuid_bin = (uuid_le *)mod_entry->uuid.id;
+ 		memcpy(&module->uuid, uuid_bin, sizeof(module->uuid));
+ 
+-		module->id = i;
++		module->id = (i | (index << 12));
+ 		module->is_loadable = mod_entry->type.load_type;
+ 
+ 		list_add_tail(&module->list, &skl->uuid_list);
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index 6de4c027a65b..6e9c634cf84f 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -88,7 +88,7 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
+ 		}
+ 	}
+ 
+-	ret = snd_skl_parse_uuids(ctx, SKL_ADSP_FW_BIN_HDR_OFFSET);
++	ret = snd_skl_parse_uuids(ctx, ctx->fw, SKL_ADSP_FW_BIN_HDR_OFFSET, 0);
+ 	if (ret < 0) {
+ 		dev_err(ctx->dev,
+ 				"UUID parsing err: %d\n", ret);
 -- 
 1.9.1
