@@ -1,55 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] Question about struct snd_soc_dai() ::
- cpu_dai->codec
-Date: Wed, 27 Jul 2016 19:22:33 +0100
-Message-ID: <20160727182233.GV11806@sirena.org.uk>
-References: <878twpj739.wl%kuninori.morimoto.gx@renesas.com>
- <20160727032111.GY9681@localhost>
- <s5hh9bb7he6.wl-tiwai@suse.de>
- <20160727172125.GF9681@localhost>
- <20160727180456.GQ11806@sirena.org.uk>
- <s5h1t2f6jdm.wl-tiwai@suse.de>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: Re: da7213 questions
+Date: Wed, 27 Jul 2016 14:17:56 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337D464A231@SW-EX-MBX01.diasemi.com>
+References: <alpine.DEB.2.02.1607131354390.10743@pmeerw.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="dBMBt2YGaTHbdllf"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h1t2f6jdm.wl-tiwai@suse.de>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
+ [195.245.231.147])
+ by alsa0.perex.cz (Postfix) with ESMTP id 08E1C26667C
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2016 16:17:57 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1607131354390.10743@pmeerw.net>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 13 July 2016 14:33, Peter Meerwald-Stadler wrote:
 
---dBMBt2YGaTHbdllf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> I have a couple of questions/comments regarding the da7213 driver in
+> mainline:
+> 
+> (1) the da7213 driver enables mclk in BIAS_SUSPEND, so essentially the
+> clock is always running (since idle_bias_off is not set); at least on my
+> platform, clk_set_rate() fails when the clock is already enabled
 
-On Wed, Jul 27, 2016 at 08:11:49PM +0200, Takashi Iwai wrote:
+I guess depending on the clock being used, some allow for setting rate whilst
+enabled and some do not. I had a quick look and it wasn't completely clear as to
+how you would determine this. With regards to MCLK running in BIAS_SUSPEND
+though, I agree it's not the most efficient. Will take a look at this.
 
-> I'm wondering whether it's a better option to block the unbind
-> behavior, either in driver base (allowing to return an error) or in
-> the sound side (waiting in remove() until the sane point).=20
+> (2) da7213's srm_en variable is redundant and can be removed
 
-That's certainly going to be a lot easier and part of the reason it's
-never been looked at much is that (unlike USB) there's very little
-reason why an ASoC sound card would ever be hotplugged - even in
-development these days the normal development flow involves rebooting.
+I'd like to look at improving the PLL function a little, so will address this
+at that time.
 
---dBMBt2YGaTHbdllf
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> (3) for 32 kHz PLL mode (DAI master), section 13.28 of the datasheet
+> indicates that PLL_SRM_EN should be asserted; the da7213 drivers goesn't
+> 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+This was noted recently, and is on my TODO list to update. I'll address it as
+part of the PLL function improvements.
 
-iQEcBAEBCAAGBQJXmPvoAAoJECTWi3JdVIfQ3wsH/iB4vRqAMgOyGMsSTknY9i2S
-LT3t3AWBlrbkx8CyXHl8EOdG3Tuhr8A8APBDdN3Br4NJv8kQQMsUtRSNbR3G+lRK
-Heg6NxuN5+wQTx6VTxWaEcL8f3FbLUuiF0o3maXd8z/LNE0KdWNqFRnZnqGXNq5F
-PgFEfol4W86Ag5TUxMtwvX25GtHPNTavPTW/oSSM3U3I4N9tPCeh/SL1WBQZRFbq
-dcNKEYQDA6s7YIiU8gmE1k/8V480jdvo1pGM2Srms/EYMKJnF4VZEI5sUgAajhfH
-+eZ39UbjCGaAcIs/bD0BwXu4/WNyiZQYqzcF4+2XmBlwD0YRUQVUx+4YmMfypWQ=
-=wcfj
------END PGP SIGNATURE-----
+> (4) is only S16_LE actually supported?
+> #define DA7213_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |
+> SNDRV_PCM_FMTBIT_S20_3LE |\
+> 			SNDRV_PCM_FMTBIT_S24_LE |
+> SNDRV_PCM_FMTBIT_S32_LE)
+> but in da7213_set_dai_fmt() we have
+> 	/* By default only 32 BCLK per WCLK is supported */
+> 	dai_clk_mode |= DA7213_DAI_BCLKS_PER_WCLK_32;
+>
 
---dBMBt2YGaTHbdllf--
+Yes, you're correct here. It's a mistake on my part. Should be 64 not 32. Will
+make sure this is updated.
