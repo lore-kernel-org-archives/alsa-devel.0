@@ -1,68 +1,71 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: [alsa-utils] alsaucm should come with a man page
-Date: Wed, 27 Jul 2016 11:48:28 +0200
-Message-ID: <20160727114828.9d6c709d80084b659426e6cc@ao2.it>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Is this bug ? dev_set/get_drvdata() of rtd
+Date: Wed, 27 Jul 2016 11:47:41 +0100
+Message-ID: <20160727104741.GJ11806@sirena.org.uk>
+References: <8760rrdb10.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ao2.it (ao2.it [92.243.12.208])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F27E265864
- for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2016 11:48:32 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Stefan Schmidt <stefan@slimlogic.co.uk>, Justin Xu <justinx@slimlogic.co.uk>, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1EKig6ypoSyM7jaD"
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <8760rrdb10.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I used alsaucm to test mixer use cases for an Intel Baytrail tablet, I
-wanted to use bare alsa before bringing pulseaudio in, and it took some
-time to get my head around it.
+--1EKig6ypoSyM7jaD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The output from the "alsaucm --help" is too terse, I had to look at the
-alsa-lib code[1] to see the possible IDENTIFIERs, and even then it was
-not clear to me that some operations, like for instance "list _devices",
-can only work after setting a _verb in the same _execution_, for
-instance this sequence doesn't work:
+On Wed, Jul 27, 2016 at 03:25:41AM +0000, Kuninori Morimoto wrote:
 
-# alsaucm -c bytcr-rt5640 set _verb HiFi
-# alsaucm -c bytcr-rt5640 list _devices
+> I think device data of "rtd->dev" is set as "rtd" on soc_post_component_i=
+nit()
+> by using dev_set_drvdata(),
+> and many soc-core functions are based on it (=3D they are using dev_get_d=
+rvdata())
 
-But this command does:
-  
-# alsaucm -c bytcr-rt5640 -b - <<EOM
-set _verb HiFi
-list _devces
-EOM
+> But, soc.h has snd_soc_pcm_set_drvdata().=20
+> device data of rtd->dev will be overwrite by this function ?
+> But is this OK ? or bug ?
 
-Now that I know something more it makes sense: UCM just operates on
-mixer settings, it does not have its own external state.
+Looks like a bug, I suspect there's some confusion caused by old code
+expecting there to be a soc-card device there and getting confused.
 
-However, my point is that a man page explaining these things can make
-the life easier to new users.
+> static ssize_t codec_reg_show(xxx)
+> {
+> 	struct snd_soc_pcm_runtime *rtd =3D dev_get_drvdata(dev);
+> 	...
+> }
 
-It would be better if alsa/UCM developers wrote the man page, but if no
-one steps up I guess I could draft a first version myself.
+We can probably kill this file now, everything is on regmap now.
 
-Thanks,
-   Antonio
+>=20
+> static ssize_t pmdown_time_show(xxx)
+> {
+> 	struct snd_soc_pcm_runtime *rtd =3D dev_get_drvdata(dev);
+> 	...
+> }
 
-[1]
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=include/use-case.h
+These ones will need a bit more looking at, they probably want to be on
+the card using the card device I think.
 
--- 
-Antonio Ospite
-http://ao2.it
+--1EKig6ypoSyM7jaD
+Content-Type: application/pgp-signature; name="signature.asc"
 
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXmJFMAAoJECTWi3JdVIfQBnEH/0IS7/GObfcuu56346lBU+on
+krZhUHd/kd4M+WbhLdhgBIsVno1VFM75Qlaw1hZJdh8Dx+suwPUNS1lnxA4l9SRx
+N8Rq6ArL7U6JiNBO7jw6Fj+uCli4IE5uYOPm2MUMMqrEnQpvXCbUd7P3B2B0zmJ9
+UgEU4nPdRr0zq9giMNVV4NdUYdgHtpp0SGe32Vp6sRE8VPRumAYmIpoVaOYU+k54
+UrEsY1q7CO1aVwrBDAIhZjyDjYNrMsk/D+yQdNLDV8iq44QBhOzhOpQaWGNVVm/a
+yusMvmbQpP0QrY1Wvg4SRP/MADyLhfCFuoNFsezYTOaSnD0LU07Z9++dMSQWMEc=
+=g/hZ
+-----END PGP SIGNATURE-----
+
+--1EKig6ypoSyM7jaD--
