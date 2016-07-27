@@ -1,15 +1,21 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v4] topology: Return -EINVAL at once on failure
-	to find a reference
-Date: Wed, 27 Jul 2016 16:48:53 +0800
-Message-ID: <1469609333-13961-1-git-send-email-mengdong.lin@linux.intel.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH v2 2/2] topology: Fix the missing
+ referenced elem ptr when merging private data
+Date: Wed, 27 Jul 2016 16:57:36 +0800
+Message-ID: <57987780.9070005@linux.intel.com>
+References: <cover.1469151453.git.mengdong.lin@linux.intel.com>
+ <7d8df59aab4a6935f4d3c7ca1c6955a2ff0e8d20.1469151453.git.mengdong.lin@linux.intel.com>
+ <579181F5.3090206@sakamocchi.jp>
+ <F46914AEC2663F4A9BB62374E5EEF8F84BA872AD@shsmsx102.ccr.corp.intel.com>
+ <579192CB.4030505@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 3241426524F
- for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2016 10:43:54 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4AE21265312
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2016 10:52:33 +0200 (CEST)
+In-Reply-To: <579192CB.4030505@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,171 +25,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, mengdong.lin@intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, o-takashi@sakamocchi.jp
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Nc, Shreyas" <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Hi,
 
-In building phase, return error -EINVAL at once if an element's references
-(e.g. TLV, text, control or private data) cannot be found.
+I submitted a new v4 patch to solve this issue, which will return 
+-EINVAL right after a failure to find an element's reference. I hope 
+will make the code more clear to read. So there is no need to modify 
+tplg_copy_data() now, checking its return value is enough.
 
-Move this error check right after looking up a reference, to make the
-code more clear. And checking the return value of tplg_copy_data() is
-enough, no need to check ref->elem for data references.
+The new patch name is [PATCH v4] topology: Return -EINVAL at once on 
+failure to find a reference. Please review.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+Thanks
+Mengdong
 
-diff --git a/src/topology/ctl.c b/src/topology/ctl.c
-index 54f8e44..d910230 100644
---- a/src/topology/ctl.c
-+++ b/src/topology/ctl.c
-@@ -135,24 +135,23 @@ static int tplg_build_mixer_control(snd_tplg_t *tplg,
- 		if (ref->type == SND_TPLG_TYPE_TLV) {
- 			ref->elem = tplg_elem_lookup(&tplg->tlv_list,
- 						ref->id, SND_TPLG_TYPE_TLV);
--			if (ref->elem)
--				 err = copy_tlv(elem, ref->elem);
-+			if (!ref->elem)
-+				goto ref_missing;
- 
-+			copy_tlv(elem, ref->elem);
- 		} else if (ref->type == SND_TPLG_TYPE_DATA) {
- 			err = tplg_copy_data(tplg, elem, ref);
- 			if (err < 0)
- 				return err;
- 		}
--
--		if (!ref->elem) {
--			SNDERR("error: cannot find '%s' referenced by"
--				" control '%s'\n", ref->id, elem->id);
--			return -EINVAL;
--		} else if (err < 0)
--			return err;
- 	}
- 
- 	return 0;
-+
-+ref_missing:
-+	SNDERR("error: cannot find '%s' referenced by control '%s'\n",
-+		ref->id, elem->id);
-+	return -EINVAL;
- }
- 
- static void copy_enum_texts(struct tplg_elem *enum_elem,
-@@ -183,23 +182,23 @@ static int tplg_build_enum_control(snd_tplg_t *tplg,
- 		if (ref->type == SND_TPLG_TYPE_TEXT) {
- 			ref->elem = tplg_elem_lookup(&tplg->text_list,
- 						ref->id, SND_TPLG_TYPE_TEXT);
--			if (ref->elem)
--				copy_enum_texts(elem, ref->elem);
-+			if (!ref->elem)
-+				goto ref_missing;
- 
-+			copy_enum_texts(elem, ref->elem);
- 		} else if (ref->type == SND_TPLG_TYPE_DATA) {
- 			err = tplg_copy_data(tplg, elem, ref);
- 			if (err < 0)
- 				return err;
- 		}
--		if (!ref->elem) {
--			SNDERR("error: cannot find '%s' referenced by"
--				" control '%s'\n", ref->id, elem->id);
--			return -EINVAL;
--		} else if (err < 0)
--			return err;
- 	}
- 
- 	return 0;
-+
-+ref_missing:
-+	SNDERR("error: cannot find '%s' referenced by control '%s'\n",
-+		ref->id, elem->id);
-+	return -EINVAL;
- }
- 
- /* check referenced private data for a byte control */
-diff --git a/src/topology/dapm.c b/src/topology/dapm.c
-index 4d343b2..988a5fc 100644
---- a/src/topology/dapm.c
-+++ b/src/topology/dapm.c
-@@ -160,7 +160,10 @@ static int tplg_build_widget(snd_tplg_t *tplg,
- 
- 	base = &elem->ref_list;
- 
--	/* for each ref in this control elem */
-+	/* Look up and merge each reference in this widget elem.
-+	 * For widgets added by C API, its control elements are already set
-+	 * and so no need to look up.
-+	 */
- 	list_for_each(pos, base) {
- 
- 		ref = list_entry(pos, struct tplg_ref, list);
-@@ -170,48 +173,50 @@ static int tplg_build_widget(snd_tplg_t *tplg,
- 			if (!ref->elem)
- 				ref->elem = tplg_elem_lookup(&tplg->mixer_list,
- 						ref->id, SND_TPLG_TYPE_MIXER);
--			if (ref->elem)
--				err = copy_dapm_control(elem, ref->elem);
-+			if (!ref->elem)
-+				goto ref_missing;
-+
-+			err = copy_dapm_control(elem, ref->elem);
- 			break;
- 
- 		case SND_TPLG_TYPE_ENUM:
- 			if (!ref->elem)
- 				ref->elem = tplg_elem_lookup(&tplg->enum_list,
- 						ref->id, SND_TPLG_TYPE_ENUM);
--			if (ref->elem)
--				err = copy_dapm_control(elem, ref->elem);
-+			if (!ref->elem)
-+				goto ref_missing;
-+
-+			err = copy_dapm_control(elem, ref->elem);
- 			break;
- 
- 		case SND_TPLG_TYPE_BYTES:
- 			if (!ref->elem)
- 				ref->elem = tplg_elem_lookup(&tplg->bytes_ext_list,
- 						ref->id, SND_TPLG_TYPE_BYTES);
--			if (ref->elem)
--				err = copy_dapm_control(elem, ref->elem);
-+			if (!ref->elem)
-+				goto ref_missing;
-+
-+			err = copy_dapm_control(elem, ref->elem);
- 			break;
- 
- 		case SND_TPLG_TYPE_DATA:
- 			err = tplg_copy_data(tplg, elem, ref);
--			if (err < 0)
--				return err;
- 			break;
- 
- 		default:
- 			break;
- 		}
- 
--		if (!ref->elem) {
--			SNDERR("error: cannot find control '%s'"
--				" referenced by widget '%s'\n",
--				ref->id, elem->id);
--			return -EINVAL;
--		}
--
- 		if (err < 0)
- 			return err;
- 	}
- 
- 	return 0;
-+
-+ref_missing:
-+	SNDERR("error: cannot find '%s' referenced by widget '%s'\n",
-+		ref->id, elem->id);
-+	return -EINVAL;
- }
- 
- int tplg_build_widgets(snd_tplg_t *tplg)
--- 
-2.5.0
+On 07/22/2016 11:28 AM, Takashi Sakamoto wrote:
+> On Jul 22 2016 11:39, Lin, Mengdong wrote:
+>>> -----Original Message-----
+>>> From: Takashi Sakamoto [mailto:o-takashi@sakamocchi.jp]
+>>> Sent: Friday, July 22, 2016 10:16 AM
+>>> To: mengdong.lin@linux.intel.com; alsa-devel@alsa-project.org;
+>>> broonie@kernel.org
+>>> Cc: tiwai@suse.de; Lin, Mengdong; Girdwood, Liam R; Nc, Shreyas
+>>> Subject: Re: [PATCH v2 2/2] topology: Fix the missing referenced elem
+>>> ptr
+>>> when merging private data
+>>>
+>>> On Jul 22 2016 10:47, mengdong.lin@linux.intel.com wrote:
+>>>> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+>>>>
+>>>> tplg_copy_data() should set the valid referenced data element pointer
+>>>> on success. The caller will double check this pointer for all kinds of
+>>>> references, including controls and data.
+>>>>
+>>>> Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+>>>>
+>>>> diff --git a/src/topology/data.c b/src/topology/data.c index
+>>>> 768fc27..e7793b2 100644
+>>>> --- a/src/topology/data.c
+>>>> +++ b/src/topology/data.c
+>>>> @@ -1078,6 +1078,8 @@ int tplg_copy_data(snd_tplg_t *tplg, struct
+>>> tplg_elem *elem,
+>>>>        ref_elem->compound_elem = 1;
+>>>>        memcpy(priv->data + old_priv_data_size,
+>>>>               ref_elem->data->data, priv_data_size);
+>>>> +
+>>>> +    ref->elem = ref_elem;
+>>>>        return 0;
+>>>>    }
+>>>
+>>> Is this really OK when the found topology element has no private data?
+>>> In this case, ref->elem has no assignment at return.
+>>
+>> No. This is my mistake. Thanks for finding this bug.
+>>
+>> ref->elem should still be assigned for this case. I will make it like
+>> this:
+>>
+>> /* overlook empty private data */
+>> if (!ref_elem->data || !ref_elem->data->size) {
+>>         ref->elem = ref_elem;
+>>           return 0;
+>> }
+>
+> Let us split data merging code to an explicit function? Then:
+>
+> if (ref_elem->data != NULL && ref_elem->data->size > 0) {
+>      err = merge_private_data(elem, ref_elem);
+>      if (err < 0)
+>          return err;
+> }
+> ref->elem = ref_elem;
+> return 0;
+>
+> (Here, I expect compiler optimization to merge the new function to
+> caller implicitly.)
+>
+>
+> Regards
+>
+> Takashi Sakamoto
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
