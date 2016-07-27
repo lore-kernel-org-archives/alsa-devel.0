@@ -1,71 +1,49 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Is this bug ? dev_set/get_drvdata() of rtd
-Date: Wed, 27 Jul 2016 11:47:41 +0100
-Message-ID: <20160727104741.GJ11806@sirena.org.uk>
-References: <8760rrdb10.wl%kuninori.morimoto.gx@renesas.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] Question about struct snd_soc_dai() ::
+ cpu_dai->codec
+Date: Wed, 27 Jul 2016 22:51:26 +0530
+Message-ID: <20160727172125.GF9681@localhost>
+References: <878twpj739.wl%kuninori.morimoto.gx@renesas.com>
+ <20160727032111.GY9681@localhost>
+ <s5hh9bb7he6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="1EKig6ypoSyM7jaD"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <8760rrdb10.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <s5hh9bb7he6.wl-tiwai@suse.de>
 Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Jul 27, 2016 at 07:57:05AM +0200, Takashi Iwai wrote:
+> On Wed, 27 Jul 2016 05:21:11 +0200,
+> Vinod Koul wrote:
+> > 
+> > On Tue, Jul 26, 2016 at 05:41:56AM +0000, Kuninori Morimoto wrote:
+> > > 
+> > > Hi ALSA SoC
+> > > 
+> > > My current headache is ALSA SoC's each modules (= Card/Codec/CPU/Platform)
+> > > doesn't care about "unbind/rmmod".
+> > > For example, if someone unbinded/rmmoded "Codec", Card or other modules
+> > > doesn't know about it. Thus, user can continue to use this sound card,
+> > > and kernel will be Oops.
+> > 
+> > Are you sure about this? Have you tried removing a module?
+> > 
+> > During card probe, asoc will hold a reference to the component. See the
+> > calls to try_module_get(). This will prevent from unloading under normal
+> > cases.
+> 
+> For unloading the module, yes, it should have been prevented by
+> managing the module refcount.  However, unbinding can't be stopped by
+> that.  It's a known problem.
 
---1EKig6ypoSyM7jaD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Oh yes, unload is an issue. Are these any solutions to prevent this?
 
-On Wed, Jul 27, 2016 at 03:25:41AM +0000, Kuninori Morimoto wrote:
+In core, should we de-register the card if one of the components exits. The
+.remove should be called for the driver, thus triggering unregister?
 
-> I think device data of "rtd->dev" is set as "rtd" on soc_post_component_i=
-nit()
-> by using dev_set_drvdata(),
-> and many soc-core functions are based on it (=3D they are using dev_get_d=
-rvdata())
-
-> But, soc.h has snd_soc_pcm_set_drvdata().=20
-> device data of rtd->dev will be overwrite by this function ?
-> But is this OK ? or bug ?
-
-Looks like a bug, I suspect there's some confusion caused by old code
-expecting there to be a soc-card device there and getting confused.
-
-> static ssize_t codec_reg_show(xxx)
-> {
-> 	struct snd_soc_pcm_runtime *rtd =3D dev_get_drvdata(dev);
-> 	...
-> }
-
-We can probably kill this file now, everything is on regmap now.
-
->=20
-> static ssize_t pmdown_time_show(xxx)
-> {
-> 	struct snd_soc_pcm_runtime *rtd =3D dev_get_drvdata(dev);
-> 	...
-> }
-
-These ones will need a bit more looking at, they probably want to be on
-the card using the card device I think.
-
---1EKig6ypoSyM7jaD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXmJFMAAoJECTWi3JdVIfQBnEH/0IS7/GObfcuu56346lBU+on
-krZhUHd/kd4M+WbhLdhgBIsVno1VFM75Qlaw1hZJdh8Dx+suwPUNS1lnxA4l9SRx
-N8Rq6ArL7U6JiNBO7jw6Fj+uCli4IE5uYOPm2MUMMqrEnQpvXCbUd7P3B2B0zmJ9
-UgEU4nPdRr0zq9giMNVV4NdUYdgHtpp0SGe32Vp6sRE8VPRumAYmIpoVaOYU+k54
-UrEsY1q7CO1aVwrBDAIhZjyDjYNrMsk/D+yQdNLDV8iq44QBhOzhOpQaWGNVVm/a
-yusMvmbQpP0QrY1Wvg4SRP/MADyLhfCFuoNFsezYTOaSnD0LU07Z9++dMSQWMEc=
-=g/hZ
------END PGP SIGNATURE-----
-
---1EKig6ypoSyM7jaD--
+-- 
+~Vinod
