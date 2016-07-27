@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Add a dummy snd_pcm_runtime to avoid NULL pointer access" to the asoc tree
-Date: Wed, 27 Jul 2016 20:09:38 +0100
-Message-ID: <E1bSUD4-0003pR-2o@debutante>
-References: <1469570151-11825-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1469570151-11825-1-git-send-email-nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+Subject: Applied "ASoC: rsnd: Fixup SRCm_IFSVR calculate method" to the asoc tree
+Date: Wed, 27 Jul 2016 20:09:41 +0100
+Message-ID: <E1bSUD7-0003qv-0l@debutante>
+References: <87h9bewkwu.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87h9bewkwu.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, tomoharu.fukawa.eb@renesas.com, Linux-ALSA <alsa-devel@alsa-project.org>, naoya.shiiba.nx@renesas.com, mitsuhiro.kimura.kc@renesas.com, hideya.tanaka.nx@renesas.com, tomohiro.komagata.aj@renesas.com, khiem.nguyen.xt@rvc.renesas.com, hien.dang.eb@renesas.com, ryo.kodama.vz@renesas.com, takeshi.kihara.df@renesas.com, ryo.kataoka.wt@renesas.com, takamitsu.honda.pv@renesas.com, hiroyuki.yokoyama.vx@renesas.com, Chris.Paterson2@renesas.com, kouei.abe.cp@renesas.com, ren.imaoka.vj@renesas.com, Simon <horms@verge.net.au>, takahiko.gomi.yn@renesas.com, yuta.wakasawa.pv@renesas.com, yoshifumi.hosoya.wj@renesas.com, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, harunobu.kurokawa.dn@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Add a dummy snd_pcm_runtime to avoid NULL pointer access
+   ASoC: rsnd: Fixup SRCm_IFSVR calculate method
 
 has been applied to the asoc tree at
 
@@ -37,87 +36,38 @@ to this mail.
 Thanks,
 Mark
 
->From 8053f21675b073b379cbca258ee4a3f3850dfa94 Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Tue, 26 Jul 2016 14:55:51 -0700
-Subject: [PATCH] ASoC: dapm: Add a dummy snd_pcm_runtime to avoid NULL pointer
- access
+>From 24e06559a8f52889b3dd581d2ddd572421a73ae0 Mon Sep 17 00:00:00 2001
+From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Date: Mon, 25 Jul 2016 01:52:43 +0000
+Subject: [PATCH] ASoC: rsnd: Fixup SRCm_IFSVR calculate method
 
-The SND_SOC_DAPM_PRE_PMU case would call startup()/hw_params() that
-might access substream->runtime through other functions.
+This patch fixes the calculation accuracy degradation of SRCm_IFSVR
+register value.
 
-For example:
-
-Unable to handle kernel NULL pointer dereference at virtual address
-[....]
-PC is at snd_pcm_hw_rule_add+0x24/0x1b0
-LR is at snd_pcm_hw_constraint_list+0x20/0x28
-[....]
-Process arecord (pid: 424, stack limit = 0xffffffc1ecaf0020)
-Call trace:
-[<ffffffc00086be68>] snd_pcm_hw_rule_add+0x24/0x1b0
-[<ffffffc00086c014>] snd_pcm_hw_constraint_list+0x20/0x28
-[<ffffffc0008b47a4>] cs53l30_pcm_startup+0x24/0x30
-[<ffffffc0008a6260>] snd_soc_dai_link_event+0x290/0x354
-[<ffffffc0008a7528>] dapm_seq_check_event.isra.31+0x134/0x2c8
-[<ffffffc0008a7768>] dapm_seq_run_coalesced+0x94/0x1c8
-[<ffffffc0008a7940>] dapm_seq_run+0xa4/0x404
-[<ffffffc0008a8bac>] dapm_power_widgets+0x524/0x984
-[<ffffffc0008ab1c4>] snd_soc_dapm_stream_event+0x8c/0xa8
-[<ffffffc0008ac7f4>] soc_pcm_prepare+0x10c/0x1ec
-[<ffffffc000865b9c>] snd_pcm_do_prepare+0x1c/0x38
-[<ffffffc000865600>] snd_pcm_action_single+0x40/0x88
-[<ffffffc0008656b8>] snd_pcm_action_nonatomic+0x70/0x90
-[<ffffffc000868d28>] snd_pcm_common_ioctl1+0xb6c/0xdd8
-[<ffffffc000869508>] snd_pcm_capture_ioctl1+0x200/0x334
-[<ffffffc00086a084>] snd_pcm_ioctl_compat+0x648/0x95c
-[<ffffffc0001ff4b4>] compat_SyS_ioctl+0xac/0xfc4
-[<ffffffc000084cf0>] el0_svc_naked+0x24/0x28
----[ end trace 0dc4f99c2759c35c ]---
-
-So this patch adds a dummy runtime for the original dummy substream
-to merely avoid the NULL pointer access.
-
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/sh/rcar/src.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 8698c26773b3..d908ff8f9755 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3493,6 +3493,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 	const struct snd_soc_pcm_stream *config = w->params + w->params_select;
- 	struct snd_pcm_substream substream;
- 	struct snd_pcm_hw_params *params = NULL;
-+	struct snd_pcm_runtime *runtime = NULL;
- 	u64 fmt;
- 	int ret;
- 
-@@ -3541,6 +3542,14 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 
- 	memset(&substream, 0, sizeof(substream));
- 
-+	/* Allocate a dummy snd_pcm_runtime for startup() and other ops() */
-+	runtime = kzalloc(sizeof(*runtime), GFP_KERNEL);
-+	if (!runtime) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	substream.runtime = runtime;
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index e39f916d0f2f..969a5169de25 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -226,8 +226,12 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 	ifscr = 0;
+ 	fsrate = 0;
+ 	if (fin != fout) {
++		u64 n;
 +
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
- 		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-@@ -3606,6 +3615,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 		ifscr = 1;
+-		fsrate = 0x0400000 / fout * fin;
++		n = (u64)0x0400000 * fin;
++		do_div(n, fout);
++		fsrate = n;
  	}
  
- out:
-+	kfree(runtime);
- 	kfree(params);
- 	return ret;
- }
+ 	/*
 -- 
 2.8.1
