@@ -1,7 +1,7 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Subject: Re: [alsa-devel] [PATCH v2] clkdev: add devm_of_clk_get()
-Date: Wed, 27 Jul 2016 00:51:27 +0000
-Message-ID: <87a8h3di61.wl%kuninori.morimoto.gx@renesas.com>
+Date: Wed, 27 Jul 2016 00:51:58 +0000
+Message-ID: <878twndi54.wl%kuninori.morimoto.gx@renesas.com>
 References: <87wpl2yyuw.wl%kuninori.morimoto.gx@renesas.com>
 	<146785219147.73491.2827268663638530377@resonance>
 	<87ziptixv7.wl%kuninori.morimoto.gx@renesas.com>
