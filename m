@@ -1,62 +1,72 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH] topology: Fix inaccurate comments when
-	building a widget element
-Date: Thu, 28 Jul 2016 09:39:01 +0800
-Message-ID: <1469669941-19665-1-git-send-email-mengdong.lin@linux.intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] Question about struct snd_soc_dai() ::
+ cpu_dai->codec
+Date: Thu, 28 Jul 2016 09:16:43 +0530
+Message-ID: <20160728034643.GH9681@localhost>
+References: <878twpj739.wl%kuninori.morimoto.gx@renesas.com>
+ <20160727032111.GY9681@localhost>
+ <s5hh9bb7he6.wl-tiwai@suse.de>
+ <20160727172125.GF9681@localhost>
+ <20160727180456.GQ11806@sirena.org.uk>
+ <s5h1t2f6jdm.wl-tiwai@suse.de>
+ <20160727182233.GV11806@sirena.org.uk>
+ <s5hpopy6dbi.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 33D9626533F
- for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2016 03:33:45 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, mengdong.lin@intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hpopy6dbi.wl-tiwai@suse.de>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+On Wed, Jul 27, 2016 at 10:22:41PM +0200, Takashi Iwai wrote:
+> On Wed, 27 Jul 2016 20:22:33 +0200,
+> Mark Brown wrote:
+> > 
+> > On Wed, Jul 27, 2016 at 08:11:49PM +0200, Takashi Iwai wrote:
+> > 
+> > > I'm wondering whether it's a better option to block the unbind
+> > > behavior, either in driver base (allowing to return an error) or in
+> > > the sound side (waiting in remove() until the sane point). 
+> > 
+> > That's certainly going to be a lot easier and part of the reason it's
+> > never been looked at much is that (unlike USB) there's very little
+> > reason why an ASoC sound card would ever be hotplugged - even in
+> > development these days the normal development flow involves rebooting.
 
-The original comments use 'control' by mistake when building a widget.
-Also describe the difference between the referenced controls defined by
-C API and text conf file.
+I agree, it makese no sense for devices to be hotplugged. And for
+developement flows people can do rmmond and insmod. That works fine!
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+> Actually there is already the suppress_bind_attr flag in struct
+> device_driver.  For a simple platform driver like snd-soc-rcar, it's
+> easy like:
 
-diff --git a/src/topology/dapm.c b/src/topology/dapm.c
-index e3c90d8..0141653 100644
---- a/src/topology/dapm.c
-+++ b/src/topology/dapm.c
-@@ -150,7 +150,7 @@ static int copy_dapm_control(struct tplg_elem *elem, struct tplg_elem *ref)
- 	return 0;
- }
- 
--/* check referenced controls for a widget */
-+/* Merge referenced controls and private data for a widget */
- static int tplg_build_widget(snd_tplg_t *tplg,
- 	struct tplg_elem *elem)
- {
-@@ -160,7 +160,12 @@ static int tplg_build_widget(snd_tplg_t *tplg,
- 
- 	base = &elem->ref_list;
- 
--	/* for each ref in this control elem */
-+	/* Look up and merge each control or data reference of this
-+	 * widget element. For a widget defined by C API, its control
-+	 * references are already bound and can be directly merged
-+	 * without lookup. Only control references defined by text
-+	 * conf file need lookup before being merged.
-+	 */
- 	list_for_each(pos, base) {
- 
- 		ref = list_entry(pos, struct tplg_ref, list);
+I like this idea, should we do this per driver or in core? I think we should
+let drivers decide..
+
+> diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+> index 3351a701c60e..d019824927de 100644
+> --- a/sound/soc/sh/rcar/core.c
+> +++ b/sound/soc/sh/rcar/core.c
+> @@ -1251,6 +1251,7 @@ static struct platform_driver rsnd_driver = {
+>  	.driver	= {
+>  		.name	= "rcar_sound",
+>  		.of_match_table = rsnd_of_match,
+> +		.suppress_bind_attrs = true,
+>  	},
+>  	.probe		= rsnd_probe,
+>  	.remove		= rsnd_remove,
+> 
+> Then there will be no sysfs bind/unbind for this driver.
+> (Note: totally untested: let me know if it really works.)
+> 
+> The same technique is likely available for i2c and spi codec drivers.
+> But it's another open question whether we should suppress the sysfs
+> bind/unbind of these devices at all.  My gut feeling is that sysfs
+> bind/unbind are mostly useless for drivers like ASoC codecs.  At
+> least, it would be much safer to disable for now.
+
 -- 
-2.5.0
+~Vinod
