@@ -1,52 +1,57 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] Question about struct snd_soc_dai() ::
- cpu_dai->codec
-Date: Fri, 29 Jul 2016 15:41:45 +0100
-Message-ID: <20160729144145.GF10376@sirena.org.uk>
-References: <878twpj739.wl%kuninori.morimoto.gx@renesas.com>
- <579A69EC.9060205@metafoo.de>
- <87popx2nbb.wl%kuninori.morimoto.gx@renesas.com>
- <4ad31e53-188a-8a40-cea9-b89df5f3535e@metafoo.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: Question about struct snd_soc_dai() :: cpu_dai->codec
+Date: Fri, 29 Jul 2016 21:37:02 +0530
+Message-ID: <20160729160702.GK9681@localhost>
+References: <s5hh9bb7he6.wl-tiwai@suse.de>
+ <20160727172125.GF9681@localhost>
+ <20160727180456.GQ11806@sirena.org.uk>
+ <s5h1t2f6jdm.wl-tiwai@suse.de>
+ <20160727182233.GV11806@sirena.org.uk>
+ <s5hpopy6dbi.wl-tiwai@suse.de>
+ <20160728034643.GH9681@localhost>
+ <579A6C1B.2060904@metafoo.de>
+ <579AA39B.5030100@sakamocchi.jp>
+ <884bd15f-da5e-49f5-73ee-d8173dc0720a@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jkO+KyKz7TfD21mV"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <4ad31e53-188a-8a40-cea9-b89df5f3535e@metafoo.de>
+In-Reply-To: <884bd15f-da5e-49f5-73ee-d8173dc0720a@metafoo.de>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Takashi Iwai <tiwai@suse.de>, Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jul 29, 2016 at 11:07:49AM +0200, Lars-Peter Clausen wrote:
+> On 07/29/2016 02:30 AM, Takashi Sakamoto wrote:
+> > Lars,
+> > 
+> > On Jul 29 2016 05:33, Lars-Peter Clausen wrote:
+> >> Hotplug is something that always pops up sooner or later. E.g. if someone
+> >> puts a ASoC supported CODEC on a hot-pluggable device (maybe USB) we
+> >> don't want to duplicate the code, but be able to reuse.
+> > 
+> > (A bit to sidetrack)
+> > 
+> > To me, it's unclear for devices on USB. When ALSA SoC part supports these
+> > devices, what is the scenario you assumed? In short, assuming we put codes
+> > to ALSA SoC part, what is the shape of the corresponding devices and links
+> > of pairs of endpoints? Additionally, in this case, what codes are able to be
+> > reused?
+> 
+> Lets say you have USB stick with a small micro controller or FPGA which has
+> a USB interface on one side and a I2S and I2C interface on the other side.
+> The I2S and I2C are connected to a CODEC. I2S for data, I2C for control. If
+> the interface is implemented in a way so that it is just a simple USB to I2C
+> bridge, this means the raw I2C commands are send over the USB interface you
+> can implement a I2C adapter driver for this bridge. If you have that you can
+> instantiate the existing ASoC CODEC driver, which is a I2C device driver, on
+> the bus registered by the adapter.
 
---jkO+KyKz7TfD21mV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+That still seems a bit fancy hardware :)
 
-On Fri, Jul 29, 2016 at 11:01:27AM +0200, Lars-Peter Clausen wrote:
+If we can reasonably support this, I am for it. But not making stuff
+overtly complex...
 
-> In my opinion the flags are just as much a hack as the pointer. In an ideal
-> setup the component does not need to know what type it is. The reason why we
-> need this in ASoC is because the framework has grown over time and we need
-> to support legacy code.
-
-Yes, the pointer is essentially already a flag - having a separate flag
-really doesn't add a huge amount here.  What we need to do is get rid of
-the need for the flag entirely.
-
---jkO+KyKz7TfD21mV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEbBAEBCAAGBQJXm2soAAoJECTWi3JdVIfQOAAH9Rb30xoYwOCStU/FgE9HKw4L
-taPToplAF/QDiz9GBDkYaYvbCr0xSOFeBjXnT/AsvtBTJKPLvqmR3sRtIkGQ/lrG
-dq7I09uSTqNLtwhtXz8Csv/i2BfeC6DNhPMUAteVUKRzHFDeyPHUsTyQq5THWAsN
-H0nRv4iOykUP0zaoMDFtgx7I2Cy3Scti0SUEu/Iz3KXKSpkp0KcttAUKWrmLC+t0
-RNaxvLMQHYgKNOpF65n2tEE+HSb3ezgtlTkfNEA+A5oxZlXyIP7w1DYYrhjc2Cjr
-0HHCvwKnPbccgZy0HRyHraa8kUqG+R0LJ6EkaQMXg8MNpwWz5kyBbcxKQpY+kA==
-=9aLF
------END PGP SIGNATURE-----
-
---jkO+KyKz7TfD21mV--
+-- 
+~Vinod
