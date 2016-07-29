@@ -1,135 +1,127 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] Question about struct snd_soc_dai() ::
- cpu_dai->codec
-Date: Fri, 29 Jul 2016 11:01:27 +0200
-Message-ID: <4ad31e53-188a-8a40-cea9-b89df5f3535e@metafoo.de>
-References: <878twpj739.wl%kuninori.morimoto.gx@renesas.com>
- <579A69EC.9060205@metafoo.de>
- <87popx2nbb.wl%kuninori.morimoto.gx@renesas.com>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH] ASoC: da7219: Make more efficient use of MCLK within driver
+Date: Fri, 29 Jul 2016 14:46:54 +0100
+Message-ID: <20160729134654.BC1F73FB13@swsrvapps-01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87popx2nbb.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Support Opensource <support.opensource@diasemi.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/29/2016 04:24 AM, Kuninori Morimoto wrote:
-> 
-> Hi Lars
-> 
-> Thank you for your feedback
-> 
->>> int snd_soc_runtime_set_dai_fmt(xxx)
->>> {
->>> 	...
->>> 	/* Flip the polarity for the "CPU" end of a CODEC<->CODEC link */
->>> 	if (cpu_dai->codec) {
->>> 		...
->>> 	}
->>> 	...
->>> }
-> (snip)
->> This is for CODEC<->CODEC links where no CPU DAI is involved and the
->> "CPU" side of the DAI link is actually a CODEC.
-> 
-> Wow !!
-> 
->> Ideally we'd make the DAI links agnostic to what is connected, e.g. it
->> shouldn't matter what type is connected to what side. But that does not
->> work since things are anti-symmetric between CPU and CODEC DAIs. On
->> CODEC DAIs the capture stream is output, on CPU DAIs the capture stream
->> is input, similar thing for playback. So we need to know whether the DAI
->> is a CPU DAI or a CODEC DAI.
->>
->> Fixing this at this point is near to impossible since it requires
->> invasive changes to all existing drivers. So we need this code and can't
->> drop it.
->>
->> The best we can do is try to come up with a generic interface that is
->> DAI type independent and recommend this interface for new drivers.
-> 
-> Hmm...
-> OK, now, I'm investigating ALSA SoC struct connection.
-> And yes, existing code has deep relationship each other.
-> Thus, fixing/droping seems very dificult...
-> I think each struct has random pointer connection which doesn't care
-> about ALSA SoC's hierarchy.
-> 
-> I would like to indicate my opinion here.
-> My strange point are...
-> 
-> 1. snd_soc_pcm_runtime has pointer to Card/Codec/Platform, but no CPU
-> 2. snd_soc_dai has pointer to [component] and [Codec]
->    [component] is its parent, [Codec] is maybe Hack
+Currently, if the driver has control of MCLK then it remains
+enabled as long as the codec is in STANDBY or above. The MCLK is
+only really required in STANDBY when a 3-pole jack is inserted
+and the HP detect procedure is required to run.
 
-dai->codec is something we could get rid of since it is the same as
-dai->component->codec. And for drivers were we know that it is a CODEC
-driver you can use snd_soc_component_to_codec(dai->component). For those
-drivers we know that this returns a valid pointer.
+This patch updates the code to enable/disable the MCLK when moving
+between the STANDBY and PREPARE bias level, and when a 3-pole jack
+is inserted and HP detection is required, thus saving power at all
+other times.
 
-But there are a lot of users which all need to be updated. If you want to do
-it go ahead. If you do the conversion this should be done by the use of
-helper functions, so we can change the implementation if necessary.
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+---
+ sound/soc/codecs/da7219-aad.c | 18 +++++++++++++++++-
+ sound/soc/codecs/da7219.c     | 18 +++++++++++-------
+ 2 files changed, 28 insertions(+), 8 deletions(-)
 
-> 3. [component] has pointer to [card] and [Codec]
->    [card] is understandable, [Codec] is maybe Hack
-> 
-> It seems many struct would like to access to [Codec], thus, each struct has
-> codec pointer (as hack ?), but it is ignoring ALSA SoC hierarchy.
-> 
-
-This is a leftover of the old hierarchy where snd_soc_codec was not a
-sub-struct of snd_soc_component.
-
-> It will be more clear if...
-> 
-> IDEA 1
-> 
->    Each component (= CPU/Codec/Platform) has pointer to Card now.
->    How about Card has pointer to each component ?
->    if so, we can access to every struct.
->    Card -> CPU/Codec/Platform, CPU/Codec/Platform -> Card
->    Then, we want to have component related macro/flag
-> 
-> 	#define component_is_cpu(component) (component->flag & COMPONENT_CPU)
-> 	#define component_is_codec(component) (component->flag & COMPONENT_CODEC)
-> 	#define component_is_platform(component) (component->flag & COMPONENT_PLATFORM)
-> 
-> 	#define component_to_cpu() container_of(xxx)
-> 	#define component_to_codec() container_of(xxx)
-> 	#define component_to_platorm() container_of(xxx)
-
-I though about this when doing the refactoring of the ASoC core. But in the
-end it does not make too much of a difference whether we have a flag field
-or a CODEC pointer field. The former would have just caused more code churn
-so I went with the later.
-
-You wouldn't be able to simplify the code by this. You need to replace all
-component->codec checks by component_is_codec(component). So the overall
-code complexity stays the same.
-
-The helper macros might still make sense to hide the actual implementation.
-
-> 
-> IDEA 2
-> 
->    if IDEA1 was OK, snd_soc_pcm_runtime already has card pointer.
->    This means snd_soc_pcm_runtime can access to every component struct.
-> 
->    snd_soc_dai has its parent component.
->    This means snd_soc_dai can access to Card, and Card can access to every component.
->    And then, cpu_dai->codec has no issue if we can use component_is_xxx() macro ?
-> 
->     - if (cpu_dai->codec)
->     + if (component_is_codec(cpu_dai->component))
-> 
-> If IDEA1 / IDEA2 are OK, we can cleanup each struct,
-> especially hack-able random pointer ?
-
-In my opinion the flags are just as much a hack as the pointer. In an ideal
-setup the component does not need to know what type it is. The reason why we
-need this in ASoC is because the framework has grown over time and we need
-to support legacy code.
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index f0057cd..4e369a1 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -13,6 +13,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/clk.h>
+ #include <linux/i2c.h>
+ #include <linux/property.h>
+ #include <linux/pm_wakeirq.h>
+@@ -115,12 +116,23 @@ static void da7219_aad_hptest_work(struct work_struct *work)
+ 
+ 	u16 tonegen_freq_hptest;
+ 	u8 accdet_cfg8;
+-	int report = 0;
++	int report = 0, ret = 0;
+ 
+ 	/* Lock DAPM and any Kcontrols that are affected by this test */
+ 	snd_soc_dapm_mutex_lock(dapm);
+ 	mutex_lock(&da7219->lock);
+ 
++	/* Ensure MCLK is available for HP test procedure */
++	if (da7219->mclk) {
++		ret = clk_prepare_enable(da7219->mclk);
++		if (ret) {
++			dev_err(codec->dev, "Failed to enable mclk - %d\n", ret);
++			mutex_unlock(&da7219->lock);
++			snd_soc_dapm_mutex_unlock(dapm);
++			return;
++		}
++	}
++
+ 	/* Bypass cache so it saves current settings */
+ 	regcache_cache_bypass(da7219->regmap, true);
+ 
+@@ -250,6 +262,10 @@ static void da7219_aad_hptest_work(struct work_struct *work)
+ 	snd_soc_update_bits(codec, DA7219_HP_R_CTRL, DA7219_HP_R_AMP_OE_MASK,
+ 			    DA7219_HP_R_AMP_OE_MASK);
+ 
++	/* Remove MCLK, if previously enabled */
++	if (da7219->mclk)
++		clk_disable_unprepare(da7219->mclk);
++
+ 	mutex_unlock(&da7219->lock);
+ 	snd_soc_dapm_mutex_unlock(dapm);
+ 
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 50ea943..737e914 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1508,11 +1508,10 @@ static int da7219_set_bias_level(struct snd_soc_codec *codec,
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+-	case SND_SOC_BIAS_PREPARE:
+ 		break;
+-	case SND_SOC_BIAS_STANDBY:
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
+-			/* MCLK */
++	case SND_SOC_BIAS_PREPARE:
++		/* Enable MCLK for transition to ON state */
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_STANDBY) {
+ 			if (da7219->mclk) {
+ 				ret = clk_prepare_enable(da7219->mclk);
+ 				if (ret) {
+@@ -1521,11 +1520,19 @@ static int da7219_set_bias_level(struct snd_soc_codec *codec,
+ 					return ret;
+ 				}
+ 			}
++		}
+ 
++		break;
++	case SND_SOC_BIAS_STANDBY:
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
+ 			/* Master bias */
+ 			snd_soc_update_bits(codec, DA7219_REFERENCES,
+ 					    DA7219_BIAS_EN_MASK,
+ 					    DA7219_BIAS_EN_MASK);
++		} else {
++			/* Remove MCLK */
++			if (da7219->mclk)
++				clk_disable_unprepare(da7219->mclk);
+ 		}
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+@@ -1534,9 +1541,6 @@ static int da7219_set_bias_level(struct snd_soc_codec *codec,
+ 			snd_soc_update_bits(codec, DA7219_REFERENCES,
+ 					    DA7219_BIAS_EN_MASK, 0);
+ 
+-		/* MCLK */
+-		if (da7219->mclk)
+-			clk_disable_unprepare(da7219->mclk);
+ 		break;
+ 	}
+ 
+-- 
+1.9.3
