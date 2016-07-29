@@ -1,68 +1,54 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH v2 0/3] ASoC: topology: Add support for BE
-	DAIs
-Date: Fri, 29 Jul 2016 16:38:47 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F84BA8DFB1@shsmsx102.ccr.corp.intel.com>
-References: <cover.1469514328.git.mengdong.lin@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5659: Add mclk controls
+Date: Fri, 29 Jul 2016 17:39:33 +0100
+Message-ID: <20160729163933.GJ10376@sirena.org.uk>
+References: <1469660568-3511-1-git-send-email-nicoleotsuka@gmail.com>
+ <20160728155732.GG11806@sirena.org.uk>
+ <20160728181419.GA4742@Asurada-Nvidia>
+ <20160728185510.GK11806@sirena.org.uk>
+ <20160729161521.GL9681@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 342102657B1
- for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2016 18:39:00 +0200 (CEST)
-In-Reply-To: <cover.1469514328.git.mengdong.lin@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Shah,
- Hardik T" <hardik.t.shah@intel.com>, "Singh,
- Guneshwor O" <guneshwor.o.singh@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="aziWXe2aaRGlkyg3"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20160729161521.GL9681@localhost>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, bardliao@realtek.com, oder_chiou@realtek.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Darren Hart <dvhart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-RXhjdXNlIG1lLCBJJ2xsIGJlIG9uIHZhY2F0aW9uIHVudGlsIEF1Zy4gMTR0aC4gUGxlYXNlIGtp
-bmRseSBsZWF2ZSB5b3VyIGNvbW1lbnRzIGlmIHlvdSByZXZpZXcgdGhlIHBhdGNoZXMsIGFuZCBJ
-J2xsIGFkZHJlc3Mgd2hlbiBJJ20gYmFjayB0byB3b3JrLg0KDQpUaGFua3MNCk1lbmdkb25nDQoN
-Cj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogbWVuZ2RvbmcubGluQGxpbnV4
-LmludGVsLmNvbSBbbWFpbHRvOm1lbmdkb25nLmxpbkBsaW51eC5pbnRlbC5jb21dDQo+IFNlbnQ6
-IFR1ZXNkYXksIEp1bHkgMjYsIDIwMTYgMjozMSBQTQ0KPiBUbzogYWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnOyBicm9vbmllQGtlcm5lbC5vcmcNCj4gQ2M6IHRpd2FpQHN1c2UuZGU7IHBlcmV4
-QHBlcmV4LmN6OyBsaWFtLnIuZ2lyZHdvb2RAbGludXguaW50ZWwuY29tOyBTaGFoLA0KPiBIYXJk
-aWsgVDsgU2luZ2gsIEd1bmVzaHdvciBPOyBMaW4sIE1lbmdkb25nOyBNZW5nZG9uZyBMaW4NCj4g
-U3ViamVjdDogW1BBVENIIHYyIDAvM10gQVNvQzogdG9wb2xvZ3k6IEFkZCBzdXBwb3J0IGZvciBC
-RSBEQUlzDQo+IA0KPiBGcm9tOiBNZW5nZG9uZyBMaW4gPG1lbmdkb25nLmxpbkBsaW51eC5pbnRl
-bC5jb20+DQo+IA0KPiBUaGVyZSBpcyB0b3BvbG9neSBBQkkgdWRwYXRlIGluIHRoaXMgc2VyaWVz
-LiBUb3BvbG9neSBjb3JlIGNhbiBjaGVjayBzaXplIG9mDQo+IGVhY2ggQUJJIG9iamVjdHMgdG8g
-ZGV0ZWN0IHZlcnNpb24gbWlzbWF0Y2ggYmV0d2VlbiB1c2VyIHNwYWNlIGFuZCBrZXJuZWwuDQo+
-IA0KPiBUaGlzIHNlcmllcyBhZGRzIHN1cHBvcnQgZm9yIEJFIChCYWNrIEVuZCkgREFJczoNCj4g
-LSBEZWZpbmUgdGhlIHR5cGUgYW5kIEFCSSBzdHJ1Y3QgZm9yIEJhY2tlbmQgREFJcy4NCj4gLSBU
-aGUgdG9wb2xvZ3kgY29yZSBjYW4gY29uZmlndXJlIGFuIGV4aXN0aW5nIEJFIERBSSBvciBjcmVh
-dGUgbmV3IEJFDQo+ICAgREFJcy4NCj4gDQo+IFRoZSB1c2VyIHNwYWNlIHNlcmllcyAidG9wb2xv
-Z3k6IEFkZCBzdXBwb3J0IGZvciBCRSBEQUlzIiBpcyBhbHNvIHN1Ym1pdHRlZC4NCj4gDQo+IFRo
-ZXJlIHdpbGwgYmUgMiBwYWlycyBvZiBrZXJuZWwgJiB1c2VyIHNwYWNlIHNlcmllcyBmb3IgUENN
-ICYgQkUgbGlua3MgbGF0ZXIuDQo+IA0KPiBIaXN0b3J5Og0KPiB2MjogUmVtb3ZlIHVudXNlZCBh
-cmd1bWVudCB0byBmaXggdGhlIGNvbXBpbGVyIHdhcm5pbmcuDQo+ICAgICBzb3VuZC9zb2Mvc29j
-LXRvcG9sb2d5LmM6IEluIGZ1bmN0aW9uIOKAmHNvY190cGxnX2JlX2RhaV9jb25maWfigJk6DQo+
-ICAgICBzb3VuZC9zb2Mvc29jLXRvcG9sb2d5LmM6MTc4OToyMjogd2FybmluZzogdG9vIG1hbnkg
-YXJndW1lbnRzIGZvcg0KPiBmb3JtYXQgWy1XZm9ybWF0LWV4dHJhLWFyZ3NdDQo+ICAgICBkZXZf
-ZXJyKHRwbGctPmRldiwgIkFTb0M6IEludmFsaWQgQkUgREFJIG5hbWVcbiIsDQo+IA0KPiANCj4g
-TWVuZ2RvbmcgTGluICgzKToNCj4gICBBU29DOiB0b3BvbG9neTogQUJJIC0gQWRkIHRoZSB0eXBl
-cyBmb3IgQkUgREFJDQo+ICAgQVNvQzogdG9wb2xvZ3k6IEFkZCBzdXBwb3J0IGZvciBjb25maWd1
-cmluZyBleGlzdGluZyBCRSBEQUlzDQo+ICAgQVNvQzogdG9wb2xvZ3k6IEFibGUgdG8gY3JlYXRl
-IEJFIERBSXMNCj4gDQo+ICBpbmNsdWRlL3NvdW5kL3NvYy10b3BvbG9neS5oIHwgICAxICsNCj4g
-IGluY2x1ZGUvdWFwaS9zb3VuZC9hc29jLmggICAgfCAgMzQgKysrKysrKysrLQ0KPiAgc291bmQv
-c29jL3NvYy1jb3JlLmMgICAgICAgICB8ICAgMyArLQ0KPiAgc291bmQvc29jL3NvYy10b3BvbG9n
-eS5jICAgICB8IDE1NQ0KPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KystDQo+ICA0IGZpbGVzIGNoYW5nZWQsIDE4OCBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygt
-KQ0KPiANCj4gLS0NCj4gMi41LjANCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+
+--aziWXe2aaRGlkyg3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jul 29, 2016 at 09:45:21PM +0530, Vinod Koul wrote:
+
+> Yeah I am not aware of any plan to have clks on x86. For audio we are not
+> going to use much. ACPI and controller w/ firmware does the job.
+
+> I have added Darren, he oversee platform things so might know if clocks
+> would be there in future..
+
+Not having controllable clocks is fine but as we've discussed before
+you're going to need to represent the clocks that are there with fixed
+clocks instantiated through whatever you use to enumerate boards.  We
+don't want to have to special case x86 all the time in CODEC drivers.
+
+--aziWXe2aaRGlkyg3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXm4bEAAoJECTWi3JdVIfQw1gH/163HvlZDgT+dvkx9mvZKxVH
+DzCeODijEp++mUFcmtQrOSmXOUnoBiv1gC7ZKSjAJp13Eoa8GjEWjv7JetZtyexp
+o00UWuTgEE4+tYaphamJcFv4y6evV98OISlRA+HiJxYEO2yICXhv3POuQj7eXTzE
+XPBVQ7MqUgPxy+E0PRBqSgUqOa7+6pvuH9l9G83vo9vMbnV8WzIfG6ZAqUuCZuSF
+OJVtYaULQAXVuSXBqZ01uydWDtRjeYZCWq9LQCXo3+02VNDuIqPh6svoQ+b/lq+f
+OFRbofuQs/IsgUAiuzdSr6TL+sll6waA4h+3K7TVOYYomcumuDv+faTIVUOkbso=
+=MaYQ
+-----END PGP SIGNATURE-----
+
+--aziWXe2aaRGlkyg3--
