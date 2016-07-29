@@ -1,16 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: =?UTF-8?Q?Stefan_M=c3=bcller-Klieser?= <s.mueller-klieser@phytec.de>
 Subject: Re: [PATCH] ASoC: davinci-mcasp: Add clocking option
-Date: Fri, 29 Jul 2016 14:08:43 +0300
-Message-ID: <51f927cf-def9-8d15-9433-acba44057aa1@ti.com>
+Date: Fri, 29 Jul 2016 15:58:38 +0200
+Message-ID: <579B610E.5080406@phytec.de>
 References: <1469534710-4006-1-git-send-email-s.mueller-klieser@phytec.de>
  <901be45a-6380-3710-1ee5-e3d192b822e3@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 360242684DA
- for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2016 13:08:50 +0200 (CEST)
+Received: from root.phytec.de (mail.rapiddevelopmentkit.de [217.6.246.34])
+ by alsa0.perex.cz (Postfix) with ESMTP id 367282668E9
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2016 15:58:46 +0200 (CEST)
 In-Reply-To: <901be45a-6380-3710-1ee5-e3d192b822e3@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,163 +21,143 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Stefan_M=c3=bcller-Klieser?= <s.mueller-klieser@phytec.de>, alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/28/16 14:48, Peter Ujfalusi wrote:
->> diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio=
-.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
->> index 46bc982..96d6244 100644
->> --- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
->> +++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
->> @@ -39,6 +39,10 @@ Optional properties:
->>    		 please refer to pinctrl-bindings.txt
->>  - fck_parent : Should contain a valid clock name which will be used as =
-parent
->>  	       for the McASP fck
->> +- ahclkx-en: In case the MCASP runs in slave mode, e.g. i2s SCK and WS =
-slave,
->> +             we can still provide the MCLK to a codec PLL using the AHC=
-LKX
->> +             transmit clock output. This setup can be activated by usin=
-g this
->> +             property. Clock master mode remains unaffected.
-> =
-
-> _if_ we hack this around in the driver I would rather have something like:
-> hclk-source: Source of HCLK internal clock when McASP is clock master.
-> With a new DT binding header file with defines:
-> =
-
-> /* Source of High-frequency transmit/receive clock */
-> #define MCASP_CLK_HCLK_AHCLK		0 /* AHCLKX/R */
-> #define MCASP_CLK_HCLK_AUXCLK		1 /* Internal functional clock */
-> =
-
-> Basically my old patches for McASP clock selection but w/o the improving =
-the
-> simple card.
-> The only change would be that we ignore the set_sysclk's clk_id parameter=
- and
-> use the private clk_id we got via DT when the dir is SND_SOC_CLOCK_IN.
-> Oh, and set the PDIR also when AUXCLK is selected for HCLK.
-> In the DT you would have for your setup:
-> =
-
-> hclk-source =3D MCASP_CLK_HCLK_AUXCLK;
-> =
-
-> Or something like that.
-> =
-
-> But I think in this way we can work around the simple-card posed limitati=
-on a
-> bit better, but it is still a questionable workaround.
-
-the other issue is that if we add the DT property, we need to support that =
-in
-the future, even if we have moved to CCF for clock selection...
-
-> =
-
-> I have attached my local patches for reference.
-> =
-
->>  =
-
->>  Example:
->>  =
-
->> diff --git a/include/linux/platform_data/davinci_asp.h b/include/linux/p=
-latform_data/davinci_asp.h
->> index 85ad68f..c878836 100644
->> --- a/include/linux/platform_data/davinci_asp.h
->> +++ b/include/linux/platform_data/davinci_asp.h
->> @@ -44,6 +44,11 @@ struct davinci_mcasp_pdata {
->>  	int clk_input_pin;
->>  =
-
->>  	/*
->> +	 * Activate AHCLKX clock output in slave mode.
->> +	 */
->> +	bool ahclkx_en;
->> +
->> +	/*
->>  	 * This flag works when both clock and FS are outputs for the cpu
->>  	 * and makes clock more accurate (FS is not symmetrical and the
->>  	 * clock is very fast.
->> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davin=
-ci-mcasp.c
->> index 237dc67..aba888e 100644
->> --- a/sound/soc/davinci/davinci-mcasp.c
->> +++ b/sound/soc/davinci/davinci-mcasp.c
->> @@ -94,6 +94,7 @@ struct davinci_mcasp {
->>  =
-
->>  	int	sysclk_freq;
->>  	bool	bclk_master;
->> +	bool    ahclkx_en;
->>  =
-
->>  	/* McASP FIFO related */
->>  	u8	txnumevt;
->> @@ -605,6 +606,10 @@ static int davinci_mcasp_set_sysclk(struct snd_soc_=
-dai *dai, int clk_id,
->>  		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG, AHCLKXE);
->>  		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG, AHCLKRE);
->>  		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AHCLKX);
->> +	} else if (mcasp->ahclkx_en) {
->> +		mcasp_clr_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG, AHCLKRE);
-> =
-
-> It is safe to set this bit as well.
-> =
-
->> +		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG, AHCLKXE);
->> +		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AHCLKX);
->>  	} else {
->>  		mcasp_clr_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG, AHCLKXE);
->>  		mcasp_clr_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG, AHCLKRE);
->> @@ -1610,6 +1615,8 @@ static struct davinci_mcasp_pdata *davinci_mcasp_s=
-et_pdata_from_of(
->>  	if (ret >=3D 0)
->>  		pdata->op_mode =3D val;
->>  =
-
->> +	pdata->ahclkx_en =3D of_property_read_bool(np, "ahclkx-en");
->> +
->>  	ret =3D of_property_read_u32(np, "tdm-slots", &val);
->>  	if (ret >=3D 0) {
->>  		if (val < 2 || val > 32) {
->> @@ -1851,6 +1858,7 @@ static int davinci_mcasp_probe(struct platform_dev=
-ice *pdev)
->>  	mcasp->version =3D pdata->version;
->>  	mcasp->txnumevt =3D pdata->txnumevt;
->>  	mcasp->rxnumevt =3D pdata->rxnumevt;
->> +	mcasp->ahclkx_en =3D pdata->ahclkx_en;
->>  =
-
->>  	mcasp->dev =3D &pdev->dev;
->>  =
-
->>
-> =
-
-> =
-
-> =
-
-> =
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> =
-
-
-
--- =
-
-P=E9ter
+SGkgUGV0ZXIsCgpPbiAyOC4wNy4yMDE2IDEzOjQ4LCBQZXRlciBVamZhbHVzaSB3cm90ZToKPiBQ
+bGVhc2UgZG8gQ0MgdGhlIG1haW50YWluZXJzIHdoZW4gc2VuZGluZyBwYXRjaGVzLgoKU29ycnks
+IHN1cHByZXNzY2M9YWxsIGF0ZSBteSBjYy1jbWQuIEFyZSB3ZSBnb29kIG5vdyBmb3IgZnVydGhl
+ciBkaXNjdXNzaW9uPwoKPiAKPiBPbiAwNy8yNi8xNiAxNTowNSwgU3RlZmFuIE3DvGxsZXItS2xp
+ZXNlciB3cm90ZToKPj4gVGhlIEFIQ0xLWCBjbG9jayBvdXRwdXQgb2YgdGhlIE1jQVNQIGNhbiBi
+ZSB1c2VkIGFzIGF1ZGlvIE1DTEssIGV2ZW4KPj4gaWYgdGhlIE1jQVNQIHJ1bnMgaW4gc2xhdmUg
+bW9kZS4gQWRkIGEgRFQgYmluZGluZyB0byBtYWtlIHRoaXMgb3B0aW9uCj4+IGF2YWlsYWJsZSBp
+biBhIHNpbXBsZS1jYXJkIHNldHVwLgo+IAo+IEluIG90aGVyIHdvcmRzOiBNY0FTUCBpcyBjbG9j
+ayBtYXN0ZXIsIGJ1dCB3ZSB3YW50IHRvIGhhdmUgdGhlIEhDTEsgdG8gYmUKPiBjb21pbmcgZnJv
+bSBpbnRlcm5hbCBBVVhDTEsgYW5kIG5vdCBmcm9tIHRoZSBBSENMS1ggcGluLCByaWdodD8KCkkg
+aGF2ZSBteSBkaWZmaWN1bHRpZXMgc2VlaW5nIGl0IHRoYXQgd2F5LiBJIHRvdGFsbHkgdW5kZXJz
+dGFuZCB0aGF0IGZyb20gYQpkcml2ZXIvc3lzdGVtIHBlcnNwZWN0aXZlLiBCdXQgSENMSyBpcyBu
+b3QgcGFydCBvZiB0aGUgSTJTIHNwZWNpZmljYXRpb24uIFNvCmZyb20gdGhlIHBlcnNwZWN0aXZl
+IG9mIHRoZSBhdWRpbyBpbnRlcmZhY2UsIEkgdGhpbmsgb2YgdGhlIEhDTEsgYXMgYSBzZXBhcmF0
+ZQplbnRpdHkuClRvIGJlIG9uIHRoZSBzYW1lIHBhZ2UsIEkgc2hvdWxkIGV4cGxhaW4gbXkgdXNl
+IGNhc2UuIEkgd2FudCB0byBhZGQgYXVkaW8Kc3VwcG9ydCBmb3IgYW4gYW0zMzV4IHdpdGggYSB0
+bHYzMjAsIG5vIHF1YXJ0eiBpcyBtb3VudGVkIGZvciB0aGUgY29kZWNzIE1DTEsKYW5kIHdlIGhh
+dmUgYW4gYW0zMzV4IE1fT1NDIG9mIDI1IE1Iei4gU28gdG8gZ2V0IHByZWNpc2UgYXVkaW8gc2Ft
+cGxlIHJhdGVzLApJIHdhbnQgdG8gcHJvdmlkZSBIQ0xLIHRvIHRoZSBjb2RlY3MgTUNMSyBhbmQg
+dXNlIHRoZSBjb2RlY3MgcGxsIHRvIGFjdCBhcyB0aGUKSTJTIG1hc3Rlci4gU28gaW4gbXkgcGFy
+dGlhbCB1bmRlcnN0YW5kaW5nIG9mIHRoZSBNY0FTUCwgaXQgd291bGQgcnVuIGluIHN5bmMKd2l0
+aCB0aGUgY2xvY2sgcHJvdmlkZWQgYnkgdGhlIGNvZGVjcyBwbGwuCgo+IFRoZXJlIG1pZ2h0IGJl
+IGFsc28gY2FzZXMgd2hlbiBNY0FTUCBpcyBzbGF2ZSBfYW5kXyB3ZSB3YW50IHRvIGNvbmZpZ3Vy
+ZSB0aGUKPiBIQ0xLIGZyb20gdGhlIEFIQ0xLWCBwaW5nLiBBZGRpbmcgbmV3IGZsYWcgZm9yIHRo
+aXMgaXMgbm90IGEgZ29vZCBpZGVhIElNSE8uCgpJIGV4cGVjdGVkIG1vcmUgdXNlIGNhc2VzIHRv
+IGFwcGVhci4gVGhpcyBvbmUgSSBkb24ndCB1bmRlcnN0YW5kLCB0aG91Z2guIElmIHRoZQpNY0FT
+UCBpcyBzbGF2ZSwgd2h5IHdvdWxkIEkgd2FudCB0byBzeW5jIHRvIEhDTEsgYW5kIG5vdCB0byBD
+TEs/Cgo+IAo+IFRoaXMgaXMgc2ltcGx5IGEgd29ya2Fyb3VuZCBmb3IgdGhlIGN1cnJlbnQgc2lt
+cGxlIGNhcmQgYW5kIG1pZ2h0IGJyZWFrIGlmCj4gc29tZXRoaW5nIGlzIGNoYW5naW5nIGluIHRo
+ZXJlLi4KClRoYXRzIHRydWUgZm9yIGFsbCBzaW1wbGUtY2FyZHMgdXNpbmcgTWNBU1AgcmlnaHQg
+bm93LCBvcj8KCj4gCj4gSSdtIGF3YXJlIHRoYXQgdGhpcyBpcyBhIHByb2JsZW1hdGljIGlzc3Vl
+LiBXZSBjYW4gbm90IGhhdmUgY2xvY2sgaWQgc3VwcG9ydAo+IGluIHRoZSBzaW1wbGUtY2FyZCBh
+bmQgSSBkb24ndCB0aGluayBpdCBpcyBhIGdvb2QgaWRlYSB0byBoYWNrIGFyb3VuZCB0aGlzIGlu
+Cj4gdGhlIE1jQVNQIGRyaXZlci4KPiBJIGRvbid0IHNlZSBhbnkgb3RoZXIgd2F5IHJpZ2h0IG5v
+dyB0aGVuIG1vdmluZyB0aGUgTWNBU1AgZHJpdmVyIHRvIENDRiwgb3IgYXQKPiBmaXJzdCBwcm9i
+YWJseSBhZGQgQ0NGIHN1cHBvcnQgdG8gY29uZmlndXJlIHRoZSBjbG9jayByb3V0ZXMgd2hpbGUg
+c3RpbGwKPiBrZWVwaW5nIHRoZSBBU29DIHdheSBvZiBjb25maWd1cmluZyB0aGUgY2xvY2tzLgoK
+T2suIEkgdHJpZWQgZmlyc3QgdG8gaW1wbGVtZW50IENDRi4gSSBqdXN0IHdhcyB0b28gYWZyYWlk
+IG9mIGJyZWFraW5nIGEgbG90IG9mCnN0dWZmLiBJZiB5b3UgdGhpbmsgdGhhdHMgdGhlIHdheSB0
+byBnbywgbWUgdG9vLCBJIHdvdWxkIHByZWZlciBub3QgcHV0dGluZyBtb3JlCndvcmsgaW4gdGhl
+IG9sZCBzdHVmZi4KVGhlbiB3ZSBjb21lIGJhY2sgdG8gbXkgaXNzdWUgd2l0aCB0aGUgSTJTIGlu
+dGVyZmFjZSB2cyBIQ0xLIGhhbmRsaW5nLiBJcyBIQ0xLCnRoZSBjbG9jayBvZiB0aGUgZGV2aWNl
+IG9yIGlzIGl0IHBhcnQgb2YgdGhlIGF1ZGlvIGludGVyZmFjZSAoSTJTICJhbGlrZSIgc3RyZWFt
+cyk/CkkgZ3Vlc3MgdGhhdHMgd2hlcmUgdGhlIG1vZGVsaW5nIGRpZmZpY3VsdGllcyBhcmUuIE1h
+eWJlIGl0cyBub3QgZWl0aGVyL29yIGJ1dCB3ZQpuZWVkIGJvdGgsIGJlY2F1c2UgaXQgY2FuIGZ1
+bmN0aW9uIGFzIGJvdGg/Cgo+IAo+PiBTaWduZWQtb2ZmLWJ5OiBTdGVmYW4gTcO8bGxlci1LbGll
+c2VyIDxzLm11ZWxsZXIta2xpZXNlckBwaHl0ZWMuZGU+Cj4+IC0tLQo+PiAgRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2RhdmluY2ktbWNhc3AtYXVkaW8udHh0IHwgNCAr
+KysrCj4+ICBpbmNsdWRlL2xpbnV4L3BsYXRmb3JtX2RhdGEvZGF2aW5jaV9hc3AuaCAgICAgICAg
+ICAgICAgICAgICAgICAgfCA1ICsrKysrCj4+ICBzb3VuZC9zb2MvZGF2aW5jaS9kYXZpbmNpLW1j
+YXNwLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCA4ICsrKysrKysrCj4+ICAzIGZp
+bGVzIGNoYW5nZWQsIDE3IGluc2VydGlvbnMoKykKPj4KPj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9kYXZpbmNpLW1jYXNwLWF1ZGlvLnR4dCBi
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9kYXZpbmNpLW1jYXNwLWF1
+ZGlvLnR4dAo+PiBpbmRleCA0NmJjOTgyLi45NmQ2MjQ0IDEwMDY0NAo+PiAtLS0gYS9Eb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZGF2aW5jaS1tY2FzcC1hdWRpby50eHQK
+Pj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2RhdmluY2kt
+bWNhc3AtYXVkaW8udHh0Cj4+IEBAIC0zOSw2ICszOSwxMCBAQCBPcHRpb25hbCBwcm9wZXJ0aWVz
+Ogo+PiAgICAJCSBwbGVhc2UgcmVmZXIgdG8gcGluY3RybC1iaW5kaW5ncy50eHQKPj4gIC0gZmNr
+X3BhcmVudCA6IFNob3VsZCBjb250YWluIGEgdmFsaWQgY2xvY2sgbmFtZSB3aGljaCB3aWxsIGJl
+IHVzZWQgYXMgcGFyZW50Cj4+ICAJICAgICAgIGZvciB0aGUgTWNBU1AgZmNrCj4+ICstIGFoY2xr
+eC1lbjogSW4gY2FzZSB0aGUgTUNBU1AgcnVucyBpbiBzbGF2ZSBtb2RlLCBlLmcuIGkycyBTQ0sg
+YW5kIFdTIHNsYXZlLAo+PiArICAgICAgICAgICAgIHdlIGNhbiBzdGlsbCBwcm92aWRlIHRoZSBN
+Q0xLIHRvIGEgY29kZWMgUExMIHVzaW5nIHRoZSBBSENMS1gKPj4gKyAgICAgICAgICAgICB0cmFu
+c21pdCBjbG9jayBvdXRwdXQuIFRoaXMgc2V0dXAgY2FuIGJlIGFjdGl2YXRlZCBieSB1c2luZyB0
+aGlzCj4+ICsgICAgICAgICAgICAgcHJvcGVydHkuIENsb2NrIG1hc3RlciBtb2RlIHJlbWFpbnMg
+dW5hZmZlY3RlZC4KPiAKPiBfaWZfIHdlIGhhY2sgdGhpcyBhcm91bmQgaW4gdGhlIGRyaXZlciBJ
+IHdvdWxkIHJhdGhlciBoYXZlIHNvbWV0aGluZyBsaWtlOgo+IGhjbGstc291cmNlOiBTb3VyY2Ug
+b2YgSENMSyBpbnRlcm5hbCBjbG9jayB3aGVuIE1jQVNQIGlzIGNsb2NrIG1hc3Rlci4KPiBXaXRo
+IGEgbmV3IERUIGJpbmRpbmcgaGVhZGVyIGZpbGUgd2l0aCBkZWZpbmVzOgoKVGhhdHMgbm90IGVu
+b3VnaCBmb3IgbXkgdXNlIGNhc2UgYXMgdGhlIE1jQVNQIGlzIGF1ZGlvIGludGVyZmFjZSBzbGF2
+ZS4gV2l0aApteSB1c2UgY2FzZSBleHBsYW5hdGlvbiwgaXQgbWF5YmUgZG9lcyBtYWtlIG1vcmUg
+c2Vuc2Ugbm93PwoKPiAKPiAvKiBTb3VyY2Ugb2YgSGlnaC1mcmVxdWVuY3kgdHJhbnNtaXQvcmVj
+ZWl2ZSBjbG9jayAqLwo+ICNkZWZpbmUgTUNBU1BfQ0xLX0hDTEtfQUhDTEsJCTAgLyogQUhDTEtY
+L1IgKi8KPiAjZGVmaW5lIE1DQVNQX0NMS19IQ0xLX0FVWENMSwkJMSAvKiBJbnRlcm5hbCBmdW5j
+dGlvbmFsIGNsb2NrICovCj4gCj4gQmFzaWNhbGx5IG15IG9sZCBwYXRjaGVzIGZvciBNY0FTUCBj
+bG9jayBzZWxlY3Rpb24gYnV0IHcvbyB0aGUgaW1wcm92aW5nIHRoZQo+IHNpbXBsZSBjYXJkLgo+
+IFRoZSBvbmx5IGNoYW5nZSB3b3VsZCBiZSB0aGF0IHdlIGlnbm9yZSB0aGUgc2V0X3N5c2Nsaydz
+IGNsa19pZCBwYXJhbWV0ZXIgYW5kCj4gdXNlIHRoZSBwcml2YXRlIGNsa19pZCB3ZSBnb3Qgdmlh
+IERUIHdoZW4gdGhlIGRpciBpcyBTTkRfU09DX0NMT0NLX0lOLgo+IE9oLCBhbmQgc2V0IHRoZSBQ
+RElSIGFsc28gd2hlbiBBVVhDTEsgaXMgc2VsZWN0ZWQgZm9yIEhDTEsuCj4gSW4gdGhlIERUIHlv
+dSB3b3VsZCBoYXZlIGZvciB5b3VyIHNldHVwOgo+IAo+IGhjbGstc291cmNlID0gTUNBU1BfQ0xL
+X0hDTEtfQVVYQ0xLOwo+IAo+IE9yIHNvbWV0aGluZyBsaWtlIHRoYXQuCj4gCj4gQnV0IEkgdGhp
+bmsgaW4gdGhpcyB3YXkgd2UgY2FuIHdvcmsgYXJvdW5kIHRoZSBzaW1wbGUtY2FyZCBwb3NlZCBs
+aW1pdGF0aW9uIGEKPiBiaXQgYmV0dGVyLCBidXQgaXQgaXMgc3RpbGwgYSBxdWVzdGlvbmFibGUg
+d29ya2Fyb3VuZC4KPiAKPiBJIGhhdmUgYXR0YWNoZWQgbXkgbG9jYWwgcGF0Y2hlcyBmb3IgcmVm
+ZXJlbmNlLgoKU28sIHdpdGggdGhlc2UgcGF0Y2hlcywgSSB3b3VsZCBzdGlsbCBuZWVkIHRvIHRv
+Z2dsZSBQRElSIG9mIEFIQ0xLWCBpbiB0aGUgY2FzZQpTTkRfU09DX0NMT0NLX0lOICsgTUNBU1Bf
+Q0xLX0hDTEtfQVVYQ0xLLgoKPiAKPj4gIAo+PiAgRXhhbXBsZToKPj4gIAo+PiBkaWZmIC0tZ2l0
+IGEvaW5jbHVkZS9saW51eC9wbGF0Zm9ybV9kYXRhL2RhdmluY2lfYXNwLmggYi9pbmNsdWRlL2xp
+bnV4L3BsYXRmb3JtX2RhdGEvZGF2aW5jaV9hc3AuaAo+PiBpbmRleCA4NWFkNjhmLi5jODc4ODM2
+IDEwMDY0NAo+PiAtLS0gYS9pbmNsdWRlL2xpbnV4L3BsYXRmb3JtX2RhdGEvZGF2aW5jaV9hc3Au
+aAo+PiArKysgYi9pbmNsdWRlL2xpbnV4L3BsYXRmb3JtX2RhdGEvZGF2aW5jaV9hc3AuaAo+PiBA
+QCAtNDQsNiArNDQsMTEgQEAgc3RydWN0IGRhdmluY2lfbWNhc3BfcGRhdGEgewo+PiAgCWludCBj
+bGtfaW5wdXRfcGluOwo+PiAgCj4+ICAJLyoKPj4gKwkgKiBBY3RpdmF0ZSBBSENMS1ggY2xvY2sg
+b3V0cHV0IGluIHNsYXZlIG1vZGUuCj4+ICsJICovCj4+ICsJYm9vbCBhaGNsa3hfZW47Cj4+ICsK
+Pj4gKwkvKgo+PiAgCSAqIFRoaXMgZmxhZyB3b3JrcyB3aGVuIGJvdGggY2xvY2sgYW5kIEZTIGFy
+ZSBvdXRwdXRzIGZvciB0aGUgY3B1Cj4+ICAJICogYW5kIG1ha2VzIGNsb2NrIG1vcmUgYWNjdXJh
+dGUgKEZTIGlzIG5vdCBzeW1tZXRyaWNhbCBhbmQgdGhlCj4+ICAJICogY2xvY2sgaXMgdmVyeSBm
+YXN0Lgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2RhdmluY2kvZGF2aW5jaS1tY2FzcC5jIGIv
+c291bmQvc29jL2RhdmluY2kvZGF2aW5jaS1tY2FzcC5jCj4+IGluZGV4IDIzN2RjNjcuLmFiYTg4
+OGUgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktbWNhc3AuYwo+PiAr
+KysgYi9zb3VuZC9zb2MvZGF2aW5jaS9kYXZpbmNpLW1jYXNwLmMKPj4gQEAgLTk0LDYgKzk0LDcg
+QEAgc3RydWN0IGRhdmluY2lfbWNhc3Agewo+PiAgCj4+ICAJaW50CXN5c2Nsa19mcmVxOwo+PiAg
+CWJvb2wJYmNsa19tYXN0ZXI7Cj4+ICsJYm9vbCAgICBhaGNsa3hfZW47Cj4+ICAKPj4gIAkvKiBN
+Y0FTUCBGSUZPIHJlbGF0ZWQgKi8KPj4gIAl1OAl0eG51bWV2dDsKPj4gQEAgLTYwNSw2ICs2MDYs
+MTAgQEAgc3RhdGljIGludCBkYXZpbmNpX21jYXNwX3NldF9zeXNjbGsoc3RydWN0IHNuZF9zb2Nf
+ZGFpICpkYWksIGludCBjbGtfaWQsCj4+ICAJCW1jYXNwX3NldF9iaXRzKG1jYXNwLCBEQVZJTkNJ
+X01DQVNQX0FIQ0xLWENUTF9SRUcsIEFIQ0xLWEUpOwo+PiAgCQltY2FzcF9zZXRfYml0cyhtY2Fz
+cCwgREFWSU5DSV9NQ0FTUF9BSENMS1JDVExfUkVHLCBBSENMS1JFKTsKPj4gIAkJbWNhc3Bfc2V0
+X2JpdHMobWNhc3AsIERBVklOQ0lfTUNBU1BfUERJUl9SRUcsIEFIQ0xLWCk7Cj4+ICsJfSBlbHNl
+IGlmIChtY2FzcC0+YWhjbGt4X2VuKSB7Cj4+ICsJCW1jYXNwX2Nscl9iaXRzKG1jYXNwLCBEQVZJ
+TkNJX01DQVNQX0FIQ0xLUkNUTF9SRUcsIEFIQ0xLUkUpOwo+IAo+IEl0IGlzIHNhZmUgdG8gc2V0
+IHRoaXMgYml0IGFzIHdlbGwuCgpUaGFua3MsIHdvdWxkbid0IHdhbnQgdG8gYXNzdW1lIHRoYXQu
+IFRoYXQgd291bGQgbWFrZSB0aGUgcGF0Y2ggZXZlbiBzbWFsbGVyLiBCdXQgSQp0b3RhbGx5IHVu
+ZGVyc3RhbmQgdGhlIGNhc2UgZm9yIENDRi4gV2hhdCB3b3VsZCBiZSB5b3VyIHN0YXJ0aW5nIHBv
+aW50IGZvciB0aGUgdHJhbnNpdGlvbj8KRG8geW91IGFscmVhZHkgaGF2ZSBzb21lIHBhdGNoZXM/
+CgpSZWdhcmRzLCBTdGVmYW4KCj4gCj4+ICsJCW1jYXNwX3NldF9iaXRzKG1jYXNwLCBEQVZJTkNJ
+X01DQVNQX0FIQ0xLWENUTF9SRUcsIEFIQ0xLWEUpOwo+PiArCQltY2FzcF9zZXRfYml0cyhtY2Fz
+cCwgREFWSU5DSV9NQ0FTUF9QRElSX1JFRywgQUhDTEtYKTsKPj4gIAl9IGVsc2Ugewo+PiAgCQlt
+Y2FzcF9jbHJfYml0cyhtY2FzcCwgREFWSU5DSV9NQ0FTUF9BSENMS1hDVExfUkVHLCBBSENMS1hF
+KTsKPj4gIAkJbWNhc3BfY2xyX2JpdHMobWNhc3AsIERBVklOQ0lfTUNBU1BfQUhDTEtSQ1RMX1JF
+RywgQUhDTEtSRSk7Cj4+IEBAIC0xNjEwLDYgKzE2MTUsOCBAQCBzdGF0aWMgc3RydWN0IGRhdmlu
+Y2lfbWNhc3BfcGRhdGEgKmRhdmluY2lfbWNhc3Bfc2V0X3BkYXRhX2Zyb21fb2YoCj4+ICAJaWYg
+KHJldCA+PSAwKQo+PiAgCQlwZGF0YS0+b3BfbW9kZSA9IHZhbDsKPj4gIAo+PiArCXBkYXRhLT5h
+aGNsa3hfZW4gPSBvZl9wcm9wZXJ0eV9yZWFkX2Jvb2wobnAsICJhaGNsa3gtZW4iKTsKPj4gKwo+
+PiAgCXJldCA9IG9mX3Byb3BlcnR5X3JlYWRfdTMyKG5wLCAidGRtLXNsb3RzIiwgJnZhbCk7Cj4+
+ICAJaWYgKHJldCA+PSAwKSB7Cj4+ICAJCWlmICh2YWwgPCAyIHx8IHZhbCA+IDMyKSB7Cj4+IEBA
+IC0xODUxLDYgKzE4NTgsNyBAQCBzdGF0aWMgaW50IGRhdmluY2lfbWNhc3BfcHJvYmUoc3RydWN0
+IHBsYXRmb3JtX2RldmljZSAqcGRldikKPj4gIAltY2FzcC0+dmVyc2lvbiA9IHBkYXRhLT52ZXJz
+aW9uOwo+PiAgCW1jYXNwLT50eG51bWV2dCA9IHBkYXRhLT50eG51bWV2dDsKPj4gIAltY2FzcC0+
+cnhudW1ldnQgPSBwZGF0YS0+cnhudW1ldnQ7Cj4+ICsJbWNhc3AtPmFoY2xreF9lbiA9IHBkYXRh
+LT5haGNsa3hfZW47Cj4+ICAKPj4gIAltY2FzcC0+ZGV2ID0gJnBkZXYtPmRldjsKPj4gIAo+Pgo+
+IAo+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
