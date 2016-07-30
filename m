@@ -1,89 +1,76 @@
-From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v2 2/2] ASoC: sunxi: compatibility for sun6i to SPDIF
-Date: Sat, 30 Jul 2016 17:56:38 +0200
-Message-ID: <20160730155638.24455-3-codekipper@gmail.com>
-References: <20160730155638.24455-1-codekipper@gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Eugeniu Rosca <roscaeugeniu@gmail.com>
+Subject: [PATCH] sound: Fix empty menuconfig SND_ARM
+Date: Sat, 30 Jul 2016 16:00:19 +0200
+Message-ID: <20160730140019.20305-1-rosca.eugeniu@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBPE46O6AKGQEYX55TLY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20160730155638.24455-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 53DB02652C3
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jul 2016 16:00:58 +0200 (CEST)
+Received: by mail-wm0-f67.google.com with SMTP id i5so19491877wmg.2
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jul 2016 07:00:58 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: perex@perex.cz, tiwai@suse.com, robert.jarzmik@free.fr, broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: Eugeniu Rosca <rosca.eugeniu@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+commit 3c8f7710c1c4 ("ASoC: fix broken pxa SoC support") has removed
+the SND_ARM dependency from SND_PXA2XX_LIB and SND_PXA2XX_LIB_AC97,
+by moving these config entries outside of the "if SND_ARM ... endif"
+construct.
 
-The A31 SoC uses the same SPDIF block as found in earlier SoCs, but its
-reset is controlled via a separate reset controller.
+However, by placing these 2 symbols right between the SND_ARM
+menuconfig definition and the first SND_ARM menu entry, the side
+effect is that the SND_ARM menu becomes empty and all the config
+entries caught between "if SND_ARM ... endif" no more belong to
+menuconfig SND_ARM, but to its parent (menuconfig SND).
 
-The DMA also complains when the maxburst is set to 4 so it's been adjusted
-to 8 which suites both the older and newer SoCs.
+Fix this.
 
-Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Signed-off-by: Eugeniu Rosca <rosca.eugeniu@gmail.com>
 ---
- sound/soc/sunxi/sun4i-spdif.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ sound/arm/Kconfig | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
-index 0b04fb0..88fbb3a 100644
---- a/sound/soc/sunxi/sun4i-spdif.c
-+++ b/sound/soc/sunxi/sun4i-spdif.c
-@@ -29,6 +29,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/reset.h>
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -162,6 +163,7 @@ struct sun4i_spdif_dev {
- 	struct platform_device *pdev;
- 	struct clk *spdif_clk;
- 	struct clk *apb_clk;
-+	struct reset_control *rst;
- 	struct snd_soc_dai_driver cpu_dai_drv;
- 	struct regmap *regmap;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
-@@ -411,6 +413,7 @@ static const struct snd_soc_dapm_route dit_routes[] = {
+diff --git a/sound/arm/Kconfig b/sound/arm/Kconfig
+index e040621..65171f6 100644
+--- a/sound/arm/Kconfig
++++ b/sound/arm/Kconfig
+@@ -9,14 +9,6 @@ menuconfig SND_ARM
+ 	  Drivers that are implemented on ASoC can be found in
+ 	  "ALSA for SoC audio support" section.
  
- static const struct of_device_id sun4i_spdif_of_match[] = {
- 	{ .compatible = "allwinner,sun4i-a10-spdif", },
-+	{ .compatible = "allwinner,sun6i-a31-spdif", },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, sun4i_spdif_of_match);
-@@ -482,11 +485,23 @@ static int sun4i_spdif_probe(struct platform_device *pdev)
- 	}
+-config SND_PXA2XX_LIB
+-	tristate
+-	select SND_AC97_CODEC if SND_PXA2XX_LIB_AC97
+-	select SND_DMAENGINE_PCM
+-
+-config SND_PXA2XX_LIB_AC97
+-	bool
+-
+ if SND_ARM
  
- 	host->dma_params_tx.addr = res->start + SUN4I_SPDIF_TXFIFO;
--	host->dma_params_tx.maxburst = 4;
-+	host->dma_params_tx.maxburst = 8;
- 	host->dma_params_tx.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+ config SND_ARMAACI
+@@ -42,3 +34,10 @@ config SND_PXA2XX_AC97
  
- 	platform_set_drvdata(pdev, host);
+ endif	# SND_ARM
  
-+	if (of_device_is_compatible(pdev->dev.of_node,
-+				    "allwinner,sun6i-a31-spdif")) {
-+		host->rst = devm_reset_control_get_optional(&pdev->dev, NULL);
-+		if (IS_ERR(host->rst) && PTR_ERR(host->rst) == -EPROBE_DEFER) {
-+			ret = -EPROBE_DEFER;
-+			dev_err(&pdev->dev, "Failed to get reset: %d\n", ret);
-+			goto err_disable_apb_clk;
-+		}
-+		if (!IS_ERR(host->rst))
-+			reset_control_deassert(host->rst);
-+	}
++config SND_PXA2XX_LIB
++	tristate
++	select SND_AC97_CODEC if SND_PXA2XX_LIB_AC97
++	select SND_DMAENGINE_PCM
 +
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 				&sun4i_spdif_component, &sun4i_spdif_dai, 1);
- 	if (ret)
++config SND_PXA2XX_LIB_AC97
++	bool
 -- 
 2.9.2
