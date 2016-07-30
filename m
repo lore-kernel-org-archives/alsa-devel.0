@@ -1,65 +1,70 @@
-From: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: sunxi: compatibility for sun6i to SPDIF
-Date: Sat, 30 Jul 2016 23:23:06 +0800
-Message-ID: <24431469892186@web18m.yandex.ru>
-References: <20160730142716.29377-1-codekipper@gmail.com>
-	 <20160730142716.29377-3-codekipper@gmail.com>
-	 <170941469890365@web9j.yandex.ru> <20160730152049.GU6215@lukather>
-Reply-To: icenowy-ymACFijhrKM@public.gmane.org
+From: Marve <marve@xs4all.nl>
+Subject: Dell XPS One 2710 HDA Intel PCH - No S/PDIF Output
+Date: Sat, 30 Jul 2016 17:24:18 +0200
+Message-ID: <5c7db325-ac1c-c8aa-a0cc-32664c50097a@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBCZLPFN5Q4OBBXUM6O6AKGQEC63DHZY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20160730152049.GU6215@lukather>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: "maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org" <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: "codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>, "linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org" <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lb3-smtp-cloud6.xs4all.net (lb3-smtp-cloud6.xs4all.net
+ [194.109.24.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8EF2265A59
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jul 2016 17:24:21 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
+I've been trying stuff myself and got help from someone (debianuser) at
+#alsa IRC, but without success! I got the advice to explain the issue in
+this mailing list!
 
-30.07.2016, 23:20, "maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org" <maxime.ripard@free-e=
-lectrons.com>:
-> On Sat, Jul 30, 2016 at 10:52:45PM +0800, Icenowy Zheng wrote:
->> =C2=A0> + if (of_device_is_compatible(pdev->dev.of_node,
->> =C2=A0> + "allwinner,sun6i-a31-spdif")) {
->> =C2=A0> + host->rst =3D devm_reset_control_get_optional(&pdev->dev, NULL=
-);
->> =C2=A0> + if (IS_ERR(host->rst) && PTR_ERR(host->rst) =3D=3D -EPROBE_DEF=
-ER) {
->> =C2=A0> + ret =3D -EPROBE_DEFER;
->> =C2=A0> + dev_err(&pdev->dev, "Failed to get reset: %d\n", ret);
->> =C2=A0> + goto err_disable_apb_clk;
->> =C2=A0> + }
->> =C2=A0> + if (!IS_ERR(host->rst))
->> =C2=A0> + reset_control_deassert(host->rst);
->> =C2=A0> + }
->> =C2=A0> +
->> =C2=A0I think you do not need the compatible.
->> =C2=A0You can just detect whether the reset is present.
->
-> That would weaken the error check. If we're running on the A31 and are
-> missing our reset property, it would go unnoticed.
-The reset property is in the SoC's dtsi file, so it won't be easily missing=
-...
+I'm running Linux Mint 18 on a all-in-one Dell XPS One 2710. Most stuff
+works, except sound.
 
->
-> Maxime
->
-> --
-> Maxime Ripard, Free Electrons
-> Embedded Linux and Kernel engineering
-> http://free-electrons.com
+The former Mint version also sound from the speakers worked out of the
+box. Now, I have to switch from the Pulse Audio volume control from 
+"Speakers" to "Headphones (unplugged)" every time I start up to get
+audio from the internal speakers, which is working well then, annoying,
+is probably an issue that belongs in another group and not the reason
+I'm writing you! :)
 
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+The XPS One 2710 has a S/PDIF Toslink (optical) connection. Back in the
+days that Microsoft wasn't trying to shove up Windows 10 to everyone, I
+successfully could get output from this connection to my JVC Receiver
+from Windows7 of the box.
+
+I find it hard to have it configured under Linux.
+
+Partly, with help from a anonymous debianuser on #alsa IRC I checked
+with alsamixer that the S/PDIF was not muted. Also, with the Jack
+Retasking for HDA tool, I enforced Pin ID: 0x1e is a SPDIF Out
+connection. After this, the Pulse Audio Tools shows several new
+interesting Built-in Audio options and I think "Digital Stereo (IEC958)
+Outout looks most promising. So I select this one and with Output
+Devices I select "Digital Output (S/PDIF). Then, when I play something
+on the box, the volume meters actually show that there is something
+playing, but I can't hear anything from the JVC receiver! The receiver
+supports PCM to DTS, but no sound is coming out of it!
+
+Thanks if you could help me out! I am happy to help you when you need
+more information or want we to test something. I had this problem on the
+previous Linux Mint LTS version and tried to install a newer kernel and
+alsa driver, which didn't work - so I decided to wait for the current LTS.
+
+I made a fresh info:
+http://www.alsa-project.org/db/?f=556ae2bdae66341579831231ef2d90ca0d7c8e24
+
+If you need one with other settings, please let me know!
+
+Best wishes,
+M.
