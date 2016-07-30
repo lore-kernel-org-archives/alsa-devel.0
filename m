@@ -1,17 +1,17 @@
 From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH 1/2] ASoC: sunxi: Add bindings for sun6i to SPDIF
-Date: Sat, 30 Jul 2016 17:17:24 +0200
-Message-ID: <20160730151724.GS6215@lukather>
+Subject: Re: [PATCH 2/2] ASoC: sunxi: compatibility for sun6i to SPDIF
+Date: Sat, 30 Jul 2016 17:19:54 +0200
+Message-ID: <20160730151954.GT6215@lukather>
 References: <20160730142716.29377-1-codekipper@gmail.com>
- <20160730142716.29377-2-codekipper@gmail.com>
+ <20160730142716.29377-3-codekipper@gmail.com>
 Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="zu8lIfFVzXMVnfzp"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBBMK6O6AKGQE73PW2LQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="MOeiELSuYwpLEKvX"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBG4L6O6AKGQESYD74GI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <20160730142716.29377-2-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+In-Reply-To: <20160730142716.29377-3-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -23,40 +23,22 @@ Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-su
 List-Id: alsa-devel@alsa-project.org
 
 
---zu8lIfFVzXMVnfzp
+--MOeiELSuYwpLEKvX
 Content-Type: text/plain; charset=UTF-8
 Content-Disposition: inline
 
-On Sat, Jul 30, 2016 at 04:27:15PM +0200, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
+On Sat, Jul 30, 2016 at 04:27:16PM +0200, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
 > From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 > 
 > The A31 SoC uses the same SPDIF block as found in earlier SoCs, but its
 > reset is controlled via a separate reset controller.
 > 
-> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> ---
->  Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt | 3 +++
->  1 file changed, 3 insertions(+)
+> The DMA also complains when the maxburst is set to 4 so it's been adjusted
+> to 8 which suites both the older and newer SoCs.
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-> index 13503aa..4fe80f7 100644
-> --- a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-> +++ b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-> @@ -9,6 +9,7 @@ Required properties:
->  
->    - compatible		: should be one of the following:
->      - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
-> +    - "allwinner,sun6i-a31-spdif": for the Allwinner A31 SoC
->  
->    - reg			: Offset and length of the register set for the device.
->  
-> @@ -25,6 +26,8 @@ Required properties:
->  	"apb"		  clock for the spdif bus.
->  	"spdif"		  clock for spdif controller.
->  
-> +  - reset		: reset specifier for the ahb reset (A31 and newer only)
+> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Isn't it resets ? (plural)
+Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 
 Thanks,
 Maxime
@@ -65,4 +47,4 @@ Maxime
 Maxime Ripard, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
---zu8lIfFVzXMVnfzp--
+--MOeiELSuYwpLEKvX--
