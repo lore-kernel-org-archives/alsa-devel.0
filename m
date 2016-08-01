@@ -1,90 +1,61 @@
-From: Shrirang Bagul <shrirang.bagul@canonical.com>
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda - On-board speaker fixup on ACER
- Veriton
-Date: Mon, 1 Aug 2016 14:56:06 +0800
-Message-ID: <ab490612-f9d3-e329-518b-347864af201d@canonical.com>
-References: <1470028577-13511-1-git-send-email-shrirang.bagul@canonical.com>
- <s5ha8gx3s6p.wl-tiwai@suse.de>
+From: Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: Re: [PATCH 1/3] drm: bridge: add DesignWare HDMI I2S
+	audio support
+Date: Mon, 1 Aug 2016 08:45:57 +0100
+Message-ID: <579EFE35.3090502@synopsys.com>
+References: <874m8jxqcy.wl%kuninori.morimoto.gx@renesas.com>
+ <8737o3xqab.wl%kuninori.morimoto.gx@renesas.com>
+ <579A2D4E.9000207@synopsys.com>
+ <87mvkx9jqj.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <s5ha8gx3s6p.wl-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtprelay.synopsys.com (us01smtprelay-2.synopsys.com
+ [198.182.47.9]) by alsa0.perex.cz (Postfix) with ESMTP id 564032659F8
+ for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2016 09:46:08 +0200 (CEST)
+In-Reply-To: <87mvkx9jqj.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Jose Abreu <Jose.Abreu@synopsys.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel.vetter@ffwll.ch>, Koji Matsuoka <koji.matsuoka.xm@renesas.com>, dri-devel@lists.freedesktop.org, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>, Russell King <rmk+kernel@arm.linux.org.uk>, Thierry Reding <treding@nvidia.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I'll ensure these rules are followed in patches submitted henceforth.
+Hi,
 
-Thanks,
-Shrirang
+On 01-08-2016 05:57, Kuninori Morimoto wrote:
+> Hi Jose
+> Cc: Mark, Thierry, Daniel
+>
+>>> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>>>
+>>> Current dw-hdmi is supporting sound via AHB bus, but it has
+>>> I2S audio feature too. This patch adds I2S audio support to dw-hdmi.
+>>> This HDMI I2S is supported by using ALSA SoC common HDMI encoder
+>>> driver.
+>>>
+>>> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>>> ---
+>>>
+>> I just tested this patch and everything seems ok. Should I give
+>> my tested-by?
+> Thank you for your test. I'm happy if it could have it.
+>
+> Mark, Thierry, Daniel
+> I wonder who can be maintainer for this patch ??
+>
+> Best regards
+> ---
+> Kuninori Morimoto
 
-On 08/01/2016 02:43 PM, Takashi Iwai wrote:
-> On Mon, 01 Aug 2016 07:16:17 +0200,
-> Shrirang Bagul wrote:
->>
->> On Acer Veriton machines, codec with subsystem-id 0x1b0a01b8 the port at
->> 0x15 is configured by default as an Internal Speaker (0x90170120).
->> However, no physical is speaker installed on-board. This patch adds a quirk
->> which disables the physical connection on this pin.
->>
->> BugLink: https://bugs.launchpad.net/bugs/1607647
->>
->> Signed-off-by: Shrirang Bagul <shrirang.bagul@canonical.com>
-> 
-> Applied with a slight modification (the item entry sorted in SSID
-> order) and with Cc to stable.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
->> ---
->>  sound/pci/hda/patch_realtek.c |    9 +++++++++
->>  1 file changed, 9 insertions(+)
->>
->> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
->> index ddd29b9..498f199 100644
->> --- a/sound/pci/hda/patch_realtek.c
->> +++ b/sound/pci/hda/patch_realtek.c
->> @@ -6549,6 +6549,7 @@ enum {
->>  	ALC668_FIXUP_ASUS_Nx51,
->>  	ALC891_FIXUP_HEADSET_MODE,
->>  	ALC891_FIXUP_DELL_MIC_NO_PRESENCE,
->> +	ALC662_FIXUP_ACER_VERITON,
->>  };
->>  
->>  static const struct hda_fixup alc662_fixups[] = {
->> @@ -6818,6 +6819,13 @@ static const struct hda_fixup alc662_fixups[] = {
->>  		.chained = true,
->>  		.chain_id = ALC891_FIXUP_HEADSET_MODE
->>  	},
->> +	[ALC662_FIXUP_ACER_VERITON] = {
->> +		.type = HDA_FIXUP_PINS,
->> +		.v.pins = (const struct hda_pintbl[]) {
->> +			{ 0x15, 0x50170120 }, /* no internal speaker */
->> +			{ }
->> +		}
->> +	},
->>  };
->>  
->>  static const struct snd_pci_quirk alc662_fixup_tbl[] = {
->> @@ -6857,6 +6865,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
->>  	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Ideapad Y550", ALC662_FIXUP_IDEAPAD),
->>  	SND_PCI_QUIRK(0x19da, 0xa130, "Zotac Z68", ALC662_FIXUP_ZOTAC_Z68),
->>  	SND_PCI_QUIRK(0x1b35, 0x2206, "CZC P10T", ALC662_FIXUP_CZC_P10T),
->> +	SND_PCI_QUIRK(0x1b0a, 0x01b8, "ACER Veriton", ALC662_FIXUP_ACER_VERITON),
->>  
->>  #if 0
->>  	/* Below is a quirk table taken from the old code.
->> -- 
->> 1.7.9.5
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
+Tested-by: Jose Abreu <joabreu@synopsys.com>
+
+Best regards,
+Jose Miguel Abreu
