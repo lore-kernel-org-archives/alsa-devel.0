@@ -1,72 +1,160 @@
-From: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-Subject: Re: Re: [PATCH 2/2] ASoC: sunxi: compatibility for
- sun6i to SPDIF
-Date: Mon, 01 Aug 2016 23:02:22 +0800
-Message-ID: <114771470063742@web16h.yandex.ru>
-References: <20160730142716.29377-1-codekipper@gmail.com> <20160730142716.29377-3-codekipper@gmail.com>
-	 <170941469890365@web9j.yandex.ru> <20160730152049.GU6215@lukather> <CAGb2v65Hyp8U1OMrfy0Bo9-qC0eO5de+NjWQzch87_2Ty+fBqQ@mail.gmail.com>
-Reply-To: icenowy-ymACFijhrKM@public.gmane.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBCZLPFN5Q4OBBAOJ7W6AKGQECMNYEAA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <CAGb2v65Hyp8U1OMrfy0Bo9-qC0eO5de+NjWQzch87_2Ty+fBqQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: "codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>, "linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org" <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: da7219: Make more efficient use of MCLK within driver" to the asoc tree
+Date: Mon, 01 Aug 2016 18:07:33 +0100
+Message-ID: <E1bUGgf-0006TS-Sm@debutante>
+References: <20160729134654.BC1F73FB13@swsrvapps-01.diasemi.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160729134654.BC1F73FB13@swsrvapps-01.diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
+   ASoC: da7219: Make more efficient use of MCLK within driver
 
-01.08.2016, 21:40, "Chen-Yu Tsai" <wens-jdAy2FN1RRM@public.gmane.org>:
-> Hi,
->
-> On Sat, Jul 30, 2016 at 11:20 PM, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
-> <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
->> =C2=A0On Sat, Jul 30, 2016 at 10:52:45PM +0800, Icenowy Zheng wrote:
->>> =C2=A0> + if (of_device_is_compatible(pdev->dev.of_node,
->>> =C2=A0> + "allwinner,sun6i-a31-spdif")) {
->>> =C2=A0> + host->rst =3D devm_reset_control_get_optional(&pdev->dev, NUL=
-L);
->>> =C2=A0> + if (IS_ERR(host->rst) && PTR_ERR(host->rst) =3D=3D -EPROBE_DE=
-FER) {
->>> =C2=A0> + ret =3D -EPROBE_DEFER;
->>> =C2=A0> + dev_err(&pdev->dev, "Failed to get reset: %d\n", ret);
->>> =C2=A0> + goto err_disable_apb_clk;
->>> =C2=A0> + }
->>> =C2=A0> + if (!IS_ERR(host->rst))
->>> =C2=A0> + reset_control_deassert(host->rst);
->>> =C2=A0> + }
->>> =C2=A0> +
->>> =C2=A0I think you do not need the compatible.
->>> =C2=A0You can just detect whether the reset is present.
->>
->> =C2=A0That would weaken the error check. If we're running on the A31 and=
- are
->> =C2=A0missing our reset property, it would go unnoticed.
->
-> We've been doing it this way with the mmc controller and the usb hosts th=
-ough.
-I did the same thing on NAND controller.
-> IIRC you once said in the older SoCs, the reset control is tied to the cl=
-ock
-> gate in the hardware.
->
-> The _optional variant is also funny, though I understand it is a design
-> of the reset controller framework.
->
-> Regards
-> ChenYu
+has been applied to the asoc tree at
 
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 3278bfca82e9d8ec0eefe7ecf932acd7efdad944 Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Fri, 29 Jul 2016 14:46:54 +0100
+Subject: [PATCH] ASoC: da7219: Make more efficient use of MCLK within driver
+
+Currently, if the driver has control of MCLK then it remains
+enabled as long as the codec is in STANDBY or above. The MCLK is
+only really required in STANDBY when a 3-pole jack is inserted
+and the HP detect procedure is required to run.
+
+This patch updates the code to enable/disable the MCLK when moving
+between the STANDBY and PREPARE bias level, and when a 3-pole jack
+is inserted and HP detection is required, thus saving power at all
+other times.
+
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/da7219-aad.c | 18 +++++++++++++++++-
+ sound/soc/codecs/da7219.c     | 18 +++++++++++-------
+ 2 files changed, 28 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index f0057cd223a4..4e369a1c5d88 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -13,6 +13,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/clk.h>
+ #include <linux/i2c.h>
+ #include <linux/property.h>
+ #include <linux/pm_wakeirq.h>
+@@ -115,12 +116,23 @@ static void da7219_aad_hptest_work(struct work_struct *work)
+ 
+ 	u16 tonegen_freq_hptest;
+ 	u8 accdet_cfg8;
+-	int report = 0;
++	int report = 0, ret = 0;
+ 
+ 	/* Lock DAPM and any Kcontrols that are affected by this test */
+ 	snd_soc_dapm_mutex_lock(dapm);
+ 	mutex_lock(&da7219->lock);
+ 
++	/* Ensure MCLK is available for HP test procedure */
++	if (da7219->mclk) {
++		ret = clk_prepare_enable(da7219->mclk);
++		if (ret) {
++			dev_err(codec->dev, "Failed to enable mclk - %d\n", ret);
++			mutex_unlock(&da7219->lock);
++			snd_soc_dapm_mutex_unlock(dapm);
++			return;
++		}
++	}
++
+ 	/* Bypass cache so it saves current settings */
+ 	regcache_cache_bypass(da7219->regmap, true);
+ 
+@@ -250,6 +262,10 @@ static void da7219_aad_hptest_work(struct work_struct *work)
+ 	snd_soc_update_bits(codec, DA7219_HP_R_CTRL, DA7219_HP_R_AMP_OE_MASK,
+ 			    DA7219_HP_R_AMP_OE_MASK);
+ 
++	/* Remove MCLK, if previously enabled */
++	if (da7219->mclk)
++		clk_disable_unprepare(da7219->mclk);
++
+ 	mutex_unlock(&da7219->lock);
+ 	snd_soc_dapm_mutex_unlock(dapm);
+ 
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 50ea94317cb3..737e91422a5e 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1508,11 +1508,10 @@ static int da7219_set_bias_level(struct snd_soc_codec *codec,
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+-	case SND_SOC_BIAS_PREPARE:
+ 		break;
+-	case SND_SOC_BIAS_STANDBY:
+-		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
+-			/* MCLK */
++	case SND_SOC_BIAS_PREPARE:
++		/* Enable MCLK for transition to ON state */
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_STANDBY) {
+ 			if (da7219->mclk) {
+ 				ret = clk_prepare_enable(da7219->mclk);
+ 				if (ret) {
+@@ -1521,11 +1520,19 @@ static int da7219_set_bias_level(struct snd_soc_codec *codec,
+ 					return ret;
+ 				}
+ 			}
++		}
+ 
++		break;
++	case SND_SOC_BIAS_STANDBY:
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
+ 			/* Master bias */
+ 			snd_soc_update_bits(codec, DA7219_REFERENCES,
+ 					    DA7219_BIAS_EN_MASK,
+ 					    DA7219_BIAS_EN_MASK);
++		} else {
++			/* Remove MCLK */
++			if (da7219->mclk)
++				clk_disable_unprepare(da7219->mclk);
+ 		}
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+@@ -1534,9 +1541,6 @@ static int da7219_set_bias_level(struct snd_soc_codec *codec,
+ 			snd_soc_update_bits(codec, DA7219_REFERENCES,
+ 					    DA7219_BIAS_EN_MASK, 0);
+ 
+-		/* MCLK */
+-		if (da7219->mclk)
+-			clk_disable_unprepare(da7219->mclk);
+ 		break;
+ 	}
+ 
+-- 
+2.8.1
