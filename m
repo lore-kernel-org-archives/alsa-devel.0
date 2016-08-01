@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5659: Add mclk controls" to the asoc tree
-Date: Mon, 01 Aug 2016 18:07:04 +0100
-Message-ID: <E1bUGgC-0006Ki-PA@debutante>
-References: <1469743036-20034-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1469743036-20034-1-git-send-email-nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, mark.rutland@arm.com, oder_chiou@realtek.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, bardliao@realtek.com
+Subject: Applied "ASoC: Intel: Skylake: Add library loading
+	IPCs" to the asoc tree
+Date: Mon, 01 Aug 2016 18:07:07 +0100
+Message-ID: <E1bUGgF-0006Lg-N2@debutante>
+References: <1469536610-27606-10-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B236D26609F
+ for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2016 19:07:16 +0200 (CEST)
+In-Reply-To: <1469536610-27606-10-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ramesh Babu <ramesh.babu@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Kranthi G <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5659: Add mclk controls
+   ASoC: Intel: Skylake: Add library loading IPCs
 
 has been applied to the asoc tree at
 
@@ -37,111 +53,74 @@ to this mail.
 Thanks,
 Mark
 
->From 6cf925e4ed8124c1fedde2451ba2b7ab8f34199b Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Thu, 28 Jul 2016 14:57:16 -0700
-Subject: [PATCH] ASoC: rt5659: Add mclk controls
+>From b1f89b197b3f7360239fc2120755252cead4e572 Mon Sep 17 00:00:00 2001
+From: Ramesh Babu <ramesh.babu@intel.com>
+Date: Tue, 26 Jul 2016 18:06:47 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add library loading IPCs
 
-The codec driver should control the mclk. So this patch adds this support.
+DSP fw can have additional firmwares as libs. These libs can be
+loaded using message IPC_GLB_LOAD_LIBRARY.
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
+Signed-off-by: Kranthi G <gudishax.kranthikumar@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rt5659.txt |  3 +++
- sound/soc/codecs/rt5659.c                          | 24 ++++++++++++++++++++++
- sound/soc/codecs/rt5659.h                          |  1 +
- 3 files changed, 28 insertions(+)
+ sound/soc/intel/skylake/skl-sst-ipc.c | 23 +++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-sst-ipc.h |  3 +++
+ 2 files changed, 26 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5659.txt b/Documentation/devicetree/bindings/sound/rt5659.txt
-index 5f79e7fde032..1766e0543fc5 100644
---- a/Documentation/devicetree/bindings/sound/rt5659.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5659.txt
-@@ -12,6 +12,9 @@ Required properties:
- 
- Optional properties:
- 
-+- clocks: The phandle of the master clock to the CODEC
-+- clock-names: Should be "mclk"
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 96f2f6889b18..1544564c0ad1 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -190,6 +190,7 @@ enum skl_ipc_glb_type {
+ 	IPC_GLB_GET_PPL_CONTEXT_SIZE = 21,
+ 	IPC_GLB_SAVE_PPL = 22,
+ 	IPC_GLB_RESTORE_PPL = 23,
++	IPC_GLB_LOAD_LIBRARY = 24,
+ 	IPC_GLB_NOTIFY = 26,
+ 	IPC_GLB_MAX_IPC_MSG_NUMBER = 31 /* Maximum message number */
+ };
+@@ -902,3 +903,25 @@ int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(skl_ipc_get_large_config);
 +
- - realtek,in1-differential
- - realtek,in3-differential
- - realtek,in4-differential
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index 1b30914c2d91..42c183f97c31 100644
---- a/sound/soc/codecs/rt5659.c
-+++ b/sound/soc/codecs/rt5659.c
-@@ -9,6 +9,7 @@
-  * published by the Free Software Foundation.
-  */
- 
-+#include <linux/clk.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/init.h>
-@@ -3565,7 +3566,9 @@ static int rt5659_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
- static int rt5659_set_bias_level(struct snd_soc_codec *codec,
- 			enum snd_soc_bias_level level)
- {
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_PREPARE:
-@@ -3582,6 +3585,17 @@ static int rt5659_set_bias_level(struct snd_soc_codec *codec,
- 			RT5659_PWR_FV1 | RT5659_PWR_FV2);
- 		break;
- 
-+	case SND_SOC_BIAS_STANDBY:
-+		if (dapm->bias_level == SND_SOC_BIAS_OFF) {
-+			ret = clk_prepare_enable(rt5659->mclk);
-+			if (ret) {
-+				dev_err(codec->dev,
-+					"failed to enable MCLK: %d\n", ret);
-+				return ret;
-+			}
-+		}
-+		break;
++int skl_sst_ipc_load_library(struct sst_generic_ipc *ipc,
++				u8 dma_id, u8 table_id)
++{
++	struct skl_ipc_header header = {0};
++	u64 *ipc_header = (u64 *)(&header);
++	int ret = 0;
 +
- 	case SND_SOC_BIAS_OFF:
- 		regmap_update_bits(rt5659->regmap, RT5659_PWR_DIG_1,
- 			RT5659_PWR_LDO, 0);
-@@ -3591,6 +3605,7 @@ static int rt5659_set_bias_level(struct snd_soc_codec *codec,
- 			RT5659_PWR_MB | RT5659_PWR_VREF2);
- 		regmap_update_bits(rt5659->regmap, RT5659_DIG_MISC,
- 			RT5659_DIG_GATE_CTRL, 0);
-+		clk_disable_unprepare(rt5659->mclk);
- 		break;
- 
- 	default:
-@@ -4020,6 +4035,15 @@ static int rt5659_i2c_probe(struct i2c_client *i2c,
- 
- 	regmap_write(rt5659->regmap, RT5659_RESET, 0);
- 
-+	/* Check if MCLK provided */
-+	rt5659->mclk = devm_clk_get(&i2c->dev, "mclk");
-+	if (IS_ERR(rt5659->mclk)) {
-+		if (PTR_ERR(rt5659->mclk) != -ENOENT)
-+			return PTR_ERR(rt5659->mclk);
-+		/* Otherwise mark the mclk pointer to NULL */
-+		rt5659->mclk = NULL;
-+	}
++	header.primary = IPC_MSG_TARGET(IPC_FW_GEN_MSG);
++	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
++	header.primary |= IPC_GLB_TYPE(IPC_GLB_LOAD_LIBRARY);
++	header.primary |= IPC_MOD_INSTANCE_ID(table_id);
++	header.primary |= IPC_MOD_ID(dma_id);
 +
- 	rt5659_calibrate(rt5659);
++	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, NULL, 0, NULL, 0);
++
++	if (ret < 0)
++		dev_err(ipc->dev, "ipc: load lib failed\n");
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(skl_sst_ipc_load_library);
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index 31e5bc356aa2..fc46779f80c3 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -151,6 +151,9 @@ int skl_ipc_set_large_config(struct sst_generic_ipc *ipc,
+ int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
+ 		struct skl_ipc_large_config_msg *msg, u32 *param);
  
- 	/* line in diff mode*/
-diff --git a/sound/soc/codecs/rt5659.h b/sound/soc/codecs/rt5659.h
-index d31c9e5bcec8..d69b0eb5a334 100644
---- a/sound/soc/codecs/rt5659.h
-+++ b/sound/soc/codecs/rt5659.h
-@@ -1796,6 +1796,7 @@ struct rt5659_priv {
- 	struct gpio_desc *gpiod_reset;
- 	struct snd_soc_jack *hs_jack;
- 	struct delayed_work jack_detect_work;
-+	struct clk *mclk;
- 
- 	int sysclk;
- 	int sysclk_src;
++int skl_sst_ipc_load_library(struct sst_generic_ipc *ipc,
++			u8 dma_id, u8 table_id);
++
+ void skl_ipc_int_enable(struct sst_dsp *dsp);
+ void skl_ipc_op_int_enable(struct sst_dsp *ctx);
+ void skl_ipc_op_int_disable(struct sst_dsp *ctx);
 -- 
 2.8.1
