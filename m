@@ -1,7 +1,7 @@
 From: Shrirang Bagul <shrirang.bagul@canonical.com>
 Subject: [PATCH] ALSA: hda - On-board speaker fixup on ACER Veriton
-Date: Mon,  1 Aug 2016 13:02:55 +0800
-Message-ID: <1470027775-12816-1-git-send-email-shrirang.bagul@canonical.com>
+Date: Mon,  1 Aug 2016 13:16:17 +0800
+Message-ID: <1470028577-13511-1-git-send-email-shrirang.bagul@canonical.com>
 Return-path: <stable-owner@vger.kernel.org>
 Sender: stable-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
