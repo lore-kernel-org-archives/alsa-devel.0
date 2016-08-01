@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Move modules query to
-	runtime" to the asoc tree
-Date: Mon, 01 Aug 2016 18:07:28 +0100
-Message-ID: <E1bUGga-0006Rf-2s@debutante>
-References: <1469536610-27606-3-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Check list empty while
+	getting module info" to the asoc tree
+Date: Mon, 01 Aug 2016 18:07:30 +0100
+Message-ID: <E1bUGgc-0006SX-WB@debutante>
+References: <1469536610-27606-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B9953266109
- for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2016 19:07:34 +0200 (CEST)
-In-Reply-To: <1469536610-27606-3-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7CF6B266158
+ for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2016 19:07:37 +0200 (CEST)
+In-Reply-To: <1469536610-27606-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Move modules query to runtime
+   ASoC: Intel: Skylake: Check list empty while getting module info
 
 has been applied to the asoc tree at
 
@@ -53,87 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From 7c617ec3e8f6b614e63ea9c82ce2ea39e7daf579 Mon Sep 17 00:00:00 2001
+>From 2392f7fd695246df4fb5f0b5fb88ce37cdb01764 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Tue, 26 Jul 2016 18:06:40 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Move modules query to runtime
+Date: Tue, 26 Jul 2016 18:06:39 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Check list empty while getting module
+ info
 
-Since we are moving DSP init to later, at the topology load the
-module info is not available.
-
-So set the module id to -1 at init and query at first module
-initialization.
+Module list can be NULL so check if the list is empty before
+accessing the list.
 
 Signed-off-by: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 32 +++++++++++++++++++++++++++-----
- sound/soc/intel/skylake/skl-topology.h |  2 +-
- 2 files changed, 28 insertions(+), 6 deletions(-)
+ sound/soc/intel/skylake/skl-sst-utils.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index cc0150fc2601..904103056d62 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -473,6 +473,28 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
- 		w = w_module->w;
- 		mconfig = w->priv;
+diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
+index 25fcb796bd86..ddcb52a51854 100644
+--- a/sound/soc/intel/skylake/skl-sst-utils.c
++++ b/sound/soc/intel/skylake/skl-sst-utils.c
+@@ -123,6 +123,11 @@ int snd_skl_get_module_info(struct skl_sst *ctx, u8 *uuid,
  
-+		/* check if module ids are populated */
-+		if (mconfig->id.module_id < 0) {
-+			struct skl_dfw_module *dfw_config;
-+
-+			dfw_config = kzalloc(sizeof(dfw_config), GFP_KERNEL);
-+			if (!dfw_config)
-+				return -ENOMEM;
-+
-+			ret = snd_skl_get_module_info(skl->skl_sst,
-+				mconfig->guid, dfw_config);
-+			if (ret < 0) {
-+				dev_err(skl->skl_sst->dev,
-+					"query module info failed: %d\n", ret);
-+				kfree(dfw_config);
-+				return ret;
-+			}
-+			mconfig->id.module_id = dfw_config->module_id;
-+			mconfig->is_loadable = dfw_config->is_loadable;
-+
-+			kfree(dfw_config);
-+		}
-+
- 		/* check resource available */
- 		if (!skl_is_pipe_mcps_avail(skl, mconfig))
- 			return -ENOMEM;
-@@ -1621,11 +1643,11 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
- 	w->priv = mconfig;
- 	memcpy(&mconfig->guid, &dfw_config->uuid, 16);
+ 	uuid_mod = (uuid_le *)uuid;
  
--	ret = snd_skl_get_module_info(skl->skl_sst, mconfig->guid, dfw_config);
--	if (ret < 0)
--		return ret;
--
--	mconfig->id.module_id = dfw_config->module_id;
-+	/*
-+	 * module binary can be loaded later, so set it to query when
-+	 * module is load for a use case
-+	 */
-+	mconfig->id.module_id = -1;
- 	mconfig->id.instance_id = dfw_config->instance_id;
- 	mconfig->mcps = dfw_config->max_mcps;
- 	mconfig->ibs = dfw_config->ibs;
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 22d3ef83817d..96fa86d0f93a 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -216,7 +216,7 @@ struct skl_module_fmt {
- struct skl_module_cfg;
- 
- struct skl_module_inst_id {
--	u32 module_id;
-+	int module_id;
- 	u32 instance_id;
- };
- 
++	if (list_empty(&ctx->uuid_list)) {
++		dev_err(ctx->dev, "Module list is empty\n");
++		return -EINVAL;
++	}
++
+ 	list_for_each_entry(module, &ctx->uuid_list, list) {
+ 		if (uuid_le_cmp(*uuid_mod, module->uuid) == 0) {
+ 			dfw_config->module_id = module->id;
 -- 
 2.8.1
