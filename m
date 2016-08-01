@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add library loading
-	IPCs" to the asoc tree
-Date: Mon, 01 Aug 2016 18:07:07 +0100
-Message-ID: <E1bUGgF-0006Lg-N2@debutante>
-References: <1469536610-27606-10-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: add support for tplg
+	manifest load" to the asoc tree
+Date: Mon, 01 Aug 2016 18:07:19 +0100
+Message-ID: <E1bUGgR-0006PA-AE@debutante>
+References: <1469536610-27606-6-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B236D26609F
- for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2016 19:07:16 +0200 (CEST)
-In-Reply-To: <1469536610-27606-10-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EEE6F2660BD
+ for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2016 19:07:25 +0200 (CEST)
+In-Reply-To: <1469536610-27606-6-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ramesh Babu <ramesh.babu@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Kranthi G <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, broonie@kernel.org
+To: Kranthi G <gudishax.kranthikumar@intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add library loading IPCs
+   ASoC: Intel: Skylake: add support for tplg manifest load
 
 has been applied to the asoc tree at
 
@@ -53,74 +53,98 @@ to this mail.
 Thanks,
 Mark
 
->From b1f89b197b3f7360239fc2120755252cead4e572 Mon Sep 17 00:00:00 2001
-From: Ramesh Babu <ramesh.babu@intel.com>
-Date: Tue, 26 Jul 2016 18:06:47 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add library loading IPCs
+>From 05b39fd4eca326aa67a636b4eec63dd4677c19d4 Mon Sep 17 00:00:00 2001
+From: Kranthi G <gudishax.kranthikumar@intel.com>
+Date: Tue, 26 Jul 2016 18:06:43 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: add support for tplg manifest load
 
-DSP fw can have additional firmwares as libs. These libs can be
-loaded using message IPC_GLB_LOAD_LIBRARY.
+Topology manifest gives information about the libraries to be
+loaded. Implement the topology manifest load callback to get
+this.
 
-Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
 Signed-off-by: Kranthi G <gudishax.kranthikumar@intel.com>
+Signed-off-by: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
+Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-ipc.c | 23 +++++++++++++++++++++++
- sound/soc/intel/skylake/skl-sst-ipc.h |  3 +++
- 2 files changed, 26 insertions(+)
+ sound/soc/intel/skylake/skl-sst-ipc.h        |  3 +++
+ sound/soc/intel/skylake/skl-topology.c       | 22 ++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-tplg-interface.h | 12 ++++++++++++
+ 3 files changed, 37 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 96f2f6889b18..1544564c0ad1 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -190,6 +190,7 @@ enum skl_ipc_glb_type {
- 	IPC_GLB_GET_PPL_CONTEXT_SIZE = 21,
- 	IPC_GLB_SAVE_PPL = 22,
- 	IPC_GLB_RESTORE_PPL = 23,
-+	IPC_GLB_LOAD_LIBRARY = 24,
- 	IPC_GLB_NOTIFY = 26,
- 	IPC_GLB_MAX_IPC_MSG_NUMBER = 31 /* Maximum message number */
- };
-@@ -902,3 +903,25 @@ int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(skl_ipc_get_large_config);
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index 0a0d09cde99d..31e5bc356aa2 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -80,6 +80,9 @@ struct skl_sst {
+ 
+ 	/* multi-core */
+ 	struct skl_dsp_cores cores;
 +
-+int skl_sst_ipc_load_library(struct sst_generic_ipc *ipc,
-+				u8 dma_id, u8 table_id)
++	/* tplg manifest */
++	struct skl_dfw_manifest manifest;
+ };
+ 
+ struct skl_ipc_init_instance_msg {
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 904103056d62..a1d9f84d9674 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1789,11 +1789,33 @@ static int skl_tplg_control_load(struct snd_soc_component *cmpnt,
+ 	return 0;
+ }
+ 
++static int skl_manifest_load(struct snd_soc_component *cmpnt,
++				struct snd_soc_tplg_manifest *manifest)
 +{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
++	struct skl_dfw_manifest *minfo;
++	struct hdac_ext_bus *ebus = snd_soc_component_get_drvdata(cmpnt);
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct skl *skl = ebus_to_skl(ebus);
 +	int ret = 0;
 +
-+	header.primary = IPC_MSG_TARGET(IPC_FW_GEN_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(IPC_GLB_LOAD_LIBRARY);
-+	header.primary |= IPC_MOD_INSTANCE_ID(table_id);
-+	header.primary |= IPC_MOD_ID(dma_id);
++	minfo = &skl->skl_sst->manifest;
++	memcpy(minfo, manifest->priv.data, sizeof(struct skl_dfw_manifest));
 +
-+	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, NULL, 0, NULL, 0);
-+
-+	if (ret < 0)
-+		dev_err(ipc->dev, "ipc: load lib failed\n");
++	if (minfo->lib_count > HDA_MAX_LIB) {
++		dev_err(bus->dev, "Exceeding max Library count. Got:%d\n",
++					minfo->lib_count);
++		ret = -EINVAL;
++	}
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(skl_sst_ipc_load_library);
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index 31e5bc356aa2..fc46779f80c3 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -151,6 +151,9 @@ int skl_ipc_set_large_config(struct sst_generic_ipc *ipc,
- int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
- 		struct skl_ipc_large_config_msg *msg, u32 *param);
- 
-+int skl_sst_ipc_load_library(struct sst_generic_ipc *ipc,
-+			u8 dma_id, u8 table_id);
 +
- void skl_ipc_int_enable(struct sst_dsp *dsp);
- void skl_ipc_op_int_enable(struct sst_dsp *ctx);
- void skl_ipc_op_int_disable(struct sst_dsp *ctx);
+ static struct snd_soc_tplg_ops skl_tplg_ops  = {
+ 	.widget_load = skl_tplg_widget_load,
+ 	.control_load = skl_tplg_control_load,
+ 	.bytes_ext_ops = skl_tlv_ops,
+ 	.bytes_ext_ops_count = ARRAY_SIZE(skl_tlv_ops),
++	.manifest = skl_manifest_load,
+ };
+ 
+ /*
+diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
+index a32e5e9cc530..1b531c165a91 100644
+--- a/sound/soc/intel/skylake/skl-tplg-interface.h
++++ b/sound/soc/intel/skylake/skl-tplg-interface.h
+@@ -228,4 +228,16 @@ struct skl_dfw_algo_data {
+ 	char params[0];
+ } __packed;
+ 
++#define LIB_NAME_LENGTH	128
++#define HDA_MAX_LIB	16
++
++struct lib_info {
++	char name[LIB_NAME_LENGTH];
++} __packed;
++
++struct skl_dfw_manifest {
++	u32 lib_count;
++	struct lib_info lib[HDA_MAX_LIB];
++} __packed;
++
+ #endif
 -- 
 2.8.1
