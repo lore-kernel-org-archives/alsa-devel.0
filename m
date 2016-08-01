@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: modify
-	skl_get_dsp_ops()" to the asoc tree
-Date: Mon, 01 Aug 2016 18:07:25 +0100
-Message-ID: <E1bUGgX-0006Qm-5c@debutante>
-References: <1469536610-27606-4-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Move modules query to
+	runtime" to the asoc tree
+Date: Mon, 01 Aug 2016 18:07:28 +0100
+Message-ID: <E1bUGga-0006Rf-2s@debutante>
+References: <1469536610-27606-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EDD712660F8
- for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2016 19:07:31 +0200 (CEST)
-In-Reply-To: <1469536610-27606-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B9953266109
+ for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2016 19:07:34 +0200 (CEST)
+In-Reply-To: <1469536610-27606-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: liam.r.girdwood@linux.intel.com, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: modify skl_get_dsp_ops()
+   ASoC: Intel: Skylake: Move modules query to runtime
 
 has been applied to the asoc tree at
 
@@ -53,109 +53,87 @@ to this mail.
 Thanks,
 Mark
 
->From e68644c4290c6fbc65d1684c04b15c5828f8d765 Mon Sep 17 00:00:00 2001
+>From 7c617ec3e8f6b614e63ea9c82ce2ea39e7daf579 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Tue, 26 Jul 2016 18:06:41 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: modify skl_get_dsp_ops()
+Date: Tue, 26 Jul 2016 18:06:40 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Move modules query to runtime
 
-To query the ops used for a platform, we use skl_get_dsp_ops() which return
-index and then we load the ops.
+Since we are moving DSP init to later, at the topology load the
+module info is not available.
 
-Rather than this return the ops, this way it cna be used later to query the
-ops in rest of the driver.
+So set the module id to -1 at init and query at first module
+initialization.
 
+Signed-off-by: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c | 30 ++++++++++++++++--------------
- sound/soc/intel/skylake/skl.h          |  1 +
- 2 files changed, 17 insertions(+), 14 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 32 +++++++++++++++++++++++++++-----
+ sound/soc/intel/skylake/skl-topology.h |  2 +-
+ 2 files changed, 28 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 44ab595ce21a..25d057679f2c 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -219,16 +219,16 @@ static const struct skl_dsp_ops dsp_ops[] = {
- 	},
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index cc0150fc2601..904103056d62 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -473,6 +473,28 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
+ 		w = w_module->w;
+ 		mconfig = w->priv;
+ 
++		/* check if module ids are populated */
++		if (mconfig->id.module_id < 0) {
++			struct skl_dfw_module *dfw_config;
++
++			dfw_config = kzalloc(sizeof(dfw_config), GFP_KERNEL);
++			if (!dfw_config)
++				return -ENOMEM;
++
++			ret = snd_skl_get_module_info(skl->skl_sst,
++				mconfig->guid, dfw_config);
++			if (ret < 0) {
++				dev_err(skl->skl_sst->dev,
++					"query module info failed: %d\n", ret);
++				kfree(dfw_config);
++				return ret;
++			}
++			mconfig->id.module_id = dfw_config->module_id;
++			mconfig->is_loadable = dfw_config->is_loadable;
++
++			kfree(dfw_config);
++		}
++
+ 		/* check resource available */
+ 		if (!skl_is_pipe_mcps_avail(skl, mconfig))
+ 			return -ENOMEM;
+@@ -1621,11 +1643,11 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
+ 	w->priv = mconfig;
+ 	memcpy(&mconfig->guid, &dfw_config->uuid, 16);
+ 
+-	ret = snd_skl_get_module_info(skl->skl_sst, mconfig->guid, dfw_config);
+-	if (ret < 0)
+-		return ret;
+-
+-	mconfig->id.module_id = dfw_config->module_id;
++	/*
++	 * module binary can be loaded later, so set it to query when
++	 * module is load for a use case
++	 */
++	mconfig->id.module_id = -1;
+ 	mconfig->id.instance_id = dfw_config->instance_id;
+ 	mconfig->mcps = dfw_config->max_mcps;
+ 	mconfig->ibs = dfw_config->ibs;
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 22d3ef83817d..96fa86d0f93a 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -216,7 +216,7 @@ struct skl_module_fmt {
+ struct skl_module_cfg;
+ 
+ struct skl_module_inst_id {
+-	u32 module_id;
++	int module_id;
+ 	u32 instance_id;
  };
  
--static int skl_get_dsp_ops(int pci_id)
-+const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id)
- {
- 	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(dsp_ops); i++) {
- 		if (dsp_ops[i].id == pci_id)
--			return i;
-+			return &dsp_ops[i];
- 	}
- 
--	return -EINVAL;
-+	return NULL;
- }
- 
- int skl_init_dsp(struct skl *skl)
-@@ -238,7 +238,8 @@ int skl_init_dsp(struct skl *skl)
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 	struct skl_dsp_loader_ops loader_ops;
- 	int irq = bus->irq;
--	int ret, index;
-+	const struct skl_dsp_ops *ops;
-+	int ret;
- 
- 	/* enable ppcap interrupt */
- 	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, true);
-@@ -251,13 +252,14 @@ int skl_init_dsp(struct skl *skl)
- 		return -ENXIO;
- 	}
- 
--	index  = skl_get_dsp_ops(skl->pci->device);
--	if (index  < 0)
--		return -EINVAL;
-+	ops = skl_get_dsp_ops(skl->pci->device);
-+	if (!ops)
-+		return -EIO;
- 
--	loader_ops = dsp_ops[index].loader_ops();
--	ret = dsp_ops[index].init(bus->dev, mmio_base, irq,
--			skl->fw_name, loader_ops, &skl->skl_sst);
-+	loader_ops = ops->loader_ops();
-+	ret = ops->init(bus->dev, mmio_base, irq,
-+				skl->fw_name, loader_ops,
-+				&skl->skl_sst);
- 
- 	if (ret < 0)
- 		return ret;
-@@ -273,16 +275,16 @@ int skl_free_dsp(struct skl *skl)
- 	struct hdac_ext_bus *ebus = &skl->ebus;
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 	struct skl_sst *ctx = skl->skl_sst;
--	int index;
-+	const struct skl_dsp_ops *ops;
- 
- 	/* disable  ppcap interrupt */
- 	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, false);
- 
--	index = skl_get_dsp_ops(skl->pci->device);
--	if (index  < 0)
-+	ops = skl_get_dsp_ops(skl->pci->device);
-+	if (!ops)
- 		return -EIO;
- 
--	dsp_ops[index].cleanup(bus->dev, ctx);
-+	ops->cleanup(bus->dev, ctx);
- 
- 	if (ctx->dsp->addr.lpe)
- 		iounmap(ctx->dsp->addr.lpe);
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 9064e5b0d676..c3538f8b17d9 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -123,4 +123,5 @@ int skl_free_dsp(struct skl *skl);
- int skl_suspend_dsp(struct skl *skl);
- int skl_resume_dsp(struct skl *skl);
- void skl_cleanup_resources(struct skl *skl);
-+const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id);
- #endif /* __SOUND_SOC_SKL_H */
 -- 
 2.8.1
