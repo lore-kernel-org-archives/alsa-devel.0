@@ -1,11 +1,11 @@
 From: Baole Ni <baolex.ni@intel.com>
-Subject: [PATCH 1271/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 20:33:26 +0800
-Message-ID: <20160802123326.2771-1-baolex.ni@intel.com>
+Subject: [PATCH 1224/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 20:28:25 +0800
+Message-ID: <20160802122825.31821-1-baolex.ni@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, davem@davemloft.net, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, chuansheng.liu@intel.com, baolex.ni@intel.com, fabio.estevam@nxp.com, linus.walleij@linaro.org, zidan.wang@freescale.com, sachinpandhare@gmail.com, lars@metafoo.de
+To: perex@perex.cz, tiwai@suse.com, serge@hallyn.com, davem@davemloft.net, kadlec@blackhole.kfki.hu, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, chuansheng.liu@intel.com, baolex.ni@intel.com, aryabinin@virtuozzo.com
 List-Id: alsa-devel@alsa-project.org
 
 I find that the developers often just specified the numeric value
@@ -17,30 +17,27 @@ thus, I suggest replacing the numeric parameter with the macro.
 Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
 Signed-off-by: Baole Ni <baolex.ni@intel.com>
 ---
- sound/soc/omap/mcbsp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/emu10k1/emu10k1x.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
-index 4a16e77..3938336 100644
---- a/sound/soc/omap/mcbsp.c
-+++ b/sound/soc/omap/mcbsp.c
-@@ -857,7 +857,7 @@ unlock:
- 	return size;
- }
+diff --git a/sound/pci/emu10k1/emu10k1x.c b/sound/pci/emu10k1/emu10k1x.c
+index 6d1b98d..a4c1836 100644
+--- a/sound/pci/emu10k1/emu10k1x.c
++++ b/sound/pci/emu10k1/emu10k1x.c
+@@ -52,11 +52,11 @@ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
+ static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+ static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
  
--static DEVICE_ATTR(dma_op_mode, 0644, dma_op_mode_show, dma_op_mode_store);
-+static DEVICE_ATTR(dma_op_mode, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, dma_op_mode_show, dma_op_mode_store);
+-module_param_array(index, int, NULL, 0444);
++module_param_array(index, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(index, "Index value for the EMU10K1X soundcard.");
+-module_param_array(id, charp, NULL, 0444);
++module_param_array(id, charp, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(id, "ID string for the EMU10K1X soundcard.");
+-module_param_array(enable, bool, NULL, 0444);
++module_param_array(enable, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(enable, "Enable the EMU10K1X soundcard.");
  
- static const struct attribute *additional_attrs[] = {
- 	&dev_attr_max_tx_thres.attr,
-@@ -926,7 +926,7 @@ out:
- 	return size;
- }
  
--static DEVICE_ATTR(st_taps, 0644, st_taps_show, st_taps_store);
-+static DEVICE_ATTR(st_taps, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, st_taps_show, st_taps_store);
- 
- static const struct attribute *sidetone_attrs[] = {
- 	&dev_attr_st_taps.attr,
 -- 
 2.9.2
