@@ -1,23 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: ALSA 1.1.2 release
-Date: Tue, 2 Aug 2016 20:59:15 +0200
-Message-ID: <5693070a-0aa7-2ad0-1983-d42422c070ac@perex.cz>
-References: <56FD4C61.6000601@perex.cz>
+From: Marve <marve@xs4all.nl>
+Subject: Re: Dell XPS One 2710 HDA Intel PCH - No S/PDIF Output
+ - High Definition ALC275Q (ALC3260)
+Date: Tue, 2 Aug 2016 21:16:15 +0200
+Message-ID: <0f3905b1-d136-8343-4147-2de3d731de34@xs4all.nl>
+References: <5c7db325-ac1c-c8aa-a0cc-32664c50097a@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 32C412664F4
- for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2016 20:59:16 +0200 (CEST)
-Received: from server.perex-int.cz (server.perex-srv.cz [172.16.0.20])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 196DD14AA94
- for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2016 20:59:16 +0200 (CEST)
-Received: from t510.perex-int.cz (localhost [127.0.0.1])
- by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
- 004992E401D
- for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2016 20:59:15 +0200 (CEST)
-In-Reply-To: <56FD4C61.6000601@perex.cz>
+Received: from lb2-smtp-cloud3.xs4all.net (lb2-smtp-cloud3.xs4all.net
+ [194.109.24.26])
+ by alsa0.perex.cz (Postfix) with ESMTP id 573982664F4
+ for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2016 21:16:17 +0200 (CEST)
+In-Reply-To: <5c7db325-ac1c-c8aa-a0cc-32664c50097a@xs4all.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,22 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+Anyone solved connecting audio system to a TOSLINK S/PDIF Out connection
+on a High Definition ALC275Q (ALC3260) of a Dell XPS One 2710?
 
-  the userspace packages alsa-lib and alsa-utils were released today.
-You may download them from the ALSA website http://www.alsa-project.org
-or directly from the FTP server ftp://ftp.alsa-project.org/pub .
+Best regards,
+M.
 
-Full list of changes:
-
-  http://www.alsa-project.org/main/index.php/Changes_v1.1.1_v1.1.2
-
-			Have fun,
-				Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+On 07/30/2016 05:24 PM, Marve wrote:
+> Hi all,
+>
+> I've been trying stuff myself and got help from someone (debianuser) at
+> #alsa IRC, but without success! I got the advice to explain the issue in
+> this mailing list!
+>
+> I'm running Linux Mint 18 on a all-in-one Dell XPS One 2710. Most stuff
+> works, except sound.
+>
+> The former Mint version also sound from the speakers worked out of the
+> box. Now, I have to switch from the Pulse Audio volume control from 
+> "Speakers" to "Headphones (unplugged)" every time I start up to get
+> audio from the internal speakers, which is working well then, annoying,
+> is probably an issue that belongs in another group and not the reason
+> I'm writing you! :)
+>
+> The XPS One 2710 has a S/PDIF Toslink (optical) connection. Back in the
+> days that Microsoft wasn't trying to shove up Windows 10 to everyone, I
+> successfully could get output from this connection to my JVC Receiver
+> from Windows7 of the box.
+>
+> I find it hard to have it configured under Linux.
+>
+> Partly, with help from a anonymous debianuser on #alsa IRC I checked
+> with alsamixer that the S/PDIF was not muted. Also, with the Jack
+> Retasking for HDA tool, I enforced Pin ID: 0x1e is a SPDIF Out
+> connection. After this, the Pulse Audio Tools shows several new
+> interesting Built-in Audio options and I think "Digital Stereo (IEC958)
+> Outout looks most promising. So I select this one and with Output
+> Devices I select "Digital Output (S/PDIF). Then, when I play something
+> on the box, the volume meters actually show that there is something
+> playing, but I can't hear anything from the JVC receiver! The receiver
+> supports PCM to DTS, but no sound is coming out of it!
+>
+> Thanks if you could help me out! I am happy to help you when you need
+> more information or want we to test something. I had this problem on the
+> previous Linux Mint LTS version and tried to install a newer kernel and
+> alsa driver, which didn't work - so I decided to wait for the current LTS.
+>
+> I made a fresh info:
+> http://www.alsa-project.org/db/?f=556ae2bdae66341579831231ef2d90ca0d7c8e24
+>
+> If you need one with other settings, please let me know!
+>
+> Best wishes,
+> M.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
