@@ -1,7 +1,7 @@
 From: Baole Ni <baolex.ni@intel.com>
-Subject: [PATCH 1156/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 20:21:27 +0800
-Message-ID: <20160802122127.27200-1-baolex.ni@intel.com>
+Subject: [PATCH 1155/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 20:21:20 +0800
+Message-ID: <20160802122120.27132-1-baolex.ni@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: perex@perex.cz, tiwai@suse.com, serge@hallyn.com, davem@davemloft.net, kadlec@blackhole.kfki.hu, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
@@ -17,24 +17,25 @@ thus, I suggest replacing the numeric parameter with the macro.
 Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
 Signed-off-by: Baole Ni <baolex.ni@intel.com>
 ---
- sound/core/sound.c | 4 ++--
+ sound/core/seq/seq_midi.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/core/sound.c b/sound/core/sound.c
-index 175f9e4..6c5a4f2 100644
---- a/sound/core/sound.c
-+++ b/sound/core/sound.c
-@@ -41,9 +41,9 @@ static int cards_limit = 1;
- MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
- MODULE_DESCRIPTION("Advanced Linux Sound Architecture driver for soundcards.");
+diff --git a/sound/core/seq/seq_midi.c b/sound/core/seq/seq_midi.c
+index 5dd0ee2..18c428d 100644
+--- a/sound/core/seq/seq_midi.c
++++ b/sound/core/seq/seq_midi.c
+@@ -43,10 +43,10 @@ MODULE_AUTHOR("Frank van de Pol <fvdpol@coil.demon.nl>, Jaroslav Kysela <perex@p
+ MODULE_DESCRIPTION("Advanced Linux Sound Architecture sequencer MIDI synth.");
  MODULE_LICENSE("GPL");
--module_param(major, int, 0444);
-+module_param(major, int, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(major, "Major # for sound driver.");
--module_param(cards_limit, int, 0444);
-+module_param(cards_limit, int, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(cards_limit, "Count of auto-loadable soundcards.");
- MODULE_ALIAS_CHARDEV_MAJOR(CONFIG_SND_MAJOR);
+ static int output_buffer_size = PAGE_SIZE;
+-module_param(output_buffer_size, int, 0644);
++module_param(output_buffer_size, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(output_buffer_size, "Output buffer size in bytes.");
+ static int input_buffer_size = PAGE_SIZE;
+-module_param(input_buffer_size, int, 0644);
++module_param(input_buffer_size, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(input_buffer_size, "Input buffer size in bytes.");
  
+ /* data for this midi synth driver */
 -- 
 2.9.2
