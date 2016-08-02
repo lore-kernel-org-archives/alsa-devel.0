@@ -1,11 +1,11 @@
 From: Baole Ni <baolex.ni@intel.com>
-Subject: [PATCH 1272/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 20:33:31 +0800
-Message-ID: <20160802123331.2842-1-baolex.ni@intel.com>
+Subject: [PATCH 1188/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 20:24:48 +0800
+Message-ID: <20160802122448.29374-1-baolex.ni@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, davem@davemloft.net, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, chuansheng.liu@intel.com, baolex.ni@intel.com, fabio.estevam@nxp.com, linus.walleij@linaro.org, zidan.wang@freescale.com, sachinpandhare@gmail.com, lars@metafoo.de
+To: perex@perex.cz, tiwai@suse.com, serge@hallyn.com, davem@davemloft.net, kadlec@blackhole.kfki.hu, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, chuansheng.liu@intel.com, baolex.ni@intel.com, aryabinin@virtuozzo.com
 List-Id: alsa-devel@alsa-project.org
 
 I find that the developers often just specified the numeric value
@@ -17,30 +17,59 @@ thus, I suggest replacing the numeric parameter with the macro.
 Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
 Signed-off-by: Baole Ni <baolex.ni@intel.com>
 ---
- sound/soc/soc-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/isa/opl3sa2.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 16369ca..9da79cd 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -157,7 +157,7 @@ static ssize_t codec_reg_show(struct device *dev,
- 	return soc_codec_reg_show(rtd->codec, buf, PAGE_SIZE, 0);
- }
+diff --git a/sound/isa/opl3sa2.c b/sound/isa/opl3sa2.c
+index ae13363..33e8c30 100644
+--- a/sound/isa/opl3sa2.c
++++ b/sound/isa/opl3sa2.c
+@@ -59,33 +59,33 @@ static int dma1[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;	/* 1,3,5,6,7 */
+ static int dma2[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;	/* 1,3,5,6,7 */
+ static int opl3sa3_ymode[SNDRV_CARDS];   /* 0,1,2,3 */ /*SL Added*/
  
--static DEVICE_ATTR(codec_reg, 0444, codec_reg_show, NULL);
-+static DEVICE_ATTR(codec_reg, S_IRUSR | S_IRGRP | S_IROTH, codec_reg_show, NULL);
+-module_param_array(index, int, NULL, 0444);
++module_param_array(index, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(index, "Index value for OPL3-SA soundcard.");
+-module_param_array(id, charp, NULL, 0444);
++module_param_array(id, charp, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(id, "ID string for OPL3-SA soundcard.");
+-module_param_array(enable, bool, NULL, 0444);
++module_param_array(enable, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(enable, "Enable OPL3-SA soundcard.");
+ #ifdef CONFIG_PNP
+-module_param_array(isapnp, bool, NULL, 0444);
++module_param_array(isapnp, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(isapnp, "PnP detection for specified soundcard.");
+ #endif
+-module_param_array(port, long, NULL, 0444);
++module_param_array(port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(port, "Port # for OPL3-SA driver.");
+-module_param_array(sb_port, long, NULL, 0444);
++module_param_array(sb_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(sb_port, "SB port # for OPL3-SA driver.");
+-module_param_array(wss_port, long, NULL, 0444);
++module_param_array(wss_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(wss_port, "WSS port # for OPL3-SA driver.");
+-module_param_array(fm_port, long, NULL, 0444);
++module_param_array(fm_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(fm_port, "FM port # for OPL3-SA driver.");
+-module_param_array(midi_port, long, NULL, 0444);
++module_param_array(midi_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(midi_port, "MIDI port # for OPL3-SA driver.");
+-module_param_array(irq, int, NULL, 0444);
++module_param_array(irq, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(irq, "IRQ # for OPL3-SA driver.");
+-module_param_array(dma1, int, NULL, 0444);
++module_param_array(dma1, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(dma1, "DMA1 # for OPL3-SA driver.");
+-module_param_array(dma2, int, NULL, 0444);
++module_param_array(dma2, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(dma2, "DMA2 # for OPL3-SA driver.");
+-module_param_array(opl3sa3_ymode, int, NULL, 0444);
++module_param_array(opl3sa3_ymode, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(opl3sa3_ymode, "Speaker size selection for 3D Enhancement mode: Desktop/Large Notebook/Small Notebook/HiFi.");
  
- static ssize_t pmdown_time_show(struct device *dev,
- 				struct device_attribute *attr, char *buf)
-@@ -181,7 +181,7 @@ static ssize_t pmdown_time_set(struct device *dev,
- 	return count;
- }
- 
--static DEVICE_ATTR(pmdown_time, 0644, pmdown_time_show, pmdown_time_set);
-+static DEVICE_ATTR(pmdown_time, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, pmdown_time_show, pmdown_time_set);
- 
- static struct attribute *soc_dev_attrs[] = {
- 	&dev_attr_codec_reg.attr,
+ #ifdef CONFIG_PNP
 -- 
 2.9.2
