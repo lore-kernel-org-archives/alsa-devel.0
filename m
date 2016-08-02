@@ -1,18 +1,15 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: cs42l73: Constify
- cs42l73_mclk_coeffs and cs42l73_mclkx_coeffs tables
-Date: Tue, 2 Aug 2016 09:00:34 -0500
-Message-ID: <3fcb94a0-a626-4b66-b9b6-9c987b906a2f@EX3.ad.cirrus.com>
-References: <1470116911-7592-1-git-send-email-axel.lin@ingics.com>
+From: Thomas =?ISO-8859-1?Q?Niederpr=FCm?= <niederp@physik.uni-kl.de>
+Subject: ASoC: sun4i-i2s: Restricting the MCLK
+Date: Tue, 02 Aug 2016 17:05:13 +0200
+Message-ID: <1470150313.4786.48.camel@physik.uni-kl.de>
+Reply-To: niederp@physik.uni-kl.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B50E2668E7
- for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2016 15:59:44 +0200 (CEST)
-In-Reply-To: <1470116911-7592-1-git-send-email-axel.lin@ingics.com>
+Received: from mailgw1.uni-kl.de (mailgw1.uni-kl.de [131.246.120.220])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B83B266909
+ for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2016 16:59:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
+To: linux-sunxi@googlegroups.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-> ---
->  sound/soc/codecs/cs42l73.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-> index 42a8fd4..8524e22 100644
-> --- a/sound/soc/codecs/cs42l73.c
-> +++ b/sound/soc/codecs/cs42l73.c
-> @@ -794,7 +794,7 @@ struct cs42l73_mclk_div {
->  	u8 mmcc;
->  };
->  
-> -static struct cs42l73_mclk_div cs42l73_mclk_coeffs[] = {
-> +static const struct cs42l73_mclk_div cs42l73_mclk_coeffs[] = {
->  	/* MCLK, Sample Rate, xMMCC[5:0] */
->  	{5644800, 11025, 0x30},
->  	{5644800, 22050, 0x20},
-> @@ -844,7 +844,7 @@ struct cs42l73_mclkx_div {
->  	u8 mclkdiv;
->  };
->  
-> -static struct cs42l73_mclkx_div cs42l73_mclkx_coeffs[] = {
-> +static const struct cs42l73_mclkx_div cs42l73_mclkx_coeffs[] = {
->  	{5644800,  1, 0},	/* 5644800 */
->  	{6000000,  1, 0},	/* 6000000 */
->  	{6144000,  1, 0},	/* 6144000 */
-> -- 
-> 2.7.4
-> 
-> 
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+SSBhbSB1c2luZyB0aGUgbmV3IHN1bjRpLWkycyBkcml2ZXIgaW4gbGludXgtbmV4dCB0byBydW4g
+YSBzdGEzMjYgY29kZWMKdmlhIHRoZSBwaW4gaGVhZGVyIG9uIGEgY3ViaWV0cnVjayAodGhpcyBp
+bnZvbHZlcyBzb21lIHNvbGRlcmluZyBhcwpkZXNjcmliZWQgaW4gWzFdKS4gVGhlIGNvZGVjIGNh
+biBvbmx5IGJlIGNvbmZpZ3VyZWQgYXMgc2xhdmUgYW5kIG5lZWRzCmEgbWFzdGVyIGNsb2NrIGZv
+ciBpdHMgaW50ZXJuYWwgUExMLiBJdCBpcyB0aGVyZWZvcmUgZ3JlYXQgdGhhdCwgdW5saWtlCm1h
+bnkgb3RoZXIgU09DcywgdGhlIGEyMCBwcm92aWRlcyBhIE1DTEsgdGhhdCBjYW4gYmUgdXNlZCB0
+byBzeW5jIHRoZQpjb2RlYy4gSG93ZXZlciwgaW4gbXkgY2FzZSB0aGVyZSBpcyBhIHJlc3RyaWN0
+aW9uIGltcG9zZWQgb24gdGhlIE1DTEsKYnkgdGhlIGNvZGVjLiBBcyBzdGF0ZWQgaW4gdGhlIGRh
+dGFzaGVldCBbMl0sIHRoZSBtYXN0ZXIgY2xvY2sgc2hvdWxkCmJlIGF0IG1heGltdW0gMTIuMjg4
+IE1Iei8xMS4yODk2IE1IeiBvciBvdGhlcndpc2UgdGhlIGNvZGVjIHdpbGwgbm90CndvcmsgKGNv
+bmZpcm1lZCBieSBleHBlcmltZW50ISkuCgpTaW5jZSB0aGUgbW9kIGNsb2NrIG9mIHRoZSBhMjAn
+cyBkYWkgYmxvY2sgaXMgcnVubmluZyBhdCB0d2ljZSB0aGlzCmZyZXF1ZW5jeSwgSSBuZWVkIHRv
+IGFzc3VyZSB0aGF0IHRoZSBNTENLIGRpdmlkZXIgaXMgYXQgbGVhc3QgMi4KQWN0dWFsbHkgaXQg
+aXMgcmF0aGVyIHN0cmFpZ2h0IGZvcndhcmQgdG8gYWNoaWV2ZSB0aGlzIGJ5IGNoYW5naW5nIHRo
+ZQpicmVha2luZyBjb25kaXRpb24gaW4gdGhlIGRpdmlkZXIgY2FsY3VsYXRpb24sIGFzIHNob3du
+IGJ5IHRoZQpmb2xsb3dpbmcgb25lLWxpbmUgcGF0Y2g6CgpkaWZmIC0tZ2l0IGEvc291bmQvc29j
+L3N1bnhpL3N1bjRpLWkycy5jIGIvc291bmQvc29jL3N1bnhpL3N1bjRpLWkycy5jCmluZGV4IDY4
+N2E4ZjguLjg5MjA4NDQgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9zdW54aS9zdW40aS1pMnMuYwor
+KysgYi9zb3VuZC9zb2Mvc3VueGkvc3VuNGktaTJzLmMKQEAgLTIwNiw3ICsyMDYsNyBAQCBzdGF0
+aWMgaW50IHN1bjRpX2kyc19zZXRfY2xrX3JhdGUoc3RydWN0IHN1bjRpX2kycwoqaTJzLArCoAkJ
+CQkJCcKgwqBjbGtfcmF0ZSwKwqAJCQkJCQnCoMKgcmF0ZSk7CsKgCi0JCWlmICgoYmNsa19kaXYg
+Pj0gMCkgJiYgKG1jbGtfZGl2ID49IDApKQorCQlpZiAoKGJjbGtfZGl2ID49IDApICYmIChtY2xr
+X2RpdiA+PSAxKSkKwqAJCQlicmVhazsKwqAJfQoKT2YgY291cnNlLCB0aGlzIGlzIGp1c3QgYSBo
+YWNrIHRvIGZpeCBteSB1c2UgY2FzZSBhbmQgSSBhbSB3b25kZXJpbmcKd2hhdCB3b3VsZCBiZSB0
+aGUgYmVzdCB3YXkgdG8gaGFuZGxlIG15IGNvcm5lciBjYXNlIG1vcmUgZ2VuZXJhbGx5PyBJCnNl
+ZSBvbmUgb3B0aW9uIGluIGludHJvZHVjaW5nIGEgRFQgcHJvcGVydHkgbWxja19taW5kaXYsIG9y
+IHNpbWlsYXIsCnRoYXQgZGVmYXVsdHMgdG8gMSBhbmQgY2FuIGJlIG92ZXJ3cml0dGVuIGF0IHRo
+ZSBib2FyZCBsZXZlbC4gSSdtCndpbGxpbmcgdG8gcHJlcGFyZSBhIHByb3BlciBwYXRjaCB0byB0
+YWNrbGUgdGhpcyBwcm9ibGVtIGJ1dCByaWdodCBub3cKSSdtIHdvbmRlcmluZyBpZiB0aGVyZSBh
+IG1ham9yIG9iamVjdGlvbnMgdG8gdGhpcyBhcHByb2FjaCBvciB3aGV0aGVyCnRoZXJlIGlzIGFu
+eSBiZXR0ZXIgc29sdXRpb24gdG8gdGhlIHByb2JsZW0uCgpCZXN0IHJlZ2FyZHMsCgpUaG9tYXMK
+ClsxXcKgaHR0cHM6Ly9oaWZpZHVpbm8ud29yZHByZXNzLmNvbS8yMDE0LzAzLzA3L2N1YmllYm9h
+cmQtZm9yLWF1ZGlvLwpbMl3CoHd3dy5zdC5jb20vcmVzb3VyY2UvZW4vZGF0YXNoZWV0L3N0YTMy
+Ni5wZGYKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
