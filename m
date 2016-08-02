@@ -1,7 +1,7 @@
 From: Baole Ni <baolex.ni@intel.com>
-Subject: [PATCH 1184/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 20:24:20 +0800
-Message-ID: <20160802122420.29102-1-baolex.ni@intel.com>
+Subject: [PATCH 1150/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 20:20:50 +0800
+Message-ID: <20160802122050.26792-1-baolex.ni@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: perex@perex.cz, tiwai@suse.com, serge@hallyn.com, davem@davemloft.net, kadlec@blackhole.kfki.hu, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
@@ -17,60 +17,26 @@ thus, I suggest replacing the numeric parameter with the macro.
 Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
 Signed-off-by: Baole Ni <baolex.ni@intel.com>
 ---
- sound/isa/gus/gusextreme.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ sound/core/pcm_memory.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/isa/gus/gusextreme.c b/sound/isa/gus/gusextreme.c
-index 693d95f..3ba22c2 100644
---- a/sound/isa/gus/gusextreme.c
-+++ b/sound/isa/gus/gusextreme.c
-@@ -60,33 +60,33 @@ static int joystick_dac[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 29};
- static int channels[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 24};
- static int pcm_channels[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 2};
+diff --git a/sound/core/pcm_memory.c b/sound/core/pcm_memory.c
+index b45f6aa..f93f9cd 100644
+--- a/sound/core/pcm_memory.c
++++ b/sound/core/pcm_memory.c
+@@ -32,11 +32,11 @@
+ #include <sound/initval.h>
  
--module_param_array(index, int, NULL, 0444);
-+module_param_array(index, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(index, "Index value for " CRD_NAME " soundcard.");
--module_param_array(id, charp, NULL, 0444);
-+module_param_array(id, charp, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(id, "ID string for " CRD_NAME " soundcard.");
--module_param_array(enable, bool, NULL, 0444);
-+module_param_array(enable, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(enable, "Enable " CRD_NAME " soundcard.");
--module_param_array(port, long, NULL, 0444);
-+module_param_array(port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(port, "Port # for " CRD_NAME " driver.");
--module_param_array(gf1_port, long, NULL, 0444);
-+module_param_array(gf1_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(gf1_port, "GF1 port # for " CRD_NAME " driver (optional).");
--module_param_array(mpu_port, long, NULL, 0444);
-+module_param_array(mpu_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(mpu_port, "MPU-401 port # for " CRD_NAME " driver.");
--module_param_array(irq, int, NULL, 0444);
-+module_param_array(irq, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(irq, "IRQ # for " CRD_NAME " driver.");
--module_param_array(mpu_irq, int, NULL, 0444);
-+module_param_array(mpu_irq, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(mpu_irq, "MPU-401 IRQ # for " CRD_NAME " driver.");
--module_param_array(gf1_irq, int, NULL, 0444);
-+module_param_array(gf1_irq, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(gf1_irq, "GF1 IRQ # for " CRD_NAME " driver.");
--module_param_array(dma8, int, NULL, 0444);
-+module_param_array(dma8, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(dma8, "8-bit DMA # for " CRD_NAME " driver.");
--module_param_array(dma1, int, NULL, 0444);
-+module_param_array(dma1, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(dma1, "GF1 DMA # for " CRD_NAME " driver.");
--module_param_array(joystick_dac, int, NULL, 0444);
-+module_param_array(joystick_dac, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(joystick_dac, "Joystick DAC level 0.59V-4.52V or 0.389V-2.98V for " CRD_NAME " driver.");
--module_param_array(channels, int, NULL, 0444);
-+module_param_array(channels, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(channels, "GF1 channels for " CRD_NAME " driver.");
--module_param_array(pcm_channels, int, NULL, 0444);
-+module_param_array(pcm_channels, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(pcm_channels, "Reserved PCM channels for " CRD_NAME " driver.");
+ static int preallocate_dma = 1;
+-module_param(preallocate_dma, int, 0444);
++module_param(preallocate_dma, int, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(preallocate_dma, "Preallocate DMA memory when the PCM devices are initialized.");
  
- static int snd_gusextreme_match(struct device *dev, unsigned int n)
+ static int maximum_substreams = 4;
+-module_param(maximum_substreams, int, 0444);
++module_param(maximum_substreams, int, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(maximum_substreams, "Maximum substreams with preallocated DMA memory.");
+ 
+ static const size_t snd_minimum_buffer = 16384;
 -- 
 2.9.2
