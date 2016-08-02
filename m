@@ -1,19 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 1271/1285] Replace numeric parameter like 0444 with macro
-Date: Tue, 2 Aug 2016 16:25:15 +0300
-Message-ID: <4bc851b0-73a2-f206-09e7-e6cc1f60cb9f@ti.com>
-References: <20160802123326.2771-1-baolex.ni@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1169/1285] Replace numeric parameter like 0444 with macro
+Date: Tue, 2 Aug 2016 22:29:36 +0900
+Message-ID: <71bd5f16-7c69-f331-1012-c683d6133abb@sakamocchi.jp>
+References: <20160802122246.28082-1-baolex.ni@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160802123326.2771-1-baolex.ni@intel.com>
+In-Reply-To: <20160802122246.28082-1-baolex.ni@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Baole Ni <baolex.ni@intel.com>, jarkko.nikula@bitmer.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, davem@davemloft.net, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, chuansheng.liu@intel.com, fabio.estevam@nxp.com, linus.walleij@linaro.org, zidan.wang@freescale.com, sachinpandhare@gmail.com, lars@metafoo.de
+To: Baole Ni <baolex.ni@intel.com>, clemens@ladisch.de, perex@perex.cz, tiwai@suse.com, serge@hallyn.com, davem@davemloft.net, kadlec@blackhole.kfki.hu, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, julia.lawall@lip6.fr, chuansheng.liu@intel.com, aryabinin@virtuozzo.com
 List-Id: alsa-devel@alsa-project.org
 
-On 08/02/16 15:33, Baole Ni wrote:
+On Aug 2 2016 21:22, Baole Ni wrote:
 > I find that the developers often just specified the numeric value
 > when calling a macro which is defined with a parameter for access permission.
 > As we know, these numeric value for access permission have had the corresponding macro,
@@ -22,36 +22,29 @@ On 08/02/16 15:33, Baole Ni wrote:
 > 
 > Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
 > Signed-off-by: Baole Ni <baolex.ni@intel.com>
+
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
 > ---
->  sound/soc/omap/mcbsp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  sound/firewire/bebob/bebob.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
-> index 4a16e77..3938336 100644
-> --- a/sound/soc/omap/mcbsp.c
-> +++ b/sound/soc/omap/mcbsp.c
-> @@ -857,7 +857,7 @@ unlock:
->  	return size;
->  }
+> diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+> index f7e2cbd..ec67fc6 100644
+> --- a/sound/firewire/bebob/bebob.c
+> +++ b/sound/firewire/bebob/bebob.c
+> @@ -22,11 +22,11 @@ static int index[SNDRV_CARDS]	= SNDRV_DEFAULT_IDX;
+>  static char *id[SNDRV_CARDS]	= SNDRV_DEFAULT_STR;
+>  static bool enable[SNDRV_CARDS]	= SNDRV_DEFAULT_ENABLE_PNP;
 >  
-> -static DEVICE_ATTR(dma_op_mode, 0644, dma_op_mode_show, dma_op_mode_store);
-> +static DEVICE_ATTR(dma_op_mode, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, dma_op_mode_show, dma_op_mode_store);
-
-I prefer to have the octal representation, more compact, easier to understand.
-
+> -module_param_array(index, int, NULL, 0444);
+> +module_param_array(index, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+>  MODULE_PARM_DESC(index, "card index");
+> -module_param_array(id, charp, NULL, 0444);
+> +module_param_array(id, charp, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+>  MODULE_PARM_DESC(id, "ID string");
+> -module_param_array(enable, bool, NULL, 0444);
+> +module_param_array(enable, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+>  MODULE_PARM_DESC(enable, "enable BeBoB sound card");
 >  
->  static const struct attribute *additional_attrs[] = {
->  	&dev_attr_max_tx_thres.attr,
-> @@ -926,7 +926,7 @@ out:
->  	return size;
->  }
->  
-> -static DEVICE_ATTR(st_taps, 0644, st_taps_show, st_taps_store);
-> +static DEVICE_ATTR(st_taps, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, st_taps_show, st_taps_store);
->  
->  static const struct attribute *sidetone_attrs[] = {
->  	&dev_attr_st_taps.attr,
-> 
-
--- 
-Péter
+>  static DEFINE_MUTEX(devices_mutex);
