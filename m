@@ -1,48 +1,48 @@
-From: Kevin Hilman <khilman@baylibre.com>
-Subject: Re: [PATCH] ASoC: simple-card-utils: add missing MODULE_xxx()
-Date: Tue, 02 Aug 2016 11:50:48 -0700
-Message-ID: <m2r3a7qa2f.fsf@baylibre.com>
-References: <20160801233610.10479-1-khilman@baylibre.com>
-	<877fc0hte3.wl%kuninori.morimoto.gx@renesas.com>
-	<CAOi56cUjygjOiZ6OwRHXu0XsNMkJHeTB9KCOzTM9mzsuP78GOw@mail.gmail.com>
-	<8760rjj20g.wl%kuninori.morimoto.gx@renesas.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: ALSA 1.1.2 release
+Date: Tue, 2 Aug 2016 20:59:15 +0200
+Message-ID: <5693070a-0aa7-2ad0-1983-d42422c070ac@perex.cz>
+References: <56FD4C61.6000601@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <8760rjj20g.wl%kuninori.morimoto.gx@renesas.com> (Kuninori
-	Morimoto's message of "Tue, 2 Aug 2016 03:22:08 +0000")
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Sekhar Nori <nsekhar@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32C412664F4
+ for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2016 20:59:16 +0200 (CEST)
+Received: from server.perex-int.cz (server.perex-srv.cz [172.16.0.20])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 196DD14AA94
+ for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2016 20:59:16 +0200 (CEST)
+Received: from t510.perex-int.cz (localhost [127.0.0.1])
+ by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
+ 004992E401D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2016 20:59:15 +0200 (CEST)
+In-Reply-To: <56FD4C61.6000601@perex.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> writes:
+Hello all,
 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->
-> simple-card-utils might be used as module, but MODULE_xxx()
-> information was missed. This patch adds it.
-> Otherwise, we will have below error, and can't use it.
-> Specil thanks to Kevin.
->
->> insmod simple-card-utils.ko
-> simple_card_utils: module license 'unspecified' taints kernel.
-> Disabling lock debugging due to kernel taint
-> simple_card_utils: Unknown symbol snd_soc_of_parse_daifmt (err 0)
-> simple_card_utils: Unknown symbol snd_soc_of_parse_card_name (err 0)
-> insmod: can't insert 'simple-card-utils.ko': \
->         unknown symbol in module, or unknown parameter
->
-> Reported-by: Kevin Hilman <khilman@baylibre.com>
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->
->>> Kevin
->
-> Thank you for your report. I think this patch can solve your issue.
-> Can you check this ?
+  the userspace packages alsa-lib and alsa-utils were released today.
+You may download them from the ALSA website http://www.alsa-project.org
+or directly from the FTP server ftp://ftp.alsa-project.org/pub .
 
-Your patch works, but as Mark pointed out, I didn't think that this was
-the right fix as this isn't a module, but just library.
+Full list of changes:
 
-Kevin
+  http://www.alsa-project.org/main/index.php/Changes_v1.1.1_v1.1.2
+
+			Have fun,
+				Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
