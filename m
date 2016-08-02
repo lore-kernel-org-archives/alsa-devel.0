@@ -1,11 +1,11 @@
 From: Baole Ni <baolex.ni@intel.com>
-Subject: [PATCH 1218/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 20:27:47 +0800
-Message-ID: <20160802122747.31412-1-baolex.ni@intel.com>
+Subject: [PATCH 1210/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 20:27:00 +0800
+Message-ID: <20160802122700.30869-1-baolex.ni@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: perex@perex.cz, tiwai@suse.com, serge@hallyn.com, davem@davemloft.net, kadlec@blackhole.kfki.hu, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, chuansheng.liu@intel.com, baolex.ni@intel.com, aryabinin@virtuozzo.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Julia.Lawall@lip6.fr, chuansheng.liu@intel.com, baolex.ni@intel.com, aryabinin@virtuozzo.com
 List-Id: alsa-devel@alsa-project.org
 
 I find that the developers often just specified the numeric value
@@ -17,36 +17,33 @@ thus, I suggest replacing the numeric parameter with the macro.
 Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
 Signed-off-by: Baole Ni <baolex.ni@intel.com>
 ---
- sound/pci/cs46xx/cs46xx.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/pci/atiixp_modem.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/cs46xx/cs46xx.c b/sound/pci/cs46xx/cs46xx.c
-index 655fbea..928d768 100644
---- a/sound/pci/cs46xx/cs46xx.c
-+++ b/sound/pci/cs46xx/cs46xx.c
-@@ -51,17 +51,17 @@ static bool external_amp[SNDRV_CARDS];
- static bool thinkpad[SNDRV_CARDS];
- static bool mmap_valid[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+diff --git a/sound/pci/atiixp_modem.c b/sound/pci/atiixp_modem.c
+index c534552..848a9b2 100644
+--- a/sound/pci/atiixp_modem.c
++++ b/sound/pci/atiixp_modem.c
+@@ -43,16 +43,16 @@ static int index = -2; /* Exclude the first card */
+ static char *id = SNDRV_DEFAULT_STR1;	/* ID for this card */
+ static int ac97_clock = 48000;
  
--module_param_array(index, int, NULL, 0444);
-+module_param_array(index, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(index, "Index value for the CS46xx soundcard.");
--module_param_array(id, charp, NULL, 0444);
-+module_param_array(id, charp, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(id, "ID string for the CS46xx soundcard.");
--module_param_array(enable, bool, NULL, 0444);
-+module_param_array(enable, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(enable, "Enable CS46xx soundcard.");
--module_param_array(external_amp, bool, NULL, 0444);
-+module_param_array(external_amp, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(external_amp, "Force to enable external amplifer.");
--module_param_array(thinkpad, bool, NULL, 0444);
-+module_param_array(thinkpad, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(thinkpad, "Force to enable Thinkpad's CLKRUN control.");
--module_param_array(mmap_valid, bool, NULL, 0444);
-+module_param_array(mmap_valid, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(mmap_valid, "Support OSS mmap.");
+-module_param(index, int, 0444);
++module_param(index, int, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(index, "Index value for ATI IXP controller.");
+-module_param(id, charp, 0444);
++module_param(id, charp, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(id, "ID string for ATI IXP controller.");
+-module_param(ac97_clock, int, 0444);
++module_param(ac97_clock, int, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(ac97_clock, "AC'97 codec clock (default 48000Hz).");
  
- static const struct pci_device_id snd_cs46xx_ids[] = {
+ /* just for backward compatibility */
+ static bool enable;
+-module_param(enable, bool, 0444);
++module_param(enable, bool, S_IRUSR | S_IRGRP | S_IROTH);
+ 
+ 
+ /*
 -- 
 2.9.2
