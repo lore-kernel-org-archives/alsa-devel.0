@@ -1,11 +1,11 @@
-From: Baole Ni <baolex.ni@intel.com>
-Subject: [PATCH 1260/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 20:32:24 +0800
-Message-ID: <20160802123224.1957-1-baolex.ni@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, thierry.reding@gmail.com, gnurou@gmail.com, kadlec@blackhole.kfki.hu, davem@davemloft.net, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, chuansheng.liu@intel.com, baolex.ni@intel.com, aryabinin@virtuozzo.com
+From: Baole Ni <baolex.ni-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH 1232/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 20:29:18 +0800
+Message-ID: <20160802122918.32423-1-baolex.ni@intel.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, kadlec-K40Dz/62t/MgiyqX0sVFJYdd74u8MsAO@public.gmane.org, davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org, m.szyprowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, kyungmin.park-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, chuansheng.liu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, baolex.ni-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, xiong.y.zhang-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, libin.yang-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, aryabinin-5HdwGun5lf+gSpxsJD1C4w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 I find that the developers often just specified the numeric value
@@ -14,44 +14,24 @@ As we know, these numeric value for access permission have had the corresponding
 and that using macro can improve the robustness and readability of the code,
 thus, I suggest replacing the numeric parameter with the macro.
 
-Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
-Signed-off-by: Baole Ni <baolex.ni@intel.com>
+Signed-off-by: Chuansheng Liu <chuansheng.liu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Signed-off-by: Baole Ni <baolex.ni-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
 ---
- sound/pci/ymfpci/ymfpci.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/pci/hda/hda_tegra.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/ymfpci/ymfpci.c b/sound/pci/ymfpci/ymfpci.c
-index 812e27a..7794dc4 100644
---- a/sound/pci/ymfpci/ymfpci.c
-+++ b/sound/pci/ymfpci/ymfpci.c
-@@ -49,21 +49,21 @@ static long joystick_port[SNDRV_CARDS];
- #endif
- static bool rear_switch[SNDRV_CARDS];
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index 17fd817..4c00aa8 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -78,7 +78,7 @@ struct hda_tegra {
  
--module_param_array(index, int, NULL, 0444);
-+module_param_array(index, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(index, "Index value for the Yamaha DS-1 PCI soundcard.");
--module_param_array(id, charp, NULL, 0444);
-+module_param_array(id, charp, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(id, "ID string for the Yamaha DS-1 PCI soundcard.");
--module_param_array(enable, bool, NULL, 0444);
-+module_param_array(enable, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(enable, "Enable Yamaha DS-1 soundcard.");
--module_param_array(mpu_port, long, NULL, 0444);
-+module_param_array(mpu_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(mpu_port, "MPU-401 Port.");
--module_param_array(fm_port, long, NULL, 0444);
-+module_param_array(fm_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(fm_port, "FM OPL-3 Port.");
- #ifdef SUPPORT_JOYSTICK
--module_param_array(joystick_port, long, NULL, 0444);
-+module_param_array(joystick_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(joystick_port, "Joystick port address");
- #endif
--module_param_array(rear_switch, bool, NULL, 0444);
-+module_param_array(rear_switch, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(rear_switch, "Enable shared rear/line-in switch");
- 
- static const struct pci_device_id snd_ymfpci_ids[] = {
+ #ifdef CONFIG_PM
+ static int power_save = CONFIG_SND_HDA_POWER_SAVE_DEFAULT;
+-module_param(power_save, bint, 0644);
++module_param(power_save, bint, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(power_save,
+ 		 "Automatic power-saving timeout (in seconds, 0 = disable).");
+ #else
 -- 
 2.9.2
