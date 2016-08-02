@@ -1,18 +1,21 @@
-From: Marve <marve@xs4all.nl>
-Subject: Re: Dell XPS One 2710 HDA Intel PCH - No S/PDIF Output
- - High Definition ALC275Q (ALC3260)
-Date: Tue, 2 Aug 2016 21:16:15 +0200
-Message-ID: <0f3905b1-d136-8343-4147-2de3d731de34@xs4all.nl>
-References: <5c7db325-ac1c-c8aa-a0cc-32664c50097a@xs4all.nl>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: simple-card-utils: add missing
+	MODULE_xxx()
+Date: Tue, 2 Aug 2016 20:41:46 +0100
+Message-ID: <20160802194146.GI10376@sirena.org.uk>
+References: <20160801233610.10479-1-khilman@baylibre.com>
+ <877fc0hte3.wl%kuninori.morimoto.gx@renesas.com>
+ <CAOi56cUjygjOiZ6OwRHXu0XsNMkJHeTB9KCOzTM9mzsuP78GOw@mail.gmail.com>
+ <8760rjj20g.wl%kuninori.morimoto.gx@renesas.com>
+ <m2r3a7qa2f.fsf@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1443378962714352579=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lb2-smtp-cloud3.xs4all.net (lb2-smtp-cloud3.xs4all.net
- [194.109.24.26])
- by alsa0.perex.cz (Postfix) with ESMTP id 573982664F4
- for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2016 21:16:17 +0200 (CEST)
-In-Reply-To: <5c7db325-ac1c-c8aa-a0cc-32664c50097a@xs4all.nl>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12BD6266543
+ for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2016 21:41:59 +0200 (CEST)
+In-Reply-To: <m2r3a7qa2f.fsf@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +25,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Kevin Hilman <khilman@baylibre.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>, Sekhar Nori <nsekhar@ti.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Anyone solved connecting audio system to a TOSLINK S/PDIF Out connection
-on a High Definition ALC275Q (ALC3260) of a Dell XPS One 2710?
 
-Best regards,
-M.
+--===============1443378962714352579==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1QGDfz3Tkbtkncdd"
+Content-Disposition: inline
 
-On 07/30/2016 05:24 PM, Marve wrote:
-> Hi all,
->
-> I've been trying stuff myself and got help from someone (debianuser) at
-> #alsa IRC, but without success! I got the advice to explain the issue in
-> this mailing list!
->
-> I'm running Linux Mint 18 on a all-in-one Dell XPS One 2710. Most stuff
-> works, except sound.
->
-> The former Mint version also sound from the speakers worked out of the
-> box. Now, I have to switch from the Pulse Audio volume control from 
-> "Speakers" to "Headphones (unplugged)" every time I start up to get
-> audio from the internal speakers, which is working well then, annoying,
-> is probably an issue that belongs in another group and not the reason
-> I'm writing you! :)
->
-> The XPS One 2710 has a S/PDIF Toslink (optical) connection. Back in the
-> days that Microsoft wasn't trying to shove up Windows 10 to everyone, I
-> successfully could get output from this connection to my JVC Receiver
-> from Windows7 of the box.
->
-> I find it hard to have it configured under Linux.
->
-> Partly, with help from a anonymous debianuser on #alsa IRC I checked
-> with alsamixer that the S/PDIF was not muted. Also, with the Jack
-> Retasking for HDA tool, I enforced Pin ID: 0x1e is a SPDIF Out
-> connection. After this, the Pulse Audio Tools shows several new
-> interesting Built-in Audio options and I think "Digital Stereo (IEC958)
-> Outout looks most promising. So I select this one and with Output
-> Devices I select "Digital Output (S/PDIF). Then, when I play something
-> on the box, the volume meters actually show that there is something
-> playing, but I can't hear anything from the JVC receiver! The receiver
-> supports PCM to DTS, but no sound is coming out of it!
->
-> Thanks if you could help me out! I am happy to help you when you need
-> more information or want we to test something. I had this problem on the
-> previous Linux Mint LTS version and tried to install a newer kernel and
-> alsa driver, which didn't work - so I decided to wait for the current LTS.
->
-> I made a fresh info:
-> http://www.alsa-project.org/db/?f=556ae2bdae66341579831231ef2d90ca0d7c8e24
->
-> If you need one with other settings, please let me know!
->
-> Best wishes,
-> M.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--1QGDfz3Tkbtkncdd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Aug 02, 2016 at 11:50:48AM -0700, Kevin Hilman wrote:
+
+> Your patch works, but as Mark pointed out, I didn't think that this was
+> the right fix as this isn't a module, but just library.
+
+I think building the library as a module is fine, that way we can load
+it only in situations where it's used, it's just that it should be
+pulled in by the relevant driver.
+
+--1QGDfz3Tkbtkncdd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXoPd6AAoJECTWi3JdVIfQGEQH/38CW5me21biwIM07aA1LI83
+1XFWw2jyEflgsbxaa3ibl/jY0igELJzFLM3ShMWvAZAmK/G4RGdWIpKl40kqzc2k
+ATQVknSDBdcGF8Kb7qdIeAMUnkKUx6cDbIFLHL2bkcGES+gZA+cfduSZmWQWsiiW
+99HONYr1cMvAB/YV46Tt1zJx2OfISULOcxFAMzmLFRi7G4Zk8t8plc/7P8YGLL4z
+gAfQYoi1spU1WEKo6I0fCtgs8exWlwRzSsyssB/k6SZwB5wTwDDY7K+kYjTa6z8V
+71uSXxDZOIIXu0qSSStDM7Xfr17kg5j5nWrpoa3WCLt9dtpRLi3QdpdDIPDDA/E=
+=WH7b
+-----END PGP SIGNATURE-----
+
+--1QGDfz3Tkbtkncdd--
+
+--===============1443378962714352579==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1443378962714352579==--
