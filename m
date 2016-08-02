@@ -1,7 +1,7 @@
 From: Baole Ni <baolex.ni@intel.com>
-Subject: [PATCH 1163/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 20:22:09 +0800
-Message-ID: <20160802122209.27676-1-baolex.ni@intel.com>
+Subject: [PATCH 1190/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 20:25:00 +0800
+Message-ID: <20160802122500.29510-1-baolex.ni@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: perex@perex.cz, tiwai@suse.com, serge@hallyn.com, davem@davemloft.net, kadlec@blackhole.kfki.hu, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
@@ -17,21 +17,53 @@ thus, I suggest replacing the numeric parameter with the macro.
 Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
 Signed-off-by: Baole Ni <baolex.ni@intel.com>
 ---
- sound/drivers/opl3/opl3_seq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/isa/opti9xx/opti92x-ad1848.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/drivers/opl3/opl3_seq.c b/sound/drivers/opl3/opl3_seq.c
-index fdae5d7..d24bb27 100644
---- a/sound/drivers/opl3/opl3_seq.c
-+++ b/sound/drivers/opl3/opl3_seq.c
-@@ -33,7 +33,7 @@ MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("ALSA driver for OPL3 FM synth");
+diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
+index 0a52660..520853d 100644
+--- a/sound/isa/opti9xx/opti92x-ad1848.c
++++ b/sound/isa/opti9xx/opti92x-ad1848.c
+@@ -78,30 +78,30 @@ static int dma1 = SNDRV_DEFAULT_DMA1;		/* 0,1,3 */
+ static int dma2 = SNDRV_DEFAULT_DMA1;		/* 0,1,3 */
+ #endif	/* CS4231 || OPTi93X */
  
- bool use_internal_drums = 0;
--module_param(use_internal_drums, bool, 0444);
-+module_param(use_internal_drums, bool, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(use_internal_drums, "Enable internal OPL2/3 drums.");
+-module_param(index, int, 0444);
++module_param(index, int, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(index, "Index value for opti9xx based soundcard.");
+-module_param(id, charp, 0444);
++module_param(id, charp, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(id, "ID string for opti9xx based soundcard.");
+ //module_param(enable, bool, 0444);
+ //MODULE_PARM_DESC(enable, "Enable opti9xx soundcard.");
+ #ifdef CONFIG_PNP
+-module_param(isapnp, bool, 0444);
++module_param(isapnp, bool, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(isapnp, "Enable ISA PnP detection for specified soundcard.");
+ #endif
+-module_param(port, long, 0444);
++module_param(port, long, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(port, "WSS port # for opti9xx driver.");
+-module_param(mpu_port, long, 0444);
++module_param(mpu_port, long, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(mpu_port, "MPU-401 port # for opti9xx driver.");
+-module_param(fm_port, long, 0444);
++module_param(fm_port, long, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(fm_port, "FM port # for opti9xx driver.");
+-module_param(irq, int, 0444);
++module_param(irq, int, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(irq, "WSS irq # for opti9xx driver.");
+-module_param(mpu_irq, int, 0444);
++module_param(mpu_irq, int, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(mpu_irq, "MPU-401 irq # for opti9xx driver.");
+-module_param(dma1, int, 0444);
++module_param(dma1, int, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(dma1, "1st dma # for opti9xx driver.");
+ #if defined(CS4231) || defined(OPTi93X)
+-module_param(dma2, int, 0444);
++module_param(dma2, int, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(dma2, "2nd dma # for opti9xx driver.");
+ #endif	/* CS4231 || OPTi93X */
  
- int snd_opl3_synth_use_inc(struct snd_opl3 * opl3)
 -- 
 2.9.2
