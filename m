@@ -1,37 +1,41 @@
-From: Baole Ni <baolex.ni@intel.com>
-Subject: [PATCH 1267/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 20:33:03 +0800
-Message-ID: <20160802123303.2502-1-baolex.ni@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, davem@davemloft.net, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, chuansheng.liu@intel.com, baolex.ni@intel.com, aryabinin@virtuozzo.com
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH 1/3] drm: bridge: add DesignWare HDMI I2S audio support
+Date: Tue, 2 Aug 2016 15:14:57 +0200
+Message-ID: <20160802131457.GI6232@phenom.ffwll.local>
+References: <874m8jxqcy.wl%kuninori.morimoto.gx@renesas.com>
+ <8737o3xqab.wl%kuninori.morimoto.gx@renesas.com>
+ <579A2D4E.9000207@synopsys.com>
+ <87mvkx9jqj.wl%kuninori.morimoto.gx@renesas.com>
+ <20160801174516.GY10376@sirena.org.uk>
+ <878twghul8.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <878twghul8.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Jose Abreu <Jose.Abreu@synopsys.com>, Fabio Estevam <fabio.estevam@freescale.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Daniel Vetter <daniel.vetter@ffwll.ch>, Koji Matsuoka <koji.matsuoka.xm@renesas.com>, dri-devel@lists.freedesktop.org, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>, Russell King <rmk+kernel@arm.linux.org.uk>, Thierry Reding <treding@nvidia.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I find that the developers often just specified the numeric value
-when calling a macro which is defined with a parameter for access permission.
-As we know, these numeric value for access permission have had the corresponding macro,
-and that using macro can improve the robustness and readability of the code,
-thus, I suggest replacing the numeric parameter with the macro.
-
-Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
-Signed-off-by: Baole Ni <baolex.ni@intel.com>
----
- sound/soc/codecs/cs42l52.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index 47b97fc..4323e17 100644
---- a/sound/soc/codecs/cs42l52.c
-+++ b/sound/soc/codecs/cs42l52.c
-@@ -976,7 +976,7 @@ static ssize_t cs42l52_beep_set(struct device *dev,
- 	return count;
- }
- 
--static DEVICE_ATTR(beep, 0200, NULL, cs42l52_beep_set);
-+static DEVICE_ATTR(beep, S_IWUSR, NULL, cs42l52_beep_set);
- 
- static void cs42l52_init_beep(struct snd_soc_codec *codec)
- {
--- 
-2.9.2
+T24gVHVlLCBBdWcgMDIsIDIwMTYgYXQgMTI6NDc6NDZBTSArMDAwMCwgS3VuaW5vcmkgTW9yaW1v
+dG8gd3JvdGU6Cj4gCj4gSGkgTWFyawo+IAo+ID4gPiBNYXJrLCBUaGllcnJ5LCBEYW5pZWwKPiA+
+ID4gSSB3b25kZXIgd2hvIGNhbiBiZSBtYWludGFpbmVyIGZvciB0aGlzIHBhdGNoID8/Cj4gPiAK
+PiA+IEl0J3MgYSBEUk0gcGF0Y2ggc28gSSdkIGV4cGVjdCBzb21lb25lIGluIHRoZSBEUk0gc3Vi
+c3lzdGVtLgo+IAo+IE9LLCBJIHNlZS4KPiBCdXQsIEkgd2lsbCBrZWVwIENjIHRvIHlvdSBmb3Ig
+dGhpcyBwYXRjaC1zZXQuCgpBcmNoaXQgVGFqZW5hIGlzIHRoZSBtYWludGFpbmVyIG9mIGxhc3Qg
+cmVzb3J0IGZvciBhbnl0aGluZyByZWxhdGVkIHRvCmRybV9icmlkZ2UuCi1EYW5pZWwKLS0gCkRh
+bmllbCBWZXR0ZXIKU29mdHdhcmUgRW5naW5lZXIsIEludGVsIENvcnBvcmF0aW9uCmh0dHA6Ly9i
+bG9nLmZmd2xsLmNoCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9y
+ZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZl
+bAo=
