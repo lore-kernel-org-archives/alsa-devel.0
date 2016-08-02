@@ -1,7 +1,7 @@
 From: Baole Ni <baolex.ni@intel.com>
-Subject: [PATCH 1188/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 20:24:48 +0800
-Message-ID: <20160802122448.29374-1-baolex.ni@intel.com>
+Subject: [PATCH 1184/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 20:24:20 +0800
+Message-ID: <20160802122420.29102-1-baolex.ni@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: perex@perex.cz, tiwai@suse.com, serge@hallyn.com, davem@davemloft.net, kadlec@blackhole.kfki.hu, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
@@ -17,59 +17,60 @@ thus, I suggest replacing the numeric parameter with the macro.
 Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
 Signed-off-by: Baole Ni <baolex.ni@intel.com>
 ---
- sound/isa/opl3sa2.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ sound/isa/gus/gusextreme.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/sound/isa/opl3sa2.c b/sound/isa/opl3sa2.c
-index ae13363..33e8c30 100644
---- a/sound/isa/opl3sa2.c
-+++ b/sound/isa/opl3sa2.c
-@@ -59,33 +59,33 @@ static int dma1[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;	/* 1,3,5,6,7 */
- static int dma2[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;	/* 1,3,5,6,7 */
- static int opl3sa3_ymode[SNDRV_CARDS];   /* 0,1,2,3 */ /*SL Added*/
+diff --git a/sound/isa/gus/gusextreme.c b/sound/isa/gus/gusextreme.c
+index 693d95f..3ba22c2 100644
+--- a/sound/isa/gus/gusextreme.c
++++ b/sound/isa/gus/gusextreme.c
+@@ -60,33 +60,33 @@ static int joystick_dac[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 29};
+ static int channels[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 24};
+ static int pcm_channels[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 2};
  
 -module_param_array(index, int, NULL, 0444);
 +module_param_array(index, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(index, "Index value for OPL3-SA soundcard.");
+ MODULE_PARM_DESC(index, "Index value for " CRD_NAME " soundcard.");
 -module_param_array(id, charp, NULL, 0444);
 +module_param_array(id, charp, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(id, "ID string for OPL3-SA soundcard.");
+ MODULE_PARM_DESC(id, "ID string for " CRD_NAME " soundcard.");
 -module_param_array(enable, bool, NULL, 0444);
 +module_param_array(enable, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(enable, "Enable OPL3-SA soundcard.");
- #ifdef CONFIG_PNP
--module_param_array(isapnp, bool, NULL, 0444);
-+module_param_array(isapnp, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(isapnp, "PnP detection for specified soundcard.");
- #endif
+ MODULE_PARM_DESC(enable, "Enable " CRD_NAME " soundcard.");
 -module_param_array(port, long, NULL, 0444);
 +module_param_array(port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(port, "Port # for OPL3-SA driver.");
--module_param_array(sb_port, long, NULL, 0444);
-+module_param_array(sb_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(sb_port, "SB port # for OPL3-SA driver.");
--module_param_array(wss_port, long, NULL, 0444);
-+module_param_array(wss_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(wss_port, "WSS port # for OPL3-SA driver.");
--module_param_array(fm_port, long, NULL, 0444);
-+module_param_array(fm_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(fm_port, "FM port # for OPL3-SA driver.");
--module_param_array(midi_port, long, NULL, 0444);
-+module_param_array(midi_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(midi_port, "MIDI port # for OPL3-SA driver.");
+ MODULE_PARM_DESC(port, "Port # for " CRD_NAME " driver.");
+-module_param_array(gf1_port, long, NULL, 0444);
++module_param_array(gf1_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(gf1_port, "GF1 port # for " CRD_NAME " driver (optional).");
+-module_param_array(mpu_port, long, NULL, 0444);
++module_param_array(mpu_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(mpu_port, "MPU-401 port # for " CRD_NAME " driver.");
 -module_param_array(irq, int, NULL, 0444);
 +module_param_array(irq, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(irq, "IRQ # for OPL3-SA driver.");
+ MODULE_PARM_DESC(irq, "IRQ # for " CRD_NAME " driver.");
+-module_param_array(mpu_irq, int, NULL, 0444);
++module_param_array(mpu_irq, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(mpu_irq, "MPU-401 IRQ # for " CRD_NAME " driver.");
+-module_param_array(gf1_irq, int, NULL, 0444);
++module_param_array(gf1_irq, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(gf1_irq, "GF1 IRQ # for " CRD_NAME " driver.");
+-module_param_array(dma8, int, NULL, 0444);
++module_param_array(dma8, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(dma8, "8-bit DMA # for " CRD_NAME " driver.");
 -module_param_array(dma1, int, NULL, 0444);
 +module_param_array(dma1, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(dma1, "DMA1 # for OPL3-SA driver.");
--module_param_array(dma2, int, NULL, 0444);
-+module_param_array(dma2, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(dma2, "DMA2 # for OPL3-SA driver.");
--module_param_array(opl3sa3_ymode, int, NULL, 0444);
-+module_param_array(opl3sa3_ymode, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(opl3sa3_ymode, "Speaker size selection for 3D Enhancement mode: Desktop/Large Notebook/Small Notebook/HiFi.");
+ MODULE_PARM_DESC(dma1, "GF1 DMA # for " CRD_NAME " driver.");
+-module_param_array(joystick_dac, int, NULL, 0444);
++module_param_array(joystick_dac, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(joystick_dac, "Joystick DAC level 0.59V-4.52V or 0.389V-2.98V for " CRD_NAME " driver.");
+-module_param_array(channels, int, NULL, 0444);
++module_param_array(channels, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(channels, "GF1 channels for " CRD_NAME " driver.");
+-module_param_array(pcm_channels, int, NULL, 0444);
++module_param_array(pcm_channels, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+ MODULE_PARM_DESC(pcm_channels, "Reserved PCM channels for " CRD_NAME " driver.");
  
- #ifdef CONFIG_PNP
+ static int snd_gusextreme_match(struct device *dev, unsigned int n)
 -- 
 2.9.2
