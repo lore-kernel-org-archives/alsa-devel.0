@@ -1,11 +1,11 @@
-From: Baole Ni <baolex.ni-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 1232/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 20:29:18 +0800
-Message-ID: <20160802122918.32423-1-baolex.ni@intel.com>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, kadlec-K40Dz/62t/MgiyqX0sVFJYdd74u8MsAO@public.gmane.org, davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org, m.szyprowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, kyungmin.park-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, chuansheng.liu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, baolex.ni-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, xiong.y.zhang-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, libin.yang-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, aryabinin-5HdwGun5lf+gSpxsJD1C4w@public.gmane.org
+From: Baole Ni <baolex.ni@intel.com>
+Subject: [PATCH 1271/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 20:33:26 +0800
+Message-ID: <20160802123326.2771-1-baolex.ni@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, davem@davemloft.net, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, chuansheng.liu@intel.com, baolex.ni@intel.com, fabio.estevam@nxp.com, linus.walleij@linaro.org, zidan.wang@freescale.com, sachinpandhare@gmail.com, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
 I find that the developers often just specified the numeric value
@@ -14,24 +14,33 @@ As we know, these numeric value for access permission have had the corresponding
 and that using macro can improve the robustness and readability of the code,
 thus, I suggest replacing the numeric parameter with the macro.
 
-Signed-off-by: Chuansheng Liu <chuansheng.liu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Signed-off-by: Baole Ni <baolex.ni-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
+Signed-off-by: Baole Ni <baolex.ni@intel.com>
 ---
- sound/pci/hda/hda_tegra.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/omap/mcbsp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-index 17fd817..4c00aa8 100644
---- a/sound/pci/hda/hda_tegra.c
-+++ b/sound/pci/hda/hda_tegra.c
-@@ -78,7 +78,7 @@ struct hda_tegra {
+diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
+index 4a16e77..3938336 100644
+--- a/sound/soc/omap/mcbsp.c
++++ b/sound/soc/omap/mcbsp.c
+@@ -857,7 +857,7 @@ unlock:
+ 	return size;
+ }
  
- #ifdef CONFIG_PM
- static int power_save = CONFIG_SND_HDA_POWER_SAVE_DEFAULT;
--module_param(power_save, bint, 0644);
-+module_param(power_save, bint, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(power_save,
- 		 "Automatic power-saving timeout (in seconds, 0 = disable).");
- #else
+-static DEVICE_ATTR(dma_op_mode, 0644, dma_op_mode_show, dma_op_mode_store);
++static DEVICE_ATTR(dma_op_mode, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, dma_op_mode_show, dma_op_mode_store);
+ 
+ static const struct attribute *additional_attrs[] = {
+ 	&dev_attr_max_tx_thres.attr,
+@@ -926,7 +926,7 @@ out:
+ 	return size;
+ }
+ 
+-static DEVICE_ATTR(st_taps, 0644, st_taps_show, st_taps_store);
++static DEVICE_ATTR(st_taps, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, st_taps_show, st_taps_store);
+ 
+ static const struct attribute *sidetone_attrs[] = {
+ 	&dev_attr_st_taps.attr,
 -- 
 2.9.2
