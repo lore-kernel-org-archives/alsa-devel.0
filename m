@@ -1,56 +1,60 @@
-From: Baole Ni <baolex.ni@intel.com>
-Subject: [PATCH 1216/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 20:27:35 +0800
-Message-ID: <20160802122735.31276-1-baolex.ni@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, serge@hallyn.com, davem@davemloft.net, kadlec@blackhole.kfki.hu, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, chuansheng.liu@intel.com, baolex.ni@intel.com, aryabinin@virtuozzo.com
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: Re: [PATCH 1/2] ASoC: cs42l73: Constify
+ cs42l73_mclk_coeffs and cs42l73_mclkx_coeffs tables
+Date: Tue, 2 Aug 2016 09:00:34 -0500
+Message-ID: <3fcb94a0-a626-4b66-b9b6-9c987b906a2f@EX3.ad.cirrus.com>
+References: <1470116911-7592-1-git-send-email-axel.lin@ingics.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B50E2668E7
+ for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2016 15:59:44 +0200 (CEST)
+In-Reply-To: <1470116911-7592-1-git-send-email-axel.lin@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I find that the developers often just specified the numeric value
-when calling a macro which is defined with a parameter for access permission.
-As we know, these numeric value for access permission have had the corresponding macro,
-and that using macro can improve the robustness and readability of the code,
-thus, I suggest replacing the numeric parameter with the macro.
-
-Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
-Signed-off-by: Baole Ni <baolex.ni@intel.com>
----
- sound/pci/cmipci.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
-index 24cdcba..a45c7bf 100644
---- a/sound/pci/cmipci.c
-+++ b/sound/pci/cmipci.c
-@@ -62,20 +62,20 @@ static bool soft_ac3[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)]=1};
- static int joystick_port[SNDRV_CARDS];
- #endif
- 
--module_param_array(index, int, NULL, 0444);
-+module_param_array(index, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(index, "Index value for C-Media PCI soundcard.");
--module_param_array(id, charp, NULL, 0444);
-+module_param_array(id, charp, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(id, "ID string for C-Media PCI soundcard.");
--module_param_array(enable, bool, NULL, 0444);
-+module_param_array(enable, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(enable, "Enable C-Media PCI soundcard.");
--module_param_array(mpu_port, long, NULL, 0444);
-+module_param_array(mpu_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(mpu_port, "MPU-401 port.");
--module_param_array(fm_port, long, NULL, 0444);
-+module_param_array(fm_port, long, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(fm_port, "FM port.");
--module_param_array(soft_ac3, bool, NULL, 0444);
-+module_param_array(soft_ac3, bool, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(soft_ac3, "Software-conversion of raw SPDIF packets (model 033 only).");
- #ifdef SUPPORT_JOYSTICK
--module_param_array(joystick_port, int, NULL, 0444);
-+module_param_array(joystick_port, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(joystick_port, "Joystick port address.");
- #endif
- 
--- 
-2.9.2
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+>  sound/soc/codecs/cs42l73.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+> index 42a8fd4..8524e22 100644
+> --- a/sound/soc/codecs/cs42l73.c
+> +++ b/sound/soc/codecs/cs42l73.c
+> @@ -794,7 +794,7 @@ struct cs42l73_mclk_div {
+>  	u8 mmcc;
+>  };
+>  
+> -static struct cs42l73_mclk_div cs42l73_mclk_coeffs[] = {
+> +static const struct cs42l73_mclk_div cs42l73_mclk_coeffs[] = {
+>  	/* MCLK, Sample Rate, xMMCC[5:0] */
+>  	{5644800, 11025, 0x30},
+>  	{5644800, 22050, 0x20},
+> @@ -844,7 +844,7 @@ struct cs42l73_mclkx_div {
+>  	u8 mclkdiv;
+>  };
+>  
+> -static struct cs42l73_mclkx_div cs42l73_mclkx_coeffs[] = {
+> +static const struct cs42l73_mclkx_div cs42l73_mclkx_coeffs[] = {
+>  	{5644800,  1, 0},	/* 5644800 */
+>  	{6000000,  1, 0},	/* 6000000 */
+>  	{6144000,  1, 0},	/* 6144000 */
+> -- 
+> 2.7.4
+> 
+> 
+Acked-by: Brian Austin <brian.austin@cirrus.com>
