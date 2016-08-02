@@ -1,10 +1,10 @@
 From: Baole Ni <baolex.ni@intel.com>
-Subject: [PATCH 1154/1285] Replace numeric parameter like 0444 with macro
-Date: Tue,  2 Aug 2016 20:21:15 +0800
-Message-ID: <20160802122115.27064-1-baolex.ni@intel.com>
+Subject: [PATCH 1267/1285] Replace numeric parameter like 0444 with macro
+Date: Tue,  2 Aug 2016 20:33:03 +0800
+Message-ID: <20160802123303.2502-1-baolex.ni@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, serge@hallyn.com, davem@davemloft.net, kadlec@blackhole.kfki.hu, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
+To: brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, davem@davemloft.net, m.szyprowski@samsung.com, kyungmin.park@samsung.com, k.kozlowski@samsung.com
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, chuansheng.liu@intel.com, baolex.ni@intel.com, aryabinin@virtuozzo.com
 List-Id: alsa-devel@alsa-project.org
 
@@ -17,24 +17,21 @@ thus, I suggest replacing the numeric parameter with the macro.
 Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
 Signed-off-by: Baole Ni <baolex.ni@intel.com>
 ---
- sound/core/seq/seq_dummy.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs42l52.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/core/seq/seq_dummy.c b/sound/core/seq/seq_dummy.c
-index d3a2ec4..1b01fb6 100644
---- a/sound/core/seq/seq_dummy.c
-+++ b/sound/core/seq/seq_dummy.c
-@@ -67,9 +67,9 @@ MODULE_ALIAS("snd-seq-client-" __stringify(SNDRV_SEQ_CLIENT_DUMMY));
- static int ports = 1;
- static bool duplex;
+diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
+index 47b97fc..4323e17 100644
+--- a/sound/soc/codecs/cs42l52.c
++++ b/sound/soc/codecs/cs42l52.c
+@@ -976,7 +976,7 @@ static ssize_t cs42l52_beep_set(struct device *dev,
+ 	return count;
+ }
  
--module_param(ports, int, 0444);
-+module_param(ports, int, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(ports, "number of ports to be created");
--module_param(duplex, bool, 0444);
-+module_param(duplex, bool, S_IRUSR | S_IRGRP | S_IROTH);
- MODULE_PARM_DESC(duplex, "create DUPLEX ports");
+-static DEVICE_ATTR(beep, 0200, NULL, cs42l52_beep_set);
++static DEVICE_ATTR(beep, S_IWUSR, NULL, cs42l52_beep_set);
  
- struct snd_seq_dummy_port {
+ static void cs42l52_init_beep(struct snd_soc_codec *codec)
+ {
 -- 
 2.9.2
