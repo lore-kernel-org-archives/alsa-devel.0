@@ -1,60 +1,45 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Improving status timestamp accuracy
-Date: Tue, 2 Aug 2016 09:55:07 +0200
-Message-ID: <35f9d6de-f11f-7977-7b6f-69d2f3e1e73c@ladisch.de>
-References: <5752A005.2050309@gmail.com>
- <CAN8cciZN=Gjq3Za+Qz31EYoCsTuTNp4au_Upxq8ZvvEJqNdw9w@mail.gmail.com>
- <5753FFF0.3050200@gmail.com> <s5hwpm2n2bq.wl-tiwai@suse.de>
- <57554591.20103@gmail.com>
- <51c7887a-db2f-ee88-8290-2f2d21d6435d@linux.intel.com>
- <57566D64.1050400@gmail.com> <577FC0C4.1060508@IEE.org>
- <93b0b35f-5b8d-6ba3-c7db-fb534e66d31c@linux.intel.com>
- <578E4862.4050603@IEE.org>
- <805c3724-f027-a405-5704-3b343aa5404b@linux.intel.com>
- <578F2139.9060001@IEE.org>
- <97295c12-7abb-54a2-f51f-7610c0e5447c@linux.intel.com>
- <57A04BFE.9030704@IEE.org>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH 0/3] drm/i2c: tda998x ASoC hdmi-codec support +
+ BeagleBoneBlack audio support
+Date: Tue, 2 Aug 2016 15:05:06 +0300
+Message-ID: <cover.1470129989.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 2ACDE265AD3
- for <alsa-devel@alsa-project.org>; Tue,  2 Aug 2016 09:55:11 +0200 (CEST)
-In-Reply-To: <57A04BFE.9030704@IEE.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Young <Alan.Young@IEE.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org, rmk+kernel@arm.linux.org.uk
+Cc: peter.ujfalusi@ti.com, tony@atomide.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Alan Young wrote:
-> Stepping back for a moment, the delay calculation essentially
-> consists of two parts:
->
-> 1. How much data is still in the ring buffer.
-> 2. How much data has been removed from the ring buffer but not yet
->    played out.
-> [...]
-> The more that I think about it the more it seems to me that using
-> a time-based estimate for position (hw_ptr), outside of an interrupt
-> callback, will always be more accurate than that returned by
-> substream->ops->pointer().
-
-Please note that "hw_ptr" (or "avail" in the API) specifies the DMA
-position, i.e., it is guaranteed that the samples up to this position
-have been handled by the DMA controller and can now be accessed by the
-program.  An estimate that gets this wrong can lead to data corruption.
-
-Using an estimate for the delay is perfectly fine.
-
-
-Regards,
-Clemens
+VGhlc2UgcGF0Y2hlcyBhcmUganVzdCBhIHJlYmFzZSBvZiB0aGUgc2FtZSBwYXRjaGVzIGZyb20g
+bXkgIltQQVRDSAp2NCAwLzddIEltcGxlbWVudCBnZW5lcmljIEFTb0MgSERNSSBjb2RlYyBhbmQg
+dXNlIGl0IGluIHRkYTk5OHgiCi1wYXRjaCBzZXJpZXMuIEkgaGF2ZSBvbmx5IG1hZGUgdXBkYXRl
+cyByZXF1aXJlZCBieSBlZmM5MTk0YmNmZjgKKCJBU29DOiBoZG1pLWNvZGVjOiBjYWxsYmFjayBm
+dW5jdGlvbiB3aWxsIGJlIGNhbGxlZCB3aXRoIHByaXZhdGUKZGF0YSIpIC1wYXRjaC4KClRoZSBm
+aXJzdCBwYXRjaCBjaGFuZ2VzIHRkYTk5OHggcGRhdGEsIHNvIGlmIHRoZXJlIGFyZSBhbnkgb3V0
+IG9mIHRyZWUKdXNlcnMgb2YgdGRhOTk4eC1kcml2ZXIgdGhlIG91dCBvZiB0cmVlIGNvZGUgbmVl
+ZHMgdG8gYmUgdXBkYXRlZC4KCkp5cmkgU2FyaGEgKDMpOgogIGRybS9pMmM6IHRkYTk5OHg6IElt
+cHJvdmUgdGRhOTk4eF9jb25maWd1cmVfYXVkaW8oKSBhdWRpbyByZWxhdGVkCiAgICBwZGF0YQog
+IGRybS9pMmM6IHRkYTk5OHg6IFJlZ2lzdGVyIEFTb0MgaGRtaS1jb2RlYyBhbmQgYWRkIGF1ZGlv
+IERUIGJpbmRpbmcKICBBUk06IGR0czogYW0zMzV4LWJvbmVibGFjazogQWRkIEhETUkgYXVkaW8g
+c3VwcG9ydAoKIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvYnJpZGdlL3RkYTk5OHgu
+dHh0IHwgIDE4ICsrCiBhcmNoL2FybS9ib290L2R0cy9hbTMzNXgtYm9uZWJsYWNrLmR0cyAgICAg
+ICAgICAgICB8ICA3MSArKysrKy0KIGRyaXZlcnMvZ3B1L2RybS9pMmMvS2NvbmZpZyAgICAgICAg
+ICAgICAgICAgICAgICAgIHwgICAxICsKIGRyaXZlcnMvZ3B1L2RybS9pMmMvdGRhOTk4eF9kcnYu
+YyAgICAgICAgICAgICAgICAgIHwgMjc2ICsrKysrKysrKysrKysrKysrKy0tLQogaW5jbHVkZS9k
+cm0vaTJjL3RkYTk5OHguaCAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMjQgKy0KIGluY2x1
+ZGUvZHQtYmluZGluZ3MvZGlzcGxheS90ZGE5OTh4LmggICAgICAgICAgICAgIHwgICA3ICsKIDYg
+ZmlsZXMgY2hhbmdlZCwgMzQyIGluc2VydGlvbnMoKyksIDU1IGRlbGV0aW9ucygtKQogY3JlYXRl
+IG1vZGUgMTAwNjQ0IGluY2x1ZGUvZHQtYmluZGluZ3MvZGlzcGxheS90ZGE5OTh4LmgKCi0tIAox
+LjkuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJp
+LWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBz
+Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
