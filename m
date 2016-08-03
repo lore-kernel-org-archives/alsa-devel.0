@@ -1,42 +1,62 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 1/xx][sample] ASoC: add COMPONENT_FUNC()
- macro for snd_soc_component_driver
-Date: Wed, 3 Aug 2016 21:16:33 +0200
-Message-ID: <7de0934c-6d6a-ad51-7d5a-693bcf999a56@metafoo.de>
+Subject: Re: [alsa-devel] How to post cleanup patches ?
+Date: Wed, 3 Aug 2016 21:20:16 +0200
+Message-ID: <c52dc535-1f9f-007c-34a9-d7adbec1f58d@metafoo.de>
 References: <87k2fy8xy5.wl%kuninori.morimoto.gx@renesas.com>
- <87invi8xwc.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87invi8xwc.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87k2fy8xy5.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/03/2016 03:13 AM, Kuninori Morimoto wrote:
-> snd_soc_component_driver requests some struct xxx, and int num_xxx.
-> To make initialize easy, this patch adds COMPONENT_FUNC() macro.
+On 08/03/2016 03:12 AM, Kuninori Morimoto wrote:
 > 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  include/sound/soc.h | 3 +++
->  1 file changed, 3 insertions(+)
+> Hi Mark
 > 
-> diff --git a/include/sound/soc.h b/include/sound/soc.h
-> index 6144882..41c21f9 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -795,6 +795,9 @@ struct snd_soc_component_driver {
->  	int probe_order;
->  	int remove_order;
->  };
-> +#define COMPONENT_FUNC(name, func)		\
-> +	.name		= func,			\
-> +	.num_##name	= ARRAY_SIZE(func)
+> Now codec driver and component driver has duplicated callback function,
+> and snd_soc_register_codec() just copied it to component side.
+> 
+> 	int snd_soc_register_codec(xxx) {
+> 		...
+>  
+> 		if (codec_drv->controls) {
+> 			codec->component.controls = codec_drv->controls;
+> 			codec->component.num_controls = codec_drv->num_controls;
+> 		}
+> 		if (codec_drv->dapm_widgets) {
+> 			codec->component.dapm_widgets = codec_drv->dapm_widgets;
+> 			codec->component.num_dapm_widgets = codec_drv->num_dapm_widgets;
+> 		}
+> 		if (codec_drv->dapm_routes) {
+> 			codec->component.dapm_routes = codec_drv->dapm_routes;
+> 			codec->component.num_dapm_routes = codec_drv->num_dapm_routes;
+> 		}
+> 		...
+> 	}
+> 
+> I think we can cleanup this duplicated function, similar things happen on
+> .probe, .remove, and platform side too.
+> 
+> I would like to post cleanup patches for these.
+> As 1st step, remove codec duplicate callback.
+> 
+> But my concern is that you hate big-patch-set, and it is almost 70 patches.
+> Can I post these patches to ML ? or should I use git pull request ? or I shouldn't post ?
 
-I'd avoid like to a void this kind of macro. Sure it slightly reduces
-boilerplate code, but it is difficult to parse for both humans as well as
-machines. Makes the code much less intuitive to understand and also breaks
-automated scripts.
+I left this step out on purpose during the componentization of
+snd_soc_codec. Simply because it is a huge amount of code churn for very
+little gain. If you want to do it, go ahead, but I don't think it is worth
+the effort at this point.
+
+I think of this as the final cleanup step once everything else is in place.
+E.g. there are lots of CODEC drivers that don't actually need anything CODEC
+specific, except that we need to know that it is a CODEC so we which
+direction the capture and playback streams of the DAI go. If we can come up
+with a generic to represent the DAI streams we could convert all these
+drivers directly from snd_soc_codec_driver to snd_soc_component_driver.
+
+I'd much rather see this conversion to be part of such an effort.
