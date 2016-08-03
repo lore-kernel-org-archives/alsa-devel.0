@@ -1,15 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 5/5] ALSA - hda: Add support for link audio
-	time reporting
-Date: Wed,  3 Aug 2016 21:36:14 +0530
-Message-ID: <1470240374-20018-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 4/5] ALSA - hda: Add support for parsing new
+	HDA capabilities
+Date: Wed,  3 Aug 2016 21:36:13 +0530
+Message-ID: <1470240374-20018-5-git-send-email-vinod.koul@intel.com>
 References: <1470240374-20018-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id CBD612675F4
+ by alsa0.perex.cz (Postfix) with ESMTP id 795FE2675F2
  for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2016 17:59:25 +0200 (CEST)
 In-Reply-To: <1470240374-20018-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,134 +22,135 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org
+Cc: tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogR3VuZXNod29yIFNpbmdoIDxndW5lc2h3b3Iuby5zaW5naEBpbnRlbC5jb20+CgpUaGUg
-SERBIGNvbnRyb2xsZXIgZnJvbSBTS0wgb253YXJkcyBzdXBwb3J0IGFkZGl0aW9uYWwgdGltZXN0
-YW1wCnJlcG9ydGluZyBvZiB0aGUgbGluayB0aW1lLiBUaGUgbGluayB0aW1lIGlzIHJlYWQgZnJv
-bSBIVwpyZWdpc3RlcnMgYW5kIGNvbnZlcnRlZCB0byBhdWRpbyB2YWx1ZXMuCgpTaWduZWQtb2Zm
-LWJ5OiBHdW5lc2h3b3IgU2luZ2ggPGd1bmVzaHdvci5vLnNpbmdoQGludGVsLmNvbT4KU2lnbmVk
-LW9mZi1ieTogSGFyZGlrIFQgU2hhaCA8aGFyZGlrLnQuc2hhaEBpbnRlbC5jb20+Ci0tLQogc291
-bmQvcGNpL2hkYS9oZGFfY29udHJvbGxlci5jIHwgMTk1ICsrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKystCiAxIGZpbGUgY2hhbmdlZCwgMTk0IGluc2VydGlvbnMoKyksIDEg
-ZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9jb250cm9sbGVyLmMg
-Yi9zb3VuZC9wY2kvaGRhL2hkYV9jb250cm9sbGVyLmMKaW5kZXggMTU2N2ZlMjA5ZTAxLi5lYjI5
-ZjYxNDM0YjIgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvaGRhX2NvbnRyb2xsZXIuYworKysg
-Yi9zb3VuZC9wY2kvaGRhL2hkYV9jb250cm9sbGVyLmMKQEAgLTI3LDYgKzI3LDEyIEBACiAjaW5j
-bHVkZSA8bGludXgvbW9kdWxlLmg+CiAjaW5jbHVkZSA8bGludXgvcG1fcnVudGltZS5oPgogI2lu
-Y2x1ZGUgPGxpbnV4L3NsYWIuaD4KKworI2lmZGVmIENPTkZJR19YODYKKy8qIGZvciBhcnQtdHNj
-IGNvbnZlcnNpb24gKi8KKyNpbmNsdWRlIDxhc20vdHNjLmg+CisjZW5kaWYKKwogI2luY2x1ZGUg
-PHNvdW5kL2NvcmUuaD4KICNpbmNsdWRlIDxzb3VuZC9pbml0dmFsLmg+CiAjaW5jbHVkZSAiaGRh
-X2NvbnRyb2xsZXIuaCIKQEAgLTMzNywxMiArMzQzLDE2OSBAQCBzdGF0aWMgc25kX3BjbV91ZnJh
-bWVzX3QgYXp4X3BjbV9wb2ludGVyKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFt
-KQogCQkJICAgICAgIGF6eF9nZXRfcG9zaXRpb24oY2hpcCwgYXp4X2RldikpOwogfQogCisvKgor
-ICogYXp4X3NjYWxlNjQ6IFNjYWxlIGJhc2UgYnkgbXVsdC9kaXYgd2hpbGUgbm90IG92ZXJmbG93
-aW5nIHNhbmVseQorICoKKyAqIERlcml2ZWQgZnJvbSBzY2FsZTY0X2NoZWNrX292ZXJmbG93IGlu
-IGtlcm5lbC90aW1lL3RpbWVrZWVwaW5nLmMKKyAqCisgKiBUaGUgdG1lc3RhbXBzIGZvciBhIDQ4
-S2h6IHN0cmVhbSBjYW4gb3ZlcmZsb3cgYWZ0ZXIgKDJeNjQvMTBeOSkvNDhLIHdoaWNoCisgKiBp
-cyBhYm91dCAzODQzMDcgaWUgfjQuNSBkYXlzLgorICoKKyAqIFRoaXMgc2NhbGVzIHRoZSBjYWxj
-dWxhdGlvbiBzbyB0aGF0IG92ZXJmbG93IHdpbGwgaGFwcGVuIGJ1dCBhZnRlciAyXjY0IC8KKyAq
-IDQ4MDAwIHNlY3MsIHdoaWNoIGlzIHByZXR0eSBsYXJnZSEKKyAqCisgKiBJbiBjYWxuIGJlbG93
-OgorICoJYmFzZSBtYXkgb3ZlcmZsb3csIGJ1dCBzaW5jZSB0aGVyZSBpc27igJl0IGFueSBhZGRp
-dGlvbmFsIGRpdmlzaW9uCisgKglwZXJmb3JtZWQgb24gYmFzZSBpdOKAmXMgT0sKKyAqCXJlbSBj
-YW7igJl0IG92ZXJmbG93IGJlY2F1c2UgYm90aCBhcmUgMzItYml0IHZhbHVlcworICovCisKKyNp
-ZmRlZiBDT05GSUdfWDg2CitzdGF0aWMgdTY0IGF6eF9zY2FsZTY0KHU2NCBiYXNlLCB1MzIgbnVt
-LCB1MzIgZGVuKQoreworCXU2NCByZW07CisKKwlyZW0gPSBkb19kaXYoYmFzZSwgZGVuKTsKKwor
-CWJhc2UgKj0gbnVtOworCXJlbSAqPSBudW07CisKKwlkb19kaXYocmVtLCBkZW4pOworCisJcmV0
-dXJuIGJhc2UgKyByZW07Cit9CisKK3N0YXRpYyBpbnQgYXp4X2dldF9zeW5jX3RpbWUoa3RpbWVf
-dCAqZGV2aWNlLAorCQlzdHJ1Y3Qgc3lzdGVtX2NvdW50ZXJ2YWxfdCAqc3lzdGVtLCB2b2lkICpj
-dHgpCit7CisJc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0gPSAoc3RydWN0IHNu
-ZF9wY21fc3Vic3RyZWFtICopY3R4OworCXN0cnVjdCBhenhfZGV2ICphenhfZGV2ID0gZ2V0X2F6
-eF9kZXYoc3Vic3RyZWFtKTsKKwlzdHJ1Y3QgYXp4X3BjbSAqYXBjbSA9IHNuZF9wY21fc3Vic3Ry
-ZWFtX2NoaXAoc3Vic3RyZWFtKTsKKwlzdHJ1Y3QgYXp4ICpjaGlwID0gYXBjbS0+Y2hpcDsKKwlz
-dHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lOworCXU2NCBsbF9jb3VudGVyLCBsbF9jb3Vu
-dGVyX2wsIGxsX2NvdW50ZXJfaDsKKwl1NjQgdHNjX2NvdW50ZXIsIHRzY19jb3VudGVyX2wsIHRz
-Y19jb3VudGVyX2g7CisJdTMyIHdhbGxjbGtfY3RyLCB3YWxsY2xrX2N5Y2xlczsKKwlib29sIGRp
-cmVjdGlvbjsKKwl1MzIgZG1hX3NlbGVjdDsKKwl1MzIgdGltZW91dCA9IDIwMDsKKwl1MzIgcmV0
-cnlfY291bnQgPSAwOworCisJcnVudGltZSA9IHN1YnN0cmVhbS0+cnVudGltZTsKKworCWlmIChz
-dWJzdHJlYW0tPnN0cmVhbSA9PSBTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLKQorCQlkaXJlY3Rp
-b24gPSAxOworCWVsc2UKKwkJZGlyZWN0aW9uID0gMDsKKworCS8qIDB0aCBzdHJlYW0gdGFnIGlz
-IG5vdCB1c2VkLCBzbyBETUEgY2ggMCBpcyBmb3IgMXN0IHN0cmVhbSB0YWcgKi8KKwlkbyB7CisJ
-CXRpbWVvdXQgPSAxMDA7CisJCWRtYV9zZWxlY3QgPSAoZGlyZWN0aW9uIDw8IEdUU0NDX0NETUFT
-X0RNQV9ESVJfU0hJRlQpIHwKKwkJCQkJKGF6eF9kZXYtPmNvcmUuc3RyZWFtX3RhZyAtIDEpOwor
-CQlfc25kX2hkYWNfY2hpcF93cml0ZShsLCBhenhfYnVzKGNoaXApLCBBWlhfUkVHX0dUU0NDLAor
-CQkJCQkJZG1hX3NlbGVjdCk7CisJCS8qIEVuYWJsZSB0aGUgY2FwdHVyZSAqLworCQlfc25kX2hk
-YWNfY2hpcF93cml0ZShsLCBhenhfYnVzKGNoaXApLCBBWlhfUkVHX0dUU0NDLAorCQkJCSAgICAg
-X3NuZF9oZGFjX2NoaXBfcmVhZChsLCBhenhfYnVzKGNoaXApLAorCQkJCQlBWlhfUkVHX0dUU0ND
-KSB8IEdUU0NDX1RTQ0NJX01BU0spOworCisJCXdoaWxlICh0aW1lb3V0KSB7CisJCQlpZiAoX3Nu
-ZF9oZGFjX2NoaXBfcmVhZChsLCBhenhfYnVzKGNoaXApLAorCQkJCUFaWF9SRUdfR1RTQ0MpICYg
-R1RTQ0NfVFNDQ0RfTUFTSykKKwkJCQlicmVhazsKKwkJCXRpbWVvdXQtLTsKKwkJfQorCisJCWlm
-ICghdGltZW91dCkgeworCQkJZGV2X2VycihjaGlwLT5jYXJkLT5kZXYsICJHVFNDQyBjYXB0dXJl
-IFRpbWVkb3V0IVxuIik7CisJCQlyZXR1cm4gLUVJTzsKKwkJfQorCisJCS8qIFJlYWQgd2FsbCBj
-bG9jayBjb3VudGVyICovCisJCXdhbGxjbGtfY3RyID0gX3NuZF9oZGFjX2NoaXBfcmVhZChsLCBh
-enhfYnVzKGNoaXApLAorCQkJCQkJICBBWlhfUkVHX1dBTEZDQyk7CisKKwkJLyogUmVhZCBUU0Mg
-Y291bnRlciAqLworCQl0c2NfY291bnRlcl9sID0gX3NuZF9oZGFjX2NoaXBfcmVhZChsLCBhenhf
-YnVzKGNoaXApLAorCQkJCQkJICAgIEFaWF9SRUdfVFNDQ0wpOworCQl0c2NfY291bnRlcl9oID0g
-X3NuZF9oZGFjX2NoaXBfcmVhZChsLCBhenhfYnVzKGNoaXApLAorCQkJCQkJICAgIEFaWF9SRUdf
-VFNDQ1UpOworCisJCS8qIFJlYWQgTGluayBjb3VudGVyICovCisJCWxsX2NvdW50ZXJfbCA9IF9z
-bmRfaGRhY19jaGlwX3JlYWQobCwgYXp4X2J1cyhjaGlwKSwKKwkJCQkJCSAgIEFaWF9SRUdfTExQ
-Q0wpOworCQlsbF9jb3VudGVyX2ggPSBfc25kX2hkYWNfY2hpcF9yZWFkKGwsIGF6eF9idXMoY2hp
-cCksCisJCQkJCQkgICBBWlhfUkVHX0xMUENVKTsKKworCQkvKiBBY2s6IHJlZ2lzdGVycyByZWFk
-IGRvbmUgKi8KKwkJX3NuZF9oZGFjX2NoaXBfd3JpdGUobCwgYXp4X2J1cyhjaGlwKSwKKwkJCQkg
-ICAgIEFaWF9SRUdfR1RTQ0MsCisJCQkJICAgICAoMHgxIDw8IEdUU0NDX1RTQ0NEX1NISUZUKSk7
-CisKKwkJdHNjX2NvdW50ZXIgPSAodHNjX2NvdW50ZXJfaCA8PCBUU0NDVV9DQ1VfU0hJRlQpIHwK
-KwkJCQkJCXRzY19jb3VudGVyX2w7CisKKwkJbGxfY291bnRlciA9IChsbF9jb3VudGVyX2ggPDwg
-TExQQ19DQ1VfU0hJRlQpIHwJbGxfY291bnRlcl9sOworCQl3YWxsY2xrX2N5Y2xlcyA9IHdhbGxj
-bGtfY3RyICYgV0FMRkNDX0NJRl9NQVNLOworCisJCS8qCisJCSAqIEFuIGVycm9yIG9jY3VycyBu
-ZWFyIGZyYW1lICJyb2xsb3ZlciIuIFRoZSBjbG9ja3MgaW4KKwkJICogZnJhbWUgdmFsdWUgaW5k
-aWNhdGVzIHdoZXRoZXIgdGhpcyBlcnJvciBtYXkgaGF2ZQorCQkgKiBvY2N1cnJlZC4gSGVyZSB3
-ZSB1c2UgdGhlIHZhbHVlIG9mIDEwIGkuZS4sCisJCSAqIEhEQV9NQVhfQ1lDTEVfT0ZGU0VUCisJ
-CSAqLworCQlpZiAod2FsbGNsa19jeWNsZXMgPCBIREFfTUFYX0NZQ0xFX1ZBTFVFIC0gSERBX01B
-WF9DWUNMRV9PRkZTRVQKKwkJICAgICYmIHdhbGxjbGtfY3ljbGVzID4gSERBX01BWF9DWUNMRV9P
-RkZTRVQpCisJCQlicmVhazsKKworCQkvKgorCQkgKiBTbGVlcCBiZWZvcmUgd2UgcmVhZCBhZ2Fp
-biwgZWxzZSB3ZSBtYXkgYWdhaW4gZ2V0CisJCSAqIHZhbHVlIG5lYXIgdG8gTUFYX0NZQ0xFLiBU
-cnkgdG8gc2xlZXAgZm9yIGRpZmZlcmVudAorCQkgKiBhbW91bnQgb2YgdGltZSBzbyB3ZSBkb250
-IGhpdCB0aGUgc2FtZSBudW1iZXIgYWdhaW4KKwkJICovCisJCXVkZWxheShyZXRyeV9jb3VudCsr
-KTsKKworCX0gd2hpbGUgKHJldHJ5X2NvdW50ICE9IEhEQV9NQVhfQ1lDTEVfUkVBRF9SRVRSWSk7
-CisKKwlpZiAocmV0cnlfY291bnQgPT0gSERBX01BWF9DWUNMRV9SRUFEX1JFVFJZKSB7CisJCWRl
-dl9lcnIoY2hpcC0+Y2FyZC0+ZGV2LCAiRXJyb3IgaW4gV0FMRkNDIGN5Y2xlIGNvdW50XG4iKTsK
-KwkJcmV0dXJuIC1FSU87CisJfQorCisJKmRldmljZSA9IG5zX3RvX2t0aW1lKGF6eF9zY2FsZTY0
-KGxsX2NvdW50ZXIsCisJCQkJTlNFQ19QRVJfU0VDLCBydW50aW1lLT5yYXRlKSk7CisJKmRldmlj
-ZSA9IGt0aW1lX2FkZF9ucygqZGV2aWNlLCAod2FsbGNsa19jeWNsZXMgKiBOU0VDX1BFUl9TRUMp
-IC8KKwkJCSAgICAgICAoKEhEQV9NQVhfQ1lDTEVfVkFMVUUgKyAxKSAqIHJ1bnRpbWUtPnJhdGUp
-KTsKKworCSpzeXN0ZW0gPSBjb252ZXJ0X2FydF90b190c2ModHNjX2NvdW50ZXIpOworCisJcmV0
-dXJuIDA7Cit9CisKKyNlbHNlCitzdGF0aWMgaW50IGF6eF9nZXRfc3luY190aW1lKGt0aW1lX3Qg
-KmRldmljZSwKKwkJc3RydWN0IHN5c3RlbV9jb3VudGVydmFsX3QgKnN5c3RlbSwgdm9pZCAqY3R4
-KQoreworCXJldHVybiAtRU5YSU87Cit9CisjZW5kaWYKKworc3RhdGljIGludCBhenhfZ2V0X2Ny
-b3NzdHN0YW1wKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAorCQkJICAgICAg
-c3RydWN0IHN5c3RlbV9kZXZpY2VfY3Jvc3N0c3RhbXAgKnh0c3RhbXApCit7CisJcmV0dXJuIGdl
-dF9kZXZpY2Vfc3lzdGVtX2Nyb3NzdHN0YW1wKGF6eF9nZXRfc3luY190aW1lLAorCQkJCQlzdWJz
-dHJlYW0sIE5VTEwsIHh0c3RhbXApOworfQorCiBzdGF0aWMgaW50IGF6eF9nZXRfdGltZV9pbmZv
-KHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCQkJc3RydWN0IHRpbWVzcGVj
-ICpzeXN0ZW1fdHMsIHN0cnVjdCB0aW1lc3BlYyAqYXVkaW9fdHMsCiAJCQlzdHJ1Y3Qgc25kX3Bj
-bV9hdWRpb190c3RhbXBfY29uZmlnICphdWRpb190c3RhbXBfY29uZmlnLAogCQkJc3RydWN0IHNu
-ZF9wY21fYXVkaW9fdHN0YW1wX3JlcG9ydCAqYXVkaW9fdHN0YW1wX3JlcG9ydCkKIHsKIAlzdHJ1
-Y3QgYXp4X2RldiAqYXp4X2RldiA9IGdldF9henhfZGV2KHN1YnN0cmVhbSk7CisJc3RydWN0IHNu
-ZF9wY21fcnVudGltZSAqcnVudGltZSA9IHN1YnN0cmVhbS0+cnVudGltZTsKKwlzdHJ1Y3Qgc3lz
-dGVtX2RldmljZV9jcm9zc3RzdGFtcCB4dHN0YW1wOwogCXU2NCBuc2VjOwogCiAJaWYgKChzdWJz
-dHJlYW0tPnJ1bnRpbWUtPmh3LmluZm8gJiBTTkRSVl9QQ01fSU5GT19IQVNfTElOS19BVElNRSkg
-JiYKQEAgLTM2MSw4ICs1MjQsMzggQEAgc3RhdGljIGludCBhenhfZ2V0X3RpbWVfaW5mbyhzdHJ1
-Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAkJYXVkaW9fdHN0YW1wX3JlcG9ydC0+
-YWNjdXJhY3lfcmVwb3J0ID0gMTsgLyogcmVzdCBvZiBzdHJ1Y3R1cmUgaXMgdmFsaWQgKi8KIAkJ
-YXVkaW9fdHN0YW1wX3JlcG9ydC0+YWNjdXJhY3kgPSA0MjsgLyogMjQgTUh6IFdhbGxDbG9jayA9
-PSA0Mm5zIHJlc29sdXRpb24gKi8KIAotCX0gZWxzZQorCX0gZWxzZSBpZiAoKHJ1bnRpbWUtPmh3
-LmluZm8gJgorCQkJU05EUlZfUENNX0lORk9fSEFTX0xJTktfU1lOQ0hST05JWkVEX0FUSU1FKSAm
-JgorCQkJKGF1ZGlvX3RzdGFtcF9jb25maWctPnR5cGVfcmVxdWVzdGVkID09CisJCQlTTkRSVl9Q
-Q01fQVVESU9fVFNUQU1QX1RZUEVfTElOS19TWU5DSFJPTklaRUQpKSB7CisKKwkJYXp4X2dldF9j
-cm9zc3RzdGFtcChzdWJzdHJlYW0sICZ4dHN0YW1wKTsKKworCQlzd2l0Y2ggKHJ1bnRpbWUtPnRz
-dGFtcF90eXBlKSB7CisJCWNhc2UgU05EUlZfUENNX1RTVEFNUF9UWVBFX01PTk9UT05JQzoKKwkJ
-CXJldHVybiAtRUlOVkFMOworCisJCWNhc2UgU05EUlZfUENNX1RTVEFNUF9UWVBFX01PTk9UT05J
-Q19SQVc6CisJCQkqc3lzdGVtX3RzID0ga3RpbWVfdG9fdGltZXNwZWMoeHRzdGFtcC5zeXNfbW9u
-b3Jhdyk7CisJCQlicmVhazsKKworCQlkZWZhdWx0OgorCQkJKnN5c3RlbV90cyA9IGt0aW1lX3Rv
-X3RpbWVzcGVjKHh0c3RhbXAuc3lzX3JlYWx0aW1lKTsKKwkJCWJyZWFrOworCisJCX0KKworCQkq
-YXVkaW9fdHMgPSBrdGltZV90b190aW1lc3BlYyh4dHN0YW1wLmRldmljZSk7CisKKwkJYXVkaW9f
-dHN0YW1wX3JlcG9ydC0+YWN0dWFsX3R5cGUgPQorCQkJU05EUlZfUENNX0FVRElPX1RTVEFNUF9U
-WVBFX0xJTktfU1lOQ0hST05JWkVEOworCQlhdWRpb190c3RhbXBfcmVwb3J0LT5hY2N1cmFjeV9y
-ZXBvcnQgPSAxOworCQkvKiAyNCBNSHogV2FsbENsb2NrID09IDQybnMgcmVzb2x1dGlvbiAqLwor
-CQlhdWRpb190c3RhbXBfcmVwb3J0LT5hY2N1cmFjeSA9IDQyOworCisJfSBlbHNlIHsKIAkJYXVk
-aW9fdHN0YW1wX3JlcG9ydC0+YWN0dWFsX3R5cGUgPSBTTkRSVl9QQ01fQVVESU9fVFNUQU1QX1RZ
-UEVfREVGQVVMVDsKKwl9CiAKIAlyZXR1cm4gMDsKIH0KLS0gCjEuOS4xCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+
+Skylake onwards HDA controller supports new capabilities like
+Global Time Stamping (GTS) capability. So add support to parse
+these new capabilities.
+
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/sound/hda_register.h   | 36 ++++++++++++++++++++++++++++++++++++
+ sound/pci/hda/hda_controller.c |  5 +++++
+ sound/pci/hda/hda_controller.h |  3 +++
+ sound/pci/hda/hda_intel.c      | 16 ++++++++++++++++
+ 4 files changed, 60 insertions(+)
+
+diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
+index ff1aecf325e8..c806060944e1 100644
+--- a/include/sound/hda_register.h
++++ b/include/sound/hda_register.h
+@@ -89,6 +89,19 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define AZX_REG_SD_BDLPL		0x18
+ #define AZX_REG_SD_BDLPU		0x1c
+ 
++/* GTS registers */
++#define AZX_REG_LLCH			0x14
++
++#define AZX_REG_GTS_BASE		0x520
++
++#define AZX_REG_GTSCC	(AZX_REG_GTS_BASE + 0x00)
++#define AZX_REG_WALFCC	(AZX_REG_GTS_BASE + 0x04)
++#define AZX_REG_TSCCL	(AZX_REG_GTS_BASE + 0x08)
++#define AZX_REG_TSCCU	(AZX_REG_GTS_BASE + 0x0C)
++#define AZX_REG_LLPFOC	(AZX_REG_GTS_BASE + 0x14)
++#define AZX_REG_LLPCL	(AZX_REG_GTS_BASE + 0x18)
++#define AZX_REG_LLPCU	(AZX_REG_GTS_BASE + 0x1C)
++
+ /* Haswell/Broadwell display HD-A controller Extended Mode registers */
+ #define AZX_REG_HSW_EM4			0x100c
+ #define AZX_REG_HSW_EM5			0x1010
+@@ -242,6 +255,29 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ /* Interval used to calculate the iterating register offset */
+ #define AZX_DRSM_INTERVAL		0x08
+ 
++/* Global time synchronization registers */
++#define GTSCC_TSCCD_MASK		0x80000000
++#define GTSCC_TSCCD_SHIFT		31
++#define GTSCC_TSCCI_MASK		0x20
++#define GTSCC_CDMAS_DMA_DIR_SHIFT	4
++
++#define WALFCC_CIF_MASK			0x1FF
++#define WALFCC_FN_SHIFT			9
++#define HDA_CLK_CYCLES_PER_FRAME	512
++
++/*
++ * An error occurs near frame "rollover". The clocks in frame value indicates
++ * whether this error may have occurred. Here we use the value of 10. Please
++ * see the errata for the right number [<10]
++ */
++#define HDA_MAX_CYCLE_VALUE		499
++#define HDA_MAX_CYCLE_OFFSET		10
++#define HDA_MAX_CYCLE_READ_RETRY	10
++
++#define TSCCU_CCU_SHIFT			32
++#define LLPC_CCU_SHIFT			32
++
++
+ /*
+  * helpers to read the stream position
+  */
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index 27de8015717d..1567fe209e01 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -412,6 +412,11 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
+ 		goto unlock;
+ 	}
+ 	runtime->private_data = azx_dev;
++
++	if (chip->gts_present)
++		azx_pcm_hw.info = azx_pcm_hw.info |
++			SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME;
++
+ 	runtime->hw = azx_pcm_hw;
+ 	runtime->hw.channels_min = hinfo->channels_min;
+ 	runtime->hw.channels_max = hinfo->channels_max;
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index ec63bbf1ec6d..a50e0532622a 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -159,6 +159,9 @@ struct azx {
+ 	unsigned int region_requested:1;
+ 	unsigned int disabled:1; /* disabled by vga_switcheroo */
+ 
++	/* GTS present */
++	unsigned int gts_present:1;
++
+ #ifdef CONFIG_SND_HDA_DSP_LOADER
+ 	struct azx_dev saved_azx_dev;
+ #endif
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 89dacf9b4e6c..215f7be615bb 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1655,6 +1655,22 @@ static int azx_first_init(struct azx *chip)
+ 		return -ENXIO;
+ 	}
+ 
++	if (IS_SKL_PLUS(pci))
++		snd_hdac_bus_parse_capabilities(bus);
++
++	/*
++	 * Some Intel CPUs has always running timer (ART) feature and
++	 * controller may have Global time sync reporting capability, so
++	 * check both of these before declaring synchronized time reporting
++	 * capability SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME
++	 */
++	chip->gts_present = false;
++
++#ifdef CONFIG_X86
++	if ((bus->ppcap && boot_cpu_has(X86_FEATURE_ART)))
++		chip->gts_present = true;
++#endif
++
+ 	if (chip->msi) {
+ 		if (chip->driver_caps & AZX_DCAPS_NO_MSI64) {
+ 			dev_dbg(card->dev, "Disabling 64bit MSI\n");
+-- 
+1.9.1
