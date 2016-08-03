@@ -1,14 +1,15 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda: Fix krealloc() with __GFP_ZERO usage
-Date: Wed,  3 Aug 2016 15:38:52 +0200
-Message-ID: <20160803133852.25741-1-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v3 0/5] ALSA - hda: Add support for link audio
+	time reporting
+Date: Wed,  3 Aug 2016 21:36:09 +0530
+Message-ID: <1470240374-20018-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D359D269D4F
- for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2016 15:38:53 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 587012666B9
+ for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2016 17:59:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,40 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Joe Perches <joe@perches.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-krealloc() doesn't work always properly with __GFP_ZERO flag as
-expected.  For clearing the reallocated area, we need to clear
-explicitly instead.
+Skylake onwards we support GTS capability and thus can report audio link
+time. This series adds support for parsing the capability and then reports
+link time.
 
-Reported-by: Joe Perches <joe@perches.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/hda/array.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+The parsing of caps is made common and moved up from extended hda to hdac.
+The SKL driver and hdac extended core has been updated for this.
 
-diff --git a/sound/hda/array.c b/sound/hda/array.c
-index 516795baa7db..5dfa610e4471 100644
---- a/sound/hda/array.c
-+++ b/sound/hda/array.c
-@@ -21,13 +21,15 @@ void *snd_array_new(struct snd_array *array)
- 		return NULL;
- 	if (array->used >= array->alloced) {
- 		int num = array->alloced + array->alloc_align;
-+		int oldsize = array->alloced * array->elem_size;
- 		int size = (num + 1) * array->elem_size;
- 		void *nlist;
- 		if (snd_BUG_ON(num >= 4096))
- 			return NULL;
--		nlist = krealloc(array->list, size, GFP_KERNEL | __GFP_ZERO);
-+		nlist = krealloc(array->list, size, GFP_KERNEL);
- 		if (!nlist)
- 			return NULL;
-+		memset(nlist + oldsize, 0, size - oldsize);
- 		array->list = nlist;
- 		array->alloced = num;
- 	}
+Mark,
+	The update of the driver needs to update Skl driver, so if you can
+ACK the 2nd patch, it can go along with extended audio change thru ALSA
+tree.
+
+Changes in v3:
+	moved extended hda to hdac
+	update SKL drv to use new hdac caps
+	update patchset for HDA drv to use new caps parsing
+
+Guneshwor Singh (2):
+  ALSA - hda: Add support for parsing new HDA capabilities
+  ALSA - hda: Add support for link audio time reporting
+
+Vinod Koul (3):
+  ALSA: hda - move bus_parse_capabilities to core
+  ALSA: convert users to core bus_parse_capabilities
+  ALSA - Ext hda: remove bus_parse_capabilities
+
+ include/sound/hda_register.h           |  36 ++++++
+ include/sound/hdaudio.h                |  13 +++
+ include/sound/hdaudio_ext.h            |  12 --
+ sound/hda/ext/hdac_ext_controller.c    |  91 ++-------------
+ sound/hda/ext/hdac_ext_stream.c        |  46 ++++----
+ sound/hda/hdac_controller.c            |  76 +++++++++++++
+ sound/pci/hda/hda_controller.c         | 200 ++++++++++++++++++++++++++++++++-
+ sound/pci/hda/hda_controller.h         |   3 +
+ sound/pci/hda/hda_intel.c              |  16 +++
+ sound/soc/intel/skylake/skl-messages.c |   4 +-
+ sound/soc/intel/skylake/skl-pcm.c      |   8 +-
+ sound/soc/intel/skylake/skl.c          |   6 +-
+ 12 files changed, 383 insertions(+), 128 deletions(-)
+
 -- 
-2.9.2
+1.9.1
