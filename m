@@ -1,62 +1,105 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] How to post cleanup patches ?
-Date: Wed, 3 Aug 2016 21:20:16 +0200
-Message-ID: <c52dc535-1f9f-007c-34a9-d7adbec1f58d@metafoo.de>
-References: <87k2fy8xy5.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [alsa-devel] Question about struct snd_soc_dai() ::
+ cpu_dai->codec
+Date: Wed, 3 Aug 2016 21:32:51 +0200
+Message-ID: <49dd216c-d63c-693e-92ed-6abf1865eeb0@metafoo.de>
+References: <878twpj739.wl%kuninori.morimoto.gx@renesas.com>
+ <579A69EC.9060205@metafoo.de>
+ <87popx2nbb.wl%kuninori.morimoto.gx@renesas.com>
+ <4ad31e53-188a-8a40-cea9-b89df5f3535e@metafoo.de>
+ <20160729144145.GF10376@sirena.org.uk>
+ <87popt9n1w.wl%kuninori.morimoto.gx@renesas.com>
+ <87y44fhdxt.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87k2fy8xy5.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87y44fhdxt.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Simon <horms@verge.net.au>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/03/2016 03:12 AM, Kuninori Morimoto wrote:
+On 08/02/2016 08:47 AM, Kuninori Morimoto wrote:
 > 
-> Hi Mark
+> Hi Lars, Mark
 > 
-> Now codec driver and component driver has duplicated callback function,
-> and snd_soc_register_codec() just copied it to component side.
+> My previous mail was missing point...
 > 
-> 	int snd_soc_register_codec(xxx) {
-> 		...
->  
-> 		if (codec_drv->controls) {
-> 			codec->component.controls = codec_drv->controls;
-> 			codec->component.num_controls = codec_drv->num_controls;
-> 		}
-> 		if (codec_drv->dapm_widgets) {
-> 			codec->component.dapm_widgets = codec_drv->dapm_widgets;
-> 			codec->component.num_dapm_widgets = codec_drv->num_dapm_widgets;
-> 		}
-> 		if (codec_drv->dapm_routes) {
-> 			codec->component.dapm_routes = codec_drv->dapm_routes;
-> 			codec->component.num_dapm_routes = codec_drv->num_dapm_routes;
-> 		}
-> 		...
-> 	}
+>>>> In my opinion the flags are just as much a hack as the pointer. In an ideal
+>>>> setup the component does not need to know what type it is. The reason why we
+>>>> need this in ASoC is because the framework has grown over time and we need
+>>>> to support legacy code.
+>>>
+>>> Yes, the pointer is essentially already a flag - having a separate flag
+>>> really doesn't add a huge amount here.  What we need to do is get rid of
+>>> the need for the flag entirely.
+>>
+>> I can agree to remove flag entirely, and actually it is my final target.
+>> But we need many steps for it IMO.
+>>
+>> I would like to cleanup (= remove random pointer) as 1st step.
+>> My 1st concern is that each struct which want to have codec pointer has
+>> codec pointer randomly.
+>> And it makes component cleanup difficult IMO.
+>>
+>> 2nd concern is rtd has *codec, *platform, and *dai (for cpu/codec).
+>> These are different type of pointer.
+>> If platform can have dummy *dai, we can do like below ?
+>>
+>> 	struct snd_soc_pcm_runtime {
+>> 		...
+>> 		struct snd_soc_dai *cpu;
+>> 		struct snd_soc_dai *codec;
+>> 		struct snd_soc_dai *platform;
+>> 		...
+>> 	}
+>>
+>> Here, we can get original *codec or *platform by
+>> using component_to_xxx, because dai already have *component;
+>> It can be more cleanup ?
 > 
-> I think we can cleanup this duplicated function, similar things happen on
-> .probe, .remove, and platform side too.
+> I mean current ALSA SoC has duplicate pointer,
+> and using different type of pointer for CPU/Codec/Platform/Card.
+> I agree that we would like to have flag-less style.
 > 
-> I would like to post cleanup patches for these.
-> As 1st step, remove codec duplicate callback.
+> If my understanding was correct, we can more cleanup struct
+> relationship if we can exchange pointer style.
+> I think this is related to flag-less style.
 > 
-> But my concern is that you hate big-patch-set, and it is almost 70 patches.
-> Can I post these patches to ML ? or should I use git pull request ? or I shouldn't post ?
+> For example, current rtd <-> CPU/Codec/Platform relationship
+> is using different type of pointer.
+> It makes flag-less style difficult.
+> But we can use same type of pointer if we can have dummy dai on platform,
+> like above idea. Similar idea is for component.
+> 
+> I think this kind of cleanup is needed, and it makes hotplug support easier.
+> Otherwise, hotplug support will add more random pointer on each struct,
+> and it makes cleanup more difficult.
+> 
+> # Here, I said "flag-less" style, but maybe we need flag somehow to keep
+> # current style ? For example I don't think we can have flag-less cristal-clear
+> # style for CODEC-CODEC support or DPCM etc ...
 
-I left this step out on purpose during the componentization of
-snd_soc_codec. Simply because it is a huge amount of code churn for very
-little gain. If you want to do it, go ahead, but I don't think it is worth
-the effort at this point.
+I think moving forward we should get rid of the whole CPU/CODEC/platform
+concept. This is an outdated view of how the hardware looks like. When ASoC
+was initially introduce all hardware basically had a CPU side DAI, a CODEC
+side DAI and a DMA. The DMA was connected to the CPU DAI and the CPU DAI was
+connected to the CODEC DAI and that was it. The CPU side was also really
+simple, no signal processing, no signal routing, just the raw audio data
+directly transferred via DMA (or PIO sometimes) to the CPU DAI controller.
+And all digital audio was assumed to be in a single digital domain running
+at them same clock rate.
 
-I think of this as the final cleanup step once everything else is in place.
-E.g. there are lots of CODEC drivers that don't actually need anything CODEC
-specific, except that we need to know that it is a CODEC so we which
-direction the capture and playback streams of the DAI go. If we can come up
-with a generic to represent the DAI streams we could convert all these
-drivers directly from snd_soc_codec_driver to snd_soc_component_driver.
+This no longer reflects todays typical systems. Sometimes you have more than
+those three components (e.g. additional amplifier IC, BT chip ...),
+sometimes you less (just a DAC or ADC directly connected to a DMA in the
+SoC). You often have complex routing and processing capabilities on the host
+side. Also you have often multiple digital domains with sample-rate
+converters between them.
 
-I'd much rather see this conversion to be part of such an effort.
+Yet still at the core ASoC keeps the CPU/CODEC/platform concept. DPCM e.g.
+tries to work with these concepts by introducing frontend and backend DAIs
+and use dummy components to compensate for when the software model does not
+match the hardware model. This makes it code more complicated than it has to
+be and less efficient than it can be.
