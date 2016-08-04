@@ -1,15 +1,17 @@
 From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH 1/2] ASoC: nau8825: fix bug in playback when
-	suspend
-Date: Thu, 4 Aug 2016 16:52:06 +0800
-Message-ID: <1470300727-19998-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: [PATCH 2/2] ASoC: nau8825: fix static check error
+	about semaphone control
+Date: Thu, 4 Aug 2016 16:52:07 +0800
+Message-ID: <1470300727-19998-2-git-send-email-KCHSU0@nuvoton.com>
+References: <1470300727-19998-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4D731266601
- for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2016 10:52:23 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 995A72657B1
+ for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2016 10:52:30 +0200 (CEST)
+In-Reply-To: <1470300727-19998-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,121 +25,87 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-In chromium, the following steps will make codec function fail.
-\1. plug in headphones, Play music
-\2. run "powerd_dbus_suspend"
-\3. resume from S3
-After resume, the jack detection will restart and make configuration
-for the headset. Meanwhile, the playback prepares and starts to work.
-The two sequences will conflict and make wrong register configuration.
+The patch is to fix the static check error as the following.
 
-Originally, the driver adds protection for the case when it finds
-the playback is active. But the "powerd_dbus_suspend" command will
-close the pcm stream before suspend. Therefore, the driver can't
-detect the playback after resume, and the protection not works.
-For the issue, the driver raises protection every time after resume.
-The protection will release after jack detection and configuration
-completes, and then the playback just will goes on.
+The patch commit b50455fab459 ("ASoC: nau8825: cross talk suppression
+measurement function") from Jun 7, 2016, leads to the following
+static checker warning:
+
+	sound/soc/codecs/nau8825.c:265 nau8825_sema_acquire()
+	warn: 'sem:&nau8825->xtalk_sem' is sometimes locked here and
+	sometimes unlocked.
+
+The semaphone acquire function has return value, and some callers
+can do error handling when lock fails.
 
 Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 ---
- sound/soc/codecs/nau8825.c | 51 +++++++++++-----------------------------------
- 1 file changed, 12 insertions(+), 39 deletions(-)
+ sound/soc/codecs/nau8825.c | 29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 5c9707a..20d2f15 100644
+index 20d2f15..2e59a85 100644
 --- a/sound/soc/codecs/nau8825.c
 +++ b/sound/soc/codecs/nau8825.c
-@@ -212,31 +212,6 @@ static const unsigned short logtable[256] = {
- 	0xfa2f, 0xfaea, 0xfba5, 0xfc60, 0xfd1a, 0xfdd4, 0xfe8e, 0xff47
- };
+@@ -225,19 +225,26 @@ static const unsigned short logtable[256] = {
+  * Acquires the semaphore without jiffies. If no more tasks are allowed
+  * to acquire the semaphore, calling this function will put the task to
+  * sleep until the semaphore is released.
+- * It returns if the semaphore was acquired.
++ * If the semaphore is not released within the specified number of jiffies,
++ * this function returns -ETIME.
++ * If the sleep is interrupted by a signal, this function will return -EINTR.
++ * It returns 0 if the semaphore was acquired successfully.
+  */
+-static void nau8825_sema_acquire(struct nau8825 *nau8825, long timeout)
++static int nau8825_sema_acquire(struct nau8825 *nau8825, long timeout)
+ {
+ 	int ret;
  
--static struct snd_soc_dai *nau8825_get_codec_dai(struct nau8825 *nau8825)
--{
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(nau8825->dapm);
--	struct snd_soc_component *component = &codec->component;
--	struct snd_soc_dai *codec_dai, *_dai;
--
--	list_for_each_entry_safe(codec_dai, _dai, &component->dai_list, list) {
--		if (!strncmp(codec_dai->name, NUVOTON_CODEC_DAI,
--			strlen(NUVOTON_CODEC_DAI)))
--			return codec_dai;
--	}
--	return NULL;
--}
--
--static bool nau8825_dai_is_active(struct nau8825 *nau8825)
--{
--	struct snd_soc_dai *codec_dai = nau8825_get_codec_dai(nau8825);
--
--	if (codec_dai) {
--		if (codec_dai->playback_active || codec_dai->capture_active)
--			return true;
--	}
--	return false;
--}
--
+-	if (timeout)
++	if (timeout) {
+ 		ret = down_timeout(&nau8825->xtalk_sem, timeout);
+-	else
++		if (ret < 0)
++			dev_warn(nau8825->dev, "Acquire semaphone timeout\n");
++	} else {
+ 		ret = down_interruptible(&nau8825->xtalk_sem);
++		if (ret < 0)
++			dev_warn(nau8825->dev, "Acquire semaphone fail\n");
++	}
+ 
+-	if (ret < 0)
+-		dev_warn(nau8825->dev, "Acquire semaphone fail\n");
++	return ret;
+ }
+ 
  /**
-  * nau8825_sema_acquire - acquire the semaphore of nau88l25
-  * @nau8825:  component to register the codec private data with
-@@ -1205,6 +1180,8 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
+@@ -1596,8 +1603,11 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
+ 					 * cess and restore changes if process
+ 					 * is ongoing when ejection.
+ 					 */
++					int ret;
+ 					nau8825->xtalk_protect = true;
+-					nau8825_sema_acquire(nau8825, 0);
++					ret = nau8825_sema_acquire(nau8825, 0);
++					if (ret < 0)
++						nau8825->xtalk_protect = false;
+ 				}
+ 				/* Startup cross talk detection process */
+ 				nau8825->xtalk_state = NAU8825_XTALK_PREPARE;
+@@ -2223,11 +2233,14 @@ static int __maybe_unused nau8825_suspend(struct snd_soc_codec *codec)
+ static int __maybe_unused nau8825_resume(struct snd_soc_codec *codec)
+ {
  	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int val_len = 0;
- 
-+	nau8825_sema_acquire(nau8825, 2 * HZ);
-+
- 	switch (params_width(params)) {
- 	case 16:
- 		val_len |= NAU8825_I2S_DL_16;
-@@ -1225,6 +1202,9 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
- 	regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL1,
- 		NAU8825_I2S_DL_MASK, val_len);
- 
-+	/* Release the semaphone. */
-+	nau8825_sema_release(nau8825);
-+
- 	return 0;
- }
- 
-@@ -1234,6 +1214,8 @@ static int nau8825_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int ctrl1_val = 0, ctrl2_val = 0;
- 
-+	nau8825_sema_acquire(nau8825, 2 * HZ);
-+
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM:
- 		ctrl2_val |= NAU8825_I2S_MS_MASTER;
-@@ -1282,6 +1264,9 @@ static int nau8825_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2,
- 		NAU8825_I2S_MS_MASK, ctrl2_val);
- 
-+	/* Release the semaphone. */
-+	nau8825_sema_release(nau8825);
-+
- 	return 0;
- }
- 
-@@ -2241,20 +2226,8 @@ static int __maybe_unused nau8825_resume(struct snd_soc_codec *codec)
++	int ret;
  
  	regcache_cache_only(nau8825->regmap, false);
  	regcache_sync(nau8825->regmap);
--	if (nau8825_is_jack_inserted(nau8825->regmap)) {
--		/* If the jack is inserted, we need to check whether the play-
--		 * back is active before suspend. If active, the driver has to
--		 * raise the protection for cross talk function to avoid the
--		 * playback recovers before cross talk process finish. Other-
--		 * wise, the playback will be interfered by cross talk func-
--		 * tion. It is better to apply hardware related parameters
--		 * before starting playback or record.
--		 */
--		if (nau8825_dai_is_active(nau8825)) {
--			nau8825->xtalk_protect = true;
--			nau8825_sema_acquire(nau8825, 0);
--		}
--	}
-+	nau8825->xtalk_protect = true;
-+	nau8825_sema_acquire(nau8825, 0);
+ 	nau8825->xtalk_protect = true;
+-	nau8825_sema_acquire(nau8825, 0);
++	ret = nau8825_sema_acquire(nau8825, 0);
++	if (ret < 0)
++		nau8825->xtalk_protect = false;
  	enable_irq(nau8825->irq);
  
  	return 0;
