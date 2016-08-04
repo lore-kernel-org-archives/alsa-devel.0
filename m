@@ -1,8 +1,7 @@
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH 3/8] ASoC: uda134x: Optionally initialize L3 ops to default
- GPIO ops
-Date: Thu, 04 Aug 2016 15:38:43 +0200
-Message-ID: <1470317928-25365-4-git-send-email-s.nawrocki@samsung.com>
+Subject: [PATCH 4/8] ASoC: s3c24xx_uda134x: Remove unused power() callback
+Date: Thu, 04 Aug 2016 15:38:44 +0200
+Message-ID: <1470317928-25365-5-git-send-email-s.nawrocki@samsung.com>
 References: <1470317928-25365-1-git-send-email-s.nawrocki@samsung.com>
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 In-reply-to: <1470317928-25365-1-git-send-email-s.nawrocki@samsung.com>
@@ -11,47 +10,37 @@ To: broonie@kernel.org
 Cc: krzk@kernel.org, alsa-devel@alsa-project.org, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-The GPIO ops can be selected by platform_data which allows the
-codec platform device to probe without the sound card's driver
-intervention.
-
-The downside is that it will request GPIOs on behalf of the codec
-device and thus allow only one user on the bus, but it desn't seem
-to be a limitation with current code and usage of the GPIO ops is
-optional anyway.
-The proper approach would presumably be to create a proper Linux
-bus driver for L3, should this rather ancient bus specification
-suddenly gain more interest.
+The power() callback has always been empty so just remove it.
 
 Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 ---
- sound/soc/codecs/uda134x.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ include/sound/s3c24xx_uda134x.h     | 1 -
+ sound/soc/samsung/s3c24xx_uda134x.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
-index e4c694c..b72c925 100644
---- a/sound/soc/codecs/uda134x.c
-+++ b/sound/soc/codecs/uda134x.c
-@@ -544,6 +544,7 @@ static int uda134x_codec_probe(struct platform_device *pdev)
- {
- 	struct uda134x_platform_data *pd = pdev->dev.platform_data;
- 	struct uda134x_priv *uda134x;
-+	int ret;
+diff --git a/include/sound/s3c24xx_uda134x.h b/include/sound/s3c24xx_uda134x.h
+index 33df4cb..ffaf1f0 100644
+--- a/include/sound/s3c24xx_uda134x.h
++++ b/include/sound/s3c24xx_uda134x.h
+@@ -7,7 +7,6 @@ struct s3c24xx_uda134x_platform_data {
+ 	int l3_clk;
+ 	int l3_mode;
+ 	int l3_data;
+-	void (*power) (int);
+ 	int model;
+ };
  
- 	if (!pd) {
- 		dev_err(&pdev->dev, "Missing L3 bitbang function\n");
-@@ -557,6 +558,12 @@ static int uda134x_codec_probe(struct platform_device *pdev)
- 	uda134x->pd = pd;
- 	platform_set_drvdata(pdev, uda134x);
+diff --git a/sound/soc/samsung/s3c24xx_uda134x.c b/sound/soc/samsung/s3c24xx_uda134x.c
+index 92e88bc..c145eb2 100644
+--- a/sound/soc/samsung/s3c24xx_uda134x.c
++++ b/sound/soc/samsung/s3c24xx_uda134x.c
+@@ -282,7 +282,6 @@ static int s3c24xx_uda134x_probe(struct platform_device *pdev)
+ 		       "unable to find platform data\n");
+ 		return -ENODEV;
+ 	}
+-	s3c24xx_uda134x.power = s3c24xx_uda134x_l3_pins->power;
+ 	s3c24xx_uda134x.model = s3c24xx_uda134x_l3_pins->model;
  
-+	if (pd->l3.use_gpios) {
-+		ret = l3_set_gpio_ops(&pdev->dev, &uda134x->pd->l3);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	uda134x->regmap = devm_regmap_init(&pdev->dev, NULL, pd,
- 		&uda134x_regmap_config);
- 	if (IS_ERR(uda134x->regmap))
+ 	if (s3c24xx_uda134x_setup_pin(s3c24xx_uda134x_l3_pins->l3_data,
 -- 
 1.9.1
