@@ -1,56 +1,55 @@
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH] ASoC: samsung: Fix clock handling in S3C24XX_UDA134X card
-Date: Thu, 04 Aug 2016 11:51:25 +0200
-Message-ID: <1470304285-14831-1-git-send-email-s.nawrocki@samsung.com>
+Subject: [PATCH] ASoC: dwc: Drop DMA channel names assignment
+Date: Thu, 04 Aug 2016 12:22:32 +0200
+Message-ID: <1470306152-15441-1-git-send-email-s.nawrocki@samsung.com>
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Sender: linux-samsung-soc-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Andrew.Jackson@arm.com, rajeevk-dlh.kumar@st.com, Jose.Abreu@synopsys.com, alsa-devel@alsa-project.org, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is no "pclk" alias in the s3c2440 clk driver for "soc-audio"
-device so related clk_get() fails, which prevents any operation
-of the S3C24XX_UDA134X sound card.
-Instead we get the clock on behalf of the I2S device, i.e. we use
-the I2S block gate clock which has PCLK is its parent clock.
+The dw_configure_dai_by_dt() function and further dev->{play,capture}
+_dma_data.dt data structures seem to be used in this driver only in case 
+of a system using devicetree, thus chan_name assignments have no effect 
+since they will be ignored in dmaengine_pcm_request_chan_of() call and 
+will be substituted with values taken form dmaengine_pcm_dma_channel_names[] 
+table ("tx", "rx").
 
-Without this patch there is an error like:
+Also there is no any "TX", "RX" dma-names entries in arch/arm/boot/dts, 
+only lower case "tx", "rx" seem to be used.
 
-s3c24xx_uda134x_startup cannot get pclk
-ASoC: UDA134X startup failed: -2
+Lastly, this driver doesn't set SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME
+flag when registering a dmaengine PCM to indicate the chan_name should be
+used.
+
+My intention is to eventually remove the struct snd_dmaengine_dai_dma_data
+chan_name field as there is also a chan_names[] field in struct
+snd_dmaengine_pcm_config which can be used for same purpose.
 
 Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 ---
- sound/soc/samsung/s3c24xx_uda134x.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/dwc/designware_i2s.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/samsung/s3c24xx_uda134x.c b/sound/soc/samsung/s3c24xx_uda134x.c
-index 50849e1..92e88bc 100644
---- a/sound/soc/samsung/s3c24xx_uda134x.c
-+++ b/sound/soc/samsung/s3c24xx_uda134x.c
-@@ -58,10 +58,12 @@ static struct platform_device *s3c24xx_uda134x_snd_device;
- 
- static int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
- {
--	int ret = 0;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- #ifdef ENFORCE_RATES
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- #endif
-+	int ret = 0;
- 
- 	mutex_lock(&clk_lock);
- 	pr_debug("%s %d\n", __func__, clk_users);
-@@ -71,8 +73,7 @@ static int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
- 			printk(KERN_ERR "%s cannot get xtal\n", __func__);
- 			ret = PTR_ERR(xtal);
- 		} else {
--			pclk = clk_get(&s3c24xx_uda134x_snd_device->dev,
--				       "pclk");
-+			pclk = clk_get(cpu_dai->dev, "iis");
- 			if (IS_ERR(pclk)) {
- 				printk(KERN_ERR "%s cannot get pclk\n",
- 				       __func__);
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index dc97f43..2998954 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -577,7 +577,6 @@ static int dw_configure_dai_by_dt(struct dw_i2s_dev *dev,
+ 		dev->capability |= DWC_I2S_PLAY;
+ 		dev->play_dma_data.dt.addr = res->start + I2S_TXDMA;
+ 		dev->play_dma_data.dt.addr_width = bus_widths[idx];
+-		dev->play_dma_data.dt.chan_name = "TX";
+ 		dev->play_dma_data.dt.fifo_size = fifo_depth *
+ 			(fifo_width[idx2]) >> 8;
+ 		dev->play_dma_data.dt.maxburst = 16;
+@@ -588,7 +587,6 @@ static int dw_configure_dai_by_dt(struct dw_i2s_dev *dev,
+ 		dev->capability |= DWC_I2S_RECORD;
+ 		dev->capture_dma_data.dt.addr = res->start + I2S_RXDMA;
+ 		dev->capture_dma_data.dt.addr_width = bus_widths[idx];
+-		dev->capture_dma_data.dt.chan_name = "RX";
+ 		dev->capture_dma_data.dt.fifo_size = fifo_depth *
+ 			(fifo_width[idx2] >> 8);
+ 		dev->capture_dma_data.dt.maxburst = 16;
 -- 
 1.9.1
