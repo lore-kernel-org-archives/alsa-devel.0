@@ -1,55 +1,64 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH] ASoC: dwc: Drop DMA channel names assignment
-Date: Thu, 04 Aug 2016 12:22:32 +0200
-Message-ID: <1470306152-15441-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: Andrew.Jackson@arm.com, rajeevk-dlh.kumar@st.com, Jose.Abreu@synopsys.com, alsa-devel@alsa-project.org, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Question about struct snd_soc_dai() :: cpu_dai->codec
+Date: Thu, 4 Aug 2016 11:28:26 +0100
+Message-ID: <20160804102826.GU10376@sirena.org.uk>
+References: <s5hpopy6dbi.wl-tiwai@suse.de>
+ <20160728034643.GH9681@localhost>
+ <579A6C1B.2060904@metafoo.de>
+ <579AA39B.5030100@sakamocchi.jp>
+ <884bd15f-da5e-49f5-73ee-d8173dc0720a@metafoo.de>
+ <20160729160702.GK9681@localhost>
+ <s5hy44k41oa.wl-tiwai@suse.de>
+ <ab6b5a69-9d36-b4a5-0b8f-10a7dcf1ea40@sakamocchi.jp>
+ <20160729220854.GN10376@sirena.org.uk>
+ <5152607b-90ab-1675-6be8-986be880a8eb@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="HPm2I89eDTDbofr6"
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5152607b-90ab-1675-6be8-986be880a8eb@sakamocchi.jp>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-The dw_configure_dai_by_dt() function and further dev->{play,capture}
-_dma_data.dt data structures seem to be used in this driver only in case 
-of a system using devicetree, thus chan_name assignments have no effect 
-since they will be ignored in dmaengine_pcm_request_chan_of() call and 
-will be substituted with values taken form dmaengine_pcm_dma_channel_names[] 
-table ("tx", "rx").
 
-Also there is no any "TX", "RX" dma-names entries in arch/arm/boot/dts, 
-only lower case "tx", "rx" seem to be used.
+--HPm2I89eDTDbofr6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Lastly, this driver doesn't set SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME
-flag when registering a dmaengine PCM to indicate the chan_name should be
-used.
+On Thu, Aug 04, 2016 at 12:17:57PM +0900, Takashi Sakamoto wrote:
+> On Jul 30 2016 07:08, Mark Brown wrote:
 
-My intention is to eventually remove the struct snd_dmaengine_dai_dma_data
-chan_name field as there is also a chan_names[] field in struct
-snd_dmaengine_pcm_config which can be used for same purpose.
+> > The card should be deinstantiated and reinstantiated whenever a
+> > component driver unbinds and rebinds (respectively).  You'd need to
+> > completely deregister the card to change the list of things it's
+> > expecting currently.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
- sound/soc/dwc/designware_i2s.c | 2 --
- 1 file changed, 2 deletions(-)
+> In a point of application interfaces, I guess that current implementation of
+> ALSA soc part includes a bug that it's possible to unload codec or component
+> modules when any ALSA character devices are opened. The framework has no
+> codes to manage reference counting of character devices or loaded codecs,
+> components.
 
-diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index dc97f43..2998954 100644
---- a/sound/soc/dwc/designware_i2s.c
-+++ b/sound/soc/dwc/designware_i2s.c
-@@ -577,7 +577,6 @@ static int dw_configure_dai_by_dt(struct dw_i2s_dev *dev,
- 		dev->capability |= DWC_I2S_PLAY;
- 		dev->play_dma_data.dt.addr = res->start + I2S_TXDMA;
- 		dev->play_dma_data.dt.addr_width = bus_widths[idx];
--		dev->play_dma_data.dt.chan_name = "TX";
- 		dev->play_dma_data.dt.fifo_size = fifo_depth *
- 			(fifo_width[idx2]) >> 8;
- 		dev->play_dma_data.dt.maxburst = 16;
-@@ -588,7 +587,6 @@ static int dw_configure_dai_by_dt(struct dw_i2s_dev *dev,
- 		dev->capability |= DWC_I2S_RECORD;
- 		dev->capture_dma_data.dt.addr = res->start + I2S_RXDMA;
- 		dev->capture_dma_data.dt.addr_width = bus_widths[idx];
--		dev->capture_dma_data.dt.chan_name = "RX";
- 		dev->capture_dma_data.dt.fifo_size = fifo_depth *
- 			(fifo_width[idx2] >> 8);
- 		dev->capture_dma_data.dt.maxburst = 16;
--- 
-1.9.1
+Yes, exactly - we don't cope very well with that situation and we really
+ought to but since it's hard to trigger without trying in practice it's
+never been a priority.
+
+--HPm2I89eDTDbofr6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXoxjIAAoJECTWi3JdVIfQ5MAH/0BYqcNsqHtbLsI+nD6OIBlG
+kpNy8SIVaNSyisPVHPNRuBy/DTnqwk+PHVvOlONOSopfM7MFCiOr8QHmeSFGvxXR
+ueJA1HetQTjEBXBhqOz/07R18uaYUQgZnuboFIqzmiIqNjb/7wt6as0KAg4B5+2I
+4lgB63BxUC3IeSUKu/ZGXzMmMbS9nC+1dGWh5QOLucxlPXm4MlN7YN9UHUUVj98y
+EebZA1Rfl39ZzL9pDZ/+ZK8YHlPjexVa4hzD2/XbGJzQdXNmM8YdrzEryIgUwoAn
+ZYGVE665S4aYJSkrEBn0f2JzDkg8XEwBjBKcwQgKt0ciuDwgQfiIT7k/EWfY6NU=
+=Q6Da
+-----END PGP SIGNATURE-----
+
+--HPm2I89eDTDbofr6--
