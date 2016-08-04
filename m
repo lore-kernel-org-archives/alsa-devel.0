@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v4 5/5] ALSA - hda: Add support for link audio
-	time reporting
-Date: Thu,  4 Aug 2016 15:46:04 +0530
-Message-ID: <1470305764-20802-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v4 3/5] ALSA - Ext hda: remove
+	bus_parse_capabilities
+Date: Thu,  4 Aug 2016 15:46:02 +0530
+Message-ID: <1470305764-20802-4-git-send-email-vinod.koul@intel.com>
 References: <1470305764-20802-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id BA17226826D
- for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2016 12:08:52 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7054126826A
+ for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2016 12:08:51 +0200 (CEST)
 In-Reply-To: <1470305764-20802-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,134 +22,139 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogR3VuZXNod29yIFNpbmdoIDxndW5lc2h3b3Iuby5zaW5naEBpbnRlbC5jb20+CgpUaGUg
-SERBIGNvbnRyb2xsZXIgZnJvbSBTS0wgb253YXJkcyBzdXBwb3J0IGFkZGl0aW9uYWwgdGltZXN0
-YW1wCnJlcG9ydGluZyBvZiB0aGUgbGluayB0aW1lLiBUaGUgbGluayB0aW1lIGlzIHJlYWQgZnJv
-bSBIVwpyZWdpc3RlcnMgYW5kIGNvbnZlcnRlZCB0byBhdWRpbyB2YWx1ZXMuCgpTaWduZWQtb2Zm
-LWJ5OiBHdW5lc2h3b3IgU2luZ2ggPGd1bmVzaHdvci5vLnNpbmdoQGludGVsLmNvbT4KU2lnbmVk
-LW9mZi1ieTogSGFyZGlrIFQgU2hhaCA8aGFyZGlrLnQuc2hhaEBpbnRlbC5jb20+Ci0tLQogc291
-bmQvcGNpL2hkYS9oZGFfY29udHJvbGxlci5jIHwgMTk4ICsrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKystCiAxIGZpbGUgY2hhbmdlZCwgMTk3IGluc2VydGlvbnMoKyksIDEg
-ZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9jb250cm9sbGVyLmMg
-Yi9zb3VuZC9wY2kvaGRhL2hkYV9jb250cm9sbGVyLmMKaW5kZXggMTU2N2ZlMjA5ZTAxLi4yYWQz
-YjQ0NzQ4M2YgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvaGRhX2NvbnRyb2xsZXIuYworKysg
-Yi9zb3VuZC9wY2kvaGRhL2hkYV9jb250cm9sbGVyLmMKQEAgLTI3LDYgKzI3LDEyIEBACiAjaW5j
-bHVkZSA8bGludXgvbW9kdWxlLmg+CiAjaW5jbHVkZSA8bGludXgvcG1fcnVudGltZS5oPgogI2lu
-Y2x1ZGUgPGxpbnV4L3NsYWIuaD4KKworI2lmZGVmIENPTkZJR19YODYKKy8qIGZvciBhcnQtdHNj
-IGNvbnZlcnNpb24gKi8KKyNpbmNsdWRlIDxhc20vdHNjLmg+CisjZW5kaWYKKwogI2luY2x1ZGUg
-PHNvdW5kL2NvcmUuaD4KICNpbmNsdWRlIDxzb3VuZC9pbml0dmFsLmg+CiAjaW5jbHVkZSAiaGRh
-X2NvbnRyb2xsZXIuaCIKQEAgLTMzNywxMiArMzQzLDE3MyBAQCBzdGF0aWMgc25kX3BjbV91ZnJh
-bWVzX3QgYXp4X3BjbV9wb2ludGVyKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFt
-KQogCQkJICAgICAgIGF6eF9nZXRfcG9zaXRpb24oY2hpcCwgYXp4X2RldikpOwogfQogCisvKgor
-ICogYXp4X3NjYWxlNjQ6IFNjYWxlIGJhc2UgYnkgbXVsdC9kaXYgd2hpbGUgbm90IG92ZXJmbG93
-aW5nIHNhbmVseQorICoKKyAqIERlcml2ZWQgZnJvbSBzY2FsZTY0X2NoZWNrX292ZXJmbG93IGlu
-IGtlcm5lbC90aW1lL3RpbWVrZWVwaW5nLmMKKyAqCisgKiBUaGUgdG1lc3RhbXBzIGZvciBhIDQ4
-S2h6IHN0cmVhbSBjYW4gb3ZlcmZsb3cgYWZ0ZXIgKDJeNjQvMTBeOSkvNDhLIHdoaWNoCisgKiBp
-cyBhYm91dCAzODQzMDcgaWUgfjQuNSBkYXlzLgorICoKKyAqIFRoaXMgc2NhbGVzIHRoZSBjYWxj
-dWxhdGlvbiBzbyB0aGF0IG92ZXJmbG93IHdpbGwgaGFwcGVuIGJ1dCBhZnRlciAyXjY0IC8KKyAq
-IDQ4MDAwIHNlY3MsIHdoaWNoIGlzIHByZXR0eSBsYXJnZSEKKyAqCisgKiBJbiBjYWxuIGJlbG93
-OgorICoJYmFzZSBtYXkgb3ZlcmZsb3csIGJ1dCBzaW5jZSB0aGVyZSBpc27igJl0IGFueSBhZGRp
-dGlvbmFsIGRpdmlzaW9uCisgKglwZXJmb3JtZWQgb24gYmFzZSBpdOKAmXMgT0sKKyAqCXJlbSBj
-YW7igJl0IG92ZXJmbG93IGJlY2F1c2UgYm90aCBhcmUgMzItYml0IHZhbHVlcworICovCisKKyNp
-ZmRlZiBDT05GSUdfWDg2CitzdGF0aWMgdTY0IGF6eF9zY2FsZTY0KHU2NCBiYXNlLCB1MzIgbnVt
-LCB1MzIgZGVuKQoreworCXU2NCByZW07CisKKwlyZW0gPSBkb19kaXYoYmFzZSwgZGVuKTsKKwor
-CWJhc2UgKj0gbnVtOworCXJlbSAqPSBudW07CisKKwlkb19kaXYocmVtLCBkZW4pOworCisJcmV0
-dXJuIGJhc2UgKyByZW07Cit9CisKK3N0YXRpYyBpbnQgYXp4X2dldF9zeW5jX3RpbWUoa3RpbWVf
-dCAqZGV2aWNlLAorCQlzdHJ1Y3Qgc3lzdGVtX2NvdW50ZXJ2YWxfdCAqc3lzdGVtLCB2b2lkICpj
-dHgpCit7CisJc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0gPSBjdHg7CisJc3Ry
-dWN0IGF6eF9kZXYgKmF6eF9kZXYgPSBnZXRfYXp4X2RldihzdWJzdHJlYW0pOworCXN0cnVjdCBh
-enhfcGNtICphcGNtID0gc25kX3BjbV9zdWJzdHJlYW1fY2hpcChzdWJzdHJlYW0pOworCXN0cnVj
-dCBhenggKmNoaXAgPSBhcGNtLT5jaGlwOworCXN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRp
-bWU7CisJdTY0IGxsX2NvdW50ZXIsIGxsX2NvdW50ZXJfbCwgbGxfY291bnRlcl9oOworCXU2NCB0
-c2NfY291bnRlciwgdHNjX2NvdW50ZXJfbCwgdHNjX2NvdW50ZXJfaDsKKwl1MzIgd2FsbGNsa19j
-dHIsIHdhbGxjbGtfY3ljbGVzOworCWJvb2wgZGlyZWN0aW9uOworCXUzMiBkbWFfc2VsZWN0Owor
-CXUzMiB0aW1lb3V0ID0gMjAwOworCXUzMiByZXRyeV9jb3VudCA9IDA7CisKKwlydW50aW1lID0g
-c3Vic3RyZWFtLT5ydW50aW1lOworCisJaWYgKHN1YnN0cmVhbS0+c3RyZWFtID09IFNORFJWX1BD
-TV9TVFJFQU1fUExBWUJBQ0spCisJCWRpcmVjdGlvbiA9IDE7CisJZWxzZQorCQlkaXJlY3Rpb24g
-PSAwOworCisJLyogMHRoIHN0cmVhbSB0YWcgaXMgbm90IHVzZWQsIHNvIERNQSBjaCAwIGlzIGZv
-ciAxc3Qgc3RyZWFtIHRhZyAqLworCWRvIHsKKwkJdGltZW91dCA9IDEwMDsKKwkJZG1hX3NlbGVj
-dCA9IChkaXJlY3Rpb24gPDwgR1RTQ0NfQ0RNQVNfRE1BX0RJUl9TSElGVCkgfAorCQkJCQkoYXp4
-X2Rldi0+Y29yZS5zdHJlYW1fdGFnIC0gMSk7CisJCXNuZF9oZGFjX2NoaXBfd3JpdGVsKGF6eF9i
-dXMoY2hpcCksIEdUU0NDLCBkbWFfc2VsZWN0KTsKKworCQkvKiBFbmFibGUgdGhlIGNhcHR1cmUg
-Ki8KKwkJc25kX2hkYWNfY2hpcF91cGRhdGVsKGF6eF9idXMoY2hpcCksIEdUU0NDLCAwLCBHVFND
-Q19UU0NDSV9NQVNLKTsKKworCQl3aGlsZSAodGltZW91dCkgeworCQkJaWYgKHNuZF9oZGFjX2No
-aXBfcmVhZGwoYXp4X2J1cyhjaGlwKSwgR1RTQ0MpICYKKwkJCQkJCUdUU0NDX1RTQ0NEX01BU0sp
-CisJCQkJYnJlYWs7CisKKwkJCXRpbWVvdXQtLTsKKwkJfQorCisJCWlmICghdGltZW91dCkgewor
-CQkJZGV2X2VycihjaGlwLT5jYXJkLT5kZXYsICJHVFNDQyBjYXB0dXJlIFRpbWVkb3V0IVxuIik7
-CisJCQlyZXR1cm4gLUVJTzsKKwkJfQorCisJCS8qIFJlYWQgd2FsbCBjbG9jayBjb3VudGVyICov
-CisJCXdhbGxjbGtfY3RyID0gc25kX2hkYWNfY2hpcF9yZWFkbChhenhfYnVzKGNoaXApLCBXQUxG
-Q0MpOworCisJCS8qIFJlYWQgVFNDIGNvdW50ZXIgKi8KKwkJdHNjX2NvdW50ZXJfbCA9IHNuZF9o
-ZGFjX2NoaXBfcmVhZGwoYXp4X2J1cyhjaGlwKSwgVFNDQ0wpOworCQl0c2NfY291bnRlcl9oID0g
-c25kX2hkYWNfY2hpcF9yZWFkbChhenhfYnVzKGNoaXApLCBUU0NDVSk7CisKKwkJLyogUmVhZCBM
-aW5rIGNvdW50ZXIgKi8KKwkJbGxfY291bnRlcl9sID0gc25kX2hkYWNfY2hpcF9yZWFkbChhenhf
-YnVzKGNoaXApLCBMTFBDTCk7CisJCWxsX2NvdW50ZXJfaCA9IHNuZF9oZGFjX2NoaXBfcmVhZGwo
-YXp4X2J1cyhjaGlwKSwgTExQQ1UpOworCisJCS8qIEFjazogcmVnaXN0ZXJzIHJlYWQgZG9uZSAq
-LworCQlzbmRfaGRhY19jaGlwX3dyaXRlbChhenhfYnVzKGNoaXApLCBHVFNDQywgR1RTQ0NfVFND
-Q0RfU0hJRlQpOworCisJCXRzY19jb3VudGVyID0gKHRzY19jb3VudGVyX2ggPDwgVFNDQ1VfQ0NV
-X1NISUZUKSB8CisJCQkJCQl0c2NfY291bnRlcl9sOworCisJCWxsX2NvdW50ZXIgPSAobGxfY291
-bnRlcl9oIDw8IExMUENfQ0NVX1NISUZUKSB8CWxsX2NvdW50ZXJfbDsKKwkJd2FsbGNsa19jeWNs
-ZXMgPSB3YWxsY2xrX2N0ciAmIFdBTEZDQ19DSUZfTUFTSzsKKworCQkvKgorCQkgKiBBbiBlcnJv
-ciBvY2N1cnMgbmVhciBmcmFtZSAicm9sbG92ZXIiLiBUaGUgY2xvY2tzIGluCisJCSAqIGZyYW1l
-IHZhbHVlIGluZGljYXRlcyB3aGV0aGVyIHRoaXMgZXJyb3IgbWF5IGhhdmUKKwkJICogb2NjdXJy
-ZWQuIEhlcmUgd2UgdXNlIHRoZSB2YWx1ZSBvZiAxMCBpLmUuLAorCQkgKiBIREFfTUFYX0NZQ0xF
-X09GRlNFVAorCQkgKi8KKwkJaWYgKHdhbGxjbGtfY3ljbGVzIDwgSERBX01BWF9DWUNMRV9WQUxV
-RSAtIEhEQV9NQVhfQ1lDTEVfT0ZGU0VUCisJCQkJCSYmIHdhbGxjbGtfY3ljbGVzID4gSERBX01B
-WF9DWUNMRV9PRkZTRVQpCisJCQlicmVhazsKKworCQkvKgorCQkgKiBTbGVlcCBiZWZvcmUgd2Ug
-cmVhZCBhZ2FpbiwgZWxzZSB3ZSBtYXkgYWdhaW4gZ2V0CisJCSAqIHZhbHVlIG5lYXIgdG8gTUFY
-X0NZQ0xFLiBUcnkgdG8gc2xlZXAgZm9yIGRpZmZlcmVudAorCQkgKiBhbW91bnQgb2YgdGltZSBz
-byB3ZSBkb250IGhpdCB0aGUgc2FtZSBudW1iZXIgYWdhaW4KKwkJICovCisJCXVkZWxheShyZXRy
-eV9jb3VudCsrKTsKKworCX0gd2hpbGUgKHJldHJ5X2NvdW50ICE9IEhEQV9NQVhfQ1lDTEVfUkVB
-RF9SRVRSWSk7CisKKwlpZiAocmV0cnlfY291bnQgPT0gSERBX01BWF9DWUNMRV9SRUFEX1JFVFJZ
-KSB7CisJCWRldl9lcnJfcmF0ZWxpbWl0ZWQoY2hpcC0+Y2FyZC0+ZGV2LAorCQkJIkVycm9yIGlu
-IFdBTEZDQyBjeWNsZSBjb3VudFxuIik7CisJCXJldHVybiAtRUlPOworCX0KKworCSpkZXZpY2Ug
-PSBuc190b19rdGltZShhenhfc2NhbGU2NChsbF9jb3VudGVyLAorCQkJCU5TRUNfUEVSX1NFQywg
-cnVudGltZS0+cmF0ZSkpOworCSpkZXZpY2UgPSBrdGltZV9hZGRfbnMoKmRldmljZSwgKHdhbGxj
-bGtfY3ljbGVzICogTlNFQ19QRVJfU0VDKSAvCisJCQkgICAgICAgKChIREFfTUFYX0NZQ0xFX1ZB
-TFVFICsgMSkgKiBydW50aW1lLT5yYXRlKSk7CisKKwkqc3lzdGVtID0gY29udmVydF9hcnRfdG9f
-dHNjKHRzY19jb3VudGVyKTsKKworCXJldHVybiAwOworfQorCisjZWxzZQorc3RhdGljIGludCBh
-enhfZ2V0X3N5bmNfdGltZShrdGltZV90ICpkZXZpY2UsCisJCXN0cnVjdCBzeXN0ZW1fY291bnRl
-cnZhbF90ICpzeXN0ZW0sIHZvaWQgKmN0eCkKK3sKKwlyZXR1cm4gLUVOWElPOworfQorI2VuZGlm
-CisKK3N0YXRpYyBpbnQgYXp4X2dldF9jcm9zc3RzdGFtcChzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJl
-YW0gKnN1YnN0cmVhbSwKKwkJCSAgICAgIHN0cnVjdCBzeXN0ZW1fZGV2aWNlX2Nyb3NzdHN0YW1w
-ICp4dHN0YW1wKQoreworCXJldHVybiBnZXRfZGV2aWNlX3N5c3RlbV9jcm9zc3RzdGFtcChhenhf
-Z2V0X3N5bmNfdGltZSwKKwkJCQkJc3Vic3RyZWFtLCBOVUxMLCB4dHN0YW1wKTsKK30KKworc3Rh
-dGljIGlubGluZSBib29sIGlzX2xpbmtfdGltZV9zdXBwb3J0ZWQoc3RydWN0IHNuZF9wY21fcnVu
-dGltZSAqcnVudGltZSwKKwkJCQlzdHJ1Y3Qgc25kX3BjbV9hdWRpb190c3RhbXBfY29uZmlnICp0
-cykKK3sKKwlpZiAocnVudGltZS0+aHcuaW5mbyAmIFNORFJWX1BDTV9JTkZPX0hBU19MSU5LX1NZ
-TkNIUk9OSVpFRF9BVElNRSkKKwkJaWYgKHRzLT50eXBlX3JlcXVlc3RlZCA9PSBTTkRSVl9QQ01f
-QVVESU9fVFNUQU1QX1RZUEVfTElOS19TWU5DSFJPTklaRUQpCisJCQlyZXR1cm4gdHJ1ZTsKKwor
-CXJldHVybiBmYWxzZTsKK30KKwogc3RhdGljIGludCBhenhfZ2V0X3RpbWVfaW5mbyhzdHJ1Y3Qg
-c25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAkJCXN0cnVjdCB0aW1lc3BlYyAqc3lzdGVt
-X3RzLCBzdHJ1Y3QgdGltZXNwZWMgKmF1ZGlvX3RzLAogCQkJc3RydWN0IHNuZF9wY21fYXVkaW9f
-dHN0YW1wX2NvbmZpZyAqYXVkaW9fdHN0YW1wX2NvbmZpZywKIAkJCXN0cnVjdCBzbmRfcGNtX2F1
-ZGlvX3RzdGFtcF9yZXBvcnQgKmF1ZGlvX3RzdGFtcF9yZXBvcnQpCiB7CiAJc3RydWN0IGF6eF9k
-ZXYgKmF6eF9kZXYgPSBnZXRfYXp4X2RldihzdWJzdHJlYW0pOworCXN0cnVjdCBzbmRfcGNtX3J1
-bnRpbWUgKnJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7CisJc3RydWN0IHN5c3RlbV9kZXZp
-Y2VfY3Jvc3N0c3RhbXAgeHRzdGFtcDsKKwlpbnQgcmV0OwogCXU2NCBuc2VjOwogCiAJaWYgKChz
-dWJzdHJlYW0tPnJ1bnRpbWUtPmh3LmluZm8gJiBTTkRSVl9QQ01fSU5GT19IQVNfTElOS19BVElN
-RSkgJiYKQEAgLTM2MSw4ICs1MjgsMzcgQEAgc3RhdGljIGludCBhenhfZ2V0X3RpbWVfaW5mbyhz
-dHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAkJYXVkaW9fdHN0YW1wX3JlcG9y
-dC0+YWNjdXJhY3lfcmVwb3J0ID0gMTsgLyogcmVzdCBvZiBzdHJ1Y3R1cmUgaXMgdmFsaWQgKi8K
-IAkJYXVkaW9fdHN0YW1wX3JlcG9ydC0+YWNjdXJhY3kgPSA0MjsgLyogMjQgTUh6IFdhbGxDbG9j
-ayA9PSA0Mm5zIHJlc29sdXRpb24gKi8KIAotCX0gZWxzZQorCX0gZWxzZSBpZiAoaXNfbGlua190
-aW1lX3N1cHBvcnRlZChydW50aW1lLCBhdWRpb190c3RhbXBfY29uZmlnKSkgeworCisJCXJldCA9
-IGF6eF9nZXRfY3Jvc3N0c3RhbXAoc3Vic3RyZWFtLCAmeHRzdGFtcCk7CisJCWlmIChyZXQpCisJ
-CQlyZXR1cm4gcmV0OworCisJCXN3aXRjaCAocnVudGltZS0+dHN0YW1wX3R5cGUpIHsKKwkJY2Fz
-ZSBTTkRSVl9QQ01fVFNUQU1QX1RZUEVfTU9OT1RPTklDOgorCQkJcmV0dXJuIC1FSU5WQUw7CisK
-KwkJY2FzZSBTTkRSVl9QQ01fVFNUQU1QX1RZUEVfTU9OT1RPTklDX1JBVzoKKwkJCSpzeXN0ZW1f
-dHMgPSBrdGltZV90b190aW1lc3BlYyh4dHN0YW1wLnN5c19tb25vcmF3KTsKKwkJCWJyZWFrOwor
-CisJCWRlZmF1bHQ6CisJCQkqc3lzdGVtX3RzID0ga3RpbWVfdG9fdGltZXNwZWMoeHRzdGFtcC5z
-eXNfcmVhbHRpbWUpOworCQkJYnJlYWs7CisKKwkJfQorCisJCSphdWRpb190cyA9IGt0aW1lX3Rv
-X3RpbWVzcGVjKHh0c3RhbXAuZGV2aWNlKTsKKworCQlhdWRpb190c3RhbXBfcmVwb3J0LT5hY3R1
-YWxfdHlwZSA9CisJCQlTTkRSVl9QQ01fQVVESU9fVFNUQU1QX1RZUEVfTElOS19TWU5DSFJPTkla
-RUQ7CisJCWF1ZGlvX3RzdGFtcF9yZXBvcnQtPmFjY3VyYWN5X3JlcG9ydCA9IDE7CisJCS8qIDI0
-IE1IeiBXYWxsQ2xvY2sgPT0gNDJucyByZXNvbHV0aW9uICovCisJCWF1ZGlvX3RzdGFtcF9yZXBv
-cnQtPmFjY3VyYWN5ID0gNDI7CisKKwl9IGVsc2UgewogCQlhdWRpb190c3RhbXBfcmVwb3J0LT5h
-Y3R1YWxfdHlwZSA9IFNORFJWX1BDTV9BVURJT19UU1RBTVBfVFlQRV9ERUZBVUxUOworCX0KIAog
-CXJldHVybiAwOwogfQotLSAKMS45LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+Remove the unused one as we have moved it up to hdac core.
+
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/sound/hdaudio_ext.h         | 12 ------
+ sound/hda/ext/hdac_ext_controller.c | 75 -------------------------------------
+ 2 files changed, 87 deletions(-)
+
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index b9593b201599..8660a7f10851 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -8,11 +8,6 @@
+  *
+  * @bus: hdac bus
+  * @num_streams: streams supported
+- * @ppcap: pp capabilities pointer
+- * @spbcap: SPIB capabilities pointer
+- * @mlcap: MultiLink capabilities pointer
+- * @gtscap: gts capabilities pointer
+- * @drsmcap: dma resume capabilities pointer
+  * @hlink_list: link list of HDA links
+  * @lock: lock for link mgmt
+  * @cmd_dma_state: state of cmd DMAs: CORB and RIRB
+@@ -22,12 +17,6 @@ struct hdac_ext_bus {
+ 	int num_streams;
+ 	int idx;
+ 
+-	void __iomem *ppcap;
+-	void __iomem *spbcap;
+-	void __iomem *mlcap;
+-	void __iomem *gtscap;
+-	void __iomem *drsmcap;
+-
+ 	struct list_head hlink_list;
+ 
+ 	struct mutex lock;
+@@ -54,7 +43,6 @@ void snd_hdac_ext_bus_device_remove(struct hdac_ext_bus *ebus);
+ #define HDA_CODEC_EXT_ENTRY(_vid, _revid, _name, _drv_data) \
+ 	HDA_CODEC_REV_EXT_ENTRY(_vid, _revid, _name, _drv_data)
+ 
+-int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *sbus);
+ void snd_hdac_ext_bus_ppcap_enable(struct hdac_ext_bus *chip, bool enable);
+ void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_ext_bus *chip, bool enable);
+ 
+diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
+index cd65e007e864..261469188566 100644
+--- a/sound/hda/ext/hdac_ext_controller.c
++++ b/sound/hda/ext/hdac_ext_controller.c
+@@ -29,81 +29,6 @@
+  */
+ #define HDAC_MAX_CAPS 10
+ 
+-/**
+- * snd_hdac_ext_bus_parse_capabilities - parse capablity structure
+- * @ebus: the pointer to extended bus object
+- *
+- * Returns 0 if successful, or a negative error code.
+- */
+-int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *ebus)
+-{
+-	unsigned int cur_cap;
+-	unsigned int offset;
+-	struct hdac_bus *bus = &ebus->bus;
+-	unsigned int counter = 0;
+-
+-	offset = snd_hdac_chip_readl(bus, LLCH);
+-
+-	/* Lets walk the linked capabilities list */
+-	do {
+-		cur_cap = _snd_hdac_chip_read(l, bus, offset);
+-
+-		dev_dbg(bus->dev, "Capability version: 0x%x\n",
+-				((cur_cap & AZX_CAP_HDR_VER_MASK) >> AZX_CAP_HDR_VER_OFF));
+-
+-		dev_dbg(bus->dev, "HDA capability ID: 0x%x\n",
+-				(cur_cap & AZX_CAP_HDR_ID_MASK) >> AZX_CAP_HDR_ID_OFF);
+-
+-		switch ((cur_cap & AZX_CAP_HDR_ID_MASK) >> AZX_CAP_HDR_ID_OFF) {
+-		case AZX_ML_CAP_ID:
+-			dev_dbg(bus->dev, "Found ML capability\n");
+-			ebus->mlcap = bus->remap_addr + offset;
+-			break;
+-
+-		case AZX_GTS_CAP_ID:
+-			dev_dbg(bus->dev, "Found GTS capability offset=%x\n", offset);
+-			ebus->gtscap = bus->remap_addr + offset;
+-			break;
+-
+-		case AZX_PP_CAP_ID:
+-			/* PP capability found, the Audio DSP is present */
+-			dev_dbg(bus->dev, "Found PP capability offset=%x\n", offset);
+-			ebus->ppcap = bus->remap_addr + offset;
+-			break;
+-
+-		case AZX_SPB_CAP_ID:
+-			/* SPIB capability found, handler function */
+-			dev_dbg(bus->dev, "Found SPB capability\n");
+-			ebus->spbcap = bus->remap_addr + offset;
+-			break;
+-
+-		case AZX_DRSM_CAP_ID:
+-			/* DMA resume  capability found, handler function */
+-			dev_dbg(bus->dev, "Found DRSM capability\n");
+-			ebus->drsmcap = bus->remap_addr + offset;
+-			break;
+-
+-		default:
+-			dev_dbg(bus->dev, "Unknown capability %d\n", cur_cap);
+-			break;
+-		}
+-
+-		counter++;
+-
+-		if (counter > HDAC_MAX_CAPS) {
+-			dev_err(bus->dev, "We exceeded HDAC Ext capablities!!!\n");
+-			break;
+-		}
+-
+-		/* read the offset of next capabiity */
+-		offset = cur_cap & AZX_CAP_HDR_NXT_PTR_MASK;
+-
+-	} while (offset);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_parse_capabilities);
+-
+ /*
+  * processing pipe helpers - these helpers are useful for dealing with HDA
+  * new capability of processing pipelines
+-- 
+1.9.1
