@@ -1,22 +1,18 @@
-From: Rob Nertney <rob@rob-otics.com>
-Subject: Re: Stale data interleaved in capture driver
-Date: Thu, 4 Aug 2016 09:58:35 -0700
-Message-ID: <CALAeOVPavUscy-wRmY=QTqfCOM8AD5ZqLh+D23bsTa9js9UnaA@mail.gmail.com>
-References: <CALAeOVO94y6R6bZOWK=2TfEckyVUxRXBMcOtXWvuoO5oG_4V4g@mail.gmail.com>
- <bdbdcb8f-8deb-20a7-51ec-f123328880ac@ladisch.de>
- <CALAeOVOZZgh5SThku3SF_7CPrrm_SbLEbR83mkSMefCy5GdrKA@mail.gmail.com>
- <9db62b13-f027-0986-5458-8ff9495a0cd0@ladisch.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: nau8825: fix static check error about
+	semaphone control" to the asoc tree
+Date: Thu, 04 Aug 2016 22:09:09 +0100
+Message-ID: <E1bVPt7-0007Hb-4b@debutante>
+References: <1470300727-19998-2-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f46.google.com (mail-vk0-f46.google.com
- [209.85.213.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 615372667D3
- for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2016 18:58:37 +0200 (CEST)
-Received: by mail-vk0-f46.google.com with SMTP id n129so172029420vke.3
- for <alsa-devel@alsa-project.org>; Thu, 04 Aug 2016 09:58:37 -0700 (PDT)
-In-Reply-To: <9db62b13-f027-0986-5458-8ff9495a0cd0@ladisch.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD9C626797F
+ for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2016 23:09:17 +0200 (CEST)
+In-Reply-To: <1470300727-19998-2-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,75 +22,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com, yong.zhi@intel.com, mhkuo@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Clemens. Remind me to buy you a beer next time I'm in Germany, or
-you're on the West Coast of the US :)
+The patch
 
-I think it was because of the IRQ counting I implemented the handler. I
-noticed in hardware that during a buffer_bytes loop-around, the IRQ handle
-time would go up drastically, and I would miss other IRQs from the DMA,
-breaking the offset that ALSA thought it was at, and where the DMA was
-actually at. I am running more tests tonight.
+   ASoC: nau8825: fix static check error about semaphone control
 
-I've rewritten the DMA to fire an  IRQ only at the write-completion of
-(buffer_bytes/2) and (buffer_bytes) (which will always be a multiple of my
-frame length). The pointer callback now reads a hardware frame-position
-too. I think this will emulate an actual sound card much more closely. The
-IRQ handler simply calls snd_pcm_period_elapsed, and the pointer callback
-simply returns the hardware frame count I am currently at in the buffer.
+has been applied to the asoc tree at
 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-64K buffer / 64Byte frames = 1024 frames/buffer.
-2 periods in the buffer = 512 Frames/IRQ
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-buffer_bytes_max = 65535
-period_bytes_min = 32768
-period_bytes_max = 32768
-periods_min = 2
-periods_max = 2
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Hopefully my testing tonight goes well.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Rob
+Mark
 
+>From 06746c672cdd60715ee57ab1aced95a9e536fd4d Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Thu, 4 Aug 2016 16:52:07 +0800
+Subject: [PATCH] ASoC: nau8825: fix static check error about semaphone control
 
+The patch is to fix the static check error as the following.
 
+The patch commit b50455fab459 ("ASoC: nau8825: cross talk suppression
+measurement function") from Jun 7, 2016, leads to the following
+static checker warning:
 
+	sound/soc/codecs/nau8825.c:265 nau8825_sema_acquire()
+	warn: 'sem:&nau8825->xtalk_sem' is sometimes locked here and
+	sometimes unlocked.
 
-On Thu, Aug 4, 2016 at 1:53 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+The semaphone acquire function has return value, and some callers
+can do error handling when lock fails.
 
-> Rob Nertney wrote:
-> > I've made changes to remove the high-frequency. I originally tried
-> > that method because my DMA IRQ fires whenever it writes 1/2 frame (it
-> > doesn't have coalescing support yet).
->
-> The snd_pcm_hardware is supposed to describe the hardware.
->
-> > I have a DMA which is looping across 64Kbytes.
->
-> This is buffer_bytes.
->
-> > The DMA is configured to interrupt at 32Bytes
->
-> This is period_bytes.
->
-> > From what I can tell (please correct me if I'm wrong), the periods_min
-> > and periods_max are up to me to define
->
-> They describe how often the *hardware* can interrupt.
->
-> > since i don't interrupt on a period boundary.
->
-> Periods are *defined* as the data between two interrupts.
->
-> Mapping ALSA periods to something else makes sense only if the hardware
-> cannot interrupt after a fixed number of bytes.
->
->
-> Regards,
-> Clemens
->
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/nau8825.c | 29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 20d2f1578b87..2e59a85e360b 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -225,19 +225,26 @@ static const unsigned short logtable[256] = {
+  * Acquires the semaphore without jiffies. If no more tasks are allowed
+  * to acquire the semaphore, calling this function will put the task to
+  * sleep until the semaphore is released.
+- * It returns if the semaphore was acquired.
++ * If the semaphore is not released within the specified number of jiffies,
++ * this function returns -ETIME.
++ * If the sleep is interrupted by a signal, this function will return -EINTR.
++ * It returns 0 if the semaphore was acquired successfully.
+  */
+-static void nau8825_sema_acquire(struct nau8825 *nau8825, long timeout)
++static int nau8825_sema_acquire(struct nau8825 *nau8825, long timeout)
+ {
+ 	int ret;
+ 
+-	if (timeout)
++	if (timeout) {
+ 		ret = down_timeout(&nau8825->xtalk_sem, timeout);
+-	else
++		if (ret < 0)
++			dev_warn(nau8825->dev, "Acquire semaphone timeout\n");
++	} else {
+ 		ret = down_interruptible(&nau8825->xtalk_sem);
++		if (ret < 0)
++			dev_warn(nau8825->dev, "Acquire semaphone fail\n");
++	}
+ 
+-	if (ret < 0)
+-		dev_warn(nau8825->dev, "Acquire semaphone fail\n");
++	return ret;
+ }
+ 
+ /**
+@@ -1596,8 +1603,11 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
+ 					 * cess and restore changes if process
+ 					 * is ongoing when ejection.
+ 					 */
++					int ret;
+ 					nau8825->xtalk_protect = true;
+-					nau8825_sema_acquire(nau8825, 0);
++					ret = nau8825_sema_acquire(nau8825, 0);
++					if (ret < 0)
++						nau8825->xtalk_protect = false;
+ 				}
+ 				/* Startup cross talk detection process */
+ 				nau8825->xtalk_state = NAU8825_XTALK_PREPARE;
+@@ -2223,11 +2233,14 @@ static int __maybe_unused nau8825_suspend(struct snd_soc_codec *codec)
+ static int __maybe_unused nau8825_resume(struct snd_soc_codec *codec)
+ {
+ 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
++	int ret;
+ 
+ 	regcache_cache_only(nau8825->regmap, false);
+ 	regcache_sync(nau8825->regmap);
+ 	nau8825->xtalk_protect = true;
+-	nau8825_sema_acquire(nau8825, 0);
++	ret = nau8825_sema_acquire(nau8825, 0);
++	if (ret < 0)
++		nau8825->xtalk_protect = false;
+ 	enable_irq(nau8825->irq);
+ 
+ 	return 0;
+-- 
+2.8.1
