@@ -1,13 +1,22 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [GIT PULL] Skylake firmware update
-Date: Thu, 4 Aug 2016 16:13:51 +0530
-Message-ID: <20160804104351.GC9681@localhost>
+From: Rob Nertney <rob@rob-otics.com>
+Subject: Re: Stale data interleaved in capture driver
+Date: Thu, 4 Aug 2016 09:58:35 -0700
+Message-ID: <CALAeOVPavUscy-wRmY=QTqfCOM8AD5ZqLh+D23bsTa9js9UnaA@mail.gmail.com>
+References: <CALAeOVO94y6R6bZOWK=2TfEckyVUxRXBMcOtXWvuoO5oG_4V4g@mail.gmail.com>
+ <bdbdcb8f-8deb-20a7-51ec-f123328880ac@ladisch.de>
+ <CALAeOVOZZgh5SThku3SF_7CPrrm_SbLEbR83mkSMefCy5GdrKA@mail.gmail.com>
+ <9db62b13-f027-0986-5458-8ff9495a0cd0@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9159490189306017029=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id BEB61266DD8
- for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2016 12:36:16 +0200 (CEST)
+Received: from mail-vk0-f46.google.com (mail-vk0-f46.google.com
+ [209.85.213.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 615372667D3
+ for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2016 18:58:37 +0200 (CEST)
+Received: by mail-vk0-f46.google.com with SMTP id n129so172029420vke.3
+ for <alsa-devel@alsa-project.org>; Thu, 04 Aug 2016 09:58:37 -0700 (PDT)
+In-Reply-To: <9db62b13-f027-0986-5458-8ff9495a0cd0@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,83 +26,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-firmware@kernel.org
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Thanks Clemens. Remind me to buy you a beer next time I'm in Germany, or
+you're on the West Coast of the US :)
 
---===============9159490189306017029==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AqCDj3hiknadvR6t"
-Content-Disposition: inline
+I think it was because of the IRQ counting I implemented the handler. I
+noticed in hardware that during a buffer_bytes loop-around, the IRQ handle
+time would go up drastically, and I would miss other IRQs from the DMA,
+breaking the offset that ALSA thought it was at, and where the DMA was
+actually at. I am running more tests tonight.
 
-
---AqCDj3hiknadvR6t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-Hi,
-
-Please PULL to recive updated Skylake audio firmware.
-
-The following changes since commit 6bc2c609988823744d1a45d33ee370c8310ec305:
-
-  amdgpu: update stoney UVD firmware (2016-07-29 14:40:03 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git skl
-
-for you to fetch changes up to c170c8d95794d6aedbaeea44674daaa96baf04f7:
-
-  linux-firmware: intel: Update Skylake audio firmware (2016-08-04 16:09:21=
- +0530)
-
-----------------------------------------------------------------
-Vinod Koul (1):
-      linux-firmware: intel: Update Skylake audio firmware
-
- WHENCE                        |   4 ++--
- intel/dsp_fw_release.bin      |   2 +-
- intel/dsp_fw_release_v958.bin | Bin 0 -> 221184 bytes
- 3 files changed, 3 insertions(+), 3 deletions(-)
- create mode 100644 intel/dsp_fw_release_v958.bin
-
-Thanks
---=20
-~Vinod
-
---AqCDj3hiknadvR6t
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJXoxxnAAoJEHwUBw8lI4NHPEoP/R186tKMJ+ys/uhyBB8Uy0Kk
-kxuQrYRDxoPJpbv/zjWwSQHX6bJYnUdquNf6LUXRNdSf9nlB9qL1DQqU5iDOsAJ+
-Vp8MtMxkig+7AZE/H/GKc8kjskWFNCFhzxcmAgGttaGla5mpRBbFveI3omEQc2gV
-0/R8qKDz67lz+8OR2TM5vyP9nC+QjAVz3sx55046IH0509TEpgH5PbxT/JB3PdW/
-+tj7dgAkTEpjUigUQILzOLFOx1/VRII2poAipSdr9tJP8vLzU92RKCVZOJtL3ZpA
-pWHUeMlNavgxpwMakgvYBWEVZY7CAkD505TgRWHrUlKxbzbzFoCVaO7y+DJYNLCQ
-q2g41jLpATZDQOD6454Hrga1Jlz44qGOHxUZxG3lykzscK7b5n8MsE/tkZnqCdHL
-3krhJP/V5fZGGxgZVqfZ6S9YtQLFAVVvpGGu4TKbV9SBNfHRnJeYZXBxk6P6J8Mw
-4HSSJxsG032nOw7Hcy5TEIGAf42e0vMFI/rlsHQH46JcFhcorpfJVm6cyU0+Wp0t
-absOctxLe4tfO6uBBaFBJE2kDVVSkL9v9gFTc8/s30rN+oCcRX0cEbkghnasJOLO
-e8bpWjA4J0rZNo+ojuEt+Ggmd3Q8KQ+iSS7U7Lkr38nE+bi/720v6OZ8O7U2D0qj
-gYIkvsuZQKDwxJ+jyG+O
-=2UxV
------END PGP SIGNATURE-----
-
---AqCDj3hiknadvR6t--
-
---===============9159490189306017029==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I've rewritten the DMA to fire an  IRQ only at the write-completion of
+(buffer_bytes/2) and (buffer_bytes) (which will always be a multiple of my
+frame length). The pointer callback now reads a hardware frame-position
+too. I think this will emulate an actual sound card much more closely. The
+IRQ handler simply calls snd_pcm_period_elapsed, and the pointer callback
+simply returns the hardware frame count I am currently at in the buffer.
 
 
---===============9159490189306017029==--
+64K buffer / 64Byte frames = 1024 frames/buffer.
+2 periods in the buffer = 512 Frames/IRQ
+
+buffer_bytes_max = 65535
+period_bytes_min = 32768
+period_bytes_max = 32768
+periods_min = 2
+periods_max = 2
+
+Hopefully my testing tonight goes well.
+
+Thanks,
+Rob
+
+
+
+
+
+On Thu, Aug 4, 2016 at 1:53 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+
+> Rob Nertney wrote:
+> > I've made changes to remove the high-frequency. I originally tried
+> > that method because my DMA IRQ fires whenever it writes 1/2 frame (it
+> > doesn't have coalescing support yet).
+>
+> The snd_pcm_hardware is supposed to describe the hardware.
+>
+> > I have a DMA which is looping across 64Kbytes.
+>
+> This is buffer_bytes.
+>
+> > The DMA is configured to interrupt at 32Bytes
+>
+> This is period_bytes.
+>
+> > From what I can tell (please correct me if I'm wrong), the periods_min
+> > and periods_max are up to me to define
+>
+> They describe how often the *hardware* can interrupt.
+>
+> > since i don't interrupt on a period boundary.
+>
+> Periods are *defined* as the data between two interrupts.
+>
+> Mapping ALSA periods to something else makes sense only if the hardware
+> cannot interrupt after a fixed number of bytes.
+>
+>
+> Regards,
+> Clemens
+>
