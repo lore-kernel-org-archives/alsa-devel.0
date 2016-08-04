@@ -1,71 +1,70 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH 0/8] ASoC: s3c24xx_uda134x card fixes and cleanups
-Date: Thu, 04 Aug 2016 15:38:40 +0200
-Message-ID: <1470317928-25365-1-git-send-email-s.nawrocki@samsung.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Question about struct snd_soc_dai() :: cpu_dai->codec
+Date: Thu, 4 Aug 2016 22:39:40 +0900
+Message-ID: <30173e35-41fc-36f2-4c31-f51f753cb34b@sakamocchi.jp>
+References: <s5hpopy6dbi.wl-tiwai@suse.de> <20160728034643.GH9681@localhost>
+ <579A6C1B.2060904@metafoo.de> <579AA39B.5030100@sakamocchi.jp>
+ <884bd15f-da5e-49f5-73ee-d8173dc0720a@metafoo.de>
+ <20160729160702.GK9681@localhost> <s5hy44k41oa.wl-tiwai@suse.de>
+ <ab6b5a69-9d36-b4a5-0b8f-10a7dcf1ea40@sakamocchi.jp>
+ <20160729220854.GN10376@sirena.org.uk>
+ <5152607b-90ab-1675-6be8-986be880a8eb@sakamocchi.jp>
+ <20160804102826.GU10376@sirena.org.uk>
+ <a9071ad9-ea67-1bce-27cf-3f2ac21b6456@sakamocchi.jp>
+ <s5hy44c7m87.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, krzk@kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <s5hy44c7m87.wl-tiwai@suse.de>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-This series might have a bit of an archaeological aspect, nevertheless
-my goal was to have sound working on one of the older S3C24XX SoC
-based boards for testing any patches touching the older Samsung
-SoC IP block related code.
+On Aug 4 2016 21:27, Takashi Iwai wrote:
+> On Thu, 04 Aug 2016 14:12:09 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> On Aug 4 2016 19:28, Mark Brown wrote:
+>>> On Thu, Aug 04, 2016 at 12:17:57PM +0900, Takashi Sakamoto wrote:
+>>>> On Jul 30 2016 07:08, Mark Brown wrote:
+>>>
+>>>>> The card should be deinstantiated and reinstantiated whenever a
+>>>>> component driver unbinds and rebinds (respectively).  You'd need to
+>>>>> completely deregister the card to change the list of things it's
+>>>>> expecting currently.
+>>>
+>>>> In a point of application interfaces, I guess that current implementation of
+>>>> ALSA soc part includes a bug that it's possible to unload codec or component
+>>>> modules when any ALSA character devices are opened. The framework has no
+>>>> codes to manage reference counting of character devices or loaded codecs,
+>>>> components.
+>>>
+>>> Yes, exactly - we don't cope very well with that situation and we really
+>>> ought to but since it's hard to trigger without trying in practice it's
+>>> never been a priority.
+>>
+>> Ugly... completely ugly idea for user space applications and operating
+>> system... It's better for developers for ALSA soc part to pay enough
+>> attention not only to their hardwares but also to application interfaces.
+>>
+>> Please assume that a loaded module for SoC's sound interface which
+>> supports Jack detection, and pulseaudio runs on the system. Then,
+>> typically, the process listen to ALSA ctrl character device for Jack
+>> detection.
+>>
+>> In this case, when modules for codec or component are unloaded, what
+>> happends?
+> 
+> You can't unload.  The module unload is already protected by the
+> proper module refcounting.
 
-Together with patches:
-  ASoC: samsung: Fix clock handling in S3C24XX_UDA134X card
-  ARM: S3C24XX: Add dma_mask assignments for DMA devices
-  ARM: S3C24XX: Add missing DMA device for Mini2440 board
+Hm. For my information, could you please show call graph to increment
+the reference counter of codec/component modules when modules for SoC's
+sound interfaces refer to them?
 
-this series fixes sound on Micro2440SDK/mini2440 board broken since
-the 3.12 kernel release.
 
-I'm not sure how it worked before but currently the uda134x codec
-always fails to probe due to uninitialized platform_data, which
-is supposed to be set by the ASoC machine driver.
+Regards
 
-This series addresses the issue by moving all required codec
-platform_data to the board file and exposing optional GPIO bitbang
-L3 bus ops which are selected by the codec.
-
-ASoC dependency patches:
-  ASoC: samsung: Fix clock handling in S3C24XX_UDA134X card
-
-The patch
-"ARM: S3C24XX: Specify audio codec platform_data for mini2440 board"
-is for arm-soc but it would be good to merge whole series through one
-tree to avoid compilation breaks due to unmet dependencies.
-
-Sylwester Nawrocki (8):
-  ASoC: L3 bus: Add default gpio ops
-  ARM: S3C24XX: Specify audio codec platform_data for mini2440 board
-  ASoC: uda134x: Optionally initialize L3 ops to default GPIO ops
-  ASoC: s3c24xx_uda134x: Remove unused power() callback
-  ASoC: s3c24xx_uda134x: Drop initialization of codec's platform data
-  ASoC: samsung: Convert s3c24xx_uda134x to use
-    devm_snd_soc_register_card()
-  ASoC: samsung: s3c24xx_uda134x: debug/error trace cleanup
-  ASoC: s3c244_uda134x: Allocate private data dynamically
-
- arch/arm/mach-s3c24xx/mach-mini2440.c |  19 ++++
- include/sound/l3.h                    |  15 ++-
- include/sound/s3c24xx_uda134x.h       |   1 -
- sound/soc/codecs/l3.c                 |  71 ++++++++++--
- sound/soc/codecs/uda134x.c            |   7 ++
- sound/soc/samsung/s3c24xx_uda134x.c   | 205 ++++++++++------------------------
- 6 files changed, 158 insertions(+), 160 deletions(-)
-
---
-1.9.1
+Takashi Sakamoto
