@@ -1,70 +1,125 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Question about struct snd_soc_dai() :: cpu_dai->codec
-Date: Thu, 4 Aug 2016 22:39:40 +0900
-Message-ID: <30173e35-41fc-36f2-4c31-f51f753cb34b@sakamocchi.jp>
-References: <s5hpopy6dbi.wl-tiwai@suse.de> <20160728034643.GH9681@localhost>
- <579A6C1B.2060904@metafoo.de> <579AA39B.5030100@sakamocchi.jp>
- <884bd15f-da5e-49f5-73ee-d8173dc0720a@metafoo.de>
- <20160729160702.GK9681@localhost> <s5hy44k41oa.wl-tiwai@suse.de>
- <ab6b5a69-9d36-b4a5-0b8f-10a7dcf1ea40@sakamocchi.jp>
- <20160729220854.GN10376@sirena.org.uk>
- <5152607b-90ab-1675-6be8-986be880a8eb@sakamocchi.jp>
- <20160804102826.GU10376@sirena.org.uk>
- <a9071ad9-ea67-1bce-27cf-3f2ac21b6456@sakamocchi.jp>
- <s5hy44c7m87.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <s5hy44c7m87.wl-tiwai@suse.de>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Simon <horms@verge.net.au>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH 5/8] ASoC: s3c24xx_uda134x: Drop initialization of codec's
+ platform data
+Date: Thu, 04 Aug 2016 15:38:45 +0200
+Message-ID: <1470317928-25365-6-git-send-email-s.nawrocki@samsung.com>
+References: <1470317928-25365-1-git-send-email-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <1470317928-25365-1-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: krzk@kernel.org, alsa-devel@alsa-project.org, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 4 2016 21:27, Takashi Iwai wrote:
-> On Thu, 04 Aug 2016 14:12:09 +0200,
-> Takashi Sakamoto wrote:
->>
->> On Aug 4 2016 19:28, Mark Brown wrote:
->>> On Thu, Aug 04, 2016 at 12:17:57PM +0900, Takashi Sakamoto wrote:
->>>> On Jul 30 2016 07:08, Mark Brown wrote:
->>>
->>>>> The card should be deinstantiated and reinstantiated whenever a
->>>>> component driver unbinds and rebinds (respectively).  You'd need to
->>>>> completely deregister the card to change the list of things it's
->>>>> expecting currently.
->>>
->>>> In a point of application interfaces, I guess that current implementation of
->>>> ALSA soc part includes a bug that it's possible to unload codec or component
->>>> modules when any ALSA character devices are opened. The framework has no
->>>> codes to manage reference counting of character devices or loaded codecs,
->>>> components.
->>>
->>> Yes, exactly - we don't cope very well with that situation and we really
->>> ought to but since it's hard to trigger without trying in practice it's
->>> never been a priority.
->>
->> Ugly... completely ugly idea for user space applications and operating
->> system... It's better for developers for ALSA soc part to pay enough
->> attention not only to their hardwares but also to application interfaces.
->>
->> Please assume that a loaded module for SoC's sound interface which
->> supports Jack detection, and pulseaudio runs on the system. Then,
->> typically, the process listen to ALSA ctrl character device for Jack
->> detection.
->>
->> In this case, when modules for codec or component are unloaded, what
->> happends?
-> 
-> You can't unload.  The module unload is already protected by the
-> proper module refcounting.
+It's already taken care by the codec and its platform_data defined
+in the arch/arm/mach-s3c24xx/mach-mini2440.c board file.
 
-Hm. For my information, could you please show call graph to increment
-the reference counter of codec/component modules when modules for SoC's
-sound interfaces refer to them?
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+ sound/soc/samsung/s3c24xx_uda134x.c | 71 +------------------------------------
+ 1 file changed, 1 insertion(+), 70 deletions(-)
 
-
-Regards
-
-Takashi Sakamoto
+diff --git a/sound/soc/samsung/s3c24xx_uda134x.c b/sound/soc/samsung/s3c24xx_uda134x.c
+index c145eb2..794e30d 100644
+--- a/sound/soc/samsung/s3c24xx_uda134x.c
++++ b/sound/soc/samsung/s3c24xx_uda134x.c
+@@ -227,78 +227,12 @@ static struct snd_soc_card snd_soc_s3c24xx_uda134x = {
+ 	.num_links = 1,
+ };
+ 
+-static struct s3c24xx_uda134x_platform_data *s3c24xx_uda134x_l3_pins;
+-
+-static void setdat(int v)
+-{
+-	gpio_set_value(s3c24xx_uda134x_l3_pins->l3_data, v > 0);
+-}
+-
+-static void setclk(int v)
+-{
+-	gpio_set_value(s3c24xx_uda134x_l3_pins->l3_clk, v > 0);
+-}
+-
+-static void setmode(int v)
+-{
+-	gpio_set_value(s3c24xx_uda134x_l3_pins->l3_mode, v > 0);
+-}
+-
+-/* FIXME - This must be codec platform data but in which board file ?? */
+-static struct uda134x_platform_data s3c24xx_uda134x = {
+-	.l3 = {
+-		.setdat = setdat,
+-		.setclk = setclk,
+-		.setmode = setmode,
+-		.data_hold = 1,
+-		.data_setup = 1,
+-		.clock_high = 1,
+-		.mode_hold = 1,
+-		.mode = 1,
+-		.mode_setup = 1,
+-	},
+-};
+-
+-static int s3c24xx_uda134x_setup_pin(int pin, char *fun)
+-{
+-	if (gpio_request(pin, "s3c24xx_uda134x") < 0) {
+-		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: "
+-		       "l3 %s pin already in use", fun);
+-		return -EBUSY;
+-	}
+-	gpio_direction_output(pin, 0);
+-	return 0;
+-}
+-
+ static int s3c24xx_uda134x_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+ 
+ 	printk(KERN_INFO "S3C24XX_UDA134X SoC Audio driver\n");
+ 
+-	s3c24xx_uda134x_l3_pins = pdev->dev.platform_data;
+-	if (s3c24xx_uda134x_l3_pins == NULL) {
+-		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: "
+-		       "unable to find platform data\n");
+-		return -ENODEV;
+-	}
+-	s3c24xx_uda134x.model = s3c24xx_uda134x_l3_pins->model;
+-
+-	if (s3c24xx_uda134x_setup_pin(s3c24xx_uda134x_l3_pins->l3_data,
+-				      "data") < 0)
+-		return -EBUSY;
+-	if (s3c24xx_uda134x_setup_pin(s3c24xx_uda134x_l3_pins->l3_clk,
+-				      "clk") < 0) {
+-		gpio_free(s3c24xx_uda134x_l3_pins->l3_data);
+-		return -EBUSY;
+-	}
+-	if (s3c24xx_uda134x_setup_pin(s3c24xx_uda134x_l3_pins->l3_mode,
+-				      "mode") < 0) {
+-		gpio_free(s3c24xx_uda134x_l3_pins->l3_data);
+-		gpio_free(s3c24xx_uda134x_l3_pins->l3_clk);
+-		return -EBUSY;
+-	}
+-
+ 	s3c24xx_uda134x_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!s3c24xx_uda134x_snd_device) {
+ 		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: "
+@@ -308,7 +242,7 @@ static int s3c24xx_uda134x_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(s3c24xx_uda134x_snd_device,
+ 			     &snd_soc_s3c24xx_uda134x);
+-	platform_device_add_data(s3c24xx_uda134x_snd_device, &s3c24xx_uda134x, sizeof(s3c24xx_uda134x));
++
+ 	ret = platform_device_add(s3c24xx_uda134x_snd_device);
+ 	if (ret) {
+ 		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: Unable to add\n");
+@@ -321,9 +255,6 @@ static int s3c24xx_uda134x_probe(struct platform_device *pdev)
+ static int s3c24xx_uda134x_remove(struct platform_device *pdev)
+ {
+ 	platform_device_unregister(s3c24xx_uda134x_snd_device);
+-	gpio_free(s3c24xx_uda134x_l3_pins->l3_data);
+-	gpio_free(s3c24xx_uda134x_l3_pins->l3_clk);
+-	gpio_free(s3c24xx_uda134x_l3_pins->l3_mode);
+ 	return 0;
+ }
+ 
+-- 
+1.9.1
