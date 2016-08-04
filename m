@@ -1,25 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Question about struct snd_soc_dai() ::
- cpu_dai->codec
-Date: Thu, 4 Aug 2016 10:21:10 +0200
-Message-ID: <2c894b35-9c57-6212-c8c5-f97ec1e1d263@metafoo.de>
-References: <878twpj739.wl%kuninori.morimoto.gx@renesas.com>
- <579A69EC.9060205@metafoo.de>
- <87popx2nbb.wl%kuninori.morimoto.gx@renesas.com>
- <4ad31e53-188a-8a40-cea9-b89df5f3535e@metafoo.de>
- <20160729144145.GF10376@sirena.org.uk>
- <87popt9n1w.wl%kuninori.morimoto.gx@renesas.com>
- <87y44fhdxt.wl%kuninori.morimoto.gx@renesas.com>
- <49dd216c-d63c-693e-92ed-6abf1865eeb0@metafoo.de>
- <87r3a5mfjd.wl%kuninori.morimoto.gx@renesas.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: [PATCH 1/2] ASoC: nau8825: fix bug in playback when
+	suspend
+Date: Thu, 4 Aug 2016 16:52:06 +0800
+Message-ID: <1470300727-19998-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DC0A2657B1
- for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2016 10:21:21 +0200 (CEST)
-In-Reply-To: <87r3a5mfjd.wl%kuninori.morimoto.gx@renesas.com>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D731266601
+ for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2016 10:52:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,100 +19,127 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 08/04/2016 04:38 AM, Kuninori Morimoto wrote:
-> 
-> Hi Lars
-> 
->> I think moving forward we should get rid of the whole CPU/CODEC/platform
->> concept. This is an outdated view of how the hardware looks like. When ASoC
->> was initially introduce all hardware basically had a CPU side DAI, a CODEC
->> side DAI and a DMA. The DMA was connected to the CPU DAI and the CPU DAI was
->> connected to the CODEC DAI and that was it. The CPU side was also really
->> simple, no signal processing, no signal routing, just the raw audio data
->> directly transferred via DMA (or PIO sometimes) to the CPU DAI controller.
->> And all digital audio was assumed to be in a single digital domain running
->> at them same clock rate.
->>
->> This no longer reflects todays typical systems. Sometimes you have more than
->> those three components (e.g. additional amplifier IC, BT chip ...),
->> sometimes you less (just a DAC or ADC directly connected to a DMA in the
->> SoC). You often have complex routing and processing capabilities on the host
->> side. Also you have often multiple digital domains with sample-rate
->> converters between them.
->>
->> Yet still at the core ASoC keeps the CPU/CODEC/platform concept. DPCM e.g.
->> tries to work with these concepts by introducing frontend and backend DAIs
->> and use dummy components to compensate for when the software model does not
->> match the hardware model. This makes it code more complicated than it has to
->> be and less efficient than it can be.
-> 
-> I agree to your opinion.
-> OTOH, we would like to use/keep existing current all drivers.
-> Thus, I think we need super many small and slow steps.
-> Or, we need new ASoC2 ?
-> 
-> I can agree that we should get rid of current CPU/Codec/Platform,
-> but, removing all of them is a little bit over-kill for me.
-> I think ALSA SoC "framework" should care "component" only,
-> and it doesn't care what it was.
-> OTOH "driver" side can use existing CPU/Codec/Platform and/or AUX/compr
-> etc as helper ? (I'm not sure detail of AUX/compr actually...)
-> And each "component" has "dai".
-> 
-> My image is like this.
-> This allows many / few components, and many / few DAIs.
-> Current DPCM style is automatically supported,
-> and it is easy to add new style device.
-> What do you think ?
+In chromium, the following steps will make codec function fail.
+\1. plug in headphones, Play music
+\2. run "powerd_dbus_suspend"
+\3. resume from S3
+After resume, the jack detection will restart and make configuration
+for the headset. Meanwhile, the playback prepares and starts to work.
+The two sequences will conflict and make wrong register configuration.
 
-To be honest I'd also get rid of DAIs has a top level concept. This image
-(http://metafoo.de/the_new_asoc.svg) is something I've put together awhile
-ago how I think we should lay things out if we do a major refactoring of the
-ASoC core.
+Originally, the driver adds protection for the case when it finds
+the playback is active. But the "powerd_dbus_suspend" command will
+close the pcm stream before suspend. Therefore, the driver can't
+detect the playback after resume, and the protection not works.
+For the issue, the driver raises protection every time after resume.
+The protection will release after jack detection and configuration
+completes, and then the playback just will goes on.
 
-The big green and blue boxes are components. Green are On-SoC components,
-blue are external components.
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+---
+ sound/soc/codecs/nau8825.c | 51 +++++++++++-----------------------------------
+ 1 file changed, 12 insertions(+), 39 deletions(-)
 
-The light grey boxes are domains. Domains have certain properties, like e.g.
-samplerates. There are different types of domains and different types have
-different kinds of properties. E.g. in the PCM domain we care about the
-memory layout of the samples in addition to the samplerate and the number of
-channels, while in the digital domain however we do no longer care about the
-memory layout since here data is processed one sample at a time. In the I2S
-link domain we care about which I2S mode is used (I2S, LJ, ...), while in a
-SPDIF link domain we don't care about such properties.
-
-The dark grey boxes are bridges between domains and they translate
-properties from one domain to another. This can either be straight forward
-propagation like a PCM device where the samplerate in the source and target
-domain are the same, or it can modify the properties, e.g. a samplerate
-converter between two digital domains will change the samplerate according
-to the interpolation/decimation factor of the SRC.
-
-In addition to just translating the properties a bridge can also translate
-the constraints on properties from one domain to another or even add its own
-constraints. E.g. if a CODEC has a constraint that it can run either with
-48kHz or 96kHz this constraint is propagated through the bridges to the PCM
-devices so that the userspace application using the PCM is aware of this.
-Bridges can also add their own constraints e.g. a SRC might have multiple
-interpolation/decimation rates available, so it might say the samplerate in
-the target domain must be 1x or 2x that of the source domain. Going back to
-the example that means for a CODEC that supports either 48kHz or 96kHz and
-there is a SRC with interpolation factors of 1 or 2 then the PCM device will
-present the list of either 24kHz, 48kHz or 96kHz to the userspace application.
-
-A bridge is also not limited to one source and one sink. It can have
-multiple sources and multiple sinks e.g. for a crossbar with a complex
-routing matrix.
-
-Obviously we can't convert everything at the same time and it will take a
-lot of time and effort to update all drivers to this new model. This is
-where the legacy bridge kicks in which still keeps the concept of 1 CPU, 1
-CODEC, 1 platform. If you want to use the advanced features of the new
-framework you have to update your driver, if you are OK with the current set
-of features just keep the drivers the way they are and use the legacy bridge
-that is automatically managed by the ASoC core.
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 5c9707a..20d2f15 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -212,31 +212,6 @@ static const unsigned short logtable[256] = {
+ 	0xfa2f, 0xfaea, 0xfba5, 0xfc60, 0xfd1a, 0xfdd4, 0xfe8e, 0xff47
+ };
+ 
+-static struct snd_soc_dai *nau8825_get_codec_dai(struct nau8825 *nau8825)
+-{
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(nau8825->dapm);
+-	struct snd_soc_component *component = &codec->component;
+-	struct snd_soc_dai *codec_dai, *_dai;
+-
+-	list_for_each_entry_safe(codec_dai, _dai, &component->dai_list, list) {
+-		if (!strncmp(codec_dai->name, NUVOTON_CODEC_DAI,
+-			strlen(NUVOTON_CODEC_DAI)))
+-			return codec_dai;
+-	}
+-	return NULL;
+-}
+-
+-static bool nau8825_dai_is_active(struct nau8825 *nau8825)
+-{
+-	struct snd_soc_dai *codec_dai = nau8825_get_codec_dai(nau8825);
+-
+-	if (codec_dai) {
+-		if (codec_dai->playback_active || codec_dai->capture_active)
+-			return true;
+-	}
+-	return false;
+-}
+-
+ /**
+  * nau8825_sema_acquire - acquire the semaphore of nau88l25
+  * @nau8825:  component to register the codec private data with
+@@ -1205,6 +1180,8 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
+ 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int val_len = 0;
+ 
++	nau8825_sema_acquire(nau8825, 2 * HZ);
++
+ 	switch (params_width(params)) {
+ 	case 16:
+ 		val_len |= NAU8825_I2S_DL_16;
+@@ -1225,6 +1202,9 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL1,
+ 		NAU8825_I2S_DL_MASK, val_len);
+ 
++	/* Release the semaphone. */
++	nau8825_sema_release(nau8825);
++
+ 	return 0;
+ }
+ 
+@@ -1234,6 +1214,8 @@ static int nau8825_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int ctrl1_val = 0, ctrl2_val = 0;
+ 
++	nau8825_sema_acquire(nau8825, 2 * HZ);
++
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		ctrl2_val |= NAU8825_I2S_MS_MASTER;
+@@ -1282,6 +1264,9 @@ static int nau8825_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2,
+ 		NAU8825_I2S_MS_MASK, ctrl2_val);
+ 
++	/* Release the semaphone. */
++	nau8825_sema_release(nau8825);
++
+ 	return 0;
+ }
+ 
+@@ -2241,20 +2226,8 @@ static int __maybe_unused nau8825_resume(struct snd_soc_codec *codec)
+ 
+ 	regcache_cache_only(nau8825->regmap, false);
+ 	regcache_sync(nau8825->regmap);
+-	if (nau8825_is_jack_inserted(nau8825->regmap)) {
+-		/* If the jack is inserted, we need to check whether the play-
+-		 * back is active before suspend. If active, the driver has to
+-		 * raise the protection for cross talk function to avoid the
+-		 * playback recovers before cross talk process finish. Other-
+-		 * wise, the playback will be interfered by cross talk func-
+-		 * tion. It is better to apply hardware related parameters
+-		 * before starting playback or record.
+-		 */
+-		if (nau8825_dai_is_active(nau8825)) {
+-			nau8825->xtalk_protect = true;
+-			nau8825_sema_acquire(nau8825, 0);
+-		}
+-	}
++	nau8825->xtalk_protect = true;
++	nau8825_sema_acquire(nau8825, 0);
+ 	enable_irq(nau8825->irq);
+ 
+ 	return 0;
+-- 
+2.6.4
