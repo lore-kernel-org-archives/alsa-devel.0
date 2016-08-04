@@ -1,46 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 7/8] ASoC: samsung: s3c24xx_uda134x: debug/error trace
- cleanup
-Date: Thu, 4 Aug 2016 22:05:54 +0100
-Message-ID: <20160804210554.GL10383@sirena.org.uk>
-References: <1470317928-25365-1-git-send-email-s.nawrocki@samsung.com>
- <1470317928-25365-8-git-send-email-s.nawrocki@samsung.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v4 0/5] ALSA - hda: Add support for link audio
+	time reporting
+Date: Thu,  4 Aug 2016 15:45:59 +0530
+Message-ID: <1470305764-20802-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lZZ4ablUVnt2XgAh"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1470317928-25365-8-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: krzk@kernel.org, alsa-devel@alsa-project.org, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A799268263
+ for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2016 12:08:49 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+Skylake onwards we support GTS capability and thus can report audio link
+time. This series adds support for parsing the capability and then reports
+link time.
 
---lZZ4ablUVnt2XgAh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The parsing of caps is made common and moved up from extended hda to hdac.
+The SKL driver and hdac extended core has been updated for this.
 
-On Thu, Aug 04, 2016 at 03:38:47PM +0200, Sylwester Nawrocki wrote:
-> Switch from pr_* to dev_* macros and drop some debug traces.
+Mark,
+	The update of the driver needs to update Skl driver, so if you can
+ACK the 2nd patch, it can go along with extended audio change thru ALSA
+tree.
 
-This doesn't apply against current code and the previous patch had
-unknown SHA1s suggesting that you've got some other patches in your
-tree, please check and resend.
+Changes in v4:
+  - fix code style
+  - use hdac_readl/writel
+  - add cpufeatures header
 
---lZZ4ablUVnt2XgAh
-Content-Type: application/pgp-signature; name="signature.asc"
+Guneshwor Singh (2):
+  ALSA - hda: Add support for parsing new HDA capabilities
+  ALSA - hda: Add support for link audio time reporting
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Vinod Koul (3):
+  ALSA: hda - move bus_parse_capabilities to core
+  ALSA: convert users to core bus_parse_capabilities
+  ALSA - Ext hda: remove bus_parse_capabilities
 
-iQEcBAEBCAAGBQJXo64xAAoJECTWi3JdVIfQKr4H+wThnrb2xyAK/QuPbvuz9d6L
-CUCp03yihBnRO4v+lSdC2MfkpX5lybAyyj3EZyVoIsdr8J9l84zlwVx5rgtpUo6P
-mh7QG54+qH/RdHeLciIFFifJdK1Ie7L0X5/ny4EhXw+uVxXcC4XF4V37K8UmPeHd
-eaYmJwm9Uw558FlZB/jdrz/dLo/IOCu4HqJFl22fJn7uq9RjUUPTEoxwSvorMAKR
-Aug1EbYuEXsF7D0DG/2eO9Z33LtFf0fLQtv/P4tL283U2hTE6sN4oyIgZP/tMZU/
-40iyDoApIrimel4bm/KOdRk5Ln1LhxOcfwuu9PRZliRTHjP+Sx0DX3UKUp+5OUI=
-=gzeW
------END PGP SIGNATURE-----
+ include/sound/hda_register.h           |  36 ++++++
+ include/sound/hdaudio.h                |  13 +++
+ include/sound/hdaudio_ext.h            |  12 --
+ sound/hda/ext/hdac_ext_controller.c    |  91 ++-------------
+ sound/hda/ext/hdac_ext_stream.c        |  46 ++++----
+ sound/hda/hdac_controller.c            |  75 ++++++++++++
+ sound/pci/hda/hda_controller.c         | 203 ++++++++++++++++++++++++++++++++-
+ sound/pci/hda/hda_controller.h         |   3 +
+ sound/pci/hda/hda_intel.c              |  17 +++
+ sound/soc/intel/skylake/skl-messages.c |   4 +-
+ sound/soc/intel/skylake/skl-pcm.c      |   8 +-
+ sound/soc/intel/skylake/skl.c          |   6 +-
+ 12 files changed, 386 insertions(+), 128 deletions(-)
 
---lZZ4ablUVnt2XgAh--
+-- 
+1.9.1
