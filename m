@@ -1,36 +1,43 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH 7/8] ASoC: samsung: s3c24xx_uda134x: debug/error trace
- cleanup
-Date: Fri, 05 Aug 2016 11:52:06 +0200
-Message-ID: <dc98210f-b87f-443c-f54f-1123f31c7ad3@samsung.com>
-References: <1470317928-25365-1-git-send-email-s.nawrocki@samsung.com>
- <1470317928-25365-8-git-send-email-s.nawrocki@samsung.com>
- <20160804210554.GL10383@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RESEND 7/8] ASoC: samsung: s3c24xx_uda134x: debug/error
+ trace cleanup
+Date: Fri, 5 Aug 2016 11:03:43 +0100
+Message-ID: <20160805100343.GO10383@sirena.org.uk>
+References: <1470390429-30902-1-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5FetH82qe0Z6y/zI"
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <20160804210554.GL10383@sirena.org.uk>
+Content-Disposition: inline
+In-Reply-To: <1470390429-30902-1-git-send-email-s.nawrocki@samsung.com>
 Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: krzk@kernel.org, alsa-devel@alsa-project.org, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/04/2016 11:05 PM, Mark Brown wrote:
-> On Thu, Aug 04, 2016 at 03:38:47PM +0200, Sylwester Nawrocki wrote:
->> Switch from pr_* to dev_* macros and drop some debug traces.
-> 
-> This doesn't apply against current code and the previous patch had
-> unknown SHA1s suggesting that you've got some other patches in your
-> tree, please check and resend.
 
-I suspect the cause is this patch missing:
-"ASoC: samsung: Fix clock handling in S3C24XX_UDA134X card"
-which I really should have sent as a first one together with
-this series. My apologies for the mess. 
+--5FetH82qe0Z6y/zI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Fri, Aug 05, 2016 at 11:47:09AM +0200, Sylwester Nawrocki wrote:
+> Switch from pr_* to dev_* macros and drop some debug traces.
 
-I've resent $subject patch and will hold on for a moment with 
-PATCH 8/8 as there are large conflicts when I first rebase it 
-onto topic/samsung and then try to merge fix/samsung and 
-topic/samsung to the for-next branch.
+I've only got patch 7 here, what's the story with the other patches?
+
+--5FetH82qe0Z6y/zI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXpGR4AAoJECTWi3JdVIfQ79UH/iTaFVb3O99hDHo43s6Yo2dQ
+8On9rrQOW1RfAmnPj/95qywJnuYrS1lgpqL5f0FWlPX4bTLF7UtvNRon3tZ7RJft
+DiAiJlqtCJIJQsuhDanvQe7YwtTtrTi0gI843hBgYrgT/2GcQzL6onupNkCw0fHV
+1zvqQ1Q30MMoHk6GoqIYCfhwrfcLvrS5mEIXkxBUz2tAUYWO5PqFP0egxUAalibI
+UGU1dHpUDHjtGVx7IOit3a8OWM2XRC7W8foSDnS5+M/IoogN0NOi+l7LiziaV17N
+2MOYfccfUyKn1KZIgB9FuOgj+PznV4iqT5DTryz60HIGBvahYkDXoH1SCpjFWYM=
+=cum7
+-----END PGP SIGNATURE-----
+
+--5FetH82qe0Z6y/zI--
