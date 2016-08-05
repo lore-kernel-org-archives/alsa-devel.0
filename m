@@ -1,58 +1,132 @@
-From: Rob Nertney <rob@rob-otics.com>
-Subject: Re: Stale data interleaved in capture driver
-Date: Fri, 5 Aug 2016 08:42:50 -0700
-Message-ID: <CALAeOVNc4GZ3LZTqM4eBZgVfz06B6ckp2fi9uU=ivd-h0dygPw@mail.gmail.com>
-References: <CALAeOVO94y6R6bZOWK=2TfEckyVUxRXBMcOtXWvuoO5oG_4V4g@mail.gmail.com>
- <bdbdcb8f-8deb-20a7-51ec-f123328880ac@ladisch.de>
- <CALAeOVOZZgh5SThku3SF_7CPrrm_SbLEbR83mkSMefCy5GdrKA@mail.gmail.com>
- <9db62b13-f027-0986-5458-8ff9495a0cd0@ladisch.de>
- <CALAeOVPavUscy-wRmY=QTqfCOM8AD5ZqLh+D23bsTa9js9UnaA@mail.gmail.com>
- <ee683e13-52e0-5b21-c468-563b36cb4641@ladisch.de>
+From: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCH v4 1/4] mfd: Add DT bindings documentation for Samsung
+ Exynos LPASS
+Date: Fri, 05 Aug 2016 17:44:33 +0200
+Message-ID: <ac95ed3f-a4c5-e1a9-8470-8d00b14b1f95@samsung.com>
+References: <1467738785-31410-1-git-send-email-s.nawrocki@samsung.com>
+ <20160805133628.GG5243@dell>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f43.google.com (mail-vk0-f43.google.com
- [209.85.213.43])
- by alsa0.perex.cz (Postfix) with ESMTP id A1EE426688E
- for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2016 17:42:54 +0200 (CEST)
-Received: by mail-vk0-f43.google.com with SMTP id n129so193897215vke.3
- for <alsa-devel@alsa-project.org>; Fri, 05 Aug 2016 08:42:54 -0700 (PDT)
-In-Reply-To: <ee683e13-52e0-5b21-c468-563b36cb4641@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-reply-to: <20160805133628.GG5243@dell>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-It was just easier to code it to do an exact /2 rather than a programmable
-periodic value, which is what i'm going to implement next.
+On 08/05/2016 03:36 PM, Lee Jones wrote:
+> On Tue, 05 Jul 2016, Sylwester Nawrocki wrote:
+> 
+>> This patch adds documentation of the DT bindings for the Samsung
+>> Exynos SoC Low Power Audio Subsystem.
+>>
+>> Signed-off-by: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 
-I notice that after 1 full buffer, the IRQ handle time (from entry to
-handled) for snd_pcm_period_elapsed is almost 1/2 of a second. Is that
-expected for large (64K) buffers, especially with only 2 periods?
+>> new file mode 100644
+>> index 0000000..7e97c0d
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mfd/samsung,exynos5433-lpass.txt
+>> @@ -0,0 +1,21 @@
+>> +
+> 
+> Nit: This line is superfluous.
+>
+>> +Samsung Exynos SoC Low Power Audio Subsystem (LPASS)
+>> +
+>> +Required properties:
+>> +
+>> + - compatible : "samsung,exynos5433-lpass"
+>> + - reg : should contain the LPASS top SFR region location and size
+>> + - samsung,pmu-syscon : the phandle to the Power Management Unit node
+>> + - #address-cells: should be 1
+>> + - #size-cells: should be 1
+>> + - ranges: must be present
+> 
+> These look so much better like:
+> 
+> - compatible  	  : "samsung,exynos5433-lpass"
+> - reg		   	  : should contain the LPASS top SFR region location and size
+> - samsung,pmu-syscon 	  : the phandle to the Power Management Unit node
+> - #address-cells	  : should be 1
+> - #size-cells		  : should be 1
+> - ranges		  : must be present
 
-Does the buffer copy at the period intervals for period sizes? or at the
-buffer_bytes size? If the copy is on the period size, then I really should
-implement the programmable periods in the DMA.
+OK, will rewrite it this way.
 
-On Fri, Aug 5, 2016 at 1:18 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+>> +Each IP block of the Low Power Audio Subsystem should be specified
+>> +as an optional sub-node. For "samsung,exynos5433-lpass" compatible
+>> +this includes: UART, SLIMBUS, PCM, I2S, DMAC, Timers 0...4, WDT 0...1
+>> +devices.
+>> +
+>> +Bindings of the sub-nodes are described in:
+>> + Documentation/devicetree/bindings/serial/samsung_uart.txt
+>> + Documentation/devicetree/bindings/sound/samsung-i2s.txt
+>> + Documentation/devicetree/bindings/dma/arm-pl330.txt
+> 
+> Use relative path names:
+> 
+> ../serial/samsung_uart.txt
+> ../sound/samsung-i2s.txt
+> ../dma/arm-pl330.txt
 
-> Rob Nertney wrote:
-> > I've rewritten the DMA to fire an IRQ only at the write-completion of
-> > (buffer_bytes/2) and (buffer_bytes)
->
-> Is the DMA actually restricted to two interrupts per buffer?  If not,
-> your driver should support arbitrary period sizes.
->
->
-> Regards,
-> Clemens
->
+OK, actually I had it this way in one of the versions but somehow
+with full paths it appeared better to me.
+
+> Missing example?
+
+Yes, omitted deliberately as that appeared quite many more lines
+with fully specified subnodes.  Perhaps I will add it with omitted
+all properties of the subnodes but compatible.
+
+
+ audio-subsystem {
+	compatible = "samsung,exynos5433-lpass";
+	reg = <0x11400000 0x100>, <0x11500000 0x08>;
+	samsung,pmu-syscon = <&pmu_system_controller>;
+	#address-cells = <1>;
+	#size-cells = <1>;
+	ranges;
+
+	adma: adma@11420000 {
+		compatible = "arm,pl330", "arm,primecell";
+		reg = <0x11420000 0x1000>;
+		interrupts = <0 73 0>;
+		clocks = <&cmu_aud CLK_ACLK_DMAC>;
+		clock-names = "apb_pclk";
+		#dma-cells = <1>;
+		#dma-channels = <8>;
+		#dma-requests = <32>;
+        };
+
+	i2s0: i2s0@11440000 {
+		compatible = "samsung,exynos7-i2s";
+		reg = <0x11440000 0x100>;
+		dmas = <&adma 0 &adma 2>;
+		dma-names = "tx", "rx";
+		interrupts = <0 70 0>;
+		clocks = <&cmu_aud CLK_PCLK_AUD_I2S>,
+			 <&cmu_aud CLK_SCLK_AUD_I2S>,
+			 <&cmu_aud CLK_SCLK_I2S_BCLK>;
+		clock-names = "iis", "i2s_opclk0", "i2s_opclk1";
+		pinctrl-names = "default";
+		pinctrl-0 = <&i2s0_bus>;
+		status = "disabled";
+	};
+
+	serial_3: serial@11460000 {
+		compatible = "samsung,exynos5433-uart";
+		reg = <0x11460000 0x100>;
+		interrupts = <0 67 0>;
+		clocks = <&cmu_aud CLK_PCLK_AUD_UART>,
+			 <&cmu_aud CLK_SCLK_AUD_UART>;
+		clock-names = "uart", "clk_uart_baud0";
+		pinctrl-names = "default";
+		pinctrl-0 = <&uart_aud_bus>;
+		status = "disabled";
+	};
+ };
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
