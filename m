@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dwc: Drop DMA channel names assignment" to the asoc tree
-Date: Fri, 05 Aug 2016 13:09:04 +0100
-Message-ID: <E1bVdw0-0002dt-JY@debutante>
-References: <1470306152-15441-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1470306152-15441-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, Jose.Abreu@synopsys.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, Andrew.Jackson@arm.com, rajeevk-dlh.kumar@st.com
+Subject: Applied "ASoC: rsrc-card: use asoc_simple_card_parse_clk()" to the asoc tree
+Date: Fri, 05 Aug 2016 13:08:58 +0100
+Message-ID: <E1bVdvu-0002c3-Lq@debutante>
+References: <87k2gimjki.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87k2gimjki.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dwc: Drop DMA channel names assignment
+   ASoC: rsrc-card: use asoc_simple_card_parse_clk()
 
 has been applied to the asoc tree at
 
@@ -37,54 +37,121 @@ to this mail.
 Thanks,
 Mark
 
->From 8bb9d4991657fc79874076b89f96601e6b32319a Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Thu, 4 Aug 2016 12:22:32 +0200
-Subject: [PATCH] ASoC: dwc: Drop DMA channel names assignment
+>From c9a235da8a61cf9af7653fca341ded0881a64eca Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 19 Jul 2016 02:53:32 +0000
+Subject: [PATCH] ASoC: rsrc-card: use asoc_simple_card_parse_clk()
 
-The dw_configure_dai_by_dt() function and further dev->{play,capture}
-_dma_data.dt data structures seem to be used in this driver only in case
-of a system using devicetree, thus chan_name assignments have no effect
-since they will be ignored in dmaengine_pcm_request_chan_of() call and
-will be substituted with values taken form dmaengine_pcm_dma_channel_names[]
-table ("tx", "rx").
-
-Also there is no any "TX", "RX" dma-names entries in arch/arm/boot/dts,
-only lower case "tx", "rx" seem to be used.
-
-Lastly, this driver doesn't set SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME
-flag when registering a dmaengine PCM to indicate the chan_name should be
-used.
-
-My intention is to eventually remove the struct snd_dmaengine_dai_dma_data
-chan_name field as there is also a chan_names[] field in struct
-snd_dmaengine_pcm_config which can be used for same purpose.
-
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/dwc/designware_i2s.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/sh/rcar/rsrc-card.c | 68 +++++++------------------------------------
+ 1 file changed, 10 insertions(+), 58 deletions(-)
 
-diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index dc97f4349e66..2998954a1c74 100644
---- a/sound/soc/dwc/designware_i2s.c
-+++ b/sound/soc/dwc/designware_i2s.c
-@@ -577,7 +577,6 @@ static int dw_configure_dai_by_dt(struct dw_i2s_dev *dev,
- 		dev->capability |= DWC_I2S_PLAY;
- 		dev->play_dma_data.dt.addr = res->start + I2S_TXDMA;
- 		dev->play_dma_data.dt.addr_width = bus_widths[idx];
--		dev->play_dma_data.dt.chan_name = "TX";
- 		dev->play_dma_data.dt.fifo_size = fifo_depth *
- 			(fifo_width[idx2]) >> 8;
- 		dev->play_dma_data.dt.maxburst = 16;
-@@ -588,7 +587,6 @@ static int dw_configure_dai_by_dt(struct dw_i2s_dev *dev,
- 		dev->capability |= DWC_I2S_RECORD;
- 		dev->capture_dma_data.dt.addr = res->start + I2S_RXDMA;
- 		dev->capture_dma_data.dt.addr_width = bus_widths[idx];
--		dev->capture_dma_data.dt.chan_name = "RX";
- 		dev->capture_dma_data.dt.fifo_size = fifo_depth *
- 			(fifo_width[idx2] >> 8);
- 		dev->capture_dma_data.dt.maxburst = 16;
+diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
+index fa37f842b62f..ed5391f41280 100644
+--- a/sound/soc/sh/rcar/rsrc-card.c
++++ b/sound/soc/sh/rcar/rsrc-card.c
+@@ -190,6 +190,10 @@ static int rsrc_card_parse_links(struct device_node *np,
+ 		if (ret < 0)
+ 			return ret;
+ 
++		ret = asoc_simple_card_parse_clk_cpu(np, dai_link, dai_props);
++		if (ret < 0)
++			return ret;
++
+ 		ret = asoc_simple_card_set_dailink_name(dev, dai_link,
+ 							"fe.%s",
+ 							dai_link->cpu_dai_name);
+@@ -225,6 +229,10 @@ static int rsrc_card_parse_links(struct device_node *np,
+ 		if (ret < 0)
+ 			return ret;
+ 
++		ret = asoc_simple_card_parse_clk_codec(np, dai_link, dai_props);
++		if (ret < 0)
++			return ret;
++
+ 		ret = asoc_simple_card_set_dailink_name(dev, dai_link,
+ 							"be.%s",
+ 							dai_link->codec_dai_name);
+@@ -250,68 +258,12 @@ static int rsrc_card_parse_links(struct device_node *np,
+ 	dai_link->ops			= &rsrc_card_ops;
+ 	dai_link->init			= rsrc_card_dai_init;
+ 
+-	return 0;
+-}
+-
+-static int rsrc_card_parse_clk(struct device_node *np,
+-			       struct rsrc_card_priv *priv,
+-			       int idx, bool is_fe)
+-{
+-	struct snd_soc_dai_link *dai_link = rsrc_priv_to_link(priv, idx);
+-	struct asoc_simple_dai *dai_props = rsrc_priv_to_props(priv, idx);
+-	struct clk *clk;
+-	struct device_node *of_np = is_fe ?	dai_link->cpu_of_node :
+-						dai_link->codec_of_node;
+-	u32 val;
+-
+-	/*
+-	 * Parse dai->sysclk come from "clocks = <&xxx>"
+-	 * (if system has common clock)
+-	 *  or "system-clock-frequency = <xxx>"
+-	 *  or device's module clock.
+-	 */
+-	if (of_property_read_bool(np, "clocks")) {
+-		clk = of_clk_get(np, 0);
+-		if (IS_ERR(clk))
+-			return PTR_ERR(clk);
+-
+-		dai_props->sysclk = clk_get_rate(clk);
+-		dai_props->clk = clk;
+-	} else if (!of_property_read_u32(np, "system-clock-frequency", &val)) {
+-		dai_props->sysclk = val;
+-	} else {
+-		clk = of_clk_get(of_np, 0);
+-		if (!IS_ERR(clk))
+-			dai_props->sysclk = clk_get_rate(clk);
+-	}
+-
+-	return 0;
+-}
+-
+-static int rsrc_card_dai_sub_link_of(struct device_node *node,
+-				     struct device_node *np,
+-				     struct rsrc_card_priv *priv,
+-				     int idx, bool is_fe)
+-{
+-	struct device *dev = rsrc_priv_to_dev(priv);
+-	struct snd_soc_dai_link *dai_link = rsrc_priv_to_link(priv, idx);
+-	struct asoc_simple_dai *dai_props = rsrc_priv_to_props(priv, idx);
+-	int ret;
+-
+-	ret = rsrc_card_parse_links(np, priv, idx, is_fe);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = rsrc_card_parse_clk(np, priv, idx, is_fe);
+-	if (ret < 0)
+-		return ret;
+-
+ 	dev_dbg(dev, "\t%s / %04x / %d\n",
+ 		dai_link->name,
+ 		dai_link->dai_fmt,
+ 		dai_props->sysclk);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int rsrc_card_dai_link_of(struct device_node *node,
+@@ -348,7 +300,7 @@ static int rsrc_card_dai_link_of(struct device_node *node,
+ 		if (strcmp(np->name, "cpu") == 0)
+ 			is_fe = true;
+ 
+-		ret = rsrc_card_dai_sub_link_of(node, np, priv, i, is_fe);
++		ret = rsrc_card_parse_links(np, priv, i, is_fe);
+ 		if (ret < 0)
+ 			return ret;
+ 		i++;
 -- 
 2.8.1
