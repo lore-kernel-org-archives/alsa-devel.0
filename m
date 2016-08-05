@@ -1,70 +1,49 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 0/5] ALSA - hda: Add support for link
- audio	time reporting
-Date: Fri, 5 Aug 2016 13:16:55 +0100
-Message-ID: <20160805121655.GX10383@sirena.org.uk>
-References: <1470305764-20802-1-git-send-email-vinod.koul@intel.com>
- <s5hlh0b5s8r.wl-tiwai@suse.de>
+Subject: Re: [PATCH 4/7] ASoC: simple-card-utils: add
+ asoc_simple_card_parse_dai()
+Date: Fri, 5 Aug 2016 13:27:25 +0100
+Message-ID: <20160805122725.GY10383@sirena.org.uk>
+References: <87oa5umjoe.wl%kuninori.morimoto.gx@renesas.com>
+ <87h9bmmjj2.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8308661788835283387=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8AE68266A9B
- for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2016 14:17:04 +0200 (CEST)
-In-Reply-To: <s5hlh0b5s8r.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, patches.audio@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gX5Hm7FaHdN5aeGl"
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87h9bmmjj2.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8308661788835283387==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="m9FEOsnejx470nED"
-Content-Disposition: inline
-
-
---m9FEOsnejx470nED
+--gX5Hm7FaHdN5aeGl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 05, 2016 at 02:12:52PM +0200, Takashi Iwai wrote:
+On Tue, Jul 19, 2016 at 02:54:25AM +0000, Kuninori Morimoto wrote:
+>=20
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> simple-card needs to get its dai name and endpoint node.
+> This patch makes it simple style standard
 
-> Mark, please merge back to your intel topic branch later if needed.
+This doesn't apply against current code, please check and resend.
 
-Can you let me know when there's a tag for it please?
-
---m9FEOsnejx470nED
+--gX5Hm7FaHdN5aeGl
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXpIO2AAoJECTWi3JdVIfQE2MH/3EQvUJYDgXz0QbfGDSxGQNa
-mkzmQx/plX7u9cjC0GsEzckuk39IwyvnJizxrR7hQKrj97RAr1Lb8y5d7tpESd7K
-c6Mk+ylNcTw1j+dKQIk608XZS51hSYIc85aN57CdaFvGjfmUoIHIJCNLQepzJ8um
-dgbRMWyjhJ4T2ythZg/WwnGAHzYLcGm0UXD5eXKAsl4W8F/6F4dWDe+lXsWAXGT5
-pf0T6LgpFyW6mRFDaLvrNDh7Q6hHl4wdC6tRhgGgHdIW261zMasxTvhbBNacod9W
-VE5zoBXn0i+wmwEfacb3Kjxj7+AM5syhaUEQ0iBSjVOU2KMjqGnB7s8lyQkO6YE=
-=jsjL
+iQEcBAEBCAAGBQJXpIYsAAoJECTWi3JdVIfQNrIH/iyurrb7VoFao9KxcBiEtkv1
+NqGrY+7+DlPFCLfF3EIRTdFUDccOVnb1GM3TZrj5kE+ymDG2spy7uVuq8pqki5XO
+O6BPLFFBgDSVztabae+etBzR8tFW2qSkck8Pkd1DsR2/qx+wge0XvXRBttVThm3D
+E4ZYiUOK39FfcoX2uIJ7zdwqKmMWX7E7TY3fuZbScP2V7JVklhQdGmTK0l0jWTKC
+DVC3Bv/FUcyt55ir+ugrN1MA9ah7/nYIrxNGJX4rpaG9olqtAiR4aQdW0LrH/lkv
+kYLcrv/4uM2m7ZYxa9cQcTjQtIkfoMzB/vVsbrnDsCcMbNxXLXGzEnPVpB0Qe0k=
+=4YeN
 -----END PGP SIGNATURE-----
 
---m9FEOsnejx470nED--
-
---===============8308661788835283387==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8308661788835283387==--
+--gX5Hm7FaHdN5aeGl--
