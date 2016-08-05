@@ -1,181 +1,134 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8825: fix bug in playback when
-	suspend" to the asoc tree
-Date: Thu, 04 Aug 2016 22:09:12 +0100
-Message-ID: <E1bVPtA-0007Ib-1Q@debutante>
-References: <1470300727-19998-1-git-send-email-KCHSU0@nuvoton.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH] drm/i915/dp: DP audio API changes for MST
+Date: Fri, 5 Aug 2016 02:31:36 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D19119F9330@SHSMSX103.ccr.corp.intel.com>
+References: <1470190470-32326-1-git-send-email-dhinakaran.pandiyan@intel.com>
+ <1470190470-32326-2-git-send-email-dhinakaran.pandiyan@intel.com>
+ <20160803190812.GO4329@intel.com> <20160804171852.GA15944@shiv>
+ <20160804173516.GK4329@intel.com> <s5h8twcs9ky.wl-tiwai@suse.de>
+ <20160804204828.GL4329@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F970267981
- for <alsa-devel@alsa-project.org>; Thu,  4 Aug 2016 23:09:18 +0200 (CEST)
-In-Reply-To: <1470300727-19998-1-git-send-email-KCHSU0@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com, yong.zhi@intel.com, mhkuo@nuvoton.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20160804204828.GL4329@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: =?utf-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Pandiyan,
+ Dhinakaran" <dhinakaran.pandiyan@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: nau8825: fix bug in playback when suspend
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From ca6ac305f017472a172e53345264abdb495eba46 Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Thu, 4 Aug 2016 16:52:06 +0800
-Subject: [PATCH] ASoC: nau8825: fix bug in playback when suspend
-
-In chromium, the following steps will make codec function fail.
-\1. plug in headphones, Play music
-\2. run "powerd_dbus_suspend"
-\3. resume from S3
-After resume, the jack detection will restart and make configuration
-for the headset. Meanwhile, the playback prepares and starts to work.
-The two sequences will conflict and make wrong register configuration.
-
-Originally, the driver adds protection for the case when it finds
-the playback is active. But the "powerd_dbus_suspend" command will
-close the pcm stream before suspend. Therefore, the driver can't
-detect the playback after resume, and the protection not works.
-For the issue, the driver raises protection every time after resume.
-The protection will release after jack detection and configuration
-completes, and then the playback just will goes on.
-
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/nau8825.c | 51 +++++++++++-----------------------------------
- 1 file changed, 12 insertions(+), 39 deletions(-)
-
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 5c9707ac4bbf..20d2f1578b87 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -212,31 +212,6 @@ static const unsigned short logtable[256] = {
- 	0xfa2f, 0xfaea, 0xfba5, 0xfc60, 0xfd1a, 0xfdd4, 0xfe8e, 0xff47
- };
- 
--static struct snd_soc_dai *nau8825_get_codec_dai(struct nau8825 *nau8825)
--{
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(nau8825->dapm);
--	struct snd_soc_component *component = &codec->component;
--	struct snd_soc_dai *codec_dai, *_dai;
--
--	list_for_each_entry_safe(codec_dai, _dai, &component->dai_list, list) {
--		if (!strncmp(codec_dai->name, NUVOTON_CODEC_DAI,
--			strlen(NUVOTON_CODEC_DAI)))
--			return codec_dai;
--	}
--	return NULL;
--}
--
--static bool nau8825_dai_is_active(struct nau8825 *nau8825)
--{
--	struct snd_soc_dai *codec_dai = nau8825_get_codec_dai(nau8825);
--
--	if (codec_dai) {
--		if (codec_dai->playback_active || codec_dai->capture_active)
--			return true;
--	}
--	return false;
--}
--
- /**
-  * nau8825_sema_acquire - acquire the semaphore of nau88l25
-  * @nau8825:  component to register the codec private data with
-@@ -1205,6 +1180,8 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
- 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int val_len = 0;
- 
-+	nau8825_sema_acquire(nau8825, 2 * HZ);
-+
- 	switch (params_width(params)) {
- 	case 16:
- 		val_len |= NAU8825_I2S_DL_16;
-@@ -1225,6 +1202,9 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
- 	regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL1,
- 		NAU8825_I2S_DL_MASK, val_len);
- 
-+	/* Release the semaphone. */
-+	nau8825_sema_release(nau8825);
-+
- 	return 0;
- }
- 
-@@ -1234,6 +1214,8 @@ static int nau8825_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int ctrl1_val = 0, ctrl2_val = 0;
- 
-+	nau8825_sema_acquire(nau8825, 2 * HZ);
-+
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM:
- 		ctrl2_val |= NAU8825_I2S_MS_MASTER;
-@@ -1282,6 +1264,9 @@ static int nau8825_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2,
- 		NAU8825_I2S_MS_MASK, ctrl2_val);
- 
-+	/* Release the semaphone. */
-+	nau8825_sema_release(nau8825);
-+
- 	return 0;
- }
- 
-@@ -2241,20 +2226,8 @@ static int __maybe_unused nau8825_resume(struct snd_soc_codec *codec)
- 
- 	regcache_cache_only(nau8825->regmap, false);
- 	regcache_sync(nau8825->regmap);
--	if (nau8825_is_jack_inserted(nau8825->regmap)) {
--		/* If the jack is inserted, we need to check whether the play-
--		 * back is active before suspend. If active, the driver has to
--		 * raise the protection for cross talk function to avoid the
--		 * playback recovers before cross talk process finish. Other-
--		 * wise, the playback will be interfered by cross talk func-
--		 * tion. It is better to apply hardware related parameters
--		 * before starting playback or record.
--		 */
--		if (nau8825_dai_is_active(nau8825)) {
--			nau8825->xtalk_protect = true;
--			nau8825_sema_acquire(nau8825, 0);
--		}
--	}
-+	nau8825->xtalk_protect = true;
-+	nau8825_sema_acquire(nau8825, 0);
- 	enable_irq(nau8825->irq);
- 
- 	return 0;
--- 
-2.8.1
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEludGVsLWdmeCBbbWFpbHRv
+OmludGVsLWdmeC1ib3VuY2VzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZ10gT24gQmVoYWxmIE9mDQo+
+IFZpbGxlIFN5cmrDpGzDpA0KPiBTZW50OiBGcmlkYXksIEF1Z3VzdCA1LCAyMDE2IDQ6NDggQU0N
+Cj4gVG86IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4NCj4gQ2M6IGxpYmluLnlhbmdAbGlu
+dXguaW50ZWwuY29tOyBpbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBhbHNhLQ0KPiBk
+ZXZlbEBhbHNhLXByb2plY3Qub3JnOyBQYW5kaXlhbiwgRGhpbmFrYXJhbg0KPiA8ZGhpbmFrYXJh
+bi5wYW5kaXlhbkBpbnRlbC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbSW50ZWwtZ2Z4XSBbUEFUQ0hd
+IGRybS9pOTE1L2RwOiBEUCBhdWRpbyBBUEkgY2hhbmdlcyBmb3IgTVNUDQo+IA0KPiBPbiBUaHUs
+IEF1ZyAwNCwgMjAxNiBhdCAwNzo1NTowOVBNICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6DQo+
+ID4gT24gVGh1LCAwNCBBdWcgMjAxNiAxOTozNToxNiArMDIwMCwNCj4gPiBWaWxsZSBTeXJqw6Rs
+w6Qgd3JvdGU6DQo+ID4gPg0KPiA+ID4gT24gVGh1LCBBdWcgMDQsIDIwMTYgYXQgMTA6MTg6NTJB
+TSAtMDcwMCwgSmltIEJyaWRlIHdyb3RlOg0KPiA+ID4gPiBPbiBXZWQsIEF1ZyAwMywgMjAxNiBh
+dCAxMDowODoxMlBNICswMzAwLCBWaWxsZSBTeXJqw6Rsw6Qgd3JvdGU6DQo+ID4gPiA+ID4gT24g
+VHVlLCBBdWcgMDIsIDIwMTYgYXQgMDc6MTQ6MzBQTSAtMDcwMCwgRGhpbmFrYXJhbiBQYW5kaXlh
+biB3cm90ZToNCj4gPiA+ID4gPiA+IERQIE1TVCBwcm92aWRlcyB0aGUgY2FwYWJpbGl0eSB0byBz
+ZW5kIG11bHRpcGxlIHZpZGVvIGFuZA0KPiA+ID4gPiA+ID4gYXVkaW8gc3RyZWFtcyB2aWEgb25l
+IHNpbmdsZSBwb3J0LiBUaGlzIHJlcXVpcmVzIHRoZSBBUEkncw0KPiA+ID4gPiA+ID4gYmV0d2Vl
+biBpOTE1IGFuZCBhdWRpbyBkcml2ZXJzIHRvIGRpc3Rpbmd1aXNoIGJldHdlZW4gYXVkaW8NCj4g
+PiA+ID4gPiA+IGNhcGFibGUgZGlzcGxheXMgY29ubmVjdGVkIHRvIGEgcG9ydC4gVGhpcyBwYXRj
+aCBhZGRzIHRoaXMNCj4gPiA+ID4gPiA+IHN1cHBvcnQgdmlhIGFuIGFkZGl0aW9uYWwgcGFyYW1l
+dGVyICdpbnQgZGV2X2lkJy4gVGhlIGV4aXN0aW5nDQo+IHBhcmFtZXRlciAncG9ydCcgZG9lcyBu
+b3QgY2hhbmdlIGl0J3MgbWVhbmluZy4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBkZXZfaWQg
+PQ0KPiA+ID4gPiA+ID4gCU1TVAk6IHBpcGUgdGhhdCB0aGUgc3RyZWFtIG9yaWdpbmF0ZXMgZnJv
+bQ0KPiA+ID4gPiA+ID4gCU5vbi1NU1QJOiAtMQ0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IEFm
+ZmVjdGVkIEFQSXM6DQo+ID4gPiA+ID4gPiBzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnRfb3Bz
+DQo+ID4gPiA+ID4gPiAtICAgICAgIGludCAoKnN5bmNfYXVkaW9fcmF0ZSkoc3RydWN0IGRldmlj
+ZSAqLCBpbnQgcG9ydCwgaW50IHJhdGUpOw0KPiA+ID4gPiA+ID4gKwlpbnQgKCpzeW5jX2F1ZGlv
+X3JhdGUpKHN0cnVjdCBkZXZpY2UgKiwgaW50IHBvcnQsIGludA0KPiA+ID4gPiA+ID4gK2Rldl9p
+ZCwNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IERvZXMgdGhlIHRlcm0gJ2Rldl9pZCcgaGF2ZSBzb21l
+IHNwZWNpYWwgbWVhbmluZyBvbiB0aGUgYXVkaW8NCj4gPiA+ID4gPiBzaWRlPyBPbiB0aGUgaTkx
+NSBzaWRlIHRoaW5ncyB3b3VsZCBiZSBsZXNzIGNvbmZ1c2luZyBpZiB3ZSBqdXN0DQo+ID4gPiA+
+ID4gY2FsbGVkIGl0ICdwaXBlJy4NCj4gPiA+ID4NCj4gPiA+ID4gWWVhaCwgaXQgZG9lcy4gIEFs
+bCBvZiB0aGUgZG9jdW1lbnRhdGlvbiBvbiB0aGUgYXVkaW8gc2lkZSBpcw0KPiA+ID4gPiB3cml0
+dGVuIGluIHRlcm1zIG9mIGRldmljZSBJRCwgc28gdGhleSBhc2tlZCBmb3IgdGhhdCBub21lbmNs
+YXR1cmUuDQo+ID4gPg0KPiA+ID4gQW5kIGlzIHRoZSBkZXZpY2UgSUQgYWx3YXlzIHRoZSBzYW1l
+IGFzIHRoZSBwaXBlPyBVbnRpbCBub3cgd2UndmUNCj4gPiA+IG1hZGUgZHVlIHdpdGggcGFzc2lu
+ZyB0aGUgcG9ydCBpbnN0ZWFkIG9mIHRoZSBwaXBlLCBzbyBlaXRoZXIgdGhlDQo+ID4gPiBhdWRp
+byBzaWRlIGRpZG4ndCB1c2UgdGhlIGRldmljZSBJRCwgb3IgaXRzIG1lYW5pbmcgY2hhbmdlcyBi
+YXNlZCBvbg0KPiA+ID4gaG93IHdlIGRyaXZlIHRoaW5ncywgb3IgdGhleSBkdWcgaXQgb3V0IGZy
+b20gc29tZXdoZXJlIGVsc2UgYmFzZWQgb24gdGhlDQo+IHBvcnQ/DQo+ID4NCj4gPiBUaGlzIGlz
+IG15IGNvbmNlcm4sIHRvby4gIEN1cnJlbnRseSB3ZSBoYXZlIGEgdmVyeSB3aWxkIGFzc3VtcHRp
+b24NCj4gPiBldmVuIGZvciB0aGUgcG9ydCBtYXBwaW5nLiAgSW4gdGhlIGF1ZGlvIHNpZGUsIHRo
+ZXJlIGlzIG5laXRoZXIgcG9ydA0KPiA+IG5vciBwaXBlLiAgVGhlcmUgYXJlIG9ubHkgdGhlIHdp
+ZGdldCBub2RlIGlkIGFuZCB0aGUgZGV2aWNlIGlkLiAgVGhlDQo+ID4gZm9ybWVyIGlzIHN1cHBv
+c2VkbHkgY29ycmVzcG9uZGluZyB0byB0aGUgcG9ydCwgYW5kIHRoZSBsYXR0ZXIgdG8gdGhlDQo+
+ID4gcGlwZS4gIEJ1dCB0aGUgYXVkaW8gc2lkZSBoYXMgYWJzb2x1dGVseSBubyBjbHVlIGFib3V0
+IGhvdyB0aGVzZSBhcmUNCj4gPiBjb25uZWN0ZWQuDQo+IA0KPiBTbyBJIHRyaWVkIHRvIHN0dWR5
+IHRoaXMgYSBiaXQsIGFuZCBNU1QgYW5kIGRldmljZTxuPiBhcmUgbWVudGlvbmVkIGEgZmV3DQo+
+IHRpbWVzIGluIHRoZSBkZXNjcmlwdGlvbiBvZiBzb21lIGF1ZGlvIHJlZ2lzdGVycyBpbiB0aGUg
+R1BVIGRvY3MuIExvb2tzIGxpa2UgYQ0KPiBidW5jaCBvZiBiaXRzIG92ZXJsYXAgc29tZWhvdyB3
+aXRoIHBpbiB2cy4gZGV2aWNlIHVzYWdlLiBJIGRvbid0IHVuZGVyc3RhbmQNCj4gaG93IHRoYXQn
+cyBzdXBwb3NlZCB0byB3b3JrLiBFZzoNCg0KRm9yIFNTVCAmIEhETUksIHBvcnQgaXMgbWFwcGlu
+ZyB0byBwaW4uDQoNCkZvciBNU1QsIGluIGF1ZGlvLCBlYWNoIHBpbiBoYXMgc2V2ZXJhbCBkZXZp
+Y2UgZW50cmllcy4gRWFjaCBkZXZpY2UgZW50cnkNCmNhbiB0cmFuc2ZlciBhdWRpbyBzdHJlYW0u
+IEFuZCB3ZSBjb25maXJtZWQgd2l0aCBzaWxpY29uIHRlYW0sDQpkZXZpY2UgZW50cnkgaXMgcmVs
+YXRlZCB0byBwaXBlLg0KDQpEZXZpY2UgZW50cnkgaXMgYWx3YXlzIHRoZSByaWdodCBjb25jZXB0
+IGluIGF1ZGlvIGRyaXZlci4gV2UgYXJlIG5vdCBzdXJlDQp0aGUgcmVsYXRpb25zaGlwIHdpbGwg
+YmUgYWx3YXlzIHJpZ2h0IGJldHdlZW4gcGlwZSBhbmQgZGV2aWNlIGVudHJ5Lg0KDQpXZSBhcmUg
+d29ycnkgdGhhdCB0aGUgcmVsYXRpb25zaGlwIG1heSBiZSBjaGFuZ2VkIGluIHRoZSBmdXR1cmUg
+YmV0d2Vlbg0KcGlwZSBhbmQgZGV2aWNlIGVudHJ5LiBJIG1lYW4gbWF5YmUgdGhlIHBpcGUgaXMg
+bm90IHJlbGF0ZWQgdG8gZGV2aWNlDQplbnRyeSBpbiB0aGUgbmV3IHBsYXRmb3JtcywgYnV0IHNv
+bWUgb3RoZXIgY29uY2VwdGlvbiwgc3VjaCBhcyB0cmFuc2NvZGVyLg0KSWYgc28sIGlmIHdlIGFy
+ZSB1c2luZyBwaXBlIG5vdywgbWF5YmUgd2UgbmVlZCBjaGFuZ2UgdGhlIEFQSSBhZ2Fpbi4NCkZv
+ciB0aGUgc3RhYmlsaXR5LCB3ZSBhcmUgdGhpbmtpbmcgZGV2aWNlIGVudHJ5IGlzIHN1aXRhYmxl
+Lg0KDQpJIHRoaW5rIHlvdXIgY29uY2VybiBpcyByaWdodC4gSXQgaXMgbm90IGdvb2QgdG8gdXNl
+IGF1ZGlvIGNvbmNlcHRpb24gDQppbiBnZnggZHJpdmVyLCB3aGljaCB3aWxsIGNhdXNlIGNvbmZ1
+c2lvbi4gSWYgd2UgY2FuIGNvbmZpcm0gdGhhdA0KcGlwZSB3aWxsIGFsd2F5cyBiZSB0aGUgZml4
+ZWQgbWFwcGluZyB0byBkZXZpY2UgZW50cnksIGl0IHdpbGwgYmUNCmJldHRlciB0byB1c2UgcGlw
+ZS4NCg0KPiAgQVVEX1BXUlNUQVVEX1BXUlNUDQo+ICAxOjAgCSBQaW5CIFdpZGdldCBQd3JTdCBT
+ZXQNCj4gIFBpbkIgV2lkZ2V0IHBvd2VyIHN0YXRlIHRoYXQgd2FzIHNldEZvciBEUCBNU1QgdGhp
+cyByZXByZXNlbnRzIERldmljZTENCj4gcG93ZXIgc3RhdGUNCg0KRm9yIHRoaXMgcmVnaXN0ZXIs
+IGl0IG1lYW5zIGRpZmZlcmVudCBpbiBkaWZmZXJlbnQgc2NlbmFyaW86DQpJbiBEUCBTU1QgJiBI
+RE1JLCBpdCBpcyBmb3IgUGluQg0KSW4gRFAgTVNULCBpdCBpcyBmb3IgZGV2aWNlIGVudHJ5IDEg
+KG9uIHdoaWNoZXZlciBwaW4pLiANCg0KPiANCj4gSXQncyBhbnlvbmUncyBndWVlcyB3aGF0IHRo
+b3NlIGJpdHMgYXJlIHN1cHBvb3NlZCB0byByZWZsZWN0IHdoZW4geW91J3JlIGRvaW5nDQo+IE1T
+VCB3aXRoIGRldmljZTEvcGlwZSBBLCBhbmQgYXQgdGhlIHNhbWUgdGltZSB5b3UncmUgZHJpdmlu
+ZyBwb3J0IEIgaW4NCj4gSERNSS9TU1QgbW9kZS4NCg0KSSBkaWQgdGhlIHNpbWlsYXIgdGVzdCBi
+ZWZvcmUuIEkgcmVtZW1iZXIgKGJ1dCBJIGRpZG4ndCByZW1lbWJlciBjbGVhcmx5IG5vdykNCklm
+IG9uZSBwaW4gaXMgdXNlZCBhcyBEUCBNU1QsIGFsbCB0aGUgcGlucyBhcmUgdXNlZCBhcyBEUCBN
+U1QuIFRoaXMgbWVhbnMgaWYNClBpbkIgaXMgdXNlZCBhcyBEUCBNU1QsIDE6MCByZXByZXNlbnRz
+IERldmljZSAxIGFuZCA1OjQgcmVwcmVzZW50cyBEZXZpY2UgMi4NCkxldCdzIHNheSBQaW5DIGlz
+IGNvbm5lY3RlZCB0byBIRE1JIGF1ZGlvLCBpdCBpcyBub3cgbG9va2VkIGFzIERldmljZSAyIChv
+cg0Kb3RoZXIgZGV2aWNlIGlkKSBub3QgYXMgUGluQyBhdWRpby4NCg0KUmVnYXJkcywNCkxpYmlu
+DQoNCj4gDQo+IEFueXdheXMsIGl0IGRvZXNuJ3QgaGVscCB0aGF0IHRoaXMgd2hvbGUgZGV2aWNl
+IHdpZGdldCBhc3BlY3Qgb2YgaGRhIHNlZW1zIHRvDQo+IGJlIHVuZG9jdW1lbnRlZC4gTm8gc3Bl
+YyBJJ3ZlIGZvdW5kIHNlZW1zIHRvIGtub3cgYW55dGhpbmcgYWJvdXQgYW55DQo+IGRldmljZSB3
+aWRnZXRzLCBhbmQgeWV0IHRob3NlIGFyZSBob3cgTVNUIHJvbGxzIGFwcGFyZW50bHkuDQo+IA0K
+PiBJbiBjb25jbHVzaW9uLCBJJ2Qgc2F5IHRoYXQgY29uc2lzdGVuY3kncyBzYWtlIHdlIHNob3Vs
+ZCB1c2UgZWl0aGVyDQo+IGRlditwaW4gb3IgcGlwZStwb3J0IGluIHRoZSBpbnRlcmZhY2UsIG5v
+dCBtaXggYm90aC4gSW4gY2FzZSBvZiBwaW4gSQ0KPiBkZXYrZG9uJ3QgdGhpbmsgd2Ugc2hvdWxk
+IHVzZSB0aGUgTklEIChJJ20gYXNzdW1pbmcgZGV2aWNlDQo+IHdpZGdldHMgaGF2ZSBvbmUgdG9v
+KSwgYnV0IHJhdGhlciB0aGUgaW5kZXguIGk5MTUgY291bGQgdGhlbiBkbyB0aGUgbWFwcGluZw0K
+PiBzb21ldGhpZ24gbGlrZSBkZXY9cGlwZSBhbmQgcGluPXBvcnQtMSwgYW5kIHRoZW4gc25kLWhk
+YSBjYW4gZG8gdGhlIGlkeDwtDQo+ID5uaWQgY29udmVyc2lvbiBob3dldmVyIGl0IHNlZXMgZml0
+IChqdXN0IHVzZSBiYXNlX25pZCwgb3Igd2FsayBzb21lIHBlci10eXBlDQo+IHdpZGdldCBsaXN0
+cywgb3Igd2hhdGV2ZXIpLg0KPiANCj4gVGhhdCdzIGFzc3VtaW5nIHRoZSB3aWRnZXRzIHJlYWxs
+eSBhcmUgc29tZWhvdyBvcmRlcmVkIGNvbnNpc3RlbnRseSBzbyB3ZQ0KPiBjYW4gaW5kZXggdGhl
+bSBsaWtlIHRoYXQuIEkgYWxzbyBtaWdodCBoYXZlIHVuZGVyc3R0b2QgZXZlcnloaW5nIEkgcmVh
+ZCBhYm91DQo+IGhkYS4NCj4gDQo+IC0tDQo+IFZpbGxlIFN5cmrDpGzDpA0KPiBJbnRlbCBPVEMN
+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gSW50
+ZWwtZ2Z4IG1haWxpbmcgbGlzdA0KPiBJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnDQo+
+IGh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4
+DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1n
+ZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9s
+aXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
