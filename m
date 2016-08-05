@@ -1,114 +1,97 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 11/11] ASoC: use of_property_read_bool
-Date: Fri,  5 Aug 2016 10:56:51 +0200
-Message-ID: <1470387411-15879-12-git-send-email-Julia.Lawall@lip6.fr>
-References: <1470387411-15879-1-git-send-email-Julia.Lawall@lip6.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2-relais-roc.national.inria.fr
- (mail2-relais-roc.national.inria.fr [192.134.164.83])
- by alsa0.perex.cz (Postfix) with ESMTP id 3CC29265A7F
- for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2016 11:14:30 +0200 (CEST)
-In-Reply-To: <1470387411-15879-1-git-send-email-Julia.Lawall@lip6.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH RESEND 7/8] ASoC: samsung: s3c24xx_uda134x: debug/error trace
+ cleanup
+Date: Fri, 05 Aug 2016 11:47:09 +0200
+Message-ID: <1470390429-30902-1-git-send-email-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use of_property_read_bool to check for the existence of a property.
+Switch from pr_* to dev_* macros and drop some debug traces.
 
-The semantic patch that makes this change is as follows:
-(http://coccinelle.lip6.fr/)
-
-// <smpl>
-@@
-expression e1,e2;
-statement S2,S1;
-@@
--       if (of_get_property(e1,e2,NULL))
-+       if (of_property_read_bool(e1,e2))
-        S1 else S2
-// </smpl>
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 ---
- sound/soc/codecs/ab8500-codec.c |   10 +++++-----
- sound/soc/sh/rcar/ssi.c         |    2 +-
- sound/soc/soc-core.c            |    2 +-
- 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index 2fc8915..1d4059c 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -2408,28 +2408,28 @@ static void ab8500_codec_of_probe(struct device *dev, struct device_node *np,
+Rebased onto topic/samsung branch.
+
+ sound/soc/samsung/s3c24xx_uda134x.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/sound/soc/samsung/s3c24xx_uda134x.c b/sound/soc/samsung/s3c24xx_uda134x.c
+index 13e52fb..1619e76 100644
+--- a/sound/soc/samsung/s3c24xx_uda134x.c
++++ b/sound/soc/samsung/s3c24xx_uda134x.c
+@@ -62,18 +62,18 @@ static int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
+ #endif
+
+ 	mutex_lock(&clk_lock);
+-	pr_debug("%s %d\n", __func__, clk_users);
++
+ 	if (clk_users == 0) {
+ 		xtal = clk_get(rtd->dev, "xtal");
+ 		if (IS_ERR(xtal)) {
+-			printk(KERN_ERR "%s cannot get xtal\n", __func__);
++			dev_err(rtd->dev, "%s cannot get xtal\n", __func__);
+ 			ret = PTR_ERR(xtal);
+ 		} else {
+ 			pclk = clk_get(&s3c24xx_uda134x_snd_device->dev,
+ 				       "pclk");
+ 			if (IS_ERR(pclk)) {
+-				printk(KERN_ERR "%s cannot get pclk\n",
+-				       __func__);
++				dev_err(rtd->dev, "%s cannot get pclk\n",
++					__func__);
+ 				clk_put(xtal);
+ 				ret = PTR_ERR(pclk);
+ 			}
+@@ -99,8 +99,8 @@ static int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
+ 						 SNDRV_PCM_HW_PARAM_RATE,
+ 						 &hw_constraints_rates);
+ 		if (ret < 0)
+-			printk(KERN_ERR "%s cannot set constraints\n",
+-			       __func__);
++			dev_err(rtd->dev, "%s cannot set constraints\n",
++				__func__);
+ #endif
+ 	}
+ 	return ret;
+@@ -109,7 +109,6 @@ static int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
+ static void s3c24xx_uda134x_shutdown(struct snd_pcm_substream *substream)
  {
- 	u32 value;
- 
--	if (of_get_property(np, "stericsson,amic1-type-single-ended", NULL))
-+	if (of_property_read_bool(np, "stericsson,amic1-type-single-ended"))
- 		codec->amics.mic1_type = AMIC_TYPE_SINGLE_ENDED;
- 	else
- 		codec->amics.mic1_type = AMIC_TYPE_DIFFERENTIAL;
- 
--	if (of_get_property(np, "stericsson,amic2-type-single-ended", NULL))
-+	if (of_property_read_bool(np, "stericsson,amic2-type-single-ended"))
- 		codec->amics.mic2_type = AMIC_TYPE_SINGLE_ENDED;
- 	else
- 		codec->amics.mic2_type = AMIC_TYPE_DIFFERENTIAL;
- 
- 	/* Has a non-standard Vamic been requested? */
--	if (of_get_property(np, "stericsson,amic1a-bias-vamic2", NULL))
-+	if (of_property_read_bool(np, "stericsson,amic1a-bias-vamic2"))
- 		codec->amics.mic1a_micbias = AMIC_MICBIAS_VAMIC2;
- 	else
- 		codec->amics.mic1a_micbias = AMIC_MICBIAS_VAMIC1;
- 
--	if (of_get_property(np, "stericsson,amic1b-bias-vamic2", NULL))
-+	if (of_property_read_bool(np, "stericsson,amic1b-bias-vamic2"))
- 		codec->amics.mic1b_micbias = AMIC_MICBIAS_VAMIC2;
- 	else
- 		codec->amics.mic1b_micbias = AMIC_MICBIAS_VAMIC1;
- 
--	if (of_get_property(np, "stericsson,amic2-bias-vamic1", NULL))
-+	if (of_property_read_bool(np, "stericsson,amic2-bias-vamic1"))
- 		codec->amics.mic2_micbias = AMIC_MICBIAS_VAMIC1;
- 	else
- 		codec->amics.mic2_micbias = AMIC_MICBIAS_VAMIC2;
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 5f848f0..6cb6db0 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -928,7 +928,7 @@ int rsnd_ssi_probe(struct rsnd_priv *priv)
- 		}
- 
- 		ops = &rsnd_ssi_non_ops;
--		if (of_get_property(np, "pio-transfer", NULL))
-+		if (of_property_read_bool(np, "pio-transfer"))
- 			ops = &rsnd_ssi_pio_ops;
- 		else
- 			ops = &rsnd_ssi_dma_ops;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 16369ca..ead49d0 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3733,7 +3733,7 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
- 	 * SND_SOC_DAIFMT_CLOCK_MASK area
- 	 */
- 	snprintf(prop, sizeof(prop), "%scontinuous-clock", prefix);
--	if (of_get_property(np, prop, NULL))
-+	if (of_property_read_bool(np, prop))
- 		format |= SND_SOC_DAIFMT_CONT;
- 	else
- 		format |= SND_SOC_DAIFMT_GATED;
+ 	mutex_lock(&clk_lock);
+-	pr_debug("%s %d\n", __func__, clk_users);
+ 	clk_users -= 1;
+ 	if (clk_users == 0) {
+ 		clk_put(xtal);
+@@ -156,18 +155,19 @@ static int s3c24xx_uda134x_hw_params(struct snd_pcm_substream *substream,
+ 		clk_source = S3C24XX_CLKSRC_PCLK;
+ 		div = bi % 33;
+ 	}
+-	pr_debug("%s desired rate %lu, %d\n", __func__, rate, bi);
++
++	dev_dbg(rtd->dev, "%s desired rate %lu, %d\n", __func__, rate, bi);
+
+ 	clk = (fs_mode == S3C2410_IISMOD_384FS ? 384 : 256) * rate;
+-	pr_debug("%s will use: %s %s %d sysclk %d err %ld\n", __func__,
+-		 fs_mode == S3C2410_IISMOD_384FS ? "384FS" : "256FS",
+-		 clk_source == S3C24XX_CLKSRC_MPLL ? "MPLLin" : "PCLK",
+-		 div, clk, err);
++
++	dev_dbg(rtd->dev, "%s will use: %s %s %d sysclk %d err %ld\n", __func__,
++		fs_mode == S3C2410_IISMOD_384FS ? "384FS" : "256FS",
++		clk_source == S3C24XX_CLKSRC_MPLL ? "MPLLin" : "PCLK",
++		div, clk, err);
+
+ 	if ((err * 100 / rate) > 5) {
+-		printk(KERN_ERR "S3C24XX_UDA134X: effective frequency "
+-		       "too different from desired (%ld%%)\n",
+-		       err * 100 / rate);
++		dev_err(rtd->dev, "effective frequency too different "
++				  "from desired (%ld%%)\n", err * 100 / rate);
+ 		return -EINVAL;
+ 	}
+
+--
+1.9.1
