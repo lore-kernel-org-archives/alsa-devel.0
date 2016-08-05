@@ -1,132 +1,111 @@
-From: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v4 1/4] mfd: Add DT bindings documentation for Samsung
- Exynos LPASS
-Date: Fri, 05 Aug 2016 17:44:33 +0200
-Message-ID: <ac95ed3f-a4c5-e1a9-8470-8d00b14b1f95@samsung.com>
-References: <1467738785-31410-1-git-send-email-s.nawrocki@samsung.com>
- <20160805133628.GG5243@dell>
+From: Thomas =?ISO-8859-1?Q?Niederpr=FCm?= <niederp@physik.uni-kl.de>
+Subject: Re: ASoC: sun4i-i2s: Restricting the MCLK
+Date: Fri, 05 Aug 2016 18:35:15 +0200
+Message-ID: <1470414915.5372.36.camel@physik.uni-kl.de>
+References: <1470150313.4786.48.camel@physik.uni-kl.de>
+ <CAGb2v66Xjv4A8SWoxT5-=8OELxcCJp+_4PCQd5BM8Hk7YS+85w@mail.gmail.com>
+Reply-To: niederp@physik.uni-kl.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-reply-to: <20160805133628.GG5243@dell>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailgw1.uni-kl.de (mailgw1.uni-kl.de [131.246.120.220])
+ by alsa0.perex.cz (Postfix) with ESMTP id 779F1266901
+ for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2016 18:29:38 +0200 (CEST)
+In-Reply-To: <CAGb2v66Xjv4A8SWoxT5-=8OELxcCJp+_4PCQd5BM8Hk7YS+85w@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: linux-sunxi <linux-sunxi@googlegroups.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/05/2016 03:36 PM, Lee Jones wrote:
-> On Tue, 05 Jul 2016, Sylwester Nawrocki wrote:
-> 
->> This patch adds documentation of the DT bindings for the Samsung
->> Exynos SoC Low Power Audio Subsystem.
->>
->> Signed-off-by: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-
->> new file mode 100644
->> index 0000000..7e97c0d
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mfd/samsung,exynos5433-lpass.txt
->> @@ -0,0 +1,21 @@
->> +
-> 
-> Nit: This line is superfluous.
->
->> +Samsung Exynos SoC Low Power Audio Subsystem (LPASS)
->> +
->> +Required properties:
->> +
->> + - compatible : "samsung,exynos5433-lpass"
->> + - reg : should contain the LPASS top SFR region location and size
->> + - samsung,pmu-syscon : the phandle to the Power Management Unit node
->> + - #address-cells: should be 1
->> + - #size-cells: should be 1
->> + - ranges: must be present
-> 
-> These look so much better like:
-> 
-> - compatible  	  : "samsung,exynos5433-lpass"
-> - reg		   	  : should contain the LPASS top SFR region location and size
-> - samsung,pmu-syscon 	  : the phandle to the Power Management Unit node
-> - #address-cells	  : should be 1
-> - #size-cells		  : should be 1
-> - ranges		  : must be present
-
-OK, will rewrite it this way.
-
->> +Each IP block of the Low Power Audio Subsystem should be specified
->> +as an optional sub-node. For "samsung,exynos5433-lpass" compatible
->> +this includes: UART, SLIMBUS, PCM, I2S, DMAC, Timers 0...4, WDT 0...1
->> +devices.
->> +
->> +Bindings of the sub-nodes are described in:
->> + Documentation/devicetree/bindings/serial/samsung_uart.txt
->> + Documentation/devicetree/bindings/sound/samsung-i2s.txt
->> + Documentation/devicetree/bindings/dma/arm-pl330.txt
-> 
-> Use relative path names:
-> 
-> ../serial/samsung_uart.txt
-> ../sound/samsung-i2s.txt
-> ../dma/arm-pl330.txt
-
-OK, actually I had it this way in one of the versions but somehow
-with full paths it appeared better to me.
-
-> Missing example?
-
-Yes, omitted deliberately as that appeared quite many more lines
-with fully specified subnodes.  Perhaps I will add it with omitted
-all properties of the subnodes but compatible.
-
-
- audio-subsystem {
-	compatible = "samsung,exynos5433-lpass";
-	reg = <0x11400000 0x100>, <0x11500000 0x08>;
-	samsung,pmu-syscon = <&pmu_system_controller>;
-	#address-cells = <1>;
-	#size-cells = <1>;
-	ranges;
-
-	adma: adma@11420000 {
-		compatible = "arm,pl330", "arm,primecell";
-		reg = <0x11420000 0x1000>;
-		interrupts = <0 73 0>;
-		clocks = <&cmu_aud CLK_ACLK_DMAC>;
-		clock-names = "apb_pclk";
-		#dma-cells = <1>;
-		#dma-channels = <8>;
-		#dma-requests = <32>;
-        };
-
-	i2s0: i2s0@11440000 {
-		compatible = "samsung,exynos7-i2s";
-		reg = <0x11440000 0x100>;
-		dmas = <&adma 0 &adma 2>;
-		dma-names = "tx", "rx";
-		interrupts = <0 70 0>;
-		clocks = <&cmu_aud CLK_PCLK_AUD_I2S>,
-			 <&cmu_aud CLK_SCLK_AUD_I2S>,
-			 <&cmu_aud CLK_SCLK_I2S_BCLK>;
-		clock-names = "iis", "i2s_opclk0", "i2s_opclk1";
-		pinctrl-names = "default";
-		pinctrl-0 = <&i2s0_bus>;
-		status = "disabled";
-	};
-
-	serial_3: serial@11460000 {
-		compatible = "samsung,exynos5433-uart";
-		reg = <0x11460000 0x100>;
-		interrupts = <0 67 0>;
-		clocks = <&cmu_aud CLK_PCLK_AUD_UART>,
-			 <&cmu_aud CLK_SCLK_AUD_UART>;
-		clock-names = "uart", "clk_uart_baud0";
-		pinctrl-names = "default";
-		pinctrl-0 = <&uart_aud_bus>;
-		status = "disabled";
-	};
- };
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+QW0gRG9ubmVyc3RhZywgZGVuIDA0LjA4LjIwMTYsIDEwOjQ1ICswODAwIHNjaHJpZWIgQ2hlbi1Z
+dSBUc2FpOgo+IEhpLAo+IAo+IE9uIFR1ZSwgQXVnIDIsIDIwMTYgYXQgMTE6MDUgUE0sIFRob21h
+cyBOaWVkZXJwcsO8bQo+IDxuaWVkZXJwQHBoeXNpay51bmkta2wuZGU+IHdyb3RlOgo+ID4gSSBh
+bSB1c2luZyB0aGUgbmV3IHN1bjRpLWkycyBkcml2ZXIgaW4gbGludXgtbmV4dCB0byBydW4gYSBz
+dGEzMjYgY29kZWMKPiA+IHZpYSB0aGUgcGluIGhlYWRlciBvbiBhIGN1YmlldHJ1Y2sgKHRoaXMg
+aW52b2x2ZXMgc29tZSBzb2xkZXJpbmcgYXMKPiA+IGRlc2NyaWJlZCBpbiBbMV0pLiBUaGUgY29k
+ZWMgY2FuIG9ubHkgYmUgY29uZmlndXJlZCBhcyBzbGF2ZSBhbmQgbmVlZHMKPiA+IGEgbWFzdGVy
+IGNsb2NrIGZvciBpdHMgaW50ZXJuYWwgUExMLiBJdCBpcyB0aGVyZWZvcmUgZ3JlYXQgdGhhdCwg
+dW5saWtlCj4gPiBtYW55IG90aGVyIFNPQ3MsIHRoZSBhMjAgcHJvdmlkZXMgYSBNQ0xLIHRoYXQg
+Y2FuIGJlIHVzZWQgdG8gc3luYyB0aGUKPiA+IGNvZGVjLiBIb3dldmVyLCBpbiBteSBjYXNlIHRo
+ZXJlIGlzIGEgcmVzdHJpY3Rpb24gaW1wb3NlZCBvbiB0aGUgTUNMSwo+ID4gYnkgdGhlIGNvZGVj
+LiBBcyBzdGF0ZWQgaW4gdGhlIGRhdGFzaGVldCBbMl0sIHRoZSBtYXN0ZXIgY2xvY2sgc2hvdWxk
+Cj4gPiBiZSBhdCBtYXhpbXVtIDEyLjI4OCBNSHovMTEuMjg5NiBNSHogb3Igb3RoZXJ3aXNlIHRo
+ZSBjb2RlYyB3aWxsIG5vdAo+ID4gd29yayAoY29uZmlybWVkIGJ5IGV4cGVyaW1lbnQhKS4KPiA+
+IAo+ID4gU2luY2UgdGhlIG1vZCBjbG9jayBvZiB0aGUgYTIwJ3MgZGFpIGJsb2NrIGlzIHJ1bm5p
+bmcgYXQgdHdpY2UgdGhpcwo+ID4gZnJlcXVlbmN5LCBJIG5lZWQgdG8gYXNzdXJlIHRoYXQgdGhl
+IE1MQ0sgZGl2aWRlciBpcyBhdCBsZWFzdCAyLgo+ID4gQWN0dWFsbHkgaXQgaXMgcmF0aGVyIHN0
+cmFpZ2h0IGZvcndhcmQgdG8gYWNoaWV2ZSB0aGlzIGJ5IGNoYW5naW5nIHRoZQo+ID4gYnJlYWtp
+bmcgY29uZGl0aW9uIGluIHRoZSBkaXZpZGVyIGNhbGN1bGF0aW9uLCBhcyBzaG93biBieSB0aGUK
+PiA+IGZvbGxvd2luZyBvbmUtbGluZSBwYXRjaDoKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL3NvdW5k
+L3NvYy9zdW54aS9zdW40aS1pMnMuYyBiL3NvdW5kL3NvYy9zdW54aS9zdW40aS1pMnMuYwo+ID4g
+aW5kZXggNjg3YThmOC4uODkyMDg0NCAxMDA2NDQKPiA+IC0tLSBhL3NvdW5kL3NvYy9zdW54aS9z
+dW40aS1pMnMuYwo+ID4gKysrIGIvc291bmQvc29jL3N1bnhpL3N1bjRpLWkycy5jCj4gPiBAQCAt
+MjA2LDcgKzIwNiw3IEBAIHN0YXRpYyBpbnQgc3VuNGlfaTJzX3NldF9jbGtfcmF0ZShzdHJ1Y3Qg
+c3VuNGlfaTJzCj4gPiAqaTJzLAo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoGNsa19yYXRlLAo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoHJhdGUpOwo+ID4gCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+aWYgKChiY2xrX2RpdiA+PSAwKSAmJiAobWNsa19kaXYgPj0gMCkpCj4gPiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgaWYgKChiY2xrX2RpdiA+PSAwKSAmJiAobWNsa19kaXYgPj0gMSkp
+Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBicmVh
+azsKPiA+IMKgwqDCoMKgwqDCoMKgwqB9Cj4gPiAKPiA+IE9mIGNvdXJzZSwgdGhpcyBpcyBqdXN0
+IGEgaGFjayB0byBmaXggbXkgdXNlIGNhc2UgYW5kIEkgYW0gd29uZGVyaW5nCj4gPiB3aGF0IHdv
+dWxkIGJlIHRoZSBiZXN0IHdheSB0byBoYW5kbGUgbXkgY29ybmVyIGNhc2UgbW9yZSBnZW5lcmFs
+bHk/IEkKPiA+IHNlZSBvbmUgb3B0aW9uIGluIGludHJvZHVjaW5nIGEgRFQgcHJvcGVydHkgbWxj
+a19taW5kaXYsIG9yIHNpbWlsYXIsCj4gPiB0aGF0IGRlZmF1bHRzIHRvIDEgYW5kIGNhbiBiZSBv
+dmVyd3JpdHRlbiBhdCB0aGUgYm9hcmQgbGV2ZWwuIEknbQo+ID4gd2lsbGluZyB0byBwcmVwYXJl
+IGEgcHJvcGVyIHBhdGNoIHRvIHRhY2tsZSB0aGlzIHByb2JsZW0gYnV0IHJpZ2h0IG5vdwo+ID4g
+SSdtIHdvbmRlcmluZyBpZiB0aGVyZSBhIG1ham9yIG9iamVjdGlvbnMgdG8gdGhpcyBhcHByb2Fj
+aCBvciB3aGV0aGVyCj4gPiB0aGVyZSBpcyBhbnkgYmV0dGVyIHNvbHV0aW9uIHRvIHRoZSBwcm9i
+bGVtLgo+IAo+IEkgdGhpbmsgdGhlIHByb3BlciB3YXkgd291bGQgYmUgdG8gaGF2ZSBzdW40aS1p
+MnMgc3VwcG9ydCB0aGUgLnNldF9zeXNjbGsKPiBjYWxsYmFjayBpbiAuZGFpX29wcy4gc2ltcGxl
+LWNhcmQgY2FsbHMgc25kX3NvY19kYWlfc2V0X3N5c2NsayBpZiB5b3UKPiBoYXZlIHRoZSAibWNs
+ay1mcyIgcHJvcGVydHkgc2V0IGluIHRoZSBEVC4KClRoYW5rcyBmb3IgcG9pbnRpbmcgdGhpcyBv
+dXQuIFdoaWxlIHRoaXMgaW5kZWVkIHNlZW1zIHRvIGJlIHRoZSBzdGFuZGFyZCB3YXkgdG8Kb2J0
+YWluIGNvbnRyb2wgb3ZlciB0aGUgbWNsayBhbmQgaXQgd291bGQgcHJvYmFibHkgc29sdmUgbXkg
+dXNlIGNhc2UsIEkgc2VlIGEKcHJvYmxlbSBpbiByZXRhaW5pbmcgdGhlIGN1cnJlbnQgYmVoYXZp
+b3VyIG9mIHRoZSBkcml2ZXIgaWYgLnNldF9zeXNjbGsgaXMKaW1wbGVtZW50ZWQuClJpZ2h0IG5v
+dyB0aGUgZHJpdmVyIGF1dG9tYXRpY2FsbHkgY2hvb3NlcyB0aGUgY29ycmVjdCBmcmVxdWVuY3kg
+b2YgdGhlIG1vZApjbG9jayAoNDQuMWtIeiBmYW1pbHkgb3IgNDhrSHogZmFtaWx5KSBhbmQgdGhl
+IGRpdmlkZXJzIGZvciB0aGUgbWNsayBhbmQgdGhlCmJjbGsgZGVwZW5kaW5nIG9uIHRoZSByZXF1
+ZXN0ZWQgc2FtcGxlcmF0ZS4gVGhlIHVwc2lkZSBvZiB0aGlzIHRoYXQgaWYgeW91IGFyZQpub3Qg
+aW50ZXJlc3RlZCBpbiB0aGUgbWNsaywgdGhlIGRhaSB3aWxsIHByb2JhYmx5IGp1c3Qgd29yayBm
+b3IgeW91LiBUaGUKZG93bnNpZGUgaXMgdGhhdCBvdXRzaWRlIHRoZSBkcml2ZXIgeW91IGNhbiBu
+b3QgY29udHJvbCB0aGUgbWNsay4KCklmIC5zZXRfc3lzY2xrIGlzIGltcGxlbWVudGVkLCB0aGUg
+ZHJpdmVyIGhhcyB0byByZXNwZWN0IHRoZSB2YWx1ZSBzZXQgYnkgdGhlCmZ1bmN0aW9uLiBUaHVz
+LCB0aGUgZHJpdmVyIGNhbiBvbmx5IHNldCB0aGUgYmNsayBkaXZpZGVyIGFjY29yZGluZyB0byB0
+aGUKcHJlZGV0ZXJtaW5lZCBtY2xrIGFuZCB0aGUgcmVxdWVzdGVkIHNhbXBsZXJhdGUuIFRoaXMg
+bWVhbnMgdGhhdCBhIHBhcnQgb2YgdGhlCmxvZ2ljIHRoYXQgaXMgY3VycmVudGx5IGluIHRoZSBz
+dW40aS1pMnMgZHJpdmVyIGhhcyB0byBiZSBwcm92aWRlZCBieSB0aGUgbGF5ZXIKYWJvdmUuIElu
+IHBhcnRpY3VsYXIsIHRoaXMgbWVhbnMgdG8gZW5zdXJlIHRoYXQgdGhlIG1jbGsgbWF0Y2hlcyB0
+aGUgZnJlcXVlbmN5CmZhbWlseSAoNDQuMWtIeiBvciA0OGtIeikgb2YgdGhlIHJlcXVlc3RlZCBz
+YW1wbGVyYXRlIGFuZCB0aGF0IG1jbGsgPSAyXm4gKgpiY2xrLiBBcyB5b3UgcG9pbnRlZCBvdXQg
+dGhlICJtY2xrLWZzIiBwcm9wZXJ0eSBjb3VsZCAocGFydGlhbGx5KSBkbyB0aGlzIGluIHRoZQpj
+YXNlIG9mIHNpbXBsZS1jYXJkLiBUaGlzIHdvdWxkIGVuc3VyZSB0aGUgY29ycmVjdCBmcmVxdWVu
+Y3kgZmFtaWx5IGZvciB0aGUgbWNsawpidXQgaXMgbm90IGFzIHNvcGhpc3RpY2F0ZWQgYXMgdGhl
+IGN1cnJlbnQgc29sdXRpb24gaW4gdGhlIGRyaXZlciB3aGVuIGl0IGNvbWVzCnRvIGNob29zaW5n
+IHRoZSBvcHRpbWFsIGRpdmlkZXJzLiBXaGlsZSB0aGUgY3VycmVudCBzb2x1dGlvbiBhbHdheXMg
+Y2hvb3NlcyB0aGUKaGlnaGVzdCBwb3NzaWJsZSBvdmVyc2FtcGxpbmcsIHRoZSAibWNsay1mcyIg
+c29sdXRpb24gZml4ZXMgdGhlIG92ZXJzYW1wbGluZy4KClRoZSBxdWVzdGlvbiBub3cgYm9pbHMg
+dG8gd2hldGhlciB3ZSB3YW50IHRvIGhhdmUgZXh0ZXJuYWwgY29udHJvbCBvbiB0aGUgbWNsawpv
+ciBzb3BoaXN0aWNhdGVkIGF1dG9tYXRpYyBzZXR0aW5nIG9mIGl0LgoKQmVzdCByZWdhcmRzLApU
+aG9tYXMKCj4gCj4gUmVnYXJkcwo+IENoZW5ZdQo+IAo+ID4gCj4gPiBCZXN0IHJlZ2FyZHMsCj4g
+PiAKPiA+IFRob21hcwo+ID4gCj4gPiBbMV0gaHR0cHM6Ly9oaWZpZHVpbm8ud29yZHByZXNzLmNv
+bS8yMDE0LzAzLzA3L2N1YmllYm9hcmQtZm9yLWF1ZGlvLwo+ID4gWzJdIHd3dy5zdC5jb20vcmVz
+b3VyY2UvZW4vZGF0YXNoZWV0L3N0YTMyNi5wZGYKPiA+IF9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCj4gPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+ID4g
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbApfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
