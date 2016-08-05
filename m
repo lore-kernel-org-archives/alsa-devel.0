@@ -1,111 +1,64 @@
-From: Thomas =?ISO-8859-1?Q?Niederpr=FCm?= <niederp@physik.uni-kl.de>
-Subject: Re: ASoC: sun4i-i2s: Restricting the MCLK
-Date: Fri, 05 Aug 2016 18:35:15 +0200
-Message-ID: <1470414915.5372.36.camel@physik.uni-kl.de>
-References: <1470150313.4786.48.camel@physik.uni-kl.de>
- <CAGb2v66Xjv4A8SWoxT5-=8OELxcCJp+_4PCQd5BM8Hk7YS+85w@mail.gmail.com>
-Reply-To: niederp@physik.uni-kl.de
+From: Russell King - ARM Linux <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>
+Subject: Re: [PATCH 2/3] drm/i2c: tda998x: Register ASoC hdmi-codec and add
+ audio DT binding
+Date: Fri, 5 Aug 2016 17:48:45 +0100
+Message-ID: <20160805164845.GP5783@n2100.arm.linux.org.uk>
+References: <cover.1470129989.git.jsarha@ti.com>
+ <ce10548e1c28270d80ee99a525e117d0d25f5656.1470129989.git.jsarha@ti.com>
+ <20160804140712.GO5783@n2100.arm.linux.org.uk>
+ <3a3dcfa4-cec8-53f8-eddb-9a0e04c10ac9@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw1.uni-kl.de (mailgw1.uni-kl.de [131.246.120.220])
- by alsa0.perex.cz (Postfix) with ESMTP id 779F1266901
- for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2016 18:29:38 +0200 (CEST)
-In-Reply-To: <CAGb2v66Xjv4A8SWoxT5-=8OELxcCJp+_4PCQd5BM8Hk7YS+85w@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: linux-sunxi <linux-sunxi@googlegroups.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <3a3dcfa4-cec8-53f8-eddb-9a0e04c10ac9-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Cc: dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, tomi.valkeinen-l0cyMroinI0@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-QW0gRG9ubmVyc3RhZywgZGVuIDA0LjA4LjIwMTYsIDEwOjQ1ICswODAwIHNjaHJpZWIgQ2hlbi1Z
-dSBUc2FpOgo+IEhpLAo+IAo+IE9uIFR1ZSwgQXVnIDIsIDIwMTYgYXQgMTE6MDUgUE0sIFRob21h
-cyBOaWVkZXJwcsO8bQo+IDxuaWVkZXJwQHBoeXNpay51bmkta2wuZGU+IHdyb3RlOgo+ID4gSSBh
-bSB1c2luZyB0aGUgbmV3IHN1bjRpLWkycyBkcml2ZXIgaW4gbGludXgtbmV4dCB0byBydW4gYSBz
-dGEzMjYgY29kZWMKPiA+IHZpYSB0aGUgcGluIGhlYWRlciBvbiBhIGN1YmlldHJ1Y2sgKHRoaXMg
-aW52b2x2ZXMgc29tZSBzb2xkZXJpbmcgYXMKPiA+IGRlc2NyaWJlZCBpbiBbMV0pLiBUaGUgY29k
-ZWMgY2FuIG9ubHkgYmUgY29uZmlndXJlZCBhcyBzbGF2ZSBhbmQgbmVlZHMKPiA+IGEgbWFzdGVy
-IGNsb2NrIGZvciBpdHMgaW50ZXJuYWwgUExMLiBJdCBpcyB0aGVyZWZvcmUgZ3JlYXQgdGhhdCwg
-dW5saWtlCj4gPiBtYW55IG90aGVyIFNPQ3MsIHRoZSBhMjAgcHJvdmlkZXMgYSBNQ0xLIHRoYXQg
-Y2FuIGJlIHVzZWQgdG8gc3luYyB0aGUKPiA+IGNvZGVjLiBIb3dldmVyLCBpbiBteSBjYXNlIHRo
-ZXJlIGlzIGEgcmVzdHJpY3Rpb24gaW1wb3NlZCBvbiB0aGUgTUNMSwo+ID4gYnkgdGhlIGNvZGVj
-LiBBcyBzdGF0ZWQgaW4gdGhlIGRhdGFzaGVldCBbMl0sIHRoZSBtYXN0ZXIgY2xvY2sgc2hvdWxk
-Cj4gPiBiZSBhdCBtYXhpbXVtIDEyLjI4OCBNSHovMTEuMjg5NiBNSHogb3Igb3RoZXJ3aXNlIHRo
-ZSBjb2RlYyB3aWxsIG5vdAo+ID4gd29yayAoY29uZmlybWVkIGJ5IGV4cGVyaW1lbnQhKS4KPiA+
-IAo+ID4gU2luY2UgdGhlIG1vZCBjbG9jayBvZiB0aGUgYTIwJ3MgZGFpIGJsb2NrIGlzIHJ1bm5p
-bmcgYXQgdHdpY2UgdGhpcwo+ID4gZnJlcXVlbmN5LCBJIG5lZWQgdG8gYXNzdXJlIHRoYXQgdGhl
-IE1MQ0sgZGl2aWRlciBpcyBhdCBsZWFzdCAyLgo+ID4gQWN0dWFsbHkgaXQgaXMgcmF0aGVyIHN0
-cmFpZ2h0IGZvcndhcmQgdG8gYWNoaWV2ZSB0aGlzIGJ5IGNoYW5naW5nIHRoZQo+ID4gYnJlYWtp
-bmcgY29uZGl0aW9uIGluIHRoZSBkaXZpZGVyIGNhbGN1bGF0aW9uLCBhcyBzaG93biBieSB0aGUK
-PiA+IGZvbGxvd2luZyBvbmUtbGluZSBwYXRjaDoKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL3NvdW5k
-L3NvYy9zdW54aS9zdW40aS1pMnMuYyBiL3NvdW5kL3NvYy9zdW54aS9zdW40aS1pMnMuYwo+ID4g
-aW5kZXggNjg3YThmOC4uODkyMDg0NCAxMDA2NDQKPiA+IC0tLSBhL3NvdW5kL3NvYy9zdW54aS9z
-dW40aS1pMnMuYwo+ID4gKysrIGIvc291bmQvc29jL3N1bnhpL3N1bjRpLWkycy5jCj4gPiBAQCAt
-MjA2LDcgKzIwNiw3IEBAIHN0YXRpYyBpbnQgc3VuNGlfaTJzX3NldF9jbGtfcmF0ZShzdHJ1Y3Qg
-c3VuNGlfaTJzCj4gPiAqaTJzLAo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoGNsa19yYXRlLAo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoHJhdGUpOwo+ID4gCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-aWYgKChiY2xrX2RpdiA+PSAwKSAmJiAobWNsa19kaXYgPj0gMCkpCj4gPiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgaWYgKChiY2xrX2RpdiA+PSAwKSAmJiAobWNsa19kaXYgPj0gMSkp
-Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBicmVh
-azsKPiA+IMKgwqDCoMKgwqDCoMKgwqB9Cj4gPiAKPiA+IE9mIGNvdXJzZSwgdGhpcyBpcyBqdXN0
-IGEgaGFjayB0byBmaXggbXkgdXNlIGNhc2UgYW5kIEkgYW0gd29uZGVyaW5nCj4gPiB3aGF0IHdv
-dWxkIGJlIHRoZSBiZXN0IHdheSB0byBoYW5kbGUgbXkgY29ybmVyIGNhc2UgbW9yZSBnZW5lcmFs
-bHk/IEkKPiA+IHNlZSBvbmUgb3B0aW9uIGluIGludHJvZHVjaW5nIGEgRFQgcHJvcGVydHkgbWxj
-a19taW5kaXYsIG9yIHNpbWlsYXIsCj4gPiB0aGF0IGRlZmF1bHRzIHRvIDEgYW5kIGNhbiBiZSBv
-dmVyd3JpdHRlbiBhdCB0aGUgYm9hcmQgbGV2ZWwuIEknbQo+ID4gd2lsbGluZyB0byBwcmVwYXJl
-IGEgcHJvcGVyIHBhdGNoIHRvIHRhY2tsZSB0aGlzIHByb2JsZW0gYnV0IHJpZ2h0IG5vdwo+ID4g
-SSdtIHdvbmRlcmluZyBpZiB0aGVyZSBhIG1ham9yIG9iamVjdGlvbnMgdG8gdGhpcyBhcHByb2Fj
-aCBvciB3aGV0aGVyCj4gPiB0aGVyZSBpcyBhbnkgYmV0dGVyIHNvbHV0aW9uIHRvIHRoZSBwcm9i
-bGVtLgo+IAo+IEkgdGhpbmsgdGhlIHByb3BlciB3YXkgd291bGQgYmUgdG8gaGF2ZSBzdW40aS1p
-MnMgc3VwcG9ydCB0aGUgLnNldF9zeXNjbGsKPiBjYWxsYmFjayBpbiAuZGFpX29wcy4gc2ltcGxl
-LWNhcmQgY2FsbHMgc25kX3NvY19kYWlfc2V0X3N5c2NsayBpZiB5b3UKPiBoYXZlIHRoZSAibWNs
-ay1mcyIgcHJvcGVydHkgc2V0IGluIHRoZSBEVC4KClRoYW5rcyBmb3IgcG9pbnRpbmcgdGhpcyBv
-dXQuIFdoaWxlIHRoaXMgaW5kZWVkIHNlZW1zIHRvIGJlIHRoZSBzdGFuZGFyZCB3YXkgdG8Kb2J0
-YWluIGNvbnRyb2wgb3ZlciB0aGUgbWNsayBhbmQgaXQgd291bGQgcHJvYmFibHkgc29sdmUgbXkg
-dXNlIGNhc2UsIEkgc2VlIGEKcHJvYmxlbSBpbiByZXRhaW5pbmcgdGhlIGN1cnJlbnQgYmVoYXZp
-b3VyIG9mIHRoZSBkcml2ZXIgaWYgLnNldF9zeXNjbGsgaXMKaW1wbGVtZW50ZWQuClJpZ2h0IG5v
-dyB0aGUgZHJpdmVyIGF1dG9tYXRpY2FsbHkgY2hvb3NlcyB0aGUgY29ycmVjdCBmcmVxdWVuY3kg
-b2YgdGhlIG1vZApjbG9jayAoNDQuMWtIeiBmYW1pbHkgb3IgNDhrSHogZmFtaWx5KSBhbmQgdGhl
-IGRpdmlkZXJzIGZvciB0aGUgbWNsayBhbmQgdGhlCmJjbGsgZGVwZW5kaW5nIG9uIHRoZSByZXF1
-ZXN0ZWQgc2FtcGxlcmF0ZS4gVGhlIHVwc2lkZSBvZiB0aGlzIHRoYXQgaWYgeW91IGFyZQpub3Qg
-aW50ZXJlc3RlZCBpbiB0aGUgbWNsaywgdGhlIGRhaSB3aWxsIHByb2JhYmx5IGp1c3Qgd29yayBm
-b3IgeW91LiBUaGUKZG93bnNpZGUgaXMgdGhhdCBvdXRzaWRlIHRoZSBkcml2ZXIgeW91IGNhbiBu
-b3QgY29udHJvbCB0aGUgbWNsay4KCklmIC5zZXRfc3lzY2xrIGlzIGltcGxlbWVudGVkLCB0aGUg
-ZHJpdmVyIGhhcyB0byByZXNwZWN0IHRoZSB2YWx1ZSBzZXQgYnkgdGhlCmZ1bmN0aW9uLiBUaHVz
-LCB0aGUgZHJpdmVyIGNhbiBvbmx5IHNldCB0aGUgYmNsayBkaXZpZGVyIGFjY29yZGluZyB0byB0
-aGUKcHJlZGV0ZXJtaW5lZCBtY2xrIGFuZCB0aGUgcmVxdWVzdGVkIHNhbXBsZXJhdGUuIFRoaXMg
-bWVhbnMgdGhhdCBhIHBhcnQgb2YgdGhlCmxvZ2ljIHRoYXQgaXMgY3VycmVudGx5IGluIHRoZSBz
-dW40aS1pMnMgZHJpdmVyIGhhcyB0byBiZSBwcm92aWRlZCBieSB0aGUgbGF5ZXIKYWJvdmUuIElu
-IHBhcnRpY3VsYXIsIHRoaXMgbWVhbnMgdG8gZW5zdXJlIHRoYXQgdGhlIG1jbGsgbWF0Y2hlcyB0
-aGUgZnJlcXVlbmN5CmZhbWlseSAoNDQuMWtIeiBvciA0OGtIeikgb2YgdGhlIHJlcXVlc3RlZCBz
-YW1wbGVyYXRlIGFuZCB0aGF0IG1jbGsgPSAyXm4gKgpiY2xrLiBBcyB5b3UgcG9pbnRlZCBvdXQg
-dGhlICJtY2xrLWZzIiBwcm9wZXJ0eSBjb3VsZCAocGFydGlhbGx5KSBkbyB0aGlzIGluIHRoZQpj
-YXNlIG9mIHNpbXBsZS1jYXJkLiBUaGlzIHdvdWxkIGVuc3VyZSB0aGUgY29ycmVjdCBmcmVxdWVu
-Y3kgZmFtaWx5IGZvciB0aGUgbWNsawpidXQgaXMgbm90IGFzIHNvcGhpc3RpY2F0ZWQgYXMgdGhl
-IGN1cnJlbnQgc29sdXRpb24gaW4gdGhlIGRyaXZlciB3aGVuIGl0IGNvbWVzCnRvIGNob29zaW5n
-IHRoZSBvcHRpbWFsIGRpdmlkZXJzLiBXaGlsZSB0aGUgY3VycmVudCBzb2x1dGlvbiBhbHdheXMg
-Y2hvb3NlcyB0aGUKaGlnaGVzdCBwb3NzaWJsZSBvdmVyc2FtcGxpbmcsIHRoZSAibWNsay1mcyIg
-c29sdXRpb24gZml4ZXMgdGhlIG92ZXJzYW1wbGluZy4KClRoZSBxdWVzdGlvbiBub3cgYm9pbHMg
-dG8gd2hldGhlciB3ZSB3YW50IHRvIGhhdmUgZXh0ZXJuYWwgY29udHJvbCBvbiB0aGUgbWNsawpv
-ciBzb3BoaXN0aWNhdGVkIGF1dG9tYXRpYyBzZXR0aW5nIG9mIGl0LgoKQmVzdCByZWdhcmRzLApU
-aG9tYXMKCj4gCj4gUmVnYXJkcwo+IENoZW5ZdQo+IAo+ID4gCj4gPiBCZXN0IHJlZ2FyZHMsCj4g
-PiAKPiA+IFRob21hcwo+ID4gCj4gPiBbMV0gaHR0cHM6Ly9oaWZpZHVpbm8ud29yZHByZXNzLmNv
-bS8yMDE0LzAzLzA3L2N1YmllYm9hcmQtZm9yLWF1ZGlvLwo+ID4gWzJdIHd3dy5zdC5jb20vcmVz
-b3VyY2UvZW4vZGF0YXNoZWV0L3N0YTMyNi5wZGYKPiA+IF9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCj4gPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+ID4g
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbApfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Fri, Aug 05, 2016 at 12:02:39PM +0300, Jyri Sarha wrote:
+> On 08/04/16 17:07, Russell King - ARM Linux wrote:
+> > On Tue, Aug 02, 2016 at 03:05:08PM +0300, Jyri Sarha wrote:
+> >> +	priv->audio_pdev = platform_device_register_data(
+> >> +		dev, HDMI_CODEC_DRV_NAME, PLATFORM_DEVID_AUTO,
+> >> +		&codec_data, sizeof(codec_data));
+> > 
+> > I'd much prefer that this was a child of the I2C device, which will
+> > show the relationship between this virtual platform device and the
+> > device which it's associated with.  That can be done via
+> > platform_device_register_full().
+> > 
+> 
+> That may be a problem. The ASoC card device tree binding current looks
+> for the ASoC DAI's parent's of-node if it can not find the node for the
+> DAI-device itself.
+
+I don't follow.  The "parent" of this audio_pdev device above is
+the "platform" device - /sys/devices/platform.  If ASoC is
+referencing the parent of the above platform device for some
+reason, it's probably not going to get anything useful from such
+an attempt.
+
+Any other ASoC codec driver where the codec platform device was
+declared with a NULL parent pointer also ends up as a child of
+that same location.
+
+I'd _really_ be surprised if ASoC is even doing what you describe,
+because such an action is totally illogical (as can be seen from
+my description above.)
+
+Moving it under the I2C device means it stays as a platform device,
+but the relationship between the platform device and its I2C parent
+is properly represented in the tree of devices, and also ensures
+that, should PM hooks be added, that the platform device gets
+properly ordered wrt the I2C device.
+
+-- 
+RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
