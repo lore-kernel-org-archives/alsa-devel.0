@@ -1,40 +1,35 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Stale data interleaved in capture driver
-Date: Fri, 5 Aug 2016 10:18:44 +0200
-Message-ID: <ee683e13-52e0-5b21-c468-563b36cb4641@ladisch.de>
-References: <CALAeOVO94y6R6bZOWK=2TfEckyVUxRXBMcOtXWvuoO5oG_4V4g@mail.gmail.com>
- <bdbdcb8f-8deb-20a7-51ec-f123328880ac@ladisch.de>
- <CALAeOVOZZgh5SThku3SF_7CPrrm_SbLEbR83mkSMefCy5GdrKA@mail.gmail.com>
- <9db62b13-f027-0986-5458-8ff9495a0cd0@ladisch.de>
- <CALAeOVPavUscy-wRmY=QTqfCOM8AD5ZqLh+D23bsTa9js9UnaA@mail.gmail.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH 3/8] ASoC: uda134x: Optionally initialize L3 ops to default
+ GPIO ops
+Date: Fri, 05 Aug 2016 10:48:19 +0200
+Message-ID: <e2dbe62b-8767-d0a5-a133-e927cfce98d4@samsung.com>
+References: <1470317928-25365-1-git-send-email-s.nawrocki@samsung.com>
+ <1470317928-25365-4-git-send-email-s.nawrocki@samsung.com>
+ <20160804210323.GK10383@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 181B0265885
- for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2016 10:18:53 +0200 (CEST)
-In-Reply-To: <CALAeOVPavUscy-wRmY=QTqfCOM8AD5ZqLh+D23bsTa9js9UnaA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Nertney <rob@rob-otics.com>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <20160804210323.GK10383@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: krzk@kernel.org, alsa-devel@alsa-project.org, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Rob Nertney wrote:
-> I've rewritten the DMA to fire an IRQ only at the write-completion of
-> (buffer_bytes/2) and (buffer_bytes)
+On 08/04/2016 11:03 PM, Mark Brown wrote:
+> Does L3 actually support multiple devices?
 
-Is the DMA actually restricted to two interrupts per buffer?  If not,
-your driver should support arbitrary period sizes.
+>From the bus operation description in a few datasheets of the Philips'
+UDA13XX codecs I have checked I would say it's possible to have multiple
+devices working on same bus.  The slave devices are selectable by 6
+most significant bits of the address byte and the device addresses
+seem to be unique at first sight.
 
+"In the event that the UDA1341TS receives a different address, it will
+deselect its microcontroller interface logic." (ch. 7.19 [1])
 
-Regards,
-Clemens
+However I can't answer yes for sure, I've never seen multiple device
+operation mentioned explicitly in the datasheets nor such an hardware
+configuration.
+
+[1] http://www.nxp.com/documents/data_sheet/UDA1341TS.pdf
