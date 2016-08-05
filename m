@@ -1,62 +1,104 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH 2/3] drm/i2c: tda998x: Register ASoC hdmi-codec and add
- audio DT binding
-Date: Fri, 5 Aug 2016 12:02:39 +0300
-Message-ID: <3a3dcfa4-cec8-53f8-eddb-9a0e04c10ac9@ti.com>
-References: <cover.1470129989.git.jsarha@ti.com>
- <ce10548e1c28270d80ee99a525e117d0d25f5656.1470129989.git.jsarha@ti.com>
- <20160804140712.GO5783@n2100.arm.linux.org.uk>
+From: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Subject: Re: [PATCH 4/4] ASoC: da7213: Improve 32KHz mode PLL
+ locking
+Date: Fri, 5 Aug 2016 11:04:51 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1608051102420.11835@pmeerw.net>
+References: <cover.1470318378.git.Adam.Thomson.Opensource@diasemi.com>
+ <497bb3724104ba16dc3588287f6071f0b7cce09e.1470318378.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20160804140712.GO5783@n2100.arm.linux.org.uk>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Russell King - ARM Linux <linux@armlinux.org.uk>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pmeerw.net (ns.pmeerw.net [84.19.176.92])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC2E1266730
+ for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2016 11:04:54 +0200 (CEST)
+In-Reply-To: <497bb3724104ba16dc3588287f6071f0b7cce09e.1470318378.git.Adam.Thomson.Opensource@diasemi.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, c.huber@bct-electronic.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDgvMDQvMTYgMTc6MDcsIFJ1c3NlbGwgS2luZyAtIEFSTSBMaW51eCB3cm90ZToKPiBPbiBU
-dWUsIEF1ZyAwMiwgMjAxNiBhdCAwMzowNTowOFBNICswMzAwLCBKeXJpIFNhcmhhIHdyb3RlOgo+
-PiArCW1lbWNweShhdWRpby5zdGF0dXMsIHBhcmFtcy0+aWVjLnN0YXR1cywKPj4gKwkgICAgICAg
-bWluKHNpemVvZihhdWRpby5zdGF0dXMpLCBzaXplb2YocGFyYW1zLT5pZWMuc3RhdHVzKSkpOwo+
-IAo+IEFzIG1lbnRpb25lZCBpbiB0aGUgb3RoZXIgcGF0Y2gsIHRoZSBhdWRpbyBzdGF0dXMgZG9l
-cyBub3QgZGlyZWN0bHkKPiBjb3JyZXNwb25kIHdpdGggdGhlIEFFUyBieXRlcywgc28gdGhpcyBl
-bmRzIHVwIGNhdXNpbmcgdGhlIGRyaXZlciB0bwo+IHdyaXRlIHRoZSB3cm9uZyBieXRlcyB0byB0
-aGUgd3JvbmcgcmVnaXN0ZXJzLgo+IAoKQXMgSSBzYWlkIGVhcmxpZXIsIEknZCByYXRoZXIgaGF2
-ZSBpdCBhcyBwbGFpbiBBRVMvSUVDOTU4IGNoYW5uZWwgc3RhdHVzCmJpdHMgYnVmZmVyLgoKPj4g
-KwlyZXQgPSB0ZGE5OTh4X2NvbmZpZ3VyZV9hdWRpbyhwcml2LAo+PiArCQkJCSAgICAgICZhdWRp
-bywKPj4gKwkJCQkgICAgICBwcml2LT5lbmNvZGVyLmNydGMtPmh3bW9kZS5jbG9jayk7Cj4gCj4g
-V2hhdCBoYXBwZW5zIGlmIGF1ZGlvIGNoYW5nZXMgYXQgdGhlIHNhbWUgdGltZSB0aGF0IHRoZSB2
-aWRlbyBtb2RlCj4gY2hhbmdlcz8gIFdoYXQgcHJvdGVjdGlvbiBpcyB0aGVyZSBhZ2FpbnN0IHR3
-byB0aHJlYWRzIGNvbmN1cnJlbnRseQo+IGV4ZWN1dGluZyB0ZGE5OTh4X2NvbmZpZ3VyZV9hdWRp
-bygpID8KPiAKCk9oLCB5ZXMuIEkgZGVmaW5pdGVseSBuZWVkIHNvbWUgbG9ja2luZyBoZXJlLiBU
-aGUgc2FtZSBsb2NrIGNvdWxkCnByb3RlY3QgdGhlIGF0b21pY2l0eSBvZiB0ZGE5OTh4X2F1ZGlv
-X3BhcmFtcyB1cGRhdGUgYW5kIHVzYWdlLgoKPj4gKwlwcml2LT5hdWRpb19wZGV2ID0gcGxhdGZv
-cm1fZGV2aWNlX3JlZ2lzdGVyX2RhdGEoCj4+ICsJCWRldiwgSERNSV9DT0RFQ19EUlZfTkFNRSwg
-UExBVEZPUk1fREVWSURfQVVUTywKPj4gKwkJJmNvZGVjX2RhdGEsIHNpemVvZihjb2RlY19kYXRh
-KSk7Cj4gCj4gSSdkIG11Y2ggcHJlZmVyIHRoYXQgdGhpcyB3YXMgYSBjaGlsZCBvZiB0aGUgSTJD
-IGRldmljZSwgd2hpY2ggd2lsbAo+IHNob3cgdGhlIHJlbGF0aW9uc2hpcCBiZXR3ZWVuIHRoaXMg
-dmlydHVhbCBwbGF0Zm9ybSBkZXZpY2UgYW5kIHRoZQo+IGRldmljZSB3aGljaCBpdCdzIGFzc29j
-aWF0ZWQgd2l0aC4gIFRoYXQgY2FuIGJlIGRvbmUgdmlhCj4gcGxhdGZvcm1fZGV2aWNlX3JlZ2lz
-dGVyX2Z1bGwoKS4KPiAKClRoYXQgbWF5IGJlIGEgcHJvYmxlbS4gVGhlIEFTb0MgY2FyZCBkZXZp
-Y2UgdHJlZSBiaW5kaW5nIGN1cnJlbnQgbG9va3MKZm9yIHRoZSBBU29DIERBSSdzIHBhcmVudCdz
-IG9mLW5vZGUgaWYgaXQgY2FuIG5vdCBmaW5kIHRoZSBub2RlIGZvciB0aGUKREFJLWRldmljZSBp
-dHNlbGYuIEluZGljYXRpbmcgQVNvQyBEQUktbGluayBieSByZWZlcmVuY2luZyB0aGUgcGFyZW50
-CmkyYyBkZXZpY2Ugc2ltcGx5IHdvbid0IHdvcmssIGJlY2F1c2UgdGhlcmUgbWF5IGJlIG90aGVy
-IEFTb0MgY29kZWNzIG9uCnRoZSBzYW1lIGkyYyBidXMuIEFkZGluZyBhIHNlcGFyYXRlIERULW5v
-ZGUgZm9yIGEgdmlydHVhbCBhdWRpbyBkZXZpY2UKc2hvdWxkIGJlIHBvc3NpYmxlLCBidXQgaXQg
-bmVlZHMgc29tZSB0aGlua2luZyBhbmQgbWF5IGhhdmUgaXRzIG93bgpwcm9ibGVtcy4gSSBjYW4g
-bm90IGZvbGxvdyB0aGUgcmVhc29uaW5nIGJlaGluZCB0aGlzLCBpcyB0aGlzIHJlYWxseQpuZWNl
-c3Nhcnk/CgpCZXN0IHJlZ2FyZHMsCkp5cmkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMu
-ZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlz
-dGluZm8vZHJpLWRldmVsCg==
+
+> To aid PLL in locking on to a 32KHz MCLK, some register mods
+> are made during PLL configuration, and when enabling the DAI,
+> to achieve the full range of sample rates.
+
+thanks for the patch series; we are about to test...
+
+some comments below
+ 
+> Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+> ---
+>  sound/soc/codecs/da7213.c | 25 ++++++++++++++++++++++++-
+>  1 file changed, 24 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+> index 79b8324..095fe40 100644
+> --- a/sound/soc/codecs/da7213.c
+> +++ b/sound/soc/codecs/da7213.c
+> @@ -750,11 +750,18 @@ static int da7213_dai_event(struct snd_soc_dapm_widget *w,
+>  		snd_soc_update_bits(codec, DA7213_PC_COUNT,
+>  				    DA7213_PC_FREERUN_MASK, 0);
+> 
+> -		/* Slave mode, if SRM not enabled no need for status checks */
+> +		/* If SRM not enabled then nothing more to do */
+>  		pll_ctrl = snd_soc_read(codec, DA7213_PLL_CTRL);
+>  		if (!(pll_ctrl & DA7213_PLL_SRM_EN))
+>  			return 0;
+> 
+> +		/* Assist 32KHz mode PLL lock */
+> +		if (pll_ctrl & DA7213_PLL_32K_MODE) {
+
+these registers cannot not found in the datasheet;
+maybe add descriptive #defines in da7213.h
+
+> +			snd_soc_write(codec, 0xF0, 0x8B);
+> +			snd_soc_write(codec, 0xF2, 0x03);
+> +			snd_soc_write(codec, 0xF0, 0x00);
+> +		}
+> +
+>  		/* Check SRM has locked */
+>  		do {
+>  			pll_status = snd_soc_read(codec, DA7213_PLL_STATUS);
+> @@ -771,6 +778,14 @@ static int da7213_dai_event(struct snd_soc_dapm_widget *w,
+> 
+>  		return 0;
+>  	case SND_SOC_DAPM_POST_PMD:
+> +		/* Revert 32KHz PLL lock udpates if applied previously */
+> +		pll_ctrl = snd_soc_read(codec, DA7213_PLL_CTRL);
+> +		if (pll_ctrl & DA7213_PLL_32K_MODE) {
+> +			snd_soc_write(codec, 0xF0, 0x8B);
+> +			snd_soc_write(codec, 0xF2, 0x01);
+> +			snd_soc_write(codec, 0xF0, 0x00);
+> +		}
+> +
+>  		/* PC free-running */
+>  		snd_soc_update_bits(codec, DA7213_PC_COUNT,
+>  				    DA7213_PC_FREERUN_MASK,
+> @@ -1428,6 +1443,14 @@ static int da7213_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
+>  			    DA7213_PLL_INDIV_MASK | DA7213_PLL_MODE_MASK,
+>  			    pll_ctrl);
+> 
+> +	/* Assist 32KHz mode PLL lock */
+> +	if (source == DA7213_SYSCLK_PLL_32KHZ) {
+> +		snd_soc_write(codec, 0xF0, 0x8B);
+> +		snd_soc_write(codec, 0xF1, 0x03);
+> +		snd_soc_write(codec, 0xF1, 0x01);
+> +		snd_soc_write(codec, 0xF0, 0x00);
+> +	}
+> +
+>  	return 0;
+>  }
+
+-- 
+
+Peter Meerwald-Stadler
++43-664-2444418 (mobile)
