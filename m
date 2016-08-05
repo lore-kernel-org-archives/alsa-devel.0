@@ -1,79 +1,119 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8810: Add driver for Nuvoton
-	codec chip NAU88C10
-Date: Fri, 5 Aug 2016 13:08:04 +0100
-Message-ID: <20160805120804.GV10383@sirena.org.uk>
-References: <1466152834-29615-1-git-send-email-KCHSU0@nuvoton.com>
- <20160627171546.GE17217@sirena.org.uk>
- <5775E4C7.5010303@nuvoton.com>
- <20160701100423.GM6247@sirena.org.uk> <5779D93B.80106@nuvoton.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1579492604298336367=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D28D2652F8
- for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2016 14:08:12 +0200 (CEST)
-In-Reply-To: <5779D93B.80106@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
+Subject: Applied "ASoC: simple-card: use asoc_simple_card_parse_clk()" to the asoc tree
+Date: Fri, 05 Aug 2016 13:09:01 +0100
+Message-ID: <E1bVdvx-0002cx-Kx@debutante>
+References: <87r3cxqd03.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87r3cxqd03.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1579492604298336367==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="p8mP+8RrBGerSNjm"
-Content-Disposition: inline
+   ASoC: simple-card: use asoc_simple_card_parse_clk()
 
+has been applied to the asoc tree at
 
---p8mP+8RrBGerSNjm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Jul 04, 2016 at 11:34:19AM +0800, John Hsu wrote:
-> On 7/1/2016 6:04 PM, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > No, you don't - this is entirely normal for 7x9 regmaps, I've never seen
-> > such a device that supported readback.  Look at devices like wm8731 for
-> > examples.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Sometimes, we need to know the codec information and need read it
-> from hardware, not cache. I'm afraid that it can't be done in this
-> case.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-What does the read actually look like on this device?
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---p8mP+8RrBGerSNjm
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+>From 28abd99b6e40741cd0e75be20817f23a3044d338 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 19 Jul 2016 02:53:13 +0000
+Subject: [PATCH] ASoC: simple-card: use asoc_simple_card_parse_clk()
 
-iQEcBAEBCAAGBQJXpIGjAAoJECTWi3JdVIfQfXUH/0M90B17NO13subj0T4WcdBS
-UpRSdYKhhA4X1tcjSVEwjCmSAPwwvNQvZpTtPHmRc3wNG3bbs1Sc6MW/xqwhu2gP
-p5/mk7zz+/dYmNLwCzGfSVwqgB98L+6wg8q0dAN72UU9i+TvEUScct7YZitoBJhv
-7D49vuMHxOf1o95SKL3okJBPL8rHU6qrduaiVC9ylpn2lkLqOwtKwVvSQc2AwtAc
-r1h9LUIozYx+r0pnrSm0+xvFuSMDod4qFinOMMNml1TgiOowrqwEtjVfGJzDEu54
-F/mmHjYlNS8OpEsDLbPmRLEQJgirYpcpQBjvgqryM6IaiP8Yv9xGylWTJ0Eq66c=
-=iSSV
------END PGP SIGNATURE-----
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/generic/simple-card.c | 35 ++++++++++-------------------------
+ 1 file changed, 10 insertions(+), 25 deletions(-)
 
---p8mP+8RrBGerSNjm--
-
---===============1579492604298336367==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1579492604298336367==--
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 43295f024982..b37c81b09203 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -244,8 +244,6 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ 			      int *args_count)
+ {
+ 	struct of_phandle_args args;
+-	struct clk *clk;
+-	u32 val;
+ 	int ret;
+ 
+ 	if (!np)
+@@ -282,29 +280,6 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ 	if (ret)
+ 		return ret;
+ 
+-	/*
+-	 * Parse dai->sysclk come from "clocks = <&xxx>"
+-	 * (if system has common clock)
+-	 *  or "system-clock-frequency = <xxx>"
+-	 *  or device's module clock.
+-	 */
+-	if (of_property_read_bool(np, "clocks")) {
+-		clk = of_clk_get(np, 0);
+-		if (IS_ERR(clk)) {
+-			ret = PTR_ERR(clk);
+-			return ret;
+-		}
+-
+-		dai->sysclk = clk_get_rate(clk);
+-		dai->clk = clk;
+-	} else if (!of_property_read_u32(np, "system-clock-frequency", &val)) {
+-		dai->sysclk = val;
+-	} else {
+-		clk = of_clk_get(args.np, 0);
+-		if (!IS_ERR(clk))
+-			dai->sysclk = clk_get_rate(clk);
+-	}
+-
+ 	return 0;
+ }
+ 
+@@ -316,6 +291,8 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, idx);
+ 	struct simple_dai_props *dai_props = simple_priv_to_props(priv, idx);
++	struct asoc_simple_dai *cpu_dai = &dai_props->cpu_dai;
++	struct asoc_simple_dai *codec_dai = &dai_props->codec_dai;
+ 	struct device_node *cpu = NULL;
+ 	struct device_node *plat = NULL;
+ 	struct device_node *codec = NULL;
+@@ -370,6 +347,14 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
++	ret = asoc_simple_card_parse_clk_cpu(cpu, dai_link, cpu_dai);
++	if (ret < 0)
++		goto dai_link_of_err;
++
++	ret = asoc_simple_card_parse_clk_codec(codec, dai_link, codec_dai);
++	if (ret < 0)
++		goto dai_link_of_err;
++
+ 	if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name) {
+ 		ret = -EINVAL;
+ 		goto dai_link_of_err;
+-- 
+2.8.1
