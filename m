@@ -1,25 +1,19 @@
 From: Russell King - ARM Linux <linux@armlinux.org.uk>
-Subject: Re: [PATCH 2/3] drm/i2c: tda998x: Register ASoC
- hdmi-codec and add audio DT binding
-Date: Fri, 5 Aug 2016 23:19:44 +0100
-Message-ID: <20160805221944.GR5783@n2100.arm.linux.org.uk>
+Subject: Re: [PATCH 1/3] drm/i2c: tda998x: Improve
+ tda998x_configure_audio() audio related pdata
+Date: Sat, 6 Aug 2016 17:57:34 +0100
+Message-ID: <20160806165734.GS5783@n2100.arm.linux.org.uk>
 References: <cover.1470129989.git.jsarha@ti.com>
- <ce10548e1c28270d80ee99a525e117d0d25f5656.1470129989.git.jsarha@ti.com>
- <20160804140712.GO5783@n2100.arm.linux.org.uk>
- <3a3dcfa4-cec8-53f8-eddb-9a0e04c10ac9@ti.com>
- <20160805164845.GP5783@n2100.arm.linux.org.uk>
- <20160805165959.GA10383@sirena.org.uk>
- <20160805170450.GQ5783@n2100.arm.linux.org.uk>
- <20160805175908.GC10383@sirena.org.uk>
+ <5adcd94104080abcd5b072a5d6a85b85c5ea0584.1470129989.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
- by alsa0.perex.cz (Postfix) with ESMTP id 72ABD266AE0
- for <alsa-devel@alsa-project.org>; Sat,  6 Aug 2016 00:20:00 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E3A1265325
+ for <alsa-devel@alsa-project.org>; Sat,  6 Aug 2016 18:57:54 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20160805175908.GC10383@sirena.org.uk>
+In-Reply-To: <5adcd94104080abcd5b072a5d6a85b85c5ea0584.1470129989.git.jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,34 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, airlied@linux.ie, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, tomi.valkeinen@ti.com, Jyri Sarha <jsarha@ti.com>, bcousson@baylibre.com, linux-omap@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, airlied@linux.ie, tomi.valkeinen@ti.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 05, 2016 at 06:59:08PM +0100, Mark Brown wrote:
-> On Fri, Aug 05, 2016 at 06:04:50PM +0100, Russell King - ARM Linux wrote:
-> > On Fri, Aug 05, 2016 at 05:59:59PM +0100, Mark Brown wrote:
-> 
-> > > We do have some stuff in there in order to handle MFDs - they'll
-> > > instantiate a Linux-internal virtual platform device as a child of the
-> > > DT device that represents the device as a whole.  We're definitely not
-> > > expecting to find anything for parentless platform devices though, it's
-> > > only done if the ASoC level device has no of_node and the parent does.
-> 
-> > And if we make the hdmi-codec device a child of the I2C device which
-> > does have an of-node, what will happen?
-> 
-> It'll pick up that as the DT device to hang things off which I'd expect
-> to be the desired outcome given that this is a very similar situation to
-> the MFD situation.  I've not been following the full thread so there is
-> probably context I'm missing here...
+On Tue, Aug 02, 2016 at 03:05:07PM +0300, Jyri Sarha wrote:
+> @@ -787,19 +792,13 @@ tda998x_configure_audio(struct tda998x_priv *priv,
+>  	reg_clear(priv, REG_AIP_CNTRL_0, AIP_CNTRL_0_RST_CTS);
+>  
+>  	/* Write the channel status */
+> -	buf[0] = IEC958_AES0_CON_NOT_COPYRIGHT;
+> -	buf[1] = 0x00;
+> -	buf[2] = IEC958_AES3_CON_FS_NOTID;
+> -	buf[3] = IEC958_AES4_CON_ORIGFS_NOTID |
+> -			IEC958_AES4_CON_MAX_WORDLEN_24;
+> -	reg_write_range(priv, REG_CH_STAT_B(0), buf, 4);
+> +	reg_write_range(priv, REG_CH_STAT_B(0), params->status, 4);
 
-Okay, and that sounds to me like a very reasonable thing to want to
-happen - so that the audio side can be clearly identified as being
-coupled with the video side.
+Another couple of points here:
 
-So, I'm not seeing a problem with my suggestion... I'm actually more
-reasons why it's a good thing to want.
+1. I think we should only write the channel status if I2S mode is
+selected - channel status won't be used on SPDIF mode as SPDIF
+supplies its own channel status.
+
+2. I think we should continue writing all the channel status in a
+single I2C transaction, and not breaking it into several different
+transactions to cater for the odd register order.  I don't have
+any direct evidence that one way is better than the other in terms
+of atomicity of the update, but I think having it as a single
+transaction stands a better chance of the chip atomically updating
+the channel status.
 
 -- 
 RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
