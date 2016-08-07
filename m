@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 20/39] ALSA: seq: optimize unsubscribe_port
+Subject: [PATCH 21/39] ALSA: seq: optimize create_queue
 	function to new design
-Date: Sun,  7 Aug 2016 18:48:56 +0900
-Message-ID: <1470563355-18368-21-git-send-email-o-takashi@sakamocchi.jp>
+Date: Sun,  7 Aug 2016 18:48:57 +0900
+Message-ID: <1470563355-18368-22-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id B61EE265CB5
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id BF711265CBB
  for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:38 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,64 +33,59 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 25 +++++++++----------------
+ 1 file changed, 9 insertions(+), 16 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 8681f90..9f4bcf2 100644
+index 9f4bcf2..aa937c0 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1466,34 +1466,36 @@ static int seq_ioctl_subscribe_port(struct snd_seq_client *client, void *arg)
- /* 
-  * remove from port's subscription list 
-  */
--static int seq_ioctl_unsubscribe_port(struct snd_seq_client *client,
--				      void __user *arg)
-+static int seq_ioctl_unsubscribe_port(struct snd_seq_client *client, void *arg)
+@@ -1510,17 +1510,13 @@ static int seq_ioctl_unsubscribe_port(struct snd_seq_client *client, void *arg)
+ 
+ 
+ /* CREATE_QUEUE ioctl() */
+-static int seq_ioctl_create_queue(struct snd_seq_client *client,
+-				  void __user *arg)
++static int seq_ioctl_create_queue(struct snd_seq_client *client, void *arg)
  {
-+	struct snd_seq_port_subscribe *subs = arg;
- 	int result = -ENXIO;
- 	struct snd_seq_client *receiver = NULL, *sender = NULL;
- 	struct snd_seq_client_port *sport = NULL, *dport = NULL;
--	struct snd_seq_port_subscribe subs;
--
--	if (copy_from_user(&subs, arg, sizeof(subs)))
+-	struct snd_seq_queue_info info;
++	struct snd_seq_queue_info *info = arg;
+ 	int result;
+ 	struct snd_seq_queue *q;
+ 
+-	if (copy_from_user(&info, arg, sizeof(info)))
 -		return -EFAULT;
- 
--	if ((receiver = snd_seq_client_use_ptr(subs.dest.client)) == NULL)
-+	receiver = snd_seq_client_use_ptr(subs->dest.client);
-+	if (receiver == NULL)
- 		goto __end;
--	if ((sender = snd_seq_client_use_ptr(subs.sender.client)) == NULL)
-+	sender = snd_seq_client_use_ptr(subs->sender.client);
-+	if (receiver == NULL)
- 		goto __end;
--	if ((sport = snd_seq_port_use_ptr(sender, subs.sender.port)) == NULL)
-+	sport = snd_seq_port_use_ptr(sender, subs->sender.port);
-+	if (sport == NULL)
- 		goto __end;
--	if ((dport = snd_seq_port_use_ptr(receiver, subs.dest.port)) == NULL)
-+	dport = snd_seq_port_use_ptr(receiver, subs->dest.port);
-+	if (dport == NULL)
- 		goto __end;
- 
--	result = check_subscription_permission(client, sport, dport, &subs);
-+	result = check_subscription_permission(client, sport, dport, subs);
+-
+-	result = snd_seq_queue_alloc(client->number, info.locked, info.flags);
++	result = snd_seq_queue_alloc(client->number, info->locked, info->flags);
  	if (result < 0)
- 		goto __end;
+ 		return result;
  
--	result = snd_seq_port_disconnect(client, sender, sport, receiver, dport, &subs);
--	if (! result) /* broadcast announce */
--		snd_seq_client_notify_subscription(SNDRV_SEQ_ADDRESS_SUBSCRIBERS, 0,
--						   &subs, SNDRV_SEQ_EVENT_PORT_UNSUBSCRIBED);
-+	result = snd_seq_port_disconnect(client, sender, sport, receiver, dport,
-+					 subs);
-+	if (!result) /* broadcast announce */
-+		snd_seq_client_notify_subscription(
-+					SNDRV_SEQ_ADDRESS_SUBSCRIBERS, 0, subs,
-+					SNDRV_SEQ_EVENT_PORT_UNSUBSCRIBED);
-       __end:
-       	if (sport)
- 		snd_seq_port_unlock(sport);
+@@ -1528,19 +1524,16 @@ static int seq_ioctl_create_queue(struct snd_seq_client *client,
+ 	if (q == NULL)
+ 		return -EINVAL;
+ 
+-	info.queue = q->queue;
+-	info.locked = q->locked;
+-	info.owner = q->owner;
++	info->queue = q->queue;
++	info->locked = q->locked;
++	info->owner = q->owner;
+ 
+ 	/* set queue name */
+-	if (! info.name[0])
+-		snprintf(info.name, sizeof(info.name), "Queue-%d", q->queue);
+-	strlcpy(q->name, info.name, sizeof(q->name));
++	if (!info->name[0])
++		snprintf(info->name, sizeof(info->name), "Queue-%d", q->queue);
++	strlcpy(q->name, info->name, sizeof(q->name));
+ 	queuefree(q);
+ 
+-	if (copy_to_user(arg, &info, sizeof(info)))
+-		return -EFAULT;
+-
+ 	return 0;
+ }
+ 
 -- 
 2.7.4
