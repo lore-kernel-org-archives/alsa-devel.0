@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 15/39] ALSA: seq: optimize create_port function
-	to new design
-Date: Sun,  7 Aug 2016 18:48:51 +0900
-Message-ID: <1470563355-18368-16-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 29/39] ALSA: seq: optimize get_queue_timer
+	function to new design
+Date: Sun,  7 Aug 2016 18:49:05 +0900
+Message-ID: <1470563355-18368-30-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id AAD06265B97
- for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:38 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 084E9265D3D
+ for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:39 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,65 +33,56 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 24 +++++++++---------------
- 1 file changed, 9 insertions(+), 15 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 46e040b..c2bb93b 100644
+index a90a4a3..383f5d3 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1253,30 +1253,27 @@ static int seq_ioctl_set_client_info(struct snd_seq_client *client, void *arg)
- /* 
-  * CREATE PORT ioctl() 
-  */
--static int seq_ioctl_create_port(struct snd_seq_client *client,
--				 void __user *arg)
-+static int seq_ioctl_create_port(struct snd_seq_client *client, void *arg)
+@@ -1688,17 +1688,13 @@ static int seq_ioctl_set_queue_tempo(struct snd_seq_client *client, void *arg)
+ 
+ 
+ /* GET_QUEUE_TIMER ioctl() */
+-static int seq_ioctl_get_queue_timer(struct snd_seq_client *client,
+-				     void __user *arg)
++static int seq_ioctl_get_queue_timer(struct snd_seq_client *client, void *arg)
  {
-+	struct snd_seq_port_info *info = arg;
- 	struct snd_seq_client_port *port;
--	struct snd_seq_port_info info;
- 	struct snd_seq_port_callback *callback;
+-	struct snd_seq_queue_timer timer;
++	struct snd_seq_queue_timer *timer = arg;
+ 	struct snd_seq_queue *queue;
+ 	struct snd_seq_timer *tmr;
  
--	if (copy_from_user(&info, arg, sizeof(info)))
+-	if (copy_from_user(&timer, arg, sizeof(timer)))
 -		return -EFAULT;
 -
- 	/* it is not allowed to create the port for an another client */
--	if (info.addr.client != client->number)
-+	if (info->addr.client != client->number)
- 		return -EPERM;
- 
--	port = snd_seq_create_port(client, (info.flags & SNDRV_SEQ_PORT_FLG_GIVEN_PORT) ? info.addr.port : -1);
-+	port = snd_seq_create_port(client, (info->flags & SNDRV_SEQ_PORT_FLG_GIVEN_PORT) ? info->addr.port : -1);
- 	if (port == NULL)
- 		return -ENOMEM;
- 
--	if (client->type == USER_CLIENT && info.kernel) {
-+	if (client->type == USER_CLIENT && info->kernel) {
- 		snd_seq_delete_port(client, port->addr.port);
+-	queue = queueptr(timer.queue);
++	queue = queueptr(timer->queue);
+ 	if (queue == NULL)
  		return -EINVAL;
+ 
+@@ -1707,19 +1703,17 @@ static int seq_ioctl_get_queue_timer(struct snd_seq_client *client,
+ 		return -ERESTARTSYS;
  	}
- 	if (client->type == KERNEL_CLIENT) {
--		if ((callback = info.kernel) != NULL) {
-+		callback = info->kernel;
-+		if (callback != NULL) {
- 			if (callback->owner)
- 				port->owner = callback->owner;
- 			port->private_data = callback->private_data;
-@@ -1289,14 +1286,11 @@ static int seq_ioctl_create_port(struct snd_seq_client *client,
- 		}
+ 	tmr = queue->timer;
+-	memset(&timer, 0, sizeof(timer));
+-	timer.queue = queue->queue;
++	memset(timer, 0, sizeof(*timer));
++	timer->queue = queue->queue;
+ 
+-	timer.type = tmr->type;
++	timer->type = tmr->type;
+ 	if (tmr->type == SNDRV_SEQ_TIMER_ALSA) {
+-		timer.u.alsa.id = tmr->alsa_id;
+-		timer.u.alsa.resolution = tmr->preferred_resolution;
++		timer->u.alsa.id = tmr->alsa_id;
++		timer->u.alsa.resolution = tmr->preferred_resolution;
  	}
- 
--	info.addr = port->addr;
-+	info->addr = port->addr;
- 
--	snd_seq_set_port_info(port, &info);
-+	snd_seq_set_port_info(port, info);
- 	snd_seq_system_client_ev_port_start(port->addr.client, port->addr.port);
- 
--	if (copy_to_user(arg, &info, sizeof(info)))
+ 	mutex_unlock(&queue->timer_mutex);
+ 	queuefree(queue);
+ 	
+-	if (copy_to_user(arg, &timer, sizeof(timer)))
 -		return -EFAULT;
--
  	return 0;
  }
  
