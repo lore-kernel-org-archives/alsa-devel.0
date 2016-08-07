@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/39] ALSA: seq: optimize set_client_info
+Subject: [PATCH 12/39] ALSA: seq: optimize running mode
 	function to new design
-Date: Sun,  7 Aug 2016 18:48:50 +0900
-Message-ID: <1470563355-18368-15-git-send-email-o-takashi@sakamocchi.jp>
+Date: Sun,  7 Aug 2016 18:48:48 +0900
+Message-ID: <1470563355-18368-13-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 339B5265B8F
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 2C701265B63
  for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:38 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,50 +33,58 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 3e7431e..46e040b 100644
+index cb86190..10a2e43 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1227,28 +1227,24 @@ static int seq_ioctl_get_client_info(struct snd_seq_client *client, void *arg)
+@@ -1149,38 +1149,34 @@ static int seq_ioctl_system_info(struct snd_seq_client *client, void *arg)
  
  
- /* CLIENT_INFO ioctl() */
--static int seq_ioctl_set_client_info(struct snd_seq_client *client,
--				     void __user *arg)
-+static int seq_ioctl_set_client_info(struct snd_seq_client *client, void *arg)
+ /* RUNNING_MODE ioctl() */
+-static int seq_ioctl_running_mode(struct snd_seq_client *client,
+-				  void __user *arg)
++static int seq_ioctl_running_mode(struct snd_seq_client *client, void *arg)
  {
--	struct snd_seq_client_info client_info;
--
--	if (copy_from_user(&client_info, arg, sizeof(client_info)))
+-	struct snd_seq_running_info info;
++	struct snd_seq_running_info *info = arg;
+ 	struct snd_seq_client *cptr;
+ 	int err = 0;
+ 
+-	if (copy_from_user(&info, arg, sizeof(info)))
 -		return -EFAULT;
-+	struct snd_seq_client_info *client_info = arg;
+-
+ 	/* requested client number */
+-	cptr = snd_seq_client_use_ptr(info.client);
++	cptr = snd_seq_client_use_ptr(info->client);
+ 	if (cptr == NULL)
+ 		return -ENOENT;		/* don't change !!! */
  
- 	/* it is not allowed to set the info fields for an another client */
--	if (client->number != client_info.client)
-+	if (client->number != client_info->client)
- 		return -EPERM;
- 	/* also client type must be set now */
--	if (client->type != client_info.type)
-+	if (client->type != client_info->type)
- 		return -EINVAL;
+ #ifdef SNDRV_BIG_ENDIAN
+-	if (! info.big_endian) {
++	if (!info->big_endian) {
+ 		err = -EINVAL;
+ 		goto __err;
+ 	}
+ #else
+-	if (info.big_endian) {
++	if (info->big_endian) {
+ 		err = -EINVAL;
+ 		goto __err;
+ 	}
  
- 	/* fill the info fields */
--	if (client_info.name[0])
--		strlcpy(client->name, client_info.name, sizeof(client->name));
-+	if (client_info->name[0])
-+		strlcpy(client->name, client_info->name, sizeof(client->name));
- 
--	client->filter = client_info.filter;
--	client->event_lost = client_info.event_lost;
--	memcpy(client->event_filter, client_info.event_filter, 32);
-+	client->filter = client_info->filter;
-+	client->event_lost = client_info->event_lost;
-+	memcpy(client->event_filter, client_info->event_filter, 32);
- 
- 	return 0;
- }
+ #endif
+-	if (info.cpu_mode > sizeof(long)) {
++	if (info->cpu_mode > sizeof(long)) {
+ 		err = -EINVAL;
+ 		goto __err;
+ 	}
+-	cptr->convert32 = (info.cpu_mode < sizeof(long));
++	cptr->convert32 = (info->cpu_mode < sizeof(long));
+  __err:
+ 	snd_seq_client_unlock(cptr);
+ 	return err;
 -- 
 2.7.4
