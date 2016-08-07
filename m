@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 39/39] ALSA: seq: optimize query_next_port
+Subject: [PATCH 38/39] ALSA: seq: optimize query_next_client
 	function to new design
-Date: Sun,  7 Aug 2016 18:49:15 +0900
-Message-ID: <1470563355-18368-40-git-send-email-o-takashi@sakamocchi.jp>
+Date: Sun,  7 Aug 2016 18:49:14 +0900
+Message-ID: <1470563355-18368-39-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 22011265DF4
- for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:40 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 92CE7265DD2
+ for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:39 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,49 +33,47 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 0f840ca..6bc29b5 100644
+index e4a9754..0f840ca 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -2014,35 +2014,30 @@ static int seq_ioctl_query_next_client(struct snd_seq_client *client, void *arg)
- /* 
-  * query next port
+@@ -1988,32 +1988,26 @@ static int seq_ioctl_query_subs(struct snd_seq_client *client, void *arg)
+ /*
+  * query next client
   */
--static int seq_ioctl_query_next_port(struct snd_seq_client *client,
--				     void __user *arg)
-+static int seq_ioctl_query_next_port(struct snd_seq_client *client, void *arg)
+-static int seq_ioctl_query_next_client(struct snd_seq_client *client,
+-				       void __user *arg)
++static int seq_ioctl_query_next_client(struct snd_seq_client *client, void *arg)
  {
-+	struct snd_seq_port_info *info = arg;
- 	struct snd_seq_client *cptr;
- 	struct snd_seq_client_port *port = NULL;
--	struct snd_seq_port_info info;
- 
++	struct snd_seq_client_info *info = arg;
+ 	struct snd_seq_client *cptr = NULL;
+-	struct snd_seq_client_info info;
+-
 -	if (copy_from_user(&info, arg, sizeof(info)))
 -		return -EFAULT;
--	cptr = snd_seq_client_use_ptr(info.addr.client);
-+	cptr = snd_seq_client_use_ptr(info->addr.client);
- 	if (cptr == NULL)
- 		return -ENXIO;
  
- 	/* search for next port */
--	info.addr.port++;
--	port = snd_seq_port_query_nearest(cptr, &info);
-+	info->addr.port++;
-+	port = snd_seq_port_query_nearest(cptr, info);
- 	if (port == NULL) {
- 		snd_seq_client_unlock(cptr);
- 		return -ENOENT;
+ 	/* search for next client */
+-	info.client++;
+-	if (info.client < 0)
+-		info.client = 0;
+-	for (; info.client < SNDRV_SEQ_MAX_CLIENTS; info.client++) {
+-		cptr = snd_seq_client_use_ptr(info.client);
++	info->client++;
++	if (info->client < 0)
++		info->client = 0;
++	for (; info->client < SNDRV_SEQ_MAX_CLIENTS; info->client++) {
++		cptr = snd_seq_client_use_ptr(info->client);
+ 		if (cptr)
+ 			break; /* found */
  	}
+ 	if (cptr == NULL)
+ 		return -ENOENT;
  
- 	/* get port info */
--	info.addr = port->addr;
--	snd_seq_get_port_info(port, &info);
-+	info->addr = port->addr;
-+	snd_seq_get_port_info(port, info);
- 	snd_seq_port_unlock(port);
+-	get_client_info(cptr, &info);
++	get_client_info(cptr, info);
  	snd_seq_client_unlock(cptr);
  
 -	if (copy_to_user(arg, &info, sizeof(info)))
