@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 02/39] ALSA: seq: apply shorter name for file
-	local functions
-Date: Sun,  7 Aug 2016 18:48:38 +0900
-Message-ID: <1470563355-18368-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 06/39] ALSA: seq: obsolete address mode in
+	compatibility layer
+Date: Sun,  7 Aug 2016 18:48:42 +0900
+Message-ID: <1470563355-18368-7-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 733A02658AB
- for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:36 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id CDC372658D5
+ for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:37 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,483 +25,75 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Exported symbols should have 'snd_' prefix to avoid name conflict, while
-file local symbols have no need to have. Shorter names are generally
-preferable due to '80 characters in a line' rule.
+In a 32/64 bit compatibility layer of ALSA sequencer core, data for some
+ioctls is copied to kernel stack and passed to core operations. Then,
+address limit of running task is changed because core implementation
+expected arguments in userspace.
 
-This commit renames some local functions.
+In this case, snd_seq_kernel_client_ctl() is available. This commit
+replaces with it.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 180 +++++++++++++++++++++--------------------
- sound/core/seq/seq_compat.c    |  19 ++---
- 2 files changed, 101 insertions(+), 98 deletions(-)
+ sound/core/seq/seq_compat.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 42be1e5..1331103 100644
---- a/sound/core/seq/seq_clientmgr.c
-+++ b/sound/core/seq/seq_clientmgr.c
-@@ -1130,7 +1130,8 @@ static unsigned int snd_seq_poll(struct file *file, poll_table * wait)
- 
- 
- /* SYSTEM_INFO ioctl() */
--static int snd_seq_ioctl_system_info(struct snd_seq_client *client, void __user *arg)
-+static int seq_ioctl_system_info(struct snd_seq_client *client,
-+				 void __user *arg)
- {
- 	struct snd_seq_system_info info;
- 
-@@ -1150,7 +1151,8 @@ static int snd_seq_ioctl_system_info(struct snd_seq_client *client, void __user
- 
- 
- /* RUNNING_MODE ioctl() */
--static int snd_seq_ioctl_running_mode(struct snd_seq_client *client, void __user *arg)
-+static int seq_ioctl_running_mode(struct snd_seq_client *client,
-+				  void __user *arg)
- {
- 	struct snd_seq_running_info info;
- 	struct snd_seq_client *cptr;
-@@ -1213,8 +1215,8 @@ static void get_client_info(struct snd_seq_client *cptr,
- 	memset(info->reserved, 0, sizeof(info->reserved));
- }
- 
--static int snd_seq_ioctl_get_client_info(struct snd_seq_client *client,
--					 void __user *arg)
-+static int seq_ioctl_get_client_info(struct snd_seq_client *client,
-+				     void __user *arg)
- {
- 	struct snd_seq_client *cptr;
- 	struct snd_seq_client_info client_info;
-@@ -1237,8 +1239,8 @@ static int snd_seq_ioctl_get_client_info(struct snd_seq_client *client,
- 
- 
- /* CLIENT_INFO ioctl() */
--static int snd_seq_ioctl_set_client_info(struct snd_seq_client *client,
--					 void __user *arg)
-+static int seq_ioctl_set_client_info(struct snd_seq_client *client,
-+				     void __user *arg)
- {
- 	struct snd_seq_client_info client_info;
- 
-@@ -1267,8 +1269,8 @@ static int snd_seq_ioctl_set_client_info(struct snd_seq_client *client,
- /* 
-  * CREATE PORT ioctl() 
-  */
--static int snd_seq_ioctl_create_port(struct snd_seq_client *client,
--				     void __user *arg)
-+static int seq_ioctl_create_port(struct snd_seq_client *client,
-+				 void __user *arg)
- {
- 	struct snd_seq_client_port *port;
- 	struct snd_seq_port_info info;
-@@ -1317,8 +1319,8 @@ static int snd_seq_ioctl_create_port(struct snd_seq_client *client,
- /* 
-  * DELETE PORT ioctl() 
-  */
--static int snd_seq_ioctl_delete_port(struct snd_seq_client *client,
--				     void __user *arg)
-+static int seq_ioctl_delete_port(struct snd_seq_client *client,
-+				 void __user *arg)
- {
- 	struct snd_seq_port_info info;
- 	int err;
-@@ -1341,8 +1343,8 @@ static int snd_seq_ioctl_delete_port(struct snd_seq_client *client,
- /* 
-  * GET_PORT_INFO ioctl() (on any client) 
-  */
--static int snd_seq_ioctl_get_port_info(struct snd_seq_client *client,
--				       void __user *arg)
-+static int seq_ioctl_get_port_info(struct snd_seq_client *client,
-+				   void __user *arg)
- {
- 	struct snd_seq_client *cptr;
- 	struct snd_seq_client_port *port;
-@@ -1374,8 +1376,8 @@ static int snd_seq_ioctl_get_port_info(struct snd_seq_client *client,
- /* 
-  * SET_PORT_INFO ioctl() (only ports on this/own client) 
-  */
--static int snd_seq_ioctl_set_port_info(struct snd_seq_client *client,
--				       void __user *arg)
-+static int seq_ioctl_set_port_info(struct snd_seq_client *client,
-+				   void __user *arg)
- {
- 	struct snd_seq_client_port *port;
- 	struct snd_seq_port_info info;
-@@ -1452,8 +1454,8 @@ int snd_seq_client_notify_subscription(int client, int port,
- /* 
-  * add to port's subscription list IOCTL interface 
-  */
--static int snd_seq_ioctl_subscribe_port(struct snd_seq_client *client,
--					void __user *arg)
-+static int seq_ioctl_subscribe_port(struct snd_seq_client *client,
-+				    void __user *arg)
- {
- 	int result = -EINVAL;
- 	struct snd_seq_client *receiver = NULL, *sender = NULL;
-@@ -1497,8 +1499,8 @@ static int snd_seq_ioctl_subscribe_port(struct snd_seq_client *client,
- /* 
-  * remove from port's subscription list 
-  */
--static int snd_seq_ioctl_unsubscribe_port(struct snd_seq_client *client,
--					  void __user *arg)
-+static int seq_ioctl_unsubscribe_port(struct snd_seq_client *client,
-+				      void __user *arg)
- {
- 	int result = -ENXIO;
- 	struct snd_seq_client *receiver = NULL, *sender = NULL;
-@@ -1539,8 +1541,8 @@ static int snd_seq_ioctl_unsubscribe_port(struct snd_seq_client *client,
- 
- 
- /* CREATE_QUEUE ioctl() */
--static int snd_seq_ioctl_create_queue(struct snd_seq_client *client,
--				      void __user *arg)
-+static int seq_ioctl_create_queue(struct snd_seq_client *client,
-+				  void __user *arg)
- {
- 	struct snd_seq_queue_info info;
- 	int result;
-@@ -1574,8 +1576,8 @@ static int snd_seq_ioctl_create_queue(struct snd_seq_client *client,
- }
- 
- /* DELETE_QUEUE ioctl() */
--static int snd_seq_ioctl_delete_queue(struct snd_seq_client *client,
--				      void __user *arg)
-+static int seq_ioctl_delete_queue(struct snd_seq_client *client,
-+				  void __user *arg)
- {
- 	struct snd_seq_queue_info info;
- 
-@@ -1586,8 +1588,8 @@ static int snd_seq_ioctl_delete_queue(struct snd_seq_client *client,
- }
- 
- /* GET_QUEUE_INFO ioctl() */
--static int snd_seq_ioctl_get_queue_info(struct snd_seq_client *client,
--					void __user *arg)
-+static int seq_ioctl_get_queue_info(struct snd_seq_client *client,
-+				    void __user *arg)
- {
- 	struct snd_seq_queue_info info;
- 	struct snd_seq_queue *q;
-@@ -1613,8 +1615,8 @@ static int snd_seq_ioctl_get_queue_info(struct snd_seq_client *client,
- }
- 
- /* SET_QUEUE_INFO ioctl() */
--static int snd_seq_ioctl_set_queue_info(struct snd_seq_client *client,
--					void __user *arg)
-+static int seq_ioctl_set_queue_info(struct snd_seq_client *client,
-+				    void __user *arg)
- {
- 	struct snd_seq_queue_info info;
- 	struct snd_seq_queue *q;
-@@ -1649,7 +1651,8 @@ static int snd_seq_ioctl_set_queue_info(struct snd_seq_client *client,
- }
- 
- /* GET_NAMED_QUEUE ioctl() */
--static int snd_seq_ioctl_get_named_queue(struct snd_seq_client *client, void __user *arg)
-+static int seq_ioctl_get_named_queue(struct snd_seq_client *client,
-+				     void __user *arg)
- {
- 	struct snd_seq_queue_info info;
- 	struct snd_seq_queue *q;
-@@ -1672,8 +1675,8 @@ static int snd_seq_ioctl_get_named_queue(struct snd_seq_client *client, void __u
- }
- 
- /* GET_QUEUE_STATUS ioctl() */
--static int snd_seq_ioctl_get_queue_status(struct snd_seq_client *client,
--					  void __user *arg)
-+static int seq_ioctl_get_queue_status(struct snd_seq_client *client,
-+				      void __user *arg)
- {
- 	struct snd_seq_queue_status status;
- 	struct snd_seq_queue *queue;
-@@ -1706,8 +1709,8 @@ static int snd_seq_ioctl_get_queue_status(struct snd_seq_client *client,
- 
- 
- /* GET_QUEUE_TEMPO ioctl() */
--static int snd_seq_ioctl_get_queue_tempo(struct snd_seq_client *client,
--					 void __user *arg)
-+static int seq_ioctl_get_queue_tempo(struct snd_seq_client *client,
-+				     void __user *arg)
- {
- 	struct snd_seq_queue_tempo tempo;
- 	struct snd_seq_queue *queue;
-@@ -1746,8 +1749,8 @@ int snd_seq_set_queue_tempo(int client, struct snd_seq_queue_tempo *tempo)
- 
- EXPORT_SYMBOL(snd_seq_set_queue_tempo);
- 
--static int snd_seq_ioctl_set_queue_tempo(struct snd_seq_client *client,
--					 void __user *arg)
-+static int seq_ioctl_set_queue_tempo(struct snd_seq_client *client,
-+				     void __user *arg)
- {
- 	int result;
- 	struct snd_seq_queue_tempo tempo;
-@@ -1761,8 +1764,8 @@ static int snd_seq_ioctl_set_queue_tempo(struct snd_seq_client *client,
- 
- 
- /* GET_QUEUE_TIMER ioctl() */
--static int snd_seq_ioctl_get_queue_timer(struct snd_seq_client *client,
--					 void __user *arg)
-+static int seq_ioctl_get_queue_timer(struct snd_seq_client *client,
-+				     void __user *arg)
- {
- 	struct snd_seq_queue_timer timer;
- 	struct snd_seq_queue *queue;
-@@ -1798,8 +1801,8 @@ static int snd_seq_ioctl_get_queue_timer(struct snd_seq_client *client,
- 
- 
- /* SET_QUEUE_TIMER ioctl() */
--static int snd_seq_ioctl_set_queue_timer(struct snd_seq_client *client,
--					 void __user *arg)
-+static int seq_ioctl_set_queue_timer(struct snd_seq_client *client,
-+				     void __user *arg)
- {
- 	int result = 0;
- 	struct snd_seq_queue_timer timer;
-@@ -1840,8 +1843,8 @@ static int snd_seq_ioctl_set_queue_timer(struct snd_seq_client *client,
- 
- 
- /* GET_QUEUE_CLIENT ioctl() */
--static int snd_seq_ioctl_get_queue_client(struct snd_seq_client *client,
--					  void __user *arg)
-+static int seq_ioctl_get_queue_client(struct snd_seq_client *client,
-+				      void __user *arg)
- {
- 	struct snd_seq_queue_client info;
- 	int used;
-@@ -1862,8 +1865,8 @@ static int snd_seq_ioctl_get_queue_client(struct snd_seq_client *client,
- 
- 
- /* SET_QUEUE_CLIENT ioctl() */
--static int snd_seq_ioctl_set_queue_client(struct snd_seq_client *client,
--					  void __user *arg)
-+static int seq_ioctl_set_queue_client(struct snd_seq_client *client,
-+				      void __user *arg)
- {
- 	int err;
- 	struct snd_seq_queue_client info;
-@@ -1877,13 +1880,13 @@ static int snd_seq_ioctl_set_queue_client(struct snd_seq_client *client,
- 			return err;
- 	}
- 
--	return snd_seq_ioctl_get_queue_client(client, arg);
-+	return seq_ioctl_get_queue_client(client, arg);
- }
- 
- 
- /* GET_CLIENT_POOL ioctl() */
--static int snd_seq_ioctl_get_client_pool(struct snd_seq_client *client,
--					 void __user *arg)
-+static int seq_ioctl_get_client_pool(struct snd_seq_client *client,
-+				     void __user *arg)
- {
- 	struct snd_seq_client_pool info;
- 	struct snd_seq_client *cptr;
-@@ -1917,8 +1920,8 @@ static int snd_seq_ioctl_get_client_pool(struct snd_seq_client *client,
- }
- 
- /* SET_CLIENT_POOL ioctl() */
--static int snd_seq_ioctl_set_client_pool(struct snd_seq_client *client,
--					 void __user *arg)
-+static int seq_ioctl_set_client_pool(struct snd_seq_client *client,
-+				     void __user *arg)
- {
- 	struct snd_seq_client_pool info;
- 	int rc;
-@@ -1957,13 +1960,13 @@ static int snd_seq_ioctl_set_client_pool(struct snd_seq_client *client,
- 		client->pool->room  = info.output_room;
- 	}
- 
--	return snd_seq_ioctl_get_client_pool(client, arg);
-+	return seq_ioctl_get_client_pool(client, arg);
- }
- 
- 
- /* REMOVE_EVENTS ioctl() */
--static int snd_seq_ioctl_remove_events(struct snd_seq_client *client,
--				       void __user *arg)
-+static int seq_ioctl_remove_events(struct snd_seq_client *client,
-+				   void __user *arg)
- {
- 	struct snd_seq_remove_events info;
- 
-@@ -1992,8 +1995,8 @@ static int snd_seq_ioctl_remove_events(struct snd_seq_client *client,
- /*
-  * get subscription info
-  */
--static int snd_seq_ioctl_get_subscription(struct snd_seq_client *client,
--					  void __user *arg)
-+static int seq_ioctl_get_subscription(struct snd_seq_client *client,
-+				      void __user *arg)
- {
- 	int result;
- 	struct snd_seq_client *sender = NULL;
-@@ -2032,8 +2035,7 @@ static int snd_seq_ioctl_get_subscription(struct snd_seq_client *client,
- /*
-  * get subscription info - check only its presence
-  */
--static int snd_seq_ioctl_query_subs(struct snd_seq_client *client,
--				    void __user *arg)
-+static int seq_ioctl_query_subs(struct snd_seq_client *client, void __user *arg)
- {
- 	int result = -ENXIO;
- 	struct snd_seq_client *cptr = NULL;
-@@ -2102,8 +2104,8 @@ static int snd_seq_ioctl_query_subs(struct snd_seq_client *client,
- /*
-  * query next client
-  */
--static int snd_seq_ioctl_query_next_client(struct snd_seq_client *client,
--					   void __user *arg)
-+static int seq_ioctl_query_next_client(struct snd_seq_client *client,
-+				       void __user *arg)
- {
- 	struct snd_seq_client *cptr = NULL;
- 	struct snd_seq_client_info info;
-@@ -2134,8 +2136,8 @@ static int snd_seq_ioctl_query_next_client(struct snd_seq_client *client,
- /* 
-  * query next port
-  */
--static int snd_seq_ioctl_query_next_port(struct snd_seq_client *client,
--					 void __user *arg)
-+static int seq_ioctl_query_next_port(struct snd_seq_client *client,
-+				     void __user *arg)
- {
- 	struct snd_seq_client *cptr;
- 	struct snd_seq_client_port *port = NULL;
-@@ -2172,39 +2174,39 @@ static const struct seq_ioctl_table {
- 	unsigned int cmd;
- 	int (*func)(struct snd_seq_client *client, void __user * arg);
- } ioctl_tables[] = {
--	{ SNDRV_SEQ_IOCTL_SYSTEM_INFO, snd_seq_ioctl_system_info },
--	{ SNDRV_SEQ_IOCTL_RUNNING_MODE, snd_seq_ioctl_running_mode },
--	{ SNDRV_SEQ_IOCTL_GET_CLIENT_INFO, snd_seq_ioctl_get_client_info },
--	{ SNDRV_SEQ_IOCTL_SET_CLIENT_INFO, snd_seq_ioctl_set_client_info },
--	{ SNDRV_SEQ_IOCTL_CREATE_PORT, snd_seq_ioctl_create_port },
--	{ SNDRV_SEQ_IOCTL_DELETE_PORT, snd_seq_ioctl_delete_port },
--	{ SNDRV_SEQ_IOCTL_GET_PORT_INFO, snd_seq_ioctl_get_port_info },
--	{ SNDRV_SEQ_IOCTL_SET_PORT_INFO, snd_seq_ioctl_set_port_info },
--	{ SNDRV_SEQ_IOCTL_SUBSCRIBE_PORT, snd_seq_ioctl_subscribe_port },
--	{ SNDRV_SEQ_IOCTL_UNSUBSCRIBE_PORT, snd_seq_ioctl_unsubscribe_port },
--	{ SNDRV_SEQ_IOCTL_CREATE_QUEUE, snd_seq_ioctl_create_queue },
--	{ SNDRV_SEQ_IOCTL_DELETE_QUEUE, snd_seq_ioctl_delete_queue },
--	{ SNDRV_SEQ_IOCTL_GET_QUEUE_INFO, snd_seq_ioctl_get_queue_info },
--	{ SNDRV_SEQ_IOCTL_SET_QUEUE_INFO, snd_seq_ioctl_set_queue_info },
--	{ SNDRV_SEQ_IOCTL_GET_NAMED_QUEUE, snd_seq_ioctl_get_named_queue },
--	{ SNDRV_SEQ_IOCTL_GET_QUEUE_STATUS, snd_seq_ioctl_get_queue_status },
--	{ SNDRV_SEQ_IOCTL_GET_QUEUE_TEMPO, snd_seq_ioctl_get_queue_tempo },
--	{ SNDRV_SEQ_IOCTL_SET_QUEUE_TEMPO, snd_seq_ioctl_set_queue_tempo },
--	{ SNDRV_SEQ_IOCTL_GET_QUEUE_TIMER, snd_seq_ioctl_get_queue_timer },
--	{ SNDRV_SEQ_IOCTL_SET_QUEUE_TIMER, snd_seq_ioctl_set_queue_timer },
--	{ SNDRV_SEQ_IOCTL_GET_QUEUE_CLIENT, snd_seq_ioctl_get_queue_client },
--	{ SNDRV_SEQ_IOCTL_SET_QUEUE_CLIENT, snd_seq_ioctl_set_queue_client },
--	{ SNDRV_SEQ_IOCTL_GET_CLIENT_POOL, snd_seq_ioctl_get_client_pool },
--	{ SNDRV_SEQ_IOCTL_SET_CLIENT_POOL, snd_seq_ioctl_set_client_pool },
--	{ SNDRV_SEQ_IOCTL_GET_SUBSCRIPTION, snd_seq_ioctl_get_subscription },
--	{ SNDRV_SEQ_IOCTL_QUERY_NEXT_CLIENT, snd_seq_ioctl_query_next_client },
--	{ SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT, snd_seq_ioctl_query_next_port },
--	{ SNDRV_SEQ_IOCTL_REMOVE_EVENTS, snd_seq_ioctl_remove_events },
--	{ SNDRV_SEQ_IOCTL_QUERY_SUBS, snd_seq_ioctl_query_subs },
-+	{ SNDRV_SEQ_IOCTL_SYSTEM_INFO, seq_ioctl_system_info },
-+	{ SNDRV_SEQ_IOCTL_RUNNING_MODE, seq_ioctl_running_mode },
-+	{ SNDRV_SEQ_IOCTL_GET_CLIENT_INFO, seq_ioctl_get_client_info },
-+	{ SNDRV_SEQ_IOCTL_SET_CLIENT_INFO, seq_ioctl_set_client_info },
-+	{ SNDRV_SEQ_IOCTL_CREATE_PORT, seq_ioctl_create_port },
-+	{ SNDRV_SEQ_IOCTL_DELETE_PORT, seq_ioctl_delete_port },
-+	{ SNDRV_SEQ_IOCTL_GET_PORT_INFO, seq_ioctl_get_port_info },
-+	{ SNDRV_SEQ_IOCTL_SET_PORT_INFO, seq_ioctl_set_port_info },
-+	{ SNDRV_SEQ_IOCTL_SUBSCRIBE_PORT, seq_ioctl_subscribe_port },
-+	{ SNDRV_SEQ_IOCTL_UNSUBSCRIBE_PORT, seq_ioctl_unsubscribe_port },
-+	{ SNDRV_SEQ_IOCTL_CREATE_QUEUE, seq_ioctl_create_queue },
-+	{ SNDRV_SEQ_IOCTL_DELETE_QUEUE, seq_ioctl_delete_queue },
-+	{ SNDRV_SEQ_IOCTL_GET_QUEUE_INFO, seq_ioctl_get_queue_info },
-+	{ SNDRV_SEQ_IOCTL_SET_QUEUE_INFO, seq_ioctl_set_queue_info },
-+	{ SNDRV_SEQ_IOCTL_GET_NAMED_QUEUE, seq_ioctl_get_named_queue },
-+	{ SNDRV_SEQ_IOCTL_GET_QUEUE_STATUS, seq_ioctl_get_queue_status },
-+	{ SNDRV_SEQ_IOCTL_GET_QUEUE_TEMPO, seq_ioctl_get_queue_tempo },
-+	{ SNDRV_SEQ_IOCTL_SET_QUEUE_TEMPO, seq_ioctl_set_queue_tempo },
-+	{ SNDRV_SEQ_IOCTL_GET_QUEUE_TIMER, seq_ioctl_get_queue_timer },
-+	{ SNDRV_SEQ_IOCTL_SET_QUEUE_TIMER, seq_ioctl_set_queue_timer },
-+	{ SNDRV_SEQ_IOCTL_GET_QUEUE_CLIENT, seq_ioctl_get_queue_client },
-+	{ SNDRV_SEQ_IOCTL_SET_QUEUE_CLIENT, seq_ioctl_set_queue_client },
-+	{ SNDRV_SEQ_IOCTL_GET_CLIENT_POOL, seq_ioctl_get_client_pool },
-+	{ SNDRV_SEQ_IOCTL_SET_CLIENT_POOL, seq_ioctl_set_client_pool },
-+	{ SNDRV_SEQ_IOCTL_GET_SUBSCRIPTION, seq_ioctl_get_subscription },
-+	{ SNDRV_SEQ_IOCTL_QUERY_NEXT_CLIENT, seq_ioctl_query_next_client },
-+	{ SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT, seq_ioctl_query_next_port },
-+	{ SNDRV_SEQ_IOCTL_REMOVE_EVENTS, seq_ioctl_remove_events },
-+	{ SNDRV_SEQ_IOCTL_QUERY_SUBS, seq_ioctl_query_subs },
- 	{ 0, NULL },
- };
- 
--static int snd_seq_do_ioctl(struct snd_seq_client *client, unsigned int cmd,
-+static int seq_do_ioctl(struct snd_seq_client *client, unsigned int cmd,
- 			    void __user *arg)
- {
- 	const struct seq_ioctl_table *p;
-@@ -2237,7 +2239,7 @@ static long snd_seq_ioctl(struct file *file, unsigned int cmd, unsigned long arg
- 	if (snd_BUG_ON(!client))
- 		return -ENXIO;
- 		
--	return snd_seq_do_ioctl(client, cmd, (void __user *) arg);
-+	return seq_do_ioctl(client, cmd, (void __user *) arg);
- }
- 
- #ifdef CONFIG_COMPAT
-@@ -2437,7 +2439,7 @@ int snd_seq_kernel_client_ctl(int clientid, unsigned int cmd, void *arg)
- 	if (client == NULL)
- 		return -ENXIO;
- 	fs = snd_enter_user();
--	result = snd_seq_do_ioctl(client, cmd, (void __force __user *)arg);
-+	result = seq_do_ioctl(client, cmd, (void __force __user *)arg);
- 	snd_leave_user(fs);
- 	return result;
- }
 diff --git a/sound/core/seq/seq_compat.c b/sound/core/seq/seq_compat.c
-index 6517590..70d3ddb 100644
+index 70d3ddb..6cc7302 100644
 --- a/sound/core/seq/seq_compat.c
 +++ b/sound/core/seq/seq_compat.c
-@@ -42,8 +42,9 @@ struct snd_seq_port_info32 {
+@@ -42,13 +42,11 @@ struct snd_seq_port_info32 {
  	char reserved[59];		/* for future use */
  };
  
--static int snd_seq_call_port_info_ioctl(struct snd_seq_client *client, unsigned int cmd,
--					struct snd_seq_port_info32 __user *data32)
-+static int seq_call_port_info_ioctl(struct snd_seq_client *client,
-+				    unsigned int cmd,
-+				    struct snd_seq_port_info32 __user *data32)
+-static int seq_call_port_info_ioctl(struct snd_seq_client *client,
+-				    unsigned int cmd,
++static int seq_call_port_info_ioctl(int clientid, unsigned int cmd,
+ 				    struct snd_seq_port_info32 __user *data32)
  {
  	int err = -EFAULT;
  	struct snd_seq_port_info *data;
-@@ -60,7 +61,7 @@ static int snd_seq_call_port_info_ioctl(struct snd_seq_client *client, unsigned
+-	mm_segment_t fs;
+ 
+ 	data = kmalloc(sizeof(*data), GFP_KERNEL);
+ 	if (!data)
+@@ -60,9 +58,7 @@ static int seq_call_port_info_ioctl(struct snd_seq_client *client,
+ 		goto error;
  	data->kernel = NULL;
  
- 	fs = snd_enter_user();
--	err = snd_seq_do_ioctl(client, cmd, data);
-+	err = seq_do_ioctl(client, cmd, data);
- 	snd_leave_user(fs);
+-	fs = snd_enter_user();
+-	err = seq_do_ioctl(client, cmd, data);
+-	snd_leave_user(fs);
++	err = snd_seq_kernel_client_ctl(clientid, cmd, data);
  	if (err < 0)
  		goto error;
-@@ -123,17 +124,17 @@ static long snd_seq_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
+ 
+@@ -124,17 +120,22 @@ static long snd_seq_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
  	case SNDRV_SEQ_IOCTL_GET_SUBSCRIPTION:
  	case SNDRV_SEQ_IOCTL_QUERY_NEXT_CLIENT:
  	case SNDRV_SEQ_IOCTL_RUNNING_MODE:
--		return snd_seq_do_ioctl(client, cmd, argp);
-+		return seq_do_ioctl(client, cmd, argp);
+-		return seq_do_ioctl(client, cmd, argp);
++		return snd_seq_ioctl(file, cmd, (unsigned long)arg);
  	case SNDRV_SEQ_IOCTL_CREATE_PORT32:
--		return snd_seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_CREATE_PORT, argp);
-+		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_CREATE_PORT, argp);
+-		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_CREATE_PORT, argp);
++		return seq_call_port_info_ioctl(client->number,
++					SNDRV_SEQ_IOCTL_CREATE_PORT, argp);
  	case SNDRV_SEQ_IOCTL_DELETE_PORT32:
--		return snd_seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_DELETE_PORT, argp);
-+		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_DELETE_PORT, argp);
+-		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_DELETE_PORT, argp);
++		return seq_call_port_info_ioctl(client->number,
++					SNDRV_SEQ_IOCTL_DELETE_PORT, argp);
  	case SNDRV_SEQ_IOCTL_GET_PORT_INFO32:
--		return snd_seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_GET_PORT_INFO, argp);
-+		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_GET_PORT_INFO, argp);
+-		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_GET_PORT_INFO, argp);
++		return seq_call_port_info_ioctl(client->number,
++					SNDRV_SEQ_IOCTL_GET_PORT_INFO, argp);
  	case SNDRV_SEQ_IOCTL_SET_PORT_INFO32:
--		return snd_seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_SET_PORT_INFO, argp);
-+		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_SET_PORT_INFO, argp);
+-		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_SET_PORT_INFO, argp);
++		return seq_call_port_info_ioctl(client->number,
++					SNDRV_SEQ_IOCTL_SET_PORT_INFO, argp);
  	case SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT32:
--		return snd_seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT, argp);
-+		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT, argp);
+-		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT, argp);
++		return seq_call_port_info_ioctl(client->number,
++					SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT, argp);
  	}
  	return -ENOIOCTLCMD;
  }
