@@ -1,21 +1,18 @@
-From: =?UTF-8?Q?Hauke_Kr=c3=bcger?= <public-hk@ind.rwth-aachen.de>
-Subject: Alsa Application using the "default" plugin
-Date: Sun, 7 Aug 2016 18:29:54 +0200
-Message-ID: <57A76202.9040304@ind.rwth-aachen.de>
+From: Maurizio Berti <maurizio.berti@gmail.com>
+Subject: [PATCH] alsa-python: alsaseq: added binding for
+	delete_port
+Date: Sun, 7 Aug 2016 22:28:49 +0200
+Message-ID: <CAPn+-XQD26Zfx=_oheaXPKYOUt9WzNejrBR+BzCX-HXE_sdaCQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx-out-2.rwth-aachen.de (mx-out-2.rwth-aachen.de
- [134.130.5.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DC71265B3F
- for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 18:29:55 +0200 (CEST)
-Received: from [192.168.178.121] (aftr-88-153-6-101.unity-media.net
- [88.153.6.101])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by mail.ind.rwth-aachen.de (Postfix) with ESMTP id A48061674131
- for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 18:29:54 +0200 (CEST)
+Received: from mail-yw0-f194.google.com (mail-yw0-f194.google.com
+ [209.85.161.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC568265919
+ for <Alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 22:29:30 +0200 (CEST)
+Received: by mail-yw0-f194.google.com with SMTP id z8so23942155ywa.0
+ for <Alsa-devel@alsa-project.org>; Sun, 07 Aug 2016 13:29:30 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,37 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi everyone,
-
-I have created an ALSA audio application which works fine for any kind 
-of hardware device (all devices addressed by "hw:n,m").
-
-Today, I planned to implement the functionality to also address plugins. 
-My test case is the "default" plugin.
-When using this, I see significant differences:
-
-1) Function "snd_pcm_hw_params_any" returns a value of 1. For hardware 
-devices it returns 0. There is no documentation of the return type from 
-that function. What does the 1 say?
-2) I want to simultaneously capture and playback. Therefore I call 
-"snd_pcm_link". This function fails with the error saying that this 
-function is not implemented. Is that the intended behavior and how would 
-I synchronize input and output? What I do to fix this is to start input 
-and output ("snd_pcm_start") independently if "snd_pcm_link" fails.
-3) The program stops working on the second call to "snd_pcm_writei": The 
-function call simply never returns. I guess that the pcm output 
-interface does not run at this moment and the output buffer has been 
-completely filled before.
-
-All other functions calls work as expected but the described behavior 
-prevents the application from working properly. And - to repeat - the 
-same code works for all hardware soundcards "hw:n,m" which I tested.
-
-What is the recommended way to address the "default" plugin pcm device?
-
-Best regards
-
-Hauke
+SGVsbG8sCkkgd2FzIGdvaW5nIHRvIHNlbmQgdGhpcyBwYXRjaCB2aWEgZ2l0LCBidXQgSSd2ZSB0
+cm91YmxlcyBzZXR0aW5nIGl0IHVwCmFnYWluc3QgZ21haWwsIHRoZW4gSSBob3BlIEknbSBub3Qg
+ZG9pbmcgc29tZXRoaW5nIHdyb25nIGJ5IHBvc3RpbmcgdGhpcwpkaXJlY3RseSBoZXJlLgoKSSBm
+b3VuZCBvdXQgdGhhdCBweWFsc2EgZG9lc24ndCBwcm92aWRlIGRlbGV0ZV9wb3J0LCB0aGVuIEkg
+YWRkZWQgaXQ7CnBsZWFzZSwgbm90ZSwgSSdtIG5vdCBhIHByb2dyYW1tZXIsIEkganVzdCBkbyB0
+aGlzIGZvciBmdW4gYW5kIEkgYWN0dWFsbHkKaGF2ZSBubyBleHBlcmllbmNlIGluIEMgcHJvZ3Jh
+bW1pbmc6IEkganVzdCB1bmRlcnN0YW5kIChtb3N0IG9mKSBpdCBieQpyZWFkaW5nIHRoZSBjb2Rl
+LCBzbyBJIGp1c3QgdXNlZCBzb21lIGtub3dsZWRnZSBhbmQgbG9naWMgdG8gYWRkIHRoaXMKYmlu
+ZGluZy4gU28gZmFyLCBpdCBsb29rcyBmaW5lIHRvIG1lIGFuZCB3b3JrcyB3aXRob3V0IGFueSBw
+cm9ibGVtLgoKU2lnbmVkLW9mZi1ieTogTWF1cml6aW9CIDxtYXVyaXppby5iZXJ0aUBnbWFpbC5j
+b20+CgpkaWZmIC0tZ2l0IGEvcHlhbHNhL2Fsc2FzZXEuYyBiL3B5YWxzYS9hbHNhc2VxLmMKaW5k
+ZXggY2UzMzJlZC4uMmFkNGQ1NSAxMDA2NDQKLS0tIGEvcHlhbHNhL2Fsc2FzZXEuYworKysgYi9w
+eWFsc2EvYWxzYXNlcS5jCkBAIC0yMzQzLDYgKzIzNDMsNDQgQEAgU2VxdWVuY2VyX2NyZWF0ZV9z
+aW1wbGVfcG9ydChTZXF1ZW5jZXJPYmplY3QgKnNlbGYsCiAgIHJldHVybiBQeUludF9Gcm9tTG9u
+Zyhwb3J0KTsKIH0KCisKKy8qKiBhbHNhc2VxLlNlcXVlbmNlciBkZWxldGVfcG9ydCgpIG1ldGhv
+ZDogX19kb2NfXyAqLworUHlEb2NfU1RSVkFSKFNlcXVlbmNlcl9kZWxldGVfcG9ydF9fZG9jX18s
+CisgICJkZWxldGVfcG9ydChwb3J0X2lkKSAtPiBpbnQiCisgICJcbiIKKyAgIkRlbGV0ZSBhbiBl
+eGlzdGluZyBwb3J0LlxuIgorICAiXG4iCisgICJQYXJhbWV0ZXJzOlxuIgorICAiICAgIHBvcnRf
+aWQgLS0gaWQgb2YgdGhlIHBvcnRcbiIKKyAgIlJhaXNlczpcbiIKKyAgIiAgU2VxdWVuY2VyRXJy
+b3I6IGlmIEFMU0EgY2FuJ3QgZGVsZXRlIHRoZSBwb3J0IgorKTsKKworCisvKiogYWxzYXNlcS5T
+ZXF1ZW5jZXIgZGVsZXRlX3BvcnQoKSBtZXRob2QgKi8KK3N0YXRpYyBQeU9iamVjdCAqCitTZXF1
+ZW5jZXJfZGVsZXRlX3BvcnQoU2VxdWVuY2VyT2JqZWN0ICpzZWxmLAorICAgICBQeU9iamVjdCAq
+YXJncywKKyAgICAgUHlPYmplY3QgKmt3ZHMpIHsKKyAgaW50IHBvcnRfaWQgPSAwOworICBpbnQg
+cmV0OworICBjaGFyICprd2xpc3RbXSA9IHsgInBvcnRfaWQiLCBOVUxMfTsKKworICBpZiAoIVB5
+QXJnX1BhcnNlVHVwbGVBbmRLZXl3b3JkcyhhcmdzLCBrd2RzLCAifGkiLCBrd2xpc3QsCisgICAm
+cG9ydF9pZCkpIHsKKyAgICByZXR1cm4gTlVMTDsKKyAgfQorCisgIHJldCA9IHNuZF9zZXFfZGVs
+ZXRlX3BvcnQoc2VsZi0+aGFuZGxlLCBwb3J0X2lkKTsKKyAgaWYgKHJldCA8IDApIHsKKyAgICBS
+QUlTRVNORChyZXQsICJGYWlsZWQgdG8gZGVsZXRlIHBvcnQiKTsKKyAgICByZXR1cm4gTlVMTDsK
+KyAgfQorCisgIFB5X1JFVFVSTl9OT05FOworfQorCisKIC8qKiBhbHNhc2VxLlNlcXVlbmNlciBj
+b25uZWN0aW9uX2xpc3QoKSBtZXRob2Q6IF9fZG9jX18gKi8KIFB5RG9jX1NUUlZBUihTZXF1ZW5j
+ZXJfY29ubmVjdGlvbl9saXN0X19kb2NfXywKICAgImNvbm5lY3Rpb25fbGlzdCgpIC0+IGxpc3Rc
+biIKQEAgLTMyNDgsNiArMzI4NiwxMCBAQCBzdGF0aWMgUHlNZXRob2REZWYgU2VxdWVuY2VyX21l
+dGhvZHNbXSA9IHsKICAgIChQeUNGdW5jdGlvbikgU2VxdWVuY2VyX2NyZWF0ZV9zaW1wbGVfcG9y
+dCwKICAgIE1FVEhfVkFSQVJHUyB8IE1FVEhfS0VZV09SRFMsCiAgICBTZXF1ZW5jZXJfY3JlYXRl
+X3NpbXBsZV9wb3J0X19kb2NfXyB9LAorICB7ImRlbGV0ZV9wb3J0IiwKKyAgIChQeUNGdW5jdGlv
+bikgU2VxdWVuY2VyX2RlbGV0ZV9wb3J0LAorICAgTUVUSF9WQVJBUkdTIHwgTUVUSF9LRVlXT1JE
+UywKKyAgIFNlcXVlbmNlcl9kZWxldGVfcG9ydF9fZG9jX18gfSwKICAgeyJjb25uZWN0aW9uX2xp
+c3QiLAogICAgKFB5Q0Z1bmN0aW9uKSBTZXF1ZW5jZXJfY29ubmVjdGlvbl9saXN0LAogICAgTUVU
+SF9WQVJBUkdTLAotLSAKMi40LjEwCgoKLS0Kw4ggZGlmZmljaWxlIGF2ZXJlIHVuYSBjb252aW56
+aW9uZSBwcmVjaXNhIHF1YW5kbyBzaSBwYXJsYSBkZWxsZSByYWdpb25pIGRlbApjdW9yZS4gLSAi
+U29zdGllbmUgUGVyZWlyYSIsIEFudG9uaW8gVGFidWNjaGkKaHR0cDovL3d3dy5qaWRlc2submV0
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
