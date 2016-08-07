@@ -1,19 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 04/39] ALSA: seq: copy ioctl data from user
- space to kernel stack
-Date: Sun, 7 Aug 2016 23:26:35 +0900
-Message-ID: <57A7451B.4050102@sakamocchi.jp>
-References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
- <1470563355-18368-5-git-send-email-o-takashi@sakamocchi.jp>
- <c647ef16-f993-6c29-b8f0-18337ea32d4d@ladisch.de>
+From: =?UTF-8?Q?Hauke_Kr=c3=bcger?= <public-hk@ind.rwth-aachen.de>
+Subject: Alsa Application using the "default" plugin
+Date: Sun, 7 Aug 2016 18:29:54 +0200
+Message-ID: <57A76202.9040304@ind.rwth-aachen.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id D55BA26058F
- for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 16:26:45 +0200 (CEST)
-In-Reply-To: <c647ef16-f993-6c29-b8f0-18337ea32d4d@ladisch.de>
+Received: from mx-out-2.rwth-aachen.de (mx-out-2.rwth-aachen.de
+ [134.130.5.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DC71265B3F
+ for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 18:29:55 +0200 (CEST)
+Received: from [192.168.178.121] (aftr-88-153-6-101.unity-media.net
+ [88.153.6.101])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by mail.ind.rwth-aachen.de (Postfix) with ESMTP id A48061674131
+ for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 18:29:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,34 +25,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+Hi everyone,
 
-On Aug 7 2016 19:15, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> Data from user space is once copied to kernel stack, then operated and
->> copied to user space, in a consistent manner. This manner forces all ioctl
->> operations to copy the data from/to user space, even if it's read-only or
->> write-only. Thus, it has an overhead for simpler ioctl commands.
-> 
-> The ioctl code itself already contains information about the direction
-> and size of the data to be copied (and in theory, these values are
-> correct).  See dispatch_ioctl() in drivers/firewire/core-cdev.c for an
-> example.
+I have created an ALSA audio application which works fine for any kind 
+of hardware device (all devices addressed by "hw:n,m").
 
-A nice idea.
+Today, I planned to implement the functionality to also address plugins. 
+My test case is the "default" plugin.
+When using this, I see significant differences:
 
-_IOC_SIZE macro pick up 13 or 14 bits (architecture-dependent) in ioctl
-command, which represents the size of argument. In my patch, the size of
-'union ioctl_arg' is 188 (x86/x32) or 192 (x86_64) and there's enough
-rest of the size field. So we can pick up the size from ioctl command by
-the macro because the size represents the maximum bytes of argument for
-all of sequencer ioctls.
+1) Function "snd_pcm_hw_params_any" returns a value of 1. For hardware 
+devices it returns 0. There is no documentation of the return type from 
+that function. What does the 1 say?
+2) I want to simultaneously capture and playback. Therefore I call 
+"snd_pcm_link". This function fails with the error saying that this 
+function is not implemented. Is that the intended behavior and how would 
+I synchronize input and output? What I do to fix this is to start input 
+and output ("snd_pcm_start") independently if "snd_pcm_link" fails.
+3) The program stops working on the second call to "snd_pcm_writei": The 
+function call simply never returns. I guess that the pcm output 
+interface does not run at this moment and the output buffer has been 
+completely filled before.
 
-I'll post revised version tomorrow. Thanks ;)
+All other functions calls work as expected but the described behavior 
+prevents the application from working properly. And - to repeat - the 
+same code works for all hardware soundcards "hw:n,m" which I tested.
 
+What is the recommended way to address the "default" plugin pcm device?
 
-Takashi Sakamoto
+Best regards
+
+Hauke
