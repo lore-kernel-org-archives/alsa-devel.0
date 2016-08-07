@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 11/39] ALSA: seq: optimize system_info function
-	to new design
-Date: Sun,  7 Aug 2016 18:48:47 +0900
-Message-ID: <1470563355-18368-12-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 09/39] ALSA: seq: optimize pversion function to
+	new design
+Date: Sun,  7 Aug 2016 18:48:45 +0900
+Message-ID: <1470563355-18368-10-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 19923265AA7
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 25E3D265B4C
  for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:38 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,44 +33,27 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 123d8a1..cb86190 100644
+index a643b4e..5e81d4f 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1131,22 +1131,19 @@ static int seq_ioctl_client_id(struct snd_seq_client *client, void *arg)
- }
+@@ -1114,9 +1114,12 @@ static unsigned int snd_seq_poll(struct file *file, poll_table * wait)
+ /*-----------------------------------------------------*/
  
- /* SYSTEM_INFO ioctl() */
--static int seq_ioctl_system_info(struct snd_seq_client *client,
--				 void __user *arg)
-+static int seq_ioctl_system_info(struct snd_seq_client *client, void *arg)
+ 
+-static int seq_ioctl_pversion(struct snd_seq_client *client, void __user *arg)
++static int seq_ioctl_pversion(struct snd_seq_client *client, void *arg)
  {
--	struct snd_seq_system_info info;
-+	struct snd_seq_system_info *info = arg;
- 
--	memset(&info, 0, sizeof(info));
-+	memset(info, 0, sizeof(*info));
- 	/* fill the info fields */
--	info.queues = SNDRV_SEQ_MAX_QUEUES;
--	info.clients = SNDRV_SEQ_MAX_CLIENTS;
--	info.ports = SNDRV_SEQ_MAX_PORTS;
--	info.channels = 256;	/* fixed limit */
--	info.cur_clients = client_usage.cur;
--	info.cur_queues = snd_seq_queue_get_cur_queues();
-+	info->queues = SNDRV_SEQ_MAX_QUEUES;
-+	info->clients = SNDRV_SEQ_MAX_CLIENTS;
-+	info->ports = SNDRV_SEQ_MAX_PORTS;
-+	info->channels = 256;	/* fixed limit */
-+	info->cur_clients = client_usage.cur;
-+	info->cur_queues = snd_seq_queue_get_cur_queues();
- 
--	if (copy_to_user(arg, &info, sizeof(info)))
--		return -EFAULT;
- 	return 0;
+-	return put_user(SNDRV_SEQ_VERSION, (int __user *)arg) ? -EFAULT : 0;
++	int *version = arg;
++
++	*version = SNDRV_SEQ_VERSION;
++	return 0;
  }
  
+ static int seq_ioctl_client_id(struct snd_seq_client *client, void __user *arg)
 -- 
 2.7.4
