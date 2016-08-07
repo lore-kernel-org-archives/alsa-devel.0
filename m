@@ -1,15 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 08/39] ALSA: seq: obsolete address limit helper
-Date: Sun,  7 Aug 2016 18:48:44 +0900
-Message-ID: <1470563355-18368-9-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 11/39] ALSA: seq: optimize system_info function
+	to new design
+Date: Sun,  7 Aug 2016 18:48:47 +0900
+Message-ID: <1470563355-18368-12-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id DDA51265919
- for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:37 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 19923265AA7
+ for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:38 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,39 +25,52 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Former commits make it useless to change address limit of running task.
-This commit obsoletes helper functions for it.
+In former commit, actual operations of each ioctl command get argument
+in kernel space. Copying from/to user space is performed outside of
+the function.
+
+This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 2002dac..a643b4e 100644
+index 123d8a1..cb86190 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -87,21 +87,6 @@ static int snd_seq_deliver_single_event(struct snd_seq_client *client,
+@@ -1131,22 +1131,19 @@ static int seq_ioctl_client_id(struct snd_seq_client *client, void *arg)
+ }
  
- /*
-  */
-- 
--static inline mm_segment_t snd_enter_user(void)
--{
--	mm_segment_t fs = get_fs();
--	set_fs(get_ds());
--	return fs;
--}
--
--static inline void snd_leave_user(mm_segment_t fs)
--{
--	set_fs(fs);
--}
--
--/*
-- */
- static inline unsigned short snd_seq_file_flags(struct file *file)
+ /* SYSTEM_INFO ioctl() */
+-static int seq_ioctl_system_info(struct snd_seq_client *client,
+-				 void __user *arg)
++static int seq_ioctl_system_info(struct snd_seq_client *client, void *arg)
  {
-         switch (file->f_mode & (FMODE_READ | FMODE_WRITE)) {
+-	struct snd_seq_system_info info;
++	struct snd_seq_system_info *info = arg;
+ 
+-	memset(&info, 0, sizeof(info));
++	memset(info, 0, sizeof(*info));
+ 	/* fill the info fields */
+-	info.queues = SNDRV_SEQ_MAX_QUEUES;
+-	info.clients = SNDRV_SEQ_MAX_CLIENTS;
+-	info.ports = SNDRV_SEQ_MAX_PORTS;
+-	info.channels = 256;	/* fixed limit */
+-	info.cur_clients = client_usage.cur;
+-	info.cur_queues = snd_seq_queue_get_cur_queues();
++	info->queues = SNDRV_SEQ_MAX_QUEUES;
++	info->clients = SNDRV_SEQ_MAX_CLIENTS;
++	info->ports = SNDRV_SEQ_MAX_PORTS;
++	info->channels = 256;	/* fixed limit */
++	info->cur_clients = client_usage.cur;
++	info->cur_queues = snd_seq_queue_get_cur_queues();
+ 
+-	if (copy_to_user(arg, &info, sizeof(info)))
+-		return -EFAULT;
+ 	return 0;
+ }
+ 
 -- 
 2.7.4
