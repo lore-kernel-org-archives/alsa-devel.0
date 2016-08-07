@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 30/39] ALSA: seq: optimize seq_queue_timer
+Subject: [PATCH 35/39] ALSA: seq: optimize remove_events
 	function to new design
-Date: Sun,  7 Aug 2016 18:49:06 +0900
-Message-ID: <1470563355-18368-31-git-send-email-o-takashi@sakamocchi.jp>
+Date: Sun,  7 Aug 2016 18:49:11 +0900
+Message-ID: <1470563355-18368-36-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 859A4265DA4
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 87D79265DA7
  for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:39 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,60 +33,45 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 24 ++++++++++--------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 383f5d3..667ad23 100644
+index bf86ca3..b608521 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1719,23 +1719,19 @@ static int seq_ioctl_get_queue_timer(struct snd_seq_client *client, void *arg)
+@@ -1862,18 +1862,14 @@ static int seq_ioctl_set_client_pool(struct snd_seq_client *client, void *arg)
  
  
- /* SET_QUEUE_TIMER ioctl() */
--static int seq_ioctl_set_queue_timer(struct snd_seq_client *client,
--				     void __user *arg)
-+static int seq_ioctl_set_queue_timer(struct snd_seq_client *client, void *arg)
+ /* REMOVE_EVENTS ioctl() */
+-static int seq_ioctl_remove_events(struct snd_seq_client *client,
+-				   void __user *arg)
++static int seq_ioctl_remove_events(struct snd_seq_client *client, void *arg)
  {
-+	struct snd_seq_queue_timer *timer = arg;
- 	int result = 0;
--	struct snd_seq_queue_timer timer;
+-	struct snd_seq_remove_events info;
 -
--	if (copy_from_user(&timer, arg, sizeof(timer)))
+-	if (copy_from_user(&info, arg, sizeof(info)))
 -		return -EFAULT;
++	struct snd_seq_remove_events *info = arg;
  
--	if (timer.type != SNDRV_SEQ_TIMER_ALSA)
-+	if (timer->type != SNDRV_SEQ_TIMER_ALSA)
- 		return -EINVAL;
+ 	/*
+ 	 * Input mostly not implemented XXX.
+ 	 */
+-	if (info.remove_mode & SNDRV_SEQ_REMOVE_INPUT) {
++	if (info->remove_mode & SNDRV_SEQ_REMOVE_INPUT) {
+ 		/*
+ 		 * No restrictions so for a user client we can clear
+ 		 * the whole fifo
+@@ -1882,8 +1878,8 @@ static int seq_ioctl_remove_events(struct snd_seq_client *client,
+ 			snd_seq_fifo_clear(client->data.user.fifo);
+ 	}
  
--	if (snd_seq_queue_check_access(timer.queue, client->number)) {
-+	if (snd_seq_queue_check_access(timer->queue, client->number)) {
- 		struct snd_seq_queue *q;
- 		struct snd_seq_timer *tmr;
+-	if (info.remove_mode & SNDRV_SEQ_REMOVE_OUTPUT)
+-		snd_seq_queue_remove_cells(client->number, &info);
++	if (info->remove_mode & SNDRV_SEQ_REMOVE_OUTPUT)
++		snd_seq_queue_remove_cells(client->number, info);
  
--		q = queueptr(timer.queue);
-+		q = queueptr(timer->queue);
- 		if (q == NULL)
- 			return -ENXIO;
- 		if (mutex_lock_interruptible(&q->timer_mutex)) {
-@@ -1743,13 +1739,13 @@ static int seq_ioctl_set_queue_timer(struct snd_seq_client *client,
- 			return -ERESTARTSYS;
- 		}
- 		tmr = q->timer;
--		snd_seq_queue_timer_close(timer.queue);
--		tmr->type = timer.type;
-+		snd_seq_queue_timer_close(timer->queue);
-+		tmr->type = timer->type;
- 		if (tmr->type == SNDRV_SEQ_TIMER_ALSA) {
--			tmr->alsa_id = timer.u.alsa.id;
--			tmr->preferred_resolution = timer.u.alsa.resolution;
-+			tmr->alsa_id = timer->u.alsa.id;
-+			tmr->preferred_resolution = timer->u.alsa.resolution;
- 		}
--		result = snd_seq_queue_timer_open(timer.queue);
-+		result = snd_seq_queue_timer_open(timer->queue);
- 		mutex_unlock(&q->timer_mutex);
- 		queuefree(q);
- 	} else {
+ 	return 0;
+ }
 -- 
 2.7.4
