@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 36/39] ALSA: seq: optimize get_subscription
+Subject: [PATCH 26/39] ALSA: seq: optimize get_queue_status
 	function to new design
-Date: Sun,  7 Aug 2016 18:49:12 +0900
-Message-ID: <1470563355-18368-37-git-send-email-o-takashi@sakamocchi.jp>
+Date: Sun,  7 Aug 2016 18:49:02 +0900
+Message-ID: <1470563355-18368-27-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 1C6B9265DE0
- for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:40 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 915C5265DC3
+ for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:39 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,59 +33,57 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 23 +++++++++--------------
- 1 file changed, 9 insertions(+), 14 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 26 ++++++++++----------------
+ 1 file changed, 10 insertions(+), 16 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index b608521..cd4073d 100644
+index 9afb0aa..40346f2 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1888,27 +1888,25 @@ static int seq_ioctl_remove_events(struct snd_seq_client *client, void *arg)
- /*
-  * get subscription info
-  */
--static int seq_ioctl_get_subscription(struct snd_seq_client *client,
--				      void __user *arg)
-+static int seq_ioctl_get_subscription(struct snd_seq_client *client, void *arg)
- {
-+	struct snd_seq_port_subscribe *subs = arg;
- 	int result;
- 	struct snd_seq_client *sender = NULL;
- 	struct snd_seq_client_port *sport = NULL;
--	struct snd_seq_port_subscribe subs;
- 	struct snd_seq_subscribers *p;
+@@ -1615,35 +1615,29 @@ static int seq_ioctl_get_named_queue(struct snd_seq_client *client, void *arg)
+ }
  
--	if (copy_from_user(&subs, arg, sizeof(subs)))
+ /* GET_QUEUE_STATUS ioctl() */
+-static int seq_ioctl_get_queue_status(struct snd_seq_client *client,
+-				      void __user *arg)
++static int seq_ioctl_get_queue_status(struct snd_seq_client *client, void *arg)
+ {
+-	struct snd_seq_queue_status status;
++	struct snd_seq_queue_status *status = arg;
+ 	struct snd_seq_queue *queue;
+ 	struct snd_seq_timer *tmr;
+ 
+-	if (copy_from_user(&status, arg, sizeof(status)))
 -		return -EFAULT;
 -
- 	result = -EINVAL;
--	if ((sender = snd_seq_client_use_ptr(subs.sender.client)) == NULL)
-+	sender = snd_seq_client_use_ptr(subs->sender.client);
-+	if (sender == NULL)
- 		goto __end;
--	if ((sport = snd_seq_port_use_ptr(sender, subs.sender.port)) == NULL)
-+	sport = snd_seq_port_use_ptr(sender, subs->sender.port);
-+	if (sport == NULL)
- 		goto __end;
--	p = snd_seq_port_get_subscription(&sport->c_src, &subs.dest);
-+	p = snd_seq_port_get_subscription(&sport->c_src, &subs->dest);
- 	if (p) {
- 		result = 0;
--		subs = p->info;
-+		*subs = p->info;
- 	} else
- 		result = -ENOENT;
+-	queue = queueptr(status.queue);
++	queue = queueptr(status->queue);
+ 	if (queue == NULL)
+ 		return -EINVAL;
+-	memset(&status, 0, sizeof(status));
+-	status.queue = queue->queue;
++	memset(status, 0, sizeof(*status));
++	status->queue = queue->queue;
+ 	
+ 	tmr = queue->timer;
+-	status.events = queue->tickq->cells + queue->timeq->cells;
++	status->events = queue->tickq->cells + queue->timeq->cells;
  
-@@ -1917,10 +1915,7 @@ static int seq_ioctl_get_subscription(struct snd_seq_client *client,
- 		snd_seq_port_unlock(sport);
- 	if (sender)
- 		snd_seq_client_unlock(sender);
--	if (result >= 0) {
--		if (copy_to_user(arg, &subs, sizeof(subs)))
--			return -EFAULT;
--	}
-+
- 	return result;
+-	status.time = snd_seq_timer_get_cur_time(tmr);
+-	status.tick = snd_seq_timer_get_cur_tick(tmr);
++	status->time = snd_seq_timer_get_cur_time(tmr);
++	status->tick = snd_seq_timer_get_cur_tick(tmr);
+ 
+-	status.running = tmr->running;
++	status->running = tmr->running;
+ 
+-	status.flags = queue->flags;
++	status->flags = queue->flags;
+ 	queuefree(queue);
+ 
+-	if (copy_to_user(arg, &status, sizeof(status)))
+-		return -EFAULT;
+ 	return 0;
  }
  
 -- 
