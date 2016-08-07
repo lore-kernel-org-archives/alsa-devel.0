@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 06/39] ALSA: seq: obsolete address mode in
-	compatibility layer
-Date: Sun,  7 Aug 2016 18:48:42 +0900
-Message-ID: <1470563355-18368-7-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 05/39] ALSA: seq: add documentation for
+	snd_seq_kernel_client_ctl
+Date: Sun,  7 Aug 2016 18:48:41 +0900
+Message-ID: <1470563355-18368-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id CDC372658D5
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id DA6BB265917
  for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:37 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,77 +25,43 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In a 32/64 bit compatibility layer of ALSA sequencer core, data for some
-ioctls is copied to kernel stack and passed to core operations. Then,
-address limit of running task is changed because core implementation
-expected arguments in userspace.
+This kernel API is used by kernel implementation. Currently, it's used for
+kernel clients of ALSA sequencer, while it can be used for application
+clients. The difference is just on address spaces of argument. In short,
+this kernel API can be available for application client with data in kernel
+space.
 
-In this case, snd_seq_kernel_client_ctl() is available. This commit
-replaces with it.
+This commit adds a document about this.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_compat.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/sound/core/seq/seq_compat.c b/sound/core/seq/seq_compat.c
-index 70d3ddb..6cc7302 100644
---- a/sound/core/seq/seq_compat.c
-+++ b/sound/core/seq/seq_compat.c
-@@ -42,13 +42,11 @@ struct snd_seq_port_info32 {
- 	char reserved[59];		/* for future use */
- };
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index 17d988a..a09cb84 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -2494,9 +2494,17 @@ int snd_seq_kernel_client_dispatch(int client, struct snd_seq_event * ev,
  
--static int seq_call_port_info_ioctl(struct snd_seq_client *client,
--				    unsigned int cmd,
-+static int seq_call_port_info_ioctl(int clientid, unsigned int cmd,
- 				    struct snd_seq_port_info32 __user *data32)
+ EXPORT_SYMBOL(snd_seq_kernel_client_dispatch);
+ 
+-/*
+- * exported, called by kernel clients to perform same functions as with
+- * userland ioctl() 
++/**
++ * snd_seq_kernel_client_ctl - operate a command for a client with data in
++ *			       kernel space.
++ * @clientid:	A numerical ID for a client.
++ * @cmd:	An ioctl(2) command for ALSA sequencer operation.
++ * @arg:	A pointer to data in kernel space.
++ *
++ * Against its name, both kernel/application client can be handled by this
++ * kernel API. Address space for 'arg' argument should be in kernel space.
++ *
++ * Return: 0 at success. Minus error code at failure.
+  */
+ int snd_seq_kernel_client_ctl(int clientid, unsigned int cmd, void *arg)
  {
- 	int err = -EFAULT;
- 	struct snd_seq_port_info *data;
--	mm_segment_t fs;
- 
- 	data = kmalloc(sizeof(*data), GFP_KERNEL);
- 	if (!data)
-@@ -60,9 +58,7 @@ static int seq_call_port_info_ioctl(struct snd_seq_client *client,
- 		goto error;
- 	data->kernel = NULL;
- 
--	fs = snd_enter_user();
--	err = seq_do_ioctl(client, cmd, data);
--	snd_leave_user(fs);
-+	err = snd_seq_kernel_client_ctl(clientid, cmd, data);
- 	if (err < 0)
- 		goto error;
- 
-@@ -124,17 +120,22 @@ static long snd_seq_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
- 	case SNDRV_SEQ_IOCTL_GET_SUBSCRIPTION:
- 	case SNDRV_SEQ_IOCTL_QUERY_NEXT_CLIENT:
- 	case SNDRV_SEQ_IOCTL_RUNNING_MODE:
--		return seq_do_ioctl(client, cmd, argp);
-+		return snd_seq_ioctl(file, cmd, (unsigned long)arg);
- 	case SNDRV_SEQ_IOCTL_CREATE_PORT32:
--		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_CREATE_PORT, argp);
-+		return seq_call_port_info_ioctl(client->number,
-+					SNDRV_SEQ_IOCTL_CREATE_PORT, argp);
- 	case SNDRV_SEQ_IOCTL_DELETE_PORT32:
--		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_DELETE_PORT, argp);
-+		return seq_call_port_info_ioctl(client->number,
-+					SNDRV_SEQ_IOCTL_DELETE_PORT, argp);
- 	case SNDRV_SEQ_IOCTL_GET_PORT_INFO32:
--		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_GET_PORT_INFO, argp);
-+		return seq_call_port_info_ioctl(client->number,
-+					SNDRV_SEQ_IOCTL_GET_PORT_INFO, argp);
- 	case SNDRV_SEQ_IOCTL_SET_PORT_INFO32:
--		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_SET_PORT_INFO, argp);
-+		return seq_call_port_info_ioctl(client->number,
-+					SNDRV_SEQ_IOCTL_SET_PORT_INFO, argp);
- 	case SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT32:
--		return seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT, argp);
-+		return seq_call_port_info_ioctl(client->number,
-+					SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT, argp);
- 	}
- 	return -ENOIOCTLCMD;
- }
 -- 
 2.7.4
