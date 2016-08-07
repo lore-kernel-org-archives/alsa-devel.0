@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 32/39] ALSA: seq: optimize set_queue_client
+Subject: [PATCH 28/39] ALSA: seq: optimize set_queue_tempo
 	function to new design
-Date: Sun,  7 Aug 2016 18:49:08 +0900
-Message-ID: <1470563355-18368-33-git-send-email-o-takashi@sakamocchi.jp>
+Date: Sun,  7 Aug 2016 18:49:04 +0900
+Message-ID: <1470563355-18368-29-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 90062265DAB
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 82C3C265D9E
  for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:39 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,35 +33,32 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 30aac28..6c1b406 100644
+index 2338468..a90a4a3 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1773,17 +1773,14 @@ static int seq_ioctl_get_queue_client(struct snd_seq_client *client, void *arg)
+@@ -1677,16 +1677,12 @@ int snd_seq_set_queue_tempo(int client, struct snd_seq_queue_tempo *tempo)
  
+ EXPORT_SYMBOL(snd_seq_set_queue_tempo);
  
- /* SET_QUEUE_CLIENT ioctl() */
--static int seq_ioctl_set_queue_client(struct snd_seq_client *client,
--				      void __user *arg)
-+static int seq_ioctl_set_queue_client(struct snd_seq_client *client, void *arg)
+-static int seq_ioctl_set_queue_tempo(struct snd_seq_client *client,
+-				     void __user *arg)
++static int seq_ioctl_set_queue_tempo(struct snd_seq_client *client, void *arg)
  {
-+	struct snd_seq_queue_client *info = arg;
- 	int err;
--	struct snd_seq_queue_client info;
++	struct snd_seq_queue_tempo *tempo = arg;
+ 	int result;
+-	struct snd_seq_queue_tempo tempo;
 -
--	if (copy_from_user(&info, arg, sizeof(info)))
+-	if (copy_from_user(&tempo, arg, sizeof(tempo)))
 -		return -EFAULT;
  
--	if (info.used >= 0) {
--		err = snd_seq_queue_use(info.queue, client->number, info.used);
-+	if (info->used >= 0) {
-+		err = snd_seq_queue_use(info->queue, client->number,
-+					info->used);
- 		if (err < 0)
- 			return err;
- 	}
+-	result = snd_seq_set_queue_tempo(client->number, &tempo);
++	result = snd_seq_set_queue_tempo(client->number, tempo);
+ 	return result < 0 ? result : 0;
+ }
+ 
 -- 
 2.7.4
