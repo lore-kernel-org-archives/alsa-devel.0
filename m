@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 21/39] ALSA: seq: optimize create_queue
+Subject: [PATCH 17/39] ALSA: seq: optimize get_port_info
 	function to new design
-Date: Sun,  7 Aug 2016 18:48:57 +0900
-Message-ID: <1470563355-18368-22-git-send-email-o-takashi@sakamocchi.jp>
+Date: Sun,  7 Aug 2016 18:48:53 +0900
+Message-ID: <1470563355-18368-18-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id BF711265CBB
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id AFE5F265CA5
  for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:38 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,57 +33,48 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 25 +++++++++----------------
- 1 file changed, 9 insertions(+), 16 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 9f4bcf2..aa937c0 100644
+index 3acec92..1e7b2ac 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1510,17 +1510,13 @@ static int seq_ioctl_unsubscribe_port(struct snd_seq_client *client, void *arg)
- 
- 
- /* CREATE_QUEUE ioctl() */
--static int seq_ioctl_create_queue(struct snd_seq_client *client,
--				  void __user *arg)
-+static int seq_ioctl_create_queue(struct snd_seq_client *client, void *arg)
+@@ -1317,32 +1317,27 @@ static int seq_ioctl_delete_port(struct snd_seq_client *client, void *arg)
+ /* 
+  * GET_PORT_INFO ioctl() (on any client) 
+  */
+-static int seq_ioctl_get_port_info(struct snd_seq_client *client,
+-				   void __user *arg)
++static int seq_ioctl_get_port_info(struct snd_seq_client *client, void *arg)
  {
--	struct snd_seq_queue_info info;
-+	struct snd_seq_queue_info *info = arg;
- 	int result;
- 	struct snd_seq_queue *q;
++	struct snd_seq_port_info *info = arg;
+ 	struct snd_seq_client *cptr;
+ 	struct snd_seq_client_port *port;
+-	struct snd_seq_port_info info;
  
 -	if (copy_from_user(&info, arg, sizeof(info)))
 -		return -EFAULT;
--
--	result = snd_seq_queue_alloc(client->number, info.locked, info.flags);
-+	result = snd_seq_queue_alloc(client->number, info->locked, info->flags);
- 	if (result < 0)
- 		return result;
+-	cptr = snd_seq_client_use_ptr(info.addr.client);
++	cptr = snd_seq_client_use_ptr(info->addr.client);
+ 	if (cptr == NULL)
+ 		return -ENXIO;
  
-@@ -1528,19 +1524,16 @@ static int seq_ioctl_create_queue(struct snd_seq_client *client,
- 	if (q == NULL)
- 		return -EINVAL;
+-	port = snd_seq_port_use_ptr(cptr, info.addr.port);
++	port = snd_seq_port_use_ptr(cptr, info->addr.port);
+ 	if (port == NULL) {
+ 		snd_seq_client_unlock(cptr);
+ 		return -ENOENT;			/* don't change */
+ 	}
  
--	info.queue = q->queue;
--	info.locked = q->locked;
--	info.owner = q->owner;
-+	info->queue = q->queue;
-+	info->locked = q->locked;
-+	info->owner = q->owner;
- 
- 	/* set queue name */
--	if (! info.name[0])
--		snprintf(info.name, sizeof(info.name), "Queue-%d", q->queue);
--	strlcpy(q->name, info.name, sizeof(q->name));
-+	if (!info->name[0])
-+		snprintf(info->name, sizeof(info->name), "Queue-%d", q->queue);
-+	strlcpy(q->name, info->name, sizeof(q->name));
- 	queuefree(q);
+ 	/* get port info */
+-	snd_seq_get_port_info(port, &info);
++	snd_seq_get_port_info(port, info);
+ 	snd_seq_port_unlock(port);
+ 	snd_seq_client_unlock(cptr);
  
 -	if (copy_to_user(arg, &info, sizeof(info)))
 -		return -EFAULT;
--
  	return 0;
  }
  
