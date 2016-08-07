@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 13/39] ALSA: seq: optimize client_info function
-	to new design
-Date: Sun,  7 Aug 2016 18:48:49 +0900
-Message-ID: <1470563355-18368-14-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 14/39] ALSA: seq: optimize set_client_info
+	function to new design
+Date: Sun,  7 Aug 2016 18:48:50 +0900
+Message-ID: <1470563355-18368-15-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 24BA3265B3F
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 339B5265B8F
  for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:38 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,42 +33,50 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 10a2e43..3e7431e 100644
+index 3e7431e..46e040b 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1209,25 +1209,19 @@ static void get_client_info(struct snd_seq_client *cptr,
- 	memset(info->reserved, 0, sizeof(info->reserved));
- }
+@@ -1227,28 +1227,24 @@ static int seq_ioctl_get_client_info(struct snd_seq_client *client, void *arg)
  
--static int seq_ioctl_get_client_info(struct snd_seq_client *client,
+ 
+ /* CLIENT_INFO ioctl() */
+-static int seq_ioctl_set_client_info(struct snd_seq_client *client,
 -				     void __user *arg)
-+static int seq_ioctl_get_client_info(struct snd_seq_client *client, void *arg)
++static int seq_ioctl_set_client_info(struct snd_seq_client *client, void *arg)
  {
-+	struct snd_seq_client_info *client_info = arg;
- 	struct snd_seq_client *cptr;
 -	struct snd_seq_client_info client_info;
 -
 -	if (copy_from_user(&client_info, arg, sizeof(client_info)))
 -		return -EFAULT;
++	struct snd_seq_client_info *client_info = arg;
  
- 	/* requested client number */
--	cptr = snd_seq_client_use_ptr(client_info.client);
-+	cptr = snd_seq_client_use_ptr(client_info->client);
- 	if (cptr == NULL)
- 		return -ENOENT;		/* don't change !!! */
+ 	/* it is not allowed to set the info fields for an another client */
+-	if (client->number != client_info.client)
++	if (client->number != client_info->client)
+ 		return -EPERM;
+ 	/* also client type must be set now */
+-	if (client->type != client_info.type)
++	if (client->type != client_info->type)
+ 		return -EINVAL;
  
--	get_client_info(cptr, &client_info);
-+	get_client_info(cptr, client_info);
- 	snd_seq_client_unlock(cptr);
+ 	/* fill the info fields */
+-	if (client_info.name[0])
+-		strlcpy(client->name, client_info.name, sizeof(client->name));
++	if (client_info->name[0])
++		strlcpy(client->name, client_info->name, sizeof(client->name));
  
--	if (copy_to_user(arg, &client_info, sizeof(client_info)))
--		return -EFAULT;
+-	client->filter = client_info.filter;
+-	client->event_lost = client_info.event_lost;
+-	memcpy(client->event_filter, client_info.event_filter, 32);
++	client->filter = client_info->filter;
++	client->event_lost = client_info->event_lost;
++	memcpy(client->event_filter, client_info->event_filter, 32);
+ 
  	return 0;
  }
- 
 -- 
 2.7.4
