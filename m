@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 16/39] ALSA: seq: optimize delete_port function
-	to new design
-Date: Sun,  7 Aug 2016 18:48:52 +0900
-Message-ID: <1470563355-18368-17-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 18/39] ALSA: seq: optimize seq_port_info
+	function to new design
+Date: Sun,  7 Aug 2016 18:48:54 +0900
+Message-ID: <1470563355-18368-19-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 36417265D57
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 504BF265D91
  for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:39 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,42 +33,38 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index c2bb93b..3acec92 100644
+index 1e7b2ac..4b4cd66 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1297,23 +1297,19 @@ static int seq_ioctl_create_port(struct snd_seq_client *client, void *arg)
+@@ -1345,20 +1345,16 @@ static int seq_ioctl_get_port_info(struct snd_seq_client *client, void *arg)
  /* 
-  * DELETE PORT ioctl() 
+  * SET_PORT_INFO ioctl() (only ports on this/own client) 
   */
--static int seq_ioctl_delete_port(struct snd_seq_client *client,
--				 void __user *arg)
-+static int seq_ioctl_delete_port(struct snd_seq_client *client, void *arg)
+-static int seq_ioctl_set_port_info(struct snd_seq_client *client,
+-				   void __user *arg)
++static int seq_ioctl_set_port_info(struct snd_seq_client *client, void *arg)
  {
--	struct snd_seq_port_info info;
 +	struct snd_seq_port_info *info = arg;
- 	int err;
- 
--	/* set passed parameters */
+ 	struct snd_seq_client_port *port;
+-	struct snd_seq_port_info info;
+-
 -	if (copy_from_user(&info, arg, sizeof(info)))
 -		return -EFAULT;
--	
- 	/* it is not allowed to remove the port for an another client */
--	if (info.addr.client != client->number)
-+	if (info->addr.client != client->number)
+ 
+-	if (info.addr.client != client->number) /* only set our own ports ! */
++	if (info->addr.client != client->number) /* only set our own ports ! */
  		return -EPERM;
- 
--	err = snd_seq_delete_port(client, info.addr.port);
-+	err = snd_seq_delete_port(client, info->addr.port);
- 	if (err >= 0)
--		snd_seq_system_client_ev_port_exit(client->number, info.addr.port);
-+		snd_seq_system_client_ev_port_exit(client->number,
-+						   info->addr.port);
- 	return err;
- }
- 
+-	port = snd_seq_port_use_ptr(client, info.addr.port);
++	port = snd_seq_port_use_ptr(client, info->addr.port);
+ 	if (port) {
+-		snd_seq_set_port_info(port, &info);
++		snd_seq_set_port_info(port, info);
+ 		snd_seq_port_unlock(port);
+ 	}
+ 	return 0;
 -- 
 2.7.4
