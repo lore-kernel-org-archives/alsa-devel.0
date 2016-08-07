@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 12/39] ALSA: seq: optimize running mode
-	function to new design
-Date: Sun,  7 Aug 2016 18:48:48 +0900
-Message-ID: <1470563355-18368-13-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/39] ALSA: seq: optimize client_id function
+	to new design
+Date: Sun,  7 Aug 2016 18:48:46 +0900
+Message-ID: <1470563355-18368-11-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 2C701265B63
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 28A92265B61
  for <alsa-devel@alsa-project.org>; Sun,  7 Aug 2016 11:49:38 +0200 (CEST)
 In-Reply-To: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,58 +33,27 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index cb86190..10a2e43 100644
+index 5e81d4f..123d8a1 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1149,38 +1149,34 @@ static int seq_ioctl_system_info(struct snd_seq_client *client, void *arg)
+@@ -1122,9 +1122,12 @@ static int seq_ioctl_pversion(struct snd_seq_client *client, void *arg)
+ 	return 0;
+ }
  
- 
- /* RUNNING_MODE ioctl() */
--static int seq_ioctl_running_mode(struct snd_seq_client *client,
--				  void __user *arg)
-+static int seq_ioctl_running_mode(struct snd_seq_client *client, void *arg)
+-static int seq_ioctl_client_id(struct snd_seq_client *client, void __user *arg)
++static int seq_ioctl_client_id(struct snd_seq_client *client, void *arg)
  {
--	struct snd_seq_running_info info;
-+	struct snd_seq_running_info *info = arg;
- 	struct snd_seq_client *cptr;
- 	int err = 0;
+-	return put_user(client->number, (int __user *)arg) ? -EFAULT : 0;
++	int *number = arg;
++
++	*number = client->number;
++	return 0;
+ }
  
--	if (copy_from_user(&info, arg, sizeof(info)))
--		return -EFAULT;
--
- 	/* requested client number */
--	cptr = snd_seq_client_use_ptr(info.client);
-+	cptr = snd_seq_client_use_ptr(info->client);
- 	if (cptr == NULL)
- 		return -ENOENT;		/* don't change !!! */
- 
- #ifdef SNDRV_BIG_ENDIAN
--	if (! info.big_endian) {
-+	if (!info->big_endian) {
- 		err = -EINVAL;
- 		goto __err;
- 	}
- #else
--	if (info.big_endian) {
-+	if (info->big_endian) {
- 		err = -EINVAL;
- 		goto __err;
- 	}
- 
- #endif
--	if (info.cpu_mode > sizeof(long)) {
-+	if (info->cpu_mode > sizeof(long)) {
- 		err = -EINVAL;
- 		goto __err;
- 	}
--	cptr->convert32 = (info.cpu_mode < sizeof(long));
-+	cptr->convert32 = (info->cpu_mode < sizeof(long));
-  __err:
- 	snd_seq_client_unlock(cptr);
- 	return err;
+ /* SYSTEM_INFO ioctl() */
 -- 
 2.7.4
