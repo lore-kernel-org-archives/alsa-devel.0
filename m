@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on wm8728" to the asoc tree
-Date: Mon, 08 Aug 2016 12:05:56 +0100
-Message-ID: <E1bWiNY-00044s-Mq@debutante>
-References: <87bn138xcj.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on tlv320aic3x" to the asoc tree
+Date: Mon, 08 Aug 2016 12:05:41 +0100
+Message-ID: <E1bWiNJ-00040a-ML@debutante>
+References: <874m6v8x9e.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87bn138xcj.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <874m6v8x9e.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on wm8728
+   ASoC: codec duplicated callback function goes to component on tlv320aic3x
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 298e17babf7d3fbc5ab225212cbf3af414d97109 Mon Sep 17 00:00:00 2001
+>From 786e3a480fa9e04b36191a2529cabfec3e30ad9c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:51:16 +0000
+Date: Mon, 8 Aug 2016 08:53:08 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- wm8728
+ tlv320aic3x
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8728.c | 14 ++++++++------
+ sound/soc/codecs/tlv320aic3x.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8728.c b/sound/soc/codecs/wm8728.c
-index 1564e6926527..dcd64b38bd7d 100644
---- a/sound/soc/codecs/wm8728.c
-+++ b/sound/soc/codecs/wm8728.c
-@@ -215,12 +215,14 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8728 = {
- 	.set_bias_level = wm8728_set_bias_level,
- 	.suspend_bias_off = true,
- 
--	.controls = wm8728_snd_controls,
--	.num_controls = ARRAY_SIZE(wm8728_snd_controls),
--	.dapm_widgets = wm8728_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(wm8728_dapm_widgets),
--	.dapm_routes = wm8728_intercon,
--	.num_dapm_routes = ARRAY_SIZE(wm8728_intercon),
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index a564759845f9..5a8d96ec058c 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1670,12 +1670,14 @@ static struct snd_soc_codec_driver soc_codec_dev_aic3x = {
+ 	.idle_bias_off = true,
+ 	.probe = aic3x_probe,
+ 	.remove = aic3x_remove,
+-	.controls = aic3x_snd_controls,
+-	.num_controls = ARRAY_SIZE(aic3x_snd_controls),
+-	.dapm_widgets = aic3x_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(aic3x_dapm_widgets),
+-	.dapm_routes = intercon,
+-	.num_dapm_routes = ARRAY_SIZE(intercon),
 +	.component_driver = {
-+		.controls		= wm8728_snd_controls,
-+		.num_controls		= ARRAY_SIZE(wm8728_snd_controls),
-+		.dapm_widgets		= wm8728_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(wm8728_dapm_widgets),
-+		.dapm_routes		= wm8728_intercon,
-+		.num_dapm_routes	= ARRAY_SIZE(wm8728_intercon),
++		.controls		= aic3x_snd_controls,
++		.num_controls		= ARRAY_SIZE(aic3x_snd_controls),
++		.dapm_widgets		= aic3x_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(aic3x_dapm_widgets),
++		.dapm_routes		= intercon,
++		.num_dapm_routes	= ARRAY_SIZE(intercon),
 +	},
  };
  
- static const struct of_device_id wm8728_of_match[] = {
+ /*
 -- 
 2.8.1
