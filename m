@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on wm8770" to the asoc tree
-Date: Mon, 08 Aug 2016 12:06:14 +0100
-Message-ID: <E1bWiNq-00049v-FU@debutante>
-References: <87k2fr8xfs.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on wm8510" to the asoc tree
+Date: Mon, 08 Aug 2016 12:05:44 +0100
+Message-ID: <E1bWiNM-00041T-KT@debutante>
+References: <8760rb8xa9.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87k2fr8xfs.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8760rb8xa9.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on wm8770
+   ASoC: codec duplicated callback function goes to component on wm8510
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From baa484716a59e86065787ae20008703d178dcec5 Mon Sep 17 00:00:00 2001
+>From 42c889233d8d5e075fdf8a2643a4ca69a9807075 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:49:19 +0000
+Date: Mon, 8 Aug 2016 08:52:40 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- wm8770
+ wm8510
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8770.c | 14 ++++++++------
+ sound/soc/codecs/wm8510.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8770.c b/sound/soc/codecs/wm8770.c
-index df6178464b00..8783a5fc123e 100644
---- a/sound/soc/codecs/wm8770.c
-+++ b/sound/soc/codecs/wm8770.c
-@@ -613,12 +613,14 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8770 = {
- 	.set_bias_level = wm8770_set_bias_level,
- 	.idle_bias_off = true,
+diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
+index 99e40e629cca..7f93adf7118d 100644
+--- a/sound/soc/codecs/wm8510.c
++++ b/sound/soc/codecs/wm8510.c
+@@ -586,12 +586,14 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8510 = {
+ 	.set_bias_level = wm8510_set_bias_level,
+ 	.suspend_bias_off = true,
  
--	.controls = wm8770_snd_controls,
--	.num_controls = ARRAY_SIZE(wm8770_snd_controls),
--	.dapm_widgets = wm8770_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(wm8770_dapm_widgets),
--	.dapm_routes = wm8770_intercon,
--	.num_dapm_routes = ARRAY_SIZE(wm8770_intercon),
+-	.controls = wm8510_snd_controls,
+-	.num_controls = ARRAY_SIZE(wm8510_snd_controls),
+-	.dapm_widgets = wm8510_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(wm8510_dapm_widgets),
+-	.dapm_routes = wm8510_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(wm8510_dapm_routes),
 +	.component_driver = {
-+		.controls		= wm8770_snd_controls,
-+		.num_controls		= ARRAY_SIZE(wm8770_snd_controls),
-+		.dapm_widgets		= wm8770_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(wm8770_dapm_widgets),
-+		.dapm_routes		= wm8770_intercon,
-+		.num_dapm_routes	= ARRAY_SIZE(wm8770_intercon),
++		.controls		= wm8510_snd_controls,
++		.num_controls		= ARRAY_SIZE(wm8510_snd_controls),
++		.dapm_widgets		= wm8510_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(wm8510_dapm_widgets),
++		.dapm_routes		= wm8510_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(wm8510_dapm_routes),
 +	},
  };
  
- static const struct of_device_id wm8770_of_match[] = {
+ static const struct of_device_id wm8510_of_match[] = {
 -- 
 2.8.1
