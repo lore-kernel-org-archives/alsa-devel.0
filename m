@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on pcm179x" to the asoc tree
-Date: Mon, 08 Aug 2016 12:04:42 +0100
-Message-ID: <E1bWiMM-0003ir-Cx@debutante>
-References: <87bn137idk.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on cs42l73" to the asoc tree
+Date: Mon, 08 Aug 2016 12:04:15 +0100
+Message-ID: <E1bWiLv-0003an-OP@debutante>
+References: <87y44763of.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87bn137idk.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87y44763of.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on pcm179x
+   ASoC: codec duplicated callback function goes to component on cs42l73
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 98773a87e83dfd81c77418f2d0f19a63e7476bac Mon Sep 17 00:00:00 2001
+>From 951cd7e6ffda4dc86ed6fb6ff10e0ca8f3b67c2b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:59:59 +0000
+Date: Mon, 8 Aug 2016 09:02:48 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- pcm179x
+ cs42l73
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,34 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm179x.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/cs42l73.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
-index 88fbdd184aa0..b813a154ddd9 100644
---- a/sound/soc/codecs/pcm179x.c
-+++ b/sound/soc/codecs/pcm179x.c
-@@ -206,12 +206,14 @@ const struct regmap_config pcm179x_regmap_config = {
- EXPORT_SYMBOL_GPL(pcm179x_regmap_config);
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index 42a8fd4e1f9b..01b573ab7036 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -1257,13 +1257,14 @@ static const struct snd_soc_codec_driver soc_codec_dev_cs42l73 = {
+ 	.set_bias_level = cs42l73_set_bias_level,
+ 	.suspend_bias_off = true,
  
- static struct snd_soc_codec_driver soc_codec_dev_pcm179x = {
--	.controls		= pcm179x_controls,
--	.num_controls		= ARRAY_SIZE(pcm179x_controls),
--	.dapm_widgets		= pcm179x_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(pcm179x_dapm_widgets),
--	.dapm_routes		= pcm179x_dapm_routes,
--	.num_dapm_routes	= ARRAY_SIZE(pcm179x_dapm_routes),
+-	.dapm_widgets = cs42l73_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(cs42l73_dapm_widgets),
+-	.dapm_routes = cs42l73_audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(cs42l73_audio_map),
+-
+-	.controls = cs42l73_snd_controls,
+-	.num_controls = ARRAY_SIZE(cs42l73_snd_controls),
 +	.component_driver = {
-+		.controls		= pcm179x_controls,
-+		.num_controls		= ARRAY_SIZE(pcm179x_controls),
-+		.dapm_widgets		= pcm179x_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(pcm179x_dapm_widgets),
-+		.dapm_routes		= pcm179x_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(pcm179x_dapm_routes),
++		.controls		= cs42l73_snd_controls,
++		.num_controls		= ARRAY_SIZE(cs42l73_snd_controls),
++		.dapm_widgets		= cs42l73_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(cs42l73_dapm_widgets),
++		.dapm_routes		= cs42l73_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(cs42l73_audio_map),
 +	},
  };
  
- int pcm179x_common_init(struct device *dev, struct regmap *regmap)
+ static const struct regmap_config cs42l73_regmap = {
 -- 
 2.8.1
