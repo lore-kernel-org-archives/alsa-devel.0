@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on tlv320aic26" to the asoc tree
-Date: Mon, 08 Aug 2016 12:00:39 +0100
-Message-ID: <E1bWiIR-0002Y9-EQ@debutante>
-References: <87zion1uwy.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on sta529" to the asoc tree
+Date: Mon, 08 Aug 2016 12:00:45 +0100
+Message-ID: <E1bWiIX-0002Zp-8T@debutante>
+References: <8737mf39ii.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87zion1uwy.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8737mf39ii.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on tlv320aic26
+   ASoC: codec duplicated callback function goes to component on sta529
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 40be1e609e743733e1e8a18b90e7be22c27d2062 Mon Sep 17 00:00:00 2001
+>From 29926fc8e853b6ddfee916d91fe88bec07058107 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:25:40 +0000
+Date: Mon, 8 Aug 2016 09:25:03 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- tlv320aic26
+ sta529
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,25 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic26.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/sta529.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
-index 2c904d7150ad..14aa96d41719 100644
---- a/sound/soc/codecs/tlv320aic26.c
-+++ b/sound/soc/codecs/tlv320aic26.c
-@@ -321,12 +321,14 @@ static int aic26_probe(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
+index 2cdaca943a8c..d4b384e4b266 100644
+--- a/sound/soc/codecs/sta529.c
++++ b/sound/soc/codecs/sta529.c
+@@ -317,8 +317,10 @@ static const struct snd_soc_codec_driver sta529_codec_driver = {
+ 	.set_bias_level = sta529_set_bias_level,
+ 	.suspend_bias_off = true,
  
- static struct snd_soc_codec_driver aic26_soc_codec_dev = {
- 	.probe = aic26_probe,
--	.controls = aic26_snd_controls,
--	.num_controls = ARRAY_SIZE(aic26_snd_controls),
--	.dapm_widgets = tlv320aic26_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(tlv320aic26_dapm_widgets),
--	.dapm_routes = tlv320aic26_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(tlv320aic26_dapm_routes),
+-	.controls = sta529_snd_controls,
+-	.num_controls = ARRAY_SIZE(sta529_snd_controls),
 +	.component_driver = {
-+		.controls		= aic26_snd_controls,
-+		.num_controls		= ARRAY_SIZE(aic26_snd_controls),
-+		.dapm_widgets		= tlv320aic26_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(tlv320aic26_dapm_widgets),
-+		.dapm_routes		= tlv320aic26_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(tlv320aic26_dapm_routes),
++		.controls		= sta529_snd_controls,
++		.num_controls		= ARRAY_SIZE(sta529_snd_controls),
 +	},
  };
  
- static const struct regmap_config aic26_regmap = {
+ static const struct regmap_config sta529_regmap = {
 -- 
 2.8.1
