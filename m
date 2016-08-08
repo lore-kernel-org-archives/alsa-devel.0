@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on ssm4567" to the asoc tree
-Date: Mon, 08 Aug 2016 12:05:09 +0100
-Message-ID: <E1bWiMn-0003rB-4V@debutante>
-References: <87oa537ii1.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on sti-sas" to the asoc tree
+Date: Mon, 08 Aug 2016 12:05:17 +0100
+Message-ID: <E1bWiMv-0003ti-Vl@debutante>
+References: <87shuf7ijj.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87oa537ii1.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87shuf7ijj.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on ssm4567
+   ASoC: codec duplicated callback function goes to component on sti-sas
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From b5fce187a54808861bb24d84301a8d6d2559bca9 Mon Sep 17 00:00:00 2001
+>From 97bf5f33475c1d2db8a5173883acacb961f45563 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:57:18 +0000
+Date: Mon, 8 Aug 2016 08:56:24 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- ssm4567
+ sti-sas
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,28 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ssm4567.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/sti-sas.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
-index 080c78e88e10..2bb5a11c9ba1 100644
---- a/sound/soc/codecs/ssm4567.c
-+++ b/sound/soc/codecs/ssm4567.c
-@@ -421,12 +421,14 @@ static struct snd_soc_codec_driver ssm4567_codec_driver = {
- 	.set_bias_level = ssm4567_set_bias_level,
- 	.idle_bias_off = true,
+diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
+index 160d61a66204..7b31ee9b82bc 100644
+--- a/sound/soc/codecs/sti-sas.c
++++ b/sound/soc/codecs/sti-sas.c
+@@ -591,11 +591,11 @@ static int sti_sas_driver_probe(struct platform_device *pdev)
+ 	sti_sas_dai[STI_SAS_DAI_ANALOG_OUT].ops = drvdata->dev_data->dac_ops;
  
--	.controls = ssm4567_snd_controls,
--	.num_controls = ARRAY_SIZE(ssm4567_snd_controls),
--	.dapm_widgets = ssm4567_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(ssm4567_dapm_widgets),
--	.dapm_routes = ssm4567_routes,
--	.num_dapm_routes = ARRAY_SIZE(ssm4567_routes),
-+	.component_driver = {
-+		.controls		= ssm4567_snd_controls,
-+		.num_controls		= ARRAY_SIZE(ssm4567_snd_controls),
-+		.dapm_widgets		= ssm4567_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(ssm4567_dapm_widgets),
-+		.dapm_routes		= ssm4567_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(ssm4567_routes),
-+	},
- };
+ 	/* Set dapms*/
+-	sti_sas_driver.dapm_widgets = drvdata->dev_data->dapm_widgets;
+-	sti_sas_driver.num_dapm_widgets = drvdata->dev_data->num_dapm_widgets;
++	sti_sas_driver.component_driver.dapm_widgets = drvdata->dev_data->dapm_widgets;
++	sti_sas_driver.component_driver.num_dapm_widgets = drvdata->dev_data->num_dapm_widgets;
  
- static const struct regmap_config ssm4567_regmap_config = {
+-	sti_sas_driver.dapm_routes = drvdata->dev_data->dapm_routes;
+-	sti_sas_driver.num_dapm_routes = drvdata->dev_data->num_dapm_routes;
++	sti_sas_driver.component_driver.dapm_routes = drvdata->dev_data->dapm_routes;
++	sti_sas_driver.component_driver.num_dapm_routes = drvdata->dev_data->num_dapm_routes;
+ 
+ 	/* Store context */
+ 	dev_set_drvdata(&pdev->dev, drvdata);
 -- 
 2.8.1
