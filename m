@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on twl6040" to the asoc tree
-Date: Mon, 08 Aug 2016 12:00:27 +0100
-Message-ID: <E1bWiIF-0002UX-MI@debutante>
-References: <87twev1uux.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on wm0010" to the asoc tree
+Date: Mon, 08 Aug 2016 12:00:16 +0100
+Message-ID: <E1bWiI4-0002R0-1i@debutante>
+References: <87oa531usw.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87twev1uux.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87oa531usw.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on twl6040
+   ASoC: codec duplicated callback function goes to component on wm0010
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 2f45b8bd731cbaee5404cfac8bf083e807cffadf Mon Sep 17 00:00:00 2001
+>From 022f86d6f3b15bcd4865bccf837d309eb336f5a2 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:26:56 +0000
+Date: Mon, 8 Aug 2016 09:28:08 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- twl6040
+ wm0010
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,29 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/twl6040.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/wm0010.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 1f7081043566..748036e851ea 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -1156,12 +1156,14 @@ static struct snd_soc_codec_driver soc_codec_dev_twl6040 = {
- 	.suspend_bias_off = true,
- 	.ignore_pmdown_time = true,
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index e3c34bdc2772..4ef6919ab1a1 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -795,10 +795,12 @@ static struct snd_soc_codec_driver soc_codec_dev_wm0010 = {
+ 	.set_sysclk = wm0010_set_sysclk,
+ 	.idle_bias_off = true,
  
--	.controls = twl6040_snd_controls,
--	.num_controls = ARRAY_SIZE(twl6040_snd_controls),
--	.dapm_widgets = twl6040_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(twl6040_dapm_widgets),
--	.dapm_routes = intercon,
--	.num_dapm_routes = ARRAY_SIZE(intercon),
+-	.dapm_widgets = wm0010_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(wm0010_dapm_widgets),
+-	.dapm_routes = wm0010_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(wm0010_dapm_routes),
 +	.component_driver = {
-+		.controls		= twl6040_snd_controls,
-+		.num_controls		= ARRAY_SIZE(twl6040_snd_controls),
-+		.dapm_widgets		= twl6040_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(twl6040_dapm_widgets),
-+		.dapm_routes		= intercon,
-+		.num_dapm_routes	= ARRAY_SIZE(intercon),
++		.dapm_widgets		= wm0010_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(wm0010_dapm_widgets),
++		.dapm_routes		= wm0010_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(wm0010_dapm_routes),
 +	},
  };
  
- static int twl6040_codec_probe(struct platform_device *pdev)
+ #define WM0010_RATES (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
 -- 
 2.8.1
