@@ -1,15 +1,16 @@
-From: Dharageswari R <dharageswari.r@intel.com>
-Subject: Underrun with 2 periods on skylake HDA driver
-Date: Thu, 10 Aug 2006 10:34:15 +0530
-Message-ID: <20060810050415.GB5190@dhara-desktop>
+From: Riku Voipio <riku.voipio@linaro.org>
+Subject: [PATCH] ucm: Add ucm files for DB410c board.
+Date: Mon,  8 Aug 2016 16:23:10 +0300
+Message-ID: <1470662590-23434-1-git-send-email-riku.voipio@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 88BA0265906
- for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 07:04:36 +0200 (CEST)
-Content-Disposition: inline
+Received: from mail-wm0-f47.google.com (mail-wm0-f47.google.com [74.125.82.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63B4D2674FC
+ for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2016 15:23:14 +0200 (CEST)
+Received: by mail-wm0-f47.google.com with SMTP id i5so139105996wmg.0
+ for <alsa-devel@alsa-project.org>; Mon, 08 Aug 2016 06:23:14 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,61 +20,311 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, dharageswari.r@intel.com, vinod.koul@intel.com, Hardik T <hardik.t.shah@intel.com>, Shah@dhara-desktop.alsa-project.org, Ughreja@dhara-desktop.alsa-project.org, Rakesh A <rakesh.a.ughreja@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: nicolas.dechesne@linaro.org, Riku Voipio <riku.voipio@linaro.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgpXaGlsZSBkb2luZyB0aGUgdmFsaWRhdGlvbiBvZiBTa3lsYWtlIEhEQSBkcml2ZXIg
-dXNpbmcgYXBsYXkgYW5kCmZvbGxvd2luZyBwYXJhbWV0ZXJzLCB3ZSBub3RpY2VkIHVuZGVycnVu
-IGlzc3Vlcy4KCmFwbGF5IC1EaHc6MCwwLDAgLXZ2IHNfNDhLXzE2Qml0X1N1bnNoaW5lLndhdiAt
-RiAxMDAwMDAgLUIgMjAwMDAwIC1kIDIwCkl0cyBzZXR1cCBpczoKc3RyZWFtICAgICAgIDogUExB
-WUJBQ0sKYWNjZXNzICAgICAgIDogUldfSU5URVJMRUFWRUQKZm9ybWF0ICAgICAgIDogUzE2X0xF
-CnN1YmZvcm1hdCAgICA6IFNURApjaGFubmVscyAgICAgOiAyCnJhdGUgICAgICAgICA6IDQ4MDAw
-CmV4YWN0IHJhdGUgICA6IDQ4MDAwICg0ODAwMC8xKQptc2JpdHMgICAgICAgOiAxNgpidWZmZXJf
-c2l6ZSAgOiA5NjAwCnBlcmlvZF9zaXplICA6IDQ4MDAKcGVyaW9kX3RpbWUgIDogMTAwMDAwCnRz
-dGFtcF9tb2RlICA6IE5PTkUKcGVyaW9kX3N0ZXAgIDogMQphdmFpbF9taW4gICAgOiA0ODAwCnBl
-cmlvZF9ldmVudCA6IDAKc3RhcnRfdGhyZXNob2xkICA6IDk2MDAKc3RvcF90aHJlc2hvbGQgICA6
-IDk2MDAKc2lsZW5jZV90aHJlc2hvbGQ6IDAKc2lsZW5jZV9zaXplIDogMApib3VuZGFyeSAgICAg
-OiA1NDA0MzE5NTUyODQ0NTk1MjAwCmFwcGxfcHRyICAgICA6IDAKaHdfcHRyICAgICAgIDogMAoK
-QWZ0ZXIgZG9pbmcgZnVydGhlciBkZWJ1Z2dpbmcsIHdoYXQgSSBmb3VuZCBpcwoKMS5ETUEgY29t
-cGxldGUgaW50ZXJydXB0IG9jY3VycyBmb3IgdGhlIGZpcnN0IHBlcmlvZC4KMi5Ecml2ZXIgcmVh
-ZHMgRE1BIHBvc2l0aW9uIGluIGJ1ZmZlciBwb2ludGVyIGFuZCBnZXRzIHZhbHVlIG9mIDQ3ODQu
-CjMuRHJpdmVyIGNhbGxzIHNuZF9wY21fcGVyaW9kX2VsYXBzZWQoKSBmdW5jdGlvbiB0byByZXBv
-cnQgcGVyaW9kCiAgZWxhcHNlZCBpbnRlcnJ1cHQgdG8gYXBwbGljYXRpb24gd2l0aCBETUEgcG9z
-aXRpb24gPSA0Nzg0Lgo0LnNuZF9wY21fbGliX3dyaXRlMSgpIGlzIHdhaXRpbmcgZm9yIOKAnGF2
-YWlsX21pbuKAnSBmcmVlIHNwYWNlIHRvIGJlCiAgYXZhaWxhYmxlLiBJbiB0aGlzIGNhc2UgdGhl
-IGF2YWlsX21pbiA9IDQ4MDAgYW5kIGF0IHRoaXMgaW50ZXJydXB0CiAgdGhlIGF2YWlsID0gNDg3
-NCBhbmQgc28gaXQgZG9lcyBub3Qgd3JpdGUgYW55IGRhdGEuCjUuRE1BIGNvbXBsZXRlIGludGVy
-cnVwdCBvY2N1cnMgZm9yIHRoZSBzZWNvbmQgcGVyaW9kLgo2LkRyaXZlciByZWFkcyBETUEgcG9z
-aXRpb24gaW4gdGhlIGJ1ZmZlciBwb2ludGVyIGFuZCBnZXRzIHZhbHVlIG9mIDk2MDAuCjcuRHJp
-dmVyIGNhbGxzIHNuZF9wY21fcGVyaW9kX2VsYXBzZWQoKSBmdW5jdGlvbiB0byByZXBvcnQgcGVy
-aW9kIAogIGVsYXBzZWQgaW50ZXJydXB0Lgo4Lk5vdyB0aGUgc25kX3BjbV9saWJfd3JpdGUxKCkg
-Z2V0cyBhdmFpbCA+IGF2YWlsX21pbiBidXQgaXTigJlzIHRvbyBsYXRlCiAgYmVjYXVzZSBETUEg
-aGFzIGFscmVhZHkgc3RhcnRlZCBwbGF5aW5nIGRhdGEgZnJvbSBmaXJzdCBwZXJpb2QsIHdoaWNo
-CiAgaXMgbm90IHlldCB3cml0dGVuIGJ5IHRoZSBhcHBsaWNhdGlvbi4KOS5UaGlzIGNhdXNlcyB1
-bmRlcnJ1bi4KCkxvZ3M6Cjg1Ny44NzA5NzQ6IGh3cHRyOiBwY21DMEQwcC9zdWIwOiBJUlE6IHBv
-cz00ODAwLCBvbGQ9MTkyMDAsIGJhc2U9MTkyMDAsIApwZXJpb2Q9NDgwMCwgYnVmPTk2MDAKODU3
-Ljg3MTIzNzogaHdwdHI6IHBjbUMwRDBwL3N1YjA6IFBPUzogcG9zPTQ4MDAsIG9sZD0yNDAwMCwg
-YmFzZT0xOTIwMCwgCnBlcmlvZD00ODAwLCBidWY9OTYwMAo4NTcuOTcwOTcyOiBod3B0cjogcGNt
-QzBEMHAvc3ViMDogSVJROiBwb3M9MCwgb2xkPTI0MDAwLCBiYXNlPTE5MjAwLCAKcGVyaW9kPTQ4
-MDAsIGJ1Zj05NjAwCjg1Ny45NzExMDE6IGh3cHRyOiBwY21DMEQwcC9zdWIwOiBQT1M6IHBvcz0w
-LCBvbGQ9Mjg4MDAsIGJhc2U9Mjg4MDAsIApwZXJpb2Q9NDgwMCwgYnVmPTk2MDAKODU4LjA3MDk3
-MTogaHdwdHI6IHBjbUMwRDBwL3N1YjA6IElSUTogcG9zPTQ3ODQsIG9sZD0yODgwMCwgYmFzZT0y
-ODgwMCwgCnBlcmlvZD00ODAwLCBidWY9OTYwMAo4NTguMTcwOTY4OiBod3B0cjogcGNtQzBEMHAv
-c3ViMDogSVJROiBwb3M9MCwgb2xkPTMzNTg0LCBiYXNlPTI4ODAwLCAKcGVyaW9kPTQ4MDAsIGJ1
-Zj05NjAwCjg1OC4xNzA5ODg6IHhydW46IHBjbUMwRDBwL3N1YjA6IFhSVU46IG9sZD0zODQwMCwg
-YmFzZT0zODQwMCwgCnBlcmlvZD00ODAwLCBidWY9OTYwMAo4NTguMTcyMjQwOiBod3B0cjogcGNt
-QzBEMHAvc3ViMDogUE9TOiBwb3M9OTYsIG9sZD0wLCBiYXNlPTAsIApwZXJpb2Q9NDgwMCwgYnVm
-PTk2MDAKODU4LjI2OTg2NzogaHdwdHI6IHBjbUMwRDBwL3N1YjA6IElSUTogcG9zPTQ3OTgsIG9s
-ZD05NiwgYmFzZT0wLCAKcGVyaW9kPTQ4MDAsIGJ1Zj05NjAwCjg1OC4zNjk5MDI6IGh3cHRyOiBw
-Y21DMEQwcC9zdWIwOiBJUlE6IHBvcz0wLCBvbGQ9NDc5OCwgYmFzZT0wLCAKcGVyaW9kPTQ4MDAs
-IGJ1Zj05NjAwCgpJIGNoZWNrZWQgd2l0aCBIREEgYXJjaGl0ZWN0cyBhbmQgdGhleSBhcmUgc2F5
-aW5nIHRoYXQgd2hlbiB0aGUgRE1BIApjb21wbGV0aW9uIGludGVycnVwdCBvY2N1cnMgdGhlcmUg
-Y2FuIGJlIHNsaWdodCBkZWxheSBiZWZvcmUgdGhlIERNQSAKUG9zaXRpb24gSW4gQnVmZmVyIFBv
-aW50ZXIgZ2V0cyB1cGRhdGVkLiBTbyBkcml2ZXIgaXMgZXhwZWN0ZWQgdG8gCnJlZmlsbCBkYXRh
-IGJhc2VkIG9uIHdoYXRldmVyIGNvbnRlbnQgaXMgcmVmbGVjdGVkIGluIHRoZSBETUEgUG9zaXRp
-b24KSW4gQnVmZmVyLgoKV2hhdCBpcyB0aGUgcmlnaHQgd2F5IHRvIGZpeCB0aGlzIGlzc3VlID8K
-ClRoYW5rcywKRGhhcmEuUgoKLS0gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+DB410c board has support for both Digital and Analog audio. Digital
+audio is over HDMI and analog is over codec chip integrated inside the
+APQ8016 SOC.
+
+It can support:
+ -  3 Microphones: Primary Mic(Handset mic), Headset Mic and Secondary
+ - 2 Digital Microphones.
+ - Earpiece.
+ - Headset.
+ - Loud Speaker.
+ - HDMI.
+
+[Riku: squashed Srinivas's patches together and converted spaces to tabs]
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Riku Voipio <riku.voipio@linaro.org>
+Cc: nicolas.dechesne@linaro.org
+---
+ configure.ac                    |   1 +
+ src/conf/ucm/DB410c/DB410c.conf |   8 ++
+ src/conf/ucm/DB410c/HDMI        |  31 +++++++
+ src/conf/ucm/DB410c/HiFi        | 185 ++++++++++++++++++++++++++++++++++++++++
+ src/conf/ucm/DB410c/Makefile.am |   4 +
+ src/conf/ucm/Makefile.am        |   2 +-
+ 6 files changed, 230 insertions(+), 1 deletion(-)
+ create mode 100644 src/conf/ucm/DB410c/DB410c.conf
+ create mode 100644 src/conf/ucm/DB410c/HDMI
+ create mode 100644 src/conf/ucm/DB410c/HiFi
+ create mode 100644 src/conf/ucm/DB410c/Makefile.am
+
+diff --git a/configure.ac b/configure.ac
+index f592e8b..014af5f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -675,6 +675,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+ 	  src/conf/ucm/broadwell-rt286/Makefile \
+ 	  src/conf/ucm/VEYRON-I2S/Makefile \
+ 	  src/conf/ucm/chtrt5645/Makefile \
++	  src/conf/ucm/DB410c/Makefile \
+ 	  src/conf/topology/Makefile \
+ 	  src/conf/topology/broadwell/Makefile \
+ 	  modules/Makefile modules/mixer/Makefile modules/mixer/simple/Makefile \
+diff --git a/src/conf/ucm/DB410c/DB410c.conf b/src/conf/ucm/DB410c/DB410c.conf
+new file mode 100644
+index 0000000..590278f
+--- /dev/null
++++ b/src/conf/ucm/DB410c/DB410c.conf
+@@ -0,0 +1,8 @@
++SectionUseCase."HiFi" {
++	File "HiFi"
++	Comment "Play HiFi quality Music."
++}
++SectionUseCase."HDMI" {
++	File "HDMI"
++	Comment "HDMI output."
++}
+diff --git a/src/conf/ucm/DB410c/HDMI b/src/conf/ucm/DB410c/HDMI
+new file mode 100644
+index 0000000..8112bc0
+--- /dev/null
++++ b/src/conf/ucm/DB410c/HDMI
+@@ -0,0 +1,31 @@
++# Use case configuration for DB410c board.
++# Author: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++
++SectionVerb {
++	EnableSequence [
++	]
++
++	DisableSequence [
++	]
++	Value {
++		TQ "HiFi"
++		PlaybackPCM "plughw:0,0"
++	}
++}
++
++SectionDevice."HDMI-stereo" {
++	#Name "HDMI-stereo"
++	Comment "HDMI Digital Stereo Output"
++
++	EnableSequence [
++		cdev "hw:0"
++	]
++
++	DisableSequence [
++		cdev "hw:0"
++	]
++
++	Value {
++		PlaybackChannels "2"
++	}
++}
+diff --git a/src/conf/ucm/DB410c/HiFi b/src/conf/ucm/DB410c/HiFi
+new file mode 100644
+index 0000000..f9cbcf0
+--- /dev/null
++++ b/src/conf/ucm/DB410c/HiFi
+@@ -0,0 +1,185 @@
++# Use case configuration for DB410c board.
++# Author: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++
++SectionVerb {
++
++	EnableSequence [
++	]
++
++	DisableSequence [
++	]
++
++	# ALSA PCM
++	Value {
++		# ALSA PCM device for HiFi
++		PlaybackPCM "plughw:0,1"
++		CapturePCM "plughw:0,2"
++	}
++}
++
++
++SectionDevice."Speaker" {
++	Comment "Speaker playback"
++
++	ConflictingDevice [
++		"Headphones"
++		"Earpiece"
++	]
++
++	EnableSequence [
++		cdev "hw:0"
++		cset "name='SPK DAC Switch' 1"
++		cset "name='RX3 MIX1 INP1' RX1"
++		## gain to  0dB
++		cset "name='RX3 Digital Volume' 128"
++	]
++
++	DisableSequence [
++		cdev "hw:0"
++		cset "name='SPK DAC Switch' 0"
++		cset "name='RX3 MIX1 INP1' ZERO"
++	]
++
++	Value {
++		PlaybackChannels "2"
++	}
++}
++
++
++SectionDevice."Headphones" {
++	Comment "Headphones playback"
++
++	ConflictingDevice [
++		"Speaker"
++		"Earpiece"
++	]
++	EnableSequence [
++		cdev "hw:0"
++		cset "name='RX1 MIX1 INP1' RX1"
++		cset "name='RX2 MIX1 INP1' RX2"
++		cset "name='RDAC2 MUX' RX2"
++		cset "name='HPHL' 1"
++		cset "name='HPHR' 1"
++		## gain to  0dB
++		cset "name='RX1 Digital Volume' 128"
++		## gain to  0dB
++		cset "name='RX2 Digital Volume' 128"
++	]
++
++	DisableSequence [
++		cdev "hw:0"
++		cset "name='RX1 Digital Volume' 0"
++		cset "name='RX2 Digital Volume' 0"
++		cset "name='HPHL' 0"
++		cset "name='HPHR' 0"
++		cset "name='RDAC2 MUX' ZERO"
++		cset "name='RX1 MIX1 INP1' ZERO"
++		cset "name='RX2 MIX1 INP1' ZERO"
++	]
++
++	Value {
++		PlaybackChannels "2"
++	}
++}
++
++SectionDevice."Earpiece" {
++	Comment "Earpiece playback"
++
++	ConflictingDevice [
++		"Speaker"
++		"Headphones"
++	]
++	EnableSequence [
++		cdev "hw:0"
++	]
++
++	DisableSequence [
++		cdev "hw:0"
++	]
++
++	Value {
++		PlaybackChannels "2"
++	}
++}
++
++SectionDevice."Handset" {
++	Comment "Headset Microphone"
++
++	EnableSequence [
++		cdev "hw:0"
++		cset "name='DEC1 MUX' ADC2"
++		cset "name='ADC2 Volume' 8"
++		cset "name='ADC2 MUX' INP2"
++	]
++
++	DisableSequence [
++		cdev "hw:0"
++		cset "name='ADC2 MUX' ZERO"
++		cset "name='ADC2 Volume' 0"
++		cset "name='DEC1 MUX' ZERO"
++	]
++
++	Value {
++		CaptureChannels "2"
++	}
++}
++
++SectionDevice."Primarymic" {
++	Comment "Primary Microphone"
++
++	EnableSequence [
++		cdev "hw:0"
++		cset "name='DEC1 MUX' ADC1"
++		cset "name='ADC1 Volume' 8"
++	]
++
++	DisableSequence [
++		cdev "hw:0"
++		cset "name='DEC1 MUX' ZERO"
++		cset "name='ADC1 Volume' 0"
++	]
++
++	Value {
++		CaptureChannels "2"
++	}
++}
++
++SectionDevice."Secondarymic" {
++	Comment "Secondary Microphone"
++
++	EnableSequence [
++		cdev "hw:0"
++		cset "name='DEC1 MUX' ADC2"
++		cset "name='ADC2 Volume' 8"
++		cset "name='ADC2 MUX' INP2"
++	]
++
++	DisableSequence [
++		cdev "hw:0"
++		cset "name='DEC1 MUX' ZERO"
++		cset "name='ADC2 Volume' 0"
++		cset "name='ADC2 MUX' ZERO"
++	]
++
++	Value {
++		CaptureChannels "2"
++	}
++}
++
++SectionDevice."DMIC" {
++	Comment "Digital Microphone"
++
++	EnableSequence [
++		cdev "hw:0"
++		cset "name='DEC1 MUX' DMIC1"
++	]
++
++	DisableSequence [
++		cdev "hw:0"
++		cset "name='DEC1 MUX' ZERO"
++	]
++
++	Value {
++		CaptureChannels "2"
++	}
++}
+diff --git a/src/conf/ucm/DB410c/Makefile.am b/src/conf/ucm/DB410c/Makefile.am
+new file mode 100644
+index 0000000..e10a136
+--- /dev/null
++++ b/src/conf/ucm/DB410c/Makefile.am
+@@ -0,0 +1,4 @@
++alsaconfigdir = @ALSA_CONFIG_DIR@
++ucmdir = $(alsaconfigdir)/ucm/DB410c
++ucm_DATA = DB410c.conf HDMI HiFi
++EXTRA_DIST = $(ucm_DATA)
+diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
+index 8865770..7bf432e 100644
+--- a/src/conf/ucm/Makefile.am
++++ b/src/conf/ucm/Makefile.am
+@@ -1 +1 @@
+-SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan broadwell-rt286 VEYRON-I2S chtrt5645
++SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan broadwell-rt286 VEYRON-I2S chtrt5645 DB410c
+-- 
+2.1.4
