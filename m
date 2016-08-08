@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on wm8985" to the asoc tree
-Date: Mon, 08 Aug 2016 12:06:32 +0100
-Message-ID: <E1bWiO8-0004FJ-3f@debutante>
-References: <87shuf8xj5.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on sun4i-codec" to the asoc tree
+Date: Mon, 08 Aug 2016 12:06:40 +0100
+Message-ID: <E1bWiOG-0004I0-Tg@debutante>
+References: <87vazb8xk6.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87shuf8xj5.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87vazb8xk6.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on wm8985
+   ASoC: codec duplicated callback function goes to component on sun4i-codec
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From c90e938ebfc3e239818fbb5abe761837f4f80d53 Mon Sep 17 00:00:00 2001
+>From 180f58fece4be11125e663983ee3388e6512f159 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:47:18 +0000
+Date: Mon, 8 Aug 2016 08:46:41 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- wm8985
+ sun4i-codec
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8985.c | 14 ++++++++------
+ sound/soc/sunxi/sun4i-codec.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
-index 7347abff4b2c..bcf34730d507 100644
---- a/sound/soc/codecs/wm8985.c
-+++ b/sound/soc/codecs/wm8985.c
-@@ -1110,12 +1110,14 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8985 = {
- 	.set_bias_level = wm8985_set_bias_level,
- 	.suspend_bias_off = true,
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 44f170c73b06..0e19c5070005 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -628,12 +628,14 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+ };
  
--	.controls = wm8985_common_snd_controls,
--	.num_controls = ARRAY_SIZE(wm8985_common_snd_controls),
--	.dapm_widgets = wm8985_common_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(wm8985_common_dapm_widgets),
--	.dapm_routes = wm8985_common_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(wm8985_common_dapm_routes),
+ static struct snd_soc_codec_driver sun4i_codec_codec = {
+-	.controls		= sun4i_codec_widgets,
+-	.num_controls		= ARRAY_SIZE(sun4i_codec_widgets),
+-	.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
+-	.dapm_routes		= sun4i_codec_codec_dapm_routes,
+-	.num_dapm_routes	= ARRAY_SIZE(sun4i_codec_codec_dapm_routes),
 +	.component_driver = {
-+		.controls		= wm8985_common_snd_controls,
-+		.num_controls		= ARRAY_SIZE(wm8985_common_snd_controls),
-+		.dapm_widgets		= wm8985_common_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(wm8985_common_dapm_widgets),
-+		.dapm_routes		= wm8985_common_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(wm8985_common_dapm_routes),
++		.controls		= sun4i_codec_widgets,
++		.num_controls		= ARRAY_SIZE(sun4i_codec_widgets),
++		.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
++		.dapm_routes		= sun4i_codec_codec_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(sun4i_codec_codec_dapm_routes),
 +	},
  };
  
- static const struct regmap_config wm8985_regmap = {
+ static const struct snd_soc_component_driver sun4i_codec_component = {
 -- 
 2.8.1
