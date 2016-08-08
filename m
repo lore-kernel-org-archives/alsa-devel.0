@@ -1,101 +1,59 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: remove codec duplicated callback function" to the asoc tree
-Date: Mon, 08 Aug 2016 12:06:35 +0100
-Message-ID: <E1bWiOB-0004G9-1b@debutante>
-References: <87fuqm8xur.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87fuqm8xur.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
+Subject: Re: [PATCH 2/3] drm/i2c: tda998x: Register ASoC hdmi-codec and add
+ audio DT binding
+Date: Mon, 8 Aug 2016 15:15:42 +0300
+Message-ID: <fef3d781-3a97-e1ab-6faf-6fac910dee2d@ti.com>
+References: <cover.1470129989.git.jsarha@ti.com>
+ <ce10548e1c28270d80ee99a525e117d0d25f5656.1470129989.git.jsarha@ti.com>
+ <20160804140712.GO5783@n2100.arm.linux.org.uk>
+ <3a3dcfa4-cec8-53f8-eddb-9a0e04c10ac9@ti.com>
+ <20160805164845.GP5783@n2100.arm.linux.org.uk>
+ <20160805165959.GA10383@sirena.org.uk>
+ <20160805170450.GQ5783@n2100.arm.linux.org.uk>
+ <20160805175908.GC10383@sirena.org.uk>
+ <20160805221944.GR5783@n2100.arm.linux.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20160805221944.GR5783-l+eeeJia6m9vn6HldHNs0ANdhmdF6hFW@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Russell King - ARM Linux <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, tomi.valkeinen-l0cyMroinI0@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 08/06/16 01:19, Russell King - ARM Linux wrote:
+>> > It'll pick up that as the DT device to hang things off which I'd expect
+>> > to be the desired outcome given that this is a very similar situation to
+>> > the MFD situation.  I've not been following the full thread so there is
+>> > probably context I'm missing here...
+> Okay, and that sounds to me like a very reasonable thing to want to
+> happen - so that the audio side can be clearly identified as being
+> coupled with the video side.
+> 
+> So, I'm not seeing a problem with my suggestion... I'm actually more
+> reasons why it's a good thing to want.
 
-   ASoC: remove codec duplicated callback function
 
-has been applied to the asoc tree at
+Ok, so getting back to this comment:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+>> +	priv->audio_pdev = platform_device_register_data(
+>> > +		dev, HDMI_CODEC_DRV_NAME, PLATFORM_DEVID_AUTO,
+>> > +		&codec_data, sizeof(codec_data));
+> I'd much prefer that this was a child of the I2C device, which will
+> show the relationship between this virtual platform device and the
+> device which it's associated with.  That can be done via
+> platform_device_register_full().
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+The platform_device_register_data() sets the parent of the registered
+platform device according to the first parameter, the tda998x i2c-client
+in this case. Is there some reason why I should use
+platform_device_register_full() and should I set parent to something
+else than the tda998x i2c device?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 8073aefa60823acf205a1e6a5ea118297179d766 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:36:49 +0000
-Subject: [PATCH] ASoC: remove codec duplicated callback function
-
-codec driver and component driver has duplicated callback functions,
-and codec side functions are just copied to component side when
-register timing. This was quick-hack, but no longer needed.
-This patch removes codec side duplicated callback function.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/soc.h  |  8 --------
- sound/soc/soc-core.c | 13 -------------
- 2 files changed, 21 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 6144882cc96a..5eb2b38c3437 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -898,14 +898,6 @@ struct snd_soc_codec_driver {
- 	int (*resume)(struct snd_soc_codec *);
- 	struct snd_soc_component_driver component_driver;
- 
--	/* Default control and setup, added after probe() is run */
--	const struct snd_kcontrol_new *controls;
--	int num_controls;
--	const struct snd_soc_dapm_widget *dapm_widgets;
--	int num_dapm_widgets;
--	const struct snd_soc_dapm_route *dapm_routes;
--	int num_dapm_routes;
--
- 	/* codec wide operations */
- 	int (*set_sysclk)(struct snd_soc_codec *codec,
- 			  int clk_id, int source, unsigned int freq, int dir);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 16369cad4803..edba975d893e 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3333,19 +3333,6 @@ int snd_soc_register_codec(struct device *dev,
- 	if (ret)
- 		goto err_free;
- 
--	if (codec_drv->controls) {
--		codec->component.controls = codec_drv->controls;
--		codec->component.num_controls = codec_drv->num_controls;
--	}
--	if (codec_drv->dapm_widgets) {
--		codec->component.dapm_widgets = codec_drv->dapm_widgets;
--		codec->component.num_dapm_widgets = codec_drv->num_dapm_widgets;
--	}
--	if (codec_drv->dapm_routes) {
--		codec->component.dapm_routes = codec_drv->dapm_routes;
--		codec->component.num_dapm_routes = codec_drv->num_dapm_routes;
--	}
--
- 	if (codec_drv->probe)
- 		codec->component.probe = snd_soc_codec_drv_probe;
- 	if (codec_drv->remove)
--- 
-2.8.1
+BR,
+Jyri
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
