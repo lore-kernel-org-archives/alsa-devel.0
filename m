@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on ads117x" to the asoc tree
-Date: Mon, 08 Aug 2016 12:02:45 +0100
-Message-ID: <E1bWiKT-0003A5-3v@debutante>
-References: <87popj4ont.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on alc5632" to the asoc tree
+Date: Mon, 08 Aug 2016 12:02:33 +0100
+Message-ID: <E1bWiKH-00036g-EZ@debutante>
+References: <87k2fr4olr.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87popj4ont.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87k2fr4olr.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on ads117x
+   ASoC: codec duplicated callback function goes to component on alc5632
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 940b816f905eddf6c61db150b4833cd0c7eb61d8 Mon Sep 17 00:00:00 2001
+>From e9474dc634c76d047be84c3dd35bf81213d2d550 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:12:30 +0000
+Date: Mon, 8 Aug 2016 09:13:44 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- ads117x
+ alc5632
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,29 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ads117x.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/alc5632.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/ads117x.c b/sound/soc/codecs/ads117x.c
-index c5be1bdc2c9a..90c756d183b4 100644
---- a/sound/soc/codecs/ads117x.c
-+++ b/sound/soc/codecs/ads117x.c
-@@ -59,10 +59,12 @@ static struct snd_soc_dai_driver ads117x_dai = {
- };
+diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
+index 4d3ba33eb6f9..adb80d8719bd 100644
+--- a/sound/soc/codecs/alc5632.c
++++ b/sound/soc/codecs/alc5632.c
+@@ -1072,12 +1072,14 @@ static const struct snd_soc_codec_driver soc_codec_device_alc5632 = {
+ 	.set_bias_level = alc5632_set_bias_level,
+ 	.suspend_bias_off = true,
  
- static struct snd_soc_codec_driver soc_codec_dev_ads117x = {
--	.dapm_widgets = ads117x_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(ads117x_dapm_widgets),
--	.dapm_routes = ads117x_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(ads117x_dapm_routes),
+-	.controls = alc5632_snd_controls,
+-	.num_controls = ARRAY_SIZE(alc5632_snd_controls),
+-	.dapm_widgets = alc5632_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(alc5632_dapm_widgets),
+-	.dapm_routes = alc5632_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(alc5632_dapm_routes),
 +	.component_driver = {
-+		.dapm_widgets		= ads117x_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(ads117x_dapm_widgets),
-+		.dapm_routes		= ads117x_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(ads117x_dapm_routes),
++		.controls		= alc5632_snd_controls,
++		.num_controls		= ARRAY_SIZE(alc5632_snd_controls),
++		.dapm_widgets		= alc5632_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(alc5632_dapm_widgets),
++		.dapm_routes		= alc5632_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(alc5632_dapm_routes),
 +	},
  };
  
- static int ads117x_probe(struct platform_device *pdev)
+ static const struct regmap_config alc5632_regmap = {
 -- 
 2.8.1
