@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on ad73311" to the asoc tree
-Date: Mon, 08 Aug 2016 12:03:20 +0100
-Message-ID: <E1bWiL2-0003KT-5d@debutante>
-References: <877fbr63ei.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on ad193x" to the asoc tree
+Date: Mon, 08 Aug 2016 12:03:11 +0100
+Message-ID: <E1bWiKt-0003Hr-CA@debutante>
+References: <8737mf63cv.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <877fbr63ei.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8737mf63cv.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on ad73311
+   ASoC: codec duplicated callback function goes to component on ad193x
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From f95b81387cac798cf790b47cbb676e0fd8f87a6d Mon Sep 17 00:00:00 2001
+>From 1d09e8c35626ea0b899c1cd1922d8802bd169868 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:08:46 +0000
+Date: Mon, 8 Aug 2016 09:09:43 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- ad73311
+ ad193x
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,29 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ad73311.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/ad193x.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/ad73311.c b/sound/soc/codecs/ad73311.c
-index a9400aef60b5..3e358a49442d 100644
---- a/sound/soc/codecs/ad73311.c
-+++ b/sound/soc/codecs/ad73311.c
-@@ -55,10 +55,12 @@ static struct snd_soc_dai_driver ad73311_dai = {
- };
+diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
+index 3a3f3f2343d7..d643557d89a7 100644
+--- a/sound/soc/codecs/ad193x.c
++++ b/sound/soc/codecs/ad193x.c
+@@ -410,12 +410,14 @@ static int ad193x_codec_probe(struct snd_soc_codec *codec)
  
- static struct snd_soc_codec_driver soc_codec_dev_ad73311 = {
--	.dapm_widgets = ad73311_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(ad73311_dapm_widgets),
--	.dapm_routes = ad73311_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(ad73311_dapm_routes),
+ static struct snd_soc_codec_driver soc_codec_dev_ad193x = {
+ 	.probe = ad193x_codec_probe,
+-	.controls = ad193x_snd_controls,
+-	.num_controls = ARRAY_SIZE(ad193x_snd_controls),
+-	.dapm_widgets = ad193x_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(ad193x_dapm_widgets),
+-	.dapm_routes = audio_paths,
+-	.num_dapm_routes = ARRAY_SIZE(audio_paths),
 +	.component_driver = {
-+		.dapm_widgets		= ad73311_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(ad73311_dapm_widgets),
-+		.dapm_routes		= ad73311_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(ad73311_dapm_routes),
++		.controls		= ad193x_snd_controls,
++		.num_controls		= ARRAY_SIZE(ad193x_snd_controls),
++		.dapm_widgets		= ad193x_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(ad193x_dapm_widgets),
++		.dapm_routes		= audio_paths,
++		.num_dapm_routes	= ARRAY_SIZE(audio_paths),
 +	},
  };
  
- static int ad73311_probe(struct platform_device *pdev)
+ const struct regmap_config ad193x_regmap_config = {
 -- 
 2.8.1
