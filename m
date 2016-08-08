@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on spdif_receiver" to the asoc tree
-Date: Mon, 08 Aug 2016 12:05:00 +0100
-Message-ID: <E1bWiMe-0003oa-8D@debutante>
-References: <87k2fr7igl.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on sta32x" to the asoc tree
+Date: Mon, 08 Aug 2016 12:05:12 +0100
+Message-ID: <E1bWiMq-0003s1-39@debutante>
+References: <87popj7iik.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87k2fr7igl.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87popj7iik.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on spdif_receiver
+   ASoC: codec duplicated callback function goes to component on sta32x
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 35eeafe3bf90d969756c5ef0f996c052ef35959d Mon Sep 17 00:00:00 2001
+>From 37f112b39d8442a17ecdc7e72d42145d8cf18d37 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:58:11 +0000
+Date: Mon, 8 Aug 2016 08:57:00 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- spdif_receiver
+ sta32x
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,29 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/spdif_receiver.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/sta32x.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/spdif_receiver.c b/sound/soc/codecs/spdif_receiver.c
-index 3ec41ccbf4e2..234f87b54838 100644
---- a/sound/soc/codecs/spdif_receiver.c
-+++ b/sound/soc/codecs/spdif_receiver.c
-@@ -38,10 +38,12 @@ static const struct snd_soc_dapm_route dir_routes[] = {
- 			SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE)
- 
- static struct snd_soc_codec_driver soc_codec_spdif_dir = {
--	.dapm_widgets = dir_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(dir_widgets),
--	.dapm_routes = dir_routes,
--	.num_dapm_routes = ARRAY_SIZE(dir_routes),
+diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
+index a9844b2ac829..0790ae8530d9 100644
+--- a/sound/soc/codecs/sta32x.c
++++ b/sound/soc/codecs/sta32x.c
+@@ -991,12 +991,14 @@ static const struct snd_soc_codec_driver sta32x_codec = {
+ 	.remove =		sta32x_remove,
+ 	.set_bias_level =	sta32x_set_bias_level,
+ 	.suspend_bias_off =	true,
+-	.controls =		sta32x_snd_controls,
+-	.num_controls =		ARRAY_SIZE(sta32x_snd_controls),
+-	.dapm_widgets =		sta32x_dapm_widgets,
+-	.num_dapm_widgets =	ARRAY_SIZE(sta32x_dapm_widgets),
+-	.dapm_routes =		sta32x_dapm_routes,
+-	.num_dapm_routes =	ARRAY_SIZE(sta32x_dapm_routes),
 +	.component_driver = {
-+		.dapm_widgets		= dir_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(dir_widgets),
-+		.dapm_routes		= dir_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(dir_routes),
++		.controls =		sta32x_snd_controls,
++		.num_controls =		ARRAY_SIZE(sta32x_snd_controls),
++		.dapm_widgets =		sta32x_dapm_widgets,
++		.num_dapm_widgets =	ARRAY_SIZE(sta32x_dapm_widgets),
++		.dapm_routes =		sta32x_dapm_routes,
++		.num_dapm_routes =	ARRAY_SIZE(sta32x_dapm_routes),
 +	},
  };
  
- static struct snd_soc_dai_driver dir_stub_dai = {
+ static const struct regmap_config sta32x_regmap = {
 -- 
 2.8.1
