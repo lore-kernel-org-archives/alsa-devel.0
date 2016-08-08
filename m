@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on rt5677" to the asoc tree
-Date: Mon, 08 Aug 2016 12:00:56 +0100
-Message-ID: <E1bWiIi-0002dH-Tp@debutante>
-References: <878tw739ko.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on tlv320aic26" to the asoc tree
+Date: Mon, 08 Aug 2016 12:00:39 +0100
+Message-ID: <E1bWiIR-0002Y9-EQ@debutante>
+References: <87zion1uwy.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <878tw739ko.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87zion1uwy.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on rt5677
+   ASoC: codec duplicated callback function goes to component on tlv320aic26
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 1ec95a5748de5fd448f0b54a3b3c6fcd3b8374c0 Mon Sep 17 00:00:00 2001
+>From 40be1e609e743733e1e8a18b90e7be22c27d2062 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:23:46 +0000
+Date: Mon, 8 Aug 2016 09:25:40 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- rt5677
+ tlv320aic26
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5677.c | 14 ++++++++------
+ sound/soc/codecs/tlv320aic26.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index da9483c1c6fb..68268f2d68ca 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4974,12 +4974,14 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5677 = {
- 	.resume = rt5677_resume,
- 	.set_bias_level = rt5677_set_bias_level,
- 	.idle_bias_off = true,
--	.controls = rt5677_snd_controls,
--	.num_controls = ARRAY_SIZE(rt5677_snd_controls),
--	.dapm_widgets = rt5677_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(rt5677_dapm_widgets),
--	.dapm_routes = rt5677_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(rt5677_dapm_routes),
+diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
+index 2c904d7150ad..14aa96d41719 100644
+--- a/sound/soc/codecs/tlv320aic26.c
++++ b/sound/soc/codecs/tlv320aic26.c
+@@ -321,12 +321,14 @@ static int aic26_probe(struct snd_soc_codec *codec)
+ 
+ static struct snd_soc_codec_driver aic26_soc_codec_dev = {
+ 	.probe = aic26_probe,
+-	.controls = aic26_snd_controls,
+-	.num_controls = ARRAY_SIZE(aic26_snd_controls),
+-	.dapm_widgets = tlv320aic26_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(tlv320aic26_dapm_widgets),
+-	.dapm_routes = tlv320aic26_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(tlv320aic26_dapm_routes),
 +	.component_driver = {
-+		.controls		= rt5677_snd_controls,
-+		.num_controls		= ARRAY_SIZE(rt5677_snd_controls),
-+		.dapm_widgets		= rt5677_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(rt5677_dapm_widgets),
-+		.dapm_routes		= rt5677_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(rt5677_dapm_routes),
++		.controls		= aic26_snd_controls,
++		.num_controls		= ARRAY_SIZE(aic26_snd_controls),
++		.dapm_widgets		= tlv320aic26_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(tlv320aic26_dapm_widgets),
++		.dapm_routes		= tlv320aic26_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(tlv320aic26_dapm_routes),
 +	},
  };
  
- static const struct regmap_config rt5677_regmap_physical = {
+ static const struct regmap_config aic26_regmap = {
 -- 
 2.8.1
