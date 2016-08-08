@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on cs4265" to the asoc tree
-Date: Mon, 08 Aug 2016 12:03:58 +0100
-Message-ID: <E1bWiLe-0003Vk-7w@debutante>
-References: <87popj63l7.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on cs42l52" to the asoc tree
+Date: Mon, 08 Aug 2016 12:04:09 +0100
+Message-ID: <E1bWiLp-0003Z7-Ud@debutante>
+References: <87vazb63ne.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87popj63l7.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87vazb63ne.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on cs4265
+   ASoC: codec duplicated callback function goes to component on cs42l52
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 9f9dc779bca7eb24f0afc8929bf89a4c5cccccea Mon Sep 17 00:00:00 2001
+>From 59aad18c027669bccfe6b3334c03dbec42c74a7d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:04:43 +0000
+Date: Mon, 8 Aug 2016 09:03:26 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- cs4265
+ cs42l52
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,34 +51,34 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs4265.c | 15 ++++++++-------
+ sound/soc/codecs/cs42l52.c | 15 ++++++++-------
  1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
-index 55db19ddc5ff..fd966bb851cb 100644
---- a/sound/soc/codecs/cs4265.c
-+++ b/sound/soc/codecs/cs4265.c
-@@ -547,13 +547,14 @@ static struct snd_soc_dai_driver cs4265_dai[] = {
- static const struct snd_soc_codec_driver soc_codec_cs4265 = {
- 	.set_bias_level = cs4265_set_bias_level,
+diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
+index 47b97fcefb0b..0d9c4a57301b 100644
+--- a/sound/soc/codecs/cs42l52.c
++++ b/sound/soc/codecs/cs42l52.c
+@@ -1056,13 +1056,14 @@ static const struct snd_soc_codec_driver soc_codec_dev_cs42l52 = {
+ 	.set_bias_level = cs42l52_set_bias_level,
+ 	.suspend_bias_off = true,
  
--	.dapm_widgets = cs4265_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(cs4265_dapm_widgets),
--	.dapm_routes = cs4265_audio_map,
--	.num_dapm_routes = ARRAY_SIZE(cs4265_audio_map),
+-	.dapm_widgets = cs42l52_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(cs42l52_dapm_widgets),
+-	.dapm_routes = cs42l52_audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(cs42l52_audio_map),
 -
--	.controls = cs4265_snd_controls,
--	.num_controls = ARRAY_SIZE(cs4265_snd_controls),
+-	.controls = cs42l52_snd_controls,
+-	.num_controls = ARRAY_SIZE(cs42l52_snd_controls),
 +	.component_driver = {
-+		.controls		= cs4265_snd_controls,
-+		.num_controls		= ARRAY_SIZE(cs4265_snd_controls),
-+		.dapm_widgets		= cs4265_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(cs4265_dapm_widgets),
-+		.dapm_routes		= cs4265_audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(cs4265_audio_map),
++		.controls		= cs42l52_snd_controls,
++		.num_controls		= ARRAY_SIZE(cs42l52_snd_controls),
++		.dapm_widgets		= cs42l52_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(cs42l52_dapm_widgets),
++		.dapm_routes		= cs42l52_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(cs42l52_audio_map),
 +	},
  };
  
- static const struct regmap_config cs4265_regmap = {
+ /* Current and threshold powerup sequence Pg37 */
 -- 
 2.8.1
