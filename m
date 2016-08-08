@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on max9860" to the asoc tree
-Date: Mon, 08 Aug 2016 12:04:36 +0100
-Message-ID: <E1bWiMG-0003h9-59@debutante>
-References: <878tw77ick.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on pcm179x" to the asoc tree
+Date: Mon, 08 Aug 2016 12:04:42 +0100
+Message-ID: <E1bWiMM-0003ir-Cx@debutante>
+References: <87bn137idk.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <878tw77ick.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87bn137idk.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on max9860
+   ASoC: codec duplicated callback function goes to component on pcm179x
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 750a33e6173c5ac5f202f15bb092eb4965f4547d Mon Sep 17 00:00:00 2001
+>From 98773a87e83dfd81c77418f2d0f19a63e7476bac Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:00:35 +0000
+Date: Mon, 8 Aug 2016 08:59:59 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- max9860
+ pcm179x
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9860.c | 14 ++++++++------
+ sound/soc/codecs/pcm179x.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/max9860.c b/sound/soc/codecs/max9860.c
-index 68074c92a7c0..499bdbfd0a2d 100644
---- a/sound/soc/codecs/max9860.c
-+++ b/sound/soc/codecs/max9860.c
-@@ -538,12 +538,14 @@ static struct snd_soc_codec_driver max9860_codec_driver = {
- 	.set_bias_level = max9860_set_bias_level,
- 	.idle_bias_off = true,
+diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
+index 88fbdd184aa0..b813a154ddd9 100644
+--- a/sound/soc/codecs/pcm179x.c
++++ b/sound/soc/codecs/pcm179x.c
+@@ -206,12 +206,14 @@ const struct regmap_config pcm179x_regmap_config = {
+ EXPORT_SYMBOL_GPL(pcm179x_regmap_config);
  
--	.controls = max9860_controls,
--	.num_controls = ARRAY_SIZE(max9860_controls),
--	.dapm_widgets = max9860_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(max9860_dapm_widgets),
--	.dapm_routes = max9860_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(max9860_dapm_routes),
+ static struct snd_soc_codec_driver soc_codec_dev_pcm179x = {
+-	.controls		= pcm179x_controls,
+-	.num_controls		= ARRAY_SIZE(pcm179x_controls),
+-	.dapm_widgets		= pcm179x_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(pcm179x_dapm_widgets),
+-	.dapm_routes		= pcm179x_dapm_routes,
+-	.num_dapm_routes	= ARRAY_SIZE(pcm179x_dapm_routes),
 +	.component_driver = {
-+		.controls		= max9860_controls,
-+		.num_controls		= ARRAY_SIZE(max9860_controls),
-+		.dapm_widgets		= max9860_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(max9860_dapm_widgets),
-+		.dapm_routes		= max9860_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(max9860_dapm_routes),
++		.controls		= pcm179x_controls,
++		.num_controls		= ARRAY_SIZE(pcm179x_controls),
++		.dapm_widgets		= pcm179x_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(pcm179x_dapm_widgets),
++		.dapm_routes		= pcm179x_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(pcm179x_dapm_routes),
 +	},
  };
  
- #ifdef CONFIG_PM
+ int pcm179x_common_init(struct device *dev, struct regmap *regmap)
 -- 
 2.8.1
