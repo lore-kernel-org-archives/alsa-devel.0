@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on tas5086" to the asoc tree
-Date: Mon, 08 Aug 2016 12:05:23 +0100
-Message-ID: <E1bWiN1-0003vO-SX@debutante>
-References: <87vazb7iks.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on tas5720" to the asoc tree
+Date: Mon, 08 Aug 2016 12:05:29 +0100
+Message-ID: <E1bWiN7-0003x7-SZ@debutante>
+References: <87y4477ilt.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87vazb7iks.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87y4477ilt.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on tas5086
+   ASoC: codec duplicated callback function goes to component on tas5720
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 9a9a069c4445122b98025e8b1003caf5e0eba037 Mon Sep 17 00:00:00 2001
+>From a8f552df807d0c809ec529c8e998a6abbf40f324 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:55:41 +0000
+Date: Mon, 8 Aug 2016 08:55:04 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- tas5086
+ tas5720
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas5086.c | 14 ++++++++------
+ sound/soc/codecs/tas5720.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
-index d49d25d51957..c297b9fc8bf6 100644
---- a/sound/soc/codecs/tas5086.c
-+++ b/sound/soc/codecs/tas5086.c
-@@ -890,12 +890,14 @@ static struct snd_soc_codec_driver soc_codec_dev_tas5086 = {
- 	.remove			= tas5086_remove,
- 	.suspend		= tas5086_soc_suspend,
- 	.resume			= tas5086_soc_resume,
--	.controls		= tas5086_controls,
--	.num_controls		= ARRAY_SIZE(tas5086_controls),
--	.dapm_widgets		= tas5086_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(tas5086_dapm_widgets),
--	.dapm_routes		= tas5086_dapm_routes,
--	.num_dapm_routes	= ARRAY_SIZE(tas5086_dapm_routes),
+diff --git a/sound/soc/codecs/tas5720.c b/sound/soc/codecs/tas5720.c
+index f54fb46b77c2..c65b917598d2 100644
+--- a/sound/soc/codecs/tas5720.c
++++ b/sound/soc/codecs/tas5720.c
+@@ -489,12 +489,14 @@ static struct snd_soc_codec_driver soc_codec_dev_tas5720 = {
+ 	.suspend = tas5720_suspend,
+ 	.resume = tas5720_resume,
+ 
+-	.controls = tas5720_snd_controls,
+-	.num_controls = ARRAY_SIZE(tas5720_snd_controls),
+-	.dapm_widgets = tas5720_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(tas5720_dapm_widgets),
+-	.dapm_routes = tas5720_audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(tas5720_audio_map),
 +	.component_driver = {
-+		.controls		= tas5086_controls,
-+		.num_controls		= ARRAY_SIZE(tas5086_controls),
-+		.dapm_widgets		= tas5086_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(tas5086_dapm_widgets),
-+		.dapm_routes		= tas5086_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(tas5086_dapm_routes),
++		.controls		= tas5720_snd_controls,
++		.num_controls		= ARRAY_SIZE(tas5720_snd_controls),
++		.dapm_widgets		= tas5720_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(tas5720_dapm_widgets),
++		.dapm_routes		= tas5720_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(tas5720_audio_map),
 +	},
  };
  
- static const struct i2c_device_id tas5086_i2c_id[] = {
+ /* PCM rates supported by the TAS5720 driver */
 -- 
 2.8.1
