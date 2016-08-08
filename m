@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on hdmi-codec" to the asoc tree
-Date: Mon, 08 Aug 2016 12:02:04 +0100
-Message-ID: <E1bWiJo-0002xZ-4P@debutante>
-References: <8760rb4ogu.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on da732x" to the asoc tree
+Date: Mon, 08 Aug 2016 12:02:12 +0100
+Message-ID: <E1bWiJw-00030Y-V7@debutante>
+References: <87a8gn4oie.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <8760rb4ogu.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87a8gn4oie.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on hdmi-codec
+   ASoC: codec duplicated callback function goes to component on da732x
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 88b0f761e296682f24639e9d9fc0122e7a7695c1 Mon Sep 17 00:00:00 2001
+>From e7e8dda8b8a3dafd81c64f378c3a2d5cb71860df Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:16:40 +0000
+Date: Mon, 8 Aug 2016 09:15:48 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- hdmi-codec
+ da732x
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,32 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/da732x.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index f64ecaa0141a..b904492d7744 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -375,13 +375,13 @@ static int hdmi_of_xlate_dai_name(struct snd_soc_component *component,
- }
+diff --git a/sound/soc/codecs/da732x.c b/sound/soc/codecs/da732x.c
+index 461506a4ca6a..c1cc1c1c28f2 100644
+--- a/sound/soc/codecs/da732x.c
++++ b/sound/soc/codecs/da732x.c
+@@ -1501,12 +1501,14 @@ static int da732x_set_bias_level(struct snd_soc_codec *codec,
  
- static struct snd_soc_codec_driver hdmi_codec = {
--	.controls = hdmi_controls,
--	.num_controls = ARRAY_SIZE(hdmi_controls),
--	.dapm_widgets = hdmi_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(hdmi_widgets),
--	.dapm_routes = hdmi_routes,
--	.num_dapm_routes = ARRAY_SIZE(hdmi_routes),
- 	.component_driver = {
-+		.controls		= hdmi_controls,
-+		.num_controls		= ARRAY_SIZE(hdmi_controls),
-+		.dapm_widgets		= hdmi_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(hdmi_widgets),
-+		.dapm_routes		= hdmi_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(hdmi_routes),
- 		.of_xlate_dai_name	= hdmi_of_xlate_dai_name,
- 	},
+ static struct snd_soc_codec_driver soc_codec_dev_da732x = {
+ 	.set_bias_level		= da732x_set_bias_level,
+-	.controls		= da732x_snd_controls,
+-	.num_controls		= ARRAY_SIZE(da732x_snd_controls),
+-	.dapm_widgets		= da732x_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(da732x_dapm_widgets),
+-	.dapm_routes		= da732x_dapm_routes,
+-	.num_dapm_routes	= ARRAY_SIZE(da732x_dapm_routes),
++	.component_driver = {
++		.controls		= da732x_snd_controls,
++		.num_controls		= ARRAY_SIZE(da732x_snd_controls),
++		.dapm_widgets		= da732x_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(da732x_dapm_widgets),
++		.dapm_routes		= da732x_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(da732x_dapm_routes),
++	},
+ 	.set_pll		= da732x_set_dai_pll,
  };
+ 
 -- 
 2.8.1
