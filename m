@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on bt-sco" to the asoc tree
-Date: Mon, 08 Aug 2016 12:03:49 +0100
-Message-ID: <E1bWiLV-0003TD-GA@debutante>
-References: <87lh0763jq.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on cs35l32" to the asoc tree
+Date: Mon, 08 Aug 2016 12:03:52 +0100
+Message-ID: <E1bWiLY-0003U4-DA@debutante>
+References: <87mvkn63k8.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87lh0763jq.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87mvkn63k8.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on bt-sco
+   ASoC: codec duplicated callback function goes to component on cs35l32
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 24fe48d78be574dcd43bc5156f47d37757cfffbd Mon Sep 17 00:00:00 2001
+>From 1728f9d11f234df10c392f41a0ec80be287c4567 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:05:36 +0000
+Date: Mon, 8 Aug 2016 09:05:18 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- bt-sco
+ cs35l32
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,29 +51,34 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/bt-sco.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/cs35l32.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/bt-sco.c b/sound/soc/codecs/bt-sco.c
-index 2a8d0ee141d4..8014e697d540 100644
---- a/sound/soc/codecs/bt-sco.c
-+++ b/sound/soc/codecs/bt-sco.c
-@@ -63,10 +63,12 @@ static struct snd_soc_dai_driver bt_sco_dai[] = {
- };
+diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
+index 287d13740be4..7e9806206648 100644
+--- a/sound/soc/codecs/cs35l32.c
++++ b/sound/soc/codecs/cs35l32.c
+@@ -231,13 +231,14 @@ static int cs35l32_codec_set_sysclk(struct snd_soc_codec *codec,
+ static const struct snd_soc_codec_driver soc_codec_dev_cs35l32 = {
+ 	.set_sysclk = cs35l32_codec_set_sysclk,
  
- static struct snd_soc_codec_driver soc_codec_dev_bt_sco = {
--	.dapm_widgets = bt_sco_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(bt_sco_widgets),
--	.dapm_routes = bt_sco_routes,
--	.num_dapm_routes = ARRAY_SIZE(bt_sco_routes),
+-	.dapm_widgets = cs35l32_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(cs35l32_dapm_widgets),
+-	.dapm_routes = cs35l32_audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(cs35l32_audio_map),
+-
+-	.controls = cs35l32_snd_controls,
+-	.num_controls = ARRAY_SIZE(cs35l32_snd_controls),
 +	.component_driver = {
-+		.dapm_widgets		= bt_sco_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(bt_sco_widgets),
-+		.dapm_routes		= bt_sco_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(bt_sco_routes),
++		.controls		= cs35l32_snd_controls,
++		.num_controls		= ARRAY_SIZE(cs35l32_snd_controls),
++		.dapm_widgets		= cs35l32_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(cs35l32_dapm_widgets),
++		.dapm_routes		= cs35l32_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(cs35l32_audio_map),
 +	},
  };
  
- static int bt_sco_probe(struct platform_device *pdev)
+ /* Current and threshold powerup sequence Pg37 in datasheet */
 -- 
 2.8.1
