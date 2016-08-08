@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on sgtl5000" to the asoc tree
-Date: Mon, 08 Aug 2016 12:04:57 +0100
-Message-ID: <E1bWiMb-0003ni-A9@debutante>
-References: <87invb7ig2.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on rt5616" to the asoc tree
+Date: Mon, 08 Aug 2016 12:04:51 +0100
+Message-ID: <E1bWiMV-0003lm-C8@debutante>
+References: <87fuqf7if4.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87invb7ig2.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87fuqf7if4.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on sgtl5000
+   ASoC: codec duplicated callback function goes to component on rt5616
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From a324dbe5201aadbd96063404162d996ec8a6ad9e Mon Sep 17 00:00:00 2001
+>From 947cd148b43c025bab870f724cba7a17d090f1a5 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:58:28 +0000
+Date: Mon, 8 Aug 2016 08:59:05 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- sgtl5000
+ rt5616
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sgtl5000.c | 14 ++++++++------
+ sound/soc/codecs/rt5616.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 527b759c1562..a635bd09d637 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1151,12 +1151,14 @@ static struct snd_soc_codec_driver sgtl5000_driver = {
- 	.remove = sgtl5000_remove,
- 	.set_bias_level = sgtl5000_set_bias_level,
- 	.suspend_bias_off = true,
--	.controls = sgtl5000_snd_controls,
--	.num_controls = ARRAY_SIZE(sgtl5000_snd_controls),
--	.dapm_widgets = sgtl5000_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(sgtl5000_dapm_widgets),
--	.dapm_routes = sgtl5000_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(sgtl5000_dapm_routes),
+diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
+index f527b5b2817b..e92a1490fa68 100644
+--- a/sound/soc/codecs/rt5616.c
++++ b/sound/soc/codecs/rt5616.c
+@@ -1302,12 +1302,14 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5616 = {
+ 	.resume = rt5616_resume,
+ 	.set_bias_level = rt5616_set_bias_level,
+ 	.idle_bias_off = true,
+-	.controls = rt5616_snd_controls,
+-	.num_controls = ARRAY_SIZE(rt5616_snd_controls),
+-	.dapm_widgets = rt5616_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(rt5616_dapm_widgets),
+-	.dapm_routes = rt5616_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(rt5616_dapm_routes),
 +	.component_driver = {
-+		.controls		= sgtl5000_snd_controls,
-+		.num_controls		= ARRAY_SIZE(sgtl5000_snd_controls),
-+		.dapm_widgets		= sgtl5000_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(sgtl5000_dapm_widgets),
-+		.dapm_routes		= sgtl5000_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(sgtl5000_dapm_routes),
++		.controls		= rt5616_snd_controls,
++		.num_controls		= ARRAY_SIZE(rt5616_snd_controls),
++		.dapm_widgets		= rt5616_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(rt5616_dapm_widgets),
++		.dapm_routes		= rt5616_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(rt5616_dapm_routes),
 +	},
  };
  
- static const struct regmap_config sgtl5000_regmap = {
+ static const struct regmap_config rt5616_regmap = {
 -- 
 2.8.1
