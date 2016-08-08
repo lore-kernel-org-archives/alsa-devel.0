@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on es8328" to the asoc tree
-Date: Mon, 08 Aug 2016 12:04:27 +0100
-Message-ID: <E1bWiM7-0003eW-DE@debutante>
-References: <874m6v7ib1.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on max9860" to the asoc tree
+Date: Mon, 08 Aug 2016 12:04:36 +0100
+Message-ID: <E1bWiMG-0003h9-59@debutante>
+References: <878tw77ick.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <874m6v7ib1.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <878tw77ick.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on es8328
+   ASoC: codec duplicated callback function goes to component on max9860
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 87869e4fadcaf6f4eac48bfb4a417720af8325a0 Mon Sep 17 00:00:00 2001
+>From 750a33e6173c5ac5f202f15bb092eb4965f4547d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:01:30 +0000
+Date: Mon, 8 Aug 2016 09:00:35 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- es8328
+ max9860
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/es8328.c | 14 ++++++++------
+ sound/soc/codecs/max9860.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index 2086d7107622..37722194b107 100644
---- a/sound/soc/codecs/es8328.c
-+++ b/sound/soc/codecs/es8328.c
-@@ -823,12 +823,14 @@ static struct snd_soc_codec_driver es8328_codec_driver = {
- 	.set_bias_level	  = es8328_set_bias_level,
- 	.suspend_bias_off = true,
+diff --git a/sound/soc/codecs/max9860.c b/sound/soc/codecs/max9860.c
+index 68074c92a7c0..499bdbfd0a2d 100644
+--- a/sound/soc/codecs/max9860.c
++++ b/sound/soc/codecs/max9860.c
+@@ -538,12 +538,14 @@ static struct snd_soc_codec_driver max9860_codec_driver = {
+ 	.set_bias_level = max9860_set_bias_level,
+ 	.idle_bias_off = true,
  
--	.controls	  = es8328_snd_controls,
--	.num_controls	  = ARRAY_SIZE(es8328_snd_controls),
--	.dapm_widgets	  = es8328_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(es8328_dapm_widgets),
--	.dapm_routes	  = es8328_dapm_routes,
--	.num_dapm_routes  = ARRAY_SIZE(es8328_dapm_routes),
+-	.controls = max9860_controls,
+-	.num_controls = ARRAY_SIZE(max9860_controls),
+-	.dapm_widgets = max9860_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(max9860_dapm_widgets),
+-	.dapm_routes = max9860_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(max9860_dapm_routes),
 +	.component_driver = {
-+		.controls		= es8328_snd_controls,
-+		.num_controls		= ARRAY_SIZE(es8328_snd_controls),
-+		.dapm_widgets		= es8328_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(es8328_dapm_widgets),
-+		.dapm_routes		= es8328_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(es8328_dapm_routes),
++		.controls		= max9860_controls,
++		.num_controls		= ARRAY_SIZE(max9860_controls),
++		.dapm_widgets		= max9860_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(max9860_dapm_widgets),
++		.dapm_routes		= max9860_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(max9860_dapm_routes),
 +	},
  };
  
- int es8328_probe(struct device *dev, struct regmap *regmap)
+ #ifdef CONFIG_PM
 -- 
 2.8.1
