@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on tlv320dac33" to the asoc tree
-Date: Mon, 08 Aug 2016 12:00:33 +0100
-Message-ID: <E1bWiIL-0002WL-JQ@debutante>
-References: <87wpjr1uw0.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on uda1380" to the asoc tree
+Date: Mon, 08 Aug 2016 12:00:21 +0100
+Message-ID: <E1bWiI9-0002Sm-Sg@debutante>
+References: <87r39z1utv.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87wpjr1uw0.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87r39z1utv.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on tlv320dac33
+   ASoC: codec duplicated callback function goes to component on uda1380
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From b04c71e634e6654cf4e52e7a94e98aba27c0e643 Mon Sep 17 00:00:00 2001
+>From 68509ede7e80e6cd1782485f9a91c9641adadc54 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:26:17 +0000
+Date: Mon, 8 Aug 2016 09:27:32 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- tlv320dac33
+ uda1380
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320dac33.c | 14 ++++++++------
+ sound/soc/codecs/uda1380.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index f7a6ce7e5fb1..d64eac74d1cc 100644
---- a/sound/soc/codecs/tlv320dac33.c
-+++ b/sound/soc/codecs/tlv320dac33.c
-@@ -1453,12 +1453,14 @@ static struct snd_soc_codec_driver soc_codec_dev_tlv320dac33 = {
- 	.probe = dac33_soc_probe,
- 	.remove = dac33_soc_remove,
+diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+index 35f0469ebb16..533e3bb444e4 100644
+--- a/sound/soc/codecs/uda1380.c
++++ b/sound/soc/codecs/uda1380.c
+@@ -765,12 +765,14 @@ static struct snd_soc_codec_driver soc_codec_dev_uda1380 = {
+ 	.reg_cache_default = uda1380_reg,
+ 	.reg_cache_step = 1,
  
--	.controls = dac33_snd_controls,
--	.num_controls = ARRAY_SIZE(dac33_snd_controls),
--	.dapm_widgets = dac33_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(dac33_dapm_widgets),
--	.dapm_routes = audio_map,
--	.num_dapm_routes = ARRAY_SIZE(audio_map),
+-	.controls = uda1380_snd_controls,
+-	.num_controls = ARRAY_SIZE(uda1380_snd_controls),
+-	.dapm_widgets = uda1380_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(uda1380_dapm_widgets),
+-	.dapm_routes = uda1380_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(uda1380_dapm_routes),
 +	.component_driver = {
-+		.controls		= dac33_snd_controls,
-+		.num_controls		= ARRAY_SIZE(dac33_snd_controls),
-+		.dapm_widgets		= dac33_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(dac33_dapm_widgets),
-+		.dapm_routes		= audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(audio_map),
++		.controls		= uda1380_snd_controls,
++		.num_controls		= ARRAY_SIZE(uda1380_snd_controls),
++		.dapm_widgets		= uda1380_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(uda1380_dapm_widgets),
++		.dapm_routes		= uda1380_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(uda1380_dapm_routes),
 +	},
  };
  
- #define DAC33_RATES	(SNDRV_PCM_RATE_44100 | \
+ #if IS_ENABLED(CONFIG_I2C)
 -- 
 2.8.1
