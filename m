@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on atmel-pdmic" to the asoc tree
-Date: Mon, 08 Aug 2016 12:03:02 +0100
-Message-ID: <E1bWiKk-0003FL-Ji@debutante>
-References: <87y4474oqv.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on atmel-classd" to the asoc tree
+Date: Mon, 08 Aug 2016 12:03:05 +0100
+Message-ID: <E1bWiKn-0003GB-H5@debutante>
+References: <87zion4ore.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87y4474oqv.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87zion4ore.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on atmel-pdmic
+   ASoC: codec duplicated callback function goes to component on atmel-classd
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 72bb3cdf93b1718c9a540fb157890d8639633eca Mon Sep 17 00:00:00 2001
+>From 69295df090a03e406c54ca0dbd67a76355773138 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:10:41 +0000
+Date: Mon, 8 Aug 2016 09:10:21 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- atmel-pdmic
+ atmel-classd
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,22 +51,23 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel-pdmic.c | 6 ++++--
+ sound/soc/atmel/atmel-classd.c | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
-index 5f56da60c92f..2a3a41fad38d 100644
---- a/sound/soc/atmel/atmel-pdmic.c
-+++ b/sound/soc/atmel/atmel-pdmic.c
-@@ -357,8 +357,10 @@ static int atmel_pdmic_codec_probe(struct snd_soc_codec *codec)
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index 6d9b8b44e2da..89ac5f5a93eb 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -308,9 +308,11 @@ static struct regmap *atmel_classd_codec_get_remap(struct device *dev)
  
- static struct snd_soc_codec_driver soc_codec_dev_pdmic = {
- 	.probe		= atmel_pdmic_codec_probe,
--	.controls	= atmel_pdmic_snd_controls,
--	.num_controls	= ARRAY_SIZE(atmel_pdmic_snd_controls),
+ static struct snd_soc_codec_driver soc_codec_dev_classd = {
+ 	.probe		= atmel_classd_codec_probe,
+-	.controls	= atmel_classd_snd_controls,
+-	.num_controls	= ARRAY_SIZE(atmel_classd_snd_controls),
+ 	.get_regmap	= atmel_classd_codec_get_remap,
 +	.component_driver = {
-+		.controls		= atmel_pdmic_snd_controls,
-+		.num_controls		= ARRAY_SIZE(atmel_pdmic_snd_controls),
++		.controls		= atmel_classd_snd_controls,
++		.num_controls		= ARRAY_SIZE(atmel_classd_snd_controls),
 +	},
  };
  
