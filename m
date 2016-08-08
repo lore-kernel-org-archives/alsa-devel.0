@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 03/27] ALSA: seq: copy ioctl data from user
-	space to kernel stack
-Date: Mon,  8 Aug 2016 23:54:29 +0900
-Message-ID: <1470668093-31027-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 06/27] ALSA: seq: obsolete change of address
+	limit in in-kernel path for ioctl
+Date: Mon,  8 Aug 2016 23:54:32 +0900
+Message-ID: <1470668093-31027-7-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470668093-31027-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 6F31D26700C
- for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2016 16:55:00 +0200 (CEST)
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id BFE9E267134
+ for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2016 16:55:01 +0200 (CEST)
 In-Reply-To: <1470668093-31027-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,102 +25,74 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ALSA sequencer core allows kernel-mode tasks to execute operations
-corresponding to ioctls by user-mode tasks. This is for compatibility
-layers such as ABIs for 32/64 bit and I/O operations via Open Sound
-System.
+In former commit, actual operations for each ioctl is re-designed to get
+data in kernel space. Therefore, no need to cast pointer in kernel space
+to user space.
 
-This design requires to handle ioctl data in kernel space. For this
-requirement, ALSA sequencer core temporarily changes address limit for the
-task by get_fs()/set_fs() macro.
-
-Although, this way get shape of code worse, because even when an pointer
-has '__user' qualifier, actually it refers to kernel space, depending on
-the task. This easily misleads readers.
-
-This commit is a preparation for following patches to solve this issue.
-Data from user space is once copied to kernel stack, then operated and
-copied to user space, in a consistent manner. This manner forces all ioctl
-operations to copy the data from/to user space, even if it's read-only or
-write-only. Thus, it has an overhead for simpler ioctl commands.
+This commit applies optimization to in-kernel path of ioctl.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 49 +++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 46 insertions(+), 3 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 36 +++++++++++++-----------------------
+ 1 file changed, 13 insertions(+), 23 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 78fd64e..de1177f 100644
+index 586f9cd..449eb7a 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -2180,7 +2180,7 @@ static int snd_seq_ioctl_query_next_port(struct snd_seq_client *client,
+@@ -2216,23 +2216,6 @@ static const struct seq_ioctl_table {
+ 	{ 0, NULL },
+ };
  
- static const struct seq_ioctl_table {
- 	unsigned int cmd;
--	int (*func)(struct snd_seq_client *client, void __user * arg);
-+	int (*func)(struct snd_seq_client *client, void *arg);
- } ioctl_tables[] = {
- 	{ SNDRV_SEQ_IOCTL_PVERSION, seq_ioctl_pversion },
- 	{ SNDRV_SEQ_IOCTL_CLIENT_ID, seq_ioctl_client_id },
-@@ -2233,14 +2233,57 @@ static int snd_seq_do_ioctl(struct snd_seq_client *client, unsigned int cmd,
- }
- 
- 
--static long snd_seq_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-+static long snd_seq_ioctl(struct file *file, unsigned int cmd,
-+			  unsigned long arg)
+-static int snd_seq_do_ioctl(struct snd_seq_client *client, unsigned int cmd,
+-			    void __user *arg)
+-{
+-	const struct seq_ioctl_table *p;
+-
+-	if (! arg)
+-		return -EFAULT;
+-	for (p = ioctl_tables; p->cmd; p++) {
+-		if (p->cmd == cmd)
+-			return p->func(client, arg);
+-	}
+-	pr_debug("ALSA: seq unknown ioctl() 0x%x (type='%c', number=0x%02x)\n",
+-		   cmd, _IOC_TYPE(cmd), _IOC_NR(cmd));
+-	return -ENOTTY;
+-}
+-
+-
+ static long snd_seq_ioctl(struct file *file, unsigned int cmd,
+ 			  unsigned long arg)
  {
- 	struct snd_seq_client *client = file->private_data;
+@@ -2484,16 +2467,23 @@ EXPORT_SYMBOL(snd_seq_kernel_client_dispatch);
+ int snd_seq_kernel_client_ctl(int clientid, unsigned int cmd, void *arg)
+ {
+ 	struct snd_seq_client *client;
+-	mm_segment_t fs;
+-	int result;
 +	const struct seq_ioctl_table *p;
-+	/* To use kernel stack for ioctl data. */
-+	union ioctl_arg {
-+		int pversion;
-+		int client_id;
-+		struct snd_seq_system_info	system_info;
-+		struct snd_seq_running_info	running_info;
-+		struct snd_seq_client_info	client_info;
-+		struct snd_seq_port_info	port_info;
-+		struct snd_seq_port_subscribe	port_subscribe;
-+		struct snd_seq_queue_info	queue_info;
-+		struct snd_seq_queue_status	queue_status;
-+		struct snd_seq_queue_tempo	tempo;
-+		struct snd_seq_queue_timer	queue_timer;
-+		struct snd_seq_queue_client	queue_client;
-+		struct snd_seq_client_pool	client_pool;
-+		struct snd_seq_remove_events	remove_events;
-+		struct snd_seq_query_subs	query_subs;
-+	} buf = {0};
-+	int err;
  
- 	if (snd_BUG_ON(!client))
+ 	client = clientptr(clientid);
+ 	if (client == NULL)
  		return -ENXIO;
+-	fs = snd_enter_user();
+-	result = snd_seq_do_ioctl(client, cmd, (void __force __user *)arg);
+-	snd_leave_user(fs);
+-	return result;
 +
 +	for (p = ioctl_tables; p->cmd > 0; ++p) {
 +		if (p->cmd == cmd)
 +			break;
 +	}
-+	if (p->cmd == 0)
++	if (p->cmd == 0) {
++		pr_debug("ALSA: seq unknown ioctl() 0x%x (type='%c', number=0x%02x)\n",
++			 cmd, _IOC_TYPE(cmd), _IOC_NR(cmd));
 +		return -ENOTTY;
-+
-+	/*
-+	 * All of ioctl commands for ALSA sequencer get an argument of size
-+	 * within 13 bits. We can safely pick up the size from the command.
-+	 * On the other hand, some commands includes a bug of 'read' or 'write',
-+	 * thus we cannot utilize information from the access fields.
-+	 */
-+	if (copy_from_user(&buf, (const void __user *)arg, _IOC_SIZE(p->cmd)))
-+		return -EFAULT;
- 		
--	return snd_seq_do_ioctl(client, cmd, (void __user *) arg);
-+	err = p->func(client, &buf);
-+	if (err >= 0) {
-+		if (copy_to_user((void __user *)arg, &buf, _IOC_SIZE(p->cmd)))
-+			return -EFAULT;
 +	}
 +
-+	return err;
++	return p->func(client, arg);
  }
  
- #ifdef CONFIG_COMPAT
+ EXPORT_SYMBOL(snd_seq_kernel_client_ctl);
 -- 
 2.7.4
