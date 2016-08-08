@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on rt5631" to the asoc tree
-Date: Mon, 08 Aug 2016 12:04:54 +0100
-Message-ID: <E1bWiMY-0003mo-Bh@debutante>
-References: <87h9av7ifm.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on sta350" to the asoc tree
+Date: Mon, 08 Aug 2016 12:05:15 +0100
+Message-ID: <E1bWiMt-0003sr-1Z@debutante>
+References: <87r39z7ij1.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87h9av7ifm.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87r39z7ij1.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on rt5631
+   ASoC: codec duplicated callback function goes to component on sta350
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From f78bc2bf1d336246c85fe5a009104fe7c3f586d9 Mon Sep 17 00:00:00 2001
+>From ffbb87c94acf917eccd70c635af58dee60548f3d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:58:45 +0000
+Date: Mon, 8 Aug 2016 08:56:41 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- rt5631
+ sta350
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5631.c | 14 ++++++++------
+ sound/soc/codecs/sta350.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
-index 1be2bab7dee3..0e418089c053 100644
---- a/sound/soc/codecs/rt5631.c
-+++ b/sound/soc/codecs/rt5631.c
-@@ -1657,12 +1657,14 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5631 = {
- 	.probe = rt5631_probe,
- 	.set_bias_level = rt5631_set_bias_level,
- 	.suspend_bias_off = true,
--	.controls = rt5631_snd_controls,
--	.num_controls = ARRAY_SIZE(rt5631_snd_controls),
--	.dapm_widgets = rt5631_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(rt5631_dapm_widgets),
--	.dapm_routes = rt5631_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(rt5631_dapm_routes),
+diff --git a/sound/soc/codecs/sta350.c b/sound/soc/codecs/sta350.c
+index 33a4612f0a07..9644c20f44e3 100644
+--- a/sound/soc/codecs/sta350.c
++++ b/sound/soc/codecs/sta350.c
+@@ -1057,12 +1057,14 @@ static const struct snd_soc_codec_driver sta350_codec = {
+ 	.remove =		sta350_remove,
+ 	.set_bias_level =	sta350_set_bias_level,
+ 	.suspend_bias_off =	true,
+-	.controls =		sta350_snd_controls,
+-	.num_controls =		ARRAY_SIZE(sta350_snd_controls),
+-	.dapm_widgets =		sta350_dapm_widgets,
+-	.num_dapm_widgets =	ARRAY_SIZE(sta350_dapm_widgets),
+-	.dapm_routes =		sta350_dapm_routes,
+-	.num_dapm_routes =	ARRAY_SIZE(sta350_dapm_routes),
 +	.component_driver = {
-+		.controls		= rt5631_snd_controls,
-+		.num_controls		= ARRAY_SIZE(rt5631_snd_controls),
-+		.dapm_widgets		= rt5631_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(rt5631_dapm_widgets),
-+		.dapm_routes		= rt5631_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(rt5631_dapm_routes),
++		.controls =		sta350_snd_controls,
++		.num_controls =		ARRAY_SIZE(sta350_snd_controls),
++		.dapm_widgets =		sta350_dapm_widgets,
++		.num_dapm_widgets =	ARRAY_SIZE(sta350_dapm_widgets),
++		.dapm_routes =		sta350_dapm_routes,
++		.num_dapm_routes =	ARRAY_SIZE(sta350_dapm_routes),
 +	},
  };
  
- static const struct i2c_device_id rt5631_i2c_id[] = {
+ static const struct regmap_config sta350_regmap = {
 -- 
 2.8.1
