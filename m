@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on cs53l30" to the asoc tree
-Date: Mon, 08 Aug 2016 12:04:24 +0100
-Message-ID: <E1bWiM4-0003dd-FG@debutante>
-References: <8737mf7iai.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on cs42l51" to the asoc tree
+Date: Mon, 08 Aug 2016 12:04:07 +0100
+Message-ID: <E1bWiLn-0003YH-0A@debutante>
+References: <87twev63mv.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <8737mf7iai.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87twev63mv.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on cs53l30
+   ASoC: codec duplicated callback function goes to component on cs42l51
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From cbe5cdbf0e07ea563def6dda7acc6d95817949a5 Mon Sep 17 00:00:00 2001
+>From 9353d25dc8442784b1bc626cb2741965a1f53dad Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:01:49 +0000
+Date: Mon, 8 Aug 2016 09:03:45 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- cs53l30
+ cs42l51
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,34 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs53l30.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ sound/soc/codecs/cs42l51.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index 2c0d9c430a8c..e244e08b7da1 100644
---- a/sound/soc/codecs/cs53l30.c
-+++ b/sound/soc/codecs/cs53l30.c
-@@ -897,13 +897,14 @@ static struct snd_soc_codec_driver cs53l30_driver = {
- 	.set_bias_level = cs53l30_set_bias_level,
- 	.idle_bias_off = true,
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index 35488f14e237..96cfe38943cd 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -507,12 +507,14 @@ static int cs42l51_codec_probe(struct snd_soc_codec *codec)
+ static struct snd_soc_codec_driver soc_codec_device_cs42l51 = {
+ 	.probe = cs42l51_codec_probe,
  
--	.dapm_widgets = cs53l30_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(cs53l30_dapm_widgets),
--	.dapm_routes = cs53l30_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(cs53l30_dapm_routes),
--
--	.controls = cs53l30_snd_controls,
--	.num_controls = ARRAY_SIZE(cs53l30_snd_controls),
+-	.controls = cs42l51_snd_controls,
+-	.num_controls = ARRAY_SIZE(cs42l51_snd_controls),
+-	.dapm_widgets = cs42l51_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(cs42l51_dapm_widgets),
+-	.dapm_routes = cs42l51_routes,
+-	.num_dapm_routes = ARRAY_SIZE(cs42l51_routes),
 +	.component_driver = {
-+		.controls		= cs53l30_snd_controls,
-+		.num_controls		= ARRAY_SIZE(cs53l30_snd_controls),
-+		.dapm_widgets		= cs53l30_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(cs53l30_dapm_widgets),
-+		.dapm_routes		= cs53l30_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(cs53l30_dapm_routes),
++		.controls		= cs42l51_snd_controls,
++		.num_controls		= ARRAY_SIZE(cs42l51_snd_controls),
++		.dapm_widgets		= cs42l51_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(cs42l51_dapm_widgets),
++		.dapm_routes		= cs42l51_routes,
++		.num_dapm_routes	= ARRAY_SIZE(cs42l51_routes),
 +	},
  };
  
- static struct regmap_config cs53l30_regmap = {
+ const struct regmap_config cs42l51_regmap = {
 -- 
 2.8.1
