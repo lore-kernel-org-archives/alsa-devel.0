@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on adau1701" to the asoc tree
-Date: Mon, 08 Aug 2016 12:03:28 +0100
-Message-ID: <E1bWiLA-0003NE-Uw@debutante>
-References: <87bn1363g3.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on ak4104" to the asoc tree
+Date: Mon, 08 Aug 2016 12:03:34 +0100
+Message-ID: <E1bWiLG-0003Ov-Qd@debutante>
+References: <87eg5z63h5.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87bn1363g3.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87eg5z63h5.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on adau1701
+   ASoC: codec duplicated callback function goes to component on ak4104
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 637591ecb4468c55489654b698319adb9fbfbe36 Mon Sep 17 00:00:00 2001
+>From 1cd5e361736664302285850a327d52ef7f70e74a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:07:47 +0000
+Date: Mon, 8 Aug 2016 09:07:11 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- adau1701
+ ak4104
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,34 +51,29 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adau1701.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ sound/soc/codecs/ak4104.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-index de53c0d7bf10..3bad1bc8c00a 100644
---- a/sound/soc/codecs/adau1701.c
-+++ b/sound/soc/codecs/adau1701.c
-@@ -765,13 +765,14 @@ static struct snd_soc_codec_driver adau1701_codec_drv = {
- 	.set_bias_level		= adau1701_set_bias_level,
- 	.idle_bias_off		= true,
+diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
+index 595d02d7602c..bdca8793e630 100644
+--- a/sound/soc/codecs/ak4104.c
++++ b/sound/soc/codecs/ak4104.c
+@@ -245,10 +245,12 @@ static struct snd_soc_codec_driver soc_codec_device_ak4104 = {
+ 	.suspend = ak4104_soc_suspend,
+ 	.resume = ak4104_soc_resume,
  
--	.controls		= adau1701_controls,
--	.num_controls		= ARRAY_SIZE(adau1701_controls),
--	.dapm_widgets		= adau1701_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(adau1701_dapm_widgets),
--	.dapm_routes		= adau1701_dapm_routes,
--	.num_dapm_routes	= ARRAY_SIZE(adau1701_dapm_routes),
--
+-	.dapm_widgets = ak4104_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(ak4104_dapm_widgets),
+-	.dapm_routes = ak4104_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(ak4104_dapm_routes),
 +	.component_driver = {
-+		.controls		= adau1701_controls,
-+		.num_controls		= ARRAY_SIZE(adau1701_controls),
-+		.dapm_widgets		= adau1701_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(adau1701_dapm_widgets),
-+		.dapm_routes		= adau1701_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(adau1701_dapm_routes),
-+	},
- 	.set_sysclk		= adau1701_set_sysclk,
++		.dapm_widgets		= ak4104_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(ak4104_dapm_widgets),
++		.dapm_routes		= ak4104_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(ak4104_dapm_routes),
++	}
  };
  
+ static const struct regmap_config ak4104_regmap = {
 -- 
 2.8.1
