@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on da732x" to the asoc tree
-Date: Mon, 08 Aug 2016 12:02:12 +0100
-Message-ID: <E1bWiJw-00030Y-V7@debutante>
-References: <87a8gn4oie.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on jz4740" to the asoc tree
+Date: Mon, 08 Aug 2016 12:01:58 +0100
+Message-ID: <E1bWiJi-0002vq-9e@debutante>
+References: <8737mf4ofu.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87a8gn4oie.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8737mf4ofu.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on da732x
+   ASoC: codec duplicated callback function goes to component on jz4740
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From e7e8dda8b8a3dafd81c64f378c3a2d5cb71860df Mon Sep 17 00:00:00 2001
+>From af15dc71b0c343279678af50543f6a64e84fb569 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:15:48 +0000
+Date: Mon, 8 Aug 2016 09:17:19 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- da732x
+ jz4740
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da732x.c | 14 ++++++++------
+ sound/soc/codecs/jz4740.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/da732x.c b/sound/soc/codecs/da732x.c
-index 461506a4ca6a..c1cc1c1c28f2 100644
---- a/sound/soc/codecs/da732x.c
-+++ b/sound/soc/codecs/da732x.c
-@@ -1501,12 +1501,14 @@ static int da732x_set_bias_level(struct snd_soc_codec *codec,
+diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
+index 1f5ab99956ed..0290fab383da 100644
+--- a/sound/soc/codecs/jz4740.c
++++ b/sound/soc/codecs/jz4740.c
+@@ -298,12 +298,14 @@ static struct snd_soc_codec_driver soc_codec_dev_jz4740_codec = {
+ 	.set_bias_level = jz4740_codec_set_bias_level,
+ 	.suspend_bias_off = true,
  
- static struct snd_soc_codec_driver soc_codec_dev_da732x = {
- 	.set_bias_level		= da732x_set_bias_level,
--	.controls		= da732x_snd_controls,
--	.num_controls		= ARRAY_SIZE(da732x_snd_controls),
--	.dapm_widgets		= da732x_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(da732x_dapm_widgets),
--	.dapm_routes		= da732x_dapm_routes,
--	.num_dapm_routes	= ARRAY_SIZE(da732x_dapm_routes),
+-	.controls = jz4740_codec_controls,
+-	.num_controls = ARRAY_SIZE(jz4740_codec_controls),
+-	.dapm_widgets = jz4740_codec_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(jz4740_codec_dapm_widgets),
+-	.dapm_routes = jz4740_codec_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(jz4740_codec_dapm_routes),
 +	.component_driver = {
-+		.controls		= da732x_snd_controls,
-+		.num_controls		= ARRAY_SIZE(da732x_snd_controls),
-+		.dapm_widgets		= da732x_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(da732x_dapm_widgets),
-+		.dapm_routes		= da732x_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(da732x_dapm_routes),
++		.controls		= jz4740_codec_controls,
++		.num_controls		= ARRAY_SIZE(jz4740_codec_controls),
++		.dapm_widgets		= jz4740_codec_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(jz4740_codec_dapm_widgets),
++		.dapm_routes		= jz4740_codec_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(jz4740_codec_dapm_routes),
 +	},
- 	.set_pll		= da732x_set_dai_pll,
  };
  
+ static const struct regmap_config jz4740_codec_regmap_config = {
 -- 
 2.8.1
