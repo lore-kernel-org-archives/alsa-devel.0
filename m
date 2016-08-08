@@ -1,22 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8810: Add driver for Nuvoton
-	codec chip NAU88C10
-Date: Mon, 8 Aug 2016 16:18:13 +0100
-Message-ID: <20160808151813.GH10383@sirena.org.uk>
-References: <1466152834-29615-1-git-send-email-KCHSU0@nuvoton.com>
- <20160627171546.GE17217@sirena.org.uk>
- <5775E4C7.5010303@nuvoton.com>
- <20160701100423.GM6247@sirena.org.uk> <5779D93B.80106@nuvoton.com>
- <20160805120804.GV10383@sirena.org.uk>
- <57A7EE1A.1040307@nuvoton.com>
+From: Antonio Ospite <ao2@ao2.it>
+Subject: Re: [alsa-utils] alsaucm should come with a man page
+Date: Mon, 8 Aug 2016 18:30:41 +0200
+Message-ID: <20160808183041.783253de1e523d05bb529760@ao2.it>
+References: <20160727114828.9d6c709d80084b659426e6cc@ao2.it>
+ <s5hmvkt975u.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2590651397596868771=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E5C8F266E19
- for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2016 17:18:22 +0200 (CEST)
-In-Reply-To: <57A7EE1A.1040307@nuvoton.com>
+Received: from ao2.it (ao2.it [92.243.12.208])
+ by alsa0.perex.cz (Postfix) with ESMTP id 17D1E26660B
+ for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2016 18:30:45 +0200 (CEST)
+In-Reply-To: <s5hmvkt975u.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,58 +21,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Justin Xu <justinx@slimlogic.co.uk>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 03 Aug 2016 17:57:49 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
---===============2590651397596868771==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wZwWzkkm73dI25u3"
-Content-Disposition: inline
+> On Wed, 27 Jul 2016 11:48:28 +0200,
+> Antonio Ospite wrote:
+> > 
+> > Hi,
+> > 
+> > I used alsaucm to test mixer use cases for an Intel Baytrail tablet, I
+> > wanted to use bare alsa before bringing pulseaudio in, and it took some
+> > time to get my head around it.
+[...]
+> > However, my point is that a man page explaining these things can make
+> > the life easier to new users.
+> > 
+> > It would be better if alsa/UCM developers wrote the man page, but if no
+> > one steps up I guess I could draft a first version myself.
+> 
+> Go ahead, please post your draft version.  That's already helpful.
+> 
 
+OK, I will.
 
---wZwWzkkm73dI25u3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The first version will be in a readable text format (maybe asciidoc),
+this makes writing and reviewing the content a lot easier.
 
-On Mon, Aug 08, 2016 at 10:27:38AM +0800, John Hsu wrote:
-> On 8/5/2016 8:08 PM, Mark Brown wrote:
+Then, if depending on an external tool to generate the man page
+automatically is not acceptable for alsa-utils, I will format the
+approved content manually following the style used in the man pages of
+the other alsa programs.
 
-> > What does the read actually look like on this device?
+Thanks,
+   Antonio
 
-> The data read from codec by the IIC bus is as the following.
-> 0 0 0 0 0 0 0 D8 ACK D7 D6 D5 D4 D3 D2 D1 D0
-> The bottom 9 bits are the real register value. The nau8810_reg_read
-> in driver is made by the formate.
+-- 
+Antonio Ospite
+http://ao2.it
 
-So there's really only one read "register"?  If that's the case I'd
-just open code the read and not bother with regmap, it's probably more
-trouble than it's worth.  There are other 7x9 CODECs that do the same
-thing.
-
---wZwWzkkm73dI25u3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXqKK0AAoJECTWi3JdVIfQNjcH/R3PPsJdSTVO6J50AaE7B02t
-tH9DHqNgNMCiyQ8F78CK9NipGqPXKE2wpruGmBcHlJRKNyVYWEIrxXzfpPVyQ06v
-UXyZ+0pM5KtVzG56V6ESyYE3fTR66+XcycgrgzcvOLT2gBN/oB+r7ipdeeYSLIr5
-loo1tNko92O0KCBopuEqTOpvW4M8t/5f2f5OGm15f75oMM1dU3qRPJu0eQeihFfn
-lrHTkjD+T6ofnRYFRLnOHLo3Wg3k5YOMiZSdyecHbCDr8N0tI4tzX1RO9p14wwmK
-TWOenQE+uQK3ojv1cQtjICaQDuP3Rf5e8J+i9AbUh3exoK7ljEobk55je7S9c+Q=
-=+rtD
------END PGP SIGNATURE-----
-
---wZwWzkkm73dI25u3--
-
---===============2590651397596868771==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2590651397596868771==--
+A: Because it messes up the order in which people normally read text.
+   See http://en.wikipedia.org/wiki/Posting_style
+Q: Why is top-posting such a bad thing?
