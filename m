@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on wm9850" to the asoc tree
-Date: Mon, 08 Aug 2016 12:01:43 +0100
-Message-ID: <E1bWiJT-0002rV-Mh@debutante>
-References: <87vazb39sv.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on pcm3008" to the asoc tree
+Date: Mon, 08 Aug 2016 12:01:23 +0100
+Message-ID: <E1bWiJ9-0002lR-8k@debutante>
+References: <87lh0739p3.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87vazb39sv.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87lh0739p3.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on wm9850
+   ASoC: codec duplicated callback function goes to component on pcm3008
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 9d32d3dca9f377f8dbfb03413cea5af5482e412c Mon Sep 17 00:00:00 2001
+>From 4cd747df40c6dfdc61daf22b6457904a3d87213a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:18:52 +0000
+Date: Mon, 8 Aug 2016 09:21:02 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- wm9850
+ pcm3008
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,29 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9850.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/pcm3008.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
-index c14a79d026a1..0610840733d1 100644
---- a/sound/soc/codecs/max9850.c
-+++ b/sound/soc/codecs/max9850.c
-@@ -306,12 +306,14 @@ static struct snd_soc_codec_driver soc_codec_dev_max9850 = {
- 	.set_bias_level = max9850_set_bias_level,
- 	.suspend_bias_off = true,
+diff --git a/sound/soc/codecs/pcm3008.c b/sound/soc/codecs/pcm3008.c
+index 8fb445f33f6f..708af05486f6 100644
+--- a/sound/soc/codecs/pcm3008.c
++++ b/sound/soc/codecs/pcm3008.c
+@@ -99,10 +99,12 @@ static struct snd_soc_dai_driver pcm3008_dai = {
+ };
  
--	.controls = max9850_controls,
--	.num_controls = ARRAY_SIZE(max9850_controls),
--	.dapm_widgets = max9850_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(max9850_dapm_widgets),
--	.dapm_routes = max9850_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(max9850_dapm_routes),
+ static struct snd_soc_codec_driver soc_codec_dev_pcm3008 = {
+-	.dapm_widgets = pcm3008_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(pcm3008_dapm_widgets),
+-	.dapm_routes = pcm3008_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(pcm3008_dapm_routes),
 +	.component_driver = {
-+		.controls		= max9850_controls,
-+		.num_controls		= ARRAY_SIZE(max9850_controls),
-+		.dapm_widgets		= max9850_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(max9850_dapm_widgets),
-+		.dapm_routes		= max9850_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(max9850_dapm_routes),
++		.dapm_widgets		= pcm3008_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(pcm3008_dapm_widgets),
++		.dapm_routes		= pcm3008_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(pcm3008_dapm_routes),
 +	},
  };
  
- static int max9850_i2c_probe(struct i2c_client *i2c,
+ static int pcm3008_codec_probe(struct platform_device *pdev)
 -- 
 2.8.1
