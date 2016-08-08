@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on cs47l24" to the asoc tree
-Date: Mon, 08 Aug 2016 12:02:30 +0100
-Message-ID: <E1bWiKE-00035q-H2@debutante>
-References: <87invb4ola.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on da7210" to the asoc tree
+Date: Mon, 08 Aug 2016 12:02:24 +0100
+Message-ID: <E1bWiK8-000348-Mv@debutante>
+References: <87fuqf4oka.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87invb4ola.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87fuqf4oka.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on cs47l24
+   ASoC: codec duplicated callback function goes to component on da7210
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 295f08154cc07db27c75e0c0ac4af9890b87f85b Mon Sep 17 00:00:00 2001
+>From 57329a3a419273e765f5654c3c8cad9266c5b6f2 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:14:00 +0000
+Date: Mon, 8 Aug 2016 09:14:35 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- cs47l24
+ da7210
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,34 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs47l24.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/da7210.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 954a4f5d3338..779a7bfff1c3 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -1190,12 +1190,14 @@ static struct snd_soc_codec_driver soc_codec_dev_cs47l24 = {
- 	.set_sysclk = arizona_set_sysclk,
- 	.set_pll = cs47l24_set_fll,
+diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
+index af23a61b7b28..17053dfc94cf 100644
+--- a/sound/soc/codecs/da7210.c
++++ b/sound/soc/codecs/da7210.c
+@@ -1167,13 +1167,14 @@ static int da7210_probe(struct snd_soc_codec *codec)
+ static struct snd_soc_codec_driver soc_codec_dev_da7210 = {
+ 	.probe			= da7210_probe,
  
--	.controls = cs47l24_snd_controls,
--	.num_controls = ARRAY_SIZE(cs47l24_snd_controls),
--	.dapm_widgets = cs47l24_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(cs47l24_dapm_widgets),
--	.dapm_routes = cs47l24_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(cs47l24_dapm_routes),
+-	.controls		= da7210_snd_controls,
+-	.num_controls		= ARRAY_SIZE(da7210_snd_controls),
+-
+-	.dapm_widgets		= da7210_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(da7210_dapm_widgets),
+-	.dapm_routes		= da7210_audio_map,
+-	.num_dapm_routes	= ARRAY_SIZE(da7210_audio_map),
 +	.component_driver = {
-+		.controls		= cs47l24_snd_controls,
-+		.num_controls		= ARRAY_SIZE(cs47l24_snd_controls),
-+		.dapm_widgets		= cs47l24_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(cs47l24_dapm_widgets),
-+		.dapm_routes		= cs47l24_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(cs47l24_dapm_routes),
++		.controls		= da7210_snd_controls,
++		.num_controls		= ARRAY_SIZE(da7210_snd_controls),
++		.dapm_widgets		= da7210_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(da7210_dapm_widgets),
++		.dapm_routes		= da7210_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(da7210_audio_map),
 +	},
  };
  
- static struct snd_compr_ops cs47l24_compr_ops = {
+ #if IS_ENABLED(CONFIG_I2C)
 -- 
 2.8.1
