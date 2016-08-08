@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on cs4271" to the asoc tree
-Date: Mon, 08 Aug 2016 12:04:04 +0100
-Message-ID: <E1bWiLk-0003XQ-2G@debutante>
-References: <87shuf63ma.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on cs4265" to the asoc tree
+Date: Mon, 08 Aug 2016 12:03:58 +0100
+Message-ID: <E1bWiLe-0003Vk-7w@debutante>
+References: <87popj63l7.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87shuf63ma.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87popj63l7.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on cs4271
+   ASoC: codec duplicated callback function goes to component on cs4265
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 228a57aea80b5dfc4624ad29952a8168317a1884 Mon Sep 17 00:00:00 2001
+>From 9f9dc779bca7eb24f0afc8929bf89a4c5cccccea Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:04:04 +0000
+Date: Mon, 8 Aug 2016 09:04:43 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- cs4271
+ cs4265
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,34 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs4271.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/cs4265.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index 0c0010b25421..8c0f3b89b5bc 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -645,12 +645,14 @@ static struct snd_soc_codec_driver soc_codec_dev_cs4271 = {
- 	.suspend		= cs4271_soc_suspend,
- 	.resume			= cs4271_soc_resume,
+diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
+index 55db19ddc5ff..fd966bb851cb 100644
+--- a/sound/soc/codecs/cs4265.c
++++ b/sound/soc/codecs/cs4265.c
+@@ -547,13 +547,14 @@ static struct snd_soc_dai_driver cs4265_dai[] = {
+ static const struct snd_soc_codec_driver soc_codec_cs4265 = {
+ 	.set_bias_level = cs4265_set_bias_level,
  
--	.controls		= cs4271_snd_controls,
--	.num_controls		= ARRAY_SIZE(cs4271_snd_controls),
--	.dapm_widgets		= cs4271_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(cs4271_dapm_widgets),
--	.dapm_routes		= cs4271_dapm_routes,
--	.num_dapm_routes	= ARRAY_SIZE(cs4271_dapm_routes),
+-	.dapm_widgets = cs4265_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(cs4265_dapm_widgets),
+-	.dapm_routes = cs4265_audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(cs4265_audio_map),
+-
+-	.controls = cs4265_snd_controls,
+-	.num_controls = ARRAY_SIZE(cs4265_snd_controls),
 +	.component_driver = {
-+		.controls		= cs4271_snd_controls,
-+		.num_controls		= ARRAY_SIZE(cs4271_snd_controls),
-+		.dapm_widgets		= cs4271_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(cs4271_dapm_widgets),
-+		.dapm_routes		= cs4271_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(cs4271_dapm_routes),
++		.controls		= cs4265_snd_controls,
++		.num_controls		= ARRAY_SIZE(cs4265_snd_controls),
++		.dapm_widgets		= cs4265_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(cs4265_dapm_widgets),
++		.dapm_routes		= cs4265_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(cs4265_audio_map),
 +	},
  };
  
- static int cs4271_common_probe(struct device *dev,
+ static const struct regmap_config cs4265_regmap = {
 -- 
 2.8.1
