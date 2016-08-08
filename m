@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsrc-card: use asoc_simple_card_parse_dai()" to the asoc tree
-Date: Mon, 08 Aug 2016 11:46:50 +0100
-Message-ID: <E1bWi54-0000Jr-L9@debutante>
-References: <8737pdqchm.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card-utils: add asoc_simple_card_parse_dai()" to the asoc tree
+Date: Mon, 08 Aug 2016 11:46:56 +0100
+Message-ID: <E1bWi5A-0000Lj-Hs@debutante>
+References: <8737mfajrk.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <8737pdqchm.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8737mfajrk.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsrc-card: use asoc_simple_card_parse_dai()
+   ASoC: simple-card-utils: add asoc_simple_card_parse_dai()
 
 has been applied to the asoc tree at
 
@@ -37,84 +37,94 @@ to this mail.
 Thanks,
 Mark
 
->From 5bbf3866cbc1da23c628ad5dd7248cca8b8adc2c Mon Sep 17 00:00:00 2001
+>From ae30a694da4c37b4d0c8b750c9a4104d8da749b3 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 06:02:31 +0000
-Subject: [PATCH] ASoC: rsrc-card: use asoc_simple_card_parse_dai()
+Date: Mon, 8 Aug 2016 06:01:43 +0000
+Subject: [PATCH] ASoC: simple-card-utils: add asoc_simple_card_parse_dai()
+
+simple-card needs to get its dai name and endpoint node.
+This patch makes it simple style standard
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rsrc-card.c | 27 +++++++++++----------------
- 1 file changed, 11 insertions(+), 16 deletions(-)
+ include/sound/simple_card_utils.h     | 17 ++++++++++++++++
+ sound/soc/generic/simple-card-utils.c | 37 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 54 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
-index ed5391f41280..82187e00eb12 100644
---- a/sound/soc/sh/rcar/rsrc-card.c
-+++ b/sound/soc/sh/rcar/rsrc-card.c
-@@ -62,6 +62,9 @@ struct rsrc_card_priv {
- #define rsrc_priv_to_link(priv, i) ((priv)->snd_card.dai_link + (i))
- #define rsrc_priv_to_props(priv, i) ((priv)->dai_props + (i))
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index 1392eb56cf0e..62b392695d2d 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -41,4 +41,21 @@ int asoc_simple_card_parse_clk(struct device_node *node,
+ 			       struct device_node *dai_of_node,
+ 			       struct asoc_simple_dai *simple_dai);
  
-+#define DAI	"sound-dai"
-+#define CELL	"#sound-dai-cells"
++#define asoc_simple_card_parse_cpu(node, dai_link,				\
++				   list_name, cells_name, is_single_link)	\
++	asoc_simple_card_parse_dai(node, &dai_link->cpu_of_node,		\
++		&dai_link->cpu_dai_name, list_name, cells_name, is_single_link)
++#define asoc_simple_card_parse_codec(node, dai_link, list_name, cells_name)	\
++	asoc_simple_card_parse_dai(node, &dai_link->codec_of_node,		\
++		&dai_link->codec_dai_name, list_name, cells_name, NULL)
++#define asoc_simple_card_parse_platform(node, dai_link, list_name, cells_name)	\
++	asoc_simple_card_parse_dai(node, &dai_link->platform_of_node,		\
++		NULL, list_name, cells_name, NULL)
++int asoc_simple_card_parse_dai(struct device_node *node,
++				  struct device_node **endpoint_np,
++				  const char **dai_name,
++				  const char *list_name,
++				  const char *cells_name,
++				  int *is_single_links);
 +
- static int rsrc_card_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -155,18 +158,9 @@ static int rsrc_card_parse_links(struct device_node *np,
- 	struct device *dev = rsrc_priv_to_dev(priv);
- 	struct snd_soc_dai_link *dai_link = rsrc_priv_to_link(priv, idx);
- 	struct asoc_simple_dai *dai_props = rsrc_priv_to_props(priv, idx);
--	struct of_phandle_args args;
-+	int is_single_links = 0;
- 	int ret;
+ #endif /* __SIMPLE_CARD_CORE_H */
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 16f65f972d04..27e6d038a902 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -127,6 +127,43 @@ int asoc_simple_card_parse_clk(struct device_node *node,
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_card_parse_clk);
  
--	/*
--	 * Get node via "sound-dai = <&phandle port>"
--	 * it will be used as xxx_of_node on soc_bind_dai_link()
--	 */
--	ret = of_parse_phandle_with_args(np, "sound-dai",
--					 "#sound-dai-cells", 0, &args);
--	if (ret)
--		return ret;
--
- 	/* Parse TDM slot */
- 	ret = snd_soc_of_parse_tdm_slot(np,
- 					&dai_props->tx_slot_mask,
-@@ -185,9 +179,10 @@ static int rsrc_card_parse_links(struct device_node *np,
- 		/* FE settings */
- 		dai_link->dynamic		= 1;
- 		dai_link->dpcm_merged_format	= 1;
--		dai_link->cpu_of_node		= args.np;
--		ret = snd_soc_of_get_dai_name(np, &dai_link->cpu_dai_name);
--		if (ret < 0)
++int asoc_simple_card_parse_dai(struct device_node *node,
++				    struct device_node **dai_of_node,
++				    const char **dai_name,
++				    const char *list_name,
++				    const char *cells_name,
++				    int *is_single_link)
++{
++	struct of_phandle_args args;
++	int ret;
 +
-+		ret = asoc_simple_card_parse_cpu(np, dai_link, DAI, CELL,
-+						 &is_single_links);
-+		if (ret)
- 			return ret;
- 
- 		ret = asoc_simple_card_parse_clk_cpu(np, dai_link, dai_props);
-@@ -209,7 +204,7 @@ static int rsrc_card_parse_links(struct device_node *np,
- 		 *	fmt_single_name()
- 		 *	fmt_multiple_name()
- 		 */
--		if (!args.args_count)
-+		if (is_single_links)
- 			dai_link->cpu_dai_name = NULL;
- 	} else {
- 		const struct rsrc_card_of_data *of_data;
-@@ -224,8 +219,8 @@ static int rsrc_card_parse_links(struct device_node *np,
- 		/* BE settings */
- 		dai_link->no_pcm		= 1;
- 		dai_link->be_hw_params_fixup	= rsrc_card_be_hw_params_fixup;
--		dai_link->codec_of_node		= args.np;
--		ret = snd_soc_of_get_dai_name(np, &dai_link->codec_dai_name);
++	if (!node)
++		return 0;
 +
-+		ret = asoc_simple_card_parse_codec(np, dai_link, DAI, CELL);
- 		if (ret < 0)
- 			return ret;
- 
++	/*
++	 * Get node via "sound-dai = <&phandle port>"
++	 * it will be used as xxx_of_node on soc_bind_dai_link()
++	 */
++	ret = of_parse_phandle_with_args(node, list_name, cells_name, 0, &args);
++	if (ret)
++		return ret;
++
++	/* Get dai->name */
++	if (dai_name) {
++		ret = snd_soc_of_get_dai_name(node, dai_name);
++		if (ret < 0)
++			return ret;
++	}
++
++	*dai_of_node = args.np;
++
++	if (is_single_link)
++		*is_single_link = !args.args_count;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(asoc_simple_card_parse_dai);
++
+ /* Module information */
+ MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
+ MODULE_DESCRIPTION("ALSA SoC Simple Card Utils");
 -- 
 2.8.1
