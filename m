@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on wm98088" to the asoc tree
-Date: Mon, 08 Aug 2016 12:01:52 +0100
-Message-ID: <E1bWiJc-0002u9-FI@debutante>
-References: <87zion39uc.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on wm98095" to the asoc tree
+Date: Mon, 08 Aug 2016 12:01:49 +0100
+Message-ID: <E1bWiJZ-0002tI-Gt@debutante>
+References: <87y44739tw.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87zion39uc.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87y44739tw.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on wm98088
+   ASoC: codec duplicated callback function goes to component on wm98095
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From b5cd19e8c3efda9f0b81c7420886b640ef82d223 Mon Sep 17 00:00:00 2001
+>From 7fb49ebab0a1e50848466096a217bd8f0aa729eb Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:17:54 +0000
+Date: Mon, 8 Aug 2016 09:18:12 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- wm98088
+ wm98095
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98088.c | 14 ++++++++------
+ sound/soc/codecs/max98095.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index fc22804cabc5..72f77455582e 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -1704,12 +1704,14 @@ static struct snd_soc_codec_driver soc_codec_dev_max98088 = {
- 	.set_bias_level = max98088_set_bias_level,
- 	.suspend_bias_off = true,
- 
--	.controls = max98088_snd_controls,
--	.num_controls = ARRAY_SIZE(max98088_snd_controls),
--	.dapm_widgets = max98088_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(max98088_dapm_widgets),
--	.dapm_routes = max98088_audio_map,
--	.num_dapm_routes = ARRAY_SIZE(max98088_audio_map),
+diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
+index 3577003f39cf..6f8a757876ed 100644
+--- a/sound/soc/codecs/max98095.c
++++ b/sound/soc/codecs/max98095.c
+@@ -2108,12 +2108,14 @@ static struct snd_soc_codec_driver soc_codec_dev_max98095 = {
+ 	.suspend = max98095_suspend,
+ 	.resume  = max98095_resume,
+ 	.set_bias_level = max98095_set_bias_level,
+-	.controls = max98095_snd_controls,
+-	.num_controls = ARRAY_SIZE(max98095_snd_controls),
+-	.dapm_widgets	  = max98095_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(max98095_dapm_widgets),
+-	.dapm_routes     = max98095_audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(max98095_audio_map),
 +	.component_driver = {
-+		.controls		= max98088_snd_controls,
-+		.num_controls		= ARRAY_SIZE(max98088_snd_controls),
-+		.dapm_widgets		= max98088_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(max98088_dapm_widgets),
-+		.dapm_routes		= max98088_audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(max98088_audio_map),
++		.controls		= max98095_snd_controls,
++		.num_controls		= ARRAY_SIZE(max98095_snd_controls),
++		.dapm_widgets		= max98095_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(max98095_dapm_widgets),
++		.dapm_routes		= max98095_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(max98095_audio_map),
 +	},
  };
  
- static int max98088_i2c_probe(struct i2c_client *i2c,
+ static int max98095_i2c_probe(struct i2c_client *i2c,
 -- 
 2.8.1
