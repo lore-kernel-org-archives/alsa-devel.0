@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on tas2552" to the asoc tree
-Date: Mon, 08 Aug 2016 12:05:20 +0100
-Message-ID: <E1bWiMy-0003uY-Tr@debutante>
-References: <87twev7ik8.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on tas571x" to the asoc tree
+Date: Mon, 08 Aug 2016 12:05:26 +0100
+Message-ID: <E1bWiN4-0003wH-Us@debutante>
+References: <87wpjr7il9.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87twev7ik8.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87wpjr7il9.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on tas2552
+   ASoC: codec duplicated callback function goes to component on tas571x
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From e5538659c81991b9074ccb842e8af901c908b79b Mon Sep 17 00:00:00 2001
+>From d75a9df6927363e5c4a41477db39e5332aa6bf73 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:55:58 +0000
+Date: Mon, 8 Aug 2016 08:55:21 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- tas2552
+ tas571x
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,40 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas2552.c | 14 ++++++++------
+ sound/soc/codecs/tas571x.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index cc1d3981fa4b..baf455e8c2f7 100644
---- a/sound/soc/codecs/tas2552.c
-+++ b/sound/soc/codecs/tas2552.c
-@@ -667,12 +667,14 @@ static struct snd_soc_codec_driver soc_codec_dev_tas2552 = {
- 	.resume = tas2552_resume,
- 	.ignore_pmdown_time = true,
+diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
+index d8baca3f8413..df5e5cb33baa 100644
+--- a/sound/soc/codecs/tas571x.c
++++ b/sound/soc/codecs/tas571x.c
+@@ -658,10 +658,12 @@ static const struct snd_soc_codec_driver tas571x_codec = {
+ 	.set_bias_level = tas571x_set_bias_level,
+ 	.idle_bias_off = true,
  
--	.controls = tas2552_snd_controls,
--	.num_controls = ARRAY_SIZE(tas2552_snd_controls),
--	.dapm_widgets = tas2552_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(tas2552_dapm_widgets),
--	.dapm_routes = tas2552_audio_map,
--	.num_dapm_routes = ARRAY_SIZE(tas2552_audio_map),
+-	.dapm_widgets = tas571x_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(tas571x_dapm_widgets),
+-	.dapm_routes = tas571x_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(tas571x_dapm_routes),
 +	.component_driver = {
-+		.controls		= tas2552_snd_controls,
-+		.num_controls		= ARRAY_SIZE(tas2552_snd_controls),
-+		.dapm_widgets		= tas2552_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(tas2552_dapm_widgets),
-+		.dapm_routes		= tas2552_audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(tas2552_audio_map),
++		.dapm_widgets		= tas571x_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(tas571x_dapm_widgets),
++		.dapm_routes		= tas571x_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(tas571x_dapm_routes),
 +	},
  };
  
- static const struct regmap_config tas2552_regmap_config = {
+ static struct snd_soc_dai_driver tas571x_dai = {
+@@ -754,8 +756,8 @@ static int tas571x_i2c_probe(struct i2c_client *client,
+ 
+ 
+ 	memcpy(&priv->codec_driver, &tas571x_codec, sizeof(priv->codec_driver));
+-	priv->codec_driver.controls = priv->chip->controls;
+-	priv->codec_driver.num_controls = priv->chip->num_controls;
++	priv->codec_driver.component_driver.controls = priv->chip->controls;
++	priv->codec_driver.component_driver.num_controls = priv->chip->num_controls;
+ 
+ 	if (priv->chip->vol_reg_size == 2) {
+ 		/*
 -- 
 2.8.1
