@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 11/27] ALSA: seq: optimize running mode
+Subject: [PATCH 16/27] ALSA: seq: optimize create/delete_queue
 	function to new design
-Date: Mon,  8 Aug 2016 23:54:37 +0900
-Message-ID: <1470668093-31027-12-git-send-email-o-takashi@sakamocchi.jp>
+Date: Mon,  8 Aug 2016 23:54:42 +0900
+Message-ID: <1470668093-31027-17-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470668093-31027-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id DCBEF26714E
- for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2016 16:55:01 +0200 (CEST)
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 97ABA2671A0
+ for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2016 16:55:02 +0200 (CEST)
 In-Reply-To: <1470668093-31027-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,57 +33,75 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 35 ++++++++++++-----------------------
+ 1 file changed, 12 insertions(+), 23 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 624d001..59de125 100644
+index 7b32daa..44b58dc 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1149,37 +1149,34 @@ static int snd_seq_ioctl_system_info(struct snd_seq_client *client, void *arg)
+@@ -1514,17 +1514,13 @@ static int snd_seq_ioctl_unsubscribe_port(struct snd_seq_client *client,
  
  
- /* RUNNING_MODE ioctl() */
--static int snd_seq_ioctl_running_mode(struct snd_seq_client *client, void __user *arg)
-+static int snd_seq_ioctl_running_mode(struct snd_seq_client *client, void *arg)
+ /* CREATE_QUEUE ioctl() */
+-static int snd_seq_ioctl_create_queue(struct snd_seq_client *client,
+-				      void __user *arg)
++static int snd_seq_ioctl_create_queue(struct snd_seq_client *client, void *arg)
  {
--	struct snd_seq_running_info info;
-+	struct snd_seq_running_info *info = arg;
- 	struct snd_seq_client *cptr;
- 	int err = 0;
+-	struct snd_seq_queue_info info;
++	struct snd_seq_queue_info *info = arg;
+ 	int result;
+ 	struct snd_seq_queue *q;
  
 -	if (copy_from_user(&info, arg, sizeof(info)))
 -		return -EFAULT;
 -
- 	/* requested client number */
--	cptr = snd_seq_client_use_ptr(info.client);
-+	cptr = snd_seq_client_use_ptr(info->client);
- 	if (cptr == NULL)
- 		return -ENOENT;		/* don't change !!! */
+-	result = snd_seq_queue_alloc(client->number, info.locked, info.flags);
++	result = snd_seq_queue_alloc(client->number, info->locked, info->flags);
+ 	if (result < 0)
+ 		return result;
  
- #ifdef SNDRV_BIG_ENDIAN
--	if (! info.big_endian) {
-+	if (!info->big_endian) {
- 		err = -EINVAL;
- 		goto __err;
- 	}
- #else
--	if (info.big_endian) {
-+	if (info->big_endian) {
- 		err = -EINVAL;
- 		goto __err;
- 	}
+@@ -1532,32 +1528,25 @@ static int snd_seq_ioctl_create_queue(struct snd_seq_client *client,
+ 	if (q == NULL)
+ 		return -EINVAL;
  
- #endif
--	if (info.cpu_mode > sizeof(long)) {
-+	if (info->cpu_mode > sizeof(long)) {
- 		err = -EINVAL;
- 		goto __err;
- 	}
--	cptr->convert32 = (info.cpu_mode < sizeof(long));
-+	cptr->convert32 = (info->cpu_mode < sizeof(long));
-  __err:
- 	snd_seq_client_unlock(cptr);
- 	return err;
+-	info.queue = q->queue;
+-	info.locked = q->locked;
+-	info.owner = q->owner;
++	info->queue = q->queue;
++	info->locked = q->locked;
++	info->owner = q->owner;
+ 
+ 	/* set queue name */
+-	if (! info.name[0])
+-		snprintf(info.name, sizeof(info.name), "Queue-%d", q->queue);
+-	strlcpy(q->name, info.name, sizeof(q->name));
++	if (!info->name[0])
++		snprintf(info->name, sizeof(info->name), "Queue-%d", q->queue);
++	strlcpy(q->name, info->name, sizeof(q->name));
+ 	queuefree(q);
+ 
+-	if (copy_to_user(arg, &info, sizeof(info)))
+-		return -EFAULT;
+-
+ 	return 0;
+ }
+ 
+ /* DELETE_QUEUE ioctl() */
+-static int snd_seq_ioctl_delete_queue(struct snd_seq_client *client,
+-				      void __user *arg)
++static int snd_seq_ioctl_delete_queue(struct snd_seq_client *client, void *arg)
+ {
+-	struct snd_seq_queue_info info;
+-
+-	if (copy_from_user(&info, arg, sizeof(info)))
+-		return -EFAULT;
++	struct snd_seq_queue_info *info = arg;
+ 
+-	return snd_seq_queue_delete(client->number, info.queue);
++	return snd_seq_queue_delete(client->number, info->queue);
+ }
+ 
+ /* GET_QUEUE_INFO ioctl() */
 -- 
 2.7.4
