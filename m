@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on sn95031" to the asoc tree
-Date: Mon, 08 Aug 2016 12:00:51 +0100
-Message-ID: <E1bWiId-0002bZ-30@debutante>
-References: <8760rb39ji.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on tlv320dac33" to the asoc tree
+Date: Mon, 08 Aug 2016 12:00:33 +0100
+Message-ID: <E1bWiIL-0002WL-JQ@debutante>
+References: <87wpjr1uw0.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <8760rb39ji.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87wpjr1uw0.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on sn95031
+   ASoC: codec duplicated callback function goes to component on tlv320dac33
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 486e0763e23d0fc91aac0b5a156a2646ed7c658f Mon Sep 17 00:00:00 2001
+>From b04c71e634e6654cf4e52e7a94e98aba27c0e643 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:24:24 +0000
+Date: Mon, 8 Aug 2016 09:26:17 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- sn95031
+ tlv320dac33
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sn95031.c | 14 ++++++++------
+ sound/soc/codecs/tlv320dac33.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/sn95031.c b/sound/soc/codecs/sn95031.c
-index 3a7de0159f24..eae54c37cff9 100644
---- a/sound/soc/codecs/sn95031.c
-+++ b/sound/soc/codecs/sn95031.c
-@@ -888,12 +888,14 @@ static struct snd_soc_codec_driver sn95031_codec = {
- 	.set_bias_level	= sn95031_set_vaud_bias,
- 	.idle_bias_off	= true,
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index f7a6ce7e5fb1..d64eac74d1cc 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -1453,12 +1453,14 @@ static struct snd_soc_codec_driver soc_codec_dev_tlv320dac33 = {
+ 	.probe = dac33_soc_probe,
+ 	.remove = dac33_soc_remove,
  
--	.controls	= sn95031_snd_controls,
--	.num_controls	= ARRAY_SIZE(sn95031_snd_controls),
--	.dapm_widgets	= sn95031_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(sn95031_dapm_widgets),
--	.dapm_routes	= sn95031_audio_map,
--	.num_dapm_routes	= ARRAY_SIZE(sn95031_audio_map),
+-	.controls = dac33_snd_controls,
+-	.num_controls = ARRAY_SIZE(dac33_snd_controls),
+-	.dapm_widgets = dac33_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(dac33_dapm_widgets),
+-	.dapm_routes = audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(audio_map),
 +	.component_driver = {
-+		.controls		= sn95031_snd_controls,
-+		.num_controls		= ARRAY_SIZE(sn95031_snd_controls),
-+		.dapm_widgets		= sn95031_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(sn95031_dapm_widgets),
-+		.dapm_routes		= sn95031_audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(sn95031_audio_map),
++		.controls		= dac33_snd_controls,
++		.num_controls		= ARRAY_SIZE(dac33_snd_controls),
++		.dapm_widgets		= dac33_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(dac33_dapm_widgets),
++		.dapm_routes		= audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(audio_map),
 +	},
  };
  
- static int sn95031_device_probe(struct platform_device *pdev)
+ #define DAC33_RATES	(SNDRV_PCM_RATE_44100 | \
 -- 
 2.8.1
