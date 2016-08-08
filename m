@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on rt286" to the asoc tree
-Date: Mon, 08 Aug 2016 12:01:20 +0100
-Message-ID: <E1bWiJ6-0002kX-Ab@debutante>
-References: <87k2fr39on.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on nau8825" to the asoc tree
+Date: Mon, 08 Aug 2016 12:01:26 +0100
+Message-ID: <E1bWiJC-0002mJ-6m@debutante>
+References: <87mvkn39pl.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87k2fr39on.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87mvkn39pl.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on rt286
+   ASoC: codec duplicated callback function goes to component on nau8825
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From a6a505dd2fabe43b969147f63d44a3dd1daf6f9d Mon Sep 17 00:00:00 2001
+>From 889adf638721a9dcd772e20075697338d65fb2bc Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:21:19 +0000
+Date: Mon, 8 Aug 2016 09:20:46 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- rt286
+ nau8825
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt286.c | 14 ++++++++------
+ sound/soc/codecs/nau8825.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 74c0e4eb3788..9c365a7f758d 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1053,12 +1053,14 @@ static struct snd_soc_codec_driver soc_codec_dev_rt286 = {
- 	.resume = rt286_resume,
- 	.set_bias_level = rt286_set_bias_level,
- 	.idle_bias_off = true,
--	.controls = rt286_snd_controls,
--	.num_controls = ARRAY_SIZE(rt286_snd_controls),
--	.dapm_widgets = rt286_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(rt286_dapm_widgets),
--	.dapm_routes = rt286_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(rt286_dapm_routes),
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 5c9707ac4bbf..822791eb9574 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -2270,12 +2270,14 @@ static struct snd_soc_codec_driver nau8825_codec_driver = {
+ 	.suspend = nau8825_suspend,
+ 	.resume = nau8825_resume,
+ 
+-	.controls = nau8825_controls,
+-	.num_controls = ARRAY_SIZE(nau8825_controls),
+-	.dapm_widgets = nau8825_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(nau8825_dapm_widgets),
+-	.dapm_routes = nau8825_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(nau8825_dapm_routes),
 +	.component_driver = {
-+		.controls		= rt286_snd_controls,
-+		.num_controls		= ARRAY_SIZE(rt286_snd_controls),
-+		.dapm_widgets		= rt286_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(rt286_dapm_widgets),
-+		.dapm_routes		= rt286_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(rt286_dapm_routes),
++		.controls		= nau8825_controls,
++		.num_controls		= ARRAY_SIZE(nau8825_controls),
++		.dapm_widgets		= nau8825_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(nau8825_dapm_widgets),
++		.dapm_routes		= nau8825_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(nau8825_dapm_routes),
 +	},
  };
  
- static const struct regmap_config rt286_regmap = {
+ static void nau8825_reset_chip(struct regmap *regmap)
 -- 
 2.8.1
