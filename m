@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on twl4030" to the asoc tree
-Date: Mon, 08 Aug 2016 12:00:30 +0100
-Message-ID: <E1bWiII-0002VO-KA@debutante>
-References: <87vazb1uvg.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on sn95031" to the asoc tree
+Date: Mon, 08 Aug 2016 12:00:51 +0100
+Message-ID: <E1bWiId-0002bZ-30@debutante>
+References: <8760rb39ji.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87vazb1uvg.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8760rb39ji.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on twl4030
+   ASoC: codec duplicated callback function goes to component on sn95031
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From e4b918ea24b1e16db7370883a6748efe7a3ac9ff Mon Sep 17 00:00:00 2001
+>From 486e0763e23d0fc91aac0b5a156a2646ed7c658f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:26:35 +0000
+Date: Mon, 8 Aug 2016 09:24:24 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- twl4030
+ sn95031
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/twl4030.c | 14 ++++++++------
+ sound/soc/codecs/sn95031.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index a5a4e9f75c57..a2104d68169d 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -2199,12 +2199,14 @@ static struct snd_soc_codec_driver soc_codec_dev_twl4030 = {
- 	.set_bias_level = twl4030_set_bias_level,
- 	.idle_bias_off = true,
+diff --git a/sound/soc/codecs/sn95031.c b/sound/soc/codecs/sn95031.c
+index 3a7de0159f24..eae54c37cff9 100644
+--- a/sound/soc/codecs/sn95031.c
++++ b/sound/soc/codecs/sn95031.c
+@@ -888,12 +888,14 @@ static struct snd_soc_codec_driver sn95031_codec = {
+ 	.set_bias_level	= sn95031_set_vaud_bias,
+ 	.idle_bias_off	= true,
  
--	.controls = twl4030_snd_controls,
--	.num_controls = ARRAY_SIZE(twl4030_snd_controls),
--	.dapm_widgets = twl4030_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(twl4030_dapm_widgets),
--	.dapm_routes = intercon,
--	.num_dapm_routes = ARRAY_SIZE(intercon),
+-	.controls	= sn95031_snd_controls,
+-	.num_controls	= ARRAY_SIZE(sn95031_snd_controls),
+-	.dapm_widgets	= sn95031_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(sn95031_dapm_widgets),
+-	.dapm_routes	= sn95031_audio_map,
+-	.num_dapm_routes	= ARRAY_SIZE(sn95031_audio_map),
 +	.component_driver = {
-+		.controls		= twl4030_snd_controls,
-+		.num_controls		= ARRAY_SIZE(twl4030_snd_controls),
-+		.dapm_widgets		= twl4030_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(twl4030_dapm_widgets),
-+		.dapm_routes		= intercon,
-+		.num_dapm_routes	= ARRAY_SIZE(intercon),
++		.controls		= sn95031_snd_controls,
++		.num_controls		= ARRAY_SIZE(sn95031_snd_controls),
++		.dapm_widgets		= sn95031_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(sn95031_dapm_widgets),
++		.dapm_routes		= sn95031_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(sn95031_audio_map),
 +	},
  };
  
- static int twl4030_codec_probe(struct platform_device *pdev)
+ static int sn95031_device_probe(struct platform_device *pdev)
 -- 
 2.8.1
