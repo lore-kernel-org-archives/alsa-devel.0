@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on wm8903" to the asoc tree
-Date: Mon, 08 Aug 2016 12:06:23 +0100
-Message-ID: <E1bWiNz-0004Cb-9s@debutante>
-References: <87oa538xhc.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: remove codec duplicated callback function" to the asoc tree
+Date: Mon, 08 Aug 2016 12:06:35 +0100
+Message-ID: <E1bWiOB-0004G9-1b@debutante>
+References: <87fuqm8xur.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87oa538xhc.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87fuqm8xur.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on wm8903
+   ASoC: remove codec duplicated callback function
 
 has been applied to the asoc tree at
 
@@ -37,47 +37,65 @@ to this mail.
 Thanks,
 Mark
 
->From 2fdff3a06e2fdc7ddfb5636e500fcd491c897c7c Mon Sep 17 00:00:00 2001
+>From 8073aefa60823acf205a1e6a5ea118297179d766 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:48:24 +0000
-Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- wm8903
+Date: Mon, 8 Aug 2016 09:36:49 +0000
+Subject: [PATCH] ASoC: remove codec duplicated callback function
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
 register timing. This was quick-hack, but no longer needed.
-This patch moves these functions from codec driver to component driver.
+This patch removes codec side duplicated callback function.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8903.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ include/sound/soc.h  |  8 --------
+ sound/soc/soc-core.c | 13 -------------
+ 2 files changed, 21 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index a26ca490cf31..c19ba7ca3a35 100644
---- a/sound/soc/codecs/wm8903.c
-+++ b/sound/soc/codecs/wm8903.c
-@@ -1880,12 +1880,14 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8903 = {
- 	.seq_notifier = wm8903_seq_notifier,
- 	.suspend_bias_off = true,
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 6144882cc96a..5eb2b38c3437 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -898,14 +898,6 @@ struct snd_soc_codec_driver {
+ 	int (*resume)(struct snd_soc_codec *);
+ 	struct snd_soc_component_driver component_driver;
  
--	.controls = wm8903_snd_controls,
--	.num_controls = ARRAY_SIZE(wm8903_snd_controls),
--	.dapm_widgets = wm8903_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(wm8903_dapm_widgets),
--	.dapm_routes = wm8903_intercon,
--	.num_dapm_routes = ARRAY_SIZE(wm8903_intercon),
-+	.component_driver = {
-+		.controls		= wm8903_snd_controls,
-+		.num_controls		= ARRAY_SIZE(wm8903_snd_controls),
-+		.dapm_widgets		= wm8903_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(wm8903_dapm_widgets),
-+		.dapm_routes		= wm8903_intercon,
-+		.num_dapm_routes	= ARRAY_SIZE(wm8903_intercon),
-+	},
- };
+-	/* Default control and setup, added after probe() is run */
+-	const struct snd_kcontrol_new *controls;
+-	int num_controls;
+-	const struct snd_soc_dapm_widget *dapm_widgets;
+-	int num_dapm_widgets;
+-	const struct snd_soc_dapm_route *dapm_routes;
+-	int num_dapm_routes;
+-
+ 	/* codec wide operations */
+ 	int (*set_sysclk)(struct snd_soc_codec *codec,
+ 			  int clk_id, int source, unsigned int freq, int dir);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 16369cad4803..edba975d893e 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3333,19 +3333,6 @@ int snd_soc_register_codec(struct device *dev,
+ 	if (ret)
+ 		goto err_free;
  
- static const struct regmap_config wm8903_regmap = {
+-	if (codec_drv->controls) {
+-		codec->component.controls = codec_drv->controls;
+-		codec->component.num_controls = codec_drv->num_controls;
+-	}
+-	if (codec_drv->dapm_widgets) {
+-		codec->component.dapm_widgets = codec_drv->dapm_widgets;
+-		codec->component.num_dapm_widgets = codec_drv->num_dapm_widgets;
+-	}
+-	if (codec_drv->dapm_routes) {
+-		codec->component.dapm_routes = codec_drv->dapm_routes;
+-		codec->component.num_dapm_routes = codec_drv->num_dapm_routes;
+-	}
+-
+ 	if (codec_drv->probe)
+ 		codec->component.probe = snd_soc_codec_drv_probe;
+ 	if (codec_drv->remove)
 -- 
 2.8.1
