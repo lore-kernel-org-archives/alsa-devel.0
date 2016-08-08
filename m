@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on cs42l56" to the asoc tree
-Date: Mon, 08 Aug 2016 12:04:12 +0100
-Message-ID: <E1bWiLs-0003Zx-RI@debutante>
-References: <87wpjr63nw.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on cs4349" to the asoc tree
+Date: Mon, 08 Aug 2016 12:04:21 +0100
+Message-ID: <E1bWiM1-0003cc-Ii@debutante>
+References: <871t1z7i9y.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87wpjr63nw.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <871t1z7i9y.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on cs42l56
+   ASoC: codec duplicated callback function goes to component on cs4349
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 561828f821c95c73177e5291e5831b909b400450 Mon Sep 17 00:00:00 2001
+>From b9835ec4a7ebf508cea5e2b5955b830db0fffc5f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:03:06 +0000
+Date: Mon, 8 Aug 2016 09:02:09 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- cs42l56
+ cs4349
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,34 +51,34 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l56.c | 15 ++++++++-------
+ sound/soc/codecs/cs4349.c | 15 ++++++++-------
  1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index eec1ff853b98..54c1768bc818 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -1121,13 +1121,14 @@ static const struct snd_soc_codec_driver soc_codec_dev_cs42l56 = {
- 	.set_bias_level = cs42l56_set_bias_level,
- 	.suspend_bias_off = true,
+diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
+index 0ac8fc5ed4ae..231ca935cdf3 100644
+--- a/sound/soc/codecs/cs4349.c
++++ b/sound/soc/codecs/cs4349.c
+@@ -256,13 +256,14 @@ static struct snd_soc_dai_driver cs4349_dai = {
+ };
  
--	.dapm_widgets = cs42l56_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(cs42l56_dapm_widgets),
--	.dapm_routes = cs42l56_audio_map,
--	.num_dapm_routes = ARRAY_SIZE(cs42l56_audio_map),
+ static struct snd_soc_codec_driver soc_codec_dev_cs4349 = {
+-	.controls		= cs4349_snd_controls,
+-	.num_controls		= ARRAY_SIZE(cs4349_snd_controls),
 -
--	.controls = cs42l56_snd_controls,
--	.num_controls = ARRAY_SIZE(cs42l56_snd_controls),
+-	.dapm_widgets		= cs4349_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(cs4349_dapm_widgets),
+-	.dapm_routes		= cs4349_routes,
+-	.num_dapm_routes	= ARRAY_SIZE(cs4349_routes),
 +	.component_driver = {
-+		.controls		= cs42l56_snd_controls,
-+		.num_controls		= ARRAY_SIZE(cs42l56_snd_controls),
-+		.dapm_widgets		= cs42l56_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(cs42l56_dapm_widgets),
-+		.dapm_routes		= cs42l56_audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(cs42l56_audio_map),
++		.controls		= cs4349_snd_controls,
++		.num_controls		= ARRAY_SIZE(cs4349_snd_controls),
++		.dapm_widgets		= cs4349_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(cs4349_dapm_widgets),
++		.dapm_routes		= cs4349_routes,
++		.num_dapm_routes	= ARRAY_SIZE(cs4349_routes),
 +	},
  };
  
- static const struct regmap_config cs42l56_regmap = {
+ static const struct regmap_config cs4349_regmap = {
 -- 
 2.8.1
