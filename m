@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on ak4642" to the asoc tree
-Date: Mon, 08 Aug 2016 12:03:43 +0100
-Message-ID: <E1bWiLP-0003RW-Jz@debutante>
-References: <87invb63ip.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on ak5386" to the asoc tree
+Date: Mon, 08 Aug 2016 12:03:46 +0100
+Message-ID: <E1bWiLS-0003SM-He@debutante>
+References: <87k2fr63j8.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87invb63ip.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87k2fr63j8.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on ak4642
+   ASoC: codec duplicated callback function goes to component on ak5386
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 3a6ce00e2a5b85d558f051b709be9d1952bd7461 Mon Sep 17 00:00:00 2001
+>From 5bc4f738018ddcb86b7ac5894d4a9e416dbb65b0 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:06:14 +0000
+Date: Mon, 8 Aug 2016 09:05:56 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- ak4642
+ ak5386
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,29 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4642.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/ak5386.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
-index cc941d66ec3d..2609f95b7d19 100644
---- a/sound/soc/codecs/ak4642.c
-+++ b/sound/soc/codecs/ak4642.c
-@@ -555,12 +555,14 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4642 = {
- 	.suspend		= ak4642_suspend,
- 	.resume			= ak4642_resume,
- 	.set_bias_level		= ak4642_set_bias_level,
--	.controls		= ak4642_snd_controls,
--	.num_controls		= ARRAY_SIZE(ak4642_snd_controls),
--	.dapm_widgets		= ak4642_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(ak4642_dapm_widgets),
--	.dapm_routes		= ak4642_intercon,
--	.num_dapm_routes	= ARRAY_SIZE(ak4642_intercon),
+diff --git a/sound/soc/codecs/ak5386.c b/sound/soc/codecs/ak5386.c
+index afa95360826d..0ef2df223336 100644
+--- a/sound/soc/codecs/ak5386.c
++++ b/sound/soc/codecs/ak5386.c
+@@ -74,10 +74,12 @@ static struct snd_soc_codec_driver soc_codec_ak5386 = {
+ 	.remove = ak5386_soc_remove,
+ 	.suspend = ak5386_soc_suspend,
+ 	.resume = ak5386_soc_resume,
+-	.dapm_widgets = ak5386_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(ak5386_dapm_widgets),
+-	.dapm_routes = ak5386_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(ak5386_dapm_routes),
 +	.component_driver = {
-+		.controls		= ak4642_snd_controls,
-+		.num_controls		= ARRAY_SIZE(ak4642_snd_controls),
-+		.dapm_widgets		= ak4642_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(ak4642_dapm_widgets),
-+		.dapm_routes		= ak4642_intercon,
-+		.num_dapm_routes	= ARRAY_SIZE(ak4642_intercon),
++		.dapm_widgets		= ak5386_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(ak5386_dapm_widgets),
++		.dapm_routes		= ak5386_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(ak5386_dapm_routes),
 +	},
  };
  
- static const struct regmap_config ak4642_regmap = {
+ static int ak5386_set_dai_fmt(struct snd_soc_dai *codec_dai,
 -- 
 2.8.1
