@@ -1,61 +1,33 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [alsa-devel] [PATCH 000/159] ASoC: codec cleanup - codec
- duplicate functions
-Date: Mon, 8 Aug 2016 18:36:46 +0800
-Message-ID: <CAGb2v66xQuMuDLdCoUr-gsOTamPssDOJoyNZsNx5PtdanFPHzA@mail.gmail.com>
-References: <87wpjr8xld.wl%kuninori.morimoto.gx@renesas.com>
+From: "Vittorio Gambaletta (VittGam)" <linuxbugs@vittgam.net>
+Subject: [PATCH] ALSA: usb-audio: Add quirk for ELP HD USB Camera
+Date: Mon, 08 Aug 2016 12:35:40 +0200
+Message-ID: <cdaa8f6247049412e7f400fa3cbc5192@vittgam.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87wpjr8xld.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sound-owner@vger.kernel.org>
+Sender: linux-sound-owner@vger.kernel.org
+To: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The ELP HD USB Camera (05a3:9420) needs this quirk for suppressing
+the unsupported sample rate inquiry.
 
-On Mon, Aug 8, 2016 at 4:45 PM, Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
->
-> Hi Mark
->
-> These are codec duplicate functions cleanup patches - v1
-> We would like to switch to "component" style base ASoC in the future
-> instead of current "CPU/Codec/Platform/Card" style.
->
-> Current "component" already has callback functions, and "codec" is based
-> on "component", but "codec" is still requesting/using its original callback.
-> This is bacause of historical reason, but this is the time to cleanup.
->
-> Lars's opinion is that this kind of cleanup can be final stage,
-> but I think these are needed for "component" base style switching
->
-> These are very big patch-set, but it doesn't add new features.
-> [001/159] - [158/159] move callback functions from codec to component,
-> and last [159/159] will remove codec side callback.
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=98481
+Cc: <stable@vger.kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Vittorio Gambaletta <linuxbugs@vittgam.net>
+---
 
-This series would probably be better for others to look through if the
-codec name came after "ASoC: ", instead of at the end of the subject,
-where it gets pushed way beyond 80 characters due to the "[alsa-devel]"
-and "[PATCH xxx/yyy]" tags.
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1138,6 +1138,7 @@
+  	case USB_ID(0x047F, 0xAA05): /* Plantronics DA45 */
+  	case USB_ID(0x04D8, 0xFEEA): /* Benchmark DAC1 Pre */
+  	case USB_ID(0x0556, 0x0014): /* Phoenix Audio TMX320VC */
++	case USB_ID(0x05A3, 0x9420): /* ELP HD USB Camera */
+  	case USB_ID(0x074D, 0x3553): /* Outlaw RR2150 (Micronas UAC3553B) */
+  	case USB_ID(0x1de7, 0x0013): /* Phoenix Audio MT202exe */
+  	case USB_ID(0x1de7, 0x0014): /* Phoenix Audio TMX320 */
 
-
-Regards
-ChenYu
-
-> We need this kind of cleanup for .probe/.remove too, and on Platform too.
-> This cares codec duplicate callback function only as 1st step.
-> I will post codec .probe/.remove cleanup if these are accepted,
-> and will post platform side cleanup too.
->
-> I build-tested these patches with make allyesconfig on x86,
-> and tested on Lager board.
->
-> Best regards
-> ---
-> Kuninori Morimoto
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
