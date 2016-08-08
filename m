@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on cx20442" to the asoc tree
-Date: Mon, 08 Aug 2016 12:02:27 +0100
-Message-ID: <E1bWiKB-000350-KL@debutante>
-References: <87h9av4okr.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on ak4641" to the asoc tree
+Date: Mon, 08 Aug 2016 12:02:39 +0100
+Message-ID: <E1bWiKN-00038P-8Z@debutante>
+References: <87mvkn4omt.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87h9av4okr.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87mvkn4omt.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on cx20442
+   ASoC: codec duplicated callback function goes to component on ak4641
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From a2c9c0f9729be9b0c5d410fd3f9ba2b335d5e868 Mon Sep 17 00:00:00 2001
+>From f303eb9e1e5d1c9c26cf85274324ce6a863da946 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:14:19 +0000
+Date: Mon, 8 Aug 2016 09:13:06 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- cx20442
+ ak4641
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,29 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cx20442.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/ak4641.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
-index fb3885fe0afb..2c12471e42a6 100644
---- a/sound/soc/codecs/cx20442.c
-+++ b/sound/soc/codecs/cx20442.c
-@@ -407,10 +407,12 @@ static struct snd_soc_codec_driver cx20442_codec_dev = {
- 	.reg_word_size = sizeof(u8),
- 	.read = cx20442_read_reg_cache,
- 	.write = cx20442_write,
--	.dapm_widgets = cx20442_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(cx20442_dapm_widgets),
--	.dapm_routes = cx20442_audio_map,
--	.num_dapm_routes = ARRAY_SIZE(cx20442_audio_map),
-+	.component_driver = {
-+		.dapm_widgets		= cx20442_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(cx20442_dapm_widgets),
-+		.dapm_routes		= cx20442_audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(cx20442_audio_map),
-+	},
+diff --git a/sound/soc/codecs/ak4641.c b/sound/soc/codecs/ak4641.c
+index b14176f8d884..c91717d08513 100644
+--- a/sound/soc/codecs/ak4641.c
++++ b/sound/soc/codecs/ak4641.c
+@@ -505,12 +505,14 @@ static struct snd_soc_dai_driver ak4641_dai[] = {
  };
  
- static int cx20442_platform_probe(struct platform_device *pdev)
+ static struct snd_soc_codec_driver soc_codec_dev_ak4641 = {
+-	.controls		= ak4641_snd_controls,
+-	.num_controls		= ARRAY_SIZE(ak4641_snd_controls),
+-	.dapm_widgets		= ak4641_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(ak4641_dapm_widgets),
+-	.dapm_routes		= ak4641_audio_map,
+-	.num_dapm_routes	= ARRAY_SIZE(ak4641_audio_map),
++	.component_driver = {
++		.controls		= ak4641_snd_controls,
++		.num_controls		= ARRAY_SIZE(ak4641_snd_controls),
++		.dapm_widgets		= ak4641_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(ak4641_dapm_widgets),
++		.dapm_routes		= ak4641_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(ak4641_audio_map),
++	},
+ 	.set_bias_level		= ak4641_set_bias_level,
+ 	.suspend_bias_off	= true,
+ };
 -- 
 2.8.1
