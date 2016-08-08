@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on da9055" to the asoc tree
-Date: Mon, 08 Aug 2016 12:02:09 +0100
-Message-ID: <E1bWiJt-0002zY-Vs@debutante>
-References: <878tw74oht.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on cx20442" to the asoc tree
+Date: Mon, 08 Aug 2016 12:02:27 +0100
+Message-ID: <E1bWiKB-000350-KL@debutante>
+References: <87h9av4okr.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <878tw74oht.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87h9av4okr.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on da9055
+   ASoC: codec duplicated callback function goes to component on cx20442
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From b2fb9a6e5cf0ef6771f821507ccb5ca6efd9acad Mon Sep 17 00:00:00 2001
+>From a2c9c0f9729be9b0c5d410fd3f9ba2b335d5e868 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:16:04 +0000
+Date: Mon, 8 Aug 2016 09:14:19 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- da9055
+ cx20442
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,34 +51,29 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da9055.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ sound/soc/codecs/cx20442.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
-index 0b2ede8db978..4efb5f897a0c 100644
---- a/sound/soc/codecs/da9055.c
-+++ b/sound/soc/codecs/da9055.c
-@@ -1455,13 +1455,14 @@ static struct snd_soc_codec_driver soc_codec_dev_da9055 = {
- 	.probe			= da9055_probe,
- 	.set_bias_level		= da9055_set_bias_level,
- 
--	.controls		= da9055_snd_controls,
--	.num_controls		= ARRAY_SIZE(da9055_snd_controls),
--
--	.dapm_widgets		= da9055_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(da9055_dapm_widgets),
--	.dapm_routes		= da9055_audio_map,
--	.num_dapm_routes	= ARRAY_SIZE(da9055_audio_map),
+diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
+index fb3885fe0afb..2c12471e42a6 100644
+--- a/sound/soc/codecs/cx20442.c
++++ b/sound/soc/codecs/cx20442.c
+@@ -407,10 +407,12 @@ static struct snd_soc_codec_driver cx20442_codec_dev = {
+ 	.reg_word_size = sizeof(u8),
+ 	.read = cx20442_read_reg_cache,
+ 	.write = cx20442_write,
+-	.dapm_widgets = cx20442_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(cx20442_dapm_widgets),
+-	.dapm_routes = cx20442_audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(cx20442_audio_map),
 +	.component_driver = {
-+		.controls		= da9055_snd_controls,
-+		.num_controls		= ARRAY_SIZE(da9055_snd_controls),
-+		.dapm_widgets		= da9055_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(da9055_dapm_widgets),
-+		.dapm_routes		= da9055_audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(da9055_audio_map),
++		.dapm_widgets		= cx20442_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(cx20442_dapm_widgets),
++		.dapm_routes		= cx20442_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(cx20442_audio_map),
 +	},
  };
  
- static const struct regmap_config da9055_regmap_config = {
+ static int cx20442_platform_probe(struct platform_device *pdev)
 -- 
 2.8.1
