@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on wm8741" to the asoc tree
-Date: Mon, 08 Aug 2016 12:06:05 +0100
-Message-ID: <E1bWiNh-00047O-Kw@debutante>
-References: <87fuqf8xe4.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on wm8523" to the asoc tree
+Date: Mon, 08 Aug 2016 12:05:47 +0100
+Message-ID: <E1bWiNP-00042K-He@debutante>
+References: <877fbr8xas.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87fuqf8xe4.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <877fbr8xas.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on wm8741
+   ASoC: codec duplicated callback function goes to component on wm8523
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 818d2aa162b886e4c1b722ca8661f79384a257e9 Mon Sep 17 00:00:00 2001
+>From f8a5c975bd5b7fc5e46fd85b5a65c0028d09f979 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:50:19 +0000
+Date: Mon, 8 Aug 2016 08:52:19 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- wm8741
+ wm8523
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,29 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8741.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm8523.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index 36ef91fe0511..3e432721903e 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -502,10 +502,12 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8741 = {
- 	.remove =	wm8741_remove,
- 	.resume =	wm8741_resume,
+diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
+index aa287a3965e7..0bb189a3d322 100644
+--- a/sound/soc/codecs/wm8523.c
++++ b/sound/soc/codecs/wm8523.c
+@@ -418,12 +418,14 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8523 = {
+ 	.set_bias_level = wm8523_set_bias_level,
+ 	.suspend_bias_off = true,
  
--	.dapm_widgets = wm8741_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(wm8741_dapm_widgets),
--	.dapm_routes = wm8741_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(wm8741_dapm_routes),
+-	.controls = wm8523_controls,
+-	.num_controls = ARRAY_SIZE(wm8523_controls),
+-	.dapm_widgets = wm8523_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(wm8523_dapm_widgets),
+-	.dapm_routes = wm8523_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(wm8523_dapm_routes),
 +	.component_driver = {
-+		.dapm_widgets		= wm8741_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(wm8741_dapm_widgets),
-+		.dapm_routes		= wm8741_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(wm8741_dapm_routes),
++		.controls		= wm8523_controls,
++		.num_controls		= ARRAY_SIZE(wm8523_controls),
++		.dapm_widgets		= wm8523_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(wm8523_dapm_widgets),
++		.dapm_routes		= wm8523_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(wm8523_dapm_routes),
 +	},
  };
  
- static const struct of_device_id wm8741_of_match[] = {
+ static const struct of_device_id wm8523_of_match[] = {
 -- 
 2.8.1
