@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on adau1781" to the asoc tree
-Date: Mon, 08 Aug 2016 12:02:53 +0100
-Message-ID: <E1bWiKb-0003Ck-RK@debutante>
-References: <87twev4opa.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on 88pm860x-codec" to the asoc tree
+Date: Mon, 08 Aug 2016 12:03:08 +0100
+Message-ID: <E1bWiKq-0003H1-FL@debutante>
+References: <871t1z63cd.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87twev4opa.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <871t1z63cd.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on adau1781
+   ASoC: codec duplicated callback function goes to component on 88pm860x-codec
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From dbd33b16d68bf3ff93fb7965a2e87878ee091e94 Mon Sep 17 00:00:00 2001
+>From 33398b509aafe936ec57cb1023f7ff1ba9e48586 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:11:36 +0000
+Date: Mon, 8 Aug 2016 09:10:02 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- adau1781
+ 88pm860x-codec
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adau1781.c | 14 ++++++++------
+ sound/soc/codecs/88pm860x-codec.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1781.c b/sound/soc/codecs/adau1781.c
-index bc1bb56dae63..546071c6c0d0 100644
---- a/sound/soc/codecs/adau1781.c
-+++ b/sound/soc/codecs/adau1781.c
-@@ -432,12 +432,14 @@ static const struct snd_soc_codec_driver adau1781_codec_driver = {
- 	.set_bias_level = adau1781_set_bias_level,
- 	.suspend_bias_off = true,
+diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
+index e8bed6b0c9db..b013a4c62b63 100644
+--- a/sound/soc/codecs/88pm860x-codec.c
++++ b/sound/soc/codecs/88pm860x-codec.c
+@@ -1361,12 +1361,14 @@ static struct snd_soc_codec_driver soc_codec_dev_pm860x = {
+ 	.set_bias_level	= pm860x_set_bias_level,
+ 	.get_regmap	= pm860x_get_regmap,
  
--	.controls = adau1781_controls,
--	.num_controls = ARRAY_SIZE(adau1781_controls),
--	.dapm_widgets = adau1781_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(adau1781_dapm_widgets),
--	.dapm_routes = adau1781_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(adau1781_dapm_routes),
+-	.controls = pm860x_snd_controls,
+-	.num_controls = ARRAY_SIZE(pm860x_snd_controls),
+-	.dapm_widgets = pm860x_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(pm860x_dapm_widgets),
+-	.dapm_routes = pm860x_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(pm860x_dapm_routes),
 +	.component_driver = {
-+		.controls		= adau1781_controls,
-+		.num_controls		= ARRAY_SIZE(adau1781_controls),
-+		.dapm_widgets		= adau1781_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(adau1781_dapm_widgets),
-+		.dapm_routes		= adau1781_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(adau1781_dapm_routes),
++		.controls		= pm860x_snd_controls,
++		.num_controls		= ARRAY_SIZE(pm860x_snd_controls),
++		.dapm_widgets		= pm860x_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(pm860x_dapm_widgets),
++		.dapm_routes		= pm860x_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(pm860x_dapm_routes),
 +	},
  };
  
- #define ADAU1781_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+ static int pm860x_codec_probe(struct platform_device *pdev)
 -- 
 2.8.1
