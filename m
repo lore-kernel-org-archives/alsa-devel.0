@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on adau1373" to the asoc tree
-Date: Mon, 08 Aug 2016 12:03:17 +0100
-Message-ID: <E1bWiKz-0003JX-7p@debutante>
-References: <8760rb63dy.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on adau1781" to the asoc tree
+Date: Mon, 08 Aug 2016 12:02:53 +0100
+Message-ID: <E1bWiKb-0003Ck-RK@debutante>
+References: <87twev4opa.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <8760rb63dy.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87twev4opa.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on adau1373
+   ASoC: codec duplicated callback function goes to component on adau1781
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From adfe0976aadb618acf130564d39e39ec0b0a5b90 Mon Sep 17 00:00:00 2001
+>From dbd33b16d68bf3ff93fb7965a2e87878ee091e94 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:09:04 +0000
+Date: Mon, 8 Aug 2016 09:11:36 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- adau1373
+ adau1781
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adau1373.c | 14 ++++++++------
+ sound/soc/codecs/adau1781.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-index 1556b360fa15..8fa9045571ff 100644
---- a/sound/soc/codecs/adau1373.c
-+++ b/sound/soc/codecs/adau1373.c
-@@ -1466,12 +1466,14 @@ static struct snd_soc_codec_driver adau1373_codec_driver = {
+diff --git a/sound/soc/codecs/adau1781.c b/sound/soc/codecs/adau1781.c
+index bc1bb56dae63..546071c6c0d0 100644
+--- a/sound/soc/codecs/adau1781.c
++++ b/sound/soc/codecs/adau1781.c
+@@ -432,12 +432,14 @@ static const struct snd_soc_codec_driver adau1781_codec_driver = {
+ 	.set_bias_level = adau1781_set_bias_level,
+ 	.suspend_bias_off = true,
  
- 	.set_pll = adau1373_set_pll,
- 
--	.controls = adau1373_controls,
--	.num_controls = ARRAY_SIZE(adau1373_controls),
--	.dapm_widgets = adau1373_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(adau1373_dapm_widgets),
--	.dapm_routes = adau1373_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(adau1373_dapm_routes),
+-	.controls = adau1781_controls,
+-	.num_controls = ARRAY_SIZE(adau1781_controls),
+-	.dapm_widgets = adau1781_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(adau1781_dapm_widgets),
+-	.dapm_routes = adau1781_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(adau1781_dapm_routes),
 +	.component_driver = {
-+		.controls		= adau1373_controls,
-+		.num_controls		= ARRAY_SIZE(adau1373_controls),
-+		.dapm_widgets		= adau1373_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(adau1373_dapm_widgets),
-+		.dapm_routes		= adau1373_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(adau1373_dapm_routes),
++		.controls		= adau1781_controls,
++		.num_controls		= ARRAY_SIZE(adau1781_controls),
++		.dapm_widgets		= adau1781_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(adau1781_dapm_widgets),
++		.dapm_routes		= adau1781_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(adau1781_dapm_routes),
 +	},
  };
  
- static int adau1373_i2c_probe(struct i2c_client *client,
+ #define ADAU1781_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
 -- 
 2.8.1
