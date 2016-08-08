@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on wm8978" to the asoc tree
-Date: Mon, 08 Aug 2016 12:06:29 +0100
-Message-ID: <E1bWiO5-0004EO-4w@debutante>
-References: <87r39z8xin.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on wm8974" to the asoc tree
+Date: Mon, 08 Aug 2016 12:06:26 +0100
+Message-ID: <E1bWiO2-0004DX-84@debutante>
+References: <87popj8xhw.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87r39z8xin.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87popj8xhw.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on wm8978
+   ASoC: codec duplicated callback function goes to component on wm8974
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 7a3304ea5c783fba6b68c62e17d041dfe9e57d9c Mon Sep 17 00:00:00 2001
+>From 48b042380e970b70f1c5453d31c6bbff2114974e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:47:36 +0000
+Date: Mon, 8 Aug 2016 08:48:05 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- wm8978
+ wm8974
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8978.c | 14 ++++++++------
+ sound/soc/codecs/wm8974.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
-index d36d6001fbb7..910b36f11264 100644
---- a/sound/soc/codecs/wm8978.c
-+++ b/sound/soc/codecs/wm8978.c
-@@ -999,12 +999,14 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8978 = {
- 	.resume =	wm8978_resume,
- 	.set_bias_level = wm8978_set_bias_level,
+diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
+index dc8c3b1ebb6f..fbda6e3f8a9d 100644
+--- a/sound/soc/codecs/wm8974.c
++++ b/sound/soc/codecs/wm8974.c
+@@ -681,12 +681,14 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8974 = {
+ 	.set_bias_level = wm8974_set_bias_level,
+ 	.suspend_bias_off = true,
  
--	.controls = wm8978_snd_controls,
--	.num_controls = ARRAY_SIZE(wm8978_snd_controls),
--	.dapm_widgets = wm8978_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(wm8978_dapm_widgets),
--	.dapm_routes = wm8978_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(wm8978_dapm_routes),
+-	.controls = wm8974_snd_controls,
+-	.num_controls = ARRAY_SIZE(wm8974_snd_controls),
+-	.dapm_widgets = wm8974_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(wm8974_dapm_widgets),
+-	.dapm_routes = wm8974_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(wm8974_dapm_routes),
 +	.component_driver = {
-+		.controls		= wm8978_snd_controls,
-+		.num_controls		= ARRAY_SIZE(wm8978_snd_controls),
-+		.dapm_widgets		= wm8978_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(wm8978_dapm_widgets),
-+		.dapm_routes		= wm8978_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(wm8978_dapm_routes),
++		.controls		= wm8974_snd_controls,
++		.num_controls		= ARRAY_SIZE(wm8974_snd_controls),
++		.dapm_widgets		= wm8974_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(wm8974_dapm_widgets),
++		.dapm_routes		= wm8974_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(wm8974_dapm_routes),
 +	},
  };
  
- static const struct regmap_config wm8978_regmap_config = {
+ static int wm8974_i2c_probe(struct i2c_client *i2c,
 -- 
 2.8.1
