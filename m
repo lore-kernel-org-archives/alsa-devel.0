@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 01/27] ALSA: seq: add const qualifier to table
-	of functions for ioctl
-Date: Mon,  8 Aug 2016 23:54:27 +0900
-Message-ID: <1470668093-31027-2-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/27] ALSA: seq: optimize system_info function
+	to new design
+Date: Mon,  8 Aug 2016 23:54:36 +0900
+Message-ID: <1470668093-31027-11-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470668093-31027-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 72E4E2670F6
- for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2016 16:55:00 +0200 (CEST)
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id C9D5D267137
+ for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2016 16:55:01 +0200 (CEST)
 In-Reply-To: <1470668093-31027-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,35 +25,51 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Each entry in this table is never changed in runtime. This commit moves it
-from .data to .rodata section.
+In former commit, actual operations of each ioctl command get argument
+in kernel space. Copying from/to user space is performed outside of
+the function.
+
+This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index d6d9419..42be1e5 100644
+index 9cf5a82..624d001 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -2168,7 +2168,7 @@ static int snd_seq_ioctl_query_next_port(struct snd_seq_client *client,
+@@ -1131,21 +1131,19 @@ static int seq_ioctl_client_id(struct snd_seq_client *client, void *arg)
+ }
  
- /* -------------------------------------------------------- */
- 
--static struct seq_ioctl_table {
-+static const struct seq_ioctl_table {
- 	unsigned int cmd;
- 	int (*func)(struct snd_seq_client *client, void __user * arg);
- } ioctl_tables[] = {
-@@ -2207,7 +2207,7 @@ static struct seq_ioctl_table {
- static int snd_seq_do_ioctl(struct snd_seq_client *client, unsigned int cmd,
- 			    void __user *arg)
+ /* SYSTEM_INFO ioctl() */
+-static int snd_seq_ioctl_system_info(struct snd_seq_client *client, void __user *arg)
++static int snd_seq_ioctl_system_info(struct snd_seq_client *client, void *arg)
  {
--	struct seq_ioctl_table *p;
-+	const struct seq_ioctl_table *p;
+-	struct snd_seq_system_info info;
++	struct snd_seq_system_info *info = arg;
  
- 	switch (cmd) {
- 	case SNDRV_SEQ_IOCTL_PVERSION:
+-	memset(&info, 0, sizeof(info));
++	memset(info, 0, sizeof(*info));
+ 	/* fill the info fields */
+-	info.queues = SNDRV_SEQ_MAX_QUEUES;
+-	info.clients = SNDRV_SEQ_MAX_CLIENTS;
+-	info.ports = SNDRV_SEQ_MAX_PORTS;
+-	info.channels = 256;	/* fixed limit */
+-	info.cur_clients = client_usage.cur;
+-	info.cur_queues = snd_seq_queue_get_cur_queues();
++	info->queues = SNDRV_SEQ_MAX_QUEUES;
++	info->clients = SNDRV_SEQ_MAX_CLIENTS;
++	info->ports = SNDRV_SEQ_MAX_PORTS;
++	info->channels = 256;	/* fixed limit */
++	info->cur_clients = client_usage.cur;
++	info->cur_queues = snd_seq_queue_get_cur_queues();
+ 
+-	if (copy_to_user(arg, &info, sizeof(info)))
+-		return -EFAULT;
+ 	return 0;
+ }
+ 
 -- 
 2.7.4
