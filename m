@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on sta529" to the asoc tree
-Date: Mon, 08 Aug 2016 12:00:45 +0100
-Message-ID: <E1bWiIX-0002Zp-8T@debutante>
-References: <8737mf39ii.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on rt5670" to the asoc tree
+Date: Mon, 08 Aug 2016 12:00:59 +0100
+Message-ID: <E1bWiIl-0002e7-RE@debutante>
+References: <87a8gn39l6.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <8737mf39ii.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87a8gn39l6.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on sta529
+   ASoC: codec duplicated callback function goes to component on rt5670
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 29926fc8e853b6ddfee916d91fe88bec07058107 Mon Sep 17 00:00:00 2001
+>From 462fe79468ccc79d9d639f03c666b5c117b4957c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:25:03 +0000
+Date: Mon, 8 Aug 2016 09:23:24 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- sta529
+ rt5670
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,25 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sta529.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5670.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
-index 2cdaca943a8c..d4b384e4b266 100644
---- a/sound/soc/codecs/sta529.c
-+++ b/sound/soc/codecs/sta529.c
-@@ -317,8 +317,10 @@ static const struct snd_soc_codec_driver sta529_codec_driver = {
- 	.set_bias_level = sta529_set_bias_level,
- 	.suspend_bias_off = true,
- 
--	.controls = sta529_snd_controls,
--	.num_controls = ARRAY_SIZE(sta529_snd_controls),
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 8ef467f64f03..49caf1393aeb 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -2777,12 +2777,14 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5670 = {
+ 	.resume = rt5670_resume,
+ 	.set_bias_level = rt5670_set_bias_level,
+ 	.idle_bias_off = true,
+-	.controls = rt5670_snd_controls,
+-	.num_controls = ARRAY_SIZE(rt5670_snd_controls),
+-	.dapm_widgets = rt5670_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(rt5670_dapm_widgets),
+-	.dapm_routes = rt5670_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(rt5670_dapm_routes),
 +	.component_driver = {
-+		.controls		= sta529_snd_controls,
-+		.num_controls		= ARRAY_SIZE(sta529_snd_controls),
++		.controls		= rt5670_snd_controls,
++		.num_controls		= ARRAY_SIZE(rt5670_snd_controls),
++		.dapm_widgets		= rt5670_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(rt5670_dapm_widgets),
++		.dapm_routes		= rt5670_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(rt5670_dapm_routes),
 +	},
  };
  
- static const struct regmap_config sta529_regmap = {
+ static const struct regmap_config rt5670_regmap = {
 -- 
 2.8.1
