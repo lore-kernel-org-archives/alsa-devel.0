@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on ssm2518" to the asoc tree
-Date: Mon, 08 Aug 2016 12:00:48 +0100
-Message-ID: <E1bWiIa-0002ag-5K@debutante>
-References: <874m6v39iz.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on rt5651" to the asoc tree
+Date: Mon, 08 Aug 2016 12:01:05 +0100
+Message-ID: <E1bWiIr-0002ft-Lu@debutante>
+References: <87d1lj39m5.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <874m6v39iz.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87d1lj39m5.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on ssm2518
+   ASoC: codec duplicated callback function goes to component on rt5651
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 96107bbaf32ab93bd359c7741f3611aff08e144b Mon Sep 17 00:00:00 2001
+>From 1fd899821d59303d7e6ec4be14770213788f1bb8 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:24:44 +0000
+Date: Mon, 8 Aug 2016 09:22:51 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- ssm2518
+ rt5651
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ssm2518.c | 14 ++++++++------
+ sound/soc/codecs/rt5651.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/ssm2518.c b/sound/soc/codecs/ssm2518.c
-index e2e0bfa7ec20..38a85f3adc80 100644
---- a/sound/soc/codecs/ssm2518.c
-+++ b/sound/soc/codecs/ssm2518.c
-@@ -715,12 +715,14 @@ static struct snd_soc_codec_driver ssm2518_codec_driver = {
- 	.set_sysclk = ssm2518_set_sysclk,
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index 7a6197042423..f5d34153e21f 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -1712,12 +1712,14 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5651 = {
+ 	.resume = rt5651_resume,
+ 	.set_bias_level = rt5651_set_bias_level,
  	.idle_bias_off = true,
- 
--	.controls = ssm2518_snd_controls,
--	.num_controls = ARRAY_SIZE(ssm2518_snd_controls),
--	.dapm_widgets = ssm2518_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(ssm2518_dapm_widgets),
--	.dapm_routes = ssm2518_routes,
--	.num_dapm_routes = ARRAY_SIZE(ssm2518_routes),
+-	.controls = rt5651_snd_controls,
+-	.num_controls = ARRAY_SIZE(rt5651_snd_controls),
+-	.dapm_widgets = rt5651_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(rt5651_dapm_widgets),
+-	.dapm_routes = rt5651_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(rt5651_dapm_routes),
 +	.component_driver = {
-+		.controls		= ssm2518_snd_controls,
-+		.num_controls		= ARRAY_SIZE(ssm2518_snd_controls),
-+		.dapm_widgets		= ssm2518_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(ssm2518_dapm_widgets),
-+		.dapm_routes		= ssm2518_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(ssm2518_routes),
++		.controls		= rt5651_snd_controls,
++		.num_controls		= ARRAY_SIZE(rt5651_snd_controls),
++		.dapm_widgets		= rt5651_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(rt5651_dapm_widgets),
++		.dapm_routes		= rt5651_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(rt5651_dapm_routes),
 +	},
  };
  
- static const struct regmap_config ssm2518_regmap_config = {
+ static const struct regmap_config rt5651_regmap = {
 -- 
 2.8.1
