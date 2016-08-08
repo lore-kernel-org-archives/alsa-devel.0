@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on nau8825" to the asoc tree
-Date: Mon, 08 Aug 2016 12:01:26 +0100
-Message-ID: <E1bWiJC-0002mJ-6m@debutante>
-References: <87mvkn39pl.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on wm9850" to the asoc tree
+Date: Mon, 08 Aug 2016 12:01:43 +0100
+Message-ID: <E1bWiJT-0002rV-Mh@debutante>
+References: <87vazb39sv.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87mvkn39pl.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87vazb39sv.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on nau8825
+   ASoC: codec duplicated callback function goes to component on wm9850
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 889adf638721a9dcd772e20075697338d65fb2bc Mon Sep 17 00:00:00 2001
+>From 9d32d3dca9f377f8dbfb03413cea5af5482e412c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:20:46 +0000
+Date: Mon, 8 Aug 2016 09:18:52 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- nau8825
+ wm9850
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8825.c | 14 ++++++++------
+ sound/soc/codecs/max9850.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 5c9707ac4bbf..822791eb9574 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -2270,12 +2270,14 @@ static struct snd_soc_codec_driver nau8825_codec_driver = {
- 	.suspend = nau8825_suspend,
- 	.resume = nau8825_resume,
+diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
+index c14a79d026a1..0610840733d1 100644
+--- a/sound/soc/codecs/max9850.c
++++ b/sound/soc/codecs/max9850.c
+@@ -306,12 +306,14 @@ static struct snd_soc_codec_driver soc_codec_dev_max9850 = {
+ 	.set_bias_level = max9850_set_bias_level,
+ 	.suspend_bias_off = true,
  
--	.controls = nau8825_controls,
--	.num_controls = ARRAY_SIZE(nau8825_controls),
--	.dapm_widgets = nau8825_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(nau8825_dapm_widgets),
--	.dapm_routes = nau8825_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(nau8825_dapm_routes),
+-	.controls = max9850_controls,
+-	.num_controls = ARRAY_SIZE(max9850_controls),
+-	.dapm_widgets = max9850_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(max9850_dapm_widgets),
+-	.dapm_routes = max9850_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(max9850_dapm_routes),
 +	.component_driver = {
-+		.controls		= nau8825_controls,
-+		.num_controls		= ARRAY_SIZE(nau8825_controls),
-+		.dapm_widgets		= nau8825_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(nau8825_dapm_widgets),
-+		.dapm_routes		= nau8825_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(nau8825_dapm_routes),
++		.controls		= max9850_controls,
++		.num_controls		= ARRAY_SIZE(max9850_controls),
++		.dapm_widgets		= max9850_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(max9850_dapm_widgets),
++		.dapm_routes		= max9850_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(max9850_dapm_routes),
 +	},
  };
  
- static void nau8825_reset_chip(struct regmap *regmap)
+ static int max9850_i2c_probe(struct i2c_client *i2c,
 -- 
 2.8.1
