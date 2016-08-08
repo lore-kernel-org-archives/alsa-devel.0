@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on tlv320aic23" to the asoc tree
-Date: Mon, 08 Aug 2016 12:05:35 +0100
-Message-ID: <E1bWiND-0003yp-OV@debutante>
-References: <871t1z8x7b.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on tfa9879" to the asoc tree
+Date: Mon, 08 Aug 2016 12:05:32 +0100
+Message-ID: <E1bWiNA-0003xz-RU@debutante>
+References: <87zion7imc.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <871t1z8x7b.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87zion7imc.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on tlv320aic23
+   ASoC: codec duplicated callback function goes to component on tfa9879
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From e88e495064e602772afa7b165643866acc6da6bf Mon Sep 17 00:00:00 2001
+>From f2dea01ccbfc34a5e631afeb13c7d010d39c2543 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:54:25 +0000
+Date: Mon, 8 Aug 2016 08:54:44 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- tlv320aic23
+ tfa9879
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,34 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic23.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/tfa9879.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index cd8c02b6e4de..410cae0f2060 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -583,12 +583,14 @@ static struct snd_soc_codec_driver soc_codec_dev_tlv320aic23 = {
- 	.set_bias_level = tlv320aic23_set_bias_level,
- 	.suspend_bias_off = true,
+diff --git a/sound/soc/codecs/tfa9879.c b/sound/soc/codecs/tfa9879.c
+index cb5310d89c0f..95e0a7abeb7a 100644
+--- a/sound/soc/codecs/tfa9879.c
++++ b/sound/soc/codecs/tfa9879.c
+@@ -231,13 +231,14 @@ static const struct snd_soc_dapm_route tfa9879_dapm_routes[] = {
+ };
  
--	.controls = tlv320aic23_snd_controls,
--	.num_controls = ARRAY_SIZE(tlv320aic23_snd_controls),
--	.dapm_widgets = tlv320aic23_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(tlv320aic23_dapm_widgets),
--	.dapm_routes = tlv320aic23_intercon,
--	.num_dapm_routes = ARRAY_SIZE(tlv320aic23_intercon),
+ static const struct snd_soc_codec_driver tfa9879_codec = {
+-	.controls = tfa9879_controls,
+-	.num_controls = ARRAY_SIZE(tfa9879_controls),
+-
+-	.dapm_widgets = tfa9879_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(tfa9879_dapm_widgets),
+-	.dapm_routes = tfa9879_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(tfa9879_dapm_routes),
 +	.component_driver = {
-+		.controls		= tlv320aic23_snd_controls,
-+		.num_controls		= ARRAY_SIZE(tlv320aic23_snd_controls),
-+		.dapm_widgets		= tlv320aic23_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(tlv320aic23_dapm_widgets),
-+		.dapm_routes		= tlv320aic23_intercon,
-+		.num_dapm_routes	= ARRAY_SIZE(tlv320aic23_intercon),
++		.controls		= tfa9879_controls,
++		.num_controls		= ARRAY_SIZE(tfa9879_controls),
++		.dapm_widgets		= tfa9879_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(tfa9879_dapm_widgets),
++		.dapm_routes		= tfa9879_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(tfa9879_dapm_routes),
 +	},
  };
  
- int tlv320aic23_probe(struct device *dev, struct regmap *regmap)
+ static const struct regmap_config tfa9879_regmap = {
 -- 
 2.8.1
