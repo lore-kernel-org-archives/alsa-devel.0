@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on ad1836" to the asoc tree
-Date: Mon, 08 Aug 2016 12:03:14 +0100
-Message-ID: <E1bWiKw-0003Ih-An@debutante>
-References: <874m6v63dh.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on atmel-pdmic" to the asoc tree
+Date: Mon, 08 Aug 2016 12:03:02 +0100
+Message-ID: <E1bWiKk-0003FL-Ji@debutante>
+References: <87y4474oqv.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <874m6v63dh.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87y4474oqv.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on ad1836
+   ASoC: codec duplicated callback function goes to component on atmel-pdmic
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 8a04dd67a380384549f6553049fd6c69ae0447ee Mon Sep 17 00:00:00 2001
+>From 72bb3cdf93b1718c9a540fb157890d8639633eca Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:09:21 +0000
+Date: Mon, 8 Aug 2016 09:10:41 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- ad1836
+ atmel-pdmic
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,25 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ad1836.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/atmel/atmel-pdmic.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/ad1836.c b/sound/soc/codecs/ad1836.c
-index e2ce6c4d7ece..a478239aadac 100644
---- a/sound/soc/codecs/ad1836.c
-+++ b/sound/soc/codecs/ad1836.c
-@@ -327,12 +327,14 @@ static struct snd_soc_codec_driver soc_codec_dev_ad1836 = {
- 	.suspend = ad1836_suspend,
- 	.resume = ad1836_resume,
+diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
+index 5f56da60c92f..2a3a41fad38d 100644
+--- a/sound/soc/atmel/atmel-pdmic.c
++++ b/sound/soc/atmel/atmel-pdmic.c
+@@ -357,8 +357,10 @@ static int atmel_pdmic_codec_probe(struct snd_soc_codec *codec)
  
--	.controls = ad183x_controls,
--	.num_controls = ARRAY_SIZE(ad183x_controls),
--	.dapm_widgets = ad183x_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(ad183x_dapm_widgets),
--	.dapm_routes = ad183x_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(ad183x_dapm_routes),
+ static struct snd_soc_codec_driver soc_codec_dev_pdmic = {
+ 	.probe		= atmel_pdmic_codec_probe,
+-	.controls	= atmel_pdmic_snd_controls,
+-	.num_controls	= ARRAY_SIZE(atmel_pdmic_snd_controls),
 +	.component_driver = {
-+		.controls		= ad183x_controls,
-+		.num_controls		= ARRAY_SIZE(ad183x_controls),
-+		.dapm_widgets		= ad183x_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(ad183x_dapm_widgets),
-+		.dapm_routes		= ad183x_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(ad183x_dapm_routes),
++		.controls		= atmel_pdmic_snd_controls,
++		.num_controls		= ARRAY_SIZE(atmel_pdmic_snd_controls),
 +	},
  };
  
- static const struct reg_default ad1836_reg_defaults[] = {
+ /* codec dai component */
 -- 
 2.8.1
