@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on ak4613" to the asoc tree
-Date: Mon, 08 Aug 2016 12:03:40 +0100
-Message-ID: <E1bWiLM-0003Qd-NY@debutante>
-References: <87h9av63i7.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on cs35l33" to the asoc tree
+Date: Mon, 08 Aug 2016 12:03:55 +0100
+Message-ID: <E1bWiLb-0003Uu-Ar@debutante>
+References: <87oa5363kq.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87h9av63i7.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87oa5363kq.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on ak4613
+   ASoC: codec duplicated callback function goes to component on cs35l33
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From beb84f75c4d9d069172f32543544d757d59e114b Mon Sep 17 00:00:00 2001
+>From 133987d66418f09c1d9b010a4a6ae67fdd2d6214 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:06:34 +0000
+Date: Mon, 8 Aug 2016 09:05:00 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- ak4613
+ cs35l33
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,34 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4613.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/cs35l33.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
-index 97798d250f08..e819dd8c82fd 100644
---- a/sound/soc/codecs/ak4613.c
-+++ b/sound/soc/codecs/ak4613.c
-@@ -458,12 +458,14 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4613 = {
- 	.suspend		= ak4613_suspend,
- 	.resume			= ak4613_resume,
- 	.set_bias_level		= ak4613_set_bias_level,
--	.controls		= ak4613_snd_controls,
--	.num_controls		= ARRAY_SIZE(ak4613_snd_controls),
--	.dapm_widgets		= ak4613_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(ak4613_dapm_widgets),
--	.dapm_routes		= ak4613_intercon,
--	.num_dapm_routes	= ARRAY_SIZE(ak4613_intercon),
+diff --git a/sound/soc/codecs/cs35l33.c b/sound/soc/codecs/cs35l33.c
+index 6f9c1addcd7f..6df29fa30fb9 100644
+--- a/sound/soc/codecs/cs35l33.c
++++ b/sound/soc/codecs/cs35l33.c
+@@ -837,13 +837,14 @@ static struct snd_soc_codec_driver soc_codec_dev_cs35l33 = {
+ 	.set_bias_level = cs35l33_set_bias_level,
+ 	.set_sysclk = cs35l33_codec_set_sysclk,
+ 
+-	.dapm_widgets = cs35l33_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(cs35l33_dapm_widgets),
+-	.dapm_routes = cs35l33_audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(cs35l33_audio_map),
+-	.controls = cs35l33_snd_controls,
+-	.num_controls = ARRAY_SIZE(cs35l33_snd_controls),
+-
 +	.component_driver = {
-+		.controls		= ak4613_snd_controls,
-+		.num_controls		= ARRAY_SIZE(ak4613_snd_controls),
-+		.dapm_widgets		= ak4613_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(ak4613_dapm_widgets),
-+		.dapm_routes		= ak4613_intercon,
-+		.num_dapm_routes	= ARRAY_SIZE(ak4613_intercon),
++		.controls		= cs35l33_snd_controls,
++		.num_controls		= ARRAY_SIZE(cs35l33_snd_controls),
++		.dapm_widgets		= cs35l33_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(cs35l33_dapm_widgets),
++		.dapm_routes		= cs35l33_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(cs35l33_audio_map),
 +	},
+ 	.idle_bias_off = true,
  };
  
- static void ak4613_parse_of(struct ak4613_priv *priv,
 -- 
 2.8.1
