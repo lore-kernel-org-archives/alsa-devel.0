@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on ak4535" to the asoc tree
-Date: Mon, 08 Aug 2016 12:02:42 +0100
-Message-ID: <E1bWiKQ-00039F-63@debutante>
-References: <87oa534ona.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on adau1977" to the asoc tree
+Date: Mon, 08 Aug 2016 12:02:50 +0100
+Message-ID: <E1bWiKY-0003Br-T9@debutante>
+References: <87shuf4oot.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87oa534ona.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87shuf4oot.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on ak4535
+   ASoC: codec duplicated callback function goes to component on adau1977
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 301810d0dfbcd1f56c552da6c9234db5003ec344 Mon Sep 17 00:00:00 2001
+>From ef611e1f4ad7c0355a2aa97660210bfa4a4472c4 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:12:48 +0000
+Date: Mon, 8 Aug 2016 09:11:55 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- ak4535
+ adau1977
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4535.c | 14 ++++++++------
+ sound/soc/codecs/adau1977.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
-index 54428c64387b..66cfffde9a12 100644
---- a/sound/soc/codecs/ak4535.c
-+++ b/sound/soc/codecs/ak4535.c
-@@ -395,12 +395,14 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4535 = {
- 	.set_bias_level = ak4535_set_bias_level,
- 	.suspend_bias_off = true,
+diff --git a/sound/soc/codecs/adau1977.c b/sound/soc/codecs/adau1977.c
+index 9bdd15f408c1..b319db6a69f8 100644
+--- a/sound/soc/codecs/adau1977.c
++++ b/sound/soc/codecs/adau1977.c
+@@ -873,12 +873,14 @@ static struct snd_soc_codec_driver adau1977_codec_driver = {
+ 	.set_sysclk = adau1977_set_sysclk,
+ 	.idle_bias_off = true,
  
--	.controls = ak4535_snd_controls,
--	.num_controls = ARRAY_SIZE(ak4535_snd_controls),
--	.dapm_widgets = ak4535_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(ak4535_dapm_widgets),
--	.dapm_routes = ak4535_audio_map,
--	.num_dapm_routes = ARRAY_SIZE(ak4535_audio_map),
+-	.controls = adau1977_snd_controls,
+-	.num_controls = ARRAY_SIZE(adau1977_snd_controls),
+-	.dapm_widgets = adau1977_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(adau1977_dapm_widgets),
+-	.dapm_routes = adau1977_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(adau1977_dapm_routes),
 +	.component_driver = {
-+		.controls		= ak4535_snd_controls,
-+		.num_controls		= ARRAY_SIZE(ak4535_snd_controls),
-+		.dapm_widgets		= ak4535_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(ak4535_dapm_widgets),
-+		.dapm_routes		= ak4535_audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(ak4535_audio_map),
++		.controls		= adau1977_snd_controls,
++		.num_controls		= ARRAY_SIZE(adau1977_snd_controls),
++		.dapm_widgets		= adau1977_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(adau1977_dapm_widgets),
++		.dapm_routes		= adau1977_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(adau1977_dapm_routes),
 +	},
  };
  
- static int ak4535_i2c_probe(struct i2c_client *i2c,
+ static int adau1977_setup_micbias(struct adau1977 *adau1977)
 -- 
 2.8.1
