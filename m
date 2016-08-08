@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on wl1273" to the asoc tree
-Date: Mon, 08 Aug 2016 12:00:18 +0100
-Message-ID: <E1bWiI6-0002Rs-VK@debutante>
-References: <87popj1utd.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on twl6040" to the asoc tree
+Date: Mon, 08 Aug 2016 12:00:27 +0100
+Message-ID: <E1bWiIF-0002UX-MI@debutante>
+References: <87twev1uux.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87popj1utd.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87twev1uux.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on wl1273
+   ASoC: codec duplicated callback function goes to component on twl6040
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 23ce0ad98946b6d27d43bec2cc1fb34013761690 Mon Sep 17 00:00:00 2001
+>From 2f45b8bd731cbaee5404cfac8bf083e807cffadf Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:27:49 +0000
+Date: Mon, 8 Aug 2016 09:26:56 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- wl1273
+ twl6040
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wl1273.c | 14 ++++++++------
+ sound/soc/codecs/twl6040.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
-index 1b79778098d2..fcffb6e707d9 100644
---- a/sound/soc/codecs/wl1273.c
-+++ b/sound/soc/codecs/wl1273.c
-@@ -484,12 +484,14 @@ static struct snd_soc_codec_driver soc_codec_dev_wl1273 = {
- 	.probe = wl1273_probe,
- 	.remove = wl1273_remove,
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index 1f7081043566..748036e851ea 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -1156,12 +1156,14 @@ static struct snd_soc_codec_driver soc_codec_dev_twl6040 = {
+ 	.suspend_bias_off = true,
+ 	.ignore_pmdown_time = true,
  
--	.controls = wl1273_controls,
--	.num_controls = ARRAY_SIZE(wl1273_controls),
--	.dapm_widgets = wl1273_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(wl1273_dapm_widgets),
--	.dapm_routes = wl1273_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(wl1273_dapm_routes),
+-	.controls = twl6040_snd_controls,
+-	.num_controls = ARRAY_SIZE(twl6040_snd_controls),
+-	.dapm_widgets = twl6040_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(twl6040_dapm_widgets),
+-	.dapm_routes = intercon,
+-	.num_dapm_routes = ARRAY_SIZE(intercon),
 +	.component_driver = {
-+		.controls		= wl1273_controls,
-+		.num_controls		= ARRAY_SIZE(wl1273_controls),
-+		.dapm_widgets		= wl1273_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(wl1273_dapm_widgets),
-+		.dapm_routes		= wl1273_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(wl1273_dapm_routes),
++		.controls		= twl6040_snd_controls,
++		.num_controls		= ARRAY_SIZE(twl6040_snd_controls),
++		.dapm_widgets		= twl6040_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(twl6040_dapm_widgets),
++		.dapm_routes		= intercon,
++		.num_dapm_routes	= ARRAY_SIZE(intercon),
 +	},
  };
  
- static int wl1273_platform_probe(struct platform_device *pdev)
+ static int twl6040_codec_probe(struct platform_device *pdev)
 -- 
 2.8.1
