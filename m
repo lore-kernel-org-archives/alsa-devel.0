@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on cs35l33" to the asoc tree
-Date: Mon, 08 Aug 2016 12:03:55 +0100
-Message-ID: <E1bWiLb-0003Uu-Ar@debutante>
-References: <87oa5363kq.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on cs4271" to the asoc tree
+Date: Mon, 08 Aug 2016 12:04:04 +0100
+Message-ID: <E1bWiLk-0003XQ-2G@debutante>
+References: <87shuf63ma.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87oa5363kq.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87shuf63ma.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on cs35l33
+   ASoC: codec duplicated callback function goes to component on cs4271
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 133987d66418f09c1d9b010a4a6ae67fdd2d6214 Mon Sep 17 00:00:00 2001
+>From 228a57aea80b5dfc4624ad29952a8168317a1884 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:05:00 +0000
+Date: Mon, 8 Aug 2016 09:04:04 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- cs35l33
+ cs4271
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,34 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs35l33.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ sound/soc/codecs/cs4271.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l33.c b/sound/soc/codecs/cs35l33.c
-index 6f9c1addcd7f..6df29fa30fb9 100644
---- a/sound/soc/codecs/cs35l33.c
-+++ b/sound/soc/codecs/cs35l33.c
-@@ -837,13 +837,14 @@ static struct snd_soc_codec_driver soc_codec_dev_cs35l33 = {
- 	.set_bias_level = cs35l33_set_bias_level,
- 	.set_sysclk = cs35l33_codec_set_sysclk,
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 0c0010b25421..8c0f3b89b5bc 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -645,12 +645,14 @@ static struct snd_soc_codec_driver soc_codec_dev_cs4271 = {
+ 	.suspend		= cs4271_soc_suspend,
+ 	.resume			= cs4271_soc_resume,
  
--	.dapm_widgets = cs35l33_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(cs35l33_dapm_widgets),
--	.dapm_routes = cs35l33_audio_map,
--	.num_dapm_routes = ARRAY_SIZE(cs35l33_audio_map),
--	.controls = cs35l33_snd_controls,
--	.num_controls = ARRAY_SIZE(cs35l33_snd_controls),
--
+-	.controls		= cs4271_snd_controls,
+-	.num_controls		= ARRAY_SIZE(cs4271_snd_controls),
+-	.dapm_widgets		= cs4271_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(cs4271_dapm_widgets),
+-	.dapm_routes		= cs4271_dapm_routes,
+-	.num_dapm_routes	= ARRAY_SIZE(cs4271_dapm_routes),
 +	.component_driver = {
-+		.controls		= cs35l33_snd_controls,
-+		.num_controls		= ARRAY_SIZE(cs35l33_snd_controls),
-+		.dapm_widgets		= cs35l33_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(cs35l33_dapm_widgets),
-+		.dapm_routes		= cs35l33_audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(cs35l33_audio_map),
++		.controls		= cs4271_snd_controls,
++		.num_controls		= ARRAY_SIZE(cs4271_snd_controls),
++		.dapm_widgets		= cs4271_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(cs4271_dapm_widgets),
++		.dapm_routes		= cs4271_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(cs4271_dapm_routes),
 +	},
- 	.idle_bias_off = true,
  };
  
+ static int cs4271_common_probe(struct device *dev,
 -- 
 2.8.1
