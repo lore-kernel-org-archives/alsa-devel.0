@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 16/27] ALSA: seq: optimize create/delete_queue
+Subject: [PATCH 19/27] ALSA: seq: optimize get_named_queue
 	function to new design
-Date: Mon,  8 Aug 2016 23:54:42 +0900
-Message-ID: <1470668093-31027-17-git-send-email-o-takashi@sakamocchi.jp>
+Date: Mon,  8 Aug 2016 23:54:45 +0900
+Message-ID: <1470668093-31027-20-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470668093-31027-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 97ABA2671A0
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 9F9FC2671A8
  for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2016 16:55:02 +0200 (CEST)
 In-Reply-To: <1470668093-31027-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,52 +33,38 @@ This commit optimizes to the new design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 35 ++++++++++++-----------------------
- 1 file changed, 12 insertions(+), 23 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 7b32daa..44b58dc 100644
+index 1502794..3b17e72 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1514,17 +1514,13 @@ static int snd_seq_ioctl_unsubscribe_port(struct snd_seq_client *client,
+@@ -1604,25 +1604,20 @@ static int snd_seq_ioctl_set_queue_info(struct snd_seq_client *client,
+ }
  
- 
- /* CREATE_QUEUE ioctl() */
--static int snd_seq_ioctl_create_queue(struct snd_seq_client *client,
--				      void __user *arg)
-+static int snd_seq_ioctl_create_queue(struct snd_seq_client *client, void *arg)
+ /* GET_NAMED_QUEUE ioctl() */
+-static int snd_seq_ioctl_get_named_queue(struct snd_seq_client *client, void __user *arg)
++static int snd_seq_ioctl_get_named_queue(struct snd_seq_client *client,
++					 void *arg)
  {
 -	struct snd_seq_queue_info info;
 +	struct snd_seq_queue_info *info = arg;
- 	int result;
  	struct snd_seq_queue *q;
  
 -	if (copy_from_user(&info, arg, sizeof(info)))
 -		return -EFAULT;
 -
--	result = snd_seq_queue_alloc(client->number, info.locked, info.flags);
-+	result = snd_seq_queue_alloc(client->number, info->locked, info->flags);
- 	if (result < 0)
- 		return result;
- 
-@@ -1532,32 +1528,25 @@ static int snd_seq_ioctl_create_queue(struct snd_seq_client *client,
+-	q = snd_seq_queue_find_name(info.name);
++	q = snd_seq_queue_find_name(info->name);
  	if (q == NULL)
  		return -EINVAL;
- 
 -	info.queue = q->queue;
--	info.locked = q->locked;
 -	info.owner = q->owner;
+-	info.locked = q->locked;
 +	info->queue = q->queue;
-+	info->locked = q->locked;
 +	info->owner = q->owner;
- 
- 	/* set queue name */
--	if (! info.name[0])
--		snprintf(info.name, sizeof(info.name), "Queue-%d", q->queue);
--	strlcpy(q->name, info.name, sizeof(q->name));
-+	if (!info->name[0])
-+		snprintf(info->name, sizeof(info->name), "Queue-%d", q->queue);
-+	strlcpy(q->name, info->name, sizeof(q->name));
++	info->locked = q->locked;
  	queuefree(q);
  
 -	if (copy_to_user(arg, &info, sizeof(info)))
@@ -87,21 +73,5 @@ index 7b32daa..44b58dc 100644
  	return 0;
  }
  
- /* DELETE_QUEUE ioctl() */
--static int snd_seq_ioctl_delete_queue(struct snd_seq_client *client,
--				      void __user *arg)
-+static int snd_seq_ioctl_delete_queue(struct snd_seq_client *client, void *arg)
- {
--	struct snd_seq_queue_info info;
--
--	if (copy_from_user(&info, arg, sizeof(info)))
--		return -EFAULT;
-+	struct snd_seq_queue_info *info = arg;
- 
--	return snd_seq_queue_delete(client->number, info.queue);
-+	return snd_seq_queue_delete(client->number, info->queue);
- }
- 
- /* GET_QUEUE_INFO ioctl() */
 -- 
 2.7.4
