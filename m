@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on da7219" to the asoc tree
-Date: Mon, 08 Aug 2016 12:02:15 +0100
-Message-ID: <E1bWiJz-00031Y-Sx@debutante>
-References: <87bn134oiv.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on hdmi-codec" to the asoc tree
+Date: Mon, 08 Aug 2016 12:02:04 +0100
+Message-ID: <E1bWiJo-0002xZ-4P@debutante>
+References: <8760rb4ogu.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87bn134oiv.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8760rb4ogu.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on da7219
+   ASoC: codec duplicated callback function goes to component on hdmi-codec
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From b0d9df4dc5f3a690c460bb1bb0799ed85255448e Mon Sep 17 00:00:00 2001
+>From 88b0f761e296682f24639e9d9fc0122e7a7695c1 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:15:27 +0000
+Date: Mon, 8 Aug 2016 09:16:40 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- da7219
+ hdmi-codec
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,34 +51,32 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7219.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ sound/soc/codecs/hdmi-codec.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 50ea94317cb3..b6411bd3c4f2 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1767,13 +1767,14 @@ static struct snd_soc_codec_driver soc_codec_dev_da7219 = {
- 	.resume			= da7219_resume,
- 	.set_bias_level		= da7219_set_bias_level,
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index f64ecaa0141a..b904492d7744 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -375,13 +375,13 @@ static int hdmi_of_xlate_dai_name(struct snd_soc_component *component,
+ }
  
--	.controls		= da7219_snd_controls,
--	.num_controls		= ARRAY_SIZE(da7219_snd_controls),
--
--	.dapm_widgets		= da7219_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(da7219_dapm_widgets),
--	.dapm_routes		= da7219_audio_map,
--	.num_dapm_routes	= ARRAY_SIZE(da7219_audio_map),
-+	.component_driver = {
-+		.controls		= da7219_snd_controls,
-+		.num_controls		= ARRAY_SIZE(da7219_snd_controls),
-+		.dapm_widgets		= da7219_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(da7219_dapm_widgets),
-+		.dapm_routes		= da7219_audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(da7219_audio_map),
-+	},
+ static struct snd_soc_codec_driver hdmi_codec = {
+-	.controls = hdmi_controls,
+-	.num_controls = ARRAY_SIZE(hdmi_controls),
+-	.dapm_widgets = hdmi_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(hdmi_widgets),
+-	.dapm_routes = hdmi_routes,
+-	.num_dapm_routes = ARRAY_SIZE(hdmi_routes),
+ 	.component_driver = {
++		.controls		= hdmi_controls,
++		.num_controls		= ARRAY_SIZE(hdmi_controls),
++		.dapm_widgets		= hdmi_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(hdmi_widgets),
++		.dapm_routes		= hdmi_routes,
++		.num_dapm_routes	= ARRAY_SIZE(hdmi_routes),
+ 		.of_xlate_dai_name	= hdmi_of_xlate_dai_name,
+ 	},
  };
- 
- 
 -- 
 2.8.1
