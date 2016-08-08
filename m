@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 12/27] ALSA: seq: optimize get/set_client_info
-	function to new design
-Date: Mon,  8 Aug 2016 23:54:38 +0900
-Message-ID: <1470668093-31027-13-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 05/27] ALSA: seq: obsolete address mode in
+	compatibility layer
+Date: Mon,  8 Aug 2016 23:54:31 +0900
+Message-ID: <1470668093-31027-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470668093-31027-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id D68E826714A
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id C98B4267135
  for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2016 16:55:01 +0200 (CEST)
 In-Reply-To: <1470668093-31027-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,85 +25,77 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In former commit, actual operations of each ioctl command get argument
-in kernel space. Copying from/to user space is performed outside of
-the function.
+In a 32/64 bit compatibility layer of ALSA sequencer core, data for some
+ioctls is copied to kernel stack and passed to core operations. Then,
+address limit of running task is changed because core implementation
+expected arguments in userspace.
 
-This commit optimizes to the new design.
+In this case, snd_seq_kernel_client_ctl() is available. This commit
+replaces with it.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 34 +++++++++++++---------------------
- 1 file changed, 13 insertions(+), 21 deletions(-)
+ sound/core/seq/seq_compat.c | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
-diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 59de125..e346786 100644
---- a/sound/core/seq/seq_clientmgr.c
-+++ b/sound/core/seq/seq_clientmgr.c
-@@ -1210,51 +1210,43 @@ static void get_client_info(struct snd_seq_client *cptr,
- }
+diff --git a/sound/core/seq/seq_compat.c b/sound/core/seq/seq_compat.c
+index 6517590..d9cf163 100644
+--- a/sound/core/seq/seq_compat.c
++++ b/sound/core/seq/seq_compat.c
+@@ -42,12 +42,11 @@ struct snd_seq_port_info32 {
+ 	char reserved[59];		/* for future use */
+ };
  
- static int snd_seq_ioctl_get_client_info(struct snd_seq_client *client,
--					 void __user *arg)
-+					 void *arg)
+-static int snd_seq_call_port_info_ioctl(struct snd_seq_client *client, unsigned int cmd,
+-					struct snd_seq_port_info32 __user *data32)
++static int snd_seq_call_port_info_ioctl(int clientid, unsigned int cmd,
++				struct snd_seq_port_info32 __user *data32)
  {
-+	struct snd_seq_client_info *client_info = arg;
- 	struct snd_seq_client *cptr;
--	struct snd_seq_client_info client_info;
--
--	if (copy_from_user(&client_info, arg, sizeof(client_info)))
--		return -EFAULT;
+ 	int err = -EFAULT;
+ 	struct snd_seq_port_info *data;
+-	mm_segment_t fs;
  
- 	/* requested client number */
--	cptr = snd_seq_client_use_ptr(client_info.client);
-+	cptr = snd_seq_client_use_ptr(client_info->client);
- 	if (cptr == NULL)
- 		return -ENOENT;		/* don't change !!! */
+ 	data = kmalloc(sizeof(*data), GFP_KERNEL);
+ 	if (!data)
+@@ -59,9 +58,7 @@ static int snd_seq_call_port_info_ioctl(struct snd_seq_client *client, unsigned
+ 		goto error;
+ 	data->kernel = NULL;
  
--	get_client_info(cptr, &client_info);
-+	get_client_info(cptr, client_info);
- 	snd_seq_client_unlock(cptr);
+-	fs = snd_enter_user();
+-	err = snd_seq_do_ioctl(client, cmd, data);
+-	snd_leave_user(fs);
++	err = snd_seq_kernel_client_ctl(clientid, cmd, data);
+ 	if (err < 0)
+ 		goto error;
  
--	if (copy_to_user(arg, &client_info, sizeof(client_info)))
--		return -EFAULT;
- 	return 0;
- }
- 
- 
- /* CLIENT_INFO ioctl() */
- static int snd_seq_ioctl_set_client_info(struct snd_seq_client *client,
--					 void __user *arg)
-+					 void *arg)
- {
--	struct snd_seq_client_info client_info;
--
--	if (copy_from_user(&client_info, arg, sizeof(client_info)))
--		return -EFAULT;
-+	struct snd_seq_client_info *client_info = arg;
- 
- 	/* it is not allowed to set the info fields for an another client */
--	if (client->number != client_info.client)
-+	if (client->number != client_info->client)
- 		return -EPERM;
- 	/* also client type must be set now */
--	if (client->type != client_info.type)
-+	if (client->type != client_info->type)
- 		return -EINVAL;
- 
- 	/* fill the info fields */
--	if (client_info.name[0])
--		strlcpy(client->name, client_info.name, sizeof(client->name));
-+	if (client_info->name[0])
-+		strlcpy(client->name, client_info->name, sizeof(client->name));
- 
--	client->filter = client_info.filter;
--	client->event_lost = client_info.event_lost;
--	memcpy(client->event_filter, client_info.event_filter, 32);
-+	client->filter = client_info->filter;
-+	client->event_lost = client_info->event_lost;
-+	memcpy(client->event_filter, client_info->event_filter, 32);
- 
- 	return 0;
+@@ -123,17 +120,22 @@ static long snd_seq_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
+ 	case SNDRV_SEQ_IOCTL_GET_SUBSCRIPTION:
+ 	case SNDRV_SEQ_IOCTL_QUERY_NEXT_CLIENT:
+ 	case SNDRV_SEQ_IOCTL_RUNNING_MODE:
+-		return snd_seq_do_ioctl(client, cmd, argp);
++		return snd_seq_ioctl(file, cmd, (unsigned long)argp);
+ 	case SNDRV_SEQ_IOCTL_CREATE_PORT32:
+-		return snd_seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_CREATE_PORT, argp);
++		return snd_seq_call_port_info_ioctl(client->number,
++					SNDRV_SEQ_IOCTL_CREATE_PORT, argp);
+ 	case SNDRV_SEQ_IOCTL_DELETE_PORT32:
+-		return snd_seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_DELETE_PORT, argp);
++		return snd_seq_call_port_info_ioctl(client->number,
++					SNDRV_SEQ_IOCTL_DELETE_PORT, argp);
+ 	case SNDRV_SEQ_IOCTL_GET_PORT_INFO32:
+-		return snd_seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_GET_PORT_INFO, argp);
++		return snd_seq_call_port_info_ioctl(client->number,
++					SNDRV_SEQ_IOCTL_GET_PORT_INFO, argp);
+ 	case SNDRV_SEQ_IOCTL_SET_PORT_INFO32:
+-		return snd_seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_SET_PORT_INFO, argp);
++		return snd_seq_call_port_info_ioctl(client->number,
++					SNDRV_SEQ_IOCTL_SET_PORT_INFO, argp);
+ 	case SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT32:
+-		return snd_seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT, argp);
++		return snd_seq_call_port_info_ioctl(client->number,
++					SNDRV_SEQ_IOCTL_QUERY_NEXT_PORT, argp);
+ 	}
+ 	return -ENOIOCTLCMD;
  }
 -- 
 2.7.4
