@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on tlv320aic32x4" to the asoc tree
-Date: Mon, 08 Aug 2016 12:00:36 +0100
-Message-ID: <E1bWiIO-0002XF-H5@debutante>
-References: <87y4471uwi.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on twl4030" to the asoc tree
+Date: Mon, 08 Aug 2016 12:00:30 +0100
+Message-ID: <E1bWiII-0002VO-KA@debutante>
+References: <87vazb1uvg.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87y4471uwi.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87vazb1uvg.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on tlv320aic32x4
+   ASoC: codec duplicated callback function goes to component on twl4030
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From a06809b83f5d8b8a84fc9eb1bd3dae8edf839774 Mon Sep 17 00:00:00 2001
+>From e4b918ea24b1e16db7370883a6748efe7a3ac9ff Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:25:57 +0000
+Date: Mon, 8 Aug 2016 09:26:35 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- tlv320aic32x4
+ twl4030
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 14 ++++++++------
+ sound/soc/codecs/twl4030.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 85d4978d0384..28fdfc5ec544 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -797,12 +797,14 @@ static struct snd_soc_codec_driver soc_codec_dev_aic32x4 = {
- 	.set_bias_level = aic32x4_set_bias_level,
- 	.suspend_bias_off = true,
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index a5a4e9f75c57..a2104d68169d 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -2199,12 +2199,14 @@ static struct snd_soc_codec_driver soc_codec_dev_twl4030 = {
+ 	.set_bias_level = twl4030_set_bias_level,
+ 	.idle_bias_off = true,
  
--	.controls = aic32x4_snd_controls,
--	.num_controls = ARRAY_SIZE(aic32x4_snd_controls),
--	.dapm_widgets = aic32x4_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(aic32x4_dapm_widgets),
--	.dapm_routes = aic32x4_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(aic32x4_dapm_routes),
+-	.controls = twl4030_snd_controls,
+-	.num_controls = ARRAY_SIZE(twl4030_snd_controls),
+-	.dapm_widgets = twl4030_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(twl4030_dapm_widgets),
+-	.dapm_routes = intercon,
+-	.num_dapm_routes = ARRAY_SIZE(intercon),
 +	.component_driver = {
-+		.controls		= aic32x4_snd_controls,
-+		.num_controls		= ARRAY_SIZE(aic32x4_snd_controls),
-+		.dapm_widgets		= aic32x4_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(aic32x4_dapm_widgets),
-+		.dapm_routes		= aic32x4_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(aic32x4_dapm_routes),
++		.controls		= twl4030_snd_controls,
++		.num_controls		= ARRAY_SIZE(twl4030_snd_controls),
++		.dapm_widgets		= twl4030_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(twl4030_dapm_widgets),
++		.dapm_routes		= intercon,
++		.num_dapm_routes	= ARRAY_SIZE(intercon),
 +	},
  };
  
- static int aic32x4_parse_dt(struct aic32x4_priv *aic32x4,
+ static int twl4030_codec_probe(struct platform_device *pdev)
 -- 
 2.8.1
