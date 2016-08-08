@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on wm9867" to the asoc tree
-Date: Mon, 08 Aug 2016 12:01:40 +0100
-Message-ID: <E1bWiJQ-0002qb-PD@debutante>
-References: <87twev39s9.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on wm98088" to the asoc tree
+Date: Mon, 08 Aug 2016 12:01:52 +0100
+Message-ID: <E1bWiJc-0002u9-FI@debutante>
+References: <87zion39uc.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87twev39s9.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87zion39uc.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on wm9867
+   ASoC: codec duplicated callback function goes to component on wm98088
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From e92b48aa21d41c64ae1a06d69b94c8dfaec9c672 Mon Sep 17 00:00:00 2001
+>From b5cd19e8c3efda9f0b81c7420886b640ef82d223 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:19:11 +0000
+Date: Mon, 8 Aug 2016 09:17:54 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- wm9867
+ wm98088
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9867.c | 14 ++++++++------
+ sound/soc/codecs/max98088.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 2a22fddeb6af..c9673235078d 100644
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -417,12 +417,14 @@ static int max9867_probe(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index fc22804cabc5..72f77455582e 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -1704,12 +1704,14 @@ static struct snd_soc_codec_driver soc_codec_dev_max98088 = {
+ 	.set_bias_level = max98088_set_bias_level,
+ 	.suspend_bias_off = true,
  
- static struct snd_soc_codec_driver max9867_codec = {
- 	.probe = max9867_probe,
--	.controls = max9867_snd_controls,
--	.num_controls = ARRAY_SIZE(max9867_snd_controls),
--	.dapm_routes = max9867_audio_map,
--	.num_dapm_routes = ARRAY_SIZE(max9867_audio_map),
--	.dapm_widgets = max9867_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(max9867_dapm_widgets),
+-	.controls = max98088_snd_controls,
+-	.num_controls = ARRAY_SIZE(max98088_snd_controls),
+-	.dapm_widgets = max98088_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(max98088_dapm_widgets),
+-	.dapm_routes = max98088_audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(max98088_audio_map),
 +	.component_driver = {
-+		.controls		= max9867_snd_controls,
-+		.num_controls		= ARRAY_SIZE(max9867_snd_controls),
-+		.dapm_routes		= max9867_audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(max9867_audio_map),
-+		.dapm_widgets		= max9867_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(max9867_dapm_widgets),
++		.controls		= max98088_snd_controls,
++		.num_controls		= ARRAY_SIZE(max98088_snd_controls),
++		.dapm_widgets		= max98088_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(max98088_dapm_widgets),
++		.dapm_routes		= max98088_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(max98088_audio_map),
 +	},
  };
  
- static bool max9867_volatile_register(struct device *dev, unsigned int reg)
+ static int max98088_i2c_probe(struct i2c_client *i2c,
 -- 
 2.8.1
