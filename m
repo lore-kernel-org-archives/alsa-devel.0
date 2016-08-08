@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on ak4671" to the asoc tree
-Date: Mon, 08 Aug 2016 12:02:36 +0100
-Message-ID: <E1bWiKK-00037Z-Bi@debutante>
-References: <87lh074om9.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on ak4535" to the asoc tree
+Date: Mon, 08 Aug 2016 12:02:42 +0100
+Message-ID: <E1bWiKQ-00039F-63@debutante>
+References: <87oa534ona.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87lh074om9.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87oa534ona.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on ak4671
+   ASoC: codec duplicated callback function goes to component on ak4535
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From af06ccaded87dc25c41714004a2d73bfeef0c922 Mon Sep 17 00:00:00 2001
+>From 301810d0dfbcd1f56c552da6c9234db5003ec344 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:13:26 +0000
+Date: Mon, 8 Aug 2016 09:12:48 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- ak4671
+ ak4535
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4671.c | 14 ++++++++------
+ sound/soc/codecs/ak4535.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4671.c b/sound/soc/codecs/ak4671.c
-index c73a9f6914b6..6088afaabf62 100644
---- a/sound/soc/codecs/ak4671.c
-+++ b/sound/soc/codecs/ak4671.c
-@@ -612,12 +612,14 @@ static struct snd_soc_dai_driver ak4671_dai = {
+diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
+index 54428c64387b..66cfffde9a12 100644
+--- a/sound/soc/codecs/ak4535.c
++++ b/sound/soc/codecs/ak4535.c
+@@ -395,12 +395,14 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4535 = {
+ 	.set_bias_level = ak4535_set_bias_level,
+ 	.suspend_bias_off = true,
  
- static struct snd_soc_codec_driver soc_codec_dev_ak4671 = {
- 	.set_bias_level = ak4671_set_bias_level,
--	.controls = ak4671_snd_controls,
--	.num_controls = ARRAY_SIZE(ak4671_snd_controls),
--	.dapm_widgets = ak4671_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(ak4671_dapm_widgets),
--	.dapm_routes = ak4671_intercon,
--	.num_dapm_routes = ARRAY_SIZE(ak4671_intercon),
+-	.controls = ak4535_snd_controls,
+-	.num_controls = ARRAY_SIZE(ak4535_snd_controls),
+-	.dapm_widgets = ak4535_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(ak4535_dapm_widgets),
+-	.dapm_routes = ak4535_audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(ak4535_audio_map),
 +	.component_driver = {
-+		.controls		= ak4671_snd_controls,
-+		.num_controls		= ARRAY_SIZE(ak4671_snd_controls),
-+		.dapm_widgets		= ak4671_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(ak4671_dapm_widgets),
-+		.dapm_routes		= ak4671_intercon,
-+		.num_dapm_routes	= ARRAY_SIZE(ak4671_intercon),
++		.controls		= ak4535_snd_controls,
++		.num_controls		= ARRAY_SIZE(ak4535_snd_controls),
++		.dapm_widgets		= ak4535_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(ak4535_dapm_widgets),
++		.dapm_routes		= ak4535_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(ak4535_audio_map),
 +	},
  };
  
- static const struct regmap_config ak4671_regmap = {
+ static int ak4535_i2c_probe(struct i2c_client *i2c,
 -- 
 2.8.1
