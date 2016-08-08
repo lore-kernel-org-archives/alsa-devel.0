@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on pcm512x" to the asoc tree
-Date: Mon, 08 Aug 2016 12:04:48 +0100
-Message-ID: <E1bWiMS-0003ko-Db@debutante>
-References: <87eg5z7iek.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on inno_rk3036" to the asoc tree
+Date: Mon, 08 Aug 2016 12:04:33 +0100
+Message-ID: <E1bWiMD-0003gH-84@debutante>
+References: <877fbr7ic1.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87eg5z7iek.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <877fbr7ic1.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on pcm512x
+   ASoC: codec duplicated callback function goes to component on inno_rk3036
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From d25f113f969eb9a0ae3a61d3937a0fbfe7ecdbdd Mon Sep 17 00:00:00 2001
+>From f410a81d4d5fd4d0e9477c5d7ebd4e6712ed4c42 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:59:23 +0000
+Date: Mon, 8 Aug 2016 09:00:54 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- pcm512x
+ inno_rk3036
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm512x.c | 14 ++++++++------
+ sound/soc/codecs/inno_rk3036.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index 047c48953a20..72b19e62f626 100644
---- a/sound/soc/codecs/pcm512x.c
-+++ b/sound/soc/codecs/pcm512x.c
-@@ -1348,12 +1348,14 @@ static struct snd_soc_codec_driver pcm512x_codec_driver = {
- 	.set_bias_level = pcm512x_set_bias_level,
- 	.idle_bias_off = true,
- 
--	.controls = pcm512x_controls,
--	.num_controls = ARRAY_SIZE(pcm512x_controls),
--	.dapm_widgets = pcm512x_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(pcm512x_dapm_widgets),
--	.dapm_routes = pcm512x_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(pcm512x_dapm_routes),
+diff --git a/sound/soc/codecs/inno_rk3036.c b/sound/soc/codecs/inno_rk3036.c
+index 9b6e8840a1b5..b918ba5c8ce5 100644
+--- a/sound/soc/codecs/inno_rk3036.c
++++ b/sound/soc/codecs/inno_rk3036.c
+@@ -380,12 +380,14 @@ static struct snd_soc_codec_driver rk3036_codec_driver = {
+ 	.probe			= rk3036_codec_probe,
+ 	.remove			= rk3036_codec_remove,
+ 	.set_bias_level		= rk3036_codec_set_bias_level,
+-	.controls		= rk3036_codec_dapm_controls,
+-	.num_controls		= ARRAY_SIZE(rk3036_codec_dapm_controls),
+-	.dapm_routes		= rk3036_codec_dapm_routes,
+-	.num_dapm_routes	= ARRAY_SIZE(rk3036_codec_dapm_routes),
+-	.dapm_widgets		= rk3036_codec_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(rk3036_codec_dapm_widgets),
 +	.component_driver = {
-+		.controls		= pcm512x_controls,
-+		.num_controls		= ARRAY_SIZE(pcm512x_controls),
-+		.dapm_widgets		= pcm512x_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(pcm512x_dapm_widgets),
-+		.dapm_routes		= pcm512x_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(pcm512x_dapm_routes),
++		.controls		= rk3036_codec_dapm_controls,
++		.num_controls		= ARRAY_SIZE(rk3036_codec_dapm_controls),
++		.dapm_routes		= rk3036_codec_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(rk3036_codec_dapm_routes),
++		.dapm_widgets		= rk3036_codec_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(rk3036_codec_dapm_widgets),
 +	},
  };
  
- static const struct regmap_range_cfg pcm512x_range = {
+ static const struct regmap_config rk3036_codec_regmap_config = {
 -- 
 2.8.1
