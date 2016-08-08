@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on adav80x" to the asoc tree
-Date: Mon, 08 Aug 2016 12:02:48 +0100
-Message-ID: <E1bWiKW-0003B0-0E@debutante>
-References: <87r39z4oob.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on da7213" to the asoc tree
+Date: Mon, 08 Aug 2016 12:02:21 +0100
+Message-ID: <E1bWiK5-00033G-PA@debutante>
+References: <87eg5z4oju.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87r39z4oob.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87eg5z4oju.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on adav80x
+   ASoC: codec duplicated callback function goes to component on da7213
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From c5946fcf84bf71f4c0bc08a6bce3781e6b281737 Mon Sep 17 00:00:00 2001
+>From 92d2a233d878c4ddebad805ae4201e8ec335b3af Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:12:11 +0000
+Date: Mon, 8 Aug 2016 09:14:53 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- adav80x
+ da7213
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,34 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adav80x.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/da7213.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
-index acff8d62059c..6e793ebb5883 100644
---- a/sound/soc/codecs/adav80x.c
-+++ b/sound/soc/codecs/adav80x.c
-@@ -834,12 +834,14 @@ static struct snd_soc_codec_driver adav80x_codec_driver = {
- 	.set_pll = adav80x_set_pll,
- 	.set_sysclk = adav80x_set_sysclk,
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index e5527bc570ae..7cfb5da5378d 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -1740,13 +1740,14 @@ static struct snd_soc_codec_driver soc_codec_dev_da7213 = {
+ 	.probe			= da7213_probe,
+ 	.set_bias_level		= da7213_set_bias_level,
  
--	.controls = adav80x_controls,
--	.num_controls = ARRAY_SIZE(adav80x_controls),
--	.dapm_widgets = adav80x_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(adav80x_dapm_widgets),
--	.dapm_routes = adav80x_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(adav80x_dapm_routes),
+-	.controls		= da7213_snd_controls,
+-	.num_controls		= ARRAY_SIZE(da7213_snd_controls),
+-
+-	.dapm_widgets		= da7213_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(da7213_dapm_widgets),
+-	.dapm_routes		= da7213_audio_map,
+-	.num_dapm_routes	= ARRAY_SIZE(da7213_audio_map),
 +	.component_driver = {
-+		.controls		= adav80x_controls,
-+		.num_controls		= ARRAY_SIZE(adav80x_controls),
-+		.dapm_widgets		= adav80x_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(adav80x_dapm_widgets),
-+		.dapm_routes		= adav80x_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(adav80x_dapm_routes),
++		.controls		= da7213_snd_controls,
++		.num_controls		= ARRAY_SIZE(da7213_snd_controls),
++		.dapm_widgets		= da7213_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(da7213_dapm_widgets),
++		.dapm_routes		= da7213_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(da7213_audio_map),
 +	},
  };
  
- int adav80x_bus_probe(struct device *dev, struct regmap *regmap)
+ static const struct regmap_config da7213_regmap_config = {
 -- 
 2.8.1
