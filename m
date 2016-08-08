@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on rt5645" to the asoc tree
-Date: Mon, 08 Aug 2016 12:01:08 +0100
-Message-ID: <E1bWiIu-0002gm-JQ@debutante>
-References: <87eg5z39mo.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on rt5514" to the asoc tree
+Date: Mon, 08 Aug 2016 12:01:14 +0100
+Message-ID: <E1bWiJ0-0002iU-Eg@debutante>
+References: <87h9av39no.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87eg5z39mo.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87h9av39no.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on rt5645
+   ASoC: codec duplicated callback function goes to component on rt5514
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 51712de1ea87b794e6e47584a87cda7cfd7a2056 Mon Sep 17 00:00:00 2001
+>From a3470399bcfcd2ca57b6135f89f48e7e37a499fd Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:22:33 +0000
+Date: Mon, 8 Aug 2016 09:21:55 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- rt5645
+ rt5514
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 14 ++++++++------
+ sound/soc/codecs/rt5514.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 490bfe661346..10c2a564a715 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3484,12 +3484,14 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5645 = {
- 	.resume = rt5645_resume,
- 	.set_bias_level = rt5645_set_bias_level,
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 7162f05101d9..e0606a58da98 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -1023,12 +1023,14 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5514 = {
+ 	.probe = rt5514_probe,
  	.idle_bias_off = true,
--	.controls = rt5645_snd_controls,
--	.num_controls = ARRAY_SIZE(rt5645_snd_controls),
--	.dapm_widgets = rt5645_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(rt5645_dapm_widgets),
--	.dapm_routes = rt5645_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(rt5645_dapm_routes),
+ 	.set_bias_level = rt5514_set_bias_level,
+-	.controls = rt5514_snd_controls,
+-	.num_controls = ARRAY_SIZE(rt5514_snd_controls),
+-	.dapm_widgets = rt5514_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(rt5514_dapm_widgets),
+-	.dapm_routes = rt5514_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(rt5514_dapm_routes),
 +	.component_driver = {
-+		.controls		= rt5645_snd_controls,
-+		.num_controls		= ARRAY_SIZE(rt5645_snd_controls),
-+		.dapm_widgets		= rt5645_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(rt5645_dapm_widgets),
-+		.dapm_routes		= rt5645_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(rt5645_dapm_routes),
++		.controls		= rt5514_snd_controls,
++		.num_controls		= ARRAY_SIZE(rt5514_snd_controls),
++		.dapm_widgets		= rt5514_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(rt5514_dapm_widgets),
++		.dapm_routes		= rt5514_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(rt5514_dapm_routes),
 +	},
  };
  
- static const struct regmap_config rt5645_regmap = {
+ static const struct regmap_config rt5514_i2c_regmap = {
 -- 
 2.8.1
