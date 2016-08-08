@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on atmel-classd" to the asoc tree
-Date: Mon, 08 Aug 2016 12:03:05 +0100
-Message-ID: <E1bWiKn-0003GB-H5@debutante>
-References: <87zion4ore.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on ab8500-codec" to the asoc tree
+Date: Mon, 08 Aug 2016 12:02:59 +0100
+Message-ID: <E1bWiKh-0003ES-LO@debutante>
+References: <87wpjr4oqb.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87zion4ore.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87wpjr4oqb.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on atmel-classd
+   ASoC: codec duplicated callback function goes to component on ab8500-codec
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 69295df090a03e406c54ca0dbd67a76355773138 Mon Sep 17 00:00:00 2001
+>From ed135dd69556c70fb780985c536cc650e7f7b450 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:10:21 +0000
+Date: Mon, 8 Aug 2016 09:10:59 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- atmel-classd
+ ab8500-codec
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,26 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel-classd.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/codecs/ab8500-codec.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-index 6d9b8b44e2da..89ac5f5a93eb 100644
---- a/sound/soc/atmel/atmel-classd.c
-+++ b/sound/soc/atmel/atmel-classd.c
-@@ -308,9 +308,11 @@ static struct regmap *atmel_classd_codec_get_remap(struct device *dev)
+diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
+index 2fc89155f14a..3056487ed5a9 100644
+--- a/sound/soc/codecs/ab8500-codec.c
++++ b/sound/soc/codecs/ab8500-codec.c
+@@ -2525,12 +2525,14 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
  
- static struct snd_soc_codec_driver soc_codec_dev_classd = {
- 	.probe		= atmel_classd_codec_probe,
--	.controls	= atmel_classd_snd_controls,
--	.num_controls	= ARRAY_SIZE(atmel_classd_snd_controls),
- 	.get_regmap	= atmel_classd_codec_get_remap,
+ static struct snd_soc_codec_driver ab8500_codec_driver = {
+ 	.probe =		ab8500_codec_probe,
+-	.controls =		ab8500_ctrls,
+-	.num_controls =		ARRAY_SIZE(ab8500_ctrls),
+-	.dapm_widgets =		ab8500_dapm_widgets,
+-	.num_dapm_widgets =	ARRAY_SIZE(ab8500_dapm_widgets),
+-	.dapm_routes =		ab8500_dapm_routes,
+-	.num_dapm_routes =	ARRAY_SIZE(ab8500_dapm_routes),
 +	.component_driver = {
-+		.controls		= atmel_classd_snd_controls,
-+		.num_controls		= ARRAY_SIZE(atmel_classd_snd_controls),
++		.controls =		ab8500_ctrls,
++		.num_controls =		ARRAY_SIZE(ab8500_ctrls),
++		.dapm_widgets =		ab8500_dapm_widgets,
++		.num_dapm_widgets =	ARRAY_SIZE(ab8500_dapm_widgets),
++		.dapm_routes =		ab8500_dapm_routes,
++		.num_dapm_routes =	ARRAY_SIZE(ab8500_dapm_routes),
 +	},
  };
  
- /* codec dai component */
+ static int ab8500_codec_driver_probe(struct platform_device *pdev)
 -- 
 2.8.1
