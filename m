@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on pcm3168a" to the asoc tree
-Date: Mon, 08 Aug 2016 12:04:45 +0100
-Message-ID: <E1bWiMP-0003jx-Du@debutante>
-References: <87d1lj7ie2.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on sgtl5000" to the asoc tree
+Date: Mon, 08 Aug 2016 12:04:57 +0100
+Message-ID: <E1bWiMb-0003ni-A9@debutante>
+References: <87invb7ig2.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87d1lj7ie2.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87invb7ig2.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on pcm3168a
+   ASoC: codec duplicated callback function goes to component on sgtl5000
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From d4fff1ba4768dc7b8dd09db0eee19c1ff098ee60 Mon Sep 17 00:00:00 2001
+>From a324dbe5201aadbd96063404162d996ec8a6ad9e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:59:41 +0000
+Date: Mon, 8 Aug 2016 08:58:28 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- pcm3168a
+ sgtl5000
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3168a.c | 14 ++++++++------
+ sound/soc/codecs/sgtl5000.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index 992a77edcd5d..39bc02d5bc5d 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -599,12 +599,14 @@ EXPORT_SYMBOL_GPL(pcm3168a_regmap);
- 
- static const struct snd_soc_codec_driver pcm3168a_driver = {
- 	.idle_bias_off = true,
--	.controls = pcm3168a_snd_controls,
--	.num_controls = ARRAY_SIZE(pcm3168a_snd_controls),
--	.dapm_widgets = pcm3168a_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(pcm3168a_dapm_widgets),
--	.dapm_routes = pcm3168a_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(pcm3168a_dapm_routes)
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 527b759c1562..a635bd09d637 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1151,12 +1151,14 @@ static struct snd_soc_codec_driver sgtl5000_driver = {
+ 	.remove = sgtl5000_remove,
+ 	.set_bias_level = sgtl5000_set_bias_level,
+ 	.suspend_bias_off = true,
+-	.controls = sgtl5000_snd_controls,
+-	.num_controls = ARRAY_SIZE(sgtl5000_snd_controls),
+-	.dapm_widgets = sgtl5000_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(sgtl5000_dapm_widgets),
+-	.dapm_routes = sgtl5000_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(sgtl5000_dapm_routes),
 +	.component_driver = {
-+		.controls		= pcm3168a_snd_controls,
-+		.num_controls		= ARRAY_SIZE(pcm3168a_snd_controls),
-+		.dapm_widgets		= pcm3168a_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(pcm3168a_dapm_widgets),
-+		.dapm_routes		= pcm3168a_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(pcm3168a_dapm_routes)
++		.controls		= sgtl5000_snd_controls,
++		.num_controls		= ARRAY_SIZE(sgtl5000_snd_controls),
++		.dapm_widgets		= sgtl5000_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(sgtl5000_dapm_widgets),
++		.dapm_routes		= sgtl5000_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(sgtl5000_dapm_routes),
 +	},
  };
  
- int pcm3168a_probe(struct device *dev, struct regmap *regmap)
+ static const struct regmap_config sgtl5000_regmap = {
 -- 
 2.8.1
