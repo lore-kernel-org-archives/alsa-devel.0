@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on ml26124" to the asoc tree
-Date: Mon, 08 Aug 2016 12:01:29 +0100
-Message-ID: <E1bWiJF-0002nB-3w@debutante>
-References: <87oa5339q8.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on wm9867" to the asoc tree
+Date: Mon, 08 Aug 2016 12:01:40 +0100
+Message-ID: <E1bWiJQ-0002qb-PD@debutante>
+References: <87twev39s9.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87oa5339q8.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87twev39s9.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on ml26124
+   ASoC: codec duplicated callback function goes to component on wm9867
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From e21413cab309abdc315ece737f6dff86669884d3 Mon Sep 17 00:00:00 2001
+>From e92b48aa21d41c64ae1a06d69b94c8dfaec9c672 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:20:28 +0000
+Date: Mon, 8 Aug 2016 09:19:11 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- ml26124
+ wm9867
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ml26124.c | 14 ++++++++------
+ sound/soc/codecs/max9867.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
-index f561c78b9e0e..69e5e18880c5 100644
---- a/sound/soc/codecs/ml26124.c
-+++ b/sound/soc/codecs/ml26124.c
-@@ -541,12 +541,14 @@ static struct snd_soc_codec_driver soc_codec_dev_ml26124 = {
- 	.probe =	ml26124_probe,
- 	.set_bias_level = ml26124_set_bias_level,
- 	.suspend_bias_off = true,
--	.dapm_widgets = ml26124_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(ml26124_dapm_widgets),
--	.dapm_routes = ml26124_intercon,
--	.num_dapm_routes = ARRAY_SIZE(ml26124_intercon),
--	.controls = ml26124_snd_controls,
--	.num_controls = ARRAY_SIZE(ml26124_snd_controls),
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 2a22fddeb6af..c9673235078d 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -417,12 +417,14 @@ static int max9867_probe(struct snd_soc_codec *codec)
+ 
+ static struct snd_soc_codec_driver max9867_codec = {
+ 	.probe = max9867_probe,
+-	.controls = max9867_snd_controls,
+-	.num_controls = ARRAY_SIZE(max9867_snd_controls),
+-	.dapm_routes = max9867_audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(max9867_audio_map),
+-	.dapm_widgets = max9867_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(max9867_dapm_widgets),
 +	.component_driver = {
-+		.controls		= ml26124_snd_controls,
-+		.num_controls		= ARRAY_SIZE(ml26124_snd_controls),
-+		.dapm_widgets		= ml26124_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(ml26124_dapm_widgets),
-+		.dapm_routes		= ml26124_intercon,
-+		.num_dapm_routes	= ARRAY_SIZE(ml26124_intercon),
++		.controls		= max9867_snd_controls,
++		.num_controls		= ARRAY_SIZE(max9867_snd_controls),
++		.dapm_routes		= max9867_audio_map,
++		.num_dapm_routes	= ARRAY_SIZE(max9867_audio_map),
++		.dapm_widgets		= max9867_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(max9867_dapm_widgets),
 +	},
  };
  
- static const struct regmap_config ml26124_i2c_regmap = {
+ static bool max9867_volatile_register(struct device *dev, unsigned int reg)
 -- 
 2.8.1
