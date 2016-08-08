@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on pcm1681" to the asoc tree
-Date: Mon, 08 Aug 2016 12:04:39 +0100
-Message-ID: <E1bWiMJ-0003i0-2t@debutante>
-References: <87a8gn7id1.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on gtm601" to the asoc tree
+Date: Mon, 08 Aug 2016 12:04:30 +0100
+Message-ID: <E1bWiMA-0003fM-AO@debutante>
+References: <8760rb7ibj.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87a8gn7id1.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8760rb7ibj.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on pcm1681
+   ASoC: codec duplicated callback function goes to component on gtm601
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From a005fd746b4a257ff650c4ac9651111a5d580abe Mon Sep 17 00:00:00 2001
+>From 054ea6c9e3d240a6679458c6e6e1ecf4031271ea Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:00:18 +0000
+Date: Mon, 8 Aug 2016 09:01:11 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- pcm1681
+ gtm601
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,29 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm1681.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/gtm601.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
-index 33e1fc2d1598..0b14efab6280 100644
---- a/sound/soc/codecs/pcm1681.c
-+++ b/sound/soc/codecs/pcm1681.c
-@@ -289,12 +289,14 @@ static const struct regmap_config pcm1681_regmap = {
+diff --git a/sound/soc/codecs/gtm601.c b/sound/soc/codecs/gtm601.c
+index 0b80052996d3..926b1a4e37d4 100644
+--- a/sound/soc/codecs/gtm601.c
++++ b/sound/soc/codecs/gtm601.c
+@@ -52,10 +52,12 @@ static struct snd_soc_dai_driver gtm601_dai = {
  };
  
- static struct snd_soc_codec_driver soc_codec_dev_pcm1681 = {
--	.controls		= pcm1681_controls,
--	.num_controls		= ARRAY_SIZE(pcm1681_controls),
--	.dapm_widgets		= pcm1681_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(pcm1681_dapm_widgets),
--	.dapm_routes		= pcm1681_dapm_routes,
--	.num_dapm_routes	= ARRAY_SIZE(pcm1681_dapm_routes),
+ static const struct snd_soc_codec_driver soc_codec_dev_gtm601 = {
+-	.dapm_widgets = gtm601_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(gtm601_dapm_widgets),
+-	.dapm_routes = gtm601_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(gtm601_dapm_routes),
 +	.component_driver = {
-+		.controls		= pcm1681_controls,
-+		.num_controls		= ARRAY_SIZE(pcm1681_controls),
-+		.dapm_widgets		= pcm1681_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(pcm1681_dapm_widgets),
-+		.dapm_routes		= pcm1681_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(pcm1681_dapm_routes),
++		.dapm_widgets		= gtm601_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(gtm601_dapm_widgets),
++		.dapm_routes		= gtm601_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(gtm601_dapm_routes),
 +	},
  };
  
- static const struct i2c_device_id pcm1681_i2c_id[] = {
+ static int gtm601_platform_probe(struct platform_device *pdev)
 -- 
 2.8.1
