@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on sta32x" to the asoc tree
-Date: Mon, 08 Aug 2016 12:05:12 +0100
-Message-ID: <E1bWiMq-0003s1-39@debutante>
-References: <87popj7iik.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on ssm4567" to the asoc tree
+Date: Mon, 08 Aug 2016 12:05:09 +0100
+Message-ID: <E1bWiMn-0003rB-4V@debutante>
+References: <87oa537ii1.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87popj7iik.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87oa537ii1.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on sta32x
+   ASoC: codec duplicated callback function goes to component on ssm4567
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 37f112b39d8442a17ecdc7e72d42145d8cf18d37 Mon Sep 17 00:00:00 2001
+>From b5fce187a54808861bb24d84301a8d6d2559bca9 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:57:00 +0000
+Date: Mon, 8 Aug 2016 08:57:18 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- sta32x
+ ssm4567
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sta32x.c | 14 ++++++++------
+ sound/soc/codecs/ssm4567.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
-index a9844b2ac829..0790ae8530d9 100644
---- a/sound/soc/codecs/sta32x.c
-+++ b/sound/soc/codecs/sta32x.c
-@@ -991,12 +991,14 @@ static const struct snd_soc_codec_driver sta32x_codec = {
- 	.remove =		sta32x_remove,
- 	.set_bias_level =	sta32x_set_bias_level,
- 	.suspend_bias_off =	true,
--	.controls =		sta32x_snd_controls,
--	.num_controls =		ARRAY_SIZE(sta32x_snd_controls),
--	.dapm_widgets =		sta32x_dapm_widgets,
--	.num_dapm_widgets =	ARRAY_SIZE(sta32x_dapm_widgets),
--	.dapm_routes =		sta32x_dapm_routes,
--	.num_dapm_routes =	ARRAY_SIZE(sta32x_dapm_routes),
+diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
+index 080c78e88e10..2bb5a11c9ba1 100644
+--- a/sound/soc/codecs/ssm4567.c
++++ b/sound/soc/codecs/ssm4567.c
+@@ -421,12 +421,14 @@ static struct snd_soc_codec_driver ssm4567_codec_driver = {
+ 	.set_bias_level = ssm4567_set_bias_level,
+ 	.idle_bias_off = true,
+ 
+-	.controls = ssm4567_snd_controls,
+-	.num_controls = ARRAY_SIZE(ssm4567_snd_controls),
+-	.dapm_widgets = ssm4567_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(ssm4567_dapm_widgets),
+-	.dapm_routes = ssm4567_routes,
+-	.num_dapm_routes = ARRAY_SIZE(ssm4567_routes),
 +	.component_driver = {
-+		.controls =		sta32x_snd_controls,
-+		.num_controls =		ARRAY_SIZE(sta32x_snd_controls),
-+		.dapm_widgets =		sta32x_dapm_widgets,
-+		.num_dapm_widgets =	ARRAY_SIZE(sta32x_dapm_widgets),
-+		.dapm_routes =		sta32x_dapm_routes,
-+		.num_dapm_routes =	ARRAY_SIZE(sta32x_dapm_routes),
++		.controls		= ssm4567_snd_controls,
++		.num_controls		= ARRAY_SIZE(ssm4567_snd_controls),
++		.dapm_widgets		= ssm4567_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(ssm4567_dapm_widgets),
++		.dapm_routes		= ssm4567_routes,
++		.num_dapm_routes	= ARRAY_SIZE(ssm4567_routes),
 +	},
  };
  
- static const struct regmap_config sta32x_regmap = {
+ static const struct regmap_config ssm4567_regmap_config = {
 -- 
 2.8.1
