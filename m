@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on wm1250-ev1" to the asoc tree
-Date: Mon, 08 Aug 2016 12:00:13 +0100
-Message-ID: <E1bWiI1-0002QA-5V@debutante>
-References: <87mvkn1usd.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on wl1273" to the asoc tree
+Date: Mon, 08 Aug 2016 12:00:18 +0100
+Message-ID: <E1bWiI6-0002Rs-VK@debutante>
+References: <87popj1utd.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87mvkn1usd.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87popj1utd.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on wm1250-ev1
+   ASoC: codec duplicated callback function goes to component on wl1273
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From c6c0a214001ecc6c5d42c1226cdd33c07f8a016b Mon Sep 17 00:00:00 2001
+>From 23ce0ad98946b6d27d43bec2cc1fb34013761690 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:28:25 +0000
+Date: Mon, 8 Aug 2016 09:27:49 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- wm1250-ev1
+ wl1273
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,30 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm1250-ev1.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wl1273.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm1250-ev1.c b/sound/soc/codecs/wm1250-ev1.c
-index ec45c5b220b1..caf501227265 100644
---- a/sound/soc/codecs/wm1250-ev1.c
-+++ b/sound/soc/codecs/wm1250-ev1.c
-@@ -142,11 +142,12 @@ static struct snd_soc_dai_driver wm1250_ev1_dai = {
+diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
+index 1b79778098d2..fcffb6e707d9 100644
+--- a/sound/soc/codecs/wl1273.c
++++ b/sound/soc/codecs/wl1273.c
+@@ -484,12 +484,14 @@ static struct snd_soc_codec_driver soc_codec_dev_wl1273 = {
+ 	.probe = wl1273_probe,
+ 	.remove = wl1273_remove,
+ 
+-	.controls = wl1273_controls,
+-	.num_controls = ARRAY_SIZE(wl1273_controls),
+-	.dapm_widgets = wl1273_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(wl1273_dapm_widgets),
+-	.dapm_routes = wl1273_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(wl1273_dapm_routes),
++	.component_driver = {
++		.controls		= wl1273_controls,
++		.num_controls		= ARRAY_SIZE(wl1273_controls),
++		.dapm_widgets		= wl1273_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(wl1273_dapm_widgets),
++		.dapm_routes		= wl1273_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(wl1273_dapm_routes),
++	},
  };
  
- static struct snd_soc_codec_driver soc_codec_dev_wm1250_ev1 = {
--	.dapm_widgets = wm1250_ev1_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(wm1250_ev1_dapm_widgets),
--	.dapm_routes = wm1250_ev1_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(wm1250_ev1_dapm_routes),
--
-+	.component_driver = {
-+		.dapm_widgets		= wm1250_ev1_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(wm1250_ev1_dapm_widgets),
-+		.dapm_routes		= wm1250_ev1_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(wm1250_ev1_dapm_routes),
-+	},
- 	.set_bias_level = wm1250_ev1_set_bias_level,
- 	.idle_bias_off = true,
- };
+ static int wl1273_platform_probe(struct platform_device *pdev)
 -- 
 2.8.1
