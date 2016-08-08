@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on wm8523" to the asoc tree
-Date: Mon, 08 Aug 2016 12:05:47 +0100
-Message-ID: <E1bWiNP-00042K-He@debutante>
-References: <877fbr8xas.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on wm8737" to the asoc tree
+Date: Mon, 08 Aug 2016 12:06:02 +0100
+Message-ID: <E1bWiNe-00046Y-Mr@debutante>
+References: <87eg5z8xdl.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <877fbr8xas.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87eg5z8xdl.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on wm8523
+   ASoC: codec duplicated callback function goes to component on wm8737
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From f8a5c975bd5b7fc5e46fd85b5a65c0028d09f979 Mon Sep 17 00:00:00 2001
+>From 5cf0b2bd457ceae21b9a85ca7ecf97ccfbca6e25 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 08:52:19 +0000
+Date: Mon, 8 Aug 2016 08:50:38 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- wm8523
+ wm8737
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,33 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8523.c | 14 ++++++++------
+ sound/soc/codecs/wm8737.c | 14 ++++++++------
  1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
-index aa287a3965e7..0bb189a3d322 100644
---- a/sound/soc/codecs/wm8523.c
-+++ b/sound/soc/codecs/wm8523.c
-@@ -418,12 +418,14 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8523 = {
- 	.set_bias_level = wm8523_set_bias_level,
+diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
+index e7807601e675..728c42cc70ca 100644
+--- a/sound/soc/codecs/wm8737.c
++++ b/sound/soc/codecs/wm8737.c
+@@ -578,12 +578,14 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8737 = {
+ 	.set_bias_level = wm8737_set_bias_level,
  	.suspend_bias_off = true,
  
--	.controls = wm8523_controls,
--	.num_controls = ARRAY_SIZE(wm8523_controls),
--	.dapm_widgets = wm8523_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(wm8523_dapm_widgets),
--	.dapm_routes = wm8523_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(wm8523_dapm_routes),
+-	.controls = wm8737_snd_controls,
+-	.num_controls = ARRAY_SIZE(wm8737_snd_controls),
+-	.dapm_widgets = wm8737_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(wm8737_dapm_widgets),
+-	.dapm_routes = intercon,
+-	.num_dapm_routes = ARRAY_SIZE(intercon),
 +	.component_driver = {
-+		.controls		= wm8523_controls,
-+		.num_controls		= ARRAY_SIZE(wm8523_controls),
-+		.dapm_widgets		= wm8523_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(wm8523_dapm_widgets),
-+		.dapm_routes		= wm8523_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(wm8523_dapm_routes),
++		.controls		= wm8737_snd_controls,
++		.num_controls		= ARRAY_SIZE(wm8737_snd_controls),
++		.dapm_widgets		= wm8737_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(wm8737_dapm_widgets),
++		.dapm_routes		= intercon,
++		.num_dapm_routes	= ARRAY_SIZE(intercon),
 +	},
  };
  
- static const struct of_device_id wm8523_of_match[] = {
+ static const struct of_device_id wm8737_of_match[] = {
 -- 
 2.8.1
