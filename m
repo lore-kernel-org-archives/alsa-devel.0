@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: use asoc_simple_card_parse_dai()" to the asoc tree
-Date: Mon, 08 Aug 2016 11:46:53 +0100
-Message-ID: <E1bWi57-0000Ko-JI@debutante>
-References: <87fur6mjic.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card-utils: add asoc_simple_card_parse_clk()" to the asoc tree
+Date: Mon, 08 Aug 2016 11:46:59 +0100
+Message-ID: <E1bWi5D-0000Mh-GU@debutante>
+References: <877fbrajul.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87fur6mjic.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <877fbrajul.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: use asoc_simple_card_parse_dai()
+   ASoC: simple-card-utils: add asoc_simple_card_parse_clk()
 
 has been applied to the asoc tree at
 
@@ -37,106 +37,86 @@ to this mail.
 Thanks,
 Mark
 
->From 44c16af1fa8a5b1464fd76834ee6943f721748fa Mon Sep 17 00:00:00 2001
+>From bb6fc620c2ed972f58a0174f64f8dbd22a5911b1 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 06:02:07 +0000
-Subject: [PATCH] ASoC: simple-card: use asoc_simple_card_parse_dai()
+Date: Mon, 8 Aug 2016 05:59:56 +0000
+Subject: [PATCH] ASoC: simple-card-utils: add asoc_simple_card_parse_clk()
+
+Current simple-card can get clock via DT clocks or
+"system-clock-frequency" property.
+This patch makes it simple style standard
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 43 +++++++++++++++++------------------------
- 1 file changed, 18 insertions(+), 25 deletions(-)
+ include/sound/simple_card_utils.h     |  8 ++++++++
+ sound/soc/generic/simple-card-utils.c | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index b37c81b09203..05d6e02c42f3 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -44,6 +44,8 @@ struct simple_card_data {
- #define simple_priv_to_link(priv, i) ((priv)->snd_card.dai_link + i)
- #define simple_priv_to_props(priv, i) ((priv)->dai_props + i)
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index 86088aed9002..1392eb56cf0e 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -33,4 +33,12 @@ int asoc_simple_card_set_dailink_name(struct device *dev,
+ int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
+ 				     char *prefix);
  
-+#define DAI	"sound-dai"
-+#define CELL	"#sound-dai-cells"
- #define PREFIX	"simple-audio-card,"
- 
- #define asoc_simple_card_init_hp(card, sjack, prefix)\
-@@ -243,33 +245,11 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- 			      const char **name,
- 			      int *args_count)
- {
--	struct of_phandle_args args;
- 	int ret;
- 
- 	if (!np)
- 		return 0;
- 
--	/*
--	 * Get node via "sound-dai = <&phandle port>"
--	 * it will be used as xxx_of_node on soc_bind_dai_link()
--	 */
--	ret = of_parse_phandle_with_args(np, "sound-dai",
--					 "#sound-dai-cells", 0, &args);
--	if (ret)
--		return ret;
--
--	*p_node = args.np;
--
--	if (args_count)
--		*args_count = args.args_count;
--
--	/* Get dai->name */
--	if (name) {
--		ret = snd_soc_of_get_dai_name(np, name);
--		if (ret < 0)
--			return ret;
--	}
--
- 	if (!dai)
- 		return 0;
- 
-@@ -298,7 +278,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	struct device_node *codec = NULL;
- 	char prop[128];
- 	char *prefix = "";
--	int ret, cpu_args;
-+	int ret, single_cpu;
- 	u32 val;
- 
- 	/* For single DAI link & old style of DT node */
-@@ -328,10 +308,23 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	if (!of_property_read_u32(node, "mclk-fs", &val))
- 		dai_props->mclk_fs = val;
- 
-+	ret = asoc_simple_card_parse_cpu(cpu, dai_link,
-+					 DAI, CELL, &single_cpu);
-+	if (ret < 0)
-+		goto dai_link_of_err;
++#define asoc_simple_card_parse_clk_cpu(node, dai_link, simple_dai)		\
++	asoc_simple_card_parse_clk(node, dai_link->cpu_of_node, simple_dai)
++#define asoc_simple_card_parse_clk_codec(node, dai_link, simple_dai)		\
++	asoc_simple_card_parse_clk(node, dai_link->codec_of_node, simple_dai)
++int asoc_simple_card_parse_clk(struct device_node *node,
++			       struct device_node *dai_of_node,
++			       struct asoc_simple_dai *simple_dai);
 +
-+	ret = asoc_simple_card_parse_codec(codec, dai_link, DAI, CELL);
-+	if (ret < 0)
-+		goto dai_link_of_err;
-+
-+	ret = asoc_simple_card_parse_platform(plat, dai_link, DAI, CELL);
-+	if (ret < 0)
-+		goto dai_link_of_err;
-+
- 	ret = asoc_simple_card_sub_parse_of(cpu, &dai_props->cpu_dai,
- 					    &dai_link->cpu_of_node,
- 					    &dai_link->cpu_dai_name,
--					    &cpu_args);
-+					    &single_cpu);
- 	if (ret < 0)
- 		goto dai_link_of_err;
+ #endif /* __SIMPLE_CARD_CORE_H */
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 9599de69a880..16f65f972d04 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -7,6 +7,7 @@
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+  */
++#include <linux/clk.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <sound/simple_card_utils.h>
+@@ -97,6 +98,35 @@ int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_card_parse_card_name);
  
-@@ -392,7 +385,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	 *	fmt_single_name()
- 	 *	fmt_multiple_name()
- 	 */
--	if (!cpu_args)
-+	if (single_cpu)
- 		dai_link->cpu_dai_name = NULL;
- 
- dai_link_of_err:
++int asoc_simple_card_parse_clk(struct device_node *node,
++			       struct device_node *dai_of_node,
++			       struct asoc_simple_dai *simple_dai)
++{
++	struct clk *clk;
++	u32 val;
++
++	/*
++	 * Parse dai->sysclk come from "clocks = <&xxx>"
++	 * (if system has common clock)
++	 *  or "system-clock-frequency = <xxx>"
++	 *  or device's module clock.
++	 */
++	clk = of_clk_get(node, 0);
++	if (!IS_ERR(clk)) {
++		simple_dai->sysclk = clk_get_rate(clk);
++		simple_dai->clk = clk;
++	} else if (!of_property_read_u32(node, "system-clock-frequency", &val)) {
++		simple_dai->sysclk = val;
++	} else {
++		clk = of_clk_get(dai_of_node, 0);
++		if (!IS_ERR(clk))
++			simple_dai->sysclk = clk_get_rate(clk);
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(asoc_simple_card_parse_clk);
++
+ /* Module information */
+ MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
+ MODULE_DESCRIPTION("ALSA SoC Simple Card Utils");
 -- 
 2.8.1
