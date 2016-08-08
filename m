@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on cs35l32" to the asoc tree
-Date: Mon, 08 Aug 2016 12:03:52 +0100
-Message-ID: <E1bWiLY-0003U4-DA@debutante>
-References: <87mvkn63k8.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on ak4613" to the asoc tree
+Date: Mon, 08 Aug 2016 12:03:40 +0100
+Message-ID: <E1bWiLM-0003Qd-NY@debutante>
+References: <87h9av63i7.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87mvkn63k8.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87h9av63i7.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on cs35l32
+   ASoC: codec duplicated callback function goes to component on ak4613
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 1728f9d11f234df10c392f41a0ec80be287c4567 Mon Sep 17 00:00:00 2001
+>From beb84f75c4d9d069172f32543544d757d59e114b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:05:18 +0000
+Date: Mon, 8 Aug 2016 09:06:34 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- cs35l32
+ ak4613
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,34 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs35l32.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ sound/soc/codecs/ak4613.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
-index 287d13740be4..7e9806206648 100644
---- a/sound/soc/codecs/cs35l32.c
-+++ b/sound/soc/codecs/cs35l32.c
-@@ -231,13 +231,14 @@ static int cs35l32_codec_set_sysclk(struct snd_soc_codec *codec,
- static const struct snd_soc_codec_driver soc_codec_dev_cs35l32 = {
- 	.set_sysclk = cs35l32_codec_set_sysclk,
- 
--	.dapm_widgets = cs35l32_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(cs35l32_dapm_widgets),
--	.dapm_routes = cs35l32_audio_map,
--	.num_dapm_routes = ARRAY_SIZE(cs35l32_audio_map),
--
--	.controls = cs35l32_snd_controls,
--	.num_controls = ARRAY_SIZE(cs35l32_snd_controls),
+diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
+index 97798d250f08..e819dd8c82fd 100644
+--- a/sound/soc/codecs/ak4613.c
++++ b/sound/soc/codecs/ak4613.c
+@@ -458,12 +458,14 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4613 = {
+ 	.suspend		= ak4613_suspend,
+ 	.resume			= ak4613_resume,
+ 	.set_bias_level		= ak4613_set_bias_level,
+-	.controls		= ak4613_snd_controls,
+-	.num_controls		= ARRAY_SIZE(ak4613_snd_controls),
+-	.dapm_widgets		= ak4613_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(ak4613_dapm_widgets),
+-	.dapm_routes		= ak4613_intercon,
+-	.num_dapm_routes	= ARRAY_SIZE(ak4613_intercon),
 +	.component_driver = {
-+		.controls		= cs35l32_snd_controls,
-+		.num_controls		= ARRAY_SIZE(cs35l32_snd_controls),
-+		.dapm_widgets		= cs35l32_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(cs35l32_dapm_widgets),
-+		.dapm_routes		= cs35l32_audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(cs35l32_audio_map),
++		.controls		= ak4613_snd_controls,
++		.num_controls		= ARRAY_SIZE(ak4613_snd_controls),
++		.dapm_widgets		= ak4613_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(ak4613_dapm_widgets),
++		.dapm_routes		= ak4613_intercon,
++		.num_dapm_routes	= ARRAY_SIZE(ak4613_intercon),
 +	},
  };
  
- /* Current and threshold powerup sequence Pg37 in datasheet */
+ static void ak4613_parse_of(struct ak4613_priv *priv,
 -- 
 2.8.1
