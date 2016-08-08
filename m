@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card-utils: add asoc_simple_card_parse_clk()" to the asoc tree
-Date: Mon, 08 Aug 2016 11:46:59 +0100
-Message-ID: <E1bWi5D-0000Mh-GU@debutante>
-References: <877fbrajul.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on uda134x" to the asoc tree
+Date: Mon, 08 Aug 2016 12:00:24 +0100
+Message-ID: <E1bWiIC-0002Te-Oy@debutante>
+References: <87shuf1uud.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <877fbrajul.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87shuf1uud.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card-utils: add asoc_simple_card_parse_clk()
+   ASoC: codec duplicated callback function goes to component on uda134x
 
 has been applied to the asoc tree at
 
@@ -37,86 +37,43 @@ to this mail.
 Thanks,
 Mark
 
->From bb6fc620c2ed972f58a0174f64f8dbd22a5911b1 Mon Sep 17 00:00:00 2001
+>From e939fc6c2679c474c31c7e07c73703099bd68f70 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 05:59:56 +0000
-Subject: [PATCH] ASoC: simple-card-utils: add asoc_simple_card_parse_clk()
+Date: Mon, 8 Aug 2016 09:27:14 +0000
+Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
+ uda134x
 
-Current simple-card can get clock via DT clocks or
-"system-clock-frequency" property.
-This patch makes it simple style standard
+codec driver and component driver has duplicated callback functions,
+and codec side functions are just copied to component side when
+register timing. This was quick-hack, but no longer needed.
+This patch moves these functions from codec driver to component driver.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/simple_card_utils.h     |  8 ++++++++
- sound/soc/generic/simple-card-utils.c | 30 ++++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+)
+ sound/soc/codecs/uda134x.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 86088aed9002..1392eb56cf0e 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -33,4 +33,12 @@ int asoc_simple_card_set_dailink_name(struct device *dev,
- int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
- 				     char *prefix);
+diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
+index e4c694c758b8..a4a3e9854086 100644
+--- a/sound/soc/codecs/uda134x.c
++++ b/sound/soc/codecs/uda134x.c
+@@ -523,10 +523,12 @@ static struct snd_soc_codec_driver soc_codec_dev_uda134x = {
+ 	.set_bias_level = uda134x_set_bias_level,
+ 	.suspend_bias_off = true,
  
-+#define asoc_simple_card_parse_clk_cpu(node, dai_link, simple_dai)		\
-+	asoc_simple_card_parse_clk(node, dai_link->cpu_of_node, simple_dai)
-+#define asoc_simple_card_parse_clk_codec(node, dai_link, simple_dai)		\
-+	asoc_simple_card_parse_clk(node, dai_link->codec_of_node, simple_dai)
-+int asoc_simple_card_parse_clk(struct device_node *node,
-+			       struct device_node *dai_of_node,
-+			       struct asoc_simple_dai *simple_dai);
-+
- #endif /* __SIMPLE_CARD_CORE_H */
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 9599de69a880..16f65f972d04 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -7,6 +7,7 @@
-  * it under the terms of the GNU General Public License version 2 as
-  * published by the Free Software Foundation.
-  */
-+#include <linux/clk.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <sound/simple_card_utils.h>
-@@ -97,6 +98,35 @@ int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
- }
- EXPORT_SYMBOL_GPL(asoc_simple_card_parse_card_name);
+-	.dapm_widgets = uda134x_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(uda134x_dapm_widgets),
+-	.dapm_routes = uda134x_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(uda134x_dapm_routes),
++	.component_driver = {
++		.dapm_widgets		= uda134x_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(uda134x_dapm_widgets),
++		.dapm_routes		= uda134x_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(uda134x_dapm_routes),
++	},
+ };
  
-+int asoc_simple_card_parse_clk(struct device_node *node,
-+			       struct device_node *dai_of_node,
-+			       struct asoc_simple_dai *simple_dai)
-+{
-+	struct clk *clk;
-+	u32 val;
-+
-+	/*
-+	 * Parse dai->sysclk come from "clocks = <&xxx>"
-+	 * (if system has common clock)
-+	 *  or "system-clock-frequency = <xxx>"
-+	 *  or device's module clock.
-+	 */
-+	clk = of_clk_get(node, 0);
-+	if (!IS_ERR(clk)) {
-+		simple_dai->sysclk = clk_get_rate(clk);
-+		simple_dai->clk = clk;
-+	} else if (!of_property_read_u32(node, "system-clock-frequency", &val)) {
-+		simple_dai->sysclk = val;
-+	} else {
-+		clk = of_clk_get(dai_of_node, 0);
-+		if (!IS_ERR(clk))
-+			simple_dai->sysclk = clk_get_rate(clk);
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(asoc_simple_card_parse_clk);
-+
- /* Module information */
- MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
- MODULE_DESCRIPTION("ALSA SoC Simple Card Utils");
+ static const struct regmap_config uda134x_regmap_config = {
 -- 
 2.8.1
