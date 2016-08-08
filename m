@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec duplicated callback function goes to component on cs42l73" to the asoc tree
-Date: Mon, 08 Aug 2016 12:04:15 +0100
-Message-ID: <E1bWiLv-0003an-OP@debutante>
-References: <87y44763of.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codec duplicated callback function goes to component on pcm1681" to the asoc tree
+Date: Mon, 08 Aug 2016 12:04:39 +0100
+Message-ID: <E1bWiMJ-0003i0-2t@debutante>
+References: <87a8gn7id1.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87y44763of.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87a8gn7id1.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec duplicated callback function goes to component on cs42l73
+   ASoC: codec duplicated callback function goes to component on pcm1681
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From 951cd7e6ffda4dc86ed6fb6ff10e0ca8f3b67c2b Mon Sep 17 00:00:00 2001
+>From a005fd746b4a257ff650c4ac9651111a5d580abe Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 8 Aug 2016 09:02:48 +0000
+Date: Mon, 8 Aug 2016 09:00:18 +0000
 Subject: [PATCH] ASoC: codec duplicated callback function goes to component on
- cs42l73
+ pcm1681
 
 codec driver and component driver has duplicated callback functions,
 and codec side functions are just copied to component side when
@@ -51,34 +51,33 @@ This patch moves these functions from codec driver to component driver.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l73.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ sound/soc/codecs/pcm1681.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 42a8fd4e1f9b..01b573ab7036 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -1257,13 +1257,14 @@ static const struct snd_soc_codec_driver soc_codec_dev_cs42l73 = {
- 	.set_bias_level = cs42l73_set_bias_level,
- 	.suspend_bias_off = true,
+diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
+index 33e1fc2d1598..0b14efab6280 100644
+--- a/sound/soc/codecs/pcm1681.c
++++ b/sound/soc/codecs/pcm1681.c
+@@ -289,12 +289,14 @@ static const struct regmap_config pcm1681_regmap = {
+ };
  
--	.dapm_widgets = cs42l73_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(cs42l73_dapm_widgets),
--	.dapm_routes = cs42l73_audio_map,
--	.num_dapm_routes = ARRAY_SIZE(cs42l73_audio_map),
--
--	.controls = cs42l73_snd_controls,
--	.num_controls = ARRAY_SIZE(cs42l73_snd_controls),
+ static struct snd_soc_codec_driver soc_codec_dev_pcm1681 = {
+-	.controls		= pcm1681_controls,
+-	.num_controls		= ARRAY_SIZE(pcm1681_controls),
+-	.dapm_widgets		= pcm1681_dapm_widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(pcm1681_dapm_widgets),
+-	.dapm_routes		= pcm1681_dapm_routes,
+-	.num_dapm_routes	= ARRAY_SIZE(pcm1681_dapm_routes),
 +	.component_driver = {
-+		.controls		= cs42l73_snd_controls,
-+		.num_controls		= ARRAY_SIZE(cs42l73_snd_controls),
-+		.dapm_widgets		= cs42l73_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(cs42l73_dapm_widgets),
-+		.dapm_routes		= cs42l73_audio_map,
-+		.num_dapm_routes	= ARRAY_SIZE(cs42l73_audio_map),
++		.controls		= pcm1681_controls,
++		.num_controls		= ARRAY_SIZE(pcm1681_controls),
++		.dapm_widgets		= pcm1681_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(pcm1681_dapm_widgets),
++		.dapm_routes		= pcm1681_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(pcm1681_dapm_routes),
 +	},
  };
  
- static const struct regmap_config cs42l73_regmap = {
+ static const struct i2c_device_id pcm1681_i2c_id[] = {
 -- 
 2.8.1
