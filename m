@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: simple-card-utils: add
-	asoc_simple_card_canonicalize_dailink()" to the asoc tree
-Date: Tue, 09 Aug 2016 13:43:54 +0100
-Message-ID: <E1bX6Nu-0003XF-MA@debutante>
-References: <87h9au7b38.wl%kuninori.morimoto.gx@renesas.com>
+	asoc_simple_card_init_dai()" to the asoc tree
+Date: Tue, 09 Aug 2016 13:44:00 +0100
+Message-ID: <E1bX6O0-0003Z2-Ge@debutante>
+References: <87lh067b57.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3335A267CF6
- for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2016 14:44:01 +0200 (CEST)
-In-Reply-To: <87h9au7b38.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A2B0267D07
+ for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2016 14:44:07 +0200 (CEST)
+In-Reply-To: <87lh067b57.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card-utils: add asoc_simple_card_canonicalize_dailink()
+   ASoC: simple-card-utils: add asoc_simple_card_init_dai()
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,68 @@ to this mail.
 Thanks,
 Mark
 
->From c262c9ab7a956b15c4c12b81472502a587d0dfcd Mon Sep 17 00:00:00 2001
+>From 21ba62f849a20accf7d41e3056ea8913bc23cfb1 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 9 Aug 2016 05:49:41 +0000
-Subject: [PATCH] ASoC: simple-card-utils: add
- asoc_simple_card_canonicalize_dailink()
+Date: Tue, 9 Aug 2016 05:48:30 +0000
+Subject: [PATCH] ASoC: simple-card-utils: add asoc_simple_card_init_dai()
 
-simple-card is assuming that sometimes platform and cpu are same.
+simple-card is supporting clock/tdm slot initialization.
 This patch makes this method simple style standard.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/simple_card_utils.h     |  3 +++
- sound/soc/generic/simple-card-utils.c | 13 +++++++++++++
- 2 files changed, 16 insertions(+)
+ include/sound/simple_card_utils.h     |  2 ++
+ sound/soc/generic/simple-card-utils.c | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 31 insertions(+)
 
 diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 13168e029232..a71d46a95ca8 100644
+index 62b392695d2d..13168e029232 100644
 --- a/include/sound/simple_card_utils.h
 +++ b/include/sound/simple_card_utils.h
-@@ -60,4 +60,7 @@ int asoc_simple_card_parse_dai(struct device_node *node,
+@@ -58,4 +58,6 @@ int asoc_simple_card_parse_dai(struct device_node *node,
+ 				  const char *cells_name,
+ 				  int *is_single_links);
  
- int asoc_simple_card_init_dai(struct snd_soc_dai *dai,
- 			      struct asoc_simple_dai *simple_dai);
-+
-+int asoc_simple_card_canonicalize_dailink(struct snd_soc_dai_link *dai_link);
-+
++int asoc_simple_card_init_dai(struct snd_soc_dai *dai,
++			      struct asoc_simple_dai *simple_dai);
  #endif /* __SIMPLE_CARD_CORE_H */
 diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 33abe1f7014e..189eadddfad3 100644
+index 27e6d038a902..33abe1f7014e 100644
 --- a/sound/soc/generic/simple-card-utils.c
 +++ b/sound/soc/generic/simple-card-utils.c
-@@ -193,6 +193,19 @@ int asoc_simple_card_init_dai(struct snd_soc_dai *dai,
+@@ -164,6 +164,35 @@ int asoc_simple_card_parse_dai(struct device_node *node,
  }
- EXPORT_SYMBOL_GPL(asoc_simple_card_init_dai);
+ EXPORT_SYMBOL_GPL(asoc_simple_card_parse_dai);
  
-+int asoc_simple_card_canonicalize_dailink(struct snd_soc_dai_link *dai_link)
++int asoc_simple_card_init_dai(struct snd_soc_dai *dai,
++			      struct asoc_simple_dai *simple_dai)
 +{
-+	if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name)
-+		return -EINVAL;
++	int ret;
 +
-+	/* Assumes platform == cpu */
-+	if (!dai_link->platform_of_node)
-+		dai_link->platform_of_node = dai_link->cpu_of_node;
++	if (simple_dai->sysclk) {
++		ret = snd_soc_dai_set_sysclk(dai, 0, simple_dai->sysclk, 0);
++		if (ret && ret != -ENOTSUPP) {
++			dev_err(dai->dev, "simple-card: set_sysclk error\n");
++			return ret;
++		}
++	}
++
++	if (simple_dai->slots) {
++		ret = snd_soc_dai_set_tdm_slot(dai,
++					       simple_dai->tx_slot_mask,
++					       simple_dai->rx_slot_mask,
++					       simple_dai->slots,
++					       simple_dai->slot_width);
++		if (ret && ret != -ENOTSUPP) {
++			dev_err(dai->dev, "simple-card: set_tdm_slot error\n");
++			return ret;
++		}
++	}
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(asoc_simple_card_canonicalize_dailink);
++EXPORT_SYMBOL_GPL(asoc_simple_card_init_dai);
 +
  /* Module information */
  MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
