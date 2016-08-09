@@ -1,31 +1,58 @@
-From: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v4 2/4] mfd: Add Samsung Exynos Low Power Audio Subsystem
- driver
-Date: Tue, 09 Aug 2016 17:36:38 +0200
-Message-ID: <61d700f7-ef66-8278-54ea-8e6e2f1a029e@samsung.com>
-References: <1467738804-31460-1-git-send-email-s.nawrocki@samsung.com>
- <20160809150502.GQ5243@dell>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v5 2/2] ASoC: samsung: Add machine driver for Exynos5433
+ based TM2 board
+Date: Tue, 9 Aug 2016 17:02:09 +0100
+Message-ID: <20160809160209.GB9347@sirena.org.uk>
+References: <1470752514-11409-1-git-send-email-s.nawrocki@samsung.com>
+ <1470752514-11409-2-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gj572EiMnwbLXET9"
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-reply-to: <20160809150502.GQ5243@dell>
+Content-Disposition: inline
+In-Reply-To: <1470752514-11409-2-git-send-email-s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, inki.dae-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Beomho Seo <beomho.seo-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+To: Sylwester Nawrocki <s.nawrocki-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, k.kozlowski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/09/2016 05:05 PM, Lee Jones wrote:
->> +static SIMPLE_DEV_PM_OPS(lpass_pm_ops, exynos_lpass_suspend,
->> > +					exynos_lpass_resume);
-> Put this up by the PM functions.
 
-Sorry, I don't understand this comment, which PM functions do you
-mean exactly?
+--gj572EiMnwbLXET9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Thanks,
-Sylwester
+On Tue, Aug 09, 2016 at 04:21:54PM +0200, Sylwester Nawrocki wrote:
+
+> +		card->dai_link[i].codec_of_node = codec_dai_node;
+> +		card->dai_link[i].cpu_of_node = cpu_dai_node;
+> +		card->dai_link[i].platform_of_node = cpu_dai_node;
+> +	}
+> +
+> +	priv->codec_mclk1 = of_clk_get_by_name(codec_dai_node, "mclk1");
+> +	if (IS_ERR(priv->codec_mclk1)) {
+
+So, all this of_clk_get_by_name() stuff is messy and is going to need to
+be duplicated for any cards using this CODEC which isn't excellent.  It
+would be a lot nicer if we just did some regular clk_get() calls in the
+MFD and then provided an interface for other drivers to get at those
+clocks (or just had the CODEC driver DTRT internally).
+
+--gj572EiMnwbLXET9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXqf6AAAoJECTWi3JdVIfQK/MH/0v5XN/TZNh0pMlbnveM6sWZ
+uy1ZBAR64pgqYFHLtLsM7VCniWccX3qwEbNI1MFZHzDjyMRcGZkaLwIquT/VDLKX
+mYae6sgotAjjaNNvnStwQUf5ksfw2tfJV+0z1Zr9yVnT6stZDASEGVY3J20k7iB4
+TOyR2+nRAu3GEEXoy8jERNkfX77nEFYv4EDeOzITORAK2FmfqFdTAZGO1Qf+ba3s
+djUWeKZEvkmDp5Ob83778N+n3uMPNYQ+Ln8Cpg1yRgMu4mxMQwdPcz2BYsU9BgaM
+4WY0J+Lir64CkL7xemErF0jIF+1foK/hf0aUQNuO5rznnkZb5IdEmxj0vHm4hEU=
+=aCgc
+-----END PGP SIGNATURE-----
+
+--gj572EiMnwbLXET9--
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
