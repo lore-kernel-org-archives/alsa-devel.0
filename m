@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: use asoc_simple_card_init_dai()" to the asoc tree
-Date: Tue, 09 Aug 2016 13:43:57 +0100
-Message-ID: <E1bX6Nx-0003YA-JX@debutante>
-References: <87eg8xqcq9.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87eg8xqcq9.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
+Subject: Applied "ASoC: remove snd_soc_pcm_set/get_drvdata()" to the asoc tree
+Date: Tue, 09 Aug 2016 13:44:03 +0100
+Message-ID: <E1bX6O3-0003a2-Dg@debutante>
+References: <87h9b59gag.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87h9b59gag.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.orgalsa-devel@alsa-project.orgLiam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: use asoc_simple_card_init_dai()
+   ASoC: remove snd_soc_pcm_set/get_drvdata()
 
 has been applied to the asoc tree at
 
@@ -37,75 +37,51 @@ to this mail.
 Thanks,
 Mark
 
->From d8cb9354c86dddb1fb67d3f247c9ebbacd6b4c07 Mon Sep 17 00:00:00 2001
+>From 1e814030954015e42621191f3adc52df2241dc08 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 9 Aug 2016 05:48:53 +0000
-Subject: [PATCH] ASoC: simple-card: use asoc_simple_card_init_dai()
+Date: Mon, 1 Aug 2016 06:11:36 +0000
+Subject: [PATCH] ASoC: remove snd_soc_pcm_set/get_drvdata()
+
+snd_soc_pcm_set_drvdata() will set driver data to rtd->dev,
+but driver data of rtd->dev is already used as "rtd" on
+soc_post_component_init().
+
+	static int soc_post_component_init(xxx)
+	{
+		...
+		dev_set_drvdata(rtd->dev, rtd);
+		...
+	}
+
+To remove confusion, this patch removes snd_soc_pcm_set/get_drvdata().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 38 +++-----------------------------------
- 1 file changed, 3 insertions(+), 35 deletions(-)
+ include/sound/soc.h | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 99028c190ea3..03ecca85a724 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -179,51 +179,19 @@ static struct snd_soc_ops asoc_simple_card_ops = {
- 	.hw_params = asoc_simple_card_hw_params,
- };
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 6144882cc96a..bc953994acb9 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1547,17 +1547,6 @@ static inline void *snd_soc_platform_get_drvdata(struct snd_soc_platform *platfo
+ 	return snd_soc_component_get_drvdata(&platform->component);
+ }
  
--static int __asoc_simple_card_dai_init(struct snd_soc_dai *dai,
--				       struct asoc_simple_dai *set)
+-static inline void snd_soc_pcm_set_drvdata(struct snd_soc_pcm_runtime *rtd,
+-		void *data)
 -{
--	int ret;
--
--	if (set->sysclk) {
--		ret = snd_soc_dai_set_sysclk(dai, 0, set->sysclk, 0);
--		if (ret && ret != -ENOTSUPP) {
--			dev_err(dai->dev, "simple-card: set_sysclk error\n");
--			goto err;
--		}
--	}
--
--	if (set->slots) {
--		ret = snd_soc_dai_set_tdm_slot(dai,
--					       set->tx_slot_mask,
--					       set->rx_slot_mask,
--						set->slots,
--						set->slot_width);
--		if (ret && ret != -ENOTSUPP) {
--			dev_err(dai->dev, "simple-card: set_tdm_slot error\n");
--			goto err;
--		}
--	}
--
--	ret = 0;
--
--err:
--	return ret;
+-	dev_set_drvdata(rtd->dev, data);
 -}
 -
- static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+-static inline void *snd_soc_pcm_get_drvdata(struct snd_soc_pcm_runtime *rtd)
+-{
+-	return dev_get_drvdata(rtd->dev);
+-}
+-
+ static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
  {
- 	struct simple_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *codec = rtd->codec_dai;
- 	struct snd_soc_dai *cpu = rtd->cpu_dai;
--	struct simple_dai_props *dai_props;
-+	struct simple_dai_props *dai_props = &priv->dai_props[rtd->num];
- 	int ret;
- 
--	dai_props = &priv->dai_props[rtd->num];
--	ret = __asoc_simple_card_dai_init(codec, &dai_props->codec_dai);
-+	ret = asoc_simple_card_init_dai(codec, &dai_props->codec_dai);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = __asoc_simple_card_dai_init(cpu, &dai_props->cpu_dai);
-+	ret = asoc_simple_card_init_dai(cpu, &dai_props->cpu_dai);
- 	if (ret < 0)
- 		return ret;
- 
+ 	INIT_LIST_HEAD(&card->codec_dev_list);
 -- 
 2.8.1
