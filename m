@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsrc-card: use
+Subject: Applied "ASoC: simple-card: use
 	asoc_simple_card_canonicalize_dailink()" to the asoc tree
-Date: Tue, 09 Aug 2016 13:43:46 +0100
-Message-ID: <E1bX6Nm-0003Uf-0X@debutante>
-References: <87eg5y7b23.wl%kuninori.morimoto.gx@renesas.com>
+Date: Tue, 09 Aug 2016 13:43:51 +0100
+Message-ID: <E1bX6Nr-0003WL-Pz@debutante>
+References: <87fuqe7b2m.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BBA64267CF1
- for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2016 14:43:59 +0200 (CEST)
-In-Reply-To: <87eg5y7b23.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 89713267CF4
+ for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2016 14:44:00 +0200 (CEST)
+In-Reply-To: <87fuqe7b2m.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsrc-card: use asoc_simple_card_canonicalize_dailink()
+   ASoC: simple-card: use asoc_simple_card_canonicalize_dailink()
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From a09f383ef72947b7d59fc7fe50fe332ab5c35dca Mon Sep 17 00:00:00 2001
+>From c958374f1cd22ec87f210985f9f9e1ba8b3df30b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 9 Aug 2016 05:50:19 +0000
-Subject: [PATCH] ASoC: rsrc-card: use asoc_simple_card_canonicalize_dailink()
+Date: Tue, 9 Aug 2016 05:50:02 +0000
+Subject: [PATCH] ASoC: simple-card: use
+ asoc_simple_card_canonicalize_dailink()
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rsrc-card.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/generic/simple-card.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
-index 1bf35634ebba..0bf17dae2b64 100644
---- a/sound/soc/sh/rcar/rsrc-card.c
-+++ b/sound/soc/sh/rcar/rsrc-card.c
-@@ -222,8 +222,10 @@ static int rsrc_card_parse_links(struct device_node *np,
- 		}
- 	}
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 03ecca85a724..8b1efdd2b115 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -286,14 +286,9 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
  
--	/* Simple Card assumes platform == cpu */
--	dai_link->platform_of_node	= dai_link->cpu_of_node;
+-	if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name) {
+-		ret = -EINVAL;
 +	ret = asoc_simple_card_canonicalize_dailink(dai_link);
 +	if (ret < 0)
-+		return ret;
-+
- 	dai_link->dpcm_playback		= 1;
- 	dai_link->dpcm_capture		= 1;
- 	dai_link->ops			= &rsrc_card_ops;
+ 		goto dai_link_of_err;
+-	}
+-
+-	/* Assumes platform == cpu */
+-	if (!dai_link->platform_of_node)
+-		dai_link->platform_of_node = dai_link->cpu_of_node;
+ 
+ 	ret = asoc_simple_card_set_dailink_name(dev, dai_link,
+ 						"%s-%s",
 -- 
 2.8.1
