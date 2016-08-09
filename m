@@ -1,23 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 06/39] ALSA: seq: obsolete address mode in
- compatibility layer
-Date: Tue, 9 Aug 2016 21:32:30 +0900
-Message-ID: <f51ae36a-a4f8-350e-a900-7b4f7a9867b4@sakamocchi.jp>
-References: <1470563355-18368-1-git-send-email-o-takashi@sakamocchi.jp>
- <1470563355-18368-7-git-send-email-o-takashi@sakamocchi.jp>
- <s5hvazbohxj.wl-tiwai@suse.de>
- <da681afe-e92e-158a-f212-cd5e4d3a18df@sakamocchi.jp>
- <s5hfuqfnw5t.wl-tiwai@suse.de>
- <cae4f730-05cb-c805-371c-29dbcfa7bbe5@sakamocchi.jp>
- <s5hmvkm2l5f.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsrc-card: use
+	asoc_simple_card_canonicalize_dailink()" to the asoc tree
+Date: Tue, 09 Aug 2016 13:43:46 +0100
+Message-ID: <E1bX6Nm-0003Uf-0X@debutante>
+References: <87eg5y7b23.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 0C85D266A13
- for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2016 14:32:32 +0200 (CEST)
-In-Reply-To: <s5hmvkm2l5f.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBA64267CF1
+ for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2016 14:43:59 +0200 (CEST)
+In-Reply-To: <87eg5y7b23.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,29 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 9 2016 21:15, Takashi Iwai wrote:
-> But, why do you need to change these changes at all?  What you
-> basically need is to change the call inside seq_call_port_info_ioctl()
-> like:
-> 
-> -	err = snd_seq_do_ioctl(client, cmd, data);
-> +	err = snd_seq_kernel_client_ctl(client->number, cmd, data);
-> 
-> Then the rest can remain intact.  Referencing client->number in each
-> caller side just results in inefficient codes, obviously.
+The patch
 
-In seq_call_port_info_ioctl(), no members except for the 'number' are
-used. So no need to get a pointer to the client data as an argument.
+   ASoC: rsrc-card: use asoc_simple_card_canonicalize_dailink()
 
-This change makes it simpler for readers to follow code of the function.
-They have no need to think about the whole data, it's OK just to focus
-on the numerical ID for client.
+has been applied to the asoc tree at
 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Regards
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Takashi Sakamoto
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From a09f383ef72947b7d59fc7fe50fe332ab5c35dca Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 9 Aug 2016 05:50:19 +0000
+Subject: [PATCH] ASoC: rsrc-card: use asoc_simple_card_canonicalize_dailink()
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/rsrc-card.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
+index 1bf35634ebba..0bf17dae2b64 100644
+--- a/sound/soc/sh/rcar/rsrc-card.c
++++ b/sound/soc/sh/rcar/rsrc-card.c
+@@ -222,8 +222,10 @@ static int rsrc_card_parse_links(struct device_node *np,
+ 		}
+ 	}
+ 
+-	/* Simple Card assumes platform == cpu */
+-	dai_link->platform_of_node	= dai_link->cpu_of_node;
++	ret = asoc_simple_card_canonicalize_dailink(dai_link);
++	if (ret < 0)
++		return ret;
++
+ 	dai_link->dpcm_playback		= 1;
+ 	dai_link->dpcm_capture		= 1;
+ 	dai_link->ops			= &rsrc_card_ops;
+-- 
+2.8.1
