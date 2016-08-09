@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA - hda: Add support for link audio time
-	reporting" to the asoc tree
-Date: Tue, 09 Aug 2016 13:44:09 +0100
-Message-ID: <E1bX6O9-0003c3-8L@debutante>
-References: <1470305764-20802-6-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ALSA - hda: Add support for parsing new HDA
+	capabilities" to the asoc tree
+Date: Tue, 09 Aug 2016 13:44:12 +0100
+Message-ID: <E1bX6OC-0003dB-Ov@debutante>
+References: <1470305764-20802-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0009365368959577835=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7034E267D15
- for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2016 14:44:18 +0200 (CEST)
-In-Reply-To: <1470305764-20802-6-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FD27267D19
+ for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2016 14:44:19 +0200 (CEST)
+In-Reply-To: <1470305764-20802-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,15 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
-
---===============0009365368959577835==
-Content-Type: text/plain
 
 The patch
 
-   ALSA - hda: Add support for link audio time reporting
+   ALSA - hda: Add support for parsing new HDA capabilities
 
 has been applied to the asoc tree at
 
@@ -55,261 +53,144 @@ to this mail.
 Thanks,
 Mark
 
->From bfcba288b97f10c22fb84f0898ebfb6b468b80ea Mon Sep 17 00:00:00 2001
+>From 50279d9b5facde811280afe13dd8c79f0e7b21ed Mon Sep 17 00:00:00 2001
 From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Date: Thu, 4 Aug 2016 15:46:04 +0530
-Subject: [PATCH] ALSA - hda: Add support for link audio time reporting
+Date: Thu, 4 Aug 2016 15:46:03 +0530
+Subject: [PATCH] ALSA - hda: Add support for parsing new HDA capabilities
 
-The HDA controller from SKL onwards support additional timestamp
-reporting of the link time. The link time is read from HW
-registers and converted to audio values.
+Skylake onwards HDA controller supports new capabilities like
+Global Time Stamping (GTS) capability. So add support to parse
+these new capabilities.
 
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_controller.c | 198 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 197 insertions(+), 1 deletion(-)
+ include/sound/hda_register.h   | 36 ++++++++++++++++++++++++++++++++++++
+ sound/pci/hda/hda_controller.c |  5 +++++
+ sound/pci/hda/hda_controller.h |  3 +++
+ sound/pci/hda/hda_intel.c      | 17 +++++++++++++++++
+ 4 files changed, 61 insertions(+)
 
+diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
+index ff1aecf325e8..0013063db7f2 100644
+--- a/include/sound/hda_register.h
++++ b/include/sound/hda_register.h
+@@ -89,6 +89,19 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define AZX_REG_SD_BDLPL		0x18
+ #define AZX_REG_SD_BDLPU		0x1c
+ 
++/* GTS registers */
++#define AZX_REG_LLCH			0x14
++
++#define AZX_REG_GTS_BASE		0x520
++
++#define AZX_REG_GTSCC	(AZX_REG_GTS_BASE + 0x00)
++#define AZX_REG_WALFCC	(AZX_REG_GTS_BASE + 0x04)
++#define AZX_REG_TSCCL	(AZX_REG_GTS_BASE + 0x08)
++#define AZX_REG_TSCCU	(AZX_REG_GTS_BASE + 0x0C)
++#define AZX_REG_LLPFOC	(AZX_REG_GTS_BASE + 0x14)
++#define AZX_REG_LLPCL	(AZX_REG_GTS_BASE + 0x18)
++#define AZX_REG_LLPCU	(AZX_REG_GTS_BASE + 0x1C)
++
+ /* Haswell/Broadwell display HD-A controller Extended Mode registers */
+ #define AZX_REG_HSW_EM4			0x100c
+ #define AZX_REG_HSW_EM5			0x1010
+@@ -242,6 +255,29 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ /* Interval used to calculate the iterating register offset */
+ #define AZX_DRSM_INTERVAL		0x08
+ 
++/* Global time synchronization registers */
++#define GTSCC_TSCCD_MASK		0x80000000
++#define GTSCC_TSCCD_SHIFT		BIT(31)
++#define GTSCC_TSCCI_MASK		0x20
++#define GTSCC_CDMAS_DMA_DIR_SHIFT	4
++
++#define WALFCC_CIF_MASK			0x1FF
++#define WALFCC_FN_SHIFT			9
++#define HDA_CLK_CYCLES_PER_FRAME	512
++
++/*
++ * An error occurs near frame "rollover". The clocks in frame value indicates
++ * whether this error may have occurred. Here we use the value of 10. Please
++ * see the errata for the right number [<10]
++ */
++#define HDA_MAX_CYCLE_VALUE		499
++#define HDA_MAX_CYCLE_OFFSET		10
++#define HDA_MAX_CYCLE_READ_RETRY	10
++
++#define TSCCU_CCU_SHIFT			32
++#define LLPC_CCU_SHIFT			32
++
++
+ /*
+  * helpers to read the stream position
+  */
 diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 1567fe209e01..2ad3b447483f 100644
+index 27de8015717d..1567fe209e01 100644
 --- a/sound/pci/hda/hda_controller.c
 +++ b/sound/pci/hda/hda_controller.c
-@@ -27,6 +27,12 @@
- #include <linux/module.h>
- #include <linux/pm_runtime.h>
- #include <linux/slab.h>
+@@ -412,6 +412,11 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
+ 		goto unlock;
+ 	}
+ 	runtime->private_data = azx_dev;
 +
-+#ifdef CONFIG_X86
-+/* for art-tsc conversion */
-+#include <asm/tsc.h>
-+#endif
++	if (chip->gts_present)
++		azx_pcm_hw.info = azx_pcm_hw.info |
++			SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME;
 +
+ 	runtime->hw = azx_pcm_hw;
+ 	runtime->hw.channels_min = hinfo->channels_min;
+ 	runtime->hw.channels_max = hinfo->channels_max;
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index ec63bbf1ec6d..a50e0532622a 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -159,6 +159,9 @@ struct azx {
+ 	unsigned int region_requested:1;
+ 	unsigned int disabled:1; /* disabled by vga_switcheroo */
+ 
++	/* GTS present */
++	unsigned int gts_present:1;
++
+ #ifdef CONFIG_SND_HDA_DSP_LOADER
+ 	struct azx_dev saved_azx_dev;
+ #endif
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 89dacf9b4e6c..4786f435eb64 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -54,6 +54,7 @@
+ /* for snoop control */
+ #include <asm/pgtable.h>
+ #include <asm/cacheflush.h>
++#include <asm/cpufeature.h>
+ #endif
  #include <sound/core.h>
  #include <sound/initval.h>
- #include "hda_controller.h"
-@@ -337,12 +343,173 @@ static snd_pcm_uframes_t azx_pcm_pointer(struct snd_pcm_substream *substream)
- 			       azx_get_position(chip, azx_dev));
- }
+@@ -1655,6 +1656,22 @@ static int azx_first_init(struct azx *chip)
+ 		return -ENXIO;
+ 	}
  
-+/*
-+ * azx_scale64: Scale base by mult/div while not overflowing sanely
-+ *
-+ * Derived from scale64_check_overflow in kernel/time/timekeeping.c
-+ *
-+ * The tmestamps for a 48Khz stream can overflow after (2^64/10^9)/48K which
-+ * is about 384307 ie ~4.5 days.
-+ *
-+ * This scales the calculation so that overflow will happen but after 2^64 /
-+ * 48000 secs, which is pretty large!
-+ *
-+ * In caln below:
-+ *	base may overflow, but since there isn’t any additional division
-+ *	performed on base it’s OK
-+ *	rem can’t overflow because both are 32-bit values
-+ */
++	if (IS_SKL_PLUS(pci))
++		snd_hdac_bus_parse_capabilities(bus);
++
++	/*
++	 * Some Intel CPUs has always running timer (ART) feature and
++	 * controller may have Global time sync reporting capability, so
++	 * check both of these before declaring synchronized time reporting
++	 * capability SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME
++	 */
++	chip->gts_present = false;
 +
 +#ifdef CONFIG_X86
-+static u64 azx_scale64(u64 base, u32 num, u32 den)
-+{
-+	u64 rem;
-+
-+	rem = do_div(base, den);
-+
-+	base *= num;
-+	rem *= num;
-+
-+	do_div(rem, den);
-+
-+	return base + rem;
-+}
-+
-+static int azx_get_sync_time(ktime_t *device,
-+		struct system_counterval_t *system, void *ctx)
-+{
-+	struct snd_pcm_substream *substream = ctx;
-+	struct azx_dev *azx_dev = get_azx_dev(substream);
-+	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
-+	struct azx *chip = apcm->chip;
-+	struct snd_pcm_runtime *runtime;
-+	u64 ll_counter, ll_counter_l, ll_counter_h;
-+	u64 tsc_counter, tsc_counter_l, tsc_counter_h;
-+	u32 wallclk_ctr, wallclk_cycles;
-+	bool direction;
-+	u32 dma_select;
-+	u32 timeout = 200;
-+	u32 retry_count = 0;
-+
-+	runtime = substream->runtime;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		direction = 1;
-+	else
-+		direction = 0;
-+
-+	/* 0th stream tag is not used, so DMA ch 0 is for 1st stream tag */
-+	do {
-+		timeout = 100;
-+		dma_select = (direction << GTSCC_CDMAS_DMA_DIR_SHIFT) |
-+					(azx_dev->core.stream_tag - 1);
-+		snd_hdac_chip_writel(azx_bus(chip), GTSCC, dma_select);
-+
-+		/* Enable the capture */
-+		snd_hdac_chip_updatel(azx_bus(chip), GTSCC, 0, GTSCC_TSCCI_MASK);
-+
-+		while (timeout) {
-+			if (snd_hdac_chip_readl(azx_bus(chip), GTSCC) &
-+						GTSCC_TSCCD_MASK)
-+				break;
-+
-+			timeout--;
-+		}
-+
-+		if (!timeout) {
-+			dev_err(chip->card->dev, "GTSCC capture Timedout!\n");
-+			return -EIO;
-+		}
-+
-+		/* Read wall clock counter */
-+		wallclk_ctr = snd_hdac_chip_readl(azx_bus(chip), WALFCC);
-+
-+		/* Read TSC counter */
-+		tsc_counter_l = snd_hdac_chip_readl(azx_bus(chip), TSCCL);
-+		tsc_counter_h = snd_hdac_chip_readl(azx_bus(chip), TSCCU);
-+
-+		/* Read Link counter */
-+		ll_counter_l = snd_hdac_chip_readl(azx_bus(chip), LLPCL);
-+		ll_counter_h = snd_hdac_chip_readl(azx_bus(chip), LLPCU);
-+
-+		/* Ack: registers read done */
-+		snd_hdac_chip_writel(azx_bus(chip), GTSCC, GTSCC_TSCCD_SHIFT);
-+
-+		tsc_counter = (tsc_counter_h << TSCCU_CCU_SHIFT) |
-+						tsc_counter_l;
-+
-+		ll_counter = (ll_counter_h << LLPC_CCU_SHIFT) |	ll_counter_l;
-+		wallclk_cycles = wallclk_ctr & WALFCC_CIF_MASK;
-+
-+		/*
-+		 * An error occurs near frame "rollover". The clocks in
-+		 * frame value indicates whether this error may have
-+		 * occurred. Here we use the value of 10 i.e.,
-+		 * HDA_MAX_CYCLE_OFFSET
-+		 */
-+		if (wallclk_cycles < HDA_MAX_CYCLE_VALUE - HDA_MAX_CYCLE_OFFSET
-+					&& wallclk_cycles > HDA_MAX_CYCLE_OFFSET)
-+			break;
-+
-+		/*
-+		 * Sleep before we read again, else we may again get
-+		 * value near to MAX_CYCLE. Try to sleep for different
-+		 * amount of time so we dont hit the same number again
-+		 */
-+		udelay(retry_count++);
-+
-+	} while (retry_count != HDA_MAX_CYCLE_READ_RETRY);
-+
-+	if (retry_count == HDA_MAX_CYCLE_READ_RETRY) {
-+		dev_err_ratelimited(chip->card->dev,
-+			"Error in WALFCC cycle count\n");
-+		return -EIO;
-+	}
-+
-+	*device = ns_to_ktime(azx_scale64(ll_counter,
-+				NSEC_PER_SEC, runtime->rate));
-+	*device = ktime_add_ns(*device, (wallclk_cycles * NSEC_PER_SEC) /
-+			       ((HDA_MAX_CYCLE_VALUE + 1) * runtime->rate));
-+
-+	*system = convert_art_to_tsc(tsc_counter);
-+
-+	return 0;
-+}
-+
-+#else
-+static int azx_get_sync_time(ktime_t *device,
-+		struct system_counterval_t *system, void *ctx)
-+{
-+	return -ENXIO;
-+}
++	if (bus->ppcap && boot_cpu_has(X86_FEATURE_ART))
++		chip->gts_present = true;
 +#endif
 +
-+static int azx_get_crosststamp(struct snd_pcm_substream *substream,
-+			      struct system_device_crosststamp *xtstamp)
-+{
-+	return get_device_system_crosststamp(azx_get_sync_time,
-+					substream, NULL, xtstamp);
-+}
-+
-+static inline bool is_link_time_supported(struct snd_pcm_runtime *runtime,
-+				struct snd_pcm_audio_tstamp_config *ts)
-+{
-+	if (runtime->hw.info & SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME)
-+		if (ts->type_requested == SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK_SYNCHRONIZED)
-+			return true;
-+
-+	return false;
-+}
-+
- static int azx_get_time_info(struct snd_pcm_substream *substream,
- 			struct timespec *system_ts, struct timespec *audio_ts,
- 			struct snd_pcm_audio_tstamp_config *audio_tstamp_config,
- 			struct snd_pcm_audio_tstamp_report *audio_tstamp_report)
- {
- 	struct azx_dev *azx_dev = get_azx_dev(substream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct system_device_crosststamp xtstamp;
-+	int ret;
- 	u64 nsec;
- 
- 	if ((substream->runtime->hw.info & SNDRV_PCM_INFO_HAS_LINK_ATIME) &&
-@@ -361,8 +528,37 @@ static int azx_get_time_info(struct snd_pcm_substream *substream,
- 		audio_tstamp_report->accuracy_report = 1; /* rest of structure is valid */
- 		audio_tstamp_report->accuracy = 42; /* 24 MHz WallClock == 42ns resolution */
- 
--	} else
-+	} else if (is_link_time_supported(runtime, audio_tstamp_config)) {
-+
-+		ret = azx_get_crosststamp(substream, &xtstamp);
-+		if (ret)
-+			return ret;
-+
-+		switch (runtime->tstamp_type) {
-+		case SNDRV_PCM_TSTAMP_TYPE_MONOTONIC:
-+			return -EINVAL;
-+
-+		case SNDRV_PCM_TSTAMP_TYPE_MONOTONIC_RAW:
-+			*system_ts = ktime_to_timespec(xtstamp.sys_monoraw);
-+			break;
-+
-+		default:
-+			*system_ts = ktime_to_timespec(xtstamp.sys_realtime);
-+			break;
-+
-+		}
-+
-+		*audio_ts = ktime_to_timespec(xtstamp.device);
-+
-+		audio_tstamp_report->actual_type =
-+			SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK_SYNCHRONIZED;
-+		audio_tstamp_report->accuracy_report = 1;
-+		/* 24 MHz WallClock == 42ns resolution */
-+		audio_tstamp_report->accuracy = 42;
-+
-+	} else {
- 		audio_tstamp_report->actual_type = SNDRV_PCM_AUDIO_TSTAMP_TYPE_DEFAULT;
-+	}
- 
- 	return 0;
- }
+ 	if (chip->msi) {
+ 		if (chip->driver_caps & AZX_DCAPS_NO_MSI64) {
+ 			dev_dbg(card->dev, "Disabling 64bit MSI\n");
 -- 
 2.8.1
-
-
---===============0009365368959577835==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0009365368959577835==--
