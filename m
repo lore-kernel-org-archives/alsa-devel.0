@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA - hda: Add support for parsing new HDA
-	capabilities" to the asoc tree
-Date: Tue, 09 Aug 2016 13:44:12 +0100
-Message-ID: <E1bX6OC-0003dB-Ov@debutante>
-References: <1470305764-20802-5-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ALSA - Ext hda: remove
+	bus_parse_capabilities" to the asoc tree
+Date: Tue, 09 Aug 2016 13:44:15 +0100
+Message-ID: <E1bX6OF-0003e6-Ln@debutante>
+References: <1470240374-20018-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3FD27267D19
- for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2016 14:44:19 +0200 (CEST)
-In-Reply-To: <1470305764-20802-5-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F34C267D1E
+ for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2016 14:44:22 +0200 (CEST)
+In-Reply-To: <1470240374-20018-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, tiwai@suse.de
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ALSA - hda: Add support for parsing new HDA capabilities
+   ALSA - Ext hda: remove bus_parse_capabilities
 
 has been applied to the asoc tree at
 
@@ -53,144 +53,142 @@ to this mail.
 Thanks,
 Mark
 
->From 50279d9b5facde811280afe13dd8c79f0e7b21ed Mon Sep 17 00:00:00 2001
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Date: Thu, 4 Aug 2016 15:46:03 +0530
-Subject: [PATCH] ALSA - hda: Add support for parsing new HDA capabilities
+>From 404735c9fd8adff8e5ad11e1f9f8db069d865698 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Thu, 4 Aug 2016 15:46:02 +0530
+Subject: [PATCH] ALSA - Ext hda: remove bus_parse_capabilities
 
-Skylake onwards HDA controller supports new capabilities like
-Global Time Stamping (GTS) capability. So add support to parse
-these new capabilities.
+Remove the unused one as we have moved it up to hdac core.
 
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/hda_register.h   | 36 ++++++++++++++++++++++++++++++++++++
- sound/pci/hda/hda_controller.c |  5 +++++
- sound/pci/hda/hda_controller.h |  3 +++
- sound/pci/hda/hda_intel.c      | 17 +++++++++++++++++
- 4 files changed, 61 insertions(+)
+ include/sound/hdaudio_ext.h         | 12 ------
+ sound/hda/ext/hdac_ext_controller.c | 75 -------------------------------------
+ 2 files changed, 87 deletions(-)
 
-diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
-index ff1aecf325e8..0013063db7f2 100644
---- a/include/sound/hda_register.h
-+++ b/include/sound/hda_register.h
-@@ -89,6 +89,19 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
- #define AZX_REG_SD_BDLPL		0x18
- #define AZX_REG_SD_BDLPU		0x1c
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index b9593b201599..8660a7f10851 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -8,11 +8,6 @@
+  *
+  * @bus: hdac bus
+  * @num_streams: streams supported
+- * @ppcap: pp capabilities pointer
+- * @spbcap: SPIB capabilities pointer
+- * @mlcap: MultiLink capabilities pointer
+- * @gtscap: gts capabilities pointer
+- * @drsmcap: dma resume capabilities pointer
+  * @hlink_list: link list of HDA links
+  * @lock: lock for link mgmt
+  * @cmd_dma_state: state of cmd DMAs: CORB and RIRB
+@@ -22,12 +17,6 @@ struct hdac_ext_bus {
+ 	int num_streams;
+ 	int idx;
  
-+/* GTS registers */
-+#define AZX_REG_LLCH			0x14
-+
-+#define AZX_REG_GTS_BASE		0x520
-+
-+#define AZX_REG_GTSCC	(AZX_REG_GTS_BASE + 0x00)
-+#define AZX_REG_WALFCC	(AZX_REG_GTS_BASE + 0x04)
-+#define AZX_REG_TSCCL	(AZX_REG_GTS_BASE + 0x08)
-+#define AZX_REG_TSCCU	(AZX_REG_GTS_BASE + 0x0C)
-+#define AZX_REG_LLPFOC	(AZX_REG_GTS_BASE + 0x14)
-+#define AZX_REG_LLPCL	(AZX_REG_GTS_BASE + 0x18)
-+#define AZX_REG_LLPCU	(AZX_REG_GTS_BASE + 0x1C)
-+
- /* Haswell/Broadwell display HD-A controller Extended Mode registers */
- #define AZX_REG_HSW_EM4			0x100c
- #define AZX_REG_HSW_EM5			0x1010
-@@ -242,6 +255,29 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
- /* Interval used to calculate the iterating register offset */
- #define AZX_DRSM_INTERVAL		0x08
+-	void __iomem *ppcap;
+-	void __iomem *spbcap;
+-	void __iomem *mlcap;
+-	void __iomem *gtscap;
+-	void __iomem *drsmcap;
+-
+ 	struct list_head hlink_list;
  
-+/* Global time synchronization registers */
-+#define GTSCC_TSCCD_MASK		0x80000000
-+#define GTSCC_TSCCD_SHIFT		BIT(31)
-+#define GTSCC_TSCCI_MASK		0x20
-+#define GTSCC_CDMAS_DMA_DIR_SHIFT	4
-+
-+#define WALFCC_CIF_MASK			0x1FF
-+#define WALFCC_FN_SHIFT			9
-+#define HDA_CLK_CYCLES_PER_FRAME	512
-+
-+/*
-+ * An error occurs near frame "rollover". The clocks in frame value indicates
-+ * whether this error may have occurred. Here we use the value of 10. Please
-+ * see the errata for the right number [<10]
-+ */
-+#define HDA_MAX_CYCLE_VALUE		499
-+#define HDA_MAX_CYCLE_OFFSET		10
-+#define HDA_MAX_CYCLE_READ_RETRY	10
-+
-+#define TSCCU_CCU_SHIFT			32
-+#define LLPC_CCU_SHIFT			32
-+
-+
- /*
-  * helpers to read the stream position
+ 	struct mutex lock;
+@@ -54,7 +43,6 @@ void snd_hdac_ext_bus_device_remove(struct hdac_ext_bus *ebus);
+ #define HDA_CODEC_EXT_ENTRY(_vid, _revid, _name, _drv_data) \
+ 	HDA_CODEC_REV_EXT_ENTRY(_vid, _revid, _name, _drv_data)
+ 
+-int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *sbus);
+ void snd_hdac_ext_bus_ppcap_enable(struct hdac_ext_bus *chip, bool enable);
+ void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_ext_bus *chip, bool enable);
+ 
+diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
+index cd65e007e864..261469188566 100644
+--- a/sound/hda/ext/hdac_ext_controller.c
++++ b/sound/hda/ext/hdac_ext_controller.c
+@@ -29,81 +29,6 @@
   */
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 27de8015717d..1567fe209e01 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -412,6 +412,11 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
- 		goto unlock;
- 	}
- 	runtime->private_data = azx_dev;
-+
-+	if (chip->gts_present)
-+		azx_pcm_hw.info = azx_pcm_hw.info |
-+			SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME;
-+
- 	runtime->hw = azx_pcm_hw;
- 	runtime->hw.channels_min = hinfo->channels_min;
- 	runtime->hw.channels_max = hinfo->channels_max;
-diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
-index ec63bbf1ec6d..a50e0532622a 100644
---- a/sound/pci/hda/hda_controller.h
-+++ b/sound/pci/hda/hda_controller.h
-@@ -159,6 +159,9 @@ struct azx {
- 	unsigned int region_requested:1;
- 	unsigned int disabled:1; /* disabled by vga_switcheroo */
+ #define HDAC_MAX_CAPS 10
  
-+	/* GTS present */
-+	unsigned int gts_present:1;
-+
- #ifdef CONFIG_SND_HDA_DSP_LOADER
- 	struct azx_dev saved_azx_dev;
- #endif
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 89dacf9b4e6c..4786f435eb64 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -54,6 +54,7 @@
- /* for snoop control */
- #include <asm/pgtable.h>
- #include <asm/cacheflush.h>
-+#include <asm/cpufeature.h>
- #endif
- #include <sound/core.h>
- #include <sound/initval.h>
-@@ -1655,6 +1656,22 @@ static int azx_first_init(struct azx *chip)
- 		return -ENXIO;
- 	}
- 
-+	if (IS_SKL_PLUS(pci))
-+		snd_hdac_bus_parse_capabilities(bus);
-+
-+	/*
-+	 * Some Intel CPUs has always running timer (ART) feature and
-+	 * controller may have Global time sync reporting capability, so
-+	 * check both of these before declaring synchronized time reporting
-+	 * capability SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME
-+	 */
-+	chip->gts_present = false;
-+
-+#ifdef CONFIG_X86
-+	if (bus->ppcap && boot_cpu_has(X86_FEATURE_ART))
-+		chip->gts_present = true;
-+#endif
-+
- 	if (chip->msi) {
- 		if (chip->driver_caps & AZX_DCAPS_NO_MSI64) {
- 			dev_dbg(card->dev, "Disabling 64bit MSI\n");
+-/**
+- * snd_hdac_ext_bus_parse_capabilities - parse capablity structure
+- * @ebus: the pointer to extended bus object
+- *
+- * Returns 0 if successful, or a negative error code.
+- */
+-int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *ebus)
+-{
+-	unsigned int cur_cap;
+-	unsigned int offset;
+-	struct hdac_bus *bus = &ebus->bus;
+-	unsigned int counter = 0;
+-
+-	offset = snd_hdac_chip_readl(bus, LLCH);
+-
+-	/* Lets walk the linked capabilities list */
+-	do {
+-		cur_cap = _snd_hdac_chip_read(l, bus, offset);
+-
+-		dev_dbg(bus->dev, "Capability version: 0x%x\n",
+-				((cur_cap & AZX_CAP_HDR_VER_MASK) >> AZX_CAP_HDR_VER_OFF));
+-
+-		dev_dbg(bus->dev, "HDA capability ID: 0x%x\n",
+-				(cur_cap & AZX_CAP_HDR_ID_MASK) >> AZX_CAP_HDR_ID_OFF);
+-
+-		switch ((cur_cap & AZX_CAP_HDR_ID_MASK) >> AZX_CAP_HDR_ID_OFF) {
+-		case AZX_ML_CAP_ID:
+-			dev_dbg(bus->dev, "Found ML capability\n");
+-			ebus->mlcap = bus->remap_addr + offset;
+-			break;
+-
+-		case AZX_GTS_CAP_ID:
+-			dev_dbg(bus->dev, "Found GTS capability offset=%x\n", offset);
+-			ebus->gtscap = bus->remap_addr + offset;
+-			break;
+-
+-		case AZX_PP_CAP_ID:
+-			/* PP capability found, the Audio DSP is present */
+-			dev_dbg(bus->dev, "Found PP capability offset=%x\n", offset);
+-			ebus->ppcap = bus->remap_addr + offset;
+-			break;
+-
+-		case AZX_SPB_CAP_ID:
+-			/* SPIB capability found, handler function */
+-			dev_dbg(bus->dev, "Found SPB capability\n");
+-			ebus->spbcap = bus->remap_addr + offset;
+-			break;
+-
+-		case AZX_DRSM_CAP_ID:
+-			/* DMA resume  capability found, handler function */
+-			dev_dbg(bus->dev, "Found DRSM capability\n");
+-			ebus->drsmcap = bus->remap_addr + offset;
+-			break;
+-
+-		default:
+-			dev_dbg(bus->dev, "Unknown capability %d\n", cur_cap);
+-			break;
+-		}
+-
+-		counter++;
+-
+-		if (counter > HDAC_MAX_CAPS) {
+-			dev_err(bus->dev, "We exceeded HDAC Ext capablities!!!\n");
+-			break;
+-		}
+-
+-		/* read the offset of next capabiity */
+-		offset = cur_cap & AZX_CAP_HDR_NXT_PTR_MASK;
+-
+-	} while (offset);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_parse_capabilities);
+-
+ /*
+  * processing pipe helpers - these helpers are useful for dealing with HDA
+  * new capability of processing pipelines
 -- 
 2.8.1
