@@ -1,161 +1,115 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: lpass-platform: don't use snd_soc_pcm_set_drvdata()" to the asoc tree
-Date: Tue, 09 Aug 2016 13:44:06 +0100
-Message-ID: <E1bX6O6-0003b8-Av@debutante>
-References: <87invl9gbq.wl%kuninori.morimoto.gx@renesas.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH v5 1/2] mfd: Add DT bindings documentation for Samsung Exynos
+ LPASS
+Date: Tue, 09 Aug 2016 15:37:54 +0200
+Message-ID: <1470749875-9006-1-git-send-email-s.nawrocki@samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87invl9gbq.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.orgalsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>
+To: lee.jones@linaro.org
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, robh@kernel.org, devicetree@vger.kernel.org, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+This patch adds documentation of the DT bindings for the Samsung
+Exynos SoC Low Power Audio Subsystem.
 
-   ASoC: lpass-platform: don't use snd_soc_pcm_set_drvdata()
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 6adcbdcd4b6e8301c3a4c61284e701f87de9a409 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 1 Aug 2016 06:10:54 +0000
-Subject: [PATCH] ASoC: lpass-platform: don't use snd_soc_pcm_set_drvdata()
-
-snd_soc_pcm_set_drvdata() will set driver data to rtd->dev,
-but driver data of rtd->dev is already used as "rtd" on
-soc_post_component_init().
-
-	static int soc_post_component_init(xxx)
-	{
-		...
-		dev_set_drvdata(rtd->dev, rtd);
-		...
-	}
-
-To remove confusion, snd_soc_pcm_set/get_drvdata() should be
-removed soon. This patch is for it.
-
-qcom/lpass-platform.c sets struct lpass_pcm_data to rtd->dev today,
-but we can replace it to struct lpass_data :: private_data.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- sound/soc/qcom/lpass-platform.c | 14 +++++++-------
- sound/soc/qcom/lpass.h          |  2 ++
- 2 files changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index db000c6987a1..a144c14c7169 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -84,9 +84,9 @@ static int lpass_platform_pcmops_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct lpass_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(soc_runtime);
- 	struct lpass_data *drvdata =
- 		snd_soc_platform_get_drvdata(soc_runtime->platform);
-+	struct lpass_pcm_data *pcm_data = drvdata->private_data;
- 	struct lpass_variant *v = drvdata->variant;
- 	snd_pcm_format_t format = params_format(params);
- 	unsigned int channels = params_channels(params);
-@@ -177,9 +177,9 @@ static int lpass_platform_pcmops_hw_params(struct snd_pcm_substream *substream,
- static int lpass_platform_pcmops_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct lpass_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(soc_runtime);
- 	struct lpass_data *drvdata =
- 		snd_soc_platform_get_drvdata(soc_runtime->platform);
-+	struct lpass_pcm_data *pcm_data = drvdata->private_data;
- 	struct lpass_variant *v = drvdata->variant;
- 	unsigned int reg;
- 	int ret;
-@@ -201,9 +201,9 @@ static int lpass_platform_pcmops_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct lpass_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(soc_runtime);
- 	struct lpass_data *drvdata =
- 		snd_soc_platform_get_drvdata(soc_runtime->platform);
-+	struct lpass_pcm_data *pcm_data = drvdata->private_data;
- 	struct lpass_variant *v = drvdata->variant;
- 	int ret, ch, dir = substream->stream;
- 
-@@ -255,9 +255,9 @@ static int lpass_platform_pcmops_trigger(struct snd_pcm_substream *substream,
- 		int cmd)
- {
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct lpass_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(soc_runtime);
- 	struct lpass_data *drvdata =
- 		snd_soc_platform_get_drvdata(soc_runtime->platform);
-+	struct lpass_pcm_data *pcm_data = drvdata->private_data;
- 	struct lpass_variant *v = drvdata->variant;
- 	int ret, ch, dir = substream->stream;
- 
-@@ -331,9 +331,9 @@ static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
- 		struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct lpass_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(soc_runtime);
- 	struct lpass_data *drvdata =
- 			snd_soc_platform_get_drvdata(soc_runtime->platform);
-+	struct lpass_pcm_data *pcm_data = drvdata->private_data;
- 	struct lpass_variant *v = drvdata->variant;
- 	unsigned int base_addr, curr_addr;
- 	int ret, ch, dir = substream->stream;
-@@ -483,7 +483,7 @@ static int lpass_platform_pcm_new(struct snd_soc_pcm_runtime *soc_runtime)
- 		return -ENOMEM;
- 
- 	data->i2s_port = cpu_dai->driver->id;
--	snd_soc_pcm_set_drvdata(soc_runtime, data);
-+	drvdata->private_data = data;
- 
- 	psubstream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
- 	if (psubstream) {
-@@ -570,8 +570,8 @@ static void lpass_platform_pcm_free(struct snd_pcm *pcm)
- 		substream = pcm->streams[i].substream;
- 		if (substream) {
- 			rt = substream->private_data;
--			data = snd_soc_pcm_get_drvdata(rt);
- 			drvdata = snd_soc_platform_get_drvdata(rt->platform);
-+			data = drvdata->private_data;
- 
- 			ch = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 				? data->rdma_ch
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 30714ad1e138..35b3cea8207d 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -58,6 +58,8 @@ struct lpass_data {
- 	/* 8016 specific */
- 	struct clk *pcnoc_mport_clk;
- 	struct clk *pcnoc_sway_clk;
+Changes since v4:
+ - text reformatting, added VIC to the list of sub-devices, relative
+   paths used for the reference DT binding documentation files, added
+   example dts.
+
+Changes since v3:
+ - moved to Documentation/devicetree/bindings/mfd,
+ - added #address-cells, #size-cells, ranges as required
+   properties,
+ - added description of the IP block subnodes and links
+   to their binding's documentation.
+
+Changes since v2:
+ - none.
+---
+ .../bindings/mfd/samsung,exynos5433-lpass.txt      | 70 ++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/samsung,exynos5433-lpass.txt
+
+diff --git a/Documentation/devicetree/bindings/mfd/samsung,exynos5433-lpass.txt b/Documentation/devicetree/bindings/mfd/samsung,exynos5433-lpass.txt
+new file mode 100644
+index 0000000..c110e11
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/samsung,exynos5433-lpass.txt
+@@ -0,0 +1,70 @@
++Samsung Exynos SoC Low Power Audio Subsystem (LPASS)
 +
-+	void *private_data;
- };
- 
- /* Vairant data per each SOC */
--- 
-2.8.1
++Required properties:
++
++ - compatible		: "samsung,exynos5433-lpass"
++ - reg			: should contain the LPASS top SFR region location
++			  and size
++ - samsung,pmu-syscon	: the phandle to the Power Management Unit node
++ - #address-cells	: should be 1
++ - #size-cells		: should be 1
++ - ranges		: must be present
++
++Each IP block of the Low Power Audio Subsystem should be specified as
++an optional sub-node. For "samsung,exynos5433-lpass" compatible this includes:
++UART, SLIMBUS, PCM, I2S, DMAC, Timers 0...4, VIC, WDT 0...1 devices.
++
++Bindings of the sub-nodes are described in:
++  ../serial/samsung_uart.txt
++  ../sound/samsung-i2s.txt
++  ../dma/arm-pl330.txt
++
++
++Example:
++
++audio-subsystem {
++	compatible = "samsung,exynos5433-lpass";
++	reg = <0x11400000 0x100>, <0x11500000 0x08>;
++	samsung,pmu-syscon = <&pmu_system_controller>;
++	#address-cells = <1>;
++	#size-cells = <1>;
++	ranges;
++
++	adma: adma@11420000 {
++		compatible = "arm,pl330", "arm,primecell";
++		reg = <0x11420000 0x1000>;
++		interrupts = <0 73 0>;
++		clocks = <&cmu_aud CLK_ACLK_DMAC>;
++		clock-names = "apb_pclk";
++		#dma-cells = <1>;
++		#dma-channels = <8>;
++		#dma-requests = <32>;
++	};
++
++	i2s0: i2s0@11440000 {
++		compatible = "samsung,exynos7-i2s";
++		reg = <0x11440000 0x100>;
++		dmas = <&adma 0 &adma 2>;
++		dma-names = "tx", "rx";
++		interrupts = <0 70 0>;
++		clocks = <&cmu_aud CLK_PCLK_AUD_I2S>,
++			 <&cmu_aud CLK_SCLK_AUD_I2S>,
++			 <&cmu_aud CLK_SCLK_I2S_BCLK>;
++		clock-names = "iis", "i2s_opclk0", "i2s_opclk1";
++		pinctrl-names = "default";
++		pinctrl-0 = <&i2s0_bus>;
++		status = "disabled";
++	};
++
++	serial_3: serial@11460000 {
++		compatible = "samsung,exynos5433-uart";
++		reg = <0x11460000 0x100>;
++		interrupts = <0 67 0>;
++		clocks = <&cmu_aud CLK_PCLK_AUD_UART>,
++			 <&cmu_aud CLK_SCLK_AUD_UART>;
++		clock-names = "uart", "clk_uart_baud0";
++		pinctrl-names = "default";
++		pinctrl-0 = <&uart_aud_bus>;
++		status = "disabled";
++	};
++ };
+--
+1.9.1
