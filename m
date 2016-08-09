@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: core: fix shift used for second item
- in snd_soc_get_enum_double
-Date: Tue, 9 Aug 2016 19:54:14 +0100
-Message-ID: <20160809185414.GF9347@sirena.org.uk>
-References: <1470766145-3340-1-git-send-email-jjassal@opensource.wolfsonmicro.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v2 0/3] drm/i2c: tda998x ASoC hdmi-codec
+	support + BeagleBoneBlack audio support
+Date: Tue, 9 Aug 2016 22:00:03 +0300
+Message-ID: <cover.1470754071.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6138149620168813151=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C27D926662F
- for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2016 20:54:27 +0200 (CEST)
-In-Reply-To: <1470766145-3340-1-git-send-email-jjassal@opensource.wolfsonmicro.com>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E0FE26662F
+ for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2016 21:00:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: jjassal <jaswinderjassal@gmail.com>
-Cc: jjassal <jjassal@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com
+To: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org
+Cc: peter.ujfalusi@ti.com, tony@atomide.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, rmk+kernel@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
+Changes since first version [1] of this series:
+- "drm/i2c: tda998x: Improve tda998x_configure_audio() audio related pdata"
+  - Change audio in tda998x pdata to audio_params to match the naming in
+    private data struct
+  - Skip IEC958_AES2 byte when writing status bytes to registers 
+  - Turn AFMT-macros to enum
+  - include linux/hdmi.h in drm/i2c/tda998x.h
+- "drm/i2c: tda998x: Register ASoC hdmi-codec and add audio DT binding"
+  - Fix macronaming naming in dt-bindings/display/tda998x.h
+  - Turn AFMT-macros to enum
+  - Add locking to protect access to audio registers from ASoC thread
+- "dts/am335x-boneblack: SQUASH"
+  - Use corrected macros from dt-bindings/display/tda998x.h
 
---===============6138149620168813151==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qp4W5+cUSnZs0RIF"
-Content-Disposition: inline
+[1] https://lists.freedesktop.org/archives/dri-devel/2016-August/114491.html 
 
+Jyri Sarha (3):
+  drm/i2c: tda998x: Improve tda998x_configure_audio() audio related
+    pdata
+  drm/i2c: tda998x: Register ASoC hdmi-codec and add audio DT binding
+  ARM: dts: am335x-boneblack: Add HDMI audio support
 
---qp4W5+cUSnZs0RIF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ .../devicetree/bindings/display/bridge/tda998x.txt |  18 ++
+ arch/arm/boot/dts/am335x-boneblack.dts             |  71 ++++-
+ drivers/gpu/drm/i2c/Kconfig                        |   1 +
+ drivers/gpu/drm/i2c/tda998x_drv.c                  | 297 ++++++++++++++++++---
+ include/drm/i2c/tda998x.h                          |  29 +-
+ include/dt-bindings/display/tda998x.h              |   7 +
+ 6 files changed, 368 insertions(+), 55 deletions(-)
+ create mode 100644 include/dt-bindings/display/tda998x.h
 
-On Tue, Aug 09, 2016 at 07:09:05PM +0100, jjassal wrote:
-> Incorrect shift value was being used to extract the second item.
->=20
-> Signed-off-by: jjassal <jjassal@opensource.wolfsonmicro.com>
-
-This doesn't match the e-mail address this was sent from and so looks
-like a non-author signoff though I'm guessing both addresses belong to a
-single person.  You should ensure that your git configuration is
-consistent in which e-mail address it uses.  Making sure that the
-signoff comes from the author is important for licensing reasons, see
-SubmttingPatches for details, and so using different e-mail addresses
-sets off alarm bells.
-
-You really should also use something other than your login for the real
-name - it's the more common thing and it's less likely to be
-misidentified as spam.
-
---qp4W5+cUSnZs0RIF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXqibVAAoJECTWi3JdVIfQS1gH/ji/vNqj3E8pJwigZ9YOCnC+
-ND7Z98FOLS5vZhakUUxrHvplhFmvHwQq/YKX7ZcWZBuAQi/CqSiHOdJNZnn+pJdQ
-NYpzGKjt0ESQDCq/8RIB+jDD4gMLqlCCTkrezivWRySV8+9n1D4D5QS1ObDY1UZS
-2l7/j2rDOnF07Gw4ojFmkRgTft7pwYVejXdSPS6pGIoJBZmTfMJ1tBie4la5I1t1
-yiQLaD9GLJx9GTD3vs6ghhN1ESp/VWpAnoBHBIFsA8+xj5U2sTCg4WcGkvNSf2yC
-NkdebWyUuoZZZzCv1BYRTCMritmVQmgn0TCjcA5EU0txMQ/X02rzEheg9kV42OY=
-=dNSU
------END PGP SIGNATURE-----
-
---qp4W5+cUSnZs0RIF--
-
---===============6138149620168813151==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6138149620168813151==--
+-- 
+1.9.1
