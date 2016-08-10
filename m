@@ -1,14 +1,22 @@
-From: =?UTF-8?q?Stefan=20M=C3=BCller-Klieser?= <s.mueller-klieser@phytec.de>
-Subject: [PATCH] ARM: dts: am335x-wega: Add audio support
-Date: Wed, 10 Aug 2016 17:12:15 +0200
-Message-ID: <1470841935-14190-1-git-send-email-s.mueller-klieser@phytec.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5659: Add mclk controls
+Date: Wed, 10 Aug 2016 18:06:32 +0100
+Message-ID: <20160810170632.GL9347@sirena.org.uk>
+References: <1469660568-3511-1-git-send-email-nicoleotsuka@gmail.com>
+ <20160728155732.GG11806@sirena.org.uk>
+ <20160728181419.GA4742@Asurada-Nvidia>
+ <20160728185510.GK11806@sirena.org.uk>
+ <20160729161521.GL9681@localhost>
+ <20160729163933.GJ10376@sirena.org.uk>
+ <c649c3fe-b111-56a8-275e-d967a961dd41@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2724614979517317325=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from root.phytec.de (mail.x-arc.de [217.6.246.34])
- by alsa0.perex.cz (Postfix) with ESMTP id F2BF22660C2
- for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 17:12:15 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FFBF266728
+ for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 19:06:53 +0200 (CEST)
+In-Reply-To: <c649c3fe-b111-56a8-275e-d967a961dd41@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,54 +26,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, tony@atomide.com, peter.ujfalusi@ti.com, robh+dt@kernel.org, linux-omap@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: mark.rutland@arm.com, oder_chiou@realtek.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Darren Hart <dvhart@linux.intel.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, robh+dt@kernel.org, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIHdlZ2EgYm9hcmQgaGFzIGEgVExWMzIwQUlDMzAwNyBjb25uZWN0ZWQgdmlhIE1jQVNQMC4g
-SW4gdGhlIGRlZmF1bHQKY29uZmlndXJhdGlvbiwgbm8gZXh0ZXJuYWwgY3J5c3RhbCBpcyBtb3Vu
-dGVkLiBXZSBydW4gYSBzeXN0ZW0gY2xvY2sgb2YKMjUgTUh6LCBzbyB3ZSB1c2UgdGhlIGF1ZGlv
-IGNvZGVjIFBMTCBmb3IgYXVkaW8gY2xvY2sgZ2VuZXJhdGlvbi4KClNpZ25lZC1vZmYtYnk6IFN0
-ZWZhbiBNw7xsbGVyLUtsaWVzZXIgPHMubXVlbGxlci1rbGllc2VyQHBoeXRlYy5kZT4KLS0tCiBh
-cmNoL2FybS9ib290L2R0cy9hbTMzNXgtd2VnYS5kdHNpIHwgNjIgKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCA2MiBpbnNlcnRpb25zKCspCgpk
-aWZmIC0tZ2l0IGEvYXJjaC9hcm0vYm9vdC9kdHMvYW0zMzV4LXdlZ2EuZHRzaSBiL2FyY2gvYXJt
-L2Jvb3QvZHRzL2FtMzM1eC13ZWdhLmR0c2kKaW5kZXggMjgyZjZkNC4uN2Y1ZjhlZCAxMDA2NDQK
-LS0tIGEvYXJjaC9hcm0vYm9vdC9kdHMvYW0zMzV4LXdlZ2EuZHRzaQorKysgYi9hcmNoL2FybS9i
-b290L2R0cy9hbTMzNXgtd2VnYS5kdHNpCkBAIC0xMSw2ICsxMSwxMCBAQAogCW1vZGVsID0gIlBo
-eXRlYyBBTTMzNXggcGh5Qk9BUkQtV0VHQSI7CiAJY29tcGF0aWJsZSA9ICJwaHl0ZWMsYW0zMzV4
-LXdlZ2EiLCAicGh5dGVjLGFtMzM1eC1waHljb3JlLXNvbSIsICJ0aSxhbTMzeHgiOwogCisJc291
-bmQ6IHNvdW5kX2lmYWNlIHsKKwkJY29tcGF0aWJsZSA9ICJ0aSxkYTgzMC1ldm0tYXVkaW8iOwor
-CX07CisKIAlyZWd1bGF0b3JzIHsKIAkJY29tcGF0aWJsZSA9ICJzaW1wbGUtYnVzIjsKIApAQCAt
-MjQsNiArMjgsNTggQEAKIAl9OwogfTsKIAorLyogQXVkaW8gKi8KKyZhbTMzeHhfcGlubXV4IHsK
-KwltY2FzcDBfcGluczogcGlubXV4X21jYXNwMCB7CisJCXBpbmN0cmwtc2luZ2xlLHBpbnMgPSA8
-CisJCQlBTTMzWFhfSU9QQUQoMHg5QUMsIFBJTl9PVVRQVVRfUFVMTERPV04gfCBNVVhfTU9ERTAp
-IC8qIG1jYXNwMF9haGNsa3gubWNhc3AwX2FoY2xreCAqLworCQkJQU0zM1hYX0lPUEFEKDB4OTkw
-LCBQSU5fSU5QVVRfUFVMTERPV04gfCBNVVhfTU9ERTApICAvKiBtY2FzcDBfYWNsa3gubWNhc3Aw
-X2FjbGt4ICovCisJCQlBTTMzWFhfSU9QQUQoMHg5OTQsIFBJTl9JTlBVVF9QVUxMRE9XTiB8IE1V
-WF9NT0RFMCkgIC8qIG1jYXNwMF9mc3gubWNhc3AwX2ZzeCAqLworCQkJQU0zM1hYX0lPUEFEKDB4
-OTk4LCBQSU5fSU5QVVRfUFVMTERPV04gfCBNVVhfTU9ERTApICAvKiBtY2FzcDBfYXhyMC5tY2Fz
-cDBfYXhyMCAqLworCQkJQU0zM1hYX0lPUEFEKDB4OUE4LCBQSU5fT1VUUFVUX1BVTExET1dOIHwg
-TVVYX01PREUwKSAvKiBtY2FzcDBfYXhyMS5tY2FzcDBfYXhyMSAqLworCQk+OworCX07Cit9Owor
-CismaTJjMCB7CisJdGx2MzIwYWljMzAwNzogdGx2MzIwYWljMzAwN0AxOCB7CisJCWNvbXBhdGli
-bGUgPSAidGksdGx2MzIwYWljMzAwNyI7CisJCXJlZyA9IDwweDE4PjsKKwkJQVZERC1zdXBwbHkg
-PSA8JnZjYzN2Mz47CisJCUlPVkRELXN1cHBseSA9IDwmdmNjM3YzPjsKKwkJRFJWREQtc3VwcGx5
-ID0gPCZ2Y2MzdjM+OworCQlEVkRELXN1cHBseSA9IDwmdmRpZzFfcmVnPjsKKwkJc3RhdHVzID0g
-Im9rYXkiOworCX07Cit9OworCismbWNhc3AwIHsKKwlwaW5jdHJsLW5hbWVzID0gImRlZmF1bHQi
-OworCXBpbmN0cmwtMCA9IDwmbWNhc3AwX3BpbnM+OworCW9wLW1vZGUgPSA8MD47IC8qIERBVklO
-Q0lfTUNBU1BfSUlTX01PREUgKi8KKwl0ZG0tc2xvdHMgPSA8Mj47CisJc2VyaWFsLWRpciA9IDwK
-KwkJMiAxIDAgMCAvKiAjIDA6IElOQUNUSVZFLCAxOiBUWCwgMjogUlggKi8KKwk+OworCXR4LW51
-bS1ldnQgPSA8MTY+OworCXJ0LW51bS1ldnQgPSA8MTY+OworCXN0YXR1cyA9ICJva2F5IjsKK307
-CisKKyZzb3VuZCB7CisJdGksbW9kZWwgPSAiQU0zMzV4LVdlZ2EiOworCXRpLGF1ZGlvLWNvZGVj
-ID0gPCZ0bHYzMjBhaWMzMDA3PjsKKwl0aSxtY2FzcC1jb250cm9sbGVyID0gPCZtY2FzcDA+Owor
-CXRpLGF1ZGlvLXJvdXRpbmcgPQorCQkiTGluZSBPdXQiLAkJIkxMT1VUIiwKKwkJIkxpbmUgT3V0
-IiwJCSJSTE9VVCIsCisJCSJMSU5FMUwiLAkJIkxpbmUgSW4iLAorCQkiTElORTFSIiwJCSJMaW5l
-IEluIjsKKwljbG9ja3MgPSA8Jm1jYXNwMF9mY2s+OworCWNsb2NrLW5hbWVzID0gIm1jbGsiOwor
-CXN0YXR1cyA9ICJva2F5IjsKK307CisKIC8qIENBTiBCdXNzZXMgKi8KICZhbTMzeHhfcGlubXV4
-IHsKIAlkY2FuMV9waW5zOiBwaW5tdXhfZGNhbjEgewpAQCAtOTksNiArMTU1LDEyIEBACiAJc3Rh
-dHVzID0gIm9rYXkiOwogfTsKIAorLyogUG93ZXIgKi8KKyZ2ZGlnMV9yZWcgeworCXJlZ3VsYXRv
-ci1ib290LW9uOworCXJlZ3VsYXRvci1hbHdheXMtb247Cit9OworCiAvKiBVQVJUcyAqLwogJmFt
-MzN4eF9waW5tdXggewogCXVhcnQwX3BpbnM6IHBpbm11eF91YXJ0MCB7Ci0tIAoxLjkuMQoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--===============2724614979517317325==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="t5C3/nrmPumNj5sH"
+Content-Disposition: inline
+
+
+--t5C3/nrmPumNj5sH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Aug 10, 2016 at 08:57:28AM -0500, Pierre-Louis Bossart wrote:
+
+> Without going into a debate on x86 v. the clock API or the merits of a patch
+> that has already been applied, I am pretty confused on who's supposed to
+> manage the mclk between the machine and codec driver.
+
+> So on a DAPM transition the clock is enabled. Fine.
+> What's not clear here is that the codec driver doesn't know what rates are
+> supported by the SOC/chipset. The machine driver is typically the one doing
+> calls such as
+
+This should really be being propagated through the clock tree by the
+clock API rather than open coded - for a lot of things it'll just boil
+down to a clk_set_rate() at the edge of the clock tree.  Any constraints
+should also be applied through the clock API, though in a lot of cases
+the devices are simple enough that it should be a fairly mechanical
+process.
+
+> so the summary is that we have two ways of doing the same thing - turning
+> the mclk on when it's needed - and I wonder if doing this in the codec is
+> really the right solution? Again this is not a question on the merits of the
+> clk API/framework but whether we can have a single point of control instead
+> of two pieces of code doing the same thing in two drivers.
+> If I am missing something I am all ears.
+
+We've got two ways of doing this at the minute partly because
+historically things have been open coded in the machine drivers due to
+the lack of a clock API, now we have one we can use we should be using
+it consistently to set rates.  Where the machine driver needs to do
+things dynamically it really ought to be able to express the constraints
+it's trying to set through the clock API, if we can't do things we need
+we should improve the clock API.  This will mean that we don't have to
+reinvent the wheel when we're doing things with clocks, we have
+consistent interfaces to all parts of the clock tree and other bits of
+the system will get reuse from anything we've learned about
+implementation.
+
+The CODEC clearly has *some* idea of what's going on here, and
+especially for simpler CODECs the code to drive the clocking should be
+fairly easy to generalize as there's few options.  From a clock API
+point of view the CODEC really ought to be the one requesting the clocks
+that go into it, though there's nothing that says it has to only use its
+own information to do that.
+
+--t5C3/nrmPumNj5sH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXq18XAAoJECTWi3JdVIfQONcH/j1nEc+sO9quCV1emA37XseH
+7MMMrEYV+tpEwP1uk10+8f6I/hYAHGumux5VnhtRQIM3efsKxYHOGGSf7tzFBNiL
+ME07JJXDd67aJ1Zk41hWCTP3U7RBfIGFoZIE3+7gr63+XAwYFcd1sCUe6CO4RoS8
+gw9MN8Uqrdc2Nj+rR0+5kppsm+SfyzKF/SZfOxR87n+aykKBT+Q+HskAZXIxjeSQ
+AhUaPLk0/h0738jEt+nwnrfD/nnY7ACRYCxcXY8arWzITk8g6EUv81Cx4sq0BGtX
+wzGKJ3NZw16qccgBffzLwboWcVUfApRM6ZKcKmi3nGvvhRlRm7uddTKBUDS9bJc=
+=jQAw
+-----END PGP SIGNATURE-----
+
+--t5C3/nrmPumNj5sH--
+
+--===============2724614979517317325==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2724614979517317325==--
