@@ -1,16 +1,26 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Underrun with 2 periods on skylake HDA driver
-Date: Wed, 10 Aug 2016 08:54:22 +0200
-Message-ID: <41a8a1f8-01f9-6c8b-b837-f0d1bc78bc41@ladisch.de>
-References: <20060810050415.GB5190@dhara-desktop>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH v4 2/4] mfd: Add Samsung Exynos Low Power
+ Audio Subsystem driver
+Date: Wed, 10 Aug 2016 10:36:00 +0200
+Message-ID: <a66ab86f-d5da-0462-81c9-48469721d229@samsung.com>
+References: <1467738804-31460-1-git-send-email-s.nawrocki@samsung.com>
+ <20160809150502.GQ5243@dell>
+ <61d700f7-ef66-8278-54ea-8e6e2f1a029e@samsung.com>
+ <20160809205031.GD1581@dell>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 1C5F5265335
- for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 08:54:35 +0200 (CEST)
-In-Reply-To: <20060810050415.GB5190@dhara-desktop>
+Received: from mailout4.w1.samsung.com (mailout4.w1.samsung.com
+ [210.118.77.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7946C265255
+ for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 10:36:16 +0200 (CEST)
+Received: from eucpsbgm2.samsung.com (unknown [203.254.199.245])
+ by mailout4.w1.samsung.com
+ (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
+ with ESMTP id <0OBO00E2NQKDEE90@mailout4.w1.samsung.com> for
+ alsa-devel@alsa-project.org; Wed, 10 Aug 2016 09:36:13 +0100 (BST)
+In-reply-to: <20160809205031.GD1581@dell>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,48 +30,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dharageswari R <dharageswari.r@intel.com>, tiwai@suse.de
-Cc: vinod.koul@intel.com, Hardik T <hardik.t.shah@intel.com>, alsa-devel@alsa-project.org, Rakesh A <rakesh.a.ughreja@intel.com>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, b.zolnierkie@samsung.com, linux-kernel@vger.kernel.org, inki.dae@samsung.com, broonie@kernel.org, Beomho Seo <beomho.seo@samsung.com>, ideal.song@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Dharageswari R wrote:
-> While doing the validation of Skylake HDA driver using aplay and
-> following parameters, we noticed underrun issues.
->
-> buffer_size  : 9600
-> period_size  : 4800
->
-> After doing further debugging, what I found is
->
-> 1.DMA complete interrupt occurs for the first period.
-> 2.Driver reads DMA position in buffer pointer and gets value of 4784.
+On 08/09/2016 10:50 PM, Lee Jones wrote:
+> On Tue, 09 Aug 2016, Sylwester Nawrocki wrote:
+> 
+>> > On 08/09/2016 05:05 PM, Lee Jones wrote:
+>>>> > >> +static SIMPLE_DEV_PM_OPS(lpass_pm_ops, exynos_lpass_suspend,
+>>>>> > >> > +					exynos_lpass_resume);
+>>> > > Put this up by the PM functions.
+>> > 
+>> > Sorry, I don't understand this comment, which PM functions do you
+>> > mean exactly?
+> *_suspend and *_resume.  PM == Power Management.
+> 
+> You also need to place the functions in side some CONFIG_PM_SLEEP
+> guards.  Grep around, you'll see what I mean.
 
-The interrupt says that the buffer descriptor list entry has been
-completed, but the position in buffer pointer says that the entry has
-not yet been completed.
+OK, but couldn't we just leave it with that SIMPLE_DEV_PM_OPS()
+macro?  It saves us an #ifdef ugliness and if I actually grep
+drivers/mfd most of the drivers use either SIMPLE_DEV_PM_OPS() or
+SET_SYSTEM_SLEEP_PM_OPS. Are you asking me to change the above to:
 
-> I checked with HDA architects and they are saying that when the DMA
-> completion interrupt occurs there can be slight delay before the DMA
-> Position In Buffer Pointer gets updated.
+static const struct dev_pm_ops exynos_lpass_pm_ops = {
+#ifdef CONFIG_PM_SLEEP
+	.suspend = exynos_lpass_suspend,
+	.resume = exynos_lpass_resume,
+	.freeze = exynos_lpass_suspend,
+	.thaw = exynos_lpass_resume,
+	.poweroff = exynos_lpass_suspend,
+	.restore = exynos_lpass_resume,
+#endif
+}
 
-The driver's interrupt handler takes care to read the interrupt status
-register first, so that any pending memory writes from the device are
-flushed.
+or perhaps
 
-Of course, this does not work if the device posts writes _after_ the
-interrupt has been raised.  This is a bug in the hardware.
+static const struct dev_pm_ops exynos_lpass_pm_ops = {
+	SET_SYSTEM_SLEEP_PM_OPS(exynos_lpass_suspend, exynos_lpass_resume)
+}
 
-> So driver is expected to refill data based on whatever content is
-> reflected in the DMA Position In Buffer.
+?
 
-No, that's not how it works.  The driver waits until all 4800 frames
-are available, and the only way to wake it up is with an interrupt.
+I agree about the CONFIG_PM_SLEEP guards.  There is very little
+chance though the LPASS driver will ever be used with
+CONFIG_PM_SLEEP disabled. How about adding __maybe_unused attribute
+to the *_suspend/*_resume functions then?  I can see this pattern
+used already in drivers/mfd.
 
-
-It appears the driver must work around this bug by scheduling another
-interrupt after the delay.  Is there an upper limit (time or frames) for
-this delay?
-
-
-Regards,
-Clemens
+-- 
+Thanks,
+Sylwester
