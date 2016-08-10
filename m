@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsrc-card: use asoc_simple_card_canonicalize_cpu()" to the asoc tree
-Date: Wed, 10 Aug 2016 21:03:52 +0100
-Message-ID: <E1bXZjE-0000QA-4l@debutante>
-References: <87y445gymj.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card-utils: add asoc_simple_card_canonicalize_cpu()" to the asoc tree
+Date: Wed, 10 Aug 2016 21:03:58 +0100
+Message-ID: <E1bXZjK-0000S6-Gd@debutante>
+References: <871t1xid8e.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87y445gymj.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <871t1xid8e.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsrc-card: use asoc_simple_card_canonicalize_cpu()
+   ASoC: simple-card-utils: add asoc_simple_card_canonicalize_cpu()
 
 has been applied to the asoc tree at
 
@@ -37,56 +37,62 @@ to this mail.
 Thanks,
 Mark
 
->From 27b010815bcfbb2cc79de7544547e33e4d169594 Mon Sep 17 00:00:00 2001
+>From 983cebd602af8c2bf9d5830f15fb4e18fb38f994 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 10 Aug 2016 02:21:03 +0000
-Subject: [PATCH] ASoC: rsrc-card: use asoc_simple_card_canonicalize_cpu()
+Date: Wed, 10 Aug 2016 02:20:19 +0000
+Subject: [PATCH] ASoC: simple-card-utils: add
+ asoc_simple_card_canonicalize_cpu()
+
+simple-card needs remove dai_link->cpu_dai_name if it CPU was
+single DAI.
+This patch makes this method simple style standard.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rsrc-card.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+ include/sound/simple_card_utils.h     |  2 ++
+ sound/soc/generic/simple-card-utils.c | 17 +++++++++++++++++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
-index 0bf17dae2b64..dd5eda1f9a29 100644
---- a/sound/soc/sh/rcar/rsrc-card.c
-+++ b/sound/soc/sh/rcar/rsrc-card.c
-@@ -134,7 +134,6 @@ static int rsrc_card_parse_links(struct device_node *np,
- 	struct device *dev = rsrc_priv_to_dev(priv);
- 	struct snd_soc_dai_link *dai_link = rsrc_priv_to_link(priv, idx);
- 	struct asoc_simple_dai *dai_props = rsrc_priv_to_props(priv, idx);
--	int is_single_links = 0;
- 	int ret;
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index a71d46a95ca8..f760f559393e 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -62,5 +62,7 @@ int asoc_simple_card_init_dai(struct snd_soc_dai *dai,
+ 			      struct asoc_simple_dai *simple_dai);
  
- 	/* Parse TDM slot */
-@@ -147,6 +146,8 @@ static int rsrc_card_parse_links(struct device_node *np,
- 		return ret;
+ int asoc_simple_card_canonicalize_dailink(struct snd_soc_dai_link *dai_link);
++void asoc_simple_card_canonicalize_cpu(struct snd_soc_dai_link *dai_link,
++				      int is_single_links);
  
- 	if (is_fe) {
-+		int is_single_links = 0;
+ #endif /* __SIMPLE_CARD_CORE_H */
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 189eadddfad3..c5d32dad48b2 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -206,6 +206,23 @@ int asoc_simple_card_canonicalize_dailink(struct snd_soc_dai_link *dai_link)
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_card_canonicalize_dailink);
+ 
++void asoc_simple_card_canonicalize_cpu(struct snd_soc_dai_link *dai_link,
++				       int is_single_links)
++{
++	/*
++	 * In soc_bind_dai_link() will check cpu name after
++	 * of_node matching if dai_link has cpu_dai_name.
++	 * but, it will never match if name was created by
++	 * fmt_single_name() remove cpu_dai_name if cpu_args
++	 * was 0. See:
++	 *	fmt_single_name()
++	 *	fmt_multiple_name()
++	 */
++	if (is_single_links)
++		dai_link->cpu_dai_name = NULL;
++}
++EXPORT_SYMBOL_GPL(asoc_simple_card_canonicalize_cpu);
 +
- 		/* BE is dummy */
- 		dai_link->codec_of_node		= NULL;
- 		dai_link->codec_dai_name	= "snd-soc-dummy-dai";
-@@ -171,17 +172,7 @@ static int rsrc_card_parse_links(struct device_node *np,
- 		if (ret < 0)
- 			return ret;
- 
--		/*
--		 * In soc_bind_dai_link() will check cpu name after
--		 * of_node matching if dai_link has cpu_dai_name.
--		 * but, it will never match if name was created by
--		 * fmt_single_name() remove cpu_dai_name if cpu_args
--		 * was 0. See:
--		 *	fmt_single_name()
--		 *	fmt_multiple_name()
--		 */
--		if (is_single_links)
--			dai_link->cpu_dai_name = NULL;
-+		asoc_simple_card_canonicalize_cpu(dai_link, is_single_links);
- 	} else {
- 		const struct rsrc_card_of_data *of_data;
- 
+ /* Module information */
+ MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
+ MODULE_DESCRIPTION("ALSA SoC Simple Card Utils");
 -- 
 2.8.1
