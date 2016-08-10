@@ -1,15 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 0/3] ASoC: Intel: Skylake: Refine manifest
-	module info
-Date: Wed, 10 Aug 2016 09:40:47 +0530
-Message-ID: <1470802250-9232-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 3/3] ASoC: Intel: Skylake: remove module id
+	query at runtime
+Date: Wed, 10 Aug 2016 09:40:50 +0530
+Message-ID: <1470802250-9232-4-git-send-email-vinod.koul@intel.com>
+References: <1470802250-9232-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id BA874265906
- for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 06:03:14 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A5CA265ADE
+ for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 06:03:18 +0200 (CEST)
+In-Reply-To: <1470802250-9232-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,26 +25,36 @@ To: alsa-devel@alsa-project.org
 Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The module query uses a local structure dfw_config and then populates
-module skl_module_cfg. Instead we can pass skl_module_cfg as argument
-and get it updated in snd_skl_get_module_info()
+Now that we have balanced loading of the topology file and split of init
+and fw_init and fill module data during asoc probe.
 
-Also we can optimize runtime processing by using driver list to populate
-module info after init. That makes runtime query introduced earlier
-redundant so remove that while keeping error messages.
+So remove it from runtime, but keep error check in case things fall apart.
 
-Dharageswari R (1):
-  ASoC: Intel: Skylake: modify snd_skl_get_module_info args
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/skylake/skl-topology.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Vinod Koul (2):
-  ASoC: Intel: Skylake: Populate modules after loading
-  ASoC: Intel: Skylake: remove module id query at runtime
-
- sound/soc/intel/skylake/skl-pcm.c       | 27 +++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-sst-dsp.h   |  7 ++++---
- sound/soc/intel/skylake/skl-sst-utils.c | 10 +++++-----
- sound/soc/intel/skylake/skl-topology.c  | 22 ++++------------------
- 4 files changed, 40 insertions(+), 26 deletions(-)
-
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index c09e2c7608a3..4bc8f9c269db 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -475,12 +475,10 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
+ 
+ 		/* check if module ids are populated */
+ 		if (mconfig->id.module_id < 0) {
+-			ret = snd_skl_get_module_info(skl->skl_sst, mconfig);
+-			if (ret < 0) {
+-				dev_err(skl->skl_sst->dev,
+-					"query module info failed: %d\n", ret);
+-				return ret;
+-			}
++			dev_err(skl->skl_sst->dev,
++					"module %pUL id not populated\n",
++					(uuid_le *)mconfig->guid);
++			return -EIO;
+ 		}
+ 
+ 		/* check resource available */
 -- 
 1.9.1
