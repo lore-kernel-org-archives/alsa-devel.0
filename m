@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: remove module id query
-	at runtime" to the asoc tree
-Date: Wed, 10 Aug 2016 21:04:01 +0100
-Message-ID: <E1bXZjN-0000Sx-Ef@debutante>
-References: <1470802250-9232-4-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Populate modules after
+	loading" to the asoc tree
+Date: Wed, 10 Aug 2016 21:04:04 +0100
+Message-ID: <E1bXZjQ-0000Tl-C4@debutante>
+References: <1470802250-9232-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 002BF26691F
- for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 22:04:08 +0200 (CEST)
-In-Reply-To: <1470802250-9232-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AE0A72668D0
+ for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 22:04:20 +0200 (CEST)
+In-Reply-To: <1470802250-9232-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: remove module id query at runtime
+   ASoC: Intel: Skylake: Populate modules after loading
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,64 @@ to this mail.
 Thanks,
 Mark
 
->From a657ae7e5c0c9fd8858e5498e6de65c222d206d1 Mon Sep 17 00:00:00 2001
+>From 64cb1d0ad0eada322c2011e15710d2a1c12ce8b6 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Wed, 10 Aug 2016 09:40:50 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: remove module id query at runtime
+Date: Wed, 10 Aug 2016 09:40:49 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Populate modules after loading
 
-Now that we have balanced loading of the topology file and split of init
-and fw_init and fill module data during asoc probe.
-
-So remove it from runtime, but keep error check in case things fall apart.
+Once topology and firmware are loaded, we can parse the manifest. Use driver
+pipe and widget list to get list of all modules and populate the data.
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index c09e2c7608a3..4bc8f9c269db 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -475,12 +475,10 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 140249269cdb..eb1f00b28df1 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1138,6 +1138,32 @@ static int skl_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	return retval;
+ }
  
- 		/* check if module ids are populated */
- 		if (mconfig->id.module_id < 0) {
--			ret = snd_skl_get_module_info(skl->skl_sst, mconfig);
--			if (ret < 0) {
--				dev_err(skl->skl_sst->dev,
--					"query module info failed: %d\n", ret);
--				return ret;
--			}
-+			dev_err(skl->skl_sst->dev,
-+					"module %pUL id not populated\n",
-+					(uuid_le *)mconfig->guid);
-+			return -EIO;
++static int skl_populate_modules(struct skl *skl)
++{
++	struct skl_pipeline *p;
++	struct skl_pipe_module *m;
++	struct snd_soc_dapm_widget *w;
++	struct skl_module_cfg *mconfig;
++	int ret;
++
++	list_for_each_entry(p, &skl->ppl_list, node) {
++		list_for_each_entry(m, &p->pipe->w_list, node) {
++
++			w = m->w;
++			mconfig = w->priv;
++
++			ret = snd_skl_get_module_info(skl->skl_sst, mconfig);
++			if (ret < 0) {
++				dev_err(skl->skl_sst->dev,
++					"query module info failed:%d\n", ret);
++				goto err;
++			}
++		}
++	}
++err:
++	return ret;
++}
++
+ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
+ {
+ 	struct hdac_ext_bus *ebus = dev_get_drvdata(platform->dev);
+@@ -1169,6 +1195,7 @@ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
+ 			dev_err(platform->dev, "Failed to boot first fw: %d\n", ret);
+ 			return ret;
  		}
- 
- 		/* check resource available */
++		skl_populate_modules(skl);
+ 	}
+ 	pm_runtime_mark_last_busy(platform->dev);
+ 	pm_runtime_put_autosuspend(platform->dev);
 -- 
 2.8.1
