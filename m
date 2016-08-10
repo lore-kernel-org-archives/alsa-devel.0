@@ -1,17 +1,16 @@
-From: jjassal <jaswinderjassal@gmail.com>
-Subject: [PATCH] ASoC: core: fix shift used for second item in
-	snd_soc_get_enum_double
-Date: Tue,  9 Aug 2016 19:09:05 +0100
-Message-ID: <1470766145-3340-1-git-send-email-jjassal@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Underrun with 2 periods on skylake HDA driver
+Date: Wed, 10 Aug 2016 08:54:22 +0200
+Message-ID: <41a8a1f8-01f9-6c8b-b837-f0d1bc78bc41@ladisch.de>
+References: <20060810050415.GB5190@dhara-desktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F449265D44
- for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2016 20:12:00 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id i138so4757328wmf.3
- for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2016 11:12:00 -0700 (PDT)
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 1C5F5265335
+ for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 08:54:35 +0200 (CEST)
+In-Reply-To: <20060810050415.GB5190@dhara-desktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,29 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Cc: jjassal <jjassal@opensource.wolfsonmicro.com>
+To: Dharageswari R <dharageswari.r@intel.com>, tiwai@suse.de
+Cc: vinod.koul@intel.com, Hardik T <hardik.t.shah@intel.com>, alsa-devel@alsa-project.org, Rakesh A <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Incorrect shift value was being used to extract the second item.
+Dharageswari R wrote:
+> While doing the validation of Skylake HDA driver using aplay and
+> following parameters, we noticed underrun issues.
+>
+> buffer_size  : 9600
+> period_size  : 4800
+>
+> After doing further debugging, what I found is
+>
+> 1.DMA complete interrupt occurs for the first period.
+> 2.Driver reads DMA position in buffer pointer and gets value of 4784.
 
-Signed-off-by: jjassal <jjassal@opensource.wolfsonmicro.com>
----
- sound/soc/soc-ops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The interrupt says that the buffer descriptor list entry has been
+completed, but the position in buffer pointer says that the entry has
+not yet been completed.
 
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index a513a34..9fc1a7b 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -77,7 +77,7 @@ int snd_soc_get_enum_double(struct snd_kcontrol *kcontrol,
- 	item = snd_soc_enum_val_to_item(e, val);
- 	ucontrol->value.enumerated.item[0] = item;
- 	if (e->shift_l != e->shift_r) {
--		val = (reg_val >> e->shift_l) & e->mask;
-+		val = (reg_val >> e->shift_r) & e->mask;
- 		item = snd_soc_enum_val_to_item(e, val);
- 		ucontrol->value.enumerated.item[1] = item;
- 	}
--- 
-2.1.4
+> I checked with HDA architects and they are saying that when the DMA
+> completion interrupt occurs there can be slight delay before the DMA
+> Position In Buffer Pointer gets updated.
+
+The driver's interrupt handler takes care to read the interrupt status
+register first, so that any pending memory writes from the device are
+flushed.
+
+Of course, this does not work if the device posts writes _after_ the
+interrupt has been raised.  This is a bug in the hardware.
+
+> So driver is expected to refill data based on whatever content is
+> reflected in the DMA Position In Buffer.
+
+No, that's not how it works.  The driver waits until all 4800 frames
+are available, and the only way to wake it up is with an interrupt.
+
+
+It appears the driver must work around this bug by scheduling another
+interrupt after the delay.  Is there an upper limit (time or frames) for
+this delay?
+
+
+Regards,
+Clemens
