@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card-utils: add asoc_simple_card_clean_reference()" to the asoc tree
-Date: Wed, 10 Aug 2016 21:03:49 +0100
-Message-ID: <E1bXZjB-0000PH-7V@debutante>
-References: <87wpjpgylx.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87wpjpgylx.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Applied "ASoC: Intel: Skylake: remove module id query
+	at runtime" to the asoc tree
+Date: Wed, 10 Aug 2016 21:04:01 +0100
+Message-ID: <E1bXZjN-0000Sx-Ef@debutante>
+References: <1470802250-9232-4-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 002BF26691F
+ for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 22:04:08 +0200 (CEST)
+In-Reply-To: <1470802250-9232-4-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card-utils: add asoc_simple_card_clean_reference()
+   ASoC: Intel: Skylake: remove module id query at runtime
 
 has been applied to the asoc tree at
 
@@ -37,58 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From 0f4e0711b735a148cb6da0e6f91253b62fc2c5b2 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 10 Aug 2016 02:21:25 +0000
-Subject: [PATCH] ASoC: simple-card-utils: add
- asoc_simple_card_clean_reference()
+>From a657ae7e5c0c9fd8858e5498e6de65c222d206d1 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Wed, 10 Aug 2016 09:40:50 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: remove module id query at runtime
 
-simple-card needs to decrease the reference count of the device nodes.
-This patch makes this method simple style standard.
+Now that we have balanced loading of the topology file and split of init
+and fw_init and fill module data during asoc probe.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+So remove it from runtime, but keep error check in case things fall apart.
+
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/simple_card_utils.h     |  2 ++
- sound/soc/generic/simple-card-utils.c | 15 +++++++++++++++
- 2 files changed, 17 insertions(+)
+ sound/soc/intel/skylake/skl-topology.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index f760f559393e..403ec92164fc 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -65,4 +65,6 @@ int asoc_simple_card_canonicalize_dailink(struct snd_soc_dai_link *dai_link);
- void asoc_simple_card_canonicalize_cpu(struct snd_soc_dai_link *dai_link,
- 				      int is_single_links);
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index c09e2c7608a3..4bc8f9c269db 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -475,12 +475,10 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
  
-+int asoc_simple_card_clean_reference(struct snd_soc_card *card);
-+
- #endif /* __SIMPLE_CARD_CORE_H */
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index c5d32dad48b2..1cb39309f5d5 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -223,6 +223,21 @@ void asoc_simple_card_canonicalize_cpu(struct snd_soc_dai_link *dai_link,
- }
- EXPORT_SYMBOL_GPL(asoc_simple_card_canonicalize_cpu);
+ 		/* check if module ids are populated */
+ 		if (mconfig->id.module_id < 0) {
+-			ret = snd_skl_get_module_info(skl->skl_sst, mconfig);
+-			if (ret < 0) {
+-				dev_err(skl->skl_sst->dev,
+-					"query module info failed: %d\n", ret);
+-				return ret;
+-			}
++			dev_err(skl->skl_sst->dev,
++					"module %pUL id not populated\n",
++					(uuid_le *)mconfig->guid);
++			return -EIO;
+ 		}
  
-+int asoc_simple_card_clean_reference(struct snd_soc_card *card)
-+{
-+	struct snd_soc_dai_link *dai_link;
-+	int num_links;
-+
-+	for (num_links = 0, dai_link = card->dai_link;
-+	     num_links < card->num_links;
-+	     num_links++, dai_link++) {
-+		of_node_put(dai_link->cpu_of_node);
-+		of_node_put(dai_link->codec_of_node);
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(asoc_simple_card_clean_reference);
-+
- /* Module information */
- MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
- MODULE_DESCRIPTION("ALSA SoC Simple Card Utils");
+ 		/* check resource available */
 -- 
 2.8.1
