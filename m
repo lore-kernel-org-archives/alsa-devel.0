@@ -1,18 +1,18 @@
 From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH -next] ASoC: topology: Fix error return code in
-	soc_tplg_dapm_widget_create()
-Date: Wed, 10 Aug 2016 13:43:12 +0000
-Message-ID: <1470836592-11679-1-git-send-email-weiyj.lk@gmail.com>
+Subject: [PATCH -next] ASoC: atmel-pdmic: add missing
+	clk_disable_unprepare() on error in atmel_pdmic_cpu_dai_startup()
+Date: Wed, 10 Aug 2016 13:53:21 +0000
+Message-ID: <1470837201-12232-1-git-send-email-weiyj.lk@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pf0-f195.google.com (mail-pf0-f195.google.com
  [209.85.192.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 9BBC72666D4
- for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 15:43:20 +0200 (CEST)
-Received: by mail-pf0-f195.google.com with SMTP id y134so2892140pfg.3
- for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 06:43:20 -0700 (PDT)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F1BC265A7F
+ for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 15:53:29 +0200 (CEST)
+Received: by mail-pf0-f195.google.com with SMTP id g202so2916067pfb.1
+ for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 06:53:29 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 Cc: alsa-devel@alsa-project.org, Wei Yongjun <weiyj.lk@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix to return error code -ENOMEM instead of 0 when failed to create
-widget, as done elsewhere in this function.
+Add the missing clk_disable_unprepare() before return from
+atmel_pdmic_cpu_dai_startup() in the error handling case.
 
-Fixes: 8a9782346dcc ("ASoC: topology: Add topology core")
 Signed-off-by: Wei Yongjun <weiyj.lk@gmail.com>
 ---
- sound/soc/soc-topology.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/atmel/atmel-pdmic.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 05a18f6..a9e83a2 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1476,6 +1476,7 @@ widget:
- 	if (widget == NULL) {
- 		dev_err(tplg->dev, "ASoC: failed to create widget %s controls\n",
- 			w->name);
-+		ret = -ENOMEM;
- 		goto hdr_err;
- 	}
+diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
+index 2a3a41f..a67e31b 100644
+--- a/sound/soc/atmel/atmel-pdmic.c
++++ b/sound/soc/atmel/atmel-pdmic.c
+@@ -115,8 +115,10 @@ static int atmel_pdmic_cpu_dai_startup(struct snd_pcm_substream *substream,
+ 		return ret;
+ 
+ 	ret =  clk_prepare_enable(dd->pclk);
+-	if (ret)
++	if (ret) {
++		clk_disable_unprepare(dd->gclk);
+ 		return ret;
++	}
+ 
+ 	/* Clear all bits in the Control Register(PDMIC_CR) */
+ 	regmap_write(dd->regmap, PDMIC_CR, 0);
