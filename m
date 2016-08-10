@@ -1,24 +1,20 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v4 2/4] mfd: Add Samsung Exynos Low Power
- Audio Subsystem driver
-Date: Wed, 10 Aug 2016 12:19:18 +0100
-Message-ID: <20160810111918.GS1581@dell>
-References: <1467738804-31460-1-git-send-email-s.nawrocki@samsung.com>
- <20160809150502.GQ5243@dell>
- <61d700f7-ef66-8278-54ea-8e6e2f1a029e@samsung.com>
- <20160809205031.GD1581@dell>
- <a66ab86f-d5da-0462-81c9-48469721d229@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 000/127] ASoC: codec cleanup - codec
+ probe/remove
+Date: Wed, 10 Aug 2016 12:17:48 +0100
+Message-ID: <20160810111748.GI9347@sirena.org.uk>
+References: <87popieek9.wl%kuninori.morimoto.gx@renesas.com>
+ <54ffe6bb-9a97-db02-e96b-588630b08468@metafoo.de>
+ <20160809112639.GJ10383@sirena.org.uk>
+ <87a8glii9q.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5954050873689434987=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f53.google.com (mail-wm0-f53.google.com [74.125.82.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E268265B93
- for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 13:17:50 +0200 (CEST)
-Received: by mail-wm0-f53.google.com with SMTP id q128so86734403wma.1
- for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 04:17:50 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <a66ab86f-d5da-0462-81c9-48469721d229@samsung.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EDCD265DED
+ for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2016 13:18:00 +0200 (CEST)
+In-Reply-To: <87a8glii9q.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,48 +24,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, b.zolnierkie@samsung.com, linux-kernel@vger.kernel.org, inki.dae@samsung.com, broonie@kernel.org, Beomho Seo <beomho.seo@samsung.com>, ideal.song@samsung.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAxMCBBdWcgMjAxNiwgU3lsd2VzdGVyIE5hd3JvY2tpIHdyb3RlOgoKPiBPbiAwOC8w
-OS8yMDE2IDEwOjUwIFBNLCBMZWUgSm9uZXMgd3JvdGU6Cj4gPiBPbiBUdWUsIDA5IEF1ZyAyMDE2
-LCBTeWx3ZXN0ZXIgTmF3cm9ja2kgd3JvdGU6Cj4gPiAKPiA+PiA+IE9uIDA4LzA5LzIwMTYgMDU6
-MDUgUE0sIExlZSBKb25lcyB3cm90ZToKPiA+Pj4+ID4gPj4gK3N0YXRpYyBTSU1QTEVfREVWX1BN
-X09QUyhscGFzc19wbV9vcHMsIGV4eW5vc19scGFzc19zdXNwZW5kLAo+ID4+Pj4+ID4gPj4gPiAr
-CQkJCQlleHlub3NfbHBhc3NfcmVzdW1lKTsKPiA+Pj4gPiA+IFB1dCB0aGlzIHVwIGJ5IHRoZSBQ
-TSBmdW5jdGlvbnMuCj4gPj4gPiAKPiA+PiA+IFNvcnJ5LCBJIGRvbid0IHVuZGVyc3RhbmQgdGhp
-cyBjb21tZW50LCB3aGljaCBQTSBmdW5jdGlvbnMgZG8geW91Cj4gPj4gPiBtZWFuIGV4YWN0bHk/
-Cj4gPiAqX3N1c3BlbmQgYW5kICpfcmVzdW1lLiAgUE0gPT0gUG93ZXIgTWFuYWdlbWVudC4KPiA+
-IAo+ID4gWW91IGFsc28gbmVlZCB0byBwbGFjZSB0aGUgZnVuY3Rpb25zIGluIHNpZGUgc29tZSBD
-T05GSUdfUE1fU0xFRVAKPiA+IGd1YXJkcy4gIEdyZXAgYXJvdW5kLCB5b3UnbGwgc2VlIHdoYXQg
-SSBtZWFuLgo+IAo+IE9LLCBidXQgY291bGRuJ3Qgd2UganVzdCBsZWF2ZSBpdCB3aXRoIHRoYXQg
-U0lNUExFX0RFVl9QTV9PUFMoKQo+IG1hY3JvPyAgSXQgc2F2ZXMgdXMgYW4gI2lmZGVmIHVnbGlu
-ZXNzIGFuZCBpZiBJIGFjdHVhbGx5IGdyZXAKPiBkcml2ZXJzL21mZCBtb3N0IG9mIHRoZSBkcml2
-ZXJzIHVzZSBlaXRoZXIgU0lNUExFX0RFVl9QTV9PUFMoKSBvcgo+IFNFVF9TWVNURU1fU0xFRVBf
-UE1fT1BTLiBBcmUgeW91IGFza2luZyBtZSB0byBjaGFuZ2UgdGhlIGFib3ZlIHRvOgo+IAo+IHN0
-YXRpYyBjb25zdCBzdHJ1Y3QgZGV2X3BtX29wcyBleHlub3NfbHBhc3NfcG1fb3BzID0gewo+ICNp
-ZmRlZiBDT05GSUdfUE1fU0xFRVAKPiAJLnN1c3BlbmQgPSBleHlub3NfbHBhc3Nfc3VzcGVuZCwK
-PiAJLnJlc3VtZSA9IGV4eW5vc19scGFzc19yZXN1bWUsCj4gCS5mcmVlemUgPSBleHlub3NfbHBh
-c3Nfc3VzcGVuZCwKPiAJLnRoYXcgPSBleHlub3NfbHBhc3NfcmVzdW1lLAo+IAkucG93ZXJvZmYg
-PSBleHlub3NfbHBhc3Nfc3VzcGVuZCwKPiAJLnJlc3RvcmUgPSBleHlub3NfbHBhc3NfcmVzdW1l
-LAo+ICNlbmRpZgo+IH0KPiAKPiBvciBwZXJoYXBzCj4gCj4gc3RhdGljIGNvbnN0IHN0cnVjdCBk
-ZXZfcG1fb3BzIGV4eW5vc19scGFzc19wbV9vcHMgPSB7Cj4gCVNFVF9TWVNURU1fU0xFRVBfUE1f
-T1BTKGV4eW5vc19scGFzc19zdXNwZW5kLCBleHlub3NfbHBhc3NfcmVzdW1lKQo+IH0KPiAKPiA/
-CgpOb3QgbGlrZSB0aGF0LiAgR3JlcCAnZHJpdmVycy9tZmQnIGZvciAiQ09ORklHX1BNX1NMRUVQ
-IiBhcwpzdWdnZXN0ZWQuICBZb3Ugd2lsbCBmaW5kIHRoYXQgdGhlIGFjdHVhbCAqX3N1c3BlbmQg
-YW5kICpfcmVzdW1lCmZ1bmN0aW9ucyBhcmUgZ3VhcmRlZCBpbiBvcmRlciB0byBzYXZlIHNwYWNl
-LgoKPiBJIGFncmVlIGFib3V0IHRoZSBDT05GSUdfUE1fU0xFRVAgZ3VhcmRzLiAgVGhlcmUgaXMg
-dmVyeSBsaXR0bGUKPiBjaGFuY2UgdGhvdWdoIHRoZSBMUEFTUyBkcml2ZXIgd2lsbCBldmVyIGJl
-IHVzZWQgd2l0aAo+IENPTkZJR19QTV9TTEVFUCBkaXNhYmxlZC4gSG93IGFib3V0IGFkZGluZyBf
-X21heWJlX3VudXNlZCBhdHRyaWJ1dGUKPiB0byB0aGUgKl9zdXNwZW5kLypfcmVzdW1lIGZ1bmN0
-aW9ucyB0aGVuPyAgSSBjYW4gc2VlIHRoaXMgcGF0dGVybgo+IHVzZWQgYWxyZWFkeSBpbiBkcml2
-ZXJzL21mZC4KCkl0J3MgbW9yZSBjb21tb24gcHJhY3RpY2UgdG8gdXNlIENPTkZJR19QTV9TTEVF
-UDoKCiQgZ2l0IGdyZXAgX19tYXliZV91bnVzZWQgLS0gZHJpdmVycy9tZmQvIHwgd2MgLWwKNwok
-IGdpdCBncmVwIENPTkZJR19QTV9TTEVFUCAtLSBkcml2ZXJzL21mZC8gfCB3YyAtbAozMQoKLS0g
-CkxlZSBKb25lcwpMaW5hcm8gU1RNaWNyb2VsZWN0cm9uaWNzIExhbmRpbmcgVGVhbSBMZWFkCkxp
-bmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGlu
-YXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+--===============5954050873689434987==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2nTeH+t2PBomgucg"
+Content-Disposition: inline
+
+
+--2nTeH+t2PBomgucg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Aug 10, 2016 at 12:31:29AM +0000, Kuninori Morimoto wrote:
+
+> My understanding is that current "codec" is already part of "component",
+> and new ASoC controls "component" only.
+> This means, if we switches to new ASoC style, it can't call "codec"
+> side callback ?
+> Indeed my patch-set is using/keeping "codec" pointer, but it is each driver's
+> matter, ASoC framework side doesn't care about it.
+
+If something is only using the component interfaces except for things
+like probe and remove then converting them to component interfaces makes
+sense.  If it's still using CODEC interfaces for some bits then it's
+less clear that this is a good idea.
+
+> But it seems your opinion is like this ?
+>  - ASoC will care only "component" (same as my opinion)
+>  - This "component" includes all features
+>    (= Codec feature, CPU feature, Platform feature, etc)
+
+I think so, yes.  To me the goal is to avoid too much rigid
+categorization of components so that we can handle devices that have
+combinations of these features effectively without having to worry about
+exactly what terminology we use to describe them.
+
+> Anyway, I don't want to create new issue on ASoC.
+> It seems we (or only me ?) still don't have cristal clear big-picture (?)
+> If so, my previous patch-set might make new style switching difficult.
+> Mark, because of this reasons, is it possible to remove my previous
+> patch-set (= topic/codec-component) from your repository ?
+> Incomplete big-patch-set will cause new trouble.
+> I want to cleanup ASoC, but I want to do it under cristal clear agreement.
+
+I think that's a reasonable thing to do in general, I don't see a
+particular need to revert it.  Like Lars said I probably wouldn't have
+done it right now but you've done the work so I don't see any need to
+revert it.
+
+--2nTeH+t2PBomgucg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXqw1bAAoJECTWi3JdVIfQmrQH/2jqmFz5FGV1R9le0bFa765U
+5r4HsDHDiTjC0H0B9VhOm4LOMtS0+PT2XStpApwAsMvP5ehVBw48cmI2BDCiNoYA
+u1LCK2WL+Tt5lpZmCgJCYbfsL5WU/V9vZABYEQHgX4EOH/0wCKmgeb1havCyAALY
+0rcxjUab5aEQ3NxJFRwg7XS+GEawX/lAg2hNtelhlAkNzBlk4Or78sUhesf9LCTU
+JADJuL66a1/ha9EYvEQ6892JvQvPHTysya96QgpCpDHPgSgIGARatR//Zl6PYGU0
+JnG11sPDn9jeICypakbznQY6Gcv3SHcaZeeP4p+M0R/NHfo1qSaPrU/uwaQoY4s=
+=Qs3R
+-----END PGP SIGNATURE-----
+
+--2nTeH+t2PBomgucg--
+
+--===============5954050873689434987==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5954050873689434987==--
