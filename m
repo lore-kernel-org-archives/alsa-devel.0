@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsrc-card: use asoc_simple_card_clean_reference()" to the asoc tree
-Date: Wed, 10 Aug 2016 21:03:43 +0100
-Message-ID: <E1bXZj5-0000NV-C3@debutante>
-References: <87poshoxqx.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card: use asoc_simple_card_clean_reference()" to the asoc tree
+Date: Wed, 10 Aug 2016 21:03:46 +0100
+Message-ID: <E1bXZj8-0000OL-9N@debutante>
+References: <87a8jlqco1.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87poshoxqx.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87a8jlqco1.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsrc-card: use asoc_simple_card_clean_reference()
+   ASoC: simple-card: use asoc_simple_card_clean_reference()
 
 has been applied to the asoc tree at
 
@@ -37,27 +37,27 @@ to this mail.
 Thanks,
 Mark
 
->From 239486baee2bbefd81053cd4a168f90ce5c46fa2 Mon Sep 17 00:00:00 2001
+>From 885fc0595a3e91ed7b6f78ea419952345be0222b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 10 Aug 2016 02:22:01 +0000
-Subject: [PATCH] ASoC: rsrc-card: use asoc_simple_card_clean_reference()
+Date: Wed, 10 Aug 2016 02:21:42 +0000
+Subject: [PATCH] ASoC: simple-card: use asoc_simple_card_clean_reference()
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rsrc-card.c | 19 ++-----------------
+ sound/soc/generic/simple-card.c | 19 ++-----------------
  1 file changed, 2 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
-index dd5eda1f9a29..16dc13e0bec9 100644
---- a/sound/soc/sh/rcar/rsrc-card.c
-+++ b/sound/soc/sh/rcar/rsrc-card.c
-@@ -333,21 +333,6 @@ static int rsrc_card_parse_of(struct device_node *node,
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 64896e361bde..55638a800f20 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -378,21 +378,6 @@ static int asoc_simple_card_parse_of(struct device_node *node,
  	return 0;
  }
  
 -/* Decrease the reference count of the device nodes */
--static int rsrc_card_unref(struct snd_soc_card *card)
+-static int asoc_simple_card_unref(struct snd_soc_card *card)
 -{
 -	struct snd_soc_dai_link *dai_link;
 -	int num_links;
@@ -71,26 +71,26 @@ index dd5eda1f9a29..16dc13e0bec9 100644
 -	return 0;
 -}
 -
- static int rsrc_card_probe(struct platform_device *pdev)
+ static int asoc_simple_card_probe(struct platform_device *pdev)
  {
- 	struct rsrc_card_priv *priv;
-@@ -373,7 +358,7 @@ static int rsrc_card_probe(struct platform_device *pdev)
- 	if (ret >= 0)
+ 	struct simple_card_data *priv;
+@@ -478,7 +463,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
  		return ret;
- err:
--	rsrc_card_unref(&priv->snd_card);
-+	asoc_simple_card_clean_reference(&priv->snd_card);
  
+ err:
+-	asoc_simple_card_unref(&priv->snd_card);
++	asoc_simple_card_clean_reference(&priv->snd_card);
  	return ret;
  }
-@@ -382,7 +367,7 @@ static int rsrc_card_remove(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = platform_get_drvdata(pdev);
  
--	return rsrc_card_unref(card);
+@@ -490,7 +475,7 @@ static int asoc_simple_card_remove(struct platform_device *pdev)
+ 	asoc_simple_card_remove_jack(&priv->hp_jack);
+ 	asoc_simple_card_remove_jack(&priv->mic_jack);
+ 
+-	return asoc_simple_card_unref(card);
 +	return asoc_simple_card_clean_reference(card);
  }
  
- static struct platform_driver rsrc_card = {
+ static const struct of_device_id asoc_simple_of_match[] = {
 -- 
 2.8.1
