@@ -1,8 +1,7 @@
 From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v8 4/5] ASoC: mediatek: Add jack detection support to the
- mt8173-rt5650 machine driver
-Date: Thu, 11 Aug 2016 11:20:26 +0200
-Message-ID: <1470907227-899-5-git-send-email-p.zabel@pengutronix.de>
+Subject: [PATCH v8 5/5] drm/mediatek: hdmi: issue notifications
+Date: Thu, 11 Aug 2016 11:20:27 +0200
+Message-ID: <1470907227-899-6-git-send-email-p.zabel@pengutronix.de>
 References: <1470907227-899-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,56 +21,74 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hans Verkuil <hans.verkuil-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, PC Liao <pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Issue hot-plug detection, EDID update, and ELD update notifications
+from the CEC and HDMI drivers.
+
 Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- sound/soc/mediatek/mt8173/mt8173-rt5650.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ drivers/gpu/drm/mediatek/mtk_cec.c  | 11 +++++++++++
+ drivers/gpu/drm/mediatek/mtk_hdmi.c |  3 +++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-index ba65f41..64ae9ad 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-@@ -18,6 +18,7 @@
- #include <linux/gpio.h>
- #include <linux/of_gpio.h>
- #include <sound/soc.h>
-+#include <sound/hdmi-codec.h>
- #include <sound/jack.h>
- #include "../../codecs/rt5645.h"
+diff --git a/drivers/gpu/drm/mediatek/mtk_cec.c b/drivers/gpu/drm/mediatek/mtk_cec.c
+index 7a3eb8c..f78a73c 100644
+--- a/drivers/gpu/drm/mediatek/mtk_cec.c
++++ b/drivers/gpu/drm/mediatek/mtk_cec.c
+@@ -13,6 +13,7 @@
+  */
+ #include <linux/clk.h>
+ #include <linux/delay.h>
++#include <linux/hdmi-notifier.h>
+ #include <linux/io.h>
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
+@@ -105,6 +106,12 @@ void mtk_cec_set_hpd_event(struct device *dev,
+ 	cec->hdmi_dev = hdmi_dev;
+ 	cec->hpd_event = hpd_event;
+ 	spin_unlock_irqrestore(&cec->lock, flags);
++
++	/* Initial notification event to set jack state */
++	if (mtk_cec_hpd_high(dev))
++		hdmi_event_connect(hdmi_dev);
++	else
++		hdmi_event_disconnect(hdmi_dev);
+ }
  
-@@ -166,6 +167,25 @@ static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
- 	},
- };
+ bool mtk_cec_hpd_high(struct device *dev)
+@@ -179,6 +186,10 @@ static irqreturn_t mtk_cec_htplg_isr_thread(int irq, void *arg)
+ 	if (cec->hpd != hpd) {
+ 		dev_dbg(dev, "hotplug event! cur hpd = %d, hpd = %d\n",
+ 			cec->hpd, hpd);
++		if (hpd)
++			hdmi_event_connect(cec->hdmi_dev);
++		else
++			hdmi_event_disconnect(cec->hdmi_dev);
+ 		cec->hpd = hpd;
+ 		mtk_cec_hpd_event(cec, hpd);
+ 	}
+diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+index 334562d..478aa73 100644
+--- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
++++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+@@ -20,6 +20,7 @@
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/hdmi.h>
++#include <linux/hdmi-notifier.h>
+ #include <linux/i2c.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
+@@ -1225,9 +1226,11 @@ static int mtk_hdmi_conn_get_modes(struct drm_connector *conn)
+ 	hdmi->dvi_mode = !drm_detect_monitor_audio(edid);
  
-+static struct snd_soc_jack mt8173_hdmi_card_jack;
-+
-+static int mt8173_hdmi_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	struct snd_soc_card *card = runtime->card;
-+	struct snd_soc_codec *codec = runtime->codec;
-+	int ret;
-+
-+	/* enable jack detection */
-+	ret = snd_soc_card_jack_new(card, "HDMI Jack", SND_JACK_LINEOUT,
-+				    &mt8173_hdmi_card_jack, NULL, 0);
-+	if (ret) {
-+		dev_err(card->dev, "Can't new HDMI Jack %d\n", ret);
-+		return ret;
-+	}
-+
-+	return hdmi_codec_set_jack_detect(codec, &mt8173_hdmi_card_jack);
-+}
-+
- enum {
- 	DAI_LINK_PLAYBACK,
- 	DAI_LINK_CAPTURE,
-@@ -228,6 +248,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
- 		.no_pcm = 1,
- 		.codec_dai_name = "i2s-hifi",
- 		.dpcm_playback = 1,
-+		.init = mt8173_hdmi_init,
- 	},
- };
+ 	drm_mode_connector_update_edid_property(conn, edid);
++	hdmi_event_new_edid(hdmi->dev, edid, sizeof(*edid));
  
+ 	ret = drm_add_edid_modes(conn, edid);
+ 	drm_edid_to_eld(conn, edid);
++	hdmi_event_new_eld(hdmi->dev, conn->eld);
+ 	kfree(edid);
+ 	return ret;
+ }
 -- 
 2.8.1
