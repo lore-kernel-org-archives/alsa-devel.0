@@ -1,18 +1,18 @@
 From: Andrej Krutak <dev@andree.sk>
-Subject: [PATCH 14/15] ALSA: line6: Give up hwdep spinlock
-	temporarily during read operation
-Date: Thu, 11 Aug 2016 21:02:26 +0200
-Message-ID: <1470942147-19848-15-git-send-email-dev@andree.sk>
+Subject: [PATCH 12/15] ALSA: line6: Give up on the lock while
+	URBs are released.
+Date: Thu, 11 Aug 2016 21:02:24 +0200
+Message-ID: <1470942147-19848-13-git-send-email-dev@andree.sk>
 References: <1470942147-19848-1-git-send-email-dev@andree.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F5B8267779
- for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 21:04:12 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id i5so933404wmg.2
- for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 12:04:12 -0700 (PDT)
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9972426776F
+ for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 21:04:09 +0200 (CEST)
+Received: by mail-wm0-f68.google.com with SMTP id q128so956293wma.1
+ for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 12:04:09 -0700 (PDT)
 In-Reply-To: <1470942147-19848-1-git-send-email-dev@andree.sk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,35 +27,81 @@ To: alsa-devel@alsa-project.org
 Cc: Andrej Krutak <dev@andree.sk>
 List-Id: alsa-devel@alsa-project.org
 
-Without it, the code hits the 'might_sleep while atomic' debug warning.
+Done, because line6_stream_stop() locks and calls line6_unlink_audio_urbs(),
+which in turn invokes audio_out_callback(), which tries to lock 2nd time.
+
+Fixes:
+
+=============================================
+[ INFO: possible recursive locking detected ]
+4.4.15+ #15 Not tainted
+---------------------------------------------
+mplayer/3591 is trying to acquire lock:
+ (&(&line6pcm->out.lock)->rlock){-.-...}, at: [<bfa27655>] audio_out_callback+0x70/0x110 [snd_usb_line6]
+
+but task is already holding lock:
+ (&(&line6pcm->out.lock)->rlock){-.-...}, at: [<bfa26aad>] line6_stream_stop+0x24/0x5c [snd_usb_line6]
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&(&line6pcm->out.lock)->rlock);
+  lock(&(&line6pcm->out.lock)->rlock);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+3 locks held by mplayer/3591:
+ #0:  (snd_pcm_link_rwlock){.-.-..}, at: [<bf8d49a7>] snd_pcm_stream_lock+0x1e/0x40 [snd_pcm]
+ #1:  (&(&substream->self_group.lock)->rlock){-.-...}, at: [<bf8d49af>] snd_pcm_stream_lock+0x26/0x40 [snd_pcm]
+ #2:  (&(&line6pcm->out.lock)->rlock){-.-...}, at: [<bfa26aad>] line6_stream_stop+0x24/0x5c [snd_usb_line6]
+
+stack backtrace:
+CPU: 0 PID: 3591 Comm: mplayer Not tainted 4.4.15+ #15
+Hardware name: Generic AM33XX (Flattened Device Tree)
+[<c0015d85>] (unwind_backtrace) from [<c001253d>] (show_stack+0x11/0x14)
+[<c001253d>] (show_stack) from [<c02f1bdf>] (dump_stack+0x8b/0xac)
+[<c02f1bdf>] (dump_stack) from [<c0076f43>] (__lock_acquire+0xc8b/0x1780)
+[<c0076f43>] (__lock_acquire) from [<c007810d>] (lock_acquire+0x99/0x1c0)
+[<c007810d>] (lock_acquire) from [<c06171e7>] (_raw_spin_lock_irqsave+0x3f/0x4c)
+[<c06171e7>] (_raw_spin_lock_irqsave) from [<bfa27655>] (audio_out_callback+0x70/0x110 [snd_usb_line6])
+[<bfa27655>] (audio_out_callback [snd_usb_line6]) from [<c04294db>] (__usb_hcd_giveback_urb+0x53/0xd0)
+[<c04294db>] (__usb_hcd_giveback_urb) from [<c046388d>] (musb_giveback+0x3d/0x98)
+[<c046388d>] (musb_giveback) from [<c04647f5>] (musb_urb_dequeue+0x6d/0x114)
+[<c04647f5>] (musb_urb_dequeue) from [<c042ac11>] (usb_hcd_unlink_urb+0x39/0x98)
+[<c042ac11>] (usb_hcd_unlink_urb) from [<bfa26a87>] (line6_unlink_audio_urbs+0x6a/0x6c [snd_usb_line6])
+[<bfa26a87>] (line6_unlink_audio_urbs [snd_usb_line6]) from [<bfa26acb>] (line6_stream_stop+0x42/0x5c [snd_usb_line6])
+[<bfa26acb>] (line6_stream_stop [snd_usb_line6]) from [<bfa26fe7>] (snd_line6_trigger+0xb6/0xf4 [snd_usb_line6])
+[<bfa26fe7>] (snd_line6_trigger [snd_usb_line6]) from [<bf8d47b7>] (snd_pcm_do_stop+0x36/0x38 [snd_pcm])
+[<bf8d47b7>] (snd_pcm_do_stop [snd_pcm]) from [<bf8d462f>] (snd_pcm_action_single+0x22/0x40 [snd_pcm])
+[<bf8d462f>] (snd_pcm_action_single [snd_pcm]) from [<bf8d46f9>] (snd_pcm_action+0xac/0xb0 [snd_pcm])
+[<bf8d46f9>] (snd_pcm_action [snd_pcm]) from [<bf8d4b61>] (snd_pcm_drop+0x38/0x64 [snd_pcm])
+[<bf8d4b61>] (snd_pcm_drop [snd_pcm]) from [<bf8d6233>] (snd_pcm_common_ioctl1+0x7fe/0xbe8 [snd_pcm])
+[<bf8d6233>] (snd_pcm_common_ioctl1 [snd_pcm]) from [<bf8d6779>] (snd_pcm_playback_ioctl1+0x15c/0x51c [snd_pcm])
+[<bf8d6779>] (snd_pcm_playback_ioctl1 [snd_pcm]) from [<bf8d6b59>] (snd_pcm_playback_ioctl+0x20/0x28 [snd_pcm])
+[<bf8d6b59>] (snd_pcm_playback_ioctl [snd_pcm]) from [<c016714b>] (do_vfs_ioctl+0x3af/0x5c8)
 
 Signed-off-by: Andrej Krutak <dev@andree.sk>
 ---
- sound/usb/line6/driver.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/usb/line6/pcm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 142e0e3..286b6e1 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -600,6 +600,10 @@ line6_hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 		goto end;
- 	}
- 
-+	/* Release lock while copying the stuff. Since there is only one reader,
-+	 * the data is going nowhere, so this should be safe. */
-+	spin_unlock(&line6->buffer_circular.read_lock);
-+
- 	if (copy_to_user(buf,
- 		&line6->buffer_circular.data[tail * LINE6_MESSAGE_MAXLEN],
- 		line6->buffer_circular.data_len[tail])
-@@ -610,6 +614,7 @@ line6_hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 		rv = line6->buffer_circular.data_len[tail];
- 	}
- 
-+	spin_lock(&line6->buffer_circular.read_lock);
- 	smp_store_release(&line6->buffer_circular.tail,
- 				(tail + 1) & (LINE6_MESSAGE_MAXCOUNT - 1));
- 
+diff --git a/sound/usb/line6/pcm.c b/sound/usb/line6/pcm.c
+index 0af6d4e..13b3b27 100644
+--- a/sound/usb/line6/pcm.c
++++ b/sound/usb/line6/pcm.c
+@@ -216,7 +216,9 @@ static void line6_stream_stop(struct snd_line6_pcm *line6pcm, int direction,
+ 	spin_lock_irqsave(&pstr->lock, flags);
+ 	clear_bit(type, &pstr->running);
+ 	if (!pstr->running) {
++		spin_unlock_irqrestore(&pstr->lock, flags);
+ 		line6_unlink_audio_urbs(line6pcm, pstr);
++		spin_lock_irqsave(&pstr->lock, flags);
+ 		if (direction == SNDRV_PCM_STREAM_CAPTURE) {
+ 			line6pcm->prev_fbuf = NULL;
+ 			line6pcm->prev_fsize = 0;
 -- 
 1.9.1
