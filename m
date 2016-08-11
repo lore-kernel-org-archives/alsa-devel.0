@@ -1,17 +1,14 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: twl4030: runtime audio capture channel swapping
-	(kernel 3.18+)
-Date: Thu, 11 Aug 2016 12:14:02 +0300
-Message-ID: <64bcc44e-3058-01b5-3402-d140448f3add@ti.com>
-References: <CALHzX6rsFSFbER6f8mEyiyOMS4S=ErargBbMLL93fpYsRMkW1A@mail.gmail.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: [PATCH v8 0/5] ASoC: MT8173 HDMI jack detection
+Date: Thu, 11 Aug 2016 11:20:22 +0200
+Message-ID: <1470907227-899-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [198.47.19.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 831CC266A7B
- for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 11:14:06 +0200 (CEST)
-In-Reply-To: <CALHzX6rsFSFbER6f8mEyiyOMS4S=ErargBbMLL93fpYsRMkW1A@mail.gmail.com>
+Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B9392266A7B
+ for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 11:20:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,147 +18,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Akram Hameed <akramh@aq1systems.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Jean-Francois Moine <moinejf@free.fr>, Koro Chen <koro.chen@mediatek.com>, Lars-Peter Clausen <lars@metafoo.de>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Philipp Zabel <p.zabel@pengutronix.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Cawa Cheng <cawa.cheng@mediatek.com>, Mark Brown <broonie@kernel.org>, Hans Verkuil <hans.verkuil@cisco.com>, Daniel Kurtz <djkurtz@chromium.org>, kernel@pengutronix.de, PC Liao <pc.liao@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgQWtyYW0sCgpPbiAwOC8xMS8xNiAwNDowNywgQWtyYW0gSGFtZWVkIHdyb3RlOgo+IEhlaSBQ
-ZXRlciwKPiAKPiBTb3JyeSB0byBib3RoZXIgeW91IGRpcmVjdGx5LCBidXQgSSBnb3Qgbm8gcmVz
-cG9uc2UgdG8gbXkgcXVlc3Rpb25zIG9uIHRoZQo+IGFsc2EtZGV2ZWwgbGlzdCBhbmQgc2luY2Ug
-eW91IHNlZW0gdG8gYmUgYSBtYWludGFpbmVyIG9mIHRoZSBvbWFwIG1jYnNwIGFuZAo+IHBjbSBj
-b2RlLCBJIHRob3VnaHQgeW91IHdvdWxkOgoKU29ycnksIGl0IGxvb2tzIGxpa2UgSSBoYXZlIG1p
-c3NlZCB5b3VyIG1haWwgaW4gYWxzYS1kZXZlbC4gQWRkaW5nIGl0IHRvIENDCmFuZCBhbHNvIGxv
-b3BpbmcgSmFya2tvLgoKPiBhKSBXYW50IHRvIGJlIGF3YXJlIG9mIG15IGlzc3Vlcwo+IAo+IGIp
-IE1pZ2h0IGhlbHAgcG9pbnQgbWUgaW4gYSBkaXJlY3Rpb24gdG8gZml4IHRoaW5ncy4KPiAKPiBJ
-biBzaG9ydDogSSBhbSBjYXB0dXJpbmcgYSBzdGVyZW8gYXVkaW8gc3RyZWFtLCAxNi1iaXQsIDQ4
-a0h6IHVzaW5nIGEgZ3Vtc3RpeAo+IG92ZXJvIHRoYXQgaXMgcXVpdGUgc2ltaWxhciB0byB0aGUg
-b2xkZXIgYmVhZ2xlYm9hcmRzICh3ZSBhcmUgdXNpbmcgdHdvCj4gdmFyaWFudHMgLSBvbmUgaXMg
-T01BUDM1MzAgYmFzZWQgYW5kIHRoZSBvdGhlciwgRE0zNzMwKS4gUGVyaW9kaWNhbGx5LCBsZWZ0
-Cj4gY2hhbm5lbCBhdWRpbyB3aWxsIG1vdmUgdG8gcmlnaHQgY2hhbm5lbCBhbmQgdmljZSB2ZXJz
-YSBvdmVyIHRpbWUuCj4gCj4gUHJldmlvdXNseSBteSBjb21wYW55IHdhcyB1c2luZyBhIGJyYW5j
-aCBmcm9tIGtlcm5lbCAzLjAgKG1hZGUgYnkgU3RldmUKPiBTYWtvbWFuKSBhbmQgb3VyIGF1ZGlv
-IGNhcHR1cmUgd2FzIGZpbmUgLSBubyBzd2FwcGluZywgZXZlci4gRHVlIHRvCj4gaW5zdGFiaWxp
-dGllcyB3aXRoIHRoZSBvbGQgbW1jIGludGVyZmFjZSAodW5wcmVkaWN0YWJsZSBmYWlsdXJlcyB1
-c2luZyBuZXdlcgo+IFVIUy0zIGNhcmRzKSwgd2UgaGF2ZSBiZWVuIGZvcmNlZCB0byBtaWdyYXRl
-IHRvIGEgbmV3ZXIga2VybmVsLCBhbmQgaGVyZSBJCj4gZW5jb3VudGVyIHRoZSBjaGFubmVsIHN3
-YXAgaXNzdWUuCj4gCj4gVG8gbWUsIGl0IHNlZW1zIHRoZSBwcm9ibGVtIGlzIGxpa2Ugd2hhdCBp
-cyBkZXNjcmliZWQKPiBoZXJlOiBodHRwOi8vcHJvY2Vzc29ycy53aWtpLnRpLmNvbS9pbmRleC5w
-aHAvTWNCU1BfQ2hhbm5lbF9Td2FwcGluZwo+IFdoaWNoIEkgcHJlc3VtZSBkcmF3cyBvbiBhIGRp
-c2N1c3Npb24geW91IGhhZCB5ZWFycyBhZ28gd2l0aCBvbmUKPiBZaW5nOiBodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTEtRmVicnVhcnkvMDM2
-ODk1Lmh0bWwKPiAKPiBBZnRlciBzcGVuZGluZyBxdWl0ZSBzb21lIHRpbWUgcmVhZGluZyBhbmQg
-aW52ZXN0aWdhdGluZyB0aGUgdmFyaW91cwo+IHJlZ2lzdGVycywgSSBjb21lIHRvIHRoZSBmb2xs
-b3dpbmcgY29uY2x1c2lvbnM6Cj4gCj4gMSkgQXVkaW8gY29kZWMgKFRXTCkgYXBwZWFycyB0byBi
-ZSBjb25maWd1cmVkIGluIHRoZSBzYW1lIGJldHdlZW4gd29ya2luZwo+ICgzLjApIGFuZCBub24g
-d29ya2luZyAoMy4xOCkga2VybmVscywgZXhjZXB0IHRoYXQgdm9pY2UgbW9kZSBpcyBhY3RpdmUg
-YWxzbwo+IGFuZCBzb21lIGdhaW4gc2V0dGluZ3MgYXJlIGRpZmZlcmVudCAoZGlmZmVyZW50IGRl
-ZmF1bHRzLCBJIHN1cHBvc2UpLiBJIGhhdmUgYQo+IGNvbXBhcmlzb24gb2YgdGhlc2UgcmVnaXN0
-ZXIgbWFwcyBpZiB5b3Ugd2FudCB0byBzZWUuCj4gCj4gMikgTWNCU1AyIGlzIGFsc28gY29uZmln
-dXJlZCB0aGUgc2FtZSBiZXR3ZWVuIG9sZCBhbmQgbmV3IGtlcm5lbHMsIHRob3VnaCBJCj4gbm90
-ZSBmb3Igc29tZSByZWFzb24gdGhlIElEIHB1bGxlZCBieSBkZXZfZGJnIGxvb2tzIHNwdXJpb3Vz
-LCB0aG91Z2ggSSBndWVzcwo+IHVucmVsYXRlZCB0byBteSBpc3N1ZS4KPiBDb25maWd1cmluZyBN
-Y0JTUDI1NSAgcGh5c19iYXNlOiAweDQ5MDIyMDAwCj4gKioqKiBNY0JTUDI1NSByZWdzICoqKioK
-PiBEUlIyOiAgMHhmODhhCj4gRFJSMTogIDB4MDAwMAo+IERYUjI6ICAweDAwMDAKPiBEWFIxOiAg
-MHgwMDAwCj4gU1BDUjI6IDB4MDIzMAo+IFNQQ1IxOiAweDAwMzEKPiBSQ1IyOiAgMHg4MDQxCj4g
-UkNSMTogIDB4MDA0MAo+IFhDUjI6ICAweDgwNDEKPiBYQ1IxOiAgMHgwMDQwCj4gU1JHUjI6IDB4
-MDAxZgo+IFNSR1IxOiAweDBmMDAKPiBQQ1IwOiAgMHgwMDBmCj4gKioqKioqKioqKioqKioqKioq
-KioqKioKCldlIG11c3QgZHJvcCB0aGUgRFJSMS8yIChhbmQgcHJvYmFibHkgRFhSMS8yKSBkdW1w
-Li4uIEJ5IHJlYWRpbmcgdGhlIERSUgpyZWdpc3RlciB3aXRoIHRoZSBkZWJ1ZyBjb2RlIHdlIGlu
-dHJvZHVjZSB1bmRlcmZsb3cuIFRoZSBkYXRhIG11c3QgYmUgb25seQptb3ZlZCBieSB0aGUgRE1B
-IGZyb20gdGhlIERBVEEgcmVnaXN0ZXJzLiBJZiB3ZSBoYXZlIGxvdyB0aHJlc2hvbGQgaXQgaXMg
-bW9yZQpsaWtlbHkgdG8gY2F1c2UgY2hhbm5lbCBzd2FwIGFuZCBpdCBpcyBmb3Igc3VyZSBnb2lu
-ZyB0byBpbnRyb2R1Y2UgbWlzc2luZwpkYXRhIC0gdGhlIGRhdGEgaXMgZ29pbmcgdG8gdGhlIGtl
-cm5lbCBsb2cgaW5zdGVhZCBvZiB0aGUgcmVjZWl2ZSBidWZmZXIuCgo+IDMpIE15IGNoYW5uZWwg
-c3dhcHBpbmcgb2NjdXJzIHdoZW4gdXNpbmcgZG1hX29wX21vZGUgZWxlbWVudCBPUiB0aHJlc2hv
-bGQgbW9kZQo+IGluIGtlcm5lbCAzLjE4KyAoSSBoYXZlIG9ubHkgdGVzdGVkIG9uIDMuMTggYW5k
-IDQuNCwgZm9yIHRoZSByZWNvcmQpLiBTZXR0aW5nCj4gYSB0aHJlc2hvbGQgb2YgOTYwIHdpdGgg
-cGVyaW9kIHNpemUgMTBtcyByZWR1Y2VzIHRoZSBmcmVxdWVuY3kgb2YgdGhlIHN3YXAuIAo+IAo+
-IEkgZGlkIG5vdGljZSB0aGF0IERNQSBDQ1IgaXMgZGlmZmVyZW50IGJldHdlZW4ga2VybmVsIDMg
-YW5kIDMuMTggd2hlbgo+IG9wZXJhdGluZyBpbiBFTEVNRU5UIG1vZGUuIAo+IAo+IFZlcnNpb24g
-MyBrZXJuZWw6Cj4gCj4gRE1BNDpDaGFuNSBAIDQ4MDU2MjAwOkNDUj0vZGV2L21lbSBvcGVuZWQu
-Cj4gTWVtb3J5IG1hcHBlZCBhdCBhZGRyZXNzIDB4NDAxM2IwMDAuCj4gUmVhZCBhdCBhZGRyZXNz
-ICAweDQ4MDU2MjAwICgweDQwMTNiMjAwKTogMHgwMTA4NDQ4Mgo+IAo+IAo+IFZlcnNpb24gMy4x
-OCBrZXJuZWw6Cj4gCj4gRE1BNDpDaGFuNSBAIDQ4MDU2MjAwOkNDUj0vZGV2L21lbSBvcGVuZWQu
-Cj4gTWVtb3J5IG1hcHBlZCBhdCBhZGRyZXNzIDB4YjZmYTEwMDAuCj4gUmVhZCBhdCBhZGRyZXNz
-ICAweDQ4MDU2MjAwICgweGI2ZmExMjAwKTogMHgwMTBDNDRBMgk8LSBNY0JTUDIgUlggcmVxdWVz
-dC4KPiAKPiAKPiBJbnRlcmVzdGluZ2x5LCBpdCBhcHBlYXJzIHRoZSBuZXcga2VybmVsICgzLjE4
-KykgaXMgdXNpbmcgcGFja2V0IG1vZGUgZXZlbgo+IHdoZW4gJ2VsZW1lbnQnIGlzIHNlbGVjdGVk
-LiBJZiBJIGNob29zZSBkbWFfb3BfbW9kZSBUSFJFU0hPTEQgaW4gdGhlIG9sZGVyCj4ga2VybmVs
-IDMuMCwgSSBzZWUgdGhlIHNhbWUgMHgwMTBDNDRBMiBpbiB0aGUgQ0NSIGFzIEkgZG8gaW4gMy4x
-OCsuCgpZZXMsIEkgaGF2ZSBtYWRlIGEgY2hhbmdlIHRoYXQgaWYgd2UgYXJlIGluIGVsZW1lbnQg
-bW9kZSB3ZSB3aWxsIHN0aWxsIHVzZQpwYWNrZXQgbW9kZSB0byB0cmFuc2ZlciBvbmUgc2FtcGxl
-IHBlciBETUEgcmVxdWVzdC4gUmVhbCBlbGVtZW50IG1vZGUgd2lsbCBiZQp1c2VkIG9ubHkgaW4g
-Y2FzZSBvZiBtb25vIGF1ZGlvLiBJZiB0aGUgYXVkaW8gaXMgMisgY2hhbm5lbHMgd2UgYXJlIHVz
-aW5nCnBhY2tldCBtb2RlIHRvIHRyYW5zZmVyIHRoZSBzYW1wbGUuIFRoaXMgZG9lcyBoZWxwZWQg
-dG8gYXZvaWQgc3dhcHMgYXMgd2UKc2VuZC9yZWNlaXZlIG9uZSBzYW1wbGUgYXQgYSB0aW1lIGZy
-b20vdG8gTWNCU1AuCgo+IDQpIEkgaGF2ZSBub3Qgb2JzZXJ2ZWQgcGxheWJhY2sgY2hhbm5lbCBz
-d2FwcGluZy4gSSBhbSB1bnN1cmUgd2h5Lgo+IAo+IDUpIEkgZW5hYmxlZCB1bmRlcmZsb3cgYW5k
-IG92ZXJmbG93IHJlcG9ydGluZyBpbiB0aGUgTWNCU1AgSVJRIGhhbmRsZXIgKGtlcm5lbAo+IDMu
-MTgrIHNpbmNlIG9sZGVyIDMga2VybmVsIGRpZCBub3QgaGF2ZSBzdWNoIGEgaGFuZGxlciBhbmQg
-SSBoYXZlIG5vdCBwYXRjaGVkCj4gb25lIGluIHlldCksIGFuZCBmb3VuZCBzZXZlcmFsIGludGVy
-ZXN0aW5nIHRoaW5ncy4KCkkgY2FuIG5vdCByZWNhbGwgdGhlIGhpc3RvcnksIGJ1dCBiZXR3ZWVu
-IDMuMCBhbmQgMy4xOCB3ZSBtaWdodCBtb3ZlZCB0bwpkbWFlbmdpbmUgYmFzZWQgUENNIGZvciBP
-TUFQcy4gQnV0IEkgc3RpbGwgaGF2ZSBubyByZWNvbGxlY3Rpb24gdG8gZXhwZXJpZW5jZQpjYXB0
-dXJlIHNpZGUgY2hhbm5lbCBzd2FwLgoKPiBhKSBTd2FwIGRlZmluaXRlbHkgaXMgaGFwcGVuaW5n
-IGR1ZSB0byBPdmVyZmxvdywgYnV0IHNvIGZhciBJIG9ubHkgb2JzZXJ2ZSBhbgo+IG92ZXJmbG93
-IHdoZW4gdXNpbmcgZG1hX29wX21vZGUgVEhSRVNIT0xELiBXaGVuIHVzaW5nIGRtYV9vcF9tb2Rl
-IFRIUkVTSE9MRCwKPiB0aGUgc3dhcCBkb2VzIG5vdCBzZWVtIHRvIGNvaW5jaWRlIHdpdGggYW4g
-dW5kZXJmbG93LCBzbyBJIGFtIGF0IGEgbG9zcyB0bwo+IGV4cGxhaW4gZnVydGhlci4KCkhvdyBk
-b2VzIHlvdSBhcHBsaWNhdGlvbiB3b3Jrcz8gV2hhdCBhcmUgdGhlIHBhcmFtZXRlcnMgQUxTQSBp
-cyBjb25maWd1cmVkIGZvcgpjYXB0dXJlL3BsYXliYWNrIChjYXQgL3Byb2MvYXNvdW5kL2NhcmQw
-L3BjbTBwL3N1YjAvaHdfcGFyYW1zOyBjYXQKL3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBjL3N1YjAv
-aHdfcGFyYW1zKSAtIG51bWJlciBvZiBwZXJpb2RzLCBldGM/Cgo+IGIpIEluIGRtYV9vcF9tb2Rl
-IEVMRU1FTlQsIEkgZ2V0IFVuZGVyZmxvdyByZXBvcnRlZCBhbG1vc3QgZXZlcnkgc2Vjb25kIGlu
-Cj4gdGhpcyBuZXdlciBrZXJuZWwgKGFnYWluLCB1c2luZyAxMG1zIHBlcmlvZCBzaXplKS4gQ2hh
-bm5lbCBzd2FwIG9ubHkgc2VlbXMgdG8KPiBvY2N1ciBldmVyIGZldyBob3VycywgaG93ZXZlciwg
-YW5kIEkgZG8gbm90IGJlbGlldmUgSSBoYXZlIG9ic2VydmVkIHRoZQo+IG92ZXJmbG93IGF0IGFs
-bCBpbiBFTEVNRU5UIG1vZGUuIFNvLCB0aGUgc3dhcCBvY2N1cnMgZHVlIHRvIHVuZGVyZmxvdywg
-bWF5YmU/CgpVbmRlcmZsb3cgaW4gTWNCU1Agb3IgVW5kZXJmbG93IGJ5IEFMU0E/CgpVbmRlcmZs
-b3cgaW4gTWNCU1AgUlggdGVsbHMgdGhhdCBETUEgaXMgdHJ5aW5nIHRvIHJlYWQgZGF0YSB3aGVu
-IHRoZSBGSUZPIGlzCmVtcHR5LiBUaGlzIGNhbiBvbmx5IGhhcHBlbiBpZiBzb21ldGhpbmcgZWxz
-ZSBpcyByZWFkaW5nIGRhdGEgYWxzbyBmcm9tIHRoZQpNY0JTUCBzaW5jZSB3ZSBjb25maWd1cmUg
-dGhlIE1jQlNQIGFuZCBzRE1BIGluIHN5bmMuCgpPdmVyZmxvdyBpbiBNY0JTUCBoYXBwZW5zIHdo
-ZW4gREFNIGlzIGZhaWxpbmcgdG8gcmVhZCB0aGUgZGF0YSBvdXQgZnJvbSBNY0JTUApGSUZPIGlu
-IHRpbWUgLSBGSUZPIGlzIGZ1bGwgYW5kIE1jQlNQIGRpc2NhcmRzIHRoZSBpbmNvbWluZyBkYXRh
-KQoKQUxTQSB1bmRlcmZsb3cgaXMgZGlmZmVyZW50LCBpdCBoYXBwZW5zIHdoZW4gdGhlIGFwcGxp
-Y2F0aW9uIGZhaWxzIHRvIHByb2Nlc3MKdGhlIHBlcmlvZCBpbiB0aW1lIGFuZCB0aGUgRE1BIHN0
-YXJ0cyB0byByZXdyaXRlIHRoZSBidWZmZXIuIFRoaXMgaGFwcGVucyB3aGVuCnlvdSBoYXZlIG9u
-ZSB0aHJlYWQgdG8gY2FwdHVyZS9wcm9jZXNzL3BsYXkuIElmIHRoZSBwcm9jZXNzL3BsYXkgdGFr
-ZXMgbW9yZQp0aW1lIHRoYW4gd2UgZ28gcm91bmQgaW4gdGhlIGJvZmZlciAoYnVmZmVyIHRpbWUp
-IHdlIGhhdmUgQUxTQSB1bmRlcmZsb3cuIFlvdQpjYW4gdHJ5IHRvIGluY3JlYXNlIHRoZSBudW1i
-ZXIgb2YgcGVyaW9kcyBvciBzZXBhcmF0ZSB0aGUgY2FwdHVyZSBhbmQKcHJvY2Vzcy9wbGF5IGpv
-YnMgaW50byBzZXBhcmF0ZSB0aHJlYWRzLgoKPiBNeSBwbGFuIGZyb20gbm93IGlzIHRvIGdldCBt
-eSBKVEFHIHVwIGFuZCBydW5uaW5nIGFuZCB0cnkgYW5kIG1ha2UgdGhlIGNoYW5nZQo+ICJJZiB5
-b3UgYXJlIHdvcmtpbmcgd2l0aCAxNi1iaXQgc3RlcmVvIGRhdGEgYSBuaWNlIHNvbHV0aW9uIGlz
-IHRvIGNvbmZpZ3VyZQo+IHRoZSBNY0JTUCBmb3IgYSBzaW5nbGUgMzItYml0IGVsZW1lbnQgaW5z
-dGVhZCBvZiAyIDE2LWJpdCBlbGVtZW50cy4gIgoKVGhlIE1jQlNQIGRyaXZlciBkb2VzIG5vdCBo
-YXZlIHN1cHBvcnQgZm9yIHRoaXMgQVRNLiBUaGVyZSBpcyBhIHNpZGUgZWZmZWN0IG9mCnRoaXMg
-QUZBSUs6IGNoYW5uZWxzIHdpbGwgYmUgc3dhcHBlZCwgYnV0IEkgaGF2ZSBub3QgdGVzdGVkIGl0
-LgpVc2luZyAzMmJpdCBlbGVtZW50IGluc3RlYWQgb2YgMngxNmJpdCBoZWxwcyBpbiBjYXNlIHdo
-ZW4geW91IGRvIG5vdCBoYXZlIEZJRk8KZm9yIHN1cmUgdG8gZ2l2ZSBtb3JlIHRpbWUgZm9yIHRo
-ZSBETUEuIEFsc28gaW4gY2FzZSBvZiB1bmRlcnJ1bi9vdmVycnVuIHlvdQp3aWxsIGJlIGxvb3Np
-bmcgYm90aCBjaGFubmVsJ3MgZGF0YSBzbyB0aGUgc3dhcCB3b3VsZCBub3QgaGFwcGVuLgoKPiBJ
-ZiB5b3UgaGF2ZSBhbnkgaGVscGZ1bCBzdWdnZXN0aW9ucywgSSB3b3VsZCByZWFsbHkgYXBwcmVj
-aWF0ZSB0aGVtLiBJIGFtCj4gb3BlcmF0aW5nIHVuZGVyIHRoZSBhc3N1bXB0aW9uIEkgY2FuIGxl
-YXZlIHRoZSBUV0wgY29kZWMgc2V0dGluZ3MgYXMgdGhleSBhcmUKPiBhbmQganVzdCAnbGllJyB0
-byBNY0JTUCBhYm91dCB0aGUgZGF0YSBmcmFtaW5nLiBOYW1lbHksIHNwZWNpZnkgc2luZ2xlIHBo
-YXNlCj4gZnJhbWUgd2l0aCAxIHdvcmQgb2YgMzIgYml0cywgYW5kIHNldCBETUEgcGFja2V0IHNp
-emUgdG8gYSAzMmJpdCB3b3JkIGFsc28uCj4gU2luY2UgMTYgYml0IG1vZGUgb3BlcmF0ZXMgYnkg
-ZGVmYXVsdCBpbiBkdWFsIHBoYXNlLCBJIGFtIG5vdCBzdXJlIGlmIHRoZQo+IHNpZ25hbGxpbmcg
-d2lsbCB3b3JrIGNvcnJlY3RseSwgYnV0IEkgZ3Vlc3MgSSB3aWxsIGZpbmQgb3V0LgoKWWVhaCwg
-dGhpcyBpcyBhbHNvIGdvaW5nIHRvIGJlIGEgcHJvYmxlbS4gQXMgdHdsNDAzMCBpcyB1c2luZyBJ
-MlMgd2hlbiBpbgpzdGVyZW8gbW9kZSwgd2l0aCBmYWtlIG1vbm8gMzJiaXQgeW91IGNhbiBub3Qg
-dXNlIEkyUyBzaWduYWxzLiBCdXQgc2luY2UgTWNCU1AKaXMgbG9va2luZyBmb3IgdGhlIHN0YXJ0
-IGNvbmRpdGlvbiwgY29uZmlndXJpbmcgaXQgZm9yIERTUF9BIG1vZGUgd2lsbApwcm9iYWJseSBn
-b2luZyB0byBzdGFydCB0aGUgcmVjZXB0aW9uL3BsYXliYWNrIGF0IHRoZSBjb3JyZWN0IHRpbWUu
-Cgo+IEFnYWluLCBteSBhcG9sb2dpZXMgZm9yIGNvbnRhY3RpbmcgeW91IGRpcmVjdGx5LiBIb3Bl
-ZnVsbHkgdGhlIGluZm9ybWF0aW9uIEkKPiBoYXZlIHByb3ZpZGVkIGNhbiBoZWxwIGRpYWdub3Np
-bmcgdGhlIHJlYWwgcHJvYmxlbSBpbiB0aGUga2VybmVsLgoKTm8gcHJvYmxlbS4gU29ycnkgZm9y
-IHRoYXQgSSBoYXZlIG1pc3NlZCB5b3VyIG1haWwgaW4gYWxzYS1kZXZlbC4KCj4gRm9yIG1lLCBJ
-Cj4gbXVzdCBmaW5kIGEgc29sdXRpb24gaW4gdGhlIG5lYXItdGVybSBzbyBJIHdpbGwgdHJ5IHRv
-IGZpZ3VyZSBvdXQgc29tZSBoYWNrcwo+IGFzIGRlc2NyaWJlZCBpbiB0aGUgV2lraSBhcnRpY2xl
-LgoKVGhlIHdpa2kgcGFnZSB3YXMgd3JpdHRlbiBmb3IgZGFWaW5jaSBkZXZpY2VzIEFGQUlLIHdo
-ZXJlIHRoZXkgZG9uJ3QgaGF2ZSBGSUZPCmZvciB0aGVpciBNY0JTUC4KCi0tIApQw6l0ZXIKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi,
+
+now that kernel v4.8-rc1 is released and includes the new CEC framework in
+drivers/staging/media/cec, I wonder how to proceed with this. To allow the
+ASoC drivers to present HDMI cable connection state as an ALSA jack, and
+to allow them to update sink capabilities when it signals an EDID change,
+we need a notification mechanism between CEC/HDMI, and ALSA drivers.
+
+I had used Russell's hdmi notification prototype to let the CEC/HDMI
+drivers notify the hdmi-codec and ASoC machine drivers of changes. The
+mtk_cec driver currently is just a placeholder that only handles the HPD
+interrupts.
+
+Should the notifications be integrated with the CEC framework for those
+devices that do have CEC support?
+
+Changes since v7 ("ASoC: MT8173 HDMI codec support"):
+ - Dropped the already applied ELD control and machine driver patches
+ - Dropped the N/CTS helper patch for now, as the helpers don't exist yet.
+ - Lock ELD mutex while copying ELD in hdmi_eld_ctl_get
+
+regards
+Philipp
+
+Philipp Zabel (5):
+  video: rmk's HDMI notification prototype
+  ASoC: hdmi-codec: Use HDMI notifications to add jack support
+  ASoC: mediatek: Add jack detection support to mt8173-rt5650-rt5676
+    machine driver
+  ASoC: mediatek: Add jack detection support to the mt8173-rt5650
+    machine driver
+  drm/mediatek: hdmi: issue notifications
+
+ drivers/gpu/drm/mediatek/mtk_cec.c               | 11 +++
+ drivers/gpu/drm/mediatek/mtk_hdmi.c              |  3 +
+ drivers/video/Kconfig                            |  3 +
+ drivers/video/Makefile                           |  1 +
+ drivers/video/hdmi-notifier.c                    | 61 ++++++++++++++++
+ include/linux/hdmi-notifier.h                    | 44 ++++++++++++
+ include/sound/hdmi-codec.h                       |  6 ++
+ sound/soc/codecs/Kconfig                         |  1 +
+ sound/soc/codecs/hdmi-codec.c                    | 88 +++++++++++++++++++++---
+ sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c | 21 ++++++
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c        | 21 ++++++
+ 11 files changed, 252 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/video/hdmi-notifier.c
+ create mode 100644 include/linux/hdmi-notifier.h
+
+-- 
+2.8.1
