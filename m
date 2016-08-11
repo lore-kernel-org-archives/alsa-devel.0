@@ -1,126 +1,68 @@
-From: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH] ARM: dts: am335x-wega: Add audio support
-Date: Thu, 11 Aug 2016 12:25:53 +0300
-Message-ID: <7109f6e5-e7fd-4b60-98b7-85b9d78ef690@ti.com>
-References: <1470841935-14190-1-git-send-email-s.mueller-klieser@phytec.de>
+From: Russell King - ARM Linux <linux@armlinux.org.uk>
+Subject: Re: [PATCH v8 1/5] video: rmk's HDMI notification
+	prototype
+Date: Thu, 11 Aug 2016 11:18:17 +0100
+Message-ID: <20160811101817.GT1041@n2100.armlinux.org.uk>
+References: <1470907227-899-1-git-send-email-p.zabel@pengutronix.de>
+ <1470907227-899-2-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1470841935-14190-1-git-send-email-s.mueller-klieser-guT5V/WYfQezQB+pC5nmwQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: =?UTF-8?Q?Stefan_M=c3=bcller-Klieser?= <s.mueller-klieser-guT5V/WYfQezQB+pC5nmwQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+ by alsa0.perex.cz (Postfix) with ESMTP id 946A4266D0D
+ for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 12:20:38 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1470907227-899-2-git-send-email-p.zabel@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Koro Chen <koro.chen@mediatek.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Hans Verkuil <hans.verkuil@cisco.com>, Daniel Kurtz <djkurtz@chromium.org>, kernel@pengutronix.de, PC Liao <pc.liao@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org, Cawa Cheng <cawa.cheng@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/10/16 18:12, Stefan Müller-Klieser wrote:
-> The wega board has a TLV320AIC3007 connected via McASP0. In the default
-> configuration, no external crystal is mounted. We run a system clock of
-> 25 MHz, so we use the audio codec PLL for audio clock generation.
-
-It is great that the "ti,da830-evm-audio" works for you. I hope I will have
-time soon to work on the McASP driver's CCF support in the near future.
-
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-
-> Signed-off-by: Stefan Müller-Klieser <s.mueller-klieser-guT5V/WYfQezQB+pC5nmwQ@public.gmane.org>
-> ---
->  arch/arm/boot/dts/am335x-wega.dtsi | 62 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 62 insertions(+)
+On Thu, Aug 11, 2016 at 11:20:23AM +0200, Philipp Zabel wrote:
+> This is Russell's HDMI notification prototype [1], currently waiting
+> for the HDMI CEC situation to resolve.
 > 
-> diff --git a/arch/arm/boot/dts/am335x-wega.dtsi b/arch/arm/boot/dts/am335x-wega.dtsi
-> index 282f6d4..7f5f8ed 100644
-> --- a/arch/arm/boot/dts/am335x-wega.dtsi
-> +++ b/arch/arm/boot/dts/am335x-wega.dtsi
-> @@ -11,6 +11,10 @@
->  	model = "Phytec AM335x phyBOARD-WEGA";
->  	compatible = "phytec,am335x-wega", "phytec,am335x-phycore-som", "ti,am33xx";
->  
-> +	sound: sound_iface {
-> +		compatible = "ti,da830-evm-audio";
-> +	};
-> +
->  	regulators {
->  		compatible = "simple-bus";
->  
-> @@ -24,6 +28,58 @@
->  	};
->  };
->  
-> +/* Audio */
-> +&am33xx_pinmux {
-> +	mcasp0_pins: pinmux_mcasp0 {
-> +		pinctrl-single,pins = <
-> +			AM33XX_IOPAD(0x9AC, PIN_OUTPUT_PULLDOWN | MUX_MODE0) /* mcasp0_ahclkx.mcasp0_ahclkx */
-> +			AM33XX_IOPAD(0x990, PIN_INPUT_PULLDOWN | MUX_MODE0)  /* mcasp0_aclkx.mcasp0_aclkx */
-> +			AM33XX_IOPAD(0x994, PIN_INPUT_PULLDOWN | MUX_MODE0)  /* mcasp0_fsx.mcasp0_fsx */
-> +			AM33XX_IOPAD(0x998, PIN_INPUT_PULLDOWN | MUX_MODE0)  /* mcasp0_axr0.mcasp0_axr0 */
-> +			AM33XX_IOPAD(0x9A8, PIN_OUTPUT_PULLDOWN | MUX_MODE0) /* mcasp0_axr1.mcasp0_axr1 */
-> +		>;
-> +	};
-> +};
-> +
-> +&i2c0 {
-> +	tlv320aic3007: tlv320aic3007@18 {
-> +		compatible = "ti,tlv320aic3007";
-> +		reg = <0x18>;
-> +		AVDD-supply = <&vcc3v3>;
-> +		IOVDD-supply = <&vcc3v3>;
-> +		DRVDD-supply = <&vcc3v3>;
-> +		DVDD-supply = <&vdig1_reg>;
-> +		status = "okay";
-> +	};
-> +};
-> +
-> +&mcasp0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&mcasp0_pins>;
-> +	op-mode = <0>; /* DAVINCI_MCASP_IIS_MODE */
-> +	tdm-slots = <2>;
-> +	serial-dir = <
-> +		2 1 0 0 /* # 0: INACTIVE, 1: TX, 2: RX */
-> +	>;
-> +	tx-num-evt = <16>;
-> +	rt-num-evt = <16>;
-> +	status = "okay";
-> +};
-> +
-> +&sound {
-> +	ti,model = "AM335x-Wega";
-> +	ti,audio-codec = <&tlv320aic3007>;
-> +	ti,mcasp-controller = <&mcasp0>;
-> +	ti,audio-routing =
-> +		"Line Out",		"LLOUT",
-> +		"Line Out",		"RLOUT",
-> +		"LINE1L",		"Line In",
-> +		"LINE1R",		"Line In";
-> +	clocks = <&mcasp0_fck>;
-> +	clock-names = "mclk";
-> +	status = "okay";
-> +};
-> +
->  /* CAN Busses */
->  &am33xx_pinmux {
->  	dcan1_pins: pinmux_dcan1 {
-> @@ -99,6 +155,12 @@
->  	status = "okay";
->  };
->  
-> +/* Power */
-> +&vdig1_reg {
-> +	regulator-boot-on;
-> +	regulator-always-on;
-> +};
-> +
->  /* UARTs */
->  &am33xx_pinmux {
->  	uart0_pins: pinmux_uart0 {
+> The use case for the notifications on MediaTek MT8173 is to let the
+> (dis)connection notifications control an ALSA jack object.
 > 
+> No Signed-off-by since this is not my code, and still up for discussion.
 
+Well, I have two drivers (both CEC drivers) which use this, and I still
+don't see any alternative solution to the problem that this patch is
+solving.
+
+I don't think it's really a CEC problem - there's three bits to HDMI
+that need to track each others state - the video, audio and CEC paths.
+
+While the video and audio paths may be one block, the CEC path may
+actually be a separate block.  For example, the TDA998x devices
+integrate the HDMI video/audio block along with a TDA9950 on the
+same device - the TDA9950 being a CEC engine.  The TDA9950 is also
+available as a separate device, and even when integrated with HDMI,
+it appears on the I2C bus as a seperate device.
+
+So, splitting the functionality is definitely the right model.  We
+just need some way to keep each blocks state in sync.  What's provided
+in this patch is the simple solution which seems to work for the use
+cases we have.
+
+I think, in light of no comments against this approach, and no other
+approach being available, that this is good enough justification to
+merge this, especially as it is blocking other work.
+
+So... if people want to give me reviewed-by/acked-bys, I'll add them
+to my patch, and I'll post that and the dw-hdmi and tda9950 CEC drivers.
 
 -- 
-Péter
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
