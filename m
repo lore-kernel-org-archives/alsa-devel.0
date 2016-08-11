@@ -1,18 +1,18 @@
 From: Andrej Krutak <dev@andree.sk>
-Subject: [PATCH 05/15] ALSA: line6: Use device_create_file
-	instead of snd_card_add_dev_attr
-Date: Thu, 11 Aug 2016 21:02:17 +0200
-Message-ID: <1470942147-19848-6-git-send-email-dev@andree.sk>
+Subject: [PATCH 06/15] ALSA: line6: Allow bulk endpoints
+	instead of interrupt endpoints
+Date: Thu, 11 Aug 2016 21:02:18 +0200
+Message-ID: <1470942147-19848-7-git-send-email-dev@andree.sk>
 References: <1470942147-19848-1-git-send-email-dev@andree.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BF9D26774A
- for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 21:03:59 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id q128so955244wma.1
- for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 12:03:59 -0700 (PDT)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3172A26774F
+ for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 21:04:01 +0200 (CEST)
+Received: by mail-wm0-f68.google.com with SMTP id o80so966229wme.0
+ for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 12:04:01 -0700 (PDT)
 In-Reply-To: <1470942147-19848-1-git-send-email-dev@andree.sk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,116 +27,118 @@ To: alsa-devel@alsa-project.org
 Cc: Andrej Krutak <dev@andree.sk>
 List-Id: alsa-devel@alsa-project.org
 
-The latter seems to create invalid configuration, the device pointer passed
-to the attr callbacks is not correct afterwards (results into segfaults when
-accessing the attributes).
+Some PODs (e.g. POD X3) have bulk instead of interrupt endpoints for
+data transfer.
 
 Signed-off-by: Andrej Krutak <dev@andree.sk>
 ---
- sound/usb/line6/podhd.c | 60 ++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 44 insertions(+), 16 deletions(-)
+ sound/usb/line6/driver.c | 63 ++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 48 insertions(+), 15 deletions(-)
 
-diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
-index 42fa376..f72803a 100644
---- a/sound/usb/line6/podhd.c
-+++ b/sound/usb/line6/podhd.c
-@@ -57,6 +57,9 @@ struct usb_line6_podhd {
- 
- 	/* Firmware version */
- 	int firmware_version;
-+
-+	/* Flag whether the sysfs files were created */
-+	int devfiles_created;
- };
- 
- static struct snd_ratden podhd_ratden = {
-@@ -177,16 +180,37 @@ static ssize_t firmware_version_show(struct device *dev,
- static DEVICE_ATTR_RO(firmware_version);
- static DEVICE_ATTR_RO(serial_number);
- 
--static struct attribute *podhd_dev_attrs[] = {
--	&dev_attr_firmware_version.attr,
--	&dev_attr_serial_number.attr,
--	NULL
--};
-+/*
-+ *       Create sysfs entries.
-+ */
-+static int podhd_create_attrs(struct device *dev)
-+{
-+	int err;
-+	struct usb_interface *interface = to_usb_interface(dev);
-+	struct usb_line6_podhd *pod = usb_get_intfdata(interface);
- 
--static const struct attribute_group podhd_dev_attr_group = {
--	.name = "podhd",
--	.attrs = podhd_dev_attrs,
--};
-+	err = device_create_file(dev, &dev_attr_firmware_version);
-+	if (err < 0)
-+		return err;
-+	err = device_create_file(dev, &dev_attr_serial_number);
-+	if (err < 0)
-+		return err;
-+
-+	pod->devfiles_created = 1;
-+	return 0;
-+}
-+
-+static void podhd_remove_attrs(struct device *dev)
-+{
-+	struct usb_interface *interface = to_usb_interface(dev);
-+	struct usb_line6_podhd *pod = usb_get_intfdata(interface);
-+
-+	if (pod->devfiles_created) {
-+		device_remove_file(dev, &dev_attr_firmware_version);
-+		device_remove_file(dev, &dev_attr_serial_number);
-+		pod->devfiles_created = 0;
-+	}
-+}
- 
- /*
-  * POD X3 startup procedure.
-@@ -281,6 +305,14 @@ static int podhd_startup_finalize(struct usb_line6_podhd *pod)
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index 5fd6cad..9b16777 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -66,10 +66,17 @@ static int line6_start_listen(struct usb_line6 *line6)
  {
- 	struct usb_line6 *line6 = &pod->line6;
+ 	int err;
  
-+	if (pod->line6.properties->capabilities & LINE6_CAP_CONTROL) {
-+		/* create sysfs entries: */
-+		int err = podhd_create_attrs(line6->ifcdev);
-+
-+		if (err < 0)
-+			return err;
+-	usb_fill_int_urb(line6->urb_listen, line6->usbdev,
+-		usb_rcvintpipe(line6->usbdev, line6->properties->ep_ctrl_r),
+-		line6->buffer_listen, LINE6_BUFSIZE_LISTEN,
+-		line6_data_received, line6, line6->interval);
++	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
++		usb_fill_int_urb(line6->urb_listen, line6->usbdev,
++			usb_rcvintpipe(line6->usbdev, line6->properties->ep_ctrl_r),
++			line6->buffer_listen, LINE6_BUFSIZE_LISTEN,
++			line6_data_received, line6, line6->interval);
++	} else {
++		usb_fill_bulk_urb(line6->urb_listen, line6->usbdev,
++			usb_rcvbulkpipe(line6->usbdev, line6->properties->ep_ctrl_r),
++			line6->buffer_listen, LINE6_BUFSIZE_LISTEN,
++			line6_data_received, line6);
 +	}
-+
- 	/* ALSA audio interface: */
- 	return snd_card_register(line6->card);
- }
-@@ -288,8 +320,11 @@ static int podhd_startup_finalize(struct usb_line6_podhd *pod)
- static void podhd_disconnect(struct usb_line6 *line6)
+ 	line6->urb_listen->actual_length = 0;
+ 	err = usb_submit_urb(line6->urb_listen, GFP_ATOMIC);
+ 	return err;
+@@ -90,6 +97,7 @@ static int line6_send_raw_message(struct usb_line6 *line6, const char *buffer,
+ 				  int size)
  {
- 	struct usb_line6_podhd *pod = (struct usb_line6_podhd *)line6;
-+	struct device *dev = line6->ifcdev;
+ 	int i, done = 0;
++	const struct line6_properties *properties = line6->properties;
  
- 	if (pod->line6.properties->capabilities & LINE6_CAP_CONTROL) {
-+		podhd_remove_attrs(dev);
+ 	for (i = 0; i < size; i += line6->max_packet_size) {
+ 		int partial;
+@@ -97,15 +105,21 @@ static int line6_send_raw_message(struct usb_line6 *line6, const char *buffer,
+ 		int frag_size = min(line6->max_packet_size, size - i);
+ 		int retval;
+ 
+-		retval = usb_interrupt_msg(line6->usbdev,
+-					usb_sndintpipe(line6->usbdev,
+-						line6->properties->ep_ctrl_w),
+-					(char *)frag_buf, frag_size,
+-					&partial, LINE6_TIMEOUT * HZ);
++		if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
++			retval = usb_interrupt_msg(line6->usbdev,
++						usb_sndintpipe(line6->usbdev, properties->ep_ctrl_w),
++						(char *)frag_buf, frag_size,
++						&partial, LINE6_TIMEOUT * HZ);
++		} else {
++			retval = usb_bulk_msg(line6->usbdev,
++						usb_sndbulkpipe(line6->usbdev, properties->ep_ctrl_w),
++						(char *)frag_buf, frag_size,
++						&partial, LINE6_TIMEOUT * HZ);
++		}
+ 
+ 		if (retval) {
+ 			dev_err(line6->ifcdev,
+-				"usb_interrupt_msg failed (%d)\n", retval);
++				"usb_bulk_msg failed (%d)\n", retval);
+ 			break;
+ 		}
+ 
+@@ -140,10 +154,17 @@ static int line6_send_raw_message_async_part(struct message *msg,
+ 	int done = msg->done;
+ 	int bytes = min(msg->size - done, line6->max_packet_size);
+ 
+-	usb_fill_int_urb(urb, line6->usbdev,
+-		usb_sndintpipe(line6->usbdev, line6->properties->ep_ctrl_w),
+-		(char *)msg->buffer + done, bytes,
+-		line6_async_request_sent, msg, line6->interval);
++	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
++		usb_fill_int_urb(urb, line6->usbdev,
++			usb_sndintpipe(line6->usbdev, line6->properties->ep_ctrl_w),
++			(char *)msg->buffer + done, bytes,
++			line6_async_request_sent, msg, line6->interval);
++	} else {
++		usb_fill_bulk_urb(urb, line6->usbdev,
++			usb_sndbulkpipe(line6->usbdev, line6->properties->ep_ctrl_w),
++			(char *)msg->buffer + done, bytes,
++			line6_async_request_sent, msg);
++	}
+ 
+ 	msg->done += bytes;
+ 	retval = usb_submit_urb(urb, GFP_ATOMIC);
+@@ -462,7 +483,19 @@ static void line6_destruct(struct snd_card *card)
+ static void line6_get_interval(struct usb_line6 *line6)
+ {
+ 	struct usb_device *usbdev = line6->usbdev;
+-	struct usb_host_endpoint *ep = usbdev->ep_in[line6->properties->ep_ctrl_r];
++	const struct line6_properties *properties = line6->properties;
++	int pipe;
++	struct usb_host_endpoint *ep;
 +
- 		del_timer_sync(&pod->startup_timer);
- 		cancel_work_sync(&pod->startup_work);
- 	}
-@@ -306,13 +341,6 @@ static int podhd_init(struct usb_line6 *line6,
- 
- 	line6->disconnect = podhd_disconnect;
- 
--	if (pod->line6.properties->capabilities & LINE6_CAP_CONTROL) {
--		/* create sysfs entries: */
--		err = snd_card_add_dev_attr(line6->card, &podhd_dev_attr_group);
--		if (err < 0)
--			return err;
--	}
--
- 	/* initialize MIDI subsystem: */
- 	err = line6_init_midi(line6);
- 	if (err < 0)
++	if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
++		pipe =
++			usb_rcvintpipe(line6->usbdev, line6->properties->ep_ctrl_r);
++	} else {
++		pipe =
++			usb_rcvbulkpipe(line6->usbdev, line6->properties->ep_ctrl_r);
++	}
++	ep = usbdev->ep_in[usb_pipeendpoint(pipe)];
++
+ 	if (ep) {
+ 		line6->interval = ep->desc.bInterval;
+ 		if (usbdev->speed == USB_SPEED_LOW) {
 -- 
 1.9.1
