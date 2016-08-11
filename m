@@ -1,70 +1,48 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: rt5659: Add mclk controls
-Date: Thu, 11 Aug 2016 12:34:32 +0100
-Message-ID: <20160811113432.GQ9347@sirena.org.uk>
-References: <20160728155732.GG11806@sirena.org.uk>
- <20160728181419.GA4742@Asurada-Nvidia>
- <20160728185510.GK11806@sirena.org.uk>
- <20160729161521.GL9681@localhost>
- <20160729163933.GJ10376@sirena.org.uk>
- <c649c3fe-b111-56a8-275e-d967a961dd41@linux.intel.com>
- <20160810170632.GL9347@sirena.org.uk>
- <c794d543-a57a-aad6-1b62-4d101a79cdd3@linux.intel.com>
- <20160810175243.GN9347@sirena.org.uk>
- <ff13c01a-a3f5-b11f-c342-926e98f64be3@linux.intel.com>
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: Re: [PATCH -next] ASoC: sun4i-codec: Fix error return code in
+ sun4i_codec_probe()
+Date: Thu, 11 Aug 2016 22:15:27 +0800
+Message-ID: <d48eceb4-c26d-3b3c-8577-1ba19a04b040@gmail.com>
+References: <1470836554-11569-1-git-send-email-weiyj.lk@gmail.com>
+ <CAGb2v67cVXWtM=AzeFcftnajSs=+C6F12P_EvnXHB=oKsAm5Cw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="0ZpWocbG2H/Vq+uQ"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <ff13c01a-a3f5-b11f-c342-926e98f64be3-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Cc: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, mark.rutland-5wv7dgnIgG8@public.gmane.org, oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Darren Hart <dvhart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAGb2v67cVXWtM=AzeFcftnajSs=+C6F12P_EvnXHB=oKsAm5Cw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Emilio Lopez <emilio@elopez.com.ar>, Hans De Goede <hdegoede@redhat.com>, ats@offog.org, fengguang.wu@intel.com, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
---0ZpWocbG2H/Vq+uQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Aug 10, 2016 at 04:59:03PM -0500, Pierre-Louis Bossart wrote:
-> On 8/10/16 12:52 PM, Mark Brown wrote:
-
-> > I'm not just hinting at that, I've openly stated it quite a few times
-> > now!  :P  For the simpler CODECs it's kind of marginal if you need to
-> > bother but for anything more complex (even things with PLLs) it seems
-> > like the way forwards.
-
-> interesting, thanks for the precision. I must admit I missed this concept
-> completely and I didn't see any codec vendors work in this direction so far.
-> Ironically the x86 part may be the most straightforward...
-
-Architectures like x86 that are unable or unwilling to enable the use of
-the clock API are a blocker here, drivers can't make use of the API if
-it's not available.  There are more architectures than x86 but it's the
-only one with any active ASoC use that I'm aware of, unfortunately the
-maintainers didn't react positively to attempts to enable the clock API
-in the past.  I just sent a patch to try to fix it from the clock API
-side so let's hope that's a bit more helpful.
-
---0ZpWocbG2H/Vq+uQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXrGLHAAoJECTWi3JdVIfQyaMH/2hFq7j5i+hNtcE4lEQR6zT0
-9u8fXLXH/tOMeWnu+LdjwyHwWaQRYzSiNkQaHOad30Hc/APffpWroHtmtzWWlrp3
-JQwZFeHhAIWnWzkFqrbC7BEFw3YkV3gYG0SpBbphcMb6htiiHn+4+zA5Bq5jkQly
-1Hba2zEngkmE2qFR9e+vltGcWgTGxo/s/fH0Rq3OizhKW/eABlkv7idsehVT20sG
-r1ncgoy6UtUxwensxzsNzXfTH7kd5nS2vL4nmYrqXNDybUAtWR0ROeYHkHeQ4o3l
-XMq6BeAnjAF0QxhRrDssU3QP/BHEaE7Osq/UhR5uyODivLWJZfRfvRlKc4mpQtk=
-=SgME
------END PGP SIGNATURE-----
-
---0ZpWocbG2H/Vq+uQ--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On 08/10/2016 10:04 PM, Chen-Yu Tsai wrote:
+> On Wed, Aug 10, 2016 at 9:42 PM, Wei Yongjun <weiyj.lk@gmail.com> wrote:
+>> Fix to return error code -ENOMEM instead of 0 when create card
+>> failed, as done elsewhere in this function.
+>>
+>> Fixes: 45fb6b6f2aa3 ("ASoC: sunxi: add support for the on-chip
+>> codec on early Allwinner SoCs")
+>> Signed-off-by: Wei Yongjun <weiyj.lk@gmail.com>
+>> ---
+>>  sound/soc/sunxi/sun4i-codec.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+>> index 0e19c50..e741659 100644
+>> --- a/sound/soc/sunxi/sun4i-codec.c
+>> +++ b/sound/soc/sunxi/sun4i-codec.c
+>> @@ -846,6 +846,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+>>         card = sun4i_codec_create_card(&pdev->dev);
+>>         if (!card) {
+>>                 dev_err(&pdev->dev, "Failed to create our card\n");
+>> +               ret = -ENOMEM;
+>>                 goto err_unregister_codec;
+>>         }
+>>
+> This works, though it might be better to fix the create_card function and
+> any custom functions called in there to pass back a proper error value.
+>
+Since sun4i_codec_create_card() can only failed when kmalloc() return NULL, so
+still need to change sun4i_codec_create_card()?
