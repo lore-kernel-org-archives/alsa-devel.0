@@ -1,14 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/4] ALSA: seq: obsolete change of address limit
-Date: Thu, 11 Aug 2016 17:58:34 +0900
-Message-ID: <1470905914-16382-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/4] ALSA: seq: add an alternative way to
+	handle ioctl requests
+Date: Thu, 11 Aug 2016 17:58:32 +0900
+Message-ID: <1470905914-16382-3-git-send-email-o-takashi@sakamocchi.jp>
 References: <1470905914-16382-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id B99DD266B2A
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id B8606266A7B
  for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 10:58:39 +0200 (CEST)
 In-Reply-To: <1470905914-16382-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,166 +25,163 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Former commits change existent functions so that they don't handle data in
-kernel space. Copying from/to userspace is done outside of the functions,
-thus no need to change address limit of running task.
+ALSA sequencer is designed with two types of clients; application and
+kernel. Operations for each ioctl command should handle data in both of
+user space and kernel space, while current implementation just allows them
+to handle data in user space. Data in kernel space is handled with change
+of address limit of running tasks.
 
-This commit obsoletes get_fs()/set_fs() and applies corresponding changes.
+This commit adds a new table to map ioctl commands to corresponding
+functions. The functions get data in kernel space. Helper functions to
+operate kernel and application clients seek entries from the table.
+Especially, the helper function for application is responsible for coping
+from user space to kernel space.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/seq/seq_clientmgr.c | 73 +++---------------------------------------
- sound/core/seq/seq_compat.c    | 12 ++-----
- 2 files changed, 7 insertions(+), 78 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 76 +++++++++++++++++++++++++++++++++++++++++-
+ sound/core/seq/seq_compat.c    |  5 +++
+ 2 files changed, 80 insertions(+), 1 deletion(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 019facd..91e51e2 100644
+index 07d7c57..2107129 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -87,21 +87,6 @@ static int snd_seq_deliver_single_event(struct snd_seq_client *client,
+@@ -2168,6 +2168,13 @@ static int snd_seq_ioctl_query_next_port(struct snd_seq_client *client,
  
- /*
-  */
-- 
--static inline mm_segment_t snd_enter_user(void)
--{
--	mm_segment_t fs = get_fs();
--	set_fs(get_ds());
--	return fs;
--}
--
--static inline void snd_leave_user(mm_segment_t fs)
--{
--	set_fs(fs);
--}
--
--/*
-- */
- static inline unsigned short snd_seq_file_flags(struct file *file)
- {
-         switch (file->f_mode & (FMODE_READ | FMODE_WRITE)) {
-@@ -2094,14 +2079,8 @@ static const struct ioctl_handler {
+ /* -------------------------------------------------------- */
+ 
++static const struct ioctl_handler {
++	unsigned int cmd;
++	int (*func)(struct snd_seq_client *client, void *arg);
++} ioctl_handlers[] = {
++	{ 0, NULL },
++};
++
+ static struct seq_ioctl_table {
+ 	unsigned int cmd;
+ 	int (*func)(struct snd_seq_client *client, void __user * arg);
+@@ -2204,6 +2211,63 @@ static struct seq_ioctl_table {
  	{ 0, NULL },
  };
  
--static struct seq_ioctl_table {
--	unsigned int cmd;
--	int (*func)(struct snd_seq_client *client, void __user * arg);
--} ioctl_tables[] = {
--	{ 0, NULL },
--};
--
--static long seq_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-+static long snd_seq_ioctl(struct file *file, unsigned int cmd,
-+			  unsigned long arg)
++static long seq_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
++{
++	struct snd_seq_client *client = file->private_data;
++	/* To use kernel stack for ioctl data. */
++	union ioctl_arg {
++		int pversion;
++		int client_id;
++		struct snd_seq_system_info	system_info;
++		struct snd_seq_running_info	running_info;
++		struct snd_seq_client_info	client_info;
++		struct snd_seq_port_info	port_info;
++		struct snd_seq_port_subscribe	port_subscribe;
++		struct snd_seq_queue_info	queue_info;
++		struct snd_seq_queue_status	queue_status;
++		struct snd_seq_queue_tempo	tempo;
++		struct snd_seq_queue_timer	queue_timer;
++		struct snd_seq_queue_client	queue_client;
++		struct snd_seq_client_pool	client_pool;
++		struct snd_seq_remove_events	remove_events;
++		struct snd_seq_query_subs	query_subs;
++	} buf = {0};
++	const struct ioctl_handler *handler;
++	unsigned long size;
++	int err;
++
++	if (snd_BUG_ON(!client))
++		return -ENXIO;
++
++	for (handler = ioctl_handlers; handler->cmd > 0; ++handler) {
++		if (handler->cmd == cmd)
++			break;
++	}
++	if (handler->cmd == 0)
++		return -ENOTTY;
++	/*
++	 * All of ioctl commands for ALSA sequencer get an argument of size
++	 * within 13 bits. We can safely pick up the size from the command.
++	 */
++	size = _IOC_SIZE(handler->cmd);
++	if (_IOC_DIR(handler->cmd) == IOC_IN) {
++		if (copy_from_user(&buf, (const void __user *)arg, size))
++			return -EFAULT;
++	}
++
++	err = handler->func(client, &buf);
++	if (err >= 0) {
++		/* Some commands includes a bug in 'dir' field. */
++		if (handler->cmd == SNDRV_SEQ_IOCTL_SET_QUEUE_CLIENT ||
++		    handler->cmd == SNDRV_SEQ_IOCTL_SET_CLIENT_POOL ||
++		    _IOC_DIR(handler->cmd) == IOC_OUT)
++			if (copy_to_user((void __user *)arg, &buf, size))
++				return -EFAULT;
++	}
++
++	return err;
++}
++
+ static int snd_seq_do_ioctl(struct snd_seq_client *client, unsigned int cmd,
+ 			    void __user *arg)
+ {
+@@ -2234,9 +2298,12 @@ static long snd_seq_ioctl(struct file *file, unsigned int cmd, unsigned long arg
  {
  	struct snd_seq_client *client = file->private_data;
- 	/* To use kernel stack for ioctl data. */
-@@ -2158,45 +2137,6 @@ static long seq_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	return err;
+ 
++	if (seq_ioctl(file, cmd, arg) >= 0)
++		return 0;
++
+ 	if (snd_BUG_ON(!client))
+ 		return -ENXIO;
+-		
++
+ 	return snd_seq_do_ioctl(client, cmd, (void __user *) arg);
  }
  
--static int snd_seq_do_ioctl(struct snd_seq_client *client, unsigned int cmd,
--			    void __user *arg)
--{
--	struct seq_ioctl_table *p;
--
--	switch (cmd) {
--	case SNDRV_SEQ_IOCTL_PVERSION:
--		/* return sequencer version number */
--		return put_user(SNDRV_SEQ_VERSION, (int __user *)arg) ? -EFAULT : 0;
--	case SNDRV_SEQ_IOCTL_CLIENT_ID:
--		/* return the id of this client */
--		return put_user(client->number, (int __user *)arg) ? -EFAULT : 0;
--	}
--
--	if (! arg)
--		return -EFAULT;
--	for (p = ioctl_tables; p->cmd; p++) {
--		if (p->cmd == cmd)
--			return p->func(client, arg);
--	}
--	pr_debug("ALSA: seq unknown ioctl() 0x%x (type='%c', number=0x%02x)\n",
--		   cmd, _IOC_TYPE(cmd), _IOC_NR(cmd));
--	return -ENOTTY;
--}
--
--
--static long snd_seq_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
--{
--	struct snd_seq_client *client = file->private_data;
--
--	if (seq_ioctl(file, cmd, arg) >= 0)
--		return 0;
--
--	if (snd_BUG_ON(!client))
--		return -ENXIO;
--
--	return snd_seq_do_ioctl(client, cmd, (void __user *) arg);
--}
--
- #ifdef CONFIG_COMPAT
- #include "seq_compat.c"
- #else
-@@ -2396,8 +2336,6 @@ int snd_seq_kernel_client_ctl(int clientid, unsigned int cmd, void *arg)
+@@ -2437,6 +2504,7 @@ EXPORT_SYMBOL(snd_seq_kernel_client_dispatch);
+  */
+ int snd_seq_kernel_client_ctl(int clientid, unsigned int cmd, void *arg)
  {
- 	const struct ioctl_handler *handler;
++	const struct ioctl_handler *handler;
  	struct snd_seq_client *client;
--	mm_segment_t fs;
--	int result;
- 
+ 	mm_segment_t fs;
+ 	int result;
+@@ -2444,6 +2512,12 @@ int snd_seq_kernel_client_ctl(int clientid, unsigned int cmd, void *arg)
  	client = clientptr(clientid);
  	if (client == NULL)
-@@ -2408,10 +2346,9 @@ int snd_seq_kernel_client_ctl(int clientid, unsigned int cmd, void *arg)
- 			return handler->func(client, arg);
- 	}
- 
--	fs = snd_enter_user();
--	result = snd_seq_do_ioctl(client, cmd, (void __force __user *)arg);
--	snd_leave_user(fs);
--	return result;
-+	pr_debug("ALSA: seq unknown ioctl() 0x%x (type='%c', number=0x%02x)\n",
-+		 cmd, _IOC_TYPE(cmd), _IOC_NR(cmd));
-+	return -ENOTTY;
- }
- 
- EXPORT_SYMBOL(snd_seq_kernel_client_ctl);
+ 		return -ENXIO;
++
++	for (handler = ioctl_handlers; handler->cmd > 0; ++handler) {
++		if (handler->cmd == cmd)
++			return handler->func(client, arg);
++	}
++
+ 	fs = snd_enter_user();
+ 	result = snd_seq_do_ioctl(client, cmd, (void __force __user *)arg);
+ 	snd_leave_user(fs);
 diff --git a/sound/core/seq/seq_compat.c b/sound/core/seq/seq_compat.c
-index 4cfc505..fce5697 100644
+index 6517590..4cfc505 100644
 --- a/sound/core/seq/seq_compat.c
 +++ b/sound/core/seq/seq_compat.c
-@@ -47,7 +47,6 @@ static int snd_seq_call_port_info_ioctl(struct snd_seq_client *client, unsigned
- {
- 	int err = -EFAULT;
- 	struct snd_seq_port_info *data;
--	mm_segment_t fs;
- 
- 	data = kmalloc(sizeof(*data), GFP_KERNEL);
- 	if (!data)
-@@ -59,12 +58,7 @@ static int snd_seq_call_port_info_ioctl(struct snd_seq_client *client, unsigned
+@@ -59,6 +59,9 @@ static int snd_seq_call_port_info_ioctl(struct snd_seq_client *client, unsigned
  		goto error;
  	data->kernel = NULL;
  
--	if (snd_seq_kernel_client_ctl(client->number, cmd, &data) >= 0)
--		return 0;
--
--	fs = snd_enter_user();
--	err = snd_seq_do_ioctl(client, cmd, data);
--	snd_leave_user(fs);
-+	err = snd_seq_kernel_client_ctl(client->number, cmd, &data);
- 	if (err < 0)
- 		goto error;
- 
-@@ -126,9 +120,7 @@ static long snd_seq_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
++	if (snd_seq_kernel_client_ctl(client->number, cmd, &data) >= 0)
++		return 0;
++
+ 	fs = snd_enter_user();
+ 	err = snd_seq_do_ioctl(client, cmd, data);
+ 	snd_leave_user(fs);
+@@ -123,6 +126,8 @@ static long snd_seq_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
  	case SNDRV_SEQ_IOCTL_GET_SUBSCRIPTION:
  	case SNDRV_SEQ_IOCTL_QUERY_NEXT_CLIENT:
  	case SNDRV_SEQ_IOCTL_RUNNING_MODE:
--		if (seq_ioctl(file, cmd, arg) >= 0)
--			return 0;
--		return snd_seq_do_ioctl(client, cmd, argp);
-+		return snd_seq_ioctl(file, cmd, arg);
++		if (seq_ioctl(file, cmd, arg) >= 0)
++			return 0;
+ 		return snd_seq_do_ioctl(client, cmd, argp);
  	case SNDRV_SEQ_IOCTL_CREATE_PORT32:
  		return snd_seq_call_port_info_ioctl(client, SNDRV_SEQ_IOCTL_CREATE_PORT, argp);
- 	case SNDRV_SEQ_IOCTL_DELETE_PORT32:
 -- 
 2.7.4
