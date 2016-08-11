@@ -1,180 +1,70 @@
-From: Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v8 1/5] video: rmk's HDMI notification prototype
-Date: Thu, 11 Aug 2016 12:49:21 +0200
-Message-ID: <57AC5831.5050809@cisco.com>
-References: <1470907227-899-1-git-send-email-p.zabel@pengutronix.de>
- <1470907227-899-2-git-send-email-p.zabel@pengutronix.de>
- <57AC53AB.60008@cisco.com> <20160811103929.GU1041@n2100.armlinux.org.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: rt5659: Add mclk controls
+Date: Thu, 11 Aug 2016 12:34:32 +0100
+Message-ID: <20160811113432.GQ9347@sirena.org.uk>
+References: <20160728155732.GG11806@sirena.org.uk>
+ <20160728181419.GA4742@Asurada-Nvidia>
+ <20160728185510.GK11806@sirena.org.uk>
+ <20160729161521.GL9681@localhost>
+ <20160729163933.GJ10376@sirena.org.uk>
+ <c649c3fe-b111-56a8-275e-d967a961dd41@linux.intel.com>
+ <20160810170632.GL9347@sirena.org.uk>
+ <c794d543-a57a-aad6-1b62-4d101a79cdd3@linux.intel.com>
+ <20160810175243.GN9347@sirena.org.uk>
+ <ff13c01a-a3f5-b11f-c342-926e98f64be3@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <20160811103929.GU1041-l+eeeJia6m9URfEZ8mYm6t73F7V6hmMc@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Russell King - ARM Linux <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hans Verkuil <hans.verkuil-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, PC Liao <pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="0ZpWocbG2H/Vq+uQ"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <ff13c01a-a3f5-b11f-c342-926e98f64be3-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Cc: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, mark.rutland-5wv7dgnIgG8@public.gmane.org, oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Darren Hart <dvhart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
+--0ZpWocbG2H/Vq+uQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 08/11/16 12:39, Russell King - ARM Linux wrote:
-> On Thu, Aug 11, 2016 at 12:30:03PM +0200, Hans Verkuil wrote:
->> Hi Russell,
->>
->> I like this approach and it is something I will need for other CEC drivers
->> (not yet merged) as well.
->>
->> Just a few comments:
->>
->> On 08/11/16 11:20, Philipp Zabel wrote:
->>> This is Russell's HDMI notification prototype [1], currently waiting
->>> for the HDMI CEC situation to resolve.
->>>
->>> The use case for the notifications on MediaTek MT8173 is to let the
->>> (dis)connection notifications control an ALSA jack object.
->>>
->>> No Signed-off-by since this is not my code, and still up for discussion.
->>>
->>> [1] https://patchwork.kernel.org/patch/8351501/
->>> ---
->>>  drivers/video/Kconfig         |  3 +++
->>>  drivers/video/Makefile        |  1 +
->>>  drivers/video/hdmi-notifier.c | 61 +++++++++++++++++++++++++++++++++++++++++++
->>>  include/linux/hdmi-notifier.h | 44 +++++++++++++++++++++++++++++++
->>>  4 files changed, 109 insertions(+)
->>>  create mode 100644 drivers/video/hdmi-notifier.c
->>>  create mode 100644 include/linux/hdmi-notifier.h
->>>
->>> diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
->>> index 3c20af9..1ee7b9f 100644
->>> --- a/drivers/video/Kconfig
->>> +++ b/drivers/video/Kconfig
->>> @@ -36,6 +36,9 @@ config VIDEOMODE_HELPERS
->>>  config HDMI
->>>  	bool
->>>  
->>> +config HDMI_NOTIFIERS
->>> +	bool
->>> +
->>>  if VT
->>>  	source "drivers/video/console/Kconfig"
->>>  endif
->>> diff --git a/drivers/video/Makefile b/drivers/video/Makefile
->>> index 9ad3c17..65f5649 100644
->>> --- a/drivers/video/Makefile
->>> +++ b/drivers/video/Makefile
->>> @@ -1,5 +1,6 @@
->>>  obj-$(CONFIG_VGASTATE)            += vgastate.o
->>>  obj-$(CONFIG_HDMI)                += hdmi.o
->>> +obj-$(CONFIG_HDMI_NOTIFIERS)      += hdmi-notifier.o
->>>  
->>>  obj-$(CONFIG_VT)		  += console/
->>>  obj-$(CONFIG_LOGO)		  += logo/
->>> diff --git a/drivers/video/hdmi-notifier.c b/drivers/video/hdmi-notifier.c
->>> new file mode 100644
->>> index 0000000..a233359
->>> --- /dev/null
->>> +++ b/drivers/video/hdmi-notifier.c
->>> @@ -0,0 +1,61 @@
->>> +#include <linux/export.h>
->>> +#include <linux/hdmi-notifier.h>
->>> +#include <linux/notifier.h>
->>> +#include <linux/string.h>
->>> +
->>> +static BLOCKING_NOTIFIER_HEAD(hdmi_notifier);
->>> +
->>> +int hdmi_register_notifier(struct notifier_block *nb)
->>> +{
->>> +	return blocking_notifier_chain_register(&hdmi_notifier, nb);
->>> +}
->>> +EXPORT_SYMBOL_GPL(hdmi_register_notifier);
->>> +
->>> +int hdmi_unregister_notifier(struct notifier_block *nb)
->>> +{
->>> +	return blocking_notifier_chain_unregister(&hdmi_notifier, nb);
->>> +}
->>> +EXPORT_SYMBOL_GPL(hdmi_unregister_notifier);
->>> +
->>> +void hdmi_event_connect(struct device *dev)
->>> +{
->>> +	struct hdmi_event_base base;
->>> +
->>> +	base.source = dev;
->>> +
->>> +	blocking_notifier_call_chain(&hdmi_notifier, HDMI_CONNECTED, &base);
->>> +}
->>> +EXPORT_SYMBOL_GPL(hdmi_event_connect);
->>> +
->>> +void hdmi_event_disconnect(struct device *dev)
->>> +{
->>> +	struct hdmi_event_base base;
->>> +
->>> +	base.source = dev;
->>> +
->>> +	blocking_notifier_call_chain(&hdmi_notifier, HDMI_DISCONNECTED, &base);
->>> +}
->>> +EXPORT_SYMBOL_GPL(hdmi_event_disconnect);
->>> +
->>> +void hdmi_event_new_edid(struct device *dev, const void *edid, size_t size)
->>
->> I would prefer const u8 *edid. It is after all just a u8 array and not some
->> opaque data structure.
-> 
-> In DRM, the edid is of type "struct edid" (defined in
-> include/drm/drm_edid.h).  So, making it "const u8 *" means that all
-> DRM drivers will have to explicitly cast it - not something I'm in
-> favour of.
+On Wed, Aug 10, 2016 at 04:59:03PM -0500, Pierre-Louis Bossart wrote:
+> On 8/10/16 12:52 PM, Mark Brown wrote:
 
-I thought this was the raw EDID data. But if you pass a struct edid around,
-then why not make this const struct edid *edid? I fail to see why you would
-want to use a void pointer here.
+> > I'm not just hinting at that, I've openly stated it quite a few times
+> > now!  :P  For the simpler CODECs it's kind of marginal if you need to
+> > bother but for anything more complex (even things with PLLs) it seems
+> > like the way forwards.
 
-Also struct edid is for the first EDID block only, whereas CEC drivers need
-the CEA-861 block to get the physical address.
+> interesting, thanks for the precision. I must admit I missed this concept
+> completely and I didn't see any codec vendors work in this direction so far.
+> Ironically the x86 part may be the most straightforward...
 
-This could of course be a separate event that just notifies clients of the
-physical address.
+Architectures like x86 that are unable or unwilling to enable the use of
+the clock API are a blocker here, drivers can't make use of the API if
+it's not available.  There are more architectures than x86 but it's the
+only one with any active ASoC use that I'm aware of, unfortunately the
+maintainers didn't react positively to attempts to enable the clock API
+in the past.  I just sent a patch to try to fix it from the clock API
+side so let's hope that's a bit more helpful.
 
-> 
->>> +{
->>> +	struct hdmi_event_new_edid new_edid;
->>> +
->>> +	new_edid.base.source = dev;
->>> +	new_edid.edid = edid;
->>> +	new_edid.size = size;
->>> +
->>> +	blocking_notifier_call_chain(&hdmi_notifier, HDMI_NEW_EDID, &new_edid);
->>> +}
->>> +EXPORT_SYMBOL_GPL(hdmi_event_new_edid);
->>> +
->>> +void hdmi_event_new_eld(struct device *dev, const void *eld)
->>
->> Stupid question: what does ELD stand for? I've no idea...
->>
->> And is void the right choice here or should it also be u8?
-> 
-> The ELD stands for EDID-like data.  See information on HDA039.  It's a
-> method of conveying the EDID data specific to audio drivers to them
-> without having the complexities of parsing the full EDID each time.
-> It's also exported to userland so that userland can determine the
-> capabilities of the audio path, again, without having to have full
-> EDID parsers and exporting the full EDID data block through audio
-> drivers.
-> 
+--0ZpWocbG2H/Vq+uQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-OK. Since eld is an unsigned char array I would suggest changing void to
-unsigned char here.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Or perhaps const unsigned char eld[128].
+iQEcBAEBCAAGBQJXrGLHAAoJECTWi3JdVIfQyaMH/2hFq7j5i+hNtcE4lEQR6zT0
+9u8fXLXH/tOMeWnu+LdjwyHwWaQRYzSiNkQaHOad30Hc/APffpWroHtmtzWWlrp3
+JQwZFeHhAIWnWzkFqrbC7BEFw3YkV3gYG0SpBbphcMb6htiiHn+4+zA5Bq5jkQly
+1Hba2zEngkmE2qFR9e+vltGcWgTGxo/s/fH0Rq3OizhKW/eABlkv7idsehVT20sG
+r1ncgoy6UtUxwensxzsNzXfTH7kd5nS2vL4nmYrqXNDybUAtWR0ROeYHkHeQ4o3l
+XMq6BeAnjAF0QxhRrDssU3QP/BHEaE7Osq/UhR5uyODivLWJZfRfvRlKc4mpQtk=
+=SgME
+-----END PGP SIGNATURE-----
 
-Regards,
-
-	Hans
+--0ZpWocbG2H/Vq+uQ--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
