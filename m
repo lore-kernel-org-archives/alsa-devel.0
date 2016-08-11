@@ -1,8 +1,8 @@
 From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v8 3/5] ASoC: mediatek: Add jack detection support to
- mt8173-rt5650-rt5676 machine driver
-Date: Thu, 11 Aug 2016 11:20:25 +0200
-Message-ID: <1470907227-899-4-git-send-email-p.zabel@pengutronix.de>
+Subject: [PATCH v8 4/5] ASoC: mediatek: Add jack detection support to the
+ mt8173-rt5650 machine driver
+Date: Thu, 11 Aug 2016 11:20:26 +0200
+Message-ID: <1470907227-899-5-git-send-email-p.zabel@pengutronix.de>
 References: <1470907227-899-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c | 21 +++++++++++++++++++++
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c | 21 +++++++++++++++++++++
  1 file changed, 21 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-index 1b8b2a7..707eeaf 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+index ba65f41..64ae9ad 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
 @@ -18,6 +18,7 @@
  #include <linux/gpio.h>
  #include <linux/of_gpio.h>
@@ -38,8 +38,8 @@ index 1b8b2a7..707eeaf 100644
 +#include <sound/hdmi-codec.h>
  #include <sound/jack.h>
  #include "../../codecs/rt5645.h"
- #include "../../codecs/rt5677.h"
-@@ -131,6 +132,25 @@ static struct snd_soc_dai_link_component mt8173_rt5650_rt5676_codecs[] = {
+ 
+@@ -166,6 +167,25 @@ static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
  	},
  };
  
@@ -65,13 +65,13 @@ index 1b8b2a7..707eeaf 100644
  enum {
  	DAI_LINK_PLAYBACK,
  	DAI_LINK_CAPTURE,
-@@ -195,6 +215,7 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
+@@ -228,6 +248,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
  		.no_pcm = 1,
  		.codec_dai_name = "i2s-hifi",
  		.dpcm_playback = 1,
 +		.init = mt8173_hdmi_init,
  	},
- 	/* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
- 	[DAI_LINK_INTERCODEC] = {
+ };
+ 
 -- 
 2.8.1
