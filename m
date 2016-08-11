@@ -1,18 +1,18 @@
 From: Andrej Krutak <dev@andree.sk>
-Subject: [PATCH 07/15] ALSA: line6: Allow processing of raw
-	incoming messages
-Date: Thu, 11 Aug 2016 21:02:19 +0200
-Message-ID: <1470942147-19848-8-git-send-email-dev@andree.sk>
+Subject: [PATCH 09/15] ALSA: line6: Add hwdep interface to
+	access the POD control messages
+Date: Thu, 11 Aug 2016 21:02:21 +0200
+Message-ID: <1470942147-19848-10-git-send-email-dev@andree.sk>
 References: <1470942147-19848-1-git-send-email-dev@andree.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 9332F267750
- for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 21:04:02 +0200 (CEST)
-Received: by mail-wm0-f67.google.com with SMTP id i138so920607wmf.3
- for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 12:04:02 -0700 (PDT)
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 882D9267753
+ for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 21:04:05 +0200 (CEST)
+Received: by mail-wm0-f65.google.com with SMTP id q128so955997wma.1
+ for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 12:04:05 -0700 (PDT)
 In-Reply-To: <1470942147-19848-1-git-send-email-dev@andree.sk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,174 +27,272 @@ To: alsa-devel@alsa-project.org
 Cc: Andrej Krutak <dev@andree.sk>
 List-Id: alsa-devel@alsa-project.org
 
-Not all PODs use MIDI via USB data interface, thus allow avoiding
-that code and instead using direct processing.
+We must do it this way, because e.g. POD X3 won't play any sound unless
+the host listens on the bulk EP, so we cannot export it only via libusb.
+
+The driver currently doesn't use the bulk EP messages in other way,
+in future it could e.g. sense/modify volume(s).
 
 Signed-off-by: Andrej Krutak <dev@andree.sk>
 ---
- sound/usb/line6/driver.c | 59 ++++++++++++++++++++++++++++--------------------
- sound/usb/line6/driver.h |  8 ++++---
- sound/usb/line6/midi.c   |  2 +-
- 3 files changed, 40 insertions(+), 29 deletions(-)
+ include/uapi/sound/asound.h |   3 +-
+ sound/usb/line6/driver.c    | 167 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/usb/line6/driver.h    |  12 ++++
+ 3 files changed, 181 insertions(+), 1 deletion(-)
 
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 609cadb..be353a7 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -106,9 +106,10 @@ enum {
+ 	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
+ 	SNDRV_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
+ 	SNDRV_HWDEP_IFACE_FW_TASCAM,	/* TASCAM FireWire series */
++	SNDRV_HWDEP_IFACE_LINE6,	/* Line6 USB processors */
+ 
+ 	/* Don't forget to change the following: */
+-	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_TASCAM
++	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_LINE6
+ };
+ 
+ struct snd_hwdep_info {
 diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 9b16777..853a143 100644
+index 8a71d45..0a0e324 100644
 --- a/sound/usb/line6/driver.c
 +++ b/sound/usb/line6/driver.c
-@@ -290,26 +290,31 @@ static void line6_data_received(struct urb *urb)
- 	if (urb->status == -ESHUTDOWN)
- 		return;
+@@ -14,9 +14,11 @@
+ #include <linux/export.h>
+ #include <linux/slab.h>
+ #include <linux/usb.h>
++#include <linux/circ_buf.h>
  
--	done =
--	    line6_midibuf_write(mb, urb->transfer_buffer, urb->actual_length);
-+	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
-+		done =
-+			line6_midibuf_write(mb, urb->transfer_buffer, urb->actual_length);
+ #include <sound/core.h>
+ #include <sound/initval.h>
++#include <sound/hwdep.h>
  
--	if (done < urb->actual_length) {
--		line6_midibuf_ignore(mb, done);
--		dev_dbg(line6->ifcdev, "%d %d buffer overflow - message skipped\n",
--			done, urb->actual_length);
--	}
-+		if (done < urb->actual_length) {
-+			line6_midibuf_ignore(mb, done);
-+			dev_dbg(line6->ifcdev, "%d %d buffer overflow - message skipped\n",
-+				done, urb->actual_length);
-+		}
- 
--	for (;;) {
--		done =
--		    line6_midibuf_read(mb, line6->buffer_message,
--				       LINE6_MESSAGE_MAXLEN);
-+		for (;;) {
-+			done =
-+				line6_midibuf_read(mb, line6->buffer_message,
-+						LINE6_MESSAGE_MAXLEN);
- 
--		if (done == 0)
--			break;
-+			if (done == 0)
-+				break;
- 
--		line6->message_length = done;
--		line6_midi_receive(line6, line6->buffer_message, done);
-+			line6->message_length = done;
-+			line6_midi_receive(line6, line6->buffer_message, done);
- 
-+			if (line6->process_message)
-+				line6->process_message(line6);
-+		}
-+	} else {
+ #include "capture.h"
+ #include "driver.h"
+@@ -315,8 +317,11 @@ static void line6_data_received(struct urb *urb)
+ 				line6->process_message(line6);
+ 		}
+ 	} else {
++		line6->buffer_message = urb->transfer_buffer;
++		line6->message_length = urb->actual_length;
  		if (line6->process_message)
  			line6->process_message(line6);
++		line6->buffer_message = NULL;
  	}
-@@ -469,7 +474,9 @@ static void line6_destruct(struct snd_card *card)
- 	struct usb_device *usbdev = line6->usbdev;
  
- 	/* free buffer memory first: */
--	kfree(line6->buffer_message);
-+	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)
-+		kfree(line6->buffer_message);
-+
- 	kfree(line6->buffer_listen);
- 
- 	/* then free URBs: */
-@@ -515,7 +522,7 @@ static void line6_get_interval(struct usb_line6 *line6)
+ 	line6_start_listen(line6);
+@@ -522,6 +527,163 @@ static void line6_get_interval(struct usb_line6 *line6)
  	}
  }
  
--static int line6_init_cap_control_midi(struct usb_line6 *line6)
-+static int line6_init_cap_control(struct usb_line6 *line6)
- {
- 	int ret;
- 
-@@ -524,14 +531,16 @@ static int line6_init_cap_control_midi(struct usb_line6 *line6)
- 	if (!line6->buffer_listen)
- 		return -ENOMEM;
- 
--	line6->buffer_message = kmalloc(LINE6_MESSAGE_MAXLEN, GFP_KERNEL);
--	if (!line6->buffer_message)
--		return -ENOMEM;
--
- 	line6->urb_listen = usb_alloc_urb(0, GFP_KERNEL);
- 	if (!line6->urb_listen)
- 		return -ENOMEM;
- 
-+	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
-+		line6->buffer_message = kmalloc(LINE6_MESSAGE_MAXLEN, GFP_KERNEL);
-+		if (!line6->buffer_message)
-+			return -ENOMEM;
++
++/* Enable buffering of incoming messages, flush the buffer */
++static int line6_hwdep_open(struct snd_hwdep *hw, struct file *file)
++{
++	struct usb_line6 *line6 = hw->private_data;
++
++	/* NOTE: hwdep already provides atomicity (exclusive == true), but for
++	 * sure... */
++	if (test_and_set_bit(0, &line6->buffer_circular.active))
++		return -EBUSY;
++
++	line6->buffer_circular.head = 0;
++	line6->buffer_circular.tail = 0;
++	sema_init(&line6->buffer_circular.sem, 0);
++
++	line6->buffer_circular.active = 1;
++
++	line6->buffer_circular.data =
++		kmalloc(LINE6_MESSAGE_MAXLEN * LINE6_MESSAGE_MAXCOUNT, GFP_KERNEL);
++	if (!line6->buffer_circular.data) {
++		return -ENOMEM;
++	}
++	line6->buffer_circular.data_len =
++		kmalloc(sizeof(*line6->buffer_circular.data_len) *
++			LINE6_MESSAGE_MAXCOUNT, GFP_KERNEL);
++	if (!line6->buffer_circular.data_len) {
++		kfree(line6->buffer_circular.data);
++		return -ENOMEM;
 +	}
 +
- 	ret = line6_start_listen(line6);
- 	if (ret < 0) {
- 		dev_err(line6->ifcdev, "cannot start listening: %d\n", ret);
-@@ -605,8 +614,8 @@ int line6_probe(struct usb_interface *interface,
- 
- 	line6_get_interval(line6);
- 
--	if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
--		ret = line6_init_cap_control_midi(line6);
-+	if (properties->capabilities & LINE6_CAP_CONTROL) {
-+		ret = line6_init_cap_control(line6);
- 		if (ret < 0)
- 			goto error;
- 	}
-@@ -676,7 +685,7 @@ int line6_suspend(struct usb_interface *interface, pm_message_t message)
- 
- 	snd_power_change_state(line6->card, SNDRV_CTL_POWER_D3hot);
- 
--	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)
-+	if (line6->properties->capabilities & LINE6_CAP_CONTROL)
- 		line6_stop_listen(line6);
- 
- 	if (line6pcm != NULL) {
-@@ -695,7 +704,7 @@ int line6_resume(struct usb_interface *interface)
++	return 0;
++}
++
++/* Stop buffering */
++static int line6_hwdep_release(struct snd_hwdep *hw, struct file *file)
++{
++	struct usb_line6 *line6 = hw->private_data;
++
++	/* By this time, no readers are waiting, we can safely recreate the
++	 * semaphore at next open. */
++	line6->buffer_circular.active = 0;
++
++	kfree(line6->buffer_circular.data);
++	kfree(line6->buffer_circular.data_len);
++	return 0;
++}
++
++/* Read from circular buffer, return to user */
++static long
++line6_hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
++					loff_t *offset)
++{
++	struct usb_line6 *line6 = hwdep->private_data;
++	unsigned long tail;
++
++	if (down_interruptible(&line6->buffer_circular.sem)) {
++		return -ERESTARTSYS;
++	}
++	/* There must an item now in the buffer... */
++
++	tail = line6->buffer_circular.tail;
++
++	if (line6->buffer_circular.data_len[tail] > count) {
++		/* Buffer too small; allow re-read of the current item... */
++		up(&line6->buffer_circular.sem);
++		return -EINVAL;
++	}
++
++	if (copy_to_user(buf,
++		&line6->buffer_circular.data[tail * LINE6_MESSAGE_MAXLEN],
++		line6->buffer_circular.data_len[tail])
++	) {
++		rv = -EFAULT;
++		goto end;
++	} else {
++		rv = line6->buffer_circular.data_len[tail];
++	}
++
++	smp_store_release(&line6->buffer_circular.tail,
++				(tail + 1) & (LINE6_MESSAGE_MAXCOUNT - 1));
++
++	return 0;
++}
++
++/* Write directly (no buffering) to device by user*/
++static long
++line6_hwdep_write(struct snd_hwdep *hwdep, const char __user *data, long count,
++					loff_t *offset)
++{
++	struct usb_line6 *line6 = hwdep->private_data;
++	int rv;
++	char *data_copy;
++
++	data_copy = kmalloc(count, GFP_ATOMIC);
++	if (!data_copy)
++		return -ENOMEM;
++
++	if (copy_from_user(data_copy, data, count))
++		rv = -EFAULT;
++	else
++		rv = line6_send_raw_message(line6, data_copy, count);
++
++	kfree(data_copy);
++	return rv;
++}
++
++static const struct snd_hwdep_ops hwdep_ops = {
++	.open    = line6_hwdep_open,
++	.release = line6_hwdep_release,
++	.read    = line6_hwdep_read,
++	.write   = line6_hwdep_write,
++};
++
++/* Insert into circular buffer */
++static void line6_hwdep_push_message(struct usb_line6 *line6)
++{
++	unsigned long head = line6->buffer_circular.head;
++	/* The spin_unlock() and next spin_lock() provide needed ordering. */
++	unsigned long tail = ACCESS_ONCE(line6->buffer_circular.tail);
++
++	if (!line6->buffer_circular.active)
++		return;
++
++	if (CIRC_SPACE(head, tail, LINE6_MESSAGE_MAXCOUNT) >= 1) {
++		unsigned char *item = &line6->buffer_circular.data[
++			head * LINE6_MESSAGE_MAXLEN];
++		memcpy(item, line6->buffer_message, line6->message_length);
++		line6->buffer_circular.data_len[head] = line6->message_length;
++
++		smp_store_release(&line6->buffer_circular.head,
++				  (head + 1) & (LINE6_MESSAGE_MAXCOUNT - 1));
++		up(&line6->buffer_circular.sem);
++	}
++}
++
++static int line6_hwdep_init(struct usb_line6 *line6)
++{
++	int err;
++	struct snd_hwdep *hwdep;
++
++	/* TODO: usb_driver_claim_interface(); */
++	line6->process_message = line6_hwdep_push_message;
++
++	line6->buffer_circular.active = 0;
++	err = snd_hwdep_new(line6->card, "config", 0, &hwdep);
++	if (err < 0)
++		goto end;
++	strcpy(hwdep->name, "config");
++	hwdep->iface = SNDRV_HWDEP_IFACE_LINE6;
++	hwdep->ops = hwdep_ops;
++	hwdep->private_data = line6;
++	hwdep->exclusive = true;
++
++end:
++	return err;
++}
++
+ static int line6_init_cap_control(struct usb_line6 *line6)
  {
- 	struct usb_line6 *line6 = usb_get_intfdata(interface);
+ 	int ret;
+@@ -539,6 +701,10 @@ static int line6_init_cap_control(struct usb_line6 *line6)
+ 		line6->buffer_message = kmalloc(LINE6_MESSAGE_MAXLEN, GFP_KERNEL);
+ 		if (!line6->buffer_message)
+ 			return -ENOMEM;
++	} else {
++		ret = line6_hwdep_init(line6);
++		if (ret < 0)
++			return ret;
+ 	}
  
--	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)
-+	if (line6->properties->capabilities & LINE6_CAP_CONTROL)
- 		line6_start_listen(line6);
- 
- 	snd_power_change_state(line6->card, SNDRV_CTL_POWER_D0);
+ 	ret = line6_start_listen(line6);
+@@ -716,3 +882,4 @@ EXPORT_SYMBOL_GPL(line6_resume);
+ MODULE_AUTHOR(DRIVER_AUTHOR);
+ MODULE_DESCRIPTION(DRIVER_DESC);
+ MODULE_LICENSE("GPL");
++
 diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index 2551cb5..71ad299 100644
+index 71ad299..f4ab6cd 100644
 --- a/sound/usb/line6/driver.h
 +++ b/sound/usb/line6/driver.h
-@@ -146,15 +146,17 @@ struct usb_line6 {
- 	/* URB for listening to POD data endpoint */
- 	struct urb *urb_listen;
+@@ -33,6 +33,8 @@
+ #define LINE6_TIMEOUT (1)
+ #define LINE6_BUFSIZE_LISTEN (64)
+ #define LINE6_MESSAGE_MAXLEN (256)
++/* Must be 2^n; 4k packets are common, MAXLEN * MAXCOUNT should be bigger... */
++#define LINE6_MESSAGE_MAXCOUNT (1 << 5)
  
--	/* Buffer for listening to POD data endpoint */
-+	/* Buffer for incoming data from POD data endpoint */
- 	unsigned char *buffer_listen;
- 
--	/* Buffer for message to be processed */
-+	/* Buffer for message to be processed, generated from MIDI layer */
- 	unsigned char *buffer_message;
- 
--	/* Length of message to be processed */
-+	/* Length of message to be processed, generated from MIDI layer  */
+ /*
+ 	Line 6 MIDI control commands
+@@ -155,6 +157,16 @@ struct usb_line6 {
+ 	/* Length of message to be processed, generated from MIDI layer  */
  	int message_length;
  
-+	/* If MIDI is supported, buffer_message contains the pre-processed data;
-+	 * otherwise the data is only in urb_listen (buffer_incoming). */
++	/* Circular buffer for non-MIDI control messages */
++	struct {
++		int active;
++		char *data;
++		int *data_len;
++		unsigned long head, tail;
++		/* Actually is up'd # of items in the buffer - times */
++		struct semaphore sem;
++	} buffer_circular;
++
+ 	/* If MIDI is supported, buffer_message contains the pre-processed data;
+ 	 * otherwise the data is only in urb_listen (buffer_incoming). */
  	void (*process_message)(struct usb_line6 *);
- 	void (*disconnect)(struct usb_line6 *line6);
- };
-diff --git a/sound/usb/line6/midi.c b/sound/usb/line6/midi.c
-index cebea9b..d0fb2f2 100644
---- a/sound/usb/line6/midi.c
-+++ b/sound/usb/line6/midi.c
-@@ -258,7 +258,7 @@ int line6_init_midi(struct usb_line6 *line6)
- 	struct snd_rawmidi *rmidi;
- 	struct snd_line6_midi *line6midi;
- 
--	if (!(line6->properties->capabilities & LINE6_CAP_CONTROL)) {
-+	if (!(line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)) {
- 		/* skip MIDI initialization and report success */
- 		return 0;
- 	}
 -- 
 1.9.1
