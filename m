@@ -1,18 +1,18 @@
 From: Andrej Krutak <dev@andree.sk>
-Subject: [PATCH 01/15] ALSA: line6: Make driver configuration
-	more generic.
-Date: Thu, 11 Aug 2016 21:02:13 +0200
-Message-ID: <1470942147-19848-2-git-send-email-dev@andree.sk>
+Subject: [PATCH 02/15] ALSA: line6: Add LINE6_CAP_IN_NEEDS_OUT,
+	a void playback stream during capture
+Date: Thu, 11 Aug 2016 21:02:14 +0200
+Message-ID: <1470942147-19848-3-git-send-email-dev@andree.sk>
 References: <1470942147-19848-1-git-send-email-dev@andree.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 32167267741
- for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 21:03:53 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id i5so931609wmg.2
- for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 12:03:53 -0700 (PDT)
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE004267742
+ for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 21:03:54 +0200 (CEST)
+Received: by mail-wm0-f68.google.com with SMTP id i138so919892wmf.3
+ for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2016 12:03:54 -0700 (PDT)
 In-Reply-To: <1470942147-19848-1-git-send-email-dev@andree.sk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,599 +27,191 @@ To: alsa-devel@alsa-project.org
 Cc: Andrej Krutak <dev@andree.sk>
 List-Id: alsa-devel@alsa-project.org
 
-The main reasons are different settings for USB low/high speed and possible
-different channel counts for in/out; required by POD X3.
-
-This includes:
-* iso_buffers (count of iso buffers depends on USB speed, 2 is not enough
-  for high speed)
-* bytes_per_frame -> bytes_per_channel
-* max_packet_size -> max_packet_size_in/out
-* USB_INTERVALS_PER_SECOND -> LOW/HIGH settings
-  (high needs 8000, instead of 1000)
+E.g. POD X3 seems to require playback data to be sent to it to generate
+capture data. Otherwise the device stalls and doesn't send any more capture
+data until it's reset.
 
 Signed-off-by: Andrej Krutak <dev@andree.sk>
 ---
- sound/usb/line6/capture.c  | 44 ++++++++++++++++++++++++++++++--------------
- sound/usb/line6/driver.c   | 15 ++++++++++-----
- sound/usb/line6/driver.h   | 42 ++++++++++++++++++++++++++----------------
- sound/usb/line6/pcm.c      | 43 +++++++++++++++++++++++++------------------
- sound/usb/line6/pcm.h      | 15 +++++++--------
- sound/usb/line6/playback.c | 37 +++++++++++++++++++++++++------------
- sound/usb/line6/pod.c      |  3 +--
- sound/usb/line6/podhd.c    |  4 +---
- sound/usb/line6/toneport.c |  2 +-
- 9 files changed, 126 insertions(+), 79 deletions(-)
+ sound/usb/line6/capture.c  |  5 +++++
+ sound/usb/line6/driver.h   |  4 +++-
+ sound/usb/line6/pcm.c      | 37 ++++++++++++++++++++++++++++---------
+ sound/usb/line6/pcm.h      |  4 +++-
+ sound/usb/line6/toneport.c |  4 ++--
+ 5 files changed, 41 insertions(+), 13 deletions(-)
 
 diff --git a/sound/usb/line6/capture.c b/sound/usb/line6/capture.c
-index f518fbb..bacf03f 100644
+index bacf03f..21a297e 100644
 --- a/sound/usb/line6/capture.c
 +++ b/sound/usb/line6/capture.c
-@@ -29,10 +29,10 @@ static int submit_audio_in_urb(struct snd_line6_pcm *line6pcm)
- 	int ret;
- 	struct urb *urb_in;
+@@ -231,6 +231,8 @@ static int snd_line6_capture_open(struct snd_pcm_substream *substream)
+ 	if (err < 0)
+ 		return err;
  
--	index =
--	    find_first_zero_bit(&line6pcm->in.active_urbs, LINE6_ISO_BUFFERS);
-+	index = find_first_zero_bit(
-+		&line6pcm->in.active_urbs, line6pcm->line6->iso_buffers);
- 
--	if (index < 0 || index >= LINE6_ISO_BUFFERS) {
-+	if (index < 0 || index >= line6pcm->line6->iso_buffers) {
- 		dev_err(line6pcm->line6->ifcdev, "no free URB found\n");
- 		return -EINVAL;
- 	}
-@@ -44,13 +44,13 @@ static int submit_audio_in_urb(struct snd_line6_pcm *line6pcm)
- 		struct usb_iso_packet_descriptor *fin =
- 		    &urb_in->iso_frame_desc[i];
- 		fin->offset = urb_size;
--		fin->length = line6pcm->max_packet_size;
--		urb_size += line6pcm->max_packet_size;
-+		fin->length = line6pcm->max_packet_size_in;
-+		urb_size += line6pcm->max_packet_size_in;
- 	}
- 
- 	urb_in->transfer_buffer =
- 	    line6pcm->in.buffer +
--	    index * LINE6_ISO_PACKETS * line6pcm->max_packet_size;
-+	    index * LINE6_ISO_PACKETS * line6pcm->max_packet_size_in;
- 	urb_in->transfer_buffer_length = urb_size;
- 	urb_in->context = line6pcm;
- 
-@@ -73,7 +73,7 @@ int line6_submit_audio_in_all_urbs(struct snd_line6_pcm *line6pcm)
- {
- 	int ret = 0, i;
- 
--	for (i = 0; i < LINE6_ISO_BUFFERS; ++i) {
-+	for (i = 0; i < line6pcm->line6->iso_buffers; ++i) {
- 		ret = submit_audio_in_urb(line6pcm);
- 		if (ret < 0)
- 			break;
-@@ -90,7 +90,9 @@ void line6_capture_copy(struct snd_line6_pcm *line6pcm, char *fbuf, int fsize)
- 	struct snd_pcm_substream *substream =
- 	    get_substream(line6pcm, SNDRV_PCM_STREAM_CAPTURE);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	const int bytes_per_frame = line6pcm->properties->bytes_per_frame;
-+	const int bytes_per_frame =
-+		line6pcm->properties->bytes_per_channel *
-+		line6pcm->properties->capture_hw.channels_max;
- 	int frames = fsize / bytes_per_frame;
- 
- 	if (runtime == NULL)
-@@ -154,7 +156,7 @@ static void audio_in_callback(struct urb *urb)
- 	line6pcm->in.last_frame = urb->start_frame;
- 
- 	/* find index of URB */
--	for (index = 0; index < LINE6_ISO_BUFFERS; ++index)
-+	for (index = 0; index < line6pcm->line6->iso_buffers; ++index)
- 		if (urb == line6pcm->in.urbs[index])
- 			break;
- 
-@@ -173,17 +175,26 @@ static void audio_in_callback(struct urb *urb)
- 		fbuf = urb->transfer_buffer + fin->offset;
- 		fsize = fin->actual_length;
- 
--		if (fsize > line6pcm->max_packet_size) {
-+		if (fsize > line6pcm->max_packet_size_in) {
- 			dev_err(line6pcm->line6->ifcdev,
- 				"driver and/or device bug: packet too large (%d > %d)\n",
--				fsize, line6pcm->max_packet_size);
-+				fsize, line6pcm->max_packet_size_in);
- 		}
- 
- 		length += fsize;
- 
--		/* the following assumes LINE6_ISO_PACKETS == 1: */
-+#if LINE6_ISO_PACKETS != 1
-+# error "The following assumes LINE6_ISO_PACKETS == 1"
-+/* TODO:
-+   Also, if iso_buffers != 2, the prev frame is almost random at playback side.
-+   This needs to be redesigned. It should be "stable", but we may experience
-+   sync problems on such high-speed configs.
-+*/
-+#endif
- 		line6pcm->prev_fbuf = fbuf;
--		line6pcm->prev_fsize = fsize;
-+		line6pcm->prev_fsize = fsize /
-+			(line6pcm->properties->bytes_per_channel *
-+			line6pcm->properties->capture_hw.channels_max);
- 
- 		if (!test_bit(LINE6_STREAM_IMPULSE, &line6pcm->in.running) &&
- 		    test_bit(LINE6_STREAM_PCM, &line6pcm->in.running) &&
-@@ -247,8 +258,13 @@ int line6_create_audio_in_urbs(struct snd_line6_pcm *line6pcm)
- 	struct usb_line6 *line6 = line6pcm->line6;
- 	int i;
- 
-+	line6pcm->in.urbs = kzalloc(
-+		sizeof(struct urb *) * line6->iso_buffers, GFP_KERNEL);
-+	if (line6pcm->in.urbs == NULL)
-+		return -ENOMEM;
++	line6_pcm_acquire(line6pcm, LINE6_STREAM_CAPTURE_HELPER, false);
 +
- 	/* create audio URBs and fill in constant values: */
--	for (i = 0; i < LINE6_ISO_BUFFERS; ++i) {
-+	for (i = 0; i < line6->iso_buffers; ++i) {
- 		struct urb *urb;
- 
- 		/* URB for audio in: */
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 81b7da8..efeb16a8 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -462,13 +462,17 @@ static void line6_destruct(struct snd_card *card)
- static void line6_get_interval(struct usb_line6 *line6)
+ 	runtime->hw = line6pcm->properties->capture_hw;
+ 	return 0;
+ }
+@@ -238,6 +240,9 @@ static int snd_line6_capture_open(struct snd_pcm_substream *substream)
+ /* close capture callback */
+ static int snd_line6_capture_close(struct snd_pcm_substream *substream)
  {
- 	struct usb_device *usbdev = line6->usbdev;
--	struct usb_host_endpoint *ep;
--	unsigned pipe = usb_rcvintpipe(usbdev, line6->properties->ep_ctrl_r);
--	unsigned epnum = usb_pipeendpoint(pipe);
--
--	ep = usbdev->ep_in[epnum];
-+	struct usb_host_endpoint *ep = usbdev->ep_in[line6->properties->ep_ctrl_r];
- 	if (ep) {
- 		line6->interval = ep->desc.bInterval;
-+		if (usbdev->speed == USB_SPEED_LOW) {
-+			line6->intervals_per_second = USB_LOW_INTERVALS_PER_SECOND;
-+			line6->iso_buffers = USB_LOW_ISO_BUFFERS;
-+		} else {
-+			line6->intervals_per_second = USB_HIGH_INTERVALS_PER_SECOND;
-+			line6->iso_buffers = USB_HIGH_ISO_BUFFERS;
-+		}
++	struct snd_line6_pcm *line6pcm = snd_pcm_substream_chip(substream);
 +
- 		line6->max_packet_size = le16_to_cpu(ep->desc.wMaxPacketSize);
- 	} else {
- 		dev_err(line6->ifcdev,
-@@ -558,6 +562,7 @@ int line6_probe(struct usb_interface *interface,
- 	/* query interface number */
- 	interface_number = interface->cur_altsetting->desc.bInterfaceNumber;
++	line6_pcm_release(line6pcm, LINE6_STREAM_CAPTURE_HELPER);
+ 	return 0;
+ }
  
-+	/* TODO reserves the bus bandwidth even without actual transfer */
- 	ret = usb_set_interface(usbdev, interface_number,
- 				properties->altsetting);
- 	if (ret < 0) {
 diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index 7da643e..24cd667 100644
+index 24cd667..0f0c45a 100644
 --- a/sound/usb/line6/driver.h
 +++ b/sound/usb/line6/driver.h
-@@ -18,39 +18,45 @@
- 
- #include "midi.h"
- 
--#define USB_INTERVALS_PER_SECOND 1000
-+/* USB 1.1 speed configuration */
-+#define USB_LOW_INTERVALS_PER_SECOND (1000)
-+#define USB_LOW_ISO_BUFFERS (2)
-+
-+/* USB 2.0+ speed configuration */
-+#define USB_HIGH_INTERVALS_PER_SECOND (8000)
-+#define USB_HIGH_ISO_BUFFERS (16)
- 
- /* Fallback USB interval and max packet size values */
--#define LINE6_FALLBACK_INTERVAL 10
--#define LINE6_FALLBACK_MAXPACKETSIZE 16
-+#define LINE6_FALLBACK_INTERVAL (10)
-+#define LINE6_FALLBACK_MAXPACKETSIZE (16)
- 
--#define LINE6_TIMEOUT 1
--#define LINE6_BUFSIZE_LISTEN 32
--#define LINE6_MESSAGE_MAXLEN 256
-+#define LINE6_TIMEOUT (1)
-+#define LINE6_BUFSIZE_LISTEN (64)
-+#define LINE6_MESSAGE_MAXLEN (256)
+@@ -100,8 +100,10 @@ enum {
+ 	LINE6_CAP_CONTROL =	1 << 0,
+ 	/* device supports PCM input/output via USB */
+ 	LINE6_CAP_PCM =		1 << 1,
+-	/* device support hardware monitoring */
++	/* device supports hardware monitoring */
+ 	LINE6_CAP_HWMON =	1 << 2,
++	/* device requires output data when input is read */
++	LINE6_CAP_IN_NEEDS_OUT = 1 << 4,
+ };
  
  /*
- 	Line 6 MIDI control commands
- */
--#define LINE6_PARAM_CHANGE   0xb0
--#define LINE6_PROGRAM_CHANGE 0xc0
--#define LINE6_SYSEX_BEGIN    0xf0
--#define LINE6_SYSEX_END      0xf7
--#define LINE6_RESET          0xff
-+#define LINE6_PARAM_CHANGE   (0xb0)
-+#define LINE6_PROGRAM_CHANGE (0xc0)
-+#define LINE6_SYSEX_BEGIN    (0xf0)
-+#define LINE6_SYSEX_END      (0xf7)
-+#define LINE6_RESET          (0xff)
- 
- /*
- 	MIDI channel for messages initiated by the host
- 	(and eventually echoed back by the device)
- */
--#define LINE6_CHANNEL_HOST   0x00
-+#define LINE6_CHANNEL_HOST   (0x00)
- 
- /*
- 	MIDI channel for messages initiated by the device
- */
--#define LINE6_CHANNEL_DEVICE 0x02
-+#define LINE6_CHANNEL_DEVICE (0x02)
- 
--#define LINE6_CHANNEL_UNKNOWN 5	/* don't know yet what this is good for */
-+#define LINE6_CHANNEL_UNKNOWN (5)	/* don't know yet what this is good for */
- 
--#define LINE6_CHANNEL_MASK 0x0f
-+#define LINE6_CHANNEL_MASK (0x0f)
- 
- #define CHECK_STARTUP_PROGRESS(x, n)	\
- do {					\
-@@ -109,8 +115,12 @@ struct usb_line6 {
- 	/* Properties */
- 	const struct line6_properties *properties;
- 
--	/* Interval (ms) */
-+	/* Interval (frames) */
- 	int interval;
-+	int intervals_per_second;
-+
-+	/* Number of isochronous URBs used for frame transfers */
-+	int iso_buffers;
- 
- 	/* Maximum size of USB packet */
- 	int max_packet_size;
 diff --git a/sound/usb/line6/pcm.c b/sound/usb/line6/pcm.c
-index 204cc07..210c85f 100644
+index 210c85f..0af6d4e 100644
 --- a/sound/usb/line6/pcm.c
 +++ b/sound/usb/line6/pcm.c
-@@ -105,7 +105,7 @@ static void line6_unlink_audio_urbs(struct snd_line6_pcm *line6pcm,
- {
- 	int i;
+@@ -52,7 +52,7 @@ static int snd_line6_impulse_volume_put(struct snd_kcontrol *kcontrol,
  
--	for (i = 0; i < LINE6_ISO_BUFFERS; i++) {
-+	for (i = 0; i < line6pcm->line6->iso_buffers; i++) {
- 		if (test_bit(i, &pcms->active_urbs)) {
- 			if (!test_and_set_bit(i, &pcms->unlink_urbs))
- 				usb_unlink_urb(pcms->urbs[i]);
-@@ -125,7 +125,7 @@ static void line6_wait_clear_audio_urbs(struct snd_line6_pcm *line6pcm,
+ 	line6pcm->impulse_volume = value;
+ 	if (value > 0) {
+-		err = line6_pcm_acquire(line6pcm, LINE6_STREAM_IMPULSE);
++		err = line6_pcm_acquire(line6pcm, LINE6_STREAM_IMPULSE, true);
+ 		if (err < 0) {
+ 			line6pcm->impulse_volume = 0;
+ 			line6_pcm_release(line6pcm, LINE6_STREAM_IMPULSE);
+@@ -241,6 +241,15 @@ int snd_line6_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		switch (cmd) {
+ 		case SNDRV_PCM_TRIGGER_START:
+ 		case SNDRV_PCM_TRIGGER_RESUME:
++			if ((s->stream == SNDRV_PCM_STREAM_CAPTURE) &&
++				(line6pcm->line6->properties->capabilities &
++					LINE6_CAP_IN_NEEDS_OUT)
++			) {
++				err = line6_stream_start(line6pcm, SNDRV_PCM_STREAM_PLAYBACK,
++						 LINE6_STREAM_CAPTURE_HELPER);
++				if (err < 0)
++					return err;
++			}
+ 			err = line6_stream_start(line6pcm, s->stream,
+ 						 LINE6_STREAM_PCM);
+ 			if (err < 0)
+@@ -249,6 +258,13 @@ int snd_line6_trigger(struct snd_pcm_substream *substream, int cmd)
  
- 	do {
- 		alive = 0;
--		for (i = 0; i < LINE6_ISO_BUFFERS; i++) {
-+		for (i = 0; i < line6pcm->line6->iso_buffers; i++) {
- 			if (test_bit(i, &pcms->active_urbs))
- 				alive++;
- 		}
-@@ -147,15 +147,20 @@ get_stream(struct snd_line6_pcm *line6pcm, int direction)
+ 		case SNDRV_PCM_TRIGGER_STOP:
+ 		case SNDRV_PCM_TRIGGER_SUSPEND:
++			if ((s->stream == SNDRV_PCM_STREAM_CAPTURE) &&
++				(line6pcm->line6->properties->capabilities &
++					LINE6_CAP_IN_NEEDS_OUT)
++			) {
++				line6_stream_stop(line6pcm, SNDRV_PCM_STREAM_PLAYBACK,
++					  LINE6_STREAM_CAPTURE_HELPER);
++			}
+ 			line6_stream_stop(line6pcm, s->stream,
+ 					  LINE6_STREAM_PCM);
+ 			break;
+@@ -282,27 +298,30 @@ snd_pcm_uframes_t snd_line6_pointer(struct snd_pcm_substream *substream)
+ 	return pstr->pos_done;
  }
  
- /* allocate a buffer if not opened yet;
-- * call this in line6pcm.state_change mutex
-+ * call this in line6pcm.state_mutex
+-/* Acquire and start duplex streams:
++/* Acquire and optionally start duplex streams:
+  * type is either LINE6_STREAM_IMPULSE or LINE6_STREAM_MONITOR
   */
- static int line6_buffer_acquire(struct snd_line6_pcm *line6pcm,
--				struct line6_pcm_stream *pstr, int type)
-+				struct line6_pcm_stream *pstr, int direction, int type)
+-int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int type)
++int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int type, bool start)
  {
-+	const int pkt_size =
-+		(direction == SNDRV_PCM_STREAM_PLAYBACK) ?
-+			line6pcm->max_packet_size_out :
-+			line6pcm->max_packet_size_in;
-+
- 	/* Invoked multiple times in a row so allocate once only */
- 	if (!test_and_set_bit(type, &pstr->opened) && !pstr->buffer) {
--		pstr->buffer = kmalloc(LINE6_ISO_BUFFERS * LINE6_ISO_PACKETS *
--				       line6pcm->max_packet_size, GFP_KERNEL);
-+		pstr->buffer = kmalloc(line6pcm->line6->iso_buffers *
-+							   LINE6_ISO_PACKETS * pkt_size, GFP_KERNEL);
- 		if (!pstr->buffer)
- 			return -ENOMEM;
- 	}
-@@ -163,12 +168,11 @@ static int line6_buffer_acquire(struct snd_line6_pcm *line6pcm,
- }
+ 	struct line6_pcm_stream *pstr;
+ 	int ret = 0, dir;
  
- /* free a buffer if all streams are closed;
-- * call this in line6pcm.state_change mutex
-+ * call this in line6pcm.state_mutex
-  */
- static void line6_buffer_release(struct snd_line6_pcm *line6pcm,
- 				 struct line6_pcm_stream *pstr, int type)
- {
--
- 	clear_bit(type, &pstr->opened);
- 	if (!pstr->opened) {
- 		line6_wait_clear_audio_urbs(line6pcm, pstr);
-@@ -195,6 +199,7 @@ static int line6_stream_start(struct snd_line6_pcm *line6pcm, int direction,
- 		else
- 			ret = line6_submit_audio_in_all_urbs(line6pcm);
++	/* TODO: We should assert SNDRV_PCM_STREAM_PLAYBACK/CAPTURE == 0/1 */
+ 	mutex_lock(&line6pcm->state_mutex);
+ 	for (dir = 0; dir < 2; dir++) {
+ 		pstr = get_stream(line6pcm, dir);
+-		ret = line6_buffer_acquire(line6pcm, pstr, type);
++		ret = line6_buffer_acquire(line6pcm, pstr, dir, type);
+ 		if (ret < 0)
+ 			goto error;
+ 		if (!pstr->running)
+ 			line6_wait_clear_audio_urbs(line6pcm, pstr);
  	}
-+
+-	for (dir = 0; dir < 2; dir++) {
+-		ret = line6_stream_start(line6pcm, dir, type);
+-		if (ret < 0)
+-			goto error;
++	if (start) {
++		for (dir = 0; dir < 2; dir++) {
++			ret = line6_stream_start(line6pcm, dir, type);
++			if (ret < 0)
++				goto error;
++		}
+ 	}
+  error:
+ 	mutex_unlock(&line6pcm->state_mutex);
+@@ -338,7 +357,7 @@ int snd_line6_hw_params(struct snd_pcm_substream *substream,
+ 	struct line6_pcm_stream *pstr = get_stream(line6pcm, substream->stream);
+ 
+ 	mutex_lock(&line6pcm->state_mutex);
+-	ret = line6_buffer_acquire(line6pcm, pstr, LINE6_STREAM_PCM);
++	ret = line6_buffer_acquire(line6pcm, pstr, substream->stream, LINE6_STREAM_PCM);
  	if (ret < 0)
- 		clear_bit(type, &pstr->running);
- 	spin_unlock_irqrestore(&pstr->lock, flags);
-@@ -433,24 +438,26 @@ static struct snd_kcontrol_new line6_controls[] = {
- /*
- 	Cleanup the PCM device.
- */
--static void cleanup_urbs(struct line6_pcm_stream *pcms)
-+static void cleanup_urbs(struct line6_pcm_stream *pcms, int iso_buffers)
- {
- 	int i;
+ 		goto error;
  
--	for (i = 0; i < LINE6_ISO_BUFFERS; i++) {
-+	for (i = 0; i < iso_buffers; i++) {
- 		if (pcms->urbs[i]) {
- 			usb_kill_urb(pcms->urbs[i]);
- 			usb_free_urb(pcms->urbs[i]);
- 		}
- 	}
-+	kfree(pcms->urbs);
-+	pcms->urbs = NULL;
- }
- 
- static void line6_cleanup_pcm(struct snd_pcm *pcm)
- {
- 	struct snd_line6_pcm *line6pcm = snd_pcm_chip(pcm);
- 
--	cleanup_urbs(&line6pcm->out);
--	cleanup_urbs(&line6pcm->in);
-+	cleanup_urbs(&line6pcm->out, line6pcm->line6->iso_buffers);
-+	cleanup_urbs(&line6pcm->in, line6pcm->line6->iso_buffers);
- 	kfree(line6pcm);
- }
- 
-@@ -522,12 +529,12 @@ int line6_init_pcm(struct usb_line6 *line6,
- 	line6pcm->volume_monitor = 255;
- 	line6pcm->line6 = line6;
- 
--	/* Read and write buffers are sized identically, so choose minimum */
--	line6pcm->max_packet_size = min(
--			usb_maxpacket(line6->usbdev,
--				usb_rcvisocpipe(line6->usbdev, ep_read), 0),
--			usb_maxpacket(line6->usbdev,
--				usb_sndisocpipe(line6->usbdev, ep_write), 1));
-+	line6pcm->max_packet_size_in =
-+		usb_maxpacket(line6->usbdev,
-+			usb_rcvisocpipe(line6->usbdev, ep_read), 0);
-+	line6pcm->max_packet_size_out =
-+		usb_maxpacket(line6->usbdev,
-+			usb_sndisocpipe(line6->usbdev, ep_write), 1);
- 
- 	spin_lock_init(&line6pcm->out.lock);
- 	spin_lock_init(&line6pcm->in.lock);
 diff --git a/sound/usb/line6/pcm.h b/sound/usb/line6/pcm.h
-index 508410a..58d36f9 100644
+index 58d36f9..5f796ef8 100644
 --- a/sound/usb/line6/pcm.h
 +++ b/sound/usb/line6/pcm.h
-@@ -20,9 +20,6 @@
- 
- #include "driver.h"
- 
--/* number of URBs */
--#define LINE6_ISO_BUFFERS	2
--
- /*
- 	number of USB frames per URB
- 	The Line 6 Windows driver always transmits two frames per packet, but
-@@ -31,7 +28,8 @@
- */
- #define LINE6_ISO_PACKETS	1
- 
--/* in a "full speed" device (such as the PODxt Pro) this means 1ms */
-+/* in a "full speed" device (such as the PODxt Pro) this means 1ms,
-+   for "high speed" it's 1/8ms */
- #define LINE6_ISO_INTERVAL	1
- 
- #define LINE6_IMPULSE_DEFAULT_PERIOD 100
-@@ -85,12 +83,12 @@ enum {
- struct line6_pcm_properties {
- 	struct snd_pcm_hardware playback_hw, capture_hw;
- 	struct snd_pcm_hw_constraint_ratdens rates;
--	int bytes_per_frame;
-+	int bytes_per_channel;
+@@ -72,6 +72,7 @@ enum {
+ 	LINE6_STREAM_PCM,
+ 	LINE6_STREAM_MONITOR,
+ 	LINE6_STREAM_IMPULSE,
++	LINE6_STREAM_CAPTURE_HELPER,
  };
  
- struct line6_pcm_stream {
- 	/* allocated URBs */
--	struct urb *urbs[LINE6_ISO_BUFFERS];
-+	struct urb **urbs;
+ /* misc bit flags for PCM operation */
+@@ -190,7 +191,8 @@ extern int snd_line6_hw_params(struct snd_pcm_substream *substream,
+ extern int snd_line6_hw_free(struct snd_pcm_substream *substream);
+ extern snd_pcm_uframes_t snd_line6_pointer(struct snd_pcm_substream *substream);
+ extern void line6_pcm_disconnect(struct snd_line6_pcm *line6pcm);
+-extern int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int type);
++extern int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int type,
++			       bool start);
+ extern void line6_pcm_release(struct snd_line6_pcm *line6pcm, int type);
  
- 	/* Temporary buffer;
- 	 * Since the packet size is not known in advance, this buffer is
-@@ -157,11 +155,12 @@ struct snd_line6_pcm {
- 	/* Previously captured frame (for software monitoring) */
- 	unsigned char *prev_fbuf;
- 
--	/* Size of previously captured frame (for software monitoring) */
-+	/* Size of previously captured frame (for software monitoring/sync) */
- 	int prev_fsize;
- 
- 	/* Maximum size of USB packet */
--	int max_packet_size;
-+	int max_packet_size_in;
-+	int max_packet_size_out;
- 
- 	/* PCM playback volume (left and right) */
- 	int volume_playback[2];
-diff --git a/sound/usb/line6/playback.c b/sound/usb/line6/playback.c
-index 97ed593..4833c51 100644
---- a/sound/usb/line6/playback.c
-+++ b/sound/usb/line6/playback.c
-@@ -146,18 +146,20 @@ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
- 	int index;
- 	int i, urb_size, urb_frames;
- 	int ret;
--	const int bytes_per_frame = line6pcm->properties->bytes_per_frame;
-+	const int bytes_per_frame =
-+		line6pcm->properties->bytes_per_channel *
-+		line6pcm->properties->playback_hw.channels_max;
- 	const int frame_increment =
- 		line6pcm->properties->rates.rats[0].num_min;
- 	const int frame_factor =
- 		line6pcm->properties->rates.rats[0].den *
--		(USB_INTERVALS_PER_SECOND / LINE6_ISO_INTERVAL);
-+		(line6pcm->line6->intervals_per_second / LINE6_ISO_INTERVAL);
- 	struct urb *urb_out;
- 
--	index =
--	    find_first_zero_bit(&line6pcm->out.active_urbs, LINE6_ISO_BUFFERS);
-+	index = find_first_zero_bit(
-+		&line6pcm->out.active_urbs, line6pcm->line6->iso_buffers);
- 
--	if (index < 0 || index >= LINE6_ISO_BUFFERS) {
-+	if (index < 0 || index >= line6pcm->line6->iso_buffers) {
- 		dev_err(line6pcm->line6->ifcdev, "no free URB found\n");
- 		return -EINVAL;
- 	}
-@@ -165,6 +167,7 @@ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
- 	urb_out = line6pcm->out.urbs[index];
- 	urb_size = 0;
- 
-+	/* TODO: this may not work for LINE6_ISO_PACKETS != 1 */
- 	for (i = 0; i < LINE6_ISO_PACKETS; ++i) {
- 		/* compute frame size for given sampling rate */
- 		int fsize = 0;
-@@ -178,9 +181,11 @@ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
- 			line6pcm->out.count += frame_increment;
- 			n = line6pcm->out.count / frame_factor;
- 			line6pcm->out.count -= n * frame_factor;
--			fsize = n * bytes_per_frame;
-+			fsize = n;
- 		}
- 
-+		fsize *= bytes_per_frame;
-+
- 		fout->offset = urb_size;
- 		fout->length = fsize;
- 		urb_size += fsize;
-@@ -195,7 +200,7 @@ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
- 	urb_frames = urb_size / bytes_per_frame;
- 	urb_out->transfer_buffer =
- 	    line6pcm->out.buffer +
--	    index * LINE6_ISO_PACKETS * line6pcm->max_packet_size;
-+	    index * LINE6_ISO_PACKETS * line6pcm->max_packet_size_out;
- 	urb_out->transfer_buffer_length = urb_size;
- 	urb_out->context = line6pcm;
- 
-@@ -286,7 +291,7 @@ int line6_submit_audio_out_all_urbs(struct snd_line6_pcm *line6pcm)
- {
- 	int ret = 0, i;
- 
--	for (i = 0; i < LINE6_ISO_BUFFERS; ++i) {
-+	for (i = 0; i < line6pcm->line6->iso_buffers; ++i) {
- 		ret = submit_audio_out_urb(line6pcm);
- 		if (ret < 0)
- 			break;
-@@ -305,6 +310,9 @@ static void audio_out_callback(struct urb *urb)
- 	struct snd_line6_pcm *line6pcm = (struct snd_line6_pcm *)urb->context;
- 	struct snd_pcm_substream *substream =
- 	    get_substream(line6pcm, SNDRV_PCM_STREAM_PLAYBACK);
-+	const int bytes_per_frame =
-+		line6pcm->properties->bytes_per_channel *
-+		line6pcm->properties->playback_hw.channels_max;
- 
- #if USE_CLEAR_BUFFER_WORKAROUND
- 	memset(urb->transfer_buffer, 0, urb->transfer_buffer_length);
-@@ -313,11 +321,11 @@ static void audio_out_callback(struct urb *urb)
- 	line6pcm->out.last_frame = urb->start_frame;
- 
- 	/* find index of URB */
--	for (index = 0; index < LINE6_ISO_BUFFERS; index++)
-+	for (index = 0; index < line6pcm->line6->iso_buffers; index++)
- 		if (urb == line6pcm->out.urbs[index])
- 			break;
- 
--	if (index >= LINE6_ISO_BUFFERS)
-+	if (index >= line6pcm->line6->iso_buffers)
- 		return;		/* URB has been unlinked asynchronously */
- 
- 	for (i = 0; i < LINE6_ISO_PACKETS; i++)
-@@ -329,7 +337,7 @@ static void audio_out_callback(struct urb *urb)
- 		struct snd_pcm_runtime *runtime = substream->runtime;
- 
- 		line6pcm->out.pos_done +=
--		    length / line6pcm->properties->bytes_per_frame;
-+		    length / bytes_per_frame;
- 
- 		if (line6pcm->out.pos_done >= runtime->buffer_size)
- 			line6pcm->out.pos_done -= runtime->buffer_size;
-@@ -401,8 +409,13 @@ int line6_create_audio_out_urbs(struct snd_line6_pcm *line6pcm)
- 	struct usb_line6 *line6 = line6pcm->line6;
- 	int i;
- 
-+	line6pcm->out.urbs = kzalloc(
-+		sizeof(struct urb *) * line6->iso_buffers, GFP_KERNEL);
-+	if (line6pcm->out.urbs == NULL)
-+		return -ENOMEM;
-+
- 	/* create audio URBs and fill in constant values: */
--	for (i = 0; i < LINE6_ISO_BUFFERS; ++i) {
-+	for (i = 0; i < line6->iso_buffers; ++i) {
- 		struct urb *urb;
- 
- 		/* URB for audio out: */
-diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
-index daf81d1..31e5864 100644
---- a/sound/usb/line6/pod.c
-+++ b/sound/usb/line6/pod.c
-@@ -83,7 +83,6 @@ struct usb_line6_pod {
- };
- 
- #define POD_SYSEX_CODE 3
--#define POD_BYTES_PER_FRAME 6	/* 24bit audio (stereo) */
- 
- /* *INDENT-OFF* */
- 
-@@ -167,7 +166,7 @@ static struct line6_pcm_properties pod_pcm_properties = {
- 	.rates = {
- 			    .nrats = 1,
- 			    .rats = &pod_ratden},
--	.bytes_per_frame = POD_BYTES_PER_FRAME
-+	.bytes_per_channel = 3 /* SNDRV_PCM_FMTBIT_S24_3LE */
- };
- 
- static const char pod_version_header[] = {
-diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
-index 63dcaef..4fc4789 100644
---- a/sound/usb/line6/podhd.c
-+++ b/sound/usb/line6/podhd.c
-@@ -25,8 +25,6 @@ enum {
- 	LINE6_PODHD500_1,
- };
- 
--#define PODHD_BYTES_PER_FRAME 6	/* 24bit audio (stereo) */
--
- static struct snd_ratden podhd_ratden = {
- 	.num_min = 48000,
- 	.num_max = 48000,
-@@ -73,7 +71,7 @@ static struct line6_pcm_properties podhd_pcm_properties = {
- 	.rates = {
- 			    .nrats = 1,
- 			    .rats = &podhd_ratden},
--	.bytes_per_frame = PODHD_BYTES_PER_FRAME
-+	.bytes_per_channel = 3 /* 24bit audio (stereo) */
- };
- 
- /*
+ #endif
 diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
-index 6d4c50c..da76e03 100644
+index da76e03..8e22f43 100644
 --- a/sound/usb/line6/toneport.c
 +++ b/sound/usb/line6/toneport.c
-@@ -114,7 +114,7 @@ static struct line6_pcm_properties toneport_pcm_properties = {
- 	.rates = {
- 			    .nrats = 1,
- 			    .rats = &toneport_ratden},
--	.bytes_per_frame = 4
-+	.bytes_per_channel = 2
- };
+@@ -177,7 +177,7 @@ static int snd_toneport_monitor_put(struct snd_kcontrol *kcontrol,
+ 	line6pcm->volume_monitor = ucontrol->value.integer.value[0];
  
- static const struct {
+ 	if (line6pcm->volume_monitor > 0) {
+-		err = line6_pcm_acquire(line6pcm, LINE6_STREAM_MONITOR);
++		err = line6_pcm_acquire(line6pcm, LINE6_STREAM_MONITOR, true);
+ 		if (err < 0) {
+ 			line6pcm->volume_monitor = 0;
+ 			line6_pcm_release(line6pcm, LINE6_STREAM_MONITOR);
+@@ -246,7 +246,7 @@ static void toneport_start_pcm(unsigned long arg)
+ 	struct usb_line6_toneport *toneport = (struct usb_line6_toneport *)arg;
+ 	struct usb_line6 *line6 = &toneport->line6;
+ 
+-	line6_pcm_acquire(line6->line6pcm, LINE6_STREAM_MONITOR);
++	line6_pcm_acquire(line6->line6pcm, LINE6_STREAM_MONITOR, true);
+ }
+ 
+ /* control definition */
 -- 
 1.9.1
