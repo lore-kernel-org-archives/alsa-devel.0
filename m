@@ -1,14 +1,16 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 0/3] conf: Add vendor tuples in conf
-Date: Fri, 12 Aug 2016 12:30:14 +0530
-Message-ID: <1470985217-10719-1-git-send-email-vinod.koul@intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] amidi: add delay option
+Date: Fri, 12 Aug 2016 09:10:17 +0200
+Message-ID: <9210b56c-04ec-70c7-dc66-0478f13636d1@ladisch.de>
+References: <20160811163106.15063-1-eu@felipetonello.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id BFDBB2675C8
- for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 08:52:41 +0200 (CEST)
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 149DF266C29
+ for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 09:10:20 +0200 (CEST)
+In-Reply-To: <20160811163106.15063-1-eu@felipetonello.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,84 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
+To: "Felipe F. Tonello" <eu@felipetonello.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Topology changes in alsa-lib allow driver data for modules to be be passed
-in topology conf file using tuples. These changes allow private data to
-represented by tuples of type UUID, byte, short, word and strings.
+Felipe F. Tonello wrote:
+> This patch adds a new options to amidi tool to add a delay (in milliseconds)
+> to each MIDI message.
+>
+> This is very useful when sending firmware updates to a remote device via SysEx
+> or any other use that requires this delay in between messages.
 
-This patch series adds changes to :
- - include tuple and token list in the conf file
-   to define module private data.
- - Private data blobs for modules are no longer required. So, remove the
-   binary blobs and the tool used to generate the blobs.
- - Then add bxt conf file which is based on tuples
+> +	case 0xf4:
+> +	case 0xf5:
+> +		return 0; /* ignore */
+> +	case 0xf7:
+> +		return 0; /* ignore */
 
-Takashi,
-	This should be merged after the kernel changes are merged.
+Silent data loss is bad.
 
-Shreyas NC (3):
-  conf: sklrt286: define module private data through tuples in skylake
-  conf: sklrt286: Remove tool to generate private data blobs
-  conf: bxtrt298: Add topology conf file for bxt
+> +	case 0x00 ... 0x7f:
+> +		return rstate_len ?: rstate_len - 1;
 
- configure.ac                                       |    2 +-
- src/conf/topology/Makefile.am                      |    2 +-
- src/conf/topology/bxtrt298/Makefile.am             |    4 +
- src/conf/topology/bxtrt298/bxt_i2s.conf            | 3323 ++++++++++++++++++++
- src/conf/topology/sklrt286/Makefile.am             |    3 +-
- src/conf/topology/sklrt286/codec0_in-cpr-1.bin     |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/codec0_in-mi.bin        |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/codec0_out-cpr-4.bin    |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/codec0_out-mo.bin       |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/codec1_out-cpr-5.bin    |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/codec1_out-mo.bin       |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/data/Makefile.am        |    6 -
- src/conf/topology/sklrt286/data/pvt.c              | 1815 -----------
- src/conf/topology/sklrt286/data/pvt_data.c         |   90 -
- src/conf/topology/sklrt286/data/pvt_local.h        |    9 -
- .../topology/sklrt286/data/skl-tplg-interface.h    |  232 --
- .../topology/sklrt286/dmic01_hifi_in-cpr-3.bin     |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/dmic01_hifi_in-mi.bin   |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/hdmi1_pt_out-cpr-7.bin  |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/hdmi1_pt_out-cpr-8.bin  |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/hdmi2_pt_out-cpr-10.bin |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/hdmi2_pt_out-cpr-9.bin  |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/hdmi3_pt_out-cpr-11.bin |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/hdmi3_pt_out-cpr-12.bin |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/media0_in-cpr-0.bin     |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/media0_in-mi.bin        |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/media0_out-cpr-6.bin    |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/media0_out-mo.bin       |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/skl_i2s.conf            | 2694 +++++++++++++++-
- 29 files changed, 5988 insertions(+), 2192 deletions(-)
- create mode 100644 src/conf/topology/bxtrt298/Makefile.am
- create mode 100644 src/conf/topology/bxtrt298/bxt_i2s.conf
- delete mode 100644 src/conf/topology/sklrt286/codec0_in-cpr-1.bin
- delete mode 100644 src/conf/topology/sklrt286/codec0_in-mi.bin
- delete mode 100644 src/conf/topology/sklrt286/codec0_out-cpr-4.bin
- delete mode 100644 src/conf/topology/sklrt286/codec0_out-mo.bin
- delete mode 100644 src/conf/topology/sklrt286/codec1_out-cpr-5.bin
- delete mode 100644 src/conf/topology/sklrt286/codec1_out-mo.bin
- delete mode 100644 src/conf/topology/sklrt286/data/Makefile.am
- delete mode 100644 src/conf/topology/sklrt286/data/pvt.c
- delete mode 100644 src/conf/topology/sklrt286/data/pvt_data.c
- delete mode 100644 src/conf/topology/sklrt286/data/pvt_local.h
- delete mode 100644 src/conf/topology/sklrt286/data/skl-tplg-interface.h
- delete mode 100644 src/conf/topology/sklrt286/dmic01_hifi_in-cpr-3.bin
- delete mode 100644 src/conf/topology/sklrt286/dmic01_hifi_in-mi.bin
- delete mode 100644 src/conf/topology/sklrt286/hdmi1_pt_out-cpr-7.bin
- delete mode 100644 src/conf/topology/sklrt286/hdmi1_pt_out-cpr-8.bin
- delete mode 100644 src/conf/topology/sklrt286/hdmi2_pt_out-cpr-10.bin
- delete mode 100644 src/conf/topology/sklrt286/hdmi2_pt_out-cpr-9.bin
- delete mode 100644 src/conf/topology/sklrt286/hdmi3_pt_out-cpr-11.bin
- delete mode 100644 src/conf/topology/sklrt286/hdmi3_pt_out-cpr-12.bin
- delete mode 100644 src/conf/topology/sklrt286/media0_in-cpr-0.bin
- delete mode 100644 src/conf/topology/sklrt286/media0_in-mi.bin
- delete mode 100644 src/conf/topology/sklrt286/media0_out-cpr-6.bin
- delete mode 100644 src/conf/topology/sklrt286/media0_out-mo.bin
+rstate_len - 1 == -1
 
--- 
-1.9.1
+> +				int len = message_length(*data);
+> +
+> +				/* check for variable length */
+> +				if (len == -1) {
+> +					int i = 0;
+> +					while (data[i++] != 0xf7);
+
+Possible buffer overflow.
+
+> +				if (len > 0 &&
+> +				    (err = snd_rawmidi_write(output, data, len)) < 0) {
+
+Same here.
+
+
+The most robust way to find message boundaries probably would be a state
+machine.  However, there is actually no requirement to find all message
+boundaries; the _actual_ requirement is to insert pauses between SysEx
+messages.  So don't bother to try to parse everything; just search for
+F0 or F7.
+
+
+Regards,
+Clemens
