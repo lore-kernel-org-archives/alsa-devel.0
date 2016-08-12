@@ -1,46 +1,73 @@
-From: Laura Abbott <labbott@redhat.com>
-Subject: Re: Correct modules for Bay Trail MAX98090 soc?
-Date: Fri, 12 Aug 2016 08:51:34 -0700
-Message-ID: <6c9c0e51-76e1-b887-c5ea-2937bba116f9@redhat.com>
-References: <88774f89-ce4a-1877-db49-b018d725f1cd@redhat.com>
- <3a548725-5b52-4b3e-457a-f6ca93645b15@linux.intel.com>
- <20160812095317.GZ9347@sirena.org.uk>
- <4cba0e60-2dd4-38bd-6353-a6bf5b404d75@linux.intel.com>
- <20160812114905.GE9347@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] amidi: add delay option
+Date: Fri, 12 Aug 2016 13:38:06 +0200
+Message-ID: <feb1fb88-ab3f-1c77-3c21-88fb74a6b7dc@ladisch.de>
+References: <20160811163106.15063-1-eu@felipetonello.com>
+ <9210b56c-04ec-70c7-dc66-0478f13636d1@ladisch.de>
+ <7ebeac6f-f7b9-5c1e-bfda-c4df607fb6df@felipetonello.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160812114905.GE9347@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Jie Yang <yang.jie@intel.com>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 1C303268683
+ for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 13:38:07 +0200 (CEST)
+In-Reply-To: <7ebeac6f-f7b9-5c1e-bfda-c4df607fb6df@felipetonello.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Felipe Ferreri Tonello <eu@felipetonello.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/12/2016 04:49 AM, Mark Brown wrote:
-> On Fri, Aug 12, 2016 at 06:37:11AM -0500, Pierre-Louis Bossart wrote:
->> On 8/12/16 4:53 AM, Mark Brown wrote:
->>> On Thu, Aug 11, 2016 at 06:31:27PM -0500, Pierre-Louis Bossart wrote:
+Felipe Ferreri Tonello wrote:
+> On 12/08/16 08:10, Clemens Ladisch wrote:
+>> Felipe F. Tonello wrote:
+>>> +	case 0xf4:
+>>> +	case 0xf5:
+>>> +		return 0; /* ignore */
+>>> +	case 0xf7:
+>>> +		return 0; /* ignore */
+>>
+>> Silent data loss is bad.
 >
->>>> If you remove support for all other baytrail options this driver should
->>>> still be there and selectable. We just can't support both this driver for
->>>> Chromebooks and the rest for other machines with the same distribution at
->>>> the moment.
->
->>> That sounds like a regression, what's the plan to fix it.
->
->> The simple fix is easy: disable all other codecs and the
->> BYT_MAX98090 option will be enabled. BYT_MAX98090 relies on the 'old'
->> non-dpcm driver which is used only for Chromebooks with Baytrail, which
->> never enable any other codecs, so there was never any issue before.
->
-> That's not really that helpful for a distro kernel (this is for Fedora
-> AIUI).
->
+> What do you mean by that?
 
-Yes, this is unfortunate as it means that something is going to lose sound
-support in Fedora. :( It's probably going to be the Chromebook unless another
-group starts screaming louder.
+When you want to send the byte F5, this code will silently drop it.
 
-Thanks,
-Laura
+>>> +	case 0x00 ... 0x7f:
+>>> +		return rstate_len ?: rstate_len - 1;
+>>
+>> rstate_len - 1 == -1
+>
+> ?
+>
+> That's why there is this condition, if rstate_len is zero, than it
+> returns 0.
+
+There is not need to use rstate_len when its value is already known and
+does not affect the computation; it could just be written as:
+
+        return rstate_len ?: -1;
+
+>> The most robust way to find message boundaries probably would be a state
+>> machine.  However, there is actually no requirement to find all message
+>> boundaries; the _actual_ requirement is to insert pauses between SysEx
+>> messages.  So don't bother to try to parse everything; just search for
+>> F0 or F7.
+>
+> Well, I tough it would be useful to work in any type of MIDI message not
+> just SysEx.
+
+But there is no _actual_ use case, where somebody actually needed it.
+And as shown by all those problems, handling all types of messages makes
+the code too complex.
+
+
+Regards,
+Clemens
