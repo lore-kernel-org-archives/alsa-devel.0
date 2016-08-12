@@ -1,18 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] amidi: add delay option
-Date: Fri, 12 Aug 2016 13:38:06 +0200
-Message-ID: <feb1fb88-ab3f-1c77-3c21-88fb74a6b7dc@ladisch.de>
-References: <20160811163106.15063-1-eu@felipetonello.com>
- <9210b56c-04ec-70c7-dc66-0478f13636d1@ladisch.de>
- <7ebeac6f-f7b9-5c1e-bfda-c4df607fb6df@felipetonello.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [GIT PULL]: intel audio firmware updates
+Date: Fri, 12 Aug 2016 17:16:27 +0530
+Message-ID: <20160812114627.GM9681@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5144444314481140238=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 1C303268683
- for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 13:38:07 +0200 (CEST)
-In-Reply-To: <7ebeac6f-f7b9-5c1e-bfda-c4df607fb6df@felipetonello.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7FB3268718
+ for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 13:38:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +17,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Felipe Ferreri Tonello <eu@felipetonello.com>, alsa-devel@alsa-project.org
+To: linux-firmware@kernel.org
+Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Felipe Ferreri Tonello wrote:
-> On 12/08/16 08:10, Clemens Ladisch wrote:
->> Felipe F. Tonello wrote:
->>> +	case 0xf4:
->>> +	case 0xf5:
->>> +		return 0; /* ignore */
->>> +	case 0xf7:
->>> +		return 0; /* ignore */
->>
->> Silent data loss is bad.
->
-> What do you mean by that?
 
-When you want to send the byte F5, this code will silently drop it.
-
->>> +	case 0x00 ... 0x7f:
->>> +		return rstate_len ?: rstate_len - 1;
->>
->> rstate_len - 1 == -1
->
-> ?
->
-> That's why there is this condition, if rstate_len is zero, than it
-> returns 0.
-
-There is not need to use rstate_len when its value is already known and
-does not affect the computation; it could just be written as:
-
-        return rstate_len ?: -1;
-
->> The most robust way to find message boundaries probably would be a state
->> machine.  However, there is actually no requirement to find all message
->> boundaries; the _actual_ requirement is to insert pauses between SysEx
->> messages.  So don't bother to try to parse everything; just search for
->> F0 or F7.
->
-> Well, I tough it would be useful to work in any type of MIDI message not
-> just SysEx.
-
-But there is no _actual_ use case, where somebody actually needed it.
-And as shown by all those problems, handling all types of messages makes
-the code too complex.
+--===============5144444314481140238==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Bzq2cJcN05fcPrs+"
+Content-Disposition: inline
 
 
-Regards,
-Clemens
+--Bzq2cJcN05fcPrs+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+Please PULL to receive the latest Broxton and Kabylake audio firmware.
+
+The following changes since commit c170c8d95794d6aedbaeea44674daaa96baf04f7:
+
+  linux-firmware: intel: Update Skylake audio firmware (2016-08-04 16:09:21=
+ +0530)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git apl
+
+for you to fetch changes up to 92b8db544104bf8f4fa8b5b2bea2f3681ed2e713:
+
+  linux-firmware: intel: Update Broxton audio firmware (2016-08-12 16:07:01=
+ +0530)
+
+----------------------------------------------------------------
+Vinod Koul (2):
+      linux-firmware: intel: Update Kabylake audio firmware
+      linux-firmware: intel: Update Broxton audio firmware
+
+ WHENCE                      |   8 ++++----
+ intel/dsp_fw_bxtn.bin       |   2 +-
+ intel/dsp_fw_bxtn_v1118.bin | Bin 0 -> 505608 bytes
+ intel/dsp_fw_kbl.bin        |   2 +-
+ intel/dsp_fw_kbl_v1037.bin  | Bin 0 -> 238920 bytes
+ 5 files changed, 6 insertions(+), 6 deletions(-)
+ create mode 100644 intel/dsp_fw_bxtn_v1118.bin
+ create mode 100644 intel/dsp_fw_kbl_v1037.bin
+
+Thanks
+--=20
+~Vinod
+
+--Bzq2cJcN05fcPrs+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJXrbcTAAoJEHwUBw8lI4NHLNIP/0LeqhFUJkHI8Ql0ZwNxRtwC
+4ArXdHJ87fQyVUzpfc0LRTgAHt+c7ASmQx2JNgavIX1dH7qlWe0ea1ION9yMdSeR
+fHvfauZ+kl7yN36LP0qlULlpEXG4nT7pGtZIOeHygnToq4bxsJvM8unSaBG0dc46
+TLWvGUkTQDMdupr7dobcWpdgMZipljyqdrGcVSiUZ6dAgQwUmwOwIuqflbaxY3dr
+Vi50PFYJUSHNzXqly8fdbnTvLoRLQeBWzZXHyn2Hk6kOHakiyBm3FMBWAER2PhYR
+X3x0qLyW8sZl5T8c/DNHLh+AjuvNAx5t7xRC5bh5EwM71lqsLeR05BJbcMu88H9A
+tZumgQ/ZpwtZZNH6TqiLGS9sPczzG+PL1q0KvzIKoFSGRUksvSITJLPkPNyDLt/W
+2Fg3sRzLDe2sSLmcNJ6sHkqkwsF2fZwTTqA2n29DP08VkaDLZum7OEFvCdBHF7J1
+xxkcCNonr7O7eIvCOn8JzKEvD5TrwOJSqsT9oAkPLqEK6M59f7aq32Kwsu7uNJKG
+Nez4QuczOol99Rn9kZ6wQcSygz2SOWE3e4Zi2JFtUaeVBZ2wITpK/PTaBQ2vcuvd
+8TakTFnirNJRJxxvcazhb+1hFkmmPRZK0bvcl20UgpqnBZK/pCrkCKO96S70a4cd
+OuTG1Jk/IHgA0uMP3vv/
+=Vj5i
+-----END PGP SIGNATURE-----
+
+--Bzq2cJcN05fcPrs+--
+
+--===============5144444314481140238==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5144444314481140238==--
