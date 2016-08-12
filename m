@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sunxi: Add bindings for sun6i to SPDIF" to the asoc tree
-Date: Fri, 12 Aug 2016 13:29:46 +0100
-Message-ID: <E1bYBas-0002hU-56@debutante>
-References: <20160730155638.24455-2-codekipper@gmail.com>
+Subject: Applied "ASoC: topology: Fix error return code in soc_tplg_dapm_widget_create()" to the asoc tree
+Date: Fri, 12 Aug 2016 13:29:52 +0100
+Message-ID: <E1bYBay-0002jG-1N@debutante>
+References: <1470836592-11679-1-git-send-email-weiyj.lk@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160730155638.24455-2-codekipper@gmail.com>
+In-Reply-To: <1470836592-11679-1-git-send-email-weiyj.lk@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Marcus Cooper <codekipper@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, maxime.ripard@free-electrons.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, be17068@iperbole.bo.it, linux-sunxi@googlegroups.combroonie@kernel.org, linux-arm-kernel@lists.infradead.org
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sunxi: Add bindings for sun6i to SPDIF
+   ASoC: topology: Fix error return code in soc_tplg_dapm_widget_create()
 
 has been applied to the asoc tree at
 
@@ -37,40 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From fbb016a25dd0f4160df90bb1319e64e8209c7619 Mon Sep 17 00:00:00 2001
-From: Marcus Cooper <codekipper@gmail.com>
-Date: Sat, 30 Jul 2016 17:56:37 +0200
-Subject: [PATCH] ASoC: sunxi: Add bindings for sun6i to SPDIF
+>From 8ae3ea48df0d746b663057cf0b972a18d0777b7b Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Date: Wed, 10 Aug 2016 13:43:12 +0000
+Subject: [PATCH] ASoC: topology: Fix error return code in
+ soc_tplg_dapm_widget_create()
 
-The A31 SoC uses the same SPDIF block as found in earlier SoCs, but its
-reset is controlled via a separate reset controller.
+Fix to return error code -ENOMEM instead of 0 when failed to create
+widget, as done elsewhere in this function.
 
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+Fixes: 8a9782346dcc ("ASoC: topology: Add topology core")
+Signed-off-by: Wei Yongjun <weiyj.lk@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/soc-topology.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-index 13503aa505a9..0230c4d20506 100644
---- a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-+++ b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-@@ -9,6 +9,7 @@ Required properties:
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 05a18f68bfd0..a9e83a2dd91c 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1476,6 +1476,7 @@ widget:
+ 	if (widget == NULL) {
+ 		dev_err(tplg->dev, "ASoC: failed to create widget %s controls\n",
+ 			w->name);
++		ret = -ENOMEM;
+ 		goto hdr_err;
+ 	}
  
-   - compatible		: should be one of the following:
-     - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
-+    - "allwinner,sun6i-a31-spdif": for the Allwinner A31 SoC
- 
-   - reg			: Offset and length of the register set for the device.
- 
-@@ -25,6 +26,8 @@ Required properties:
- 	"apb"		  clock for the spdif bus.
- 	"spdif"		  clock for spdif controller.
- 
-+  - resets		: reset specifier for the ahb reset (A31 and newer only)
-+
- Example:
- 
- spdif: spdif@01c21000 {
 -- 
 2.8.1
