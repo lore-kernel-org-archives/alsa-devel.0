@@ -1,17 +1,25 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Correct modules for Bay Trail MAX98090 soc?
-Date: Fri, 12 Aug 2016 10:53:17 +0100
-Message-ID: <20160812095317.GZ9347@sirena.org.uk>
-References: <88774f89-ce4a-1877-db49-b018d725f1cd@redhat.com>
- <3a548725-5b52-4b3e-457a-f6ca93645b15@linux.intel.com>
+Subject: Re: [PATCH 000/127] ASoC: codec cleanup - codec
+ probe/remove
+Date: Fri, 12 Aug 2016 11:22:12 +0100
+Message-ID: <20160812102212.GA9347@sirena.org.uk>
+References: <87popieek9.wl%kuninori.morimoto.gx@renesas.com>
+ <54ffe6bb-9a97-db02-e96b-588630b08468@metafoo.de>
+ <20160809112639.GJ10383@sirena.org.uk>
+ <87a8glii9q.wl%kuninori.morimoto.gx@renesas.com>
+ <20160810111748.GI9347@sirena.org.uk>
+ <871t1wuntb.wl%kuninori.morimoto.gx@renesas.com>
+ <5a3d865f-087f-eab2-82d8-0477c2ca1400@metafoo.de>
+ <87wpjmrdgw.wl%kuninori.morimoto.gx@renesas.com>
+ <c8b124b3-68fa-8dc3-37cb-451897822b66@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0390285369071223216=="
+Content-Type: multipart/mixed; boundary="===============0679383049616165834=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 051EE2677C4
- for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 11:53:41 +0200 (CEST)
-In-Reply-To: <3a548725-5b52-4b3e-457a-f6ca93645b15@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 940CF26589D
+ for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 12:22:23 +0200 (CEST)
+In-Reply-To: <c8b124b3-68fa-8dc3-37cb-451897822b66@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +29,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Laura Abbott <labbott@redhat.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0390285369071223216==
+--===============0679383049616165834==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="HSHpc5A+GJc9BHcd"
+	protocol="application/pgp-signature"; boundary="p1zSJVlfBL7BTggM"
 Content-Disposition: inline
 
 
---HSHpc5A+GJc9BHcd
+--p1zSJVlfBL7BTggM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Aug 11, 2016 at 06:31:27PM -0500, Pierre-Louis Bossart wrote:
-> On 8/11/16 3:42 PM, Laura Abbott wrote:
+On Fri, Aug 12, 2016 at 11:33:13AM +0200, Lars-Peter Clausen wrote:
 
-> > which changed the dependencies for CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH.
-> > The set of options Fedora selects means that
-> > CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH
-> > can't be selected. Is there another driver that's supposed to replace
-> > CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH on Bay Trail or do the dependencies
-> > need to be updated? The bugzilla has alsa-info for working and non-
-> > working cases and the Fedora config is attached.
+> snd_soc_read() and similar are part of a clear hierarchy and are not part of
+> the current problem. Removing them is not a priority and changing them to
+> snd_soc_component_read() should only be done where it makes sense (driver is
+> a component driver and uses snd_soc_register_component()).
 
-> If you remove support for all other baytrail options this driver should
-> still be there and selectable. We just can't support both this driver for
-> Chromebooks and the rest for other machines with the same distribution at
-> the moment.
+There is some argument for renaming them to snd_soc_codec_read() and so
+on but it's really not worth the hassle and churn.
 
-That sounds like a regression, what's the plan to fix it.
-
---HSHpc5A+GJc9BHcd
+--p1zSJVlfBL7BTggM
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXrZyLAAoJECTWi3JdVIfQR4wH/0kqSPi5qxvinsjpERNwNG2T
-c/j5LwUgYwbWHSiqTo8HJPZ2nc259F61zfld8N0eheU6u/nEGEe8HOpkHvsm/+wa
-lO0P0lY1NoLI82C1wWZSBKzXxuAJuVMYiL9+TOH1VN1T4b1iTHtbfGikxyyn8slr
-WafJe3DC9zlkhL+21H4jiJbpZmKAdYmtv8MRW5066NinLZjR776ZgeYCUptpHkZO
-pE5VkuM4fGa3GrxvT7f95VUVpbngoXwW8ZHH3Jy5t+oANOcJmTbICCS+S/By3pnH
-l9fRrNRtfp429dzfBGl74CPGGAweIjCW9bDT/QRvZX7/ZRer5n62lNcWyvmg72w=
-=k2Zw
+iQEcBAEBCAAGBQJXraNTAAoJECTWi3JdVIfQvuMH/1yxoRhttOHNYFsPEpsNTGhG
+XfMWXWhmbRwEd1MmSP6HvqxP3b5ALe69dYMX1F6Wc30/nbuGPCS7FFhNGgM2R58O
+QM8IFsy6klnrlFhT9iK3+SPpeNe/s9ffX5UDsqaT/ztZYmGa4qXNpHbfe9El7BZN
+YkibYc9lJp4Qsfhn7cxvZThKkWvGunwByZ4H1D3q5IXoc07BAnRgmL79MO26ETDg
+uIarwac5THnJY+Rqr9IXvlurngJAelBhodpI0PA/VF4G3Xi05yxpYA31v3jVtFLg
+BksXhV8OgfAg7Jb0ExS7a1MZeL158oUWbxG9CbgUFYyj6lOnYOBFJvdrVBKP0LE=
+=2Bin
 -----END PGP SIGNATURE-----
 
---HSHpc5A+GJc9BHcd--
+--p1zSJVlfBL7BTggM--
 
---===============0390285369071223216==
+--===============0679383049616165834==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0390285369071223216==--
+--===============0679383049616165834==--
