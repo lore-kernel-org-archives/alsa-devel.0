@@ -1,72 +1,85 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel-pdmic: add missing clk_disable_unprepare() on error in atmel_pdmic_cpu_dai_startup()" to the asoc tree
-Date: Fri, 12 Aug 2016 13:29:54 +0100
-Message-ID: <E1bYBb0-0002kA-Ve@debutante>
-References: <1470837201-12232-1-git-send-email-weiyj.lk@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1470837201-12232-1-git-send-email-weiyj.lk@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: Potential Audio miniconference at LPC/KS
+Date: Fri, 12 Aug 2016 12:26:14 +0100
+Message-ID: <20160812112614.GD9347@sirena.org.uk>
+References: <20160701155438.GU6247@sirena.org.uk>
+ <20160708085903.GT12591@localhost>
+ <20160708085447.GU6247@sirena.org.uk>
+ <s5hwpjng7dm.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============7114643627585263596=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CDB7E267DE8
+ for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 13:26:27 +0200 (CEST)
+In-Reply-To: <s5hwpjng7dm.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, Liam Girgwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: atmel-pdmic: add missing clk_disable_unprepare() on error in atmel_pdmic_cpu_dai_startup()
+--===============7114643627585263596==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="+RqgOR8y65RRYhVY"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--+RqgOR8y65RRYhVY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Aug 11, 2016 at 08:13:57AM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > Yeah, there wasn't anything in the template miniconf for the wifi so I'm
+> > not clear what they're looking for there.  We could.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> I checked the status on Wiki page but it's still not accepted.
+> Mark, could you ping LPC about the status?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Just chased them, let's see what happens.  I also added a list of key
+attendees (somewhat randomly, please add people as I've most likely
+missed some) since I saw the wireless page had one added since I cloned
+it and that's the only miniconf that got accepted so far.
 
-Thanks,
-Mark
+> We should register soonish, but of course, the workshop has to be
+> accepted beforehand...
 
->From 61743bfaf061e253a58a3a2f22659405cc95939a Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Date: Wed, 10 Aug 2016 13:53:21 +0000
-Subject: [PATCH] ASoC: atmel-pdmic: add missing clk_disable_unprepare() on
- error in atmel_pdmic_cpu_dai_startup()
+I *think* people can get in without registration via KS but I'm not 100%
+sure.  Might be a problem if they need Plumbers registrations :(
 
-Add the missing clk_disable_unprepare() before return from
-atmel_pdmic_cpu_dai_startup() in the error handling case.
+--+RqgOR8y65RRYhVY
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Wei Yongjun <weiyj.lk@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/atmel/atmel-pdmic.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
-index 4cce36e07360..8b4beb07ca43 100644
---- a/sound/soc/atmel/atmel-pdmic.c
-+++ b/sound/soc/atmel/atmel-pdmic.c
-@@ -115,8 +115,10 @@ static int atmel_pdmic_cpu_dai_startup(struct snd_pcm_substream *substream,
- 		return ret;
- 
- 	ret =  clk_prepare_enable(dd->pclk);
--	if (ret)
-+	if (ret) {
-+		clk_disable_unprepare(dd->gclk);
- 		return ret;
-+	}
- 
- 	/* Clear all bits in the Control Register(PDMIC_CR) */
- 	regmap_write(dd->regmap, PDMIC_CR, 0);
--- 
-2.8.1
+iQEcBAEBCAAGBQJXrbJUAAoJECTWi3JdVIfQ/HwH/3ViLAkGdxjqJ5DYEMEPDxV+
+AEFPwiUUXqWp9LmnmmB7p1/yNGfB04YWpum8X80RLEo8EceFWFTO7V2Fdx0ggq2P
+IIJoDvVan+iN6oH2JGnUfAQWG4J1eZMhGgCG2kfsUNMOs/+KV4GUEY5xdo0oVxuw
+KyX4RwoiVGdg27oP7bRB6qhpACXX0nQ1jjDGroO6tlU36bW7G6vjJSQGkMsRvLc4
+pYkKvMSfjOSNmAu+8GWiQlp1ciVJGLFX7Wya/tRPd9VRZ2UZaQXPUibwnhUI3CfT
+QnQCW4FMXjJJkCn3wuBiPnq+juSC0ddG9S0cIVsfuG9xe7FLbkqTmUDs0PGz2YM=
+=VhPc
+-----END PGP SIGNATURE-----
+
+--+RqgOR8y65RRYhVY--
+
+--===============7114643627585263596==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7114643627585263596==--
