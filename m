@@ -1,17 +1,14 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 3/4] ASoC: Intel: Skylake: Remove dfw config
-	and associated structures
-Date: Fri, 12 Aug 2016 12:29:52 +0530
-Message-ID: <1470985193-10680-4-git-send-email-vinod.koul@intel.com>
-References: <1470985193-10680-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 0/3] conf: Add vendor tuples in conf
+Date: Fri, 12 Aug 2016 12:30:14 +0530
+Message-ID: <1470985217-10719-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 88DBC266F55
- for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 08:52:18 +0200 (CEST)
-In-Reply-To: <1470985193-10680-1-git-send-email-vinod.koul@intel.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFDBB2675C8
+ for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 08:52:41 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,122 +19,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Shreyas NC <shreyas.nc@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Shreyas NC <shreyas.nc@intel.com>
+Topology changes in alsa-lib allow driver data for modules to be be passed
+in topology conf file using tuples. These changes allow private data to
+represented by tuples of type UUID, byte, short, word and strings.
 
-The skl_dfw_config structure is no longer required as the module
-config is populated by parsing and reading the token values.
+This patch series adds changes to :
+ - include tuple and token list in the conf file
+   to define module private data.
+ - Private data blobs for modules are no longer required. So, remove the
+   binary blobs and the tool used to generate the blobs.
+ - Then add bxt conf file which is based on tuples
 
-So, remove the structure.
+Takashi,
+	This should be merged after the kernel changes are merged.
 
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/skylake/skl-sst-utils.c      |  5 --
- sound/soc/intel/skylake/skl-tplg-interface.h | 73 ----------------------------
- 2 files changed, 78 deletions(-)
+Shreyas NC (3):
+  conf: sklrt286: define module private data through tuples in skylake
+  conf: sklrt286: Remove tool to generate private data blobs
+  conf: bxtrt298: Add topology conf file for bxt
 
-diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
-index 0f990ebbe620..3a508b7a0041 100644
---- a/sound/soc/intel/skylake/skl-sst-utils.c
-+++ b/sound/soc/intel/skylake/skl-sst-utils.c
-@@ -28,11 +28,6 @@
- /* FW Extended Manifest Header id = $AE1 */
- #define SKL_EXT_MANIFEST_HEADER_MAGIC   0x31454124
- 
--struct skl_dfw_module_mod {
--	char name[100];
--	struct skl_dfw_module skl_dfw_mod;
--};
--
- struct UUID {
- 	u8 id[16];
- };
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index 281762eca0ab..e208724f9db3 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -148,79 +148,6 @@ enum skl_module_param_type {
- 	SKL_PARAM_BIND
- };
- 
--struct skl_dfw_module_pin {
--	u16 module_id;
--	u16 instance_id;
--} __packed;
--
--struct skl_dfw_module_fmt {
--	u32 channels;
--	u32 freq;
--	u32 bit_depth;
--	u32 valid_bit_depth;
--	u32 ch_cfg;
--	u32 interleaving_style;
--	u32 sample_type;
--	u32 ch_map;
--} __packed;
--
--struct skl_dfw_module_caps {
--	u32 set_params:2;
--	u32 rsvd:30;
--	u32 param_id;
--	u32 caps_size;
--	u32 caps[HDA_SST_CFG_MAX];
--};
--
--struct skl_dfw_pipe {
--	u8 pipe_id;
--	u8 pipe_priority;
--	u16 conn_type:4;
--	u16 rsvd:4;
--	u16 memory_pages:8;
--} __packed;
--
--struct skl_dfw_module {
--	u8 uuid[16];
--
--	u16 module_id;
--	u16 instance_id;
--	u32 max_mcps;
--	u32 mem_pages;
--	u32 obs;
--	u32 ibs;
--	u32 vbus_id;
--
--	u32 max_in_queue:8;
--	u32 max_out_queue:8;
--	u32 time_slot:8;
--	u32 core_id:4;
--	u32 rsvd1:4;
--
--	u32 module_type:8;
--	u32 conn_type:4;
--	u32 dev_type:4;
--	u32 hw_conn_type:4;
--	u32 rsvd2:12;
--
--	u32 params_fixup:8;
--	u32 converter:8;
--	u32 input_pin_type:1;
--	u32 output_pin_type:1;
--	u32 is_dynamic_in_pin:1;
--	u32 is_dynamic_out_pin:1;
--	u32 is_loadable:1;
--	u32 proc_domain:1;
--	u32 rsvd3:10;
--
--	struct skl_dfw_pipe pipe;
--	struct skl_dfw_module_fmt in_fmt[MAX_IN_QUEUE];
--	struct skl_dfw_module_fmt out_fmt[MAX_OUT_QUEUE];
--	struct skl_dfw_module_pin in_pin[MAX_IN_QUEUE];
--	struct skl_dfw_module_pin out_pin[MAX_OUT_QUEUE];
--	struct skl_dfw_module_caps caps;
--} __packed;
--
- struct skl_dfw_algo_data {
- 	u32 set_params:2;
- 	u32 rsvd:30;
+ configure.ac                                       |    2 +-
+ src/conf/topology/Makefile.am                      |    2 +-
+ src/conf/topology/bxtrt298/Makefile.am             |    4 +
+ src/conf/topology/bxtrt298/bxt_i2s.conf            | 3323 ++++++++++++++++++++
+ src/conf/topology/sklrt286/Makefile.am             |    3 +-
+ src/conf/topology/sklrt286/codec0_in-cpr-1.bin     |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/codec0_in-mi.bin        |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/codec0_out-cpr-4.bin    |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/codec0_out-mo.bin       |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/codec1_out-cpr-5.bin    |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/codec1_out-mo.bin       |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/data/Makefile.am        |    6 -
+ src/conf/topology/sklrt286/data/pvt.c              | 1815 -----------
+ src/conf/topology/sklrt286/data/pvt_data.c         |   90 -
+ src/conf/topology/sklrt286/data/pvt_local.h        |    9 -
+ .../topology/sklrt286/data/skl-tplg-interface.h    |  232 --
+ .../topology/sklrt286/dmic01_hifi_in-cpr-3.bin     |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/dmic01_hifi_in-mi.bin   |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/hdmi1_pt_out-cpr-7.bin  |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/hdmi1_pt_out-cpr-8.bin  |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/hdmi2_pt_out-cpr-10.bin |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/hdmi2_pt_out-cpr-9.bin  |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/hdmi3_pt_out-cpr-11.bin |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/hdmi3_pt_out-cpr-12.bin |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/media0_in-cpr-0.bin     |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/media0_in-mi.bin        |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/media0_out-cpr-6.bin    |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/media0_out-mo.bin       |  Bin 4244 -> 0 bytes
+ src/conf/topology/sklrt286/skl_i2s.conf            | 2694 +++++++++++++++-
+ 29 files changed, 5988 insertions(+), 2192 deletions(-)
+ create mode 100644 src/conf/topology/bxtrt298/Makefile.am
+ create mode 100644 src/conf/topology/bxtrt298/bxt_i2s.conf
+ delete mode 100644 src/conf/topology/sklrt286/codec0_in-cpr-1.bin
+ delete mode 100644 src/conf/topology/sklrt286/codec0_in-mi.bin
+ delete mode 100644 src/conf/topology/sklrt286/codec0_out-cpr-4.bin
+ delete mode 100644 src/conf/topology/sklrt286/codec0_out-mo.bin
+ delete mode 100644 src/conf/topology/sklrt286/codec1_out-cpr-5.bin
+ delete mode 100644 src/conf/topology/sklrt286/codec1_out-mo.bin
+ delete mode 100644 src/conf/topology/sklrt286/data/Makefile.am
+ delete mode 100644 src/conf/topology/sklrt286/data/pvt.c
+ delete mode 100644 src/conf/topology/sklrt286/data/pvt_data.c
+ delete mode 100644 src/conf/topology/sklrt286/data/pvt_local.h
+ delete mode 100644 src/conf/topology/sklrt286/data/skl-tplg-interface.h
+ delete mode 100644 src/conf/topology/sklrt286/dmic01_hifi_in-cpr-3.bin
+ delete mode 100644 src/conf/topology/sklrt286/dmic01_hifi_in-mi.bin
+ delete mode 100644 src/conf/topology/sklrt286/hdmi1_pt_out-cpr-7.bin
+ delete mode 100644 src/conf/topology/sklrt286/hdmi1_pt_out-cpr-8.bin
+ delete mode 100644 src/conf/topology/sklrt286/hdmi2_pt_out-cpr-10.bin
+ delete mode 100644 src/conf/topology/sklrt286/hdmi2_pt_out-cpr-9.bin
+ delete mode 100644 src/conf/topology/sklrt286/hdmi3_pt_out-cpr-11.bin
+ delete mode 100644 src/conf/topology/sklrt286/hdmi3_pt_out-cpr-12.bin
+ delete mode 100644 src/conf/topology/sklrt286/media0_in-cpr-0.bin
+ delete mode 100644 src/conf/topology/sklrt286/media0_in-mi.bin
+ delete mode 100644 src/conf/topology/sklrt286/media0_out-cpr-6.bin
+ delete mode 100644 src/conf/topology/sklrt286/media0_out-mo.bin
+
 -- 
 1.9.1
