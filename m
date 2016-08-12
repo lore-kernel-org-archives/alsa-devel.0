@@ -1,36 +1,40 @@
-From: Akshay Bhat <akshay.bhat@timesys.com>
-Subject: [PATCH] ALSA: usb-audio: Add sample rate inquiry quirk for B850V3 CP2114
-Date: Fri, 12 Aug 2016 14:08:47 -0400
-Message-ID: <1471025327-3529-1-git-send-email-akshay.bhat@timesys.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz
-Cc: tiwai@suse.com, gtmkramer@xs4all.nl, denk@post.com, guillaume@eulerian.com, vdronov@redhat.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Ken Lin <ken.lin@advantech.com.tw>, Akshay Bhat <akshay.bhat@timesys.com>
+From: Martin Tarenskeen <m.tarenskeen@zonnet.nl>
+Subject: Re: [PATCH] amidi: add delay option
+Date: Fri, 12 Aug 2016 21:19:42 +0200 (CEST)
+Message-ID: <alpine.LFD.2.20.1608122115480.2441@192.168.2.10>
+References: <20160811163106.15063-1-eu@felipetonello.com>
+ <9210b56c-04ec-70c7-dc66-0478f13636d1@ladisch.de>
+ <7ebeac6f-f7b9-5c1e-bfda-c4df607fb6df@felipetonello.com>
+ <feb1fb88-ab3f-1c77-3c21-88fb74a6b7dc@ladisch.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cpsmtpb-ews02.kpnxchange.com (cpsmtpb-ews02.kpnxchange.com
+ [213.75.39.5]) by alsa0.perex.cz (Postfix) with ESMTP id 93485265E20
+ for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 21:19:50 +0200 (CEST)
+In-Reply-To: <feb1fb88-ab3f-1c77-3c21-88fb74a6b7dc@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Felipe Ferreri Tonello <eu@felipetonello.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Ken Lin <ken.lin@advantech.com.tw>
 
-Avoid getting sample rate on B850V3 CP2114 as it is unsupported and
-causes noisy "current rate is different from the runtime rate" messages
-when playback starts.
 
-Signed-off-by: Ken Lin <ken.lin@advantech.com.tw>
-Signed-off-by: Akshay Bhat <akshay.bhat@timesys.com>
----
- sound/usb/quirks.c | 1 +
- 1 file changed, 1 insertion(+)
+On Fri, 12 Aug 2016, Clemens Ladisch wrote:
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 6adde45..e5a1133 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1139,6 +1139,7 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
- 	case USB_ID(0x04D8, 0xFEEA): /* Benchmark DAC1 Pre */
- 	case USB_ID(0x0556, 0x0014): /* Phoenix Audio TMX320VC */
- 	case USB_ID(0x074D, 0x3553): /* Outlaw RR2150 (Micronas UAC3553B) */
-+	case USB_ID(0x1901, 0x0191): /* GE B850V3 CP2114 audio interface */
- 	case USB_ID(0x1de7, 0x0013): /* Phoenix Audio MT202exe */
- 	case USB_ID(0x1de7, 0x0014): /* Phoenix Audio TMX320 */
- 	case USB_ID(0x1de7, 0x0114): /* Phoenix Audio MT202pcs */
+Off topic here but: what happened to that patch you proposed (requested by 
+me) to enable/disable filtering of MIDI Clock messages, just like already 
+exists for MIDI Active Sensing messages?
+
 -- 
-2.8.1
+
+MT
