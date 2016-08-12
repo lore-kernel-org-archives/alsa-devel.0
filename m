@@ -1,85 +1,46 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Potential Audio miniconference at LPC/KS
-Date: Fri, 12 Aug 2016 12:26:14 +0100
-Message-ID: <20160812112614.GD9347@sirena.org.uk>
-References: <20160701155438.GU6247@sirena.org.uk>
- <20160708085903.GT12591@localhost>
- <20160708085447.GU6247@sirena.org.uk>
- <s5hwpjng7dm.wl-tiwai@suse.de>
+From: Laura Abbott <labbott@redhat.com>
+Subject: Re: Correct modules for Bay Trail MAX98090 soc?
+Date: Fri, 12 Aug 2016 08:51:34 -0700
+Message-ID: <6c9c0e51-76e1-b887-c5ea-2937bba116f9@redhat.com>
+References: <88774f89-ce4a-1877-db49-b018d725f1cd@redhat.com>
+ <3a548725-5b52-4b3e-457a-f6ca93645b15@linux.intel.com>
+ <20160812095317.GZ9347@sirena.org.uk>
+ <4cba0e60-2dd4-38bd-6353-a6bf5b404d75@linux.intel.com>
+ <20160812114905.GE9347@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7114643627585263596=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CDB7E267DE8
- for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 13:26:27 +0200 (CEST)
-In-Reply-To: <s5hwpjng7dm.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, Liam Girgwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160812114905.GE9347@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Jie Yang <yang.jie@intel.com>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 08/12/2016 04:49 AM, Mark Brown wrote:
+> On Fri, Aug 12, 2016 at 06:37:11AM -0500, Pierre-Louis Bossart wrote:
+>> On 8/12/16 4:53 AM, Mark Brown wrote:
+>>> On Thu, Aug 11, 2016 at 06:31:27PM -0500, Pierre-Louis Bossart wrote:
+>
+>>>> If you remove support for all other baytrail options this driver should
+>>>> still be there and selectable. We just can't support both this driver for
+>>>> Chromebooks and the rest for other machines with the same distribution at
+>>>> the moment.
+>
+>>> That sounds like a regression, what's the plan to fix it.
+>
+>> The simple fix is easy: disable all other codecs and the
+>> BYT_MAX98090 option will be enabled. BYT_MAX98090 relies on the 'old'
+>> non-dpcm driver which is used only for Chromebooks with Baytrail, which
+>> never enable any other codecs, so there was never any issue before.
+>
+> That's not really that helpful for a distro kernel (this is for Fedora
+> AIUI).
+>
 
---===============7114643627585263596==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="+RqgOR8y65RRYhVY"
-Content-Disposition: inline
+Yes, this is unfortunate as it means that something is going to lose sound
+support in Fedora. :( It's probably going to be the Chromebook unless another
+group starts screaming louder.
 
-
---+RqgOR8y65RRYhVY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 11, 2016 at 08:13:57AM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > Yeah, there wasn't anything in the template miniconf for the wifi so I'm
-> > not clear what they're looking for there.  We could.
-
-> I checked the status on Wiki page but it's still not accepted.
-> Mark, could you ping LPC about the status?
-
-Just chased them, let's see what happens.  I also added a list of key
-attendees (somewhat randomly, please add people as I've most likely
-missed some) since I saw the wireless page had one added since I cloned
-it and that's the only miniconf that got accepted so far.
-
-> We should register soonish, but of course, the workshop has to be
-> accepted beforehand...
-
-I *think* people can get in without registration via KS but I'm not 100%
-sure.  Might be a problem if they need Plumbers registrations :(
-
---+RqgOR8y65RRYhVY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXrbJUAAoJECTWi3JdVIfQ/HwH/3ViLAkGdxjqJ5DYEMEPDxV+
-AEFPwiUUXqWp9LmnmmB7p1/yNGfB04YWpum8X80RLEo8EceFWFTO7V2Fdx0ggq2P
-IIJoDvVan+iN6oH2JGnUfAQWG4J1eZMhGgCG2kfsUNMOs/+KV4GUEY5xdo0oVxuw
-KyX4RwoiVGdg27oP7bRB6qhpACXX0nQ1jjDGroO6tlU36bW7G6vjJSQGkMsRvLc4
-pYkKvMSfjOSNmAu+8GWiQlp1ciVJGLFX7Wya/tRPd9VRZ2UZaQXPUibwnhUI3CfT
-QnQCW4FMXjJJkCn3wuBiPnq+juSC0ddG9S0cIVsfuG9xe7FLbkqTmUDs0PGz2YM=
-=VhPc
------END PGP SIGNATURE-----
-
---+RqgOR8y65RRYhVY--
-
---===============7114643627585263596==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7114643627585263596==--
+Thanks,
+Laura
