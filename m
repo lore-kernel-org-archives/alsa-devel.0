@@ -1,23 +1,18 @@
-From: =?UTF-8?Q?Andrej_Krut=C3=A1k?= <dev@andree.sk>
-Subject: Re: [PATCH 09/15] ALSA: line6: Add hwdep interface to
- access the POD control messages
-Date: Fri, 12 Aug 2016 14:15:16 +0200
-Message-ID: <CAFnc+wU7NMg=KTF-z7PewoAn5kK=QX7MZMXpVa_97PikPRgQpw@mail.gmail.com>
-References: <1470942147-19848-1-git-send-email-dev@andree.sk>
- <1470942147-19848-10-git-send-email-dev@andree.sk>
- <s5h8tw2fkbe.wl-tiwai@suse.de>
- <CAFnc+wWRFjyJmY0=hJDAOZQvZJP46Kp+HqbCZMGRLvsdLN8gVQ@mail.gmail.com>
- <s5hlh02dwj8.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: omap-mcbsp: Enable TX/RX under and
+	overflow interrupts" to the asoc tree
+Date: Fri, 12 Aug 2016 13:29:49 +0100
+Message-ID: <E1bYBav-0002iM-34@debutante>
+References: <20160812105210.15075-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id CB67F269174
- for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 14:15:37 +0200 (CEST)
-Received: by mail-wm0-f65.google.com with SMTP id i5so2526557wmg.2
- for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 05:15:37 -0700 (PDT)
-In-Reply-To: <s5hlh02dwj8.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EFBD2680F1
+ for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 14:30:08 +0200 (CEST)
+In-Reply-To: <20160812105210.15075-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,52 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: liam.r.girdwood@linux.intel.com, akramh@aq1systems.com, alsa-devel@alsa-project.org, broonie@kernel.org, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBBdWcgMTIsIDIwMTYgYXQgMjowMyBQTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
-LmRlPiB3cm90ZToKPiBPbiBGcmksIDEyIEF1ZyAyMDE2IDEzOjEwOjM3ICswMjAwLAo+IEFuZHJl
-aiBLcnV0w6FrIHdyb3RlOgo+PiA+ID4gK3N0YXRpYyB2b2lkIGxpbmU2X2h3ZGVwX3B1c2hfbWVz
-c2FnZShzdHJ1Y3QgdXNiX2xpbmU2ICpsaW5lNikKPj4gPiA+ICt7Cj4+ID4gPiArICAgICB1bnNp
-Z25lZCBsb25nIGhlYWQgPSBsaW5lNi0+YnVmZmVyX2NpcmN1bGFyLmhlYWQ7Cj4+ID4gPiArICAg
-ICAvKiBUaGUgc3Bpbl91bmxvY2soKSBhbmQgbmV4dCBzcGluX2xvY2soKSBwcm92aWRlIG5lZWRl
-ZCBvcmRlcmluZy4gKi8KPj4gPiA+ICsgICAgIHVuc2lnbmVkIGxvbmcgdGFpbCA9IEFDQ0VTU19P
-TkNFKGxpbmU2LT5idWZmZXJfY2lyY3VsYXIudGFpbCk7Cj4+ID4gPiArCj4+ID4gPiArICAgICBp
-ZiAoIWxpbmU2LT5idWZmZXJfY2lyY3VsYXIuYWN0aXZlKQo+PiA+ID4gKyAgICAgICAgICAgICBy
-ZXR1cm47Cj4+ID4gPiArCj4+ID4gPiArICAgICBpZiAoQ0lSQ19TUEFDRShoZWFkLCB0YWlsLCBM
-SU5FNl9NRVNTQUdFX01BWENPVU5UKSA+PSAxKSB7Cj4+ID4gPiArICAgICAgICAgICAgIHVuc2ln
-bmVkIGNoYXIgKml0ZW0gPSAmbGluZTYtPmJ1ZmZlcl9jaXJjdWxhci5kYXRhWwo+PiA+ID4gKyAg
-ICAgICAgICAgICAgICAgICAgIGhlYWQgKiBMSU5FNl9NRVNTQUdFX01BWExFTl07Cj4+ID4gPiAr
-ICAgICAgICAgICAgIG1lbWNweShpdGVtLCBsaW5lNi0+YnVmZmVyX21lc3NhZ2UsIGxpbmU2LT5t
-ZXNzYWdlX2xlbmd0aCk7Cj4+ID4gPiArICAgICAgICAgICAgIGxpbmU2LT5idWZmZXJfY2lyY3Vs
-YXIuZGF0YV9sZW5baGVhZF0gPSBsaW5lNi0+bWVzc2FnZV9sZW5ndGg7Cj4+ID4gPiArCj4+ID4g
-PiArICAgICAgICAgICAgIHNtcF9zdG9yZV9yZWxlYXNlKCZsaW5lNi0+YnVmZmVyX2NpcmN1bGFy
-LmhlYWQsCj4+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChoZWFkICsgMSkg
-JiAoTElORTZfTUVTU0FHRV9NQVhDT1VOVCAtIDEpKTsKPj4gPiA+ICsgICAgICAgICAgICAgdXAo
-JmxpbmU2LT5idWZmZXJfY2lyY3VsYXIuc2VtKTsKPj4gPiA+ICsgICAgIH0KPj4gPgo+PiA+IEht
-bS4uLiAgdGhpcyBraW5kIG9mIGEgc2ltcGxlIEZJRk8gY2FuIGJlIHNlZW4gaW4gYW55d2hlcmUg
-aW4gdGhlCj4+ID4ga2VybmVsIGNvZGUsIGFuZCBJJ20gc3VyZSB0aGF0IHlvdSBjYW4gZmluZCBh
-biBlYXNpZXIgd2F5IHRvIGltcGxlbWVudAo+PiA+IGl0LiAgVGhlIHdob2xlIGNvZGUgbG9va3Mg
-YSBiaXQgc2NhcnkgYXMgaXQgYmVpbmcgaG9tZS1icmV3ZWQuCj4+ID4KPj4KPj4gVGhpcyBjb2Rl
-IGlzIGJhc2VkIG9uIERvY3VtZW50YXRpb24vY2lyY3VsYXItYnVmZmVycy50eHQsIGV4Y2VwdCBm
-b3IKPj4gdGhlIHNlbWFwaG9yZSBtYWdpYy4KPgo+IFRoZSBleGFtcGxlIHRoZXJlIGlzIGJhc2lj
-YWxseSBhIHNlbWkgbG9jay1mcmVlIGltcGxlbWVudGF0aW9uLiAgRm9yCj4geW91ciBwdXJwb3Nl
-IGl0J3MgYW4gb3ZlcmtpbGwuICBUaGlzIGlzIG5vIHNldmVyZWx5IGhvdCBwYXRoLCB0aHVzIGEK
-PiBzaW1wbGVyIHZlcnNpb24gd291bGQgbWFrZSBsaWZlIGVhc2llci4KPgoKRmFpciBlbm91Z2gs
-IEknbGwgc3BpbmxvY2staXplIGl0IHRoZW4uCgoKPj4gPiBBbHNvLCB0aGUgYmxvY2tpbmcgcmVh
-ZC93cml0ZSBjb250cm9sIGlzbid0IHVzdWFsbHkgZG9uZSBieSBhCj4+ID4gc2VtYXBob3JlLiAg
-VGhlbiB5b3UgY2FuIGhhbmRsZSB0aGUgaW50ZXJydXB0IHRoZXJlLgo+PiA+Cj4+ID4KPj4KPj4g
-SSBhY3R1YWxseSB3b25kZXIgd2h5LCBzZW1hcGhvcmVzIHNlZW1lZCBwZXJmZWN0IGZvciB0aGlz
-Li4uIERvIHlvdQo+PiBoYXZlIHNvbWUgaGludHM/Cj4KPiBBc3N1bWUgeW91IHdhbnQgdG8gaW50
-ZXJydXB0IHRoZSB1c2VyLXNwYWNlIGFwcCB3aGlsZSBpdCdzIGJlaW5nCj4gYmxvY2tlZCBieSB0
-aGUgc2VtYXBob3JlLiAgV2l0aCB5b3VyIGNvZGUsIHlvdSBjYW4ndC4KPgo+CgpZb3UgY2FuIC0g
-ZG93bl9pbnRlcnJ1cHRpYmxlKCkgaXMgdGhlcmUgZm9yIHRoaXMgZXhhY3QgcmVhc29uLiBBcwpz
-YWlkLCBzZW1hcGhvcmUgaXMgYmFzaWNhbGx5IHdhaXQtcXVldWUgKyBjb3VudGVyLCBzbyB0aGVy
-ZSdzIG5vIHJlYWwKcmVhc29uIG5vdCB0byBkbyB0aGlzIElNTy4KCkJ1dCBpbiB0aGUgZW5kIC0g
-aWYgeW91IGhhdmUgc29tZSBuaWNlIGV4YW1wbGUgb2YgRklGTyBidWZmZXIgaW4gc29tZQpzaW1w
-bGUgZHJpdmVyLCBJIGhhdmUgbm8gcHJvYmxlbSB1c2luZyBhIG1vcmUgYWxyZWFkeS1wcm92ZW4v
-c3RhbmRhcmQKd2F5IDotKQoKCi0tIApBbmRyZWoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+The patch
+
+   ASoC: omap-mcbsp: Enable TX/RX under and overflow interrupts
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 4e85e7776eba5f6d5a3b8b43f34001a73c5d08a1 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Fri, 12 Aug 2016 13:52:10 +0300
+Subject: [PATCH] ASoC: omap-mcbsp: Enable TX/RX under and overflow interrupts
+
+FIFO under or overflow can cause channel swaps and data loss. Reporting
+them can help to identify such events.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/omap/mcbsp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
+index 76ce33199bf9..06fec5699cc8 100644
+--- a/sound/soc/omap/mcbsp.c
++++ b/sound/soc/omap/mcbsp.c
+@@ -221,7 +221,8 @@ void omap_mcbsp_config(struct omap_mcbsp *mcbsp,
+ 
+ 	/* Enable TX/RX sync error interrupts by default */
+ 	if (mcbsp->irq)
+-		MCBSP_WRITE(mcbsp, IRQEN, RSYNCERREN | XSYNCERREN);
++		MCBSP_WRITE(mcbsp, IRQEN, RSYNCERREN | XSYNCERREN |
++			    RUNDFLEN | ROVFLEN | XUNDFLEN | XOVFLEN);
+ }
+ 
+ /**
+-- 
+2.8.1
