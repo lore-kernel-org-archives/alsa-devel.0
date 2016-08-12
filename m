@@ -1,25 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 000/127] ASoC: codec cleanup - codec
- probe/remove
-Date: Fri, 12 Aug 2016 11:22:12 +0100
-Message-ID: <20160812102212.GA9347@sirena.org.uk>
-References: <87popieek9.wl%kuninori.morimoto.gx@renesas.com>
- <54ffe6bb-9a97-db02-e96b-588630b08468@metafoo.de>
- <20160809112639.GJ10383@sirena.org.uk>
- <87a8glii9q.wl%kuninori.morimoto.gx@renesas.com>
- <20160810111748.GI9347@sirena.org.uk>
- <871t1wuntb.wl%kuninori.morimoto.gx@renesas.com>
- <5a3d865f-087f-eab2-82d8-0477c2ca1400@metafoo.de>
- <87wpjmrdgw.wl%kuninori.morimoto.gx@renesas.com>
- <c8b124b3-68fa-8dc3-37cb-451897822b66@metafoo.de>
+From: =?UTF-8?Q?Andrej_Krut=C3=A1k?= <dev@andree.sk>
+Subject: Re: [PATCH 00/15] Line6 POD X3/X3Live suport
+Date: Fri, 12 Aug 2016 12:31:31 +0200
+Message-ID: <CAFnc+wVY+f1mgOXvzJRojfprE+fsf9d-1b6DG8Ythqbk3f-vuA@mail.gmail.com>
+References: <1470942147-19848-1-git-send-email-dev@andree.sk>
+ <s5hd1leflpl.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0679383049616165834=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 940CF26589D
- for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 12:22:23 +0200 (CEST)
-In-Reply-To: <c8b124b3-68fa-8dc3-37cb-451897822b66@metafoo.de>
+Received: from mail-wm0-f42.google.com (mail-wm0-f42.google.com [74.125.82.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7AD7265E17
+ for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 12:31:52 +0200 (CEST)
+Received: by mail-wm0-f42.google.com with SMTP id i5so24053491wmg.0
+ for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2016 03:31:52 -0700 (PDT)
+In-Reply-To: <s5hd1leflpl.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,53 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi!
 
---===============0679383049616165834==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="p1zSJVlfBL7BTggM"
-Content-Disposition: inline
+On Fri, Aug 12, 2016 at 10:14 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
+> On Thu, 11 Aug 2016 21:02:12 +0200,
+> Andrej Krutak wrote:
+> >
+> > Hello all,
+> >
+> >
+> > attached is the first version of the driver, based on POD HD. They share
+> a lot
+> > of similarities, but at the same time there were some generalizations
+> needed. I
+> > think POD HD could follow up on these patches to add hwdep support,
+> perhaps
+> > helix too... I tried to not introduce regressions to the old HW.
+> >
+> > Anyhow, this is probably not the final version of the patches, as it is
+> my
+> > first submission to upstream - I'm sure there will be some issues.
+> > Especially the patch
+> > "Use device_create_file instead of snd_card_add_dev_attr" I have to
+> revisit,
+> > it may not be necessarry in the end.
+> >
+> > Other than that, the patches mostly pass `make checkpatches`. I've been
+> > testing the driver for a while now, including lock debugging options
+> etc.,
+> > and there don't seem to be functional problems.
+> >
+> > There's one missing thing - the driver uses bulk USB interface of the
+> > device, but so far I wasn't able to make the usb_driver_claim_interface()
+> > work... I hope this can be added later, if someone (or I) finds time.
+> >
+> >
+> > Thanks for your inputs, greetings,
+>
+> Thanks for the patches.  Many of them look good, but we'd need
+> revisiting some of them.  But at the next time, please put maintainers
+> to Cc, not only to sending to ML.
+>
+> I'll comment on each patch.
+>
+>
+Thanks for the quick feedback! I'll rework the patches where obvious, and
+respond to the comments where I "object"...
 
---p1zSJVlfBL7BTggM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Aug 12, 2016 at 11:33:13AM +0200, Lars-Peter Clausen wrote:
-
-> snd_soc_read() and similar are part of a clear hierarchy and are not part of
-> the current problem. Removing them is not a priority and changing them to
-> snd_soc_component_read() should only be done where it makes sense (driver is
-> a component driver and uses snd_soc_register_component()).
-
-There is some argument for renaming them to snd_soc_codec_read() and so
-on but it's really not worth the hassle and churn.
-
---p1zSJVlfBL7BTggM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXraNTAAoJECTWi3JdVIfQvuMH/1yxoRhttOHNYFsPEpsNTGhG
-XfMWXWhmbRwEd1MmSP6HvqxP3b5ALe69dYMX1F6Wc30/nbuGPCS7FFhNGgM2R58O
-QM8IFsy6klnrlFhT9iK3+SPpeNe/s9ffX5UDsqaT/ztZYmGa4qXNpHbfe9El7BZN
-YkibYc9lJp4Qsfhn7cxvZThKkWvGunwByZ4H1D3q5IXoc07BAnRgmL79MO26ETDg
-uIarwac5THnJY+Rqr9IXvlurngJAelBhodpI0PA/VF4G3Xi05yxpYA31v3jVtFLg
-BksXhV8OgfAg7Jb0ExS7a1MZeL158oUWbxG9CbgUFYyj6lOnYOBFJvdrVBKP0LE=
-=2Bin
------END PGP SIGNATURE-----
-
---p1zSJVlfBL7BTggM--
-
---===============0679383049616165834==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0679383049616165834==--
+-- 
+Andrej
