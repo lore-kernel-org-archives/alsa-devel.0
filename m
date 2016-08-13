@@ -1,17 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH v2 1/2] amidi: add delay option
-Date: Sat, 13 Aug 2016 13:51:05 +0200
-Message-ID: <87767954-ce27-ac72-7b5e-4198213eb840@ladisch.de>
-References: <20160812160435.27364-1-eu@felipetonello.com>
- <20160812160435.27364-2-eu@felipetonello.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/2] ALSA: rawmidi: add runtime error state for
+	disorder of data transmission
+Date: Sat, 13 Aug 2016 21:39:15 +0900
+Message-ID: <1471091957-14757-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 03444265AED
- for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2016 13:52:43 +0200 (CEST)
-In-Reply-To: <20160812160435.27364-2-eu@felipetonello.com>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 85793265AED
+ for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2016 14:39:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,38 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Felipe F. Tonello" <eu@felipetonello.com>, alsa-devel@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Felipe F. Tonello wrote:
-> This patch adds a new options to amidi tool to add a delay (in milliseconds)
-> to each MIDI message.
-     ^^^^
-Not anymore.
+Hi,
 
-> +		if (!delay) {
-> +				if ((err = snd_rawmidi_write(output, send_data, send_data_length)) < 0) {
-> +					error("cannot send data: %s", snd_strerror(err));
-> +					return err;
-> +				}
-> +		} else {
+This patchset is based on an idea addressed in this thread:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-February/104589.html
 
-Too much indentation.
+For packet-oriented drivers such as USB Audio Device class, message
+transmission can fail due to data bus issue. In this case, corresponding
+rawmidi runtime should be closed. Although, current ALSA rawmidi core has
+no mechanism to help applications/drivers to handle this situation.
 
-> +				/* find beginning of SysEx and its end */
-> +				while((unsigned char)data[len] != 0xf0 &&
-> +				      (data + len) < (send_data + send_data_length))
-> +					len++;
-> +
-> +				while((unsigned char)data[len] != 0xf7 &&
-> +				      (data + len) < (send_data + send_data_length))
-> +					len++;
-> +				len++;
+This commit adds a helper functions for this aim.
 
-It is not necessary to search for both beginning and end.
+Takashi Sakamoto (2):
+  ALSA: rawmidi: handle error state for broken logical channel
+  ALSA: rawmidi: add a helper to set runtime error
 
-And the search can be simplified with memchr().
+ include/sound/rawmidi.h |  3 ++
+ sound/core/rawmidi.c    | 86 ++++++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 84 insertions(+), 5 deletions(-)
 
-
-Regards,
-Clemens
+-- 
+2.7.4
