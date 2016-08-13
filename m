@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v4 0/4] ALSA: seq: obsolete change of address
-	limit
-Date: Sat, 13 Aug 2016 10:13:32 +0900
-Message-ID: <1471050816-26416-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH v4 1/4] ALSA: seq: add documentation for
+	snd_seq_kernel_client_ctl
+Date: Sat, 13 Aug 2016 10:13:33 +0900
+Message-ID: <1471050816-26416-2-git-send-email-o-takashi@sakamocchi.jp>
+References: <1471050816-26416-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 7AED326600E
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 79DD2266009
  for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2016 03:13:44 +0200 (CEST)
+In-Reply-To: <1471050816-26416-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,38 +25,43 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ALSA sequencer core has two types of clients; application and kernel.
-For kernel clients, the core should handle data in kernel space, meanwhile
-this is achieved with a hack of change of address limit. This should be
-purged.
+This kernel API is used by kernel implementation. Currently, it's used for
+kernel clients of ALSA sequencer, while it can be used for application
+clients. The difference is just on address spaces of argument. In short,
+this kernel API can be available for application client with data in kernel
+space.
 
-This patchset is a revised version of my previous one:
-[alsa-devel] obsolete change of address limit
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/110937.html
+This commit adds a document about this.
 
-Changes in v2:
- - Use '_IOC_SIZE' macro to calculate the size of argument of ioctl command.
- - Keep redundant longer name.
- - Improve comments.
- - Merge some patches relevant to the same features.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/core/seq/seq_clientmgr.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-Changes in v3:
- - Improve series of patch
- - Use 'dir' field of ioctl command to detect the length of argument
-
-Changes in v4:
- - Update kernel API documentation
- - Use logical AND to detect ioctl direction
-
-Takashi Sakamoto (4):
-  ALSA: seq: add documentation for snd_seq_kernel_client_ctl
-  ALSA: seq: add an alternative way to handle ioctl requests
-  ALSA: seq: change ioctl command operation to get data in kernel space
-  ALSA: seq: obsolete change of address limit
-
- sound/core/seq/seq_clientmgr.c | 721 ++++++++++++++++++-----------------------
- sound/core/seq/seq_compat.c    |   7 +-
- 2 files changed, 317 insertions(+), 411 deletions(-)
-
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index d6d9419..37590f8 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -2423,9 +2423,17 @@ int snd_seq_kernel_client_dispatch(int client, struct snd_seq_event * ev,
+ 
+ EXPORT_SYMBOL(snd_seq_kernel_client_dispatch);
+ 
+-/*
+- * exported, called by kernel clients to perform same functions as with
+- * userland ioctl() 
++/**
++ * snd_seq_kernel_client_ctl - operate a command for a client with data in
++ *			       kernel space.
++ * @clientid:	A numerical ID for a client.
++ * @cmd:	An ioctl(2) command for ALSA sequencer operation.
++ * @arg:	A pointer to data in kernel space.
++ *
++ * Against its name, both kernel/application client can be handled by this
++ * kernel API. A pointer of 'arg' argument should be in kernel space.
++ *
++ * Return: 0 at success. Negative error code at failure.
+  */
+ int snd_seq_kernel_client_ctl(int clientid, unsigned int cmd, void *arg)
+ {
 -- 
 2.7.4
