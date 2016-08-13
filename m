@@ -1,19 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/2] amidi: ignore not only Active Sensing
- but also Clock bytes
-Date: Sat, 13 Aug 2016 20:27:27 +0900
-Message-ID: <7982b196-edae-3330-86a8-83338e182f3e@sakamocchi.jp>
-References: <ac3f1f9a-5201-7a98-e659-fd9bbcf41ab7@ladisch.de>
- <bde1ef45-8255-5ca7-01fc-5dbf0b8f3684@ladisch.de>
- <b630d5ab-da0d-d92f-010b-b8c8e4698be7@sakamocchi.jp>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH v2 1/2] amidi: add delay option
+Date: Sat, 13 Aug 2016 13:51:05 +0200
+Message-ID: <87767954-ce27-ac72-7b5e-4198213eb840@ladisch.de>
+References: <20160812160435.27364-1-eu@felipetonello.com>
+ <20160812160435.27364-2-eu@felipetonello.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 56B6E2659FE
- for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2016 13:27:34 +0200 (CEST)
-In-Reply-To: <b630d5ab-da0d-d92f-010b-b8c8e4698be7@sakamocchi.jp>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 03444265AED
+ for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2016 13:52:43 +0200 (CEST)
+In-Reply-To: <20160812160435.27364-2-eu@felipetonello.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,31 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: "Felipe F. Tonello" <eu@felipetonello.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 13 2016 20:14, Takashi Sakamoto wrote:
-> Need to modify a table for short options.
-> 
-> diff --git a/amidi/amidi.c b/amidi/amidi.c
-> index 290df48..ea61cba 100644
-> --- a/amidi/amidi.c
-> +++ b/amidi/amidi.c
-> @@ -411,7 +411,7 @@ static void add_send_hex_data(const char *str)
-> 
->  int main(int argc, char *argv[])
->  {
-> -       static const char short_options[] = "hVlLp:s:r:S::dt:a";
-> +       static const char short_options[] = "hVlLp:s:r:S::dt:a:c";
+Felipe F. Tonello wrote:
+> This patch adds a new options to amidi tool to add a delay (in milliseconds)
+> to each MIDI message.
+     ^^^^
+Not anymore.
 
-Oops. This should be "hVlLp:s:r:S::dt:ac"...
+> +		if (!delay) {
+> +				if ((err = snd_rawmidi_write(output, send_data, send_data_length)) < 0) {
+> +					error("cannot send data: %s", snd_strerror(err));
+> +					return err;
+> +				}
+> +		} else {
 
->         static const struct option long_options[] = {
->                 {"help", 0, NULL, 'h'},
->                 {"version", 0, NULL, 'V'},
+Too much indentation.
+
+> +				/* find beginning of SysEx and its end */
+> +				while((unsigned char)data[len] != 0xf0 &&
+> +				      (data + len) < (send_data + send_data_length))
+> +					len++;
+> +
+> +				while((unsigned char)data[len] != 0xf7 &&
+> +				      (data + len) < (send_data + send_data_length))
+> +					len++;
+> +				len++;
+
+It is not necessary to search for both beginning and end.
+
+And the search can be simplified with memchr().
 
 
-Regards
-
-Takashi Sakamoto
+Regards,
+Clemens
