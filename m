@@ -1,57 +1,38 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/2] ALSA: rawmidi: add runtime error state
- for disorder of data transmission
-Date: Sun, 14 Aug 2016 19:36:44 +0900
-Message-ID: <566b5e57-f186-bf9a-0d5e-b171e212efbe@sakamocchi.jp>
-References: <1471091957-14757-1-git-send-email-o-takashi@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id A65CD265964
- for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2016 12:36:47 +0200 (CEST)
-In-Reply-To: <1471091957-14757-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+From: John Keeping <john@metanate.com>
+Subject: [PATCH 0/2] ASoC: Chromebook Pixel 2015 support
+Date: Sun, 14 Aug 2016 12:18:21 +0100
+Message-ID: <20160814111823.1782-1-john@metanate.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ben Zhang <benzh@chromium.org>, Dylan Reid <dgreid@chromium.org>, John Keeping <john@metanate.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 13 2016 21:39, Takashi Sakamoto wrote:
-> Hi,
-> 
-> This patchset is based on an idea addressed in this thread:
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-February/104589.html
-> 
-> For packet-oriented drivers such as USB Audio Device class, message
-> transmission can fail due to data bus issue. In this case, corresponding
-> rawmidi runtime should be closed. Although, current ALSA rawmidi core has
-> no mechanism to help applications/drivers to handle this situation.
-> 
-> This commit adds a helper functions for this aim.
-> 
-> Takashi Sakamoto (2):
->   ALSA: rawmidi: handle error state for broken logical channel
->   ALSA: rawmidi: add a helper to set runtime error
-> 
->  include/sound/rawmidi.h |  3 ++
->  sound/core/rawmidi.c    | 86 ++++++++++++++++++++++++++++++++++++++++++++++---
->  2 files changed, 84 insertions(+), 5 deletions(-)
+These patches add basic support for audio on the Chromebook Pixel 2015.
+I took the machine driver from ChromeOS commit v3.14-10186-g7e7d95df2983
+and other than removing support for wake on voice (which is not
+supported by the mainline rt5677 codec driver), the only differences are
+to cope with API changes since 3.14.
 
-I posted this patchset without enough test. I'll post revised version.
+Only two authors have committed changes to the machine driver in the
+ChromeOS tree and all of the commits are signed off; both authors' SoB
+lines are preserved in the second commit here.
 
-(They're originally written in this March and I forgot they're still in
-a draft stage.)
+The codec driver is sufficiently different that I just added ACPI
+support from scratch using the ChromeOS source as a reference for the
+property names.
 
+John Keeping (2):
+  ASoC: rt5677: Add ACPI support
+  ASoC: Intel: boards: Add bdw-rt5677 machine driver
 
-Regards
+ sound/soc/codecs/rt5677.c           | 109 +++++++++---
+ sound/soc/intel/Kconfig             |  11 ++
+ sound/soc/intel/boards/Makefile     |   2 +
+ sound/soc/intel/boards/bdw-rt5677.c | 341 ++++++++++++++++++++++++++++++++++++
+ sound/soc/intel/common/sst-acpi.c   |   1 +
+ 5 files changed, 443 insertions(+), 21 deletions(-)
+ create mode 100644 sound/soc/intel/boards/bdw-rt5677.c
 
-Takashi Sakamoto
+-- 
+2.9.3.728.g30b24b4.dirty
