@@ -1,88 +1,43 @@
-From: =?UTF-8?Q?Andrej_Krut=C3=A1k?= <dev@andree.sk>
-Subject: Re: [PATCH 09/15] ALSA: line6: Add hwdep interface to
- access the POD control messages
-Date: Sun, 14 Aug 2016 09:59:07 +0200
-Message-ID: <CAFnc+wVSarqT5E529mnshV882OJV8+nui9BJ9amiN66oZ++OwA@mail.gmail.com>
-References: <1470942147-19848-1-git-send-email-dev@andree.sk>
- <1470942147-19848-10-git-send-email-dev@andree.sk>
- <s5h8tw2fkbe.wl-tiwai@suse.de>
- <CAFnc+wWRFjyJmY0=hJDAOZQvZJP46Kp+HqbCZMGRLvsdLN8gVQ@mail.gmail.com>
- <s5hlh02dwj8.wl-tiwai@suse.de>
- <CAFnc+wU7NMg=KTF-z7PewoAn5kK=QX7MZMXpVa_97PikPRgQpw@mail.gmail.com>
- <s5hh9aqdv9z.wl-tiwai@suse.de>
- <CAFnc+wW4ff92jWCmh1XY2qdh4NKcDJFUFyByGtEYeASF7Bqo8g@mail.gmail.com>
- <s5h37m9g3iu.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 103F4265834
- for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2016 09:59:29 +0200 (CEST)
-Received: by mail-wm0-f67.google.com with SMTP id i5so5531288wmg.2
- for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2016 00:59:29 -0700 (PDT)
-In-Reply-To: <s5h37m9g3iu.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Randy Li <ayaka@soulik.info>
+Subject: [PATCH] ASoC: es8328: explict I2C and SPI menu entry
+Date: Sun, 14 Aug 2016 16:33:49 +0800
+Message-ID: <1471163629-11193-1-git-send-email-ayaka@soulik.info>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, john@metanate.com, Randy Li <ayaka@soulik.info>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBBdWcgMTIsIDIwMTYgYXQgMTA6MDEgUE0sIFRha2FzaGkgSXdhaSA8dGl3YWlAc3Vz
-ZS5kZT4gd3JvdGU6Cj4gT24gRnJpLCAxMiBBdWcgMjAxNiAxODo0MzozMCArMDIwMCwKPiBBbmRy
-ZWogS3J1dMOhayB3cm90ZToKPj4KPj4gT24gRnJpLCBBdWcgMTIsIDIwMTYgYXQgMjozMCBQTSwg
-VGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToKPj4gPiBPbiBGcmksIDEyIEF1ZyAy
-MDE2IDE0OjE1OjE2ICswMjAwLAo+PiA+Pgo+PiA+PiA+PiA+IEFsc28sIHRoZSBibG9ja2luZyBy
-ZWFkL3dyaXRlIGNvbnRyb2wgaXNuJ3QgdXN1YWxseSBkb25lIGJ5IGEKPj4gPj4gPj4gPiBzZW1h
-cGhvcmUuICBUaGVuIHlvdSBjYW4gaGFuZGxlIHRoZSBpbnRlcnJ1cHQgdGhlcmUuCj4+ID4+ID4+
-ID4KPj4gPj4gPj4gPgo+PiA+PiA+Pgo+PiA+PiA+PiBJIGFjdHVhbGx5IHdvbmRlciB3aHksIHNl
-bWFwaG9yZXMgc2VlbWVkIHBlcmZlY3QgZm9yIHRoaXMuLi4gRG8geW91Cj4+ID4+ID4+IGhhdmUg
-c29tZSBoaW50cz8KPj4gPj4gPgo+PiA+PiA+IEFzc3VtZSB5b3Ugd2FudCB0byBpbnRlcnJ1cHQg
-dGhlIHVzZXItc3BhY2UgYXBwIHdoaWxlIGl0J3MgYmVpbmcKPj4gPj4gPiBibG9ja2VkIGJ5IHRo
-ZSBzZW1hcGhvcmUuICBXaXRoIHlvdXIgY29kZSwgeW91IGNhbid0Lgo+PiA+PiA+Cj4+ID4+ID4K
-Pj4gPj4KPj4gPj4gWW91IGNhbiAtIGRvd25faW50ZXJydXB0aWJsZSgpIGlzIHRoZXJlIGZvciB0
-aGlzIGV4YWN0IHJlYXNvbi4KPj4gPgo+PiA+IFRoZXJlIGlzIGFub3RoZXIgYmxvY2tpbmcgcGF0
-aDogeW91IGtlZXAgc2VtYXBob3JlIGRvd24gYWZ0ZXIKPj4gPiBsaW5lNl9od2RlcF9yZWFkKCkg
-dW50aWwgbGluZTZfaHdkZXBfcHVzaF9tZXNzYWdlKCkuICBXaGF0IGhhcHBlbnMgaWYKPj4gPiB1
-c2VyLXNwYWNlIGludGVycnVwdHMgZHVyaW5nIHRoYXQsIGFuZCBsaW5lNl9od2RlcF9wdXNoX21l
-c3NhZ2UoKSBpcwo+PiA+IGRlbGF5ZWQgb3Igc3RhbGwgYnkgc29tZSByZWFzb24/Cj4+ID4KPj4K
-Pj4gQWN0dWFsbHksIEkgdGhpbmsgSSBkb24ndCBzZWUgd2hhdCdzIHRoZSAiYW5vdGhlciBwYXRo
-IiBoZXJlLCBjb3VsZAo+PiB5b3UgcGxlYXNlIGVsYWJvcmF0ZSBvbmUgbW9yZSBiaXQ/IEkganVz
-dCB3YW50IHRvIG1ha2Ugc3VyZSB0byBub3QKPj4gcmVpbXBsZW1lbnQgdGhlIHNhbWUgcmFjZSB1
-c2luZyB3YWl0cXVldWUuLi4KPj4KPj4gV2hhdCdzIHRoZSBwb2ludCB0aGVuPyBsaW5lNl9od2Rl
-cF9wdXNoX21lc3NhZ2UoKSBjb3VsZCBnZXQgbm90Cj4+IHNjaGVkdWxlZCBmb3Igc29tZSB3aGls
-ZS4gU28gdW50aWwgaXQgY2FsbHMgdXAoKSwgbGluZTZfaHdkZXBfcmVhZCgpCj4+IHdpbGwgYmxv
-Y2sgb24gZG93bl9pbnRlcnJ1cHRpYmxlKCksIG9yIHVudGlsIHNpZ25hbCAoaW4gd2hpY2ggY2Fz
-ZQo+PiB1c2VyIGdldHMgLUVSRVNUQVJUU1lTKS4gQWZ0ZXIgdXAoKSBpcyBjYWxsZWQsIHRoZXJl
-IGFyZSBkYXRhIGluCj4+IGJ1ZmZlci4uLgo+Cj4gV2VsbCwgd2hhdCBoYXBwZW5zIGlmIHVzZXIg
-YWJvcnRzIGJlZm9yZSB1cCgpIGlzIGNhbGxlZCBpbgo+IGxpbmU2X2h3ZGVwX3B1c2hfbWVzc2Fn
-ZSgpPyAgTm93IHRoZSBkcml2ZXIgY2FsbHMgY2xvc2UsIGFuZCBpdCBmcmVlcwo+IHRoZSBtZW1v
-cnkuICBXaGF0IGlmLCBhdCB0aGUgdmVyeSBzYW1lIHRpbWUsCj4gbGluZTZfaHdkZXBfcHVzaF9t
-ZXNzYWdlKCkgaXMgdHJpZ2dlcmVkPwo+CgpSaWdodCwgdGhlICdhY3RpdmUnIGZsYWcgaXMgY2xl
-YXJ5IG5vdCBhIGdvb2QgbG9jay4uLgoKCj4+IElmIGxpbmU2X2h3ZGVwX3JlYWQoKSByZXR1cm5z
-IGFmdGVyIGludGVycnVwdCwgbm8gcHJvYmxlbSAtCj4+IHRoZSBidWZmZXIgd2lsbCBqdXN0IGNv
-bnRpbnVlIHRvIGJlIGZpbGxlZCBhbmQgc2VtYXBob3JlIHdpbGwgYmUKPj4gdXAoKSdkIHdoaWxl
-IHRoZXJlJ3MgZnJlZSBidWZmZXIgc3BhY2UuIE9yIHVudGlsIHRoZSBkZXZpY2UgaXMKPj4gY2xv
-c2VkLi4uCj4KPiBPciwgd2hhdCBpZiBsaW5lNl9od2RlcF9wdXNoX21lc3NhZ2UoKSBpcyB0cmln
-Z2VyZWQgdHdpY2Ugb3IgbW9yZQo+IGJlZm9yZSBsaW5lNl9od2RlcF9yZWFkKCkgaXMgY2FsbGVk
-PyAgSXQgd2lsbCBjYWxsIHVwKCkgdHdpY2Ugb3IKPiBtb3JlLiAgVGhlbiBhdCB0aGlzIHBvaW50
-LCB5b3UgY2FsbCBsaW5lNl9od2RlcF9yZWFkKCkgY29uY3VycmVudGx5Cj4gZnJvbSB0d28gdGhy
-ZWFkcy4uLiAgSG93IGRvIHRoZXkgcHJvdGVjdCBhZ2FpbnN0IGVhY2ggb3RoZXI/Cj4KClRoZXJl
-J3MgcmVhZF9sb2NrLCB1bmZvcnR1bmF0ZWx5IGFmdGVyICJmaXhpbmciIHRoZSBzbGVlcC1pbi1h
-dG9taWMgaW4KbGluZTZfaHdkZXBfcmVhZCgpLCBpdCdzIGJyb2tlbiBub3cuLi4KCgo+PiBJZiBJ
-IGRvIHRoZSBzYW1lIHZpYSB3YWl0cXVldWUsIEkgd2lsbCBoYXZlIHRoZSBzYW1lIHByb2JsZW1z
-LCBubz8KPj4gTWF5YmUgaWYgeW91IGNvdWxkIHBvc3QgdGhlIHN0ZXBzIHdoZXJlIHlvdSBzZWUg
-dGhlIHJhY2UuLi4KPgo+IEluIHlvdXIgY29kZSwgaXQncyBub3QgY2xlYXIgdGhhdCB5b3UncmUg
-cHJvdGVjdGluZyBmcm9tIHdoYXQuCj4gQSBzaW1wbGUgbG9jayt3YWl0IGxvb3Agc2hvd3MgaXQg
-bW9yZSBlYXNpbHksIGF0IGxlYXN0Lgo+CgpPa2F5LCBJJ2xsIHRyeSB0byByZXRoaW5rL3Jld29y
-ayBpdCwgc2ltcGxpZnkgdGhlIGNvZGUsIGFuZCBnZXQgYmFjay4KClRoYW5rcyEKCgotLSAKQW5k
-cmVqCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The es8328 support both I2C and SPI as control interface, and it is
+possible that the interface is determined by dts in simple sound
+card situation. We would better allow them be built at the same time.
+
+Signed-off-by: Randy Li <ayaka@soulik.info>
+---
+ sound/soc/codecs/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index f3fb98f..bcf9b1d 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -489,14 +489,14 @@ config SND_SOC_HDMI_CODEC
+ 	select HDMI
+ 
+ config SND_SOC_ES8328
+-	tristate "Everest Semi ES8328 CODEC"
++	tristate
+ 
+ config SND_SOC_ES8328_I2C
+-	tristate
++	tristate "Everest Semi ES8328 CODEC  (I2C)"
+ 	select SND_SOC_ES8328
+ 
+ config SND_SOC_ES8328_SPI
+-	tristate
++	tristate "Everest Semi ES8328 CODEC  (SPI)"
+ 	select SND_SOC_ES8328
+ 
+ config SND_SOC_GTM601
+-- 
+2.7.4
