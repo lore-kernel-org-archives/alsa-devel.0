@@ -1,17 +1,15 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: sound: deadlock
-	snd_rawmidi_kernel_open/check_and_subscribe_port
-Date: Sat, 13 Aug 2016 23:43:58 +0200
-Message-ID: <CACT4Y+Ykrc8kh9D1kqtvTZOi8agBXNUW3uaW+Kfhyu5vuqat2g@mail.gmail.com>
+From: David Henningsson <diwic@ubuntu.com>
+Subject: [PATCH] mixer: Fix rounding mode documentation
+Date: Sun, 14 Aug 2016 09:31:25 +0200
+Message-ID: <1471159885-3218-1-git-send-email-diwic@ubuntu.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f47.google.com (mail-wm0-f47.google.com [74.125.82.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AC99266528
- for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2016 23:44:19 +0200 (CEST)
-Received: by mail-wm0-f47.google.com with SMTP id o80so37661379wme.1
- for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2016 14:44:19 -0700 (PDT)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5627261585
+ for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2016 09:31:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,205 +19,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
-Cc: Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Alexander Potapenko <glider@google.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: David Henningsson <diwic@ubuntu.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+The documentation specifies three different rounding modes, but this
+is wrong, because they all end up calling snd_tlv_convert_from_dB,
+which only has two rounding modes.
 
-While running syzkaller fuzzer on
-f31494bd05b06b0cdb4da6aebe92eaafab970df6 (Aug 12), I've got the
-following deadlock report:
+Signed-off-by: David Henningsson <diwic@ubuntu.com>
+---
+ src/mixer/simple.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-======================================================
-[ INFO: possible circular locking dependency detected ]
-4.8.0-rc1+ #11 Not tainted
--------------------------------------------------------
-syz-executor/7154 is trying to acquire lock:
- (register_mutex#5){+.+.+.}, at: [<ffffffff84fd6d4b>]
-snd_rawmidi_kernel_open+0x4b/0x260 sound/core/rawmidi.c:341
-
-but task is already holding lock:
- (&grp->list_mutex){++++.+}, at: [<ffffffff850138bb>]
-check_and_subscribe_port+0x5b/0x5c0 sound/core/seq/seq_ports.c:495
-
-which lock already depends on the new lock.
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&grp->list_mutex){++++.+}:
-       [<ffffffff8147a3a8>] lock_acquire+0x208/0x430
-kernel/locking/lockdep.c:3746
-       [<ffffffff863f6199>] down_read+0x49/0xc0 kernel/locking/rwsem.c:22
-       [<     inline     >] deliver_to_subscribers
-sound/core/seq/seq_clientmgr.c:681
-       [<ffffffff85005c5e>] snd_seq_deliver_event+0x35e/0x890
-sound/core/seq/seq_clientmgr.c:822
-       [<ffffffff85006e96>] snd_seq_kernel_client_dispatch+0x126/0x170
-sound/core/seq/seq_clientmgr.c:2418
-       [<ffffffff85012c52>] snd_seq_system_broadcast+0xb2/0xf0
-sound/core/seq/seq_system.c:101
-       [<ffffffff84fff70a>] snd_seq_create_kernel_client+0x24a/0x330
-sound/core/seq/seq_clientmgr.c:2297
-       [<     inline     >] snd_virmidi_dev_attach_seq
-sound/core/seq/seq_virmidi.c:383
-       [<ffffffff8502d29f>] snd_virmidi_dev_register+0x29f/0x750
-sound/core/seq/seq_virmidi.c:450
-       [<ffffffff84fd208c>] snd_rawmidi_dev_register+0x30c/0xd40
-sound/core/rawmidi.c:1645
-       [<ffffffff84f816d3>] __snd_device_register.part.0+0x63/0xc0
-sound/core/device.c:164
-       [<     inline     >] __snd_device_register sound/core/device.c:162
-       [<ffffffff84f8235d>] snd_device_register_all+0xad/0x110
-sound/core/device.c:212
-       [<ffffffff84f7546f>] snd_card_register+0xef/0x6c0 sound/core/init.c:749
-       [<ffffffff85040b7f>] snd_virmidi_probe+0x3ef/0x590
-sound/drivers/virmidi.c:123
-       [<ffffffff833ebf7b>] platform_drv_probe+0x8b/0x170
-drivers/base/platform.c:564
-       [<     inline     >] really_probe drivers/base/dd.c:377
-       [<ffffffff833e5993>] driver_probe_device+0x563/0xcc0
-drivers/base/dd.c:499
-       [<ffffffff833e653d>] __device_attach_driver+0x21d/0x2e0
-drivers/base/dd.c:594
-       [<ffffffff833df38f>] bus_for_each_drv+0x13f/0x1d0 drivers/base/bus.c:463
-       [<ffffffff833e51ef>] __device_attach+0x1ef/0x300 drivers/base/dd.c:651
-       [<ffffffff833e669a>] device_initial_probe+0x1a/0x20 drivers/base/dd.c:698
-       [<ffffffff833e2999>] bus_probe_device+0x1e9/0x290 drivers/base/bus.c:557
-       [<ffffffff833dc459>] device_add+0xc49/0x14c0 drivers/base/core.c:1120
-       [<ffffffff833eb629>] platform_device_add+0x2f9/0x7b0
-drivers/base/platform.c:403
-       [<ffffffff833ed3b2>] platform_device_register_full+0x392/0x4b0
-drivers/base/platform.c:536
-       [<     inline     >] platform_device_register_resndata
-./include/linux/platform_device.h:111
-       [<     inline     >] platform_device_register_simple
-./include/linux/platform_device.h:140
-       [<ffffffff8870fabd>] alsa_card_virmidi_init+0x104/0x1da
-sound/drivers/virmidi.c:172
-       [<ffffffff81002330>] do_one_initcall+0xa0/0x2b0 init/main.c:778
-       [<     inline     >] do_initcall_level init/main.c:843
-       [<     inline     >] do_initcalls init/main.c:851
-       [<     inline     >] do_basic_setup init/main.c:869
-       [<ffffffff88604d11>] kernel_init_freeable+0x47b/0x534 init/main.c:1016
-       [<ffffffff863e2f53>] kernel_init+0x13/0x180 init/main.c:942
-       [<ffffffff863fbdcf>] ret_from_fork+0x1f/0x40
-arch/x86/entry/entry_64.S:393
-
--> #0 (register_mutex#5){+.+.+.}:
-       [<     inline     >] check_prev_add kernel/locking/lockdep.c:1829
-       [<     inline     >] check_prevs_add kernel/locking/lockdep.c:1939
-       [<     inline     >] validate_chain kernel/locking/lockdep.c:2266
-       [<ffffffff814791f4>] __lock_acquire+0x4d44/0x4d80
-kernel/locking/lockdep.c:3335
-       [<ffffffff8147a3a8>] lock_acquire+0x208/0x430
-kernel/locking/lockdep.c:3746
-       [<     inline     >] __mutex_lock_common kernel/locking/mutex.c:521
-       [<ffffffff863f0ef1>] mutex_lock_nested+0xb1/0xa20
-kernel/locking/mutex.c:621
-       [<ffffffff84fd6d4b>] snd_rawmidi_kernel_open+0x4b/0x260
-sound/core/rawmidi.c:341
-       [<ffffffff8502e7c7>] midisynth_subscribe+0xf7/0x350
-sound/core/seq/seq_midi.c:188
-       [<     inline     >] subscribe_port sound/core/seq/seq_ports.c:427
-       [<ffffffff85013cc7>] check_and_subscribe_port+0x467/0x5c0
-sound/core/seq/seq_ports.c:510
-       [<ffffffff85015da9>] snd_seq_port_connect+0x2c9/0x500
-sound/core/seq/seq_ports.c:579
-       [<ffffffff850079b8>] snd_seq_ioctl_subscribe_port+0x1d8/0x2b0
-sound/core/seq/seq_clientmgr.c:1480
-       [<ffffffff84ffe9e4>] snd_seq_do_ioctl+0x184/0x1e0
-sound/core/seq/seq_clientmgr.c:2225
-       [<ffffffff84ffeae8>] snd_seq_kernel_client_ctl+0xa8/0x110
-sound/core/seq/seq_clientmgr.c:2440
-       [<ffffffff85027664>] snd_seq_oss_midi_open+0x3b4/0x610
-sound/core/seq/oss/seq_oss_midi.c:375
-       [<ffffffff85023d67>] snd_seq_oss_synth_setup_midi+0x107/0x4c0
-sound/core/seq/oss/seq_oss_synth.c:281
-       [<ffffffff8501b0a8>] snd_seq_oss_open+0x748/0x8d0
-sound/core/seq/oss/seq_oss_init.c:274
-       [<ffffffff85019d8a>] odev_open+0x6a/0x90 sound/core/seq/oss/seq_oss.c:138
-       [<ffffffff84f7040f>] soundcore_open+0x30f/0x640 sound/sound_core.c:639
-       [<ffffffff818069ea>] chrdev_open+0x22a/0x4c0 fs/char_dev.c:392
-       [<ffffffff817f146f>] do_dentry_open+0x69f/0xca0 fs/open.c:736
-       [<ffffffff817f4aa5>] vfs_open+0x105/0x220 fs/open.c:849
-       [<     inline     >] do_last fs/namei.c:3374
-       [<ffffffff8182c35d>] path_openat+0x1efd/0x2f60 fs/namei.c:3497
-       [<ffffffff81830b6e>] do_filp_open+0x18e/0x250 fs/namei.c:3532
-       [<ffffffff817f53c1>] do_sys_open+0x201/0x420 fs/open.c:1036
-       [<     inline     >] SYSC_open fs/open.c:1054
-       [<ffffffff817f560d>] SyS_open+0x2d/0x40 fs/open.c:1049
-       [<ffffffff863fbb80>] entry_SYSCALL_64_fastpath+0x23/0xc1
-arch/x86/entry/entry_64.S:207
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&grp->list_mutex);
-                               lock(register_mutex#5);
-                               lock(&grp->list_mutex);
-  lock(register_mutex#5);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor/7154:
- #0:  (register_mutex#4){+.+.+.}, at: [<ffffffff85019d7f>]
-odev_open+0x5f/0x90 sound/core/seq/oss/seq_oss.c:137
- #1:  (&grp->list_mutex){++++.+}, at: [<ffffffff850138bb>]
-check_and_subscribe_port+0x5b/0x5c0 sound/core/seq/seq_ports.c:495
-
-stack backtrace:
-CPU: 0 PID: 7154 Comm: syz-executor Not tainted 4.8.0-rc1+ #11
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
- ffffffff878b7680 ffff880038b670f0 ffffffff82a5f719 ffffffff00000000
- fffffbfff0f16ed0 ffffffff8901a0d0 ffffffff8901a0d0 ffffffff890191a0
- ffff88003da2cf08 ffff88003da2c6c0 ffff880038b67140 ffffffff814708a8
-Call Trace:
- [<     inline     >] __dump_stack lib/dump_stack.c:15
- [<ffffffff82a5f719>] dump_stack+0x12e/0x185 lib/dump_stack.c:51
- [<ffffffff814708a8>] print_circular_bug+0x288/0x340
-kernel/locking/lockdep.c:1202
- [<     inline     >] check_prev_add kernel/locking/lockdep.c:1829
- [<     inline     >] check_prevs_add kernel/locking/lockdep.c:1939
- [<     inline     >] validate_chain kernel/locking/lockdep.c:2266
- [<ffffffff814791f4>] __lock_acquire+0x4d44/0x4d80 kernel/locking/lockdep.c:3335
- [<ffffffff8147a3a8>] lock_acquire+0x208/0x430 kernel/locking/lockdep.c:3746
- [<     inline     >] __mutex_lock_common kernel/locking/mutex.c:521
- [<ffffffff863f0ef1>] mutex_lock_nested+0xb1/0xa20 kernel/locking/mutex.c:621
- [<ffffffff84fd6d4b>] snd_rawmidi_kernel_open+0x4b/0x260
-sound/core/rawmidi.c:341
- [<ffffffff8502e7c7>] midisynth_subscribe+0xf7/0x350
-sound/core/seq/seq_midi.c:188
- [<     inline     >] subscribe_port sound/core/seq/seq_ports.c:427
- [<ffffffff85013cc7>] check_and_subscribe_port+0x467/0x5c0
-sound/core/seq/seq_ports.c:510
- [<ffffffff85015da9>] snd_seq_port_connect+0x2c9/0x500
-sound/core/seq/seq_ports.c:579
- [<ffffffff850079b8>] snd_seq_ioctl_subscribe_port+0x1d8/0x2b0
-sound/core/seq/seq_clientmgr.c:1480
- [<ffffffff84ffe9e4>] snd_seq_do_ioctl+0x184/0x1e0
-sound/core/seq/seq_clientmgr.c:2225
- [<ffffffff84ffeae8>] snd_seq_kernel_client_ctl+0xa8/0x110
-sound/core/seq/seq_clientmgr.c:2440
- [<ffffffff85027664>] snd_seq_oss_midi_open+0x3b4/0x610
-sound/core/seq/oss/seq_oss_midi.c:375
- [<ffffffff85023d67>] snd_seq_oss_synth_setup_midi+0x107/0x4c0
-sound/core/seq/oss/seq_oss_synth.c:281
- [<ffffffff8501b0a8>] snd_seq_oss_open+0x748/0x8d0
-sound/core/seq/oss/seq_oss_init.c:274
- [<ffffffff85019d8a>] odev_open+0x6a/0x90 sound/core/seq/oss/seq_oss.c:138
- [<ffffffff84f7040f>] soundcore_open+0x30f/0x640 sound/sound_core.c:639
- [<ffffffff818069ea>] chrdev_open+0x22a/0x4c0 fs/char_dev.c:392
- [<ffffffff817f146f>] do_dentry_open+0x69f/0xca0 fs/open.c:736
- [<ffffffff817f4aa5>] vfs_open+0x105/0x220 fs/open.c:849
- [<     inline     >] do_last fs/namei.c:3374
- [<ffffffff8182c35d>] path_openat+0x1efd/0x2f60 fs/namei.c:3497
- [<ffffffff81830b6e>] do_filp_open+0x18e/0x250 fs/namei.c:3532
- [<ffffffff817f53c1>] do_sys_open+0x201/0x420 fs/open.c:1036
- [<     inline     >] SYSC_open fs/open.c:1054
- [<ffffffff817f560d>] SyS_open+0x2d/0x40 fs/open.c:1049
- [<ffffffff863fbb80>] entry_SYSCALL_64_fastpath+0x23/0xc1
-arch/x86/entry/entry_64.S:207
+diff --git a/src/mixer/simple.c b/src/mixer/simple.c
+index fd9ba93..82476d5 100644
+--- a/src/mixer/simple.c
++++ b/src/mixer/simple.c
+@@ -376,7 +376,7 @@ int snd_mixer_selem_ask_playback_vol_dB(snd_mixer_elem_t *elem, long value, long
+  * \brief Return corresponding integer playback volume for given dB value for a mixer simple element
+  * \param elem Mixer simple element handle
+  * \param value value to be converted to dB range
+- * \param dir select direction (-1 = accurate or first bellow, 0 = accurate, 1 = accurate or first above)
++ * \param dir rounding mode - rounds up if dir > 0, otherwise rounds down
+  * \param dBvalue pointer to returned dB value
+  * \return 0 on success otherwise a negative error code
+  */
+@@ -454,7 +454,7 @@ int snd_mixer_selem_set_playback_volume(snd_mixer_elem_t *elem, snd_mixer_selem_
+  * \param elem Mixer simple element handle
+  * \param channel mixer simple element channel identifier
+  * \param value control value in dB * 100
+- * \param dir select direction (-1 = accurate or first bellow, 0 = accurate, 1 = accurate or first above)
++ * \param dir rounding mode - rounds up if dir > 0, otherwise rounds down
+  * \return 0 on success otherwise a negative error code
+  */
+ int snd_mixer_selem_set_playback_dB(snd_mixer_elem_t *elem, snd_mixer_selem_channel_id_t channel, long value, int dir)
+@@ -491,7 +491,7 @@ int snd_mixer_selem_set_playback_volume_all(snd_mixer_elem_t *elem, long value)
+  * \brief Set value in dB of playback volume control for all channels of a mixer simple element
+  * \param elem Mixer simple element handle
+  * \param value control value in dB * 100
+- * \param dir select direction (-1 = accurate or first bellow, 0 = accurate, 1 = accurate or first above)
++ * \param dir rounding mode - rounds up if dir > 0, otherwise rounds down
+  * \return 0 on success otherwise a negative error code
+  */
+ int snd_mixer_selem_set_playback_dB_all(snd_mixer_elem_t *elem, long value, int dir)
+@@ -706,7 +706,7 @@ int snd_mixer_selem_ask_capture_vol_dB(snd_mixer_elem_t *elem, long value, long
+  * \param elem Mixer simple element handle
+  * \param dBvalue dB value to be converted to integer range
+  * \param value pointer to returned integer value
+- * \param dir select direction (-1 = accurate or first bellow, 0 = accurate, 1 = accurate or first above)
++ * \param dir rounding mode - rounds up if dir > 0, otherwise rounds down
+  * \return 0 on success otherwise a negative error code
+  */
+ int snd_mixer_selem_ask_capture_dB_vol(snd_mixer_elem_t *elem, long dBvalue, int dir, long *value)
+@@ -777,7 +777,7 @@ int snd_mixer_selem_set_capture_volume(snd_mixer_elem_t *elem, snd_mixer_selem_c
+  * \param elem Mixer simple element handle
+  * \param channel mixer simple element channel identifier
+  * \param value control value in dB * 100
+- * \param dir select direction (-1 = accurate or first bellow, 0 = accurate, 1 = accurate or first above)
++ * \param dir rounding mode - rounds up if dir > 0, otherwise rounds down
+  * \return 0 on success otherwise a negative error code
+  */
+ int snd_mixer_selem_set_capture_dB(snd_mixer_elem_t *elem, snd_mixer_selem_channel_id_t channel, long value, int dir)
+@@ -814,7 +814,7 @@ int snd_mixer_selem_set_capture_volume_all(snd_mixer_elem_t *elem, long value)
+  * \brief Set value in dB of capture volume control for all channels of a mixer simple element
+  * \param elem Mixer simple element handle
+  * \param value control value in dB * 100
+- * \param dir select direction (-1 = accurate or first bellow, 0 = accurate, 1 = accurate or first above)
++ * \param dir rounding mode - rounds up if dir > 0, otherwise rounds down
+  * \return 0 on success otherwise a negative error code
+  */
+ int snd_mixer_selem_set_capture_dB_all(snd_mixer_elem_t *elem, long value, int dir)
+-- 
+1.9.1
