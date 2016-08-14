@@ -1,21 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v2 0/2] amidi: fix handling of ignored
-	messages
-Date: Sun, 14 Aug 2016 19:19:46 +0900
-Message-ID: <37ea9554-6954-5e5c-2843-7c8c4d884131@sakamocchi.jp>
-References: <ac3f1f9a-5201-7a98-e659-fd9bbcf41ab7@ladisch.de>
- <bde1ef45-8255-5ca7-01fc-5dbf0b8f3684@ladisch.de>
- <b630d5ab-da0d-d92f-010b-b8c8e4698be7@sakamocchi.jp>
- <7982b196-edae-3330-86a8-83338e182f3e@sakamocchi.jp>
- <7105f8ec-be96-04af-45b0-e86326e1cf62@ladisch.de>
+Subject: Re: [PATCH 0/2] ALSA: rawmidi: add runtime error state
+ for disorder of data transmission
+Date: Sun, 14 Aug 2016 19:36:44 +0900
+Message-ID: <566b5e57-f186-bf9a-0d5e-b171e212efbe@sakamocchi.jp>
+References: <1471091957-14757-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 6FDE0265964
- for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2016 12:19:52 +0200 (CEST)
-In-Reply-To: <7105f8ec-be96-04af-45b0-e86326e1cf62@ladisch.de>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id A65CD265964
+ for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2016 12:36:47 +0200 (CEST)
+In-Reply-To: <1471091957-14757-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,59 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>
+To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 13 2016 23:40, Clemens Ladisch wrote:
-> Clemens Ladisch (2):
->       amidi: ignore not only Active Sensing but also Clock bytes
->       amidi: fix timeout handling
+On Aug 13 2016 21:39, Takashi Sakamoto wrote:
+> Hi,
 > 
-> v2: fix short_options
+> This patchset is based on an idea addressed in this thread:
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-February/104589.html
 > 
->  amidi/amidi.1 |   19 ++++++++---
->  amidi/amidi.c |   84 ++++++++++++++++++++++++++++++++++++++------------
->  2 files changed, 79 insertions(+), 24 deletions(-)
+> For packet-oriented drivers such as USB Audio Device class, message
+> transmission can fail due to data bus issue. In this case, corresponding
+> rawmidi runtime should be closed. Although, current ALSA rawmidi core has
+> no mechanism to help applications/drivers to handle this situation.
+> 
+> This commit adds a helper functions for this aim.
+> 
+> Takashi Sakamoto (2):
+>   ALSA: rawmidi: handle error state for broken logical channel
+>   ALSA: rawmidi: add a helper to set runtime error
+> 
+>  include/sound/rawmidi.h |  3 ++
+>  sound/core/rawmidi.c    | 86 ++++++++++++++++++++++++++++++++++++++++++++++---
+>  2 files changed, 84 insertions(+), 5 deletions(-)
 
-Reviewd-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Tested-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+I posted this patchset without enough test. I'll post revised version.
 
-I tested these patches with loopbacked MIDI interface and this program.
-Then, This command finishes as expected.
-$ ./amidi -p hw:1,0,0 -d -t 5
-
--------- 8< --------
-
-#include <stdio.h>
-#include <stdlib.h>
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-
-#include <stdint.h>
-#include <unistd.h>
-
-int main(void)
-{
-        int fd;
-        uint8_t buf = 0xfe;
-
-        fd = open("/dev/snd/midiC1D0", O_WRONLY);
-        if (fd < 0) {
-                return EXIT_FAILURE;
-        }
-
-        while (write(fd, &buf, sizeof(buf)) > 0)
-                ;
-
-        close(fd);
-
-        return EXIT_FAILURE;
-}
-
--------- 8< --------
+(They're originally written in this March and I forgot they're still in
+a draft stage.)
 
 
 Regards
