@@ -1,24 +1,21 @@
 From: "Felipe F. Tonello" <eu@felipetonello.com>
-Subject: [PATCH v4 2/2] amidi: use GNU getopt_long() proper
-	argument names
-Date: Mon, 15 Aug 2016 17:33:05 +0100
-Message-ID: <20160815163305.13301-3-eu@felipetonello.com>
-References: <20160815163305.13301-1-eu@felipetonello.com>
+Subject: [PATCH v5 0/2] amidi delay option
+Date: Mon, 15 Aug 2016 17:37:32 +0100
+Message-ID: <20160815163734.17658-1-eu@felipetonello.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 8EDE42666B0
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 18:33:10 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id q128so11977131wma.1
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 09:33:10 -0700 (PDT)
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id A800B266BF4
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 18:37:36 +0200 (CEST)
+Received: by mail-wm0-f65.google.com with SMTP id q128so11997173wma.1
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 09:37:36 -0700 (PDT)
 Received: from localhost.localdomain ([81.145.202.106])
- by smtp.gmail.com with ESMTPSA id yz6sm22299547wjb.35.2016.08.15.09.33.08
+ by smtp.gmail.com with ESMTPSA id b123sm17297045wmg.17.2016.08.15.09.37.35
  for <alsa-devel@alsa-project.org>
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 15 Aug 2016 09:33:08 -0700 (PDT)
-In-Reply-To: <20160815163305.13301-1-eu@felipetonello.com>
+ Mon, 15 Aug 2016 09:37:35 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,47 +28,30 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This has no affect besides more clarity to the code.
+Small improvement to amidi, adding useful functionality.
 
-Signed-off-by: Felipe F. Tonello <eu@felipetonello.com>
----
- amidi/amidi.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+changes from v4:
+ * simplified code
 
-diff --git a/amidi/amidi.c b/amidi/amidi.c
-index 8dc3cb492651..e1a302cdc909 100644
---- a/amidi/amidi.c
-+++ b/amidi/amidi.c
-@@ -410,18 +410,18 @@ int main(int argc, char *argv[])
- {
- 	static const char short_options[] = "hVlLp:s:r:S::dt:aD:";
- 	static const struct option long_options[] = {
--		{"help", 0, NULL, 'h'},
--		{"version", 0, NULL, 'V'},
--		{"list-devices", 0, NULL, 'l'},
--		{"list-rawmidis", 0, NULL, 'L'},
--		{"port", 1, NULL, 'p'},
--		{"send", 1, NULL, 's'},
--		{"receive", 1, NULL, 'r'},
--		{"send-hex", 2, NULL, 'S'},
--		{"dump", 0, NULL, 'd'},
--		{"timeout", 1, NULL, 't'},
--		{"active-sensing", 0, NULL, 'a'},
--		{"delay", 1, NULL, 'D'},
-+		{"help", no_argument, NULL, 'h'},
-+		{"version", no_argument, NULL, 'V'},
-+		{"list-devices", no_argument, NULL, 'l'},
-+		{"list-rawmidis", no_argument, NULL, 'L'},
-+		{"port", required_argument, NULL, 'p'},
-+		{"send", required_argument, NULL, 's'},
-+		{"receive", required_argument, NULL, 'r'},
-+		{"send-hex", optional_argument, NULL, 'S'},
-+		{"dump", no_argument, NULL, 'd'},
-+		{"timeout", required_argument, NULL, 't'},
-+		{"active-sensing", no_argument, NULL, 'a'},
-+		{"delay", required_argument, NULL, 'D'},
- 		{ }
- 	};
- 	int c, err, ok = 0;
+changes from v3:
+ * fixed a bug if memchr() returns NULL
+
+changes from v2:
+ * only check of end of sysex (0xf7)
+ * use memchr() instead of direct loop approach
+ * fixed commit message
+
+changes from v1:
+ * remove delay in between any MIDI message, only SysEx
+ * added patch to use getopt_long() arguments
+
+Felipe F. Tonello (2):
+  amidi: add delay option
+  amidi: use GNU getopt_long() proper argument names
+
+ amidi/amidi.1 | 14 ++++++++++++++
+ amidi/amidi.c | 61 +++++++++++++++++++++++++++++++++++++++++++----------------
+ 2 files changed, 59 insertions(+), 16 deletions(-)
+
 -- 
 2.9.3
