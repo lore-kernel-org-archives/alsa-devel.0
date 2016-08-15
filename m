@@ -1,41 +1,62 @@
-From: wens Tsai <wens213@gmail.com>
-Subject: ASoC: sun4i-codec: playback stall and I/O error with DAPM paths all disabled
-Date: Mon, 15 Aug 2016 17:43:55 +0800
-Message-ID: <CAGb2v66X2BhEM4X+zQHUFB-wpHuBQ4xc8ztfYFuKADnY0b-gaQ@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Bug in 3.10 alsa routing?
+Date: Mon, 15 Aug 2016 11:51:39 +0200
+Message-ID: <8b60301c-eb4c-a172-8069-d4760089aac6@metafoo.de>
+References: <CAES_P+9SAvzrquMHm1kVsK7Dm__R_2LRmAohV7LmQcJCZyZgog@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Code Kipper <codekipper@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 697F2265D81
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 11:51:42 +0200 (CEST)
+In-Reply-To: <CAES_P+9SAvzrquMHm1kVsK7Dm__R_2LRmAohV7LmQcJCZyZgog@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: noman pouigt <variksla@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi everyone,
+On 08/13/2016 08:39 PM, noman pouigt wrote:
+> Hello folks,
+> 
+> I am working on enabling a new alsa codec driver and
+> I am stuck with this below routing problem.
+> 
+> SND_SOC_DAPM_AIF_OUT("AIF1TX1",)
+> 
+>         { "AIF3RX1", NULL, "AIF3 Playback" },
+>         { "AIF1TX1 Input 1", NULL, "AIF3RX1" },
+>         { "AIF1TX1", AIF1TX1, "AIF1TX1 Input 1" },
+>         { "AIF1TX1", AIF1TX2, "AIF1TX1 Input 1" },
+>         { "AIF1 Capture", NULL, "AIF1TX1" },
+> 
+> AIF3 Playback and AIF1 Capture is stream name of AIF3
+> and AIF1 dai respectively.
+> 
+> After setting the paths using mixer command and triggering
+> AIF3 playback dai, I see that it is not powering AIF3 Playback widget.
+> 
+> After debugging I found the problem to be that ALSA core searches
+> for physically connected or active widget path before it
+> can power on the widget. So I think the codec developer wanted
+> me start the AIF1 capturing to turn on the whole path. However in our
+> system we just want to connect AIF3RX1 to AIF1TX1.
 
-In the sun4i-codec driver, we control the DAC digital enable bits with a
-supply widget, which in turn supplies the DAC source widgets. DAPM will
-disable the supply if there are no usable playback paths. And it just so
-happens that the default value for various playback switches is the off
-setting.
+Hi,
 
-Any user getting codec support for the first time has to enable a proper
-playback path before getting sound out of the hardware. This is expected.
+DAPM will power up a path if there is a connection between an active sink
+and a active source. The playback widget is a source, the capture widget is
+a sink. So if both of them are active you should see them power up. If only
+one of them is active the system will stay powered down.
 
-What is unexpected is any attempt to play anything under this state makes
-the playback software (in my case mpg321) stall, and later report an I/O
-error. My guess is that the DAC is still disabled by DAPM, so it doesn't
-send any DRQs, and thus the DMA engine is not consuming any data from
-userspace.
+Maybe this presentation is also helpful:
+http://events.linuxfoundation.org/sites/events/files/slides/dapm.pdf
 
-I think we should just enable the digital bits of the DAC/ADC all the
-time. Or maybe transfer and then discard data if the DAC is off. Not
-sure if this is doable though. I expect playback software to work, and
-not block, regardless of the hardware status.
-
-Any thoughts on this? sun4i-codec seems to be one of the rarer kinds of
-hardware where the DAC is directly tied to the system bus, without an I2S
-interface in between. And I don't see any DAI drivers using DAPM.
-
-
-Regards
-ChenYu
+- Lars
