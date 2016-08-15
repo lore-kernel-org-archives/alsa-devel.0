@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "AsoC: Intel: Add quirks for MinnowBoard MAX"
-	to the asoc tree
-Date: Mon, 15 Aug 2016 15:15:39 +0100
-Message-ID: <E1bZIfz-0007HV-Df@debutante>
-References: <1471037280-17433-16-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: add IN3 map" to
+	the asoc tree
+Date: Mon, 15 Aug 2016 15:15:45 +0100
+Message-ID: <E1bZIg5-0007JE-C3@debutante>
+References: <1471037280-17433-12-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D1057267860
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:15:45 +0200 (CEST)
-In-Reply-To: <1471037280-17433-16-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F16F226786B
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:15:52 +0200 (CEST)
+In-Reply-To: <1471037280-17433-12-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, irina.tirdea@intel.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, irina.tirdea@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   AsoC: Intel: Add quirks for MinnowBoard MAX
+   ASoC: Intel: bytcr_rt5640: add IN3 map
 
 has been applied to the asoc tree at
 
@@ -52,43 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From 0565e773c272038dc917dde9ed3fb53f72692685 Mon Sep 17 00:00:00 2001
-From: Irina Tirdea <irina.tirdea@intel.com>
-Date: Fri, 12 Aug 2016 16:27:58 -0500
-Subject: [PATCH] AsoC: Intel: Add quirks for MinnowBoard MAX
+>From 59e8b6520c6e2e867b35bc402d9a3f28aef3b2bc Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 12 Aug 2016 16:27:54 -0500
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: add IN3 map
 
-I2S MCLK has been routed to LSE connector on the MinnowBoard
-starting with HW version 3. Older versions of the board do
-not have MCLK wired.
+Some platforms have the analog mic connected to IN3,
+add route accordingly
 
-Add dmi quirk to disable MCLK for MinnowBoard MAX (v2).
-
-Signed-off-by: Irina Tirdea <irina.tirdea@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 11e11c6caa89..230fc2333434 100644
+index c4a3c5778b38..9b9d380d1cbb 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -330,6 +330,15 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 		.driver_data = (unsigned long *)(BYT_RT5640_IN1_MAP |
- 						 BYT_RT5640_MCLK_EN),
- 	},
-+	{
-+		.callback = byt_rt5640_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Circuitco"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Minnowboard Max B3 PLATFORM"),
-+		},
-+		.driver_data = (unsigned long *)(BYT_RT5640_DMIC1_MAP |
-+						 BYT_RT5640_DMIC_EN),
-+	},
- 	{}
+@@ -39,6 +39,7 @@ enum {
+ 	BYT_RT5640_DMIC1_MAP,
+ 	BYT_RT5640_DMIC2_MAP,
+ 	BYT_RT5640_IN1_MAP,
++	BYT_RT5640_IN3_MAP,
  };
  
+ #define BYT_RT5640_MAP(quirk)	((quirk) & 0xff)
+@@ -79,6 +80,11 @@ static const struct snd_soc_dapm_route byt_rt5640_intmic_in1_map[] = {
+ 	{"IN1P", NULL, "Internal Mic"},
+ };
+ 
++static const struct snd_soc_dapm_route byt_rt5640_intmic_in3_map[] = {
++	{"Internal Mic", NULL, "MICBIAS1"},
++	{"IN3P", NULL, "Internal Mic"},
++};
++
+ static const struct snd_soc_dapm_route byt_rt5640_ssp2_aif1_map[] = {
+ 	{"ssp2 Tx", NULL, "codec_out0"},
+ 	{"ssp2 Tx", NULL, "codec_out1"},
+@@ -243,6 +249,10 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ 		custom_map = byt_rt5640_intmic_in1_map;
+ 		num_routes = ARRAY_SIZE(byt_rt5640_intmic_in1_map);
+ 		break;
++	case BYT_RT5640_IN3_MAP:
++		custom_map = byt_rt5640_intmic_in3_map;
++		num_routes = ARRAY_SIZE(byt_rt5640_intmic_in3_map);
++		break;
+ 	case BYT_RT5640_DMIC2_MAP:
+ 		custom_map = byt_rt5640_intmic_dmic2_map;
+ 		num_routes = ARRAY_SIZE(byt_rt5640_intmic_dmic2_map);
 -- 
 2.8.1
