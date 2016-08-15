@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr-rt5640: add Asus T100TAF
-	quirks" to the asoc tree
-Date: Mon, 15 Aug 2016 15:16:14 +0100
-Message-ID: <E1bZIgY-0007TS-VU@debutante>
-References: <1471037280-17433-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 0/2] amidi: fix handling of ignored messages
+Date: Mon, 15 Aug 2016 16:31:22 +0200
+Message-ID: <27bb6314-022a-d7ba-40fd-119f5872b28d@ladisch.de>
+References: <ac3f1f9a-5201-7a98-e659-fd9bbcf41ab7@ladisch.de>
+ <c89ccbd5-6cbe-c18d-1b70-cef9d4c9b2e0@felipetonello.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DB63267890
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:16:21 +0200 (CEST)
-In-Reply-To: <1471037280-17433-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 41972267AF0
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:31:23 +0200 (CEST)
+In-Reply-To: <c89ccbd5-6cbe-c18d-1b70-cef9d4c9b2e0@felipetonello.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,95 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, irina.tirdea@intel.com
+To: Felipe Ferreri Tonello <eu@felipetonello.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Felipe Ferreri Tonello wrote:
+> On 13/08/16 11:27, Clemens Ladisch wrote:
+>> Clemens Ladisch (2):
+>>       amidi: ignore not only Active Sensing but also Clock bytes
+>>       amidi: fix timeout handling
+>>
+>>  amidi/amidi.1 |   19 ++++++++---
+>>  amidi/amidi.c |   82 +++++++++++++++++++++++++++++++++++++++-----------
+>>  2 files changed, 78 insertions(+), 23 deletions(-)
+>>
+>
+> I can't see the patches emails.
 
-   ASoC: Intel: bytcr-rt5640: add Asus T100TAF quirks
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 73442e3ccbc3136cf92a6785d81d118932292681 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 12 Aug 2016 16:27:44 -0500
-Subject: [PATCH] ASoC: Intel: bytcr-rt5640: add Asus T100TAF quirks
-
-Add quirk based on DMI string matching
-Also fix matching to use DMI_EXACT_MATCH otherwise T100TA and T100TAF
-will be using same quirk
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/bytcr_rt5640.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 88efb62439ba..2d3441d58d6f 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -127,16 +127,24 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 	{
- 		.callback = byt_rt5640_quirk_cb,
- 		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
--			DMI_MATCH(DMI_PRODUCT_NAME, "T100TA"),
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TA"),
- 		},
- 		.driver_data = (unsigned long *)BYT_RT5640_IN1_MAP,
- 	},
- 	{
- 		.callback = byt_rt5640_quirk_cb,
- 		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "DellInc."),
--			DMI_MATCH(DMI_PRODUCT_NAME, "Venue 8 Pro 5830"),
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TAF"),
-+		},
-+		.driver_data = (unsigned long *)BYT_RT5640_IN1_MAP,
-+	},
-+	{
-+		.callback = byt_rt5640_quirk_cb,
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "DellInc."),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Venue 8 Pro 5830"),
- 		},
- 		.driver_data = (unsigned long *)(BYT_RT5640_DMIC2_MAP |
- 						 BYT_RT5640_DMIC_EN),
-@@ -144,8 +152,8 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 	{
- 		.callback = byt_rt5640_quirk_cb,
- 		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "HP ElitePad 1000 G2"),
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HP ElitePad 1000 G2"),
- 		},
- 		.driver_data = (unsigned long *)BYT_RT5640_IN1_MAP,
- 	},
--- 
-2.8.1
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111737.html
