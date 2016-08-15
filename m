@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: fix dai/clock
-	setup for SSP0 routing" to the asoc tree
-Date: Mon, 15 Aug 2016 15:15:51 +0100
-Message-ID: <E1bZIgB-0007Ks-7r@debutante>
-References: <1471037280-17433-10-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: add SSP2_AIF2
+	routing" to the asoc tree
+Date: Mon, 15 Aug 2016 15:15:57 +0100
+Message-ID: <E1bZIgH-0007O8-6H@debutante>
+References: <1471037280-17433-8-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CC97267871
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:15:57 +0200 (CEST)
-In-Reply-To: <1471037280-17433-10-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2084B267873
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:16:04 +0200 (CEST)
+In-Reply-To: <1471037280-17433-8-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: fix dai/clock setup for SSP0 routing
+   ASoC: Intel: bytcr_rt5640: add SSP2_AIF2 routing
 
 has been applied to the asoc tree at
 
@@ -53,141 +53,125 @@ to this mail.
 Thanks,
 Mark
 
->From 038a50e735c85a7a9fbcda090785a588443ffa26 Mon Sep 17 00:00:00 2001
+>From 89b8907ce28fce3e34240e7668c9704880bf3368 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 12 Aug 2016 16:27:52 -0500
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: fix dai/clock setup for SSP0
- routing
+Date: Fri, 12 Aug 2016 16:27:50 -0500
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: add SSP2_AIF2 routing
 
-SSP0 uses 16 bits 2ch, SSP2 24 bits 2ch
+Add quirk to model routing on Baytrail-CR devices
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 92 ++++++++++++++++++++++++-----------
- 1 file changed, 64 insertions(+), 28 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 54 +++++++++++++++++++++++++++++------
+ 1 file changed, 46 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 4337b5e85921..42c7bd20f54d 100644
+index 085e57f95fb2..6c6f67356c99 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -138,8 +138,6 @@ static int byt_rt5640_aif1_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int ret;
+@@ -42,6 +42,7 @@ enum {
+ #define BYT_RT5640_DMIC_EN	BIT(16)
+ #define BYT_RT5640_MONO_SPEAKER BIT(17)
+ #define BYT_RT5640_DIFF_MIC     BIT(18) /* defaut is single-ended */
++#define BYT_RT5640_SSP2_AIF2     BIT(19) /* default is using AIF1  */
  
--	snd_soc_dai_set_bclk_ratio(codec_dai, 50);
+ static unsigned long byt_rt5640_quirk = BYT_RT5640_DMIC1_MAP |
+ 					BYT_RT5640_DMIC_EN;
+@@ -54,13 +55,6 @@ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
+-	{"AIF1 Playback", NULL, "ssp2 Tx"},
+-	{"ssp2 Tx", NULL, "codec_out0"},
+-	{"ssp2 Tx", NULL, "codec_out1"},
+-	{"codec_in0", NULL, "ssp2 Rx"},
+-	{"codec_in1", NULL, "ssp2 Rx"},
+-	{"ssp2 Rx", NULL, "AIF1 Capture"},
 -
- 	ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_PLL1,
- 				     params_rate(params) * 512,
- 				     SND_SOC_CLOCK_IN);
-@@ -148,9 +146,18 @@ static int byt_rt5640_aif1_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
+ 	{"Headset Mic", NULL, "MICBIAS1"},
+ 	{"IN2P", NULL, "Headset Mic"},
+ 	{"Headphone", NULL, "HPOL"},
+@@ -80,6 +74,26 @@ static const struct snd_soc_dapm_route byt_rt5640_intmic_in1_map[] = {
+ 	{"IN1P", NULL, "Internal Mic"},
+ };
  
--	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5640_PLL1_S_BCLK1,
--				  params_rate(params) * 50,
--				  params_rate(params) * 512);
-+	if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
-+		(byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
++static const struct snd_soc_dapm_route byt_rt5640_ssp2_aif1_map[] = {
++	{"ssp2 Tx", NULL, "codec_out0"},
++	{"ssp2 Tx", NULL, "codec_out1"},
++	{"codec_in0", NULL, "ssp2 Rx"},
++	{"codec_in1", NULL, "ssp2 Rx"},
 +
-+		ret = snd_soc_dai_set_pll(codec_dai, 0, RT5640_PLL1_S_BCLK1,
-+					params_rate(params) * 32, /* FIXME */
-+					params_rate(params) * 512);
++	{"AIF1 Playback", NULL, "ssp2 Tx"},
++	{"ssp2 Rx", NULL, "AIF1 Capture"},
++};
++
++static const struct snd_soc_dapm_route byt_rt5640_ssp2_aif2_map[] = {
++	{"ssp2 Tx", NULL, "codec_out0"},
++	{"ssp2 Tx", NULL, "codec_out1"},
++	{"codec_in0", NULL, "ssp2 Rx"},
++	{"codec_in1", NULL, "ssp2 Rx"},
++
++	{"AIF2 Playback", NULL, "ssp2 Tx"},
++	{"ssp2 Rx", NULL, "AIF2 Capture"},
++};
++
+ static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
+ 	{"Speaker", NULL, "SPOLP"},
+ 	{"Speaker", NULL, "SPOLN"},
+@@ -213,6 +227,18 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ 	if (ret)
+ 		return ret;
+ 
++	if (byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) {
++		ret = snd_soc_dapm_add_routes(&card->dapm,
++					byt_rt5640_ssp2_aif2_map,
++					ARRAY_SIZE(byt_rt5640_ssp2_aif2_map));
 +	} else {
-+		ret = snd_soc_dai_set_pll(codec_dai, 0, RT5640_PLL1_S_BCLK1,
-+					params_rate(params) * 50,
-+					params_rate(params) * 512);
++		ret = snd_soc_dapm_add_routes(&card->dapm,
++					byt_rt5640_ssp2_aif1_map,
++					ARRAY_SIZE(byt_rt5640_ssp2_aif1_map));
++	}
++	if (ret)
++		return ret;
++
+ 	if (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) {
+ 		ret = snd_soc_dapm_add_routes(&card->dapm,
+ 					byt_rt5640_mono_spk_map,
+@@ -346,7 +372,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+ 		.cpu_dai_name = "ssp2-port",
+ 		.platform_name = "sst-mfld-platform",
+ 		.no_pcm = 1,
+-		.codec_dai_name = "rt5640-aif1",
++		.codec_dai_name = "rt5640-aif1", /* changed w/ quirk */
+ 		.codec_name = "i2c-10EC5640:00", /* overwritten with HID */
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+ 						| SND_SOC_DAIFMT_CBS_CFS,
+@@ -373,6 +399,7 @@ static struct snd_soc_card byt_rt5640_card = {
+ };
+ 
+ static char byt_rt5640_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
+ 
+ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ {
+@@ -407,6 +434,17 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	/* check quirks before creating card */
+ 	dmi_check_system(byt_rt5640_quirk_table);
+ 
++	if (byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) {
++
++		/* fixup codec aif name */
++		snprintf(byt_rt5640_codec_aif_name,
++			sizeof(byt_rt5640_codec_aif_name),
++			"%s", "rt5640-aif2");
++
++		byt_rt5640_dais[dai_index].codec_dai_name =
++			byt_rt5640_codec_aif_name;
 +	}
 +
- 	if (ret < 0) {
- 		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
- 		return ret;
-@@ -311,34 +318,63 @@ static int byt_rt5640_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 						SNDRV_PCM_HW_PARAM_CHANNELS);
- 	int ret;
+ 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
  
--	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
-+	/* The DSP will covert the FE rate to 48k, stereo */
- 	rate->min = rate->max = 48000;
- 	channels->min = channels->max = 2;
- 
--	/* set SSP2 to 24-bit */
--	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
--
--	/*
--	 * Default mode for SSP configuration is TDM 4 slot, override config
--	 * with explicit setting to I2S 2ch 24-bit. The word length is set with
--	 * dai_set_tdm_slot() since there is no other API exposed
--	 */
--	ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
--				  SND_SOC_DAIFMT_I2S     |
--				  SND_SOC_DAIFMT_NB_IF   |
--				  SND_SOC_DAIFMT_CBS_CFS
--				  );
--	if (ret < 0) {
--		dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
--		return ret;
--	}
-+	if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
-+		(byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
-+
-+		/* set SSP2 to 16-bit */
-+		params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
-+
-+		/*
-+		 * Default mode for SSP configuration is TDM 4 slot, override config
-+		 * with explicit setting to I2S 2ch 16-bit. The word length is set with
-+		 * dai_set_tdm_slot() since there is no other API exposed
-+		 */
-+		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
-+					SND_SOC_DAIFMT_I2S     |
-+					SND_SOC_DAIFMT_NB_IF   |
-+					SND_SOC_DAIFMT_CBS_CFS
-+			);
-+		if (ret < 0) {
-+			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
-+			return ret;
-+		}
- 
--	ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 24);
--	if (ret < 0) {
--		dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
--		return ret;
--	}
-+		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 16);
-+		if (ret < 0) {
-+			dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
-+			return ret;
-+		}
-+
-+	} else {
- 
-+		/* set SSP2 to 24-bit */
-+		params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
-+
-+		/*
-+		 * Default mode for SSP configuration is TDM 4 slot, override config
-+		 * with explicit setting to I2S 2ch 24-bit. The word length is set with
-+		 * dai_set_tdm_slot() since there is no other API exposed
-+		 */
-+		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
-+					SND_SOC_DAIFMT_I2S     |
-+					SND_SOC_DAIFMT_NB_IF   |
-+					SND_SOC_DAIFMT_CBS_CFS
-+			);
-+		if (ret < 0) {
-+			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
-+			return ret;
-+		}
-+
-+		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 24);
-+		if (ret < 0) {
-+			dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
-+			return ret;
-+		}
-+	}
- 	return 0;
- }
- 
+ 	if (ret_val) {
 -- 
 2.8.1
