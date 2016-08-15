@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Atom: auto-detection of
-	Baytrail-CR" to the asoc tree
-Date: Mon, 15 Aug 2016 15:16:06 +0100
-Message-ID: <E1bZIgQ-0007Qq-3l@debutante>
-References: <1471037280-17433-5-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: enable
+	differential mic quirk" to the asoc tree
+Date: Mon, 15 Aug 2016 15:16:09 +0100
+Message-ID: <E1bZIgT-0007Rf-2b@debutante>
+References: <1471037280-17433-4-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C327267881
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:16:13 +0200 (CEST)
-In-Reply-To: <1471037280-17433-5-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 50722267886
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:16:16 +0200 (CEST)
+In-Reply-To: <1471037280-17433-4-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Atom: auto-detection of Baytrail-CR
+   ASoC: Intel: bytcr_rt5640: enable differential mic quirk
 
 has been applied to the asoc tree at
 
@@ -53,157 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From a68bc0d43e1b96c374c4b03eb9baa662778357b3 Mon Sep 17 00:00:00 2001
+>From 5d98f58fd66ea164d7e317d57de77b7d7c1391ff Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 12 Aug 2016 16:27:47 -0500
-Subject: [PATCH] ASoC: Intel: Atom: auto-detection of Baytrail-CR
+Date: Fri, 12 Aug 2016 16:27:46 -0500
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: enable differential mic quirk
 
-BYT-CR needs special handling to deal with BIOS issues.
-For some reason the IPC interrupt index is also modified from
-the Baytrail-T reference.
-
-Use PUNIT BIOS config bits to infer platform details.
-Assume regular Baytrail configs if status is incorrect or
-CONFIG_IOSF_MBI is not enabled.
-
-SSP0 routing issues are solved without dedicated firmware
-in following patches
-
-Tested on Asus T100TA and T100TAF.
+Some Baytrail-CR devices rely on analog mics connected with
+differential pairs and not the single-ended default
+Add quirk and enable it for T00TAF
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c | 82 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 78 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 4d3184971227..0c2cc4207b95 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -39,6 +39,8 @@
- #include <acpi/platform/aclinux.h>
- #include <acpi/actypes.h>
- #include <acpi/acpi_bus.h>
-+#include <asm/cpu_device_id.h>
-+#include <asm/iosf_mbi.h>
- #include "../sst-mfld-platform.h"
- #include "../../common/sst-dsp.h"
- #include "../../common/sst-acpi.h"
-@@ -113,6 +115,28 @@ static const struct sst_res_info byt_rvp_res_info = {
- 	.acpi_ipc_irq_index = 5,
- };
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 421a53cfa53f..085e57f95fb2 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -41,6 +41,7 @@ enum {
+ #define BYT_RT5640_MAP(quirk)	((quirk) & 0xff)
+ #define BYT_RT5640_DMIC_EN	BIT(16)
+ #define BYT_RT5640_MONO_SPEAKER BIT(17)
++#define BYT_RT5640_DIFF_MIC     BIT(18) /* defaut is single-ended */
  
-+/* BYTCR has different BIOS from BYT */
-+static const struct sst_res_info bytcr_res_info = {
-+	.shim_offset = 0x140000,
-+	.shim_size = 0x000100,
-+	.shim_phy_addr = SST_BYT_SHIM_PHY_ADDR,
-+	.ssp0_offset = 0xa0000,
-+	.ssp0_size = 0x1000,
-+	.dma0_offset = 0x98000,
-+	.dma0_size = 0x4000,
-+	.dma1_offset = 0x9c000,
-+	.dma1_size = 0x4000,
-+	.iram_offset = 0x0c0000,
-+	.iram_size = 0x14000,
-+	.dram_offset = 0x100000,
-+	.dram_size = 0x28000,
-+	.mbox_offset = 0x144000,
-+	.mbox_size = 0x1000,
-+	.acpi_lpe_res_index = 0,
-+	.acpi_ddr_index = 2,
-+	.acpi_ipc_irq_index = 0
-+};
-+
- static struct sst_platform_info byt_rvp_platform_data = {
- 	.probe_data = &byt_fwparse_info,
- 	.ipc_info = &byt_ipc_info,
-@@ -215,6 +239,47 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	return 0;
- }
+ static unsigned long byt_rt5640_quirk = BYT_RT5640_DMIC1_MAP |
+ 					BYT_RT5640_DMIC_EN;
+@@ -148,7 +149,8 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TAF"),
+ 		},
+ 		.driver_data = (unsigned long *)(BYT_RT5640_IN1_MAP |
+-						 BYT_RT5640_MONO_SPEAKER
++						 BYT_RT5640_MONO_SPEAKER |
++						 BYT_RT5640_DIFF_MIC
+ 						 ),
+ 	},
+ 	{
+@@ -223,6 +225,11 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ 	if (ret)
+ 		return ret;
  
-+
-+static int is_byt_cr(struct device *dev, bool *bytcr)
-+{
-+	int status = 0;
-+
-+	if (IS_ENABLED(CONFIG_IOSF_MBI)) {
-+		static const struct x86_cpu_id cpu_ids[] __initconst = {
-+			{ X86_VENDOR_INTEL, 6, 55 }, /* Valleyview, Bay Trail */
-+			{}
-+		};
-+		int status;
-+		u32 bios_status;
-+
-+		if (!x86_match_cpu(cpu_ids) || !iosf_mbi_available()) {
-+			/* bail silently */
-+			return status;
-+		}
-+
-+		status = iosf_mbi_read(BT_MBI_UNIT_PMC, /* 0x04 PUNIT */
-+				       MBI_REG_READ, /* 0x10 */
-+				       0x006, /* BIOS_CONFIG */
-+				       &bios_status);
-+
-+		if (status) {
-+			dev_err(dev, "could not read PUNIT BIOS_CONFIG\n");
-+		} else {
-+			/* bits 26:27 mirror PMIC options */
-+			bios_status = (bios_status >> 26) & 3;
-+
-+			if ((bios_status == 1) || (bios_status == 3))
-+				*bytcr = true;
-+			else
-+				dev_info(dev, "BYT-CR not detected\n");
-+		}
-+	} else {
-+		dev_info(dev, "IOSF_MBI not enabled, no BYT-CR detection\n");
-+	}
-+	return status;
-+}
-+
-+
- static int sst_acpi_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -226,6 +291,7 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 	struct platform_device *plat_dev;
- 	struct sst_platform_info *pdata;
- 	unsigned int dev_id;
-+	bool bytcr = false;
- 
- 	id = acpi_match_device(dev->driver->acpi_match_table, dev);
- 	if (!id)
-@@ -251,6 +317,18 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 
- 	dev_dbg(dev, "ACPI device id: %x\n", dev_id);
- 
-+	ret = sst_alloc_drv_context(&ctx, dev, dev_id);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = is_byt_cr(dev, &bytcr);
-+	if (!((ret < 0) || (bytcr == false))) {
-+		dev_info(dev, "Detected Baytrail-CR platform\n");
-+
-+		/* override resource info */
-+		byt_rvp_platform_data.res_info = &bytcr_res_info;
++	if (byt_rt5640_quirk & BYT_RT5640_DIFF_MIC) {
++		snd_soc_update_bits(codec,  RT5640_IN1_IN2, RT5640_IN_DF1,
++				    RT5640_IN_DF1);
 +	}
 +
- 	plat_dev = platform_device_register_data(dev, pdata->platform, -1,
- 						NULL, 0);
- 	if (IS_ERR(plat_dev)) {
-@@ -271,10 +349,6 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 		return PTR_ERR(mdev);
- 	}
- 
--	ret = sst_alloc_drv_context(&ctx, dev, dev_id);
--	if (ret < 0)
--		return ret;
--
- 	/* Fill sst platform data */
- 	ctx->pdata = pdata;
- 	strcpy(ctx->firmware_name, mach->fw_filename);
+ 	if (byt_rt5640_quirk & BYT_RT5640_DMIC_EN) {
+ 		ret = rt5640_dmic_enable(codec, 0, 0);
+ 		if (ret)
 -- 
 2.8.1
