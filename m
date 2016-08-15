@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: default routing
-	and quirks on Baytrail-CR" to the asoc tree
-Date: Mon, 15 Aug 2016 15:15:48 +0100
-Message-ID: <E1bZIg8-0007K2-9L@debutante>
-References: <1471037280-17433-11-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: bytcr_rt56040: additional
+	routing quirks" to the asoc tree
+Date: Mon, 15 Aug 2016 15:15:54 +0100
+Message-ID: <E1bZIgE-0007Lk-6Y@debutante>
+References: <1471037280-17433-9-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AB3ED26786D
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:15:54 +0200 (CEST)
-In-Reply-To: <1471037280-17433-11-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C302426772B
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:16:00 +0200 (CEST)
+In-Reply-To: <1471037280-17433-9-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: default routing and quirks on Baytrail-CR
+   ASoC: Intel: bytcr_rt56040: additional routing quirks
 
 has been applied to the asoc tree at
 
@@ -53,90 +53,116 @@ to this mail.
 Thanks,
 Mark
 
->From e214f5e78aca81080c156a68a263d31d51d0ea17 Mon Sep 17 00:00:00 2001
+>From f47088d5ae6bec6d01bb0fd71c7d113aa8eaaa27 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 12 Aug 2016 16:27:53 -0500
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: default routing and quirks on
- Baytrail-CR
+Date: Fri, 12 Aug 2016 16:27:51 -0500
+Subject: [PATCH] ASoC: Intel: bytcr_rt56040: additional routing quirks
 
-Auto routing based on Baytrail/Baytrail-CR detection
+Allow for all possible combinations of SSP0,SSP2, AIF1, AIF2
+combination (only one at a time)
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 32 +++++++++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 44 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 42 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 42c7bd20f54d..c4a3c5778b38 100644
+index 6c6f67356c99..4337b5e85921 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -24,6 +24,8 @@
- #include <linux/device.h>
- #include <linux/dmi.h>
- #include <linux/slab.h>
-+#include <asm/cpu_device_id.h>
-+#include <asm/platform_sst_audio.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -31,6 +33,7 @@
- #include "../../codecs/rt5640.h"
- #include "../atom/sst-atom-controls.h"
- #include "../common/sst-acpi.h"
-+#include "../common/sst-dsp.h"
+@@ -43,6 +43,8 @@ enum {
+ #define BYT_RT5640_MONO_SPEAKER BIT(17)
+ #define BYT_RT5640_DIFF_MIC     BIT(18) /* defaut is single-ended */
+ #define BYT_RT5640_SSP2_AIF2     BIT(19) /* default is using AIF1  */
++#define BYT_RT5640_SSP0_AIF1     BIT(20)
++#define BYT_RT5640_SSP0_AIF2     BIT(21)
  
- enum {
- 	BYT_RT5640_DMIC1_MAP,
-@@ -189,7 +192,8 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 		},
- 		.driver_data = (unsigned long *)(BYT_RT5640_IN1_MAP |
- 						 BYT_RT5640_MONO_SPEAKER |
--						 BYT_RT5640_DIFF_MIC
-+						 BYT_RT5640_DIFF_MIC |
-+						 BYT_RT5640_SSP0_AIF2
- 						 ),
- 	},
+ static unsigned long byt_rt5640_quirk = BYT_RT5640_DMIC1_MAP |
+ 					BYT_RT5640_DMIC_EN;
+@@ -94,6 +96,22 @@ static const struct snd_soc_dapm_route byt_rt5640_ssp2_aif2_map[] = {
+ 	{"ssp2 Rx", NULL, "AIF2 Capture"},
+ };
+ 
++static const struct snd_soc_dapm_route byt_rt5640_ssp0_aif1_map[] = {
++	{"ssp0 Tx", NULL, "modem_out"},
++	{"modem_in", NULL, "ssp0 Rx"},
++
++	{"AIF1 Playback", NULL, "ssp0 Tx"},
++	{"ssp0 Rx", NULL, "AIF1 Capture"},
++};
++
++static const struct snd_soc_dapm_route byt_rt5640_ssp0_aif2_map[] = {
++	{"ssp0 Tx", NULL, "modem_out"},
++	{"modem_in", NULL, "ssp0 Rx"},
++
++	{"AIF2 Playback", NULL, "ssp0 Tx"},
++	{"ssp0 Rx", NULL, "AIF2 Capture"},
++};
++
+ static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
+ 	{"Speaker", NULL, "SPOLP"},
+ 	{"Speaker", NULL, "SPOLN"},
+@@ -231,6 +249,14 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ 		ret = snd_soc_dapm_add_routes(&card->dapm,
+ 					byt_rt5640_ssp2_aif2_map,
+ 					ARRAY_SIZE(byt_rt5640_ssp2_aif2_map));
++	} else if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) {
++		ret = snd_soc_dapm_add_routes(&card->dapm,
++					byt_rt5640_ssp0_aif1_map,
++					ARRAY_SIZE(byt_rt5640_ssp0_aif1_map));
++	} else if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2) {
++		ret = snd_soc_dapm_add_routes(&card->dapm,
++					byt_rt5640_ssp0_aif2_map,
++					ARRAY_SIZE(byt_rt5640_ssp0_aif2_map));
+ 	} else {
+ 		ret = snd_soc_dapm_add_routes(&card->dapm,
+ 					byt_rt5640_ssp2_aif1_map,
+@@ -369,7 +395,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
  	{
-@@ -464,6 +468,18 @@ static char byt_rt5640_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
- static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
- static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ 		.name = "SSP2-Codec",
+ 		.id = 1,
+-		.cpu_dai_name = "ssp2-port",
++		.cpu_dai_name = "ssp2-port", /* overwritten for ssp0 routing */
+ 		.platform_name = "sst-mfld-platform",
+ 		.no_pcm = 1,
+ 		.codec_dai_name = "rt5640-aif1", /* changed w/ quirk */
+@@ -400,6 +426,7 @@ static struct snd_soc_card byt_rt5640_card = {
  
-+static bool is_valleyview(void)
-+{
-+	static const struct x86_cpu_id cpu_ids[] __initconst = {
-+		{ X86_VENDOR_INTEL, 6, 55 }, /* Valleyview, Bay Trail */
-+		{}
-+	};
-+
-+	if (!x86_match_cpu(cpu_ids))
-+		return false;
-+	return true;
-+}
-+
+ static char byt_rt5640_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
+ static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
++static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ 
  static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
  {
- 	int ret_val = 0;
-@@ -494,6 +510,20 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		byt_rt5640_dais[dai_index].codec_name = byt_rt5640_codec_name;
- 	}
- 
-+	/*
-+	 * swap SSP0 if bytcr is detected
-+	 * (will be overridden if DMI quirk is detected)
-+	 */
-+	if (is_valleyview()) {
-+		struct sst_platform_info *p_info = mach->pdata;
-+		const struct sst_res_info *res_info = p_info->res_info;
-+
-+		/* TODO: use CHAN package info from BIOS to detect AIF1/AIF2 */
-+		if (res_info->acpi_ipc_irq_index == 0) {
-+			byt_rt5640_quirk |= BYT_RT5640_SSP0_AIF2;
-+		}
-+	}
-+
+@@ -434,7 +461,8 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
  	/* check quirks before creating card */
  	dmi_check_system(byt_rt5640_quirk_table);
  
+-	if (byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) {
++	if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
++	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
+ 
+ 		/* fixup codec aif name */
+ 		snprintf(byt_rt5640_codec_aif_name,
+@@ -445,6 +473,18 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 			byt_rt5640_codec_aif_name;
+ 	}
+ 
++	if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
++	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
++
++		/* fixup cpu dai name name */
++		snprintf(byt_rt5640_cpu_dai_name,
++			sizeof(byt_rt5640_cpu_dai_name),
++			"%s", "ssp0-port");
++
++		byt_rt5640_dais[dai_index].cpu_dai_name =
++			byt_rt5640_cpu_dai_name;
++	}
++
+ 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
+ 
+ 	if (ret_val) {
 -- 
 2.8.1
