@@ -1,23 +1,15 @@
-From: Akram Hameed <akramh@aq1systems.com>
-Subject: Re: twl4030: runtime audio capture channel swapping
-	(kernel 3.18+)
-Date: Mon, 15 Aug 2016 11:20:29 +1000
-Message-ID: <CALHzX6rkz6QuQFxWNYYsDNGifTOcXL-TUzhrhpSm8L8oZ6124g@mail.gmail.com>
-References: <CALHzX6rsFSFbER6f8mEyiyOMS4S=ErargBbMLL93fpYsRMkW1A@mail.gmail.com>
- <64bcc44e-3058-01b5-3402-d140448f3add@ti.com>
- <CALHzX6qqiDk=+d=zPU8f=ntc0KqNC2xcuRwAS+Lqj+SwdLee-g@mail.gmail.com>
- <9ad5dc76-177b-4aa5-b523-4705af436ac7@ti.com>
+From: focus.luo@linux.intel.com
+Subject: [PATCH v2 0/2] alsabat: test scripts and reference
+	amixer config files
+Date: Mon, 15 Aug 2016 13:24:03 +0800
+Message-ID: <1471238645-12554-1-git-send-email-focus.luo@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f46.google.com (mail-it0-f46.google.com
- [209.85.214.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 210252658E8
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 03:20:31 +0200 (CEST)
-Received: by mail-it0-f46.google.com with SMTP id f6so32533440ith.0
- for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2016 18:20:31 -0700 (PDT)
-In-Reply-To: <9ad5dc76-177b-4aa5-b523-4705af436ac7@ti.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44AD3265857
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 06:56:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,176 +19,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: alsa-devel@alsa-project.org
+Cc: Focus Luo <focus.luo@linux.intel.com>, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-SGVpIFDDqXRlciwKCk9uIEZyaSwgQXVnIDEyLCAyMDE2IGF0IDc6NTMgUE0sIFBldGVyIFVqZmFs
-dXNpIDxwZXRlci51amZhbHVzaUB0aS5jb20+Cndyb3RlOgo+Cj4gQWtyYW0sCj4KPiBmaXJzdCBv
-ZiBhbGw6IEknbSBhYmxlIHRvIHJlcHJvZHVjZSB0aGUgUlggdW5kZXJmbG93IDpvCgpJIGFtIGds
-YWQgdG8gaGVhciB0aGlzLCB0aGUgbGFjayBvZiBvdGhlciBwZW9wbGUgb2JzZXJ2aW5nIHRoaXMg
-b24gdGhlCm1haWxpbmcgbGlzdCB3YXMgbWFraW5nIG1lIHRoaW5rIHdlIGhhZCBzcGVjaWZpYyBp
-c3N1ZXMgdG8gb3VyCmJyYW5jaCtoYXJkd2FyZS4KCj4gT24gMDgvMTIvMTYgMDQ6MTQsIEFrcmFt
-IEhhbWVlZCB3cm90ZToKPiA+PiA+IDIpIE1jQlNQMiBpcyBhbHNvIGNvbmZpZ3VyZWQgdGhlIHNh
-bWUgYmV0d2VlbiBvbGQgYW5kIG5ldyBrZXJuZWxzLAp0aG91Z2ggSQo+ID4+ID4gbm90ZSBmb3Ig
-c29tZSByZWFzb24gdGhlIElEIHB1bGxlZCBieSBkZXZfZGJnIGxvb2tzIHNwdXJpb3VzLCB0aG91
-Z2gKSSBndWVzcwo+ID4+ID4gdW5yZWxhdGVkIHRvIG15IGlzc3VlLgo+ID4+ID4gQ29uZmlndXJp
-bmcgTWNCU1AyNTUgIHBoeXNfYmFzZTogMHg0OTAyMjAwMAo+ID4+ID4gKioqKiBNY0JTUDI1NSBy
-ZWdzICoqKioKPiA+PiA+IERSUjI6ICAweGY4OGEKPiA+PiA+IERSUjE6ICAweDAwMDAKPiA+PiA+
-IERYUjI6ICAweDAwMDAKPiA+PiA+IERYUjE6ICAweDAwMDAKPiA+PiA+IFNQQ1IyOiAweDAyMzAK
-PiA+PiA+IFNQQ1IxOiAweDAwMzEKPiA+PiA+IFJDUjI6ICAweDgwNDEKPiA+PiA+IFJDUjE6ICAw
-eDAwNDAKPiA+PiA+IFhDUjI6ICAweDgwNDEKPiA+PiA+IFhDUjE6ICAweDAwNDAKPiA+PiA+IFNS
-R1IyOiAweDAwMWYKPiA+PiA+IFNSR1IxOiAweDBmMDAKPiA+PiA+IFBDUjA6ICAweDAwMGYKPiA+
-PiA+ICoqKioqKioqKioqKioqKioqKioqKioqCj4gPj4KPiA+PiBXZSBtdXN0IGRyb3AgdGhlIERS
-UjEvMiAoYW5kIHByb2JhYmx5IERYUjEvMikgZHVtcC4uLiBCeSByZWFkaW5nIHRoZQpEUlIKPiA+
-PiByZWdpc3RlciB3aXRoIHRoZSBkZWJ1ZyBjb2RlIHdlIGludHJvZHVjZSB1bmRlcmZsb3cuIFRo
-ZSBkYXRhIG11c3QgYmUKb25seQo+ID4+IG1vdmVkIGJ5IHRoZSBETUEgZnJvbSB0aGUgREFUQSBy
-ZWdpc3RlcnMuIElmIHdlIGhhdmUgbG93IHRocmVzaG9sZCBpdAppcyBtb3JlCj4gPj4gbGlrZWx5
-IHRvIGNhdXNlIGNoYW5uZWwgc3dhcCBhbmQgaXQgaXMgZm9yIHN1cmUgZ29pbmcgdG8gaW50cm9k
-dWNlCm1pc3NpbmcKPiA+PiBkYXRhIC0gdGhlIGRhdGEgaXMgZ29pbmcgdG8gdGhlIGtlcm5lbCBs
-b2cgaW5zdGVhZCBvZiB0aGUgcmVjZWl2ZQpidWZmZXIuCj4gPgo+ID4gRm9yIHdoYXQgaXQgaXMg
-d29ydGgsIEkgaGFkIHRvIGVuYWJsZSB0aGF0IHJlZ2lzdGVyIGR1bXAgd2l0aAo+ID4gZHluYW1p
-Y19kZWJ1Zy9jb250cm9sLCBzbyBJIGd1ZXNzIGl0IGlzIG5vdCBiZWluZyB1c2VkIGluIG5vcm1h
-bApvcGVyYXRpb24uCj4KPiBZZWFoLCBpdCBpcyBvbmx5IGR1bXBlZCBvbiBzdGFydCwgYnV0IHN0
-aWxsIGl0IGlzIG5vdCBhIGdvb2QgdGhpbmcgYXMgaXQKY2FuCj4gaW50cm9kdWNlIGluaXRpYWwg
-Y2hhbm5lbCBzd2FwLgo+Cj4gPj4gSSBjYW4gbm90IHJlY2FsbCB0aGUgaGlzdG9yeSwgYnV0IGJl
-dHdlZW4gMy4wIGFuZCAzLjE4IHdlIG1pZ2h0IG1vdmVkCnRvCj4gPj4gZG1hZW5naW5lIGJhc2Vk
-IFBDTSBmb3IgT01BUHMuIEJ1dCBJIHN0aWxsIGhhdmUgbm8gcmVjb2xsZWN0aW9uIHRvCmV4cGVy
-aWVuY2UKPiA+PiBjYXB0dXJlIHNpZGUgY2hhbm5lbCBzd2FwLgo+ID4KPiA+IEkgaGF2ZSBmb3Vu
-ZCB0aGF0IGFic29sdXRlbHkgdGhlIHBjbSB3YXMgbW92ZWQgdG8gZG1hZW5naW5lIGFyb3VuZCAz
-LjcuCkkKPiA+IGhhemFyZCBhIGd1ZXNzIG15IHByb2JsZW0gd291bGQgbm90IGJlIHByZXNlbnQg
-cHJpb3IgdG8gdGhhdCwgYnV0IEkKaGF2ZSBubwo+ID4gZXZpZGVuY2UuICBUaGUgaGFyZHdhcmUg
-bWFudWZhY3R1cmVycyB3ZSB1c2UgaGF2ZSBhIGtlcm5lbCBwYXRjaGVkIGZvcgp0aGVpcgo+ID4g
-c3BlY2lmaWMgdXNlIG9mIE9NQVAzNTMwL0RNMzczMCBhdCB2ZXJzaW9uIDMuNSB0aGF0IEkgY2Fu
-IHRyeSBhbmQKdmVyaWZ5IGlmCj4gPiBjYXB0dXJlIGhhZCBpc3N1ZXMgYXQgdGhhdCB0aW1lLgo+
-Cj4gSSBoYXZlIGxvb2tlZCBiYWNrIGF0IHRoZSBoaXN0b3J5IGFuZCBub3RoaW5nIHN0YW5kcyBv
-dXQuIFdlIGFyZSBhZGRpbmcKPiBTUkMvRFNUX1BBQ0tFRCBpbiBzRE1BLCBidXQgaWYgSSByZW1v
-dmUgdGhhdCwgaXQgbWFrZXMgbm8gZGlmZmVyZW5jZS4KCkkgdGhpbmsgU1JDIHBhY2tpbmcgd2ls
-bCBub3QgYmUgZW5hYmxlZCBmb3Igc0RNQSBpbiB0aGlzIGNhc2Ugd2hlcmUKY29uc3RhbnQgYWRk
-cmVzc2luZyBpcyB1c2VkIGZvciBNY0JTUCBEUlI/IFNlZSBwcC4gOTg4IG9mIFNwcnVmOThwLiBB
-bnl3YXksCkkgYWdyZWUsIGRvZXMgbm90IGV4cGxhaW4gdGhlIGlzc3VlIGF0IGFsbC4KCj4gRXZl
-biBpZiBJIGVuYWJsZSByZWFsIGVsZW1lbnQgbW9kZSwgSSBjYW4gc3RpbGwgc2VlIHRoZSB1bmRl
-cmZsb3dzLgo+Cj4gPj4gPiBhKSBTd2FwIGRlZmluaXRlbHkgaXMgaGFwcGVuaW5nIGR1ZSB0byBP
-dmVyZmxvdywgYnV0IHNvIGZhciBJIG9ubHkKb2JzZXJ2ZSBhbgo+ID4+ID4gb3ZlcmZsb3cgd2hl
-biB1c2luZyBkbWFfb3BfbW9kZSBUSFJFU0hPTEQuIFdoZW4gdXNpbmcgZG1hX29wX21vZGUKVEhS
-RVNIT0xELAo+ID4+ID4gdGhlIHN3YXAgZG9lcyBub3Qgc2VlbSB0byBjb2luY2lkZSB3aXRoIGFu
-IHVuZGVyZmxvdywgc28gSSBhbSBhdCBhCmxvc3MgdG8KPiA+PiA+IGV4cGxhaW4gZnVydGhlci4K
-PiA+Pgo+ID4+IEhvdyBkb2VzIHlvdSBhcHBsaWNhdGlvbiB3b3Jrcz8gV2hhdCBhcmUgdGhlIHBh
-cmFtZXRlcnMgQUxTQSBpcwpjb25maWd1cmVkIGZvcgo+ID4+IGNhcHR1cmUvcGxheWJhY2sgKGNh
-dCAvcHJvYy9hc291bmQvY2FyZDAvcGNtMHAvc3ViMC9od19wYXJhbXM7IGNhdAo+ID4+IC9wcm9j
-L2Fzb3VuZC9jYXJkMC9wY20wYy9zdWIwL2h3X3BhcmFtcykgLSBudW1iZXIgb2YgcGVyaW9kcywg
-ZXRjPwo+ID4KPiA+IE91ciBhcHBsaWNhdGlvbiBhY2Nlc3NlcyBBTFNBIHZpYSBhIEMrKyB3cmFw
-cGVyCj4gPiAoUnRBdWRpbzogaHR0cHM6Ly93d3cubXVzaWMubWNnaWxsLmNhL35nYXJ5L3J0YXVk
-aW8vKS4gV2UgY2FwdHVyZSBhdWRpbwpvbmx5Cj4gPiAoNDhrSHosIDJjaCksIGFuZCBkbyBub3Qg
-cGxheSBiYWNrIGR1cmluZyB0aGVzZSBjYXB0dXJlIHNlc3Npb25zLgpDYXB0dXJlIGlzCj4gPiBk
-b25lIGluIGEgYmFja2dyb3VuZCB0aHJlYWQgYW5kIGRvdWJsZSBidWZmZXJpbmcgaXMgdXNlZCBh
-dCB0aGUKYXBwbGljYXRpb24KPiA+IGxldmVsIHNvIHRoZSAnYXVkaW8gcmVhZHknIGNhbGxiYWNr
-IGRvZXMgbm90IGJsb2NrIGxvbmdlciB0aGFuIHN0cmljdGx5Cj4gPiBuZWNlc3NhcnkgdG8gc2Vy
-dmljZSBpbmNvbWluZyBkYXRhLiBBcyBtZW50aW9uZWQgaW4gYSBwcmV2aW91cyBlbWFpbCwKdGhp
-cwo+ID4gYXBwcm9hY2ggaGFzIHdvcmtlZCBmbGF3bGVzc2x5IGJlZm9yZSBpbiBrZXJuZWwgMy4w
-Lgo+ID4KPiA+IEFMU0EgYnVmZmVyIHNpemUgaXMgbm90IHBhcnRpY3VsYXJseSBsYXJnZSwgcGVy
-aGFwcyBpdCBtaWdodCBoZWxwIGZvcgptZSB0bwo+ID4gaW5jcmVhc2UgdGhlIG51bWJlciBvZiBB
-TFNBIGJ1ZmZlcnM/IEhlcmUgYXJlIHRoZSBod19wYXJhbXM6Cj4gPgo+ID4gY2F0IC9wcm9jL2Fz
-b3VuZC9jYXJkMC9wY20wYy9zdWIwL2h3X3BhcmFtcwo+ID4gYWNjZXNzOiBSV19JTlRFUkxFQVZF
-RAo+ID4gZm9ybWF0OiBTMTZfTEUKPiA+IHN1YmZvcm1hdDogU1RECj4gPiBjaGFubmVsczogMgo+
-ID4gcmF0ZTogNDgwMDAgKDQ4MDAwLzEpCj4gPiBwZXJpb2Rfc2l6ZTogNDgwCj4gPiBidWZmZXJf
-c2l6ZTogOTYwCj4KPiBJIGZvdW5kIG5vIGNvcnJlbGF0aW9uIGJldHdlZW4gdGhlIEFMU0Egc2V0
-dGluZ3MgYW5kIHRoZSBmcmVxdWVuY3kgb2YgdGhlCj4gTWNCU1AgdW5kZXJydW5zLgo+Cj4gPgo+
-ID4gQW5kIG9mIGNvdXJzZSwgcGxheWJhY2sgaXMgbm90IG9wZXJhdGluZzoKPiA+Cj4gPiBjYXQg
-L3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBwL3N1YjAvaHdfcGFyYW1zCj4gPiBjbG9zZWQKPiA+Cj4g
-Pj4gPiBiKSBJbiBkbWFfb3BfbW9kZSBFTEVNRU5ULCBJIGdldCBVbmRlcmZsb3cgcmVwb3J0ZWQg
-YWxtb3N0IGV2ZXJ5CnNlY29uZCBpbgo+ID4+ID4gdGhpcyBuZXdlciBrZXJuZWwgKGFnYWluLCB1
-c2luZyAxMG1zIHBlcmlvZCBzaXplKS4gQ2hhbm5lbCBzd2FwIG9ubHkKc2VlbXMgdG8KPiA+PiA+
-IG9jY3VyIGV2ZXIgZmV3IGhvdXJzLCBob3dldmVyLCBhbmQgSSBkbyBub3QgYmVsaWV2ZSBJIGhh
-dmUgb2JzZXJ2ZWQKdGhlCj4gPj4gPiBvdmVyZmxvdyBhdCBhbGwgaW4gRUxFTUVOVCBtb2RlLiBT
-bywgdGhlIHN3YXAgb2NjdXJzIGR1ZSB0bwp1bmRlcmZsb3csIG1heWJlPwo+ID4+Cj4gPj4gVW5k
-ZXJmbG93IGluIE1jQlNQIG9yIFVuZGVyZmxvdyBieSBBTFNBPwo+ID4+Cj4gPj4gVW5kZXJmbG93
-IGluIE1jQlNQIFJYIHRlbGxzIHRoYXQgRE1BIGlzIHRyeWluZyB0byByZWFkIGRhdGEgd2hlbiB0
-aGUKRklGTyBpcwo+ID4+IGVtcHR5LiBUaGlzIGNhbiBvbmx5IGhhcHBlbiBpZiBzb21ldGhpbmcg
-ZWxzZSBpcyByZWFkaW5nIGRhdGEgYWxzbwpmcm9tIHRoZQo+ID4+IE1jQlNQIHNpbmNlIHdlIGNv
-bmZpZ3VyZSB0aGUgTWNCU1AgYW5kIHNETUEgaW4gc3luYy4KPiA+Cj4gPiBUaGUgdW5kZXJmbG93
-IEkgb2JzZXJ2ZSBpcyBhIE1jQlNQIG9uZS4gSSBhbSBub3QgcmVjZWl2aW5nIGFueSBmcm9tCkFM
-U0EuIEhlcmUKPiA+IGlzIHNvbWUgZG1lc2cgb3V0cHV0IChkbWFfb3BfbW9kZSA9PSBlbGVtZW50
-LCBhbHNhIGh3X3BhcmFtcyBzYW1lIGFzCmFib3ZlKToKPiA+IFsgIDgzMS44NTI0MTZdIG9tYXAt
-bWNic3AgNDkwMjIwMDAubWNic3A6IFJYIEJ1ZmZlciBVbmRlcmZsb3chCj4gPiBbICA4MzUuNDUw
-Mjg2XSBvbWFwLW1jYnNwIDQ5MDIyMDAwLm1jYnNwOiBSWCBCdWZmZXIgVW5kZXJmbG93IQo+ID4g
-WyAgODM3LjIyMTg2Ml0gb21hcC1tY2JzcCA0OTAyMjAwMC5tY2JzcDogUlggQnVmZmVyIFVuZGVy
-ZmxvdyEKPiA+Cj4gPiBJIGVuYWJsZWQgdGhlc2UgdW5kZXJmbG93IG1lc3NhZ2VzIGluIG9tYXBf
-bWNic3BfY29uZmlnIGluCj4gPiBzb3VuZC9zb2Mvb21hcC9tY2JzcC5jIGZvciBjdXJpb3NpdHkn
-cyBzYWtlLCBidXQgYXMgeW91IGNhbiBzZWUuLi50aGV5Cm9jY3VyCj4gPiBxdWl0ZSBvZnRlbi4g
-SSBhbSBub3Qgc3VyZSB3aGF0IGVsc2UgbWlnaHQgYmUgYWNjZXNzaW5nIHRoZSBEUlI6IGl0CmFs
-bW9zdAo+ID4gbG9va3MgbGlrZSB0aGUgJ01jQlNQMi5NQ0JTUExQX1JRU1RBVFVTX1JFR1szXSBS
-UkRZJyBpbnRlcnJ1cHQgbWlnaHQgYmUKZmlyZWQKPiA+IGZvciBETUEgdHJhbnNmZXIgdG9vIG9m
-dGVuIHRvIGdlbmVyYXRlIHRoaXMgbWVzc2FnZT8gVGhlIHNwcnVmOThwCm1hbnVhbCBzYXlzCj4g
-PiBvbiBwYWdlIDI5Nzk6ICdoYXBwZW5zIG9ubHkgaWYgdGhlIE1QVS9JVkEyLjIgc3Vic3lzdGVt
-IG9yIHNETUEKY29udHJvbGxlcgo+ID4gZG9lcyBub3QgcmVzcGVjdCB0aGUgRE1BIGxlbmd0aCwg
-ZG9lcyBub3Qgd2FpdCBmb3IgRE1BIHJlcXVlc3QsIG9yIGRvZXMKbm90Cj4gPiBjaGVjayB0aGUg
-YnVmZmVyIHN0YXR1cyBiZWZvcmUgcmVhZGluZyBkYXRhLicKPiA+Cj4gPiBIb3cgdG8gZml4IGl0
-LCBJIGFtIG5vdCBzdXJlLCBidXQgYWJzb2x1dGVseSBieSB1c2luZyB0aHJlc2hvbGQgbW9kZSBp
-bgo+ID4gZG1hX29wX21vZGUsIEkgZ2V0IGZhciBsZXNzIGZyZXF1ZW50IHVuZGVyZmxvdy4KPgo+
-IEkgY2FuIHRoaW5rIG9mIHR3byBjYXVzZXM6Cj4gMS4gc0RNQSBmb3Igc29tZSByZWFzb24gaXNz
-dWVzIGFuIGV4dHJhIHJlYWQsIHRoZXJlIG1pZ2h0IGJlIGFuIEVSUkFUQSBmb3IKPiB0aGlzPyBJ
-IGNhbiB0cnkgdG8gY2hlY2sgdGhlIHNETUEgZXJyYXRhcy4KPiAyLiBNY0JTUCBpc3N1ZXMgZXh0
-cmEgRE1BIHJlcXVlc3Qgb3V0IG9mIGJsdWUgYW5kIHRoYXQgZm9yY2VzIHNETUEgdG8KcmVhZD8K
-PiBIYXZlIG5vdCBoZWFyZCBhbnl0aGluZyBsaWtlIHRoYXQsIGJ1dCBjYW4gY2hlY2sgdGhlIGVy
-cmF0YXMgZm9yIE1jQlNQLiBJdAo+IGNvdWxkIGJlIHRoYXQgdGhlIHRocmVzaG9sZCBoYW5kbGlu
-ZyBpcyBoYXZpbmcgc29tZSBpc3N1ZXMgaW4gTWNCU1A/CgpJIGRpZCBub3Qgc2VlIGFueSBlcnJh
-dGEgc3BlY2lmaWMgdG8gdGhpcyBpc3N1ZSwgYnV0IHBlcmhhcHMgSSBtaXNpbnRlcnByZXQKdGhl
-IGVycmF0YSBkb2N1bWVudCBoZXJlOiBodHRwOi8vd3d3LnRpLmNvbS9saXQvZXIvc3ByejI3OGYv
-c3ByejI3OGYucGRmCgo+ID4+IE92ZXJmbG93IGluIE1jQlNQIGhhcHBlbnMgd2hlbiBEQU0gaXMg
-ZmFpbGluZyB0byByZWFkIHRoZSBkYXRhIG91dApmcm9tIE1jQlNQCj4gPj4gRklGTyBpbiB0aW1l
-IC0gRklGTyBpcyBmdWxsIGFuZCBNY0JTUCBkaXNjYXJkcyB0aGUgaW5jb21pbmcgZGF0YSkKPiA+
-Pgo+ID4+IEFMU0EgdW5kZXJmbG93IGlzIGRpZmZlcmVudCwgaXQgaGFwcGVucyB3aGVuIHRoZSBh
-cHBsaWNhdGlvbiBmYWlscyB0bwpwcm9jZXNzCj4gPj4gdGhlIHBlcmlvZCBpbiB0aW1lIGFuZCB0
-aGUgRE1BIHN0YXJ0cyB0byByZXdyaXRlIHRoZSBidWZmZXIuIFRoaXMKaGFwcGVucyB3aGVuCj4g
-Pj4geW91IGhhdmUgb25lIHRocmVhZCB0byBjYXB0dXJlL3Byb2Nlc3MvcGxheS4gSWYgdGhlIHBy
-b2Nlc3MvcGxheSB0YWtlcwptb3JlCj4gPj4gdGltZSB0aGFuIHdlIGdvIHJvdW5kIGluIHRoZSBi
-b2ZmZXIgKGJ1ZmZlciB0aW1lKSB3ZSBoYXZlIEFMU0EKdW5kZXJmbG93LiBZb3UKPiA+PiBjYW4g
-dHJ5IHRvIGluY3JlYXNlIHRoZSBudW1iZXIgb2YgcGVyaW9kcyBvciBzZXBhcmF0ZSB0aGUgY2Fw
-dHVyZSBhbmQKPiA+PiBwcm9jZXNzL3BsYXkgam9icyBpbnRvIHNlcGFyYXRlIHRocmVhZHMuCj4g
-Pj4KPiA+PiA+IE15IHBsYW4gZnJvbSBub3cgaXMgdG8gZ2V0IG15IEpUQUcgdXAgYW5kIHJ1bm5p
-bmcgYW5kIHRyeSBhbmQgbWFrZQp0aGUgY2hhbmdlCj4gPj4gPiAiSWYgeW91IGFyZSB3b3JraW5n
-IHdpdGggMTYtYml0IHN0ZXJlbyBkYXRhIGEgbmljZSBzb2x1dGlvbiBpcyB0bwpjb25maWd1cmUK
-PiA+PiA+IHRoZSBNY0JTUCBmb3IgYSBzaW5nbGUgMzItYml0IGVsZW1lbnQgaW5zdGVhZCBvZiAy
-IDE2LWJpdCBlbGVtZW50cy4gIgo+ID4+Cj4gPj4gVGhlIE1jQlNQIGRyaXZlciBkb2VzIG5vdCBo
-YXZlIHN1cHBvcnQgZm9yIHRoaXMgQVRNLiBUaGVyZSBpcyBhIHNpZGUKZWZmZWN0IG9mCj4gPj4g
-dGhpcyBBRkFJSzogY2hhbm5lbHMgd2lsbCBiZSBzd2FwcGVkLCBidXQgSSBoYXZlIG5vdCB0ZXN0
-ZWQgaXQuCj4gPj4gVXNpbmcgMzJiaXQgZWxlbWVudCBpbnN0ZWFkIG9mIDJ4MTZiaXQgaGVscHMg
-aW4gY2FzZSB3aGVuIHlvdSBkbyBub3QKaGF2ZSBGSUZPCj4gPj4gZm9yIHN1cmUgdG8gZ2l2ZSBt
-b3JlIHRpbWUgZm9yIHRoZSBETUEuIEFsc28gaW4gY2FzZSBvZgp1bmRlcnJ1bi9vdmVycnVuIHlv
-dQo+ID4+IHdpbGwgYmUgbG9vc2luZyBib3RoIGNoYW5uZWwncyBkYXRhIHNvIHRoZSBzd2FwIHdv
-dWxkIG5vdCBoYXBwZW4uCj4gPgo+ID4gVGhpcyBzb3VuZHMgbGlrZSBhIGZpbmUgc29sdXRpb24g
-Zm9yIG1lIGluIHRoZSBpbnRlcmltOiBhIHBlcm1hbmVudApjaGFubmVsCj4gPiBzd2FwIGNhbiBi
-ZSBkZWFsdCB3aXRoIGFmdGVyIGRhdGEgaXMgcmVjZWl2ZWQgZnJvbSBBTFNBLgo+Cj4gSSB0cmll
-ZCB0aGlzIChub3QgdG9vIGhhcmQpIGJ1dCBjb3VsZCBub3QgbWFrZSBpdCB3b3JrIGZvciBwbGF5
-YmFjayBzbwpjYXB0dXJlCj4gY291bGQgYmUgYnJva2VuIGFzIHdlbGwgd2l0aCB0aGlzIGhhY2su
-CgpZb3UgbWVhbiBieSB0aGlzIHlvdSB0ZXN0ZWQgRFNQX0EgZm9ybWF0IGZvciBwbGF5YmFjaz8g
-SSBkaWQgbm90IGdldCBhcm91bmQKdG8gdHJ5aW5nIGZvciBjYXB0dXJlIHlldCwgYnV0IGlmIGl0
-IGlzIGJyb2tlbiBmb3IgcGxheWJhY2ssIHRoYXQgaXMgbm90IGEKZ29vZCBzaWduLgoKPiBDb3Vw
-bGUgb2YgaW50ZXJlc3RpbmcgZGV0YWlscyAoSSdtIHJ1bm5pbmcgbXkgdGVzdHMgb24gdG9wIG9m
-IGxpbnV4LW5leHQpOgo+IEluIGVsZW1lbnQgbW9kZSB3ZSBoYXZlIHRoZSB1bmRlcnJ1bnMgY29t
-aW5nIGluIHN0ZWFkeSBwYWNlLCBidXQgaWYgSSBkbwpkbWVzZwo+IG92ZXIgdGhlIHNlcmlhbCBj
-b25zb2xlICh3aGljaCBpcyBhbHNvIHVzaW5nIERNQSBub3dkYXlzKSB0aGUgdW5kZXJydW5zIGlu
-Cj4gYXVkaW8gZ290IGluY3JlYXNlZC4gSW4gdGhyZXNob2xkIG1vZGUgd2UgaGF2ZSBsZXNzIHVu
-ZGVycnVucywgYnV0IGFnYWluCmRtZXNnCj4gb24gc2VyaWFsIHdpbGwgZ2VuZXJhdGUgbG90cyBv
-ZiB1bmRlcnJ1bnMgOm8KPgo+IE91dCBvZiBjdXJpb3NpdHkgSSBoYXZlIGNoZWNrZWQgaG93IHRo
-aW5ncyBhcmUgd2hlbiBNY0JTUCBpcyBtYXN0ZXIgb24gdGhlCj4gYnVzLiBJIHNlZSBubyB1bmRl
-cnJ1bnMgYXQgYWxsLiBFdmVuIGlmIEkgZG8gdGhlIGRtZXNnIG9uIHNlcmlhbC4gVGhpcyBpcwo+
-IHNvbWV0aGluZyBJIGRvbid0IHJlYWxseSB1bmRlcnN0YW5kIGF0bS4KPiBGb3IgcmVmZXJlbmNl
-IEkgaGF2ZSBhdHRhY2hlZCBteSBsb2NhbCBwYXRjaCBvbiB0b3Agb2YgbGludXgtbmV4dCBmb3Ig
-dGhlCj4gb21hcC10d2w0MDMwIG1hY2hpbmUgZHJpdmVyIHRvIGNyZWF0ZSB0aGUgUENNIGZvciBN
-Y0JTUCBtYXN0ZXIKY29uZmlndXJhdGlvbi4KPgo+IElmIEk6Cj4gYXJlY29yZCAtRHBsdWdodzow
-LDAgLWYgZGF0IC0tcGVyaW9kLXNpemU9NDgwIC0tYnVmZmVyLXNpemU9OTYwID4KL2Rldi9udWxs
-Cj4KPiBJIHNlZSB1bmRlcnJ1bnMKPgo+IGJ1dDoKPiBhcmVjb3JkIC1EcGx1Z2h3OjAsMSAtZiBk
-YXQgLS1wZXJpb2Qtc2l6ZT00ODAgLS1idWZmZXItc2l6ZT05NjAgPgovZGV2L251bGwKPgo+IEkg
-c2VlIG5vIHVuZGVycnVucwo+Cj4gOjAsMCBpcyB0aGUgTWNCU1Agc2xhdmUsIDowLDEgaXMgd2hl
-biBNY0JTUCBpcyBtYXN0ZXIuCj4KPiBDYW4geW91IGxvb2sgYXQgdGhlIHBhdGNoIGFuZCBzZWUg
-aWYgeW91IGNvdWxkIGdldCB0aGUgTWNCU1AgbWFzdGVyIG1vZGUKPiB3b3JraW5nIG9uIHlvdXIg
-c2V0dXAgYW5kIHRlc3QgaXQ/CgpJIHdpbGwgc2VlIGFib3V0IGltcGxlbWVudGluZyB0aGUgcGF0
-Y2ggb24gdG9wIG9mIHRoZSBrZXJuZWwgSSBhbSB1c2luZwooMy4xOCkgdG9kYXkuIFRoYW5rcyBm
-b3IgcHJvdmlkaW5nIGl0ISBXaG8ga25vd3MsIG1heWJlIGJ5IHRyZWF0aW5nIE1jQlNQCmFzIG1h
-c3RlciB0aGUgcHJvYmxlbSBvZiBjaGFubmVsIHN3YXBwaW5nIGlzIHJlc29sdmVkIGFzIHdlbGwg
-YXMgdGhlCnVuZGVyZmxvdy4KCj4gLS0KPiBQw6l0ZXIKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Focus Luo <focus.luo@linux.intel.com>
+
+The patch set supplies some automated test scripts and reference amixer config
+files for linux audio driver testing by using alsa-bat as test tool on Intel
+platforms.
+
+The first patch includes automated test scripts for linux audio driver based
+on alsa-lib interface by using alsabat as test tool. It supports analog audio
+and display audio(HDMI/DP) interface.
+
+The second patch supplies some amixer reference config file on Intel platforms.
+
+Focus Luo (2):
+  alsabat: automation test scripts
+  alsabat: add amixer config files
+
+ bat/Makefile.am                                |   1 +
+ bat/tests/Makefile.am                          |  11 +
+ bat/tests/README                               |  32 ++
+ bat/tests/alsabat_main.sh                      | 178 ++++++++++
+ bat/tests/analog_audio_playback_and_capture.sh |  84 +++++
+ bat/tests/asound_state/Makefile.am             |   6 +
+ bat/tests/asound_state/asound.state.Broadwell  | 439 +++++++++++++++++++++++++
+ bat/tests/asound_state/asound.state.Haswell    | 342 +++++++++++++++++++
+ bat/tests/asound_state/asound.state.Skylake    | 437 ++++++++++++++++++++++++
+ bat/tests/dp_audio_playback.sh                 |  83 +++++
+ bat/tests/dp_audio_subdevice_number.sh         |  68 ++++
+ bat/tests/hdmi_audio_playback.sh               |  81 +++++
+ bat/tests/hdmi_audio_subdevice_number.sh       |  65 ++++
+ bat/tests/map_test_case                        |   8 +
+ configure.ac                                   |   3 +-
+ 15 files changed, 1837 insertions(+), 1 deletion(-)
+ create mode 100644 bat/tests/Makefile.am
+ create mode 100644 bat/tests/README
+ create mode 100755 bat/tests/alsabat_main.sh
+ create mode 100755 bat/tests/analog_audio_playback_and_capture.sh
+ create mode 100644 bat/tests/asound_state/Makefile.am
+ create mode 100644 bat/tests/asound_state/asound.state.Broadwell
+ create mode 100644 bat/tests/asound_state/asound.state.Haswell
+ create mode 100644 bat/tests/asound_state/asound.state.Skylake
+ create mode 100755 bat/tests/dp_audio_playback.sh
+ create mode 100755 bat/tests/dp_audio_subdevice_number.sh
+ create mode 100755 bat/tests/hdmi_audio_playback.sh
+ create mode 100755 bat/tests/hdmi_audio_subdevice_number.sh
+ create mode 100644 bat/tests/map_test_case
+
+-- 
+1.9.1
