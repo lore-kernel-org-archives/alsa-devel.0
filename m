@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt56040: additional
-	routing quirks" to the asoc tree
-Date: Mon, 15 Aug 2016 15:15:54 +0100
-Message-ID: <E1bZIgE-0007Lk-6Y@debutante>
-References: <1471037280-17433-9-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: fix dai/clock
+	setup for SSP0 routing" to the asoc tree
+Date: Mon, 15 Aug 2016 15:15:51 +0100
+Message-ID: <E1bZIgB-0007Ks-7r@debutante>
+References: <1471037280-17433-10-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C302426772B
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:16:00 +0200 (CEST)
-In-Reply-To: <1471037280-17433-9-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CC97267871
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:15:57 +0200 (CEST)
+In-Reply-To: <1471037280-17433-10-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt56040: additional routing quirks
+   ASoC: Intel: bytcr_rt5640: fix dai/clock setup for SSP0 routing
 
 has been applied to the asoc tree at
 
@@ -53,116 +53,141 @@ to this mail.
 Thanks,
 Mark
 
->From f47088d5ae6bec6d01bb0fd71c7d113aa8eaaa27 Mon Sep 17 00:00:00 2001
+>From 038a50e735c85a7a9fbcda090785a588443ffa26 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 12 Aug 2016 16:27:51 -0500
-Subject: [PATCH] ASoC: Intel: bytcr_rt56040: additional routing quirks
+Date: Fri, 12 Aug 2016 16:27:52 -0500
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: fix dai/clock setup for SSP0
+ routing
 
-Allow for all possible combinations of SSP0,SSP2, AIF1, AIF2
-combination (only one at a time)
+SSP0 uses 16 bits 2ch, SSP2 24 bits 2ch
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 44 +++++++++++++++++++++++++++++++++--
- 1 file changed, 42 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 92 ++++++++++++++++++++++++-----------
+ 1 file changed, 64 insertions(+), 28 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 6c6f67356c99..4337b5e85921 100644
+index 4337b5e85921..42c7bd20f54d 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -43,6 +43,8 @@ enum {
- #define BYT_RT5640_MONO_SPEAKER BIT(17)
- #define BYT_RT5640_DIFF_MIC     BIT(18) /* defaut is single-ended */
- #define BYT_RT5640_SSP2_AIF2     BIT(19) /* default is using AIF1  */
-+#define BYT_RT5640_SSP0_AIF1     BIT(20)
-+#define BYT_RT5640_SSP0_AIF2     BIT(21)
+@@ -138,8 +138,6 @@ static int byt_rt5640_aif1_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	int ret;
  
- static unsigned long byt_rt5640_quirk = BYT_RT5640_DMIC1_MAP |
- 					BYT_RT5640_DMIC_EN;
-@@ -94,6 +96,22 @@ static const struct snd_soc_dapm_route byt_rt5640_ssp2_aif2_map[] = {
- 	{"ssp2 Rx", NULL, "AIF2 Capture"},
- };
- 
-+static const struct snd_soc_dapm_route byt_rt5640_ssp0_aif1_map[] = {
-+	{"ssp0 Tx", NULL, "modem_out"},
-+	{"modem_in", NULL, "ssp0 Rx"},
-+
-+	{"AIF1 Playback", NULL, "ssp0 Tx"},
-+	{"ssp0 Rx", NULL, "AIF1 Capture"},
-+};
-+
-+static const struct snd_soc_dapm_route byt_rt5640_ssp0_aif2_map[] = {
-+	{"ssp0 Tx", NULL, "modem_out"},
-+	{"modem_in", NULL, "ssp0 Rx"},
-+
-+	{"AIF2 Playback", NULL, "ssp0 Tx"},
-+	{"ssp0 Rx", NULL, "AIF2 Capture"},
-+};
-+
- static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
- 	{"Speaker", NULL, "SPOLP"},
- 	{"Speaker", NULL, "SPOLN"},
-@@ -231,6 +249,14 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
- 		ret = snd_soc_dapm_add_routes(&card->dapm,
- 					byt_rt5640_ssp2_aif2_map,
- 					ARRAY_SIZE(byt_rt5640_ssp2_aif2_map));
-+	} else if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) {
-+		ret = snd_soc_dapm_add_routes(&card->dapm,
-+					byt_rt5640_ssp0_aif1_map,
-+					ARRAY_SIZE(byt_rt5640_ssp0_aif1_map));
-+	} else if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2) {
-+		ret = snd_soc_dapm_add_routes(&card->dapm,
-+					byt_rt5640_ssp0_aif2_map,
-+					ARRAY_SIZE(byt_rt5640_ssp0_aif2_map));
- 	} else {
- 		ret = snd_soc_dapm_add_routes(&card->dapm,
- 					byt_rt5640_ssp2_aif1_map,
-@@ -369,7 +395,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
- 	{
- 		.name = "SSP2-Codec",
- 		.id = 1,
--		.cpu_dai_name = "ssp2-port",
-+		.cpu_dai_name = "ssp2-port", /* overwritten for ssp0 routing */
- 		.platform_name = "sst-mfld-platform",
- 		.no_pcm = 1,
- 		.codec_dai_name = "rt5640-aif1", /* changed w/ quirk */
-@@ -400,6 +426,7 @@ static struct snd_soc_card byt_rt5640_card = {
- 
- static char byt_rt5640_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
- static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
-+static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
- 
- static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- {
-@@ -434,7 +461,8 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	/* check quirks before creating card */
- 	dmi_check_system(byt_rt5640_quirk_table);
- 
--	if (byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) {
-+	if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
-+	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
- 
- 		/* fixup codec aif name */
- 		snprintf(byt_rt5640_codec_aif_name,
-@@ -445,6 +473,18 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 			byt_rt5640_codec_aif_name;
+-	snd_soc_dai_set_bclk_ratio(codec_dai, 50);
+-
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_PLL1,
+ 				     params_rate(params) * 512,
+ 				     SND_SOC_CLOCK_IN);
+@@ -148,9 +146,18 @@ static int byt_rt5640_aif1_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
  	}
  
+-	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5640_PLL1_S_BCLK1,
+-				  params_rate(params) * 50,
+-				  params_rate(params) * 512);
 +	if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
-+	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
++		(byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
 +
-+		/* fixup cpu dai name name */
-+		snprintf(byt_rt5640_cpu_dai_name,
-+			sizeof(byt_rt5640_cpu_dai_name),
-+			"%s", "ssp0-port");
-+
-+		byt_rt5640_dais[dai_index].cpu_dai_name =
-+			byt_rt5640_cpu_dai_name;
++		ret = snd_soc_dai_set_pll(codec_dai, 0, RT5640_PLL1_S_BCLK1,
++					params_rate(params) * 32, /* FIXME */
++					params_rate(params) * 512);
++	} else {
++		ret = snd_soc_dai_set_pll(codec_dai, 0, RT5640_PLL1_S_BCLK1,
++					params_rate(params) * 50,
++					params_rate(params) * 512);
 +	}
 +
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
+ 	if (ret < 0) {
+ 		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
+ 		return ret;
+@@ -311,34 +318,63 @@ static int byt_rt5640_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	int ret;
  
- 	if (ret_val) {
+-	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
++	/* The DSP will covert the FE rate to 48k, stereo */
+ 	rate->min = rate->max = 48000;
+ 	channels->min = channels->max = 2;
+ 
+-	/* set SSP2 to 24-bit */
+-	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
+-
+-	/*
+-	 * Default mode for SSP configuration is TDM 4 slot, override config
+-	 * with explicit setting to I2S 2ch 24-bit. The word length is set with
+-	 * dai_set_tdm_slot() since there is no other API exposed
+-	 */
+-	ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
+-				  SND_SOC_DAIFMT_I2S     |
+-				  SND_SOC_DAIFMT_NB_IF   |
+-				  SND_SOC_DAIFMT_CBS_CFS
+-				  );
+-	if (ret < 0) {
+-		dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
+-		return ret;
+-	}
++	if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
++		(byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
++
++		/* set SSP2 to 16-bit */
++		params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
++
++		/*
++		 * Default mode for SSP configuration is TDM 4 slot, override config
++		 * with explicit setting to I2S 2ch 16-bit. The word length is set with
++		 * dai_set_tdm_slot() since there is no other API exposed
++		 */
++		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
++					SND_SOC_DAIFMT_I2S     |
++					SND_SOC_DAIFMT_NB_IF   |
++					SND_SOC_DAIFMT_CBS_CFS
++			);
++		if (ret < 0) {
++			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
++			return ret;
++		}
+ 
+-	ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 24);
+-	if (ret < 0) {
+-		dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
+-		return ret;
+-	}
++		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 16);
++		if (ret < 0) {
++			dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
++			return ret;
++		}
++
++	} else {
+ 
++		/* set SSP2 to 24-bit */
++		params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++
++		/*
++		 * Default mode for SSP configuration is TDM 4 slot, override config
++		 * with explicit setting to I2S 2ch 24-bit. The word length is set with
++		 * dai_set_tdm_slot() since there is no other API exposed
++		 */
++		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
++					SND_SOC_DAIFMT_I2S     |
++					SND_SOC_DAIFMT_NB_IF   |
++					SND_SOC_DAIFMT_CBS_CFS
++			);
++		if (ret < 0) {
++			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
++			return ret;
++		}
++
++		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 24);
++		if (ret < 0) {
++			dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
++			return ret;
++		}
++	}
+ 	return 0;
+ }
+ 
 -- 
 2.8.1
