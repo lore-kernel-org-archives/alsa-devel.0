@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: add SSP2_AIF2
-	routing" to the asoc tree
-Date: Mon, 15 Aug 2016 15:15:57 +0100
-Message-ID: <E1bZIgH-0007O8-6H@debutante>
-References: <1471037280-17433-8-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: atom: enable configuration of
+	SSP0" to the asoc tree
+Date: Mon, 15 Aug 2016 15:16:00 +0100
+Message-ID: <E1bZIgK-0007P6-60@debutante>
+References: <1471037280-17433-7-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2084B267873
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:16:04 +0200 (CEST)
-In-Reply-To: <1471037280-17433-8-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 07CE5267877
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2016 16:16:07 +0200 (CEST)
+In-Reply-To: <1471037280-17433-7-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: add SSP2_AIF2 routing
+   ASoC: Intel: atom: enable configuration of SSP0
 
 has been applied to the asoc tree at
 
@@ -53,125 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From 89b8907ce28fce3e34240e7668c9704880bf3368 Mon Sep 17 00:00:00 2001
+>From a3f10de1843ab6a37d34d1601cc520498c5d3bc9 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 12 Aug 2016 16:27:50 -0500
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: add SSP2_AIF2 routing
+Date: Fri, 12 Aug 2016 16:27:49 -0500
+Subject: [PATCH] ASoC: Intel: atom: enable configuration of SSP0
 
-Add quirk to model routing on Baytrail-CR devices
+Existing code used SSP2, make selection of SSP id
+dependent on port name. This is required when the
+machine driver uses non-default settings
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 54 +++++++++++++++++++++++++++++------
- 1 file changed, 46 insertions(+), 8 deletions(-)
+ sound/soc/intel/atom/sst-atom-controls.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 085e57f95fb2..6c6f67356c99 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -42,6 +42,7 @@ enum {
- #define BYT_RT5640_DMIC_EN	BIT(16)
- #define BYT_RT5640_MONO_SPEAKER BIT(17)
- #define BYT_RT5640_DIFF_MIC     BIT(18) /* defaut is single-ended */
-+#define BYT_RT5640_SSP2_AIF2     BIT(19) /* default is using AIF1  */
- 
- static unsigned long byt_rt5640_quirk = BYT_RT5640_DMIC1_MAP |
- 					BYT_RT5640_DMIC_EN;
-@@ -54,13 +55,6 @@ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
- };
- 
- static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
--	{"AIF1 Playback", NULL, "ssp2 Tx"},
--	{"ssp2 Tx", NULL, "codec_out0"},
--	{"ssp2 Tx", NULL, "codec_out1"},
--	{"codec_in0", NULL, "ssp2 Rx"},
--	{"codec_in1", NULL, "ssp2 Rx"},
--	{"ssp2 Rx", NULL, "AIF1 Capture"},
--
- 	{"Headset Mic", NULL, "MICBIAS1"},
- 	{"IN2P", NULL, "Headset Mic"},
- 	{"Headphone", NULL, "HPOL"},
-@@ -80,6 +74,26 @@ static const struct snd_soc_dapm_route byt_rt5640_intmic_in1_map[] = {
- 	{"IN1P", NULL, "Internal Mic"},
- };
- 
-+static const struct snd_soc_dapm_route byt_rt5640_ssp2_aif1_map[] = {
-+	{"ssp2 Tx", NULL, "codec_out0"},
-+	{"ssp2 Tx", NULL, "codec_out1"},
-+	{"codec_in0", NULL, "ssp2 Rx"},
-+	{"codec_in1", NULL, "ssp2 Rx"},
-+
-+	{"AIF1 Playback", NULL, "ssp2 Tx"},
-+	{"ssp2 Rx", NULL, "AIF1 Capture"},
-+};
-+
-+static const struct snd_soc_dapm_route byt_rt5640_ssp2_aif2_map[] = {
-+	{"ssp2 Tx", NULL, "codec_out0"},
-+	{"ssp2 Tx", NULL, "codec_out1"},
-+	{"codec_in0", NULL, "ssp2 Rx"},
-+	{"codec_in1", NULL, "ssp2 Rx"},
-+
-+	{"AIF2 Playback", NULL, "ssp2 Tx"},
-+	{"ssp2 Rx", NULL, "AIF2 Capture"},
-+};
-+
- static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
- 	{"Speaker", NULL, "SPOLP"},
- 	{"Speaker", NULL, "SPOLN"},
-@@ -213,6 +227,18 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
- 	if (ret)
- 		return ret;
- 
-+	if (byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) {
-+		ret = snd_soc_dapm_add_routes(&card->dapm,
-+					byt_rt5640_ssp2_aif2_map,
-+					ARRAY_SIZE(byt_rt5640_ssp2_aif2_map));
-+	} else {
-+		ret = snd_soc_dapm_add_routes(&card->dapm,
-+					byt_rt5640_ssp2_aif1_map,
-+					ARRAY_SIZE(byt_rt5640_ssp2_aif1_map));
-+	}
-+	if (ret)
-+		return ret;
-+
- 	if (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) {
- 		ret = snd_soc_dapm_add_routes(&card->dapm,
- 					byt_rt5640_mono_spk_map,
-@@ -346,7 +372,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
- 		.cpu_dai_name = "ssp2-port",
- 		.platform_name = "sst-mfld-platform",
- 		.no_pcm = 1,
--		.codec_dai_name = "rt5640-aif1",
-+		.codec_dai_name = "rt5640-aif1", /* changed w/ quirk */
- 		.codec_name = "i2c-10EC5640:00", /* overwritten with HID */
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 						| SND_SOC_DAIFMT_CBS_CFS,
-@@ -373,6 +399,7 @@ static struct snd_soc_card byt_rt5640_card = {
- };
- 
- static char byt_rt5640_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
-+static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
- 
- static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
+index 28eea127ec33..0838478c4c3f 100644
+--- a/sound/soc/intel/atom/sst-atom-controls.c
++++ b/sound/soc/intel/atom/sst-atom-controls.c
+@@ -935,17 +935,26 @@ void sst_fill_ssp_defaults(struct snd_soc_dai *dai)
+ int send_ssp_cmd(struct snd_soc_dai *dai, const char *id, bool enable)
  {
-@@ -407,6 +434,17 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	/* check quirks before creating card */
- 	dmi_check_system(byt_rt5640_quirk_table);
+ 	struct sst_data *drv = snd_soc_dai_get_drvdata(dai);
+-	const struct sst_ssp_config *config;
++	int ssp_id;
  
-+	if (byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) {
-+
-+		/* fixup codec aif name */
-+		snprintf(byt_rt5640_codec_aif_name,
-+			sizeof(byt_rt5640_codec_aif_name),
-+			"%s", "rt5640-aif2");
-+
-+		byt_rt5640_dais[dai_index].codec_dai_name =
-+			byt_rt5640_codec_aif_name;
+ 	dev_info(dai->dev, "Enter: enable=%d port_name=%s\n", enable, id);
+ 
++	if (strcmp(id, "ssp0-port") == 0)
++		ssp_id = SSP_MODEM;
++	else if (strcmp(id, "ssp2-port") == 0)
++		ssp_id = SSP_CODEC;
++	else {
++		dev_dbg(dai->dev, "port %s is not supported\n", id);
++		return -1;
 +	}
 +
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
+ 	SST_FILL_DEFAULT_DESTINATION(drv->ssp_cmd.header.dst);
+ 	drv->ssp_cmd.header.command_id = SBA_HW_SET_SSP;
+ 	drv->ssp_cmd.header.length = sizeof(struct sst_cmd_sba_hw_set_ssp)
+ 				- sizeof(struct sst_dsp_header);
  
- 	if (ret_val) {
+-	config = &sst_ssp_configs;
+-	dev_dbg(dai->dev, "ssp_id: %u\n", config->ssp_id);
++	drv->ssp_cmd.selection = ssp_id;
++	dev_dbg(dai->dev, "ssp_id: %u\n", ssp_id);
+ 
+ 	if (enable)
+ 		drv->ssp_cmd.switch_state = SST_SWITCH_ON;
 -- 
 2.8.1
