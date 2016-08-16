@@ -1,14 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 0/3] Baytrail followup patches
-Date: Tue, 16 Aug 2016 18:28:20 -0500
-Message-ID: <1471390103-915-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/3] ASoC: Intel: atom: fix 0-day warnings
+Date: Tue, 16 Aug 2016 18:28:21 -0500
+Message-ID: <1471390103-915-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+References: <1471390103-915-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 82EB7265AC9
- for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2016 01:28:34 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BF1F26683F
+ for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2016 01:28:35 +0200 (CEST)
+In-Reply-To: <1471390103-915-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +24,39 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, sfr@canb.auug.org.au, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, irina.tirdea@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-fixes for warnings detected by 0-Day
-New quirk for Acer Aspire platforms
-Resending clock framework support (for-next audio not working on all platforms
-enabling MCLK if this patch is not applied)
+spurious __initconst copy/pasted from other drivers
 
-Irina Tirdea (1):
-  clk: x86: Add Atom PMC platform clocks
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/intel/atom/sst/sst_acpi.c   | 2 +-
+ sound/soc/intel/boards/bytcr_rt5640.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Pierre-Louis Bossart (2):
-  ASoC: Intel: atom: fix 0-day warnings
-  ASoC: Intel: bytcr_rt5640: quirk for Acer Aspire SWS-012
-
- arch/x86/Kconfig                      |   1 +
- arch/x86/include/asm/pmc_atom.h       |   6 +
- arch/x86/platform/atom/pmc_atom.c     |  55 ++++-
- drivers/clk/x86/Makefile              |   1 +
- drivers/clk/x86/clk-byt-plt.c         | 413 ++++++++++++++++++++++++++++++++++
- sound/soc/intel/atom/sst/sst_acpi.c   |   2 +-
- sound/soc/intel/boards/bytcr_rt5640.c |  15 +-
- 7 files changed, 487 insertions(+), 6 deletions(-)
- create mode 100644 drivers/clk/x86/clk-byt-plt.c
-
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 0c2cc42..773acfb 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -245,7 +245,7 @@ static int is_byt_cr(struct device *dev, bool *bytcr)
+ 	int status = 0;
+ 
+ 	if (IS_ENABLED(CONFIG_IOSF_MBI)) {
+-		static const struct x86_cpu_id cpu_ids[] __initconst = {
++		static const struct x86_cpu_id cpu_ids[] = {
+ 			{ X86_VENDOR_INTEL, 6, 55 }, /* Valleyview, Bay Trail */
+ 			{}
+ 		};
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 09ec3d7..2548815 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -668,7 +668,7 @@ static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ 
+ static bool is_valleyview(void)
+ {
+-	static const struct x86_cpu_id cpu_ids[] __initconst = {
++	static const struct x86_cpu_id cpu_ids[] = {
+ 		{ X86_VENDOR_INTEL, 6, 55 }, /* Valleyview, Bay Trail */
+ 		{}
+ 	};
 -- 
 2.7.4
