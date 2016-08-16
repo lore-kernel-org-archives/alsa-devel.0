@@ -1,18 +1,28 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel-pdmic: Fix typos in comments and
-	error messages" to the asoc tree
-Date: Tue, 16 Aug 2016 19:43:41 +0100
-Message-ID: <E1bZjKv-0002BU-NL@debutante>
-References: <1471359378-9122-2-git-send-email-pmeerw@pmeerw.net>
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Subject: locking looks odd
+Date: Tue, 16 Aug 2016 23:03:22 +0200
+Message-ID: <20160816210322.GD4466@var.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="7AUc2qLy4jB3hD7Z"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 02CBF26683F
- for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 20:43:55 +0200 (CEST)
-In-Reply-To: <1471359378-9122-2-git-send-email-pmeerw@pmeerw.net>
+Received: from hera.aquilenet.fr (hera.aquilenet.fr [141.255.128.1])
+ by alsa0.perex.cz (Postfix) with ESMTP id D8E5D26683F
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 23:03:23 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by hera.aquilenet.fr (Postfix) with ESMTP id 19BA782B0
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 23:03:23 +0200 (CEST)
+Received: from hera.aquilenet.fr ([127.0.0.1])
+ by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id PMag62UCQxel for <alsa-devel@alsa-project.org>;
+ Tue, 16 Aug 2016 23:03:22 +0200 (CEST)
+Received: from var.youpi.perso.aquilenet.fr (unknown
+ [IPv6:2a01:cb19:1af:4600:3602:86ff:fe2c:6a19])
+ by hera.aquilenet.fr (Postfix) with ESMTPSA id E1227375
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 23:03:22 +0200 (CEST)
+Received: from samy by var.youpi.perso.aquilenet.fr with local (Exim 4.87)
+ (envelope-from <samuel.thibault@ens-lyon.org>) id 1bZlW6-0007B9-H7
+ for alsa-devel@alsa-project.org; Tue, 16 Aug 2016 23:03:22 +0200
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,88 +32,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com, Songjun Wu <songjun.wu@atmel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: atmel-pdmic: Fix typos in comments and error messages
+--7AUc2qLy4jB3hD7Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+Hello,
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+We are having odd issues with libasound 1.1.2 which we didn't have with
+libasound 1.1.1, more precisely
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=833950
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+so I'm having a look at the locking API introduced in 1.1.2, and there
+are some oddities:
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+- snd_pcm_new seems to initialize pcm->thread_safe to 0 by default, this
+  does not seem safe. The attached patch initializes it to 1, which
+  fixes the bug in our tests.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+- snd_pcm_hw_open_fd forces it to 1, thus ignoring what snd_pcm_new set.
 
-Thanks,
-Mark
+- one can find both __snd_pcm_lock and snd_pcm_lock functions, what is
+  the expected difference between them?
 
->From 032ca4a76fc3cc81801903aa2532f1e6bae94ca2 Mon Sep 17 00:00:00 2001
-From: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Date: Tue, 16 Aug 2016 16:56:18 +0200
-Subject: [PATCH] ASoC: atmel-pdmic: Fix typos in comments and error messages
+- __snd_pcm_lock takes locks when thread_safe >= 0, while snd_pcm_lock
+  takes locks when thread_safe == 0, this looks really odd.
 
-Signed-off-by: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Cc: Songjun Wu <songjun.wu@atmel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/atmel/atmel-pdmic.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+- libasound could just not link against libpthread,
+  pthread_mutex_lock/unlock are already provided as empty stubs by libc,
+  the overhead will thus only be hit when the application links against
+  libpthread (libasound will then properly use pthread locks).
 
-diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
-index 8b4beb07ca43..bca7751a15fd 100644
---- a/sound/soc/atmel/atmel-pdmic.c
-+++ b/sound/soc/atmel/atmel-pdmic.c
-@@ -80,7 +80,7 @@ static struct atmel_pdmic_pdata *atmel_pdmic_dt_init(struct device *dev)
- 
- 	if (pdata->mic_max_freq < pdata->mic_min_freq) {
- 		dev_err(dev,
--			"mic-max-freq should not less than mic-min-freq\n");
-+			"mic-max-freq should not be less than mic-min-freq\n");
- 		return ERR_PTR(-EINVAL);
- 	}
- 
-@@ -598,7 +598,7 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
- 	dd->irq = platform_get_irq(pdev, 0);
- 	if (dd->irq < 0) {
- 		ret = dd->irq;
--		dev_err(dev, "failed to could not get irq: %d\n", ret);
-+		dev_err(dev, "failed to get irq: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -616,7 +616,7 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	/* The gclk clock frequency must always be tree times
-+	/* The gclk clock frequency must always be three times
- 	 * lower than the pclk clock frequency
- 	 */
- 	ret = clk_set_rate(dd->gclk, clk_get_rate(dd->pclk)/3);
-@@ -651,7 +651,7 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	/* Get the minimal and maximal sample rate that micphone supports */
-+	/* Get the minimal and maximal sample rate that the microphone supports */
- 	atmel_pdmic_get_sample_rate(dd, &rate_min, &rate_max);
- 
- 	/* register cpu dai */
--- 
-2.8.1
+Samuel
+
+--7AUc2qLy4jB3hD7Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=patch
+
+--- ./src/pcm/pcm.c.orig	2016-08-10 19:39:59.881564371 +0200
++++ ./src/pcm/pcm.c	2016-08-10 19:40:04.211539997 +0200
+@@ -2544,6 +2544,7 @@
+ 	pcm->fast_op_arg = pcm;
+ 	INIT_LIST_HEAD(&pcm->async_handlers);
+ #ifdef THREAD_SAFE_API
++	pcm->thread_safe = 1;
+ 	pthread_mutex_init(&pcm->lock, NULL);
+ 	{
+ 		static int default_thread_safe = -1;
+
+--7AUc2qLy4jB3hD7Z
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--7AUc2qLy4jB3hD7Z--
