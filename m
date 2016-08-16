@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Fix typos in comment" to the asoc
-	tree
-Date: Tue, 16 Aug 2016 19:43:44 +0100
-Message-ID: <E1bZjKy-0002CO-LI@debutante>
-References: <1471359378-9122-1-git-send-email-pmeerw@pmeerw.net>
+Subject: Applied "ASoC: atmel-pdmic: Fix typos in comments and
+	error messages" to the asoc tree
+Date: Tue, 16 Aug 2016 19:43:41 +0100
+Message-ID: <E1bZjKv-0002BU-NL@debutante>
+References: <1471359378-9122-2-git-send-email-pmeerw@pmeerw.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2661C26683D
- for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 20:43:54 +0200 (CEST)
-In-Reply-To: <1471359378-9122-1-git-send-email-pmeerw@pmeerw.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id 02CBF26683F
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 20:43:55 +0200 (CEST)
+In-Reply-To: <1471359378-9122-2-git-send-email-pmeerw@pmeerw.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com, Songjun Wu <songjun.wu@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Fix typos in comment
+   ASoC: atmel-pdmic: Fix typos in comments and error messages
 
 has been applied to the asoc tree at
 
@@ -53,93 +53,57 @@ to this mail.
 Thanks,
 Mark
 
->From c80460005743c6f253706a9a5618de81254c81bf Mon Sep 17 00:00:00 2001
+>From 032ca4a76fc3cc81801903aa2532f1e6bae94ca2 Mon Sep 17 00:00:00 2001
 From: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Date: Tue, 16 Aug 2016 16:56:17 +0200
-Subject: [PATCH] ASoC: dapm: Fix typos in comment
+Date: Tue, 16 Aug 2016 16:56:18 +0200
+Subject: [PATCH] ASoC: atmel-pdmic: Fix typos in comments and error messages
 
 Signed-off-by: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Cc: Songjun Wu <songjun.wu@atmel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ sound/soc/atmel/atmel-pdmic.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 8698c26773b3..c46b1ff52885 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1169,7 +1169,7 @@ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget,
-  * @custom_stop_condition: (optional) a function meant to stop the widget graph
-  *                         walk based on custom logic.
-  *
-- * Queries DAPM graph as to whether an valid audio stream path exists for
-+ * Queries DAPM graph as to whether a valid audio stream path exists for
-  * the initial stream specified by name. This takes into account
-  * current mixer and mux kcontrol settings. Creates list of valid widgets.
-  *
-@@ -1294,8 +1294,7 @@ static int dapm_widget_power_check(struct snd_soc_dapm_widget *w)
- 	return w->new_power;
- }
+diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
+index 8b4beb07ca43..bca7751a15fd 100644
+--- a/sound/soc/atmel/atmel-pdmic.c
++++ b/sound/soc/atmel/atmel-pdmic.c
+@@ -80,7 +80,7 @@ static struct atmel_pdmic_pdata *atmel_pdmic_dt_init(struct device *dev)
  
--/* Generic check to see if a widget should be powered.
-- */
-+/* Generic check to see if a widget should be powered. */
- static int dapm_generic_check_power(struct snd_soc_dapm_widget *w)
- {
- 	int in, out;
-@@ -1646,7 +1645,7 @@ static void dapm_pre_sequence_async(void *data, async_cookie_t cookie)
- 	struct snd_soc_dapm_context *d = data;
- 	int ret;
- 
--	/* If we're off and we're not supposed to be go into STANDBY */
-+	/* If we're off and we're not supposed to go into STANDBY */
- 	if (d->bias_level == SND_SOC_BIAS_OFF &&
- 	    d->target_bias_level != SND_SOC_BIAS_OFF) {
- 		if (d->dev)
-@@ -1798,7 +1797,7 @@ static bool dapm_idle_bias_off(struct snd_soc_dapm_context *dapm)
-  * A complete path is a route that has valid endpoints i.e.:-
-  *
-  *  o DAC to output pin.
-- *  o Input Pin to ADC.
-+ *  o Input pin to ADC.
-  *  o Input pin to Output pin (bypass, sidetone)
-  *  o DAC to ADC (loopback).
-  */
-@@ -2114,7 +2113,7 @@ static inline void dapm_debugfs_cleanup(struct snd_soc_dapm_context *dapm)
-  * soc_dapm_connect_path() - Connects or disconnects a path
-  * @path: The path to update
-  * @connect: The new connect state of the path. True if the path is connected,
-- *  false if it is disconneted.
-+ *  false if it is disconnected.
-  * @reason: The reason why the path changed (for debugging only)
-  */
- static void soc_dapm_connect_path(struct snd_soc_dapm_path *path,
-@@ -2233,7 +2232,7 @@ static ssize_t dapm_widget_show_component(struct snd_soc_component *cmpnt,
- 		if (w->dapm != dapm)
- 			continue;
- 
--		/* only display widgets that burnm power */
-+		/* only display widgets that burn power */
- 		switch (w->id) {
- 		case snd_soc_dapm_hp:
- 		case snd_soc_dapm_mic:
-@@ -2461,7 +2460,7 @@ static void dapm_update_widget_flags(struct snd_soc_dapm_widget *w)
- 
- 	switch (w->id) {
- 	case snd_soc_dapm_input:
--		/* On a fully routed card a input is never a source */
-+		/* On a fully routed card an input is never a source */
- 		if (w->dapm->card->fully_routed)
- 			return;
- 		ep = SND_SOC_DAPM_EP_SOURCE;
-@@ -3445,7 +3444,7 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
- 		w->endpoints[dir] = -1;
+ 	if (pdata->mic_max_freq < pdata->mic_min_freq) {
+ 		dev_err(dev,
+-			"mic-max-freq should not less than mic-min-freq\n");
++			"mic-max-freq should not be less than mic-min-freq\n");
+ 		return ERR_PTR(-EINVAL);
  	}
  
--	/* machine layer set ups unconnected pins and insertions */
-+	/* machine layer sets up unconnected pins and insertions */
- 	w->connected = 1;
- 	return w;
- }
+@@ -598,7 +598,7 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
+ 	dd->irq = platform_get_irq(pdev, 0);
+ 	if (dd->irq < 0) {
+ 		ret = dd->irq;
+-		dev_err(dev, "failed to could not get irq: %d\n", ret);
++		dev_err(dev, "failed to get irq: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -616,7 +616,7 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	/* The gclk clock frequency must always be tree times
++	/* The gclk clock frequency must always be three times
+ 	 * lower than the pclk clock frequency
+ 	 */
+ 	ret = clk_set_rate(dd->gclk, clk_get_rate(dd->pclk)/3);
+@@ -651,7 +651,7 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	/* Get the minimal and maximal sample rate that micphone supports */
++	/* Get the minimal and maximal sample rate that the microphone supports */
+ 	atmel_pdmic_get_sample_rate(dd, &rate_min, &rate_max);
+ 
+ 	/* register cpu dai */
 -- 
 2.8.1
