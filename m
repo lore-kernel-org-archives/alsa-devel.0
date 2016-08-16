@@ -1,47 +1,60 @@
-From: wens Tsai <wens213@gmail.com>
-Subject: Re: ASoC: sun4i-codec: playback stall and I/O error with DAPM paths
- all disabled
-Date: Tue, 16 Aug 2016 12:45:39 +0800
-Message-ID: <CAGb2v66diZMuxddK9jM5-RbOZGOF5EK_jgxxkWV-ad6WHCNd9Q@mail.gmail.com>
-References: <CAGb2v66X2BhEM4X+zQHUFB-wpHuBQ4xc8ztfYFuKADnY0b-gaQ@mail.gmail.com>
- <20160815114211.GI9347@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: compress: Fix leak of a widget list in
+	soc_compr_open_fe
+Date: Tue, 16 Aug 2016 11:24:46 +0100
+Message-ID: <1471343086-11383-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160815114211.GI9347@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Liam Girdwood <lgirdwood@gmail.com>, Code Kipper <codekipper@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA71D265A1E
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 12:24:39 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 15, 2016 at 7:42 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Mon, Aug 15, 2016 at 05:43:55PM +0800, wens Tsai wrote:
->
->> What is unexpected is any attempt to play anything under this state makes
->> the playback software (in my case mpg321) stall, and later report an I/O
->> error. My guess is that the DAC is still disabled by DAPM, so it doesn't
->> send any DRQs, and thus the DMA engine is not consuming any data from
->> userspace.
->
-> This is normal for ASoC - like you say it'll be becasue the hardware
-> isn't powered up.
->
->> I think we should just enable the digital bits of the DAC/ADC all the
->> time. Or maybe transfer and then discard data if the DAC is off. Not
->> sure if this is doable though. I expect playback software to work, and
->> not block, regardless of the hardware status.
->
-> Powering things up all the time will have a major effect on battery life
-> for systems that care about that.  The expectation is that systems with
-> this sort of hardware won't normally be offering end users direct
-> control of the routing, it'll be something that's handled during system
-> integration.
+After we have called dpcm_path_get we should make sure to call
+dpcm_path_put on all error paths. This was not happening causing the
+allocated widget list to be leaked, this patch corrects this by adding a
+dpcm_path_put to the error path.
 
-Ok. So I guess one solution would be to move the mute controls out of
-DAPM, and maybe change some other mux like paths into actual muxes, so
-there's at least one usable path at all times.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-compress.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-IIRC there was a patch doing something like this. I'll look into it.
-
-Regards
-ChenYu
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index d2df46c..bf7b52f 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -121,7 +121,7 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 
+ 		dpcm_be_disconnect(fe, stream);
+ 		fe->dpcm[stream].runtime = NULL;
+-		goto fe_err;
++		goto path_err;
+ 	}
+ 
+ 	dpcm_clear_pending_state(fe, stream);
+@@ -136,6 +136,8 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 
+ 	return 0;
+ 
++path_err:
++	dpcm_path_put(&list);
+ fe_err:
+ 	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->shutdown)
+ 		fe->dai_link->compr_ops->shutdown(cstream);
+-- 
+2.1.4
