@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI support
-Date: Tue, 16 Aug 2016 18:20:06 +0100
-Message-ID: <20160816172006.GW9347@sirena.org.uk>
-References: <20160814111823.1782-1-john@metanate.com>
- <20160814111823.1782-2-john@metanate.com>
+Subject: Applied "ASoC: dapm: Fix typos in comment" to the asoc
+	tree
+Date: Tue, 16 Aug 2016 19:43:44 +0100
+Message-ID: <E1bZjKy-0002CO-LI@debutante>
+References: <1471359378-9122-1-git-send-email-pmeerw@pmeerw.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7082325023874399217=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AE66C266807
- for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 19:20:26 +0200 (CEST)
-In-Reply-To: <20160814111823.1782-2-john@metanate.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2661C26683D
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 20:43:54 +0200 (CEST)
+In-Reply-To: <1471359378-9122-1-git-send-email-pmeerw@pmeerw.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,79 +22,124 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Keeping <john@metanate.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, Bard Liao <bardliao@realtek.com>, Dylan Reid <dgreid@chromium.org>
+To: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7082325023874399217==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="NUQP2JP/Zo+En7Or"
-Content-Disposition: inline
+   ASoC: dapm: Fix typos in comment
 
+has been applied to the asoc tree at
 
---NUQP2JP/Zo+En7Or
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Sun, Aug 14, 2016 at 12:18:22PM +0100, John Keeping wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> The Chromebook Pixel 2015 uses this codec with the ACPI ID RT5677CE, so
-> add an ACPI match table and support for reading properties from ACPI.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-This would be a lot easier to review with a concrete description of what
-"support for reading properties from ACPI" means and probably also split
-out a bit so that different things were being added separately.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +/* GPIO indexes defined by ACPI */
-> +enum {
-> +	RT5677_GPIO_PLUG_DET,
-> +	RT5677_GPIO_MIC_PRESENT_L,
-> +	RT5677_GPIO_HOTWORD_DET_L,
-> +	RT5677_GPIO_DSP_INT,
-> +	RT5677_GPIO_HP_AMP_SHDN_L,
-> +};
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-If these are an ABI you should explicitly assign the values so that they
-can't get remapped by future edits.  If they're not an ABI I don't
-understand the comment.
+Thanks,
+Mark
 
-> +	if (ACPI_HANDLE(dev)) {
-> +		u32 val;
-> +
-> +		if (!device_property_read_u32(dev, "DCLK", &val))
-> +			rt5677->pdata.dmic2_clk_pin = val;
-> +
-> +		rt5677->pdata.in1_diff = device_property_read_bool(dev, "IN1");
-> +		rt5677->pdata.in2_diff = device_property_read_bool(dev, "IN2");
+>From c80460005743c6f253706a9a5618de81254c81bf Mon Sep 17 00:00:00 2001
+From: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Date: Tue, 16 Aug 2016 16:56:17 +0200
+Subject: [PATCH] ASoC: dapm: Fix typos in comment
 
-What happens if someone makes a machine which uses the DT<->ACPI
-mappings (especially given that this is currently undocumented)?  That
-would not work which defeats the whole purpose of using the device
-property APIs.  Shouldn't we be accepting either property?
+Signed-off-by: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-dapm.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
---NUQP2JP/Zo+En7Or
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXs0tFAAoJECTWi3JdVIfQvXwH/1dddlrOZLW8tbq48xya5Hil
-3bXIVCLTlG+Yp6HZPZXHjuvqBjrk3AKLT4ikn1VkePKT7Uf80Zu3X9mXxDVXKbCS
-5uXXsLey6TfWOWqUeMdIP/1MLUS2X+Lf1vPEiS18HMhoDfoIA3Sd3T+d5BpFxiP7
-uioC7bBDtYZTKT1Iho/QENI1JwjXQOERmSSymNKs74CGGBppVsgkqIQDTss/jTwr
-M9/KaeBNE4lC3Qi4yJiL4VxoLdKkEE8up0tUAQWttyoZbGnaTVUm7+TiQgqbrZDE
-vGUTqd+3AjxgQG3Jz/l2QTJ2XT1O4FR645ew7W0iSts5seEt8dSDqCniYeDNhPY=
-=FsiY
------END PGP SIGNATURE-----
-
---NUQP2JP/Zo+En7Or--
-
---===============7082325023874399217==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7082325023874399217==--
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 8698c26773b3..c46b1ff52885 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1169,7 +1169,7 @@ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget,
+  * @custom_stop_condition: (optional) a function meant to stop the widget graph
+  *                         walk based on custom logic.
+  *
+- * Queries DAPM graph as to whether an valid audio stream path exists for
++ * Queries DAPM graph as to whether a valid audio stream path exists for
+  * the initial stream specified by name. This takes into account
+  * current mixer and mux kcontrol settings. Creates list of valid widgets.
+  *
+@@ -1294,8 +1294,7 @@ static int dapm_widget_power_check(struct snd_soc_dapm_widget *w)
+ 	return w->new_power;
+ }
+ 
+-/* Generic check to see if a widget should be powered.
+- */
++/* Generic check to see if a widget should be powered. */
+ static int dapm_generic_check_power(struct snd_soc_dapm_widget *w)
+ {
+ 	int in, out;
+@@ -1646,7 +1645,7 @@ static void dapm_pre_sequence_async(void *data, async_cookie_t cookie)
+ 	struct snd_soc_dapm_context *d = data;
+ 	int ret;
+ 
+-	/* If we're off and we're not supposed to be go into STANDBY */
++	/* If we're off and we're not supposed to go into STANDBY */
+ 	if (d->bias_level == SND_SOC_BIAS_OFF &&
+ 	    d->target_bias_level != SND_SOC_BIAS_OFF) {
+ 		if (d->dev)
+@@ -1798,7 +1797,7 @@ static bool dapm_idle_bias_off(struct snd_soc_dapm_context *dapm)
+  * A complete path is a route that has valid endpoints i.e.:-
+  *
+  *  o DAC to output pin.
+- *  o Input Pin to ADC.
++ *  o Input pin to ADC.
+  *  o Input pin to Output pin (bypass, sidetone)
+  *  o DAC to ADC (loopback).
+  */
+@@ -2114,7 +2113,7 @@ static inline void dapm_debugfs_cleanup(struct snd_soc_dapm_context *dapm)
+  * soc_dapm_connect_path() - Connects or disconnects a path
+  * @path: The path to update
+  * @connect: The new connect state of the path. True if the path is connected,
+- *  false if it is disconneted.
++ *  false if it is disconnected.
+  * @reason: The reason why the path changed (for debugging only)
+  */
+ static void soc_dapm_connect_path(struct snd_soc_dapm_path *path,
+@@ -2233,7 +2232,7 @@ static ssize_t dapm_widget_show_component(struct snd_soc_component *cmpnt,
+ 		if (w->dapm != dapm)
+ 			continue;
+ 
+-		/* only display widgets that burnm power */
++		/* only display widgets that burn power */
+ 		switch (w->id) {
+ 		case snd_soc_dapm_hp:
+ 		case snd_soc_dapm_mic:
+@@ -2461,7 +2460,7 @@ static void dapm_update_widget_flags(struct snd_soc_dapm_widget *w)
+ 
+ 	switch (w->id) {
+ 	case snd_soc_dapm_input:
+-		/* On a fully routed card a input is never a source */
++		/* On a fully routed card an input is never a source */
+ 		if (w->dapm->card->fully_routed)
+ 			return;
+ 		ep = SND_SOC_DAPM_EP_SOURCE;
+@@ -3445,7 +3444,7 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+ 		w->endpoints[dir] = -1;
+ 	}
+ 
+-	/* machine layer set ups unconnected pins and insertions */
++	/* machine layer sets up unconnected pins and insertions */
+ 	w->connected = 1;
+ 	return w;
+ }
+-- 
+2.8.1
