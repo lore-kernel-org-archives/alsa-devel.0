@@ -1,66 +1,48 @@
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Subject: Re: [PATCH v4 0/3] ASoC/ARM: tegra: apalis t30/tk1/colibri t30:
- sgtl5000 audio
-Date: Tue, 16 Aug 2016 13:55:28 +0000
-Message-ID: <1471355726.4197.6.camel@toradex.com>
-References: <1466298002-12576-1-git-send-email-marcel.ziswiler@toradex.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC 12/17] ASoC: samsung: Switch to new clock controller API
+Date: Tue, 16 Aug 2016 15:13:45 +0100
+Message-ID: <20160816141345.GT9347@sirena.org.uk>
+References: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
+ <1471354514-24224-13-git-send-email-k.kozlowski@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1466298002-12576-1-git-send-email-marcel.ziswiler@toradex.com>
-Content-Language: en-US
-Content-ID: <70A6365D2B87604AACE26E962D53577E@eurprd05.prod.outlook.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "gnurou@gmail.com" <gnurou@gmail.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "prarit@redhat.com" <prarit@redhat.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "broonie@kernel.org" <broonie@kernel.org>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "ttynkkynen@nvidia.com" <ttynkkynen@nvidia.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "perex@perex.cz" <perex@perex.cz>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rePSHXHJe0GetUdz"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1471354514-24224-13-git-send-email-k.kozlowski@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene@kernel.org>, Russell King <linux@armlinux.org.uk>, linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, Marek Szyprowski <m.szyprowski@samsung.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Javier Martinez Canillas <javier@osg.samsung.com>, a.hajda@samsung.comB
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCAyMDE2LTA2LTE5IGF0IDAyOjU5ICswMjAwLCBNYXJjZWwgWmlzd2lsZXIgd3JvdGU6
-DQo+IFRoaXMgc2VyaWVzIGFkZHMvaW50ZWdyYXRlcyBGcmVlc2NhbGUgU0dUTDUwMDAgYW5hbG9n
-dWUgYXVkaW8gY29kZWMNCj4gc3VwcG9ydC4NCj4gDQo+IENoYW5nZXMgaW4gdjQ6DQo+IC0gc2lt
-cGxlLWF1ZGlvLWNhcmQgZG9lcyBzdGlsbCBub3QgYWxsb3cgZm9yIG1vcmUgYWR2YW5jZWQgdXNl
-IGNhc2VzDQo+IMKgIGxpa2UgVGVncmEgU29Dcw0KPiAtIGZ1cnRoZXIgcGxhdGZvcm0gZHJpdmVy
-cyBoYXZlIGJlZW4gYWNjZXB0ZWQgc2luY2UgbXkgbGFzdCBhdHRlbXB0DQo+IMKgIChlLmcuIHJ0
-NTY3NyBvbmUpDQo+IC0gcmVsZXZhbmNlIGZvciBvbmUgZnVydGhlciBib2FyZCB0aGUgbmV3IFRv
-cmFkZXggQXBhbGlzIFRLMQ0KPiAtIGRyb3AgdW51c2VkIHNvdW5kL2phY2suaCBpbmNsdWRlDQo+
-IC0gaW4gdGVncmFfc2d0bDUwMDBfZHJpdmVyX3JlbW92ZSgpIHBhc3MgcmV0dXJuIHZhbHVlIG9m
-DQo+IMKgIHNuZF9zb2NfdW5yZWdpc3Rlcl9jYXJkKCkgb24gdG8gY2FsbGVyDQo+IC0gbm8gbG9u
-Z2VyIHNldCBvd25lciBwcm9wZXJ0eSBpbiBwbGF0Zm9ybV9kcml2ZXIgdG8gVEhJU19NT0RVTEUN
-Cj4gLSByZS1iYXNlZC9yZXNlbmQNCj4gDQo+IENoYW5nZXMgaW4gdjM6DQo+IC0gcmV2ZXJ0IHRv
-IG5vdCB1c2luZyBzaW1wbGUtYXVkaW8tY2FyZCBiZWluZyBpbmNvbXBhdGlibGUgd2l0aCB0ZWdy
-YQ0KPiAtIHJlYmFzZWQgdG8gZm9yLW5leHQNCj4gDQo+IENoYW5nZXMgaW4gdjI6DQo+IC0gdXNp
-bmcgc2ltcGxlLWF1ZGlvLWNhcmQgYXMgc3VnZ2VzdGVkIGJ5IEZhYmlvDQo+IA0KPiBNYXJjZWwg
-Wmlzd2lsZXIgKDMpOg0KPiDCoCBBU29DOiB0ZWdyYTogYWRkIHRlZ3JhIHNndGw1MDAwIG1hY2hp
-bmUgZHJpdmVyDQo+IMKgIEFSTTogdGVncmE6IGFwYWxpcy9jb2xpYnJpIHQzMDogaW50ZWdyYXRl
-IGF1ZGlvDQo+IMKgIEFSTTogdGVncmE6IGVuYWJsZSBzZ3RsNTAwMCBhdWRpbw0KPiANCj4gwqAu
-Li4vYmluZGluZ3Mvc291bmQvbnZpZGlhLHRlZ3JhLWF1ZGlvLXNndGw1MDAwLnR4dCB8wqDCoDQy
-ICsrKysNCj4gwqBhcmNoL2FybS9ib290L2R0cy90ZWdyYTMwLWFwYWxpcy5kdHNpwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoHzCoMKgNDkgKysrKysNCj4gwqBhcmNoL2FybS9ib290L2R0cy90
-ZWdyYTMwLWNvbGlicmkuZHRzacKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfMKgwqA0OSArKysr
-Kw0KPiDCoGFyY2gvYXJtL2NvbmZpZ3MvdGVncmFfZGVmY29uZmlnwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqB8wqDCoMKgMSArDQo+IMKgc291bmQvc29jL3RlZ3JhL0tjb25m
-aWfCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oHzCoMKgMTEgKysNCj4gwqBzb3VuZC9zb2MvdGVncmEvTWFrZWZpbGXCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB8wqDCoMKgMiArDQo+IMKgc291
-bmQvc29jL3RlZ3JhL3RlZ3JhX3NndGw1MDAwLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoHwgMjEyDQo+ICsrKysrKysrKysrKysrKysrKysrKw0KPiDCoDcgZmlsZXMgY2hh
-bmdlZCwgMzY2IGluc2VydGlvbnMoKykNCj4gwqBjcmVhdGUgbW9kZSAxMDA2NDQNCj4gRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL252aWRpYSx0ZWdyYS1hdWRpby0NCj4g
-c2d0bDUwMDAudHh0DQo+IMKgY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy90ZWdyYS90ZWdy
-YV9zZ3RsNTAwMC5jDQoNCldpdGggTWFyayBmaW5hbGx5IGhhdmluZyBwdWxsZWQgdGhlIGZpcnN0
-IHBhdGNoIG9mIHRoaXMgc2VyaWVzIChodHRwczovDQovbGttbC5vcmcvbGttbC8yMDE2LzgvMTUv
-Mjk3KSBJJ20gd29uZGVyaW5nIHdoZXRoZXIgdGhlIHNlY29uZCBhbmQNCnRoaXJkIHBhdGNoIGFy
-ZSBub3cgYmVpbmcgcHVsbGVkIHZpYSB0ZWdyYSB0cmVlPyBPciBzaG91bGQgSSByYXRoZXIgcmUt
-DQpzdWJtaXQgdGhvc2UgYXMgYSBuZXcgdjUgcGF0Y2ggc2V0PwpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlz
-dApsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCg==
+
+--rePSHXHJe0GetUdz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Aug 16, 2016 at 03:35:09PM +0200, Krzysztof Kozlowski wrote:
+> Allocate a clock controller and use new clk_register_with_ctrl() API.
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+>  	i2s_unregister_clocks(i2s);
+> +	clk_ctrl_unregister(i2s->clk_ctrl);
+
+devm?
+
+--rePSHXHJe0GetUdz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXsx+YAAoJECTWi3JdVIfQtXkH/iuQ4LWIduWwXQhaP0MDv7bv
+D4skQGj8vnnKjTNLSjxJaC5ozrwCOStLomdUmHsv9imnx5c5Ynr+ZJJttj2XrWOD
+T25EVIJdolAgYIFvi1VqG5P+K38mvpDD1Ku5zMc5LGoQSr7gflSDZujLqR47L/I8
+ISCbZ3tR02qdIQTFjSyC1NfRQJk2+p6KWsZVfPw64Gpce3/UrOziZzGAyCm7oDOz
+mxEJPuWxoGxOBdvznAx/T5bRgkxu9A8sAjoZ4KylH8xbmB6jPzHqWEsJOHc7Pt5e
+ByWqwA5SgiY4on1zD+SQ+VqhqlubXA/csSwVe1NBn50XbpXMiECryyWcH63bijM=
+=VovP
+-----END PGP SIGNATURE-----
+
+--rePSHXHJe0GetUdz--
