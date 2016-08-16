@@ -1,61 +1,66 @@
-From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Subject: Re: [RFC 00/17] clk: Add per-controller locks to fix deadlocks
-Date: Tue, 16 Aug 2016 15:51:10 +0200
-Message-ID: <65703100-1e16-6c34-babe-40e630180688@samsung.com>
-References: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Subject: Re: [PATCH v4 0/3] ASoC/ARM: tegra: apalis t30/tk1/colibri t30:
+ sgtl5000 audio
+Date: Tue, 16 Aug 2016 13:55:28 +0000
+Message-ID: <1471355726.4197.6.camel@toradex.com>
+References: <1466298002-12576-1-git-send-email-marcel.ziswiler@toradex.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene@kernel.org>, Russell King <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Javier Martinez Canillas <javier@osg.samsung.com>, a.hajda@samsung.com, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1466298002-12576-1-git-send-email-marcel.ziswiler@toradex.com>
+Content-Language: en-US
+Content-ID: <70A6365D2B87604AACE26E962D53577E@eurprd05.prod.outlook.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>, "gnurou@gmail.com" <gnurou@gmail.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "prarit@redhat.com" <prarit@redhat.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "broonie@kernel.org" <broonie@kernel.org>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "ttynkkynen@nvidia.com" <ttynkkynen@nvidia.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "perex@perex.cz" <perex@perex.cz>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/16/2016 03:34 PM, Krzysztof Kozlowski wrote:
-> Hi,
-> 
-> RFC, please, do not apply, maybe except patch #1 which is harmless.
-> 
-> 
-> Introduction
-> ============
-> The patchset brings new entity: clock controller representing a hardware
-> block.  The clock controller comes with its own prepare lock which
-> is used then in many places.  The idea is to fix the deadlock mentioned
-> in commit 10ff4c5239a1 ("i2c: exynos5: Fix possible ABBA deadlock by keeping
-> I2C clock prepared") and commit 34e81ad5f0b6 ("i2c: s3c2410: fix ABBA deadlock
-> by keeping clock prepared").
-> 
-
-Damn, I forgot to describe the overall idea. :) It is mentioned in patch
-15 but probably not many will have enough of patience to reach it.
-
-The locking idea
-================
-Clock controllers representing different hardware blocks, will contain
-its own prepare lock which protects the clocks inside controller.  The
-hierarchy itself is protected by global lock.
-
-In prepare path, the global prepare lock is removed.  This is direct
-solution for the deadlock.
-
-Clock hierarchy imposes also hierarchy between controllers so when a
-prepare happens, also parents have to be locked.
-
-Following locking design was chosen:
-1. For prepare/unprepare paths: lock only clock controller and its
-   parents.
-2. For recalc rates paths: lock global lock, the controller and its
-   children.
-3. For reparent paths: lock entire tree up down (children and parents)
-   and the global lock as well.
-
-
-In each case of traversing the clock hierarchy, the locking of
-controllers is always from children to parents.
-
-
-Best regards,
-Krzysztof
+T24gU3VuLCAyMDE2LTA2LTE5IGF0IDAyOjU5ICswMjAwLCBNYXJjZWwgWmlzd2lsZXIgd3JvdGU6
+DQo+IFRoaXMgc2VyaWVzIGFkZHMvaW50ZWdyYXRlcyBGcmVlc2NhbGUgU0dUTDUwMDAgYW5hbG9n
+dWUgYXVkaW8gY29kZWMNCj4gc3VwcG9ydC4NCj4gDQo+IENoYW5nZXMgaW4gdjQ6DQo+IC0gc2lt
+cGxlLWF1ZGlvLWNhcmQgZG9lcyBzdGlsbCBub3QgYWxsb3cgZm9yIG1vcmUgYWR2YW5jZWQgdXNl
+IGNhc2VzDQo+IMKgIGxpa2UgVGVncmEgU29Dcw0KPiAtIGZ1cnRoZXIgcGxhdGZvcm0gZHJpdmVy
+cyBoYXZlIGJlZW4gYWNjZXB0ZWQgc2luY2UgbXkgbGFzdCBhdHRlbXB0DQo+IMKgIChlLmcuIHJ0
+NTY3NyBvbmUpDQo+IC0gcmVsZXZhbmNlIGZvciBvbmUgZnVydGhlciBib2FyZCB0aGUgbmV3IFRv
+cmFkZXggQXBhbGlzIFRLMQ0KPiAtIGRyb3AgdW51c2VkIHNvdW5kL2phY2suaCBpbmNsdWRlDQo+
+IC0gaW4gdGVncmFfc2d0bDUwMDBfZHJpdmVyX3JlbW92ZSgpIHBhc3MgcmV0dXJuIHZhbHVlIG9m
+DQo+IMKgIHNuZF9zb2NfdW5yZWdpc3Rlcl9jYXJkKCkgb24gdG8gY2FsbGVyDQo+IC0gbm8gbG9u
+Z2VyIHNldCBvd25lciBwcm9wZXJ0eSBpbiBwbGF0Zm9ybV9kcml2ZXIgdG8gVEhJU19NT0RVTEUN
+Cj4gLSByZS1iYXNlZC9yZXNlbmQNCj4gDQo+IENoYW5nZXMgaW4gdjM6DQo+IC0gcmV2ZXJ0IHRv
+IG5vdCB1c2luZyBzaW1wbGUtYXVkaW8tY2FyZCBiZWluZyBpbmNvbXBhdGlibGUgd2l0aCB0ZWdy
+YQ0KPiAtIHJlYmFzZWQgdG8gZm9yLW5leHQNCj4gDQo+IENoYW5nZXMgaW4gdjI6DQo+IC0gdXNp
+bmcgc2ltcGxlLWF1ZGlvLWNhcmQgYXMgc3VnZ2VzdGVkIGJ5IEZhYmlvDQo+IA0KPiBNYXJjZWwg
+Wmlzd2lsZXIgKDMpOg0KPiDCoCBBU29DOiB0ZWdyYTogYWRkIHRlZ3JhIHNndGw1MDAwIG1hY2hp
+bmUgZHJpdmVyDQo+IMKgIEFSTTogdGVncmE6IGFwYWxpcy9jb2xpYnJpIHQzMDogaW50ZWdyYXRl
+IGF1ZGlvDQo+IMKgIEFSTTogdGVncmE6IGVuYWJsZSBzZ3RsNTAwMCBhdWRpbw0KPiANCj4gwqAu
+Li4vYmluZGluZ3Mvc291bmQvbnZpZGlhLHRlZ3JhLWF1ZGlvLXNndGw1MDAwLnR4dCB8wqDCoDQy
+ICsrKysNCj4gwqBhcmNoL2FybS9ib290L2R0cy90ZWdyYTMwLWFwYWxpcy5kdHNpwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoHzCoMKgNDkgKysrKysNCj4gwqBhcmNoL2FybS9ib290L2R0cy90
+ZWdyYTMwLWNvbGlicmkuZHRzacKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfMKgwqA0OSArKysr
+Kw0KPiDCoGFyY2gvYXJtL2NvbmZpZ3MvdGVncmFfZGVmY29uZmlnwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqB8wqDCoMKgMSArDQo+IMKgc291bmQvc29jL3RlZ3JhL0tjb25m
+aWfCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oHzCoMKgMTEgKysNCj4gwqBzb3VuZC9zb2MvdGVncmEvTWFrZWZpbGXCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB8wqDCoMKgMiArDQo+IMKgc291
+bmQvc29jL3RlZ3JhL3RlZ3JhX3NndGw1MDAwLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoHwgMjEyDQo+ICsrKysrKysrKysrKysrKysrKysrKw0KPiDCoDcgZmlsZXMgY2hh
+bmdlZCwgMzY2IGluc2VydGlvbnMoKykNCj4gwqBjcmVhdGUgbW9kZSAxMDA2NDQNCj4gRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL252aWRpYSx0ZWdyYS1hdWRpby0NCj4g
+c2d0bDUwMDAudHh0DQo+IMKgY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy90ZWdyYS90ZWdy
+YV9zZ3RsNTAwMC5jDQoNCldpdGggTWFyayBmaW5hbGx5IGhhdmluZyBwdWxsZWQgdGhlIGZpcnN0
+IHBhdGNoIG9mIHRoaXMgc2VyaWVzIChodHRwczovDQovbGttbC5vcmcvbGttbC8yMDE2LzgvMTUv
+Mjk3KSBJJ20gd29uZGVyaW5nIHdoZXRoZXIgdGhlIHNlY29uZCBhbmQNCnRoaXJkIHBhdGNoIGFy
+ZSBub3cgYmVpbmcgcHVsbGVkIHZpYSB0ZWdyYSB0cmVlPyBPciBzaG91bGQgSSByYXRoZXIgcmUt
+DQpzdWJtaXQgdGhvc2UgYXMgYSBuZXcgdjUgcGF0Y2ggc2V0PwpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlz
+dApsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCg==
