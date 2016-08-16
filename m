@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8810: Add driver for Nuvoton
-	codec chip NAU88C10
-Date: Tue, 16 Aug 2016 11:38:54 +0100
-Message-ID: <20160816103854.GP9347@sirena.org.uk>
-References: <1471251743-32084-1-git-send-email-KCHSU0@nuvoton.com>
- <20160815140604.GK9347@sirena.org.uk>
- <57B28F1D.8070409@nuvoton.com>
+From: Nicholas Mc Guire <der.herr@hofr.at>
+Subject: Re: [PATCH 1149/1285] Replace numeric parameter like
+	0444 with macro
+Date: Tue, 16 Aug 2016 11:08:45 +0000
+Message-ID: <20160816110845.GA21629@osadl.at>
+References: <20160802122044.26724-1-baolex.ni@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2498066916424986260=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 14F59265A98
- for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 12:39:05 +0200 (CEST)
-In-Reply-To: <57B28F1D.8070409@nuvoton.com>
+Received: from mail.osadl.at (mail.osadl.at [92.243.35.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6ABA9265CC5
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 13:09:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20160802122044.26724-1-baolex.ni@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,84 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: WTLI@nuvoton.com, YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
+To: Baole Ni <baolex.ni@intel.com>
+Cc: k.kozlowski@samsung.com, chuansheng.liu@intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, hofrat@osadl.org, tiwai@suse.com, kyungmin.park@samsung.com, kadlec@blackhole.kfki.hu, aryabinin@virtuozzo.com, m.szyprowski@samsung.com, davem@davemloft.net, serge@hallyn.com
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Aug 02, 2016 at 08:20:44PM +0800, Baole Ni wrote:
+> I find that the developers often just specified the numeric value
+> when calling a macro which is defined with a parameter for access permission.
+> As we know, these numeric value for access permission have had the corresponding macro,
+> and that using macro can improve the robustness and readability of the code,
+> thus, I suggest replacing the numeric parameter with the macro.
 
---===============2498066916424986260==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="h/VGaWN5ITqlMCVM"
-Content-Disposition: inline
+this is actually a quite common issue - taking your example and generalizing
+it into a simple coccinelle scanner shows aproximately 1400 cases for 
+module_param, module_param_array and module_param_named.
 
+> 
+> Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
+> Signed-off-by: Baole Ni <baolex.ni@intel.com>
+> ---
+>  sound/core/oss/pcm_oss.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+> index ebc9fdf..0ff0dd8 100644
+> --- a/sound/core/oss/pcm_oss.c
+> +++ b/sound/core/oss/pcm_oss.c
+> @@ -53,11 +53,11 @@ static bool nonblock_open = 1;
+>  MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>, Abramo Bagnara <abramo@alsa-project.org>");
+>  MODULE_DESCRIPTION("PCM OSS emulation for ALSA.");
+>  MODULE_LICENSE("GPL");
+> -module_param_array(dsp_map, int, NULL, 0444);
+> +module_param_array(dsp_map, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
 
---h/VGaWN5ITqlMCVM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+as S_IRUSR | S_IRGRP | S_IROTH == S_IRUGO  this (and the others below
+could be simplfied 
 
-On Tue, Aug 16, 2016 at 11:57:17AM +0800, John Hsu wrote:
-> On 8/15/2016 10:06 PM, Mark Brown wrote:
-> > On Mon, Aug 15, 2016 at 05:02:23PM +0800, John Hsu wrote:
++module_param_array(dsp_map, int, NULL, S_IRUGO);
 
-> > This looks very good overall, a few fairly small things but nothing too
-> > major.
+>  MODULE_PARM_DESC(dsp_map, "PCM device number assigned to 1st OSS device.");
+> -module_param_array(adsp_map, int, NULL, 0444);
+> +module_param_array(adsp_map, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+>  MODULE_PARM_DESC(adsp_map, "PCM device number assigned to 2nd OSS device.");
+> -module_param(nonblock_open, bool, 0644);
+> +module_param(nonblock_open, bool, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
-> > > +	val = (u16 *)ucontrol->value.bytes.data;
-> > > +	reg = NAU8810_REG_EQ1;
-> > > +	for (i = 0; i < params->max / sizeof(u16); i++) {
-> > > +		regmap_read(nau8810->regmap, reg + i, &reg_val);
-> > > +		reg_val = cpu_to_be16(reg_val);
-> > > +		memcpy(val + i, &reg_val, sizeof(reg_val));
-> > > +	}
+for 0644 one could also use S_IWUSR | S_IRUGO which might be more redaable
+here as well.
 
-> > This looks like it's trying to do regmap_raw_read()?  Raw I/O bypasses
-> > all the endianness conversions.
+>  MODULE_PARM_DESC(nonblock_open, "Don't block opening busy PCM devices.");
+>  MODULE_ALIAS_SNDRV_MINOR(SNDRV_MINOR_OSS_PCM);
+>  MODULE_ALIAS_SNDRV_MINOR(SNDRV_MINOR_OSS_PCM1);
 
-> We also try regmap_raw_read() but it fails because the value width
-> is 9 bits. Therefor, we make the functions by ourselves.
-
-You're not open coding this, this is using regmap!
-
-> > > +static struct snd_soc_codec_driver soc_codec_dev_nau8810 = {
-
-> > > +	.controls = nau8810_snd_controls,
-> > > +	.num_controls = ARRAY_SIZE(nau8810_snd_controls),
-> > > +	.dapm_widgets = nau8810_dapm_widgets,
-> > > +	.num_dapm_widgets = ARRAY_SIZE(nau8810_dapm_widgets),
-> > > +	.dapm_routes = nau8810_dapm_routes,
-> > > +	.num_dapm_routes = ARRAY_SIZE(nau8810_dapm_routes),
-
-> > Move this data into the component driver please.
-
-> I don't understand about it clearly. Is the snd_soc_codec_driver
-> not component driver? Could you tell me more details? Thank you.
-
-You need to set these values in the actual component driver struct, not
-directly in the CODEC driver.  Look at the series of changes
-Morimoto-san made recently for this.
-
---h/VGaWN5ITqlMCVM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXsu09AAoJECTWi3JdVIfQaEgH/3AHp6Qekl/dDMQ19tXD9fGG
-mZZz31enYFhlBBXO2UbfhsRPwnBH5Ntj2brWig/hOwEat8lRUTryhpI+d9WK5rWp
-R9hxMsDhMXkMVuYUnmqA+JZVlR2vBIbOU7w0bJeyQVil7qEung0y2QPL0PVqPZo4
-JP+ZaWuZNzFA1u0uGm3ihPkTedWOt3+b0yTiMJt5+XXTn9/pejXJwvh1MLBq7Rtb
-dEDyNeHegkPILbw8IgIfxEiM57sOuCTkF8RhWQOY8D6oSTU6GaYnbOLCUiwx/FO1
-YmVtkPw49dZDXvYXKaudrLVw/jS4HRw6Xk4unHVjX7M+j76eSD/uX7++f4EdeOQ=
-=BEbI
------END PGP SIGNATURE-----
-
---h/VGaWN5ITqlMCVM--
-
---===============2498066916424986260==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2498066916424986260==--
+thx!
+hofrat
