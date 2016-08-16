@@ -1,78 +1,77 @@
-From: Nicholas Mc Guire <der.herr@hofr.at>
-Subject: Re: [PATCH 1149/1285] Replace numeric parameter like
-	0444 with macro
-Date: Tue, 16 Aug 2016 11:08:45 +0000
-Message-ID: <20160816110845.GA21629@osadl.at>
-References: <20160802122044.26724-1-baolex.ni@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.osadl.at (mail.osadl.at [92.243.35.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 6ABA9265CC5
- for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 13:09:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20160802122044.26724-1-baolex.ni@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Baole Ni <baolex.ni@intel.com>
-Cc: k.kozlowski@samsung.com, chuansheng.liu@intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, hofrat@osadl.org, tiwai@suse.com, kyungmin.park@samsung.com, kadlec@blackhole.kfki.hu, aryabinin@virtuozzo.com, m.szyprowski@samsung.com, davem@davemloft.net, serge@hallyn.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: atmel_ssc_dai: Don't unconditionally reset SSC on stream startup" to the asoc tree
+Date: Tue, 16 Aug 2016 12:30:10 +0100
+Message-ID: <E1bZcZO-0004ht-S1@debutante>
+References: <1471280365-23452-1-git-send-email-pmeerw@pmeerw.net>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1471280365-23452-1-git-send-email-pmeerw@pmeerw.net>
+Sender: stable-owner@vger.kernel.org
+To: Christoph Huber <c.huber@bct-electronic.com>
+Cc: Peter Meerwald-Stadler <p.meerwald@bct-electronic.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgMark Brown <broonie@kernel.org>Peter Meerwald-Stadler <p.meerwald@bct-electronic.com>, alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Songjun Wu <songjun.wu@microchip.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 02, 2016 at 08:20:44PM +0800, Baole Ni wrote:
-> I find that the developers often just specified the numeric value
-> when calling a macro which is defined with a parameter for access permission.
-> As we know, these numeric value for access permission have had the corresponding macro,
-> and that using macro can improve the robustness and readability of the code,
-> thus, I suggest replacing the numeric parameter with the macro.
+The patch
 
-this is actually a quite common issue - taking your example and generalizing
-it into a simple coccinelle scanner shows aproximately 1400 cases for 
-module_param, module_param_array and module_param_named.
+   ASoC: atmel_ssc_dai: Don't unconditionally reset SSC on stream startup
 
-> 
-> Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
-> Signed-off-by: Baole Ni <baolex.ni@intel.com>
-> ---
->  sound/core/oss/pcm_oss.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
-> index ebc9fdf..0ff0dd8 100644
-> --- a/sound/core/oss/pcm_oss.c
-> +++ b/sound/core/oss/pcm_oss.c
-> @@ -53,11 +53,11 @@ static bool nonblock_open = 1;
->  MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>, Abramo Bagnara <abramo@alsa-project.org>");
->  MODULE_DESCRIPTION("PCM OSS emulation for ALSA.");
->  MODULE_LICENSE("GPL");
-> -module_param_array(dsp_map, int, NULL, 0444);
-> +module_param_array(dsp_map, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
+has been applied to the asoc tree at
 
-as S_IRUSR | S_IRGRP | S_IROTH == S_IRUGO  this (and the others below
-could be simplfied 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-+module_param_array(dsp_map, int, NULL, S_IRUGO);
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
->  MODULE_PARM_DESC(dsp_map, "PCM device number assigned to 1st OSS device.");
-> -module_param_array(adsp_map, int, NULL, 0444);
-> +module_param_array(adsp_map, int, NULL, S_IRUSR | S_IRGRP | S_IROTH);
->  MODULE_PARM_DESC(adsp_map, "PCM device number assigned to 2nd OSS device.");
-> -module_param(nonblock_open, bool, 0644);
-> +module_param(nonblock_open, bool, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-for 0644 one could also use S_IWUSR | S_IRUGO which might be more redaable
-here as well.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
->  MODULE_PARM_DESC(nonblock_open, "Don't block opening busy PCM devices.");
->  MODULE_ALIAS_SNDRV_MINOR(SNDRV_MINOR_OSS_PCM);
->  MODULE_ALIAS_SNDRV_MINOR(SNDRV_MINOR_OSS_PCM1);
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-thx!
-hofrat
+Thanks,
+Mark
+
+>From 3e103a65514c2947e53f3171b21255fbde8b60c6 Mon Sep 17 00:00:00 2001
+From: Christoph Huber <c.huber@bct-electronic.com>
+Date: Mon, 15 Aug 2016 18:59:25 +0200
+Subject: [PATCH] ASoC: atmel_ssc_dai: Don't unconditionally reset SSC on
+ stream startup
+
+commit cbaadf0f90d6 ("ASoC: atmel_ssc_dai: refactor the startup and
+shutdown") refactored code such that the SSC is reset on every
+startup; this breaks duplex audio (e.g. first start audio playback,
+then start record, causing the playback to stop/hang)
+
+Fixes: cbaadf0f90d6 (ASoC: atmel_ssc_dai: refactor the startup and shutdown)
+Signed-off-by: Christoph Huber <c.huber@bct-electronic.com>
+Signed-off-by: Peter Meerwald-Stadler <p.meerwald@bct-electronic.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/atmel/atmel_ssc_dai.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 54c09acd3fed..16e459aedffe 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -299,8 +299,9 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ 	clk_enable(ssc_p->ssc->clk);
+ 	ssc_p->mck_rate = clk_get_rate(ssc_p->ssc->clk);
+ 
+-	/* Reset the SSC to keep it at a clean status */
+-	ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_SWRST));
++	/* Reset the SSC unless initialized to keep it in a clean state */
++	if (!ssc_p->initialized)
++		ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_SWRST));
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		dir = 0;
+-- 
+2.8.1
