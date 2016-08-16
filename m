@@ -1,61 +1,32 @@
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: linux-next: Tree for Aug 16 (mellanox/mlx5 &
-	sound/oss/)
-Date: Tue, 16 Aug 2016 08:26:52 -0700
-Message-ID: <c5f1449f-b1fb-37be-71c1-85691d34994e@infradead.org>
-References: <20160816140121.5b89f2a0@canb.auug.org.au>
+From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Subject: Re: [RFC 12/17] ASoC: samsung: Switch to new clock controller API
+Date: Tue, 16 Aug 2016 18:41:41 +0200
+Message-ID: <20160816164141.GB9249@kozik-lap>
+References: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
+ <1471354514-24224-13-git-send-email-k.kozlowski@samsung.com>
+ <20160816141345.GT9347@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.9])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FF9F2666FB
- for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 17:26:56 +0200 (CEST)
-In-Reply-To: <20160816140121.5b89f2a0@canb.auug.org.au>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, moderated for non-subscribers <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20160816141345.GT9347@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Krzysztof Kozlowski <k.kozlowski@samsung.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene@kernel.org>, Russell King <linux@armlinux.org.uk>, linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, Marek Szyprowski <m.szyprowski@samsung.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>Javier Martinez Canillas <j>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/15/16 21:01, Stephen Rothwell wrote:
-> Hi all,
+On Tue, Aug 16, 2016 at 03:13:45PM +0100, Mark Brown wrote:
+> On Tue, Aug 16, 2016 at 03:35:09PM +0200, Krzysztof Kozlowski wrote:
+> > Allocate a clock controller and use new clk_register_with_ctrl() API.
 > 
-> Changes since 20160815:
+> Acked-by: Mark Brown <broonie@kernel.org>
 > 
+> >  	i2s_unregister_clocks(i2s);
+> > +	clk_ctrl_unregister(i2s->clk_ctrl);
+> 
+> devm?
 
-on i386:
+Right, that would make sense. Thanks for pointing this out.
 
-sound/built-in.o:(.data+0x5c): multiple definition of `dev_list'
-drivers/built-in.o:(.data+0x6aee8): first defined here
-ld: Warning: size of symbol `dev_list' changed from 8 in drivers/built-in.o to 16 in sound/built-in.o
-
-
-sound/ is an old oss driver (soundcard.c):
-
-struct oss_minor_dev {
-	unsigned short minor;
-	unsigned int enabled;
-} dev_list[] = {
-	{ SND_DEV_DSP16 },
-	{ SND_DEV_AUDIO },
-};
-
-=====
-
-drivers/ is net/ethernet/mellanox/mlx5/core/mlx5_core.h:
-
-extern struct list_head dev_list;
-
-
-
-
--- 
-~Randy
+Best regards,
+Krzysztof
