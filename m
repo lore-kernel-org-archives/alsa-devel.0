@@ -1,96 +1,116 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: compress: Fix leak of a widget list in
-	soc_compr_open_fe" to the asoc tree
-Date: Tue, 16 Aug 2016 12:30:14 +0100
-Message-ID: <E1bZcZS-0004iq-UG@debutante>
-References: <1471343086-11383-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B65B2666BD
- for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 13:30:25 +0200 (CEST)
-In-Reply-To: <1471343086-11383-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Subject: [RFC 00/17] clk: Add per-controller locks to fix deadlocks
+Date: Tue, 16 Aug 2016 15:34:57 +0200
+Message-ID: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene@kernel.org>, Russell King <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Javier Martinez Canillas <javier@osg.samsung.com>, a.hajda@samsung.com, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi,
 
-   ASoC: compress: Fix leak of a widget list in soc_compr_open_fe
+RFC, please, do not apply, maybe except patch #1 which is harmless.
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Introduction
+============
+The patchset brings new entity: clock controller representing a hardware
+block.  The clock controller comes with its own prepare lock which
+is used then in many places.  The idea is to fix the deadlock mentioned
+in commit 10ff4c5239a1 ("i2c: exynos5: Fix possible ABBA deadlock by keeping
+I2C clock prepared") and commit 34e81ad5f0b6 ("i2c: s3c2410: fix ABBA deadlock
+by keeping clock prepared").
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Disclaimer
+==========
+Request for comments, so:
+1. Only exynos_defconfig builds,
+2. A lot of FIXME/TODO note still,
+3. Checkpatch not run, lines not aligned,
+4. Other (non-exynos) drivers not converted,
+5. Probably not yet bisectable,
+6. Locking became quite complex.
+   The previous one lock was simple.  Inefficient and dead-lock prone but
+   simple.  Because of clock hierarchy spanning through controllers, the
+   new locking became quite complicated.  I don't like it but...
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Details
+=======
+In Exynos-based boards case the deadlock occurs between clock's
+prepare_lock and regmap-i2c's lock:
 
-Thanks,
-Mark
+CPU #0:                             CPU #1:
+lock(regmap)
+                                    s2mps11-clk: clk_prepare_lock()
 
->From b0f12c61de013ecb0abe19d5e64bdab45989de5a Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 16 Aug 2016 11:24:46 +0100
-Subject: [PATCH] ASoC: compress: Fix leak of a widget list in
- soc_compr_open_fe
+i2c-exynos: clk_prepare_lock() - wait
+                                    lock(regmap) - wait
 
-After we have called dpcm_path_get we should make sure to call
-dpcm_path_put on all error paths. This was not happening causing the
-allocated widget list to be leaked, this patch corrects this by adding a
-dpcm_path_put to the error path.
+The clk_prepare_lock() on both CPUs come from different clock drivers
+and components:
+1. I2C clock is part of SoC block and is required by i2c-s3c2410/i2c-exynos5
+   driver,
+2. S2MPS11 clock is separate device, however driver uses I2C regmap.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-compress.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+The deadlock was reported by lockdep (always) and was happening
+in 20% of boots of Odroid XU3 with multi_v7 defconfig.  Workaround for
+deadlock was implemented by removing prepare/unprepare calls from I2C
+transfers.  However these are just workarounds... which after applying
+this patch can be reverted.
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index d2df46c14c68..bf7b52fce597 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -121,7 +121,7 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 
- 		dpcm_be_disconnect(fe, stream);
- 		fe->dpcm[stream].runtime = NULL;
--		goto fe_err;
-+		goto path_err;
- 	}
- 
- 	dpcm_clear_pending_state(fe, stream);
-@@ -136,6 +136,8 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 
- 	return 0;
- 
-+path_err:
-+	dpcm_path_put(&list);
- fe_err:
- 	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->shutdown)
- 		fe->dai_link->compr_ops->shutdown(cstream);
+Additionally Marek Szyprowski's work on domains/clocks/pinctrl exposed
+the deadlock again in different configuration.
+
+
+Comments as usual are welcomed.
+
+Best regards,
+Krzysztof
+
+Krzysztof Kozlowski (17):
+  clk: bcm2835: Rename clk_register to avoid name conflict
+  clk: Add clock controller to fine-grain the prepare lock
+  clk: s2mps11: Switch to new clock controller API
+  clk: samsung: Allocate a clock controller in context
+  clk: fixed-rate: Switch to new clock controller API
+  clk: gate: Switch to new clock controller API
+  clk: mux: Switch to new clock controller API
+  clk: fixed-factor: Switch to new clock controller API
+  clk: divider: Switch to new clock controller API
+  clk: composite: Switch to new clock controller API
+  clk: gpio: Switch to new clock controller API
+  ASoC: samsung: Switch to new clock controller API
+  clk: samsung: audss: samsung: Switch to new clock controller API
+  clk: samsung: clkout: samsung: Switch to new clock controller API
+  clk: Use per-controller locking
+  Revert "i2c: exynos5: Fix possible ABBA deadlock by keeping I2C clock
+    prepared"
+  Revert "i2c: s3c2410: fix ABBA deadlock by keeping clock prepared"
+
+ drivers/clk/bcm/clk-bcm2835.c           |   8 +-
+ drivers/clk/clk-composite.c             |   8 +-
+ drivers/clk/clk-divider.c               |  10 +-
+ drivers/clk/clk-fixed-factor.c          |  11 +-
+ drivers/clk/clk-fixed-rate.c            |  28 +-
+ drivers/clk/clk-fractional-divider.c    |   5 +-
+ drivers/clk/clk-gate.c                  |   8 +-
+ drivers/clk/clk-gpio.c                  |  29 +-
+ drivers/clk/clk-mux.c                   |  32 ++-
+ drivers/clk/clk-s2mps11.c               |  10 +-
+ drivers/clk/clk.c                       | 456 +++++++++++++++++++++++++++-----
+ drivers/clk/samsung/clk-exynos-audss.c  |  30 ++-
+ drivers/clk/samsung/clk-exynos-clkout.c |  11 +-
+ drivers/clk/samsung/clk.c               |  25 +-
+ drivers/clk/samsung/clk.h               |   1 +
+ drivers/i2c/busses/i2c-exynos5.c        |  24 +-
+ drivers/i2c/busses/i2c-s3c2410.c        |  23 +-
+ include/linux/clk-provider.h            |  88 ++++--
+ include/linux/clk.h                     |   1 +
+ sound/soc/samsung/i2s.c                 |  13 +-
+ 20 files changed, 612 insertions(+), 209 deletions(-)
+
 -- 
-2.8.1
+1.9.1
