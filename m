@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: rsrc-card: rename rsrc-card to
- simple-dpcm-card phase2
-Date: Wed, 17 Aug 2016 11:56:03 +0100
-Message-ID: <20160817105603.GK9347@sirena.org.uk>
-References: <87vaz8t4bu.wl%kuninori.morimoto.gx@renesas.com>
- <87shuct48p.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: quirk for Acer
+	Aspire SWS-012" to the asoc tree
+Date: Wed, 17 Aug 2016 12:24:47 +0100
+Message-ID: <E1bZyxj-000620-TL@debutante>
+References: <1471390103-915-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5004149912248014021=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 99C09266A8A
- for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2016 12:56:11 +0200 (CEST)
-In-Reply-To: <87shuct48p.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 10E632669E0
+ for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2016 13:24:58 +0200 (CEST)
+In-Reply-To: <1471390103-915-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +22,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, sfr@canb.auug.org.au, alsa-devel@alsa-project.org, broonie@kernel.org, irina.tirdea@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5004149912248014021==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="0w7jVmmX7yCvRA1u"
-Content-Disposition: inline
+   ASoC: Intel: bytcr_rt5640: quirk for Acer Aspire SWS-012
 
+has been applied to the asoc tree at
 
---0w7jVmmX7yCvRA1u
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Aug 11, 2016 at 11:43:18AM +0900, Kuninori Morimoto wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> -- compatible				: "renesas,rsrc-card{,<board>}"
-> -					  Examples with boards are:
-> -					    - "renesas,rsrc-card"
-> -					    - "renesas,rsrc-card,lager"
-> -					    - "renesas,rsrc-card,koelsch"
-> +- compatible				: "simple-dpcm-audio-card"
-> +
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Since the card is already in released kernels we can't just remove the
-old compatible strings, we should continue to support them.  I'm also a
-bit unsure about adding a generic DPCM compatible string - it really is
-a Linux specific thing.  While code reuse in the implementation is good
-so factoring out the card is good I'm not sure we want to bake in the
-idea that this is a strong abstraction so keeping a list of specific
-compatible strings might be better.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---0w7jVmmX7yCvRA1u
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Thanks,
+Mark
 
-iQEcBAEBCAAGBQJXtELCAAoJECTWi3JdVIfQ8IcH/0/vbon/XgbIRsv8R+rZyLnr
-rGTXcGxni9cB7IpObtFAcqFa6zS3cL9EuMekI30dMpVLlK2UfdCECjU2eVRs5gzL
-hIYUHJZp6/Jpk8vQKS86jr7sgSmSnh5PxoB6nwfJV8J9XBYoZ0jyRFhEDHopUJ0y
-DfgBtT4EQOFch9W359+5K3Ol+rqssaUnQkte8CTFRMR5DvrDQSa3OMOZuz/Xh0Bi
-IUAHZEN+syFGpBj109HbGd+lHYi42nhSocRqToigpe0Op2tGnsTgIzgSDlVUQSGC
-BZy8C1m2lXRPPBwoXWj1PG5AIH4vFkjq5rSD36pUhIzbwj9v//pradbUFr4KKvw=
-=7IcD
------END PGP SIGNATURE-----
+>From 8f98307d023810669391555e370a8c2a8e2af9b6 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Tue, 16 Aug 2016 18:28:22 -0500
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: quirk for Acer Aspire SWS-012
 
---0w7jVmmX7yCvRA1u--
+Baytrail-CR platform needing SSP0-AIF1 routing
+Also fix SSP0 while we are at it.
 
---===============5004149912248014021==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Suggested-by: Andrei Lavreniyuk <andy.lavr@gmail.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/bytcr_rt5640.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-
---===============5004149912248014021==--
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 254881594c36..bff77a1f27fc 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -378,6 +378,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 						BYT_RT5640_MCLK_EN |
+ 						BYT_RT5640_SSP0_AIF1),
+ 	},
++	{
++		.callback = byt_rt5640_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire SW5-012"),
++		},
++		.driver_data = (unsigned long *)(BYT_RT5640_IN1_MAP |
++						 BYT_RT5640_MCLK_EN |
++						 BYT_RT5640_SSP0_AIF1),
++
++	},
+ 	{}
+ };
+ 
+@@ -527,7 +538,7 @@ static int byt_rt5640_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
+ 		(byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
+ 
+-		/* set SSP2 to 16-bit */
++		/* set SSP0 to 16-bit */
+ 		params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
+ 
+ 		/*
+-- 
+2.8.1
