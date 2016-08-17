@@ -1,20 +1,16 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH 0/4] ASoC: Intel: Skylake: Add token
- support for topology data
-Date: Wed, 17 Aug 2016 15:03:45 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F84BA9D71C@shsmsx102.ccr.corp.intel.com>
-References: <1470985193-10680-1-git-send-email-vinod.koul@intel.com>
- <20160812104107.GB9347@sirena.org.uk> <20160812105531.GL9681@localhost>
- <57B40B50.8000105@linux.intel.com> <20160817100154.GH9347@sirena.org.uk>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: locking looks odd
+Date: Wed, 17 Aug 2016 19:46:42 +0200
+Message-ID: <0fec7ab2-f72f-a27a-e82b-58642836db88@perex.cz>
+References: <20160816210322.GD4466@var.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FDCA267163
- for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2016 17:04:10 +0200 (CEST)
-In-Reply-To: <20160817100154.GH9347@sirena.org.uk>
-Content-Language: en-US
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32BA7266094
+ for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2016 19:46:43 +0200 (CEST)
+In-Reply-To: <20160816210322.GD4466@var.home>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,31 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Mengdong Lin <mengdong.lin@linux.intel.com>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Patches Audio <patches.audio@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: Samuel Thibault <samuel.thibault@ens-lyon.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Wednesday, August 17, 2016 6:02 PM
-> To: Mengdong Lin
-> Cc: Koul, Vinod; liam.r.girdwood@linux.intel.com; Lin, Mengdong; Patches
-> Audio; alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] [PATCH 0/4] ASoC: Intel: Skylake: Add token support
-> for topology data
+Dne 16.8.2016 v 23:03 Samuel Thibault napsal(a):
+> Hello,
 > 
-> On Wed, Aug 17, 2016 at 02:59:28PM +0800, Mengdong Lin wrote:
+> We are having odd issues with libasound 1.1.2 which we didn't have with
+> libasound 1.1.1, more precisely
 > 
-> > There will be 2 more series to bring some topology ABI update. The
-> > code is ready and verified. And we will not modify ABI to break
-> > backward compatibility after this.
+> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=833950
 > 
-> It's been over a year since this code was submitted as an ABI.  What are
-> these additional changes?  From where I'm sitting it is really difficult to see
-> that there's an end in sight here and we've had systems out that need this
-> for quite some time now.
+> so I'm having a look at the locking API introduced in 1.1.2, and there
+> are some oddities:
+> 
+> - snd_pcm_new seems to initialize pcm->thread_safe to 0 by default, this
+>   does not seem safe. The attached patch initializes it to 1, which
+>   fixes the bug in our tests.
+> 
+> - snd_pcm_hw_open_fd forces it to 1, thus ignoring what snd_pcm_new set.
 
-One kernel series is for PCM (FE) and the other is for BE link. I'll submit them for review this week.
+The thread_safe has this meaning:
 
-Thanks
-Mengdong
+0  - the pcm plugin is not thread safe
+1  - the pcm plugin is thread safe (actually only the hw plugin)
+-1 - disable thread safety
+
+Your patch does not look correct. It's necessary to determine where the
+mutex is locked the second time (use gdb and backtrace for all threads
+for that). Note that plugins may be chained.
+
+> - one can find both __snd_pcm_lock and snd_pcm_lock functions, what is
+>   the expected difference between them?
+
+__snd_pcm_lock/unlock is for forced lock
+
+snd_pcm_lock/unlock skips locking for safe plugins (only hw plugin)
+
+> - __snd_pcm_lock takes locks when thread_safe >= 0, while snd_pcm_lock
+>   takes locks when thread_safe == 0, this looks really odd.
+
+See meaning of this variable.
+
+> - libasound could just not link against libpthread,
+>   pthread_mutex_lock/unlock are already provided as empty stubs by libc,
+>   the overhead will thus only be hit when the application links against
+>   libpthread (libasound will then properly use pthread locks).
+
+Good point, but this should be configurable through the configure script.
+
+			Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
