@@ -1,17 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/3] ASoC: Intel: bytcr_rt5640: quirk for Acer
-	Aspire SWS-012
-Date: Tue, 16 Aug 2016 18:28:22 -0500
-Message-ID: <1471390103-915-3-git-send-email-pierre-louis.bossart@linux.intel.com>
-References: <1471390103-915-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl_sai: Use 'np' variable
+Date: Tue, 16 Aug 2016 21:00:54 -0300
+Message-ID: <1471392054-17700-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 651B926685D
- for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2016 01:28:35 +0200 (CEST)
-In-Reply-To: <1471390103-915-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Received: from mail-yw0-f196.google.com (mail-yw0-f196.google.com
+ [209.85.161.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73B37265AFC
+ for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2016 02:01:19 +0200 (CEST)
+Received: by mail-yw0-f196.google.com with SMTP id u134so4276805ywg.3
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2016 17:01:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, sfr@canb.auug.org.au, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, irina.tirdea@intel.com
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Baytrail-CR platform needing SSP0-AIF1 routing
-Also fix SSP0 while we are at it.
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-Suggested-by: Andrei Lavreniyuk <andy.lavr@gmail.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+The 'np' variable is already assigned to 'pdev->dev.of_node', so use
+it to improve readability.
+
+No functional change.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ sound/soc/fsl/fsl_sai.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 2548815..bff77a1 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -378,6 +378,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 						BYT_RT5640_MCLK_EN |
- 						BYT_RT5640_SSP0_AIF1),
- 	},
-+	{
-+		.callback = byt_rt5640_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire SW5-012"),
-+		},
-+		.driver_data = (unsigned long *)(BYT_RT5640_IN1_MAP |
-+						 BYT_RT5640_MCLK_EN |
-+						 BYT_RT5640_SSP0_AIF1),
-+
-+	},
- 	{}
- };
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 2147994..9fadf7e 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -801,8 +801,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
  
-@@ -527,7 +538,7 @@ static int byt_rt5640_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 	if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
- 		(byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
+ 	sai->pdev = pdev;
  
--		/* set SSP2 to 16-bit */
-+		/* set SSP0 to 16-bit */
- 		params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
+-	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx6sx-sai") ||
+-	    of_device_is_compatible(pdev->dev.of_node, "fsl,imx6ul-sai"))
++	if (of_device_is_compatible(np, "fsl,imx6sx-sai") ||
++	    of_device_is_compatible(np, "fsl,imx6ul-sai"))
+ 		sai->sai_on_imx = true;
  
- 		/*
+ 	sai->is_lsb_first = of_property_read_bool(np, "lsb-first");
+@@ -883,7 +883,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (of_find_property(np, "fsl,sai-mclk-direction-output", NULL) &&
+-	    of_device_is_compatible(pdev->dev.of_node, "fsl,imx6ul-sai")) {
++	    of_device_is_compatible(np, "fsl,imx6ul-sai")) {
+ 		gpr = syscon_regmap_lookup_by_compatible("fsl,imx6ul-iomuxc-gpr");
+ 		if (IS_ERR(gpr)) {
+ 			dev_err(&pdev->dev, "cannot find iomuxc registers\n");
 -- 
-2.7.4
+1.9.1
