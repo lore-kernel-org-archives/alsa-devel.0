@@ -1,79 +1,77 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8810: Add driver for Nuvoton
-	codec chip NAU88C10
-Date: Wed, 17 Aug 2016 10:42:21 +0100
-Message-ID: <20160817094221.GG9347@sirena.org.uk>
-References: <1471251743-32084-1-git-send-email-KCHSU0@nuvoton.com>
- <20160815140604.GK9347@sirena.org.uk>
- <57B28F1D.8070409@nuvoton.com>
- <20160816103854.GP9347@sirena.org.uk>
- <57B3B107.9080702@nuvoton.com>
+From: John Keeping <john@metanate.com>
+Subject: Re: [PATCH 1/2] ASoC: rt5677: Add ACPI support
+Date: Wed, 17 Aug 2016 11:05:22 +0100
+Message-ID: <20160817110522.123de95c.john@metanate.com>
+References: <20160814111823.1782-1-john@metanate.com>
+	<20160814111823.1782-2-john@metanate.com>
+	<20160816172006.GW9347@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5849288196101050312=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 77B41265FFA
- for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2016 11:42:29 +0200 (CEST)
-In-Reply-To: <57B3B107.9080702@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: WTLI@nuvoton.com, YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160816172006.GW9347@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ben Zhang <benzh@chromium.org>, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 16 Aug 2016 18:20:06 +0100, Mark Brown wrote:
 
---===============5849288196101050312==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5p9QWNAcIBsfgc97"
-Content-Disposition: inline
+> On Sun, Aug 14, 2016 at 12:18:22PM +0100, John Keeping wrote:
+> 
+> > The Chromebook Pixel 2015 uses this codec with the ACPI ID RT5677CE, so
+> > add an ACPI match table and support for reading properties from ACPI.  
+> 
+> This would be a lot easier to review with a concrete description of what
+> "support for reading properties from ACPI" means and probably also split
+> out a bit so that different things were being added separately.
 
+OK, I'll have a think about this, although I'm not sure how much it can
+be split up.  We can add the ACPI device property names in a separate
+patch and maybe add the match table as a final step, but the GPIO
+mapping and probe changes depend on each other.
 
---5p9QWNAcIBsfgc97
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > +/* GPIO indexes defined by ACPI */
+> > +enum {
+> > +	RT5677_GPIO_PLUG_DET,
+> > +	RT5677_GPIO_MIC_PRESENT_L,
+> > +	RT5677_GPIO_HOTWORD_DET_L,
+> > +	RT5677_GPIO_DSP_INT,
+> > +	RT5677_GPIO_HP_AMP_SHDN_L,
+> > +};  
+> 
+> If these are an ABI you should explicitly assign the values so that they
+> can't get remapped by future edits.  If they're not an ABI I don't
+> understand the comment.
 
-On Wed, Aug 17, 2016 at 08:34:15AM +0800, John Hsu wrote:
-> On 8/16/2016 6:38 PM, Mark Brown wrote:
+Yes, these are ABI.  I'll add explicit values.
 
-> > You're not open coding this, this is using regmap!
+> > +	if (ACPI_HANDLE(dev)) {
+> > +		u32 val;
+> > +
+> > +		if (!device_property_read_u32(dev, "DCLK", &val))
+> > +			rt5677->pdata.dmic2_clk_pin = val;
+> > +
+> > +		rt5677->pdata.in1_diff = device_property_read_bool(dev, "IN1");
+> > +		rt5677->pdata.in2_diff = device_property_read_bool(dev, "IN2");  
+> 
+> What happens if someone makes a machine which uses the DT<->ACPI
+> mappings (especially given that this is currently undocumented)?  That
+> would not work which defeats the whole purpose of using the device
+> property APIs.  Shouldn't we be accepting either property?
 
-> Yes, the regmap raw read will use regmap finally. But it needs
-> format_val to make the value and it is not registered because
-> no such value width, 9 bits. The system will crash if the driver
-> uses regmap_raw_read with 9 bits value.
+I'm not sure we want to accept undocumented properties in the DT case.
+I went looking for other drivers that have different property names for
+ACPI and DT and the only example I could find is:
 
-The whole point with raw read is that it isn't reformatting the value.
+    drivers/net/ethernet/amd/xgbe/xgbe-main.c
 
---5p9QWNAcIBsfgc97
-Content-Type: application/pgp-signature; name="signature.asc"
+In that case there are separate functions for parsing DT and ACPI
+properties.  Having separate functions would have made this patch a lot
+clearer, so if we keep the separation between DT and ACPI I'll make that
+change for the next round.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXtDF8AAoJECTWi3JdVIfQutAH/3uDfz3xbCOw7F2HL49g2Vg6
-9F5zzP5v+MVUw3+Fgjr6kYhNdw8FBlyQKQgl0gUWcKekv0TtQdKIFxrJbSvEK9lr
-gx01gC6cq4p07jhrmhVKP7HnqZSXEj7mFDI3HQFeh64N0d2Wu/3sbct7dNm/yoh5
-EKPibn7UY/Kv+YthBeWPnvow8dPePJ3LLs0jc/WdGDQlS+IHfrWsXlVJokxzi9/j
-7QLK2BBuHn4U1U3vCSs3Gt6tPOI+GbWDiuIK1C8uOp9t49fQG6ccfp/yPvFSedHR
-+AMTAi2+JcABnjotSUSxnF+KR4tTlD0nKdg1Mo7hAx0RhwHGA9ZpYS+ZaAc7qZM=
-=lCPy
------END PGP SIGNATURE-----
-
---5p9QWNAcIBsfgc97--
-
---===============5849288196101050312==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5849288196101050312==--
+The ideal might be to have something similar to the ACPI GPIO mapping
+support so that the ACPI device property code could handle the different
+names, but that feels like overkill if there are only two drivers that
+use different property names in DT and ACPI.
