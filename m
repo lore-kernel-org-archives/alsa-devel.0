@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: quirk for Acer
-	Aspire SWS-012" to the asoc tree
-Date: Wed, 17 Aug 2016 12:24:47 +0100
-Message-ID: <E1bZyxj-000620-TL@debutante>
-References: <1471390103-915-3-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: atom: fix 0-day warnings" to the
+	asoc tree
+Date: Wed, 17 Aug 2016 12:24:50 +0100
+Message-ID: <E1bZyxm-00062x-RH@debutante>
+References: <1471390103-915-2-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 10E632669E0
+ by alsa0.perex.cz (Postfix) with ESMTP id 118A12669E3
  for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2016 13:24:58 +0200 (CEST)
-In-Reply-To: <1471390103-915-3-git-send-email-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <1471390103-915-2-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: quirk for Acer Aspire SWS-012
+   ASoC: Intel: atom: fix 0-day warnings
 
 has been applied to the asoc tree at
 
@@ -53,51 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From 8f98307d023810669391555e370a8c2a8e2af9b6 Mon Sep 17 00:00:00 2001
+>From cac17731df11e076850c46f50a17266181a10b7c Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 16 Aug 2016 18:28:22 -0500
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: quirk for Acer Aspire SWS-012
+Date: Tue, 16 Aug 2016 18:28:21 -0500
+Subject: [PATCH] ASoC: Intel: atom: fix 0-day warnings
 
-Baytrail-CR platform needing SSP0-AIF1 routing
-Also fix SSP0 while we are at it.
+spurious __initconst copy/pasted from other drivers
 
-Suggested-by: Andrei Lavreniyuk <andy.lavr@gmail.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ sound/soc/intel/atom/sst/sst_acpi.c   | 2 +-
+ sound/soc/intel/boards/bytcr_rt5640.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 0c2cc4207b95..773acfbaaf2f 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -245,7 +245,7 @@ static int is_byt_cr(struct device *dev, bool *bytcr)
+ 	int status = 0;
+ 
+ 	if (IS_ENABLED(CONFIG_IOSF_MBI)) {
+-		static const struct x86_cpu_id cpu_ids[] __initconst = {
++		static const struct x86_cpu_id cpu_ids[] = {
+ 			{ X86_VENDOR_INTEL, 6, 55 }, /* Valleyview, Bay Trail */
+ 			{}
+ 		};
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 254881594c36..bff77a1f27fc 100644
+index 09ec3d718357..254881594c36 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -378,6 +378,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 						BYT_RT5640_MCLK_EN |
- 						BYT_RT5640_SSP0_AIF1),
- 	},
-+	{
-+		.callback = byt_rt5640_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire SW5-012"),
-+		},
-+		.driver_data = (unsigned long *)(BYT_RT5640_IN1_MAP |
-+						 BYT_RT5640_MCLK_EN |
-+						 BYT_RT5640_SSP0_AIF1),
-+
-+	},
- 	{}
- };
+@@ -668,7 +668,7 @@ static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
  
-@@ -527,7 +538,7 @@ static int byt_rt5640_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 	if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
- 		(byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
- 
--		/* set SSP2 to 16-bit */
-+		/* set SSP0 to 16-bit */
- 		params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
- 
- 		/*
+ static bool is_valleyview(void)
+ {
+-	static const struct x86_cpu_id cpu_ids[] __initconst = {
++	static const struct x86_cpu_id cpu_ids[] = {
+ 		{ X86_VENDOR_INTEL, 6, 55 }, /* Valleyview, Bay Trail */
+ 		{}
+ 	};
 -- 
 2.8.1
