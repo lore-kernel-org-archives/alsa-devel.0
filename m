@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: atom: fix 0-day warnings" to the
-	asoc tree
-Date: Wed, 17 Aug 2016 12:24:50 +0100
-Message-ID: <E1bZyxm-00062x-RH@debutante>
-References: <1471390103-915-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: fsl_sai: Use 'np' variable" to the asoc
+	tree
+Date: Wed, 17 Aug 2016 12:24:44 +0100
+Message-ID: <E1bZyxg-00061A-Tl@debutante>
+References: <1471392054-17700-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 118A12669E3
- for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2016 13:24:58 +0200 (CEST)
-In-Reply-To: <1471390103-915-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 28DB42669E9
+ for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2016 13:25:01 +0200 (CEST)
+In-Reply-To: <1471392054-17700-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, sfr@canb.auug.org.au, alsa-devel@alsa-project.org, broonie@kernel.org, irina.tirdea@intel.com
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: atom: fix 0-day warnings
+   ASoC: fsl_sai: Use 'np' variable
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From cac17731df11e076850c46f50a17266181a10b7c Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 16 Aug 2016 18:28:21 -0500
-Subject: [PATCH] ASoC: Intel: atom: fix 0-day warnings
+>From 6ea9c7ddd96d88e6cc391e63b5ed2fcfe41d5725 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Tue, 16 Aug 2016 21:00:54 -0300
+Subject: [PATCH] ASoC: fsl_sai: Use 'np' variable
 
-spurious __initconst copy/pasted from other drivers
+The 'np' variable is already assigned to 'pdev->dev.of_node', so use
+it to improve readability.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+No functional change.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c   | 2 +-
- sound/soc/intel/boards/bytcr_rt5640.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 0c2cc4207b95..773acfbaaf2f 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -245,7 +245,7 @@ static int is_byt_cr(struct device *dev, bool *bytcr)
- 	int status = 0;
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 2147994ab46f..9fadf7e31c5f 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -801,8 +801,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
  
- 	if (IS_ENABLED(CONFIG_IOSF_MBI)) {
--		static const struct x86_cpu_id cpu_ids[] __initconst = {
-+		static const struct x86_cpu_id cpu_ids[] = {
- 			{ X86_VENDOR_INTEL, 6, 55 }, /* Valleyview, Bay Trail */
- 			{}
- 		};
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 09ec3d718357..254881594c36 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -668,7 +668,7 @@ static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ 	sai->pdev = pdev;
  
- static bool is_valleyview(void)
- {
--	static const struct x86_cpu_id cpu_ids[] __initconst = {
-+	static const struct x86_cpu_id cpu_ids[] = {
- 		{ X86_VENDOR_INTEL, 6, 55 }, /* Valleyview, Bay Trail */
- 		{}
- 	};
+-	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx6sx-sai") ||
+-	    of_device_is_compatible(pdev->dev.of_node, "fsl,imx6ul-sai"))
++	if (of_device_is_compatible(np, "fsl,imx6sx-sai") ||
++	    of_device_is_compatible(np, "fsl,imx6ul-sai"))
+ 		sai->sai_on_imx = true;
+ 
+ 	sai->is_lsb_first = of_property_read_bool(np, "lsb-first");
+@@ -883,7 +883,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (of_find_property(np, "fsl,sai-mclk-direction-output", NULL) &&
+-	    of_device_is_compatible(pdev->dev.of_node, "fsl,imx6ul-sai")) {
++	    of_device_is_compatible(np, "fsl,imx6ul-sai")) {
+ 		gpr = syscon_regmap_lookup_by_compatible("fsl,imx6ul-iomuxc-gpr");
+ 		if (IS_ERR(gpr)) {
+ 			dev_err(&pdev->dev, "cannot find iomuxc registers\n");
 -- 
 2.8.1
