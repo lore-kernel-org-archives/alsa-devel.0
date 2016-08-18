@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH for 4.8] Revert "ASoC: omap-mcpdm: Add
- support for pdmclk clock handling"
-Date: Thu, 18 Aug 2016 15:52:06 +0100
-Message-ID: <20160818145206.GP9347@sirena.org.uk>
-References: <20160818110059.13457-1-peter.ujfalusi@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 00/17] Baytrail audio fixes
+Date: Thu, 18 Aug 2016 11:22:38 -0500
+Message-ID: <5e408cf5-cb8c-0588-021a-8b8fa5aa6321@linux.intel.com>
+References: <1471037280-17433-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <928a31f5-d032-c06c-f59d-04d0d7ef1220@linux.intel.com>
+ <20160817105032.GJ9347@sirena.org.uk>
+ <5a448c3a-3f72-f753-e92f-43442c48f3e7@linux.intel.com>
+ <20160818092929.GM9347@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7744728657082004849=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D028266569
- for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 16:52:24 +0200 (CEST)
-In-Reply-To: <20160818110059.13457-1-peter.ujfalusi@ti.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8AB2D265AF6
+ for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 18:22:42 +0200 (CEST)
+In-Reply-To: <20160818092929.GM9347@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, irina.tirdea@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+On 8/18/16 4:29 AM, Mark Brown wrote:
+> On Wed, Aug 17, 2016 at 01:26:02PM -0500, Pierre-Louis Bossart wrote:
+>> On 8/17/16 5:50 AM, Mark Brown wrote:
+>
+>>> You need to at least send clock API patches to the clock maintainers,
+>>> since there's no build time dependency the normal thing would be that
+>>> things will go through the clock tree.
+>
+>> so would you rebase your tree on the clock tree then? the longer this takes
+>> the more reports we'll get of broken audio in for-next due to this missing
+>> MCLK support.
+>
+> No, if there's any need to do a merge we'll do a merge.  Does this
+> actively break existing boards?
 
---===============7744728657082004849==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="FX8H79VVjfzinewO"
-Content-Disposition: inline
-
-
---FX8H79VVjfzinewO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 18, 2016 at 02:00:59PM +0300, Peter Ujfalusi wrote:
-> This reverts commit 65aca64d05b5eaa5ce15e18b458a8d338ddbd478.
-
-
-Please submit patches using subject lines reflecting the style for the
-subsystem.  This makes it easier for people to identify relevant
-patches.  Look at what existing commits in the area you're changing are
-doing and make sure your subject lines visually resemble what they're
-doing.
-
---FX8H79VVjfzinewO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXtcuVAAoJECTWi3JdVIfQziIH/jp6NckpRfQCPEL4zkTvQmCS
-FjPFZ7Zy/QmpXQtKkxgsDsn1WjeBWqMWt64LHR34tpLMBOpyCoL4H+Y/jGl1jCXy
-L7eS4ZaPSOeH01OoWJvl2ZaXDrUUsY8RxZBi9DUZhTY3jnoX3OlLtOSF1+CkKUou
-7K1dqGqndKJzA8suYxiSbcsOeiMma3NYbJp4ONfhUumt0jyn0jO5oJDe8RH2loHo
-SFWzqyorYKQNlZeiNd9D1yENQ2Jdw2Rx6YX3fBO7HpuCzRJMX0GXj130Q8InZD3P
-qmdzy/x0xF2hdf0mHNBUBtepup+66l3FfNQC9gUD3wC8AAuuYoVdaz6iNZ9tDzc=
-=LZwV
------END PGP SIGNATURE-----
-
---FX8H79VVjfzinewO--
-
---===============7744728657082004849==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7744728657082004849==--
+No for all the Baytrail-CR boards who never worked before.
+But I believe it does for the T100/DellVenue, but we could have a 
+mechanism to fall back to BCLK when MCLK is not available. Let me look 
+at it later today.
