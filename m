@@ -1,20 +1,18 @@
-From: Andrej Krutak <dev@andree.sk>
-Subject: [PATCH v2 9/9] ALSA: line6: Add hwdep interface to
-	access the POD control messages
-Date: Fri, 19 Aug 2016 00:20:39 +0200
-Message-ID: <1471558839-14120-10-git-send-email-dev@andree.sk>
-References: <1470942147-19848-1-git-send-email-dev@andree.sk>
- <1471558839-14120-1-git-send-email-dev@andree.sk>
+From: Russell King - ARM Linux <linux@armlinux.org.uk>
+Subject: Re: [PATCH] ASoC: core: Clean up DAPM before the card
+	debugfs
+Date: Fri, 19 Aug 2016 00:26:42 +0100
+Message-ID: <20160818232642.GF1041@n2100.armlinux.org.uk>
+References: <1471545449-29516-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 98E792663E5
- for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2016 00:21:51 +0200 (CEST)
-Received: by mail-wm0-f65.google.com with SMTP id i5so1278275wmg.2
- for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 15:21:51 -0700 (PDT)
-In-Reply-To: <1471558839-14120-1-git-send-email-dev@andree.sk>
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+ by alsa0.perex.cz (Postfix) with ESMTP id A81432663E5
+ for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2016 01:26:49 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1471545449-29516-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,298 +22,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.com, perex@perex.cz, stefanha@gmail.com, grabner@icg.tugraz.at, alsa-devel@alsa-project.org
-Cc: Andrej Krutak <dev@andree.sk>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-We must do it this way, because e.g. POD X3 won't play any sound unless
-the host listens on the bulk EP, so we cannot export it only via libusb.
+On Thu, Aug 18, 2016 at 07:37:29PM +0100, Mark Brown wrote:
+> Both the card and DAPM cleanups recursively delete their debugfs
+> directories.  Since the DAPM debugfs subdirectory for the card is
+> located within the card debugfs this means we end up trying to double
+> free the DAPM subdirectory.  Reorder the cleanup to free the card
+> debugfs after we've cleaned up DAPM and it has deleted its own
+> subdirectory.
+> 
+> Reported-by: Russell King - ARM Linux <linux@armlinux.org.uk>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+> 
+> Not tested at all yet, just about done for today.
 
-The driver currently doesn't use the bulk EP messages in other way,
-in future it could e.g. sense/modify volume(s).
+Thanks - that appears to solve the oops on rmmod of
+snd-soc-omap-abe-twl6040!
 
-Signed-off-by: Andrej Krutak <dev@andree.sk>
----
- include/uapi/sound/asound.h |   3 +-
- sound/usb/line6/driver.c    | 151 ++++++++++++++++++++++++++++++++++++++++++--
- sound/usb/line6/driver.h    |  23 ++++++-
- 3 files changed, 170 insertions(+), 7 deletions(-)
+Tested-by: Russell King <rmk+kernel@armlinux.org.uk>
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 609cadb..be353a7 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -106,9 +106,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
- 	SNDRV_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
- 	SNDRV_HWDEP_IFACE_FW_TASCAM,	/* TASCAM FireWire series */
-+	SNDRV_HWDEP_IFACE_LINE6,	/* Line6 USB processors */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_TASCAM
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_LINE6
- };
- 
- struct snd_hwdep_info {
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 8a71d45..ac4c702 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -17,6 +17,7 @@
- 
- #include <sound/core.h>
- #include <sound/initval.h>
-+#include <sound/hwdep.h>
- 
- #include "capture.h"
- #include "driver.h"
-@@ -303,7 +304,7 @@ static void line6_data_received(struct urb *urb)
- 		for (;;) {
- 			done =
- 				line6_midibuf_read(mb, line6->buffer_message,
--						LINE6_MESSAGE_MAXLEN);
-+						LINE6_MIDI_MESSAGE_MAXLEN);
- 
- 			if (done == 0)
- 				break;
-@@ -315,8 +316,11 @@ static void line6_data_received(struct urb *urb)
- 				line6->process_message(line6);
- 		}
- 	} else {
-+		line6->buffer_message = urb->transfer_buffer;
-+		line6->message_length = urb->actual_length;
- 		if (line6->process_message)
- 			line6->process_message(line6);
-+		line6->buffer_message = NULL;
- 	}
- 
- 	line6_start_listen(line6);
-@@ -473,14 +477,16 @@ static void line6_destruct(struct snd_card *card)
- 	struct usb_line6 *line6 = card->private_data;
- 	struct usb_device *usbdev = line6->usbdev;
- 
--	/* free buffer memory first: */
--	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)
-+	/* Free buffer memory first. We cannot depend on the existence of private
-+	 * data from the (podhd) module, it may be gone already during this call */
-+	if (line6->buffer_message)
- 		kfree(line6->buffer_message);
- 
- 	kfree(line6->buffer_listen);
- 
- 	/* then free URBs: */
- 	usb_free_urb(line6->urb_listen);
-+	line6->urb_listen = NULL;
- 
- 	/* decrement reference counters: */
- 	usb_put_dev(usbdev);
-@@ -522,6 +528,138 @@ static void line6_get_interval(struct usb_line6 *line6)
- 	}
- }
- 
-+
-+/* Enable buffering of incoming messages, flush the buffer */
-+static int line6_hwdep_open(struct snd_hwdep *hw, struct file *file)
-+{
-+	struct usb_line6 *line6 = hw->private_data;
-+
-+	/* NOTE: hwdep layer provides atomicity here */
-+
-+	line6->messages.active = 1;
-+
-+	return 0;
-+}
-+
-+/* Stop buffering */
-+static int line6_hwdep_release(struct snd_hwdep *hw, struct file *file)
-+{
-+	struct usb_line6 *line6 = hw->private_data;
-+
-+	line6->messages.active = 0;
-+
-+	return 0;
-+}
-+
-+/* Read from circular buffer, return to user */
-+static long
-+line6_hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
-+					loff_t *offset)
-+{
-+	struct usb_line6 *line6 = hwdep->private_data;
-+	long rv = 0;
-+	unsigned int out_count;
-+
-+	if (mutex_lock_interruptible(&line6->messages.read_lock))
-+		return -ERESTARTSYS;
-+
-+	while (kfifo_len(&line6->messages.fifo) == 0) {
-+		mutex_unlock(&line6->messages.read_lock);
-+
-+		rv = wait_event_interruptible(
-+			line6->messages.wait_queue,
-+			kfifo_len(&line6->messages.fifo) != 0);
-+		if (rv < 0)
-+			return rv;
-+
-+		if (mutex_lock_interruptible(&line6->messages.read_lock))
-+			return -ERESTARTSYS;
-+	}
-+
-+	if (kfifo_peek_len(&line6->messages.fifo) > count) {
-+		/* Buffer too small; allow re-read of the current item... */
-+		rv = -EINVAL;
-+	} else {
-+		rv = kfifo_to_user(&line6->messages.fifo, buf, count, &out_count);
-+		if (rv == 0)
-+			rv = out_count;
-+	}
-+
-+	mutex_unlock(&line6->messages.read_lock);
-+	return rv;
-+}
-+
-+/* Write directly (no buffering) to device by user*/
-+static long
-+line6_hwdep_write(struct snd_hwdep *hwdep, const char __user *data, long count,
-+					loff_t *offset)
-+{
-+	struct usb_line6 *line6 = hwdep->private_data;
-+	int rv;
-+	char *data_copy;
-+
-+	if (count > line6->max_packet_size * LINE6_RAW_MESSAGES_MAXCOUNT) {
-+		/* This is an arbitrary limit - still better than nothing... */
-+		return -EINVAL;
-+	}
-+
-+	data_copy = memdup_user(data, count);
-+	if (IS_ERR(ERR_PTR))
-+		return -ENOMEM;
-+
-+	rv = line6_send_raw_message(line6, data_copy, count);
-+
-+	kfree(data_copy);
-+	return rv;
-+}
-+
-+static const struct snd_hwdep_ops hwdep_ops = {
-+	.open    = line6_hwdep_open,
-+	.release = line6_hwdep_release,
-+	.read    = line6_hwdep_read,
-+	.write   = line6_hwdep_write,
-+};
-+
-+/* Insert into circular buffer */
-+static void line6_hwdep_push_message(struct usb_line6 *line6)
-+{
-+	if (!line6->messages.active)
-+		return;
-+
-+	if (kfifo_avail(&line6->messages.fifo) >= line6->message_length) {
-+		/* No race condition here, there's only one writer */
-+		kfifo_in(&line6->messages.fifo,
-+			line6->buffer_message, line6->message_length);
-+	} /* else TODO: signal overflow */
-+
-+	wake_up_interruptible(&line6->messages.wait_queue);
-+}
-+
-+static int line6_hwdep_init(struct usb_line6 *line6)
-+{
-+	int err;
-+	struct snd_hwdep *hwdep;
-+
-+	/* TODO: usb_driver_claim_interface(); */
-+	line6->process_message = line6_hwdep_push_message;
-+	line6->messages.active = 0;
-+	init_waitqueue_head(&line6->messages.wait_queue);
-+	mutex_init(&line6->messages.read_lock);
-+	INIT_KFIFO(line6->messages.fifo);
-+
-+	err = snd_hwdep_new(line6->card, "config", 0, &hwdep);
-+	if (err < 0)
-+		goto end;
-+	strcpy(hwdep->name, "config");
-+	hwdep->iface = SNDRV_HWDEP_IFACE_LINE6;
-+	hwdep->ops = hwdep_ops;
-+	hwdep->private_data = line6;
-+	hwdep->exclusive = true;
-+
-+end:
-+	return err;
-+}
-+
- static int line6_init_cap_control(struct usb_line6 *line6)
- {
- 	int ret;
-@@ -536,9 +674,13 @@ static int line6_init_cap_control(struct usb_line6 *line6)
- 		return -ENOMEM;
- 
- 	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
--		line6->buffer_message = kmalloc(LINE6_MESSAGE_MAXLEN, GFP_KERNEL);
-+		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
- 		if (!line6->buffer_message)
- 			return -ENOMEM;
-+	} else {
-+		ret = line6_hwdep_init(line6);
-+		if (ret < 0)
-+			return ret;
- 	}
- 
- 	ret = line6_start_listen(line6);
-@@ -716,3 +858,4 @@ EXPORT_SYMBOL_GPL(line6_resume);
- MODULE_AUTHOR(DRIVER_AUTHOR);
- MODULE_DESCRIPTION(DRIVER_DESC);
- MODULE_LICENSE("GPL");
-+
-diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index 14093c5..207a1d5 100644
---- a/sound/usb/line6/driver.h
-+++ b/sound/usb/line6/driver.h
-@@ -12,8 +12,9 @@
- #ifndef DRIVER_H
- #define DRIVER_H
- 
--#include <linux/spinlock.h>
- #include <linux/usb.h>
-+#include <linux/mutex.h>
-+#include <linux/kfifo.h>
- #include <sound/core.h>
- 
- #include "midi.h"
-@@ -32,7 +33,16 @@
- 
- #define LINE6_TIMEOUT 1
- #define LINE6_BUFSIZE_LISTEN 64
--#define LINE6_MESSAGE_MAXLEN 256
-+#define LINE6_MIDI_MESSAGE_MAXLEN 256
-+
-+#define LINE6_RAW_MESSAGES_MAXCOUNT_ORDER 7
-+/* 4k packets are common, BUFSIZE * MAXCOUNT should be bigger... */
-+#define LINE6_RAW_MESSAGES_MAXCOUNT (1 << LINE6_RAW_MESSAGES_MAXCOUNT_ORDER)
-+
-+
-+#if LINE6_BUFSIZE_LISTEN > 65535
-+#error "Use dynamic fifo instead"
-+#endif
- 
- /*
- 	Line 6 MIDI control commands
-@@ -156,6 +166,15 @@ struct usb_line6 {
- 	/* Length of message to be processed, generated from MIDI layer  */
- 	int message_length;
- 
-+	/* Circular buffer for non-MIDI control messages */
-+	struct {
-+		struct mutex read_lock;
-+		wait_queue_head_t wait_queue;
-+		int active:1;
-+		STRUCT_KFIFO_REC_2(LINE6_BUFSIZE_LISTEN * LINE6_RAW_MESSAGES_MAXCOUNT)
-+			fifo;
-+	} messages;
-+
- 	/* If MIDI is supported, buffer_message contains the pre-processed data;
- 	 * otherwise the data is only in urb_listen (buffer_incoming). */
- 	void (*process_message)(struct usb_line6 *);
+So this allows me to test a bit more... and there's more bad news.
+On re-inserting this module...
+
+twl6040 0-004b: Unable to sync registers 0xc-0xd. -121
+genirq: Flags mismatch irq 242. 00000004 (McPDM) vs. 00000004 (McPDM)
+omap-mcpdm 40132000.mcpdm: Request for IRQ failed
+omap-mcpdm 40132000.mcpdm: ASoC: failed to probe DAI 40132000.mcpdm: -16
+omap-abe-twl6040 sound: ASoC: failed to instantiate card -16
+omap-abe-twl6040 sound: snd_soc_register_card() failed: -16
+omap-abe-twl6040: probe of sound failed with error -16
+
+Looks like removing and re-inserting these modules has never been
+tested. :(  And oh my...
+
+static int omap_mcpdm_probe(struct snd_soc_dai *dai)
+{
+        ret = devm_request_irq(mcpdm->dev, mcpdm->irq, omap_mcpdm_irq_handler,
+                                0, "McPDM", (void *)mcpdm);
+
+static struct snd_soc_dai_driver omap_mcpdm_dai = {
+        .probe = omap_mcpdm_probe,
+        .remove = omap_mcpdm_remove,
+
+Using devm_* stuff in a context where it doesn't get automatically
+freed when the DAI driver is unbound, and nothing in omap_mcpdm_remove()
+to undo that request.
+
+I suspect that isn't the full story though, because of the regmap
+complaint (which I've not even looked at yet.)
+
+At the moment, omap_mcpdm_probe() should _not_ be making use of any
+devm_* calls, and omap_mcpdm_remove() should be _explicitly_ releasing
+everything that was claimed in omap_mcpdm_probe() because ASoC does
+nothing with devres groups.  The alternative solution here is that
+ASoC gains devres group support so resources claimed in the DAI
+driver .probe function can be automatically released in the same way
+as happens with normal driver model probe/release and component
+helper bind/unbind.
+
+Maybe we should have a test mode in the kernel where every device
+goes through a bind-unbind-rebind sequence during boot to test more
+of these paths...
+
 -- 
-1.9.1
+RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
