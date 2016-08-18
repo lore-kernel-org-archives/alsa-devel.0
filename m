@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sst: fix ix spelling mistake:
-	"capablities" -> "capabilites"" to the asoc tree
-Date: Thu, 18 Aug 2016 11:17:25 +0100
-Message-ID: <E1baKO5-00022f-O2@debutante>
-References: <1471456079-130702-1-git-send-email-colin.king@canonical.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH for 4.8] Revert "ASoC: omap-mcpdm: Add support
+	for pdmclk clock handling"
+Date: Thu, 18 Aug 2016 14:00:59 +0300
+Message-ID: <20160818110059.13457-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AE8F265D44
- for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 12:17:41 +0200 (CEST)
-In-Reply-To: <1471456079-130702-1-git-send-email-colin.king@canonical.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C434265DF6
+ for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 13:01:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +19,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+This reverts commit 65aca64d05b5eaa5ce15e18b458a8d338ddbd478.
 
-   ASoC: Intel: sst: fix ix spelling mistake: "capablities" -> "capabilites"
+The patches for twl6040 MFD and clk missed the merge window and
+causing the McPDM driver to never probe since it is put back to
+the deferred list because the missing drivers.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 84ccd63686498e907799fe3789b521a2a18dd6a9 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 17 Aug 2016 18:47:59 +0100
-Subject: [PATCH] ASoC: Intel: sst: fix ix spelling mistake: "capablities" ->
- "capabilites"
-
-trivial fix to spelling mistake in dev_err message and reformat code
-to avoid being over 80 chars wide per line
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/intel/atom/sst/sst.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Mark,
 
-diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-index a4b458e77089..498b5f7fba4c 100644
---- a/sound/soc/intel/atom/sst/sst.c
-+++ b/sound/soc/intel/atom/sst/sst.c
-@@ -190,7 +190,8 @@ int sst_driver_ops(struct intel_sst_drv *sst)
- 
- 	default:
- 		dev_err(sst->dev,
--			"SST Driver capablities missing for dev_id: %x", sst->dev_id);
-+			"SST Driver capabilities missing for dev_id: %x",
-+			sst->dev_id);
- 		return -EINVAL;
- 	};
+OMAP4/5 audio regressed in 4.8 due to the hack that the twl6040 MFD and clk
+driver changes were not take in time.
+The only clean solution I can think is to revert the pdmclk clock handling
+from the McPDM driver for now.
+
+Regards,
+Peter
+
+ Documentation/devicetree/bindings/sound/omap-mcpdm.txt | 10 ----------
+ sound/soc/omap/omap-mcpdm.c                            | 17 -----------------
+ 2 files changed, 27 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt b/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+index 6f6c2f8e908d..0741dff048dd 100644
+--- a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
++++ b/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+@@ -8,8 +8,6 @@ Required properties:
+ - interrupts: Interrupt number for McPDM
+ - interrupt-parent: The parent interrupt controller
+ - ti,hwmods: Name of the hwmod associated to the McPDM
+-- clocks:  phandle for the pdmclk provider, likely <&twl6040>
+-- clock-names: Must be "pdmclk"
+
+ Example:
+
+@@ -21,11 +19,3 @@ mcpdm: mcpdm@40132000 {
+ 	interrupt-parent = <&gic>;
+ 	ti,hwmods = "mcpdm";
+ };
+-
+-In board DTS file the pdmclk needs to be added:
+-
+-&mcpdm {
+-	clocks = <&twl6040>;
+-	clock-names = "pdmclk";
+-	status = "okay";
+-};
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index e7cdc51fd806..74d6e6fdcfd0 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -31,7 +31,6 @@
+ #include <linux/err.h>
+ #include <linux/io.h>
+ #include <linux/irq.h>
+-#include <linux/clk.h>
+ #include <linux/slab.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/of_device.h>
+@@ -55,7 +54,6 @@ struct omap_mcpdm {
+ 	unsigned long phys_base;
+ 	void __iomem *io_base;
+ 	int irq;
+-	struct clk *pdmclk;
+
+ 	struct mutex mutex;
+
+@@ -390,7 +388,6 @@ static int omap_mcpdm_probe(struct snd_soc_dai *dai)
+ 	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
+ 	int ret;
+
+-	clk_prepare_enable(mcpdm->pdmclk);
+ 	pm_runtime_enable(mcpdm->dev);
+
+ 	/* Disable lines while request is ongoing */
+@@ -425,7 +422,6 @@ static int omap_mcpdm_remove(struct snd_soc_dai *dai)
+
+ 	pm_runtime_disable(mcpdm->dev);
+
+-	clk_disable_unprepare(mcpdm->pdmclk);
+ 	return 0;
  }
--- 
-2.8.1
+
+@@ -445,8 +441,6 @@ static int omap_mcpdm_suspend(struct snd_soc_dai *dai)
+ 		mcpdm->pm_active_count++;
+ 	}
+
+-	clk_disable_unprepare(mcpdm->pdmclk);
+-
+ 	return 0;
+ }
+
+@@ -454,8 +448,6 @@ static int omap_mcpdm_resume(struct snd_soc_dai *dai)
+ {
+ 	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
+
+-	clk_prepare_enable(mcpdm->pdmclk);
+-
+ 	if (mcpdm->pm_active_count) {
+ 		while (mcpdm->pm_active_count--)
+ 			pm_runtime_get_sync(mcpdm->dev);
+@@ -549,15 +541,6 @@ static int asoc_mcpdm_probe(struct platform_device *pdev)
+
+ 	mcpdm->dev = &pdev->dev;
+
+-	mcpdm->pdmclk = devm_clk_get(&pdev->dev, "pdmclk");
+-	if (IS_ERR(mcpdm->pdmclk)) {
+-		if (PTR_ERR(mcpdm->pdmclk) == -EPROBE_DEFER)
+-			return -EPROBE_DEFER;
+-		dev_warn(&pdev->dev, "Error getting pdmclk (%ld)!\n",
+-			 PTR_ERR(mcpdm->pdmclk));
+-		mcpdm->pdmclk = NULL;
+-	}
+-
+ 	ret =  devm_snd_soc_register_component(&pdev->dev,
+ 					       &omap_mcpdm_component,
+ 					       &omap_mcpdm_dai, 1);
+--
+2.9.2
