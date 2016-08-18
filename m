@@ -1,16 +1,19 @@
 From: Andrej Krutak <dev@andree.sk>
-Subject: [PATCH 0/3] line6 locking and segfault fixes
-Date: Thu, 18 Aug 2016 23:52:09 +0200
-Message-ID: <1471557132-10206-1-git-send-email-dev@andree.sk>
+Subject: [PATCH 2/3] ALSA: line6: Give up on the lock while
+	URBs are released.
+Date: Thu, 18 Aug 2016 23:52:11 +0200
+Message-ID: <1471557132-10206-3-git-send-email-dev@andree.sk>
+References: <1471557132-10206-1-git-send-email-dev@andree.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 72287266199
- for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 23:52:47 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id q128so1220794wma.1
- for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 14:52:47 -0700 (PDT)
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7DDF2663E5
+ for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 23:52:50 +0200 (CEST)
+Received: by mail-wm0-f67.google.com with SMTP id o80so1229764wme.0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 14:52:50 -0700 (PDT)
+In-Reply-To: <1471557132-10206-1-git-send-email-dev@andree.sk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,20 +27,81 @@ To: tiwai@suse.com, perex@perex.cz, stefanha@gmail.com, grabner@icg.tugraz.at, a
 Cc: Andrej Krutak <dev@andree.sk>
 List-Id: alsa-devel@alsa-project.org
 
-These are already seen patches fixing a few locking issues, now split out of the
-POD-X3 patchset.
+Done, because line6_stream_stop() locks and calls line6_unlink_audio_urbs(),
+which in turn invokes audio_out_callback(), which tries to lock 2nd time.
 
-In addition, pod sysfs attributes touched something else than they thought,
-causing segfaults - fixed it (tested with the same code in podhd)...
+Fixes:
 
-Andrej Krutak (3):
-  ALSA: line6: Remove double line6_pcm_release() after failed acquire.
-  ALSA: line6: Give up on the lock while URBs are released.
-  ALSA: line6: Fix POD sysfs attributes segfault
+=============================================
+[ INFO: possible recursive locking detected ]
+4.4.15+ #15 Not tainted
+---------------------------------------------
+mplayer/3591 is trying to acquire lock:
+ (&(&line6pcm->out.lock)->rlock){-.-...}, at: [<bfa27655>] audio_out_callback+0x70/0x110 [snd_usb_line6]
 
- sound/usb/line6/pcm.c |  3 ++-
- sound/usb/line6/pod.c | 12 ++++++------
- 2 files changed, 8 insertions(+), 7 deletions(-)
+but task is already holding lock:
+ (&(&line6pcm->out.lock)->rlock){-.-...}, at: [<bfa26aad>] line6_stream_stop+0x24/0x5c [snd_usb_line6]
 
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&(&line6pcm->out.lock)->rlock);
+  lock(&(&line6pcm->out.lock)->rlock);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+3 locks held by mplayer/3591:
+ #0:  (snd_pcm_link_rwlock){.-.-..}, at: [<bf8d49a7>] snd_pcm_stream_lock+0x1e/0x40 [snd_pcm]
+ #1:  (&(&substream->self_group.lock)->rlock){-.-...}, at: [<bf8d49af>] snd_pcm_stream_lock+0x26/0x40 [snd_pcm]
+ #2:  (&(&line6pcm->out.lock)->rlock){-.-...}, at: [<bfa26aad>] line6_stream_stop+0x24/0x5c [snd_usb_line6]
+
+stack backtrace:
+CPU: 0 PID: 3591 Comm: mplayer Not tainted 4.4.15+ #15
+Hardware name: Generic AM33XX (Flattened Device Tree)
+[<c0015d85>] (unwind_backtrace) from [<c001253d>] (show_stack+0x11/0x14)
+[<c001253d>] (show_stack) from [<c02f1bdf>] (dump_stack+0x8b/0xac)
+[<c02f1bdf>] (dump_stack) from [<c0076f43>] (__lock_acquire+0xc8b/0x1780)
+[<c0076f43>] (__lock_acquire) from [<c007810d>] (lock_acquire+0x99/0x1c0)
+[<c007810d>] (lock_acquire) from [<c06171e7>] (_raw_spin_lock_irqsave+0x3f/0x4c)
+[<c06171e7>] (_raw_spin_lock_irqsave) from [<bfa27655>] (audio_out_callback+0x70/0x110 [snd_usb_line6])
+[<bfa27655>] (audio_out_callback [snd_usb_line6]) from [<c04294db>] (__usb_hcd_giveback_urb+0x53/0xd0)
+[<c04294db>] (__usb_hcd_giveback_urb) from [<c046388d>] (musb_giveback+0x3d/0x98)
+[<c046388d>] (musb_giveback) from [<c04647f5>] (musb_urb_dequeue+0x6d/0x114)
+[<c04647f5>] (musb_urb_dequeue) from [<c042ac11>] (usb_hcd_unlink_urb+0x39/0x98)
+[<c042ac11>] (usb_hcd_unlink_urb) from [<bfa26a87>] (line6_unlink_audio_urbs+0x6a/0x6c [snd_usb_line6])
+[<bfa26a87>] (line6_unlink_audio_urbs [snd_usb_line6]) from [<bfa26acb>] (line6_stream_stop+0x42/0x5c [snd_usb_line6])
+[<bfa26acb>] (line6_stream_stop [snd_usb_line6]) from [<bfa26fe7>] (snd_line6_trigger+0xb6/0xf4 [snd_usb_line6])
+[<bfa26fe7>] (snd_line6_trigger [snd_usb_line6]) from [<bf8d47b7>] (snd_pcm_do_stop+0x36/0x38 [snd_pcm])
+[<bf8d47b7>] (snd_pcm_do_stop [snd_pcm]) from [<bf8d462f>] (snd_pcm_action_single+0x22/0x40 [snd_pcm])
+[<bf8d462f>] (snd_pcm_action_single [snd_pcm]) from [<bf8d46f9>] (snd_pcm_action+0xac/0xb0 [snd_pcm])
+[<bf8d46f9>] (snd_pcm_action [snd_pcm]) from [<bf8d4b61>] (snd_pcm_drop+0x38/0x64 [snd_pcm])
+[<bf8d4b61>] (snd_pcm_drop [snd_pcm]) from [<bf8d6233>] (snd_pcm_common_ioctl1+0x7fe/0xbe8 [snd_pcm])
+[<bf8d6233>] (snd_pcm_common_ioctl1 [snd_pcm]) from [<bf8d6779>] (snd_pcm_playback_ioctl1+0x15c/0x51c [snd_pcm])
+[<bf8d6779>] (snd_pcm_playback_ioctl1 [snd_pcm]) from [<bf8d6b59>] (snd_pcm_playback_ioctl+0x20/0x28 [snd_pcm])
+[<bf8d6b59>] (snd_pcm_playback_ioctl [snd_pcm]) from [<c016714b>] (do_vfs_ioctl+0x3af/0x5c8)
+
+Signed-off-by: Andrej Krutak <dev@andree.sk>
+---
+ sound/usb/line6/pcm.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/usb/line6/pcm.c b/sound/usb/line6/pcm.c
+index 2bc8879..41aa335 100644
+--- a/sound/usb/line6/pcm.c
++++ b/sound/usb/line6/pcm.c
+@@ -210,7 +210,9 @@ static void line6_stream_stop(struct snd_line6_pcm *line6pcm, int direction,
+ 	spin_lock_irqsave(&pstr->lock, flags);
+ 	clear_bit(type, &pstr->running);
+ 	if (!pstr->running) {
++		spin_unlock_irqrestore(&pstr->lock, flags);
+ 		line6_unlink_audio_urbs(line6pcm, pstr);
++		spin_lock_irqsave(&pstr->lock, flags);
+ 		if (direction == SNDRV_PCM_STREAM_CAPTURE) {
+ 			line6pcm->prev_fbuf = NULL;
+ 			line6pcm->prev_fsize = 0;
 -- 
 1.9.1
