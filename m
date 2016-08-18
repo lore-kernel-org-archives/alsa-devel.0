@@ -1,20 +1,19 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: Re: [PATCH] ASoC: nau8810: Add driver for Nuvoton
-	codec chip NAU88C10
-Date: Thu, 18 Aug 2016 09:04:12 +0800
-Message-ID: <57B5098C.7020102@nuvoton.com>
-References: <1471251743-32084-1-git-send-email-KCHSU0@nuvoton.com>
- <20160815140604.GK9347@sirena.org.uk> <57B28F1D.8070409@nuvoton.com>
- <20160816103854.GP9347@sirena.org.uk> <57B3B107.9080702@nuvoton.com>
- <20160817094221.GG9347@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 00/17] Baytrail audio fixes
+Date: Thu, 18 Aug 2016 10:29:29 +0100
+Message-ID: <20160818092929.GM9347@sirena.org.uk>
+References: <1471037280-17433-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <928a31f5-d032-c06c-f59d-04d0d7ef1220@linux.intel.com>
+ <20160817105032.GJ9347@sirena.org.uk>
+ <5a448c3a-3f72-f753-e92f-43442c48f3e7@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7549745517505051625=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 00D30266021
- for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 03:04:16 +0200 (CEST)
-In-Reply-To: <20160817094221.GG9347@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CADA7265A2A
+ for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 11:29:41 +0200 (CEST)
+In-Reply-To: <5a448c3a-3f72-f753-e92f-43442c48f3e7@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,51 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: WTLI@nuvoton.com, YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, irina.tirdea@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On 8/17/2016 5:42 PM, Mark Brown wrote:
-> On Wed, Aug 17, 2016 at 08:34:15AM +0800, John Hsu wrote:
->   
->> On 8/16/2016 6:38 PM, Mark Brown wrote:
->>     
->
->   
->>> You're not open coding this, this is using regmap!
->>>       
->
->   
->> Yes, the regmap raw read will use regmap finally. But it needs
->> format_val to make the value and it is not registered because
->> no such value width, 9 bits. The system will crash if the driver
->> uses regmap_raw_read with 9 bits value.
->>     
->
-> The whole point with raw read is that it isn't reformatting the value.
->   
+--===============7549745517505051625==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="W/k2pzXB1sdSS/P9"
+Content-Disposition: inline
 
-I post the partial function. The format_val is not valid for our
-codec driver and we can't use the regmap_raw_read(). It's the reason
-that we need to make the function like regmap_raw_read().
 
-int regmap_raw_read(struct regmap *map, unsigned int reg, ... )
-{
-    ...
-    if (regmap_volatile_range(map, reg, val_count) ... ) {
-        ...
-    } else {
-        /* Otherwise go word by word for the cache; should be low
-         * cost as we expect to hit the cache.
-         */
-        for (i = 0; i < val_count; i++) {
-            ret = _regmap_read(map, reg + regmap_get_offset(map, i),
-                       &v);
-            if (ret != 0)
-                goto out;
+--W/k2pzXB1sdSS/P9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-            map->format.format_val(val + (i * val_bytes), v, 0);
-        }
-    }
+On Wed, Aug 17, 2016 at 01:26:02PM -0500, Pierre-Louis Bossart wrote:
+> On 8/17/16 5:50 AM, Mark Brown wrote:
+
+> > You need to at least send clock API patches to the clock maintainers,
+> > since there's no build time dependency the normal thing would be that
+> > things will go through the clock tree.
+
+> so would you rebase your tree on the clock tree then? the longer this takes
+> the more reports we'll get of broken audio in for-next due to this missing
+> MCLK support.
+
+No, if there's any need to do a merge we'll do a merge.  Does this
+actively break existing boards?
+
+--W/k2pzXB1sdSS/P9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXtX/3AAoJECTWi3JdVIfQ1ugH/3iR8h9UlTxa1ptx3HLvZyEg
+BLWBQLBMKOywvk//G2lHpNQE0fDqyLfemznVypXVmtAxByJtb849sYAfuddywXY/
+uMtgu2GbfKSKWZhmqXshalprC1MIio3r+fm5s1C8QMwsQU41KkApacmvtxOOEjD3
+sAr0uSCLEhbq4uKKMZ4v6Rhyu7EwxYpyXmIBC6QSYBirPdUNjybZDORkSZ4QVFvJ
+zsEhvrLlNc1DDRsqla5AWVuJ3vh56/ay4KgPV6Teg6nzhtIkIbhSftSnZ8agw/e6
+4wsZbPRfd92ssHyafwJ7uQ4TKKN8F3wjoPG7uAn5K7knfFinBMf5x1Qi74Mvgys=
+=B0sR
+-----END PGP SIGNATURE-----
+
+--W/k2pzXB1sdSS/P9--
+
+--===============7549745517505051625==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7549745517505051625==--
