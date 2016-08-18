@@ -1,16 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: core: Clean up DAPM before the card
-	debugfs
-Date: Thu, 18 Aug 2016 19:37:29 +0100
-Message-ID: <1471545449-29516-1-git-send-email-broonie@kernel.org>
+From: Andrej Krutak <dev@andree.sk>
+Subject: [PATCH 0/3] line6 locking and segfault fixes
+Date: Thu, 18 Aug 2016 23:52:09 +0200
+Message-ID: <1471557132-10206-1-git-send-email-dev@andree.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E3C126619A
- for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 20:37:39 +0200 (CEST)
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72287266199
+ for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 23:52:47 +0200 (CEST)
+Received: by mail-wm0-f68.google.com with SMTP id q128so1220794wma.1
+ for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 14:52:47 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,45 +20,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Russell King - ARM Linux <linux@armlinux.org.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: tiwai@suse.com, perex@perex.cz, stefanha@gmail.com, grabner@icg.tugraz.at, alsa-devel@alsa-project.org
+Cc: Andrej Krutak <dev@andree.sk>
 List-Id: alsa-devel@alsa-project.org
 
-Both the card and DAPM cleanups recursively delete their debugfs
-directories.  Since the DAPM debugfs subdirectory for the card is
-located within the card debugfs this means we end up trying to double
-free the DAPM subdirectory.  Reorder the cleanup to free the card
-debugfs after we've cleaned up DAPM and it has deleted its own
-subdirectory.
+These are already seen patches fixing a few locking issues, now split out of the
+POD-X3 patchset.
 
-Reported-by: Russell King - ARM Linux <linux@armlinux.org.uk>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
+In addition, pod sysfs attributes touched something else than they thought,
+causing segfaults - fixed it (tested with the same code in podhd)...
 
-Not tested at all yet, just about done for today.
+Andrej Krutak (3):
+  ALSA: line6: Remove double line6_pcm_release() after failed acquire.
+  ALSA: line6: Give up on the lock while URBs are released.
+  ALSA: line6: Fix POD sysfs attributes segfault
 
- sound/soc/soc-core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/usb/line6/pcm.c |  3 ++-
+ sound/usb/line6/pod.c | 12 ++++++------
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 16369cad4803..66a33f1e4881 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2083,14 +2083,13 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
- 	/* remove auxiliary devices */
- 	soc_remove_aux_devices(card);
- 
-+	snd_soc_dapm_free(&card->dapm);
- 	soc_cleanup_card_debugfs(card);
- 
- 	/* remove the card */
- 	if (card->remove)
- 		card->remove(card);
- 
--	snd_soc_dapm_free(&card->dapm);
--
- 	snd_card_free(card->snd_card);
- 	return 0;
- 
 -- 
-2.8.1
+1.9.1
