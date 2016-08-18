@@ -1,18 +1,19 @@
 From: Andrej Krutak <dev@andree.sk>
-Subject: [PATCH v2 8/9] ALSA: line6: Cleanup initialization
-Date: Fri, 19 Aug 2016 00:20:38 +0200
-Message-ID: <1471558839-14120-9-git-send-email-dev@andree.sk>
+Subject: [PATCH v2 3/9] ALSA: line6: Distinguish device init
+	(ctrl EP) and MIDI data transfer (int EP)
+Date: Fri, 19 Aug 2016 00:20:33 +0200
+Message-ID: <1471558839-14120-4-git-send-email-dev@andree.sk>
 References: <1470942147-19848-1-git-send-email-dev@andree.sk>
  <1471558839-14120-1-git-send-email-dev@andree.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id B8DD426657A
- for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2016 00:21:49 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id i5so1278222wmg.2
- for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 15:21:49 -0700 (PDT)
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9BE12664B6
+ for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2016 00:21:42 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id i5so1278020wmg.2
+ for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 15:21:42 -0700 (PDT)
 In-Reply-To: <1471558839-14120-1-git-send-email-dev@andree.sk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,60 +28,170 @@ To: tiwai@suse.com, perex@perex.cz, stefanha@gmail.com, grabner@icg.tugraz.at, a
 Cc: Andrej Krutak <dev@andree.sk>
 List-Id: alsa-devel@alsa-project.org
 
-Only determine control port properties if the devices needs it.
-Only initialize PCM for POD HD devices that support it.
-No POD HD seems to support MIDI, thus drop the initialization.
+POD X3 can initialize similarly to older PODs, but it doesn't have the MIDI
+interface. Instead, configuration is done via proprietary bulk EP messages.
 
 Signed-off-by: Andrej Krutak <dev@andree.sk>
 ---
- sound/usb/line6/driver.c |  3 +--
- sound/usb/line6/podhd.c  | 19 ++++++++-----------
- 2 files changed, 9 insertions(+), 13 deletions(-)
+ sound/usb/line6/driver.c | 10 +++++-----
+ sound/usb/line6/driver.h |  6 ++++--
+ sound/usb/line6/pod.c    |  9 ++++++++-
+ sound/usb/line6/variax.c |  6 ++++--
+ 4 files changed, 21 insertions(+), 10 deletions(-)
 
 diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 853a143..8a71d45 100644
+index efeb16a8..5fd6cad 100644
 --- a/sound/usb/line6/driver.c
 +++ b/sound/usb/line6/driver.c
-@@ -612,9 +612,8 @@ int line6_probe(struct usb_interface *interface,
- 		goto error;
+@@ -482,7 +482,7 @@ static void line6_get_interval(struct usb_line6 *line6)
  	}
+ }
  
--	line6_get_interval(line6);
--
- 	if (properties->capabilities & LINE6_CAP_CONTROL) {
-+		line6_get_interval(line6);
- 		ret = line6_init_cap_control(line6);
+-static int line6_init_cap_control(struct usb_line6 *line6)
++static int line6_init_cap_control_midi(struct usb_line6 *line6)
+ {
+ 	int ret;
+ 
+@@ -572,8 +572,8 @@ int line6_probe(struct usb_interface *interface,
+ 
+ 	line6_get_interval(line6);
+ 
+-	if (properties->capabilities & LINE6_CAP_CONTROL) {
+-		ret = line6_init_cap_control(line6);
++	if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
++		ret = line6_init_cap_control_midi(line6);
  		if (ret < 0)
  			goto error;
-diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
-index 8246ea5..193eb29 100644
---- a/sound/usb/line6/podhd.c
-+++ b/sound/usb/line6/podhd.c
-@@ -314,17 +314,14 @@ static int podhd_init(struct usb_line6 *line6,
- 			return err;
  	}
+@@ -643,7 +643,7 @@ int line6_suspend(struct usb_interface *interface, pm_message_t message)
  
--	/* initialize MIDI subsystem: */
--	err = line6_init_midi(line6);
--	if (err < 0)
--		return err;
--
--	/* initialize PCM subsystem: */
--	err = line6_init_pcm(line6,
--		(id->driver_info == LINE6_PODX3) ? &podx3_pcm_properties :
--		&podhd_pcm_properties);
--	if (err < 0)
--		return err;
-+	if (pod->line6.properties->capabilities & LINE6_CAP_PCM) {
-+		/* initialize PCM subsystem: */
-+		err = line6_init_pcm(line6,
-+			(id->driver_info == LINE6_PODX3) ? &podx3_pcm_properties :
-+			&podhd_pcm_properties);
-+		if (err < 0)
-+			return err;
-+	}
+ 	snd_power_change_state(line6->card, SNDRV_CTL_POWER_D3hot);
  
- 	if (!(pod->line6.properties->capabilities & LINE6_CAP_CONTROL)) {
- 		/* register USB audio system directly */
+-	if (line6->properties->capabilities & LINE6_CAP_CONTROL)
++	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)
+ 		line6_stop_listen(line6);
+ 
+ 	if (line6pcm != NULL) {
+@@ -662,7 +662,7 @@ int line6_resume(struct usb_interface *interface)
+ {
+ 	struct usb_line6 *line6 = usb_get_intfdata(interface);
+ 
+-	if (line6->properties->capabilities & LINE6_CAP_CONTROL)
++	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)
+ 		line6_start_listen(line6);
+ 
+ 	snd_power_change_state(line6->card, SNDRV_CTL_POWER_D0);
+diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
+index 69658dc..7aeb6ad 100644
+--- a/sound/usb/line6/driver.h
++++ b/sound/usb/line6/driver.h
+@@ -102,6 +102,8 @@ enum {
+ 	LINE6_CAP_PCM =		1 << 1,
+ 	/* device supports hardware monitoring */
+ 	LINE6_CAP_HWMON =	1 << 2,
++	/* device uses raw MIDI via USB (data endpoints) */
++	LINE6_CAP_CONTROL_MIDI = 1 << 3,
+ 	/* device requires output data when input is read */
+ 	LINE6_CAP_IN_NEEDS_OUT = 1 << 4,
+ };
+@@ -142,10 +144,10 @@ struct usb_line6 {
+ 	/* Line 6 MIDI device data structure */
+ 	struct snd_line6_midi *line6midi;
+ 
+-	/* URB for listening to PODxt Pro control endpoint */
++	/* URB for listening to POD data endpoint */
+ 	struct urb *urb_listen;
+ 
+-	/* Buffer for listening to PODxt Pro control endpoint */
++	/* Buffer for listening to POD data endpoint */
+ 	unsigned char *buffer_listen;
+ 
+ 	/* Buffer for message to be processed */
+diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
+index 36e7274..17aa616 100644
+--- a/sound/usb/line6/pod.c
++++ b/sound/usb/line6/pod.c
+@@ -475,6 +475,7 @@ static const struct line6_properties pod_properties_table[] = {
+ 		.id = "BassPODxt",
+ 		.name = "BassPODxt",
+ 		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI
+ 				| LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 5,
+@@ -487,6 +488,7 @@ static const struct line6_properties pod_properties_table[] = {
+ 		.id = "BassPODxtLive",
+ 		.name = "BassPODxt Live",
+ 		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI
+ 				| LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 1,
+@@ -499,6 +501,7 @@ static const struct line6_properties pod_properties_table[] = {
+ 		.id = "BassPODxtPro",
+ 		.name = "BassPODxt Pro",
+ 		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI
+ 				| LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 5,
+@@ -510,7 +513,8 @@ static const struct line6_properties pod_properties_table[] = {
+ 	[LINE6_POCKETPOD] = {
+ 		.id = "PocketPOD",
+ 		.name = "Pocket POD",
+-		.capabilities	= LINE6_CAP_CONTROL,
++		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI,
+ 		.altsetting = 0,
+ 		.ep_ctrl_r = 0x82,
+ 		.ep_ctrl_w = 0x02,
+@@ -520,6 +524,7 @@ static const struct line6_properties pod_properties_table[] = {
+ 		.id = "PODxt",
+ 		.name = "PODxt",
+ 		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI
+ 				| LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 5,
+@@ -532,6 +537,7 @@ static const struct line6_properties pod_properties_table[] = {
+ 		.id = "PODxtLive",
+ 		.name = "PODxt Live",
+ 		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI
+ 				| LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 1,
+@@ -544,6 +550,7 @@ static const struct line6_properties pod_properties_table[] = {
+ 		.id = "PODxtPro",
+ 		.name = "PODxt Pro",
+ 		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI
+ 				| LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 5,
+diff --git a/sound/usb/line6/variax.c b/sound/usb/line6/variax.c
+index ddc23dd..0c4512d 100644
+--- a/sound/usb/line6/variax.c
++++ b/sound/usb/line6/variax.c
+@@ -259,7 +259,8 @@ static const struct line6_properties variax_properties_table[] = {
+ 	[LINE6_PODXTLIVE_VARIAX] = {
+ 		.id = "PODxtLive",
+ 		.name = "PODxt Live",
+-		.capabilities	= LINE6_CAP_CONTROL,
++		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI,
+ 		.altsetting = 1,
+ 		.ep_ctrl_r = 0x86,
+ 		.ep_ctrl_w = 0x05,
+@@ -269,7 +270,8 @@ static const struct line6_properties variax_properties_table[] = {
+ 	[LINE6_VARIAX] = {
+ 		.id = "Variax",
+ 		.name = "Variax Workbench",
+-		.capabilities	= LINE6_CAP_CONTROL,
++		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI,
+ 		.altsetting = 1,
+ 		.ep_ctrl_r = 0x82,
+ 		.ep_ctrl_w = 0x01,
 -- 
 1.9.1
