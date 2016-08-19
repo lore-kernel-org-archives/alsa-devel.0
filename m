@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: fsl_asrc: Propagate the real
-	error code
-Date: Fri, 19 Aug 2016 15:19:47 +0100
-Message-ID: <20160819141947.GA22076@sirena.org.uk>
-References: <1471613461-21654-1-git-send-email-fabio.estevam@nxp.com>
+Subject: Applied "ASoC: core: Clean up DAPM before the card
+	debugfs" to the asoc tree
+Date: Fri, 19 Aug 2016 16:10:19 +0100
+Message-ID: <E1balR5-0001Sl-LY@debutante>
+References: <1471545449-29516-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7641007934618145760=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 41310266FD8
- for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2016 16:19:57 +0200 (CEST)
-In-Reply-To: <1471613461-21654-1-git-send-email-fabio.estevam@nxp.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D422026753B
+ for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2016 17:10:32 +0200 (CEST)
+In-Reply-To: <1471545449-29516-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,48 +22,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, festevam@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Russell King <rmk+kernel@armlinux.org.uk>, Russell King - ARM Linux <linux@armlinux.org.uk>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7641007934618145760==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3V7upXqbjpZ4EhLz"
-Content-Disposition: inline
+   ASoC: core: Clean up DAPM before the card debugfs
 
+has been applied to the asoc tree at
 
---3V7upXqbjpZ4EhLz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Aug 19, 2016 at 10:30:59AM -0300, Fabio Estevam wrote:
-> Instead of returning -EINVAL on error, return the real error code.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-I seem to be missing patch 2/3 for some reason?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---3V7upXqbjpZ4EhLz
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJXtxWCAAoJECTWi3JdVIfQupYH/2ojr0IXuMuN61iwIM2s016d
-lZIWAxGP3o6ElWlfFWaEAJM7VZHqDCJ3M4Hu9Xn2KxRhajT6vqZGoTfBeKB3onN0
-FZ2eSTKLFSoLs42Vq97nrzESHR1vxHcBF3yfDgm6KERh9vqi5JpxCFp3NPGiMHAj
-yLievJ0lvaubN8LnBf3LJupMsQFV/Lo0WXlz52R0/pTBQJS9Ec9lx8YvOUfSxlWB
-ZxkS71/4Exlb81U5xWEZMq9b6BbopNBVjjOUXJarS0rFDf50tBINqFA2We0SQ0hH
-2MOBOSPfLlAX9/7vWp0M7JkQlWMWLoEpo70jFuNPvDQt/wEjD84mGq4E5b/wFMM=
-=fgPR
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---3V7upXqbjpZ4EhLz--
+>From d1e81428826221d7ff8e4d83db784d099cd232a7 Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@kernel.org>
+Date: Thu, 18 Aug 2016 19:32:59 +0100
+Subject: [PATCH] ASoC: core: Clean up DAPM before the card debugfs
 
---===============7641007934618145760==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Both the card and DAPM cleanups recursively delete their debugfs
+directories.  Since the DAPM debugfs subdirectory for the card is
+located within the card debugfs this means we end up trying to double
+free the DAPM subdirectory.  Reorder the cleanup to free the card
+debugfs after we've cleaned up DAPM and it has deleted its own
+subdirectory.
 
+Reported-by: Russell King - ARM Linux <linux@armlinux.org.uk>
+Tested-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---===============7641007934618145760==--
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 16369cad4803..66a33f1e4881 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2083,14 +2083,13 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
+ 	/* remove auxiliary devices */
+ 	soc_remove_aux_devices(card);
+ 
++	snd_soc_dapm_free(&card->dapm);
+ 	soc_cleanup_card_debugfs(card);
+ 
+ 	/* remove the card */
+ 	if (card->remove)
+ 		card->remove(card);
+ 
+-	snd_soc_dapm_free(&card->dapm);
+-
+ 	snd_card_free(card->snd_card);
+ 	return 0;
+ 
+-- 
+2.8.1
