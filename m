@@ -1,323 +1,104 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [RFC PATCH] mfd: arizona: Add gating of external MCLKn clocks
-Date: Fri, 19 Aug 2016 19:17:16 +0200
-Message-ID: <1471627036-19465-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, ckeepax@opensource.wolfsonmicro.com
-Cc: lee.jones@linaro.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: core: Clean up DAPM before the card
+	debugfs
+Date: Fri, 19 Aug 2016 18:50:03 +0100
+Message-ID: <20160819175003.GE22076@sirena.org.uk>
+References: <1471545449-29516-1-git-send-email-broonie@kernel.org>
+ <20160818232642.GF1041@n2100.armlinux.org.uk>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============6164057239760375128=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 687D92665F9
+ for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2016 19:50:16 +0200 (CEST)
+In-Reply-To: <20160818232642.GF1041@n2100.armlinux.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Russell King - ARM Linux <linux@armlinux.org.uk>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds handling of the CODEC's external MCLK{1,2} clocks
-needed for board configurations where these clocks are not always on
-oscillators.
-The 32k source MCLKn clock is basically kept permanently enabled while
-the other MCLKn clock is being gated in the MFD's runtime suspend/resume
-callbacks.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
-I'm not sure it's a correct approach hence only an RFC patch.
----
- drivers/mfd/arizona-core.c       | 105 ++++++++++++++++++++++++++++++++-------
- include/linux/mfd/arizona/core.h |   9 ++++
- 2 files changed, 96 insertions(+), 18 deletions(-)
+--===============6164057239760375128==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="TD8GDToEDw0WLGOL"
+Content-Disposition: inline
 
-diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-index e4f97b3..a733b61 100644
---- a/drivers/mfd/arizona-core.c
-+++ b/drivers/mfd/arizona-core.c
-@@ -10,6 +10,7 @@
-  * published by the Free Software Foundation.
-  */
- 
-+#include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/gpio.h>
-@@ -49,7 +50,15 @@ int arizona_clk32k_enable(struct arizona *arizona)
- 		case ARIZONA_32KZ_MCLK1:
- 			ret = pm_runtime_get_sync(arizona->dev);
- 			if (ret != 0)
--				goto out;
-+				goto err_ref;
-+			ret = clk_prepare_enable(arizona->mclk[ARIZONA_MCLK1]);
-+			if (ret != 0)
-+				goto err_pm;
-+			break;
-+		case ARIZONA_32KZ_MCLK2:
-+			ret = clk_prepare_enable(arizona->mclk[ARIZONA_MCLK2]);
-+			if (ret != 0)
-+				goto err_ref;
- 			break;
- 		}
- 
-@@ -58,7 +67,9 @@ int arizona_clk32k_enable(struct arizona *arizona)
- 					 ARIZONA_CLK_32K_ENA);
- 	}
- 
--out:
-+err_pm:
-+	pm_runtime_put_sync(arizona->dev);
-+err_ref:
- 	if (ret != 0)
- 		arizona->clk32k_ref--;
- 
-@@ -83,6 +94,10 @@ int arizona_clk32k_disable(struct arizona *arizona)
- 		switch (arizona->pdata.clk32k_src) {
- 		case ARIZONA_32KZ_MCLK1:
- 			pm_runtime_put_sync(arizona->dev);
-+			clk_disable_unprepare(arizona->mclk[ARIZONA_MCLK1]);
-+			break;
-+		case ARIZONA_32KZ_MCLK2:
-+			clk_disable_unprepare(arizona->mclk[ARIZONA_MCLK2]);
- 			break;
- 		}
- 	}
-@@ -93,6 +108,34 @@ int arizona_clk32k_disable(struct arizona *arizona)
- }
- EXPORT_SYMBOL_GPL(arizona_clk32k_disable);
- 
-+/* Enable all external MCLKn clocks except the 32k source clock */
-+int arizona_mclk_enable(struct arizona *arizona)
-+{
-+	int ret;
-+
-+	if (arizona->pdata.clk32k_src != ARIZONA_32KZ_MCLK1) {
-+		ret = clk_prepare_enable(arizona->mclk[ARIZONA_MCLK1]);
-+		if (ret != 0)
-+			return ret;
-+	}
-+	if (arizona->pdata.clk32k_src != ARIZONA_32KZ_MCLK2) {
-+		ret = clk_prepare_enable(arizona->mclk[ARIZONA_MCLK2]);
-+		if (ret != 0)
-+			return ret;
-+	}
-+	return 0;
-+}
-+
-+/* Disable all external MCLKn clocks except the 32k source clock */
-+void arizona_mclk_disable(struct arizona *arizona)
-+{
-+	if (arizona->pdata.clk32k_src != ARIZONA_32KZ_MCLK1)
-+		clk_disable_unprepare(arizona->mclk[ARIZONA_MCLK1]);
-+
-+	if (arizona->pdata.clk32k_src != ARIZONA_32KZ_MCLK2)
-+		clk_disable_unprepare(arizona->mclk[ARIZONA_MCLK2]);
-+}
-+
- static irqreturn_t arizona_clkgen_err(int irq, void *data)
- {
- 	struct arizona *arizona = data;
-@@ -533,6 +576,12 @@ static int arizona_runtime_resume(struct device *dev)
- 		return ret;
- 	}
- 
-+	ret = arizona_mclk_enable(arizona);
-+	if (ret != 0) {
-+		dev_err(dev, "Failed to enable mclk: %d\n", ret);
-+		goto err_reg;
-+	}
-+
- 	if (arizona->has_fully_powered_off) {
- 		arizona_disable_reset(arizona);
- 		enable_irq(arizona->irq);
-@@ -546,14 +595,14 @@ static int arizona_runtime_resume(struct device *dev)
- 		if (arizona->external_dcvdd) {
- 			ret = arizona_connect_dcvdd(arizona);
- 			if (ret != 0)
--				goto err;
-+				goto err_clk;
- 		}
- 
- 		ret = wm5102_patch(arizona);
- 		if (ret != 0) {
- 			dev_err(arizona->dev, "Failed to apply patch: %d\n",
- 				ret);
--			goto err;
-+			goto err_clk;
- 		}
- 
- 		ret = wm5102_apply_hardware_patch(arizona);
-@@ -561,19 +610,19 @@ static int arizona_runtime_resume(struct device *dev)
- 			dev_err(arizona->dev,
- 				"Failed to apply hardware patch: %d\n",
- 				ret);
--			goto err;
-+			goto err_clk;
- 		}
- 		break;
- 	case WM5110:
- 	case WM8280:
- 		ret = arizona_wait_for_boot(arizona);
- 		if (ret)
--			goto err;
-+			goto err_clk;
- 
- 		if (arizona->external_dcvdd) {
- 			ret = arizona_connect_dcvdd(arizona);
- 			if (ret != 0)
--				goto err;
-+				goto err_clk;
- 		} else {
- 			/*
- 			 * As this is only called for the internal regulator
-@@ -586,7 +635,7 @@ static int arizona_runtime_resume(struct device *dev)
- 				dev_err(arizona->dev,
- 					"Failed to set resume voltage: %d\n",
- 					ret);
--				goto err;
-+				goto err_clk;
- 			}
- 		}
- 
-@@ -595,24 +644,24 @@ static int arizona_runtime_resume(struct device *dev)
- 			dev_err(arizona->dev,
- 				"Failed to re-apply sleep patch: %d\n",
- 				ret);
--			goto err;
-+			goto err_clk;
- 		}
- 		break;
- 	case WM1831:
- 	case CS47L24:
- 		ret = arizona_wait_for_boot(arizona);
- 		if (ret != 0)
--			goto err;
-+			goto err_clk;
- 		break;
- 	default:
- 		ret = arizona_wait_for_boot(arizona);
- 		if (ret != 0)
--			goto err;
-+			goto err_clk;
- 
- 		if (arizona->external_dcvdd) {
- 			ret = arizona_connect_dcvdd(arizona);
- 			if (ret != 0)
--				goto err;
-+				goto err_clk;
- 		}
- 		break;
- 	}
-@@ -620,12 +669,14 @@ static int arizona_runtime_resume(struct device *dev)
- 	ret = regcache_sync(arizona->regmap);
- 	if (ret != 0) {
- 		dev_err(arizona->dev, "Failed to restore register cache\n");
--		goto err;
-+		goto err_clk;
- 	}
- 
- 	return 0;
- 
--err:
-+err_clk:
-+	arizona_mclk_disable(arizona);
-+err_reg:
- 	regcache_cache_only(arizona->regmap, true);
- 	regulator_disable(arizona->dcvdd);
- 	return ret;
-@@ -707,6 +758,7 @@ static int arizona_runtime_suspend(struct device *dev)
- 	regcache_cache_only(arizona->regmap, true);
- 	regcache_mark_dirty(arizona->regmap);
- 	regulator_disable(arizona->dcvdd);
-+	arizona_mclk_disable(arizona);
- 
- 	/* Allow us to completely power down if no jack detection */
- 	if (!jd_active) {
-@@ -1000,6 +1052,7 @@ static const struct mfd_cell wm8998_devs[] = {
- 
- int arizona_dev_init(struct arizona *arizona)
- {
-+	const char * const mclk_name[] = { "mclk1", "mclk2" };
- 	struct device *dev = arizona->dev;
- 	const char *type_name = NULL;
- 	unsigned int reg, val, mask;
-@@ -1016,6 +1069,15 @@ int arizona_dev_init(struct arizona *arizona)
- 	else
- 		arizona_of_get_core_pdata(arizona);
- 
-+	for (i = 0; i < ARRAY_SIZE(arizona->mclk); i++) {
-+		arizona->mclk[i] = devm_clk_get(arizona->dev, mclk_name[i]);
-+		if (IS_ERR(arizona->mclk[i])) {
-+			dev_info(arizona->dev, "Failed to get mclk%d: %ld\n",
-+				 i, PTR_ERR(arizona->mclk[i]));
-+			arizona->mclk[i] = NULL;
-+		}
-+	}
-+
- 	regcache_cache_only(arizona->regmap, true);
- 
- 	switch (arizona->type) {
-@@ -1101,6 +1163,16 @@ int arizona_dev_init(struct arizona *arizona)
- 		goto err_enable;
- 	}
- 
-+	/* Chip default */
-+	if (!arizona->pdata.clk32k_src)
-+		arizona->pdata.clk32k_src = ARIZONA_32KZ_MCLK2;
-+
-+	ret = arizona_mclk_enable(arizona);
-+	if (ret != 0) {
-+		dev_err(dev, "Failed to enable mclk: %d\n", ret);
-+		goto err_enable;
-+	}
-+
- 	arizona_disable_reset(arizona);
- 
- 	regcache_cache_only(arizona->regmap, false);
-@@ -1332,10 +1404,6 @@ int arizona_dev_init(struct arizona *arizona)
- 			     arizona->pdata.gpio_defaults[i]);
- 	}
- 
--	/* Chip default */
--	if (!arizona->pdata.clk32k_src)
--		arizona->pdata.clk32k_src = ARIZONA_32KZ_MCLK2;
--
- 	switch (arizona->pdata.clk32k_src) {
- 	case ARIZONA_32KZ_MCLK1:
- 	case ARIZONA_32KZ_MCLK2:
-@@ -1490,6 +1558,7 @@ err_pm:
- 	pm_runtime_disable(arizona->dev);
- err_reset:
- 	arizona_enable_reset(arizona);
-+	arizona_mclk_disable(arizona);
- 	regulator_disable(arizona->dcvdd);
- err_enable:
- 	regulator_bulk_disable(arizona->num_core_supplies,
-diff --git a/include/linux/mfd/arizona/core.h b/include/linux/mfd/arizona/core.h
-index 58ab4c0..b9909bb 100644
---- a/include/linux/mfd/arizona/core.h
-+++ b/include/linux/mfd/arizona/core.h
-@@ -13,6 +13,7 @@
- #ifndef _WM_ARIZONA_CORE_H
- #define _WM_ARIZONA_CORE_H
- 
-+#include <linux/clk.h>
- #include <linux/interrupt.h>
- #include <linux/notifier.h>
- #include <linux/regmap.h>
-@@ -21,6 +22,12 @@
- 
- #define ARIZONA_MAX_CORE_SUPPLIES 2
- 
-+enum {
-+	ARIZONA_MCLK1,
-+	ARIZONA_MCLK2,
-+	ARIZONA_NUM_MCLK
-+};
-+
- enum arizona_type {
- 	WM5102 = 1,
- 	WM5110 = 2,
-@@ -139,6 +146,8 @@ struct arizona {
- 	struct mutex clk_lock;
- 	int clk32k_ref;
- 
-+	struct clk *mclk[ARIZONA_NUM_MCLK];
-+
- 	bool ctrlif_error;
- 
- 	struct snd_soc_dapm_context *dapm;
--- 
-1.9.1
+
+--TD8GDToEDw0WLGOL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Aug 19, 2016 at 12:26:42AM +0100, Russell King - ARM Linux wrote:
+
+> So this allows me to test a bit more... and there's more bad news.
+> On re-inserting this module...
+
+> Looks like removing and re-inserting these modules has never been
+> tested. :(  And oh my...
+
+> static int omap_mcpdm_probe(struct snd_soc_dai *dai)
+> {
+>         ret = devm_request_irq(mcpdm->dev, mcpdm->irq, omap_mcpdm_irq_handler,
+>                                 0, "McPDM", (void *)mcpdm);
+
+> static struct snd_soc_dai_driver omap_mcpdm_dai = {
+>         .probe = omap_mcpdm_probe,
+>         .remove = omap_mcpdm_remove,
+
+> Using devm_* stuff in a context where it doesn't get automatically
+> freed when the DAI driver is unbound, and nothing in omap_mcpdm_remove()
+> to undo that request.
+
+Yes, that's obviously bad - and in any case we should request resources
+at the device model level regardless of that.
+
+> I suspect that isn't the full story though, because of the regmap
+> complaint (which I've not even looked at yet.)
+
+Missed that one?
+
+> Maybe we should have a test mode in the kernel where every device
+> goes through a bind-unbind-rebind sequence during boot to test more
+> of these paths...
+
+That actually came up independently the other day during the Kernel
+Summit discussions, Rob Herring gave it a bit of a go but I'm not sure
+if he did it with a view to upstreaming or anything.  It's definitely a
+good idea, as I said on that thread I think deferred probe has been one
+of the best things to ever happen to kernel error handling and this
+would just extend it.
+
+--TD8GDToEDw0WLGOL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXt0bKAAoJECTWi3JdVIfQJwkH/Aw+GhwB9Bqnseym16JNLaAO
+7E1ieKDX8d8fFRwGb+mPfgRdXPCnTVTViPs/mLx7u4ACtCoHPOpATG3myiSPFnjb
+u5mzYti+FLCWb8nDcb/Q0Ks5E10RHTtzEGF57PBbBmMIQge2b+6eGx1mxW90XXDF
+cKsoBWqE/FooUAPHXamHG9FrZCiIVjJernx20r7B2I2Xr50cEYj2HMIMAedMkSaG
+iZ9qZssLZ3g+CycI4sbLcRXVBdXEib2iNIPxM4u73Vs+OneyTVjzlB1HJIPF4lBX
+/ixKmg3Vz38YYjAjZmeEzqDh3eKWkhvc7fIY5U/ELwJDE/0AMLoVQTtlhFeR/ms=
+=cXb2
+-----END PGP SIGNATURE-----
+
+--TD8GDToEDw0WLGOL--
+
+--===============6164057239760375128==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6164057239760375128==--
