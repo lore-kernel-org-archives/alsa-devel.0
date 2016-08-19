@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 07/13] ASoC: topology: ABI - Add name &
-	component info to BE/CC links
-Date: Fri, 19 Aug 2016 18:13:36 +0800
-Message-ID: <2175adec09f0058c60214452ddc74bd0819fb427.1471599648.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 08/13] ASoC: topology: ABI - Define DAI
+	physical PCM data formats
+Date: Fri, 19 Aug 2016 18:13:45 +0800
+Message-ID: <947ca5f06cec9f7ddde8457dd0dcb25e37ac40fd.1471599648.git.mengdong.lin@linux.intel.com>
 References: <cover.1471599648.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 088D2266C56
- for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2016 12:07:43 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D823266CDD
+ for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2016 12:07:53 +0200 (CEST)
 In-Reply-To: <cover.1471599648.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,58 +27,73 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Add link name, stream name, CPU and codec components info, for topology
-to create new backend or codec-codec links in the future.
+Define DAI physical PCM data formats for user space, so users can specify
+the formats of backends by topology (e.g. the DAI format to set on backend
+link init).
+
+The kernel will also refer to these formats.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 964b7de..534aae2 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -15,6 +15,7 @@
+ 
+ 
+ #include <linux/list.h>
++#include <sound/asoc.h>
+ 
+ struct snd_pcm_substream;
+ struct snd_soc_dapm_widget;
+@@ -26,13 +27,13 @@ struct snd_compr_stream;
+  * Describes the physical PCM data formating and clocking. Add new formats
+  * to the end.
+  */
+-#define SND_SOC_DAIFMT_I2S		1 /* I2S mode */
+-#define SND_SOC_DAIFMT_RIGHT_J		2 /* Right Justified mode */
+-#define SND_SOC_DAIFMT_LEFT_J		3 /* Left Justified mode */
+-#define SND_SOC_DAIFMT_DSP_A		4 /* L data MSB after FRM LRC */
+-#define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
+-#define SND_SOC_DAIFMT_AC97		6 /* AC97 */
+-#define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
++#define SND_SOC_DAIFMT_I2S		SND_SOC_DAI_FORMAT_I2S
++#define SND_SOC_DAIFMT_RIGHT_J		SND_SOC_DAI_FORMAT_RIGHT_J
++#define SND_SOC_DAIFMT_LEFT_J		SND_SOC_DAI_FORMAT_LEFT_J
++#define SND_SOC_DAIFMT_DSP_A		SND_SOC_DAI_FORMAT_DSP_A
++#define SND_SOC_DAIFMT_DSP_B		SND_SOC_DAI_FORMAT_DSP_B
++#define SND_SOC_DAIFMT_AC97		SND_SOC_DAI_FORMAT_AC97
++#define SND_SOC_DAIFMT_PDM		SND_SOC_DAI_FORMAT_PDM
+ 
+ /* left and right justified also known as MSB and LSB respectively */
+ #define SND_SOC_DAIFMT_MSB		SND_SOC_DAIFMT_LEFT_J
 diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index c75ed4f..812a70b 100644
+index 812a70b..4802410 100644
 --- a/include/uapi/sound/asoc.h
 +++ b/include/uapi/sound/asoc.h
-@@ -39,6 +39,9 @@
-  */
- #define SND_SOC_TPLG_STREAM_CONFIG_MAX  8
- 
-+/* maximum number of codecs for a BE/CC link */
-+#define SND_SOC_TPLG_LINK_CODECS_MAX    4
-+
- /* individual kcontrol info types - can be mixed with other types */
- #define SND_SOC_TPLG_CTL_VOLSW		1
- #define SND_SOC_TPLG_CTL_VOLSW_SX	2
-@@ -465,6 +468,15 @@ struct snd_soc_tplg_pcm {
- 
+@@ -138,6 +138,22 @@
+ #define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME   (1 << 1)
  
  /*
-+ * Component for backend links.
++ * DAI physical PCM data formats.
++ * Add new formats to the end of the list.
 + */
-+struct snd_soc_tplg_link_cmpnt {
-+	__le32 size;		/* in bytes of this structure */
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* component name, optional */
-+	char dai_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+} __attribute__((packed));
++#define SND_SOC_DAI_FORMAT_I2S          1 /* I2S mode */
++#define SND_SOC_DAI_FORMAT_RIGHT_J      2 /* Right Justified mode */
++#define SND_SOC_DAI_FORMAT_LEFT_J       3 /* Left Justified mode */
++#define SND_SOC_DAI_FORMAT_DSP_A        4 /* L data MSB after FRM LRC */
++#define SND_SOC_DAI_FORMAT_DSP_B        5 /* L data MSB during FRM LRC */
++#define SND_SOC_DAI_FORMAT_AC97         6 /* AC97 */
++#define SND_SOC_DAI_FORMAT_PDM          7 /* Pulse density modulation */
++
++/* left and right justified also known as MSB and LSB respectively */
++#define SND_SOC_DAI_FORMAT_MSB          SND_SOC_DAI_FORMAT_LEFT_J
++#define SND_SOC_DAI_FORMAT_LSB          SND_SOC_DAI_FORMAT_RIGHT_J
 +
 +/*
-  * Describes the BE or CC link runtime supported configs or params
+  * Dynamic PCM trigger ordering. Triggering flexibility is required as some
+  * DSPs require triggering before/after their CPU platform and DAIs.
   *
-  * File block representation for BE/CC link config :-
-@@ -476,9 +488,16 @@ struct snd_soc_tplg_pcm {
-  */
- struct snd_soc_tplg_link_config {
- 	__le32 size;            /* in bytes of this structure */
--	__le32 id;              /* unique ID - used to match */
-+	__le32 id;              /* unique ID - used to match with DAI link */
- 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback and captrure */
- 	__le32 num_streams;     /* number of streams */
-+
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];        /* link name */
-+	char stream_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* stream name */
-+
-+	struct snd_soc_tplg_link_cmpnt cpu;              /* cpu component */
-+	struct snd_soc_tplg_link_cmpnt codecs[SND_SOC_TPLG_LINK_CODECS_MAX]; /* codec components */
-+	__le32 num_codecs;      /* number of codecs */
- } __attribute__((packed));
- 
- /*
 -- 
 2.5.0
