@@ -1,47 +1,130 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Use of copy_to_user in fireworks_hwdep.c while holding a
- spin_lock
-Date: Fri, 19 Aug 2016 22:24:49 +0900
-Message-ID: <57B708A1.9010607@sakamocchi.jp>
-References: <57B6A61F.7080700@oracle.com>
+From: Xing Zheng <zhengxing@rock-chips.com>
+Subject: [PATCH] ASoC: rockchip: Add support rt5514 dsp summy dailink
+Date: Fri, 19 Aug 2016 21:56:12 +0800
+Message-ID: <1471614973-10325-1-git-send-email-zhengxing@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <57B6A61F.7080700@oracle.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vaishali Thakkar <vaishali.thakkar@oracle.com>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: linux-rockchip@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, heiko@sntech.de, Xing Zheng <zhengxing@rock-chips.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, dianders@chromium.org, hychao@chromium.org, smbarber@google.com, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This patch can attach automaticlly rt5514 spi DAI with driver name "rt5514"
+in the snd_soc_find_dai process. Turn this feature on, we can enable the
+voice wake up via rt5514 dsp for RK3399 Gru Boards.
 
-On Aug 19 2016 15:24, Vaishali Thakkar wrote:
-> I was wondering about the call to copy_to_user in function hwdep_read_locked and
-> hwdep_read_resp_buf for driver sound/firewire/fireworks/fireworks_hwdep.c. 
-> The function hwdep_read calls both of these functions while holding a spinlock[1],
-> which is not normally allowed due to the possibility of a deadlock.
-> 
-> This seems to be coming from the commit 555e8a8f7f149544eb7d4aa3a6420bc4c3055638
-> while adding a command/response functionality into hwdep interface. Is there some
-> reason that I am overlooking, why it is OK in this case? Is there some code in the
-> same file which ensures that page fault will not occur when we are calling these
-> functions while holding a spin_lock_irq?
-> 
-> The same issue is there with the driver sound/firewire/tascam/tascam-hwdep.c for
-> obvious reasons.
-> 
-> Coccinelle script is used to detect this issue.
-> 
-> Thank you.
-> 
-> [1] http://lxr.free-electrons.com/source/sound/firewire/fireworks/fireworks_hwdep.c#L114
+Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
+---
 
-Indeed, I was unaware of the situation in which deadlock occurs; i.e.
-page fault.
+ sound/soc/rockchip/Kconfig            |    1 +
+ sound/soc/rockchip/rk3399_gru_sound.c |   39 ++++++++++++++++++++++++++++++++-
+ 2 files changed, 39 insertions(+), 1 deletion(-)
 
-I'm on short summer vacation, so will post patches for them in next week.
-
-
-Thanks
-
-Takashi Sakamoto
+diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+index 6d39032..d82d763 100644
+--- a/sound/soc/rockchip/Kconfig
++++ b/sound/soc/rockchip/Kconfig
+@@ -49,6 +49,7 @@ config SND_SOC_RK3399_GRU_SOUND
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_RT5514
+ 	select SND_SOC_DA7219
++	select SND_SOC_RT5514_SPI
+ 	help
+ 	  Say Y or M here if you want to add support multiple codecs for SoC
+ 	  audio on Rockchip RK3399 GRU boards.
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 9933703..164b6da 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -230,8 +230,11 @@ enum {
+ 	DAILINK_MAX98357A,
+ 	DAILINK_RT5514,
+ 	DAILINK_DA7219,
++	DAILINK_RT5514_DSP,
+ };
+ 
++#define DAILINK_ENTITIES	(DAILINK_DA7219 + 1)
++
+ static struct snd_soc_dai_link rockchip_dailinks[] = {
+ 	[DAILINK_MAX98357A] = {
+ 		.name = "MAX98357A",
+@@ -261,6 +264,13 @@ static struct snd_soc_dai_link rockchip_dailinks[] = {
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			SND_SOC_DAIFMT_CBS_CFS,
+ 	},
++	/* RT5514 DSP for voice wakeup via spi bus */
++	[DAILINK_RT5514_DSP] = {
++		.name = "RT5514 DSP",
++		.stream_name = "Wake on Voice",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++	},
+ };
+ 
+ static struct snd_soc_card rockchip_sound_card = {
+@@ -276,10 +286,17 @@ static struct snd_soc_card rockchip_sound_card = {
+ 	.num_controls = ARRAY_SIZE(rockchip_controls),
+ };
+ 
++static int rockchip_sound_match_stub(struct device *dev, void *data)
++{
++	return 1;
++}
++
+ static int rockchip_sound_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &rockchip_sound_card;
+ 	struct device_node *cpu_node;
++	struct device *dev;
++	struct device_driver *drv;
+ 	int i, ret;
+ 
+ 	cpu_node = of_parse_phandle(pdev->dev.of_node, "rockchip,cpu", 0);
+@@ -288,7 +305,7 @@ static int rockchip_sound_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 
+-	for (i = 0; i < card->num_links; i++) {
++	for (i = 0; i < DAILINK_ENTITIES; i++) {
+ 		rockchip_dailinks[i].platform_of_node = cpu_node;
+ 		rockchip_dailinks[i].cpu_of_node = cpu_node;
+ 
+@@ -301,6 +318,26 @@ static int rockchip_sound_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	/**
++	 * To acquire the spi driver of the rt5514 and set the dai-links names
++	 * for soc_bind_dai_link
++	 */
++	drv = driver_find("rt5514", &spi_bus_type);
++	if (!drv) {
++		dev_err(&pdev->dev, "Can not find the rt5514 driver at the spi bus\n");
++		return -EINVAL;
++	}
++
++	dev = driver_find_device(drv, NULL, NULL, rockchip_sound_match_stub);
++	if (!dev) {
++		dev_err(&pdev->dev, "Can not find the rt5514 device\n");
++		return -ENODEV;
++	}
++
++	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
++	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
++	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
++
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+ 
+-- 
+1.7.9.5
