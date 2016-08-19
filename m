@@ -1,17 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH v5 1/2] amidi: add delay option
-Date: Mon, 22 Aug 2016 14:43:55 +0200
-Message-ID: <5b064978-df48-23fa-26e1-89f9ed1843ff@ladisch.de>
-References: <20160815163734.17658-1-eu@felipetonello.com>
- <20160815163734.17658-2-eu@felipetonello.com>
+From: Stefan Hajnoczi <stefanha@gmail.com>
+Subject: Re: [PATCH 3/3] ALSA: line6: Fix POD sysfs attributes
+	segfault
+Date: Fri, 19 Aug 2016 06:54:21 +0100
+Message-ID: <CAJSP0QUa=1uStk6-tD4eC5L1RRSxUPzfmYGB9jtfMiiKmmw2UA@mail.gmail.com>
+References: <1471557132-10206-1-git-send-email-dev@andree.sk>
+ <1471557132-10206-4-git-send-email-dev@andree.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 3B0BD26690F
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 14:44:11 +0200 (CEST)
-In-Reply-To: <20160815163734.17658-2-eu@felipetonello.com>
+Received: from mail-ua0-f194.google.com (mail-ua0-f194.google.com
+ [209.85.217.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96FF32664B3
+ for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2016 07:54:23 +0200 (CEST)
+Received: by mail-ua0-f194.google.com with SMTP id u13so4921934uau.0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2016 22:54:23 -0700 (PDT)
+In-Reply-To: <1471557132-10206-4-git-send-email-dev@andree.sk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,44 +25,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Felipe F. Tonello" <eu@felipetonello.com>, alsa-devel@alsa-project.org
+To: Andrej Krutak <dev@andree.sk>
+Cc: Markus Grabner <grabner@icg.tugraz.at>, alsa-devel@alsa-project.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Felipe F. Tonello wrote:
-> +.I \-D, \-\-delay=3Dmseconds
-> +Adds a delay in between each SysEx message sent to a device.
+On Thu, Aug 18, 2016 at 10:52 PM, Andrej Krutak <dev@andree.sk> wrote:
+> The commit 02fc76f6a changed base of the sysfs attributes from device to card.
+> The "show" callbacks dereferenced wrong objects because of this.
+> ---
+>  sound/usb/line6/pod.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 
-> +			while (data < (send_data + send_data_length)) {
-> +				int len =3D send_data + send_data_length - data;
-> +				char *temp;
-> +
-> +				if (data > send_data)
-> +					usleep(delay * 1000);
-
-The MIDI data is sent asynchonously, so this delay is not _between_ message=
-s.
-You'd have to add 320 =B5s for any byte not yet sent (I guess you have to u=
-se
-snd_rawmidi_status_get_avail() to find out how many have been sent).
-
-
-> +				/* find end of SysEx */
-> +				if ((temp =3D memchr(data, 0xf7, len)))
-
-This would be clearer with "!=3D NULL".
-
-> +					len =3D temp - data + 1;
-> +
-> +				if ((err =3D snd_rawmidi_write(output, data, len)) < 0) {
-> +					error("cannot send data: %s", snd_strerror(err));
-> +					return err;
-> +				}
-> +
-> +				data +=3D len;
-> +			}
->  		}
->  	}
-
-
-Regards,
-Clemens
+Reviewed-by: Stefan Hajnoczi <stefanha@gmail.com>
