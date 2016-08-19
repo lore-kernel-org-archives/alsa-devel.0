@@ -1,130 +1,38 @@
-From: Xing Zheng <zhengxing@rock-chips.com>
-Subject: [PATCH] ASoC: rockchip: Add support rt5514 dsp summy dailink
-Date: Fri, 19 Aug 2016 21:56:12 +0800
-Message-ID: <1471614973-10325-1-git-send-email-zhengxing@rock-chips.com>
+From: Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
+Subject: Re: [PATCH] Try to support analog audio codec at firefly reload
+Date: Fri, 19 Aug 2016 16:16:00 +0200
+Message-ID: <6373888.a6VB9iqPkj@phil>
+References: <1471293727-26258-1-git-send-email-ayaka@soulik.info>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-rockchip@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, Xing Zheng <zhengxing@rock-chips.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, dianders@chromium.org, hychao@chromium.org, smbarber@google.com, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 7Bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1471293727-26258-1-git-send-email-ayaka-xPW3/0Ywev/iB9QmIjCX8w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Randy Li <ayaka-xPW3/0Ywev/iB9QmIjCX8w@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch can attach automaticlly rt5514 spi DAI with driver name "rt5514"
-in the snd_soc_find_dai process. Turn this feature on, we can enable the
-voice wake up via rt5514 dsp for RK3399 Gru Boards.
+Am Dienstag, 16. August 2016, 04:42:06 CEST schrieb Randy Li:
+> Hello:
+>   This patch could enabled the es8328 codec at firefly reload board,
+> but it doesn't not really work. I disable the mute of channel
+> Left mix and Right mix in alsamixer, I could hear the noise from
+> my headphone, but it never be a music.
+>   I just send this patch here to see whether somebody could figure
+> out what is wrong, I am really not familiar with sound.
 
-Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
----
+I can't really help here as I have neither the board nor that much sound 
+experience, but it's definitly customary to label patches as rfc when they're 
+expected to need more work, so make that
 
- sound/soc/rockchip/Kconfig            |    1 +
- sound/soc/rockchip/rk3399_gru_sound.c |   39 ++++++++++++++++++++++++++++++++-
- 2 files changed, 39 insertions(+), 1 deletion(-)
+[PATCH RFC] ...
 
-diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
-index 6d39032..d82d763 100644
---- a/sound/soc/rockchip/Kconfig
-+++ b/sound/soc/rockchip/Kconfig
-@@ -49,6 +49,7 @@ config SND_SOC_RK3399_GRU_SOUND
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_RT5514
- 	select SND_SOC_DA7219
-+	select SND_SOC_RT5514_SPI
- 	help
- 	  Say Y or M here if you want to add support multiple codecs for SoC
- 	  audio on Rockchip RK3399 GRU boards.
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 9933703..164b6da 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -230,8 +230,11 @@ enum {
- 	DAILINK_MAX98357A,
- 	DAILINK_RT5514,
- 	DAILINK_DA7219,
-+	DAILINK_RT5514_DSP,
- };
- 
-+#define DAILINK_ENTITIES	(DAILINK_DA7219 + 1)
-+
- static struct snd_soc_dai_link rockchip_dailinks[] = {
- 	[DAILINK_MAX98357A] = {
- 		.name = "MAX98357A",
-@@ -261,6 +264,13 @@ static struct snd_soc_dai_link rockchip_dailinks[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
- 	},
-+	/* RT5514 DSP for voice wakeup via spi bus */
-+	[DAILINK_RT5514_DSP] = {
-+		.name = "RT5514 DSP",
-+		.stream_name = "Wake on Voice",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+	},
- };
- 
- static struct snd_soc_card rockchip_sound_card = {
-@@ -276,10 +286,17 @@ static struct snd_soc_card rockchip_sound_card = {
- 	.num_controls = ARRAY_SIZE(rockchip_controls),
- };
- 
-+static int rockchip_sound_match_stub(struct device *dev, void *data)
-+{
-+	return 1;
-+}
-+
- static int rockchip_sound_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = &rockchip_sound_card;
- 	struct device_node *cpu_node;
-+	struct device *dev;
-+	struct device_driver *drv;
- 	int i, ret;
- 
- 	cpu_node = of_parse_phandle(pdev->dev.of_node, "rockchip,cpu", 0);
-@@ -288,7 +305,7 @@ static int rockchip_sound_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 
--	for (i = 0; i < card->num_links; i++) {
-+	for (i = 0; i < DAILINK_ENTITIES; i++) {
- 		rockchip_dailinks[i].platform_of_node = cpu_node;
- 		rockchip_dailinks[i].cpu_of_node = cpu_node;
- 
-@@ -301,6 +318,26 @@ static int rockchip_sound_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	/**
-+	 * To acquire the spi driver of the rt5514 and set the dai-links names
-+	 * for soc_bind_dai_link
-+	 */
-+	drv = driver_find("rt5514", &spi_bus_type);
-+	if (!drv) {
-+		dev_err(&pdev->dev, "Can not find the rt5514 driver at the spi bus\n");
-+		return -EINVAL;
-+	}
-+
-+	dev = driver_find_device(drv, NULL, NULL, rockchip_sound_match_stub);
-+	if (!dev) {
-+		dev_err(&pdev->dev, "Can not find the rt5514 device\n");
-+		return -ENODEV;
-+	}
-+
-+	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
-+	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
-+	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
-+
- 	card->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, card);
- 
--- 
-1.7.9.5
+for stuff that requires more work before it can actually be merged.
+
+
+Heiko
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
