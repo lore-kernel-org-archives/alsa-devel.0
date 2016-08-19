@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: core: Clean up DAPM before the card
-	debugfs
-Date: Fri, 19 Aug 2016 19:11:23 +0100
-Message-ID: <20160819181123.GF22076@sirena.org.uk>
-References: <1471545449-29516-1-git-send-email-broonie@kernel.org>
- <20160818232642.GF1041@n2100.armlinux.org.uk>
- <20160819175003.GE22076@sirena.org.uk>
- <20160819180452.GW1041@n2100.armlinux.org.uk>
+From: Javier Martinez Canillas <javier@osg.samsung.com>
+Subject: Re: [RFC 00/17] clk: Add per-controller locks to fix
+	deadlocks
+Date: Fri, 19 Aug 2016 15:31:08 -0400
+Message-ID: <8519a1cf-ec51-2914-e4aa-27b26b9233de@osg.samsung.com>
+References: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3717402301004482490=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F3AA266605
- for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2016 20:11:40 +0200 (CEST)
-In-Reply-To: <20160819180452.GW1041@n2100.armlinux.org.uk>
+Received: from s-opensource.com
+ (ec2-52-27-115-49.us-west-2.compute.amazonaws.com [52.27.115.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B1BF266605
+ for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2016 21:31:32 +0200 (CEST)
+In-Reply-To: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,59 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@armlinux.org.uk>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Krzysztof Kozlowski <k.kozlowski@samsung.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene@kernel.org>, Russell King <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: a.hajda@samsung.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hello Krzysztof,
 
---===============3717402301004482490==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Wb5NtZlyOqqy58h0"
-Content-Disposition: inline
+On 08/16/2016 09:34 AM, Krzysztof Kozlowski wrote:
+> Hi,
+> 
+> RFC, please, do not apply, maybe except patch #1 which is harmless.
+> 
+> 
+> Introduction
+> ============
+> The patchset brings new entity: clock controller representing a hardware
+> block.  The clock controller comes with its own prepare lock which
+> is used then in many places.  The idea is to fix the deadlock mentioned
+> in commit 10ff4c5239a1 ("i2c: exynos5: Fix possible ABBA deadlock by keeping
+> I2C clock prepared") and commit 34e81ad5f0b6 ("i2c: s3c2410: fix ABBA deadlock
+> by keeping clock prepared").
+> 
+> 
 
+I'm not familiar enough with the common clock framework to do a proper review
+of this patch-set, but I've tested both on an Exynos5800 Peach Pi Chromebook
+and an Exynos5422 Odroid XU4 board and I didn't find any clock regressions.
 
---Wb5NtZlyOqqy58h0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Also, I confirmed that the possible deadlock in the Odroid XU4 that was fixed
+by reverted commit 10ff4c5239a1 doesn't happen anymore with your patches.
 
-On Fri, Aug 19, 2016 at 07:04:52PM +0100, Russell King - ARM Linux wrote:
+Tested-by: Javier Martinez Canillas <javier@osg.samsung.com>
 
-> I think it was something like the following, but I don't remember
-> off hand without re-running the build that caused it and booting it
-> again.
-
-> twl6040 0-004b: Unable to sync registers 0xc-0xd. -121
-
-...
-
-> That's probably not regmap's fault, but something else.  I guess TIers
-> need to dig into that one.
-
-Yeah, smells like an I/O error - possibly attempting to resync before
-the I2C bus is up or something?
-
---Wb5NtZlyOqqy58h0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXt0vKAAoJECTWi3JdVIfQmAsH/0/Cyh/UQrYVHilIhGXCDMqE
-mOALkyQwflirCB3s60+4U6p8wu27k88/eGBazSWbz1BgiqfHmVnPLJGC0IeJ6iP2
-WbPBCuzEUeu/h4WaKYaG7rXNexHqNft7ypTlVX+mNDhbVe3Vxe99F0L988qgs9pX
-mDyLSFh+ZnSzg8sz5lGMa7ScDufjLsM2HjbThuQtfa0heelXBDfpiZVnarhYvkm/
-uItN8vfRMBWM83fdZpjhxDOxFTWtljt+nVNcTKEZcq/MYb/rWdtDk73VH5p2k7gf
-BaeZWjEv3I8wWa3rxIl32jTt7pVJC88judodFg5dogmfaPBlf/i27Kjv4n46Zi8=
-=3iJL
------END PGP SIGNATURE-----
-
---Wb5NtZlyOqqy58h0--
-
---===============3717402301004482490==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3717402301004482490==--
+Best regards,
+-- 
+Javier Martinez Canillas
+Open Source Group
+Samsung Research America
