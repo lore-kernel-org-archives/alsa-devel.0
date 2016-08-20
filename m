@@ -1,49 +1,39 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [RFC 00/17] clk: Add per-controller locks to fix deadlocks
-Date: Sat, 20 Aug 2016 18:03:07 +0200
-Message-ID: <20160820160307.GB6344@kozik-book>
-References: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
- <8519a1cf-ec51-2914-e4aa-27b26b9233de@osg.samsung.com>
+From: John Keeping <john-HooS5bfzL4hWk0Htik3J/w@public.gmane.org>
+Subject: Re: [PATCH] Try to support analog audio codec at firefly reload
+Date: Sat, 20 Aug 2016 19:33:38 +0100
+Message-ID: <20160820183338.33pcyfbtmwjulogk@john.keeping.me.uk>
+References: <1471293727-26258-1-git-send-email-ayaka@soulik.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-i2c-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <8519a1cf-ec51-2914-e4aa-27b26b9233de@osg.samsung.com>
-Sender: linux-i2c-owner@vger.kernel.org
-To: Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: Krzysztof Kozlowski <k.kozlowski@samsung.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene@kernel.org>, Russell King <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-
+In-Reply-To: <1471293727-26258-1-git-send-email-ayaka-xPW3/0Ywev/iB9QmIjCX8w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Randy Li <ayaka-xPW3/0Ywev/iB9QmIjCX8w@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 19, 2016 at 03:31:08PM -0400, Javier Martinez Canillas wrote:
-> Hello Krzysztof,
-> 
-> On 08/16/2016 09:34 AM, Krzysztof Kozlowski wrote:
-> > Hi,
-> > 
-> > RFC, please, do not apply, maybe except patch #1 which is harmless.
-> > 
-> > 
-> > Introduction
-> > ============
-> > The patchset brings new entity: clock controller representing a hardware
-> > block.  The clock controller comes with its own prepare lock which
-> > is used then in many places.  The idea is to fix the deadlock mentioned
-> > in commit 10ff4c5239a1 ("i2c: exynos5: Fix possible ABBA deadlock by keeping
-> > I2C clock prepared") and commit 34e81ad5f0b6 ("i2c: s3c2410: fix ABBA deadlock
-> > by keeping clock prepared").
-> > 
-> > 
-> 
-> I'm not familiar enough with the common clock framework to do a proper review
-> of this patch-set, but I've tested both on an Exynos5800 Peach Pi Chromebook
-> and an Exynos5422 Odroid XU4 board and I didn't find any clock regressions.
-> 
-> Also, I confirmed that the possible deadlock in the Odroid XU4 that was fixed
-> by reverted commit 10ff4c5239a1 doesn't happen anymore with your patches.
-> 
-> Tested-by: Javier Martinez Canillas <javier@osg.samsung.com>
+On Tue, Aug 16, 2016 at 04:42:06AM +0800, Randy Li wrote:
+>   This patch could enabled the es8328 codec at firefly reload board,
+> but it doesn't not really work. I disable the mute of channel 
+> Left mix and Right mix in alsamixer, I could hear the noise from
+> my headphone, but it never be a music. 
+>   I just send this patch here to see whether somebody could figure
+> out what is wrong, I am really not familiar with sound.
 
-Thanks for testing, I appreciate that!
+Have you tried adding an mclk-fs setting to the simple-audio-card?  You
+probably want to set it to 256, which will allow 44.1kHz, 48kHz, 88.2kHz
+and 96kHz at the codec.  This will give more functionality than pinning
+the clock to a specific rate.
 
-Best regards,
-Krzysztof
+For the Rock2 Square, I write a machine driver for the sound because the
+headphone GPIO setup cannot be made to work with simple-audio-card; I
+found the Firefly Reload schematic and it looks like the configuration
+hardware is very similar.  It's a bit of a mess but you can find it on
+Github [1] if you want to take a look.
+
+[1] https://github.com/johnkeeping/linux/tree/topic/audio
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
