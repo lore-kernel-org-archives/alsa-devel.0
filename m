@@ -1,39 +1,52 @@
-From: John Keeping <john-HooS5bfzL4hWk0Htik3J/w@public.gmane.org>
-Subject: Re: [PATCH] Try to support analog audio codec at firefly reload
-Date: Sat, 20 Aug 2016 19:33:38 +0100
-Message-ID: <20160820183338.33pcyfbtmwjulogk@john.keeping.me.uk>
-References: <1471293727-26258-1-git-send-email-ayaka@soulik.info>
+From: Shawn Lin <shawn.lin@rock-chips.com>
+Subject: [PATCH] ALSA: usb-audio: rmove print for failure of
+	kmalloc
+Date: Sun, 21 Aug 2016 10:17:36 +0800
+Message-ID: <1471745856-30083-1-git-send-email-shawn.lin@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1471293727-26258-1-git-send-email-ayaka-xPW3/0Ywev/iB9QmIjCX8w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Randy Li <ayaka-xPW3/0Ywev/iB9QmIjCX8w@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lucky1.263xmail.com (lucky1.263xmail.com [211.157.147.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 712AB2654CE
+ for <alsa-devel@alsa-project.org>; Sun, 21 Aug 2016 04:22:02 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Shawn Lin <shawn.lin@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 16, 2016 at 04:42:06AM +0800, Randy Li wrote:
->   This patch could enabled the es8328 codec at firefly reload board,
-> but it doesn't not really work. I disable the mute of channel 
-> Left mix and Right mix in alsamixer, I could hear the noise from
-> my headphone, but it never be a music. 
->   I just send this patch here to see whether somebody could figure
-> out what is wrong, I am really not familiar with sound.
+kmalloc already print similar error once failing to alloc
+enough memory, so let's remove this dump here.
 
-Have you tried adding an mclk-fs setting to the simple-audio-card?  You
-probably want to set it to 256, which will allow 44.1kHz, 48kHz, 88.2kHz
-and 96kHz at the codec.  This will give more functionality than pinning
-the clock to a specific rate.
+Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
+---
 
-For the Rock2 Square, I write a machine driver for the sound because the
-headphone GPIO setup cannot be made to work with simple-audio-card; I
-found the Firefly Reload schematic and it looks like the configuration
-hardware is very similar.  It's a bit of a mess but you can find it on
-Github [1] if you want to take a look.
+ sound/usb/format.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-[1] https://github.com/johnkeeping/linux/tree/topic/audio
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index 789d19e..2c44386 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -176,10 +176,8 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
+ 		int r, idx;
+ 
+ 		fp->rate_table = kmalloc(sizeof(int) * nr_rates, GFP_KERNEL);
+-		if (fp->rate_table == NULL) {
+-			usb_audio_err(chip, "cannot malloc\n");
++		if (fp->rate_table == NULL)
+ 			return -ENOMEM;
+-		}
+ 
+ 		fp->nr_rates = 0;
+ 		fp->rate_min = fp->rate_max = 0;
+-- 
+2.3.7
