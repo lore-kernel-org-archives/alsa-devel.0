@@ -1,18 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: core: Clean up DAPM before the card
- debugfs
-Date: Mon, 22 Aug 2016 16:32:21 +0300
-Message-ID: <0aff36cb-63cd-baa0-5a97-49212ee0dcf6@ti.com>
-References: <1471545449-29516-1-git-send-email-broonie@kernel.org>
- <20160818232642.GF1041@n2100.armlinux.org.uk>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH] ASoC: sunxi: depend on ARCH_SUNXI
+Date: Mon, 22 Aug 2016 16:04:48 +0200
+Message-ID: <20160822140448.GP7104@lukather>
+References: <20160822121242.18827-1-pbrobinson@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============6712591471322244519=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 305DF2657B6
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 15:32:24 +0200 (CEST)
-In-Reply-To: <20160818232642.GF1041@n2100.armlinux.org.uk>
+Received: from mail.free-electrons.com (down.free-electrons.com
+ [37.187.137.238])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BB7B266A3F
+ for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 16:05:00 +0200 (CEST)
+In-Reply-To: <20160822121242.18827-1-pbrobinson@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,89 +20,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Peter Robinson <pbrobinson@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, wens@csie.org, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/19/16 02:26, Russell King - ARM Linux wrote:
-> On Thu, Aug 18, 2016 at 07:37:29PM +0100, Mark Brown wrote:
->> Both the card and DAPM cleanups recursively delete their debugfs
->> directories.  Since the DAPM debugfs subdirectory for the card is
->> located within the card debugfs this means we end up trying to double
->> free the DAPM subdirectory.  Reorder the cleanup to free the card
->> debugfs after we've cleaned up DAPM and it has deleted its own
->> subdirectory.
->>
->> Reported-by: Russell King - ARM Linux <linux@armlinux.org.uk>
->> Signed-off-by: Mark Brown <broonie@kernel.org>
->> ---
->>
->> Not tested at all yet, just about done for today.
-> =
 
-> Thanks - that appears to solve the oops on rmmod of
-> snd-soc-omap-abe-twl6040!
-> =
-
-> Tested-by: Russell King <rmk+kernel@armlinux.org.uk>
-> =
-
-> So this allows me to test a bit more... and there's more bad news.
-> On re-inserting this module...
-> =
-
-> twl6040 0-004b: Unable to sync registers 0xc-0xd. -121
-> genirq: Flags mismatch irq 242. 00000004 (McPDM) vs. 00000004 (McPDM)
-> omap-mcpdm 40132000.mcpdm: Request for IRQ failed
-> omap-mcpdm 40132000.mcpdm: ASoC: failed to probe DAI 40132000.mcpdm: -16
-> omap-abe-twl6040 sound: ASoC: failed to instantiate card -16
-> omap-abe-twl6040 sound: snd_soc_register_card() failed: -16
-> omap-abe-twl6040: probe of sound failed with error -16
-> =
-
-> Looks like removing and re-inserting these modules has never been
-> tested. :(  And oh my...
-> =
-
-> static int omap_mcpdm_probe(struct snd_soc_dai *dai)
-> {
->         ret =3D devm_request_irq(mcpdm->dev, mcpdm->irq, omap_mcpdm_irq_h=
-andler,
->                                 0, "McPDM", (void *)mcpdm);
-> =
-
-> static struct snd_soc_dai_driver omap_mcpdm_dai =3D {
->         .probe =3D omap_mcpdm_probe,
->         .remove =3D omap_mcpdm_remove,
-> =
-
-> Using devm_* stuff in a context where it doesn't get automatically
-> freed when the DAI driver is unbound, and nothing in omap_mcpdm_remove()
-> to undo that request.
-> =
-
-> I suspect that isn't the full story though, because of the regmap
-> complaint (which I've not even looked at yet.)
-> =
-
-> At the moment, omap_mcpdm_probe() should _not_ be making use of any
-> devm_* calls, and omap_mcpdm_remove() should be _explicitly_ releasing
-> everything that was claimed in omap_mcpdm_probe() because ASoC does
-> nothing with devres groups.  The alternative solution here is that
-> ASoC gains devres group support so resources claimed in the DAI
-> driver .probe function can be automatically released in the same way
-> as happens with normal driver model probe/release and component
-> helper bind/unbind.
-> =
-
-> Maybe we should have a test mode in the kernel where every device
-> goes through a bind-unbind-rebind sequence during boot to test more
-> of these paths...
-
-Ouch, we have only tested modules when they are all removed. I will fix it =
-asap.
+--===============6712591471322244519==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Kynn+LdAwU9N+JqL"
+Content-Disposition: inline
 
 
--- =
+--Kynn+LdAwU9N+JqL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-P=E9ter
+Hi,
+
+On Mon, Aug 22, 2016 at 01:12:42PM +0100, Peter Robinson wrote:
+> Depend on ARCH_SUNXI or COMPILE_TEST as it doesn't make sense to enable
+> these if the appropriate SoC they're embedded in isn't enabled.
+>=20
+> Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
+
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+
+Thanks!
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+
+--Kynn+LdAwU9N+JqL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJXuwaAAAoJEBx+YmzsjxAgEtQQALzi1rkqeNQgiKAD+gvXr6m6
+mz+eGRkp1GkTEhVpbgBHW9Anqd2ZxpcjScsWMGVjtYroGVLca5+LP+c4L9WSPxQU
+JSLbDIayTH0cefbQ+Biqav10Nrw+MJMtjrFaD3hQt/ztyNIwaz2dbPzS9O2RSqe0
+h9FbTxvBP2q1W4aoW1F9g6k+6Aki90rFWFksMXfjpdiWM/M4dINPoKQOx8fJAXKg
+chlKulPz9uozwH8wVVQl0Y3bSLJcaEcxaJs8Z6t8pibPRSu+HWN672JthCGvvG0J
+G1KnWUISWoVF8H0em72x5tdWIX3XSIyBPfReJde/ozhyZgk4Hcv6whYtOVvLF6Vr
+PS3zXbfbvxsiyoWRP3mw7bgwBOhuTZNKDCMTkgl9ZZ+IGuiGn0pbnEmNH9pvnFuz
+I1ORrLO+79xhRZNcWFra4LdfLK3Gt49gAZCu5r6tYRJ5YkouhVlw9fSI+kWv0P6V
+odGLn8fleUbKICmrxxauyCAQy9WiDu8Q2nCQGOrMYVlBLZjgMfDavnuZQt6rv3R4
+lCpP5EVnfpoAMH1rIK5Nqa5PnjPgsKdws4nPMYB6qk57GQzCj/fC6LGoVDwHXsXT
+mAVdSVlcaIrdY/2kkQwZEnbxo0ZmeOjIX+y7aECltHFQY1VseaQLhUrDTRHb1Ejr
+nEvdFmzesHJ0bDOSw103
+=HN62
+-----END PGP SIGNATURE-----
+
+--Kynn+LdAwU9N+JqL--
+
+--===============6712591471322244519==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6712591471322244519==--
