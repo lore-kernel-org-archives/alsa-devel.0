@@ -1,41 +1,70 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Alsa-lib 'cancelability'
-Date: Mon, 22 Aug 2016 19:37:23 +0200
-Message-ID: <5780ba02-e3b2-2cd6-e35e-a16fd77bc951@ladisch.de>
-References: <201608221741.21375.gineera@aspect135.co.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [RFC PATCH] mfd: arizona: Add gating of external
+ MCLKn clocks
+Date: Mon, 22 Aug 2016 18:41:04 +0100
+Message-ID: <20160822174104.GT22076@sirena.org.uk>
+References: <1471627036-19465-1-git-send-email-s.nawrocki@samsung.com>
+ <20160822092233.GN21682@localhost.localdomain>
+ <d47e7106-037f-b40c-71e5-099ee30874e6@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 34F16265E07
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 19:37:32 +0200 (CEST)
-In-Reply-To: <201608221741.21375.gineera@aspect135.co.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BfbbJsf3thGkpLcA"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <d47e7106-037f-b40c-71e5-099ee30874e6@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, lee.jones@linaro.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Alan Horstmann wrote:
-> I am wondering if there is a policy on the thread 'cancelability' /
-> 'cancellability' of the functions in Alsa-lib?
 
-Yes.  The policy is "don't even think about it".
+--BfbbJsf3thGkpLcA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> The callback runs in it's own thread; when a user requests 'AbortStream'
-> a thread cancel is requested.
+On Mon, Aug 22, 2016 at 07:22:47PM +0200, Sylwester Nawrocki wrote:
 
-Alsa-lib is not the only library with this 'policy'.  You cannot cancel
-threads over whose code you do not have complete control.
+> I got suggestion from Mark not to request the main MCLK clock
+> in the machine driver.  But even if gating of that clock was
+> added to the CODEC driver I would need to get hold of it in
+> the machine driver to get rate of MCLK.  So I thought about
+> exporting a helper from the MFD for requesting MCLK clock or
+> specifying MCLK clock back in the sound DT node.
 
+No, the immediate suggestion is more about the requesting bit than the
+management bit - once the DT is there it's set in stone.
 
-Regards,
-Clemens
+> If we provided an interface like:
+
+> struct clk * arizona_get_mclk(struct arizona *arizona, int id);
+> void arizona_put_mclk(struct clk *clk);
+
+> the machine driver would need to get hold of struct arizona*,
+> which is not that straightforward if we are given on CODEC
+> of_node (it can be a child of I2S or SPI bus).
+
+We could add an interface for the machine driver to retrieve a clock
+=66rom the CODEC as a transition measure...
+
+> Then how about specifying MCLK in the sound node and using
+> regular devm_clk_get()?
+
+This is what we're trying to avoid?
+
+--BfbbJsf3thGkpLcA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXuzkuAAoJECTWi3JdVIfQ+ogH/RkINbYh1MMX/6ZsDUXWVPwp
+c7FHVNpWGHqzmO/o461fi+vuM6aaPlhCOH6z9e3I7c2HsUUB5jEGSLZeGnzv2KD5
+isdYSgW2R4PKm5TOiOtG+2gDRzgEm7rOIC3mpjTmtcq+F1k2a3zBvkel1is+kjZ5
+pmiqwvTRj9HIxJwjSiE9uIig+3cLoMbWHJa/98lZpJckH6KCy//B38DiM8PrJKAf
+u9s65aMxBqWFK9UPhHX/Wd3VyvhnBAodZVqmhF2L+xIrxM1/OjVC8PCA0h1GAhxn
+9K28tJho+HJu/2vZ48ATz0K4m9IQyxE/WieaC/luRzf36wmMsLgRuMNqtXagNpI=
+=hw3q
+-----END PGP SIGNATURE-----
+
+--BfbbJsf3thGkpLcA--
