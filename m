@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Parse vendor tokens to
-	build module data" to the asoc tree
-Date: Mon, 22 Aug 2016 18:59:14 +0100
-Message-ID: <E1bbtVC-0000rV-G8@debutante>
-References: <1470985193-10680-3-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: nau8810: Add driver for Nuvoton codec
+	chip NAU88C10" to the asoc tree
+Date: Mon, 22 Aug 2016 18:59:21 +0100
+Message-ID: <E1bbtVJ-0000tY-T0@debutante>
+References: <1471598692-8621-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 05837266661
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 19:59:21 +0200 (CEST)
-In-Reply-To: <1470985193-10680-3-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EE097266AF8
+ for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 19:59:28 +0200 (CEST)
+In-Reply-To: <1471598692-8621-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shreyas NC <shreyas.nc@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Parse vendor tokens to build module data
+   ASoC: nau8810: Add driver for Nuvoton codec chip NAU88C10
 
 has been applied to the asoc tree at
 
@@ -53,772 +53,1267 @@ to this mail.
 Thanks,
 Mark
 
->From 6277e83292a2d4d88d150c0eb3004bd714ad8728 Mon Sep 17 00:00:00 2001
-From: Shreyas NC <shreyas.nc@intel.com>
-Date: Fri, 12 Aug 2016 12:29:51 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Parse vendor tokens to build module
- data
+>From b6970b48e384a602bdb9d6246cded83e150d4660 Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Fri, 19 Aug 2016 17:24:52 +0800
+Subject: [PATCH] ASoC: nau8810: Add driver for Nuvoton codec chip NAU88C10
 
-Skl topology data is preceded by a descriptor for number of data
-blocks, the size of the data block and type of data block. The
-type of the data block can be either a tuple or a binary blob.
+The driver is for codec NAU88C10 of Nuvoton Technology Corporation.
 
-Private data is parsed based on data block type and module data
-is filled accordingly.
-
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c       | 645 ++++++++++++++++++++++-----
- sound/soc/intel/skylake/skl-tplg-interface.h |  10 +
- 2 files changed, 545 insertions(+), 110 deletions(-)
+ .../devicetree/bindings/sound/nau8810.txt          |  16 +
+ sound/soc/codecs/Kconfig                           |   5 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/nau8810.c                         | 884 +++++++++++++++++++++
+ sound/soc/codecs/nau8810.h                         | 281 +++++++
+ 5 files changed, 1188 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/nau8810.txt
+ create mode 100644 sound/soc/codecs/nau8810.c
+ create mode 100644 sound/soc/codecs/nau8810.h
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 4bc8f9c269db..000482e6e2f7 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -21,6 +21,7 @@
- #include <linux/firmware.h>
- #include <sound/soc.h>
- #include <sound/soc-topology.h>
-+#include <uapi/sound/snd_sst_tokens.h>
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
- #include "skl-topology.h"
-@@ -32,6 +33,8 @@
- #define SKL_CH_FIXUP_MASK		(1 << 0)
- #define SKL_RATE_FIXUP_MASK		(1 << 1)
- #define SKL_FMT_FIXUP_MASK		(1 << 2)
-+#define SKL_IN_DIR_BIT_MASK		BIT(0)
-+#define SKL_PIN_COUNT_MASK		GENMASK(7, 4)
- 
- /*
-  * SKL DSP driver modelling uses only few DAPM widgets so for rest we will
-@@ -1468,85 +1471,570 @@ static const struct snd_soc_tplg_bytes_ext_ops skl_tlv_ops[] = {
- 					skl_tplg_tlv_control_set},
- };
- 
--/*
-- * The topology binary passes the pin info for a module so initialize the pin
-- * info passed into module instance
-- */
--static void skl_fill_module_pin_info(struct skl_dfw_module_pin *dfw_pin,
--						struct skl_module_pin *m_pin,
--						bool is_dynamic, int max_pin)
-+static int skl_tplg_fill_pipe_tkn(struct device *dev,
-+			struct skl_pipe *pipe, u32 tkn,
-+			u32 tkn_val)
- {
--	int i;
- 
--	for (i = 0; i < max_pin; i++) {
--		m_pin[i].id.module_id = dfw_pin[i].module_id;
--		m_pin[i].id.instance_id = dfw_pin[i].instance_id;
--		m_pin[i].in_use = false;
--		m_pin[i].is_dynamic = is_dynamic;
--		m_pin[i].pin_state = SKL_PIN_UNBIND;
-+	switch (tkn) {
-+	case SKL_TKN_U32_PIPE_CONN_TYPE:
-+		pipe->conn_type = tkn_val;
-+		break;
+diff --git a/Documentation/devicetree/bindings/sound/nau8810.txt b/Documentation/devicetree/bindings/sound/nau8810.txt
+new file mode 100644
+index 000000000000..05830e477acd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nau8810.txt
+@@ -0,0 +1,16 @@
++NAU8810 audio CODEC
 +
-+	case SKL_TKN_U32_PIPE_PRIORITY:
-+		pipe->pipe_priority = tkn_val;
-+		break;
++This device supports I2C only.
 +
-+	case SKL_TKN_U32_PIPE_MEM_PGS:
-+		pipe->memory_pages = tkn_val;
-+		break;
++Required properties:
 +
++  - compatible : "nuvoton,nau8810"
++
++  - reg : the I2C address of the device.
++
++Example:
++
++codec: nau8810@1a {
++	compatible = "nuvoton,nau8810";
++	reg = <0x1a>;
++};
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 1cd6ab344d67..b3fd110b1325 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -92,6 +92,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_MAX9877 if I2C
+ 	select SND_SOC_MC13783 if MFD_MC13XXX
+ 	select SND_SOC_ML26124 if I2C
++	select SND_SOC_NAU8810 if I2C
+ 	select SND_SOC_NAU8825 if I2C
+ 	select SND_SOC_HDMI_CODEC
+ 	select SND_SOC_PCM1681 if I2C
+@@ -1064,6 +1065,10 @@ config SND_SOC_MC13783
+ config SND_SOC_ML26124
+ 	tristate
+ 
++config SND_SOC_NAU8810
++	tristate "Nuvoton Technology Corporation NAU88C10 CODEC"
++	depends on I2C
++
+ config SND_SOC_NAU8825
+ 	tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 58036af2c7d9..ffaa523a7556 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -86,6 +86,7 @@ snd-soc-max9850-objs := max9850.o
+ snd-soc-max9860-objs := max9860.o
+ snd-soc-mc13783-objs := mc13783.o
+ snd-soc-ml26124-objs := ml26124.o
++snd-soc-nau8810-objs := nau8810.o
+ snd-soc-nau8825-objs := nau8825.o
+ snd-soc-hdmi-codec-objs := hdmi-codec.o
+ snd-soc-pcm1681-objs := pcm1681.o
+@@ -307,6 +308,7 @@ obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
+ obj-$(CONFIG_SND_SOC_MAX9860)	+= snd-soc-max9860.o
+ obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
+ obj-$(CONFIG_SND_SOC_ML26124)	+= snd-soc-ml26124.o
++obj-$(CONFIG_SND_SOC_NAU8810)   += snd-soc-nau8810.o
+ obj-$(CONFIG_SND_SOC_NAU8825)   += snd-soc-nau8825.o
+ obj-$(CONFIG_SND_SOC_HDMI_CODEC)	+= snd-soc-hdmi-codec.o
+ obj-$(CONFIG_SND_SOC_PCM1681)	+= snd-soc-pcm1681.o
+diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
+new file mode 100644
+index 000000000000..7617ddad5601
+--- /dev/null
++++ b/sound/soc/codecs/nau8810.c
+@@ -0,0 +1,884 @@
++/*
++ * nau8810.c  --  NAU8810 ALSA Soc Audio driver
++ *
++ * Copyright 2016 Nuvoton Technology Corp.
++ *
++ * Author: David Lin <ctlin0@nuvoton.com>
++ *
++ * Based on WM8974.c
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <linux/pm.h>
++#include <linux/i2c.h>
++#include <linux/regmap.h>
++#include <linux/slab.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/initval.h>
++#include <sound/tlv.h>
++
++#include "nau8810.h"
++
++#define NAU_PLL_FREQ_MAX 100000000
++#define NAU_PLL_FREQ_MIN 90000000
++#define NAU_PLL_REF_MAX 33000000
++#define NAU_PLL_REF_MIN 8000000
++#define NAU_PLL_OPTOP_MIN 6
++
++
++static const int nau8810_mclk_scaler[] = { 10, 15, 20, 30, 40, 60, 80, 120 };
++
++static const struct reg_default nau8810_reg_defaults[] = {
++	{ NAU8810_REG_POWER1, 0x0000 },
++	{ NAU8810_REG_POWER2, 0x0000 },
++	{ NAU8810_REG_POWER3, 0x0000 },
++	{ NAU8810_REG_IFACE, 0x0050 },
++	{ NAU8810_REG_COMP, 0x0000 },
++	{ NAU8810_REG_CLOCK, 0x0140 },
++	{ NAU8810_REG_SMPLR, 0x0000 },
++	{ NAU8810_REG_DAC, 0x0000 },
++	{ NAU8810_REG_DACGAIN, 0x00FF },
++	{ NAU8810_REG_ADC, 0x0100 },
++	{ NAU8810_REG_ADCGAIN, 0x00FF },
++	{ NAU8810_REG_EQ1, 0x012C },
++	{ NAU8810_REG_EQ2, 0x002C },
++	{ NAU8810_REG_EQ3, 0x002C },
++	{ NAU8810_REG_EQ4, 0x002C },
++	{ NAU8810_REG_EQ5, 0x002C },
++	{ NAU8810_REG_DACLIM1, 0x0032 },
++	{ NAU8810_REG_DACLIM2, 0x0000 },
++	{ NAU8810_REG_NOTCH1, 0x0000 },
++	{ NAU8810_REG_NOTCH2, 0x0000 },
++	{ NAU8810_REG_NOTCH3, 0x0000 },
++	{ NAU8810_REG_NOTCH4, 0x0000 },
++	{ NAU8810_REG_ALC1, 0x0038 },
++	{ NAU8810_REG_ALC2, 0x000B },
++	{ NAU8810_REG_ALC3, 0x0032 },
++	{ NAU8810_REG_NOISEGATE, 0x0000 },
++	{ NAU8810_REG_PLLN, 0x0008 },
++	{ NAU8810_REG_PLLK1, 0x000C },
++	{ NAU8810_REG_PLLK2, 0x0093 },
++	{ NAU8810_REG_PLLK3, 0x00E9 },
++	{ NAU8810_REG_ATTEN, 0x0000 },
++	{ NAU8810_REG_INPUT_SIGNAL, 0x0003 },
++	{ NAU8810_REG_PGAGAIN, 0x0010 },
++	{ NAU8810_REG_ADCBOOST, 0x0100 },
++	{ NAU8810_REG_OUTPUT, 0x0002 },
++	{ NAU8810_REG_SPKMIX, 0x0001 },
++	{ NAU8810_REG_SPKGAIN, 0x0039 },
++	{ NAU8810_REG_MONOMIX, 0x0001 },
++	{ NAU8810_REG_POWER4, 0x0000 },
++	{ NAU8810_REG_TSLOTCTL1, 0x0000 },
++	{ NAU8810_REG_TSLOTCTL2, 0x0020 },
++	{ NAU8810_REG_DEVICE_REVID, 0x0000 },
++	{ NAU8810_REG_I2C_DEVICEID, 0x001A },
++	{ NAU8810_REG_ADDITIONID, 0x00CA },
++	{ NAU8810_REG_RESERVE, 0x0124 },
++	{ NAU8810_REG_OUTCTL, 0x0001 },
++	{ NAU8810_REG_ALC1ENHAN1, 0x0010 },
++	{ NAU8810_REG_ALC1ENHAN2, 0x0000 },
++	{ NAU8810_REG_MISCCTL, 0x0000 },
++	{ NAU8810_REG_OUTTIEOFF, 0x0000 },
++	{ NAU8810_REG_AGCP2POUT, 0x0000 },
++	{ NAU8810_REG_AGCPOUT, 0x0000 },
++	{ NAU8810_REG_AMTCTL, 0x0000 },
++	{ NAU8810_REG_OUTTIEOFFMAN, 0x0000 },
++};
++
++static bool nau8810_readable_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case NAU8810_REG_RESET ... NAU8810_REG_SMPLR:
++	case NAU8810_REG_DAC ... NAU8810_REG_DACGAIN:
++	case NAU8810_REG_ADC ... NAU8810_REG_ADCGAIN:
++	case NAU8810_REG_EQ1 ... NAU8810_REG_EQ5:
++	case NAU8810_REG_DACLIM1 ... NAU8810_REG_DACLIM2:
++	case NAU8810_REG_NOTCH1 ... NAU8810_REG_NOTCH4:
++	case NAU8810_REG_ALC1 ... NAU8810_REG_ATTEN:
++	case NAU8810_REG_INPUT_SIGNAL ... NAU8810_REG_PGAGAIN:
++	case NAU8810_REG_ADCBOOST:
++	case NAU8810_REG_OUTPUT ... NAU8810_REG_SPKMIX:
++	case NAU8810_REG_SPKGAIN:
++	case NAU8810_REG_MONOMIX:
++	case NAU8810_REG_POWER4 ... NAU8810_REG_TSLOTCTL2:
++	case NAU8810_REG_DEVICE_REVID ... NAU8810_REG_RESERVE:
++	case NAU8810_REG_OUTCTL ... NAU8810_REG_ALC1ENHAN2:
++	case NAU8810_REG_MISCCTL:
++	case NAU8810_REG_OUTTIEOFF ... NAU8810_REG_OUTTIEOFFMAN:
++		return true;
 +	default:
-+		dev_err(dev, "Token not handled %d\n", tkn);
-+		return -EINVAL;
- 	}
++		return false;
++	}
++}
++
++static bool nau8810_writeable_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case NAU8810_REG_RESET ... NAU8810_REG_SMPLR:
++	case NAU8810_REG_DAC ... NAU8810_REG_DACGAIN:
++	case NAU8810_REG_ADC ... NAU8810_REG_ADCGAIN:
++	case NAU8810_REG_EQ1 ... NAU8810_REG_EQ5:
++	case NAU8810_REG_DACLIM1 ... NAU8810_REG_DACLIM2:
++	case NAU8810_REG_NOTCH1 ... NAU8810_REG_NOTCH4:
++	case NAU8810_REG_ALC1 ... NAU8810_REG_ATTEN:
++	case NAU8810_REG_INPUT_SIGNAL ... NAU8810_REG_PGAGAIN:
++	case NAU8810_REG_ADCBOOST:
++	case NAU8810_REG_OUTPUT ... NAU8810_REG_SPKMIX:
++	case NAU8810_REG_SPKGAIN:
++	case NAU8810_REG_MONOMIX:
++	case NAU8810_REG_POWER4 ... NAU8810_REG_TSLOTCTL2:
++	case NAU8810_REG_OUTCTL ... NAU8810_REG_ALC1ENHAN2:
++	case NAU8810_REG_MISCCTL:
++	case NAU8810_REG_OUTTIEOFF ... NAU8810_REG_OUTTIEOFFMAN:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool nau8810_volatile_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case NAU8810_REG_RESET:
++	case NAU8810_REG_DEVICE_REVID ... NAU8810_REG_RESERVE:
++		return true;
++	default:
++		return false;
++	}
++}
++
++/* The EQ parameters get function is to get the 5 band equalizer control.
++ * The regmap raw read can't work here because regmap doesn't provide
++ * value format for value width of 9 bits. Therefore, the driver reads data
++ * from cache and makes value format according to the endianness of
++ * bytes type control element.
++ */
++static int nau8810_eq_get(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
++	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++	struct soc_bytes_ext *params = (void *)kcontrol->private_value;
++	int i, reg, reg_val;
++	u16 *val;
++
++	val = (u16 *)ucontrol->value.bytes.data;
++	reg = NAU8810_REG_EQ1;
++	for (i = 0; i < params->max / sizeof(u16); i++) {
++		regmap_read(nau8810->regmap, reg + i, &reg_val);
++		/* conversion of 16-bit integers between native CPU format
++		 * and big endian format
++		 */
++		reg_val = cpu_to_be16(reg_val);
++		memcpy(val + i, &reg_val, sizeof(reg_val));
++	}
 +
 +	return 0;
- }
- 
- /*
-- * Add pipeline from topology binary into driver pipeline list
-- *
-- * If already added we return that instance
-- * Otherwise we create a new instance and add into driver list
-+ * Add pipeline by parsing the relevant tokens
-+ * Return an existing pipe if the pipe already exists.
-  */
--static struct skl_pipe *skl_tplg_add_pipe(struct device *dev,
--			struct skl *skl, struct skl_dfw_pipe *dfw_pipe)
-+static int skl_tplg_add_pipe(struct device *dev,
-+		struct skl_module_cfg *mconfig, struct skl *skl,
-+		struct snd_soc_tplg_vendor_value_elem *tkn_elem)
- {
- 	struct skl_pipeline *ppl;
- 	struct skl_pipe *pipe;
- 	struct skl_pipe_params *params;
- 
- 	list_for_each_entry(ppl, &skl->ppl_list, node) {
--		if (ppl->pipe->ppl_id == dfw_pipe->pipe_id)
--			return ppl->pipe;
-+		if (ppl->pipe->ppl_id == tkn_elem->value) {
-+			mconfig->pipe = ppl->pipe;
-+			return EEXIST;
++}
++
++/* The EQ parameters put function is to make configuration of 5 band equalizer
++ * control. These configuration includes central frequency, equalizer gain,
++ * cut-off frequency, bandwidth control, and equalizer path.
++ * The regmap raw write can't work here because regmap doesn't provide
++ * register and value format for register with address 7 bits and value 9 bits.
++ * Therefore, the driver makes value format according to the endianness of
++ * bytes type control element and writes data to codec.
++ */
++static int nau8810_eq_put(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
++	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++	struct soc_bytes_ext *params = (void *)kcontrol->private_value;
++	void *data;
++	u16 *val, value;
++	int i, reg, ret;
++
++	data = kmemdup(ucontrol->value.bytes.data,
++		params->max, GFP_KERNEL | GFP_DMA);
++	if (!data)
++		return -ENOMEM;
++
++	val = (u16 *)data;
++	reg = NAU8810_REG_EQ1;
++	for (i = 0; i < params->max / sizeof(u16); i++) {
++		/* conversion of 16-bit integers between native CPU format
++		 * and big endian format
++		 */
++		value = be16_to_cpu(*(val + i));
++		ret = regmap_write(nau8810->regmap, reg + i, value);
++		if (ret) {
++			dev_err(codec->dev, "EQ configuration fail, register: %x ret: %d\n",
++				reg + i, ret);
++			return ret;
 +		}
- 	}
- 
- 	ppl = devm_kzalloc(dev, sizeof(*ppl), GFP_KERNEL);
- 	if (!ppl)
--		return NULL;
-+		return -ENOMEM;
- 
- 	pipe = devm_kzalloc(dev, sizeof(*pipe), GFP_KERNEL);
- 	if (!pipe)
--		return NULL;
-+		return -ENOMEM;
- 
- 	params = devm_kzalloc(dev, sizeof(*params), GFP_KERNEL);
- 	if (!params)
--		return NULL;
-+		return -ENOMEM;
- 
--	pipe->ppl_id = dfw_pipe->pipe_id;
--	pipe->memory_pages = dfw_pipe->memory_pages;
--	pipe->pipe_priority = dfw_pipe->pipe_priority;
--	pipe->conn_type = dfw_pipe->conn_type;
--	pipe->state = SKL_PIPE_INVALID;
- 	pipe->p_params = params;
-+	pipe->ppl_id = tkn_elem->value;
- 	INIT_LIST_HEAD(&pipe->w_list);
- 
- 	ppl->pipe = pipe;
- 	list_add(&ppl->node, &skl->ppl_list);
- 
--	return ppl->pipe;
-+	mconfig->pipe = pipe;
-+	mconfig->pipe->state = SKL_PIPE_INVALID;
++	}
++	kfree(data);
 +
 +	return 0;
 +}
 +
-+static int skl_tplg_fill_pin(struct device *dev, u32 tkn,
-+			struct skl_module_pin *m_pin,
-+			int pin_index, u32 value)
++static const char * const nau8810_companding[] = {
++	"Off", "NC", "u-law", "A-law" };
++
++static const struct soc_enum nau8810_companding_adc_enum =
++	SOC_ENUM_SINGLE(NAU8810_REG_COMP, NAU8810_ADCCM_SFT,
++		ARRAY_SIZE(nau8810_companding), nau8810_companding);
++
++static const struct soc_enum nau8810_companding_dac_enum =
++	SOC_ENUM_SINGLE(NAU8810_REG_COMP, NAU8810_DACCM_SFT,
++		ARRAY_SIZE(nau8810_companding), nau8810_companding);
++
++static const char * const nau8810_deemp[] = {
++	"None", "32kHz", "44.1kHz", "48kHz" };
++
++static const struct soc_enum nau8810_deemp_enum =
++	SOC_ENUM_SINGLE(NAU8810_REG_DAC, NAU8810_DEEMP_SFT,
++		ARRAY_SIZE(nau8810_deemp), nau8810_deemp);
++
++static const char * const nau8810_eqmode[] = {"Capture", "Playback" };
++
++static const struct soc_enum nau8810_eqmode_enum =
++	SOC_ENUM_SINGLE(NAU8810_REG_EQ1, NAU8810_EQM_SFT,
++		ARRAY_SIZE(nau8810_eqmode), nau8810_eqmode);
++
++static const char * const nau8810_alc[] = {"Normal", "Limiter" };
++
++static const struct soc_enum nau8810_alc_enum =
++	SOC_ENUM_SINGLE(NAU8810_REG_ALC3, NAU8810_ALCM_SFT,
++		ARRAY_SIZE(nau8810_alc), nau8810_alc);
++
++static const DECLARE_TLV_DB_SCALE(digital_tlv, -12750, 50, 1);
++static const DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
++static const DECLARE_TLV_DB_SCALE(inpga_tlv, -1200, 75, 0);
++static const DECLARE_TLV_DB_SCALE(spk_tlv, -5700, 100, 0);
++
++static const struct snd_kcontrol_new nau8810_snd_controls[] = {
++	SOC_ENUM("ADC Companding", nau8810_companding_adc_enum),
++	SOC_ENUM("DAC Companding", nau8810_companding_dac_enum),
++	SOC_ENUM("DAC De-emphasis", nau8810_deemp_enum),
++
++	SOC_ENUM("EQ Function", nau8810_eqmode_enum),
++	SND_SOC_BYTES_EXT("EQ Parameters", 10,
++		  nau8810_eq_get, nau8810_eq_put),
++
++	SOC_SINGLE("DAC Inversion Switch", NAU8810_REG_DAC,
++		NAU8810_DACPL_SFT, 1, 0),
++	SOC_SINGLE_TLV("Playback Volume", NAU8810_REG_DACGAIN,
++		NAU8810_DACGAIN_SFT, 0xff, 0, digital_tlv),
++
++	SOC_SINGLE("High Pass Filter Switch", NAU8810_REG_ADC,
++		NAU8810_HPFEN_SFT, 1, 0),
++	SOC_SINGLE("High Pass Cut Off", NAU8810_REG_ADC,
++		NAU8810_HPF_SFT, 0x7, 0),
++
++	SOC_SINGLE("ADC Inversion Switch", NAU8810_REG_ADC,
++		NAU8810_ADCPL_SFT, 1, 0),
++	SOC_SINGLE_TLV("Capture Volume", NAU8810_REG_ADCGAIN,
++		NAU8810_ADCGAIN_SFT, 0xff, 0, digital_tlv),
++
++	SOC_SINGLE_TLV("EQ1 Volume", NAU8810_REG_EQ1,
++		NAU8810_EQ1GC_SFT, 0x18, 1, eq_tlv),
++	SOC_SINGLE_TLV("EQ2 Volume", NAU8810_REG_EQ2,
++		NAU8810_EQ2GC_SFT, 0x18, 1, eq_tlv),
++	SOC_SINGLE_TLV("EQ3 Volume", NAU8810_REG_EQ3,
++		NAU8810_EQ3GC_SFT, 0x18, 1, eq_tlv),
++	SOC_SINGLE_TLV("EQ4 Volume", NAU8810_REG_EQ4,
++		NAU8810_EQ4GC_SFT, 0x18, 1, eq_tlv),
++	SOC_SINGLE_TLV("EQ5 Volume", NAU8810_REG_EQ5,
++		NAU8810_EQ5GC_SFT, 0x18, 1, eq_tlv),
++
++	SOC_SINGLE("DAC Limiter Switch", NAU8810_REG_DACLIM1,
++		NAU8810_DACLIMEN_SFT, 1, 0),
++	SOC_SINGLE("DAC Limiter Decay", NAU8810_REG_DACLIM1,
++		NAU8810_DACLIMDCY_SFT, 0xf, 0),
++	SOC_SINGLE("DAC Limiter Attack", NAU8810_REG_DACLIM1,
++		NAU8810_DACLIMATK_SFT, 0xf, 0),
++	SOC_SINGLE("DAC Limiter Threshold", NAU8810_REG_DACLIM2,
++		NAU8810_DACLIMTHL_SFT, 0x7, 0),
++	SOC_SINGLE("DAC Limiter Boost", NAU8810_REG_DACLIM2,
++		NAU8810_DACLIMBST_SFT, 0xf, 0),
++
++	SOC_ENUM("ALC Mode", nau8810_alc_enum),
++	SOC_SINGLE("ALC Enable Switch", NAU8810_REG_ALC1,
++		NAU8810_ALCEN_SFT, 1, 0),
++	SOC_SINGLE("ALC Max Volume", NAU8810_REG_ALC1,
++		NAU8810_ALCMXGAIN_SFT, 0x7, 0),
++	SOC_SINGLE("ALC Min Volume", NAU8810_REG_ALC1,
++		NAU8810_ALCMINGAIN_SFT, 0x7, 0),
++	SOC_SINGLE("ALC ZC Switch", NAU8810_REG_ALC2,
++		NAU8810_ALCZC_SFT, 1, 0),
++	SOC_SINGLE("ALC Hold", NAU8810_REG_ALC2,
++		NAU8810_ALCHT_SFT, 0xf, 0),
++	SOC_SINGLE("ALC Target", NAU8810_REG_ALC2,
++		NAU8810_ALCSL_SFT, 0xf, 0),
++	SOC_SINGLE("ALC Decay", NAU8810_REG_ALC3,
++		NAU8810_ALCDCY_SFT, 0xf, 0),
++	SOC_SINGLE("ALC Attack", NAU8810_REG_ALC3,
++		NAU8810_ALCATK_SFT, 0xf, 0),
++	SOC_SINGLE("ALC Noise Gate Switch", NAU8810_REG_NOISEGATE,
++		NAU8810_ALCNEN_SFT, 1, 0),
++	SOC_SINGLE("ALC Noise Gate Threshold", NAU8810_REG_NOISEGATE,
++		NAU8810_ALCNTH_SFT, 0x7, 0),
++
++	SOC_SINGLE("PGA ZC Switch", NAU8810_REG_PGAGAIN,
++		NAU8810_PGAZC_SFT, 1, 0),
++	SOC_SINGLE_TLV("PGA Volume", NAU8810_REG_PGAGAIN,
++		NAU8810_PGAGAIN_SFT, 0x3f, 0, inpga_tlv),
++
++	SOC_SINGLE("Speaker ZC Switch", NAU8810_REG_SPKGAIN,
++		NAU8810_SPKZC_SFT, 1, 0),
++	SOC_SINGLE("Speaker Mute Switch", NAU8810_REG_SPKGAIN,
++		NAU8810_SPKMT_SFT, 1, 0),
++	SOC_SINGLE_TLV("Speaker Volume", NAU8810_REG_SPKGAIN,
++		NAU8810_SPKGAIN_SFT, 0x3f, 0, spk_tlv),
++
++	SOC_SINGLE("Capture Boost(+20dB)", NAU8810_REG_ADCBOOST,
++		NAU8810_PGABST_SFT, 1, 0),
++	SOC_SINGLE("Mono Mute Switch", NAU8810_REG_MONOMIX,
++		NAU8810_MOUTMXMT_SFT, 1, 0),
++
++	SOC_SINGLE("DAC Oversampling Rate(128x) Switch", NAU8810_REG_DAC,
++		NAU8810_DACOS_SFT, 1, 0),
++	SOC_SINGLE("ADC Oversampling Rate(128x) Switch", NAU8810_REG_ADC,
++		NAU8810_ADCOS_SFT, 1, 0),
++};
++
++/* Speaker Output Mixer */
++static const struct snd_kcontrol_new nau8810_speaker_mixer_controls[] = {
++	SOC_DAPM_SINGLE("Line Bypass Switch", NAU8810_REG_SPKMIX,
++		NAU8810_BYPSPK_SFT, 1, 0),
++	SOC_DAPM_SINGLE("PCM Playback Switch", NAU8810_REG_SPKMIX,
++		NAU8810_DACSPK_SFT, 1, 0),
++};
++
++/* Mono Output Mixer */
++static const struct snd_kcontrol_new nau8810_mono_mixer_controls[] = {
++	SOC_DAPM_SINGLE("Line Bypass Switch", NAU8810_REG_MONOMIX,
++		NAU8810_BYPMOUT_SFT, 1, 0),
++	SOC_DAPM_SINGLE("PCM Playback Switch", NAU8810_REG_MONOMIX,
++		NAU8810_DACMOUT_SFT, 1, 0),
++};
++
++/* PGA Mute */
++static const struct snd_kcontrol_new nau8810_inpga_mute[] = {
++	SOC_DAPM_SINGLE("PGA Mute Switch", NAU8810_REG_PGAGAIN,
++		NAU8810_PGAMT_SFT, 1, 0),
++};
++
++/* Input PGA */
++static const struct snd_kcontrol_new nau8810_inpga[] = {
++	SOC_DAPM_SINGLE("MicN Switch", NAU8810_REG_INPUT_SIGNAL,
++		NAU8810_NMICPGA_SFT, 1, 0),
++	SOC_DAPM_SINGLE("MicP Switch", NAU8810_REG_INPUT_SIGNAL,
++		NAU8810_PMICPGA_SFT, 1, 0),
++};
++
++/* Mic Input boost vol */
++static const struct snd_kcontrol_new nau8810_mic_boost_controls =
++	SOC_DAPM_SINGLE("Mic Volume", NAU8810_REG_ADCBOOST,
++		NAU8810_PMICBSTGAIN_SFT, 0x7, 0);
++
++/* Loopback Switch */
++static const struct snd_kcontrol_new nau8810_loopback[] = {
++	SOC_DAPM_SINGLE("Switch", NAU8810_REG_COMP,
++		NAU8810_ADDAP_SFT, 1, 0),
++};
++
++static int check_mclk_select_pll(struct snd_soc_dapm_widget *source,
++			 struct snd_soc_dapm_widget *sink)
 +{
-+	switch (tkn) {
-+	case SKL_TKN_U32_PIN_MOD_ID:
-+		m_pin[pin_index].id.module_id = value;
-+		break;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
++	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++	unsigned int value;
 +
-+	case SKL_TKN_U32_PIN_INST_ID:
-+		m_pin[pin_index].id.instance_id = value;
-+		break;
++	regmap_read(nau8810->regmap, NAU8810_REG_CLOCK, &value);
++	return (value & NAU8810_CLKM_MASK);
++}
 +
-+	default:
-+		dev_err(dev, "%d Not a pin token\n", value);
-+		return -EINVAL;
-+	}
++static const struct snd_soc_dapm_widget nau8810_dapm_widgets[] = {
++	SND_SOC_DAPM_MIXER("Speaker Mixer", NAU8810_REG_POWER3,
++		NAU8810_SPKMX_EN_SFT, 0, &nau8810_speaker_mixer_controls[0],
++		ARRAY_SIZE(nau8810_speaker_mixer_controls)),
++	SND_SOC_DAPM_MIXER("Mono Mixer", NAU8810_REG_POWER3,
++		NAU8810_MOUTMX_EN_SFT, 0, &nau8810_mono_mixer_controls[0],
++		ARRAY_SIZE(nau8810_mono_mixer_controls)),
++	SND_SOC_DAPM_DAC("DAC", "HiFi Playback", NAU8810_REG_POWER3,
++		NAU8810_DAC_EN_SFT, 0),
++	SND_SOC_DAPM_ADC("ADC", "HiFi Capture", NAU8810_REG_POWER2,
++		NAU8810_ADC_EN_SFT, 0),
++	SND_SOC_DAPM_PGA("SpkN Out", NAU8810_REG_POWER3,
++		NAU8810_NSPK_EN_SFT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("SpkP Out", NAU8810_REG_POWER3,
++		NAU8810_PSPK_EN_SFT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Mono Out", NAU8810_REG_POWER3,
++		NAU8810_MOUT_EN_SFT, 0, NULL, 0),
++
++	SND_SOC_DAPM_MIXER("Input PGA", NAU8810_REG_POWER2,
++		NAU8810_PGA_EN_SFT, 0, nau8810_inpga,
++		ARRAY_SIZE(nau8810_inpga)),
++	SND_SOC_DAPM_MIXER("Input Boost Stage", NAU8810_REG_POWER2,
++		NAU8810_BST_EN_SFT, 0, nau8810_inpga_mute,
++		ARRAY_SIZE(nau8810_inpga_mute)),
++
++	SND_SOC_DAPM_SUPPLY("Mic Bias", NAU8810_REG_POWER1,
++		NAU8810_MICBIAS_EN_SFT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("PLL", NAU8810_REG_POWER1,
++		NAU8810_PLL_EN_SFT, 0, NULL, 0),
++
++	SND_SOC_DAPM_SWITCH("Digital Loopback", SND_SOC_NOPM, 0, 0,
++		&nau8810_loopback),
++
++	SND_SOC_DAPM_INPUT("MICN"),
++	SND_SOC_DAPM_INPUT("MICP"),
++	SND_SOC_DAPM_OUTPUT("MONOOUT"),
++	SND_SOC_DAPM_OUTPUT("SPKOUTP"),
++	SND_SOC_DAPM_OUTPUT("SPKOUTN"),
++};
++
++static const struct snd_soc_dapm_route nau8810_dapm_routes[] = {
++	{"DAC", NULL, "PLL", check_mclk_select_pll},
++
++	/* Mono output mixer */
++	{"Mono Mixer", "PCM Playback Switch", "DAC"},
++	{"Mono Mixer", "Line Bypass Switch", "Input Boost Stage"},
++
++	/* Speaker output mixer */
++	{"Speaker Mixer", "PCM Playback Switch", "DAC"},
++	{"Speaker Mixer", "Line Bypass Switch", "Input Boost Stage"},
++
++	/* Outputs */
++	{"Mono Out", NULL, "Mono Mixer"},
++	{"MONOOUT", NULL, "Mono Out"},
++	{"SpkN Out", NULL, "Speaker Mixer"},
++	{"SpkP Out", NULL, "Speaker Mixer"},
++	{"SPKOUTN", NULL, "SpkN Out"},
++	{"SPKOUTP", NULL, "SpkP Out"},
++
++	/* Input Boost Stage */
++	{"ADC", NULL, "Input Boost Stage"},
++	{"ADC", NULL, "PLL", check_mclk_select_pll},
++	{"Input Boost Stage", NULL, "Input PGA"},
++	{"Input Boost Stage", NULL, "MICP"},
++
++	/* Input PGA */
++	{"Input PGA", NULL, "Mic Bias"},
++	{"Input PGA", "MicN Switch", "MICN"},
++	{"Input PGA", "MicP Switch", "MICP"},
++
++	/* Digital Looptack */
++	{"Digital Loopback", "Switch", "ADC"},
++	{"DAC", NULL, "Digital Loopback"},
++};
++
++static int nau8810_set_sysclk(struct snd_soc_dai *dai,
++				 int clk_id, unsigned int freq, int dir)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++
++	nau8810->clk_id = clk_id;
++	nau8810->sysclk = freq;
++	dev_dbg(nau8810->dev, "master sysclk %dHz, source %s\n",
++		freq, clk_id == NAU8810_SCLK_PLL ? "PLL" : "MCLK");
 +
 +	return 0;
 +}
 +
-+/*
-+ * Parse for pin config specific tokens to fill up the
-+ * module private data
-+ */
-+static int skl_tplg_fill_pins_info(struct device *dev,
-+		struct skl_module_cfg *mconfig,
-+		struct snd_soc_tplg_vendor_value_elem *tkn_elem,
-+		int dir, int pin_count)
++static int nau88l0_calc_pll(unsigned int pll_in,
++	unsigned int fs, struct nau8810_pll *pll_param)
 +{
-+	int ret;
-+	struct skl_module_pin *m_pin;
++	u64 f2, f2_max, pll_ratio;
++	int i, scal_sel;
 +
-+	switch (dir) {
-+	case SKL_DIR_IN:
-+		m_pin = mconfig->m_in_pin;
-+		break;
-+
-+	case SKL_DIR_OUT:
-+		m_pin = mconfig->m_out_pin;
-+		break;
-+
-+	default:
-+		dev_err(dev, "Invalid direction value");
-+		return -EINVAL;
-+	}
-+
-+	ret = skl_tplg_fill_pin(dev, tkn_elem->token,
-+			m_pin, pin_count, tkn_elem->value);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	m_pin[pin_count].in_use = false;
-+	m_pin[pin_count].pin_state = SKL_PIN_UNBIND;
-+
-+	return 0;
- }
- 
--static void skl_tplg_fill_fmt(struct skl_module_fmt *dst_fmt,
--				struct skl_dfw_module_fmt *src_fmt,
--				int pins)
-+/*
-+ * Fill up input/output module config format based
-+ * on the direction
-+ */
-+static int skl_tplg_fill_fmt(struct device *dev,
-+		struct skl_module_cfg *mconfig,	u32 tkn,
-+		u32 value, u32 dir, u32 pin_count)
-+{
-+	struct skl_module_fmt *dst_fmt;
-+
-+	switch (dir) {
-+	case SKL_DIR_IN:
-+		dst_fmt = mconfig->in_fmt;
-+		dst_fmt += pin_count;
-+		break;
-+
-+	case SKL_DIR_OUT:
-+		dst_fmt = mconfig->out_fmt;
-+		dst_fmt += pin_count;
-+		break;
-+
-+	default:
-+		dev_err(dev, "Invalid direction value");
-+		return -EINVAL;
-+	}
-+
-+	switch (tkn) {
-+	case SKL_TKN_U32_FMT_CH:
-+		dst_fmt->channels  = value;
-+		break;
-+
-+	case SKL_TKN_U32_FMT_FREQ:
-+		dst_fmt->s_freq = value;
-+		break;
-+
-+	case SKL_TKN_U32_FMT_BIT_DEPTH:
-+		dst_fmt->bit_depth = value;
-+		break;
-+
-+	case SKL_TKN_U32_FMT_SAMPLE_SIZE:
-+		dst_fmt->valid_bit_depth = value;
-+		break;
-+
-+	case SKL_TKN_U32_FMT_CH_CONFIG:
-+		dst_fmt->ch_cfg = value;
-+		break;
-+
-+	case SKL_TKN_U32_FMT_INTERLEAVE:
-+		dst_fmt->interleaving_style = value;
-+		break;
-+
-+	case SKL_TKN_U32_FMT_SAMPLE_TYPE:
-+		dst_fmt->sample_type = value;
-+		break;
-+
-+	case SKL_TKN_U32_FMT_CH_MAP:
-+		dst_fmt->ch_map = value;
-+		break;
-+
-+	default:
-+		dev_err(dev, "Invalid token %d", tkn);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int skl_tplg_get_uuid(struct device *dev, struct skl_module_cfg *mconfig,
-+	      struct snd_soc_tplg_vendor_uuid_elem *uuid_tkn)
-+{
-+	if (uuid_tkn->token == SKL_TKN_UUID)
-+		memcpy(&mconfig->guid, &uuid_tkn->uuid, 16);
-+	else {
-+		dev_err(dev, "Not an UUID token tkn %d", uuid_tkn->token);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static void skl_tplg_fill_pin_dynamic_val(
-+		struct skl_module_pin *mpin, u32 pin_count, u32 value)
- {
- 	int i;
- 
--	for (i = 0; i < pins; i++) {
--		dst_fmt[i].channels  = src_fmt[i].channels;
--		dst_fmt[i].s_freq = src_fmt[i].freq;
--		dst_fmt[i].bit_depth = src_fmt[i].bit_depth;
--		dst_fmt[i].valid_bit_depth = src_fmt[i].valid_bit_depth;
--		dst_fmt[i].ch_cfg = src_fmt[i].ch_cfg;
--		dst_fmt[i].ch_map = src_fmt[i].ch_map;
--		dst_fmt[i].interleaving_style = src_fmt[i].interleaving_style;
--		dst_fmt[i].sample_type = src_fmt[i].sample_type;
-+	for (i = 0; i < pin_count; i++)
-+		mpin[i].is_dynamic = value;
-+}
-+
-+/*
-+ * Parse tokens to fill up the module private data
-+ */
-+static int skl_tplg_get_token(struct device *dev,
-+		struct snd_soc_tplg_vendor_value_elem *tkn_elem,
-+		struct skl *skl, struct skl_module_cfg *mconfig)
-+{
-+	int tkn_count = 0;
-+	int ret;
-+	static int is_pipe_exists;
-+	static int pin_index, dir;
-+
-+	if (tkn_elem->token > SKL_TKN_MAX)
++	if (pll_in > NAU_PLL_REF_MAX || pll_in < NAU_PLL_REF_MIN)
 +		return -EINVAL;
 +
-+	switch (tkn_elem->token) {
-+	case SKL_TKN_U8_IN_QUEUE_COUNT:
-+		mconfig->max_in_queue = tkn_elem->value;
-+		mconfig->m_in_pin = devm_kzalloc(dev, mconfig->max_in_queue *
-+					sizeof(*mconfig->m_in_pin),
-+					GFP_KERNEL);
-+		if (!mconfig->m_in_pin)
-+			return -ENOMEM;
-+
-+		break;
-+
-+	case SKL_TKN_U8_OUT_QUEUE_COUNT:
-+		mconfig->max_out_queue = tkn_elem->value;
-+		mconfig->m_out_pin = devm_kzalloc(dev, mconfig->max_out_queue *
-+					sizeof(*mconfig->m_out_pin),
-+					GFP_KERNEL);
-+
-+		if (!mconfig->m_out_pin)
-+			return -ENOMEM;
-+
-+		break;
-+
-+	case SKL_TKN_U8_DYN_IN_PIN:
-+		if (!mconfig->m_in_pin)
-+			return -ENOMEM;
-+
-+		skl_tplg_fill_pin_dynamic_val(mconfig->m_in_pin,
-+			mconfig->max_in_queue, tkn_elem->value);
-+
-+		break;
-+
-+	case SKL_TKN_U8_DYN_OUT_PIN:
-+		if (!mconfig->m_out_pin)
-+			return -ENOMEM;
-+
-+		skl_tplg_fill_pin_dynamic_val(mconfig->m_out_pin,
-+			mconfig->max_out_queue, tkn_elem->value);
-+
-+		break;
-+
-+	case SKL_TKN_U8_TIME_SLOT:
-+		mconfig->time_slot = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U8_CORE_ID:
-+		mconfig->core_id = tkn_elem->value;
-+
-+	case SKL_TKN_U8_MOD_TYPE:
-+		mconfig->m_type = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U8_DEV_TYPE:
-+		mconfig->dev_type = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U8_HW_CONN_TYPE:
-+		mconfig->hw_conn_type = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U16_MOD_INST_ID:
-+		mconfig->id.instance_id =
-+		tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_MEM_PAGES:
-+		mconfig->mem_pages = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_MAX_MCPS:
-+		mconfig->mcps = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_OBS:
-+		mconfig->obs = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_IBS:
-+		mconfig->ibs = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_VBUS_ID:
-+		mconfig->vbus_id = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_PARAMS_FIXUP:
-+		mconfig->params_fixup = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_CONVERTER:
-+		mconfig->converter = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_PIPE_ID:
-+		ret = skl_tplg_add_pipe(dev,
-+				mconfig, skl, tkn_elem);
-+
-+		if (ret < 0)
-+			return is_pipe_exists;
-+
-+		if (ret == EEXIST)
-+			is_pipe_exists = 1;
-+
-+		break;
-+
-+	case SKL_TKN_U32_PIPE_CONN_TYPE:
-+	case SKL_TKN_U32_PIPE_PRIORITY:
-+	case SKL_TKN_U32_PIPE_MEM_PGS:
-+		if (is_pipe_exists) {
-+			ret = skl_tplg_fill_pipe_tkn(dev, mconfig->pipe,
-+					tkn_elem->token, tkn_elem->value);
-+			if (ret < 0)
-+				return ret;
++	f2_max = 0;
++	scal_sel = ARRAY_SIZE(nau8810_mclk_scaler);
++	for (i = 0; i < ARRAY_SIZE(nau8810_mclk_scaler); i++) {
++		f2 = 256 * fs * 4 * nau8810_mclk_scaler[i] / 10;
++		if (f2 > NAU_PLL_FREQ_MIN && f2 < NAU_PLL_FREQ_MAX &&
++			f2_max < f2) {
++			f2_max = f2;
++			scal_sel = i;
 +		}
++	}
++	if (ARRAY_SIZE(nau8810_mclk_scaler) == scal_sel)
++		return -EINVAL;
++	pll_param->mclk_scaler = scal_sel;
++	f2 = f2_max;
 +
-+		break;
-+
-+	/*
-+	 * SKL_TKN_U32_DIR_PIN_COUNT token has the value for both
-+	 * direction and the pin count. The first four bits represent
-+	 * direction and next four the pin count.
++	/* Calculate the PLL 4-bit integer input and the PLL 24-bit fractional
++	 * input; round up the 24+4bit.
 +	 */
-+	case SKL_TKN_U32_DIR_PIN_COUNT:
-+		dir = tkn_elem->value & SKL_IN_DIR_BIT_MASK;
-+		pin_index = (tkn_elem->value &
-+			SKL_PIN_COUNT_MASK) >> 4;
++	pll_ratio = div_u64(f2 << 28, pll_in);
++	pll_param->pre_factor = 0;
++	if (((pll_ratio >> 28) & 0xF) < NAU_PLL_OPTOP_MIN) {
++		pll_ratio <<= 1;
++		pll_param->pre_factor = 1;
++	}
++	pll_param->pll_int = (pll_ratio >> 28) & 0xF;
++	pll_param->pll_frac = ((pll_ratio & 0xFFFFFFF) >> 4);
 +
-+		break;
-+
-+	case SKL_TKN_U32_FMT_CH:
-+	case SKL_TKN_U32_FMT_FREQ:
-+	case SKL_TKN_U32_FMT_BIT_DEPTH:
-+	case SKL_TKN_U32_FMT_SAMPLE_SIZE:
-+	case SKL_TKN_U32_FMT_CH_CONFIG:
-+	case SKL_TKN_U32_FMT_INTERLEAVE:
-+	case SKL_TKN_U32_FMT_SAMPLE_TYPE:
-+	case SKL_TKN_U32_FMT_CH_MAP:
-+		ret = skl_tplg_fill_fmt(dev, mconfig, tkn_elem->token,
-+				tkn_elem->value, dir, pin_index);
-+
-+		if (ret < 0)
-+			return ret;
-+
-+		break;
-+
-+	case SKL_TKN_U32_PIN_MOD_ID:
-+	case SKL_TKN_U32_PIN_INST_ID:
-+		ret = skl_tplg_fill_pins_info(dev,
-+				mconfig, tkn_elem, dir,
-+				pin_index);
-+		if (ret < 0)
-+			return ret;
-+
-+		break;
-+
-+	case SKL_TKN_U32_CAPS_SIZE:
-+		mconfig->formats_config.caps_size =
-+			tkn_elem->value;
-+
-+		break;
-+
-+	case SKL_TKN_U32_PROC_DOMAIN:
-+		mconfig->domain =
-+			tkn_elem->value;
-+
-+		break;
-+
-+	case SKL_TKN_U8_IN_PIN_TYPE:
-+	case SKL_TKN_U8_OUT_PIN_TYPE:
-+	case SKL_TKN_U8_CONN_TYPE:
-+		break;
-+
-+	default:
-+		dev_err(dev, "Token %d not handled\n",
-+				tkn_elem->token);
-+		return -EINVAL;
- 	}
-+
-+	tkn_count++;
-+
-+	return tkn_count;
++	return 0;
 +}
 +
-+/*
-+ * Parse the vendor array for specific tokens to construct
-+ * module private data
-+ */
-+static int skl_tplg_get_tokens(struct device *dev,
-+		char *pvt_data,	struct skl *skl,
-+		struct skl_module_cfg *mconfig, int block_size)
++static int nau8810_set_pll(struct snd_soc_dai *codec_dai, int pll_id,
++	int source, unsigned int freq_in, unsigned int freq_out)
 +{
-+	struct snd_soc_tplg_vendor_array *array;
-+	struct snd_soc_tplg_vendor_value_elem *tkn_elem;
-+	int tkn_count = 0, ret;
-+	int off = 0, tuple_size = 0;
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++	struct regmap *map = nau8810->regmap;
++	struct nau8810_pll *pll_param = &nau8810->pll;
++	int ret, fs;
 +
-+	if (block_size <= 0)
++	fs = freq_out / 256;
++	ret = nau88l0_calc_pll(freq_in, fs, pll_param);
++	if (ret < 0) {
++		dev_err(nau8810->dev, "Unsupported input clock %d\n", freq_in);
++		return ret;
++	}
++	dev_info(nau8810->dev, "pll_int=%x pll_frac=%x mclk_scaler=%x pre_factor=%x\n",
++		pll_param->pll_int, pll_param->pll_frac, pll_param->mclk_scaler,
++		pll_param->pre_factor);
++
++	regmap_update_bits(map, NAU8810_REG_PLLN,
++		NAU8810_PLLMCLK_DIV2 | NAU8810_PLLN_MASK,
++		(pll_param->pre_factor ? NAU8810_PLLMCLK_DIV2 : 0) |
++		pll_param->pll_int);
++	regmap_write(map, NAU8810_REG_PLLK1,
++		(pll_param->pll_frac >> NAU8810_PLLK1_SFT) &
++		NAU8810_PLLK1_MASK);
++	regmap_write(map, NAU8810_REG_PLLK2,
++		(pll_param->pll_frac >> NAU8810_PLLK2_SFT) &
++		NAU8810_PLLK2_MASK);
++	regmap_write(map, NAU8810_REG_PLLK3,
++		pll_param->pll_frac & NAU8810_PLLK3_MASK);
++	regmap_update_bits(map, NAU8810_REG_CLOCK, NAU8810_MCLKSEL_MASK,
++		pll_param->mclk_scaler << NAU8810_MCLKSEL_SFT);
++	regmap_update_bits(map, NAU8810_REG_CLOCK,
++		NAU8810_CLKM_MASK, NAU8810_CLKM_PLL);
++
++	return 0;
++}
++
++static int nau8810_set_dai_fmt(struct snd_soc_dai *codec_dai,
++		unsigned int fmt)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++	u16 ctrl1_val = 0, ctrl2_val = 0;
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		ctrl2_val |= NAU8810_CLKIO_MASTER;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		break;
++	default:
 +		return -EINVAL;
++	}
 +
-+	while (tuple_size < block_size) {
-+		array = (struct snd_soc_tplg_vendor_array *)(pvt_data + off);
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		ctrl1_val |= NAU8810_AIFMT_I2S;
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		ctrl1_val |= NAU8810_AIFMT_LEFT;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		ctrl1_val |= NAU8810_AIFMT_PCM_A;
++		break;
++	default:
++		return -EINVAL;
++	}
 +
-+		off += array->size;
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		ctrl1_val |= NAU8810_BCLKP_IB | NAU8810_FSP_IF;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		ctrl1_val |= NAU8810_BCLKP_IB;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		ctrl1_val |= NAU8810_FSP_IF;
++		break;
++	default:
++		return -EINVAL;
++	}
 +
-+		switch (array->type) {
-+		case SND_SOC_TPLG_TUPLE_TYPE_STRING:
-+			dev_warn(dev, "no string tokens expected for skl tplg");
-+			continue;
++	regmap_update_bits(nau8810->regmap, NAU8810_REG_IFACE,
++		NAU8810_AIFMT_MASK | NAU8810_FSP_IF |
++		NAU8810_BCLKP_IB, ctrl1_val);
++	regmap_update_bits(nau8810->regmap, NAU8810_REG_CLOCK,
++		NAU8810_CLKIO_MASK, ctrl2_val);
 +
-+		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
-+			ret = skl_tplg_get_uuid(dev, mconfig, array->uuid);
-+			if (ret < 0)
-+				return ret;
++	return 0;
++}
 +
-+			tuple_size += sizeof(*array->uuid);
++static int nau8810_mclk_clkdiv(struct nau8810 *nau8810, int rate)
++{
++	int i, sclk, imclk = rate * 256, div = 0;
 +
-+			continue;
++	if (!nau8810->sysclk) {
++		dev_err(nau8810->dev, "Make mclk div configuration fail because of invalid system clock\n");
++		return -EINVAL;
++	}
 +
-+		default:
-+			tkn_elem = array->value;
-+			tkn_count = 0;
++	/* Configure the master clock prescaler div to make system
++	 * clock to approximate the internal master clock (IMCLK);
++	 * and large or equal to IMCLK.
++	 */
++	for (i = 1; i < ARRAY_SIZE(nau8810_mclk_scaler); i++) {
++		sclk = (nau8810->sysclk * 10) /
++			nau8810_mclk_scaler[i];
++		if (sclk < imclk)
 +			break;
-+		}
-+
-+		while (tkn_count <= (array->num_elems - 1)) {
-+			ret = skl_tplg_get_token(dev, tkn_elem,
-+					skl, mconfig);
-+
-+			if (ret < 0)
-+				return ret;
-+
-+			tkn_count = tkn_count + ret;
-+			tkn_elem++;
-+		}
-+
-+		tuple_size += tkn_count * sizeof(*tkn_elem);
++		div = i;
 +	}
++	dev_dbg(nau8810->dev,
++		"master clock prescaler %x for fs %d\n", div, rate);
++
++	/* master clock from MCLK and disable PLL */
++	regmap_update_bits(nau8810->regmap, NAU8810_REG_CLOCK,
++		NAU8810_MCLKSEL_MASK, (div << NAU8810_MCLKSEL_SFT));
++	regmap_update_bits(nau8810->regmap, NAU8810_REG_CLOCK,
++		NAU8810_CLKM_MASK, NAU8810_CLKM_MCLK);
 +
 +	return 0;
 +}
 +
-+/*
-+ * Every data block is preceded by a descriptor to read the number
-+ * of data blocks, they type of the block and it's size
-+ */
-+static int skl_tplg_get_desc_blocks(struct device *dev,
-+		struct snd_soc_tplg_vendor_array *array)
++static int nau8810_pcm_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_tplg_vendor_value_elem *tkn_elem;
++	struct snd_soc_codec *codec = dai->codec;
++	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++	int val_len = 0, val_rate = 0, ret = 0;
 +
-+	tkn_elem = array->value;
-+
-+	switch (tkn_elem->token) {
-+	case SKL_TKN_U8_NUM_BLOCKS:
-+	case SKL_TKN_U8_BLOCK_TYPE:
-+	case SKL_TKN_U16_BLOCK_SIZE:
-+		return tkn_elem->value;
-+
-+	default:
-+		dev_err(dev, "Invalid descriptor token %d", tkn_elem->token);
++	switch (params_width(params)) {
++	case 16:
++		break;
++	case 20:
++		val_len |= NAU8810_WLEN_20;
++		break;
++	case 24:
++		val_len |= NAU8810_WLEN_24;
++		break;
++	case 32:
++		val_len |= NAU8810_WLEN_32;
 +		break;
 +	}
 +
-+	return -EINVAL;
++	switch (params_rate(params)) {
++	case 8000:
++		val_rate |= NAU8810_SMPLR_8K;
++		break;
++	case 11025:
++		val_rate |= NAU8810_SMPLR_12K;
++		break;
++	case 16000:
++		val_rate |= NAU8810_SMPLR_16K;
++		break;
++	case 22050:
++		val_rate |= NAU8810_SMPLR_24K;
++		break;
++	case 32000:
++		val_rate |= NAU8810_SMPLR_32K;
++		break;
++	case 44100:
++	case 48000:
++		break;
++	}
++
++	regmap_update_bits(nau8810->regmap, NAU8810_REG_IFACE,
++		NAU8810_WLEN_MASK, val_len);
++	regmap_update_bits(nau8810->regmap, NAU8810_REG_SMPLR,
++		NAU8810_SMPLR_MASK, val_rate);
++
++	/* If the master clock is from MCLK, provide the runtime FS for driver
++	 * to get the master clock prescaler configuration.
++	 */
++	if (nau8810->clk_id == NAU8810_SCLK_MCLK) {
++		ret = nau8810_mclk_clkdiv(nau8810, params_rate(params));
++		if (ret < 0)
++			dev_err(nau8810->dev, "MCLK div configuration fail\n");
++	}
++
++	return ret;
 +}
 +
-+/*
-+ * Parse the private data for the token and corresponding value.
-+ * The private data can have multiple data blocks. So, a data block
-+ * is preceded by a descriptor for number of blocks and a descriptor
-+ * for the type and size of the suceeding data block.
-+ */
-+static int skl_tplg_get_pvt_data(struct snd_soc_tplg_dapm_widget *tplg_w,
-+				struct skl *skl, struct device *dev,
-+				struct skl_module_cfg *mconfig)
++static int nau8810_set_bias_level(struct snd_soc_codec *codec,
++	enum snd_soc_bias_level level)
 +{
-+	struct snd_soc_tplg_vendor_array *array;
-+	int num_blocks, block_size = 0, block_type, off = 0;
-+	char *data;
-+	int ret;
++	struct nau8810 *nau8810 = snd_soc_codec_get_drvdata(codec);
++	struct regmap *map = nau8810->regmap;
 +
-+	/* Read the NUM_DATA_BLOCKS descriptor */
-+	array = (struct snd_soc_tplg_vendor_array *)tplg_w->priv.data;
-+	ret = skl_tplg_get_desc_blocks(dev, array);
-+	if (ret < 0)
-+		return ret;
-+	num_blocks = ret;
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++	case SND_SOC_BIAS_PREPARE:
++		regmap_update_bits(map, NAU8810_REG_POWER1,
++			NAU8810_REFIMP_MASK, NAU8810_REFIMP_80K);
++		break;
 +
-+	off += array->size;
-+	array = (struct snd_soc_tplg_vendor_array *)(tplg_w->priv.data + off);
++	case SND_SOC_BIAS_STANDBY:
++		regmap_update_bits(map, NAU8810_REG_POWER1,
++			NAU8810_IOBUF_EN | NAU8810_ABIAS_EN,
++			NAU8810_IOBUF_EN | NAU8810_ABIAS_EN);
 +
-+	/* Read the BLOCK_TYPE and BLOCK_SIZE descriptor */
-+	while (num_blocks > 0) {
-+		ret = skl_tplg_get_desc_blocks(dev, array);
-+
-+		if (ret < 0)
-+			return ret;
-+		block_type = ret;
-+		off += array->size;
-+
-+		array = (struct snd_soc_tplg_vendor_array *)
-+			(tplg_w->priv.data + off);
-+
-+		ret = skl_tplg_get_desc_blocks(dev, array);
-+
-+		if (ret < 0)
-+			return ret;
-+		block_size = ret;
-+		off += array->size;
-+
-+		array = (struct snd_soc_tplg_vendor_array *)
-+			(tplg_w->priv.data + off);
-+
-+		data = (tplg_w->priv.data + off);
-+
-+		if (block_type == SKL_TYPE_TUPLE) {
-+			ret = skl_tplg_get_tokens(dev, data,
-+					skl, mconfig, block_size);
-+
-+			if (ret < 0)
-+				return ret;
-+
-+			--num_blocks;
-+		} else {
-+			if (mconfig->formats_config.caps_size > 0)
-+				memcpy(mconfig->formats_config.caps, data,
-+					mconfig->formats_config.caps_size);
-+			--num_blocks;
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
++			regcache_sync(map);
++			regmap_update_bits(map, NAU8810_REG_POWER1,
++				NAU8810_REFIMP_MASK, NAU8810_REFIMP_3K);
++			mdelay(100);
 +		}
++		regmap_update_bits(map, NAU8810_REG_POWER1,
++			NAU8810_REFIMP_MASK, NAU8810_REFIMP_300K);
++		break;
++
++	case SND_SOC_BIAS_OFF:
++		regmap_write(map, NAU8810_REG_POWER1, 0);
++		regmap_write(map, NAU8810_REG_POWER2, 0);
++		regmap_write(map, NAU8810_REG_POWER3, 0);
++		break;
 +	}
 +
 +	return 0;
- }
- 
- static void skl_clear_pin_config(struct snd_soc_platform *platform,
-@@ -1614,9 +2102,6 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
- 	struct skl *skl = ebus_to_skl(ebus);
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 	struct skl_module_cfg *mconfig;
--	struct skl_pipe *pipe;
--	struct skl_dfw_module *dfw_config =
--				(struct skl_dfw_module *)tplg_w->priv.data;
- 
- 	if (!tplg_w->priv.size)
- 		goto bind_event;
-@@ -1627,77 +2112,17 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
- 		return -ENOMEM;
- 
- 	w->priv = mconfig;
--	memcpy(&mconfig->guid, &dfw_config->uuid, 16);
- 
- 	/*
- 	 * module binary can be loaded later, so set it to query when
- 	 * module is load for a use case
- 	 */
- 	mconfig->id.module_id = -1;
--	mconfig->id.instance_id = dfw_config->instance_id;
--	mconfig->mcps = dfw_config->max_mcps;
--	mconfig->ibs = dfw_config->ibs;
--	mconfig->obs = dfw_config->obs;
--	mconfig->core_id = dfw_config->core_id;
--	mconfig->max_in_queue = dfw_config->max_in_queue;
--	mconfig->max_out_queue = dfw_config->max_out_queue;
--	mconfig->is_loadable = dfw_config->is_loadable;
--	mconfig->domain = dfw_config->proc_domain;
--	skl_tplg_fill_fmt(mconfig->in_fmt, dfw_config->in_fmt,
--						MODULE_MAX_IN_PINS);
--	skl_tplg_fill_fmt(mconfig->out_fmt, dfw_config->out_fmt,
--						MODULE_MAX_OUT_PINS);
--
--	mconfig->params_fixup = dfw_config->params_fixup;
--	mconfig->converter = dfw_config->converter;
--	mconfig->m_type = dfw_config->module_type;
--	mconfig->vbus_id = dfw_config->vbus_id;
--	mconfig->mem_pages = dfw_config->mem_pages;
--
--	pipe = skl_tplg_add_pipe(bus->dev, skl, &dfw_config->pipe);
--	if (pipe)
--		mconfig->pipe = pipe;
--
--	mconfig->dev_type = dfw_config->dev_type;
--	mconfig->hw_conn_type = dfw_config->hw_conn_type;
--	mconfig->time_slot = dfw_config->time_slot;
--	mconfig->formats_config.caps_size = dfw_config->caps.caps_size;
--
--	mconfig->m_in_pin = devm_kzalloc(bus->dev, (mconfig->max_in_queue) *
--						sizeof(*mconfig->m_in_pin),
--						GFP_KERNEL);
--	if (!mconfig->m_in_pin)
--		return -ENOMEM;
--
--	mconfig->m_out_pin = devm_kzalloc(bus->dev, (mconfig->max_out_queue) *
--						sizeof(*mconfig->m_out_pin),
--						GFP_KERNEL);
--	if (!mconfig->m_out_pin)
--		return -ENOMEM;
--
--	skl_fill_module_pin_info(dfw_config->in_pin, mconfig->m_in_pin,
--						dfw_config->is_dynamic_in_pin,
--						mconfig->max_in_queue);
--
--	skl_fill_module_pin_info(dfw_config->out_pin, mconfig->m_out_pin,
--						 dfw_config->is_dynamic_out_pin,
--							mconfig->max_out_queue);
--
--
--	if (mconfig->formats_config.caps_size == 0)
--		goto bind_event;
--
--	mconfig->formats_config.caps = (u32 *)devm_kzalloc(bus->dev,
--			mconfig->formats_config.caps_size, GFP_KERNEL);
--
--	if (mconfig->formats_config.caps == NULL)
--		return -ENOMEM;
--
--	memcpy(mconfig->formats_config.caps, dfw_config->caps.caps,
--						 dfw_config->caps.caps_size);
--	mconfig->formats_config.param_id = dfw_config->caps.param_id;
--	mconfig->formats_config.set_params = dfw_config->caps.set_params;
- 
-+	/* Parse private data for tuples */
-+	ret = skl_tplg_get_pvt_data(tplg_w, skl, bus->dev, mconfig);
-+	if (ret < 0)
-+		return ret;
- bind_event:
- 	if (tplg_w->event_type == 0) {
- 		dev_dbg(bus->dev, "ASoC: No event handler required\n");
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index bd8b4ae43557..281762eca0ab 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -241,4 +241,14 @@ struct skl_dfw_manifest {
- 	struct lib_info lib[HDA_MAX_LIB];
- } __packed;
- 
-+enum skl_tkn_dir {
-+	SKL_DIR_IN,
-+	SKL_DIR_OUT
++}
++
++
++#define NAU8810_RATES (SNDRV_PCM_RATE_8000_48000)
++
++#define NAU8810_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
++	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
++
++static const struct snd_soc_dai_ops nau8810_ops = {
++	.hw_params = nau8810_pcm_hw_params,
++	.set_fmt = nau8810_set_dai_fmt,
++	.set_sysclk = nau8810_set_sysclk,
++	.set_pll = nau8810_set_pll,
 +};
 +
-+enum skl_tuple_type {
-+	SKL_TYPE_TUPLE,
-+	SKL_TYPE_DATA
++static struct snd_soc_dai_driver nau8810_dai = {
++	.name = "nau8810-hifi",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 1,
++		.channels_max = 2,   /* Only 1 channel of data */
++		.rates = NAU8810_RATES,
++		.formats = NAU8810_FORMATS,
++	},
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 1,
++		.channels_max = 2,   /* Only 1 channel of data */
++		.rates = NAU8810_RATES,
++		.formats = NAU8810_FORMATS,
++	},
++	.ops = &nau8810_ops,
++	.symmetric_rates = 1,
 +};
 +
- #endif
++static const struct regmap_config nau8810_regmap_config = {
++	.reg_bits = 7,
++	.val_bits = 9,
++
++	.max_register = NAU8810_REG_MAX,
++	.readable_reg = nau8810_readable_reg,
++	.writeable_reg = nau8810_writeable_reg,
++	.volatile_reg = nau8810_volatile_reg,
++
++	.cache_type = REGCACHE_RBTREE,
++	.reg_defaults = nau8810_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(nau8810_reg_defaults),
++};
++
++static struct snd_soc_codec_driver nau8810_codec_driver = {
++	.set_bias_level = nau8810_set_bias_level,
++	.suspend_bias_off = true,
++
++	.component_driver = {
++		.controls = nau8810_snd_controls,
++		.num_controls = ARRAY_SIZE(nau8810_snd_controls),
++		.dapm_widgets = nau8810_dapm_widgets,
++		.num_dapm_widgets = ARRAY_SIZE(nau8810_dapm_widgets),
++		.dapm_routes = nau8810_dapm_routes,
++		.num_dapm_routes = ARRAY_SIZE(nau8810_dapm_routes),
++	},
++};
++
++static int nau8810_i2c_probe(struct i2c_client *i2c,
++			    const struct i2c_device_id *id)
++{
++	struct device *dev = &i2c->dev;
++	struct nau8810 *nau8810 = dev_get_platdata(dev);
++
++	if (!nau8810) {
++		nau8810 = devm_kzalloc(dev, sizeof(*nau8810), GFP_KERNEL);
++		if (!nau8810)
++			return -ENOMEM;
++	}
++	i2c_set_clientdata(i2c, nau8810);
++
++	nau8810->regmap = devm_regmap_init_i2c(i2c, &nau8810_regmap_config);
++	if (IS_ERR(nau8810->regmap))
++		return PTR_ERR(nau8810->regmap);
++	nau8810->dev = dev;
++
++	regmap_write(nau8810->regmap, NAU8810_REG_RESET, 0x00);
++
++	return snd_soc_register_codec(dev,
++		&nau8810_codec_driver, &nau8810_dai, 1);
++}
++
++static int nau8810_i2c_remove(struct i2c_client *client)
++{
++	snd_soc_unregister_codec(&client->dev);
++
++	return 0;
++}
++
++static const struct i2c_device_id nau8810_i2c_id[] = {
++	{ "nau8810", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, nau8810_i2c_id);
++
++#ifdef CONFIG_OF
++static const struct of_device_id nau8810_of_match[] = {
++	{ .compatible = "nuvoton,nau8810", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, nau8810_of_match);
++#endif
++
++static struct i2c_driver nau8810_i2c_driver = {
++	.driver = {
++		.name = "nau8810",
++		.of_match_table = of_match_ptr(nau8810_of_match),
++	},
++	.probe =    nau8810_i2c_probe,
++	.remove =   nau8810_i2c_remove,
++	.id_table = nau8810_i2c_id,
++};
++
++module_i2c_driver(nau8810_i2c_driver);
++
++MODULE_DESCRIPTION("ASoC NAU8810 driver");
++MODULE_AUTHOR("David Lin <ctlin0@nuvoton.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/nau8810.h b/sound/soc/codecs/nau8810.h
+new file mode 100644
+index 000000000000..df882658ca91
+--- /dev/null
++++ b/sound/soc/codecs/nau8810.h
+@@ -0,0 +1,281 @@
++/*
++ * NAU8810 ALSA SoC audio driver
++ *
++ * Copyright 2016 Nuvoton Technology Corp.
++ * Author: David Lin <ctlin0@nuvoton.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef __NAU8810_H__
++#define __NAU8810_H__
++
++#define NAU8810_REG_RESET		0x00
++#define NAU8810_REG_POWER1		0x01
++#define NAU8810_REG_POWER2		0x02
++#define NAU8810_REG_POWER3		0x03
++#define NAU8810_REG_IFACE		0x04
++#define NAU8810_REG_COMP		0x05
++#define NAU8810_REG_CLOCK		0x06
++#define NAU8810_REG_SMPLR		0x07
++#define NAU8810_REG_DAC		0x0A
++#define NAU8810_REG_DACGAIN		0x0B
++#define NAU8810_REG_ADC		0x0E
++#define NAU8810_REG_ADCGAIN		0x0F
++#define NAU8810_REG_EQ1		0x12
++#define NAU8810_REG_EQ2		0x13
++#define NAU8810_REG_EQ3		0x14
++#define NAU8810_REG_EQ4		0x15
++#define NAU8810_REG_EQ5		0x16
++#define NAU8810_REG_DACLIM1		0x18
++#define NAU8810_REG_DACLIM2		0x19
++#define NAU8810_REG_NOTCH1		0x1B
++#define NAU8810_REG_NOTCH2		0x1C
++#define NAU8810_REG_NOTCH3		0x1D
++#define NAU8810_REG_NOTCH4		0x1E
++#define NAU8810_REG_ALC1		0x20
++#define NAU8810_REG_ALC2		0x21
++#define NAU8810_REG_ALC3		0x22
++#define NAU8810_REG_NOISEGATE		0x23
++#define NAU8810_REG_PLLN		0x24
++#define NAU8810_REG_PLLK1		0x25
++#define NAU8810_REG_PLLK2		0x26
++#define NAU8810_REG_PLLK3		0x27
++#define NAU8810_REG_ATTEN		0x28
++#define NAU8810_REG_INPUT_SIGNAL	0x2C
++#define NAU8810_REG_PGAGAIN		0x2D
++#define NAU8810_REG_ADCBOOST		0x2F
++#define NAU8810_REG_OUTPUT		0x31
++#define NAU8810_REG_SPKMIX		0x32
++#define NAU8810_REG_SPKGAIN		0x36
++#define NAU8810_REG_MONOMIX		0x38
++#define NAU8810_REG_POWER4		0x3A
++#define NAU8810_REG_TSLOTCTL1		0x3B
++#define NAU8810_REG_TSLOTCTL2		0x3C
++#define NAU8810_REG_DEVICE_REVID	0x3E
++#define NAU8810_REG_I2C_DEVICEID	0x3F
++#define NAU8810_REG_ADDITIONID	0x40
++#define NAU8810_REG_RESERVE		0x41
++#define NAU8810_REG_OUTCTL		0x45
++#define NAU8810_REG_ALC1ENHAN1	0x46
++#define NAU8810_REG_ALC1ENHAN2	0x47
++#define NAU8810_REG_MISCCTL		0x49
++#define NAU8810_REG_OUTTIEOFF		0x4B
++#define NAU8810_REG_AGCP2POUT	0x4C
++#define NAU8810_REG_AGCPOUT		0x4D
++#define NAU8810_REG_AMTCTL		0x4E
++#define NAU8810_REG_OUTTIEOFFMAN	0x4F
++#define NAU8810_REG_MAX		NAU8810_REG_OUTTIEOFFMAN
++
++
++/* NAU8810_REG_POWER1 (0x1) */
++#define NAU8810_DCBUF_EN		(0x1 << 8)
++#define NAU8810_PLL_EN_SFT		5
++#define NAU8810_MICBIAS_EN_SFT	4
++#define NAU8810_ABIAS_EN		(0x1 << 3)
++#define NAU8810_IOBUF_EN		(0x1 << 2)
++#define NAU8810_REFIMP_MASK		0x3
++#define NAU8810_REFIMP_DIS		0x0
++#define NAU8810_REFIMP_80K		0x1
++#define NAU8810_REFIMP_300K		0x2
++#define NAU8810_REFIMP_3K		0x3
++
++/* NAU8810_REG_POWER2 (0x2) */
++#define NAU8810_BST_EN_SFT		4
++#define NAU8810_PGA_EN_SFT		2
++#define NAU8810_ADC_EN_SFT		0
++
++/* NAU8810_REG_POWER3 (0x3) */
++#define NAU8810_DAC_EN_SFT		0
++#define NAU8810_SPKMX_EN_SFT		2
++#define NAU8810_MOUTMX_EN_SFT	3
++#define NAU8810_PSPK_EN_SFT		5
++#define NAU8810_NSPK_EN_SFT		6
++#define NAU8810_MOUT_EN_SFT		7
++
++/* NAU8810_REG_IFACE (0x4) */
++#define NAU8810_AIFMT_SFT		3
++#define NAU8810_AIFMT_MASK		(0x3 << NAU8810_AIFMT_SFT)
++#define NAU8810_AIFMT_RIGHT		(0x0 << NAU8810_AIFMT_SFT)
++#define NAU8810_AIFMT_LEFT		(0x1 << NAU8810_AIFMT_SFT)
++#define NAU8810_AIFMT_I2S		(0x2 << NAU8810_AIFMT_SFT)
++#define NAU8810_AIFMT_PCM_A		(0x3 << NAU8810_AIFMT_SFT)
++#define NAU8810_WLEN_SFT		5
++#define NAU8810_WLEN_MASK		(0x3 << NAU8810_WLEN_SFT)
++#define NAU8810_WLEN_16		(0x0 << NAU8810_WLEN_SFT)
++#define NAU8810_WLEN_20		(0x1 << NAU8810_WLEN_SFT)
++#define NAU8810_WLEN_24		(0x2 << NAU8810_WLEN_SFT)
++#define NAU8810_WLEN_32		(0x3 << NAU8810_WLEN_SFT)
++#define NAU8810_FSP_IF			(0x1 << 7)
++#define NAU8810_BCLKP_IB		(0x1 << 8)
++
++/* NAU8810_REG_COMP (0x5) */
++#define NAU8810_ADDAP_SFT		0
++#define NAU8810_ADCCM_SFT		1
++#define NAU8810_DACCM_SFT		3
++
++/* NAU8810_REG_CLOCK (0x6) */
++#define NAU8810_CLKIO_MASK		0x1
++#define NAU8810_CLKIO_SLAVE		0x0
++#define NAU8810_CLKIO_MASTER		0x1
++#define NAU8810_BCLKSEL_SFT		2
++#define NAU8810_BCLKSEL_MASK		(0x7 << NAU8810_BCLKSEL_SFT)
++#define NAU8810_BCLKDIV_1		(0x0 << NAU8810_BCLKSEL_SFT)
++#define NAU8810_BCLKDIV_2		(0x1 << NAU8810_BCLKSEL_SFT)
++#define NAU8810_BCLKDIV_4		(0x2 << NAU8810_BCLKSEL_SFT)
++#define NAU8810_BCLKDIV_8		(0x3 << NAU8810_BCLKSEL_SFT)
++#define NAU8810_BCLKDIV_16		(0x4 << NAU8810_BCLKSEL_SFT)
++#define NAU8810_BCLKDIV_32		(0x5 << NAU8810_BCLKSEL_SFT)
++#define NAU8810_MCLKSEL_SFT		5
++#define NAU8810_MCLKSEL_MASK		(0x7 << NAU8810_MCLKSEL_SFT)
++#define NAU8810_CLKM_SFT		8
++#define NAU8810_CLKM_MASK		(0x1 << NAU8810_CLKM_SFT)
++#define NAU8810_CLKM_MCLK		(0x0 << NAU8810_CLKM_SFT)
++#define NAU8810_CLKM_PLL		(0x1 << NAU8810_CLKM_SFT)
++
++/* NAU8810_REG_SMPLR (0x7) */
++#define NAU8810_SMPLR_SFT		1
++#define NAU8810_SMPLR_MASK		(0x7 << NAU8810_SMPLR_SFT)
++#define NAU8810_SMPLR_48K		(0x0 << NAU8810_SMPLR_SFT)
++#define NAU8810_SMPLR_32K		(0x1 << NAU8810_SMPLR_SFT)
++#define NAU8810_SMPLR_24K		(0x2 << NAU8810_SMPLR_SFT)
++#define NAU8810_SMPLR_16K		(0x3 << NAU8810_SMPLR_SFT)
++#define NAU8810_SMPLR_12K		(0x4 << NAU8810_SMPLR_SFT)
++#define NAU8810_SMPLR_8K		(0x5 << NAU8810_SMPLR_SFT)
++
++/* NAU8810_REG_DAC (0xA) */
++#define NAU8810_DACPL_SFT		0
++#define NAU8810_DACOS_SFT		3
++#define NAU8810_DEEMP_SFT		4
++
++/* NAU8810_REG_DACGAIN (0xB) */
++#define NAU8810_DACGAIN_SFT		0
++
++/* NAU8810_REG_ADC (0xE) */
++#define NAU8810_ADCPL_SFT		0
++#define NAU8810_ADCOS_SFT		3
++#define NAU8810_HPF_SFT		4
++#define NAU8810_HPFEN_SFT		8
++
++/* NAU8810_REG_ADCGAIN (0xF) */
++#define NAU8810_ADCGAIN_SFT		0
++
++/* NAU8810_REG_EQ1 (0x12) */
++#define NAU8810_EQ1GC_SFT		0
++#define NAU8810_EQ1CF_SFT		5
++#define NAU8810_EQM_SFT		8
++
++/* NAU8810_REG_EQ2 (0x13) */
++#define NAU8810_EQ2GC_SFT		0
++#define NAU8810_EQ2CF_SFT		5
++#define NAU8810_EQ2BW_SFT		8
++
++/* NAU8810_REG_EQ3 (0x14) */
++#define NAU8810_EQ3GC_SFT		0
++#define NAU8810_EQ3CF_SFT		5
++#define NAU8810_EQ3BW_SFT		8
++
++/* NAU8810_REG_EQ4 (0x15) */
++#define NAU8810_EQ4GC_SFT		0
++#define NAU8810_EQ4CF_SFT		5
++#define NAU8810_EQ4BW_SFT		8
++
++/* NAU8810_REG_EQ5 (0x16) */
++#define NAU8810_EQ5GC_SFT		0
++#define NAU8810_EQ5CF_SFT		5
++
++/* NAU8810_REG_DACLIM1 (0x18) */
++#define NAU8810_DACLIMATK_SFT		0
++#define NAU8810_DACLIMDCY_SFT		4
++#define NAU8810_DACLIMEN_SFT		8
++
++/* NAU8810_REG_DACLIM2 (0x19) */
++#define NAU8810_DACLIMBST_SFT		0
++#define NAU8810_DACLIMTHL_SFT		4
++
++/* NAU8810_REG_ALC1 (0x20) */
++#define NAU8810_ALCMINGAIN_SFT	0
++#define NAU8810_ALCMXGAIN_SFT		3
++#define NAU8810_ALCEN_SFT		8
++
++/* NAU8810_REG_ALC2 (0x21) */
++#define NAU8810_ALCSL_SFT		0
++#define NAU8810_ALCHT_SFT		4
++#define NAU8810_ALCZC_SFT		8
++
++/* NAU8810_REG_ALC3 (0x22) */
++#define NAU8810_ALCATK_SFT		0
++#define NAU8810_ALCDCY_SFT		4
++#define NAU8810_ALCM_SFT		8
++
++/* NAU8810_REG_NOISEGATE (0x23) */
++#define NAU8810_ALCNTH_SFT		0
++#define NAU8810_ALCNEN_SFT		3
++
++/* NAU8810_REG_PLLN (0x24) */
++#define NAU8810_PLLN_MASK		0xF
++#define NAU8810_PLLMCLK_DIV2		(0x1 << 4)
++
++/* NAU8810_REG_PLLK1 (0x25) */
++#define NAU8810_PLLK1_SFT		18
++#define NAU8810_PLLK1_MASK		0x3F
++
++/* NAU8810_REG_PLLK2 (0x26) */
++#define NAU8810_PLLK2_SFT		9
++#define NAU8810_PLLK2_MASK		0x1FF
++
++/* NAU8810_REG_PLLK3 (0x27) */
++#define NAU8810_PLLK3_MASK		0x1FF
++
++/* NAU8810_REG_INPUT_SIGNAL (0x2C) */
++#define NAU8810_PMICPGA_SFT		0
++#define NAU8810_NMICPGA_SFT		1
++
++/* NAU8810_REG_PGAGAIN (0x2D) */
++#define NAU8810_PGAGAIN_SFT		0
++#define NAU8810_PGAMT_SFT		6
++#define NAU8810_PGAZC_SFT		7
++
++/* NAU8810_REG_ADCBOOST (0x2F) */
++#define NAU8810_PMICBSTGAIN_SFT	4
++#define NAU8810_PGABST_SFT		8
++
++/* NAU8810_REG_SPKMIX (0x32) */
++#define NAU8810_DACSPK_SFT		0
++#define NAU8810_BYPSPK_SFT		1
++
++/* NAU8810_REG_SPKGAIN (0x36) */
++#define NAU8810_SPKGAIN_SFT		0
++#define NAU8810_SPKMT_SFT		6
++#define NAU8810_SPKZC_SFT		7
++
++/* NAU8810_REG_MONOMIX (0x38) */
++#define NAU8810_DACMOUT_SFT		0
++#define NAU8810_BYPMOUT_SFT		1
++#define NAU8810_MOUTMXMT_SFT		6
++
++
++/* System Clock Source */
++enum {
++	NAU8810_SCLK_MCLK,
++	NAU8810_SCLK_PLL,
++};
++
++struct nau8810_pll {
++	int pre_factor;
++	int mclk_scaler;
++	int pll_frac;
++	int pll_int;
++};
++
++struct nau8810 {
++	struct device *dev;
++	struct regmap *regmap;
++	struct nau8810_pll pll;
++	int sysclk;
++	int clk_id;
++};
++
++#endif
 -- 
 2.8.1
