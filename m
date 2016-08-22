@@ -1,8 +1,8 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH v2 1/2] ALSA: compress: Restructure source code around an if
- statement in snd_compr_set_params()
-Date: Mon, 22 Aug 2016 10:38:25 +0200
-Message-ID: <89765506-60f0-8319-5806-29476a36f9f3@users.sourceforge.net>
+Subject: [PATCH v2 2/2] ALSA: compress: Use memdup_user() rather than
+ duplicating its implementation
+Date: Mon, 22 Aug 2016 10:40:56 +0200
+Message-ID: <85977ca3-562e-0a49-0189-53e0ebcdde0c@users.sourceforge.net>
 References: <566ABCD9.1060404@users.sourceforge.net>
  <7233eb00-a941-4935-dce2-7cb907272d41@users.sourceforge.net>
  <03eac1fe-ff33-1759-9c2a-7914f1c6de45@users.sourceforge.net>
@@ -19,96 +19,38 @@ Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia 
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 22 Aug 2016 10:01:52 +0200
+Date: Mon, 22 Aug 2016 10:12:37 +0200
 
-* Reverse a condition check.
+Reuse existing functionality from memdup_user() instead of keeping
+duplicate source code.
 
-* Reduce the indentation one level then for some source code
-  from a previous if branch.
+This issue was detected by using the Coccinelle software.
 
-Suggested-by: Joe Perches <joe@perches.com>
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/core/compress_offload.c | 62 +++++++++++++++++++++----------------------
- 1 file changed, 30 insertions(+), 32 deletions(-)
+ sound/core/compress_offload.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 2c49848..a10d139 100644
+index a10d139..786989b 100644
 --- a/sound/core/compress_offload.c
 +++ b/sound/core/compress_offload.c
-@@ -548,43 +548,41 @@ snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
- 	struct snd_compr_params *params;
- 	int retval;
- 
--	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
--		/*
--		 * we should allow parameter change only when stream has been
--		 * opened not in other cases
--		 */
--		params = kmalloc(sizeof(*params), GFP_KERNEL);
--		if (!params)
--			return -ENOMEM;
--		if (copy_from_user(params, (void __user *)arg, sizeof(*params))) {
--			retval = -EFAULT;
--			goto out;
--		}
-+	if (stream->runtime->state != SNDRV_PCM_STATE_OPEN)
-+		return -EPERM;
-+	/*
-+	 * we should allow parameter change only when stream has been
-+	 * opened not in other cases
-+	 */
-+	params = kmalloc(sizeof(*params), GFP_KERNEL);
-+	if (!params)
-+		return -ENOMEM;
-+	if (copy_from_user(params, (void __user *)arg, sizeof(*params))) {
-+		retval = -EFAULT;
-+		goto out;
-+	}
- 
--		retval = snd_compress_check_input(params);
--		if (retval)
--			goto out;
-+	retval = snd_compress_check_input(params);
-+	if (retval)
-+		goto out;
- 
--		retval = snd_compr_allocate_buffer(stream, params);
--		if (retval) {
--			retval = -ENOMEM;
--			goto out;
--		}
-+	retval = snd_compr_allocate_buffer(stream, params);
-+	if (retval) {
-+		retval = -ENOMEM;
-+		goto out;
-+	}
- 
--		retval = stream->ops->set_params(stream, params);
--		if (retval)
--			goto out;
-+	retval = stream->ops->set_params(stream, params);
-+	if (retval)
-+		goto out;
- 
--		stream->metadata_set = false;
--		stream->next_track = false;
-+	stream->metadata_set = false;
-+	stream->next_track = false;
- 
--		if (stream->direction == SND_COMPRESS_PLAYBACK)
--			stream->runtime->state = SNDRV_PCM_STATE_SETUP;
--		else
--			stream->runtime->state = SNDRV_PCM_STATE_PREPARED;
--	} else {
--		return -EPERM;
+@@ -554,13 +554,9 @@ snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
+ 	 * we should allow parameter change only when stream has been
+ 	 * opened not in other cases
+ 	 */
+-	params = kmalloc(sizeof(*params), GFP_KERNEL);
+-	if (!params)
+-		return -ENOMEM;
+-	if (copy_from_user(params, (void __user *)arg, sizeof(*params))) {
+-		retval = -EFAULT;
+-		goto out;
 -	}
-+	if (stream->direction == SND_COMPRESS_PLAYBACK)
-+		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-+	else
-+		stream->runtime->state = SNDRV_PCM_STATE_PREPARED;
- out:
- 	kfree(params);
- 	return retval;
++	params = memdup_user((void __user *)arg, sizeof(*params));
++	if (IS_ERR(params))
++		return PTR_ERR(params);
+ 
+ 	retval = snd_compress_check_input(params);
+ 	if (retval)
 -- 
 2.9.3
