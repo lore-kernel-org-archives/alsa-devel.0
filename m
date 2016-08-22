@@ -1,82 +1,82 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: rsrc-card: rename rsrc-card to
- simple-dpcm-card phase2
-Date: Mon, 22 Aug 2016 17:51:49 +0100
-Message-ID: <20160822165149.GR22076@sirena.org.uk>
-References: <87vaz8t4bu.wl%kuninori.morimoto.gx@renesas.com>
- <87shuct48p.wl%kuninori.morimoto.gx@renesas.com>
- <20160817105603.GK9347@sirena.org.uk>
- <874m6dv60c.wl%kuninori.morimoto.gx@renesas.com>
- <87wpj9473x.wl%kuninori.morimoto.gx@renesas.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [alsa-devel] [RFC PATCH] mfd: arizona: Add gating of external
+ MCLKn clocks
+Date: Mon, 22 Aug 2016 19:22:47 +0200
+Message-ID: <d47e7106-037f-b40c-71e5-099ee30874e6@samsung.com>
+References: <1471627036-19465-1-git-send-email-s.nawrocki@samsung.com>
+ <20160822092233.GN21682@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1970167661415116372=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F9452657B6
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 18:51:56 +0200 (CEST)
-In-Reply-To: <87wpj9473x.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <20160822092233.GN21682@localhost.localdomain>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, lee.jones@linaro.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 08/22/2016 11:22 AM, Charles Keepax wrote:
+> Yeah I am not sure this is quite the correct approach, there are
+> quite a few corner cases that would not be covered well here. For
+> example an internally divided down 32k in which case both the 32k
+> and MCLK would come from the same pin, or using the 32k to feed
+> an FLL in which case we are trying to enable MCLK1 unnecessarily.
+> 
+> I think we could request the 32k clock source from this part
+> of the code, but without implementing clock drivers for the
+> chips internal clocking I think the main MCLK would need to be
+> requested from the machine driver for now.
+> 
+> On that note, I have been working on a patch chain that adds an
+> actual clock driver for the chip unfortunately this has been
+> delayed somewhat due to issues interfacing SPI backed clocks to
+> the clock framework. Krzysztof Kozlowski has sent a series that
+> appears to resolve these issues for me so hopefully once the
+> clock guys have had a look at that I can send my clock driver.
+> My current implementation mostly just implements the 32k clock
+> but we can start building that out to include the SYSCLKs and
+> FLLs etc. fairly quickly. The best thing might be to wait for
+> that and then build additional features onto that.
+> 
+> Let me know if you want to get an early look at that code.
 
---===============1970167661415116372==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gMqNd2jlyJQcupG/"
-Content-Disposition: inline
+Thanks for the feedback.  I would really like to avoid touching
+this code and messing up anything in code shared by multiple
+CODECs.  You certainly know it much better than than I do.
 
+I got suggestion from Mark not to request the main MCLK clock
+in the machine driver.  But even if gating of that clock was
+added to the CODEC driver I would need to get hold of it in
+the machine driver to get rate of MCLK.  So I thought about
+exporting a helper from the MFD for requesting MCLK clock or
+specifying MCLK clock back in the sound DT node.
 
---gMqNd2jlyJQcupG/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+IIUC, you are suggesting to leave the 32k parts of the patch 
+and just drop the MCLK part?
 
-On Mon, Aug 22, 2016 at 07:12:50AM +0000, Kuninori Morimoto wrote:
+If we provided an interface like:
 
-> > > > -					    - "renesas,rsrc-card,lager"
-> > > > -					    - "renesas,rsrc-card,koelsch"
+struct clk * arizona_get_mclk(struct arizona *arizona, int id);
+void arizona_put_mclk(struct clk *clk);
 
-> I can keep "renesas,rsrc-card" compatible,
-> but I would like to remove above "board" specific compatible,
-> because it exists in my test environment only. No one is using it.
-> And it makes this driver very complex.
+the machine driver would need to get hold of struct arizona*,
+which is not that straightforward if we are given on CODEC
+of_node (it can be a child of I2S or SPI bus).
 
-I thought Lager and Koelsch were quite widely available?  But if the
-boards you're removing really are just specials on your desk then it's
-fine, just make sure you provide a separate patch doing that with a
-clear explanation as to why.
+Then how about specifying MCLK in the sound node and using
+regular devm_clk_get()?
 
---gMqNd2jlyJQcupG/
-Content-Type: application/pgp-signature; name="signature.asc"
+Regarding the clock locking patches, I think it needs some more 
+discussion and should rather be merged early in the development
+cycle to have good exposure in -next as it's quite an invasive
+change.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+I'd be happy to look at your code, if only to have a better 
+overview and to avoid interfering with you work.
 
-iQEcBAEBCAAGBQJXuy2kAAoJECTWi3JdVIfQ+CAH/jphi3OV925MXc/inl31zt+v
-1KNDu+8/eTjFc1sWF8esqtFNBnP1b468AE7v9tntYgUOc6zEtFDHlHZfvnA2ZZOy
-tL8woLj55BVZen3oLMTczHg8qAolaiol6xfWNk+e+Bjlz4CTr5Z/bmw/7oE35GRW
-1e0R+9j+8x6QARaqTz0YZDhys4YQr8heRArdnXQtRrKlLVjfBwe0bwihqXMio/kG
-OoEzKQSMpHcbHUxibwe0rhEHfUVz5LehhLA/CBdTMRNZJnDDEJzBkKkK6rNSsPtL
-xF/j3w9cPSx2Xzi4u8LMPAYFcc7y7PGAEa9i9jO3wHLt3VZ/RH1Bz6jEZ5xU9uo=
-=DTl4
------END PGP SIGNATURE-----
+Anyway, my main goal is only to get the tm2_wm5110 sound card
+upstream, with as little casualties as possible;)
 
---gMqNd2jlyJQcupG/--
-
---===============1970167661415116372==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1970167661415116372==--
+--
+Thanks, 
+Sylwester
