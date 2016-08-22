@@ -1,15 +1,15 @@
 From: focus.luo@linux.intel.com
-Subject: [PATCH v2 1/2] alsabat: automation test scripts
-Date: Tue, 23 Aug 2016 00:16:49 +0800
-Message-ID: <1471882610-18781-2-git-send-email-focus.luo@linux.intel.com>
+Subject: [PATCH v2 2/2] alsabat: add amixer config files
+Date: Tue, 23 Aug 2016 00:16:50 +0800
+Message-ID: <1471882610-18781-3-git-send-email-focus.luo@linux.intel.com>
 References: <1471882610-18781-1-git-send-email-focus.luo@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id EB5C0266662
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 17:48:55 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D55FE266719
+ for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 17:48:56 +0200 (CEST)
 In-Reply-To: <1471882610-18781-1-git-send-email-focus.luo@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,718 +26,1290 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Focus Luo <focus.luo@linux.intel.com>
 
-This patch includes automated test scripts for linux audio driver
-based on alsa-lib interface by using alsabat as test tool.
-It supports analog and display(HDMI/DP) audio test.
-The package needs the alsa-utils, alsa-lib installed environment.
+This patch includes the reference asound.state config files
+on Intel Skylake, Broadwell and Hsawell platforms
 
 Signed-off-by: Focus Luo <focus.luo@linux.intel.com>
 ---
- bat/Makefile.am                                |   1 +
- bat/tests/Makefile.am                          |  10 ++
- bat/tests/README                               |  32 +++++
- bat/tests/alsabat_main.sh                      | 178 +++++++++++++++++++++++++
- bat/tests/analog_audio_playback_and_capture.sh |  84 ++++++++++++
- bat/tests/dp_audio_playback.sh                 |  83 ++++++++++++
- bat/tests/dp_audio_subdevice_number.sh         |  68 ++++++++++
- bat/tests/hdmi_audio_playback.sh               |  81 +++++++++++
- bat/tests/hdmi_audio_subdevice_number.sh       |  65 +++++++++
- bat/tests/map_test_case                        |   8 ++
- configure.ac                                   |   3 +-
- 11 files changed, 612 insertions(+), 1 deletion(-)
- create mode 100644 bat/tests/Makefile.am
- create mode 100644 bat/tests/README
- create mode 100755 bat/tests/alsabat_main.sh
- create mode 100755 bat/tests/analog_audio_playback_and_capture.sh
- create mode 100755 bat/tests/dp_audio_playback.sh
- create mode 100755 bat/tests/dp_audio_subdevice_number.sh
- create mode 100755 bat/tests/hdmi_audio_playback.sh
- create mode 100755 bat/tests/hdmi_audio_subdevice_number.sh
- create mode 100644 bat/tests/map_test_case
+ bat/tests/Makefile.am                         |   1 +
+ bat/tests/asound_state/Makefile.am            |   6 +
+ bat/tests/asound_state/asound.state.Broadwell | 439 ++++++++++++++++++++++++++
+ bat/tests/asound_state/asound.state.Haswell   | 342 ++++++++++++++++++++
+ bat/tests/asound_state/asound.state.Skylake   | 437 +++++++++++++++++++++++++
+ configure.ac                                  |   2 +-
+ 6 files changed, 1226 insertions(+), 1 deletion(-)
+ create mode 100644 bat/tests/asound_state/Makefile.am
+ create mode 100644 bat/tests/asound_state/asound.state.Broadwell
+ create mode 100644 bat/tests/asound_state/asound.state.Haswell
+ create mode 100644 bat/tests/asound_state/asound.state.Skylake
 
-diff --git a/bat/Makefile.am b/bat/Makefile.am
-index 6883826..5151f77 100644
---- a/bat/Makefile.am
-+++ b/bat/Makefile.am
-@@ -1,3 +1,4 @@
-+SUBDIRS=tests
- bin_PROGRAMS = alsabat
- man_MANS = alsabat.1
- EXTRA_DIST = alsabat.1 alsabat-test.sh
 diff --git a/bat/tests/Makefile.am b/bat/tests/Makefile.am
-new file mode 100644
-index 0000000..5182976
---- /dev/null
+index 5182976..d20eb3c 100644
+--- a/bat/tests/Makefile.am
 +++ b/bat/tests/Makefile.am
-@@ -0,0 +1,10 @@
-+alsabat_script_files = analog_audio_playback_and_capture.sh \
-+	dp_audio_playback.sh \
-+	dp_audio_subdevice_number.sh \
-+	hdmi_audio_playback.sh \
-+	hdmi_audio_subdevice_number.sh \
-+	map_test_case \
-+	README
+@@ -1,3 +1,4 @@
++SUBDIRS=asound_state
+ alsabat_script_files = analog_audio_playback_and_capture.sh \
+ 	dp_audio_playback.sh \
+ 	dp_audio_subdevice_number.sh \
+diff --git a/bat/tests/asound_state/Makefile.am b/bat/tests/asound_state/Makefile.am
+new file mode 100644
+index 0000000..7010310
+--- /dev/null
++++ b/bat/tests/asound_state/Makefile.am
+@@ -0,0 +1,6 @@
++alsabat_cfg_files = asound.state.Broadwell \
++	asound.state.Haswell \
++	asound.state.Skylake
 +
 +EXTRA_DIST = \
-+	$(alsabat_script_files)
-diff --git a/bat/tests/README b/bat/tests/README
++	$(alsabat_cfg_files)
+diff --git a/bat/tests/asound_state/asound.state.Broadwell b/bat/tests/asound_state/asound.state.Broadwell
 new file mode 100644
-index 0000000..de69686
+index 0000000..bea75e5
 --- /dev/null
-+++ b/bat/tests/README
-@@ -0,0 +1,32 @@
-+
-+	automated test scripts for linux audio driver
-+	based on alsa-lib interface by using alsabat
-+===============================================================================
-+
-+This package contains the test scripts for linux audio driver based on
-+alsa-lib interface by using alsabat.
-+It supports analog and display(HDMI/DP) audio test.
-+The package needs  the alsa-utils, alsa-lib installed environment.
-+
-+alsabat_main.sh
-+	- the main entrance test script,
-+	it will call the other scripts to run the tests
-+	(test result will save in the ./log/ folder)
-+analog_audio_playback_and_capture.sh
-+	- analog audio test script (please to loopback the
-+	analog audio output to analog audio input)
-+hdmi_audio_playback.sh
-+	- hdmi audio test script (please to loopback the hdmi audio output
-+	to analog audio input)
-+dp_audio_playback.sh
-+	- dp audio test script (please to loopback the dp audio
-+	output to analog audio input)
-+map_test_case
-+	- to map the test suite/cases to a test script
-+asound_state/
-+	- some asound.state config reference files
-+	based on different platforms
-+
-+				Focus Luo <focus.luo@linux.intel.com>
-+				Wang,Jinliang <jinliang.wang@intel.com>
-+				Zhang,Keqiao <keqiao.zhang@intel.com>
-diff --git a/bat/tests/alsabat_main.sh b/bat/tests/alsabat_main.sh
-new file mode 100755
-index 0000000..478ac98
---- /dev/null
-+++ b/bat/tests/alsabat_main.sh
-@@ -0,0 +1,178 @@
-+#!/bin/bash
-+
-+#/*
-+# * Copyright (C) 2013-2016 Intel Corporation
-+# *
-+# * This program is free software; you can redistribute it and/or modify
-+# * it under the terms of the GNU General Public License as published by
-+# * the Free Software Foundation; either version 2 of the License, or
-+# * (at your option) any later version.
-+# *
-+# * This program is distributed in the hope that it will be useful,
-+# * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# * GNU General Public License for more details.
-+# *
-+# */
-+#set -x
-+
-+#alsabat test scripts path
-+export ABAT_TEST_PATH=`pwd`
-+
-+#alsabat test log file, path+filename
-+Day=`date +"%Y-%m-%d-%H-%M"`
-+Log_FileName="test_result-"${Day}".log"
-+export ABAT_TEST_LOG_FILE=${ABAT_TEST_PATH}/log/${Log_FileName}
-+
-+#terminal display colour setting
-+ESC_GREEN="\033[32m"
-+ESC_RED="\033[31m"
-+ESC_YELLOW="\033[33;1m"
-+ESC_OFF="\033[0m"
-+
-+#total/pass/fail test cases number
-+total_case_number=0
-+suit_number=1
-+pass_number=0
-+fail_number=0
-+# =========================== Public function  ==========================
-+
-+function get_platform_info()
-+{
-+	#to get the audio card number
-+	Card_Number=$(aplay -l | grep "HDMI 0" | cut -b 6)
-+	cd /proc/asound/card$Card_Number/
-+	for file in `ls`
-+	do
-+		if [[ $file == codec* ]]; then
-+			#to get the hardware platform ID, currently Intel skylake,
-+			#broadwell and haswell hardware platforms are supported
-+			Platform_ID=`cat $file |grep "Codec:" |cut -d " " -f 3`
-+			if [ "$Platform_ID" == "Skylake" ] \
-+				|| [ "$Platform_ID" == "Broadwell" ] \
-+				|| [ "$Platform_ID" == "Haswell" ]; then
-+				echo $Platform_ID
-+				break
-+				exit 0
-+			fi
-+		else
-+			printf '\033[1;31m %-30s %s \033[1;31m%s\n\033[0m' \
-+						"Get platform information failed";
-+			exit 1
-+		fi
-+	done
++++ b/bat/tests/asound_state/asound.state.Broadwell
+@@ -0,0 +1,439 @@
++state.HDMI {
++	control.1 {
++		iface CARD
++		name 'HDMI/DP,pcm=3 Jack'
++		value false
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.2 {
++		iface MIXER
++		name 'IEC958 Playback Con Mask'
++		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.3 {
++		iface MIXER
++		name 'IEC958 Playback Pro Mask'
++		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.4 {
++		iface MIXER
++		name 'IEC958 Playback Default'
++		value '0482000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access 'read write'
++			type IEC958
++			count 1
++		}
++	}
++	control.5 {
++		iface MIXER
++		name 'IEC958 Playback Switch'
++		value true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.6 {
++		iface PCM
++		device 3
++		name ELD
++		value ''
++		comment {
++			access 'read volatile'
++			type BYTES
++			count 0
++		}
++	}
++	control.7 {
++		iface CARD
++		name 'HDMI/DP,pcm=7 Jack'
++		value true
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.8 {
++		iface MIXER
++		name 'IEC958 Playback Con Mask'
++		index 1
++		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.9 {
++		iface MIXER
++		name 'IEC958 Playback Pro Mask'
++		index 1
++		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.10 {
++		iface MIXER
++		name 'IEC958 Playback Default'
++		index 1
++		value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access 'read write'
++			type IEC958
++			count 1
++		}
++	}
++	control.11 {
++		iface MIXER
++		name 'IEC958 Playback Switch'
++		index 1
++		value true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.12 {
++		iface PCM
++		device 7
++		name ELD
++		value '100008006a10000100000000000000000469b12341535553205041323338091707000000'
++		comment {
++			access 'read volatile'
++			type BYTES
++			count 36
++		}
++	}
++	control.13 {
++		iface CARD
++		name 'HDMI/DP,pcm=8 Jack'
++		value false
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.14 {
++		iface MIXER
++		name 'IEC958 Playback Con Mask'
++		index 2
++		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.15 {
++		iface MIXER
++		name 'IEC958 Playback Pro Mask'
++		index 2
++		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.16 {
++		iface MIXER
++		name 'IEC958 Playback Default'
++		index 2
++		value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access 'read write'
++			type IEC958
++			count 1
++		}
++	}
++	control.17 {
++		iface MIXER
++		name 'IEC958 Playback Switch'
++		index 2
++		value true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.18 {
++		iface PCM
++		device 8
++		name ELD
++		value ''
++		comment {
++			access 'read volatile'
++			type BYTES
++			count 0
++		}
++	}
++	control.19 {
++		iface PCM
++		device 3
++		name 'Playback Channel Map'
++		value.0 0
++		value.1 0
++		value.2 0
++		value.3 0
++		value.4 0
++		value.5 0
++		value.6 0
++		value.7 0
++		comment {
++			access 'read write'
++			type INTEGER
++			count 8
++			range '0 - 36'
++		}
++	}
++	control.20 {
++		iface PCM
++		device 7
++		name 'Playback Channel Map'
++		value.0 0
++		value.1 0
++		value.2 0
++		value.3 0
++		value.4 0
++		value.5 0
++		value.6 0
++		value.7 0
++		comment {
++			access 'read write'
++			type INTEGER
++			count 8
++			range '0 - 36'
++		}
++	}
++	control.21 {
++		iface PCM
++		device 8
++		name 'Playback Channel Map'
++		value.0 0
++		value.1 0
++		value.2 0
++		value.3 0
++		value.4 0
++		value.5 0
++		value.6 0
++		value.7 0
++		comment {
++			access 'read write'
++			type INTEGER
++			count 8
++			range '0 - 36'
++		}
++	}
 +}
-+
-+#printf the "pass" info in the file
-+show_pass()
-+{
-+	echo -e "$suit_number - [$1]:test ------- PASS" >> $ABAT_TEST_LOG_FILE
-+	printf '\033[1;33m %-30s %s \033[1;32m%s\n\033[0m' \
-+"$suit_number -	[$1]" "--------------------------------  " "PASS";
++state.PCH {
++	control.1 {
++		iface MIXER
++		name 'Master Playback Volume'
++		value.0 41
++		value.1 41
++		comment {
++			access 'read write'
++			type INTEGER
++			count 2
++			range '0 - 87'
++			dbmin -6525
++			dbmax 0
++			dbvalue.0 -3450
++			dbvalue.1 -3450
++		}
++	}
++	control.2 {
++		iface MIXER
++		name 'Master Playback Switch'
++		value.0 true
++		value.1 true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 2
++		}
++	}
++	control.3 {
++		iface MIXER
++		name 'Loopback Mixing'
++		value Enabled
++		comment {
++			access 'read write'
++			type ENUMERATED
++			count 1
++			item.0 Disabled
++			item.1 Enabled
++		}
++	}
++	control.4 {
++		iface MIXER
++		name 'Mic Playback Volume'
++		value.0 0
++		value.1 0
++		comment {
++			access 'read write'
++			type INTEGER
++			count 2
++			range '0 - 31'
++			dbmin -3450
++			dbmax 1200
++			dbvalue.0 -3450
++			dbvalue.1 -3450
++		}
++	}
++	control.5 {
++		iface MIXER
++		name 'Mic Playback Switch'
++		value.0 true
++		value.1 true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 2
++		}
++	}
++	control.6 {
++		iface MIXER
++		name 'Capture Volume'
++		value.0 21
++		value.1 21
++		comment {
++			access 'read write'
++			type INTEGER
++			count 2
++			range '0 - 63'
++			dbmin -1725
++			dbmax 3000
++			dbvalue.0 -150
++			dbvalue.1 -150
++		}
++	}
++	control.7 {
++		iface MIXER
++		name 'Capture Switch'
++		value.0 true
++		value.1 true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 2
++		}
++	}
++	control.8 {
++		iface MIXER
++		name 'Mic Boost Volume'
++		value.0 0
++		value.1 0
++		comment {
++			access 'read write'
++			type INTEGER
++			count 2
++			range '0 - 3'
++			dbmin 0
++			dbmax 3600
++			dbvalue.0 0
++			dbvalue.1 0
++		}
++	}
++	control.9 {
++		iface CARD
++		name 'Mic Jack'
++		value false
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.10 {
++		iface CARD
++		name 'Headphone Jack'
++		value true
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.11 {
++		iface PCM
++		name 'Playback Channel Map'
++		value.0 0
++		value.1 0
++		comment {
++			access read
++			type INTEGER
++			count 2
++			range '0 - 36'
++		}
++	}
++	control.12 {
++		iface PCM
++		name 'Capture Channel Map'
++		value.0 0
++		value.1 0
++		comment {
++			access read
++			type INTEGER
++			count 2
++			range '0 - 36'
++		}
++	}
++	control.13 {
++		iface MIXER
++		name 'PCM Playback Volume'
++		value.0 105
++		value.1 105
++		comment {
++			access 'read write user'
++			type INTEGER
++			count 2
++			range '0 - 255'
++			tlv '0000000100000008ffffec1400000014'
++			dbmin -5100
++			dbmax 0
++			dbvalue.0 -3000
++			dbvalue.1 -3000
++		}
++	}
++	control.14 {
++		iface MIXER
++		name 'Digital Capture Volume'
++		value.0 60
++		value.1 60
++		comment {
++			access 'read write user'
++			type INTEGER
++			count 2
++			range '0 - 120'
++			tlv '0000000100000008fffff44800000032'
++			dbmin -3000
++			dbmax 3000
++			dbvalue.0 0
++			dbvalue.1 0
++		}
++	}
 +}
-+
-+#printf the "fail" info in the file
-+show_fail()
-+{
-+	echo -e "$suit_number - [$1]:test ------- FAIL" >> $ABAT_TEST_LOG_FILE
-+	printf '\033[1;33m %-30s %s \033[1;31m%s\n\033[0m' \
-+"$suit_number - [$1]" "--------------------------------  " "FAIL";
-+}
-+
-+
-+function run_test()
-+{
-+	for TestItem in $@
-+		do
-+			Date=`date`
-+			Dot="$Dot".
-+			echo "Now doing $TestItem test$Dot"
-+
-+			#map test case to test script
-+			eval item='$'$TestItem
-+
-+			#to check the test script existing
-+			if  [ ! -f "$item" ]; then
-+				echo -e "\e[31m not found $TestItem script,confirm it firstly"
-+				echo -e "\e[0m"
-+				exit 1
-+			fi
-+
-+			#to run each test script
-+			eval "\$$TestItem"
-+			Result=$?
-+			#record the test result to the log file
-+			if [ $Result -eq 0 ]; then
-+				show_pass "$TestItem"
-+			else
-+				show_fail "$TestItem"
-+			fi
-+			suit_number=$(($suit_number + 1))
-+
-+		done
-+}
-+
-+function test_suites ( )
-+{
-+	#define the test suites/cases need to be run
-+	TestProgram="verify_Analog_audio_playback_and_capture \
-+				verify_HDMI_audio_playback verify_DP_audio_playback"
-+
-+	#run each test suites/test cases
-+	run_test "$TestProgram"
-+
-+	# to printf the detailed test results on the screen
-+	cat $ABAT_TEST_LOG_FILE |grep FAIL
-+	case_number=$(($case_number - 1))
-+	total_case_number=`cat $ABAT_TEST_LOG_FILE |grep -c "Test target frequency:"`
-+	pass_number=`cat $ABAT_TEST_LOG_FILE |grep -c "Passed"`
-+	fail_number=`cat $ABAT_TEST_LOG_FILE |grep -c "Failed"`
-+	echo -e "\e[0m"
-+	echo -e "\e[1;33m *---------------------------------------------------*\n"
-+	echo -e " * "Total" ${total_case_number} "cases", \
-+"PASS:" ${pass_number} "cases", "FAIL:" ${fail_number} "cases", \
-+"Passrate is:" $((pass_number*100/total_case_number)) "%" *\n"
-+	echo -e " *-------------------------------------------------------*\e[0m\n"
-+
-+	#the the result also will be saved on the log file
-+	echo "Total" ${total_case_number} "cases", \
-+"PASS:" ${pass_number} "cases", "FAIL:" ${fail_number} "cases",  \
-+"Passrate:" $((pass_number*100/total_case_number)) "%" >> ${ABAT_TEST_LOG_FILE}
-+
-+	#return 0, if the script finishs normally
-+	exit 0
-+}
-+
-+function main ( )
-+{
-+	echo "Test results are as follows:" > ${ABAT_TEST_LOG_FILE}
-+	get_platform_info # get hardware platform information
-+	cd $ABAT_TEST_PATH
-+
-+	# make sure the log folder is exist
-+	if [ ! -d "$ABAT_TEST_PATH/log/" ]; then
-+		mkdir "log"
-+	fi
-+
-+	#map the test cases to test scripts
-+	source map_test_case
-+
-+	#setting the alsa configure environment
-+	alsactl restore -f $ABAT_TEST_PATH/asound_state/asound.state.$Platform_ID
-+
-+	#Printf the user interface info
-+	clear
-+	echo -e "\e[1;33m"
-+	date
-+	echo -e "\e[0m"
-+	echo -e "\e[1;33m *-------------------------------------------------*\n"
-+	echo -e " *--Running the audio automated test on $Platform_ID-------*\n"
-+	echo -e " *------------------------------------------------------*\e[0m\n"
-+	read -p "Press enter to continue"
-+
-+	#run the test suites/test cases
-+	test_suites
-+}
-+
-+#the main entrance function
-+main
-diff --git a/bat/tests/analog_audio_playback_and_capture.sh b/bat/tests/analog_audio_playback_and_capture.sh
-new file mode 100755
-index 0000000..bac491e
---- /dev/null
-+++ b/bat/tests/analog_audio_playback_and_capture.sh
-@@ -0,0 +1,84 @@
-+#!/bin/bash
-+
-+#/*
-+# * Copyright (C) 2013-2016 Intel Corporation
-+# *
-+# * This program is free software; you can redistribute it and/or modify
-+# * it under the terms of the GNU General Public License as published by
-+# * the Free Software Foundation; either version 2 of the License, or
-+# * (at your option) any later version.
-+# *
-+# * This program is distributed in the hope that it will be useful,
-+# * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# * GNU General Public License for more details.
-+# *
-+# */
-+
-+#set test freq table (HZ)
-+freq_table="10 31 73 155 380 977 1932 4119 8197 16197"
-+
-+#set test number of channels
-+test_channel=2
-+
-+#get Analog audio card number
-+card_number=$(aplay -l | grep "Analog" | cut -b 6)
-+if [ "$card_number" = "" ]; then
-+        echo "Can not get Analog card number."
-+        exit 1
-+fi
-+
-+#get Analog audio device number
-+device_number=$(aplay -l | grep "Analog"| cut -d " " -f 8 |cut -b 1)
-+if [ "$device_number" = "" ]; then
-+        echo "Can not get Analog device number"
-+        exit 1
-+fi
-+
-+
-+device="hw:$card_number,$device_number"
-+echo $device
-+
-+#get Analog audio record card number
-+record_card_number=$(arecord -l | grep "Analog" | cut -b 6)
-+if [ "$record_card_number" = "" ]; then
-+        echo "Can not get record card number."
-+        exit 1
-+fi
-+
-+#get Analog audio record device number
-+record_device_number=$(arecord -l | grep "Analog"| cut -d " " -f 8 |cut -b 1)
-+echo $record_device_number
-+if [ "$record_device_number" = "" ]; then
-+        echo "Can not get record device number"
-+        exit 1
-+fi
-+
-+#Notice: to loopback the analog audio output to the analog audio input
-+record_device="hw:$record_card_number,$record_device_number"
-+test_flag=0
-+
-+echo  -e "\e[31m Notice: to loopback the analog audio output to \
-+the analog audio input"
-+echo -e "\e[0m"
-+read -p "Press enter to continue"
-+
-+#call alsabat to do the test for each frequency in the freq_table
-+for freq in $freq_table
-+	do
-+	alsabat -P $device -C plug$record_device -c $test_channel -F $freq
-+		if [ $? = 0 ]; then
-+			echo "Test target frequency:$freq for Analog playback -- Passed \
-+" >> $ABAT_TEST_LOG_FILE
-+			echo "Test target frequency:$freq for Analog capture -- Passed \
-+" >> $ABAT_TEST_LOG_FILE
-+		else
-+			echo "Test target frequency:$freq for Analog playback -- Failed \
-+" >> $ABAT_TEST_LOG_FILE
-+			echo "Test target frequency:$freq for Analog capture -- Failed \
-+" >> $ABAT_TEST_LOG_FILE
-+			test_flag=1
-+		fi
-+	done
-+
-+exit $test_flag
-diff --git a/bat/tests/dp_audio_playback.sh b/bat/tests/dp_audio_playback.sh
-new file mode 100755
-index 0000000..9c7ee7e
---- /dev/null
-+++ b/bat/tests/dp_audio_playback.sh
-@@ -0,0 +1,83 @@
-+#!/bin/bash
-+
-+#/*
-+# * Copyright (C) 2013-2016 Intel Corporation
-+# *
-+# * This program is free software; you can redistribute it and/or modify
-+# * it under the terms of the GNU General Public License as published by
-+# * the Free Software Foundation; either version 2 of the License, or
-+# * (at your option) any later version.
-+# *
-+# * This program is distributed in the hope that it will be useful,
-+# * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# * GNU General Public License for more details.
-+# *
-+# */
-+
-+#set test freq table (HZ)
-+freq_table="10 31 73 155 380 977 1932 4119 8197 16197"
-+
-+#set test number of channels
-+test_channel=2
-+
-+#get device number for DP
-+DP_device_num=0
-+$ABAT_TEST_PATH/dp_audio_subdevice_number.sh
-+DP_device_num=$?
-+if [ $DP_device_num = 77 ]; then
-+	echo "Prompt: Can not get device with DP audio or \
-+show the wrong connection type as HDMI in ELD info"
-+	exit 1
-+fi
-+
-+#To get DP audio device number
-+DP_card_number=$(aplay -l | grep "HDMI 0" | cut -b 6)
-+if [ "$DP_card_number" = "" ]; then
-+	echo "Error: Can not get Display audio card."
-+	exit 1
-+fi
-+
-+DP_device="hw:$DP_card_number,$DP_device_num"
-+echo $device
-+sleep 2
-+
-+#get Analog audio record card number
-+record_card_number=$(arecord -l | grep "Analog" | cut -b 6)
-+if [ "$record_card_number" = "" ]; then
-+	echo "Can not get record card number."
-+	exit 1
-+fi
-+
-+#get Analog audio record device number
-+record_device_number=$(arecord -l | grep "Analog"| cut -d " " -f 8 |cut -b 1)
-+echo $record_device_number
-+if [ "$record_device_number" = "" ]; then
-+        echo "Can not get record device number"
-+        exit 1
-+fi
-+
-+#Notice: to loopback the DP audio output to the analog audio input
-+record_device="hw:$record_card_number,$record_device_number"
-+test_flag=0
-+
-+echo -e "\e[31m Notice: to loopback the DP audio \
-+output to the analog audio input"
-+echo -e "\e[0m"
-+read -p "Press enter to continue"
-+
-+#call alsabat to do the test for each frequency in the freq_table
-+for freq in $freq_table
-+	do
-+		alsabat -P $DP_device -C plug$record_device -c $test_channel -F $freq
-+		if [ $? = 0 ]; then
-+			echo "Test target frequency:$freq for DP audio playback--Passed" \
-+>> $ABAT_TEST_LOG_FILE
-+		else
-+			echo "Test target frequency:$freq for DP audio playback--Failed" \
-+>> $ABAT_TEST_LOG_FILE
-+			test_flag=1
-+		fi
-+	done
-+
-+exit $test_flag
-diff --git a/bat/tests/dp_audio_subdevice_number.sh b/bat/tests/dp_audio_subdevice_number.sh
-new file mode 100755
-index 0000000..db2e79e
---- /dev/null
-+++ b/bat/tests/dp_audio_subdevice_number.sh
-@@ -0,0 +1,68 @@
-+#!/bin/bash
-+
-+#/*
-+# * Copyright (C) 2013-2016 Intel Corporation
-+# *
-+# * This program is free software; you can redistribute it and/or modify
-+# * it under the terms of the GNU General Public License as published by
-+# * the Free Software Foundation; either version 2 of the License, or
-+# * (at your option) any later version.
-+# *
-+# * This program is distributed in the hope that it will be useful,
-+# * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# * GNU General Public License for more details.
-+# *
-+# */
-+#set -x
-+
-+subdevice_number=0
-+get_subdevice=0
-+
-+#make sure the DP monitor is connected and active
-+
-+# To get DisplayPort audio device number
-+card_number=$(aplay -l | grep "HDMI 1" | cut -b 6)
-+echo $card_number
-+if [ "$card_number" = "" ]; then
-+	echo "Can not get Display audio card."
-+	exit 254
-+fi
-+
-+audio_card_dir="/proc/asound/card$card_number/"
-+
-+cd $audio_card_dir
-+
-+for file in `ls`
-+do
-+	#To get the ELD info according to the connented monitor with DisplayPort.
-+	if [[ $file == eld* ]]; then
-+		let subdevice_number+=1
-+		cat $file | grep connection_type | grep DisplayPort > /dev/null
-+		if [ $? = 0 ]; then
-+			echo "Get the ELD information according to the connented \
-+monitor with DisplayPort."
-+			get_subdevice=1
-+			break
-+		fi
-+	fi
-+done
-+
-+#failed to get the subdevice number of DisplayPort audio
-+if [ $get_subdevice == 0 ]; then
-+        exit 77
-+fi
-+
-+#the subdevice number of DisplayPort audio is 3
-+if [ $subdevice_number == 1 ]; then
-+	exit 3
-+#the subdevice number of DisplayPort audio is 7.
-+elif [ $subdevice_number == 2 ]; then
-+	exit 7
-+#the subdevice number of DisplayPort audio is 8
-+elif [ $subdevice_number == 3 ]; then
-+	exit 8
-+#default: failed to get the subdevice number of DisplayPort audio
-+else
-+	exit 77
-+fi
-diff --git a/bat/tests/hdmi_audio_playback.sh b/bat/tests/hdmi_audio_playback.sh
-new file mode 100755
-index 0000000..3c45d91
---- /dev/null
-+++ b/bat/tests/hdmi_audio_playback.sh
-@@ -0,0 +1,81 @@
-+#!/bin/bash
-+
-+#/*
-+# * Copyright (C) 2013-2016 Intel Corporation
-+# *
-+# * This program is free software; you can redistribute it and/or modify
-+# * it under the terms of the GNU General Public License as published by
-+# * the Free Software Foundation; either version 2 of the License, or
-+# * (at your option) any later version.
-+# *
-+# * This program is distributed in the hope that it will be useful,
-+# * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# * GNU General Public License for more details.
-+# *
-+# */
-+
-+#set test freq table (HZ)
-+freq_table="10 31 73 155 380 977 1932 4119 8197 16197"
-+
-+#set test number of channels
-+test_channel=2
-+
-+#get device number for HDMI
-+HDMI_device_num=0
-+$ABAT_TEST_PATH/hdmi_audio_subdevice_number.sh
-+HDMI_device_num=$?
-+if [ $HDMI_device_num = 77 ]; then
-+	echo "Prompt: Can not get device with HDMI audio or \
-+show the wrong connection type as DP in ELD info"
-+	exit 1
-+fi
-+
-+#To get HDMI audio device number
-+HDMI_card_number=$(aplay -l | grep "HDMI 0" | cut -b 6)
-+if [ "$HDMI_card_number" = "" ]; then
-+        echo "Error: Can not get Display audio card."
-+        exit 1
-+fi
-+
-+HDMI_device="hw:$HDMI_card_number,$HDMI_device_num"
-+echo $device
-+sleep 2
-+
-+#get Analog audio record card number
-+record_card_number=$(arecord -l | grep "Analog" | cut -b 6)
-+if [ "$record_card_number" = "" ]; then
-+        echo "Can not get record card number."
-+        exit 1
-+fi
-+
-+#get Analog audio record device number
-+record_device_number=$(arecord -l | grep "Analog"| cut -d " " -f 8 |cut -b 1)
-+if [ "$record_device_number" = "" ]; then
-+        echo "Can not get record device number"
-+        exit 1
-+fi
-+
-+#Notice: to loopback the HDMI audio output to the analog audio input
-+record_device="hw:$record_card_number,$record_device_number"
-+test_flag=0
-+
-+echo -e "\e[31m Notice: to loopback the HDMI audio output \
-+to the analog audio input"
-+echo -e "\e[0m"
-+read -p "Press enter to continue"
-+#call alsabat to do the test for each frequency in the freq_table
-+for freq in $freq_table
-+	do
-+		alsabat -P $HDMI_device -C plug$record_device -c $test_channel -F $freq
-+		if [ $? = 0 ]; then
-+			echo "Test target frequency:$freq for HDMI audio playback \
-+-- Passed    " >> $ABAT_TEST_LOG_FILE
-+		else
-+			echo "Test target frequency:$freq for HDMI audio playback \
-+-- Failed    " >> $ABAT_TEST_LOG_FILE
-+			test_flag=1
-+		fi
-+	done
-+
-+exit $test_flag
-diff --git a/bat/tests/hdmi_audio_subdevice_number.sh b/bat/tests/hdmi_audio_subdevice_number.sh
-new file mode 100755
-index 0000000..7811577
---- /dev/null
-+++ b/bat/tests/hdmi_audio_subdevice_number.sh
-@@ -0,0 +1,65 @@
-+#!/bin/bash
-+
-+#/*
-+# * Copyright (C) 2013-2016 Intel Corporation
-+# *
-+# * This program is free software; you can redistribute it and/or modify
-+# * it under the terms of the GNU General Public License as published by
-+# * the Free Software Foundation; either version 2 of the License, or
-+# * (at your option) any later version.
-+# *
-+# * This program is distributed in the hope that it will be useful,
-+# * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# * GNU General Public License for more details.
-+# *
-+# */
-+#set -x
-+
-+subdevice_number=0
-+get_subdevice=0
-+
-+#make sure the HDMI monitor is connected and active ########
-+
-+# To get HDMI audio device number
-+card_number=$(aplay -l | grep "HDMI 0" | cut -b 6)
-+if [ "$card_number" = "" ]; then
-+	echo "Can not get Display audio card."
-+	#failed to get Display audio card.
-+	exit 1
-+fi
-+
-+audio_card_dir="/proc/asound/card$card_number/"
-+
-+cd $audio_card_dir
-+for file in `ls`
-+	do
-+		#To get the ELD information according to the connented monitor with HDMI
-+		if [[ $file == eld* ]]; then
-+			let subdevice_number+=1
-+			cat $file | grep connection_type | grep HDMI > /dev/null
-+			if [ $? = 0 ]; then
-+				get_subdevice=1
-+				break
-+			fi
-+		fi
-+	done
-+
-+#failed to get the subdevice number of HDMI audio.
-+if [ $get_subdevice == 0 ]; then
-+	exit 77
-+fi
-+
-+#the subdevice number of HDMI audio is 3.
-+if [ $subdevice_number == 1 ]; then
-+	exit 3
-+#the subdevice number of HDMI audio is 7.
-+elif [ $subdevice_number == 2 ]; then
-+	exit 7
-+#the subdevice number of HDMI audio is 8.
-+elif [ $subdevice_number == 3 ]; then
-+	exit 8
-+#default: failed to get the subdevice number of HDMI audio.
-+else
-+	exit 77
-+fi
-diff --git a/bat/tests/map_test_case b/bat/tests/map_test_case
+diff --git a/bat/tests/asound_state/asound.state.Haswell b/bat/tests/asound_state/asound.state.Haswell
 new file mode 100644
-index 0000000..20eb223
+index 0000000..8bc8f3c
 --- /dev/null
-+++ b/bat/tests/map_test_case
-@@ -0,0 +1,8 @@
-+# Analog audio basic test
-+verify_Analog_audio_playback_and_capture="$ABAT_TEST_PATH/analog_audio_playback_and_capture.sh"
-+
-+# Display audio basic test cases - for HDMI
-+verify_HDMI_audio_playback="$ABAT_TEST_PATH/hdmi_audio_playback.sh"
-+
-+# Display audio basic test cases - for DP
-+verify_DP_audio_playback="$ABAT_TEST_PATH/dp_audio_playback.sh"
++++ b/bat/tests/asound_state/asound.state.Haswell
+@@ -0,0 +1,342 @@
++state.HDMI {
++	control.1 {
++		iface CARD
++		name 'HDMI/DP,pcm=3 Jack'
++		value true
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.2 {
++		iface MIXER
++		name 'IEC958 Playback Con Mask'
++		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.3 {
++		iface MIXER
++		name 'IEC958 Playback Pro Mask'
++		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.4 {
++		iface MIXER
++		name 'IEC958 Playback Default'
++		value '0482000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access 'read write'
++			type IEC958
++			count 1
++		}
++	}
++	control.5 {
++		iface MIXER
++		name 'IEC958 Playback Switch'
++		value true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.6 {
++		iface PCM
++		device 3
++		name ELD
++		value '100008006a10000100000000000000000469d22341535553205653323339091707000000'
++		comment {
++			access 'read volatile'
++			type BYTES
++			count 36
++		}
++	}
++	control.7 {
++		iface CARD
++		name 'HDMI/DP,pcm=7 Jack'
++		value true
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.8 {
++		iface MIXER
++		name 'IEC958 Playback Con Mask'
++		index 1
++		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.9 {
++		iface MIXER
++		name 'IEC958 Playback Pro Mask'
++		index 1
++		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.10 {
++		iface MIXER
++		name 'IEC958 Playback Default'
++		index 1
++		value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access 'read write'
++			type IEC958
++			count 1
++		}
++	}
++	control.11 {
++		iface MIXER
++		name 'IEC958 Playback Switch'
++		index 1
++		value true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.12 {
++		iface PCM
++		device 7
++		name ELD
++		value '100008006a10000100000000000000000469b12341535553205041323338091707000000'
++		comment {
++			access 'read volatile'
++			type BYTES
++			count 36
++		}
++	}
++	control.13 {
++		iface PCM
++		device 3
++		name 'Playback Channel Map'
++		value.0 0
++		value.1 0
++		value.2 0
++		value.3 0
++		value.4 0
++		value.5 0
++		value.6 0
++		value.7 0
++		comment {
++			access 'read write'
++			type INTEGER
++			count 8
++			range '0 - 36'
++		}
++	}
++	control.14 {
++		iface PCM
++		device 7
++		name 'Playback Channel Map'
++		value.0 0
++		value.1 0
++		value.2 0
++		value.3 0
++		value.4 0
++		value.5 0
++		value.6 0
++		value.7 0
++		comment {
++			access 'read write'
++			type INTEGER
++			count 8
++			range '0 - 36'
++		}
++	}
++}
++state.PCH {
++	control.1 {
++		iface MIXER
++		name 'Master Playback Volume'
++		value.0 45
++		value.1 45
++		comment {
++			access 'read write'
++			type INTEGER
++			count 2
++			range '0 - 87'
++			dbmin -6525
++			dbmax 0
++			dbvalue.0 -3150
++			dbvalue.1 -3150
++		}
++	}
++	control.2 {
++		iface MIXER
++		name 'Master Playback Switch'
++		value.0 true
++		value.1 true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 2
++		}
++	}
++	control.3 {
++		iface MIXER
++		name 'Capture Volume'
++		value.0 27
++		value.1 27
++		comment {
++			access 'read write'
++			type INTEGER
++			count 2
++			range '0 - 63'
++			dbmin -1725
++			dbmax 3000
++			dbvalue.0 300
++			dbvalue.1 300
++		}
++	}
++	control.4 {
++		iface MIXER
++		name 'Capture Switch'
++		value.0 true
++		value.1 true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 2
++		}
++	}
++	control.5 {
++		iface MIXER
++		name 'Mic Boost Volume'
++		value.0 0
++		value.1 0
++		comment {
++			access 'read write'
++			type INTEGER
++			count 2
++			range '0 - 3'
++			dbmin 0
++			dbmax 3600
++			dbvalue.0 0
++			dbvalue.1 0
++		}
++	}
++	control.6 {
++		iface MIXER
++		name 'Internal Mic Boost Volume'
++		value.0 0
++		value.1 0
++		comment {
++			access 'read write'
++			type INTEGER
++			count 2
++			range '0 - 3'
++			dbmin 0
++			dbmax 3600
++			dbvalue.0 0
++			dbvalue.1 0
++		}
++	}
++	control.7 {
++		iface CARD
++		name 'Mic Jack'
++		value true
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.8 {
++		iface CARD
++		name 'Internal Mic Phantom Jack'
++		value true
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.9 {
++		iface CARD
++		name 'Headphone Jack'
++		value true
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.10 {
++		iface PCM
++		name 'Playback Channel Map'
++		value.0 0
++		value.1 0
++		comment {
++			access read
++			type INTEGER
++			count 2
++			range '0 - 36'
++		}
++	}
++	control.11 {
++		iface PCM
++		name 'Capture Channel Map'
++		value.0 0
++		value.1 0
++		comment {
++			access read
++			type INTEGER
++			count 2
++			range '0 - 36'
++		}
++	}
++	control.12 {
++		iface MIXER
++		name 'PCM Playback Volume'
++		value.0 167
++		value.1 167
++		comment {
++			access 'read write user'
++			type INTEGER
++			count 2
++			range '0 - 255'
++			tlv '0000000100000008ffffec1400000014'
++			dbmin -5100
++			dbmax 0
++			dbvalue.0 -1760
++			dbvalue.1 -1760
++		}
++	}
++	control.13 {
++		iface MIXER
++		name 'Digital Capture Volume'
++		value.0 60
++		value.1 60
++		comment {
++			access 'read write user'
++			type INTEGER
++			count 2
++			range '0 - 120'
++			tlv '0000000100000008fffff44800000032'
++			dbmin -3000
++			dbmax 3000
++			dbvalue.0 0
++			dbvalue.1 0
++		}
++	}
++}
+diff --git a/bat/tests/asound_state/asound.state.Skylake b/bat/tests/asound_state/asound.state.Skylake
+new file mode 100644
+index 0000000..50f672a
+--- /dev/null
++++ b/bat/tests/asound_state/asound.state.Skylake
+@@ -0,0 +1,437 @@
++state.PCH {
++	control.1 {
++		iface MIXER
++		name 'Master Playback Volume'
++		value.0 57
++		value.1 57
++		comment {
++			access 'read write'
++			type INTEGER
++			count 2
++			range '0 - 87'
++			dbmin -6525
++			dbmax 0
++			dbvalue.0 -2250
++			dbvalue.1 -2250
++		}
++	}
++	control.2 {
++		iface MIXER
++		name 'Master Playback Switch'
++		value.0 true
++		value.1 true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 2
++		}
++	}
++	control.3 {
++		iface MIXER
++		name 'Loopback Mixing'
++		value Enabled
++		comment {
++			access 'read write'
++			type ENUMERATED
++			count 1
++			item.0 Disabled
++			item.1 Enabled
++		}
++	}
++	control.4 {
++		iface MIXER
++		name 'Mic Playback Volume'
++		value.0 15
++		value.1 15
++		comment {
++			access 'read write'
++			type INTEGER
++			count 2
++			range '0 - 31'
++			dbmin -3450
++			dbmax 1200
++			dbvalue.0 -1200
++			dbvalue.1 -1200
++		}
++	}
++	control.5 {
++		iface MIXER
++		name 'Mic Playback Switch'
++		value.0 true
++		value.1 true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 2
++		}
++	}
++	control.6 {
++		iface MIXER
++		name 'Capture Volume'
++		value.0 27
++		value.1 27
++		comment {
++			access 'read write'
++			type INTEGER
++			count 2
++			range '0 - 63'
++			dbmin -1725
++			dbmax 3000
++			dbvalue.0 300
++			dbvalue.1 300
++		}
++	}
++	control.7 {
++		iface MIXER
++		name 'Capture Switch'
++		value.0 true
++		value.1 true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 2
++		}
++	}
++	control.8 {
++		iface MIXER
++		name 'Mic Boost Volume'
++		value.0 0
++		value.1 0
++		comment {
++			access 'read write'
++			type INTEGER
++			count 2
++			range '0 - 3'
++			dbmin 0
++			dbmax 3600
++			dbvalue.0 0
++			dbvalue.1 0
++		}
++	}
++	control.9 {
++		iface CARD
++		name 'Mic Jack'
++		value true
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.10 {
++		iface CARD
++		name 'Headphone Jack'
++		value true
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.11 {
++		iface PCM
++		name 'Playback Channel Map'
++		value.0 0
++		value.1 0
++		comment {
++			access read
++			type INTEGER
++			count 2
++			range '0 - 36'
++		}
++	}
++	control.12 {
++		iface PCM
++		name 'Capture Channel Map'
++		value.0 0
++		value.1 0
++		comment {
++			access read
++			type INTEGER
++			count 2
++			range '0 - 36'
++		}
++	}
++	control.13 {
++		iface CARD
++		name 'HDMI/DP,pcm=3 Jack'
++		value true
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.14 {
++		iface MIXER
++		name 'IEC958 Playback Con Mask'
++		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.15 {
++		iface MIXER
++		name 'IEC958 Playback Pro Mask'
++		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.16 {
++		iface MIXER
++		name 'IEC958 Playback Default'
++		value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access 'read write'
++			type IEC958
++			count 1
++		}
++	}
++	control.17 {
++		iface MIXER
++		name 'IEC958 Playback Switch'
++		value true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.18 {
++		iface PCM
++		device 3
++		name ELD
++		value '100008006a10000100000000000000000469d22341535553205653323339091707000000'
++		comment {
++			access 'read volatile'
++			type BYTES
++			count 36
++		}
++	}
++	control.19 {
++		iface CARD
++		name 'HDMI/DP,pcm=7 Jack'
++		value true
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.20 {
++		iface MIXER
++		name 'IEC958 Playback Con Mask'
++		index 1
++		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.21 {
++		iface MIXER
++		name 'IEC958 Playback Pro Mask'
++		index 1
++		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.22 {
++		iface MIXER
++		name 'IEC958 Playback Default'
++		index 1
++		value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access 'read write'
++			type IEC958
++			count 1
++		}
++	}
++	control.23 {
++		iface MIXER
++		name 'IEC958 Playback Switch'
++		index 1
++		value true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.24 {
++		iface PCM
++		device 7
++		name ELD
++		value '100008006a14000100000000000000000469b12341535553205041323338091707000000'
++		comment {
++			access 'read volatile'
++			type BYTES
++			count 36
++		}
++	}
++	control.25 {
++		iface CARD
++		name 'HDMI/DP,pcm=8 Jack'
++		value false
++		comment {
++			access read
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.26 {
++		iface MIXER
++		name 'IEC958 Playback Con Mask'
++		index 2
++		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.27 {
++		iface MIXER
++		name 'IEC958 Playback Pro Mask'
++		index 2
++		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access read
++			type IEC958
++			count 1
++		}
++	}
++	control.28 {
++		iface MIXER
++		name 'IEC958 Playback Default'
++		index 2
++		value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
++		comment {
++			access 'read write'
++			type IEC958
++			count 1
++		}
++	}
++	control.29 {
++		iface MIXER
++		name 'IEC958 Playback Switch'
++		index 2
++		value true
++		comment {
++			access 'read write'
++			type BOOLEAN
++			count 1
++		}
++	}
++	control.30 {
++		iface PCM
++		device 8
++		name ELD
++		value ''
++		comment {
++			access 'read volatile'
++			type BYTES
++			count 0
++		}
++	}
++	control.31 {
++		iface PCM
++		device 3
++		name 'Playback Channel Map'
++		value.0 0
++		value.1 0
++		value.2 0
++		value.3 0
++		value.4 0
++		value.5 0
++		value.6 0
++		value.7 0
++		comment {
++			access 'read write'
++			type INTEGER
++			count 8
++			range '0 - 36'
++		}
++	}
++	control.32 {
++		iface PCM
++		device 7
++		name 'Playback Channel Map'
++		value.0 0
++		value.1 0
++		value.2 0
++		value.3 0
++		value.4 0
++		value.5 0
++		value.6 0
++		value.7 0
++		comment {
++			access 'read write'
++			type INTEGER
++			count 8
++			range '0 - 36'
++		}
++	}
++	control.33 {
++		iface PCM
++		device 8
++		name 'Playback Channel Map'
++		value.0 0
++		value.1 0
++		value.2 0
++		value.3 0
++		value.4 0
++		value.5 0
++		value.6 0
++		value.7 0
++		comment {
++			access 'read write'
++			type INTEGER
++			count 8
++			range '0 - 36'
++		}
++	}
++	control.34 {
++		iface MIXER
++		name 'PCM Playback Volume'
++		value.0 158
++		value.1 158
++		comment {
++			access 'read write user'
++			type INTEGER
++			count 2
++			range '0 - 255'
++			tlv '0000000100000008ffffec1400000014'
++			dbmin -5100
++			dbmax 0
++			dbvalue.0 -1940
++			dbvalue.1 -1940
++		}
++	}
++	control.35 {
++		iface MIXER
++		name 'Digital Capture Volume'
++		value.0 60
++		value.1 60
++		comment {
++			access 'read write user'
++			type INTEGER
++			count 2
++			range '0 - 120'
++			tlv '0000000100000008fffff44800000032'
++			dbmin -3000
++			dbmax 3000
++			dbvalue.0 0
++			dbvalue.1 0
++		}
++	}
++}
 diff --git a/configure.ac b/configure.ac
-index 750911a..0520515 100644
+index 0520515..2221617 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -411,7 +411,8 @@ AC_OUTPUT(Makefile alsactl/Makefile alsactl/init/Makefile \
- 	  m4/Makefile po/Makefile.in \
+@@ -412,7 +412,7 @@ AC_OUTPUT(Makefile alsactl/Makefile alsactl/init/Makefile \
  	  alsaconf/alsaconf alsaconf/Makefile \
  	  alsaconf/po/Makefile \
--	  alsaucm/Makefile topology/Makefile bat/Makefile \
-+	  alsaucm/Makefile topology/Makefile \
-+	  bat/Makefile bat/tests/Makefile \
+ 	  alsaucm/Makefile topology/Makefile \
+-	  bat/Makefile bat/tests/Makefile \
++	  bat/Makefile bat/tests/Makefile bat/tests/asound_state/Makefile \
  	  aplay/Makefile include/Makefile iecset/Makefile utils/Makefile \
  	  utils/alsa-utils.spec seq/Makefile seq/aconnect/Makefile \
  	  seq/aplaymidi/Makefile seq/aseqdump/Makefile seq/aseqnet/Makefile \
