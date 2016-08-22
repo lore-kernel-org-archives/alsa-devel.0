@@ -1,14 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH RESEND 0/3] conf: Add vendor tuples in conf
-Date: Tue, 23 Aug 2016 09:38:33 +0530
-Message-ID: <1471925316-490-1-git-send-email-vinod.koul@intel.com>
+From: Ismael Luceno <ismael@iodev.co.uk>
+Subject: Re: [PATCH] pcm: Fix shm initialization race-condition
+Date: Mon, 22 Aug 2016 12:02:41 -0300
+Message-ID: <20160822150240.w6sylh4nedsa4l4p@pirotess.bf.iodev.co.uk>
+References: <20160814002852.4013-1-ismael@iodev.co.uk>
+ <s5ha8g5gnn8.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id BEE74266A6F
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 06:00:48 +0200 (CEST)
+Received: from iodev.co.uk (iodev.co.uk [82.211.30.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23C07266EC9
+ for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 17:02:47 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5ha8g5gnn8.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,81 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Topology changes in alsa-lib allow driver data for modules to be be passed
-in topology conf file using tuples. These changes allow private data to
-represented by tuples of type UUID, byte, short, word and strings.
+On 22/Ago/2016 11:26, Takashi Iwai wrote:
+> On Sun, 14 Aug 2016 02:28:52 +0200,
+> Ismael Luceno wrote:
+> > 
+> > Easily seen when two threads try at the same time, one of them will fail.
+> > 
+> > The bug was identified by using apulse with Skype.
+> > 
+> > Fixes: dec428c35221 ("pcm: fix 'unable to create IPC shm instance' caused by fork from a thread")
+> > Fixes: https://github.com/i-rinat/apulse/issues/38
+> > Signed-off-by: Ismael Luceno <ismael@iodev.co.uk>
+> > ---
+> >  src/pcm/pcm_direct.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+> > index c3925cc20fd3..b5215ba35406 100644
+> > --- a/src/pcm/pcm_direct.c
+> > +++ b/src/pcm/pcm_direct.c
+> > @@ -101,6 +101,8 @@ retryget:
+> >  		if ((dmix->shmid = shmget(dmix->ipc_key, sizeof(snd_pcm_direct_share_t),
+> >  					     IPC_CREAT | IPC_EXCL | dmix->ipc_perm)) != -1)
+> >  			first_instance = 1;
+> > +		if (dmix->shmid < 0 && errno == EEXIST)
+> > +			goto retryget;
+> 
+> Hrm, but this would result in an endless loop if the shm was already
+> taken persistently.
 
-This patch series adds changes to :
- - include tuple and token list in the conf file
-   to define module private data.
- - Private data blobs for modules are no longer required. So, remove the
-   binary blobs and the tool used to generate the blobs.
- - Then add bxt conf file which is based on tuples
+If so, shouldn't the first call to shmget succeed?
 
-Shreyas NC (3):
-  conf: sklrt286: define module private data through tuples in skylake
-  conf: sklrt286: Remove tool to generate private data blobs
-  conf: bxtrt298: Add topology conf file for bxt
+To me it seems very unlikely that both calls continuosly fail.
 
- configure.ac                                       |    2 +-
- src/conf/topology/Makefile.am                      |    2 +-
- src/conf/topology/bxtrt298/Makefile.am             |    4 +
- src/conf/topology/bxtrt298/bxt_i2s.conf            | 3323 ++++++++++++++++++++
- src/conf/topology/sklrt286/Makefile.am             |    3 +-
- src/conf/topology/sklrt286/codec0_in-cpr-1.bin     |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/codec0_in-mi.bin        |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/codec0_out-cpr-4.bin    |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/codec0_out-mo.bin       |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/codec1_out-cpr-5.bin    |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/codec1_out-mo.bin       |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/data/Makefile.am        |    6 -
- src/conf/topology/sklrt286/data/pvt.c              | 1815 -----------
- src/conf/topology/sklrt286/data/pvt_data.c         |   90 -
- src/conf/topology/sklrt286/data/pvt_local.h        |    9 -
- .../topology/sklrt286/data/skl-tplg-interface.h    |  232 --
- .../topology/sklrt286/dmic01_hifi_in-cpr-3.bin     |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/dmic01_hifi_in-mi.bin   |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/hdmi1_pt_out-cpr-7.bin  |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/hdmi1_pt_out-cpr-8.bin  |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/hdmi2_pt_out-cpr-10.bin |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/hdmi2_pt_out-cpr-9.bin  |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/hdmi3_pt_out-cpr-11.bin |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/hdmi3_pt_out-cpr-12.bin |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/media0_in-cpr-0.bin     |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/media0_in-mi.bin        |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/media0_out-cpr-6.bin    |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/media0_out-mo.bin       |  Bin 4244 -> 0 bytes
- src/conf/topology/sklrt286/skl_i2s.conf            | 2694 +++++++++++++++-
- 29 files changed, 5988 insertions(+), 2192 deletions(-)
- create mode 100644 src/conf/topology/bxtrt298/Makefile.am
- create mode 100644 src/conf/topology/bxtrt298/bxt_i2s.conf
- delete mode 100644 src/conf/topology/sklrt286/codec0_in-cpr-1.bin
- delete mode 100644 src/conf/topology/sklrt286/codec0_in-mi.bin
- delete mode 100644 src/conf/topology/sklrt286/codec0_out-cpr-4.bin
- delete mode 100644 src/conf/topology/sklrt286/codec0_out-mo.bin
- delete mode 100644 src/conf/topology/sklrt286/codec1_out-cpr-5.bin
- delete mode 100644 src/conf/topology/sklrt286/codec1_out-mo.bin
- delete mode 100644 src/conf/topology/sklrt286/data/Makefile.am
- delete mode 100644 src/conf/topology/sklrt286/data/pvt.c
- delete mode 100644 src/conf/topology/sklrt286/data/pvt_data.c
- delete mode 100644 src/conf/topology/sklrt286/data/pvt_local.h
- delete mode 100644 src/conf/topology/sklrt286/data/skl-tplg-interface.h
- delete mode 100644 src/conf/topology/sklrt286/dmic01_hifi_in-cpr-3.bin
- delete mode 100644 src/conf/topology/sklrt286/dmic01_hifi_in-mi.bin
- delete mode 100644 src/conf/topology/sklrt286/hdmi1_pt_out-cpr-7.bin
- delete mode 100644 src/conf/topology/sklrt286/hdmi1_pt_out-cpr-8.bin
- delete mode 100644 src/conf/topology/sklrt286/hdmi2_pt_out-cpr-10.bin
- delete mode 100644 src/conf/topology/sklrt286/hdmi2_pt_out-cpr-9.bin
- delete mode 100644 src/conf/topology/sklrt286/hdmi3_pt_out-cpr-11.bin
- delete mode 100644 src/conf/topology/sklrt286/hdmi3_pt_out-cpr-12.bin
- delete mode 100644 src/conf/topology/sklrt286/media0_in-cpr-0.bin
- delete mode 100644 src/conf/topology/sklrt286/media0_in-mi.bin
- delete mode 100644 src/conf/topology/sklrt286/media0_out-cpr-6.bin
- delete mode 100644 src/conf/topology/sklrt286/media0_out-mo.bin
+> Also, which call does give a negative shmid, actually?  It's from the
+> first shmget() or the second shmget()?
 
--- 
-1.9.1
+What happens is that both threads go down that path but, of course,
+only one succeeds in the second shmget call.
