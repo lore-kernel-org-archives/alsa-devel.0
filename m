@@ -1,66 +1,72 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/2] ALSA: compress: Use memdup_user() rather than
- duplicating its implementation
-Date: Mon, 22 Aug 2016 10:31:17 +0530
-Message-ID: <20160822050117.GC2890@localhost>
+Subject: Re: [PATCH 2/2] ALSA: compress: Reduce the scope for
+ two variables in snd_compr_set_params()
+Date: Mon, 22 Aug 2016 10:31:56 +0530
+Message-ID: <20160822050156.GD2890@localhost>
 References: <566ABCD9.1060404@users.sourceforge.net>
  <7233eb00-a941-4935-dce2-7cb907272d41@users.sourceforge.net>
- <375fcd8c-ebb5-5f63-f094-347559c5b9c1@users.sourceforge.net>
+ <03eac1fe-ff33-1759-9c2a-7914f1c6de45@users.sourceforge.net>
+ <alpine.DEB.2.10.1608211635480.3119@hadrien>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id D4136266726
+ for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 06:54:02 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <375fcd8c-ebb5-5f63-f094-347559c5b9c1@users.sourceforge.net>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: SF Markus Elfring <elfring@users.sourceforge.net>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
+In-Reply-To: <alpine.DEB.2.10.1608211635480.3119@hadrien>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, SF Markus Elfring <elfring@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 21, 2016 at 09:43:22PM +0200, SF Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Sun, 21 Aug 2016 21:02:06 +0200
+On Sun, Aug 21, 2016 at 04:36:22PM -0400, Julia Lawall wrote:
 > 
-> Reuse existing functionality from memdup_user() instead of keeping
-> duplicate source code.
 > 
-> This issue was detected by using the Coccinelle software.
+> On Sun, 21 Aug 2016, SF Markus Elfring wrote:
+> 
+> > From: Markus Elfring <elfring@users.sourceforge.net>
+> > Date: Sun, 21 Aug 2016 21:26:18 +0200
+> >
+> > Reduce the scope for the local variables to an if branch.
+> >
+> > Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> > ---
+> >  sound/core/compress_offload.c | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+> > index 583d407..b43aec5 100644
+> > --- a/sound/core/compress_offload.c
+> > +++ b/sound/core/compress_offload.c
+> > @@ -545,14 +545,14 @@ static int snd_compress_check_input(struct snd_compr_params *params)
+> >  static int
+> >  snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
+> >  {
+> > -	struct snd_compr_params *params;
+> > -	int retval;
+> > -
+> >  	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
+> >  		/*
+> >  		 * we should allow parameter change only when stream has been
+> >  		 * opened not in other cases
+> >  		 */
+> > +		int retval;
+> > +		struct snd_compr_params *params;
+> 
+> I don't like this at all.  Local variables should be at the top of the
+> function, not hiding under 4 lines of comments in the middle of the code.
 
-It usually helps to have Coccinelle script in changelog.
-
-But nevertheless
-
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->  sound/core/compress_offload.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
-> 
-> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-> index 2c49848..583d407 100644
-> --- a/sound/core/compress_offload.c
-> +++ b/sound/core/compress_offload.c
-> @@ -553,13 +553,9 @@ snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
->  		 * we should allow parameter change only when stream has been
->  		 * opened not in other cases
->  		 */
-> -		params = kmalloc(sizeof(*params), GFP_KERNEL);
-> -		if (!params)
-> -			return -ENOMEM;
-> -		if (copy_from_user(params, (void __user *)arg, sizeof(*params))) {
-> -			retval = -EFAULT;
-> -			goto out;
-> -		}
-> +		params = memdup_user((void __user *)arg, sizeof(*params));
-> +		if (IS_ERR(params))
-> +			return PTR_ERR(params);
->  
->  		retval = snd_compress_check_input(params);
->  		if (retval)
-> -- 
-> 2.9.3
-> 
+I agree with you this, it doesn't help IMO as well
 
 -- 
 ~Vinod
