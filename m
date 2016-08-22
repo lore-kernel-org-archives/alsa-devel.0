@@ -1,97 +1,67 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH -next] ASoC: sun4i-codec: Fix error return code in
- sun4i_codec_probe()
-Date: Mon, 22 Aug 2016 07:54:50 +0200
-Message-ID: <20160822055450.GA21741@lukather>
-References: <1470836554-11569-1-git-send-email-weiyj.lk@gmail.com>
- <CAGb2v67cVXWtM=AzeFcftnajSs=+C6F12P_EvnXHB=oKsAm5Cw@mail.gmail.com>
- <d48eceb4-c26d-3b3c-8577-1ba19a04b040@gmail.com>
+From: Daniel Mack <daniel@zonque.org>
+Subject: [PATCH 1/3] ALSA: usb: move udh01_fb_quirk setting to
+	quirks.c
+Date: Mon, 22 Aug 2016 08:53:36 +0200
+Message-ID: <1471848818-11860-1-git-send-email-daniel@zonque.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <d48eceb4-c26d-3b3c-8577-1ba19a04b040@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: Chen-Yu Tsai <wens@csie.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Emilio Lopez <emilio@elopez.com.ar>, Hans De Goede <hdegoede@redhat.com>, ats@offog.org, fengguang.wu@intel.com, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24917265FFA
+ for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 08:53:49 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: norman.nolte@gmx.net, T.Gresens@intershop.de, clemens@ladisch.de, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
+That's a quirk, after all, so move it where to all the other quirks
+live.
 
---zYM0uCDKw75PZbzx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Daniel Mack <daniel@zonque.org>
+---
+ sound/usb/endpoint.c | 4 ----
+ sound/usb/quirks.c   | 5 +++++
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-Hi,
-
-On Thu, Aug 11, 2016 at 10:15:27PM +0800, Wei Yongjun wrote:
-> Hi
->=20
-> On 08/10/2016 10:04 PM, Chen-Yu Tsai wrote:
-> > On Wed, Aug 10, 2016 at 9:42 PM, Wei Yongjun <weiyj.lk@gmail.com> wrote:
-> >> Fix to return error code -ENOMEM instead of 0 when create card
-> >> failed, as done elsewhere in this function.
-> >>
-> >> Fixes: 45fb6b6f2aa3 ("ASoC: sunxi: add support for the on-chip
-> >> codec on early Allwinner SoCs")
-> >> Signed-off-by: Wei Yongjun <weiyj.lk@gmail.com>
-> >> ---
-> >>  sound/soc/sunxi/sun4i-codec.c | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-cod=
-ec.c
-> >> index 0e19c50..e741659 100644
-> >> --- a/sound/soc/sunxi/sun4i-codec.c
-> >> +++ b/sound/soc/sunxi/sun4i-codec.c
-> >> @@ -846,6 +846,7 @@ static int sun4i_codec_probe(struct platform_devic=
-e *pdev)
-> >>         card =3D sun4i_codec_create_card(&pdev->dev);
-> >>         if (!card) {
-> >>                 dev_err(&pdev->dev, "Failed to create our card\n");
-> >> +               ret =3D -ENOMEM;
-> >>                 goto err_unregister_codec;
-> >>         }
-> >>
-> > This works, though it might be better to fix the create_card function a=
-nd
-> > any custom functions called in there to pass back a proper error value.
-> >
-> Since sun4i_codec_create_card() can only failed when kmalloc() return NUL=
-L, so
-> still need to change sun4i_codec_create_card()?
-
-Yes, please do. It's better to return whatever the function was
-returning. That was, if we add a new error code, we don't have to
-rework the code over and over again.
-
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
-
---zYM0uCDKw75PZbzx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJXupOqAAoJEBx+YmzsjxAgWFYP/1dN/INbrlsKDjEI5ObV5eWw
-Ia/ZVSRPEIFp6Rtx2PHxdbyvTdvyi7xwDv4CeZXitnBZbYP2MuB+iezlpo/Kjmu7
-HUMagXdz5ry2aV+d7XfSD/fpPHZa+A6vLQ4RxXj7Qifi8LdVlUctGCVYKYv6HIgQ
-2nSajThU8js7fGbfENB1GpH2WV9K3QveRxLE2vpk4XjhvRsOX+ZhCyra0JbCCS1Z
-qYa7lKlA56o61Pol3+s84s0iUGnwq5D6x3BrqS9wv6lxZcs1uOXd3Mx2AF775C92
-v8FLDLBV0i9YVewnI72DPEPieugDbLKEMld4vPFiB7sUGOazslYvI8I8XGCjE4B8
-OSCzQ3FyL2HIhaCRhD4yQvBINAip46uCgn5Ct/7CO+8u6+/abq9eKKfjg/nBI3RN
-vYM+x2fH+sCEN8UxoaiQe9X8VF7dbf2miUmk5knzvo1HDTIFDxygfITr1uoPuRy7
-qmhjdA8s1Ieyv80mKvKG0H+Zr462swmLTDzBz4HRwGcdIgIr3QlW5fNFU+eWlHmP
-6lJNgJTOIB9KSqBhHMzeiQQyDLqOXBTxhb7nwi5UlMSdBROUXcLVjTNdvg2jW6+o
-APwTsbg6heaIDO1SfzMYbFYgfXtDoMD3QP8PaWzU5gto708JEcpkXlK2y4A5xvUa
-gyJ45ohcIkcmXKmwGfDC
-=pdGg
------END PGP SIGNATURE-----
-
---zYM0uCDKw75PZbzx--
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index c07a7ed..4b4ffa0 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -502,10 +502,6 @@ struct snd_usb_endpoint *snd_usb_add_endpoint(struct snd_usb_audio *chip,
+ 			ep->syncinterval = 3;
+ 
+ 		ep->syncmaxsize = le16_to_cpu(get_endpoint(alts, 1)->wMaxPacketSize);
+-
+-		if (chip->usb_id == USB_ID(0x0644, 0x8038) /* TEAC UD-H01 */ &&
+-		    ep->syncmaxsize == 4)
+-			ep->udh01_fb_quirk = 1;
+ 	}
+ 
+ 	list_add_tail(&ep->list, &chip->ep_list);
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 6cf1f35..299813f 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1216,6 +1216,11 @@ void snd_usb_endpoint_start_quirk(struct snd_usb_endpoint *ep)
+ 	     ep->chip->usb_id == USB_ID(0x0763, 0x2031)) &&
+ 	    ep->type == SND_USB_ENDPOINT_TYPE_DATA)
+ 		ep->skip_packets = 16;
++
++	/* Work around devices that report unreasonable feedback data */
++	if (ep->chip->usb_id == USB_ID(0x0644, 0x8038) /* TEAC UD-H01 */ &&
++	    ep->syncmaxsize == 4)
++		ep->udh01_fb_quirk = 1;
+ }
+ 
+ void snd_usb_set_interface_quirk(struct usb_device *dev)
+-- 
+2.5.5
