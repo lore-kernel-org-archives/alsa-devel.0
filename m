@@ -1,70 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [RFC PATCH] mfd: arizona: Add gating of external
- MCLKn clocks
-Date: Mon, 22 Aug 2016 18:41:04 +0100
-Message-ID: <20160822174104.GT22076@sirena.org.uk>
-References: <1471627036-19465-1-git-send-email-s.nawrocki@samsung.com>
- <20160822092233.GN21682@localhost.localdomain>
- <d47e7106-037f-b40c-71e5-099ee30874e6@samsung.com>
+Subject: Re: [PATCH] ASoC: sunxi: depend on ARCH_SUNXI
+Date: Mon, 22 Aug 2016 18:41:38 +0100
+Message-ID: <20160822174138.GU22076@sirena.org.uk>
+References: <20160822121242.18827-1-pbrobinson@gmail.com>
+ <2008659.grltYsYuN0@wuerfel>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="BfbbJsf3thGkpLcA"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <d47e7106-037f-b40c-71e5-099ee30874e6@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, lee.jones@linaro.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============2194322313104418568=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <2008659.grltYsYuN0@wuerfel>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, wens@csie.org, Peter Robinson <pbrobinson@gmail.com>, maxime.ripard@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---BfbbJsf3thGkpLcA
+--===============2194322313104418568==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="QOa9dl9wYIBIim/b"
+Content-Disposition: inline
+
+
+--QOa9dl9wYIBIim/b
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 22, 2016 at 07:22:47PM +0200, Sylwester Nawrocki wrote:
+On Mon, Aug 22, 2016 at 04:49:11PM +0200, Arnd Bergmann wrote:
 
-> I got suggestion from Mark not to request the main MCLK clock
-> in the machine driver.  But even if gating of that clock was
-> added to the CODEC driver I would need to get hold of it in
-> the machine driver to get rate of MCLK.  So I thought about
-> exporting a helper from the MFD for requesting MCLK clock or
-> specifying MCLK clock back in the sound DT node.
+> Makes sense, though I think it's nicer to add the dependency to the entire
+> menu, so we hide that as well, and don't have to add the line to future
+> entries:
 
-No, the immediate suggestion is more about the requesting bit than the
-management bit - once the DT is there it's set in stone.
+Yes, that seems better.
 
-> If we provided an interface like:
-
-> struct clk * arizona_get_mclk(struct arizona *arizona, int id);
-> void arizona_put_mclk(struct clk *clk);
-
-> the machine driver would need to get hold of struct arizona*,
-> which is not that straightforward if we are given on CODEC
-> of_node (it can be a child of I2S or SPI bus).
-
-We could add an interface for the machine driver to retrieve a clock
-=66rom the CODEC as a transition measure...
-
-> Then how about specifying MCLK in the sound node and using
-> regular devm_clk_get()?
-
-This is what we're trying to avoid?
-
---BfbbJsf3thGkpLcA
+--QOa9dl9wYIBIim/b
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJXuzkuAAoJECTWi3JdVIfQ+ogH/RkINbYh1MMX/6ZsDUXWVPwp
-c7FHVNpWGHqzmO/o461fi+vuM6aaPlhCOH6z9e3I7c2HsUUB5jEGSLZeGnzv2KD5
-isdYSgW2R4PKm5TOiOtG+2gDRzgEm7rOIC3mpjTmtcq+F1k2a3zBvkel1is+kjZ5
-pmiqwvTRj9HIxJwjSiE9uIig+3cLoMbWHJa/98lZpJckH6KCy//B38DiM8PrJKAf
-u9s65aMxBqWFK9UPhHX/Wd3VyvhnBAodZVqmhF2L+xIrxM1/OjVC8PCA0h1GAhxn
-9K28tJho+HJu/2vZ48ATz0K4m9IQyxE/WieaC/luRzf36wmMsLgRuMNqtXagNpI=
-=hw3q
+iQEcBAEBCAAGBQJXuzlSAAoJECTWi3JdVIfQyHoH/0AikM35eAaGKyzkOZrz6gI7
+bGH+LmO2gP4VGeX8FEsRPUPkpk93bQz/nQGapfoQCbhZc9raiUqkyhXYLjSc+dLb
+97Yh5vFAjDQXqS4KNGckzxNhY42vJWIYBy9Pb4M5ocPVo5zLIT2aimPeiBEvV40h
+fVtf/GXNdTxt9tqgvdceDVP5grGOM7HRI9ewltHWIA49YcYj1B9MURY3dy2fxMvt
+SPxVfWogEy2kkS9koNraOe21/1iepU1Cuwtm6ITIkL+zgTcj92z60s8Z6XSLW2Y5
+UbX++O+RDYkW7kHgNcvOSshrdd7PPt3wik/0/CGyzqJkJqAq1wc63taOsoDFmXU=
+=lTcz
 -----END PGP SIGNATURE-----
 
---BfbbJsf3thGkpLcA--
+--QOa9dl9wYIBIim/b--
+
+
+--===============2194322313104418568==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============2194322313104418568==--
