@@ -1,15 +1,20 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Alsa-lib 'cancelability'
-Date: Mon, 22 Aug 2016 17:41:21 +0100
-Message-ID: <201608221741.21375.gineera@aspect135.co.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/3] ASoC: rsrc-card: rename rsrc-card to
+ simple-dpcm-card phase2
+Date: Mon, 22 Aug 2016 17:49:07 +0100
+Message-ID: <20160822164907.GQ22076@sirena.org.uk>
+References: <87vaz8t4bu.wl%kuninori.morimoto.gx@renesas.com>
+ <87shuct48p.wl%kuninori.morimoto.gx@renesas.com>
+ <20160817105603.GK9347@sirena.org.uk>
+ <874m6dv60c.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4857166389550201629=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-5.talktalk.net (smtp-out-5.talktalk.net [62.24.135.69])
- by alsa0.perex.cz (Postfix) with ESMTP id 2963C266A63
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 18:39:32 +0200 (CEST)
-Content-Disposition: inline
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7F062657B6
+ for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 18:49:18 +0200 (CEST)
+In-Reply-To: <874m6dv60c.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,29 +24,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I am wondering if there is a policy on the thread 'cancelability' / 
-'cancellability' of the functions in Alsa-lib?
+--===============4857166389550201629==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="i/CQJCAqWP/GQJtX"
+Content-Disposition: inline
 
-We are dissecting an issue on the Portaudio list which has appeared with the 
-'Locking API' version 1.1.2, when using the Portaudio callback API.  The 
-callback runs in it's own thread; when a user requests 'AbortStream' a thread 
-cancel is requested.  Sometimes it seems this can take effect during 
-snd_pcm_mmap_commit(), so the function never completes and a lock is not 
-released.  Then, during the cleanup, snd_pcm_drop() attempts to aquire the 
-lock, which is already held, and a lock-up occurs.
 
-Is it up to the application to ensure each Alsa function completes, eg by 
-disabling cancelability on the thread for those periods, or is it reasonable 
-to expect the functions to ensure they complete adequately?
+--i/CQJCAqWP/GQJtX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Any comment would be appreciated.
+On Mon, Aug 22, 2016 at 03:34:23AM +0000, Kuninori Morimoto wrote:
 
-Regards
+> This driver was used for Renesas SCU (Sampling Rate Converter Unit) which
+> is including SRC (Sampling Rate Converter), CTU (Channel Transfer Unit), MIX (Mixer),
+> 1 or more CPU and 1 Codec system.
+> (Original was only for SRC, rsrc = Renesas SRC)
 
-Alan
+> Can I use simple-scu-audio-card ? If OK, I can send such patch.
+
+Yes, that seems fine.
+
+--i/CQJCAqWP/GQJtX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXuy0CAAoJECTWi3JdVIfQjgMH/2SNCntG/HPTDqC7hM/NEhJo
+zyDTlr1b48a+Sz5t81n0+5JIC0p1cVElZwwT3w4wgVqzOGS/L53P2EqunkOCInP5
+UP8BLIjD0hnD9AY7pHGGtrAwpYuIReI47112SuTRpLkcL26qjmHC/0NfhTroRGOL
+o8DsTYKELbIzb0WfyKPRvERaJMdFaKbNCl9VY3yyaBaB1Vo0Lvi5d7tydW+HtD1L
+qHuybMgk6ZPz3TX6ybDBRerHLc95SGcB2zVDQqPRaRPxPmGsGl4mlMVUAshKxhr7
+RChV4854Me9kEoBvLEQzaS+2EO3eAVna7QxoDcBDNimFTaS/1c/px9ytyd9w7Kk=
+=MKSr
+-----END PGP SIGNATURE-----
+
+--i/CQJCAqWP/GQJtX--
+
+--===============4857166389550201629==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4857166389550201629==--
