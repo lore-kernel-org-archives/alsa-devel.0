@@ -1,72 +1,97 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 2/2] ALSA: compress: Reduce the scope for
- two variables in snd_compr_set_params()
-Date: Mon, 22 Aug 2016 10:31:56 +0530
-Message-ID: <20160822050156.GD2890@localhost>
-References: <566ABCD9.1060404@users.sourceforge.net>
- <7233eb00-a941-4935-dce2-7cb907272d41@users.sourceforge.net>
- <03eac1fe-ff33-1759-9c2a-7914f1c6de45@users.sourceforge.net>
- <alpine.DEB.2.10.1608211635480.3119@hadrien>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH -next] ASoC: sun4i-codec: Fix error return code in
+ sun4i_codec_probe()
+Date: Mon, 22 Aug 2016 07:54:50 +0200
+Message-ID: <20160822055450.GA21741@lukather>
+References: <1470836554-11569-1-git-send-email-weiyj.lk@gmail.com>
+ <CAGb2v67cVXWtM=AzeFcftnajSs=+C6F12P_EvnXHB=oKsAm5Cw@mail.gmail.com>
+ <d48eceb4-c26d-3b3c-8577-1ba19a04b040@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id D4136266726
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 06:54:02 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.10.1608211635480.3119@hadrien>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <julia.lawall@lip6.fr>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, SF Markus Elfring <elfring@users.sourceforge.net>
+In-Reply-To: <d48eceb4-c26d-3b3c-8577-1ba19a04b040@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: Chen-Yu Tsai <wens@csie.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Emilio Lopez <emilio@elopez.com.ar>, Hans De Goede <hdegoede@redhat.com>, ats@offog.org, fengguang.wu@intel.com, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 21, 2016 at 04:36:22PM -0400, Julia Lawall wrote:
-> 
-> 
-> On Sun, 21 Aug 2016, SF Markus Elfring wrote:
-> 
-> > From: Markus Elfring <elfring@users.sourceforge.net>
-> > Date: Sun, 21 Aug 2016 21:26:18 +0200
-> >
-> > Reduce the scope for the local variables to an if branch.
-> >
-> > Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> > ---
-> >  sound/core/compress_offload.c | 12 ++++++------
-> >  1 file changed, 6 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-> > index 583d407..b43aec5 100644
-> > --- a/sound/core/compress_offload.c
-> > +++ b/sound/core/compress_offload.c
-> > @@ -545,14 +545,14 @@ static int snd_compress_check_input(struct snd_compr_params *params)
-> >  static int
-> >  snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
-> >  {
-> > -	struct snd_compr_params *params;
-> > -	int retval;
-> > -
-> >  	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
-> >  		/*
-> >  		 * we should allow parameter change only when stream has been
-> >  		 * opened not in other cases
-> >  		 */
-> > +		int retval;
-> > +		struct snd_compr_params *params;
-> 
-> I don't like this at all.  Local variables should be at the top of the
-> function, not hiding under 4 lines of comments in the middle of the code.
 
-I agree with you this, it doesn't help IMO as well
+--zYM0uCDKw75PZbzx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-~Vinod
+Hi,
+
+On Thu, Aug 11, 2016 at 10:15:27PM +0800, Wei Yongjun wrote:
+> Hi
+>=20
+> On 08/10/2016 10:04 PM, Chen-Yu Tsai wrote:
+> > On Wed, Aug 10, 2016 at 9:42 PM, Wei Yongjun <weiyj.lk@gmail.com> wrote:
+> >> Fix to return error code -ENOMEM instead of 0 when create card
+> >> failed, as done elsewhere in this function.
+> >>
+> >> Fixes: 45fb6b6f2aa3 ("ASoC: sunxi: add support for the on-chip
+> >> codec on early Allwinner SoCs")
+> >> Signed-off-by: Wei Yongjun <weiyj.lk@gmail.com>
+> >> ---
+> >>  sound/soc/sunxi/sun4i-codec.c | 1 +
+> >>  1 file changed, 1 insertion(+)
+> >>
+> >> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-cod=
+ec.c
+> >> index 0e19c50..e741659 100644
+> >> --- a/sound/soc/sunxi/sun4i-codec.c
+> >> +++ b/sound/soc/sunxi/sun4i-codec.c
+> >> @@ -846,6 +846,7 @@ static int sun4i_codec_probe(struct platform_devic=
+e *pdev)
+> >>         card =3D sun4i_codec_create_card(&pdev->dev);
+> >>         if (!card) {
+> >>                 dev_err(&pdev->dev, "Failed to create our card\n");
+> >> +               ret =3D -ENOMEM;
+> >>                 goto err_unregister_codec;
+> >>         }
+> >>
+> > This works, though it might be better to fix the create_card function a=
+nd
+> > any custom functions called in there to pass back a proper error value.
+> >
+> Since sun4i_codec_create_card() can only failed when kmalloc() return NUL=
+L, so
+> still need to change sun4i_codec_create_card()?
+
+Yes, please do. It's better to return whatever the function was
+returning. That was, if we add a new error code, we don't have to
+rework the code over and over again.
+
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+
+--zYM0uCDKw75PZbzx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJXupOqAAoJEBx+YmzsjxAgWFYP/1dN/INbrlsKDjEI5ObV5eWw
+Ia/ZVSRPEIFp6Rtx2PHxdbyvTdvyi7xwDv4CeZXitnBZbYP2MuB+iezlpo/Kjmu7
+HUMagXdz5ry2aV+d7XfSD/fpPHZa+A6vLQ4RxXj7Qifi8LdVlUctGCVYKYv6HIgQ
+2nSajThU8js7fGbfENB1GpH2WV9K3QveRxLE2vpk4XjhvRsOX+ZhCyra0JbCCS1Z
+qYa7lKlA56o61Pol3+s84s0iUGnwq5D6x3BrqS9wv6lxZcs1uOXd3Mx2AF775C92
+v8FLDLBV0i9YVewnI72DPEPieugDbLKEMld4vPFiB7sUGOazslYvI8I8XGCjE4B8
+OSCzQ3FyL2HIhaCRhD4yQvBINAip46uCgn5Ct/7CO+8u6+/abq9eKKfjg/nBI3RN
+vYM+x2fH+sCEN8UxoaiQe9X8VF7dbf2miUmk5knzvo1HDTIFDxygfITr1uoPuRy7
+qmhjdA8s1Ieyv80mKvKG0H+Zr462swmLTDzBz4HRwGcdIgIr3QlW5fNFU+eWlHmP
+6lJNgJTOIB9KSqBhHMzeiQQyDLqOXBTxhb7nwi5UlMSdBROUXcLVjTNdvg2jW6+o
+APwTsbg6heaIDO1SfzMYbFYgfXtDoMD3QP8PaWzU5gto708JEcpkXlK2y4A5xvUa
+gyJ45ohcIkcmXKmwGfDC
+=pdGg
+-----END PGP SIGNATURE-----
+
+--zYM0uCDKw75PZbzx--
