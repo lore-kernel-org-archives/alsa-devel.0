@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Remove dfw config and
-	associated structures" to the asoc tree
-Date: Mon, 22 Aug 2016 18:59:11 +0100
-Message-ID: <E1bbtV9-0000qX-Cg@debutante>
-References: <1470985193-10680-4-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: topology: ABI - Add sig_bits to stream
+	caps" to the asoc tree
+Date: Mon, 22 Aug 2016 18:59:08 +0100
+Message-ID: <E1bbtV6-0000pQ-EX@debutante>
+References: <d9147786c40ccf5eeb461c06ae008c4f22c68e7a.1471599648.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 26FD8265A8C
+ by alsa0.perex.cz (Postfix) with ESMTP id 19FBD26585A
  for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 19:59:19 +0200 (CEST)
-In-Reply-To: <1470985193-10680-4-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <d9147786c40ccf5eeb461c06ae008c4f22c68e7a.1471599648.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shreyas NC <shreyas.nc@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
+To: Mengdong Lin <mengdong.lin@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, mengdong.lin@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, hardik.t.shah@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Remove dfw config and associated structures
+   ASoC: topology: ABI - Add sig_bits to stream caps
 
 has been applied to the asoc tree at
 
@@ -53,124 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From 33ece7f9c8e8a2abfcca681ec9424b15271f7afb Mon Sep 17 00:00:00 2001
-From: Shreyas NC <shreyas.nc@intel.com>
-Date: Fri, 12 Aug 2016 12:29:52 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Remove dfw config and associated
- structures
+>From f918e1697b1a8f2f26a4813db053cfbcafc48046 Mon Sep 17 00:00:00 2001
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Date: Fri, 19 Aug 2016 18:12:46 +0800
+Subject: [PATCH] ASoC: topology: ABI - Add sig_bits to stream caps
 
-The skl_dfw_config structure is no longer required as the module
-config is populated by parsing and reading the token values.
+Kernel struct snd_soc_pcm_stream, SoC PCM stream information, needs this
+field. Although current topology users don't configure this, we define it
+for future extension.
 
-So, remove the structure.
-
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-utils.c      |  5 --
- sound/soc/intel/skylake/skl-tplg-interface.h | 73 ----------------------------
- 2 files changed, 78 deletions(-)
+ include/uapi/sound/asoc.h | 1 +
+ sound/soc/soc-topology.c  | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
-index e4865ea950d7..9ce93e9a03b5 100644
---- a/sound/soc/intel/skylake/skl-sst-utils.c
-+++ b/sound/soc/intel/skylake/skl-sst-utils.c
-@@ -28,11 +28,6 @@
- /* FW Extended Manifest Header id = $AE1 */
- #define SKL_EXT_MANIFEST_HEADER_MAGIC   0x31454124
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index f734bea9a032..33d00a4ce656 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -257,6 +257,7 @@ struct snd_soc_tplg_stream_caps {
+ 	__le32 period_size_max;	/* max period size bytes */
+ 	__le32 buffer_size_min;	/* min buffer size bytes */
+ 	__le32 buffer_size_max;	/* max buffer size bytes */
++	__le32 sig_bits;        /* number of bits of content */
+ } __attribute__((packed));
  
--struct skl_dfw_module_mod {
--	char name[100];
--	struct skl_dfw_module skl_dfw_mod;
--};
--
- struct UUID {
- 	u8 id[16];
- };
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index 281762eca0ab..e208724f9db3 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -148,79 +148,6 @@ enum skl_module_param_type {
- 	SKL_PARAM_BIND
- };
+ /*
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index a9e83a2dd91c..6b05047a4134 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1556,6 +1556,7 @@ static void set_stream_info(struct snd_soc_pcm_stream *stream,
+ 	stream->rate_min = caps->rate_min;
+ 	stream->rate_max = caps->rate_max;
+ 	stream->formats = caps->formats;
++	stream->sig_bits = caps->sig_bits;
+ }
  
--struct skl_dfw_module_pin {
--	u16 module_id;
--	u16 instance_id;
--} __packed;
--
--struct skl_dfw_module_fmt {
--	u32 channels;
--	u32 freq;
--	u32 bit_depth;
--	u32 valid_bit_depth;
--	u32 ch_cfg;
--	u32 interleaving_style;
--	u32 sample_type;
--	u32 ch_map;
--} __packed;
--
--struct skl_dfw_module_caps {
--	u32 set_params:2;
--	u32 rsvd:30;
--	u32 param_id;
--	u32 caps_size;
--	u32 caps[HDA_SST_CFG_MAX];
--};
--
--struct skl_dfw_pipe {
--	u8 pipe_id;
--	u8 pipe_priority;
--	u16 conn_type:4;
--	u16 rsvd:4;
--	u16 memory_pages:8;
--} __packed;
--
--struct skl_dfw_module {
--	u8 uuid[16];
--
--	u16 module_id;
--	u16 instance_id;
--	u32 max_mcps;
--	u32 mem_pages;
--	u32 obs;
--	u32 ibs;
--	u32 vbus_id;
--
--	u32 max_in_queue:8;
--	u32 max_out_queue:8;
--	u32 time_slot:8;
--	u32 core_id:4;
--	u32 rsvd1:4;
--
--	u32 module_type:8;
--	u32 conn_type:4;
--	u32 dev_type:4;
--	u32 hw_conn_type:4;
--	u32 rsvd2:12;
--
--	u32 params_fixup:8;
--	u32 converter:8;
--	u32 input_pin_type:1;
--	u32 output_pin_type:1;
--	u32 is_dynamic_in_pin:1;
--	u32 is_dynamic_out_pin:1;
--	u32 is_loadable:1;
--	u32 proc_domain:1;
--	u32 rsvd3:10;
--
--	struct skl_dfw_pipe pipe;
--	struct skl_dfw_module_fmt in_fmt[MAX_IN_QUEUE];
--	struct skl_dfw_module_fmt out_fmt[MAX_OUT_QUEUE];
--	struct skl_dfw_module_pin in_pin[MAX_IN_QUEUE];
--	struct skl_dfw_module_pin out_pin[MAX_OUT_QUEUE];
--	struct skl_dfw_module_caps caps;
--} __packed;
--
- struct skl_dfw_algo_data {
- 	u32 set_params:2;
- 	u32 rsvd:30;
+ static void set_dai_flags(struct snd_soc_dai_driver *dai_drv,
 -- 
 2.8.1
