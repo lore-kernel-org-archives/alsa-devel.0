@@ -1,66 +1,66 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Potential Audio miniconference at LPC/KS
-Date: Mon, 22 Aug 2016 10:29:17 +0530
-Message-ID: <20160822045917.GB2890@localhost>
-References: <20160701155438.GU6247@sirena.org.uk>
- <20160708085903.GT12591@localhost>
- <20160708085447.GU6247@sirena.org.uk>
- <s5hwpjng7dm.wl-tiwai@suse.de>
- <20160812112614.GD9347@sirena.org.uk>
- <s5hinv6dwef.wl-tiwai@suse.de>
+Subject: Re: [PATCH 1/2] ALSA: compress: Use memdup_user() rather than
+ duplicating its implementation
+Date: Mon, 22 Aug 2016 10:31:17 +0530
+Message-ID: <20160822050117.GC2890@localhost>
+References: <566ABCD9.1060404@users.sourceforge.net>
+ <7233eb00-a941-4935-dce2-7cb907272d41@users.sourceforge.net>
+ <375fcd8c-ebb5-5f63-f094-347559c5b9c1@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DB642666D0
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2016 06:51:24 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5hinv6dwef.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girgwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+In-Reply-To: <375fcd8c-ebb5-5f63-f094-347559c5b9c1@users.sourceforge.net>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: SF Markus Elfring <elfring@users.sourceforge.net>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 12, 2016 at 02:06:16PM +0200, Takashi Iwai wrote:
-> On Fri, 12 Aug 2016 13:26:14 +0200,
-> Mark Brown wrote:
-> > 
-> > On Thu, Aug 11, 2016 at 08:13:57AM +0200, Takashi Iwai wrote:
-> > > Mark Brown wrote:
-> > 
-> > > > Yeah, there wasn't anything in the template miniconf for the wifi so I'm
-> > > > not clear what they're looking for there.  We could.
-> > 
-> > > I checked the status on Wiki page but it's still not accepted.
-> > > Mark, could you ping LPC about the status?
-> > 
-> > Just chased them, let's see what happens.  I also added a list of key
-> > attendees (somewhat randomly, please add people as I've most likely
-> > missed some) since I saw the wireless page had one added since I cloned
-> > it and that's the only miniconf that got accepted so far.
-> > 
-> > > We should register soonish, but of course, the workshop has to be
-> > > accepted beforehand...
-> > 
-> > I *think* people can get in without registration via KS but I'm not 100%
-> > sure.  Might be a problem if they need Plumbers registrations :(
+On Sun, Aug 21, 2016 at 09:43:22PM +0200, SF Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Sun, 21 Aug 2016 21:02:06 +0200
 > 
-> Yeah, that's my concern, too.  It'd be great if the situation gets
-> clarified.  It seems like the early registration deadline coming
-> soon, and if the LPC registration is mandatory, we'd need to do it
-> ASAP.
+> Reuse existing functionality from memdup_user() instead of keeping
+> duplicate source code.
+> 
+> This issue was detected by using the Coccinelle software.
 
-Did we get info from organizers. Audio is still not accepted uConf.
-Anything we missed doing :)
+It usually helps to have Coccinelle script in changelog.
+
+But nevertheless
+
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>  sound/core/compress_offload.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
+> 
+> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+> index 2c49848..583d407 100644
+> --- a/sound/core/compress_offload.c
+> +++ b/sound/core/compress_offload.c
+> @@ -553,13 +553,9 @@ snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
+>  		 * we should allow parameter change only when stream has been
+>  		 * opened not in other cases
+>  		 */
+> -		params = kmalloc(sizeof(*params), GFP_KERNEL);
+> -		if (!params)
+> -			return -ENOMEM;
+> -		if (copy_from_user(params, (void __user *)arg, sizeof(*params))) {
+> -			retval = -EFAULT;
+> -			goto out;
+> -		}
+> +		params = memdup_user((void __user *)arg, sizeof(*params));
+> +		if (IS_ERR(params))
+> +			return PTR_ERR(params);
+>  
+>  		retval = snd_compress_check_input(params);
+>  		if (retval)
+> -- 
+> 2.9.3
+> 
 
 -- 
 ~Vinod
