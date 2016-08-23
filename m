@@ -1,41 +1,27 @@
 From: Luis Henriques <luis.henriques@canonical.com>
-Subject: ALSA: compress: Memset timestamp structure to zero.
-Date: Tue, 23 Aug 2016 14:40:37 +0100
-Message-ID: <1471959637-18163-2-git-send-email-luis.henriques@canonical.com>
-References: <1471959637-18163-1-git-send-email-luis.henriques@canonical.com>
+Subject: CVE-2014-9892 fix is not upstream
+Date: Tue, 23 Aug 2016 14:40:36 +0100
+Message-ID: <1471959637-18163-1-git-send-email-luis.henriques@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1471959637-18163-1-git-send-email-luis.henriques@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Krishnankutty Kolathappilly <kkolat@codeaurora.org>
 Cc: Vinod Koul <vinod.koul@intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Krishnankutty Kolathappilly <kkolat@codeaurora.org>
+Hi!
 
-snd_compr_tstamp is initialized using aggregate initialization
-that does not zero out the padded bytes. Initialize timestamp
-structure to zero using memset to avoid this.
+Digging through some old CVEs I came across this one that doesn't seem be
+in mainline.  Was there a good reason for not being sent upstream?  Maybe it was
+rejected for some reason and I failed to find the discussion.
 
-CRs-Fixed: 568717
-Change-Id: I7a7d188705161f06201f1a1f2945bb6acd633d5d
-Signed-off-by: Krishnankutty Kolathappilly <kkolat@codeaurora.org>
----
- sound/core/compress_offload.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+References:
+ https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-9892
+ https://source.android.com/security/bulletin/2016-08-01.html
+ https://source.codeaurora.org/quic/la/kernel/msm-3.10/commit/?id=591b1f455c32206704cbcf426bb30911c260c33e
 
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 2c498488af6c..84aaa07ca853 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -659,9 +659,10 @@ snd_compr_set_metadata(struct snd_compr_stream *stream, unsigned long arg)
- static inline int
- snd_compr_tstamp(struct snd_compr_stream *stream, unsigned long arg)
- {
--	struct snd_compr_tstamp tstamp = {0};
-+	struct snd_compr_tstamp tstamp;
- 	int ret;
- 
-+	memset(&tstamp, 0, sizeof(tstamp));
- 	ret = snd_compr_update_tstamp(stream, &tstamp);
- 	if (ret == 0)
- 		ret = copy_to_user((struct snd_compr_tstamp __user *)arg,
+Cheers,
+--
+Luís
