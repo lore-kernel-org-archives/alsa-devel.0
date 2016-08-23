@@ -1,17 +1,18 @@
-From: Maurizio Berti <maurizio.berti@gmail.com>
-Subject: Range of pitchbend MIDI events
-Date: Tue, 23 Aug 2016 23:59:02 +0200
-Message-ID: <CAPn+-XSsDEe3ruu7vYmdNgneLpK13VxYVm860JAt4cwFe86soQ@mail.gmail.com>
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: [PATCH -next] ASoC: omap-abe-twl6040: Use
+	devm_snd_soc_register_card()
+Date: Tue, 23 Aug 2016 23:10:17 +0000
+Message-ID: <1471993817-10903-1-git-send-email-weiyj.lk@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb0-f182.google.com (mail-yb0-f182.google.com
- [209.85.213.182])
- by alsa0.perex.cz (Postfix) with ESMTP id AEEF5266656
- for <Alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 23:59:43 +0200 (CEST)
-Received: by mail-yb0-f182.google.com with SMTP id z10so55393553ybh.2
- for <Alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 14:59:43 -0700 (PDT)
+Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
+ [209.85.192.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E400266D1C
+ for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2016 01:10:44 +0200 (CEST)
+Received: by mail-pf0-f193.google.com with SMTP id y134so8982371pfg.3
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 16:10:43 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,40 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCkkgd2FzIHBsYXlpbmcgd2l0aCBweWFsc2EgYW5kIEkgcmVhbGl6ZWQgYW4gdW5leHBl
-Y3RlZCBiZWhhdmlvciB3aXRoCnBpdGNoYmVuZCBldmVudHMuClRoZSBwaXRjaGJlbmQgcmFuZ2Ug
-c2hvdWxkIGJlLCBieSBNSURJIHN0YW5kYXJkLCBiZXR3ZWVuIC04MTkyIGFuZCArODE5MSwKb3Ig
-MC0xNjM4NC4gQmVpbmcgYSAzIGJ5dGUgZXZlbnQsIGl0IHNob3VsZCBpZ25vcmUgYW55IHN1YnNl
-cXVlbnQgYnl0ZQpyZWNlaXZlZC4KClVzaW5nIHB5YWxzYSBJJ20gYWJsZSB0byBjcmVhdGUgZXZl
-bnRzIHdpdGggdmFsdWVzIGdyZWF0ZXIgdGhhbiAxMjcgYW5kCnRoZXkgYXJlIHRyYW5zbGF0ZWQg
-dXNpbmcgYXMgbWFueSBieXRlcyBhcyBwb3NzaWJsZTsgaW4gZmFjdCwgaWYgSSBjcmVhdGUgYQpu
-b3RlIGV2ZW50IHdpdGggYSBub3RlIHZhbHVlIG9mIDgxOTMsIEkgcmVjZWl2ZSBhIHZhbHVlIDEg
-KHVzaW5nIHRoZSBmaXJzdApieXRlIG9mIGEgMiBieXRlIHZhbHVlIHdpdGggN2JpdCBmb3JtYXQp
-LgpUaGF0J3MgZmluZSwgSSBzdXBwb3NlIGl0J3MgYnkgYXJjaGl0ZWN0dXJlIChJJ20gbm90IGEg
-cHJvZ3JhbW1lciwgSSBqdXN0CnBsYXkgYXJvdW5kIHdpdGggcHl0aG9uLCBJJ20ganVzdCBhc3N1
-bWluZyB0aGlzKS4KVGhlIHByb2JsZW0gY29tZXMgd2l0aCBwaXRjaGJlbmQgdmFsdWVzLCBzaW5j
-ZSBpdCBsb29rcyBsaWtlIGFsc2EgYWNjZXB0cwp2YWx1ZXMgZ3JlYXRlciB0aGFuIDgxOTEgYW5k
-IGRvZXMgbm90IGlnbm9yZSB0aGUgZXhjZWVkaW5nIGJ5dGVzIGFzIGl0CnNob3VsZDsgdGhhdCBp
-cywgSSdtIGFibGUgdG8gc2VuZCA4MTkyLCBhbmQgdGhhdCdzIHdoYXQgdmtleWJkIGRvZXMuClRo
-ZSB0cmFuc2Zvcm1hdGlvbiBoZXJlIGlzIHRoZSBpc3N1ZSwgc2luY2UgcmVjZWl2aW5nIHByb2dy
-YW1zIHNlZW0gdG8KdHJhbnNsYXRlIG9ubHkgdGhlIGxhdGVzdCB0d28gYnl0ZXMsIHRoYXQncyB3
-aHkgdmtleWJkIChhbmQgb3RoZXIgc29mdHdhcmUKdG9vKSBzaG91bGRuJ3QgaGF2ZSBhIDgxOTIg
-dmFsdWUuClRoYXQgY2FuIGJlIGNvbmZ1c2luZywgZm9yIGV4YW1wbGUsIHVzaW5nIGEyam1pZGk6
-IHRoZSBlbmQgb2YgdGhlIHBpdGNoYmVuZApzY2FsZSBpcyBzdWRkZW5seSBhIDAgdmFsdWU7IEkg
-a25vdyB0aGF0IHZrZXliZCBpcyBub3QgdGhlIHVsdGltYXRlCnNvZnR3YXJlIGluIG11c2ljIHBy
-b2R1Y3Rpb24sIGJ1dCwgc3RpbGwsIGl0IHNob3VsZG4ndCBiZSBhYmxlIHRvIGRvIHNvLCBJCnRo
-aW5rIDopCgpJIGRvbid0IGtub3cgaWYsIG1heWJlLCB0aGVyZSdzIHNvbWUgbGVzcyBrbm93biBh
-c3BlY3QgcmVnYXJkaW5nIHBpdGNoYmVuZCwKYW5kLCBhcyBJIG1lbnRpb25lZCBiZWZvcmUsIEkg
-ZG9uJ3Qga25vdyBhIHRoaW5nIGFib3V0IHByb2dyYW1taW5nLCBub3IgaG93CmFjdHVhbGx5IHdv
-cmtzIEFMU0EgdW5kZXIgdGhlIGhvb2QuIEFueXdheSwgSSB0aGluayB0aGVyZSBzaG91bGQgYmUg
-c29tZQpraW5kIG9mIHJhbmdlIGNvbnRyb2wsIGF0IGxlYXN0IHdpdGggcHlhbHNhLCBpZiBub3Qg
-YnkgYWxzYSBhdCBhbGwuCgpXaGF0IGRvIHlvdSB0aGluaz8KClJlZ2FyZHMsCk1hdXJpemlvCgot
-LSAKw4ggZGlmZmljaWxlIGF2ZXJlIHVuYSBjb252aW56aW9uZSBwcmVjaXNhIHF1YW5kbyBzaSBw
-YXJsYSBkZWxsZSByYWdpb25pIGRlbApjdW9yZS4gLSAiU29zdGllbmUgUGVyZWlyYSIsIEFudG9u
-aW8gVGFidWNjaGkKaHR0cDovL3d3dy5qaWRlc2submV0Cl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+From: Wei Yongjun <weiyongjun1@huawei.com>
+
+Using devm_snd_soc_register_card() can make the code
+shorter and cleaner.
+
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ sound/soc/omap/omap-abe-twl6040.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
+
+diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-twl6040.c
+index f61b3b5..89fe95e 100644
+--- a/sound/soc/omap/omap-abe-twl6040.c
++++ b/sound/soc/omap/omap-abe-twl6040.c
+@@ -305,23 +305,14 @@ static int omap_abe_probe(struct platform_device *pdev)
+ 
+ 	snd_soc_card_set_drvdata(card, priv);
+ 
+-	ret = snd_soc_register_card(card);
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 	if (ret)
+-		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
++		dev_err(&pdev->dev, "devm_snd_soc_register_card() failed: %d\n",
+ 			ret);
+ 
+ 	return ret;
+ }
+ 
+-static int omap_abe_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+-
+-	snd_soc_unregister_card(card);
+-
+-	return 0;
+-}
+-
+ static const struct of_device_id omap_abe_of_match[] = {
+ 	{.compatible = "ti,abe-twl6040", },
+ 	{ },
+@@ -335,7 +326,6 @@ static struct platform_driver omap_abe_driver = {
+ 		.of_match_table = omap_abe_of_match,
+ 	},
+ 	.probe = omap_abe_probe,
+-	.remove = omap_abe_remove,
+ };
+ 
+ static int __init omap_abe_init(void)
