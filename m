@@ -1,17 +1,14 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH RESEND 3/3] conf: bxtrt298: Add topology conf
-	file for bxt
-Date: Tue, 23 Aug 2016 09:38:36 +0530
-Message-ID: <1471925316-490-4-git-send-email-vinod.koul@intel.com>
-References: <1471925316-490-1-git-send-email-vinod.koul@intel.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5660: add rt5660 codec driver
+Date: Tue, 23 Aug 2016 13:33:43 +0800
+Message-ID: <1471930423-9619-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 68D7F266ACF
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 06:00:57 +0200 (CEST)
-In-Reply-To: <1471925316-490-1-git-send-email-vinod.koul@intel.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC5CE266A42
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 07:33:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,3383 +18,2399 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Shreyas NC <shreyas.nc@intel.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Shreyas NC <shreyas.nc@intel.com>
+This is the initial codec driver for rt5660
 
-Add the conf file for bxt platform as well to define module
-private data.
-
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 ---
- configure.ac                            |    1 +
- src/conf/topology/Makefile.am           |    2 +-
- src/conf/topology/bxtrt298/Makefile.am  |    4 +
- src/conf/topology/bxtrt298/bxt_i2s.conf | 3323 +++++++++++++++++++++++++++++++
- 4 files changed, 3329 insertions(+), 1 deletion(-)
- create mode 100644 src/conf/topology/bxtrt298/Makefile.am
- create mode 100644 src/conf/topology/bxtrt298/bxt_i2s.conf
+ Documentation/devicetree/bindings/sound/rt5660.txt |   50 +
+ include/sound/rt5660.h                             |   31 +
+ sound/soc/codecs/Kconfig                           |    6 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/rt5660.c                          | 1364 ++++++++++++++++++++
+ sound/soc/codecs/rt5660.h                          |  847 ++++++++++++
+ 6 files changed, 2300 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rt5660.txt
+ create mode 100644 include/sound/rt5660.h
+ create mode 100644 sound/soc/codecs/rt5660.c
+ create mode 100644 sound/soc/codecs/rt5660.h
 
-diff --git a/configure.ac b/configure.ac
-index 6de8efea3b7c..a1de230e588c 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -680,6 +680,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/conf/topology/broadwell/Makefile \
- 	  modules/Makefile modules/mixer/Makefile modules/mixer/simple/Makefile \
- 	  src/conf/topology/sklrt286/Makefile \
-+	  src/conf/topology/bxtrt298/Makefile \
- 	  alsalisp/Makefile aserver/Makefile \
- 	  test/Makefile test/lsb/Makefile \
- 	  utils/Makefile utils/alsa-lib.spec utils/alsa.pc)
-diff --git a/src/conf/topology/Makefile.am b/src/conf/topology/Makefile.am
-index cbdb7cf07c97..8adaed903053 100644
---- a/src/conf/topology/Makefile.am
-+++ b/src/conf/topology/Makefile.am
-@@ -1 +1 @@
--SUBDIRS=broadwell sklrt286
-+SUBDIRS=broadwell sklrt286 bxtrt298
-diff --git a/src/conf/topology/bxtrt298/Makefile.am b/src/conf/topology/bxtrt298/Makefile.am
+diff --git a/Documentation/devicetree/bindings/sound/rt5660.txt b/Documentation/devicetree/bindings/sound/rt5660.txt
 new file mode 100644
-index 000000000000..152d5cff4fc4
+index 0000000..c6cdb0d
 --- /dev/null
-+++ b/src/conf/topology/bxtrt298/Makefile.am
-@@ -0,0 +1,4 @@
-+alsaconfigdir = @ALSA_CONFIG_DIR@
-+bxtrt298dir = $(alsaconfigdir)/topology/bxtrt298
-+bxtrt298_DATA = bxt_i2s.conf
-+EXTRA_DIST = $(bxtrt298_DATA)
-diff --git a/src/conf/topology/bxtrt298/bxt_i2s.conf b/src/conf/topology/bxtrt298/bxt_i2s.conf
++++ b/Documentation/devicetree/bindings/sound/rt5660.txt
+@@ -0,0 +1,50 @@
++RT5660 audio CODEC
++
++This device supports I2C only.
++
++Required properties:
++
++- compatible : "realtek,rt5660".
++
++- reg : The I2C address of the device.
++
++Optional properties:
++
++- clocks: The phandle of the master clock to the CODEC
++- clock-names: Should be "mclk"
++
++- realtek,in1-differential
++- realtek,in3-differential
++  Boolean. Indicate MIC1/3 input are differential, rather than single-ended.
++
++- realtek,use-ldo2
++  Boolean. Use LDO2 for MICVDD
++
++- realtek,poweroff-in-suspend
++  Boolean. If the codec will be powered off in suspend, the resume should be
++  added delay time for waiting codec power ready.
++
++- realtek,dmic1-data-pin
++  0: dmic1 is not used
++  1: using GPIO2 pin as dmic1 data pin
++  2: using IN1P pin as dmic1 data pin
++
++Pins on the device (for linking into audio routes) for RT5660:
++
++  * DMIC L1
++  * DMIC R1
++  * IN1P
++  * IN1N
++  * IN2P
++  * IN3P
++  * IN3N
++  * SPO
++  * LOUTL
++  * LOUTR
++
++Example:
++
++rt5660 {
++	compatible = "realtek,rt5660";
++	reg = <0x1c>;
++};
+diff --git a/include/sound/rt5660.h b/include/sound/rt5660.h
 new file mode 100644
-index 000000000000..3b7a54e3a323
+index 0000000..065f83a
 --- /dev/null
-+++ b/src/conf/topology/bxtrt298/bxt_i2s.conf
-@@ -0,0 +1,3323 @@
-+SectionVendorTokens."skl_tokens" {
-+	SKL_TKN_UUID "1"
-+	SKL_TKN_U8_NUM_BLOCKS "2"
-+	SKL_TKN_U8_BLOCK_TYPE "3"
-+	SKL_TKN_U8_IN_PIN_TYPE "4"
-+	SKL_TKN_U8_OUT_PIN_TYPE "5"
-+	SKL_TKN_U8_DYN_IN_PIN "6"
-+	SKL_TKN_U8_DYN_OUT_PIN "7"
-+	SKL_TKN_U8_IN_QUEUE_COUNT "8"
-+	SKL_TKN_U8_OUT_QUEUE_COUNT "9"
-+	SKL_TKN_U8_TIME_SLOT "10"
-+	SKL_TKN_U8_CORE_ID "11"
-+	SKL_TKN_U8_MODULE_TYPE "12"
-+	SKL_TKN_U8_CONN_TYPE "13"
-+	SKL_TKN_U8_DEV_TYPE "14"
-+	SKL_TKN_U8_HW_CONN_TYPE "15"
-+	SKL_TKN_U16_MOD_INST_ID "16"
-+	SKL_TKN_U16_BLOCK_SIZE "17"
-+	SKL_TKN_U32_MAX_MCPS "18"
-+	SKL_TKN_U32_MEM_PAGES "19"
-+	SKL_TKN_U32_OBS "20"
-+	SKL_TKN_U32_IBS "21"
-+	SKL_TKN_U32_VBUS_ID "22"
-+	SKL_TKN_U32_PARAMS_FIXUP "23"
-+	SKL_TKN_U32_CONVERTER "24"
-+	SKL_TKN_U32_PIPE_ID "25"
-+	SKL_TKN_U32_PIPE_CONN_TYPE "26"
-+	SKL_TKN_U32_PIPE_PRIORITY "27"
-+	SKL_TKN_U32_PIPE_MEM_PGS "28"
-+	SKL_TKN_U32_DIR_PIN_COUNT "29"
-+	SKL_TKN_U32_FMT_CH "30"
-+	SKL_TKN_U32_FMT_FREQ "31"
-+	SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+	SKL_TKN_U32_FMT_SAMPLE_SIZE "33"
-+	SKL_TKN_U32_FMT_CH_CONFIG "34"
-+	SKL_TKN_U32_FMT_INTERLEAVE "35"
-+	SKL_TKN_U32_FMT_SAMPLE_TYPE "36"
-+	SKL_TKN_U32_FMT_CH_MAP "37"
-+	SKL_TKN_U32_PIN_MOD_ID "38"
-+	SKL_TKN_U32_PIN_INST_ID "39"
-+	SKL_TKN_U32_MOD_SET_PARAMS "40"
-+	SKL_TKN_U32_MOD_PARAM_ID "41"
-+	SKL_TKN_U32_CAPS_SET_PARAMS "42"
-+	SKL_TKN_U32_CAPS_PARAMS_ID "43"
-+	SKL_TKN_U32_CAPS_SIZE "44"
-+	SKL_TKN_U32_PROC_DOMAIN "45"
-+	SKL_TKN_U32_LIB_COUNT "46"
-+	SKL_TKN_STR_LIB_NAME "47"
-+}
-+
-+SectionVendorTuples."media0_in cpr 0 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."media0_in cpr 0_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."media0_in cpr 0" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "1"
-+		SKL_TKN_U8_HW_CONN_TYPE "1"
-+		SKL_TKN_U8_DEV_TYPE "5"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "0"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "0"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "1"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "1"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."media0_in mi num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."media0_in mi_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "420"
-+	}
-+}
-+
-+SectionVendorTuples."media0_in mi" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "178, 110, 101, 57, 113, 59,
-+		73, 64, 141, 63, 249, 44, 213, 196, 60, 9"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "1"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "0"
-+		SKL_TKN_U8_CONN_TYPE "0"
-+		SKL_TKN_U8_HW_CONN_TYPE "1"
-+		SKL_TKN_U8_DEV_TYPE "6"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "0"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "0"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "1"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "1"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."codec0_in cpr 1 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."codec0_in cpr 1_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."codec0_in cpr 1" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "2"
-+		SKL_TKN_U8_HW_CONN_TYPE "2"
-+		SKL_TKN_U8_DEV_TYPE "2"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "1"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0x5"
-+		SKL_TKN_U32_PARAMS_FIXUP "0"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "2"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "2"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."codec0_in mi num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."codec0_in mi_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "420"
-+	}
-+}
-+
-+SectionVendorTuples."codec0_in mi" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "178, 110, 101, 57, 113, 59,
-+		73, 64, 141, 63, 249, 44, 213, 196, 60, 9"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "1"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "0"
-+		SKL_TKN_U8_CONN_TYPE "0"
-+		SKL_TKN_U8_HW_CONN_TYPE "2"
-+		SKL_TKN_U8_DEV_TYPE "6"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "1"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "0"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "2"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "2"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."codec0_out mo num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."codec0_out mo_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "1092"
-+	}
-+}
-+
-+SectionVendorTuples."codec0_out mo" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "90, 80, 86, 60, 215, 36,
-+		143, 65, 189, 220, 193, 245, 163, 172, 42, 224"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "8"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "1"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "0"
-+		SKL_TKN_U8_CONN_TYPE "0"
-+		SKL_TKN_U8_HW_CONN_TYPE "1"
-+		SKL_TKN_U8_DEV_TYPE "6"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "0"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "0"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "3"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "2"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "16"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_2" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "32"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_3" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "48"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_4" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "64"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_5" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "80"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_6" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "96"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_7" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "112"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "16"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_2" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "32"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_3" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "48"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_4" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "64"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_5" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "80"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_6" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "96"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_7" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "112"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."codec0_out cpr 2 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."codec0_out cpr 2_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."codec0_out cpr 2" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "2"
-+		SKL_TKN_U8_HW_CONN_TYPE "1"
-+		SKL_TKN_U8_DEV_TYPE "2"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "2"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0x5"
-+		SKL_TKN_U32_PARAMS_FIXUP "0"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "3"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "2"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."media0_out mo num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."media0_out mo_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "1092"
-+	}
-+}
-+
-+SectionVendorTuples."media0_out mo" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "90, 80, 86, 60, 215, 36,
-+		143, 65, 189, 220, 193, 245, 163, 172, 42, 224"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "8"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "1"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "0"
-+		SKL_TKN_U8_CONN_TYPE "0"
-+		SKL_TKN_U8_HW_CONN_TYPE "2"
-+		SKL_TKN_U8_DEV_TYPE "6"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "1"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "0"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "4"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "1"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "16"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_2" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "32"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_3" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "48"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_4" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "64"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_5" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "80"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_6" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "96"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_7" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "112"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "16"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_2" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "32"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_3" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "48"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_4" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "64"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_5" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "80"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_6" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "96"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_7" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "112"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."media0_out cpr 3 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."media0_out cpr 3_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."media0_out cpr 3" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "0"
-+		SKL_TKN_U8_HW_CONN_TYPE "2"
-+		SKL_TKN_U8_DEV_TYPE "5"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "3"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "4"
-+		SKL_TKN_U32_CONVERTER "4"
-+		SKL_TKN_U32_PIPE_ID "4"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "1"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."dmic01_hifi_in cpr 4 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."dmic01_hifi_in cpr 4_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."dmic01_hifi_in cpr 4" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "2"
-+		SKL_TKN_U8_HW_CONN_TYPE "2"
-+		SKL_TKN_U8_DEV_TYPE "1"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "4"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0x0"
-+		SKL_TKN_U32_PARAMS_FIXUP "4"
-+		SKL_TKN_U32_CONVERTER "4"
-+		SKL_TKN_U32_PIPE_ID "5"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "2"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."dmic01_hifi_in mi num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."dmic01_hifi_in mi_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "420"
-+	}
-+}
-+
-+SectionVendorTuples."dmic01_hifi_in mi" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "178, 110, 101, 57, 113, 59,
-+		73, 64, 141, 63, 249, 44, 213, 196, 60, 9"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "1"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "0"
-+		SKL_TKN_U8_CONN_TYPE "0"
-+		SKL_TKN_U8_HW_CONN_TYPE "2"
-+		SKL_TKN_U8_DEV_TYPE "6"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "2"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "0"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "5"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "0"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."codec1_out mo num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."codec1_out mo_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "1092"
-+	}
-+}
-+
-+SectionVendorTuples."codec1_out mo" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "90, 80, 86, 60, 215, 36,
-+		143, 65, 189, 220, 193, 245, 163, 172, 42, 224"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "8"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "1"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "0"
-+		SKL_TKN_U8_CONN_TYPE "0"
-+		SKL_TKN_U8_HW_CONN_TYPE "1"
-+		SKL_TKN_U8_DEV_TYPE "6"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "2"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "0"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "6"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "2"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "16"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_2" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "32"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_3" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "48"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_4" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "64"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_5" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "80"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_6" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "96"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_fmt_7" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "112"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "16"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_2" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "32"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_3" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "48"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_4" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "64"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_5" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "80"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_6" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "96"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.in_pin_7" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "112"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."codec1_out cpr 5 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."codec1_out cpr 5_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."codec1_out cpr 5" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "2"
-+		SKL_TKN_U8_HW_CONN_TYPE "1"
-+		SKL_TKN_U8_DEV_TYPE "2"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "5"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0x5"
-+		SKL_TKN_U32_PARAMS_FIXUP "0"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "6"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "2"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi1_pt_out cpr 6 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi1_pt_out cpr 6_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi1_pt_out cpr 6" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "1"
-+		SKL_TKN_U8_HW_CONN_TYPE "1"
-+		SKL_TKN_U8_DEV_TYPE "5"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "6"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "7"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "7"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "1"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi1_pt_out cpr 7 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi1_pt_out cpr 7_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi1_pt_out cpr 7" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "1"
-+		SKL_TKN_U8_HW_CONN_TYPE "1"
-+		SKL_TKN_U8_DEV_TYPE "4"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "7"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "7"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "7"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "1"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi2_pt_out cpr 8 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi2_pt_out cpr 8_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi2_pt_out cpr 8" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "1"
-+		SKL_TKN_U8_HW_CONN_TYPE "1"
-+		SKL_TKN_U8_DEV_TYPE "5"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "8"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "7"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "8"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "1"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi2_pt_out cpr 9 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi2_pt_out cpr 9_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi2_pt_out cpr 9" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "1"
-+		SKL_TKN_U8_HW_CONN_TYPE "1"
-+		SKL_TKN_U8_DEV_TYPE "4"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "9"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "7"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "8"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "1"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi3_pt_out cpr 10 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi3_pt_out cpr 10_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi3_pt_out cpr 10" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "1"
-+		SKL_TKN_U8_HW_CONN_TYPE "1"
-+		SKL_TKN_U8_DEV_TYPE "5"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "10"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "7"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "9"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "1"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi3_pt_out cpr 11 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi3_pt_out cpr 11_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."hdmi3_pt_out cpr 11" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "1"
-+		SKL_TKN_U8_HW_CONN_TYPE "1"
-+		SKL_TKN_U8_DEV_TYPE "4"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "11"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "384"
-+		SKL_TKN_U32_IBS "384"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "7"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "9"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "1"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "2"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffffff10"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x1"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."mch_cap_in cpr 12 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."mch_cap_in cpr 12_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."mch_cap_in cpr 12" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "2"
-+		SKL_TKN_U8_HW_CONN_TYPE "2"
-+		SKL_TKN_U8_DEV_TYPE "1"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "12"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "200000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "768"
-+		SKL_TKN_U32_IBS "768"
-+		SKL_TKN_U32_VBUS_ID "0x0"
-+		SKL_TKN_U32_PARAMS_FIXUP "4"
-+		SKL_TKN_U32_CONVERTER "0"
-+		SKL_TKN_U32_PIPE_ID "10"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "2"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "4"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffff4320"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x5"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "4"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffff4320"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x5"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "4"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffff4320"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x5"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."mch_cap_in cpr 13 num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."mch_cap_in cpr 13_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "516"
-+	}
-+}
-+
-+SectionVendorTuples."mch_cap_in cpr 13" {
-+	tokens "skl_tokens"
-+
-+	tuples."uuid" {
-+		SKL_TKN_UUID "131, 12, 160, 155, 18, 202,
-+		131, 74, 148, 60, 31, 162, 232, 47, 157, 218"
-+	}
-+
-+	tuples."byte.u8_data" {
-+		SKL_TKN_U8_IN_PIN_TYPE "0"
-+		SKL_TKN_U8_OUT_PIN_TYPE "0"
-+		SKL_TKN_U8_IN_QUEUE_COUNT "1"
-+		SKL_TKN_U8_OUT_QUEUE_COUNT "2"
-+		SKL_TKN_U8_DYN_IN_PIN "1"
-+		SKL_TKN_U8_DYN_OUT_PIN "1"
-+		SKL_TKN_U8_TIME_SLOT "0"
-+		SKL_TKN_U8_CORE_ID "0"
-+		SKL_TKN_U8_MODULE_TYPE "1"
-+		SKL_TKN_U8_CONN_TYPE "2"
-+		SKL_TKN_U8_HW_CONN_TYPE "2"
-+		SKL_TKN_U8_DEV_TYPE "5"
-+	}
-+
-+	tuples."short.u16_data" {
-+		SKL_TKN_U16_MOD_INST_ID "13"
-+	}
-+
-+	tuples."word.u32_data" {
-+		SKL_TKN_U32_MAX_MCPS "100000"
-+		SKL_TKN_U32_MEM_PAGES "1"
-+		SKL_TKN_U32_OBS "768"
-+		SKL_TKN_U32_IBS "768"
-+		SKL_TKN_U32_VBUS_ID "0xffffffff"
-+		SKL_TKN_U32_PARAMS_FIXUP "4"
-+		SKL_TKN_U32_CONVERTER "4"
-+		SKL_TKN_U32_PIPE_ID "10"
-+		SKL_TKN_U32_PIPE_CONN_TYPE "2"
-+		SKL_TKN_U32_PIPE_PRIORITY "0"
-+		SKL_TKN_U32_PIPE_MEM_PGS "2"
-+		SKL_TKN_U32_CAPS_SIZE "0"
-+		SKL_TKN_U32_PROC_DOMAIN "0"
-+	}
-+
-+	tuples."word.in_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_FMT_CH "4"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffff4320"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x5"
-+	}
-+
-+	tuples."word.out_fmt_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_FMT_CH "4"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffff4320"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x5"
-+	}
-+
-+	tuples."word.out_fmt_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_FMT_CH "4"
-+		SKL_TKN_U32_FMT_FREQ "48000"
-+		SKL_TKN_U32_FMT_BIT_DEPTH "32"
-+		SKL_TKN_U32_FMT_SAMPLE_SIZE "24"
-+		SKL_TKN_U32_FMT_INTERLEAVE "0"
-+		SKL_TKN_U32_FMT_SAMPLE_TYPE "0"
-+		SKL_TKN_U32_FMT_CH_MAP "0xffff4320"
-+		SKL_TKN_U32_FMT_CH_CONFIG "0x5"
-+	}
-+
-+	tuples."word.in_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "0"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_0" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "1"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+
-+	tuples."word.out_pin_1" {
-+		SKL_TKN_U32_DIR_PIN_COUNT "17"
-+		SKL_TKN_U32_PIN_MOD_ID "0"
-+		SKL_TKN_U32_PIN_INST_ID "0"
-+	}
-+}
-+
-+SectionVendorTuples."lib_data num_desc" {
-+	tokens "skl_tokens"
-+
-+	tuples."byte.u8_num_blocks" {
-+		SKL_TKN_U8_NUM_BLOCKS "1"
-+	}
-+}
-+
-+SectionVendorTuples."lib_data_size_desc" {
-+	tokens "skl_tokens"
-+	tuples."byte.u8_block_type"{
-+		SKL_TKN_U8_BLOCK_TYPE "0"
-+	}
-+	tuples."short.u16_size_desc"{
-+		SKL_TKN_U16_BLOCK_SIZE "56"
-+	}
-+}
-+
-+SectionVendorTuples."lib_data" {
-+	tokens "skl_tokens"
-+
-+	tuples."word.lib_name" {
-+		SKL_TKN_U32_LIB_COUNT "1"
-+	}
-+
-+	tuples."string.lib_name_0" {
-+		SKL_TKN_STR_LIB_NAME "base_fw"
-+	}
-+
-+}
-+
-+
-+SectionData."media0_in cpr 0 num_desc" {
-+	tuples "media0_in cpr 0 num_desc"
-+}
-+
-+SectionData."media0_in cpr 0_size_desc" {
-+	tuples "media0_in cpr 0_size_desc"
-+}
-+
-+SectionData."media0_in cpr 0" {
-+	tuples "media0_in cpr 0"
-+}
-+
-+SectionData."media0_in mi num_desc" {
-+	tuples "media0_in mi num_desc"
-+}
-+
-+SectionData."media0_in mi_size_desc" {
-+	tuples "media0_in mi_size_desc"
-+}
-+
-+SectionData."media0_in mi" {
-+	tuples "media0_in mi"
-+}
-+
-+SectionData."codec0_in cpr 1 num_desc" {
-+	tuples "codec0_in cpr 1 num_desc"
-+}
-+
-+SectionData."codec0_in cpr 1_size_desc" {
-+	tuples "codec0_in cpr 1_size_desc"
-+}
-+
-+SectionData."codec0_in cpr 1" {
-+	tuples "codec0_in cpr 1"
-+}
-+
-+SectionData."codec0_in mi num_desc" {
-+	tuples "codec0_in mi num_desc"
-+}
-+
-+SectionData."codec0_in mi_size_desc" {
-+	tuples "codec0_in mi_size_desc"
-+}
-+
-+SectionData."codec0_in mi" {
-+	tuples "codec0_in mi"
-+}
-+
-+SectionData."codec0_out mo num_desc" {
-+	tuples "codec0_out mo num_desc"
-+}
-+
-+SectionData."codec0_out mo_size_desc" {
-+	tuples "codec0_out mo_size_desc"
-+}
-+
-+SectionData."codec0_out mo" {
-+	tuples "codec0_out mo"
-+}
-+
-+SectionData."codec0_out cpr 2 num_desc" {
-+	tuples "codec0_out cpr 2 num_desc"
-+}
-+
-+SectionData."codec0_out cpr 2_size_desc" {
-+	tuples "codec0_out cpr 2_size_desc"
-+}
-+
-+SectionData."codec0_out cpr 2" {
-+	tuples "codec0_out cpr 2"
-+}
-+
-+SectionData."media0_out mo num_desc" {
-+	tuples "media0_out mo num_desc"
-+}
-+
-+SectionData."media0_out mo_size_desc" {
-+	tuples "media0_out mo_size_desc"
-+}
-+
-+SectionData."media0_out mo" {
-+	tuples "media0_out mo"
-+}
-+
-+SectionData."media0_out cpr 3 num_desc" {
-+	tuples "media0_out cpr 3 num_desc"
-+}
-+
-+SectionData."media0_out cpr 3_size_desc" {
-+	tuples "media0_out cpr 3_size_desc"
-+}
-+
-+SectionData."media0_out cpr 3" {
-+	tuples "media0_out cpr 3"
-+}
-+
-+SectionData."dmic01_hifi_in cpr 4 num_desc" {
-+	tuples "dmic01_hifi_in cpr 4 num_desc"
-+}
-+
-+SectionData."dmic01_hifi_in cpr 4_size_desc" {
-+	tuples "dmic01_hifi_in cpr 4_size_desc"
-+}
-+
-+SectionData."dmic01_hifi_in cpr 4" {
-+	tuples "dmic01_hifi_in cpr 4"
-+}
-+
-+SectionData."dmic01_hifi_in mi num_desc" {
-+	tuples "dmic01_hifi_in mi num_desc"
-+}
-+
-+SectionData."dmic01_hifi_in mi_size_desc" {
-+	tuples "dmic01_hifi_in mi_size_desc"
-+}
-+
-+SectionData."dmic01_hifi_in mi" {
-+	tuples "dmic01_hifi_in mi"
-+}
-+
-+SectionData."codec1_out mo num_desc" {
-+	tuples "codec1_out mo num_desc"
-+}
-+
-+SectionData."codec1_out mo_size_desc" {
-+	tuples "codec1_out mo_size_desc"
-+}
-+
-+SectionData."codec1_out mo" {
-+	tuples "codec1_out mo"
-+}
-+
-+SectionData."codec1_out cpr 5 num_desc" {
-+	tuples "codec1_out cpr 5 num_desc"
-+}
-+
-+SectionData."codec1_out cpr 5_size_desc" {
-+	tuples "codec1_out cpr 5_size_desc"
-+}
-+
-+SectionData."codec1_out cpr 5" {
-+	tuples "codec1_out cpr 5"
-+}
-+
-+SectionData."hdmi1_pt_out cpr 6 num_desc" {
-+	tuples "hdmi1_pt_out cpr 6 num_desc"
-+}
-+
-+SectionData."hdmi1_pt_out cpr 6_size_desc" {
-+	tuples "hdmi1_pt_out cpr 6_size_desc"
-+}
-+
-+SectionData."hdmi1_pt_out cpr 6" {
-+	tuples "hdmi1_pt_out cpr 6"
-+}
-+
-+SectionData."hdmi1_pt_out cpr 7 num_desc" {
-+	tuples "hdmi1_pt_out cpr 7 num_desc"
-+}
-+
-+SectionData."hdmi1_pt_out cpr 7_size_desc" {
-+	tuples "hdmi1_pt_out cpr 7_size_desc"
-+}
-+
-+SectionData."hdmi1_pt_out cpr 7" {
-+	tuples "hdmi1_pt_out cpr 7"
-+}
-+
-+SectionData."hdmi2_pt_out cpr 8 num_desc" {
-+	tuples "hdmi2_pt_out cpr 8 num_desc"
-+}
-+
-+SectionData."hdmi2_pt_out cpr 8_size_desc" {
-+	tuples "hdmi2_pt_out cpr 8_size_desc"
-+}
-+
-+SectionData."hdmi2_pt_out cpr 8" {
-+	tuples "hdmi2_pt_out cpr 8"
-+}
-+
-+SectionData."hdmi2_pt_out cpr 9 num_desc" {
-+	tuples "hdmi2_pt_out cpr 9 num_desc"
-+}
-+
-+SectionData."hdmi2_pt_out cpr 9_size_desc" {
-+	tuples "hdmi2_pt_out cpr 9_size_desc"
-+}
-+
-+SectionData."hdmi2_pt_out cpr 9" {
-+	tuples "hdmi2_pt_out cpr 9"
-+}
-+
-+SectionData."hdmi3_pt_out cpr 10 num_desc" {
-+	tuples "hdmi3_pt_out cpr 10 num_desc"
-+}
-+
-+SectionData."hdmi3_pt_out cpr 10_size_desc" {
-+	tuples "hdmi3_pt_out cpr 10_size_desc"
-+}
-+
-+SectionData."hdmi3_pt_out cpr 10" {
-+	tuples "hdmi3_pt_out cpr 10"
-+}
-+
-+SectionData."hdmi3_pt_out cpr 11 num_desc" {
-+	tuples "hdmi3_pt_out cpr 11 num_desc"
-+}
-+
-+SectionData."hdmi3_pt_out cpr 11_size_desc" {
-+	tuples "hdmi3_pt_out cpr 11_size_desc"
-+}
-+
-+SectionData."hdmi3_pt_out cpr 11" {
-+	tuples "hdmi3_pt_out cpr 11"
-+}
-+
-+SectionData."mch_cap_in cpr 12 num_desc" {
-+	tuples "mch_cap_in cpr 12 num_desc"
-+}
-+
-+SectionData."mch_cap_in cpr 12_size_desc" {
-+	tuples "mch_cap_in cpr 12_size_desc"
-+}
-+
-+SectionData."mch_cap_in cpr 12" {
-+	tuples "mch_cap_in cpr 12"
-+}
-+
-+SectionData."mch_cap_in cpr 13 num_desc" {
-+	tuples "mch_cap_in cpr 13 num_desc"
-+}
-+
-+SectionData."mch_cap_in cpr 13_size_desc" {
-+	tuples "mch_cap_in cpr 13_size_desc"
-+}
-+
-+SectionData."mch_cap_in cpr 13" {
-+	tuples "mch_cap_in cpr 13"
-+}
-+
-+SectionData."lib_data num_desc" {
-+	tuples "lib_data num_desc"
-+}
-+
-+SectionData."lib_data_size_desc" {
-+	tuples "lib_data_size_desc"
-+}
-+
-+SectionData."lib_data" {
-+	tuples "lib_data"
-+}
-+
-+
-+SectionControlMixer."media0_in mi Switch" {
-+	index"1"
-+	invert "false"
-+	max "1"
-+	min"0"
-+	no_pm "true"
-+	channel."fl" {
-+		reg "-1"
-+		shift "0"
-+	}
-+	channel."fr" {
-+		reg "-1"
-+		shift "0"
-+	}
-+	ops."ctl" {
-+		get "64"
-+		put "64"
-+		info "64"
-+	}
-+}
-+SectionControlMixer."dmic01_hifi_in mi Switch" {
-+	index"1"
-+	invert "false"
-+	max "1"
-+	min"0"
-+	no_pm "true"
-+	channel."fl" {
-+		reg "-1"
-+		shift "0"
-+	}
-+	channel."fr" {
-+		reg "-1"
-+		shift "0"
-+	}
-+	ops."ctl" {
-+		get "64"
-+		put "64"
-+		info "64"
-+	}
-+}
-+SectionControlMixer."codec0_in mi Switch" {
-+	index"1"
-+	invert "false"
-+	max "1"
-+	min"0"
-+	no_pm "true"
-+	channel."fl" {
-+		reg "-1"
-+		shift "0"
-+	}
-+	channel."fr" {
-+		reg "-1"
-+		shift "0"
-+	}
-+	ops."ctl" {
-+		get "64"
-+		put "64"
-+		info "64"
-+	}
-+}
-+
-+
-+SectionWidget."media0_in cpr 0" {
-+	index"1"
-+	type"mixer"
-+	no_pm "true"
-+	event_type "3"
-+	event_flags "9"
-+	data [
-+		"media0_in cpr 0 num_desc"
-+		"media0_in cpr 0_size_desc"
-+		"media0_in cpr 0"
-+	]
-+}
-+SectionWidget."media0_in mi" {
-+	index"1"
-+	type"pga"
-+	no_pm "true"
-+	event_type "4"
-+	event_flags "9"
-+	subseq "10"
-+	data [
-+		"media0_in mi num_desc"
-+		"media0_in mi_size_desc"
-+		"media0_in mi"
-+	]
-+}
-+SectionWidget."codec0_in cpr 1" {
-+	index"1"
-+	type"mixer"
-+	no_pm "true"
-+	event_type "3"
-+	event_flags "9"
-+	data [
-+		"codec0_in cpr 1 num_desc"
-+		"codec0_in cpr 1_size_desc"
-+		"codec0_in cpr 1"
-+	]
-+}
-+SectionWidget."codec0_in mi" {
-+	index"1"
-+	type"pga"
-+	no_pm "true"
-+	event_type "4"
-+	event_flags "9"
-+	subseq "10"
-+	data [
-+		"codec0_in mi num_desc"
-+		"codec0_in mi_size_desc"
-+		"codec0_in mi"
-+	]
-+}
-+SectionWidget."codec0_in" {
-+	index"1"
-+	type"aif_in"
-+	no_pm "true"
-+}
-+SectionWidget."codec0_out mo" {
-+	index"1"
-+	type"mixer"
-+	no_pm "true"
-+	event_type "1"
-+	event_flags "15"
-+	subseq "10"
-+	data [
-+		"codec0_out mo num_desc"
-+		"codec0_out mo_size_desc"
-+		"codec0_out mo"
-+	]
-+	mixer [
-+		"media0_in mi Switch"
-+		"dmic01_hifi_in mi Switch"
-+		"codec0_in mi Switch"
-+	]
-+}
-+SectionWidget."codec0_out cpr 2" {
-+	index"1"
-+	type"pga"
-+	no_pm "true"
-+	event_type "4"
-+	data [
-+		"codec0_out cpr 2 num_desc"
-+		"codec0_out cpr 2_size_desc"
-+		"codec0_out cpr 2"
-+	]
-+}
-+SectionWidget."codec0_out" {
-+	index"1"
-+	type"aif_out"
-+	no_pm "true"
-+}
-+SectionWidget."media0_out mo" {
-+	index"1"
-+	type"mixer"
-+	no_pm "true"
-+	event_type "1"
-+	event_flags "15"
-+	subseq "10"
-+	data [
-+		"media0_out mo num_desc"
-+		"media0_out mo_size_desc"
-+		"media0_out mo"
-+	]
-+	mixer [
-+		"media0_in mi Switch"
-+		"dmic01_hifi_in mi Switch"
-+		"codec0_in mi Switch"
-+	]
-+}
-+SectionWidget."media0_out cpr 3" {
-+	index"1"
-+	type"pga"
-+	no_pm "true"
-+	event_type "4"
-+	data [
-+		"media0_out cpr 3 num_desc"
-+		"media0_out cpr 3_size_desc"
-+		"media0_out cpr 3"
-+	]
-+}
-+SectionWidget."dmic01_hifi_in cpr 4" {
-+	index"1"
-+	type"mixer"
-+	no_pm "true"
-+	event_type "3"
-+	event_flags "9"
-+	data [
-+		"dmic01_hifi_in cpr 4 num_desc"
-+		"dmic01_hifi_in cpr 4_size_desc"
-+		"dmic01_hifi_in cpr 4"
-+	]
-+}
-+SectionWidget."dmic01_hifi_in mi" {
-+	index"1"
-+	type"pga"
-+	no_pm "true"
-+	event_type "4"
-+	event_flags "9"
-+	subseq "10"
-+	data [
-+		"dmic01_hifi_in mi num_desc"
-+		"dmic01_hifi_in mi_size_desc"
-+		"dmic01_hifi_in mi"
-+	]
-+}
-+SectionWidget."dmic01_hifi" {
-+	index"1"
-+	type"aif_in"
-+	no_pm "true"
-+}
-+SectionWidget."codec1_out mo" {
-+	index"1"
-+	type"mixer"
-+	no_pm "true"
-+	event_type "1"
-+	event_flags "15"
-+	subseq "10"
-+	data [
-+		"codec1_out mo num_desc"
-+		"codec1_out mo_size_desc"
-+		"codec1_out mo"
-+	]
-+	mixer [
-+		"media0_in mi Switch"
-+		"dmic01_hifi_in mi Switch"
-+		"codec0_in mi Switch"
-+	]
-+}
-+SectionWidget."codec1_out cpr 5" {
-+	index"1"
-+	type"pga"
-+	no_pm "true"
-+	event_type "4"
-+	data [
-+		"codec1_out cpr 5 num_desc"
-+		"codec1_out cpr 5_size_desc"
-+		"codec1_out cpr 5"
-+	]
-+}
-+SectionWidget."codec1_out" {
-+	index"1"
-+	type"aif_out"
-+	no_pm "true"
-+}
-+SectionWidget."hdmi1_pt_out cpr 6" {
-+	index"1"
-+	type"mixer"
-+	no_pm "true"
-+	event_type "3"
-+	event_flags "9"
-+	data [
-+		"hdmi1_pt_out cpr 6 num_desc"
-+		"hdmi1_pt_out cpr 6_size_desc"
-+		"hdmi1_pt_out cpr 6"
-+	]
-+}
-+SectionWidget."hdmi1_pt_out cpr 7" {
-+	index"1"
-+	type"pga"
-+	no_pm "true"
-+	event_type "4"
-+	data [
-+		"hdmi1_pt_out cpr 7 num_desc"
-+		"hdmi1_pt_out cpr 7_size_desc"
-+		"hdmi1_pt_out cpr 7"
-+	]
-+}
-+SectionWidget."iDisp1_out" {
-+	index"1"
-+	type"aif_out"
-+	no_pm "true"
-+}
-+SectionWidget."hdmi2_pt_out cpr 8" {
-+	index"1"
-+	type"mixer"
-+	no_pm "true"
-+	event_type "3"
-+	event_flags "9"
-+	data [
-+		"hdmi2_pt_out cpr 8 num_desc"
-+		"hdmi2_pt_out cpr 8_size_desc"
-+		"hdmi2_pt_out cpr 8"
-+	]
-+}
-+SectionWidget."hdmi2_pt_out cpr 9" {
-+	index"1"
-+	type"pga"
-+	no_pm "true"
-+	event_type "4"
-+	data [
-+		"hdmi2_pt_out cpr 9 num_desc"
-+		"hdmi2_pt_out cpr 9_size_desc"
-+		"hdmi2_pt_out cpr 9"
-+	]
-+}
-+SectionWidget."iDisp2_out" {
-+	index"1"
-+	type"aif_out"
-+	no_pm "true"
-+}
-+SectionWidget."hdmi3_pt_out cpr 10" {
-+	index"1"
-+	type"mixer"
-+	no_pm "true"
-+	event_type "3"
-+	event_flags "9"
-+	data [
-+		"hdmi3_pt_out cpr 10 num_desc"
-+		"hdmi3_pt_out cpr 10_size_desc"
-+		"hdmi3_pt_out cpr 10"
-+	]
-+}
-+SectionWidget."hdmi3_pt_out cpr 11" {
-+	index"1"
-+	type"pga"
-+	no_pm "true"
-+	event_type "4"
-+	data [
-+		"hdmi3_pt_out cpr 11 num_desc"
-+		"hdmi3_pt_out cpr 11_size_desc"
-+		"hdmi3_pt_out cpr 11"
-+	]
-+}
-+SectionWidget."iDisp3_out" {
-+	index"1"
-+	type"aif_out"
-+	no_pm "true"
-+}
-+SectionWidget."mch_cap_in cpr 12" {
-+	index"1"
-+	type"mixer"
-+	no_pm "true"
-+	event_type "3"
-+	event_flags "9"
-+	data [
-+		"mch_cap_in cpr 12 num_desc"
-+		"mch_cap_in cpr 12_size_desc"
-+		"mch_cap_in cpr 12"
-+	]
-+}
-+SectionWidget."mch_cap_in cpr 13" {
-+	index"1"
-+	type"pga"
-+	no_pm "true"
-+	event_type "4"
-+	data [
-+		"mch_cap_in cpr 13 num_desc"
-+		"mch_cap_in cpr 13_size_desc"
-+		"mch_cap_in cpr 13"
-+	]
-+}
-+SectionManifest."lib_data" {
-+	data [
-+		"lib_data num_desc"
-+		"lib_data_size_desc"
-+		"lib_data"
-+	]
-+}
-+
-+SectionGraph."Pipeline 1 Graph" {
-+	index"1"
-+	lines [
-+		"media0_in mi, , media0_in cpr 0"
-+		"media0_in cpr 0, , System Playback"
-+		"codec0_in mi, , codec0_in cpr 1"
-+		"codec0_in cpr 1, , codec0_in"
-+		"codec0_out mo, media0_in mi Switch, media0_in mi"
-+		"codec0_out mo, dmic01_hifi_in mi Switch, dmic01_hifi_in mi"
-+		"codec0_out mo, codec0_in mi Switch, codec0_in mi"
-+		"codec0_out cpr 2, , codec0_out mo"
-+		"codec0_out, , codec0_out cpr 2"
-+		"media0_out mo, media0_in mi Switch, media0_in mi"
-+		"media0_out mo, dmic01_hifi_in mi Switch, dmic01_hifi_in mi"
-+		"media0_out mo, codec0_in mi Switch, codec0_in mi"
-+		"media0_out cpr 3, , media0_out mo"
-+		"System Capture, , media0_out cpr 3"
-+		"dmic01_hifi_in mi, , dmic01_hifi_in cpr 4"
-+		"dmic01_hifi_in cpr 4, , dmic01_hifi"
-+		"codec1_out mo, media0_in mi Switch, media0_in mi"
-+		"codec1_out mo, dmic01_hifi_in mi Switch, dmic01_hifi_in mi"
-+		"codec1_out mo, codec0_in mi Switch, codec0_in mi"
-+		"codec1_out cpr 5, , codec1_out mo"
-+		"codec1_out, , codec1_out cpr 5"
-+		"hdmi1_pt_out cpr 7, , hdmi1_pt_out cpr 6"
-+		"hdmi1_pt_out cpr 6, , HDMI1 Playback"
-+		"iDisp1_out, , hdmi1_pt_out cpr 7"
-+		"hdmi2_pt_out cpr 9, , hdmi2_pt_out cpr 8"
-+		"hdmi2_pt_out cpr 8, , HDMI2 Playback"
-+		"iDisp2_out, , hdmi2_pt_out cpr 9"
-+		"hdmi3_pt_out cpr 11, , hdmi3_pt_out cpr 10"
-+		"hdmi3_pt_out cpr 10, , HDMI3 Playback"
-+		"iDisp3_out, , hdmi3_pt_out cpr 11"
-+		"mch_cap_in cpr 13, , mch_cap_in cpr 12"
-+		"DMIC Capture, , mch_cap_in cpr 13"
-+		"mch_cap_in cpr 12, , dmic01_hifi"
-+	]
-+}
-+
++++ b/include/sound/rt5660.h
+@@ -0,0 +1,31 @@
++/*
++ * linux/sound/rt5660.h -- Platform data for RT5660
++ *
++ * Copyright 2016 Realtek Semiconductor Corp.
++ * Author: Oder Chiou <oder_chiou@realtek.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef __LINUX_SND_RT5660_H
++#define __LINUX_SND_RT5660_H
++
++enum rt5660_dmic1_data_pin {
++	RT5660_DMIC1_NULL,
++	RT5660_DMIC1_DATA_GPIO2,
++	RT5660_DMIC1_DATA_IN1P,
++};
++
++struct rt5660_platform_data {
++	/* IN1 & IN3 can optionally be differential */
++	bool in1_diff;
++	bool in3_diff;
++	bool use_ldo2;
++	bool poweroff_codec_in_suspend;
++
++	enum rt5660_dmic1_data_pin dmic1_data_pin;
++};
++
++#endif
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 1cd6ab3..890affe 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -112,6 +112,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_RT5645 if I2C
+ 	select SND_SOC_RT5651 if I2C
+ 	select SND_SOC_RT5659 if I2C
++	select SND_SOC_RT5660 if I2C
+ 	select SND_SOC_RT5670 if I2C
+ 	select SND_SOC_RT5677 if I2C && SPI_MASTER
+ 	select SND_SOC_SGTL5000 if I2C
+@@ -645,6 +646,7 @@ config SND_SOC_RL6231
+ 	default y if SND_SOC_RT5645=y
+ 	default y if SND_SOC_RT5651=y
+ 	default y if SND_SOC_RT5659=y
++	default y if SND_SOC_RT5660=y
+ 	default y if SND_SOC_RT5670=y
+ 	default y if SND_SOC_RT5677=y
+ 	default m if SND_SOC_RT5514=m
+@@ -653,6 +655,7 @@ config SND_SOC_RL6231
+ 	default m if SND_SOC_RT5645=m
+ 	default m if SND_SOC_RT5651=m
+ 	default m if SND_SOC_RT5659=m
++	default m if SND_SOC_RT5660=m
+ 	default m if SND_SOC_RT5670=m
+ 	default m if SND_SOC_RT5677=m
+ 
+@@ -697,6 +700,9 @@ config SND_SOC_RT5651
+ config SND_SOC_RT5659
+ 	tristate
+ 
++config SND_SOC_RT5660
++	tristate
++
+ config SND_SOC_RT5670
+ 	tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 58036af..68fed20 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -112,6 +112,7 @@ snd-soc-rt5640-objs := rt5640.o
+ snd-soc-rt5645-objs := rt5645.o
+ snd-soc-rt5651-objs := rt5651.o
+ snd-soc-rt5659-objs := rt5659.o
++snd-soc-rt5660-objs := rt5660.o
+ snd-soc-rt5670-objs := rt5670.o
+ snd-soc-rt5677-objs := rt5677.o
+ snd-soc-rt5677-spi-objs := rt5677-spi.o
+@@ -333,6 +334,7 @@ obj-$(CONFIG_SND_SOC_RT5640)	+= snd-soc-rt5640.o
+ obj-$(CONFIG_SND_SOC_RT5645)	+= snd-soc-rt5645.o
+ obj-$(CONFIG_SND_SOC_RT5651)	+= snd-soc-rt5651.o
+ obj-$(CONFIG_SND_SOC_RT5659)	+= snd-soc-rt5659.o
++obj-$(CONFIG_SND_SOC_RT5660)	+= snd-soc-rt5660.o
+ obj-$(CONFIG_SND_SOC_RT5670)	+= snd-soc-rt5670.o
+ obj-$(CONFIG_SND_SOC_RT5677)	+= snd-soc-rt5677.o
+ obj-$(CONFIG_SND_SOC_RT5677_SPI)	+= snd-soc-rt5677-spi.o
+diff --git a/sound/soc/codecs/rt5660.c b/sound/soc/codecs/rt5660.c
+new file mode 100644
+index 0000000..4c2c65e
+--- /dev/null
++++ b/sound/soc/codecs/rt5660.c
+@@ -0,0 +1,1364 @@
++/*
++ * rt5660.c  --  RT5660 ALSA SoC audio codec driver
++ *
++ * Copyright 2016 Realtek Semiconductor Corp.
++ * Author: Oder Chiou <oder_chiou@realtek.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <linux/pm.h>
++#include <linux/gpio.h>
++#include <linux/i2c.h>
++#include <linux/regmap.h>
++#include <linux/of.h>
++#include <linux/of_gpio.h>
++#include <linux/platform_device.h>
++#include <linux/spi/spi.h>
++#include <linux/acpi.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/initval.h>
++#include <sound/tlv.h>
++
++#include "rl6231.h"
++#include "rt5660.h"
++
++#define RT5660_DEVICE_ID 0x6338
++
++#define RT5660_PR_RANGE_BASE (0xff + 1)
++#define RT5660_PR_SPACING 0x100
++
++#define RT5660_PR_BASE (RT5660_PR_RANGE_BASE + (0 * RT5660_PR_SPACING))
++
++static const struct regmap_range_cfg rt5660_ranges[] = {
++	{ .name = "PR", .range_min = RT5660_PR_BASE,
++	  .range_max = RT5660_PR_BASE + 0xf3,
++	  .selector_reg = RT5660_PRIV_INDEX,
++	  .selector_mask = 0xff,
++	  .selector_shift = 0x0,
++	  .window_start = RT5660_PRIV_DATA,
++	  .window_len = 0x1, },
++};
++
++static const struct reg_sequence rt5660_patch[] = {
++	{ RT5660_ALC_PGA_CTRL2,		0x44c3 },
++	{ RT5660_PR_BASE + 0x3d,	0x2600 },
++};
++
++static const struct reg_default rt5660_reg[] = {
++	{ 0x00, 0x0000 },
++	{ 0x01, 0xc800 },
++	{ 0x02, 0xc8c8 },
++	{ 0x0d, 0x1010 },
++	{ 0x0e, 0x1010 },
++	{ 0x19, 0xafaf },
++	{ 0x1c, 0x2f2f },
++	{ 0x1e, 0x0000 },
++	{ 0x27, 0x6060 },
++	{ 0x29, 0x8080 },
++	{ 0x2a, 0x4242 },
++	{ 0x2f, 0x0000 },
++	{ 0x3b, 0x0000 },
++	{ 0x3c, 0x007f },
++	{ 0x3d, 0x0000 },
++	{ 0x3e, 0x007f },
++	{ 0x45, 0xe000 },
++	{ 0x46, 0x003e },
++	{ 0x48, 0xf800 },
++	{ 0x4a, 0x0004 },
++	{ 0x4d, 0x0000 },
++	{ 0x4e, 0x0000 },
++	{ 0x4f, 0x01ff },
++	{ 0x50, 0x0000 },
++	{ 0x51, 0x0000 },
++	{ 0x52, 0x01ff },
++	{ 0x61, 0x0000 },
++	{ 0x62, 0x0000 },
++	{ 0x63, 0x00c0 },
++	{ 0x64, 0x0000 },
++	{ 0x65, 0x0000 },
++	{ 0x66, 0x0000 },
++	{ 0x70, 0x8000 },
++	{ 0x73, 0x7000 },
++	{ 0x74, 0x3c00 },
++	{ 0x75, 0x2800 },
++	{ 0x80, 0x0000 },
++	{ 0x81, 0x0000 },
++	{ 0x82, 0x0000 },
++	{ 0x8c, 0x0228 },
++	{ 0x8d, 0xa000 },
++	{ 0x8e, 0x0000 },
++	{ 0x92, 0x0000 },
++	{ 0x93, 0x3000 },
++	{ 0xa1, 0x0059 },
++	{ 0xa2, 0x0001 },
++	{ 0xa3, 0x5c80 },
++	{ 0xa4, 0x0146 },
++	{ 0xa5, 0x1f1f },
++	{ 0xa6, 0x78c6 },
++	{ 0xa7, 0xe5ec },
++	{ 0xa8, 0xba61 },
++	{ 0xa9, 0x3c78 },
++	{ 0xaa, 0x8ae2 },
++	{ 0xab, 0xe5ec },
++	{ 0xac, 0xc600 },
++	{ 0xad, 0xba61 },
++	{ 0xae, 0x17ed },
++	{ 0xb0, 0x2080 },
++	{ 0xb1, 0x0000 },
++	{ 0xb3, 0x001f },
++	{ 0xb4, 0x020c },
++	{ 0xb5, 0x1f00 },
++	{ 0xb6, 0x0000 },
++	{ 0xb7, 0x4000 },
++	{ 0xbb, 0x0000 },
++	{ 0xbd, 0x0000 },
++	{ 0xbe, 0x0000 },
++	{ 0xbf, 0x0100 },
++	{ 0xc0, 0x0000 },
++	{ 0xc2, 0x0000 },
++	{ 0xd3, 0xa220 },
++	{ 0xd9, 0x0809 },
++	{ 0xda, 0x0000 },
++	{ 0xe0, 0x8000 },
++	{ 0xe1, 0x0200 },
++	{ 0xe2, 0x8000 },
++	{ 0xe3, 0x0200 },
++	{ 0xe4, 0x0f20 },
++	{ 0xe5, 0x001f },
++	{ 0xe6, 0x020c },
++	{ 0xe7, 0x1f00 },
++	{ 0xe8, 0x0000 },
++	{ 0xe9, 0x4000 },
++	{ 0xea, 0x00a6 },
++	{ 0xeb, 0x04c3 },
++	{ 0xec, 0x27c8 },
++	{ 0xed, 0x7418 },
++	{ 0xee, 0xbf50 },
++	{ 0xef, 0x0045 },
++	{ 0xf0, 0x0007 },
++	{ 0xfa, 0x0000 },
++	{ 0xfd, 0x0000 },
++	{ 0xfe, 0x10ec },
++	{ 0xff, 0x6338 },
++};
++
++static bool rt5660_volatile_register(struct device *dev, unsigned int reg)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(rt5660_ranges); i++)
++		if ((reg >= rt5660_ranges[i].window_start &&
++		     reg <= rt5660_ranges[i].window_start +
++		     rt5660_ranges[i].window_len) ||
++		    (reg >= rt5660_ranges[i].range_min &&
++		     reg <= rt5660_ranges[i].range_max))
++			return true;
++
++	switch (reg) {
++	case RT5660_RESET:
++	case RT5660_PRIV_DATA:
++	case RT5660_EQ_CTRL1:
++	case RT5660_IRQ_CTRL2:
++	case RT5660_INT_IRQ_ST:
++	case RT5660_VENDOR_ID:
++	case RT5660_VENDOR_ID1:
++	case RT5660_VENDOR_ID2:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool rt5660_readable_register(struct device *dev, unsigned int reg)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(rt5660_ranges); i++)
++		if ((reg >= rt5660_ranges[i].window_start &&
++		     reg <= rt5660_ranges[i].window_start +
++		     rt5660_ranges[i].window_len) ||
++		    (reg >= rt5660_ranges[i].range_min &&
++		     reg <= rt5660_ranges[i].range_max))
++			return true;
++
++	switch (reg) {
++	case RT5660_RESET:
++	case RT5660_SPK_VOL:
++	case RT5660_LOUT_VOL:
++	case RT5660_IN1_IN2:
++	case RT5660_IN3_IN4:
++	case RT5660_DAC1_DIG_VOL:
++	case RT5660_STO1_ADC_DIG_VOL:
++	case RT5660_ADC_BST_VOL1:
++	case RT5660_STO1_ADC_MIXER:
++	case RT5660_AD_DA_MIXER:
++	case RT5660_STO_DAC_MIXER:
++	case RT5660_DIG_INF1_DATA:
++	case RT5660_REC_L1_MIXER:
++	case RT5660_REC_L2_MIXER:
++	case RT5660_REC_R1_MIXER:
++	case RT5660_REC_R2_MIXER:
++	case RT5660_LOUT_MIXER:
++	case RT5660_SPK_MIXER:
++	case RT5660_SPO_MIXER:
++	case RT5660_SPO_CLSD_RATIO:
++	case RT5660_OUT_L_GAIN1:
++	case RT5660_OUT_L_GAIN2:
++	case RT5660_OUT_L1_MIXER:
++	case RT5660_OUT_R_GAIN1:
++	case RT5660_OUT_R_GAIN2:
++	case RT5660_OUT_R1_MIXER:
++	case RT5660_PWR_DIG1:
++	case RT5660_PWR_DIG2:
++	case RT5660_PWR_ANLG1:
++	case RT5660_PWR_ANLG2:
++	case RT5660_PWR_MIXER:
++	case RT5660_PWR_VOL:
++	case RT5660_PRIV_INDEX:
++	case RT5660_PRIV_DATA:
++	case RT5660_I2S1_SDP:
++	case RT5660_ADDA_CLK1:
++	case RT5660_ADDA_CLK2:
++	case RT5660_DMIC_CTRL1:
++	case RT5660_GLB_CLK:
++	case RT5660_PLL_CTRL1:
++	case RT5660_PLL_CTRL2:
++	case RT5660_CLSD_AMP_OC_CTRL:
++	case RT5660_CLSD_AMP_CTRL:
++	case RT5660_LOUT_AMP_CTRL:
++	case RT5660_SPK_AMP_SPKVDD:
++	case RT5660_MICBIAS:
++	case RT5660_CLSD_OUT_CTRL1:
++	case RT5660_CLSD_OUT_CTRL2:
++	case RT5660_DIPOLE_MIC_CTRL1:
++	case RT5660_DIPOLE_MIC_CTRL2:
++	case RT5660_DIPOLE_MIC_CTRL3:
++	case RT5660_DIPOLE_MIC_CTRL4:
++	case RT5660_DIPOLE_MIC_CTRL5:
++	case RT5660_DIPOLE_MIC_CTRL6:
++	case RT5660_DIPOLE_MIC_CTRL7:
++	case RT5660_DIPOLE_MIC_CTRL8:
++	case RT5660_DIPOLE_MIC_CTRL9:
++	case RT5660_DIPOLE_MIC_CTRL10:
++	case RT5660_DIPOLE_MIC_CTRL11:
++	case RT5660_DIPOLE_MIC_CTRL12:
++	case RT5660_EQ_CTRL1:
++	case RT5660_EQ_CTRL2:
++	case RT5660_DRC_AGC_CTRL1:
++	case RT5660_DRC_AGC_CTRL2:
++	case RT5660_DRC_AGC_CTRL3:
++	case RT5660_DRC_AGC_CTRL4:
++	case RT5660_DRC_AGC_CTRL5:
++	case RT5660_JD_CTRL:
++	case RT5660_IRQ_CTRL1:
++	case RT5660_IRQ_CTRL2:
++	case RT5660_INT_IRQ_ST:
++	case RT5660_GPIO_CTRL1:
++	case RT5660_GPIO_CTRL2:
++	case RT5660_WIND_FILTER_CTRL1:
++	case RT5660_SV_ZCD1:
++	case RT5660_SV_ZCD2:
++	case RT5660_DRC1_LM_CTRL1:
++	case RT5660_DRC1_LM_CTRL2:
++	case RT5660_DRC2_LM_CTRL1:
++	case RT5660_DRC2_LM_CTRL2:
++	case RT5660_MULTI_DRC_CTRL:
++	case RT5660_DRC2_CTRL1:
++	case RT5660_DRC2_CTRL2:
++	case RT5660_DRC2_CTRL3:
++	case RT5660_DRC2_CTRL4:
++	case RT5660_DRC2_CTRL5:
++	case RT5660_ALC_PGA_CTRL1:
++	case RT5660_ALC_PGA_CTRL2:
++	case RT5660_ALC_PGA_CTRL3:
++	case RT5660_ALC_PGA_CTRL4:
++	case RT5660_ALC_PGA_CTRL5:
++	case RT5660_ALC_PGA_CTRL6:
++	case RT5660_ALC_PGA_CTRL7:
++	case RT5660_GEN_CTRL1:
++	case RT5660_GEN_CTRL2:
++	case RT5660_GEN_CTRL3:
++	case RT5660_VENDOR_ID:
++	case RT5660_VENDOR_ID1:
++	case RT5660_VENDOR_ID2:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static const DECLARE_TLV_DB_SCALE(rt5660_out_vol_tlv, -4650, 150, 0);
++static const DECLARE_TLV_DB_SCALE(rt5660_dac_vol_tlv, -6525, 75, 0);
++static const DECLARE_TLV_DB_SCALE(rt5660_adc_vol_tlv, -1725, 75, 0);
++static const DECLARE_TLV_DB_SCALE(rt5660_adc_bst_tlv, 0, 1200, 0);
++static const DECLARE_TLV_DB_SCALE(rt5660_bst_tlv, -1200, 75, 0);
++
++static const struct snd_kcontrol_new rt5660_snd_controls[] = {
++	/* Speaker Output Volume */
++	SOC_SINGLE("Speaker Playback Switch", RT5660_SPK_VOL, RT5660_L_MUTE_SFT,
++		1, 1),
++	SOC_SINGLE_TLV("Speaker Playback Volume", RT5660_SPK_VOL,
++		RT5660_L_VOL_SFT, 39, 1, rt5660_out_vol_tlv),
++
++	/* OUTPUT Control */
++	SOC_DOUBLE("OUT Playback Switch", RT5660_LOUT_VOL, RT5660_L_MUTE_SFT,
++		RT5660_R_MUTE_SFT, 1, 1),
++	SOC_DOUBLE_TLV("OUT Playback Volume", RT5660_LOUT_VOL, RT5660_L_VOL_SFT,
++		RT5660_R_VOL_SFT, 39, 1, rt5660_out_vol_tlv),
++
++	/* DAC Digital Volume */
++	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5660_DAC1_DIG_VOL,
++		RT5660_DAC_L1_VOL_SFT, RT5660_DAC_R1_VOL_SFT, 87, 0,
++		rt5660_dac_vol_tlv),
++
++	/* IN1/IN2/IN3 Control */
++	SOC_SINGLE_TLV("IN1 Boost Volume", RT5660_IN1_IN2, RT5660_BST_SFT1, 69,
++		0, rt5660_bst_tlv),
++	SOC_SINGLE_TLV("IN2 Boost Volume", RT5660_IN1_IN2, RT5660_BST_SFT2, 69,
++		0, rt5660_bst_tlv),
++	SOC_SINGLE_TLV("IN3 Boost Volume", RT5660_IN3_IN4, RT5660_BST_SFT3, 69,
++		0, rt5660_bst_tlv),
++
++	/* ADC Digital Volume Control */
++	SOC_DOUBLE("ADC Capture Switch", RT5660_STO1_ADC_DIG_VOL,
++		RT5660_L_MUTE_SFT, RT5660_R_MUTE_SFT, 1, 1),
++	SOC_DOUBLE_TLV("ADC Capture Volume", RT5660_STO1_ADC_DIG_VOL,
++		RT5660_ADC_L_VOL_SFT, RT5660_ADC_R_VOL_SFT, 63, 0,
++		rt5660_adc_vol_tlv),
++
++	/* ADC Boost Volume Control */
++	SOC_DOUBLE_TLV("STO1 ADC Boost Gain Volume", RT5660_ADC_BST_VOL1,
++		RT5660_STO1_ADC_L_BST_SFT, RT5660_STO1_ADC_R_BST_SFT, 3, 0,
++		rt5660_adc_bst_tlv),
++};
++
++/**
++ * rt5660_set_dmic_clk - Set parameter of dmic.
++ *
++ * @w: DAPM widget.
++ * @kcontrol: The kcontrol of this widget.
++ * @event: Event id.
++ *
++ */
++static int rt5660_set_dmic_clk(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
++	int idx, rate;
++
++	rate = rt5660->sysclk / rl6231_get_pre_div(rt5660->regmap,
++		RT5660_ADDA_CLK1, RT5660_I2S_PD1_SFT);
++	idx = rl6231_calc_dmic_clk(rate);
++	if (idx < 0)
++		dev_err(codec->dev, "Failed to set DMIC clock\n");
++	else
++		snd_soc_update_bits(codec, RT5660_DMIC_CTRL1,
++			RT5660_DMIC_CLK_MASK, idx << RT5660_DMIC_CLK_SFT);
++
++	return idx;
++}
++
++static int rt5660_is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
++			 struct snd_soc_dapm_widget *sink)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
++	unsigned int val;
++
++	val = snd_soc_read(codec, RT5660_GLB_CLK);
++	val &= RT5660_SCLK_SRC_MASK;
++	if (val == RT5660_SCLK_SRC_PLL1)
++		return 1;
++	else
++		return 0;
++}
++
++static int rt5660_is_using_ldo2(struct snd_soc_dapm_widget *source,
++			 struct snd_soc_dapm_widget *sink)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
++	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
++
++	return rt5660->pdata.use_ldo2;
++}
++
++/* Digital Mixer */
++static const struct snd_kcontrol_new rt5660_sto1_adc_l_mix[] = {
++	SOC_DAPM_SINGLE("ADC1 Switch", RT5660_STO1_ADC_MIXER,
++			RT5660_M_ADC_L1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("ADC2 Switch", RT5660_STO1_ADC_MIXER,
++			RT5660_M_ADC_L2_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5660_sto1_adc_r_mix[] = {
++	SOC_DAPM_SINGLE("ADC1 Switch", RT5660_STO1_ADC_MIXER,
++			RT5660_M_ADC_R1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("ADC2 Switch", RT5660_STO1_ADC_MIXER,
++			RT5660_M_ADC_R2_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5660_dac_l_mix[] = {
++	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5660_AD_DA_MIXER,
++			RT5660_M_ADCMIX_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC1 Switch", RT5660_AD_DA_MIXER,
++			RT5660_M_DAC1_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5660_dac_r_mix[] = {
++	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5660_AD_DA_MIXER,
++			RT5660_M_ADCMIX_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC1 Switch", RT5660_AD_DA_MIXER,
++			RT5660_M_DAC1_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5660_sto_dac_l_mix[] = {
++	SOC_DAPM_SINGLE("DAC L1 Switch", RT5660_STO_DAC_MIXER,
++			RT5660_M_DAC_L1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5660_STO_DAC_MIXER,
++			RT5660_M_DAC_R1_STO_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5660_sto_dac_r_mix[] = {
++	SOC_DAPM_SINGLE("DAC R1 Switch", RT5660_STO_DAC_MIXER,
++			RT5660_M_DAC_R1_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DAC L1 Switch", RT5660_STO_DAC_MIXER,
++			RT5660_M_DAC_L1_STO_R_SFT, 1, 1),
++};
++
++/* Analog Input Mixer */
++static const struct snd_kcontrol_new rt5660_rec_l_mix[] = {
++	SOC_DAPM_SINGLE("BST3 Switch", RT5660_REC_L2_MIXER,
++			RT5660_M_BST3_RM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST2 Switch", RT5660_REC_L2_MIXER,
++			RT5660_M_BST2_RM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5660_REC_L2_MIXER,
++			RT5660_M_BST1_RM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUT MIXL Switch", RT5660_REC_L2_MIXER,
++			RT5660_M_OM_L_RM_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5660_rec_r_mix[] = {
++	SOC_DAPM_SINGLE("BST3 Switch", RT5660_REC_R2_MIXER,
++			RT5660_M_BST3_RM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST2 Switch", RT5660_REC_R2_MIXER,
++			RT5660_M_BST2_RM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5660_REC_R2_MIXER,
++			RT5660_M_BST1_RM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUT MIXR Switch", RT5660_REC_R2_MIXER,
++			RT5660_M_OM_R_RM_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5660_spk_mix[] = {
++	SOC_DAPM_SINGLE("BST3 Switch", RT5660_SPK_MIXER,
++			RT5660_M_BST3_SM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5660_SPK_MIXER,
++			RT5660_M_BST1_SM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DACL Switch", RT5660_SPK_MIXER,
++			RT5660_M_DACL_SM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DACR Switch", RT5660_SPK_MIXER,
++			RT5660_M_DACR_SM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUTMIXL Switch", RT5660_SPK_MIXER,
++			RT5660_M_OM_L_SM_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5660_out_l_mix[] = {
++	SOC_DAPM_SINGLE("BST3 Switch", RT5660_OUT_L1_MIXER,
++			RT5660_M_BST3_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST2 Switch", RT5660_OUT_L1_MIXER,
++			RT5660_M_BST2_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5660_OUT_L1_MIXER,
++			RT5660_M_BST1_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("RECMIXL Switch", RT5660_OUT_L1_MIXER,
++			RT5660_M_RM_L_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DACR Switch", RT5660_OUT_L1_MIXER,
++			RT5660_M_DAC_R_OM_L_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DACL Switch", RT5660_OUT_L1_MIXER,
++			RT5660_M_DAC_L_OM_L_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5660_out_r_mix[] = {
++	SOC_DAPM_SINGLE("BST2 Switch", RT5660_OUT_R1_MIXER,
++			RT5660_M_BST2_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5660_OUT_R1_MIXER,
++			RT5660_M_BST1_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("RECMIXR Switch", RT5660_OUT_R1_MIXER,
++			RT5660_M_RM_R_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DACR Switch", RT5660_OUT_R1_MIXER,
++			RT5660_M_DAC_R_OM_R_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DACL Switch", RT5660_OUT_R1_MIXER,
++			RT5660_M_DAC_L_OM_R_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5660_spo_mix[] = {
++	SOC_DAPM_SINGLE("DACR Switch", RT5660_SPO_MIXER,
++			RT5660_M_DAC_R_SPM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("DACL Switch", RT5660_SPO_MIXER,
++			RT5660_M_DAC_L_SPM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("SPKVOL Switch", RT5660_SPO_MIXER,
++			RT5660_M_SV_SPM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("BST1 Switch", RT5660_SPO_MIXER,
++			RT5660_M_BST1_SPM_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new rt5660_lout_mix[] = {
++	SOC_DAPM_SINGLE("DAC Switch", RT5660_LOUT_MIXER,
++			RT5660_M_DAC1_LM_SFT, 1, 1),
++	SOC_DAPM_SINGLE("OUTMIX Switch", RT5660_LOUT_MIXER,
++			RT5660_M_LOVOL_LM_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new spk_vol_control =
++	SOC_DAPM_SINGLE("Switch", RT5660_SPK_VOL,
++		RT5660_VOL_L_SFT, 1, 1);
++
++static const struct snd_kcontrol_new lout_l_vol_control =
++	SOC_DAPM_SINGLE("Switch", RT5660_LOUT_VOL,
++		RT5660_VOL_L_SFT, 1, 1);
++
++static const struct snd_kcontrol_new lout_r_vol_control =
++	SOC_DAPM_SINGLE("Switch", RT5660_LOUT_VOL,
++		RT5660_VOL_R_SFT, 1, 1);
++
++/* Interface data select */
++static const char * const rt5660_data_select[] = {
++	"L/R", "R/L", "L/L", "R/R"
++};
++
++static const SOC_ENUM_SINGLE_DECL(rt5660_if1_dac_enum,
++	RT5660_DIG_INF1_DATA, RT5660_IF1_DAC_IN_SFT, rt5660_data_select);
++
++static const SOC_ENUM_SINGLE_DECL(rt5660_if1_adc_enum,
++	RT5660_DIG_INF1_DATA, RT5660_IF1_ADC_IN_SFT, rt5660_data_select);
++
++static const struct snd_kcontrol_new rt5660_if1_dac_swap_mux =
++	SOC_DAPM_ENUM("IF1 DAC Swap Source", rt5660_if1_dac_enum);
++
++static const struct snd_kcontrol_new rt5660_if1_adc_swap_mux =
++	SOC_DAPM_ENUM("IF1 ADC Swap Source", rt5660_if1_adc_enum);
++
++static int rt5660_lout_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		snd_soc_update_bits(codec, RT5660_LOUT_AMP_CTRL,
++			RT5660_LOUT_CO_MASK | RT5660_LOUT_CB_MASK,
++			RT5660_LOUT_CO_EN | RT5660_LOUT_CB_PU);
++		break;
++
++	case SND_SOC_DAPM_PRE_PMD:
++		snd_soc_update_bits(codec, RT5660_LOUT_AMP_CTRL,
++			RT5660_LOUT_CO_MASK | RT5660_LOUT_CB_MASK,
++			RT5660_LOUT_CO_DIS | RT5660_LOUT_CB_PD);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget rt5660_dapm_widgets[] = {
++	SND_SOC_DAPM_SUPPLY("LDO2", RT5660_PWR_ANLG1,
++		RT5660_PWR_LDO2_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("PLL1", RT5660_PWR_ANLG2,
++		RT5660_PWR_PLL_BIT, 0, NULL, 0),
++
++	/* MICBIAS */
++	SND_SOC_DAPM_SUPPLY("MICBIAS1", RT5660_PWR_ANLG2,
++			RT5660_PWR_MB1_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("MICBIAS2", RT5660_PWR_ANLG2,
++			RT5660_PWR_MB2_BIT, 0, NULL, 0),
++
++	/* Input Side */
++	/* Input Lines */
++	SND_SOC_DAPM_INPUT("DMIC L1"),
++	SND_SOC_DAPM_INPUT("DMIC R1"),
++
++	SND_SOC_DAPM_INPUT("IN1P"),
++	SND_SOC_DAPM_INPUT("IN1N"),
++	SND_SOC_DAPM_INPUT("IN2P"),
++	SND_SOC_DAPM_INPUT("IN3P"),
++	SND_SOC_DAPM_INPUT("IN3N"),
++
++	SND_SOC_DAPM_SUPPLY("DMIC CLK", SND_SOC_NOPM, 0, 0,
++		rt5660_set_dmic_clk, SND_SOC_DAPM_PRE_PMU),
++	SND_SOC_DAPM_SUPPLY("DMIC Power", RT5660_DMIC_CTRL1,
++		RT5660_DMIC_1_EN_SFT, 0, NULL, 0),
++
++	/* Boost */
++	SND_SOC_DAPM_PGA("BST1", RT5660_PWR_ANLG2, RT5660_PWR_BST1_BIT, 0,
++		NULL, 0),
++	SND_SOC_DAPM_PGA("BST2", RT5660_PWR_ANLG2, RT5660_PWR_BST2_BIT, 0,
++		NULL, 0),
++	SND_SOC_DAPM_PGA("BST3", RT5660_PWR_ANLG2, RT5660_PWR_BST3_BIT, 0,
++		NULL, 0),
++
++	/* REC Mixer */
++	SND_SOC_DAPM_MIXER("RECMIXL", RT5660_PWR_MIXER, RT5660_PWR_RM_L_BIT,
++			0, rt5660_rec_l_mix, ARRAY_SIZE(rt5660_rec_l_mix)),
++	SND_SOC_DAPM_MIXER("RECMIXR", RT5660_PWR_MIXER, RT5660_PWR_RM_R_BIT,
++			0, rt5660_rec_r_mix, ARRAY_SIZE(rt5660_rec_r_mix)),
++
++	/* ADCs */
++	SND_SOC_DAPM_ADC("ADC L", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_ADC("ADC R", NULL, SND_SOC_NOPM, 0, 0),
++
++	SND_SOC_DAPM_SUPPLY("ADC L power", RT5660_PWR_DIG1,
++			RT5660_PWR_ADC_L_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("ADC R power", RT5660_PWR_DIG1,
++			RT5660_PWR_ADC_R_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("ADC clock", RT5660_PR_BASE + RT5660_CHOP_DAC_ADC,
++			12, 0, NULL, 0),
++
++	/* ADC Mixer */
++	SND_SOC_DAPM_SUPPLY("adc stereo1 filter", RT5660_PWR_DIG2,
++		RT5660_PWR_ADC_S1F_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Sto1 ADC MIXL", SND_SOC_NOPM, 0, 0,
++		rt5660_sto1_adc_l_mix, ARRAY_SIZE(rt5660_sto1_adc_l_mix)),
++	SND_SOC_DAPM_MIXER("Sto1 ADC MIXR", SND_SOC_NOPM, 0, 0,
++		rt5660_sto1_adc_r_mix, ARRAY_SIZE(rt5660_sto1_adc_r_mix)),
++
++	/* ADC */
++	SND_SOC_DAPM_ADC("Stereo1 ADC MIXL", NULL, RT5660_STO1_ADC_DIG_VOL,
++		RT5660_L_MUTE_SFT, 1),
++	SND_SOC_DAPM_ADC("Stereo1 ADC MIXR", NULL, RT5660_STO1_ADC_DIG_VOL,
++		RT5660_R_MUTE_SFT, 1),
++
++	/* Digital Interface */
++	SND_SOC_DAPM_SUPPLY("I2S1", RT5660_PWR_DIG1, RT5660_PWR_I2S1_BIT, 0,
++		NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 DAC L", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("IF1 DAC R", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MUX("IF1 DAC Swap Mux", SND_SOC_NOPM, 0, 0,
++			&rt5660_if1_dac_swap_mux),
++	SND_SOC_DAPM_PGA("IF1 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MUX("IF1 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
++			&rt5660_if1_adc_swap_mux),
++
++	/* Audio Interface */
++	SND_SOC_DAPM_AIF_IN("AIF1RX", "AIF1 Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("AIF1TX", "AIF1 Capture", 0, SND_SOC_NOPM, 0, 0),
++
++	/* Output Side */
++	/* DAC mixer before sound effect  */
++	SND_SOC_DAPM_MIXER("DAC1 MIXL", SND_SOC_NOPM, 0, 0, rt5660_dac_l_mix,
++		ARRAY_SIZE(rt5660_dac_l_mix)),
++	SND_SOC_DAPM_MIXER("DAC1 MIXR", SND_SOC_NOPM, 0, 0, rt5660_dac_r_mix,
++		ARRAY_SIZE(rt5660_dac_r_mix)),
++
++	/* DAC Mixer */
++	SND_SOC_DAPM_SUPPLY("dac stereo1 filter", RT5660_PWR_DIG2,
++		RT5660_PWR_DAC_S1F_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Stereo DAC MIXL", SND_SOC_NOPM, 0, 0,
++		rt5660_sto_dac_l_mix, ARRAY_SIZE(rt5660_sto_dac_l_mix)),
++	SND_SOC_DAPM_MIXER("Stereo DAC MIXR", SND_SOC_NOPM, 0, 0,
++		rt5660_sto_dac_r_mix, ARRAY_SIZE(rt5660_sto_dac_r_mix)),
++
++	/* DACs */
++	SND_SOC_DAPM_DAC("DAC L1", NULL, RT5660_PWR_DIG1,
++			RT5660_PWR_DAC_L1_BIT, 0),
++	SND_SOC_DAPM_DAC("DAC R1", NULL, RT5660_PWR_DIG1,
++			RT5660_PWR_DAC_R1_BIT, 0),
++
++	/* OUT Mixer */
++	SND_SOC_DAPM_MIXER("SPK MIX", RT5660_PWR_MIXER, RT5660_PWR_SM_BIT,
++		0, rt5660_spk_mix, ARRAY_SIZE(rt5660_spk_mix)),
++	SND_SOC_DAPM_MIXER("OUT MIXL", RT5660_PWR_MIXER, RT5660_PWR_OM_L_BIT,
++		0, rt5660_out_l_mix, ARRAY_SIZE(rt5660_out_l_mix)),
++	SND_SOC_DAPM_MIXER("OUT MIXR", RT5660_PWR_MIXER, RT5660_PWR_OM_R_BIT,
++		0, rt5660_out_r_mix, ARRAY_SIZE(rt5660_out_r_mix)),
++
++	/* Output Volume */
++	SND_SOC_DAPM_SWITCH("SPKVOL", RT5660_PWR_VOL,
++		RT5660_PWR_SV_BIT, 0, &spk_vol_control),
++	SND_SOC_DAPM_PGA("DAC 1", SND_SOC_NOPM,
++		0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("LOUTVOL", SND_SOC_NOPM,
++		0, 0, NULL, 0),
++	SND_SOC_DAPM_SWITCH("LOUTVOL L", SND_SOC_NOPM,
++		RT5660_PWR_LV_L_BIT, 0, &lout_l_vol_control),
++	SND_SOC_DAPM_SWITCH("LOUTVOL R", SND_SOC_NOPM,
++		RT5660_PWR_LV_R_BIT, 0, &lout_r_vol_control),
++
++	/* HPO/LOUT/Mono Mixer */
++	SND_SOC_DAPM_MIXER("SPO MIX", SND_SOC_NOPM, 0,
++		0, rt5660_spo_mix, ARRAY_SIZE(rt5660_spo_mix)),
++	SND_SOC_DAPM_MIXER("LOUT MIX", SND_SOC_NOPM, 0, 0,
++		rt5660_lout_mix, ARRAY_SIZE(rt5660_lout_mix)),
++	SND_SOC_DAPM_SUPPLY("VREF HP", RT5660_GEN_CTRL1,
++		RT5660_PWR_VREF_HP_SFT, 0, NULL, 0),
++	SND_SOC_DAPM_PGA_S("LOUT amp", 1, RT5660_PWR_ANLG1,
++		RT5660_PWR_HA_BIT, 0, rt5660_lout_event,
++		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_PGA_S("SPK amp", 1, RT5660_PWR_DIG1,
++		RT5660_PWR_CLS_D_BIT, 0, NULL, 0),
++
++	/* Output Lines */
++	SND_SOC_DAPM_OUTPUT("LOUTL"),
++	SND_SOC_DAPM_OUTPUT("LOUTR"),
++	SND_SOC_DAPM_OUTPUT("SPO"),
++};
++
++static const struct snd_soc_dapm_route rt5660_dapm_routes[] = {
++	{ "MICBIAS1", NULL, "LDO2", rt5660_is_using_ldo2 },
++	{ "MICBIAS2", NULL, "LDO2", rt5660_is_using_ldo2 },
++
++	{ "BST1", NULL, "IN1P" },
++	{ "BST1", NULL, "IN1N" },
++	{ "BST2", NULL, "IN2P" },
++	{ "BST3", NULL, "IN3P" },
++	{ "BST3", NULL, "IN3N" },
++
++	{ "RECMIXL", "BST3 Switch", "BST3" },
++	{ "RECMIXL", "BST2 Switch", "BST2" },
++	{ "RECMIXL", "BST1 Switch", "BST1" },
++	{ "RECMIXL", "OUT MIXL Switch", "OUT MIXL" },
++
++	{ "RECMIXR", "BST3 Switch", "BST3" },
++	{ "RECMIXR", "BST2 Switch", "BST2" },
++	{ "RECMIXR", "BST1 Switch", "BST1" },
++	{ "RECMIXR", "OUT MIXR Switch", "OUT MIXR" },
++
++	{ "ADC L", NULL, "RECMIXL" },
++	{ "ADC L", NULL, "ADC L power" },
++	{ "ADC L", NULL, "ADC clock" },
++	{ "ADC R", NULL, "RECMIXR" },
++	{ "ADC R", NULL, "ADC R power" },
++	{ "ADC R", NULL, "ADC clock" },
++
++	{"DMIC L1", NULL, "DMIC CLK"},
++	{"DMIC L1", NULL, "DMIC Power"},
++	{"DMIC R1", NULL, "DMIC CLK"},
++	{"DMIC R1", NULL, "DMIC Power"},
++
++	{ "Sto1 ADC MIXL", "ADC1 Switch", "ADC L" },
++	{ "Sto1 ADC MIXL", "ADC2 Switch", "DMIC L1" },
++	{ "Sto1 ADC MIXR", "ADC1 Switch", "ADC R" },
++	{ "Sto1 ADC MIXR", "ADC2 Switch", "DMIC R1" },
++
++	{ "Stereo1 ADC MIXL", NULL, "Sto1 ADC MIXL" },
++	{ "Stereo1 ADC MIXL", NULL, "adc stereo1 filter" },
++	{ "adc stereo1 filter", NULL, "PLL1", rt5660_is_sys_clk_from_pll },
++
++	{ "Stereo1 ADC MIXR", NULL, "Sto1 ADC MIXR" },
++	{ "Stereo1 ADC MIXR", NULL, "adc stereo1 filter" },
++	{ "adc stereo1 filter", NULL, "PLL1", rt5660_is_sys_clk_from_pll },
++
++	{ "IF1 ADC", NULL, "Stereo1 ADC MIXL" },
++	{ "IF1 ADC", NULL, "Stereo1 ADC MIXR" },
++	{ "IF1 ADC", NULL, "I2S1" },
++
++	{ "IF1 ADC Swap Mux", "L/R", "IF1 ADC" },
++	{ "IF1 ADC Swap Mux", "R/L", "IF1 ADC" },
++	{ "IF1 ADC Swap Mux", "L/L", "IF1 ADC" },
++	{ "IF1 ADC Swap Mux", "R/R", "IF1 ADC" },
++	{ "AIF1TX", NULL, "IF1 ADC Swap Mux" },
++
++	{ "IF1 DAC", NULL, "AIF1RX" },
++	{ "IF1 DAC", NULL, "I2S1" },
++
++	{ "IF1 DAC Swap Mux", "L/R", "IF1 DAC" },
++	{ "IF1 DAC Swap Mux", "R/L", "IF1 DAC" },
++	{ "IF1 DAC Swap Mux", "L/L", "IF1 DAC" },
++	{ "IF1 DAC Swap Mux", "R/R", "IF1 DAC" },
++
++	{ "IF1 DAC L", NULL, "IF1 DAC Swap Mux" },
++	{ "IF1 DAC R", NULL, "IF1 DAC Swap Mux" },
++
++	{ "DAC1 MIXL", "Stereo ADC Switch", "Stereo1 ADC MIXL" },
++	{ "DAC1 MIXL", "DAC1 Switch", "IF1 DAC L" },
++	{ "DAC1 MIXR", "Stereo ADC Switch", "Stereo1 ADC MIXR" },
++	{ "DAC1 MIXR", "DAC1 Switch", "IF1 DAC R" },
++
++	{ "Stereo DAC MIXL", "DAC L1 Switch", "DAC1 MIXL" },
++	{ "Stereo DAC MIXL", "DAC R1 Switch", "DAC1 MIXR" },
++	{ "Stereo DAC MIXL", NULL, "dac stereo1 filter" },
++	{ "dac stereo1 filter", NULL, "PLL1", rt5660_is_sys_clk_from_pll },
++	{ "Stereo DAC MIXR", "DAC R1 Switch", "DAC1 MIXR" },
++	{ "Stereo DAC MIXR", "DAC L1 Switch", "DAC1 MIXL" },
++	{ "Stereo DAC MIXR", NULL, "dac stereo1 filter" },
++	{ "dac stereo1 filter", NULL, "PLL1", rt5660_is_sys_clk_from_pll },
++
++	{ "DAC L1", NULL, "Stereo DAC MIXL" },
++	{ "DAC R1", NULL, "Stereo DAC MIXR" },
++
++	{ "SPK MIX", "BST3 Switch", "BST3" },
++	{ "SPK MIX", "BST1 Switch", "BST1" },
++	{ "SPK MIX", "DACL Switch", "DAC L1" },
++	{ "SPK MIX", "DACR Switch", "DAC R1" },
++	{ "SPK MIX", "OUTMIXL Switch", "OUT MIXL" },
++
++	{ "OUT MIXL", "BST3 Switch", "BST3" },
++	{ "OUT MIXL", "BST2 Switch", "BST2" },
++	{ "OUT MIXL", "BST1 Switch", "BST1" },
++	{ "OUT MIXL", "RECMIXL Switch", "RECMIXL" },
++	{ "OUT MIXL", "DACR Switch", "DAC R1" },
++	{ "OUT MIXL", "DACL Switch", "DAC L1" },
++
++	{ "OUT MIXR", "BST2 Switch", "BST2" },
++	{ "OUT MIXR", "BST1 Switch", "BST1" },
++	{ "OUT MIXR", "RECMIXR Switch", "RECMIXR" },
++	{ "OUT MIXR", "DACR Switch", "DAC R1" },
++	{ "OUT MIXR", "DACL Switch", "DAC L1" },
++
++	{ "SPO MIX", "DACR Switch", "DAC R1" },
++	{ "SPO MIX", "DACL Switch", "DAC L1" },
++	{ "SPO MIX", "SPKVOL Switch", "SPKVOL" },
++	{ "SPO MIX", "BST1 Switch", "BST1" },
++
++	{ "SPKVOL", "Switch", "SPK MIX" },
++	{ "LOUTVOL L", "Switch", "OUT MIXL" },
++	{ "LOUTVOL R", "Switch", "OUT MIXR" },
++
++	{ "LOUTVOL", NULL, "LOUTVOL L" },
++	{ "LOUTVOL", NULL, "LOUTVOL R" },
++
++	{ "DAC 1", NULL, "DAC L1" },
++	{ "DAC 1", NULL, "DAC R1" },
++
++	{ "LOUT MIX", "DAC Switch", "DAC 1" },
++	{ "LOUT MIX", "OUTMIX Switch", "LOUTVOL" },
++
++	{ "LOUT amp", NULL, "LOUT MIX" },
++	{ "LOUT amp", NULL, "VREF HP" },
++	{ "LOUTL", NULL, "LOUT amp" },
++	{ "LOUTR", NULL, "LOUT amp" },
++
++	{ "SPK amp", NULL, "SPO MIX" },
++	{ "SPO", NULL, "SPK amp" },
++};
++
++static int rt5660_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
++	unsigned int val_len = 0, val_clk, mask_clk;
++	int pre_div, bclk_ms, frame_size;
++
++	rt5660->lrck[dai->id] = params_rate(params);
++	pre_div = rl6231_get_clk_info(rt5660->sysclk, rt5660->lrck[dai->id]);
++	if (pre_div < 0) {
++		dev_err(codec->dev, "Unsupported clock setting %d for DAI %d\n",
++			rt5660->lrck[dai->id], dai->id);
++		return -EINVAL;
++	}
++
++	frame_size = snd_soc_params_to_frame_size(params);
++	if (frame_size < 0) {
++		dev_err(codec->dev, "Unsupported frame size: %d\n", frame_size);
++		return frame_size;
++	}
++
++	if (frame_size > 32)
++		bclk_ms = 1;
++	else
++		bclk_ms = 0;
++
++	rt5660->bclk[dai->id] = rt5660->lrck[dai->id] * (32 << bclk_ms);
++
++	dev_dbg(dai->dev, "bclk is %dHz and lrck is %dHz\n",
++		rt5660->bclk[dai->id], rt5660->lrck[dai->id]);
++	dev_dbg(dai->dev, "bclk_ms is %d and pre_div is %d for iis %d\n",
++				bclk_ms, pre_div, dai->id);
++
++	switch (params_width(params)) {
++	case 16:
++		break;
++	case 20:
++		val_len |= RT5660_I2S_DL_20;
++		break;
++	case 24:
++		val_len |= RT5660_I2S_DL_24;
++		break;
++	case 8:
++		val_len |= RT5660_I2S_DL_8;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (dai->id) {
++	case RT5660_AIF1:
++		mask_clk = RT5660_I2S_BCLK_MS1_MASK | RT5660_I2S_PD1_MASK;
++		val_clk = bclk_ms << RT5660_I2S_BCLK_MS1_SFT |
++			pre_div << RT5660_I2S_PD1_SFT;
++		snd_soc_update_bits(codec, RT5660_I2S1_SDP, RT5660_I2S_DL_MASK,
++			val_len);
++		snd_soc_update_bits(codec, RT5660_ADDA_CLK1, mask_clk, val_clk);
++		break;
++
++	default:
++		dev_err(codec->dev, "Invalid dai->id: %d\n", dai->id);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int rt5660_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
++	unsigned int reg_val = 0;
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		rt5660->master[dai->id] = 1;
++		break;
++
++	case SND_SOC_DAIFMT_CBS_CFS:
++		reg_val |= RT5660_I2S_MS_S;
++		rt5660->master[dai->id] = 0;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		break;
++
++	case SND_SOC_DAIFMT_IB_NF:
++		reg_val |= RT5660_I2S_BP_INV;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		break;
++
++	case SND_SOC_DAIFMT_LEFT_J:
++		reg_val |= RT5660_I2S_DF_LEFT;
++		break;
++
++	case SND_SOC_DAIFMT_DSP_A:
++		reg_val |= RT5660_I2S_DF_PCM_A;
++		break;
++
++	case SND_SOC_DAIFMT_DSP_B:
++		reg_val  |= RT5660_I2S_DF_PCM_B;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	switch (dai->id) {
++	case RT5660_AIF1:
++		snd_soc_update_bits(codec, RT5660_I2S1_SDP,
++			RT5660_I2S_MS_MASK | RT5660_I2S_BP_MASK |
++			RT5660_I2S_DF_MASK, reg_val);
++		break;
++
++	default:
++		dev_err(codec->dev, "Invalid dai->id: %d\n", dai->id);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int rt5660_set_dai_sysclk(struct snd_soc_dai *dai,
++		int clk_id, unsigned int freq, int dir)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
++	unsigned int reg_val = 0;
++
++	if (freq == rt5660->sysclk && clk_id == rt5660->sysclk_src)
++		return 0;
++
++	switch (clk_id) {
++	case RT5660_SCLK_S_MCLK:
++		reg_val |= RT5660_SCLK_SRC_MCLK;
++		break;
++
++	case RT5660_SCLK_S_PLL1:
++		reg_val |= RT5660_SCLK_SRC_PLL1;
++		break;
++
++	case RT5660_SCLK_S_RCCLK:
++		reg_val |= RT5660_SCLK_SRC_RCCLK;
++		break;
++
++	default:
++		dev_err(codec->dev, "Invalid clock id (%d)\n", clk_id);
++		return -EINVAL;
++	}
++
++	snd_soc_update_bits(codec, RT5660_GLB_CLK, RT5660_SCLK_SRC_MASK,
++		reg_val);
++
++	rt5660->sysclk = freq;
++	rt5660->sysclk_src = clk_id;
++
++	dev_dbg(dai->dev, "Sysclk is %dHz and clock id is %d\n", freq, clk_id);
++
++	return 0;
++}
++
++static int rt5660_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
++			unsigned int freq_in, unsigned int freq_out)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
++	struct rl6231_pll_code pll_code;
++	int ret;
++
++	if (source == rt5660->pll_src && freq_in == rt5660->pll_in &&
++		freq_out == rt5660->pll_out)
++		return 0;
++
++	if (!freq_in || !freq_out) {
++		dev_dbg(codec->dev, "PLL disabled\n");
++
++		rt5660->pll_in = 0;
++		rt5660->pll_out = 0;
++		snd_soc_update_bits(codec, RT5660_GLB_CLK,
++			RT5660_SCLK_SRC_MASK, RT5660_SCLK_SRC_MCLK);
++		return 0;
++	}
++
++	switch (source) {
++	case RT5660_PLL1_S_MCLK:
++		snd_soc_update_bits(codec, RT5660_GLB_CLK,
++			RT5660_PLL1_SRC_MASK, RT5660_PLL1_SRC_MCLK);
++		break;
++
++	case RT5660_PLL1_S_BCLK:
++		snd_soc_update_bits(codec, RT5660_GLB_CLK,
++			RT5660_PLL1_SRC_MASK, RT5660_PLL1_SRC_BCLK1);
++		break;
++
++	default:
++		dev_err(codec->dev, "Unknown PLL source %d\n", source);
++		return -EINVAL;
++	}
++
++	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
++	if (ret < 0) {
++		dev_err(codec->dev, "Unsupport input clock %d\n", freq_in);
++		return ret;
++	}
++
++	dev_dbg(codec->dev, "bypass=%d m=%d n=%d k=%d\n",
++		pll_code.m_bp, (pll_code.m_bp ? 0 : pll_code.m_code),
++		pll_code.n_code, pll_code.k_code);
++
++	snd_soc_write(codec, RT5660_PLL_CTRL1,
++		pll_code.n_code << RT5660_PLL_N_SFT | pll_code.k_code);
++	snd_soc_write(codec, RT5660_PLL_CTRL2,
++		(pll_code.m_bp ? 0 : pll_code.m_code) << RT5660_PLL_M_SFT |
++		pll_code.m_bp << RT5660_PLL_M_BP_SFT);
++
++	rt5660->pll_in = freq_in;
++	rt5660->pll_out = freq_out;
++	rt5660->pll_src = source;
++
++	return 0;
++}
++
++static int rt5660_set_bias_level(struct snd_soc_codec *codec,
++			enum snd_soc_bias_level level)
++{
++	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
++	int ret;
++
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++		break;
++
++	case SND_SOC_BIAS_PREPARE:
++		snd_soc_update_bits(codec, RT5660_GEN_CTRL1,
++			RT5660_DIG_GATE_CTRL, RT5660_DIG_GATE_CTRL);
++
++		if (IS_ERR(rt5660->mclk))
++			break;
++
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_ON) {
++			clk_disable_unprepare(rt5660->mclk);
++		} else {
++			ret = clk_prepare_enable(rt5660->mclk);
++			if (ret)
++				return ret;
++		}
++		break;
++
++	case SND_SOC_BIAS_STANDBY:
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
++			snd_soc_update_bits(codec, RT5660_PWR_ANLG1,
++				RT5660_PWR_VREF1 | RT5660_PWR_MB |
++				RT5660_PWR_BG | RT5660_PWR_VREF2,
++				RT5660_PWR_VREF1 | RT5660_PWR_MB |
++				RT5660_PWR_BG | RT5660_PWR_VREF2);
++			usleep_range(10000, 15000);
++			snd_soc_update_bits(codec, RT5660_PWR_ANLG1,
++				RT5660_PWR_FV1 | RT5660_PWR_FV2,
++				RT5660_PWR_FV1 | RT5660_PWR_FV2);
++		}
++		break;
++
++	case SND_SOC_BIAS_OFF:
++		snd_soc_update_bits(codec, RT5660_GEN_CTRL1,
++			RT5660_DIG_GATE_CTRL, 0);
++		break;
++
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int rt5660_probe(struct snd_soc_codec *codec)
++{
++	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
++
++	/* Check if MCLK provided */
++	rt5660->mclk = devm_clk_get(codec->dev, "mclk");
++	if (PTR_ERR(rt5660->mclk) == -EPROBE_DEFER)
++		return -EPROBE_DEFER;
++
++	rt5660->codec = codec;
++
++	return 0;
++}
++
++static int rt5660_remove(struct snd_soc_codec *codec)
++{
++	return snd_soc_write(codec, RT5660_RESET, 0);
++}
++
++#ifdef CONFIG_PM
++static int rt5660_suspend(struct snd_soc_codec *codec)
++{
++	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
++
++	regcache_cache_only(rt5660->regmap, true);
++	regcache_mark_dirty(rt5660->regmap);
++
++	return 0;
++}
++
++static int rt5660_resume(struct snd_soc_codec *codec)
++{
++	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
++
++	if (rt5660->pdata.poweroff_codec_in_suspend)
++		usleep_range(350000, 400000);
++
++	regcache_cache_only(rt5660->regmap, false);
++	regcache_sync(rt5660->regmap);
++
++	return 0;
++}
++#else
++#define rt5660_suspend NULL
++#define rt5660_resume NULL
++#endif
++
++#define RT5660_STEREO_RATES SNDRV_PCM_RATE_8000_192000
++#define RT5660_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
++			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
++
++static const struct snd_soc_dai_ops rt5660_aif_dai_ops = {
++	.hw_params = rt5660_hw_params,
++	.set_fmt = rt5660_set_dai_fmt,
++	.set_sysclk = rt5660_set_dai_sysclk,
++	.set_pll = rt5660_set_dai_pll,
++};
++
++static struct snd_soc_dai_driver rt5660_dai[] = {
++	{
++		.name = "rt5660-aif1",
++		.id = RT5660_AIF1,
++		.playback = {
++			.stream_name = "AIF1 Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT5660_STEREO_RATES,
++			.formats = RT5660_FORMATS,
++		},
++		.capture = {
++			.stream_name = "AIF1 Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT5660_STEREO_RATES,
++			.formats = RT5660_FORMATS,
++		},
++		.ops = &rt5660_aif_dai_ops,
++	},
++};
++
++static struct snd_soc_codec_driver soc_codec_dev_rt5660 = {
++	.probe = rt5660_probe,
++	.remove = rt5660_remove,
++	.suspend = rt5660_suspend,
++	.resume = rt5660_resume,
++	.set_bias_level = rt5660_set_bias_level,
++	.idle_bias_off = true,
++	.component_driver = {
++		.controls		= rt5660_snd_controls,
++		.num_controls		= ARRAY_SIZE(rt5660_snd_controls),
++		.dapm_widgets		= rt5660_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(rt5660_dapm_widgets),
++		.dapm_routes		= rt5660_dapm_routes,
++		.num_dapm_routes	= ARRAY_SIZE(rt5660_dapm_routes),
++	},
++};
++
++static const struct regmap_config rt5660_regmap = {
++	.reg_bits = 8,
++	.val_bits = 16,
++	.use_single_rw = true,
++
++	.max_register = RT5660_VENDOR_ID2 + 1 + (ARRAY_SIZE(rt5660_ranges) *
++					       RT5660_PR_SPACING),
++	.volatile_reg = rt5660_volatile_register,
++	.readable_reg = rt5660_readable_register,
++
++	.cache_type = REGCACHE_RBTREE,
++	.reg_defaults = rt5660_reg,
++	.num_reg_defaults = ARRAY_SIZE(rt5660_reg),
++	.ranges = rt5660_ranges,
++	.num_ranges = ARRAY_SIZE(rt5660_ranges),
++};
++
++static const struct i2c_device_id rt5660_i2c_id[] = {
++	{ "rt5660", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, rt5660_i2c_id);
++
++static const struct of_device_id rt5660_of_match[] = {
++	{ .compatible = "realtek,rt5660", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, rt5660_of_match);
++
++static const struct acpi_device_id rt5660_acpi_match[] = {
++	{ "10EC5660", 0 },
++	{ },
++};
++MODULE_DEVICE_TABLE(acpi, rt5660_acpi_match);
++
++static int rt5660_parse_dt(struct rt5660_priv *rt5660, struct device *dev)
++{
++	rt5660->pdata.in1_diff = device_property_read_bool(dev,
++					"realtek,in1-differential");
++	rt5660->pdata.in3_diff = device_property_read_bool(dev,
++					"realtek,in3-differential");
++	rt5660->pdata.use_ldo2 = device_property_read_bool(dev,
++					"realtek,use-ldo2");
++	rt5660->pdata.poweroff_codec_in_suspend = device_property_read_bool(dev,
++					"realtek,poweroff-in-suspend");
++	device_property_read_u32(dev, "realtek,dmic1-data-pin",
++		&rt5660->pdata.dmic1_data_pin);
++
++	return 0;
++}
++
++static int rt5660_i2c_probe(struct i2c_client *i2c,
++		    const struct i2c_device_id *id)
++{
++	struct rt5660_platform_data *pdata = dev_get_platdata(&i2c->dev);
++	struct rt5660_priv *rt5660;
++	int ret;
++	unsigned int val;
++
++	rt5660 = devm_kzalloc(&i2c->dev, sizeof(struct rt5660_priv),
++		GFP_KERNEL);
++
++	if (rt5660 == NULL)
++		return -ENOMEM;
++
++	i2c_set_clientdata(i2c, rt5660);
++
++	if (pdata)
++		rt5660->pdata = *pdata;
++	else if (i2c->dev.of_node)
++		rt5660_parse_dt(rt5660, &i2c->dev);
++
++	rt5660->regmap = devm_regmap_init_i2c(i2c, &rt5660_regmap);
++	if (IS_ERR(rt5660->regmap)) {
++		ret = PTR_ERR(rt5660->regmap);
++		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
++			ret);
++		return ret;
++	}
++
++	regmap_read(rt5660->regmap, RT5660_VENDOR_ID2, &val);
++	if (val != RT5660_DEVICE_ID) {
++		dev_err(&i2c->dev,
++			"Device with ID register %#x is not rt5660/39\n", val);
++		return -ENODEV;
++	}
++
++	regmap_write(rt5660->regmap, RT5660_RESET, 0);
++
++	ret = regmap_register_patch(rt5660->regmap, rt5660_patch,
++				    ARRAY_SIZE(rt5660_patch));
++	if (ret != 0)
++		dev_warn(&i2c->dev, "Failed to apply regmap patch: %d\n", ret);
++
++	if (rt5660->pdata.dmic1_data_pin) {
++		regmap_update_bits(rt5660->regmap, RT5660_GPIO_CTRL1,
++			RT5660_GP1_PIN_MASK, RT5660_GP1_PIN_DMIC1_SCL);
++
++		if (rt5660->pdata.dmic1_data_pin == RT5660_DMIC1_DATA_GPIO2)
++			regmap_update_bits(rt5660->regmap, RT5660_DMIC_CTRL1,
++				RT5660_SEL_DMIC_DATA_MASK,
++				RT5660_SEL_DMIC_DATA_GPIO2);
++		else if (rt5660->pdata.dmic1_data_pin == RT5660_DMIC1_DATA_IN1P)
++			regmap_update_bits(rt5660->regmap, RT5660_DMIC_CTRL1,
++				RT5660_SEL_DMIC_DATA_MASK,
++				RT5660_SEL_DMIC_DATA_IN1P);
++	}
++
++	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5660,
++				      rt5660_dai, ARRAY_SIZE(rt5660_dai));
++}
++
++static int rt5660_i2c_remove(struct i2c_client *i2c)
++{
++	snd_soc_unregister_codec(&i2c->dev);
++
++	return 0;
++}
++
++static struct i2c_driver rt5660_i2c_driver = {
++	.driver = {
++		.name = "rt5660",
++		.acpi_match_table = ACPI_PTR(rt5660_acpi_match),
++		.of_match_table = of_match_ptr(rt5660_of_match),
++	},
++	.probe = rt5660_i2c_probe,
++	.remove   = rt5660_i2c_remove,
++	.id_table = rt5660_i2c_id,
++};
++module_i2c_driver(rt5660_i2c_driver);
++
++MODULE_DESCRIPTION("ASoC RT5660 driver");
++MODULE_AUTHOR("Oder Chiou <oder_chiou@realtek.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/rt5660.h b/sound/soc/codecs/rt5660.h
+new file mode 100644
+index 0000000..6cdb926
+--- /dev/null
++++ b/sound/soc/codecs/rt5660.h
+@@ -0,0 +1,847 @@
++/*
++ * rt5660.h  --  RT5660 ALSA SoC audio driver
++ *
++ * Copyright 2016 Realtek Semiconductor Corp.
++ * Author: Oder Chiou <oder_chiou@realtek.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef _RT5660_H
++#define _RT5660_H
++
++#include <linux/clk.h>
++#include <sound/rt5660.h>
++
++/* Info */
++#define RT5660_RESET				0x00
++#define RT5660_VENDOR_ID			0xfd
++#define RT5660_VENDOR_ID1			0xfe
++#define RT5660_VENDOR_ID2			0xff
++/*  I/O - Output */
++#define RT5660_SPK_VOL				0x01
++#define RT5660_LOUT_VOL				0x02
++/* I/O - Input */
++#define RT5660_IN1_IN2				0x0d
++#define RT5660_IN3_IN4				0x0e
++/* I/O - ADC/DAC/DMIC */
++#define RT5660_DAC1_DIG_VOL			0x19
++#define RT5660_STO1_ADC_DIG_VOL			0x1c
++#define RT5660_ADC_BST_VOL1			0x1e
++/* Mixer - D-D */
++#define RT5660_STO1_ADC_MIXER			0x27
++#define RT5660_AD_DA_MIXER			0x29
++#define RT5660_STO_DAC_MIXER			0x2a
++#define RT5660_DIG_INF1_DATA			0x2f
++/* Mixer - ADC */
++#define RT5660_REC_L1_MIXER			0x3b
++#define RT5660_REC_L2_MIXER			0x3c
++#define RT5660_REC_R1_MIXER			0x3d
++#define RT5660_REC_R2_MIXER			0x3e
++/* Mixer - DAC */
++#define RT5660_LOUT_MIXER			0x45
++#define RT5660_SPK_MIXER			0x46
++#define RT5660_SPO_MIXER			0x48
++#define RT5660_SPO_CLSD_RATIO			0x4a
++#define RT5660_OUT_L_GAIN1			0x4d
++#define RT5660_OUT_L_GAIN2			0x4e
++#define RT5660_OUT_L1_MIXER			0x4f
++#define RT5660_OUT_R_GAIN1			0x50
++#define RT5660_OUT_R_GAIN2			0x51
++#define RT5660_OUT_R1_MIXER			0x52
++/* Power */
++#define RT5660_PWR_DIG1				0x61
++#define RT5660_PWR_DIG2				0x62
++#define RT5660_PWR_ANLG1			0x63
++#define RT5660_PWR_ANLG2			0x64
++#define RT5660_PWR_MIXER			0x65
++#define RT5660_PWR_VOL				0x66
++/* Private Register Control */
++#define RT5660_PRIV_INDEX			0x6a
++#define RT5660_PRIV_DATA			0x6c
++/* Format - ADC/DAC */
++#define RT5660_I2S1_SDP				0x70
++#define RT5660_ADDA_CLK1			0x73
++#define RT5660_ADDA_CLK2			0x74
++#define RT5660_DMIC_CTRL1			0x75
++/* Function - Analog */
++#define RT5660_GLB_CLK				0x80
++#define RT5660_PLL_CTRL1			0x81
++#define RT5660_PLL_CTRL2			0x82
++#define RT5660_CLSD_AMP_OC_CTRL			0x8c
++#define RT5660_CLSD_AMP_CTRL			0x8d
++#define RT5660_LOUT_AMP_CTRL			0x8e
++#define RT5660_SPK_AMP_SPKVDD			0x92
++#define RT5660_MICBIAS				0x93
++#define RT5660_CLSD_OUT_CTRL1			0xa1
++#define RT5660_CLSD_OUT_CTRL2			0xa2
++#define RT5660_DIPOLE_MIC_CTRL1			0xa3
++#define RT5660_DIPOLE_MIC_CTRL2			0xa4
++#define RT5660_DIPOLE_MIC_CTRL3			0xa5
++#define RT5660_DIPOLE_MIC_CTRL4			0xa6
++#define RT5660_DIPOLE_MIC_CTRL5			0xa7
++#define RT5660_DIPOLE_MIC_CTRL6			0xa8
++#define RT5660_DIPOLE_MIC_CTRL7			0xa9
++#define RT5660_DIPOLE_MIC_CTRL8			0xaa
++#define RT5660_DIPOLE_MIC_CTRL9			0xab
++#define RT5660_DIPOLE_MIC_CTRL10		0xac
++#define RT5660_DIPOLE_MIC_CTRL11		0xad
++#define RT5660_DIPOLE_MIC_CTRL12		0xae
++/* Function - Digital */
++#define RT5660_EQ_CTRL1				0xb0
++#define RT5660_EQ_CTRL2				0xb1
++#define RT5660_DRC_AGC_CTRL1			0xb3
++#define RT5660_DRC_AGC_CTRL2			0xb4
++#define RT5660_DRC_AGC_CTRL3			0xb5
++#define RT5660_DRC_AGC_CTRL4			0xb6
++#define RT5660_DRC_AGC_CTRL5			0xb7
++#define RT5660_JD_CTRL				0xbb
++#define RT5660_IRQ_CTRL1			0xbd
++#define RT5660_IRQ_CTRL2			0xbe
++#define RT5660_INT_IRQ_ST			0xbf
++#define RT5660_GPIO_CTRL1			0xc0
++#define RT5660_GPIO_CTRL2			0xc2
++#define RT5660_WIND_FILTER_CTRL1		0xd3
++#define RT5660_SV_ZCD1				0xd9
++#define RT5660_SV_ZCD2				0xda
++#define RT5660_DRC1_LM_CTRL1			0xe0
++#define RT5660_DRC1_LM_CTRL2			0xe1
++#define RT5660_DRC2_LM_CTRL1			0xe2
++#define RT5660_DRC2_LM_CTRL2			0xe3
++#define RT5660_MULTI_DRC_CTRL			0xe4
++#define RT5660_DRC2_CTRL1			0xe5
++#define RT5660_DRC2_CTRL2			0xe6
++#define RT5660_DRC2_CTRL3			0xe7
++#define RT5660_DRC2_CTRL4			0xe8
++#define RT5660_DRC2_CTRL5			0xe9
++#define RT5660_ALC_PGA_CTRL1			0xea
++#define RT5660_ALC_PGA_CTRL2			0xeb
++#define RT5660_ALC_PGA_CTRL3			0xec
++#define RT5660_ALC_PGA_CTRL4			0xed
++#define RT5660_ALC_PGA_CTRL5			0xee
++#define RT5660_ALC_PGA_CTRL6			0xef
++#define RT5660_ALC_PGA_CTRL7			0xf0
++
++/* General Control */
++#define RT5660_GEN_CTRL1			0xfa
++#define RT5660_GEN_CTRL2			0xfb
++#define RT5660_GEN_CTRL3			0xfc
++
++/* Index of Codec Private Register definition */
++#define RT5660_CHOP_DAC_ADC			0x3d
++
++/* Global Definition */
++#define RT5660_L_MUTE				(0x1 << 15)
++#define RT5660_L_MUTE_SFT			15
++#define RT5660_VOL_L_MUTE			(0x1 << 14)
++#define RT5660_VOL_L_SFT			14
++#define RT5660_R_MUTE				(0x1 << 7)
++#define RT5660_R_MUTE_SFT			7
++#define RT5660_VOL_R_MUTE			(0x1 << 6)
++#define RT5660_VOL_R_SFT			6
++#define RT5660_L_VOL_MASK			(0x3f << 8)
++#define RT5660_L_VOL_SFT			8
++#define RT5660_R_VOL_MASK			(0x3f)
++#define RT5660_R_VOL_SFT			0
++
++/* IN1 and IN2 Control (0x0d) */
++#define RT5660_IN_DF1				(0x1 << 15)
++#define RT5660_IN_SFT1				15
++#define RT5660_BST_MASK1			(0x7f << 8)
++#define RT5660_BST_SFT1				8
++#define RT5660_IN_DF2				(0x1 << 7)
++#define RT5660_IN_SFT2				7
++#define RT5660_BST_MASK2			(0x7f << 0)
++#define RT5660_BST_SFT2				0
++
++/* IN3 and IN4 Control (0x0e) */
++#define RT5660_IN_DF3				(0x1 << 15)
++#define RT5660_IN_SFT3				15
++#define RT5660_BST_MASK3			(0x7f << 8)
++#define RT5660_BST_SFT3				8
++#define RT5660_IN_DF4				(0x1 << 7)
++#define RT5660_IN_SFT4				7
++#define RT5660_BST_MASK4			(0x7f << 0)
++#define RT5660_BST_SFT4				0
++
++/* DAC1 Digital Volume (0x19) */
++#define RT5660_DAC_L1_VOL_MASK			(0x7f << 9)
++#define RT5660_DAC_L1_VOL_SFT			9
++#define RT5660_DAC_R1_VOL_MASK			(0x7f << 1)
++#define RT5660_DAC_R1_VOL_SFT			1
++
++/* ADC Digital Volume Control (0x1c) */
++#define RT5660_ADC_L_VOL_MASK			(0x3f << 9)
++#define RT5660_ADC_L_VOL_SFT			9
++#define RT5660_ADC_R_VOL_MASK			(0x3f << 1)
++#define RT5660_ADC_R_VOL_SFT			1
++
++/* ADC Boost Volume Control (0x1e) */
++#define RT5660_STO1_ADC_L_BST_MASK		(0x3 << 14)
++#define RT5660_STO1_ADC_L_BST_SFT		14
++#define RT5660_STO1_ADC_R_BST_MASK		(0x3 << 12)
++#define RT5660_STO1_ADC_R_BST_SFT		12
++
++/* Stereo ADC Mixer Control (0x27) */
++#define RT5660_M_ADC_L1				(0x1 << 14)
++#define RT5660_M_ADC_L1_SFT			14
++#define RT5660_M_ADC_L2				(0x1 << 13)
++#define RT5660_M_ADC_L2_SFT			13
++#define RT5660_M_ADC_R1				(0x1 << 6)
++#define RT5660_M_ADC_R1_SFT			6
++#define RT5660_M_ADC_R2				(0x1 << 5)
++#define RT5660_M_ADC_R2_SFT			5
++
++/* ADC Mixer to DAC Mixer Control (0x29) */
++#define RT5660_M_ADCMIX_L			(0x1 << 15)
++#define RT5660_M_ADCMIX_L_SFT			15
++#define RT5660_M_DAC1_L				(0x1 << 14)
++#define RT5660_M_DAC1_L_SFT			14
++#define RT5660_M_ADCMIX_R			(0x1 << 7)
++#define RT5660_M_ADCMIX_R_SFT			7
++#define RT5660_M_DAC1_R				(0x1 << 6)
++#define RT5660_M_DAC1_R_SFT			6
++
++/* Stereo DAC Mixer Control (0x2a) */
++#define RT5660_M_DAC_L1				(0x1 << 14)
++#define RT5660_M_DAC_L1_SFT			14
++#define RT5660_DAC_L1_STO_L_VOL_MASK		(0x1 << 13)
++#define RT5660_DAC_L1_STO_L_VOL_SFT		13
++#define RT5660_M_DAC_R1_STO_L			(0x1 << 9)
++#define RT5660_M_DAC_R1_STO_L_SFT		9
++#define RT5660_DAC_R1_STO_L_VOL_MASK		(0x1 << 8)
++#define RT5660_DAC_R1_STO_L_VOL_SFT		8
++#define RT5660_M_DAC_R1				(0x1 << 6)
++#define RT5660_M_DAC_R1_SFT			6
++#define RT5660_DAC_R1_STO_R_VOL_MASK		(0x1 << 5)
++#define RT5660_DAC_R1_STO_R_VOL_SFT		5
++#define RT5660_M_DAC_L1_STO_R			(0x1 << 1)
++#define RT5660_M_DAC_L1_STO_R_SFT		1
++#define RT5660_DAC_L1_STO_R_VOL_MASK		(0x1)
++#define RT5660_DAC_L1_STO_R_VOL_SFT		0
++
++/* Digital Interface Data Control (0x2f) */
++#define RT5660_IF1_DAC_IN_SEL			(0x3 << 14)
++#define RT5660_IF1_DAC_IN_SFT			14
++#define RT5660_IF1_ADC_IN_SEL			(0x3 << 12)
++#define RT5660_IF1_ADC_IN_SFT			12
++
++/* REC Left Mixer Control 1 (0x3b) */
++#define RT5660_G_BST3_RM_L_MASK			(0x7 << 4)
++#define RT5660_G_BST3_RM_L_SFT			4
++#define RT5660_G_BST2_RM_L_MASK			(0x7 << 1)
++#define RT5660_G_BST2_RM_L_SFT			1
++
++/* REC Left Mixer Control 2 (0x3c) */
++#define RT5660_G_BST1_RM_L_MASK			(0x7 << 13)
++#define RT5660_G_BST1_RM_L_SFT			13
++#define RT5660_G_OM_L_RM_L_MASK			(0x7 << 10)
++#define RT5660_G_OM_L_RM_L_SFT			10
++#define RT5660_M_BST3_RM_L			(0x1 << 3)
++#define RT5660_M_BST3_RM_L_SFT			3
++#define RT5660_M_BST2_RM_L			(0x1 << 2)
++#define RT5660_M_BST2_RM_L_SFT			2
++#define RT5660_M_BST1_RM_L			(0x1 << 1)
++#define RT5660_M_BST1_RM_L_SFT			1
++#define RT5660_M_OM_L_RM_L			(0x1)
++#define RT5660_M_OM_L_RM_L_SFT			0
++
++/* REC Right Mixer Control 1 (0x3d) */
++#define RT5660_G_BST3_RM_R_MASK			(0x7 << 4)
++#define RT5660_G_BST3_RM_R_SFT			4
++#define RT5660_G_BST2_RM_R_MASK			(0x7 << 1)
++#define RT5660_G_BST2_RM_R_SFT			1
++
++/* REC Right Mixer Control 2 (0x3e) */
++#define RT5660_G_BST1_RM_R_MASK			(0x7 << 13)
++#define RT5660_G_BST1_RM_R_SFT			13
++#define RT5660_G_OM_R_RM_R_MASK			(0x7 << 10)
++#define RT5660_G_OM_R_RM_R_SFT			10
++#define RT5660_M_BST3_RM_R			(0x1 << 3)
++#define RT5660_M_BST3_RM_R_SFT			3
++#define RT5660_M_BST2_RM_R			(0x1 << 2)
++#define RT5660_M_BST2_RM_R_SFT			2
++#define RT5660_M_BST1_RM_R			(0x1 << 1)
++#define RT5660_M_BST1_RM_R_SFT			1
++#define RT5660_M_OM_R_RM_R			(0x1)
++#define RT5660_M_OM_R_RM_R_SFT			0
++
++/* LOUTMIX Control (0x45) */
++#define RT5660_M_DAC1_LM			(0x1 << 14)
++#define RT5660_M_DAC1_LM_SFT			14
++#define RT5660_M_LOVOL_M			(0x1 << 13)
++#define RT5660_M_LOVOL_LM_SFT			13
++
++/* SPK Mixer Control (0x46) */
++#define RT5660_G_BST3_SM_MASK			(0x3 << 14)
++#define RT5660_G_BST3_SM_SFT			14
++#define RT5660_G_BST1_SM_MASK			(0x3 << 12)
++#define RT5660_G_BST1_SM_SFT			12
++#define RT5660_G_DACl_SM_MASK			(0x3 << 10)
++#define RT5660_G_DACl_SM_SFT			10
++#define RT5660_G_DACR_SM_MASK			(0x3 << 8)
++#define RT5660_G_DACR_SM_SFT			8
++#define RT5660_G_OM_L_SM_MASK			(0x3 << 6)
++#define RT5660_G_OM_L_SM_SFT			6
++#define RT5660_M_DACR_SM			(0x1 << 5)
++#define RT5660_M_DACR_SM_SFT			5
++#define RT5660_M_BST1_SM			(0x1 << 4)
++#define RT5660_M_BST1_SM_SFT			4
++#define RT5660_M_BST3_SM			(0x1 << 3)
++#define RT5660_M_BST3_SM_SFT			3
++#define RT5660_M_DACL_SM			(0x1 << 2)
++#define RT5660_M_DACL_SM_SFT			2
++#define RT5660_M_OM_L_SM			(0x1 << 1)
++#define RT5660_M_OM_L_SM_SFT			1
++
++/* SPOMIX Control (0x48) */
++#define RT5660_M_DAC_R_SPM			(0x1 << 14)
++#define RT5660_M_DAC_R_SPM_SFT			14
++#define RT5660_M_DAC_L_SPM			(0x1 << 13)
++#define RT5660_M_DAC_L_SPM_SFT			13
++#define RT5660_M_SV_SPM				(0x1 << 12)
++#define RT5660_M_SV_SPM_SFT			12
++#define RT5660_M_BST1_SPM			(0x1 << 11)
++#define RT5660_M_BST1_SPM_SFT			11
++
++/* Output Left Mixer Control 1 (0x4d) */
++#define RT5660_G_BST3_OM_L_MASK			(0x7 << 13)
++#define RT5660_G_BST3_OM_L_SFT			13
++#define RT5660_G_BST2_OM_L_MASK			(0x7 << 10)
++#define RT5660_G_BST2_OM_L_SFT			10
++#define RT5660_G_BST1_OM_L_MASK			(0x7 << 7)
++#define RT5660_G_BST1_OM_L_SFT			7
++#define RT5660_G_RM_L_OM_L_MASK			(0x7 << 1)
++#define RT5660_G_RM_L_OM_L_SFT			1
++
++/* Output Left Mixer Control 2 (0x4e) */
++#define RT5660_G_DAC_R1_OM_L_MASK		(0x7 << 10)
++#define RT5660_G_DAC_R1_OM_L_SFT		10
++#define RT5660_G_DAC_L1_OM_L_MASK		(0x7 << 7)
++#define RT5660_G_DAC_L1_OM_L_SFT		7
++
++/* Output Left Mixer Control 3 (0x4f) */
++#define RT5660_M_BST3_OM_L			(0x1 << 5)
++#define RT5660_M_BST3_OM_L_SFT			5
++#define RT5660_M_BST2_OM_L			(0x1 << 4)
++#define RT5660_M_BST2_OM_L_SFT			4
++#define RT5660_M_BST1_OM_L			(0x1 << 3)
++#define RT5660_M_BST1_OM_L_SFT			3
++#define RT5660_M_RM_L_OM_L			(0x1 << 2)
++#define RT5660_M_RM_L_OM_L_SFT			2
++#define RT5660_M_DAC_R_OM_L			(0x1 << 1)
++#define RT5660_M_DAC_R_OM_L_SFT			1
++#define RT5660_M_DAC_L_OM_L			(0x1)
++#define RT5660_M_DAC_L_OM_L_SFT			0
++
++/* Output Right Mixer Control 1 (0x50) */
++#define RT5660_G_BST2_OM_R_MASK			(0x7 << 10)
++#define RT5660_G_BST2_OM_R_SFT			10
++#define RT5660_G_BST1_OM_R_MASK			(0x7 << 7)
++#define RT5660_G_BST1_OM_R_SFT			7
++#define RT5660_G_RM_R_OM_R_MASK			(0x7 << 1)
++#define RT5660_G_RM_R_OM_R_SFT			1
++
++/* Output Right Mixer Control 2 (0x51) */
++#define RT5660_G_DAC_L_OM_R_MASK		(0x7 << 10)
++#define RT5660_G_DAC_L_OM_R_SFT			10
++#define RT5660_G_DAC_R_OM_R_MASK		(0x7 << 7)
++#define RT5660_G_DAC_R_OM_R_SFT			7
++
++/* Output Right Mixer Control 3 (0x52) */
++#define RT5660_M_BST2_OM_R			(0x1 << 4)
++#define RT5660_M_BST2_OM_R_SFT			4
++#define RT5660_M_BST1_OM_R			(0x1 << 3)
++#define RT5660_M_BST1_OM_R_SFT			3
++#define RT5660_M_RM_R_OM_R			(0x1 << 2)
++#define RT5660_M_RM_R_OM_R_SFT			2
++#define RT5660_M_DAC_L_OM_R			(0x1 << 1)
++#define RT5660_M_DAC_L_OM_R_SFT			1
++#define RT5660_M_DAC_R_OM_R			(0x1)
++#define RT5660_M_DAC_R_OM_R_SFT			0
++
++/* Power Management for Digital 1 (0x61) */
++#define RT5660_PWR_I2S1				(0x1 << 15)
++#define RT5660_PWR_I2S1_BIT			15
++#define RT5660_PWR_DAC_L1			(0x1 << 12)
++#define RT5660_PWR_DAC_L1_BIT			12
++#define RT5660_PWR_DAC_R1			(0x1 << 11)
++#define RT5660_PWR_DAC_R1_BIT			11
++#define RT5660_PWR_ADC_L			(0x1 << 2)
++#define RT5660_PWR_ADC_L_BIT			2
++#define RT5660_PWR_ADC_R			(0x1 << 1)
++#define RT5660_PWR_ADC_R_BIT			1
++#define RT5660_PWR_CLS_D			(0x1)
++#define RT5660_PWR_CLS_D_BIT			0
++
++/* Power Management for Digital 2 (0x62) */
++#define RT5660_PWR_ADC_S1F			(0x1 << 15)
++#define RT5660_PWR_ADC_S1F_BIT			15
++#define RT5660_PWR_DAC_S1F			(0x1 << 11)
++#define RT5660_PWR_DAC_S1F_BIT			11
++
++/* Power Management for Analog 1 (0x63) */
++#define RT5660_PWR_VREF1			(0x1 << 15)
++#define RT5660_PWR_VREF1_BIT			15
++#define RT5660_PWR_FV1				(0x1 << 14)
++#define RT5660_PWR_FV1_BIT			14
++#define RT5660_PWR_MB				(0x1 << 13)
++#define RT5660_PWR_MB_BIT			13
++#define RT5660_PWR_BG				(0x1 << 11)
++#define RT5660_PWR_BG_BIT			11
++#define RT5660_PWR_HP_L				(0x1 << 7)
++#define RT5660_PWR_HP_L_BIT			7
++#define RT5660_PWR_HP_R				(0x1 << 6)
++#define RT5660_PWR_HP_R_BIT			6
++#define RT5660_PWR_HA				(0x1 << 5)
++#define RT5660_PWR_HA_BIT			5
++#define RT5660_PWR_VREF2			(0x1 << 4)
++#define RT5660_PWR_VREF2_BIT			4
++#define RT5660_PWR_FV2				(0x1 << 3)
++#define RT5660_PWR_FV2_BIT			3
++#define RT5660_PWR_LDO2				(0x1 << 2)
++#define RT5660_PWR_LDO2_BIT			2
++
++/* Power Management for Analog 2 (0x64) */
++#define RT5660_PWR_BST1				(0x1 << 15)
++#define RT5660_PWR_BST1_BIT			15
++#define RT5660_PWR_BST2				(0x1 << 14)
++#define RT5660_PWR_BST2_BIT			14
++#define RT5660_PWR_BST3				(0x1 << 13)
++#define RT5660_PWR_BST3_BIT			13
++#define RT5660_PWR_MB1				(0x1 << 11)
++#define RT5660_PWR_MB1_BIT			11
++#define RT5660_PWR_MB2				(0x1 << 10)
++#define RT5660_PWR_MB2_BIT			10
++#define RT5660_PWR_PLL				(0x1 << 9)
++#define RT5660_PWR_PLL_BIT			9
++
++/* Power Management for Mixer (0x65) */
++#define RT5660_PWR_OM_L				(0x1 << 15)
++#define RT5660_PWR_OM_L_BIT			15
++#define RT5660_PWR_OM_R				(0x1 << 14)
++#define RT5660_PWR_OM_R_BIT			14
++#define RT5660_PWR_SM				(0x1 << 13)
++#define RT5660_PWR_SM_BIT			13
++#define RT5660_PWR_RM_L				(0x1 << 11)
++#define RT5660_PWR_RM_L_BIT			11
++#define RT5660_PWR_RM_R				(0x1 << 10)
++#define RT5660_PWR_RM_R_BIT			10
++
++/* Power Management for Volume (0x66) */
++#define RT5660_PWR_SV				(0x1 << 15)
++#define RT5660_PWR_SV_BIT			15
++#define RT5660_PWR_LV_L				(0x1 << 11)
++#define RT5660_PWR_LV_L_BIT			11
++#define RT5660_PWR_LV_R				(0x1 << 10)
++#define RT5660_PWR_LV_R_BIT			10
++
++/* I2S1 Audio Serial Data Port Control (0x70) */
++#define RT5660_I2S_MS_MASK			(0x1 << 15)
++#define RT5660_I2S_MS_SFT			15
++#define RT5660_I2S_MS_M				(0x0 << 15)
++#define RT5660_I2S_MS_S				(0x1 << 15)
++#define RT5660_I2S_O_CP_MASK			(0x3 << 10)
++#define RT5660_I2S_O_CP_SFT			10
++#define RT5660_I2S_O_CP_OFF			(0x0 << 10)
++#define RT5660_I2S_O_CP_U_LAW			(0x1 << 10)
++#define RT5660_I2S_O_CP_A_LAW			(0x2 << 10)
++#define RT5660_I2S_I_CP_MASK			(0x3 << 8)
++#define RT5660_I2S_I_CP_SFT			8
++#define RT5660_I2S_I_CP_OFF			(0x0 << 8)
++#define RT5660_I2S_I_CP_U_LAW			(0x1 << 8)
++#define RT5660_I2S_I_CP_A_LAW			(0x2 << 8)
++#define RT5660_I2S_BP_MASK			(0x1 << 7)
++#define RT5660_I2S_BP_SFT			7
++#define RT5660_I2S_BP_NOR			(0x0 << 7)
++#define RT5660_I2S_BP_INV			(0x1 << 7)
++#define RT5660_I2S_DL_MASK			(0x3 << 2)
++#define RT5660_I2S_DL_SFT			2
++#define RT5660_I2S_DL_16			(0x0 << 2)
++#define RT5660_I2S_DL_20			(0x1 << 2)
++#define RT5660_I2S_DL_24			(0x2 << 2)
++#define RT5660_I2S_DL_8				(0x3 << 2)
++#define RT5660_I2S_DF_MASK			(0x3)
++#define RT5660_I2S_DF_SFT			0
++#define RT5660_I2S_DF_I2S			(0x0)
++#define RT5660_I2S_DF_LEFT			(0x1)
++#define RT5660_I2S_DF_PCM_A			(0x2)
++#define RT5660_I2S_DF_PCM_B			(0x3)
++
++/* ADC/DAC Clock Control 1 (0x73) */
++#define RT5660_I2S_BCLK_MS1_MASK		(0x1 << 15)
++#define RT5660_I2S_BCLK_MS1_SFT			15
++#define RT5660_I2S_BCLK_MS1_32			(0x0 << 15)
++#define RT5660_I2S_BCLK_MS1_64			(0x1 << 15)
++#define RT5660_I2S_PD1_MASK			(0x7 << 12)
++#define RT5660_I2S_PD1_SFT			12
++#define RT5660_I2S_PD1_1			(0x0 << 12)
++#define RT5660_I2S_PD1_2			(0x1 << 12)
++#define RT5660_I2S_PD1_3			(0x2 << 12)
++#define RT5660_I2S_PD1_4			(0x3 << 12)
++#define RT5660_I2S_PD1_6			(0x4 << 12)
++#define RT5660_I2S_PD1_8			(0x5 << 12)
++#define RT5660_I2S_PD1_12			(0x6 << 12)
++#define RT5660_I2S_PD1_16			(0x7 << 12)
++#define RT5660_DAC_OSR_MASK			(0x3 << 2)
++#define RT5660_DAC_OSR_SFT			2
++#define RT5660_DAC_OSR_128			(0x0 << 2)
++#define RT5660_DAC_OSR_64			(0x1 << 2)
++#define RT5660_DAC_OSR_32			(0x2 << 2)
++#define RT5660_DAC_OSR_16			(0x3 << 2)
++#define RT5660_ADC_OSR_MASK			(0x3)
++#define RT5660_ADC_OSR_SFT			0
++#define RT5660_ADC_OSR_128			(0x0)
++#define RT5660_ADC_OSR_64			(0x1)
++#define RT5660_ADC_OSR_32			(0x2)
++#define RT5660_ADC_OSR_16			(0x3)
++
++/* ADC/DAC Clock Control 2 (0x74) */
++#define RT5660_RESET_ADF			(0x1 << 13)
++#define RT5660_RESET_ADF_SFT			13
++#define RT5660_RESET_DAF			(0x1 << 12)
++#define RT5660_RESET_DAF_SFT			12
++#define RT5660_DAHPF_EN				(0x1 << 11)
++#define RT5660_DAHPF_EN_SFT			11
++#define RT5660_ADHPF_EN				(0x1 << 10)
++#define RT5660_ADHPF_EN_SFT			10
++
++/* Digital Microphone Control (0x75) */
++#define RT5660_DMIC_1_EN_MASK			(0x1 << 15)
++#define RT5660_DMIC_1_EN_SFT			15
++#define RT5660_DMIC_1_DIS			(0x0 << 15)
++#define RT5660_DMIC_1_EN			(0x1 << 15)
++#define RT5660_DMIC_1L_LH_MASK			(0x1 << 13)
++#define RT5660_DMIC_1L_LH_SFT			13
++#define RT5660_DMIC_1L_LH_RISING		(0x0 << 13)
++#define RT5660_DMIC_1L_LH_FALLING		(0x1 << 13)
++#define RT5660_DMIC_1R_LH_MASK			(0x1 << 12)
++#define RT5660_DMIC_1R_LH_SFT			12
++#define RT5660_DMIC_1R_LH_RISING		(0x0 << 12)
++#define RT5660_DMIC_1R_LH_FALLING		(0x1 << 12)
++#define RT5660_SEL_DMIC_DATA_MASK		(0x1 << 11)
++#define RT5660_SEL_DMIC_DATA_SFT		11
++#define RT5660_SEL_DMIC_DATA_GPIO2		(0x0 << 11)
++#define RT5660_SEL_DMIC_DATA_IN1P		(0x1 << 11)
++#define RT5660_DMIC_CLK_MASK			(0x7 << 5)
++#define RT5660_DMIC_CLK_SFT			5
++
++/* Global Clock Control (0x80) */
++#define RT5660_SCLK_SRC_MASK			(0x3 << 14)
++#define RT5660_SCLK_SRC_SFT			14
++#define RT5660_SCLK_SRC_MCLK			(0x0 << 14)
++#define RT5660_SCLK_SRC_PLL1			(0x1 << 14)
++#define RT5660_SCLK_SRC_RCCLK			(0x2 << 14)
++#define RT5660_PLL1_SRC_MASK			(0x3 << 12)
++#define RT5660_PLL1_SRC_SFT			12
++#define RT5660_PLL1_SRC_MCLK			(0x0 << 12)
++#define RT5660_PLL1_SRC_BCLK1			(0x1 << 12)
++#define RT5660_PLL1_SRC_RCCLK			(0x2 << 12)
++#define RT5660_PLL1_PD_MASK			(0x1 << 3)
++#define RT5660_PLL1_PD_SFT			3
++#define RT5660_PLL1_PD_1			(0x0 << 3)
++#define RT5660_PLL1_PD_2			(0x1 << 3)
++
++#define RT5660_PLL_INP_MAX			40000000
++#define RT5660_PLL_INP_MIN			256000
++/* PLL M/N/K Code Control 1 (0x81) */
++#define RT5660_PLL_N_MAX			0x1ff
++#define RT5660_PLL_N_MASK			(RT5660_PLL_N_MAX << 7)
++#define RT5660_PLL_N_SFT			7
++#define RT5660_PLL_K_MAX			0x1f
++#define RT5660_PLL_K_MASK			(RT5660_PLL_K_MAX)
++#define RT5660_PLL_K_SFT			0
++
++/* PLL M/N/K Code Control 2 (0x82) */
++#define RT5660_PLL_M_MAX			0xf
++#define RT5660_PLL_M_MASK			(RT5660_PLL_M_MAX << 12)
++#define RT5660_PLL_M_SFT			12
++#define RT5660_PLL_M_BP				(0x1 << 11)
++#define RT5660_PLL_M_BP_SFT			11
++
++/* Class D Over Current Control (0x8c) */
++#define RT5660_CLSD_OC_MASK			(0x1 << 9)
++#define RT5660_CLSD_OC_SFT			9
++#define RT5660_CLSD_OC_PU			(0x0 << 9)
++#define RT5660_CLSD_OC_PD			(0x1 << 9)
++#define RT5660_AUTO_PD_MASK			(0x1 << 8)
++#define RT5660_AUTO_PD_SFT			8
++#define RT5660_AUTO_PD_DIS			(0x0 << 8)
++#define RT5660_AUTO_PD_EN			(0x1 << 8)
++#define RT5660_CLSD_OC_TH_MASK			(0x3f)
++#define RT5660_CLSD_OC_TH_SFT			0
++
++/* Class D Output Control (0x8d) */
++#define RT5660_CLSD_RATIO_MASK			(0xf << 12)
++#define RT5660_CLSD_RATIO_SFT			12
++
++/* Lout Amp Control 1 (0x8e) */
++#define RT5660_LOUT_CO_MASK			(0x1 << 4)
++#define RT5660_LOUT_CO_SFT			4
++#define RT5660_LOUT_CO_DIS			(0x0 << 4)
++#define RT5660_LOUT_CO_EN			(0x1 << 4)
++#define RT5660_LOUT_CB_MASK			(0x1)
++#define RT5660_LOUT_CB_SFT			0
++#define RT5660_LOUT_CB_PD			(0x0)
++#define RT5660_LOUT_CB_PU			(0x1)
++
++/* SPKVDD detection control (0x92) */
++#define RT5660_SPKVDD_DET_MASK			(0x1 << 15)
++#define RT5660_SPKVDD_DET_SFT			15
++#define RT5660_SPKVDD_DET_DIS			(0x0 << 15)
++#define RT5660_SPKVDD_DET_EN			(0x1 << 15)
++#define RT5660_SPK_AG_MASK			(0x1 << 14)
++#define RT5660_SPK_AG_SFT			14
++#define RT5660_SPK_AG_DIS			(0x0 << 14)
++#define RT5660_SPK_AG_EN			(0x1 << 14)
++
++/* Micbias Control (0x93) */
++#define RT5660_MIC1_BS_MASK			(0x1 << 15)
++#define RT5660_MIC1_BS_SFT			15
++#define RT5660_MIC1_BS_9AV			(0x0 << 15)
++#define RT5660_MIC1_BS_75AV			(0x1 << 15)
++#define RT5660_MIC2_BS_MASK			(0x1 << 14)
++#define RT5660_MIC2_BS_SFT			14
++#define RT5660_MIC2_BS_9AV			(0x0 << 14)
++#define RT5660_MIC2_BS_75AV			(0x1 << 14)
++#define RT5660_MIC1_OVCD_MASK			(0x1 << 11)
++#define RT5660_MIC1_OVCD_SFT			11
++#define RT5660_MIC1_OVCD_DIS			(0x0 << 11)
++#define RT5660_MIC1_OVCD_EN			(0x1 << 11)
++#define RT5660_MIC1_OVTH_MASK			(0x3 << 9)
++#define RT5660_MIC1_OVTH_SFT			9
++#define RT5660_MIC1_OVTH_600UA			(0x0 << 9)
++#define RT5660_MIC1_OVTH_1500UA			(0x1 << 9)
++#define RT5660_MIC1_OVTH_2000UA			(0x2 << 9)
++#define RT5660_MIC2_OVCD_MASK			(0x1 << 8)
++#define RT5660_MIC2_OVCD_SFT			8
++#define RT5660_MIC2_OVCD_DIS			(0x0 << 8)
++#define RT5660_MIC2_OVCD_EN			(0x1 << 8)
++#define RT5660_MIC2_OVTH_MASK			(0x3 << 6)
++#define RT5660_MIC2_OVTH_SFT			6
++#define RT5660_MIC2_OVTH_600UA			(0x0 << 6)
++#define RT5660_MIC2_OVTH_1500UA			(0x1 << 6)
++#define RT5660_MIC2_OVTH_2000UA			(0x2 << 6)
++#define RT5660_PWR_CLK25M_MASK			(0x1 << 4)
++#define RT5660_PWR_CLK25M_SFT			4
++#define RT5660_PWR_CLK25M_PD			(0x0 << 4)
++#define RT5660_PWR_CLK25M_PU			(0x1 << 4)
++
++/* EQ Control 1 (0xb0) */
++#define RT5660_EQ_SRC_MASK			(0x1 << 15)
++#define RT5660_EQ_SRC_SFT			15
++#define RT5660_EQ_SRC_DAC			(0x0 << 15)
++#define RT5660_EQ_SRC_ADC			(0x1 << 15)
++#define RT5660_EQ_UPD				(0x1 << 14)
++#define RT5660_EQ_UPD_BIT			14
++
++/* Jack Detect Control (0xbb) */
++#define RT5660_JD_MASK				(0x3 << 14)
++#define RT5660_JD_SFT				14
++#define RT5660_JD_DIS				(0x0 << 14)
++#define RT5660_JD_GPIO1				(0x1 << 14)
++#define RT5660_JD_GPIO2				(0x2 << 14)
++#define RT5660_JD_LOUT_MASK			(0x1 << 11)
++#define RT5660_JD_LOUT_SFT			11
++#define RT5660_JD_LOUT_DIS			(0x0 << 11)
++#define RT5660_JD_LOUT_EN			(0x1 << 11)
++#define RT5660_JD_LOUT_TRG_MASK			(0x1 << 10)
++#define RT5660_JD_LOUT_TRG_SFT			10
++#define RT5660_JD_LOUT_TRG_LO			(0x0 << 10)
++#define RT5660_JD_LOUT_TRG_HI			(0x1 << 10)
++#define RT5660_JD_SPO_MASK			(0x1 << 9)
++#define RT5660_JD_SPO_SFT			9
++#define RT5660_JD_SPO_DIS			(0x0 << 9)
++#define RT5660_JD_SPO_EN			(0x1 << 9)
++#define RT5660_JD_SPO_TRG_MASK			(0x1 << 8)
++#define RT5660_JD_SPO_TRG_SFT			8
++#define RT5660_JD_SPO_TRG_LO			(0x0 << 8)
++#define RT5660_JD_SPO_TRG_HI			(0x1 << 8)
++
++/* IRQ Control 1 (0xbd) */
++#define RT5660_IRQ_JD_MASK			(0x1 << 15)
++#define RT5660_IRQ_JD_SFT			15
++#define RT5660_IRQ_JD_BP			(0x0 << 15)
++#define RT5660_IRQ_JD_NOR			(0x1 << 15)
++#define RT5660_IRQ_OT_MASK			(0x1 << 14)
++#define RT5660_IRQ_OT_SFT			14
++#define RT5660_IRQ_OT_BP			(0x0 << 14)
++#define RT5660_IRQ_OT_NOR			(0x1 << 14)
++#define RT5660_JD_STKY_MASK			(0x1 << 13)
++#define RT5660_JD_STKY_SFT			13
++#define RT5660_JD_STKY_DIS			(0x0 << 13)
++#define RT5660_JD_STKY_EN			(0x1 << 13)
++#define RT5660_OT_STKY_MASK			(0x1 << 12)
++#define RT5660_OT_STKY_SFT			12
++#define RT5660_OT_STKY_DIS			(0x0 << 12)
++#define RT5660_OT_STKY_EN			(0x1 << 12)
++#define RT5660_JD_P_MASK			(0x1 << 11)
++#define RT5660_JD_P_SFT				11
++#define RT5660_JD_P_NOR				(0x0 << 11)
++#define RT5660_JD_P_INV				(0x1 << 11)
++#define RT5660_OT_P_MASK			(0x1 << 10)
++#define RT5660_OT_P_SFT				10
++#define RT5660_OT_P_NOR				(0x0 << 10)
++#define RT5660_OT_P_INV				(0x1 << 10)
++
++/* IRQ Control 2 (0xbe) */
++#define RT5660_IRQ_MB1_OC_MASK			(0x1 << 15)
++#define RT5660_IRQ_MB1_OC_SFT			15
++#define RT5660_IRQ_MB1_OC_BP			(0x0 << 15)
++#define RT5660_IRQ_MB1_OC_NOR			(0x1 << 15)
++#define RT5660_IRQ_MB2_OC_MASK			(0x1 << 14)
++#define RT5660_IRQ_MB2_OC_SFT			14
++#define RT5660_IRQ_MB2_OC_BP			(0x0 << 14)
++#define RT5660_IRQ_MB2_OC_NOR			(0x1 << 14)
++#define RT5660_MB1_OC_STKY_MASK			(0x1 << 11)
++#define RT5660_MB1_OC_STKY_SFT			11
++#define RT5660_MB1_OC_STKY_DIS			(0x0 << 11)
++#define RT5660_MB1_OC_STKY_EN			(0x1 << 11)
++#define RT5660_MB2_OC_STKY_MASK			(0x1 << 10)
++#define RT5660_MB2_OC_STKY_SFT			10
++#define RT5660_MB2_OC_STKY_DIS			(0x0 << 10)
++#define RT5660_MB2_OC_STKY_EN			(0x1 << 10)
++#define RT5660_MB1_OC_P_MASK			(0x1 << 7)
++#define RT5660_MB1_OC_P_SFT			7
++#define RT5660_MB1_OC_P_NOR			(0x0 << 7)
++#define RT5660_MB1_OC_P_INV			(0x1 << 7)
++#define RT5660_MB2_OC_P_MASK			(0x1 << 6)
++#define RT5660_MB2_OC_P_SFT			6
++#define RT5660_MB2_OC_P_NOR			(0x0 << 6)
++#define RT5660_MB2_OC_P_INV			(0x1 << 6)
++#define RT5660_MB1_OC_CLR			(0x1 << 3)
++#define RT5660_MB1_OC_CLR_SFT			3
++#define RT5660_MB2_OC_CLR			(0x1 << 2)
++#define RT5660_MB2_OC_CLR_SFT			2
++
++/* GPIO Control 1 (0xc0) */
++#define RT5660_GP2_PIN_MASK			(0x1 << 14)
++#define RT5660_GP2_PIN_SFT			14
++#define RT5660_GP2_PIN_GPIO2			(0x0 << 14)
++#define RT5660_GP2_PIN_DMIC1_SDA		(0x1 << 14)
++#define RT5660_GP1_PIN_MASK			(0x3 << 12)
++#define RT5660_GP1_PIN_SFT			12
++#define RT5660_GP1_PIN_GPIO1			(0x0 << 12)
++#define RT5660_GP1_PIN_DMIC1_SCL		(0x1 << 12)
++#define RT5660_GP1_PIN_IRQ			(0x2 << 12)
++#define RT5660_GPIO_M_MASK			(0x1 << 9)
++#define RT5660_GPIO_M_SFT			9
++#define RT5660_GPIO_M_FLT			(0x0 << 9)
++#define RT5660_GPIO_M_PH			(0x1 << 9)
++
++/* GPIO Control 3 (0xc2) */
++#define RT5660_GP2_PF_MASK			(0x1 << 5)
++#define RT5660_GP2_PF_SFT			5
++#define RT5660_GP2_PF_IN			(0x0 << 5)
++#define RT5660_GP2_PF_OUT			(0x1 << 5)
++#define RT5660_GP2_OUT_MASK			(0x1 << 4)
++#define RT5660_GP2_OUT_SFT			4
++#define RT5660_GP2_OUT_LO			(0x0 << 4)
++#define RT5660_GP2_OUT_HI			(0x1 << 4)
++#define RT5660_GP2_P_MASK			(0x1 << 3)
++#define RT5660_GP2_P_SFT			3
++#define RT5660_GP2_P_NOR			(0x0 << 3)
++#define RT5660_GP2_P_INV			(0x1 << 3)
++#define RT5660_GP1_PF_MASK			(0x1 << 2)
++#define RT5660_GP1_PF_SFT			2
++#define RT5660_GP1_PF_IN			(0x0 << 2)
++#define RT5660_GP1_PF_OUT			(0x1 << 2)
++#define RT5660_GP1_OUT_MASK			(0x1 << 1)
++#define RT5660_GP1_OUT_SFT			1
++#define RT5660_GP1_OUT_LO			(0x0 << 1)
++#define RT5660_GP1_OUT_HI			(0x1 << 1)
++#define RT5660_GP1_P_MASK			(0x1)
++#define RT5660_GP1_P_SFT			0
++#define RT5660_GP1_P_NOR			(0x0)
++#define RT5660_GP1_P_INV			(0x1)
++
++/* Soft volume and zero cross control 1 (0xd9) */
++#define RT5660_SV_MASK				(0x1 << 15)
++#define RT5660_SV_SFT				15
++#define RT5660_SV_DIS				(0x0 << 15)
++#define RT5660_SV_EN				(0x1 << 15)
++#define RT5660_SPO_SV_MASK			(0x1 << 14)
++#define RT5660_SPO_SV_SFT			14
++#define RT5660_SPO_SV_DIS			(0x0 << 14)
++#define RT5660_SPO_SV_EN			(0x1 << 14)
++#define RT5660_OUT_SV_MASK			(0x1 << 12)
++#define RT5660_OUT_SV_SFT			12
++#define RT5660_OUT_SV_DIS			(0x0 << 12)
++#define RT5660_OUT_SV_EN			(0x1 << 12)
++#define RT5660_ZCD_DIG_MASK			(0x1 << 11)
++#define RT5660_ZCD_DIG_SFT			11
++#define RT5660_ZCD_DIG_DIS			(0x0 << 11)
++#define RT5660_ZCD_DIG_EN			(0x1 << 11)
++#define RT5660_ZCD_MASK				(0x1 << 10)
++#define RT5660_ZCD_SFT				10
++#define RT5660_ZCD_PD				(0x0 << 10)
++#define RT5660_ZCD_PU				(0x1 << 10)
++#define RT5660_SV_DLY_MASK			(0xf)
++#define RT5660_SV_DLY_SFT			0
++
++/* Soft volume and zero cross control 2 (0xda) */
++#define RT5660_ZCD_SPO_MASK			(0x1 << 15)
++#define RT5660_ZCD_SPO_SFT			15
++#define RT5660_ZCD_SPO_DIS			(0x0 << 15)
++#define RT5660_ZCD_SPO_EN			(0x1 << 15)
++#define RT5660_ZCD_OMR_MASK			(0x1 << 8)
++#define RT5660_ZCD_OMR_SFT			8
++#define RT5660_ZCD_OMR_DIS			(0x0 << 8)
++#define RT5660_ZCD_OMR_EN			(0x1 << 8)
++#define RT5660_ZCD_OML_MASK			(0x1 << 7)
++#define RT5660_ZCD_OML_SFT			7
++#define RT5660_ZCD_OML_DIS			(0x0 << 7)
++#define RT5660_ZCD_OML_EN			(0x1 << 7)
++#define RT5660_ZCD_SPM_MASK			(0x1 << 6)
++#define RT5660_ZCD_SPM_SFT			6
++#define RT5660_ZCD_SPM_DIS			(0x0 << 6)
++#define RT5660_ZCD_SPM_EN			(0x1 << 6)
++#define RT5660_ZCD_RMR_MASK			(0x1 << 5)
++#define RT5660_ZCD_RMR_SFT			5
++#define RT5660_ZCD_RMR_DIS			(0x0 << 5)
++#define RT5660_ZCD_RMR_EN			(0x1 << 5)
++#define RT5660_ZCD_RML_MASK			(0x1 << 4)
++#define RT5660_ZCD_RML_SFT			4
++#define RT5660_ZCD_RML_DIS			(0x0 << 4)
++#define RT5660_ZCD_RML_EN			(0x1 << 4)
++
++/* General Control 1 (0xfa) */
++#define RT5660_PWR_VREF_HP			(0x1 << 11)
++#define RT5660_PWR_VREF_HP_SFT			11
++#define RT5660_DIG_GATE_CTRL			(0x1)
++#define RT5660_DIG_GATE_CTRL_SFT		0
++
++/* System Clock Source */
++#define RT5660_SCLK_S_MCLK			0
++#define RT5660_SCLK_S_PLL1			1
++#define RT5660_SCLK_S_RCCLK			2
++
++/* PLL1 Source */
++#define RT5660_PLL1_S_MCLK			0
++#define RT5660_PLL1_S_BCLK			1
++
++enum {
++	RT5660_AIF1,
++	RT5660_AIFS,
++};
++
++struct rt5660_priv {
++	struct snd_soc_codec *codec;
++	struct rt5660_platform_data pdata;
++	struct regmap *regmap;
++	struct clk *mclk;
++
++	int sysclk;
++	int sysclk_src;
++	int lrck[RT5660_AIFS];
++	int bclk[RT5660_AIFS];
++	int master[RT5660_AIFS];
++
++	int pll_src;
++	int pll_in;
++	int pll_out;
++};
++
++#endif
 -- 
-1.9.1
+1.8.1.1.439.g50a6b54
