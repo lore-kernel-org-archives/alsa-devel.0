@@ -1,54 +1,38 @@
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH -next] ASoC: samsung: i2s: Add missing clk_disable_unprepare() on error in samsung_i2s_probe()
-Date: Tue, 23 Aug 2016 15:16:42 +0000
-Message-ID: <1471965402-6642-1-git-send-email-weiyj.lk@gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: ALSA: compress: Memset timestamp structure to zero.
+Date: Tue, 23 Aug 2016 21:31:00 +0530
+Message-ID: <20160823160100.GZ2890@localhost>
+References: <1471959637-18163-1-git-send-email-luis.henriques@canonical.com>
+ <1471959637-18163-2-git-send-email-luis.henriques@canonical.com>
+ <s5hwpj761kt.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hwpj761kt.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Krzysztof Kozlowski <k.kozlowski@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Wei Yongjun <weiyj.lk@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Luis Henriques <luis.henriques@canonical.com>, Krishnankutty Kolathappilly <kkolat@codeaurora.org>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the missing clk_disable_unprepare() before return
-from samsung_i2s_probe() in the error handling case.
+On Tue, Aug 23, 2016 at 03:45:38PM +0200, Takashi Iwai wrote:
+> On Tue, 23 Aug 2016 15:40:37 +0200,
+> Luis Henriques wrote:
+> > 
+> > From: Krishnankutty Kolathappilly <kkolat@codeaurora.org>
+> > 
+> > snd_compr_tstamp is initialized using aggregate initialization
+> > that does not zero out the padded bytes. Initialize timestamp
+> > structure to zero using memset to avoid this.
+> > 
+> > CRs-Fixed: 568717
+> > Change-Id: I7a7d188705161f06201f1a1f2945bb6acd633d5d
+> > Signed-off-by: Krishnankutty Kolathappilly <kkolat@codeaurora.org>
+> 
+> Vinod already informed me about this, and we agreed that it doesn't
+> make any sense.  What does it really fix?
 
-Signed-off-by: Wei Yongjun <weiyj.lk@gmail.com>
----
- sound/soc/samsung/i2s.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Btw is there a process to make this CVE invalidated?
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index fa3ff03..7e32cf4 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1318,7 +1318,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 		sec_dai = i2s_alloc_dai(pdev, true);
- 		if (!sec_dai) {
- 			dev_err(&pdev->dev, "Unable to alloc I2S_sec\n");
--			return -ENOMEM;
-+			ret = -ENOMEM;
-+			goto err_disable_clk;
- 		}
- 
- 		sec_dai->lock = &pri_dai->spinlock;
-@@ -1342,7 +1343,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 
- 	if (i2s_pdata && i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
- 		dev_err(&pdev->dev, "Unable to configure gpio\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_disable_clk;
- 	}
- 
- 	ret = devm_snd_soc_register_component(&pri_dai->pdev->dev,
-@@ -1366,6 +1368,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- err_free_dai:
- 	if (sec_dai)
- 		i2s_free_sec_dai(sec_dai);
-+err_disable_clk:
-+	clk_disable_unprepare(pri_dai->clk);
- 	return ret;
- }
- 
+-- 
+~Vinod
