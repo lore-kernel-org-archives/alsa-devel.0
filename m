@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 03/13] ASoC: topology: ABI - Define DPCM
- trigger ordering for PCM
-Date: Tue, 23 Aug 2016 18:41:35 +0100
-Message-ID: <20160823174135.GA22076@sirena.org.uk>
-References: <cover.1471599648.git.mengdong.lin@linux.intel.com>
- <24428c2714d09062f3ace5803679c743d36afb04.1471599648.git.mengdong.lin@linux.intel.com>
+From: Maurizio Berti <maurizio.berti@gmail.com>
+Subject: Range of pitchbend MIDI events
+Date: Tue, 23 Aug 2016 23:59:02 +0200
+Message-ID: <CAPn+-XSsDEe3ruu7vYmdNgneLpK13VxYVm860JAt4cwFe86soQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7262177619879321641=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E7D33266EAA
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 19:41:41 +0200 (CEST)
-In-Reply-To: <24428c2714d09062f3ace5803679c743d36afb04.1471599648.git.mengdong.lin@linux.intel.com>
+Received: from mail-yb0-f182.google.com (mail-yb0-f182.google.com
+ [209.85.213.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id AEEF5266656
+ for <Alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 23:59:43 +0200 (CEST)
+Received: by mail-yb0-f182.google.com with SMTP id z10so55393553ybh.2
+ for <Alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 14:59:43 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, mengdong.lin@intel.com
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============7262177619879321641==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="W18qbkTAGYos9/y6"
-Content-Disposition: inline
-
-
---W18qbkTAGYos9/y6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Aug 19, 2016 at 06:12:55PM +0800, mengdong.lin@linux.intel.com wrot=
-e:
-
-> Definition of dynamic PCM trigger ordering is exposed to uapi asoc.h,
-> and topology allows user space to define the trigger ordering for PCM
-> (FE links).
-
-This seems *incredibly* implementation specific.  Why wouldn't the
-driver for the thing implementing the topology be able to figure out the
-ordering here?  What's the use case?  What happens when we change away
-=66rom DPCM?
-
---W18qbkTAGYos9/y6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXvIrOAAoJECTWi3JdVIfQVSwH/Rt7KH9rPJxHmoTy8bJ6963d
-F6Faw607xTyHNkbh2+wZgkaT+eLiyVhBAqw7rJU66iQwbPUdfWvNfvbPgXYe1twg
-DigSAO30N1sIgKK7zvNL3U9zCNi4jfoA3DQ6QdgJ/tPBazFQk5I2la6eXXkk1JVe
-+vR0EIs5Fvni+Cyr1vXAL+//yqOQPwASVrNbVvdHwnv4z3kYvLQsK8G17ZXT6B9Y
-B9UJ07VYLDsKW8uRcW7YzHZlL3R9I1E8ff/FkTb4qFXYTuTkNdNsvPIb/Asgi8GS
-N+GR8t/8wAB/y2WhgSLcHle6VUhDTqxT6q/hi4Wj0BpL67SWDoW0/EeU1F25ItY=
-=j1hv
------END PGP SIGNATURE-----
-
---W18qbkTAGYos9/y6--
-
---===============7262177619879321641==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7262177619879321641==--
+SGVsbG8sCkkgd2FzIHBsYXlpbmcgd2l0aCBweWFsc2EgYW5kIEkgcmVhbGl6ZWQgYW4gdW5leHBl
+Y3RlZCBiZWhhdmlvciB3aXRoCnBpdGNoYmVuZCBldmVudHMuClRoZSBwaXRjaGJlbmQgcmFuZ2Ug
+c2hvdWxkIGJlLCBieSBNSURJIHN0YW5kYXJkLCBiZXR3ZWVuIC04MTkyIGFuZCArODE5MSwKb3Ig
+MC0xNjM4NC4gQmVpbmcgYSAzIGJ5dGUgZXZlbnQsIGl0IHNob3VsZCBpZ25vcmUgYW55IHN1YnNl
+cXVlbnQgYnl0ZQpyZWNlaXZlZC4KClVzaW5nIHB5YWxzYSBJJ20gYWJsZSB0byBjcmVhdGUgZXZl
+bnRzIHdpdGggdmFsdWVzIGdyZWF0ZXIgdGhhbiAxMjcgYW5kCnRoZXkgYXJlIHRyYW5zbGF0ZWQg
+dXNpbmcgYXMgbWFueSBieXRlcyBhcyBwb3NzaWJsZTsgaW4gZmFjdCwgaWYgSSBjcmVhdGUgYQpu
+b3RlIGV2ZW50IHdpdGggYSBub3RlIHZhbHVlIG9mIDgxOTMsIEkgcmVjZWl2ZSBhIHZhbHVlIDEg
+KHVzaW5nIHRoZSBmaXJzdApieXRlIG9mIGEgMiBieXRlIHZhbHVlIHdpdGggN2JpdCBmb3JtYXQp
+LgpUaGF0J3MgZmluZSwgSSBzdXBwb3NlIGl0J3MgYnkgYXJjaGl0ZWN0dXJlIChJJ20gbm90IGEg
+cHJvZ3JhbW1lciwgSSBqdXN0CnBsYXkgYXJvdW5kIHdpdGggcHl0aG9uLCBJJ20ganVzdCBhc3N1
+bWluZyB0aGlzKS4KVGhlIHByb2JsZW0gY29tZXMgd2l0aCBwaXRjaGJlbmQgdmFsdWVzLCBzaW5j
+ZSBpdCBsb29rcyBsaWtlIGFsc2EgYWNjZXB0cwp2YWx1ZXMgZ3JlYXRlciB0aGFuIDgxOTEgYW5k
+IGRvZXMgbm90IGlnbm9yZSB0aGUgZXhjZWVkaW5nIGJ5dGVzIGFzIGl0CnNob3VsZDsgdGhhdCBp
+cywgSSdtIGFibGUgdG8gc2VuZCA4MTkyLCBhbmQgdGhhdCdzIHdoYXQgdmtleWJkIGRvZXMuClRo
+ZSB0cmFuc2Zvcm1hdGlvbiBoZXJlIGlzIHRoZSBpc3N1ZSwgc2luY2UgcmVjZWl2aW5nIHByb2dy
+YW1zIHNlZW0gdG8KdHJhbnNsYXRlIG9ubHkgdGhlIGxhdGVzdCB0d28gYnl0ZXMsIHRoYXQncyB3
+aHkgdmtleWJkIChhbmQgb3RoZXIgc29mdHdhcmUKdG9vKSBzaG91bGRuJ3QgaGF2ZSBhIDgxOTIg
+dmFsdWUuClRoYXQgY2FuIGJlIGNvbmZ1c2luZywgZm9yIGV4YW1wbGUsIHVzaW5nIGEyam1pZGk6
+IHRoZSBlbmQgb2YgdGhlIHBpdGNoYmVuZApzY2FsZSBpcyBzdWRkZW5seSBhIDAgdmFsdWU7IEkg
+a25vdyB0aGF0IHZrZXliZCBpcyBub3QgdGhlIHVsdGltYXRlCnNvZnR3YXJlIGluIG11c2ljIHBy
+b2R1Y3Rpb24sIGJ1dCwgc3RpbGwsIGl0IHNob3VsZG4ndCBiZSBhYmxlIHRvIGRvIHNvLCBJCnRo
+aW5rIDopCgpJIGRvbid0IGtub3cgaWYsIG1heWJlLCB0aGVyZSdzIHNvbWUgbGVzcyBrbm93biBh
+c3BlY3QgcmVnYXJkaW5nIHBpdGNoYmVuZCwKYW5kLCBhcyBJIG1lbnRpb25lZCBiZWZvcmUsIEkg
+ZG9uJ3Qga25vdyBhIHRoaW5nIGFib3V0IHByb2dyYW1taW5nLCBub3IgaG93CmFjdHVhbGx5IHdv
+cmtzIEFMU0EgdW5kZXIgdGhlIGhvb2QuIEFueXdheSwgSSB0aGluayB0aGVyZSBzaG91bGQgYmUg
+c29tZQpraW5kIG9mIHJhbmdlIGNvbnRyb2wsIGF0IGxlYXN0IHdpdGggcHlhbHNhLCBpZiBub3Qg
+YnkgYWxzYSBhdCBhbGwuCgpXaGF0IGRvIHlvdSB0aGluaz8KClJlZ2FyZHMsCk1hdXJpemlvCgot
+LSAKw4ggZGlmZmljaWxlIGF2ZXJlIHVuYSBjb252aW56aW9uZSBwcmVjaXNhIHF1YW5kbyBzaSBw
+YXJsYSBkZWxsZSByYWdpb25pIGRlbApjdW9yZS4gLSAiU29zdGllbmUgUGVyZWlyYSIsIEFudG9u
+aW8gVGFidWNjaGkKaHR0cDovL3d3dy5qaWRlc2submV0Cl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
