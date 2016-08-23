@@ -1,19 +1,23 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH v5 1/2] amidi: add delay option
-Date: Tue, 23 Aug 2016 12:37:11 +0200
-Message-ID: <6bc1bbb7-37ea-8d23-875b-3472ec131463@ladisch.de>
-References: <20160815163734.17658-1-eu@felipetonello.com>
- <20160815163734.17658-2-eu@felipetonello.com>
- <5b064978-df48-23fa-26e1-89f9ed1843ff@ladisch.de>
- <1e733023-d7e8-a4ac-3b27-4bdb5a659418@felipetonello.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/3] ASoC: rsrc-card: rename rsrc-card to
+ simple-dpcm-card phase2
+Date: Tue, 23 Aug 2016 11:41:40 +0100
+Message-ID: <20160823104140.GY22076@sirena.org.uk>
+References: <87vaz8t4bu.wl%kuninori.morimoto.gx@renesas.com>
+ <87shuct48p.wl%kuninori.morimoto.gx@renesas.com>
+ <20160817105603.GK9347@sirena.org.uk>
+ <874m6dv60c.wl%kuninori.morimoto.gx@renesas.com>
+ <87wpj9473x.wl%kuninori.morimoto.gx@renesas.com>
+ <20160822165149.GR22076@sirena.org.uk>
+ <87fupwibpe.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============6865162755176647086=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 38F662669F1
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 12:37:13 +0200 (CEST)
-In-Reply-To: <1e733023-d7e8-a4ac-3b27-4bdb5a659418@felipetonello.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 522FC266A0A
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 12:41:49 +0200 (CEST)
+In-Reply-To: <87fupwibpe.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,28 +27,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Felipe Ferreri Tonello <eu@felipetonello.com>, alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Felipe Ferreri Tonello wrote:
-> On 22/08/16 13:43, Clemens Ladisch wrote:
->> Felipe F. Tonello wrote:
->>> +				if (data > send_data)
->>> +					usleep(delay * 1000);
->>
->> The MIDI data is sent asynchonously, so this delay is not _between_ mess=
-ages.
->> You'd have to add 320 =B5s for any byte not yet sent (I guess you have t=
-o use
->> snd_rawmidi_status_get_avail() to find out how many have been sent).
->
-> Right. Or I can just use snd_rawmidi_drain()?
 
-This function not only drains the ALSA buffer, but also waits for the
-hardware FIFO to empty.  And most drivers do not implement this, in
-which case the framework just does a fixed wait of 50 ms, which would
-correspond to a FIFO size of 156 bytes.
+--===============6865162755176647086==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Tln/wzp9jsNjmSUr"
+Content-Disposition: inline
 
 
-Regards,
-Clemens
+--Tln/wzp9jsNjmSUr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Aug 23, 2016 at 12:22:05AM +0000, Kuninori Morimoto wrote:
+
+> Ahh sorry, my explanation was not good.
+> Lager/Koelsch boards itself is very common board.
+> But, the "user of board specific compatible" is only my test environment.
+> It was created as 1st prototype. Now, normal user can use generic
+> compatible (= without specific board name).
+> I will create and send removing patch which has explanation.
+
+I see.  The other thing you can do there is keep the compatibles but
+just handle them the same as the generic one.
+
+--Tln/wzp9jsNjmSUr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXvChjAAoJECTWi3JdVIfQsyEH/23w8AWFVcq8xxrZLKEQZApO
+JR/Vv7D0B0xSdWyokFRtVFlngW8Ev3GPeq9P2bVw6lW18JZpicbzZPwfT6/x0iw4
+hvS9bMsGDFLhv6pytAbAiGDl3cVEHiQ+abYo70ScrGJfAN9WOWnfXVJd3jQQGy1K
+LMgF7y24JKJNWSpNqXFwj2kyHkquUOITGneypxx+fHdmn1VkeNy4JaU0LdF9WK4e
+vTkFJ/UMyvMOVinV7Gucvh0JKDR6Oa/Z3YSKMcIwv4SGjwLOcuXt8xGO72hC75UX
+NKvwfG5GkOUNsyNaSQ8dKgEKyC1qvUPPa9t749ocJnM7kXBlN8kiLAEPEqttTPs=
+=l63Y
+-----END PGP SIGNATURE-----
+
+--Tln/wzp9jsNjmSUr--
+
+--===============6865162755176647086==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6865162755176647086==--
