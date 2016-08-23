@@ -1,21 +1,23 @@
 From: "Felipe F. Tonello" <eu@felipetonello.com>
-Subject: [PATCH v6 0/2] amidi delay option
-Date: Tue, 23 Aug 2016 15:09:36 +0100
-Message-ID: <20160823140938.21423-1-eu@felipetonello.com>
+Subject: [PATCH v6 1/2] amidi: add delay option
+Date: Tue, 23 Aug 2016 15:09:37 +0100
+Message-ID: <20160823140938.21423-2-eu@felipetonello.com>
+References: <20160823140938.21423-1-eu@felipetonello.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id E2E22267E58
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 16:09:40 +0200 (CEST)
-Received: by mail-wm0-f65.google.com with SMTP id i5so18327665wmg.2
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 07:09:40 -0700 (PDT)
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72262267E5F
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 16:09:42 +0200 (CEST)
+Received: by mail-wm0-f68.google.com with SMTP id i5so18327748wmg.2
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 07:09:42 -0700 (PDT)
 Received: from localhost.localdomain ([81.145.202.106])
- by smtp.gmail.com with ESMTPSA id us9sm4005204wjb.43.2016.08.23.07.09.39
+ by smtp.gmail.com with ESMTPSA id us9sm4005204wjb.43.2016.08.23.07.09.40
  for <alsa-devel@alsa-project.org>
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 23 Aug 2016 07:09:39 -0700 (PDT)
+ Tue, 23 Aug 2016 07:09:40 -0700 (PDT)
+In-Reply-To: <20160823140938.21423-1-eu@felipetonello.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,33 +30,83 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Small improvement to amidi, adding useful functionality.
-
-changes from v5:
- * wait until MIDI message is competely sent to sleep
-
-changes from v4:
- * simplified code
-
-changes from v3:
- * fixed a bug if memchr() returns NULL
-
-changes from v2:
- * only check of end of sysex (0xf7)
- * use memchr() instead of direct loop approach
- * fixed commit message
-
-changes from v1:
- * remove delay in between any MIDI message, only SysEx
- * added patch to use getopt_long() arguments
-
-Felipe F. Tonello (2):
-  amidi: add delay option
-  amidi: use GNU getopt_long() proper argument names
-
- amidi/amidi.1 | 14 ++++++++++
- amidi/amidi.c | 82 ++++++++++++++++++++++++++++++++++++++++++++++-------------
- 2 files changed, 79 insertions(+), 17 deletions(-)
-
--- 
-2.9.3
+VGhpcyBwYXRjaCBhZGRzIGEgbmV3IG9wdGlvbnMgdG8gYW1pZGkgdG9vbCB0byBhZGQgYSBkZWxh
+eSAoaW4gbWlsbGlzZWNvbmRzKQp0byBlYWNoIFN5c0V4IG1lc3NhZ2UuCgpUaGlzIGlzIHZlcnkg
+dXNlZnVsIHdoZW4gc2VuZGluZyBmaXJtd2FyZSB1cGRhdGVzIHRvIGEgcmVtb3RlIGRldmljZSB2
+aWEgU3lzRXgKb3IgYW55IG90aGVyIHVzZSB0aGF0IHJlcXVpcmVzIHRoaXMgZGVsYXkgaW4gYmV0
+d2VlbiBtZXNzYWdlcy4KClNpZ25lZC1vZmYtYnk6IEZlbGlwZSBGLiBUb25lbGxvIDxldUBmZWxp
+cGV0b25lbGxvLmNvbT4KLS0tCiBhbWlkaS9hbWlkaS4xIHwgMTQgKysrKysrKysrKysrKysKIGFt
+aWRpL2FtaWRpLmMgfCA1OCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKy0tLS0tCiAyIGZpbGVzIGNoYW5nZWQsIDY3IGluc2VydGlvbnMoKyksIDUg
+ZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvYW1pZGkvYW1pZGkuMSBiL2FtaWRpL2FtaWRpLjEK
+aW5kZXggODZiZWIyN2ExZTNiLi40Y2EyMTY0Nzg4ZjEgMTAwNjQ0Ci0tLSBhL2FtaWRpL2FtaWRp
+LjEKKysrIGIvYW1pZGkvYW1pZGkuMQpAQCAtMTIwLDYgKzEyMCwxMiBAQCByZWNlaXZlZCBNSURJ
+IGNvbW1hbmRzLgogRG9lcyBub3QgaWdub3JlIENsb2NrIGJ5dGVzIChGOGgpIHdoZW4gc2F2aW5n
+IG9yIHByaW50aW5nIHJlY2VpdmVkCiBNSURJIGNvbW1hbmRzLgogCisuVFAKKy5JIFwtRCwgXC1c
+LWRlbGF5PW1zZWNvbmRzCitBZGRzIGEgZGVsYXkgaW4gYmV0d2VlbiBlYWNoIFN5c0V4IG1lc3Nh
+Z2Ugc2VudCB0byBhIGRldmljZS4gSXQgaXMKK3VzZWZ1bCB3aGVuIHNlbmRpbmcgZmlybXdhcmUg
+dXBkYXRlcyB2aWEgU3lzRXggbWVzc2FnZXMgdG8gYSByZW1vdGUKK2RldmljZS4KKwogLlNIIEVY
+QU1QTEVTCiAKIC5UUApAQCAtMTMwLDYgKzEzNiwxNCBAQCB0byBwb3J0CiAuSSBodzowLgogCiAu
+VFAKKy5CIGFtaWRpIFwtcCBodzoxLDAsMCAtcyBmaXJtd2FyZS5zeXggXC1EIDEwMAord2lsbCBz
+ZW5kIHRoZSBNSURJIGNvbW1hbmRzIGluCisuSSBmaXJtd2FyZS5zeXgKK3RvIHBvcnQKKy5JIGh3
+OjEsMCwwCit3aXRoIDEwMCBtaWxsaXNlY29uZHMgZGVsYXkgaW4gYmV0d2VlbiBlYWNoIFN5c0V4
+IG1lc3NhZ2UuCisKKy5UUAogLkIgYW1pZGkgXC1TICdGMCA0MyAxMCA0QyAwMCAwMCA3RSAwMCBG
+NycKIHNlbmRzIGFuIFhHIFJlc2V0IHRvIHRoZSBkZWZhdWx0IHBvcnQuCiAKZGlmZiAtLWdpdCBh
+L2FtaWRpL2FtaWRpLmMgYi9hbWlkaS9hbWlkaS5jCmluZGV4IGMyMDUxMmNjOTZhNy4uZDBkYmIz
+MjJmODBhIDEwMDY0NAotLS0gYS9hbWlkaS9hbWlkaS5jCisrKyBiL2FtaWRpL2FtaWRpLmMKQEAg
+LTUyLDYgKzUyLDcgQEAgc3RhdGljIGludCByZWNlaXZlX2ZpbGU7CiBzdGF0aWMgaW50IGR1bXA7
+CiBzdGF0aWMgZmxvYXQgdGltZW91dDsKIHN0YXRpYyBpbnQgc3RvcDsKK3N0YXRpYyBpbnQgZGVs
+YXk7CiBzdGF0aWMgc25kX3Jhd21pZGlfdCAqaW5wdXQsICoqaW5wdXRwOwogc3RhdGljIHNuZF9y
+YXdtaWRpX3QgKm91dHB1dCwgKipvdXRwdXRwOwogCkBAIC04Miw3ICs4Myw4IEBAIHN0YXRpYyB2
+b2lkIHVzYWdlKHZvaWQpCiAJCSItdCwgLS10aW1lb3V0PXNlY29uZHMgIGV4aXRzIHdoZW4gbm8g
+ZGF0YSBoYXMgYmVlbiByZWNlaXZlZFxuIgogCQkiICAgICAgICAgICAgICAgICAgICAgICBmb3Ig
+dGhlIHNwZWNpZmllZCBkdXJhdGlvblxuIgogCQkiLWEsIC0tYWN0aXZlLXNlbnNpbmcgICBpbmNs
+dWRlIGFjdGl2ZSBzZW5zaW5nIGJ5dGVzXG4iCi0JCSItYywgLS1jbG9jayAgICAgICAgICAgIGlu
+Y2x1ZGUgY2xvY2sgYnl0ZXNcbiIpOworCQkiLWMsIC0tY2xvY2sgICAgICAgICAgICBpbmNsdWRl
+IGNsb2NrIGJ5dGVzXG4iCisJCSItRCwgLS1kZWxheT1tc2Vjb25kcyAgIGRlbGF5IGluIGJldHdl
+ZW4gZWFjaCBTeXNFeCBtZXNzYWdlXG4iKTsKIH0KIAogc3RhdGljIHZvaWQgdmVyc2lvbih2b2lk
+KQpAQCAtNDExLDcgKzQxMyw3IEBAIHN0YXRpYyB2b2lkIGFkZF9zZW5kX2hleF9kYXRhKGNvbnN0
+IGNoYXIgKnN0cikKIAogaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIHsKLQlzdGF0
+aWMgY29uc3QgY2hhciBzaG9ydF9vcHRpb25zW10gPSAiaFZsTHA6czpyOlM6OmR0OmFjIjsKKwlz
+dGF0aWMgY29uc3QgY2hhciBzaG9ydF9vcHRpb25zW10gPSAiaFZsTHA6czpyOlM6OmR0OmFjRDoi
+OwogCXN0YXRpYyBjb25zdCBzdHJ1Y3Qgb3B0aW9uIGxvbmdfb3B0aW9uc1tdID0gewogCQl7Imhl
+bHAiLCAwLCBOVUxMLCAnaCd9LAogCQl7InZlcnNpb24iLCAwLCBOVUxMLCAnVid9LApAQCAtNDI1
+LDYgKzQyNyw3IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCiAJCXsidGltZW91
+dCIsIDEsIE5VTEwsICd0J30sCiAJCXsiYWN0aXZlLXNlbnNpbmciLCAwLCBOVUxMLCAnYSd9LAog
+CQl7ImNsb2NrIiwgMCwgTlVMTCwgJ2MnfSwKKwkJeyJkZWxheSIsIDEsIE5VTEwsICdEJ30sCiAJ
+CXsgfQogCX07CiAJaW50IGMsIGVyciwgb2sgPSAwOwpAQCAtNDc0LDYgKzQ3Nyw5IEBAIGludCBt
+YWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCiAJCWNhc2UgJ2MnOgogCQkJaWdub3JlX2Nsb2Nr
+ID0gMDsKIAkJCWJyZWFrOworCQljYXNlICdEJzoKKwkJCWRlbGF5ID0gYXRvaShvcHRhcmcpOwor
+CQkJYnJlYWs7CiAJCWRlZmF1bHQ6CiAJCQllcnJvcigiVHJ5IGBhbWlkaSAtLWhlbHAnIGZvciBt
+b3JlIGluZm9ybWF0aW9uLiIpOwogCQkJcmV0dXJuIDE7CkBAIC01NDksOSArNTU1LDUxIEBAIGlu
+dCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCiAJCQllcnJvcigiY2Fubm90IHNldCBibG9j
+a2luZyBtb2RlOiAlcyIsIHNuZF9zdHJlcnJvcihlcnIpKTsKIAkJCWdvdG8gX2V4aXQ7CiAJCX0K
+LQkJaWYgKChlcnIgPSBzbmRfcmF3bWlkaV93cml0ZShvdXRwdXQsIHNlbmRfZGF0YSwgc2VuZF9k
+YXRhX2xlbmd0aCkpIDwgMCkgewotCQkJZXJyb3IoImNhbm5vdCBzZW5kIGRhdGE6ICVzIiwgc25k
+X3N0cmVycm9yKGVycikpOwotCQkJZ290byBfZXhpdDsKKwkJaWYgKCFkZWxheSkgeworCQkJaWYg
+KChlcnIgPSBzbmRfcmF3bWlkaV93cml0ZShvdXRwdXQsIHNlbmRfZGF0YSwgc2VuZF9kYXRhX2xl
+bmd0aCkpIDwgMCkgeworCQkJCWVycm9yKCJjYW5ub3Qgc2VuZCBkYXRhOiAlcyIsIHNuZF9zdHJl
+cnJvcihlcnIpKTsKKwkJCQlyZXR1cm4gZXJyOworCQkJfQorCQl9IGVsc2UgeworCQkJY2hhciAq
+ZGF0YSA9IHNlbmRfZGF0YTsKKwkJCXNpemVfdCBidWZmZXJfc2l6ZTsKKwkJCXNuZF9yYXdtaWRp
+X3BhcmFtc190ICpwYXJhbTsKKwkJCXNuZF9yYXdtaWRpX3N0YXR1c190ICpzdDsKKworCQkJc25k
+X3Jhd21pZGlfc3RhdHVzX21hbGxvYygmc3QpOworCisJCQlzbmRfcmF3bWlkaV9wYXJhbXNfbWFs
+bG9jKCZwYXJhbSk7CisJCQlzbmRfcmF3bWlkaV9wYXJhbXNfY3VycmVudChvdXRwdXQsIHBhcmFt
+KTsKKwkJCWJ1ZmZlcl9zaXplID0gc25kX3Jhd21pZGlfcGFyYW1zX2dldF9idWZmZXJfc2l6ZShw
+YXJhbSk7CisJCQlzbmRfcmF3bWlkaV9wYXJhbXNfZnJlZShwYXJhbSk7CisKKwkJCXdoaWxlIChk
+YXRhIDwgKHNlbmRfZGF0YSArIHNlbmRfZGF0YV9sZW5ndGgpKSB7CisJCQkJaW50IGxlbiA9IHNl
+bmRfZGF0YSArIHNlbmRfZGF0YV9sZW5ndGggLSBkYXRhOworCQkJCWNoYXIgKnRlbXA7CisKKwkJ
+CQlpZiAoZGF0YSA+IHNlbmRfZGF0YSkgeworCQkJCQlzbmRfcmF3bWlkaV9zdGF0dXMob3V0cHV0
+LCBzdCk7CisJCQkJCWRvIHsKKwkJCQkJCS8qIDMyMCDCtXMgcGVyIGJ5dGUgYXMgbm90ZWQgaW4g
+UGFnZSAxIG9mIE1JREkgc3BlYyAqLworCQkJCQkJdXNsZWVwKChidWZmZXJfc2l6ZSAtIHNuZF9y
+YXdtaWRpX3N0YXR1c19nZXRfYXZhaWwoc3QpKSAqIDMyMCk7CisJCQkJCQlzbmRfcmF3bWlkaV9z
+dGF0dXMob3V0cHV0LCBzdCk7CisJCQkJCX0gd2hpbGUoc25kX3Jhd21pZGlfc3RhdHVzX2dldF9h
+dmFpbChzdCkgPCBidWZmZXJfc2l6ZSk7CisJCQkJCXVzbGVlcChkZWxheSAqIDEwMDApOworCQkJ
+CX0KKworCQkJCS8qIGZpbmQgZW5kIG9mIFN5c0V4ICovCisJCQkJaWYgKCh0ZW1wID0gbWVtY2hy
+KGRhdGEsIDB4ZjcsIGxlbikpICE9IE5VTEwpCisJCQkJCWxlbiA9IHRlbXAgLSBkYXRhICsgMTsK
+KworCQkJCWlmICgoZXJyID0gc25kX3Jhd21pZGlfd3JpdGUob3V0cHV0LCBkYXRhLCBsZW4pKSA8
+IDApIHsKKwkJCQkJZXJyb3IoImNhbm5vdCBzZW5kIGRhdGE6ICVzIiwgc25kX3N0cmVycm9yKGVy
+cikpOworCQkJCQlyZXR1cm4gZXJyOworCQkJCX0KKworCQkJCWRhdGEgKz0gbGVuOworCQkJfQor
+CisJCQlzbmRfcmF3bWlkaV9zdGF0dXNfZnJlZShzdCk7CiAJCX0KIAl9CiAKLS0gCjIuOS4zCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
