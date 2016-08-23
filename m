@@ -1,15 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH for 4.8] ASoC: omap-mcpdm: Fix irq resource
-	handling
-Date: Tue, 23 Aug 2016 10:27:19 +0300
-Message-ID: <20160823072719.16880-1-peter.ujfalusi@ti.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: [PATCH] ASoC: nau8810: fix compile warning in loopback
+	switch control
+Date: Tue, 23 Aug 2016 16:02:49 +0800
+Message-ID: <1471939369-4835-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 47BFC266A42
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 09:27:26 +0200 (CEST)
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6AED2266ABA
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 10:03:13 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,44 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Russell King <linux@armlinux.org.uk>
+To: broonie@kernel.org
+Cc: sfr@canb.auug.org.au, alsa-devel@alsa-project.org, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-Fixes: ddd17531ad908 ("ASoC: omap-mcpdm: Clean up with devm_* function")
+Thank Stephen Rothwell for the message.
+The patch is to fix the following compile error.
+ 
+sound/soc/codecs/nau8810.c:441:3: error: initialization from incompatible
+pointer type [-Werror=incompatible-pointer-types]
+SND_SOC_DAPM_SWITCH("Digital Loopback", SND_SOC_NOPM, 0, 0,
+&nau8810_loopback),
+^
+sound/soc/codecs/nau8810.c:441:3: note: (near initialization for 
+'nau8810_dapm_widgets[11].kcontrol_news')
 
-Managed irq request will not doing any good in ASoC probe level as it is
-not going to free up the irq when the driver is unbound from the sound
-card.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reported-by: Russell King <linux@armlinux.org.uk>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 ---
- sound/soc/omap/omap-mcpdm.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/codecs/nau8810.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index 74d6e6fdcfd0..64609c77a79d 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -394,8 +394,8 @@ static int omap_mcpdm_probe(struct snd_soc_dai *dai)
- 	pm_runtime_get_sync(mcpdm->dev);
- 	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, 0x00);
+diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
+index 7617dda..f9bcdc3 100644
+--- a/sound/soc/codecs/nau8810.c
++++ b/sound/soc/codecs/nau8810.c
+@@ -391,10 +391,9 @@ static const struct snd_kcontrol_new nau8810_mic_boost_controls =
+ 		NAU8810_PMICBSTGAIN_SFT, 0x7, 0);
  
--	ret = devm_request_irq(mcpdm->dev, mcpdm->irq, omap_mcpdm_irq_handler,
--				0, "McPDM", (void *)mcpdm);
-+	ret = request_irq(mcpdm->irq, omap_mcpdm_irq_handler, 0, "McPDM",
-+			  (void *)mcpdm);
+ /* Loopback Switch */
+-static const struct snd_kcontrol_new nau8810_loopback[] = {
++static const struct snd_kcontrol_new nau8810_loopback =
+ 	SOC_DAPM_SINGLE("Switch", NAU8810_REG_COMP,
+-		NAU8810_ADDAP_SFT, 1, 0),
+-};
++		NAU8810_ADDAP_SFT, 1, 0);
  
- 	pm_runtime_put_sync(mcpdm->dev);
- 
-@@ -420,6 +420,7 @@ static int omap_mcpdm_remove(struct snd_soc_dai *dai)
- {
- 	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
- 
-+	free_irq(mcpdm->irq, (void *)mcpdm);
- 	pm_runtime_disable(mcpdm->dev);
- 
- 	return 0;
+ static int check_mclk_select_pll(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
 -- 
-2.9.2
+2.6.4
