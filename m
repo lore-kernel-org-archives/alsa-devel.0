@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8810: fix compile warning in
-	loopback switch control" to the asoc tree
-Date: Tue, 23 Aug 2016 12:36:05 +0100
-Message-ID: <E1bc9zx-0007Is-8T@debutante>
-References: <1471939369-4835-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC: omap-mcpdm: Fix irq resource handling"
+	to the asoc tree
+Date: Tue, 23 Aug 2016 12:36:02 +0100
+Message-ID: <E1bc9zu-0007Hv-Af@debutante>
+References: <20160823072719.16880-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AC2226640F
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C3FF26655F
  for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 13:36:15 +0200 (CEST)
-In-Reply-To: <1471939369-4835-1-git-send-email-KCHSU0@nuvoton.com>
+In-Reply-To: <20160823072719.16880-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: sfr@canb.auug.org.au, alsa-devel@alsa-project.org, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Russell King <linux@armlinux.org.uk>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8810: fix compile warning in loopback switch control
+   ASoC: omap-mcpdm: Fix irq resource handling
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 78822e36dca8fe8bc83e7847508891b59f3f8603 Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Tue, 23 Aug 2016 16:02:49 +0800
-Subject: [PATCH] ASoC: nau8810: fix compile warning in loopback switch control
+>From a8719670687c46ed2e904c0d05fa4cd7e4950cd1 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Tue, 23 Aug 2016 10:27:19 +0300
+Subject: [PATCH] ASoC: omap-mcpdm: Fix irq resource handling
 
-Thank Stephen Rothwell for the message.
-The patch is to fix the following compile error.
+Fixes: ddd17531ad908 ("ASoC: omap-mcpdm: Clean up with devm_* function")
 
-sound/soc/codecs/nau8810.c:441:3: error: initialization from incompatible
-pointer type [-Werror=incompatible-pointer-types]
-SND_SOC_DAPM_SWITCH("Digital Loopback", SND_SOC_NOPM, 0, 0,
-&nau8810_loopback),
-^
-sound/soc/codecs/nau8810.c:441:3: note: (near initialization for
-'nau8810_dapm_widgets[11].kcontrol_news')
+Managed irq request will not doing any good in ASoC probe level as it is
+not going to free up the irq when the driver is unbound from the sound
+card.
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Reported-by: Russell King <linux@armlinux.org.uk>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8810.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/omap/omap-mcpdm.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
-index 7617ddad5601..f9bcdc33df84 100644
---- a/sound/soc/codecs/nau8810.c
-+++ b/sound/soc/codecs/nau8810.c
-@@ -391,10 +391,9 @@ static const struct snd_kcontrol_new nau8810_mic_boost_controls =
- 		NAU8810_PMICBSTGAIN_SFT, 0x7, 0);
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index 74d6e6fdcfd0..64609c77a79d 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -394,8 +394,8 @@ static int omap_mcpdm_probe(struct snd_soc_dai *dai)
+ 	pm_runtime_get_sync(mcpdm->dev);
+ 	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, 0x00);
  
- /* Loopback Switch */
--static const struct snd_kcontrol_new nau8810_loopback[] = {
-+static const struct snd_kcontrol_new nau8810_loopback =
- 	SOC_DAPM_SINGLE("Switch", NAU8810_REG_COMP,
--		NAU8810_ADDAP_SFT, 1, 0),
--};
-+		NAU8810_ADDAP_SFT, 1, 0);
+-	ret = devm_request_irq(mcpdm->dev, mcpdm->irq, omap_mcpdm_irq_handler,
+-				0, "McPDM", (void *)mcpdm);
++	ret = request_irq(mcpdm->irq, omap_mcpdm_irq_handler, 0, "McPDM",
++			  (void *)mcpdm);
  
- static int check_mclk_select_pll(struct snd_soc_dapm_widget *source,
- 			 struct snd_soc_dapm_widget *sink)
+ 	pm_runtime_put_sync(mcpdm->dev);
+ 
+@@ -420,6 +420,7 @@ static int omap_mcpdm_remove(struct snd_soc_dai *dai)
+ {
+ 	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
+ 
++	free_irq(mcpdm->irq, (void *)mcpdm);
+ 	pm_runtime_disable(mcpdm->dev);
+ 
+ 	return 0;
 -- 
 2.8.1
