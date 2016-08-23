@@ -1,19 +1,15 @@
-From: Peter Robinson <pbrobinson@gmail.com>
-Subject: Re: [PATCH] ASoC: sunxi: depend on ARCH_SUNXI
-Date: Tue, 23 Aug 2016 09:34:10 +0100
-Message-ID: <CALeDE9MWKGUS-+HRPoDs0a5zPaqi4v9bUZ+pxP6eUyt7RvVQ_w@mail.gmail.com>
-References: <20160822121242.18827-1-pbrobinson@gmail.com>
- <2008659.grltYsYuN0@wuerfel>
+From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+Subject: [PATCH 1/2] ASoC: simple-card-utils: add __printf
+	attribute
+Date: Tue, 23 Aug 2016 10:51:22 +0200
+Message-ID: <20160823085122.5859-1-nicolas.iooss_linux@m4x.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id DA6E7266C1F
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 10:34:11 +0200 (CEST)
-Received: by mail-wm0-f67.google.com with SMTP id i5so17020913wmg.2
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 01:34:11 -0700 (PDT)
-In-Reply-To: <2008659.grltYsYuN0@wuerfel>
+Received: from mx1.polytechnique.org (mx1.polytechnique.org [129.104.30.34])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E692266B9B
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2016 10:51:47 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,51 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, wens@csie.org, broonie@kernel.org, maxime.ripard@free-electrons.com, linux-arm-kernel@lists.infradead.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 22, 2016 at 3:49 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Monday, August 22, 2016 1:12:42 PM CEST Peter Robinson wrote:
->> Depend on ARCH_SUNXI or COMPILE_TEST as it doesn't make sense to enable
->> these if the appropriate SoC they're embedded in isn't enabled.
->>
->> Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
->> ---
->>  sound/soc/sunxi/Kconfig | 4 +++-
->>  1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
->> index 2a954bd..a2b62dc5 100644
->> --- a/sound/soc/sunxi/Kconfig
->> +++ b/sound/soc/sunxi/Kconfig
->> @@ -2,6 +2,7 @@ menu "Allwinner SoC Audio support"
->>
->>  config SND_SUN4I_CODEC
->>         tristate "Allwinner A10 Codec Support"
->> +       depends on ARCH_SUNXI || COMPILE_TEST
->>         select SND_SOC_GENERIC_DMAENGINE_PCM
->>         select REGMAP_MMIO
->>
->
-> Makes sense, though I think it's nicer to add the dependency to the entire
-> menu, so we hide that as well, and don't have to add the line to future
-> entries:
+asoc_simple_card_set_dailink_name() uses devm_kvasprintf() to format
+some of its arguments.  Adding a __printf attribute to this function
+makes it possible to detect at compile-time errors related to format
+strings.
 
-Makes sense, will do a v2 shortly.
+Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+---
+ include/sound/simple_card_utils.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-P
-
-> diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-> index 2a954bd01fd8..dd2368297fd3 100644
-> --- a/sound/soc/sunxi/Kconfig
-> +++ b/sound/soc/sunxi/Kconfig
-> @@ -1,4 +1,5 @@
->  menu "Allwinner SoC Audio support"
-> +       depends on ARCH_SUNXI || COMPILE_TEST
->
->  config SND_SUN4I_CODEC
->         tristate "Allwinner A10 Codec Support"
->
-> Either way
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index 86088aed9002..3207b1a70d38 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -27,6 +27,7 @@ int asoc_simple_card_parse_daifmt(struct device *dev,
+ 				  struct device_node *codec,
+ 				  char *prefix,
+ 				  unsigned int *retfmt);
++__printf(3, 4)
+ int asoc_simple_card_set_dailink_name(struct device *dev,
+ 				      struct snd_soc_dai_link *dai_link,
+ 				      const char *fmt, ...);
+-- 
+2.9.3
