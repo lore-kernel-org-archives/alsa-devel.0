@@ -1,59 +1,52 @@
-From: Aaro Koskinen <aaro.koskinen@iki.fi>
-Subject: [PATCH] ALSA: snd-aoa: enable sound on PowerBook G4 12"
-Date: Wed, 24 Aug 2016 20:57:47 +0300
-Message-ID: <20160824175747.31180-1-aaro.koskinen@iki.fi>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [RFC][PATCH] ASoC: rt5659: Fix incorrect register addresses
+Date: Wed, 24 Aug 2016 11:00:27 -0700
+Message-ID: <1472061627-821-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>
+To: broonie@kernel.org, bardliao@realtek.com, oder_chiou@realtek.com
+Cc: lgirdwood@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Enable sound on PowerBook G4 12".
+According to the datasheets of Realtek ALC5658 (Rev. 0.9)
+and ALC5659 (Rev. 0.13), the "IRQ Control 4" register is
+located at MX-00BAh while the "IRQ control 5" register is
+at MX-00BBh.
 
-Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+There is no "IRQ Control 6" register in the datasheets but
+it is supposed to be behind the "IRQ Control 5" register.
+
+So this patch corrects these addresses.
+
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
- sound/aoa/fabrics/layout.c       | 8 ++++++++
- sound/aoa/soundbus/i2sbus/core.c | 2 +-
- 2 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/aoa/fabrics/layout.c b/sound/aoa/fabrics/layout.c
-index 8f71f7e..edc8681 100644
---- a/sound/aoa/fabrics/layout.c
-+++ b/sound/aoa/fabrics/layout.c
-@@ -112,6 +112,7 @@ MODULE_ALIAS("sound-layout-100");
- 
- MODULE_ALIAS("aoa-device-id-14");
- MODULE_ALIAS("aoa-device-id-22");
-+MODULE_ALIAS("aoa-device-id-31");
- MODULE_ALIAS("aoa-device-id-35");
- MODULE_ALIAS("aoa-device-id-44");
- 
-@@ -362,6 +363,13 @@ static struct layout layouts[] = {
- 		.connections = tas_connections_nolineout,
- 	  },
- 	},
-+	/* PowerBook6,1 */
-+	{ .device_id = 31,
-+	  .codecs[0] = {
-+		.name = "tas",
-+		.connections = tas_connections_nolineout,
-+	  },
-+	},
- 	/* PowerBook6,5 */
- 	{ .device_id = 44,
- 	  .codecs[0] = {
-diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
-index 1cbf210..000b585 100644
---- a/sound/aoa/soundbus/i2sbus/core.c
-+++ b/sound/aoa/soundbus/i2sbus/core.c
-@@ -197,7 +197,7 @@ static int i2sbus_add_dev(struct macio_dev *macio,
- 			 * so restrict to those we do handle for now.
- 			 */
- 			if (id && (*id == 22 || *id == 14 || *id == 35 ||
--				   *id == 44)) {
-+				   *id == 31 || *id == 44)) {
- 				snprintf(dev->sound.modalias, 32,
- 					 "aoa-device-id-%d", *id);
- 				ok = 1;
+Hi Mark,
+
+This patch needs the confirmation from Realtek side (hoping that
+at least Bard or Oder would give an Ack) as the datasheets that I
+have might not reflect the latest register map. And the datasheets
+don't seem to be directly downloadable from Realtek website.
+
+ sound/soc/codecs/rt5659.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5659.h b/sound/soc/codecs/rt5659.h
+index d69b0eb..8f1aeef 100644
+--- a/sound/soc/codecs/rt5659.h
++++ b/sound/soc/codecs/rt5659.h
+@@ -180,9 +180,9 @@
+ #define RT5659_IRQ_CTRL_1			0x00b6
+ #define RT5659_IRQ_CTRL_2			0x00b7
+ #define RT5659_IRQ_CTRL_3			0x00b8
+-#define RT5659_IRQ_CTRL_4			0x00b9
+-#define RT5659_IRQ_CTRL_5			0x00ba
+-#define RT5659_IRQ_CTRL_6			0x00bb
++#define RT5659_IRQ_CTRL_4			0x00ba
++#define RT5659_IRQ_CTRL_5			0x00bb
++#define RT5659_IRQ_CTRL_6			0x00bc
+ #define RT5659_INT_ST_1				0x00be
+ #define RT5659_INT_ST_2				0x00bf
+ #define RT5659_GPIO_CTRL_1			0x00c0
 -- 
-2.9.2
+2.1.4
