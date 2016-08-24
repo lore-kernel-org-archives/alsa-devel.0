@@ -1,15 +1,17 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: tas5086: fix typo: "Inavlid" -> "Invalid"
-Date: Wed, 24 Aug 2016 07:48:06 +0100
-Message-ID: <20160824064806.15809-1-colin.king@canonical.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH -next] ASoC: omap-abe-twl6040: Use
+ devm_snd_soc_register_card()
+Date: Wed, 24 Aug 2016 10:01:51 +0300
+Message-ID: <6b695e17-37b4-6c53-04df-be21fe28a97d@ti.com>
+References: <1471993817-10903-1-git-send-email-weiyj.lk@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AED2266142
- for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2016 08:49:24 +0200 (CEST)
+Received: from bear.ext.ti.com (bear.ext.ti.com [198.47.19.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58914266176
+ for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2016 09:01:57 +0200 (CEST)
+In-Reply-To: <1471993817-10903-1-git-send-email-weiyj.lk@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,31 +21,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+To: Wei Yongjun <weiyj.lk@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 08/24/16 02:10, Wei Yongjun wrote:
+> From: Wei Yongjun <weiyongjun1@huawei.com>
+> =
 
-trivial typo fix in dev_err message
+> Using devm_snd_soc_register_card() can make the code
+> shorter and cleaner.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/codecs/tas5086.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
-index c297b9f..b7de857 100644
---- a/sound/soc/codecs/tas5086.c
-+++ b/sound/soc/codecs/tas5086.c
-@@ -387,7 +387,7 @@ static int tas5086_hw_params(struct snd_pcm_substream *substream,
- 	val = index_in_array(tas5086_ratios, ARRAY_SIZE(tas5086_ratios),
- 			     priv->mclk / priv->rate);
- 	if (val < 0) {
--		dev_err(codec->dev, "Inavlid MCLK / Fs ratio\n");
-+		dev_err(codec->dev, "Invalid MCLK / Fs ratio\n");
- 		return -EINVAL;
- 	}
- 
--- 
-2.9.3
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> ---
+>  sound/soc/omap/omap-abe-twl6040.c | 14 ++------------
+>  1 file changed, 2 insertions(+), 12 deletions(-)
+> =
+
+> diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-=
+twl6040.c
+> index f61b3b5..89fe95e 100644
+> --- a/sound/soc/omap/omap-abe-twl6040.c
+> +++ b/sound/soc/omap/omap-abe-twl6040.c
+> @@ -305,23 +305,14 @@ static int omap_abe_probe(struct platform_device *p=
+dev)
+>  =
+
+>  	snd_soc_card_set_drvdata(card, priv);
+>  =
+
+> -	ret =3D snd_soc_register_card(card);
+> +	ret =3D devm_snd_soc_register_card(&pdev->dev, card);
+>  	if (ret)
+> -		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+> +		dev_err(&pdev->dev, "devm_snd_soc_register_card() failed: %d\n",
+>  			ret);
+>  =
+
+>  	return ret;
+>  }
+>  =
+
+> -static int omap_abe_remove(struct platform_device *pdev)
+> -{
+> -	struct snd_soc_card *card =3D platform_get_drvdata(pdev);
+> -
+> -	snd_soc_unregister_card(card);
+> -
+> -	return 0;
+> -}
+> -
+>  static const struct of_device_id omap_abe_of_match[] =3D {
+>  	{.compatible =3D "ti,abe-twl6040", },
+>  	{ },
+> @@ -335,7 +326,6 @@ static struct platform_driver omap_abe_driver =3D {
+>  		.of_match_table =3D omap_abe_of_match,
+>  	},
+>  	.probe =3D omap_abe_probe,
+> -	.remove =3D omap_abe_remove,
+>  };
+>  =
+
+>  static int __init omap_abe_init(void)
+> =
+
+> =
+
+> =
+
+
+
+-- =
+
+P=E9ter
