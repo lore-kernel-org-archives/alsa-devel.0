@@ -1,14 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 0/9] ASoC: Intel: Skylake: Driver updates
-Date: Wed, 24 Aug 2016 18:03:12 +0530
-Message-ID: <1472042001-9582-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 2/9] ASoC: Intel: Skylake: Fix the inverted
+	logic check
+Date: Wed, 24 Aug 2016 18:03:14 +0530
+Message-ID: <1472042001-9582-3-git-send-email-vinod.koul@intel.com>
+References: <1472042001-9582-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id B643A26759B
- for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2016 14:25:30 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A99026759D
+ for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2016 14:25:33 +0200 (CEST)
+In-Reply-To: <1472042001-9582-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,40 +25,27 @@ To: alsa-devel@alsa-project.org
 Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-So we had some driver updates collated, time to send them upstream :)
+While converting to new core hda capability parsing, one instance of
+check had inverted logic which was converted wrongly.
 
- - manifest data size was not checked so that is fixed
- - previous conversion to use core parsing for HDA capabilities was wrong at
-   one place, that is fixed.
- - DMA config size was wrong, that is also fixed
- - Add 32bit format
- - The module instance IDs are manged in driver now.
+Fixes: ec8ae5703da1 (ALSA: convert users to core bus_parse_capabilities)
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/skylake/skl-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Dharageswari R (5):
-  ASoC: Intel: Skylake: Unload all the loadable modules
-  ASoC: Intel: Skylake: Create dynamic instance ids for DSP modules
-  ASoC: Intel: Skylake: Use private instance id of modules in IPC
-  ASoC: Intel: Skylake: Table for module instance id and private id
-  ASoC: Intel: Skylake: Override the actual instance id's to pvt_id's
-
-Jeeja KP (1):
-  ASoC: Intel: Skylake: Fix DMA control config size
-
-Samaga Krishna (1):
-  ASoC: Intel: Skylake: Add 32bit support
-
-Vinod Koul (2):
-  ASoC: Intel: Skylake: check manifest size
-  ASoC: Intel: Skylake: Fix the inverted logic check
-
- sound/soc/intel/skylake/skl-messages.c       |  24 +++--
- sound/soc/intel/skylake/skl-pcm.c            |   5 +-
- sound/soc/intel/skylake/skl-sst-dsp.h        |   6 ++
- sound/soc/intel/skylake/skl-sst-utils.c      | 133 ++++++++++++++++++++++++++-
- sound/soc/intel/skylake/skl-topology.c       |  44 ++++++++-
- sound/soc/intel/skylake/skl-topology.h       |  13 ++-
- sound/soc/intel/skylake/skl-tplg-interface.h |   3 +-
- 7 files changed, 208 insertions(+), 20 deletions(-)
-
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index eb1f00b28df1..77bfd407f2a1 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1020,7 +1020,7 @@ static int skl_platform_pcm_trigger(struct snd_pcm_substream *substream,
+ {
+ 	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
+ 
+-	if ((ebus_to_hbus(ebus))->ppcap)
++	if (!(ebus_to_hbus(ebus))->ppcap)
+ 		return skl_coupled_trigger(substream, cmd);
+ 
+ 	return 0;
 -- 
 1.9.1
