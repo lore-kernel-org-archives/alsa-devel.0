@@ -1,13 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sunxi: depend on ARCH_SUNXI" to the asoc tree
-Date: Wed, 24 Aug 2016 12:20:31 +0100
-Message-ID: <E1bcWER-00008q-V4@debutante>
-References: <2008659.grltYsYuN0@wuerfel>
+Subject: Re: [RFC PATCH v2 0/7] AC97 device/driver model revamp
+Date: Wed, 24 Aug 2016 12:39:53 +0100
+Message-ID: <20160824113953.GF22076@sirena.org.uk>
+References: <1464380819-19075-1-git-send-email-robert.jarzmik@free.fr>
+ <87twebphh4.fsf@belgarion.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1851927226293660026=="
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <2008659.grltYsYuN0@wuerfel>
+In-Reply-To: <87twebphh4.fsf@belgarion.home>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -17,60 +17,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Peter Robinson <pbrobinson@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, wens@csie.org, broonie@kernel.org, maxime.ripard@free-electrons.com, linux-arm-kernel@lists.infradead.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: sunxi: depend on ARCH_SUNXI
+--===============1851927226293660026==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="7cXxibKNEnJOqEg4"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--7cXxibKNEnJOqEg4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Aug 23, 2016 at 06:39:35PM +0200, Robert Jarzmik wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> In the old ac97 bus, the match function was always returning "true", and the
+> driver did probe. With this new implementation, the ac97 is discovered and
+> sound/soc/codecs/wm9713.c#wm9713_ac97_probe() is called. I don't export
+> ac97_bus_type (nor want to do it), and only _one_ device is created upon
+> discovery, while the wm97xx-core.c would benefic a second ac97 device.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> I'm wondering how to work around this :
+>  - either I add a wm97xx-ts ac97 device in wm9713_ac97_probe()
+>  - or I add a platform device in wm9713_ac97_probe() and add a new
+>    platform_driver in wm97xx-core ...
+>  - or something smarter
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+That device really should be a MFD.
 
-Thanks,
-Mark
+> What's behind this question is : should I keep to my initial solution of 1 ac97
+> device discovered is bound on the ac97 to _at most_ 1 ac97 driver, or is there a
+> know smart way to have several drivers for one device (that sounds a bit heretic
+> regarding my understanding of the device/driver model but who knows ...) ?
 
->From 702650bda073cb9df90e3a091ee515f340133b05 Mon Sep 17 00:00:00 2001
-From: Peter Robinson <pbrobinson@gmail.com>
-Date: Tue, 23 Aug 2016 18:17:46 +0100
-Subject: [PATCH] ASoC: sunxi: depend on ARCH_SUNXI
+MFDs are how we do multiple drivers per device.
 
-Depend on ARCH_SUNXI or COMPILE_TEST as it doesn't make sense to enable
-these if the appropriate SoC they're embedded in isn't enabled.
+--7cXxibKNEnJOqEg4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sunxi/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-index 2a954bd01fd8..dd2368297fd3 100644
---- a/sound/soc/sunxi/Kconfig
-+++ b/sound/soc/sunxi/Kconfig
-@@ -1,4 +1,5 @@
- menu "Allwinner SoC Audio support"
-+	depends on ARCH_SUNXI || COMPILE_TEST
- 
- config SND_SUN4I_CODEC
- 	tristate "Allwinner A10 Codec Support"
--- 
-2.8.1
+iQEcBAEBCAAGBQJXvYd+AAoJECTWi3JdVIfQ6pcH/2FcK/Wk0D9FljAA6xkCu8GU
+glQTTLjFoVOGVoZF3fgxu7ZmA9/vedCuJwad/lJM8J1NQEsMj1jdebk2+I2YyjE/
+zzeYj3vrqTanhCkRb179R90mML9tYK53gYs1sG9ib4KX+abtFAjhYyXpdKTfACTL
+D7fanKYh1TF4aXhdA813j+/xQ3IPEcJukMQyLGn9wfEuSgl6mc5Vx6FEPOEmoZjV
+91MlRDcgyQa7k4ZwZWo8E+x/an5Mc4F5GuK4Bil4xmhIpGe5DPiivDR5OV061E5G
+ltYAAmzZJCsAHuAs3c9psmSorcvHDV9aT/JHze67RURTSz2SaDpVpr8ugAcxtcE=
+=oTIK
+-----END PGP SIGNATURE-----
+
+--7cXxibKNEnJOqEg4--
+
+
+--===============1851927226293660026==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============1851927226293660026==--
