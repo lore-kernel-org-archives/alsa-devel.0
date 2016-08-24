@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsrc-card: remove board specific
-	compatible" to the asoc tree
-Date: Wed, 24 Aug 2016 12:20:29 +0100
-Message-ID: <E1bcWEP-00007y-17@debutante>
-References: <87d1l0i8dn.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: omap-abe-twl6040: Use
+	devm_snd_soc_register_card()" to the asoc tree
+Date: Wed, 24 Aug 2016 12:20:34 +0100
+Message-ID: <E1bcWEU-00009o-Uh@debutante>
+References: <1471993817-10903-1-git-send-email-weiyj.lk@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C227267331
- for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2016 13:20:35 +0200 (CEST)
-In-Reply-To: <87d1l0i8dn.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CBBB267347
+ for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2016 13:20:51 +0200 (CEST)
+In-Reply-To: <1471993817-10903-1-git-send-email-weiyj.lk@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsrc-card: remove board specific compatible
+   ASoC: omap-abe-twl6040: Use devm_snd_soc_register_card()
 
 has been applied to the asoc tree at
 
@@ -53,66 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From a3235938308150fbd0f8b478e73d1e66e945937a Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 23 Aug 2016 01:33:57 +0000
-Subject: [PATCH] ASoC: rsrc-card: remove board specific compatible
+>From 687df1ad848102da9ea1ee8b0c64c2576ceb60f6 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Tue, 23 Aug 2016 23:10:17 +0000
+Subject: [PATCH] ASoC: omap-abe-twl6040: Use devm_snd_soc_register_card()
 
-rsrc-card has board specific compatible (= lager/koelsh), but these were
-created as 1st prototype, and it is used in my test environment only.
-Now normal user can use generic compatible (= renesas,rsrc-card).
-Removing these board specific compatible doesn't breake compatibility.
-This patch remove these.
+Using devm_snd_soc_register_card() can make the code
+shorter and cleaner.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/renesas,rsrc-card.txt         |  7 ++-----
- sound/soc/sh/rcar/rsrc-card.c                               | 13 -------------
- 2 files changed, 2 insertions(+), 18 deletions(-)
+ sound/soc/omap/omap-abe-twl6040.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-index 255ece3043ad..f148bf27723b 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsrc-card.txt
-@@ -4,11 +4,8 @@ Renesas Sampling Rate Convert Sound Card specifies audio DAI connections of SoC
+diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-twl6040.c
+index f61b3b58083b..89fe95e877db 100644
+--- a/sound/soc/omap/omap-abe-twl6040.c
++++ b/sound/soc/omap/omap-abe-twl6040.c
+@@ -305,23 +305,14 @@ static int omap_abe_probe(struct platform_device *pdev)
  
- Required properties:
+ 	snd_soc_card_set_drvdata(card, priv);
  
--- compatible				: "renesas,rsrc-card{,<board>}"
--					  Examples with boards are:
--					    - "renesas,rsrc-card"
--					    - "renesas,rsrc-card,lager"
--					    - "renesas,rsrc-card,koelsch"
-+- compatible				: "renesas,rsrc-card"
-+
- Optional properties:
+-	ret = snd_soc_register_card(card);
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 	if (ret)
+-		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
++		dev_err(&pdev->dev, "devm_snd_soc_register_card() failed: %d\n",
+ 			ret);
  
- - card_name				: User specified audio sound card name, one string
-diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
-index 16dc13e0bec9..ce9f91143f1f 100644
---- a/sound/soc/sh/rcar/rsrc-card.c
-+++ b/sound/soc/sh/rcar/rsrc-card.c
-@@ -28,20 +28,7 @@ struct rsrc_card_of_data {
- 	int num_routes;
+ 	return ret;
+ }
+ 
+-static int omap_abe_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+-
+-	snd_soc_unregister_card(card);
+-
+-	return 0;
+-}
+-
+ static const struct of_device_id omap_abe_of_match[] = {
+ 	{.compatible = "ti,abe-twl6040", },
+ 	{ },
+@@ -335,7 +326,6 @@ static struct platform_driver omap_abe_driver = {
+ 		.of_match_table = omap_abe_of_match,
+ 	},
+ 	.probe = omap_abe_probe,
+-	.remove = omap_abe_remove,
  };
  
--static const struct snd_soc_dapm_route routes_ssi0_ak4642[] = {
--	{"ak4642 Playback", NULL, "DAI0 Playback"},
--	{"DAI0 Capture", NULL, "ak4642 Capture"},
--};
--
--static const struct rsrc_card_of_data routes_of_ssi0_ak4642 = {
--	.prefix		= "ak4642",
--	.routes		= routes_ssi0_ak4642,
--	.num_routes	= ARRAY_SIZE(routes_ssi0_ak4642),
--};
--
- static const struct of_device_id rsrc_card_of_match[] = {
--	{ .compatible = "renesas,rsrc-card,lager",	.data = &routes_of_ssi0_ak4642 },
--	{ .compatible = "renesas,rsrc-card,koelsch",	.data = &routes_of_ssi0_ak4642 },
- 	{ .compatible = "renesas,rsrc-card", },
- 	{},
- };
+ static int __init omap_abe_init(void)
 -- 
 2.8.1
