@@ -1,55 +1,59 @@
-From: Randy Dunlap <rdunlap-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>
-Subject: [PATCH -next] sound: rockchip: fix build when SPI_MASTER is not
- enabled
-Date: Wed, 24 Aug 2016 10:57:20 -0700
-Message-ID: <22fcb876-1a27-0ff4-3f18-5079281c247e@infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: moderated for non-subscribers <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: [PATCH] ALSA: snd-aoa: enable sound on PowerBook G4 12"
+Date: Wed, 24 Aug 2016 20:57:47 +0300
+Message-ID: <20160824175747.31180-1-aaro.koskinen@iki.fi>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>
 List-Id: alsa-devel@alsa-project.org
 
-From: Randy Dunlap <rdunlap-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>
+Enable sound on PowerBook G4 12".
 
-Fix multiple build errors in sound/soc/rockchip/ drivers by
-adding "depends on SPI_MASTER".
-
-Fixes these build errors:
-sound/built-in.o: In function `rt5514_spi_burst_read':
-(.text+0x6c26c): undefined reference to `spi_sync'
-sound/built-in.o: In function `rt5514_spi_burst_write':
-(.text+0x6c96e): undefined reference to `spi_sync'
-sound/built-in.o: In function `rockchip_sound_probe':
-rk3399_gru_sound.c:(.text+0x9f579): undefined reference to `spi_bus_type'
-sound/built-in.o: In function `rt5514_spi_driver_init':
-rt5514-spi.c:(.init.text+0x983): undefined reference to `__spi_register_driver'
-
-Signed-off-by: Randy Dunlap <rdunlap-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>
-Cc:	Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
-Cc:	linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc:	linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
 ---
- sound/soc/rockchip/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ sound/aoa/fabrics/layout.c       | 8 ++++++++
+ sound/aoa/soundbus/i2sbus/core.c | 2 +-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
---- linux-next-20160824.orig/sound/soc/rockchip/Kconfig
-+++ linux-next-20160824/sound/soc/rockchip/Kconfig
-@@ -45,6 +45,7 @@ config SND_SOC_ROCKCHIP_RT5645
- config SND_SOC_RK3399_GRU_SOUND
- 	tristate "ASoC support multiple codecs for Rockchip RK3399 GRU boards"
- 	depends on SND_SOC_ROCKCHIP && I2C && GPIOLIB && CLKDEV_LOOKUP
-+	depends on SPI_MASTER
- 	select SND_SOC_ROCKCHIP_I2S
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_RT5514
+diff --git a/sound/aoa/fabrics/layout.c b/sound/aoa/fabrics/layout.c
+index 8f71f7e..edc8681 100644
+--- a/sound/aoa/fabrics/layout.c
++++ b/sound/aoa/fabrics/layout.c
+@@ -112,6 +112,7 @@ MODULE_ALIAS("sound-layout-100");
+ 
+ MODULE_ALIAS("aoa-device-id-14");
+ MODULE_ALIAS("aoa-device-id-22");
++MODULE_ALIAS("aoa-device-id-31");
+ MODULE_ALIAS("aoa-device-id-35");
+ MODULE_ALIAS("aoa-device-id-44");
+ 
+@@ -362,6 +363,13 @@ static struct layout layouts[] = {
+ 		.connections = tas_connections_nolineout,
+ 	  },
+ 	},
++	/* PowerBook6,1 */
++	{ .device_id = 31,
++	  .codecs[0] = {
++		.name = "tas",
++		.connections = tas_connections_nolineout,
++	  },
++	},
+ 	/* PowerBook6,5 */
+ 	{ .device_id = 44,
+ 	  .codecs[0] = {
+diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
+index 1cbf210..000b585 100644
+--- a/sound/aoa/soundbus/i2sbus/core.c
++++ b/sound/aoa/soundbus/i2sbus/core.c
+@@ -197,7 +197,7 @@ static int i2sbus_add_dev(struct macio_dev *macio,
+ 			 * so restrict to those we do handle for now.
+ 			 */
+ 			if (id && (*id == 22 || *id == 14 || *id == 35 ||
+-				   *id == 44)) {
++				   *id == 31 || *id == 44)) {
+ 				snprintf(dev->sound.modalias, 32,
+ 					 "aoa-device-id-%d", *id);
+ 				ok = 1;
+-- 
+2.9.2
