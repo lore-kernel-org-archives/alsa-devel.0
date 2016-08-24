@@ -1,45 +1,71 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH] ASoC: rt5659: Enable IRQ output for GPIO1 pin
-Date: Wed, 24 Aug 2016 12:03:39 -0700
-Message-ID: <1472065419-22058-1-git-send-email-nicoleotsuka@gmail.com>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [PATCH] ALSA: snd-aoa: enable sound on PowerBook G4 12"
+Date: Wed, 24 Aug 2016 21:43:23 +0200
+Message-ID: <1472067803.5143.20.camel@sipsolutions.net>
+References: <20160824175747.31180-1-aaro.koskinen@iki.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160824175747.31180-1-aaro.koskinen@iki.fi>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, bardliao@realtek.com, oder_chiou@realtek.com
-Cc: lgirdwood@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Aaro Koskinen <aaro.koskinen@iki.fi>, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Since it's possible to have an IRQ without enabling JD3, the
-GPIO1 pin then would remain its default GPIO function which
-is set as an input direction (seeing from rt5659). Meanwhile,
-CPU would also listen this connection via its own GPIO input:
-      [input]          [input]
-    CPU GPIO <--------> RT5659 GPIO1
+On Wed, 2016-08-24 at 20:57 +0300, Aaro Koskinen wrote:
+> Enable sound on PowerBook G4 12".
 
-The result for the IRQ on the CPU side will be unexpectable.
+Looks good to me, I assume you tested it and it works :)
 
-So this patch enables the IRQ output for GPIO1 pin any way
-as long as there's an IRQ assigned from platform data or DT:
-      [input]          [IRQ output]
-    CPU GPIO <--------< RT5659 GPIO1
+johannes
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- sound/soc/codecs/rt5659.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index 4c0d2b8..db54550 100644
---- a/sound/soc/codecs/rt5659.c
-+++ b/sound/soc/codecs/rt5659.c
-@@ -4189,6 +4189,9 @@ static int rt5659_i2c_probe(struct i2c_client *i2c,
- 		if (ret)
- 			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
- 
-+		/* Enable IRQ output for GPIO1 pin any way */
-+		regmap_update_bits(rt5659->regmap, RT5659_GPIO_CTRL_1,
-+				   RT5659_GP1_PIN_MASK, RT5659_GP1_PIN_IRQ);
- 	}
- 
- 	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5659,
--- 
-2.1.4
+> Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+> ---
+>  sound/aoa/fabrics/layout.c       | 8 ++++++++
+>  sound/aoa/soundbus/i2sbus/core.c | 2 +-
+>  2 files changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/aoa/fabrics/layout.c b/sound/aoa/fabrics/layout.c
+> index 8f71f7e..edc8681 100644
+> --- a/sound/aoa/fabrics/layout.c
+> +++ b/sound/aoa/fabrics/layout.c
+> @@ -112,6 +112,7 @@ MODULE_ALIAS("sound-layout-100");
+>  
+>  MODULE_ALIAS("aoa-device-id-14");
+>  MODULE_ALIAS("aoa-device-id-22");
+> +MODULE_ALIAS("aoa-device-id-31");
+>  MODULE_ALIAS("aoa-device-id-35");
+>  MODULE_ALIAS("aoa-device-id-44");
+>  
+> @@ -362,6 +363,13 @@ static struct layout layouts[] = {
+>  		.connections = tas_connections_nolineout,
+>  	  },
+>  	},
+> +	/* PowerBook6,1 */
+> +	{ .device_id = 31,
+> +	  .codecs[0] = {
+> +		.name = "tas",
+> +		.connections = tas_connections_nolineout,
+> +	  },
+> +	},
+>  	/* PowerBook6,5 */
+>  	{ .device_id = 44,
+>  	  .codecs[0] = {
+> diff --git a/sound/aoa/soundbus/i2sbus/core.c
+> b/sound/aoa/soundbus/i2sbus/core.c
+> index 1cbf210..000b585 100644
+> --- a/sound/aoa/soundbus/i2sbus/core.c
+> +++ b/sound/aoa/soundbus/i2sbus/core.c
+> @@ -197,7 +197,7 @@ static int i2sbus_add_dev(struct macio_dev
+> *macio,
+>  			 * so restrict to those we do handle for
+> now.
+>  			 */
+>  			if (id && (*id == 22 || *id == 14 || *id ==
+> 35 ||
+> -				   *id == 44)) {
+> +				   *id == 31 || *id == 44)) {
+>  				snprintf(dev->sound.modalias, 32,
+>  					 "aoa-device-id-%d", *id);
+>  				ok = 1;
