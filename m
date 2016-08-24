@@ -1,90 +1,37 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: i2s: Add missing clk_disable_unprepare() on error in samsung_i2s_probe()" to the asoc tree
-Date: Wed, 24 Aug 2016 12:38:29 +0100
-Message-ID: <E1bcWVp-0000yB-5k@debutante>
-References: <1471965402-6642-1-git-send-email-weiyj.lk@gmail.com>
+From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+Subject: [PATCH v2 2/2] MAINTAINERS: document ASoC header files
+Date: Wed, 24 Aug 2016 17:23:48 +0200
+Message-ID: <20160824152348.2048-2-nicolas.iooss_linux@m4x.org>
+References: <20160824152348.2048-1-nicolas.iooss_linux@m4x.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1471965402-6642-1-git-send-email-weiyj.lk@gmail.com>
+In-Reply-To: <20160824152348.2048-1-nicolas.iooss_linux@m4x.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+include/sound/simple_card_utils.h is handled by ASoC maintainers, as
+stated in https://lkml.org/lkml/2016/8/22/307, and
+include/sound/simple_card.h seems to be an ASoC file too. In the future
+there will be more files named like these ones so introduce a pattern to
+match them.
 
-   ASoC: samsung: i2s: Add missing clk_disable_unprepare() on error in samsung_i2s_probe()
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From fd61576fdda88c9677f9ea62e6f32997ce39daea Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Date: Tue, 23 Aug 2016 15:16:42 +0000
-Subject: [PATCH] ASoC: samsung: i2s: Add missing clk_disable_unprepare() on
- error in samsung_i2s_probe()
-
-Add the missing clk_disable_unprepare() before return
-from samsung_i2s_probe() in the error handling case.
-
-Signed-off-by: Wei Yongjun <weiyj.lk@gmail.com>
-Acked-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
 ---
- sound/soc/samsung/i2s.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index fa3ff03d97d5..7e32cf4581f8 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1318,7 +1318,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 		sec_dai = i2s_alloc_dai(pdev, true);
- 		if (!sec_dai) {
- 			dev_err(&pdev->dev, "Unable to alloc I2S_sec\n");
--			return -ENOMEM;
-+			ret = -ENOMEM;
-+			goto err_disable_clk;
- 		}
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0bbe4b105c34..3f4e8bf042b9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11012,6 +11012,7 @@ S:	Supported
+ F:	Documentation/devicetree/bindings/sound/
+ F:	Documentation/sound/alsa/soc/
+ F:	sound/soc/
++F:	include/sound/simple*card*
+ F:	include/sound/soc*
  
- 		sec_dai->lock = &pri_dai->spinlock;
-@@ -1342,7 +1343,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 
- 	if (i2s_pdata && i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
- 		dev_err(&pdev->dev, "Unable to configure gpio\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_disable_clk;
- 	}
- 
- 	ret = devm_snd_soc_register_component(&pri_dai->pdev->dev,
-@@ -1366,6 +1368,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- err_free_dai:
- 	if (sec_dai)
- 		i2s_free_sec_dai(sec_dai);
-+err_disable_clk:
-+	clk_disable_unprepare(pri_dai->clk);
- 	return ret;
- }
- 
+ SOUND - DMAENGINE HELPERS
 -- 
-2.8.1
+2.9.3
