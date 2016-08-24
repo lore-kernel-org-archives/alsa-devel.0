@@ -1,18 +1,29 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas5086: fix typo: "Inavlid" -> "Invalid"" to the asoc tree
-Date: Wed, 24 Aug 2016 12:20:37 +0100
-Message-ID: <E1bcWEX-0000Ai-U7@debutante>
-References: <20160824064806.15809-1-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160824064806.15809-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Applied "ASoC: sunxi: depend on ARCH_SUNXI" to the asoc tree
+Date: Wed, 24 Aug 2016 12:20:31 +0100
+Message-ID: <E1bcWER-00008q-V4@debutante>
+References: <2008659.grltYsYuN0@wuerfel>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <2008659.grltYsYuN0@wuerfel>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Peter Robinson <pbrobinson@gmail.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, wens@csie.org, broonie@kernel.org, maxime.ripard@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tas5086: fix typo: "Inavlid" -> "Invalid"
+   ASoC: sunxi: depend on ARCH_SUNXI
 
 has been applied to the asoc tree at
 
@@ -37,31 +48,29 @@ to this mail.
 Thanks,
 Mark
 
->From e56375155e95019cd4abc55d30c2c1a415037e27 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 24 Aug 2016 07:48:06 +0100
-Subject: [PATCH] ASoC: tas5086: fix typo: "Inavlid" -> "Invalid"
+>From 702650bda073cb9df90e3a091ee515f340133b05 Mon Sep 17 00:00:00 2001
+From: Peter Robinson <pbrobinson@gmail.com>
+Date: Tue, 23 Aug 2016 18:17:46 +0100
+Subject: [PATCH] ASoC: sunxi: depend on ARCH_SUNXI
 
-trivial typo fix in dev_err message
+Depend on ARCH_SUNXI or COMPILE_TEST as it doesn't make sense to enable
+these if the appropriate SoC they're embedded in isn't enabled.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas5086.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sunxi/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
-index d49d25d51957..1666ea697647 100644
---- a/sound/soc/codecs/tas5086.c
-+++ b/sound/soc/codecs/tas5086.c
-@@ -387,7 +387,7 @@ static int tas5086_hw_params(struct snd_pcm_substream *substream,
- 	val = index_in_array(tas5086_ratios, ARRAY_SIZE(tas5086_ratios),
- 			     priv->mclk / priv->rate);
- 	if (val < 0) {
--		dev_err(codec->dev, "Inavlid MCLK / Fs ratio\n");
-+		dev_err(codec->dev, "Invalid MCLK / Fs ratio\n");
- 		return -EINVAL;
- 	}
+diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+index 2a954bd01fd8..dd2368297fd3 100644
+--- a/sound/soc/sunxi/Kconfig
++++ b/sound/soc/sunxi/Kconfig
+@@ -1,4 +1,5 @@
+ menu "Allwinner SoC Audio support"
++	depends on ARCH_SUNXI || COMPILE_TEST
  
+ config SND_SUN4I_CODEC
+ 	tristate "Allwinner A10 Codec Support"
 -- 
 2.8.1
