@@ -1,37 +1,34 @@
 From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-Subject: [PATCH v2 2/2] MAINTAINERS: document ASoC header files
-Date: Wed, 24 Aug 2016 17:23:48 +0200
-Message-ID: <20160824152348.2048-2-nicolas.iooss_linux@m4x.org>
-References: <20160824152348.2048-1-nicolas.iooss_linux@m4x.org>
+Subject: [PATCH v2 1/2] ASoC: simple-card-utils: add __printf attribute
+Date: Wed, 24 Aug 2016 17:23:47 +0200
+Message-ID: <20160824152348.2048-1-nicolas.iooss_linux@m4x.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160824152348.2048-1-nicolas.iooss_linux@m4x.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-include/sound/simple_card_utils.h is handled by ASoC maintainers, as
-stated in https://lkml.org/lkml/2016/8/22/307, and
-include/sound/simple_card.h seems to be an ASoC file too. In the future
-there will be more files named like these ones so introduce a pattern to
-match them.
+asoc_simple_card_set_dailink_name() uses devm_kvasprintf() to format
+some of its arguments.  Adding a __printf attribute to this function
+makes it possible to detect at compile-time errors related to format
+strings.
 
 Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
 ---
- MAINTAINERS | 1 +
+ include/sound/simple_card_utils.h | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0bbe4b105c34..3f4e8bf042b9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11012,6 +11012,7 @@ S:	Supported
- F:	Documentation/devicetree/bindings/sound/
- F:	Documentation/sound/alsa/soc/
- F:	sound/soc/
-+F:	include/sound/simple*card*
- F:	include/sound/soc*
- 
- SOUND - DMAENGINE HELPERS
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index 86088aed9002..3207b1a70d38 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -27,6 +27,7 @@ int asoc_simple_card_parse_daifmt(struct device *dev,
+ 				  struct device_node *codec,
+ 				  char *prefix,
+ 				  unsigned int *retfmt);
++__printf(3, 4)
+ int asoc_simple_card_set_dailink_name(struct device *dev,
+ 				      struct snd_soc_dai_link *dai_link,
+ 				      const char *fmt, ...);
 -- 
 2.9.3
