@@ -1,55 +1,55 @@
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH -next] sound: rockchip: fix build when SPI is not enabled
-Date: Wed, 24 Aug 2016 10:55:08 -0700
-Message-ID: <52b8a769-e582-d9d7-403a-e49a59067786@infradead.org>
-References: <14691987-ab74-96c4-de5d-8caa06e94d3f@infradead.org>
+From: Randy Dunlap <rdunlap-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>
+Subject: [PATCH -next] sound: rockchip: fix build when SPI_MASTER is not
+ enabled
+Date: Wed, 24 Aug 2016 10:57:20 -0700
+Message-ID: <22fcb876-1a27-0ff4-3f18-5079281c247e@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <14691987-ab74-96c4-de5d-8caa06e94d3f@infradead.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: LKML <linux-kernel@vger.kernel.org>, moderated for non-subscribers <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
+List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: moderated for non-subscribers <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/22/16 11:32, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Fix build errors found in rt5514 drivers when SPI is not enabled.
-> 
-> Fixes these build errors:
-> ERROR: "__spi_register_driver" [sound/soc/codecs/snd-soc-rt5514-spi.ko] undefined!
-> ERROR: "spi_sync" [sound/soc/codecs/snd-soc-rt5514-spi.ko] undefined!
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc:	Bard Liao <bardliao@realtek.com>
-> Cc:	Oder Chiou <oder_chiou@realtek.com>
-> ---
->  sound/soc/rockchip/Kconfig |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> This builds without errors, but if you always want to have the SPI
-> interface available in this driver, change the first "depends" to
-> include "&& SPI_MASTER".
+From: Randy Dunlap <rdunlap-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>
 
-Please drop this patch.  The comment above is the correct thing to do
-and I am sending a patch with that change.
+Fix multiple build errors in sound/soc/rockchip/ drivers by
+adding "depends on SPI_MASTER".
 
+Fixes these build errors:
+sound/built-in.o: In function `rt5514_spi_burst_read':
+(.text+0x6c26c): undefined reference to `spi_sync'
+sound/built-in.o: In function `rt5514_spi_burst_write':
+(.text+0x6c96e): undefined reference to `spi_sync'
+sound/built-in.o: In function `rockchip_sound_probe':
+rk3399_gru_sound.c:(.text+0x9f579): undefined reference to `spi_bus_type'
+sound/built-in.o: In function `rt5514_spi_driver_init':
+rt5514-spi.c:(.init.text+0x983): undefined reference to `__spi_register_driver'
 
-> --- linux-next-20160822.orig/sound/soc/rockchip/Kconfig
-> +++ linux-next-20160822/sound/soc/rockchip/Kconfig
-> @@ -49,7 +49,7 @@ config SND_SOC_RK3399_GRU_SOUND
->  	select SND_SOC_MAX98357A
->  	select SND_SOC_RT5514
->  	select SND_SOC_DA7219
-> -	select SND_SOC_RT5514_SPI
-> +	select SND_SOC_RT5514_SPI if SPI_MASTER
->  	help
->  	  Say Y or M here if you want to add support multiple codecs for SoC
->  	  audio on Rockchip RK3399 GRU boards.
-> 
+Signed-off-by: Randy Dunlap <rdunlap-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>
+Cc:	Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
+Cc:	linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc:	linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+---
+ sound/soc/rockchip/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-
--- 
-~Randy
+--- linux-next-20160824.orig/sound/soc/rockchip/Kconfig
++++ linux-next-20160824/sound/soc/rockchip/Kconfig
+@@ -45,6 +45,7 @@ config SND_SOC_ROCKCHIP_RT5645
+ config SND_SOC_RK3399_GRU_SOUND
+ 	tristate "ASoC support multiple codecs for Rockchip RK3399 GRU boards"
+ 	depends on SND_SOC_ROCKCHIP && I2C && GPIOLIB && CLKDEV_LOOKUP
++	depends on SPI_MASTER
+ 	select SND_SOC_ROCKCHIP_I2S
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_RT5514
