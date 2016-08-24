@@ -1,17 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 7/9] ASoC: Intel: Skylake: Table for module
-	instance id and private id
-Date: Wed, 24 Aug 2016 18:03:19 +0530
-Message-ID: <1472042001-9582-8-git-send-email-vinod.koul@intel.com>
-References: <1472042001-9582-1-git-send-email-vinod.koul@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/2] ALSA: bebob: merge vendor-dependent codes
+	for Yamaha/Terratec
+Date: Wed, 24 Aug 2016 21:42:41 +0900
+Message-ID: <1472042563-24634-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E0552675A7
- for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2016 14:25:43 +0200 (CEST)
-In-Reply-To: <1472042001-9582-1-git-send-email-vinod.koul@intel.com>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 89D8D26885F
+ for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2016 14:42:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,111 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Dharageswari R <dharageswari.r@intel.com>, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Dharageswari R <dharageswari.r@intel.com>
-
-Now that modules ids are generated dynamically, it helps to keep track of
-generated ids while referring modules, so add a map for each module.
-
-Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/skylake/skl-sst-dsp.h   |  2 ++
- sound/soc/intel/skylake/skl-sst-utils.c | 37 +++++++++++++++++++++++++++++++--
- 2 files changed, 37 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index b61bd03ee4f0..b9e71d051fb1 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -219,6 +219,8 @@ int skl_get_pvt_id(struct skl_sst *ctx,
- 				struct skl_module_cfg *mconfig);
- int skl_put_pvt_id(struct skl_sst *ctx,
- 				struct skl_module_cfg *mconfig);
-+int skl_get_pvt_instance_id_map(struct skl_sst *ctx,
-+				int module_id, int instance_id);
- void skl_freeup_uuid_list(struct skl_sst *ctx);
- 
- int skl_dsp_strip_extended_manifest(struct firmware *fw);
-diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
-index 64873bc341dd..8b955f93f405 100644
---- a/sound/soc/intel/skylake/skl-sst-utils.c
-+++ b/sound/soc/intel/skylake/skl-sst-utils.c
-@@ -102,6 +102,7 @@ struct uuid_module {
- 	int is_loadable;
- 	int max_instance;
- 	u64 pvt_id[MAX_INSTANCE_BUFF];
-+	int *instance_id;
- 
- 	struct list_head list;
- };
-@@ -140,6 +141,31 @@ int snd_skl_get_module_info(struct skl_sst *ctx,
- }
- EXPORT_SYMBOL_GPL(snd_skl_get_module_info);
- 
-+static int skl_get_pvtid_map(struct uuid_module *module, int instance_id)
-+{
-+	int pvt_id;
-+
-+	for (pvt_id = 0; pvt_id < module->max_instance; pvt_id++) {
-+		if (module->instance_id[pvt_id] == instance_id)
-+			return pvt_id;
-+	}
-+	return -EINVAL;
-+}
-+
-+int skl_get_pvt_instance_id_map(struct skl_sst *ctx,
-+				int module_id, int instance_id)
-+{
-+	struct uuid_module *module;
-+
-+	list_for_each_entry(module, &ctx->uuid_list, list) {
-+		if (module->id == module_id)
-+			return skl_get_pvtid_map(module, instance_id);
-+	}
-+
-+	return -EINVAL;
-+}
-+EXPORT_SYMBOL_GPL(skl_get_pvt_instance_id_map);
-+
- static inline int skl_getid_32(struct uuid_module *module, u64 *val,
- 				int word1_mask, int word2_mask)
- {
-@@ -199,8 +225,11 @@ int skl_get_pvt_id(struct skl_sst *ctx, struct skl_module_cfg *mconfig)
- 		if (uuid_le_cmp(*uuid_mod, module->uuid) == 0) {
- 
- 			pvt_id = skl_pvtid_128(module);
--			if (pvt_id >= 0)
-+			if (pvt_id >= 0) {
-+				module->instance_id[pvt_id] =
-+						mconfig->id.instance_id;
- 				return pvt_id;
-+			}
- 		}
- 	}
- 
-@@ -242,7 +271,7 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
- {
- 	struct adsp_fw_hdr *adsp_hdr;
- 	struct adsp_module_entry *mod_entry;
--	int i, num_entry;
-+	int i, num_entry, size;
- 	uuid_le *uuid_bin;
- 	const char *buf;
- 	struct skl_sst *skl = ctx->thread_context;
-@@ -306,6 +335,10 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
- 		module->id = (i | (index << 12));
- 		module->is_loadable = mod_entry->type.load_type;
- 		module->max_instance = mod_entry->instance_max_count;
-+		size = sizeof(int) * mod_entry->instance_max_count;
-+		module->instance_id = devm_kzalloc(ctx->dev, size, GFP_KERNEL);
-+		if (!module->instance_id)
-+			return -ENOMEM;
- 
- 		list_add_tail(&module->list, &skl->uuid_list);
- 
--- 
-1.9.1
+SGksCgpUaGlzIHBhdGNoc2V0IG1lcmdlcyB2ZW5kb3ItZGVwZW5kZW50IGNvZGVzIGZvciBZYW1h
+aGEvVGVycmF0ZWMsIGJlY2F1c2UKZWFjaCBvZiB0aGVzZSB0d28gcGFpcnMgaGFzIHRoZSBzYW1l
+IGNvbmZpZ3VyYXRpb246CgogLSBZYW1haGEgR080NCAvIFRlcnJhdGVjIFBoYXNlIDI0IEZXCiAt
+IFlhbWFoYSBHTzQ2IC8gVGVycmF0ZWMgUGhhc2UgWDI0IEZXCgpUaGUgdHdvIGNvbXBhbmllcyBt
+aWdodCBvbmNlIGhhdmUgY29vcGVyYXRlZCB0byBkZXZlbG9wIHNvbWUgYXVkaW8gYW5kIG11c2lj
+CnVuaXRzIG9uIElFRUUgMTM5NCBidXMsIGJhc2VkIG9uIERNMTAwMEUgQVNJQyBhbmQgQmVCb0Ig
+ZmlybXdhcmUuIFRoaXMKY29uY2x1c2lvbiBjb21lcyBmcm9tIGEgcmVwb3J0ZXIgb2YgYSBmb3J1
+bSBvZiBVYnVudHUgSmFwYW5lc2UgQ29tbXVuaXR5LgpUaGFua3MgZm9yIGhpcyBoZWxwIHRvIGlk
+ZW50aWZ5IHN1YnVuaXQgZm9ybWF0aW9uIGFuZCBzdXBwb3J0ZWQgc3RyZWFtIGZvcm1hdHM6CgpK
+YWNrICYgRmlyZXdpcmXjgqrjg7zjg4fjgqPjgqrjgqTjg7Pjgr/jg7zjg5XjgqfjgqTjgrnjga7o
+qK3lrprjgavplqLjgZnjgovos6rllY/jgafjgZnjgIIKaHR0cHM6Ly9mb3J1bXMudWJ1bnR1bGlu
+dXguanAvdmlld3RvcGljLnBocD9pZD0xODY1NwoKVGVycmF0ZWMgaGFzIGFsc28gcHJvZHVjZWQg
+dGhlIG90aGVyIG1vZGVscyB3aXRoIERNIEFTSUMgc2VyaWVzIGFuZCBCZUJvQgpmaXJtd2FyZS4g
+Rm9yIHRoZSBtb2RlbHMsIHZlbmRvci1kZXBlbmRlbnQgY29kZXMgYXJlIHN0aWxsIGxlZnQuCgoK
+VGFrYXNoaSBTYWthbW90byAoMik6CiAgQUxTQTogYmVib2I6IHJlbmFtZSBmaWxlIHdpdGggdmVu
+ZG9yLWRlcGVuZGVudCBjb2RlIHNvIHRoYXQgaXQncyBmb3IKICAgIFlhbWFoYS9UZXJyYXRlYwog
+IEFMU0E6IGJlYm9iOiB1bmlmeSBjb25maWd1cmF0aW9ucyBmb3Igc29tZSBtb2RlbHMgcHJvZHVj
+ZWQgYnkKICAgIFlhbWFoYS9UZXJyYXRlYwoKIHNvdW5kL2ZpcmV3aXJlL2JlYm9iL01ha2VmaWxl
+ICAgICAgICAgICAgICAgICAgICAgIHwgIDUgKystLQogc291bmQvZmlyZXdpcmUvYmVib2IvYmVi
+b2IuYyAgICAgICAgICAgICAgICAgICAgICAgfCAgOCArKystLS0KIHNvdW5kL2ZpcmV3aXJlL2Jl
+Ym9iL2JlYm9iLmggICAgICAgICAgICAgICAgICAgICAgIHwgIDMgKy0tCiBzb3VuZC9maXJld2ly
+ZS9iZWJvYi9iZWJvYl90ZXJyYXRlYy5jICAgICAgICAgICAgICB8IDMxIC0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0KIC4uLi97YmVib2JfeWFtYWhhLmMgPT4gYmVib2JfeWFtYWhhX3RlcnJhdGVjLmN9
+ICAgIHwgIDkgKysrKy0tLQogNSBmaWxlcyBjaGFuZ2VkLCAxNCBpbnNlcnRpb25zKCspLCA0MiBk
+ZWxldGlvbnMoLSkKIHJlbmFtZSBzb3VuZC9maXJld2lyZS9iZWJvYi97YmVib2JfeWFtYWhhLmMg
+PT4gYmVib2JfeWFtYWhhX3RlcnJhdGVjLmN9ICg4NSUpCgotLSAKMi43LjQKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
