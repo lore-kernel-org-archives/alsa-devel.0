@@ -1,87 +1,90 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH v2 0/7] AC97 device/driver model revamp
-Date: Wed, 24 Aug 2016 12:39:53 +0100
-Message-ID: <20160824113953.GF22076@sirena.org.uk>
-References: <1464380819-19075-1-git-send-email-robert.jarzmik@free.fr>
- <87twebphh4.fsf@belgarion.home>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1851927226293660026=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <87twebphh4.fsf@belgarion.home>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: samsung: i2s: Add missing clk_disable_unprepare() on error in samsung_i2s_probe()" to the asoc tree
+Date: Wed, 24 Aug 2016 12:38:29 +0100
+Message-ID: <E1bcWVp-0000yB-5k@debutante>
+References: <1471965402-6642-1-git-send-email-weiyj.lk@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1471965402-6642-1-git-send-email-weiyj.lk@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1851927226293660026==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="7cXxibKNEnJOqEg4"
-Content-Disposition: inline
+   ASoC: samsung: i2s: Add missing clk_disable_unprepare() on error in samsung_i2s_probe()
 
+has been applied to the asoc tree at
 
---7cXxibKNEnJOqEg4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Aug 23, 2016 at 06:39:35PM +0200, Robert Jarzmik wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> In the old ac97 bus, the match function was always returning "true", and the
-> driver did probe. With this new implementation, the ac97 is discovered and
-> sound/soc/codecs/wm9713.c#wm9713_ac97_probe() is called. I don't export
-> ac97_bus_type (nor want to do it), and only _one_ device is created upon
-> discovery, while the wm97xx-core.c would benefic a second ac97 device.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> I'm wondering how to work around this :
->  - either I add a wm97xx-ts ac97 device in wm9713_ac97_probe()
->  - or I add a platform device in wm9713_ac97_probe() and add a new
->    platform_driver in wm97xx-core ...
->  - or something smarter
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-That device really should be a MFD.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> What's behind this question is : should I keep to my initial solution of 1 ac97
-> device discovered is bound on the ac97 to _at most_ 1 ac97 driver, or is there a
-> know smart way to have several drivers for one device (that sounds a bit heretic
-> regarding my understanding of the device/driver model but who knows ...) ?
+Thanks,
+Mark
 
-MFDs are how we do multiple drivers per device.
+>From fd61576fdda88c9677f9ea62e6f32997ce39daea Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Date: Tue, 23 Aug 2016 15:16:42 +0000
+Subject: [PATCH] ASoC: samsung: i2s: Add missing clk_disable_unprepare() on
+ error in samsung_i2s_probe()
 
---7cXxibKNEnJOqEg4
-Content-Type: application/pgp-signature; name="signature.asc"
+Add the missing clk_disable_unprepare() before return
+from samsung_i2s_probe() in the error handling case.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Signed-off-by: Wei Yongjun <weiyj.lk@gmail.com>
+Acked-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/samsung/i2s.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-iQEcBAEBCAAGBQJXvYd+AAoJECTWi3JdVIfQ6pcH/2FcK/Wk0D9FljAA6xkCu8GU
-glQTTLjFoVOGVoZF3fgxu7ZmA9/vedCuJwad/lJM8J1NQEsMj1jdebk2+I2YyjE/
-zzeYj3vrqTanhCkRb179R90mML9tYK53gYs1sG9ib4KX+abtFAjhYyXpdKTfACTL
-D7fanKYh1TF4aXhdA813j+/xQ3IPEcJukMQyLGn9wfEuSgl6mc5Vx6FEPOEmoZjV
-91MlRDcgyQa7k4ZwZWo8E+x/an5Mc4F5GuK4Bil4xmhIpGe5DPiivDR5OV061E5G
-ltYAAmzZJCsAHuAs3c9psmSorcvHDV9aT/JHze67RURTSz2SaDpVpr8ugAcxtcE=
-=oTIK
------END PGP SIGNATURE-----
-
---7cXxibKNEnJOqEg4--
-
-
---===============1851927226293660026==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============1851927226293660026==--
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index fa3ff03d97d5..7e32cf4581f8 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1318,7 +1318,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 		sec_dai = i2s_alloc_dai(pdev, true);
+ 		if (!sec_dai) {
+ 			dev_err(&pdev->dev, "Unable to alloc I2S_sec\n");
+-			return -ENOMEM;
++			ret = -ENOMEM;
++			goto err_disable_clk;
+ 		}
+ 
+ 		sec_dai->lock = &pri_dai->spinlock;
+@@ -1342,7 +1343,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 
+ 	if (i2s_pdata && i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
+ 		dev_err(&pdev->dev, "Unable to configure gpio\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_disable_clk;
+ 	}
+ 
+ 	ret = devm_snd_soc_register_component(&pri_dai->pdev->dev,
+@@ -1366,6 +1368,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ err_free_dai:
+ 	if (sec_dai)
+ 		i2s_free_sec_dai(sec_dai);
++err_disable_clk:
++	clk_disable_unprepare(pri_dai->clk);
+ 	return ret;
+ }
+ 
+-- 
+2.8.1
