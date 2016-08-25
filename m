@@ -1,22 +1,18 @@
-From: Maurizio Berti <maurizio.berti@gmail.com>
-Subject: Re: Range of pitchbend MIDI events
-Date: Thu, 25 Aug 2016 01:00:14 +0200
-Message-ID: <CAPn+-XQpYvgrzYYBixpY_qastVLLf7zoCbNuK=BcsWAgm-crGQ@mail.gmail.com>
-References: <CAPn+-XSsDEe3ruu7vYmdNgneLpK13VxYVm860JAt4cwFe86soQ@mail.gmail.com>
- <alpine.DEB.2.02.1608241139580.6821@lnxricardw1.se.axis.com>
- <CAPn+-XRFqXU11229d2WXMwqOLZx=jyGqDJB=khAiFX9uRS2FBg@mail.gmail.com>
- <alpine.DEB.2.02.1608242120400.2718@lnxricardw1.se.axis.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH] ASoC: tegra_rt5640: Correct a copy and paste
+	typo in the comments
+Date: Wed, 24 Aug 2016 17:26:15 -0700
+Message-ID: <1472084775-7655-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb0-f175.google.com (mail-yb0-f175.google.com
- [209.85.213.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 7301226621A
- for <Alsa-devel@alsa-project.org>; Thu, 25 Aug 2016 01:00:56 +0200 (CEST)
-Received: by mail-yb0-f175.google.com with SMTP id e31so10901138ybi.3
- for <Alsa-devel@alsa-project.org>; Wed, 24 Aug 2016 16:00:56 -0700 (PDT)
-In-Reply-To: <alpine.DEB.2.02.1608242120400.2718@lnxricardw1.se.axis.com>
+Received: from mail-pf0-f195.google.com (mail-pf0-f195.google.com
+ [209.85.192.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D0DD266633
+ for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2016 02:26:20 +0200 (CEST)
+Received: by mail-pf0-f195.google.com with SMTP id g202so2131003pfb.1
+ for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2016 17:26:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,70 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: alsa-devel <Alsa-devel@alsa-project.org>
+To: broonie@kernel.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, swarren@wwwdotorg.org
 List-Id: alsa-devel@alsa-project.org
 
-Wy4uLl0KPiBJbiBib3RoIGNhc2VzLCB3aGVuIHZrZXliZCBzYXlzIGl0J3Mgc2VuZGluZyBhIHBp
-dGNoIGJlbmQgdmFsdWUgb2YgODE5MiwKPiB0aGUgcmVzdWx0aW5nIGRhdGEgdGhhdCBpcyBhY3R1
-YWxseSBvdXRwdXQgb24gTUlESSBpcyAtODE5MiwgZXZlbiB0aG91Z2gKPiBhc2VxZHVtcCBhbmQg
-b3RoZXIgTUlESSBkdW1wIHByb2dyYW1zIEkgdHJpZWQgKGttaWRpbW9uIGZvciBvbmUpIGRpc3Bs
-YXllZAo+IGl0IGFzIDgxOTIuIEl0IGlzIHZlcnkgZXZpZGVudCB3aGVuIHNlbmRpbmcgdG8gYSBy
-ZWFsIHdvcmxkIGRldmljZSwKPiBiZWNhdXNlIGFzIHlvdSBiZW5kIHVwd2FyZHMgaW4gdmtleWJk
-IHRoZSBwaXRjaCByaXNlcyBhcyBleHBlY3RlZCwgdGhlbgo+IHN1ZGRlbmx5IGp1bXBzIHRvIHRo
-ZSBtaW5pbXVtIHZhbHVlIHdoZW4gdmtleWJkIHJlYWNoZXMgODE5Mi4KPgo+IENvbnZlcnNlbHks
-IHdoZW4gYSByZWFsLXdvcmxkIGRldmljZSBzZW5kcyBhIG1heGltdW0gcG9zaXRpdmUgTUlESSBw
-aXRjaAo+IGJlbmQgdmFsdWUsIGl0IGlzIGRpc3BsYXllZCBhcyA4MTkxIGluIGFzZXFkdW1wIGFz
-IHdvdWxkIGJlIGV4cGVjdGVkLgo+Cj4gSSBoYXZlbid0IGRvbmUgYW55IGZ1cnRoZXIgaW52ZXN0
-aWdhdGlvbiwgYnV0IGl0IHN1Z2dlc3RzIHRvIG1lIHRoYXQgdGhlcmUKPiBhcmUgYSBjb3VwbGUg
-b2YgYnVncyBoZXJlLiBGaXJzdCBvZiBhbGwsIHRoYXQgdmtleWJkIGF0dGVtcHRzIHRvIHNlbmQg
-YQo+IHBpdGNoIGJlbmQgdmFsdWUgdGhhdCBpcyBsYXJnZXIgdGhhbiA4MTkxLCBhbmQgc2Vjb25k
-bHkgdGhhdCBzdWNoIGEgbGFyZ2UKPiB2YWx1ZSBpcyBhY3R1YWxseSBwcm9wYWdhdGVkIHdpdGhp
-biBBTFNBLgoKSSBqdXN0IG1hZGUgYSBuZXcgdGVzdCwgdGhpbmtpbmcgYWJvdXQgdGhlIHN0YXR1
-cyBieXRlLCBJIGNyZWF0ZWQgYSBwaXRjaApiZW5kIGV2ZW50IHdpdGggdmFsdWUgMTIzNDU2Nzg5
-LCB3aGljaCBoYXMgYml0IGxlbmd0aCBvZiAyNywgaGVuY2UgNCA3LWJpdApieXRlcy4KSWYgSSd2
-ZSB1bmRlcnN0b29kIGNvcnJlY3RseSBob3cgTUlESSB3b3JrcywgdGhhdCBzaG91bGQgbWVhbiB0
-aGF0IEkndmUKc2VudCBhIDUgYnl0ZXMgZ3JvdXAsIGJlaW5nIHRoZSBmaXJzdCB0aGUgc3RhdHVz
-IGJ5dGUsIHRoZSBmaXJzdCBwYWlyIHRoZQpmaXJzdCBwaXRjaCBiZW5kLCBhbmQgdGhlIGxhc3Qg
-YSBzZWNvbmQgcGl0Y2ggYmVuZCBldmVudCB3aXRob3V0IHRoZSBzdGF0dXMKYnl0ZS4gVGhhdCdz
-IG5vdCB0aGUgY2FzZSwgSSBjYW4gYWN0dWFsbHkgc2VlIGEgcGl0Y2ggYmVuZCB2YWx1ZSBvZgox
-MjM0NTY3ODkgb24gYXNlcWR1bXAuCkFjY29yZGluZyB0byBldmVyeSBwcm9ncmFtIEkndmUgc2Vl
-biB0aGF0IHJlbGF0ZXMgdG8gQUxTQSBidXQgd29ya3Mgd2l0aCBhbgoiZXh0ZXJuYWwiIGVudmly
-b25tZW50IChhcyB5b3UgbWVudGlvbmVkLCBwaHlzaWNhbCBkZXZpY2VzLCBidXQgYWxzbwphMmpt
-aWRpIGFuZCBvdGhlcnMpIGp1c3QgZ2V0cyB0aGUgZmlyc3QgdHdvIGJ5dGVzIG9mIHRoZSBldmVu
-dCB2YWx1ZS4KCgo+IEJ1dCBwZXJoYXBzIGxhcmdlci10aGFuLTE0LWJpdCBNSURJIHBpdGNoIGJl
-bmQgbWVzc2FnZXMgYXJlIGluIGZhY3QKPiBhbGxvd2VkIHdpdGhpbiBBTFNBLCBhbmQgb25seSB0
-cnVuY2F0ZWQgb25jZSB0aGV5J3JlIHRyYW5zZmVycmVkIG92ZXIgVVNCCj4gb3IgTUlESSA/Pz8g
-SSB3b3VsZCBmaW5kIHRoYXQgdmVyeSBvZGQsIGFzIHRoZXkgb2J2aW91c2x5IG5ldmVyIGNhbiBi
-ZQo+IHByb3BhZ2F0ZWQgaW4gdGhlIHJlYWwgd29ybGQsIGJ1dCBJIGNhbid0IHNheSBJIGtub3cg
-Zm9yIHN1cmUuCgpJIGFsc28gdGhvdWdodCBhYm91dCBBTFNBIGJlaW5nICJwZXJtaXNzaXZlIiB3
-aXRoIG1hbGZvcm1lZCBldmVudHMsIGJ1dAp0aGVuIEkgcmVtZW1iZXJlZCB0aGF0IHRoYXQgcmFu
-Z2UgaXMgY2xlYXJseSBzcGVjaWZpZWQgaW4gdGhlIGFsc2FzZXEKZG9jdW1lbnRhdGlvbjoKaHR0
-cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2Fsc2EtZG9jL2Fsc2EtbGliL2dyb3VwX19fc2VxX21p
-ZGRsZS5odG1sI2dhOGRhNDBiZmQ1NmUwMGViZWM3NzVlNTI0MWQ4NmEzZTMKT25lIHdvdWxkIGV4
-cGVjdCB0aGF0IG91dCBvZiByYW5nZSB2YWx1ZXMgc2hvdWxkIGJlIGF0IGxlYXN0IGNvcnJlY3Rl
-ZCB0byBhCmRlZmF1bHQgKG1heGltdW0/KSB2YWx1ZSBvciwgZXZlbnR1YWxseSwgcmFpc2UgYW4g
-ZXhjZXB0aW9uIG9yIHJldHVybiBudWxsLgpJIG1pZ2h0IGJlIHNwZWFraW5nIG5vbnNlbnNlIGhl
-cmUsIGFzIGZhciBhcyBJIGtub3cgQUxTQSBpcyB3cml0dGVuIGluIEMKYW5kIEMgZG9lc24ndCBo
-YXZlIGV4Y2VwdGlvbnMuIEJ1dCwgc3RpbGwuCgpOb3cuIEkgYWxyZWFkeSBrbm93IHRoYXQgdGhp
-cyBpcyBhY3R1YWxseSBhIHRyaXZpYWwgaXNzdWUsIGFuZCwgaWYgaXQncyBhCnJlYWwgYnVnLCB0
-aGF0IHRyaXZpYWxuZXNzIG1pZ2h0IGV4cGxhaW4gd2h5IG5vYm9keSBmb3VuZCBvdXQgYWJvdXQg
-aXQgaW4KbW9yZSB0aGFuIDE1IHllYXJzLiA7KQpJdCBjYW4gYmUgc3RpbGwgY29uZnVzaW5nLCB0
-aG91Z2gsIGFuZCBJIHRoaW5rIGl0IHNob3VsZCBiZSBjb3JyZWN0ZWQgKG9yLAphdCBsZWFzdCwg
-ZXhwbGFpbmVkKSBldmVudHVhbGx5LgoKPiAoQlRXLCB0aGFua3MgZm9yIG1lbnRpb25pbmcgdmtl
-eWJkLCBJJ2QgbmV2ZXIgaGVhcmQgb2YgaXQgYmVmb3JlLCBidXQgSSd2ZQo+IGJlZW4gbG9va2lu
-ZyBmb3Igc3VjaCBhIGxpZ2h0d2VpZ2h0IGtleWJvYXJkIGFwcGxpY2F0aW9uIGZvciBxdWljayB0
-ZXN0cy4KPiBTcGVjaWFsIGJvbnVzIHRoYXQgeW91IGNhbiBhY3R1YWxseSBwbGF5IHRoZSBjb21w
-dXRlciBrZXlib2FyZCB0byBnZW5lcmF0ZQo+IG5vdGUgbWVzc2FnZXMuIEEgYml0IG9kZCB3aXRo
-IHRoZSBSZXZlcmIgYW5kIENob3J1cyBtZW51cyBzZW5kaW5nIFJvbGFuZAo+IHN5c2V4IG1lc3Nh
-Z2VzIHRob3VnaC4uLikKCllvdSdyZSB3ZWxjb21lIDopIHZrZXliZCBpcyByZWFsbHkgYSB0aW55
-IHlldCB2ZXJ5IHVzZWZ1bCBwaWVjZSBvZgpzb2Z0d2FyZSwgSSB1c2UgaXQgaW5kZWVkIGV2ZXJ5
-dGltZSBJIG5lZWQgcXVpY2sgdGVzdHMuCkJ5IHRoZSB3YXksIGl0cyBkZXZlbG9wZXIgaXMgVGFr
-YXNoaSBJd2FpLCB3aGljaCBpcyBhY3RpdmUgaGVyZSB0b28sIHNvIHdlCnNob3VsZCBhbGVydCBo
-aW0gYWJvdXQgdGhpcyB0aHJlYWQgYW5kIGFzayBoaW0gYWJvdXQgdGhvc2Ugc3lzZXggbWVzc2Fn
-ZXMgOikKCk1hdXJpemlvCgotLQrDiCBkaWZmaWNpbGUgYXZlcmUgdW5hIGNvbnZpbnppb25lIHBy
-ZWNpc2EgcXVhbmRvIHNpIHBhcmxhIGRlbGxlIHJhZ2lvbmkgZGVsCmN1b3JlLiAtICJTb3N0aWVu
-ZSBQZXJlaXJhIiwgQW50b25pbyBUYWJ1Y2NoaQpodHRwOi8vd3d3LmppZGVzay5uZXQKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+This patch corrects a copy and paste typo.
+
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
+ sound/soc/tegra/tegra_rt5640.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/tegra/tegra_rt5640.c b/sound/soc/tegra/tegra_rt5640.c
+index 773daec..e5ef4e9 100644
+--- a/sound/soc/tegra/tegra_rt5640.c
++++ b/sound/soc/tegra/tegra_rt5640.c
+@@ -1,5 +1,5 @@
+ /*
+-* tegra_rt5640.c - Tegra machine ASoC driver for boards using WM8903 codec.
++* tegra_rt5640.c - Tegra machine ASoC driver for boards using RT5640 codec.
+  *
+  * Copyright (c) 2013, NVIDIA CORPORATION.  All rights reserved.
+  *
+-- 
+2.1.4
