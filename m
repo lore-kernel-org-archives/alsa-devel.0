@@ -1,45 +1,37 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [alsa-devel] [RFC PATCH] mfd: arizona: Add gating of external
- MCLKn clocks
-Date: Thu, 25 Aug 2016 12:18:47 +0200
-Message-ID: <6b1626c1-d223-4e39-8065-a7421bd3944c@samsung.com>
-References: <1471627036-19465-1-git-send-email-s.nawrocki@samsung.com>
- <20160822092233.GN21682@localhost.localdomain>
- <d47e7106-037f-b40c-71e5-099ee30874e6@samsung.com>
- <20160823162825.GO21682@localhost.localdomain>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: Wait for resume before enabling FLL
+Date: Thu, 25 Aug 2016 11:39:32 +0100
+Message-ID: <1472121572-13020-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <20160823162825.GO21682@localhost.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, lee.jones@linaro.org, linux-kernel@vger.kernel.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 08/23/2016 06:28 PM, Charles Keepax wrote:
-> Apologies it seems I missed another version of this on the
-> mailing list, please do feel free to add me or the
-> patches@opensource.wolfsonmicro.com list as a direct CC on
-> any patches using our CODECs, I am always more than happy to look
-> over things and feel bad when I miss stuff. I will have a look
-> at the latest version of the patch.
+When enabling an FLL use pm_runtime_get_sync() instead of
+pm_runtime_get() to ensure that all the register settings
+have been written out and the codec is powered-up before
+we write the enable bit.
 
-Actually I should have copied you on the last iteration after
-addressing your review comments, sorry about this omission.
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I think we should be able to do something requesting the 32k
-> approximately as your existing patch here does, but then
-> requesting the main MCLK from the set_pll and set_sysclk
-> handlers. Eventually I would like the internal SYSCLK and FLLs
-> represented in the clock framework, so I want to have a quick
-> think about how that would migrate over. Let me see what I can
-> come up with here.
-
-Sounds good, I assume you mean enabling/disabling from the set_pll
-and set_syclk handlers. Do you find any issues with that? I think
-the CODEC should ensure external MCLK is enabled when setting FLL,
-otherwise it will not lock?
-Presumably arizona_set_fll() and arizona_set_sysclk() are places
-where it should be checked what the root source clock is and enable
-it if it's not yet enabled?
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index ecfdbfc..8b8f2d2 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -2268,7 +2268,7 @@ static int arizona_enable_fll(struct arizona_fll *fll)
+ 					 ARIZONA_FLL1_SYNC_BW);
+ 
+ 	if (!already_enabled)
+-		pm_runtime_get(arizona->dev);
++		pm_runtime_get_sync(arizona->dev);
+ 
+ 	regmap_update_bits_async(arizona->regmap, fll->base + 1,
+ 				 ARIZONA_FLL1_ENA, ARIZONA_FLL1_ENA);
+-- 
+1.9.1
