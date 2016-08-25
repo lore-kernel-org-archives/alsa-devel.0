@@ -1,25 +1,21 @@
-From: =?ISO-8859-1?Q?J=F6rg?= Krause <joerg.krause@embedded.rocks>
-Subject: Toggle GPIO if ALSA playbacks begins or ends
-Date: Thu, 25 Aug 2016 20:27:48 +0200
-Message-ID: <1472149668.24475.10.camel@embedded.rocks>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Alsa-lib 'cancelability'
+Date: Thu, 25 Aug 2016 20:31:17 +0100
+Message-ID: <201608252031.18085.gineera@aspect135.co.uk>
+References: <201608221741.21375.gineera@aspect135.co.uk>
+ <5780ba02-e3b2-2cd6-e35e-a16fd77bc951@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.142])
- by alsa0.perex.cz (Postfix) with ESMTP id 690F526717B
- for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2016 20:28:01 +0200 (CEST)
-Received: from customer (localhost [127.0.0.1])
- by submission (posteo.de) with ESMTPSA id 3sKt2d3mfCz105v
- for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2016 20:27:50 +0200 (CEST)
-Received: from mail.embedded.rocks ([127.0.0.1])
- by localhost (mail.embedded.rocks [127.0.0.1]) (amavisd-new, port 10025)
- with ESMTP id fqxZA8LCkFFa for <alsa-devel@alsa-project.org>;
- Thu, 25 Aug 2016 20:27:49 +0200 (CEST)
-Received: from nzxt.fritz.box (x2f774f1.dyn.telefonica.de [2.247.116.241])
- (Authenticated sender: joerg.krause@embedded.rocks)
- by mail.embedded.rocks (Postfix) with ESMTPSA
- for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2016 20:27:49 +0200 (CEST)
+Received: from 7.smtp.34sp.com (7.smtp.34sp.com [46.183.8.237])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2493265D22
+ for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2016 21:28:57 +0200 (CEST)
+Received: from smtpauth2.array1.smtp.34sp.com (lvs6.34sp.com [46.183.13.74])
+ by 7.smtp.34sp.com (Postfix) with ESMTPS id 8AE52421517
+ for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2016 20:28:48 +0100 (BST)
+In-Reply-To: <5780ba02-e3b2-2cd6-e35e-a16fd77bc951@ladisch.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,12 +26,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpJIGFtIGxvb2tpbmcgZm9yIGEgd2F5IHRvIHRvZ2dsZSBhIEdQSU8gaWYgQUxTQSBpcyBh
-Ym91dCB0byBwbGF5IG9yIGhhcwpzdG9wcGVkIHRvIHR1cm4gYW4gZXh0ZXJuYWwgYW1wbGlmaWVy
-IG9uL29mZi4KCkNhbiBpdCBiZSBkb25lIHVzaW5nIGxpYmFzb3VuZCBvciBjYW4gSSB1c2UgYSBw
-bHVnaW4gb3Igd3JpdGUgb25lPwoKQmVzdCByZWdhcmRzCkrDtnJnIEtyYXVzZQpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Clemens,
+
+I missed replying to say thanks for the quick response - appreciated.
+
+On Monday 22 August 2016 18:37, you wrote:
+> Alan Horstmann wrote:
+> > I am wondering if there is a policy on the thread 'cancelability' /
+> > 'cancellability' of the functions in Alsa-lib?
+>
+> Yes.  The policy is "don't even think about it".
+
+Too late - it's been happening for years!
+
+> > The callback runs in it's own thread; when a user requests 'AbortStream'
+> > a thread cancel is requested.
+>
+> Alsa-lib is not the only library with this 'policy'.  You cannot cancel
+> threads over whose code you do not have complete control.
+
+I was unsure whether libraries might disable cancelablility themselves as a 
+defensive measure so as to protect the internal states - in this case to 
+prevent the audio system from getting 'screwed-up', if only for other users.
+
+We will have to ensure there is only limited opportunity for cancelling the 
+thread during well-chosen sections.  Initial patches to do just that are 
+proving effective.
+
+Thanks again,
+
+Alan
