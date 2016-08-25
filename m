@@ -1,53 +1,41 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Subject: Re: [alsa-devel] [RFC PATCH] mfd: arizona: Add gating of external
  MCLKn clocks
-Date: Thu, 25 Aug 2016 14:02:34 +0100
-Message-ID: <20160825130234.GQ21682@localhost.localdomain>
+Date: Thu, 25 Aug 2016 15:26:41 +0200
+Message-ID: <bec76144-9dd1-4b67-ea17-0a0a2e190b91@samsung.com>
 References: <1471627036-19465-1-git-send-email-s.nawrocki@samsung.com>
  <20160822092233.GN21682@localhost.localdomain>
  <d47e7106-037f-b40c-71e5-099ee30874e6@samsung.com>
  <20160823162825.GO21682@localhost.localdomain>
  <6b1626c1-d223-4e39-8065-a7421bd3944c@samsung.com>
+ <20160825130234.GQ21682@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <6b1626c1-d223-4e39-8065-a7421bd3944c@samsung.com>
+In-reply-to: <20160825130234.GQ21682@localhost.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Cc: broonie@kernel.org, alsa-devel@alsa-project.org, lee.jones@linaro.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 25, 2016 at 12:18:47PM +0200, Sylwester Nawrocki wrote:
-> On 08/23/2016 06:28 PM, Charles Keepax wrote:
-> > I think we should be able to do something requesting the 32k
-> > approximately as your existing patch here does, but then
-> > requesting the main MCLK from the set_pll and set_sysclk
-> > handlers. Eventually I would like the internal SYSCLK and FLLs
-> > represented in the clock framework, so I want to have a quick
-> > think about how that would migrate over. Let me see what I can
-> > come up with here.
+On 08/25/2016 03:02 PM, Charles Keepax wrote:
+> Yes so the MCLK needs to be available before we start the FLL, so
+> my thinking was we would enable the clock that corresponds
+> to the source for the FLL in arizona_set_fll before we start
+> enabling the FLL.
 > 
-> Sounds good, I assume you mean enabling/disabling from the set_pll
-> and set_syclk handlers. Do you find any issues with that? I think
-> the CODEC should ensure external MCLK is enabled when setting FLL,
-> otherwise it will not lock?
-> Presumably arizona_set_fll() and arizona_set_sysclk() are places
-> where it should be checked what the root source clock is and enable
-> it if it's not yet enabled?
+> The direct MCLK would require a little more work but we could
+> probably enable the clock in this case from wm5110_sysclk_ev.
+> 
+> I have sent you through a copy of my prototype clock patches you
+> can have a look at. I am going to have a bit of a look over this
+> today and hopefully will be able to get back to you with more
+> concrete thoughts later today.
 
-Yes so the MCLK needs to be available before we start the FLL, so
-my thinking was we would enable the clock that corresponds
-to the source for the FLL in arizona_set_fll before we start
-enabling the FLL.
+Thanks, I will have a closer look at the patches.
 
-The direct MCLK would require a little more work but we could
-probably enable the clock in this case from wm5110_sysclk_ev.
-
-I have sent you through a copy of my prototype clock patches you
-can have a look at. I am going to have a bit of a look over this
-today and hopefully will be able to get back to you with more
-concrete thoughts later today.
-
-Thanks,
-Charles
+I have hard coded the MCLK frequency in the tm2_wm511 machine driver
+as its fixed anyway and now if the MCLK gating was taken care of by
+the CODEC we wouldn't need at all to get at the MCLK clocks in the
+machine driver.
