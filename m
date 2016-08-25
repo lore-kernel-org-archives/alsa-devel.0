@@ -1,53 +1,45 @@
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Subject: Re: [PATCH 03/13] ASoC: topology: ABI - Define DPCM
- trigger ordering for PCM
-Date: Thu, 25 Aug 2016 16:35:33 +0800
-Message-ID: <57BEADD5.1040307@linux.intel.com>
-References: <cover.1471599648.git.mengdong.lin@linux.intel.com>
- <24428c2714d09062f3ace5803679c743d36afb04.1471599648.git.mengdong.lin@linux.intel.com>
- <20160823174135.GA22076@sirena.org.uk>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [alsa-devel] [RFC PATCH] mfd: arizona: Add gating of external
+ MCLKn clocks
+Date: Thu, 25 Aug 2016 12:18:47 +0200
+Message-ID: <6b1626c1-d223-4e39-8065-a7421bd3944c@samsung.com>
+References: <1471627036-19465-1-git-send-email-s.nawrocki@samsung.com>
+ <20160822092233.GN21682@localhost.localdomain>
+ <d47e7106-037f-b40c-71e5-099ee30874e6@samsung.com>
+ <20160823162825.GO21682@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B37CF2667DC
- for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2016 10:32:11 +0200 (CEST)
-In-Reply-To: <20160823174135.GA22076@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, mengdong.lin@intel.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <20160823162825.GO21682@localhost.localdomain>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, lee.jones@linaro.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 08/23/2016 06:28 PM, Charles Keepax wrote:
+> Apologies it seems I missed another version of this on the
+> mailing list, please do feel free to add me or the
+> patches@opensource.wolfsonmicro.com list as a direct CC on
+> any patches using our CODECs, I am always more than happy to look
+> over things and feel bad when I miss stuff. I will have a look
+> at the latest version of the patch.
 
+Actually I should have copied you on the last iteration after
+addressing your review comments, sorry about this omission.
 
-On 08/24/2016 01:41 AM, Mark Brown wrote:
-> On Fri, Aug 19, 2016 at 06:12:55PM +0800, mengdong.lin@linux.intel.com wrote:
->
->> Definition of dynamic PCM trigger ordering is exposed to uapi asoc.h,
->> and topology allows user space to define the trigger ordering for PCM
->> (FE links).
->
-> This seems *incredibly* implementation specific.  Why wouldn't the
-> driver for the thing implementing the topology be able to figure out the
-> ordering here?  What's the use case?  What happens when we change away
-> from DPCM?
->
+> I think we should be able to do something requesting the 32k
+> approximately as your existing patch here does, but then
+> requesting the main MCLK from the set_pll and set_sysclk
+> handlers. Eventually I would like the internal SYSCLK and FLLs
+> represented in the clock framework, so I want to have a quick
+> think about how that would migrate over. Let me see what I can
+> come up with here.
 
-I'll check if we can let driver figure out this ordering or use some 
-more generic name.
-
-We add this trigger ordering as driver developer request and we think 
-it's decided by the firmware behavior. We hope firmware properties can 
-be covered by topology.
-
-Thanks
-Mengdong
+Sounds good, I assume you mean enabling/disabling from the set_pll
+and set_syclk handlers. Do you find any issues with that? I think
+the CODEC should ensure external MCLK is enabled when setting FLL,
+otherwise it will not lock?
+Presumably arizona_set_fll() and arizona_set_sysclk() are places
+where it should be checked what the root source clock is and enable
+it if it's not yet enabled?
