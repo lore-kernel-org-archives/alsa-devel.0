@@ -1,21 +1,21 @@
 From: kbuild test robot <lkp@intel.com>
-Subject: Re: [alsa-devel] [PATCH 2/2] ALSA: firewire-tascam: accessing to
- user space outside spinlock
-Date: Sat, 27 Aug 2016 05:30:20 +0800
-Message-ID: <201608270559.Z5M5aXML%fengguang.wu@intel.com>
-References: <1472244609-31830-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: Re: [alsa-devel] [PATCH 1/2] ALSA: fireworks: accessing to user
+ space outside spinlock
+Date: Sat, 27 Aug 2016 05:34:59 +0800
+Message-ID: <201608270552.3vMoYwQr%fengguang.wu@intel.com>
+References: <1472244609-31830-2-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="sm4nu43k4a2Rpi4c"
+Content-Type: multipart/mixed; boundary="ReaqsoxgOBHFXBhH"
 Return-path: <stable-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1472244609-31830-3-git-send-email-o-takashi@sakamocchi.jp>
+In-Reply-To: <1472244609-31830-2-git-send-email-o-takashi@sakamocchi.jp>
 Sender: stable-owner@vger.kernel.org
 To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Cc: kbuild-all@01.org, clemens@ladisch.de, tiwai@suse.de, vaishali.thakkar@oracle.com, alsa-devel@alsa-project.org, stable@vger.kernel.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 
---sm4nu43k4a2Rpi4c
+--ReaqsoxgOBHFXBhH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -39,48 +39,48 @@ reproduce:
 
 All warnings (new ones prefixed by >>):
 
-   sound/firewire/tascam/tascam-hwdep.c: In function 'hwdep_read':
->> sound/firewire/tascam/tascam-hwdep.c:24:8: warning: missing braces around initializer [-Wmissing-braces]
-   sound/firewire/tascam/tascam-hwdep.c:24:8: warning: (near initialization for 'event.common') [-Wmissing-braces]
+   sound/firewire/fireworks/fireworks_hwdep.c: In function 'hwdep_read_locked':
+>> sound/firewire/fireworks/fireworks_hwdep.c:86:8: warning: missing braces around initializer [-Wmissing-braces]
+   sound/firewire/fireworks/fireworks_hwdep.c:86:8: warning: (near initialization for 'event.common') [-Wmissing-braces]
 
-vim +24 sound/firewire/tascam/tascam-hwdep.c
+vim +86 sound/firewire/fireworks/fireworks_hwdep.c
 
-     8	
-     9	/*
-    10	 * This codes give three functionality.
-    11	 *
-    12	 * 1.get firewire node information
-    13	 * 2.get notification about starting/stopping stream
-    14	 * 3.lock/unlock stream
-    15	 */
-    16	
-    17	#include "tascam.h"
-    18	
-    19	static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
-    20			       loff_t *offset)
-    21	{
-    22		struct snd_tscm *tscm = hwdep->private_data;
-    23		DEFINE_WAIT(wait);
-  > 24		union snd_firewire_event event = {0};
-    25	
-    26		spin_lock_irq(&tscm->lock);
-    27	
-    28		while (!tscm->dev_lock_changed) {
-    29			prepare_to_wait(&tscm->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-    30			spin_unlock_irq(&tscm->lock);
-    31			schedule();
-    32			finish_wait(&tscm->hwdep_wait, &wait);
+    70				count += till_end;
+    71				remained -= till_end;
+    72			}
+    73	
+    74			efw->resp_queues--;
+    75		}
+    76	
+    77		spin_unlock_irq(&efw->lock);
+    78	
+    79		return count;
+    80	}
+    81	
+    82	static long
+    83	hwdep_read_locked(struct snd_efw *efw, char __user *buf, long count,
+    84			  loff_t *offset)
+    85	{
+  > 86		union snd_firewire_event event = {0};
+    87	
+    88		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
+    89	
+    90		spin_lock_irq(&efw->lock);
+    91	
+    92		event.lock_status.status = (efw->dev_lock_count > 0);
+    93		efw->dev_lock_changed = false;
+    94	
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---sm4nu43k4a2Rpi4c
+--ReaqsoxgOBHFXBhH
 Content-Type: application/octet-stream
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICCO0wFcAAy5jb25maWcAlFxbc9w2k33Pr5hy9mH3IbEtO/N5d0sPIAkOkeFNBDga6YUl
+H4sICK2zwFcAAy5jb25maWcAlFxbc9w2k33Pr5hy9mH3IbEtO/N5d0sPIAkOkeFNBDga6YUl
 y+NEFVnySqNs8u+3G7w1gOYom6qUxXMaIC6NRncDnB9/+HElXo6P326Od7c39/d/r347PBye
 bo6HL6uvd/eH/14l1aqszEomyvwMwvndw8tfb49ArT7+/Onndz893b5fbQ9PD4f7Vfz48PXu
 txcofff48MOPP8RVmapNZ1Quz/8en4qinR82spSNirtYt8WMZmInO9HEWSfyvIq7Rhai9mgt
@@ -924,4 +924,4 @@ DnCEfnvjIXQEYfrcTChQQSsUAo6pPfqTN+FlR96XFEKtAF0dv/GLhQheHb2t2Ksa9MbN+Grd
 YCZdyns+ryRjtzc4ElVaLLlKRbrivgmXad12KkuvnXQIl0kJc7fg6cQMhGkCZn8Ng102lgse
 ge5zmHYcw12iVBVDegRg+T8uZqDV/9cCAA==
 
---sm4nu43k4a2Rpi4c--
+--ReaqsoxgOBHFXBhH--
