@@ -1,19 +1,15 @@
-From: Samuel Thibault <samuel.thibault@ens-lyon.org>
-Subject: Re: locking looks odd
-Date: Fri, 26 Aug 2016 21:02:12 +0200
-Message-ID: <20160826190212.GR5165@var>
-References: <20160816210322.GD4466@var.home>
- <0fec7ab2-f72f-a27a-e82b-58642836db88@perex.cz>
- <20160820121205.GK4252@var.home>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/2] ALSA: fireworks/firewire-tascam: accessing
+	to user space outside spinlock
+Date: Sat, 27 Aug 2016 05:50:07 +0900
+Message-ID: <1472244609-31830-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hera.aquilenet.fr (hera.aquilenet.fr [141.255.128.1])
- by alsa0.perex.cz (Postfix) with ESMTP id DDEAC267BF4
- for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2016 21:02:55 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20160820121205.GK4252@var.home>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E685A266642
+ for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2016 22:50:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,20 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: vaishali.thakkar@oracle.com, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Samuel Thibault, on Sat 20 Aug 2016 14:12:05 +0200, wrote:
-> I'd just like to check something: do we agree that libasound must be
-> thread-safe by default (otherwise it breaks the application assumption
-> that it's thread-safe)?  If so, then there are thread-safety bugs:
+Hi,
 
-Ok, now with the discussion on the portaudio list starting at
+In ALSA fireworks driver and firewire-tascam driver, current implementation
+for hwdep interface have issues for page fault handling. For example,
+when using single core processor, after executing lock_page() in page fault
+handler and call task scheduler, then the context never run again, because
+any interrupts are disabled by these drivers and the context can't catch
+waiting event. This patchset fixes the issues.
 
-https://lists.columbia.edu/pipermail/portaudio/2016-August/000599.html
+The issues were reported by Vaishali Thakkar, with a help of coccinelle.
+Thanks a lot for his care to these minor drivers.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111887.html
 
-it seems the issue was in portaudio, which was hit by the locking
-behavior change.
+Takashi Sakamoto (2):
+  ALSA: fireworks: accessing to user space outside spinlock
+  ALSA: firewire-tascam: accessing to user space outside spinlock
 
-Samuel
+ sound/firewire/fireworks/fireworks_hwdep.c | 20 ++++++++++++++-----
+ sound/firewire/tascam/tascam-hwdep.c       | 32 ++++++++++--------------------
+ 2 files changed, 25 insertions(+), 27 deletions(-)
+
+-- 
+2.7.4
