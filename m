@@ -1,98 +1,100 @@
-From: Mauricio Cirelli <cirelli.mauricio@gmail.com>
-Subject: Questions about DAPM Routing for STA309A DSP Driver
-Date: Wed, 24 Aug 2016 14:36:36 -0300
-Message-ID: <CAJxDekNSBp0yCFYKvOg=r4+0tGpf6X19fCBHQMiShUThyfr+jw@mail.gmail.com>
+From: Danny Milosavljevic <dannym@scratchpost.org>
+Subject: [PATCH v9 0/2] sun4i-codec: Add Line-In, FM-In, Mic 2, Capture Source,
+ Differential Line-In
+Date: Fri, 26 Aug 2016 08:53:10 +0200
+Message-ID: <20160826065312.26803-1-dannym@scratchpost.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
- [209.85.215.66])
- by alsa0.perex.cz (Postfix) with ESMTP id F059D26710D
- for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2016 19:36:37 +0200 (CEST)
-Received: by mail-lf0-f66.google.com with SMTP id l89so1172923lfi.2
- for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2016 10:36:37 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="------------2.9.1"
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Danny Milosavljevic <dannym@scratchpost.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dear ALSA Community,
+This is a multi-part message in MIME format.
+--------------2.9.1
+Content-Type: text/plain; charset=UTF-8; format=fixed
+Content-Transfer-Encoding: 8bit
 
-I am new to this community and have a basic knowledge on ASoC architecture.
-I have worked a few times with Freescale's boards and the SGTL5000 Codec
-driver.
+This patch adds support for some mixer controls:
+- Line-In
+- FM-In
+- Mic 2
+- Capture Source
+- Differential Line-In
 
-Now, time has come for me to develop a ASoC Codec Driver for an Audio DSP
-(ST Microelectronics STA309A). Obviously, this driver should work only on
-the Playback stream. This chip supports up to 8 playback channels (I2S
-format) and has up to 8 output channels. There are also 8 internal
-channels, whose inputs can be one of the 8 playback channels and outputs
-are connected to one of each 8 output channels like this:
+v9 changes compared to v8 are:
+ - added Line Differential Capture Switch.
+ - split Capture Source into Left Capture Select, Right Capture Select.
+ - added Line Capture Volume.
+ - rename "sun4i_codec_widgets" to "sun4i_codec_controls" for 
+   consistency with the struct field it's used in.
+ - rename "Line-In" to "Line".
+ - rename "Power Amplifier Playback Volume" to "Headphone Playback Volume".
 
-Playback Channel X --> Input Channel Y --> Output Channel Z
+v8 changes compared to v7 are:
+ - fixed the routes for line and mic capturing.
 
-This DSP has several controls to apply effects and modify volume on each
-channel internal channel individually. I have been able to implement
-snd_kcontrol_new for them successfully and I am able to control them from
-the userspace correctly.
+v7 changes compared to v6 are:
+ - preparation for different A20, A10 controls is now in an extra patch.
+ - all register definitions are now at the top.
+ - sun7i-specific things (A20-specific things) are now less grouped-together.
+ - rename "Power Amplifier Volume" to "Power Amplifier Playback Volume".
 
-The part I am still in doubt on how to proceed is related to this channel
-routing. From what I have researched, this could be designed on top of DAPM
-Widgets and DAPM Routes in a way that the machine-level driver could
-configure this routing according to the specific board and the userspace
-would not be required to deal with this stuff.
+v6 changes compared to v5 are:
+ - Mic preamplifier special cases for A20 and A10 now are now not icky:
+   There are two different _widget arrays and the probe() function now 
+   selects the right one to pass to snd_soc_register_codec() unmodified.
+ - sun7i-specific things (A20-specific things) are now grouped together.
 
-I want to develop a device driver following the ASoC architecture so I can
-use it in different boards and in a way it could be useful for other
-developers.
+v5 changes compared to v4 are:
+ - Mic preamplifier controls have more common names now.
+ - Mic preamplifier scale has a 0 dB entry as well now, as documented in the 
+   A20 user manual.
+ - Mic preamplifier has special cases for A20 and A10 now.
+ - Gain controls have "Gain" in the name now.
 
-Here is what I was sketching up for this snd_soc_codec_driver:
+v4 changes compared to v3 are:
+ - names of the input are not uppercase anymore.
+ - bit index constants are now named as in the A20 user manual v1.4.
+ - added Mic1-In, Mac2-In.
+ - added Mic1 and Mic2 Pre-Amplifiers.
 
-static const char *input_names[8] = { "DIN1", "DIN2", "DIN3", "DIN4",
-"DIN5", "DIN6", "DIN7", "DIN8" };
-static const char *internal_names[8] = { "INT1", "INT2", "INT3", "INT4",
-"INT5", "INT6", "INT7", "INT8" };
+v3 changes compared to v2 are:
+ - added DAPM routes.
 
-/* Playback Channel to Internal DSP Channel Mapping */
-static SOC_ENUM_SINGLE_DECL(int1mux, STA309A_C12IM, 0, input_names);
-static const struct snd_kcontrol_new int1mux_ctrl =
-SOC_DAPM_ENUM("INT1MUX", int1mux);
-.... replicated to all 8 internal channels
+v2 changes compared to v1 are:
+ - moved Line-In and FM-In playback switches to their respective 
+   sun4i_codec_*_mixer_controls.
 
-/* Internal DSP Channel to Output Channel Mapping */
-static SOC_ENUM_SINGLE_DECL(out1mux, STA309A_C12OM, 0, internal_names);
-static const struct snd_kcontrol_new out1mux_ctrl =
-SOC_DAPM_ENUM("OUT1MUX", out1mux);
-.... replicated to all 8 output channels
+v1 changes:
+ - added linein, fmin output volumes and switches.
 
-static const struct snd_soc_dapm_widget sta309a_dsp_dapm_widgets[] = {
-    SND_SOC_DAPM_MUX("INT1MUX", SND_SOC_NOPM, 0, 0, &int1mux_ctrl),
-.... added 8 internal channel muxes
+Danny Milosavljevic (2):
+  ASoC: sun4i-codec: Distinguish sun4i from sun7i
+  Add mixer controls: Line-In, FM-In, Mic 2, Capture Source,
+    Differential Line-In.
 
-    SND_SOC_DAPM_MUX("OUT1MUX", SND_SOC_NOPM, 0, 0, &out1mux_ctrl),
-.... added 8 output channel muxes
-};
+ sound/soc/sunxi/sun4i-codec.c | 278 +++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 259 insertions(+), 19 deletions(-)
 
-Now I am lost on how to declare the possible routes. It should be possible
-to route each playback channel to any of the 8 possible internal channels
-and the internal channels to any of the 8 possible output channels. Note
-that this DSP supports Cross-Overs, so one can route a playback channel to
-one or more internal channels. Analogously, one can route an internal
-channel to one or more output channels.
+--------------2.9.1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I have not started to develop the machine-level driver, but any thoughts on
-how to design it would be very helpful. In the machine-level driver, I
-would like to define the DSP routing for an specific board. How can I do it?
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
-Thank you very much.
-
-
-Mauricio Cirelli
+--------------2.9.1--
