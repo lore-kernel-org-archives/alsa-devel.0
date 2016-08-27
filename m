@@ -1,65 +1,45 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH v9 0/2] sun4i-codec: Add Line-In, FM-In, Mic 2, Capture
- Source, Differential Line-In
-Date: Sat, 27 Aug 2016 14:02:51 +0200
-Message-ID: <20160827120251.GQ3165@lukather>
-References: <20160826072230.30429-1-dannym@scratchpost.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="fu8LepSeDvpxVgv6"
+From: Chen-Yu Tsai <wens@csie.org>
+Subject: [PATCH 3/4] ASoC: dapm: Fix kcontrol creation for output driver widget
+Date: Sat, 27 Aug 2016 19:28:00 +0800
+Message-ID: <20160827112801.31010-4-wens@csie.org>
+References: <20160827112801.31010-1-wens@csie.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160826072230.30429-1-dannym@scratchpost.org>
+In-Reply-To: <20160827112801.31010-1-wens@csie.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Danny Milosavljevic <dannym@scratchpost.org>
-Cc: Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Commit d88429a695a4 ("ASoC: dapm: Add output driver widget") added
+the snd_soc_dapm_out_drv ID for the output driver widget, which is
+the same as the PGA widget, with a later power sequence number.
 
---fu8LepSeDvpxVgv6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit 19a2557b76d6 ("ASoC: dapm: Add kcontrol support for PGAs")
+then added kcontrol support for PGA widgets, but failed to account
+for output driver widgets. Attempts to use kcontrols with output
+driver widgets result in silent failures, with the developer having
+little idea about what went on.
 
-Hi,
+Add snd_soc_dapm_out_drv to the switch/case block under snd_soc_dapm_pga
+in dapm_create_or_share_kcontrol, since they are essentially the same.
 
-On Fri, Aug 26, 2016 at 09:22:28AM +0200, Danny Milosavljevic wrote:
-> This patch adds support for some mixer controls:
-> - Line-In
-> - FM-In
-> - Mic 2
-> - Capture Source
-> - Differential Line-In
+Fixes: 19a2557b76d6 ("ASoC: dapm: Add kcontrol support for PGAs")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+---
+ sound/soc/soc-dapm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Please send your patches using send-email.
-
-Thanks,
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
-
---fu8LepSeDvpxVgv6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJXwYFrAAoJEBx+YmzsjxAg18AP/iSY7nnVVUY4ZHvB/MBmi645
-ks69j+/BU+ZIejye+J0yVPmYHXi2YSjw8h2dicMFw7qsALJdwY9UluYQsnzF+wyY
-x/bYI25E7vqEJ000VWag8Vjndr78BEBg8YfGdxBI8uptWD39l4qeamPRl8KpKLSz
-lGvI4b+zwsPEdp+kXEXUQOf2BTMHKBYUckaNCT4ZECh95/oKPOWljTBJ0R85sjFs
-Q47rJAM867O1JGiYhpRCWCQaM3HL5cnUQMC/amM+rxaD2Lyh9H2iU1xdNViVaEVz
-DwuFk6M65wNiFiPNKkPwTSxcnqG9wahm8+A5Svyg6pXw5SWauqAmRkUGzgVd9Z8B
-gNUg7UebTd4dVmV4l/QfaEhpIj8LbVo/KYKXy4oL2QvF0WO6or+FgWnfVnAd8CM1
-zA81G+/YS0LW+27Ugvvr7aK23PT06j6m6oSSNRunNmit6iuekE5IyOqOgkwT3XI6
-w/HW7aSJgQP50wHgVJXvrFIir5XnbXKijI5qjj2deKC57rdcZ+zOG9jQm+wd4Mrc
-g1iXsJA43vZvidzRznCmn8QcCC/iE0j59Nty+GHDddnLjqF7Ib+cOf8DeCvJcsV7
-B/IA22qZtbUnOO2HI8fSKO+HlKzamtawNM58cm7Dz0VeNPTa3UCKQu1n9ZW13NBc
-UpZo7j8V1uXov9kcJZbe
-=QCde
------END PGP SIGNATURE-----
-
---fu8LepSeDvpxVgv6--
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 9be076bc14b5..ed6b707cc7ce 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -823,6 +823,7 @@ static int dapm_create_or_share_kcontrol(struct snd_soc_dapm_widget *w,
+ 			case snd_soc_dapm_switch:
+ 			case snd_soc_dapm_mixer:
+ 			case snd_soc_dapm_pga:
++			case snd_soc_dapm_out_drv:
+ 				wname_in_long_name = true;
+ 				kcname_in_long_name = true;
+ 				break;
+-- 
+2.9.3
