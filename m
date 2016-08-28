@@ -1,56 +1,311 @@
-From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-Subject: Re: [PATCH 1/1] ASoC: Intel: Atom: add a missing star in a memcpy
- call
-Date: Sun, 28 Aug 2016 20:31:26 +0200
-Message-ID: <c6077e34-64d9-c030-c23a-e2f246deb3ee@m4x.org>
-References: <20160828173945.27721-1-nicolas.iooss_linux@m4x.org>
- <1472408231.26978.98.camel@perches.com>
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: sound: division by 0 in snd_hrtimer_callback
+Date: Sun, 28 Aug 2016 20:39:22 +0200
+Message-ID: <CACT4Y+Y5wBuXSzTw0UohFDSLJ_s88du06jFwc0Qz=yikMKhWPQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1472408231.26978.98.camel@perches.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Joe Perches <joe@perches.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+Cc: Alexander Potapenko <glider@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 28/08/16 20:17, Joe Perches wrote:
-> On Sun, 2016-08-28 at 19:39 +0200, Nicolas Iooss wrote:
->> In sst_prepare_and_post_msg(), when a response is received in "block",
->> the following code gets executed:
->>
->>     *data = kzalloc(block->size, GFP_KERNEL);
->>     memcpy(data, (void *) block->data, block->size);
->>
->> The memcpy() call overwrites the content of the *data pointer instead of
->> filling the newly-allocated memory (which pointer is hold by *data).
->> Fix this by using *data in the memcpy() call.
->>
->> Fixes: 60dc8dbacb00 ("ASoC: Intel: sst: Add some helper functions")
->> Cc: stable@vger.kernel.org # 3.19.x
->> Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
->> ---
->>  sound/soc/intel/atom/sst/sst_pvt.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/intel/atom/sst/sst_pvt.c b/sound/soc/intel/atom/sst/sst_pvt.c
->> index adb32fefd693..7c398b7c9d4b 100644
->> --- a/sound/soc/intel/atom/sst/sst_pvt.c
->> +++ b/sound/soc/intel/atom/sst/sst_pvt.c
->> @@ -289,7 +289,7 @@ int sst_prepare_and_post_msg(struct intel_sst_drv *sst,
->>  				ret = -ENOMEM;
->>  				goto out;
->>  			} else
->> -				memcpy(data, (void *) block->data, block->size);
->> +				memcpy(*data, (void *) block->data, block->size);
->>  		}
->>  	}
->>  out:
-> 
-> Perhaps this would be nicer using kmemdup too
+Hello,
 
-Thanks for your quick reply! I agree using kmemdup looks nicer here and
-your patch looks good. I will send a v2 once I compile-tested it.
+The following program triggers divide error in snd_hrtimer_callback:
 
-Nicolas
+divide error: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+Modules linked in:
+CPU: 3 PID: 17469 Comm: syz-executor Not tainted 4.8.0-rc3+ #33
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+task: ffff88003dc4a640 task.stack: ffff88003c690000
+RIP: 0010:[<ffffffff8575b49c>]
+ [<     inline     >] ktime_divns ./include/linux/ktime.h:195
+ [<ffffffff8575b49c>] snd_hrtimer_callback+0x1bc/0x3c0 sound/core/hrtimer.c:62
+RSP: 0018:ffff88006d507d98  EFLAGS: 00010006
+RAX: 0000000000005f28 RBX: ffff88006c4acb48 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffff88006c4acb60 RDI: ffffffff884b7a68
+RBP: ffff88006d507df0 R08: 000000687d030efd R09: ffff88007fff70c8
+R10: ffff88007fff70d8 R11: ffff88007fff70d0 R12: ffff88003cda70c0
+R13: ffff88003cda7174 R14: ffff88003cda71f0 R15: ffff88006c4acb40
+FS:  00007f131f945700(0000) GS:ffff88006d500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000451ed0 CR3: 000000005bb88000 CR4: 00000000000006e0
+Stack:
+ 0000000000000000 ffff88006c4acb60 ffff88003cda7178 0000000000005f28
+ ffff88006c4acba0 0000000000000000 ffff88006c4acb48 0000000000000003
+ ffff88006d51b400 dffffc0000000000 dffffc0000000000 ffff88006d507ee8
+Call Trace:
+ <IRQ>
+ [<     inline     >] __run_hrtimer kernel/time/hrtimer.c:1238
+ [<ffffffff814f48b5>] __hrtimer_run_queues+0x325/0xe70
+kernel/time/hrtimer.c:1302
+ [<ffffffff814f726b>] hrtimer_interrupt+0x18b/0x420 kernel/time/hrtimer.c:1336
+ [<ffffffff81268f8f>] local_apic_timer_interrupt+0x6f/0xe0
+arch/x86/kernel/apic/apic.c:933
+ [<ffffffff86c27d96>] smp_apic_timer_interrupt+0x76/0xa0
+arch/x86/kernel/apic/apic.c:957
+ [<ffffffff86c26e4c>] apic_timer_interrupt+0x8c/0xa0
+arch/x86/entry/entry_64.S:455
+ <EOI>
+ [<     inline     >] spin_unlock_irqrestore ./include/linux/spinlock.h:362
+ [<ffffffff85750f7d>] snd_timer_start1+0xdd/0x590 sound/core/timer.c:464
+ [<ffffffff857532b5>] snd_timer_continue+0x45/0x80 sound/core/timer.c:593
+ [<     inline     >] snd_timer_user_continue sound/core/timer.c:1821
+ [<     inline     >] __snd_timer_user_ioctl sound/core/timer.c:1888
+ [<ffffffff85758ce9>] snd_timer_user_ioctl+0xe99/0x2470 sound/core/timer.c:1903
+ [<     inline     >] vfs_ioctl fs/ioctl.c:43
+ [<ffffffff8186f1fc>] do_vfs_ioctl+0x18c/0x1080 fs/ioctl.c:675
+ [<     inline     >] SYSC_ioctl fs/ioctl.c:690
+ [<ffffffff8187017f>] SyS_ioctl+0x8f/0xc0 fs/ioctl.c:681
+ [<ffffffff86c25480>] entry_SYSCALL_64_fastpath+0x23/0xc1
+arch/x86/entry/entry_64.S:207
+Code: 6b 45 e5 fb 8b 0d e5 ca 64 05 48 0f af 4d d0 48 85 c9 0f 88 6a
+01 00 00 48 89 4d a8 e8 4e 45 e5 fb 48 8b 45 c0 48 8b 4d a8 48 99 <48>
+f7 f9 48 01 45 d0 e8 38 45 e5 fb 4c 89 fa 48 b8 00 00 00 00
+RIP  [<     inline     >] ktime_divns ./include/linux/ktime.h:195
+RIP  [<ffffffff8575b49c>] snd_hrtimer_callback+0x1bc/0x3c0
+sound/core/hrtimer.c:62
+ RSP <ffff88006d507d98>
+---[ end trace b12f88d370b1ccee ]---
+Kernel panic - not syncing: Fatal exception in interrupt
+
+
+On commit 61c04572de404e52a655a36752e696bbcb483cf5 (Aug 25).
+
+
+
+// autogenerated by syzkaller (http://github.com/google/syzkaller)
+#ifndef __NR_mmap
+#define __NR_mmap 9
+#endif
+#ifndef __NR_syz_open_dev
+#define __NR_syz_open_dev 1000001
+#endif
+#ifndef __NR_ioctl
+#define __NR_ioctl 16
+#endif
+#ifndef __NR_syz_fuse_mount
+#define __NR_syz_fuse_mount 1000003
+#endif
+#ifndef __NR_syz_fuseblk_mount
+#define __NR_syz_fuseblk_mount 1000004
+#endif
+#ifndef __NR_syz_open_pts
+#define __NR_syz_open_pts 1000002
+#endif
+
+#include <fcntl.h>
+#include <pthread.h>
+#include <setjmp.h>
+#include <signal.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+__thread int skip_segv;
+__thread jmp_buf segv_env;
+
+static void segv_handler(int sig, siginfo_t* info, void* uctx)
+{
+  if (__atomic_load_n(&skip_segv, __ATOMIC_RELAXED))
+    _longjmp(segv_env, 1);
+  exit(sig);
+}
+
+static void install_segv_handler()
+{
+  struct sigaction sa;
+  memset(&sa, 0, sizeof(sa));
+  sa.sa_sigaction = segv_handler;
+  sa.sa_flags = SA_NODEFER | SA_SIGINFO;
+  sigaction(SIGSEGV, &sa, NULL);
+  sigaction(SIGBUS, &sa, NULL);
+}
+
+#define NONFAILING(...)                                                \
+  {                                                                    \
+    __atomic_fetch_add(&skip_segv, 1, __ATOMIC_SEQ_CST);               \
+    if (_setjmp(segv_env) == 0) {                                      \
+      __VA_ARGS__;                                                     \
+    }                                                                  \
+    __atomic_fetch_sub(&skip_segv, 1, __ATOMIC_SEQ_CST);               \
+  }
+
+static uintptr_t syz_open_dev(uintptr_t a0, uintptr_t a1, uintptr_t a2)
+{
+  if (a0 == 0xc || a0 == 0xb) {
+    char buf[128];
+    sprintf(buf, "/dev/%s/%d:%d", a0 == 0xc ? "char" : "block",
+            (uint8_t)a1, (uint8_t)a2);
+    return open(buf, O_RDWR, 0);
+  } else {
+    char buf[1024];
+    char* hash;
+    strncpy(buf, (char*)a0, sizeof(buf));
+    buf[sizeof(buf) - 1] = 0;
+    while ((hash = strchr(buf, '#'))) {
+      *hash = '0' + (char)(a1 % 10);
+      a1 /= 10;
+    }
+    return open(buf, a2, 0);
+  }
+}
+
+static uintptr_t syz_open_pts(uintptr_t a0, uintptr_t a1)
+{
+  int ptyno = 0;
+  if (ioctl(a0, TIOCGPTN, &ptyno))
+    return -1;
+  char buf[128];
+  sprintf(buf, "/dev/pts/%d", ptyno);
+  return open(buf, a1, 0);
+}
+
+static uintptr_t syz_fuse_mount(uintptr_t a0, uintptr_t a1,
+                                uintptr_t a2, uintptr_t a3,
+                                uintptr_t a4, uintptr_t a5)
+{
+  uint64_t target = a0;
+  uint64_t mode = a1;
+  uint64_t uid = a2;
+  uint64_t gid = a3;
+  uint64_t maxread = a4;
+  uint64_t flags = a5;
+
+  int fd = open("/dev/fuse", O_RDWR);
+  if (fd == -1)
+    return fd;
+  char buf[1024];
+  sprintf(buf, "fd=%d,user_id=%ld,group_id=%ld,rootmode=0%o", fd,
+          (long)uid, (long)gid, (unsigned)mode & ~3u);
+  if (maxread != 0)
+    sprintf(buf + strlen(buf), ",max_read=%ld", (long)maxread);
+  if (mode & 1)
+    strcat(buf, ",default_permissions");
+  if (mode & 2)
+    strcat(buf, ",allow_other");
+  syscall(SYS_mount, "", target, "fuse", flags, buf);
+  return fd;
+}
+
+static uintptr_t syz_fuseblk_mount(uintptr_t a0, uintptr_t a1,
+                                   uintptr_t a2, uintptr_t a3,
+                                   uintptr_t a4, uintptr_t a5,
+                                   uintptr_t a6, uintptr_t a7)
+{
+  uint64_t target = a0;
+  uint64_t blkdev = a1;
+  uint64_t mode = a2;
+  uint64_t uid = a3;
+  uint64_t gid = a4;
+  uint64_t maxread = a5;
+  uint64_t blksize = a6;
+  uint64_t flags = a7;
+
+  int fd = open("/dev/fuse", O_RDWR);
+  if (fd == -1)
+    return fd;
+  if (syscall(SYS_mknodat, AT_FDCWD, blkdev, S_IFBLK, makedev(7, 199)))
+    return fd;
+  char buf[256];
+  sprintf(buf, "fd=%d,user_id=%ld,group_id=%ld,rootmode=0%o", fd,
+          (long)uid, (long)gid, (unsigned)mode & ~3u);
+  if (maxread != 0)
+    sprintf(buf + strlen(buf), ",max_read=%ld", (long)maxread);
+  if (blksize != 0)
+    sprintf(buf + strlen(buf), ",blksize=%ld", (long)blksize);
+  if (mode & 1)
+    strcat(buf, ",default_permissions");
+  if (mode & 2)
+    strcat(buf, ",allow_other");
+  syscall(SYS_mount, blkdev, target, "fuseblk", flags, buf);
+  return fd;
+}
+
+static uintptr_t execute_syscall(int nr, uintptr_t a0, uintptr_t a1,
+                                 uintptr_t a2, uintptr_t a3,
+                                 uintptr_t a4, uintptr_t a5,
+                                 uintptr_t a6, uintptr_t a7,
+                                 uintptr_t a8)
+{
+  switch (nr) {
+  default:
+    return syscall(nr, a0, a1, a2, a3, a4, a5);
+  case __NR_syz_open_dev:
+    return syz_open_dev(a0, a1, a2);
+  case __NR_syz_open_pts:
+    return syz_open_pts(a0, a1);
+  case __NR_syz_fuse_mount:
+    return syz_fuse_mount(a0, a1, a2, a3, a4, a5);
+  case __NR_syz_fuseblk_mount:
+    return syz_fuseblk_mount(a0, a1, a2, a3, a4, a5, a6, a7);
+  }
+}
+
+long r[42];
+
+int main()
+{
+  install_segv_handler();
+  memset(r, -1, sizeof(r));
+  r[0] = execute_syscall(__NR_mmap, 0x20000000ul, 0xd000ul, 0x3ul,
+                         0x32ul, 0xfffffffffffffffful, 0x0ul, 0, 0, 0);
+  NONFAILING(memcpy(
+      (void*)0x20003000,
+      "\x2f\x64\x65\x76\x2f\x73\x6e\x64\x2f\x74\x69\x6d\x65\x72\x00",
+      15));
+  r[2] = execute_syscall(__NR_syz_open_dev, 0x20003000ul, 0x0ul, 0x1ul,
+                         0, 0, 0, 0, 0, 0);
+  NONFAILING(*(uint32_t*)0x2000bfcc = (uint32_t)0x1);
+  NONFAILING(*(uint32_t*)0x2000bfd0 = (uint32_t)0x4);
+  NONFAILING(*(uint32_t*)0x2000bfd4 = (uint32_t)0x2);
+  NONFAILING(*(uint32_t*)0x2000bfd8 = (uint32_t)0x3);
+  NONFAILING(*(uint32_t*)0x2000bfdc = (uint32_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfe0 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfe1 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfe2 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfe3 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfe4 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfe5 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfe6 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfe7 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfe8 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfe9 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfea = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfeb = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfec = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfed = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfee = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfef = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bff0 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bff1 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bff2 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bff3 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bff4 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bff5 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bff6 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bff7 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bff8 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bff9 = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bffa = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bffb = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bffc = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bffd = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bffe = (uint8_t)0x0);
+  NONFAILING(*(uint8_t*)0x2000bfff = (uint8_t)0x0);
+  r[40] = execute_syscall(__NR_ioctl, r[2], 0x40345410ul, 0x2000bfccul,
+                          0, 0, 0, 0, 0, 0);
+  r[41] =
+      execute_syscall(__NR_ioctl, r[2], 0x54a2ul, 0, 0, 0, 0, 0, 0, 0);
+  return 0;
+}
