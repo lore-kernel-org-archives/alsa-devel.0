@@ -1,89 +1,130 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: Misuses of ** ? (was Re: [PATCH 1/1] ASoC: Intel: Atom: add a
- missing star in a memcpy call)
-Date: Sun, 28 Aug 2016 14:54:44 -0700
-Message-ID: <1472421284.26978.132.camel@perches.com>
-References: <20160828173945.27721-1-nicolas.iooss_linux@m4x.org>
-         <1472406636.26978.95.camel@perches.com>
-         <fcac5d87-9f50-b303-f100-4313d7f21907@m4x.org>
-         <alpine.DEB.2.10.1608282137050.3419@hadrien>
-         <1472416453.26978.115.camel@perches.com>
-         <alpine.DEB.2.10.1608282338290.3419@hadrien>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
+From: Vegard Nossum <vegard.nossum@oracle.com>
+Subject: [PATCH 1/3] ALSA: timer: fix NULL pointer dereference in read()/ioctl() race
+Date: Mon, 29 Aug 2016 00:33:49 +0200
+Message-ID: <20160828223351.32489-1-vegard.nossum@oracle.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.10.1608282338290.3419@hadrien>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Julia Lawall <julia.lawall@lip6.fr>
-Cc: Nicolas Iooss <nicolas.iooss_linux@m4x.org>, alsa-devel@alsa-project.org, Dan Capenter <error27@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, syzkaller <syzkaller@googlegroups.com>, Vegard Nossum <vegard.nossum@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2016-08-28 at 23:40 +0200, Julia Lawall wrote:
-> On Sun, 28 Aug 2016, Joe Perches wrote:
-> > On Sun, 2016-08-28 at 21:38 +0200, Julia Lawall wrote:
-> > > On Sun, 28 Aug 2016, Nicolas Iooss wrote:
-> > > > On 28/08/16 19:50, Joe Perches wrote:
-> > > > > On Sun, 2016-08-28 at 19:39 +0200, Nicolas Iooss wrote:
-> > > > >> In sst_prepare_and_post_msg(), when a response is received in "block",
-> > > > >> the following code gets executed:
-> > > > >>
-> > > > >>     *data = kzalloc(block->size, GFP_KERNEL);
-> > > > >>     memcpy(data, (void *) block->data, block->size);
-> > > > >
-> > > > > Yuck, thanks.
-> > > > >
-> > > > > Julia, Dan, could cocci or smatch help find any other
-> > > > > similar misuses here?
-> > []
-> > > I tried the following semantic patch, that is quite general, and the fixed
-> > > issue was the only report.
-> > >
-> > > @@
-> > > expression x,y,sz;
-> > > identifier f,g;
-> > > @@
-> > >
-> > > * *x = f(sz,...);
-> > >   ...
-> > > * g(x,y,sz);
-> >
-> > Hi Julia,
-> >
-> > This would find exactly the same form, but I think
-> > the question is are there assignments of a **pp
-> > that should have been *pp
-> >
-> > Something like:
-> >
-> > @@
-> > type P;
-> > P **pp;
-> > @@
-> >
-> > * pp = \|\|(..., sizeof(P), ...)
+I got this with syzkaller:
 
-> I didn't get anything for this.  Did you mean for the left hand side of
-> the assignment to be pp or *pp?  Is the issue that the type is wrong?
+    ==================================================================
+    BUG: KASAN: null-ptr-deref on address 0000000000000020
+    Read of size 32 by task syz-executor/22519
+    CPU: 1 PID: 22519 Comm: syz-executor Not tainted 4.8.0-rc2+ #169
+    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.9.3-0-ge2fc41e-prebuilt.qemu-project.org 04/01/2
+    014
+     0000000000000001 ffff880111a17a00 ffffffff81f9f141 ffff880111a17a90
+     ffff880111a17c50 ffff880114584a58 ffff880114584a10 ffff880111a17a80
+     ffffffff8161fe3f ffff880100000000 ffff880118d74a48 ffff880118d74a68
+    Call Trace:
+     [<ffffffff81f9f141>] dump_stack+0x83/0xb2
+     [<ffffffff8161fe3f>] kasan_report_error+0x41f/0x4c0
+     [<ffffffff8161ff74>] kasan_report+0x34/0x40
+     [<ffffffff82c84b54>] ? snd_timer_user_read+0x554/0x790
+     [<ffffffff8161e79e>] check_memory_region+0x13e/0x1a0
+     [<ffffffff8161e9c1>] kasan_check_read+0x11/0x20
+     [<ffffffff82c84b54>] snd_timer_user_read+0x554/0x790
+     [<ffffffff82c84600>] ? snd_timer_user_info_compat.isra.5+0x2b0/0x2b0
+     [<ffffffff817d0831>] ? proc_fault_inject_write+0x1c1/0x250
+     [<ffffffff817d0670>] ? next_tgid+0x2a0/0x2a0
+     [<ffffffff8127c278>] ? do_group_exit+0x108/0x330
+     [<ffffffff8174653a>] ? fsnotify+0x72a/0xca0
+     [<ffffffff81674dfe>] __vfs_read+0x10e/0x550
+     [<ffffffff82c84600>] ? snd_timer_user_info_compat.isra.5+0x2b0/0x2b0
+     [<ffffffff81674cf0>] ? do_sendfile+0xc50/0xc50
+     [<ffffffff81745e10>] ? __fsnotify_update_child_dentry_flags+0x60/0x60
+     [<ffffffff8143fec6>] ? kcov_ioctl+0x56/0x190
+     [<ffffffff81e5ada2>] ? common_file_perm+0x2e2/0x380
+     [<ffffffff81746b0e>] ? __fsnotify_parent+0x5e/0x2b0
+     [<ffffffff81d93536>] ? security_file_permission+0x86/0x1e0
+     [<ffffffff816728f5>] ? rw_verify_area+0xe5/0x2b0
+     [<ffffffff81675355>] vfs_read+0x115/0x330
+     [<ffffffff81676371>] SyS_read+0xd1/0x1a0
+     [<ffffffff816762a0>] ? vfs_write+0x4b0/0x4b0
+     [<ffffffff82001c2c>] ? __this_cpu_preempt_check+0x1c/0x20
+     [<ffffffff8150455a>] ? __context_tracking_exit.part.4+0x3a/0x1e0
+     [<ffffffff816762a0>] ? vfs_write+0x4b0/0x4b0
+     [<ffffffff81005524>] do_syscall_64+0x1c4/0x4e0
+     [<ffffffff810052fc>] ? syscall_return_slowpath+0x16c/0x1d0
+     [<ffffffff83c3276a>] entry_SYSCALL64_slow_path+0x25/0x25
+    ==================================================================
 
-Yes, the issue here is the type may be wrong.
+There are a couple of problems that I can see:
 
-A function passed a ** and assigned like:
+ - ioctl(SNDRV_TIMER_IOCTL_SELECT), which potentially sets
+   tu->queue/tu->tqueue to NULL on memory allocation failure, so read()
+   would get a NULL pointer dereference like the above splat
 
-    type function foo(type **bar)
-    {
-    	    ...
-    	    bar = baz();
-    	    ...
-    }
+ - the same ioctl() can free tu->queue/to->tqueue which means read()
+   could potentially see (and dereference) the freed pointer
 
-bar is rarely correct and *bar is generally correct.
+We can fix the NULL pointer dereference by not touching the pointers
+until we have allocated the new memory (similar to what is done in
+ioctl(SNDRV_TIMER_IOCTL_PARAMS)) and we can fix the use-after-free by
+taking the ioctl_lock mutex when dereferencing ->queue/->tqueue, since
+that's always held over all the ioctl() code.
 
-I suppose the example would have been clearer with something
+Just looking at the code I find it likely that there are more problems
+here such as tu->qhead pointing outside the buffer if the size is
+changed concurrently using SNDRV_TIMER_IOCTL_PARAMS.
 
--	pp = foo;
-+	*pp = foo;
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+---
+ sound/core/timer.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-Also, any function that calls another function with
-implicit casts to void * from a specific type **pp
-after an assignment to *pp could be suspect.
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index 9a6157e..7899e37 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -1602,15 +1602,25 @@ static int snd_timer_user_tselect(struct file *file,
+ 	kfree(tu->tqueue);
+ 	tu->tqueue = NULL;
+ 	if (tu->tread) {
+-		tu->tqueue = kmalloc(tu->queue_size * sizeof(struct snd_timer_tread),
++		struct snd_timer_tread *ttr;
++		ttr = kmalloc(tu->queue_size * sizeof(struct snd_timer_tread),
+ 				     GFP_KERNEL);
+-		if (tu->tqueue == NULL)
++		if (ttr) {
++			kfree(tu->tqueue);
++			tu->tqueue = ttr;
++		} else {
+ 			err = -ENOMEM;
++		}
+ 	} else {
+-		tu->queue = kmalloc(tu->queue_size * sizeof(struct snd_timer_read),
++		struct snd_timer_read *tr;
++		tr = kmalloc(tu->queue_size * sizeof(struct snd_timer_read),
+ 				    GFP_KERNEL);
+-		if (tu->queue == NULL)
++		if (tr) {
++			kfree(tu->queue);
++			tu->queue = tr;
++		} else {
+ 			err = -ENOMEM;
++		}
+ 	}
+ 
+       	if (err < 0) {
+@@ -1958,6 +1968,7 @@ static ssize_t snd_timer_user_read(struct file *file, char __user *buffer,
+ 		tu->qused--;
+ 		spin_unlock_irq(&tu->qlock);
+ 
++		mutex_lock(&tu->ioctl_lock);
+ 		if (tu->tread) {
+ 			if (copy_to_user(buffer, &tu->tqueue[qhead],
+ 					 sizeof(struct snd_timer_tread)))
+@@ -1967,6 +1978,7 @@ static ssize_t snd_timer_user_read(struct file *file, char __user *buffer,
+ 					 sizeof(struct snd_timer_read)))
+ 				err = -EFAULT;
+ 		}
++		mutex_unlock(&tu->ioctl_lock);
+ 
+ 		spin_lock_irq(&tu->qlock);
+ 		if (err < 0)
+-- 
+2.10.0.rc0.1.g07c9292
