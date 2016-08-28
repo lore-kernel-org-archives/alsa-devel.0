@@ -1,59 +1,124 @@
-From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-Subject: [PATCH v2 1/1] ASoC: Intel: Atom: add a missing star in a memcpy call
-Date: Sun, 28 Aug 2016 21:10:04 +0200
-Message-ID: <20160828191004.5832-1-nicolas.iooss_linux@m4x.org>
+From: Vegard Nossum <vegard.nossum@gmail.com>
+Subject: Re: sound: division by 0 in snd_hrtimer_callback
+Date: Sun, 28 Aug 2016 21:17:07 +0200
+Message-ID: <CAOMGZ=E8n0WUgBAf3ehD2rGF2Q60eB9FhfgRwo3yFJtf5QwS_w@mail.gmail.com>
+References: <CACT4Y+Y5wBuXSzTw0UohFDSLJ_s88du06jFwc0Qz=yikMKhWPQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary=001a11426658fcc8b9053b269746
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CACT4Y+Y5wBuXSzTw0UohFDSLJ_s88du06jFwc0Qz=yikMKhWPQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Joe Perches <joe@perches.com>
-Cc: linux-kernel@vger.kernel.org
+To: Dmitry Vyukov <dvyukov@google.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Alexander Potapenko <glider@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
 List-Id: alsa-devel@alsa-project.org
 
-In sst_prepare_and_post_msg(), when a response is received in "block",
-the following code gets executed:
+--001a11426658fcc8b9053b269746
+Content-Type: text/plain; charset=UTF-8
 
-    *data = kzalloc(block->size, GFP_KERNEL);
-    memcpy(data, (void *) block->data, block->size);
+On 28 August 2016 at 20:39, Dmitry Vyukov <dvyukov@google.com> wrote:
+> Hello,
+>
+> The following program triggers divide error in snd_hrtimer_callback:
+>
+> divide error: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN
+> Dumping ftrace buffer:
+>    (ftrace buffer empty)
+> Modules linked in:
+> CPU: 3 PID: 17469 Comm: syz-executor Not tainted 4.8.0-rc3+ #33
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+> task: ffff88003dc4a640 task.stack: ffff88003c690000
+> RIP: 0010:[<ffffffff8575b49c>]
+>  [<     inline     >] ktime_divns ./include/linux/ktime.h:195
+>  [<ffffffff8575b49c>] snd_hrtimer_callback+0x1bc/0x3c0 sound/core/hrtimer.c:62
 
-The memcpy() call overwrites the content of the *data pointer instead of
-filling the newly-allocated memory (which pointer is hold by *data).
-Fix this by merging kzalloc+memcpy into a single kmemdup() call.
+Attached patch should fix it...
 
-Thanks Joe Perches for suggesting using kmemdup()
 
-Fixes: 60dc8dbacb00 ("ASoC: Intel: sst: Add some helper functions")
-Cc: stable@vger.kernel.org # 3.19.x
-Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
----
- sound/soc/intel/atom/sst/sst_pvt.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+Vegard
 
-diff --git a/sound/soc/intel/atom/sst/sst_pvt.c b/sound/soc/intel/atom/sst/sst_pvt.c
-index adb32fefd693..b1e6b8f34a6a 100644
---- a/sound/soc/intel/atom/sst/sst_pvt.c
-+++ b/sound/soc/intel/atom/sst/sst_pvt.c
-@@ -279,17 +279,15 @@ int sst_prepare_and_post_msg(struct intel_sst_drv *sst,
- 
- 	if (response) {
- 		ret = sst_wait_timeout(sst, block);
--		if (ret < 0) {
-+		if (ret < 0)
- 			goto out;
--		} else if(block->data) {
--			if (!data)
--				goto out;
--			*data = kzalloc(block->size, GFP_KERNEL);
--			if (!(*data)) {
-+
-+		if (data && block->data) {
-+			*data = kmemdup(block->data, block->size, GFP_KERNEL);
-+			if (!*data) {
- 				ret = -ENOMEM;
- 				goto out;
--			} else
--				memcpy(data, (void *) block->data, block->size);
-+			}
- 		}
- 	}
- out:
--- 
-2.9.3
+--001a11426658fcc8b9053b269746
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="0001-ALSA-timer-fix-division-by-zero-after-SNDRV_TIMER_IO.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-timer-fix-division-by-zero-after-SNDRV_TIMER_IO.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_isezy96f0
+
+RnJvbSA0MjM2MTRjNDcxOTBmNzg0NmRkMzA0YzY4ZTVjNjc1NTc0NTFjYTJkIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBWZWdhcmQgTm9zc3VtIDx2ZWdhcmQubm9zc3VtQG9yYWNsZS5j
+b20+CkRhdGU6IFN1biwgMjggQXVnIDIwMTYgMjA6MzI6MTEgKzAyMDAKU3ViamVjdDogW1BBVENI
+XSBBTFNBOiB0aW1lcjogZml4IGRpdmlzaW9uIGJ5IHplcm8gYWZ0ZXIKIFNORFJWX1RJTUVSX0lP
+Q1RMX0NPTlRJTlVFCgpJIGdvdCB0aGlzOgoKICAgIGRpdmlkZSBlcnJvcjogMDAwMCBbIzFdIFBS
+RUVNUFQgU01QIEtBU0FOCiAgICBDUFU6IDEgUElEOiAxMzI3IENvbW06IGEub3V0IE5vdCB0YWlu
+dGVkIDQuOC4wLXJjMisgIzE4OQogICAgSGFyZHdhcmUgbmFtZTogUUVNVSBTdGFuZGFyZCBQQyAo
+aTQ0MEZYICsgUElJWCwgMTk5NiksIEJJT1MgcmVsLTEuOS4zLTAtZ2UyZmM0MWUtcHJlYnVpbHQu
+cWVtdS1wcm9qZWN0Lm9yZyAwNC8wMS8yMDE0CiAgICB0YXNrOiBmZmZmODgwMTEyMGE5NTgwIHRh
+c2suc3RhY2s6IGZmZmY4ODAxMTIwYjAwMDAKICAgIFJJUDogMDAxMDpbPGZmZmZmZmZmODJjOGJk
+OWE+XSAgWzxmZmZmZmZmZjgyYzhiZDlhPl0gc25kX2hydGltZXJfY2FsbGJhY2srMHgxZGEvMHgz
+ZjAKICAgIFJTUDogMDAxODpmZmZmODgwMTFhYTg3ZGE4ICBFRkxBR1M6IDAwMDEwMDA2CiAgICBS
+QVg6IDAwMDAwMDAwMDAwMDRmNzYgUkJYOiBmZmZmODgwMTEyNjU1ZTg4IFJDWDogMDAwMDAwMDAw
+MDAwMDAwMAogICAgUkRYOiAwMDAwMDAwMDAwMDAwMDAwIFJTSTogZmZmZjg4MDExMjY1NWVhMCBS
+REk6IDAwMDAwMDAwMDAwMDAwMDEKICAgIFJCUDogZmZmZjg4MDExYWE4N2UwMCBSMDg6IGZmZmY4
+ODAxM2ZmZjkwNWMgUjA5OiBmZmZmODgwMTNmZmY5MDQ4CiAgICBSMTA6IGZmZmY4ODAxM2ZmZjkw
+NTAgUjExOiAwMDAwMDAwMTA1MGE3YjhjIFIxMjogZmZmZjg4MDExNDc3OGEwMAogICAgUjEzOiBm
+ZmZmODgwMTE0Nzc4YWI0IFIxNDogZmZmZjg4MDExNDc3OGIzMCBSMTU6IDAwMDAwMDAwMDAwMDAw
+MDAKICAgIEZTOiAgMDAwMDdmMDcxNjQ3YzcwMCgwMDAwKSBHUzpmZmZmODgwMTFhYTgwMDAwKDAw
+MDApIGtubEdTOjAwMDAwMDAwMDAwMDAwMDAKICAgIENTOiAgMDAxMCBEUzogMDAwMCBFUzogMDAw
+MCBDUjA6IDAwMDAwMDAwODAwNTAwMzMKICAgIENSMjogMDAwMDAwMDAwMDYwMzAwMSBDUjM6IDAw
+MDAwMDAxMTIwMjEwMDAgQ1I0OiAwMDAwMDAwMDAwMDAwNmUwCiAgICBTdGFjazoKICAgICAwMDAw
+MDAwMDAwMDAwMDAwIGZmZmY4ODAxMTQ3NzhhYjggZmZmZjg4MDExMjY1NWVhMCAwMDAwMDAwMDAw
+MDA0Zjc2CiAgICAgZmZmZjg4MDExMjY1NWVjOCBmZmZmODgwMTEyNjU1ZTgwIGZmZmY4ODAxMTI2
+NTVlODggZmZmZjg4MDExYWE5OGZjMAogICAgIDAwMDAwMDAwYjk3Y2NmMmIgZGZmZmZjMDAwMDAw
+MDAwMCBmZmZmODgwMTFhYTk4ZmMwIGZmZmY4ODAxMWFhODdlZjAKICAgIENhbGwgVHJhY2U6CiAg
+ICAgPElSUT4KICAgICBbPGZmZmZmZmZmODEzYWJjZTc+XSBfX2hydGltZXJfcnVuX3F1ZXVlcysw
+eDM0Ny8weGEwMAogICAgIFs8ZmZmZmZmZmY4MmM4YmJjMD5dID8gc25kX2hydGltZXJfY2xvc2Ur
+MHgxMzAvMHgxMzAKICAgICBbPGZmZmZmZmZmODEzYWI5YTA+XSA/IHJldHJpZ2dlcl9uZXh0X2V2
+ZW50KzB4MWIwLzB4MWIwCiAgICAgWzxmZmZmZmZmZjgxM2FlMWE2Pl0gPyBocnRpbWVyX2ludGVy
+cnVwdCsweDEzNi8weDRiMAogICAgIFs8ZmZmZmZmZmY4MTNhZTIyMD5dIGhydGltZXJfaW50ZXJy
+dXB0KzB4MWIwLzB4NGIwCiAgICAgWzxmZmZmZmZmZjgxMjBmOTFlPl0gbG9jYWxfYXBpY190aW1l
+cl9pbnRlcnJ1cHQrMHg2ZS8weGYwCiAgICAgWzxmZmZmZmZmZjgxMjI3YWQzPl0gPyBrdm1fZ3Vl
+c3RfYXBpY19lb2lfd3JpdGUrMHgxMy8weGMwCiAgICAgWzxmZmZmZmZmZjgzYzM1MDg2Pl0gc21w
+X2FwaWNfdGltZXJfaW50ZXJydXB0KzB4NzYvMHhhMAogICAgIFs8ZmZmZmZmZmY4M2MzNDE2Yz5d
+IGFwaWNfdGltZXJfaW50ZXJydXB0KzB4OGMvMHhhMAogICAgIDxFT0k+CiAgICAgWzxmZmZmZmZm
+ZjgzYzMyMzljPl0gPyBfcmF3X3NwaW5fdW5sb2NrX2lycXJlc3RvcmUrMHgyYy8weDYwCiAgICAg
+WzxmZmZmZmZmZjgyYzgxODVkPl0gc25kX3RpbWVyX3N0YXJ0MSsweGRkLzB4NjcwCiAgICAgWzxm
+ZmZmZmZmZjgyYzg3MDE1Pl0gc25kX3RpbWVyX2NvbnRpbnVlKzB4NDUvMHg4MAogICAgIFs8ZmZm
+ZmZmZmY4MmM4ODEwMD5dIHNuZF90aW1lcl91c2VyX2lvY3RsKzB4MTAzMC8weDI4MzAKICAgICBb
+PGZmZmZmZmZmODE1OWYzYTA+XSA/IF9fZm9sbG93X3B0ZS5pc3JhLjQ5KzB4NDMwLzB4NDMwCiAg
+ICAgWzxmZmZmZmZmZjgyYzg3MGQwPl0gPyBzbmRfdGltZXJfcGF1c2UrMHg4MC8weDgwCiAgICAg
+WzxmZmZmZmZmZjgxNWEyNmZhPl0gPyBkb193cF9wYWdlKzB4M2FhLzB4MWM5MAogICAgIFs8ZmZm
+ZmZmZmY4MTVhYTRmOD5dID8gaGFuZGxlX21tX2ZhdWx0KzB4YmM4LzB4MjdmMAogICAgIFs8ZmZm
+ZmZmZmY4MTVhOTkzMD5dID8gX19wbWRfYWxsb2MrMHgzNzAvMHgzNzAKICAgICBbPGZmZmZmZmZm
+ODJjODcwZDA+XSA/IHNuZF90aW1lcl9wYXVzZSsweDgwLzB4ODAKICAgICBbPGZmZmZmZmZmODE2
+YjA3MzM+XSBkb192ZnNfaW9jdGwrMHgxOTMvMHgxMDUwCiAgICAgWzxmZmZmZmZmZjgxNmIwNWEw
+Pl0gPyBpb2N0bF9wcmVhbGxvY2F0ZSsweDIwMC8weDIwMAogICAgIFs8ZmZmZmZmZmY4MTAwMmYy
+Zj5dID8gc3lzY2FsbF90cmFjZV9lbnRlcisweDNjZi8weGRiMAogICAgIFs8ZmZmZmZmZmY4MTUw
+NDViYT5dID8gX19jb250ZXh0X3RyYWNraW5nX2V4aXQucGFydC40KzB4OWEvMHgxZTAKICAgICBb
+PGZmZmZmZmZmODEwMDJiNjA+XSA/IGV4aXRfdG9fdXNlcm1vZGVfbG9vcCsweDE5MC8weDE5MAog
+ICAgIFs8ZmZmZmZmZmY4MjAwMWE5Nz5dID8gY2hlY2tfcHJlZW1wdGlvbl9kaXNhYmxlZCsweDM3
+LzB4MWUwCiAgICAgWzxmZmZmZmZmZjgxZDkzODg5Pl0gPyBzZWN1cml0eV9maWxlX2lvY3RsKzB4
+ODkvMHhiMAogICAgIFs8ZmZmZmZmZmY4MTZiMTY3Zj5dIFN5U19pb2N0bCsweDhmLzB4YzAKICAg
+ICBbPGZmZmZmZmZmODE2YjE1ZjA+XSA/IGRvX3Zmc19pb2N0bCsweDEwNTAvMHgxMDUwCiAgICAg
+WzxmZmZmZmZmZjgxMDA1NTI0Pl0gZG9fc3lzY2FsbF82NCsweDFjNC8weDRlMAogICAgIFs8ZmZm
+ZmZmZmY4M2MzMmIyYT5dIGVudHJ5X1NZU0NBTEw2NF9zbG93X3BhdGgrMHgyNS8weDI1CiAgICBD
+b2RlOiBlOCBmYyA0MiA3YiBmZSA4YiAwZCAwNiA4YSA1MCAwMyA0OSAwZiBhZiBjZiA0OCA4NSBj
+OSAwZiA4OCA3YyAwMSAwMCAwMCA0OCA4OSA0ZCBhOCBlOCBlMCA0MiA3YiBmZSA0OCA4YiA0NSBj
+MCA0OCA4YiA0ZCBhOCA0OCA5OSA8NDg+IGY3IGY5IDQ5IDAxIGM3IGU4IGNiIDQyIDdiIGZlIDQ4
+IDhiIDU1IGQwIDQ4IGI4IDAwIDAwIDAwIDAwCiAgICBSSVAgIFs8ZmZmZmZmZmY4MmM4YmQ5YT5d
+IHNuZF9ocnRpbWVyX2NhbGxiYWNrKzB4MWRhLzB4M2YwCiAgICAgUlNQIDxmZmZmODgwMTFhYTg3
+ZGE4PgogICAgLS0tWyBlbmQgdHJhY2UgNmFhMzgwZjc1NmEyMTA3NCBdLS0tCgpUaGUgcHJvYmxl
+bSBoYXBwZW5zIHdoZW4geW91IGNhbGwgaW9jdGwoU05EUlZfVElNRVJfSU9DVExfQ09OVElOVUUp
+IG9uIGEKY29tcGxldGVseSBuZXcvdW51c2VkIHRpbWVyIC0tIGl0IHdpbGwgaGF2ZSAtPnN0aWNr
+cyA9PSAwLCB3aGljaCBjYXVzZXMgYQpkaXZpZGUgYnkgMCBpbiBzbmRfaHJ0aW1lcl9jYWxsYmFj
+aygpLgoKU2lnbmVkLW9mZi1ieTogVmVnYXJkIE5vc3N1bSA8dmVnYXJkLm5vc3N1bUBvcmFjbGUu
+Y29tPgotLS0KIHNvdW5kL2NvcmUvdGltZXIuYyB8IDEgKwogMSBmaWxlIGNoYW5nZWQsIDEgaW5z
+ZXJ0aW9uKCspCgpkaWZmIC0tZ2l0IGEvc291bmQvY29yZS90aW1lci5jIGIvc291bmQvY29yZS90
+aW1lci5jCmluZGV4IDc4OTllMzcuLmZhYTE4ZjQgMTAwNjQ0Ci0tLSBhL3NvdW5kL2NvcmUvdGlt
+ZXIuYworKysgYi9zb3VuZC9jb3JlL3RpbWVyLmMKQEAgLTgxMyw2ICs4MTMsNyBAQCBpbnQgc25k
+X3RpbWVyX25ldyhzdHJ1Y3Qgc25kX2NhcmQgKmNhcmQsIGNoYXIgKmlkLCBzdHJ1Y3Qgc25kX3Rp
+bWVyX2lkICp0aWQsCiAJdGltZXItPnRtcl9zdWJkZXZpY2UgPSB0aWQtPnN1YmRldmljZTsKIAlp
+ZiAoaWQpCiAJCXN0cmxjcHkodGltZXItPmlkLCBpZCwgc2l6ZW9mKHRpbWVyLT5pZCkpOworCXRp
+bWVyLT5zdGlja3MgPSAxOwogCUlOSVRfTElTVF9IRUFEKCZ0aW1lci0+ZGV2aWNlX2xpc3QpOwog
+CUlOSVRfTElTVF9IRUFEKCZ0aW1lci0+b3Blbl9saXN0X2hlYWQpOwogCUlOSVRfTElTVF9IRUFE
+KCZ0aW1lci0+YWN0aXZlX2xpc3RfaGVhZCk7Ci0tIAoyLjEwLjAucmMwLjEuZzA3YzkyOTIKCg==
+--001a11426658fcc8b9053b269746--
