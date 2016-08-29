@@ -1,106 +1,48 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 1/2] ALSA: fireworks: accessing to user space outside spinlock
-Date: Tue, 30 Aug 2016 08:01:34 +0900
-Message-ID: <1472511695-29316-2-git-send-email-o-takashi@sakamocchi.jp>
-References: <1472511695-29316-1-git-send-email-o-takashi@sakamocchi.jp>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1472511695-29316-1-git-send-email-o-takashi@sakamocchi.jp>
-Sender: stable-owner@vger.kernel.org
+Subject: [PATCH v2 0/2] ALSA: fireworks/firewire-tascam:
+	accessing to user space outside spinlock
+Date: Tue, 30 Aug 2016 08:01:33 +0900
+Message-ID: <1472511695-29316-1-git-send-email-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 843AD26550C
+ for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 01:01:41 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net, vaishali.thakkar@oracle.com, stable@vger.kernel.org
+Cc: vaishali.thakkar@oracle.com, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In hwdep interface of fireworks driver, accessing to user space is in a
-critical section with disabled local interrupt. Depending on architecture,
-accessing to user space can cause page fault exception. Then local
-processor stores machine status and handles the synchronous event. A
-handler corresponding to the event can call task scheduler to wait for
-preparing pages. In a case of usage of single core processor, the state to
-disable local interrupt is worse because it don't handle usual interrupts
-from hardware.
+Hi,
 
-This commit fixes this bug, performing the accessing outside spinlock.
+In ALSA fireworks driver and firewire-tascam driver, current implementation
+for hwdep interface have issues for page fault handling. For example,
+when using single core processor, after executing lock_page() in page fault
+handler and call task scheduler, then the context never regain CPU again,
+because any interrupts are disabled by these drivers and the context can't
+catch waiting event. This patchset fixes the issues.
 
-Reported-by: Vaishali Thakkar <vaishali.thakkar@oracle.com>
-Cc: stable@vger.kernel.org
-Fixes: 555e8a8f7f14('ALSA: fireworks: Add command/response functionality into hwdep interface')
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/fireworks/fireworks_hwdep.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+The issues were reported by Vaishali Thakkar, with a help of coccinelle.
+Thanks a lot for her care to these minor drivers.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111887.html
 
-diff --git a/sound/firewire/fireworks/fireworks_hwdep.c b/sound/firewire/fireworks/fireworks_hwdep.c
-index 33df865..8ed4b29 100644
---- a/sound/firewire/fireworks/fireworks_hwdep.c
-+++ b/sound/firewire/fireworks/fireworks_hwdep.c
-@@ -38,6 +38,7 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
- 	buf += sizeof(type);
- 
- 	/* write into buffer as many responses as possible */
-+	spin_lock_irq(&efw->lock);
- 	while (efw->resp_queues > 0) {
- 		t = (struct snd_efw_transaction *)(efw->pull_ptr);
- 		length = be32_to_cpu(t->length) * sizeof(__be32);
-@@ -52,9 +53,13 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
- 				(unsigned int)(efw->pull_ptr - efw->resp_buf);
- 			till_end = min_t(unsigned int, length, till_end);
- 
-+			spin_unlock_irq(&efw->lock);
-+
- 			if (copy_to_user(buf, efw->pull_ptr, till_end))
- 				return -EFAULT;
- 
-+			spin_lock_irq(&efw->lock);
-+
- 			efw->pull_ptr += till_end;
- 			if (efw->pull_ptr >= efw->resp_buf +
- 					     snd_efw_resp_buf_size)
-@@ -69,6 +74,8 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
- 		efw->resp_queues--;
- 	}
- 
-+	spin_unlock_irq(&efw->lock);
-+
- 	return count;
- }
- 
-@@ -76,14 +83,17 @@ static long
- hwdep_read_locked(struct snd_efw *efw, char __user *buf, long count,
- 		  loff_t *offset)
- {
--	union snd_firewire_event event;
-+	union snd_firewire_event event = {
-+		.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS,
-+	};
- 
--	memset(&event, 0, sizeof(event));
-+	spin_lock_irq(&efw->lock);
- 
--	event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
- 	event.lock_status.status = (efw->dev_lock_count > 0);
- 	efw->dev_lock_changed = false;
- 
-+	spin_unlock_irq(&efw->lock);
-+
- 	count = min_t(long, count, sizeof(event.lock_status));
- 
- 	if (copy_to_user(buf, &event, count))
-@@ -111,13 +121,14 @@ hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 		spin_lock_irq(&efw->lock);
- 	}
- 
-+	/* Loosely release the lock here, but still safe. */
-+	spin_unlock_irq(&efw->lock);
-+
- 	if (efw->dev_lock_changed)
- 		count = hwdep_read_locked(efw, buf, count, offset);
- 	else if (efw->resp_queues > 0)
- 		count = hwdep_read_resp_buf(efw, buf, count, offset);
- 
--	spin_unlock_irq(&efw->lock);
--
- 	return count;
- }
- 
+Takashi Sakamoto (2):
+  ALSA: fireworks: accessing to user space outside spinlock
+  ALSA: firewire-tascam: accessing to user space outside spinlock
+
+ sound/firewire/fireworks/fireworks_hwdep.c | 21 ++++++++++++++-----
+ sound/firewire/tascam/tascam-hwdep.c       | 33 ++++++++++--------------------
+ 2 files changed, 27 insertions(+), 27 deletions(-)
+
 -- 
 2.7.4
