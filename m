@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/4] ALSA: control: delegate checking the
-	length of data payload to each drivers
-Date: Tue, 30 Aug 2016 08:44:43 +0900
-Message-ID: <1472514285-3769-3-git-send-email-o-takashi@sakamocchi.jp>
-References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 0/4] ALSA: control: return payload length
+	of TLV operation
+Date: Tue, 30 Aug 2016 08:44:41 +0900
+Message-ID: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id F085E265770
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 00D4B26648B
  for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 01:44:56 +0200 (CEST)
-In-Reply-To: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +23,42 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, broonie@linaro.org, omair.m.abdullah@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-In ioctl(2) for TLV feature of ALSA control interface, an argument is
-a pointer to a data of 'struct snd_ctl_tlv' type in user space.
-The first field of this structure is for numerical ID of control element
-(numid), the second is for the length of the rest in byte unit (length).
-The rest is data payload (tlv).
+Hi,
 
-In current implementation, ALSA control core checks the length field
-so that the lest is bigger than sizeof(unsigned int) * 2. This is due to
-original design of this feature.
+ALSA control interface has a feature named TLV. This is originally designed
+to transfer information about threshold level. Later, it's used for I/O
+operation.
 
-Originally, this feature is designed to allow each driver to handle
-threshold level information. The rest of array stores the information.
-The information is expected to be this formation:
- - type: e.g. SNDRV_CTL_TLVT_CONTAINER.
- - length: length of the rest
- - the rest: information fields
+In current implementation of this feature, length of handled data is not
+returned to applications. This is not better as a feature related to I/O.
 
-Against the original design, this feature can also be used to operate I/O.
-In this case, the data field in 'struct snd_ctl_tlv' is not necessarily
-the formation. Therefore, the check in control core is unreasonable.
-Perhaps, there's a case to transfer just 1 byte by this feature.
+This patchset attempts to improve this feature so that the length is
+returned to application in a 'length' field of tlv packet structure
+(struct snd_ctl_tlv).
 
-This commit purges the check and delegate it to each drivers. Fortunately,
-each implementation in drivers already check the length of payload.
+Takashi Sakamoto (4):
+  ALSA: control: return payload length for TLV operation
+  ALSA: control: delegate checking the length of data payload to each
+    drivers
+  ALSA: control: add kerneldoc for snd_kcontrol_tlv_rw_t
+  ALSA: control: bump up protocol version to 2.0.8
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/control.c | 2 --
- 1 file changed, 2 deletions(-)
+ include/sound/control.h      | 22 ++++++++++++++++++++--
+ include/sound/soc.h          |  2 +-
+ include/uapi/sound/asound.h  |  2 +-
+ sound/core/control.c         | 30 +++++++++++++++++++-----------
+ sound/core/pcm_lib.c         | 15 ++++++++-------
+ sound/core/vmaster.c         |  2 +-
+ sound/hda/hdmi_chmap.c       | 16 +++++++++-------
+ sound/pci/hda/hda_codec.c    | 12 ++++++++----
+ sound/pci/hda/hda_local.h    |  4 ++--
+ sound/pci/hda/patch_ca0132.c |  2 +-
+ sound/pci/lola/lola_mixer.c  |  7 +++++--
+ sound/soc/soc-ops.c          |  9 +++++----
+ sound/usb/mixer.c            |  7 +++++--
+ sound/usb/mixer.h            |  2 +-
+ sound/usb/stream.c           | 13 ++++++++-----
+ 15 files changed, 94 insertions(+), 51 deletions(-)
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 485963e..b6f4ebc 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -1438,8 +1438,6 @@ static int snd_ctl_tlv_ioctl(struct snd_ctl_file *file,
- 
- 	if (copy_from_user(&tlv, _tlv, sizeof(tlv)))
- 		return -EFAULT;
--	if (tlv.length < sizeof(unsigned int) * 2)
--		return -EINVAL;
- 	if (!tlv.numid)
- 		return -EINVAL;
- 	down_read(&card->controls_rwsem);
 -- 
 2.7.4
