@@ -1,58 +1,88 @@
-From: Vaishali Thakkar <vaishali.thakkar@oracle.com>
-Subject: Re: [PATCH 0/2] ALSA: fireworks/firewire-tascam:
- accessing to user space outside spinlock
-Date: Mon, 29 Aug 2016 23:02:04 +0530
-Message-ID: <57C47194.40201@oracle.com>
-References: <1472244609-31830-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: Setting some clocks back to DUMMY fixes spdif output on imx6q
+ wandboard rev B1
+Date: Mon, 29 Aug 2016 12:28:21 -0700
+Message-ID: <20160829192820.GA14207@Asurada-Nvidia>
+References: <20160828160055.GA2122@begut>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
- by alsa0.perex.cz (Postfix) with ESMTP id ECDF7266881
- for <alsa-devel@alsa-project.org>; Mon, 29 Aug 2016 19:32:16 +0200 (CEST)
-In-Reply-To: <1472244609-31830-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Content-Disposition: inline
+In-Reply-To: <20160828160055.GA2122@begut>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Xavi Drudis Ferran <xdrudis@tinet.cat>, fabio.estevam@nxp.com
+Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, linuxppc-dev@lists.ozlabs.org, Timur Tabi <timur@tabi.org>, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Added Fabio as I can't test S/PDIF on my board.
 
-
-On Saturday 27 August 2016 02:20 AM, Takashi Sakamoto wrote:
-> Hi,
+On Sun, Aug 28, 2016 at 06:00:55PM +0200, Xavi Drudis Ferran wrote:
+ 
+> I was using linux-libre-3.19 (implies no working sdma) with a
+> wandboard quad (Freescale imx6q). Spidf output worked fine.
 > 
-> In ALSA fireworks driver and firewire-tascam driver, current implementation
-> for hwdep interface have issues for page fault handling. For example,
-> when using single core processor, after executing lock_page() in page fault
-> handler and call task scheduler, then the context never run again, because
-> any interrupts are disabled by these drivers and the context can't catch
-> waiting event. This patchset fixes the issues.
+> When I upgraded to linux-libre-4.7 spdif output was supressed without
+> any error (precisely, with the same errors about sdma that 3.19 gave).
 > 
-> The issues were reported by Vaishali Thakkar, with a help of coccinelle.
-> Thanks a lot for his care to these minor drivers.
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111887.html
-
-Hi,
-
-Just a minor correction here. 'his -> her' :)
-
-> Takashi Sakamoto (2):
->   ALSA: fireworks: accessing to user space outside spinlock
->   ALSA: firewire-tascam: accessing to user space outside spinlock
+> I saw someone else reporting the same elsewhere with linux-4.4
+> https://forum.digikey.com/thread/34240
+> (but I don't have a login there) 
 > 
->  sound/firewire/fireworks/fireworks_hwdep.c | 20 ++++++++++++++-----
->  sound/firewire/tascam/tascam-hwdep.c       | 32 ++++++++++--------------------
->  2 files changed, 25 insertions(+), 27 deletions(-)
+> This patch fixes it for me and sound works again on spdif. 
 > 
+> But I don't know if it can break (or fix?) something for some other
+> boards or kernels or cases... I hardly know what I'm doing.
 
--- 
-Vaishali
+> The commits that might have caused the problem for me might be 
+> 
+> commit 833f2cbf7091099baee28136dc68678e974c0ac5
+> Author: Shengjiu Wang <shengjiu.wang@freescale.com>
+> Date:   Sat Oct 10 18:15:07 2015 +0800
+> 
+>     ARM: dts: imx6: change the core clock of spdif
+>     
+>     The correct core clock of spdif is SPDIF_GCLK, which is added to
+>     clock tree. So the dts also need to be updated.
+>     
+>     Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+>     Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+> 
+> (the commit changed more clocks than SPDIF_GCLK)
+
+Yes, it seems that it also tried to correct the clock sources
+as those were not available when adding the S/PDIF support at
+the first place.
+
+> The issue is fixed for me with this patch but I'm not sure what's the
+> best way to help fix any issue someone else may have or what other
+> info or test you might need. Any guidance welcome. 
+
+> --- linux-4.7-no-spdif-out/arch/arm/boot/dts/imx6qdl.dtsi	2016-07-25 00:19:43.000000000 +0200
+> +++ linux-4.7/arch/arm/boot/dts/imx6qdl.dtsi	2016-08-28 17:59:14.276774409 +0200
+> @@ -240,9 +240,9 @@
+>  					       <&sdma 15 18 0>;
+>  					dma-names = "rx", "tx";
+>  					clocks = <&clks IMX6QDL_CLK_SPDIF_GCLK>, <&clks IMX6QDL_CLK_OSC>,
+> -						 <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_ASRC>,
+> -						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_ESAI_EXTAL>,
+> -						 <&clks IMX6QDL_CLK_IPG>, <&clks IMX6QDL_CLK_MLB>,
+> +						 <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_DUMMY>,
+> +						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_DUMMY>,
+> +						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_DUMMY>,
+>  						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_SPBA>;
+>  					clock-names = "core",  "rxtx0",
+>  						      "rxtx1", "rxtx2",
+
+This looks like that you merely revert the SPDIF_GCLK. Would you
+please do a little debug using "#define DEBUG 1" and check printk
+from fsl_spdif_probe_txclk() to see the difference between before
+and after Shengjiu's commit?
