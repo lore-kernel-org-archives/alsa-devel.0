@@ -1,88 +1,110 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: Setting some clocks back to DUMMY fixes spdif output on imx6q
- wandboard rev B1
-Date: Mon, 29 Aug 2016 12:28:21 -0700
-Message-ID: <20160829192820.GA14207@Asurada-Nvidia>
-References: <20160828160055.GA2122@begut>
+From: Tony Lindgren <tony@atomide.com>
+Subject: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for McBSP
+ to prevent glitches
+Date: Mon, 29 Aug 2016 11:27:46 -0700
+Message-ID: <20160829182746.53vrgbxadqodzzug@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from muru.com (muru.com [72.249.23.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE616265770
+ for <alsa-devel@alsa-project.org>; Mon, 29 Aug 2016 20:27:51 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20160828160055.GA2122@begut>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Xavi Drudis Ferran <xdrudis@tinet.cat>, fabio.estevam@nxp.com
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, linuxppc-dev@lists.ozlabs.org, Timur Tabi <timur@tabi.org>, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Pavel Machel <pavel@ucw.cz>, Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Added Fabio as I can't test S/PDIF on my board.
+We can get audio errors if hitting deeper idle states on omaps:
 
-On Sun, Aug 28, 2016 at 06:00:55PM +0200, Xavi Drudis Ferran wrote:
+[alsa.c:230] error: Fatal problem with alsa output, error -5.
+[audio.c:614] error: Error in writing audio (Input/output error?)!
+
+This seems to happen with off mode idle enabled as power for the
+whole SoC may get cut off between filling the McBSP fifo using DMA.
+While active DMA blocks deeper idle states in hardware, McBSP
+activity does not seem to do so.
+
+Let's fix the issue by adding PM QoS latency requirement for McBSP.
+Based on my experiments a working latency value is somewhere
+around 35 ms with 40 ms breaking. So let's use a safer value of 30 ms.
+
+Note that this is different from snd_pcm_hw_constraint_step() as
+that can configure things based on the buffer and period size.
+However, that does not help to block idle between the fifo fills.
+
+Note that in theory some omaps are capable of playing audio while
+hitting deeper idle states. If somebody needs that and gets it
+working, we can set the latency requirements accordingly.
+
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ sound/soc/omap/mcbsp.c | 10 ++++++++++
+ sound/soc/omap/mcbsp.h |  2 ++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
+--- a/sound/soc/omap/mcbsp.c
++++ b/sound/soc/omap/mcbsp.c
+@@ -25,6 +25,7 @@
+ #include <linux/io.h>
+ #include <linux/slab.h>
+ #include <linux/pm_runtime.h>
++#include <linux/pm_qos.h>
  
-> I was using linux-libre-3.19 (implies no working sdma) with a
-> wandboard quad (Freescale imx6q). Spidf output worked fine.
-> 
-> When I upgraded to linux-libre-4.7 spdif output was supressed without
-> any error (precisely, with the same errors about sdma that 3.19 gave).
-> 
-> I saw someone else reporting the same elsewhere with linux-4.4
-> https://forum.digikey.com/thread/34240
-> (but I don't have a login there) 
-> 
-> This patch fixes it for me and sound works again on spdif. 
-> 
-> But I don't know if it can break (or fix?) something for some other
-> boards or kernels or cases... I hardly know what I'm doing.
-
-> The commits that might have caused the problem for me might be 
-> 
-> commit 833f2cbf7091099baee28136dc68678e974c0ac5
-> Author: Shengjiu Wang <shengjiu.wang@freescale.com>
-> Date:   Sat Oct 10 18:15:07 2015 +0800
-> 
->     ARM: dts: imx6: change the core clock of spdif
->     
->     The correct core clock of spdif is SPDIF_GCLK, which is added to
->     clock tree. So the dts also need to be updated.
->     
->     Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
->     Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-> 
-> (the commit changed more clocks than SPDIF_GCLK)
-
-Yes, it seems that it also tried to correct the clock sources
-as those were not available when adding the S/PDIF support at
-the first place.
-
-> The issue is fixed for me with this patch but I'm not sure what's the
-> best way to help fix any issue someone else may have or what other
-> info or test you might need. Any guidance welcome. 
-
-> --- linux-4.7-no-spdif-out/arch/arm/boot/dts/imx6qdl.dtsi	2016-07-25 00:19:43.000000000 +0200
-> +++ linux-4.7/arch/arm/boot/dts/imx6qdl.dtsi	2016-08-28 17:59:14.276774409 +0200
-> @@ -240,9 +240,9 @@
->  					       <&sdma 15 18 0>;
->  					dma-names = "rx", "tx";
->  					clocks = <&clks IMX6QDL_CLK_SPDIF_GCLK>, <&clks IMX6QDL_CLK_OSC>,
-> -						 <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_ASRC>,
-> -						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_ESAI_EXTAL>,
-> -						 <&clks IMX6QDL_CLK_IPG>, <&clks IMX6QDL_CLK_MLB>,
-> +						 <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_DUMMY>,
-> +						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_DUMMY>,
-> +						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_DUMMY>,
->  						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_SPBA>;
->  					clock-names = "core",  "rxtx0",
->  						      "rxtx1", "rxtx2",
-
-This looks like that you merely revert the SPDIF_GCLK. Would you
-please do a little debug using "#define DEBUG 1" and check printk
-from fsl_spdif_probe_txclk() to see the difference between before
-and after Shengjiu's commit?
+ #include <linux/platform_data/asoc-ti-mcbsp.h>
+ 
+@@ -643,6 +644,10 @@ void omap_mcbsp_start(struct omap_mcbsp *mcbsp, int tx, int rx)
+ 	int enable_srg = 0;
+ 	u16 w;
+ 
++	/* Prevent omap hardware from hitting off between fifo fills */
++	pm_qos_add_request(&mcbsp->pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
++			   30 * 1000);
++
+ 	if (mcbsp->st_data)
+ 		omap_st_start(mcbsp);
+ 
+@@ -731,6 +736,8 @@ void omap_mcbsp_stop(struct omap_mcbsp *mcbsp, int tx, int rx)
+ 
+ 	if (mcbsp->st_data)
+ 		omap_st_stop(mcbsp);
++
++	pm_qos_remove_request(&mcbsp->pm_qos_req);
+ }
+ 
+ int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id)
+@@ -1098,6 +1105,9 @@ err_thres:
+ 
+ void omap_mcbsp_cleanup(struct omap_mcbsp *mcbsp)
+ {
++	if (dev_pm_qos_request_active(&mcbsp->pm_qos_req))
++		pm_qos_remove_request(&mcbsp->pm_qos_req);
++
+ 	if (mcbsp->pdata->buffer_size)
+ 		sysfs_remove_group(&mcbsp->dev->kobj, &additional_attr_group);
+ 
+diff --git a/sound/soc/omap/mcbsp.h b/sound/soc/omap/mcbsp.h
+index 61e93b1..e603f33 100644
+--- a/sound/soc/omap/mcbsp.h
++++ b/sound/soc/omap/mcbsp.h
+@@ -325,6 +325,8 @@ struct omap_mcbsp {
+ 	unsigned int in_freq;
+ 	int clk_div;
+ 	int wlen;
++
++	struct pm_qos_request pm_qos_req;
+ };
+ 
+ void omap_mcbsp_config(struct omap_mcbsp *mcbsp,
+-- 
+2.9.3
