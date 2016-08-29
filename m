@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 2/2] ALSA: firewire-tascam: accessing to user space outside spinlock
-Date: Tue, 30 Aug 2016 08:01:35 +0900
-Message-ID: <1472511695-29316-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 1/2] ALSA: fireworks: accessing to user space outside spinlock
+Date: Tue, 30 Aug 2016 08:01:34 +0900
+Message-ID: <1472511695-29316-2-git-send-email-o-takashi@sakamocchi.jp>
 References: <1472511695-29316-1-git-send-email-o-takashi@sakamocchi.jp>
 Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <1472511695-29316-1-git-send-email-o-takashi@sakamocchi.jp>
@@ -10,80 +10,95 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net, vaishali.thakkar@oracle.com, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In hwdep interface of firewire-tascam driver, accessing to user space is
-in a critical section with disabled local interrupt. Depending on
-architecture, accessing to user space can cause page fault exception. Then
-local processor stores machine status and handle the synchronous event. A
+In hwdep interface of fireworks driver, accessing to user space is in a
+critical section with disabled local interrupt. Depending on architecture,
+accessing to user space can cause page fault exception. Then local
+processor stores machine status and handles the synchronous event. A
 handler corresponding to the event can call task scheduler to wait for
 preparing pages. In a case of usage of single core processor, the state to
-disable local interrupt is worse because it doesn't handle usual interrupts
+disable local interrupt is worse because it don't handle usual interrupts
 from hardware.
 
-This commit fixes this bug, by performing the accessing outside spinlock.
+This commit fixes this bug, performing the accessing outside spinlock.
 
 Reported-by: Vaishali Thakkar <vaishali.thakkar@oracle.com>
 Cc: stable@vger.kernel.org
-Fixes: e5e0c3dd257b('ALSA: firewire-tascam: add hwdep interface')
+Fixes: 555e8a8f7f14('ALSA: fireworks: Add command/response functionality into hwdep interface')
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam-hwdep.c | 33 +++++++++++----------------------
- 1 file changed, 11 insertions(+), 22 deletions(-)
+ sound/firewire/fireworks/fireworks_hwdep.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/sound/firewire/tascam/tascam-hwdep.c b/sound/firewire/tascam/tascam-hwdep.c
-index 131267c..106406c 100644
---- a/sound/firewire/tascam/tascam-hwdep.c
-+++ b/sound/firewire/tascam/tascam-hwdep.c
-@@ -16,31 +16,14 @@
+diff --git a/sound/firewire/fireworks/fireworks_hwdep.c b/sound/firewire/fireworks/fireworks_hwdep.c
+index 33df865..8ed4b29 100644
+--- a/sound/firewire/fireworks/fireworks_hwdep.c
++++ b/sound/firewire/fireworks/fireworks_hwdep.c
+@@ -38,6 +38,7 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
+ 	buf += sizeof(type);
  
- #include "tascam.h"
+ 	/* write into buffer as many responses as possible */
++	spin_lock_irq(&efw->lock);
+ 	while (efw->resp_queues > 0) {
+ 		t = (struct snd_efw_transaction *)(efw->pull_ptr);
+ 		length = be32_to_cpu(t->length) * sizeof(__be32);
+@@ -52,9 +53,13 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
+ 				(unsigned int)(efw->pull_ptr - efw->resp_buf);
+ 			till_end = min_t(unsigned int, length, till_end);
  
--static long hwdep_read_locked(struct snd_tscm *tscm, char __user *buf,
--			      long count)
--{
--	union snd_firewire_event event;
--
--	memset(&event, 0, sizeof(event));
--
--	event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
--	event.lock_status.status = (tscm->dev_lock_count > 0);
--	tscm->dev_lock_changed = false;
--
--	count = min_t(long, count, sizeof(event.lock_status));
--
--	if (copy_to_user(buf, &event, count))
--		return -EFAULT;
--
--	return count;
--}
--
- static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 		       loff_t *offset)
++			spin_unlock_irq(&efw->lock);
++
+ 			if (copy_to_user(buf, efw->pull_ptr, till_end))
+ 				return -EFAULT;
+ 
++			spin_lock_irq(&efw->lock);
++
+ 			efw->pull_ptr += till_end;
+ 			if (efw->pull_ptr >= efw->resp_buf +
+ 					     snd_efw_resp_buf_size)
+@@ -69,6 +74,8 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
+ 		efw->resp_queues--;
+ 	}
+ 
++	spin_unlock_irq(&efw->lock);
++
+ 	return count;
+ }
+ 
+@@ -76,14 +83,17 @@ static long
+ hwdep_read_locked(struct snd_efw *efw, char __user *buf, long count,
+ 		  loff_t *offset)
  {
- 	struct snd_tscm *tscm = hwdep->private_data;
- 	DEFINE_WAIT(wait);
 -	union snd_firewire_event event;
 +	union snd_firewire_event event = {
 +		.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS,
 +	};
  
- 	spin_lock_irq(&tscm->lock);
+-	memset(&event, 0, sizeof(event));
++	spin_lock_irq(&efw->lock);
  
-@@ -54,10 +37,16 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 		spin_lock_irq(&tscm->lock);
+-	event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
+ 	event.lock_status.status = (efw->dev_lock_count > 0);
+ 	efw->dev_lock_changed = false;
+ 
++	spin_unlock_irq(&efw->lock);
++
+ 	count = min_t(long, count, sizeof(event.lock_status));
+ 
+ 	if (copy_to_user(buf, &event, count))
+@@ -111,13 +121,14 @@ hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
+ 		spin_lock_irq(&efw->lock);
  	}
  
--	memset(&event, 0, sizeof(event));
--	count = hwdep_read_locked(tscm, buf, count);
-+	event.lock_status.status = (tscm->dev_lock_count > 0);
-+	tscm->dev_lock_changed = false;
++	/* Loosely release the lock here, but still safe. */
++	spin_unlock_irq(&efw->lock);
 +
- 	spin_unlock_irq(&tscm->lock);
+ 	if (efw->dev_lock_changed)
+ 		count = hwdep_read_locked(efw, buf, count, offset);
+ 	else if (efw->resp_queues > 0)
+ 		count = hwdep_read_resp_buf(efw, buf, count, offset);
  
-+	count = min_t(long, count, sizeof(event.lock_status));
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
+-	spin_unlock_irq(&efw->lock);
+-
  	return count;
  }
  
