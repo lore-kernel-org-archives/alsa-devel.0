@@ -1,15 +1,15 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 08/12] ASoC: hdac: Register widget event
-	handlers
-Date: Mon, 29 Aug 2016 11:53:22 +0530
-Message-ID: <1472451806-10605-9-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 07/12] ASoC: hdac: Build DAPM graph by querying
+	through widget connection list
+Date: Mon, 29 Aug 2016 11:53:21 +0530
+Message-ID: <1472451806-10605-8-git-send-email-subhransu.s.prusty@intel.com>
 References: <1472451806-10605-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id CE1C9266E4C
+ by alsa0.perex.cz (Postfix) with ESMTP id BAB5F266E4B
  for <alsa-devel@alsa-project.org>; Mon, 29 Aug 2016 18:23:43 +0200 (CEST)
 In-Reply-To: <1472451806-10605-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,417 +25,373 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Register the event handlers and program the codec by sending
-required verbs in the event handlers.
+This patch recursively traverses the HDA codec widgets and builds
+the graph by querying connection list of each.
+
+Only output pin widget and adc widget endpoints can support
+connection list. So for a playback path query happens from output
+pin widget end and for a capture path query happens from adc
+widget end till an input endpoint is found.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
  sound/soc/codecs/hdac_generic.c | 329 +++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/hdac_generic.h |   3 +
- 2 files changed, 326 insertions(+), 6 deletions(-)
+ 1 file changed, 328 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/hdac_generic.c b/sound/soc/codecs/hdac_generic.c
-index 6bd7b2b..354e81d 100644
+index 7f3a2a0..6bd7b2b 100644
 --- a/sound/soc/codecs/hdac_generic.c
 +++ b/sound/soc/codecs/hdac_generic.c
-@@ -75,6 +75,305 @@ static void hdac_generic_set_power_state(struct hdac_ext_device *edev,
+@@ -53,6 +53,19 @@ static char *wid_names[] = {
+ 		NULL, NULL, NULL, "vendor",
+ };
+ 
++struct route_map {
++	struct list_head head;
++	const char *sink;
++	char *control;
++	const char *src;
++};
++
++struct widget_node_entries {
++	struct hdac_codec_widget *wid;
++	struct snd_soc_dapm_widget *w;
++	int num_nodes;
++};
++
+ static void hdac_generic_set_power_state(struct hdac_ext_device *edev,
+ 			hda_nid_t nid, unsigned int pwr_state)
+ {
+@@ -62,6 +75,316 @@ static void hdac_generic_set_power_state(struct hdac_ext_device *edev,
  				AC_VERB_SET_POWER_STATE, pwr_state);
  }
  
-+/* TODO: Add feature to program by querying capability */
-+static void hdac_generic_set_eapd(struct hdac_ext_device *edev,
-+			hda_nid_t nid, bool enable)
++static bool is_duplicate_route(struct list_head *route_list,
++		const char *sink, const char *control, const char *src)
 +{
-+	u32 pin_caps = snd_hdac_read_parm_uncached(&edev->hdac,
-+					nid, AC_PAR_PIN_CAP);
++	struct route_map *map;
 +
-+	if (pin_caps & AC_PINCAP_EAPD)
-+		snd_hdac_codec_write(&edev->hdac, nid, 0,
-+				AC_VERB_SET_EAPD_BTLENABLE, enable ? 2 : 0);
++	list_for_each_entry(map, route_list, head) {
++
++		if (strcmp(src, map->src))
++			continue;
++		if (strcmp(sink, map->sink))
++			continue;
++		if (!control && !map->control)
++			return true;
++		if ((control && map->control) &&
++				!strcmp(control, map->control))
++			return true;
++	}
++
++	return false;
 +}
 +
-+static int hdac_generic_pin_io_event(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *kc, int event)
++static int hdac_generic_add_route(struct snd_soc_dapm_context *dapm,
++		const char *sink, const char *control, const char *src,
++		struct list_head *route_list)
 +{
-+	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
-+	struct hdac_codec_widget *wid = w->priv;
-+	int val;
++	struct snd_soc_dapm_route route;
++	struct route_map *map;
 +
-+	dev_dbg(&edev->hdac.dev, "%s: widget: %s event: %x\n",
-+			__func__, w->name, event);
++	/*
++	 * During parsing a loop can be created from input pin to output pin.
++	 * An input pin is represented with pga and input dapm widgets.
++	 * There is possibility of duplicate route between these two pga and
++	 * input widgets as the input can appear for multiple output pins or
++	 * adcs during connection list query. So check the duplication.
++	 */
++	if (is_duplicate_route(route_list, sink, control, src))
++		return 0;
 +
-+	val = snd_hdac_codec_read(&edev->hdac, wid->nid, 0,
-+			AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
++	route.sink = sink;
++	route.source = src;
++	route.control = control;
++	route.connected = NULL;
 +
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		if (w->id == snd_soc_dapm_output) {
-+			/* TODO: program using a eapd widget */
-+			hdac_generic_set_eapd(edev, wid->nid, true);
-+			val |= AC_PINCTL_OUT_EN;
++	snd_soc_dapm_add_routes(dapm, &route, 1);
++
++	map = kzalloc(sizeof(*map), GFP_KERNEL);
++	if (!map)
++		return -ENOMEM;
++
++	map->sink = sink;
++	map->src = src;
++	if (control) {
++		map->control = kcalloc(SNDRV_CTL_ELEM_ID_NAME_MAXLEN,
++					sizeof(char), GFP_KERNEL);
++		if (!map->control) {
++			kfree(map);
++			return -ENOMEM;
++		}
++
++		strcpy(map->control, control);
++	}
++
++	list_add_tail(&map->head, route_list);
++
++	return 0;
++}
++
++/* Returns the only dapm widget which can be connected to other hda widgets */
++static struct snd_soc_dapm_widget *hda_widget_to_dapm_widget(
++			struct hdac_ext_device *edev,
++			struct hdac_codec_widget *wid)
++{
++	struct snd_soc_dapm_widget **wid_ref;
++
++	switch (wid->type) {
++	case AC_WID_PIN:
++		wid_ref = wid->priv;
++
++		if (is_input_pin(&edev->hdac, wid->nid))
++			return wid_ref[1];
++
++		if (wid->num_inputs == 1)
++			return wid_ref[1];
++
++		return wid_ref[2];
++
++	case AC_WID_BEEP:
++		wid_ref = wid->priv;
++
++		return wid_ref[1];
++
++	case AC_WID_AUD_OUT:
++	case AC_WID_AUD_IN:
++	case AC_WID_AUD_MIX:
++	case AC_WID_AUD_SEL:
++	case AC_WID_POWER:
++		return wid->priv;
++
++	default:
++		dev_info(&edev->hdac.dev, "Widget type %d not handled\n",
++				wid->type);
++		return NULL;
++	}
++
++	return NULL;
++}
++
++static void fill_pinout_next_wid_entry(struct hdac_ext_device *edev,
++			struct widget_node_entries *next,
++			struct widget_node_entries *wid_entry,
++			const char **control, int index)
++{
++	struct snd_soc_dapm_widget **wid_ref = wid_entry->wid->priv;
++	const struct snd_kcontrol_new *kc;
++	struct soc_enum *se;
++
++	switch (wid_entry->w->id) {
++	case snd_soc_dapm_output:
++		next->w = wid_ref[1];
++		next->num_nodes = 1;
++		next->wid = wid_entry->wid;
++
++		break;
++
++	case snd_soc_dapm_pga:
++		if (wid_entry->wid->num_inputs == 1) {
++			next->wid = wid_entry->wid->conn_list[index].input_w;
++			next->w = hda_widget_to_dapm_widget(
++					edev, next->wid);
++			next->num_nodes = next->wid->num_inputs;
 +		} else {
-+
-+			/* TODO: program vref using a mixer control */
-+			val |= AC_PINCTL_VREF_80;
-+			val |= AC_PINCTL_IN_EN;
++			next->wid = wid_entry->wid;
++			next->w = wid_ref[2];
++			next->num_nodes = wid_entry->wid->num_inputs;
 +		}
 +
 +		break;
 +
-+	case SND_SOC_DAPM_POST_PMD:
-+		if (w->id == snd_soc_dapm_output) {
-+			/* TODO: program using a eapd widget */
-+			hdac_generic_set_eapd(edev, wid->nid, false);
-+			val &= ~AC_PINCTL_OUT_EN;
-+		} else {
-+			val &= AC_PINCTL_VREF_HIZ;
-+			val &= ~AC_PINCTL_IN_EN;
-+		}
++	case snd_soc_dapm_mux:
++		kc = wid_entry->w->kcontrol_news;
++		se = (struct soc_enum *)kc->private_value;
++
++		next->wid = wid_entry->wid->conn_list[index].input_w;
++		next->num_nodes = next->wid->num_inputs;
++		next->w = hda_widget_to_dapm_widget(edev, next->wid);
++
++		*control = se->texts[index + 1];
 +
 +		break;
 +
 +	default:
-+		dev_warn(&edev->hdac.dev, "Event %d not handled\n", event);
++		dev_warn(&edev->hdac.dev,
++				"widget nid: %d id: %d not handled\n",
++				wid_entry->wid->nid, wid_entry->w->id);
++		break;
++	}
++}
++
++static int parse_node_and_add_route(struct snd_soc_dapm_context *dapm,
++				struct widget_node_entries *wid_entry,
++				struct list_head *route_list)
++{
++	struct hdac_ext_device *edev = to_hda_ext_device(dapm->dev);
++	int i, ret;
++	struct widget_node_entries next;
++	const char *control = NULL;
++
++	if (!wid_entry->num_nodes)
++		return 0;
++
++	if ((wid_entry->w->id == snd_soc_dapm_dac) ||
++			 (wid_entry->w->id == snd_soc_dapm_input) ||
++			 (wid_entry->w->id == snd_soc_dapm_siggen)) {
++
 +		return 0;
 +	}
 +
-+	snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+			AC_VERB_SET_PIN_WIDGET_CONTROL, val);
++	for (i = 0; i < wid_entry->num_nodes; i++) {
 +
-+	return 0;
-+}
++		if (wid_entry->wid->type == AC_WID_PIN) {
++			control = NULL;
 +
-+static int hdac_generic_pin_mux_event(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *kc, int event)
-+{
-+	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
-+	struct hdac_codec_widget *wid = w->priv;
-+	int mux_idx;
++			if (is_input_pin(&edev->hdac, wid_entry->wid->nid)) {
 +
-+	dev_dbg(&edev->hdac.dev, "%s: widget: %s event: %x\n",
-+			__func__, w->name, event);
-+	if (!kc)
-+		kc  = w->kcontrols[0];
++				struct snd_soc_dapm_widget **wid_ref =
++							wid_entry->wid->priv;
 +
-+	mux_idx = dapm_kcontrol_get_value(kc);
-+	if (mux_idx > 0) {
-+		snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+			AC_VERB_SET_CONNECT_SEL, (mux_idx - 1));
-+	}
-+
-+	return 0;
-+}
-+
-+static int hdac_generic_pin_pga_event(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *kc, int event)
-+{
-+	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
-+	struct hdac_codec_widget *wid = w->priv;
-+
-+	dev_dbg(&edev->hdac.dev, "%s: widget: %s event: %x\n",
-+			__func__, w->name, event);
-+
-+	if (event == SND_SOC_DAPM_POST_PMD) {
-+		hdac_generic_set_power_state(edev, wid->nid, AC_PWRST_D3);
-+		snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+				AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
-+	} else {
-+		hdac_generic_set_power_state(edev, wid->nid, AC_PWRST_D0);
-+		snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+				AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
-+	}
-+
-+	return 0;
-+}
-+
-+static int hdac_generic_widget_power_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kc, int event)
-+{
-+	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
-+	struct hdac_codec_widget *wid = w->priv;
-+
-+	dev_dbg(&edev->hdac.dev, "%s: widget: %s event: %x\n",
-+			__func__, w->name, event);
-+	hdac_generic_set_power_state(edev, wid->nid,
-+		(event == SND_SOC_DAPM_POST_PMD ? AC_PWRST_D3:AC_PWRST_D0));
-+
-+	return 0;
-+}
-+
-+static int hdac_generic_cvt_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kc, int event)
-+{
-+	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
-+	struct hdac_codec_widget *wid = w->priv;
-+
-+	hdac_generic_widget_power_event(w, kc, event);
-+
-+	if (event == SND_SOC_DAPM_POST_PMD)
-+		snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+				AC_VERB_SET_AMP_GAIN_MUTE,
-+				AMP_IN_MUTE(0));
-+	else
-+		snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+				AC_VERB_SET_AMP_GAIN_MUTE,
-+				AMP_IN_UNMUTE(0) | 0x5b);
-+
-+	return 0;
-+}
-+
-+static int get_mixer_control_index(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *kc)
-+{
-+	int i;
-+
-+	for (i = 0; i < w->num_kcontrols; i++) {
-+		if (w->kcontrols[i] == kc)
-+			return i;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int hdac_generic_mixer_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kc, int event)
-+{
-+	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
-+	struct hdac_codec_widget *wid = w->priv;
-+	bool no_input = true;
-+	int i;
-+
-+	dev_dbg(&edev->hdac.dev, "%s: widget: %s event: %x\n",
-+			__func__, w->name, event);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		hdac_generic_set_power_state(edev, wid->nid, AC_PWRST_D0);
-+
-+
-+		snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+				AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
-+
-+		for (i = 0; i < w->num_kcontrols; i++) {
-+			if (dapm_kcontrol_get_value(w->kcontrols[i])) {
-+				snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+					AC_VERB_SET_AMP_GAIN_MUTE,
-+					AMP_IN_UNMUTE(i));
++				if (wid_entry->w->id == snd_soc_dapm_pga) {
++					next.w = wid_ref[0];
++					next.num_nodes = 1;
++					next.wid = wid_entry->wid;
++				}
++			} else { /* if output pin */
++				fill_pinout_next_wid_entry(edev, &next,
++						wid_entry, &control, i);
 +			}
-+		}
-+
-+		return 0;
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+				AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
-+
-+		for (i = 0; i < w->num_kcontrols; i++) {
-+			if (dapm_kcontrol_get_value(w->kcontrols[i])) {
-+				snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+					AC_VERB_SET_AMP_GAIN_MUTE,
-+					AMP_IN_MUTE(i));
-+			}
-+		}
-+
-+		hdac_generic_set_power_state(edev, wid->nid, AC_PWRST_D3);
-+
-+		return 0;
-+
-+	case SND_SOC_DAPM_POST_REG:
-+		i = get_mixer_control_index(w, kc);
-+		if (i < 0) {
-+			dev_err(&edev->hdac.dev,
-+					"%s: Wrong kcontrol event: %s\n",
-+					__func__, kc->id.name);
-+			return i;
-+		}
-+		if (dapm_kcontrol_get_value(kc)) {
-+			snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+				AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(i));
-+			no_input = false;
 +		} else {
-+			snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+				AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(i));
-+		}
++			struct snd_soc_dapm_widget *w = wid_entry->wid->priv;
++			const struct snd_kcontrol_new *kc;
++			struct soc_enum *se;
 +
-+		if (no_input)
-+			snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+				AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
-+
-+		return 0;
-+
-+	default:
-+		dev_warn(&edev->hdac.dev, "Event %d not handled\n", event);
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static void update_mux_amp_switch(struct hdac_ext_device *edev,
-+		hda_nid_t nid, struct snd_kcontrol *kc, bool enable)
-+{
-+	struct soc_enum *e = (struct soc_enum *)kc->private_value;
-+	int mux_idx, i;
-+
-+	mux_idx = dapm_kcontrol_get_value(kc);
-+
-+	if (!enable || !mux_idx) {
-+		for (i = 1; i < (e->items - 1); i++)
-+			snd_hdac_codec_write(&edev->hdac, nid, 0,
-+				AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(i - 1));
-+
-+		snd_hdac_codec_write(&edev->hdac, nid, 0,
-+			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
-+	} else {
-+		for (i = 1; i < (e->items - 1); i++) {
-+			if (i == mux_idx)
-+				snd_hdac_codec_write(&edev->hdac, nid, 0,
-+					AC_VERB_SET_AMP_GAIN_MUTE,
-+					AMP_IN_UNMUTE(i - 1));
++			next.wid = wid_entry->wid->conn_list[i].input_w;
++			next.w = hda_widget_to_dapm_widget(edev, next.wid);
++			if (next.wid->type == AC_WID_PIN &&
++					is_input_pin(&edev->hdac,
++						next.wid->nid))
++				next.num_nodes = 1;
 +			else
-+				snd_hdac_codec_write(&edev->hdac, nid, 0,
-+					AC_VERB_SET_AMP_GAIN_MUTE,
-+					AMP_IN_MUTE(i - 1));
++				next.num_nodes = next.wid->num_inputs;
++
++			switch (w->id) {
++			case snd_soc_dapm_mux:
++				kc = &w->kcontrol_news[0];
++				se = (struct soc_enum *)kc->private_value;
++				control = se->texts[i + 1];
++
++				break;
++
++			case snd_soc_dapm_mixer:
++				kc = &w->kcontrol_news[i];
++				control = kc->name;
++
++				break;
++			default:
++				break;
++			}
 +		}
 +
-+		snd_hdac_codec_write(&edev->hdac, nid, 0,
-+			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
-+	}
-+}
++		ret = hdac_generic_add_route(dapm, wid_entry->w->name,
++					control, next.w->name, route_list);
++		if (ret < 0)
++			return ret;
 +
-+static int hdac_generic_selector_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kc, int event)
-+{
-+	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
-+	struct hdac_codec_widget *wid = w->priv;
-+
-+	dev_dbg(&edev->hdac.dev, "%s: widget: %s event: %x\n",
-+			__func__, w->name, event);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		hdac_generic_set_power_state(edev, wid->nid, AC_PWRST_D0);
-+		snd_hdac_codec_write(&edev->hdac, wid->nid, 0,
-+				AC_VERB_SET_CONNECT_SEL,
-+				(dapm_kcontrol_get_value(w->kcontrols[0]) - 1));
-+		update_mux_amp_switch(edev, wid->nid, w->kcontrols[0], true);
-+
-+		return 0;
-+
-+	case SND_SOC_DAPM_POST_REG:
-+		update_mux_amp_switch(edev, wid->nid, kc, true);
-+
-+		return 0;
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		update_mux_amp_switch(edev, wid->nid, w->kcontrols[0], false);
-+		hdac_generic_set_power_state(edev, wid->nid, AC_PWRST_D3);
-+
-+		return 0;
-+
-+	default:
-+		dev_warn(&edev->hdac.dev, "Event %d not handled\n", event);
-+		return 0;
++		ret = parse_node_and_add_route(dapm, &next, route_list);
++		if (ret < 0)
++			return ret;
 +	}
 +
 +	return 0;
 +}
 +
- static bool is_duplicate_route(struct list_head *route_list,
- 		const char *sink, const char *control, const char *src)
- {
-@@ -480,7 +779,8 @@ static int hdac_generic_alloc_mux_widget(struct snd_soc_dapm_context *dapm,
- 
- 	ret = hdac_generic_fill_widget_info(dapm->dev, &widgets[index],
- 			snd_soc_dapm_mux, wid, widget_name, NULL, kc, 1,
--			NULL, 0);
-+			hdac_generic_selector_event, SND_SOC_DAPM_PRE_PMU |
-+			SND_SOC_DAPM_POST_PMD | SND_SOC_DAPM_POST_REG);
- 
- 	if (ret < 0)
- 		return ret;
-@@ -534,7 +834,9 @@ static int hdac_codec_alloc_cvt_widget(struct snd_soc_dapm_context *dapm,
- 	ret = hdac_generic_fill_widget_info(dapm->dev, &widgets[index],
- 			wid->type == AC_WID_AUD_IN ?
- 			snd_soc_dapm_aif_in : snd_soc_dapm_aif_out,
--			wid, widget_name, dai_strm_name, NULL, 0, NULL, 0);
-+			wid, widget_name, dai_strm_name, NULL, 0,
-+			hdac_generic_cvt_event,
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -587,7 +889,9 @@ static int hdac_codec_alloc_mixer_widget(struct snd_soc_dapm_context *dapm,
- 	sprintf(widget_name, "Mixer %x", wid->nid);
- 	ret = hdac_generic_fill_widget_info(dapm->dev, &w[index],
- 			snd_soc_dapm_mixer, wid, widget_name, NULL,
--			kc, wid->num_inputs, NULL, 0);
-+			kc, wid->num_inputs, hdac_generic_mixer_event,
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD |
-+			SND_SOC_DAPM_POST_REG);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -634,7 +938,9 @@ static int hdac_codec_alloc_pin_widget(struct snd_soc_dapm_context *dapm,
- 
- 	ret = hdac_generic_fill_widget_info(dapm->dev, &widgets[i],
- 			input ? snd_soc_dapm_input : snd_soc_dapm_output,
--			wid, widget_name, NULL, NULL, 0, NULL, 0);
-+			wid, widget_name, NULL, NULL, 0,
-+			hdac_generic_pin_io_event,
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -644,7 +950,8 @@ static int hdac_codec_alloc_pin_widget(struct snd_soc_dapm_context *dapm,
- 	sprintf(widget_name, "Pin %x PGA", wid->nid);
- 	ret = hdac_generic_fill_widget_info(dapm->dev, &widgets[i],
- 			snd_soc_dapm_pga, wid, widget_name, NULL,
--			NULL, 0, NULL, 0);
-+			NULL, 0, hdac_generic_pin_pga_event,
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -656,6 +963,15 @@ static int hdac_codec_alloc_pin_widget(struct snd_soc_dapm_context *dapm,
- 		ret = hdac_generic_alloc_mux_widget(dapm, widgets, i, wid);
- 		if (ret < 0)
- 			return ret;
++/*
++ * Example graph connection from a output PIN to a DAC:
++ * DAC1->
++ *         Mixer 1 ------->
++ * DAC2->                   Virtual Mux -> PIN PGA -> OUTPUT PIN
++ *                       ->
++ * LOUT1 ----------------|
++ *
++ * Widget connection map can be created by querying the connection list for
++ * each widget. The parsing can happen from two endpoints:
++ * 1) PIN widget 2) ADC widget.
++ *
++ * This goes through both pin list and adc list and builds the graph.
++ */
++
++static int hdac_generic_add_route_to_list(struct snd_soc_dapm_context *dapm,
++				struct snd_soc_dapm_widget *widgets)
++{
++	struct hdac_ext_device *edev = to_hda_ext_device(dapm->dev);
++	struct hdac_codec_widget *wid;
++	struct snd_soc_dapm_widget **wid_ref;
++	struct widget_node_entries wid_entry;
++	struct list_head route_list;
++	struct route_map *map, *tmp;
++	int ret =  0;
++
++	/*
++	 * manage the routes through a temp list to identify duplicate
++	 * routes from being added.
++	 */
++	INIT_LIST_HEAD(&route_list);
++	list_for_each_entry(wid, &edev->hdac.widget_list, head) {
++		if ((wid->type != AC_WID_PIN) && (wid->type != AC_WID_AUD_IN))
++			continue;
 +		/*
-+		 * Pin mux will not use generic selector handler, so
-+		 * override. Also mux widget create will increment the
-+		 * index, so assign the previous widget.
++		 * input capable pins don't have a connection list, so skip
++		 * them.
 +		 */
-+		widgets[i].event_flags = SND_SOC_DAPM_PRE_PMU |
-+						SND_SOC_DAPM_POST_PMD |
-+						SND_SOC_DAPM_POST_REG;
-+		widgets[i].event = hdac_generic_pin_mux_event;
++		if ((wid->type == AC_WID_PIN) &&
++				(is_input_pin(&edev->hdac, wid->nid)))
++			continue;
++
++		if (wid->type == AC_WID_PIN) {
++			wid_ref = wid->priv;
++
++			wid_entry.wid = wid;
++			wid_entry.num_nodes = 1;
++			wid_entry.w = wid_ref[0];
++		} else {
++			wid_entry.wid = wid;
++			wid_entry.num_nodes = wid->num_inputs;
++			wid_entry.w = wid->priv;
++		}
++
++		ret = parse_node_and_add_route(dapm, &wid_entry, &route_list);
++		if (ret < 0)
++			goto fail;
++	}
++
++fail:
++	list_for_each_entry_safe(map, tmp, &route_list, head) {
++		kfree(map->control);
++		list_del(&map->head);
++		kfree(map);
++	}
++
++	return ret;
++}
++
+ static int hdac_generic_fill_widget_info(struct device *dev,
+ 		struct snd_soc_dapm_widget *w, enum snd_soc_dapm_type id,
+ 		void *priv, const char *wname, const char *stream,
+@@ -518,7 +841,11 @@ static int hdac_generic_create_fill_widget_route_map(
  
- 		wid_ref[2] = &widgets[i++];
- 	}
-@@ -677,7 +993,8 @@ static int hdac_codec_alloc_power_widget(struct snd_soc_dapm_context *dapm,
- 	sprintf(widget_name, "Power %x", wid->nid);
- 	ret = hdac_generic_fill_widget_info(dapm->dev, &widgets[index],
- 			snd_soc_dapm_supply, wid, widget_name,
--			NULL, NULL, 0, NULL, 0);
-+			NULL, NULL, 0, hdac_generic_widget_power_event,
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD);
- 	if (ret < 0)
- 		return ret;
+ 	snd_soc_dapm_new_controls(dapm, widgets, hdac_priv->num_dapm_widgets);
  
-diff --git a/sound/soc/codecs/hdac_generic.h b/sound/soc/codecs/hdac_generic.h
-index 5ca713a..a938b50 100644
---- a/sound/soc/codecs/hdac_generic.h
-+++ b/sound/soc/codecs/hdac_generic.h
-@@ -21,5 +21,8 @@
- #define __HDAC_GENERIC_H__
+-	/* TODO:  Add each path to dapm graph when enumerated */
++	/* Add each path to dapm graph when enumerated */
++	hdac_generic_add_route_to_list(dapm, widgets);
++
++	snd_soc_dapm_new_widgets(dapm->card);
++
  
- #define HDAC_GENERIC_NAME_SIZE	32
-+#define AMP_OUT_MUTE		0xb080
-+#define AMP_OUT_UNMUTE		0xb000
-+#define PIN_OUT			(AC_PINCTL_OUT_EN)
- 
- #endif /* __HDAC_GENERIC_H__ */
+ 	return 0;
+ }
 -- 
 1.9.1
