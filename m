@@ -1,58 +1,70 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-lib][PATCH] test: fix comment about first two
-	fields of TLV data payload
-Date: Tue, 30 Aug 2016 09:21:45 +0900
-Message-ID: <1472516505-8350-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Xavi Drudis Ferran <xdrudis@tinet.cat>
+Subject: Re: Setting some clocks back to DUMMY fixes spdif output on imx6q
+ wandboard rev B1
+Date: Mon, 29 Aug 2016 21:54:28 +0200
+Message-ID: <20160829195428.GD1967@begut>
+References: <20160828160055.GA2122@begut>
+ <20160829192820.GA14207@Asurada-Nvidia>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 18B7C265770
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 02:21:50 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Content-Disposition: inline
+In-Reply-To: <20160829192820.GA14207@Asurada-Nvidia>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Xavi Drudis Ferran <xdrudis@tinet.cat>, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-I misunderstand TLV packet structure (struct snd_ctl_tlv) nests in its
-payload. But actually, the payload stores different type of data.
+El Mon, Aug 29, 2016 at 12:28:21PM -0700, Nicolin Chen deia:
+> 
+> Yes, it seems that it also tried to correct the clock sources
+> as those were not available when adding the S/PDIF support at
+> the first place.
+>
 
-This commit corrects a comment in a test program of user control element
-set including my misunderstanding.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- test/user-ctl-element-set.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/test/user-ctl-element-set.c b/test/user-ctl-element-set.c
-index 9b9dc59..f6f050a 100644
---- a/test/user-ctl-element-set.c
-+++ b/test/user-ctl-element-set.c
-@@ -418,11 +418,11 @@ static int check_tlv(struct elem_set_trial *trial)
- 	int err;
+I wonder if maybe they need to be defined, assigned or somehow listed
+elsewhere and they are not for wandboard quad (but are for other boards)?
  
- 	/*
--	 * See a layout of 'struct snd_ctl_tlv'. I don't know the reason to
--	 * construct this buffer with the same layout. It should be abstracted
--	 * inner userspace library...
-+	 * When transferring threshold level information via TLV feature of
-+	 * ALSA control interface, the first two fields of packet payload
-+	 * consist of data type and data length.
- 	 */
--	orig[0] = snd_ctl_elem_id_get_numid(trial->id);
-+	orig[0] = SNDRV_CTL_TLVT_CONTAINER;
- 	orig[1] = 6 * sizeof(orig[0]);
- 	orig[2] = 'a';
- 	orig[3] = 'b';
--- 
-2.7.4
+> > The issue is fixed for me with this patch but I'm not sure what's the
+> > best way to help fix any issue someone else may have or what other
+> > info or test you might need. Any guidance welcome. 
+> 
+> > --- linux-4.7-no-spdif-out/arch/arm/boot/dts/imx6qdl.dtsi	2016-07-25 00:19:43.000000000 +0200
+> > +++ linux-4.7/arch/arm/boot/dts/imx6qdl.dtsi	2016-08-28 17:59:14.276774409 +0200
+> > @@ -240,9 +240,9 @@
+> >  					       <&sdma 15 18 0>;
+> >  					dma-names = "rx", "tx";
+> >  					clocks = <&clks IMX6QDL_CLK_SPDIF_GCLK>, <&clks IMX6QDL_CLK_OSC>,
+> > -						 <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_ASRC>,
+> > -						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_ESAI_EXTAL>,
+> > -						 <&clks IMX6QDL_CLK_IPG>, <&clks IMX6QDL_CLK_MLB>,
+> > +						 <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_DUMMY>,
+> > +						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_DUMMY>,
+> > +						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_DUMMY>,
+> >  						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_SPBA>;
+> >  					clock-names = "core",  "rxtx0",
+> >  						      "rxtx1", "rxtx2",
+> 
+
+> This looks like that you merely revert the SPDIF_GCLK. 
+
+I revert only some clocks, yes. I left SPDIF_GCLK and CLK_SBPA intact.
+So it is a partial revert of the commit.
+
+> Would you
+> please do a little debug using "#define DEBUG 1" and check printk
+> from fsl_spdif_probe_txclk() to see the difference between before
+> and after Shengjiu's commit?
+
+Yes, but I'm compiling the kernel in the wandboard, so it'll take me some time. 
+
+Thank you. 
