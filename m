@@ -1,25 +1,28 @@
-From: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH 0/2] Support non-ssi cpu-dai for sgtl5000
-Date: Mon, 29 Aug 2016 10:58:57 -0300
-Message-ID: <CAOMZO5B3FDPxm301Hwb+ZVOwYDAMU0vjcVAG0hH36Rf2+s0VDA@mail.gmail.com>
-References: <1472467915-21317-1-git-send-email-wente.wang@nxp.com>
+From: Akshay Bhat <akshay.bhat@timesys.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Add sample rate inquiry quirk for B850V3 CP2114
+Date: Mon, 29 Aug 2016 10:10:03 -0400
+Message-ID: <CACrMeVBgQS4je7ny_r83Xi-7yX-AzR2YVT_gHyp5U7m2LpFoyA@mail.gmail.com>
+References: <1471025327-3529-1-git-send-email-akshay.bhat@timesys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1472467915-21317-1-git-send-email-wente.wang-3arQi8VN3Tc@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Winter Wang <wente.wang-3arQi8VN3Tc@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1471025327-3529-1-git-send-email-akshay.bhat@timesys.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz
+Cc: tiwai@suse.com, gtmkramer@xs4all.nl, denk@post.com, guillaume@eulerian.com, vdronov@redhat.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Ken Lin <ken.lin@advantech.com.tw>, Akshay Bhat <akshay.bhat@timesys.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 29, 2016 at 7:51 AM, Winter Wang <wente.wang-3arQi8VN3Tc@public.gmane.org> wrote:
-> These patches support sgtl5000 to be attached to other non-ssi cpu-dais like SAI.
+Hi,
 
-Do we really need this?
+On Fri, Aug 12, 2016 at 2:08 PM, Akshay Bhat <akshay.bhat@timesys.com> wrote:
+> From: Ken Lin <ken.lin@advantech.com.tw>
+>
+> Avoid getting sample rate on B850V3 CP2114 as it is unsupported and
+> causes noisy "current rate is different from the runtime rate" messages
+> when playback starts.
+>
+> Signed-off-by: Ken Lin <ken.lin@advantech.com.tw>
+> Signed-off-by: Akshay Bhat <akshay.bhat@timesys.com>
+> ---
 
-We can use SAI with sgtl5000 just fine via simple card. Take a look at:
-https://git.kernel.org/cgit/linux/kernel/git/shawnguo/linux.git/commit/arch/arm/boot/dts/imx6ul-14x14-evk.dts?h=imx/fixes&id=bf3251e112a0139c8dec796c9f12f2e8f01a73ca
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Any feedback on the patch? If not can it be applied? Thanks.
