@@ -1,19 +1,21 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
- McBSP to prevent glitches
-Date: Tue, 30 Aug 2016 11:38:35 -0700
-Message-ID: <20160830183834.6u73eb5ujgm5emlk@atomide.com>
-References: <20160829182746.53vrgbxadqodzzug@atomide.com>
- <201608300739.JrTVlIyd%fengguang.wu@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/4] ALSA: control: return payload length
+ for TLV operation
+Date: Wed, 31 Aug 2016 07:04:12 +0900
+Message-ID: <38f437e4-56e7-dc7a-6892-c1d812fd56d3@sakamocchi.jp>
+References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
+ <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
+ <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
+ <20160830145136.GE9355@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muru.com (muru.com [72.249.23.125])
- by alsa0.perex.cz (Postfix) with ESMTP id EFE202673E8
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 20:38:39 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <201608300739.JrTVlIyd%fengguang.wu@intel.com>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 4C767265E0C
+ for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 00:04:19 +0200 (CEST)
+In-Reply-To: <20160830145136.GE9355@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,116 +25,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kbuild test robot <lkp@intel.com>
-Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, kbuild-all@01.org, Pavel Machel <pavel@ucw.cz>, Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@linaro.org, Clemens Ladisch <clemens@ladisch.de>, omair.m.abdullah@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-* kbuild test robot <lkp@intel.com> [160829 21:31]:
-> vim +/dev_pm_qos_request_active +1108 sound/soc/omap/mcbsp.c
+On Aug 30 2016 23:51, Vinod Koul wrote:
+> On Tue, Aug 30, 2016 at 04:09:33PM +0900, Takashi Sakamoto wrote:
+>> On Aug 30 2016 16:05, Clemens Ladisch wrote:
+>>> Takashi Sakamoto wrote:
+>>>> [...] APIs return operated length, while TLV feature
+>>>> can't. This is inconvenient to applications.
+>>>>
+>>>> This commit enables control core to return operated length of TLV feature.
+>>>> This changes the prototype of 'snd_kcontrol_tlv_rw_t' to get a pointer to
+>>>> size variable so that each implementation of the prototype can modify the
+>>>> variable with operated length.
+>>>
+>>> I'll use this function as an example:
+>>>
+>>>> --- a/sound/usb/mixer.c
+>>>> +++ b/sound/usb/mixer.c
+>>>> @@ -535,17 +535,20 @@ int snd_usb_set_cur_mix_value(struct usb_mixer_elem_info *cval, int channel,
+>>>>  * TLV callback for mixer volume controls
+>>>>  */
+>>>> int snd_usb_mixer_vol_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+>>>> -			 unsigned int size, unsigned int __user *_tlv)
+>>>> +			 unsigned int *size, unsigned int __user *_tlv)
+>>>> {
+>>>> 	struct usb_mixer_elem_info *cval = kcontrol->private_data;
+>>>> 	DECLARE_TLV_DB_MINMAX(scale, 0, 0);
+>>>>
+>>>> -	if (size < sizeof(scale))
+>>>> +	if (*size < sizeof(scale))
+>>>> 		return -ENOMEM;
+>>>> 	scale[2] = cval->dBmin;
+>>>> 	scale[3] = cval->dBmax;
+>>>> 	if (copy_to_user(_tlv, scale, sizeof(scale)))
+>>>> 		return -EFAULT;
+>>>> +
+>>>> +	*size = sizeof(scale);
+>>>> +
+>>>> 	return 0;
+>>>> }
+>>>
+>>> The size is already returned in scale[1] (it's initialized by
+>>> DECLARE_TLV_DB_MINMAX()).  That's exactly what the "L" in "TLV" means.
+>>>
+>>> All other TLV callbacks also take care to set this field correctly.
+>>>
+>>> If there were any TLV callback that did not set _tlv[1] to the actual
+>>> size, it would be buggy, and just needed to be fixed to do so.
+>>
+>> As I described, TLV feature of ALSA control interface is not only
+>> used to transfer threshold level information, but also arbitrary
+>> data for I/O by developers in ALSA SoC part. The '_tlv[1]' protocol
+>> is not necessarily kept by them.
 > 
->   1102		clk_put(mcbsp->fclk);
->   1103		return ret;
->   1104	}
->   1105	
->   1106	void omap_mcbsp_cleanup(struct omap_mcbsp *mcbsp)
->   1107	{
-> > 1108		if (dev_pm_qos_request_active(&mcbsp->pm_qos_req))
->   1109			pm_qos_remove_request(&mcbsp->pm_qos_req);
->   1110	
->   1111		if (mcbsp->pdata->buffer_size)
+> can you explain what you mean by 'to transfer threshold level information'
+> 
+> And on this discussion, IIUC, we should fill tlv[1] with size being returned
+> right? For the asoc part, I think we should fix snd_soc_bytes_tlv_callback()
+> to update this.
 
-Oops sorry about that. Looks like I completely missed that warning
-after a copy-paste adding of the check to omap_mcbsp_cleanup. Looks
-like implementing dev_pm_qos needs more work as it needs the
-set_latency_tolerance implemented somewhere.
+The layout of TLV packet is:
+struct snd_ctl_tlv {
+    unsigned int numid;   # numerical ID of a control element
+    unsigned int length;  # length of payload
+    unsigned int tlv[0];  # payload
+};
+http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/uapi/sound/asound.h?h=sound-4.8-rc4#n945
 
-Updated patch below, Mark let me know if you need an incremental
-patch to fix the warning.
+In our implementaion, TLV packet payload (struct snd_ctl_tlv.tlv) is
+used to transfer data. For pure threshold level information, we expects
+applications and drivers to fill the payload with this protocol:
+struct snd_ctl_tlv.tlv[0]:  one of SNDRV_CTL_TLVT_XXX
+struct snd_ctl_tlv.tlv[1]:  length of data
+struct snd_ctl_tlv.tlv[2..]: data
 
-Regards,
+(You can see SNDRV_CTL_TLVT_XXX in this header.
+http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/uapi/sound/tlv.h?h=sound-4.8-rc4
+)
 
-Tony
+On the other hand, ALSA SoC part performs:
+struct snd_ctl_tlv.tlv[0..]: arbitrary data
 
-8< -----------------
-From: Tony Lindgren <tony@atomide.com>
-Date: Mon, 29 Aug 2016 11:27:46 -0700
-Subject: [PATCHv2] ASoC: omap-mcbsp: Add PM QoS support for McBSP to prevent
- glitches
+If your 'tlv[1]' means the 'struct snd_ctl_tlv.tlv[1]', no sense.
 
-We can get audio errors if hitting deeper idle states on omaps:
+The issue I address is current implementation cannot correctly handle
+this case:
+ - applications request a buffer with a certain size
+ - drivers processes the request with smaller size
+ - application cannot get the size
 
-[alsa.c:230] error: Fatal problem with alsa output, error -5.
-[audio.c:614] error: Error in writing audio (Input/output error?)!
+When implementing I/O operation, in my understanding, this situation
+often occurs, depending on driver implementation. Fortunately, current
+implementation of WM-ADSP is free from this concern, but it's better for
+us not to expect this luck always.
 
-This seems to happen with off mode idle enabled as power for the
-whole SoC may get cut off between filling the McBSP fifo using DMA.
-While active DMA blocks deeper idle states in hardware, McBSP
-activity does not seem to do so.
 
-Let's fix the issue by adding PM QoS latency requirement for McBSP.
-Based on my experiments a working latency value is somewhere
-around 35 ms with 40 ms breaking. So let's use a safer value of 30 ms.
+Regards
 
-Note that this is different from snd_pcm_hw_constraint_step() as
-that can configure things based on the buffer and period size.
-However, that does not help to block idle between the fifo fills.
-
-Note that in theory some omaps are capable of playing audio while
-hitting deeper idle states. If somebody needs that and gets it
-working, we can set the latency requirements accordingly.
-
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-
-diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
---- a/sound/soc/omap/mcbsp.c
-+++ b/sound/soc/omap/mcbsp.c
-@@ -25,6 +25,7 @@
- #include <linux/io.h>
- #include <linux/slab.h>
- #include <linux/pm_runtime.h>
-+#include <linux/pm_qos.h>
- 
- #include <linux/platform_data/asoc-ti-mcbsp.h>
- 
-@@ -643,6 +644,10 @@ void omap_mcbsp_start(struct omap_mcbsp *mcbsp, int tx, int rx)
- 	int enable_srg = 0;
- 	u16 w;
- 
-+	/* Prevent omap hardware from hitting off between fifo fills */
-+	pm_qos_add_request(&mcbsp->pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
-+			   30 * 1000);
-+
- 	if (mcbsp->st_data)
- 		omap_st_start(mcbsp);
- 
-@@ -731,6 +736,8 @@ void omap_mcbsp_stop(struct omap_mcbsp *mcbsp, int tx, int rx)
- 
- 	if (mcbsp->st_data)
- 		omap_st_stop(mcbsp);
-+
-+	pm_qos_remove_request(&mcbsp->pm_qos_req);
- }
- 
- int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id)
-@@ -1098,6 +1105,9 @@ err_thres:
- 
- void omap_mcbsp_cleanup(struct omap_mcbsp *mcbsp)
- {
-+	if (pm_qos_request_active(&mcbsp->pm_qos_req))
-+		pm_qos_remove_request(&mcbsp->pm_qos_req);
-+
- 	if (mcbsp->pdata->buffer_size)
- 		sysfs_remove_group(&mcbsp->dev->kobj, &additional_attr_group);
- 
-diff --git a/sound/soc/omap/mcbsp.h b/sound/soc/omap/mcbsp.h
---- a/sound/soc/omap/mcbsp.h
-+++ b/sound/soc/omap/mcbsp.h
-@@ -325,6 +325,8 @@ struct omap_mcbsp {
- 	unsigned int in_freq;
- 	int clk_div;
- 	int wlen;
-+
-+	struct pm_qos_request pm_qos_req;
- };
- 
- void omap_mcbsp_config(struct omap_mcbsp *mcbsp,
+Takashi Sakamoto
