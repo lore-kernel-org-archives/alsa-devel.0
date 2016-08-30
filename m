@@ -1,21 +1,19 @@
-From: "Felipe F. Tonello" <eu@felipetonello.com>
-Subject: [v7 PATCH] amidi: add sysex-interval option
-Date: Tue, 30 Aug 2016 17:02:48 +0100
-Message-ID: <20160830160248.4595-1-eu@felipetonello.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
+ McBSP to prevent glitches
+Date: Tue, 30 Aug 2016 11:38:35 -0700
+Message-ID: <20160830183834.6u73eb5ujgm5emlk@atomide.com>
+References: <20160829182746.53vrgbxadqodzzug@atomide.com>
+ <201608300739.JrTVlIyd%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 0566D268092
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 18:02:51 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id i5so3794153wmg.2
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 09:02:51 -0700 (PDT)
-Received: from localhost.localdomain ([81.145.202.106])
- by smtp.gmail.com with ESMTPSA id g67sm4606600wme.5.2016.08.30.09.02.49
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 30 Aug 2016 09:02:49 -0700 (PDT)
+Received: from muru.com (muru.com [72.249.23.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFE202673E8
+ for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 20:38:39 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201608300739.JrTVlIyd%fengguang.wu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,118 +23,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: kbuild test robot <lkp@intel.com>
+Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, kbuild-all@01.org, Pavel Machel <pavel@ucw.cz>, Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBwYXRjaCBhZGRzIGEgbmV3IG9wdGlvbiB0byBhbWlkaSB0b29sOiBzeXNleC1pbnRlcnZh
-bC4KCkl0IGFkZHMgYSBkZWxheSAoaW4gbWlsbGlzZWNvbmRzKSBpbiBiZXR3ZWVuIGVhY2ggU3lz
-RXggbWVzc2FnZSAtIGl0IHNlYXJjaGVzCmZvciBhIDB4RjcgYnl0ZS4KClRoaXMgaXMgdmVyeSB1
-c2VmdWwgd2hlbiBzZW5kaW5nIGZpcm13YXJlIHVwZGF0ZXMgdG8gYSByZW1vdGUgZGV2aWNlIHZp
-YSBTeXNFeApvciBhbnkgb3RoZXIgdXNlIHRoYXQgcmVxdWlyZXMgdGhpcyBkZWxheSBpbiBiZXR3
-ZWVuIFN5c0V4IG1lc3NhZ2VzLgoKYGFtaWRpJyBtYW51YWwgd2FzIHVwZGF0ZWQgd2l0aCBhbiBl
-eGFtcGxlIHVzYWdlIGFzIHdlbGwuCgpTaWduZWQtb2ZmLWJ5OiBGZWxpcGUgRi4gVG9uZWxsbyA8
-ZXVAZmVsaXBldG9uZWxsby5jb20+Ci0tLQogYW1pZGkvYW1pZGkuMSB8IDE2ICsrKysrKysrKyst
-CiBhbWlkaS9hbWlkaS5jIHwgODggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKystLS0tLS0tLS0tLS0KIDIgZmlsZXMgY2hhbmdlZCwgODYgaW5zZXJ0aW9ucygr
-KSwgMTggZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvYW1pZGkvYW1pZGkuMSBiL2FtaWRpL2Ft
-aWRpLjEKaW5kZXggODZiZWIyN2ExZTNiLi41YmMyNGJhM2FkNTQgMTAwNjQ0Ci0tLSBhL2FtaWRp
-L2FtaWRpLjEKKysrIGIvYW1pZGkvYW1pZGkuMQpAQCAtMSw0ICsxLDQgQEAKLS5USCBBTUlESSAx
-ICIxNiBBcHIgMjAxNiIKKy5USCBBTUlESSAxICIzMCBBdWcgMjAxNiIKIAogLlNIIE5BTUUKIGFt
-aWRpIFwtIHJlYWQgZnJvbSBhbmQgd3JpdGUgdG8gQUxTQSBSYXdNSURJIHBvcnRzCkBAIC0xMjAs
-NiArMTIwLDEyIEBAIHJlY2VpdmVkIE1JREkgY29tbWFuZHMuCiBEb2VzIG5vdCBpZ25vcmUgQ2xv
-Y2sgYnl0ZXMgKEY4aCkgd2hlbiBzYXZpbmcgb3IgcHJpbnRpbmcgcmVjZWl2ZWQKIE1JREkgY29t
-bWFuZHMuCiAKKy5UUAorLkkgXC1pLCBcLVwtc3lzZXgtaW50ZXJ2YWw9bXNlY29uZHMKK0FkZHMg
-YSBkZWxheSBpbiBiZXR3ZWVuIGVhY2ggU3lzRXggbWVzc2FnZSBzZW50IHRvIGEgZGV2aWNlLiBJ
-dCBpcwordXNlZnVsIHdoZW4gc2VuZGluZyBmaXJtd2FyZSB1cGRhdGVzIHZpYSBTeXNFeCBtZXNz
-YWdlcyB0byBhIHJlbW90ZQorZGV2aWNlLgorCiAuU0ggRVhBTVBMRVMKIAogLlRQCkBAIC0xMzAs
-NiArMTM2LDE0IEBAIHRvIHBvcnQKIC5JIGh3OjAuCiAKIC5UUAorLkIgYW1pZGkgXC1wIGh3OjEs
-MCwwIC1zIGZpcm13YXJlLnN5eCBcLWkgMTAwCit3aWxsIHNlbmQgdGhlIE1JREkgY29tbWFuZHMg
-aW4KKy5JIGZpcm13YXJlLnN5eAordG8gcG9ydAorLkkgaHc6MSwwLDAKK3dpdGggMTAwIG1pbGxp
-c2Vjb25kcyBkZWxheSBpbiBiZXR3ZWVuIGVhY2ggU3lzRXggbWVzc2FnZS4KKworLlRQCiAuQiBh
-bWlkaSBcLVMgJ0YwIDQzIDEwIDRDIDAwIDAwIDdFIDAwIEY3Jwogc2VuZHMgYW4gWEcgUmVzZXQg
-dG8gdGhlIGRlZmF1bHQgcG9ydC4KIApkaWZmIC0tZ2l0IGEvYW1pZGkvYW1pZGkuYyBiL2FtaWRp
-L2FtaWRpLmMKaW5kZXggYzIwNTEyY2M5NmE3Li5hODI2NGYxODFjZjMgMTAwNjQ0Ci0tLSBhL2Ft
-aWRpL2FtaWRpLmMKKysrIGIvYW1pZGkvYW1pZGkuYwpAQCAtNTIsNiArNTIsNyBAQCBzdGF0aWMg
-aW50IHJlY2VpdmVfZmlsZTsKIHN0YXRpYyBpbnQgZHVtcDsKIHN0YXRpYyBmbG9hdCB0aW1lb3V0
-Owogc3RhdGljIGludCBzdG9wOworc3RhdGljIGludCBzeXNleF9pbnRlcnZhbDsKIHN0YXRpYyBz
-bmRfcmF3bWlkaV90ICppbnB1dCwgKippbnB1dHA7CiBzdGF0aWMgc25kX3Jhd21pZGlfdCAqb3V0
-cHV0LCAqKm91dHB1dHA7CiAKQEAgLTcwLDE5ICs3MSwyMCBAQCBzdGF0aWMgdm9pZCB1c2FnZSh2
-b2lkKQogCXByaW50ZigKIAkJIlVzYWdlOiBhbWlkaSBvcHRpb25zXG4iCiAJCSJcbiIKLQkJIi1o
-LCAtLWhlbHAgICAgICAgICAgICAgdGhpcyBoZWxwXG4iCi0JCSItViwgLS12ZXJzaW9uICAgICAg
-ICAgIHByaW50IGN1cnJlbnQgdmVyc2lvblxuIgotCQkiLWwsIC0tbGlzdC1kZXZpY2VzICAgICBs
-aXN0IGFsbCBoYXJkd2FyZSBwb3J0c1xuIgotCQkiLUwsIC0tbGlzdC1yYXdtaWRpcyAgICBsaXN0
-IGFsbCBSYXdNSURJIGRlZmluaXRpb25zXG4iCi0JCSItcCwgLS1wb3J0PW5hbWUgICAgICAgIHNl
-bGVjdCBwb3J0IGJ5IG5hbWVcbiIKLQkJIi1zLCAtLXNlbmQ9ZmlsZSAgICAgICAgc2VuZCB0aGUg
-Y29udGVudHMgb2YgYSAoLnN5eCkgZmlsZVxuIgotCQkiLXIsIC0tcmVjZWl2ZT1maWxlICAgICB3
-cml0ZSByZWNlaXZlZCBkYXRhIGludG8gYSBmaWxlXG4iCi0JCSItUywgLS1zZW5kLWhleD1cIi4u
-LlwiICAgc2VuZCBoZXhhZGVjaW1hbCBieXRlc1xuIgotCQkiLWQsIC0tZHVtcCAgICAgICAgICAg
-ICBwcmludCByZWNlaXZlZCBkYXRhIGFzIGhleGFkZWNpbWFsIGJ5dGVzXG4iCi0JCSItdCwgLS10
-aW1lb3V0PXNlY29uZHMgIGV4aXRzIHdoZW4gbm8gZGF0YSBoYXMgYmVlbiByZWNlaXZlZFxuIgot
-CQkiICAgICAgICAgICAgICAgICAgICAgICBmb3IgdGhlIHNwZWNpZmllZCBkdXJhdGlvblxuIgot
-CQkiLWEsIC0tYWN0aXZlLXNlbnNpbmcgICBpbmNsdWRlIGFjdGl2ZSBzZW5zaW5nIGJ5dGVzXG4i
-Ci0JCSItYywgLS1jbG9jayAgICAgICAgICAgIGluY2x1ZGUgY2xvY2sgYnl0ZXNcbiIpOworCQki
-LWgsIC0taGVscCAgICAgICAgICAgICAgICAgICAgICB0aGlzIGhlbHBcbiIKKwkJIi1WLCAtLXZl
-cnNpb24gICAgICAgICAgICAgICAgICAgcHJpbnQgY3VycmVudCB2ZXJzaW9uXG4iCisJCSItbCwg
-LS1saXN0LWRldmljZXMgICAgICAgICAgICAgIGxpc3QgYWxsIGhhcmR3YXJlIHBvcnRzXG4iCisJ
-CSItTCwgLS1saXN0LXJhd21pZGlzICAgICAgICAgICAgIGxpc3QgYWxsIFJhd01JREkgZGVmaW5p
-dGlvbnNcbiIKKwkJIi1wLCAtLXBvcnQ9bmFtZSAgICAgICAgICAgICAgICAgc2VsZWN0IHBvcnQg
-YnkgbmFtZVxuIgorCQkiLXMsIC0tc2VuZD1maWxlICAgICAgICAgICAgICAgICBzZW5kIHRoZSBj
-b250ZW50cyBvZiBhICguc3l4KSBmaWxlXG4iCisJCSItciwgLS1yZWNlaXZlPWZpbGUgICAgICAg
-ICAgICAgIHdyaXRlIHJlY2VpdmVkIGRhdGEgaW50byBhIGZpbGVcbiIKKwkJIi1TLCAtLXNlbmQt
-aGV4PVwiLi4uXCIgICAgICAgICAgICBzZW5kIGhleGFkZWNpbWFsIGJ5dGVzXG4iCisJCSItZCwg
-LS1kdW1wICAgICAgICAgICAgICAgICAgICAgIHByaW50IHJlY2VpdmVkIGRhdGEgYXMgaGV4YWRl
-Y2ltYWwgYnl0ZXNcbiIKKwkJIi10LCAtLXRpbWVvdXQ9c2Vjb25kcyAgICAgICAgICAgZXhpdHMg
-d2hlbiBubyBkYXRhIGhhcyBiZWVuIHJlY2VpdmVkXG4iCisJCSIgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIGZvciB0aGUgc3BlY2lmaWVkIGR1cmF0aW9uXG4iCisJCSItYSwgLS1hY3Rp
-dmUtc2Vuc2luZyAgICAgICAgICAgIGluY2x1ZGUgYWN0aXZlIHNlbnNpbmcgYnl0ZXNcbiIKKwkJ
-Ii1jLCAtLWNsb2NrICAgICAgICAgICAgICAgICAgICAgaW5jbHVkZSBjbG9jayBieXRlc1xuIgor
-CQkiLWksIC0tc3lzZXgtaW50ZXJ2YWw9bXNlY29uZHMgICBkZWxheSBpbiBiZXR3ZWVuIGVhY2gg
-U3lzRXggbWVzc2FnZVxuIik7CiB9CiAKIHN0YXRpYyB2b2lkIHZlcnNpb24odm9pZCkKQEAgLTIz
-MCw2ICsyMzIsNDcgQEAgc3RhdGljIHZvaWQgcmF3bWlkaV9saXN0KHZvaWQpCiAJc25kX291dHB1
-dF9jbG9zZShvdXRwdXQpOwogfQogCitzdGF0aWMgaW50IHNlbmRfbWlkaV9pbnRlcmxlYXZlZCh2
-b2lkKQoreworCWludCBlcnI7CisJY2hhciAqZGF0YSA9IHNlbmRfZGF0YTsKKwlzaXplX3QgYnVm
-ZmVyX3NpemU7CisJc25kX3Jhd21pZGlfcGFyYW1zX3QgKnBhcmFtOworCXNuZF9yYXdtaWRpX3N0
-YXR1c190ICpzdDsKKworCXNuZF9yYXdtaWRpX3N0YXR1c19hbGxvY2EoJnN0KTsKKworCXNuZF9y
-YXdtaWRpX3BhcmFtc19hbGxvY2EoJnBhcmFtKTsKKwlzbmRfcmF3bWlkaV9wYXJhbXNfY3VycmVu
-dChvdXRwdXQsIHBhcmFtKTsKKwlidWZmZXJfc2l6ZSA9IHNuZF9yYXdtaWRpX3BhcmFtc19nZXRf
-YnVmZmVyX3NpemUocGFyYW0pOworCisJd2hpbGUgKGRhdGEgPCAoc2VuZF9kYXRhICsgc2VuZF9k
-YXRhX2xlbmd0aCkpIHsKKwkJaW50IGxlbiA9IHNlbmRfZGF0YSArIHNlbmRfZGF0YV9sZW5ndGgg
-LSBkYXRhOworCQljaGFyICp0ZW1wOworCisJCWlmIChkYXRhID4gc2VuZF9kYXRhKSB7CisJCQlz
-bmRfcmF3bWlkaV9zdGF0dXMob3V0cHV0LCBzdCk7CisJCQlkbyB7CisJCQkJLyogMzIwIMK1cyBw
-ZXIgYnl0ZSBhcyBub3RlZCBpbiBQYWdlIDEgb2YgTUlESSBzcGVjICovCisJCQkJdXNsZWVwKChi
-dWZmZXJfc2l6ZSAtIHNuZF9yYXdtaWRpX3N0YXR1c19nZXRfYXZhaWwoc3QpKSAqIDMyMCk7CisJ
-CQkJc25kX3Jhd21pZGlfc3RhdHVzKG91dHB1dCwgc3QpOworCQkJfSB3aGlsZShzbmRfcmF3bWlk
-aV9zdGF0dXNfZ2V0X2F2YWlsKHN0KSA8IGJ1ZmZlcl9zaXplKTsKKwkJCXVzbGVlcChzeXNleF9p
-bnRlcnZhbCAqIDEwMDApOworCQl9CisKKwkJLyogZmluZCBlbmQgb2YgU3lzRXggKi8KKwkJaWYg
-KCh0ZW1wID0gbWVtY2hyKGRhdGEsIDB4ZjcsIGxlbikpICE9IE5VTEwpCisJCQlsZW4gPSB0ZW1w
-IC0gZGF0YSArIDE7CisKKwkJaWYgKChlcnIgPSBzbmRfcmF3bWlkaV93cml0ZShvdXRwdXQsIGRh
-dGEsIGxlbikpIDwgMCkKKwkJCXJldHVybiBlcnI7CisKKwkJZGF0YSArPSBsZW47CisJfQorCisJ
-cmV0dXJuIDA7Cit9CisKIHN0YXRpYyB2b2lkIGxvYWRfZmlsZSh2b2lkKQogewogCWludCBmZDsK
-QEAgLTQxMSw3ICs0NTQsNyBAQCBzdGF0aWMgdm9pZCBhZGRfc2VuZF9oZXhfZGF0YShjb25zdCBj
-aGFyICpzdHIpCiAKIGludCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCiB7Ci0Jc3RhdGlj
-IGNvbnN0IGNoYXIgc2hvcnRfb3B0aW9uc1tdID0gImhWbExwOnM6cjpTOjpkdDphYyI7CisJc3Rh
-dGljIGNvbnN0IGNoYXIgc2hvcnRfb3B0aW9uc1tdID0gImhWbExwOnM6cjpTOjpkdDphY2k6IjsK
-IAlzdGF0aWMgY29uc3Qgc3RydWN0IG9wdGlvbiBsb25nX29wdGlvbnNbXSA9IHsKIAkJeyJoZWxw
-IiwgMCwgTlVMTCwgJ2gnfSwKIAkJeyJ2ZXJzaW9uIiwgMCwgTlVMTCwgJ1YnfSwKQEAgLTQyNSw2
-ICs0NjgsNyBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQogCQl7InRpbWVvdXQi
-LCAxLCBOVUxMLCAndCd9LAogCQl7ImFjdGl2ZS1zZW5zaW5nIiwgMCwgTlVMTCwgJ2EnfSwKIAkJ
-eyJjbG9jayIsIDAsIE5VTEwsICdjJ30sCisJCXsic3lzZXgtaW50ZXJ2YWwiLCAxLCBOVUxMLCAn
-aSd9LAogCQl7IH0KIAl9OwogCWludCBjLCBlcnIsIG9rID0gMDsKQEAgLTQ3NCw2ICs1MTgsOSBA
-QCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQogCQljYXNlICdjJzoKIAkJCWlnbm9y
-ZV9jbG9jayA9IDA7CiAJCQlicmVhazsKKwkJY2FzZSAnaSc6CisJCQlzeXNleF9pbnRlcnZhbCA9
-IGF0b2kob3B0YXJnKTsKKwkJCWJyZWFrOwogCQlkZWZhdWx0OgogCQkJZXJyb3IoIlRyeSBgYW1p
-ZGkgLS1oZWxwJyBmb3IgbW9yZSBpbmZvcm1hdGlvbi4iKTsKIAkJCXJldHVybiAxOwpAQCAtNTQ5
-LDkgKzU5NiwxNiBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQogCQkJZXJyb3Io
-ImNhbm5vdCBzZXQgYmxvY2tpbmcgbW9kZTogJXMiLCBzbmRfc3RyZXJyb3IoZXJyKSk7CiAJCQln
-b3RvIF9leGl0OwogCQl9Ci0JCWlmICgoZXJyID0gc25kX3Jhd21pZGlfd3JpdGUob3V0cHV0LCBz
-ZW5kX2RhdGEsIHNlbmRfZGF0YV9sZW5ndGgpKSA8IDApIHsKLQkJCWVycm9yKCJjYW5ub3Qgc2Vu
-ZCBkYXRhOiAlcyIsIHNuZF9zdHJlcnJvcihlcnIpKTsKLQkJCWdvdG8gX2V4aXQ7CisJCWlmICgh
-c3lzZXhfaW50ZXJ2YWwpIHsKKwkJCWlmICgoZXJyID0gc25kX3Jhd21pZGlfd3JpdGUob3V0cHV0
-LCBzZW5kX2RhdGEsIHNlbmRfZGF0YV9sZW5ndGgpKSA8IDApIHsKKwkJCQllcnJvcigiY2Fubm90
-IHNlbmQgZGF0YTogJXMiLCBzbmRfc3RyZXJyb3IoZXJyKSk7CisJCQkJcmV0dXJuIGVycjsKKwkJ
-CX0KKwkJfSBlbHNlIHsKKwkJCWlmICgoZXJyID0gc2VuZF9taWRpX2ludGVybGVhdmVkKCkpIDwg
-MCkgeworCQkJCWVycm9yKCJjYW5ub3Qgc2VuZCBkYXRhOiAlcyIsIHNuZF9zdHJlcnJvcihlcnIp
-KTsKKwkJCQlyZXR1cm4gZXJyOworCQkJfQogCQl9CiAJfQogCi0tIAoyLjkuMwoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+* kbuild test robot <lkp@intel.com> [160829 21:31]:
+> vim +/dev_pm_qos_request_active +1108 sound/soc/omap/mcbsp.c
+> 
+>   1102		clk_put(mcbsp->fclk);
+>   1103		return ret;
+>   1104	}
+>   1105	
+>   1106	void omap_mcbsp_cleanup(struct omap_mcbsp *mcbsp)
+>   1107	{
+> > 1108		if (dev_pm_qos_request_active(&mcbsp->pm_qos_req))
+>   1109			pm_qos_remove_request(&mcbsp->pm_qos_req);
+>   1110	
+>   1111		if (mcbsp->pdata->buffer_size)
+
+Oops sorry about that. Looks like I completely missed that warning
+after a copy-paste adding of the check to omap_mcbsp_cleanup. Looks
+like implementing dev_pm_qos needs more work as it needs the
+set_latency_tolerance implemented somewhere.
+
+Updated patch below, Mark let me know if you need an incremental
+patch to fix the warning.
+
+Regards,
+
+Tony
+
+8< -----------------
+From: Tony Lindgren <tony@atomide.com>
+Date: Mon, 29 Aug 2016 11:27:46 -0700
+Subject: [PATCHv2] ASoC: omap-mcbsp: Add PM QoS support for McBSP to prevent
+ glitches
+
+We can get audio errors if hitting deeper idle states on omaps:
+
+[alsa.c:230] error: Fatal problem with alsa output, error -5.
+[audio.c:614] error: Error in writing audio (Input/output error?)!
+
+This seems to happen with off mode idle enabled as power for the
+whole SoC may get cut off between filling the McBSP fifo using DMA.
+While active DMA blocks deeper idle states in hardware, McBSP
+activity does not seem to do so.
+
+Let's fix the issue by adding PM QoS latency requirement for McBSP.
+Based on my experiments a working latency value is somewhere
+around 35 ms with 40 ms breaking. So let's use a safer value of 30 ms.
+
+Note that this is different from snd_pcm_hw_constraint_step() as
+that can configure things based on the buffer and period size.
+However, that does not help to block idle between the fifo fills.
+
+Note that in theory some omaps are capable of playing audio while
+hitting deeper idle states. If somebody needs that and gets it
+working, we can set the latency requirements accordingly.
+
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+
+diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
+--- a/sound/soc/omap/mcbsp.c
++++ b/sound/soc/omap/mcbsp.c
+@@ -25,6 +25,7 @@
+ #include <linux/io.h>
+ #include <linux/slab.h>
+ #include <linux/pm_runtime.h>
++#include <linux/pm_qos.h>
+ 
+ #include <linux/platform_data/asoc-ti-mcbsp.h>
+ 
+@@ -643,6 +644,10 @@ void omap_mcbsp_start(struct omap_mcbsp *mcbsp, int tx, int rx)
+ 	int enable_srg = 0;
+ 	u16 w;
+ 
++	/* Prevent omap hardware from hitting off between fifo fills */
++	pm_qos_add_request(&mcbsp->pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
++			   30 * 1000);
++
+ 	if (mcbsp->st_data)
+ 		omap_st_start(mcbsp);
+ 
+@@ -731,6 +736,8 @@ void omap_mcbsp_stop(struct omap_mcbsp *mcbsp, int tx, int rx)
+ 
+ 	if (mcbsp->st_data)
+ 		omap_st_stop(mcbsp);
++
++	pm_qos_remove_request(&mcbsp->pm_qos_req);
+ }
+ 
+ int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id)
+@@ -1098,6 +1105,9 @@ err_thres:
+ 
+ void omap_mcbsp_cleanup(struct omap_mcbsp *mcbsp)
+ {
++	if (pm_qos_request_active(&mcbsp->pm_qos_req))
++		pm_qos_remove_request(&mcbsp->pm_qos_req);
++
+ 	if (mcbsp->pdata->buffer_size)
+ 		sysfs_remove_group(&mcbsp->dev->kobj, &additional_attr_group);
+ 
+diff --git a/sound/soc/omap/mcbsp.h b/sound/soc/omap/mcbsp.h
+--- a/sound/soc/omap/mcbsp.h
++++ b/sound/soc/omap/mcbsp.h
+@@ -325,6 +325,8 @@ struct omap_mcbsp {
+ 	unsigned int in_freq;
+ 	int clk_div;
+ 	int wlen;
++
++	struct pm_qos_request pm_qos_req;
+ };
+ 
+ void omap_mcbsp_config(struct omap_mcbsp *mcbsp,
