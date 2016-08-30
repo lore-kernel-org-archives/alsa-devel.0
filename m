@@ -1,18 +1,18 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] test: fix comment about first two fields
- of TLV data payload
-Date: Tue, 30 Aug 2016 15:33:24 +0900
-Message-ID: <7934a94f-a725-1d4b-43f0-3ea24a435aee@sakamocchi.jp>
-References: <1472516505-8350-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5h7fay4ya7.wl-tiwai@suse.de>
+Subject: Re: [PATCH] ALSA: seq: initialize whole fields of
+ automatic variable with union type
+Date: Tue, 30 Aug 2016 15:34:18 +0900
+Message-ID: <8e834bc7-1f12-826f-57cc-c1fdcf2ab372@sakamocchi.jp>
+References: <1472515914-7703-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hbn0a4z8n.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 15DA9266168
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 08:33:27 +0200 (CEST)
-In-Reply-To: <s5h7fay4ya7.wl-tiwai@suse.de>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id CF26826697E
+ for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 08:34:20 +0200 (CEST)
+In-Reply-To: <s5hbn0a4z8n.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +26,48 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 30 2016 14:32, Takashi Iwai wrote:
-> On Tue, 30 Aug 2016 02:21:45 +0200,
+On Aug 30 2016 14:11, Takashi Iwai wrote:
+> On Tue, 30 Aug 2016 02:11:54 +0200,
 > Takashi Sakamoto wrote:
 >>
->> I misunderstand TLV packet structure (struct snd_ctl_tlv) nests in its
->> payload. But actually, the payload stores different type of data.
+>> Currently, automatic variable of 'union ioctl_arg' type is initialized
+>> by designated initialization. Although, the actual effect is interpretation
+>> of early element of int type and initialization of 'int pversion'.
+>> Therefore the first field corresponding to int type is initialized to zero.
+>> This is against my expectation to initialize whole fields.
 >>
->> This commit corrects a comment in a test program of user control element
->> set including my misunderstanding.
+>> This commit uses memset() to initialize the variable, instead of designated
+>> initialization.
 >>
+>> Fixes: 04a56dd8ed0d ('ALSA: seq: change ioctl command operation to get data in kernel space')
 >> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 >> ---
->>  test/user-ctl-element-set.c | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>  sound/core/seq/seq_clientmgr.c | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
 >>
->> diff --git a/test/user-ctl-element-set.c b/test/user-ctl-element-set.c
->> index 9b9dc59..f6f050a 100644
->> --- a/test/user-ctl-element-set.c
->> +++ b/test/user-ctl-element-set.c
->> @@ -418,11 +418,11 @@ static int check_tlv(struct elem_set_trial *trial)
+>> diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+>> index 286394b..fd50c38 100644
+>> --- a/sound/core/seq/seq_clientmgr.c
+>> +++ b/sound/core/seq/seq_clientmgr.c
+>> @@ -2100,7 +2100,7 @@ static long snd_seq_ioctl(struct file *file, unsigned int cmd,
+>>  		struct snd_seq_client_pool	client_pool;
+>>  		struct snd_seq_remove_events	remove_events;
+>>  		struct snd_seq_query_subs	query_subs;
+>> -	} buf = {0};
+>> +	} buf;
+>>  	const struct ioctl_handler *handler;
+>>  	unsigned long size;
 >>  	int err;
->>
->>  	/*
->> -	 * See a layout of 'struct snd_ctl_tlv'. I don't know the reason to
->> -	 * construct this buffer with the same layout. It should be abstracted
->> -	 * inner userspace library...
->> +	 * When transferring threshold level information via TLV feature of
->> +	 * ALSA control interface, the first two fields of packet payload
->> +	 * consist of data type and data length.
->>  	 */
->> -	orig[0] = snd_ctl_elem_id_get_numid(trial->id);
->> +	orig[0] = SNDRV_CTL_TLVT_CONTAINER;
->>  	orig[1] = 6 * sizeof(orig[0]);
->>  	orig[2] = 'a';
->>  	orig[3] = 'b';
+>> @@ -2114,6 +2114,9 @@ static long snd_seq_ioctl(struct file *file, unsigned int cmd,
+>>  	}
+>>  	if (handler->cmd == 0)
+>>  		return -ENOTTY;
+>> +
+>> +	memset(&buf, 0, sizeof(union ioctl_arg));
 >
-> The container TLV type expects other TLVs as its content.  So the
-> above looks buggy to me...
+> The common practice is to pass sizeof(buf).
 
-This is a test program just to serve to myself. So I hope this degree of 
-roughness is allowed...
-
-Or could you please construct valid TLV array here? I don't exactly know 
-the way to do it, because I've never touched better documentation about 
-whole design of TLV payload data.
+OK. I'll post revised version later.
 
 
 Regards
