@@ -1,60 +1,76 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v2 1/2] ALSA: fireworks: accessing to user space outside
- spinlock
-Date: Tue, 30 Aug 2016 15:27:34 +0900
-Message-ID: <87689314-7c37-0477-2b7e-8f870f4d6e44@sakamocchi.jp>
-References: <1472511695-29316-1-git-send-email-o-takashi@sakamocchi.jp>
- <1472511695-29316-2-git-send-email-o-takashi@sakamocchi.jp>
- <s5ha8fu4yv7.wl-tiwai@suse.de> <57C52288.4010502@oracle.com>
+Subject: Re: [PATCH] test: fix comment about first two fields
+ of TLV data payload
+Date: Tue, 30 Aug 2016 15:33:24 +0900
+Message-ID: <7934a94f-a725-1d4b-43f0-3ea24a435aee@sakamocchi.jp>
+References: <1472516505-8350-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5h7fay4ya7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <57C52288.4010502@oracle.com>
-Sender: stable-owner@vger.kernel.org
-To: Vaishali Thakkar <vaishali.thakkar@oracle.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, stable@vger.kernel.org, ffado-devel@lists.sf.net
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 15DA9266168
+ for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 08:33:27 +0200 (CEST)
+In-Reply-To: <s5h7fay4ya7.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 30 2016 15:07, Vaishali Thakkar wrote:
->>> diff --git a/sound/firewire/fireworks/fireworks_hwdep.c b/sound/firewire/fireworks/fireworks_hwdep.c
->>> index 33df865..8ed4b29 100644
->>> --- a/sound/firewire/fireworks/fireworks_hwdep.c
->>> +++ b/sound/firewire/fireworks/fireworks_hwdep.c
->>> @@ -38,6 +38,7 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
->>>  	buf += sizeof(type);
->>>
->>>  	/* write into buffer as many responses as possible */
->>> +	spin_lock_irq(&efw->lock);
->>>  	while (efw->resp_queues > 0) {
->>>  		t = (struct snd_efw_transaction *)(efw->pull_ptr);
->>>  		length = be32_to_cpu(t->length) * sizeof(__be32);
->>> @@ -52,9 +53,13 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
->>>  				(unsigned int)(efw->pull_ptr - efw->resp_buf);
->>>  			till_end = min_t(unsigned int, length, till_end);
->>>
->>> +			spin_unlock_irq(&efw->lock);
->>> +
->>>  			if (copy_to_user(buf, efw->pull_ptr, till_end))
->>>  				return -EFAULT;
->>>
->>> +			spin_lock_irq(&efw->lock);
->>> +
->>>  			efw->pull_ptr += till_end;
+On Aug 30 2016 14:32, Takashi Iwai wrote:
+> On Tue, 30 Aug 2016 02:21:45 +0200,
+> Takashi Sakamoto wrote:
 >>
->> Strictly speaking, this is still racy.  efw->pull_ptr is accessed
->> outside the spinlock, and it can be modified while copy_to_user() is
->> being processed.
+>> I misunderstand TLV packet structure (struct snd_ctl_tlv) nests in its
+>> payload. But actually, the payload stores different type of data.
+>>
+>> This commit corrects a comment in a test program of user control element
+>> set including my misunderstanding.
+>>
+>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>> ---
+>>  test/user-ctl-element-set.c | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/test/user-ctl-element-set.c b/test/user-ctl-element-set.c
+>> index 9b9dc59..f6f050a 100644
+>> --- a/test/user-ctl-element-set.c
+>> +++ b/test/user-ctl-element-set.c
+>> @@ -418,11 +418,11 @@ static int check_tlv(struct elem_set_trial *trial)
+>>  	int err;
+>>
+>>  	/*
+>> -	 * See a layout of 'struct snd_ctl_tlv'. I don't know the reason to
+>> -	 * construct this buffer with the same layout. It should be abstracted
+>> -	 * inner userspace library...
+>> +	 * When transferring threshold level information via TLV feature of
+>> +	 * ALSA control interface, the first two fields of packet payload
+>> +	 * consist of data type and data length.
+>>  	 */
+>> -	orig[0] = snd_ctl_elem_id_get_numid(trial->id);
+>> +	orig[0] = SNDRV_CTL_TLVT_CONTAINER;
+>>  	orig[1] = 6 * sizeof(orig[0]);
+>>  	orig[2] = 'a';
+>>  	orig[3] = 'b';
 >
-> Should disabling pagefaults while interacting with user space work here?
+> The container TLV type expects other TLVs as its content.  So the
+> above looks buggy to me...
 
-Instead, assignment efw->pull_ptr to automatic variable in the spin 
-lock, then use it to copy_to_user(). The pointer is in ring buffer and 
-moves when receiving replies from actual devices, thus it's still valid 
-as long as an application sent transactions in order.
-(One application is allowed to use this interface in a time.)
+This is a test program just to serve to myself. So I hope this degree of 
+roughness is allowed...
 
-Not the best, but better with less complexities, I think.
+Or could you please construct valid TLV array here? I don't exactly know 
+the way to do it, because I've never touched better documentation about 
+whole design of TLV payload data.
 
 
 Regards
