@@ -1,70 +1,38 @@
-From: Xavi Drudis Ferran <xdrudis@tinet.cat>
-Subject: Re: Setting some clocks back to DUMMY fixes spdif output on imx6q
- wandboard rev B1
-Date: Mon, 29 Aug 2016 21:54:28 +0200
-Message-ID: <20160829195428.GD1967@begut>
-References: <20160828160055.GA2122@begut>
- <20160829192820.GA14207@Asurada-Nvidia>
+From: Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [PATCH v9 0/2] sun4i-codec: Add Line-In, FM-In, Mic 2, Capture
+ Source, Differential Line-In
+Date: Tue, 30 Aug 2016 09:58:46 +0800
+Message-ID: <CAGb2v641btw_4Y+s2Ufbk98N=ekwh6yfMQKLHModLM-4QPRsrg@mail.gmail.com>
+References: <20160826072230.30429-1-dannym@scratchpost.org>
+ <20160827120251.GQ3165@lukather> <20160829200347.7e6aa714@scratchpost.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Content-Disposition: inline
-In-Reply-To: <20160829192820.GA14207@Asurada-Nvidia>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Xavi Drudis Ferran <xdrudis@tinet.cat>, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160829200347.7e6aa714@scratchpost.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Danny Milosavljevic <dannym@scratchpost.org>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-El Mon, Aug 29, 2016 at 12:28:21PM -0700, Nicolin Chen deia:
-> 
-> Yes, it seems that it also tried to correct the clock sources
-> as those were not available when adding the S/PDIF support at
-> the first place.
+On Tue, Aug 30, 2016 at 2:03 AM, Danny Milosavljevic
+<dannym@scratchpost.org> wrote:
+> Hi Maxime,
 >
+> On Sat, 27 Aug 2016 14:02:51 +0200
+> Maxime Ripard <maxime.ripard@free-electrons.com> wrote:
+>
+>> Please send your patches using send-email.
+>
+> If you are referring to "git send-email", I did send the patch series using that (with almost the same setup I use for many other projects). It probably barfed because my description enumeration contained a dash like "- Line In". Sigh.
 
-I wonder if maybe they need to be defined, assigned or somehow listed
-elsewhere and they are not for wandboard quad (but are for other boards)?
- 
-> > The issue is fixed for me with this patch but I'm not sure what's the
-> > best way to help fix any issue someone else may have or what other
-> > info or test you might need. Any guidance welcome. 
-> 
-> > --- linux-4.7-no-spdif-out/arch/arm/boot/dts/imx6qdl.dtsi	2016-07-25 00:19:43.000000000 +0200
-> > +++ linux-4.7/arch/arm/boot/dts/imx6qdl.dtsi	2016-08-28 17:59:14.276774409 +0200
-> > @@ -240,9 +240,9 @@
-> >  					       <&sdma 15 18 0>;
-> >  					dma-names = "rx", "tx";
-> >  					clocks = <&clks IMX6QDL_CLK_SPDIF_GCLK>, <&clks IMX6QDL_CLK_OSC>,
-> > -						 <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_ASRC>,
-> > -						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_ESAI_EXTAL>,
-> > -						 <&clks IMX6QDL_CLK_IPG>, <&clks IMX6QDL_CLK_MLB>,
-> > +						 <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_DUMMY>,
-> > +						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_DUMMY>,
-> > +						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_DUMMY>,
-> >  						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_SPBA>;
-> >  					clock-names = "core",  "rxtx0",
-> >  						      "rxtx1", "rxtx2",
-> 
+The problem is your patches are being treated as attachments.
+Try using '--no-attach' with git format-patch, regenerate the patches
+and check that they are not mulit-part before sending them again.
 
-> This looks like that you merely revert the SPDIF_GCLK. 
+ChenYu
 
-I revert only some clocks, yes. I left SPDIF_GCLK and CLK_SBPA intact.
-So it is a partial revert of the commit.
-
-> Would you
-> please do a little debug using "#define DEBUG 1" and check printk
-> from fsl_spdif_probe_txclk() to see the difference between before
-> and after Shengjiu's commit?
-
-Yes, but I'm compiling the kernel in the wandboard, so it'll take me some time. 
-
-Thank you. 
+>
+> Anyway, I'll send the E-Mail again.
+>
+> Thanks,
+>    Danny
