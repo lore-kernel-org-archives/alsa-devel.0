@@ -1,72 +1,53 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/4] ALSA: control: return payload length
- for TLV operation
-Date: Tue, 30 Aug 2016 15:19:46 +0900
-Message-ID: <1b8df791-0c18-50f7-6a64-ee1bccc30c8f@sakamocchi.jp>
-References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
- <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
- <s5h8tve4yfb.wl-tiwai@suse.de>
+From: Kai Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - Enable subwoofer on Dell Inspiron 7559
+Date: Tue, 30 Aug 2016 14:25:18 +0800
+Message-ID: <CAAd53p4stFs1GzGtbzRKVa6GVcotrFprsN_OO5ZA7jjQnf+3wg@mail.gmail.com>
+References: <20160830052741.20190-1-kai.heng.feng@canonical.com> <s5h4m624y7s.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 8F74726608F
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 08:19:49 +0200 (CEST)
-In-Reply-To: <s5h8tve4yfb.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h4m624y7s.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, broonie@linaro.org, clemens@ladisch.de, omair.m.abdullah@intel.com
+Cc: alsa-devel@alsa-project.org, Hui Wang <hui.wang@canonical.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 30 2016 14:29, Takashi Iwai wrote:
-> On Tue, 30 Aug 2016 01:44:42 +0200,
-> Takashi Sakamoto wrote:
+On Tue, Aug 30, 2016 at 1:33 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Tue, 30 Aug 2016 07:27:41 +0200,
+> Kai-Heng Feng wrote:
 >>
->> TLV feature of control interface is originally introduced at
->> commit 42750b04c5ba ("[ALSA] Control API - TLV implementation for
->> additional information like dB scale") and commit 8aa9b586e420 ("[ALSA]
->> Control API - more robust TLV implementation"). In this time,
->> snd_kcontrol_tlv_rw_t is for generating and transferring information about
->> threshold level for applications.
+>> The subwoofer on Inspiron 7559 does not work originally.
+>> Applying a pin fixup can make it work.
 >>
->> This feature can transfer arbitrary data in a shape of an array with
->> members of unsigned int type, therefore it can be used to deliver quite
->> large arbitrary data from user space to in-kernel drivers via ALSA control
->> character device. Focusing on this nature, commit 7523a271682f ("ASoC:
->> core: add a helper for extended byte controls using TLV") introduced
->> snd_soc_bytes_tlv_callback() just for I/O operations.
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>> ---
+>>  sound/pci/hda/patch_realtek.c | 11 +++++++++++
+>>  1 file changed, 11 insertions(+)
 >>
->> In this case, typically, APIs return operated length, while TLV feature
->> can't. This is inconvenient to applications.
+>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+>> index 7100f05..2a3dd18 100644
+>> --- a/sound/pci/hda/patch_realtek.c
+>> +++ b/sound/pci/hda/patch_realtek.c
+>> @@ -4855,6 +4855,7 @@ enum {
+>>       ALC221_FIXUP_HP_FRONT_MIC,
+>>       ALC292_FIXUP_TPT460,
+>>       ALC298_FIXUP_SPK_VOLUME,
+>> +     ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER,
+>>  };
+>>
+>>  static const struct hda_fixup alc269_fixups[] = {
+>> @@ -5516,6 +5517,15 @@ static const struct hda_fixup alc269_fixups[] = {
+>>               .chained = true,
+>>               .chain_id = ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
+>>       },
+>> +     [ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER] = {
+>> +             .type = HDA_FIXUP_PINS,
+>> +             .v.pins = (const struct hda_pintbl[]) {
+>> +                     { 0x1b, 0x90170151 },
 >
-> The ASoC TLV (ab)usage still takes / receives the length field of
-> TLV.  What's missing there?
+> What's the original value of this pin?
+>
+>
+> Takashi
 
-I don't get exactly what you mean.
-
-The issue in which I'm interested is that applications cannot get to 
-know length of actual processed bytes. Nothing others.
-
-When pure threshold level information is transferred, applications can 
-get its length of TLV packet payload, because we have a loose protocol 
-to store the length of data in second element of the payload. The size 
-of 2 elements plus the length equals to the length of TLV packet payload.
-
-When using TLV feature just for I/O, this protocol is not kept, as we 
-can see implementation of 'soc_bytes_ext' operation. Thus, the number of 
-processed bytes should be returned to applications, by any ways. This 
-patchset uses 'length' field in TLV packet header.
-
-
-Regards
-
-Takashi Sakamoto
+The original value of 0x1b is 0x411111f0.
