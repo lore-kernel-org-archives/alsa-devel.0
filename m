@@ -1,46 +1,27 @@
-From: Wente Wang <wente.wang@nxp.com>
-Subject: Re: [PATCH 0/2] Support non-ssi cpu-dai for sgtl5000
-Date: Tue, 30 Aug 2016 12:31:00 +0000
-Message-ID: <AM3PR04MB5299DB1A46C9EB79B5131BA8FE00@AM3PR04MB529.eurprd04.prod.outlook.com>
-References: <1472467915-21317-1-git-send-email-wente.wang@nxp.com>
- <CAOMZO5B3FDPxm301Hwb+ZVOwYDAMU0vjcVAG0hH36Rf2+s0VDA@mail.gmail.com>
+From: Stefan Monnier <monnier-CRDzTM1onBSWkKpYnGOUKg@public.gmane.org>
+Subject: Re: [PATCH v9 0/2] sun4i-codec: Add Line-In, FM-In, Mic
+ 2, Capture Source, Differential Line-In
+Date: Tue, 30 Aug 2016 09:12:48 -0400
+Message-ID: <jwvh9a29z9n.fsf-monnier+gmane.comp.hardware.netbook.arm.sunxi@gnu.org>
+References: <20160829180321.11695-1-dannym@scratchpost.org>
+Reply-To: monnier-CRDzTM1onBSWkKpYnGOUKg@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR02-AM5-obe.outbound.protection.outlook.com
- (mail-eopbgr00076.outbound.protection.outlook.com [40.107.0.76])
- by alsa0.perex.cz (Postfix) with ESMTP id 15F6A266C28
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 14:31:02 +0200 (CEST)
-In-Reply-To: <CAOMZO5B3FDPxm301Hwb+ZVOwYDAMU0vjcVAG0hH36Rf2+s0VDA@mail.gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBDMKFH665MBBBZ4MS27AKGQEW63CZYA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Fabio Estevam [mailto:festevam@gmail.com]
-> Subject: Re: [PATCH 0/2] Support non-ssi cpu-dai for sgtl5000
-> 
-> On Mon, Aug 29, 2016 at 7:51 AM, Winter Wang <wente.wang@nxp.com> wrote:
-> > These patches support sgtl5000 to be attached to other non-ssi cpu-dais
-> like SAI.
-> 
-> Do we really need this?
-> 
-> We can use SAI with sgtl5000 just fine via simple card. Take a look at:
-> https://git.kernel.org/cgit/linux/kernel/git/shawnguo/linux.git/commit/arch/
-> arm/boot/dts/imx6ul-14x14-
-> evk.dts?h=imx/fixes&id=bf3251e112a0139c8dec796c9f12f2e8f01a73ca
+>  - rename "Line-In" to "Line".
 
-Thanks, that's another approach. 
-This patch set is not needed.
+Curious: why?
+
+
+        Stefan
