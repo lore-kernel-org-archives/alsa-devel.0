@@ -1,19 +1,21 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: [PATCH 1/4] ALSA: control: return payload length
  for TLV operation
-Date: Tue, 30 Aug 2016 16:09:33 +0900
-Message-ID: <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
+Date: Tue, 30 Aug 2016 16:13:54 +0900
+Message-ID: <8c8544f9-4a8d-5732-8555-295bad1e00f6@sakamocchi.jp>
 References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
  <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
- <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
+ <s5h8tve4yfb.wl-tiwai@suse.de>
+ <1b8df791-0c18-50f7-6a64-ee1bccc30c8f@sakamocchi.jp>
+ <s5hr3963foo.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 0CFAD26663A
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 09:09:36 +0200 (CEST)
-In-Reply-To: <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 4E67B26663A
+ for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 09:13:57 +0200 (CEST)
+In-Reply-To: <s5hr3963foo.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org, omair.m.abdullah@intel.com, broonie@linaro.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, broonie@linaro.org, clemens@ladisch.de, omair.m.abdullah@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 30 2016 16:05, Clemens Ladisch wrote:
+On Aug 30 2016 15:59, Takashi Iwai wrote:
+> On Tue, 30 Aug 2016 08:19:46 +0200,
 > Takashi Sakamoto wrote:
->> [...] APIs return operated length, while TLV feature
->> can't. This is inconvenient to applications.
 >>
->> This commit enables control core to return operated length of TLV feature.
->> This changes the prototype of 'snd_kcontrol_tlv_rw_t' to get a pointer to
->> size variable so that each implementation of the prototype can modify the
->> variable with operated length.
->
-> I'll use this function as an example:
->
->> --- a/sound/usb/mixer.c
->> +++ b/sound/usb/mixer.c
->> @@ -535,17 +535,20 @@ int snd_usb_set_cur_mix_value(struct usb_mixer_elem_info *cval, int channel,
->>   * TLV callback for mixer volume controls
->>   */
->>  int snd_usb_mixer_vol_tlv(struct snd_kcontrol *kcontrol, int op_flag,
->> -			 unsigned int size, unsigned int __user *_tlv)
->> +			 unsigned int *size, unsigned int __user *_tlv)
->>  {
->>  	struct usb_mixer_elem_info *cval = kcontrol->private_data;
->>  	DECLARE_TLV_DB_MINMAX(scale, 0, 0);
+>> On Aug 30 2016 14:29, Takashi Iwai wrote:
+>>> On Tue, 30 Aug 2016 01:44:42 +0200,
+>>> Takashi Sakamoto wrote:
+>>>>
+>>>> TLV feature of control interface is originally introduced at
+>>>> commit 42750b04c5ba ("[ALSA] Control API - TLV implementation for
+>>>> additional information like dB scale") and commit 8aa9b586e420 ("[ALSA]
+>>>> Control API - more robust TLV implementation"). In this time,
+>>>> snd_kcontrol_tlv_rw_t is for generating and transferring information about
+>>>> threshold level for applications.
+>>>>
+>>>> This feature can transfer arbitrary data in a shape of an array with
+>>>> members of unsigned int type, therefore it can be used to deliver quite
+>>>> large arbitrary data from user space to in-kernel drivers via ALSA control
+>>>> character device. Focusing on this nature, commit 7523a271682f ("ASoC:
+>>>> core: add a helper for extended byte controls using TLV") introduced
+>>>> snd_soc_bytes_tlv_callback() just for I/O operations.
+>>>>
+>>>> In this case, typically, APIs return operated length, while TLV feature
+>>>> can't. This is inconvenient to applications.
+>>>
+>>> The ASoC TLV (ab)usage still takes / receives the length field of
+>>> TLV.  What's missing there?
 >>
->> -	if (size < sizeof(scale))
->> +	if (*size < sizeof(scale))
->>  		return -ENOMEM;
->>  	scale[2] = cval->dBmin;
->>  	scale[3] = cval->dBmax;
->>  	if (copy_to_user(_tlv, scale, sizeof(scale)))
->>  		return -EFAULT;
->> +
->> +	*size = sizeof(scale);
->> +
->>  	return 0;
->>  }
+>> I don't get exactly what you mean.
+>>
+>> The issue in which I'm interested is that applications cannot get to
+>> know length of actual processed bytes. Nothing others.
+>>
+>> When pure threshold level information is transferred, applications can
+>> get its length of TLV packet payload, because we have a loose protocol
+>> to store the length of data in second element of the payload. The size
+>> of 2 elements plus the length equals to the length of TLV packet
+>> payload.
+>>
+>> When using TLV feature just for I/O, this protocol is not kept, as we
+>> can see implementation of 'soc_bytes_ext' operation. Thus, the number
+>> of processed bytes should be returned to applications, by any
+>> ways. This patchset uses 'length' field in TLV packet header.
 >
-> The size is already returned in scale[1] (it's initialized by
-> DECLARE_TLV_DB_MINMAX()).  That's exactly what the "L" in "TLV" means.
->
-> All other TLV callbacks also take care to set this field correctly.
->
-> If there were any TLV callback that did not set _tlv[1] to the actual
-> size, it would be buggy, and just needed to be fixed to do so.
+> The current way of ASoC ext ctl is intended to be a workaround to pass
+> a large data via ctl API.  Nothing more than that.  If it's used for
+> receiving arbitrary size of data from the driver, it's a buggy usage.
 
-As I described, TLV feature of ALSA control interface is not only used 
-to transfer threshold level information, but also arbitrary data for I/O 
-by developers in ALSA SoC part. The '_tlv[1]' protocol is not 
-necessarily kept by them.
+It's not workaround, it's actually used. It's better to consider as one 
+of supported ways and pay enough attention so that applications don't 
+get disadvantages from it.
+
+The way to use is depending on actual implementation of each driver. 
+It's better not to force policy of the usage to driver developers, I think.
 
 
 Regards
