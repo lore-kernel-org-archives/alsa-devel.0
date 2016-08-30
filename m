@@ -1,20 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 1/4] ALSA: control: return payload length
-	for	TLV operation
-Date: Tue, 30 Aug 2016 10:04:26 +0200
-Message-ID: <d41ab924-ca4a-39ac-651e-73a4662c3f1d@ladisch.de>
-References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
- <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
- <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
- <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
+Subject: Re: Range of pitchbend MIDI events
+Date: Tue, 30 Aug 2016 10:15:41 +0200
+Message-ID: <61c9fbcc-221d-bc63-0ba3-4977b67d31a7@ladisch.de>
+References: <CAPn+-XSsDEe3ruu7vYmdNgneLpK13VxYVm860JAt4cwFe86soQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id CD42026670B
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 10:04:27 +0200 (CEST)
-In-Reply-To: <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 5DDC926670B
+ for <Alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 10:15:42 +0200 (CEST)
+In-Reply-To: <CAPn+-XSsDEe3ruu7vYmdNgneLpK13VxYVm860JAt4cwFe86soQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,21 +20,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org, broonie@linaro.org, omair.m.abdullah@intel.com
+To: Maurizio Berti <maurizio.berti@gmail.com>
+Cc: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> On Aug 30 2016 16:05, Clemens Ladisch wrote:
->> If there were any TLV callback that did not set _tlv[1] to the actual
->> size, it would be buggy, and just needed to be fixed to do so.
+Maurizio Berti wrote:
+> I was playing with pyalsa and I realized an unexpected behavior with
+> pitchbend events.
+> The pitchbend range should be, by MIDI standard, between -8192 and +8191,
+> or 0-16384. Being a 3 byte event, it should ignore any subsequent byte
+> received.
 >
-> TLV feature of ALSA control interface is not only used to transfer
-> threshold level information, but also arbitrary data for I/O by
-> developers in ALSA SoC part. The '_tlv[1]' protocol is not necessarily
-> kept by them.
+> Using pyalsa I'm able to create events with values greater than 127
 
-Which specific ASoC driver does this?
+The ALSA sequencer does not use the MIDI byte format for its events.
+
+Sequencer events use a 32-bit field for controller values:
+http://www.alsa-project.org/alsa-doc/alsa-lib/structsnd__seq__ev__ctrl__t.html
+and the entire structure is delivered unchanged to the receiving
+sequencer client.
+
+Events get converted into actual MIDI bytes only when they end up at
+a real MIDI port.  In that case, only the lowest 14 bits of the value
+are put into the two data bytes of the pitchbend event.
 
 
 Regards,
