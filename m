@@ -1,21 +1,19 @@
-From: Markus Trippelsdorf <markus@trippelsdorf.de>
-Subject: Re: No sound for several minutes after reboot
-Date: Tue, 30 Aug 2016 10:32:01 +0200
-Message-ID: <20160830083201.GA5031@x4>
-References: <20160829083334.GA309@x4> <s5hshtot1e2.wl-tiwai@suse.de>
- <20160829085653.GA306@x4> <20160829090548.GA314@x4>
- <s5hk2f0szne.wl-tiwai@suse.de> <20160829092047.GB314@x4>
- <s5hh9a3udhn.wl-tiwai@suse.de> <20160829120659.GA305@x4>
- <20160829140233.GA857@x4> <s5hbn0a3cow.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: core: fix shift used for second
+ item in snd_soc_get_enum_double
+Date: Tue, 30 Aug 2016 09:41:20 +0100
+Message-ID: <20160830084120.GW21682@localhost.localdomain>
+References: <1472483218-11987-1-git-send-email-jjassal@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.ud10.udmedia.de (ud10.udmedia.de [194.117.254.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BBDD266971
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 10:32:02 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id B54712669D5
+ for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 10:41:12 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hbn0a3cow.wl-tiwai@suse.de>
+In-Reply-To: <1472483218-11987-1-git-send-email-jjassal@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,61 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Jaswinder Jassal <jjassal@opensource.wolfsonmicro.com>
+Cc: tiwai@suse.com, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2016.08.30 at 10:04 +0200, Takashi Iwai wrote:
-> On Mon, 29 Aug 2016 16:02:33 +0200,
-> Markus Trippelsdorf wrote:
-> > 
-> > On 2016.08.29 at 14:06 +0200, Markus Trippelsdorf wrote:
-> > > On 2016.08.29 at 11:32 +0200, Takashi Iwai wrote:
-> > > > On Mon, 29 Aug 2016 11:20:47 +0200,
-> > > > Markus Trippelsdorf wrote:
-> > >  output:ALSA def-222   [003] ....   422.035002: hda_send_cmd: [0000:00:14.2:0] val=0x01570d01
-> > >  output:ALSA def-222   [003] ....   422.035061: hda_get_response: [0000:00:14.2:0] val=0x00000000
-> > 
-> > Actually it right here that sound starts again:
-> > 
-> > markus@x4 hda-emu % ./a.out 0x01570d01
-> > raw value = 0x01570d01
-> > cid = 0, nid = 0x15, verb = 0x70d, parm = 0x01
-> > raw value: verb = 0x70d, parm = 0x1
-> > verbname = set_digi_cvt_1
+On Mon, Aug 29, 2016 at 04:06:58PM +0100, Jaswinder Jassal wrote:
+> Incorrect shift value was being used to extract the second item.
 > 
-> So, the program itself sets the value.  Which sound backend are you
-> using?  PulseAudio, whatever?
+> Signed-off-by: Jaswinder Jassal <jjassal@opensource.wolfsonmicro.com>
+> ---
 
-No backend at all. I use mpd directly on type hw:
+Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-pcm.!default {
-  type hw
-  card 0
-  device 3
-}
-
-> Basically you need to track the verb 0x01570dXX that changes the
-> digital converter parameter.
-> 
-> When the driver was loaded and initialized, what value does the node
-> have?  Also check the raw ctl elements, too.  The value is controlled
-> via "IEC958 Status" controls.  If the value at the init time is wrong,
-> you may set the initial value via "iecset" program included in
-> alsa-utils.
-
-The driver is build directly into my monolithic kernel (I don't have
-modules enabled at all).
-At boot time I run "alsactl restore" in an init script.
-alsamixer shows that S/PDIF is unmuted, but as I wrote it doesn't work
-for several minutes. If I toggle the S/PDIF setting in alsamixer from
-unmuted to muted to unmuted then sounds starts working.
-
-Anyway:
- /usr/bin/hda-verb /dev/snd/hwC0D0 0x15 SET_DIGI_CONVERT_1 0x01 &> /dev/null
-works fine in my init script, so the issue is solved for me.
-
-Thanks.
-
--- 
-Markus
+Thanks,
+Charles
