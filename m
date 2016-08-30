@@ -1,19 +1,23 @@
-From: Felipe Ferreri Tonello <eu@felipetonello.com>
-Subject: Re: [PATCH v6 1/2] amidi: add delay option
-Date: Tue, 30 Aug 2016 11:19:40 +0100
-Message-ID: <23cd591f-5d05-34e2-6cb1-7a8e0f343c00@felipetonello.com>
-References: <20160823140938.21423-1-eu@felipetonello.com>
- <20160823140938.21423-2-eu@felipetonello.com>
- <e3b3a853-c2cf-5908-666a-f89fb47008e5@sakamocchi.jp>
+From: Xavi Drudis Ferran <xdrudis@tinet.cat>
+Subject: Re: Setting some clocks back to DUMMY fixes spdif
+ output on imx6q wandboard rev B1
+Date: Tue, 30 Aug 2016 13:14:14 +0200
+Message-ID: <20160830111414.GA1968@begut>
+References: <20160828160055.GA2122@begut>
+ <20160829192820.GA14207@Asurada-Nvidia>
+ <20160829195428.GD1967@begut>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------6ED9F6D34DC2EC6012A43919"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 8EC9D266B56
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 12:19:42 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id i138so2452925wmf.3
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 03:19:42 -0700 (PDT)
-In-Reply-To: <e3b3a853-c2cf-5908-666a-f89fb47008e5@sakamocchi.jp>
+Received: from mx2.tinet.org (mx2.tinet.org [195.77.216.147])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBD0A266B4F
+ for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 13:14:18 +0200 (CEST)
+Received: from smtp01.tinet.org (smtp01.tinet.org [195.77.216.131]) by
+ mx2.tinet.org with ESMTP id DZvQdDytBct2Ecni for
+ <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 13:14:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20160829195428.GD1967@begut>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,311 +27,501 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Xavi Drudis Ferran <xdrudis@tinet.cat>, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------6ED9F6D34DC2EC6012A43919
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-
-Hi Takashi,
-
-On 30/08/16 00:19, Takashi Sakamoto wrote:
-> Hi,
+El Mon, Aug 29, 2016 at 09:54:28PM +0200, Xavi Drudis Ferran deia:
+> El Mon, Aug 29, 2016 at 12:28:21PM -0700, Nicolin Chen deia:
+> > Would you
+> > please do a little debug using "#define DEBUG 1" and check printk
+> > from fsl_spdif_probe_txclk() to see the difference between before
+> > and after Shengjiu's commit?
 > 
-> On Aug 23 2016 23:09, Felipe F. Tonello wrote:
->> This patch adds a new options to amidi tool to add a delay (in milliseconds)
->> to each SysEx message.
->>
->> This is very useful when sending firmware updates to a remote device via SysEx
->> or any other use that requires this delay in between messages.
->>
->> Signed-off-by: Felipe F. Tonello <eu@felipetonello.com>
->> ---
->>  amidi/amidi.1 | 14 ++++++++++++++
->>  amidi/amidi.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++++++++-----
->>  2 files changed, 67 insertions(+), 5 deletions(-)
->>
->> diff --git a/amidi/amidi.1 b/amidi/amidi.1
->> index 86beb27a1e3b..4ca2164788f1 100644
->> --- a/amidi/amidi.1
->> +++ b/amidi/amidi.1
->> @@ -120,6 +120,12 @@ received MIDI commands.
->>  Does not ignore Clock bytes (F8h) when saving or printing received
->>  MIDI commands.
->>  
->> +.TP
->> +.I \-D, \-\-delay=mseconds
->> +Adds a delay in between each SysEx message sent to a device. It is
->> +useful when sending firmware updates via SysEx messages to a remote
->> +device.
->> +
+> Yes, but I'm compiling the kernel in the wandboard, so it'll take me some time. 
 > 
-> I think it's helpful to name this option so that it keeps intervals
-> somewhat between each system exclusives. For example, how do you think
-> about using 'sysex-interval'?
 
-Sure.
+Now. Sorry for the delay. 
 
-> 
->>  .SH EXAMPLES
->>  
->>  .TP
->> @@ -130,6 +136,14 @@ to port
->>  .I hw:0.
->>  
->>  .TP
->> +.B amidi \-p hw:1,0,0 -s firmware.syx \-D 100
->> +will send the MIDI commands in
->> +.I firmware.syx
->> +to port
->> +.I hw:1,0,0
->> +with 100 milliseconds delay in between each SysEx message.
->> +
->> +.TP
->>  .B amidi \-S 'F0 43 10 4C 00 00 7E 00 F7'
->>  sends an XG Reset to the default port.
->>  
->> diff --git a/amidi/amidi.c b/amidi/amidi.c
->> index c20512cc96a7..d0dbb322f80a 100644
->> --- a/amidi/amidi.c
->> +++ b/amidi/amidi.c
->> @@ -52,6 +52,7 @@ static int receive_file;
->>  static int dump;
->>  static float timeout;
->>  static int stop;
->> +static int delay;
->>  static snd_rawmidi_t *input, **inputp;
->>  static snd_rawmidi_t *output, **outputp;
->>  
->> @@ -82,7 +83,8 @@ static void usage(void)
->>  		"-t, --timeout=seconds  exits when no data has been received\n"
->>  		"                       for the specified duration\n"
->>  		"-a, --active-sensing   include active sensing bytes\n"
->> -		"-c, --clock            include clock bytes\n");
->> +		"-c, --clock            include clock bytes\n"
->> +		"-D, --delay=mseconds   delay in between each SysEx message\n");
->>  }
->>  
->>  static void version(void)
->> @@ -411,7 +413,7 @@ static void add_send_hex_data(const char *str)
->>  
->>  int main(int argc, char *argv[])
->>  {
->> -	static const char short_options[] = "hVlLp:s:r:S::dt:ac";
->> +	static const char short_options[] = "hVlLp:s:r:S::dt:acD:";
->>  	static const struct option long_options[] = {
->>  		{"help", 0, NULL, 'h'},
->>  		{"version", 0, NULL, 'V'},
->> @@ -425,6 +427,7 @@ int main(int argc, char *argv[])
->>  		{"timeout", 1, NULL, 't'},
->>  		{"active-sensing", 0, NULL, 'a'},
->>  		{"clock", 0, NULL, 'c'},
->> +		{"delay", 1, NULL, 'D'},
->>  		{ }
->>  	};
->>  	int c, err, ok = 0;
->> @@ -474,6 +477,9 @@ int main(int argc, char *argv[])
->>  		case 'c':
->>  			ignore_clock = 0;
->>  			break;
->> +		case 'D':
->> +			delay = atoi(optarg);
->> +			break;
->>  		default:
->>  			error("Try `amidi --help' for more information.");
->>  			return 1;
->> @@ -549,9 +555,51 @@ int main(int argc, char *argv[])
->>  			error("cannot set blocking mode: %s", snd_strerror(err));
->>  			goto _exit;
->>  		}
->> -		if ((err = snd_rawmidi_write(output, send_data, send_data_length)) < 0) {
->> -			error("cannot send data: %s", snd_strerror(err));
->> -			goto _exit;
->> +		if (!delay) {
->> +			if ((err = snd_rawmidi_write(output, send_data, send_data_length)) < 0) {
->> +				error("cannot send data: %s", snd_strerror(err));
->> +				return err;
->> +			}
->> +		} else {
->> +			char *data = send_data;
->> +			size_t buffer_size;
->> +			snd_rawmidi_params_t *param;
->> +			snd_rawmidi_status_t *st;
->> +
->> +			snd_rawmidi_status_malloc(&st);
->> +
->> +			snd_rawmidi_params_malloc(&param);
->> +			snd_rawmidi_params_current(output, param);
->> +			buffer_size = snd_rawmidi_params_get_buffer_size(param);
->> +			snd_rawmidi_params_free(param);
->> +
->> +			while (data < (send_data + send_data_length)) {
->> +				int len = send_data + send_data_length - data;
->> +				char *temp;
->> +
->> +				if (data > send_data) {
->> +					snd_rawmidi_status(output, st);
->> +					do {
->> +						/* 320 µs per byte as noted in Page 1 of MIDI spec */
->> +						usleep((buffer_size - snd_rawmidi_status_get_avail(st)) * 320);
->> +						snd_rawmidi_status(output, st);
->> +					} while(snd_rawmidi_status_get_avail(st) < buffer_size);
->> +					usleep(delay * 1000);
->> +				}
->> +
->> +				/* find end of SysEx */
->> +				if ((temp = memchr(data, 0xf7, len)) != NULL)
->> +					len = temp - data + 1;
->> +
->> +				if ((err = snd_rawmidi_write(output, data, len)) < 0) {
->> +					error("cannot send data: %s", snd_strerror(err));
->> +					return err;
->> +				}
->> +
->> +				data += len;
->> +			}
->> +
->> +			snd_rawmidi_status_free(st);
->>  		}
->>  	}
-> 
-> In my opinion, it's better to split function specific to this purpose
-> and call it here. An appropriate name of the function might help readers.
-
-Right. It will make the code cleaner.
-
--- 
-Felipe
-
---------------6ED9F6D34DC2EC6012A43919
-Content-Type: application/pgp-keys;
- name="0x92698E6A.asc"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0x92698E6A.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-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
-SkAyCfQaSw==
-=JwBB
------END PGP PUBLIC KEY BLOCK-----
-
---------------6ED9F6D34DC2EC6012A43919
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I did a mistake and had to do it twice. I added a couple of sanity check messages:
+"enter fsl_spdif_probe"
+"enter fsl_spdif_probe_txclk"
 
 
---------------6ED9F6D34DC2EC6012A43919--
+linux-libre-4.7 without my patch, i.e. clocks defined like this :
+arch/arm/boot/dts/imx6qdl.dtsi:
+aips-bus@02000000 { /* AIPS1 */
+[...]
+   spba-bus@02000000 {
+[...]
+       spdif: spdif@02004000 {
+          clocks = <&clks IMX6QDL_CLK_SPDIF_GCLK>, <&clks IMX6QDL_CLK_OSC>,
+                   <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_ASRC>,
+                   <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_ESAI_EXTAL>,
+                   <&clks IMX6QDL_CLK_IPG>, <&clks IMX6QDL_CLK_MLB>,
+                   <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_SPBA>;
+          clock-names = "core",  "rxtx0",
+                        "rxtx1", "rxtx2",
+                        "rxtx3", "rxtx4",
+                        "rxtx5", "rxtx6",
+                        "rxtx7", "spba";
+[...]
+
+The messages at boot: 
+
+[    8.803603] 20ec000.sdma: Missing Free firmware (non-Free firmware loading is disabled)
+[    8.813737] imx-sdma 20ec000.sdma: failed to get firmware from device tree
+[    8.870764] imx-sdma 20ec000.sdma: Direct firmware load for /*(DEBLOBBED)*/ failed with error -2
+[...]
+[    9.083301] fsl-asrc 2034000.asrc: driver registered
+[    9.087050] sgtl5000 1-000a: sgtl5000 revision 0x11
+[    9.107141] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe
+[    9.144839] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.225228] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 32000Hz sample rate
+[    9.234058] fsl-spdif-dai 2004000.spdif: use txclk df 16 for 32000Hz sample rate
+[    9.235565] imx-spdif sound-spdif: ASoC: CPU DAI (null) not registered
+[    9.236007] imx-spdif sound-spdif: snd_soc_register_card failed: -517
+[...]
+[    9.262713] fsl-spdif-dai 2004000.spdif: use sysclk df 2 for 32000Hz sample rate
+[    9.269349] fsl-spdif-dai 2004000.spdif: the best rate for 32000Hz sample rate is 32226Hz
+[    9.276431] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+[    9.276438] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+[    9.289559] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.306991] imx-sgtl5000 sound: ASoC: CPU DAI (null) not registered
+[    9.346253] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    9.376398] fsl-spdif-dai 2004000.spdif: use rxtx6 as tx clock source for 44100Hz sample rate
+[    9.376404] fsl-spdif-dai 2004000.spdif: use txclk df 94 for 44100Hz sample rate
+[    9.376409] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 43882Hz
+[    9.376415] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.403159] fsl-spdif-dai 2004000.spdif: use rxtx6 as tx clock source for 48000Hz sample rate
+[    9.403165] fsl-spdif-dai 2004000.spdif: use txclk df 86 for 48000Hz sample rate
+[    9.403170] fsl-spdif-dai 2004000.spdif: the best rate for 48000Hz sample rate is 47965Hz
+[    9.403174] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.424007] fsl-spdif-dai 2004000.spdif: use rxtx6 as tx clock source for 96000Hz sample rate
+[    9.424013] fsl-spdif-dai 2004000.spdif: use txclk df 43 for 96000Hz sample rate
+[    9.424021] fsl-spdif-dai 2004000.spdif: the best rate for 96000Hz sample rate is 95930Hz
+[    9.424025] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.450424] fsl-spdif-dai 2004000.spdif: use rxtx6 as tx clock source for 192000Hz sample rate
+[    9.481561] fsl-spdif-dai 2004000.spdif: use txclk df 21 for 192000Hz sample rate
+[    9.488400] fsl-spdif-dai 2004000.spdif: the best rate for 192000Hz sample rate is 196428Hz
+[    9.536785] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    9.582106] imx-spdif sound-spdif: snd-soc-dummy-dai <-> 2004000.spdif mapping ok
+[    9.612159] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+[    9.621942] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+[    9.638227] imx-sgtl5000 sound: ASoC: CPU DAI (null) not registered
+[    9.647247] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    9.682092] sgtl5000 1-000a: Using internal LDO instead of VDDD
+[    9.776989] fsl-asoc-card sound: sgtl5000 <-> 2028000.ssi mapping ok
+[...]
+[   70.407805] fsl-spdif-dai 2004000.spdif: expected clock rate = 265305600
+[   70.407829] fsl-spdif-dai 2004000.spdif: actual clock rate = 264000000
+[   70.407857] fsl-spdif-dai 2004000.spdif: set sample rate to 43882Hz for 44100Hz playback
+[   70.407867] fsl-spdif-dai 2004000.spdif: STCSCH: 0x304000
+[   70.407875] fsl-spdif-dai 2004000.spdif: STCSCL: 0x000000
+[   70.469948] fsl-spdif-dai 2004000.spdif: expected clock rate = 265305600
+[   70.469965] fsl-spdif-dai 2004000.spdif: actual clock rate = 264000000
+[   70.469977] fsl-spdif-dai 2004000.spdif: set sample rate to 43882Hz for 44100Hz playback
+[   70.469999] fsl-spdif-dai 2004000.spdif: STCSCH: 0x304000
+[   70.470014] fsl-spdif-dai 2004000.spdif: STCSCL: 0x000000
+[...]
+
+Then when I try to play sound through spdif:
+
+[  140.176536] fsl-spdif-dai 2004000.spdif: expected clock rate = 265305600
+[  140.176555] fsl-spdif-dai 2004000.spdif: actual clock rate = 264000000
+[  140.176566] fsl-spdif-dai 2004000.spdif: set sample rate to 43882Hz for 44100Hz playback
+[  140.176579] fsl-spdif-dai 2004000.spdif: STCSCH: 0x304000
+[  140.176587] fsl-spdif-dai 2004000.spdif: STCSCL: 0x000000
+
+
+
+
+linux-libre-4.7 with my patch, i.e. clocks defined like this :
+arch/arm/boot/dts/imx6qdl.dtsi:
+aips-bus@02000000 { /* AIPS1 */
+[...]
+   spba-bus@02000000 {
+[...]
+      spdif: spdif@02004000 {
+          clocks = <&clks IMX6QDL_CLK_SPDIF_GCLK>, <&clks IMX6QDL_CLK_OSC>,
+                   <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_DUMMY>,
+                   <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_DUMMY>,
+                   <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_DUMMY>,
+                   <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_SPBA>;
+          clock-names = "core",  "rxtx0",
+                        "rxtx1", "rxtx2",
+                        "rxtx3", "rxtx4",
+                        "rxtx5", "rxtx6",
+                        "rxtx7", "spba";
+[...]
+
+
+The messages at boot: 
+
+[...]
+[    6.655532] imx-spdif sound-spdif: ASoC: CPU DAI (null) not registered
+[    6.655545] imx-spdif sound-spdif: snd_soc_register_card failed: -517
+[    6.656895] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe
+[    6.657567] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    6.660895] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 32000Hz sample rate
+[    6.660902] fsl-spdif-dai 2004000.spdif: use txclk df 4 for 32000Hz sample rate
+[    6.660907] fsl-spdif-dai 2004000.spdif: the best rate for 32000Hz sample rate is 31719Hz
+[    6.660911] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    6.662922] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 44100Hz sample rate
+[    6.662927] fsl-spdif-dai 2004000.spdif: use txclk df 9 for 44100Hz sample rate
+[    6.662932] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 43859Hz
+[    6.662936] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    6.663205] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+[    6.663213] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+[    6.676779] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 48000Hz sample rate
+[    6.676785] fsl-spdif-dai 2004000.spdif: use txclk df 5 for 48000Hz sample rate
+[    6.676790] fsl-spdif-dai 2004000.spdif: the best rate for 48000Hz sample rate is 47368Hz
+[    6.676795] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    6.687008] imx-sgtl5000 sound: ASoC: CPU DAI (null) not registered
+[    6.687016] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    6.704876] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 96000Hz sample rate
+[    6.704882] fsl-spdif-dai 2004000.spdif: use txclk df 3 for 96000Hz sample rate
+[    6.704888] fsl-spdif-dai 2004000.spdif: the best rate for 96000Hz sample rate is 94736Hz
+[    6.704892] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    6.723554] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 192000Hz sample rate
+[    6.723561] fsl-spdif-dai 2004000.spdif: use txclk df 2 for 192000Hz sample rate
+[    6.723567] fsl-spdif-dai 2004000.spdif: the best rate for 192000Hz sample rate is 187500Hz
+[    6.723679] fsl-spdif-dai 2004000.spdif: imx_pcm_dma_init failed: -517
+[    7.626351] fsl-asrc 2034000.asrc: driver registered
+[    7.642378] imx-spdif sound-spdif: ASoC: CPU DAI (null) not registered
+[    7.650279] imx-spdif sound-spdif: snd_soc_register_card failed: -517
+[    7.667765] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+[    7.676924] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+[    7.696535] imx-sgtl5000 sound: ASoC: CPU DAI (null) not registered
+[    7.704977] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    7.718722] sgtl5000 1-000a: sgtl5000 revision 0x11
+[...]
+[    7.725855] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    7.728561] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe
+[    7.738178] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.740172] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 32000Hz sample rate
+[    7.740177] fsl-spdif-dai 2004000.spdif: use txclk df 4 for 32000Hz sample rate
+[    7.740183] fsl-spdif-dai 2004000.spdif: the best rate for 32000Hz sample rate is 31719Hz
+[    7.740187] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.760659] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 44100Hz sample rate
+[    7.760665] fsl-spdif-dai 2004000.spdif: use txclk df 9 for 44100Hz sample rate
+[    7.760672] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 43859Hz
+[    7.760676] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.765495] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 48000Hz sample rate
+[    7.765501] fsl-spdif-dai 2004000.spdif: use txclk df 5 for 48000Hz sample rate
+[    7.765506] fsl-spdif-dai 2004000.spdif: the best rate for 48000Hz sample rate is 47368Hz
+[    7.765510] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.774373] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 96000Hz sample rate
+[    7.774378] fsl-spdif-dai 2004000.spdif: use txclk df 3 for 96000Hz sample rate
+[    7.774384] fsl-spdif-dai 2004000.spdif: the best rate for 96000Hz sample rate is 94736Hz
+[    7.774388] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.778530] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 192000Hz sample rate
+[    7.778536] fsl-spdif-dai 2004000.spdif: use txclk df 2 for 192000Hz sample rate
+[    7.778541] fsl-spdif-dai 2004000.spdif: the best rate for 192000Hz sample rate is 187500Hz
+[    7.783897] fsl-spdif-dai 2004000.spdif: imx_pcm_dma_init failed: -517
+[    7.828163] imx-spdif sound-spdif: ASoC: CPU DAI (null) not registered
+[    7.828174] imx-spdif sound-spdif: snd_soc_register_card failed: -517
+[    7.828703] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+[    7.828712] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+[    7.828825] imx-sgtl5000 sound: ASoC: CPU DAI (null) not registered
+[    7.828832] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    7.829908] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    7.834312] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe
+[    7.837686] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.842472] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 32000Hz sample rate
+[    7.842478] fsl-spdif-dai 2004000.spdif: use txclk df 4 for 32000Hz sample rate
+[    7.842485] fsl-spdif-dai 2004000.spdif: the best rate for 32000Hz sample rate is 31719Hz
+[    7.842490] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.844695] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 44100Hz sample rate
+[    7.844700] fsl-spdif-dai 2004000.spdif: use txclk df 9 for 44100Hz sample rate
+[    7.844705] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 43859Hz
+[    7.844708] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.848458] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 48000Hz sample rate
+[    7.848464] fsl-spdif-dai 2004000.spdif: use txclk df 5 for 48000Hz sample rate
+[    7.848470] fsl-spdif-dai 2004000.spdif: the best rate for 48000Hz sample rate is 47368Hz
+[    7.848474] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.858907] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 96000Hz sample rate
+[    7.858912] fsl-spdif-dai 2004000.spdif: use txclk df 3 for 96000Hz sample rate
+[    7.858917] fsl-spdif-dai 2004000.spdif: the best rate for 96000Hz sample rate is 94736Hz
+[    7.858921] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.868189] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 192000Hz sample rate
+[    7.868195] fsl-spdif-dai 2004000.spdif: use txclk df 2 for 192000Hz sample rate
+[    7.868200] fsl-spdif-dai 2004000.spdif: the best rate for 192000Hz sample rate is 187500Hz
+[    7.868555] fsl-spdif-dai 2004000.spdif: imx_pcm_dma_init failed: -517
+[    8.094960] imx-spdif sound-spdif: ASoC: CPU DAI (null) not registered
+[    8.094994] imx-spdif sound-spdif: snd_soc_register_card failed: -517
+[    8.095669] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+[    8.095808] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+[    8.098338] imx-sgtl5000 sound: ASoC: CPU DAI (null) not registered
+[    8.098347] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    8.099067] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    8.109691] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe
+[    8.113038] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.117534] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 32000Hz sample rate
+[    8.117539] fsl-spdif-dai 2004000.spdif: use txclk df 4 for 32000Hz sample rate
+[    8.117544] fsl-spdif-dai 2004000.spdif: the best rate for 32000Hz sample rate is 31719Hz
+[    8.117548] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.120341] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 44100Hz sample rate
+[    8.120347] fsl-spdif-dai 2004000.spdif: use txclk df 9 for 44100Hz sample rate
+[    8.120352] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 43859Hz
+[    8.120356] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.134938] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 48000Hz sample rate
+[    8.134944] fsl-spdif-dai 2004000.spdif: use txclk df 5 for 48000Hz sample rate
+[    8.134949] fsl-spdif-dai 2004000.spdif: the best rate for 48000Hz sample rate is 47368Hz
+[    8.134953] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.139127] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 96000Hz sample rate
+[    8.139133] fsl-spdif-dai 2004000.spdif: use txclk df 3 for 96000Hz sample rate
+[    8.139139] fsl-spdif-dai 2004000.spdif: the best rate for 96000Hz sample rate is 94736Hz
+[    8.139143] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.147727] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 192000Hz sample rate
+[    8.147734] fsl-spdif-dai 2004000.spdif: use txclk df 2 for 192000Hz sample rate
+[    8.147740] fsl-spdif-dai 2004000.spdif: the best rate for 192000Hz sample rate is 187500Hz
+[    8.147822] fsl-spdif-dai 2004000.spdif: imx_pcm_dma_init failed: -517
+[...]
+[    8.831797] 20ec000.sdma: Missing Free firmware (non-Free firmware loading is disabled)
+[    8.880684] imx-sdma 20ec000.sdma: failed to get firmware from device tree
+[    8.910258] imx-sdma 20ec000.sdma: Direct firmware load for /*(DEBLOBBED)*/ failed with error -2
+[    9.073968] imx-spdif sound-spdif: ASoC: CPU DAI (null) not registered
+[    9.081645] imx-spdif sound-spdif: snd_soc_register_card failed: -517
+[    9.095074] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+[    9.110834] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+[    9.121216] imx-sgtl5000 sound: ASoC: CPU DAI (null) not registered
+[    9.130267] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    9.153016] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    9.165177] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe
+[    9.195832] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.211198] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 32000Hz sample rate
+[    9.217917] fsl-spdif-dai 2004000.spdif: use txclk df 4 for 32000Hz sample rate
+[    9.224900] fsl-spdif-dai 2004000.spdif: the best rate for 32000Hz sample rate is 31719Hz
+[    9.231164] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.241790] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 44100Hz sample rate
+[    9.248073] fsl-spdif-dai 2004000.spdif: use txclk df 9 for 44100Hz sample rate
+[    9.254457] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 43859Hz
+[    9.260822] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.279536] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 48000Hz sample rate
+[    9.285950] fsl-spdif-dai 2004000.spdif: use txclk df 5 for 48000Hz sample rate
+[    9.292236] fsl-spdif-dai 2004000.spdif: the best rate for 48000Hz sample rate is 47368Hz
+[    9.298648] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.313550] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 96000Hz sample rate
+[...]
+[    9.328117] fsl-spdif-dai 2004000.spdif: use txclk df 3 for 96000Hz sample rate
+[    9.334526] fsl-spdif-dai 2004000.spdif: the best rate for 96000Hz sample rate is 94736Hz
+[    9.340888] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.351639] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 192000Hz sample rate
+[    9.358052] fsl-spdif-dai 2004000.spdif: use txclk df 2 for 192000Hz sample rate
+[    9.364471] fsl-spdif-dai 2004000.spdif: the best rate for 192000Hz sample rate is 187500Hz
+[    9.417677] imx-spdif sound-spdif: snd-soc-dummy-dai <-> 2004000.spdif mapping ok
+[    9.461316] sgtl5000 1-000a: Using internal LDO instead of VDDD
+[    9.592189] fsl-asoc-card sound: sgtl5000 <-> 2028000.ssi mapping ok
+[...]
+[   69.198853] fsl-spdif-dai 2004000.spdif: expected clock rate = 25401600
+[   69.198874] fsl-spdif-dai 2004000.spdif: actual clock rate = 25263158
+[   69.198892] fsl-spdif-dai 2004000.spdif: set sample rate to 43859Hz for 44100Hz playback
+[   69.198902] fsl-spdif-dai 2004000.spdif: STCSCH: 0x304000
+[   69.198910] fsl-spdif-dai 2004000.spdif: STCSCL: 0x000000
+[   69.349763] fsl-spdif-dai 2004000.spdif: expected clock rate = 25401600
+[   69.349776] fsl-spdif-dai 2004000.spdif: actual clock rate = 25263158
+[   69.349793] fsl-spdif-dai 2004000.spdif: set sample rate to 43859Hz for 44100Hz playback
+[   69.349812] fsl-spdif-dai 2004000.spdif: STCSCH: 0x304000
+[   69.349820] fsl-spdif-dai 2004000.spdif: STCSCL: 0x000000
+[...]
+
+Then when I try (successfully) to play sound through spdif:
+
+[  113.186850] fsl-spdif-dai 2004000.spdif: expected clock rate = 25401600
+[  113.186863] fsl-spdif-dai 2004000.spdif: actual clock rate = 25263158
+[  113.186872] fsl-spdif-dai 2004000.spdif: set sample rate to 43859Hz for 44100Hz playback
+[  113.186882] fsl-spdif-dai 2004000.spdif: STCSCH: 0x304000
+[  113.186889] fsl-spdif-dai 2004000.spdif: STCSCL: 0x000000
+
+
+Does it mean that a 43859Hz clock is close enough to theoretical 44100Hz
+but  43882Hz is not ? 
+
+The clock that doesn't work seems closer to the desired value.
+I don't understand. 
+
+Maybe there's something wrong with rxtx6 (IMX6QDL_CLK_MLB). This clock
+does not seem to be used elsewhere (I mean in files, it's used in any
+board that includes imx6qdl.dtsi)
+
+
+include/dt-bindings/clock/imx6qdl-clock.h: 
+#define IMX6QDL_CLK_MLB						139
+
+
+
+Might it have to do with the fact I'm using (still trying in fact) to use etnaviv ?
+
+drivers/clk/imx/clk-imx6q.c:
+
+   if (clk_on_imx6dl())
+      /*
+       * The multiplexer and divider of the imx6q clock gpu2d get
+       * redefined/reused as mlb_sys_sel and mlb_sys_clk_podf on imx6dl.
+       */
+       clk[IMX6QDL_CLK_MLB] = imx_clk_gate2("mlb",            "gpu2d_core_podf",   base + 0x74, 18);
+   else
+       clk[IMX6QDL_CLK_MLB] = imx_clk_gate2("mlb",            "axi",               base + 0x74, 18);
+
+
+But I'm on a imx6q not imx6dl .
+
+It seems I've found a similar case, just more ancient. I've tried the
+patch in the last message there instead of the one I sent, and it
+works for me (gives me sound on the spdif output) but I still don't
+understand.
+
+https://community.nxp.com/thread/387131
+
+The patch is 
+
+--- linux-4.7-no-spdif-out/arch/arm/boot/dts/imx6qdl.dtsi	2016-07-25 00:19:43.000000000 +0200
++++ linux-4.7/arch/arm/boot/dts/imx6qdl.dtsi	2016-08-30 12:51:37.369431791 +0200
+@@ -242,7 +242,7 @@
+ 					clocks = <&clks IMX6QDL_CLK_SPDIF_GCLK>, <&clks IMX6QDL_CLK_OSC>,
+ 						 <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_ASRC>,
+ 						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_ESAI_EXTAL>,
+-						 <&clks IMX6QDL_CLK_IPG>, <&clks IMX6QDL_CLK_MLB>,
++						 <&clks IMX6QDL_CLK_IPG>, <&clks IMX6QDL_CLK_DUMMY>,
+ 						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_SPBA>;
+ 					clock-names = "core",  "rxtx0",
+ 						      "rxtx1", "rxtx2",
+
+And the dmesg is: 
+
+[...]
+[    6.757672] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+[    6.757680] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+[    6.767863] imx-sgtl5000 sound: ASoC: CPU DAI (null) not registered
+[    6.767874] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    6.771927] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    6.782230] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe
+[    6.795682] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    6.851089] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 32000Hz sample rate
+[    6.857631] fsl-spdif-dai 2004000.spdif: use txclk df 16 for 32000Hz sample rate
+[    6.864477] fsl-spdif-dai 2004000.spdif: use sysclk df 2 for 32000Hz sample rate
+[    6.864484] fsl-spdif-dai 2004000.spdif: the best rate for 32000Hz sample rate is 32226Hz
+[    6.864489] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    6.909089] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 44100Hz sample rate
+[    6.909096] fsl-spdif-dai 2004000.spdif: use txclk df 9 for 44100Hz sample rate
+[    6.909101] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 43859Hz
+[    6.909105] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    6.981874] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 48000Hz sample rate
+[    6.992935] fsl-spdif-dai 2004000.spdif: use txclk df 5 for 48000Hz sample rate
+[    6.992943] fsl-spdif-dai 2004000.spdif: the best rate for 48000Hz sample rate is 47368Hz
+[    6.992948] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    6.993678] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+[    6.993688] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+[    6.993809] imx-sgtl5000 sound: ASoC: CPU DAI (null) not registered
+[    6.993816] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    6.994121] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    7.024546] 20ec000.sdma: Missing Free firmware (non-Free firmware loading is disabled)
+[    7.024577] imx-sdma 20ec000.sdma: failed to get firmware from device tree
+[    7.025416] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 96000Hz sample rate
+[    7.025422] fsl-spdif-dai 2004000.spdif: use txclk df 3 for 96000Hz sample rate
+[    7.025426] fsl-spdif-dai 2004000.spdif: the best rate for 96000Hz sample rate is 94736Hz
+[    7.025430] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.040198] imx-sdma 20ec000.sdma: Direct firmware load for /*(DEBLOBBED)*/ failed with error -2
+[    7.052490] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 192000Hz sample rate
+[    7.052497] fsl-spdif-dai 2004000.spdif: use txclk df 2 for 192000Hz sample rate
+[    7.052503] fsl-spdif-dai 2004000.spdif: the best rate for 192000Hz sample rate is 187500Hz
+[    7.052601] fsl-spdif-dai 2004000.spdif: imx_pcm_dma_init failed: -517
+[    7.053550] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+[    7.053560] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+[    7.054022] imx-sgtl5000 sound: ASoC: CPU DAI (null) not registered
+[    7.054295] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    7.056803] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    7.060206] fsl-asrc 2034000.asrc: driver registered
+[    7.063842] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe
+[    7.064485] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.096570] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 32000Hz sample rate
+[    7.096579] fsl-spdif-dai 2004000.spdif: use txclk df 16 for 32000Hz sample rate
+[    7.096584] fsl-spdif-dai 2004000.spdif: use sysclk df 2 for 32000Hz sample rate
+[    7.096589] fsl-spdif-dai 2004000.spdif: the best rate for 32000Hz sample rate is 32226Hz
+[    7.096593] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.123283] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 44100Hz sample rate
+[    7.123289] fsl-spdif-dai 2004000.spdif: use txclk df 9 for 44100Hz sample rate
+[    7.123295] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 43859Hz
+[    7.123299] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.144167] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 48000Hz sample rate
+[    7.144173] fsl-spdif-dai 2004000.spdif: use txclk df 5 for 48000Hz sample rate
+[    7.144180] fsl-spdif-dai 2004000.spdif: the best rate for 48000Hz sample rate is 47368Hz
+[    7.144185] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.169620] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 96000Hz sample rate
+[    7.169626] fsl-spdif-dai 2004000.spdif: use txclk df 3 for 96000Hz sample rate
+[    7.169634] fsl-spdif-dai 2004000.spdif: the best rate for 96000Hz sample rate is 94736Hz
+[    7.169637] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.190745] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 192000Hz sample rate
+[    7.190753] fsl-spdif-dai 2004000.spdif: use txclk df 2 for 192000Hz sample rate
+[    7.190758] fsl-spdif-dai 2004000.spdif: the best rate for 192000Hz sample rate is 187500Hz
+[    7.190883] fsl-spdif-dai 2004000.spdif: imx_pcm_dma_init failed: -517
+[    7.191660] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+[    7.191671] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+[    7.191777] imx-sgtl5000 sound: ASoC: CPU DAI (null) not registered
+[    7.191784] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    7.192106] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    7.220888] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe
+[    7.221677] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.246497] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 32000Hz sample rate
+[    7.246504] fsl-spdif-dai 2004000.spdif: use txclk df 16 for 32000Hz sample rate
+[    7.246510] fsl-spdif-dai 2004000.spdif: use sysclk df 2 for 32000Hz sample rate
+[    7.246515] fsl-spdif-dai 2004000.spdif: the best rate for 32000Hz sample rate is 32226Hz
+[    7.246520] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.266974] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 44100Hz sample rate
+[    7.266980] fsl-spdif-dai 2004000.spdif: use txclk df 9 for 44100Hz sample rate
+[    7.266985] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 43859Hz
+[    7.266989] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.288040] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 48000Hz sample rate
+[    7.288046] fsl-spdif-dai 2004000.spdif: use txclk df 5 for 48000Hz sample rate
+[    7.288051] fsl-spdif-dai 2004000.spdif: the best rate for 48000Hz sample rate is 47368Hz
+[    7.288055] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.320893] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 96000Hz sample rate
+[    7.320901] fsl-spdif-dai 2004000.spdif: use txclk df 3 for 96000Hz sample rate
+[    7.320909] fsl-spdif-dai 2004000.spdif: the best rate for 96000Hz sample rate is 94736Hz
+[    7.320915] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.342352] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 192000Hz sample rate
+[    7.342363] fsl-spdif-dai 2004000.spdif: use txclk df 2 for 192000Hz sample rate
+[    7.342370] fsl-spdif-dai 2004000.spdif: the best rate for 192000Hz sample rate is 187500Hz
+[    7.369879] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
+[    7.369889] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+[    7.370024] imx-sgtl5000 sound: ASoC: CPU DAI (null) not registered
+[    7.370033] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    7.391119] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    7.422777] fsl-asoc-card sound: ASoC: CODEC DAI sgtl5000 not registered
+[    7.422789] fsl-asoc-card sound: snd_soc_register_card failed (-517)
+[    7.423120] imx-sgtl5000 sound: ASoC: CODEC DAI sgtl5000 not registered
+[    7.423133] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    7.454462] sgtl5000 1-000a: sgtl5000 revision 0x11
+[...]
+[    7.658346] sgtl5000 1-000a: Using internal LDO instead of VDDD
+[    7.766216] fsl-asoc-card sound: sgtl5000 <-> 2028000.ssi mapping ok
+[...]
+[    8.496784] imx-spdif sound-spdif: snd-soc-dummy-dai <-> 2004000.spdif mapping ok
+[...]
+[  110.494306] fsl-spdif-dai 2004000.spdif: expected clock rate = 25401600
+[  110.494321] fsl-spdif-dai 2004000.spdif: actual clock rate = 25263158
+[  110.494343] fsl-spdif-dai 2004000.spdif: set sample rate to 43859Hz for 44100Hz playback
+[  110.494352] fsl-spdif-dai 2004000.spdif: STCSCH: 0x304000
+[  110.494359] fsl-spdif-dai 2004000.spdif: STCSCL: 0x000000
+[  110.549945] fsl-spdif-dai 2004000.spdif: expected clock rate = 25401600
+[  110.549959] fsl-spdif-dai 2004000.spdif: actual clock rate = 25263158
+[  110.549973] fsl-spdif-dai 2004000.spdif: set sample rate to 43859Hz for 44100Hz playback
+[  110.549988] fsl-spdif-dai 2004000.spdif: STCSCH: 0x304000
+[  110.549996] fsl-spdif-dai 2004000.spdif: STCSCL: 0x000000
+
+Then, when I play music: 
+
+[  178.269300] fsl-spdif-dai 2004000.spdif: expected clock rate = 25401600
+[  178.269311] fsl-spdif-dai 2004000.spdif: actual clock rate = 25263158
+[  178.269321] fsl-spdif-dai 2004000.spdif: set sample rate to 43859Hz for 44100Hz playback
+[  178.269332] fsl-spdif-dai 2004000.spdif: STCSCH: 0x304000
+[  178.269339] fsl-spdif-dai 2004000.spdif: STCSCL: 0x000000
+
+
+AFAICS it just uses rxtx5 (IMX6QDL_CLK_IPG) for 32KHz and gets a little closer to that. 
+But I haven't tried to play at 32KHz
+
+Is there anything else I can try ? 
+
+Thanks. 
