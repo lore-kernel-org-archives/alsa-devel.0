@@ -1,8 +1,7 @@
 From: Bhaktipriya Shridhar <bhaktipriya96@gmail.com>
-Subject: [PATCH] ASoC: tlv320dac33: Remove deprecated
- create_singlethread_workqueue
-Date: Tue, 30 Aug 2016 23:57:50 +0530
-Message-ID: <20160830182750.GA8074@Karyakshetra>
+Subject: [PATCH v2] ASoC:  Remove deprecated create_singlethread_workqueue
+Date: Wed, 31 Aug 2016 00:02:14 +0530
+Message-ID: <20160830183213.GA8478@Karyakshetra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -38,6 +37,9 @@ increase of local concurrency shouldn't make any difference.
 
 Signed-off-by: Bhaktipriya Shridhar <bhaktipriya96@gmail.com>
 ---
+ Changes in v2:
+	- Fixed heading to indicate that changes were made in sound/soc
+
  sound/soc/codecs/tlv320dac33.c | 17 ++++-------------
  sound/soc/intel/atom/sst/sst.c | 14 +++++---------
  2 files changed, 9 insertions(+), 22 deletions(-)
