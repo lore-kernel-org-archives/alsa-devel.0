@@ -1,72 +1,132 @@
-From: Markus Trippelsdorf <markus@trippelsdorf.de>
-Subject: Re: No sound for several minutes after reboot
-Date: Mon, 29 Aug 2016 11:40:48 +0200
-Message-ID: <20160829094048.GC314@x4>
-References: <20160827095018.GA309@x4> <20160827113908.GA312@x4>
- <s5htwe4t2hy.wl-tiwai@suse.de> <20160829083334.GA309@x4>
- <s5hshtot1e2.wl-tiwai@suse.de> <20160829085653.GA306@x4>
- <20160829090548.GA314@x4> <s5hk2f0szne.wl-tiwai@suse.de>
- <20160829092047.GB314@x4> <s5hh9a3udhn.wl-tiwai@suse.de>
+From: Vaishali Thakkar <vaishali.thakkar@oracle.com>
+Subject: Re: [PATCH v2 1/2] ALSA: fireworks: accessing to user space outside
+ spinlock
+Date: Tue, 30 Aug 2016 11:37:04 +0530
+Message-ID: <57C52288.4010502@oracle.com>
+References: <1472511695-29316-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1472511695-29316-2-git-send-email-o-takashi@sakamocchi.jp>
+ <s5ha8fu4yv7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.ud10.udmedia.de (ud10.udmedia.de [194.117.254.50])
- by alsa0.perex.cz (Postfix) with ESMTP id A22ED266954
- for <alsa-devel@alsa-project.org>; Mon, 29 Aug 2016 20:05:25 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hh9a3udhn.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <s5ha8fu4yv7.wl-tiwai@suse.de>
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: clemens@ladisch.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2016.08.29 at 11:32 +0200, Takashi Iwai wrote:
-> On Mon, 29 Aug 2016 11:20:47 +0200,
-> Markus Trippelsdorf wrote:
-> > 
-> > On 2016.08.29 at 11:16 +0200, Takashi Iwai wrote:
-> > > On Mon, 29 Aug 2016 11:05:48 +0200,
-> > > Markus Trippelsdorf wrote:
-> > > > 
-> > > > On 2016.08.29 at 10:56 +0200, Markus Trippelsdorf wrote:
-> > > > > 
-> > > > > Unfortunately running: hda-verb /dev/snd/hwC0D0 0x14 SET_POWER 0x00
-> > > > > has no effect.
-> > > > 
-> > > > OK.
-> > > > Running: hda-verb /dev/snd/hwC0D0 0x15 SET_DIGI_CONVERT_1 0x01
-> > > > fixes the issue.
-> > > > I have now put this into my startup script.
-> > > 
-> > > Oh, then you're using SPDIF output or such?  I missed it from the
-> > > description.
-> > 
-> > Yes, as I wrote in first mail:
-> > it is a TOSLINK-S/PDIF link to my DAC.
+
+
+On Tuesday 30 August 2016 10:49 AM, Takashi Iwai wrote:
+> On Tue, 30 Aug 2016 01:01:34 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> In hwdep interface of fireworks driver, accessing to user space is in a
+>> critical section with disabled local interrupt. Depending on architecture,
+>> accessing to user space can cause page fault exception. Then local
+>> processor stores machine status and handles the synchronous event. A
+>> handler corresponding to the event can call task scheduler to wait for
+>> preparing pages. In a case of usage of single core processor, the state to
+>> disable local interrupt is worse because it don't handle usual interrupts
+>> from hardware.
+>>
+>> This commit fixes this bug, performing the accessing outside spinlock.
+>>
+>> Reported-by: Vaishali Thakkar <vaishali.thakkar@oracle.com>
+>> Cc: stable@vger.kernel.org
+>> Fixes: 555e8a8f7f14('ALSA: fireworks: Add command/response functionality into hwdep interface')
+>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>> ---
+>>  sound/firewire/fireworks/fireworks_hwdep.c | 21 ++++++++++++++++-----
+>>  1 file changed, 16 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/sound/firewire/fireworks/fireworks_hwdep.c b/sound/firewire/fireworks/fireworks_hwdep.c
+>> index 33df865..8ed4b29 100644
+>> --- a/sound/firewire/fireworks/fireworks_hwdep.c
+>> +++ b/sound/firewire/fireworks/fireworks_hwdep.c
+>> @@ -38,6 +38,7 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
+>>  	buf += sizeof(type);
+>>  
+>>  	/* write into buffer as many responses as possible */
+>> +	spin_lock_irq(&efw->lock);
+>>  	while (efw->resp_queues > 0) {
+>>  		t = (struct snd_efw_transaction *)(efw->pull_ptr);
+>>  		length = be32_to_cpu(t->length) * sizeof(__be32);
+>> @@ -52,9 +53,13 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
+>>  				(unsigned int)(efw->pull_ptr - efw->resp_buf);
+>>  			till_end = min_t(unsigned int, length, till_end);
+>>  
+>> +			spin_unlock_irq(&efw->lock);
+>> +
+>>  			if (copy_to_user(buf, efw->pull_ptr, till_end))
+>>  				return -EFAULT;
+>>  
+>> +			spin_lock_irq(&efw->lock);
+>> +
+>>  			efw->pull_ptr += till_end;
 > 
-> Yeah, now I found it.  It's hidden well like Wally, as if it's a part
-> of the "aplay -l" output...
+> Strictly speaking, this is still racy.  efw->pull_ptr is accessed
+> outside the spinlock, and it can be modified while copy_to_user() is
+> being processed.
 
-Hey, never mind.
+Should disabling pagefaults while interacting with user space work here?
 
-> > > This should have been set by IEC958 status bits control.  Does the
-> > > problem exist only after a fresh reboot?
-> > Yes. And only for a few minutes. After that it gets finally switched on.
 > 
-> Hm, it's interesting who sets this bit at all.  Could you track it via
-> tracing verbs as described in Documentation/sound/alsa/HD-Audio.txt.
-
-I'm not particular motivated now that it is working as expected again.
-But if I find time I will do the tracing.
+> Takashi
+> 
+>>  			if (efw->pull_ptr >= efw->resp_buf +
+>>  					     snd_efw_resp_buf_size)
+>> @@ -69,6 +74,8 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
+>>  		efw->resp_queues--;
+>>  	}
+>>  
+>> +	spin_unlock_irq(&efw->lock);
+>> +
+>>  	return count;
+>>  }
+>>  
+>> @@ -76,14 +83,17 @@ static long
+>>  hwdep_read_locked(struct snd_efw *efw, char __user *buf, long count,
+>>  		  loff_t *offset)
+>>  {
+>> -	union snd_firewire_event event;
+>> +	union snd_firewire_event event = {
+>> +		.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS,
+>> +	};
+>>  
+>> -	memset(&event, 0, sizeof(event));
+>> +	spin_lock_irq(&efw->lock);
+>>  
+>> -	event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
+>>  	event.lock_status.status = (efw->dev_lock_count > 0);
+>>  	efw->dev_lock_changed = false;
+>>  
+>> +	spin_unlock_irq(&efw->lock);
+>> +
+>>  	count = min_t(long, count, sizeof(event.lock_status));
+>>  
+>>  	if (copy_to_user(buf, &event, count))
+>> @@ -111,13 +121,14 @@ hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
+>>  		spin_lock_irq(&efw->lock);
+>>  	}
+>>  
+>> +	/* Loosely release the lock here, but still safe. */
+>> +	spin_unlock_irq(&efw->lock);
+>> +
+>>  	if (efw->dev_lock_changed)
+>>  		count = hwdep_read_locked(efw, buf, count, offset);
+>>  	else if (efw->resp_queues > 0)
+>>  		count = hwdep_read_resp_buf(efw, buf, count, offset);
+>>  
+>> -	spin_unlock_irq(&efw->lock);
+>> -
+>>  	return count;
+>>  }
+>>  
+>> -- 
+>> 2.7.4
+>>
 
 -- 
-Markus
+Vaishali
