@@ -1,20 +1,19 @@
 From: Felipe Ferreri Tonello <eu@felipetonello.com>
-Subject: Re: [PATCH v6 2/2] amidi: use GNU getopt_long() proper
-	argument names
-Date: Tue, 30 Aug 2016 11:18:10 +0100
-Message-ID: <86a87a98-556e-bb75-1871-f4e702bc200d@felipetonello.com>
+Subject: Re: [PATCH v6 1/2] amidi: add delay option
+Date: Tue, 30 Aug 2016 11:19:40 +0100
+Message-ID: <23cd591f-5d05-34e2-6cb1-7a8e0f343c00@felipetonello.com>
 References: <20160823140938.21423-1-eu@felipetonello.com>
- <20160823140938.21423-3-eu@felipetonello.com>
- <9216de97-1bea-8848-29fd-2a90f8136626@sakamocchi.jp>
+ <20160823140938.21423-2-eu@felipetonello.com>
+ <e3b3a853-c2cf-5908-666a-f89fb47008e5@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------A67E235DAF8F0873D45AB6E7"
+Content-Type: multipart/mixed; boundary="------------6ED9F6D34DC2EC6012A43919"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id C86BE266B4F
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 12:18:12 +0200 (CEST)
-Received: by mail-wm0-f65.google.com with SMTP id o80so2467208wme.0
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 03:18:12 -0700 (PDT)
-In-Reply-To: <9216de97-1bea-8848-29fd-2a90f8136626@sakamocchi.jp>
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8EC9D266B56
+ for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 12:19:42 +0200 (CEST)
+Received: by mail-wm0-f68.google.com with SMTP id i138so2452925wmf.3
+ for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 03:19:42 -0700 (PDT)
+In-Reply-To: <e3b3a853-c2cf-5908-666a-f89fb47008e5@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,69 +27,181 @@ To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------A67E235DAF8F0873D45AB6E7
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+--------------6ED9F6D34DC2EC6012A43919
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 
 Hi Takashi,
 
-On 30/08/16 00:22, Takashi Sakamoto wrote:
+On 30/08/16 00:19, Takashi Sakamoto wrote:
+> Hi,
+> 
 > On Aug 23 2016 23:09, Felipe F. Tonello wrote:
->> This has no affect besides more clarity to the code.
+>> This patch adds a new options to amidi tool to add a delay (in milliseconds)
+>> to each SysEx message.
+>>
+>> This is very useful when sending firmware updates to a remote device via SysEx
+>> or any other use that requires this delay in between messages.
 >>
 >> Signed-off-by: Felipe F. Tonello <eu@felipetonello.com>
 >> ---
->>  amidi/amidi.c | 26 +++++++++++++-------------
->>  1 file changed, 13 insertions(+), 13 deletions(-)
+>>  amidi/amidi.1 | 14 ++++++++++++++
+>>  amidi/amidi.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+>>  2 files changed, 67 insertions(+), 5 deletions(-)
 >>
+>> diff --git a/amidi/amidi.1 b/amidi/amidi.1
+>> index 86beb27a1e3b..4ca2164788f1 100644
+>> --- a/amidi/amidi.1
+>> +++ b/amidi/amidi.1
+>> @@ -120,6 +120,12 @@ received MIDI commands.
+>>  Does not ignore Clock bytes (F8h) when saving or printing received
+>>  MIDI commands.
+>>  
+>> +.TP
+>> +.I \-D, \-\-delay=mseconds
+>> +Adds a delay in between each SysEx message sent to a device. It is
+>> +useful when sending firmware updates via SysEx messages to a remote
+>> +device.
+>> +
+> 
+> I think it's helpful to name this option so that it keeps intervals
+> somewhat between each system exclusives. For example, how do you think
+> about using 'sysex-interval'?
+
+Sure.
+
+> 
+>>  .SH EXAMPLES
+>>  
+>>  .TP
+>> @@ -130,6 +136,14 @@ to port
+>>  .I hw:0.
+>>  
+>>  .TP
+>> +.B amidi \-p hw:1,0,0 -s firmware.syx \-D 100
+>> +will send the MIDI commands in
+>> +.I firmware.syx
+>> +to port
+>> +.I hw:1,0,0
+>> +with 100 milliseconds delay in between each SysEx message.
+>> +
+>> +.TP
+>>  .B amidi \-S 'F0 43 10 4C 00 00 7E 00 F7'
+>>  sends an XG Reset to the default port.
+>>  
 >> diff --git a/amidi/amidi.c b/amidi/amidi.c
->> index d0dbb322f80a..088da56e2139 100644
+>> index c20512cc96a7..d0dbb322f80a 100644
 >> --- a/amidi/amidi.c
 >> +++ b/amidi/amidi.c
->> @@ -415,19 +415,19 @@ int main(int argc, char *argv[])
+>> @@ -52,6 +52,7 @@ static int receive_file;
+>>  static int dump;
+>>  static float timeout;
+>>  static int stop;
+>> +static int delay;
+>>  static snd_rawmidi_t *input, **inputp;
+>>  static snd_rawmidi_t *output, **outputp;
+>>  
+>> @@ -82,7 +83,8 @@ static void usage(void)
+>>  		"-t, --timeout=seconds  exits when no data has been received\n"
+>>  		"                       for the specified duration\n"
+>>  		"-a, --active-sensing   include active sensing bytes\n"
+>> -		"-c, --clock            include clock bytes\n");
+>> +		"-c, --clock            include clock bytes\n"
+>> +		"-D, --delay=mseconds   delay in between each SysEx message\n");
+>>  }
+>>  
+>>  static void version(void)
+>> @@ -411,7 +413,7 @@ static void add_send_hex_data(const char *str)
+>>  
+>>  int main(int argc, char *argv[])
 >>  {
->>  	static const char short_options[] = "hVlLp:s:r:S::dt:acD:";
+>> -	static const char short_options[] = "hVlLp:s:r:S::dt:ac";
+>> +	static const char short_options[] = "hVlLp:s:r:S::dt:acD:";
 >>  	static const struct option long_options[] = {
->> -		{"help", 0, NULL, 'h'},
->> -		{"version", 0, NULL, 'V'},
->> -		{"list-devices", 0, NULL, 'l'},
->> -		{"list-rawmidis", 0, NULL, 'L'},
->> -		{"port", 1, NULL, 'p'},
->> -		{"send", 1, NULL, 's'},
->> -		{"receive", 1, NULL, 'r'},
->> -		{"send-hex", 2, NULL, 'S'},
->> -		{"dump", 0, NULL, 'd'},
->> -		{"timeout", 1, NULL, 't'},
->> -		{"active-sensing", 0, NULL, 'a'},
->> -		{"clock", 0, NULL, 'c'},
->> -		{"delay", 1, NULL, 'D'},
->> +		{"help", no_argument, NULL, 'h'},
->> +		{"version", no_argument, NULL, 'V'},
->> +		{"list-devices", no_argument, NULL, 'l'},
->> +		{"list-rawmidis", no_argument, NULL, 'L'},
->> +		{"port", required_argument, NULL, 'p'},
->> +		{"send", required_argument, NULL, 's'},
->> +		{"receive", required_argument, NULL, 'r'},
->> +		{"send-hex", optional_argument, NULL, 'S'},
->> +		{"dump", no_argument, NULL, 'd'},
->> +		{"timeout", required_argument, NULL, 't'},
->> +		{"active-sensing", no_argument, NULL, 'a'},
->> +		{"clock", no_argument, NULL, 'c'},
->> +		{"delay", required_argument, NULL, 'D'},
+>>  		{"help", 0, NULL, 'h'},
+>>  		{"version", 0, NULL, 'V'},
+>> @@ -425,6 +427,7 @@ int main(int argc, char *argv[])
+>>  		{"timeout", 1, NULL, 't'},
+>>  		{"active-sensing", 0, NULL, 'a'},
+>>  		{"clock", 0, NULL, 'c'},
+>> +		{"delay", 1, NULL, 'D'},
 >>  		{ }
 >>  	};
 >>  	int c, err, ok = 0;
+>> @@ -474,6 +477,9 @@ int main(int argc, char *argv[])
+>>  		case 'c':
+>>  			ignore_clock = 0;
+>>  			break;
+>> +		case 'D':
+>> +			delay = atoi(optarg);
+>> +			break;
+>>  		default:
+>>  			error("Try `amidi --help' for more information.");
+>>  			return 1;
+>> @@ -549,9 +555,51 @@ int main(int argc, char *argv[])
+>>  			error("cannot set blocking mode: %s", snd_strerror(err));
+>>  			goto _exit;
+>>  		}
+>> -		if ((err = snd_rawmidi_write(output, send_data, send_data_length)) < 0) {
+>> -			error("cannot send data: %s", snd_strerror(err));
+>> -			goto _exit;
+>> +		if (!delay) {
+>> +			if ((err = snd_rawmidi_write(output, send_data, send_data_length)) < 0) {
+>> +				error("cannot send data: %s", snd_strerror(err));
+>> +				return err;
+>> +			}
+>> +		} else {
+>> +			char *data = send_data;
+>> +			size_t buffer_size;
+>> +			snd_rawmidi_params_t *param;
+>> +			snd_rawmidi_status_t *st;
+>> +
+>> +			snd_rawmidi_status_malloc(&st);
+>> +
+>> +			snd_rawmidi_params_malloc(&param);
+>> +			snd_rawmidi_params_current(output, param);
+>> +			buffer_size = snd_rawmidi_params_get_buffer_size(param);
+>> +			snd_rawmidi_params_free(param);
+>> +
+>> +			while (data < (send_data + send_data_length)) {
+>> +				int len = send_data + send_data_length - data;
+>> +				char *temp;
+>> +
+>> +				if (data > send_data) {
+>> +					snd_rawmidi_status(output, st);
+>> +					do {
+>> +						/* 320 µs per byte as noted in Page 1 of MIDI spec */
+>> +						usleep((buffer_size - snd_rawmidi_status_get_avail(st)) * 320);
+>> +						snd_rawmidi_status(output, st);
+>> +					} while(snd_rawmidi_status_get_avail(st) < buffer_size);
+>> +					usleep(delay * 1000);
+>> +				}
+>> +
+>> +				/* find end of SysEx */
+>> +				if ((temp = memchr(data, 0xf7, len)) != NULL)
+>> +					len = temp - data + 1;
+>> +
+>> +				if ((err = snd_rawmidi_write(output, data, len)) < 0) {
+>> +					error("cannot send data: %s", snd_strerror(err));
+>> +					return err;
+>> +				}
+>> +
+>> +				data += len;
+>> +			}
+>> +
+>> +			snd_rawmidi_status_free(st);
+>>  		}
+>>  	}
 > 
-> This patch should be posted separately from this patchset, because it's
-> just for code improvement regardless of your new feature. This patch
-> might be independently merged without long discussions.
+> In my opinion, it's better to split function specific to this purpose
+> and call it here. An appropriate name of the function might help readers.
 
-Ok.
+Right. It will make the code cleaner.
 
 -- 
 Felipe
 
---------------A67E235DAF8F0873D45AB6E7
+--------------6ED9F6D34DC2EC6012A43919
 Content-Type: application/pgp-keys;
  name="0x92698E6A.asc"
 Content-Transfer-Encoding: 7bit
@@ -212,11 +323,11 @@ SkAyCfQaSw==
 =JwBB
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------A67E235DAF8F0873D45AB6E7
+--------------6ED9F6D34DC2EC6012A43919
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---------------A67E235DAF8F0873D45AB6E7--
+--------------6ED9F6D34DC2EC6012A43919--
