@@ -1,16 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Range of pitchbend MIDI events
-Date: Tue, 30 Aug 2016 10:15:41 +0200
-Message-ID: <61c9fbcc-221d-bc63-0ba3-4977b67d31a7@ladisch.de>
-References: <CAPn+-XSsDEe3ruu7vYmdNgneLpK13VxYVm860JAt4cwFe86soQ@mail.gmail.com>
+From: Markus Trippelsdorf <markus@trippelsdorf.de>
+Subject: Re: No sound for several minutes after reboot
+Date: Tue, 30 Aug 2016 10:32:01 +0200
+Message-ID: <20160830083201.GA5031@x4>
+References: <20160829083334.GA309@x4> <s5hshtot1e2.wl-tiwai@suse.de>
+ <20160829085653.GA306@x4> <20160829090548.GA314@x4>
+ <s5hk2f0szne.wl-tiwai@suse.de> <20160829092047.GB314@x4>
+ <s5hh9a3udhn.wl-tiwai@suse.de> <20160829120659.GA305@x4>
+ <20160829140233.GA857@x4> <s5hbn0a3cow.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 5DDC926670B
- for <Alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 10:15:42 +0200 (CEST)
-In-Reply-To: <CAPn+-XSsDEe3ruu7vYmdNgneLpK13VxYVm860JAt4cwFe86soQ@mail.gmail.com>
+Received: from mail.ud10.udmedia.de (ud10.udmedia.de [194.117.254.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BBDD266971
+ for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 10:32:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hbn0a3cow.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,30 +25,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Maurizio Berti <maurizio.berti@gmail.com>
-Cc: Alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Maurizio Berti wrote:
-> I was playing with pyalsa and I realized an unexpected behavior with
-> pitchbend events.
-> The pitchbend range should be, by MIDI standard, between -8192 and +8191,
-> or 0-16384. Being a 3 byte event, it should ignore any subsequent byte
-> received.
->
-> Using pyalsa I'm able to create events with values greater than 127
+On 2016.08.30 at 10:04 +0200, Takashi Iwai wrote:
+> On Mon, 29 Aug 2016 16:02:33 +0200,
+> Markus Trippelsdorf wrote:
+> > 
+> > On 2016.08.29 at 14:06 +0200, Markus Trippelsdorf wrote:
+> > > On 2016.08.29 at 11:32 +0200, Takashi Iwai wrote:
+> > > > On Mon, 29 Aug 2016 11:20:47 +0200,
+> > > > Markus Trippelsdorf wrote:
+> > >  output:ALSA def-222   [003] ....   422.035002: hda_send_cmd: [0000:00:14.2:0] val=0x01570d01
+> > >  output:ALSA def-222   [003] ....   422.035061: hda_get_response: [0000:00:14.2:0] val=0x00000000
+> > 
+> > Actually it right here that sound starts again:
+> > 
+> > markus@x4 hda-emu % ./a.out 0x01570d01
+> > raw value = 0x01570d01
+> > cid = 0, nid = 0x15, verb = 0x70d, parm = 0x01
+> > raw value: verb = 0x70d, parm = 0x1
+> > verbname = set_digi_cvt_1
+> 
+> So, the program itself sets the value.  Which sound backend are you
+> using?  PulseAudio, whatever?
 
-The ALSA sequencer does not use the MIDI byte format for its events.
+No backend at all. I use mpd directly on type hw:
 
-Sequencer events use a 32-bit field for controller values:
-http://www.alsa-project.org/alsa-doc/alsa-lib/structsnd__seq__ev__ctrl__t.html
-and the entire structure is delivered unchanged to the receiving
-sequencer client.
+pcm.!default {
+  type hw
+  card 0
+  device 3
+}
 
-Events get converted into actual MIDI bytes only when they end up at
-a real MIDI port.  In that case, only the lowest 14 bits of the value
-are put into the two data bytes of the pitchbend event.
+> Basically you need to track the verb 0x01570dXX that changes the
+> digital converter parameter.
+> 
+> When the driver was loaded and initialized, what value does the node
+> have?  Also check the raw ctl elements, too.  The value is controlled
+> via "IEC958 Status" controls.  If the value at the init time is wrong,
+> you may set the initial value via "iecset" program included in
+> alsa-utils.
 
+The driver is build directly into my monolithic kernel (I don't have
+modules enabled at all).
+At boot time I run "alsactl restore" in an init script.
+alsamixer shows that S/PDIF is unmuted, but as I wrote it doesn't work
+for several minutes. If I toggle the S/PDIF setting in alsamixer from
+unmuted to muted to unmuted then sounds starts working.
 
-Regards,
-Clemens
+Anyway:
+ /usr/bin/hda-verb /dev/snd/hwC0D0 0x15 SET_DIGI_CONVERT_1 0x01 &> /dev/null
+works fine in my init script, so the issue is solved for me.
+
+Thanks.
+
+-- 
+Markus
