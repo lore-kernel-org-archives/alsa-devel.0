@@ -1,90 +1,51 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
- McBSP to prevent glitches
-Date: Wed, 31 Aug 2016 12:41:07 -0700
-Message-ID: <20160831194107.wijnbmdns2jjvzkv@atomide.com>
-References: <20160829182746.53vrgbxadqodzzug@atomide.com>
- <925ded57-1e91-3db6-9e82-3a3ff5775412@ti.com>
- <20160831141340.h24szdqjnicmt2ew@atomide.com>
- <20160831165959.3sldcjxaci3kdx6z@atomide.com>
- <eef88aa4-b829-1889-f083-eb0359c0dac6@ti.com>
+From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Subject: Re: Re: [PATCH v9 1/2] ASoC: sun4i-codec: Distinguish
+ sun4i from sun7i
+Date: Wed, 31 Aug 2016 22:14:02 +0200
+Message-ID: <20160831221402.670ab832@scratchpost.org>
+References: <20160830054403.7878-1-dannym@scratchpost.org>
+	<20160830054403.7878-2-dannym@scratchpost.org>
+	<20160831174623.GA20462@lukather>
+Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muru.com (muru.com [72.249.23.125])
- by alsa0.perex.cz (Postfix) with ESMTP id AFA0526668F
- for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 21:41:12 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <eef88aa4-b829-1889-f083-eb0359c0dac6@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Pavel Machel <pavel@ucw.cz>, Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBBDPVTS7AKGQEKJEDOGI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20160831174623.GA20462@lukather>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi@ti.com> [160831 11:34]:
-> On 08/31/16 19:59, Tony Lindgren wrote:
-> > * Tony Lindgren <tony@atomide.com> [160831 07:14]:
-> >> * Peter Ujfalusi <peter.ujfalusi@ti.com> [160831 04:38]:
-> >>> If we have McBSP w/o FIFO there is no need for the qos AFAIK.
-> >>> I'm fine with the 30ms, if you have done the testing on OMAP3.McBSP2, probably
-> >>> setting 30ms for McBSP with 1280 FIFO, 3ms for 128 FIFO and no qos for McBSP
-> >>> w/o FIFO might be better. Or:
-> >>>
-> >>> latency = mcbsp->pdata->buffer_size * 23; /* 29.44ms on omap3's mcbsp2 */
-> >>>
-> >>> if (latency)
-> >>> 	pm_qos_add_request(&mcbsp->pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
-> >>> 			   latency);
-> >>
-> >> OK let me run some tests with that and mcbsp2 fifo set to 128. My guess
-> >> is that things already work for that case with no patches with the existing
-> >> fifo based  snd_pcm_hw_constraint_step() setting limits low enough so
-> >> we never enter deeper idle states, but let's see :)
-> > 
-> > Well not quite so :) The fixed limit of 30 ms also works with fifo
-> > set to 128, but we still have audio fail without any patches.
+Hi Maxime,
+
+On Wed, 31 Aug 2016 19:46:23 +0200
+Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+
+> > -#define SUN4I_CODEC_AC_SYS_VERI			(0x38)
+> > -#define SUN4I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
+> > +
+> > +#define SUN7I_CODEC_AC_DAC_CAL			(0x38)
+> > +#define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)  
 > 
-> does it fail at start time or later?
-> At start time we will have ~10 DMA bursts of 128 words to fill the FIFO on McBSP2.
+> That will need at least some mention in the commit log.
 
-The problems start only later on, about 10 seconds into playing of
-course depending on things like console activity etc.
+Hm? It's now called like it is called in the user manual.
+Also, the macro SUN4I_CODEC_AC_SYS_VERI was unused before anyway.
 
-> > @@ -1064,6 +1072,16 @@ int omap_mcbsp_init(struct platform_device *pdev)
-> >  		mcbsp->max_tx_thres = max_thres(mcbsp) - 0x10;
-> >  		mcbsp->max_rx_thres = max_thres(mcbsp) - 0x10;
-> >  
-> > +		/*
-> > +		 * Prevent device from hitting deeper idle states between
-> > +		 * DMA fifo loads. On omap3 mcbsp2 we have a larger FIFO of
-> > +		 * 1280 bytes instead of the usual 128 bytes, and the measured
-> 
-> not bytes, but words. The word size does not matter, it can be 8, 16 or
-> 32bits, but we have 1280 or 128 of these words.
+What should I write in the commit log?
 
-Oh OK, will fix.
+> It would be better to add a structure assiocated to the data field of
+> of_device_id. That way, you'll also be able to have any quirks without
+> adding more checks (such as a different regmap config, like Chen-Yu
+> suggested).
 
-> > +		 * max latency we can tolerate is somewhere below 40 ms. To be
-> > +		 * safe, use a fixed value of 30 ms to block off idle on omap3
-> > +		 * while still allowing retention idle.
-> > +		 */
-> > +		mcbsp->latency = 30 * 1000;
-> 
-> were there issue with calculating the latency like
-> 		mcbsp->latency = max_thres(mcbsp) * 23;
+Yeah, I did that now; seems to work.
 
-Yes, we're not hitting retention idle at all during play with FIFO set
-to 128 words.
-
-Regards,
-
-Tony
+Cheers,
+   Danny
