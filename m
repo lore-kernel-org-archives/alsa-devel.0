@@ -1,23 +1,23 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: Setting some clocks back to DUMMY fixes spdif
- output on imx6q wandboard rev B1
-Date: Tue, 30 Aug 2016 21:21:01 -0700
-Message-ID: <20160831042100.GA3308@Asurada>
-References: <20160828160055.GA2122@begut>
- <20160829192820.GA14207@Asurada-Nvidia>
- <20160829195428.GD1967@begut> <20160830111414.GA1968@begut>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/4] ALSA: control: return payload length
+ for TLV operation
+Date: Wed, 31 Aug 2016 13:30:02 +0900
+Message-ID: <57C65D4A.9090209@sakamocchi.jp>
+References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
+ <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
+ <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
+ <20160830145136.GE9355@localhost>
+ <38f437e4-56e7-dc7a-6892-c1d812fd56d3@sakamocchi.jp>
+ <20160831042040.GO9355@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f169.google.com (mail-pf0-f169.google.com
- [209.85.192.169])
- by alsa0.perex.cz (Postfix) with ESMTP id DAE8A266655
- for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 06:21:25 +0200 (CEST)
-Received: by mail-pf0-f169.google.com with SMTP id y134so14921682pfg.0
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2016 21:21:25 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20160830111414.GA1968@begut>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 80914266CCB
+ for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 06:30:07 +0200 (CEST)
+In-Reply-To: <20160831042040.GO9355@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,123 +27,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xavi Drudis Ferran <xdrudis@tinet.cat>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@linaro.org, Clemens Ladisch <clemens@ladisch.de>, omair.m.abdullah@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 30, 2016 at 01:14:14PM +0200, Xavi Drudis Ferran wrote:
-
-> linux-libre-4.7 without my patch, i.e. clocks defined like this :
-> arch/arm/boot/dts/imx6qdl.dtsi:
-> aips-bus@02000000 { /* AIPS1 */
-> [...]
->    spba-bus@02000000 {
-> [...]
->        spdif: spdif@02004000 {
->           clocks = <&clks IMX6QDL_CLK_SPDIF_GCLK>, <&clks IMX6QDL_CLK_OSC>,
->                    <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_ASRC>,
->                    <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_ESAI_EXTAL>,
->                    <&clks IMX6QDL_CLK_IPG>, <&clks IMX6QDL_CLK_MLB>,
->                    <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_SPBA>;
->           clock-names = "core",  "rxtx0",
->                         "rxtx1", "rxtx2",
->                         "rxtx3", "rxtx4",
->                         "rxtx5", "rxtx6",
->                         "rxtx7", "spba";
-> [...]
-
-> [    9.376398] fsl-spdif-dai 2004000.spdif: use rxtx6 as tx clock source for 44100Hz sample rate
-> [    9.376404] fsl-spdif-dai 2004000.spdif: use txclk df 94 for 44100Hz sample rate
-> [    9.376409] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 43882Hz
-
-Without your patch, it chose rxtx6 (MLB) as the source for 44.1KHz.
-
-> linux-libre-4.7 with my patch, i.e. clocks defined like this :
-> arch/arm/boot/dts/imx6qdl.dtsi:
-> aips-bus@02000000 { /* AIPS1 */
-> [...]
->    spba-bus@02000000 {
-> [...]
->       spdif: spdif@02004000 {
->           clocks = <&clks IMX6QDL_CLK_SPDIF_GCLK>, <&clks IMX6QDL_CLK_OSC>,
->                    <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_DUMMY>,
->                    <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_DUMMY>,
->                    <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_DUMMY>,
->                    <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_SPBA>;
->           clock-names = "core",  "rxtx0",
->                         "rxtx1", "rxtx2",
->                         "rxtx3", "rxtx4",
->                         "rxtx5", "rxtx6",
->                         "rxtx7", "spba";
-> [...]
-
-> [    6.662922] fsl-spdif-dai 2004000.spdif: use rxtx1 as tx clock source for 44100Hz sample rate
-> [    6.662927] fsl-spdif-dai 2004000.spdif: use txclk df 9 for 44100Hz sample rate
-> [    6.662932] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 43859Hz
-
-With your patch, it selects rxtx1 (the dedicated SPDIF baud clock).
-
-> Does it mean that a 43859Hz clock is close enough to theoretical 44100Hz
-> but  43882Hz is not ? 
-
-No, the problem is not at the rate but the source -- Although the
-MLB clock exists in the clock tree as a better rate provider, it
-might not be correctly enabled or running at the rate it claims.
-
-> Maybe there's something wrong with rxtx6 (IMX6QDL_CLK_MLB). This clock
-
-Yes.
-
-> does not seem to be used elsewhere (I mean in files, it's used in any
-> board that includes imx6qdl.dtsi)
+On Aug 31 2016 13:20, Vinod Koul wrote:
+>> The layout of TLV packet is:
+>> struct snd_ctl_tlv {
+>>     unsigned int numid;   # numerical ID of a control element
+>>     unsigned int length;  # length of payload
+>>     unsigned int tlv[0];  # payload
+>> };
+>> http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/uapi/sound/asound.h?h=sound-4.8-rc4#n945
+>>
+>> In our implementaion, TLV packet payload (struct snd_ctl_tlv.tlv) is
+>> used to transfer data. For pure threshold level information, we expects
+>> applications and drivers to fill the payload with this protocol:
+>> struct snd_ctl_tlv.tlv[0]:  one of SNDRV_CTL_TLVT_XXX
+>> struct snd_ctl_tlv.tlv[1]:  length of data
+>> struct snd_ctl_tlv.tlv[2..]: data
+>>
+>> (You can see SNDRV_CTL_TLVT_XXX in this header.
+>> http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/uapi/sound/tlv.h?h=sound-4.8-rc4
+>> )
+>>
+>> On the other hand, ALSA SoC part performs:
+>> struct snd_ctl_tlv.tlv[0..]: arbitrary data
+>>
+>> If your 'tlv[1]' means the 'struct snd_ctl_tlv.tlv[1]', no sense.
+>>
+>> The issue I address is current implementation cannot correctly handle
+>> this case:
+>>  - applications request a buffer with a certain size
+>>  - drivers processes the request with smaller size
+>>  - application cannot get the size
+>>
+>> When implementing I/O operation, in my understanding, this situation
+>> often occurs, depending on driver implementation. Fortunately, current
+>> implementation of WM-ADSP is free from this concern, but it's better for
+>> us not to expect this luck always.
 > 
+> Thanks for the detailed explanation,
 > 
-> include/dt-bindings/clock/imx6qdl-clock.h: 
-> #define IMX6QDL_CLK_MLB						139
- 
-> Might it have to do with the fact I'm using (still trying in fact) to use etnaviv ?
-> 
-> drivers/clk/imx/clk-imx6q.c:
-> 
->    if (clk_on_imx6dl())
->       /*
->        * The multiplexer and divider of the imx6q clock gpu2d get
->        * redefined/reused as mlb_sys_sel and mlb_sys_clk_podf on imx6dl.
->        */
->        clk[IMX6QDL_CLK_MLB] = imx_clk_gate2("mlb",            "gpu2d_core_podf",   base + 0x74, 18);
->    else
->        clk[IMX6QDL_CLK_MLB] = imx_clk_gate2("mlb",            "axi",               base + 0x74, 18);
-> 
-> 
-> But I'm on a imx6q not imx6dl .
+> IIUC, the fix would be to ensure that drivers or ASoC does return the length
+> value in snd_ctl_tlv.tlv[1] per the API expectations. As I said, in ASoC we
+> tend to move code to core, so snd_soc_bytes_tlv_callback should be updated
 
-There are five MLB clocks sharing the same clock gate according
-to CCM chapter in the Reference Manual of imx6q. But five clocks
-come from three different parent clocks, and I am wondering if
-the MLB clock that's connected to the S/PDIF module is really
-derived from this AXI.
+Instead of it, I proposed to use 'struct snd_ctl_tlv.length' for the
+length of TLV packet payload, because the original protocol is too rough
+as I/O operations. The issue I suggested for ALSA SoC part is one of
+actual examples. We can generate similar issues on user-defined control
+element set.
 
-Hope Fabio might be able to help on the clock tree issue here:)
 
-> --- linux-4.7-no-spdif-out/arch/arm/boot/dts/imx6qdl.dtsi	2016-07-25 00:19:43.000000000 +0200
-> +++ linux-4.7/arch/arm/boot/dts/imx6qdl.dtsi	2016-08-30 12:51:37.369431791 +0200
-> @@ -242,7 +242,7 @@
->  					clocks = <&clks IMX6QDL_CLK_SPDIF_GCLK>, <&clks IMX6QDL_CLK_OSC>,
->  						 <&clks IMX6QDL_CLK_SPDIF>, <&clks IMX6QDL_CLK_ASRC>,
->  						 <&clks IMX6QDL_CLK_DUMMY>, <&clks IMX6QDL_CLK_ESAI_EXTAL>,
-> -						 <&clks IMX6QDL_CLK_IPG>, <&clks IMX6QDL_CLK_MLB>,
-> +						 <&clks IMX6QDL_CLK_IPG>, <&clks IMX6QDL_CLK_DUMMY>,
+Regards
 
-As MLB might be gated or not available at all, disabling it is a
-quick work around.
- 
-> AFAICS it just uses rxtx5 (IMX6QDL_CLK_IPG) for 32KHz and gets a little closer to that. 
-> But I haven't tried to play at 32KHz
-> 
-> Is there anything else I can try ? 
-
-Another solution for you could be to change the rates of two of
-those existing clocks to the perfect rates for 44.1KHz and 48KHz
-respectively, 22579200Hz and 24576000Hz for example. (If you
-only need one sample rate support, changing rxtx1 SPDIF clock
-only then.)
+Takashi Sakamoto
