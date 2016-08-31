@@ -1,157 +1,198 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
- McBSP to prevent glitches
-Date: Wed, 31 Aug 2016 14:37:26 +0300
-Message-ID: <925ded57-1e91-3db6-9e82-3a3ff5775412@ti.com>
-References: <20160829182746.53vrgbxadqodzzug@atomide.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: tlv320dac33: Remove deprecated
+ create_singlethread_workqueue
+Date: Wed, 31 Aug 2016 14:56:50 +0300
+Message-ID: <7abb8b68-760b-cf67-17a5-d120136d6ec5@ti.com>
+References: <20160830182750.GA8074@Karyakshetra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 538AD267006
- for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 13:37:33 +0200 (CEST)
-In-Reply-To: <20160829182746.53vrgbxadqodzzug@atomide.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Pavel Machel <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160830182750.GA8074@Karyakshetra>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bhaktipriya Shridhar <bhaktipriya96@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/29/16 21:27, Tony Lindgren wrote:
-> We can get audio errors if hitting deeper idle states on omaps:
-> =
+On 08/30/16 21:27, Bhaktipriya Shridhar wrote:
+> The workqueue "dac33_wq" queues a single work item &dac33->work and hence
+> doesn't require ordering. Also, it is not being used on a memory reclaim
+> path. Hence, it has been converted to use system_wq.
+>
+> The work item has been flushed in dac33_soc_remove to ensure that
+> there are no pending tasks while disconnecting the driver.
 
-> [alsa.c:230] error: Fatal problem with alsa output, error -5.
-> [audio.c:614] error: Error in writing audio (Input/output error?)!
-> =
+The reason why dac33 had it's own wq is that it is absolutely time critical
+that the work is not going to be delayed by the scheduling needs with the
+system_wq. If the work execution is delayed, we could run out of time in FIFO
+mode, which can cause the chip to hang do to FIFO underrun.
 
-> This seems to happen with off mode idle enabled as power for the
-> whole SoC may get cut off between filling the McBSP fifo using DMA.
-> While active DMA blocks deeper idle states in hardware, McBSP
-> activity does not seem to do so.
-> =
+Unfortunately I'm no longer able to test the dac33 as I don't have the HW any
+more.
 
-> Let's fix the issue by adding PM QoS latency requirement for McBSP.
-> Based on my experiments a working latency value is somewhere
-> around 35 ms with 40 ms breaking. So let's use a safer value of 30 ms.
-> =
+If you are 100% percent sure that this is not going to delay the work, then
+I'm OK with the change, but I have used the dedicated queue at the time,
+because the system_wq given unpredictable latencies.
 
-> Note that this is different from snd_pcm_hw_constraint_step() as
-> that can configure things based on the buffer and period size.
-> However, that does not help to block idle between the fifo fills.
-> =
-
-> Note that in theory some omaps are capable of playing audio while
-> hitting deeper idle states. If somebody needs that and gets it
-> working, we can set the latency requirements accordingly.
-> =
-
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> The workqueue "post_msg_wq" queues a single work item
+> &drv->ipc_post_msg_wq and hence doesn't require ordering. Also, it is
+> not being used on a memory reclaim path. Hence, it has been converted to
+> use system_wq.
+> 
+> The work item has been flushed in sst_context_cleanup to ensure that
+> there are no pending tasks while disconnecting the driver.
+> 
+> System workqueues have been able to handle high level of concurrency
+> for a long time now and hence it's not required to have a singlethreaded
+> workqueue just to gain concurrency. Unlike a dedicated per-cpu workqueue
+> created with create_singlethread_workqueue(), system_wq allows multiple
+> work items to overlap executions even on the same CPU; however, a
+> per-cpu workqueue doesn't have any CPU locality or global ordering
+> guarantee unless the target CPU is explicitly specified and thus the
+> increase of local concurrency shouldn't make any difference.
+> 
+> Signed-off-by: Bhaktipriya Shridhar <bhaktipriya96@gmail.com>
 > ---
->  sound/soc/omap/mcbsp.c | 10 ++++++++++
->  sound/soc/omap/mcbsp.h |  2 ++
->  2 files changed, 12 insertions(+)
-> =
+>  sound/soc/codecs/tlv320dac33.c | 17 ++++-------------
+>  sound/soc/intel/atom/sst/sst.c | 14 +++++---------
 
-> diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
-> --- a/sound/soc/omap/mcbsp.c
-> +++ b/sound/soc/omap/mcbsp.c
-> @@ -25,6 +25,7 @@
->  #include <linux/io.h>
->  #include <linux/slab.h>
->  #include <linux/pm_runtime.h>
-> +#include <linux/pm_qos.h>
->  =
+two separate patch?
 
->  #include <linux/platform_data/asoc-ti-mcbsp.h>
->  =
-
-> @@ -643,6 +644,10 @@ void omap_mcbsp_start(struct omap_mcbsp *mcbsp, int =
-tx, int rx)
->  	int enable_srg =3D 0;
->  	u16 w;
->  =
-
-> +	/* Prevent omap hardware from hitting off between fifo fills */
-> +	pm_qos_add_request(&mcbsp->pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
-> +			   30 * 1000);
-
-The latency value depends on the McBSP FIFO size and the speed the DMA can
-transfer the data.
-OMAP3.McBSP2 have 1280 word as buffer. All other McBSP across SoCs have 128
-words or no FIFO.
-
-The DMA fill speed will depend on several factors, I guess it is faster on
-OMAP4/5 then on OMAP3/2/1.
-
-If we have McBSP w/o FIFO there is no need for the qos AFAIK.
-I'm fine with the 30ms, if you have done the testing on OMAP3.McBSP2, proba=
-bly
-setting 30ms for McBSP with 1280 FIFO, 3ms for 128 FIFO and no qos for McBSP
-w/o FIFO might be better. Or:
-
-latency =3D mcbsp->pdata->buffer_size * 23; /* 29.44ms on omap3's mcbsp2 */
-
-if (latency)
-	pm_qos_add_request(&mcbsp->pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
-			   latency);
-
-
-> +
->  	if (mcbsp->st_data)
->  		omap_st_start(mcbsp);
->  =
-
-> @@ -731,6 +736,8 @@ void omap_mcbsp_stop(struct omap_mcbsp *mcbsp, int tx=
-, int rx)
->  =
-
->  	if (mcbsp->st_data)
->  		omap_st_stop(mcbsp);
-> +
-> +	pm_qos_remove_request(&mcbsp->pm_qos_req);
+>  2 files changed, 9 insertions(+), 22 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+> index f7a6ce7..6822ac1 100644
+> --- a/sound/soc/codecs/tlv320dac33.c
+> +++ b/sound/soc/codecs/tlv320dac33.c
+> @@ -90,7 +90,6 @@ static const char *dac33_supply_names[DAC33_NUM_SUPPLIES] = {
+> 
+>  struct tlv320dac33_priv {
+>  	struct mutex mutex;
+> -	struct workqueue_struct *dac33_wq;
+>  	struct work_struct work;
+>  	struct snd_soc_codec *codec;
+>  	struct regulator_bulk_data supplies[DAC33_NUM_SUPPLIES];
+> @@ -771,7 +770,7 @@ static irqreturn_t dac33_interrupt_handler(int irq, void *dev)
+> 
+>  	/* Do not schedule the workqueue in Mode7 */
+>  	if (dac33->fifo_mode != DAC33_FIFO_MODE7)
+> -		queue_work(dac33->dac33_wq, &dac33->work);
+> +		schedule_work(&dac33->work);
+> 
+>  	return IRQ_HANDLED;
 >  }
->  =
-
->  int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id)
-> @@ -1098,6 +1105,9 @@ err_thres:
->  =
-
->  void omap_mcbsp_cleanup(struct omap_mcbsp *mcbsp)
->  {
-> +	if (dev_pm_qos_request_active(&mcbsp->pm_qos_req))
-> +		pm_qos_remove_request(&mcbsp->pm_qos_req);
+> @@ -1127,7 +1126,7 @@ static int dac33_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+>  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+>  		if (dac33->fifo_mode) {
+>  			dac33->state = DAC33_PREFILL;
+> -			queue_work(dac33->dac33_wq, &dac33->work);
+> +			schedule_work(&dac33->work);
+>  		}
+>  		break;
+>  	case SNDRV_PCM_TRIGGER_STOP:
+> @@ -1135,7 +1134,7 @@ static int dac33_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+>  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+>  		if (dac33->fifo_mode) {
+>  			dac33->state = DAC33_FLUSH;
+> -			queue_work(dac33->dac33_wq, &dac33->work);
+> +			schedule_work(&dac33->work);
+>  		}
+>  		break;
+>  	default:
+> @@ -1410,14 +1409,6 @@ static int dac33_soc_probe(struct snd_soc_codec *codec)
+>  			dac33->irq = -1;
+>  		}
+>  		if (dac33->irq != -1) {
+> -			/* Setup work queue */
+> -			dac33->dac33_wq =
+> -				create_singlethread_workqueue("tlv320dac33");
+> -			if (dac33->dac33_wq == NULL) {
+> -				free_irq(dac33->irq, codec);
+> -				return -ENOMEM;
+> -			}
+> -
+>  			INIT_WORK(&dac33->work, dac33_work);
+>  		}
+>  	}
+> @@ -1437,7 +1428,7 @@ static int dac33_soc_remove(struct snd_soc_codec *codec)
+> 
+>  	if (dac33->irq >= 0) {
+>  		free_irq(dac33->irq, dac33->codec);
+> -		destroy_workqueue(dac33->dac33_wq);
+> +		flush_work(&dac33->work);
+>  	}
+>  	return 0;
+>  }
+> diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
+> index a4b458e..8cfd0cf 100644
+> --- a/sound/soc/intel/atom/sst/sst.c
+> +++ b/sound/soc/intel/atom/sst/sst.c
+> @@ -76,7 +76,7 @@ static irqreturn_t intel_sst_interrupt_mrfld(int irq, void *context)
+>  		spin_unlock(&drv->ipc_spin_lock);
+> 
+>  		/* we can send more messages to DSP so trigger work */
+> -		queue_work(drv->post_msg_wq, &drv->ipc_post_msg_wq);
+> +		schedule_work(&drv->ipc_post_msg_wq);
+>  		retval = IRQ_HANDLED;
+>  	}
+> 
+> @@ -212,10 +212,6 @@ static int sst_workqueue_init(struct intel_sst_drv *ctx)
+>  	INIT_WORK(&ctx->ipc_post_msg_wq, sst_process_pending_msg);
+>  	init_waitqueue_head(&ctx->wait_queue);
+> 
+> -	ctx->post_msg_wq =
+> -		create_singlethread_workqueue("sst_post_msg_wq");
+> -	if (!ctx->post_msg_wq)
+> -		return -EBUSY;
+>  	return 0;
+>  }
+> 
+> @@ -318,7 +314,6 @@ int sst_context_init(struct intel_sst_drv *ctx)
+>  	return 0;
+> 
+>  do_free_mem:
+> -	destroy_workqueue(ctx->post_msg_wq);
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(sst_context_init);
+> @@ -330,7 +325,7 @@ void sst_context_cleanup(struct intel_sst_drv *ctx)
+>  	sst_unregister(ctx->dev);
+>  	sst_set_fw_state_locked(ctx, SST_SHUTDOWN);
+>  	flush_scheduled_work();
+> -	destroy_workqueue(ctx->post_msg_wq);
+> +	flush_work(&ctx->ipc_post_msg_wq);
+>  	pm_qos_remove_request(ctx->qos);
+>  	kfree(ctx->fw_sg_list.src);
+>  	kfree(ctx->fw_sg_list.dst);
+> @@ -414,7 +409,7 @@ static int intel_sst_runtime_suspend(struct device *dev)
+>  	sst_set_fw_state_locked(ctx, SST_RESET);
+> 
+>  	synchronize_irq(ctx->irq_num);
+> -	flush_workqueue(ctx->post_msg_wq);
+> +	flush_work(&ctx->ipc_post_msg_wq);
+> 
+>  	ctx->ops->reset(ctx);
+>  	/* save the shim registers because PMC doesn't save state */
+> @@ -445,8 +440,9 @@ static int intel_sst_suspend(struct device *dev)
+>  			return -EBUSY;
+>  		}
+>  	}
 > +
->  	if (mcbsp->pdata->buffer_size)
->  		sysfs_remove_group(&mcbsp->dev->kobj, &additional_attr_group);
->  =
-
-> diff --git a/sound/soc/omap/mcbsp.h b/sound/soc/omap/mcbsp.h
-> index 61e93b1..e603f33 100644
-> --- a/sound/soc/omap/mcbsp.h
-> +++ b/sound/soc/omap/mcbsp.h
-> @@ -325,6 +325,8 @@ struct omap_mcbsp {
->  	unsigned int in_freq;
->  	int clk_div;
->  	int wlen;
-> +
-> +	struct pm_qos_request pm_qos_req;
->  };
->  =
-
->  void omap_mcbsp_config(struct omap_mcbsp *mcbsp,
-> =
+>  	synchronize_irq(ctx->irq_num);
+> -	flush_workqueue(ctx->post_msg_wq);
+> +	flush_work(ctx->ipc_post_msg_wq);
+> 
+>  	/* Move the SST state to Reset */
+>  	sst_set_fw_state_locked(ctx, SST_RESET);
+> --
+> 2.1.4
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
 
 
-
--- =
-
-P=E9ter
+-- 
+Péter
