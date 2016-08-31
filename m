@@ -1,306 +1,157 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v6 2/2] mfd: Add Samsung Exynos Low Power Audio Subsystem
- driver
-Date: Wed, 31 Aug 2016 12:31:37 +0100
-Message-ID: <20160831113137.GM27357@dell>
-References: <1470840500-2428-1-git-send-email-s.nawrocki@samsung.com>
- <1470840500-2428-2-git-send-email-s.nawrocki@samsung.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
+ McBSP to prevent glitches
+Date: Wed, 31 Aug 2016 14:37:26 +0300
+Message-ID: <925ded57-1e91-3db6-9e82-3a3ff5775412@ti.com>
+References: <20160829182746.53vrgbxadqodzzug@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1470840500-2428-2-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, robh@kernel.org, devicetree@vger.kernel.org, b.zolnierkie@samsung.com, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Inha Song <ideal.song@samsung.com>, Beomho Seo <beomho.seo@samsung.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 538AD267006
+ for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 13:37:33 +0200 (CEST)
+In-Reply-To: <20160829182746.53vrgbxadqodzzug@atomide.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Pavel Machel <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 10 Aug 2016, Sylwester Nawrocki wrote:
+On 08/29/16 21:27, Tony Lindgren wrote:
+> We can get audio errors if hitting deeper idle states on omaps:
+> =
 
-> This patch adds common driver for the Top block of the Samsung Exynos
-> SoC Low Power Audio Subsystem.  This is a minimal driver which prepares
-> resources for IP blocks like I2S, audio DMA and UART and exposes
-> a regmap for the Top block registers.  Also system power ops are added
-> to ensure the Audio Subsystem is operational after system suspend/resume
-> cycle.
-> 
-> Signed-off-by: Inha Song <ideal.song@samsung.com>
-> Signed-off-by: Beomho Seo <beomho.seo@samsung.com>
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> [alsa.c:230] error: Fatal problem with alsa output, error -5.
+> [audio.c:614] error: Error in writing audio (Input/output error?)!
+> =
+
+> This seems to happen with off mode idle enabled as power for the
+> whole SoC may get cut off between filling the McBSP fifo using DMA.
+> While active DMA blocks deeper idle states in hardware, McBSP
+> activity does not seem to do so.
+> =
+
+> Let's fix the issue by adding PM QoS latency requirement for McBSP.
+> Based on my experiments a working latency value is somewhere
+> around 35 ms with 40 ms breaking. So let's use a safer value of 30 ms.
+> =
+
+> Note that this is different from snd_pcm_hw_constraint_step() as
+> that can configure things based on the buffer and period size.
+> However, that does not help to block idle between the fifo fills.
+> =
+
+> Note that in theory some omaps are capable of playing audio while
+> hitting deeper idle states. If somebody needs that and gets it
+> working, we can set the latency requirements accordingly.
+> =
+
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
 > ---
-> 
-> Changes since v5:
->  - BIT() used for the register bit macro definitions,
->  - removed unneeded dev->of_node test,
->  - exynos_lpass_{suspend,resume} functions compiled-in conditionally,
->  - added comments for struct exynos_lpass fields.
-> 
-> Changes since v4:
->  - none.
-> 
-> Changes since v3:
->  - moved from sound/soc/samsung and rewritten as a MFD driver,
->  - PMU register definitions moved to include/linux/mfd/syscon/exynos5-pmu.h,
->  - added regmap for LPASS Top SFR region,
->  - cleaned up register bit field defintions.
-> 
-> Changes since v2:
->  - move misplaced SND_SAMSUNG_AUDSS Kconfig symbol addition
->    to this patch.
-> ---
->  drivers/mfd/Kconfig                    |   8 ++
->  drivers/mfd/Makefile                   |   1 +
->  drivers/mfd/exynos-lpass.c             | 187 +++++++++++++++++++++++++++++++++
->  include/linux/mfd/syscon/exynos5-pmu.h |   4 +-
->  4 files changed, 199 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mfd/exynos-lpass.c
+>  sound/soc/omap/mcbsp.c | 10 ++++++++++
+>  sound/soc/omap/mcbsp.h |  2 ++
+>  2 files changed, 12 insertions(+)
+> =
 
-Applied, thanks.
+> diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
+> --- a/sound/soc/omap/mcbsp.c
+> +++ b/sound/soc/omap/mcbsp.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/io.h>
+>  #include <linux/slab.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/pm_qos.h>
+>  =
 
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index 2d1fb64..a7ec890 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -281,6 +281,14 @@ config MFD_DLN2
->  	  etc. must be enabled in order to use the functionality of
->  	  the device.
->  
-> +config MFD_EXYNOS_LPASS
-> +	tristate "Samsung Exynos SoC Low Power Audio Subsystem"
-> +	select MFD_CORE
-> +	select REGMAP_MMIO
-> +	help
-> +	  Select this option to enable support for Samsung Exynos Low Power
-> +	  Audio Subsystem.
-> +
->  config MFD_MC13XXX
->  	tristate
->  	depends on (SPI_MASTER || I2C)
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index 2ba3ba3..41510bb 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -13,6 +13,7 @@ obj-$(CONFIG_MFD_BCM590XX)	+= bcm590xx.o
->  obj-$(CONFIG_MFD_CROS_EC)	+= cros_ec.o
->  obj-$(CONFIG_MFD_CROS_EC_I2C)	+= cros_ec_i2c.o
->  obj-$(CONFIG_MFD_CROS_EC_SPI)	+= cros_ec_spi.o
-> +obj-$(CONFIG_MFD_EXYNOS_LPASS)	+= exynos-lpass.o
->  
->  rtsx_pci-objs			:= rtsx_pcr.o rts5209.o rts5229.o rtl8411.o rts5227.o rts5249.o
->  obj-$(CONFIG_MFD_RTSX_PCI)	+= rtsx_pci.o
-> diff --git a/drivers/mfd/exynos-lpass.c b/drivers/mfd/exynos-lpass.c
-> new file mode 100644
-> index 0000000..578ac7b
-> --- /dev/null
-> +++ b/drivers/mfd/exynos-lpass.c
-> @@ -0,0 +1,187 @@
-> +/*
-> + * Copyright (C) 2015 - 2016 Samsung Electronics Co., Ltd.
-> + *
-> + * Authors: Inha Song <ideal.song@samsung.com>
-> + *          Sylwester Nawrocki <s.nawrocki@samsung.com>
-> + *
-> + * Samsung Exynos SoC series Low Power Audio Subsystem driver.
-> + *
-> + * This module provides regmap for the Top SFR region and instantiates
-> + * devices for IP blocks like DMAC, I2S, UART.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 and
-> + * only version 2 as published by the Free Software Foundation.
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/mfd/syscon/exynos5-pmu.h>
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/types.h>
-> +
-> +/* LPASS Top register definitions */
-> +#define SFR_LPASS_CORE_SW_RESET		0x08
-> +#define  LPASS_SB_SW_RESET		BIT(11)
-> +#define  LPASS_UART_SW_RESET		BIT(10)
-> +#define  LPASS_PCM_SW_RESET		BIT(9)
-> +#define  LPASS_I2S_SW_RESET		BIT(8)
-> +#define  LPASS_WDT1_SW_RESET		BIT(4)
-> +#define  LPASS_WDT0_SW_RESET		BIT(3)
-> +#define  LPASS_TIMER_SW_RESET		BIT(2)
-> +#define  LPASS_MEM_SW_RESET		BIT(1)
-> +#define  LPASS_DMA_SW_RESET		BIT(0)
-> +
-> +#define SFR_LPASS_INTR_CA5_MASK		0x48
-> +#define SFR_LPASS_INTR_CPU_MASK		0x58
-> +#define  LPASS_INTR_APM			BIT(9)
-> +#define  LPASS_INTR_MIF			BIT(8)
-> +#define  LPASS_INTR_TIMER		BIT(7)
-> +#define  LPASS_INTR_DMA			BIT(6)
-> +#define  LPASS_INTR_GPIO		BIT(5)
-> +#define  LPASS_INTR_I2S			BIT(4)
-> +#define  LPASS_INTR_PCM			BIT(3)
-> +#define  LPASS_INTR_SLIMBUS		BIT(2)
-> +#define  LPASS_INTR_UART		BIT(1)
-> +#define  LPASS_INTR_SFR			BIT(0)
-> +
-> +struct exynos_lpass {
-> +	/* pointer to the Power Management Unit regmap */
-> +	struct regmap *pmu;
-> +	/* pointer to the LPASS TOP regmap */
-> +	struct regmap *top;
-> +};
-> +
-> +static void exynos_lpass_core_sw_reset(struct exynos_lpass *lpass, int mask)
-> +{
-> +	unsigned int val = 0;
-> +
-> +	regmap_read(lpass->top, SFR_LPASS_CORE_SW_RESET, &val);
-> +
-> +	val &= ~mask;
-> +	regmap_write(lpass->top, SFR_LPASS_CORE_SW_RESET, val);
-> +
-> +	usleep_range(100, 150);
-> +
-> +	val |= mask;
-> +	regmap_write(lpass->top, SFR_LPASS_CORE_SW_RESET, val);
-> +}
-> +
-> +static void exynos_lpass_enable(struct exynos_lpass *lpass)
-> +{
-> +	/* Unmask SFR, DMA and I2S interrupt */
-> +	regmap_write(lpass->top, SFR_LPASS_INTR_CA5_MASK,
-> +		     LPASS_INTR_SFR | LPASS_INTR_DMA | LPASS_INTR_I2S);
-> +
-> +	regmap_write(lpass->top, SFR_LPASS_INTR_CPU_MASK,
-> +		     LPASS_INTR_SFR | LPASS_INTR_DMA | LPASS_INTR_I2S);
-> +
-> +	/* Activate related PADs from retention state */
-> +	regmap_write(lpass->pmu, EXYNOS5433_PAD_RETENTION_AUD_OPTION,
-> +		     EXYNOS5433_PAD_INITIATE_WAKEUP_FROM_LOWPWR);
-> +
-> +	exynos_lpass_core_sw_reset(lpass, LPASS_I2S_SW_RESET);
-> +	exynos_lpass_core_sw_reset(lpass, LPASS_DMA_SW_RESET);
-> +	exynos_lpass_core_sw_reset(lpass, LPASS_MEM_SW_RESET);
-> +}
-> +
-> +static void exynos_lpass_disable(struct exynos_lpass *lpass)
-> +{
-> +	/* Mask any unmasked IP interrupt sources */
-> +	regmap_write(lpass->top, SFR_LPASS_INTR_CPU_MASK, 0);
-> +	regmap_write(lpass->top, SFR_LPASS_INTR_CA5_MASK, 0);
-> +
-> +	/* Deactivate related PADs from retention state */
-> +	regmap_write(lpass->pmu, EXYNOS5433_PAD_RETENTION_AUD_OPTION, 0);
-> +}
-> +
-> +static const struct regmap_config exynos_lpass_reg_conf = {
-> +	.reg_bits	= 32,
-> +	.reg_stride	= 4,
-> +	.val_bits	= 32,
-> +	.max_register	= 0xfc,
-> +	.fast_io	= true,
-> +};
-> +
-> +static int exynos_lpass_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct exynos_lpass *lpass;
-> +	void __iomem *base_top;
-> +	struct resource *res;
-> +
-> +	lpass = devm_kzalloc(dev, sizeof(*lpass), GFP_KERNEL);
-> +	if (!lpass)
-> +		return -ENOMEM;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	base_top = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(base_top))
-> +		return PTR_ERR(base_top);
-> +
-> +	lpass->top = regmap_init_mmio(dev, base_top,
-> +					&exynos_lpass_reg_conf);
-> +	if (IS_ERR(lpass->top)) {
-> +		dev_err(dev, "LPASS top regmap initialization failed\n");
-> +		return PTR_ERR(lpass->top);
-> +	}
-> +
-> +	lpass->pmu = syscon_regmap_lookup_by_phandle(dev->of_node,
-> +						"samsung,pmu-syscon");
-> +	if (IS_ERR(lpass->pmu)) {
-> +		dev_err(dev, "Failed to lookup PMU regmap\n");
-> +		return PTR_ERR(lpass->pmu);
-> +	}
-> +
-> +	platform_set_drvdata(pdev, lpass);
-> +	exynos_lpass_enable(lpass);
-> +
-> +	return of_platform_populate(dev->of_node, NULL, NULL, dev);
-> +}
-> +
-> +#ifdef CONFIG_PM_SLEEP
-> +static int exynos_lpass_suspend(struct device *dev)
-> +{
-> +	struct exynos_lpass *lpass = dev_get_drvdata(dev);
-> +
-> +	exynos_lpass_disable(lpass);
-> +
-> +	return 0;
-> +}
-> +
-> +static int exynos_lpass_resume(struct device *dev)
-> +{
-> +	struct exynos_lpass *lpass = dev_get_drvdata(dev);
-> +
-> +	exynos_lpass_enable(lpass);
-> +
-> +	return 0;
-> +}
-> +#endif
-> +
-> +static SIMPLE_DEV_PM_OPS(lpass_pm_ops, exynos_lpass_suspend,
-> +					exynos_lpass_resume);
-> +
-> +static const struct of_device_id exynos_lpass_of_match[] = {
-> +	{ .compatible = "samsung,exynos5433-lpass" },
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, exynos_lpass_of_match);
-> +
-> +static struct platform_driver exynos_lpass_driver = {
-> +	.driver = {
-> +		.name		= "exynos-lpass",
-> +		.pm		= &lpass_pm_ops,
-> +		.of_match_table	= exynos_lpass_of_match,
-> +	},
-> +	.probe	= exynos_lpass_probe,
-> +};
-> +module_platform_driver(exynos_lpass_driver);
-> +
-> +MODULE_DESCRIPTION("Samsung Low Power Audio Subsystem driver");
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/include/linux/mfd/syscon/exynos5-pmu.h b/include/linux/mfd/syscon/exynos5-pmu.h
-> index 76f30f9..c28ff21 100644
-> --- a/include/linux/mfd/syscon/exynos5-pmu.h
-> +++ b/include/linux/mfd/syscon/exynos5-pmu.h
-> @@ -43,8 +43,10 @@
->  #define EXYNOS5433_MIPI_PHY2_CONTROL		(0x718)
->  
->  #define EXYNOS5_PHY_ENABLE			BIT(0)
-> -
->  #define EXYNOS5_MIPI_PHY_S_RESETN		BIT(1)
->  #define EXYNOS5_MIPI_PHY_M_RESETN		BIT(2)
->  
-> +#define EXYNOS5433_PAD_RETENTION_AUD_OPTION		(0x3028)
-> +#define EXYNOS5433_PAD_INITIATE_WAKEUP_FROM_LOWPWR	BIT(28)
-> +
->  #endif /* _LINUX_MFD_SYSCON_PMU_EXYNOS5_H_ */
+>  #include <linux/platform_data/asoc-ti-mcbsp.h>
+>  =
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> @@ -643,6 +644,10 @@ void omap_mcbsp_start(struct omap_mcbsp *mcbsp, int =
+tx, int rx)
+>  	int enable_srg =3D 0;
+>  	u16 w;
+>  =
+
+> +	/* Prevent omap hardware from hitting off between fifo fills */
+> +	pm_qos_add_request(&mcbsp->pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
+> +			   30 * 1000);
+
+The latency value depends on the McBSP FIFO size and the speed the DMA can
+transfer the data.
+OMAP3.McBSP2 have 1280 word as buffer. All other McBSP across SoCs have 128
+words or no FIFO.
+
+The DMA fill speed will depend on several factors, I guess it is faster on
+OMAP4/5 then on OMAP3/2/1.
+
+If we have McBSP w/o FIFO there is no need for the qos AFAIK.
+I'm fine with the 30ms, if you have done the testing on OMAP3.McBSP2, proba=
+bly
+setting 30ms for McBSP with 1280 FIFO, 3ms for 128 FIFO and no qos for McBSP
+w/o FIFO might be better. Or:
+
+latency =3D mcbsp->pdata->buffer_size * 23; /* 29.44ms on omap3's mcbsp2 */
+
+if (latency)
+	pm_qos_add_request(&mcbsp->pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
+			   latency);
+
+
+> +
+>  	if (mcbsp->st_data)
+>  		omap_st_start(mcbsp);
+>  =
+
+> @@ -731,6 +736,8 @@ void omap_mcbsp_stop(struct omap_mcbsp *mcbsp, int tx=
+, int rx)
+>  =
+
+>  	if (mcbsp->st_data)
+>  		omap_st_stop(mcbsp);
+> +
+> +	pm_qos_remove_request(&mcbsp->pm_qos_req);
+>  }
+>  =
+
+>  int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id)
+> @@ -1098,6 +1105,9 @@ err_thres:
+>  =
+
+>  void omap_mcbsp_cleanup(struct omap_mcbsp *mcbsp)
+>  {
+> +	if (dev_pm_qos_request_active(&mcbsp->pm_qos_req))
+> +		pm_qos_remove_request(&mcbsp->pm_qos_req);
+> +
+>  	if (mcbsp->pdata->buffer_size)
+>  		sysfs_remove_group(&mcbsp->dev->kobj, &additional_attr_group);
+>  =
+
+> diff --git a/sound/soc/omap/mcbsp.h b/sound/soc/omap/mcbsp.h
+> index 61e93b1..e603f33 100644
+> --- a/sound/soc/omap/mcbsp.h
+> +++ b/sound/soc/omap/mcbsp.h
+> @@ -325,6 +325,8 @@ struct omap_mcbsp {
+>  	unsigned int in_freq;
+>  	int clk_div;
+>  	int wlen;
+> +
+> +	struct pm_qos_request pm_qos_req;
+>  };
+>  =
+
+>  void omap_mcbsp_config(struct omap_mcbsp *mcbsp,
+> =
+
+
+
+-- =
+
+P=E9ter
