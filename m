@@ -1,136 +1,97 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: Re: [PATCH v9 1/2] ASoC: sun4i-codec: Distinguish sun4i
- from sun7i
-Date: Wed, 31 Aug 2016 11:22:14 +0800
-Message-ID: <CAGb2v66z-5+zHzjVp-zWEAMo0v9fykY=USTGkbSxzexJE=am2A@mail.gmail.com>
-References: <20160830054403.7878-1-dannym@scratchpost.org> <20160830054403.7878-2-dannym@scratchpost.org>
-Reply-To: wens-jdAy2FN1RRM@public.gmane.org
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/4] ALSA: control: return payload length
+ for TLV operation
+Date: Wed, 31 Aug 2016 09:50:40 +0530
+Message-ID: <20160831042040.GO9355@localhost>
+References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
+ <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
+ <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
+ <20160830145136.GE9355@localhost>
+ <38f437e4-56e7-dc7a-6892-c1d812fd56d3@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCMILY6JWQBBB742TG7AKGQESFKDM6Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20160830054403.7878-2-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4F512665EB
+ for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 06:12:38 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <38f437e4-56e7-dc7a-6892-c1d812fd56d3@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@linaro.org, Clemens Ladisch <clemens@ladisch.de>, omair.m.abdullah@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 30, 2016 at 1:44 PM, Danny Milosavljevic
-<dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org> wrote:
-> This distinguishes sun4i from sun7i. It is necessary because they use
-> different registers for the audio mixer.
-> ---
->  sound/soc/sunxi/sun4i-codec.c | 44 +++++++++++++++++++++++++++++++++----------
->  1 file changed, 34 insertions(+), 10 deletions(-)
->
-> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-> index 0e19c50..30f4ea2 100644
-> --- a/sound/soc/sunxi/sun4i-codec.c
-> +++ b/sound/soc/sunxi/sun4i-codec.c
-> @@ -96,8 +96,9 @@
->  /* Other various ADC registers */
->  #define SUN4I_CODEC_DAC_TXCNT                  (0x30)
->  #define SUN4I_CODEC_ADC_RXCNT                  (0x34)
-> -#define SUN4I_CODEC_AC_SYS_VERI                        (0x38)
-> -#define SUN4I_CODEC_AC_MIC_PHONE_CAL           (0x3c)
-> +
-> +#define SUN7I_CODEC_AC_DAC_CAL                 (0x38)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL           (0x3c)
->
->  struct sun4i_codec {
->         struct device   *dev;
-> @@ -509,10 +510,17 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
->
->  static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
->
-> -static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
-> -       SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
-> -                      SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
-> -                      sun4i_codec_pa_volume_scale),
-> +#define SUN4I_COMMON_CODEC_CONTROLS \
-> +       SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,\
-> +                      SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,\
-> +                      sun4i_codec_pa_volume_scale)
+On Wed, Aug 31, 2016 at 07:04:12AM +0900, Takashi Sakamoto wrote:
+> >>> The size is already returned in scale[1] (it's initialized by
+> >>> DECLARE_TLV_DB_MINMAX()).  That's exactly what the "L" in "TLV" means.
+> >>>
+> >>> All other TLV callbacks also take care to set this field correctly.
+> >>>
+> >>> If there were any TLV callback that did not set _tlv[1] to the actual
+> >>> size, it would be buggy, and just needed to be fixed to do so.
+> >>
+> >> As I described, TLV feature of ALSA control interface is not only
+> >> used to transfer threshold level information, but also arbitrary
+> >> data for I/O by developers in ALSA SoC part. The '_tlv[1]' protocol
+> >> is not necessarily kept by them.
+> > 
+> > can you explain what you mean by 'to transfer threshold level information'
+> > 
+> > And on this discussion, IIUC, we should fill tlv[1] with size being returned
+> > right? For the asoc part, I think we should fix snd_soc_bytes_tlv_callback()
+> > to update this.
+> 
+> The layout of TLV packet is:
+> struct snd_ctl_tlv {
+>     unsigned int numid;   # numerical ID of a control element
+>     unsigned int length;  # length of payload
+>     unsigned int tlv[0];  # payload
+> };
+> http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/uapi/sound/asound.h?h=sound-4.8-rc4#n945
+> 
+> In our implementaion, TLV packet payload (struct snd_ctl_tlv.tlv) is
+> used to transfer data. For pure threshold level information, we expects
+> applications and drivers to fill the payload with this protocol:
+> struct snd_ctl_tlv.tlv[0]:  one of SNDRV_CTL_TLVT_XXX
+> struct snd_ctl_tlv.tlv[1]:  length of data
+> struct snd_ctl_tlv.tlv[2..]: data
+> 
+> (You can see SNDRV_CTL_TLVT_XXX in this header.
+> http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/uapi/sound/tlv.h?h=sound-4.8-rc4
+> )
+> 
+> On the other hand, ALSA SoC part performs:
+> struct snd_ctl_tlv.tlv[0..]: arbitrary data
+> 
+> If your 'tlv[1]' means the 'struct snd_ctl_tlv.tlv[1]', no sense.
+> 
+> The issue I address is current implementation cannot correctly handle
+> this case:
+>  - applications request a buffer with a certain size
+>  - drivers processes the request with smaller size
+>  - application cannot get the size
+> 
+> When implementing I/O operation, in my understanding, this situation
+> often occurs, depending on driver implementation. Fortunately, current
+> implementation of WM-ADSP is free from this concern, but it's better for
+> us not to expect this luck always.
 
-This is slightly worrying. It will get messy as you add more widgets.
+Thanks for the detailed explanation,
 
-> +
-> +static const struct snd_kcontrol_new sun4i_codec_controls[] = {
-> +       SUN4I_COMMON_CODEC_CONTROLS,
-> +};
-> +
-> +static const struct snd_kcontrol_new sun7i_codec_controls[] = {
-> +       SUN4I_COMMON_CODEC_CONTROLS,
->  };
->
->  static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
-> @@ -629,8 +637,18 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
->
->  static struct snd_soc_codec_driver sun4i_codec_codec = {
->         .component_driver = {
-> -               .controls               = sun4i_codec_widgets,
-> -               .num_controls           = ARRAY_SIZE(sun4i_codec_widgets),
-> +               .controls               = sun4i_codec_controls,
-> +               .num_controls           = ARRAY_SIZE(sun4i_codec_controls),
-> +               .dapm_widgets           = sun4i_codec_codec_dapm_widgets,
-> +               .num_dapm_widgets       = ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
-> +               .dapm_routes            = sun4i_codec_codec_dapm_routes,
-> +               .num_dapm_routes        = ARRAY_SIZE(sun4i_codec_codec_dapm_routes),
-> +       },
-> +};
-> +static struct snd_soc_codec_driver sun7i_codec_codec = {
-> +       .component_driver = {
-> +               .controls               = sun7i_codec_controls,
-> +               .num_controls           = ARRAY_SIZE(sun7i_codec_controls),
->                 .dapm_widgets           = sun4i_codec_codec_dapm_widgets,
->                 .num_dapm_widgets       = ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
->                 .dapm_routes            = sun4i_codec_codec_dapm_routes,
-> @@ -682,7 +700,7 @@ static const struct regmap_config sun4i_codec_regmap_config = {
->         .reg_bits       = 32,
->         .reg_stride     = 4,
->         .val_bits       = 32,
-> -       .max_register   = SUN4I_CODEC_AC_MIC_PHONE_CAL,
-> +       .max_register   = SUN7I_CODEC_AC_MIC_PHONE_CAL,
->  };
+IIUC, the fix would be to ensure that drivers or ASoC does return the length
+value in snd_ctl_tlv.tlv[1] per the API expectations. As I said, in ASoC we
+tend to move code to core, so snd_soc_bytes_tlv_callback should be updated
 
-On sun4i the registers only go as far as SUN4I_CODEC_ADC_RXCNT.
-Could you add a separate regmap_config as well?
-
->
->  static const struct of_device_id sun4i_codec_of_match[] = {
-> @@ -760,6 +778,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
->  {
->         struct snd_soc_card *card;
->         struct sun4i_codec *scodec;
-> +       struct snd_soc_codec_driver *codec;
->         struct resource *res;
->         void __iomem *base;
->         int ret;
-> @@ -822,7 +841,12 @@ static int sun4i_codec_probe(struct platform_device *pdev)
->         scodec->capture_dma_data.maxburst = 4;
->         scodec->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
->
-> -       ret = snd_soc_register_codec(&pdev->dev, &sun4i_codec_codec,
-> +       if (of_device_is_compatible(pdev->dev.of_node,
-> +                                   "allwinner,sun7i-a20-codec"))
-> +               codec = &sun7i_codec_codec;
-> +       else
-> +               codec = &sun4i_codec_codec;
-> +       ret = snd_soc_register_codec(&pdev->dev, codec,
-
-This will get reworked into something like in
-
-https://github.com/wens/linux/commit/54a58e3087fb67572ca416256bc000e08b163480
-
-I haven't gotten around to posting this series yet though.
-
-ChenYu
-
->                                      &sun4i_codec_dai, 1);
->         if (ret) {
->                 dev_err(&pdev->dev, "Failed to register our codec\n");
+Thanks
+-- 
+~Vinod
