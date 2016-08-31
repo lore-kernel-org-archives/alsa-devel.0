@@ -1,128 +1,144 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/4] ALSA: control: return payload length
- for TLV operation
-Date: Wed, 31 Aug 2016 07:04:12 +0900
-Message-ID: <38f437e4-56e7-dc7a-6892-c1d812fd56d3@sakamocchi.jp>
-References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
- <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
- <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
- <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
- <20160830145136.GE9355@localhost>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH] clk: x86: Add Atom PMC platform clocks
+Date: Tue, 30 Aug 2016 17:37:22 -0700
+Message-ID: <20160831003722.GH12510@codeaurora.org>
+References: <1471459276-11517-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 4C767265E0C
- for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 00:04:19 +0200 (CEST)
-In-Reply-To: <20160830145136.GE9355@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@linaro.org, Clemens Ladisch <clemens@ladisch.de>, omair.m.abdullah@intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1471459276-11517-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: linux-clk@vger.kernel.org, mturquette@baylibre.com, alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, irina.tirdea@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 30 2016 23:51, Vinod Koul wrote:
-> On Tue, Aug 30, 2016 at 04:09:33PM +0900, Takashi Sakamoto wrote:
->> On Aug 30 2016 16:05, Clemens Ladisch wrote:
->>> Takashi Sakamoto wrote:
->>>> [...] APIs return operated length, while TLV feature
->>>> can't. This is inconvenient to applications.
->>>>
->>>> This commit enables control core to return operated length of TLV feature.
->>>> This changes the prototype of 'snd_kcontrol_tlv_rw_t' to get a pointer to
->>>> size variable so that each implementation of the prototype can modify the
->>>> variable with operated length.
->>>
->>> I'll use this function as an example:
->>>
->>>> --- a/sound/usb/mixer.c
->>>> +++ b/sound/usb/mixer.c
->>>> @@ -535,17 +535,20 @@ int snd_usb_set_cur_mix_value(struct usb_mixer_elem_info *cval, int channel,
->>>>  * TLV callback for mixer volume controls
->>>>  */
->>>> int snd_usb_mixer_vol_tlv(struct snd_kcontrol *kcontrol, int op_flag,
->>>> -			 unsigned int size, unsigned int __user *_tlv)
->>>> +			 unsigned int *size, unsigned int __user *_tlv)
->>>> {
->>>> 	struct usb_mixer_elem_info *cval = kcontrol->private_data;
->>>> 	DECLARE_TLV_DB_MINMAX(scale, 0, 0);
->>>>
->>>> -	if (size < sizeof(scale))
->>>> +	if (*size < sizeof(scale))
->>>> 		return -ENOMEM;
->>>> 	scale[2] = cval->dBmin;
->>>> 	scale[3] = cval->dBmax;
->>>> 	if (copy_to_user(_tlv, scale, sizeof(scale)))
->>>> 		return -EFAULT;
->>>> +
->>>> +	*size = sizeof(scale);
->>>> +
->>>> 	return 0;
->>>> }
->>>
->>> The size is already returned in scale[1] (it's initialized by
->>> DECLARE_TLV_DB_MINMAX()).  That's exactly what the "L" in "TLV" means.
->>>
->>> All other TLV callbacks also take care to set this field correctly.
->>>
->>> If there were any TLV callback that did not set _tlv[1] to the actual
->>> size, it would be buggy, and just needed to be fixed to do so.
->>
->> As I described, TLV feature of ALSA control interface is not only
->> used to transfer threshold level information, but also arbitrary
->> data for I/O by developers in ALSA SoC part. The '_tlv[1]' protocol
->> is not necessarily kept by them.
-> 
-> can you explain what you mean by 'to transfer threshold level information'
-> 
-> And on this discussion, IIUC, we should fill tlv[1] with size being returned
-> right? For the asoc part, I think we should fix snd_soc_bytes_tlv_callback()
-> to update this.
+On 08/17, Pierre-Louis Bossart wrote:
+> @@ -414,6 +456,13 @@ static int pmc_setup_dev(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  	if (ret)
+>  		dev_warn(&pdev->dev, "debugfs register failed\n");
+>  
+> +	/* Register platform clocks - PMC_PLT_CLK [5:0] */
+> +	clkdev = platform_device_register_data(NULL, "clk-byt-plt", -1,
+> +					       &clks, sizeof(clks));
 
-The layout of TLV packet is:
-struct snd_ctl_tlv {
-    unsigned int numid;   # numerical ID of a control element
-    unsigned int length;  # length of payload
-    unsigned int tlv[0];  # payload
-};
-http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/uapi/sound/asound.h?h=sound-4.8-rc4#n945
+Shouldn't we register the clk device as a child of the
+registering device? Otherwise it's just floating in the device
+hierarchy?
 
-In our implementaion, TLV packet payload (struct snd_ctl_tlv.tlv) is
-used to transfer data. For pure threshold level information, we expects
-applications and drivers to fill the payload with this protocol:
-struct snd_ctl_tlv.tlv[0]:  one of SNDRV_CTL_TLVT_XXX
-struct snd_ctl_tlv.tlv[1]:  length of data
-struct snd_ctl_tlv.tlv[2..]: data
+> diff --git a/drivers/clk/x86/clk-byt-plt.c b/drivers/clk/x86/clk-byt-plt.c
+> new file mode 100644
+> index 0000000..330cd35
+> --- /dev/null
+> +++ b/drivers/clk/x86/clk-byt-plt.c
+> @@ -0,0 +1,413 @@
+> +
+> +static int plt_pmc_atom_update(struct clk_plt *clk, u32 mask, u32 val)
+> +{
+> +	int ret;
+> +	u32 orig, tmp;
+> +	unsigned long flags = 0;
+> +
+> +	spin_lock_irqsave(&clk->lock, flags);
+> +
+> +	ret = pmc_atom_read(clk->offset, &orig);
+> +	if (ret)
+> +		goto out;
+> +
+> +	tmp = orig & ~mask;
+> +	tmp |= val & mask;
+> +
+> +	if (tmp == orig)
+> +		goto out;
+> +
+> +	ret = pmc_atom_write(clk->offset, tmp);
 
-(You can see SNDRV_CTL_TLVT_XXX in this header.
-http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/uapi/sound/tlv.h?h=sound-4.8-rc4
-)
+It's sad that this can't be compiled on any platform. Has there
+been any move towards making this into a regmap provider so that
+this clk driver can use cross platform regmap APIs instead? Or
+even passing the __iomem pointer through platform data or
+something so that we can use readl/writel APIs directly instead
+of pmc_atom_write()/read()?
 
-On the other hand, ALSA SoC part performs:
-struct snd_ctl_tlv.tlv[0..]: arbitrary data
+> +	if (ret)
+> +		goto out;
+> +
+> +out:
+> +	spin_unlock_irqrestore(&clk->lock, flags);
+> +
+> +	return ret;
+> +}
+[...]
+> +
+> +static int plt_clk_is_enabled(struct clk_hw *hw)
+> +{
+> +	struct clk_plt *clk = to_clk_plt(hw);
+> +	u32 value;
+> +	int ret;
+> +
+> +	ret = pmc_atom_read(clk->offset, &value);
+> +	if (ret)
+> +		return ret;
 
-If your 'tlv[1]' means the 'struct snd_ctl_tlv.tlv[1]', no sense.
+Should return 0?
 
-The issue I address is current implementation cannot correctly handle
-this case:
- - applications request a buffer with a certain size
- - drivers processes the request with smaller size
- - application cannot get the size
+> +
+> +	return plt_reg_to_enabled(value);
+> +}
+> +
+> +static struct clk *plt_clk_register(struct platform_device *pdev, int id,
+> +				    const char **parent_names, int num_parents)
+> +{
+> +	struct clk_plt *pclk;
+> +	struct clk *clk;
+> +	struct clk_init_data init;
+> +	int ret = 0;
+> +
+> +	pclk = devm_kzalloc(&pdev->dev, sizeof(*pclk), GFP_KERNEL);
+> +	if (!pclk)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	init.name =  kasprintf(GFP_KERNEL, "%s%d", PLT_CLK_NAME_BASE, id);
+> +	init.ops = &plt_clk_ops;
+> +	init.flags = 0;
+> +	init.parent_names = parent_names;
+> +	init.num_parents = num_parents;
+> +
+> +	pclk->hw.init = &init;
+> +	pclk->id = id;
+> +	pclk->offset = PMC_CLK_CTL_0 + id * PMC_CLK_CTL_SIZE;
+> +	spin_lock_init(&pclk->lock);
+> +
+> +	clk = clk_register(&pdev->dev, &pclk->hw);
 
-When implementing I/O operation, in my understanding, this situation
-often occurs, depending on driver implementation. Fortunately, current
-implementation of WM-ADSP is free from this concern, but it's better for
-us not to expect this luck always.
+Please use clk_hw_register() instead (and devM_clk_hw_register()
+would be even simpler).
 
+> +	if (IS_ERR(clk)) {
+> +		ret = PTR_ERR(clk);
+> +		goto err_free_pclk;
+> +	}
+> +
+> +	pclk->lookup = clkdev_create(clk, init.name, NULL);
 
-Regards
+And clkdev_hw_create().
 
-Takashi Sakamoto
+> +	if (!pclk->lookup) {
+> +		ret = -ENOMEM;
+> +		goto err_clk_unregister;
+> +	}
+> +
+> +	kfree(init.name);
+> +
+> +	return clk;
+> +
+> +err_clk_unregister:
+> +	clk_unregister(clk);
+> +err_free_pclk:
+> +	kfree(init.name);
+> +	return ERR_PTR(ret);
+> +}
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
