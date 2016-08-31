@@ -1,85 +1,148 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] ALSA: control: return payload length
- for TLV operation
-Date: Wed, 31 Aug 2016 15:18:47 +0100
-Message-ID: <20160831141847.GC21682@localhost.localdomain>
-References: <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
- <20160830145136.GE9355@localhost>
- <38f437e4-56e7-dc7a-6892-c1d812fd56d3@sakamocchi.jp>
- <20160831042040.GO9355@localhost> <57C65D4A.9090209@sakamocchi.jp>
- <20160831090552.GZ21682@localhost.localdomain>
- <s5hzintgtsr.wl-tiwai@suse.de>
- <e95db80c-682d-b186-ea9e-a4a8a5501329@ladisch.de>
- <20160831121934.GB21682@localhost.localdomain>
- <3935ce7f-e087-cd8f-1e1e-ef4b17c363c0@ladisch.de>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v9 1/2] ASoC: sun4i-codec: Distinguish sun4i
+ from sun7i
+Date: Wed, 31 Aug 2016 19:46:23 +0200
+Message-ID: <20160831174623.GA20462@lukather>
+References: <20160830054403.7878-1-dannym@scratchpost.org>
+ <20160830054403.7878-2-dannym@scratchpost.org>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id C261C268B0C
- for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 16:18:41 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBB4FPTS7AKGQEF65DLDI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <3935ce7f-e087-cd8f-1e1e-ef4b17c363c0@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, broonie@linaro.org, Takashi Iwai <tiwai@suse.de>, omair.m.abdullah@intel.com, Vinod Koul <vinod.koul@intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+In-Reply-To: <20160830054403.7878-2-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 31, 2016 at 03:24:31PM +0200, Clemens Ladisch wrote:
-> Charles Keepax wrote:
-> > On Wed, Aug 31, 2016 at 01:54:37PM +0200, Clemens Ladisch wrote:
-> >> Anyway, the separate length value could be useful only for drivers (like
-> >> soc-wm-adsp) that use a binary stream where TLV data should have been
-> >> used.  But the software that writes these coefficients to the WM ADSP
-> >> driver is very hardware specific anyway, and it presumably already works
-> >> without knowing the returned length value.  So there is no case where
-> >> this patchset _actually_ improves the interface.
-> >
-> > The software that writes these coefficients to wm_adsp is
-> > not hardware specific at all its just regular amixer and
-> > tinymix.
+
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
+
+Hi Danny,
+
+On Tue, Aug 30, 2016 at 07:44:02AM +0200, Danny Milosavljevic wrote:
+> This distinguishes sun4i from sun7i. It is necessary because they use
+> different registers for the audio mixer.
+
+Your Signed-off-by is missing
+
+> ---
+>  sound/soc/sunxi/sun4i-codec.c | 44 +++++++++++++++++++++++++++++++++----------
+>  1 file changed, 34 insertions(+), 10 deletions(-)
 > 
-> As far as I can see, neither amixer nor tinymix support writing
-> or "command"ing TLV data.  Do you mean alsactl or alsaucm?
-> 
-> (And I notice that when alsa-lib's UCM loads TLV data from a file,
-> it does check that the second word contains the correct size.  Is
-> this value also correct when reading TLV from these controls?)
-> 
+> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+> index 0e19c50..30f4ea2 100644
+> --- a/sound/soc/sunxi/sun4i-codec.c
+> +++ b/sound/soc/sunxi/sun4i-codec.c
+> @@ -96,8 +96,9 @@
+>  /* Other various ADC registers */
+>  #define SUN4I_CODEC_DAC_TXCNT			(0x30)
+>  #define SUN4I_CODEC_ADC_RXCNT			(0x34)
+> -#define SUN4I_CODEC_AC_SYS_VERI			(0x38)
+> -#define SUN4I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
+> +
+> +#define SUN7I_CODEC_AC_DAC_CAL			(0x38)
+> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
 
-Certainly tinyalsa does:
+That will need at least some mention in the commit log.
 
-https://github.com/tinyalsa/tinyalsa/commit/45b2d047b8c2f4d9d1d87244f7f981db8234c906
+>  
+>  struct sun4i_codec {
+>  	struct device	*dev;
+> @@ -509,10 +510,17 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
+>  
+>  static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
+>  
+> -static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
+> -	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
+> -		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
+> -		       sun4i_codec_pa_volume_scale),
+> +#define SUN4I_COMMON_CODEC_CONTROLS \
+> +	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,\
+> +		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,\
+> +		       sun4i_codec_pa_volume_scale)
+> +
+> +static const struct snd_kcontrol_new sun4i_codec_controls[] = {
+> +	SUN4I_COMMON_CODEC_CONTROLS,
+> +};
+> +
+> +static const struct snd_kcontrol_new sun7i_codec_controls[] = {
+> +	SUN4I_COMMON_CODEC_CONTROLS,
+>  };
+>  
+>  static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
+> @@ -629,8 +637,18 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+>  
+>  static struct snd_soc_codec_driver sun4i_codec_codec = {
+>  	.component_driver = {
+> -		.controls		= sun4i_codec_widgets,
+> -		.num_controls		= ARRAY_SIZE(sun4i_codec_widgets),
+> +		.controls		= sun4i_codec_controls,
+> +		.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
+> +		.dapm_widgets           = sun4i_codec_codec_dapm_widgets,
+> +		.num_dapm_widgets       = ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
+> +		.dapm_routes            = sun4i_codec_codec_dapm_routes,
+> +		.num_dapm_routes        = ARRAY_SIZE(sun4i_codec_codec_dapm_routes),
+> +	},
+> +};
 
-I thought the Intel guys added support to amixer as well although
-I may have been mistaken about that. I will try to find some time
-to look at that a little more closely. I guess my main concern
-here was the "very hardware specific" the intention is not to
-require hardware specific user-space code to use these controls.
+You need a new line here.
 
-> > These TLV controls are just like any other ALSA control
-> 
-> You're treating it like one, but actually TLV is not a control type but
-> metadata attached to a control.
-> 
+> +static struct snd_soc_codec_driver sun7i_codec_codec = {
+> +	.component_driver = {
+> +		.controls               = sun7i_codec_controls,
+> +		.num_controls           = ARRAY_SIZE(sun7i_codec_controls),
+>  		.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
+>  		.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
+>  		.dapm_routes		= sun4i_codec_codec_dapm_routes,
+> @@ -682,7 +700,7 @@ static const struct regmap_config sun4i_codec_regmap_config = {
+>  	.reg_bits	= 32,
+>  	.reg_stride	= 4,
+>  	.val_bits	= 32,
+> -	.max_register	= SUN4I_CODEC_AC_MIC_PHONE_CAL,
+> +	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
+>  };
+>  
+>  static const struct of_device_id sun4i_codec_of_match[] = {
+> @@ -760,6 +778,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+>  {
+>  	struct snd_soc_card *card;
+>  	struct sun4i_codec *scodec;
+> +	struct snd_soc_codec_driver *codec;
+>  	struct resource *res;
+>  	void __iomem *base;
+>  	int ret;
+> @@ -822,7 +841,12 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+>  	scodec->capture_dma_data.maxburst = 4;
+>  	scodec->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+>  
+> -	ret = snd_soc_register_codec(&pdev->dev, &sun4i_codec_codec,
+> +	if (of_device_is_compatible(pdev->dev.of_node,
+> +				    "allwinner,sun7i-a20-codec"))
+> +		codec = &sun7i_codec_codec;
+> +	else
+> +		codec = &sun4i_codec_codec;
 
-Yes but that metadata is just being used to transfer the actual
-data for the control in this case. Personally I would just expect
-that control to function the same way as any other binary control
-for the user, just it is >512 bytes. Different things happen on
-the back end but it would be nice if it felt the same to the
-person using it. Which is mostly the case though tinyalsa at the
-moment.
+It would be better to add a structure assiocated to the data field of
+of_device_id. That way, you'll also be able to have any quirks without
+adding more checks (such as a different regmap config, like Chen-Yu
+suggested).
 
-Thanks,
-Charles
+Thanks!
+Maxime
+
+-- 
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+--PEIAKu/WMn1b1Hv9--
