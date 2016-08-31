@@ -1,91 +1,60 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v3 1/2] ALSA: firewire-tascam: accessing to user space outside spinlock
-Date: Wed, 31 Aug 2016 20:15:32 +0900
-Message-ID: <1472642133-31576-2-git-send-email-o-takashi@sakamocchi.jp>
-References: <1472642133-31576-1-git-send-email-o-takashi@sakamocchi.jp>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1472642133-31576-1-git-send-email-o-takashi@sakamocchi.jp>
-Sender: stable-owner@vger.kernel.org
+Subject: [PATCH v3 0/2] ALSA: fireworks/firewire-tascam:
+	accessing to user space outside spinlock
+Date: Wed, 31 Aug 2016 20:15:31 +0900
+Message-ID: <1472642133-31576-1-git-send-email-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 0485326661E
+ for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 13:15:42 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In hwdep interface of firewire-tascam driver, accessing to user space is
-in a critical section with disabled local interrupt. Depending on
-architecture, accessing to user space can cause page fault exception. Then
-local processor stores machine status and handle the synchronous event. A
-handler corresponding to the event can call task scheduler to wait for
-preparing pages. In a case of usage of single core processor, the state to
-disable local interrupt is worse because it doesn't handle usual interrupts
-from hardware.
+Hi,
 
-This commit fixes this bug, by performing the accessing outside spinlock.
+This patchset updates my previous one:
+[alsa-devel] [PATCH v2 0/2] ALSA: fireworks/firewire-tascam: accessing to user space outside spinlock
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/112236.html
 
-Reported-by: Vaishali Thakkar <vaishali.thakkar@oracle.com>
-Cc: stable@vger.kernel.org
-Fixes: e5e0c3dd257b('ALSA: firewire-tascam: add hwdep interface')
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/tascam/tascam-hwdep.c | 33 +++++++++++----------------------
- 1 file changed, 11 insertions(+), 22 deletions(-)
+In ALSA fireworks driver and firewire-tascam driver, current implementation
+for hwdep interface have issues for page fault handling. For example,
+when using single core processor, after executing lock_page() in page fault
+handler and call task scheduler, then the context never regain CPU again,
+because any interrupts are disabled by these drivers and the context can't
+catch waiting event. This patchset fixes the issues.
 
-diff --git a/sound/firewire/tascam/tascam-hwdep.c b/sound/firewire/tascam/tascam-hwdep.c
-index 131267c..106406c 100644
---- a/sound/firewire/tascam/tascam-hwdep.c
-+++ b/sound/firewire/tascam/tascam-hwdep.c
-@@ -16,31 +16,14 @@
- 
- #include "tascam.h"
- 
--static long hwdep_read_locked(struct snd_tscm *tscm, char __user *buf,
--			      long count)
--{
--	union snd_firewire_event event;
--
--	memset(&event, 0, sizeof(event));
--
--	event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
--	event.lock_status.status = (tscm->dev_lock_count > 0);
--	tscm->dev_lock_changed = false;
--
--	count = min_t(long, count, sizeof(event.lock_status));
--
--	if (copy_to_user(buf, &event, count))
--		return -EFAULT;
--
--	return count;
--}
--
- static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 		       loff_t *offset)
- {
- 	struct snd_tscm *tscm = hwdep->private_data;
- 	DEFINE_WAIT(wait);
--	union snd_firewire_event event;
-+	union snd_firewire_event event = {
-+		.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS,
-+	};
- 
- 	spin_lock_irq(&tscm->lock);
- 
-@@ -54,10 +37,16 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 		spin_lock_irq(&tscm->lock);
- 	}
- 
--	memset(&event, 0, sizeof(event));
--	count = hwdep_read_locked(tscm, buf, count);
-+	event.lock_status.status = (tscm->dev_lock_count > 0);
-+	tscm->dev_lock_changed = false;
-+
- 	spin_unlock_irq(&tscm->lock);
- 
-+	count = min_t(long, count, sizeof(event.lock_status));
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
- 	return count;
- }
- 
+The issues were reported by Vaishali Thakkar, with a help of coccinelle.
+Thanks a lot for her care to these minor drivers.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111887.html
+
+Changes in v3:
+ * Add a workaround against a case that several tasks are going to read from
+   one response buffer.
+
+Changes in v2:
+ * improve designated initialization for automatic variable of union type
+
+Takashi Sakamoto (2):
+  ALSA: firewire-tascam: accessing to user space outside spinlock
+  ALSA: fireworks: accessing to user space outside spinlock
+
+ sound/firewire/fireworks/fireworks_hwdep.c       | 52 ++++++++++++++++++------
+ sound/firewire/fireworks/fireworks_transaction.c |  4 +-
+ sound/firewire/tascam/tascam-hwdep.c             | 33 +++++----------
+ 3 files changed, 53 insertions(+), 36 deletions(-)
+
 -- 
 2.7.4
