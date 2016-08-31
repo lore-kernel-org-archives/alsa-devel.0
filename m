@@ -1,90 +1,58 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Don't change the FLLn_GAIN
-	before entering FREERUN" to the asoc tree
-Date: Wed, 31 Aug 2016 12:42:33 +0100
-Message-ID: <E1bf3ub-00012e-Ty@finisterre>
-References: <1472549440-4155-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] clk: x86: Add Atom PMC platform clocks
+Date: Wed, 31 Aug 2016 18:08:58 +0100
+Message-ID: <20160831170858.GA6560@sirena.org.uk>
+References: <1471459276-11517-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <20160831003722.GH12510@codeaurora.org>
+ <7c15a844-1351-f1ac-2ad0-3c41455fcc2e@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D0DC26750B
- for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 13:42:53 +0200 (CEST)
-In-Reply-To: <1472549440-4155-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, nariman@opensource.wolfsonmicro.com, lgirdwood@gmail.com, broonie@kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ZGiS0Q5IWpPtfppv"
+Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <7c15a844-1351-f1ac-2ad0-3c41455fcc2e@linux.intel.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Stephen Boyd <sboyd@codeaurora.org>, linux-clk@vger.kernel.org, mturquette@baylibre.com, alsa-devel@alsa-project.org, tiwai@suse.de, irina.tirdea@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: arizona: Don't change the FLLn_GAIN before entering FREERUN
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Tue, Aug 30, 2016 at 08:35:55PM -0500, Pierre-Louis Bossart wrote:
+> On 8/30/16 7:37 PM, Stephen Boyd wrote:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> > It's sad that this can't be compiled on any platform. Has there
+> > been any move towards making this into a regmap provider so that
+> > this clk driver can use cross platform regmap APIs instead? Or
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> it's not clear to me what cross-platform goals you are hinting at and what
+> the concern is. We can add more framework stuff and make the code more
+> elegant but at the end of the day we will write in a very limited set of
+> registers (2 for audio - on/off and 19.2/25MHz selection) and the use of
+> this functionality is restricted to Baytrail and Cherrytrail.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+If code can be compiled on a wide range of platforms then that means
+that it's much easier to get build coverage of the code.  This is
+helpful for anyone doing any kind of cross tree updates - things like
+updating APIs for example.  The fewer configurations they have to touch
+to get everything built the easier it is for them.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--ZGiS0Q5IWpPtfppv
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Thanks,
-Mark
+iQEcBAEBCAAGBQJXxw8pAAoJECTWi3JdVIfQ00oIAIWAl1ODhtK28ysDr78ek/9M
+CsSNAuuC+EFhJ9w4xbwyZWNMfRl+2WPnjWAyqHnQlrkjt3yDi31mP94FWwNSvEgB
+n65Bia9mSAcuaIXIXUrinBMVz66WheW44yj423lF8ef5QatTVLKOH/gocYQCfZDK
+XzCz7iRw3aM7qViE2CxB/K30jsf6zU0oNjcz4xo3rrQp6q/9QVuNHwGoLd5Yzxyv
+69Ag+hxxIgQtlnSm3IaNtSKw0s7zCMWefZBqywuheuANyGRx+iDvOyugYyjZl24d
+ecK3X2azq60DEOjQSCzuOrDsMD5g/egg2QzCAaoVEbRICUuhGnk8l4O7fTIyMTM=
+=bss6
+-----END PGP SIGNATURE-----
 
->From c9991052aedaa74c69f8198852c65a99caf1adec Mon Sep 17 00:00:00 2001
-From: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
-Date: Tue, 30 Aug 2016 10:30:40 +0100
-Subject: [PATCH] ASoC: arizona: Don't change the FLLn_GAIN before entering
- FREERUN
-
-When reclocking an active FLL, to ensure a clean transition, do
-not change the gain setting until we have entered free run.
-
-Signed-off-by: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/arizona.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index ecfdbfcae366..0fc3b4b61552 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -2218,11 +2218,11 @@ static int arizona_enable_fll(struct arizona_fll *fll)
- 
- 	if (already_enabled) {
- 		/* Facilitate smooth refclk across the transition */
--		regmap_update_bits_async(fll->arizona->regmap, fll->base + 0x9,
--					 ARIZONA_FLL1_GAIN_MASK, 0);
- 		regmap_update_bits(fll->arizona->regmap, fll->base + 1,
- 				   ARIZONA_FLL1_FREERUN, ARIZONA_FLL1_FREERUN);
- 		udelay(32);
-+		regmap_update_bits_async(fll->arizona->regmap, fll->base + 0x9,
-+					 ARIZONA_FLL1_GAIN_MASK, 0);
- 	}
- 
- 	/*
--- 
-2.9.3
+--ZGiS0Q5IWpPtfppv--
