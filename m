@@ -1,68 +1,45 @@
-From: Doug Anderson <dianders@chromium.org>
-Subject: Re: [PATCH] ASoC: rockchip: implement system suspend/resume for i2s
-Date: Wed, 31 Aug 2016 15:24:36 -0700
-Message-ID: <CAD=FV=VF7NJ0+tbuWsKOxFnFS+hBqhbXmMhs5w_+DJ3EdBW9bw@mail.gmail.com>
-References: <1467686711-52347-1-git-send-email-sugar.zhang@rock-chips.com>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH] clk: x86: Add Atom PMC platform clocks
+Date: Wed, 31 Aug 2016 15:34:11 -0700
+Message-ID: <20160831223407.GJ12510@codeaurora.org>
+References: <1471459276-11517-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <20160831003722.GH12510@codeaurora.org>
+ <7c15a844-1351-f1ac-2ad0-3c41455fcc2e@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1467686711-52347-1-git-send-email-sugar.zhang@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc: =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, "broonie@kernel.org" <broonie@kernel.org>, "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Caesar Wang <wxt@rock-chips.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <7c15a844-1351-f1ac-2ad0-3c41455fcc2e@linux.intel.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: linux-clk@vger.kernel.org, mturquette@baylibre.com, alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, irina.tirdea@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 08/30, Pierre-Louis Bossart wrote:
+> On 8/30/16 7:37 PM, Stephen Boyd wrote:
+> >On 08/17, Pierre-Louis Bossart wrote:
+> >>@@ -414,6 +456,13 @@ static int pmc_setup_dev(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >> 	if (ret)
+> >> 		dev_warn(&pdev->dev, "debugfs register failed\n");
+> >>
+> >>+	/* Register platform clocks - PMC_PLT_CLK [5:0] */
+> >>+	clkdev = platform_device_register_data(NULL, "clk-byt-plt", -1,
+> >>+					       &clks, sizeof(clks));
+> >
+> >Shouldn't we register the clk device as a child of the
+> >registering device? Otherwise it's just floating in the device
+> >hierarchy?
+> 
+> from a hardware perspective these clocks are pretty much stand-alone
+> and independent, there is no real parent/child dependency I can
+> think of and having this as 'floating' isn't very far from reality.
 
-On Mon, Jul 4, 2016 at 7:45 PM, Sugar Zhang <sugar.zhang@rock-chips.com> wrote:
-> restore hw registers after power loss during a suspend/resume cycle.
->
-> Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
-> ---
->
->  sound/soc/rockchip/rockchip_i2s.c | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
->
-> diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-> index 574c6af..53970ac 100644
-> --- a/sound/soc/rockchip/rockchip_i2s.c
-> +++ b/sound/soc/rockchip/rockchip_i2s.c
-> @@ -614,9 +614,35 @@ static const struct of_device_id rockchip_i2s_match[] = {
->         {},
->  };
->
-> +#ifdef CONFIG_PM_SLEEP
-> +static int rockchip_i2s_suspend(struct device *dev)
+Hmm... what about things like suspend/resume? Presumably we would
+want the clk device that's touching the pmc register space to be
+suspended before we suspend pmc itself? Not having a parent would
+mean it's a virtual device which doesn't seem correct. It's a
+logical device that is related to the pmc device.
 
-Rather than #ifdef, I think that the currently suggested way to do
-this is to use __maybe_unused, like:
-  static __maybe_unused int rockchip_i2s_suspend(struct device *dev)
-
-> +{
-> +       struct rk_i2s_dev *i2s = dev_get_drvdata(dev);
-> +
-> +       regcache_mark_dirty(i2s->regmap);
-> +
-> +       return 0;
-> +}
-
-I do wonder a little bit if we should be doing this work in pm_runtime
-instead of actually adding suspend/resume hooks.
-
-I think that technically you end up losing state when your power
-domain dies, right?  Looking at rk3399, I see that i2s is in
-"pd_sdioaudio" along with "sdio, spi, i2s, spdif".  That means (I
-think) that if all of those peripherals happen to runtime suspend at
-the same time (or they are totally unused) then you'll lose state when
-you are runtime suspended.  Then when you runtime resume you need to
-restore.
-
-Maybe in your case you never actually get into the situation where the
-power domain turns off except during suspend/resume, but it seems
-possible it could happen.
-
-Am I understanding this all properly?  Maybe someone can correct me.
-I'm still a bit of a PM Runtime noob.
-
-
--Doug
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
