@@ -1,25 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 1/4] ALSA: control: return payload length
-	for	TLV operation
-Date: Wed, 31 Aug 2016 13:54:37 +0200
-Message-ID: <e95db80c-682d-b186-ea9e-a4a8a5501329@ladisch.de>
-References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
- <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
- <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
- <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
- <20160830145136.GE9355@localhost>
- <38f437e4-56e7-dc7a-6892-c1d812fd56d3@sakamocchi.jp>
- <20160831042040.GO9355@localhost> <57C65D4A.9090209@sakamocchi.jp>
- <20160831090552.GZ21682@localhost.localdomain>
- <s5hzintgtsr.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH v2] ALSA: seq: initialize whole fields of
+	automatic variable with union type
+Date: Wed, 31 Aug 2016 21:02:13 +0900
+Message-ID: <1472644933-574-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 59044267136
- for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 13:54:39 +0200 (CEST)
-In-Reply-To: <s5hzintgtsr.wl-tiwai@suse.de>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 92420267BC6
+ for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 14:02:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,27 +19,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Vinod Koul <vinod.koul@intel.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, omair.m.abdullah@intel.com, alsa-devel@alsa-project.org, broonie@linaro.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> TLV has never been and (will never be) an API to handle a
-> generic binary stream.
+Currently, automatic variable of 'union ioctl_arg' type is initialized
+by designated initialization. Although, the actual effect is interpretation
+of early element of int type and initialization of 'int pversion'.
+Therefore the first field corresponding to int type is initialized to zero.
+This is against my expectation to initialize whole fields.
 
-It would be possible to define something like SNDRV_CTL_TLVT_HWDEP_BLOB
-or _COEFFICIENTS, or to reserve a range of TLVT values for driver-
-defined types.  (But we cannot change soc-wm-adsp to support only proper
-TLV data, because this would introduce a regression.)
+This commit uses memset() to initialize the variable, instead of designated
+initialization.
 
+Fixes: 04a56dd8ed0d ('ALSA: seq: change ioctl command operation to get data in kernel space')
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/core/seq/seq_clientmgr.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-Anyway, the separate length value could be useful only for drivers (like
-soc-wm-adsp) that use a binary stream where TLV data should have been
-used.  But the software that writes these coefficients to the WM ADSP
-driver is very hardware specific anyway, and it presumably already works
-without knowing the returned length value.  So there is no case where
-this patchset _actually_ improves the interface.
-
-
-Regards,
-Clemens
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index 286394b..811b95b 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -2084,7 +2084,7 @@ static long snd_seq_ioctl(struct file *file, unsigned int cmd,
+ {
+ 	struct snd_seq_client *client = file->private_data;
+ 	/* To use kernel stack for ioctl data. */
+-	union ioctl_arg {
++	union {
+ 		int pversion;
+ 		int client_id;
+ 		struct snd_seq_system_info	system_info;
+@@ -2100,7 +2100,7 @@ static long snd_seq_ioctl(struct file *file, unsigned int cmd,
+ 		struct snd_seq_client_pool	client_pool;
+ 		struct snd_seq_remove_events	remove_events;
+ 		struct snd_seq_query_subs	query_subs;
+-	} buf = {0};
++	} buf;
+ 	const struct ioctl_handler *handler;
+ 	unsigned long size;
+ 	int err;
+@@ -2114,6 +2114,9 @@ static long snd_seq_ioctl(struct file *file, unsigned int cmd,
+ 	}
+ 	if (handler->cmd == 0)
+ 		return -ENOTTY;
++
++	memset(&buf, 0, sizeof(buf));
++
+ 	/*
+ 	 * All of ioctl commands for ALSA sequencer get an argument of size
+ 	 * within 13 bits. We can safely pick up the size from the command.
+-- 
+2.7.4
