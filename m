@@ -1,53 +1,76 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: Re: Re: [PATCH v9 2/2] Add mixer controls: Line-In,
- FM-In, Mic 2, Capture Source, Differential Line-In.
-Date: Wed, 31 Aug 2016 15:55:46 +0800
-Message-ID: <CAGb2v66jkd7+GMUbihQjA0ec9nDZc=k2yDT3afD1q6qo57PVVA@mail.gmail.com>
-References: <20160830054403.7878-1-dannym@scratchpost.org> <20160830054403.7878-3-dannym@scratchpost.org>
- <CAGb2v64zA3iSOe7ku=pF0RhJkvErxt_tbPWG4H8D6r5UEUJAMQ@mail.gmail.com>
- <20160831094044.1c3227d6@scratchpost.org> <CAGb2v67YGiZEzBezub5HcEBZ5689uF1yQYj2xJkbVdHyEpOm5Q@mail.gmail.com>
- <20160831094959.2e5e6ae7@scratchpost.org>
-Reply-To: wens-jdAy2FN1RRM@public.gmane.org
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4] ALSA: control: return payload length
+ for TLV operation
+Date: Wed, 31 Aug 2016 10:05:52 +0100
+Message-ID: <20160831090552.GZ21682@localhost.localdomain>
+References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
+ <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
+ <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
+ <20160830145136.GE9355@localhost>
+ <38f437e4-56e7-dc7a-6892-c1d812fd56d3@sakamocchi.jp>
+ <20160831042040.GO9355@localhost> <57C65D4A.9090209@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCMILY6JWQBBBGU3TK7AKGQEST75THY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20160831094959.2e5e6ae7-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id AE4DE265750
+ for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 11:05:53 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <57C65D4A.9090209@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, broonie@linaro.org, Vinod Koul <vinod.koul@intel.com>, Clemens Ladisch <clemens@ladisch.de>, omair.m.abdullah@intel.com, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 31, 2016 at 3:49 PM, Danny Milosavljevic
-<dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org> wrote:
-> Hi Chen-Yu,
->
->> My apologies. I didn't notice that VMIC was already in the driver.
->> In that your original patch did everything right.
->
-> Don't worry about it :)
->
-> But I have a question:
->
-> If I replace DAPM_INPUT by DAPM_MIC it wants a callback that is supposed to
-> fiddle with the bias.
-> Do I provide one?
-> If so, will it conflict with the supply?
->
-> Or do I leave it as DAPM_INPUT ?
+On Wed, Aug 31, 2016 at 01:30:02PM +0900, Takashi Sakamoto wrote:
+> On Aug 31 2016 13:20, Vinod Koul wrote:
+> >> The layout of TLV packet is:
+> >> struct snd_ctl_tlv {
+> >>     unsigned int numid;   # numerical ID of a control element
+> >>     unsigned int length;  # length of payload
+> >>     unsigned int tlv[0];  # payload
+> >> };
+> >> http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/uapi/sound/asound.h?h=sound-4.8-rc4#n945
+> >>
+> >> In our implementaion, TLV packet payload (struct snd_ctl_tlv.tlv) is
+> >> used to transfer data. For pure threshold level information, we expects
+> >> applications and drivers to fill the payload with this protocol:
+> >> struct snd_ctl_tlv.tlv[0]:  one of SNDRV_CTL_TLVT_XXX
+> >> struct snd_ctl_tlv.tlv[1]:  length of data
+> >> struct snd_ctl_tlv.tlv[2..]: data
+> >>
+> >> (You can see SNDRV_CTL_TLVT_XXX in this header.
+> >> http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/uapi/sound/tlv.h?h=sound-4.8-rc4
+> >> )
+> >>
+> >> On the other hand, ALSA SoC part performs:
+> >> struct snd_ctl_tlv.tlv[0..]: arbitrary data
+> >>
+> >> If your 'tlv[1]' means the 'struct snd_ctl_tlv.tlv[1]', no sense.
+> >>
+> >> The issue I address is current implementation cannot correctly handle
+> >> this case:
+> >>  - applications request a buffer with a certain size
+> >>  - drivers processes the request with smaller size
+> >>  - application cannot get the size
 
-I think leaving it as DAPM_INPUT will do. Also, if you use DAPM_MIC or any
-other widget type that takes a callback, the callback can be NULL.
+Is this an expected use-case? The TLV controls were implemented
+to allow ALSA controls of greater than 512 bytes, I am not sure
+the intention was to provide completely generalised binary pipe. In
+general the expection for reading a control is that you can
+always read the whole control (AFAIK), so it feels like something
+returning less than the requested amount of data is buggy.
 
-I took a quick look at other drivers. The codecs only use non-endpoint
-types, like INPUT/OUTPUT. It's up to the card to provide endpoints
-(HP/SPEAKER/LINE/MIC) and route them to the codec INPUT/OUTPUTs.
-
-
-Regards
-ChenYu
+Thanks,
+Charles
