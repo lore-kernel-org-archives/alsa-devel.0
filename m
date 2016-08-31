@@ -1,54 +1,240 @@
-From: Xavi Drudis Ferran <xdrudis@tinet.cat>
-Subject: Re: [alsa-devel] Setting some clocks back to DUMMY fixes spdif
- output on imx6q wandboard rev B1
-Date: Wed, 31 Aug 2016 15:49:25 +0200
-Message-ID: <20160831134925.GB1967@begut>
-References: <20160828160055.GA2122@begut>
- <20160829192820.GA14207@Asurada-Nvidia>
- <20160829195428.GD1967@begut> <20160830111414.GA1968@begut>
- <20160831042100.GA3308@Asurada> <20160831091013.GA3185@begut>
- <CAOMZO5AoCo9Faq7oWgRQUE0Hg+Pg+i6z8eg-qeLFDvwpoEqz_g@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5AoCo9Faq7oWgRQUE0Hg+Pg+i6z8eg-qeLFDvwpoEqz_g@mail.gmail.com>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Xavi Drudis Ferran <xdrudis@tinet.cat>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH v4] ALSA: fireworks: accessing to user space outside spinlock
+Date: Wed, 31 Aug 2016 22:58:42 +0900
+Message-ID: <1472651922-12100-2-git-send-email-o-takashi@sakamocchi.jp>
+References: <1472651922-12100-1-git-send-email-o-takashi@sakamocchi.jp>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1472651922-12100-1-git-send-email-o-takashi@sakamocchi.jp>
+Sender: stable-owner@vger.kernel.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-El Wed, Aug 31, 2016 at 10:11:13AM -0300, Fabio Estevam deia:
-> 2. SPDIF clock rate not accurate. Probably using PLL4 as SPDIF source
-> would help to get more accurate SPDIF clock rates.
-> 
-> Could you please try the untested change?
-> 
-> --- a/drivers/clk/imx/clk-imx6q.c
-> +++ b/drivers/clk/imx/clk-imx6q.c
-> @@ -623,7 +623,7 @@ static void __init imx6q_clocks_init(struct
-> device_node *ccm_node)
->                 pr_warn("failed to set up CLKO: %d\n", ret);
-> 
->         /* Audio-related clocks configuration */
-> -       clk_set_parent(clk[IMX6QDL_CLK_SPDIF_SEL],
-> clk[IMX6QDL_CLK_PLL3_PFD3_454M]);
-> +       clk_set_parent(clk[IMX6QDL_CLK_SPDIF_SEL],
-> clk[IMX6QDL_CLK_PLL4_AUDIO_DIV]);
-> 
->         /* All existing boards with PCIe use LVDS1 */
->         if (IS_ENABLED(CONFIG_PCI_IMX6))
->
+In hwdep interface of fireworks driver, accessing to user space is in a
+critical section with disabled local interrupt. Depending on architecture,
+accessing to user space can cause page fault exception. Then local
+processor stores machine status and handles the synchronous event. A
+handler corresponding to the event can call task scheduler to wait for
+preparing pages. In a case of usage of single core processor, the state to
+disable local interrupt is worse because it don't handle usual interrupts
+from hardware.
 
-I'm going to try. I'll take a while. I'll report the result later.
+This commit fixes this bug, performing the accessing outside spinlock. This
+commit also gives up counting the number of queued response messages to
+simplify ring-buffer management.
 
-Thank you very much.
+Reported-by: Vaishali Thakkar <vaishali.thakkar@oracle.com>
+Cc: stable@vger.kernel.org
+Fixes: 555e8a8f7f14('ALSA: fireworks: Add command/response functionality into hwdep interface')
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/fireworks/fireworks.h             |  1 -
+ sound/firewire/fireworks/fireworks_hwdep.c       | 71 +++++++++++++++++-------
+ sound/firewire/fireworks/fireworks_proc.c        |  4 +-
+ sound/firewire/fireworks/fireworks_transaction.c |  5 +-
+ 4 files changed, 56 insertions(+), 25 deletions(-)
+
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index 03ed352..d73c12b 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -108,7 +108,6 @@ struct snd_efw {
+ 	u8 *resp_buf;
+ 	u8 *pull_ptr;
+ 	u8 *push_ptr;
+-	unsigned int resp_queues;
+ };
+ 
+ int snd_efw_transaction_cmd(struct fw_unit *unit,
+diff --git a/sound/firewire/fireworks/fireworks_hwdep.c b/sound/firewire/fireworks/fireworks_hwdep.c
+index 33df865..531baab 100644
+--- a/sound/firewire/fireworks/fireworks_hwdep.c
++++ b/sound/firewire/fireworks/fireworks_hwdep.c
+@@ -25,6 +25,7 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
+ {
+ 	unsigned int length, till_end, type;
+ 	struct snd_efw_transaction *t;
++	u8 *pull_ptr;
+ 	long count = 0;
+ 
+ 	if (remained < sizeof(type) + sizeof(struct snd_efw_transaction))
+@@ -38,8 +39,17 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
+ 	buf += sizeof(type);
+ 
+ 	/* write into buffer as many responses as possible */
+-	while (efw->resp_queues > 0) {
+-		t = (struct snd_efw_transaction *)(efw->pull_ptr);
++	spin_lock_irq(&efw->lock);
++
++	/*
++	 * When another task reaches here during this task's access to user
++	 * space, it picks up current position in buffer and can read the same
++	 * series of responses.
++	 */
++	pull_ptr = efw->pull_ptr;
++
++	while (efw->push_ptr != pull_ptr) {
++		t = (struct snd_efw_transaction *)(pull_ptr);
+ 		length = be32_to_cpu(t->length) * sizeof(__be32);
+ 
+ 		/* confirm enough space for this response */
+@@ -49,26 +59,39 @@ hwdep_read_resp_buf(struct snd_efw *efw, char __user *buf, long remained,
+ 		/* copy from ring buffer to user buffer */
+ 		while (length > 0) {
+ 			till_end = snd_efw_resp_buf_size -
+-				(unsigned int)(efw->pull_ptr - efw->resp_buf);
++				(unsigned int)(pull_ptr - efw->resp_buf);
+ 			till_end = min_t(unsigned int, length, till_end);
+ 
+-			if (copy_to_user(buf, efw->pull_ptr, till_end))
++			spin_unlock_irq(&efw->lock);
++
++			if (copy_to_user(buf, pull_ptr, till_end))
+ 				return -EFAULT;
+ 
+-			efw->pull_ptr += till_end;
+-			if (efw->pull_ptr >= efw->resp_buf +
+-					     snd_efw_resp_buf_size)
+-				efw->pull_ptr -= snd_efw_resp_buf_size;
++			spin_lock_irq(&efw->lock);
++
++			pull_ptr += till_end;
++			if (pull_ptr >= efw->resp_buf + snd_efw_resp_buf_size)
++				pull_ptr -= snd_efw_resp_buf_size;
+ 
+ 			length -= till_end;
+ 			buf += till_end;
+ 			count += till_end;
+ 			remained -= till_end;
+ 		}
+-
+-		efw->resp_queues--;
+ 	}
+ 
++	/*
++	 * All of tasks can read from the buffer nearly simultaneously, but the
++	 * last position for each task is different depending on the length of
++	 * given buffer. Here, for simplicity, a position of buffer is set by
++	 * the latest task. It's better for a listening application to allow one
++	 * thread to read from the buffer. Unless, each task can read different
++	 * sequence of responses depending on variation of buffer length.
++	 */
++	efw->pull_ptr = pull_ptr;
++
++	spin_unlock_irq(&efw->lock);
++
+ 	return count;
+ }
+ 
+@@ -76,14 +99,17 @@ static long
+ hwdep_read_locked(struct snd_efw *efw, char __user *buf, long count,
+ 		  loff_t *offset)
+ {
+-	union snd_firewire_event event;
++	union snd_firewire_event event = {
++		.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS,
++	};
+ 
+-	memset(&event, 0, sizeof(event));
++	spin_lock_irq(&efw->lock);
+ 
+-	event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
+ 	event.lock_status.status = (efw->dev_lock_count > 0);
+ 	efw->dev_lock_changed = false;
+ 
++	spin_unlock_irq(&efw->lock);
++
+ 	count = min_t(long, count, sizeof(event.lock_status));
+ 
+ 	if (copy_to_user(buf, &event, count))
+@@ -98,10 +124,15 @@ hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
+ {
+ 	struct snd_efw *efw = hwdep->private_data;
+ 	DEFINE_WAIT(wait);
++	bool dev_lock_changed;
++	bool queued;
+ 
+ 	spin_lock_irq(&efw->lock);
+ 
+-	while ((!efw->dev_lock_changed) && (efw->resp_queues == 0)) {
++	dev_lock_changed = efw->dev_lock_changed;
++	queued = efw->push_ptr != efw->pull_ptr;
++
++	while (!dev_lock_changed && !queued) {
+ 		prepare_to_wait(&efw->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
+ 		spin_unlock_irq(&efw->lock);
+ 		schedule();
+@@ -109,15 +140,17 @@ hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
+ 		if (signal_pending(current))
+ 			return -ERESTARTSYS;
+ 		spin_lock_irq(&efw->lock);
++		dev_lock_changed = efw->dev_lock_changed;
++		queued = efw->push_ptr != efw->pull_ptr;
+ 	}
+ 
+-	if (efw->dev_lock_changed)
++	spin_unlock_irq(&efw->lock);
++
++	if (dev_lock_changed)
+ 		count = hwdep_read_locked(efw, buf, count, offset);
+-	else if (efw->resp_queues > 0)
++	else if (queued)
+ 		count = hwdep_read_resp_buf(efw, buf, count, offset);
+ 
+-	spin_unlock_irq(&efw->lock);
+-
+ 	return count;
+ }
+ 
+@@ -160,7 +193,7 @@ hwdep_poll(struct snd_hwdep *hwdep, struct file *file, poll_table *wait)
+ 	poll_wait(file, &efw->hwdep_wait, wait);
+ 
+ 	spin_lock_irq(&efw->lock);
+-	if (efw->dev_lock_changed || (efw->resp_queues > 0))
++	if (efw->dev_lock_changed || efw->pull_ptr != efw->push_ptr)
+ 		events = POLLIN | POLLRDNORM;
+ 	else
+ 		events = 0;
+diff --git a/sound/firewire/fireworks/fireworks_proc.c b/sound/firewire/fireworks/fireworks_proc.c
+index 0639dcb..beb0a0f 100644
+--- a/sound/firewire/fireworks/fireworks_proc.c
++++ b/sound/firewire/fireworks/fireworks_proc.c
+@@ -188,8 +188,8 @@ proc_read_queues_state(struct snd_info_entry *entry,
+ 	else
+ 		consumed = (unsigned int)(efw->push_ptr - efw->pull_ptr);
+ 
+-	snd_iprintf(buffer, "%d %d/%d\n",
+-		    efw->resp_queues, consumed, snd_efw_resp_buf_size);
++	snd_iprintf(buffer, "%d/%d\n",
++		    consumed, snd_efw_resp_buf_size);
+ }
+ 
+ static void
+diff --git a/sound/firewire/fireworks/fireworks_transaction.c b/sound/firewire/fireworks/fireworks_transaction.c
+index f550808..36a08ba 100644
+--- a/sound/firewire/fireworks/fireworks_transaction.c
++++ b/sound/firewire/fireworks/fireworks_transaction.c
+@@ -121,11 +121,11 @@ copy_resp_to_buf(struct snd_efw *efw, void *data, size_t length, int *rcode)
+ 	size_t capacity, till_end;
+ 	struct snd_efw_transaction *t;
+ 
+-	spin_lock_irq(&efw->lock);
+-
+ 	t = (struct snd_efw_transaction *)data;
+ 	length = min_t(size_t, be32_to_cpu(t->length) * sizeof(u32), length);
+ 
++	spin_lock_irq(&efw->lock);
++
+ 	if (efw->push_ptr < efw->pull_ptr)
+ 		capacity = (unsigned int)(efw->pull_ptr - efw->push_ptr);
+ 	else
+@@ -155,7 +155,6 @@ copy_resp_to_buf(struct snd_efw *efw, void *data, size_t length, int *rcode)
+ 	}
+ 
+ 	/* for hwdep */
+-	efw->resp_queues++;
+ 	wake_up(&efw->hwdep_wait);
+ 
+ 	*rcode = RCODE_COMPLETE;
+-- 
+2.7.4
