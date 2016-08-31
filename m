@@ -1,51 +1,90 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: Remove deprecated create_singlethread_workqueue
-Date: Wed, 31 Aug 2016 15:50:59 +0100
-Message-ID: <20160831145059.GB5967@sirena.org.uk>
-References: <20160830192709.GA16591@Karyakshetra>
+Subject: Applied "ASoC: arizona: Don't change the FLLn_GAIN
+	before entering FREERUN" to the asoc tree
+Date: Wed, 31 Aug 2016 12:42:33 +0100
+Message-ID: <E1bf3ub-00012e-Ty@finisterre>
+References: <1472549440-4155-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6sX45UoQRIJXqkqR"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160830192709.GA16591@Karyakshetra>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bhaktipriya Shridhar <bhaktipriya96@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Tejun Heo <tj@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D0DC26750B
+ for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 13:42:53 +0200 (CEST)
+In-Reply-To: <1472549440-4155-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, nariman@opensource.wolfsonmicro.com, lgirdwood@gmail.com, broonie@kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---6sX45UoQRIJXqkqR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: arizona: Don't change the FLLn_GAIN before entering FREERUN
 
-On Wed, Aug 31, 2016 at 12:57:09AM +0530, Bhaktipriya Shridhar wrote:
+has been applied to the asoc tree at
 
-> The workqueue "dac33_wq" queues a single work item &dac33->work and hence
-> doesn't require ordering. Also, it is not being used on a memory reclaim
-> path. Hence, it has been converted to use system_wq.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> The workqueue "post_msg_wq" queues a single work item
-> &drv->ipc_post_msg_wq and hence doesn't require ordering. Also, it is
-> not being used on a memory reclaim path. Hence, it has been converted to
-> use system_wq.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Please send one patch per change, and please address Peter's concerns
-about the dac33.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---6sX45UoQRIJXqkqR
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJXxu7SAAoJECTWi3JdVIfQFn4H+wd65yBCwkoVMyNOCGoWx3PR
-4aJObQ7BfFTdf7SJ9i5Zw1BkmgbswG4ngK4VG0/mXSxugIir8yJ/Y6Lwcre8M+nm
-6wDzDq2JEMmwnEmNRFxQ9s7pXKASGoVeluNVI+PXjpg0DstZ+LXDD9Dwn7hp+06u
-bfL+BzTY4cvFXtgEdYnknhbeOjjVybhmtgpguYKHdyxjPvYXkgcvdNIpmWret1LT
-x6ABfeygRdv/+hvDog7BCfTAYIfzXNpUhfj2XK666BrSAsg9bP6ujqz/O0jWDWb8
-1/QdUO6P9LnJdTx3SfTREzSNAmJPlkWXFBM+WzuEiKRE5pOy2/pcut8li6f4XII=
-=IYXP
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---6sX45UoQRIJXqkqR--
+>From c9991052aedaa74c69f8198852c65a99caf1adec Mon Sep 17 00:00:00 2001
+From: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
+Date: Tue, 30 Aug 2016 10:30:40 +0100
+Subject: [PATCH] ASoC: arizona: Don't change the FLLn_GAIN before entering
+ FREERUN
+
+When reclocking an active FLL, to ensure a clean transition, do
+not change the gain setting until we have entered free run.
+
+Signed-off-by: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/arizona.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index ecfdbfcae366..0fc3b4b61552 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -2218,11 +2218,11 @@ static int arizona_enable_fll(struct arizona_fll *fll)
+ 
+ 	if (already_enabled) {
+ 		/* Facilitate smooth refclk across the transition */
+-		regmap_update_bits_async(fll->arizona->regmap, fll->base + 0x9,
+-					 ARIZONA_FLL1_GAIN_MASK, 0);
+ 		regmap_update_bits(fll->arizona->regmap, fll->base + 1,
+ 				   ARIZONA_FLL1_FREERUN, ARIZONA_FLL1_FREERUN);
+ 		udelay(32);
++		regmap_update_bits_async(fll->arizona->regmap, fll->base + 0x9,
++					 ARIZONA_FLL1_GAIN_MASK, 0);
+ 	}
+ 
+ 	/*
+-- 
+2.9.3
