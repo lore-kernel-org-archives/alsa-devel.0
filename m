@@ -1,178 +1,239 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/4] ALSA: control: return payload length
- for TLV operation
-Date: Thu, 1 Sep 2016 00:26:14 +0900
-Message-ID: <47fa0f7b-cf3a-b3dd-7e7e-7d45369ddaac@sakamocchi.jp>
-References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
- <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
- <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
- <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
- <20160830145136.GE9355@localhost>
- <38f437e4-56e7-dc7a-6892-c1d812fd56d3@sakamocchi.jp>
- <20160831042040.GO9355@localhost> <57C65D4A.9090209@sakamocchi.jp>
- <20160831090552.GZ21682@localhost.localdomain> <s5hzintgtsr.wl-tiwai@suse.de>
- <e95db80c-682d-b186-ea9e-a4a8a5501329@ladisch.de>
- <s5ha8ftgmyh.wl-tiwai@suse.de>
+From: Xavi Drudis Ferran <xdrudis@tinet.cat>
+Subject: Re: [alsa-devel] Setting some clocks back to DUMMY fixes spdif
+ output on imx6q wandboard rev B1
+Date: Wed, 31 Aug 2016 19:49:47 +0200
+Message-ID: <20160831174947.GA2018@begut>
+References: <20160828160055.GA2122@begut>
+ <20160829192820.GA14207@Asurada-Nvidia>
+ <20160829195428.GD1967@begut> <20160830111414.GA1968@begut>
+ <20160831042100.GA3308@Asurada> <20160831091013.GA3185@begut>
+ <CAOMZO5AoCo9Faq7oWgRQUE0Hg+Pg+i6z8eg-qeLFDvwpoEqz_g@mail.gmail.com>
+ <20160831134925.GB1967@begut>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id D1FE1266F02
- for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 17:26:19 +0200 (CEST)
-In-Reply-To: <s5ha8ftgmyh.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, omair.m.abdullah@intel.com, alsa-devel@alsa-project.org, broonie@linaro.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Content-Disposition: inline
+In-Reply-To: <20160831134925.GB1967@begut>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Xavi Drudis Ferran <xdrudis@tinet.cat>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 31 2016 21:08, Takashi Iwai wrote:
-> On Wed, 31 Aug 2016 13:54:37 +0200,
-> Clemens Ladisch wrote:
->>
->> Takashi Iwai wrote:
->>> TLV has never been and (will never be) an API to handle a
->>> generic binary stream.
->>
->> It would be possible to define something like SNDRV_CTL_TLVT_HWDEP_BLOB
->> or _COEFFICIENTS, or to reserve a range of TLVT values for driver-
->> defined types.  (But we cannot change soc-wm-adsp to support only proper
->> TLV data, because this would introduce a regression.)
+El Wed, Aug 31, 2016 at 03:49:25PM +0200, Xavi Drudis Ferran deia:
+> El Wed, Aug 31, 2016 at 10:11:13AM -0300, Fabio Estevam deia:
+> > 2. SPDIF clock rate not accurate. Probably using PLL4 as SPDIF source
+> > would help to get more accurate SPDIF clock rates.
+> > 
+> > Could you please try the untested change?
+> > 
+> > --- a/drivers/clk/imx/clk-imx6q.c
+> > +++ b/drivers/clk/imx/clk-imx6q.c
+> > @@ -623,7 +623,7 @@ static void __init imx6q_clocks_init(struct
+> > device_node *ccm_node)
+> >                 pr_warn("failed to set up CLKO: %d\n", ret);
+> > 
+> >         /* Audio-related clocks configuration */
+> > -       clk_set_parent(clk[IMX6QDL_CLK_SPDIF_SEL],
+> > clk[IMX6QDL_CLK_PLL3_PFD3_454M]);
+> > +       clk_set_parent(clk[IMX6QDL_CLK_SPDIF_SEL],
+> > clk[IMX6QDL_CLK_PLL4_AUDIO_DIV]);
+> > 
+> >         /* All existing boards with PCIe use LVDS1 */
+> >         if (IS_ENABLED(CONFIG_PCI_IMX6))
+> >
 > 
-> Well, passing the random hw-specific data is fine, but what I meant is
-> that a "stream" isn't suitable with TLV.  (And I don't mean it's
-> impossible, either :)
+> I'm going to try. I'll take a while. I'll report the result later.
+> 
+> Thank you very much.
 
-I'm few interested in whether it's binary stream or not, or
-hardware-specific or not. The returned length is the most, in a point of
-application developers. I'll show you two cases.
+I just tried. Spdif output still works. I can't hear any difference. 
 
-1.Let's see current implementation of 'snd_soc_bytes_tlv_callback()' in
-sound/soc/soc-ops.c.
+I've summarised the tests in a table:
 
-http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/soc/soc-ops.c?h=v4.8-rc4#n772
+Nominal    
+Hz               32000      44100      48000      96000     192000
+ns               31250      22676      20833      10417       5208
 
-Here, 'size' argument is struct snd_ctl_tlv.length and 'tlv' argument is
-&struct snd_ctl_tlv.tlv[2].
+Linux-libre-4.7 (unchanged)   (no spdif output)                                                               
+Hz               32226      43882      47965      95930     196428
+ns               31031      22788      20849      10424       5091
+deviation(ns)      219       -113        -15         -8        117
 
-The size of actual I/O is smaller value between the length and hardcoded
-'params->max'.
+only core (SPDIF_GCLK), rxtx0 (CLK_OSC), rxtx1(SPDIF) & spba (spdif output)
+Hz               31719      43859      47368      94736     187500
+ns               31527      22800      21111      10556       5333
+deviation(ns)     -277       -125       -278       -139       -125
+ 
+without MLB (the rest  unchanged)   (spdif output)                         
+Hz               32226      43859      47368      94736     187500
+ns               31031      22800      21111      10556       5333
+deviation(ns)      219       -125       -278       -139       -125
 
-When applications give larger buffer to TLV feature of ALSA control
-interface, then the early part of the buffer is filled. On the other
-hand, applications cannot get to know the actual length.
+without MLB, and PLL4 instead of PLL3 for SPDIF (spdif output)               
+Hz               32226      44836      49107      93750     187500
+ns               31031      22304      20364      10667       5333
+deviation(ns)      219        372        470       -250       -125
 
-2.Let's see core implementation user-defined control element set.
+I saw page 121 of
+http://cache.freescale.com/files/32bit/doc/data_sheet/IMX6DQIEC.pdf
+And it seems like the the margin for the SPDIF clock would be 16 ns
+so I've just inverted the frequencies to compare, but I'm not convinced
+it's relevant. 
 
-http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/core/control.c?h=v4.8-rc4#n1140
+Here's the extract from dmesg with your patch (and .dtsi like mainline
+except MLB replaced with DUMMY).
 
-The 'size' and 'tlv' arguments are the same as the first example.
+[...]
+[    7.517394] etnaviv-gpu 130000.gpu: model: GC2000, revision: 5108
+[    7.578089] imx_thermal 2000000.aips-bus:tempmon: Extended Commercial CPU temperature grade - max:105C critical:100C passive:95C
+[    7.594443] etnaviv-gpu 2204000.gpu: model: GC355, revision: 1215
+[    7.594454] etnaviv-gpu 2204000.gpu: Ignoring GPU with VG and FE2.0
+[    7.594459] etnaviv-gpu 2204000.gpu: hw init failed: -6
+[    7.653041] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe
+[    7.656319] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.704159] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 32000Hz sample rate
+[    7.711719] fsl-spdif-dai 2004000.spdif: use txclk df 16 for 32000Hz sample rate
+[    7.718328] fsl-spdif-dai 2004000.spdif: use sysclk df 2 for 32000Hz sample rate
+[    7.724762] fsl-spdif-dai 2004000.spdif: the best rate for 32000Hz sample rate is 32226Hz
+[    7.732679] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.760087] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 44100Hz sample rate
+[    7.766536] fsl-spdif-dai 2004000.spdif: use txclk df 1 for 44100Hz sample rate
+[    7.772986] fsl-spdif-dai 2004000.spdif: use sysclk df 23 for 44100Hz sample rate
+[    7.780120] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 44836Hz
+[    7.788952] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.825238] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 48000Hz sample rate
+[    7.831515] fsl-spdif-dai 2004000.spdif: use txclk df 7 for 48000Hz sample rate
+[    7.837583] fsl-spdif-dai 2004000.spdif: use sysclk df 3 for 48000Hz sample rate
+[    7.843718] fsl-spdif-dai 2004000.spdif: the best rate for 48000Hz sample rate is 49107Hz
+[    7.849672] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.878632] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 96000Hz sample rate
+[    7.884550] fsl-spdif-dai 2004000.spdif: use txclk df 4 for 96000Hz sample rate
+[    7.890390] fsl-spdif-dai 2004000.spdif: the best rate for 96000Hz sample rate is 93750Hz
+[    7.896253] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.921228] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 192000Hz sample rate
+[    7.927034] fsl-spdif-dai 2004000.spdif: use txclk df 2 for 192000Hz sample rate
+[    7.932809] fsl-spdif-dai 2004000.spdif: the best rate for 192000Hz sample rate is 187500Hz
+[    7.938616] fsl-spdif-dai 2004000.spdif: imx_pcm_dma_init failed: -517
+[    7.944791] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    7.954697] fsl-asrc 2034000.asrc: driver registered
+[    7.961411] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe
+[    7.967622] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    7.992427] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 32000Hz sample rate
+[    7.998228] fsl-spdif-dai 2004000.spdif: use txclk df 16 for 32000Hz sample rate
+[    8.004122] fsl-spdif-dai 2004000.spdif: use sysclk df 2 for 32000Hz sample rate
+[    8.009806] fsl-spdif-dai 2004000.spdif: the best rate for 32000Hz sample rate is 32226Hz
+[    8.015572] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.044534] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 44100Hz sample rate
+[    8.050294] fsl-spdif-dai 2004000.spdif: use txclk df 1 for 44100Hz sample rate
+[    8.056069] fsl-spdif-dai 2004000.spdif: use sysclk df 23 for 44100Hz sample rate
+[    8.061869] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 44836Hz
+[    8.067662] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.092093] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 48000Hz sample rate
+[    8.097916] fsl-spdif-dai 2004000.spdif: use txclk df 7 for 48000Hz sample rate
+[    8.103769] fsl-spdif-dai 2004000.spdif: use sysclk df 3 for 48000Hz sample rate
+[    8.109660] fsl-spdif-dai 2004000.spdif: the best rate for 48000Hz sample rate is 49107Hz
+[    8.115488] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.141250] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 96000Hz sample rate
+[    8.147179] fsl-spdif-dai 2004000.spdif: use txclk df 4 for 96000Hz sample rate
+[    8.153066] fsl-spdif-dai 2004000.spdif: the best rate for 96000Hz sample rate is 93750Hz
+[    8.158900] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.185506] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 192000Hz sample rate
+[    8.191441] fsl-spdif-dai 2004000.spdif: use txclk df 2 for 192000Hz sample rate
+[    8.197297] fsl-spdif-dai 2004000.spdif: the best rate for 192000Hz sample rate is 187500Hz
+[    8.203477] fsl-spdif-dai 2004000.spdif: imx_pcm_dma_init failed: -517
+[    8.210220] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    8.653296] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe
+[    8.678782] imx-spdif sound-spdif: ASoC: CPU DAI (null) not registered
+[    8.682393] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.705822] imx-spdif sound-spdif: snd_soc_register_card failed: -517
+[    8.735316] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 32000Hz sample rate
+[    8.741460] fsl-spdif-dai 2004000.spdif: use txclk df 16 for 32000Hz sample rate
+[    8.747889] fsl-spdif-dai 2004000.spdif: use sysclk df 2 for 32000Hz sample rate
+[    8.754006] fsl-spdif-dai 2004000.spdif: the best rate for 32000Hz sample rate is 32226Hz
+[    8.755063] sgtl5000 1-000a: sgtl5000 revision 0x11
+[...]
+[    8.776463] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.804281] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 44100Hz sample rate
+[    8.810549] fsl-spdif-dai 2004000.spdif: use txclk df 1 for 44100Hz sample rate
+[    8.816670] fsl-spdif-dai 2004000.spdif: use sysclk df 23 for 44100Hz sample rate
+[    8.822881] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 44836Hz
+[    8.829149] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.857633] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 48000Hz sample rate
+[    8.864664] fsl-spdif-dai 2004000.spdif: use txclk df 7 for 48000Hz sample rate
+[    8.871299] fsl-spdif-dai 2004000.spdif: use sysclk df 3 for 48000Hz sample rate
+[    8.878169] fsl-spdif-dai 2004000.spdif: the best rate for 48000Hz sample rate is 49107Hz
+[    8.885341] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.887272] 20ec000.sdma: Missing Free firmware (non-Free firmware loading is disabled)
+[    8.887325] imx-sdma 20ec000.sdma: failed to get firmware from device tree
+[    8.928411] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 96000Hz sample rate
+[    8.932841] imx-sdma 20ec000.sdma: Direct firmware load for /*(DEBLOBBED)*/ failed with error -2
+[    8.941518] fsl-spdif-dai 2004000.spdif: use txclk df 4 for 96000Hz sample rate
+[    8.948104] fsl-spdif-dai 2004000.spdif: the best rate for 96000Hz sample rate is 93750Hz
+[    8.954948] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    8.985543] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 192000Hz sample rate
+[    8.992121] fsl-spdif-dai 2004000.spdif: use txclk df 2 for 192000Hz sample rate
+[    8.998731] fsl-spdif-dai 2004000.spdif: the best rate for 192000Hz sample rate is 187500Hz
+[...]
+[    9.013319] fsl-spdif-dai 2004000.spdif: imx_pcm_dma_init failed: -517
+[    9.029511] fsl-ssi-dai 2028000.ssi: No cache defaults, reading back from HW
+[    9.052247] imx-spdif sound-spdif: ASoC: CPU DAI (null) not registered
+[    9.061522] imx-spdif sound-spdif: snd_soc_register_card failed: -517
+[    9.072088] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe
+[    9.087019] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.120952] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 32000Hz sample rate
+[    9.128069] fsl-spdif-dai 2004000.spdif: use txclk df 16 for 32000Hz sample rate
+[    9.135255] fsl-spdif-dai 2004000.spdif: use sysclk df 2 for 32000Hz sample rate
+[    9.142316] fsl-spdif-dai 2004000.spdif: the best rate for 32000Hz sample rate is 32226Hz
+[    9.149247] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.181927] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 44100Hz sample rate
+[    9.188687] sgtl5000 1-000a: Using internal LDO instead of VDDD
+[    9.196207] fsl-spdif-dai 2004000.spdif: use txclk df 1 for 44100Hz sample rate
+[    9.203005] fsl-spdif-dai 2004000.spdif: use sysclk df 23 for 44100Hz sample rate
+[    9.209998] fsl-spdif-dai 2004000.spdif: the best rate for 44100Hz sample rate is 44836Hz
+[    9.216928] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.250153] fsl-spdif-dai 2004000.spdif: use rxtx5 as tx clock source for 48000Hz sample rate
+[    9.256987] fsl-spdif-dai 2004000.spdif: use txclk df 7 for 48000Hz sample rate
+[    9.263890] fsl-spdif-dai 2004000.spdif: use sysclk df 3 for 48000Hz sample rate
+[    9.270641] fsl-spdif-dai 2004000.spdif: the best rate for 48000Hz sample rate is 49107Hz
+[    9.277343] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.305524] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 96000Hz sample rate
+[    9.312400] fsl-spdif-dai 2004000.spdif: use txclk df 4 for 96000Hz sample rate
+[    9.319041] fsl-spdif-dai 2004000.spdif: the best rate for 96000Hz sample rate is 93750Hz
+[    9.325799] fsl-spdif-dai 2004000.spdif: enter fsl_spdif_probe_txclk
+[    9.354693] fsl-asoc-card sound: sgtl5000 <-> 2028000.ssi mapping ok
+[    9.357288] fsl-spdif-dai 2004000.spdif: use rxtx0 as tx clock source for 192000Hz sample rate
+[    9.357293] fsl-spdif-dai 2004000.spdif: use txclk df 2 for 192000Hz sample rate
+[    9.357298] fsl-spdif-dai 2004000.spdif: the best rate for 192000Hz sample rate is 187500Hz
+[    9.470268] imx-spdif sound-spdif: snd-soc-dummy-dai <-> 2004000.spdif mapping ok
+[...]
+[   71.548012] fsl-spdif-dai 2004000.spdif: expected clock rate = 64915200
+[   71.548027] fsl-spdif-dai 2004000.spdif: actual clock rate = 66000000
+[   71.548043] fsl-spdif-dai 2004000.spdif: set sample rate to 44836Hz for 44100Hz playback
+[   71.548054] fsl-spdif-dai 2004000.spdif: STCSCH: 0x304000
+[   71.548065] fsl-spdif-dai 2004000.spdif: STCSCL: 0x000000
+[   71.743796] fsl-spdif-dai 2004000.spdif: expected clock rate = 64915200
+[   71.743812] fsl-spdif-dai 2004000.spdif: actual clock rate = 66000000
+[   71.743823] fsl-spdif-dai 2004000.spdif: set sample rate to 44836Hz for 44100Hz playback
+[   71.743844] fsl-spdif-dai 2004000.spdif: STCSCH: 0x304000
+[   71.743867] fsl-spdif-dai 2004000.spdif: STCSCL: 0x000000
 
-When write operation, the given buffer and length is stored to a control
-element set. When read operation, the given buffer is filled by the
-stored data with the stored length. On the other hand, applications
-cannot get to know the actual length.
+And when playing sound (spdif output works ok)
 
-When we're considering just about pure threshold information, there's no
-concern about the length, due to struct snd_ctl_tlv.tlv[1]. But now
-we've already decided to use this feature to transfer arbitrary length
-of data. It's better to consider about what is better for applications.
-In this point, I believe that my patchset is not fishy at all.
-
-In the end of this message, I put a sample program for second example.
+[  128.778530] fsl-spdif-dai 2004000.spdif: expected clock rate = 64915200
+[  128.778549] fsl-spdif-dai 2004000.spdif: actual clock rate = 66000000
+[  128.778560] fsl-spdif-dai 2004000.spdif: set sample rate to 44836Hz for 44100Hz playback
+[  128.778575] fsl-spdif-dai 2004000.spdif: STCSCH: 0x304000
+[  128.778583] fsl-spdif-dai 2004000.spdif: STCSCL: 0x000000
 
 
-Regards
-
-Takashi Sakamoto
-
------ 8< -----
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
-#include <string.h>
-#include <errno.h>
-#include <sound/asound.h>
-
-int main(void)
-{
-    struct snd_ctl_tlv *packet;
-    int fd;
-    struct snd_ctl_elem_info info = {0};
-
-    packet = malloc(100);
-    if (packet == NULL) {
-        printf("malloc(3): %s\n", strerror(ENOMEM));
-        goto end_malloc;
-    }
-
-    fd = open("/dev/snd/controlC0", O_RDONLY);
-    if (fd < 0) {
-        printf("open(2): %s\n", strerror(errno));
-        goto end_malloc;
-    }
-
-    /* Add my control element set. Don't forget to remove them. */
-    info.id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-    info.owner = 100;
-    strcpy((char *)info.id.name, "sample");
-    info.access = SNDRV_CTL_ELEM_ACCESS_READ |
-              SNDRV_CTL_ELEM_ACCESS_WRITE |
-              SNDRV_CTL_ELEM_ACCESS_TLV_READ |
-              SNDRV_CTL_ELEM_ACCESS_TLV_WRITE;
-    info.count = 128;
-    info.type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-    info.value.integer.min = 0;
-    info.value.integer.max = 100;
-    info.value.integer.step = 1;
-    if (ioctl(fd, SNDRV_CTL_IOCTL_ELEM_ADD, &info) < 0) {
-        printf("ioctl(ADD): %s\n", strerror(errno));
-        goto end_malloc;
-    }
-
-    /* In a case to store arbitrary data. */
-    packet->numid = info.id.numid;
-    packet->length = 6 * sizeof(packet->tlv[0]);
-    packet->tlv[0] = 'a';
-    packet->tlv[1] = 'b';
-    packet->tlv[2] = 'c';
-    packet->tlv[3] = 'd';
-    packet->tlv[4] = 'e';
-    packet->tlv[5] = 'f';
-    if (ioctl(fd, SNDRV_CTL_IOCTL_TLV_WRITE, packet) < 0) {
-        printf("ioctl(TLV_WRITE): %s\n", strerror(errno));
-        goto end_addition;
-    }
-
-    /* This simulates the other processes to read it. */
-    packet->length = 100 - sizeof(struct snd_ctl_tlv);
-    if (ioctl(fd, SNDRV_CTL_IOCTL_TLV_READ, packet) < 0) {
-        printf("ioctl(TLV_READ): %s\n", strerror(errno));
-        goto end_addition;
-    }
-
-    printf("struct snd_ctl_tlv.length: %d\n", packet->length);
-    printf("But I store %ld bytes.\n", 6 * sizeof(unsigned int));
-end_addition:
-    /* For a combination of PulseAudio and alsa-lib 1.1.1. */
-    sleep(2);
-    if (ioctl(fd, SNDRV_CTL_IOCTL_ELEM_REMOVE, &info.id) < 0)
-        printf("ioctl(REMOVE): %s\n", strerror(errno));
-end_malloc:
-    free(packet);
-
-    return EXIT_SUCCESS;
-}
+Thank you amd feel free to suggest more tests, but it is good enough
+as it is for me.
