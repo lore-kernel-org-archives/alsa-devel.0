@@ -1,58 +1,55 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] clk: x86: Add Atom PMC platform clocks
-Date: Wed, 31 Aug 2016 18:08:58 +0100
-Message-ID: <20160831170858.GA6560@sirena.org.uk>
-References: <1471459276-11517-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <20160831003722.GH12510@codeaurora.org>
- <7c15a844-1351-f1ac-2ad0-3c41455fcc2e@linux.intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/4] ALSA: control: return payload length
+	for	TLV operation
+Date: Wed, 31 Aug 2016 13:54:37 +0200
+Message-ID: <e95db80c-682d-b186-ea9e-a4a8a5501329@ladisch.de>
+References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
+ <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
+ <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
+ <20160830145136.GE9355@localhost>
+ <38f437e4-56e7-dc7a-6892-c1d812fd56d3@sakamocchi.jp>
+ <20160831042040.GO9355@localhost> <57C65D4A.9090209@sakamocchi.jp>
+ <20160831090552.GZ21682@localhost.localdomain>
+ <s5hzintgtsr.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ZGiS0Q5IWpPtfppv"
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <7c15a844-1351-f1ac-2ad0-3c41455fcc2e@linux.intel.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Stephen Boyd <sboyd@codeaurora.org>, linux-clk@vger.kernel.org, mturquette@baylibre.com, alsa-devel@alsa-project.org, tiwai@suse.de, irina.tirdea@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 59044267136
+ for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2016 13:54:39 +0200 (CEST)
+In-Reply-To: <s5hzintgtsr.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Vinod Koul <vinod.koul@intel.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, omair.m.abdullah@intel.com, alsa-devel@alsa-project.org, broonie@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> TLV has never been and (will never be) an API to handle a
+> generic binary stream.
 
---ZGiS0Q5IWpPtfppv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It would be possible to define something like SNDRV_CTL_TLVT_HWDEP_BLOB
+or _COEFFICIENTS, or to reserve a range of TLVT values for driver-
+defined types.  (But we cannot change soc-wm-adsp to support only proper
+TLV data, because this would introduce a regression.)
 
-On Tue, Aug 30, 2016 at 08:35:55PM -0500, Pierre-Louis Bossart wrote:
-> On 8/30/16 7:37 PM, Stephen Boyd wrote:
 
-> > It's sad that this can't be compiled on any platform. Has there
-> > been any move towards making this into a regmap provider so that
-> > this clk driver can use cross platform regmap APIs instead? Or
+Anyway, the separate length value could be useful only for drivers (like
+soc-wm-adsp) that use a binary stream where TLV data should have been
+used.  But the software that writes these coefficients to the WM ADSP
+driver is very hardware specific anyway, and it presumably already works
+without knowing the returned length value.  So there is no case where
+this patchset _actually_ improves the interface.
 
-> it's not clear to me what cross-platform goals you are hinting at and what
-> the concern is. We can add more framework stuff and make the code more
-> elegant but at the end of the day we will write in a very limited set of
-> registers (2 for audio - on/off and 19.2/25MHz selection) and the use of
-> this functionality is restricted to Baytrail and Cherrytrail.
 
-If code can be compiled on a wide range of platforms then that means
-that it's much easier to get build coverage of the code.  This is
-helpful for anyone doing any kind of cross tree updates - things like
-updating APIs for example.  The fewer configurations they have to touch
-to get everything built the easier it is for them.
-
---ZGiS0Q5IWpPtfppv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXxw8pAAoJECTWi3JdVIfQ00oIAIWAl1ODhtK28ysDr78ek/9M
-CsSNAuuC+EFhJ9w4xbwyZWNMfRl+2WPnjWAyqHnQlrkjt3yDi31mP94FWwNSvEgB
-n65Bia9mSAcuaIXIXUrinBMVz66WheW44yj423lF8ef5QatTVLKOH/gocYQCfZDK
-XzCz7iRw3aM7qViE2CxB/K30jsf6zU0oNjcz4xo3rrQp6q/9QVuNHwGoLd5Yzxyv
-69Ag+hxxIgQtlnSm3IaNtSKw0s7zCMWefZBqywuheuANyGRx+iDvOyugYyjZl24d
-ecK3X2azq60DEOjQSCzuOrDsMD5g/egg2QzCAaoVEbRICUuhGnk8l4O7fTIyMTM=
-=bss6
------END PGP SIGNATURE-----
-
---ZGiS0Q5IWpPtfppv--
+Regards,
+Clemens
