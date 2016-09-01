@@ -1,29 +1,13 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 4/6] ALSA: ad1889: constify snd_pcm_ops
-	structures
-Date: Fri,  2 Sep 2016 00:13:12 +0200
-Message-ID: <1472767994-26269-5-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 5/6] ALSA: oxygen: constify snd_pcm_ops structures
+Date: Fri,  2 Sep 2016 00:13:13 +0200
+Message-ID: <1472767994-26269-6-git-send-email-Julia.Lawall@lip6.fr>
 References: <1472767994-26269-1-git-send-email-Julia.Lawall@lip6.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3-relais-sop.national.inria.fr
- (mail3-relais-sop.national.inria.fr [192.134.164.104])
- by alsa0.perex.cz (Postfix) with ESMTP id AEBB92672B3
- for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2016 00:31:09 +0200 (CEST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1472767994-26269-1-git-send-email-Julia.Lawall@lip6.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Thibaut Varene <T-Bone@parisc-linux.org>
-Cc: alsa-devel@alsa-project.org, linux-parisc@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: kernel-janitors@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 Check for snd_pcm_ops structures that are only stored in the ops field of a
@@ -74,28 +58,64 @@ static
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
- sound/pci/ad1889.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/oxygen/oxygen_pcm.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/pci/ad1889.c b/sound/pci/ad1889.c
-index 1fc6d8b..8c36990 100644
---- a/sound/pci/ad1889.c
-+++ b/sound/pci/ad1889.c
-@@ -571,7 +571,7 @@ snd_ad1889_capture_pointer(struct snd_pcm_substream *ss)
- 	return bytes_to_frames(ss->runtime, ptr);
+diff --git a/sound/pci/oxygen/oxygen_pcm.c b/sound/pci/oxygen/oxygen_pcm.c
+index aa2ebd1..042a243 100644
+--- a/sound/pci/oxygen/oxygen_pcm.c
++++ b/sound/pci/oxygen/oxygen_pcm.c
+@@ -631,7 +631,7 @@ static snd_pcm_uframes_t oxygen_pointer(struct snd_pcm_substream *substream)
+ 	return bytes_to_frames(runtime, curr_addr - (u32)runtime->dma_addr);
  }
  
--static struct snd_pcm_ops snd_ad1889_playback_ops = {
-+static const struct snd_pcm_ops snd_ad1889_playback_ops = {
- 	.open = snd_ad1889_playback_open,
- 	.close = snd_ad1889_playback_close,
- 	.ioctl = snd_pcm_lib_ioctl,
-@@ -582,7 +582,7 @@ static struct snd_pcm_ops snd_ad1889_playback_ops = {
- 	.pointer = snd_ad1889_playback_pointer, 
+-static struct snd_pcm_ops oxygen_rec_a_ops = {
++static const struct snd_pcm_ops oxygen_rec_a_ops = {
+ 	.open      = oxygen_rec_a_open,
+ 	.close     = oxygen_close,
+ 	.ioctl     = snd_pcm_lib_ioctl,
+@@ -642,7 +642,7 @@ static struct snd_pcm_ops oxygen_rec_a_ops = {
+ 	.pointer   = oxygen_pointer,
  };
  
--static struct snd_pcm_ops snd_ad1889_capture_ops = {
-+static const struct snd_pcm_ops snd_ad1889_capture_ops = {
- 	.open = snd_ad1889_capture_open,
- 	.close = snd_ad1889_capture_close,
- 	.ioctl = snd_pcm_lib_ioctl,
+-static struct snd_pcm_ops oxygen_rec_b_ops = {
++static const struct snd_pcm_ops oxygen_rec_b_ops = {
+ 	.open      = oxygen_rec_b_open,
+ 	.close     = oxygen_close,
+ 	.ioctl     = snd_pcm_lib_ioctl,
+@@ -653,7 +653,7 @@ static struct snd_pcm_ops oxygen_rec_b_ops = {
+ 	.pointer   = oxygen_pointer,
+ };
+ 
+-static struct snd_pcm_ops oxygen_rec_c_ops = {
++static const struct snd_pcm_ops oxygen_rec_c_ops = {
+ 	.open      = oxygen_rec_c_open,
+ 	.close     = oxygen_close,
+ 	.ioctl     = snd_pcm_lib_ioctl,
+@@ -664,7 +664,7 @@ static struct snd_pcm_ops oxygen_rec_c_ops = {
+ 	.pointer   = oxygen_pointer,
+ };
+ 
+-static struct snd_pcm_ops oxygen_spdif_ops = {
++static const struct snd_pcm_ops oxygen_spdif_ops = {
+ 	.open      = oxygen_spdif_open,
+ 	.close     = oxygen_close,
+ 	.ioctl     = snd_pcm_lib_ioctl,
+@@ -675,7 +675,7 @@ static struct snd_pcm_ops oxygen_spdif_ops = {
+ 	.pointer   = oxygen_pointer,
+ };
+ 
+-static struct snd_pcm_ops oxygen_multich_ops = {
++static const struct snd_pcm_ops oxygen_multich_ops = {
+ 	.open      = oxygen_multich_open,
+ 	.close     = oxygen_close,
+ 	.ioctl     = snd_pcm_lib_ioctl,
+@@ -686,7 +686,7 @@ static struct snd_pcm_ops oxygen_multich_ops = {
+ 	.pointer   = oxygen_pointer,
+ };
+ 
+-static struct snd_pcm_ops oxygen_ac97_ops = {
++static const struct snd_pcm_ops oxygen_ac97_ops = {
+ 	.open      = oxygen_ac97_open,
+ 	.close     = oxygen_close,
+ 	.ioctl     = snd_pcm_lib_ioctl,
