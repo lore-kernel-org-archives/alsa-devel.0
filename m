@@ -1,62 +1,85 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 0/6] constify snd_pcm_ops structures
-Date: Fri,  2 Sep 2016 00:13:08 +0200
-Message-ID: <1472767994-26269-1-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 1/6] ALSA: cs5535audio: constify snd_pcm_ops structures
+Date: Fri,  2 Sep 2016 00:13:09 +0200
+Message-ID: <1472767994-26269-2-git-send-email-Julia.Lawall@lip6.fr>
+References: <1472767994-26269-1-git-send-email-Julia.Lawall@lip6.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1472767994-26269-1-git-send-email-Julia.Lawall@lip6.fr>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+To: Jaya Kumar <jayakumar.alsa@gmail.com>
+Cc: kernel-janitors@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Constify snd_pcm_ops structures.
+Check for snd_pcm_ops structures that are only stored in the ops field of a
+snd_soc_platform_driver structure or passed as the third argument to
+snd_pcm_set_ops.  The corresponding field or parameter is declared const,
+so snd_pcm_ops structures that have this property can be declared as const
+also.
+
+The semantic patch that makes this change is as follows:
+(http://coccinelle.lip6.fr/)
+
+// <smpl>
+@r disable optional_qualifier@
+identifier i;
+position p;
+@@
+static struct snd_pcm_ops i@p = { ... };
+
+@ok1@
+identifier r.i;
+struct snd_soc_platform_driver e;
+position p;
+@@
+e.ops = &i@p;
+
+@ok2@
+identifier r.i;
+expression e1, e2;
+position p;
+@@
+snd_pcm_set_ops(e1, e2, &i@p)
+
+@bad@
+position p != {r.p,ok1.p,ok2.p};
+identifier r.i;
+struct snd_pcm_ops e;
+@@
+e@i@p
+
+@depends on !bad disable optional_qualifier@
+identifier r.i;
+@@
+static
++const
+ struct snd_pcm_ops i = { ... };
+// </smpl>
+
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
-
- sound/firewire/dice/dice-pcm.c          |    4 ++--
- sound/firewire/digi00x/digi00x-pcm.c    |    4 ++--
- sound/firewire/oxfw/oxfw-pcm.c          |    4 ++--
- sound/firewire/tascam/tascam-pcm.c      |    4 ++--
- sound/pci/ad1889.c                      |    4 ++--
- sound/pci/als300.c                      |    4 ++--
- sound/pci/als4000.c                     |    4 ++--
- sound/pci/asihpi/asihpi.c               |    4 ++--
- sound/pci/atiixp.c                      |    6 +++---
- sound/pci/atiixp_modem.c                |    4 ++--
- sound/pci/aw2/aw2-alsa.c                |    4 ++--
- sound/pci/azt3328.c                     |    6 +++---
- sound/pci/bt87x.c                       |    2 +-
- sound/pci/ca0106/ca0106_main.c          |   16 ++++++++--------
- sound/pci/cmipci.c                      |   10 +++++-----
- sound/pci/cs4281.c                      |    4 ++--
  sound/pci/cs5535audio/cs5535audio_pcm.c |    4 ++--
- sound/pci/ctxfi/ctpcm.c                 |    4 ++--
- sound/pci/emu10k1/emu10k1x.c            |    4 ++--
- sound/pci/emu10k1/emupcm.c              |   12 ++++++------
- sound/pci/emu10k1/p16v.c                |    4 ++--
- sound/pci/ens1370.c                     |    6 +++---
- sound/pci/es1938.c                      |    4 ++--
- sound/pci/es1968.c                      |    4 ++--
- sound/pci/fm801.c                       |    4 ++--
- sound/pci/hda/hda_controller.c          |    2 +-
- sound/pci/ice1712/ice1712.c             |   10 +++++-----
- sound/pci/ice1712/ice1724.c             |   10 +++++-----
- sound/pci/korg1212/korg1212.c           |    4 ++--
- sound/pci/lola/lola_pcm.c               |    2 +-
- sound/pci/lx6464es/lx6464es.c           |    4 ++--
- sound/pci/maestro3.c                    |    4 ++--
- sound/pci/mixart/mixart.c               |    4 ++--
- sound/pci/nm256/nm256.c                 |    4 ++--
- sound/pci/oxygen/oxygen_pcm.c           |   12 ++++++------
- sound/pci/pcxhr/pcxhr.c                 |    2 +-
- sound/pci/riptide/riptide.c             |    4 ++--
- sound/pci/rme32.c                       |   16 ++++++++--------
- sound/pci/rme96.c                       |    8 ++++----
- sound/pci/rme9652/hdsp.c                |    4 ++--
- sound/pci/rme9652/hdspm.c               |    2 +-
- sound/pci/rme9652/rme9652.c             |    4 ++--
- sound/pci/sonicvibes.c                  |    4 ++--
- sound/pci/trident/trident_main.c        |   12 ++++++------
- sound/pci/via82xx.c                     |   10 +++++-----
- sound/pci/via82xx_modem.c               |    4 ++--
- sound/pci/ymfpci/ymfpci_main.c          |   10 +++++-----
- 47 files changed, 133 insertions(+), 133 deletions(-)
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/cs5535audio/cs5535audio_pcm.c b/sound/pci/cs5535audio/cs5535audio_pcm.c
+index 27fa57d..c208c1d 100644
+--- a/sound/pci/cs5535audio/cs5535audio_pcm.c
++++ b/sound/pci/cs5535audio/cs5535audio_pcm.c
+@@ -380,7 +380,7 @@ static int snd_cs5535audio_capture_prepare(struct snd_pcm_substream *substream)
+ 				 substream->runtime->rate);
+ }
+ 
+-static struct snd_pcm_ops snd_cs5535audio_playback_ops = {
++static const struct snd_pcm_ops snd_cs5535audio_playback_ops = {
+ 	.open =		snd_cs5535audio_playback_open,
+ 	.close =	snd_cs5535audio_playback_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+@@ -391,7 +391,7 @@ static struct snd_pcm_ops snd_cs5535audio_playback_ops = {
+ 	.pointer =	snd_cs5535audio_pcm_pointer,
+ };
+ 
+-static struct snd_pcm_ops snd_cs5535audio_capture_ops = {
++static const struct snd_pcm_ops snd_cs5535audio_capture_ops = {
+ 	.open =		snd_cs5535audio_capture_open,
+ 	.close =	snd_cs5535audio_capture_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
