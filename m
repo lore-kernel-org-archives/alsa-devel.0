@@ -1,8 +1,8 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 3/6] ALSA: firewire: constify snd_pcm_ops
+Subject: [PATCH 4/6] ALSA: ad1889: constify snd_pcm_ops
 	structures
-Date: Fri,  2 Sep 2016 00:13:11 +0200
-Message-ID: <1472767994-26269-4-git-send-email-Julia.Lawall@lip6.fr>
+Date: Fri,  2 Sep 2016 00:13:12 +0200
+Message-ID: <1472767994-26269-5-git-send-email-Julia.Lawall@lip6.fr>
 References: <1472767994-26269-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail3-relais-sop.national.inria.fr
  (mail3-relais-sop.national.inria.fr [192.134.164.104])
- by alsa0.perex.cz (Postfix) with ESMTP id 846C3267299
+ by alsa0.perex.cz (Postfix) with ESMTP id AEBB92672B3
  for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2016 00:31:09 +0200 (CEST)
 In-Reply-To: <1472767994-26269-1-git-send-email-Julia.Lawall@lip6.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,8 +22,8 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+To: Thibaut Varene <T-Bone@parisc-linux.org>
+Cc: alsa-devel@alsa-project.org, linux-parisc@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 Check for snd_pcm_ops structures that are only stored in the ops field of a
@@ -74,97 +74,28 @@ static
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
- sound/firewire/dice/dice-pcm.c       |    4 ++--
- sound/firewire/digi00x/digi00x-pcm.c |    4 ++--
- sound/firewire/oxfw/oxfw-pcm.c       |    4 ++--
- sound/firewire/tascam/tascam-pcm.c   |    4 ++--
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ sound/pci/ad1889.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
-index 4aa0249..6074fe1 100644
---- a/sound/firewire/dice/dice-pcm.c
-+++ b/sound/firewire/dice/dice-pcm.c
-@@ -302,7 +302,7 @@ static snd_pcm_uframes_t playback_pointer(struct snd_pcm_substream *substream)
- 
- int snd_dice_create_pcm(struct snd_dice *dice)
- {
--	static struct snd_pcm_ops capture_ops = {
-+	static const struct snd_pcm_ops capture_ops = {
- 		.open      = pcm_open,
- 		.close     = pcm_close,
- 		.ioctl     = snd_pcm_lib_ioctl,
-@@ -314,7 +314,7 @@ int snd_dice_create_pcm(struct snd_dice *dice)
- 		.page      = snd_pcm_lib_get_vmalloc_page,
- 		.mmap      = snd_pcm_lib_mmap_vmalloc,
- 	};
--	static struct snd_pcm_ops playback_ops = {
-+	static const struct snd_pcm_ops playback_ops = {
- 		.open      = pcm_open,
- 		.close     = pcm_close,
- 		.ioctl     = snd_pcm_lib_ioctl,
-diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
-index cac28f7..613f058 100644
---- a/sound/firewire/digi00x/digi00x-pcm.c
-+++ b/sound/firewire/digi00x/digi00x-pcm.c
-@@ -329,7 +329,7 @@ static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
- 	return amdtp_stream_pcm_pointer(&dg00x->rx_stream);
+diff --git a/sound/pci/ad1889.c b/sound/pci/ad1889.c
+index 1fc6d8b..8c36990 100644
+--- a/sound/pci/ad1889.c
++++ b/sound/pci/ad1889.c
+@@ -571,7 +571,7 @@ snd_ad1889_capture_pointer(struct snd_pcm_substream *ss)
+ 	return bytes_to_frames(ss->runtime, ptr);
  }
  
--static struct snd_pcm_ops pcm_capture_ops = {
-+static const struct snd_pcm_ops pcm_capture_ops = {
- 	.open		= pcm_open,
- 	.close		= pcm_close,
- 	.ioctl		= snd_pcm_lib_ioctl,
-@@ -341,7 +341,7 @@ static struct snd_pcm_ops pcm_capture_ops = {
- 	.page		= snd_pcm_lib_get_vmalloc_page,
+-static struct snd_pcm_ops snd_ad1889_playback_ops = {
++static const struct snd_pcm_ops snd_ad1889_playback_ops = {
+ 	.open = snd_ad1889_playback_open,
+ 	.close = snd_ad1889_playback_close,
+ 	.ioctl = snd_pcm_lib_ioctl,
+@@ -582,7 +582,7 @@ static struct snd_pcm_ops snd_ad1889_playback_ops = {
+ 	.pointer = snd_ad1889_playback_pointer, 
  };
  
--static struct snd_pcm_ops pcm_playback_ops = {
-+static const struct snd_pcm_ops pcm_playback_ops = {
- 	.open		= pcm_open,
- 	.close		= pcm_close,
- 	.ioctl		= snd_pcm_lib_ioctl,
-diff --git a/sound/firewire/oxfw/oxfw-pcm.c b/sound/firewire/oxfw/oxfw-pcm.c
-index 8d23341..f3530f8 100644
---- a/sound/firewire/oxfw/oxfw-pcm.c
-+++ b/sound/firewire/oxfw/oxfw-pcm.c
-@@ -388,7 +388,7 @@ static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstm)
- 
- int snd_oxfw_create_pcm(struct snd_oxfw *oxfw)
- {
--	static struct snd_pcm_ops capture_ops = {
-+	static const struct snd_pcm_ops capture_ops = {
- 		.open      = pcm_open,
- 		.close     = pcm_close,
- 		.ioctl     = snd_pcm_lib_ioctl,
-@@ -400,7 +400,7 @@ int snd_oxfw_create_pcm(struct snd_oxfw *oxfw)
- 		.page      = snd_pcm_lib_get_vmalloc_page,
- 		.mmap      = snd_pcm_lib_mmap_vmalloc,
- 	};
--	static struct snd_pcm_ops playback_ops = {
-+	static const struct snd_pcm_ops playback_ops = {
- 		.open      = pcm_open,
- 		.close     = pcm_close,
- 		.ioctl     = snd_pcm_lib_ioctl,
-diff --git a/sound/firewire/tascam/tascam-pcm.c b/sound/firewire/tascam/tascam-pcm.c
-index 380d3db..79db1b6 100644
---- a/sound/firewire/tascam/tascam-pcm.c
-+++ b/sound/firewire/tascam/tascam-pcm.c
-@@ -268,7 +268,7 @@ static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
- 	return amdtp_stream_pcm_pointer(&tscm->rx_stream);
- }
- 
--static struct snd_pcm_ops pcm_capture_ops = {
-+static const struct snd_pcm_ops pcm_capture_ops = {
- 	.open		= pcm_open,
- 	.close		= pcm_close,
- 	.ioctl		= snd_pcm_lib_ioctl,
-@@ -280,7 +280,7 @@ static struct snd_pcm_ops pcm_capture_ops = {
- 	.page		= snd_pcm_lib_get_vmalloc_page,
- };
- 
--static struct snd_pcm_ops pcm_playback_ops = {
-+static const struct snd_pcm_ops pcm_playback_ops = {
- 	.open		= pcm_open,
- 	.close		= pcm_close,
- 	.ioctl		= snd_pcm_lib_ioctl,
+-static struct snd_pcm_ops snd_ad1889_capture_ops = {
++static const struct snd_pcm_ops snd_ad1889_capture_ops = {
+ 	.open = snd_ad1889_capture_open,
+ 	.close = snd_ad1889_capture_close,
+ 	.ioctl = snd_pcm_lib_ioctl,
