@@ -1,66 +1,94 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: Re: [PATCH v9 1/2] ASoC: sun4i-codec: Distinguish
- sun4i from sun7i
-Date: Thu, 1 Sep 2016 18:45:01 +0200
-Message-ID: <20160901164501.GE20462@lukather>
-References: <20160830054403.7878-1-dannym@scratchpost.org>
- <20160830054403.7878-2-dannym@scratchpost.org>
- <20160831174623.GA20462@lukather>
- <20160831221402.670ab832@scratchpost.org>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
+ McBSP to prevent glitches
+Date: Thu, 1 Sep 2016 07:50:07 -0700
+Message-ID: <20160901145006.xr3ux63cg6f5bh7p@atomide.com>
+References: <20160829182746.53vrgbxadqodzzug@atomide.com>
+ <925ded57-1e91-3db6-9e82-3a3ff5775412@ti.com>
+ <20160831141340.h24szdqjnicmt2ew@atomide.com>
+ <20160831165959.3sldcjxaci3kdx6z@atomide.com>
+ <eef88aa4-b829-1889-f083-eb0359c0dac6@ti.com>
+ <20160831194107.wijnbmdns2jjvzkv@atomide.com>
+ <5af44090-6902-2ade-be78-378843757a0a@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ryJZkp9/svQ58syV"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBDVWUG7AKGQER4PRCAY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from muru.com (muru.com [72.249.23.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id E030626734D
+ for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2016 16:50:15 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20160831221402.670ab832-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <5af44090-6902-2ade-be78-378843757a0a@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Pavel Machel <pavel@ucw.cz>, Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [160831 23:58]:
+> What is the audio format you are using? sampling rate and how many channels?
+> cat /proc/asound/card0/pcm0p/sub0/hw_params
 
---ryJZkp9/svQ58syV
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
+Just 44.1 stereo mp3 or wav files.
 
-Hi Danny,
+> What happens if you set the FIFO to 256? Do you still need the 30ms or it can
+> be higher, like 60ms?
 
-On Wed, Aug 31, 2016 at 10:14:02PM +0200, Danny Milosavljevic wrote:
-> Hi Maxime,
+No this is not related to the FIFO size. We just need to block off idle mode
+for cpuidle as the McBSP hardware is not blocking it.
+
+> When the FIFO is set to 128, it means that after the initial FIFO fill we will
+> have DMA request coming from McBSP to sDMA with a rate of:
 > 
-> On Wed, 31 Aug 2016 19:46:23 +0200
-> Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+> (1000/sampling_rate) * (FIFO-threshold / channels) = DMA_req_distance_in_ms
 > 
-> > > -#define SUN4I_CODEC_AC_SYS_VERI			(0x38)
-> > > -#define SUN4I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
-> > > +
-> > > +#define SUN7I_CODEC_AC_DAC_CAL			(0x38)
-> > > +#define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)  
-> > 
-> > That will need at least some mention in the commit log.
+> So in case of 44.1KHz, stereo with 128 FIFO threshold DMA request will come at
+> every 1.45ms. If I'm not mistaken. The whole FIFO (1280) holds 14.51ms of
+> audio in this case.
 > 
-> Hm? It's now called like it is called in the user manual.
-> Also, the macro SUN4I_CODEC_AC_SYS_VERI was unused before anyway.
-> 
-> What should I write in the commit log?
+> I don't see this correlate with the 30ms at all.
 
-For example, that the current code was wrong and those registers are
-not present on the A10.
+It seems we easily have a situation where DMA is done buffering to McBSP,
+and PMIC is playing audio, and we hit idle. At that point there are no immediate
+timers pending and cpuidle determines we can try to hit a deeper idle mode. As
+there are no hardware blockers with DMA off and McBSP not blocking, the hardware
+hits off mode. This cuts power to McBSP.
 
-That way, you justify both the renaming, and the max_register change
-in the regmap.
+Ideally we'd configure McBSP activity to block deeper idle states in the
+hardware but I don't think we have such a configuration available.
 
-Maxime
+So we just want to tell pm_qos that McBSP can't take any idle states shorter
+than 30 ms to prevent cutting off power fro the whole SoC.
 
--- 
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
---ryJZkp9/svQ58syV--
+> Do you see anything in the kernel log? If McBSP is not powered and DMA tries
+> to write data we should see l3 error at least. If the reason is that the
+> system is not able to wake up fast enough to react to the DMA request from
+> McBSP, then we should see FIFO underrun from McBSP (this patch will show them:
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111671.html)
+
+No, nothing as both McBSP and DMA are powered off :) Coming back from
+idle, from McBSP and DMA point of view things appear as if nothing happened.
+I think we're still missing the save and restore of the McBSP state, but
+that's a different story and does not help with the fact that we allow
+cutting off the power to McBSP during playback.
+
+With Linux next with the patch above, I do see occasional interrupts
+for "omap-mcbsp 49022000.mcbsp: TX Buffer Overflow!" but those seem
+to also happen if I keep the system busy and I don't hear any dropped
+samples.
+
+> Have you tried with different sampling rates? That would have similar effect
+> as changing the FIFO threshold for the DMA request periods.
+
+Not very much, but this seems more like a SoC specific issue.
+
+Regards,
+
+Tony
