@@ -1,81 +1,57 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: constify snd_soc_codec_driver
-	structures
-Date: Thu, 1 Sep 2016 10:45:41 +0100
-Message-ID: <20160901094541.GD21682@localhost.localdomain>
-References: <1472680347-19575-1-git-send-email-Julia.Lawall@lip6.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 493AE266704
- for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2016 11:45:34 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1472680347-19575-1-git-send-email-Julia.Lawall@lip6.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ALSA: cs46xx: fix typo "seconadry" -> "secondary"
+Date: Thu,  1 Sep 2016 11:15:44 +0100
+Message-ID: <20160901101544.24833-1-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ondrej Zary <linux@rainbow-software.org>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 31, 2016 at 11:52:27PM +0200, Julia Lawall wrote:
-> Check for snd_soc_codec_driver structures that are only passed to
-> snd_soc_register_codec or memcpy (2nd arg), for which the corresponding
-> parameters are declared const.  Declare as const snd_soc_codec_driver
-> structures that have these properties.
-> 
-> The semantic patch that makes this change is as follows:
-> (http://coccinelle.lip6.fr/)
-> 
-> // <smpl>
-> @r disable optional_qualifier@
-> identifier i;
-> position p;
-> @@
-> static struct snd_soc_codec_driver i@p = { ... };
-> 
-> @ok@
-> identifier r.i;
-> expression e1,e2,e3;
-> position p;
-> @@
-> (
-> snd_soc_register_codec(e1,&i@p,e2,e3)
-> |
-> memcpy(e1,&i@p,e2)
-> )
-> 
-> @bad@
-> position p != {r.p,ok.p};
-> identifier r.i;
-> @@
-> i@p
-> 
-> @depends on !bad disable optional_qualifier@
-> identifier r.i;
-> @@
-> static
-> +const
->  struct snd_soc_codec_driver i = { ... };
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-> 
-> ---
+From: Colin Ian King <colin.king@canonical.com>
 
-I haven't looked at every single case individually, but the ones
-I have looked at look fine.
+Trivial fix to typos dev_dbg messages and comment.
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/pci/cs46xx/cs46xx_lib.c | 4 ++--
+ sound/pci/cs46xx/dsp_spos.c   | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Thanks,
-Charles
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+index 2706f27..528102cc 100644
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -2460,7 +2460,7 @@ static int cs46xx_detect_codec(struct snd_cs46xx *chip, int codec)
+ 		udelay(10);
+ 		if (snd_cs46xx_codec_read(chip, AC97_RESET, codec) & 0x8000) {
+ 			dev_dbg(chip->card->dev,
+-				"seconadry codec not present\n");
++				"secondary codec not present\n");
+ 			return -ENXIO;
+ 		}
+ 	}
+@@ -2503,7 +2503,7 @@ int snd_cs46xx_mixer(struct snd_cs46xx *chip, int spdif_device)
+ 	chip->nr_ac97_codecs = 1;
+ 
+ #ifdef CONFIG_SND_CS46XX_NEW_DSP
+-	dev_dbg(chip->card->dev, "detecting seconadry codec\n");
++	dev_dbg(chip->card->dev, "detecting secondary codec\n");
+ 	/* try detect a secondary codec */
+ 	if (! cs46xx_detect_codec(chip, CS46XX_SECONDARY_CODEC_INDEX))
+ 		chip->nr_ac97_codecs = 2;
+diff --git a/sound/pci/cs46xx/dsp_spos.c b/sound/pci/cs46xx/dsp_spos.c
+index d2951ed..4a0cbd2 100644
+--- a/sound/pci/cs46xx/dsp_spos.c
++++ b/sound/pci/cs46xx/dsp_spos.c
+@@ -1441,7 +1441,7 @@ int cs46xx_dsp_scb_and_task_init (struct snd_cs46xx *chip)
+ 	
+ 	if (chip->nr_ac97_codecs == 2) {
+ 		/* create CODEC tasklet for rear Center/LFE output 
+-		   slot 6 and 9 on seconadry CODEC */
++		   slot 6 and 9 on secondary CODEC */
+ 		clfe_codec_out_scb = cs46xx_dsp_create_codec_out_scb(chip,"CodecOutSCB_CLFE",0x0030,0x0030,
+ 								     CLFE_MIXER_SCB_ADDR,
+ 								     CLFE_CODEC_SCB_ADDR,
+-- 
+2.9.3
