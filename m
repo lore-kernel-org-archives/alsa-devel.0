@@ -1,45 +1,69 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [PATCH] clk: x86: Add Atom PMC platform clocks
-Date: Wed, 31 Aug 2016 15:34:11 -0700
-Message-ID: <20160831223407.GJ12510@codeaurora.org>
-References: <1471459276-11517-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <20160831003722.GH12510@codeaurora.org>
- <7c15a844-1351-f1ac-2ad0-3c41455fcc2e@linux.intel.com>
+From: lin-alsa@noblejury.com
+Subject: Re: CIP Discontinuity with snd-firewire-digi00x
+Date: Wed, 31 Aug 2016 19:52:24 -0500 (EST)
+Message-ID: <alpine.LNX.2.20.1608311949210.31059@localhost.localdomain>
+References: <alpine.LNX.2.20.1606041726460.13950@anticlack.com>
+ <57535D26.2080105@sakamocchi.jp>
+ <alpine.LNX.2.20.1606041805260.17774@anticlack.com>
+ <5753736F.6010902@sakamocchi.jp>
+ <alpine.LNX.2.20.1606050916120.23467@anticlack.com>
+ <5754AD09.3080807@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <7c15a844-1351-f1ac-2ad0-3c41455fcc2e@linux.intel.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: linux-clk@vger.kernel.org, mturquette@baylibre.com, alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, irina.tirdea@intel.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from noblejury.com (noblejury.com [45.33.77.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D02F267411
+ for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2016 02:52:39 +0200 (CEST)
+In-Reply-To: <5754AD09.3080807@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: lin-alsa@noblejury.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/30, Pierre-Louis Bossart wrote:
-> On 8/30/16 7:37 PM, Stephen Boyd wrote:
-> >On 08/17, Pierre-Louis Bossart wrote:
-> >>@@ -414,6 +456,13 @@ static int pmc_setup_dev(struct pci_dev *pdev, const struct pci_device_id *ent)
-> >> 	if (ret)
-> >> 		dev_warn(&pdev->dev, "debugfs register failed\n");
-> >>
-> >>+	/* Register platform clocks - PMC_PLT_CLK [5:0] */
-> >>+	clkdev = platform_device_register_data(NULL, "clk-byt-plt", -1,
-> >>+					       &clks, sizeof(clks));
-> >
-> >Shouldn't we register the clk device as a child of the
-> >registering device? Otherwise it's just floating in the device
-> >hierarchy?
-> 
-> from a hardware perspective these clocks are pretty much stand-alone
-> and independent, there is no real parent/child dependency I can
-> think of and having this as 'floating' isn't very far from reality.
+TZAG,
 
-Hmm... what about things like suspend/resume? Presumably we would
-want the clk device that's touching the pmc register space to be
-suspended before we suspend pmc itself? Not having a parent would
-mean it's a virtual device which doesn't seem correct. It's a
-logical device that is related to the pmc device.
+This issue went away for a while, sorry for the radio silence. I'm now 
+running 4.4.17-rt25-1-rt-lts. I believe that the relevant driver was 
+merged into mainline since then. I've had a little more time to do some 
+debugging, and I've discovered that the mixer connected light goes on
+and off a few times before turning off and requiring a hard reboot.
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Best,
+
+Lin
+
+On Mon, 6 Jun 2016, Takashi Sakamoto wrote:
+
+> Hi,
+>
+> On Jun 5 2016 23:22, lin-alsa@noblejury.com wrote:
+>>  I know I compiled it from your git repo at one point in the past, and I
+>>  think that is the version being used (I'm on a lts kernel).
+>
+> OK. We should check the point in the past.
+>
+> Please get git-hash of HEAD in your local repository duplicated from my 
+> remote repository, like:
+> $ cd your-local-repository
+> $ git show HEAD
+> $ commit xxxx....
+>
+> As a next step, I'd like to update your build so that we can use the new 
+> feature (tracepoints) recently added to snd-firewire-lib in Linux 4.7-rc1. I 
+> maintain my remote repository for backporting to Linux 3.10 or later and you 
+> could install the latest feature in your 3.18 kernel.
+>
+>
+> Regards
+>
+> Takashi Sakamoto
+>
