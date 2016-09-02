@@ -1,29 +1,30 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH 0/6] constify snd_pcm_ops structures
-Date: Fri, 2 Sep 2016 11:05:14 +0100 (IST)
-Message-ID: <alpine.DEB.2.10.1609021104390.3052@hadrien>
-References: <1472767994-26269-1-git-send-email-Julia.Lawall@lip6.fr> <s5heg52oc8j.wl-tiwai@suse.de>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [alsa-devel] [PATCH v5 2/2] ASoC: samsung: Add machine driver for
+ Exynos5433 based TM2 board
+Date: Fri, 02 Sep 2016 12:49:51 +0200
+Message-ID: <2f5ac8bf-34da-7ce7-931c-86a8dad61dfc@samsung.com>
+References: <1470752514-11409-1-git-send-email-s.nawrocki@samsung.com>
+ <1470752514-11409-2-git-send-email-s.nawrocki@samsung.com>
+ <20160829150251.GU21682@localhost.localdomain>
+ <65238f9c-bed0-7ad5-1961-fa2ff3848782@samsung.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <s5heg52oc8j.wl-tiwai@suse.de>
-Sender: linux-parisc-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <65238f9c-bed0-7ad5-1961-fa2ff3848782@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, k.kozlowski@samsung.com, broonie@kernel.org, Inha Song <ideal.song@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 08/30/2016 04:57 PM, Sylwester Nawrocki wrote:
+> I will use prepare/complete as with late_suspend/early_resume power
+> sequences are wrong as you point out. I still need to debug why
+> there is no errors reported when the SPI controller is suspended
+> while there are supposed to be done SPI bus transfers.
 
-
-On Fri, 2 Sep 2016, Takashi Iwai wrote:
-
-> On Fri, 02 Sep 2016 00:13:08 +0200,
-> Julia Lawall wrote:
-> >
-> > Constify snd_pcm_ops structures.
->
-> Applied all six patches now.  Thanks.
-
-Thanks.  There are a bunch more for this type, for other directories.  I
-will send them shortly.
-
-julia
+As it turns out the reason there is no any errors with late_suspend/
+early_resume is that the CODEC sets its regmap's "cache only" only flag
+in its suspend() callback and then clears it in resume().  So any SPI
+transfers which might happen when SPI controller is suspended
+are prevented this way.
