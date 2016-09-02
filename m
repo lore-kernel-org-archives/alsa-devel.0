@@ -1,71 +1,99 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/6] ASoC: arizona: Avoid changing SYNC_ENA whilst the FLL_ENA is set
-Date: Fri, 2 Sep 2016 16:52:45 +0100
-Message-ID: <1472831568-466-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1472831568-466-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH v2 00/11] ASoC: hdac: Add hdac generic driver
+Date: Fri,  2 Sep 2016 16:34:49 +0530
+Message-ID: <1472814300-5629-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1472831568-466-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lee.jones@linaro.org, broonie@kernel.org
-Cc: lgirdwood@gmail.com, s.nawrocki@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4009F267790
+ for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2016 13:10:40 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-For best performance changing the synchroniser state whilst the FLL is
-running should be avoided. As this has been done fairly regularly in
-practice rather than hard preventing this, simply improve the FLL enable
-sequence and give a warning if the user changes the synchroniser state.
+HDA devices generically can be modelled with DAPM in ASoC.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+We would like to create a framework for the HDA devices in ASoC.
+This will follow HDA standard. This will be registered as generic
+"virtual" class device (Not implemented in this series).  If
+there is no match found for vendor id and device id, then the
+class driver will be loaded.  For vendor specific devices, vendor
+quirks will be loaded based on the match.  Additional widgets,
+controls and route will be created in a vendor specific way
+through vendor ops.
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 463979f4..be24387 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -2209,12 +2209,15 @@ static int arizona_enable_fll(struct arizona_fll *fll)
- 	struct arizona *arizona = fll->arizona;
- 	bool use_sync = false;
- 	int already_enabled = arizona_is_enabled_fll(fll, fll->base);
-+	int sync_enabled = arizona_is_enabled_fll(fll, fll->base + 0x10);
- 	struct arizona_fll_cfg cfg;
- 	int i;
- 	unsigned int val;
- 
- 	if (already_enabled < 0)
- 		return already_enabled;
-+	if (sync_enabled < 0)
-+		return sync_enabled;
- 
- 	if (already_enabled) {
- 		/* Facilitate smooth refclk across the transition */
-@@ -2259,6 +2262,9 @@ static int arizona_enable_fll(struct arizona_fll *fll)
- 		return -EINVAL;
- 	}
- 
-+	if (already_enabled && !!sync_enabled != use_sync)
-+		arizona_fll_warn(fll, "Synchroniser changed on active FLL\n");
-+
- 	/*
- 	 * Increase the bandwidth if we're not using a low frequency
- 	 * sync source.
-@@ -2274,12 +2280,12 @@ static int arizona_enable_fll(struct arizona_fll *fll)
- 	if (!already_enabled)
- 		pm_runtime_get_sync(arizona->dev);
- 
--	regmap_update_bits_async(arizona->regmap, fll->base + 1,
--				 ARIZONA_FLL1_ENA, ARIZONA_FLL1_ENA);
- 	if (use_sync)
- 		regmap_update_bits_async(arizona->regmap, fll->base + 0x11,
- 					 ARIZONA_FLL1_SYNC_ENA,
- 					 ARIZONA_FLL1_SYNC_ENA);
-+	regmap_update_bits_async(arizona->regmap, fll->base + 1,
-+				 ARIZONA_FLL1_ENA, ARIZONA_FLL1_ENA);
- 
- 	if (already_enabled)
- 		regmap_update_bits_async(arizona->regmap, fll->base + 1,
+This series adds a framework in ASoC to model HDA codecs. HDA
+widgets are enumerated and one or multiple DAPM widget(s) are
+created. Connection list is queried for each widget to identify
+the connection between two endpoints and modelled using DAPM
+graph.
+
+Set of event handlers are defined for each widget type. Based on
+DAPM events required verbs are sent to program codec.
+
+Finally a function is exported to query for the device endpoint
+configuration to create machine controls.
+
+Features yet to be added:
+	- Optional features of widgets will be added using
+	  additional dapm widgets or controls
+	- Pin retasking will be done by adding all possible dapm
+	  route map
+	- Class driver to load the generic driver if no match found
+	- Jack detection
+
+changes in v2:
+	- Addressed review comment from Takashi
+	- Moved the widget_list to hdac_ext_device
+	- helper to fill the widget list is now called from
+	  hdac_ext_bus_device_init instead of driver probe
+	- Fixed a NULL pointer dereferencing issue
+	- Reorder patch to fix 'auto build test error'
+	- Playback with hs/spk and amic capture now working for rt286
+	- And some more cleanup and code refactoring to avoid long function
+	  definition
+
+Subhransu S. Prusty (11):
+  ALSA: hdac: Add codec helper library
+  ALSA: hda - Add macro to test pin widget's input capability
+  ASoC: hdac: Add a generic hdac driver framework
+  ALSA: hdac: Move 'to_hda_ext_device' helper to core
+  ASoC: hdac: Create DAPM model for HDA widgets
+  ASoC: hdac: Build DAPM graph by querying through widget connection
+    list
+  ASoC: hdac: Register widget event handlers
+  ALSA: hda - macro to get default config device of pin widgets
+  ASoC: hdac: Export API to create machine controls
+  ALSA: hdac: Implement a match function
+  ASoC: hdac: Add coefficient init callback for RT286
+
+ include/sound/hdaudio_ext.h     |   40 +
+ sound/hda/ext/Makefile          |    3 +-
+ sound/hda/ext/hdac_ext_bus.c    |   24 +
+ sound/hda/ext/hdac_ext_codec.c  |  156 ++++
+ sound/hda/ext/hdac_ext_codec.h  |   26 +
+ sound/hda/local.h               |   13 +
+ sound/soc/codecs/Kconfig        |    5 +
+ sound/soc/codecs/Makefile       |    2 +
+ sound/soc/codecs/hdac_generic.c | 1743 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/hdac_generic.h |   36 +
+ sound/soc/codecs/hdac_hdmi.c    |    8 +-
+ 11 files changed, 2048 insertions(+), 8 deletions(-)
+ create mode 100644 sound/hda/ext/hdac_ext_codec.c
+ create mode 100644 sound/hda/ext/hdac_ext_codec.h
+ create mode 100644 sound/soc/codecs/hdac_generic.c
+ create mode 100644 sound/soc/codecs/hdac_generic.h
+
 -- 
-2.1.4
+1.9.1
