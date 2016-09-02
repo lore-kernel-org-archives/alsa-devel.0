@@ -1,7 +1,7 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 5/6] ASoC: arizona: Add gating for clock when used for direct MCLK
-Date: Fri, 2 Sep 2016 16:52:47 +0100
-Message-ID: <1472831568-466-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/6] mfd: arizona: Add gating of external MCLKn clocks
+Date: Fri, 2 Sep 2016 16:52:46 +0100
+Message-ID: <1472831568-466-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1472831568-466-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,206 +12,132 @@ To: lee.jones@linaro.org, broonie@kernel.org
 Cc: lgirdwood@gmail.com, s.nawrocki@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Whilst ultimately we would like to move all the clocking over to the
-clock framework, as an intermediate step to get people going for now
-gating the source clocks for SYSCLK/ASYNCCLK when they are configured
-to come directly from an MCLK pin.
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
+This patch adds requesting of the clocks supplied on MCLK1, MCLK2 pins,
+gating of the 32k clock is added to the arizona_clk32k_enable(),
+arizona_clk32k_disable() helpers.
+
+It's a temporary change until the CODEC's clock controller gets exposed
+through the clk API and is helpful for board configurations where the
+MCLK clocks are not provided by always on oscillators.
+
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/arizona.c | 40 ++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/arizona.h |  2 ++
- sound/soc/codecs/cs47l24.c |  6 ++++--
- sound/soc/codecs/wm5102.c  |  9 +++++++--
- sound/soc/codecs/wm5110.c  | 10 +++++++---
- sound/soc/codecs/wm8997.c  |  9 +++++++--
- sound/soc/codecs/wm8998.c  |  6 ++++--
- 7 files changed, 71 insertions(+), 11 deletions(-)
+ drivers/mfd/arizona-core.c       | 30 ++++++++++++++++++++++++++++--
+ include/linux/mfd/arizona/core.h |  9 +++++++++
+ 2 files changed, 37 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index be24387..2a019e9 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1195,6 +1195,46 @@ static int arizona_set_opclk(struct snd_soc_codec *codec, unsigned int clk,
- 	return -EINVAL;
- }
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index e4f97b3..4fa0fae 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -10,6 +10,7 @@
+  * published by the Free Software Foundation.
+  */
  
-+int arizona_clk_ev(struct snd_soc_dapm_widget *w,
-+		   struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
-+	unsigned int val;
-+	int clk_idx;
-+	int ret;
-+
-+	ret = regmap_read(arizona->regmap, w->reg, &val);
-+	if (ret) {
-+		dev_err(codec->dev, "Failed to check clock source: %d\n", ret);
-+		return ret;
-+	}
-+
-+	val = (val & ARIZONA_SYSCLK_SRC_MASK) >> ARIZONA_SYSCLK_SRC_SHIFT;
-+
-+	switch (val) {
-+	case ARIZONA_CLK_SRC_MCLK1:
-+		clk_idx = ARIZONA_MCLK1;
-+		break;
-+	case ARIZONA_CLK_SRC_MCLK2:
-+		clk_idx = ARIZONA_MCLK2;
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		return clk_prepare_enable(arizona->mclk[clk_idx]);
-+	case SND_SOC_DAPM_POST_PMD:
-+		clk_disable_unprepare(arizona->mclk[clk_idx]);
-+		return 0;
-+	default:
-+		return 0;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(arizona_clk_ev);
-+
- int arizona_set_sysclk(struct snd_soc_codec *codec, int clk_id,
- 		       int source, unsigned int freq, int dir)
++#include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/err.h>
+ #include <linux/gpio.h>
+@@ -49,7 +50,15 @@ int arizona_clk32k_enable(struct arizona *arizona)
+ 		case ARIZONA_32KZ_MCLK1:
+ 			ret = pm_runtime_get_sync(arizona->dev);
+ 			if (ret != 0)
+-				goto out;
++				goto err_ref;
++			ret = clk_prepare_enable(arizona->mclk[ARIZONA_MCLK1]);
++			if (ret != 0)
++				goto err_pm;
++			break;
++		case ARIZONA_32KZ_MCLK2:
++			ret = clk_prepare_enable(arizona->mclk[ARIZONA_MCLK2]);
++			if (ret != 0)
++				goto err_ref;
+ 			break;
+ 		}
+ 
+@@ -58,7 +67,9 @@ int arizona_clk32k_enable(struct arizona *arizona)
+ 					 ARIZONA_CLK_32K_ENA);
+ 	}
+ 
+-out:
++err_pm:
++	pm_runtime_put_sync(arizona->dev);
++err_ref:
+ 	if (ret != 0)
+ 		arizona->clk32k_ref--;
+ 
+@@ -83,6 +94,10 @@ int arizona_clk32k_disable(struct arizona *arizona)
+ 		switch (arizona->pdata.clk32k_src) {
+ 		case ARIZONA_32KZ_MCLK1:
+ 			pm_runtime_put_sync(arizona->dev);
++			clk_disable_unprepare(arizona->mclk[ARIZONA_MCLK1]);
++			break;
++		case ARIZONA_32KZ_MCLK2:
++			clk_disable_unprepare(arizona->mclk[ARIZONA_MCLK2]);
+ 			break;
+ 		}
+ 	}
+@@ -1000,6 +1015,7 @@ static const struct mfd_cell wm8998_devs[] = {
+ 
+ int arizona_dev_init(struct arizona *arizona)
  {
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index 69da1ef..1728771 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -272,6 +272,8 @@ extern int arizona_eq_coeff_put(struct snd_kcontrol *kcontrol,
- extern int arizona_lhpf_coeff_put(struct snd_kcontrol *kcontrol,
- 				  struct snd_ctl_elem_value *ucontrol);
++	const char * const mclk_name[] = { "mclk1", "mclk2" };
+ 	struct device *dev = arizona->dev;
+ 	const char *type_name = NULL;
+ 	unsigned int reg, val, mask;
+@@ -1016,6 +1032,16 @@ int arizona_dev_init(struct arizona *arizona)
+ 	else
+ 		arizona_of_get_core_pdata(arizona);
  
-+extern int arizona_clk_ev(struct snd_soc_dapm_widget *w,
-+			  struct snd_kcontrol *kcontrol, int event);
- extern int arizona_set_sysclk(struct snd_soc_codec *codec, int clk_id,
- 			      int source, unsigned int freq, int dir);
++	BUILD_BUG_ON(ARRAY_SIZE(arizona->mclk) != ARRAY_SIZE(mclk_name));
++	for (i = 0; i < ARRAY_SIZE(arizona->mclk); i++) {
++		arizona->mclk[i] = devm_clk_get(arizona->dev, mclk_name[i]);
++		if (IS_ERR(arizona->mclk[i])) {
++			dev_info(arizona->dev, "Failed to get %s: %ld\n",
++				 mclk_name[i], PTR_ERR(arizona->mclk[i]));
++			arizona->mclk[i] = NULL;
++		}
++	}
++
+ 	regcache_cache_only(arizona->regmap, true);
  
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 257b152..5e8f979 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -335,9 +335,11 @@ static const struct snd_kcontrol_new cs47l24_aec_loopback_mux =
+ 	switch (arizona->type) {
+diff --git a/include/linux/mfd/arizona/core.h b/include/linux/mfd/arizona/core.h
+index 58ab4c0..b9909bb 100644
+--- a/include/linux/mfd/arizona/core.h
++++ b/include/linux/mfd/arizona/core.h
+@@ -13,6 +13,7 @@
+ #ifndef _WM_ARIZONA_CORE_H
+ #define _WM_ARIZONA_CORE_H
  
- static const struct snd_soc_dapm_widget cs47l24_dapm_widgets[] = {
- SND_SOC_DAPM_SUPPLY("SYSCLK", ARIZONA_SYSTEM_CLOCK_1,
--		    ARIZONA_SYSCLK_ENA_SHIFT, 0, NULL, 0),
-+		    ARIZONA_SYSCLK_ENA_SHIFT, 0, arizona_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("ASYNCCLK", ARIZONA_ASYNC_CLOCK_1,
--		    ARIZONA_ASYNC_CLK_ENA_SHIFT, 0, NULL, 0),
-+		    ARIZONA_ASYNC_CLK_ENA_SHIFT, 0, arizona_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("OPCLK", ARIZONA_OUTPUT_SYSTEM_CLOCK,
- 		    ARIZONA_OPCLK_ENA_SHIFT, 0, NULL, 0),
- SND_SOC_DAPM_SUPPLY("ASYNCOPCLK", ARIZONA_OUTPUT_ASYNC_CLOCK,
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index ed03ed27..a891344 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -607,6 +607,9 @@ static int wm5102_sysclk_ev(struct snd_soc_dapm_widget *w,
- 		break;
- 	case SND_SOC_DAPM_PRE_PMD:
- 		break;
-+	case SND_SOC_DAPM_PRE_PMU:
-+	case SND_SOC_DAPM_POST_PMD:
-+		return arizona_clk_ev(w, kcontrol, event);
- 	default:
- 		return 0;
- 	}
-@@ -1077,9 +1080,11 @@ static const struct snd_kcontrol_new wm5102_aec_loopback_mux =
- static const struct snd_soc_dapm_widget wm5102_dapm_widgets[] = {
- SND_SOC_DAPM_SUPPLY("SYSCLK", ARIZONA_SYSTEM_CLOCK_1, ARIZONA_SYSCLK_ENA_SHIFT,
- 		    0, wm5102_sysclk_ev,
--		    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+		    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD |
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("ASYNCCLK", ARIZONA_ASYNC_CLOCK_1,
--		    ARIZONA_ASYNC_CLK_ENA_SHIFT, 0, NULL, 0),
-+		    ARIZONA_ASYNC_CLK_ENA_SHIFT, 0, arizona_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("OPCLK", ARIZONA_OUTPUT_SYSTEM_CLOCK,
- 		    ARIZONA_OPCLK_ENA_SHIFT, 0, NULL, 0),
- SND_SOC_DAPM_SUPPLY("ASYNCOPCLK", ARIZONA_OUTPUT_ASYNC_CLOCK,
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 53d35fe..a4331ad 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -183,7 +183,9 @@ static int wm5110_sysclk_ev(struct snd_soc_dapm_widget *w,
- 				regmap_write_async(regmap, patch[i].reg,
- 						   patch[i].def);
- 		break;
--
-+	case SND_SOC_DAPM_PRE_PMU:
-+	case SND_SOC_DAPM_POST_PMD:
-+		return arizona_clk_ev(w, kcontrol, event);
- 	default:
- 		break;
- 	}
-@@ -1073,9 +1075,11 @@ static const struct snd_kcontrol_new wm5110_output_anc_src[] = {
++#include <linux/clk.h>
+ #include <linux/interrupt.h>
+ #include <linux/notifier.h>
+ #include <linux/regmap.h>
+@@ -21,6 +22,12 @@
  
- static const struct snd_soc_dapm_widget wm5110_dapm_widgets[] = {
- SND_SOC_DAPM_SUPPLY("SYSCLK", ARIZONA_SYSTEM_CLOCK_1, ARIZONA_SYSCLK_ENA_SHIFT,
--		    0, wm5110_sysclk_ev, SND_SOC_DAPM_POST_PMU),
-+		    0, wm5110_sysclk_ev, SND_SOC_DAPM_POST_PMU |
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("ASYNCCLK", ARIZONA_ASYNC_CLOCK_1,
--		    ARIZONA_ASYNC_CLK_ENA_SHIFT, 0, NULL, 0),
-+		    ARIZONA_ASYNC_CLK_ENA_SHIFT, 0, arizona_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("OPCLK", ARIZONA_OUTPUT_SYSTEM_CLOCK,
- 		    ARIZONA_OPCLK_ENA_SHIFT, 0, NULL, 0),
- SND_SOC_DAPM_SUPPLY("ASYNCOPCLK", ARIZONA_OUTPUT_ASYNC_CLOCK,
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index 2f2821b..f5f5d43 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -108,6 +108,9 @@ static int wm8997_sysclk_ev(struct snd_soc_dapm_widget *w,
- 		break;
- 	case SND_SOC_DAPM_PRE_PMD:
- 		break;
-+	case SND_SOC_DAPM_PRE_PMU:
-+	case SND_SOC_DAPM_POST_PMD:
-+		return arizona_clk_ev(w, kcontrol, event);
- 	default:
- 		return 0;
- 	}
-@@ -408,9 +411,11 @@ static const struct snd_kcontrol_new wm8997_aec_loopback_mux =
- static const struct snd_soc_dapm_widget wm8997_dapm_widgets[] = {
- SND_SOC_DAPM_SUPPLY("SYSCLK", ARIZONA_SYSTEM_CLOCK_1, ARIZONA_SYSCLK_ENA_SHIFT,
- 		    0, wm8997_sysclk_ev,
--		    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+		    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD |
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("ASYNCCLK", ARIZONA_ASYNC_CLOCK_1,
--		    ARIZONA_ASYNC_CLK_ENA_SHIFT, 0, NULL, 0),
-+		    ARIZONA_ASYNC_CLK_ENA_SHIFT, 0, arizona_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("OPCLK", ARIZONA_OUTPUT_SYSTEM_CLOCK,
- 		    ARIZONA_OPCLK_ENA_SHIFT, 0, NULL, 0),
- SND_SOC_DAPM_SUPPLY("ASYNCOPCLK", ARIZONA_OUTPUT_ASYNC_CLOCK,
-diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
-index bcc2e10..3eaa361 100644
---- a/sound/soc/codecs/wm8998.c
-+++ b/sound/soc/codecs/wm8998.c
-@@ -541,9 +541,11 @@ static const struct snd_kcontrol_new wm8998_aec_loopback_mux[] = {
+ #define ARIZONA_MAX_CORE_SUPPLIES 2
  
- static const struct snd_soc_dapm_widget wm8998_dapm_widgets[] = {
- SND_SOC_DAPM_SUPPLY("SYSCLK", ARIZONA_SYSTEM_CLOCK_1,
--		    ARIZONA_SYSCLK_ENA_SHIFT, 0, NULL, 0),
-+		    ARIZONA_SYSCLK_ENA_SHIFT, 0, arizona_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("ASYNCCLK", ARIZONA_ASYNC_CLOCK_1,
--		    ARIZONA_ASYNC_CLK_ENA_SHIFT, 0, NULL, 0),
-+		    ARIZONA_ASYNC_CLK_ENA_SHIFT, 0, arizona_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("OPCLK", ARIZONA_OUTPUT_SYSTEM_CLOCK,
- 		    ARIZONA_OPCLK_ENA_SHIFT, 0, NULL, 0),
- SND_SOC_DAPM_SUPPLY("ASYNCOPCLK", ARIZONA_OUTPUT_ASYNC_CLOCK,
++enum {
++	ARIZONA_MCLK1,
++	ARIZONA_MCLK2,
++	ARIZONA_NUM_MCLK
++};
++
+ enum arizona_type {
+ 	WM5102 = 1,
+ 	WM5110 = 2,
+@@ -139,6 +146,8 @@ struct arizona {
+ 	struct mutex clk_lock;
+ 	int clk32k_ref;
+ 
++	struct clk *mclk[ARIZONA_NUM_MCLK];
++
+ 	bool ctrlif_error;
+ 
+ 	struct snd_soc_dapm_context *dapm;
 -- 
 2.1.4
