@@ -1,19 +1,17 @@
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Subject: Re: [PATCH 03/13] ASoC: topology: ABI - Define DPCM
- trigger ordering for PCM
-Date: Fri, 2 Sep 2016 14:44:40 +0800
-Message-ID: <57C91FD8.1090205@linux.intel.com>
-References: <cover.1471599648.git.mengdong.lin@linux.intel.com>
- <24428c2714d09062f3ace5803679c743d36afb04.1471599648.git.mengdong.lin@linux.intel.com>
- <20160823174135.GA22076@sirena.org.uk>
+From: Rob Nertney <rob@rob-otics.com>
+Subject: arecord: does hardware or software throw away unused
+Date: Thu, 1 Sep 2016 23:55:37 -0700
+Message-ID: <CALAeOVNogPUjK68n6LozD4j0y9RhO3ObaduANshG0+mg-8+1Rw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id AE59926724D
- for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2016 08:38:43 +0200 (CEST)
-In-Reply-To: <20160823174135.GA22076@sirena.org.uk>
+Received: from mail-vk0-f43.google.com (mail-vk0-f43.google.com
+ [209.85.213.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C10F26724D
+ for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2016 08:55:39 +0200 (CEST)
+Received: by mail-vk0-f43.google.com with SMTP id j189so5943133vkc.2
+ for <alsa-devel@alsa-project.org>; Thu, 01 Sep 2016 23:55:39 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,63 +21,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, mengdong.lin@intel.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+My hardware is putting a stream of MAX_CHANNELS into memory, and firing the
+IRQs on my period boundary with respect to this full MAX_CHANNELS stream.
 
+If I apply an arecord -c <MAX_CHANNELS-x> flag, essentially saying that I
+only want to capture less than the maximum number of channels, will arecord
+expect that the *hardware* will throw away the unused channel data, and the
+data placed into memory is a contiguous stream of only pertinent channels?
 
-On 08/24/2016 01:41 AM, Mark Brown wrote:
-> On Fri, Aug 19, 2016 at 06:12:55PM +0800, mengdong.lin@linux.intel.com wrote:
->
->> Definition of dynamic PCM trigger ordering is exposed to uapi asoc.h,
->> and topology allows user space to define the trigger ordering for PCM
->> (FE links).
->
-> This seems *incredibly* implementation specific.  Why wouldn't the
-> driver for the thing implementing the topology be able to figure out the
-> ordering here?  What's the use case?  What happens when we change away
-> from DPCM?
->
+Or will arecord see the MAX_CHANNELS in my driver, and use its *software*
+to strip out the upper channels worth of data automatically for me?
 
-There is another patch (04/13) to add generic flags and flag mask to PCM 
-objects. So we'll allow users to set DPCM trigger ordering as flags as 
-below, to avoid using trigger[] in ABI. The topology kernel driver will 
-check the flag bits and set the proper trigger ordering to FE DAI links. 
-If we change away from DPCM in the future, user can stop using these 
-flags. And the 32-bit flags seems enough for future extension.
+For example, if I am capturing 2 channels of u8 data, and my dma regardless
+puts the data into memory as
+11111111222222221111111122222222_IRQ_11111111222222221111111122222222. If I
+apply an "arecord -c 1 ...", and my DMA remains unchanged, will the
+resulting wavfile have 1111111111111111_IRQ_1111111111111111?
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index f734bea..30da32f 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -130,6 +130,16 @@
-  #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
-  #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
-
-+/* DAI link flags */
-+#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND          (1 << 0)
-+#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME   (1 << 1)
-+#define SND_SOC_TPLG_LNK_FLGBIT_PLAYBACK_DPCM_TRIGGER_PRE       (1<<2)
-+#define SND_SOC_TPLG_LNK_FLGBIT_PLAYBACK_DPCM_TRIGGER_POST      (1<<3)
-+#define SND_SOC_TPLG_LNK_FLGBIT_PLAYBACK_DPCM_TRIGGER_BESPOKE   (1<<4)
-+#define SND_SOC_TPLG_LNK_FLGBIT_CAPTURE_DPCM_TRIGGER_PRE        (1<<2)
-+#define SND_SOC_TPLG_LNK_FLGBIT_CAPTURE_DPCM_TRIGGER_POST       (1<<3)
-+#define SND_SOC_TPLG_LNK_FLGBIT_CAPTURE_DPCM_TRIGGER_BESPOKE    (1<<4)
-+
-  /*
-   * Block Header.
-   * This header precedes all object and object arrays below.
-@@ -439,6 +449,8 @@ struct snd_soc_tplg_pcm {
-         struct snd_soc_tplg_stream 
-stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* for DAI link */
-         __le32 num_streams;     /* number of streams */
-         struct snd_soc_tplg_stream_caps caps[2]; /* playback and 
-capture for DAI */
-+       __le32 flag_mask;       /* bitmask of flags to configure */
-+       __le32 flags;           /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
-  } __attribute__((packed));
-
-
-Thanks
-Mengdong
+Thanks,
+Rob
