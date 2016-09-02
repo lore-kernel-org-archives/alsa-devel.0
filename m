@@ -1,38 +1,55 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH v5 2/2] ASoC: samsung: Add machine driver
- for Exynos5433 based TM2 board
-Date: Fri, 2 Sep 2016 11:56:16 +0100
-Message-ID: <20160902105616.GF21682@localhost.localdomain>
-References: <1470752514-11409-1-git-send-email-s.nawrocki@samsung.com>
- <1470752514-11409-2-git-send-email-s.nawrocki@samsung.com>
- <20160829150251.GU21682@localhost.localdomain>
- <65238f9c-bed0-7ad5-1961-fa2ff3848782@samsung.com>
- <2f5ac8bf-34da-7ce7-931c-86a8dad61dfc@samsung.com>
+From: Vegard Nossum <vegard.nossum@oracle.com>
+Subject: Re: [PATCH 1/3] ALSA: timer: fix NULL pointer dereference in
+ read()/ioctl() race
+Date: Fri, 2 Sep 2016 14:34:47 +0200
+Message-ID: <14739ff0-b415-08e5-5f5c-a29a99fe473e@oracle.com>
+References: <20160828223351.32489-1-vegard.nossum@oracle.com>
+ <s5hr39883ch.wl-tiwai@suse.de>
+ <0560accf-2461-8205-6377-32b464bfce7e@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2f5ac8bf-34da-7ce7-931c-86a8dad61dfc@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, k.kozlowski@samsung.com, broonie@kernel.org, Inha Song <ideal.song@samsung.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <0560accf-2461-8205-6377-32b464bfce7e@oracle.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, syzkaller <syzkaller@googlegroups.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 02, 2016 at 12:49:51PM +0200, Sylwester Nawrocki wrote:
-> On 08/30/2016 04:57 PM, Sylwester Nawrocki wrote:
-> > I will use prepare/complete as with late_suspend/early_resume power
-> > sequences are wrong as you point out. I still need to debug why
-> > there is no errors reported when the SPI controller is suspended
-> > while there are supposed to be done SPI bus transfers.
-> 
-> As it turns out the reason there is no any errors with late_suspend/
-> early_resume is that the CODEC sets its regmap's "cache only" only flag
-> in its suspend() callback and then clears it in resume().  So any SPI
-> transfers which might happen when SPI controller is suspended
-> are prevented this way.
+On 08/29/2016 09:14 AM, Vegard Nossum wrote:
+> On 08/29/2016 09:02 AM, Takashi Iwai wrote:
+>> On Mon, 29 Aug 2016 00:33:49 +0200,
+>> Vegard Nossum wrote:
+>>> @@ -1602,15 +1602,25 @@ static int snd_timer_user_tselect(struct file
+>>> *file,
+>>>      kfree(tu->tqueue);
+>>>      tu->tqueue = NULL;
+>>>      if (tu->tread) {
+>>> -        tu->tqueue = kmalloc(tu->queue_size * sizeof(struct
+>>> snd_timer_tread),
+>>> +        struct snd_timer_tread *ttr;
+>>> +        ttr = kmalloc(tu->queue_size * sizeof(struct snd_timer_tread),
+>>>                       GFP_KERNEL);
+>>> -        if (tu->tqueue == NULL)
+>>> +        if (ttr) {
+>>> +            kfree(tu->tqueue);
+>>> +            tu->tqueue = ttr;
+>>
+>> This looks like the double-tree, as you didn't remove the kfree() call
+>> in the above.  But, I guess this change is superfluous when you
+>> introduce the mutex at...
+>
+> You're right, this hunk is garbage.
+>
+> Please see the new patch (attached), I also changed the patch
+> description slightly to match the changes.
+>
+> I'll start running some tests on the new patch.
 
-Ah of course yeah should have realised that, but yeah you still
-end up with the writes not actually reaching the hardware.
+I tested the new patch (from the email I'm replying to). It seems to
+work for me.
 
 Thanks,
-Charles
+
+
+Vegard
