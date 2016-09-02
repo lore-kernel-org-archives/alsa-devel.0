@@ -1,30 +1,26 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/4] ALSA: control: return payload length
- for TLV operation
-Date: Fri, 2 Sep 2016 23:50:39 +0900
-Message-ID: <ea70748a-e4f1-7c63-6f61-5d878303a8ad@sakamocchi.jp>
-References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
- <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
- <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
- <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
- <20160830145136.GE9355@localhost>
- <38f437e4-56e7-dc7a-6892-c1d812fd56d3@sakamocchi.jp>
- <20160831042040.GO9355@localhost> <57C65D4A.9090209@sakamocchi.jp>
- <20160831090552.GZ21682@localhost.localdomain> <s5hzintgtsr.wl-tiwai@suse.de>
- <e95db80c-682d-b186-ea9e-a4a8a5501329@ladisch.de>
- <s5ha8ftgmyh.wl-tiwai@suse.de>
- <47fa0f7b-cf3a-b3dd-7e7e-7d45369ddaac@sakamocchi.jp>
- <s5ha8fteyle.wl-tiwai@suse.de>
- <2450af02-a554-6374-d92f-d4d0666c7138@sakamocchi.jp>
- <s5h1t12fnxb.wl-tiwai@suse.de>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
+ McBSP to prevent glitches
+Date: Fri, 2 Sep 2016 07:56:04 -0700
+Message-ID: <20160902145604.nlixopwza76kfgbz@atomide.com>
+References: <20160829182746.53vrgbxadqodzzug@atomide.com>
+ <925ded57-1e91-3db6-9e82-3a3ff5775412@ti.com>
+ <20160831141340.h24szdqjnicmt2ew@atomide.com>
+ <20160831165959.3sldcjxaci3kdx6z@atomide.com>
+ <eef88aa4-b829-1889-f083-eb0359c0dac6@ti.com>
+ <20160831194107.wijnbmdns2jjvzkv@atomide.com>
+ <5af44090-6902-2ade-be78-378843757a0a@ti.com>
+ <20160901145006.xr3ux63cg6f5bh7p@atomide.com>
+ <b3a254b2-948f-f04d-3289-fb8fb9f9ab23@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 3397B2676C6
- for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2016 16:50:43 +0200 (CEST)
-In-Reply-To: <s5h1t12fnxb.wl-tiwai@suse.de>
+Received: from muru.com (muru.com [72.249.23.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28AE82676C8
+ for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2016 16:56:10 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <b3a254b2-948f-f04d-3289-fb8fb9f9ab23@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,135 +30,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, broonie@linaro.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, "Kristo, Tero" <t-kristo@ti.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Pavel Machel <pavel@ucw.cz>, Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Sep 2 2016 22:09, Takashi Iwai wrote:
-> On Fri, 02 Sep 2016 13:30:33 +0200,
-> Takashi Sakamoto wrote:
->> On Sep 1 2016 00:40, Takashi Iwai wrote:
->>> Which application do you have in mind?
->>
->> At first, I did never suggest that 'TLV feature should handle byte
->> stream' or 'TLV feature should be extended to somewhere'. I just
->> addressed that 'Now, TLV feature is not used only for transmission of
->> pure threshold information between applications/drivers, but it's also
->> used for I/O operation. Unfortunately, protocol of TLV packet payload is
->> not kept anymore.'
->>
->> It's not my intension to discuss about this patchset in a point of 'byte
->> stream'. It comes from your bias, and the other developers are led to
->> the wrong direction, sigh. I really hope them to read my comment in this
->> patchset carefully and compare them to actual code implementations
->> in driver/core/library and applications[1][2][3].
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [160902 00:30]:
+> On 09/01/16 17:50, Tony Lindgren wrote:
+> > * Peter Ujfalusi <peter.ujfalusi@ti.com> [160831 23:58]:
+> >> What is the audio format you are using? sampling rate and how many channels?
+> >> cat /proc/asound/card0/pcm0p/sub0/hw_params
+> > 
+> > Just 44.1 stereo mp3 or wav files.
+> > 
+> >> What happens if you set the FIFO to 256? Do you still need the 30ms or it can
+> >> be higher, like 60ms?
+> > 
+> > No this is not related to the FIFO size. We just need to block off idle mode
+> > for cpuidle as the McBSP hardware is not blocking it.
 > 
-> Well, without the particular purpose explained, it's hard to
-> understand why your patchset is required.  That was the failure.
-> The implementation details come after the design.
+> So this happens with any threshold value? Even in element mode, where we have
+> the threshold set to 2?
 
-Read my comment in the first patch, again.
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/112245.html
+Probably. How can I test the above?
 
-I wrote 'This is inconvenient to applications'. It shows that I take
-care of ALSA applications in this patch.
-
->> Again, I have few interests about actual implementation of TLV feature
->> in driver side and for what purposes applications are developed to
->> utilize TLV feature. They're free for developers in each area now, and
->> for future. What we should do is how to assist their activity via the
->> design of APIs. This is my place in this patchset. It's not my intension
->> to request extensions of TLV feature.
+> >> When the FIFO is set to 128, it means that after the initial FIFO fill we will
+> >> have DMA request coming from McBSP to sDMA with a rate of:
+> >>
+> >> (1000/sampling_rate) * (FIFO-threshold / channels) = DMA_req_distance_in_ms
+> >>
+> >> So in case of 44.1KHz, stereo with 128 FIFO threshold DMA request will come at
+> >> every 1.45ms. If I'm not mistaken. The whole FIFO (1280) holds 14.51ms of
+> >> audio in this case.
+> >>
+> >> I don't see this correlate with the 30ms at all.
+> > 
+> > It seems we easily have a situation where DMA is done buffering to McBSP,
+> > and PMIC is playing audio, and we hit idle. At that point there are no immediate
+> > timers pending and cpuidle determines we can try to hit a deeper idle mode. As
+> > there are no hardware blockers with DMA off and McBSP not blocking, the hardware
+> > hits off mode. This cuts power to McBSP.
+> > 
+> > Ideally we'd configure McBSP activity to block deeper idle states in the
+> > hardware but I don't think we have such a configuration available.
 > 
-> But your patchset changes the call patterns largely.  This annoyed me,
-> and supposedly most people, too.  If the TLV feature isn't needed to
-> be extended, the necessary change shouldn't be too intrusive, either.
-
-Surprisingly, the annoying planted a bias to you and lost calmness in
-your brain, away from the core concept of this patchset.
-
-Well, to me, it's really normal for I/O APIs to return processed bytes
-to applications. This is a reason that I explain like that.
-
-Of course, I don't say I can always write comments to fully explains
-patch features so that everyone can get them. But I believe that my
-comments describes an item:
- - I/O operation recent supported in TLV feature ignores
-   the protocol of TLV packet.
- - Then, applications have disadvantages when calling TLV ioctl in a
-   point of operated bytes.
-
-That's all of my concerns. Most of you interpret the item as what
-convenient to them.
-
->>> Applications would access via either alsa-lib or tinyalsa.  And these
->> libraries do already care about how to access via TLV.
->>
->> Without enough care due to implementation in kernel land.
->>
->> As I already cleared, current TLV feature has a difficulty not to return
->> the length of actually handled bytes[4]. Correspondingly, APIs in these
->> libraries have defections, as APIs for I/O operation or transmission of
->> arbitrary data, because applications cannot get to know the actual
->> length of handled data.
+> I wonder why we have not seen this before? I can not recall anything like this
+> with n900 (Jarkko might know that better) neither with n9/n950. On the n9/n950
+> I have even put the OMAP3 to OFF during audio playback with the DAC33 and
+> still it worked just fine. On the twl4030 audio side we used 1024 or something
+> as threshold during audio playback and we do not had QoS placed at all.
+> The C state numbers must be different what we had and what we have in mainline
+> now days, but still this is something I don't expect to happen.
 > 
-> It's TLV, so the actual length is always encoded in the block (in
-> tlv[1]).  What's missing...?
+> Why McBSP is not working correctly in smart-idle mode in upstream, when it
+> appeared to be working fine on n900/n9/n950?
 
-I've already addressed two cases that 'struct snd_ctl_tlv.tlv[1]'
-doesn't have actual length of data:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/112398.html
+I think the difference is that the audio chip on n900/n9/n950 is a buffering
+one while the pmic is not. Plus I think we're also missing McBSP state save
+and restore in the mainline kernel for off mode. And we're missing the piece
+of code that in the Nokia kernel blocked off idle when McBSP was active.
+And we're missing some kind of wakeirq that tells to wake up McBSP, restore
+it's state and refill the fifo.
 
->> There's no way for user space to get appropriate length in advance, this
->> brings contradiction for content of given buffer. For example, in ALSA
->> SoC part, the length is trimmed according to a parameter of driver
->> instance, implicitly[5]. As a result, users are beguiled. They requests
->> a certain length of buffer to be handled via TLV feature. Even if they
->> receive success, a _part_ of buffer is actually handled. This is not
->> good for software stacks in a point of abstraction layer of hardware.
->> There's no transparency independent from hardwares. Application
->> developers is forced to consider about device driver's codes which are
->> not open via APIs.
->>
->> I already wrote patchset for alternative TLV APIs to alsa-lib:
->> https://github.com/takaswie/alsa-lib/tree/new-tlv-api
->>
->> In the remote branch, you can see new APIs at commit 5f13de, which
->> allows applications to receive the length of actually handled data:
->> https://github.com/takaswie/alsa-lib/commit/5f13deacfc65d26d6acbb066da0f2c35538f7497
->>
->>
->>> What makes better what, practically seen?
->>
->> Already described in this message.
->>
->> If you're still against to this patchset, I'm OK to cancel this discussion.
->>
->> But in this case, involuntarily, when my friends are going to use TLV
->> feature for their ALSA applications (I hope it's unlikely), I'll
->> recommend them not to use it, because it certainly confuses application
->> developers and bring them to particular-hardware-specific something with
->> the lack of transparency. That's a waste of their expensive time.
+The wakeirq could be anything like audio codec GPIO in bank one or PMIC
+GPIO. Or it could be just a Linux timer that wakes up the system to refill
+the fifo.
+
+> > So we just want to tell pm_qos that McBSP can't take any idle states shorter
+> > than 30 ms to prevent cutting off power fro the whole SoC.
 > 
-> The usage of TLV for this type of communication has *NEVER* been
-> recommended.  That's why I wrote it was an "(ab)usage".  It was
-> accepted just because the proposed usage fitted with the current TLV
-> access pattern.  If it were for more generic purpose, it wouldn't have
-> been accepted from the beginning.
-> 
-> The extended API is merely to pass a large blob over the control API.
-> That's the only purpose, and wouldn't be more than that.
+> based on the numbers in the arch/arm/mach-omap2/cpuidle34xx.c we are trying to
+> block C7 since the exit_latency for it is (10000 + 30000)us, right? Or is it
+> the traget_residency we need to look at when we set PM_QOS_CPU_DMA_LATENCY?
 
-You missed my intention, again. Please be in user space, then consider
-about TLV ioctls and the state of buffers, length. TLV feature supports
-read, write and command operations.
+Yeah anything blocking C7 is enough because McBSP can't survive off mode.
 
-I'm sorry but it's time to go to bed. I got tired because it's the last
-day of daily work in a week...
+> Still in case of 44.1KHz/Stereo, FIFO threshold at 128 we will have DMA
+> requests coming at 1.45ms with the whole FIFO holding 14.51ms of data. In
+> order to avoid draining the FIFO, the latency for omap3.mcbsp2 when the audio
+> is 44.1KHz, stereo must be set to 14.51ms maximum, but I would set it to:
+> (1000/sampling_rate) * ((FIFOsize - threshold) / channels) in ms.
 
+Yes if it was fifo related I'd agree :) But it's not, see below.
 
-Thanks
+I think the reason why we don't need to set any pm_qos latency limit with
+retention idle is that the McBSP hardware will automatigally wake up the
+system to a fifo threshold interrupt or a timer which will trigger another
+dma transaction. As long as the wakeup latency from retention idle is less
+than the time needed to refill the fifo, everything works automagically in
+the hardware. So the calculation above is not needed at all and unnecessarily
+blocks core retention during idle.
 
-Takashi Sakamoto
+> Certainly not 30ms. What happens if someone changes the C7 state number and it
+> is going to be less than 30ms? We will hit C7 and have the same issue? I
+> suppose yes.
+
+That value is a hardware limitation of the SoC for the only known working
+case of off idle in the mainline kernel. But yes it would have to be SoC
+specific if we ever get let's say omap4 off idle working in the mainline
+kernel. In that case I'd make SoC specific using someting like
+compatible = "ti,omap4-mcbsp".
+
+> This is my main problem with the 30ms. It is just an arbitrary number which
+> matches some number in cpuidle34xx.c, but it has nothing to do with the real
+> requirement of McBSP, which is that we should not hit a state where the wakeup
+> is going to take more time than what we can compensate from the McBSP FIFO.
+
+Yeah I agree this number is somewhat artificial as it is a value that's a
+limitation of the SoC and not the McBSP. I don't know a better way to
+block C7 in a Linux generic way though when McBSP is active.
+
+> Furthermore: in case of other McBSPs where they have 128 word FIFO, which
+> holds in your use case 1.45ms of audio, how it will survive the C6 wakeup
+> latency of (3000 + 8500)us? It can tolerate C3 at maximum, C4 takes (1500 +
+> 1800)us.
+
+That's because the hardware or a timer triggers the next dma automagically
+so we don't need to do anything.
+
+> Sure, we will not going to be able to hit C6 with this based on the numbers we
+> have in cpuidle34xx.c, but I have no view on how those numbers were calculated...
+
+Right, but we don't need to block C6 because of the hardware and/or Linux
+timers doing things for us :)
+
+Regards,
+
+Tony
