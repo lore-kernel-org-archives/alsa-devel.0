@@ -1,51 +1,55 @@
 From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: fsl_esai: fix spelling mistake "Transmition" -> "Transmission"
-Date: Fri,  2 Sep 2016 15:07:23 +0100
-Message-ID: <20160902140723.26593-1-colin.king@canonical.com>
+Subject: [PATCH] ASoC: ux500: fix spelling mistake "Unsopported" -> "Unsupported"
+Date: Fri,  2 Sep 2016 16:25:07 +0100
+Message-ID: <20160902152507.31311-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Lars-Peter Clausen <lars@metafoo.de>, Luis de Bethencourt <luis@debethencourt.com>, alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-Trivial fix to spelling mistakes in dev_dbg messages
+Trivial fix to spelling mistakes in dev_err messages
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/soc/fsl/fsl_esai.c | 6 +++---
+ sound/soc/ux500/ux500_msp_dai.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 26a90e1..e927955 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -77,19 +77,19 @@ static irqreturn_t esai_isr(int irq, void *devid)
- 	regmap_read(esai_priv->regmap, REG_ESAI_ESR, &esr);
+diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
+index 6d5698b..b343efd 100644
+--- a/sound/soc/ux500/ux500_msp_dai.c
++++ b/sound/soc/ux500/ux500_msp_dai.c
+@@ -187,7 +187,7 @@ static int setup_clocking(struct snd_soc_dai *dai,
  
- 	if (esr & ESAI_ESR_TINIT_MASK)
--		dev_dbg(&pdev->dev, "isr: Transmition Initialized\n");
-+		dev_dbg(&pdev->dev, "isr: Transmission Initialized\n");
+ 	default:
+ 		dev_err(dai->dev,
+-			"%s: Error: Unsopported inversion (fmt = 0x%x)!\n",
++			"%s: Error: Unsupported inversion (fmt = 0x%x)!\n",
+ 			__func__, fmt);
  
- 	if (esr & ESAI_ESR_RFF_MASK)
- 		dev_warn(&pdev->dev, "isr: Receiving overrun\n");
+ 		return -EINVAL;
+@@ -218,7 +218,7 @@ static int setup_clocking(struct snd_soc_dai *dai,
+ 		break;
  
- 	if (esr & ESAI_ESR_TFE_MASK)
--		dev_warn(&pdev->dev, "isr: Transmition underrun\n");
-+		dev_warn(&pdev->dev, "isr: Transmission underrun\n");
+ 	default:
+-		dev_err(dai->dev, "%s: Error: Unsopported master (fmt = 0x%x)!\n",
++		dev_err(dai->dev, "%s: Error: Unsupported master (fmt = 0x%x)!\n",
+ 			__func__, fmt);
  
- 	if (esr & ESAI_ESR_TLS_MASK)
- 		dev_dbg(&pdev->dev, "isr: Just transmitted the last slot\n");
+ 		return -EINVAL;
+@@ -374,7 +374,7 @@ static int setup_msp_config(struct snd_pcm_substream *substream,
+ 		break;
  
- 	if (esr & ESAI_ESR_TDE_MASK)
--		dev_dbg(&pdev->dev, "isr: Transmition data exception\n");
-+		dev_dbg(&pdev->dev, "isr: Transmission data exception\n");
- 
- 	if (esr & ESAI_ESR_TED_MASK)
- 		dev_dbg(&pdev->dev, "isr: Transmitting even slots\n");
+ 	default:
+-		dev_err(dai->dev, "%s: Error: Unsopported format (%d)!\n",
++		dev_err(dai->dev, "%s: Error: Unsupported format (%d)!\n",
+ 			__func__, fmt);
+ 		return -EINVAL;
+ 	}
 -- 
 2.9.3
