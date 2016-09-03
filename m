@@ -1,27 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/4] ALSA: control: return payload length
- for TLV operation
-Date: Sat, 3 Sep 2016 12:53:08 +0900
-Message-ID: <cefef785-21e5-71c1-6132-1c894711f20b@sakamocchi.jp>
-References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
- <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
- <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
- <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
- <20160830145136.GE9355@localhost>
- <38f437e4-56e7-dc7a-6892-c1d812fd56d3@sakamocchi.jp>
- <20160831042040.GO9355@localhost> <57C65D4A.9090209@sakamocchi.jp>
- <20160831090552.GZ21682@localhost.localdomain> <s5hzintgtsr.wl-tiwai@suse.de>
- <e95db80c-682d-b186-ea9e-a4a8a5501329@ladisch.de>
- <a21ab28c-12d5-41c2-9209-4127fe3ca79a@sakamocchi.jp>
- <s5hlgzae17q.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: arizona: Correct handling of FLL theta
+	in synchroniser mode" to the asoc tree
+Date: Sat, 03 Sep 2016 12:08:36 +0100
+Message-ID: <E1bg8oP-0003dE-01@finisterre>
+References: <1472831568-466-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id B8D862673BF
- for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2016 05:53:18 +0200 (CEST)
-In-Reply-To: <s5hlgzae17q.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA6B2266FBD
+ for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2016 13:08:55 +0200 (CEST)
+In-Reply-To: <1472831568-466-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,33 +22,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@linaro.org, Vinod Koul <vinod.koul@intel.com>, Clemens Ladisch <clemens@ladisch.de>, omair.m.abdullah@intel.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org, s.nawrocki@samsung.com, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sep 3 2016 01:05, Takashi Iwai wrote:
-> But, the addition of the flag is helpful alone.  Could you concentrate
-> on that and resubmit?
+The patch
 
-Before starting it, I'd like to wait for comments from Clemens Ladisch,
-Charles Keepax and Vinod Koul, in a view of application interfaces
-stable, safe and tolerant for long term usage. I'm unwilling to use my
-time more for light-minded work done to bring confusions to hardware-
-abstraction layers for user land applications.
+   ASoC: arizona: Correct handling of FLL theta in synchroniser mode
 
-But, if possible, I'd request you to re-think about my proposal to
-return processed byte of TLV packet payload to user land, again. It
-looks to be intrusive, but in my taste, it doesn't bring much impacts to
-applications, than adding new flags to kernel/userspace interfaces.
+has been applied to the asoc tree at
 
-The length of processed bytes from drivers in ALSA SoC part might help
-developers to get current value of 'struct soc_bytes_ext.max' of each
-control element set. As of kernel 4.8, soc-da7218/nau8825/wm5102 modules
-implements the coefficients, and it's already in ALSA topology design. I
-believe it better to assist developers for the feature, than judging
-it's coarse and abuse for good APIs.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Regards
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Takashi Sakamoto
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From e87d9ae8886783f3a5a8dd6863e8261783214e3b Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Fri, 2 Sep 2016 16:52:43 +0100
+Subject: [PATCH] ASoC: arizona: Correct handling of FLL theta in synchroniser
+ mode
+
+Theta/lambda is used to give the fractional portion of the FLL
+frequency multiplication. When the synchroniser is active the
+reference path lambda value is hard coded in the hardware to
+65536. This patch corrects the handling of theta such that it
+is scaled to match this denominator, when the synchroniser is
+active.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/arizona.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index ccb3ca2f77a4..ded235f3090f 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1920,8 +1920,8 @@ static struct {
+ 
+ struct arizona_fll_cfg {
+ 	int n;
+-	int theta;
+-	int lambda;
++	unsigned int theta;
++	unsigned int lambda;
+ 	int refdiv;
+ 	int outdiv;
+ 	int fratio;
+@@ -2233,6 +2233,10 @@ static int arizona_enable_fll(struct arizona_fll *fll)
+ 	    fll->ref_src != fll->sync_src) {
+ 		arizona_calc_fll(fll, &cfg, fll->ref_freq, false);
+ 
++		/* Ref path hardcodes lambda to 65536 when sync is on */
++		if (fll->sync_src >= 0 && cfg.lambda)
++			cfg.theta = (cfg.theta * (1 << 16)) / cfg.lambda;
++
+ 		arizona_apply_fll(arizona, fll->base, &cfg, fll->ref_src,
+ 				  false);
+ 		if (fll->sync_src >= 0) {
+-- 
+2.9.3
