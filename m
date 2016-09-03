@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Correct handling of FLL theta
-	in synchroniser mode" to the asoc tree
-Date: Sat, 03 Sep 2016 12:08:36 +0100
-Message-ID: <E1bg8oP-0003dE-01@finisterre>
-References: <1472831568-466-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EA6B2266FBD
- for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2016 13:08:55 +0200 (CEST)
-In-Reply-To: <1472831568-466-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org, s.nawrocki@samsung.com, lee.jones@linaro.org
+Subject: Applied "ASoC: Intel: sst: fix to spelling mistake: "susupend" -> "suspend"" to the asoc tree
+Date: Sat, 03 Sep 2016 12:08:40 +0100
+Message-ID: <E1bg8oS-0003e8-IA@finisterre>
+References: <20160902084525.8646-1-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160902084525.8646-1-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Correct handling of FLL theta in synchroniser mode
+   ASoC: Intel: sst: fix to spelling mistake: "susupend" -> "suspend"
 
 has been applied to the asoc tree at
 
@@ -53,50 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From e87d9ae8886783f3a5a8dd6863e8261783214e3b Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Fri, 2 Sep 2016 16:52:43 +0100
-Subject: [PATCH] ASoC: arizona: Correct handling of FLL theta in synchroniser
- mode
+>From 0fd67cee29cef1942865bd4375b8a7e5d98343ad Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Fri, 2 Sep 2016 09:45:25 +0100
+Subject: [PATCH] ASoC: Intel: sst: fix to spelling mistake: "susupend" ->
+ "suspend"
 
-Theta/lambda is used to give the fractional portion of the FLL
-frequency multiplication. When the synchroniser is active the
-reference path lambda value is hard coded in the hardware to
-65536. This patch corrects the handling of theta such that it
-is scaled to match this denominator, when the synchroniser is
-active.
+trivial fix to spelling mistake in dev_err message and replace "cant"
+with "can't"
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/intel/atom/sst/sst.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index ccb3ca2f77a4..ded235f3090f 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1920,8 +1920,8 @@ static struct {
+diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
+index 498b5f7fba4c..9b6e27385dc9 100644
+--- a/sound/soc/intel/atom/sst/sst.c
++++ b/sound/soc/intel/atom/sst/sst.c
+@@ -442,7 +442,7 @@ static int intel_sst_suspend(struct device *dev)
+ 		struct stream_info *stream = &ctx->streams[i];
  
- struct arizona_fll_cfg {
- 	int n;
--	int theta;
--	int lambda;
-+	unsigned int theta;
-+	unsigned int lambda;
- 	int refdiv;
- 	int outdiv;
- 	int fratio;
-@@ -2233,6 +2233,10 @@ static int arizona_enable_fll(struct arizona_fll *fll)
- 	    fll->ref_src != fll->sync_src) {
- 		arizona_calc_fll(fll, &cfg, fll->ref_freq, false);
- 
-+		/* Ref path hardcodes lambda to 65536 when sync is on */
-+		if (fll->sync_src >= 0 && cfg.lambda)
-+			cfg.theta = (cfg.theta * (1 << 16)) / cfg.lambda;
-+
- 		arizona_apply_fll(arizona, fll->base, &cfg, fll->ref_src,
- 				  false);
- 		if (fll->sync_src >= 0) {
+ 		if (stream->status == STREAM_RUNNING) {
+-			dev_err(dev, "stream %d is running, cant susupend, abort\n", i);
++			dev_err(dev, "stream %d is running, can't suspend, abort\n", i);
+ 			return -EBUSY;
+ 		}
+ 	}
 -- 
 2.9.3
