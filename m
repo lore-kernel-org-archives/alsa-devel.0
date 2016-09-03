@@ -1,154 +1,96 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: sound: divide by 0 in snd_hrtimer_callback (or hang)
-Date: Sat, 3 Sep 2016 14:35:15 +0200
-Message-ID: <CACT4Y+Yw_05S47dEYLWbwMCJvfB4cb9Mdb3q1qOYLyKfJMK1bA@mail.gmail.com>
+From: Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
+ McBSP to prevent glitches
+Date: Sat, 3 Sep 2016 18:08:36 +0200
+Message-ID: <20160903160836.yvyucnp5oefuherq@earth>
+References: <20160831141340.h24szdqjnicmt2ew@atomide.com>
+ <20160831165959.3sldcjxaci3kdx6z@atomide.com>
+ <eef88aa4-b829-1889-f083-eb0359c0dac6@ti.com>
+ <20160831194107.wijnbmdns2jjvzkv@atomide.com>
+ <5af44090-6902-2ade-be78-378843757a0a@ti.com>
+ <20160901145006.xr3ux63cg6f5bh7p@atomide.com>
+ <b3a254b2-948f-f04d-3289-fb8fb9f9ab23@ti.com>
+ <20160902155437.GA4152@amd>
+ <2ff0fe3b-d2a2-6186-1091-6aa802eb3596@ti.com>
+ <20160902200922.getqf6xbiivvamj5@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Vegard Nossum <vegard.nossum@gmail.com>, Vegard Nossum <vegard.nossum@oracle.com>, Jaroslav Kysela <perex@perex.cz>, kangjielu@gmail.com, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
-Cc: syzkaller <syzkaller@googlegroups.com>
+Content-Type: multipart/mixed; boundary="===============4693698624104834754=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3DB126736F
+ for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2016 18:08:45 +0200 (CEST)
+In-Reply-To: <20160902200922.getqf6xbiivvamj5@atomide.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: "Kristo, Tero" <t-kristo@ti.com>, alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Pavel Machek <pavel@ucw.cz>, Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-The following program causes either division error or hangs kernel:
-
-https://gist.githubusercontent.com/dvyukov/b1f33be3bfcc15d629e10db483bee1e4/raw/1574b407e0456bf8277bee423e7731641f5f2c14/gistfile1.txt
-
-
-divide error: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-Modules linked in:
-CPU: 1 PID: 27320 Comm: syz-executor Not tainted 4.8.0-rc3-next-20160825+ #8
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-task: ffff88003c9b2280 task.stack: ffff880027280000
-RIP: 0010:[<ffffffff858e1a6c>]  [<     inline     >] ktime_divns
-include/linux/ktime.h:195
-RIP: 0010:[<ffffffff858e1a6c>]  [<ffffffff858e1a6c>]
-snd_hrtimer_callback+0x1bc/0x3c0 sound/core/hrtimer.c:62
-RSP: 0018:ffff88003ed07dd8  EFLAGS: 00010006
-RAX: 0000000000004801 RBX: ffff88003d3a0a88 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffff88003d3a0aa0 RDI: ffffffff886b69a8
-RBP: ffff88003ed07e30 R08: 0000010e85417665 R09: ffff88007fff7048
-R10: ffff88007fff7058 R11: ffff88007fff7050 R12: ffff88003d00f840
-R13: ffff88003d00f8f4 R14: ffff88003d00f970 R15: ffff88003d3a0a80
-FS:  0000000000000000(0000) GS:ffff88003ed00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f4152126db8 CR3: 000000006b896000 CR4: 00000000000006e0
-DR0: 000000000000001e DR1: 000000000000001e DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-Stack:
- 0000000000000000 ffff88003d3a0aa0 ffff88003d00f8f8 0000000000004801
- ffff88003d3a0ae0 0000000000000000 ffff88003d3a0a88 0000000000000001
- ffff88003ed1b400 dffffc0000000000 0000000000000001 ffff88003ed07f28
-Call Trace:
- <IRQ>
- [<     inline     >] __run_hrtimer kernel/time/hrtimer.c:1238
- [<ffffffff81504335>] __hrtimer_run_queues+0x325/0xe70
-kernel/time/hrtimer.c:1302
- [<ffffffff81506ceb>] hrtimer_interrupt+0x18b/0x420 kernel/time/hrtimer.c:1336
- [<ffffffff8126d8df>] local_apic_timer_interrupt+0x6f/0xe0
-arch/x86/kernel/apic/apic.c:933
- [<ffffffff86e13056>] smp_apic_timer_interrupt+0x76/0xa0
-arch/x86/kernel/apic/apic.c:957
- [<ffffffff86e1210c>] apic_timer_interrupt+0x8c/0xa0
-arch/x86/entry/entry_64.S:487
- <EOI>
- [<     inline     >] rcu_lock_release include/linux/rcupdate.h:494
- [<     inline     >] rcu_read_unlock include/linux/rcupdate.h:927
- [<ffffffff81839f55>] unlock_page_memcg+0x95/0x130 mm/memcontrol.c:1680
- [<     inline     >] page_remove_file_rmap mm/rmap.c:1343
- [<ffffffff817b742c>] page_remove_rmap+0x1cc/0x8e0 mm/rmap.c:1394
- [<     inline     >] zap_pte_range mm/memory.c:1170
- [<     inline     >] zap_pmd_range mm/memory.c:1257
- [<     inline     >] zap_pud_range mm/memory.c:1278
- [<ffffffff81789119>] unmap_page_range+0xf89/0x1ba0 mm/memory.c:1299
- [<ffffffff81789e31>] unmap_single_vma+0x101/0x260 mm/memory.c:1344
- [<ffffffff8178a741>] unmap_vmas+0xf1/0x1b0
- [<ffffffff817a5aab>] exit_mmap+0x22b/0x420 mm/mmap.c:2787
- [<     inline     >] __mmput kernel/fork.c:770
- [<ffffffff8137c576>] mmput+0xd6/0x3c0 kernel/fork.c:790
- [<     inline     >] exit_mm kernel/exit.c:512
- [<ffffffff813940e8>] do_exit+0x738/0x2e70 kernel/exit.c:815
- [<ffffffff81396998>] do_group_exit+0x108/0x330 kernel/exit.c:958
- [<ffffffff813ba4aa>] get_signal+0x62a/0x15d0 kernel/signal.c:2307
- [<ffffffff81202333>] do_signal+0x83/0x1f60 arch/x86/kernel/signal.c:805
- [<ffffffff81006345>] exit_to_usermode_loop+0x1a5/0x210
-arch/x86/entry/common.c:163
- [<     inline     >] prepare_exit_to_usermode arch/x86/entry/common.c:198
- [<     inline     >] syscall_return_slowpath arch/x86/entry/common.c:267
- [<ffffffff81008be0>] do_syscall_64+0x4c0/0x640 arch/x86/entry/common.c:293
- [<ffffffff86e107c3>] entry_SYSCALL64_slow_path+0x25/0x25
-Code: cb a2 ce fb 8b 0d f5 21 70 05 48 0f af 4d d0 48 85 c9 0f 88 6a
-01 00 00 48 89 4d a8 e8 ae a2 ce fb 48 8b 45 c0 48 8b 4d a8 48 99 <48>
-f7 f9 48 01 45 d0 e8 98 a2 ce fb 4c 89 fa 48 b8 00 00 00 00
-RIP  [<     inline     >] ktime_divns include/linux/ktime.h:195
-RIP  [<ffffffff858e1a6c>] snd_hrtimer_callback+0x1bc/0x3c0
-sound/core/hrtimer.c:62
- RSP <ffff88003ed07dd8>
----[ end trace e1a6d1e5a6136d50 ]---
+--===============4693698624104834754==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="e7ogxms2hxkbuo4v"
+Content-Disposition: inline
 
 
-or:
+--e7ogxms2hxkbuo4v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-INFO: rcu_sched detected stalls on CPUs/tasks:
-0-...: (1 GPs behind) idle=203/140000000000001/0 softirq=923090/923091 fqs=6490
-(detected by 1, t=26002 jiffies, g=508022, c=508021, q=20)
-Task dump for CPU 0:
-a.out           R  running task    28848 31756   4047 0x0000000a
- 0000000000000000 0000000000000282 0000000000000000 ffff880066a9b430
- ffff880066a9b430 ffff8800667cfae0 0000000000000282 0000000000000000
- 0000000000000000 0000000000000000 000003a0184674dd dffffc0000000000
-Call Trace:
- [<     inline     >] spin_unlock_irqrestore ./include/linux/spinlock.h:362
- [<ffffffff858db3dd>] snd_timer_start1+0xdd/0x740 sound/core/timer.c:477
- [<ffffffff858dbb25>] snd_timer_continue+0x45/0x80 sound/core/timer.c:606
- [<     inline     >] snd_timer_user_continue sound/core/timer.c:1835
- [<     inline     >] __snd_timer_user_ioctl sound/core/timer.c:1902
- [<ffffffff858df299>] snd_timer_user_ioctl+0xe99/0x2470 sound/core/timer.c:1917
- [<     inline     >] vfs_ioctl fs/ioctl.c:43
- [<ffffffff818a1dfc>] do_vfs_ioctl+0x18c/0x1080 fs/ioctl.c:675
- [<     inline     >] SYSC_ioctl fs/ioctl.c:690
- [<ffffffff818a2d7f>] SyS_ioctl+0x8f/0xc0 fs/ioctl.c:681
- [<ffffffff86e10700>] entry_SYSCALL_64_fastpath+0x23/0xc1
-arch/x86/entry/entry_64.S:208
+Hi,
+
+On Fri, Sep 02, 2016 at 01:09:23PM -0700, Tony Lindgren wrote:
+> > So it must be possible to reproduce it on BeagleBoard-xm...
+> > I will try to get the PM working on it and let's see (hear).
+>=20
+> Yeah you can do that quite easily with current mainline or next with
+> omap2plus_defconfig. Just use minimal modules and make sure *hci USB
+> kernel modules are not loaded. So root on MMC, not NFS. The same goes
+> for few other modules, at least hsi and isp used to block idle but I
+> have not checked the recent status for those.
+
+hsi should be fixed since 9c99e5e51988, which is part of 4.8.
+
+> [...]
+
+-- Sebastian
+
+--e7ogxms2hxkbuo4v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBCgAGBQJXyvWBAAoJENju1/PIO/qa8e4P/iRRtIdAF6xJg9dyR8c2is6T
+h/Y00Xm9MXjomFYRipuB1RBzJySBKVfWjfqcCTcBXTMFpEVrc1xxhZz5ObsACYWk
+8EEkJYmcYnTdCoY/J81Czc6BOUWU++KJt+3xZzBBhqgakkLa852SD4CSqDjmqLCi
+H79d8ItxbGPKCaovB5mK31m7dGi0J0csj35KR0hhosyJm81dQSB1zaOniedseJTM
+6TLjCzoc17jgvARSH2hRazWG5RGAJoVjuF/85BBciOWS7W3eRbuJy+k4Y9TUgAaX
+/nXiwwnLDPz6SdSjUq9Y/TAOZ43zFowsW923jutbu7JehOMOhQHf0RzEqcNV128Z
+/ASgvrBrAOlhVY2sEfwIFj6HK9zhYpmEQrViLM+cCwi39H3nmdEkB2eEVzf0zevs
+2Azjy1cQoaCzstnDw1DrVlHMFNUn1ZJbSoHJqc4FhCQ2sgUdXZxNcbODD3PAjqIu
+n3kokGFHjsl8QtOlDgS7Cy1v+aqzQC7nZ0PJ5O/NIvVRiYu/zd141tTt3KMvny8v
++P2jtcDCSJ7USXjjgt2Pq4l+07r/mCiys/QndeCl8CQgGIFgOmc1YNgENPCnPbpW
+Tyf53HS2hTazRmNcqxSqx7M7C763twNNGuGPp5AofvO1/xqt0S89GyZiq9QjjU1x
+UcUtFN0DKOFGvOp1aU+M
+=EzLB
+-----END PGP SIGNATURE-----
+
+--e7ogxms2hxkbuo4v--
+
+--===============4693698624104834754==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-
-I am on 0f98f121e1670eaa2a2fbb675e07d6ba7f0e146f of linux-next with
-the following diff in sound/core/timer.c (one is a fix for another
-division by 0):
-
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index 9a6157e..3e55c6d 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -813,6 +813,7 @@ int snd_timer_new(struct snd_card *card, char *id,
-struct snd_timer_id *tid,
-        timer->tmr_subdevice = tid->subdevice;
-        if (id)
-                strlcpy(timer->id, id, sizeof(timer->id));
-+       timer->sticks = 1;
-        INIT_LIST_HEAD(&timer->device_list);
-        INIT_LIST_HEAD(&timer->open_list_head);
-        INIT_LIST_HEAD(&timer->active_list_head);
-@@ -1958,6 +1959,7 @@ static ssize_t snd_timer_user_read(struct file
-*file, char __user *buffer,
-                tu->qused--;
-                spin_unlock_irq(&tu->qlock);
-
-+               mutex_lock(&tu->ioctl_lock);
-                if (tu->tread) {
-                        if (copy_to_user(buffer, &tu->tqueue[qhead],
-                                         sizeof(struct snd_timer_tread)))
-@@ -1967,6 +1969,7 @@ static ssize_t snd_timer_user_read(struct file
-*file, char __user *buffer,
-                                         sizeof(struct snd_timer_read)))
-                                err = -EFAULT;
-                }
-+               mutex_unlock(&tu->ioctl_lock);
-
-                spin_lock_irq(&tu->qlock);
-                if (err < 0)
+--===============4693698624104834754==--
