@@ -1,22 +1,27 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] test: fix comment about first two fields
- of TLV data payload
-Date: Sat, 3 Sep 2016 09:55:18 +0900
-Message-ID: <f9b45b94-cfec-2eaa-59a3-630eccd0e07a@sakamocchi.jp>
-References: <1472516505-8350-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5h7fay4ya7.wl-tiwai@suse.de>
- <7934a94f-a725-1d4b-43f0-3ea24a435aee@sakamocchi.jp>
- <dc879ef0-f95f-fd11-06bf-a31ac1a29e5d@ladisch.de>
- <3e25f3bb-b951-a964-897f-11b2c9cb5d28@sakamocchi.jp>
- <s5hmvjqe1k1.wl-tiwai@suse.de>
+Subject: Re: [PATCH 1/4] ALSA: control: return payload length
+ for TLV operation
+Date: Sat, 3 Sep 2016 12:53:08 +0900
+Message-ID: <cefef785-21e5-71c1-6132-1c894711f20b@sakamocchi.jp>
+References: <1472514285-3769-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1472514285-3769-2-git-send-email-o-takashi@sakamocchi.jp>
+ <8bb43ca3-eaf1-9f03-1f73-540f96941ae1@ladisch.de>
+ <9f0188ab-31c9-d42d-ba2c-8718d5b97c49@sakamocchi.jp>
+ <20160830145136.GE9355@localhost>
+ <38f437e4-56e7-dc7a-6892-c1d812fd56d3@sakamocchi.jp>
+ <20160831042040.GO9355@localhost> <57C65D4A.9090209@sakamocchi.jp>
+ <20160831090552.GZ21682@localhost.localdomain> <s5hzintgtsr.wl-tiwai@suse.de>
+ <e95db80c-682d-b186-ea9e-a4a8a5501329@ladisch.de>
+ <a21ab28c-12d5-41c2-9209-4127fe3ca79a@sakamocchi.jp>
+ <s5hlgzae17q.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 44E2D2673BF
- for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2016 02:55:23 +0200 (CEST)
-In-Reply-To: <s5hmvjqe1k1.wl-tiwai@suse.de>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id B8D862673BF
+ for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2016 05:53:18 +0200 (CEST)
+In-Reply-To: <s5hlgzae17q.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,42 +32,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, broonie@linaro.org, Vinod Koul <vinod.koul@intel.com>, Clemens Ladisch <clemens@ladisch.de>, omair.m.abdullah@intel.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxNuW5tDA55pyIMDPml6UgMDA6NTgsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBGcmks
-IDAyIFNlcCAyMDE2IDE2OjExOjMwICswMjAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
-Cj4+IE9uIEF1ZyAzMCAyMDE2IDE2OjI0LCBDbGVtZW5zIExhZGlzY2ggd3JvdGU6Cj4+PiBJbiB0
-aGUga2VybmVsLCB5b3UgY291bGQgdXNlIHRoZSBtYWNyb3MgZnJvbSBpbmNsdWRlL3NvdW5kL3Rs
-di5oLgo+Pj4KPj4+IEVpdGhlciBjb3B5IHRoZW0gaW50byB5b3VyIHRlc3QgcHJvZ3JhbSwgYW5k
-IHVzZSB0aGVtIGRpcmVjdGx5Ogo+Pj4KPj4+IAkvKiA0IHdvcmRzOiAqLwo+Pj4gCURFQ0xBUkVf
-VExWX0RCX01JTk1BWChvcmlnLCAtNjAsICs2MCk7Cj4+PiAJLyogY29udGFpbmVyIHdpdGggb25s
-eSBvbmUgc3ViaXRlbTsgOCB3b3JkczogKi8KPj4+IAlERUNMQVJFX1RMVl9DT05UQUlORVIob3Jp
-Z19jb250YWluZXIsCj4+PiAJCVRMVl9JVEVNKFNORFJWX0NUTF9UTFZUX0NITUFQX0ZJWEVELAo+
-Pj4gCQkJIFNORFJWX0NITUFQX0ZMLCBTTkRSVl9DSE1BUF9GUiwgU05EUlZfQ0hNQVBfRkMsIFNO
-RFJWX0NITUFQX0xGRSkKPj4+IAkpOwo+Pj4KPj4+IG9yIGNyZWF0ZSB0aGUgdmFsdWVzIGJ5IGhh
-bmQ6Cj4+Pgo+Pj4gCW9yaWdbMF0gPSBTTkRSVl9DVExfVExWVF9EQl9NSU5NQVg7Cj4+PiAJb3Jp
-Z1sxXSA9IDIgKiBzaXplb2YoKm9yaWcpOwo+Pj4gCW9yaWdbMl0gPSAtNjA7Cj4+PiAJb3JpZ1sz
-XSA9ICs2MDsKPj4+Cj4+PiAJb3JpZ19jb250YWluZXJbMF0gPSBTTkRSVl9DVExfVExWVF9DT05U
-QUlORVI7Cj4+PiAJb3JpZ19jb250YWluZXJbMV0gPSA2ICogc2l6ZW9mKCpvcmlnX2NvbnRhaW5l
-cik7Cj4+PiAJCW9yaWdfY29udGFpbmVyWzJdID0gU05EUlZfQ1RMX1RMVlRfQ0hNQVBfRklYRUQ7
-Cj4+PiAJCW9yaWdfY29udGFpbmVyWzNdID0gNCAqIHNpemVvZigqb3JpZ19jb250YWluZXIpOwo+
-Pj4gCQlvcmlnX2NvbnRhaW5lcls0XSA9IFNORFJWX0NITUFQX0ZMCj4+PiAJCW9yaWdfY29udGFp
-bmVyWzVdID0gU05EUlZfQ0hNQVBfRlI7Cj4+PiAJCW9yaWdfY29udGFpbmVyWzZdID0gU05EUlZf
-Q0hNQVBfRkM7Cj4+PiAJCW9yaWdfY29udGFpbmVyWzddID0gU05EUlZfQ0hNQVBfTEZFOwo+Pgo+
-PiBNbW0uIEZvciB1c2VyLWRlZmluZWQgY29udHJvbCBlbGVtZW50IHNldHMsIHRoZXNlIG1hY3Jv
-cyBzaG91bGQgYmUgaW4gVUFQSS4KPgo+IChBbHNvIHRoZXNlIG1hY3JvcyB3ZXJlIHJlY2VudGx5
-IGFscmVhZHkgcHV0IGluIHVhcGkvaW5jbHVkZS9zb3VuZC4pCgpBaCwgc29ycnksIEkgYWRkcmVz
-c2VkIHRvIG1hY3JvcyBzdWNoIGFzIERFQ0xBUkVfVExWX0RCX01JTk1BWCwgYmVjYXVzZQp0aGUg
-YXJyYXkgaXMgcHJlcHJvY2Vzc2VkIHRoZSBtYWNyby4KCj4gVGhlIG1hY3JvcyBhcmUgZm9yIHN0
-YXRpYyBkYXRhLCBhbmQgZm9yIHVzZXItc3BhY2UsIGl0J3MgYmV0dGVyIHRvCj4gaGF2ZSBmdW5j
-dGlvbnMgZmlsbGluZyB0aGUgVExWLCBJTU8uCgpJbiBhIHBvaW50IG9mIG1haW50ZW5hbmNlLCBp
-dCdzIHByZWZlcmFibGUgdGhhdCBhIHNpbmdsZSBmaWxlIGdpdmVzIHRoZQpmZWF0dXJlLiBObyBu
-ZWVkIHRvIGhhdmUgc2V2ZXJhbCBmaWxlcyBmb3IgZXhhY3RseSB0aGUgc2FtZSBmZWF0dXJlLgoK
-T2YgY291cnNlLCB3ZSBjYW4gbW92ZSB0aGUgbWFjcm9zIHRvIFVBUEkgYW5kIGdpdmUgaW5saW5l
-IGZ1bmN0aW9uIEFQSXMKZm9yIGFwcGxpY2F0aW9ucyB0byBleHBhbmQgd2l0aCB0aGUgbWFjcm9z
-LiBCdXQsIHRoaXMgaXMgYSBiaXQgZHVsbAphcHByb2FjaCB0byBtZS4KCgpSZWdhcmRzCgpUYWth
-c2hpIFNha2Ftb3RvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+On Sep 3 2016 01:05, Takashi Iwai wrote:
+> But, the addition of the flag is helpful alone.  Could you concentrate
+> on that and resubmit?
+
+Before starting it, I'd like to wait for comments from Clemens Ladisch,
+Charles Keepax and Vinod Koul, in a view of application interfaces
+stable, safe and tolerant for long term usage. I'm unwilling to use my
+time more for light-minded work done to bring confusions to hardware-
+abstraction layers for user land applications.
+
+But, if possible, I'd request you to re-think about my proposal to
+return processed byte of TLV packet payload to user land, again. It
+looks to be intrusive, but in my taste, it doesn't bring much impacts to
+applications, than adding new flags to kernel/userspace interfaces.
+
+The length of processed bytes from drivers in ALSA SoC part might help
+developers to get current value of 'struct soc_bytes_ext.max' of each
+control element set. As of kernel 4.8, soc-da7218/nau8825/wm5102 modules
+implements the coefficients, and it's already in ALSA topology design. I
+believe it better to assist developers for the feature, than judging
+it's coarse and abuse for good APIs.
+
+
+Regards
+
+Takashi Sakamoto
