@@ -1,21 +1,22 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [PATCH] clk: x86: Add Atom PMC platform clocks
-Date: Fri, 2 Sep 2016 17:31:46 -0700
-Message-ID: <20160903003146.GO12510@codeaurora.org>
-References: <1471459276-11517-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <20160831003722.GH12510@codeaurora.org>
- <7c15a844-1351-f1ac-2ad0-3c41455fcc2e@linux.intel.com>
- <20160831170858.GA6560@sirena.org.uk>
- <9df1be06-8415-8cff-9468-0c4938f6e0fc@linux.intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] test: fix comment about first two fields
+ of TLV data payload
+Date: Sat, 3 Sep 2016 09:55:18 +0900
+Message-ID: <f9b45b94-cfec-2eaa-59a3-630eccd0e07a@sakamocchi.jp>
+References: <1472516505-8350-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5h7fay4ya7.wl-tiwai@suse.de>
+ <7934a94f-a725-1d4b-43f0-3ea24a435aee@sakamocchi.jp>
+ <dc879ef0-f95f-fd11-06bf-a31ac1a29e5d@ladisch.de>
+ <3e25f3bb-b951-a964-897f-11b2c9cb5d28@sakamocchi.jp>
+ <s5hmvjqe1k1.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id A49A62673BF
- for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2016 02:31:50 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <9df1be06-8415-8cff-9468-0c4938f6e0fc@linux.intel.com>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 44E2D2673BF
+ for <alsa-devel@alsa-project.org>; Sat,  3 Sep 2016 02:55:23 +0200 (CEST)
+In-Reply-To: <s5hmvjqe1k1.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,42 +26,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, irina.tirdea@intel.com, tiwai@suse.de, mturquette@baylibre.com, Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/01, Pierre-Louis Bossart wrote:
-> On 8/31/16 12:08 PM, Mark Brown wrote:
-> >On Tue, Aug 30, 2016 at 08:35:55PM -0500, Pierre-Louis Bossart wrote:
-> >>On 8/30/16 7:37 PM, Stephen Boyd wrote:
-> >
-> >>>It's sad that this can't be compiled on any platform. Has there
-> >>>been any move towards making this into a regmap provider so that
-> >>>this clk driver can use cross platform regmap APIs instead? Or
-> >
-> >>it's not clear to me what cross-platform goals you are hinting at and what
-> >>the concern is. We can add more framework stuff and make the code more
-> >>elegant but at the end of the day we will write in a very limited set of
-> >>registers (2 for audio - on/off and 19.2/25MHz selection) and the use of
-> >>this functionality is restricted to Baytrail and Cherrytrail.
-> >
-> >If code can be compiled on a wide range of platforms then that means
-> >that it's much easier to get build coverage of the code.  This is
-> >helpful for anyone doing any kind of cross tree updates - things like
-> >updating APIs for example.  The fewer configurations they have to touch
-> >to get everything built the easier it is for them.
-> 
-> ok, we can add a dummy pmc_write/read for non atom platforms so that
-> changes in the clock framework API can be handled without
-> configuration.
-> Using regmap to hide the IPC requests to the PCM seems a bit
-> over-engineered - we are talking about 2 registers per clock - and
-> bring limited benefits.
-
-Sure regmap may not be helpful. Even passing the iomem pointer
-through platform data and then using readl/writel would be good
-though.
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+T24gMjAxNuW5tDA55pyIMDPml6UgMDA6NTgsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBGcmks
+IDAyIFNlcCAyMDE2IDE2OjExOjMwICswMjAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
+Cj4+IE9uIEF1ZyAzMCAyMDE2IDE2OjI0LCBDbGVtZW5zIExhZGlzY2ggd3JvdGU6Cj4+PiBJbiB0
+aGUga2VybmVsLCB5b3UgY291bGQgdXNlIHRoZSBtYWNyb3MgZnJvbSBpbmNsdWRlL3NvdW5kL3Rs
+di5oLgo+Pj4KPj4+IEVpdGhlciBjb3B5IHRoZW0gaW50byB5b3VyIHRlc3QgcHJvZ3JhbSwgYW5k
+IHVzZSB0aGVtIGRpcmVjdGx5Ogo+Pj4KPj4+IAkvKiA0IHdvcmRzOiAqLwo+Pj4gCURFQ0xBUkVf
+VExWX0RCX01JTk1BWChvcmlnLCAtNjAsICs2MCk7Cj4+PiAJLyogY29udGFpbmVyIHdpdGggb25s
+eSBvbmUgc3ViaXRlbTsgOCB3b3JkczogKi8KPj4+IAlERUNMQVJFX1RMVl9DT05UQUlORVIob3Jp
+Z19jb250YWluZXIsCj4+PiAJCVRMVl9JVEVNKFNORFJWX0NUTF9UTFZUX0NITUFQX0ZJWEVELAo+
+Pj4gCQkJIFNORFJWX0NITUFQX0ZMLCBTTkRSVl9DSE1BUF9GUiwgU05EUlZfQ0hNQVBfRkMsIFNO
+RFJWX0NITUFQX0xGRSkKPj4+IAkpOwo+Pj4KPj4+IG9yIGNyZWF0ZSB0aGUgdmFsdWVzIGJ5IGhh
+bmQ6Cj4+Pgo+Pj4gCW9yaWdbMF0gPSBTTkRSVl9DVExfVExWVF9EQl9NSU5NQVg7Cj4+PiAJb3Jp
+Z1sxXSA9IDIgKiBzaXplb2YoKm9yaWcpOwo+Pj4gCW9yaWdbMl0gPSAtNjA7Cj4+PiAJb3JpZ1sz
+XSA9ICs2MDsKPj4+Cj4+PiAJb3JpZ19jb250YWluZXJbMF0gPSBTTkRSVl9DVExfVExWVF9DT05U
+QUlORVI7Cj4+PiAJb3JpZ19jb250YWluZXJbMV0gPSA2ICogc2l6ZW9mKCpvcmlnX2NvbnRhaW5l
+cik7Cj4+PiAJCW9yaWdfY29udGFpbmVyWzJdID0gU05EUlZfQ1RMX1RMVlRfQ0hNQVBfRklYRUQ7
+Cj4+PiAJCW9yaWdfY29udGFpbmVyWzNdID0gNCAqIHNpemVvZigqb3JpZ19jb250YWluZXIpOwo+
+Pj4gCQlvcmlnX2NvbnRhaW5lcls0XSA9IFNORFJWX0NITUFQX0ZMCj4+PiAJCW9yaWdfY29udGFp
+bmVyWzVdID0gU05EUlZfQ0hNQVBfRlI7Cj4+PiAJCW9yaWdfY29udGFpbmVyWzZdID0gU05EUlZf
+Q0hNQVBfRkM7Cj4+PiAJCW9yaWdfY29udGFpbmVyWzddID0gU05EUlZfQ0hNQVBfTEZFOwo+Pgo+
+PiBNbW0uIEZvciB1c2VyLWRlZmluZWQgY29udHJvbCBlbGVtZW50IHNldHMsIHRoZXNlIG1hY3Jv
+cyBzaG91bGQgYmUgaW4gVUFQSS4KPgo+IChBbHNvIHRoZXNlIG1hY3JvcyB3ZXJlIHJlY2VudGx5
+IGFscmVhZHkgcHV0IGluIHVhcGkvaW5jbHVkZS9zb3VuZC4pCgpBaCwgc29ycnksIEkgYWRkcmVz
+c2VkIHRvIG1hY3JvcyBzdWNoIGFzIERFQ0xBUkVfVExWX0RCX01JTk1BWCwgYmVjYXVzZQp0aGUg
+YXJyYXkgaXMgcHJlcHJvY2Vzc2VkIHRoZSBtYWNyby4KCj4gVGhlIG1hY3JvcyBhcmUgZm9yIHN0
+YXRpYyBkYXRhLCBhbmQgZm9yIHVzZXItc3BhY2UsIGl0J3MgYmV0dGVyIHRvCj4gaGF2ZSBmdW5j
+dGlvbnMgZmlsbGluZyB0aGUgVExWLCBJTU8uCgpJbiBhIHBvaW50IG9mIG1haW50ZW5hbmNlLCBp
+dCdzIHByZWZlcmFibGUgdGhhdCBhIHNpbmdsZSBmaWxlIGdpdmVzIHRoZQpmZWF0dXJlLiBObyBu
+ZWVkIHRvIGhhdmUgc2V2ZXJhbCBmaWxlcyBmb3IgZXhhY3RseSB0aGUgc2FtZSBmZWF0dXJlLgoK
+T2YgY291cnNlLCB3ZSBjYW4gbW92ZSB0aGUgbWFjcm9zIHRvIFVBUEkgYW5kIGdpdmUgaW5saW5l
+IGZ1bmN0aW9uIEFQSXMKZm9yIGFwcGxpY2F0aW9ucyB0byBleHBhbmQgd2l0aCB0aGUgbWFjcm9z
+LiBCdXQsIHRoaXMgaXMgYSBiaXQgZHVsbAphcHByb2FjaCB0byBtZS4KCgpSZWdhcmRzCgpUYWth
+c2hpIFNha2Ftb3RvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
