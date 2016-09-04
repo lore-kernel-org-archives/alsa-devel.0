@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 0/2] ALSA: control: limit life time of
-	user-defined element set
-Date: Sun,  4 Sep 2016 19:06:54 +0900
-Message-ID: <1472983616-16254-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/2] ALSA: control: bump up protocol version to
+	2.0.8
+Date: Sun,  4 Sep 2016 19:06:56 +0900
+Message-ID: <1472983616-16254-3-git-send-email-o-takashi@sakamocchi.jp>
+References: <1472983616-16254-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E59CA265D21
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E46C3265D1C
  for <alsa-devel@alsa-project.org>; Sun,  4 Sep 2016 12:07:04 +0200 (CEST)
+In-Reply-To: <1472983616-16254-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,48 +25,30 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: jimmy@spalge.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In former commit, life time of user-defined element set is limited.
+This is a change of protocol between kernel/userland and tell it to
+applications so that they can judge to remove added element sets
+voluntarily or not.
 
-This patchset is an example to implement an idea mentioned in this thread:
+This commit bumps up the version of protocol.
 
-[alsa-devel] [PATCH] Softvol: Allow per process volume control.
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-July/095026.html
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ include/uapi/sound/asound.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-ALSA control core allows applications to add arbitrary element sets to an
-instance of control device, while removal of the element sets is voluntarily
-done by some applications. This is not convenient to certain situations.
-For example, an application adds some element sets, then aborted due to
-programming mistakes, and restart. Needless elements can be added one after
-another.
-
-This patchset limits life time of user-defined element set. Basically, the life
-time is corresponding to a file descriptor opened by a process to add element
-sets. However, elements can be locked by the other processes. For this case,
-this patchset counts locked elements, then judge to remove an element set
-including these elements.
-
-My large concern is whether there's any applications to open a file descriptor
-just to add any element sets. In this case, added element sets are removed
-immediately at closing the file descriptor unexpectedly to the application, and
-unavailable to the other processes anymore. In this point, this patchset is
-intrusive.
-
-(But I'm a bit optimistic because use-defined element set is long abandoned not
-to work well in several items, and there may be probably few consumers in user
-space. Perhaps, this change is acceptable, I hope.)
-
-To reviewers, my aim for this patchset is to show attempts to synchronize life
-time of user-defined element set to file descriptors. Any objections are
-welcome. Then, I'd like to receive alternative ideas, especially for definition
-of the life time.
-
-Takashi Sakamoto (2):
-  ALSA: control: limit life time of user-defined element set
-  ALSA: control: bump up protocol version to 2.0.8
-
- include/uapi/sound/asound.h |   2 +-
- sound/core/control.c        | 101 +++++++++++++++++++++++++++++++++++++-------
- 2 files changed, 87 insertions(+), 16 deletions(-)
-
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 609cadb..34c6f3e 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -805,7 +805,7 @@ struct snd_timer_tread {
+  *                                                                          *
+  ****************************************************************************/
+ 
+-#define SNDRV_CTL_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 7)
++#define SNDRV_CTL_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 8)
+ 
+ struct snd_ctl_card_info {
+ 	int card;			/* card number */
 -- 
 2.7.4
