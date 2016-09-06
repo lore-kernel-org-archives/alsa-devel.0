@@ -1,50 +1,63 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: sun4i-codec: Distinguish sun4i from sun7i
-Date: Tue, 6 Sep 2016 01:58:26 +0100
-Message-ID: <20160906005826.GC3950@sirena.org.uk>
-References: <20160905192404.13871-1-dannym@scratchpost.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ULkDCyeHsmlwbqED"
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
+Subject: [PATCH v2] ASoC: rockchip: i2s: restore register during runtime_suspend/resume cycle
+Date: Tue,  6 Sep 2016 09:19:53 +0800
+Message-ID: <1473124793-74625-1-git-send-email-sugar.zhang@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160905192404.13871-1-dannym@scratchpost.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Danny Milosavljevic <dannym@scratchpost.org>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi@googlegroups.com
+To: dianders@chromium.org, broonie@kernel.org
+Cc: linux-rockchip@lists.infradead.org, Sugar Zhang <sugar.zhang@rock-chips.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+when step into runtime_suspend, i2s pd will be disabled and loss state.
+so need to restore register when runtime_resume.
 
---ULkDCyeHsmlwbqED
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
 
-On Mon, Sep 05, 2016 at 09:24:03PM +0200, Danny Milosavljevic wrote:
-> Here's just the part that allows distinguishing sun4i from sun7i.
->=20
-> Since I'm waiting for Chen-Yu's DAPM_DOUBLE patch series I figured I'd po=
-st the preliminaries in the mean time which will not change and can be appl=
-ied independently without problems.
+---
 
-Please don't send cover letters for single patches, if there is anything
-that needs saying put it in the changelog of the patch or after the ---
-if it's administrative stuff.  This reduces mail volume and ensures that=20
-any important information is recorded in the changelog rather than being
-lost.=20
+Changes in v2:
+- remove system suspend/resume and restore register
+  in runtime_suspend/resume per Doug Anderson's suggestion
 
---ULkDCyeHsmlwbqED
-Content-Type: application/pgp-signature; name="signature.asc"
+ sound/soc/rockchip/rockchip_i2s.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-
-iQEcBAEBCAAGBQJXzhSxAAoJECTWi3JdVIfQWUYH/1oC6NzWu3gx1jPkM76i8itk
-4trc7emA2epDnHy02XzAn454JNIz/ZmWZJJe/pui3W3UrkERt0M9FYNWOMSAv+x8
-vN9YGmqi5HwZ/AMyBvui8LMDf2Wr3L8ueDSOKEu/BIrDoQyiNprobXZ0kn0iwcrA
-5cvUf+JYXtc5Ffln4VUQ+6glnJiJlnyoKCgGdQK7F6jbdA8lLKZrn3XmFeAoPaCb
-kd2QJT4qjuWLOCoafUoT0Fnc1f6aDhFUfzweA73r8I1sSKuFnuDkZUOLN/c9tEg2
-3jkE4CbXKf4ssbBccR20qE5kbyjsuYgKT1EPGfdwA+7sHwohEF4nzqPZS3qtvso=
-=NwJJ
------END PGP SIGNATURE-----
-
---ULkDCyeHsmlwbqED--
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 652e8c5..98b6822 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -57,6 +57,7 @@ static int i2s_runtime_suspend(struct device *dev)
+ {
+ 	struct rk_i2s_dev *i2s = dev_get_drvdata(dev);
+ 
++	regcache_cache_only(i2s->regmap, true);
+ 	clk_disable_unprepare(i2s->mclk);
+ 
+ 	return 0;
+@@ -65,7 +66,7 @@ static int i2s_runtime_suspend(struct device *dev)
+ static int i2s_runtime_resume(struct device *dev)
+ {
+ 	struct rk_i2s_dev *i2s = dev_get_drvdata(dev);
+-	int ret;
++	int ret = 0;
+ 
+ 	ret = clk_prepare_enable(i2s->mclk);
+ 	if (ret) {
+@@ -73,7 +74,14 @@ static int i2s_runtime_resume(struct device *dev)
+ 		return ret;
+ 	}
+ 
+-	return 0;
++	regcache_cache_only(i2s->regmap, false);
++	regcache_mark_dirty(i2s->regmap);
++
++	ret = regcache_sync(i2s->regmap);
++	if (ret)
++		clk_disable_unprepare(i2s->mclk);
++
++	return ret;
+ }
+ 
+ static inline struct rk_i2s_dev *to_info(struct snd_soc_dai *dai)
+-- 
+1.9.1
