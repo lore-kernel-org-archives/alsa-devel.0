@@ -1,48 +1,57 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rockchip: i2s: restore register during
- runtime_suspend/resume cycle
-Date: Tue, 6 Sep 2016 11:29:44 +0100
-Message-ID: <20160906102944.GH3950@sirena.org.uk>
-References: <1473124793-74625-1-git-send-email-sugar.zhang@rock-chips.com>
+Subject: Re: [PATCH] ASoC: sun4i-codec: Distinguish sun4i from sun7i
+Date: Tue, 6 Sep 2016 11:28:14 +0100
+Message-ID: <20160906102814.GG3950@sirena.org.uk>
+References: <20160905192404.13871-1-dannym@scratchpost.org>
+ <20160905192404.13871-2-dannym@scratchpost.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Qp+4iQ/pA/lPyvuI"
+        protocol="application/pgp-signature"; boundary="A1+ljxmNgwU2bK8G"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1473124793-74625-1-git-send-email-sugar.zhang@rock-chips.com>
+In-Reply-To: <20160905192404.13871-2-dannym@scratchpost.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc: dianders@chromium.org, linux-rockchip@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Danny Milosavljevic <dannym@scratchpost.org>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi@googlegroups.com
 List-Id: alsa-devel@alsa-project.org
 
 
---Qp+4iQ/pA/lPyvuI
+--A1+ljxmNgwU2bK8G
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 06, 2016 at 09:19:53AM +0800, Sugar Zhang wrote:
+On Mon, Sep 05, 2016 at 09:24:04PM +0200, Danny Milosavljevic wrote:
 
->  	struct rk_i2s_dev *i2s =3D dev_get_drvdata(dev);
-> -	int ret;
-> +	int ret =3D 0;
-> =20
+> -static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
+> -	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
+> -		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
+> -		       sun4i_codec_pa_volume_scale),
+> +#define SUN4I_COMMON_CODEC_CONTROLS \
+> +	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,\
+> +		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,\
+> +		       sun4i_codec_pa_volume_scale)
+> +
+> +static const struct snd_kcontrol_new sun4i_codec_controls[] = {
+> +	SUN4I_COMMON_CODEC_CONTROLS,
+> +};
 
-Why are you initializing this?  All this will do is stop the compiler
-warning you about use without initializaiton bugs.
+No, please don't do this - macros like this just make the code harder to
+work with.  Do what everything else that handles multiple devices in one
+driver does and have several different tables of controls, registering
+the ones that are appropriate for the current device at runtime.
 
---Qp+4iQ/pA/lPyvuI
+--A1+ljxmNgwU2bK8G
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCAAGBQJXzpqXAAoJECTWi3JdVIfQRQgH/1mnJri6ikRLM2L57wLKHdFa
-AVK+uulyNrtwi5BhpfTEvbYdiAGCqh5dm8iXlj0viPe5DkDJh9O9cuF0olLwdxlp
-W4h4CSqDwZpq0fOHDorICJD2Woi85yt+9JX4Fr0BGHHHM2Hf6TKffUfptbU5qktl
-Rl8Dvzoacnim+txD85jw6ejAN774bbCCpqSOeUeRxO0UGHcx3Mxo5NfQQ7d7Dl/g
-vamCjxYXZNCJCVqCok3o6typke4velEOPvYeaIprkcrJSFfm4XdLcwolFZkxiKWp
-FmFrxKfQvN+as7hCOlpa6zicSe41U9kHaWkhE/XJzMNghdrVjMr3CNV/ZfDsdoU=
-=RooU
+iQEcBAEBCAAGBQJXzpo9AAoJECTWi3JdVIfQ8Y4H/1eJac+deW70yGXvlRnXR47T
+hrzSJZEKdAWzgb9YCJ5FD27cR9XGrbZZTo4iE+cvy73vko3JdDbEznz/48Q9InrS
+zErePk5dLSSmZg8Ibg7LfljXkG1TJ5DCOu21oYf1g3Yir86p98i7vRl15MZwJwh8
+1fJs60cnYn/G2yttxeg8FHhFWTPWYLYqh1WPdTT2EoG9WEskSwBif1hSoT4j31s6
+tENaNVJ3Jsi7AnvECFEbmC0jRSPlNpf0tsnukpG5UDlTHPj+KIpCYbt5Vb+cvCZj
+YkeCKbPuJ/0r/e7/orf/E6UXDaN9JieuYcAS9vpuaYa+ir0Kk9G7GyB5PqFFWkc=
+=U/KG
 -----END PGP SIGNATURE-----
 
---Qp+4iQ/pA/lPyvuI--
+--A1+ljxmNgwU2bK8G--
