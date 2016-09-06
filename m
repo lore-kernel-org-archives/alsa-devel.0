@@ -1,160 +1,50 @@
-From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Subject: [PATCH] ASoC: sun4i-codec: Distinguish sun4i from sun7i
-Date: Mon,  5 Sep 2016 21:24:04 +0200
-Message-ID: <20160905192404.13871-2-dannym@scratchpost.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: sun4i-codec: Distinguish sun4i from sun7i
+Date: Tue, 6 Sep 2016 01:58:26 +0100
+Message-ID: <20160906005826.GC3950@sirena.org.uk>
 References: <20160905192404.13871-1-dannym@scratchpost.org>
-Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCPKHTHNWIPBBBENW67AKGQEAWZNNPY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20160905192404.13871-1-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Cc: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ULkDCyeHsmlwbqED"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20160905192404.13871-1-dannym@scratchpost.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Danny Milosavljevic <dannym@scratchpost.org>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi@googlegroups.com
 List-Id: alsa-devel@alsa-project.org
 
-ASoC: sun4i-codec: Distinguish sun4i from sun7i
 
-Introduce mechanism to detect sun7i and provide a different regmap, codec
-and different controls for it - different compared to sun4i Allwinner A10.
+--ULkDCyeHsmlwbqED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The controls will be extended in a forthcoming patch - it is necessary to
-distinguish between sun4i and sun7i controls because the mic gains are in
-different registers.
+On Mon, Sep 05, 2016 at 09:24:03PM +0200, Danny Milosavljevic wrote:
+> Here's just the part that allows distinguishing sun4i from sun7i.
+>=20
+> Since I'm waiting for Chen-Yu's DAPM_DOUBLE patch series I figured I'd po=
+st the preliminaries in the mean time which will not change and can be appl=
+ied independently without problems.
 
-Renamed SUN4I_CODEC_AC_SYS_VERI to SUN7I_CODEC_AC_DAC_CAL and renamed
-SUN4I_CODEC_AC_MIC_PHONE_CAL to SUN7I_CODEC_AC_MIC_PHONE_CAL because these
-are actually not present on Allwinner A10.
+Please don't send cover letters for single patches, if there is anything
+that needs saying put it in the changelog of the patch or after the ---
+if it's administrative stuff.  This reduces mail volume and ensures that=20
+any important information is recorded in the changelog rather than being
+lost.=20
 
-Handle quirks by regmap config and codec and select the correct quirks
-automatically.
+--ULkDCyeHsmlwbqED
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
----
- sound/soc/sunxi/sun4i-codec.c | 66 +++++++++++++++++++++++++++++++++++--------
- 1 file changed, 54 insertions(+), 12 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 0e19c50..8531c93 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -96,8 +96,8 @@
- /* Other various ADC registers */
- #define SUN4I_CODEC_DAC_TXCNT			(0x30)
- #define SUN4I_CODEC_ADC_RXCNT			(0x34)
--#define SUN4I_CODEC_AC_SYS_VERI			(0x38)
--#define SUN4I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
-+#define SUN7I_CODEC_AC_DAC_CAL			(0x38)
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
- 
- struct sun4i_codec {
- 	struct device	*dev;
-@@ -509,10 +509,17 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
- 
- static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
- 
--static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
--	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
--		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
--		       sun4i_codec_pa_volume_scale),
-+#define SUN4I_COMMON_CODEC_CONTROLS \
-+	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,\
-+		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,\
-+		       sun4i_codec_pa_volume_scale)
-+
-+static const struct snd_kcontrol_new sun4i_codec_controls[] = {
-+	SUN4I_COMMON_CODEC_CONTROLS,
-+};
-+
-+static const struct snd_kcontrol_new sun7i_codec_controls[] = {
-+	SUN4I_COMMON_CODEC_CONTROLS,
- };
- 
- static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
-@@ -629,8 +636,19 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
- 
- static struct snd_soc_codec_driver sun4i_codec_codec = {
- 	.component_driver = {
--		.controls		= sun4i_codec_widgets,
--		.num_controls		= ARRAY_SIZE(sun4i_codec_widgets),
-+		.controls		= sun4i_codec_controls,
-+		.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
-+		.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
-+		.dapm_routes		= sun4i_codec_codec_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(sun4i_codec_codec_dapm_routes),
-+	},
-+};
-+
-+static struct snd_soc_codec_driver sun7i_codec_codec = {
-+	.component_driver = {
-+		.controls		= sun7i_codec_controls,
-+		.num_controls		= ARRAY_SIZE(sun7i_codec_controls),
- 		.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
- 		.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
- 		.dapm_routes		= sun4i_codec_codec_dapm_routes,
-@@ -682,12 +700,34 @@ static const struct regmap_config sun4i_codec_regmap_config = {
- 	.reg_bits	= 32,
- 	.reg_stride	= 4,
- 	.val_bits	= 32,
--	.max_register	= SUN4I_CODEC_AC_MIC_PHONE_CAL,
-+	.max_register	= SUN4I_CODEC_ADC_RXCNT,
-+};
-+
-+static const struct regmap_config sun7i_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
-+};
-+
-+struct sun4i_quirks {
-+	const struct snd_soc_codec_driver *codec;
-+	const struct regmap_config *regmap_config;
-+};
-+
-+static const struct sun4i_quirks sun4i_quirks = {
-+	.codec = &sun4i_codec_codec,
-+	.regmap_config = &sun4i_codec_regmap_config,
-+};
-+
-+static const struct sun4i_quirks sun7i_quirks = {
-+	.codec = &sun7i_codec_codec,
-+	.regmap_config = &sun7i_codec_regmap_config,
- };
- 
- static const struct of_device_id sun4i_codec_of_match[] = {
--	{ .compatible = "allwinner,sun4i-a10-codec" },
--	{ .compatible = "allwinner,sun7i-a20-codec" },
-+	{ .compatible = "allwinner,sun4i-a10-codec", .data = &sun4i_quirks },
-+	{ .compatible = "allwinner,sun7i-a20-codec", .data = &sun7i_quirks },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
-@@ -760,6 +800,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card;
- 	struct sun4i_codec *scodec;
-+	struct sun4i_quirks *quirks;
- 	struct resource *res;
- 	void __iomem *base;
- 	int ret;
-@@ -777,8 +818,9 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 		return PTR_ERR(base);
- 	}
- 
-+	quirks = of_device_get_match_data(&pdev->dev);
- 	scodec->regmap = devm_regmap_init_mmio(&pdev->dev, base,
--					     &sun4i_codec_regmap_config);
-+					       quirks->regmap_config);
- 	if (IS_ERR(scodec->regmap)) {
- 		dev_err(&pdev->dev, "Failed to create our regmap\n");
- 		return PTR_ERR(scodec->regmap);
--- 
-2.1.4
+iQEcBAEBCAAGBQJXzhSxAAoJECTWi3JdVIfQWUYH/1oC6NzWu3gx1jPkM76i8itk
+4trc7emA2epDnHy02XzAn454JNIz/ZmWZJJe/pui3W3UrkERt0M9FYNWOMSAv+x8
+vN9YGmqi5HwZ/AMyBvui8LMDf2Wr3L8ueDSOKEu/BIrDoQyiNprobXZ0kn0iwcrA
+5cvUf+JYXtc5Ffln4VUQ+6glnJiJlnyoKCgGdQK7F6jbdA8lLKZrn3XmFeAoPaCb
+kd2QJT4qjuWLOCoafUoT0Fnc1f6aDhFUfzweA73r8I1sSKuFnuDkZUOLN/c9tEg2
+3jkE4CbXKf4ssbBccR20qE5kbyjsuYgKT1EPGfdwA+7sHwohEF4nzqPZS3qtvso=
+=NwJJ
+-----END PGP SIGNATURE-----
+
+--ULkDCyeHsmlwbqED--
