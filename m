@@ -1,136 +1,106 @@
-From: Chris Zhong <zyw@rock-chips.com>
-Subject: [PATCH 2/2] ASoC: rockchip: Add DP dai-links to the rk3399-gru machine driver
-Date: Mon,  5 Sep 2016 21:48:55 -0700
-Message-ID: <1473137335-14541-3-git-send-email-zyw@rock-chips.com>
-References: <1473137335-14541-1-git-send-email-zyw@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1473137335-14541-1-git-send-email-zyw@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: dianders@chromium.org, heiko@sntech.de, zhengxing@rock-chips.com, cychiang@chromium.org
-Cc: linux-rockchip@lists.infradead.org, Chris Zhong <zyw@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-arm-kernel@lists.infradead.org
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH 03/13] ASoC: topology: ABI - Define DPCM
+ trigger ordering for PCM
+Date: Tue, 6 Sep 2016 14:15:55 +0800
+Message-ID: <57CE5F1B.3020601@linux.intel.com>
+References: <cover.1471599648.git.mengdong.lin@linux.intel.com>
+ <24428c2714d09062f3ace5803679c743d36afb04.1471599648.git.mengdong.lin@linux.intel.com>
+ <20160823174135.GA22076@sirena.org.uk> <57C91FD8.1090205@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 745AB266552
+ for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2016 08:09:53 +0200 (CEST)
+In-Reply-To: <57C91FD8.1090205@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds DP audio output support to the rk3300-gru machine
-driver.
++ Rakesh
 
-Signed-off-by: Chris Zhong <zyw@rock-chips.com>
-hychao@chromium.org, broonie@kernel.org
----
 
- .../bindings/sound/rockchip,rk3399-gru-sound.txt   | 13 +++---
- sound/soc/rockchip/rk3399_gru_sound.c              | 48 ++++++++++++++++++++++
- 2 files changed, 55 insertions(+), 6 deletions(-)
+Hi Hardik/Vinod/Rakesh,
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-index f19b6c8..222124b 100644
---- a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-@@ -1,15 +1,16 @@
--ROCKCHIP with MAX98357A/RT5514/DA7219 codecs on GRU boards
-+ROCKCHIP with MAX98357A/RT5514/DA7219 codecs and DP via spdif on GRU boards
- 
- Required properties:
- - compatible: "rockchip,rk3399-gru-sound"
--- rockchip,cpu: The phandle of the Rockchip I2S controller that's
--  connected to the codecs
--- rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
-+- rockchip,cpu: The phandle of the Rockchip I2S controller controller that's
-+  connected to the codecs, and the SPDIF controller that's connected to DP
-+- rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs and of the
-+  DP encoder node
- 
- Example:
- 
- sound {
- 	compatible = "rockchip,rk3399-gru-sound";
--	rockchip,cpu = <&i2s0>;
--	rockchip,codec = <&max98357a &rt5514 &da7219>;
-+	rockchip,cpu = <&i2s0 &spdif>;
-+	rockchip,codec = <&max98357a &rt5514 &da7219 &cdn_dp 1>;
- };
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 164b6da..50e5d9a 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -25,6 +25,7 @@
- #include <linux/spi/spi.h>
- #include <sound/core.h>
- #include <sound/jack.h>
-+#include <sound/hdmi-codec.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -226,10 +227,30 @@ static struct snd_soc_ops rockchip_sound_da7219_ops = {
- 	.hw_params = rockchip_sound_da7219_hw_params,
- };
- 
-+static struct snd_soc_jack cdn_dp_card_jack;
-+
-+static int cdn_dp_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	struct snd_soc_card *card = runtime->card;
-+	struct snd_soc_codec *codec = runtime->codec;
-+	int ret;
-+
-+	/* enable jack detection */
-+	ret = snd_soc_card_jack_new(card, "DP Jack", SND_JACK_LINEOUT,
-+				    &cdn_dp_card_jack, NULL, 0);
-+	if (ret) {
-+		dev_err(card->dev, "Can't new DP Jack %d\n", ret);
-+		return ret;
-+	}
-+
-+	return hdmi_codec_set_jack_detect(codec, &cdn_dp_card_jack);
-+}
-+
- enum {
- 	DAILINK_MAX98357A,
- 	DAILINK_RT5514,
- 	DAILINK_DA7219,
-+	DAILINK_CDNDP,
- 	DAILINK_RT5514_DSP,
- };
- 
-@@ -264,6 +285,14 @@ static struct snd_soc_dai_link rockchip_dailinks[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
- 	},
-+	[DAILINK_CDNDP] = {
-+		.name = "DP",
-+		.stream_name = "DP PCM",
-+		.codec_dai_name = "spdif-hifi",
-+		.init = cdn_dp_init,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS,
-+	},
- 	/* RT5514 DSP for voice wakeup via spi bus */
- 	[DAILINK_RT5514_DSP] = {
- 		.name = "RT5514 DSP",
-@@ -334,6 +363,25 @@ static int rockchip_sound_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
-+	cpu_node = of_parse_phandle(pdev->dev.of_node, "rockchip,cpu", 1);
-+	if (!cpu_node) {
-+		dev_err(&pdev->dev, "Property 'rockchip,cpu 1' missing or invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	rockchip_dailinks[DAILINK_CDNDP].platform_of_node = cpu_node;
-+	rockchip_dailinks[DAILINK_CDNDP].cpu_of_node = cpu_node;
-+
-+	rockchip_dailinks[DAILINK_CDNDP].codec_of_node =
-+		of_parse_phandle(pdev->dev.of_node, "rockchip,codec",
-+				 DAILINK_CDNDP);
-+	if (!rockchip_dailinks[DAILINK_CDNDP].codec_of_node) {
-+		dev_err(&pdev->dev,
-+			"Property[%d] 'rockchip,codec' missing or invalid\n",
-+			DAILINK_CDNDP);
-+		return -EINVAL;
-+	}
-+
- 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
- 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
- 	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
--- 
-1.9.1
+Would you please share more info about DPCM trigger ordering used in 
+current ADSP firmware? And why we hope to configure this by topology?
+
+Here is Mark's question "Why do these things need to be triggered in 
+this particular order and why is that invisible to the system?".
+
+Please see link 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-September/112539.html
+
+My mail client lost Mark's mail so I paste the link here.
+
+Thanks
+Mengdong
+
+On 09/02/2016 02:44 PM, Mengdong Lin wrote:
+>
+>
+> On 08/24/2016 01:41 AM, Mark Brown wrote:
+>> On Fri, Aug 19, 2016 at 06:12:55PM +0800, mengdong.lin@linux.intel.com
+>> wrote:
+>>
+>>> Definition of dynamic PCM trigger ordering is exposed to uapi asoc.h,
+>>> and topology allows user space to define the trigger ordering for PCM
+>>> (FE links).
+>>
+>> This seems *incredibly* implementation specific.  Why wouldn't the
+>> driver for the thing implementing the topology be able to figure out the
+>> ordering here?  What's the use case?  What happens when we change away
+>> from DPCM?
+>>
+>
+> There is another patch (04/13) to add generic flags and flag mask to PCM
+> objects. So we'll allow users to set DPCM trigger ordering as flags as
+> below, to avoid using trigger[] in ABI. The topology kernel driver will
+> check the flag bits and set the proper trigger ordering to FE DAI links.
+> If we change away from DPCM in the future, user can stop using these
+> flags. And the 32-bit flags seems enough for future extension.
+>
+> diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+> index f734bea..30da32f 100644
+> --- a/include/uapi/sound/asoc.h
+> +++ b/include/uapi/sound/asoc.h
+> @@ -130,6 +130,16 @@
+>   #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
+>   #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
+>
+> +/* DAI link flags */
+> +#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND          (1 << 0)
+> +#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME   (1 << 1)
+> +#define SND_SOC_TPLG_LNK_FLGBIT_PLAYBACK_DPCM_TRIGGER_PRE       (1<<2)
+> +#define SND_SOC_TPLG_LNK_FLGBIT_PLAYBACK_DPCM_TRIGGER_POST      (1<<3)
+> +#define SND_SOC_TPLG_LNK_FLGBIT_PLAYBACK_DPCM_TRIGGER_BESPOKE   (1<<4)
+> +#define SND_SOC_TPLG_LNK_FLGBIT_CAPTURE_DPCM_TRIGGER_PRE        (1<<2)
+> +#define SND_SOC_TPLG_LNK_FLGBIT_CAPTURE_DPCM_TRIGGER_POST       (1<<3)
+> +#define SND_SOC_TPLG_LNK_FLGBIT_CAPTURE_DPCM_TRIGGER_BESPOKE    (1<<4)
+> +
+>   /*
+>    * Block Header.
+>    * This header precedes all object and object arrays below.
+> @@ -439,6 +449,8 @@ struct snd_soc_tplg_pcm {
+>          struct snd_soc_tplg_stream
+> stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* for DAI link */
+>          __le32 num_streams;     /* number of streams */
+>          struct snd_soc_tplg_stream_caps caps[2]; /* playback and
+> capture for DAI */
+> +       __le32 flag_mask;       /* bitmask of flags to configure */
+> +       __le32 flags;           /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
+>   } __attribute__((packed));
+>
+>
+> Thanks
+> Mengdong
