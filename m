@@ -1,52 +1,81 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH] ASoC: dpcm: Don't apply symmetry for BE with
-	hw param fixup
-Date: Tue,  6 Sep 2016 14:17:55 +0530
-Message-ID: <1473151675-1945-1-git-send-email-jeeja.kp@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 877F326698E
- for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2016 10:39:36 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: [PATCH v4 0/6] ASoC: Add support to Qualcomm msm8916-wcd multi codec
+Date: Tue,  6 Sep 2016 10:57:39 +0100
+Message-ID: <1473155865-13361-1-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+This patchset aims at adding msm8916-wcd multi codec support.
+msm8916-wcd codec is found in Qualcomm msm8916 and apq8016 processors.
+This codec IP is split in to two parts(Digital & Analog), Analog part
+is integrated in to PMIC PM8916 and the digital part is integrated into
+Application processor. Register access to the analog part is done via
+SPMI interface to PMIC, and registers on the Application processor are
+memory mapped. Data transfer between Analog and Digital Die is done via
+a internal bus called PDM.
 
-If be_hw_param_fixup is defined for BE then it will
-force the BE to a specific configuration supported
-by HW. In this case don't apply symmetry.
+Most of this driver is ported from downstream Andriod v3.10 kernel.
+Jack support and Headset button detection code is not added in to this
+series.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/soc/soc-pcm.c | 3 +++
- 1 file changed, 3 insertions(+)
+First two patches add digital and analog codec support and the follow on
+patches add routes and multicodec support to the sound card and
+finally dts patch for board.
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 60d702f..c1bfe9d 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1694,6 +1694,9 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
- 		struct snd_soc_pcm_runtime *rtd = be_substream->private_data;
- 		int i;
- 
-+		if (rtd->dai_link->be_hw_params_fixup)
-+			continue;
-+
- 		if (soc_pcm_has_symmetry(be_substream))
- 			be_substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
- 
+This codec support:
+ - 3 Microphones: Primary Mic(Handset mic), Headset Mic and Secondary Mic.
+ - 2 Digital Microphones.
+ - 2 Mic Bias Circuits.
+ - Earpiece
+ - Headset
+ - Loud Speaker.
+ - Jack Detect.
+ - Headset Button detection circuit.
+
+Tested this code on v4.8-rc3 with for Headset (Mic and speakers), Secondary Mic
+and Loudspeaker on DB410C. DMIC should work too.
+
+
+Thanks,
+srini
+
+Changes since v3:
+	- Split the codec to 2 seperate codecs digital and analog,
+	suggested by Mark and Kenneth.
+	- Addressed various suggestions from Mark and Kenneth.
+
+Srinivas Kandagatla (6):
+  ASoC: codecs: Add msm8916-wcd analog codec
+  ASoC: codecs: Add msm8916-wcd digital codec
+  ASoC: qcom: apq8016-sbc: add board specific dapm mic widgets
+  ASoC: qcom: apq8016-sbc: add support to routing via DT
+  ASoC: qcom: apq8016-sbc: Add support to multi codec.
+  arm64: dts: apq8016-sbc: add analog audio support with multicodec
+
+ .../devicetree/bindings/sound/qcom,apq8016-sbc.txt |  30 +
+ .../bindings/sound/qcom,msm8916-wcd-analog.txt     |  83 ++
+ .../bindings/sound/qcom,msm8916-wcd-digital.txt    |  20 +
+ arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi          |  63 ++
+ arch/arm64/boot/dts/qcom/msm8916.dtsi              |   9 +
+ arch/arm64/boot/dts/qcom/pm8916.dtsi               |  45 +-
+ sound/soc/codecs/Kconfig                           |   7 +
+ sound/soc/codecs/Makefile                          |   5 +-
+ sound/soc/codecs/msm8916-wcd-analog.c              | 888 +++++++++++++++++++
+ sound/soc/codecs/msm8916-wcd-digital.c             | 954 +++++++++++++++++++++
+ sound/soc/qcom/apq8016_sbc.c                       |  31 +-
+ 11 files changed, 2125 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-digital.txt
+ create mode 100644 sound/soc/codecs/msm8916-wcd-analog.c
+ create mode 100644 sound/soc/codecs/msm8916-wcd-digital.c
+
 -- 
-2.5.0
+2.7.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
