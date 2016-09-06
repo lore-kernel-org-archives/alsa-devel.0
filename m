@@ -1,102 +1,42 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH 0/2] ALSA: control: limit life time of
- user-defined element set
-Date: Tue, 6 Sep 2016 11:16:28 +0900
-Message-ID: <6cc7e474-64f0-d74e-61bd-e6428929f984@sakamocchi.jp>
-References: <1472983616-16254-1-git-send-email-o-takashi@sakamocchi.jp>
- <c05a8424-724d-89a1-7a70-c2365420d7d7@ladisch.de>
- <s5hpoojd3k8.wl-tiwai@suse.de>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: Re: [PATCH] ASoC: sun4i-codec: Distinguish sun4i from sun7i
+Date: Tue, 6 Sep 2016 11:29:52 +0800
+Message-ID: <CAGb2v67yFx1VxGFWQk-Z9V=BQN0kfj1YJWfqb5RCNRUwVWrjbA@mail.gmail.com>
+References: <20160905192404.13871-1-dannym@scratchpost.org> <20160905192404.13871-2-dannym@scratchpost.org>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 2D77E2666AC
- for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2016 04:16:31 +0200 (CEST)
-In-Reply-To: <s5hpoojd3k8.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
-Cc: jimmy@spalge.com, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBSHQXC7AKGQEWBIPWKA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20160905192404.13871-2-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Sep 5 2016 01:37, Takashi Iwai wrote:
-> On Sun, 04 Sep 2016 17:38:20 +0200,
-> Clemens Ladisch wrote:
->>
->> Takashi Sakamoto wrote:
->>> ALSA control core allows applications to add arbitrary element sets to an
->>> instance of control device, while removal of the element sets is voluntarily
->>> done by some applications. This is not convenient to certain situations.
->>
->> This was originally designed for softvol, where the user-defined element
->> should behave as much as possible as a hardware control.
->>
->>> My large concern is whether there's any applications to open a file descriptor
->>> just to add any element sets.
->>
->> alsactl restore
+On Tue, Sep 6, 2016 at 3:24 AM, Danny Milosavljevic
+<dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org> wrote:
+> ASoC: sun4i-codec: Distinguish sun4i from sun7i
 >
-> Yes, and this is actually 99% of use cases for now: restoring the
-> persistent softvol element at the boot time.
+> Introduce mechanism to detect sun7i and provide a different regmap, codec
+> and different controls for it - different compared to sun4i Allwinner A10.
+>
+> The controls will be extended in a forthcoming patch - it is necessary to
+> distinguish between sun4i and sun7i controls because the mic gains are in
+> different registers.
+>
+> Renamed SUN4I_CODEC_AC_SYS_VERI to SUN7I_CODEC_AC_DAC_CAL and renamed
+> SUN4I_CODEC_AC_MIC_PHONE_CAL to SUN7I_CODEC_AC_MIC_PHONE_CAL because these
+> are actually not present on Allwinner A10.
+>
+> Handle quirks by regmap config and codec and select the correct quirks
+> automatically.
+>
+> Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 
-Aha. I didn't realize alsactl calls library APIs to add control element 
-sets. I was just aware of PCM softvol plugin. Thanks for your notification.
-
-> A similar idea to implement a process-bound user-space kctl has popped
-> up a few times in the past, but it's never realized, since no one
-> could find it really useful / demanded.
-
-For my information, if possible, would you please show pointers to the 
-proposals?
-
-> You may say that it can be used for some application-specific volume or
-> such, but what would be it exactly?
-
-I have a plan for a daemon program in user land. It allows ALSA 
-applications to control DSP configurations of audio and music units on 
-IEEE 1394 bus, via ALSA control character device.
-
-Currently, drivers for the units are in ALSA firewire stack[1], while 
-they support no control elements, just support packet streaming 
-functionality, because we can achieve it in user land. For example, 
-there're already some Python 3 scripts in hinawa-utils[2] to configure 
-the units from user space via firewire character device, with a help of 
-libhinawa[3].
-
-When detecting some audio and music units on IEEE 1394 bus, the daemon 
-program adds some element sets and start listening to them. If ALSA 
-control applications changes state of elements in the element sets, the 
-daemon catches the event and configure these units by hardware-specific 
-ways.
-
-Currently, this idea is just for audio and music units on IEEE 1394 bus. 
-But I think we can utilize it for USB audio devices with vendor-specific 
-features, without adding more vendor-dependent codes to kernel land.
-
-> Once when we have a real use case, I'm not against adding such a
-> change.  But of course as long as it doesn't break the current way of
-> softvol usage with the persistent user kctl.
-
-Apparently, this patch breaks the combination of 'PCM softvol plugin' 
-and 'alsactl restore'. I think it better to add a new flag such as 
-'SNDRV_CTL_ELEM_ACCESS_USER_BOND_TO_FD' to perform automatic removal.
-
-[1] 
-http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/firewire
-[2] https://github.com/takaswie/hinawa-utils/
-[3] https://github.com/takaswie/libhinawa/
-
-
-Regards
-
-Takashi Sakamoto
+Acked-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
