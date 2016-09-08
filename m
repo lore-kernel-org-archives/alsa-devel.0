@@ -1,155 +1,200 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [PATCH v2] clk: x86: Add Atom PMC platform clocks
-Date: Wed, 7 Sep 2016 16:52:27 -0700
-Message-ID: <20160907235227.GB13062@codeaurora.org>
-References: <1473266524-14786-1-git-send-email-irina.tirdea@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1473266524-14786-1-git-send-email-irina.tirdea@intel.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: Irina Tirdea <irina.tirdea@intel.com>
-Cc: linux-clk@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH] ASoC: constify snd_pcm_ops structures
+Date: Thu,  8 Sep 2016 02:35:23 +0200
+Message-ID: <1473294923-24220-1-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/07, Irina Tirdea wrote:
-> @@ -152,6 +155,17 @@
->  #define	SLEEP_TYPE_S5		0x1C00
->  #define	SLEEP_ENABLE		0x2000
->  
-> +struct pmc_clk {
-> +	const char *name;
-> +	unsigned long freq;
-> +	const char *parent_name;
-> +};
-> +
-> +struct pmc_clk_data {
-> +	void __iomem *base;
-> +	const struct pmc_clk *clks;
-> +};
+Check for snd_pcm_ops structures that are only stored in the ops field of a
+snd_soc_platform_driver structure or passed as the third argument to
+snd_pcm_set_ops.  The corresponding field or parameter is declared const,
+so snd_pcm_ops structures that have this property can be declared as const
+also.
 
-Can you please put these structures in
-include/linux/platform_data/ with some new file? That way we
-don't need to have any architecture specific configuration to
-test build the clk driver and we can drop the asm include fro
-mthe clk driver too.
+The semantic patch that makes this change is as follows:
+(http://coccinelle.lip6.fr/)
 
-> diff --git a/drivers/clk/x86/Makefile b/drivers/clk/x86/Makefile
-> index 0478138..cbdc8cc 100644
-> --- a/drivers/clk/x86/Makefile
-> +++ b/drivers/clk/x86/Makefile
-> @@ -1,2 +1,3 @@
->  clk-x86-lpss-objs		:= clk-lpt.o
->  obj-$(CONFIG_X86_INTEL_LPSS)	+= clk-x86-lpss.o
-> +obj-$(CONFIG_PMC_ATOM)		+= clk-byt-plt.o
-> diff --git a/drivers/clk/x86/clk-byt-plt.c b/drivers/clk/x86/clk-byt-plt.c
-> new file mode 100644
-> index 0000000..ec98bdf
-> --- /dev/null
-> +++ b/drivers/clk/x86/clk-byt-plt.c
-> @@ -0,0 +1,387 @@
-> +/*
-> + * Intel Atom platform clocks driver for BayTrail and CherryTrail SoC.
-> + *
-> + * Copyright (C) 2016, Intel Corporation
-> + * Author: Irina Tirdea <irina.tirdea@intel.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms and conditions of the GNU General Public License,
-> + * version 2, as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope it will be useful, but WITHOUT
-> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-> + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-> + * more details.
-> + */
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/err.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/clkdev.h>
-> +
-> +#include <asm/pmc_atom.h>
-> +
-> +#define PLT_CLK_NAME_BASE	"pmc_plt_clk_"
-> +#define PLT_CLK_DRIVER_NAME	"clk-byt-plt"
-> +
-> +#define PMC_CLK_CTL_SIZE	4
-> +#define PMC_CLK_NUM		6
-> +#define PMC_MASK_CLK_CTL	GENMASK(1, 0)
-> +#define PMC_MASK_CLK_FREQ	BIT(2)
-> +#define PMC_CLK_CTL_GATED_ON_D3	0x0
-> +#define PMC_CLK_CTL_FORCE_ON	0x1
-> +#define PMC_CLK_CTL_FORCE_OFF	0x2
-> +#define PMC_CLK_CTL_RESERVED	0x3
-> +#define PMC_CLK_FREQ_XTAL	0x0	/* 25 MHz */
-> +#define PMC_CLK_FREQ_PLL	0x4	/* 19.2 MHz */
-> +
-> +struct clk_plt_fixed {
-> +	struct clk *clk;
+// <smpl>
+@r disable optional_qualifier@
+identifier i;
+position p;
+@@
+static struct snd_pcm_ops i@p = { ... };
 
-Hopefully this can be a clk_hw pointer instead.
+@ok1@
+identifier r.i;
+struct snd_soc_platform_driver e;
+position p;
+@@
+e.ops = &i@p;
 
-> +	struct clk_lookup *lookup;
-> +};
-> +
-[..]
-> +
-> +static void plt_clk_reg_update(struct clk_plt *clk, u32 mask, u32 val)
-> +{
-> +	u32 orig, tmp;
-> +	unsigned long flags = 0;
-> +
-> +	spin_lock_irqsave(&clk->lock, flags);
-> +
-> +	orig = readl(clk->reg);
-> +
-> +	tmp = orig & ~mask;
-> +	tmp |= val & mask;
-> +
-> +	if (tmp == orig)
-> +		goto out;
-> +
-> +	writel(tmp, clk->reg);
+@ok2@
+identifier r.i;
+expression e1, e2;
+position p;
+@@
+snd_pcm_set_ops(e1, e2, &i@p)
 
-Or just
+@bad@
+position p != {r.p,ok1.p,ok2.p};
+identifier r.i;
+struct snd_pcm_ops e;
+@@
+e@i@p
 
-	if (tmp != orig)
-		writel(..)
+@depends on !bad disable optional_qualifier@
+identifier r.i;
+@@
+static
++const
+ struct snd_pcm_ops i = { ... };
+// </smpl>
 
-> +
-> +out:
-> +	spin_unlock_irqrestore(&clk->lock, flags);
-> +}
-> +
-[..]
-> +
-> +static struct clk_plt_fixed *plt_clk_register_fixed_rate(struct platform_device *pdev,
-> +						 const char *name,
-> +						 const char *parent_name,
-> +						 unsigned long fixed_rate)
-> +{
-> +	struct clk_plt_fixed *pclk;
-> +	int ret = 0;
-> +
-> +	pclk = devm_kzalloc(&pdev->dev, sizeof(*pclk), GFP_KERNEL);
-> +	if (!pclk)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	pclk->clk = clk_register_fixed_rate(&pdev->dev, name, parent_name,
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
-clk_hw_register_fixed_rate?
+---
+ sound/soc/amd/acp-pcm-dma.c                  |    2 +-
+ sound/soc/atmel/atmel-pcm-pdc.c              |    2 +-
+ sound/soc/codecs/rt5514-spi.c                |    2 +-
+ sound/soc/fsl/fsl_asrc_dma.c                 |    2 +-
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c |    2 +-
+ sound/soc/intel/haswell/sst-haswell-pcm.c    |    2 +-
+ sound/soc/intel/skylake/skl-pcm.c            |    2 +-
+ sound/soc/kirkwood/kirkwood-dma.c            |    2 +-
+ sound/soc/qcom/lpass-platform.c              |    2 +-
+ sound/soc/soc-utils.c                        |    2 +-
+ 10 files changed, 10 insertions(+), 10 deletions(-)
 
-> +					    0, fixed_rate);
-> +	if (IS_ERR(pclk->clk)) {
-> +		ret = PTR_ERR(pclk->clk);
-> +		return ERR_PTR(ret);
-
-Could be simplified to return ERR_CAST(pclk->clk);
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
+index 3154525..9e4094e 100644
+--- a/sound/soc/intel/haswell/sst-haswell-pcm.c
++++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
+@@ -871,7 +871,7 @@ out:
+ 	return ret;
+ }
+ 
+-static struct snd_pcm_ops hsw_pcm_ops = {
++static const struct snd_pcm_ops hsw_pcm_ops = {
+ 	.open		= hsw_pcm_open,
+ 	.close		= hsw_pcm_close,
+ 	.ioctl		= snd_pcm_lib_ioctl,
+diff --git a/sound/soc/atmel/atmel-pcm-pdc.c b/sound/soc/atmel/atmel-pcm-pdc.c
+index da861b4..91b7069 100644
+--- a/sound/soc/atmel/atmel-pcm-pdc.c
++++ b/sound/soc/atmel/atmel-pcm-pdc.c
+@@ -381,7 +381,7 @@ static int atmel_pcm_close(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static struct snd_pcm_ops atmel_pcm_ops = {
++static const struct snd_pcm_ops atmel_pcm_ops = {
+ 	.open		= atmel_pcm_open,
+ 	.close		= atmel_pcm_close,
+ 	.ioctl		= snd_pcm_lib_ioctl,
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index a144c14..e2ff538 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -372,7 +372,7 @@ static int lpass_platform_pcmops_mmap(struct snd_pcm_substream *substream,
+ 			runtime->dma_bytes);
+ }
+ 
+-static struct snd_pcm_ops lpass_platform_pcm_ops = {
++static const struct snd_pcm_ops lpass_platform_pcm_ops = {
+ 	.open		= lpass_platform_pcmops_open,
+ 	.ioctl		= snd_pcm_lib_ioctl,
+ 	.hw_params	= lpass_platform_pcmops_hw_params,
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 77ff8eb..09103aa 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -236,7 +236,7 @@ static snd_pcm_uframes_t rt5514_spi_pcm_pointer(
+ 	return bytes_to_frames(runtime, rt5514_dsp->dma_offset);
+ }
+ 
+-static struct snd_pcm_ops rt5514_spi_pcm_ops = {
++static const struct snd_pcm_ops rt5514_spi_pcm_ops = {
+ 	.open		= rt5514_spi_pcm_open,
+ 	.hw_params	= rt5514_spi_hw_params,
+ 	.hw_free	= rt5514_spi_hw_free,
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index d1fb035..504c7cd 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -897,7 +897,7 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static struct snd_pcm_ops acp_dma_ops = {
++static const struct snd_pcm_ops acp_dma_ops = {
+ 	.open = acp_dma_open,
+ 	.close = acp_dma_close,
+ 	.ioctl = snd_pcm_lib_ioctl,
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index 52ed434..25c6d87 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -670,7 +670,7 @@ static snd_pcm_uframes_t sst_platform_pcm_pointer
+ 	return str_info->buffer_ptr;
+ }
+ 
+-static struct snd_pcm_ops sst_platform_ops = {
++static const struct snd_pcm_ops sst_platform_ops = {
+ 	.open = sst_platform_open,
+ 	.ioctl = snd_pcm_lib_ioctl,
+ 	.trigger = sst_platform_pcm_trigger,
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 77bfd40..86c125f 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1093,7 +1093,7 @@ static int skl_get_time_info(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_pcm_ops skl_platform_ops = {
++static const struct snd_pcm_ops skl_platform_ops = {
+ 	.open = skl_platform_open,
+ 	.ioctl = snd_pcm_lib_ioctl,
+ 	.trigger = skl_platform_pcm_trigger,
+diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+index dbfdfe9..dafd22e 100644
+--- a/sound/soc/kirkwood/kirkwood-dma.c
++++ b/sound/soc/kirkwood/kirkwood-dma.c
+@@ -242,7 +242,7 @@ static snd_pcm_uframes_t kirkwood_dma_pointer(struct snd_pcm_substream
+ 	return count;
+ }
+ 
+-static struct snd_pcm_ops kirkwood_dma_ops = {
++static const struct snd_pcm_ops kirkwood_dma_ops = {
+ 	.open =		kirkwood_dma_open,
+ 	.close =        kirkwood_dma_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index 53dd085..393e8f0 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -80,7 +80,7 @@ static int dummy_dma_open(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static struct snd_pcm_ops dummy_dma_ops = {
++static const struct snd_pcm_ops dummy_dma_ops = {
+ 	.open		= dummy_dma_open,
+ 	.ioctl		= snd_pcm_lib_ioctl,
+ };
+diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+index ffc000b..dc30d78 100644
+--- a/sound/soc/fsl/fsl_asrc_dma.c
++++ b/sound/soc/fsl/fsl_asrc_dma.c
+@@ -322,7 +322,7 @@ static snd_pcm_uframes_t fsl_asrc_dma_pcm_pointer(struct snd_pcm_substream *subs
+ 	return bytes_to_frames(substream->runtime, pair->pos);
+ }
+ 
+-static struct snd_pcm_ops fsl_asrc_dma_pcm_ops = {
++static const struct snd_pcm_ops fsl_asrc_dma_pcm_ops = {
+ 	.ioctl		= snd_pcm_lib_ioctl,
+ 	.hw_params	= fsl_asrc_dma_hw_params,
+ 	.hw_free	= fsl_asrc_dma_hw_free,
