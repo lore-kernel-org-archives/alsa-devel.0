@@ -1,11 +1,11 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH] ASoC: constify snd_pcm_ops structures
-Date: Thu,  8 Sep 2016 02:35:23 +0200
-Message-ID: <1473294923-24220-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] ALSA: usb: constify snd_pcm_ops structures
+Date: Thu,  8 Sep 2016 03:01:02 +0200
+Message-ID: <1473296462-26377-1-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: kernel-janitors@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 Check for snd_pcm_ops structures that are only stored in the ops field of a
@@ -56,145 +56,85 @@ static
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
- sound/soc/amd/acp-pcm-dma.c                  |    2 +-
- sound/soc/atmel/atmel-pcm-pdc.c              |    2 +-
- sound/soc/codecs/rt5514-spi.c                |    2 +-
- sound/soc/fsl/fsl_asrc_dma.c                 |    2 +-
- sound/soc/intel/atom/sst-mfld-platform-pcm.c |    2 +-
- sound/soc/intel/haswell/sst-haswell-pcm.c    |    2 +-
- sound/soc/intel/skylake/skl-pcm.c            |    2 +-
- sound/soc/kirkwood/kirkwood-dma.c            |    2 +-
- sound/soc/qcom/lpass-platform.c              |    2 +-
- sound/soc/soc-utils.c                        |    2 +-
- 10 files changed, 10 insertions(+), 10 deletions(-)
+ sound/usb/6fire/pcm.c           |    2 +-
+ sound/usb/caiaq/audio.c         |    2 +-
+ sound/usb/hiface/pcm.c          |    2 +-
+ sound/usb/misc/ua101.c          |    4 ++--
+ sound/usb/usx2y/usx2yhwdeppcm.c |    2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
-index 3154525..9e4094e 100644
---- a/sound/soc/intel/haswell/sst-haswell-pcm.c
-+++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
-@@ -871,7 +871,7 @@ out:
+diff --git a/sound/usb/6fire/pcm.c b/sound/usb/6fire/pcm.c
+index 36f4115..224a6a5 100644
+--- a/sound/usb/6fire/pcm.c
++++ b/sound/usb/6fire/pcm.c
+@@ -555,7 +555,7 @@ static snd_pcm_uframes_t usb6fire_pcm_pointer(
  	return ret;
  }
  
--static struct snd_pcm_ops hsw_pcm_ops = {
-+static const struct snd_pcm_ops hsw_pcm_ops = {
- 	.open		= hsw_pcm_open,
- 	.close		= hsw_pcm_close,
- 	.ioctl		= snd_pcm_lib_ioctl,
-diff --git a/sound/soc/atmel/atmel-pcm-pdc.c b/sound/soc/atmel/atmel-pcm-pdc.c
-index da861b4..91b7069 100644
---- a/sound/soc/atmel/atmel-pcm-pdc.c
-+++ b/sound/soc/atmel/atmel-pcm-pdc.c
-@@ -381,7 +381,7 @@ static int atmel_pcm_close(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static struct snd_pcm_ops atmel_pcm_ops = {
-+static const struct snd_pcm_ops atmel_pcm_ops = {
- 	.open		= atmel_pcm_open,
- 	.close		= atmel_pcm_close,
- 	.ioctl		= snd_pcm_lib_ioctl,
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index a144c14..e2ff538 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -372,7 +372,7 @@ static int lpass_platform_pcmops_mmap(struct snd_pcm_substream *substream,
- 			runtime->dma_bytes);
- }
- 
--static struct snd_pcm_ops lpass_platform_pcm_ops = {
-+static const struct snd_pcm_ops lpass_platform_pcm_ops = {
- 	.open		= lpass_platform_pcmops_open,
- 	.ioctl		= snd_pcm_lib_ioctl,
- 	.hw_params	= lpass_platform_pcmops_hw_params,
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 77ff8eb..09103aa 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -236,7 +236,7 @@ static snd_pcm_uframes_t rt5514_spi_pcm_pointer(
- 	return bytes_to_frames(runtime, rt5514_dsp->dma_offset);
- }
- 
--static struct snd_pcm_ops rt5514_spi_pcm_ops = {
-+static const struct snd_pcm_ops rt5514_spi_pcm_ops = {
- 	.open		= rt5514_spi_pcm_open,
- 	.hw_params	= rt5514_spi_hw_params,
- 	.hw_free	= rt5514_spi_hw_free,
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index d1fb035..504c7cd 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -897,7 +897,7 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static struct snd_pcm_ops acp_dma_ops = {
-+static const struct snd_pcm_ops acp_dma_ops = {
- 	.open = acp_dma_open,
- 	.close = acp_dma_close,
+-static struct snd_pcm_ops pcm_ops = {
++static const struct snd_pcm_ops pcm_ops = {
+ 	.open = usb6fire_pcm_open,
+ 	.close = usb6fire_pcm_close,
  	.ioctl = snd_pcm_lib_ioctl,
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 52ed434..25c6d87 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -670,7 +670,7 @@ static snd_pcm_uframes_t sst_platform_pcm_pointer
- 	return str_info->buffer_ptr;
+diff --git a/sound/usb/hiface/pcm.c b/sound/usb/hiface/pcm.c
+index 2c44139..23e66ed 100644
+--- a/sound/usb/hiface/pcm.c
++++ b/sound/usb/hiface/pcm.c
+@@ -511,7 +511,7 @@ static snd_pcm_uframes_t hiface_pcm_pointer(struct snd_pcm_substream *alsa_sub)
+ 	return bytes_to_frames(alsa_sub->runtime, dma_offset);
  }
  
--static struct snd_pcm_ops sst_platform_ops = {
-+static const struct snd_pcm_ops sst_platform_ops = {
- 	.open = sst_platform_open,
+-static struct snd_pcm_ops pcm_ops = {
++static const struct snd_pcm_ops pcm_ops = {
+ 	.open = hiface_pcm_open,
+ 	.close = hiface_pcm_close,
  	.ioctl = snd_pcm_lib_ioctl,
- 	.trigger = sst_platform_pcm_trigger,
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 77bfd40..86c125f 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1093,7 +1093,7 @@ static int skl_get_time_info(struct snd_pcm_substream *substream,
- 	return 0;
+diff --git a/sound/usb/usx2y/usx2yhwdeppcm.c b/sound/usb/usx2y/usx2yhwdeppcm.c
+index 90766a9..1f28cb2a 100644
+--- a/sound/usb/usx2y/usx2yhwdeppcm.c
++++ b/sound/usb/usx2y/usx2yhwdeppcm.c
+@@ -587,7 +587,7 @@ static int snd_usX2Y_usbpcm_close(struct snd_pcm_substream *substream)
  }
  
--static struct snd_pcm_ops skl_platform_ops = {
-+static const struct snd_pcm_ops skl_platform_ops = {
- 	.open = skl_platform_open,
+ 
+-static struct snd_pcm_ops snd_usX2Y_usbpcm_ops = 
++static const struct snd_pcm_ops snd_usX2Y_usbpcm_ops =
+ {
+ 	.open =		snd_usX2Y_usbpcm_open,
+ 	.close =	snd_usX2Y_usbpcm_close,
+diff --git a/sound/usb/misc/ua101.c b/sound/usb/misc/ua101.c
+index c19a5dd..71a0e9e 100644
+--- a/sound/usb/misc/ua101.c
++++ b/sound/usb/misc/ua101.c
+@@ -890,7 +890,7 @@ static snd_pcm_uframes_t playback_pcm_pointer(struct snd_pcm_substream *subs)
+ 	return ua101_pcm_pointer(ua, &ua->playback);
+ }
+ 
+-static struct snd_pcm_ops capture_pcm_ops = {
++static const struct snd_pcm_ops capture_pcm_ops = {
+ 	.open = capture_pcm_open,
+ 	.close = capture_pcm_close,
  	.ioctl = snd_pcm_lib_ioctl,
- 	.trigger = skl_platform_pcm_trigger,
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index dbfdfe9..dafd22e 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -242,7 +242,7 @@ static snd_pcm_uframes_t kirkwood_dma_pointer(struct snd_pcm_substream
- 	return count;
- }
- 
--static struct snd_pcm_ops kirkwood_dma_ops = {
-+static const struct snd_pcm_ops kirkwood_dma_ops = {
- 	.open =		kirkwood_dma_open,
- 	.close =        kirkwood_dma_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index 53dd085..393e8f0 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -80,7 +80,7 @@ static int dummy_dma_open(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static struct snd_pcm_ops dummy_dma_ops = {
-+static const struct snd_pcm_ops dummy_dma_ops = {
- 	.open		= dummy_dma_open,
- 	.ioctl		= snd_pcm_lib_ioctl,
+@@ -903,7 +903,7 @@ static struct snd_pcm_ops capture_pcm_ops = {
+ 	.mmap = snd_pcm_lib_mmap_vmalloc,
  };
-diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-index ffc000b..dc30d78 100644
---- a/sound/soc/fsl/fsl_asrc_dma.c
-+++ b/sound/soc/fsl/fsl_asrc_dma.c
-@@ -322,7 +322,7 @@ static snd_pcm_uframes_t fsl_asrc_dma_pcm_pointer(struct snd_pcm_substream *subs
- 	return bytes_to_frames(substream->runtime, pair->pos);
+ 
+-static struct snd_pcm_ops playback_pcm_ops = {
++static const struct snd_pcm_ops playback_pcm_ops = {
+ 	.open = playback_pcm_open,
+ 	.close = playback_pcm_close,
+ 	.ioctl = snd_pcm_lib_ioctl,
+diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
+index 8f66ba7..af5ad84 100644
+--- a/sound/usb/caiaq/audio.c
++++ b/sound/usb/caiaq/audio.c
+@@ -338,7 +338,7 @@ unlock:
  }
  
--static struct snd_pcm_ops fsl_asrc_dma_pcm_ops = {
-+static const struct snd_pcm_ops fsl_asrc_dma_pcm_ops = {
- 	.ioctl		= snd_pcm_lib_ioctl,
- 	.hw_params	= fsl_asrc_dma_hw_params,
- 	.hw_free	= fsl_asrc_dma_hw_free,
+ /* operators for both playback and capture */
+-static struct snd_pcm_ops snd_usb_caiaq_ops = {
++static const struct snd_pcm_ops snd_usb_caiaq_ops = {
+ 	.open =		snd_usb_caiaq_substream_open,
+ 	.close =	snd_usb_caiaq_substream_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+
