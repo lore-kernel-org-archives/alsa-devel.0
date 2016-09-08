@@ -1,66 +1,140 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Skip Realtek SKU check for Lenovo
-	machines
-Date: Thu,  8 Sep 2016 15:17:44 +0200
-Message-ID: <20160908131744.9202-1-tiwai@suse.de>
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: sound: divide by 0 in snd_hrtimer_callback (or hang)
+Date: Thu, 8 Sep 2016 17:14:18 +0200
+Message-ID: <CACT4Y+YsVKN2K-xFE4w4fDx463MOnB1gudarNQOEerJkL==atQ@mail.gmail.com>
+References: <CACT4Y+Yw_05S47dEYLWbwMCJvfB4cb9Mdb3q1qOYLyKfJMK1bA@mail.gmail.com>
+ <s5h8tv5xjw7.wl-tiwai@suse.de> <CACT4Y+aUHvS8RG+bADfZg4NPXjNRr5mNqGWJDaCThK7PKuewjw@mail.gmail.com>
+ <s5hk2epw3cv.wl-tiwai@suse.de> <CACT4Y+b506FW+f8SqRe=FmYnG+wnZ=jL+jO02JM2C9c=VuxoXg@mail.gmail.com>
+ <s5hk2epm2kp.wl-tiwai@suse.de> <s5hfupblpq8.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id EB85C26670E
- for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2016 15:17:45 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 47AFCACE9
- for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2016 13:17:45 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hfupblpq8.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vegard Nossum <vegard.nossum@gmail.com>, Vegard Nossum <vegard.nossum@oracle.com>, Jaroslav Kysela <perex@perex.cz>, Kangjie Lu <kangjielu@gmail.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, syzkaller <syzkaller@googlegroups.com>
 List-Id: alsa-devel@alsa-project.org
 
-Realtek codec driver expects an implicit rule where either the codec
-SSID or the pincfg NID 0x1d contains the some information encoded in
-some bits.  One of the expected information is there is the
-availability of PC beep, and the driver doesn't build up the PC beep
-control if this is *supposed* to be disabled there.
+On Wed, Sep 7, 2016 at 5:00 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Tue, 06 Sep 2016 18:10:30 +0200,
+> Takashi Iwai wrote:
+>>
+>> On Tue, 06 Sep 2016 16:06:08 +0200,
+>> Dmitry Vyukov wrote:
+>> >
+>> > > Do you really see the zero-division error with sticks=1 fix?  That's
+>> > > unexpected.
+>> >
+>> > Yes, just reproduced it again.
+>> > I am on 0693c28cfc8e25f18c25b65a8942c026f1854a3c of linux-next now, so
+>> > I already have:
+>> >     commit 6b760bb2c63a9e322c0e4a0b5daf335ad93d5a33
+>> >     ALSA: timer: fix division by zero after SNDRV_TIMER_IOCTL_CONTINUE
+>> >
+>> > Compiled the program verbatim and run it using stress utility (http
+>> > s://godoc.org/golang.org/x/tools/cmd/stress namely just runs the
+>> > program in parallel loop) and instantly get the following crash.
+>>
+>> OK, I'll take a deeper look.
+>
+> The fix patch below seems working on my system.  Please give it a
+> try.
 
-Meanwhile, Lenovo doesn't seem to follow this requirement (yes it's
-non-standard after all), and the BIOS sets just the normal SSID and
-the pincfg values.  This resulted in the lack of PC beep on a few
-machines, purely with a lucky or unlucky number.  It didn't bother
-most people, but some people still demand the PC beep, as found in bug
-reports.
 
-This patch just adds the fixup chain to Lenovo machines to skip the
-SKU checks.  Then the beep control will show up in the mixer, and user
-can still decide to enable / disable it via the standard mixer
-interface.
+Pulled this from linux-next.
+This should fix both division and stalls, right?
+I will let you know if I see any of these again.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=156311
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 574b1b48996f..4be2c77031fa 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5263,6 +5263,8 @@ static const struct hda_fixup alc269_fixups[] = {
- 	[ALC269_FIXUP_THINKPAD_ACPI] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = hda_fixup_thinkpad_acpi,
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_SKU_IGNORE,
- 	},
- 	[ALC269_FIXUP_DMIC_THINKPAD_ACPI] = {
- 		.type = HDA_FIXUP_FUNC,
--- 
-2.10.0
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: timer: Fix zero-division by continue of uninitialized
+>  instance
+>
+> When a user timer instance is continued without the explicit start
+> beforehand, the system gets eventually zero-division error like:
+>
+>   divide error: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN
+>   CPU: 1 PID: 27320 Comm: syz-executor Not tainted 4.8.0-rc3-next-20160825+ #8
+>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+>    task: ffff88003c9b2280 task.stack: ffff880027280000
+>    RIP: 0010:[<ffffffff858e1a6c>]  [<     inline     >] ktime_divns include/linux/ktime.h:195
+>    RIP: 0010:[<ffffffff858e1a6c>]  [<ffffffff858e1a6c>] snd_hrtimer_callback+0x1bc/0x3c0 sound/core/hrtimer.c:62
+>   Call Trace:
+>    <IRQ>
+>    [<     inline     >] __run_hrtimer kernel/time/hrtimer.c:1238
+>    [<ffffffff81504335>] __hrtimer_run_queues+0x325/0xe70 kernel/time/hrtimer.c:1302
+>    [<ffffffff81506ceb>] hrtimer_interrupt+0x18b/0x420 kernel/time/hrtimer.c:1336
+>    [<ffffffff8126d8df>] local_apic_timer_interrupt+0x6f/0xe0 arch/x86/kernel/apic/apic.c:933
+>    [<ffffffff86e13056>] smp_apic_timer_interrupt+0x76/0xa0 arch/x86/kernel/apic/apic.c:957
+>    [<ffffffff86e1210c>] apic_timer_interrupt+0x8c/0xa0 arch/x86/entry/entry_64.S:487
+>    <EOI>
+>    .....
+>
+> Although a similar issue was spotted and a fix patch was merged in
+> commit [6b760bb2c63a: ALSA: timer: fix division by zero after
+> SNDRV_TIMER_IOCTL_CONTINUE], it seems covering only a part of
+> iceberg.
+>
+> In this patch, we fix the issue a bit more drastically.  Basically the
+> continue of an uninitialized timer is supposed to be a fresh start, so
+> we do it for user timers.  For the direct snd_timer_continue() call,
+> there is no way to pass the initial tick value, so we kick out for the
+> uninitialized case.
+>
+> Reported-by: Reported-by: Dmitry Vyukov <dvyukov@google.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/core/timer.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>
+> diff --git a/sound/core/timer.c b/sound/core/timer.c
+> index 2706061fc1ea..fc144f43faa6 100644
+> --- a/sound/core/timer.c
+> +++ b/sound/core/timer.c
+> @@ -35,6 +35,9 @@
+>  #include <sound/initval.h>
+>  #include <linux/kmod.h>
+>
+> +/* internal flags */
+> +#define SNDRV_TIMER_IFLG_PAUSED                0x00010000
+> +
+>  #if IS_ENABLED(CONFIG_SND_HRTIMER)
+>  #define DEFAULT_TIMER_LIMIT 4
+>  #else
+> @@ -539,6 +542,10 @@ static int snd_timer_stop1(struct snd_timer_instance *timeri, bool stop)
+>                 }
+>         }
+>         timeri->flags &= ~(SNDRV_TIMER_IFLG_RUNNING | SNDRV_TIMER_IFLG_START);
+> +       if (stop)
+> +               timeri->flags &= ~SNDRV_TIMER_IFLG_PAUSED;
+> +       else
+> +               timeri->flags |= SNDRV_TIMER_IFLG_PAUSED;
+>         snd_timer_notify1(timeri, stop ? SNDRV_TIMER_EVENT_STOP :
+>                           SNDRV_TIMER_EVENT_CONTINUE);
+>   unlock:
+> @@ -600,6 +607,10 @@ int snd_timer_stop(struct snd_timer_instance *timeri)
+>   */
+>  int snd_timer_continue(struct snd_timer_instance *timeri)
+>  {
+> +       /* timer can continue only after pause */
+> +       if (!(timeri->flags & SNDRV_TIMER_IFLG_PAUSED))
+> +               return -EINVAL;
+> +
+>         if (timeri->flags & SNDRV_TIMER_IFLG_SLAVE)
+>                 return snd_timer_start_slave(timeri, false);
+>         else
+> @@ -1831,6 +1842,9 @@ static int snd_timer_user_continue(struct file *file)
+>         tu = file->private_data;
+>         if (!tu->timeri)
+>                 return -EBADFD;
+> +       /* start timer instead of continue if it's not used before */
+> +       if (!(tu->timeri->flags & SNDRV_TIMER_IFLG_PAUSED))
+> +               return snd_timer_user_start(file);
+>         tu->timeri->lost = 0;
+>         return (err = snd_timer_continue(tu->timeri)) < 0 ? err : 0;
+>  }
+> --
+> 2.10.0
+>
