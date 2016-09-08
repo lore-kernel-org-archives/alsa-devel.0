@@ -1,85 +1,195 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v5 0/5] ASoC: Add support to Qualcomm msm8916-wcd multi codec
-Date: Thu,  8 Sep 2016 14:04:51 +0100
-Message-ID: <1473339896-9409-1-git-send-email-srinivas.kandagatla@linaro.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: robh+dt@kernel.org, mark.rutland@arm.com, tiwai@suse.com, devicetree@vger.kernel.org, kwestfie@codeaurora.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: [PATCH v5 5/5] arm64: dts: apq8016-sbc: add analog audio support with multicodec
+Date: Thu,  8 Sep 2016 14:04:56 +0100
+Message-ID: <1473339896-9409-6-git-send-email-srinivas.kandagatla@linaro.org>
+References: <1473339896-9409-1-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1473339896-9409-1-git-send-email-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patchset aims at adding msm8916-wcd multi codec support.
-msm8916-wcd codec is found in Qualcomm msm8916 and apq8016 processors.
-This codec IP is split in to two parts(Digital & Analog), Analog part
-is integrated in to PMIC PM8916 and the digital part is integrated into
-Application processor. Register access to the analog part is done via
-SPMI interface to PMIC, and registers on the Application processor are
-memory mapped. Data transfer between Analog and Digital Die is done via
-a internal bus called PDM.
+This patch add support to Analog audio both Playback and Capture via
+msm8916 WCD muti codec.
 
-Most of this driver is ported from downstream Andriod v3.10 kernel.
-Jack support and Headset button detection code is not added in to this
-series.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+---
+ arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi | 63 +++++++++++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/msm8916.dtsi     |  9 +++++
+ arch/arm64/boot/dts/qcom/pm8916.dtsi      | 45 +++++++++++++++++++++-
+ 3 files changed, 116 insertions(+), 1 deletion(-)
 
-First two patches add digital and analog codec support and the follow on
-patches add routes and multicodec support to the sound card and
-finally dts patch for board.
-
-This codec support:
- - 3 Microphones: Primary Mic(Handset mic), Headset Mic and Secondary Mic.
- - 2 Digital Microphones.
- - 2 Mic Bias Circuits.
- - Earpiece
- - Headset
- - Loud Speaker.
- - Jack Detect.
- - Headset Button detection circuit.
-
-Tested this code on v4.8-rc3 with for Headset (Mic and speakers), Secondary Mic
-and Loudspeaker on DB410C. DMIC should work too.
-
-Thanks,
-srini
-
-Changes since v4:
-	- Fixed various C-style related issues reported by Mark
-	- Added shutdown call to clear things setup in startup,
-	spotted by Mark.
-	- Rearranged code to make it more readble suggested by
-	Mark.
-	- Converted dmic clk to a dapm supply spotted by Mark.
-	- Added example in dt bindings to show support of multicodec.
-	- Removed two patches from this list as they are already
-	 applied in sound tree.
-
-Changes since v3:
-	- Split the codec to 2 seperate codecs digital and analog,
-	suggested by Mark and Kenneth.
-	- Addressed various suggestions from Mark and Kenneth.
-
-Srinivas Kandagatla (5):
-  ASoC: codecs: Add msm8916-wcd analog codec
-  ASoC: codecs: Add msm8916-wcd digital codec
-  ASoC: apq8016-sbc: dt bindings: remove incorrect property
-  ASoC: qcom: apq8016-sbc: Add support to multi codec.
-  arm64: dts: apq8016-sbc: add analog audio support with multicodec
-
- .../devicetree/bindings/sound/qcom,apq8016-sbc.txt |   5 +-
- .../bindings/sound/qcom,msm8916-wcd-analog.txt     |  83 ++
- .../bindings/sound/qcom,msm8916-wcd-digital.txt    |  20 +
- arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi          |  63 ++
- arch/arm64/boot/dts/qcom/msm8916.dtsi              |   9 +
- arch/arm64/boot/dts/qcom/pm8916.dtsi               |  45 +-
- sound/soc/codecs/Kconfig                           |   7 +
- sound/soc/codecs/Makefile                          |   5 +-
- sound/soc/codecs/msm8916-wcd-analog.c              | 888 ++++++++++++++++++++
- sound/soc/codecs/msm8916-wcd-digital.c             | 920 +++++++++++++++++++++
- sound/soc/qcom/apq8016_sbc.c                       |  11 +-
- 11 files changed, 2043 insertions(+), 13 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-digital.txt
- create mode 100644 sound/soc/codecs/msm8916-wcd-analog.c
- create mode 100644 sound/soc/codecs/msm8916-wcd-digital.c
-
+diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+index 18639bc..2c1801b 100644
+--- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
++++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+@@ -15,6 +15,7 @@
+ #include "pm8916.dtsi"
+ #include "apq8016-sbc-soc-pins.dtsi"
+ #include "apq8016-sbc-pmic-pins.dtsi"
++#include <dt-bindings/sound/apq8016-lpass.h>
+ 
+ / {
+ 	aliases {
+@@ -180,6 +181,61 @@
+ 		lpass@07708000 {
+ 			status = "okay";
+ 		};
++
++		lpass_codec: codec{
++			status = "okay";
++		};
++
++		/*
++		Internal Codec
++			playback - Primary MI2S
++			capture - Ter MI2S
++
++		External Primary:
++			playback - secondary MI2S
++			capture - Quat MI2S
++
++		External Secondary:
++			playback - Quat MI2S
++			capture - Quat MI2S
++
++		*/
++
++                sound: sound {
++                        compatible = "qcom,apq8016-sbc-sndcard";
++                        reg = <0x07702000 0x4>, <0x07702004 0x4>;
++                        reg-names = "mic-iomux", "spkr-iomux";
++
++                        status = "okay";
++                        pinctrl-0 = <&cdc_pdm_lines_act &ext_sec_tlmm_lines_act &ext_mclk_tlmm_lines_act>;
++                        pinctrl-1 = <&cdc_pdm_lines_sus &ext_sec_tlmm_lines_sus &ext_mclk_tlmm_lines_sus>;
++                        pinctrl-names = "default", "sleep";
++                        qcom,model = "DB410c";
++                        qcom,audio-routing =
++                                "AMIC2", "MIC BIAS Internal2",
++                                "AMIC3", "MIC BIAS External1";
++
++                        internal-codec-playback-dai-link@0 {            /* I2S - Internal codec */
++                                link-name = "WCD";
++                                cpu { /* PRIMARY */
++                                        sound-dai = <&lpass MI2S_PRIMARY>;
++                                };
++                                codec {
++                                        sound-dai = <&lpass_codec 0>, <&wcd_codec 0>;
++                                };
++                        };
++
++                        internal-codec-capture-dai-link@0 {             /* I2S - Internal codec */
++                                link-name = "WCD-Capture";
++                                cpu { /* PRIMARY */
++                                        sound-dai = <&lpass MI2S_TERTIARY>;
++                                };
++                                codec {
++                                        sound-dai = <&lpass_codec 1>, <&wcd_codec 1>;
++                                };
++                        };
++
++                };
+ 	};
+ 
+ 	usb2513 {
+@@ -194,6 +250,13 @@
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&usb_id_default>;
+ 	};
++
++};
++
++&wcd_codec {
++        status = "okay";
++        clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
++        clock-names = "mclk";
+ };
+ 
+ &smd_rpm_regulators {
+diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+index 11bdc24..f0e7ebf 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+@@ -450,6 +450,15 @@
+ 			reg-names = "lpass-lpaif";
+ 		};
+ 
++                lpass_codec: codec{
++			compatible = "qcom,msm8916-wcd-digital-codec";
++			reg = <0x0771c000 0x400>;
++			clocks = <&gcc GCC_ULTAUDIO_AHBFABRIC_IXFABRIC_CLK>,
++				 <&gcc GCC_CODEC_DIGCODEC_CLK>;
++			clock-names = "ahbix-clk", "mclk";
++			#sound-dai-cells = <1>;
++                };
++
+ 		sdhc_1: sdhci@07824000 {
+ 			compatible = "qcom,sdhci-msm-v4";
+ 			reg = <0x07824900 0x11c>, <0x07824000 0x800>;
+diff --git a/arch/arm64/boot/dts/qcom/pm8916.dtsi b/arch/arm64/boot/dts/qcom/pm8916.dtsi
+index f71679b..6e30599 100644
+--- a/arch/arm64/boot/dts/qcom/pm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/pm8916.dtsi
+@@ -91,9 +91,52 @@
+ 	};
+ 
+ 	pm8916_1: pm8916@1 {
+-		compatible = "qcom,spmi-pmic";
++		compatible = "qcom,pm8916", "qcom,spmi-pmic";
+ 		reg = <0x1 SPMI_USID>;
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
++
++                wcd_codec: codec@f000 {
++                        compatible = "qcom,msm8916-wcd-analog-codec";
++	               reg = <0xf000 0x200>;
++	               reg-names = "pmic-codec-core";
++	               clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
++	               clock-names = "mclk";
++	               interrupt-parent = <&spmi_bus>;
++	               interrupts = <0x1 0xf0 0x0 IRQ_TYPE_NONE>,
++	                            <0x1 0xf0 0x1 IRQ_TYPE_NONE>,
++	                            <0x1 0xf0 0x2 IRQ_TYPE_NONE>,
++	                            <0x1 0xf0 0x3 IRQ_TYPE_NONE>,
++	                            <0x1 0xf0 0x4 IRQ_TYPE_NONE>,
++	                            <0x1 0xf0 0x5 IRQ_TYPE_NONE>,
++	                            <0x1 0xf0 0x6 IRQ_TYPE_NONE>,
++	                            <0x1 0xf0 0x7 IRQ_TYPE_NONE>,
++	                            <0x1 0xf1 0x0 IRQ_TYPE_NONE>,
++	                            <0x1 0xf1 0x1 IRQ_TYPE_NONE>,
++	                            <0x1 0xf1 0x2 IRQ_TYPE_NONE>,
++	                            <0x1 0xf1 0x3 IRQ_TYPE_NONE>,
++	                            <0x1 0xf1 0x4 IRQ_TYPE_NONE>,
++	                            <0x1 0xf1 0x5 IRQ_TYPE_NONE>;
++	               interrupt-names = "cdc_spk_cnp_int",
++	                                 "cdc_spk_clip_int",
++	                                 "cdc_spk_ocp_int",
++	                                 "mbhc_ins_rem_det1",
++	                                 "mbhc_but_rel_det",
++	                                 "mbhc_but_press_det",
++	                                 "mbhc_ins_rem_det",
++	                                 "mbhc_switch_int",
++	                                 "cdc_ear_ocp_int",
++	                                 "cdc_hphr_ocp_int",
++	                                 "cdc_hphl_ocp_det",
++	                                 "cdc_ear_cnp_int",
++	                                 "cdc_hphr_cnp_int",
++	                                 "cdc_hphl_cnp_int";
++	               VDD-CDC-IO-supply = <&pm8916_l5>;
++	               VDD-CDC-TX-RX-CX-supply = <&pm8916_l5>;
++	               VDD-MICBIAS-supply = <&pm8916_l13>;
++	               #sound-dai-cells = <1>;
++
++                };
++
+ 	};
+ };
 -- 
 2.7.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
