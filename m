@@ -1,63 +1,167 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [PATCH v2] clk: x86: Add Atom PMC platform clocks
-Date: Thu, 8 Sep 2016 12:39:52 -0700
-Message-ID: <bb55c314-456e-ecff-541c-08cb2a62cd79@codeaurora.org>
-References: <1473266524-14786-1-git-send-email-irina.tirdea@intel.com>
- <20160907235227.GB13062@codeaurora.org>
- <1F3AC3675D538145B1661F571FE1805F2F329961@irsmsx105.ger.corp.intel.com>
+From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Subject: [PATCH v2] ASoC: sun4i-codec: Distinguish sun4i from sun7i
+Date: Thu,  8 Sep 2016 21:57:59 +0200
+Message-ID: <20160908195759.18485-1-dannym@scratchpost.org>
+Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <1F3AC3675D538145B1661F571FE1805F2F329961@irsmsx105.ger.corp.intel.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: "Tirdea, Irina" <irina.tirdea@intel.com>
-Cc: "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, "Bossart, Pierre-louis" <pierre-louis.bossart@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBBVMFY67AKGQE47CT2WQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Cc: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/08/2016 11:08 AM, Tirdea, Irina wrote:
->
->> -----Original Message-----
->> From: linux-clk-owner@vger.kernel.org [mailto:linux-clk-owner@vger.kernel.org] On Behalf Of Stephen Boyd
->> Sent: 08 September, 2016 2:52
->> To: Tirdea, Irina
->> Cc: linux-clk@vger.kernel.org; Michael Turquette; alsa-devel@alsa-project.org; Mark Brown; Takashi Iwai; Bossart, Pierre-louis; Pierre-
->> Louis Bossart
->> Subject: Re: [PATCH v2] clk: x86: Add Atom PMC platform clocks
->>
->> On 09/07, Irina Tirdea wrote:
->>> @@ -152,6 +155,17 @@
->>>  #define	SLEEP_TYPE_S5		0x1C00
->>>  #define	SLEEP_ENABLE		0x2000
->>>
->>> +struct pmc_clk {
->>> +	const char *name;
->>> +	unsigned long freq;
->>> +	const char *parent_name;
->>> +};
->>> +
->>> +struct pmc_clk_data {
->>> +	void __iomem *base;
->>> +	const struct pmc_clk *clks;
->>> +};
->> Can you please put these structures in
->> include/linux/platform_data/ with some new file? That way we
->> don't need to have any architecture specific configuration to
->> test build the clk driver and we can drop the asm include fro
->> mthe clk driver too.
->>
-> Thanks for the review!
->
-> Sure, I will make all the changes you pointed out.
->
-> I assume I will also need to allow the driver to be compiled if
-> COMPILE_TEST is set. Is that correct or is there another way
-> to test build the driver for any architecture?
+Introduce mechanism to detect sun7i and provide a different regmap
+and different controls for it - different compared to sun4i Allwinner A10.
 
-Yes that's good too. Individual files can be compiled standalone with
-"make foo.o" even when they're not enabled in the Kconfig.
+The controls will be extended in a forthcoming patch - it is necessary to
+distinguish between sun4i and sun7i controls because the mic gains are in
+different registers.
 
+Renamed SUN4I_CODEC_AC_SYS_VERI to SUN7I_CODEC_AC_DAC_CAL and renamed
+SUN4I_CODEC_AC_MIC_PHONE_CAL to SUN7I_CODEC_AC_MIC_PHONE_CAL because these
+are actually not present on Allwinner A10.
+
+Handle quirks by regmap config and codec and select the correct quirks
+automatically.
+
+Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+---
+ sound/soc/sunxi/sun4i-codec.c | 78 ++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 58 insertions(+), 20 deletions(-)
+
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 0e19c50..239e330 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -96,8 +96,8 @@
+ /* Other various ADC registers */
+ #define SUN4I_CODEC_DAC_TXCNT			(0x30)
+ #define SUN4I_CODEC_ADC_RXCNT			(0x34)
+-#define SUN4I_CODEC_AC_SYS_VERI			(0x38)
+-#define SUN4I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
++#define SUN7I_CODEC_AC_DAC_CAL			(0x38)
++#define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
+ 
+ struct sun4i_codec {
+ 	struct device	*dev;
+@@ -509,7 +509,7 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
+ 
+ static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
+ 
+-static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
++static const struct snd_kcontrol_new sun4i_codec_controls[] = {
+ 	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
+ 		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
+ 		       sun4i_codec_pa_volume_scale),
+@@ -627,10 +627,60 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+ 	{ "Mic1", NULL, "VMIC" },
+ };
+ 
++static const struct regmap_config sun4i_codec_regmap_config = {
++	.reg_bits	= 32,
++	.reg_stride	= 4,
++	.val_bits	= 32,
++	.max_register	= SUN4I_CODEC_ADC_RXCNT,
++};
++
++static const struct regmap_config sun7i_codec_regmap_config = {
++	.reg_bits	= 32,
++	.reg_stride	= 4,
++	.val_bits	= 32,
++	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
++};
++
++struct sun4i_quirks {
++	const struct snd_kcontrol_new *controls;
++	unsigned int num_controls;
++	const struct regmap_config *regmap_config;
++};
++
++static const struct sun4i_quirks sun4i_quirks = {
++	.controls = NULL,
++	.num_controls = 0U,
++	.regmap_config = &sun4i_codec_regmap_config,
++};
++
++static const struct sun4i_quirks sun7i_quirks = {
++	.controls = NULL,
++	.num_controls = 0U,
++	.regmap_config = &sun7i_codec_regmap_config,
++};
++
++static const struct of_device_id sun4i_codec_of_match[] = {
++	{ .compatible = "allwinner,sun4i-a10-codec", .data = &sun4i_quirks },
++	{ .compatible = "allwinner,sun7i-a20-codec", .data = &sun7i_quirks },
++	{}
++};
++MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
++
++static int sun4i_codec_codec_probe(struct snd_soc_codec *scodec)
++{
++	const struct sun4i_quirks *quirks;
++
++	quirks = of_device_get_match_data(scodec->dev);
++	return snd_soc_add_codec_controls(scodec,
++					  quirks->controls,
++					  quirks->num_controls);
++}
++
+ static struct snd_soc_codec_driver sun4i_codec_codec = {
++	.probe = sun4i_codec_codec_probe,
+ 	.component_driver = {
+-		.controls		= sun4i_codec_widgets,
+-		.num_controls		= ARRAY_SIZE(sun4i_codec_widgets),
++		.controls		= sun4i_codec_controls,
++		.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
+ 		.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
+ 		.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
+ 		.dapm_routes		= sun4i_codec_codec_dapm_routes,
+@@ -678,20 +728,6 @@ static struct snd_soc_dai_driver dummy_cpu_dai = {
+ 	 },
+ };
+ 
+-static const struct regmap_config sun4i_codec_regmap_config = {
+-	.reg_bits	= 32,
+-	.reg_stride	= 4,
+-	.val_bits	= 32,
+-	.max_register	= SUN4I_CODEC_AC_MIC_PHONE_CAL,
+-};
+-
+-static const struct of_device_id sun4i_codec_of_match[] = {
+-	{ .compatible = "allwinner,sun4i-a10-codec" },
+-	{ .compatible = "allwinner,sun7i-a20-codec" },
+-	{}
+-};
+-MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
+-
+ static struct snd_soc_dai_link *sun4i_codec_create_link(struct device *dev,
+ 							int *num_links)
+ {
+@@ -760,6 +796,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card;
+ 	struct sun4i_codec *scodec;
++	const struct sun4i_quirks *quirks;
+ 	struct resource *res;
+ 	void __iomem *base;
+ 	int ret;
+@@ -777,8 +814,9 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 		return PTR_ERR(base);
+ 	}
+ 
++	quirks = of_device_get_match_data(&pdev->dev);
+ 	scodec->regmap = devm_regmap_init_mmio(&pdev->dev, base,
+-					     &sun4i_codec_regmap_config);
++					       quirks->regmap_config);
+ 	if (IS_ERR(scodec->regmap)) {
+ 		dev_err(&pdev->dev, "Failed to create our regmap\n");
+ 		return PTR_ERR(scodec->regmap);
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+2.1.4
