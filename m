@@ -1,65 +1,147 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
- McBSP to prevent glitches
-Date: Wed, 7 Sep 2016 20:53:56 -0700
-Message-ID: <20160908035356.mkk35s5gpcemifcg@atomide.com>
-References: <20160831194107.wijnbmdns2jjvzkv@atomide.com>
- <5af44090-6902-2ade-be78-378843757a0a@ti.com>
- <20160901145006.xr3ux63cg6f5bh7p@atomide.com>
- <b3a254b2-948f-f04d-3289-fb8fb9f9ab23@ti.com>
- <20160902145604.nlixopwza76kfgbz@atomide.com>
- <c8f293f6-db2e-e518-7566-2cd92eb06ec0@ti.com>
- <20160902204049.uhp4oosu3oc4k5v6@atomide.com>
- <7d1c9a2f-60ae-2d83-f7dc-55fe476dbccb@ti.com>
- <20160906201649.fx4vhuqmnziwshoe@atomide.com>
- <1b82e33a-7db5-81ed-de4f-75847f840088@ti.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-devel] [PATCH] ALSA: usb: constify snd_pcm_ops structures
+Date: Thu, 8 Sep 2016 08:54:20 +0200
+Message-ID: <237732c1-fc0b-e379-fff1-6d0a4aa35e7f@ladisch.de>
+References: <1473296462-26377-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muru.com (muru.com [72.249.23.125])
- by alsa0.perex.cz (Postfix) with ESMTP id 66F592664B3
- for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2016 05:54:01 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1b82e33a-7db5-81ed-de4f-75847f840088@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, "Kristo, Tero" <t-kristo@ti.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Pavel Machel <pavel@ucw.cz>, Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1473296462-26377-1-git-send-email-Julia.Lawall@lip6.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: Julia Lawall <Julia.Lawall@lip6.fr>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi@ti.com> [160907 07:32]:
-> On 09/06/2016 11:16 PM, Tony Lindgren wrote:
-> > Makes sense. Do you have a formula or updated patch I can test here?
-> > Then we can add comments about the possible unaccounted latencies that
-> > can be worked out as needed.
-> 
-> Not yet, but I'll try to come up with something in the coming days.
+Julia Lawall wrote:
+> Check for snd_pcm_ops structures that are only stored in the ops field of a
+> snd_soc_platform_driver structure or passed as the third argument to
+> snd_pcm_set_ops.  The corresponding field or parameter is declared const,
+> so snd_pcm_ops structures that have this property can be declared as const
+> also.
+>
+> The semantic patch that makes this change is as follows:
+> (http://coccinelle.lip6.fr/)
+>
+> // <smpl>
+> @r disable optional_qualifier@
+> identifier i;
+> position p;
+> @@
+> static struct snd_pcm_ops i@p = { ... };
+>
+> @ok1@
+> identifier r.i;
+> struct snd_soc_platform_driver e;
+> position p;
+> @@
+> e.ops = &i@p;
+>
+> @ok2@
+> identifier r.i;
+> expression e1, e2;
+> position p;
+> @@
+> snd_pcm_set_ops(e1, e2, &i@p)
+>
+> @bad@
+> position p != {r.p,ok1.p,ok2.p};
+> identifier r.i;
+> struct snd_pcm_ops e;
+> @@
+> e@i@p
+>
+> @depends on !bad disable optional_qualifier@
+> identifier r.i;
+> @@
+> static
+> +const
+>  struct snd_pcm_ops i = { ... };
+> // </smpl>
+>
+> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
-OK
+Acked-by: Clemens Ladisch <clemens@ladisch.de>
 
-> btw: I have tried the idle off on beagbeboard-xm with audio, but even w/o the
-> qos it is not triggering. w/o audio I hit off but if audio is running, not.
-
-OK yeah figured it out you need to comment out the watch -n5 command
-as that keeps the serial console busy :) I was doing it over ssh earlier
-on the torpedo board.
-
-> btw2: if you set the qos to 30ms and set the mcbsp2 threshold to 1024 (or
-> leave it as default) do you have audio glitches? I think if we hit C6 we
-> should not be able to wake up in time...
-
-Not that I've noticed at least with the default fifo size. How can
-I force the threshold to 1024? I tried changing pkt_size for
-omap_mcbsp_set_threshold but not getting any audio.
-
-Regards,
-
-Tony
+> ---
+>  sound/usb/6fire/pcm.c           |    2 +-
+>  sound/usb/caiaq/audio.c         |    2 +-
+>  sound/usb/hiface/pcm.c          |    2 +-
+>  sound/usb/misc/ua101.c          |    4 ++--
+>  sound/usb/usx2y/usx2yhwdeppcm.c |    2 +-
+>  5 files changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/sound/usb/6fire/pcm.c b/sound/usb/6fire/pcm.c
+> index 36f4115..224a6a5 100644
+> --- a/sound/usb/6fire/pcm.c
+> +++ b/sound/usb/6fire/pcm.c
+> @@ -555,7 +555,7 @@ static snd_pcm_uframes_t usb6fire_pcm_pointer(
+>  	return ret;
+>  }
+>
+> -static struct snd_pcm_ops pcm_ops = {
+> +static const struct snd_pcm_ops pcm_ops = {
+>  	.open = usb6fire_pcm_open,
+>  	.close = usb6fire_pcm_close,
+>  	.ioctl = snd_pcm_lib_ioctl,
+> diff --git a/sound/usb/hiface/pcm.c b/sound/usb/hiface/pcm.c
+> index 2c44139..23e66ed 100644
+> --- a/sound/usb/hiface/pcm.c
+> +++ b/sound/usb/hiface/pcm.c
+> @@ -511,7 +511,7 @@ static snd_pcm_uframes_t hiface_pcm_pointer(struct snd_pcm_substream *alsa_sub)
+>  	return bytes_to_frames(alsa_sub->runtime, dma_offset);
+>  }
+>
+> -static struct snd_pcm_ops pcm_ops = {
+> +static const struct snd_pcm_ops pcm_ops = {
+>  	.open = hiface_pcm_open,
+>  	.close = hiface_pcm_close,
+>  	.ioctl = snd_pcm_lib_ioctl,
+> diff --git a/sound/usb/usx2y/usx2yhwdeppcm.c b/sound/usb/usx2y/usx2yhwdeppcm.c
+> index 90766a9..1f28cb2a 100644
+> --- a/sound/usb/usx2y/usx2yhwdeppcm.c
+> +++ b/sound/usb/usx2y/usx2yhwdeppcm.c
+> @@ -587,7 +587,7 @@ static int snd_usX2Y_usbpcm_close(struct snd_pcm_substream *substream)
+>  }
+>
+>
+> -static struct snd_pcm_ops snd_usX2Y_usbpcm_ops =
+> +static const struct snd_pcm_ops snd_usX2Y_usbpcm_ops =
+>  {
+>  	.open =		snd_usX2Y_usbpcm_open,
+>  	.close =	snd_usX2Y_usbpcm_close,
+> diff --git a/sound/usb/misc/ua101.c b/sound/usb/misc/ua101.c
+> index c19a5dd..71a0e9e 100644
+> --- a/sound/usb/misc/ua101.c
+> +++ b/sound/usb/misc/ua101.c
+> @@ -890,7 +890,7 @@ static snd_pcm_uframes_t playback_pcm_pointer(struct snd_pcm_substream *subs)
+>  	return ua101_pcm_pointer(ua, &ua->playback);
+>  }
+>
+> -static struct snd_pcm_ops capture_pcm_ops = {
+> +static const struct snd_pcm_ops capture_pcm_ops = {
+>  	.open = capture_pcm_open,
+>  	.close = capture_pcm_close,
+>  	.ioctl = snd_pcm_lib_ioctl,
+> @@ -903,7 +903,7 @@ static struct snd_pcm_ops capture_pcm_ops = {
+>  	.mmap = snd_pcm_lib_mmap_vmalloc,
+>  };
+>
+> -static struct snd_pcm_ops playback_pcm_ops = {
+> +static const struct snd_pcm_ops playback_pcm_ops = {
+>  	.open = playback_pcm_open,
+>  	.close = playback_pcm_close,
+>  	.ioctl = snd_pcm_lib_ioctl,
+> diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
+> index 8f66ba7..af5ad84 100644
+> --- a/sound/usb/caiaq/audio.c
+> +++ b/sound/usb/caiaq/audio.c
+> @@ -338,7 +338,7 @@ unlock:
+>  }
+>
+>  /* operators for both playback and capture */
+> -static struct snd_pcm_ops snd_usb_caiaq_ops = {
+> +static const struct snd_pcm_ops snd_usb_caiaq_ops = {
+>  	.open =		snd_usb_caiaq_substream_open,
+>  	.close =	snd_usb_caiaq_substream_close,
+>  	.ioctl =	snd_pcm_lib_ioctl,
