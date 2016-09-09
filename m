@@ -1,97 +1,76 @@
-From: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Subject: RE: [PATCH] ASoC: da7219: make sure the valid event when startup
-Date: Fri, 9 Sep 2016 14:17:47 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A03370142A25083@SW-EX-MBX01.diasemi.com>
-References: <1473429695-12604-1-git-send-email-zhengxing@rock-chips.com>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v2 09/11] ASoC: Define API to find a dai link
+	by id
+Date: Fri,  9 Sep 2016 19:46:40 +0800
+Message-ID: <ca2a74096301459900ee33c5e39197baf6cf0f14.1473420558.git.mengdong.lin@linux.intel.com>
+References: <cover.1473420558.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1473429695-12604-1-git-send-email-zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, "linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "hychao-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org" <hychao-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Support Opensource <Support.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, "heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org" <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "smbarber-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org" <smbarber-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, "cychiang-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org" <cychiang-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id E648E26646C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2016 13:40:32 +0200 (CEST)
+In-Reply-To: <cover.1473420558.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 09 September 2016 15:02, Xing Zheng wrote:
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-> We need to ensure the master bias and jack detection to be enabled
-> before reporting event at the da7219_aad_irq_thread. Otherwise, we
-> may acquire the incorrect the unplug event when the DUT startup
-> with a plugged headphone.
+Topology can use this to check if a BE link already exists, and create
+a new link if not found.
 
-For this device, the master bias is enabled by default at power on and should
-also be enabled in the move to bias_level STANDBY. This I believe should all
-happen before the machine code calls the 'da7219_aad_jack_det()' function, and
-you should certainly not see any IRQs until after you've made that call and
-enabled accessory detection in the device.
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-I'm not really sure how this fixes anything.
-
-> 
-> Signed-off-by: Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-> ---
-> 
->  sound/soc/codecs/da7219-aad.c | 7 +++++++
->  sound/soc/codecs/da7219-aad.h | 1 +
->  2 files changed, 8 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
-> index 4e369a1..cef17c0d 100644
-> --- a/sound/soc/codecs/da7219-aad.c
-> +++ b/sound/soc/codecs/da7219-aad.c
-> @@ -38,6 +38,7 @@ void da7219_aad_jack_det(struct snd_soc_codec *codec,
-> struct snd_soc_jack *jack)
-> 
->  	da7219->aad->jack = jack;
->  	da7219->aad->jack_inserted = false;
-> +	da7219->aad->accdet_en = false;
-> 
->  	/* Send an initial empty report */
->  	snd_soc_jack_report(jack, 0, DA7219_AAD_REPORT_ALL_MASK);
-> @@ -46,6 +47,8 @@ void da7219_aad_jack_det(struct snd_soc_codec *codec,
-> struct snd_soc_jack *jack)
->  	snd_soc_update_bits(codec, DA7219_ACCDET_CONFIG_1,
->  			    DA7219_ACCDET_EN_MASK,
->  			    (jack ? DA7219_ACCDET_EN_MASK : 0));
-> +
-> +	da7219->aad->accdet_en = true;
->  }
->  EXPORT_SYMBOL_GPL(da7219_aad_jack_det);
-> 
-> @@ -293,6 +296,10 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void
-> *data)
->  	u8 statusa;
->  	int i, report = 0, mask = 0;
-> 
-> +	/* Ensure the master bias to be enabled */
-> +	if (!da7219_aad->accdet_en)
-> +		return IRQ_NONE;
-> +
->  	/* Read current IRQ events */
->  	regmap_bulk_read(da7219->regmap, DA7219_ACCDET_IRQ_EVENT_A,
->  			 events, DA7219_AAD_IRQ_REG_MAX);
-> diff --git a/sound/soc/codecs/da7219-aad.h b/sound/soc/codecs/da7219-aad.h
-> index 4fccf67..5641965 100644
-> --- a/sound/soc/codecs/da7219-aad.h
-> +++ b/sound/soc/codecs/da7219-aad.h
-> @@ -200,6 +200,7 @@ struct da7219_aad_priv {
-> 
->  	struct snd_soc_jack *jack;
->  	bool jack_inserted;
-> +	bool accdet_en;
->  };
-> 
->  /* AAD control */
-> --
-> 1.9.1
->
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 4f1c784..d52601a 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1671,6 +1671,8 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
+ 				struct snd_soc_dai_link *dai_link);
+ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+ 			     struct snd_soc_dai_link *dai_link);
++struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
++					       int id);
+ 
+ int snd_soc_register_dai(struct snd_soc_component *component,
+ 	struct snd_soc_dai_driver *dai_drv);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 810b1d7..e8113df 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -972,6 +972,22 @@ struct snd_soc_dai *snd_soc_find_dai(
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_find_dai);
+ 
++struct snd_soc_dai_link *snd_soc_find_dai_link(
++	struct snd_soc_card *card, int id)
++{
++	struct snd_soc_dai_link *link, *_link;
++
++	lockdep_assert_held(&client_mutex);
++
++	list_for_each_entry_safe(link, _link, &card->dai_link_list, list) {
++		if (link->id == id)
++			return link;
++	}
++
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(snd_soc_find_dai_link);
++
+ static bool soc_is_dai_link_bound(struct snd_soc_card *card,
+ 		struct snd_soc_dai_link *dai_link)
+ {
+-- 
+2.5.0
