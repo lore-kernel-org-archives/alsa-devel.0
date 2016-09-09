@@ -1,14 +1,14 @@
 From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: add rt5663 codec driver
-Date: Fri, 9 Sep 2016 10:25:39 +0800
-Message-ID: <1473387939-5670-1-git-send-email-bardliao@realtek.com>
+Subject: [PATCH v2] ASoC: add rt5663 codec driver
+Date: Fri, 9 Sep 2016 10:33:10 +0800
+Message-ID: <1473388390-5911-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id F1D422606F8
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2016 04:26:00 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 100BD261A64
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2016 04:33:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,20 +27,23 @@ This is the initial codec driver for both rt5663 rt5668 codec.
 Signed-off-by: John Lin <john.lin@realtek.com>
 Signed-off-by: Jack Yu <jack.yu@realtek.com>
 Signed-off-by: Bard Liao <bardliao@realtek.com>
+
+---
+* correct the codec name in the documentation file.
 ---
  Documentation/devicetree/bindings/sound/rt5663.txt |   30 +
- sound/soc/codecs/Kconfig                           |    6 +
+ sound/soc/codecs/Kconfig                           |    7 +
  sound/soc/codecs/Makefile                          |    2 +
  sound/soc/codecs/rt5663.c                          | 3216 ++++++++++++++++++++
  sound/soc/codecs/rt5663.h                          | 1121 +++++++
- 5 files changed, 4375 insertions(+)
+ 5 files changed, 4376 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/rt5663.txt
  create mode 100644 sound/soc/codecs/rt5663.c
  create mode 100644 sound/soc/codecs/rt5663.h
 
 diff --git a/Documentation/devicetree/bindings/sound/rt5663.txt b/Documentation/devicetree/bindings/sound/rt5663.txt
 new file mode 100644
-index 0000000..ca1f875
+index 0000000..7d3c974
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/sound/rt5663.txt
 @@ -0,0 +1,30 @@
@@ -58,7 +61,7 @@ index 0000000..ca1f875
 +
 +Optional properties:
 +
-+Pins on the device (for linking into audio routes) for RT5645/RT5650:
++Pins on the device (for linking into audio routes) for RT5663/RT5668:
 +
 +  * IN1P
 +  * IN1N
@@ -75,7 +78,7 @@ index 0000000..ca1f875
 +	interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
 +};
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index b3fd110..4a86fcf 100644
+index b3fd110..80e89de 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
 @@ -113,6 +113,7 @@ config SND_SOC_ALL_CODECS
@@ -102,7 +105,15 @@ index b3fd110..4a86fcf 100644
  	default m if SND_SOC_RT5670=m
  	default m if SND_SOC_RT5677=m
  
-@@ -698,6 +701,9 @@ config SND_SOC_RT5651
+@@ -666,6 +669,7 @@ config SND_SOC_RL6347A
+ 
+ config SND_SOC_RT286
+ 	tristate
++	select SND_SOC_RT5663
+ 	depends on I2C
+ 
+ config SND_SOC_RT298
+@@ -698,6 +702,9 @@ config SND_SOC_RT5651
  config SND_SOC_RT5659
  	tristate
  
