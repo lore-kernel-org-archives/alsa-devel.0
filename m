@@ -1,58 +1,40 @@
-From: Richard Leitner <dev@g0hl1n.net>
-Subject: Re: [PATCH v2] ASoC: sgtl5000: add headphone and LINEOUT mute
- controls
-Date: Fri, 9 Sep 2016 09:46:45 +0200
-Message-ID: <20160909094645.64b7744a@g0hl1n.net>
-References: <20160830202501.19323-1-dev@g0hl1n.net>
-        <20160831092631.013c8170@g0hl1n.net>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: Intel: remove status, it is shadowing status of a higher scope
+Date: Fri,  9 Sep 2016 10:09:29 +0100
+Message-ID: <20160909090929.27845-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160831092631.013c8170@g0hl1n.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: eric@nelint.com, clemens.gruber@pqgruber.com, tiwai@suse.com, perex@perex.cz, broonie@kernel.org, lgirdwood@gmail.com, Richard Leitner <dev@g0hl1n.net>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Jorge Fernandez Monteagudo <jorgefm@cirsa.com>, Sachin Mokashi <sachinx.mokashi@intel.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-any comments, updates or ideas for improvement on that patch?
+From: Colin Ian King <colin.king@canonical.com>
 
-regards,
-Richard
+The second declaration of status is shadowing the status of a higher
+scope.  This uninitialized status results in garbage being returned
+by the !x86_match_cpu(cpu_ids) || !iosf_mbi_available() return exit
+path.  Fix this by removing the extraneous second declaration of
+status.
 
-On Wed, 31 Aug 2016 09:26:31 +0200
-Richard Leitner <dev@g0hl1n.net> wrote:
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/intel/atom/sst/sst_acpi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> These controls mute/unmute the LINEOUT and headphone outputs of SGTL5000
-> using its CHIP_ANA_CTRL register.
-> 
-> Signed-off-by: Richard Leitner <dev@g0hl1n.net>
-> ---
-> CHANGES v2: fix invert value for both controls
-> 	(sorry I've missed that in my initial tests!)
-> ---
->  sound/soc/codecs/sgtl5000.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-> index 527b759..a6af65d 100644
-> --- a/sound/soc/codecs/sgtl5000.c
-> +++ b/sound/soc/codecs/sgtl5000.c
-> @@ -411,6 +411,8 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
->  			0, 8,
->  			0x7f, 1,
->  			headphone_volume),
-> +	SOC_SINGLE("Headphone Playback Switch", SGTL5000_CHIP_ANA_CTRL,
-> +			4, 1, 1),
->  	SOC_SINGLE("Headphone Playback ZC Switch", SGTL5000_CHIP_ANA_CTRL,
->  			5, 1, 0),
->  
-> @@ -423,6 +425,7 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
->  			SGTL5000_LINE_OUT_VOL_RIGHT_SHIFT,
->  			0x1f, 1,
->  			lineout_volume),
-> +	SOC_SINGLE("Lineout Playback Switch", SGTL5000_CHIP_ANA_CTRL, 8, 1, 1),
->  };
->  
->  /* mute the codec used by alsa core */
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 773acfb..4c14215 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -249,7 +249,6 @@ static int is_byt_cr(struct device *dev, bool *bytcr)
+ 			{ X86_VENDOR_INTEL, 6, 55 }, /* Valleyview, Bay Trail */
+ 			{}
+ 		};
+-		int status;
+ 		u32 bios_status;
+ 
+ 		if (!x86_match_cpu(cpu_ids) || !iosf_mbi_available()) {
+-- 
+2.9.3
