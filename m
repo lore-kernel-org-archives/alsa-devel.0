@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 09/11] ASoC: Define API to find a dai link
-	by id
-Date: Fri,  9 Sep 2016 19:46:40 +0800
-Message-ID: <ca2a74096301459900ee33c5e39197baf6cf0f14.1473420558.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v2 10/11] ASoC: Probe link components after
+	finding new links
+Date: Fri,  9 Sep 2016 19:46:48 +0800
+Message-ID: <ffa1d263b375c9cbb178e4d4f5b2553f920e0e10.1473420558.git.mengdong.lin@linux.intel.com>
 References: <cover.1473420558.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id E648E26646C
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2016 13:40:32 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id C281C26646C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2016 13:40:40 +0200 (CEST)
 In-Reply-To: <cover.1473420558.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,50 +27,71 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Topology can use this to check if a BE link already exists, and create
-a new link if not found.
+Probing link components may bring new links from topolgy and these new
+links may need new components. So there will be multiple rounds of
+components probing until there is no new links found during the process.
+
+Probing of aux_dev is moved earlier to simply the code. There is no need
+to probe aux_devices multiple times.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 4f1c784..d52601a 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1671,6 +1671,8 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
- 				struct snd_soc_dai_link *dai_link);
- void snd_soc_remove_dai_link(struct snd_soc_card *card,
- 			     struct snd_soc_dai_link *dai_link);
-+struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
-+					       int id);
- 
- int snd_soc_register_dai(struct snd_soc_component *component,
- 	struct snd_soc_dai_driver *dai_drv);
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 810b1d7..e8113df 100644
+index e8113df..6870917 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -972,6 +972,22 @@ struct snd_soc_dai *snd_soc_find_dai(
- }
- EXPORT_SYMBOL_GPL(snd_soc_find_dai);
+@@ -1862,6 +1862,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	struct snd_soc_pcm_runtime *rtd;
+ 	struct snd_soc_dai_link *dai_link;
+ 	int ret, i, order;
++	bool find_new_link; /* topolgy may create new links */
  
-+struct snd_soc_dai_link *snd_soc_find_dai_link(
-+	struct snd_soc_card *card, int id)
-+{
-+	struct snd_soc_dai_link *link, *_link;
+ 	mutex_lock(&client_mutex);
+ 	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_INIT);
+@@ -1934,7 +1935,13 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 			goto card_probe_error;
+ 	}
+ 
++	/* probe auxiliary components */
++	ret = soc_probe_aux_devices(card);
++	if (ret < 0)
++		goto probe_dai_err;
 +
-+	lockdep_assert_held(&client_mutex);
+ 	/* probe all components used by DAI links on this card */
++probe_link_cmpnt:
+ 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+ 			order++) {
+ 		list_for_each_entry(rtd, &card->rtd_list, list) {
+@@ -1948,18 +1955,15 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		}
+ 	}
+ 
+-	/* probe auxiliary components */
+-	ret = soc_probe_aux_devices(card);
+-	if (ret < 0)
+-		goto probe_dai_err;
+-
+ 	/* Find new DAI links added during probing components and bind them.
+ 	 * Components with topology may bring new DAIs and DAI links.
+ 	 */
++	find_new_link = false;
+ 	list_for_each_entry(dai_link, &card->dai_link_list, list) {
+ 		if (soc_is_dai_link_bound(card, dai_link))
+ 			continue;
+ 
++		find_new_link = true;
+ 		ret = soc_init_dai_link(card, dai_link);
+ 		if (ret)
+ 			goto probe_dai_err;
+@@ -1968,6 +1972,9 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 			goto probe_dai_err;
+ 	}
+ 
++	if (find_new_link) /* new link may have unprobed components */
++		goto probe_link_cmpnt;
 +
-+	list_for_each_entry_safe(link, _link, &card->dai_link_list, list) {
-+		if (link->id == id)
-+			return link;
-+	}
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_find_dai_link);
-+
- static bool soc_is_dai_link_bound(struct snd_soc_card *card,
- 		struct snd_soc_dai_link *dai_link)
- {
+ 	/* probe all DAI links on this card */
+ 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+ 			order++) {
 -- 
 2.5.0
