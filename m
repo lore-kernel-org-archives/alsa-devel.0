@@ -1,142 +1,197 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [RFC 00/17] clk: Add per-controller locks to fix deadlocks
-Date: Thu, 8 Sep 2016 17:24:32 -0700
-Message-ID: <20160909002432.GE13062@codeaurora.org>
-References: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene@kernel.org>, Russell King <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, Marek Szyprowski <m.szyprowski@samsung.com>, Charles
+From: Chris Zhong <zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: [PATCH v3 2/2] ASoC: rockchip: Add DP dai-links to the rk3399-gru machine driver
+Date: Thu,  8 Sep 2016 21:43:55 -0700
+Message-ID: <1473396235-11769-1-git-send-email-zyw@rock-chips.com>
+References: <1473181792-15398-1-git-send-email-zyw@rock-chips.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1473181792-15398-1-git-send-email-zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org, cychiang-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, hychao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Chris Zhong <zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/16, Krzysztof Kozlowski wrote:
-> Hi,
-> 
-> RFC, please, do not apply, maybe except patch #1 which is harmless.
-> 
-> 
-> Introduction
-> ============
-> The patchset brings new entity: clock controller representing a hardware
-> block.  The clock controller comes with its own prepare lock which
-> is used then in many places.  The idea is to fix the deadlock mentioned
-> in commit 10ff4c5239a1 ("i2c: exynos5: Fix possible ABBA deadlock by keeping
-> I2C clock prepared") and commit 34e81ad5f0b6 ("i2c: s3c2410: fix ABBA deadlock
-> by keeping clock prepared").
-> 
-> 
-> Disclaimer
-> ==========
-> Request for comments, so:
-> 1. Only exynos_defconfig builds,
-> 2. A lot of FIXME/TODO note still,
-> 3. Checkpatch not run, lines not aligned,
-> 4. Other (non-exynos) drivers not converted,
-> 5. Probably not yet bisectable,
-> 6. Locking became quite complex.
->    The previous one lock was simple.  Inefficient and dead-lock prone but
->    simple.  Because of clock hierarchy spanning through controllers, the
->    new locking became quite complicated.  I don't like it but...
-> 
-> 
-> Details
-> =======
-> In Exynos-based boards case the deadlock occurs between clock's
-> prepare_lock and regmap-i2c's lock:
-> 
-> CPU #0:                             CPU #1:
-> lock(regmap)
->                                     s2mps11-clk: clk_prepare_lock()
-> 
-> i2c-exynos: clk_prepare_lock() - wait
->                                     lock(regmap) - wait
-> 
-> The clk_prepare_lock() on both CPUs come from different clock drivers
-> and components:
-> 1. I2C clock is part of SoC block and is required by i2c-s3c2410/i2c-exynos5
->    driver,
-> 2. S2MPS11 clock is separate device, however driver uses I2C regmap.
-> 
-> The deadlock was reported by lockdep (always) and was happening
-> in 20% of boots of Odroid XU3 with multi_v7 defconfig.  Workaround for
-> deadlock was implemented by removing prepare/unprepare calls from I2C
-> transfers.  However these are just workarounds... which after applying
-> this patch can be reverted.
-> 
-> Additionally Marek Szyprowski's work on domains/clocks/pinctrl exposed
-> the deadlock again in different configuration.
-> 
+This patch adds DP audio output support to the rk3399-gru machine
+driver.
 
-Per-controller locks seems to be a misnomer. These patches look
-more like per-clk_register() locks. The clk registrant can decide
-how fine grained to make the prepare locking scheme. They can
-decide to have one lock per clk, one lock for the entire tree, or
-one lock per arbitrary subtree. I'd prefer to drop the controller
-concept unless it's really done that way, by attaching to the OF
-clk provider or device pointer.
+Signed-off-by: Chris Zhong <zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+---
 
-Given that, it seems that conceptually these patches allow clk
-registrants to carve out a set of clks that they want to be
-treated as an atomic unit with regards to the prepare lock.
-TL;DR trees of per-process recursive prepare mutex locks where
-the locks cover one or more clks.
+Changes in v3:
+- change spdif to i2s2
 
-The locks are recursive per-process to simplify the problem where
-we need to acquire the same lock multiple times while traversing
-a tree that shares the same lock, right? Otherwise we would need
-to track which locks we've already grabbed and refcount and we
-wouldn't be able to re-enter the framework from within the clk
-ops of the same atomic unit.
+Changes in v2:
+- correct the commit message
 
-As long as we can guarantee that we always take the locks in the
-same order we'll be fine. The burden to ensure that would be
-placed on the clk registrants though, and verifying that will be
-left up to humans? That seems fragile and error prone. We can
-always say that we take the global lock and then traverse the
-children up to the roots, but we can't be sure that during the
-tree traversal we don't take locks in different order because of
-how the clk registrant has structured things.
+ .../bindings/sound/rockchip,rk3399-gru-sound.txt   | 11 +--
+ sound/soc/rockchip/rk3399_gru_sound.c              | 93 ++++++++++++++++++++++
+ 2 files changed, 99 insertions(+), 5 deletions(-)
 
-It would be great if the different clk APIs were listed, with the
-order of how locks are taken BTW. And really overall just more
-information about how the locking scheme works. I had to read
-this patch series quite a few times to come to (hopefully the
-right) conclusions.
-
-So I'm not very fond of this design because the locking scheme is
-pretty much out of the hands of the framework and can be easily
-broken. I'm biased of course, because I'd prefer we go with my
-wwmutex design of per-clk locks[1]. Taking locks in any order
-works fine there, and we resolve quite a few long standing
-locking problems that we have while improving scalability. The
-problem there is that we don't get the recursive mutex design
-(maybe that's a benefit!). Once a clk_op reenters the framework
-with consumer APIs and tries to grab the same lock we deadlock.
-This is why I've been slowly splitting consumers from providers
-so we can easily identify these cases. If we had something like
-coordinated clk rate switching, we could get rid of clk_ops
-reentering the framework and avoid this problem (and we really do
-need to do that).
-
-The one thing I do like about this patch series though is the
-gradual movement of providers to the new locking scheme. Maybe if
-we combined that idea with per-clk wwmutex locks we could have
-the best of both worlds and fix reentrancy later when we need it?
-There's wwmutex_trylock() that we could use. Perhaps always pass
-a NULL context if some clk flag isn't set (CLK_USE_PER_CLK_LOCK).
-Plus we could assign the same wwmutex all over the place when
-that flag isn't set and allocate a unique wwmutex at clk_register
-time otherwise. I haven't thought about it deeply, so there may
-be some glaring problem that I'm missing like when we have half
-the clks in a tree with the flag set or something. This is where
-driving home from the office for 45 minutes helps.
-
-[1] http://lists.infradead.org/pipermail/linux-arm-kernel/2014-April/251039.html
-
+diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
+index f19b6c8..83af540 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
+@@ -1,15 +1,16 @@
+-ROCKCHIP with MAX98357A/RT5514/DA7219 codecs on GRU boards
++ROCKCHIP with MAX98357A/RT5514/DA7219 codecs and DP via spdif on GRU boards
+ 
+ Required properties:
+ - compatible: "rockchip,rk3399-gru-sound"
+-- rockchip,cpu: The phandle of the Rockchip I2S controller that's
++- rockchip,cpu: The phandle of the Rockchip I2S controller controller that's
+   connected to the codecs
+-- rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
++- rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs and of the
++  DP encoder node
+ 
+ Example:
+ 
+ sound {
+ 	compatible = "rockchip,rk3399-gru-sound";
+-	rockchip,cpu = <&i2s0>;
+-	rockchip,codec = <&max98357a &rt5514 &da7219>;
++	rockchip,cpu = <&i2s0 &i2s2>;
++	rockchip,codec = <&max98357a &rt5514 &da7219 &cdn_dp>;
+ };
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 164b6da..d9aa2e0 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -25,6 +25,7 @@
+ #include <linux/spi/spi.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
++#include <sound/hdmi-codec.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -214,6 +215,65 @@ static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
++
++static int rockchip_sound_cdndp_hw_params(struct snd_pcm_substream *substream,
++					  struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int mclk, ret;
++
++	/* in bypass mode, the mclk has to be one of the frequencies below */
++	switch (params_rate(params)) {
++	case 8000:
++	case 16000:
++	case 24000:
++	case 32000:
++	case 48000:
++	case 64000:
++	case 96000:
++		mclk = 12288000;
++		break;
++	case 11025:
++	case 22050:
++	case 44100:
++	case 88200:
++		mclk = 11289600;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
++				     SND_SOC_CLOCK_OUT);
++	if (ret < 0) {
++		dev_err(codec_dai->dev, "Can't set cpu clock out %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static struct snd_soc_jack cdn_dp_card_jack;
++
++static int rockchip_sound_cdndp_init(struct snd_soc_pcm_runtime *runtime)
++{
++	struct snd_soc_card *card = runtime->card;
++	struct snd_soc_codec *codec = runtime->codec;
++	int ret;
++
++	/* enable jack detection */
++	ret = snd_soc_card_jack_new(card, "DP Jack", SND_JACK_LINEOUT,
++				    &cdn_dp_card_jack, NULL, 0);
++	if (ret) {
++		dev_err(card->dev, "Can't new DP Jack %d\n", ret);
++		return ret;
++	}
++
++	return hdmi_codec_set_jack_detect(codec, &cdn_dp_card_jack);
++}
++
+ static struct snd_soc_ops rockchip_sound_max98357a_ops = {
+ 	.hw_params = rockchip_sound_max98357a_hw_params,
+ };
+@@ -226,10 +286,15 @@ static struct snd_soc_ops rockchip_sound_da7219_ops = {
+ 	.hw_params = rockchip_sound_da7219_hw_params,
+ };
+ 
++static struct snd_soc_ops rockchip_sound_cdndp_ops = {
++	.hw_params = rockchip_sound_cdndp_hw_params,
++};
++
+ enum {
+ 	DAILINK_MAX98357A,
+ 	DAILINK_RT5514,
+ 	DAILINK_DA7219,
++	DAILINK_CDNDP,
+ 	DAILINK_RT5514_DSP,
+ };
+ 
+@@ -264,6 +329,15 @@ static struct snd_soc_dai_link rockchip_dailinks[] = {
+ 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			SND_SOC_DAIFMT_CBS_CFS,
+ 	},
++	[DAILINK_CDNDP] = {
++		.name = "DP",
++		.stream_name = "DP PCM",
++		.codec_dai_name = "i2s-hifi",
++		.init = rockchip_sound_cdndp_init,
++		.ops = &rockchip_sound_cdndp_ops,
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
++	},
+ 	/* RT5514 DSP for voice wakeup via spi bus */
+ 	[DAILINK_RT5514_DSP] = {
+ 		.name = "RT5514 DSP",
+@@ -334,6 +408,25 @@ static int rockchip_sound_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
++	cpu_node = of_parse_phandle(pdev->dev.of_node, "rockchip,cpu", 1);
++	if (!cpu_node) {
++		dev_err(&pdev->dev, "Property 'rockchip,cpu 1' missing or invalid\n");
++		return -EINVAL;
++	}
++
++	rockchip_dailinks[DAILINK_CDNDP].platform_of_node = cpu_node;
++	rockchip_dailinks[DAILINK_CDNDP].cpu_of_node = cpu_node;
++
++	rockchip_dailinks[DAILINK_CDNDP].codec_of_node =
++		of_parse_phandle(pdev->dev.of_node, "rockchip,codec",
++				 DAILINK_CDNDP);
++	if (!rockchip_dailinks[DAILINK_CDNDP].codec_of_node) {
++		dev_err(&pdev->dev,
++			"Property[%d] 'rockchip,codec' missing or invalid\n",
++			DAILINK_CDNDP);
++		return -EINVAL;
++	}
++
+ 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+ 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+ 	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
