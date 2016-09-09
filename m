@@ -1,15 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 01/11] ASoC: topology: Able to create BE DAIs
-Date: Fri,  9 Sep 2016 19:43:11 +0800
-Message-ID: <084b7ba7ba3f0d4a97641b43fab26aee2dc20c5d.1473420558.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v2 02/11] ASoC: topology: ABI - Add flags to PCM
+Date: Fri,  9 Sep 2016 19:45:27 +0800
+Message-ID: <f99d2b2e874c2aeb1a5f0d76c8e3d21a9d26cd66.1473420558.git.mengdong.lin@linux.intel.com>
 References: <cover.1473420558.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B28A265D2B
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2016 13:37:02 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 334E126646C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2016 13:39:18 +0200 (CEST)
 In-Reply-To: <cover.1473420558.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,196 +26,65 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Topology will check with ASoC if a BE DAI already exists by checking
-its name. If the BE DAI doesn't exist, topology will create a new one
-and the dai_load ops will be called for device specific init.
+Add flags to PCM. These flags will be applied to FE (Front End) links.
 
-Here is why we need topology to create BE DAIs (and BE DAI links
-in later patches): Intel platform supports too many different types of
-DAIs based on the platform variant e.g. I2S, HDA, DMIC and Soundwire in
-the future. Due to the SoC pin count limitation, not all the interface
-pins are taken out of the SoC to connect various peripherals. So even
-though technically hardware supports many physical interfaces but the
-platform may have limited what can be connected on the platform. Our
-attempt is to create BE DAIs based on what is actually supported on a
-platform, e.g. if the platform does not support HDA then we will not
-create the HDA DAIs. Ideally, the driver should query BIOS to get the
-physical pin output types and connections to peripherals for a specific
-platform, but unfortunately BIOS sometimes does not have accurate info,
-so there is still hard code of BE DAI & DAI links in driver. To share a
-common driver across Intel platforms and remove the hard code, we choose
-topology to give us such info e.g. SKL Chrome topology does not use HDA
-Codec and so there are only I2S and DMIC DAIs.
-
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index d318fe4..9ebb9f2 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -39,6 +39,7 @@ enum snd_soc_dobj_type {
- 	SND_SOC_DOBJ_ENUM,
- 	SND_SOC_DOBJ_BYTES,
- 	SND_SOC_DOBJ_PCM,
-+	SND_SOC_DOBJ_BE_DAI,
- 	SND_SOC_DOBJ_DAI_LINK,
- 	SND_SOC_DOBJ_CODEC_LINK,
- 	SND_SOC_DOBJ_WIDGET,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c0bbcd9..810b1d7 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2871,7 +2871,8 @@ int snd_soc_register_dai(struct snd_soc_component *component,
- 	struct snd_soc_dai *dai;
- 	int ret;
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index 33d00a4..a8d25be 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -130,6 +130,10 @@
+ #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
+ #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
  
--	if (dai_drv->dobj.type != SND_SOC_DOBJ_PCM) {
-+	if (!(dai_drv->dobj.type == SND_SOC_DOBJ_PCM ||
-+	    dai_drv->dobj.type == SND_SOC_DOBJ_BE_DAI)) {
- 		dev_err(component->dev, "Invalid dai type %d\n",
- 			dai_drv->dobj.type);
- 		return -EINVAL;
++/* DAI link flags */
++#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND          (1 << 0)
++#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME   (1 << 1)
++
+ /*
+  * Block Header.
+  * This header precedes all object and object arrays below.
+@@ -440,6 +444,8 @@ struct snd_soc_tplg_pcm {
+ 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* for DAI link */
+ 	__le32 num_streams;	/* number of streams */
+ 	struct snd_soc_tplg_stream_caps caps[2]; /* playback and capture for DAI */
++	__le32 flag_mask;       /* bitmask of flags to configure */
++	__le32 flags;           /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
+ } __attribute__((packed));
+ 
+ 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 6b05047..b271248 100644
+index b271248..ede60df 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -1711,42 +1711,14 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
- 	return 0;
+@@ -1621,6 +1621,18 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
+ 	return snd_soc_register_dai(tplg->comp, dai_drv);
  }
  
--/* *
-- * soc_tplg_be_dai_config - Find and configure an existing BE DAI.
-- * @tplg: topology context
-- * @be: topology BE DAI configs.
-- *
-- * The BE dai should already be registered by the platform driver. The
-- * platform driver should specify the BE DAI name and ID for matching.
-- */
--static int soc_tplg_be_dai_config(struct soc_tplg *tplg,
-+static int config_be_dai(struct soc_tplg *tplg,
-+				  struct snd_soc_dai_driver *dai_drv,
- 				  struct snd_soc_tplg_be_dai *be)
- {
--	struct snd_soc_dai_link_component dai_component = {0};
--	struct snd_soc_dai *dai;
--	struct snd_soc_dai_driver *dai_drv;
- 	struct snd_soc_pcm_stream *stream;
- 	struct snd_soc_tplg_stream_caps *caps;
- 	int ret;
++static void set_link_flags(struct snd_soc_dai_link *link,
++		unsigned int flag_mask, unsigned int flags)
++{
++	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND)
++		link->ignore_suspend =
++			flags & SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND ? 1 : 0;
++
++	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME)
++		link->ignore_pmdown_time =
++		flags & SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME ? 1 : 0;
++}
++
+ /* create the FE DAI link */
+ static int soc_tplg_link_create(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_pcm *pcm)
+@@ -1644,6 +1656,8 @@ static int soc_tplg_link_create(struct soc_tplg *tplg,
+ 	link->dynamic = 1;
+ 	link->dpcm_playback = pcm->playback;
+ 	link->dpcm_capture = pcm->capture;
++	if (pcm->flag_mask)
++		set_link_flags(link, pcm->flag_mask, pcm->flags);
  
--	dai_component.dai_name = be->dai_name;
--	dai = snd_soc_find_dai(&dai_component);
--	if (!dai) {
--		dev_err(tplg->dev, "ASoC: BE DAI %s not registered\n",
--			be->dai_name);
--		return -EINVAL;
--	}
--
--	if (be->dai_id != dai->id) {
--		dev_err(tplg->dev, "ASoC: BE DAI %s id mismatch\n",
--			be->dai_name);
--		return -EINVAL;
--	}
--
--	dai_drv = dai->driver;
--	if (!dai_drv)
--		return -EINVAL;
--
- 	if (be->playback) {
- 		stream = &dai_drv->playback;
- 		caps = &be->caps[SND_SOC_TPLG_STREAM_PLAYBACK];
-@@ -1765,13 +1737,80 @@ static int soc_tplg_be_dai_config(struct soc_tplg *tplg,
  	/* pass control to component driver for optional further init */
- 	ret = soc_tplg_dai_load(tplg, dai_drv);
- 	if (ret < 0) {
--		dev_err(tplg->comp->dev, "ASoC: DAI loading failed\n");
-+		dev_err(tplg->comp->dev, "ASoC: BE DAI loading failed\n");
- 		return ret;
- 	}
- 
- 	return 0;
- }
- 
-+static int soc_tplg_be_dai_create(struct soc_tplg *tplg,
-+				  struct snd_soc_tplg_be_dai *be)
-+{
-+	struct snd_soc_dai_driver *dai_drv;
-+	int ret;
-+
-+	dai_drv = kzalloc(sizeof(struct snd_soc_dai_driver), GFP_KERNEL);
-+	if (dai_drv == NULL)
-+		return -ENOMEM;
-+
-+	dai_drv->name = be->dai_name;
-+	dai_drv->id = be->dai_id;
-+
-+	ret = config_be_dai(tplg, dai_drv, be);
-+	if (ret < 0) {
-+		kfree(dai_drv);
-+		return ret;
-+	}
-+
-+	dai_drv->dobj.index = tplg->index;
-+	dai_drv->dobj.ops = tplg->ops;
-+	dai_drv->dobj.type = SND_SOC_DOBJ_BE_DAI;
-+	list_add(&dai_drv->dobj.list, &tplg->comp->dobj_list);
-+
-+	/* register the DAI to the component */
-+	return snd_soc_register_dai(tplg->comp, dai_drv);
-+}
-+
-+/* *
-+ * soc_tplg_be_dai_config - Create a new BE DAI or configure an existing one.
-+ * @tplg: topology context
-+ * @be: topology BE DAI configs.
-+ *
-+ * The BE dai should already be registered by the platform driver. The
-+ * platform driver should specify the BE DAI name and ID for matching.
-+ */
-+static int soc_tplg_be_dai_config(struct soc_tplg *tplg,
-+				  struct snd_soc_tplg_be_dai *be)
-+{
-+	struct snd_soc_dai_link_component dai_component = {0};
-+	struct snd_soc_dai *dai;
-+	struct snd_soc_dai_driver *dai_drv;
-+
-+	if (!strlen(be->dai_name)) {
-+		dev_err(tplg->dev, "ASoC: Invalid BE DAI name\n");
-+		return -EINVAL;
-+	}
-+
-+	dai_component.dai_name = be->dai_name;
-+	dai = snd_soc_find_dai(&dai_component);
-+	if (!dai) /* BE DAI doesn't exist, create it */
-+		return soc_tplg_be_dai_create(tplg, be);
-+
-+	/* configure an existing BE DAI */
-+	if (be->dai_id != dai->id) {
-+		dev_err(tplg->dev, "ASoC: BE DAI %s id mismatch\n",
-+			be->dai_name);
-+		return -EINVAL;
-+	}
-+
-+	dai_drv = dai->driver;
-+	if (!dai_drv)
-+		return -EINVAL;
-+
-+	return config_be_dai(tplg, dai_drv, be);
-+}
-+
- static int soc_tplg_be_dai_elems_load(struct soc_tplg *tplg,
- 				      struct snd_soc_tplg_hdr *hdr)
- {
-@@ -2063,6 +2102,9 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
- 			case SND_SOC_DOBJ_PCM:
- 				remove_dai(comp, dobj, pass);
- 				break;
-+			case SND_SOC_DOBJ_BE_DAI:
-+				remove_dai(comp, dobj, pass);
-+				break;
- 			case SND_SOC_DOBJ_DAI_LINK:
- 				remove_link(comp, dobj, pass);
- 				break;
+ 	ret = soc_tplg_dai_link_load(tplg, link);
 -- 
 2.5.0
