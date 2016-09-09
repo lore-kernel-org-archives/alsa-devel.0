@@ -1,185 +1,108 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [linux-sunxi] [PATCH v2] ASoC: sun4i-codec: Distinguish sun4i
- from sun7i
-Date: Fri, 9 Sep 2016 21:56:16 +0800
-Message-ID: <CAGb2v64cW8ik3UzSBP0-VqS=2eZZ+YmUvf4qPgD-MimfDyOv=g@mail.gmail.com>
-References: <20160908195759.18485-1-dannym@scratchpost.org>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v2 07/11] ASoC: topology: ABI - Add HW
+	configurations to BE/CC links
+Date: Fri,  9 Sep 2016 19:46:22 +0800
+Message-ID: <a7dc2409d143431bde85e28dab7f3ad2b95ddfb5.1473420558.git.mengdong.lin@linux.intel.com>
+References: <cover.1473420558.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160908195759.18485-1-dannym@scratchpost.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Danny Milosavljevic <dannym@scratchpost.org>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 212B726646C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2016 13:40:12 +0200 (CEST)
+In-Reply-To: <cover.1473420558.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-On Fri, Sep 9, 2016 at 3:57 AM, Danny Milosavljevic
-<dannym@scratchpost.org> wrote:
-> Introduce mechanism to detect sun7i and provide a different regmap
-> and different controls for it - different compared to sun4i Allwinner A10.
->
-> The controls will be extended in a forthcoming patch - it is necessary to
-> distinguish between sun4i and sun7i controls because the mic gains are in
-> different registers.
->
-> Renamed SUN4I_CODEC_AC_SYS_VERI to SUN7I_CODEC_AC_DAC_CAL and renamed
-> SUN4I_CODEC_AC_MIC_PHONE_CAL to SUN7I_CODEC_AC_MIC_PHONE_CAL because these
-> are actually not present on Allwinner A10.
->
-> Handle quirks by regmap config and codec and select the correct quirks
-> automatically.
->
-> Signed-off-by: Danny Milosavljevic <dannym@scratchpost.org>
-> ---
->  sound/soc/sunxi/sun4i-codec.c | 78 ++++++++++++++++++++++++++++++++-----------
->  1 file changed, 58 insertions(+), 20 deletions(-)
->
-> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-> index 0e19c50..239e330 100644
-> --- a/sound/soc/sunxi/sun4i-codec.c
-> +++ b/sound/soc/sunxi/sun4i-codec.c
-> @@ -96,8 +96,8 @@
->  /* Other various ADC registers */
->  #define SUN4I_CODEC_DAC_TXCNT                  (0x30)
->  #define SUN4I_CODEC_ADC_RXCNT                  (0x34)
-> -#define SUN4I_CODEC_AC_SYS_VERI                        (0x38)
-> -#define SUN4I_CODEC_AC_MIC_PHONE_CAL           (0x3c)
-> +#define SUN7I_CODEC_AC_DAC_CAL                 (0x38)
-> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL           (0x3c)
->
->  struct sun4i_codec {
->         struct device   *dev;
-> @@ -509,7 +509,7 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
->
->  static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
->
-> -static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
-> +static const struct snd_kcontrol_new sun4i_codec_controls[] = {
->         SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
->                        SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
->                        sun4i_codec_pa_volume_scale),
-> @@ -627,10 +627,60 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
->         { "Mic1", NULL, "VMIC" },
->  };
->
-> +static const struct regmap_config sun4i_codec_regmap_config = {
-> +       .reg_bits       = 32,
-> +       .reg_stride     = 4,
-> +       .val_bits       = 32,
-> +       .max_register   = SUN4I_CODEC_ADC_RXCNT,
-> +};
-> +
-> +static const struct regmap_config sun7i_codec_regmap_config = {
-> +       .reg_bits       = 32,
-> +       .reg_stride     = 4,
-> +       .val_bits       = 32,
-> +       .max_register   = SUN7I_CODEC_AC_MIC_PHONE_CAL,
-> +};
-> +
-> +struct sun4i_quirks {
+Define the types and ABI struct for a single Backend or Codec<->Codec link
+runtime supported hardware config, e.g. audio hardware formats.
 
-Nit: use the driver name, sun4i_codec, as the prefix.
+The default HW config ID will help topology to find the DAI format to set
+on init.
 
-> +       const struct snd_kcontrol_new *controls;
-> +       unsigned int num_controls;
-> +       const struct regmap_config *regmap_config;
-> +};
-> +
-> +static const struct sun4i_quirks sun4i_quirks = {
-> +       .controls = NULL,
-> +       .num_controls = 0U,
+Topology provides this as a fallback if such HW settings are not available
+in ACPI or device tree, to avoid hard code in drivers.
 
-Nit: they default to NULL/0. You don't need to do it.
+It's only for config items that can be programmed by SW or FW, not for
+physical things like link connections or GPIO used for HP etc.
 
-> +       .regmap_config = &sun4i_codec_regmap_config,
-> +};
-> +
-> +static const struct sun4i_quirks sun7i_quirks = {
-> +       .controls = NULL,
-> +       .num_controls = 0U,
-> +       .regmap_config = &sun7i_codec_regmap_config,
-> +};
-> +
-> +static const struct of_device_id sun4i_codec_of_match[] = {
-> +       { .compatible = "allwinner,sun4i-a10-codec", .data = &sun4i_quirks },
-> +       { .compatible = "allwinner,sun7i-a20-codec", .data = &sun7i_quirks },
-> +       {}
-> +};
-> +MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Nit: I would put the above at the very bottom, just above the platform driver
-probe function, or where it was originally. Keep the file organized into
-codec/card/platform driver sections.
-
-ChenYu
-
-> +
-> +static int sun4i_codec_codec_probe(struct snd_soc_codec *scodec)
-> +{
-> +       const struct sun4i_quirks *quirks;
-> +
-> +       quirks = of_device_get_match_data(scodec->dev);
-> +       return snd_soc_add_codec_controls(scodec,
-> +                                         quirks->controls,
-> +                                         quirks->num_controls);
-> +}
-> +
->  static struct snd_soc_codec_driver sun4i_codec_codec = {
-> +       .probe = sun4i_codec_codec_probe,
->         .component_driver = {
-> -               .controls               = sun4i_codec_widgets,
-> -               .num_controls           = ARRAY_SIZE(sun4i_codec_widgets),
-> +               .controls               = sun4i_codec_controls,
-> +               .num_controls           = ARRAY_SIZE(sun4i_codec_controls),
->                 .dapm_widgets           = sun4i_codec_codec_dapm_widgets,
->                 .num_dapm_widgets       = ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
->                 .dapm_routes            = sun4i_codec_codec_dapm_routes,
-> @@ -678,20 +728,6 @@ static struct snd_soc_dai_driver dummy_cpu_dai = {
->          },
->  };
->
-> -static const struct regmap_config sun4i_codec_regmap_config = {
-> -       .reg_bits       = 32,
-> -       .reg_stride     = 4,
-> -       .val_bits       = 32,
-> -       .max_register   = SUN4I_CODEC_AC_MIC_PHONE_CAL,
-> -};
-> -
-> -static const struct of_device_id sun4i_codec_of_match[] = {
-> -       { .compatible = "allwinner,sun4i-a10-codec" },
-> -       { .compatible = "allwinner,sun7i-a20-codec" },
-> -       {}
-> -};
-> -MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
-> -
->  static struct snd_soc_dai_link *sun4i_codec_create_link(struct device *dev,
->                                                         int *num_links)
->  {
-> @@ -760,6 +796,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
->  {
->         struct snd_soc_card *card;
->         struct sun4i_codec *scodec;
-> +       const struct sun4i_quirks *quirks;
->         struct resource *res;
->         void __iomem *base;
->         int ret;
-> @@ -777,8 +814,9 @@ static int sun4i_codec_probe(struct platform_device *pdev)
->                 return PTR_ERR(base);
->         }
->
-> +       quirks = of_device_get_match_data(&pdev->dev);
->         scodec->regmap = devm_regmap_init_mmio(&pdev->dev, base,
-> -                                            &sun4i_codec_regmap_config);
-> +                                              quirks->regmap_config);
->         if (IS_ERR(scodec->regmap)) {
->                 dev_err(&pdev->dev, "Failed to create our regmap\n");
->                 return PTR_ERR(scodec->regmap);
-> --
-> 2.1.4
->
-> --
-> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
-> For more options, visit https://groups.google.com/d/optout.
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index 3256dd4..31f2181 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -42,6 +42,11 @@
+ /* maximum number of codecs for a BE/CC link */
+ #define SND_SOC_TPLG_LINK_CODECS_MAX    4
+ 
++/*
++ * Maximum number of BE/CC link HW configs
++ */
++#define SND_SOC_TPLG_HW_CONFIG_MAX	8
++
+ /* individual kcontrol info types - can be mixed with other types */
+ #define SND_SOC_TPLG_CTL_VOLSW		1
+ #define SND_SOC_TPLG_CTL_VOLSW_SX	2
+@@ -295,6 +300,35 @@ struct snd_soc_tplg_stream {
+ 	__le32 channels;	/* channels */
+ } __attribute__((packed));
+ 
++
++/*
++ * Describes a single BE or CC link runtime supported hardware config,
++ * i.e. hardware audio formats.
++ */
++struct snd_soc_tplg_hw_config {
++	__le32 size;            /* in bytes of this structure */
++	__le32 id;		/* unique ID - - used to match */
++	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
++	__u8 clock_gated;	/* 1 if clock can be gated to save power */
++	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
++	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
++	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
++	__u8 fsync_master;	/* 1 for master of FSYNC, 0 for slave */
++	__u8 mclk_direction;    /* 0 for input, 1 for output */
++	__le16 reserved;	/* for 32bit alignment */
++	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
++	__le32 bclk_rate;	/* BCLK freqency in Hz */
++	__le32 fsync_rate;	/* frame clock in Hz */
++	__le32 tdm_slots;	/* number of TDM slots in use */
++	__le32 tdm_slot_width;	/* width in bits for each slot */
++	__le32 tx_slots;	/* bit mask for active Tx slots */
++	__le32 rx_slots;	/* bit mask for active Rx slots */
++	__le32 tx_channels;	/* number of Tx channels */
++	__le32 tx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
++	__le32 rx_channels;	/* number of Rx channels */
++	__le32 rx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
++} __attribute__((packed));
++
+ /*
+  * Manifest. List totals for each payload type. Not used in parsing, but will
+  * be passed to the component driver before any other objects in order for any
+@@ -499,6 +533,10 @@ struct snd_soc_tplg_link_config {
+ 	struct snd_soc_tplg_link_cmpnt cpu;              /* cpu component */
+ 	struct snd_soc_tplg_link_cmpnt codecs[SND_SOC_TPLG_LINK_CODECS_MAX]; /* codec components */
+ 	__le32 num_codecs;      /* number of codecs */
++
++	struct snd_soc_tplg_hw_config hw_config[SND_SOC_TPLG_HW_CONFIG_MAX]; /* hw configs */
++	__le32 num_hw_configs;         /* number of hw configs */
++	__le32 default_hw_config_id;   /* default hw config ID for init */
+ } __attribute__((packed));
+ 
+ /*
+-- 
+2.5.0
