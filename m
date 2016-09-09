@@ -1,65 +1,73 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: sgtl5000: add headphone and LINEOUT mute
- controls
-Date: Fri, 9 Sep 2016 11:17:19 +0100
-Message-ID: <20160909101719.GD27946@sirena.org.uk>
-References: <20160830202501.19323-1-dev@g0hl1n.net>
- <20160831092631.013c8170@g0hl1n.net>
- <20160909094645.64b7744a@g0hl1n.net>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 2/2] ASoC: rockchip: Add DP dai-links to the
+ rk3399-gru machine driver
+Date: Fri, 9 Sep 2016 11:29:11 +0100
+Message-ID: <20160909102911.GE27946@sirena.org.uk>
+References: <1473181792-15398-1-git-send-email-zyw@rock-chips.com>
+ <1473396235-11769-1-git-send-email-zyw@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="XvKFcGCOAo53UbWW"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160909094645.64b7744a@g0hl1n.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Leitner <dev@g0hl1n.net>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, eric@nelint.com, clemens.gruber@pqgruber.com, tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com
+Content-Type: multipart/mixed; boundary="===============1709932923094484918=="
+Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1473396235-11769-1-git-send-email-zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
+List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Chris Zhong <zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, hychao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, cychiang-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---XvKFcGCOAo53UbWW
+--===============1709932923094484918==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="G6nVm6DDWH/FONJq"
+Content-Disposition: inline
+
+
+--G6nVm6DDWH/FONJq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 09, 2016 at 09:46:45AM +0200, Richard Leitner wrote:
-> Hi,
-> any comments, updates or ideas for improvement on that patch?
->=20
-> regards,
-> Richard
->=20
-> On Wed, 31 Aug 2016 09:26:31 +0200
-> Richard Leitner <dev@g0hl1n.net> wrote:
+On Thu, Sep 08, 2016 at 09:43:55PM -0700, Chris Zhong wrote:
+> This patch adds DP audio output support to the rk3399-gru machine
+> driver.
 
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
+Please don't resend or update single patches in the middle of a patch
+series, it makes things very confusing.  Please send the entire patch
+series at once.
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
-Sending content free pings just adds to the mail volume (if they are
-seen at all) and if something has gone wrong you'll have to resend the
-patches anyway.
-
---XvKFcGCOAo53UbWW
+--G6nVm6DDWH/FONJq
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJX0owuAAoJECTWi3JdVIfQrQgH/0QaH3b/aH4UuDJHdClvmEzm
-EKYQsxvV7FSItyGzwuU4pV9cAs2WNgcNnQ/lAwsggD3ajcJ4sNxuqMZjW50TiIhw
-qeLzNfQY9xnYC0E1IOUQ89tDZWbP2ACkiqL5evGrpxA8UEG6tOkzTl6x89IPl1w2
-NAnS7RD5ZtfTaPzUoIuPF8jF0EhWaIEx7f99Zf2+JuinkZc0hJL7VNZg3tTQxUZy
-r6ciSmAfutpX/U7Cx6ry/MI4zXqStMENgXVg0SB9l+rXIaNYwJFDV6yzJlja0XK0
-5fjExv61qwyRSeuwlzodam6uaHgZoG1w/QYGO46H6d/LMBEv81tJ+3pmFlkc6HU=
-=nfdv
+iQEcBAEBCAAGBQJX0o72AAoJECTWi3JdVIfQW84H/iYk/sSOPrXPbtVbPXq9laSI
+SHbzC8GEG/JF0tp5CyBDyn6GnxmnfK5LCZL5wE/tmuA9WBRu9vYVKU9aQJLb7oO+
+JXDepY1ULEj9IXLvZZTNi4/h9KtP3lzeaHuDJJru5XU8+WY8jOApqOfvs6bfo6Pi
+NGprDEjaO0Nq0t+wRJ97vycm6w0bSbeClAuGEuIsUrRykAmf4vLhWswvZ31yCgq3
+Mgmv6S08pNIJm9bKcTQNVybc0ulGV459jNnvBmkF1KfSLQrezL0SMi63DZFUxT47
+3ujJA337UF7T2+GRrsEVX+rT0RCD+pQJ8d5FbSKwTfIi9nLlI5hsvhZHlDCr7eg=
+=MHwV
 -----END PGP SIGNATURE-----
 
---XvKFcGCOAo53UbWW--
+--G6nVm6DDWH/FONJq--
+
+
+--===============1709932923094484918==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Linux-rockchip mailing list
+Linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+http://lists.infradead.org/mailman/listinfo/linux-rockchip
+
+--===============1709932923094484918==--
