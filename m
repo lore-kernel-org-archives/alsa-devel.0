@@ -1,98 +1,185 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 06/11] ASoC: topology: ABI - Define DAI
-	physical PCM data formats
-Date: Fri,  9 Sep 2016 19:46:13 +0800
-Message-ID: <cf3caa969a0294d57d9f9e7697cbdfd49c999dc4.1473420558.git.mengdong.lin@linux.intel.com>
-References: <cover.1473420558.git.mengdong.lin@linux.intel.com>
+From: Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [linux-sunxi] [PATCH v2] ASoC: sun4i-codec: Distinguish sun4i
+ from sun7i
+Date: Fri, 9 Sep 2016 21:56:16 +0800
+Message-ID: <CAGb2v64cW8ik3UzSBP0-VqS=2eZZ+YmUvf4qPgD-MimfDyOv=g@mail.gmail.com>
+References: <20160908195759.18485-1-dannym@scratchpost.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 4D96726646C
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2016 13:40:04 +0200 (CEST)
-In-Reply-To: <cover.1473420558.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160908195759.18485-1-dannym@scratchpost.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Danny Milosavljevic <dannym@scratchpost.org>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi <linux-sunxi@googlegroups.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Hi,
 
-Define DAI physical PCM data formats for user space, so users can specify
-the formats of backends by topology (e.g. the DAI format to set on backend
-link init).
+On Fri, Sep 9, 2016 at 3:57 AM, Danny Milosavljevic
+<dannym@scratchpost.org> wrote:
+> Introduce mechanism to detect sun7i and provide a different regmap
+> and different controls for it - different compared to sun4i Allwinner A10.
+>
+> The controls will be extended in a forthcoming patch - it is necessary to
+> distinguish between sun4i and sun7i controls because the mic gains are in
+> different registers.
+>
+> Renamed SUN4I_CODEC_AC_SYS_VERI to SUN7I_CODEC_AC_DAC_CAL and renamed
+> SUN4I_CODEC_AC_MIC_PHONE_CAL to SUN7I_CODEC_AC_MIC_PHONE_CAL because these
+> are actually not present on Allwinner A10.
+>
+> Handle quirks by regmap config and codec and select the correct quirks
+> automatically.
+>
+> Signed-off-by: Danny Milosavljevic <dannym@scratchpost.org>
+> ---
+>  sound/soc/sunxi/sun4i-codec.c | 78 ++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 58 insertions(+), 20 deletions(-)
+>
+> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+> index 0e19c50..239e330 100644
+> --- a/sound/soc/sunxi/sun4i-codec.c
+> +++ b/sound/soc/sunxi/sun4i-codec.c
+> @@ -96,8 +96,8 @@
+>  /* Other various ADC registers */
+>  #define SUN4I_CODEC_DAC_TXCNT                  (0x30)
+>  #define SUN4I_CODEC_ADC_RXCNT                  (0x34)
+> -#define SUN4I_CODEC_AC_SYS_VERI                        (0x38)
+> -#define SUN4I_CODEC_AC_MIC_PHONE_CAL           (0x3c)
+> +#define SUN7I_CODEC_AC_DAC_CAL                 (0x38)
+> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL           (0x3c)
+>
+>  struct sun4i_codec {
+>         struct device   *dev;
+> @@ -509,7 +509,7 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
+>
+>  static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
+>
+> -static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
+> +static const struct snd_kcontrol_new sun4i_codec_controls[] = {
+>         SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
+>                        SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
+>                        sun4i_codec_pa_volume_scale),
+> @@ -627,10 +627,60 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+>         { "Mic1", NULL, "VMIC" },
+>  };
+>
+> +static const struct regmap_config sun4i_codec_regmap_config = {
+> +       .reg_bits       = 32,
+> +       .reg_stride     = 4,
+> +       .val_bits       = 32,
+> +       .max_register   = SUN4I_CODEC_ADC_RXCNT,
+> +};
+> +
+> +static const struct regmap_config sun7i_codec_regmap_config = {
+> +       .reg_bits       = 32,
+> +       .reg_stride     = 4,
+> +       .val_bits       = 32,
+> +       .max_register   = SUN7I_CODEC_AC_MIC_PHONE_CAL,
+> +};
+> +
+> +struct sun4i_quirks {
 
-The kernel will also refer to these formats.
+Nit: use the driver name, sun4i_codec, as the prefix.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+> +       const struct snd_kcontrol_new *controls;
+> +       unsigned int num_controls;
+> +       const struct regmap_config *regmap_config;
+> +};
+> +
+> +static const struct sun4i_quirks sun4i_quirks = {
+> +       .controls = NULL,
+> +       .num_controls = 0U,
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 964b7de..534aae2 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -15,6 +15,7 @@
- 
- 
- #include <linux/list.h>
-+#include <sound/asoc.h>
- 
- struct snd_pcm_substream;
- struct snd_soc_dapm_widget;
-@@ -26,13 +27,13 @@ struct snd_compr_stream;
-  * Describes the physical PCM data formating and clocking. Add new formats
-  * to the end.
-  */
--#define SND_SOC_DAIFMT_I2S		1 /* I2S mode */
--#define SND_SOC_DAIFMT_RIGHT_J		2 /* Right Justified mode */
--#define SND_SOC_DAIFMT_LEFT_J		3 /* Left Justified mode */
--#define SND_SOC_DAIFMT_DSP_A		4 /* L data MSB after FRM LRC */
--#define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
--#define SND_SOC_DAIFMT_AC97		6 /* AC97 */
--#define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
-+#define SND_SOC_DAIFMT_I2S		SND_SOC_DAI_FORMAT_I2S
-+#define SND_SOC_DAIFMT_RIGHT_J		SND_SOC_DAI_FORMAT_RIGHT_J
-+#define SND_SOC_DAIFMT_LEFT_J		SND_SOC_DAI_FORMAT_LEFT_J
-+#define SND_SOC_DAIFMT_DSP_A		SND_SOC_DAI_FORMAT_DSP_A
-+#define SND_SOC_DAIFMT_DSP_B		SND_SOC_DAI_FORMAT_DSP_B
-+#define SND_SOC_DAIFMT_AC97		SND_SOC_DAI_FORMAT_AC97
-+#define SND_SOC_DAIFMT_PDM		SND_SOC_DAI_FORMAT_PDM
- 
- /* left and right justified also known as MSB and LSB respectively */
- #define SND_SOC_DAIFMT_MSB		SND_SOC_DAIFMT_LEFT_J
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 1d4c3b9..3256dd4 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -137,6 +137,21 @@
- #define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND          (1 << 0)
- #define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME   (1 << 1)
- 
-+/* DAI physical PCM data formats.
-+ * Add new formats to the end of the list.
-+ */
-+#define SND_SOC_DAI_FORMAT_I2S          1 /* I2S mode */
-+#define SND_SOC_DAI_FORMAT_RIGHT_J      2 /* Right Justified mode */
-+#define SND_SOC_DAI_FORMAT_LEFT_J       3 /* Left Justified mode */
-+#define SND_SOC_DAI_FORMAT_DSP_A        4 /* L data MSB after FRM LRC */
-+#define SND_SOC_DAI_FORMAT_DSP_B        5 /* L data MSB during FRM LRC */
-+#define SND_SOC_DAI_FORMAT_AC97         6 /* AC97 */
-+#define SND_SOC_DAI_FORMAT_PDM          7 /* Pulse density modulation */
-+
-+/* left and right justified also known as MSB and LSB respectively */
-+#define SND_SOC_DAI_FORMAT_MSB          SND_SOC_DAI_FORMAT_LEFT_J
-+#define SND_SOC_DAI_FORMAT_LSB          SND_SOC_DAI_FORMAT_RIGHT_J
-+
- /*
-  * Block Header.
-  * This header precedes all object and object arrays below.
--- 
-2.5.0
+Nit: they default to NULL/0. You don't need to do it.
+
+> +       .regmap_config = &sun4i_codec_regmap_config,
+> +};
+> +
+> +static const struct sun4i_quirks sun7i_quirks = {
+> +       .controls = NULL,
+> +       .num_controls = 0U,
+> +       .regmap_config = &sun7i_codec_regmap_config,
+> +};
+> +
+> +static const struct of_device_id sun4i_codec_of_match[] = {
+> +       { .compatible = "allwinner,sun4i-a10-codec", .data = &sun4i_quirks },
+> +       { .compatible = "allwinner,sun7i-a20-codec", .data = &sun7i_quirks },
+> +       {}
+> +};
+> +MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
+
+Nit: I would put the above at the very bottom, just above the platform driver
+probe function, or where it was originally. Keep the file organized into
+codec/card/platform driver sections.
+
+ChenYu
+
+> +
+> +static int sun4i_codec_codec_probe(struct snd_soc_codec *scodec)
+> +{
+> +       const struct sun4i_quirks *quirks;
+> +
+> +       quirks = of_device_get_match_data(scodec->dev);
+> +       return snd_soc_add_codec_controls(scodec,
+> +                                         quirks->controls,
+> +                                         quirks->num_controls);
+> +}
+> +
+>  static struct snd_soc_codec_driver sun4i_codec_codec = {
+> +       .probe = sun4i_codec_codec_probe,
+>         .component_driver = {
+> -               .controls               = sun4i_codec_widgets,
+> -               .num_controls           = ARRAY_SIZE(sun4i_codec_widgets),
+> +               .controls               = sun4i_codec_controls,
+> +               .num_controls           = ARRAY_SIZE(sun4i_codec_controls),
+>                 .dapm_widgets           = sun4i_codec_codec_dapm_widgets,
+>                 .num_dapm_widgets       = ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
+>                 .dapm_routes            = sun4i_codec_codec_dapm_routes,
+> @@ -678,20 +728,6 @@ static struct snd_soc_dai_driver dummy_cpu_dai = {
+>          },
+>  };
+>
+> -static const struct regmap_config sun4i_codec_regmap_config = {
+> -       .reg_bits       = 32,
+> -       .reg_stride     = 4,
+> -       .val_bits       = 32,
+> -       .max_register   = SUN4I_CODEC_AC_MIC_PHONE_CAL,
+> -};
+> -
+> -static const struct of_device_id sun4i_codec_of_match[] = {
+> -       { .compatible = "allwinner,sun4i-a10-codec" },
+> -       { .compatible = "allwinner,sun7i-a20-codec" },
+> -       {}
+> -};
+> -MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
+> -
+>  static struct snd_soc_dai_link *sun4i_codec_create_link(struct device *dev,
+>                                                         int *num_links)
+>  {
+> @@ -760,6 +796,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+>  {
+>         struct snd_soc_card *card;
+>         struct sun4i_codec *scodec;
+> +       const struct sun4i_quirks *quirks;
+>         struct resource *res;
+>         void __iomem *base;
+>         int ret;
+> @@ -777,8 +814,9 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+>                 return PTR_ERR(base);
+>         }
+>
+> +       quirks = of_device_get_match_data(&pdev->dev);
+>         scodec->regmap = devm_regmap_init_mmio(&pdev->dev, base,
+> -                                            &sun4i_codec_regmap_config);
+> +                                              quirks->regmap_config);
+>         if (IS_ERR(scodec->regmap)) {
+>                 dev_err(&pdev->dev, "Failed to create our regmap\n");
+>                 return PTR_ERR(scodec->regmap);
+> --
+> 2.1.4
+>
+> --
+> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
+> For more options, visit https://groups.google.com/d/optout.
