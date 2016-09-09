@@ -1,197 +1,153 @@
-From: Chris Zhong <zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: [PATCH v3 2/2] ASoC: rockchip: Add DP dai-links to the rk3399-gru machine driver
-Date: Thu,  8 Sep 2016 21:43:55 -0700
-Message-ID: <1473396235-11769-1-git-send-email-zyw@rock-chips.com>
-References: <1473181792-15398-1-git-send-email-zyw@rock-chips.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1473181792-15398-1-git-send-email-zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org, cychiang-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, hychao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Chris Zhong <zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
+ McBSP to prevent glitches
+Date: Fri, 9 Sep 2016 09:51:41 +0300
+Message-ID: <8ec65c33-cc92-7737-ac7a-1338bcab7b90@ti.com>
+References: <b3a254b2-948f-f04d-3289-fb8fb9f9ab23@ti.com>
+ <20160902145604.nlixopwza76kfgbz@atomide.com>
+ <c8f293f6-db2e-e518-7566-2cd92eb06ec0@ti.com>
+ <20160902204049.uhp4oosu3oc4k5v6@atomide.com>
+ <7d1c9a2f-60ae-2d83-f7dc-55fe476dbccb@ti.com>
+ <20160906201649.fx4vhuqmnziwshoe@atomide.com>
+ <1b82e33a-7db5-81ed-de4f-75847f840088@ti.com>
+ <20160908035356.mkk35s5gpcemifcg@atomide.com>
+ <ceb7854b-6cd4-fe3d-ede7-016c64f88dc0@ti.com>
+ <9452a3c6-9bf9-818f-6e8d-455193839e94@ti.com>
+ <20160908144834.i722j3afyztk6vhh@atomide.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [198.47.19.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A475261A8B
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2016 08:51:49 +0200 (CEST)
+In-Reply-To: <20160908144834.i722j3afyztk6vhh@atomide.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, "Kristo, Tero" <t-kristo@ti.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Pavel Machel <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds DP audio output support to the rk3399-gru machine
-driver.
+On 09/08/16 17:48, Tony Lindgren wrote:
+>>> My findings so far:
+>>> w/o the QoS patch we will hit core OFF even if we are in element mode i=
+n McBSP:
+>>> # cat /sys/devices/platform/68000000.ocp/49022000.mcbsp/dma_op_mode
+>>> [element] threshold
+>>>
+>>> If I start the playback we will hit core OFF even if the we have DMA re=
+quest
+>>> coming at every sample (every 0.02ms).
+> =
 
-Signed-off-by: Chris Zhong <zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
----
+> I think that's because we still have windows without pm qos where dma
+> is not active and we hit idle and there's nothing in hardware blocking
+> off mode.
 
-Changes in v3:
-- change spdif to i2s2
+Hrm. Should we block idle when the FIFO threshold is 'low'. I don't think it
+is a good thing to try to enter to lower C state to immediately jump out of
+it. With 0.02ms there is not much time we can spend conserving power and the
+enter/leave takes a bit more compared to staying wherever we were.
+ON the other hand, if we have big ALSA buffer we can keep the MPU off for a
+long time as we only need the DMA and the McBSP to run between user space
+filling the ALSA buffer...
 
-Changes in v2:
-- correct the commit message
+Oh, I have looked again to cpuidle34xx.c and we have two tables there:
+omap3_idle_driver and omap3430_idle_driver.
 
- .../bindings/sound/rockchip,rk3399-gru-sound.txt   | 11 +--
- sound/soc/rockchip/rk3399_gru_sound.c              | 93 ++++++++++++++++++++++
- 2 files changed, 99 insertions(+), 5 deletions(-)
+The omap3430_idle_driver numbers are based on measurements while the
+omap3_idle_driver probably contains safe numbers?
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-index f19b6c8..83af540 100644
---- a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-@@ -1,15 +1,16 @@
--ROCKCHIP with MAX98357A/RT5514/DA7219 codecs on GRU boards
-+ROCKCHIP with MAX98357A/RT5514/DA7219 codecs and DP via spdif on GRU boards
- 
- Required properties:
- - compatible: "rockchip,rk3399-gru-sound"
--- rockchip,cpu: The phandle of the Rockchip I2S controller that's
-+- rockchip,cpu: The phandle of the Rockchip I2S controller controller that's
-   connected to the codecs
--- rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
-+- rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs and of the
-+  DP encoder node
- 
- Example:
- 
- sound {
- 	compatible = "rockchip,rk3399-gru-sound";
--	rockchip,cpu = <&i2s0>;
--	rockchip,codec = <&max98357a &rt5514 &da7219>;
-+	rockchip,cpu = <&i2s0 &i2s2>;
-+	rockchip,codec = <&max98357a &rt5514 &da7219 &cdn_dp>;
- };
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 164b6da..d9aa2e0 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -25,6 +25,7 @@
- #include <linux/spi/spi.h>
- #include <sound/core.h>
- #include <sound/jack.h>
-+#include <sound/hdmi-codec.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -214,6 +215,65 @@ static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
- 
-+
-+static int rockchip_sound_cdndp_hw_params(struct snd_pcm_substream *substream,
-+					  struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int mclk, ret;
-+
-+	/* in bypass mode, the mclk has to be one of the frequencies below */
-+	switch (params_rate(params)) {
-+	case 8000:
-+	case 16000:
-+	case 24000:
-+	case 32000:
-+	case 48000:
-+	case 64000:
-+	case 96000:
-+		mclk = 12288000;
-+		break;
-+	case 11025:
-+	case 22050:
-+	case 44100:
-+	case 88200:
-+		mclk = 11289600;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
-+				     SND_SOC_CLOCK_OUT);
-+	if (ret < 0) {
-+		dev_err(codec_dai->dev, "Can't set cpu clock out %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_jack cdn_dp_card_jack;
-+
-+static int rockchip_sound_cdndp_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	struct snd_soc_card *card = runtime->card;
-+	struct snd_soc_codec *codec = runtime->codec;
-+	int ret;
-+
-+	/* enable jack detection */
-+	ret = snd_soc_card_jack_new(card, "DP Jack", SND_JACK_LINEOUT,
-+				    &cdn_dp_card_jack, NULL, 0);
-+	if (ret) {
-+		dev_err(card->dev, "Can't new DP Jack %d\n", ret);
-+		return ret;
-+	}
-+
-+	return hdmi_codec_set_jack_detect(codec, &cdn_dp_card_jack);
-+}
-+
- static struct snd_soc_ops rockchip_sound_max98357a_ops = {
- 	.hw_params = rockchip_sound_max98357a_hw_params,
- };
-@@ -226,10 +286,15 @@ static struct snd_soc_ops rockchip_sound_da7219_ops = {
- 	.hw_params = rockchip_sound_da7219_hw_params,
- };
- 
-+static struct snd_soc_ops rockchip_sound_cdndp_ops = {
-+	.hw_params = rockchip_sound_cdndp_hw_params,
-+};
-+
- enum {
- 	DAILINK_MAX98357A,
- 	DAILINK_RT5514,
- 	DAILINK_DA7219,
-+	DAILINK_CDNDP,
- 	DAILINK_RT5514_DSP,
- };
- 
-@@ -264,6 +329,15 @@ static struct snd_soc_dai_link rockchip_dailinks[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
- 	},
-+	[DAILINK_CDNDP] = {
-+		.name = "DP",
-+		.stream_name = "DP PCM",
-+		.codec_dai_name = "i2s-hifi",
-+		.init = rockchip_sound_cdndp_init,
-+		.ops = &rockchip_sound_cdndp_ops,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS,
-+	},
- 	/* RT5514 DSP for voice wakeup via spi bus */
- 	[DAILINK_RT5514_DSP] = {
- 		.name = "RT5514 DSP",
-@@ -334,6 +408,25 @@ static int rockchip_sound_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
-+	cpu_node = of_parse_phandle(pdev->dev.of_node, "rockchip,cpu", 1);
-+	if (!cpu_node) {
-+		dev_err(&pdev->dev, "Property 'rockchip,cpu 1' missing or invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	rockchip_dailinks[DAILINK_CDNDP].platform_of_node = cpu_node;
-+	rockchip_dailinks[DAILINK_CDNDP].cpu_of_node = cpu_node;
-+
-+	rockchip_dailinks[DAILINK_CDNDP].codec_of_node =
-+		of_parse_phandle(pdev->dev.of_node, "rockchip,codec",
-+				 DAILINK_CDNDP);
-+	if (!rockchip_dailinks[DAILINK_CDNDP].codec_of_node) {
-+		dev_err(&pdev->dev,
-+			"Property[%d] 'rockchip,codec' missing or invalid\n",
-+			DAILINK_CDNDP);
-+		return -EINVAL;
-+	}
-+
- 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
- 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
- 	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
--- 
-1.9.1
+In any way, according to the numbers:
+C7 is (7505 + 15274) vs (10000 + 30000)
+C6 is (7580 + 4134) vs (3000 + 8500)
+C5 is (855 + 1146) vs (2500 + 7500)
+C4 is (121 + 3374) vs (1500 + 1800)
+C3 is (107 + 410) vs (50 + 50)
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+with the 30ms QoS we set we will still hit OFF on OMAP3430, it should minim=
+um
+11.715ms for omap3430, but that will block C6 on omap36xx.
+
+If we could have the data for the struct cpuidle_state coming from DT and n=
+ot
+wired in the cpuidle34xx/44xx files then the McBSP driver could look up the=
+ C7
+number and block that...
+
+>>> We hit C6, but when the DMA request comes we have 16 words in the FIFO =
+(8
+>>> samples, 0.16ms of audio). C6 should take 11.5ms to exit...
+> =
+
+> So maybe we have the C6 latency for 36xx wrong, and it's much faster than
+> for 34xx? I wonder what happens on the original beagleboard, not the
+> xm variant.. I don't have one though.
+
+I have one working omap3 zoom2 board. AFAIK it has OMAP3430. I have
+3.9.smthing kernel booting on it, but I'm not sure if mainline would even
+work. Zoom3 and Zoom2 are mostly identical, but the SoC is different for su=
+re
+and probably memories, NAND, something else on the SOM? Can not find
+information on this.
+
+>>> Based on my experiments the FIFO threshold does not matter as even if we
+>>> should not be able to leave from a C state in time, we do leave from th=
+e state :o
+> =
+
+> Yes that's a mystery :)
+> =
+
+>>> The patch generates the following warning when the playback is stopped:
+> ...
+>>> [  115.996002] [<c0155b74>] (__cancel_work_timer) from [<c0199ad8>]
+>>> (pm_qos_remove_request+0x28/0x1c8)
+>>> [  116.005523] [<c0199ad8>] (pm_qos_remove_request) from [<c0684634>]
+>>> (omap_mcbsp_dai_trigger+0x70/0x8c)
+>>> [  116.015197] [<c0684634>] (omap_mcbsp_dai_trigger) from [<c067baa8>]
+>>> (soc_pcm_trigger+0xd0/0x11c)
+>>> [  116.024414] [<c067baa8>] (soc_pcm_trigger) from [<c0663be0>]
+>>> (snd_pcm_do_stop+0x50/0x54)
+>>> [  116.032928] [<c0663be0>] (snd_pcm_do_stop) from [<c06639c4>]
+>>> (snd_pcm_action_single+0x38/0x80)
+> =
+
+> Hmm OK I wonder why have not seen that one, I've been just hitting ctrl-c
+> to stop the playback.
+
+I also stopped the playback with ctrl-c :o
+
+>>> There is one more issue: if we have playback and capture running at the=
+ same
+>>> time and you stop one of them. It will remove the QoS and the remaining=
+ stream
+>>> might break.
+>>
+>> it is better to place the QoS in omap_mcbsp_request() and remove it in
+>> omap_mcbsp_free(). This way we retain the QoS for the time the McBSP is =
+in
+>> active use.
+> =
+
+> OK makes sense.
+> =
+
+> Regards,
+> =
+
+> Tony
+> =
+
+
+
+-- =
+
+P=E9ter
