@@ -1,108 +1,68 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 07/11] ASoC: topology: ABI - Add HW
-	configurations to BE/CC links
-Date: Fri,  9 Sep 2016 19:46:22 +0800
-Message-ID: <a7dc2409d143431bde85e28dab7f3ad2b95ddfb5.1473420558.git.mengdong.lin@linux.intel.com>
-References: <cover.1473420558.git.mengdong.lin@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 212B726646C
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2016 13:40:12 +0200 (CEST)
-In-Reply-To: <cover.1473420558.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+From: Xing Zheng <zhengxing@rock-chips.com>
+Subject: [PATCH] ASoC: da7219: make sure the valid event when startup
+Date: Fri,  9 Sep 2016 22:01:35 +0800
+Message-ID: <1473429695-12604-1-git-send-email-zhengxing@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-rockchip@lists.infradead.org, Adam.Thomson.Opensource@diasemi.com
+Cc: cychiang@google.com, heiko@sntech.de, smbarber@google.com, hychao@google.com, Xing Zheng <zhengxing@rock-chips.com>, Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+We need to ensure the master bias and jack detection to be enabled
+before reporting event at the da7219_aad_irq_thread. Otherwise, we
+may acquire the incorrect the unplug event when the DUT startup
+with a plugged headphone.
 
-Define the types and ABI struct for a single Backend or Codec<->Codec link
-runtime supported hardware config, e.g. audio hardware formats.
+Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
+---
 
-The default HW config ID will help topology to find the DAI format to set
-on init.
+ sound/soc/codecs/da7219-aad.c | 7 +++++++
+ sound/soc/codecs/da7219-aad.h | 1 +
+ 2 files changed, 8 insertions(+)
 
-Topology provides this as a fallback if such HW settings are not available
-in ACPI or device tree, to avoid hard code in drivers.
-
-It's only for config items that can be programmed by SW or FW, not for
-physical things like link connections or GPIO used for HP etc.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 3256dd4..31f2181 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -42,6 +42,11 @@
- /* maximum number of codecs for a BE/CC link */
- #define SND_SOC_TPLG_LINK_CODECS_MAX    4
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index 4e369a1..cef17c0d 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -38,6 +38,7 @@ void da7219_aad_jack_det(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
  
-+/*
-+ * Maximum number of BE/CC link HW configs
-+ */
-+#define SND_SOC_TPLG_HW_CONFIG_MAX	8
-+
- /* individual kcontrol info types - can be mixed with other types */
- #define SND_SOC_TPLG_CTL_VOLSW		1
- #define SND_SOC_TPLG_CTL_VOLSW_SX	2
-@@ -295,6 +300,35 @@ struct snd_soc_tplg_stream {
- 	__le32 channels;	/* channels */
- } __attribute__((packed));
+ 	da7219->aad->jack = jack;
+ 	da7219->aad->jack_inserted = false;
++	da7219->aad->accdet_en = false;
  
+ 	/* Send an initial empty report */
+ 	snd_soc_jack_report(jack, 0, DA7219_AAD_REPORT_ALL_MASK);
+@@ -46,6 +47,8 @@ void da7219_aad_jack_det(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
+ 	snd_soc_update_bits(codec, DA7219_ACCDET_CONFIG_1,
+ 			    DA7219_ACCDET_EN_MASK,
+ 			    (jack ? DA7219_ACCDET_EN_MASK : 0));
 +
-+/*
-+ * Describes a single BE or CC link runtime supported hardware config,
-+ * i.e. hardware audio formats.
-+ */
-+struct snd_soc_tplg_hw_config {
-+	__le32 size;            /* in bytes of this structure */
-+	__le32 id;		/* unique ID - - used to match */
-+	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
-+	__u8 clock_gated;	/* 1 if clock can be gated to save power */
-+	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
-+	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
-+	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
-+	__u8 fsync_master;	/* 1 for master of FSYNC, 0 for slave */
-+	__u8 mclk_direction;    /* 0 for input, 1 for output */
-+	__le16 reserved;	/* for 32bit alignment */
-+	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
-+	__le32 bclk_rate;	/* BCLK freqency in Hz */
-+	__le32 fsync_rate;	/* frame clock in Hz */
-+	__le32 tdm_slots;	/* number of TDM slots in use */
-+	__le32 tdm_slot_width;	/* width in bits for each slot */
-+	__le32 tx_slots;	/* bit mask for active Tx slots */
-+	__le32 rx_slots;	/* bit mask for active Rx slots */
-+	__le32 tx_channels;	/* number of Tx channels */
-+	__le32 tx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
-+	__le32 rx_channels;	/* number of Rx channels */
-+	__le32 rx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
-+} __attribute__((packed));
-+
- /*
-  * Manifest. List totals for each payload type. Not used in parsing, but will
-  * be passed to the component driver before any other objects in order for any
-@@ -499,6 +533,10 @@ struct snd_soc_tplg_link_config {
- 	struct snd_soc_tplg_link_cmpnt cpu;              /* cpu component */
- 	struct snd_soc_tplg_link_cmpnt codecs[SND_SOC_TPLG_LINK_CODECS_MAX]; /* codec components */
- 	__le32 num_codecs;      /* number of codecs */
-+
-+	struct snd_soc_tplg_hw_config hw_config[SND_SOC_TPLG_HW_CONFIG_MAX]; /* hw configs */
-+	__le32 num_hw_configs;         /* number of hw configs */
-+	__le32 default_hw_config_id;   /* default hw config ID for init */
- } __attribute__((packed));
++	da7219->aad->accdet_en = true;
+ }
+ EXPORT_SYMBOL_GPL(da7219_aad_jack_det);
  
- /*
+@@ -293,6 +296,10 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
+ 	u8 statusa;
+ 	int i, report = 0, mask = 0;
+ 
++	/* Ensure the master bias to be enabled */
++	if (!da7219_aad->accdet_en)
++		return IRQ_NONE;
++
+ 	/* Read current IRQ events */
+ 	regmap_bulk_read(da7219->regmap, DA7219_ACCDET_IRQ_EVENT_A,
+ 			 events, DA7219_AAD_IRQ_REG_MAX);
+diff --git a/sound/soc/codecs/da7219-aad.h b/sound/soc/codecs/da7219-aad.h
+index 4fccf67..5641965 100644
+--- a/sound/soc/codecs/da7219-aad.h
++++ b/sound/soc/codecs/da7219-aad.h
+@@ -200,6 +200,7 @@ struct da7219_aad_priv {
+ 
+ 	struct snd_soc_jack *jack;
+ 	bool jack_inserted;
++	bool accdet_en;
+ };
+ 
+ /* AAD control */
 -- 
-2.5.0
+1.9.1
