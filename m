@@ -1,167 +1,142 @@
-From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Subject: [PATCH v2] ASoC: sun4i-codec: Distinguish sun4i from sun7i
-Date: Thu,  8 Sep 2016 21:57:59 +0200
-Message-ID: <20160908195759.18485-1-dannym@scratchpost.org>
-Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [RFC 00/17] clk: Add per-controller locks to fix deadlocks
+Date: Thu, 8 Sep 2016 17:24:32 -0700
+Message-ID: <20160909002432.GE13062@codeaurora.org>
+References: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCPKHTHNWIPBBVMFY67AKGQE47CT2WQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Cc: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene@kernel.org>, Russell King <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, Marek Szyprowski <m.szyprowski@samsung.com>, Charles
 List-Id: alsa-devel@alsa-project.org
 
-Introduce mechanism to detect sun7i and provide a different regmap
-and different controls for it - different compared to sun4i Allwinner A10.
+On 08/16, Krzysztof Kozlowski wrote:
+> Hi,
+> 
+> RFC, please, do not apply, maybe except patch #1 which is harmless.
+> 
+> 
+> Introduction
+> ============
+> The patchset brings new entity: clock controller representing a hardware
+> block.  The clock controller comes with its own prepare lock which
+> is used then in many places.  The idea is to fix the deadlock mentioned
+> in commit 10ff4c5239a1 ("i2c: exynos5: Fix possible ABBA deadlock by keeping
+> I2C clock prepared") and commit 34e81ad5f0b6 ("i2c: s3c2410: fix ABBA deadlock
+> by keeping clock prepared").
+> 
+> 
+> Disclaimer
+> ==========
+> Request for comments, so:
+> 1. Only exynos_defconfig builds,
+> 2. A lot of FIXME/TODO note still,
+> 3. Checkpatch not run, lines not aligned,
+> 4. Other (non-exynos) drivers not converted,
+> 5. Probably not yet bisectable,
+> 6. Locking became quite complex.
+>    The previous one lock was simple.  Inefficient and dead-lock prone but
+>    simple.  Because of clock hierarchy spanning through controllers, the
+>    new locking became quite complicated.  I don't like it but...
+> 
+> 
+> Details
+> =======
+> In Exynos-based boards case the deadlock occurs between clock's
+> prepare_lock and regmap-i2c's lock:
+> 
+> CPU #0:                             CPU #1:
+> lock(regmap)
+>                                     s2mps11-clk: clk_prepare_lock()
+> 
+> i2c-exynos: clk_prepare_lock() - wait
+>                                     lock(regmap) - wait
+> 
+> The clk_prepare_lock() on both CPUs come from different clock drivers
+> and components:
+> 1. I2C clock is part of SoC block and is required by i2c-s3c2410/i2c-exynos5
+>    driver,
+> 2. S2MPS11 clock is separate device, however driver uses I2C regmap.
+> 
+> The deadlock was reported by lockdep (always) and was happening
+> in 20% of boots of Odroid XU3 with multi_v7 defconfig.  Workaround for
+> deadlock was implemented by removing prepare/unprepare calls from I2C
+> transfers.  However these are just workarounds... which after applying
+> this patch can be reverted.
+> 
+> Additionally Marek Szyprowski's work on domains/clocks/pinctrl exposed
+> the deadlock again in different configuration.
+> 
 
-The controls will be extended in a forthcoming patch - it is necessary to
-distinguish between sun4i and sun7i controls because the mic gains are in
-different registers.
+Per-controller locks seems to be a misnomer. These patches look
+more like per-clk_register() locks. The clk registrant can decide
+how fine grained to make the prepare locking scheme. They can
+decide to have one lock per clk, one lock for the entire tree, or
+one lock per arbitrary subtree. I'd prefer to drop the controller
+concept unless it's really done that way, by attaching to the OF
+clk provider or device pointer.
 
-Renamed SUN4I_CODEC_AC_SYS_VERI to SUN7I_CODEC_AC_DAC_CAL and renamed
-SUN4I_CODEC_AC_MIC_PHONE_CAL to SUN7I_CODEC_AC_MIC_PHONE_CAL because these
-are actually not present on Allwinner A10.
+Given that, it seems that conceptually these patches allow clk
+registrants to carve out a set of clks that they want to be
+treated as an atomic unit with regards to the prepare lock.
+TL;DR trees of per-process recursive prepare mutex locks where
+the locks cover one or more clks.
 
-Handle quirks by regmap config and codec and select the correct quirks
-automatically.
+The locks are recursive per-process to simplify the problem where
+we need to acquire the same lock multiple times while traversing
+a tree that shares the same lock, right? Otherwise we would need
+to track which locks we've already grabbed and refcount and we
+wouldn't be able to re-enter the framework from within the clk
+ops of the same atomic unit.
 
-Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
----
- sound/soc/sunxi/sun4i-codec.c | 78 ++++++++++++++++++++++++++++++++-----------
- 1 file changed, 58 insertions(+), 20 deletions(-)
+As long as we can guarantee that we always take the locks in the
+same order we'll be fine. The burden to ensure that would be
+placed on the clk registrants though, and verifying that will be
+left up to humans? That seems fragile and error prone. We can
+always say that we take the global lock and then traverse the
+children up to the roots, but we can't be sure that during the
+tree traversal we don't take locks in different order because of
+how the clk registrant has structured things.
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 0e19c50..239e330 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -96,8 +96,8 @@
- /* Other various ADC registers */
- #define SUN4I_CODEC_DAC_TXCNT			(0x30)
- #define SUN4I_CODEC_ADC_RXCNT			(0x34)
--#define SUN4I_CODEC_AC_SYS_VERI			(0x38)
--#define SUN4I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
-+#define SUN7I_CODEC_AC_DAC_CAL			(0x38)
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
- 
- struct sun4i_codec {
- 	struct device	*dev;
-@@ -509,7 +509,7 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
- 
- static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
- 
--static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
-+static const struct snd_kcontrol_new sun4i_codec_controls[] = {
- 	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
- 		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
- 		       sun4i_codec_pa_volume_scale),
-@@ -627,10 +627,60 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
- 	{ "Mic1", NULL, "VMIC" },
- };
- 
-+static const struct regmap_config sun4i_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= SUN4I_CODEC_ADC_RXCNT,
-+};
-+
-+static const struct regmap_config sun7i_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
-+};
-+
-+struct sun4i_quirks {
-+	const struct snd_kcontrol_new *controls;
-+	unsigned int num_controls;
-+	const struct regmap_config *regmap_config;
-+};
-+
-+static const struct sun4i_quirks sun4i_quirks = {
-+	.controls = NULL,
-+	.num_controls = 0U,
-+	.regmap_config = &sun4i_codec_regmap_config,
-+};
-+
-+static const struct sun4i_quirks sun7i_quirks = {
-+	.controls = NULL,
-+	.num_controls = 0U,
-+	.regmap_config = &sun7i_codec_regmap_config,
-+};
-+
-+static const struct of_device_id sun4i_codec_of_match[] = {
-+	{ .compatible = "allwinner,sun4i-a10-codec", .data = &sun4i_quirks },
-+	{ .compatible = "allwinner,sun7i-a20-codec", .data = &sun7i_quirks },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
-+
-+static int sun4i_codec_codec_probe(struct snd_soc_codec *scodec)
-+{
-+	const struct sun4i_quirks *quirks;
-+
-+	quirks = of_device_get_match_data(scodec->dev);
-+	return snd_soc_add_codec_controls(scodec,
-+					  quirks->controls,
-+					  quirks->num_controls);
-+}
-+
- static struct snd_soc_codec_driver sun4i_codec_codec = {
-+	.probe = sun4i_codec_codec_probe,
- 	.component_driver = {
--		.controls		= sun4i_codec_widgets,
--		.num_controls		= ARRAY_SIZE(sun4i_codec_widgets),
-+		.controls		= sun4i_codec_controls,
-+		.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
- 		.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
- 		.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
- 		.dapm_routes		= sun4i_codec_codec_dapm_routes,
-@@ -678,20 +728,6 @@ static struct snd_soc_dai_driver dummy_cpu_dai = {
- 	 },
- };
- 
--static const struct regmap_config sun4i_codec_regmap_config = {
--	.reg_bits	= 32,
--	.reg_stride	= 4,
--	.val_bits	= 32,
--	.max_register	= SUN4I_CODEC_AC_MIC_PHONE_CAL,
--};
--
--static const struct of_device_id sun4i_codec_of_match[] = {
--	{ .compatible = "allwinner,sun4i-a10-codec" },
--	{ .compatible = "allwinner,sun7i-a20-codec" },
--	{}
--};
--MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
--
- static struct snd_soc_dai_link *sun4i_codec_create_link(struct device *dev,
- 							int *num_links)
- {
-@@ -760,6 +796,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card;
- 	struct sun4i_codec *scodec;
-+	const struct sun4i_quirks *quirks;
- 	struct resource *res;
- 	void __iomem *base;
- 	int ret;
-@@ -777,8 +814,9 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 		return PTR_ERR(base);
- 	}
- 
-+	quirks = of_device_get_match_data(&pdev->dev);
- 	scodec->regmap = devm_regmap_init_mmio(&pdev->dev, base,
--					     &sun4i_codec_regmap_config);
-+					       quirks->regmap_config);
- 	if (IS_ERR(scodec->regmap)) {
- 		dev_err(&pdev->dev, "Failed to create our regmap\n");
- 		return PTR_ERR(scodec->regmap);
+It would be great if the different clk APIs were listed, with the
+order of how locks are taken BTW. And really overall just more
+information about how the locking scheme works. I had to read
+this patch series quite a few times to come to (hopefully the
+right) conclusions.
+
+So I'm not very fond of this design because the locking scheme is
+pretty much out of the hands of the framework and can be easily
+broken. I'm biased of course, because I'd prefer we go with my
+wwmutex design of per-clk locks[1]. Taking locks in any order
+works fine there, and we resolve quite a few long standing
+locking problems that we have while improving scalability. The
+problem there is that we don't get the recursive mutex design
+(maybe that's a benefit!). Once a clk_op reenters the framework
+with consumer APIs and tries to grab the same lock we deadlock.
+This is why I've been slowly splitting consumers from providers
+so we can easily identify these cases. If we had something like
+coordinated clk rate switching, we could get rid of clk_ops
+reentering the framework and avoid this problem (and we really do
+need to do that).
+
+The one thing I do like about this patch series though is the
+gradual movement of providers to the new locking scheme. Maybe if
+we combined that idea with per-clk wwmutex locks we could have
+the best of both worlds and fix reentrancy later when we need it?
+There's wwmutex_trylock() that we could use. Perhaps always pass
+a NULL context if some clk flag isn't set (CLK_USE_PER_CLK_LOCK).
+Plus we could assign the same wwmutex all over the place when
+that flag isn't set and allocate a unique wwmutex at clk_register
+time otherwise. I haven't thought about it deeply, so there may
+be some glaring problem that I'm missing like when we have half
+the clks in a tree with the flag set or something. This is where
+driving home from the office for 45 minutes helps.
+
+[1] http://lists.infradead.org/pipermail/linux-arm-kernel/2014-April/251039.html
+
 -- 
-2.1.4
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
