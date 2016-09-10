@@ -1,206 +1,212 @@
-From: Chris Zhong <zyw@rock-chips.com>
-Subject: [PATCH v15 5/5] ASoC: rockchip: Add DP dai-links to the rk3399-gru machine driver
-Date: Fri,  9 Sep 2016 19:15:48 -0700
-Message-ID: <1473473748-22331-6-git-send-email-zyw@rock-chips.com>
-References: <1473473748-22331-1-git-send-email-zyw@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1473473748-22331-1-git-send-email-zyw@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: dianders@chromium.org, tfiga@chromium.org, heiko@sntech.de, yzq@rock-chips.com, groeck@chromium.org, myungjoo.ham@samsung.com, cw00.choi@samsung.com, wulf@rock-chips.com, marcheu@chromium.org, briannorris@chromium.org, zhengxing@rock-chips.com, cychiang@chromium.org, hychao@chromium.org, broonie@kernel.org
-Cc: linux-rockchip@lists.infradead.org, Chris Zhong <zyw@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Kumar Gala <galak@codeaurora.org>, linux-kernel@vger.kernel.org, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, linux-arm-kernel@lists.infradead.org
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 1/2] ALSA: control: export layout of TLV
+	payload to UAPI header
+Date: Sat, 10 Sep 2016 13:50:15 +0900
+Message-ID: <1473483016-10529-2-git-send-email-o-takashi@sakamocchi.jp>
+References: <1473483016-10529-1-git-send-email-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 7E60A2666BB
+ for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2016 06:50:23 +0200 (CEST)
+In-Reply-To: <1473483016-10529-1-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds DP audio output support to the rk3399-gru machine
-driver.
+In ALSA control interface, each element set can have threshold level
+information. This information is transferred between drivers/applications,
+in a shape of tlv packet. The layout of this packet is defined in
+'uapi/sound/asound.h' (struct snd_ctl_tlv):
 
-Signed-off-by: Chris Zhong <zyw@rock-chips.com>
+struct snd_ctl_tlv {
+    unsigned int numid;
+    unsigned int length;
+    unsigned int tlv[0];
+};
+
+Data in the payload (struct snd_ctl_tlv.tlv) is expected to be filled
+according to our own protocol. This protocol is described in
+'include/sound/tlv.h'. A layout of the payload is expected as:
+
+struct snd_ctl_tlv.tlv[0]: one of SNDRV_CTL_TLVT_XXX
+struct snd_ctl_tlv.tlv[1]: Length of data
+struct snd_ctl_tlv.tlv[2...]: data
+
+Unfortunately, the macro is not exported to user land yet, thus
+applications cannot get to know the protocol.
+
+Additionally, ALSA control core has a feature called as 'user-defined'
+element set. This allows applications to add/remove arbitrary element sets
+with elements to control devices. Elements in the element set can be
+operated by the same way as the ones added by in-kernel implementation.
+
+For threshold level information of 'user-defined' element set, applications
+need to register the information to an element set. However, as described
+above, layout of the payload is closed in kernel land. This is quite
+inconvenient, too.
+
+This commit moves the protocol to UAPI header for TLV. According to this
+change, an old header is obsoleted.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
+ include/sound/tlv.h      | 62 +-----------------------------------------------
+ include/uapi/sound/tlv.h | 60 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 61 insertions(+), 61 deletions(-)
 
-Changes in v15: None
-Changes in v14: None
-Changes in v13: None
-Changes in v12: None
-Changes in v11: None
-Changes in v10: None
-Changes in v9: None
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3:
-- change spdif to i2s2
-
-Changes in v2:
-- correct the commit message
-
-Changes in v1: None
-
- .../bindings/sound/rockchip,rk3399-gru-sound.txt   | 11 +--
- sound/soc/rockchip/rk3399_gru_sound.c              | 93 ++++++++++++++++++++++
- 2 files changed, 99 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-index f19b6c8..83af540 100644
---- a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-@@ -1,15 +1,16 @@
--ROCKCHIP with MAX98357A/RT5514/DA7219 codecs on GRU boards
-+ROCKCHIP with MAX98357A/RT5514/DA7219 codecs and DP via spdif on GRU boards
+diff --git a/include/sound/tlv.h b/include/sound/tlv.h
+index df97d19..7b0d0d1 100644
+--- a/include/sound/tlv.h
++++ b/include/sound/tlv.h
+@@ -22,67 +22,7 @@
+  *
+  */
  
- Required properties:
- - compatible: "rockchip,rk3399-gru-sound"
--- rockchip,cpu: The phandle of the Rockchip I2S controller that's
-+- rockchip,cpu: The phandle of the Rockchip I2S controller controller that's
-   connected to the codecs
--- rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
-+- rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs and of the
-+  DP encoder node
+-/*
+- * TLV structure is right behind the struct snd_ctl_tlv:
+- *   unsigned int type  	- see SNDRV_CTL_TLVT_*
+- *   unsigned int length
+- *   .... data aligned to sizeof(unsigned int), use
+- *        block_length = (length + (sizeof(unsigned int) - 1)) &
+- *                       ~(sizeof(unsigned int) - 1)) ....
+- */
+-
++/* You should include UAPI header directly, instead of this. */
+ #include <uapi/sound/tlv.h>
  
- Example:
+-#define TLV_ITEM(type, ...) \
+-	(type), TLV_LENGTH(__VA_ARGS__), __VA_ARGS__
+-#define TLV_LENGTH(...) \
+-	((unsigned int)sizeof((const unsigned int[]) { __VA_ARGS__ }))
+-
+-#define TLV_CONTAINER_ITEM(...) \
+-	TLV_ITEM(SNDRV_CTL_TLVT_CONTAINER, __VA_ARGS__)
+-#define DECLARE_TLV_CONTAINER(name, ...) \
+-	unsigned int name[] = { TLV_CONTAINER_ITEM(__VA_ARGS__) }
+-
+-#define TLV_DB_SCALE_MASK	0xffff
+-#define TLV_DB_SCALE_MUTE	0x10000
+-#define TLV_DB_SCALE_ITEM(min, step, mute)			\
+-	TLV_ITEM(SNDRV_CTL_TLVT_DB_SCALE,			\
+-		 (min),					\
+-		 ((step) & TLV_DB_SCALE_MASK) |		\
+-			((mute) ? TLV_DB_SCALE_MUTE : 0))
+-#define DECLARE_TLV_DB_SCALE(name, min, step, mute) \
+-	unsigned int name[] = { TLV_DB_SCALE_ITEM(min, step, mute) }
+-
+-/* dB scale specified with min/max values instead of step */
+-#define TLV_DB_MINMAX_ITEM(min_dB, max_dB)			\
+-	TLV_ITEM(SNDRV_CTL_TLVT_DB_MINMAX, (min_dB), (max_dB))
+-#define TLV_DB_MINMAX_MUTE_ITEM(min_dB, max_dB)			\
+-	TLV_ITEM(SNDRV_CTL_TLVT_DB_MINMAX_MUTE, (min_dB), (max_dB))
+-#define DECLARE_TLV_DB_MINMAX(name, min_dB, max_dB) \
+-	unsigned int name[] = { TLV_DB_MINMAX_ITEM(min_dB, max_dB) }
+-#define DECLARE_TLV_DB_MINMAX_MUTE(name, min_dB, max_dB) \
+-	unsigned int name[] = { TLV_DB_MINMAX_MUTE_ITEM(min_dB, max_dB) }
+-
+-/* linear volume between min_dB and max_dB (.01dB unit) */
+-#define TLV_DB_LINEAR_ITEM(min_dB, max_dB)		    \
+-	TLV_ITEM(SNDRV_CTL_TLVT_DB_LINEAR, (min_dB), (max_dB))
+-#define DECLARE_TLV_DB_LINEAR(name, min_dB, max_dB)	\
+-	unsigned int name[] = { TLV_DB_LINEAR_ITEM(min_dB, max_dB) }
+-
+-/* dB range container:
+- * Items in dB range container must be ordered by their values and by their
+- * dB values. This implies that larger values must correspond with larger
+- * dB values (which is also required for all other mixer controls).
+- */
+-/* Each item is: <min> <max> <TLV> */
+-#define TLV_DB_RANGE_ITEM(...) \
+-	TLV_ITEM(SNDRV_CTL_TLVT_DB_RANGE, __VA_ARGS__)
+-#define DECLARE_TLV_DB_RANGE(name, ...) \
+-	unsigned int name[] = { TLV_DB_RANGE_ITEM(__VA_ARGS__) }
+-/* The below assumes that each item TLV is 4 words like DB_SCALE or LINEAR */
+-#define TLV_DB_RANGE_HEAD(num)			\
+-	SNDRV_CTL_TLVT_DB_RANGE, 6 * (num) * sizeof(unsigned int)
+-
+-#define TLV_DB_GAIN_MUTE	-9999999
+-
+ #endif /* __SOUND_TLV_H */
+diff --git a/include/uapi/sound/tlv.h b/include/uapi/sound/tlv.h
+index ffc4f20..b741e0e 100644
+--- a/include/uapi/sound/tlv.h
++++ b/include/uapi/sound/tlv.h
+@@ -28,4 +28,64 @@
+ #define SNDRV_CTL_TLVT_CHMAP_VAR	0x102	/* channels freely swappable */
+ #define SNDRV_CTL_TLVT_CHMAP_PAIRED	0x103	/* pair-wise swappable */
  
- sound {
- 	compatible = "rockchip,rk3399-gru-sound";
--	rockchip,cpu = <&i2s0>;
--	rockchip,codec = <&max98357a &rt5514 &da7219>;
-+	rockchip,cpu = <&i2s0 &i2s2>;
-+	rockchip,codec = <&max98357a &rt5514 &da7219 &cdn_dp>;
- };
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 164b6da..d9aa2e0 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -25,6 +25,7 @@
- #include <linux/spi/spi.h>
- #include <sound/core.h>
- #include <sound/jack.h>
-+#include <sound/hdmi-codec.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -214,6 +215,65 @@ static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
- 
++/*
++ * TLV structure is right behind the struct snd_ctl_tlv:
++ *   unsigned int type  	- see SNDRV_CTL_TLVT_*
++ *   unsigned int length
++ *   .... data aligned to sizeof(unsigned int), use
++ *        block_length = (length + (sizeof(unsigned int) - 1)) &
++ *                       ~(sizeof(unsigned int) - 1)) ....
++ */
++#define TLV_ITEM(type, ...) \
++	(type), TLV_LENGTH(__VA_ARGS__), __VA_ARGS__
++#define TLV_LENGTH(...) \
++	((unsigned int)sizeof((const unsigned int[]) { __VA_ARGS__ }))
 +
-+static int rockchip_sound_cdndp_hw_params(struct snd_pcm_substream *substream,
-+					  struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int mclk, ret;
++#define TLV_CONTAINER_ITEM(...) \
++	TLV_ITEM(SNDRV_CTL_TLVT_CONTAINER, __VA_ARGS__)
++#define DECLARE_TLV_CONTAINER(name, ...) \
++	unsigned int name[] = { TLV_CONTAINER_ITEM(__VA_ARGS__) }
 +
-+	/* in bypass mode, the mclk has to be one of the frequencies below */
-+	switch (params_rate(params)) {
-+	case 8000:
-+	case 16000:
-+	case 24000:
-+	case 32000:
-+	case 48000:
-+	case 64000:
-+	case 96000:
-+		mclk = 12288000;
-+		break;
-+	case 11025:
-+	case 22050:
-+	case 44100:
-+	case 88200:
-+		mclk = 11289600;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
++#define TLV_DB_SCALE_MASK	0xffff
++#define TLV_DB_SCALE_MUTE	0x10000
++#define TLV_DB_SCALE_ITEM(min, step, mute)			\
++	TLV_ITEM(SNDRV_CTL_TLVT_DB_SCALE,			\
++		 (min),					\
++		 ((step) & TLV_DB_SCALE_MASK) |		\
++			((mute) ? TLV_DB_SCALE_MUTE : 0))
++#define DECLARE_TLV_DB_SCALE(name, min, step, mute) \
++	unsigned int name[] = { TLV_DB_SCALE_ITEM(min, step, mute) }
 +
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
-+				     SND_SOC_CLOCK_OUT);
-+	if (ret < 0) {
-+		dev_err(codec_dai->dev, "Can't set cpu clock out %d\n", ret);
-+		return ret;
-+	}
++/* dB scale specified with min/max values instead of step */
++#define TLV_DB_MINMAX_ITEM(min_dB, max_dB)			\
++	TLV_ITEM(SNDRV_CTL_TLVT_DB_MINMAX, (min_dB), (max_dB))
++#define TLV_DB_MINMAX_MUTE_ITEM(min_dB, max_dB)			\
++	TLV_ITEM(SNDRV_CTL_TLVT_DB_MINMAX_MUTE, (min_dB), (max_dB))
++#define DECLARE_TLV_DB_MINMAX(name, min_dB, max_dB) \
++	unsigned int name[] = { TLV_DB_MINMAX_ITEM(min_dB, max_dB) }
++#define DECLARE_TLV_DB_MINMAX_MUTE(name, min_dB, max_dB) \
++	unsigned int name[] = { TLV_DB_MINMAX_MUTE_ITEM(min_dB, max_dB) }
 +
-+	return 0;
-+}
++/* linear volume between min_dB and max_dB (.01dB unit) */
++#define TLV_DB_LINEAR_ITEM(min_dB, max_dB)		    \
++	TLV_ITEM(SNDRV_CTL_TLVT_DB_LINEAR, (min_dB), (max_dB))
++#define DECLARE_TLV_DB_LINEAR(name, min_dB, max_dB)	\
++	unsigned int name[] = { TLV_DB_LINEAR_ITEM(min_dB, max_dB) }
 +
-+static struct snd_soc_jack cdn_dp_card_jack;
++/* dB range container:
++ * Items in dB range container must be ordered by their values and by their
++ * dB values. This implies that larger values must correspond with larger
++ * dB values (which is also required for all other mixer controls).
++ */
++/* Each item is: <min> <max> <TLV> */
++#define TLV_DB_RANGE_ITEM(...) \
++	TLV_ITEM(SNDRV_CTL_TLVT_DB_RANGE, __VA_ARGS__)
++#define DECLARE_TLV_DB_RANGE(name, ...) \
++	unsigned int name[] = { TLV_DB_RANGE_ITEM(__VA_ARGS__) }
++/* The below assumes that each item TLV is 4 words like DB_SCALE or LINEAR */
++#define TLV_DB_RANGE_HEAD(num)			\
++	SNDRV_CTL_TLVT_DB_RANGE, 6 * (num) * sizeof(unsigned int)
 +
-+static int rockchip_sound_cdndp_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	struct snd_soc_card *card = runtime->card;
-+	struct snd_soc_codec *codec = runtime->codec;
-+	int ret;
++#define TLV_DB_GAIN_MUTE	-9999999
 +
-+	/* enable jack detection */
-+	ret = snd_soc_card_jack_new(card, "DP Jack", SND_JACK_LINEOUT,
-+				    &cdn_dp_card_jack, NULL, 0);
-+	if (ret) {
-+		dev_err(card->dev, "Can't new DP Jack %d\n", ret);
-+		return ret;
-+	}
-+
-+	return hdmi_codec_set_jack_detect(codec, &cdn_dp_card_jack);
-+}
-+
- static struct snd_soc_ops rockchip_sound_max98357a_ops = {
- 	.hw_params = rockchip_sound_max98357a_hw_params,
- };
-@@ -226,10 +286,15 @@ static struct snd_soc_ops rockchip_sound_da7219_ops = {
- 	.hw_params = rockchip_sound_da7219_hw_params,
- };
- 
-+static struct snd_soc_ops rockchip_sound_cdndp_ops = {
-+	.hw_params = rockchip_sound_cdndp_hw_params,
-+};
-+
- enum {
- 	DAILINK_MAX98357A,
- 	DAILINK_RT5514,
- 	DAILINK_DA7219,
-+	DAILINK_CDNDP,
- 	DAILINK_RT5514_DSP,
- };
- 
-@@ -264,6 +329,15 @@ static struct snd_soc_dai_link rockchip_dailinks[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
- 	},
-+	[DAILINK_CDNDP] = {
-+		.name = "DP",
-+		.stream_name = "DP PCM",
-+		.codec_dai_name = "i2s-hifi",
-+		.init = rockchip_sound_cdndp_init,
-+		.ops = &rockchip_sound_cdndp_ops,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS,
-+	},
- 	/* RT5514 DSP for voice wakeup via spi bus */
- 	[DAILINK_RT5514_DSP] = {
- 		.name = "RT5514 DSP",
-@@ -334,6 +408,25 @@ static int rockchip_sound_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
-+	cpu_node = of_parse_phandle(pdev->dev.of_node, "rockchip,cpu", 1);
-+	if (!cpu_node) {
-+		dev_err(&pdev->dev, "Property 'rockchip,cpu 1' missing or invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	rockchip_dailinks[DAILINK_CDNDP].platform_of_node = cpu_node;
-+	rockchip_dailinks[DAILINK_CDNDP].cpu_of_node = cpu_node;
-+
-+	rockchip_dailinks[DAILINK_CDNDP].codec_of_node =
-+		of_parse_phandle(pdev->dev.of_node, "rockchip,codec",
-+				 DAILINK_CDNDP);
-+	if (!rockchip_dailinks[DAILINK_CDNDP].codec_of_node) {
-+		dev_err(&pdev->dev,
-+			"Property[%d] 'rockchip,codec' missing or invalid\n",
-+			DAILINK_CDNDP);
-+		return -EINVAL;
-+	}
-+
- 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
- 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
- 	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+ #endif
 -- 
-1.9.1
+2.7.4
