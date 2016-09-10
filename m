@@ -1,112 +1,201 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
- McBSP to prevent glitches
-Date: Fri, 9 Sep 2016 16:45:29 -0700
-Message-ID: <20160909234528.qku3fugiwglkqa3q@atomide.com>
-References: <c8f293f6-db2e-e518-7566-2cd92eb06ec0@ti.com>
- <20160902204049.uhp4oosu3oc4k5v6@atomide.com>
- <7d1c9a2f-60ae-2d83-f7dc-55fe476dbccb@ti.com>
- <20160906201649.fx4vhuqmnziwshoe@atomide.com>
- <1b82e33a-7db5-81ed-de4f-75847f840088@ti.com>
- <20160908035356.mkk35s5gpcemifcg@atomide.com>
- <ceb7854b-6cd4-fe3d-ede7-016c64f88dc0@ti.com>
- <9452a3c6-9bf9-818f-6e8d-455193839e94@ti.com>
- <20160908144834.i722j3afyztk6vhh@atomide.com>
- <8ec65c33-cc92-7737-ac7a-1338bcab7b90@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muru.com (muru.com [72.249.23.125])
- by alsa0.perex.cz (Postfix) with ESMTP id 5DD882664B5
- for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2016 01:45:34 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <8ec65c33-cc92-7737-ac7a-1338bcab7b90@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, "Kristo, Tero" <t-kristo@ti.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Pavel Machel <pavel@ucw.cz>, Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
+From: Chris Zhong <zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: [PATCH v15 0/5] Rockchip Type-C DisplayPort driver
+Date: Fri,  9 Sep 2016 19:15:43 -0700
+Message-ID: <1473473748-22331-1-git-send-email-zyw@rock-chips.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, tfiga-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, yzq-TNX95d0MmH7DzftRWevZcw@public.gmane.org, groeck-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, myungjoo.ham-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, wulf-TNX95d0MmH7DzftRWevZcw@public.gmane.org, marcheu-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, briannorris-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org, cychiang-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, hychao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Chris Zhong <zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, David Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Yao <mark.yao-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi@ti.com> [160908 23:52]:
-> On 09/08/16 17:48, Tony Lindgren wrote:
-> >>> My findings so far:
-> >>> w/o the QoS patch we will hit core OFF even if we are in element mode in McBSP:
-> >>> # cat /sys/devices/platform/68000000.ocp/49022000.mcbsp/dma_op_mode
-> >>> [element] threshold
-> >>>
-> >>> If I start the playback we will hit core OFF even if the we have DMA request
-> >>> coming at every sample (every 0.02ms).
-> > 
-> > I think that's because we still have windows without pm qos where dma
-> > is not active and we hit idle and there's nothing in hardware blocking
-> > off mode.
-> 
-> Hrm. Should we block idle when the FIFO threshold is 'low'. I don't think it
-> is a good thing to try to enter to lower C state to immediately jump out of
-> it. With 0.02ms there is not much time we can spend conserving power and the
-> enter/leave takes a bit more compared to staying wherever we were.
-> ON the other hand, if we have big ALSA buffer we can keep the MPU off for a
-> long time as we only need the DMA and the McBSP to run between user space
-> filling the ALSA buffer...
-> 
-> Oh, I have looked again to cpuidle34xx.c and we have two tables there:
-> omap3_idle_driver and omap3430_idle_driver.
-> 
-> The omap3430_idle_driver numbers are based on measurements while the
-> omap3_idle_driver probably contains safe numbers?
-> 
-> In any way, according to the numbers:
-> C7 is (7505 + 15274) vs (10000 + 30000)
-> C6 is (7580 + 4134) vs (3000 + 8500)
-> C5 is (855 + 1146) vs (2500 + 7500)
-> C4 is (121 + 3374) vs (1500 + 1800)
-> C3 is (107 + 410) vs (50 + 50)
-> 
-> with the 30ms QoS we set we will still hit OFF on OMAP3430, it should minimum
-> 11.715ms for omap3430, but that will block C6 on omap36xx.
 
-Yeah those don't seem to be correct. The Nokia N9(50) kernel seems to have
-some measured numbers for 36xx.
+Hi all
 
-> If we could have the data for the struct cpuidle_state coming from DT and not
-> wired in the cpuidle34xx/44xx files then the McBSP driver could look up the C7
-> number and block that...
+This series patch is for rockchip Type-C DisplayPort controller driver.
 
-I'm now thinking that your fifo threshold calculation is what we should
-do, then fix the cpuidle latencies and playback should hit retention idle.
+The USB Type-C PHY is designed to support the USB3 and DP applications.
+The PHY basically has two main components: USB3 and DisplyPort. USB3
+operates in SuperSpeed mode and the DP can operate at RBR, HBR and HBR2
+data rates. The Type-C cable orientation detection and Power Delivery
+(PD) is accomplished using a PD PHY or a exernal PD chip.
 
-> >>> We hit C6, but when the DMA request comes we have 16 words in the FIFO (8
-> >>> samples, 0.16ms of audio). C6 should take 11.5ms to exit...
-> > 
-> > So maybe we have the C6 latency for 36xx wrong, and it's much faster than
-> > for 34xx? I wonder what happens on the original beagleboard, not the
-> > xm variant.. I don't have one though.
-> 
-> I have one working omap3 zoom2 board. AFAIK it has OMAP3430. I have
-> 3.9.smthing kernel booting on it, but I'm not sure if mainline would even
-> work. Zoom3 and Zoom2 are mostly identical, but the SoC is different for sure
-> and probably memories, NAND, something else on the SOM? Can not find
-> information on this.
+The DP controller is compliant with DisplayPort Specification,
+Version 1.3, This IP is compatible with the rockchip type-c PHY IP.
+There is a uCPU in DP controller, it need a firmware to work, please
+put the firmware file[0] rockchip/dptx.bin to
+/lib/firmware/rockchip/dptx.bin. The uCPU in charge of aux communication
+and link training, the host use mailbox to communicate with the ucpu.
 
-I would not bother with that one.. Chances are it has an older 3430
-SoC that does not properly support off mode. We should be able to use
-n900 for that test :)
+The DP contoller has register a notification with extcon API, to get the
+alt mode from PD, the PD driver need call the devm_extcon_dev_allocate
+to create a extcon device and use extcon_set_state to notify DP
+controller. And call extcon_set_cable_property to set orientation.
 
-> > Hmm OK I wonder why have not seen that one, I've been just hitting ctrl-c
-> > to stop the playback.
-> 
-> I also stopped the playback with ctrl-c :o
+About the DP audio, cdn-dp registered 2 DAIs: 0 is I2S, 1 is SPDIF.
+We can reference them in rk3399-gru machine driver. It base on the
+hdmi-notify patches[1], they are both in reviewing.
 
-Hmm I need to recheck.
+This series is based on Mark Yao's branch[2], the extcon API backport
+from linux-next[3].
 
-Regards,
+I test this patches on the rk3399-evb board, with a fusb302 driver,
+this branch has no rk3399.dtsi, so the patch about dts is not included
+in this series.
 
-Tony
+>From V9, the Type-C PHY is split into two PHYs: DP and USB3. The PHY
+will be init, no matter which PHY be power_on. The DP module will
+enter A2 mode (standby mode) after phy_init, if DP PHY is powered on,
+the DP module will enter to A0 mode(running mode). Then if DP PHY is
+powered off, DP module will back to A2 mode. If everything is
+un-plugged, phy will be deinit.
+
+[0]
+kernel/git/firmware/linux-firmware.git
+[1]
+https://patchwork.kernel.org/patch/8887261/
+https://patchwork.kernel.org/patch/8887251/
+[2]
+https://github.com/markyzq/kernel-drm-rockchip/tree/drm-rockchip-next-2016-05-23
+[3]
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+
+
+Changes in v15:
+Chris Zhong's changes:
+- fix disable phy unbalance
+- support Apple Dock hot-plug in HDMI port
+- retraining when Apple Dock hpd irq coming
+Sean Paul's changes:
+- Restructured the worker
+- Synchronized between worker & drm hooks
+- Properly implemented enable/disable
+- Added error checking
+- Use devm variant of extcon
+- Use DRM_DEV_* logging
+- Refactored code to (hopefully) be more clear
+
+Changes in v14:
+- Modify some grammatical errors
+- remove the mutex around cdn_dp_audio_get_eld
+- power on the power domain after clk_enable
+- retry to read edid
+- change super speed property name to EXTCON_PROP_USB_SS
+- do a correct mode_valid check when bpc is 0
+
+Changes in v13:
+- add dptx and apb reset
+- support suspend/resume
+- switch power domain dynamically
+- re-training when hpd signal is triggered
+
+Changes in v12:
+- use EXTCON_PROP_USB_SUPERSPEED to replace EXTCON_USB_HOST
+
+Changes in v11:
+- refer dp phy
+- add best_encoder back, since it required by drm_atomic_helper_check
+
+Changes in v10:
+- add pclk_vio_grf clock
+- remove best_encoder ops
+- support read sink count from DPCD
+- control the grf_clk in DP
+
+Changes in v9:
+- modify the reference phy = <&tcphy0 0>, <&tcphy1 0>;
+- do not need reset the phy before power_on
+- add a orientation information for set_capability
+- retry to read dpcd in 10 seconds
+
+Changes in v8:
+- optimization the err log
+
+Changes in v7:
+- support firmware standby when no dptx connection
+- optimization the calculation of tu size and valid symbol
+
+Changes in v6:
+- add assigned-clocks and assigned-clock-rates
+- add power-domains
+- add a port struct
+- select SND_SOC_HDMI_CODEC
+- force reset the phy when hpd detected
+
+Changes in v5:
+- alphabetical order
+- do not use long, use u32 or u64
+- return MODE_CLOCK_HIGH when requested > actual
+- Optimized Coding Style
+- add a formula to get better tu size and symbol value.
+- modify according to Sean Paul's comments
+- fixed the fw_wait always 0
+
+Changes in v4:
+- add a reset node
+- support 2 phys
+- use phy framework to control DP phy
+- support 2 phys
+
+Changes in v3:
+- add SoC specific compatible string
+- remove reg = <1>;
+- use EXTCON_DISP_DP and EXTCON_DISP_DP_ALT cable to get dp port state.
+- reset spdif before config it
+- modify the firmware clk to 100Mhz
+- retry load firmware if fw file is requested too early
+- change spdif to i2s2
+
+Changes in v2:
+- Alphabetic order
+- remove excess error message
+- use define clk_rate
+- check all return value
+- remove dev_set_name(dp->dev, "cdn-dp");
+- use schedule_delayed_work
+- remove never-called functions
+- remove some unnecessary ()
+- correct the commit message
+
+Changes in v1:
+- add extcon node description
+- add #sound-dai-cells description
+- use extcon API
+- use hdmi-codec for the DP Asoc
+- do not initialize the "ret"
+- printk a err log when drm_of_encoder_active_endpoint_id
+- modify the dclk pin_pol to a single line
+
+Chris Zhong (5):
+  extcon: Introduce EXTCON_PROP_DISP_HPD property
+  Documentation: bindings: add dt documentation for cdn DP controller
+  drm/rockchip: cdn-dp: add cdn DP support for rk3399
+  drm/rockchip: cdn-dp: support audio hot-plug
+  ASoC: rockchip: Add DP dai-links to the rk3399-gru machine driver
+
+ .../bindings/display/rockchip/cdn-dp-rockchip.txt  |   75 ++
+ .../bindings/sound/rockchip,rk3399-gru-sound.txt   |   11 +-
+ drivers/gpu/drm/rockchip/Kconfig                   |   10 +
+ drivers/gpu/drm/rockchip/Makefile                  |    1 +
+ drivers/gpu/drm/rockchip/cdn-dp-core.c             | 1165 ++++++++++++++++++++
+ drivers/gpu/drm/rockchip/cdn-dp-core.h             |  108 ++
+ drivers/gpu/drm/rockchip/cdn-dp-reg.c              |  956 ++++++++++++++++
+ drivers/gpu/drm/rockchip/cdn-dp-reg.h              |  482 ++++++++
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c        |   13 +-
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.h        |    9 +
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.c        |    2 +
+ include/linux/extcon.h                             |   14 +-
+ sound/soc/rockchip/rk3399_gru_sound.c              |   93 ++
+ 13 files changed, 2930 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/rockchip/cdn-dp-rockchip.txt
+ create mode 100644 drivers/gpu/drm/rockchip/cdn-dp-core.c
+ create mode 100644 drivers/gpu/drm/rockchip/cdn-dp-core.h
+ create mode 100644 drivers/gpu/drm/rockchip/cdn-dp-reg.c
+ create mode 100644 drivers/gpu/drm/rockchip/cdn-dp-reg.h
+
+-- 
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
