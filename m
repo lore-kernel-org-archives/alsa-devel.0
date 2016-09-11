@@ -1,13 +1,13 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 6/6] ASoC: constify gpio_chip structures
-Date: Sun, 11 Sep 2016 14:14:42 +0200
-Message-ID: <1473596082-32690-7-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 5/6] ASoC: ac97: constify gpio_chip structures
+Date: Sun, 11 Sep 2016 14:14:41 +0200
+Message-ID: <1473596082-32690-6-git-send-email-Julia.Lawall@lip6.fr>
 References: <1473596082-32690-1-git-send-email-Julia.Lawall@lip6.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1473596082-32690-1-git-send-email-Julia.Lawall@lip6.fr>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: kernel-janitors@vger.kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 These structures are only used to copy into other structures, so declare
@@ -48,75 +48,19 @@ static
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
- sound/soc/codecs/rt5677.c |    2 +-
- sound/soc/codecs/wm5100.c |    2 +-
- sound/soc/codecs/wm8903.c |    2 +-
- sound/soc/codecs/wm8962.c |    2 +-
- sound/soc/codecs/wm8996.c |    2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/soc-ac97.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
-index 278467d..5605750 100644
---- a/sound/soc/codecs/wm5100.c
-+++ b/sound/soc/codecs/wm5100.c
-@@ -2285,7 +2285,7 @@ static int wm5100_gpio_direction_in(struct gpio_chip *chip, unsigned offset)
- 				  (1 << WM5100_GP1_DIR_SHIFT));
+diff --git a/sound/soc/soc-ac97.c b/sound/soc/soc-ac97.c
+index bc4a55b..6c8b0b0 100644
+--- a/sound/soc/soc-ac97.c
++++ b/sound/soc/soc-ac97.c
+@@ -116,7 +116,7 @@ static int snd_soc_ac97_gpio_direction_out(struct gpio_chip *chip,
+ 	return snd_soc_update_bits(codec, AC97_GPIO_CFG, 1 << offset, 0);
  }
  
--static struct gpio_chip wm5100_template_chip = {
-+static const struct gpio_chip wm5100_template_chip = {
- 	.label			= "wm5100",
+-static struct gpio_chip snd_soc_ac97_gpio_chip = {
++static const struct gpio_chip snd_soc_ac97_gpio_chip = {
+ 	.label			= "snd_soc_ac97",
  	.owner			= THIS_MODULE,
- 	.direction_output	= wm5100_gpio_direction_out,
-diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index 837c8b9..6e887c2 100644
---- a/sound/soc/codecs/wm8903.c
-+++ b/sound/soc/codecs/wm8903.c
-@@ -1830,7 +1830,7 @@ static void wm8903_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
- 			   !!value << WM8903_GP1_LVL_SHIFT);
- }
- 
--static struct gpio_chip wm8903_template_chip = {
-+static const struct gpio_chip wm8903_template_chip = {
- 	.label			= "wm8903",
- 	.owner			= THIS_MODULE,
- 	.request		= wm8903_gpio_request,
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 9f67922..fd2731d 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3357,7 +3357,7 @@ static int wm8962_gpio_direction_out(struct gpio_chip *chip,
- 	return 0;
- }
- 
--static struct gpio_chip wm8962_template_chip = {
-+static const struct gpio_chip wm8962_template_chip = {
- 	.label			= "wm8962",
- 	.owner			= THIS_MODULE,
- 	.request		= wm8962_gpio_request,
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 5eba8ff..8affa49 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -2184,7 +2184,7 @@ static int wm8996_gpio_direction_in(struct gpio_chip *chip, unsigned offset)
- 				  (1 << WM8996_GP1_DIR_SHIFT));
- }
- 
--static struct gpio_chip wm8996_template_chip = {
-+static const struct gpio_chip wm8996_template_chip = {
- 	.label			= "wm8996",
- 	.owner			= THIS_MODULE,
- 	.direction_output	= wm8996_gpio_direction_out,
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 68268f2..7df422c 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4657,7 +4657,7 @@ static int rt5677_to_irq(struct gpio_chip *chip, unsigned offset)
- 	return regmap_irq_get_virq(data, irq);
- }
- 
--static struct gpio_chip rt5677_template_chip = {
-+static const struct gpio_chip rt5677_template_chip = {
- 	.label			= "rt5677",
- 	.owner			= THIS_MODULE,
- 	.direction_output	= rt5677_gpio_direction_out,
+ 	.request		= snd_soc_ac97_gpio_request,
