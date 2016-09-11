@@ -1,43 +1,89 @@
-From: =?UTF-8?Q?Gonzalo_Garramu=c3=b1o?= <ggarra13@gmail.com>
-Subject: Re: Switching from default to plughw:0,0
-Date: Sat, 10 Sep 2016 22:20:54 -0300
-Message-ID: <6621e855-a92c-18e1-7e27-72d43fb4f7e0@gmail.com>
-References: <0d46fa40-ea42-2103-7062-005665c7e9e1@gmail.com>
- <96a65dd8-3d5e-634a-79d6-6b501d8c7953@ladisch.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [RFC][PATCH 0/2] ALSA: control: export all of TLV related macros
+ to user land
+Date: Sun, 11 Sep 2016 12:06:41 +0900
+Message-ID: <4bb2e266-61d5-29c0-65a0-c53ca0af3a69@sakamocchi.jp>
+References: <1473483016-10529-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hr38s9ru2.wl-tiwai@suse.de>
+ <f8ef81e9-37a9-505e-ed66-2df9ae8070e8@sakamocchi.jp>
+ <s5hmvjfan34.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f194.google.com (mail-qk0-f194.google.com
- [209.85.220.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 67C222654B3
- for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2016 03:21:00 +0200 (CEST)
-Received: by mail-qk0-f194.google.com with SMTP id n66so9037652qkf.0
- for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2016 18:21:00 -0700 (PDT)
-In-Reply-To: <96a65dd8-3d5e-634a-79d6-6b501d8c7953@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <s5hmvjfan34.wl-tiwai@suse.de>
+Sender: linux-media-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: clemens@ladisch.de, alsa-devel@alsa-project.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpFbCAxMC8wOS8xNiBhIGxhcyAyMDo0NiwgQ2xlbWVucyBMYWRpc2NoIGVzY3JpYmnDszoKPiBH
-b256YWxvIEdhcnJhbXXDsW8gd3JvdGU6Cj4+IE15IHByb2JsZW0gaXMgdGhhdCB3aGVuIEkgY2hv
-b3NlIHRoZSBkZWZhdWx0LCB3aGljaCBpcyBlcXVpdmFsZW50IHRvIHBsdWdodzowLDAKPiBUaGUg
-ZGVmYXVsdCBhY3R1YWxseSBpcyBQdWxzZUF1ZGlvIG9yIGRtaXguCj4KPgo+IFJlZ2FyZHMsCj4g
-Q2xlbWVucwpJIGNhbiBjb25maXJtIHRoaXMgaXMgYSBidWcgaW4gYWxzYS9wdWxzZWF1ZGlvLiAg
-SSBtYW5hZ2VkIHRvIGdldCB0aGUgCnNhbWUgYmVoYXZpb3Igb3V0IG9mIHZsYywgYnkgY2FsbGlu
-ZyBpdCB3aXRoOgoKICB2bGMgLUEgYWxzYSAtLWFsc2EtYXVkaW8tZGV2aWNlIHBsdWdodzowLDAg
-Ci9tZWRpYS9nZ2EvRGF0b3MvbW92aWVzL3RyYWlsZXJzL0Zyb3plbi1MZXRfaXRfZ28ubXA0Cgph
-bmQgdGhlbiBzd2l0Y2hpbmcgYmFjayBhbmQgZm9ydGggYmV0d2VlbiBQdWxzZSBBdWRpbyBTb3Vu
-ZCBTZXJ2ZXIgYW5kIApIREEgSW50ZWwgUENILiAgV2hlbiBzd2l0Y2hpbmcgYmFjayB0byBpbnRl
-bCAocGx1Z2h3OjAsMCksIHRoZSByZXNvdXJjZSAKaXMgYnVzeSBhbmQgdGhlIGF1ZGlvIGZhaWxz
-LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Sep 10 2016 22:41, Takashi Iwai wrote:
+> On Sat, 10 Sep 2016 09:25:31 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> On Sep 10 2016 15:44, Takashi Iwai wrote:
+>>> On Sat, 10 Sep 2016 06:50:14 +0200,
+>>> Takashi Sakamoto wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> Currently, TLV related protocol is not shared to user land. This is not
+>>>> good in a point of application interfaces, because application developers
+>>>> can't realize the protocol just to see UAPI headers.
+>>>>
+>>>> For this purpose, this patchset moves all of macros related to TLV to UAPI
+>>>> header. As a result, a header just for kernel land is obsoleted. When adding
+>>>> new items to the protocol, it's added to the UAPI header. This change affects
+>>>> some drivers in media subsystem.
+>>>>
+>>>> In my concern, this change can break applications. When these macros are
+>>>> already defined in application side and they includes tlv UAPI header
+>>>> directly, 'redefined' warning is generated at preprocess time. But the
+>>>> compilation will be success itself. If these two macros have different
+>>>> content, the result of preprocess is dominated to the order to define.
+>>>> However, the most applications are assumed to use TLV feature via libraries
+>>>> such as alsa-lib, thus I'm optimistic to this concern.
+>>>>
+>>>> As another my concern, the name of these macros are quite simple, as
+>>>> 'TLV_XXX'. It might be help application developers to rename them with a
+>>>> prefix, as 'SNDRV_CTL_TLV_XXX'. (But not yet. I'm a lazy guy.)
+>>>
+>>> The second patch does simply wrong.  You must not obsolete
+>>> include/sound/tlv.h.  Even if it includes only uapi/*, it should be
+>>> still there.
+>>
+>> Any reasons?
+> 
+> The concept and the design.
+> 
+> Don't need to change the root inclusion, it's just to provide cleaner
+> uapi header files, and not meant to be included directly -- it was the
+> basic idea when uapi split was introduced.
+
+OK. I can see what you indicated in this post for UAPI idea[0]. I'm
+ready to drop the second patch.
+
+Well, how do you think about my concern of macro prefix? For example, we
+can apply below step:
+
+Put substantial macros with renaming to 'include/uapi.sound/tlv.h':
+#define SNDRV_CTL_TLV_DATA_LENGTH(...) \
+       ((unsigned int)sizeof((const unsigned int[]) { __VA_ARGS__ }))
+
+Then, put alias macros to 'include/sound/tlv.h':
+#include <uapi/sound/tlv.h>
+#define TLV_LENGTH SNDRV_CTL_TLV_DATA_LENGTH
+...
+
+Finally, applications can expand these macro with apparent names with
+prefix of 'SNDRV_CTL_TLV_DATA_XXX'. I think the prefix prevent
+application codes from name conflict by including 'uapi/sound/tlv.h'.
+
+
+Thanks
+
+[0] [PATCH 00/13] UAPI header file split
+https://lkml.org/lkml/2012/7/20/406
+
+
+Takashi Sakamoto
