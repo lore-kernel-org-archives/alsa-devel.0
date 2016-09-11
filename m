@@ -1,192 +1,116 @@
-From: Jarkko Sakkinen <jarkko.sakkinen-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Subject: Re: [PATCH 00/26] constify local structures
-Date: Sun, 11 Sep 2016 20:21:05 +0300
-Message-ID: <20160911172105.GB5493@intel.com>
-References: <1473599168-30561-1-git-send-email-Julia.Lawall@lip6.fr>
+From: =?UTF-8?Q?Gonzalo_Garramu=c3=b1o?= <ggarra13@gmail.com>
+Subject: Re: Switching from default to plughw:0,0
+Date: Sun, 11 Sep 2016 14:40:53 -0300
+Message-ID: <a479dadf-8028-b717-bec9-d27ffed396ca@gmail.com>
+References: <0d46fa40-ea42-2103-7062-005665c7e9e1@gmail.com>
+ <96a65dd8-3d5e-634a-79d6-6b501d8c7953@ladisch.de>
+ <19f3ac8e-cd79-2b03-824f-330350c5bc82@gmail.com>
+ <18fe27d1-5962-16fd-f0f0-d6bf0fb95444@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <tpmdd-devel-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1473599168-30561-1-git-send-email-Julia.Lawall-L2FTfq7BK8M@public.gmane.org>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/tpmdd-devel>,
-	<mailto:tpmdd-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=tpmdd-devel>
-List-Post: <mailto:tpmdd-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
-List-Help: <mailto:tpmdd-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/tpmdd-devel>,
-	<mailto:tpmdd-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=subscribe>
-Errors-To: tpmdd-devel-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
-To: Julia Lawall <Julia.Lawall-L2FTfq7BK8M@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mustafa Ismail <mustafa.ismail-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Tatyana Nikolova <tatyana.e.nikolova-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, kernel-janitors-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, platform-driver-x86-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tpmdd-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-pm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-can-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Shiraz Saleem <shiraz.saleem-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Sergei Shtylyov <sergei.shtylyov-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Chien Tin Tung <chien.tin.tung-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qt0-f196.google.com (mail-qt0-f196.google.com
+ [209.85.216.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id B730926663D
+ for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2016 19:40:58 +0200 (CEST)
+Received: by mail-qt0-f196.google.com with SMTP id f46so342045qta.0
+ for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2016 10:40:58 -0700 (PDT)
+In-Reply-To: <18fe27d1-5962-16fd-f0f0-d6bf0fb95444@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Sep 11, 2016 at 03:05:42PM +0200, Julia Lawall wrote:
-> Constify local structures.
-> 
-> The semantic patch that makes this change is as follows:
-> (http://coccinelle.lip6.fr/)
-
-Just my two cents but:
-
-1. You *can* use a static analysis too to find bugs or other issues.
-2. However, you should manually do the commits and proper commit
-   messages to subsystems based on your findings. And I generally think
-   that if one contributes code one should also at least smoke test changes
-   somehow.
-
-I don't know if I'm alone with my opinion. I just think that one should
-also do the analysis part and not blindly create and submit patches.
-
-Anyway, I'll apply the TPM change at some point. As I said they were
-for better. Thanks.
-
-/Jarkko
-
-> // <smpl>
-> // The first rule ignores some cases that posed problems
-> @r disable optional_qualifier@
-> identifier s != {peri_clk_data,threshold_attr,tracer_flags,tracer};
-> identifier i != {s5k5baf_cis_rect,smtcfb_fix};
-> position p;
-> @@
-> static struct s i@p = { ... };
-> 
-> @lstruct@
-> identifier r.s;
-> @@
-> struct s { ... };
-> 
-> @used depends on lstruct@
-> identifier r.i;
-> @@
-> i
-> 
-> @bad1@
-> expression e;
-> identifier r.i;
-> assignment operator a;
-> @@
->  (<+...i...+>) a e
-> 
-> @bad2@
-> identifier r.i;
-> @@
->  &(<+...i...+>)
-> 
-> @bad3@
-> identifier r.i;
-> declarer d;
-> @@
->  d(...,<+...i...+>,...);
-> 
-> @bad4@
-> identifier r.i;
-> type T;
-> T[] e;
-> identifier f;
-> position p;
-> @@
-> 
-> f@p(...,
-> (
->   (<+...i...+>)
-> &
->   e
-> )
-> ,...)
-> 
-> @bad4a@
-> identifier r.i;
-> type T;
-> T *e;
-> identifier f;
-> position p;
-> @@
-> 
-> f@p(...,
-> (
->   (<+...i...+>)
-> &
->   e
-> )
-> ,...)
-> 
-> @ok5@
-> expression *e;
-> identifier r.i;
-> position p;
-> @@
-> e =@p i
-> 
-> @bad5@
-> expression *e;
-> identifier r.i;
-> position p != ok5.p;
-> @@
-> e =@p (<+...i...+>)
-> 
-> @rr depends on used && !bad1 && !bad2 && !bad3 && !bad4 && !bad4a && !bad5@
-> identifier s,r.i;
-> position r.p;
-> @@
-> 
-> static
-> +const
->  struct s i@p = { ... };
-> 
-> @depends on used && !bad1 && !bad2 && !bad3 && !bad4 && !bad4a && !bad5
->  disable optional_qualifier@
-> identifier rr.s,r.i;
-> @@
-> 
-> static
-> +const
->  struct s i;
-> // </smpl>
-> 
-> ---
-> 
->  drivers/acpi/acpi_apd.c                              |    8 +++---
->  drivers/char/tpm/tpm-interface.c                     |   10 ++++----
->  drivers/char/tpm/tpm-sysfs.c                         |    2 -
->  drivers/cpufreq/intel_pstate.c                       |    8 +++---
->  drivers/infiniband/hw/i40iw/i40iw_uk.c               |    6 ++---
->  drivers/media/i2c/tvp514x.c                          |    2 -
->  drivers/media/pci/ddbridge/ddbridge-core.c           |   18 +++++++--------
->  drivers/media/pci/ngene/ngene-cards.c                |   14 ++++++------
->  drivers/media/pci/smipcie/smipcie-main.c             |    8 +++---
->  drivers/misc/sgi-xp/xpc_uv.c                         |    2 -
->  drivers/net/arcnet/com20020-pci.c                    |   10 ++++----
->  drivers/net/can/c_can/c_can_pci.c                    |    4 +--
->  drivers/net/can/sja1000/plx_pci.c                    |   20 ++++++++---------
->  drivers/net/ethernet/mellanox/mlx4/main.c            |    4 +--
->  drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c |    2 -
->  drivers/net/ethernet/renesas/sh_eth.c                |   14 ++++++------
->  drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c     |    2 -
->  drivers/net/wireless/ath/dfs_pattern_detector.c      |    2 -
->  drivers/net/wireless/intel/iwlegacy/3945.c           |    4 +--
->  drivers/net/wireless/realtek/rtlwifi/rtl8188ee/sw.c  |    2 -
->  drivers/net/wireless/realtek/rtlwifi/rtl8192ce/sw.c  |    2 -
->  drivers/net/wireless/realtek/rtlwifi/rtl8192de/sw.c  |    2 -
->  drivers/net/wireless/realtek/rtlwifi/rtl8192ee/sw.c  |    2 -
->  drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c  |    2 -
->  drivers/net/wireless/realtek/rtlwifi/rtl8723ae/sw.c  |    2 -
->  drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c  |    2 -
->  drivers/net/wireless/realtek/rtlwifi/rtl8821ae/sw.c  |    2 -
->  drivers/platform/chrome/chromeos_laptop.c            |   22 +++++++++----------
->  drivers/platform/x86/intel_scu_ipc.c                 |    6 ++---
->  drivers/platform/x86/intel_telemetry_debugfs.c       |    2 -
->  drivers/scsi/esas2r/esas2r_flash.c                   |    2 -
->  drivers/scsi/hptiop.c                                |    6 ++---
->  drivers/spi/spi-dw-pci.c                             |    4 +--
->  drivers/staging/rtl8192e/rtl8192e/rtl_core.c         |    2 -
->  drivers/usb/misc/ezusb.c                             |    2 -
->  drivers/video/fbdev/matrox/matroxfb_g450.c           |    2 -
->  lib/crc64_ecma.c                                     |    2 -
->  sound/pci/ctxfi/ctatc.c                              |    2 -
->  sound/pci/hda/patch_ca0132.c                         |   10 ++++----
->  sound/pci/riptide/riptide.c                          |    2 -
->  40 files changed, 110 insertions(+), 110 deletions(-)
-
-------------------------------------------------------------------------------
+CgpFbCAxMS8wOS8xNiBhIGxhcyAwNzo1OCwgQ2xlbWVucyBMYWRpc2NoIGVzY3JpYmnDszoKPiBX
+aGVuIFB1bHNlQXVkaW8gaXMgY29uZmlndXJlZCBhcyB0aGUgZGVmYXVsdCwgaXQgY2FuIGJlIGFj
+Y2Vzc2VkIHRocm91Z2ggdGhlIEFMU0EgQVBJLgpIb3cgZXhhY3RseT8KPgo+IEFueXdheSwgdGhl
+IGNvcnJlY3QgbmFtZSBmb3IgdGhlIGRlZmF1bHQgZGV2aWNlIGlzICJkZWZhdWx0Ii4KPgo+IFRv
+IGdldCBhIGxpc3Qgb2YgZGV2aWNlcywgc2VlICJhcGxheSAtTCIuCkhlcmUncyB0aGUgb3V0cHV0
+IG9mIGFwbGF5IC1MCiQgYXBsYXkgLUwKCmRlZmF1bHQKICAgICBQbGF5YmFjay9yZWNvcmRpbmcg
+dGhyb3VnaCB0aGUgUHVsc2VBdWRpbyBzb3VuZCBzZXJ2ZXIKbnVsbAogICAgIERpc2NhcmQgYWxs
+IHNhbXBsZXMgKHBsYXliYWNrKSBvciBnZW5lcmF0ZSB6ZXJvIHNhbXBsZXMgKGNhcHR1cmUpCnB1
+bHNlCiAgICAgUHVsc2VBdWRpbyBTb3VuZCBTZXJ2ZXIKc3lzZGVmYXVsdDpDQVJEPVBDSAogICAg
+IEhEQSBJbnRlbCBQQ0gsIEFMQzExNTAgQW5hbG9nCiAgICAgRGVmYXVsdCBBdWRpbyBEZXZpY2UK
+ZnJvbnQ6Q0FSRD1QQ0gsREVWPTAKICAgICBIREEgSW50ZWwgUENILCBBTEMxMTUwIEFuYWxvZwog
+ICAgIEZyb250IHNwZWFrZXJzCnN1cnJvdW5kMjE6Q0FSRD1QQ0gsREVWPTAKICAgICBIREEgSW50
+ZWwgUENILCBBTEMxMTUwIEFuYWxvZwogICAgIDIuMSBTdXJyb3VuZCBvdXRwdXQgdG8gRnJvbnQg
+YW5kIFN1Yndvb2ZlciBzcGVha2VycwpzdXJyb3VuZDQwOkNBUkQ9UENILERFVj0wCiAgICAgSERB
+IEludGVsIFBDSCwgQUxDMTE1MCBBbmFsb2cKICAgICA0LjAgU3Vycm91bmQgb3V0cHV0IHRvIEZy
+b250IGFuZCBSZWFyIHNwZWFrZXJzCnN1cnJvdW5kNDE6Q0FSRD1QQ0gsREVWPTAKICAgICBIREEg
+SW50ZWwgUENILCBBTEMxMTUwIEFuYWxvZwogICAgIDQuMSBTdXJyb3VuZCBvdXRwdXQgdG8gRnJv
+bnQsIFJlYXIgYW5kIFN1Yndvb2ZlciBzcGVha2VycwpzdXJyb3VuZDUwOkNBUkQ9UENILERFVj0w
+CiAgICAgSERBIEludGVsIFBDSCwgQUxDMTE1MCBBbmFsb2cKICAgICA1LjAgU3Vycm91bmQgb3V0
+cHV0IHRvIEZyb250LCBDZW50ZXIgYW5kIFJlYXIgc3BlYWtlcnMKc3Vycm91bmQ1MTpDQVJEPVBD
+SCxERVY9MAogICAgIEhEQSBJbnRlbCBQQ0gsIEFMQzExNTAgQW5hbG9nCiAgICAgNS4xIFN1cnJv
+dW5kIG91dHB1dCB0byBGcm9udCwgQ2VudGVyLCBSZWFyIGFuZCBTdWJ3b29mZXIgc3BlYWtlcnMK
+c3Vycm91bmQ3MTpDQVJEPVBDSCxERVY9MAogICAgIEhEQSBJbnRlbCBQQ0gsIEFMQzExNTAgQW5h
+bG9nCiAgICAgNy4xIFN1cnJvdW5kIG91dHB1dCB0byBGcm9udCwgQ2VudGVyLCBTaWRlLCBSZWFy
+IGFuZCBXb29mZXIgc3BlYWtlcnMKaWVjOTU4OkNBUkQ9UENILERFVj0wCiAgICAgSERBIEludGVs
+IFBDSCwgQUxDMTE1MCBEaWdpdGFsCiAgICAgSUVDOTU4IChTL1BESUYpIERpZ2l0YWwgQXVkaW8g
+T3V0cHV0CmRtaXg6Q0FSRD1QQ0gsREVWPTAKICAgICBIREEgSW50ZWwgUENILCBBTEMxMTUwIEFu
+YWxvZwogICAgIERpcmVjdCBzYW1wbGUgbWl4aW5nIGRldmljZQpkbWl4OkNBUkQ9UENILERFVj0x
+CiAgICAgSERBIEludGVsIFBDSCwgQUxDMTE1MCBEaWdpdGFsCiAgICAgRGlyZWN0IHNhbXBsZSBt
+aXhpbmcgZGV2aWNlCmRzbm9vcDpDQVJEPVBDSCxERVY9MAogICAgIEhEQSBJbnRlbCBQQ0gsIEFM
+QzExNTAgQW5hbG9nCiAgICAgRGlyZWN0IHNhbXBsZSBzbm9vcGluZyBkZXZpY2UKZHNub29wOkNB
+UkQ9UENILERFVj0xCiAgICAgSERBIEludGVsIFBDSCwgQUxDMTE1MCBEaWdpdGFsCiAgICAgRGly
+ZWN0IHNhbXBsZSBzbm9vcGluZyBkZXZpY2UKaHc6Q0FSRD1QQ0gsREVWPTAKICAgICBIREEgSW50
+ZWwgUENILCBBTEMxMTUwIEFuYWxvZwogICAgIERpcmVjdCBoYXJkd2FyZSBkZXZpY2Ugd2l0aG91
+dCBhbnkgY29udmVyc2lvbnMKaHc6Q0FSRD1QQ0gsREVWPTEKICAgICBIREEgSW50ZWwgUENILCBB
+TEMxMTUwIERpZ2l0YWwKICAgICBEaXJlY3QgaGFyZHdhcmUgZGV2aWNlIHdpdGhvdXQgYW55IGNv
+bnZlcnNpb25zCnBsdWdodzpDQVJEPVBDSCxERVY9MAogICAgIEhEQSBJbnRlbCBQQ0gsIEFMQzEx
+NTAgQW5hbG9nCiAgICAgSGFyZHdhcmUgZGV2aWNlIHdpdGggYWxsIHNvZnR3YXJlIGNvbnZlcnNp
+b25zCnBsdWdodzpDQVJEPVBDSCxERVY9MQogICAgIEhEQSBJbnRlbCBQQ0gsIEFMQzExNTAgRGln
+aXRhbAogICAgIEhhcmR3YXJlIGRldmljZSB3aXRoIGFsbCBzb2Z0d2FyZSBjb252ZXJzaW9ucwpo
+ZG1pOkNBUkQ9TlZpZGlhLERFVj0wCiAgICAgSERBIE5WaWRpYSwgSERNSSAwCiAgICAgSERNSSBB
+dWRpbyBPdXRwdXQKaGRtaTpDQVJEPU5WaWRpYSxERVY9MQogICAgIEhEQSBOVmlkaWEsIEhETUkg
+MQogICAgIEhETUkgQXVkaW8gT3V0cHV0CmhkbWk6Q0FSRD1OVmlkaWEsREVWPTIKICAgICBIREEg
+TlZpZGlhLCBIRE1JIDIKICAgICBIRE1JIEF1ZGlvIE91dHB1dApoZG1pOkNBUkQ9TlZpZGlhLERF
+Vj0zCiAgICAgSERBIE5WaWRpYSwgSERNSSAzCiAgICAgSERNSSBBdWRpbyBPdXRwdXQKZG1peDpD
+QVJEPU5WaWRpYSxERVY9MwogICAgIEhEQSBOVmlkaWEsIEhETUkgMAogICAgIERpcmVjdCBzYW1w
+bGUgbWl4aW5nIGRldmljZQpkbWl4OkNBUkQ9TlZpZGlhLERFVj03CiAgICAgSERBIE5WaWRpYSwg
+SERNSSAxCiAgICAgRGlyZWN0IHNhbXBsZSBtaXhpbmcgZGV2aWNlCmRtaXg6Q0FSRD1OVmlkaWEs
+REVWPTgKICAgICBIREEgTlZpZGlhLCBIRE1JIDIKICAgICBEaXJlY3Qgc2FtcGxlIG1peGluZyBk
+ZXZpY2UKZG1peDpDQVJEPU5WaWRpYSxERVY9OQogICAgIEhEQSBOVmlkaWEsIEhETUkgMwogICAg
+IERpcmVjdCBzYW1wbGUgbWl4aW5nIGRldmljZQpkc25vb3A6Q0FSRD1OVmlkaWEsREVWPTMKICAg
+ICBIREEgTlZpZGlhLCBIRE1JIDAKICAgICBEaXJlY3Qgc2FtcGxlIHNub29waW5nIGRldmljZQpk
+c25vb3A6Q0FSRD1OVmlkaWEsREVWPTcKICAgICBIREEgTlZpZGlhLCBIRE1JIDEKICAgICBEaXJl
+Y3Qgc2FtcGxlIHNub29waW5nIGRldmljZQpkc25vb3A6Q0FSRD1OVmlkaWEsREVWPTgKICAgICBI
+REEgTlZpZGlhLCBIRE1JIDIKICAgICBEaXJlY3Qgc2FtcGxlIHNub29waW5nIGRldmljZQpkc25v
+b3A6Q0FSRD1OVmlkaWEsREVWPTkKICAgICBIREEgTlZpZGlhLCBIRE1JIDMKICAgICBEaXJlY3Qg
+c2FtcGxlIHNub29waW5nIGRldmljZQpodzpDQVJEPU5WaWRpYSxERVY9MwogICAgIEhEQSBOVmlk
+aWEsIEhETUkgMAogICAgIERpcmVjdCBoYXJkd2FyZSBkZXZpY2Ugd2l0aG91dCBhbnkgY29udmVy
+c2lvbnMKaHc6Q0FSRD1OVmlkaWEsREVWPTcKICAgICBIREEgTlZpZGlhLCBIRE1JIDEKICAgICBE
+aXJlY3QgaGFyZHdhcmUgZGV2aWNlIHdpdGhvdXQgYW55IGNvbnZlcnNpb25zCmh3OkNBUkQ9TlZp
+ZGlhLERFVj04CiAgICAgSERBIE5WaWRpYSwgSERNSSAyCiAgICAgRGlyZWN0IGhhcmR3YXJlIGRl
+dmljZSB3aXRob3V0IGFueSBjb252ZXJzaW9ucwpodzpDQVJEPU5WaWRpYSxERVY9OQogICAgIEhE
+QSBOVmlkaWEsIEhETUkgMwogICAgIERpcmVjdCBoYXJkd2FyZSBkZXZpY2Ugd2l0aG91dCBhbnkg
+Y29udmVyc2lvbnMKcGx1Z2h3OkNBUkQ9TlZpZGlhLERFVj0zCiAgICAgSERBIE5WaWRpYSwgSERN
+SSAwCiAgICAgSGFyZHdhcmUgZGV2aWNlIHdpdGggYWxsIHNvZnR3YXJlIGNvbnZlcnNpb25zCnBs
+dWdodzpDQVJEPU5WaWRpYSxERVY9NwogICAgIEhEQSBOVmlkaWEsIEhETUkgMQogICAgIEhhcmR3
+YXJlIGRldmljZSB3aXRoIGFsbCBzb2Z0d2FyZSBjb252ZXJzaW9ucwpwbHVnaHc6Q0FSRD1OVmlk
+aWEsREVWPTgKICAgICBIREEgTlZpZGlhLCBIRE1JIDIKICAgICBIYXJkd2FyZSBkZXZpY2Ugd2l0
+aCBhbGwgc29mdHdhcmUgY29udmVyc2lvbnMKcGx1Z2h3OkNBUkQ9TlZpZGlhLERFVj05CiAgICAg
+SERBIE5WaWRpYSwgSERNSSAzCiAgICAgSGFyZHdhcmUgZGV2aWNlIHdpdGggYWxsIHNvZnR3YXJl
+IGNvbnZlcnNpb25zCgoKPgo+IFJlZ2FyZHMsCj4gQ2xlbWVucwpUaGFua3MsIENsZW1lbnMuICBN
+eSBjb2RlIHdvcmtzIHdpdGggdGhlICJkZWZhdWx0IiBkZXZpY2UuICBPbiB0aGUgCmdub21lLWNv
+bnRyb2wtY2VudGVyLCBJIGFtIGFibGUgdG8gc3dpdGNoIHRoZSBkZWZhdWx0IGRldmljZSBhbmQg
+YWxsIAp3b3JrcyBmaW5lLgoKTXkgcHJvYmxlbSBpcyB3aGVuIEkgd2FudCBteSBwcm9ncmFtIHRv
+IHNwZWNpZnkgdGhlIGRldmljZSB0byB1c2UgCmRpcmVjdGx5IGZyb20gdGhlIEdVSTogcGx1Z2h3
+OjAsMC4gIFRoZSBkZXZpY2UgaXMgaW4gY29udHJvbCBvZiAKcHVsc2VhdWRpbyBhbmQgZG9lcyBu
+b3QgcmVsZWFzZSBpdCB1bnRpbCBhYm91dCA3IHNlY29uZHMgZ28gYnkgd2l0aCBubyAKYXVkaW8u
+ICBJIHRyaWVkIGEgc2ltaWxhciBzZXQgdXAgaW4gdmxjIGFuZCB0aGUgcmVzdWx0IHdhcyB0aGUg
+c2FtZSAodmxjIApyZXBvcnRlZCB0aGF0IGl0IGNvdWxkIG5vdCBvcGVuIHRoZSBkZXZpY2UpLCBz
+byBJIGtub3cgaXQgaXMgbm90IG15IGNvZGUuCgpMZXQgbWUga25vdyBob3cgY2FuIEkgY29udHJv
+bCBwdWxzZWF1ZGlvIHRvIGNsb3NlIGltbWVkaWF0ZWx5IHRoZSAKdmlydHVhbCBkZXZpY2UgaXQg
+b3BlbnMuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
