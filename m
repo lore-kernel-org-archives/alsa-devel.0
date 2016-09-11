@@ -1,89 +1,62 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH 0/2] ALSA: control: export all of TLV related macros
- to user land
-Date: Sun, 11 Sep 2016 12:06:41 +0900
-Message-ID: <4bb2e266-61d5-29c0-65a0-c53ca0af3a69@sakamocchi.jp>
-References: <1473483016-10529-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5hr38s9ru2.wl-tiwai@suse.de>
- <f8ef81e9-37a9-505e-ed66-2df9ae8070e8@sakamocchi.jp>
- <s5hmvjfan34.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <s5hmvjfan34.wl-tiwai@suse.de>
-Sender: linux-media-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: clemens@ladisch.de, alsa-devel@alsa-project.org, linux-media@vger.kernel.org
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - Fix headset mic detection problem for several Dell laptops
+Date: Sun, 11 Sep 2016 11:26:16 +0800
+Message-ID: <1473564376-6999-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sep 10 2016 22:41, Takashi Iwai wrote:
-> On Sat, 10 Sep 2016 09:25:31 +0200,
-> Takashi Sakamoto wrote:
->>
->> On Sep 10 2016 15:44, Takashi Iwai wrote:
->>> On Sat, 10 Sep 2016 06:50:14 +0200,
->>> Takashi Sakamoto wrote:
->>>>
->>>> Hi,
->>>>
->>>> Currently, TLV related protocol is not shared to user land. This is not
->>>> good in a point of application interfaces, because application developers
->>>> can't realize the protocol just to see UAPI headers.
->>>>
->>>> For this purpose, this patchset moves all of macros related to TLV to UAPI
->>>> header. As a result, a header just for kernel land is obsoleted. When adding
->>>> new items to the protocol, it's added to the UAPI header. This change affects
->>>> some drivers in media subsystem.
->>>>
->>>> In my concern, this change can break applications. When these macros are
->>>> already defined in application side and they includes tlv UAPI header
->>>> directly, 'redefined' warning is generated at preprocess time. But the
->>>> compilation will be success itself. If these two macros have different
->>>> content, the result of preprocess is dominated to the order to define.
->>>> However, the most applications are assumed to use TLV feature via libraries
->>>> such as alsa-lib, thus I'm optimistic to this concern.
->>>>
->>>> As another my concern, the name of these macros are quite simple, as
->>>> 'TLV_XXX'. It might be help application developers to rename them with a
->>>> prefix, as 'SNDRV_CTL_TLV_XXX'. (But not yet. I'm a lazy guy.)
->>>
->>> The second patch does simply wrong.  You must not obsolete
->>> include/sound/tlv.h.  Even if it includes only uapi/*, it should be
->>> still there.
->>
->> Any reasons?
-> 
-> The concept and the design.
-> 
-> Don't need to change the root inclusion, it's just to provide cleaner
-> uapi header files, and not meant to be included directly -- it was the
-> basic idea when uapi split was introduced.
+One of the laptops has the codec ALC256 on it, applying the
+ALC255_FIXUP_DELL1_MIC_NO_PRESENCE can fix the problem, the rest
+of laptops have the codec ALC295 on them, they are similar to machines
+with ALC225, applying the ALC269_FIXUP_DELL1_MIC_NO_PRESENCE can fix
+the problem.
 
-OK. I can see what you indicated in this post for UAPI idea[0]. I'm
-ready to drop the second patch.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-Well, how do you think about my concern of macro prefix? For example, we
-can apply below step:
-
-Put substantial macros with renaming to 'include/uapi.sound/tlv.h':
-#define SNDRV_CTL_TLV_DATA_LENGTH(...) \
-       ((unsigned int)sizeof((const unsigned int[]) { __VA_ARGS__ }))
-
-Then, put alias macros to 'include/sound/tlv.h':
-#include <uapi/sound/tlv.h>
-#define TLV_LENGTH SNDRV_CTL_TLV_DATA_LENGTH
-...
-
-Finally, applications can expand these macro with apparent names with
-prefix of 'SNDRV_CTL_TLV_DATA_XXX'. I think the prefix prevent
-application codes from name conflict by including 'uapi/sound/tlv.h'.
-
-
-Thanks
-
-[0] [PATCH 00/13] UAPI header file split
-https://lkml.org/lkml/2012/7/20/406
-
-
-Takashi Sakamoto
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 575cefd..32cbcf8 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5806,6 +5806,13 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{0x14, 0x90170110}, \
+ 	{0x15, 0x0221401f}
+ 
++#define ALC295_STANDARD_PINS \
++	{0x12, 0xb7a60130}, \
++	{0x14, 0x90170110}, \
++	{0x17, 0x21014020}, \
++	{0x18, 0x21a19030}, \
++	{0x21, 0x04211020}
++
+ #define ALC298_STANDARD_PINS \
+ 	{0x12, 0x90a60130}, \
+ 	{0x21, 0x03211020}
+@@ -5911,6 +5918,10 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x14, 0x90170120},
+ 		{0x21, 0x02211030}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		{0x12, 0xb7a60130},
++		{0x14, 0x90170110},
++		{0x21, 0x02211020}),
++	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		ALC256_STANDARD_PINS),
+ 	SND_HDA_PIN_QUIRK(0x10ec0280, 0x103c, "HP", ALC280_FIXUP_HP_GPIO4,
+ 		{0x12, 0x90a60130},
+@@ -6021,6 +6032,8 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 	SND_HDA_PIN_QUIRK(0x10ec0293, 0x1028, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		ALC292_STANDARD_PINS,
+ 		{0x13, 0x90a60140}),
++	SND_HDA_PIN_QUIRK(0x10ec0295, 0x1028, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
++		ALC295_STANDARD_PINS),
+ 	SND_HDA_PIN_QUIRK(0x10ec0298, 0x1028, "Dell", ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		ALC298_STANDARD_PINS,
+ 		{0x17, 0x90170110}),
+-- 
+1.9.1
