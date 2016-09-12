@@ -1,201 +1,211 @@
-From: German Gomez <gergomez@gmail.com>
-Subject: Fwd: HT Omega Claro II support
-Date: Sun, 11 Sep 2016 01:10:36 -0700
-Message-ID: <423f0e30-28ff-8cbe-a3d0-ed9f9c499f8c@gmail.com>
-References: <a4d1eb45-30cf-48d4-cd40-93cd0b8cfdf4@gmail.com>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v2] ASoC: sun4i-codec: Distinguish sun4i
+ from sun7i
+Date: Mon, 12 Sep 2016 10:04:18 +0200
+Message-ID: <20160912080418.GE9449@lukather>
+References: <20160908195759.18485-1-dannym@scratchpost.org>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------19818C908DA1CF85E7121CE9"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f175.google.com (mail-pf0-f175.google.com
- [209.85.192.175])
- by alsa0.perex.cz (Postfix) with ESMTP id D3A3126674A
- for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2016 10:10:39 +0200 (CEST)
-Received: by mail-pf0-f175.google.com with SMTP id g202so42878029pfb.0
- for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2016 01:10:39 -0700 (PDT)
-Received: from ?IPv6:2601:641:0:401e:810:afe4:3cc5:7837?
- ([2601:641:0:401e:810:afe4:3cc5:7837])
- by smtp.gmail.com with ESMTPSA id tm1sm16282718pac.23.2016.09.11.01.10.36
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sun, 11 Sep 2016 01:10:37 -0700 (PDT)
-In-Reply-To: <a4d1eb45-30cf-48d4-cd40-93cd0b8cfdf4@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="hwvH6HDNit2nSK4j"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBDOD3G7AKGQEZTO5SFY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Disposition: inline
+In-Reply-To: <20160908195759.18485-1-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------19818C908DA1CF85E7121CE9
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 
-Hello,
-
-I've sent this email to Clemens Ladisch, that appears as the developer
-of the snd-oxygen driver, but just in case he is not the actual
-maintainer of the driver, I'm forwarding it here.
-
-Thanks,
-
-- german
-
-
--------- Forwarded Message --------
-Subject: 	HT Omega Claro II support
-Date: 	Thu, 8 Sep 2016 00:32:36 -0700
-From: 	German Gomez <gergomez@gmail.com>
-To: 	Clemens Ladisch <clemens@ladisch.de>
-
-
-
-Hello,
-
-I've read in the alsa-users mailing-list
-(https://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg29284.html)
-that there is no support for the HT Omega Claro II card and that you
-should have to reverse engineer the windows driver to add it. I have
-that soundcard, although I has been able to use the onboard HDA audio
-when booting to Linux. But now my onboard audio is not working (it is
-dead, not working either under Windows) so I'm trying to make the Claro
-II working under Linux. I've contacted the HT Omega support and to my
-surprise they actually answered with some useful information. I've
-attached the email. The summary is that the Claro II should be exactly
-the same as the other cards by HT Omega using the CMI8788 except that
-the GPIO for initializing the card is #6.
-
-I have compared specs for both Claro (http://www.htomega.com/claro.html)
-and Claro II (http://www.htomega.com/claro2.html), and there are more
-differences, the Claro uses AK4396VF and WM8785G chips while the Claro
-II uses AK4396VF and CS4362 (+ CS5361 for line input). I've checked the
-code under sound/pci/oxygen and it seems that we have support for the
-CS4362 for the Xonar D1/DX soundcard. I don't know if having the GPIO
-pin for initialization and all the other chips already there is enough
-to add support, of course I'm willing to test any patch that you could
-provide. I've taken a look at the code, as I'm not bad with C, but audio
-driver development is completely outside my skills and domain, so I'm
-quite lost, if you don't have time or if it is not trivial to add
-support for the Claro II I would understand it, but the card is a really
-good one and it is quite easy to find in the US, it would be awesome to
-have support for it in ALSA.
-
-Thank you for your time!
-
-- german*
-*
-
---------------19818C908DA1CF85E7121CE9
-Content-Type: message/rfc822;
- name="Re: HT Omega Claro II Linux support (German ).eml"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="Re: HT Omega Claro II Linux support (German ).eml"
-
-Delivered-To: gergomez@gmail.com
-Received: by 10.202.242.139 with SMTP id q133csp550711oih;
-        Wed, 7 Sep 2016 15:48:13 -0700 (PDT)
-X-Received: by 10.98.63.193 with SMTP id z62mr37666866pfj.131.1473288493852;
-        Wed, 07 Sep 2016 15:48:13 -0700 (PDT)
-Return-Path: <laputa@htomega.com>
-Received: from hw-fwd1.mailplug.co.kr (hw-fwd.mailplug.co.kr. [121.78.227.188])
-        by mx.google.com with ESMTPS id tq7si8852152pab.0.2016.09.07.15.48.12
-        for <gergomez@gmail.com>
-        (version=TLS1_1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 07 Sep 2016 15:48:13 -0700 (PDT)
-Received-SPF: neutral (google.com: 121.78.227.188 is neither permitted nor denied by best guess record for domain of laputa@htomega.com) client-ip=121.78.227.188;
-Authentication-Results: mx.google.com;
-       spf=neutral (google.com: 121.78.227.188 is neither permitted nor denied by best guess record for domain of laputa@htomega.com) smtp.mailfrom=laputa@htomega.com
-Received: (qmail 17298 invoked from network); 8 Sep 2016 07:48:11 +0900
-Received: from m188.mailplug.co.kr (121.156.118.88)
-	by 0 (qmail 1.03 + mailplug 2.0) with SMTP;
-	8 Sep 2016 07:48:11 +0900
-Received: (qmail 21483 invoked from network); 8 Sep 2016 07:48:11 +0900
-Received: from unknown (HELO HTOMEGAPC) (laputa@htomega.com@1.11.201.123)
-	by 0 (qmail 1.03 + mailplug 2.0) with SMTP;
-	8 Sep 2016 07:48:11 +0900
-From: "Jason-HTOMEGA" <laputa@htomega.com>
-To: "'German Gomez'" <gergomez@gmail.com>
-References: <b6190feb-2209-653a-2f92-71bd950880d8@gmail.com>
-In-Reply-To: <b6190feb-2209-653a-2f92-71bd950880d8@gmail.com>
-Subject: RE: HT Omega Claro II Linux support (German )
-Date: Wed, 7 Sep 2016 15:48:10 -0700
-Message-ID: <000601d20959$e88d0120$b9a70360$@com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Office Outlook 12.0
-thread-index: AdIIKIA3vccDmlIqTbS7+alvDioXvwAxsxIA
-Content-Language: ko
-
-Dear German Gomez
-
-I'm sorry for this issue.=20
-
-8788 has no official driver for Linux. This is Cmedia policy.  And we =
-have no information about driver side.=20
-Cmedia doesn't share about driver information with any hardware =
-manufactories. =20
-Thank you for your understanding. =20
-
-But there is one information. If the other 8788 cards are working =
-properly, Claro II isn't different except GPIO initializing. =20
-Claro II uses GPIO #6 for initializing.  But we don't know how it is =
-working.  I think the developer has some idea.=20
-
-By the way, we still recommend Windows system for using full feature of =
-Claro II.=20
-Feel free to contact me with any question.
-
-Thank you.
-Sincerely,
-Jason.
-HT OMEGA  =20
-
-
-
------Original Message-----
-From: German Gomez [mailto:gergomez@gmail.com]=20
-Sent: Tuesday, September 6, 2016 3:22 AM
-To: help@htomega.com
-Subject: HT Omega Claro II Linux support
-
-Hello,
-
-I'm trying to use the HT Omega Claro II under Linux (Ubuntu 16.04), but =
-I've found that it is one of the few cards from HT Omega that is not =
-supported by the Linux Sound System, ALSA =
-(http://www.alsa-project.org/main/index.php/Matrix:Vendor-HT_Omega).
-
-According to the developer of the CMI8788 driver it seems that the =
-information to support it is not available:
-
-https://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg29284.htm=
-l
-
-Is there anyway to provide that information to the developer, so he =
-would be able to add support to this awesome card to Linux? As I was =
-searching for a solution, I've found that there are many other users =
-like me looking for support under Linux.
-
-Thanks!
-
-- german
-
-
-
-
---------------19818C908DA1CF85E7121CE9
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+--hwvH6HDNit2nSK4j
+Content-Type: text/plain; charset=UTF-8
 Content-Disposition: inline
 
+Hi,
 
---------------19818C908DA1CF85E7121CE9--
+On Thu, Sep 08, 2016 at 09:57:59PM +0200, Danny Milosavljevic wrote:
+> Introduce mechanism to detect sun7i and provide a different regmap
+> and different controls for it - different compared to sun4i Allwinner A10.
+> 
+> The controls will be extended in a forthcoming patch - it is necessary to
+> distinguish between sun4i and sun7i controls because the mic gains are in
+> different registers.
+> 
+> Renamed SUN4I_CODEC_AC_SYS_VERI to SUN7I_CODEC_AC_DAC_CAL and renamed
+> SUN4I_CODEC_AC_MIC_PHONE_CAL to SUN7I_CODEC_AC_MIC_PHONE_CAL because these
+> are actually not present on Allwinner A10.
+> 
+> Handle quirks by regmap config and codec and select the correct quirks
+> automatically.
+
+You're doing several different things in that patch:
+
+> 
+> Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+> ---
+>  sound/soc/sunxi/sun4i-codec.c | 78 ++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 58 insertions(+), 20 deletions(-)
+> 
+> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+> index 0e19c50..239e330 100644
+> --- a/sound/soc/sunxi/sun4i-codec.c
+> +++ b/sound/soc/sunxi/sun4i-codec.c
+> @@ -96,8 +96,8 @@
+>  /* Other various ADC registers */
+>  #define SUN4I_CODEC_DAC_TXCNT			(0x30)
+>  #define SUN4I_CODEC_ADC_RXCNT			(0x34)
+> -#define SUN4I_CODEC_AC_SYS_VERI			(0x38)
+> -#define SUN4I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
+> +#define SUN7I_CODEC_AC_DAC_CAL			(0x38)
+> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
+
+1) Renaming some registers
+
+>  struct sun4i_codec {
+>  	struct device	*dev;
+> @@ -509,7 +509,7 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
+>  
+>  static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
+>  
+> -static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
+> +static const struct snd_kcontrol_new sun4i_codec_controls[] = {
+
+2) Changing some structure name
+
+>  	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
+>  		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
+>  		       sun4i_codec_pa_volume_scale),
+> @@ -627,10 +627,60 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+>  	{ "Mic1", NULL, "VMIC" },
+>  };
+>  
+> +static const struct regmap_config sun4i_codec_regmap_config = {
+> +	.reg_bits	= 32,
+> +	.reg_stride	= 4,
+> +	.val_bits	= 32,
+> +	.max_register	= SUN4I_CODEC_ADC_RXCNT,
+> +};
+> +
+> +static const struct regmap_config sun7i_codec_regmap_config = {
+> +	.reg_bits	= 32,
+> +	.reg_stride	= 4,
+> +	.val_bits	= 32,
+> +	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
+> +};
+
+3) Adding some custom regmap configs for the A10 and A20 variants
+
+> +struct sun4i_quirks {
+> +	const struct snd_kcontrol_new *controls;
+> +	unsigned int num_controls;
+
+4) Allow to have some custom controls (but you're not using that
+anywhere yet).
+
+> +	const struct regmap_config *regmap_config;
+> +};
+> +
+> +static const struct sun4i_quirks sun4i_quirks = {
+> +	.controls = NULL,
+> +	.num_controls = 0U,
+> +	.regmap_config = &sun4i_codec_regmap_config,
+> +};
+> +
+> +static const struct sun4i_quirks sun7i_quirks = {
+> +	.controls = NULL,
+> +	.num_controls = 0U,
+> +	.regmap_config = &sun7i_codec_regmap_config,
+> +};
+> +
+> +static const struct of_device_id sun4i_codec_of_match[] = {
+> +	{ .compatible = "allwinner,sun4i-a10-codec", .data = &sun4i_quirks },
+> +	{ .compatible = "allwinner,sun7i-a20-codec", .data = &sun7i_quirks },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
+
+This could be related to 3
+
+> +
+> +static int sun4i_codec_codec_probe(struct snd_soc_codec *scodec)
+> +{
+> +	const struct sun4i_quirks *quirks;
+> +
+> +	quirks = of_device_get_match_data(scodec->dev);
+> +	return snd_soc_add_codec_controls(scodec,
+> +					  quirks->controls,
+> +					  quirks->num_controls);
+> +}
+> +
+>  static struct snd_soc_codec_driver sun4i_codec_codec = {
+> +	.probe = sun4i_codec_codec_probe,
+
+And this to 4.
+
+>  	.component_driver = {
+> -		.controls		= sun4i_codec_widgets,
+> -		.num_controls		= ARRAY_SIZE(sun4i_codec_widgets),
+> +		.controls		= sun4i_codec_controls,
+> +		.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
+
+2)
+
+>  		.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
+>  		.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
+>  		.dapm_routes		= sun4i_codec_codec_dapm_routes,
+> @@ -678,20 +728,6 @@ static struct snd_soc_dai_driver dummy_cpu_dai = {
+>  	 },
+>  };
+>  
+> -static const struct regmap_config sun4i_codec_regmap_config = {
+> -	.reg_bits	= 32,
+> -	.reg_stride	= 4,
+> -	.val_bits	= 32,
+> -	.max_register	= SUN4I_CODEC_AC_MIC_PHONE_CAL,
+> -};
+> -
+> -static const struct of_device_id sun4i_codec_of_match[] = {
+> -	{ .compatible = "allwinner,sun4i-a10-codec" },
+> -	{ .compatible = "allwinner,sun7i-a20-codec" },
+> -	{}
+> -};
+> -MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
+> -
+>  static struct snd_soc_dai_link *sun4i_codec_create_link(struct device *dev,
+>  							int *num_links)
+>  {
+> @@ -760,6 +796,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+>  {
+>  	struct snd_soc_card *card;
+>  	struct sun4i_codec *scodec;
+> +	const struct sun4i_quirks *quirks;
+>  	struct resource *res;
+>  	void __iomem *base;
+>  	int ret;
+> @@ -777,8 +814,9 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+>  		return PTR_ERR(base);
+>  	}
+>  
+> +	quirks = of_device_get_match_data(&pdev->dev);
+>  	scodec->regmap = devm_regmap_init_mmio(&pdev->dev, base,
+> -					     &sun4i_codec_regmap_config);
+> +					       quirks->regmap_config);
+
+3
+
+This should be in separate patches.
+
+Thanks!
+Maxime
+
+-- 
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+--hwvH6HDNit2nSK4j--
