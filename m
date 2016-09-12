@@ -1,113 +1,82 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: make the volume TLV to match
-	the units 0.01dB" to the asoc tree
-Date: Mon, 12 Sep 2016 20:07:00 +0100
-Message-ID: <E1bjWZI-0002Zb-62@debutante>
-References: <1473217669-29972-1-git-send-email-oder_chiou@realtek.com>
+From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Subject: Re: [PATCH 00/26] constify local structures
+Date: Mon, 12 Sep 2016 23:14:50 +0300
+Message-ID: <20160912201450.GA8889@intel.com>
+References: <1473599168-30561-1-git-send-email-Julia.Lawall@lip6.fr>
+ <20160911172105.GB5493@intel.com>
+ <alpine.DEB.2.10.1609121051050.3049@hadrien>
+ <20160912131625.GD957@intel.com> <877fah5j35.fsf@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 368A7266948
- for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2016 21:07:09 +0200 (CEST)
-In-Reply-To: <1473217669-29972-1-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, shumingf@realtek.com, broonie@kernel.org, woojoo.lee@samsung.com, bardliao@realtek.com, flove@realtek.com
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+Content-Disposition: inline
+In-Reply-To: <877fah5j35.fsf@linux.intel.com>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
+To: Felipe Balbi <felipe.balbi@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Mustafa Ismail <mustafa.ismail@intel.com>, Tatyana Nikolova <tatyana.e.nikolova@intel.com>, kernel-janitors@vger.kernel.org, linux-fbdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org, Jason Gunthorpe <jgunthorpe@obsidianresearch.com>, linux-acpi@vger.kernel.org, tpmdd-devel@lists.sourceforge.net, linux-media@vger.kernel.org, linux-pm@vger.kernel.org, linux-can@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>, Shiraz Saleem <shiraz.saleem@intel.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, Chien Tin Tung <chien.tin.tung@intel.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-usb@vger.kernel.org, joe@perches.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Mon, Sep 12, 2016 at 04:43:58PM +0300, Felipe Balbi wrote:
+> 
+> Hi,
+> 
+> Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> writes:
+> > On Mon, Sep 12, 2016 at 10:54:07AM +0200, Julia Lawall wrote:
+> >> 
+> >> 
+> >> On Sun, 11 Sep 2016, Jarkko Sakkinen wrote:
+> >> 
+> >> > On Sun, Sep 11, 2016 at 03:05:42PM +0200, Julia Lawall wrote:
+> >> > > Constify local structures.
+> >> > >
+> >> > > The semantic patch that makes this change is as follows:
+> >> > > (http://coccinelle.lip6.fr/)
+> >> >
+> >> > Just my two cents but:
+> >> >
+> >> > 1. You *can* use a static analysis too to find bugs or other issues.
+> >> > 2. However, you should manually do the commits and proper commit
+> >> >    messages to subsystems based on your findings. And I generally think
+> >> >    that if one contributes code one should also at least smoke test changes
+> >> >    somehow.
+> >> >
+> >> > I don't know if I'm alone with my opinion. I just think that one should
+> >> > also do the analysis part and not blindly create and submit patches.
+> >> 
+> >> All of the patches are compile tested.  And the individual patches are
+> >
+> > Compile-testing is not testing. If you are not able to test a commit,
+> > you should explain why.
+> 
+> Dude, Julia has been doing semantic patching for years already and
+> nobody has raised any concerns so far. There's already an expectation
+> that Coccinelle *works* and Julia's sematic patches are sound.
+> 
+> Besides, adding 'const' is something that causes virtually no functional
+> changes to the point that build-testing is really all you need. Any
+> problems caused by adding 'const' to a definition will be seen by build
+> errors or warnings.
+> 
+> Really, just stop with the pointless discussion and go read a bit about
+> Coccinelle and what semantic patches are giving you. The work done by
+> Julia and her peers are INRIA have measurable benefits.
+> 
+> You're really making a thunderstorm in a glass of water.
 
-   ASoC: rt5514: make the volume TLV to match the units 0.01dB
+Hmm... I've been using coccinelle in cyclic basis for some time now.
+My comment was oversized but I didn't mean it to be impolite or attack
+of any kind for that matter.
 
-has been applied to the asoc tree at
+> -- 
+> balbi
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From a1338a7d4cd401bb71f4562d6896aa2b74eeb1fb Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Wed, 7 Sep 2016 11:07:49 +0800
-Subject: [PATCH] ASoC: rt5514: make the volume TLV to match the units 0.01dB
-
-The volume have a step of 0.375dB, but TLV uses the units 0.01dB. It should
-be changed to a step of 0.75dB to match the units of TLV.
-
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5514.c | 6 +++---
- sound/soc/codecs/rt5514.h | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index 7162f05101d9..bad41ae40c6d 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -278,7 +278,7 @@ static const DECLARE_TLV_DB_RANGE(bst_tlv,
- 	8, 8, TLV_DB_SCALE_ITEM(1700, 0, 0)
- );
- 
--static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
-+static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -1725, 75, 0);
- 
- static int rt5514_dsp_voice_wake_up_get(struct snd_kcontrol *kcontrol,
- 		struct snd_ctl_elem_value *ucontrol)
-@@ -352,10 +352,10 @@ static const struct snd_kcontrol_new rt5514_snd_controls[] = {
- 	SOC_DOUBLE_TLV("MIC Boost Volume", RT5514_ANA_CTRL_MICBST,
- 		RT5514_SEL_BSTL_SFT, RT5514_SEL_BSTR_SFT, 8, 0, bst_tlv),
- 	SOC_DOUBLE_R_TLV("ADC1 Capture Volume", RT5514_DOWNFILTER0_CTRL1,
--		RT5514_DOWNFILTER0_CTRL2, RT5514_AD_GAIN_SFT, 127, 0,
-+		RT5514_DOWNFILTER0_CTRL2, RT5514_AD_GAIN_SFT, 63, 0,
- 		adc_vol_tlv),
- 	SOC_DOUBLE_R_TLV("ADC2 Capture Volume", RT5514_DOWNFILTER1_CTRL1,
--		RT5514_DOWNFILTER1_CTRL2, RT5514_AD_GAIN_SFT, 127, 0,
-+		RT5514_DOWNFILTER1_CTRL2, RT5514_AD_GAIN_SFT, 63, 0,
- 		adc_vol_tlv),
- 	SOC_SINGLE_EXT("DSP Voice Wake Up", SND_SOC_NOPM, 0, 1, 0,
- 		rt5514_dsp_voice_wake_up_get, rt5514_dsp_voice_wake_up_put),
-diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
-index 68883c68e999..229de0e2c88c 100644
---- a/sound/soc/codecs/rt5514.h
-+++ b/sound/soc/codecs/rt5514.h
-@@ -196,8 +196,8 @@
- #define RT5514_AD_AD_MIX_BIT			10
- #define RT5514_AD_AD_MUTE			(0x1 << 7)
- #define RT5514_AD_AD_MUTE_BIT			7
--#define RT5514_AD_GAIN_MASK			(0x7f << 0)
--#define RT5514_AD_GAIN_SFT			0
-+#define RT5514_AD_GAIN_MASK			(0x3f << 1)
-+#define RT5514_AD_GAIN_SFT			1
- 
- /*  RT5514_ANA_CTRL_MICBST (0x2220) */
- #define RT5514_SEL_BSTL_MASK			(0xf << 4)
--- 
-2.8.1
+/Jarkko
