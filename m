@@ -1,195 +1,203 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH 00/26] constify local structures
-Date: Mon, 12 Sep 2016 10:54:07 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1609121051050.3049@hadrien>
-References: <1473599168-30561-1-git-send-email-Julia.Lawall@lip6.fr> <20160911172105.GB5493@intel.com>
+From: Dennis Wassenberg <dennis.wassenberg@secunet.com>
+Subject: [PATCH 1/4] hda: Rename fixup thinkpad_acpi to fixup_thinkpad
+Date: Mon, 12 Sep 2016 12:44:50 +0200
+Message-ID: <5cb009b2-11a0-fb19-e751-965a874903b0@secunet.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-can-owner@vger.kernel.org>
-In-Reply-To: <20160911172105.GB5493@intel.com>
-Sender: linux-can-owner@vger.kernel.org
-To: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc: Julia Lawall <Julia.Lawall@lip6.fr>, linux-renesas-soc@vger.kernel.org, joe@perches.com, kernel-janitors@vger.kernel.org, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, linux-pm@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-media@vger.kernel.org, linux-can@vger.kernel.org, Tatyana Nikolova <tatyana.e.nikolova@intel.com>, Shiraz Saleem <shiraz.saleem@intel.com>, Mustafa Ismail <mustafa.ismail@intel.com>, Chien Tin Tung <chien.tin.tung@intel.com>, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-wireless@vger.kernel.org, Jason Gunthorpe <jgunthorpe@obsidianresearch.com>, tpmdd-devel@lists.sourceforge.net, linux-scsi@vger.ker
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-sound-owner@vger.kernel.org>
+Sender: linux-sound-owner@vger.kernel.org
+To: linux-input@vger.kernel.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.de, lukas@wunner.de, Benjamin Tissoires <benjamin.tissoires@redhat.com>, Andrew Duggan <aduggan@synaptics.com>, perex@perex.cz, david.henningsson@canonical.com, vinod.koul@intel.com, hui.wang@canonical.com, rafael.j.wysocki@intel.com, jikos@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+This is some preparatory work to not only support led control in
+thinkpad_helper over thinkpad_acpi.
 
+A further patch will introduce led control over hid-lenovo.
+This will make it possible to use the thinkpad_helper not only with
+lenovo devices via acpi but also with hid-lenovo driver
+if there is a hid-lenovo compatible device found.
 
-On Sun, 11 Sep 2016, Jarkko Sakkinen wrote:
+Signed-off-by: Dennis Wassenberg <dennis.wassenberg@secunet.com>
+---
+ sound/pci/hda/patch_conexant.c  | 14 +++++++-------
+ sound/pci/hda/patch_realtek.c   | 24 ++++++++++++------------
+ sound/pci/hda/thinkpad_helper.c |  4 ++--
+ 3 files changed, 21 insertions(+), 21 deletions(-)
 
-> On Sun, Sep 11, 2016 at 03:05:42PM +0200, Julia Lawall wrote:
-> > Constify local structures.
-> >
-> > The semantic patch that makes this change is as follows:
-> > (http://coccinelle.lip6.fr/)
->
-> Just my two cents but:
->
-> 1. You *can* use a static analysis too to find bugs or other issues.
-> 2. However, you should manually do the commits and proper commit
->    messages to subsystems based on your findings. And I generally think
->    that if one contributes code one should also at least smoke test changes
->    somehow.
->
-> I don't know if I'm alone with my opinion. I just think that one should
-> also do the analysis part and not blindly create and submit patches.
-
-All of the patches are compile tested.  And the individual patches are
-submitted to the relevant maintainers.  The individual commit messages
-give a more detailed explanation of the strategy used to decide that the
-structure was constifiable.  It seemed redundant to put that in the cover
-letter, which will not be committed anyway.
-
-julia
-
->
-> Anyway, I'll apply the TPM change at some point. As I said they were
-> for better. Thanks.
->
-> /Jarkko
->
-> > // <smpl>
-> > // The first rule ignores some cases that posed problems
-> > @r disable optional_qualifier@
-> > identifier s != {peri_clk_data,threshold_attr,tracer_flags,tracer};
-> > identifier i != {s5k5baf_cis_rect,smtcfb_fix};
-> > position p;
-> > @@
-> > static struct s i@p = { ... };
-> >
-> > @lstruct@
-> > identifier r.s;
-> > @@
-> > struct s { ... };
-> >
-> > @used depends on lstruct@
-> > identifier r.i;
-> > @@
-> > i
-> >
-> > @bad1@
-> > expression e;
-> > identifier r.i;
-> > assignment operator a;
-> > @@
-> >  (<+...i...+>) a e
-> >
-> > @bad2@
-> > identifier r.i;
-> > @@
-> >  &(<+...i...+>)
-> >
-> > @bad3@
-> > identifier r.i;
-> > declarer d;
-> > @@
-> >  d(...,<+...i...+>,...);
-> >
-> > @bad4@
-> > identifier r.i;
-> > type T;
-> > T[] e;
-> > identifier f;
-> > position p;
-> > @@
-> >
-> > f@p(...,
-> > (
-> >   (<+...i...+>)
-> > &
-> >   e
-> > )
-> > ,...)
-> >
-> > @bad4a@
-> > identifier r.i;
-> > type T;
-> > T *e;
-> > identifier f;
-> > position p;
-> > @@
-> >
-> > f@p(...,
-> > (
-> >   (<+...i...+>)
-> > &
-> >   e
-> > )
-> > ,...)
-> >
-> > @ok5@
-> > expression *e;
-> > identifier r.i;
-> > position p;
-> > @@
-> > e =@p i
-> >
-> > @bad5@
-> > expression *e;
-> > identifier r.i;
-> > position p != ok5.p;
-> > @@
-> > e =@p (<+...i...+>)
-> >
-> > @rr depends on used && !bad1 && !bad2 && !bad3 && !bad4 && !bad4a && !bad5@
-> > identifier s,r.i;
-> > position r.p;
-> > @@
-> >
-> > static
-> > +const
-> >  struct s i@p = { ... };
-> >
-> > @depends on used && !bad1 && !bad2 && !bad3 && !bad4 && !bad4a && !bad5
-> >  disable optional_qualifier@
-> > identifier rr.s,r.i;
-> > @@
-> >
-> > static
-> > +const
-> >  struct s i;
-> > // </smpl>
-> >
-> > ---
-> >
-> >  drivers/acpi/acpi_apd.c                              |    8 +++---
-> >  drivers/char/tpm/tpm-interface.c                     |   10 ++++----
-> >  drivers/char/tpm/tpm-sysfs.c                         |    2 -
-> >  drivers/cpufreq/intel_pstate.c                       |    8 +++---
-> >  drivers/infiniband/hw/i40iw/i40iw_uk.c               |    6 ++---
-> >  drivers/media/i2c/tvp514x.c                          |    2 -
-> >  drivers/media/pci/ddbridge/ddbridge-core.c           |   18 +++++++--------
-> >  drivers/media/pci/ngene/ngene-cards.c                |   14 ++++++------
-> >  drivers/media/pci/smipcie/smipcie-main.c             |    8 +++---
-> >  drivers/misc/sgi-xp/xpc_uv.c                         |    2 -
-> >  drivers/net/arcnet/com20020-pci.c                    |   10 ++++----
-> >  drivers/net/can/c_can/c_can_pci.c                    |    4 +--
-> >  drivers/net/can/sja1000/plx_pci.c                    |   20 ++++++++---------
-> >  drivers/net/ethernet/mellanox/mlx4/main.c            |    4 +--
-> >  drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c |    2 -
-> >  drivers/net/ethernet/renesas/sh_eth.c                |   14 ++++++------
-> >  drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c     |    2 -
-> >  drivers/net/wireless/ath/dfs_pattern_detector.c      |    2 -
-> >  drivers/net/wireless/intel/iwlegacy/3945.c           |    4 +--
-> >  drivers/net/wireless/realtek/rtlwifi/rtl8188ee/sw.c  |    2 -
-> >  drivers/net/wireless/realtek/rtlwifi/rtl8192ce/sw.c  |    2 -
-> >  drivers/net/wireless/realtek/rtlwifi/rtl8192de/sw.c  |    2 -
-> >  drivers/net/wireless/realtek/rtlwifi/rtl8192ee/sw.c  |    2 -
-> >  drivers/net/wireless/realtek/rtlwifi/rtl8192se/sw.c  |    2 -
-> >  drivers/net/wireless/realtek/rtlwifi/rtl8723ae/sw.c  |    2 -
-> >  drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c  |    2 -
-> >  drivers/net/wireless/realtek/rtlwifi/rtl8821ae/sw.c  |    2 -
-> >  drivers/platform/chrome/chromeos_laptop.c            |   22 +++++++++----------
-> >  drivers/platform/x86/intel_scu_ipc.c                 |    6 ++---
-> >  drivers/platform/x86/intel_telemetry_debugfs.c       |    2 -
-> >  drivers/scsi/esas2r/esas2r_flash.c                   |    2 -
-> >  drivers/scsi/hptiop.c                                |    6 ++---
-> >  drivers/spi/spi-dw-pci.c                             |    4 +--
-> >  drivers/staging/rtl8192e/rtl8192e/rtl_core.c         |    2 -
-> >  drivers/usb/misc/ezusb.c                             |    2 -
-> >  drivers/video/fbdev/matrox/matroxfb_g450.c           |    2 -
-> >  lib/crc64_ecma.c                                     |    2 -
-> >  sound/pci/ctxfi/ctatc.c                              |    2 -
-> >  sound/pci/hda/patch_ca0132.c                         |   10 ++++----
-> >  sound/pci/riptide/riptide.c                          |    2 -
-> >  40 files changed, 110 insertions(+), 110 deletions(-)
->
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 56fefbd..d54ffd9 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -254,7 +254,7 @@ enum {
+ 	CXT_FIXUP_HEADPHONE_MIC,
+ 	CXT_FIXUP_GPIO1,
+ 	CXT_FIXUP_ASPIRE_DMIC,
+-	CXT_FIXUP_THINKPAD_ACPI,
++	CXT_FIXUP_THINKPAD,
+ 	CXT_FIXUP_OLPC_XO,
+ 	CXT_FIXUP_CAP_MIX_AMP,
+ 	CXT_FIXUP_TOSHIBA_P105,
+@@ -263,7 +263,7 @@ enum {
+ 	CXT_FIXUP_MUTE_LED_EAPD,
+ };
+ 
+-/* for hda_fixup_thinkpad_acpi() */
++/* for hda_fixup_thinkpad() */
+ #include "thinkpad_helper.c"
+ 
+ static void cxt_fixup_stereo_dmic(struct hda_codec *codec,
+@@ -670,7 +670,7 @@ static void cxt_fixup_cap_mix_amp_5047(struct hda_codec *codec,
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = cxt_pincfg_lenovo_tp410,
+ 		.chained = true,
+-		.chain_id = CXT_FIXUP_THINKPAD_ACPI,
++		.chain_id = CXT_FIXUP_THINKPAD,
+ 	},
+ 	[CXT_PINCFG_LEMOTE_A1004] = {
+ 		.type = HDA_FIXUP_PINS,
+@@ -727,9 +727,9 @@ static void cxt_fixup_cap_mix_amp_5047(struct hda_codec *codec,
+ 		.chained = true,
+ 		.chain_id = CXT_FIXUP_GPIO1,
+ 	},
+-	[CXT_FIXUP_THINKPAD_ACPI] = {
++	[CXT_FIXUP_THINKPAD] = {
+ 		.type = HDA_FIXUP_FUNC,
+-		.v.func = hda_fixup_thinkpad_acpi,
++		.v.func = hda_fixup_thinkpad,
+ 	},
+ 	[CXT_FIXUP_OLPC_XO] = {
+ 		.type = HDA_FIXUP_FUNC,
+@@ -828,7 +828,7 @@ static void cxt_fixup_cap_mix_amp_5047(struct hda_codec *codec,
+ 	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310", CXT_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205", CXT_FIXUP_STEREO_DMIC),
+-	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", CXT_FIXUP_THINKPAD_ACPI),
++	SND_PCI_QUIRK_VENDOR(0x17aa,  "Thinkpad", CXT_FIXUP_THINKPAD),
+ 	SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004", CXT_PINCFG_LEMOTE_A1004),
+ 	SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205", CXT_PINCFG_LEMOTE_A1205),
+ 	{}
+@@ -839,7 +839,7 @@ static void cxt_fixup_cap_mix_amp_5047(struct hda_codec *codec,
+ 	{ .id = CXT_FIXUP_GPIO1, .name = "gpio1" },
+ 	{ .id = CXT_FIXUP_HEADPHONE_MIC_PIN, .name = "headphone-mic-pin" },
+ 	{ .id = CXT_PINCFG_LENOVO_TP410, .name = "tp410" },
+-	{ .id = CXT_FIXUP_THINKPAD_ACPI, .name = "thinkpad" },
++	{ .id = CXT_FIXUP_THINKPAD, .name = "thinkpad" },
+ 	{ .id = CXT_PINCFG_LEMOTE_A1004, .name = "lemote-a1004" },
+ 	{ .id = CXT_PINCFG_LEMOTE_A1205, .name = "lemote-a1205" },
+ 	{ .id = CXT_FIXUP_OLPC_XO, .name = "olpc-xo" },
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 1fe8750..6d78d76 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4754,7 +4754,7 @@ static void alc280_fixup_hp_9480m(struct hda_codec *codec,
+ 	}
+ }
+ 
+-/* for hda_fixup_thinkpad_acpi() */
++/* for hda_fixup_thinkpad() */
+ #include "thinkpad_helper.c"
+ 
+ /* for dell wmi mic mute led */
+@@ -4819,8 +4819,8 @@ enum {
+ 	ALC290_FIXUP_MONO_SPEAKERS_HSJACK,
+ 	ALC290_FIXUP_SUBWOOFER,
+ 	ALC290_FIXUP_SUBWOOFER_HSJACK,
+-	ALC269_FIXUP_THINKPAD_ACPI,
+-	ALC269_FIXUP_DMIC_THINKPAD_ACPI,
++	ALC269_FIXUP_THINKPAD,
++	ALC269_FIXUP_DMIC_THINKPAD,
+ 	ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 	ALC255_FIXUP_DELL2_MIC_NO_PRESENCE,
+ 	ALC255_FIXUP_HEADSET_MODE,
+@@ -5052,7 +5052,7 @@ enum {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
+ 		.chained = true,
+-		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
++		.chain_id = ALC269_FIXUP_THINKPAD,
+ 	},
+ 	[ALC269_FIXUP_DELL1_MIC_NO_PRESENCE] = {
+ 		.type = HDA_FIXUP_PINS,
+@@ -5175,7 +5175,7 @@ enum {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_limit_int_mic_boost,
+ 		.chained = true,
+-		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
++		.chain_id = ALC269_FIXUP_THINKPAD,
+ 	},
+ 	[ALC269VB_FIXUP_ASUS_ZENBOOK] = {
+ 		.type = HDA_FIXUP_FUNC,
+@@ -5261,17 +5261,17 @@ enum {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_DELL3_MIC_NO_PRESENCE,
+ 	},
+-	[ALC269_FIXUP_THINKPAD_ACPI] = {
++	[ALC269_FIXUP_THINKPAD] = {
+ 		.type = HDA_FIXUP_FUNC,
+-		.v.func = hda_fixup_thinkpad_acpi,
++		.v.func = hda_fixup_thinkpad,
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_SKU_IGNORE,
+ 	},
+-	[ALC269_FIXUP_DMIC_THINKPAD_ACPI] = {
++	[ALC269_FIXUP_DMIC_THINKPAD] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_inv_dmic,
+ 		.chained = true,
+-		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
++		.chain_id = ALC269_FIXUP_THINKPAD,
+ 	},
+ 	[ALC255_FIXUP_DELL1_MIC_NO_PRESENCE] = {
+ 		.type = HDA_FIXUP_PINS,
+@@ -5471,7 +5471,7 @@ enum {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_disable_aamix,
+ 		.chained = true,
+-		.chain_id = ALC269_FIXUP_THINKPAD_ACPI
++		.chain_id = ALC269_FIXUP_THINKPAD
+ 	},
+ 	[ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY] = {
+ 		.type = HDA_FIXUP_FUNC,
+@@ -5691,7 +5691,7 @@ enum {
+ 	SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC292_FIXUP_TPT460),
+ 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+-	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
++	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD),
+ 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3978, "IdeaPad Y410P", ALC269_FIXUP_NO_SHUTUP),
+ 	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+@@ -5766,7 +5766,7 @@ enum {
+ 	SND_PCI_QUIRK_VENDOR(0x1025, "Acer Aspire", ALC271_FIXUP_DMIC),
+ 	SND_PCI_QUIRK_VENDOR(0x103c, "HP", ALC269_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK_VENDOR(0x104d, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
+-	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", ALC269_FIXUP_THINKPAD_ACPI),
++	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", ALC269_FIXUP_THINKPAD),
+ 	{}
+ };
+ 
+diff --git a/sound/pci/hda/thinkpad_helper.c b/sound/pci/hda/thinkpad_helper.c
+index f0955fd..62741a7 100644
+--- a/sound/pci/hda/thinkpad_helper.c
++++ b/sound/pci/hda/thinkpad_helper.c
+@@ -38,7 +38,7 @@ static void update_tpacpi_micmute_led(struct hda_codec *codec,
+ 	}
+ }
+ 
+-static void hda_fixup_thinkpad_acpi(struct hda_codec *codec,
++static void hda_fixup_thinkpad(struct hda_codec *codec,
+ 				    const struct hda_fixup *fix, int action)
+ {
+ 	struct hda_gen_spec *spec = codec->spec;
+@@ -81,7 +81,7 @@ static void hda_fixup_thinkpad_acpi(struct hda_codec *codec,
+ 
+ #else /* CONFIG_THINKPAD_ACPI */
+ 
+-static void hda_fixup_thinkpad_acpi(struct hda_codec *codec,
++static void hda_fixup_thinkpad(struct hda_codec *codec,
+ 				    const struct hda_fixup *fix, int action)
+ {
+ }
+-- 
+1.9.1
