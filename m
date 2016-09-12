@@ -1,137 +1,121 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH] ASoC: da7219: Support HP detect procedure when MCLK not
- present
-Date: Mon, 12 Sep 2016 16:46:50 +0100
-Message-ID: <20160912154650.F1EAF3FA9D@swsrvapps-01.diasemi.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/4] ALSA: control: return payload length
+ for TLV operation
+Date: Mon, 12 Sep 2016 20:55:31 +0530
+Message-ID: <20160912152531.GE9355@localhost>
+References: <e95db80c-682d-b186-ea9e-a4a8a5501329@ladisch.de>
+ <s5ha8ftgmyh.wl-tiwai@suse.de>
+ <47fa0f7b-cf3a-b3dd-7e7e-7d45369ddaac@sakamocchi.jp>
+ <s5ha8fteyle.wl-tiwai@suse.de>
+ <2450af02-a554-6374-d92f-d4d0666c7138@sakamocchi.jp>
+ <20160903113816.GH21682@localhost.localdomain>
+ <2ba13afd-433f-8db3-b535-879155be0c47@sakamocchi.jp>
+ <s5hk2ercs2c.wl-tiwai@suse.de>
+ <2cf64652-2ba2-64a4-b6a4-ce9957a5f0ab@sakamocchi.jp>
+ <20160912123737.GJ21682@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Support Opensource <support.opensource@diasemi.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 701E1265A82
+ for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2016 17:17:14 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20160912123737.GJ21682@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, broonie@linaro.org, Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-Currently the driver code assumes that MCLK will be present during
-the procedure, or if it has control of MCLK then it can make sure
-it's enabled. Some platforms however do not provide MCLK to the
-driver in this way, and will not leave MCLK enabled when Codec is
-in STANDBY state.
+On Mon, Sep 12, 2016 at 01:37:37PM +0100, Charles Keepax wrote:
+> On Tue, Sep 06, 2016 at 12:30:35PM +0900, Takashi Sakamoto wrote:
+> > On Sep 5 2016 05:45, Takashi Iwai wrote:
+> > >Yeah, there are obviously some issues in the current implementation of
+> > >wm_adsp and ASoC ext ctl.  Although I'll unlikely take Sakamoto-san's
+> > >patchset as is from a few reasons, these issues still should be
+> > >addressed.
+> > 
+> > OK. I welcome to abandon this patchset ;)
+> > 
+> > >First off, passing the binary blob directly via TLV callback is
+> > >incorrect from the ABI perspective.  When Vinod proposed the idea via
+> > >TLV access originally, we thought they the data is encoded in TLV
+> > >format.  Alas, the resulted code didn't do that and it slipped into
+> > >the upstream without consideration.
+> > 
+> > +1
+> > 
+> > >Besides that, the second problem is the count value returned via
+> > >snd_ctl_elem_info, as mentioned in the above.  It's beyond the
+> > >original control API design, and a kind of illegal usage.
+> > 
+> > +1
+> > 
+> > >(Well, it's a philosophical argument: what one would expect for an
+> > > element that has neither read nor write access...?)
+> > 
+> > It's an element with no sense for applications. A waste of codes in kernel
+> > land.
+> > 
+> > >So, at this point, the main question is whether we keep this access
+> > >pattern as is, as a sort of official one, and put some exceptional
+> > >rule.  Charles, how is the situation?  Has it been already deployed to
+> > >real systems?
+> > >
+> > >If we may still change the wm_adsp behavior, we may "fix" the first
+> > >issue by passing the blob properly encoded in TLV format, at least.
+> > >OTOH, if we need to keep the current ABI abuse as is, one idea is to
+> > >add a special flag in SNDRV_CTL_ELEM_ACCESS_* indicating this kind of
+> > >control, and we define more strictly how the code should be
+> > >implemented.  Currently we can judge this element as a one that has no
+> > >read/write access but with tlv r/w.  But it's way too unclear.
+> > 
+> > The 'abuse' is a part of my understanding of ALSA SoC part. I need a bit
+> > time to switch my mind for this issue.
+> 
+> Perhaps we should add this as a topic for discussion at the Audio
+> mini-conference? If the general feeling is that this feature is
+> badly designed we should certainly be looking at what we can do
+> to improve it.
+> 
+> I do very much like the idea of the additional access flag as I
+> said. Wrapping the data in a TLV structure we would have to think
+> about a little more though as the code has shipped in several
+> kernel versions at this point.
+> 
+> We are starting to have a few customers use a 4.4 kernel which
+> does include these controls, all our previous backports had used
+> a system of partitioning the controls up into multiple 512 byte
+> controls as these binary TLV controls were not supported. So
+> there is a little bit of friction to major changes to the ABI,
+> but I don't think its insurmountable as long as the functionality
+> remains the same.
+> 
+> But we need to get Intel involved in that discussion too, as they
+> have used these controls quite widely as well.
 
-This patch adds support for the HP detect procedure when running
-from the device's internal oscillator, to ensure all platforms
-can make use of this feature correctly.
+Sorry havent been able to follow this yet :(
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
----
- sound/soc/codecs/da7219-aad.c | 34 ++++++++++++++++++++++++++++++++--
- sound/soc/codecs/da7219-aad.h |  6 ++++--
- sound/soc/codecs/da7219.h     |  2 ++
- 3 files changed, 38 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
-index 4e369a1..fc27dab 100644
---- a/sound/soc/codecs/da7219-aad.c
-+++ b/sound/soc/codecs/da7219-aad.c
-@@ -115,7 +115,7 @@ static void da7219_aad_hptest_work(struct work_struct *work)
- 	struct da7219_priv *da7219 = snd_soc_codec_get_drvdata(codec);
- 
- 	u16 tonegen_freq_hptest;
--	u8 accdet_cfg8;
-+	u8 pll_srm_sts, gain_ramp_ctrl, accdet_cfg8;
- 	int report = 0, ret = 0;
- 
- 	/* Lock DAPM and any Kcontrols that are affected by this test */
-@@ -133,6 +133,20 @@ static void da7219_aad_hptest_work(struct work_struct *work)
- 		}
- 	}
- 
-+	/*
-+	 * If MCLK not present, then we're using the internal oscillator and
-+	 * require different frequency settings to achieve the same result.
-+	 */
-+	pll_srm_sts = snd_soc_read(codec, DA7219_PLL_SRM_STS);
-+	if (pll_srm_sts & DA7219_PLL_SRM_STS_MCLK)
-+		tonegen_freq_hptest = cpu_to_le16(DA7219_AAD_HPTEST_RAMP_FREQ);
-+	else
-+		tonegen_freq_hptest = cpu_to_le16(DA7219_AAD_HPTEST_RAMP_FREQ_INT_OSC);
-+
-+	/* Ensure gain ramping at fastest rate */
-+	gain_ramp_ctrl = snd_soc_read(codec, DA7219_GAIN_RAMP_CTRL);
-+	snd_soc_write(codec, DA7219_GAIN_RAMP_CTRL, DA7219_GAIN_RAMP_RATE_X8);
-+
- 	/* Bypass cache so it saves current settings */
- 	regcache_cache_bypass(da7219->regmap, true);
- 
-@@ -195,9 +209,15 @@ static void da7219_aad_hptest_work(struct work_struct *work)
- 	snd_soc_write(codec, DA7219_HP_R_CTRL,
- 		      DA7219_HP_R_AMP_OE_MASK | DA7219_HP_R_AMP_EN_MASK);
- 
-+	/*
-+	 * If we're running from the internal oscillator then give audio paths
-+	 * time to settle before running test.
-+	 */
-+	if (!(pll_srm_sts & DA7219_PLL_SRM_STS_MCLK))
-+		msleep(DA7219_AAD_HPTEST_INT_OSC_PATH_DELAY);
-+
- 	/* Configure & start Tone Generator */
- 	snd_soc_write(codec, DA7219_TONE_GEN_ON_PER, DA7219_BEEP_ON_PER_MASK);
--	tonegen_freq_hptest = cpu_to_le16(DA7219_AAD_HPTEST_RAMP_FREQ);
- 	regmap_raw_write(da7219->regmap, DA7219_TONE_GEN_FREQ1_L,
- 			 &tonegen_freq_hptest, sizeof(tonegen_freq_hptest));
- 	snd_soc_update_bits(codec, DA7219_TONE_GEN_CFG2,
-@@ -256,6 +276,16 @@ static void da7219_aad_hptest_work(struct work_struct *work)
- 	snd_soc_update_bits(codec, DA7219_ACCDET_CONFIG_8,
- 			    DA7219_HPTEST_EN_MASK, 0);
- 
-+	/*
-+	 * If we're running from the internal oscillator then give audio paths
-+	 * time to settle before allowing headphones to be driven as required.
-+	 */
-+	if (!(pll_srm_sts & DA7219_PLL_SRM_STS_MCLK))
-+		msleep(DA7219_AAD_HPTEST_INT_OSC_PATH_DELAY);
-+
-+	/* Restore gain ramping rate */
-+	snd_soc_write(codec, DA7219_GAIN_RAMP_CTRL, gain_ramp_ctrl);
-+
- 	/* Drive Headphones/lineout */
- 	snd_soc_update_bits(codec, DA7219_HP_L_CTRL, DA7219_HP_L_AMP_OE_MASK,
- 			    DA7219_HP_L_AMP_OE_MASK);
-diff --git a/sound/soc/codecs/da7219-aad.h b/sound/soc/codecs/da7219-aad.h
-index 4fccf67..a34be48 100644
---- a/sound/soc/codecs/da7219-aad.h
-+++ b/sound/soc/codecs/da7219-aad.h
-@@ -176,8 +176,10 @@
- #define DA7219_AAD_MICBIAS_CHK_DELAY	10
- #define DA7219_AAD_MICBIAS_CHK_RETRIES	5
- 
--#define DA7219_AAD_HPTEST_RAMP_FREQ	0x28
--#define DA7219_AAD_HPTEST_PERIOD	65
-+#define DA7219_AAD_HPTEST_RAMP_FREQ		0x28
-+#define DA7219_AAD_HPTEST_RAMP_FREQ_INT_OSC	0x4D
-+#define DA7219_AAD_HPTEST_PERIOD		65
-+#define DA7219_AAD_HPTEST_INT_OSC_PATH_DELAY	20
- 
- enum da7219_aad_event_regs {
- 	DA7219_AAD_IRQ_REG_A = 0,
-diff --git a/sound/soc/codecs/da7219.h b/sound/soc/codecs/da7219.h
-index ff2a2f0..545576d 100644
---- a/sound/soc/codecs/da7219.h
-+++ b/sound/soc/codecs/da7219.h
-@@ -224,6 +224,7 @@
- #define DA7219_PLL_SRM_STATE_MASK	(0xF << 0)
- #define DA7219_PLL_SRM_STATUS_SHIFT	4
- #define DA7219_PLL_SRM_STATUS_MASK	(0xF << 4)
-+#define DA7219_PLL_SRM_STS_MCLK		(0x1 << 4)
- #define DA7219_PLL_SRM_STS_SRM_LOCK	(0x1 << 7)
- 
- /* DA7219_DIG_ROUTING_DAI = 0x2A */
-@@ -576,6 +577,7 @@
- /* DA7219_GAIN_RAMP_CTRL = 0x92 */
- #define DA7219_GAIN_RAMP_RATE_SHIFT	0
- #define DA7219_GAIN_RAMP_RATE_MASK	(0x3 << 0)
-+#define DA7219_GAIN_RAMP_RATE_X8	(0x0 << 0)
- #define DA7219_GAIN_RAMP_RATE_MAX	4
- 
- /* DA7219_PC_COUNT = 0x94 */
+But yes current Skylake Chromebooks ship with this code so we cant break it.
+
+I am not sure what is the issue with API though. (sorry haven't read the
+thread yet). The tlv was designed to allow people send bytes larger than 512
+down to kernel. The Type cna be anything (implementation specific, though we
+haven't used it yet), length the blob length and then the bytes blob.
+We provide a tunnel and pass these to DSP. They maybe module coefficients,
+hotwording blobs etc.
+
+Sure, we can this at u-conf :) F2F is always much better ...
+
+Thanks
 -- 
-1.9.3
+~Vinod
