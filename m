@@ -1,117 +1,86 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: alsa-tools FTBFS on armel: gcc-6 narrowing conversions
-Date: Mon, 12 Sep 2016 18:52:18 +0200
-Message-ID: <20160912165218.vys63p73adfi2x76@galadriel.home.lxtec.de>
+From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Subject: Re: [PATCH 00/26] constify local structures
+Date: Mon, 12 Sep 2016 21:50:23 +0300
+Message-ID: <20160912185023.GB14727@intel.com>
+References: <1473599168-30561-1-git-send-email-Julia.Lawall@lip6.fr>
+ <20160911172105.GB5493@intel.com>
+ <alpine.DEB.2.10.1609121051050.3049@hadrien>
+ <20160912131625.GD957@intel.com>
+ <877fah5j35.fsf@linux.intel.com>
+ <alpine.DEB.2.10.1609121548200.29099@hadrien>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8101866784569746749=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.hostsharing.net (mailout2.hostsharing.net
- [83.223.90.233])
- by alsa0.perex.cz (Postfix) with ESMTP id AAFD326680E
- for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2016 18:52:20 +0200 (CEST)
-Received: from h06.hostsharing.net (h06.hostsharing.net [83.223.95.25])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mailout2.hostsharing.net (Postfix) with ESMTPS id D8E59101899A9
- for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2016 18:52:19 +0200 (CEST)
-Received: from mail.home.lxtec.de
- (HSI-KBW-46-223-54-142.hsi.kabel-badenwuerttemberg.de [46.223.54.142])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by h06.hostsharing.net (Postfix) with ESMTPSA id 996DC6052C04
- for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2016 18:52:19 +0200 (CEST)
-Received: from localhost ([127.0.0.1])
- by mail.home.lxtec.de with esmtp (Exim 4.87 2 (LXTEC))
- id 1bjUSw-0006mc-SU
- for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2016 18:52:18 +0200
-Received: from mail.home.lxtec.de ([IPv6:::1])
- by localhost (baumbart.home.lxtec.de [IPv6:::1]) (amavisd-new, port 10024)
- with ESMTP id JDMG94gH3kmE for <alsa-devel@alsa-project.org>;
- Mon, 12 Sep 2016 18:52:18 +0200 (CEST)
-Received: from galadriel.home.lxtec.de ([192.168.200.207])
- by mail.home.lxtec.de with smtp (Exim 4.87 2 (LXTEC))
- id 1bjUSw-0006tO-Lx
- for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2016 18:52:18 +0200
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-can-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.10.1609121548200.29099@hadrien>
+Sender: linux-can-owner@vger.kernel.org
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: Felipe Balbi <felipe.balbi@linux.intel.com>, linux-renesas-soc@vger.kernel.org, joe@perches.com, kernel-janitors@vger.kernel.org, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, linux-pm@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-media@vger.kernel.org, linux-can@vger.kernel.org, Tatyana Nikolova <tatyana.e.nikolova@intel.com>, Shiraz Saleem <shiraz.saleem@intel.com>, Mustafa Ismail <mustafa.ismail@intel.com>, Chien Tin Tung <chien.tin.tung@intel.com>, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-wireless@vger.kernel.org, Jason Gunthorpe <jgunthorpe@obsidianresearch.com>, tpmdd-devel@lists.sourceforge.net, linux-scsi@
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Sep 12, 2016 at 03:52:08PM +0200, Julia Lawall wrote:
+> 
+> 
+> On Mon, 12 Sep 2016, Felipe Balbi wrote:
+> 
+> >
+> > Hi,
+> >
+> > Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> writes:
+> > > On Mon, Sep 12, 2016 at 10:54:07AM +0200, Julia Lawall wrote:
+> > >>
+> > >>
+> > >> On Sun, 11 Sep 2016, Jarkko Sakkinen wrote:
+> > >>
+> > >> > On Sun, Sep 11, 2016 at 03:05:42PM +0200, Julia Lawall wrote:
+> > >> > > Constify local structures.
+> > >> > >
+> > >> > > The semantic patch that makes this change is as follows:
+> > >> > > (http://coccinelle.lip6.fr/)
+> > >> >
+> > >> > Just my two cents but:
+> > >> >
+> > >> > 1. You *can* use a static analysis too to find bugs or other issues.
+> > >> > 2. However, you should manually do the commits and proper commit
+> > >> >    messages to subsystems based on your findings. And I generally think
+> > >> >    that if one contributes code one should also at least smoke test changes
+> > >> >    somehow.
+> > >> >
+> > >> > I don't know if I'm alone with my opinion. I just think that one should
+> > >> > also do the analysis part and not blindly create and submit patches.
+> > >>
+> > >> All of the patches are compile tested.  And the individual patches are
+> > >
+> > > Compile-testing is not testing. If you are not able to test a commit,
+> > > you should explain why.
+> >
+> > Dude, Julia has been doing semantic patching for years already and
+> > nobody has raised any concerns so far. There's already an expectation
+> > that Coccinelle *works* and Julia's sematic patches are sound.
+> >
+> > Besides, adding 'const' is something that causes virtually no functional
+> > changes to the point that build-testing is really all you need. Any
+> > problems caused by adding 'const' to a definition will be seen by build
+> > errors or warnings.
+> >
+> > Really, just stop with the pointless discussion and go read a bit about
+> > Coccinelle and what semantic patches are giving you. The work done by
+> > Julia and her peers are INRIA have measurable benefits.
+> >
+> > You're really making a thunderstorm in a glass of water.
+> 
+> Thanks for the defense, but since a lot of these patches torned out to be
+> wrong, due to an incorrect parse by Coccinelle, combined with an
+> unpleasantly lax compiler, Jarkko does have a point that I should have
+> looked at the patches more carefully.  In any case, I have written to the
+> maintainers relevant to the patches that turned out to be incorrect.
 
---===============8101866784569746749==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vnrsl2qlacbfh23t"
-Content-Disposition: inline
+Exactly. I'm not excepting that every commit would require extensive
+analysis but it would be good to quickly at least skim through commits
+and see if they make sense (or ask if unsure) :) 
 
+And I'm fine with compile testing if it is mentioned in the commit msg.
 
---vnrsl2qlacbfh23t
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> julia
 
-Hi all,
-
-in Debian a FTBFS was discovered in building alsa-tools:
-
-| arm-linux-gnueabi-g++ -DPACKAGE_NAME=3D\"hdspmixer\" -DPACKAGE_TARNAME=3D=
-\"hdspmixer\" -DPACKAGE_VERSION=3D\"1.11\" -DPACKAGE_STRING=3D\"hdspmixer\ =
-1.11\" -DPACKAGE_BUGREPORT=3D\"\" -DPACKAGE_URL=3D\"\" -DPACKAGE=3D\"hdspmi=
-xer\" -DVERSION=3D\"1.11\" -DSTDC_HEADERS=3D1 -DHAVE_LIBASOUND=3D1 -I.   -W=
-date-time -D_FORTIFY_SOURCE=3D2  -g -O2 -fdebug-prefix-map=3D/<<PKGBUILDDIR=
->>=3D. -fstack-protector-strong -Wformat -Werror=3Dformat-security   -I/usr=
-/include/freetype2   -D_THREAD_SAFE -D_REENTRANT -fno-exceptions -MT channe=
-lmap.o -MD -MP -MF .deps/channelmap.Tpo -c -o channelmap.o channelmap.cxx
-| channelmap.cxx:59:1: error: narrowing conversion of '-1' from 'int' to 'c=
-har' inside { } [-Wnarrowing]
-|  };
-|  ^
-
-More Details can be found at:
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D837590
-
-Could this be fixed for next release?
-
-Thanks in advance
-Elimar
---=20
-  Experience is something you don't get until
-  just after you need it!
-
---vnrsl2qlacbfh23t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Comment: I welcome encrypted mail.
-
-iQIcBAEBCAAGBQJX1t0+AAoJED2rN0233PG7XHAQAIpwYaAmgbrEtBTJxp/GKu1z
-Q1WPB5upLX8KzUupL59sjXyMYlL8wpawACZd8CXDuQB9znMBk+wHWwZaH/VEp4to
-g4nRgRtDFCI070M1VNaW4pYToYp9Iow0y7fjWSj/d2fPkvN/leWj5c90K59dOO+d
-fyA7ivyMvkEU7IW3kpEXDRwTAEbfd/jXPrRUHZhVKuWnFbuRowXo6tLMhPa+8hfl
-NCArUFrfVxu6ucj3PdfOpKJchpubBVUhm3lKyLELdjW3ndRU62ofk7ux8htNNycV
-IFhZRPHd/WgQSx+E1akoGGtAILZ2hECOOuS8LMCSxuLp7JbpxX4Z22Ti3nECgwOV
-gK0/kU/UumrvmD/aePMAGxXqyGUHD7QUHN4MbY/hy5FvSWqVWzlxKNLezEFTmtLR
-1Njx0ZcNLHABHCKiogJKTB0gSPiP/f5sIknThLDC2WeclVgcvdLlW4RLuFLdkN3P
-C7MGb4mqRH5xdiUSEM3p8YaYk9QBbUirjl6lfwa4/8WiGDsGJXfDa6I3D09J53rL
-EG9e1pVODscETLSkwODG5YhxaULeOaNLKk0rKjcBab156ynbSdng7C+M2R3BuKMu
-1Ay2Vcqx/jX8S7kqBmwipDRAKREUkZKmoX3HO7b2zLUvZ9sSAVuo6/Rh+zSLrrsE
-HEfc9eKDTDhxbP+H9prt
-=Ql2/
------END PGP SIGNATURE-----
-
---vnrsl2qlacbfh23t--
-
---===============8101866784569746749==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8101866784569746749==--
+/Jarkko
