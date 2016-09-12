@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: i2s: restore register during runtime_suspend/resume cycle" to the asoc tree
-Date: Mon, 12 Sep 2016 20:06:57 +0100
-Message-ID: <E1bjWZF-0002YT-2V@debutante>
-References: <1473229653-53789-1-git-send-email-sugar.zhang@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1473229653-53789-1-git-send-email-sugar.zhang@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc: Mark Brown <broonie@kernel.org>, dianders@chromium.orgbroonie@kernel.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: rt5514: make the volume TLV to match
+	the units 0.01dB" to the asoc tree
+Date: Mon, 12 Sep 2016 20:07:00 +0100
+Message-ID: <E1bjWZI-0002Zb-62@debutante>
+References: <1473217669-29972-1-git-send-email-oder_chiou@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 368A7266948
+ for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2016 21:07:09 +0200 (CEST)
+In-Reply-To: <1473217669-29972-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, shumingf@realtek.com, broonie@kernel.org, woojoo.lee@samsung.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: i2s: restore register during runtime_suspend/resume cycle
+   ASoC: rt5514: make the volume TLV to match the units 0.01dB
 
 has been applied to the asoc tree at
 
@@ -37,48 +53,61 @@ to this mail.
 Thanks,
 Mark
 
->From f0447f6cbb202e1be8244d15aee390a96d65e490 Mon Sep 17 00:00:00 2001
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Date: Wed, 7 Sep 2016 14:27:33 +0800
-Subject: [PATCH] ASoC: rockchip: i2s: restore register during
- runtime_suspend/resume cycle
+>From a1338a7d4cd401bb71f4562d6896aa2b74eeb1fb Mon Sep 17 00:00:00 2001
+From: Oder Chiou <oder_chiou@realtek.com>
+Date: Wed, 7 Sep 2016 11:07:49 +0800
+Subject: [PATCH] ASoC: rt5514: make the volume TLV to match the units 0.01dB
 
-when step into runtime_suspend, i2s pd will be disabled and loss state.
-so need to restore register when runtime_resume.
+The volume have a step of 0.375dB, but TLV uses the units 0.01dB. It should
+be changed to a step of 0.75dB to match the units of TLV.
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5514.c | 6 +++---
+ sound/soc/codecs/rt5514.h | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 652e8c5ea166..974915cb4c4f 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -57,6 +57,7 @@ static int i2s_runtime_suspend(struct device *dev)
- {
- 	struct rk_i2s_dev *i2s = dev_get_drvdata(dev);
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 7162f05101d9..bad41ae40c6d 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -278,7 +278,7 @@ static const DECLARE_TLV_DB_RANGE(bst_tlv,
+ 	8, 8, TLV_DB_SCALE_ITEM(1700, 0, 0)
+ );
  
-+	regcache_cache_only(i2s->regmap, true);
- 	clk_disable_unprepare(i2s->mclk);
+-static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
++static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -1725, 75, 0);
  
- 	return 0;
-@@ -73,7 +74,14 @@ static int i2s_runtime_resume(struct device *dev)
- 		return ret;
- 	}
+ static int rt5514_dsp_voice_wake_up_get(struct snd_kcontrol *kcontrol,
+ 		struct snd_ctl_elem_value *ucontrol)
+@@ -352,10 +352,10 @@ static const struct snd_kcontrol_new rt5514_snd_controls[] = {
+ 	SOC_DOUBLE_TLV("MIC Boost Volume", RT5514_ANA_CTRL_MICBST,
+ 		RT5514_SEL_BSTL_SFT, RT5514_SEL_BSTR_SFT, 8, 0, bst_tlv),
+ 	SOC_DOUBLE_R_TLV("ADC1 Capture Volume", RT5514_DOWNFILTER0_CTRL1,
+-		RT5514_DOWNFILTER0_CTRL2, RT5514_AD_GAIN_SFT, 127, 0,
++		RT5514_DOWNFILTER0_CTRL2, RT5514_AD_GAIN_SFT, 63, 0,
+ 		adc_vol_tlv),
+ 	SOC_DOUBLE_R_TLV("ADC2 Capture Volume", RT5514_DOWNFILTER1_CTRL1,
+-		RT5514_DOWNFILTER1_CTRL2, RT5514_AD_GAIN_SFT, 127, 0,
++		RT5514_DOWNFILTER1_CTRL2, RT5514_AD_GAIN_SFT, 63, 0,
+ 		adc_vol_tlv),
+ 	SOC_SINGLE_EXT("DSP Voice Wake Up", SND_SOC_NOPM, 0, 1, 0,
+ 		rt5514_dsp_voice_wake_up_get, rt5514_dsp_voice_wake_up_put),
+diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
+index 68883c68e999..229de0e2c88c 100644
+--- a/sound/soc/codecs/rt5514.h
++++ b/sound/soc/codecs/rt5514.h
+@@ -196,8 +196,8 @@
+ #define RT5514_AD_AD_MIX_BIT			10
+ #define RT5514_AD_AD_MUTE			(0x1 << 7)
+ #define RT5514_AD_AD_MUTE_BIT			7
+-#define RT5514_AD_GAIN_MASK			(0x7f << 0)
+-#define RT5514_AD_GAIN_SFT			0
++#define RT5514_AD_GAIN_MASK			(0x3f << 1)
++#define RT5514_AD_GAIN_SFT			1
  
--	return 0;
-+	regcache_cache_only(i2s->regmap, false);
-+	regcache_mark_dirty(i2s->regmap);
-+
-+	ret = regcache_sync(i2s->regmap);
-+	if (ret)
-+		clk_disable_unprepare(i2s->mclk);
-+
-+	return ret;
- }
- 
- static inline struct rk_i2s_dev *to_info(struct snd_soc_dai *dai)
+ /*  RT5514_ANA_CTRL_MICBST (0x2220) */
+ #define RT5514_SEL_BSTL_MASK			(0xf << 4)
 -- 
 2.8.1
