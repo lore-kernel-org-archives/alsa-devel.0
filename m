@@ -1,755 +1,1310 @@
-From: infernix <infernix@infernix.net>
-Subject: No speaker output on Skylake SoC
-Date: Mon, 12 Sep 2016 00:00:51 +0200
-Message-ID: <57D5D413.9000909@infernix.net>
-Content-Type: multipart/mixed; boundary="------------010501000800050408090805"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dx.infernix.net (dx.infernix.net [109.71.48.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 259D5265A82
- for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2016 00:00:51 +0200 (CEST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
- by dx.infernix.net (Postfix) with ESMTPSA id 32515AC4E0
- for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2016 00:00:51 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH] treewide: remove redundant #include <linux/kconfig.h>
+Date: Mon, 12 Sep 2016 13:56:04 +0900
+Message-ID: <1473656164-11929-1-git-send-email-yamada.masahiro@socionext.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org
+To: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Marek Lindner <mareklindner@neomailbox.ch>, Liam Girdwood <lgirdwood@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Linus Walleij <linus.walleij@linaro.org>, Trond Myklebust <trond.myklebust@primarydata.com>, Antonio Quartulli <a@unstable.cc>, Jaroslav Kysela <perex@perex.cz>, "J. Bruce Fields" <bfields@fieldses.org>, Masahiro Yamada <yamada.masahiro@socionext.com>, linux-mtd@lists.infradead.org, Hans Verkuil <hverkuil@xs4all.nl>, Michael Buesch <m@bues.ch>, Jeff Layton <jlayton@poochiereds.net>, Olli Salonen <olli.salonen@iki.fi>, Alexandre Courbot <gnurou@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, Sergey Kozlov <serjk@netup.ru>, Mathias Nyman <mathias.nyman@intel.com>, Patrick Boettcher <patrick.boettcher@posteo.de>, Kevin Cernekee <cernekee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------010501000800050408090805
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Kernel source files need not include <linux/kconfig.h> explicitly
+because the top Makefile forces to include it with:
 
-Hi,
+  -include $(srctree)/include/linux/kconfig.h
 
-On a Skylake based Samsung Tabpro S tablet I am having two alsa issues 
-on 4.7.0 and 4.8.0-rc5:
+This commit removes explicit includes except the following:
 
-- no output on speaker with any possible configuration, but audio over 
-headphone jack works
-- playback speed/pitch is doubled (audible over headphones)
+  * arch/s390/include/asm/facilities_src.h
+  * tools/testing/radix-tree/linux/kernel.h
 
-Sound works fine in Windows obviously, but rebooting from Windows to 
-Linux (as opposed to cold boot) doesn't seem to have any influence on 
-these issues.
+These two are used for host programs.
 
-I've tried modprobing with all the various ALC model quirks to no avail. 
-I've tried toggling various options with amixer (Auto Mute, various 
-speaker related values with amixer cset) and even played with 
-hda-analyzer.py but was unable to get anything from the speakers whatsoever.
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-Since this is Sunrise Point-LP HD Audio, I realize it's fairly new and 
-there may be new quirks required to make this work. I've attached 
-alsa-info.txt; I'm happy to patch and test if someone can give me some 
-direction on what to try, but any help would be much appreciated.
-
-Thanks.
+I thought including <asm/facilities_src.h> from a host tool
+is weird.  I am planning to fix it later.
 
 
+ arch/arm/include/asm/trusted_foundations.h       | 1 -
+ arch/arm64/include/asm/alternative.h             | 1 -
+ arch/mips/include/asm/mach-loongson64/loongson.h | 1 -
+ arch/mips/math-emu/cp1emu.c                      | 1 -
+ arch/mips/net/bpf_jit.c                          | 1 -
+ drivers/char/virtio_console.c                    | 1 -
+ drivers/input/rmi4/rmi_bus.c                     | 1 -
+ drivers/input/rmi4/rmi_driver.c                  | 1 -
+ drivers/input/rmi4/rmi_f01.c                     | 1 -
+ drivers/input/rmi4/rmi_f11.c                     | 1 -
+ drivers/irqchip/irq-bcm6345-l1.c                 | 1 -
+ drivers/irqchip/irq-bcm7038-l1.c                 | 1 -
+ drivers/irqchip/irq-bcm7120-l2.c                 | 1 -
+ drivers/irqchip/irq-brcmstb-l2.c                 | 1 -
+ drivers/media/dvb-frontends/af9013.h             | 1 -
+ drivers/media/dvb-frontends/af9033.h             | 2 --
+ drivers/media/dvb-frontends/ascot2e.h            | 1 -
+ drivers/media/dvb-frontends/atbm8830.h           | 1 -
+ drivers/media/dvb-frontends/au8522.h             | 1 -
+ drivers/media/dvb-frontends/cx22702.h            | 1 -
+ drivers/media/dvb-frontends/cx24113.h            | 2 --
+ drivers/media/dvb-frontends/cx24116.h            | 1 -
+ drivers/media/dvb-frontends/cx24117.h            | 1 -
+ drivers/media/dvb-frontends/cx24120.h            | 1 -
+ drivers/media/dvb-frontends/cx24123.h            | 1 -
+ drivers/media/dvb-frontends/cxd2820r.h           | 1 -
+ drivers/media/dvb-frontends/cxd2841er.h          | 1 -
+ drivers/media/dvb-frontends/dib3000mc.h          | 2 --
+ drivers/media/dvb-frontends/dib7000m.h           | 2 --
+ drivers/media/dvb-frontends/dib7000p.h           | 2 --
+ drivers/media/dvb-frontends/drxd.h               | 1 -
+ drivers/media/dvb-frontends/drxk.h               | 1 -
+ drivers/media/dvb-frontends/ds3000.h             | 1 -
+ drivers/media/dvb-frontends/dvb_dummy_fe.h       | 1 -
+ drivers/media/dvb-frontends/ec100.h              | 1 -
+ drivers/media/dvb-frontends/hd29l2.h             | 1 -
+ drivers/media/dvb-frontends/helene.h             | 1 -
+ drivers/media/dvb-frontends/horus3a.h            | 1 -
+ drivers/media/dvb-frontends/ix2505v.h            | 1 -
+ drivers/media/dvb-frontends/lg2160.h             | 1 -
+ drivers/media/dvb-frontends/lgdt3305.h           | 1 -
+ drivers/media/dvb-frontends/lgs8gl5.h            | 1 -
+ drivers/media/dvb-frontends/lgs8gxx.h            | 1 -
+ drivers/media/dvb-frontends/lnbh24.h             | 2 --
+ drivers/media/dvb-frontends/lnbh25.h             | 1 -
+ drivers/media/dvb-frontends/lnbp21.h             | 2 --
+ drivers/media/dvb-frontends/lnbp22.h             | 2 --
+ drivers/media/dvb-frontends/m88rs2000.h          | 1 -
+ drivers/media/dvb-frontends/mb86a20s.h           | 1 -
+ drivers/media/dvb-frontends/s5h1409.h            | 1 -
+ drivers/media/dvb-frontends/s5h1411.h            | 1 -
+ drivers/media/dvb-frontends/s5h1432.h            | 1 -
+ drivers/media/dvb-frontends/s921.h               | 1 -
+ drivers/media/dvb-frontends/si21xx.h             | 1 -
+ drivers/media/dvb-frontends/sp2.h                | 1 -
+ drivers/media/dvb-frontends/stb6000.h            | 1 -
+ drivers/media/dvb-frontends/stv0288.h            | 1 -
+ drivers/media/dvb-frontends/stv0367.h            | 1 -
+ drivers/media/dvb-frontends/stv0900.h            | 1 -
+ drivers/media/dvb-frontends/stv6110.h            | 1 -
+ drivers/media/dvb-frontends/tda10048.h           | 1 -
+ drivers/media/dvb-frontends/tda18271c2dd.h       | 2 --
+ drivers/media/dvb-frontends/ts2020.h             | 1 -
+ drivers/media/dvb-frontends/zl10036.h            | 1 -
+ drivers/media/dvb-frontends/zl10039.h            | 2 --
+ drivers/media/pci/cx23885/altera-ci.h            | 2 --
+ drivers/media/tuners/fc0011.h                    | 1 -
+ drivers/media/tuners/fc0012.h                    | 1 -
+ drivers/media/tuners/fc0013.h                    | 1 -
+ drivers/media/tuners/max2165.h                   | 2 --
+ drivers/media/tuners/mc44s803.h                  | 2 --
+ drivers/media/tuners/mxl5005s.h                  | 2 --
+ drivers/media/tuners/r820t.h                     | 1 -
+ drivers/media/tuners/si2157.h                    | 1 -
+ drivers/media/tuners/tda18212.h                  | 1 -
+ drivers/media/tuners/tda18218.h                  | 1 -
+ drivers/media/tuners/xc5000.h                    | 1 -
+ drivers/media/usb/dvb-usb-v2/mxl111sf-demod.h    | 1 -
+ drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.h    | 1 -
+ drivers/media/usb/dvb-usb/dibusb-common.c        | 1 -
+ drivers/media/usb/hdpvr/hdpvr-video.c            | 1 -
+ drivers/mtd/mtdcore.c                            | 1 -
+ drivers/mtd/mtdpart.c                            | 1 -
+ drivers/net/dsa/b53/b53_mmap.c                   | 1 -
+ drivers/net/ethernet/sun/ldmvsw.c                | 1 -
+ drivers/net/ethernet/wiznet/w5100.c              | 1 -
+ drivers/net/ethernet/wiznet/w5300.c              | 1 -
+ drivers/usb/early/ehci-dbgp.c                    | 1 -
+ drivers/usb/gadget/udc/bcm63xx_udc.c             | 1 -
+ drivers/usb/host/pci-quirks.c                    | 1 -
+ fs/lockd/procfs.h                                | 2 --
+ include/linux/export.h                           | 1 -
+ include/linux/gpio/driver.h                      | 1 -
+ net/batman-adv/debugfs.h                         | 2 --
+ sound/soc/intel/common/sst-acpi.h                | 1 -
+ tools/testing/nvdimm/config_check.c              | 1 -
+ 96 files changed, 112 deletions(-)
+
+diff --git a/arch/arm/include/asm/trusted_foundations.h b/arch/arm/include/asm/trusted_foundations.h
+index 624e1d4..0074835 100644
+--- a/arch/arm/include/asm/trusted_foundations.h
++++ b/arch/arm/include/asm/trusted_foundations.h
+@@ -26,7 +26,6 @@
+ #ifndef __ASM_ARM_TRUSTED_FOUNDATIONS_H
+ #define __ASM_ARM_TRUSTED_FOUNDATIONS_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/printk.h>
+ #include <linux/bug.h>
+ #include <linux/of.h>
+diff --git a/arch/arm64/include/asm/alternative.h b/arch/arm64/include/asm/alternative.h
+index 8746ff6..e998a1f 100644
+--- a/arch/arm64/include/asm/alternative.h
++++ b/arch/arm64/include/asm/alternative.h
+@@ -6,7 +6,6 @@
+ #ifndef __ASSEMBLY__
+ 
+ #include <linux/init.h>
+-#include <linux/kconfig.h>
+ #include <linux/types.h>
+ #include <linux/stddef.h>
+ #include <linux/stringify.h>
+diff --git a/arch/mips/include/asm/mach-loongson64/loongson.h b/arch/mips/include/asm/mach-loongson64/loongson.h
+index d1ff774..c68c0cc 100644
+--- a/arch/mips/include/asm/mach-loongson64/loongson.h
++++ b/arch/mips/include/asm/mach-loongson64/loongson.h
+@@ -14,7 +14,6 @@
+ #include <linux/io.h>
+ #include <linux/init.h>
+ #include <linux/irq.h>
+-#include <linux/kconfig.h>
+ #include <boot_param.h>
+ 
+ /* loongson internal northbridge initialization */
+diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
+index 36775d2..f8b7bf8 100644
+--- a/arch/mips/math-emu/cp1emu.c
++++ b/arch/mips/math-emu/cp1emu.c
+@@ -35,7 +35,6 @@
+  */
+ #include <linux/sched.h>
+ #include <linux/debugfs.h>
+-#include <linux/kconfig.h>
+ #include <linux/percpu-defs.h>
+ #include <linux/perf_event.h>
+ 
+diff --git a/arch/mips/net/bpf_jit.c b/arch/mips/net/bpf_jit.c
+index 39e7b47..49a2e22 100644
+--- a/arch/mips/net/bpf_jit.c
++++ b/arch/mips/net/bpf_jit.c
+@@ -14,7 +14,6 @@
+ #include <linux/errno.h>
+ #include <linux/filter.h>
+ #include <linux/if_vlan.h>
+-#include <linux/kconfig.h>
+ #include <linux/moduleloader.h>
+ #include <linux/netdevice.h>
+ #include <linux/string.h>
+diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+index 5da47e26..65a6e04 100644
+--- a/drivers/char/virtio_console.c
++++ b/drivers/char/virtio_console.c
+@@ -38,7 +38,6 @@
+ #include <linux/workqueue.h>
+ #include <linux/module.h>
+ #include <linux/dma-mapping.h>
+-#include <linux/kconfig.h>
+ #include "../tty/hvc/hvc_console.h"
+ 
+ #define is_rproc_enabled IS_ENABLED(CONFIG_REMOTEPROC)
+diff --git a/drivers/input/rmi4/rmi_bus.c b/drivers/input/rmi4/rmi_bus.c
+index a735806..e0b5a45 100644
+--- a/drivers/input/rmi4/rmi_bus.c
++++ b/drivers/input/rmi4/rmi_bus.c
+@@ -9,7 +9,6 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/device.h>
+-#include <linux/kconfig.h>
+ #include <linux/list.h>
+ #include <linux/pm.h>
+ #include <linux/rmi.h>
+diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
+index c83bce8..4a88312 100644
+--- a/drivers/input/rmi4/rmi_driver.c
++++ b/drivers/input/rmi4/rmi_driver.c
+@@ -17,7 +17,6 @@
+ #include <linux/bitmap.h>
+ #include <linux/delay.h>
+ #include <linux/fs.h>
+-#include <linux/kconfig.h>
+ #include <linux/pm.h>
+ #include <linux/slab.h>
+ #include <linux/of.h>
+diff --git a/drivers/input/rmi4/rmi_f01.c b/drivers/input/rmi4/rmi_f01.c
+index fac81fc..b5d2dfc 100644
+--- a/drivers/input/rmi4/rmi_f01.c
++++ b/drivers/input/rmi4/rmi_f01.c
+@@ -8,7 +8,6 @@
+  */
+ 
+ #include <linux/kernel.h>
+-#include <linux/kconfig.h>
+ #include <linux/rmi.h>
+ #include <linux/slab.h>
+ #include <linux/uaccess.h>
+diff --git a/drivers/input/rmi4/rmi_f11.c b/drivers/input/rmi4/rmi_f11.c
+index 20c7134..f798f42 100644
+--- a/drivers/input/rmi4/rmi_f11.c
++++ b/drivers/input/rmi4/rmi_f11.c
+@@ -12,7 +12,6 @@
+ #include <linux/device.h>
+ #include <linux/input.h>
+ #include <linux/input/mt.h>
+-#include <linux/kconfig.h>
+ #include <linux/rmi.h>
+ #include <linux/slab.h>
+ #include <linux/of.h>
+diff --git a/drivers/irqchip/irq-bcm6345-l1.c b/drivers/irqchip/irq-bcm6345-l1.c
+index b844c89..daa4ae8 100644
+--- a/drivers/irqchip/irq-bcm6345-l1.c
++++ b/drivers/irqchip/irq-bcm6345-l1.c
+@@ -52,7 +52,6 @@
+ 
+ #include <linux/bitops.h>
+ #include <linux/cpumask.h>
+-#include <linux/kconfig.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+diff --git a/drivers/irqchip/irq-bcm7038-l1.c b/drivers/irqchip/irq-bcm7038-l1.c
+index 0fea985..353c549 100644
+--- a/drivers/irqchip/irq-bcm7038-l1.c
++++ b/drivers/irqchip/irq-bcm7038-l1.c
+@@ -12,7 +12,6 @@
+ #define pr_fmt(fmt)	KBUILD_MODNAME	": " fmt
+ 
+ #include <linux/bitops.h>
+-#include <linux/kconfig.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+diff --git a/drivers/irqchip/irq-bcm7120-l2.c b/drivers/irqchip/irq-bcm7120-l2.c
+index 0ec9263..64c2692 100644
+--- a/drivers/irqchip/irq-bcm7120-l2.c
++++ b/drivers/irqchip/irq-bcm7120-l2.c
+@@ -13,7 +13,6 @@
+ #include <linux/init.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+-#include <linux/kconfig.h>
+ #include <linux/kernel.h>
+ #include <linux/platform_device.h>
+ #include <linux/of.h>
+diff --git a/drivers/irqchip/irq-brcmstb-l2.c b/drivers/irqchip/irq-brcmstb-l2.c
+index 1d4a5b4..bddf169 100644
+--- a/drivers/irqchip/irq-brcmstb-l2.c
++++ b/drivers/irqchip/irq-brcmstb-l2.c
+@@ -18,7 +18,6 @@
+ #include <linux/init.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+-#include <linux/kconfig.h>
+ #include <linux/platform_device.h>
+ #include <linux/spinlock.h>
+ #include <linux/of.h>
+diff --git a/drivers/media/dvb-frontends/af9013.h b/drivers/media/dvb-frontends/af9013.h
+index 1dcc936..dcdd163 100644
+--- a/drivers/media/dvb-frontends/af9013.h
++++ b/drivers/media/dvb-frontends/af9013.h
+@@ -25,7 +25,6 @@
+ #ifndef AF9013_H
+ #define AF9013_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ /* AF9013/5 GPIOs (mostly guessed)
+diff --git a/drivers/media/dvb-frontends/af9033.h b/drivers/media/dvb-frontends/af9033.h
+index 6ad22b6..5b83e4f 100644
+--- a/drivers/media/dvb-frontends/af9033.h
++++ b/drivers/media/dvb-frontends/af9033.h
+@@ -22,8 +22,6 @@
+ #ifndef AF9033_H
+ #define AF9033_H
+ 
+-#include <linux/kconfig.h>
+-
+ /*
+  * I2C address (TODO: are these in 8-bit format?)
+  * 0x38, 0x3a, 0x3c, 0x3e
+diff --git a/drivers/media/dvb-frontends/ascot2e.h b/drivers/media/dvb-frontends/ascot2e.h
+index 6da4ae6..dc61bf7 100644
+--- a/drivers/media/dvb-frontends/ascot2e.h
++++ b/drivers/media/dvb-frontends/ascot2e.h
+@@ -22,7 +22,6 @@
+ #ifndef __DVB_ASCOT2E_H__
+ #define __DVB_ASCOT2E_H__
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ #include <linux/i2c.h>
+ 
+diff --git a/drivers/media/dvb-frontends/atbm8830.h b/drivers/media/dvb-frontends/atbm8830.h
+index 5446d13..bb86238 100644
+--- a/drivers/media/dvb-frontends/atbm8830.h
++++ b/drivers/media/dvb-frontends/atbm8830.h
+@@ -22,7 +22,6 @@
+ #ifndef __ATBM8830_H__
+ #define __ATBM8830_H__
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ #include <linux/i2c.h>
+ 
+diff --git a/drivers/media/dvb-frontends/au8522.h b/drivers/media/dvb-frontends/au8522.h
+index 78bf3f7..21c51a4 100644
+--- a/drivers/media/dvb-frontends/au8522.h
++++ b/drivers/media/dvb-frontends/au8522.h
+@@ -22,7 +22,6 @@
+ #ifndef __AU8522_H__
+ #define __AU8522_H__
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ enum au8522_if_freq {
+diff --git a/drivers/media/dvb-frontends/cx22702.h b/drivers/media/dvb-frontends/cx22702.h
+index 68b69a7..a1956a9 100644
+--- a/drivers/media/dvb-frontends/cx22702.h
++++ b/drivers/media/dvb-frontends/cx22702.h
+@@ -28,7 +28,6 @@
+ #ifndef CX22702_H
+ #define CX22702_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ struct cx22702_config {
+diff --git a/drivers/media/dvb-frontends/cx24113.h b/drivers/media/dvb-frontends/cx24113.h
+index 962919b..194c703 100644
+--- a/drivers/media/dvb-frontends/cx24113.h
++++ b/drivers/media/dvb-frontends/cx24113.h
+@@ -22,8 +22,6 @@
+ #ifndef CX24113_H
+ #define CX24113_H
+ 
+-#include <linux/kconfig.h>
+-
+ struct dvb_frontend;
+ 
+ struct cx24113_config {
+diff --git a/drivers/media/dvb-frontends/cx24116.h b/drivers/media/dvb-frontends/cx24116.h
+index f6dbabc..9ff8df8d 100644
+--- a/drivers/media/dvb-frontends/cx24116.h
++++ b/drivers/media/dvb-frontends/cx24116.h
+@@ -21,7 +21,6 @@
+ #ifndef CX24116_H
+ #define CX24116_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ struct cx24116_config {
+diff --git a/drivers/media/dvb-frontends/cx24117.h b/drivers/media/dvb-frontends/cx24117.h
+index 1648ab4..445f13f 100644
+--- a/drivers/media/dvb-frontends/cx24117.h
++++ b/drivers/media/dvb-frontends/cx24117.h
+@@ -22,7 +22,6 @@
+ #ifndef CX24117_H
+ #define CX24117_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ struct cx24117_config {
+diff --git a/drivers/media/dvb-frontends/cx24120.h b/drivers/media/dvb-frontends/cx24120.h
+index f097042..de4ca9a 100644
+--- a/drivers/media/dvb-frontends/cx24120.h
++++ b/drivers/media/dvb-frontends/cx24120.h
+@@ -20,7 +20,6 @@
+ #ifndef CX24120_H
+ #define CX24120_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ #include <linux/firmware.h>
+ 
+diff --git a/drivers/media/dvb-frontends/cx24123.h b/drivers/media/dvb-frontends/cx24123.h
+index 975f3c9..aac2344 100644
+--- a/drivers/media/dvb-frontends/cx24123.h
++++ b/drivers/media/dvb-frontends/cx24123.h
+@@ -21,7 +21,6 @@
+ #ifndef CX24123_H
+ #define CX24123_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ struct cx24123_config {
+diff --git a/drivers/media/dvb-frontends/cxd2820r.h b/drivers/media/dvb-frontends/cxd2820r.h
+index 56d4276..297a71a 100644
+--- a/drivers/media/dvb-frontends/cxd2820r.h
++++ b/drivers/media/dvb-frontends/cxd2820r.h
+@@ -22,7 +22,6 @@
+ #ifndef CXD2820R_H
+ #define CXD2820R_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ #define CXD2820R_GPIO_D (0 << 0) /* disable */
+diff --git a/drivers/media/dvb-frontends/cxd2841er.h b/drivers/media/dvb-frontends/cxd2841er.h
+index 62ad5f0..7f1acfb 100644
+--- a/drivers/media/dvb-frontends/cxd2841er.h
++++ b/drivers/media/dvb-frontends/cxd2841er.h
+@@ -22,7 +22,6 @@
+ #ifndef CXD2841ER_H
+ #define CXD2841ER_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ enum cxd2841er_xtal {
+diff --git a/drivers/media/dvb-frontends/dib3000mc.h b/drivers/media/dvb-frontends/dib3000mc.h
+index b37e69e..67a6d50 100644
+--- a/drivers/media/dvb-frontends/dib3000mc.h
++++ b/drivers/media/dvb-frontends/dib3000mc.h
+@@ -13,8 +13,6 @@
+ #ifndef DIB3000MC_H
+ #define DIB3000MC_H
+ 
+-#include <linux/kconfig.h>
+-
+ #include "dibx000_common.h"
+ 
+ struct dib3000mc_config {
+diff --git a/drivers/media/dvb-frontends/dib7000m.h b/drivers/media/dvb-frontends/dib7000m.h
+index 6468c27..8f84dfa 100644
+--- a/drivers/media/dvb-frontends/dib7000m.h
++++ b/drivers/media/dvb-frontends/dib7000m.h
+@@ -1,8 +1,6 @@
+ #ifndef DIB7000M_H
+ #define DIB7000M_H
+ 
+-#include <linux/kconfig.h>
+-
+ #include "dibx000_common.h"
+ 
+ struct dib7000m_config {
+diff --git a/drivers/media/dvb-frontends/dib7000p.h b/drivers/media/dvb-frontends/dib7000p.h
+index baa2789..205fbbf 100644
+--- a/drivers/media/dvb-frontends/dib7000p.h
++++ b/drivers/media/dvb-frontends/dib7000p.h
+@@ -1,8 +1,6 @@
+ #ifndef DIB7000P_H
+ #define DIB7000P_H
+ 
+-#include <linux/kconfig.h>
+-
+ #include "dibx000_common.h"
+ 
+ struct dib7000p_config {
+diff --git a/drivers/media/dvb-frontends/drxd.h b/drivers/media/dvb-frontends/drxd.h
+index a47c22d..f0507cd 100644
+--- a/drivers/media/dvb-frontends/drxd.h
++++ b/drivers/media/dvb-frontends/drxd.h
+@@ -24,7 +24,6 @@
+ #ifndef _DRXD_H_
+ #define _DRXD_H_
+ 
+-#include <linux/kconfig.h>
+ #include <linux/types.h>
+ #include <linux/i2c.h>
+ 
+diff --git a/drivers/media/dvb-frontends/drxk.h b/drivers/media/dvb-frontends/drxk.h
+index 8f0b9ee..a629897 100644
+--- a/drivers/media/dvb-frontends/drxk.h
++++ b/drivers/media/dvb-frontends/drxk.h
+@@ -1,7 +1,6 @@
+ #ifndef _DRXK_H_
+ #define _DRXK_H_
+ 
+-#include <linux/kconfig.h>
+ #include <linux/types.h>
+ #include <linux/i2c.h>
+ 
+diff --git a/drivers/media/dvb-frontends/ds3000.h b/drivers/media/dvb-frontends/ds3000.h
+index 153169d..82e8c25 100644
+--- a/drivers/media/dvb-frontends/ds3000.h
++++ b/drivers/media/dvb-frontends/ds3000.h
+@@ -22,7 +22,6 @@
+ #ifndef DS3000_H
+ #define DS3000_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ struct ds3000_config {
+diff --git a/drivers/media/dvb-frontends/dvb_dummy_fe.h b/drivers/media/dvb-frontends/dvb_dummy_fe.h
+index 15e4cea..50f1af5 100644
+--- a/drivers/media/dvb-frontends/dvb_dummy_fe.h
++++ b/drivers/media/dvb-frontends/dvb_dummy_fe.h
+@@ -22,7 +22,6 @@
+ #ifndef DVB_DUMMY_FE_H
+ #define DVB_DUMMY_FE_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/dvb-frontends/ec100.h b/drivers/media/dvb-frontends/ec100.h
+index 9544bab..e894bdc 100644
+--- a/drivers/media/dvb-frontends/ec100.h
++++ b/drivers/media/dvb-frontends/ec100.h
+@@ -22,7 +22,6 @@
+ #ifndef EC100_H
+ #define EC100_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ struct ec100_config {
+diff --git a/drivers/media/dvb-frontends/hd29l2.h b/drivers/media/dvb-frontends/hd29l2.h
+index 48e9ab7..a14d6f3 100644
+--- a/drivers/media/dvb-frontends/hd29l2.h
++++ b/drivers/media/dvb-frontends/hd29l2.h
+@@ -23,7 +23,6 @@
+ #ifndef HD29L2_H
+ #define HD29L2_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ struct hd29l2_config {
+diff --git a/drivers/media/dvb-frontends/helene.h b/drivers/media/dvb-frontends/helene.h
+index e1b9224..3336154 100644
+--- a/drivers/media/dvb-frontends/helene.h
++++ b/drivers/media/dvb-frontends/helene.h
+@@ -21,7 +21,6 @@
+ #ifndef __DVB_HELENE_H__
+ #define __DVB_HELENE_H__
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ #include <linux/i2c.h>
+ 
+diff --git a/drivers/media/dvb-frontends/horus3a.h b/drivers/media/dvb-frontends/horus3a.h
+index c1e2d18..672a556 100644
+--- a/drivers/media/dvb-frontends/horus3a.h
++++ b/drivers/media/dvb-frontends/horus3a.h
+@@ -22,7 +22,6 @@
+ #ifndef __DVB_HORUS3A_H__
+ #define __DVB_HORUS3A_H__
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ #include <linux/i2c.h>
+ 
+diff --git a/drivers/media/dvb-frontends/ix2505v.h b/drivers/media/dvb-frontends/ix2505v.h
+index af107a2..5eab397 100644
+--- a/drivers/media/dvb-frontends/ix2505v.h
++++ b/drivers/media/dvb-frontends/ix2505v.h
+@@ -20,7 +20,6 @@
+ #ifndef DVB_IX2505V_H
+ #define DVB_IX2505V_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/i2c.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/dvb-frontends/lg2160.h b/drivers/media/dvb-frontends/lg2160.h
+index d20bd90..8c74ddc 100644
+--- a/drivers/media/dvb-frontends/lg2160.h
++++ b/drivers/media/dvb-frontends/lg2160.h
+@@ -22,7 +22,6 @@
+ #ifndef _LG2160_H_
+ #define _LG2160_H_
+ 
+-#include <linux/kconfig.h>
+ #include <linux/i2c.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/dvb-frontends/lgdt3305.h b/drivers/media/dvb-frontends/lgdt3305.h
+index f91a1b4..e7dceb6 100644
+--- a/drivers/media/dvb-frontends/lgdt3305.h
++++ b/drivers/media/dvb-frontends/lgdt3305.h
+@@ -22,7 +22,6 @@
+ #ifndef _LGDT3305_H_
+ #define _LGDT3305_H_
+ 
+-#include <linux/kconfig.h>
+ #include <linux/i2c.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/dvb-frontends/lgs8gl5.h b/drivers/media/dvb-frontends/lgs8gl5.h
+index a5b3faf..f36a7fd 100644
+--- a/drivers/media/dvb-frontends/lgs8gl5.h
++++ b/drivers/media/dvb-frontends/lgs8gl5.h
+@@ -23,7 +23,6 @@
+ #ifndef LGS8GL5_H
+ #define LGS8GL5_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ struct lgs8gl5_config {
+diff --git a/drivers/media/dvb-frontends/lgs8gxx.h b/drivers/media/dvb-frontends/lgs8gxx.h
+index 368c992..7519c02 100644
+--- a/drivers/media/dvb-frontends/lgs8gxx.h
++++ b/drivers/media/dvb-frontends/lgs8gxx.h
+@@ -26,7 +26,6 @@
+ #ifndef __LGS8GXX_H__
+ #define __LGS8GXX_H__
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ #include <linux/i2c.h>
+ 
+diff --git a/drivers/media/dvb-frontends/lnbh24.h b/drivers/media/dvb-frontends/lnbh24.h
+index a088b8e..24431df 100644
+--- a/drivers/media/dvb-frontends/lnbh24.h
++++ b/drivers/media/dvb-frontends/lnbh24.h
+@@ -23,8 +23,6 @@
+ #ifndef _LNBH24_H
+ #define _LNBH24_H
+ 
+-#include <linux/kconfig.h>
+-
+ /* system register bits */
+ #define LNBH24_OLF	0x01
+ #define LNBH24_OTF	0x02
+diff --git a/drivers/media/dvb-frontends/lnbh25.h b/drivers/media/dvb-frontends/lnbh25.h
+index 1f329ef..f13fd03 100644
+--- a/drivers/media/dvb-frontends/lnbh25.h
++++ b/drivers/media/dvb-frontends/lnbh25.h
+@@ -22,7 +22,6 @@
+ #define LNBH25_H
+ 
+ #include <linux/i2c.h>
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ /* 22 kHz tone enabled. Tone output controlled by DSQIN pin */
+diff --git a/drivers/media/dvb-frontends/lnbp21.h b/drivers/media/dvb-frontends/lnbp21.h
+index cd9101f..4bb6439 100644
+--- a/drivers/media/dvb-frontends/lnbp21.h
++++ b/drivers/media/dvb-frontends/lnbp21.h
+@@ -27,8 +27,6 @@
+ #ifndef _LNBP21_H
+ #define _LNBP21_H
+ 
+-#include <linux/kconfig.h>
+-
+ /* system register bits */
+ /* [RO] 0=OK; 1=over current limit flag */
+ #define LNBP21_OLF	0x01
+diff --git a/drivers/media/dvb-frontends/lnbp22.h b/drivers/media/dvb-frontends/lnbp22.h
+index 5d01d92..0cb7212 100644
+--- a/drivers/media/dvb-frontends/lnbp22.h
++++ b/drivers/media/dvb-frontends/lnbp22.h
+@@ -28,8 +28,6 @@
+ #ifndef _LNBP22_H
+ #define _LNBP22_H
+ 
+-#include <linux/kconfig.h>
+-
+ /* Enable */
+ #define LNBP22_EN	  0x10
+ /* Voltage selection */
+diff --git a/drivers/media/dvb-frontends/m88rs2000.h b/drivers/media/dvb-frontends/m88rs2000.h
+index de74301..1a313b0 100644
+--- a/drivers/media/dvb-frontends/m88rs2000.h
++++ b/drivers/media/dvb-frontends/m88rs2000.h
+@@ -20,7 +20,6 @@
+ #ifndef M88RS2000_H
+ #define M88RS2000_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/dvb-frontends/mb86a20s.h b/drivers/media/dvb-frontends/mb86a20s.h
+index a113282..dfb02db 100644
+--- a/drivers/media/dvb-frontends/mb86a20s.h
++++ b/drivers/media/dvb-frontends/mb86a20s.h
+@@ -16,7 +16,6 @@
+ #ifndef MB86A20S_H
+ #define MB86A20S_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ /**
+diff --git a/drivers/media/dvb-frontends/s5h1409.h b/drivers/media/dvb-frontends/s5h1409.h
+index f58b9ca..b38557c 100644
+--- a/drivers/media/dvb-frontends/s5h1409.h
++++ b/drivers/media/dvb-frontends/s5h1409.h
+@@ -22,7 +22,6 @@
+ #ifndef __S5H1409_H__
+ #define __S5H1409_H__
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ struct s5h1409_config {
+diff --git a/drivers/media/dvb-frontends/s5h1411.h b/drivers/media/dvb-frontends/s5h1411.h
+index f3a87f7..791bab0 100644
+--- a/drivers/media/dvb-frontends/s5h1411.h
++++ b/drivers/media/dvb-frontends/s5h1411.h
+@@ -22,7 +22,6 @@
+ #ifndef __S5H1411_H__
+ #define __S5H1411_H__
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ #define S5H1411_I2C_TOP_ADDR (0x32 >> 1)
+diff --git a/drivers/media/dvb-frontends/s5h1432.h b/drivers/media/dvb-frontends/s5h1432.h
+index f490c5e..b81c9bd 100644
+--- a/drivers/media/dvb-frontends/s5h1432.h
++++ b/drivers/media/dvb-frontends/s5h1432.h
+@@ -22,7 +22,6 @@
+ #ifndef __S5H1432_H__
+ #define __S5H1432_H__
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ #define S5H1432_I2C_TOP_ADDR (0x02 >> 1)
+diff --git a/drivers/media/dvb-frontends/s921.h b/drivers/media/dvb-frontends/s921.h
+index f5b722d..a47ed89 100644
+--- a/drivers/media/dvb-frontends/s921.h
++++ b/drivers/media/dvb-frontends/s921.h
+@@ -17,7 +17,6 @@
+ #ifndef S921_H
+ #define S921_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ struct s921_config {
+diff --git a/drivers/media/dvb-frontends/si21xx.h b/drivers/media/dvb-frontends/si21xx.h
+index ef5f351..b1be62f 100644
+--- a/drivers/media/dvb-frontends/si21xx.h
++++ b/drivers/media/dvb-frontends/si21xx.h
+@@ -1,7 +1,6 @@
+ #ifndef SI21XX_H
+ #define SI21XX_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/dvb-frontends/sp2.h b/drivers/media/dvb-frontends/sp2.h
+index 6cceea0..3901cd7 100644
+--- a/drivers/media/dvb-frontends/sp2.h
++++ b/drivers/media/dvb-frontends/sp2.h
+@@ -17,7 +17,6 @@
+ #ifndef SP2_H
+ #define SP2_H
+ 
+-#include <linux/kconfig.h>
+ #include "dvb_ca_en50221.h"
+ 
+ /*
+diff --git a/drivers/media/dvb-frontends/stb6000.h b/drivers/media/dvb-frontends/stb6000.h
+index da581b6..78e75df 100644
+--- a/drivers/media/dvb-frontends/stb6000.h
++++ b/drivers/media/dvb-frontends/stb6000.h
+@@ -23,7 +23,6 @@
+ #ifndef __DVB_STB6000_H__
+ #define __DVB_STB6000_H__
+ 
+-#include <linux/kconfig.h>
+ #include <linux/i2c.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/dvb-frontends/stv0288.h b/drivers/media/dvb-frontends/stv0288.h
+index b58603c..803acb9 100644
+--- a/drivers/media/dvb-frontends/stv0288.h
++++ b/drivers/media/dvb-frontends/stv0288.h
+@@ -27,7 +27,6 @@
+ #ifndef STV0288_H
+ #define STV0288_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/dvb-frontends/stv0367.h b/drivers/media/dvb-frontends/stv0367.h
+index 92b3e85..b88166a 100644
+--- a/drivers/media/dvb-frontends/stv0367.h
++++ b/drivers/media/dvb-frontends/stv0367.h
+@@ -26,7 +26,6 @@
+ #ifndef STV0367_H
+ #define STV0367_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/dvb-frontends/stv0900.h b/drivers/media/dvb-frontends/stv0900.h
+index c90bf00..9ca2da9 100644
+--- a/drivers/media/dvb-frontends/stv0900.h
++++ b/drivers/media/dvb-frontends/stv0900.h
+@@ -26,7 +26,6 @@
+ #ifndef STV0900_H
+ #define STV0900_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/dvb-frontends/stv6110.h b/drivers/media/dvb-frontends/stv6110.h
+index f3c8a5c..4604f79 100644
+--- a/drivers/media/dvb-frontends/stv6110.h
++++ b/drivers/media/dvb-frontends/stv6110.h
+@@ -25,7 +25,6 @@
+ #ifndef __DVB_STV6110_H__
+ #define __DVB_STV6110_H__
+ 
+-#include <linux/kconfig.h>
+ #include <linux/i2c.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/dvb-frontends/tda10048.h b/drivers/media/dvb-frontends/tda10048.h
+index bc77a73..a2cebb0 100644
+--- a/drivers/media/dvb-frontends/tda10048.h
++++ b/drivers/media/dvb-frontends/tda10048.h
+@@ -22,7 +22,6 @@
+ #ifndef TDA10048_H
+ #define TDA10048_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ #include <linux/firmware.h>
+ 
+diff --git a/drivers/media/dvb-frontends/tda18271c2dd.h b/drivers/media/dvb-frontends/tda18271c2dd.h
+index 7ebd8ea..e6ccf24 100644
+--- a/drivers/media/dvb-frontends/tda18271c2dd.h
++++ b/drivers/media/dvb-frontends/tda18271c2dd.h
+@@ -1,8 +1,6 @@
+ #ifndef _TDA18271C2DD_H_
+ #define _TDA18271C2DD_H_
+ 
+-#include <linux/kconfig.h>
+-
+ #if IS_REACHABLE(CONFIG_DVB_TDA18271C2DD)
+ struct dvb_frontend *tda18271c2dd_attach(struct dvb_frontend *fe,
+ 					 struct i2c_adapter *i2c, u8 adr);
+diff --git a/drivers/media/dvb-frontends/ts2020.h b/drivers/media/dvb-frontends/ts2020.h
+index 9220e5c..facc54f 100644
+--- a/drivers/media/dvb-frontends/ts2020.h
++++ b/drivers/media/dvb-frontends/ts2020.h
+@@ -22,7 +22,6 @@
+ #ifndef TS2020_H
+ #define TS2020_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/dvb/frontend.h>
+ 
+ struct ts2020_config {
+diff --git a/drivers/media/dvb-frontends/zl10036.h b/drivers/media/dvb-frontends/zl10036.h
+index 670e76a..c568d8d 100644
+--- a/drivers/media/dvb-frontends/zl10036.h
++++ b/drivers/media/dvb-frontends/zl10036.h
+@@ -21,7 +21,6 @@
+ #ifndef DVB_ZL10036_H
+ #define DVB_ZL10036_H
+ 
+-#include <linux/kconfig.h>
+ #include <linux/i2c.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/dvb-frontends/zl10039.h b/drivers/media/dvb-frontends/zl10039.h
+index 0709294..66e7085 100644
+--- a/drivers/media/dvb-frontends/zl10039.h
++++ b/drivers/media/dvb-frontends/zl10039.h
+@@ -22,8 +22,6 @@
+ #ifndef ZL10039_H
+ #define ZL10039_H
+ 
+-#include <linux/kconfig.h>
+-
+ #if IS_REACHABLE(CONFIG_DVB_ZL10039)
+ struct dvb_frontend *zl10039_attach(struct dvb_frontend *fe,
+ 					u8 i2c_addr,
+diff --git a/drivers/media/pci/cx23885/altera-ci.h b/drivers/media/pci/cx23885/altera-ci.h
+index 6c51172..57a40c8 100644
+--- a/drivers/media/pci/cx23885/altera-ci.h
++++ b/drivers/media/pci/cx23885/altera-ci.h
+@@ -20,8 +20,6 @@
+ #ifndef __ALTERA_CI_H
+ #define __ALTERA_CI_H
+ 
+-#include <linux/kconfig.h>
+-
+ #define ALT_DATA	0x000000ff
+ #define ALT_TDI		0x00008000
+ #define ALT_TDO		0x00004000
+diff --git a/drivers/media/tuners/fc0011.h b/drivers/media/tuners/fc0011.h
+index 81bb568..438cf89 100644
+--- a/drivers/media/tuners/fc0011.h
++++ b/drivers/media/tuners/fc0011.h
+@@ -1,7 +1,6 @@
+ #ifndef LINUX_FC0011_H_
+ #define LINUX_FC0011_H_
+ 
+-#include <linux/kconfig.h>
+ #include "dvb_frontend.h"
+ 
+ 
+diff --git a/drivers/media/tuners/fc0012.h b/drivers/media/tuners/fc0012.h
+index 9ad3285..4a23e41 100644
+--- a/drivers/media/tuners/fc0012.h
++++ b/drivers/media/tuners/fc0012.h
+@@ -21,7 +21,6 @@
+ #ifndef _FC0012_H_
+ #define _FC0012_H_
+ 
+-#include <linux/kconfig.h>
+ #include "dvb_frontend.h"
+ #include "fc001x-common.h"
+ 
+diff --git a/drivers/media/tuners/fc0013.h b/drivers/media/tuners/fc0013.h
+index e130bd7..8c34105 100644
+--- a/drivers/media/tuners/fc0013.h
++++ b/drivers/media/tuners/fc0013.h
+@@ -22,7 +22,6 @@
+ #ifndef _FC0013_H_
+ #define _FC0013_H_
+ 
+-#include <linux/kconfig.h>
+ #include "dvb_frontend.h"
+ #include "fc001x-common.h"
+ 
+diff --git a/drivers/media/tuners/max2165.h b/drivers/media/tuners/max2165.h
+index 5054f01..aadd9fe 100644
+--- a/drivers/media/tuners/max2165.h
++++ b/drivers/media/tuners/max2165.h
+@@ -22,8 +22,6 @@
+ #ifndef __MAX2165_H__
+ #define __MAX2165_H__
+ 
+-#include <linux/kconfig.h>
+-
+ struct dvb_frontend;
+ struct i2c_adapter;
+ 
+diff --git a/drivers/media/tuners/mc44s803.h b/drivers/media/tuners/mc44s803.h
+index b3e614b..6b40df3 100644
+--- a/drivers/media/tuners/mc44s803.h
++++ b/drivers/media/tuners/mc44s803.h
+@@ -22,8 +22,6 @@
+ #ifndef MC44S803_H
+ #define MC44S803_H
+ 
+-#include <linux/kconfig.h>
+-
+ struct dvb_frontend;
+ struct i2c_adapter;
+ 
+diff --git a/drivers/media/tuners/mxl5005s.h b/drivers/media/tuners/mxl5005s.h
+index 5764b12..d842734 100644
+--- a/drivers/media/tuners/mxl5005s.h
++++ b/drivers/media/tuners/mxl5005s.h
+@@ -23,8 +23,6 @@
+ #ifndef __MXL5005S_H
+ #define __MXL5005S_H
+ 
+-#include <linux/kconfig.h>
+-
+ #include <linux/i2c.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/tuners/r820t.h b/drivers/media/tuners/r820t.h
+index b1e5661..fdcab91 100644
+--- a/drivers/media/tuners/r820t.h
++++ b/drivers/media/tuners/r820t.h
+@@ -21,7 +21,6 @@
+ #ifndef R820T_H
+ #define R820T_H
+ 
+-#include <linux/kconfig.h>
+ #include "dvb_frontend.h"
+ 
+ enum r820t_chip {
+diff --git a/drivers/media/tuners/si2157.h b/drivers/media/tuners/si2157.h
+index 5f1a60b..76807f5 100644
+--- a/drivers/media/tuners/si2157.h
++++ b/drivers/media/tuners/si2157.h
+@@ -17,7 +17,6 @@
+ #ifndef SI2157_H
+ #define SI2157_H
+ 
+-#include <linux/kconfig.h>
+ #include <media/media-device.h>
+ #include "dvb_frontend.h"
+ 
+diff --git a/drivers/media/tuners/tda18212.h b/drivers/media/tuners/tda18212.h
+index e58c909..6391daf 100644
+--- a/drivers/media/tuners/tda18212.h
++++ b/drivers/media/tuners/tda18212.h
+@@ -21,7 +21,6 @@
+ #ifndef TDA18212_H
+ #define TDA18212_H
+ 
+-#include <linux/kconfig.h>
+ #include "dvb_frontend.h"
+ 
+ struct tda18212_config {
+diff --git a/drivers/media/tuners/tda18218.h b/drivers/media/tuners/tda18218.h
+index 1eacb4f..076b5f2 100644
+--- a/drivers/media/tuners/tda18218.h
++++ b/drivers/media/tuners/tda18218.h
+@@ -21,7 +21,6 @@
+ #ifndef TDA18218_H
+ #define TDA18218_H
+ 
+-#include <linux/kconfig.h>
+ #include "dvb_frontend.h"
+ 
+ struct tda18218_config {
+diff --git a/drivers/media/tuners/xc5000.h b/drivers/media/tuners/xc5000.h
+index 00ba29e..336bd49 100644
+--- a/drivers/media/tuners/xc5000.h
++++ b/drivers/media/tuners/xc5000.h
+@@ -22,7 +22,6 @@
+ #ifndef __XC5000_H__
+ #define __XC5000_H__
+ 
+-#include <linux/kconfig.h>
+ #include <linux/firmware.h>
+ 
+ struct dvb_frontend;
+diff --git a/drivers/media/usb/dvb-usb-v2/mxl111sf-demod.h b/drivers/media/usb/dvb-usb-v2/mxl111sf-demod.h
+index 7065aca..e6eae9d 100644
+--- a/drivers/media/usb/dvb-usb-v2/mxl111sf-demod.h
++++ b/drivers/media/usb/dvb-usb-v2/mxl111sf-demod.h
+@@ -21,7 +21,6 @@
+ #ifndef __MXL111SF_DEMOD_H__
+ #define __MXL111SF_DEMOD_H__
+ 
+-#include <linux/kconfig.h>
+ #include "dvb_frontend.h"
+ #include "mxl111sf.h"
+ 
+diff --git a/drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.h b/drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.h
+index 509b550..e96d9a4 100644
+--- a/drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.h
++++ b/drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.h
+@@ -21,7 +21,6 @@
+ #ifndef __MXL111SF_TUNER_H__
+ #define __MXL111SF_TUNER_H__
+ 
+-#include <linux/kconfig.h>
+ #include "dvb_frontend.h"
+ #include "mxl111sf.h"
+ 
+diff --git a/drivers/media/usb/dvb-usb/dibusb-common.c b/drivers/media/usb/dvb-usb/dibusb-common.c
+index 6eea4e6..9e94b17 100644
+--- a/drivers/media/usb/dvb-usb/dibusb-common.c
++++ b/drivers/media/usb/dvb-usb/dibusb-common.c
+@@ -9,7 +9,6 @@
+  * see Documentation/dvb/README.dvb-usb for more information
+  */
+ 
+-#include <linux/kconfig.h>
+ #include "dibusb.h"
+ 
+ /* Max transfer size done by I2C transfer functions */
+diff --git a/drivers/media/usb/hdpvr/hdpvr-video.c b/drivers/media/usb/hdpvr/hdpvr-video.c
+index 2a3a8b4..f3325b0 100644
+--- a/drivers/media/usb/hdpvr/hdpvr-video.c
++++ b/drivers/media/usb/hdpvr/hdpvr-video.c
+@@ -10,7 +10,6 @@
+  */
+ 
+ #include <linux/kernel.h>
+-#include <linux/kconfig.h>
+ #include <linux/errno.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index e3936b8..44da7b8 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -39,7 +39,6 @@
+ #include <linux/gfp.h>
+ #include <linux/slab.h>
+ #include <linux/reboot.h>
+-#include <linux/kconfig.h>
+ #include <linux/leds.h>
+ 
+ #include <linux/mtd/mtd.h>
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 1f13e32..3f6034c 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -30,7 +30,6 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/err.h>
+-#include <linux/kconfig.h>
+ 
+ #include "mtdcore.h"
+ 
+diff --git a/drivers/net/dsa/b53/b53_mmap.c b/drivers/net/dsa/b53/b53_mmap.c
+index 77ffc43..4432681 100644
+--- a/drivers/net/dsa/b53/b53_mmap.c
++++ b/drivers/net/dsa/b53/b53_mmap.c
+@@ -17,7 +17,6 @@
+  */
+ 
+ #include <linux/kernel.h>
+-#include <linux/kconfig.h>
+ #include <linux/module.h>
+ #include <linux/io.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/net/ethernet/sun/ldmvsw.c b/drivers/net/ethernet/sun/ldmvsw.c
+index e15bf84..0ac449a 100644
+--- a/drivers/net/ethernet/sun/ldmvsw.c
++++ b/drivers/net/ethernet/sun/ldmvsw.c
+@@ -11,7 +11,6 @@
+ #include <linux/highmem.h>
+ #include <linux/if_vlan.h>
+ #include <linux/init.h>
+-#include <linux/kconfig.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+diff --git a/drivers/net/ethernet/wiznet/w5100.c b/drivers/net/ethernet/wiznet/w5100.c
+index 37ab46c..d2349a1 100644
+--- a/drivers/net/ethernet/wiznet/w5100.c
++++ b/drivers/net/ethernet/wiznet/w5100.c
+@@ -9,7 +9,6 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/kconfig.h>
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/net/ethernet/wiznet/w5300.c b/drivers/net/ethernet/wiznet/w5300.c
+index 0b37ce9..ca31a57 100644
+--- a/drivers/net/ethernet/wiznet/w5300.c
++++ b/drivers/net/ethernet/wiznet/w5300.c
+@@ -10,7 +10,6 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/kconfig.h>
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/usb/early/ehci-dbgp.c b/drivers/usb/early/ehci-dbgp.c
+index 12731e6..ea73afb 100644
+--- a/drivers/usb/early/ehci-dbgp.c
++++ b/drivers/usb/early/ehci-dbgp.c
+@@ -20,7 +20,6 @@
+ #include <linux/usb/ehci_def.h>
+ #include <linux/delay.h>
+ #include <linux/serial_core.h>
+-#include <linux/kconfig.h>
+ #include <linux/kgdb.h>
+ #include <linux/kthread.h>
+ #include <asm/io.h>
+diff --git a/drivers/usb/gadget/udc/bcm63xx_udc.c b/drivers/usb/gadget/udc/bcm63xx_udc.c
+index f5fccb3..f785032 100644
+--- a/drivers/usb/gadget/udc/bcm63xx_udc.c
++++ b/drivers/usb/gadget/udc/bcm63xx_udc.c
+@@ -21,7 +21,6 @@
+ #include <linux/errno.h>
+ #include <linux/interrupt.h>
+ #include <linux/ioport.h>
+-#include <linux/kconfig.h>
+ #include <linux/kernel.h>
+ #include <linux/list.h>
+ #include <linux/module.h>
+diff --git a/drivers/usb/host/pci-quirks.c b/drivers/usb/host/pci-quirks.c
+index 35af362..d793f54 100644
+--- a/drivers/usb/host/pci-quirks.c
++++ b/drivers/usb/host/pci-quirks.c
+@@ -9,7 +9,6 @@
+  */
+ 
+ #include <linux/types.h>
+-#include <linux/kconfig.h>
+ #include <linux/kernel.h>
+ #include <linux/pci.h>
+ #include <linux/delay.h>
+diff --git a/fs/lockd/procfs.h b/fs/lockd/procfs.h
+index 2257a13..184a15e 100644
+--- a/fs/lockd/procfs.h
++++ b/fs/lockd/procfs.h
+@@ -6,8 +6,6 @@
+ #ifndef _LOCKD_PROCFS_H
+ #define _LOCKD_PROCFS_H
+ 
+-#include <linux/kconfig.h>
+-
+ #if IS_ENABLED(CONFIG_PROC_FS)
+ int lockd_create_procfs(void);
+ void lockd_remove_procfs(void);
+diff --git a/include/linux/export.h b/include/linux/export.h
+index c565f87..d7df492 100644
+--- a/include/linux/export.h
++++ b/include/linux/export.h
+@@ -78,7 +78,6 @@ extern struct module __this_module;
+ 
+ #elif defined(CONFIG_TRIM_UNUSED_KSYMS)
+ 
+-#include <linux/kconfig.h>
+ #include <generated/autoksyms.h>
+ 
+ #define __EXPORT_SYMBOL(sym, sec)				\
+diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+index 50882e0..073d9c5 100644
+--- a/include/linux/gpio/driver.h
++++ b/include/linux/gpio/driver.h
+@@ -9,7 +9,6 @@
+ #include <linux/irqdomain.h>
+ #include <linux/lockdep.h>
+ #include <linux/pinctrl/pinctrl.h>
+-#include <linux/kconfig.h>
+ 
+ struct gpio_desc;
+ struct of_phandle_args;
+diff --git a/net/batman-adv/debugfs.h b/net/batman-adv/debugfs.h
+index 1ab4e2e6..992ec26 100644
+--- a/net/batman-adv/debugfs.h
++++ b/net/batman-adv/debugfs.h
+@@ -20,8 +20,6 @@
+ 
+ #include "main.h"
+ 
+-#include <linux/kconfig.h>
+-
+ struct net_device;
+ 
+ #define BATADV_DEBUGFS_SUBDIR "batman_adv"
+diff --git a/sound/soc/intel/common/sst-acpi.h b/sound/soc/intel/common/sst-acpi.h
+index 5d29493..0127422 100644
+--- a/sound/soc/intel/common/sst-acpi.h
++++ b/sound/soc/intel/common/sst-acpi.h
+@@ -12,7 +12,6 @@
+  *
+  */
+ 
+-#include <linux/kconfig.h>
+ #include <linux/stddef.h>
+ #include <linux/acpi.h>
+ 
+diff --git a/tools/testing/nvdimm/config_check.c b/tools/testing/nvdimm/config_check.c
+index 878daf3..7dc5a0a 100644
+--- a/tools/testing/nvdimm/config_check.c
++++ b/tools/testing/nvdimm/config_check.c
+@@ -1,4 +1,3 @@
+-#include <linux/kconfig.h>
+ #include <linux/bug.h>
+ 
+ void check(void)
+-- 
+1.9.1
 
 
-
-
-
---------------010501000800050408090805
-Content-Type: text/plain; charset=UTF-8;
- name="alsa-info.txt.tabpros"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="alsa-info.txt.tabpros"
-
-dXBsb2FkPXRydWUmc2NyaXB0PXRydWUmY2FyZGluZm89CiEhIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMKISFBTFNBIEluZm9ybWF0aW9uIFNjcmlwdCB2IDAuNC42NAohISMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCgohIVNjcmlwdCByYW4gb246IFN1biBT
-ZXAgMTEgMjE6Mzc6MTIgVVRDIDIwMTYKCgohIUxpbnV4IERpc3RyaWJ1dGlvbgohIS0tLS0t
-LS0tLS0tLS0tLS0tLQoKVWJ1bnR1IDE2LjA0LjEgTFRTIFxuIFxsIERJU1RSSUJfSUQ9VWJ1
-bnR1IERJU1RSSUJfREVTQ1JJUFRJT049IlVidW50dSAxNi4wNC4xIExUUyIgTkFNRT0iVWJ1
-bnR1IiBJRD11YnVudHUgSURfTElLRT1kZWJpYW4gUFJFVFRZX05BTUU9IlVidW50dSAxNi4w
-NC4xIExUUyIgSE9NRV9VUkw9Imh0dHA6Ly93d3cudWJ1bnR1LmNvbS8iIFNVUFBPUlRfVVJM
-PSJodHRwOi8vaGVscC51YnVudHUuY29tLyIgQlVHX1JFUE9SVF9VUkw9Imh0dHA6Ly9idWdz
-LmxhdW5jaHBhZC5uZXQvdWJ1bnR1LyIgVUJVTlRVX0NPREVOQU1FPXhlbmlhbAoKCiEhRE1J
-IEluZm9ybWF0aW9uCiEhLS0tLS0tLS0tLS0tLS0tCgpNYW51ZmFjdHVyZXI6ICAgICAgU0FN
-U1VORyBFTEVDVFJPTklDUyBDTy4sIExURC4KUHJvZHVjdCBOYW1lOiAgICAgIEdhbGF4eSBU
-YWJQcm8gUwpQcm9kdWN0IFZlcnNpb246ICAgUDA5SEFCCkZpcm13YXJlIFZlcnNpb246ICBQ
-MDlIQUIuMDAwLjE2MDcyNS5XWS4xNDI4CgoKISFLZXJuZWwgSW5mb3JtYXRpb24KISEtLS0t
-LS0tLS0tLS0tLS0tLS0KCktlcm5lbCByZWxlYXNlOiAgICA0LjguMC1yYzUKT3BlcmF0aW5n
-IFN5c3RlbTogIEdOVS9MaW51eApBcmNoaXRlY3R1cmU6ICAgICAgeDg2XzY0ClByb2Nlc3Nv
-cjogICAgICAgICB4ODZfNjQKU01QIEVuYWJsZWQ6ICAgICAgIFllcwoKCiEhQUxTQSBWZXJz
-aW9uCiEhLS0tLS0tLS0tLS0tCgpEcml2ZXIgdmVyc2lvbjogICAgIGs0LjguMC1yYzUKTGli
-cmFyeSB2ZXJzaW9uOiAgICAxLjEuMApVdGlsaXRpZXMgdmVyc2lvbjogIDEuMS4wCgoKISFM
-b2FkZWQgQUxTQSBtb2R1bGVzCiEhLS0tLS0tLS0tLS0tLS0tLS0tLQoKc25kX2hkYV9pbnRl
-bAoKCiEhU291bmQgU2VydmVycyBvbiB0aGlzIHN5c3RlbQohIS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KClB1bHNlYXVkaW86CiAgICAgIEluc3RhbGxlZCAtIFllcyAoL3Vzci9i
-aW4vcHVsc2VhdWRpbykKICAgICAgUnVubmluZyAtIE5vCgoKISFTb3VuZGNhcmRzIHJlY29n
-bmlzZWQgYnkgQUxTQQohIS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgogMCBbUENI
-ICAgICAgICAgICAgXTogSERBLUludGVsIC0gSERBIEludGVsIFBDSAogICAgICAgICAgICAg
-ICAgICAgICAgSERBIEludGVsIFBDSCBhdCAweGRmNjM4MDAwIGlycSAyNzkKCgohIVBDSSBT
-b3VuZGNhcmRzIGluc3RhbGxlZCBpbiB0aGUgc3lzdGVtCiEhLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KCjAwOjA1LjAgTXVsdGltZWRpYSBjb250cm9sbGVyOiBJ
-bnRlbCBDb3Jwb3JhdGlvbiBTa3lsYWtlIEltYWdpbmcgVW5pdCAocmV2IDAxKQowMDoxNC4z
-IE11bHRpbWVkaWEgY29udHJvbGxlcjogSW50ZWwgQ29ycG9yYXRpb24gRGV2aWNlIDlkMzIg
-KHJldiAwMSkKMDA6MWYuMyBNdWx0aW1lZGlhIGF1ZGlvIGNvbnRyb2xsZXI6IEludGVsIENv
-cnBvcmF0aW9uIFN1bnJpc2UgUG9pbnQtTFAgSEQgQXVkaW8gKHJldiAyMSkKCgohIUFkdmFu
-Y2VkIGluZm9ybWF0aW9uIC0gUENJIFZlbmRvci9EZXZpY2UvU3Vic3lzdGVtIElEJ3MKISEt
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-CgowMDoxZi4zIDA0MDE6IDgwODY6OWQ3MCAocmV2IDIxKQoJU3Vic3lzdGVtOiAxNDRkOmMx
-MzUKCgohIU1vZHByb2JlIG9wdGlvbnMgKFNvdW5kIHJlbGF0ZWQpCiEhLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KCnNuZF9wY3NwOiBpbmRleD0tMgpzbmRfdXNiX2F1ZGlv
-OiBpbmRleD0tMgpzbmRfYXRpaXhwX21vZGVtOiBpbmRleD0tMgpzbmRfaW50ZWw4eDBtOiBp
-bmRleD0tMgpzbmRfdmlhODJ4eF9tb2RlbTogaW5kZXg9LTIKc25kX2F0aWl4cF9tb2RlbTog
-aW5kZXg9LTIKc25kX2ludGVsOHgwbTogaW5kZXg9LTIKc25kX3ZpYTgyeHhfbW9kZW06IGlu
-ZGV4PS0yCnNuZF91c2JfYXVkaW86IGluZGV4PS0yCnNuZF91c2JfY2FpYXE6IGluZGV4PS0y
-CnNuZF91c2JfdWExMDE6IGluZGV4PS0yCnNuZF91c2JfdXMxMjJsOiBpbmRleD0tMgpzbmRf
-dXNiX3VzeDJ5OiBpbmRleD0tMgpzbmRfY21pcGNpOiBtcHVfcG9ydD0weDMzMCBmbV9wb3J0
-PTB4Mzg4CnNuZF9wY3NwOiBpbmRleD0tMgpzbmRfdXNiX2F1ZGlvOiBpbmRleD0tMgoKCiEh
-TG9hZGVkIHNvdW5kIG1vZHVsZSBvcHRpb25zCiEhLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tCgohIU1vZHVsZTogc25kX2hkYV9pbnRlbAoJYWxpZ25fYnVmZmVyX3NpemUgOiAtMQoJ
-YmRsX3Bvc19hZGogOiAtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
-MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
-MQoJYmVlcF9tb2RlIDogWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZ
-LFksWSxZLFksWSxZLFksWSxZLFksWSxZCgllbmFibGUgOiBZLFksWSxZLFksWSxZLFksWSxZ
-LFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFkKCWVuYWJsZV9t
-c2kgOiAtMQoJaWQgOiAobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxs
-KSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51
-bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwo
-bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwp
-LChudWxsKSwobnVsbCksKG51bGwpCglpbmRleCA6IC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
-LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
-LC0xLC0xLC0xLC0xLC0xLC0xCglqYWNrcG9sbF9tcyA6IDAsMCwwLDAsMCwwLDAsMCwwLDAs
-MCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMAoJbW9kZWwgOiAo
-bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwp
-LChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
-bCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChu
-dWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCks
-KG51bGwpCglwYXRjaCA6IChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51
-bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwo
-bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwp
-LChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
-bCksKG51bGwpLChudWxsKSwobnVsbCkKCXBvc2l0aW9uX2ZpeCA6IC0xLC0xLC0xLC0xLC0x
-LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
-LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xCglwb3dlcl9zYXZlIDogMAoJcG93ZXJfc2F2
-ZV9jb250cm9sbGVyIDogWQoJcHJvYmVfbWFzayA6IC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
-LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
-LC0xLC0xLC0xLC0xLC0xLC0xCglwcm9iZV9vbmx5IDogMCwwLDAsMCwwLDAsMCwwLDAsMCww
-LDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwCglzaW5nbGVfY21k
-IDogTgoJc25vb3AgOiAtMQoKCiEhSERBLUludGVsIENvZGVjIGluZm9ybWF0aW9uCiEhLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCi0tc3RhcnRjb2xsYXBzZS0tCgpDb2RlYzogUmVh
-bHRlayBBTEMyOTgKQWRkcmVzczogMApBRkcgRnVuY3Rpb24gSWQ6IDB4MSAodW5zb2wgMSkK
-VmVuZG9yIElkOiAweDEwZWMwMjk4ClN1YnN5c3RlbSBJZDogMHgxNDRkYzEzNQpSZXZpc2lv
-biBJZDogMHgxMDAxMDMKTm8gTW9kZW0gRnVuY3Rpb24gR3JvdXAgZm91bmQKRGVmYXVsdCBQ
-Q006CiAgICByYXRlcyBbMHg2MF06IDQ0MTAwIDQ4MDAwCiAgICBiaXRzIFsweGVdOiAxNiAy
-MCAyNAogICAgZm9ybWF0cyBbMHgxXTogUENNCkRlZmF1bHQgQW1wLUluIGNhcHM6IE4vQQpE
-ZWZhdWx0IEFtcC1PdXQgY2FwczogTi9BClN0YXRlIG9mIEFGRyBub2RlIDB4MDE6CiAgUG93
-ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRDNjb2xkIENMS1NUT1AgRVBTUwogIFBvd2VyOiBz
-ZXR0aW5nPUQwLCBhY3R1YWw9RDAKR1BJTzogaW89OCwgbz0wLCBpPTAsIHVuc29saWNpdGVk
-PTEsIHdha2U9MAogIElPWzBdOiBlbmFibGU9MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAs
-IGRhdGE9MCwgdW5zb2w9MAogIElPWzFdOiBlbmFibGU9MCwgZGlyPTAsIHdha2U9MCwgc3Rp
-Y2t5PTAsIGRhdGE9MCwgdW5zb2w9MAogIElPWzJdOiBlbmFibGU9MCwgZGlyPTAsIHdha2U9
-MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5zb2w9MAogIElPWzNdOiBlbmFibGU9MCwgZGlyPTAs
-IHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5zb2w9MAogIElPWzRdOiBlbmFibGU9MCwg
-ZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5zb2w9MAogIElPWzVdOiBlbmFi
-bGU9MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5zb2w9MAogIElPWzZd
-OiBlbmFibGU9MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5zb2w9MAog
-IElPWzddOiBlbmFibGU9MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwgdW5z
-b2w9MApOb2RlIDB4MDIgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MWQ6IFN0ZXJlbyBBbXAt
-T3V0CiAgQ29udHJvbDogbmFtZT0iSGVhZHBob25lIFBsYXliYWNrIFZvbHVtZSIsIGluZGV4
-PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPU91dCwgaWR4PTAsIG9m
-cz0wCiAgRGV2aWNlOiBuYW1lPSJBTEMyOTggQW5hbG9nIiwgdHlwZT0iQXVkaW8iLCBkZXZp
-Y2U9MAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4N2YsIG5zdGVwcz0weDdmLCBzdGVwc2l6ZT0w
-eDAxLCBtdXRlPTAKICBBbXAtT3V0IHZhbHM6ICBbMHg3ZiAweDdmXQogIENvbnZlcnRlcjog
-c3RyZWFtPTEsIGNoYW5uZWw9MAogIFBDTToKICAgIHJhdGVzIFsweDYwXTogNDQxMDAgNDgw
-MDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQ
-b3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFj
-dHVhbD1EMApOb2RlIDB4MDMgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MWQ6IFN0ZXJlbyBB
-bXAtT3V0CiAgQ29udHJvbDogbmFtZT0iU3BlYWtlciBQbGF5YmFjayBWb2x1bWUiLCBpbmRl
-eD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1PdXQsIGlkeD0wLCBv
-ZnM9MAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4N2YsIG5zdGVwcz0weDdmLCBzdGVwc2l6ZT0w
-eDAxLCBtdXRlPTAKICBBbXAtT3V0IHZhbHM6ICBbMHgwMCAweDAwXQogIENvbnZlcnRlcjog
-c3RyZWFtPTEsIGNoYW5uZWw9MAogIFBDTToKICAgIHJhdGVzIFsweDYwXTogNDQxMDAgNDgw
-MDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQ
-b3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFj
-dHVhbD1EMApOb2RlIDB4MDQgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAw
-MDA6IE1vbm8KTm9kZSAweDA1IFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAw
-MDAwOiBNb25vCk5vZGUgMHgwNiBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDQxMTogU3RlcmVv
-CiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgUENNOgogICAgcmF0ZXMgWzB4
-NDBdOiA0ODAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4MV06
-IFBDTQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjogc2V0dGlu
-Zz1EMywgYWN0dWFsPUQzCk5vZGUgMHgwNyBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2Fw
-cyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MDggW0F1ZGlvIElucHV0XSB3Y2FwcyAweDEwMDUx
-YjogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBvZnM9MHg0MywgbnN0ZXBzPTB4N2Ys
-IHN0ZXBzaXplPTB4MDEsIG11dGU9MQogIEFtcC1JbiB2YWxzOiAgWzB4YzMgMHhjM10KICBD
-b252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBTREktU2VsZWN0OiAwCiAgUENNOgog
-ICAgcmF0ZXMgWzB4NjBdOiA0NDEwMCA0ODAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQK
-ICAgIGZvcm1hdHMgWzB4MV06IFBDTQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQ
-U1MKICBQb3dlcjogc2V0dGluZz1EMywgYWN0dWFsPUQzCiAgQ29ubmVjdGlvbjogMQogICAg
-IDB4MjMKTm9kZSAweDA5IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDA1MWI6IFN0ZXJlbyBB
-bXAtSW4KICBDb250cm9sOiBuYW1lPSJDYXB0dXJlIFZvbHVtZSIsIGluZGV4PTAsIGRldmlj
-ZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9MCwgb2ZzPTAKICBDb250
-cm9sOiBuYW1lPSJDYXB0dXJlIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250
-cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9MCwgb2ZzPTAKICBEZXZpY2U6IG5hbWU9IkFM
-QzI5OCBBbmFsb2ciLCB0eXBlPSJBdWRpbyIsIGRldmljZT0wCiAgQW1wLUluIGNhcHM6IG9m
-cz0weDQzLCBuc3RlcHM9MHg3Ziwgc3RlcHNpemU9MHgwMSwgbXV0ZT0xCiAgQW1wLUluIHZh
-bHM6ICBbMHgwMCAweDAwXQogIENvbnZlcnRlcjogc3RyZWFtPTEsIGNoYW5uZWw9MAogIFNE
-SS1TZWxlY3Q6IDAKICBQQ006CiAgICByYXRlcyBbMHg2MF06IDQ0MTAwIDQ4MDAwCiAgICBi
-aXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93ZXIgc3Rh
-dGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAK
-ICBDb25uZWN0aW9uOiAxCiAgICAgMHgyMgpOb2RlIDB4MGEgW0F1ZGlvIElucHV0XSB3Y2Fw
-cyAweDEwMDUxMTogU3RlcmVvCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAg
-U0RJLVNlbGVjdDogMAogIFBDTToKICAgIHJhdGVzIFsweDQwXTogNDgwMDAKICAgIGJpdHMg
-WzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQb3dlciBzdGF0ZXM6
-ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDMsIGFjdHVhbD1EMwogIENv
-bm5lY3Rpb246IDEKICAgICAweDI1Ck5vZGUgMHgwYiBbQXVkaW8gTWl4ZXJdIHdjYXBzIDB4
-MjAwMTBiOiBTdGVyZW8gQW1wLUluCiAgQ29udHJvbDogbmFtZT0iTWljIFBsYXliYWNrIFZv
-bHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUlu
-LCBpZHg9MCwgb2ZzPTAKICBDb250cm9sOiBuYW1lPSJNaWMgUGxheWJhY2sgU3dpdGNoIiwg
-aW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0w
-LCBvZnM9MAogIEFtcC1JbiBjYXBzOiBvZnM9MHgxNywgbnN0ZXBzPTB4MWYsIHN0ZXBzaXpl
-PTB4MDUsIG11dGU9MQogIEFtcC1JbiB2YWxzOiAgWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0g
-WzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0KICBDb25uZWN0aW9uOiA0CiAgICAgMHgxOCAweDE5
-IDB4MWEgMHgxZApOb2RlIDB4MGMgW0F1ZGlvIE1peGVyXSB3Y2FwcyAweDIwMDEwYjogU3Rl
-cmVvIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBz
-aXplPTB4MDAsIG11dGU9MQogIEFtcC1JbiB2YWxzOiAgWzB4MDAgMHgwMF0gWzB4MDAgMHgw
-MF0KICBDb25uZWN0aW9uOiAyCiAgICAgMHgwMiAweDBiCk5vZGUgMHgwZCBbQXVkaW8gTWl4
-ZXJdIHdjYXBzIDB4MjAwMTBiOiBTdGVyZW8gQW1wLUluCiAgQW1wLUluIGNhcHM6IG9mcz0w
-eDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCiAgQW1wLUluIHZhbHM6
-ICBbMHgwMCAweDAwXQogIENvbm5lY3Rpb246IDEKICAgICAweDAzCk5vZGUgMHgwZSBbVmVu
-ZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MGYgW1Zl
-bmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAweDEwIFtW
-ZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUgMHgxMSBb
-QXVkaW8gSW5wdXRdIHdjYXBzIDB4MTAwNTFiOiBTdGVyZW8gQW1wLUluCiAgQW1wLUluIGNh
-cHM6IG9mcz0weDQzLCBuc3RlcHM9MHg3Ziwgc3RlcHNpemU9MHgwMSwgbXV0ZT0xCiAgQW1w
-LUluIHZhbHM6ICBbMHhjMyAweGMzXQogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9
-MAogIFNESS1TZWxlY3Q6IDAKICBQQ006CiAgICByYXRlcyBbMHg2MF06IDQ0MTAwIDQ4MDAw
-CiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93
-ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQzLCBhY3R1
-YWw9RDMKICBDb25uZWN0aW9uOiAxCiAgICAgMHgyNApOb2RlIDB4MTIgW1BpbiBDb21wbGV4
-XSB3Y2FwcyAweDQwMDQwYjogU3RlcmVvIEFtcC1JbgogIENvbnRyb2w6IG5hbWU9IkludGVy
-bmFsIE1pYyBCb29zdCBWb2x1bWUiLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFt
-cDogY2hzPTMsIGRpcj1JbiwgaWR4PTAsIG9mcz0wCiAgQW1wLUluIGNhcHM6IG9mcz0weDAw
-LCBuc3RlcHM9MHgwMywgc3RlcHNpemU9MHgyNywgbXV0ZT0wCiAgQW1wLUluIHZhbHM6ICBb
-MHgwMCAweDAwXQogIFBpbmNhcCAweDAwMDAwMDIwOiBJTgogIFBpbiBEZWZhdWx0IDB4OTBh
-NjAxYzA6IFtGaXhlZF0gTWljIGF0IEludCBOL0EKICAgIENvbm4gPSBEaWdpdGFsLCBDb2xv
-ciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHhjLCBTZXF1ZW5jZSA9IDB4MAog
-ICAgTWlzYyA9IE5PX1BSRVNFTkNFCiAgUGluLWN0bHM6IDB4MjA6IElOCiAgUG93ZXIgc3Rh
-dGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAK
-Tm9kZSAweDEzIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA0MGI6IFN0ZXJlbyBBbXAtSW4K
-ICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAzLCBzdGVwc2l6ZT0weDI3LCBt
-dXRlPTAKICBBbXAtSW4gdmFsczogIFsweDAwIDB4MDBdCiAgUGluY2FwIDB4MDAwMDAwMjA6
-IElOCiAgUGluIERlZmF1bHQgMHg0MDAwMDAwMDogW04vQV0gTGluZSBPdXQgYXQgRXh0IE4v
-QQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRp
-b24gPSAweDAsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4MDA6CiAgUG93ZXIgc3Rh
-dGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQzLCBhY3R1YWw9RDMK
-Tm9kZSAweDE0IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA1MGQ6IFN0ZXJlbyBBbXAtT3V0
-CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAs
-IG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDgwIDB4ODBdCiAgUGluY2FwIDB4MDAwMTAw
-MTA6IE9VVCBFQVBECiAgRUFQRCAweDI6IEVBUEQKICBQaW4gRGVmYXVsdCAweDQxMTExMWYw
-OiBbTi9BXSBTcGVha2VyIGF0IEV4dCBSZWFyCiAgICBDb25uID0gMS84LCBDb2xvciA9IEJs
-YWNrCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAweDAKICAgIE1pc2Mg
-PSBOT19QUkVTRU5DRQogIFBpbi1jdGxzOiAweDAwOgogIFBvd2VyIHN0YXRlczogIEQwIEQx
-IEQyIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMywgYWN0dWFsPUQzCiAgQ29ubmVjdGlv
-bjogMgogICAgIDB4MGMqIDB4MGQKTm9kZSAweDE1IFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRd
-IHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUgMHgxNiBbVmVuZG9yIERlZmluZWQgV2lkZ2V0
-XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MTcgW1BpbiBDb21wbGV4XSB3Y2FwcyAw
-eDQwMDU4ZDogU3RlcmVvIEFtcC1PdXQKICBDb250cm9sOiBuYW1lPSJIZWFkcGhvbmUgUGxh
-eWJhY2sgU3dpdGNoIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0z
-LCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3Rl
-cHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4MDAg
-MHgwMF0KICBQaW5jYXAgMHgwMDAxMDAxYzogT1VUIEhQIEVBUEQgRGV0ZWN0CiAgRUFQRCAw
-eDI6IEVBUEQKICBQaW4gRGVmYXVsdCAweDA0MjExMDEwOiBbSmFja10gSFAgT3V0IGF0IEV4
-dCBSaWdodAogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawogICAgRGVmQXNzb2NpYXRp
-b24gPSAweDEsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4YzA6IE9VVCBIUAogIFVu
-c29saWNpdGVkOiB0YWc9MDEsIGVuYWJsZWQ9MQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQy
-IEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjog
-MwogICAgIDB4MGMqIDB4MGQgMHgwNgpOb2RlIDB4MTggW1BpbiBDb21wbGV4XSB3Y2FwcyAw
-eDQwMDQ4YjogU3RlcmVvIEFtcC1JbgogIENvbnRyb2w6IG5hbWU9Ik1pYyBCb29zdCBWb2x1
-bWUiLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1Jbiwg
-aWR4PTAsIG9mcz0wCiAgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMywgc3Rl
-cHNpemU9MHgyNywgbXV0ZT0wCiAgQW1wLUluIHZhbHM6ICBbMHgwMCAweDAwXQogIFBpbmNh
-cCAweDAwMDAzNzI0OiBJTiBEZXRlY3QKICAgIFZyZWYgY2FwczogSElaIDUwIEdSRCA4MCAx
-MDAKICBQaW4gRGVmYXVsdCAweDA0YTExMDQwOiBbSmFja10gTWljIGF0IEV4dCBSaWdodAog
-ICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawogICAgRGVmQXNzb2NpYXRpb24gPSAweDQs
-IFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4MjQ6IElOIFZSRUZfODAKICBVbnNvbGlj
-aXRlZDogdGFnPTAyLCBlbmFibGVkPTEKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBF
-UFNTCiAgUG93ZXI6IHNldHRpbmc9RDMsIGFjdHVhbD1EMwpOb2RlIDB4MTkgW1BpbiBDb21w
-bGV4XSB3Y2FwcyAweDQwMDQ4YjogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBvZnM9
-MHgwMCwgbnN0ZXBzPTB4MDMsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAogIEFtcC1JbiB2YWxz
-OiAgWzB4MDAgMHgwMF0KICBQaW5jYXAgMHgwMDAwMzcyNDogSU4gRGV0ZWN0CiAgICBWcmVm
-IGNhcHM6IEhJWiA1MCBHUkQgODAgMTAwCiAgUGluIERlZmF1bHQgMHg0MTExMTFmMDogW04v
-QV0gU3BlYWtlciBhdCBFeHQgUmVhcgogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawog
-ICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAgICBNaXNjID0gTk9f
-UFJFU0VOQ0UKICBQaW4tY3RsczogMHgwMDogVlJFRl9ISVoKICBVbnNvbGljaXRlZDogdGFn
-PTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93
-ZXI6IHNldHRpbmc9RDMsIGFjdHVhbD1EMwpOb2RlIDB4MWEgW1BpbiBDb21wbGV4XSB3Y2Fw
-cyAweDQwMDU4ZjogU3RlcmVvIEFtcC1JbiBBbXAtT3V0CiAgQ29udHJvbDogbmFtZT0iU3Bl
-YWtlciBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFt
-cDogY2hzPTMsIGRpcj1PdXQsIGlkeD0wLCBvZnM9MAogIEFtcC1JbiBjYXBzOiBvZnM9MHgw
-MCwgbnN0ZXBzPTB4MDMsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAogIEFtcC1JbiB2YWxzOiAg
-WzB4MDAgMHgwMF0KICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3Rl
-cHNpemU9MHgwMCwgbXV0ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4ODAgMHg4MF0KICBQaW5j
-YXAgMHgwMDAxMzczYzogSU4gT1VUIEhQIEVBUEQgRGV0ZWN0CiAgICBWcmVmIGNhcHM6IEhJ
-WiA1MCBHUkQgODAgMTAwCiAgRUFQRCAweDI6IEVBUEQKICBQaW4gRGVmYXVsdCAweDkwMTcw
-MTIwOiBbRml4ZWRdIFNwZWFrZXIgYXQgSW50IE4vQQogICAgQ29ubiA9IEFuYWxvZywgQ29s
-b3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MiwgU2VxdWVuY2UgPSAweDAK
-ICAgIE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1jdGxzOiAweDQwOiBPVVQgVlJFRl9ISVoK
-ICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBE
-MSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rp
-b246IDIKICAgICAweDBjIDB4MGQqCk5vZGUgMHgxYiBbVmVuZG9yIERlZmluZWQgV2lkZ2V0
-XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MWMgW1ZlbmRvciBEZWZpbmVkIFdpZGdl
-dF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAweDFkIFtQaW4gQ29tcGxleF0gd2NhcHMg
-MHg0MDA0MDA6IE1vbm8KICBQaW5jYXAgMHgwMDAwMDAyMDogSU4KICBQaW4gRGVmYXVsdCAw
-eDQwNjQyMjQ1OiBbTi9BXSBNb2RlbSBMaW5lIGF0IEV4dCBOL0EKICAgIENvbm4gPSBSQ0Es
-IENvbG9yID0gR3JleQogICAgRGVmQXNzb2NpYXRpb24gPSAweDQsIFNlcXVlbmNlID0gMHg1
-CiAgUGluLWN0bHM6IDB4MjA6IElOCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBT
-UwogIFBvd2VyOiBzZXR0aW5nPUQzLCBhY3R1YWw9RDMKTm9kZSAweDFlIFtQaW4gQ29tcGxl
-eF0gd2NhcHMgMHg0MDA1MDE6IFN0ZXJlbwogIFBpbmNhcCAweDAwMDAwMDE0OiBPVVQgRGV0
-ZWN0CiAgUGluIERlZmF1bHQgMHg0MTExMTFmMDogW04vQV0gU3BlYWtlciBhdCBFeHQgUmVh
-cgogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawogICAgRGVmQXNzb2NpYXRpb24gPSAw
-eGYsIFNlcXVlbmNlID0gMHgwCiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3Rsczog
-MHgwMDoKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRp
-bmc9RDMsIGFjdHVhbD1EMwogIENvbm5lY3Rpb246IDEKICAgICAweDA2Ck5vZGUgMHgxZiBb
-UGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNDAxOiBTdGVyZW8KICBQaW5jYXAgMHgwMDAwMDAy
-NDogSU4gRGV0ZWN0CiAgUGluIERlZmF1bHQgMHg0MTExMTFmMDogW04vQV0gU3BlYWtlciBh
-dCBFeHQgUmVhcgogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawogICAgRGVmQXNzb2Np
-YXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQ
-aW4tY3RsczogMHgwMDoKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93
-ZXI6IHNldHRpbmc9RDMsIGFjdHVhbD1EMwpOb2RlIDB4MjAgW1ZlbmRvciBEZWZpbmVkIFdp
-ZGdldF0gd2NhcHMgMHhmMDAwNDA6IE1vbm8KICBQcm9jZXNzaW5nIGNhcHM6IGJlbmlnbj0w
-LCBuY29lZmY9MTUwCk5vZGUgMHgyMSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNThkOiBT
-dGVyZW8gQW1wLU91dAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBz
-dGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6ICBbMHg4MCAweDgwXQogIFBp
-bmNhcCAweDAwMDAwMDFjOiBPVVQgSFAgRGV0ZWN0CiAgUGluIERlZmF1bHQgMHg0MTExMTFm
-MDogW04vQV0gU3BlYWtlciBhdCBFeHQgUmVhcgogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBC
-bGFjawogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAgICBNaXNj
-ID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHgwMDoKICBVbnNvbGljaXRlZDogdGFnPTAw
-LCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6
-IHNldHRpbmc9RDMsIGFjdHVhbD1EMwogIENvbm5lY3Rpb246IDIKICAgICAweDBjKiAweDBk
-Ck5vZGUgMHgyMiBbQXVkaW8gU2VsZWN0b3JdIHdjYXBzIDB4MzAwMTAxOiBTdGVyZW8KICBD
-b25uZWN0aW9uOiA2CiAgICAgMHgxOCAweDE5IDB4MWEgMHgxZCAweDBiIDB4MTIqCk5vZGUg
-MHgyMyBbQXVkaW8gU2VsZWN0b3JdIHdjYXBzIDB4MzAwMTAxOiBTdGVyZW8KICBDb25uZWN0
-aW9uOiA2CiAgICAgMHgxOCAweDE5IDB4MWEqIDB4MWQgMHgwYiAweDEzCk5vZGUgMHgyNCBb
-QXVkaW8gU2VsZWN0b3JdIHdjYXBzIDB4MzAwMTAxOiBTdGVyZW8KICBDb25uZWN0aW9uOiAy
-CiAgICAgMHgxMiogMHgxMwpOb2RlIDB4MjUgW0F1ZGlvIFNlbGVjdG9yXSB3Y2FwcyAweDMw
-MDEwMTogU3RlcmVvCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MWYKQ29kZWM6IEludGVsIFNr
-eWxha2UgSERNSQpBZGRyZXNzOiAyCkFGRyBGdW5jdGlvbiBJZDogMHgxICh1bnNvbCAwKQpW
-ZW5kb3IgSWQ6IDB4ODA4NjI4MDkKU3Vic3lzdGVtIElkOiAweDgwODYwMTAxClJldmlzaW9u
-IElkOiAweDEwMDAwMApObyBNb2RlbSBGdW5jdGlvbiBHcm91cCBmb3VuZApEZWZhdWx0IFBD
-TToKICAgIHJhdGVzIFsweDBdOgogICAgYml0cyBbMHgwXToKICAgIGZvcm1hdHMgWzB4MF06
-CkRlZmF1bHQgQW1wLUluIGNhcHM6IE4vQQpEZWZhdWx0IEFtcC1PdXQgY2FwczogTi9BClN0
-YXRlIG9mIEFGRyBub2RlIDB4MDE6CiAgUG93ZXIgc3RhdGVzOiAgRDAgRDMgQ0xLU1RPUCBF
-UFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMCwgQ2xvY2stc3RvcC1PSwpHUElP
-OiBpbz0wLCBvPTAsIGk9MCwgdW5zb2xpY2l0ZWQ9MCwgd2FrZT0wCk5vZGUgMHgwMiBbQXVk
-aW8gT3V0cHV0XSB3Y2FwcyAweDY2MTE6IDgtQ2hhbm5lbHMgRGlnaXRhbAogIENvbnZlcnRl
-cjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIERpZ2l0YWw6IEtBRQogIERpZ2l0YWwgY2F0ZWdv
-cnk6IDB4MAogIElFQyBDb2RpbmcgVHlwZTogMHgwCiAgUENNOgogICAgcmF0ZXMgWzB4N2Yw
-XTogMzIwMDAgNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAgMTc2NDAwIDE5MjAwMAogICAgYml0
-cyBbMHgxYV06IDE2IDI0IDMyCiAgICBmb3JtYXRzIFsweDVdOiBQQ00gQUMzCiAgUG93ZXIg
-c3RhdGVzOiAgRDAgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKTm9k
-ZSAweDAzIFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4NjYxMTogOC1DaGFubmVscyBEaWdpdGFs
-CiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgRGlnaXRhbDogRW5hYmxlZCBL
-QUUKICBEaWdpdGFsIGNhdGVnb3J5OiAweDAKICBJRUMgQ29kaW5nIFR5cGU6IDB4MAogIFBD
-TToKICAgIHJhdGVzIFsweDdmMF06IDMyMDAwIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3
-NjQwMCAxOTIwMDAKICAgIGJpdHMgWzB4MWFdOiAxNiAyNCAzMgogICAgZm9ybWF0cyBbMHg1
-XTogUENNIEFDMwogIFBvd2VyIHN0YXRlczogIEQwIEQzIEVQU1MKICBQb3dlcjogc2V0dGlu
-Zz1EMCwgYWN0dWFsPUQwCk5vZGUgMHgwNCBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDY2MTE6
-IDgtQ2hhbm5lbHMgRGlnaXRhbAogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAog
-IERpZ2l0YWw6IEVuYWJsZWQgS0FFCiAgRGlnaXRhbCBjYXRlZ29yeTogMHgwCiAgSUVDIENv
-ZGluZyBUeXBlOiAweDAKICBQQ006CiAgICByYXRlcyBbMHg3ZjBdOiAzMjAwMCA0NDEwMCA0
-ODAwMCA4ODIwMCA5NjAwMCAxNzY0MDAgMTkyMDAwCiAgICBiaXRzIFsweDFhXTogMTYgMjQg
-MzIKICAgIGZvcm1hdHMgWzB4NV06IFBDTSBBQzMKICBQb3dlciBzdGF0ZXM6ICBEMCBEMyBF
-UFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMApOb2RlIDB4MDUgW1BpbiBDb21w
-bGV4XSB3Y2FwcyAweDQwNzc4ZDogOC1DaGFubmVscyBEaWdpdGFsIEFtcC1PdXQgQ1AKICBD
-b250cm9sOiBuYW1lPSJJRUM5NTggUGxheWJhY2sgQ29uIE1hc2siLCBpbmRleD0wLCBkZXZp
-Y2U9MAogIENvbnRyb2w6IG5hbWU9IklFQzk1OCBQbGF5YmFjayBQcm8gTWFzayIsIGluZGV4
-PTAsIGRldmljZT0wCiAgQ29udHJvbDogbmFtZT0iSUVDOTU4IFBsYXliYWNrIERlZmF1bHQi
-LCBpbmRleD0wLCBkZXZpY2U9MAogIENvbnRyb2w6IG5hbWU9IklFQzk1OCBQbGF5YmFjayBT
-d2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5z
-dGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6ICBbMHgw
-MCAweDAwXQogIFBpbmNhcCAweDBiMDAwMDk0OiBPVVQgRGV0ZWN0IEhCUiBIRE1JIERQCiAg
-UGluIERlZmF1bHQgMHgxODU2MDAxMDogW0phY2tdIERpZ2l0YWwgT3V0IGF0IEludCBIRE1J
-CiAgICBDb25uID0gRGlnaXRhbCwgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlv
-biA9IDB4MSwgU2VxdWVuY2UgPSAweDAKICBQaW4tY3RsczogMHgwMDoKICBVbnNvbGljaXRl
-ZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBEMyBFUFNTCiAgUG93
-ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIERldmljZXM6IDAKICBDb25uZWN0aW9uOiAw
-CiAgSW4tZHJpdmVyIENvbm5lY3Rpb246IDMKICAgICAweDAyIDB4MDMgMHgwNApOb2RlIDB4
-MDYgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwNzc4ZDogOC1DaGFubmVscyBEaWdpdGFsIEFt
-cC1PdXQgQ1AKICBDb250cm9sOiBuYW1lPSJJRUM5NTggUGxheWJhY2sgQ29uIE1hc2siLCBp
-bmRleD0xLCBkZXZpY2U9MAogIENvbnRyb2w6IG5hbWU9IklFQzk1OCBQbGF5YmFjayBQcm8g
-TWFzayIsIGluZGV4PTEsIGRldmljZT0wCiAgQ29udHJvbDogbmFtZT0iSUVDOTU4IFBsYXli
-YWNrIERlZmF1bHQiLCBpbmRleD0xLCBkZXZpY2U9MAogIENvbnRyb2w6IG5hbWU9IklFQzk1
-OCBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0xLCBkZXZpY2U9MAogIEFtcC1PdXQgY2Fwczog
-b2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0
-IHZhbHM6ICBbMHgwMCAweDAwXQogIFBpbmNhcCAweDBiMDAwMDk0OiBPVVQgRGV0ZWN0IEhC
-UiBIRE1JIERQCiAgUGluIERlZmF1bHQgMHgxODU2MDAxMDogW0phY2tdIERpZ2l0YWwgT3V0
-IGF0IEludCBIRE1JCiAgICBDb25uID0gRGlnaXRhbCwgQ29sb3IgPSBVbmtub3duCiAgICBE
-ZWZBc3NvY2lhdGlvbiA9IDB4MSwgU2VxdWVuY2UgPSAweDAKICBQaW4tY3RsczogMHgwMDoK
-ICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBE
-MyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIERldmljZXM6IDAKICBD
-b25uZWN0aW9uOiAwCiAgSW4tZHJpdmVyIENvbm5lY3Rpb246IDMKICAgICAweDAyIDB4MDMg
-MHgwNApOb2RlIDB4MDcgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwNzc4ZDogOC1DaGFubmVs
-cyBEaWdpdGFsIEFtcC1PdXQgQ1AKICBDb250cm9sOiBuYW1lPSJJRUM5NTggUGxheWJhY2sg
-Q29uIE1hc2siLCBpbmRleD0yLCBkZXZpY2U9MAogIENvbnRyb2w6IG5hbWU9IklFQzk1OCBQ
-bGF5YmFjayBQcm8gTWFzayIsIGluZGV4PTIsIGRldmljZT0wCiAgQ29udHJvbDogbmFtZT0i
-SUVDOTU4IFBsYXliYWNrIERlZmF1bHQiLCBpbmRleD0yLCBkZXZpY2U9MAogIENvbnRyb2w6
-IG5hbWU9IklFQzk1OCBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0yLCBkZXZpY2U9MAogIEFt
-cC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRl
-PTEKICBBbXAtT3V0IHZhbHM6ICBbMHgwMCAweDAwXQogIFBpbmNhcCAweDBiMDAwMDk0OiBP
-VVQgRGV0ZWN0IEhCUiBIRE1JIERQCiAgUGluIERlZmF1bHQgMHgxODU2MDAxMDogW0phY2td
-IERpZ2l0YWwgT3V0IGF0IEludCBIRE1JCiAgICBDb25uID0gRGlnaXRhbCwgQ29sb3IgPSBV
-bmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MSwgU2VxdWVuY2UgPSAweDAKICBQaW4t
-Y3RsczogMHgwMDoKICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBz
-dGF0ZXM6ICBEMCBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIERl
-dmljZXM6IDAKICBDb25uZWN0aW9uOiAwCiAgSW4tZHJpdmVyIENvbm5lY3Rpb246IDMKICAg
-ICAweDAyIDB4MDMgMHgwNApOb2RlIDB4MDggW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2Nh
-cHMgMHhmMDAwMDA6IE1vbm8KLS1lbmRjb2xsYXBzZS0tCgoKISFBTFNBIERldmljZSBub2Rl
-cwohIS0tLS0tLS0tLS0tLS0tLS0tCgpjcnctcnctLS0tKyAxIHJvb3QgYXVkaW8gMTE2LCAg
-MiBTZXAgMTEgMjM6MzAgL2Rldi9zbmQvY29udHJvbEMwCmNydy1ydy0tLS0rIDEgcm9vdCBh
-dWRpbyAxMTYsICA4IFNlcCAxMSAyMzozMCAvZGV2L3NuZC9od0MwRDAKY3J3LXJ3LS0tLSsg
-MSByb290IGF1ZGlvIDExNiwgIDkgU2VwIDExIDIzOjMwIC9kZXYvc25kL2h3QzBEMgpjcnct
-cnctLS0tKyAxIHJvb3QgYXVkaW8gMTE2LCAgNCBTZXAgMTEgMjM6MzAgL2Rldi9zbmQvcGNt
-QzBEMGMKY3J3LXJ3LS0tLSsgMSByb290IGF1ZGlvIDExNiwgIDMgU2VwIDExIDIzOjM2IC9k
-ZXYvc25kL3BjbUMwRDBwCmNydy1ydy0tLS0rIDEgcm9vdCBhdWRpbyAxMTYsICA1IFNlcCAx
-MSAyMzozMiAvZGV2L3NuZC9wY21DMEQzcApjcnctcnctLS0tKyAxIHJvb3QgYXVkaW8gMTE2
-LCAgNiBTZXAgMTEgMjM6MzAgL2Rldi9zbmQvcGNtQzBEN3AKY3J3LXJ3LS0tLSsgMSByb290
-IGF1ZGlvIDExNiwgIDcgU2VwIDExIDIzOjMwIC9kZXYvc25kL3BjbUMwRDhwCmNydy1ydy0t
-LS0rIDEgcm9vdCBhdWRpbyAxMTYsICAxIFNlcCAxMSAyMzozMCAvZGV2L3NuZC9zZXEKY3J3
-LXJ3LS0tLSsgMSByb290IGF1ZGlvIDExNiwgMzMgU2VwIDExIDIzOjMwIC9kZXYvc25kL3Rp
-bWVyCgovZGV2L3NuZC9ieS1wYXRoOgp0b3RhbCAwCmRyd3hyLXhyLXggMiByb290IHJvb3Qg
-IDYwIFNlcCAxMSAyMzozMCAuCmRyd3hyLXhyLXggMyByb290IHJvb3QgMjYwIFNlcCAxMSAy
-MzozMCAuLgpscnd4cnd4cnd4IDEgcm9vdCByb290ICAxMiBTZXAgMTEgMjM6MzAgcGNpLTAw
-MDA6MDA6MWYuMyAtPiAuLi9jb250cm9sQzAKCgohIUFwbGF5L0FyZWNvcmQgb3V0cHV0CiEh
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KCkFQTEFZCgp4Y2JfY29ubmVjdGlvbl9oYXNfZXJyb3Io
-KSByZXR1cm5lZCB0cnVlCioqKiogTGlzdCBvZiBQTEFZQkFDSyBIYXJkd2FyZSBEZXZpY2Vz
-ICoqKioKY2FyZCAwOiBQQ0ggW0hEQSBJbnRlbCBQQ0hdLCBkZXZpY2UgMDogQUxDMjk4IEFu
-YWxvZyBbQUxDMjk4IEFuYWxvZ10KICBTdWJkZXZpY2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6
-IHN1YmRldmljZSAjMApjYXJkIDA6IFBDSCBbSERBIEludGVsIFBDSF0sIGRldmljZSAzOiBI
-RE1JIDAgW0hETUkgMF0KICBTdWJkZXZpY2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6IHN1YmRl
-dmljZSAjMApjYXJkIDA6IFBDSCBbSERBIEludGVsIFBDSF0sIGRldmljZSA3OiBIRE1JIDEg
-W0hETUkgMV0KICBTdWJkZXZpY2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAj
-MApjYXJkIDA6IFBDSCBbSERBIEludGVsIFBDSF0sIGRldmljZSA4OiBIRE1JIDIgW0hETUkg
-Ml0KICBTdWJkZXZpY2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMAoKQVJF
-Q09SRAoKeGNiX2Nvbm5lY3Rpb25faGFzX2Vycm9yKCkgcmV0dXJuZWQgdHJ1ZQoqKioqIExp
-c3Qgb2YgQ0FQVFVSRSBIYXJkd2FyZSBEZXZpY2VzICoqKioKY2FyZCAwOiBQQ0ggW0hEQSBJ
-bnRlbCBQQ0hdLCBkZXZpY2UgMDogQUxDMjk4IEFuYWxvZyBbQUxDMjk4IEFuYWxvZ10KICBT
-dWJkZXZpY2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMAoKISFBbWl4ZXIg
-b3V0cHV0CiEhLS0tLS0tLS0tLS0tLQoKISEtLS0tLS0tTWl4ZXIgY29udHJvbHMgZm9yIGNh
-cmQgMCBbUENIXQoKQ2FyZCBodzowICdQQ0gnLydIREEgSW50ZWwgUENIIGF0IDB4ZGY2Mzgw
-MDAgaXJxIDI3OScKICBNaXhlciBuYW1lCTogJ1JlYWx0ZWsgQUxDMjk4JwogIENvbXBvbmVu
-dHMJOiAnSERBOjEwZWMwMjk4LDE0NGRjMTM1LDAwMTAwMTAzIEhEQTo4MDg2MjgwOSw4MDg2
-MDEwMSwwMDEwMDAwMCcKICBDb250cm9scyAgICAgIDogNDIKICBTaW1wbGUgY3RybHMgIDog
-MTMKU2ltcGxlIG1peGVyIGNvbnRyb2wgJ01hc3RlcicsMAogIENhcGFiaWxpdGllczogcHZv
-bHVtZSBwdm9sdW1lLWpvaW5lZCBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sg
-Y2hhbm5lbHM6IE1vbm8KICBMaW1pdHM6IFBsYXliYWNrIDAgLSAxMjcKICBNb25vOiBQbGF5
-YmFjayAxMjcgWzEwMCVdIFswLjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0hl
-YWRwaG9uZScsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBwc3dpdGNoCiAgUGxheWJhY2sg
-Y2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExpbWl0czogUGxheWJhY2sg
-MCAtIDEyNwogIE1vbm86CiAgRnJvbnQgTGVmdDogUGxheWJhY2sgMTI3IFsxMDAlXSBbMC4w
-MGRCXSBbb25dCiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNrIDEyNyBbMTAwJV0gWzAuMDBkQl0g
-W29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnU3BlYWtlcicsMAogIENhcGFiaWxpdGllczog
-cHZvbHVtZSBwc3dpdGNoCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9u
-dCBSaWdodAogIExpbWl0czogUGxheWJhY2sgMCAtIDEyNwogIE1vbm86CiAgRnJvbnQgTGVm
-dDogUGxheWJhY2sgMCBbMCVdIFstNjMuNTBkQl0gW29mZl0KICBGcm9udCBSaWdodDogUGxh
-eWJhY2sgMCBbMCVdIFstNjMuNTBkQl0gW29mZl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ1BD
-TScsMAogIENhcGFiaWxpdGllczogcHZvbHVtZQogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9u
-dCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAgLSAyNTUKICBNb25v
-OgogIEZyb250IExlZnQ6IFBsYXliYWNrIDI1NSBbMTAwJV0gWzAuMDBkQl0KICBGcm9udCBS
-aWdodDogUGxheWJhY2sgMjU1IFsxMDAlXSBbMC4wMGRCXQpTaW1wbGUgbWl4ZXIgY29udHJv
-bCAnTWljJywwCiAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKICBQbGF5YmFjayBj
-aGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFjayAw
-IC0gMzEKICBNb25vOgogIEZyb250IExlZnQ6IFBsYXliYWNrIDAgWzAlXSBbLTM0LjUwZEJd
-IFtvZmZdCiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNrIDAgWzAlXSBbLTM0LjUwZEJdIFtvZmZd
-ClNpbXBsZSBtaXhlciBjb250cm9sICdNaWMgQm9vc3QnLDAKICBDYXBhYmlsaXRpZXM6IHZv
-bHVtZQogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBD
-YXB0dXJlIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IDAg
-LSAzCiAgRnJvbnQgTGVmdDogMCBbMCVdIFswLjAwZEJdCiAgRnJvbnQgUmlnaHQ6IDAgWzAl
-XSBbMC4wMGRCXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4JywwCiAgQ2FwYWJpbGl0
-aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8K
-ICBNb25vOiBQbGF5YmFjayBbb2ZmXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4Jywx
-CiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hh
-bm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBbb25dClNpbXBsZSBtaXhlciBjb250cm9s
-ICdJRUM5NTgnLDIKICBDYXBhYmlsaXRpZXM6IHBzd2l0Y2ggcHN3aXRjaC1qb2luZWQKICBQ
-bGF5YmFjayBjaGFubmVsczogTW9ubwogIE1vbm86IFBsYXliYWNrIFtvbl0KU2ltcGxlIG1p
-eGVyIGNvbnRyb2wgJ0NhcHR1cmUnLDAKICBDYXBhYmlsaXRpZXM6IGN2b2x1bWUgY3N3aXRj
-aAogIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExpbWl0
-czogQ2FwdHVyZSAwIC0gMTI3CiAgRnJvbnQgTGVmdDogQ2FwdHVyZSAwIFswJV0gWy0zMy41
-MGRCXSBbb25dCiAgRnJvbnQgUmlnaHQ6IENhcHR1cmUgMCBbMCVdIFstMzMuNTBkQl0gW29u
-XQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnQXV0by1NdXRlIE1vZGUnLDAKICBDYXBhYmlsaXRp
-ZXM6IGVudW0KICBJdGVtczogJ0Rpc2FibGVkJyAnRW5hYmxlZCcKICBJdGVtMDogJ0Rpc2Fi
-bGVkJwpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSW50ZXJuYWwgTWljIEJvb3N0JywwCiAgQ2Fw
-YWJpbGl0aWVzOiB2b2x1bWUKICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZy
-b250IFJpZ2h0CiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0
-CiAgTGltaXRzOiAwIC0gMwogIEZyb250IExlZnQ6IDAgWzAlXSBbMC4wMGRCXQogIEZyb250
-IFJpZ2h0OiAwIFswJV0gWzAuMDBkQl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0xvb3BiYWNr
-IE1peGluZycsMAogIENhcGFiaWxpdGllczogZW51bQogIEl0ZW1zOiAnRGlzYWJsZWQnICdF
-bmFibGVkJwogIEl0ZW0wOiAnRW5hYmxlZCcKCgohIUFsc2FjdGwgb3V0cHV0CiEhLS0tLS0t
-LS0tLS0tLS0KCi0tc3RhcnRjb2xsYXBzZS0tCnN0YXRlLlBDSCB7Cgljb250cm9sLjEgewoJ
-CWlmYWNlIE1JWEVSCgkJbmFtZSAnSGVhZHBob25lIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1
-ZS4wIDEyNwoJCXZhbHVlLjEgMTI3CgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0
-ZScKCQkJdHlwZSBJTlRFR0VSCgkJCWNvdW50IDIKCQkJcmFuZ2UgJzAgLSAxMjcnCgkJCWRi
-bWluIC02MzUwCgkJCWRibWF4IDAKCQkJZGJ2YWx1ZS4wIDAKCQkJZGJ2YWx1ZS4xIDAKCQl9
-Cgl9Cgljb250cm9sLjIgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSGVhZHBob25lIFBsYXli
-YWNrIFN3aXRjaCcKCQl2YWx1ZS4wIHRydWUKCQl2YWx1ZS4xIHRydWUKCQljb21tZW50IHsK
-CQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMgoJCX0K
-CX0KCWNvbnRyb2wuMyB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdTcGVha2VyIFBsYXliYWNr
-IFZvbHVtZScKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQljb21tZW50IHsKCQkJYWNjZXNz
-ICdyZWFkIHdyaXRlJwoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQgMgoJCQlyYW5nZSAnMCAt
-IDEyNycKCQkJZGJtaW4gLTYzNTAKCQkJZGJtYXggMAoJCQlkYnZhbHVlLjAgLTYzNTAKCQkJ
-ZGJ2YWx1ZS4xIC02MzUwCgkJfQoJfQoJY29udHJvbC40IHsKCQlpZmFjZSBNSVhFUgoJCW5h
-bWUgJ1NwZWFrZXIgUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlLjAgZmFsc2UKCQl2YWx1ZS4x
-IGZhbHNlCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlwZSBCT09M
-RUFOCgkJCWNvdW50IDIKCQl9Cgl9Cgljb250cm9sLjUgewoJCWlmYWNlIE1JWEVSCgkJbmFt
-ZSAnTG9vcGJhY2sgTWl4aW5nJwoJCXZhbHVlIEVuYWJsZWQKCQljb21tZW50IHsKCQkJYWNj
-ZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIEVOVU1FUkFURUQKCQkJY291bnQgMQoJCQlpdGVt
-LjAgRGlzYWJsZWQKCQkJaXRlbS4xIEVuYWJsZWQKCQl9Cgl9Cgljb250cm9sLjYgewoJCWlm
-YWNlIE1JWEVSCgkJbmFtZSAnTWljIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZS4wIDAKCQl2
-YWx1ZS4xIDAKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIElO
-VEVHRVIKCQkJY291bnQgMgoJCQlyYW5nZSAnMCAtIDMxJwoJCQlkYm1pbiAtMzQ1MAoJCQlk
-Ym1heCAxMjAwCgkJCWRidmFsdWUuMCAtMzQ1MAoJCQlkYnZhbHVlLjEgLTM0NTAKCQl9Cgl9
-Cgljb250cm9sLjcgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWljIFBsYXliYWNrIFN3aXRj
-aCcKCQl2YWx1ZS4wIGZhbHNlCgkJdmFsdWUuMSBmYWxzZQoJCWNvbW1lbnQgewoJCQlhY2Nl
-c3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgQk9PTEVBTgoJCQljb3VudCAyCgkJfQoJfQoJY29u
-dHJvbC44IHsKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0F1dG8tTXV0ZSBNb2RlJwoJCXZhbHVl
-IERpc2FibGVkCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlwZSBF
-TlVNRVJBVEVECgkJCWNvdW50IDEKCQkJaXRlbS4wIERpc2FibGVkCgkJCWl0ZW0uMSBFbmFi
-bGVkCgkJfQoJfQoJY29udHJvbC45IHsKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0NhcHR1cmUg
-Vm9sdW1lJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJCWNvbW1lbnQgewoJCQlhY2Nlc3Mg
-J3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdFUgoJCQljb3VudCAyCgkJCXJhbmdlICcwIC0g
-MTI3JwoJCQlkYm1pbiAtMzM1MAoJCQlkYm1heCAzMDAwCgkJCWRidmFsdWUuMCAtMzM1MAoJ
-CQlkYnZhbHVlLjEgLTMzNTAKCQl9Cgl9Cgljb250cm9sLjEwIHsKCQlpZmFjZSBNSVhFUgoJ
-CW5hbWUgJ0NhcHR1cmUgU3dpdGNoJwoJCXZhbHVlLjAgdHJ1ZQoJCXZhbHVlLjEgdHJ1ZQoJ
-CWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgQk9PTEVBTgoJCQlj
-b3VudCAyCgkJfQoJfQoJY29udHJvbC4xMSB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdNaWMg
-Qm9vc3QgVm9sdW1lJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJCWNvbW1lbnQgewoJCQlh
-Y2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdFUgoJCQljb3VudCAyCgkJCXJhbmdl
-ICcwIC0gMycKCQkJZGJtaW4gMAoJCQlkYm1heCAzMDAwCgkJCWRidmFsdWUuMCAwCgkJCWRi
-dmFsdWUuMSAwCgkJfQoJfQoJY29udHJvbC4xMiB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdJ
-bnRlcm5hbCBNaWMgQm9vc3QgVm9sdW1lJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJCWNv
-bW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdFUgoJCQljb3Vu
-dCAyCgkJCXJhbmdlICcwIC0gMycKCQkJZGJtaW4gMAoJCQlkYm1heCAzMDAwCgkJCWRidmFs
-dWUuMCAwCgkJCWRidmFsdWUuMSAwCgkJfQoJfQoJY29udHJvbC4xMyB7CgkJaWZhY2UgTUlY
-RVIKCQluYW1lICdNYXN0ZXIgUGxheWJhY2sgVm9sdW1lJwoJCXZhbHVlIDEyNwoJCWNvbW1l
-bnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdFUgoJCQljb3VudCAx
-CgkJCXJhbmdlICcwIC0gMTI3JwoJCQlkYm1pbiAtNjM1MAoJCQlkYm1heCAwCgkJCWRidmFs
-dWUuMCAwCgkJfQoJfQoJY29udHJvbC4xNCB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdNYXN0
-ZXIgUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNz
-ICdyZWFkIHdyaXRlJwoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNvbnRy
-b2wuMTUgewoJCWlmYWNlIENBUkQKCQluYW1lICdNaWMgSmFjaycKCQl2YWx1ZSBmYWxzZQoJ
-CWNvbW1lbnQgewoJCQlhY2Nlc3MgcmVhZAoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJ
-CX0KCX0KCWNvbnRyb2wuMTYgewoJCWlmYWNlIENBUkQKCQluYW1lICdJbnRlcm5hbCBNaWMg
-UGhhbnRvbSBKYWNrJwoJCXZhbHVlIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQK
-CQkJdHlwZSBCT09MRUFOCgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjE3IHsKCQlpZmFj
-ZSBDQVJECgkJbmFtZSAnSGVhZHBob25lIEphY2snCgkJdmFsdWUgdHJ1ZQoJCWNvbW1lbnQg
-ewoJCQlhY2Nlc3MgcmVhZAoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNv
-bnRyb2wuMTggewoJCWlmYWNlIENBUkQKCQluYW1lICdTcGVha2VyIFBoYW50b20gSmFjaycK
-CQl2YWx1ZSB0cnVlCgkJY29tbWVudCB7CgkJCWFjY2VzcyByZWFkCgkJCXR5cGUgQk9PTEVB
-TgoJCQljb3VudCAxCgkJfQoJfQoJY29udHJvbC4xOSB7CgkJaWZhY2UgUENNCgkJbmFtZSAn
-UGxheWJhY2sgQ2hhbm5lbCBNYXAnCgkJdmFsdWUuMCAwCgkJdmFsdWUuMSAwCgkJY29tbWVu
-dCB7CgkJCWFjY2VzcyByZWFkCgkJCXR5cGUgSU5URUdFUgoJCQljb3VudCAyCgkJCXJhbmdl
-ICcwIC0gMzYnCgkJfQoJfQoJY29udHJvbC4yMCB7CgkJaWZhY2UgUENNCgkJbmFtZSAnQ2Fw
-dHVyZSBDaGFubmVsIE1hcCcKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQljb21tZW50IHsK
-CQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBJTlRFR0VSCgkJCWNvdW50IDIKCQkJcmFuZ2UgJzAg
-LSAzNicKCQl9Cgl9Cgljb250cm9sLjIxIHsKCQlpZmFjZSBDQVJECgkJbmFtZSAnSERNSS9E
-UCxwY209MyBKYWNrJwoJCXZhbHVlIGZhbHNlCgkJY29tbWVudCB7CgkJCWFjY2VzcyByZWFk
-CgkJCXR5cGUgQk9PTEVBTgoJCQljb3VudCAxCgkJfQoJfQoJY29udHJvbC4yMiB7CgkJaWZh
-Y2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sgQ29uIE1hc2snCgkJdmFsdWUgJzBm
-ZmYwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAnCgkJY29tbWVudCB7CgkJCWFjY2VzcyByZWFk
-CgkJCXR5cGUgSUVDOTU4CgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjIzIHsKCQlpZmFj
-ZSBNSVhFUgoJCW5hbWUgJ0lFQzk1OCBQbGF5YmFjayBQcm8gTWFzaycKCQl2YWx1ZSAnMGYw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCcKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQK
-CQkJdHlwZSBJRUM5NTgKCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMjQgewoJCWlmYWNl
-IE1JWEVSCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIERlZmF1bHQnCgkJdmFsdWUgJzA0MDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAnCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3
-cml0ZScKCQkJdHlwZSBJRUM5NTgKCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMjUgewoJ
-CWlmYWNlIE1JWEVSCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1ZSBm
-YWxzZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgQk9PTEVB
-TgoJCQljb3VudCAxCgkJfQoJfQoJY29udHJvbC4yNiB7CgkJaWZhY2UgUENNCgkJZGV2aWNl
-IDMKCQluYW1lIEVMRAoJCXZhbHVlICcnCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB2
-b2xhdGlsZScKCQkJdHlwZSBCWVRFUwoJCQljb3VudCAwCgkJfQoJfQoJY29udHJvbC4yNyB7
-CgkJaWZhY2UgQ0FSRAoJCW5hbWUgJ0hETUkvRFAscGNtPTcgSmFjaycKCQl2YWx1ZSBmYWxz
-ZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgcmVhZAoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQg
-MQoJCX0KCX0KCWNvbnRyb2wuMjggewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSUVDOTU4IFBs
-YXliYWNrIENvbiBNYXNrJwoJCWluZGV4IDEKCQl2YWx1ZSAnMGZmZjAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMCcKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBJRUM5NTgK
-CQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMjkgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAn
-SUVDOTU4IFBsYXliYWNrIFBybyBNYXNrJwoJCWluZGV4IDEKCQl2YWx1ZSAnMGYwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMCcKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlw
-ZSBJRUM5NTgKCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMzAgewoJCWlmYWNlIE1JWEVS
-CgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIERlZmF1bHQnCgkJaW5kZXggMQoJCXZhbHVlICcw
-NDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwJwoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3Jl
-YWQgd3JpdGUnCgkJCXR5cGUgSUVDOTU4CgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjMx
-IHsKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0lFQzk1OCBQbGF5YmFjayBTd2l0Y2gnCgkJaW5k
-ZXggMQoJCXZhbHVlIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJ
-CQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMzIgewoJCWlmYWNl
-IFBDTQoJCWRldmljZSA3CgkJbmFtZSBFTEQKCQl2YWx1ZSAnJwoJCWNvbW1lbnQgewoJCQlh
-Y2Nlc3MgJ3JlYWQgdm9sYXRpbGUnCgkJCXR5cGUgQllURVMKCQkJY291bnQgMAoJCX0KCX0K
-CWNvbnRyb2wuMzMgewoJCWlmYWNlIENBUkQKCQluYW1lICdIRE1JL0RQLHBjbT04IEphY2sn
-CgkJdmFsdWUgZmFsc2UKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBCT09M
-RUFOCgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjM0IHsKCQlpZmFjZSBNSVhFUgoJCW5h
-bWUgJ0lFQzk1OCBQbGF5YmFjayBDb24gTWFzaycKCQlpbmRleCAyCgkJdmFsdWUgJzBmZmYw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAnCgkJY29tbWVudCB7CgkJCWFjY2VzcyByZWFkCgkJ
-CXR5cGUgSUVDOTU4CgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjM1IHsKCQlpZmFjZSBN
-SVhFUgoJCW5hbWUgJ0lFQzk1OCBQbGF5YmFjayBQcm8gTWFzaycKCQlpbmRleCAyCgkJdmFs
-dWUgJzBmMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAnCgkJY29tbWVudCB7CgkJCWFjY2Vz
-cyByZWFkCgkJCXR5cGUgSUVDOTU4CgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjM2IHsK
-CQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0lFQzk1OCBQbGF5YmFjayBEZWZhdWx0JwoJCWluZGV4
-IDIKCQl2YWx1ZSAnMDQwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCcKCQljb21tZW50IHsK
-CQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIElFQzk1OAoJCQljb3VudCAxCgkJfQoJ
-fQoJY29udHJvbC4zNyB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sg
-U3dpdGNoJwoJCWluZGV4IDIKCQl2YWx1ZSB0cnVlCgkJY29tbWVudCB7CgkJCWFjY2VzcyAn
-cmVhZCB3cml0ZScKCQkJdHlwZSBCT09MRUFOCgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9s
-LjM4IHsKCQlpZmFjZSBQQ00KCQlkZXZpY2UgOAoJCW5hbWUgRUxECgkJdmFsdWUgJycKCQlj
-b21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHZvbGF0aWxlJwoJCQl0eXBlIEJZVEVTCgkJCWNv
-dW50IDAKCQl9Cgl9Cgljb250cm9sLjM5IHsKCQlpZmFjZSBQQ00KCQlkZXZpY2UgMwoJCW5h
-bWUgJ1BsYXliYWNrIENoYW5uZWwgTWFwJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJCXZh
-bHVlLjIgMAoJCXZhbHVlLjMgMAoJCXZhbHVlLjQgMAoJCXZhbHVlLjUgMAoJCXZhbHVlLjYg
-MAoJCXZhbHVlLjcgMAoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5
-cGUgSU5URUdFUgoJCQljb3VudCA4CgkJCXJhbmdlICcwIC0gMzYnCgkJfQoJfQoJY29udHJv
-bC40MCB7CgkJaWZhY2UgUENNCgkJZGV2aWNlIDcKCQluYW1lICdQbGF5YmFjayBDaGFubmVs
-IE1hcCcKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQl2YWx1ZS4yIDAKCQl2YWx1ZS4zIDAK
-CQl2YWx1ZS40IDAKCQl2YWx1ZS41IDAKCQl2YWx1ZS42IDAKCQl2YWx1ZS43IDAKCQljb21t
-ZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQg
-OAoJCQlyYW5nZSAnMCAtIDM2JwoJCX0KCX0KCWNvbnRyb2wuNDEgewoJCWlmYWNlIFBDTQoJ
-CWRldmljZSA4CgkJbmFtZSAnUGxheWJhY2sgQ2hhbm5lbCBNYXAnCgkJdmFsdWUuMCAwCgkJ
-dmFsdWUuMSAwCgkJdmFsdWUuMiAwCgkJdmFsdWUuMyAwCgkJdmFsdWUuNCAwCgkJdmFsdWUu
-NSAwCgkJdmFsdWUuNiAwCgkJdmFsdWUuNyAwCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVh
-ZCB3cml0ZScKCQkJdHlwZSBJTlRFR0VSCgkJCWNvdW50IDgKCQkJcmFuZ2UgJzAgLSAzNicK
-CQl9Cgl9Cgljb250cm9sLjQyIHsKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ1BDTSBQbGF5YmFj
-ayBWb2x1bWUnCgkJdmFsdWUuMCAyNTUKCQl2YWx1ZS4xIDI1NQoJCWNvbW1lbnQgewoJCQlh
-Y2Nlc3MgJ3JlYWQgd3JpdGUgdXNlcicKCQkJdHlwZSBJTlRFR0VSCgkJCWNvdW50IDIKCQkJ
-cmFuZ2UgJzAgLSAyNTUnCgkJCXRsdiAnMDAwMDAwMDEwMDAwMDAwOGZmZmZlYzE0MDAwMDAw
-MTQnCgkJCWRibWluIC01MTAwCgkJCWRibWF4IDAKCQkJZGJ2YWx1ZS4wIDAKCQkJZGJ2YWx1
-ZS4xIDAKCQl9Cgl9Cn0KLS1lbmRjb2xsYXBzZS0tCgoKISFBbGwgTG9hZGVkIE1vZHVsZXMK
-ISEtLS0tLS0tLS0tLS0tLS0tLS0KCk1vZHVsZQpjdHIKY2NtCnJmY29tbQpmdXNlCmFyYzQK
-Ym5lcAppbnRlbF9yYXBsCmludGVsX3Bvd2VyY2xhbXAKY29yZXRlbXAKYXRoMTBrX3BjaQpz
-bmRfc29jX3NrbAphdGgxMGtfY29yZQpzbmRfc29jX3NrbF9pcGMKc25kX3NvY19zc3RfaXBj
-CnNuZF9zb2Nfc3N0X2RzcApzbmRfaGRhX2V4dF9jb3JlCnNuZF9oZGFfY29kZWNfaGRtaQpz
-bmRfc29jX3NzdF9tYXRjaApzbmRfc29jX2NvcmUKc25kX2hkYV9jb2RlY19yZWFsdGVrCm5s
-c191dGY4Cm5sc19jcDQzNwpzbmRfaGRhX2NvZGVjX2dlbmVyaWMKdmZhdApzbmRfY29tcHJl
-c3MKYXRoCnNuZF9wY21fZG1hZW5naW5lCmFjOTdfYnVzCm1hYzgwMjExCnNuZF9oZGFfaW50
-ZWwKc25kX2hkYV9jb2RlYwpqb3lkZXYKa3ZtX2ludGVsCmt2bQpzbmRfaGRhX2NvcmUKZmF0
-CmlycWJ5cGFzcwpzbmRfaHdkZXAKY3JjdDEwZGlmX3BjbG11bApjcmMzMl9wY2xtdWwKc25k
-X3BjbQppMmNfZGVzaWdud2FyZV9wbGF0Zm9ybQpnaGFzaF9jbG11bG5pX2ludGVsCmkyY19k
-ZXNpZ253YXJlX2NvcmUKc25kX3NlcV9taWRpCmFlc25pX2ludGVsCnNuZF9zZXFfbWlkaV9l
-dmVudApidHVzYgphZXNfeDg2XzY0CmxydwpidHJ0bApnZjEyOG11bApidGJjbQpzbmRfcmF3
-bWlkaQpjZmc4MDIxMQpzbmRfc2VxCmdsdWVfaGVscGVyCmFibGtfaGVscGVyCmNyeXB0ZApi
-dGludGVsCmludGVsX2NzdGF0ZQpibHVldG9vdGgKaW50ZWxfcmFwbF9wZXJmCnNuZF9zZXFf
-ZGV2aWNlCnNuZF90aW1lcgpzZXJpb19yYXcKc25kCmVmaV9wc3RvcmUKZWZpdmFycwpoaWRf
-bXVsdGl0b3VjaApzZwptZWlfbWUKc291bmRjb3JlCnJma2lsbAptZWkKdWNzaQpzaHBjaHAK
-aWRtYTY0CnZpcnRfZG1hCmludGVsX2xwc3NfcGNpCmludGVsX3ZidG4Kc3BhcnNlX2tleW1h
-cApzb2NfYnV0dG9uX2FycmF5CmV2ZGV2CmludGVsX2xwc3NfYWNwaQppbnRlbF9scHNzCm1m
-ZF9jb3JlCnRwbV9jcmIKYWMKdHBtX3Rpcwp0cG1fdGlzX2NvcmUKdHBtCnBhcnBvcnRfcGMK
-cHBkZXYKbHAKcGFycG9ydAplZml2YXJmcwphdXRvZnM0CmV4dDQKY3JjMTYKamJkMgptYmNh
-Y2hlCnNkX21vZApoaWRfZ2VuZXJpYwp1c2JoaWQKaTkxNQppMmNfYWxnb19iaXQKY3JjMzJj
-X2ludGVsCmRybV9rbXNfaGVscGVyCmFoY2kKbGliYWhjaQpsaWJhdGEKeGhjaV9wY2kKeGhj
-aV9oY2QKZHJtCnNjc2lfbW9kCnVzYmNvcmUKdXNiX2NvbW1vbgppMmNfaGlkCndtaQpoaWQK
-ZmplcwoKCiEhU3lzZnMgRmlsZXMKISEtLS0tLS0tLS0tLQoKL3N5cy9jbGFzcy9zb3VuZC9o
-d0MwRDAvaW5pdF9waW5fY29uZmlnczoKMHgxMiAweDkwYTYwMWMwCjB4MTMgMHg0MDAwMDAw
-MAoweDE0IDB4NDExMTExZjAKMHgxNyAweDA0MjExMDEwCjB4MTggMHgwNGExMTA0MAoweDE5
-IDB4NDExMTExZjAKMHgxYSAweDkwMTcwMTIwCjB4MWQgMHg0MDY0MjI0NQoweDFlIDB4NDEx
-MTExZjAKMHgxZiAweDQxMTExMWYwCjB4MjEgMHg0MTExMTFmMAoKL3N5cy9jbGFzcy9zb3Vu
-ZC9od0MwRDAvZHJpdmVyX3Bpbl9jb25maWdzOgoKL3N5cy9jbGFzcy9zb3VuZC9od0MwRDAv
-dXNlcl9waW5fY29uZmlnczoKCi9zeXMvY2xhc3Mvc291bmQvaHdDMEQwL2luaXRfdmVyYnM6
-Cgovc3lzL2NsYXNzL3NvdW5kL2h3QzBEMC9oaW50czoKCi9zeXMvY2xhc3Mvc291bmQvaHdD
-MEQyL2luaXRfcGluX2NvbmZpZ3M6CjB4MDUgMHgxODU2MDAxMAoweDA2IDB4MTg1NjAwMTAK
-MHgwNyAweDE4NTYwMDEwCgovc3lzL2NsYXNzL3NvdW5kL2h3QzBEMi9kcml2ZXJfcGluX2Nv
-bmZpZ3M6Cgovc3lzL2NsYXNzL3NvdW5kL2h3QzBEMi91c2VyX3Bpbl9jb25maWdzOgoKL3N5
-cy9jbGFzcy9zb3VuZC9od0MwRDIvaW5pdF92ZXJiczoKCi9zeXMvY2xhc3Mvc291bmQvaHdD
-MEQyL2hpbnRzOgoKCiEhQUxTQS9IREEgZG1lc2cKISEtLS0tLS0tLS0tLS0tLQoKWyAgIDE2
-Ljc1NzYxNV0gaGlkLW11bHRpdG91Y2ggMDAxODowNkNCOjU4MTAuMDAwNDogaW5wdXQsaGlk
-cmF3MzogSTJDIEhJRCB2MS4wMCBEZXZpY2UgW1NZTlAxMjM0OjAwIDA2Q0I6NTgxMF0gb24g
-aTJjLVNZTlAxMjM0OjAwClsgICAxNy4wNDI3NzNdIHNuZF9oZGFfaW50ZWwgMDAwMDowMDox
-Zi4zOiBlbmFibGluZyBkZXZpY2UgKDAwMDAgLT4gMDAwMikKWyAgIDE3LjA1MjAzOF0gc25k
-X2hkYV9pbnRlbCAwMDAwOjAwOjFmLjM6IGJvdW5kIDAwMDA6MDA6MDIuMCAob3BzIGk5MTVf
-YXVkaW9fY29tcG9uZW50X2JpbmRfb3BzIFtpOTE1XSkKWyAgIDE3LjA5OTU2NV0gRkFULWZz
-IChzZGExKTogdXRmOCBpcyBub3QgYSByZWNvbW1lbmRlZCBJTyBjaGFyc2V0IGZvciBGQVQg
-ZmlsZXN5c3RlbXMsIGZpbGVzeXN0ZW0gd2lsbCBiZSBjYXNlIHNlbnNpdGl2ZSEKWyAgIDE3
-LjEyMDA0OV0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMEQwOiBhdXRvY29uZmln
-IGZvciBBTEMyOTg6IGxpbmVfb3V0cz0xICgweDFhLzB4MC8weDAvMHgwLzB4MCkgdHlwZTpz
-cGVha2VyClsgICAxNy4xMjAwNTJdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBE
-MDogICAgc3BlYWtlcl9vdXRzPTAgKDB4MC8weDAvMHgwLzB4MC8weDApClsgICAxNy4xMjAw
-NTRdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMDogICAgaHBfb3V0cz0xICgw
-eDE3LzB4MC8weDAvMHgwLzB4MCkKWyAgIDE3LjEyMDA1Nl0gc25kX2hkYV9jb2RlY19yZWFs
-dGVrIGhkYXVkaW9DMEQwOiAgICBtb25vOiBtb25vX291dD0weDAKWyAgIDE3LjEyMDA1N10g
-c25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMEQwOiAgICBpbnB1dHM6ClsgICAxNy4x
-MjAwNTldIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMDogICAgICBNaWM9MHgx
-OApbICAgMTcuMTIwMDYxXSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDA6ICAg
-ICAgSW50ZXJuYWwgTWljPTB4MTIKWyAgIDE3LjE2NzYyMl0gaW5wdXQ6IEhEQSBJbnRlbCBQ
-Q0ggTWljIGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxZi4zL3NvdW5kL2NhcmQw
-L2lucHV0MTAKWyAgIDE3LjE2NzcwOF0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggSGVhZHBob25l
-IGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxZi4zL3NvdW5kL2NhcmQwL2lucHV0
-MTEKWyAgIDE3LjE2Nzc4N10gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggSERNSS9EUCxwY209MyBh
-cyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWYuMy9zb3VuZC9jYXJkMC9pbnB1dDEy
-ClsgICAxNy4xNjc4NjJdIGlucHV0OiBIREEgSW50ZWwgUENIIEhETUkvRFAscGNtPTcgYXMg
-L2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFmLjMvc291bmQvY2FyZDAvaW5wdXQxMwpb
-ICAgMTcuMTY3OTM4XSBpbnB1dDogSERBIEludGVsIFBDSCBIRE1JL0RQLHBjbT04IGFzIC9k
-ZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxZi4zL3NvdW5kL2NhcmQwL2lucHV0MTQKWyAg
-IDE3LjIzMjUyOF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IGVuYWJsaW5nIGRldmljZSAo
-MDAwMCAtPiAwMDAyKQoKCg==
---------------010501000800050408090805
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------010501000800050408090805--
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
