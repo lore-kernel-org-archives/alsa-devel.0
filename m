@@ -1,14 +1,27 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: seq: fix to copy from/to user space
-Date: Tue, 13 Sep 2016 19:37:53 +0900
-Message-ID: <1473763073-17529-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
+ McBSP to prevent glitches
+Date: Tue, 13 Sep 2016 14:45:22 +0300
+Message-ID: <6f6c2c1c-5ca4-f821-0690-c6c726b1263e@ti.com>
+References: <c8f293f6-db2e-e518-7566-2cd92eb06ec0@ti.com>
+ <20160902204049.uhp4oosu3oc4k5v6@atomide.com>
+ <7d1c9a2f-60ae-2d83-f7dc-55fe476dbccb@ti.com>
+ <20160906201649.fx4vhuqmnziwshoe@atomide.com>
+ <1b82e33a-7db5-81ed-de4f-75847f840088@ti.com>
+ <20160908035356.mkk35s5gpcemifcg@atomide.com>
+ <ceb7854b-6cd4-fe3d-ede7-016c64f88dc0@ti.com>
+ <9452a3c6-9bf9-818f-6e8d-455193839e94@ti.com>
+ <20160908144834.i722j3afyztk6vhh@atomide.com>
+ <8ec65c33-cc92-7737-ac7a-1338bcab7b90@ti.com>
+ <20160909234528.qku3fugiwglkqa3q@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 3699F2669E6
- for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2016 12:38:00 +0200 (CEST)
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [198.47.19.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2FA02669E6
+ for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2016 13:45:29 +0200 (CEST)
+In-Reply-To: <20160909234528.qku3fugiwglkqa3q@atomide.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,43 +31,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, "Kristo, Tero" <t-kristo@ti.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Pavel Machel <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-When checking value of request for copy operation, current implementation
-compares shifted value to macros, while these macros are already shifted.
-As a result, it never performs to copy from/to user space.
+On 09/10/16 02:45, Tony Lindgren wrote:
+>> In any way, according to the numbers:
+>> C7 is (7505 + 15274) vs (10000 + 30000)
+>> C6 is (7580 + 4134) vs (3000 + 8500)
+>> C5 is (855 + 1146) vs (2500 + 7500)
+>> C4 is (121 + 3374) vs (1500 + 1800)
+>> C3 is (107 + 410) vs (50 + 50)
+>>
+>> with the 30ms QoS we set we will still hit OFF on OMAP3430, it should mi=
+nimum
+>> 11.715ms for omap3430, but that will block C6 on omap36xx.
+> =
 
-This commit fixes the bug.
+> Yeah those don't seem to be correct. The Nokia N9(50) kernel seems to have
+> some measured numbers for 36xx.
 
-Fixes: 8ce8eb601c71('ALSA: seq: add an alternative way to handle ioctl requests'
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/seq/seq_clientmgr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+True, probably we should give those numbers a try? It looks like they have
+C1...C8 compared to mainline which have C1...C7.
 
-diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 811b95b..4c93520 100644
---- a/sound/core/seq/seq_clientmgr.c
-+++ b/sound/core/seq/seq_clientmgr.c
-@@ -2122,7 +2122,7 @@ static long snd_seq_ioctl(struct file *file, unsigned int cmd,
- 	 * within 13 bits. We can safely pick up the size from the command.
- 	 */
- 	size = _IOC_SIZE(handler->cmd);
--	if (_IOC_DIR(handler->cmd) & IOC_IN) {
-+	if (handler->cmd & IOC_IN) {
- 		if (copy_from_user(&buf, (const void __user *)arg, size))
- 			return -EFAULT;
- 	}
-@@ -2132,7 +2132,7 @@ static long snd_seq_ioctl(struct file *file, unsigned int cmd,
- 		/* Some commands includes a bug in 'dir' field. */
- 		if (handler->cmd == SNDRV_SEQ_IOCTL_SET_QUEUE_CLIENT ||
- 		    handler->cmd == SNDRV_SEQ_IOCTL_SET_CLIENT_POOL ||
--		    (_IOC_DIR(handler->cmd) & IOC_OUT))
-+		    (handler->cmd & IOC_OUT))
- 			if (copy_to_user((void __user *)arg, &buf, size))
- 				return -EFAULT;
- 	}
--- 
-2.7.4
+>> If we could have the data for the struct cpuidle_state coming from DT an=
+d not
+>> wired in the cpuidle34xx/44xx files then the McBSP driver could look up =
+the C7
+>> number and block that...
+> =
+
+> I'm now thinking that your fifo threshold calculation is what we should
+> do, then fix the cpuidle latencies and playback should hit retention idle.
+
+Right. So the QoS should be set time(FIFOsize - FIFOthreshold) - margin?
+What margin we should use? The DMA does not need setup time as it will just
+continue where it stopped, so probably we can ignore the margin and use the
+number we got from the FIFO use?
+During hw_param we can calculate this, but we need to consider on more thin=
+g:
+we need to make sure that the QoS we place covers the capture and the playb=
+ack
+as well, so we need to use the worst case number. the FIFO threshold can be
+different for capture and playback.
+
+-- =
+
+P=E9ter
