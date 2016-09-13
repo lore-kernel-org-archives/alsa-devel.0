@@ -1,32 +1,143 @@
 From: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Subject: [[alsa-devel][Patch] 0/2] ASoC sti: suppress inappropriate DT fields
-Date: Tue, 13 Sep 2016 09:58:22 +0200
-Message-ID: <1473753504-20179-1-git-send-email-arnaud.pouliquen@st.com>
+Subject: [[alsa-devel][Patch] 2/2] Documentation: dt-bindings: suppress inappropriate fields for sti sound card
+Date: Tue, 13 Sep 2016 09:58:24 +0200
+Message-ID: <1473753504-20179-3-git-send-email-arnaud.pouliquen@st.com>
+References: <1473753504-20179-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1473753504-20179-1-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, peter.griffin-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Aim of this patchset is to clean some "dirty" fields in devicetree. 
-As Values are linked to the chip version and the IP usage, 
-they can be handled by device data associated to the compatibility string.
+Suppress fields that can be handled in driver using compatible string.
+Rename compatibility strings accordingly.
 
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+---
+ .../devicetree/bindings/sound/st,sti-asoc-card.txt | 52 +++++++---------------
+ 1 file changed, 16 insertions(+), 36 deletions(-)
 
-Arnaud Pouliquen (2):
-  ASoC: sti: suppress inappropriate DT fields
-  Documentation: dt-bindings: suppress inappropriate fields for sti
-    sound card
-
- .../devicetree/bindings/sound/st,sti-asoc-card.txt |  52 +++------
- sound/soc/sti/sti_uniperif.c                       | 130 +++++++++++++++++----
- sound/soc/sti/uniperif.h                           |  28 ++---
- sound/soc/sti/uniperif_player.c                    |  79 +++----------
- sound/soc/sti/uniperif_reader.c                    |  46 +-------
- 5 files changed, 156 insertions(+), 179 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt b/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
+index 16bcdfb..745dc62 100644
+--- a/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
++++ b/Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
+@@ -11,7 +11,9 @@ Documentation/devicetree/bindings/sound/simple-card.txt.
+ ---------------------------------------
+ 
+ Required properties:
+-  - compatible: "st,sti-uni-player" or "st,sti-uni-reader"
++  - compatible: "st,stih407-uni-player-hdmi", "st,stih407-uni-player-pcm-out",
++		"st,stih407-uni-player-dac", "st,stih407-uni-player-spdif",
++		"st,stih407-uni-reader-pcm_in", "st,stih407-uni-reader-hdmi",
+ 
+   - st,syscfg: phandle to boot-device system configuration registers
+ 
+@@ -33,32 +35,24 @@ Required properties:
+ 	"tx" for "st,sti-uni-player" compatibility
+ 	"rx" for "st,sti-uni-reader" compatibility
+ 
+-  - st,version: IP version integrated in SOC.
+-
+-  - dai-name: DAI name that describes the IP.
+-
+-  - st,mode: IP working mode depending on associated codec.
+-	"HDMI" connected to HDMI codec and support IEC HDMI formats (player only).
+-	"SPDIF" connected to SPDIF codec and support SPDIF formats (player only).
+-	"PCM" PCM standard mode for I2S or TDM bus.
+-	"TDM" TDM mode for TDM bus.
+-
+ Required properties ("st,sti-uni-player" compatibility only):
+   - clocks: CPU_DAI IP clock source, listed in the same order than the
+ 	    CPU_DAI properties.
+ 
+-  - st,uniperiph-id: internal SOC IP instance ID.
+-
+ Optional properties:
+   - pinctrl-0: defined for CPU_DAI@1 and CPU_DAI@4 to describe I2S PIOs for
+ 	       external codecs connection.
+ 
+   - pinctrl-names: should contain only one value - "default".
+ 
++  - st,tdm-mode: to declare to set TDM mode for unireader and uniplayer IPs.
++	Only compartible with IPs in charge of the external I2S/TDM bus.
++	Should be declared depending on associated codec.
++
+ Example:
+ 
+-	sti_uni_player1: sti-uni-player@1 {
+-		compatible = "st,sti-uni-player";
++	sti_uni_player1: sti-uni-player@0x8D81000 {
++		compatible = "st,stih407-uni-player-hdmi";
+ 		status = "okay";
+ 		#sound-dai-cells = <0>;
+ 		st,syscfg = <&syscfg_core>;
+@@ -66,15 +60,12 @@ Example:
+ 		reg = <0x8D81000 0x158>;
+ 		interrupts = <GIC_SPI 85 IRQ_TYPE_NONE>;
+ 		dmas = <&fdma0 3 0 1>;
+-		st,dai-name = "Uni Player #1 (I2S)";
+ 		dma-names = "tx";
+-		st,uniperiph-id = <1>;
+-		st,version = <5>;
+-		st,mode = "TDM";
++		st,tdm-mode = <1>;
+ 	};
+ 
+-	sti_uni_player2: sti-uni-player@2 {
+-		compatible = "st,sti-uni-player";
++	sti_uni_player2: sti-uni-player@0x8D82000 {
++		compatible = "st,stih407-uni-player-pcm-out";
+ 		status = "okay";
+ 		#sound-dai-cells = <0>;
+ 		st,syscfg = <&syscfg_core>;
+@@ -82,15 +73,11 @@ Example:
+ 		reg = <0x8D82000 0x158>;
+ 		interrupts = <GIC_SPI 86 IRQ_TYPE_NONE>;
+ 		dmas = <&fdma0 4 0 1>;
+-		dai-name = "Uni Player #2 (DAC)";
+ 		dma-names = "tx";
+-		st,uniperiph-id = <2>;
+-		st,version = <5>;
+-		st,mode = "PCM";
+ 	};
+ 
+-	sti_uni_player3: sti-uni-player@3 {
+-		compatible = "st,sti-uni-player";
++	sti_uni_player3: sti-uni-player@0x8D85000 {
++		compatible = "st,stih407-uni-player-spdif";
+ 		status = "okay";
+ 		#sound-dai-cells = <0>;
+ 		st,syscfg = <&syscfg_core>;
+@@ -99,14 +86,10 @@ Example:
+ 		interrupts = <GIC_SPI 89 IRQ_TYPE_NONE>;
+ 		dmas = <&fdma0 7 0 1>;
+ 		dma-names = "tx";
+-		dai-name = "Uni Player #3 (SPDIF)";
+-		st,uniperiph-id = <3>;
+-		st,version = <5>;
+-		st,mode = "SPDIF";
+ 	};
+ 
+-	sti_uni_reader1: sti-uni-reader@1 {
+-		compatible = "st,sti-uni-reader";
++	sti_uni_reader1: sti-uni-reader@0x8D84000 {
++		compatible = "st,stih407-uni-reader-hdmi";
+ 		status = "disabled";
+ 		#sound-dai-cells = <0>;
+ 		st,syscfg = <&syscfg_core>;
+@@ -114,9 +97,6 @@ Example:
+ 		interrupts = <GIC_SPI 88 IRQ_TYPE_NONE>;
+ 		dmas = <&fdma0 6 0 1>;
+ 		dma-names = "rx";
+-		dai-name = "Uni Reader #1 (HDMI RX)";
+-		st,version = <3>;
+-		st,mode = "PCM";
+ 	};
+ 
+ 2) sti-sas-codec: internal audio codec IPs driver
 -- 
 1.9.1
 
