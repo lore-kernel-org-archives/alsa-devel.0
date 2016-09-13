@@ -1,17 +1,27 @@
-From: varun sood <soodvarun78@yahoo.co.in>
-Subject: Problem in using few ladspa plugins
-Date: Tue, 13 Sep 2016 13:10:59 +0000 (UTC)
-Message-ID: <1473175359.414439.1473772259017@mail.yahoo.com>
-References: <1473175359.414439.1473772259017.ref@mail.yahoo.com>
-Reply-To: varun sood <soodvarun78@yahoo.co.in>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
+ McBSP to prevent glitches
+Date: Tue, 13 Sep 2016 06:45:14 -0700
+Message-ID: <20160913134512.7cpq3nuosn7rcgwl@atomide.com>
+References: <7d1c9a2f-60ae-2d83-f7dc-55fe476dbccb@ti.com>
+ <20160906201649.fx4vhuqmnziwshoe@atomide.com>
+ <1b82e33a-7db5-81ed-de4f-75847f840088@ti.com>
+ <20160908035356.mkk35s5gpcemifcg@atomide.com>
+ <ceb7854b-6cd4-fe3d-ede7-016c64f88dc0@ti.com>
+ <9452a3c6-9bf9-818f-6e8d-455193839e94@ti.com>
+ <20160908144834.i722j3afyztk6vhh@atomide.com>
+ <8ec65c33-cc92-7737-ac7a-1338bcab7b90@ti.com>
+ <20160909234528.qku3fugiwglkqa3q@atomide.com>
+ <6f6c2c1c-5ca4-f821-0690-c6c726b1263e@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm18-vm3.bullet.mail.sg3.yahoo.com
- (nm18-vm3.bullet.mail.sg3.yahoo.com [106.10.149.98])
- by alsa0.perex.cz (Postfix) with ESMTP id 93621266A4B
- for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2016 15:11:03 +0200 (CEST)
+Received: from muru.com (muru.com [72.249.23.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id 027D0266A34
+ for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2016 15:45:19 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <6f6c2c1c-5ca4-f821-0690-c6c726b1263e@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,30 +31,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, "Kristo, Tero" <t-kristo@ti.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Pavel Machel <pavel@ucw.cz>, Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgQWxzYSBEZXZlbG9wZXJzLApJIGFtIHdvcmtpbmcgb24gbGFkc3BhIHBsdWdpbiB1c2luZyBh
-bHNhIGxpYiAuIApUaGVyZSBpcyBwcm9ibGVtIHdpdGggYWxzYSBsaWJyYXJ5IHdpdGggdGhvc2Ug
-bGFkc3BhIHBsdWdpbnMgd2hlcmUgdGhlcmUgaXMgY2hhbmdlIGluIG51bWJlciBvZiBpbnB1dCBh
-bmQgb3V0cHV0IGF1ZGlvIHBvcnRzIGZyb20gdGhlIGxhZHNwYSBwbHVnaW4uRSxnIGZvciBsYWRz
-cGEgcGx1Z2luLCBpZiBJIGRvCmFuYWx5c2VwbHVnaW4gc3Vycm91bmRfZW5jb2Rlcl8xNDAxLnNv
-UG9ydHM6ICJMIiBpbnB1dCwgYXVkaW8KwqDCoMKgwqDCoMKgwqDCoMKgICJSIiBpbnB1dCwgYXVk
-aW8KwqDCoMKgwqDCoMKgwqDCoMKgwqAgIkMiIGlucHV0LCBhdWRpbwrCoMKgwqDCoMKgwqDCoMKg
-wqDCoCAiUyIgaW5wdXQsIGF1ZGlvCsKgwqDCoMKgwqDCoMKgwqDCoMKgICJMdCIgb3V0cHV0LCBh
-dWRpbwrCoMKgwqDCoMKgwqDCoMKgwqDCoCAiUnQiIG91dHB1dCwgYXVkaW8KVGhlcmUgYXJlIDQg
-aW5wdXQgcG9ydHMoIkwiLCJSIiwiQyIsIlMiKSBmb3IgbGFkc3BhIGFuZCAyIG91dHB1dCBwb3J0
-IGZyb20gbGFkc3BhKCJMdCIsIlJ0IikuIApUaGlzIGlzIGVxdWl2YWxlbnQgdG8gNCBpbnB1dCBj
-aGFubmVscyBhbmQgMiBvdXRwdXQgY2hhbm5lbHMuClRoZSBhbHNhIGxpYnJhcnkgZG9lcyBub3Qg
-aGFuZGxlIHRoaXMgcGx1Z2luIHByb3Blcmx5LiBJIHJlY2VpdmUgc2VnbWVudGF0aW9uIGZhdWx0
-IG9uIHVzaW5nIHRoaXMgcGx1Z2luIGluIGFsc2EgY2hhaW4gc2NlbmFyaW8gYXQgbGluZSAKaWYg
-KHBjaGFubmVsc1tjaG5dID09IE5VTEwgJiYgY2huIDwgaWNoYW5uZWxzKSAKaW4gZnVuY3Rpb24g
-c25kX3BjbV9sYWRzcGFfYWxsb2NhdGVfbWVtb3J5IGluIGZpbGUgcGNtX2xhZHNwYS5jCgpTaW1p
-bGFyIGlzc3VlIEkgaGF2ZSBzZWVuIGluIHNwbGl0XzE0MDYuc28sIHdoaWNoIHRha2VzIDEgY2hh
-bm5lbCBpbnB1dCggMSBpbnB1dCBwb3J0KSBhbmQgZ2l2ZXMgMiBjaGFubmVsIG91dHB1dCggMiBv
-dXRwdXQgcG9ydHMpLk5vIHNlZ21lbnRhdGlvbiBmYXVsdCBpbiB0aGlzIGNhc2UgYnV0IGl0IGln
-bm9yZXMgdGhlIDJuZCBjaGFubmVsIC4KSXMgdGhlcmUgYSB3YXkgdG8gc29sdmUgdGhlc2UgcHJv
-YmxlbSA/CgpSZWdhcmRzVmFydW4gU29vZApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [160913 04:45]:
+> On 09/10/16 02:45, Tony Lindgren wrote:
+> >> In any way, according to the numbers:
+> >> C7 is (7505 + 15274) vs (10000 + 30000)
+> >> C6 is (7580 + 4134) vs (3000 + 8500)
+> >> C5 is (855 + 1146) vs (2500 + 7500)
+> >> C4 is (121 + 3374) vs (1500 + 1800)
+> >> C3 is (107 + 410) vs (50 + 50)
+> >>
+> >> with the 30ms QoS we set we will still hit OFF on OMAP3430, it should minimum
+> >> 11.715ms for omap3430, but that will block C6 on omap36xx.
+> > 
+> > Yeah those don't seem to be correct. The Nokia N9(50) kernel seems to have
+> > some measured numbers for 36xx.
+> 
+> True, probably we should give those numbers a try? It looks like they have
+> C1...C8 compared to mainline which have C1...C7.
+
+Well some of those numbers are based on OSWR (Open SWitch Retention), not
+sure if that works properly with mainline. Worth trying though.
+
+> >> If we could have the data for the struct cpuidle_state coming from DT and not
+> >> wired in the cpuidle34xx/44xx files then the McBSP driver could look up the C7
+> >> number and block that...
+> > 
+> > I'm now thinking that your fifo threshold calculation is what we should
+> > do, then fix the cpuidle latencies and playback should hit retention idle.
+> 
+> Right. So the QoS should be set time(FIFOsize - FIFOthreshold) - margin?
+> What margin we should use? The DMA does not need setup time as it will just
+> continue where it stopped, so probably we can ignore the margin and use the
+> number we got from the FIFO use?
+
+Yeah seems safe assuming the mystery numbers are wrong C state latencies :)
+
+> During hw_param we can calculate this, but we need to consider on more thing:
+> we need to make sure that the QoS we place covers the capture and the playback
+> as well, so we need to use the worst case number. the FIFO threshold can be
+> different for capture and playback.
+
+OK makes sense to me.
+
+Regards,
+
+Tony
