@@ -1,47 +1,36 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: nau8825: fix bug in FLL parameter
-Date: Tue, 13 Sep 2016 11:56:03 +0800
-Message-ID: <1473738963-17406-1-git-send-email-KCHSU0@nuvoton.com>
+From: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Subject: [[alsa-devel][Patch] 0/2] ASoC sti: suppress inappropriate DT fields
+Date: Tue, 13 Sep 2016 09:58:22 +0200
+Message-ID: <1473753504-20179-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id EB2A1266966
- for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2016 05:56:14 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, peter.griffin-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-In the FLL parameter calculation, the FVCO should choose the maximum one.
-The patch is to fix the bug about the wrong FVCO chosen.
+Aim of this patchset is to clean some "dirty" fields in devicetree. 
+As Values are linked to the chip version and the IP usage, 
+they can be handled by device data associated to the compatibility string.
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- sound/soc/codecs/nau8825.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 057785b..e643be9 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -1907,7 +1907,7 @@ static int nau8825_calc_fll_param(unsigned int fll_in, unsigned int fs,
- 	/* Calculate the FLL 10-bit integer input and the FLL 16-bit fractional
- 	 * input based on FDCO, FREF and FLL ratio.
- 	 */
--	fvco = div_u64(fvco << 16, fref * fll_param->ratio);
-+	fvco = div_u64(fvco_max << 16, fref * fll_param->ratio);
- 	fll_param->fll_int = (fvco >> 16) & 0x3FF;
- 	fll_param->fll_frac = fvco & 0xFFFF;
- 	return 0;
+Arnaud Pouliquen (2):
+  ASoC: sti: suppress inappropriate DT fields
+  Documentation: dt-bindings: suppress inappropriate fields for sti
+    sound card
+
+ .../devicetree/bindings/sound/st,sti-asoc-card.txt |  52 +++------
+ sound/soc/sti/sti_uniperif.c                       | 130 +++++++++++++++++----
+ sound/soc/sti/uniperif.h                           |  28 ++---
+ sound/soc/sti/uniperif_player.c                    |  79 +++----------
+ sound/soc/sti/uniperif_reader.c                    |  46 +-------
+ 5 files changed, 156 insertions(+), 179 deletions(-)
+
 -- 
-2.6.4
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
