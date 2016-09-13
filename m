@@ -1,80 +1,156 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Add PM QoS support for
- McBSP to prevent glitches
-Date: Tue, 13 Sep 2016 14:45:22 +0300
-Message-ID: <6f6c2c1c-5ca4-f821-0690-c6c726b1263e@ti.com>
-References: <c8f293f6-db2e-e518-7566-2cd92eb06ec0@ti.com>
- <20160902204049.uhp4oosu3oc4k5v6@atomide.com>
- <7d1c9a2f-60ae-2d83-f7dc-55fe476dbccb@ti.com>
- <20160906201649.fx4vhuqmnziwshoe@atomide.com>
- <1b82e33a-7db5-81ed-de4f-75847f840088@ti.com>
- <20160908035356.mkk35s5gpcemifcg@atomide.com>
- <ceb7854b-6cd4-fe3d-ede7-016c64f88dc0@ti.com>
- <9452a3c6-9bf9-818f-6e8d-455193839e94@ti.com>
- <20160908144834.i722j3afyztk6vhh@atomide.com>
- <8ec65c33-cc92-7737-ac7a-1338bcab7b90@ti.com>
- <20160909234528.qku3fugiwglkqa3q@atomide.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 4/6] mfd: arizona: Add gating of external MCLKn clocks
+Date: Tue, 13 Sep 2016 13:44:57 +0100
+Message-ID: <20160913124457.GA31412@dell>
+References: <1472831568-466-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1472831568-466-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [198.47.19.12])
- by alsa0.perex.cz (Postfix) with ESMTP id B2FA02669E6
- for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2016 13:45:29 +0200 (CEST)
-In-Reply-To: <20160909234528.qku3fugiwglkqa3q@atomide.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, "Kristo, Tero" <t-kristo@ti.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Pavel Machel <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1472831568-466-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, s.nawrocki@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 09/10/16 02:45, Tony Lindgren wrote:
->> In any way, according to the numbers:
->> C7 is (7505 + 15274) vs (10000 + 30000)
->> C6 is (7580 + 4134) vs (3000 + 8500)
->> C5 is (855 + 1146) vs (2500 + 7500)
->> C4 is (121 + 3374) vs (1500 + 1800)
->> C3 is (107 + 410) vs (50 + 50)
->>
->> with the 30ms QoS we set we will still hit OFF on OMAP3430, it should mi=
-nimum
->> 11.715ms for omap3430, but that will block C6 on omap36xx.
-> =
+On Fri, 02 Sep 2016, Charles Keepax wrote:
 
-> Yeah those don't seem to be correct. The Nokia N9(50) kernel seems to have
-> some measured numbers for 36xx.
+> From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> 
+> This patch adds requesting of the clocks supplied on MCLK1, MCLK2 pins,
+> gating of the 32k clock is added to the arizona_clk32k_enable(),
+> arizona_clk32k_disable() helpers.
+> 
+> It's a temporary change until the CODEC's clock controller gets exposed
+> through the clk API and is helpful for board configurations where the
+> MCLK clocks are not provided by always on oscillators.
+> 
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> ---
+>  drivers/mfd/arizona-core.c       | 30 ++++++++++++++++++++++++++++--
+>  include/linux/mfd/arizona/core.h |  9 +++++++++
+>  2 files changed, 37 insertions(+), 2 deletions(-)
 
-True, probably we should give those numbers a try? It looks like they have
-C1...C8 compared to mainline which have C1...C7.
+Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 
->> If we could have the data for the struct cpuidle_state coming from DT an=
-d not
->> wired in the cpuidle34xx/44xx files then the McBSP driver could look up =
-the C7
->> number and block that...
-> =
+Can I take this?
 
-> I'm now thinking that your fifo threshold calculation is what we should
-> do, then fix the cpuidle latencies and playback should hit retention idle.
+> diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+> index e4f97b3..4fa0fae 100644
+> --- a/drivers/mfd/arizona-core.c
+> +++ b/drivers/mfd/arizona-core.c
+> @@ -10,6 +10,7 @@
+>   * published by the Free Software Foundation.
+>   */
+>  
+> +#include <linux/clk.h>
+>  #include <linux/delay.h>
+>  #include <linux/err.h>
+>  #include <linux/gpio.h>
+> @@ -49,7 +50,15 @@ int arizona_clk32k_enable(struct arizona *arizona)
+>  		case ARIZONA_32KZ_MCLK1:
+>  			ret = pm_runtime_get_sync(arizona->dev);
+>  			if (ret != 0)
+> -				goto out;
+> +				goto err_ref;
+> +			ret = clk_prepare_enable(arizona->mclk[ARIZONA_MCLK1]);
+> +			if (ret != 0)
+> +				goto err_pm;
+> +			break;
+> +		case ARIZONA_32KZ_MCLK2:
+> +			ret = clk_prepare_enable(arizona->mclk[ARIZONA_MCLK2]);
+> +			if (ret != 0)
+> +				goto err_ref;
+>  			break;
+>  		}
+>  
+> @@ -58,7 +67,9 @@ int arizona_clk32k_enable(struct arizona *arizona)
+>  					 ARIZONA_CLK_32K_ENA);
+>  	}
+>  
+> -out:
+> +err_pm:
+> +	pm_runtime_put_sync(arizona->dev);
+> +err_ref:
+>  	if (ret != 0)
+>  		arizona->clk32k_ref--;
+>  
+> @@ -83,6 +94,10 @@ int arizona_clk32k_disable(struct arizona *arizona)
+>  		switch (arizona->pdata.clk32k_src) {
+>  		case ARIZONA_32KZ_MCLK1:
+>  			pm_runtime_put_sync(arizona->dev);
+> +			clk_disable_unprepare(arizona->mclk[ARIZONA_MCLK1]);
+> +			break;
+> +		case ARIZONA_32KZ_MCLK2:
+> +			clk_disable_unprepare(arizona->mclk[ARIZONA_MCLK2]);
+>  			break;
+>  		}
+>  	}
+> @@ -1000,6 +1015,7 @@ static const struct mfd_cell wm8998_devs[] = {
+>  
+>  int arizona_dev_init(struct arizona *arizona)
+>  {
+> +	const char * const mclk_name[] = { "mclk1", "mclk2" };
+>  	struct device *dev = arizona->dev;
+>  	const char *type_name = NULL;
+>  	unsigned int reg, val, mask;
+> @@ -1016,6 +1032,16 @@ int arizona_dev_init(struct arizona *arizona)
+>  	else
+>  		arizona_of_get_core_pdata(arizona);
+>  
+> +	BUILD_BUG_ON(ARRAY_SIZE(arizona->mclk) != ARRAY_SIZE(mclk_name));
+> +	for (i = 0; i < ARRAY_SIZE(arizona->mclk); i++) {
+> +		arizona->mclk[i] = devm_clk_get(arizona->dev, mclk_name[i]);
+> +		if (IS_ERR(arizona->mclk[i])) {
+> +			dev_info(arizona->dev, "Failed to get %s: %ld\n",
+> +				 mclk_name[i], PTR_ERR(arizona->mclk[i]));
+> +			arizona->mclk[i] = NULL;
+> +		}
+> +	}
+> +
+>  	regcache_cache_only(arizona->regmap, true);
+>  
+>  	switch (arizona->type) {
+> diff --git a/include/linux/mfd/arizona/core.h b/include/linux/mfd/arizona/core.h
+> index 58ab4c0..b9909bb 100644
+> --- a/include/linux/mfd/arizona/core.h
+> +++ b/include/linux/mfd/arizona/core.h
+> @@ -13,6 +13,7 @@
+>  #ifndef _WM_ARIZONA_CORE_H
+>  #define _WM_ARIZONA_CORE_H
+>  
+> +#include <linux/clk.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/notifier.h>
+>  #include <linux/regmap.h>
+> @@ -21,6 +22,12 @@
+>  
+>  #define ARIZONA_MAX_CORE_SUPPLIES 2
+>  
+> +enum {
+> +	ARIZONA_MCLK1,
+> +	ARIZONA_MCLK2,
+> +	ARIZONA_NUM_MCLK
+> +};
+> +
+>  enum arizona_type {
+>  	WM5102 = 1,
+>  	WM5110 = 2,
+> @@ -139,6 +146,8 @@ struct arizona {
+>  	struct mutex clk_lock;
+>  	int clk32k_ref;
+>  
+> +	struct clk *mclk[ARIZONA_NUM_MCLK];
+> +
+>  	bool ctrlif_error;
+>  
+>  	struct snd_soc_dapm_context *dapm;
 
-Right. So the QoS should be set time(FIFOsize - FIFOthreshold) - margin?
-What margin we should use? The DMA does not need setup time as it will just
-continue where it stopped, so probably we can ignore the margin and use the
-number we got from the FIFO use?
-During hw_param we can calculate this, but we need to consider on more thin=
-g:
-we need to make sure that the QoS we place covers the capture and the playb=
-ack
-as well, so we need to use the worst case number. the FIFO threshold can be
-different for capture and playback.
-
--- =
-
-P=E9ter
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
