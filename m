@@ -1,17 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/2] ALSA: rename TLV-related macros so that
-	they're friendly to user applications
-Date: Thu, 15 Sep 2016 07:25:20 +0900
-Message-ID: <1473891920-31214-3-git-send-email-o-takashi@sakamocchi.jp>
-References: <1473891920-31214-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: Re: alsa-tools FTBFS on armel: gcc-6 narrowing
+	conversions
+Date: Thu, 15 Sep 2016 08:33:22 +0900
+Message-ID: <100312f5-4956-02df-3dd3-6e78f9d70985@sakamocchi.jp>
+References: <20160912165218.vys63p73adfi2x76@galadriel.home.lxtec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8816504328641926563=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id DB7B526669C
- for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2016 00:25:28 +0200 (CEST)
-In-Reply-To: <1473891920-31214-1-git-send-email-o-takashi@sakamocchi.jp>
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 331B32664C3
+ for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2016 01:33:27 +0200 (CEST)
+In-Reply-To: <20160912165218.vys63p73adfi2x76@galadriel.home.lxtec.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,165 +20,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, ckeepax@opensource.wolfsonmicro.com, broonie@linaro.org
+To: riesebie@lxtec.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In a previous commit, some macros newly appeared to UAPI header for TLV
-packet. These macros have short names and they easily bring name conflist
-to applications. The conflict can be avoided to rename them with a proper
-prefix.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============8816504328641926563==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="bcwGDqoGQKbE95buNikOKQmD3CqAbh3Dc"
 
-For this purpose, this commit renames these macros with prefix
-'SNDRV_CTL_TLVD_'.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--bcwGDqoGQKbE95buNikOKQmD3CqAbh3Dc
+Content-Type: multipart/mixed; boundary="ur71XlaXWaM6jB9aW3hu3KPHVJxAPwD6Q"
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: riesebie@lxtec.de
+Cc: alsa-devel@alsa-project.org
+Message-ID: <100312f5-4956-02df-3dd3-6e78f9d70985@sakamocchi.jp>
+Subject: Re: alsa-tools FTBFS on armel: gcc-6 narrowing conversions
+References: <20160912165218.vys63p73adfi2x76@galadriel.home.lxtec.de>
+In-Reply-To: <20160912165218.vys63p73adfi2x76@galadriel.home.lxtec.de>
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- include/sound/tlv.h      | 26 ++++++++++++++++
- include/uapi/sound/tlv.h | 80 ++++++++++++++++++++++++++++--------------------
- 2 files changed, 72 insertions(+), 34 deletions(-)
+--ur71XlaXWaM6jB9aW3hu3KPHVJxAPwD6Q
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/include/sound/tlv.h b/include/sound/tlv.h
-index 1f593b6..6e2e773 100644
---- a/include/sound/tlv.h
-+++ b/include/sound/tlv.h
-@@ -24,4 +24,30 @@
- 
- #include <uapi/sound/tlv.h>
- 
-+/* For historical reasons, these macros are aliases to the ones in UAPI. */
-+#define TLV_ITEM			SNDRV_CTL_TLVD_ITEM
-+#define TLV_LENGTH			SNDRV_CTL_TLVD_LENGTH
-+
-+#define TLV_CONTAINER_ITEM		SNDRV_CTL_TLVD_CONTAINER_ITEM
-+#define DECLARE_TLV_CONTAINER		SNDRV_CTL_TLVD_DECLARE_CONTAINER
-+
-+#define TLV_DB_SCALE_MASK		SNDRV_CTL_TLVD_DB_SCALE_MASK
-+#define TLV_DB_SCALE_MUTE		SNDRV_CTL_TLVD_DB_SCALE_MUTE
-+#define TLV_DB_SCALE_ITEM		SNDRV_CTL_TLVD_DB_SCALE_ITEM
-+#define DECLARE_TLV_DB_SCALE		SNDRV_CTL_TLVD_DECLARE_DB_SCALE
-+
-+#define TLV_DB_MINMAX_ITEM		SNDRV_CTL_TLVD_DB_MINMAX_ITEM
-+#define TLV_DB_MINMAX_MUTE_ITEM		SNDRV_CTL_TLVD_DB_MINMAX_MUTE_ITEM
-+#define DECLARE_TLV_DB_MINMAX		SNDRV_CTL_TLVD_DECLARE_DB_MINMAX
-+#define DECLARE_TLV_DB_MINMAX_MUTE	SNDRV_CTL_TLVD_DECLARE_DB_MINMAX_MUTE
-+
-+#define TLV_DB_LINEAR_ITEM		SNDRV_CTL_TLVD_DB_LINEAR_ITEM
-+#define DECLARE_TLV_DB_LINEAR		SNDRV_CTL_TLVD_DECLARE_DB_LINEAR
-+
-+#define TLV_DB_RANGE_ITEM		SNDRV_CTL_TLVD_DB_RANGE_ITEM
-+#define DECLARE_TLV_DB_RANGE		SNDRV_CTL_TLVD_DECLARE_DB_RANGE
-+#define TLV_DB_RANGE_HEAD		SNDRV_CTL_TLVD_DB_RANGE_HEAD
-+
-+#define TLV_DB_GAIN_MUTE		SNDRV_CTL_TLVD_DB_GAIN_MUTE
-+
- #endif /* __SOUND_TLV_H */
-diff --git a/include/uapi/sound/tlv.h b/include/uapi/sound/tlv.h
-index b741e0e..f3c198f 100644
---- a/include/uapi/sound/tlv.h
-+++ b/include/uapi/sound/tlv.h
-@@ -36,41 +36,51 @@
-  *        block_length = (length + (sizeof(unsigned int) - 1)) &
-  *                       ~(sizeof(unsigned int) - 1)) ....
-  */
--#define TLV_ITEM(type, ...) \
--	(type), TLV_LENGTH(__VA_ARGS__), __VA_ARGS__
--#define TLV_LENGTH(...) \
-+#define SNDRV_CTL_TLVD_ITEM(type, ...) \
-+	(type), SNDRV_CTL_TLVD_LENGTH(__VA_ARGS__), __VA_ARGS__
-+#define SNDRV_CTL_TLVD_LENGTH(...) \
- 	((unsigned int)sizeof((const unsigned int[]) { __VA_ARGS__ }))
- 
--#define TLV_CONTAINER_ITEM(...) \
--	TLV_ITEM(SNDRV_CTL_TLVT_CONTAINER, __VA_ARGS__)
--#define DECLARE_TLV_CONTAINER(name, ...) \
--	unsigned int name[] = { TLV_CONTAINER_ITEM(__VA_ARGS__) }
-+#define SNDRV_CTL_TLVD_CONTAINER_ITEM(...) \
-+	SNDRV_CTL_TLVD_ITEM(SNDRV_CTL_TLVT_CONTAINER, __VA_ARGS__)
-+#define SNDRV_CTL_TLVD_DECLARE_CONTAINER(name, ...) \
-+	unsigned int name[] = { \
-+		SNDRV_CTL_TLVD_CONTAINER_ITEM(__VA_ARGS__) \
-+	}
- 
--#define TLV_DB_SCALE_MASK	0xffff
--#define TLV_DB_SCALE_MUTE	0x10000
--#define TLV_DB_SCALE_ITEM(min, step, mute)			\
--	TLV_ITEM(SNDRV_CTL_TLVT_DB_SCALE,			\
--		 (min),					\
--		 ((step) & TLV_DB_SCALE_MASK) |		\
--			((mute) ? TLV_DB_SCALE_MUTE : 0))
--#define DECLARE_TLV_DB_SCALE(name, min, step, mute) \
--	unsigned int name[] = { TLV_DB_SCALE_ITEM(min, step, mute) }
-+#define SNDRV_CTL_TLVD_DB_SCALE_MASK	0xffff
-+#define SNDRV_CTL_TLVD_DB_SCALE_MUTE	0x10000
-+#define SNDRV_CTL_TLVD_DB_SCALE_ITEM(min, step, mute) \
-+	SNDRV_CTL_TLVD_ITEM(SNDRV_CTL_TLVT_DB_SCALE, \
-+			    (min), \
-+			    ((step) & SNDRV_CTL_TLVD_DB_SCALE_MASK) | \
-+			     ((mute) ? SNDRV_CTL_TLVD_DB_SCALE_MUTE : 0))
-+#define SNDRV_CTL_TLVD_DECLARE_DB_SCALE(name, min, step, mute) \
-+	unsigned int name[] = { \
-+		SNDRV_CTL_TLVD_DB_SCALE_ITEM(min, step, mute) \
-+	}
- 
- /* dB scale specified with min/max values instead of step */
--#define TLV_DB_MINMAX_ITEM(min_dB, max_dB)			\
--	TLV_ITEM(SNDRV_CTL_TLVT_DB_MINMAX, (min_dB), (max_dB))
--#define TLV_DB_MINMAX_MUTE_ITEM(min_dB, max_dB)			\
--	TLV_ITEM(SNDRV_CTL_TLVT_DB_MINMAX_MUTE, (min_dB), (max_dB))
--#define DECLARE_TLV_DB_MINMAX(name, min_dB, max_dB) \
--	unsigned int name[] = { TLV_DB_MINMAX_ITEM(min_dB, max_dB) }
--#define DECLARE_TLV_DB_MINMAX_MUTE(name, min_dB, max_dB) \
--	unsigned int name[] = { TLV_DB_MINMAX_MUTE_ITEM(min_dB, max_dB) }
-+#define SNDRV_CTL_TLVD_DB_MINMAX_ITEM(min_dB, max_dB) \
-+	SNDRV_CTL_TLVD_ITEM(SNDRV_CTL_TLVT_DB_MINMAX, (min_dB), (max_dB))
-+#define SNDRV_CTL_TLVD_DB_MINMAX_MUTE_ITEM(min_dB, max_dB) \
-+	SNDRV_CTL_TLVD_ITEM(SNDRV_CTL_TLVT_DB_MINMAX_MUTE, (min_dB), (max_dB))
-+#define SNDRV_CTL_TLVD_DECLARE_DB_MINMAX(name, min_dB, max_dB) \
-+	unsigned int name[] = { \
-+		SNDRV_CTL_TLVD_DB_MINMAX_ITEM(min_dB, max_dB) \
-+	}
-+#define SNDRV_CTL_TLVD_DECLARE_DB_MINMAX_MUTE(name, min_dB, max_dB) \
-+	unsigned int name[] = { \
-+		SNDRV_CTL_TLVD_DB_MINMAX_MUTE_ITEM(min_dB, max_dB) \
-+	}
- 
- /* linear volume between min_dB and max_dB (.01dB unit) */
--#define TLV_DB_LINEAR_ITEM(min_dB, max_dB)		    \
--	TLV_ITEM(SNDRV_CTL_TLVT_DB_LINEAR, (min_dB), (max_dB))
--#define DECLARE_TLV_DB_LINEAR(name, min_dB, max_dB)	\
--	unsigned int name[] = { TLV_DB_LINEAR_ITEM(min_dB, max_dB) }
-+#define SNDRV_CTL_TLVD_DB_LINEAR_ITEM(min_dB, max_dB) \
-+	SNDRV_CTL_TLVD_ITEM(SNDRV_CTL_TLVT_DB_LINEAR, (min_dB), (max_dB))
-+#define SNDRV_CTL_TLVD_DECLARE_DB_LINEAR(name, min_dB, max_dB) \
-+	unsigned int name[] = { \
-+		SNDRV_CTL_TLVD_DB_LINEAR_ITEM(min_dB, max_dB) \
-+	}
- 
- /* dB range container:
-  * Items in dB range container must be ordered by their values and by their
-@@ -78,14 +88,16 @@
-  * dB values (which is also required for all other mixer controls).
-  */
- /* Each item is: <min> <max> <TLV> */
--#define TLV_DB_RANGE_ITEM(...) \
--	TLV_ITEM(SNDRV_CTL_TLVT_DB_RANGE, __VA_ARGS__)
--#define DECLARE_TLV_DB_RANGE(name, ...) \
--	unsigned int name[] = { TLV_DB_RANGE_ITEM(__VA_ARGS__) }
-+#define SNDRV_CTL_TLVD_DB_RANGE_ITEM(...) \
-+	SNDRV_CTL_TLVD_ITEM(SNDRV_CTL_TLVT_DB_RANGE, __VA_ARGS__)
-+#define SNDRV_CTL_TLVD_DECLARE_DB_RANGE(name, ...) \
-+	unsigned int name[] = { \
-+		SNDRV_CTL_TLVD_DB_RANGE_ITEM(__VA_ARGS__) \
-+	}
- /* The below assumes that each item TLV is 4 words like DB_SCALE or LINEAR */
--#define TLV_DB_RANGE_HEAD(num)			\
-+#define SNDRV_CTL_TLVD_DB_RANGE_HEAD(num) \
- 	SNDRV_CTL_TLVT_DB_RANGE, 6 * (num) * sizeof(unsigned int)
- 
--#define TLV_DB_GAIN_MUTE	-9999999
-+#define SNDRV_CTL_TLVD_DB_GAIN_MUTE	-9999999
- 
- #endif
--- 
-2.7.4
+Hi,
+
+On Sep 13 2016 01:52, Elimar Riesebieter wrote:
+> Hi all,
+>=20
+> in Debian a FTBFS was discovered in building alsa-tools:
+>=20
+> | arm-linux-gnueabi-g++ -DPACKAGE_NAME=3D\"hdspmixer\" -DPACKAGE_TARNAM=
+E=3D\"hdspmixer\" -DPACKAGE_VERSION=3D\"1.11\" -DPACKAGE_STRING=3D\"hdspm=
+ixer\ 1.11\" -DPACKAGE_BUGREPORT=3D\"\" -DPACKAGE_URL=3D\"\" -DPACKAGE=3D=
+\"hdspmixer\" -DVERSION=3D\"1.11\" -DSTDC_HEADERS=3D1 -DHAVE_LIBASOUND=3D=
+1 -I.   -Wdate-time -D_FORTIFY_SOURCE=3D2  -g -O2 -fdebug-prefix-map=3D/<=
+<PKGBUILDDIR>>=3D. -fstack-protector-strong -Wformat -Werror=3Dformat-sec=
+urity   -I/usr/include/freetype2   -D_THREAD_SAFE -D_REENTRANT -fno-excep=
+tions -MT channelmap.o -MD -MP -MF .deps/channelmap.Tpo -c -o channelmap.=
+o channelmap.cxx
+> | channelmap.cxx:59:1: error: narrowing conversion of '-1' from 'int' t=
+o 'char' inside { } [-Wnarrowing]
+> |  };
+> |  ^
+>=20
+> More Details can be found at:
+> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D837590
+>=20
+> Could this be fixed for next release?
+
+I'm interested in this issue.
+(I'm an user of Debian/Ubuntu and some of my friends are DD.)
+
+I think this issue is triggered by some compiler options, so long
+overlooked. I'd like to fix it, however I don't know how to prepare for
+build environment to reproduce it.
+
+If you have some advices to reproduce, please inform it to me? I also
+asked my friends to help for it ;)
+
+
+Thanks
+
+Takashi Sakamoto
+
+
+--ur71XlaXWaM6jB9aW3hu3KPHVJxAPwD6Q--
+
+--bcwGDqoGQKbE95buNikOKQmD3CqAbh3Dc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJX2d5DAAoJELWlhsfWb9NBAOEP/0J5k68y2NCCBPal2/l3JAjs
+x1Lv/eN3p4ahwOLTlupGq/k7PBj5LX2ollEKozGRM3qexf4F2uzartXc1i8WmVVj
+NdN0xVHF/meP6Cuo2pBFkdefiwRlXvDK3r3YpWgOl+sm6qckpbqJqagNuBLM3Vz9
+y7mVGN7Q8iH8OX5UwjaHuskn7S+jcR2u+W0ZDLGM2NZ+Nv+hKbvA3JjR/NCpe5wz
+euOVF0kzttwWGYdXRUJBN4h9XB+//ZHoszhKu2K+DtaiXk476zeZ3RIGRZvtXYrD
+IhV8raIeH8WuuFejZkRXWwoO689K/1BhmlaZdvoGuO8l7dnAJPJT0ztnHrcF8gIh
+VHpWAQl6/ejRi2YeR/v6doMz4JmqV+vKstPVuDYEU4cLxuN93/rbqYobEZEv9PxT
+/mR5+3L+rhjItUo/OCQba2QYfSGqDiO3qSXY2M85T8plsgaSbh6VXDC/fTESaHyL
+SANrP+8kBj8w+U8ANRzvVRbzDnWgZOiix7bzq/K4IdeHGHwiyNw1Ow6qFFRjqZtQ
+zr9h2c1uHrMsr60G5EytNJSfhCViOIGwbhzdJMZz1962GKrYf2+519H8lCntIbx8
+r26fPWcd0SaZjutq+Zm40K5zQm0OXu2HOlsKeqy3JxT5yJ6jLHxoOqg24LaKD47N
+rznbD0ZQTMTyGh2F1Kkn
+=/Vi+
+-----END PGP SIGNATURE-----
+
+--bcwGDqoGQKbE95buNikOKQmD3CqAbh3Dc--
+
+--===============8816504328641926563==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8816504328641926563==--
