@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5660: add rt5660 codec driver
-Date: Wed, 14 Sep 2016 17:31:14 +0100
-Message-ID: <20160914163114.GB27974@sirena.org.uk>
-References: <1471930423-9619-1-git-send-email-oder_chiou@realtek.com>
+Subject: Re: [PATCH 5/9] ASoC: Intel: Skylake: Create dynamic
+ instance ids for DSP modules
+Date: Wed, 14 Sep 2016 17:43:12 +0100
+Message-ID: <20160914164312.GC27974@sirena.org.uk>
+References: <1472042001-9582-1-git-send-email-vinod.koul@intel.com>
+ <1472042001-9582-6-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1170889996676130015=="
+Content-Type: multipart/mixed; boundary="===============6410344562734759126=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C9BD261B03
- for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2016 18:31:23 +0200 (CEST)
-In-Reply-To: <1471930423-9619-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 11E5F261B03
+ for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2016 18:43:24 +0200 (CEST)
+In-Reply-To: <1472042001-9582-6-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,86 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Dharageswari R <dharageswari.r@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1170889996676130015==
+--===============6410344562734759126==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
+	protocol="application/pgp-signature"; boundary="nVMJ2NtxeReIH9PS"
 Content-Disposition: inline
 
 
---SUOF0GtieIMvvwua
+--nVMJ2NtxeReIH9PS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Aug 23, 2016 at 01:33:43PM +0800, Oder Chiou wrote:
+On Wed, Aug 24, 2016 at 06:03:17PM +0530, Vinod Koul wrote:
 
-> +- realtek,use-ldo2
+> +	if (!(mask_val == 0xffffffff)) {
 
-This would more normally be done by making LDO2 a regulator via the
-normal regulator framework - look at how the arizona drivers handle
-DCVDD for an example, it provides a default supply mapping which makes
-things really easy for users.  Right now it's not clear to me looking at
-the code that the driver works for systems that don't use an internal
-LDO as there's nothing that enables MICVDD.
+Why is this not a != comparison?
 
-> +static int rt5660_probe(struct snd_soc_codec *codec)
-> +{
-> +	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
-> +
-> +	/* Check if MCLK provided */
-> +	rt5660->mclk = devm_clk_get(codec->dev, "mclk");
-> +	if (PTR_ERR(rt5660->mclk) == -EPROBE_DEFER)
-> +		return -EPROBE_DEFER;
-
-This should be in the I2C level probe so we don't have the device
-showing as probing there without the resources it needs being present as
-that makes things confusing for people.
-
-> +	if (rt5660->pdata.dmic1_data_pin) {
-> +		regmap_update_bits(rt5660->regmap, RT5660_GPIO_CTRL1,
-> +			RT5660_GP1_PIN_MASK, RT5660_GP1_PIN_DMIC1_SCL);
-> +
-> +		if (rt5660->pdata.dmic1_data_pin == RT5660_DMIC1_DATA_GPIO2)
-> +			regmap_update_bits(rt5660->regmap, RT5660_DMIC_CTRL1,
-> +				RT5660_SEL_DMIC_DATA_MASK,
-> +				RT5660_SEL_DMIC_DATA_GPIO2);
-> +		else if (rt5660->pdata.dmic1_data_pin == RT5660_DMIC1_DATA_IN1P)
-> +			regmap_update_bits(rt5660->regmap, RT5660_DMIC_CTRL1,
-> +				RT5660_SEL_DMIC_DATA_MASK,
-> +				RT5660_SEL_DMIC_DATA_IN1P);
-> +	}
-
-We do a reset when we unregister at the CODEC level - that'll overwrite
-these settings won't it?
-
-Otherwise this looks good.
-
---SUOF0GtieIMvvwua
+--nVMJ2NtxeReIH9PS
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJX2XtRAAoJECTWi3JdVIfQXCkH/jMoyWm68Qj6G0MHriNdnD21
-6cTyG4OsowHzaZ0VG+LNh2O539uFep3LjPTl6OB6CKQ8ic/p2EaVhJq0iKSW9uV9
-AGCI/GcScH0H2W9NOmiwwjBUU+zHHA/M+PJzD2X4PWL8cjZAbo5jqHl1BkJ95yEd
-dZjW26vAS2eKejOFmhLw1qcFuLdC6ll3eqrJnLsSDijnrNX76aQu1wUuEAKLJ2o3
-rU+398XvRkE4+URaBckckpuhQ03cfRotYWRYRzvLIVn6p4bjNcPZxqgQYlLcCPad
-G+22mEQtWrcqoswS+041NI+/1uucI4jswqwSyUchB38nX/4MEQ7haFnAlZ9EyiY=
-=WstS
+iQEcBAEBCAAGBQJX2X4eAAoJECTWi3JdVIfQxmgIAICWjiQDkHGAGHmIzVner7QW
+WhwR2lid9S6QuWuAAcTgy17GQ5aF+IAaWJnmsS6hESQXE7/w8KDbs0RBvHrWOTPZ
+vZqENW8htwDLjSI2Ln5jorq3jPVjTycQ6I3y7HZC5WOapxszabHsZx/Uh5TtmSvj
+TLwef6/WE3jtyJ6K8dIIs1Y8qRLk/Xas8A+Y+1tFgKpck33puILuLX5sP7XUttfx
+h0mYq37d4xM/PJG2A82iSOuzax5Ee4g9B9zwg0CK04/jC7UWliqiEMM45o6xOU3S
+4SfGMMzQSdnMB1BIwxgB/+uKRvysU7W915FOMCaq7996f4F3zTchI6r/dnyE8oU=
+=LfVg
 -----END PGP SIGNATURE-----
 
---SUOF0GtieIMvvwua--
+--nVMJ2NtxeReIH9PS--
 
---===============1170889996676130015==
+--===============6410344562734759126==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1170889996676130015==--
+--===============6410344562734759126==--
