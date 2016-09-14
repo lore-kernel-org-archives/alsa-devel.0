@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add 32bit support" to
-	the asoc tree
-Date: Wed, 14 Sep 2016 18:15:41 +0100
-Message-ID: <E1bkDmf-0001gU-F0@debutante>
-References: <1472042001-9582-10-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: dpcm: Don't apply symmetry for BE with
+	hw param fixup" to the asoc tree
+Date: Wed, 14 Sep 2016 18:15:44 +0100
+Message-ID: <E1bkDmi-0001hM-F8@debutante>
+References: <1473151675-1945-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E8616266619
- for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2016 19:15:48 +0200 (CEST)
-In-Reply-To: <1472042001-9582-10-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AF45C266619
+ for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2016 19:15:50 +0200 (CEST)
+In-Reply-To: <1473151675-1945-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Samaga Krishna <samaga.krishna@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
+To: Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add 32bit support
+   ASoC: dpcm: Don't apply symmetry for BE with hw param fixup
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From dde53bcc3ea054a72b6d42a6fe56beb4b1a914f2 Mon Sep 17 00:00:00 2001
-From: Samaga Krishna <samaga.krishna@intel.com>
-Date: Wed, 24 Aug 2016 18:03:21 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add 32bit support
+>From f11766143caa065b3aef4d794c104ea0f37ada76 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Tue, 6 Sep 2016 14:17:55 +0530
+Subject: [PATCH] ASoC: dpcm: Don't apply symmetry for BE with hw param fixup
 
-We also support 32bit playback, so add that in DAI capabilities.
+If be_hw_param_fixup is defined for BE then it will
+force the BE to a specific configuration supported
+by HW. In this case don't apply symmetry.
 
-Signed-off-by: Samaga Krishna <samaga.krishna@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/soc-pcm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 77bfd407f2a1..c7cdcba04c5d 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -648,7 +648,8 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 		.channels_min = HDA_MONO,
- 		.channels_max = HDA_STEREO,
- 		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_8000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
- 	},
- 	.capture = {
- 		.stream_name = "System Capture",
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 60d702f8b9f0..c1bfe9d8406d 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1694,6 +1694,9 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
+ 		struct snd_soc_pcm_runtime *rtd = be_substream->private_data;
+ 		int i;
+ 
++		if (rtd->dai_link->be_hw_params_fixup)
++			continue;
++
+ 		if (soc_pcm_has_symmetry(be_substream))
+ 			be_substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
+ 
 -- 
 2.8.1
