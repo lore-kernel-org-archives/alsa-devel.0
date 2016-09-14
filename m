@@ -1,7 +1,7 @@
 From: Xing Zheng <zhengxing@rock-chips.com>
-Subject: [PATCH] ASoC: da7219: software reset codec at probe
-Date: Wed, 14 Sep 2016 22:06:00 +0800
-Message-ID: <1473861960-7596-1-git-send-email-zhengxing@rock-chips.com>
+Subject: [PATCH v2] ASoC: da7219: software reset codec at probe
+Date: Wed, 14 Sep 2016 22:25:40 +0800
+Message-ID: <1473863140-13678-1-git-send-email-zhengxing@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-rockchip@lists.infradead.org, Adam.Thomson.Opensource@diasemi.com
@@ -10,13 +10,17 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Hsin-Yu Chao <hychao@chromium.org>
 
-On some platform da7219 codec has persistent power across reboot
-so it doesn't reset and cause abnormal jack detection.
-Workaround this issue by doing software reset at probe.
+Da7219 does not trigger interrupt to report jack status
+when system boots from warm reset because its power
+remains on during warm reset.
+Doing software reset at probe to handle this.
 
 Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
 Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
 ---
+
+Changes in v2:
+- change the commit message for more clear explain
 
  sound/soc/codecs/da7219.c | 8 ++++++++
  1 file changed, 8 insertions(+)
