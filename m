@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Allow specification of base for arizona_is_enabled_fll" to the asoc tree
-Date: Wed, 14 Sep 2016 18:15:35 +0100
-Message-ID: <E1bkDmZ-0001eS-FJ@debutante>
-References: <1472831568-466-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1472831568-466-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Mark Brown <broonie@kernel.org>, lee.jones@linaro.orgbroonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, s.nawrocki@samsung.com, linux-kernel@vger.kernel.org
+Subject: Applied "ASoC: nau8825: fix bug in FLL parameter" to the asoc tree
+Date: Wed, 14 Sep 2016 18:15:56 +0100
+Message-ID: <E1bkDmu-0001lB-OG@debutante>
+References: <1473738963-17406-1-git-send-email-KCHSU0@nuvoton.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1473738963-17406-1-git-send-email-KCHSU0@nuvoton.com>
+Sender: stable-owner@vger.kernel.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Allow specification of base for arizona_is_enabled_fll
+   ASoC: nau8825: fix bug in FLL parameter
 
 has been applied to the asoc tree at
 
@@ -37,50 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From 62bb7104687c0ac1e85b1cf45a85a20b492b06a6 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Fri, 2 Sep 2016 16:52:44 +0100
-Subject: [PATCH] ASoC: arizona: Allow specification of base for
- arizona_is_enabled_fll
+>From a8961cae29c38e225120c40c3340dbde2f552e60 Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Tue, 13 Sep 2016 11:56:03 +0800
+Subject: [PATCH] ASoC: nau8825: fix bug in FLL parameter
 
-In preparation for future improvements allow a base to be passed to
-arizona_is_enabled_fll, this will allow it to be used to check the state
-of the synchroniser path as well.
+In the FLL parameter calculation, the FVCO should choose the maximum one.
+The patch is to fix the bug about the wrong FVCO chosen.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/arizona.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/nau8825.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index ecfdbfcae366..5455d0e87f0f 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -2188,13 +2188,13 @@ static void arizona_apply_fll(struct arizona *arizona, unsigned int base,
- 				 ARIZONA_FLL1_CTRL_UPD | cfg->n);
- }
- 
--static int arizona_is_enabled_fll(struct arizona_fll *fll)
-+static int arizona_is_enabled_fll(struct arizona_fll *fll, int base)
- {
- 	struct arizona *arizona = fll->arizona;
- 	unsigned int reg;
- 	int ret;
- 
--	ret = regmap_read(arizona->regmap, fll->base + 1, &reg);
-+	ret = regmap_read(arizona->regmap, base + 1, &reg);
- 	if (ret != 0) {
- 		arizona_fll_err(fll, "Failed to read current state: %d\n",
- 				ret);
-@@ -2208,7 +2208,7 @@ static int arizona_enable_fll(struct arizona_fll *fll)
- {
- 	struct arizona *arizona = fll->arizona;
- 	bool use_sync = false;
--	int already_enabled = arizona_is_enabled_fll(fll);
-+	int already_enabled = arizona_is_enabled_fll(fll, fll->base);
- 	struct arizona_fll_cfg cfg;
- 	int i;
- 	unsigned int val;
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 5c9707ac4bbf..cc32699f8e29 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -1912,7 +1912,7 @@ static int nau8825_calc_fll_param(unsigned int fll_in, unsigned int fs,
+ 	/* Calculate the FLL 10-bit integer input and the FLL 16-bit fractional
+ 	 * input based on FDCO, FREF and FLL ratio.
+ 	 */
+-	fvco = div_u64(fvco << 16, fref * fll_param->ratio);
++	fvco = div_u64(fvco_max << 16, fref * fll_param->ratio);
+ 	fll_param->fll_int = (fvco >> 16) & 0x3FF;
+ 	fll_param->fll_frac = fvco & 0xFFFF;
+ 	return 0;
 -- 
 2.8.1
