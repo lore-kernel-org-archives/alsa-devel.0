@@ -1,13 +1,15 @@
 From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Subject: [PATCH v4 0/3] ASoC: sun4i-codec: Distinguish sun4i
- from sun7i
-Date: Thu, 15 Sep 2016 18:36:27 +0200
-Message-ID: <20160915163630.18026-1-dannym@scratchpost.org>
+Subject: [PATCH v4 1/3] ASoC: sun4i-codec: rename
+ sun4i_codec_widgets for consistency
+Date: Thu, 15 Sep 2016 18:36:28 +0200
+Message-ID: <20160915163630.18026-2-dannym@scratchpost.org>
+References: <20160915163630.18026-1-dannym@scratchpost.org>
 Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCPKHTHNWIPBBHE45O7AKGQETMAPPPA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBBIE45O7AKGQE4J46RDI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20160915163630.18026-1-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -18,28 +20,35 @@ To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.o
 Cc: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-ASoC: sun4i-codec: Introduce mechanism to detect sun7i and provide a
-different regmap different compared to sun4i Allwinner A10.
+ASoC: sun4i-codec: Rename "sun4i_codec_widgets" to "sun4i_codec_controls" for
+consistency with the struct field name.
+
+Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+---
+ sound/soc/sunxi/sun4i-codec.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 0e19c50..c2c0583 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -509,7 +509,7 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
  
-The controls will be extended in a forthcoming patch - it is necessary
-to distinguish between sun4i and sun7i controls because they have different
-registers.
+ static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
  
-Renamed SUN4I_CODEC_AC_SYS_VERI to SUN7I_CODEC_AC_DAC_CAL and renamed
-SUN4I_CODEC_AC_MIC_PHONE_CAL to SUN7I_CODEC_AC_MIC_PHONE_CAL because these
-are actually not present on Allwinner A10.
-
-Handle quirks by regmap config and codec and select the correct quirks
-automatically.  
-
-Danny Milosavljevic (3):
-  ASoC: sun4i-codec: rename "sun4i_codec_widgets" to
-    "sun4i_codec_controls" for consistency with the struct field name.
-  ASoC: rename "SUN4I_CODEC_SYS_VERI" to "SUN7I_CODEC_AC_DAC_CAL";
-    rename "SUN4I_CODEC_AC_MIC_PHONE_CAL" to
-    "SUN7I_CODEC_AC_MIC_PHONE_CAL".
-  ASoC: sun4i-codec: Add custom regmap configs for the A10 and A20
-    variants.
-
- sound/soc/sunxi/sun4i-codec.c | 45 ++++++++++++++++++++++++++++++++++---------
- 1 file changed, 36 insertions(+), 9 deletions(-)
+-static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
++static const struct snd_kcontrol_new sun4i_codec_controls[] = {
+ 	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
+ 		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
+ 		       sun4i_codec_pa_volume_scale),
+@@ -629,8 +629,8 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+ 
+ static struct snd_soc_codec_driver sun4i_codec_codec = {
+ 	.component_driver = {
+-		.controls		= sun4i_codec_widgets,
+-		.num_controls		= ARRAY_SIZE(sun4i_codec_widgets),
++		.controls		= sun4i_codec_controls,
++		.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
+ 		.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
+ 		.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
+ 		.dapm_routes		= sun4i_codec_codec_dapm_routes,
