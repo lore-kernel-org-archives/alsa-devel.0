@@ -1,82 +1,74 @@
-From: "Tirdea, Irina" <irina.tirdea@intel.com>
-Subject: RE: [PATCH v3] clk: x86: Add Atom PMC platform clocks
-Date: Thu, 15 Sep 2016 15:44:37 +0000
-Message-ID: <1F3AC3675D538145B1661F571FE1805F2F33FD26@irsmsx105.ger.corp.intel.com>
-References: <1473427417-9166-1-git-send-email-irina.tirdea@intel.com>
- <20160914213025.GE7243@codeaurora.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] Revert "ASoC: core: mark SND_SOC_BYTES_EXT
+	as deprecated"
+Date: Thu, 15 Sep 2016 23:41:43 +0900
+Message-ID: <6357ad44-b194-7dfd-b3e8-938af89f4b54@sakamocchi.jp>
+References: <1473947149-6663-1-git-send-email-o-takashi@sakamocchi.jp>
+ <20160915142148.GR21682@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <20160914213025.GE7243@codeaurora.org>
-Content-Language: en-US
-Sender: linux-clk-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, "Bossart, Pierre-louis" <pierre-louis.bossart@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 87EBB266726
+ for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2016 16:41:57 +0200 (CEST)
+In-Reply-To: <20160915142148.GR21682@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@linaro.org, tiwai@suse.de, clemens@ladisch.de, vinod.koul@intel.com, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-> -----Original Message-----
-> From: linux-clk-owner@vger.kernel.org [mailto:linux-clk-owner@vger.kernel.org] On Behalf Of Stephen Boyd
-> Sent: 15 September, 2016 0:30
-> To: Tirdea, Irina
-> Cc: linux-clk@vger.kernel.org; Michael Turquette; alsa-devel@alsa-project.org; Mark Brown; Takashi Iwai; Bossart, Pierre-louis; Pierre-
-> Louis Bossart
-> Subject: Re: [PATCH v3] clk: x86: Add Atom PMC platform clocks
+On Sep 15 2016 23:21, Charles Keepax wrote:
+> On Thu, Sep 15, 2016 at 10:45:49PM +0900, Takashi Sakamoto wrote:
+>> SND_SOC_BYTES_TLV brings confusions to user land because it doesn't follow
+>> to a protocol of ctl and tlv operation. At least, this macro and related
+>> kernel APIs include two misunderstandings:
+>>  - 'struct snd_ctl_elem_info.count' can also represent the length of TLV
+>>    packet paylaod, snd_soc_bytes_info_ext() performs in this way.
+>>  - 'struct snd_ctl_tlv.tlv' can include arbitrary data regardless of TLV
+>>    packet structure, snd_soc_bytes_tlv_callback() performs in this way.
+>>
+>> In a policy of kernel land development, it's quite worse to break protocols
+>> for applications. Therefore, developers are discouraged to use these kernel
+>> APIs.
+>>
+>> In the first place, SND_SOC_BYTES_TLV was added to satisfy a request of
+>> developers who need to add control elements which transfer data larger than
+>> the size which 'struct snd_ctl_elem_value' can represent; e.g. over 512
+>> bytes. However, as long as the size is less than the size; e.g. 512 bytes,
+>> SND_SOC_BYTES_EXT is still available. Although there is actually the
+>> limitation of maximum data size, it's better to use this API for stable
+>> application interface till better alternative ways are implemented in
+>> future.
+>>
+>> For these reasons, this commit reverts the previous commit which lead
+>> developers to the worse behaviour.
+>>
+>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>> ---
 > 
-> On 09/09, Irina Tirdea wrote:
-> > The BayTrail and CherryTrail platforms provide platform clocks
-> > through their Power Management Controller (PMC).
-> >
-> > The SoC supports up to 6 clocks (PMC_PLT_CLK[5:0]) with a
-> > frequency of either 19.2 MHz (PLL) or 25 MHz (XTAL) for BayTrail
-> > an a frequency of 19.2 MHz (XTAL) for CherryTrail. These clocks
-> > are available for general system use, where appropriate, and each
-> > have Control & Frequency register fields associated with them.
-> >
-> > For example, the usage for platform clocks suggested in the datasheet
-> > is the following:
-> >   PLT_CLK[2:0] - Camera
-> >   PLT_CLK[3] - Audio Codec
-> >   PLT_CLK[4] -
-> >   PLT_CLK[5] - COMMs
-> >
-> > Signed-off-by: Irina Tirdea <irina.tirdea@intel.com>
-> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > ---
-> >
-> > Notes:
-> >     Submitting this patch through the clock tree as requested by
-> >     Mark Brown. This patch specifically enables the audio MCLK
-> >     required by Baytrail CR devices (support already merged in
-> >     Mark's tree)
-> >
-> > Changes from v2:
-> >  - move clk platform data structures to a separate include file
-> >  - store clk_hw pointer for the fixed rate clocks
-> >
-> > Changes from v1:
-> >  - register the clk device as child of pmc device
-> >  - pass iomem pointer from pmc driver to clk driver to avoid using
-> > pmc_atom_read()/write() and use readl/writel API instead
-> >  - use devm_clk_hw_register/clkdev_hw_create instead of
-> > clk_register/clkdev_create
-> >
-> >  arch/x86/Kconfig                          |   1 +
-> >  arch/x86/include/asm/pmc_atom.h           |   3 +
-> >  arch/x86/platform/atom/pmc_atom.c         |  78 +++++-
+> Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 > 
-> Will there be problems if this merges through clk tree? If so we
-> could take the clk driver part and the platform data include part
-> could be duplicated into both trees. Or clk tree could be pulled
-> into x86?
+> Yeah would be better to use normal controls for <512 bytes, so
+> this looks good to me.
 > 
-> The patch looks fine to me.
+> Although you might want to resend using Mark's kernel.org address
+> as I imagine he would be the one to apply the change and that is
+> the address he normally uses for patches.
 
-Oops... Seems I forgot to add the x86 architecture maintainers.
-Sorry about that. I will send v4 and add them.
+Oh, he uses the domain instead of linaro.org. I missed it.
 
-Thanks,
-Irina
+Now I add him to CC list.
 
+
+Thanks
+
+Takashi Sakamoto
