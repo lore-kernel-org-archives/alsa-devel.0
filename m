@@ -1,14 +1,13 @@
 From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Subject: [PATCH v4 2/3] ASoC: rename some sun7i-only registers
-Date: Thu, 15 Sep 2016 18:36:29 +0200
-Message-ID: <20160915163630.18026-3-dannym@scratchpost.org>
-References: <20160915163630.18026-1-dannym@scratchpost.org>
+Subject: [PATCH v4 0/3] ASoC: sun4i-codec: Distinguish sun4i
+ from sun7i
+Date: Thu, 15 Sep 2016 18:36:27 +0200
+Message-ID: <20160915163630.18026-1-dannym@scratchpost.org>
 Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCPKHTHNWIPBBH445O7AKGQE3SSCCTY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBBHE45O7AKGQETMAPPPA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20160915163630.18026-1-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -19,37 +18,28 @@ To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.o
 Cc: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-ASoC: sun4i-codec: Some of the registers are sun7i-only.
-
-Therefore rename "SUN4I_CODEC_SYS_VERI" to "SUN7I_CODEC_AC_DAC_CAL" and
-rename "SUN4I_CODEC_AC_MIC_PHONE_CAL" to "SUN7I_CODEC_AC_MIC_PHONE_CAL".
-
-Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
----
- sound/soc/sunxi/sun4i-codec.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index c2c0583..3b53b78 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -96,8 +96,8 @@
- /* Other various ADC registers */
- #define SUN4I_CODEC_DAC_TXCNT			(0x30)
- #define SUN4I_CODEC_ADC_RXCNT			(0x34)
--#define SUN4I_CODEC_AC_SYS_VERI			(0x38)
--#define SUN4I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
-+#define SUN7I_CODEC_AC_DAC_CAL			(0x38)
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
+ASoC: sun4i-codec: Introduce mechanism to detect sun7i and provide a
+different regmap different compared to sun4i Allwinner A10.
  
- struct sun4i_codec {
- 	struct device	*dev;
-@@ -682,7 +682,7 @@ static const struct regmap_config sun4i_codec_regmap_config = {
- 	.reg_bits	= 32,
- 	.reg_stride	= 4,
- 	.val_bits	= 32,
--	.max_register	= SUN4I_CODEC_AC_MIC_PHONE_CAL,
-+	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
- };
+The controls will be extended in a forthcoming patch - it is necessary
+to distinguish between sun4i and sun7i controls because they have different
+registers.
  
- static const struct of_device_id sun4i_codec_of_match[] = {
+Renamed SUN4I_CODEC_AC_SYS_VERI to SUN7I_CODEC_AC_DAC_CAL and renamed
+SUN4I_CODEC_AC_MIC_PHONE_CAL to SUN7I_CODEC_AC_MIC_PHONE_CAL because these
+are actually not present on Allwinner A10.
+
+Handle quirks by regmap config and codec and select the correct quirks
+automatically.  
+
+Danny Milosavljevic (3):
+  ASoC: sun4i-codec: rename "sun4i_codec_widgets" to
+    "sun4i_codec_controls" for consistency with the struct field name.
+  ASoC: rename "SUN4I_CODEC_SYS_VERI" to "SUN7I_CODEC_AC_DAC_CAL";
+    rename "SUN4I_CODEC_AC_MIC_PHONE_CAL" to
+    "SUN7I_CODEC_AC_MIC_PHONE_CAL".
+  ASoC: sun4i-codec: Add custom regmap configs for the A10 and A20
+    variants.
+
+ sound/soc/sunxi/sun4i-codec.c | 45 ++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 36 insertions(+), 9 deletions(-)
