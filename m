@@ -1,68 +1,55 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Revert "ASoC: core: mark SND_SOC_BYTES_EXT
-	as deprecated"
-Date: Thu, 15 Sep 2016 15:21:48 +0100
-Message-ID: <20160915142148.GR21682@localhost.localdomain>
-References: <1473947149-6663-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Subject: [PATCH v3 1/3] ASoC: sun4i-codec: rename
+ "sun4i_codec_widgets" to "sun4i_codec_controls" for consistency with the
+ struct field name.
+Date: Thu, 15 Sep 2016 16:39:20 +0200
+Message-ID: <20160915143922.4890-2-dannym@scratchpost.org>
+References: <20160915143922.4890-1-dannym@scratchpost.org>
+Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 49ACA261A5E
- for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2016 16:21:58 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1473947149-6663-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org, clemens@ladisch.de, broonie@linaro.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBBKHF5K7AKGQE75ALPEY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20160915143922.4890-1-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Cc: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 15, 2016 at 10:45:49PM +0900, Takashi Sakamoto wrote:
-> SND_SOC_BYTES_TLV brings confusions to user land because it doesn't follow
-> to a protocol of ctl and tlv operation. At least, this macro and related
-> kernel APIs include two misunderstandings:
->  - 'struct snd_ctl_elem_info.count' can also represent the length of TLV
->    packet paylaod, snd_soc_bytes_info_ext() performs in this way.
->  - 'struct snd_ctl_tlv.tlv' can include arbitrary data regardless of TLV
->    packet structure, snd_soc_bytes_tlv_callback() performs in this way.
-> 
-> In a policy of kernel land development, it's quite worse to break protocols
-> for applications. Therefore, developers are discouraged to use these kernel
-> APIs.
-> 
-> In the first place, SND_SOC_BYTES_TLV was added to satisfy a request of
-> developers who need to add control elements which transfer data larger than
-> the size which 'struct snd_ctl_elem_value' can represent; e.g. over 512
-> bytes. However, as long as the size is less than the size; e.g. 512 bytes,
-> SND_SOC_BYTES_EXT is still available. Although there is actually the
-> limitation of maximum data size, it's better to use this API for stable
-> application interface till better alternative ways are implemented in
-> future.
-> 
-> For these reasons, this commit reverts the previous commit which lead
-> developers to the worse behaviour.
-> 
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> ---
+ASoC: sun4i-codec: rename "sun4i_codec_widgets" to "sun4i_codec_controls" for
+consistency with the struct field name.
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+---
+ sound/soc/sunxi/sun4i-codec.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Yeah would be better to use normal controls for <512 bytes, so
-this looks good to me.
-
-Although you might want to resend using Mark's kernel.org address
-as I imagine he would be the one to apply the change and that is
-the address he normally uses for patches.
-
-Thanks,
-Charles
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 0e19c50..c2c0583 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -509,7 +509,7 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
+ 
+ static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
+ 
+-static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
++static const struct snd_kcontrol_new sun4i_codec_controls[] = {
+ 	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
+ 		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
+ 		       sun4i_codec_pa_volume_scale),
+@@ -629,8 +629,8 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+ 
+ static struct snd_soc_codec_driver sun4i_codec_codec = {
+ 	.component_driver = {
+-		.controls		= sun4i_codec_widgets,
+-		.num_controls		= ARRAY_SIZE(sun4i_codec_widgets),
++		.controls		= sun4i_codec_controls,
++		.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
+ 		.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
+ 		.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
+ 		.dapm_routes		= sun4i_codec_codec_dapm_routes,
