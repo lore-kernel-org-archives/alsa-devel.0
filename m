@@ -1,60 +1,70 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: rt5663: refine error handling
-Date: Thu, 15 Sep 2016 17:42:21 +0200
-Message-ID: <20160915154238.3004097-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Jack Yu <jack.yu@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: "Tirdea, Irina" <irina.tirdea@intel.com>
+Subject: RE: [PATCH v3] clk: x86: Add Atom PMC platform clocks
+Date: Thu, 15 Sep 2016 15:44:38 +0000
+Message-ID: <1F3AC3675D538145B1661F571FE1805F2F33FD2D@irsmsx105.ger.corp.intel.com>
+References: <1473427417-9166-1-git-send-email-irina.tirdea@intel.com>
+ <20160914213324.GF7243@codeaurora.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <20160914213324.GF7243@codeaurora.org>
+Content-Language: en-US
+Sender: linux-clk-owner@vger.kernel.org
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, "Bossart, Pierre-louis" <pierre-louis.bossart@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The newly added rt5663 codec driver introduces a couple of warnings
-when built with -Wmaybe-uninitialized:
 
-codecs/rt5663.c: In function 'rt5663_set_tdm_slot':
-codecs/rt5663.c:2680:2: error: 'reg' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-codecs/rt5663.c: In function 'rt5663_set_dai_pll':
-codecs/rt5663.c:2556:12: error: 'shift' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-codecs/rt5663.c:2596:2: error: 'mask' may be used uninitialized in this function [-Werror=maybe-uninitialized]
 
-We can avoid those warnings by always returning an error
-from the switch() statements instead of falling through
-with an uninitialized variable when we hit an unexpected
-case.
+> -----Original Message-----
+> From: Stephen Boyd [mailto:sboyd@codeaurora.org]
+> Sent: 15 September, 2016 0:33
+> To: Tirdea, Irina
+> Cc: linux-clk@vger.kernel.org; Michael Turquette; alsa-devel@alsa-project.org; Mark Brown; Takashi Iwai; Bossart, Pierre-louis; Pierre-
+> Louis Bossart
+> Subject: Re: [PATCH v3] clk: x86: Add Atom PMC platform clocks
+> 
+> On 09/09, Irina Tirdea wrote:
+> > +
+> > +static const char **plt_clk_register_parents(struct platform_device *pdev,
+> > +					     struct clk_plt_data *data,
+> > +					     const struct pmc_clk *clks)
+> > +{
+> > +	const char **parent_names;
+> > +	int i, err;
+> > +
+> > +	data->nparents = 0;
+> > +	while (clks[data->nparents].name)
+> > +		data->nparents++;
+> > +
+> > +	data->parents = devm_kzalloc(&pdev->dev,
+> > +				     sizeof(*data->parents) * data->nparents,
+> > +				     GFP_KERNEL);
+> 
+> This could be devm_kcalloc()
+> 
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: df7c52168ee1 ("ASoC: add rt5663 codec driver")
----
- sound/soc/codecs/rt5663.c | 3 +++
- 1 file changed, 3 insertions(+)
+OK, will send v4 with this change.
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index 7963a2736a91..8078abcaf728 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -1831,6 +1831,7 @@ static int rt5663_i2s_use_asrc(struct snd_soc_dapm_widget *source,
- 		break;
- 	default:
- 		dev_err(codec->dev, "Unknown CODEC_TYPE\n");
-+		return 1;
- 	}
- 
- 	if (da_asrc_en || ad_asrc_en)
-@@ -2579,6 +2580,7 @@ static int rt5663_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
- 		break;
- 	default:
- 		dev_err(codec->dev, "Unknown CODEC_TYPE\n");
-+		return -EINVAL;
- 	}
- 
- 	switch (source) {
-@@ -2674,6 +2676,7 @@ static int rt5663_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 		break;
- 	default:
- 		dev_err(codec->dev, "Unknown CODEC_TYPE\n");
-+		return -EINVAL;
- 	}
- 
- 	snd_soc_update_bits(codec, reg, RT5668_TDM_MODE_MASK |
--- 
-2.9.0
+> ---8<----
+> diff --git a/drivers/clk/x86/clk-byt-plt.c b/drivers/clk/x86/clk-byt-plt.c
+> index 9dbf4b04ae47..7bd6c0dded00 100644
+> --- a/drivers/clk/x86/clk-byt-plt.c
+> +++ b/drivers/clk/x86/clk-byt-plt.c
+> @@ -259,9 +259,8 @@ static const char **plt_clk_register_parents(struct platform_device *pdev,
+>  	while (clks[data->nparents].name)
+>  		data->nparents++;
+> 
+> -	data->parents = devm_kzalloc(&pdev->dev,
+> -				     sizeof(*data->parents) * data->nparents,
+> -				     GFP_KERNEL);
+> +	data->parents = devm_kcalloc(&pdev->dev, data->nparents,
+> +				     sizeof(*data->parents), GFP_KERNEL);
+>  	if (!data->parents) {
+>  		err = -ENOMEM;
+>  		goto err_out;
+> 
+> --
+> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+> a Linux Foundation Collaborative Project
