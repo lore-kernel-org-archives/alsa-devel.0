@@ -1,83 +1,46 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] Revert "ASoC: core: mark SND_SOC_BYTES_EXT as
-	deprecated"
-Date: Fri, 16 Sep 2016 08:06:02 +0900
-Message-ID: <1473980762-13259-1-git-send-email-o-takashi@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 8F866261A5E
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2016 01:06:07 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de, broonie@kernel.org
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, ckeepax@opensource.wolfsonmicro.com
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH] ASoC: rockchip: Support headset button function on rk3399
+Date: Fri, 16 Sep 2016 07:10:06 +0800
+Message-ID: <1473981006-20542-1-git-send-email-cychiang@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>, alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Cheng-Yi Chiang <cychiang@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-SND_SOC_BYTES_EXT was added by commit d98812082c87 ("ASoC: add
-SND_SOC_BYTES_EXT") to allow drivers to transfer arbitrary byte-aligned
-data to/from devices via ALSA control interface. Later, SND_SOC_BYTES_TLV
-was added by commit 7523a271682f ("ASoC: core: add a helper for extended
-byte controls using TLV") was added for the same purpose and developers
-expected this to obsolete the former.
+Set the mapping between button and media key event.
 
-However, SND_SOC_BYTES_TLV brought confusions to user land because it
-doesn't follow to a protocol of ALSA control interface. At least, this
-macro and related kernel APIs include two misunderstandings:
- - 'struct snd_ctl_elem_info.count' can also represent the length of TLV
-   packet paylaod, snd_soc_bytes_info_ext() performs in this way.
- - 'struct snd_ctl_tlv.tlv' can include arbitrary data regardless of TLV
-   packet structure, snd_soc_bytes_tlv_callback() performs in this way.
-
-In a policy of kernel land development, it's quite worse to break protocols
-for applications. Therefore, developers are discouraged to use these kernel
-APIs.
-
-In the first place, SND_SOC_BYTES_TLV was added to satisfy a request of
-developers who need to add control elements which transfer data larger than
-the size which 'struct snd_ctl_elem_value' can represent; e.g. over 512
-bytes. As long as the size is less than the size, SND_SOC_BYTES_EXT is
-still available. Although there is the limitation of maximum data size,
-it's better to use this API for stable application interface till better
-alternative ways are implemented in future.
-
-For these reasons, this commit reverts the previous commit which lead
-developers to the worse behaviour. Unfortunately, SND_SOC_BYTES_TLV was
-already merged in development cycle for kernel 3.17 and published, so
-this commit doesn't touch it for any compatibilities.
-
-Reference: http://mailman.alsa-project.org/pipermail/alsa-devel/2013-November/069483.html
-Reference: commit d98812082c87 ("ASoC: add SND_SOC_BYTES_EXT")
-Reference: commit 7523a271682f ("ASoC: core: add a helper for extended byte controls using TLV")
-Cc: Vinod Koul <vinod.koul@intel.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
 ---
- include/sound/soc.h | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/rockchip/rk3399_gru_sound.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 6144882..18f7d21 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -311,9 +311,6 @@
- 		{.base = xbase, .num_regs = xregs,	      \
- 		 .mask = xmask }) }
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 164b6da..ee06489 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -23,6 +23,7 @@
+ #include <linux/of_gpio.h>
+ #include <linux/delay.h>
+ #include <linux/spi/spi.h>
++#include <linux/input.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
+ #include <sound/pcm.h>
+@@ -209,6 +210,14 @@ static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ 		return ret;
+ 	}
  
--/*
-- * SND_SOC_BYTES_EXT is deprecated, please USE SND_SOC_BYTES_TLV instead
-- */
- #define SND_SOC_BYTES_EXT(xname, xcount, xhandler_get, xhandler_put) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
- 	.info = snd_soc_bytes_info_ext, \
++	snd_jack_set_key(rockchip_sound_jack.jack, SND_JACK_BTN_0, KEY_MEDIA);
++	snd_jack_set_key(
++		rockchip_sound_jack.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
++	snd_jack_set_key(
++		rockchip_sound_jack.jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
++	snd_jack_set_key(
++		rockchip_sound_jack.jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
++
+ 	da7219_aad_jack_det(codec, &rockchip_sound_jack);
+ 
+ 	return 0;
 -- 
-2.7.4
+2.6.6
