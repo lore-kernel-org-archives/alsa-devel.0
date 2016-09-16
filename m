@@ -1,92 +1,134 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 01/11] ASoC: topology: Able to create BE
-	DAIs
-Date: Fri, 16 Sep 2016 15:56:52 +0100
-Message-ID: <20160916145651.GD27974@sirena.org.uk>
-References: <cover.1473420558.git.mengdong.lin@linux.intel.com>
- <084b7ba7ba3f0d4a97641b43fab26aee2dc20c5d.1473420558.git.mengdong.lin@linux.intel.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v5 1/5] ASoC: codecs: Add msm8916-wcd analog codec
+Date: Fri, 16 Sep 2016 10:41:51 -0500
+Message-ID: <20160916154151.GA13492@rob-hp-laptop>
+References: <1473339896-9409-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <1473339896-9409-2-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1784574212103558836=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D0B4266884
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2016 16:57:03 +0200 (CEST)
-In-Reply-To: <084b7ba7ba3f0d4a97641b43fab26aee2dc20c5d.1473420558.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1473339896-9409-2-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, mark.rutland@arm.com, tiwai@suse.com, devicetree@vger.kernel.org, kwestfie@codeaurora.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Sep 08, 2016 at 02:04:52PM +0100, Srinivas Kandagatla wrote:
+> msm8916-wcd codec is found in Qualcomm msm8916 and apq8016 processors.
+> This codec IP is split in to two parts (Digital & Analog).
+> Analog part is integrated in to PMIC PM8916 and the digital part is
+> integrated into Application processor. Data transfer between Analog and
+> Digital Die is done via a internal bus called PDM.
+> 
+> This patch adds support to Analog part of the Codec which is integrated
+> into PMIC PM8916.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../bindings/sound/qcom,msm8916-wcd-analog.txt     |  83 ++
+>  sound/soc/codecs/Kconfig                           |   4 +
+>  sound/soc/codecs/Makefile                          |   3 +-
+>  sound/soc/codecs/msm8916-wcd-analog.c              | 888 +++++++++++++++++++++
+>  4 files changed, 977 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
+>  create mode 100644 sound/soc/codecs/msm8916-wcd-analog.c
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
+> new file mode 100644
+> index 0000000..f426c06
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
+> @@ -0,0 +1,83 @@
+> +msm8916 analog audio CODEC
+> +
+> +Bindings for codec Analog IP which is integrated in pmic pm8916,
+> +
+> +## Bindings for codec core on pmic:
+> +
+> +Required properties
+> + - compatible = "qcom,msm8916-wcd-analog-codec";
+> + - reg: represents the slave base address provided to the peripheral.
+> + - interrupt-parent : The parent interrupt controller.
+> + - interrupts: List of interrupts in given SPMI peripheral.
+> + - interrupt-names: Names specified to above list of interrupts in same
+> +		    order. List of supported interrupt names are:
+> +  "cdc_spk_cnp_int" - Speaker click and pop interrupt.
+> +  "cdc_spk_clip_int" - Speaker clip interrupt.
+> +  "cdc_spk_ocp_int" - Speaker over current protect interrupt.
+> +  "mbhc_ins_rem_det1" - jack insert removal detect interrupt 1.
+> +  "mbhc_but_rel_det" - button release interrupt.
+> +  "mbhc_but_press_det" - button press event
+> +  "mbhc_ins_rem_det" - jack insert removal detect interrupt.
+> +  "mbhc_switch_int"	- multi button headset interrupt.
+> +  "cdc_ear_ocp_int" - Earphone over current protect interrupt.
+> +  "cdc_hphr_ocp_int" - Headphone R over current protect interrupt.
+> +  "cdc_hphl_ocp_det" - Headphone L over current protect interrupt.
+> +  "cdc_ear_cnp_int" - earphone cnp interrupt.
+> +  "cdc_hphr_cnp_int" - hphr click and pop interrupt.
+> +  "cdc_hphl_cnp_int" - hphl click and pop interrupt.
+> +
+> + - clocks: Handle to mclk.
+> + - clock-names: should be "mclk".
+> + - VDD-CDC-IO-supply: phandle to VDD_CDC_IO regulator device tree node.
+> + - VDD-CDC-TX-RX-CX-supply: phandle to VDD_CDC_TX/RX/CX regulator device tree node.
+> + - VDD-MICBIAS-supply: phandle of VDD_MICBIAS supply's regulator device tree node.
 
---===============1784574212103558836==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mjeOt6n4R71vn6wN"
-Content-Disposition: inline
+Lowercase please.
 
+> +
+> +Optional Properties:
+> +- qcom,micbias1-ext-cap: present if micbias1 has external capacitor connected.
+> +- qcom,micbias2-ext-cap: present if micbias2 has external capacitor connected.
 
---mjeOt6n4R71vn6wN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Explicitly state these are bool.
 
-On Fri, Sep 09, 2016 at 07:43:11PM +0800, mengdong.lin@linux.intel.com wrote:
+> +
+> +Example:
+> +
+> +spmi_bus {
+> +	...
+> +	msm8916_wcd_codec@f000{
 
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+audio-codec@...
 
-> Topology will check with ASoC if a BE DAI already exists by checking
-> its name. If the BE DAI doesn't exist, topology will create a new one
-> and the dai_load ops will be called for device specific init.
-
-I still remain fundamentally unconvinced that this is a good or scalable
-idea and that it makes sense to have it be part of the standard topology
-ABI.  We are not going to download a DSP firmware that creates a new
-physical link in the system so having the topology be the thing creating
-those physical links seems wrong.
-
-> create the HDA DAIs. Ideally, the driver should query BIOS to get the
-> physical pin output types and connections to peripherals for a specific
-> platform, but unfortunately BIOS sometimes does not have accurate info,
-> so there is still hard code of BE DAI & DAI links in driver. To share a
-
-Having the connections to the DSP specified in the toplogy is of course
-sensible but fundamentally this is always going to be choosing from a
-list of physical DAIs that we already know about and potential
-connections for those that are also already known.  If the driver wants
-to do something in response to a DAI being hooked up into the topology
-(which seems to be the actual goal here) that would be sensible but
-attempting to create physical hardware in a topology does not seem like
-a good idea as a generic feature.
-
---mjeOt6n4R71vn6wN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJX3AgyAAoJECTWi3JdVIfQUY4H/0a67k0f06csHzry2e0LX6aU
-jfeXbXtBa/255J7o77YhlmLludPfdZSJEADtLDmRkxr9FSvxISc2OQqDO8wcFtD0
-LwiGOTf27pIzgbzI4c56rXi8L71qYUbPiUEZr7GXcJl87D6hLRuveGPfjdfXLAdC
-Qm4tlg5MMvyKc3Jw5MwrsBuJFlckD+VWTpyZhyxtuiNeVVSg31r7zrQ+FP1SSXBp
-o/CbHBtEwhONFB4YPy3WespSqL5lGpBiZyvp8NjGh8rUwyTr7YorfSlZN4oUN1al
-vAKT7/6dMaNkC2RSX6XmzUC5aHo7eon/rx8UNGvYbFi26+n8elLnyamnv3MRrF8=
-=0MhC
------END PGP SIGNATURE-----
-
---mjeOt6n4R71vn6wN--
-
---===============1784574212103558836==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1784574212103558836==--
+> +		compatible = "qcom,msm8916-wcd-analog-codec";
+> +		reg = <0xf000 0x200>;
+> +		reg-names = "pmic-codec-core";
+> +		clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
+> +		clock-names = "mclk";
+> +		interrupt-parent = <&spmi_bus>;
+> +		interrupts = <0x1 0xf0 0x0 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x1 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x2 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x3 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x4 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x5 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x6 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf0 0x7 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf1 0x0 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf1 0x1 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf1 0x2 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf1 0x3 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf1 0x4 IRQ_TYPE_NONE>,
+> +			     <0x1 0xf1 0x5 IRQ_TYPE_NONE>;
+> +		interrupt-names = "cdc_spk_cnp_int",
+> +				  "cdc_spk_clip_int",
+> +				  "cdc_spk_ocp_int",
+> +				  "mbhc_ins_rem_det1",
+> +				  "mbhc_but_rel_det",
+> +				  "mbhc_but_press_det",
+> +				  "mbhc_ins_rem_det",
+> +				  "mbhc_switch_int",
+> +				  "cdc_ear_ocp_int",
+> +				  "cdc_hphr_ocp_int",
+> +				  "cdc_hphl_ocp_det",
+> +				  "cdc_ear_cnp_int",
+> +				  "cdc_hphr_cnp_int",
+> +				  "cdc_hphl_cnp_int";
+> +	               VDD-CDC-IO-supply = <&pm8916_l5>;
+> +	               VDD-CDC-TX-RX-CX-supply = <&pm8916_l5>;
+> +	               VDD-MICBIAS-supply = <&pm8916_l13>;
+> +	               #sound-dai-cells = <1>;
+> +	};
+> +};
