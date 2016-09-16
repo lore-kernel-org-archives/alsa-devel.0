@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5663: refine error handling" to the asoc tree
-Date: Fri, 16 Sep 2016 18:38:40 +0100
-Message-ID: <E1bkx60-0003wq-Bb@debutante>
-References: <20160915154238.3004097-1-arnd@arndb.de>
+Subject: Applied "ASoC: rockchip: Support headset button function on rk3399" to the asoc tree
+Date: Fri, 16 Sep 2016 18:39:41 +0100
+Message-ID: <E1bkx6z-0003yX-Rd@debutante>
+References: <1473981006-20542-1-git-send-email-cychiang@chromium.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160915154238.3004097-1-arnd@arndb.de>
+In-Reply-To: <1473981006-20542-1-git-send-email-cychiang@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Bard Liao <bardliao@realtek.com>
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+Cc: Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.orgMark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5663: refine error handling
+   ASoC: rockchip: Support headset button function on rk3399
 
 has been applied to the asoc tree at
 
@@ -37,59 +37,45 @@ to this mail.
 Thanks,
 Mark
 
->From 56efaed524dc2c3571f66d296cb1efbd59cb2996 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 15 Sep 2016 17:42:21 +0200
-Subject: [PATCH] ASoC: rt5663: refine error handling
+>From 22b93eaf55edfd2f1fe9d1fc0d7338f582f12745 Mon Sep 17 00:00:00 2001
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Date: Fri, 16 Sep 2016 07:10:06 +0800
+Subject: [PATCH] ASoC: rockchip: Support headset button function on rk3399
 
-The newly added rt5663 codec driver introduces a couple of warnings
-when built with -Wmaybe-uninitialized:
+Set the mapping between button and media key event.
 
-codecs/rt5663.c: In function 'rt5663_set_tdm_slot':
-codecs/rt5663.c:2680:2: error: 'reg' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-codecs/rt5663.c: In function 'rt5663_set_dai_pll':
-codecs/rt5663.c:2556:12: error: 'shift' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-codecs/rt5663.c:2596:2: error: 'mask' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-
-We can avoid those warnings by always returning an error
-from the switch() statements instead of falling through
-with an uninitialized variable when we hit an unexpected
-case.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: df7c52168ee1 ("ASoC: add rt5663 codec driver")
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5663.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/rockchip/rk3399_gru_sound.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index 7963a2736a91..8078abcaf728 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -1831,6 +1831,7 @@ static int rt5663_i2s_use_asrc(struct snd_soc_dapm_widget *source,
- 		break;
- 	default:
- 		dev_err(codec->dev, "Unknown CODEC_TYPE\n");
-+		return 1;
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 164b6da4f2cf..ee0648927afc 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -23,6 +23,7 @@
+ #include <linux/of_gpio.h>
+ #include <linux/delay.h>
+ #include <linux/spi/spi.h>
++#include <linux/input.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
+ #include <sound/pcm.h>
+@@ -209,6 +210,14 @@ static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ 		return ret;
  	}
  
- 	if (da_asrc_en || ad_asrc_en)
-@@ -2579,6 +2580,7 @@ static int rt5663_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
- 		break;
- 	default:
- 		dev_err(codec->dev, "Unknown CODEC_TYPE\n");
-+		return -EINVAL;
- 	}
++	snd_jack_set_key(rockchip_sound_jack.jack, SND_JACK_BTN_0, KEY_MEDIA);
++	snd_jack_set_key(
++		rockchip_sound_jack.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
++	snd_jack_set_key(
++		rockchip_sound_jack.jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
++	snd_jack_set_key(
++		rockchip_sound_jack.jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
++
+ 	da7219_aad_jack_det(codec, &rockchip_sound_jack);
  
- 	switch (source) {
-@@ -2674,6 +2676,7 @@ static int rt5663_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 		break;
- 	default:
- 		dev_err(codec->dev, "Unknown CODEC_TYPE\n");
-+		return -EINVAL;
- 	}
- 
- 	snd_soc_update_bits(codec, reg, RT5668_TDM_MODE_MASK |
+ 	return 0;
 -- 
 2.8.1
