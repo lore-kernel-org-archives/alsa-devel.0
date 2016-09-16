@@ -1,81 +1,100 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: Support headset button function on rk3399" to the asoc tree
-Date: Fri, 16 Sep 2016 18:39:41 +0100
-Message-ID: <E1bkx6z-0003yX-Rd@debutante>
-References: <1473981006-20542-1-git-send-email-cychiang@chromium.org>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: Intel: atom: add missing \n to end of dev_err/dev_dbg messages
+Date: Fri, 16 Sep 2016 18:37:31 +0100
+Message-ID: <20160916173731.13302-1-colin.king@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1473981006-20542-1-git-send-email-cychiang@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.orgMark Brown <broonie@kernel.org>
+To: trivial@kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Sachin Mokashi <sachinx.mokashi@intel.com>, Jorge Fernandez Monteagudo <jorgefm@cirsa.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+From: Colin Ian King <colin.king@canonical.com>
 
-   ASoC: rockchip: Support headset button function on rk3399
+Trival fix, some dev_err/deb_dbg messages are missing a \n, so add it.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 22b93eaf55edfd2f1fe9d1fc0d7338f582f12745 Mon Sep 17 00:00:00 2001
-From: Cheng-Yi Chiang <cychiang@chromium.org>
-Date: Fri, 16 Sep 2016 07:10:06 +0800
-Subject: [PATCH] ASoC: rockchip: Support headset button function on rk3399
-
-Set the mapping between button and media key event.
-
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/soc/rockchip/rk3399_gru_sound.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/intel/atom/sst/sst_acpi.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 164b6da4f2cf..ee0648927afc 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -23,6 +23,7 @@
- #include <linux/of_gpio.h>
- #include <linux/delay.h>
- #include <linux/spi/spi.h>
-+#include <linux/input.h>
- #include <sound/core.h>
- #include <sound/jack.h>
- #include <sound/pcm.h>
-@@ -209,6 +210,14 @@ static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
- 		return ret;
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 773acfb..9718e82 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -166,7 +166,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
+ 	rsrc = platform_get_resource(pdev, IORESOURCE_MEM,
+ 					ctx->pdata->res_info->acpi_lpe_res_index);
+ 	if (!rsrc) {
+-		dev_err(ctx->dev, "Invalid SHIM base from IFWI");
++		dev_err(ctx->dev, "Invalid SHIM base from IFWI\n");
+ 		return -EIO;
+ 	}
+ 	dev_info(ctx->dev, "LPE base: %#x size:%#x", (unsigned int) rsrc->start,
+@@ -178,7 +178,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
+ 	ctx->iram = devm_ioremap_nocache(ctx->dev, ctx->iram_base,
+ 					 ctx->pdata->res_info->iram_size);
+ 	if (!ctx->iram) {
+-		dev_err(ctx->dev, "unable to map IRAM");
++		dev_err(ctx->dev, "unable to map IRAM\n");
+ 		return -EIO;
  	}
  
-+	snd_jack_set_key(rockchip_sound_jack.jack, SND_JACK_BTN_0, KEY_MEDIA);
-+	snd_jack_set_key(
-+		rockchip_sound_jack.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
-+	snd_jack_set_key(
-+		rockchip_sound_jack.jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-+	snd_jack_set_key(
-+		rockchip_sound_jack.jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
-+
- 	da7219_aad_jack_det(codec, &rockchip_sound_jack);
+@@ -188,7 +188,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
+ 	ctx->dram = devm_ioremap_nocache(ctx->dev, ctx->dram_base,
+ 					 ctx->pdata->res_info->dram_size);
+ 	if (!ctx->dram) {
+-		dev_err(ctx->dev, "unable to map DRAM");
++		dev_err(ctx->dev, "unable to map DRAM\n");
+ 		return -EIO;
+ 	}
  
- 	return 0;
+@@ -197,7 +197,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
+ 	ctx->shim = devm_ioremap_nocache(ctx->dev, ctx->shim_phy_add,
+ 					ctx->pdata->res_info->shim_size);
+ 	if (!ctx->shim) {
+-		dev_err(ctx->dev, "unable to map SHIM");
++		dev_err(ctx->dev, "unable to map SHIM\n");
+ 		return -EIO;
+ 	}
+ 
+@@ -210,7 +210,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
+ 	ctx->mailbox = devm_ioremap_nocache(ctx->dev, ctx->mailbox_add,
+ 					    ctx->pdata->res_info->mbox_size);
+ 	if (!ctx->mailbox) {
+-		dev_err(ctx->dev, "unable to map mailbox");
++		dev_err(ctx->dev, "unable to map mailbox\n");
+ 		return -EIO;
+ 	}
+ 
+@@ -220,7 +220,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
+ 	rsrc = platform_get_resource(pdev, IORESOURCE_MEM,
+ 					ctx->pdata->res_info->acpi_ddr_index);
+ 	if (!rsrc) {
+-		dev_err(ctx->dev, "Invalid DDR base from IFWI");
++		dev_err(ctx->dev, "Invalid DDR base from IFWI\n");
+ 		return -EIO;
+ 	}
+ 	ctx->ddr_base = rsrc->start;
+@@ -229,7 +229,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
+ 	ctx->ddr = devm_ioremap_nocache(ctx->dev, ctx->ddr_base,
+ 					resource_size(rsrc));
+ 	if (!ctx->ddr) {
+-		dev_err(ctx->dev, "unable to map DDR");
++		dev_err(ctx->dev, "unable to map DDR\n");
+ 		return -EIO;
+ 	}
+ 
+@@ -296,7 +296,7 @@ static int sst_acpi_probe(struct platform_device *pdev)
+ 	id = acpi_match_device(dev->driver->acpi_match_table, dev);
+ 	if (!id)
+ 		return -ENODEV;
+-	dev_dbg(dev, "for %s", id->id);
++	dev_dbg(dev, "for %s\n", id->id);
+ 
+ 	mach = (struct sst_acpi_mach *)id->driver_data;
+ 	mach = sst_acpi_find_machine(mach);
 -- 
-2.8.1
+2.9.3
