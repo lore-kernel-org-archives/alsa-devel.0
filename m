@@ -1,19 +1,18 @@
 From: Andrej Krutak <dev@andree.sk>
-Subject: [PATCH v3 06/12] ALSA: line6: Distinguish device init
-	(ctrl EP) and MIDI data transfer (int EP)
-Date: Fri, 16 Sep 2016 11:12:50 +0200
-Message-ID: <1474017177-23769-7-git-send-email-dev@andree.sk>
+Subject: [PATCH v3 08/12] ALSA: line6: Add support for POD X3
+Date: Fri, 16 Sep 2016 11:12:52 +0200
+Message-ID: <1474017177-23769-9-git-send-email-dev@andree.sk>
 References: <1470942147-19848-1-git-send-email-dev@andree.sk>
  <1474017177-23769-1-git-send-email-dev@andree.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 70E152667DF
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2016 11:13:21 +0200 (CEST)
-Received: by mail-wm0-f67.google.com with SMTP id b184so2694931wma.3
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2016 02:13:21 -0700 (PDT)
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54AC72667E6
+ for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2016 11:13:24 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id b187so2696670wme.0
+ for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2016 02:13:24 -0700 (PDT)
 In-Reply-To: <1474017177-23769-1-git-send-email-dev@andree.sk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,270 +27,410 @@ To: tiwai@suse.com, perex@perex.cz, stefanha@gmail.com, grabner@icg.tugraz.at, a
 Cc: Andrej Krutak <dev@andree.sk>
 List-Id: alsa-devel@alsa-project.org
 
-POD X3 can initialize similarly to older PODs, but it doesn't have the MIDI
-interface. Instead, configuration is done via proprietary bulk EP messages.
+This includes audio in/out and basic initialization via control EP (emulates
+what original driver does). The initialization is done similarly to original
+POD, firmware and serial IDs are read and exported via sysfs.
 
 Signed-off-by: Andrej Krutak <dev@andree.sk>
 ---
- sound/usb/line6/driver.c | 72 ++++++++++++++++++++++++++++++++++--------------
- sound/usb/line6/driver.h |  6 ++--
- sound/usb/line6/pod.c    |  9 +++++-
- sound/usb/line6/variax.c |  6 ++--
- 4 files changed, 68 insertions(+), 25 deletions(-)
+ sound/usb/line6/Kconfig |   4 +-
+ sound/usb/line6/podhd.c | 276 +++++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 265 insertions(+), 15 deletions(-)
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 14032d9..9b16777 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -66,10 +66,17 @@ static int line6_start_listen(struct usb_line6 *line6)
+diff --git a/sound/usb/line6/Kconfig b/sound/usb/line6/Kconfig
+index f4585d37..8ffcf48 100644
+--- a/sound/usb/line6/Kconfig
++++ b/sound/usb/line6/Kconfig
+@@ -21,10 +21,10 @@ config SND_USB_POD
+ 	      re-amping)
+ 
+ config SND_USB_PODHD
+-	tristate "Line 6 POD HD300/400/500 USB support"
++	tristate "Line 6 POD X3/HD300/400/500 USB support"
+ 	select SND_USB_LINE6
+ 	help
+-	  This is a driver for POD HD300, 400 and 500 devices.
++	  This is a driver for POD X3, HD300, 400 and 500 devices.
+ 
+ config SND_USB_TONEPORT
+ 	tristate "TonePort GX, UX1 and UX2 USB support"
+diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
+index 4fc4789..8cf0a98 100644
+--- a/sound/usb/line6/podhd.c
++++ b/sound/usb/line6/podhd.c
+@@ -2,6 +2,7 @@
+  * Line 6 Pod HD
+  *
+  * Copyright (C) 2011 Stefan Hajnoczi <stefanha@gmail.com>
++ * Copyright (C) 2015 Andrej Krutak <dev@andree.sk>
+  *
+  *	This program is free software; you can redistribute it and/or
+  *	modify it under the terms of the GNU General Public License as
+@@ -18,11 +19,44 @@
+ #include "driver.h"
+ #include "pcm.h"
+ 
++#define PODHD_STARTUP_DELAY 500
++
++/*
++ * Stages of POD startup procedure
++ */
++enum {
++	PODHD_STARTUP_INIT = 1,
++	PODHD_STARTUP_SCHEDULE_WORKQUEUE,
++	PODHD_STARTUP_SETUP,
++	PODHD_STARTUP_LAST = PODHD_STARTUP_SETUP - 1
++};
++
+ enum {
+ 	LINE6_PODHD300,
+ 	LINE6_PODHD400,
+ 	LINE6_PODHD500_0,
+ 	LINE6_PODHD500_1,
++	LINE6_PODX3,
++};
++
++struct usb_line6_podhd {
++	/* Generic Line 6 USB data */
++	struct usb_line6 line6;
++
++	/* Timer for device initialization */
++	struct timer_list startup_timer;
++
++	/* Work handler for device initialization */
++	struct work_struct startup_work;
++
++	/* Current progress in startup procedure */
++	int startup_progress;
++
++	/* Serial number of device */
++	u32 serial_number;
++
++	/* Firmware version */
++	int firmware_version;
+ };
+ 
+ static struct snd_ratden podhd_ratden = {
+@@ -71,9 +105,196 @@ static struct line6_pcm_properties podhd_pcm_properties = {
+ 	.rates = {
+ 			    .nrats = 1,
+ 			    .rats = &podhd_ratden},
+-	.bytes_per_channel = 3 /* 24bit audio (stereo) */
++	.bytes_per_channel = 3 /* SNDRV_PCM_FMTBIT_S24_3LE */
+ };
+ 
++static struct line6_pcm_properties podx3_pcm_properties = {
++	.playback_hw = {
++				  .info = (SNDRV_PCM_INFO_MMAP |
++					   SNDRV_PCM_INFO_INTERLEAVED |
++					   SNDRV_PCM_INFO_BLOCK_TRANSFER |
++					   SNDRV_PCM_INFO_MMAP_VALID |
++					   SNDRV_PCM_INFO_PAUSE |
++					   SNDRV_PCM_INFO_SYNC_START),
++				  .formats = SNDRV_PCM_FMTBIT_S24_3LE,
++				  .rates = SNDRV_PCM_RATE_48000,
++				  .rate_min = 48000,
++				  .rate_max = 48000,
++				  .channels_min = 2,
++				  .channels_max = 2,
++				  .buffer_bytes_max = 60000,
++				  .period_bytes_min = 64,
++				  .period_bytes_max = 8192,
++				  .periods_min = 1,
++				  .periods_max = 1024},
++	.capture_hw = {
++				 .info = (SNDRV_PCM_INFO_MMAP |
++					  SNDRV_PCM_INFO_INTERLEAVED |
++					  SNDRV_PCM_INFO_BLOCK_TRANSFER |
++					  SNDRV_PCM_INFO_MMAP_VALID |
++					  SNDRV_PCM_INFO_SYNC_START),
++				 .formats = SNDRV_PCM_FMTBIT_S24_3LE,
++				 .rates = SNDRV_PCM_RATE_48000,
++				 .rate_min = 48000,
++				 .rate_max = 48000,
++				 /* 1+2: Main signal (out), 3+4: Tone 1,
++				  * 5+6: Tone 2, 7+8: raw */
++				 .channels_min = 8,
++				 .channels_max = 8,
++				 .buffer_bytes_max = 60000,
++				 .period_bytes_min = 64,
++				 .period_bytes_max = 8192,
++				 .periods_min = 1,
++				 .periods_max = 1024},
++	.rates = {
++			    .nrats = 1,
++			    .rats = &podhd_ratden},
++	.bytes_per_channel = 3 /* SNDRV_PCM_FMTBIT_S24_3LE */
++};
++
++static void podhd_startup_start_workqueue(unsigned long data);
++static void podhd_startup_workqueue(struct work_struct *work);
++static int podhd_startup_finalize(struct usb_line6_podhd *pod);
++
++static ssize_t serial_number_show(struct device *dev,
++				  struct device_attribute *attr, char *buf)
++{
++	struct snd_card *card = dev_to_snd_card(dev);
++	struct usb_line6_podhd *pod = card->private_data;
++
++	return sprintf(buf, "%u\n", pod->serial_number);
++}
++
++static ssize_t firmware_version_show(struct device *dev,
++				     struct device_attribute *attr, char *buf)
++{
++	struct snd_card *card = dev_to_snd_card(dev);
++	struct usb_line6_podhd *pod = card->private_data;
++
++	return sprintf(buf, "%06x\n", pod->firmware_version);
++}
++
++static DEVICE_ATTR_RO(firmware_version);
++static DEVICE_ATTR_RO(serial_number);
++
++static struct attribute *podhd_dev_attrs[] = {
++	&dev_attr_firmware_version.attr,
++	&dev_attr_serial_number.attr,
++	NULL
++};
++
++static const struct attribute_group podhd_dev_attr_group = {
++	.name = "podhd",
++	.attrs = podhd_dev_attrs,
++};
++
++/*
++ * POD X3 startup procedure.
++ *
++ * May be compatible with other POD HD's, since it's also similar to the
++ * previous POD setup. In any case, it doesn't seem to be required for the
++ * audio nor bulk interfaces to work.
++ */
++
++static void podhd_startup(struct usb_line6_podhd *pod)
++{
++	CHECK_STARTUP_PROGRESS(pod->startup_progress, PODHD_STARTUP_INIT);
++
++	/* delay startup procedure: */
++	line6_start_timer(&pod->startup_timer, PODHD_STARTUP_DELAY,
++		podhd_startup_start_workqueue, (unsigned long)pod);
++}
++
++static void podhd_startup_start_workqueue(unsigned long data)
++{
++	struct usb_line6_podhd *pod = (struct usb_line6_podhd *)data;
++
++	CHECK_STARTUP_PROGRESS(pod->startup_progress,
++		PODHD_STARTUP_SCHEDULE_WORKQUEUE);
++
++	/* schedule work for global work queue: */
++	schedule_work(&pod->startup_work);
++}
++
++static int podhd_dev_start(struct usb_line6_podhd *pod)
++{
++	int ret;
++	u8 init_bytes[8];
++	int i;
++	struct usb_device *usbdev = pod->line6.usbdev;
++
++	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0),
++					0x67, USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
++					0x11, 0,
++					NULL, 0, LINE6_TIMEOUT * HZ);
++	if (ret < 0) {
++		dev_err(pod->line6.ifcdev, "read request failed (error %d)\n", ret);
++		return ret;
++	}
++
++	/* NOTE: looks like some kind of ping message */
++	ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0), 0x67,
++					USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
++					0x11, 0x0,
++					&init_bytes, 3, LINE6_TIMEOUT * HZ);
++	if (ret < 0) {
++		dev_err(pod->line6.ifcdev,
++			"receive length failed (error %d)\n", ret);
++		return ret;
++	}
++
++	pod->firmware_version =
++		(init_bytes[0] << 16) | (init_bytes[1] << 8) | (init_bytes[2] << 0);
++
++	for (i = 0; i <= 16; i++) {
++		ret = line6_read_data(&pod->line6, 0xf000 + 0x08 * i, init_bytes, 8);
++		if (ret < 0)
++			return ret;
++	}
++
++	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0),
++					USB_REQ_SET_FEATURE,
++					USB_TYPE_STANDARD | USB_RECIP_DEVICE | USB_DIR_OUT,
++					1, 0,
++					NULL, 0, LINE6_TIMEOUT * HZ);
++	if (ret < 0) {
++		return ret;
++	}
++
++	return 0;
++}
++
++static void podhd_startup_workqueue(struct work_struct *work)
++{
++	struct usb_line6_podhd *pod =
++	    container_of(work, struct usb_line6_podhd, startup_work);
++
++	CHECK_STARTUP_PROGRESS(pod->startup_progress, PODHD_STARTUP_SETUP);
++
++	podhd_dev_start(pod);
++	line6_read_serial_number(&pod->line6, &pod->serial_number);
++
++	podhd_startup_finalize(pod);
++}
++
++static int podhd_startup_finalize(struct usb_line6_podhd *pod)
++{
++	struct usb_line6 *line6 = &pod->line6;
++
++	/* ALSA audio interface: */
++	return snd_card_register(line6->card);
++}
++
++static void podhd_disconnect(struct usb_line6 *line6)
++{
++	struct usb_line6_podhd *pod = (struct usb_line6_podhd *)line6;
++
++	if (pod->line6.properties->capabilities & LINE6_CAP_CONTROL) {
++		del_timer_sync(&pod->startup_timer);
++		cancel_work_sync(&pod->startup_work);
++	}
++}
++
+ /*
+ 	Try to init POD HD device.
+ */
+@@ -81,6 +302,16 @@ static int podhd_init(struct usb_line6 *line6,
+ 		      const struct usb_device_id *id)
  {
  	int err;
- 
--	usb_fill_int_urb(line6->urb_listen, line6->usbdev,
--		usb_rcvintpipe(line6->usbdev, line6->properties->ep_ctrl_r),
--		line6->buffer_listen, LINE6_BUFSIZE_LISTEN,
--		line6_data_received, line6, line6->interval);
-+	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
-+		usb_fill_int_urb(line6->urb_listen, line6->usbdev,
-+			usb_rcvintpipe(line6->usbdev, line6->properties->ep_ctrl_r),
-+			line6->buffer_listen, LINE6_BUFSIZE_LISTEN,
-+			line6_data_received, line6, line6->interval);
-+	} else {
-+		usb_fill_bulk_urb(line6->urb_listen, line6->usbdev,
-+			usb_rcvbulkpipe(line6->usbdev, line6->properties->ep_ctrl_r),
-+			line6->buffer_listen, LINE6_BUFSIZE_LISTEN,
-+			line6_data_received, line6);
-+	}
- 	line6->urb_listen->actual_length = 0;
- 	err = usb_submit_urb(line6->urb_listen, GFP_ATOMIC);
- 	return err;
-@@ -90,6 +97,7 @@ static int line6_send_raw_message(struct usb_line6 *line6, const char *buffer,
- 				  int size)
- {
- 	int i, done = 0;
-+	const struct line6_properties *properties = line6->properties;
- 
- 	for (i = 0; i < size; i += line6->max_packet_size) {
- 		int partial;
-@@ -97,15 +105,21 @@ static int line6_send_raw_message(struct usb_line6 *line6, const char *buffer,
- 		int frag_size = min(line6->max_packet_size, size - i);
- 		int retval;
- 
--		retval = usb_interrupt_msg(line6->usbdev,
--					usb_sndintpipe(line6->usbdev,
--						line6->properties->ep_ctrl_w),
--					(char *)frag_buf, frag_size,
--					&partial, LINE6_TIMEOUT * HZ);
-+		if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
-+			retval = usb_interrupt_msg(line6->usbdev,
-+						usb_sndintpipe(line6->usbdev, properties->ep_ctrl_w),
-+						(char *)frag_buf, frag_size,
-+						&partial, LINE6_TIMEOUT * HZ);
-+		} else {
-+			retval = usb_bulk_msg(line6->usbdev,
-+						usb_sndbulkpipe(line6->usbdev, properties->ep_ctrl_w),
-+						(char *)frag_buf, frag_size,
-+						&partial, LINE6_TIMEOUT * HZ);
-+		}
- 
- 		if (retval) {
- 			dev_err(line6->ifcdev,
--				"usb_interrupt_msg failed (%d)\n", retval);
-+				"usb_bulk_msg failed (%d)\n", retval);
- 			break;
- 		}
- 
-@@ -140,10 +154,17 @@ static int line6_send_raw_message_async_part(struct message *msg,
- 	int done = msg->done;
- 	int bytes = min(msg->size - done, line6->max_packet_size);
- 
--	usb_fill_int_urb(urb, line6->usbdev,
--		usb_sndintpipe(line6->usbdev, line6->properties->ep_ctrl_w),
--		(char *)msg->buffer + done, bytes,
--		line6_async_request_sent, msg, line6->interval);
-+	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
-+		usb_fill_int_urb(urb, line6->usbdev,
-+			usb_sndintpipe(line6->usbdev, line6->properties->ep_ctrl_w),
-+			(char *)msg->buffer + done, bytes,
-+			line6_async_request_sent, msg, line6->interval);
-+	} else {
-+		usb_fill_bulk_urb(urb, line6->usbdev,
-+			usb_sndbulkpipe(line6->usbdev, line6->properties->ep_ctrl_w),
-+			(char *)msg->buffer + done, bytes,
-+			line6_async_request_sent, msg);
-+	}
- 
- 	msg->done += bytes;
- 	retval = usb_submit_urb(urb, GFP_ATOMIC);
-@@ -462,7 +483,18 @@ static void line6_destruct(struct snd_card *card)
- static void line6_get_interval(struct usb_line6 *line6)
- {
- 	struct usb_device *usbdev = line6->usbdev;
--	struct usb_host_endpoint *ep = usbdev->ep_in[line6->properties->ep_ctrl_r];
-+	const struct line6_properties *properties = line6->properties;
-+	int pipe;
-+	struct usb_host_endpoint *ep;
++	struct usb_line6_podhd *pod = (struct usb_line6_podhd *) line6;
 +
-+	if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
-+		pipe =
-+			usb_rcvintpipe(line6->usbdev, line6->properties->ep_ctrl_r);
-+	} else {
-+		pipe =
-+			usb_rcvbulkpipe(line6->usbdev, line6->properties->ep_ctrl_r);
++	line6->disconnect = podhd_disconnect;
++
++	if (pod->line6.properties->capabilities & LINE6_CAP_CONTROL) {
++		/* create sysfs entries: */
++		err = snd_card_add_dev_attr(line6->card, &podhd_dev_attr_group);
++		if (err < 0)
++			return err;
 +	}
-+	ep = usbdev->ep_in[usb_pipeendpoint(pipe)];
  
- 	if (ep) {
- 		line6->interval = ep->desc.bInterval;
-@@ -483,7 +515,7 @@ static void line6_get_interval(struct usb_line6 *line6)
- 	}
+ 	/* initialize MIDI subsystem: */
+ 	err = line6_init_midi(line6);
+@@ -88,12 +319,22 @@ static int podhd_init(struct usb_line6 *line6,
+ 		return err;
+ 
+ 	/* initialize PCM subsystem: */
+-	err = line6_init_pcm(line6, &podhd_pcm_properties);
++	err = line6_init_pcm(line6,
++		(id->driver_info == LINE6_PODX3) ? &podx3_pcm_properties :
++		&podhd_pcm_properties);
+ 	if (err < 0)
+ 		return err;
+ 
+-	/* register USB audio system: */
+-	return snd_card_register(line6->card);
++	if (!(pod->line6.properties->capabilities & LINE6_CAP_CONTROL)) {
++		/* register USB audio system directly */
++		return podhd_startup_finalize(pod);
++	}
++
++	/* init device and delay registering */
++	init_timer(&pod->startup_timer);
++	INIT_WORK(&pod->startup_work, podhd_startup_workqueue);
++	podhd_startup(pod);
++	return 0;
  }
  
--static int line6_init_cap_control(struct usb_line6 *line6)
-+static int line6_init_cap_control_midi(struct usb_line6 *line6)
- {
- 	int ret;
+ #define LINE6_DEVICE(prod) USB_DEVICE(0x0e41, prod)
+@@ -101,10 +342,12 @@ static int podhd_init(struct usb_line6 *line6,
  
-@@ -573,8 +605,8 @@ int line6_probe(struct usb_interface *interface,
+ /* table of devices that work with this driver */
+ static const struct usb_device_id podhd_id_table[] = {
++	/* TODO: no need to alloc data interfaces when only audio is used */
+ 	{ LINE6_DEVICE(0x5057),    .driver_info = LINE6_PODHD300 },
+ 	{ LINE6_DEVICE(0x5058),    .driver_info = LINE6_PODHD400 },
+ 	{ LINE6_IF_NUM(0x414D, 0), .driver_info = LINE6_PODHD500_0 },
+ 	{ LINE6_IF_NUM(0x414D, 1), .driver_info = LINE6_PODHD500_1 },
++	{ LINE6_IF_NUM(0x414A, 0), .driver_info = LINE6_PODX3 },
+ 	{}
+ };
  
- 	line6_get_interval(line6);
- 
--	if (properties->capabilities & LINE6_CAP_CONTROL) {
--		ret = line6_init_cap_control(line6);
-+	if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
-+		ret = line6_init_cap_control_midi(line6);
- 		if (ret < 0)
- 			goto error;
- 	}
-@@ -644,7 +676,7 @@ int line6_suspend(struct usb_interface *interface, pm_message_t message)
- 
- 	snd_power_change_state(line6->card, SNDRV_CTL_POWER_D3hot);
- 
--	if (line6->properties->capabilities & LINE6_CAP_CONTROL)
-+	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)
- 		line6_stop_listen(line6);
- 
- 	if (line6pcm != NULL) {
-@@ -663,7 +695,7 @@ int line6_resume(struct usb_interface *interface)
- {
- 	struct usb_line6 *line6 = usb_get_intfdata(interface);
- 
--	if (line6->properties->capabilities & LINE6_CAP_CONTROL)
-+	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)
- 		line6_start_listen(line6);
- 
- 	snd_power_change_state(line6->card, SNDRV_CTL_POWER_D0);
-diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index 0bcab38..d48c7d2 100644
---- a/sound/usb/line6/driver.h
-+++ b/sound/usb/line6/driver.h
-@@ -104,6 +104,8 @@ enum {
- 	LINE6_CAP_HWMON =	1 << 2,
- 	/* device requires output data when input is read */
- 	LINE6_CAP_IN_NEEDS_OUT = 1 << 3,
-+	/* device uses raw MIDI via USB (data endpoints) */
-+	LINE6_CAP_CONTROL_MIDI = 1 << 4,
+@@ -114,8 +357,7 @@ static const struct line6_properties podhd_properties_table[] = {
+ 	[LINE6_PODHD300] = {
+ 		.id = "PODHD300",
+ 		.name = "POD HD300",
+-		.capabilities	= LINE6_CAP_CONTROL
+-				| LINE6_CAP_PCM
++		.capabilities	= LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 5,
+ 		.ep_ctrl_r = 0x84,
+@@ -126,8 +368,7 @@ static const struct line6_properties podhd_properties_table[] = {
+ 	[LINE6_PODHD400] = {
+ 		.id = "PODHD400",
+ 		.name = "POD HD400",
+-		.capabilities	= LINE6_CAP_CONTROL
+-				| LINE6_CAP_PCM
++		.capabilities	= LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 5,
+ 		.ep_ctrl_r = 0x84,
+@@ -138,8 +379,7 @@ static const struct line6_properties podhd_properties_table[] = {
+ 	[LINE6_PODHD500_0] = {
+ 		.id = "PODHD500",
+ 		.name = "POD HD500",
+-		.capabilities	= LINE6_CAP_CONTROL
+-				| LINE6_CAP_PCM
++		.capabilities	= LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 1,
+ 		.ep_ctrl_r = 0x81,
+@@ -150,8 +390,7 @@ static const struct line6_properties podhd_properties_table[] = {
+ 	[LINE6_PODHD500_1] = {
+ 		.id = "PODHD500",
+ 		.name = "POD HD500",
+-		.capabilities	= LINE6_CAP_CONTROL
+-				| LINE6_CAP_PCM
++		.capabilities	= LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 1,
+ 		.ep_ctrl_r = 0x81,
+@@ -159,6 +398,17 @@ static const struct line6_properties podhd_properties_table[] = {
+ 		.ep_audio_r = 0x86,
+ 		.ep_audio_w = 0x02,
+ 	},
++	[LINE6_PODX3] = {
++		.id = "PODX3",
++		.name = "POD X3",
++		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_PCM | LINE6_CAP_HWMON | LINE6_CAP_IN_NEEDS_OUT,
++		.altsetting = 1,
++		.ep_ctrl_r = 0x81,
++		.ep_ctrl_w = 0x01,
++		.ep_audio_r = 0x86,
++		.ep_audio_w = 0x02,
++	},
  };
  
  /*
-@@ -142,10 +144,10 @@ struct usb_line6 {
- 	/* Line 6 MIDI device data structure */
- 	struct snd_line6_midi *line6midi;
+@@ -169,7 +419,7 @@ static int podhd_probe(struct usb_interface *interface,
+ {
+ 	return line6_probe(interface, id, "Line6-PODHD",
+ 			   &podhd_properties_table[id->driver_info],
+-			   podhd_init, sizeof(struct usb_line6));
++			   podhd_init, sizeof(struct usb_line6_podhd));
+ }
  
--	/* URB for listening to PODxt Pro control endpoint */
-+	/* URB for listening to POD data endpoint */
- 	struct urb *urb_listen;
- 
--	/* Buffer for listening to PODxt Pro control endpoint */
-+	/* Buffer for listening to POD data endpoint */
- 	unsigned char *buffer_listen;
- 
- 	/* Buffer for message to be processed */
-diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
-index 36e7274..17aa616 100644
---- a/sound/usb/line6/pod.c
-+++ b/sound/usb/line6/pod.c
-@@ -475,6 +475,7 @@ static const struct line6_properties pod_properties_table[] = {
- 		.id = "BassPODxt",
- 		.name = "BassPODxt",
- 		.capabilities	= LINE6_CAP_CONTROL
-+				| LINE6_CAP_CONTROL_MIDI
- 				| LINE6_CAP_PCM
- 				| LINE6_CAP_HWMON,
- 		.altsetting = 5,
-@@ -487,6 +488,7 @@ static const struct line6_properties pod_properties_table[] = {
- 		.id = "BassPODxtLive",
- 		.name = "BassPODxt Live",
- 		.capabilities	= LINE6_CAP_CONTROL
-+				| LINE6_CAP_CONTROL_MIDI
- 				| LINE6_CAP_PCM
- 				| LINE6_CAP_HWMON,
- 		.altsetting = 1,
-@@ -499,6 +501,7 @@ static const struct line6_properties pod_properties_table[] = {
- 		.id = "BassPODxtPro",
- 		.name = "BassPODxt Pro",
- 		.capabilities	= LINE6_CAP_CONTROL
-+				| LINE6_CAP_CONTROL_MIDI
- 				| LINE6_CAP_PCM
- 				| LINE6_CAP_HWMON,
- 		.altsetting = 5,
-@@ -510,7 +513,8 @@ static const struct line6_properties pod_properties_table[] = {
- 	[LINE6_POCKETPOD] = {
- 		.id = "PocketPOD",
- 		.name = "Pocket POD",
--		.capabilities	= LINE6_CAP_CONTROL,
-+		.capabilities	= LINE6_CAP_CONTROL
-+				| LINE6_CAP_CONTROL_MIDI,
- 		.altsetting = 0,
- 		.ep_ctrl_r = 0x82,
- 		.ep_ctrl_w = 0x02,
-@@ -520,6 +524,7 @@ static const struct line6_properties pod_properties_table[] = {
- 		.id = "PODxt",
- 		.name = "PODxt",
- 		.capabilities	= LINE6_CAP_CONTROL
-+				| LINE6_CAP_CONTROL_MIDI
- 				| LINE6_CAP_PCM
- 				| LINE6_CAP_HWMON,
- 		.altsetting = 5,
-@@ -532,6 +537,7 @@ static const struct line6_properties pod_properties_table[] = {
- 		.id = "PODxtLive",
- 		.name = "PODxt Live",
- 		.capabilities	= LINE6_CAP_CONTROL
-+				| LINE6_CAP_CONTROL_MIDI
- 				| LINE6_CAP_PCM
- 				| LINE6_CAP_HWMON,
- 		.altsetting = 1,
-@@ -544,6 +550,7 @@ static const struct line6_properties pod_properties_table[] = {
- 		.id = "PODxtPro",
- 		.name = "PODxt Pro",
- 		.capabilities	= LINE6_CAP_CONTROL
-+				| LINE6_CAP_CONTROL_MIDI
- 				| LINE6_CAP_PCM
- 				| LINE6_CAP_HWMON,
- 		.altsetting = 5,
-diff --git a/sound/usb/line6/variax.c b/sound/usb/line6/variax.c
-index ddc23dd..0c4512d 100644
---- a/sound/usb/line6/variax.c
-+++ b/sound/usb/line6/variax.c
-@@ -259,7 +259,8 @@ static const struct line6_properties variax_properties_table[] = {
- 	[LINE6_PODXTLIVE_VARIAX] = {
- 		.id = "PODxtLive",
- 		.name = "PODxt Live",
--		.capabilities	= LINE6_CAP_CONTROL,
-+		.capabilities	= LINE6_CAP_CONTROL
-+				| LINE6_CAP_CONTROL_MIDI,
- 		.altsetting = 1,
- 		.ep_ctrl_r = 0x86,
- 		.ep_ctrl_w = 0x05,
-@@ -269,7 +270,8 @@ static const struct line6_properties variax_properties_table[] = {
- 	[LINE6_VARIAX] = {
- 		.id = "Variax",
- 		.name = "Variax Workbench",
--		.capabilities	= LINE6_CAP_CONTROL,
-+		.capabilities	= LINE6_CAP_CONTROL
-+				| LINE6_CAP_CONTROL_MIDI,
- 		.altsetting = 1,
- 		.ep_ctrl_r = 0x82,
- 		.ep_ctrl_w = 0x01,
+ static struct usb_driver podhd_driver = {
 -- 
 1.9.1
