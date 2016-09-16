@@ -1,57 +1,68 @@
 From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v5 1/5] ASoC: codecs: Add msm8916-wcd analog codec
-Date: Fri, 16 Sep 2016 10:43:48 -0500
-Message-ID: <20160916154348.GA15543@rob-hp-laptop>
+Subject: Re: [PATCH v5 2/5] ASoC: codecs: Add msm8916-wcd digital codec
+Date: Fri, 16 Sep 2016 10:45:11 -0500
+Message-ID: <20160916154501.GB15543@rob-hp-laptop>
 References: <1473339896-9409-1-git-send-email-srinivas.kandagatla@linaro.org>
- <1473339896-9409-2-git-send-email-srinivas.kandagatla@linaro.org>
+ <1473339896-9409-3-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1473339896-9409-2-git-send-email-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+In-Reply-To: <1473339896-9409-3-git-send-email-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 08, 2016 at 02:04:52PM +0100, Srinivas Kandagatla wrote:
+On Thu, Sep 08, 2016 at 02:04:53PM +0100, Srinivas Kandagatla wrote:
 > msm8916-wcd codec is found in Qualcomm msm8916 and apq8016 processors.
-> This codec IP is split in to two parts (Digital & Analog).
+> This codec IP is split in to two parts(Digital & Analog).
 > Analog part is integrated in to PMIC PM8916 and the digital part is
 > integrated into Application processor. Data transfer between Analog and
 > Digital Die is done via a internal bus called PDM.
 > 
-> This patch adds support to Analog part of the Codec which is integrated
-> into PMIC PM8916.
+> This patch adds support to Digital part of the Codec which is integrated
+> into Application Processor.
 > 
 > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 > ---
->  .../bindings/sound/qcom,msm8916-wcd-analog.txt     |  83 ++
->  sound/soc/codecs/Kconfig                           |   4 +
->  sound/soc/codecs/Makefile                          |   3 +-
->  sound/soc/codecs/msm8916-wcd-analog.c              | 888 +++++++++++++++++++++
->  4 files changed, 977 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
->  create mode 100644 sound/soc/codecs/msm8916-wcd-analog.c
+>  .../bindings/sound/qcom,msm8916-wcd-digital.txt    |  20 +
+>  sound/soc/codecs/Kconfig                           |   3 +
+>  sound/soc/codecs/Makefile                          |   2 +
+>  sound/soc/codecs/msm8916-wcd-digital.c             | 920 +++++++++++++++++++++
+>  4 files changed, 945 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-digital.txt
+>  create mode 100644 sound/soc/codecs/msm8916-wcd-digital.c
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-digital.txt b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-digital.txt
 > new file mode 100644
-> index 0000000..f426c06
+> index 0000000..6342549
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
-> @@ -0,0 +1,83 @@
-> +msm8916 analog audio CODEC
+> +++ b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-digital.txt
+> @@ -0,0 +1,20 @@
+> +msm8916 digital audio CODEC
 > +
-> +Bindings for codec Analog IP which is integrated in pmic pm8916,
-> +
-> +## Bindings for codec core on pmic:
+> +## Bindings for codec core in lpass:
 > +
 > +Required properties
-> + - compatible = "qcom,msm8916-wcd-analog-codec";
+> + - compatible = "qcom,msm8916-wcd-digital-codec";
+> + - reg: address space for lpass codec.
+> + - clocks: Handle to mclk and ahbclk
+> + - clock-names: should be "mclk", "ahbix-clk".
+> +
+> +Example:
+> +
+> +lpass_codec: codec{
 
-If this is part of the pm8916 PMIC, then shouldn't it be named that way.
+audio-codec@771c000
 
-Rob
+> +	compatible = "qcom,msm8916-wcd-digital-codec";
+> +	reg = <0x0771c000 0x400>;
+> +	clocks = <&gcc GCC_ULTAUDIO_AHBFABRIC_IXFABRIC_CLK>,
+> +		 <&gcc GCC_CODEC_DIGCODEC_CLK>;
+> +	clock-names = "ahbix-clk", "mclk";
+> +	#sound-dai-cells = <1>;
+> +};
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
