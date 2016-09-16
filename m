@@ -1,21 +1,23 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] Revert "ASoC: core: mark SND_SOC_BYTES_EXT
-	as deprecated"
-Date: Fri, 16 Sep 2016 08:26:35 +0900
-Message-ID: <042638a1-3881-aec2-6371-599cf2814d56@sakamocchi.jp>
-References: <1473947149-6663-1-git-send-email-o-takashi@sakamocchi.jp>
- <20160915142148.GR21682@localhost.localdomain>
- <6357ad44-b194-7dfd-b3e8-938af89f4b54@sakamocchi.jp>
- <20160915145429.GL27974@sirena.org.uk>
- <0d366da8-5683-7633-b4a1-f75973e71e97@sakamocchi.jp>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: arecord: does hardware or software throw away
+	unused
+Date: Fri, 16 Sep 2016 09:26:00 +0200
+Message-ID: <19996f68-0a7b-807b-6519-64720afb1e19@ladisch.de>
+References: <CALAeOVNogPUjK68n6LozD4j0y9RhO3ObaduANshG0+mg-8+1Rw@mail.gmail.com>
+ <a69bb60f-63d6-8979-070f-a0a6ad0cfe6b@ladisch.de>
+ <CALAeOVODpXGbY-gRD9_p3_q+=nyi0f6hNqK7e7iGcX9yrn+0pg@mail.gmail.com>
+ <d4151ac9-bad3-22eb-90f8-17bdf26b62be@ladisch.de>
+ <CALAeOVOdJ1c12PyfbsEfTP3Z=8ZuWXJm_gQASG=vr4cjEDnLQg@mail.gmail.com>
+ <485b922c-3ec6-87ac-fccc-023940583a36@ladisch.de>
+ <CALAeOVOXDKcJYvc3AJbPUgS29LnZd4xW3LeSFJSWU+FwO8h=Cw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id E63B62666BB
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2016 01:26:40 +0200 (CEST)
-In-Reply-To: <0d366da8-5683-7633-b4a1-f75973e71e97@sakamocchi.jp>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 4B69B265ACA
+ for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2016 09:26:00 +0200 (CEST)
+In-Reply-To: <CALAeOVOXDKcJYvc3AJbPUgS29LnZd4xW3LeSFJSWU+FwO8h=Cw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,52 +27,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, vinod.koul@intel.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, clemens@ladisch.de, alsa-devel@alsa-project.org
+To: Rob Nertney <rob@rob-otics.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sep 16 2016 07:29, Takashi Sakamoto wrote:
-> On Sep 15 2016 23:54, Mark Brown wrote:
->> On Thu, Sep 15, 2016 at 11:41:43PM +0900, Takashi Sakamoto wrote:
->>> On Sep 15 2016 23:21, Charles Keepax wrote:
->>
->>>> Although you might want to resend using Mark's kernel.org address
->>>> as I imagine he would be the one to apply the change and that is
->>>> the address he normally uses for patches.
->>
->>> Oh, he uses the domain instead of linaro.org. I missed it.
->>
->>> Now I add him to CC list.
->>
->> As documented in SubmittingPatches please send patches to the 
->> maintainers for the code you would like to change.  The normal kernel
->> workflow is that people apply patches from their inboxes, if they aren't
->> copied they are likely to not see the patch at all and it is much more
->> difficult to apply patches.
-> 
-> I see. I'll post this to below addresses.
-> 
-> $ ./scripts/get_maintainer.pl
-> /tmp/patch/0001-Revert-ASoC-core-mark-SND_SOC_BYTES_EXT-as-deprecate.patch
-> fatal:
-> /tmp/patch/0001-Revert-ASoC-core-mark-SND_SOC_BYTES_EXT-as-deprecate.patch:
-> '/tmp/patch/0001-Revert-ASoC-core-mark-SND_SOC_BYTES_EXT-as-deprecate.patch'
-> is outside repository
-> Liam Girdwood <lgirdwood@gmail.com> (supporter:SOUND - SOC LAYER /
-> DYNAMIC AUDIO POWER MANAGEM...)
-> Mark Brown <broonie@kernel.org> (supporter:SOUND - SOC LAYER / DYNAMIC
-> AUDIO POWER MANAGEM...)
-> Jaroslav Kysela <perex@perex.cz> (maintainer:SOUND)
-> Takashi Iwai <tiwai@suse.com> (maintainer:SOUND)
-> alsa-devel@alsa-project.org (moderated list:SOUND - SOC LAYER / DYNAMIC
-> AUDIO POWER MANAGEM...)
-> linux-kernel@vger.kernel.org (open list)
+Rob Nertney wrote:
+> If I define my hw_params like this, is it correct for multiple channels?
+>
+> channels_min = 1
+> channels_max = 16
 
-I changed my mind. I just added you to CC list of new patch, then sent
-it. Please apply it your tree after reviewing. I don't like to be
-involved to the yeast, and dull work.
+I don't know what the actual constraints of your hardware are.
+
+> buffer_bytes_max = 32768
+> period_bytes_min = 32768/16
+> period_bytes_max = 32768/16
+> periods_min = 16
+> periods_max = 16
+>
+> Everything is really associated around a 2048 Byte IRQ.
+
+Is that an actual constraint of your hardware?
+
+Anyway, this will not work with, e.g., 15 channels; 60-byte frames do
+not fit into 32768 bytes.
 
 
-Regards
-
-Takashi Sakamoto
+Regards,
+Clemens
