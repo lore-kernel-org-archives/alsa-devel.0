@@ -1,31 +1,31 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5 4/5] ASoC: qcom: apq8016-sbc: Add support to multi
- codec.
-Date: Fri, 16 Sep 2016 14:12:41 -0500
-Message-ID: <20160916191241.GA17692@rob-hp-laptop>
-References: <1473339896-9409-1-git-send-email-srinivas.kandagatla@linaro.org>
- <1473339896-9409-5-git-send-email-srinivas.kandagatla@linaro.org>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/2] ASoC: cs4341: Add DT bindings documentation for
+ CS4341 CODEC
+Date: Fri, 16 Sep 2016 14:21:26 -0500
+Message-ID: <20160916192126.GA2693@rob-hp-laptop>
+References: <1473352228-24044-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1473339896-9409-5-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, mark.rutland@arm.com, tiwai@suse.com, devicetree@vger.kernel.org, kwestfie@codeaurora.org, linux-arm-msm@vger.kernel.org
+In-Reply-To: <1473352228-24044-1-git-send-email-shc_work-JGs/UdohzUI@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 08, 2016 at 02:04:55PM +0100, Srinivas Kandagatla wrote:
-> This patch adds support to multi codec, as the msm8916 codec is now
-> split into two codecs, Analog and Digital.
+On Thu, Sep 08, 2016 at 07:30:28PM +0300, Alexander Shiyan wrote:
+> This patch adds DT bindings documentation for Cirrus Logic
+> CS4341 CODEC.
 > 
-> Also update the bindings and example to show that the card supports
-> multicodec.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Signed-off-by: Alexander Shiyan <shc_work-JGs/UdohzUI@public.gmane.org>
 > ---
->  Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt |  4 ++--
->  sound/soc/qcom/apq8016_sbc.c                                 | 11 +++--------
->  2 files changed, 5 insertions(+), 10 deletions(-)
+>  Documentation/devicetree/bindings/sound/cs4341.txt | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/cs4341.txt
 
-Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
