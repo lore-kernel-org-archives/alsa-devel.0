@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] Revert "ASoC: core: mark SND_SOC_BYTES_EXT
-	as deprecated"
-Date: Fri, 16 Sep 2016 15:11:11 +0100
-Message-ID: <20160916141111.GC27974@sirena.org.uk>
-References: <1473980762-13259-1-git-send-email-o-takashi@sakamocchi.jp>
- <20160916105247.GY27974@sirena.org.uk>
- <9ad9a4af-85ab-6e9f-f17b-6e8afc7fe595@sakamocchi.jp>
+Subject: Re: [PATCH v2 01/11] ASoC: topology: Able to create BE
+	DAIs
+Date: Fri, 16 Sep 2016 15:56:52 +0100
+Message-ID: <20160916145651.GD27974@sirena.org.uk>
+References: <cover.1473420558.git.mengdong.lin@linux.intel.com>
+ <084b7ba7ba3f0d4a97641b43fab26aee2dc20c5d.1473420558.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1746084442716426296=="
+Content-Type: multipart/mixed; boundary="===============1784574212103558836=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E55532666EB
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2016 16:11:27 +0200 (CEST)
-In-Reply-To: <9ad9a4af-85ab-6e9f-f17b-6e8afc7fe595@sakamocchi.jp>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D0B4266884
+ for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2016 16:57:03 +0200 (CEST)
+In-Reply-To: <084b7ba7ba3f0d4a97641b43fab26aee2dc20c5d.1473420558.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,103 +22,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org, clemens@ladisch.de, ckeepax@opensource.wolfsonmicro.com
+To: mengdong.lin@linux.intel.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1746084442716426296==
+--===============1784574212103558836==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2R+TDOstMAPx/aG/"
+	protocol="application/pgp-signature"; boundary="mjeOt6n4R71vn6wN"
 Content-Disposition: inline
 
 
---2R+TDOstMAPx/aG/
+--mjeOt6n4R71vn6wN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Sep 16, 2016 at 10:21:12PM +0900, Takashi Sakamoto wrote:
-> On Sep 16 2016 19:52, Mark Brown wrote:
+On Fri, Sep 09, 2016 at 07:43:11PM +0800, mengdong.lin@linux.intel.com wrote:
 
-> > Please submit patches using subject lines reflecting the style for the
-> > subsystem.  This makes it easier for people to identify relevant
-> > patches.  Look at what existing commits in the area you're changing are
-> > doing and make sure your subject lines visually resemble what they're
-> > doing.
+> From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-> OK. But the different fashion in ALSA SoC part from ALSA itself often
-> puzzles me.
+> Topology will check with ASoC if a BE DAI already exists by checking
+> its name. If the BE DAI doesn't exist, topology will create a new one
+> and the dai_load ops will be called for device specific init.
 
-ALSA patches don't usually start "Revert" either...
+I still remain fundamentally unconvinced that this is a good or scalable
+idea and that it makes sense to have it be part of the standard topology
+ABI.  We are not going to download a DSP firmware that creates a new
+physical link in the system so having the topology be the thing creating
+those physical links seems wrong.
 
-> > > However, SND_SOC_BYTES_TLV brought confusions to user land because it
-> > > doesn't follow to a protocol of ALSA control interface. At least, this
-> > > macro and related kernel APIs include two misunderstandings:
-> > >  - 'struct snd_ctl_elem_info.count' can also represent the length of TLV
-> > >    packet paylaod, snd_soc_bytes_info_ext() performs in this way.
-> > >  - 'struct snd_ctl_tlv.tlv' can include arbitrary data regardless of TLV
-> > >    packet structure, snd_soc_bytes_tlv_callback() performs in this way.
+> create the HDA DAIs. Ideally, the driver should query BIOS to get the
+> physical pin output types and connections to peripherals for a specific
+> platform, but unfortunately BIOS sometimes does not have accurate info,
+> so there is still hard code of BE DAI & DAI links in driver. To share a
 
-> > I can't tell what problem you are trying to describe here, sorry.  What
-> > are you expecting the userspace ABI to do that these controls don't,
-> > you appear to be saying that the code does actually do what's expected
-> > which obviously isn't a problem.
+Having the connections to the DSP specified in the toplogy is of course
+sensible but fundamentally this is always going to be choosing from a
+list of physical DAIs that we already know about and potential
+connections for those that are also already known.  If the driver wants
+to do something in response to a DAI being hooked up into the topology
+(which seems to be the actual goal here) that would be sensible but
+attempting to create physical hardware in a topology does not seem like
+a good idea as a generic feature.
 
-> These two APIs don't perform what to be expected in a point of application
-> interface. These two items are not what to be expected in a point of
-> application interface, but what they do wrong.
-
-In what concrete way do they not do what is expected?
-
-> > What do you expect to happen, what is
-> > actually happening and why do you beleive this to be a problem?
-
-> This patchset comes from a conclusion of this thread:
-
-We need someone reading the changelog to be able to identify what the
-change is doing, especially for something like this which is visible
-outside the kernel.
-
-> > Having two randomly different interfaces is not going to help
-> > that or stop the larger controls existing, it'll just make the interface
-> > more confusing for driver authors.
-
-> On the other hand, when some driver developers actually follow to the
-> message which I'd like to purge, then abuses of the interface are increased.
-> Near future, it will bring confusions and disorder to ALSA applications. And
-> the cause is hard to be identified from user land, because few developers
-> think drivers lose protocol of application interface in fact.
-
-> Of cource, there's a need to work more to solve this issue. This is quite a
-> small part of it.
-
-This isn't really going to help that too much unfortunately given that
-one of the users of the new interface is the Intel drivers which are
-presumably going to be one of the most common things applications
-encounter.
-
---2R+TDOstMAPx/aG/
+--mjeOt6n4R71vn6wN
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJX2/19AAoJECTWi3JdVIfQpoQH/ixp8nu+e3bcP+Ghx9iQ2Ft2
-gHzDTmQwgNTznDD8dBEefugudFfyg9qpK5B9DA+5rWfKKrBM6kjQj5NjcH83As2t
-veFQ5k92y5x7Mijaif7Xbl9kpHu5TnxCalvhV1M8GynKLTdv5gWjZ9YOTAcRp5DN
-Wf9Aes5IDYncO0/7lutSo8sdrBjL4+v7Hmd7nKmKX+b2t1//gE3+vtAdy9iOZe6N
-RKLSP7664zyiSSNocZWnAKtM5sbQ+Ej7w+gyB2+Zvdi0ydPjMb41GRgzY1y+r9eC
-CV+zjtz/DUWlV5oojPozMU58MtpciXMc4ZeciCLoQ/d1HvC31DeWoh/ys37qA8c=
-=RHTi
+iQEcBAEBCAAGBQJX3AgyAAoJECTWi3JdVIfQUY4H/0a67k0f06csHzry2e0LX6aU
+jfeXbXtBa/255J7o77YhlmLludPfdZSJEADtLDmRkxr9FSvxISc2OQqDO8wcFtD0
+LwiGOTf27pIzgbzI4c56rXi8L71qYUbPiUEZr7GXcJl87D6hLRuveGPfjdfXLAdC
+Qm4tlg5MMvyKc3Jw5MwrsBuJFlckD+VWTpyZhyxtuiNeVVSg31r7zrQ+FP1SSXBp
+o/CbHBtEwhONFB4YPy3WespSqL5lGpBiZyvp8NjGh8rUwyTr7YorfSlZN4oUN1al
+vAKT7/6dMaNkC2RSX6XmzUC5aHo7eon/rx8UNGvYbFi26+n8elLnyamnv3MRrF8=
+=0MhC
 -----END PGP SIGNATURE-----
 
---2R+TDOstMAPx/aG/--
+--mjeOt6n4R71vn6wN--
 
---===============1746084442716426296==
+--===============1784574212103558836==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1746084442716426296==--
+--===============1784574212103558836==--
