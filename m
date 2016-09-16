@@ -1,100 +1,244 @@
 From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: Intel: atom: add missing \n to end of dev_err/dev_dbg messages
-Date: Fri, 16 Sep 2016 18:37:31 +0100
-Message-ID: <20160916173731.13302-1-colin.king@canonical.com>
+Subject: [PATCH] ASoC: Intel: Skylake: add missing \n to end of dev_* messages
+Date: Fri, 16 Sep 2016 18:51:21 +0100
+Message-ID: <20160916175121.13838-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: trivial@kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Sachin Mokashi <sachinx.mokashi@intel.com>, Jorge Fernandez Monteagudo <jorgefm@cirsa.com>, alsa-devel@alsa-project.org
+To: trivial@kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Jayachandran B <jayachandran.b@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Vedang Patel <vedang.patel@intel.com>, Dharageswari R <dharageswari.r@intel.com>, Mousami Jana <mousami.janax@intel.com>, Petr Mladek <pmladek@suse.com>, =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Shreyas NC <shreyas.nc@intel.com>, Hardik T Shah <hardik.t.shah@intel.com>, alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-Trival fix, some dev_err/deb_dbg messages are missing a \n, so add it.
+Trival fix, some dev_* messages are missing a \n, so add it.
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c       |  6 +++---
+ sound/soc/intel/skylake/skl-sst-cldma.c |  4 ++--
+ sound/soc/intel/skylake/skl-sst-ipc.c   | 12 ++++++------
+ sound/soc/intel/skylake/skl-sst.c       |  6 +++---
+ sound/soc/intel/skylake/skl-topology.c  | 18 +++++++++---------
+ 5 files changed, 23 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 773acfb..9718e82 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -166,7 +166,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	rsrc = platform_get_resource(pdev, IORESOURCE_MEM,
- 					ctx->pdata->res_info->acpi_lpe_res_index);
- 	if (!rsrc) {
--		dev_err(ctx->dev, "Invalid SHIM base from IFWI");
-+		dev_err(ctx->dev, "Invalid SHIM base from IFWI\n");
- 		return -EIO;
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index 48a4ae5..1d251d5 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -404,7 +404,7 @@ static int bxt_set_dsp_D3(struct sst_dsp *ctx, unsigned int core_id)
+ 
+ 	ret = skl_dsp_disable_core(ctx, core_mask);
+ 	if (ret < 0) {
+-		dev_err(ctx->dev, "Failed to disable core %d", ret);
++		dev_err(ctx->dev, "Failed to disable core %d\n", ret);
+ 		return ret;
  	}
- 	dev_info(ctx->dev, "LPE base: %#x size:%#x", (unsigned int) rsrc->start,
-@@ -178,7 +178,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	ctx->iram = devm_ioremap_nocache(ctx->dev, ctx->iram_base,
- 					 ctx->pdata->res_info->iram_size);
- 	if (!ctx->iram) {
--		dev_err(ctx->dev, "unable to map IRAM");
-+		dev_err(ctx->dev, "unable to map IRAM\n");
- 		return -EIO;
+ 	skl->cores.state[core_id] = SKL_DSP_RESET;
+@@ -489,7 +489,7 @@ int bxt_sst_init_fw(struct device *dev, struct skl_sst *ctx)
+ 
+ 	ret = sst->fw_ops.load_fw(sst);
+ 	if (ret < 0) {
+-		dev_err(dev, "Load base fw failed: %x", ret);
++		dev_err(dev, "Load base fw failed: %x\n", ret);
+ 		return ret;
  	}
  
-@@ -188,7 +188,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	ctx->dram = devm_ioremap_nocache(ctx->dev, ctx->dram_base,
- 					 ctx->pdata->res_info->dram_size);
- 	if (!ctx->dram) {
--		dev_err(ctx->dev, "unable to map DRAM");
-+		dev_err(ctx->dev, "unable to map DRAM\n");
- 		return -EIO;
+@@ -498,7 +498,7 @@ int bxt_sst_init_fw(struct device *dev, struct skl_sst *ctx)
+ 	if (ctx->manifest.lib_count > 1) {
+ 		ret = sst->fw_ops.load_library(sst, &ctx->manifest);
+ 		if (ret < 0) {
+-			dev_err(dev, "Load Library failed : %x", ret);
++			dev_err(dev, "Load Library failed : %x\n", ret);
+ 			return ret;
+ 		}
+ 	}
+diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
+index da2329d..efa2532 100644
+--- a/sound/soc/intel/skylake/skl-sst-cldma.c
++++ b/sound/soc/intel/skylake/skl-sst-cldma.c
+@@ -341,14 +341,14 @@ int skl_cldma_prepare(struct sst_dsp *ctx)
+ 	ret = ctx->dsp_ops.alloc_dma_buf(ctx->dev,
+ 			&ctx->cl_dev.dmab_data, ctx->cl_dev.bufsize);
+ 	if (ret < 0) {
+-		dev_err(ctx->dev, "Alloc buffer for base fw failed: %x", ret);
++		dev_err(ctx->dev, "Alloc buffer for base fw failed: %x\n", ret);
+ 		return ret;
+ 	}
+ 	/* Setup Code loader BDL */
+ 	ret = ctx->dsp_ops.alloc_dma_buf(ctx->dev,
+ 			&ctx->cl_dev.dmab_bdl, PAGE_SIZE);
+ 	if (ret < 0) {
+-		dev_err(ctx->dev, "Alloc buffer for blde failed: %x", ret);
++		dev_err(ctx->dev, "Alloc buffer for blde failed: %x\n", ret);
+ 		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
+ 		return ret;
+ 	}
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 8c5d7f5..797cf40 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -344,7 +344,7 @@ static int skl_ipc_process_notification(struct sst_generic_ipc *ipc,
+ 			break;
+ 
+ 		default:
+-			dev_err(ipc->dev, "ipc: Unhandled error msg=%x",
++			dev_err(ipc->dev, "ipc: Unhandled error msg=%x\n",
+ 						header.primary);
+ 			break;
+ 		}
+@@ -385,13 +385,13 @@ static void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
+ 		break;
+ 
+ 	default:
+-		dev_err(ipc->dev, "Unknown ipc reply: 0x%x", reply);
++		dev_err(ipc->dev, "Unknown ipc reply: 0x%x\n", reply);
+ 		msg->errno = -EINVAL;
+ 		break;
  	}
  
-@@ -197,7 +197,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	ctx->shim = devm_ioremap_nocache(ctx->dev, ctx->shim_phy_add,
- 					ctx->pdata->res_info->shim_size);
- 	if (!ctx->shim) {
--		dev_err(ctx->dev, "unable to map SHIM");
-+		dev_err(ctx->dev, "unable to map SHIM\n");
- 		return -EIO;
+ 	if (reply != IPC_GLB_REPLY_SUCCESS) {
+-		dev_err(ipc->dev, "ipc FW reply: reply=%d", reply);
++		dev_err(ipc->dev, "ipc FW reply: reply=%d\n", reply);
+ 		dev_err(ipc->dev, "FW Error Code: %u\n",
+ 			ipc->dsp->fw_ops.get_fw_errcode(ipc->dsp));
+ 	}
+@@ -440,9 +440,9 @@ irqreturn_t skl_dsp_irq_thread_handler(int irq, void *context)
+ 		hipcte = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCTE);
+ 		header.primary = hipct;
+ 		header.extension = hipcte;
+-		dev_dbg(dsp->dev, "IPC irq: Firmware respond primary:%x",
++		dev_dbg(dsp->dev, "IPC irq: Firmware respond primary:%x\n",
+ 						header.primary);
+-		dev_dbg(dsp->dev, "IPC irq: Firmware respond extension:%x",
++		dev_dbg(dsp->dev, "IPC irq: Firmware respond extension:%x\n",
+ 						header.extension);
+ 
+ 		if (IPC_GLB_NOTIFY_RSP_TYPE(header.primary)) {
+@@ -749,7 +749,7 @@ int skl_ipc_bind_unbind(struct sst_generic_ipc *ipc,
+ 			 header.extension);
+ 	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, NULL, 0, NULL, 0);
+ 	if (ret < 0) {
+-		dev_err(ipc->dev, "ipc: bind/unbind faileden");
++		dev_err(ipc->dev, "ipc: bind/unbind failed\n");
+ 		return ret;
  	}
  
-@@ -210,7 +210,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	ctx->mailbox = devm_ioremap_nocache(ctx->dev, ctx->mailbox_add,
- 					    ctx->pdata->res_info->mbox_size);
- 	if (!ctx->mailbox) {
--		dev_err(ctx->dev, "unable to map mailbox");
-+		dev_err(ctx->dev, "unable to map mailbox\n");
- 		return -EIO;
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index 064fc7e..8fc3178 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -107,13 +107,13 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
+ 
+ 	ret = skl_dsp_boot(ctx);
+ 	if (ret < 0) {
+-		dev_err(ctx->dev, "Boot dsp core failed ret: %d", ret);
++		dev_err(ctx->dev, "Boot dsp core failed ret: %d\n", ret);
+ 		goto skl_load_base_firmware_failed;
  	}
  
-@@ -220,7 +220,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	rsrc = platform_get_resource(pdev, IORESOURCE_MEM,
- 					ctx->pdata->res_info->acpi_ddr_index);
- 	if (!rsrc) {
--		dev_err(ctx->dev, "Invalid DDR base from IFWI");
-+		dev_err(ctx->dev, "Invalid DDR base from IFWI\n");
- 		return -EIO;
- 	}
- 	ctx->ddr_base = rsrc->start;
-@@ -229,7 +229,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	ctx->ddr = devm_ioremap_nocache(ctx->dev, ctx->ddr_base,
- 					resource_size(rsrc));
- 	if (!ctx->ddr) {
--		dev_err(ctx->dev, "unable to map DDR");
-+		dev_err(ctx->dev, "unable to map DDR\n");
- 		return -EIO;
+ 	ret = skl_cldma_prepare(ctx);
+ 	if (ret < 0) {
+-		dev_err(ctx->dev, "CL dma prepare failed : %d", ret);
++		dev_err(ctx->dev, "CL dma prepare failed : %d\n", ret);
+ 		goto skl_load_base_firmware_failed;
  	}
  
-@@ -296,7 +296,7 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 	id = acpi_match_device(dev->driver->acpi_match_table, dev);
- 	if (!id)
- 		return -ENODEV;
--	dev_dbg(dev, "for %s", id->id);
-+	dev_dbg(dev, "for %s\n", id->id);
+@@ -502,7 +502,7 @@ int skl_sst_init_fw(struct device *dev, struct skl_sst *ctx)
  
- 	mach = (struct sst_acpi_mach *)id->driver_data;
- 	mach = sst_acpi_find_machine(mach);
+ 	ret = sst->fw_ops.load_fw(sst);
+ 	if (ret < 0) {
+-		dev_err(dev, "Load base fw failed : %d", ret);
++		dev_err(dev, "Load base fw failed : %d\n", ret);
+ 		return ret;
+ 	}
+ 
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 2d475b7..bd17996 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1588,7 +1588,7 @@ static int skl_tplg_fill_pins_info(struct device *dev,
+ 		break;
+ 
+ 	default:
+-		dev_err(dev, "Invalid direction value");
++		dev_err(dev, "Invalid direction value\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1626,7 +1626,7 @@ static int skl_tplg_fill_fmt(struct device *dev,
+ 		break;
+ 
+ 	default:
+-		dev_err(dev, "Invalid direction value");
++		dev_err(dev, "Invalid direction value\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1664,7 +1664,7 @@ static int skl_tplg_fill_fmt(struct device *dev,
+ 		break;
+ 
+ 	default:
+-		dev_err(dev, "Invalid token %d", tkn);
++		dev_err(dev, "Invalid token %d\n", tkn);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1677,7 +1677,7 @@ static int skl_tplg_get_uuid(struct device *dev, struct skl_module_cfg *mconfig,
+ 	if (uuid_tkn->token == SKL_TKN_UUID)
+ 		memcpy(&mconfig->guid, &uuid_tkn->uuid, 16);
+ 	else {
+-		dev_err(dev, "Not an UUID token tkn %d", uuid_tkn->token);
++		dev_err(dev, "Not an UUID token tkn %d\n", uuid_tkn->token);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1913,7 +1913,7 @@ static int skl_tplg_get_tokens(struct device *dev,
+ 
+ 		switch (array->type) {
+ 		case SND_SOC_TPLG_TUPLE_TYPE_STRING:
+-			dev_warn(dev, "no string tokens expected for skl tplg");
++			dev_warn(dev, "no string tokens expected for skl tplg\n");
+ 			continue;
+ 
+ 		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
+@@ -1966,7 +1966,7 @@ static int skl_tplg_get_desc_blocks(struct device *dev,
+ 		return tkn_elem->value;
+ 
+ 	default:
+-		dev_err(dev, "Invalid descriptor token %d", tkn_elem->token);
++		dev_err(dev, "Invalid descriptor token %d\n", tkn_elem->token);
+ 		break;
+ 	}
+ 
+@@ -2226,7 +2226,7 @@ static int skl_tplg_fill_str_mfest_tkn(struct device *dev,
+ 		break;
+ 
+ 	default:
+-		dev_err(dev, "Not a string token %d", str_elem->token);
++		dev_err(dev, "Not a string token %d\n", str_elem->token);
+ 		break;
+ 	}
+ 
+@@ -2267,7 +2267,7 @@ static int skl_tplg_get_int_tkn(struct device *dev,
+ 		break;
+ 
+ 	default:
+-		dev_err(dev, "Not a manifest token %d", tkn_elem->token);
++		dev_err(dev, "Not a manifest token %d\n", tkn_elem->token);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -2306,7 +2306,7 @@ static int skl_tplg_get_manifest_tkn(struct device *dev,
+ 			continue;
+ 
+ 		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
+-			dev_warn(dev, "no uuid tokens for skl tplf manifest");
++			dev_warn(dev, "no uuid tokens for skl tplf manifest\n");
+ 			continue;
+ 
+ 		default:
 -- 
 2.9.3
