@@ -1,43 +1,17 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Re: alsa-tools FTBFS on armel: gcc-6 narrowing
-	conversions
-Date: Sat, 17 Sep 2016 14:14:53 +0200
-Message-ID: <20160917121453.sz6lgwhdabehhodw@galadriel.home.lxtec.de>
-References: <20160912165218.vys63p73adfi2x76@galadriel.home.lxtec.de>
- <s5hk2edu2w1.wl-tiwai@suse.de>
- <2cd8fe48-f8b1-8349-57eb-a74439bfe399@sakamocchi.jp>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/4] test: use proper threshold level
+	information for user-ctl-element-set test
+Date: Sat, 17 Sep 2016 23:49:26 +0900
+Message-ID: <1474123768-13160-3-git-send-email-o-takashi@sakamocchi.jp>
+References: <1474123768-13160-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.hostsharing.net (mailout3.hostsharing.net
- [176.9.242.54]) by alsa0.perex.cz (Postfix) with ESMTP id 75F442606F8
- for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2016 14:14:55 +0200 (CEST)
-Received: from h06.hostsharing.net (h06.hostsharing.net [83.223.95.25])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mailout3.hostsharing.net (Postfix) with ESMTPS id C3023101E698A
- for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2016 14:14:54 +0200 (CEST)
-Received: from mail.home.lxtec.de
- (HSI-KBW-46-223-54-142.hsi.kabel-badenwuerttemberg.de [46.223.54.142])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by h06.hostsharing.net (Postfix) with ESMTPSA id 87919603DBA0
- for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2016 14:14:54 +0200 (CEST)
-Received: from localhost ([127.0.0.1])
- by mail.home.lxtec.de with esmtp (Exim 4.87 2 (LXTEC))
- id 1blEWD-00038G-K5
- for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2016 14:14:53 +0200
-Received: from mail.home.lxtec.de ([IPv6:::1])
- by localhost (baumbart.home.lxtec.de [IPv6:::1]) (amavisd-new, port 10024)
- with ESMTP id B2Mo5WFGrqx3 for <alsa-devel@alsa-project.org>;
- Sat, 17 Sep 2016 14:14:53 +0200 (CEST)
-Received: from galadriel.home.lxtec.de ([192.168.200.207])
- by mail.home.lxtec.de with smtp (Exim 4.87 2 (LXTEC))
- id 1blEWD-00038B-DV
- for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2016 14:14:53 +0200
-Content-Disposition: inline
-In-Reply-To: <2cd8fe48-f8b1-8349-57eb-a74439bfe399@sakamocchi.jp>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id ECC26265A8B
+ for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2016 16:49:33 +0200 (CEST)
+In-Reply-To: <1474123768-13160-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -47,42 +21,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de, broonie@kernel.org
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-* Takashi Sakamoto <o-takashi@sakamocchi.jp> [2016-09-15 22:11 +0900]:
+Currently, this test program uses invalid array for threshold level
+information.
 
-> Hi,
-> 
-> On Sep 15 2016 14:51, Takashi Iwai wrote:
-> > On Mon, 12 Sep 2016 18:52:18 +0200,
-> > Elimar Riesebieter wrote:
-> >>
-> >> Hi all,
-> >>
-> >> in Debian a FTBFS was discovered in building alsa-tools:
-> >>
-> >> | arm-linux-gnueabi-g++ -DPACKAGE_NAME=\"hdspmixer\" -DPACKAGE_TARNAME=\"hdspmixer\" -DPACKAGE_VERSION=\"1.11\" -DPACKAGE_STRING=\"hdspmixer\ 1.11\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DPACKAGE=\"hdspmixer\" -DVERSION=\"1.11\" -DSTDC_HEADERS=1 -DHAVE_LIBASOUND=1 -I.   -Wdate-time -D_FORTIFY_SOURCE=2  -g -O2 -fdebug-prefix-map=/<<PKGBUILDDIR>>=. -fstack-protector-strong -Wformat -Werror=format-security   -I/usr/include/freetype2   -D_THREAD_SAFE -D_REENTRANT -fno-exceptions -MT channelmap.o -MD -MP -MF .deps/channelmap.Tpo -c -o channelmap.o channelmap.cxx
-> >> | channelmap.cxx:59:1: error: narrowing conversion of '-1' from 'int' to 'char' inside { } [-Wnarrowing]
-> >> |  };
-> >> |  ^
-> >>
-> >> More Details can be found at:
-> >> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=837590
-> >>
-> >> Could this be fixed for next release?
-> > 
-> > Yes, this was already fixed in git tree.
-> 
-> This issue was fixed by this commit.
-> 
-> gcc6 narrowing error
-> http://git.alsa-project.org/?p=alsa-tools.git;a=commit;h=70118f5f93a4179a0df61925e64baf873f126be0
+This commit replaces the array with valid information, which consists of
+newly exported TLV macros from kernel land.
 
-Thanks for the hint!
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ test/user-ctl-element-set.c | 41 +++++++++++++++++++++++++++--------------
+ 1 file changed, 27 insertions(+), 14 deletions(-)
 
-Elimar
+diff --git a/test/user-ctl-element-set.c b/test/user-ctl-element-set.c
+index 9b9dc59..7d22ca6 100644
+--- a/test/user-ctl-element-set.c
++++ b/test/user-ctl-element-set.c
+@@ -8,6 +8,7 @@
+  */
+ 
+ #include "../include/asoundlib.h"
++#include <sound/tlv.h>
+ 
+ struct elem_set_trial {
+ 	snd_ctl_t *handle;
+@@ -414,22 +415,34 @@ static int check_elems(struct elem_set_trial *trial)
+ 
+ static int check_tlv(struct elem_set_trial *trial)
+ {
+-	unsigned int orig[8], curr[8];
+-	int err;
+-
+ 	/*
+-	 * See a layout of 'struct snd_ctl_tlv'. I don't know the reason to
+-	 * construct this buffer with the same layout. It should be abstracted
+-	 * inner userspace library...
++	 * Use unlikely data for threshold level.
++	 *
++	 *  Linear: dB range (coeff)
++	 *  0<-> 4: -5940<->-5636 (44)
++	 *  4<->22: -5636<->-4556 (60)
++	 * 22<->33: -4556<->-4072 (76)
++	 * 33<->37: -4072<->-3832 (44)
++	 * 37<->48: -3832<->-2996 (76)
++	 * 48<->66: -2996<->-2204 (60)
++	 * 66<->84: -2204<-> -836 (44)
++	 * 84<->95:  -836<-> -176 (60)
++	 * 95<->99:  -176<->    0 (76)
+ 	 */
+-	orig[0] = snd_ctl_elem_id_get_numid(trial->id);
+-	orig[1] = 6 * sizeof(orig[0]);
+-	orig[2] = 'a';
+-	orig[3] = 'b';
+-	orig[4] = 'c';
+-	orig[5] = 'd';
+-	orig[6] = 'e';
+-	orig[7] = 'f';
++	static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(orig,
++		SNDRV_CTL_TLVD_DB_RANGE_HEAD(9),
++		 0,   4, SNDRV_CTL_TLVD_DB_SCALE_ITEM(-5940, 44, 1),
++		 4,  22, SNDRV_CTL_TLVD_DB_SCALE_ITEM(-5636, 60, 0),
++		22,  33, SNDRV_CTL_TLVD_DB_SCALE_ITEM(-4556, 76, 0),
++		33,  37, SNDRV_CTL_TLVD_DB_SCALE_ITEM(-4072, 44, 0),
++		37,  48, SNDRV_CTL_TLVD_DB_SCALE_ITEM(-3832, 76, 0),
++		48,  66, SNDRV_CTL_TLVD_DB_SCALE_ITEM(-2996, 60, 0),
++		66,  84, SNDRV_CTL_TLVD_DB_SCALE_ITEM(-2204, 44, 0),
++		84,  95, SNDRV_CTL_TLVD_DB_SCALE_ITEM( -836, 60, 0),
++		95,  99, SNDRV_CTL_TLVD_DB_SCALE_ITEM( -176, 76, 0),
++	);
++	unsigned int curr[sizeof(orig)/sizeof(orig[0])];
++	int err;
+ 
+ 	/*
+ 	 * In in-kernel implementation, write and command operations are the
 -- 
-  "Talking much about oneself can also
-   be a means to conceal oneself."
-         -Friedrich Nietzsche
+2.7.4
