@@ -1,15 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/4] ctl: improve documentation about
-	TLV-related APIs
-Date: Sat, 17 Sep 2016 23:49:28 +0900
-Message-ID: <1474123768-13160-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/4] ctl: fix API explanation for TLV operation
+Date: Sat, 17 Sep 2016 23:49:27 +0900
+Message-ID: <1474123768-13160-4-git-send-email-o-takashi@sakamocchi.jp>
 References: <1474123768-13160-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id EF00726644C
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id F39BD266552
  for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2016 16:49:33 +0200 (CEST)
 In-Reply-To: <1474123768-13160-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,55 +24,48 @@ To: clemens@ladisch.de, tiwai@suse.de, broonie@kernel.org
 Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-The documentation gives no hints to users about content of threshold level
-information.
+A commit fe1b08803db6 ('ctl: improve API documentation for threshold level
+operations') changes documentations for some TLV-related APIs with wrong
+explanations.
 
-This commit add hints to parse the information.
+This commit fix it with better explanations.
 
+Fixes: fe1b08803db6('ctl: improve API documentation for threshold level operations')
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/control/control.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ src/control/control.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/src/control/control.c b/src/control/control.c
-index 383f401..7165222 100644
+index 6c00b8e..383f401 100644
 --- a/src/control/control.c
 +++ b/src/control/control.c
-@@ -918,6 +918,11 @@ static int snd_ctl_tlv_do(snd_ctl_t *ctl, int op_flag,
+@@ -912,7 +912,7 @@ static int snd_ctl_tlv_do(snd_ctl_t *ctl, int op_flag,
+ }
+ 
+ /**
+- * \brief Set given data to an element as threshold level.
++ * \brief Read threshold level from an element to given buffer.
+  * \param ctl A handle of backend module for control interface.
+  * \param id ID of an element.
   * \param tlv An array with members of unsigned int type.
-  * \param tlv_size The length of the array.
-  * \return 0 on success otherwise a negative error code
-+ *
-+ * The format of an array of \a tlv argument is:
-+ *   tlv[0]: Data type. One of SND_CTL_TLVT_XXX.
-+ *   tlv[1]: Lengh of data in units of byte.
-+ *   tlv[2..]: Data. Details are described in <sound/tlv.h>.
-  */
- int snd_ctl_elem_tlv_read(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 			  unsigned int *tlv, unsigned int tlv_size)
-@@ -948,6 +953,11 @@ int snd_ctl_elem_tlv_read(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
-  * \retval 0 on success
-  * \retval >0 on success when value was changed
-  * \retval <0 a negative error code
-+ *
-+ * The format of an array of \a tlv argument is:
-+ *   tlv[0]: Data type. One of SND_CTL_TLVT_XXX.
-+ *   tlv[1]: Lengh of data in units of byte.
-+ *   tlv[2..]: Data. Details are described in <sound/tlv.h>.
-  */
- int snd_ctl_elem_tlv_write(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 			   const unsigned int *tlv)
-@@ -965,6 +975,11 @@ int snd_ctl_elem_tlv_write(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
-  * \retval 0 on success
-  * \retval >0 on success when value was changed
-  * \retval <0 a negative error code
-+ *
-+ * The format of an array of \a tlv argument is:
-+ *   tlv[0]: Data type. One of SND_CTL_TLVT_XXX.
-+ *   tlv[1]: Lengh of data in units of byte.
-+ *   tlv[2..]: Data. Details are described in <sound/tlv.h>.
-  */
- int snd_ctl_elem_tlv_command(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
- 			     const unsigned int *tlv)
+@@ -940,7 +940,7 @@ int snd_ctl_elem_tlv_read(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ }
+ 
+ /**
+- * \brief Set given data to an element as threshold level.
++ * \brief Write threshold level from given buffer to an element.
+  * \param ctl A handle of backend module for control interface.
+  * \param id ID of an element.
+  * \param tlv An array with members of unsigned int type. The second member
+@@ -957,7 +957,7 @@ int snd_ctl_elem_tlv_write(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ }
+ 
+ /**
+- * \brief Set given data to an element as threshold level.
++ * \brief Process threshold level from given buffer for an element.
+  * \param ctl A handle of backend module for control interface.
+  * \param id ID of an element.
+  * \param tlv An array with members of unsigned int type. The second member
 -- 
 2.7.4
