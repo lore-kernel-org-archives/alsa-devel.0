@@ -1,39 +1,31 @@
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH -next] ASoC: sti: fix missing clk_disable_unprepare() on error in uni_player_start()
-Date: Sat, 17 Sep 2016 01:34:33 +0000
-Message-ID: <1474076073-9569-1-git-send-email-weiyj.lk@gmail.com>
+From: kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH -next] ASoC: rt5663: fix sparse warnings
+Date: Sat, 17 Sep 2016 10:45:18 +0800
+Message-ID: <201609171011.E9z8MBt2%fengguang.wu@intel.com>
+References: <1474076049-9416-1-git-send-email-weiyj.lk@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1474076049-9416-1-git-send-email-weiyj.lk@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Moise Gergaud <moise.gergaud@st.com>
-Cc: Wei Yongjun <weiyongjun1@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: kbuild-all@01.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Wei Yongjun <weiyongjun1@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+Hi Wei,
 
-Fix the missing clk_disable_unprepare() before return
-from uni_player_start() in the error handling case.
+[auto build test WARNING on next-20160916]
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+url:    https://github.com/0day-ci/linux/commits/Wei-Yongjun/ASoC-rt5663-fix-sparse-warnings/20160917-094530
+
+
+coccinelle warnings: (new ones prefixed by >>)
+
+>> sound/soc/codecs/rt5663.c:3203:3-8: No need to set .owner here. The core will do it.
+
+Please review and possibly fold the followup patch.
+
 ---
- sound/soc/sti/uniperif_player.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index 645e415..1bc8ebc 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -893,8 +893,10 @@ static int uni_player_start(struct uniperif *player)
- 	SET_UNIPERIF_SOFT_RST_SOFT_RST(player);
- 
- 	ret = reset_player(player);
--	if (ret < 0)
-+	if (ret < 0) {
-+		clk_disable_unprepare(player->clk);
- 		return ret;
-+	}
- 
- 	/*
- 	 * Does not use IEC61937 features of the uniperipheral hardware.
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
