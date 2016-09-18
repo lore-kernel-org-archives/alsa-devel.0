@@ -1,19 +1,19 @@
 From: Andrej Krutak <dev@andree.sk>
-Subject: [PATCH v4 05/12] ALSA: line6: Add
-	LINE6_CAP_IN_NEEDS_OUT, a void playback stream during capture
-Date: Sun, 18 Sep 2016 20:59:25 +0200
-Message-ID: <1474225172-32081-6-git-send-email-dev@andree.sk>
+Subject: [PATCH v4 06/12] ALSA: line6: Distinguish device init
+	(ctrl EP) and MIDI data transfer (int EP)
+Date: Sun, 18 Sep 2016 20:59:26 +0200
+Message-ID: <1474225172-32081-7-git-send-email-dev@andree.sk>
 References: <1470942147-19848-1-git-send-email-dev@andree.sk>
  <1474225172-32081-1-git-send-email-dev@andree.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 43CCE2614A0
- for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2016 21:00:50 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id b184so11711143wma.3
- for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2016 12:00:50 -0700 (PDT)
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 970272614A0
+ for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2016 21:00:51 +0200 (CEST)
+Received: by mail-wm0-f65.google.com with SMTP id b184so11711208wma.3
+ for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2016 12:00:51 -0700 (PDT)
 In-Reply-To: <1474225172-32081-1-git-send-email-dev@andree.sk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,177 +28,270 @@ To: tiwai@suse.com, perex@perex.cz, stefanha@gmail.com, grabner@icg.tugraz.at, a
 Cc: Andrej Krutak <dev@andree.sk>
 List-Id: alsa-devel@alsa-project.org
 
-E.g. POD X3 seems to require playback data to be sent to it to generate
-capture data. Otherwise the device stalls and doesn't send any more capture
-data until it's reset.
+POD X3 can initialize similarly to older PODs, but it doesn't have the MIDI
+interface. Instead, configuration is done via proprietary bulk EP messages.
 
 Signed-off-by: Andrej Krutak <dev@andree.sk>
 ---
- sound/usb/line6/capture.c  |  5 +++++
- sound/usb/line6/driver.h   |  4 +++-
- sound/usb/line6/pcm.c      | 31 ++++++++++++++++++++++++-------
- sound/usb/line6/pcm.h      |  4 +++-
- sound/usb/line6/toneport.c |  4 ++--
- 5 files changed, 37 insertions(+), 11 deletions(-)
+ sound/usb/line6/driver.c | 72 ++++++++++++++++++++++++++++++++++--------------
+ sound/usb/line6/driver.h |  6 ++--
+ sound/usb/line6/pod.c    |  9 +++++-
+ sound/usb/line6/variax.c |  6 ++--
+ 4 files changed, 68 insertions(+), 25 deletions(-)
 
-diff --git a/sound/usb/line6/capture.c b/sound/usb/line6/capture.c
-index 7959aaa..bf159c4 100644
---- a/sound/usb/line6/capture.c
-+++ b/sound/usb/line6/capture.c
-@@ -232,6 +232,8 @@ static int snd_line6_capture_open(struct snd_pcm_substream *substream)
- 	if (err < 0)
- 		return err;
- 
-+	line6_pcm_acquire(line6pcm, LINE6_STREAM_CAPTURE_HELPER, false);
-+
- 	runtime->hw = line6pcm->properties->capture_hw;
- 	return 0;
- }
-@@ -239,6 +241,9 @@ static int snd_line6_capture_open(struct snd_pcm_substream *substream)
- /* close capture callback */
- static int snd_line6_capture_close(struct snd_pcm_substream *substream)
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index 14032d9..9b16777 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -66,10 +66,17 @@ static int line6_start_listen(struct usb_line6 *line6)
  {
-+	struct snd_line6_pcm *line6pcm = snd_pcm_substream_chip(substream);
+ 	int err;
+ 
+-	usb_fill_int_urb(line6->urb_listen, line6->usbdev,
+-		usb_rcvintpipe(line6->usbdev, line6->properties->ep_ctrl_r),
+-		line6->buffer_listen, LINE6_BUFSIZE_LISTEN,
+-		line6_data_received, line6, line6->interval);
++	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
++		usb_fill_int_urb(line6->urb_listen, line6->usbdev,
++			usb_rcvintpipe(line6->usbdev, line6->properties->ep_ctrl_r),
++			line6->buffer_listen, LINE6_BUFSIZE_LISTEN,
++			line6_data_received, line6, line6->interval);
++	} else {
++		usb_fill_bulk_urb(line6->urb_listen, line6->usbdev,
++			usb_rcvbulkpipe(line6->usbdev, line6->properties->ep_ctrl_r),
++			line6->buffer_listen, LINE6_BUFSIZE_LISTEN,
++			line6_data_received, line6);
++	}
+ 	line6->urb_listen->actual_length = 0;
+ 	err = usb_submit_urb(line6->urb_listen, GFP_ATOMIC);
+ 	return err;
+@@ -90,6 +97,7 @@ static int line6_send_raw_message(struct usb_line6 *line6, const char *buffer,
+ 				  int size)
+ {
+ 	int i, done = 0;
++	const struct line6_properties *properties = line6->properties;
+ 
+ 	for (i = 0; i < size; i += line6->max_packet_size) {
+ 		int partial;
+@@ -97,15 +105,21 @@ static int line6_send_raw_message(struct usb_line6 *line6, const char *buffer,
+ 		int frag_size = min(line6->max_packet_size, size - i);
+ 		int retval;
+ 
+-		retval = usb_interrupt_msg(line6->usbdev,
+-					usb_sndintpipe(line6->usbdev,
+-						line6->properties->ep_ctrl_w),
+-					(char *)frag_buf, frag_size,
+-					&partial, LINE6_TIMEOUT * HZ);
++		if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
++			retval = usb_interrupt_msg(line6->usbdev,
++						usb_sndintpipe(line6->usbdev, properties->ep_ctrl_w),
++						(char *)frag_buf, frag_size,
++						&partial, LINE6_TIMEOUT * HZ);
++		} else {
++			retval = usb_bulk_msg(line6->usbdev,
++						usb_sndbulkpipe(line6->usbdev, properties->ep_ctrl_w),
++						(char *)frag_buf, frag_size,
++						&partial, LINE6_TIMEOUT * HZ);
++		}
+ 
+ 		if (retval) {
+ 			dev_err(line6->ifcdev,
+-				"usb_interrupt_msg failed (%d)\n", retval);
++				"usb_bulk_msg failed (%d)\n", retval);
+ 			break;
+ 		}
+ 
+@@ -140,10 +154,17 @@ static int line6_send_raw_message_async_part(struct message *msg,
+ 	int done = msg->done;
+ 	int bytes = min(msg->size - done, line6->max_packet_size);
+ 
+-	usb_fill_int_urb(urb, line6->usbdev,
+-		usb_sndintpipe(line6->usbdev, line6->properties->ep_ctrl_w),
+-		(char *)msg->buffer + done, bytes,
+-		line6_async_request_sent, msg, line6->interval);
++	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
++		usb_fill_int_urb(urb, line6->usbdev,
++			usb_sndintpipe(line6->usbdev, line6->properties->ep_ctrl_w),
++			(char *)msg->buffer + done, bytes,
++			line6_async_request_sent, msg, line6->interval);
++	} else {
++		usb_fill_bulk_urb(urb, line6->usbdev,
++			usb_sndbulkpipe(line6->usbdev, line6->properties->ep_ctrl_w),
++			(char *)msg->buffer + done, bytes,
++			line6_async_request_sent, msg);
++	}
+ 
+ 	msg->done += bytes;
+ 	retval = usb_submit_urb(urb, GFP_ATOMIC);
+@@ -462,7 +483,18 @@ static void line6_destruct(struct snd_card *card)
+ static void line6_get_interval(struct usb_line6 *line6)
+ {
+ 	struct usb_device *usbdev = line6->usbdev;
+-	struct usb_host_endpoint *ep = usbdev->ep_in[line6->properties->ep_ctrl_r];
++	const struct line6_properties *properties = line6->properties;
++	int pipe;
++	struct usb_host_endpoint *ep;
 +
-+	line6_pcm_release(line6pcm, LINE6_STREAM_CAPTURE_HELPER);
- 	return 0;
++	if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
++		pipe =
++			usb_rcvintpipe(line6->usbdev, line6->properties->ep_ctrl_r);
++	} else {
++		pipe =
++			usb_rcvbulkpipe(line6->usbdev, line6->properties->ep_ctrl_r);
++	}
++	ep = usbdev->ep_in[usb_pipeendpoint(pipe)];
+ 
+ 	if (ep) {
+ 		line6->interval = ep->desc.bInterval;
+@@ -483,7 +515,7 @@ static void line6_get_interval(struct usb_line6 *line6)
+ 	}
  }
  
+-static int line6_init_cap_control(struct usb_line6 *line6)
++static int line6_init_cap_control_midi(struct usb_line6 *line6)
+ {
+ 	int ret;
+ 
+@@ -573,8 +605,8 @@ int line6_probe(struct usb_interface *interface,
+ 
+ 	line6_get_interval(line6);
+ 
+-	if (properties->capabilities & LINE6_CAP_CONTROL) {
+-		ret = line6_init_cap_control(line6);
++	if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
++		ret = line6_init_cap_control_midi(line6);
+ 		if (ret < 0)
+ 			goto error;
+ 	}
+@@ -644,7 +676,7 @@ int line6_suspend(struct usb_interface *interface, pm_message_t message)
+ 
+ 	snd_power_change_state(line6->card, SNDRV_CTL_POWER_D3hot);
+ 
+-	if (line6->properties->capabilities & LINE6_CAP_CONTROL)
++	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)
+ 		line6_stop_listen(line6);
+ 
+ 	if (line6pcm != NULL) {
+@@ -663,7 +695,7 @@ int line6_resume(struct usb_interface *interface)
+ {
+ 	struct usb_line6 *line6 = usb_get_intfdata(interface);
+ 
+-	if (line6->properties->capabilities & LINE6_CAP_CONTROL)
++	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)
+ 		line6_start_listen(line6);
+ 
+ 	snd_power_change_state(line6->card, SNDRV_CTL_POWER_D0);
 diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index 2d32139..0bcab38 100644
+index 0bcab38..d48c7d2 100644
 --- a/sound/usb/line6/driver.h
 +++ b/sound/usb/line6/driver.h
-@@ -100,8 +100,10 @@ enum {
- 	LINE6_CAP_CONTROL =	1 << 0,
- 	/* device supports PCM input/output via USB */
- 	LINE6_CAP_PCM =		1 << 1,
--	/* device support hardware monitoring */
-+	/* device supports hardware monitoring */
+@@ -104,6 +104,8 @@ enum {
  	LINE6_CAP_HWMON =	1 << 2,
-+	/* device requires output data when input is read */
-+	LINE6_CAP_IN_NEEDS_OUT = 1 << 3,
+ 	/* device requires output data when input is read */
+ 	LINE6_CAP_IN_NEEDS_OUT = 1 << 3,
++	/* device uses raw MIDI via USB (data endpoints) */
++	LINE6_CAP_CONTROL_MIDI = 1 << 4,
  };
  
  /*
-diff --git a/sound/usb/line6/pcm.c b/sound/usb/line6/pcm.c
-index 31b68fa..f0f3ff5 100644
---- a/sound/usb/line6/pcm.c
-+++ b/sound/usb/line6/pcm.c
-@@ -52,7 +52,7 @@ static int snd_line6_impulse_volume_put(struct snd_kcontrol *kcontrol,
+@@ -142,10 +144,10 @@ struct usb_line6 {
+ 	/* Line 6 MIDI device data structure */
+ 	struct snd_line6_midi *line6midi;
  
- 	line6pcm->impulse_volume = value;
- 	if (value > 0) {
--		err = line6_pcm_acquire(line6pcm, LINE6_STREAM_IMPULSE);
-+		err = line6_pcm_acquire(line6pcm, LINE6_STREAM_IMPULSE, true);
- 		if (err < 0) {
- 			line6pcm->impulse_volume = 0;
- 			return err;
-@@ -242,6 +242,14 @@ int snd_line6_trigger(struct snd_pcm_substream *substream, int cmd)
- 		switch (cmd) {
- 		case SNDRV_PCM_TRIGGER_START:
- 		case SNDRV_PCM_TRIGGER_RESUME:
-+			if (s->stream == SNDRV_PCM_STREAM_CAPTURE &&
-+				(line6pcm->line6->properties->capabilities &
-+					LINE6_CAP_IN_NEEDS_OUT)) {
-+				err = line6_stream_start(line6pcm, SNDRV_PCM_STREAM_PLAYBACK,
-+						 LINE6_STREAM_CAPTURE_HELPER);
-+				if (err < 0)
-+					return err;
-+			}
- 			err = line6_stream_start(line6pcm, s->stream,
- 						 LINE6_STREAM_PCM);
- 			if (err < 0)
-@@ -250,6 +258,12 @@ int snd_line6_trigger(struct snd_pcm_substream *substream, int cmd)
+-	/* URB for listening to PODxt Pro control endpoint */
++	/* URB for listening to POD data endpoint */
+ 	struct urb *urb_listen;
  
- 		case SNDRV_PCM_TRIGGER_STOP:
- 		case SNDRV_PCM_TRIGGER_SUSPEND:
-+			if (s->stream == SNDRV_PCM_STREAM_CAPTURE &&
-+				(line6pcm->line6->properties->capabilities &
-+					LINE6_CAP_IN_NEEDS_OUT)) {
-+				line6_stream_stop(line6pcm, SNDRV_PCM_STREAM_PLAYBACK,
-+					  LINE6_STREAM_CAPTURE_HELPER);
-+			}
- 			line6_stream_stop(line6pcm, s->stream,
- 					  LINE6_STREAM_PCM);
- 			break;
-@@ -283,14 +297,15 @@ snd_pcm_uframes_t snd_line6_pointer(struct snd_pcm_substream *substream)
- 	return pstr->pos_done;
- }
+-	/* Buffer for listening to PODxt Pro control endpoint */
++	/* Buffer for listening to POD data endpoint */
+ 	unsigned char *buffer_listen;
  
--/* Acquire and start duplex streams:
-+/* Acquire and optionally start duplex streams:
-  * type is either LINE6_STREAM_IMPULSE or LINE6_STREAM_MONITOR
-  */
--int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int type)
-+int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int type, bool start)
- {
- 	struct line6_pcm_stream *pstr;
- 	int ret = 0, dir;
- 
-+	/* TODO: We should assert SNDRV_PCM_STREAM_PLAYBACK/CAPTURE == 0/1 */
- 	mutex_lock(&line6pcm->state_mutex);
- 	for (dir = 0; dir < 2; dir++) {
- 		pstr = get_stream(line6pcm, dir);
-@@ -300,10 +315,12 @@ int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int type)
- 		if (!pstr->running)
- 			line6_wait_clear_audio_urbs(line6pcm, pstr);
- 	}
--	for (dir = 0; dir < 2; dir++) {
--		ret = line6_stream_start(line6pcm, dir, type);
--		if (ret < 0)
--			goto error;
-+	if (start) {
-+		for (dir = 0; dir < 2; dir++) {
-+			ret = line6_stream_start(line6pcm, dir, type);
-+			if (ret < 0)
-+				goto error;
-+		}
- 	}
-  error:
- 	mutex_unlock(&line6pcm->state_mutex);
-diff --git a/sound/usb/line6/pcm.h b/sound/usb/line6/pcm.h
-index 58d36f9..5f796ef8 100644
---- a/sound/usb/line6/pcm.h
-+++ b/sound/usb/line6/pcm.h
-@@ -72,6 +72,7 @@ enum {
- 	LINE6_STREAM_PCM,
- 	LINE6_STREAM_MONITOR,
- 	LINE6_STREAM_IMPULSE,
-+	LINE6_STREAM_CAPTURE_HELPER,
- };
- 
- /* misc bit flags for PCM operation */
-@@ -190,7 +191,8 @@ extern int snd_line6_hw_params(struct snd_pcm_substream *substream,
- extern int snd_line6_hw_free(struct snd_pcm_substream *substream);
- extern snd_pcm_uframes_t snd_line6_pointer(struct snd_pcm_substream *substream);
- extern void line6_pcm_disconnect(struct snd_line6_pcm *line6pcm);
--extern int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int type);
-+extern int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int type,
-+			       bool start);
- extern void line6_pcm_release(struct snd_line6_pcm *line6pcm, int type);
- 
- #endif
-diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
-index da76e03..8e22f43 100644
---- a/sound/usb/line6/toneport.c
-+++ b/sound/usb/line6/toneport.c
-@@ -177,7 +177,7 @@ static int snd_toneport_monitor_put(struct snd_kcontrol *kcontrol,
- 	line6pcm->volume_monitor = ucontrol->value.integer.value[0];
- 
- 	if (line6pcm->volume_monitor > 0) {
--		err = line6_pcm_acquire(line6pcm, LINE6_STREAM_MONITOR);
-+		err = line6_pcm_acquire(line6pcm, LINE6_STREAM_MONITOR, true);
- 		if (err < 0) {
- 			line6pcm->volume_monitor = 0;
- 			line6_pcm_release(line6pcm, LINE6_STREAM_MONITOR);
-@@ -246,7 +246,7 @@ static void toneport_start_pcm(unsigned long arg)
- 	struct usb_line6_toneport *toneport = (struct usb_line6_toneport *)arg;
- 	struct usb_line6 *line6 = &toneport->line6;
- 
--	line6_pcm_acquire(line6->line6pcm, LINE6_STREAM_MONITOR);
-+	line6_pcm_acquire(line6->line6pcm, LINE6_STREAM_MONITOR, true);
- }
- 
- /* control definition */
+ 	/* Buffer for message to be processed */
+diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
+index 36e7274..17aa616 100644
+--- a/sound/usb/line6/pod.c
++++ b/sound/usb/line6/pod.c
+@@ -475,6 +475,7 @@ static const struct line6_properties pod_properties_table[] = {
+ 		.id = "BassPODxt",
+ 		.name = "BassPODxt",
+ 		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI
+ 				| LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 5,
+@@ -487,6 +488,7 @@ static const struct line6_properties pod_properties_table[] = {
+ 		.id = "BassPODxtLive",
+ 		.name = "BassPODxt Live",
+ 		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI
+ 				| LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 1,
+@@ -499,6 +501,7 @@ static const struct line6_properties pod_properties_table[] = {
+ 		.id = "BassPODxtPro",
+ 		.name = "BassPODxt Pro",
+ 		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI
+ 				| LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 5,
+@@ -510,7 +513,8 @@ static const struct line6_properties pod_properties_table[] = {
+ 	[LINE6_POCKETPOD] = {
+ 		.id = "PocketPOD",
+ 		.name = "Pocket POD",
+-		.capabilities	= LINE6_CAP_CONTROL,
++		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI,
+ 		.altsetting = 0,
+ 		.ep_ctrl_r = 0x82,
+ 		.ep_ctrl_w = 0x02,
+@@ -520,6 +524,7 @@ static const struct line6_properties pod_properties_table[] = {
+ 		.id = "PODxt",
+ 		.name = "PODxt",
+ 		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI
+ 				| LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 5,
+@@ -532,6 +537,7 @@ static const struct line6_properties pod_properties_table[] = {
+ 		.id = "PODxtLive",
+ 		.name = "PODxt Live",
+ 		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI
+ 				| LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 1,
+@@ -544,6 +550,7 @@ static const struct line6_properties pod_properties_table[] = {
+ 		.id = "PODxtPro",
+ 		.name = "PODxt Pro",
+ 		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI
+ 				| LINE6_CAP_PCM
+ 				| LINE6_CAP_HWMON,
+ 		.altsetting = 5,
+diff --git a/sound/usb/line6/variax.c b/sound/usb/line6/variax.c
+index ddc23dd..0c4512d 100644
+--- a/sound/usb/line6/variax.c
++++ b/sound/usb/line6/variax.c
+@@ -259,7 +259,8 @@ static const struct line6_properties variax_properties_table[] = {
+ 	[LINE6_PODXTLIVE_VARIAX] = {
+ 		.id = "PODxtLive",
+ 		.name = "PODxt Live",
+-		.capabilities	= LINE6_CAP_CONTROL,
++		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI,
+ 		.altsetting = 1,
+ 		.ep_ctrl_r = 0x86,
+ 		.ep_ctrl_w = 0x05,
+@@ -269,7 +270,8 @@ static const struct line6_properties variax_properties_table[] = {
+ 	[LINE6_VARIAX] = {
+ 		.id = "Variax",
+ 		.name = "Variax Workbench",
+-		.capabilities	= LINE6_CAP_CONTROL,
++		.capabilities	= LINE6_CAP_CONTROL
++				| LINE6_CAP_CONTROL_MIDI,
+ 		.altsetting = 1,
+ 		.ep_ctrl_r = 0x82,
+ 		.ep_ctrl_w = 0x01,
 -- 
 1.9.1
