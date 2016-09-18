@@ -1,19 +1,19 @@
 From: Andrej Krutak <dev@andree.sk>
-Subject: [PATCH v4 11/12] ALSA: line6: Cleanup podhd
-	initialization
-Date: Sun, 18 Sep 2016 20:59:31 +0200
-Message-ID: <1474225172-32081-12-git-send-email-dev@andree.sk>
+Subject: [PATCH v4 12/12] ALSA: line6: Add hwdep interface to
+	access the POD control messages
+Date: Sun, 18 Sep 2016 20:59:32 +0200
+Message-ID: <1474225172-32081-13-git-send-email-dev@andree.sk>
 References: <1470942147-19848-1-git-send-email-dev@andree.sk>
  <1474225172-32081-1-git-send-email-dev@andree.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A49126680E
- for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2016 21:00:58 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id l132so10516414wmf.1
- for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2016 12:00:58 -0700 (PDT)
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB141260A59
+ for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2016 21:01:00 +0200 (CEST)
+Received: by mail-wm0-f65.google.com with SMTP id 133so11708571wmq.2
+ for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2016 12:01:00 -0700 (PDT)
 In-Reply-To: <1474225172-32081-1-git-send-email-dev@andree.sk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,43 +28,294 @@ To: tiwai@suse.com, perex@perex.cz, stefanha@gmail.com, grabner@icg.tugraz.at, a
 Cc: Andrej Krutak <dev@andree.sk>
 List-Id: alsa-devel@alsa-project.org
 
-Only initialize PCM for POD HD devices that support it.
-No POD HD seems to support MIDI, thus drop the initialization.
+We must do it this way, because e.g. POD X3 won't play any sound unless
+the host listens on the bulk EP, so we cannot export it only via libusb.
+
+The driver currently doesn't use the bulk EP messages in other way,
+in future it could e.g. sense/modify volume(s).
 
 Signed-off-by: Andrej Krutak <dev@andree.sk>
 ---
- sound/usb/line6/podhd.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+ include/uapi/sound/asound.h |   3 +-
+ sound/usb/line6/driver.c    | 151 ++++++++++++++++++++++++++++++++++++++++++--
+ sound/usb/line6/driver.h    |  23 ++++++-
+ 3 files changed, 170 insertions(+), 7 deletions(-)
 
-diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
-index 8246ea5..193eb29 100644
---- a/sound/usb/line6/podhd.c
-+++ b/sound/usb/line6/podhd.c
-@@ -314,17 +314,14 @@ static int podhd_init(struct usb_line6 *line6,
- 			return err;
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 609cadb..be353a7 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -106,9 +106,10 @@ enum {
+ 	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
+ 	SNDRV_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
+ 	SNDRV_HWDEP_IFACE_FW_TASCAM,	/* TASCAM FireWire series */
++	SNDRV_HWDEP_IFACE_LINE6,	/* Line6 USB processors */
+ 
+ 	/* Don't forget to change the following: */
+-	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_TASCAM
++	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_LINE6
+ };
+ 
+ struct snd_hwdep_info {
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index 8a71d45..3536efe 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -17,6 +17,7 @@
+ 
+ #include <sound/core.h>
+ #include <sound/initval.h>
++#include <sound/hwdep.h>
+ 
+ #include "capture.h"
+ #include "driver.h"
+@@ -303,7 +304,7 @@ static void line6_data_received(struct urb *urb)
+ 		for (;;) {
+ 			done =
+ 				line6_midibuf_read(mb, line6->buffer_message,
+-						LINE6_MESSAGE_MAXLEN);
++						LINE6_MIDI_MESSAGE_MAXLEN);
+ 
+ 			if (done == 0)
+ 				break;
+@@ -315,8 +316,11 @@ static void line6_data_received(struct urb *urb)
+ 				line6->process_message(line6);
+ 		}
+ 	} else {
++		line6->buffer_message = urb->transfer_buffer;
++		line6->message_length = urb->actual_length;
+ 		if (line6->process_message)
+ 			line6->process_message(line6);
++		line6->buffer_message = NULL;
  	}
  
--	/* initialize MIDI subsystem: */
--	err = line6_init_midi(line6);
--	if (err < 0)
--		return err;
--
--	/* initialize PCM subsystem: */
--	err = line6_init_pcm(line6,
--		(id->driver_info == LINE6_PODX3) ? &podx3_pcm_properties :
--		&podhd_pcm_properties);
--	if (err < 0)
--		return err;
-+	if (pod->line6.properties->capabilities & LINE6_CAP_PCM) {
-+		/* initialize PCM subsystem: */
-+		err = line6_init_pcm(line6,
-+			(id->driver_info == LINE6_PODX3) ? &podx3_pcm_properties :
-+			&podhd_pcm_properties);
-+		if (err < 0)
-+			return err;
-+	}
+ 	line6_start_listen(line6);
+@@ -473,14 +477,16 @@ static void line6_destruct(struct snd_card *card)
+ 	struct usb_line6 *line6 = card->private_data;
+ 	struct usb_device *usbdev = line6->usbdev;
  
- 	if (!(pod->line6.properties->capabilities & LINE6_CAP_CONTROL)) {
- 		/* register USB audio system directly */
+-	/* free buffer memory first: */
+-	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI)
++	/* Free buffer memory first. We cannot depend on the existence of private
++	 * data from the (podhd) module, it may be gone already during this call */
++	if (line6->buffer_message)
+ 		kfree(line6->buffer_message);
+ 
+ 	kfree(line6->buffer_listen);
+ 
+ 	/* then free URBs: */
+ 	usb_free_urb(line6->urb_listen);
++	line6->urb_listen = NULL;
+ 
+ 	/* decrement reference counters: */
+ 	usb_put_dev(usbdev);
+@@ -522,6 +528,138 @@ static void line6_get_interval(struct usb_line6 *line6)
+ 	}
+ }
+ 
++
++/* Enable buffering of incoming messages, flush the buffer */
++static int line6_hwdep_open(struct snd_hwdep *hw, struct file *file)
++{
++	struct usb_line6 *line6 = hw->private_data;
++
++	/* NOTE: hwdep layer provides atomicity here */
++
++	line6->messages.active = 1;
++
++	return 0;
++}
++
++/* Stop buffering */
++static int line6_hwdep_release(struct snd_hwdep *hw, struct file *file)
++{
++	struct usb_line6 *line6 = hw->private_data;
++
++	line6->messages.active = 0;
++
++	return 0;
++}
++
++/* Read from circular buffer, return to user */
++static long
++line6_hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
++					loff_t *offset)
++{
++	struct usb_line6 *line6 = hwdep->private_data;
++	long rv = 0;
++	unsigned int out_count;
++
++	if (mutex_lock_interruptible(&line6->messages.read_lock))
++		return -ERESTARTSYS;
++
++	while (kfifo_len(&line6->messages.fifo) == 0) {
++		mutex_unlock(&line6->messages.read_lock);
++
++		rv = wait_event_interruptible(
++			line6->messages.wait_queue,
++			kfifo_len(&line6->messages.fifo) != 0);
++		if (rv < 0)
++			return rv;
++
++		if (mutex_lock_interruptible(&line6->messages.read_lock))
++			return -ERESTARTSYS;
++	}
++
++	if (kfifo_peek_len(&line6->messages.fifo) > count) {
++		/* Buffer too small; allow re-read of the current item... */
++		rv = -EINVAL;
++	} else {
++		rv = kfifo_to_user(&line6->messages.fifo, buf, count, &out_count);
++		if (rv == 0)
++			rv = out_count;
++	}
++
++	mutex_unlock(&line6->messages.read_lock);
++	return rv;
++}
++
++/* Write directly (no buffering) to device by user*/
++static long
++line6_hwdep_write(struct snd_hwdep *hwdep, const char __user *data, long count,
++					loff_t *offset)
++{
++	struct usb_line6 *line6 = hwdep->private_data;
++	int rv;
++	char *data_copy;
++
++	if (count > line6->max_packet_size * LINE6_RAW_MESSAGES_MAXCOUNT) {
++		/* This is an arbitrary limit - still better than nothing... */
++		return -EINVAL;
++	}
++
++	data_copy = memdup_user(data, count);
++	if (IS_ERR(ERR_PTR))
++		return -ENOMEM;
++
++	rv = line6_send_raw_message(line6, data_copy, count);
++
++	kfree(data_copy);
++	return rv;
++}
++
++static const struct snd_hwdep_ops hwdep_ops = {
++	.open    = line6_hwdep_open,
++	.release = line6_hwdep_release,
++	.read    = line6_hwdep_read,
++	.write   = line6_hwdep_write,
++};
++
++/* Insert into circular buffer */
++static void line6_hwdep_push_message(struct usb_line6 *line6)
++{
++	if (!line6->messages.active)
++		return;
++
++	if (kfifo_avail(&line6->messages.fifo) >= line6->message_length) {
++		/* No race condition here, there's only one writer */
++		kfifo_in(&line6->messages.fifo,
++			line6->buffer_message, line6->message_length);
++	} /* else TODO: signal overflow */
++
++	wake_up_interruptible(&line6->messages.wait_queue);
++}
++
++static int line6_hwdep_init(struct usb_line6 *line6)
++{
++	int err;
++	struct snd_hwdep *hwdep;
++
++	/* TODO: usb_driver_claim_interface(); */
++	line6->process_message = line6_hwdep_push_message;
++	line6->messages.active = 0;
++	init_waitqueue_head(&line6->messages.wait_queue);
++	mutex_init(&line6->messages.read_lock);
++	INIT_KFIFO(line6->messages.fifo);
++
++	err = snd_hwdep_new(line6->card, "config", 0, &hwdep);
++	if (err < 0)
++		goto end;
++	strcpy(hwdep->name, "config");
++	hwdep->iface = SNDRV_HWDEP_IFACE_LINE6;
++	hwdep->ops = hwdep_ops;
++	hwdep->private_data = line6;
++	hwdep->exclusive = true;
++
++end:
++	return err;
++}
++
+ static int line6_init_cap_control(struct usb_line6 *line6)
+ {
+ 	int ret;
+@@ -536,9 +674,13 @@ static int line6_init_cap_control(struct usb_line6 *line6)
+ 		return -ENOMEM;
+ 
+ 	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
+-		line6->buffer_message = kmalloc(LINE6_MESSAGE_MAXLEN, GFP_KERNEL);
++		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
+ 		if (!line6->buffer_message)
+ 			return -ENOMEM;
++	} else {
++		ret = line6_hwdep_init(line6);
++		if (ret < 0)
++			return ret;
+ 	}
+ 
+ 	ret = line6_start_listen(line6);
+@@ -716,3 +858,4 @@ EXPORT_SYMBOL_GPL(line6_resume);
+ MODULE_AUTHOR(DRIVER_AUTHOR);
+ MODULE_DESCRIPTION(DRIVER_DESC);
+ MODULE_LICENSE("GPL");
++
+diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
+index d7eefe1..cf9f077 100644
+--- a/sound/usb/line6/driver.h
++++ b/sound/usb/line6/driver.h
+@@ -12,8 +12,9 @@
+ #ifndef DRIVER_H
+ #define DRIVER_H
+ 
+-#include <linux/spinlock.h>
+ #include <linux/usb.h>
++#include <linux/mutex.h>
++#include <linux/kfifo.h>
+ #include <sound/core.h>
+ 
+ #include "midi.h"
+@@ -32,7 +33,16 @@
+ 
+ #define LINE6_TIMEOUT 1
+ #define LINE6_BUFSIZE_LISTEN 64
+-#define LINE6_MESSAGE_MAXLEN 256
++#define LINE6_MIDI_MESSAGE_MAXLEN 256
++
++#define LINE6_RAW_MESSAGES_MAXCOUNT_ORDER 7
++/* 4k packets are common, BUFSIZE * MAXCOUNT should be bigger... */
++#define LINE6_RAW_MESSAGES_MAXCOUNT (1 << LINE6_RAW_MESSAGES_MAXCOUNT_ORDER)
++
++
++#if LINE6_BUFSIZE_LISTEN > 65535
++#error "Use dynamic fifo instead"
++#endif
+ 
+ /*
+ 	Line 6 MIDI control commands
+@@ -156,6 +166,15 @@ struct usb_line6 {
+ 	/* Length of message to be processed, generated from MIDI layer  */
+ 	int message_length;
+ 
++	/* Circular buffer for non-MIDI control messages */
++	struct {
++		struct mutex read_lock;
++		wait_queue_head_t wait_queue;
++		int active:1;
++		STRUCT_KFIFO_REC_2(LINE6_BUFSIZE_LISTEN * LINE6_RAW_MESSAGES_MAXCOUNT)
++			fifo;
++	} messages;
++
+ 	/* If MIDI is supported, buffer_message contains the pre-processed data;
+ 	 * otherwise the data is only in urb_listen (buffer_incoming). */
+ 	void (*process_message)(struct usb_line6 *);
 -- 
 1.9.1
