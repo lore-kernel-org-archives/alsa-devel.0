@@ -1,14 +1,16 @@
 From: Marek Vasut <marex@denx.de>
-Subject: [PATCH 1/5] ASoC: fsl_asrc: use flat regmap cache
-Date: Mon, 19 Sep 2016 21:30:25 +0200
-Message-ID: <20160919193029.8119-1-marex@denx.de>
+Subject: [PATCH 2/5] ASoC: fsl_esai: use flat regmap cache
+Date: Mon, 19 Sep 2016 21:30:26 +0200
+Message-ID: <20160919193029.8119-2-marex@denx.de>
+References: <20160919193029.8119-1-marex@denx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
- by alsa0.perex.cz (Postfix) with ESMTP id B5B6426655F
- for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2016 21:30:41 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DB9226655F
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2016 21:30:42 +0200 (CEST)
+In-Reply-To: <20160919193029.8119-1-marex@denx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -45,21 +47,21 @@ Cc: Nicolin Chen <nicoleotsuka@gmail.com>
 Cc: Timur Tabi <timur@tabi.org>
 Cc: Xiubo Li <Xiubo.Lee@gmail.com>
 ---
- sound/soc/fsl/fsl_asrc.c | 2 +-
+ sound/soc/fsl/fsl_esai.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index b7157ce..1d82f68 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -726,7 +726,7 @@ static const struct regmap_config fsl_asrc_regmap_config = {
- 	.readable_reg = fsl_asrc_readable_reg,
- 	.volatile_reg = fsl_asrc_volatile_reg,
- 	.writeable_reg = fsl_asrc_writeable_reg,
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index e927955..38bfd46 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -781,7 +781,7 @@ static const struct regmap_config fsl_esai_regmap_config = {
+ 	.readable_reg = fsl_esai_readable_reg,
+ 	.volatile_reg = fsl_esai_volatile_reg,
+ 	.writeable_reg = fsl_esai_writeable_reg,
 -	.cache_type = REGCACHE_RBTREE,
 +	.cache_type = REGCACHE_FLAT,
  };
  
- /**
+ static int fsl_esai_probe(struct platform_device *pdev)
 -- 
 2.9.3
