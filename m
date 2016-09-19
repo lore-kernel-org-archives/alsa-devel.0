@@ -1,14 +1,14 @@
 From: Marek Vasut <marex@denx.de>
-Subject: [PATCH 3/5] ASoC: fsl_spdif: use flat regmap cache
-Date: Mon, 19 Sep 2016 21:30:27 +0200
-Message-ID: <20160919193029.8119-3-marex@denx.de>
+Subject: [PATCH 4/5] ASoC: fsl_ssi: use flat regmap cache
+Date: Mon, 19 Sep 2016 21:30:28 +0200
+Message-ID: <20160919193029.8119-4-marex@denx.de>
 References: <20160919193029.8119-1-marex@denx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
- by alsa0.perex.cz (Postfix) with ESMTP id BDE1C266569
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 193C8266666
  for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2016 21:30:45 +0200 (CEST)
 In-Reply-To: <20160919193029.8119-1-marex@denx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -47,21 +47,21 @@ Cc: Nicolin Chen <nicoleotsuka@gmail.com>
 Cc: Timur Tabi <timur@tabi.org>
 Cc: Xiubo Li <Xiubo.Lee@gmail.com>
 ---
- sound/soc/fsl/fsl_spdif.c | 2 +-
+ sound/soc/fsl/fsl_ssi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index beec793..1ff467c 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1103,7 +1103,7 @@ static const struct regmap_config fsl_spdif_regmap_config = {
- 	.readable_reg = fsl_spdif_readable_reg,
- 	.volatile_reg = fsl_spdif_volatile_reg,
- 	.writeable_reg = fsl_spdif_writeable_reg,
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index bedec4a..5034943 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -182,7 +182,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
+ 	.volatile_reg = fsl_ssi_volatile_reg,
+ 	.precious_reg = fsl_ssi_precious_reg,
+ 	.writeable_reg = fsl_ssi_writeable_reg,
 -	.cache_type = REGCACHE_RBTREE,
 +	.cache_type = REGCACHE_FLAT,
  };
  
- static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+ struct fsl_ssi_soc_data {
 -- 
 2.9.3
