@@ -1,50 +1,76 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH -next] ASoC: sti: fix missing clk_disable_unprepare() on
- error in uni_player_start()
-Date: Mon, 19 Sep 2016 09:27:03 +0200
-Message-ID: <357834f2-bae9-c481-785e-b5d4dd6f152b@st.com>
-References: <1474076073-9569-1-git-send-email-weiyj.lk@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: samsung: make audio interface/controller explicitly
+Date: Mon, 19 Sep 2016 09:33:42 +0100
+Message-ID: <20160919083342.GE10189@sirena.org.uk>
+References: <1474207751-9804-1-git-send-email-ayaka@soulik.info>
+ <1474207751-9804-2-git-send-email-ayaka@soulik.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1474076073-9569-1-git-send-email-weiyj.lk@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyj.lk@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Moise GERGAUD <moise.gergaud@st.com>
-Cc: Wei Yongjun <weiyongjun1@huawei.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============7840731993418887820=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1474207751-9804-2-git-send-email-ayaka@soulik.info>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Randy Li <ayaka@soulik.info>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, linux-kernel@vger.kernel.org, tiwai@suse.com, krzk@kernel.org, lgirdwood@gmail.com, s.nawrocki@samsung.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Wei,
 
-Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+--===============7840731993418887820==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="pY3vCvL1qV+PayAL"
+Content-Disposition: inline
 
-Thanks!
 
-On 09/17/2016 03:34 AM, Wei Yongjun wrote:
-> From: Wei Yongjun <weiyongjun1@huawei.com>
-> 
-> Fix the missing clk_disable_unprepare() before return
-> from uni_player_start() in the error handling case.
-> 
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
->  sound/soc/sti/uniperif_player.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-> index 645e415..1bc8ebc 100644
-> --- a/sound/soc/sti/uniperif_player.c
-> +++ b/sound/soc/sti/uniperif_player.c
-> @@ -893,8 +893,10 @@ static int uni_player_start(struct uniperif *player)
->  	SET_UNIPERIF_SOFT_RST_SOFT_RST(player);
->  
->  	ret = reset_player(player);
-> -	if (ret < 0)
-> +	if (ret < 0) {
-> +		clk_disable_unprepare(player->clk);
->  		return ret;
-> +	}
->  
->  	/*
->  	 * Does not use IEC61937 features of the uniperipheral hardware.
-> 
+--pY3vCvL1qV+PayAL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Sep 18, 2016 at 10:09:11PM +0800, Randy Li wrote:
+
+> It is simple sound card time, we could assign different codec
+> to a interface without making a specific driver for it.
+
+>  config SND_SAMSUNG_AC97
+> -	tristate
+> +	tristate "Samsung AC97 controller support"
+>  	select SND_SOC_AC97_BUS
+
+Are you *sure* simple-card works for AC'97?
+
+--pY3vCvL1qV+PayAL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJX36LmAAoJECTWi3JdVIfQ8bsH/j5OQAtQh5koE3Hr79mMEhh3
+3tR9Q0iLYiPc/RRb+zf0FmE5cymA+FVzTA1KARY5Wm5BRCw60ZFZ2X2WK0I8eBvL
+TCHILJxxguHzip3MTVh7gsmc106qoWqoj5Iz+q/GHQC9aEa38mtaJVe9uNV81j5I
+4L5vyLGcj581tFbwoGukjqbjFuw9K8cknsrTxTU6mvY4HFjJJLT+oeiz9vGo+SqM
+NlmMpFVUhVmV7xPtsiCN9gpRXexpHFy6tJ+ptGZeALtzj8psMr6puUkg4nLRQ8Q2
+ZEhtWJJaR4x8srHAMgsSxskGTaTHq2yMF8w/F9QC8UlPPxWS/XRy8HInUAjQbA0=
+=KNL1
+-----END PGP SIGNATURE-----
+
+--pY3vCvL1qV+PayAL--
+
+
+--===============7840731993418887820==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============7840731993418887820==--
