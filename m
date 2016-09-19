@@ -1,40 +1,49 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] make samsung interface entries explicitly
-Date: Mon, 19 Sep 2016 09:33:01 +0100
-Message-ID: <20160919083301.GD10189@sirena.org.uk>
-References: <1474207751-9804-1-git-send-email-ayaka@soulik.info>
+Subject: Re: [PATCH] topology: Add support for included files
+Date: Mon, 19 Sep 2016 10:09:06 +0100
+Message-ID: <20160919090906.GF10189@sirena.org.uk>
+References: <cover.1474262798.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8178512804345380994=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1474207751-9804-1-git-send-email-ayaka@soulik.info>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Randy Li <ayaka@soulik.info>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, linux-kernel@vger.kernel.org, tiwai@suse.com, krzk@kernel.org, lgirdwood@gmail.com, s.nawrocki@samsung.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============8775239965063485029=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D199F261740
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2016 11:09:18 +0200 (CEST)
+In-Reply-To: <cover.1474262798.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: mengdong.lin@linux.intel.com
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8178512804345380994==
+--===============8775239965063485029==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="at6+YcpfzWZg/htY"
+	protocol="application/pgp-signature"; boundary="NQTVMVnDVuULnIzU"
 Content-Disposition: inline
 
 
---at6+YcpfzWZg/htY
+--NQTVMVnDVuULnIzU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Sep 18, 2016 at 10:09:10PM +0800, Randy Li wrote:
-> I found those modules should be selected directly, as I
-> only use the simple sound card.
+On Mon, Sep 19, 2016 at 01:34:44PM +0800, mengdong.lin@linux.intel.com wrot=
+e:
+> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+>=20
+> There is no ABI change in this file, but only an enhancement for topology
+> user space library. It will let a text configuration file include other
+> files, so that some common cofigurations can be shared and we can reduce
+> the total sizes of files.
 
 Please don't send cover letters for single patches, if there is anything
 that needs saying put it in the changelog of the patch or after the ---
@@ -42,33 +51,28 @@ if it's administrative stuff.  This reduces mail volume and ensures that=20
 any important information is recorded in the changelog rather than being
 lost.=20
 
---at6+YcpfzWZg/htY
+--NQTVMVnDVuULnIzU
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJX36KxAAoJECTWi3JdVIfQiK4H/RdoYt/i8SIImzxTgBRi4T+p
-ldfiAH5f9tlHCsshS3KtDLhqpBJ+1mzZ2IkaNb8oBbrMgOsIC3QRV7pc4KzzdpMC
-2IPLLzmxfpzWf0aA7CxBA57nsgfe8sj9mYTVliRci1MSkb3Qau4WTLmkXhCa+hZ/
-I+sMfp2I5tnIZgovBNh5IBro67b/nJdd4tjytTo62W8TrCrO1u9BApSYr8/xNzLS
-K5zAWljHfegzjYPUXDTiTYLmJwR3aXxj2Ch9NsGckKFgCOt5NUBLbcmPWGocgQgv
-Z6SDD+w+2UrLiAkCL+KzCVSi4M/lZ+VX6abTfhnAafDroMVMhZe5zW7IwQB4z9Q=
-=YJcx
+iQEcBAEBCAAGBQJX36sxAAoJECTWi3JdVIfQN6YH/2wVrhRG18pZUYKQbQ1h8KK0
+haqodL85v1lkxfbfQfEDfV1lHtEHY0/WNeE/5ryLGPukgVpXHVFHdwdK81gApjuc
+prn4ZO0YpGcsmCaajPfzFOVQRyw+s/1yrv4Yl3EmobCu6m1aAiJ+a6no6Oczu9UC
+84LT/FiaabrR9O0iX7j4KnixaUgjmNowAWnDlwsA36NgDdhK2U4JsXEjt8BVMre/
+L5aPgrsqE/c98T6k1g68f7REp7A/P+J4K2QzaPr86j70JUij/kPUgBQUfK3/c8Vf
+s3sjydnuPUpH7x/sIIeIfzp2xJL2+ogDACok20H+zWNnN72EZ0nPJq0xPRj0BYY=
+=q7DU
 -----END PGP SIGNATURE-----
 
---at6+YcpfzWZg/htY--
+--NQTVMVnDVuULnIzU--
 
-
---===============8178512804345380994==
+--===============8775239965063485029==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============8178512804345380994==--
+--===============8775239965063485029==--
