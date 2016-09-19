@@ -1,263 +1,125 @@
-From: Randy Li <ayaka@soulik.info>
-Subject: [PATCH v3] ASoC: exynos: organize the asoc audio into a menu
-Date: Tue, 20 Sep 2016 02:57:50 +0800
-Message-ID: <1474311470-23175-1-git-send-email-ayaka@soulik.info>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: sbkim73@samsung.com, s.nawrocki@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, krzk@kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Randy Li <ayaka@soulik.info>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: DAPM over two regmaps (and a mailbox)
+Date: Mon, 19 Sep 2016 21:15:43 +0200
+Message-ID: <20160919191543.GU8719@lukather>
+References: <20160919105419.GK8719@lukather>
+ <20160919111247.GL10189@sirena.org.uk>
+ <20160919113415.GM8719@lukather>
+ <CAGb2v67FSOKKREr49xkD6J6APs=sc=iVvmBJxQ4n9d2L9_oGjg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============5969755577370311870=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.free-electrons.com (down.free-electrons.com
+ [37.187.137.238])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DBA826655F
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2016 21:15:44 +0200 (CEST)
+In-Reply-To: <CAGb2v67FSOKKREr49xkD6J6APs=sc=iVvmBJxQ4n9d2L9_oGjg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Mylene Josserand <mylene.josserand@free-electrons.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-It is simple sound card time, we could assign different codec
-to a interface without making a specific driver for it. The SPDIF
-and I2S interface for Samsung would be possible used by
-simple-sound-card, but not sure about the PCM.
 
-Those S3C time entries are left alone as I don't think any new board
-would need them.
+--===============5969755577370311870==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4dbYIUm7Fhfg+fSv"
+Content-Disposition: inline
 
-Signed-off-by: Randy Li <ayaka@soulik.info>
----
- sound/soc/samsung/Kconfig | 57 ++++++++++++++++++++++++-----------------------
- 1 file changed, 29 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 7b722b0..f6023b4 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -1,12 +1,14 @@
--config SND_SOC_SAMSUNG
-+menuconfig SND_SOC_SAMSUNG
- 	tristate "ASoC support for Samsung"
- 	depends on (PLAT_SAMSUNG || ARCH_EXYNOS)
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
--	help
-+	---help---
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the Samsung SoCs' Audio interfaces. You will also need to
- 	  select the audio interfaces to support below.
- 
-+if SND_SOC_SAMSUNG
-+
- config SND_S3C24XX_I2S
- 	tristate
- 
-@@ -18,22 +20,22 @@ config SND_S3C2412_SOC_I2S
- 	select SND_S3C_I2SV2_SOC
- 
- config SND_SAMSUNG_PCM
--	tristate
-+	tristate "Samsung PCM interface support"
- 
- config SND_SAMSUNG_AC97
- 	tristate
- 	select SND_SOC_AC97_BUS
- 
- config SND_SAMSUNG_SPDIF
--	tristate
-+	tristate "Samsung SPDIF transmitter support"
- 	select SND_SOC_SPDIF
- 
- config SND_SAMSUNG_I2S
--	tristate
-+	tristate "Samsung I2S interface support"
- 
- config SND_SOC_SAMSUNG_NEO1973_WM8753
- 	tristate "Audio support for Openmoko Neo1973 Smartphones (GTA02)"
--	depends on SND_SOC_SAMSUNG && MACH_NEO1973_GTA02
-+	depends on MACH_NEO1973_GTA02
- 	select SND_S3C24XX_I2S
- 	select SND_SOC_WM8753
- 	select SND_SOC_BT_SCO
-@@ -43,7 +45,7 @@ config SND_SOC_SAMSUNG_NEO1973_WM8753
- 
- config SND_SOC_SAMSUNG_JIVE_WM8750
- 	tristate "SoC I2S Audio support for Jive"
--	depends on SND_SOC_SAMSUNG && MACH_JIVE && I2C
-+	depends on MACH_JIVE && I2C
- 	select SND_SOC_WM8750
- 	select SND_S3C2412_SOC_I2S
- 	help
-@@ -51,7 +53,7 @@ config SND_SOC_SAMSUNG_JIVE_WM8750
- 
- config SND_SOC_SAMSUNG_SMDK_WM8580
- 	tristate "SoC I2S Audio support for WM8580 on SMDK"
--	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110)
-+	depends on MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110
- 	depends on I2C
- 	select SND_SOC_WM8580
- 	select SND_SAMSUNG_I2S
-@@ -60,7 +62,6 @@ config SND_SOC_SAMSUNG_SMDK_WM8580
- 
- config SND_SOC_SAMSUNG_SMDK_WM8994
- 	tristate "SoC I2S Audio support for WM8994 on SMDK"
--	depends on SND_SOC_SAMSUNG
- 	depends on I2C=y
- 	select MFD_WM8994
- 	select SND_SOC_WM8994
-@@ -70,7 +71,7 @@ config SND_SOC_SAMSUNG_SMDK_WM8994
- 
- config SND_SOC_SAMSUNG_SMDK2443_WM9710
- 	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
--	depends on SND_SOC_SAMSUNG && MACH_SMDK2443
-+	depends on MACH_SMDK2443
- 	select AC97_BUS
- 	select SND_SOC_AC97_CODEC
- 	select SND_SAMSUNG_AC97
-@@ -80,7 +81,7 @@ config SND_SOC_SAMSUNG_SMDK2443_WM9710
- 
- config SND_SOC_SAMSUNG_LN2440SBC_ALC650
- 	tristate "SoC AC97 Audio support for LN2440SBC - ALC650"
--	depends on SND_SOC_SAMSUNG && ARCH_S3C24XX
-+	depends on ARCH_S3C24XX
- 	select AC97_BUS
- 	select SND_SOC_AC97_CODEC
- 	select SND_SAMSUNG_AC97
-@@ -90,7 +91,7 @@ config SND_SOC_SAMSUNG_LN2440SBC_ALC650
- 
- config SND_SOC_SAMSUNG_S3C24XX_UDA134X
- 	tristate "SoC I2S Audio support UDA134X wired to a S3C24XX"
--	depends on SND_SOC_SAMSUNG && ARCH_S3C24XX
-+	depends on ARCH_S3C24XX
- 	select SND_S3C24XX_I2S
- 	select SND_SOC_L3
- 	select SND_SOC_UDA134X
-@@ -102,21 +103,21 @@ config SND_SOC_SAMSUNG_SIMTEC
- 
- config SND_SOC_SAMSUNG_SIMTEC_TLV320AIC23
- 	tristate "SoC I2S Audio support for TLV320AIC23 on Simtec boards"
--	depends on SND_SOC_SAMSUNG && ARCH_S3C24XX && I2C
-+	depends on ARCH_S3C24XX && I2C
- 	select SND_S3C24XX_I2S
- 	select SND_SOC_TLV320AIC23_I2C
- 	select SND_SOC_SAMSUNG_SIMTEC
- 
- config SND_SOC_SAMSUNG_SIMTEC_HERMES
- 	tristate "SoC I2S Audio support for Simtec Hermes board"
--	depends on SND_SOC_SAMSUNG && ARCH_S3C24XX && I2C
-+	depends on ARCH_S3C24XX && I2C
- 	select SND_S3C24XX_I2S
- 	select SND_SOC_TLV320AIC3X
- 	select SND_SOC_SAMSUNG_SIMTEC
- 
- config SND_SOC_SAMSUNG_H1940_UDA1380
- 	tristate "Audio support for the HP iPAQ H1940"
--	depends on SND_SOC_SAMSUNG && ARCH_H1940 && I2C
-+	depends on ARCH_H1940 && I2C
- 	select SND_S3C24XX_I2S
- 	select SND_SOC_UDA1380
- 	help
-@@ -124,7 +125,7 @@ config SND_SOC_SAMSUNG_H1940_UDA1380
- 
- config SND_SOC_SAMSUNG_RX1950_UDA1380
- 	tristate "Audio support for the HP iPAQ RX1950"
--	depends on SND_SOC_SAMSUNG && MACH_RX1950 && I2C
-+	depends on MACH_RX1950 && I2C
- 	select SND_S3C24XX_I2S
- 	select SND_SOC_UDA1380
- 	help
-@@ -132,7 +133,7 @@ config SND_SOC_SAMSUNG_RX1950_UDA1380
- 
- config SND_SOC_SAMSUNG_SMDK_WM9713
- 	tristate "SoC AC97 Audio support for SMDK with WM9713"
--	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110)
-+	depends on MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110
- 	select SND_SOC_WM9713
- 	select SND_SAMSUNG_AC97
- 	help
-@@ -140,20 +141,19 @@ config SND_SOC_SAMSUNG_SMDK_WM9713
- 
- config SND_SOC_SMARTQ
- 	tristate "SoC I2S Audio support for SmartQ board"
--	depends on SND_SOC_SAMSUNG && MACH_SMARTQ && I2C
-+	depends on MACH_SMARTQ && I2C
- 	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM8750
- 
- config SND_SOC_SAMSUNG_SMDK_SPDIF
- 	tristate "SoC S/PDIF Audio support for SMDK"
--	depends on SND_SOC_SAMSUNG
- 	select SND_SAMSUNG_SPDIF
- 	help
- 	  Say Y if you want to add support for SoC S/PDIF audio on the SMDK.
- 
- config SND_SOC_SMDK_WM8580_PCM
- 	tristate "SoC PCM Audio support for WM8580 on SMDK"
--	depends on SND_SOC_SAMSUNG && (MACH_SMDKV210 || MACH_SMDKC110)
-+	depends on MACH_SMDKV210 || MACH_SMDKC110
- 	depends on I2C
- 	select SND_SOC_WM8580
- 	select SND_SAMSUNG_PCM
-@@ -162,7 +162,6 @@ config SND_SOC_SMDK_WM8580_PCM
- 
- config SND_SOC_SMDK_WM8994_PCM
- 	tristate "SoC PCM Audio support for WM8994 on SMDK"
--	depends on SND_SOC_SAMSUNG
- 	depends on I2C=y
- 	select MFD_WM8994
- 	select SND_SOC_WM8994
-@@ -172,7 +171,7 @@ config SND_SOC_SMDK_WM8994_PCM
- 
- config SND_SOC_SPEYSIDE
- 	tristate "Audio support for Wolfson Speyside"
--	depends on SND_SOC_SAMSUNG && I2C && SPI_MASTER
-+	depends on I2C && SPI_MASTER
- 	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
- 	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM8996
-@@ -182,14 +181,14 @@ config SND_SOC_SPEYSIDE
- 
- config SND_SOC_TOBERMORY
- 	tristate "Audio support for Wolfson Tobermory"
--	depends on SND_SOC_SAMSUNG && INPUT && I2C
-+	depends on INPUT && I2C
- 	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
- 	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM8962
- 
- config SND_SOC_BELLS
- 	tristate "Audio support for Wolfson Bells"
--	depends on SND_SOC_SAMSUNG && MFD_ARIZONA && I2C && SPI_MASTER
-+	depends on MFD_ARIZONA && I2C && SPI_MASTER
- 	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
- 	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM5102
-@@ -200,7 +199,7 @@ config SND_SOC_BELLS
- 
- config SND_SOC_LOWLAND
- 	tristate "Audio support for Wolfson Lowland"
--	depends on SND_SOC_SAMSUNG && I2C
-+	depends on I2C
- 	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
- 	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM5100
-@@ -208,7 +207,7 @@ config SND_SOC_LOWLAND
- 
- config SND_SOC_LITTLEMILL
- 	tristate "Audio support for Wolfson Littlemill"
--	depends on SND_SOC_SAMSUNG && I2C
-+	depends on I2C
- 	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
- 	select SND_SAMSUNG_I2S
- 	select MFD_WM8994
-@@ -216,7 +215,7 @@ config SND_SOC_LITTLEMILL
- 
- config SND_SOC_SNOW
- 	tristate "Audio support for Google Snow boards"
--	depends on SND_SOC_SAMSUNG && I2C
-+	depends on I2C
- 	select SND_SOC_MAX98090
- 	select SND_SOC_MAX98095
- 	select SND_SAMSUNG_I2S
-@@ -226,6 +225,8 @@ config SND_SOC_SNOW
- 
- config SND_SOC_ARNDALE_RT5631_ALC5631
-         tristate "Audio support for RT5631(ALC5631) on Arndale Board"
--        depends on SND_SOC_SAMSUNG && I2C
-+        depends on I2C
-         select SND_SAMSUNG_I2S
-         select SND_SOC_RT5631
-+
-+endif #SND_SOC_SAMSUNG
--- 
-2.7.4
+--4dbYIUm7Fhfg+fSv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Mon, Sep 19, 2016 at 10:56:10PM +0800, Chen-Yu Tsai wrote:
+> On Mon, Sep 19, 2016 at 7:34 PM, Maxime Ripard
+> <maxime.ripard@free-electrons.com> wrote:
+> > On Mon, Sep 19, 2016 at 12:12:47PM +0100, Mark Brown wrote:
+> >> On Mon, Sep 19, 2016 at 12:54:19PM +0200, Maxime Ripard wrote:
+> >>
+> >> > That codec is mapped in memory, however, we have a bunch of DAPM
+> >> > widgets that are mapped in a separate register space, that should
+> >> > probably be exposed through a syscon (but isn't yet).
+> >>
+> >> Why not just represent those as a separate device?
+> >
+> > I don't know, this seems to be supplies to muxers, mixers, DACs, the
+> > amplifier (and the amplifier volume too, even though that's not a
+> > widget), and it looks really intertwinned, how would you separate
+> > them?
+>=20
+> I asked Mark the same question a while ago. I was looking at the A31s
+> codec, which is kind of a cross between A31 and A23.
+
+We're working on the A33, that has yet another setup from the A23..
+
+> Mark recommended using aux devices. AFAIU the codec would just
+> register the DAC and ADC widgets, the digital volume control, and
+> whatever digital bits there are. The analog side would be done in a
+> asoc component driver, which would register all the analog widgets
+> and controls. You then tie them together at the card level.
+
+Ok. How would that work? Can you setup routes between widgets defined
+in different components?
+
+> AFAIK the digital parts and analog parts are in different power
+> domains, probably to keep audio bypass working in standby mode.
+
+I don't think we have control over those power domains though, do we?
+
+> As for the A31s, I only got as far as implementing the regmap using
+> custom read/write callbacks, and part of the register definition.
+> Unfortunately I saved my work with git stash, which I accidentally
+> wiped out with git reflog expire...
+
+I guess some lessons are meant to be learned the hard way :)
+
+Thanks,
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+
+--4dbYIUm7Fhfg+fSv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJX4DlfAAoJEBx+YmzsjxAgBQMP/RMI4qN5iIbYtmD2tMQDhM5x
+y8S3sCjNQw5xwgN3qfVRbCfTgCj3dciCYXEtT6qEJIoxrV4wL93cuuVtpF3g42sz
+5KIyDbvU1Sb+N3a6VffJ939l+cTAsaw7ewxSsyYzfQFmpxogXG55N8n9pyVkUYpI
+iXDehq0VR0b5appwdF50zl5HYeXyA0yMm+vRATvai7f17+Qq8CYzF/xA8rTKpjXT
+sAS+iPJ1aimYYY4vU5TY8HRXr0bzePIo5lqACUyeCF0pUgtTghuuBf9iwQ/9IVLe
+1927LxjZGJ6K+H7uJJIlmhZWIbMv3n5yiMt0qVMWSBfO/SRAymmVxvMuH2O7B1q8
+48GgHbJteadzujMzm8SFcxGXkpySdLXBneLiegDtOqZCLrTu3e+NKicYkhs9/8Aw
+fxWZFpTi+c7sdQpZpwrlzF8TkC4IQ9D+EWfCHlgfWFjchq90VWawdHYTY80up2mM
+RXvx4xjBf/71FOWo44OWif3TJrRVjbHQXmQyanhZLjPvWu5o4Rh/9VaooIudcUhq
+0AAOvo9ITD/GT7hLomHXgYgiWIuelJUgZEyWt2Mxdy6kDeFc0T1YaciQHvai5l7H
+vtc6vrgdDTEl0Q1Dhz4uqELxqxo3zEKQ9uB0yMukI0q3ZOv1yDXneEG9A2+hvAxk
+6vsadqq0RWFdypv/H+QQ
+=/lll
+-----END PGP SIGNATURE-----
+
+--4dbYIUm7Fhfg+fSv--
+
+--===============5969755577370311870==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5969755577370311870==--
