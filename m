@@ -1,108 +1,79 @@
-From: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-Subject: Re: [PATCH] ASoC: rk3399_gru_sound: fix recording pop at first
- attempt
-Date: Mon, 19 Sep 2016 15:44:30 +0100
-Message-ID: <20160919144404.GA18734@leverpostej>
-References: <1474295379-16936-1-git-send-email-zhengxing@rock-chips.com>
+From: Pavan Krishna Guntooru <pavankrishna@tataelxsi.co.in>
+Subject: Fw: kernel panic with ALSA driver
+Date: Mon, 19 Sep 2016 12:15:34 +0000
+Message-ID: <PS1PR0401MB1545DFF718843D40C542DBAE96F40@PS1PR0401MB1545.apcprd04.prod.outlook.com>
+References: <PS1PR0401MB1545D4F8724C2FB04F14ADC596F40@PS1PR0401MB1545.apcprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1474295379-16936-1-git-send-email-zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, smbarber-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, hychao-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, cychiang-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from APC01-SG2-obe.outbound.protection.outlook.com
+ (mail-sg2apc01on0091.outbound.protection.outlook.com [104.47.125.91])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72B71266539
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2016 14:15:37 +0200 (CEST)
+In-Reply-To: <PS1PR0401MB1545D4F8724C2FB04F14ADC596F40@PS1PR0401MB1545.apcprd04.prod.outlook.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 19, 2016 at 10:29:39PM +0800, Xing Zheng wrote:
-> From: Wonjoon Lee <woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-> 
-> Pop happens when mclk applied but dmic's own boot-time
-> Specify dmic delay times in dt to make sure
-> clocks are ready earlier than dmic working
-> 
-> Signed-off-by: Wonjoon Lee <woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-> Signed-off-by: Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-> ---
-> 
->  .../bindings/sound/rockchip,rk3399-gru-sound.txt   |    6 ++++++
->  sound/soc/rockchip/rk3399_gru_sound.c              |   14 ++++++++++++++
->  2 files changed, 20 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-> index f19b6c8..b7dd3ab 100644
-> --- a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-> +++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-> @@ -6,6 +6,12 @@ Required properties:
->    connected to the codecs
->  - rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
->  
-> +Optional properties:
-> +- dmic-delay : specify delay time for DMIC ready.
-> +  If this option is specified, which means it's required dmic need
-> +  delay for DMIC to ready so that rt5514 can avoid recording before
-> +  DMIC send valid data
 
-What units is this in? Per the code it looks like ms, so if we follow
-Documentation/devicetree/bindings/property-units.txt, thous should be
-named something like dmic-enable-delay-ms.
+Dear All,
 
-That said, do we even need a property for this? Does this vary much in
-practice?
 
-If it does, can we not derive this delay from other information (e.g.
-the rates of input clocks and so on)? What exactly determines the
-necessary delay?
+Please find the below email and suggest us.
+
+
 
 Thanks,
-Mark.
+-Pavan G
 
->  
->  sound {
-> diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-> index 164b6da..6ab838b 100644
-> --- a/sound/soc/rockchip/rk3399_gru_sound.c
-> +++ b/sound/soc/rockchip/rk3399_gru_sound.c
-> @@ -37,6 +37,8 @@
->  
->  #define SOUND_FS	256
->  
-> +unsigned int rt5514_dmic_delay;
-> +
->  static struct snd_soc_jack rockchip_sound_jack;
->  
->  static const struct snd_soc_dapm_widget rockchip_dapm_widgets[] = {
-> @@ -122,6 +124,9 @@ static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
->  		return ret;
->  	}
->  
-> +	/* Wait for DMIC stable */
-> +	msleep(rt5514_dmic_delay);
-> +
->  	return 0;
->  }
->  
-> @@ -334,6 +339,15 @@ static int rockchip_sound_probe(struct platform_device *pdev)
->  		return -ENODEV;
->  	}
->  
-> +	/* Set DMIC delay */
-> +	ret = device_property_read_u32(&pdev->dev, "dmic-delay",
-> +					&rt5514_dmic_delay);
-> +	if (ret) {
-> +		rt5514_dmic_delay = 0;
-> +		dev_dbg(&pdev->dev,
-> +			"no optional property 'dmic-delay' found, default: no delay\n");
-> +	}
-> +
->  	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
->  	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
->  	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
-> -- 
-> 1.7.9.5
-> 
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+________________________________
+From: Pavan Krishna Guntooru
+Sent: Monday, September 19, 2016 5:40 PM
+To: clemens@ladisch.de; lrg@slimlogic.co.uk; broonie@opensource.wolfsonmicro.com
+Subject: kernel panic with ALSA driver
+
+
+
+Dear all,
+
+
+We are using ti-sdk of version 8 and linux kernel version of 3.0.14. We have ported ti-sdk-8 to our Linux embedded box. Some times kernel Panic is happening and by decoding the generated kernel panic , crash happening in kernel at place linux-3.14.26-g2489c02/sound/core/pcm_dmaengine.c:134. the issue is in PCM engine driver.
+
+
+After reading the some articles, people saying that there is a kernel bug and so happening.
+
+
+My question here are
+
+1) If its a known kernel issue, ALSA developers are aware of this bug?
+
+2) Even though it is a kernel issue, is there a way to avoid from application in using of ALSA API's?
+
+3) Do you have any fix for this?
+
+4) If it is kernel issue, so many people could have reported by this time.
+
+
+For every audio announcement playing, we are opening and closing the audio device in our application.
+
+
+Please kindly suggest and awaiting for your reply. If I sent to a wrong person, please forward to the concern person.
+
+
+
+
+
+
+Thanks,
+-Pavan G
