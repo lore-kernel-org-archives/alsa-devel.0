@@ -1,86 +1,81 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung: make audio interface/controller explicitly
-Date: Mon, 19 Sep 2016 18:37:09 +0200
-Message-ID: <20160919163709.GA5981@kozik-book>
-References: <1474300318-26767-1-git-send-email-ayaka@soulik.info>
+From: "Shah, Hardik T" <hardik.t.shah@intel.com>
+Subject: Re: [PATCH v2 01/11] ASoC: topology: Able to create BE
+	DAIs
+Date: Mon, 19 Sep 2016 17:09:19 +0000
+Message-ID: <17DC8B7179E3514D90E3A456B23B91EA1A0B0F50@BGSMSX104.gar.corp.intel.com>
+References: <cover.1473420558.git.mengdong.lin@linux.intel.com>
+ <084b7ba7ba3f0d4a97641b43fab26aee2dc20c5d.1473420558.git.mengdong.lin@linux.intel.com>
+ <20160916145651.GD27974@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1474300318-26767-1-git-send-email-ayaka@soulik.info>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Randy Li <ayaka@soulik.info>
-Cc: alsa-devel@alsa-project.org, sbkim73@samsung.com, s.nawrocki@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, krzk@kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED143264ED4
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2016 19:09:29 +0200 (CEST)
+In-Reply-To: <20160916145651.GD27974@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, "Singh, Guneshwor O" <guneshwor.o.singh@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 19, 2016 at 11:51:58PM +0800, Randy Li wrote:
-> It is simple sound card time, we could assign different codec
-> to a interface without making a specific driver for it. The SPDIF
-> and I2S interface for Samsung would be possible used by simple-sound-card,
-> but not sure about the PCM.
+
+
+Regards,
+Hardik Shah 
+
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
 > 
-> Signed-off-by: Randy Li <ayaka@soulik.info>
-> ---
->  sound/soc/samsung/Kconfig | 16 +++++++++++++---
->  1 file changed, 13 insertions(+), 3 deletions(-)
+> On Fri, Sep 09, 2016 at 07:43:11PM +0800, mengdong.lin@linux.intel.com
+> wrote:
 > 
-> diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-> index 7b722b0..210ce38 100644
-> --- a/sound/soc/samsung/Kconfig
-> +++ b/sound/soc/samsung/Kconfig
-> @@ -1,3 +1,7 @@
-> +menu "SoC Audio for Samsung CPUs"
-
-This adds a new empty layer. One have to choose this menu and then
-SND_SOC_SAMSUNG to access specific options. Instead of new menu, the
-SND_SOC_SAMSUNG should be menuconfig. The existing "depends on" and the
-one you added below won't be needed then, I think. Just have to be sure
-that nothing selects particular drivers without selecting
-SND_SOC_SAMSUNG first.
-
-
-Best regards,
-Krzysztof
-
-
-> +
-> +comment "Common SoC Audio options for Samsung CPUs:"
-> +
->  config SND_SOC_SAMSUNG
->  	tristate "ASoC support for Samsung"
->  	depends on (PLAT_SAMSUNG || ARCH_EXYNOS)
-> @@ -18,18 +22,22 @@ config SND_S3C2412_SOC_I2S
->  	select SND_S3C_I2SV2_SOC
->  
->  config SND_SAMSUNG_PCM
-> -	tristate
-> +	tristate "Samsung PCM interface support"
-> +	depends on SND_SOC_SAMSUNG
->  
->  config SND_SAMSUNG_AC97
->  	tristate
->  	select SND_SOC_AC97_BUS
-> +	depends on SND_SOC_SAMSUNG
->  
->  config SND_SAMSUNG_SPDIF
-> -	tristate
-> +	tristate "Samsung SPDIF transmitter support"
-> +	depends on SND_SOC_SAMSUNG
->  	select SND_SOC_SPDIF
->  
->  config SND_SAMSUNG_I2S
-> -	tristate
-> +	tristate "Samsung I2S interface support"
-> +	depends on I2C && SND_SOC_SAMSUNG
->  
->  config SND_SOC_SAMSUNG_NEO1973_WM8753
->  	tristate "Audio support for Openmoko Neo1973 Smartphones (GTA02)"
-> @@ -229,3 +237,5 @@ config SND_SOC_ARNDALE_RT5631_ALC5631
->          depends on SND_SOC_SAMSUNG && I2C
->          select SND_SAMSUNG_I2S
->          select SND_SOC_RT5631
-> +
-> +endmenu
-> -- 
-> 2.7.4
+> > From: Mengdong Lin <mengdong.lin@linux.intel.com>
 > 
+> > Topology will check with ASoC if a BE DAI already exists by checking
+> > its name. If the BE DAI doesn't exist, topology will create a new one
+> > and the dai_load ops will be called for device specific init.
+> 
+> I still remain fundamentally unconvinced that this is a good or scalable idea
+> and that it makes sense to have it be part of the standard topology ABI.  We
+> are not going to download a DSP firmware that creates a new physical link in
+> the system so having the topology be the thing creating those physical links
+> seems wrong.
+>
+
+Hi Mark,
+You are right, physical links will always remain same.
+
+ 
+> > create the HDA DAIs. Ideally, the driver should query BIOS to get the
+> > physical pin output types and connections to peripherals for a
+> > specific platform, but unfortunately BIOS sometimes does not have
+> > accurate info, so there is still hard code of BE DAI & DAI links in
+> > driver. To share a
+> 
+> Having the connections to the DSP specified in the toplogy is of course
+> sensible but fundamentally this is always going to be choosing from a list of
+> physical DAIs that we already know about and potential connections for
+> those that are also already known.  If the driver wants to do something in
+> response to a DAI being hooked up into the topology (which seems to be the
+> actual goal here) that would be sensible but attempting to create physical
+> hardware in a topology does not seem like a good idea as a generic feature.
+
+
+We were trying to optimize here by creating DAIs for only those physical
+links which are getting used on the platform. Intel hardware supports
+multiple physical links like I2S, HDA, HDMI and DMICs and with that BE DAIs
+can increase up to 15-20,  and very few of them may be really used in most
+of the platforms. But if you think we should create BE DAIs for all physical
+links, we will go ahead with that approach.
