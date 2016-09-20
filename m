@@ -1,21 +1,17 @@
-From: Enrico Mioso <mrkiko.rs@gmail.com>
-Subject: Re: [snd_ali5451] snd_ali5451 0000:00:06.0: BUG: ,
- pos = 16384, buffer size = 16384, period size = 1024
-Date: Tue, 20 Sep 2016 21:53:45 +0200 (CEST)
-Message-ID: <alpine.LNX.2.20.1609202150290.561@localhost.localdomain>
-References: <alpine.LNX.2.20.1604222124360.12418@localhost.localdomain>
- <alpine.LNX.2.20.1604241839520.8643@localhost.localdomain>
- <s5hoa8yqdhc.wl-tiwai@suse.de>
+From: noman pouigt <variksla@gmail.com>
+Subject: USB Gadget audio not working
+Date: Tue, 20 Sep 2016 15:00:11 -0700
+Message-ID: <CAES_P+9tg-Jgf3buOJwo1pGKX4USvoo6Fx_AEygMGiGaKVTeXA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 49296266DFE
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 21:53:54 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id b184so5105517wma.3
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 12:53:54 -0700 (PDT)
-In-Reply-To: <s5hoa8yqdhc.wl-tiwai@suse.de>
+Received: from mail-yw0-f172.google.com (mail-yw0-f172.google.com
+ [209.85.161.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5692A266D9C
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 00:00:13 +0200 (CEST)
+Received: by mail-yw0-f172.google.com with SMTP id i129so23878619ywb.0
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 15:00:13 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,71 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ruslan.bilovol@gmail.com, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
-First of all: thank you for your work and kindness.
-It seems your patch solves the problem: the message is not printed in the dmesg; I wasn't able to find other occurrencies of the messages in my dmesg after applying this patch and loading the modified module.
-thank you very much for this effort and everything, and sorry for me being late.
-You've always been responsive in general, sorry if I didn't in some cases.
+Hello,
 
+I am trying to use my device as a sound card and enabled
+CONFIG_USB_AUDIO. However I don't know what kind
+of device node should be added in the machine file?
 
-On Mon, 25 Apr 2016, Takashi Iwai wrote:
+I just want to record whatever is coming into the USB played
+back by the host over USB.
 
-==Date: Mon, 25 Apr 2016 10:50:07
-==From: Takashi Iwai <tiwai@suse.de>
-==To: Enrico Mioso <mrkiko.rs@gmail.com>
-==Cc: alsa-devel@alsa-project.org
-==Subject: Re: [alsa-devel] [snd_ali5451] snd_ali5451 0000:00:06.0: BUG: ,
-==    pos = 16384, buffer size = 16384, period size = 1024
-==
-==On Sun, 24 Apr 2016 18:43:11 +0200,
-==Enrico Mioso wrote:
-==> 
-==> After using the system for some time, the following is present on my dmesg:
-==> $ dmesg -t | grep -i ali5 | sort | uniq
-==> 
-==> pnp 00:06: Plug and Play ACPI device, IDs ALI5123 PNP0510 (active)
-==> snd_ali5451 0000:00:06.0: AC'97 1 access is not valid [0xffffffff], removing mixer.
-==> snd_ali5451 0000:00:06.0: AC'97 1 does not respond - RESET
-==> snd_ali5451 0000:00:06.0: ali mixer 1 creating error.
-==> snd_ali5451 0000:00:06.0: enabling device (0005 -> 0007)
-==> snd_ali5451 0000:00:06.0: invalid position: , pos = 16384, buffer size = 16384, period size = 1024
-==> snd_ali5451 0000:00:06.0: invalid position: , pos = 16385, buffer size = 16384, period size = 1024
-==
-==The kernel warning itself can be fixed by the patch below.
-==The remaining question is whether this covers all; do the playback and
-==capture still work well despite of these messages?  Or do you actually
-==encounter the overrun / underrun?
-==
-==In anyway, let me know whether the patch works.
-==
-==
-==thanks,
-==
-==Takashi
-==
-==---
-==diff --git a/sound/pci/ali5451/ali5451.c b/sound/pci/ali5451/ali5451.c
-==index 36470af7eda7..92b819e4f729 100644
-==--- a/sound/pci/ali5451/ali5451.c
-==+++ b/sound/pci/ali5451/ali5451.c
-==@@ -1408,6 +1408,7 @@ snd_ali_playback_pointer(struct snd_pcm_substream *substream)
-== 	spin_unlock(&codec->reg_lock);
-== 	dev_dbg(codec->card->dev, "playback pointer returned cso=%xh.\n", cso);
-== 
-==+	cso %= runtime->buffer_size;
-== 	return cso;
-== }
-== 
-==@@ -1428,6 +1429,7 @@ static snd_pcm_uframes_t snd_ali_pointer(struct snd_pcm_substream *substream)
-== 	cso = inw(ALI_REG(codec, ALI_CSO_ALPHA_FMS + 2));
-== 	spin_unlock(&codec->reg_lock);
-== 
-==+	cso %= runtime->buffer_size;
-== 	return cso;
-== }
-== 
-==
+I could get my device to be detected as a sound card i.e.
+USB_AUDIO_CLASS in my ubuntu machine.
+
+My understanding of USB audio is very less so I thought
+below change should be sufficient.
+
+Below are the only changes which i have done to enable USB_AUDIO.
+
+Machine file:
+{
+.name = "something_random",
+.stream_name = "USB Capture",
+.cpu_dai_name = "snd-soc-dummy-dai",
+.codec_dai_name = "snd-soc-dummy-dai",
+.codec_name = "snd-soc-dummy",
+.ignore_suspend = 1,
+},
+
+drivers/usb/gadget/u_uac1.c :
+#define FILE_PCM_PLAYBACK "/dev/snd/pcmC0D0p"
+#define FILE_PCM_CAPTURE "/dev/snd/pcmC0D0c"
+
+in defconfig
+CONFIG_USB_AUDIO=y
+
+Please let me know if I am doing anything wrong.
+
+Thanks,
