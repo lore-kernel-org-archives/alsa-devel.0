@@ -1,18 +1,15 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 6/7] ASoC: wm_adsp: Allow preloader to do the
-	final shutdown of the DSP
-Date: Tue, 20 Sep 2016 13:52:35 +0100
-Message-ID: <1474375956-10443-7-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1474375956-10443-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 0/7] Allow ADSPs to be preloaded with firmware
+Date: Tue, 20 Sep 2016 13:52:29 +0100
+Message-ID: <1474375956-10443-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id BD2212666AA
+ by alsa0.perex.cz (Postfix) with ESMTP id BE408266CF5
  for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 14:52:32 +0200 (CEST)
-In-Reply-To: <1474375956-10443-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,108 +23,40 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The booting process for the DSP is clearly separated into two parts, the
-preloader brings up the core and downloads code, then the main widget
-starts the code actually executing. However the shutdown sequence is all
-handled with the main widget.
+As requirements to bring up audio paths are continuous getting tighter and
+the DSP download to most ADSP devices happens over an external bus it can
+become an important factor in the path bring up time. As such sometimes it
+is a reasonable trade off to download the firmware ahead of when it will
+be required and take a small hit on power consumption for keeping the core
+powered up.
 
-To allow the preloading to be run independently of the main audio bring
-up it makes sense, and is generally just cleaner, for the preloader
-widget to shutdown those things it initialised. This patch moves the
-appropriate parts of the shutdown process into the preloader widget.
+This patch chain adds such functionality to the wm_adsp driver, broadly
+speaking there are three parts to the chain. Firstly we setup the existing
+preloader widgets such that they will be easier to power up independently.
+Secondly, we setup the ALSA controls such that they will gracefully handle
+the DSP being in a low power state between loading the firmware and
+starting the core. Finally, we actually add the preloading features itself.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c | 32 ++++++++++++++++++--------------
- sound/soc/codecs/wm_adsp.h |  2 +-
- 2 files changed, 19 insertions(+), 15 deletions(-)
+Thanks,
+Charles
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index e0cd4fe..41c179d 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -2323,6 +2323,7 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
- 	struct wm_adsp *dsp = &dsps[w->shift];
-+	struct wm_coeff_ctl *ctl;
- 
- 	dsp->card = codec->component.card;
- 
-@@ -2331,6 +2332,22 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
- 		wm_adsp2_set_dspclk(dsp, freq);
- 		queue_work(system_unbound_wq, &dsp->boot_work);
- 		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		wm_adsp_debugfs_clear(dsp);
-+
-+		dsp->fw_id = 0;
-+		dsp->fw_id_version = 0;
-+
-+		dsp->booted = false;
-+
-+		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
-+				   ADSP2_MEM_ENA, 0);
-+
-+		list_for_each_entry(ctl, &dsp->ctl_list, list)
-+			ctl->enabled = 0;
-+
-+		wm_adsp_free_alg_regions(dsp);
-+		break;
- 	default:
- 		break;
- 	}
-@@ -2345,7 +2362,6 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
- 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
- 	struct wm_adsp *dsp = &dsps[w->shift];
--	struct wm_coeff_ctl *ctl;
- 	int ret;
- 
- 	switch (event) {
-@@ -2389,17 +2405,10 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 
- 		mutex_lock(&dsp->pwr_lock);
- 
--		wm_adsp_debugfs_clear(dsp);
--
--		dsp->fw_id = 0;
--		dsp->fw_id_version = 0;
--
- 		dsp->running = false;
--		dsp->booted = false;
- 
- 		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
--				   ADSP2_MEM_ENA | ADSP2_CORE_ENA | ADSP2_START,
--				   0);
-+				   ADSP2_CORE_ENA | ADSP2_START, 0);
- 
- 		/* Make sure DMAs are quiesced */
- 		regmap_write(dsp->regmap, dsp->base + ADSP2_RDMA_CONFIG_1, 0);
-@@ -2409,11 +2418,6 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
- 				   ADSP2_SYS_ENA, 0);
- 
--		list_for_each_entry(ctl, &dsp->ctl_list, list)
--			ctl->enabled = 0;
--
--		wm_adsp_free_alg_regions(dsp);
--
- 		if (wm_adsp_fw[dsp->fw].num_caps != 0)
- 			wm_adsp_buffer_free(dsp);
- 
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 228b1f9..362dd7c 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -89,7 +89,7 @@ struct wm_adsp {
- #define WM_ADSP2(wname, num, event_fn) \
- {	.id = snd_soc_dapm_supply, .name = wname " Preloader", \
- 	.reg = SND_SOC_NOPM, .shift = num, .event = event_fn, \
--	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD, \
-+	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD, \
- 	.subseq = 100, /* Ensure we run after SYSCLK supply widget */ }, \
- {	.id = snd_soc_dapm_out_drv, .name = wname, \
- 	.reg = SND_SOC_NOPM, .shift = num, .event = wm_adsp2_event, \
+Charles Keepax (7):
+  ASoC: arizona: Attach SYSCLK to DSP preloaders
+  ASoC: wm_adsp: Make DSP preloader a supply widget
+  ASoC: wm_adsp: Separate concept of booted and running
+  ASoC: wm_adsp: Move control cache sync out of preloader
+  ASoC: wm_adsp: Put DSP into low power state between loading and
+    running
+  ASoC: wm_adsp: Allow preloader to do the final shutdown of the DSP
+  ASoC: wm_adsp: Add mechanism to preload firmware on a core
+
+ sound/soc/codecs/arizona.h |  18 ++++---
+ sound/soc/codecs/cs47l24.c |   5 +-
+ sound/soc/codecs/wm5102.c  |   3 +-
+ sound/soc/codecs/wm5110.c  |   7 ++-
+ sound/soc/codecs/wm_adsp.c | 126 ++++++++++++++++++++++++++++++++++++---------
+ sound/soc/codecs/wm_adsp.h |  18 ++++++-
+ 6 files changed, 138 insertions(+), 39 deletions(-)
+
 -- 
 2.1.4
