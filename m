@@ -1,14 +1,18 @@
-From: Max <abonnements@revolwear.com>
-Subject: Tascam US-366 and Alsa Firmware
-Date: Tue, 20 Sep 2016 20:39:08 +0900
-Message-ID: <2623497e-086d-52e5-2147-86019b0b30a1@revolwear.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 6/7] ASoC: wm_adsp: Allow preloader to do the
+	final shutdown of the DSP
+Date: Tue, 20 Sep 2016 13:52:35 +0100
+Message-ID: <1474375956-10443-7-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1474375956-10443-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dedi4226.your-server.de (dedi4226.your-server.de [78.46.143.55])
- by alsa0.perex.cz (Postfix) with ESMTP id 856CA26155E
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 13:39:17 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD2212666AA
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 14:52:32 +0200 (CEST)
+In-Reply-To: <1474375956-10443-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,41 +22,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: burton.samograd@gmail.com
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-I have this device too and was wondering if OP or anyone else ever got 
-it running and how.
+The booting process for the DSP is clearly separated into two parts, the
+preloader brings up the core and downloads code, then the main widget
+starts the code actually executing. However the shutdown sequence is all
+handled with the main widget.
 
-Thanks.
+To allow the preloading to be run independently of the main audio bring
+up it makes sense, and is generally just cleaner, for the preloader
+widget to shutdown those things it initialised. This patch moves the
+appropriate parts of the shutdown process into the preloader widget.
 
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm_adsp.c | 32 ++++++++++++++++++--------------
+ sound/soc/codecs/wm_adsp.h |  2 +-
+ 2 files changed, 19 insertions(+), 15 deletions(-)
 
-> Hi,
->
-> I recently bought the Tascam US-366 and forgot to check for Linux support,
-> which it doesn't have (yet! :). Looking through the Alsa firmware sources,
-> there seems to be a firmware loader called usx2yloader which supports a
-> number of Tascam cards, but the US-366 is not listed.  It looks like really
-> usx2yloader just needs the firmware and a `prepad` file. I`ve found the
-> firmware for the card (I think) buried in the OSX firmware download
-> package:
->
->
-> http://tascam.com/content/downloads/products/789/us-322_us-366_fw_v103_mavericks-yosemite.zip
->
-> Now I think I just need the prepad file, but there's little documentation
-> regarding exactly what that is (I'm assuming a number of 0s just to pad the
-> firmware image to alignment, but I'm not sure of what alignment).
->
-> Any ideas if usx2yloader will work at all with the US-366?  Does anyone
-> know what the pre-pad file should be/contain?  Has anyone tried to get the
-> US-366 working yet and failed?
->
-> Reference:
->
->      http://tascam.com/product/us-366/
->
-> Thanks.
->
-> Burton Samograd
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index e0cd4fe..41c179d 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2323,6 +2323,7 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
+ 	struct wm_adsp *dsp = &dsps[w->shift];
++	struct wm_coeff_ctl *ctl;
+ 
+ 	dsp->card = codec->component.card;
+ 
+@@ -2331,6 +2332,22 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ 		wm_adsp2_set_dspclk(dsp, freq);
+ 		queue_work(system_unbound_wq, &dsp->boot_work);
+ 		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		wm_adsp_debugfs_clear(dsp);
++
++		dsp->fw_id = 0;
++		dsp->fw_id_version = 0;
++
++		dsp->booted = false;
++
++		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
++				   ADSP2_MEM_ENA, 0);
++
++		list_for_each_entry(ctl, &dsp->ctl_list, list)
++			ctl->enabled = 0;
++
++		wm_adsp_free_alg_regions(dsp);
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -2345,7 +2362,6 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
+ 	struct wm_adsp *dsp = &dsps[w->shift];
+-	struct wm_coeff_ctl *ctl;
+ 	int ret;
+ 
+ 	switch (event) {
+@@ -2389,17 +2405,10 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 
+ 		mutex_lock(&dsp->pwr_lock);
+ 
+-		wm_adsp_debugfs_clear(dsp);
+-
+-		dsp->fw_id = 0;
+-		dsp->fw_id_version = 0;
+-
+ 		dsp->running = false;
+-		dsp->booted = false;
+ 
+ 		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
+-				   ADSP2_MEM_ENA | ADSP2_CORE_ENA | ADSP2_START,
+-				   0);
++				   ADSP2_CORE_ENA | ADSP2_START, 0);
+ 
+ 		/* Make sure DMAs are quiesced */
+ 		regmap_write(dsp->regmap, dsp->base + ADSP2_RDMA_CONFIG_1, 0);
+@@ -2409,11 +2418,6 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
+ 				   ADSP2_SYS_ENA, 0);
+ 
+-		list_for_each_entry(ctl, &dsp->ctl_list, list)
+-			ctl->enabled = 0;
+-
+-		wm_adsp_free_alg_regions(dsp);
+-
+ 		if (wm_adsp_fw[dsp->fw].num_caps != 0)
+ 			wm_adsp_buffer_free(dsp);
+ 
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 228b1f9..362dd7c 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -89,7 +89,7 @@ struct wm_adsp {
+ #define WM_ADSP2(wname, num, event_fn) \
+ {	.id = snd_soc_dapm_supply, .name = wname " Preloader", \
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = event_fn, \
+-	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD, \
++	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD, \
+ 	.subseq = 100, /* Ensure we run after SYSCLK supply widget */ }, \
+ {	.id = snd_soc_dapm_out_drv, .name = wname, \
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = wm_adsp2_event, \
+-- 
+2.1.4
