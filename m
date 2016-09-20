@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/5] ASoC: fsl_ssi: Remove
- .num_reg_defaults_raw from regmap_config
-Date: Tue, 20 Sep 2016 18:56:29 +0100
-Message-ID: <20160920175629.GB7994@sirena.org.uk>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 1/5] ASoC: fsl_asrc: use flat regmap cache
+Date: Tue, 20 Sep 2016 15:07:26 -0300
+Message-ID: <CAOMZO5A87egKPUj2Hbt=S-a=6+ckNP8084yetDy_nLhe_59zmA@mail.gmail.com>
 References: <20160919193029.8119-1-marex@denx.de>
- <20160919193029.8119-5-marex@denx.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0918211422776420920=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 409E3266D9C
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 19:56:40 +0200 (CEST)
-In-Reply-To: <20160919193029.8119-5-marex@denx.de>
+Received: from mail-vk0-f68.google.com (mail-vk0-f68.google.com
+ [209.85.213.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85433266DC2
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 20:07:29 +0200 (CEST)
+Received: by mail-vk0-f68.google.com with SMTP id o139so1702738vka.2
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 11:07:29 -0700 (PDT)
+In-Reply-To: <20160919193029.8119-1-marex@denx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,55 +24,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Marek Vasut <marex@denx.de>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Marek,
 
---===============0918211422776420920==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="IiVenqGWf+H9Y6IX"
-Content-Disposition: inline
+On Mon, Sep 19, 2016 at 4:30 PM, Marek Vasut <marex@denx.de> wrote:
+> Same as commit ce492b3b8f99cf9d2f807ec22d8805c996a09503
+> Subject: drm/fsl-dcu: use flat regmap cache
+
+Just one minor nit:
+
+The most standard way to reference a commit is:
+commit ce492b3b8f99 ("drm/fsl-dcu: use flat regmap cache")
+
+Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
 
 
---IiVenqGWf+H9Y6IX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Mon, Sep 19, 2016 at 09:30:29PM +0200, Marek Vasut wrote:
 
+
+
+> Using flat regmap cache instead of RB-tree to avoid the following
+> lockdep warning on driver load:
+> WARNING: CPU: 0 PID: 1 at kernel/locking/lockdep.c:2871 lockdep_trace_alloc+0x104/0x128
+> DEBUG_LOCKS_WARN_ON(irqs_disabled_flags(flags))
+>
+> The RB-tree regmap cache needs to allocate new space on first
+> writes. However, allocations in an atomic context (e.g. when a
+> spinlock is held) are not allowed. The function regmap_write
+> calls map->lock, which acquires a spinlock in the fast_io case.
+> Since the driver uses MMIO, the regmap bus of type regmap_mmio
+> is being used which has fast_io set to true.
+>
+> Signed-off-by: Marek Vasut <marex@denx.de>
+> Cc: Fabio Estevam <fabio.estevam@nxp.com>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+> Cc: Timur Tabi <timur@tabi.org>
 > Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+> ---
+>  sound/soc/fsl/fsl_asrc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+> index b7157ce..1d82f68 100644
+> --- a/sound/soc/fsl/fsl_asrc.c
+> +++ b/sound/soc/fsl/fsl_asrc.c
+> @@ -726,7 +726,7 @@ static const struct regmap_config fsl_asrc_regmap_config = {
+>         .readable_reg = fsl_asrc_readable_reg,
+>         .volatile_reg = fsl_asrc_volatile_reg,
+>         .writeable_reg = fsl_asrc_writeable_reg,
+> -       .cache_type = REGCACHE_RBTREE,
+> +       .cache_type = REGCACHE_FLAT,
+>  };
+>
+>  /**
 > --
-> fsl-ssi-dai 202c000.ssi: No cache defaults, reading back from HW
-
-This probably shouldn't have been part of the signoff chain and also
-please think hard before including complete backtraces in upstream
-reports, they are very large and contain almost no useful information
-relative to their size so often obscure the relevant content in your
-message. If part of the backtrace is usefully illustrative then it's
-usually better to pull out the relevant sections.
-
---IiVenqGWf+H9Y6IX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJX4XhMAAoJECTWi3JdVIfQT7QH/i31jRfYjXUvxws2omBdLK+d
-5fBX9gg1Cp4+RzyNT/VHfAl6DzDYglgJI3Bm/i43HDgq2tqgxeJVgFi3ObkuO4Dg
-VG7i3GhkoIEayQvUC5Yv7EqiFZNWwPSUB86fBokdQJsef/gZCQc2rz+i8OphqoG7
-+yHm3UUhGju+/WRNnmz13Gs3eLkrqtijHFXHDx/DuOwML/W3uQN3t4njDGUxMq5h
-AhuZwQABZ1c66CQ+rrUZ8CcS9LAkGx16nZMomkGwCU0IQ9a85e8GL5gfW2o3tzBG
-/yE3mxGIm806bqaW5OP7mwCaH7wlEtD2T0KdVD9fraKjDmqHfLN6n8HaIdY3zJI=
-=TYJ2
------END PGP SIGNATURE-----
-
---IiVenqGWf+H9Y6IX--
-
---===============0918211422776420920==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0918211422776420920==--
+> 2.9.3
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
