@@ -1,56 +1,34 @@
-From: jeeja.kp@intel.com
-Subject: [RFC 06/16] ASoC: Intel: Skylake: Add route change to
-	rt298 machine
-Date: Tue, 20 Sep 2016 19:16:10 +0530
-Message-ID: <1474379180-7132-7-git-send-email-jeeja.kp@intel.com>
-References: <1474379180-7132-1-git-send-email-jeeja.kp@intel.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v3] ASoC: exynos: organize the asoc audio into a menu
+Date: Tue, 20 Sep 2016 19:26:31 +0200
+Message-ID: <20160920172631.GA17304@kozik-book>
+References: <1474311470-23175-1-git-send-email-ayaka@soulik.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id A1C642666AA
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 15:38:00 +0200 (CEST)
-In-Reply-To: <1474379180-7132-1-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1474311470-23175-1-git-send-email-ayaka@soulik.info>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Randy Li <ayaka@soulik.info>
+Cc: alsa-devel@alsa-project.org, sbkim73@samsung.com, s.nawrocki@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, krzk@kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+On Tue, Sep 20, 2016 at 02:57:50AM +0800, Randy Li wrote:
+> It is simple sound card time, we could assign different codec
+> to a interface without making a specific driver for it. The SPDIF
+> and I2S interface for Samsung would be possible used by
+> simple-sound-card, but not sure about the PCM.
+> 
+> Those S3C time entries are left alone as I don't think any new board
+> would need them.
+> 
+> Signed-off-by: Randy Li <ayaka@soulik.info>
+> ---
+>  sound/soc/samsung/Kconfig | 57 ++++++++++++++++++++++++-----------------------
+>  1 file changed, 29 insertions(+), 28 deletions(-)
+> 
 
-To support MST moved pin to port, this changes the routes based on
-port. So change the route in bxt_rt298 machine.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/soc/intel/boards/bxt_rt298.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index 253d7bf..3052797 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -82,9 +82,9 @@ static const struct snd_soc_dapm_route broxton_rt298_map[] = {
- 	{"DMIC1 Pin", NULL, "DMIC2"},
- 	{"DMic", NULL, "SoC DMIC"},
- 
--	{"HDMI1", NULL, "hif5 Output"},
--	{"HDMI2", NULL, "hif6 Output"},
--	{"HDMI3", NULL, "hif7 Output"},
-+	{"HDMI1", NULL, "hif5-0 Output"},
-+	{"HDMI2", NULL, "hif6-0 Output"},
-+	{"HDMI2", NULL, "hif7-0 Output"},
- 
- 	/* CODEC BE connections */
- 	{ "AIF1 Playback", NULL, "ssp5 Tx"},
--- 
-2.5.0
+Best regards,
+Krzysztof
