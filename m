@@ -1,20 +1,21 @@
-From: marve <marve@xs4all.nl>
-Subject: Re: Dell XPS One 2710 HDA Intel PCH - No S/PDIF Output
- - High Definition ALC275Q (ALC3260)
-Date: Tue, 20 Sep 2016 20:37:28 +0200
-Message-ID: <a6c9766b-9182-71d2-d965-67b2f10fbaaa@xs4all.nl>
-References: <5c7db325-ac1c-c8aa-a0cc-32664c50097a@xs4all.nl>
- <0f3905b1-d136-8343-4147-2de3d731de34@xs4all.nl>
- <8ff48c0e-2268-e124-8be7-2081ce8dc050@xs4all.nl>
+From: Enrico Mioso <mrkiko.rs@gmail.com>
+Subject: Re: [snd_ali5451] snd_ali5451 0000:00:06.0: BUG: ,
+ pos = 16384, buffer size = 16384, period size = 1024
+Date: Tue, 20 Sep 2016 21:53:45 +0200 (CEST)
+Message-ID: <alpine.LNX.2.20.1609202150290.561@localhost.localdomain>
+References: <alpine.LNX.2.20.1604222124360.12418@localhost.localdomain>
+ <alpine.LNX.2.20.1604241839520.8643@localhost.localdomain>
+ <s5hoa8yqdhc.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lb2-smtp-cloud3.xs4all.net (lb2-smtp-cloud3.xs4all.net
- [194.109.24.26])
- by alsa0.perex.cz (Postfix) with ESMTP id AEBE0266D9C
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 20:37:30 +0200 (CEST)
-In-Reply-To: <8ff48c0e-2268-e124-8be7-2081ce8dc050@xs4all.nl>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49296266DFE
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 21:53:54 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id b184so5105517wma.3
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 12:53:54 -0700 (PDT)
+In-Reply-To: <s5hoa8yqdhc.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,103 +25,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear all,
-
-Does anyone know if there is a problem with Alsa with my particular
-hardware configuration?
-
-It is so silly to see the VU-Meters in the Pulse-Audio Volume Control
-tool reacting on sound and have set the output to SPDIF, but hearing no
-sound (or even get a signal) on the receiver. The receiver isn't
-particularly new, but supports DTS.
-
-Any suggestion?
-
-Thanks a bunch!
-
-M.
+Hello.
+First of all: thank you for your work and kindness.
+It seems your patch solves the problem: the message is not printed in the dmesg; I wasn't able to find other occurrencies of the messages in my dmesg after applying this patch and loading the modified module.
+thank you very much for this effort and everything, and sorry for me being late.
+You've always been responsive in general, sorry if I didn't in some cases.
 
 
-On 08/08/2016 09:51 PM, marve wrote:
-> Dear all,
->
-> Still haven't been able to get sound through S/PDIF. I know a little
-> about trouble shooting and today I checked if the receiver could receive
-> DTS from another TOSLINK S/PDIF enabled machine and yes, my receiver works!
->
-> The reason I am writing is that I'm out of options and wonder if this
-> might be a bug in a untested environment for ALSA, were I may help to
-> fix. Or maybe I'm just missing something.
->
-> Thanks for your help!
->
-> On 08/02/2016 09:16 PM, Marve wrote:
->> Anyone solved connecting audio system to a TOSLINK S/PDIF Out connection
->> on a High Definition ALC275Q (ALC3260) of a Dell XPS One 2710?
->>
->> Best regards,
->> M.
->>
->> On 07/30/2016 05:24 PM, Marve wrote:
->>> Hi all,
->>>
->>> I've been trying stuff myself and got help from someone (debianuser) at
->>> #alsa IRC, but without success! I got the advice to explain the issue in
->>> this mailing list!
->>>
->>> I'm running Linux Mint 18 on a all-in-one Dell XPS One 2710. Most stuff
->>> works, except sound.
->>>
->>> The former Mint version also sound from the speakers worked out of the
->>> box. Now, I have to switch from the Pulse Audio volume control from 
->>> "Speakers" to "Headphones (unplugged)" every time I start up to get
->>> audio from the internal speakers, which is working well then, annoying,
->>> is probably an issue that belongs in another group and not the reason
->>> I'm writing you! :)
->>>
->>> The XPS One 2710 has a S/PDIF Toslink (optical) connection. Back in the
->>> days that Microsoft wasn't trying to shove up Windows 10 to everyone, I
->>> successfully could get output from this connection to my JVC Receiver
->>> from Windows7 of the box.
->>>
->>> I find it hard to have it configured under Linux.
->>>
->>> Partly, with help from a anonymous debianuser on #alsa IRC I checked
->>> with alsamixer that the S/PDIF was not muted. Also, with the Jack
->>> Retasking for HDA tool, I enforced Pin ID: 0x1e is a SPDIF Out
->>> connection. After this, the Pulse Audio Tools shows several new
->>> interesting Built-in Audio options and I think "Digital Stereo (IEC958)
->>> Outout looks most promising. So I select this one and with Output
->>> Devices I select "Digital Output (S/PDIF). Then, when I play something
->>> on the box, the volume meters actually show that there is something
->>> playing, but I can't hear anything from the JVC receiver! The receiver
->>> supports PCM to DTS, but no sound is coming out of it!
->>>
->>> Thanks if you could help me out! I am happy to help you when you need
->>> more information or want we to test something. I had this problem on the
->>> previous Linux Mint LTS version and tried to install a newer kernel and
->>> alsa driver, which didn't work - so I decided to wait for the current LTS.
->>>
->>> I made a fresh info:
->>> http://www.alsa-project.org/db/?f=556ae2bdae66341579831231ef2d90ca0d7c8e24
->>>
->>> If you need one with other settings, please let me know!
->>>
->>> Best wishes,
->>> M.
->>> _______________________________________________
->>> Alsa-devel mailing list
->>> Alsa-devel@alsa-project.org
->>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+On Mon, 25 Apr 2016, Takashi Iwai wrote:
+
+==Date: Mon, 25 Apr 2016 10:50:07
+==From: Takashi Iwai <tiwai@suse.de>
+==To: Enrico Mioso <mrkiko.rs@gmail.com>
+==Cc: alsa-devel@alsa-project.org
+==Subject: Re: [alsa-devel] [snd_ali5451] snd_ali5451 0000:00:06.0: BUG: ,
+==    pos = 16384, buffer size = 16384, period size = 1024
+==
+==On Sun, 24 Apr 2016 18:43:11 +0200,
+==Enrico Mioso wrote:
+==> 
+==> After using the system for some time, the following is present on my dmesg:
+==> $ dmesg -t | grep -i ali5 | sort | uniq
+==> 
+==> pnp 00:06: Plug and Play ACPI device, IDs ALI5123 PNP0510 (active)
+==> snd_ali5451 0000:00:06.0: AC'97 1 access is not valid [0xffffffff], removing mixer.
+==> snd_ali5451 0000:00:06.0: AC'97 1 does not respond - RESET
+==> snd_ali5451 0000:00:06.0: ali mixer 1 creating error.
+==> snd_ali5451 0000:00:06.0: enabling device (0005 -> 0007)
+==> snd_ali5451 0000:00:06.0: invalid position: , pos = 16384, buffer size = 16384, period size = 1024
+==> snd_ali5451 0000:00:06.0: invalid position: , pos = 16385, buffer size = 16384, period size = 1024
+==
+==The kernel warning itself can be fixed by the patch below.
+==The remaining question is whether this covers all; do the playback and
+==capture still work well despite of these messages?  Or do you actually
+==encounter the overrun / underrun?
+==
+==In anyway, let me know whether the patch works.
+==
+==
+==thanks,
+==
+==Takashi
+==
+==---
+==diff --git a/sound/pci/ali5451/ali5451.c b/sound/pci/ali5451/ali5451.c
+==index 36470af7eda7..92b819e4f729 100644
+==--- a/sound/pci/ali5451/ali5451.c
+==+++ b/sound/pci/ali5451/ali5451.c
+==@@ -1408,6 +1408,7 @@ snd_ali_playback_pointer(struct snd_pcm_substream *substream)
+== 	spin_unlock(&codec->reg_lock);
+== 	dev_dbg(codec->card->dev, "playback pointer returned cso=%xh.\n", cso);
+== 
+==+	cso %= runtime->buffer_size;
+== 	return cso;
+== }
+== 
+==@@ -1428,6 +1429,7 @@ static snd_pcm_uframes_t snd_ali_pointer(struct snd_pcm_substream *substream)
+== 	cso = inw(ALI_REG(codec, ALI_CSO_ALPHA_FMS + 2));
+== 	spin_unlock(&codec->reg_lock);
+== 
+==+	cso %= runtime->buffer_size;
+== 	return cso;
+== }
+== 
+==
