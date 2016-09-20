@@ -1,17 +1,17 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/7] ASoC: wm_adsp: Move control cache sync out
-	of preloader
-Date: Tue, 20 Sep 2016 13:52:33 +0100
-Message-ID: <1474375956-10443-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 5/7] ASoC: wm_adsp: Put DSP into low power
+	state between loading and running
+Date: Tue, 20 Sep 2016 13:52:34 +0100
+Message-ID: <1474375956-10443-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1474375956-10443-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F3DB266D04
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 14:52:41 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71D4326155E
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 14:52:45 +0200 (CEST)
 In-Reply-To: <1474375956-10443-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,97 +26,65 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-As part of the work to download firmware before the audio path is brought
-up the DSP will be put into a low power state between downloading firmware
-to the core and starting it running. This will mean that the firmware ALSA
-controls are not accessible in the hardware during this period of time.
-
-To prepare for this change we gate access to the hardware in the ALSA
-control handlers on the DSP being running rather than simply booted and
-move the synchronisation of the control caches out of the preloader delayed
-work and into the main DAPM thread after the DSP will have been brought out
-of its low power state.
+Between when we load the DSP and when it actually starts running put the
+core into a lower power state where the memory is retained but nothing
+is clocked.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm_adsp.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index ae2f2b6..24485ec 100644
+index 24485ec..e0cd4fe 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -792,7 +792,7 @@ static int wm_coeff_put(struct snd_kcontrol *kctl,
- 	memcpy(ctl->cache, p, ctl->len);
+@@ -2223,6 +2223,11 @@ static int wm_adsp2_ena(struct wm_adsp *dsp)
+ 	unsigned int val;
+ 	int ret, count;
  
- 	ctl->set = 1;
--	if (ctl->enabled && ctl->dsp->booted)
-+	if (ctl->enabled && ctl->dsp->running)
- 		ret = wm_coeff_write_control(ctl, p, ctl->len);
- 
- 	mutex_unlock(&ctl->dsp->pwr_lock);
-@@ -814,7 +814,7 @@ static int wm_coeff_tlv_put(struct snd_kcontrol *kctl,
- 		ret = -EFAULT;
- 	} else {
- 		ctl->set = 1;
--		if (ctl->enabled && ctl->dsp->booted)
-+		if (ctl->enabled && ctl->dsp->running)
- 			ret = wm_coeff_write_control(ctl, ctl->cache, size);
- 	}
- 
-@@ -874,12 +874,12 @@ static int wm_coeff_get(struct snd_kcontrol *kctl,
- 	mutex_lock(&ctl->dsp->pwr_lock);
- 
- 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
--		if (ctl->enabled && ctl->dsp->booted)
-+		if (ctl->enabled && ctl->dsp->running)
- 			ret = wm_coeff_read_control(ctl, p, ctl->len);
- 		else
- 			ret = -EPERM;
- 	} else {
--		if (!ctl->flags && ctl->enabled && ctl->dsp->booted)
-+		if (!ctl->flags && ctl->enabled && ctl->dsp->running)
- 			ret = wm_coeff_read_control(ctl, ctl->cache, ctl->len);
- 
- 		memcpy(p, ctl->cache, ctl->len);
-@@ -901,12 +901,12 @@ static int wm_coeff_tlv_get(struct snd_kcontrol *kctl,
- 	mutex_lock(&ctl->dsp->pwr_lock);
- 
- 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
--		if (ctl->enabled && ctl->dsp->booted)
-+		if (ctl->enabled && ctl->dsp->running)
- 			ret = wm_coeff_read_control(ctl, ctl->cache, size);
- 		else
- 			ret = -EPERM;
- 	} else {
--		if (!ctl->flags && ctl->enabled && ctl->dsp->booted)
-+		if (!ctl->flags && ctl->enabled && ctl->dsp->running)
- 			ret = wm_coeff_read_control(ctl, ctl->cache, size);
- 	}
- 
-@@ -2280,11 +2280,6 @@ static void wm_adsp2_boot_work(struct work_struct *work)
++	ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
++				 ADSP2_MEM_ENA, ADSP2_MEM_ENA);
++	if (ret != 0)
++		return ret;
++
+ 	ret = regmap_update_bits_async(dsp->regmap, dsp->base + ADSP2_CONTROL,
+ 				       ADSP2_SYS_ENA, ADSP2_SYS_ENA);
  	if (ret != 0)
- 		goto err_ena;
+@@ -2282,6 +2287,12 @@ static void wm_adsp2_boot_work(struct work_struct *work)
  
--	/* Sync set controls */
--	ret = wm_coeff_sync_controls(dsp);
--	if (ret != 0)
--		goto err_ena;
--
  	dsp->booted = true;
  
++	/* Turn DSP back off until we are ready to run */
++	ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
++				 ADSP2_SYS_ENA, 0);
++	if (ret != 0)
++		goto err_ena;
++
  	mutex_unlock(&dsp->pwr_lock);
-@@ -2349,6 +2344,11 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 
+ 	return;
+@@ -2344,6 +2355,11 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
  		if (!dsp->booted)
  			return -EIO;
  
-+		/* Sync set controls */
-+		ret = wm_coeff_sync_controls(dsp);
++		ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
++					 ADSP2_SYS_ENA, ADSP2_SYS_ENA);
 +		if (ret != 0)
 +			goto err;
 +
- 		ret = regmap_update_bits(dsp->regmap,
- 					 dsp->base + ADSP2_CONTROL,
- 					 ADSP2_CORE_ENA | ADSP2_START,
+ 		/* Sync set controls */
+ 		ret = wm_coeff_sync_controls(dsp);
+ 		if (ret != 0)
+@@ -2382,7 +2398,8 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		dsp->booted = false;
+ 
+ 		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
+-				   ADSP2_CORE_ENA | ADSP2_START, 0);
++				   ADSP2_MEM_ENA | ADSP2_CORE_ENA | ADSP2_START,
++				   0);
+ 
+ 		/* Make sure DMAs are quiesced */
+ 		regmap_write(dsp->regmap, dsp->base + ADSP2_RDMA_CONFIG_1, 0);
 -- 
 2.1.4
