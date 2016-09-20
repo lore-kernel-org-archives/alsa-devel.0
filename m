@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/7] ASoC: wm_adsp: Separate concept of booted
-	and running
-Date: Tue, 20 Sep 2016 13:52:32 +0100
-Message-ID: <1474375956-10443-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/7] ASoC: wm_adsp: Make DSP preloader a supply
+	widget
+Date: Tue, 20 Sep 2016 13:52:31 +0100
+Message-ID: <1474375956-10443-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1474375956-10443-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 45025266CF7
+ by alsa0.perex.cz (Postfix) with ESMTP id 7AE53266D0D
  for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 14:52:37 +0200 (CEST)
 In-Reply-To: <1474375956-10443-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,182 +26,77 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Currently the wm_adsp driver has a flag that indicates the DSP is
-"running", this flag is used to gate access to the hardware.  However this
-flag is actually set in the firmware download thread after the firmware has
-been downloaded, but this is before the core is actually started running,
-so really it currently indicates that the core has been booted and is
-perhaps running.
+Currently the DSP loading is split into two widgets, the preloader that
+is a snd_soc_dapm_dai_link widget which starts a thread to download
+the firmware, and the DSP itself which is a snd_soc_dapm_out_drv and
+synchronises the thread back in to the DAPM sequence. This allows the
+firmware download to be overlapped with the rest of the path bring up.
 
-This patch clearly separates out the concepts of booted (firmware is
-downloaded) and running (code is executing on the DSP) within the wm_adsp
-driver.
+The use of a snd_soc_dapm_dai_link widget requires the preloader to be part
+of the audio path in DAPM, really a supply widget is a better fit for the
+preloader. The preloader is something that needs to be done for the DSP to
+function, not a part of the audio path itself.
+
+This change makes the DSP preloader widget a supply widget, which as well
+as probably being a better fit will also make it much simpler to power up
+the preloader widget to trigger firmware download to the core independently
+of the audio path coming up.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm_adsp.c | 36 +++++++++++++++++++++++++-----------
- sound/soc/codecs/wm_adsp.h |  2 ++
- 2 files changed, 27 insertions(+), 11 deletions(-)
+ sound/soc/codecs/arizona.h | 16 ++++++++--------
+ sound/soc/codecs/wm_adsp.h |  5 +++--
+ 2 files changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 21fbe7d..ae2f2b6 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -480,7 +480,7 @@ static ssize_t wm_adsp_debugfs_wmfw_read(struct file *file,
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index c3daa07..9d0997b 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -191,20 +191,20 @@ extern unsigned int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
+ #define ARIZONA_DSP_ROUTES(name) \
+ 	{ name, NULL, name " Preloader"}, \
+ 	{ name " Preloader", NULL, "SYSCLK" }, \
+-	{ name " Preloader", NULL, name " Aux 1" }, \
+-	{ name " Preloader", NULL, name " Aux 2" }, \
+-	{ name " Preloader", NULL, name " Aux 3" }, \
+-	{ name " Preloader", NULL, name " Aux 4" }, \
+-	{ name " Preloader", NULL, name " Aux 5" }, \
+-	{ name " Preloader", NULL, name " Aux 6" }, \
++	{ name, NULL, name " Aux 1" }, \
++	{ name, NULL, name " Aux 2" }, \
++	{ name, NULL, name " Aux 3" }, \
++	{ name, NULL, name " Aux 4" }, \
++	{ name, NULL, name " Aux 5" }, \
++	{ name, NULL, name " Aux 6" }, \
+ 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 1"), \
+ 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 2"), \
+ 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 3"), \
+ 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 4"), \
+ 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 5"), \
+ 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 6"), \
+-	ARIZONA_MIXER_ROUTES(name " Preloader", name "L"), \
+-	ARIZONA_MIXER_ROUTES(name " Preloader", name "R")
++	ARIZONA_MIXER_ROUTES(name, name "L"), \
++	ARIZONA_MIXER_ROUTES(name, name "R")
  
- 	mutex_lock(&dsp->pwr_lock);
- 
--	if (!dsp->wmfw_file_name || !dsp->running)
-+	if (!dsp->wmfw_file_name || !dsp->booted)
- 		ret = 0;
- 	else
- 		ret = simple_read_from_buffer(user_buf, count, ppos,
-@@ -500,7 +500,7 @@ static ssize_t wm_adsp_debugfs_bin_read(struct file *file,
- 
- 	mutex_lock(&dsp->pwr_lock);
- 
--	if (!dsp->bin_file_name || !dsp->running)
-+	if (!dsp->bin_file_name || !dsp->booted)
- 		ret = 0;
- 	else
- 		ret = simple_read_from_buffer(user_buf, count, ppos,
-@@ -554,6 +554,9 @@ static void wm_adsp2_init_debugfs(struct wm_adsp *dsp,
- 	if (!root)
- 		goto err;
- 
-+	if (!debugfs_create_bool("booted", S_IRUGO, root, &dsp->booted))
-+		goto err;
-+
- 	if (!debugfs_create_bool("running", S_IRUGO, root, &dsp->running))
- 		goto err;
- 
-@@ -637,7 +640,7 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
- 
- 	mutex_lock(&dsp[e->shift_l].pwr_lock);
- 
--	if (dsp[e->shift_l].running || dsp[e->shift_l].compr)
-+	if (dsp[e->shift_l].booted || dsp[e->shift_l].compr)
- 		ret = -EBUSY;
- 	else
- 		dsp[e->shift_l].fw = ucontrol->value.enumerated.item[0];
-@@ -789,7 +792,7 @@ static int wm_coeff_put(struct snd_kcontrol *kctl,
- 	memcpy(ctl->cache, p, ctl->len);
- 
- 	ctl->set = 1;
--	if (ctl->enabled)
-+	if (ctl->enabled && ctl->dsp->booted)
- 		ret = wm_coeff_write_control(ctl, p, ctl->len);
- 
- 	mutex_unlock(&ctl->dsp->pwr_lock);
-@@ -811,7 +814,7 @@ static int wm_coeff_tlv_put(struct snd_kcontrol *kctl,
- 		ret = -EFAULT;
- 	} else {
- 		ctl->set = 1;
--		if (ctl->enabled)
-+		if (ctl->enabled && ctl->dsp->booted)
- 			ret = wm_coeff_write_control(ctl, ctl->cache, size);
- 	}
- 
-@@ -871,12 +874,12 @@ static int wm_coeff_get(struct snd_kcontrol *kctl,
- 	mutex_lock(&ctl->dsp->pwr_lock);
- 
- 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
--		if (ctl->enabled)
-+		if (ctl->enabled && ctl->dsp->booted)
- 			ret = wm_coeff_read_control(ctl, p, ctl->len);
- 		else
- 			ret = -EPERM;
- 	} else {
--		if (!ctl->flags && ctl->enabled)
-+		if (!ctl->flags && ctl->enabled && ctl->dsp->booted)
- 			ret = wm_coeff_read_control(ctl, ctl->cache, ctl->len);
- 
- 		memcpy(p, ctl->cache, ctl->len);
-@@ -898,12 +901,12 @@ static int wm_coeff_tlv_get(struct snd_kcontrol *kctl,
- 	mutex_lock(&ctl->dsp->pwr_lock);
- 
- 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
--		if (ctl->enabled)
-+		if (ctl->enabled && ctl->dsp->booted)
- 			ret = wm_coeff_read_control(ctl, ctl->cache, size);
- 		else
- 			ret = -EPERM;
- 	} else {
--		if (!ctl->flags && ctl->enabled)
-+		if (!ctl->flags && ctl->enabled && ctl->dsp->booted)
- 			ret = wm_coeff_read_control(ctl, ctl->cache, size);
- 	}
- 
-@@ -2166,13 +2169,20 @@ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
- 		if (ret != 0)
- 			goto err_ena;
- 
-+		dsp->booted = true;
-+
- 		/* Start the core running */
- 		regmap_update_bits(dsp->regmap, dsp->base + ADSP1_CONTROL_30,
- 				   ADSP1_CORE_ENA | ADSP1_START,
- 				   ADSP1_CORE_ENA | ADSP1_START);
-+
-+		dsp->running = true;
- 		break;
- 
- 	case SND_SOC_DAPM_PRE_PMD:
-+		dsp->running = false;
-+		dsp->booted = false;
-+
- 		/* Halt the core */
- 		regmap_update_bits(dsp->regmap, dsp->base + ADSP1_CONTROL_30,
- 				   ADSP1_CORE_ENA | ADSP1_START, 0);
-@@ -2275,7 +2285,7 @@ static void wm_adsp2_boot_work(struct work_struct *work)
- 	if (ret != 0)
- 		goto err_ena;
- 
--	dsp->running = true;
-+	dsp->booted = true;
- 
- 	mutex_unlock(&dsp->pwr_lock);
- 
-@@ -2336,7 +2346,7 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 	case SND_SOC_DAPM_POST_PMU:
- 		flush_work(&dsp->boot_work);
- 
--		if (!dsp->running)
-+		if (!dsp->booted)
- 			return -EIO;
- 
- 		ret = regmap_update_bits(dsp->regmap,
-@@ -2346,6 +2356,8 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		if (ret != 0)
- 			goto err;
- 
-+		dsp->running = true;
-+
- 		mutex_lock(&dsp->pwr_lock);
- 
- 		if (wm_adsp_fw[dsp->fw].num_caps != 0)
-@@ -2365,7 +2377,9 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 
- 		dsp->fw_id = 0;
- 		dsp->fw_id_version = 0;
-+
- 		dsp->running = false;
-+		dsp->booted = false;
- 
- 		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
- 				   ADSP2_CORE_ENA | ADSP2_START, 0);
+ #define ARIZONA_EQ_CONTROL(xname, xbase)                      \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,   \
 diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index a3b1b7e..228b1f9 100644
+index be3b5bc..a3b1b7e 100644
 --- a/sound/soc/codecs/wm_adsp.h
 +++ b/sound/soc/codecs/wm_adsp.h
-@@ -61,6 +61,8 @@ struct wm_adsp {
+@@ -85,9 +85,10 @@ struct wm_adsp {
+ 		wm_adsp1_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
  
- 	int fw;
- 	int fw_ver;
-+
-+	bool booted;
- 	bool running;
- 
- 	struct list_head ctl_list;
+ #define WM_ADSP2(wname, num, event_fn) \
+-{	.id = snd_soc_dapm_dai_link, .name = wname " Preloader", \
++{	.id = snd_soc_dapm_supply, .name = wname " Preloader", \
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = event_fn, \
+-	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }, \
++	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD, \
++	.subseq = 100, /* Ensure we run after SYSCLK supply widget */ }, \
+ {	.id = snd_soc_dapm_out_drv, .name = wname, \
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = wm_adsp2_event, \
+ 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD }
 -- 
 2.1.4
