@@ -1,16 +1,15 @@
 From: jeeja.kp@intel.com
-Subject: [RFC 08/16] ASoC: hdac_hdmi: Add support to handle MST
-	capable pin
-Date: Tue, 20 Sep 2016 19:16:12 +0530
-Message-ID: <1474379180-7132-9-git-send-email-jeeja.kp@intel.com>
+Subject: [RFC 09/16] ASoC: hdac_hdmi: Add MST verb support
+Date: Tue, 20 Sep 2016 19:16:13 +0530
+Message-ID: <1474379180-7132-10-git-send-email-jeeja.kp@intel.com>
 References: <1474379180-7132-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 60A762666AA
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 15:38:06 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B0892666F1
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 15:38:08 +0200 (CEST)
 In-Reply-To: <1474379180-7132-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,90 +26,96 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-To handle Jack event and Configure the Pin widget for MST capable pin,
-this patch adds:
-1. Flag to identify the pin is MST capable.
-2. In notify callback(), based on the pipe and port information marks
-   if the port is mst_capable. In case of Non MST, port is defaulted to
-   zero.
+To support DP MST audio, new pin verbs/params are added. This patch
+adds helper functions to do following:
+1. To set a specific port
+2. To get the currently selected port
+3. To get the length of port.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 69 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 88d6dae..c9f4d4a 100644
+index c9f4d4a..d99eb9c 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -81,6 +81,7 @@ struct hdac_hdmi_eld {
- struct hdac_hdmi_pin {
- 	struct list_head head;
- 	hda_nid_t nid;
-+	bool is_mst_capable;
- 	struct hdac_hdmi_port *ports;
- 	int num_ports;
- 	struct hdac_ext_device *edev;
-@@ -1057,6 +1058,7 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	struct hdac_hdmi_pcm *pcm;
- 	int size = 0;
-+	int port_id;
+@@ -125,6 +125,75 @@ struct hdac_hdmi_priv {
+ 	struct hdac_chmap chmap;
+ };
  
- 	if (!hdmi)
- 		return;
-@@ -1064,7 +1066,9 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 	mutex_lock(&hdmi->pin_mutex);
- 	port->eld.monitor_present = false;
- 
--	size = snd_hdac_acomp_get_eld(&edev->hdac, pin->nid, -1,
-+	port_id = (pin->is_mst_capable)? port->id: -1;
++/* MST supported verbs */
++/*
++ * Get the no devices that can be connected to a port on the Pin widget.
++ */
++static int hdac_hdmi_get_port_len(struct hdac_ext_device *hdac, hda_nid_t nid)
++{
++	unsigned int caps;
++	unsigned int type, param;
 +
-+	size = snd_hdac_acomp_get_eld(&edev->hdac, pin->nid, port_id,
- 				&port->eld.monitor_present, port->eld.eld_buffer,
- 				ELD_MAX_SIZE);
- 
-@@ -1154,6 +1158,7 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
- 		return -ENOMEM;
- 
- 	pin->nid = nid;
-+	pin->is_mst_capable = false;
- 	pin->edev = edev;
- 	ret = hdac_hdmi_add_ports(hdmi, pin);
- 	if (ret < 0)
-@@ -1352,6 +1357,7 @@ static void hdac_hdmi_eld_notify_cb(void *aptr, int dport, int pipe)
- 	struct hdac_hdmi_pin *pin = NULL;
- 	struct hdac_hdmi_port *port = NULL;
- 	struct snd_soc_codec *codec = edev->scodec;
-+	int i;
- 
- 	/* Don't know how this mapping is derived */
- 	hda_nid_t pin_nid = dport + 0x04;
-@@ -1377,13 +1383,23 @@ static void hdac_hdmi_eld_notify_cb(void *aptr, int dport, int pipe)
- 			continue;
- 
- 		if (pipe == -1) {
-+			pin->is_mst_capable = false;
- 			/* if not MST, default is port[0] */
- 			port = &pin->ports[0];
--			break;
-+			goto out;
-+		} else {
-+			for (i=0; i < pin->num_ports; i++) {
-+				pin->is_mst_capable = true;
-+				if (pin->ports[i].id == pipe) {
-+					port = &pin->ports[i];
-+					goto out;
-+				}
-+			}
- 		}
- 	}
- 
--	if (port)
-+out:
-+	if (pin && port)
- 		hdac_hdmi_present_sense(pin, port);
- }
++	caps = get_wcaps(&hdac->hdac, nid);
++	type = get_wcaps_type(caps);
++
++	if (!(caps & AC_WCAP_DIGITAL) || (type != AC_WID_PIN))
++		return 0;
++
++	param = snd_hdac_read_parm_uncached(&hdac->hdac, nid,
++					AC_PAR_DEVLIST_LEN);
++	if (param == -1)
++		return param;
++
++	return param & AC_DEV_LIST_LEN_MASK;
++}
++
++/*
++ * Get the port entry select on the pin. Return the port entry
++ * id selected on the pin. Return 0 means the first port entry
++ * is selected or MST is not supported.
++ */
++static int hdac_hdmi_port_select_get(struct hdac_ext_device *hdac,
++					struct hdac_hdmi_port *port)
++{
++	return snd_hdac_codec_read(&hdac->hdac, port->pin->nid,
++				0, AC_VERB_GET_DEVICE_SEL, 0);
++}
++
++/*
++ * Sets the selected port entry for the configuring Pin widget verb.
++ * returns error if port set is not equal to port get otherwise success
++ */
++static int hdac_hdmi_port_select_set(struct hdac_ext_device *hdac,
++					struct hdac_hdmi_port *port)
++{
++	int num_ports;
++
++	if (!port->pin->is_mst_capable)
++		return 0;
++
++	/* AC_PAR_DEVLIST_LEN is 0 based. */
++	num_ports = hdac_hdmi_get_port_len(hdac, port->pin->nid);
++
++	if (num_ports < 0)
++		return -EIO;
++	/*
++	 * Device List Length is a 0 based integer value indicating the
++	 * number of sink device that a MST Pin Widget can support.
++	 */
++	if (num_ports +1  <port->id)
++		return 0;
++
++	snd_hdac_codec_write(&hdac->hdac, port->pin->nid, 0,
++			AC_VERB_SET_DEVICE_SEL, port->id);
++
++	if (port->id != hdac_hdmi_port_select_get(hdac, port))
++		return -EIO;
++
++	dev_dbg(&hdac->hdac.dev, "Selected the port=%d\n", port->id);
++	return 0;
++}
++
+ static void hdac_hdmi_enable_cvt(struct hdac_ext_device *edev,
+ 		                struct hdac_hdmi_dai_port_map *dai_map);
  
 -- 
 2.5.0
