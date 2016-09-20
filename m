@@ -1,19 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/4] test: use proper threshold level
- information for user-ctl-element-set test
-Date: Tue, 20 Sep 2016 19:13:16 +0900
-Message-ID: <e8cb64e3-a513-221a-b336-209bdfaa462a@sakamocchi.jp>
-References: <1474123768-13160-1-git-send-email-o-takashi@sakamocchi.jp>
- <1474123768-13160-3-git-send-email-o-takashi@sakamocchi.jp>
- <s5htwdblios.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: DAPM over two regmaps (and a mailbox)
+Date: Tue, 20 Sep 2016 11:46:22 +0100
+Message-ID: <20160920104622.GP10189@sirena.org.uk>
+References: <20160919105419.GK8719@lukather>
+ <20160919111247.GL10189@sirena.org.uk>
+ <20160919113415.GM8719@lukather>
+ <CAGb2v67FSOKKREr49xkD6J6APs=sc=iVvmBJxQ4n9d2L9_oGjg@mail.gmail.com>
+ <20160919191543.GU8719@lukather>
+ <CAGb2v65qARPr1cEL5oU6bsiwK61rFQx4Gma=Z0r8DK5WTBOnmA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============4482194513583211370=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id DBDA826155E
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 12:13:22 +0200 (CEST)
-In-Reply-To: <s5htwdblios.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B662926155E
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2016 12:46:32 +0200 (CEST)
+In-Reply-To: <CAGb2v65qARPr1cEL5oU6bsiwK61rFQx4Gma=Z0r8DK5WTBOnmA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,28 +25,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, clemens@ladisch.de, ckeepax@opensource.wolfsonmicro.com
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Mylene Josserand <mylene.josserand@free-electrons.com>, Liam Girdwood <lgirdwood@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxNuW5tDA55pyIMjDml6UgMDU6NDgsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBTYXQs
-IDE3IFNlcCAyMDE2IDE2OjQ5OjI2ICswMjAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
-Cj4+IEN1cnJlbnRseSwgdGhpcyB0ZXN0IHByb2dyYW0gdXNlcyBpbnZhbGlkIGFycmF5IGZvciB0
-aHJlc2hvbGQgbGV2ZWwKPj4gaW5mb3JtYXRpb24uCj4gCj4gV2hhdCBkbyB5b3UgbWVhbiBleGFj
-dGx5IGhlcmUgYXMgInRocmVzaG9sZCBsZXZlbCI/Cj4gVGhpcyB0ZXJtIGlzIGZhaXJseSB1bmNs
-ZWFyIHRvIG1lIGFuZCBJIGRvbid0IHJlbWVtYmVyIG9mIGl0IGJlaW5nCj4gZGVmaW5lZCBwcm9w
-ZXJseSBhbHRob3VnaCB5b3Ugc2VlbSB0byBoYXZlIHN0YXJ0ZWQgdXNpbmcgaW4gc29tZQo+IGNv
-bW1lbnRzLgoKQWhhLiBOb3cgSSBnb3QgaXQuCgpJIGludGVycHJldGVkICdUTFYnIGFzICdUaHJl
-c2hvbGQgTGVWZWwnLCBhbmQgaXQncyBjb21wbGV0ZWx5IG15Cm1pc3JlYWRpbmcuIEFjdHVhbGx5
-LCBUTFYgaXMgbWFpbmx5IHVzZWQgdG8gZGVzY3JpYmUgdGhlIHJlbGF0aW9uc2hpcApiZXR3ZWVu
-IExpbmVhci9kQiByZXByZXNlbnRhdGlvbiwgSG93ZXZlciwgaW4gYSBkZXNpZ24gb2YgQUxTQSBj
-b250cm9sCmludGVyZmFjZSwgJ1RMVicgbWVhbnMgYSBkYXRhIHN0cnVjdHVyZSB3aXRoIFR5cGUv
-TGVuZ3RoL1ZhbHVlLiBTbyB0aGlzCmxpbmUgZXhwZWN0IHRoZSBUTFYgcGFja2V0IGlzIGxhcmdl
-ciB0aGFuIHR3byBtZW1iZXJzIGZvciB0aGUgVCBhbmQgdGhlIEwuCmh0dHA6Ly9naXQua2VybmVs
-Lm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQuZ2l0L3RyZWUvc291bmQvY29y
-ZS9jb250cm9sLmM/aD12NC44LXJjNiNuMTQ0MAoKSSBoYXZlIHNjYXJjZWx5IHJlYWxpemVkIG15
-IG1pc3Rha2VzLiBJJ2xsIHJldmlzZSB0aGlzIHBhdGNoc2V0IHdpdGggYQpuZXcgb25lIHRvIHVw
-ZGF0ZSBjb250cm9sIGludGVyZmFjZSBkZXNjcmlwdGlvbi4uLgoKClRoYW5rcyEKClRha2FzaGkg
-U2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--===============4482194513583211370==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="9pS2hy4/DrI8BQlq"
+Content-Disposition: inline
+
+
+--9pS2hy4/DrI8BQlq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Sep 20, 2016 at 08:32:50AM +0800, Chen-Yu Tsai wrote:
+
+> > Ok. How would that work? Can you setup routes between widgets defined
+> > in different components?
+
+> Indeed you can. I think that is what the ASoC card is for, to stitch
+> up various components. Not sure if you can directly use widgets from
+
+Yes.
+
+> aux components in the codec component driver though. I guess it depends
+> on the probe/binding sequence.
+
+You can't, you'd need to provide a table for the card to use.
+
+--9pS2hy4/DrI8BQlq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJX4RN9AAoJECTWi3JdVIfQYP0H/1GfaA9jUiE9WYynGkHwQsu5
+p3Iai6wuvQkUVCFWkvt/Zy2V9oHgC4PdSceLirLjZueSXFpWfU0bKJrQYUXnZt8u
+olBpFIxrYqciW13Son/Mwym9VbXnwZSLDz2fNsQGR2BxgoUfeV5sJTR34dPB0Nq8
+NZBKj0KuwzvILbC+lAkjBDGA3IbujAKbwLc3SKpyvjma6OVD7GSchMxnqdPizMv6
+JQnE7UxJuMRWgUcoZD+yb/MUOt4pBPot23QhaKiOmpR5Xk8k5W8YcdHvbzMW4ek6
+YNtff1V2hjygALYm8d7xnTQPkwmek14jplAMXDwpAhz5NZqAA0NAQTSVj17RPBw=
+=EnfW
+-----END PGP SIGNATURE-----
+
+--9pS2hy4/DrI8BQlq--
+
+--===============4482194513583211370==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4482194513583211370==--
