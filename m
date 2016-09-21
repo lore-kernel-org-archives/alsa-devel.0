@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Remove .num_reg_defaults_raw
-	from regmap_config" to the asoc tree
-Date: Wed, 21 Sep 2016 13:55:55 +0100
-Message-ID: <E1bmh47-0001Vf-UO@debutante>
-References: <20160919193029.8119-5-marex@denx.de>
+Subject: Applied "ASoC: fsl_asrc: use flat regmap cache" to the
+	asoc tree
+Date: Wed, 21 Sep 2016 13:56:08 +0100
+Message-ID: <E1bmh4K-0001a3-2p@debutante>
+References: <20160919193029.8119-1-marex@denx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 97FCB2606F7
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 14:56:09 +0200 (CEST)
-In-Reply-To: <20160919193029.8119-5-marex@denx.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id F1AB1261560
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 14:56:14 +0200 (CEST)
+In-Reply-To: <20160919193029.8119-1-marex@denx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: Remove .num_reg_defaults_raw from regmap_config
+   ASoC: fsl_asrc: use flat regmap cache
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From 7de2763d9b325ee5e7e24ac513c93394406cfefa Mon Sep 17 00:00:00 2001
+>From b413886886b9a8f845f7d1a5adafa0ca573d3828 Mon Sep 17 00:00:00 2001
 From: Marek Vasut <marex@denx.de>
-Date: Mon, 19 Sep 2016 21:30:29 +0200
-Subject: [PATCH] ASoC: fsl_ssi: Remove .num_reg_defaults_raw from
- regmap_config
+Date: Mon, 19 Sep 2016 21:30:25 +0200
+Subject: [PATCH] ASoC: fsl_asrc: use flat regmap cache
 
-This driver provides no .reg_defaults_raw in regmap_config, so
-the .num_reg_defaults_raw is useless, and, in fact harmful. It
-triggers kernel crash in regmap_init which tries to access the
-register defaults.
+Same as commit ce492b3b8f99cf9d2f807ec22d8805c996a09503
+Subject: drm/fsl-dcu: use flat regmap cache
+
+Using flat regmap cache instead of RB-tree to avoid the following
+lockdep warning on driver load:
+WARNING: CPU: 0 PID: 1 at kernel/locking/lockdep.c:2871 lockdep_trace_alloc+0x104/0x128
+DEBUG_LOCKS_WARN_ON(irqs_disabled_flags(flags))
+
+The RB-tree regmap cache needs to allocate new space on first
+writes. However, allocations in an atomic context (e.g. when a
+spinlock is held) are not allowed. The function regmap_write
+calls map->lock, which acquires a spinlock in the fast_io case.
+Since the driver uses MMIO, the regmap bus of type regmap_mmio
+is being used which has fast_io set to true.
 
 Signed-off-by: Marek Vasut <marex@denx.de>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 50349437d961..b73c102f1cf2 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -177,7 +177,6 @@ static const struct regmap_config fsl_ssi_regconfig = {
- 	.val_bits = 32,
- 	.reg_stride = 4,
- 	.val_format_endian = REGMAP_ENDIAN_NATIVE,
--	.num_reg_defaults_raw = CCSR_SSI_SACCDIS / sizeof(uint32_t) + 1,
- 	.readable_reg = fsl_ssi_readable_reg,
- 	.volatile_reg = fsl_ssi_volatile_reg,
- 	.precious_reg = fsl_ssi_precious_reg,
-@@ -1501,8 +1500,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		 * don't have SACC{ST,EN,DIS} regs.
- 		 */
- 		regconfig.max_register = CCSR_SSI_SRMSK;
--		regconfig.num_reg_defaults_raw =
--			CCSR_SSI_SRMSK / sizeof(uint32_t) + 1;
- 	}
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index b7157ce23479..1d82f68305c3 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -726,7 +726,7 @@ static const struct regmap_config fsl_asrc_regmap_config = {
+ 	.readable_reg = fsl_asrc_readable_reg,
+ 	.volatile_reg = fsl_asrc_volatile_reg,
+ 	.writeable_reg = fsl_asrc_writeable_reg,
+-	.cache_type = REGCACHE_RBTREE,
++	.cache_type = REGCACHE_FLAT,
+ };
  
- 	ret = of_property_match_string(np, "clock-names", "ipg");
+ /**
 -- 
 2.8.1
