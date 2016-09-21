@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: use flat regmap cache" to the
-	asoc tree
-Date: Wed, 21 Sep 2016 13:55:59 +0100
-Message-ID: <E1bmh4B-0001Wp-2s@debutante>
-References: <20160919193029.8119-4-marex@denx.de>
+Subject: Applied "ASoC: fsl_ssi: Remove .num_reg_defaults_raw
+	from regmap_config" to the asoc tree
+Date: Wed, 21 Sep 2016 13:55:55 +0100
+Message-ID: <E1bmh47-0001Vf-UO@debutante>
+References: <20160919193029.8119-5-marex@denx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 983B426673A
+ by alsa0.perex.cz (Postfix) with ESMTP id 97FCB2606F7
  for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 14:56:09 +0200 (CEST)
-In-Reply-To: <20160919193029.8119-4-marex@denx.de>
+In-Reply-To: <20160919193029.8119-5-marex@denx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: use flat regmap cache
+   ASoC: fsl_ssi: Remove .num_reg_defaults_raw from regmap_config
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From bfcf928d7604692668a7c33b783d05b8e3459d09 Mon Sep 17 00:00:00 2001
+>From 7de2763d9b325ee5e7e24ac513c93394406cfefa Mon Sep 17 00:00:00 2001
 From: Marek Vasut <marex@denx.de>
-Date: Mon, 19 Sep 2016 21:30:28 +0200
-Subject: [PATCH] ASoC: fsl_ssi: use flat regmap cache
+Date: Mon, 19 Sep 2016 21:30:29 +0200
+Subject: [PATCH] ASoC: fsl_ssi: Remove .num_reg_defaults_raw from
+ regmap_config
 
-Same as commit ce492b3b8f99cf9d2f807ec22d8805c996a09503
-Subject: drm/fsl-dcu: use flat regmap cache
-
-Using flat regmap cache instead of RB-tree to avoid the following
-lockdep warning on driver load:
-WARNING: CPU: 0 PID: 1 at kernel/locking/lockdep.c:2871 lockdep_trace_alloc+0x104/0x128
-DEBUG_LOCKS_WARN_ON(irqs_disabled_flags(flags))
-
-The RB-tree regmap cache needs to allocate new space on first
-writes. However, allocations in an atomic context (e.g. when a
-spinlock is held) are not allowed. The function regmap_write
-calls map->lock, which acquires a spinlock in the fast_io case.
-Since the driver uses MMIO, the regmap bus of type regmap_mmio
-is being used which has fast_io set to true.
+This driver provides no .reg_defaults_raw in regmap_config, so
+the .num_reg_defaults_raw is useless, and, in fact harmful. It
+triggers kernel crash in regmap_init which tries to access the
+register defaults.
 
 Signed-off-by: Marek Vasut <marex@denx.de>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/fsl_ssi.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index bedec4a32581..50349437d961 100644
+index 50349437d961..b73c102f1cf2 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -182,7 +182,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
+@@ -177,7 +177,6 @@ static const struct regmap_config fsl_ssi_regconfig = {
+ 	.val_bits = 32,
+ 	.reg_stride = 4,
+ 	.val_format_endian = REGMAP_ENDIAN_NATIVE,
+-	.num_reg_defaults_raw = CCSR_SSI_SACCDIS / sizeof(uint32_t) + 1,
+ 	.readable_reg = fsl_ssi_readable_reg,
  	.volatile_reg = fsl_ssi_volatile_reg,
  	.precious_reg = fsl_ssi_precious_reg,
- 	.writeable_reg = fsl_ssi_writeable_reg,
--	.cache_type = REGCACHE_RBTREE,
-+	.cache_type = REGCACHE_FLAT,
- };
+@@ -1501,8 +1500,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		 * don't have SACC{ST,EN,DIS} regs.
+ 		 */
+ 		regconfig.max_register = CCSR_SSI_SRMSK;
+-		regconfig.num_reg_defaults_raw =
+-			CCSR_SSI_SRMSK / sizeof(uint32_t) + 1;
+ 	}
  
- struct fsl_ssi_soc_data {
+ 	ret = of_property_match_string(np, "clock-names", "ipg");
 -- 
 2.8.1
