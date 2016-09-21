@@ -1,17 +1,20 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: Re: [alsa-lib][PATCH] ucm: docs: typeset lists of
- identifiers explicitly
-Date: Wed, 21 Sep 2016 16:05:18 +0200
-Message-ID: <20160921160518.df74ee52de4b097cb6fc13e2@ao2.it>
-References: <20160921135245.8668-1-ao2@ao2.it>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 5/7] ASoC: wm_adsp: Put DSP into low power
+ state between loading and running
+Date: Wed, 21 Sep 2016 17:14:01 +0100
+Message-ID: <20160921161401.GV21682@localhost.localdomain>
+References: <1474375956-10443-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1474375956-10443-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ao2.it (ao2.it [92.243.12.208])
- by alsa0.perex.cz (Postfix) with ESMTP id E2B5F2606F7
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 16:05:20 +0200 (CEST)
-In-Reply-To: <20160921135245.8668-1-ao2@ao2.it>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 445B32666EB
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 18:13:54 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1474375956-10443-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,44 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Antonio Ospite <ao2@ao2.it>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 21 Sep 2016 15:52:45 +0200
-Antonio Ospite <ao2@ao2.it> wrote:
-
-> Doxygen doesn't preserve formatting that relies only on indentation,
-> typeset lists of identifiers explicitly.
+On Tue, Sep 20, 2016 at 01:52:34PM +0100, Charles Keepax wrote:
+> Between when we load the DSP and when it actually starts running put the
+> core into a lower power state where the memory is retained but nothing
+> is clocked.
 > 
-[...]
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 > ---
->  include/use-case.h | 57 +++++++++++++++++++++++++++---------------------------
->  1 file changed, 29 insertions(+), 28 deletions(-)
-> 
-> diff --git a/include/use-case.h b/include/use-case.h
-> index 9aac6e2..1ebd945 100644
-> --- a/include/use-case.h
-> +++ b/include/use-case.h
-[...]
-> @@ -346,19 +347,19 @@ int snd_use_case_geti(snd_use_case_mgr_t *uc_mgr,
-[...]
-> + *   = _dismod			- disable given modifier = value
+> @@ -2344,6 +2355,11 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+>  		if (!dsp->booted)
+>  			return -EIO;
+>  
+> +		ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
+> +					 ADSP2_SYS_ENA, ADSP2_SYS_ENA);
+> +		if (ret != 0)
+> +			goto err;
+> +
 
-Here there should be a '-' in place of the first '=', I only noticed
-after sending.
-
-I'll wait some days before sending a v2, or feel free to amend the patch
-locally if that's not too much burden.
+We actually need to wait for RAM_RDY again here, I will fire out
+a new version of the patches in the next day or two.
 
 Thanks,
-   Antonio
-
--- 
-Antonio Ospite
-https://ao2.it
-https://twitter.com/ao2it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+Charles
