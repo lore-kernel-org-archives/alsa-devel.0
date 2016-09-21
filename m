@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_asrc: use flat regmap cache" to the
-	asoc tree
-Date: Wed, 21 Sep 2016 13:56:08 +0100
-Message-ID: <E1bmh4K-0001a3-2p@debutante>
-References: <20160919193029.8119-1-marex@denx.de>
+From: Antonio Ospite <ao2@ao2.it>
+Subject: [alsa-lib][PATCH] ucm: docs: typeset lists of
+	identifiers explicitly
+Date: Wed, 21 Sep 2016 15:52:45 +0200
+Message-ID: <20160921135245.8668-1-ao2@ao2.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F1AB1261560
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 14:56:14 +0200 (CEST)
-In-Reply-To: <20160919193029.8119-1-marex@denx.de>
+Received: from smtp206.alice.it (smtp206.alice.it [82.57.200.102])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A167266E64
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 15:53:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,76 +19,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marex@denx.de>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Antonio Ospite <ao2@ao2.it>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Doxygen doesn't preserve formatting that relies only on indentation,
+typeset lists of identifiers explicitly.
 
-   ASoC: fsl_asrc: use flat regmap cache
+This makes the HTML docs a lot more readable.
 
-has been applied to the asoc tree at
+This change comes along the lines of commit 72aa0f8332fb ("ucm: reformat
+snd_use_case_get() doc").
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Some TABs has been added too in order to preserve the aligned look when
+reading the source code.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From b413886886b9a8f845f7d1a5adafa0ca573d3828 Mon Sep 17 00:00:00 2001
-From: Marek Vasut <marex@denx.de>
-Date: Mon, 19 Sep 2016 21:30:25 +0200
-Subject: [PATCH] ASoC: fsl_asrc: use flat regmap cache
-
-Same as commit ce492b3b8f99cf9d2f807ec22d8805c996a09503
-Subject: drm/fsl-dcu: use flat regmap cache
-
-Using flat regmap cache instead of RB-tree to avoid the following
-lockdep warning on driver load:
-WARNING: CPU: 0 PID: 1 at kernel/locking/lockdep.c:2871 lockdep_trace_alloc+0x104/0x128
-DEBUG_LOCKS_WARN_ON(irqs_disabled_flags(flags))
-
-The RB-tree regmap cache needs to allocate new space on first
-writes. However, allocations in an atomic context (e.g. when a
-spinlock is held) are not allowed. The function regmap_write
-calls map->lock, which acquires a spinlock in the fast_io case.
-Since the driver uses MMIO, the regmap bus of type regmap_mmio
-is being used which has fast_io set to true.
-
-Signed-off-by: Marek Vasut <marex@denx.de>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Antonio Ospite <ao2@ao2.it>
 ---
- sound/soc/fsl/fsl_asrc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/use-case.h | 57 +++++++++++++++++++++++++++---------------------------
+ 1 file changed, 29 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index b7157ce23479..1d82f68305c3 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -726,7 +726,7 @@ static const struct regmap_config fsl_asrc_regmap_config = {
- 	.readable_reg = fsl_asrc_readable_reg,
- 	.volatile_reg = fsl_asrc_volatile_reg,
- 	.writeable_reg = fsl_asrc_writeable_reg,
--	.cache_type = REGCACHE_RBTREE,
-+	.cache_type = REGCACHE_FLAT,
- };
- 
- /**
+diff --git a/include/use-case.h b/include/use-case.h
+index 9aac6e2..1ebd945 100644
+--- a/include/use-case.h
++++ b/include/use-case.h
+@@ -192,20 +192,21 @@ int snd_use_case_free_list(const char *list[], int items);
+  * \return Number of list entries if success, otherwise a negative error code
+  *
+  * Defined identifiers:
+- *   NULL 		- get card list
+- *			  (in pair cardname+comment)
+- *   _verbs		- get verb list
+- *			  (in pair verb+comment)
+- *   _devices[/{verb}]	- get list of supported devices
+- *			  (in pair device+comment)
+- *   _modifiers[/{verb}]- get list of supported modifiers
+- *			  (in pair modifier+comment)
+- *   TQ[/{verb}]	- get list of TQ identifiers
+- *   _enadevs		- get list of enabled devices
+- *   _enamods		- get list of enabled modifiers
++ *   - NULL			- get card list
++ *				 (in pair cardname+comment)
++ *   - _verbs			- get verb list
++ *				  (in pair verb+comment)
++ *   - _devices[/{verb}]	- get list of supported devices
++ *				  (in pair device+comment)
++ *   - _modifiers[/{verb}]	- get list of supported modifiers
++ *				  (in pair modifier+comment)
++ *   - TQ[/{verb}]		- get list of TQ identifiers
++ *   - _enadevs			- get list of enabled devices
++ *   - _enamods			- get list of enabled modifiers
++ *
++ *   - _supporteddevs/{modifier}|{device}[/{verb}]   - list of supported devices
++ *   - _conflictingdevs/{modifier}|{device}[/{verb}] - list of conflicting devices
+  *
+- *   _supporteddevs/{modifier}|{device}[/{verb}]   - list of supported devices
+- *   _conflictingdevs/{modifier}|{device}[/{verb}] - list of conflicting devices
+  *   Note that at most one of the supported/conflicting devs lists has
+  *   any entries, and when neither is present, all devices are supported.
+  *
+@@ -331,8 +332,8 @@ int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
+  * \return Zero if success, otherwise a negative error code
+  *
+  * Known identifiers:
+- *   _devstatus/{device}	- return status for given device
+- *   _modstatus/{modifier}	- return status for given modifier
++ *   - _devstatus/{device}	- return status for given device
++ *   - _modstatus/{modifier}	- return status for given modifier
+  */
+ int snd_use_case_geti(snd_use_case_mgr_t *uc_mgr,
+ 		      const char *identifier,
+@@ -346,19 +347,19 @@ int snd_use_case_geti(snd_use_case_mgr_t *uc_mgr,
+  * \return Zero if success, otherwise a negative error code
+  *
+  * Known identifiers:
+- *   _verb 		- set current verb = value
+- *   _enadev		- enable given device = value
+- *   _disdev		- disable given device = value
+- *   _swdev/{old_device} - new_device = value
+- *			- disable old_device and then enable new_device
+- *			- if old_device is not enabled just return
+- *			- check transmit sequence firstly
+- *   _enamod		- enable given modifier = value
+- *   _dismod		- disable given modifier = value
+- *   _swmod/{old_modifier} - new_modifier = value
+- *			- disable old_modifier and then enable new_modifier
+- *			- if old_modifier is not enabled just return
+- *			- check transmit sequence firstly
++ *   - _verb			- set current verb = value
++ *   - _enadev			- enable given device = value
++ *   - _disdev			- disable given device = value
++ *   - _swdev/{old_device}	- new_device = value
++ *				  - disable old_device and then enable new_device
++ *				  - if old_device is not enabled just return
++ *				  - check transmit sequence firstly
++ *   - _enamod			- enable given modifier = value
++ *   = _dismod			- disable given modifier = value
++ *   - _swmod/{old_modifier}	- new_modifier = value
++ *				  - disable old_modifier and then enable new_modifier
++ *				  - if old_modifier is not enabled just return
++ *				  - check transmit sequence firstly
+  */
+ int snd_use_case_set(snd_use_case_mgr_t *uc_mgr,
+                      const char *identifier,
 -- 
-2.8.1
+2.9.3
