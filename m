@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_esai: use flat regmap cache" to the
+Subject: Applied "ASoC: fsl_ssi: use flat regmap cache" to the
 	asoc tree
-Date: Wed, 21 Sep 2016 13:56:05 +0100
-Message-ID: <E1bmh4H-0001Z2-3E@debutante>
-References: <20160919193029.8119-2-marex@denx.de>
+Date: Wed, 21 Sep 2016 13:55:59 +0100
+Message-ID: <E1bmh4B-0001Wp-2s@debutante>
+References: <20160919193029.8119-4-marex@denx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FFFC266808
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 14:56:11 +0200 (CEST)
-In-Reply-To: <20160919193029.8119-2-marex@denx.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 983B426673A
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 14:56:09 +0200 (CEST)
+In-Reply-To: <20160919193029.8119-4-marex@denx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_esai: use flat regmap cache
+   ASoC: fsl_ssi: use flat regmap cache
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 0effb8651ee3b00513fbba9ef3912bbcbbd38af6 Mon Sep 17 00:00:00 2001
+>From bfcf928d7604692668a7c33b783d05b8e3459d09 Mon Sep 17 00:00:00 2001
 From: Marek Vasut <marex@denx.de>
-Date: Mon, 19 Sep 2016 21:30:26 +0200
-Subject: [PATCH] ASoC: fsl_esai: use flat regmap cache
+Date: Mon, 19 Sep 2016 21:30:28 +0200
+Subject: [PATCH] ASoC: fsl_ssi: use flat regmap cache
 
 Same as commit ce492b3b8f99cf9d2f807ec22d8805c996a09503
 Subject: drm/fsl-dcu: use flat regmap cache
@@ -77,21 +77,21 @@ Signed-off-by: Marek Vasut <marex@denx.de>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_esai.c | 2 +-
+ sound/soc/fsl/fsl_ssi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index e927955ba982..38bfd46f4ad8 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -781,7 +781,7 @@ static const struct regmap_config fsl_esai_regmap_config = {
- 	.readable_reg = fsl_esai_readable_reg,
- 	.volatile_reg = fsl_esai_volatile_reg,
- 	.writeable_reg = fsl_esai_writeable_reg,
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index bedec4a32581..50349437d961 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -182,7 +182,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
+ 	.volatile_reg = fsl_ssi_volatile_reg,
+ 	.precious_reg = fsl_ssi_precious_reg,
+ 	.writeable_reg = fsl_ssi_writeable_reg,
 -	.cache_type = REGCACHE_RBTREE,
 +	.cache_type = REGCACHE_FLAT,
  };
  
- static int fsl_esai_probe(struct platform_device *pdev)
+ struct fsl_ssi_soc_data {
 -- 
 2.8.1
