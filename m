@@ -1,97 +1,88 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_spdif: use flat regmap cache" to
-	the asoc tree
-Date: Wed, 21 Sep 2016 13:56:02 +0100
-Message-ID: <E1bmh4E-0001Xr-1h@debutante>
-References: <20160919193029.8119-3-marex@denx.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: snd-usb-line6 depends on CONFIG_SND_HWDEP
+Date: Wed, 21 Sep 2016 22:25:43 +0900
+Message-ID: <b9ed1809-b48a-5e72-b815-f5ad073520d1@sakamocchi.jp>
+References: <86590.1474409693@turing-police.cc.vt.edu>
+ <046fe4be-f3e8-0088-8b1d-ed94bb9ef914@sakamocchi.jp>
+ <s5hk2e5l97y.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 98223261560
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 14:56:09 +0200 (CEST)
-In-Reply-To: <20160919193029.8119-3-marex@denx.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marex@denx.de>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hk2e5l97y.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Randy Dunlap <randy.dunlap@oracle.com>, alsa-devel@alsa-project.org, Valdis Kletnieks <Valdis.Kletnieks@vt.edu>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Sep 21 2016 21:37, Takashi Iwai wrote:
+> On Wed, 21 Sep 2016 03:56:05 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> On Sep 21 2016 07:14, Valdis Kletnieks wrote:
+>>> ALSA - snd-usb-line6 depends on CONFIG_SND_HWDEP
+>>>
+>>> ERROR: "snd_hwdep_new" [sound/usb/line6/snd-usb-line6.ko] undefined!
+>>> scripts/Makefile.modpost:91: recipe for target '__modpost' failed
+>>> make[1]: *** [__modpost] Error 1
+>>>
+>>> Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
+>>
+>> Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>>
+>> As a nitpicking, I think it better to change the subject line with a
+>> prefix of 'ALSA: line6:' or 'ALSA: usb-line6:', following to our
+>> fashion.
+> 
+> Yes, I modified the subject line and added fixes tag.
 
-   ASoC: fsl_spdif: use flat regmap cache
+Thanks.
 
-has been applied to the asoc tree at
+As another issue, I can see sparse (v0.5.0) errors:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+sound/usb/line6/driver.c:274:43: error: cannot size expression
+sound/usb/line6/driver.c:275:16: error: cannot size expression
+sound/usb/line6/driver.c:276:16: error: cannot size expression
+sound/usb/line6/driver.c:277:16: error: cannot size expression
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+And this fix can suppresses them:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 35ddb15757cd1c817e424c6252d2f11f268cfebf Mon Sep 17 00:00:00 2001
-From: Marek Vasut <marex@denx.de>
-Date: Mon, 19 Sep 2016 21:30:27 +0200
-Subject: [PATCH] ASoC: fsl_spdif: use flat regmap cache
-
-Same as commit ce492b3b8f99cf9d2f807ec22d8805c996a09503
-Subject: drm/fsl-dcu: use flat regmap cache
-
-Using flat regmap cache instead of RB-tree to avoid the following
-lockdep warning on driver load:
-WARNING: CPU: 0 PID: 1 at kernel/locking/lockdep.c:2871 lockdep_trace_alloc+0x104/0x128
-DEBUG_LOCKS_WARN_ON(irqs_disabled_flags(flags))
-
-The RB-tree regmap cache needs to allocate new space on first
-writes. However, allocations in an atomic context (e.g. when a
-spinlock is held) are not allowed. The function regmap_write
-calls map->lock, which acquires a spinlock in the fast_io case.
-Since the driver uses MMIO, the regmap bus of type regmap_mmio
-is being used which has fast_io set to true.
-
-Signed-off-by: Marek Vasut <marex@denx.de>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/fsl_spdif.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index beec7934a265..1ff467c9598a 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1103,7 +1103,7 @@ static const struct regmap_config fsl_spdif_regmap_config = {
- 	.readable_reg = fsl_spdif_readable_reg,
- 	.volatile_reg = fsl_spdif_volatile_reg,
- 	.writeable_reg = fsl_spdif_writeable_reg,
--	.cache_type = REGCACHE_RBTREE,
-+	.cache_type = REGCACHE_FLAT,
+$ git diff sound/usb/line6
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index f9224ec..ad7efc0 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -30,7 +30,7 @@
+ /*
+        This is Line 6's MIDI manufacturer ID.
+ */
+-const unsigned char line6_midi_id[] = {
++const unsigned char line6_midi_id[3] = {
+        0x00, 0x01, 0x0c
  };
- 
- static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
--- 
-2.8.1
+ EXPORT_SYMBOL_GPL(line6_midi_id);
+
+Besides, there's a difference of the declaration between header and code:
+$ cat sound/usb/line6/driver.h
+...
+extern const unsigned char line6_midi_id[3];
+
+This is quite minor. So I can't judge to fix it or not... What do you
+think about it?
+
+>>> diff --git a/sound/usb/line6/Kconfig b/sound/usb/line6/Kconfig
+>>> index 8ffcf48097d9..39b400392d71 100644
+>>> --- a/sound/usb/line6/Kconfig
+>>> +++ b/sound/usb/line6/Kconfig
+>>> @@ -2,6 +2,7 @@ config SND_USB_LINE6
+>>>  	tristate
+>>>  	select SND_RAWMIDI
+>>>  	select SND_PCM
+>>> +	select SND_HWDEP
+>>>
+>>>  config SND_USB_POD
+>>>  	tristate "Line 6 POD USB support"
+
+Regards
+
+Takashi Sakamoto
