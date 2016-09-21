@@ -1,21 +1,20 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v2 01/11] ASoC: topology: Able to create BE
- DAIs
-Date: Wed, 21 Sep 2016 08:09:55 +0100
-Message-ID: <1474441795.15879.6.camel@loki>
-References: <cover.1473420558.git.mengdong.lin@linux.intel.com>
- <084b7ba7ba3f0d4a97641b43fab26aee2dc20c5d.1473420558.git.mengdong.lin@linux.intel.com>
- <20160916145651.GD27974@sirena.org.uk>
- <17DC8B7179E3514D90E3A456B23B91EA1A0B0F50@BGSMSX104.gar.corp.intel.com>
- <57E21E2B.8020502@linux.intel.com>
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Subject: Re:
+ =?utf-8?q?=5BPATCH_1/2=5D_ASoC=3A_cs4341=3A_Add_driv?=
+ =?utf-8?q?er_for_CS4341_CODEC?=
+Date: Wed, 21 Sep 2016 11:59:53 +0300
+Message-ID: <1474448393.244848188@f267.i.mail.ru>
+References: <1473352169-23954-1-git-send-email-shc_work@mail.ru>
+ <6d495e97-4677-4f1b-9a19-b3c92e4ca606@EX4.ad.cirrus.com>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 14B79266F4E
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 09:10:45 +0200 (CEST)
-In-Reply-To: <57E21E2B.8020502@linux.intel.com>
+Received: from f267.i.mail.ru (f267.i.mail.ru [94.100.179.60])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F07C265ACA
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 10:59:56 +0200 (CEST)
+In-Reply-To: <6d495e97-4677-4f1b-9a19-b3c92e4ca606@EX4.ad.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,26 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mengdong Lin <mengdong.lin@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "Shah, Hardik T" <hardik.t.shah@intel.com>, "Singh, Guneshwor O" <guneshwor.o.singh@intel.com>, "Koul,
- Vinod" <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, "Ughreja,
- Rakesh A" <rakesh.a.ughreja@intel.com>, "Lin,
- Mengdong" <mengdong.lin@intel.com>
+To: =?UTF-8?B?IkhhbmRyaWdhbiwgUGF1bCI=?= <Paul.Handrigan@cirrus.com>
+Cc: =?UTF-8?B?IkF1c3RpbiwgQnJpYW4i?= <Brian.Austin@cirrus.com>, =?UTF-8?B?TWFyayBCcm93bg==?= <broonie@kernel.org>, =?UTF-8?B?VGFrYXNoaSBJd2Fp?= <tiwai@suse.com>, =?UTF-8?B?YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn?= <alsa-devel@alsa-project.org>, =?UTF-8?B?TGlhbSBHaXJkd29vZA==?= <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2016-09-21 at 13:44 +0800, Mengdong Lin wrote:
-> Thanks for your comments, Hardik! So we'll no longer let topology to 
-> create BE DAIs.
-> 
-> And how about the BE DAI links?
-> They are also physical hardware things. Could we also let topology 
-> configure those that can be changed by SW on the BE link, instead of 
-> letting topology create the BE links?
-> 
+>On 9/8/16, 11:29 AM, "Alexander Shiyan" < shc_work@mail.ru > wrote:
+>
+...
+>>+config SND_SOC_CS4341
+>>+tristate "Cirrus Logic CS4341 CODEC"
+>>+depends on SPI_MASTER
+>>+select REGMAP_SPI
+>>+help
+>>+  Enable support for Cirrus Logic (Crystal) CS4341 CODEC.
+>>+
+>This devices primary interface is I2C.  That should be added as well since
+>i2c is read/write and spi is write only.
 
-Yes, the topology should be able to configure the physical link SW
-params as the link may be used for multiple use cases on multiple
-different devices with the same FW binary. Each use case or device will
-possibly require a different BE DAi link configuration.
+I can add I2C support, but can not test this.
 
-Liam
+...
+>>+snd_soc_update_bits(codec, CS4341_REG_MODE2, CS4341_MODE2_DIF,
+>>+    bits24 ? CS4341_MODE2_DIF_RJ_24 :
+>>+    CS4341_MODE2_DIF_RJ_16);
+>>+break;
+>>+default:
+>>+dev_err(codec->dev, "Unsupported DAI format\n");
+>>+return -EINVAL;
+>>+}
+>
+>Can we use regmap_update_bits where we can?
+
+So you say that regmap_update_bits() is prefferred than snd_soc_update_bits() ?
+
+---
