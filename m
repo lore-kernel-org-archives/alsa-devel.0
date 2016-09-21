@@ -1,92 +1,71 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: snd-usb-line6 depends on CONFIG_SND_HWDEP
-Date: Thu, 22 Sep 2016 08:01:05 +0900
-Message-ID: <12c7a28b-0e74-beb0-00e2-7c307a17b987@sakamocchi.jp>
-References: <86590.1474409693@turing-police.cc.vt.edu>
- <046fe4be-f3e8-0088-8b1d-ed94bb9ef914@sakamocchi.jp>
- <s5hk2e5l97y.wl-tiwai@suse.de>
- <b9ed1809-b48a-5e72-b815-f5ad073520d1@sakamocchi.jp>
- <s5heg4dl6s4.wl-tiwai@suse.de>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 4/5] ASoC: fsl_ssi: use flat regmap cache
+Date: Thu, 22 Sep 2016 01:33:47 +0200
+Message-ID: <57E318DB.3040600@maciej.szmigiero.name>
+References: <20160919193029.8119-1-marex@denx.de>
+ <20160919193029.8119-4-marex@denx.de>
+ <57E2B53C.6080708@maciej.szmigiero.name>
+ <b54cd59a-97d0-e02d-16be-7aa6752bbb35@denx.de>
+ <57E3074E.4070601@maciej.szmigiero.name>
+ <8d5ad78b-3850-93bd-e299-215f001da9c2@denx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5heg4dl6s4.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Randy Dunlap <randy.dunlap@oracle.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id 534C826663D
+ for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2016 01:33:51 +0200 (CEST)
+In-Reply-To: <8d5ad78b-3850-93bd-e299-215f001da9c2@denx.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Marek Vasut <marex@denx.de>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sep 21 2016 22:30, Takashi Iwai wrote:
-> On Wed, 21 Sep 2016 15:25:43 +0200,
-> Takashi Sakamoto wrote:
->>
->> On Sep 21 2016 21:37, Takashi Iwai wrote:
->>> On Wed, 21 Sep 2016 03:56:05 +0200,
->>> Takashi Sakamoto wrote:
->>>>
->>>> On Sep 21 2016 07:14, Valdis Kletnieks wrote:
->>>>> ALSA - snd-usb-line6 depends on CONFIG_SND_HWDEP
->>>>>
->>>>> ERROR: "snd_hwdep_new" [sound/usb/line6/snd-usb-line6.ko] undefined!
->>>>> scripts/Makefile.modpost:91: recipe for target '__modpost' failed
->>>>> make[1]: *** [__modpost] Error 1
->>>>>
->>>>> Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
->>>>
->>>> Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->>>>
->>>> As a nitpicking, I think it better to change the subject line with a
->>>> prefix of 'ALSA: line6:' or 'ALSA: usb-line6:', following to our
->>>> fashion.
+On 22.09.2016 00:45, Marek Vasut wrote:
+> On 09/22/2016 12:18 AM, Maciej S. Szmigiero wrote:
+>> On 21.09.2016 21:32, Marek Vasut wrote:
+>>> On 09/21/2016 06:28 PM, Maciej S. Szmigiero wrote:
+>>>> Hi Marek,
 >>>
->>> Yes, I modified the subject line and added fixes tag.
+>>> Hi!
+>>>
+>>>> On 19.09.2016 21:30, Marek Vasut wrote:
+>> (..)
+>>>>> The RB-tree regmap cache needs to allocate new space on first
+>>>>> writes.
+>>>>
+>>>> That's why SSI driver had .num_reg_defaults_raw set in regmap config.
+>>>> With this set and .reg_defaults_raw unset regcache_hw_init() will read
+>>>> existing register content which then will be used to populate cache
+>>>> (and so allocate RB tree nodes) at regcache initialization time.
+>>>
+>>> OK
+>>>
+>>>> This means that allocation of new cache RB tree nodes should never happen
+>>>> during actual write.
+>>>> If you get a warning that it happened then maybe there is a write to
+>>>> some register not covered by .num_reg_defaults_raw - this should be
+>>>> fixed.
+>>>
+>>> I might be blind, but I really don't see that. I just discussed it with
+>>> Mark and he thinks the same. I will revisit this one more time.
 >>
->> Thanks.
->>
->> As another issue, I can see sparse (v0.5.0) errors:
->>
->> sound/usb/line6/driver.c:274:43: error: cannot size expression
->> sound/usb/line6/driver.c:275:16: error: cannot size expression
->> sound/usb/line6/driver.c:276:16: error: cannot size expression
->> sound/usb/line6/driver.c:277:16: error: cannot size expression
->>
->> And this fix can suppresses them:
->>
->> $ git diff sound/usb/line6
->> diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
->> index f9224ec..ad7efc0 100644
->> --- a/sound/usb/line6/driver.c
->> +++ b/sound/usb/line6/driver.c
->> @@ -30,7 +30,7 @@
->>  /*
->>         This is Line 6's MIDI manufacturer ID.
->>  */
->> -const unsigned char line6_midi_id[] = {
->> +const unsigned char line6_midi_id[3] = {
->>         0x00, 0x01, 0x0c
->>  };
->>  EXPORT_SYMBOL_GPL(line6_midi_id);
->>
->> Besides, there's a difference of the declaration between header and code:
->> $ cat sound/usb/line6/driver.h
->> ...
->> extern const unsigned char line6_midi_id[3];
->>
->> This is quite minor. So I can't judge to fix it or not... What do you
->> think about it?
+>> Maybe it would be possible to get a backtrace when that warning was
+>> generated so we know which register write or update triggers new cache
+>> allocation?
 > 
-> The only problem I can see is the inconsistency between the
-> declaration and the definition.
+> See patch 5/5 .
 
-I have the same opinion. Sparse is not versatile.
+In you patch 5/5 there is backtrace with flat cache, but I meant a
+backtrace with original RB tree cache code when warning about allocation
+being done in atomic context was generated.
 
-> So yes, we should align to [3], if we keep the declaration as is.
-> (And actually it's sometimes safer to have the explicit array size.)
-
-OK. I'll post the fix later.
-
-
-Thanks
-
-Takashi Sakamoto
+Maciej
