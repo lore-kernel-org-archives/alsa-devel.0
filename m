@@ -1,20 +1,20 @@
-From: "Handrigan, Paul" <Paul.Handrigan@cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: cs4341: Add driver for CS4341
- CODEC
-Date: Wed, 21 Sep 2016 02:38:49 +0000
-Message-ID: <6d495e97-4677-4f1b-9a19-b3c92e4ca606@EX4.ad.cirrus.com>
-References: <1473352169-23954-1-git-send-email-shc_work@mail.ru>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH v2 01/11] ASoC: topology: Able to create BE
+ DAIs
+Date: Wed, 21 Sep 2016 13:44:11 +0800
+Message-ID: <57E21E2B.8020502@linux.intel.com>
+References: <cover.1473420558.git.mengdong.lin@linux.intel.com>
+ <084b7ba7ba3f0d4a97641b43fab26aee2dc20c5d.1473420558.git.mengdong.lin@linux.intel.com>
+ <20160916145651.GD27974@sirena.org.uk>
+ <17DC8B7179E3514D90E3A456B23B91EA1A0B0F50@BGSMSX104.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 53DA6261A5E
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 04:38:53 +0200 (CEST)
-In-Reply-To: <1473352169-23954-1-git-send-email-shc_work@mail.ru>
-Content-Language: en-US
-Content-ID: <C1A8BC6A0F6DB5429EEDCC2AC79A0294@ad.cirrus.com>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 165C1266EC5
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2016 07:37:44 +0200 (CEST)
+In-Reply-To: <17DC8B7179E3514D90E3A456B23B91EA1A0B0F50@BGSMSX104.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,96 +24,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Shiyan <shc_work@mail.ru>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "Austin, Brian" <Brian.Austin@cirrus.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: "Shah, Hardik T" <hardik.t.shah@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, "Singh, Guneshwor O" <guneshwor.o.singh@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Thanks for your comments, Hardik! So we'll no longer let topology to 
+create BE DAIs.
 
+And how about the BE DAI links?
+They are also physical hardware things. Could we also let topology 
+configure those that can be changed by SW on the BE link, instead of 
+letting topology create the BE links?
 
-On 9/8/16, 11:29 AM, "Alexander Shiyan" <shc_work@mail.ru> wrote:
+Thanks
+Mengdong
 
->diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
->index 1cd6ab3..9853e79 100644
->--- a/sound/soc/codecs/Kconfig
->+++ b/sound/soc/codecs/Kconfig
->@@ -458,6 +458,13 @@ config SND_SOC_CS42XX8_I2C
-> 	select SND_SOC_CS42XX8
-> 	select REGMAP_I2C
-> 
->+config SND_SOC_CS4341
->+	tristate "Cirrus Logic CS4341 CODEC"
->+	depends on SPI_MASTER
->+	select REGMAP_SPI
->+	help
->+	  Enable support for Cirrus Logic (Crystal) CS4341 CODEC.
->+
-This devices primary interface is I2C.  That should be added as well since
-i2c is read/write and spi is write only.
-
-> # Cirrus Logic CS4349 HiFi DAC
-> config SND_SOC_CS4349
-> 	tristate "Cirrus Logic CS4349 CODEC"
-
->
->+#define CS4341_REG_MODE1	0x00
->+#define CS4341_REG_MODE2	0x01
->+#define CS4341_REG_MIX		0x02
->+#define CS4341_REG_VOLA		0x03
->+#define CS4341_REG_VOLB		0x04
->+
->+#define CS4341_MODE2_DIF	(7 << 4)
->+#define CS4341_MODE2_DIF_I2S_24	(0 << 4)
->+#define CS4341_MODE2_DIF_I2S_16	(1 << 4)
->+#define CS4341_MODE2_DIF_LJ_24	(2 << 4)
->+#define CS4341_MODE2_DIF_RJ_24	(3 << 4)
->+#define CS4341_MODE2_DIF_RJ_16	(5 << 4)
->+
->+#define CS4341_VOLX_MUTE	(1 << 7)
-
-It would be a good idea to clean up the indentation here.
-
-
->+	switch (cs4341->fmt) {
->+	case SND_SOC_DAIFMT_I2S:
->+		snd_soc_update_bits(codec, CS4341_REG_MODE2, CS4341_MODE2_DIF,
->+				    bits24 ? CS4341_MODE2_DIF_I2S_24 :
->+				    CS4341_MODE2_DIF_I2S_16);
->+		break;
->+	case SND_SOC_DAIFMT_LEFT_J:
->+		snd_soc_update_bits(codec, CS4341_REG_MODE2, CS4341_MODE2_DIF,
->+				    CS4341_MODE2_DIF_LJ_24);
->+		break;
->+	case SND_SOC_DAIFMT_RIGHT_J:
->+		snd_soc_update_bits(codec, CS4341_REG_MODE2, CS4341_MODE2_DIF,
->+				    bits24 ? CS4341_MODE2_DIF_RJ_24 :
->+				    CS4341_MODE2_DIF_RJ_16);
->+		break;
->+	default:
->+		dev_err(codec->dev, "Unsupported DAI format\n");
->+		return -EINVAL;
->+	}
-
-Can we use regmap_update_bits where we can?
->+
->+	return 0;
->+}
->+
->+static int cs4341_digital_mute(struct snd_soc_dai *dai, int mute)
->+{
->+	struct snd_soc_codec *codec = dai->codec;
->+	int ret;
->+
->+	ret = snd_soc_update_bits(codec, CS4341_REG_VOLA, CS4341_VOLX_MUTE,
->+				  mute ? CS4341_VOLX_MUTE : 0);
->+	if (ret < 0)
->+		return ret;
->+
->+	return snd_soc_update_bits(codec, CS4341_REG_VOLB, CS4341_VOLX_MUTE,
->+				   mute ? CS4341_VOLX_MUTE : 0);
-regmap_update_bits
-
->+}
->+
+On 09/20/2016 01:09 AM, Shah, Hardik T wrote:
 >
 >
+> Regards,
+> Hardik Shah
+>
+>> -----Original Message-----
+>> From: Mark Brown [mailto:broonie@kernel.org]
+>>
+>> On Fri, Sep 09, 2016 at 07:43:11PM +0800, mengdong.lin@linux.intel.com
+>> wrote:
+>>
+>>> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+>>
+>>> Topology will check with ASoC if a BE DAI already exists by checking
+>>> its name. If the BE DAI doesn't exist, topology will create a new one
+>>> and the dai_load ops will be called for device specific init.
+>>
+>> I still remain fundamentally unconvinced that this is a good or scalable idea
+>> and that it makes sense to have it be part of the standard topology ABI.  We
+>> are not going to download a DSP firmware that creates a new physical link in
+>> the system so having the topology be the thing creating those physical links
+>> seems wrong.
+>>
+>
+> Hi Mark,
+> You are right, physical links will always remain same.
+>
+>
+>>> create the HDA DAIs. Ideally, the driver should query BIOS to get the
+>>> physical pin output types and connections to peripherals for a
+>>> specific platform, but unfortunately BIOS sometimes does not have
+>>> accurate info, so there is still hard code of BE DAI & DAI links in
+>>> driver. To share a
+>>
+>> Having the connections to the DSP specified in the toplogy is of course
+>> sensible but fundamentally this is always going to be choosing from a list of
+>> physical DAIs that we already know about and potential connections for
+>> those that are also already known.  If the driver wants to do something in
+>> response to a DAI being hooked up into the topology (which seems to be the
+>> actual goal here) that would be sensible but attempting to create physical
+>> hardware in a topology does not seem like a good idea as a generic feature.
+>
+>
+> We were trying to optimize here by creating DAIs for only those physical
+> links which are getting used on the platform. Intel hardware supports
+> multiple physical links like I2S, HDA, HDMI and DMICs and with that BE DAIs
+> can increase up to 15-20,  and very few of them may be really used in most
+> of the platforms. But if you think we should create BE DAIs for all physical
+> links, we will go ahead with that approach.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
