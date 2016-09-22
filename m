@@ -1,398 +1,120 @@
 From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: [PATCH] ASoC: tlv320aic31xx: add explicit support for tlv320dac31xx
-Date: Thu, 22 Sep 2016 23:06:43 +0300
-Message-ID: <1474574803-4007-1-git-send-email-nikita.yoush@cogentembedded.com>
+Subject: [PATCH] ASoC: simple-card: add support for aux devices
+Date: Thu, 22 Sep 2016 23:50:44 +0300
+Message-ID: <1474577444-7598-1-git-send-email-nikita.yoush@cogentembedded.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bastien Nocera <hadess@hadess.net>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?Otto=20Kek=C3=A4l=C3=A4inen?= <otto@seravo.fi>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mengdong Lin <mengdong.lin@linux.intel.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Andrew Lunn <andrew@lunn.ch>, Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc: Chris Healy <cphealy@gmail.com>, Nikita Yushchenko <nikita.yoush@cogentembedded.com>
 List-Id: alsa-devel@alsa-project.org
 
-tlv320dac31xx is a subset of tlv320aic31xx:
-- it does not have MIC inputs and ADC, thus capture is not supported,
-- it has analog inputs AIN1/AIN2 that can be mixed into output.
+This patch makes it possible to use simple-card in setups where separate
+amplifier chip is connected to codec's output.
 
-Although tlv320dac31xx does work with tlv320aic31xx driver, this setup
-does register non-existent widgets and non-existent capture stream.
-Thus userspace lists non-existent objects in user interfaces, an can
-access these, causing operations with device registers that are
-declared as "reserved" in tlv320dac31xx datasheet.
+Example usage:
 
-This patch fixes this situation by separating controls/widgets/routes
-into common, aic31xx-specific, and dac31xx-specific parts. Only parts
-that match actual hardware (as declared in "compatible" device tree
-property) are registered.
+	codec: tlv320dac3100@18 {
+		compatible = "ti,tlv320dac3100";
+		...
+	}
+
+	amp: tpa6130a2@60 {
+		compatible = "ti,tpa6130a2";
+		...
+	}
+
+	sound {
+		compatible = "simple-audio-card";
+		...
+		simple-audio-card,widgets =
+			"Headphone", "Headphone Jack";
+		simple-audio-card,routing =
+			"Headphone Jack", "HPLEFT",
+			"Headphone Jack", "HPRIGHT",
+			"LEFTIN", "HPL",
+			"RIGHTIN", "HPR";
+		simple-audio-card,aux-devs = <&amp>;
+		simple-audio-card,cpu {
+			sound-dai = <&ssi2>;
+		};
+		simple-audio-card,codec {
+			sound-dai = <&codec1>;
+			clocks = ...
+		};
+
+This describes audio path from IMX6 SSI2 through TLV320DAC3100 codec
+through TPA6130A2 amplifier to headphones.
 
 Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 212 ++++++++++++++++++++++++++++-----------
- sound/soc/codecs/tlv320aic31xx.h |   2 +
- 2 files changed, 158 insertions(+), 56 deletions(-)
+ .../devicetree/bindings/sound/simple-card.txt      |  2 ++
+ sound/soc/generic/simple-card.c                    | 34 ++++++++++++++++++++++
+ 2 files changed, 36 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 3c5e1df..fb7d648 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -273,10 +273,20 @@ static const DECLARE_TLV_DB_SCALE(sp_vol_tlv, -6350, 50, 0);
- /*
-  * controls to be exported to the user space
-  */
--static const struct snd_kcontrol_new aic31xx_snd_controls[] = {
-+static const struct snd_kcontrol_new common31xx_snd_controls[] = {
- 	SOC_DOUBLE_R_S_TLV("DAC Playback Volume", AIC31XX_LDACVOL,
- 			   AIC31XX_RDACVOL, 0, -127, 48, 7, 0, dac_vol_tlv),
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+index 59d8628..5579f40 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+@@ -22,6 +22,8 @@ Optional properties:
+ 					  headphones are attached.
+ - simple-audio-card,mic-det-gpio	: Reference to GPIO that signals when
+ 					  a microphone is attached.
++- simple-audio-card,aux-devs		: List of phandles pointing to auxiliary devices, such
++					  as amplifiers, to be added to the sound card.
  
-+	SOC_DOUBLE_R("HP Driver Playback Switch", AIC31XX_HPLGAIN,
-+		     AIC31XX_HPRGAIN, 2, 1, 0),
-+	SOC_DOUBLE_R_TLV("HP Driver Playback Volume", AIC31XX_HPLGAIN,
-+			 AIC31XX_HPRGAIN, 3, 0x09, 0, hp_drv_tlv),
-+
-+	SOC_DOUBLE_R_TLV("HP Analog Playback Volume", AIC31XX_LANALOGHPL,
-+			 AIC31XX_RANALOGHPR, 0, 0x7F, 1, hp_vol_tlv),
-+};
-+
-+static const struct snd_kcontrol_new aic31xx_snd_controls[] = {
- 	SOC_SINGLE_TLV("ADC Fine Capture Volume", AIC31XX_ADCFGA, 4, 4, 1,
- 		       adc_fgain_tlv),
+ Optional subnodes:
  
-@@ -286,14 +296,6 @@ static const struct snd_kcontrol_new aic31xx_snd_controls[] = {
- 
- 	SOC_SINGLE_TLV("Mic PGA Capture Volume", AIC31XX_MICPGA, 0,
- 		       119, 0, mic_pga_tlv),
--
--	SOC_DOUBLE_R("HP Driver Playback Switch", AIC31XX_HPLGAIN,
--		     AIC31XX_HPRGAIN, 2, 1, 0),
--	SOC_DOUBLE_R_TLV("HP Driver Playback Volume", AIC31XX_HPLGAIN,
--			 AIC31XX_HPRGAIN, 3, 0x09, 0, hp_drv_tlv),
--
--	SOC_DOUBLE_R_TLV("HP Analog Playback Volume", AIC31XX_LANALOGHPL,
--			 AIC31XX_RANALOGHPR, 0, 0x7F, 1, hp_vol_tlv),
- };
- 
- static const struct snd_kcontrol_new aic311x_snd_controls[] = {
-@@ -397,17 +399,28 @@ static int aic31xx_dapm_power_event(struct snd_soc_dapm_widget *w,
- 	return 0;
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 43295f0..f989f34 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -417,6 +417,36 @@ dai_link_of_err:
+ 	return ret;
  }
  
--static const struct snd_kcontrol_new left_output_switches[] = {
-+static const struct snd_kcontrol_new aic31xx_left_output_switches[] = {
- 	SOC_DAPM_SINGLE("From Left DAC", AIC31XX_DACMIXERROUTE, 6, 1, 0),
- 	SOC_DAPM_SINGLE("From MIC1LP", AIC31XX_DACMIXERROUTE, 5, 1, 0),
- 	SOC_DAPM_SINGLE("From MIC1RP", AIC31XX_DACMIXERROUTE, 4, 1, 0),
- };
- 
--static const struct snd_kcontrol_new right_output_switches[] = {
-+static const struct snd_kcontrol_new aic31xx_right_output_switches[] = {
- 	SOC_DAPM_SINGLE("From Right DAC", AIC31XX_DACMIXERROUTE, 2, 1, 0),
- 	SOC_DAPM_SINGLE("From MIC1RP", AIC31XX_DACMIXERROUTE, 1, 1, 0),
- };
- 
-+static const struct snd_kcontrol_new dac31xx_left_output_switches[] = {
-+	SOC_DAPM_SINGLE("From Left DAC", AIC31XX_DACMIXERROUTE, 6, 1, 0),
-+	SOC_DAPM_SINGLE("From AIN1", AIC31XX_DACMIXERROUTE, 5, 1, 0),
-+	SOC_DAPM_SINGLE("From AIN2", AIC31XX_DACMIXERROUTE, 4, 1, 0),
-+};
++static int asoc_simple_card_parse_aux_devs(struct device_node *node,
++					   struct simple_card_data *priv)
++{
++	struct device *dev = simple_priv_to_dev(priv);
++	struct device_node *aux_node;
++	int i, n, len;
 +
-+static const struct snd_kcontrol_new dac31xx_right_output_switches[] = {
-+	SOC_DAPM_SINGLE("From Right DAC", AIC31XX_DACMIXERROUTE, 2, 1, 0),
-+	SOC_DAPM_SINGLE("From AIN2", AIC31XX_DACMIXERROUTE, 1, 1, 0),
-+};
++	if (!of_find_property(node, PREFIX "aux-devs", &len))
++		return 0;		/* Ok to have no aux-devs */
 +
- static const struct snd_kcontrol_new p_term_mic1lp =
- 	SOC_DAPM_ENUM("MIC1LP P-Terminal", mic1lp_p_enum);
- 
-@@ -457,7 +470,7 @@ static int mic_bias_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
--static const struct snd_soc_dapm_widget aic31xx_dapm_widgets[] = {
-+static const struct snd_soc_dapm_widget common31xx_dapm_widgets[] = {
- 	SND_SOC_DAPM_AIF_IN("DAC IN", "DAC Playback", 0, SND_SOC_NOPM, 0, 0),
- 
- 	SND_SOC_DAPM_MUX("DAC Left Input",
-@@ -473,14 +486,7 @@ static const struct snd_soc_dapm_widget aic31xx_dapm_widgets[] = {
- 			   AIC31XX_DACSETUP, 6, 0, aic31xx_dapm_power_event,
- 			   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
- 
--	/* Output Mixers */
--	SND_SOC_DAPM_MIXER("Output Left", SND_SOC_NOPM, 0, 0,
--			   left_output_switches,
--			   ARRAY_SIZE(left_output_switches)),
--	SND_SOC_DAPM_MIXER("Output Right", SND_SOC_NOPM, 0, 0,
--			   right_output_switches,
--			   ARRAY_SIZE(right_output_switches)),
--
-+	/* HP */
- 	SND_SOC_DAPM_SWITCH("HP Left", SND_SOC_NOPM, 0, 0,
- 			    &aic31xx_dapm_hpl_switch),
- 	SND_SOC_DAPM_SWITCH("HP Right", SND_SOC_NOPM, 0, 0,
-@@ -494,10 +500,34 @@ static const struct snd_soc_dapm_widget aic31xx_dapm_widgets[] = {
- 			       NULL, 0, aic31xx_dapm_power_event,
- 			       SND_SOC_DAPM_POST_PMD | SND_SOC_DAPM_POST_PMU),
- 
--	/* ADC */
--	SND_SOC_DAPM_ADC_E("ADC", "Capture", AIC31XX_ADCSETUP, 7, 0,
--			   aic31xx_dapm_power_event, SND_SOC_DAPM_POST_PMU |
--			   SND_SOC_DAPM_POST_PMD),
-+	/* Mic Bias */
-+	SND_SOC_DAPM_SUPPLY("MICBIAS", SND_SOC_NOPM, 0, 0, mic_bias_event,
-+			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++	n = len / sizeof(__be32);
++	if (n <= 0)
++		return -EINVAL;
 +
-+	/* Outputs */
-+	SND_SOC_DAPM_OUTPUT("HPL"),
-+	SND_SOC_DAPM_OUTPUT("HPR"),
-+};
++	priv->snd_card.aux_dev = devm_kzalloc(dev,
++			n * sizeof(*priv->snd_card.aux_dev), GFP_KERNEL);
++	if (!priv->snd_card.aux_dev)
++		return -ENOMEM;
 +
-+static const struct snd_soc_dapm_widget dac31xx_dapm_widgets[] = {
-+	/* Inputs */
-+	SND_SOC_DAPM_INPUT("AIN1"),
-+	SND_SOC_DAPM_INPUT("AIN2"),
-+
-+	/* Output Mixers */
-+	SND_SOC_DAPM_MIXER("Output Left", SND_SOC_NOPM, 0, 0,
-+			   dac31xx_left_output_switches,
-+			   ARRAY_SIZE(dac31xx_left_output_switches)),
-+	SND_SOC_DAPM_MIXER("Output Right", SND_SOC_NOPM, 0, 0,
-+			   dac31xx_right_output_switches,
-+			   ARRAY_SIZE(dac31xx_right_output_switches)),
-+};
-+
-+static const struct snd_soc_dapm_widget aic31xx_dapm_widgets[] = {
-+	/* Inputs */
-+	SND_SOC_DAPM_INPUT("MIC1LP"),
-+	SND_SOC_DAPM_INPUT("MIC1RP"),
-+	SND_SOC_DAPM_INPUT("MIC1LM"),
- 
- 	/* Input Selection to MIC_PGA */
- 	SND_SOC_DAPM_MUX("MIC1LP P-Terminal", SND_SOC_NOPM, 0, 0,
-@@ -507,24 +537,25 @@ static const struct snd_soc_dapm_widget aic31xx_dapm_widgets[] = {
- 	SND_SOC_DAPM_MUX("MIC1LM P-Terminal", SND_SOC_NOPM, 0, 0,
- 			 &p_term_mic1lm),
- 
-+	/* ADC */
-+	SND_SOC_DAPM_ADC_E("ADC", "Capture", AIC31XX_ADCSETUP, 7, 0,
-+			   aic31xx_dapm_power_event, SND_SOC_DAPM_POST_PMU |
-+			   SND_SOC_DAPM_POST_PMD),
-+
- 	SND_SOC_DAPM_MUX("MIC1LM M-Terminal", SND_SOC_NOPM, 0, 0,
- 			 &m_term_mic1lm),
-+
- 	/* Enabling & Disabling MIC Gain Ctl */
- 	SND_SOC_DAPM_PGA("MIC_GAIN_CTL", AIC31XX_MICPGA,
- 			 7, 1, NULL, 0),
- 
--	/* Mic Bias */
--	SND_SOC_DAPM_SUPPLY("MICBIAS", SND_SOC_NOPM, 0, 0, mic_bias_event,
--			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
--
--	/* Outputs */
--	SND_SOC_DAPM_OUTPUT("HPL"),
--	SND_SOC_DAPM_OUTPUT("HPR"),
--
--	/* Inputs */
--	SND_SOC_DAPM_INPUT("MIC1LP"),
--	SND_SOC_DAPM_INPUT("MIC1RP"),
--	SND_SOC_DAPM_INPUT("MIC1LM"),
-+	/* Output Mixers */
-+	SND_SOC_DAPM_MIXER("Output Left", SND_SOC_NOPM, 0, 0,
-+			   aic31xx_left_output_switches,
-+			   ARRAY_SIZE(aic31xx_left_output_switches)),
-+	SND_SOC_DAPM_MIXER("Output Right", SND_SOC_NOPM, 0, 0,
-+			   aic31xx_right_output_switches,
-+			   ARRAY_SIZE(aic31xx_right_output_switches)),
- };
- 
- static const struct snd_soc_dapm_widget aic311x_dapm_widgets[] = {
-@@ -554,7 +585,7 @@ static const struct snd_soc_dapm_widget aic310x_dapm_widgets[] = {
- };
- 
- static const struct snd_soc_dapm_route
--aic31xx_audio_map[] = {
-+common31xx_audio_map[] = {
- 	/* DAC Input Routing */
- 	{"DAC Left Input", "Left Data", "DAC IN"},
- 	{"DAC Left Input", "Right Data", "DAC IN"},
-@@ -565,6 +596,31 @@ aic31xx_audio_map[] = {
- 	{"DAC Left", NULL, "DAC Left Input"},
- 	{"DAC Right", NULL, "DAC Right Input"},
- 
-+	/* HPL path */
-+	{"HP Left", "Switch", "Output Left"},
-+	{"HPL Driver", NULL, "HP Left"},
-+	{"HPL", NULL, "HPL Driver"},
-+
-+	/* HPR path */
-+	{"HP Right", "Switch", "Output Right"},
-+	{"HPR Driver", NULL, "HP Right"},
-+	{"HPR", NULL, "HPR Driver"},
-+};
-+
-+static const struct snd_soc_dapm_route
-+dac31xx_audio_map[] = {
-+	/* Left Output */
-+	{"Output Left", "From Left DAC", "DAC Left"},
-+	{"Output Left", "From AIN1", "AIN1"},
-+	{"Output Left", "From AIN2", "AIN2"},
-+
-+	/* Right Output */
-+	{"Output Right", "From Right DAC", "DAC Right"},
-+	{"Output Right", "From AIN2", "AIN2"},
-+};
-+
-+static const struct snd_soc_dapm_route
-+aic31xx_audio_map[] = {
- 	/* Mic input */
- 	{"MIC1LP P-Terminal", "FFR 10 Ohm", "MIC1LP"},
- 	{"MIC1LP P-Terminal", "FFR 20 Ohm", "MIC1LP"},
-@@ -595,16 +651,6 @@ aic31xx_audio_map[] = {
- 	/* Right Output */
- 	{"Output Right", "From Right DAC", "DAC Right"},
- 	{"Output Right", "From MIC1RP", "MIC1RP"},
--
--	/* HPL path */
--	{"HP Left", "Switch", "Output Left"},
--	{"HPL Driver", NULL, "HP Left"},
--	{"HPL", NULL, "HPL Driver"},
--
--	/* HPR path */
--	{"HP Right", "Switch", "Output Right"},
--	{"HPR Driver", NULL, "HP Right"},
--	{"HPR", NULL, "HPR Driver"},
- };
- 
- static const struct snd_soc_dapm_route
-@@ -633,6 +679,13 @@ static int aic31xx_add_controls(struct snd_soc_codec *codec)
- 	int ret = 0;
- 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
- 
-+	if (!(aic31xx->pdata.codec_type & DAC31XX_BIT))
-+		ret = snd_soc_add_codec_controls(
-+			codec, aic31xx_snd_controls,
-+			ARRAY_SIZE(aic31xx_snd_controls));
-+	if (ret)
-+		return ret;
-+
- 	if (aic31xx->pdata.codec_type & AIC31XX_STEREO_CLASS_D_BIT)
- 		ret = snd_soc_add_codec_controls(
- 			codec, aic311x_snd_controls,
-@@ -651,6 +704,30 @@ static int aic31xx_add_widgets(struct snd_soc_codec *codec)
- 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
- 	int ret = 0;
- 
-+	if (aic31xx->pdata.codec_type & DAC31XX_BIT) {
-+		ret = snd_soc_dapm_new_controls(
-+			dapm, dac31xx_dapm_widgets,
-+			ARRAY_SIZE(dac31xx_dapm_widgets));
-+		if (ret)
-+			return ret;
-+
-+		ret = snd_soc_dapm_add_routes(dapm, dac31xx_audio_map,
-+					      ARRAY_SIZE(dac31xx_audio_map));
-+		if (ret)
-+			return ret;
-+	} else {
-+		ret = snd_soc_dapm_new_controls(
-+			dapm, aic31xx_dapm_widgets,
-+			ARRAY_SIZE(aic31xx_dapm_widgets));
-+		if (ret)
-+			return ret;
-+
-+		ret = snd_soc_dapm_add_routes(dapm, aic31xx_audio_map,
-+					      ARRAY_SIZE(aic31xx_audio_map));
-+		if (ret)
-+			return ret;
++	for (i = 0; i < n; i++) {
++		aux_node = of_parse_phandle(node, PREFIX "aux-devs", i);
++		if (!aux_node)
++			return -EINVAL;
++		priv->snd_card.aux_dev[i].codec_of_node = aux_node;
 +	}
 +
- 	if (aic31xx->pdata.codec_type & AIC31XX_STEREO_CLASS_D_BIT) {
- 		ret = snd_soc_dapm_new_controls(
- 			dapm, aic311x_dapm_widgets,
-@@ -1114,12 +1191,12 @@ static struct snd_soc_codec_driver soc_codec_driver_aic31xx = {
- 	.set_bias_level		= aic31xx_set_bias_level,
- 	.suspend_bias_off	= true,
- 
--	.controls		= aic31xx_snd_controls,
--	.num_controls		= ARRAY_SIZE(aic31xx_snd_controls),
--	.dapm_widgets		= aic31xx_dapm_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(aic31xx_dapm_widgets),
--	.dapm_routes		= aic31xx_audio_map,
--	.num_dapm_routes	= ARRAY_SIZE(aic31xx_audio_map),
-+	.controls		= common31xx_snd_controls,
-+	.num_controls		= ARRAY_SIZE(common31xx_snd_controls),
-+	.dapm_widgets		= common31xx_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(common31xx_dapm_widgets),
-+	.dapm_routes		= common31xx_audio_map,
-+	.num_dapm_routes	= ARRAY_SIZE(common31xx_audio_map),
- };
- 
- static const struct snd_soc_dai_ops aic31xx_dai_ops = {
-@@ -1129,6 +1206,21 @@ static const struct snd_soc_dai_ops aic31xx_dai_ops = {
- 	.digital_mute	= aic31xx_dac_mute,
- };
- 
-+static struct snd_soc_dai_driver dac31xx_dai_driver[] = {
-+	{
-+		.name = "tlv32dac31xx-hifi",
-+		.playback = {
-+			.stream_name	 = "Playback",
-+			.channels_min	 = 1,
-+			.channels_max	 = 2,
-+			.rates		 = AIC31XX_RATES,
-+			.formats	 = AIC31XX_FORMATS,
-+		},
-+		.ops = &aic31xx_dai_ops,
-+		.symmetric_rates = 1,
-+	}
-+};
++	priv->snd_card.num_aux_devs = n;
++	return 0;
++}
 +
- static struct snd_soc_dai_driver aic31xx_dai_driver[] = {
- 	{
- 		.name = "tlv320aic31xx-hifi",
-@@ -1259,9 +1351,16 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ static int asoc_simple_card_parse_of(struct device_node *node,
+ 				     struct simple_card_data *priv)
+ {
+@@ -474,6 +504,10 @@ static int asoc_simple_card_parse_of(struct device_node *node,
  	if (ret)
  		return ret;
  
--	return snd_soc_register_codec(&i2c->dev, &soc_codec_driver_aic31xx,
--				     aic31xx_dai_driver,
--				     ARRAY_SIZE(aic31xx_dai_driver));
-+	if (aic31xx->pdata.codec_type & DAC31XX_BIT)
-+		return snd_soc_register_codec(&i2c->dev,
-+				&soc_codec_driver_aic31xx,
-+				dac31xx_dai_driver,
-+				ARRAY_SIZE(dac31xx_dai_driver));
-+	else
-+		return snd_soc_register_codec(&i2c->dev,
-+				&soc_codec_driver_aic31xx,
-+				aic31xx_dai_driver,
-+				ARRAY_SIZE(aic31xx_dai_driver));
++	ret = asoc_simple_card_parse_aux_devs(node, priv);
++	if (ret)
++		return ret;
++
+ 	return 0;
  }
  
- static int aic31xx_i2c_remove(struct i2c_client *i2c)
-@@ -1277,6 +1376,7 @@ static const struct i2c_device_id aic31xx_i2c_id[] = {
- 	{ "tlv320aic3110", AIC3110 },
- 	{ "tlv320aic3120", AIC3120 },
- 	{ "tlv320aic3111", AIC3111 },
-+	{ "tlv320dac3100", DAC3100 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, aic31xx_i2c_id);
-diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
-index ac9b146..5acd5b6 100644
---- a/sound/soc/codecs/tlv320aic31xx.h
-+++ b/sound/soc/codecs/tlv320aic31xx.h
-@@ -24,12 +24,14 @@
- 
- #define AIC31XX_STEREO_CLASS_D_BIT	0x1
- #define AIC31XX_MINIDSP_BIT		0x2
-+#define DAC31XX_BIT			0x4
- 
- enum aic31xx_type {
- 	AIC3100	= 0,
- 	AIC3110 = AIC31XX_STEREO_CLASS_D_BIT,
- 	AIC3120 = AIC31XX_MINIDSP_BIT,
- 	AIC3111 = (AIC31XX_STEREO_CLASS_D_BIT | AIC31XX_MINIDSP_BIT),
-+	DAC3100 = DAC31XX_BIT,
- };
- 
- struct aic31xx_pdata {
 -- 
 2.1.4
