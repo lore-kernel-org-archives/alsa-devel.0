@@ -1,45 +1,141 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: cq93vc: duplicated callback function goes to component
-Date: Thu, 22 Sep 2016 11:37:32 +0200
-Message-ID: <20160922093756.2093879-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v2 4/4] ASoC: Intel: Skylake: Update to use
+	instance ids generated
+Date: Thu, 22 Sep 2016 14:00:40 +0530
+Message-ID: <1474533040-14222-5-git-send-email-vinod.koul@intel.com>
+References: <1474533040-14222-1-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id C98CC267055
+ for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2016 10:22:25 +0200 (CEST)
+In-Reply-To: <1474533040-14222-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Dharageswari R <dharageswari.r@intel.com>, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-A cleanup removed a couple of members from struct snd_soc_codec_driver
-after changing codec drivers to no longer use them, but one codec
-was missed in the process, giving a build error:
+From: Dharageswari R <dharageswari.r@intel.com>
 
-sound/soc/codecs/cq93vc.c:134:2: error: unknown field 'controls' specified in initializer
-  .controls = cq93vc_snd_controls,
+Post bind parameters of KPB module contains the instance id's of
+neighbouring modules in the sink path
 
-This moves the members from the cq93vc codec driver to its component driver
-just like the other codecs already had.
+Now that module instance ids are generated dynamically we need to update
+these parameters as well, so use the table created and update the ids
 
-Fixes: 8073aefa6082 ("ASoC: remove codec duplicated callback function")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/codecs/cq93vc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c       |  2 ++
+ sound/soc/intel/skylake/skl-topology.c       | 22 ++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h       | 10 ++++++++++
+ sound/soc/intel/skylake/skl-tplg-interface.h |  3 ++-
+ 4 files changed, 36 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
-index 1c895a53001d..7a2d9a2ee427 100644
---- a/sound/soc/codecs/cq93vc.c
-+++ b/sound/soc/codecs/cq93vc.c
-@@ -131,8 +131,10 @@ static struct regmap *cq93vc_get_regmap(struct device *dev)
- static struct snd_soc_codec_driver soc_codec_dev_cq93vc = {
- 	.set_bias_level = cq93vc_set_bias_level,
- 	.get_regmap = cq93vc_get_regmap,
--	.controls = cq93vc_snd_controls,
--	.num_controls = ARRAY_SIZE(cq93vc_snd_controls),
-+	.component_driver = {
-+		.controls = cq93vc_snd_controls,
-+		.num_controls = ARRAY_SIZE(cq93vc_snd_controls),
-+	},
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index ac0c58e170c3..805b7f2173f3 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -680,6 +680,7 @@ static u16 skl_get_module_param_size(struct skl_sst *ctx,
+ 		return param_size;
+ 
+ 	case SKL_MODULE_TYPE_BASE_OUTFMT:
++	case SKL_MODULE_TYPE_KPB:
+ 		return sizeof(struct skl_base_outfmt_cfg);
+ 
+ 	default:
+@@ -733,6 +734,7 @@ static int skl_set_module_format(struct skl_sst *ctx,
+ 		break;
+ 
+ 	case SKL_MODULE_TYPE_BASE_OUTFMT:
++	case SKL_MODULE_TYPE_KPB:
+ 		skl_set_base_outfmt_format(ctx, module_config, *param_data);
+ 		break;
+ 
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index b6fc374f38b5..e48f872505b1 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -607,6 +607,26 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
++static int skl_fill_sink_instance_id(struct skl_sst *ctx,
++				struct skl_algo_data *alg_data)
++{
++	struct skl_kpb_params *params = (struct skl_kpb_params *)alg_data->params;
++	struct skl_mod_inst_map *inst;
++	int i, pvt_id;
++
++	inst = params->map;
++
++	for (i = 0; i < params->num_modules; i++) {
++		pvt_id = skl_get_pvt_instance_id_map(ctx,
++					inst->mod_id, inst->inst_id);
++		if (pvt_id < 0)
++			return -EINVAL;
++		inst->inst_id = pvt_id;
++		inst++;
++	}
++	return 0;
++}
++
+ /*
+  * Some modules require params to be set after the module is bound to
+  * all pins connected.
+@@ -655,6 +675,8 @@ static int skl_tplg_set_module_bind_params(struct snd_soc_dapm_widget *w,
+ 			bc = (struct skl_algo_data *)sb->dobj.private;
+ 
+ 			if (bc->set_params == SKL_PARAM_BIND) {
++				if (mconfig->m_type == SKL_MODULE_TYPE_KPB)
++					skl_fill_sink_instance_id(ctx, bc);
+ 				ret = skl_set_module_params(ctx,
+ 						(u32 *)bc->params, bc->max,
+ 						bc->param_id, mconfig);
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index def03912b1bd..a519360f42a6 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -215,6 +215,16 @@ struct skl_module_fmt {
+ 
+ struct skl_module_cfg;
+ 
++struct skl_mod_inst_map {
++	u16 mod_id;
++	u16 inst_id;
++};
++
++struct skl_kpb_params {
++	u32 num_modules;
++	struct skl_mod_inst_map map[0];
++};
++
+ struct skl_module_inst_id {
+ 	int module_id;
+ 	u32 instance_id;
+diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
+index e208724f9db3..2f6281e056d6 100644
+--- a/sound/soc/intel/skylake/skl-tplg-interface.h
++++ b/sound/soc/intel/skylake/skl-tplg-interface.h
+@@ -80,7 +80,8 @@ enum skl_module_type {
+ 	SKL_MODULE_TYPE_UPDWMIX,
+ 	SKL_MODULE_TYPE_SRCINT,
+ 	SKL_MODULE_TYPE_ALGO,
+-	SKL_MODULE_TYPE_BASE_OUTFMT
++	SKL_MODULE_TYPE_BASE_OUTFMT,
++	SKL_MODULE_TYPE_KPB,
  };
  
- static int cq93vc_platform_probe(struct platform_device *pdev)
+ enum skl_core_affinity {
 -- 
-2.9.0
+1.9.1
