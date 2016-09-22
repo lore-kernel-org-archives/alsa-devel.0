@@ -1,101 +1,57 @@
-From: Xing Zheng <zhengxing@rock-chips.com>
-Subject: [PATCH v2] ASoC: rk3399_gru_sound: fix recording pop at first attempt
-Date: Thu, 22 Sep 2016 21:50:06 +0800
-Message-ID: <1474552206-31742-1-git-send-email-zhengxing@rock-chips.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 4/5] ASoC: fsl_ssi: use flat regmap cache
+Date: Thu, 22 Sep 2016 16:37:06 +0200
+Message-ID: <0ae54910-0712-006c-0afa-a59b63a904be@maciej.szmigiero.name>
+References: <20160919193029.8119-1-marex@denx.de>
+ <20160919193029.8119-4-marex@denx.de>
+ <57E2B53C.6080708@maciej.szmigiero.name>
+ <b54cd59a-97d0-e02d-16be-7aa6752bbb35@denx.de>
+ <57E3074E.4070601@maciej.szmigiero.name>
+ <8d5ad78b-3850-93bd-e299-215f001da9c2@denx.de>
+ <57E318DB.3040600@maciej.szmigiero.name>
+ <20160922104530.GL7994@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-rockchip@lists.infradead.org, woojoo.lee@samsung.com
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de, Xing Zheng <zhengxing@rock-chips.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, dianders@google.com, Mark Brown <broonie@kernel.org>, smbarber@google.com, hychao@google.com, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org, cychiang@google.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3D0D265B3E
+ for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2016 16:37:13 +0200 (CEST)
+In-Reply-To: <20160922104530.GL7994@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Marek Vasut <marex@denx.de>, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Wonjoon Lee <woojoo.lee@samsung.com>
+On 22.09.2016 12:45, Mark Brown wrote:
+> On Thu, Sep 22, 2016 at 01:33:47AM +0200, Maciej S. Szmigiero wrote:
+> 
+>> In you patch 5/5 there is backtrace with flat cache, but I meant a
+>> backtrace with original RB tree cache code when warning about allocation
+>> being done in atomic context was generated.
+> 
+> I think the conclusion of this and some IRC discussion yesterday is that
+> removing patch 5 fixes things - is that right?
 
-Pop happens when mclk applied but dmic's own boot-time
-Specify dmic delay times in dt to make sure
-clocks are ready earlier than dmic working
+There are three possible solutions:
+1) Go back to RB tree cache (revert patch 4) and debug the lockdep warning,
+2) Keep the flat cache introduced by patch 4 but debug the oops at
+cache init time (while keeping defaults read from hardware),
+3) Keep both patches and risk the same issues that were previously
+caused by hardcoded register defaults in driver.
+However, Marek says the device works fine for him with the patches.
 
-Signed-off-by: Wonjoon Lee <woojoo.lee@samsung.com>
-Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
----
+It looks to me 1) is an easier and safer solution, especially that
+the driver previously worked fine with RB tree cache.
+I would test this myself but unfortunately I don't have access to
+hardware this week.
 
-Changes in v2:
-- rename dmic-delay to dmic-wakeup-delay-ms
-
- .../bindings/sound/rockchip,rk3399-gru-sound.txt           |  7 +++++++
- sound/soc/rockchip/rk3399_gru_sound.c                      | 14 ++++++++++++++
- 2 files changed, 21 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-index f19b6c8..eac91db 100644
---- a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-@@ -6,10 +6,17 @@ Required properties:
-   connected to the codecs
- - rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
- 
-+Optional properties:
-+- dmic-wakeup-delay-ms : specify delay time (ms) for DMIC ready.
-+  If this option is specified, which means it's required dmic need
-+  delay for DMIC to ready so that rt5514 can avoid recording before
-+  DMIC send valid data
-+
- Example:
- 
- sound {
- 	compatible = "rockchip,rk3399-gru-sound";
- 	rockchip,cpu = <&i2s0>;
- 	rockchip,codec = <&max98357a &rt5514 &da7219>;
-+	dmic-wakeup-delay-ms = <20>;
- };
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index ee06489..9ed735a 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -38,6 +38,8 @@
- 
- #define SOUND_FS	256
- 
-+unsigned int rt5514_dmic_delay;
-+
- static struct snd_soc_jack rockchip_sound_jack;
- 
- static const struct snd_soc_dapm_widget rockchip_dapm_widgets[] = {
-@@ -123,6 +125,9 @@ static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
-+	/* Wait for DMIC stable */
-+	msleep(rt5514_dmic_delay);
-+
- 	return 0;
- }
- 
-@@ -343,6 +348,15 @@ static int rockchip_sound_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
-+	/* Set DMIC delay */
-+	ret = device_property_read_u32(&pdev->dev, "dmic-delay",
-+					&rt5514_dmic_delay);
-+	if (ret) {
-+		rt5514_dmic_delay = 0;
-+		dev_dbg(&pdev->dev,
-+			"no optional property 'dmic-delay' found, default: no delay\n");
-+	}
-+
- 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
- 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
- 	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
--- 
-1.9.1
+Maciej
