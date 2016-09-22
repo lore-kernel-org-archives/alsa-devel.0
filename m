@@ -1,45 +1,55 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v5 3/3] ASoC: sun4i-codec: Add custom regmap configs
-Date: Thu, 22 Sep 2016 11:29:51 +0300
-Message-ID: <20160922082951.GM8719@lukather>
-References: <20160922071313.12891-1-dannym@scratchpost.org>
- <20160922071313.12891-4-dannym@scratchpost.org>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v2 0/4] ASoC: Intel: Skylake: Add support for
+	generating unique module ids
+Date: Thu, 22 Sep 2016 14:00:36 +0530
+Message-ID: <1474533040-14222-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YgZDKPIOvldTssBR"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBCVNR27QKGQEDIVHL3Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <20160922071313.12891-4-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA9DE26704B
+ for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2016 10:22:16 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Driver needs to send unique module instance id to firmware while creating
+the module and uses this id to communicate with DSP for setting parameters
+while audio use case is ongoing.
 
---YgZDKPIOvldTssBR
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
+But, we have upper bound of instance ID. The current IDs are coming from
+topology but it doesn't know the upper bound and can't assign unique id's
+subject to upper bounds as we can create a big graph but not all parts
+running at same time.
 
-On Thu, Sep 22, 2016 at 09:13:13AM +0200, Danny Milosavljevic wrote:
-> The A20 has a few extra registers that the A10 doesn't have.
-> Therefore, use different regmaps for A10 as compared to A20.
-> 
-> Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 
-Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+So this series first adds APIs to allocate/free a 128bit unique id which is
+built on top of ffz(). It also adds a table for finding modules of
+neighbouring modules. Then driver patches are updated to use this.
 
-Thanks!
-Maxime
+Dharageswari R (4):
+  ASoC: Intel: Skylake: Add module instance id generation APIs
+  ASoC: Intel: Skylake: Use private instance id of modules in IPC
+  ASoC: Intel: Skylake: Add table for module id for quick ref
+  ASoC: Intel: Skylake: Update to use instance ids generated
+
+ sound/soc/intel/skylake/skl-messages.c       |  24 +++--
+ sound/soc/intel/skylake/skl-sst-dsp.h        |   6 ++
+ sound/soc/intel/skylake/skl-sst-utils.c      | 150 ++++++++++++++++++++++++++-
+ sound/soc/intel/skylake/skl-topology.c       |  32 +++++-
+ sound/soc/intel/skylake/skl-topology.h       |  11 ++
+ sound/soc/intel/skylake/skl-tplg-interface.h |   3 +-
+ 6 files changed, 211 insertions(+), 15 deletions(-)
 
 -- 
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
---YgZDKPIOvldTssBR--
+1.9.1
