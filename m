@@ -1,120 +1,60 @@
-From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: [PATCH] ASoC: simple-card: add support for aux devices
-Date: Thu, 22 Sep 2016 23:50:44 +0300
-Message-ID: <1474577444-7598-1-git-send-email-nikita.yoush@cogentembedded.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?Otto=20Kek=C3=A4l=C3=A4inen?= <otto@seravo.fi>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mengdong Lin <mengdong.lin@linux.intel.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Andrew Lunn <andrew@lunn.ch>, Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Chris Healy <cphealy@gmail.com>, Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 4/5] ASoC: fsl_ssi: use flat regmap cache
+Date: Fri, 23 Sep 2016 01:38:24 +0200
+Message-ID: <57E46B70.2070005@maciej.szmigiero.name>
+References: <20160919193029.8119-1-marex@denx.de>
+ <20160919193029.8119-4-marex@denx.de>
+ <57E2B53C.6080708@maciej.szmigiero.name>
+ <b54cd59a-97d0-e02d-16be-7aa6752bbb35@denx.de>
+ <57E3074E.4070601@maciej.szmigiero.name>
+ <8d5ad78b-3850-93bd-e299-215f001da9c2@denx.de>
+ <57E318DB.3040600@maciej.szmigiero.name>
+ <20160922104530.GL7994@sirena.org.uk>
+ <0ae54910-0712-006c-0afa-a59b63a904be@maciej.szmigiero.name>
+ <5506d5e4-4480-3a7d-9455-b314070bda7c@denx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5864226697F
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2016 01:38:30 +0200 (CEST)
+In-Reply-To: <5506d5e4-4480-3a7d-9455-b314070bda7c@denx.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Marek Vasut <marex@denx.de>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch makes it possible to use simple-card in setups where separate
-amplifier chip is connected to codec's output.
+On 22.09.2016 17:27, Marek Vasut wrote:
+> On 09/22/2016 04:37 PM, Maciej S. Szmigiero wrote:
+>> On 22.09.2016 12:45, Mark Brown wrote:
+>>> On Thu, Sep 22, 2016 at 01:33:47AM +0200, Maciej S. Szmigiero wrote:
+>>>
+(..)
+>> It looks to me 1) is an easier and safer solution, especially that
+>> the driver previously worked fine with RB tree cache.
+>> I would test this myself but unfortunately I don't have access to
+>> hardware this week.
+> 
+> I believe switching to flat cache is harmless and it should be a better
+> mode for devices with small mmio address spaces. After some discussion
+> on IRC, I believe [1] should resolve the RBTREE crash (?).
+> 
+> [1]
+> http://git.kernel.org/cgit/linux/kernel/git/broonie/regmap.git/commit/?h=for-next&id=b2c7f5d9c939a37c1ce7f86a642de70e3033ee9e
 
-Example usage:
+I assume you meant "flat cache crash" not "RBTREE crash".
 
-	codec: tlv320dac3100@18 {
-		compatible = "ti,tlv320dac3100";
-		...
-	}
+I will test flat cache version with this patch as soon as I get
+my UDOO board back (probably next week) - maybe everything will be
+fine.
 
-	amp: tpa6130a2@60 {
-		compatible = "ti,tpa6130a2";
-		...
-	}
-
-	sound {
-		compatible = "simple-audio-card";
-		...
-		simple-audio-card,widgets =
-			"Headphone", "Headphone Jack";
-		simple-audio-card,routing =
-			"Headphone Jack", "HPLEFT",
-			"Headphone Jack", "HPRIGHT",
-			"LEFTIN", "HPL",
-			"RIGHTIN", "HPR";
-		simple-audio-card,aux-devs = <&amp>;
-		simple-audio-card,cpu {
-			sound-dai = <&ssi2>;
-		};
-		simple-audio-card,codec {
-			sound-dai = <&codec1>;
-			clocks = ...
-		};
-
-This describes audio path from IMX6 SSI2 through TLV320DAC3100 codec
-through TPA6130A2 amplifier to headphones.
-
-Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
----
- .../devicetree/bindings/sound/simple-card.txt      |  2 ++
- sound/soc/generic/simple-card.c                    | 34 ++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-index 59d8628..5579f40 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-@@ -22,6 +22,8 @@ Optional properties:
- 					  headphones are attached.
- - simple-audio-card,mic-det-gpio	: Reference to GPIO that signals when
- 					  a microphone is attached.
-+- simple-audio-card,aux-devs		: List of phandles pointing to auxiliary devices, such
-+					  as amplifiers, to be added to the sound card.
- 
- Optional subnodes:
- 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 43295f0..f989f34 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -417,6 +417,36 @@ dai_link_of_err:
- 	return ret;
- }
- 
-+static int asoc_simple_card_parse_aux_devs(struct device_node *node,
-+					   struct simple_card_data *priv)
-+{
-+	struct device *dev = simple_priv_to_dev(priv);
-+	struct device_node *aux_node;
-+	int i, n, len;
-+
-+	if (!of_find_property(node, PREFIX "aux-devs", &len))
-+		return 0;		/* Ok to have no aux-devs */
-+
-+	n = len / sizeof(__be32);
-+	if (n <= 0)
-+		return -EINVAL;
-+
-+	priv->snd_card.aux_dev = devm_kzalloc(dev,
-+			n * sizeof(*priv->snd_card.aux_dev), GFP_KERNEL);
-+	if (!priv->snd_card.aux_dev)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < n; i++) {
-+		aux_node = of_parse_phandle(node, PREFIX "aux-devs", i);
-+		if (!aux_node)
-+			return -EINVAL;
-+		priv->snd_card.aux_dev[i].codec_of_node = aux_node;
-+	}
-+
-+	priv->snd_card.num_aux_devs = n;
-+	return 0;
-+}
-+
- static int asoc_simple_card_parse_of(struct device_node *node,
- 				     struct simple_card_data *priv)
- {
-@@ -474,6 +504,10 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	if (ret)
- 		return ret;
- 
-+	ret = asoc_simple_card_parse_aux_devs(node, priv);
-+	if (ret)
-+		return ret;
-+
- 	return 0;
- }
- 
--- 
-2.1.4
+Maciej
