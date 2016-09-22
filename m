@@ -1,88 +1,46 @@
-From: Danny Milosavljevic <dannym@scratchpost.org>
-Subject: [PATCH v5 3/3] ASoC: sun4i-codec: Add custom regmap configs
-Date: Thu, 22 Sep 2016 09:13:13 +0200
-Message-ID: <20160922071313.12891-4-dannym@scratchpost.org>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v5 2/3] ASoC: sun4i-codec: Rename some
+ sun7i-only registers
+Date: Thu, 22 Sep 2016 11:29:32 +0300
+Message-ID: <20160922082932.GL8719@lukather>
 References: <20160922071313.12891-1-dannym@scratchpost.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160922071313.12891-1-dannym@scratchpost.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi@googlegroups.com
-Cc: Danny Milosavljevic <dannym@scratchpost.org>
+ <20160922071313.12891-3-dannym@scratchpost.org>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="sA8oU60uXPLxwof5"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBB55MR27QKGQEO5J3ECA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Disposition: inline
+In-Reply-To: <20160922071313.12891-3-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The A20 has a few extra registers that the A10 doesn't have.
-Therefore, use different regmaps for A10 as compared to A20.
 
-Signed-off-by: Danny Milosavljevic <dannym@scratchpost.org>
----
- sound/soc/sunxi/sun4i-codec.c | 38 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 35 insertions(+), 3 deletions(-)
+--sA8oU60uXPLxwof5
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 3b53b78..e047ec0 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -682,12 +682,37 @@ static const struct regmap_config sun4i_codec_regmap_config = {
- 	.reg_bits	= 32,
- 	.reg_stride	= 4,
- 	.val_bits	= 32,
-+	.max_register	= SUN4I_CODEC_ADC_RXCNT,
-+};
-+
-+static const struct regmap_config sun7i_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
- 	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
- };
- 
-+struct sun4i_codec_quirks {
-+	const struct regmap_config *regmap_config;
-+};
-+
-+static const struct sun4i_codec_quirks sun4i_codec_quirks = {
-+	.regmap_config = &sun4i_codec_regmap_config,
-+};
-+
-+static const struct sun4i_codec_quirks sun7i_codec_quirks = {
-+	.regmap_config = &sun7i_codec_regmap_config,
-+};
-+
- static const struct of_device_id sun4i_codec_of_match[] = {
--	{ .compatible = "allwinner,sun4i-a10-codec" },
--	{ .compatible = "allwinner,sun7i-a20-codec" },
-+	{
-+		.compatible = "allwinner,sun4i-a10-codec",
-+		.data = &sun4i_codec_quirks,
-+	},
-+	{
-+		.compatible = "allwinner,sun7i-a20-codec",
-+		.data = &sun7i_codec_quirks,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
-@@ -760,6 +785,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card;
- 	struct sun4i_codec *scodec;
-+	const struct sun4i_codec_quirks *quirks;
- 	struct resource *res;
- 	void __iomem *base;
- 	int ret;
-@@ -777,8 +803,14 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 		return PTR_ERR(base);
- 	}
- 
-+	quirks = of_device_get_match_data(&pdev->dev);
-+	if (quirks == NULL) {
-+		dev_err(&pdev->dev, "Failed to determine the quirks to use\n");
-+		return -ENODEV;
-+	}
-+
- 	scodec->regmap = devm_regmap_init_mmio(&pdev->dev, base,
--					     &sun4i_codec_regmap_config);
-+					       quirks->regmap_config);
- 	if (IS_ERR(scodec->regmap)) {
- 		dev_err(&pdev->dev, "Failed to create our regmap\n");
- 		return PTR_ERR(scodec->regmap);
+On Thu, Sep 22, 2016 at 09:13:12AM +0200, Danny Milosavljevic wrote:
+> Some of the registers defined in the driver are only usable on the
+> A20. Rename these registers.
+> 
+> Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+
+Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+
+Thanks!
+Maxime
+
+-- 
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+--sA8oU60uXPLxwof5--
