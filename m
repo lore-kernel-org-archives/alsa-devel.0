@@ -1,89 +1,101 @@
-From: Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: Re: [PATCH] ASoC: rk3399_gru_sound: fix recording pop at first attempt
-Date: Thu, 22 Sep 2016 21:50:42 +0800
-Message-ID: <7d3cce2f-bda3-292f-cb3f-223c26b5ced3@rock-chips.com>
-References: <1474295379-16936-1-git-send-email-zhengxing@rock-chips.com>
- <20160919144404.GA18734@leverpostej>
+From: Xing Zheng <zhengxing@rock-chips.com>
+Subject: [PATCH v2] ASoC: rk3399_gru_sound: fix recording pop at first attempt
+Date: Thu, 22 Sep 2016 21:50:06 +0800
+Message-ID: <1474552206-31742-1-git-send-email-zhengxing@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <20160919144404.GA18734@leverpostej>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, cychiang-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, hychao-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, smbarber-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: linux-rockchip@lists.infradead.org, woojoo.lee@samsung.com
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de, Xing Zheng <zhengxing@rock-chips.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, dianders@google.com, Mark Brown <broonie@kernel.org>, smbarber@google.com, hychao@google.com, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org, cychiang@google.com
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyaywKCk9uIDIwMTblubQwOeaciDE55pelIDIyOjQ0LCBNYXJrIFJ1dGxhbmQgd3JvdGU6
-Cj4gT24gTW9uLCBTZXAgMTksIDIwMTYgYXQgMTA6Mjk6MzlQTSArMDgwMCwgWGluZyBaaGVuZyB3
-cm90ZToKPj4gRnJvbTogV29uam9vbiBMZWUgPHdvb2pvby5sZWVAc2Ftc3VuZy5jb20+Cj4+Cj4+
-IFBvcCBoYXBwZW5zIHdoZW4gbWNsayBhcHBsaWVkIGJ1dCBkbWljJ3Mgb3duIGJvb3QtdGltZQo+
-PiBTcGVjaWZ5IGRtaWMgZGVsYXkgdGltZXMgaW4gZHQgdG8gbWFrZSBzdXJlCj4+IGNsb2NrcyBh
-cmUgcmVhZHkgZWFybGllciB0aGFuIGRtaWMgd29ya2luZwo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBX
-b25qb29uIExlZSA8d29vam9vLmxlZUBzYW1zdW5nLmNvbT4KPj4gU2lnbmVkLW9mZi1ieTogWGlu
-ZyBaaGVuZyA8emhlbmd4aW5nQHJvY2stY2hpcHMuY29tPgo+PiAtLS0KPj4KPj4gICAuLi4vYmlu
-ZGluZ3Mvc291bmQvcm9ja2NoaXAscmszMzk5LWdydS1zb3VuZC50eHQgICB8ICAgIDYgKysrKysr
-Cj4+ICAgc291bmQvc29jL3JvY2tjaGlwL3JrMzM5OV9ncnVfc291bmQuYyAgICAgICAgICAgICAg
-fCAgIDE0ICsrKysrKysrKysrKysrCj4+ICAgMiBmaWxlcyBjaGFuZ2VkLCAyMCBpbnNlcnRpb25z
-KCspCj4+Cj4+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
-c291bmQvcm9ja2NoaXAscmszMzk5LWdydS1zb3VuZC50eHQgYi9Eb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3Mvc291bmQvcm9ja2NoaXAscmszMzk5LWdydS1zb3VuZC50eHQKPj4gaW5k
-ZXggZjE5YjZjOC4uYjdkZDNhYiAxMDA2NDQKPj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL3NvdW5kL3JvY2tjaGlwLHJrMzM5OS1ncnUtc291bmQudHh0Cj4+ICsrKyBi
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9yb2NrY2hpcCxyazMzOTkt
-Z3J1LXNvdW5kLnR4dAo+PiBAQCAtNiw2ICs2LDEyIEBAIFJlcXVpcmVkIHByb3BlcnRpZXM6Cj4+
-ICAgICBjb25uZWN0ZWQgdG8gdGhlIGNvZGVjcwo+PiAgIC0gcm9ja2NoaXAsY29kZWM6IFRoZSBw
-aGFuZGxlIG9mIHRoZSBNQVg5ODM1N0EvUlQ1NTE0L0RBNzIxOSBjb2RlY3MKPj4gICAKPj4gK09w
-dGlvbmFsIHByb3BlcnRpZXM6Cj4+ICstIGRtaWMtZGVsYXkgOiBzcGVjaWZ5IGRlbGF5IHRpbWUg
-Zm9yIERNSUMgcmVhZHkuCj4+ICsgIElmIHRoaXMgb3B0aW9uIGlzIHNwZWNpZmllZCwgd2hpY2gg
-bWVhbnMgaXQncyByZXF1aXJlZCBkbWljIG5lZWQKPj4gKyAgZGVsYXkgZm9yIERNSUMgdG8gcmVh
-ZHkgc28gdGhhdCBydDU1MTQgY2FuIGF2b2lkIHJlY29yZGluZyBiZWZvcmUKPj4gKyAgRE1JQyBz
-ZW5kIHZhbGlkIGRhdGEKPiBXaGF0IHVuaXRzIGlzIHRoaXMgaW4/IFBlciB0aGUgY29kZSBpdCBs
-b29rcyBsaWtlIG1zLCBzbyBpZiB3ZSBmb2xsb3cKPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvcHJvcGVydHktdW5pdHMudHh0LCB0aG91cyBzaG91bGQgYmUKPiBuYW1lZCBzb21l
-dGhpbmcgbGlrZSBkbWljLWVuYWJsZS1kZWxheS1tcy4KT0ssIHRoZSAiZG1pYy13YWtldXAtZGVs
-YXktbXMiIGhhdmUgYmVlbiBkb25lLgo+IFRoYXQgc2FpZCwgZG8gd2UgZXZlbiBuZWVkIGEgcHJv
-cGVydHkgZm9yIHRoaXM/IERvZXMgdGhpcyB2YXJ5IG11Y2ggaW4KPiBwcmFjdGljZT8KPgo+IElm
-IGl0IGRvZXMsIGNhbiB3ZSBub3QgZGVyaXZlIHRoaXMgZGVsYXkgZnJvbSBvdGhlciBpbmZvcm1h
-dGlvbiAoZS5nLgo+IHRoZSByYXRlcyBvZiBpbnB1dCBjbG9ja3MgYW5kIHNvIG9uKT8gV2hhdCBl
-eGFjdGx5IGRldGVybWluZXMgdGhlCj4gbmVjZXNzYXJ5IGRlbGF5PwpZZWFoLCB0aGUgRE1JQyBz
-cGVjIGluZGljYXRlcyB3YWtlLXVwIHRpbWUgYXMgMTVtcyBtYXgsIHNvIHdlIG5lZWQgdG8gCnN0
-YXJ0IHJlY29yZGluZyAxNW1zIGFmdGVyIE1DTEsgYWZ0ZXIgdGVzdGluZy4KCkBXb29qb28sIHBs
-ZWFzZSBjb3JyZWN0IG1lIGlmIEkgd2FzIHdyb25nLgoKVGhhbmtzLgo+Cj4gVGhhbmtzLAo+IE1h
-cmsuCj4KPj4gICAKPj4gICBzb3VuZCB7Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvcm9ja2No
-aXAvcmszMzk5X2dydV9zb3VuZC5jIGIvc291bmQvc29jL3JvY2tjaGlwL3JrMzM5OV9ncnVfc291
-bmQuYwo+PiBpbmRleCAxNjRiNmRhLi42YWI4MzhiIDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2Mv
-cm9ja2NoaXAvcmszMzk5X2dydV9zb3VuZC5jCj4+ICsrKyBiL3NvdW5kL3NvYy9yb2NrY2hpcC9y
-azMzOTlfZ3J1X3NvdW5kLmMKPj4gQEAgLTM3LDYgKzM3LDggQEAKPj4gICAKPj4gICAjZGVmaW5l
-IFNPVU5EX0ZTCTI1Ngo+PiAgIAo+PiArdW5zaWduZWQgaW50IHJ0NTUxNF9kbWljX2RlbGF5Owo+
-PiArCj4+ICAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2phY2sgcm9ja2NoaXBfc291bmRfamFjazsK
-Pj4gICAKPj4gICBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXQgcm9ja2No
-aXBfZGFwbV93aWRnZXRzW10gPSB7Cj4+IEBAIC0xMjIsNiArMTI0LDkgQEAgc3RhdGljIGludCBy
-b2NrY2hpcF9zb3VuZF9ydDU1MTRfaHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAq
-c3Vic3RyZWFtLAo+PiAgIAkJcmV0dXJuIHJldDsKPj4gICAJfQo+PiAgIAo+PiArCS8qIFdhaXQg
-Zm9yIERNSUMgc3RhYmxlICovCj4+ICsJbXNsZWVwKHJ0NTUxNF9kbWljX2RlbGF5KTsKPj4gKwo+
-PiAgIAlyZXR1cm4gMDsKPj4gICB9Cj4+ICAgCj4+IEBAIC0zMzQsNiArMzM5LDE1IEBAIHN0YXRp
-YyBpbnQgcm9ja2NoaXBfc291bmRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikK
-Pj4gICAJCXJldHVybiAtRU5PREVWOwo+PiAgIAl9Cj4+ICAgCj4+ICsJLyogU2V0IERNSUMgZGVs
-YXkgKi8KPj4gKwlyZXQgPSBkZXZpY2VfcHJvcGVydHlfcmVhZF91MzIoJnBkZXYtPmRldiwgImRt
-aWMtZGVsYXkiLAo+PiArCQkJCQkmcnQ1NTE0X2RtaWNfZGVsYXkpOwo+PiArCWlmIChyZXQpIHsK
-Pj4gKwkJcnQ1NTE0X2RtaWNfZGVsYXkgPSAwOwo+PiArCQlkZXZfZGJnKCZwZGV2LT5kZXYsCj4+
-ICsJCQkibm8gb3B0aW9uYWwgcHJvcGVydHkgJ2RtaWMtZGVsYXknIGZvdW5kLCBkZWZhdWx0OiBu
-byBkZWxheVxuIik7Cj4+ICsJfQo+PiArCj4+ICAgCXJvY2tjaGlwX2RhaWxpbmtzW0RBSUxJTktf
-UlQ1NTE0X0RTUF0uY3B1X25hbWUgPSBrc3RyZHVwX2NvbnN0KGRldl9uYW1lKGRldiksIEdGUF9L
-RVJORUwpOwo+PiAgIAlyb2NrY2hpcF9kYWlsaW5rc1tEQUlMSU5LX1JUNTUxNF9EU1BdLmNwdV9k
-YWlfbmFtZSA9IGtzdHJkdXBfY29uc3QoZGV2X25hbWUoZGV2KSwgR0ZQX0tFUk5FTCk7Cj4+ICAg
-CXJvY2tjaGlwX2RhaWxpbmtzW0RBSUxJTktfUlQ1NTE0X0RTUF0ucGxhdGZvcm1fbmFtZSA9IGtz
-dHJkdXBfY29uc3QoZGV2X25hbWUoZGV2KSwgR0ZQX0tFUk5FTCk7Cj4+IC0tIAo+PiAxLjcuOS41
-Cj4+Cj4+Cj4KPgoKLS0gCi0gWGluZyBaaGVuZwoKCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMaW51eC1yb2NrY2hpcCBtYWlsaW5nIGxpc3QKTGludXgt
-cm9ja2NoaXBAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2xpbnV4LXJvY2tjaGlwCg==
+From: Wonjoon Lee <woojoo.lee@samsung.com>
+
+Pop happens when mclk applied but dmic's own boot-time
+Specify dmic delay times in dt to make sure
+clocks are ready earlier than dmic working
+
+Signed-off-by: Wonjoon Lee <woojoo.lee@samsung.com>
+Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
+---
+
+Changes in v2:
+- rename dmic-delay to dmic-wakeup-delay-ms
+
+ .../bindings/sound/rockchip,rk3399-gru-sound.txt           |  7 +++++++
+ sound/soc/rockchip/rk3399_gru_sound.c                      | 14 ++++++++++++++
+ 2 files changed, 21 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
+index f19b6c8..eac91db 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
+@@ -6,10 +6,17 @@ Required properties:
+   connected to the codecs
+ - rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
+ 
++Optional properties:
++- dmic-wakeup-delay-ms : specify delay time (ms) for DMIC ready.
++  If this option is specified, which means it's required dmic need
++  delay for DMIC to ready so that rt5514 can avoid recording before
++  DMIC send valid data
++
+ Example:
+ 
+ sound {
+ 	compatible = "rockchip,rk3399-gru-sound";
+ 	rockchip,cpu = <&i2s0>;
+ 	rockchip,codec = <&max98357a &rt5514 &da7219>;
++	dmic-wakeup-delay-ms = <20>;
+ };
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index ee06489..9ed735a 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -38,6 +38,8 @@
+ 
+ #define SOUND_FS	256
+ 
++unsigned int rt5514_dmic_delay;
++
+ static struct snd_soc_jack rockchip_sound_jack;
+ 
+ static const struct snd_soc_dapm_widget rockchip_dapm_widgets[] = {
+@@ -123,6 +125,9 @@ static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
+ 
++	/* Wait for DMIC stable */
++	msleep(rt5514_dmic_delay);
++
+ 	return 0;
+ }
+ 
+@@ -343,6 +348,15 @@ static int rockchip_sound_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
++	/* Set DMIC delay */
++	ret = device_property_read_u32(&pdev->dev, "dmic-delay",
++					&rt5514_dmic_delay);
++	if (ret) {
++		rt5514_dmic_delay = 0;
++		dev_dbg(&pdev->dev,
++			"no optional property 'dmic-delay' found, default: no delay\n");
++	}
++
+ 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+ 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+ 	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+-- 
+1.9.1
