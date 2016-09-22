@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 2/4] ASoC: Intel: Skylake: Use private
-	instance id of modules in IPC
-Date: Thu, 22 Sep 2016 14:00:38 +0530
-Message-ID: <1474533040-14222-3-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 3/4] ASoC: Intel: Skylake: Add table for
+	module id for quick ref
+Date: Thu, 22 Sep 2016 14:00:39 +0530
+Message-ID: <1474533040-14222-4-git-send-email-vinod.koul@intel.com>
 References: <1474533040-14222-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D14E267056
- for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2016 10:22:20 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8129D26704B
+ for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2016 10:22:22 +0200 (CEST)
 In-Reply-To: <1474533040-14222-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,153 +27,108 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Dharageswari R <dharageswari.r@intel.com>
 
-Use private id's of module instances that are generated during
-init_module for the IPC messages to DSP. These id's are freed
-up during delete pipeline.
+Since modules ids are generated dynamically, we do not know the id
+associate with modules in another pipelines. This limits our ability to
+tell DSP about neighbouring modules.
+
+So add a table for quick referencing of allocated module ids.
 
 Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c  | 22 ++++++++++++----------
- sound/soc/intel/skylake/skl-sst-utils.c |  2 +-
- sound/soc/intel/skylake/skl-topology.c  | 10 +++++++---
- 3 files changed, 20 insertions(+), 14 deletions(-)
+ sound/soc/intel/skylake/skl-sst-dsp.h   |  2 ++
+ sound/soc/intel/skylake/skl-sst-utils.c | 37 +++++++++++++++++++++++++++++++--
+ 2 files changed, 37 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 8eb5ba2dae3a..ac0c58e170c3 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -787,6 +787,7 @@ static int skl_alloc_queue(struct skl_module_pin *mpin,
- 				mpin[i].in_use = true;
- 				mpin[i].id.module_id = id.module_id;
- 				mpin[i].id.instance_id = id.instance_id;
-+				mpin[i].id.pvt_id = id.pvt_id;
- 				mpin[i].tgt_mcfg = tgt_cfg;
- 				return i;
- 			}
-@@ -810,6 +811,7 @@ static void skl_free_queue(struct skl_module_pin *mpin, int q_index)
- 		mpin[q_index].in_use = false;
- 		mpin[q_index].id.module_id = 0;
- 		mpin[q_index].id.instance_id = 0;
-+		mpin[q_index].id.pvt_id = 0;
- 	}
- 	mpin[q_index].pin_state = SKL_PIN_UNBIND;
- 	mpin[q_index].tgt_mcfg = NULL;
-@@ -850,7 +852,7 @@ int skl_init_module(struct skl_sst *ctx,
- 	struct skl_ipc_init_instance_msg msg;
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index b61bd03ee4f0..b9e71d051fb1 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -219,6 +219,8 @@ int skl_get_pvt_id(struct skl_sst *ctx,
+ 				struct skl_module_cfg *mconfig);
+ int skl_put_pvt_id(struct skl_sst *ctx,
+ 				struct skl_module_cfg *mconfig);
++int skl_get_pvt_instance_id_map(struct skl_sst *ctx,
++				int module_id, int instance_id);
+ void skl_freeup_uuid_list(struct skl_sst *ctx);
  
- 	dev_dbg(ctx->dev, "%s: module_id = %d instance=%d\n", __func__,
--		 mconfig->id.module_id, mconfig->id.instance_id);
-+		 mconfig->id.module_id, mconfig->id.pvt_id);
- 
- 	if (mconfig->pipe->state != SKL_PIPE_CREATED) {
- 		dev_err(ctx->dev, "Pipe not created state= %d pipe_id= %d\n",
-@@ -866,7 +868,7 @@ int skl_init_module(struct skl_sst *ctx,
- 	}
- 
- 	msg.module_id = mconfig->id.module_id;
--	msg.instance_id = mconfig->id.instance_id;
-+	msg.instance_id = mconfig->id.pvt_id;
- 	msg.ppl_instance_id = mconfig->pipe->ppl_id;
- 	msg.param_data_size = module_config_size;
- 	msg.core_id = mconfig->core_id;
-@@ -887,9 +889,9 @@ static void skl_dump_bind_info(struct skl_sst *ctx, struct skl_module_cfg
- 	*src_module, struct skl_module_cfg *dst_module)
- {
- 	dev_dbg(ctx->dev, "%s: src module_id = %d  src_instance=%d\n",
--		__func__, src_module->id.module_id, src_module->id.instance_id);
-+		__func__, src_module->id.module_id, src_module->id.pvt_id);
- 	dev_dbg(ctx->dev, "%s: dst_module=%d dst_instacne=%d\n", __func__,
--		 dst_module->id.module_id, dst_module->id.instance_id);
-+		 dst_module->id.module_id, dst_module->id.pvt_id);
- 
- 	dev_dbg(ctx->dev, "src_module state = %d dst module state = %d\n",
- 		src_module->m_state, dst_module->m_state);
-@@ -936,9 +938,9 @@ int skl_unbind_modules(struct skl_sst *ctx,
- 		return 0;
- 
- 	msg.module_id = src_mcfg->id.module_id;
--	msg.instance_id = src_mcfg->id.instance_id;
-+	msg.instance_id = src_mcfg->id.pvt_id;
- 	msg.dst_module_id = dst_mcfg->id.module_id;
--	msg.dst_instance_id = dst_mcfg->id.instance_id;
-+	msg.dst_instance_id = dst_mcfg->id.pvt_id;
- 	msg.bind = false;
- 
- 	ret = skl_ipc_bind_unbind(&ctx->ipc, &msg);
-@@ -997,9 +999,9 @@ int skl_bind_modules(struct skl_sst *ctx,
- 			 msg.src_queue, msg.dst_queue);
- 
- 	msg.module_id = src_mcfg->id.module_id;
--	msg.instance_id = src_mcfg->id.instance_id;
-+	msg.instance_id = src_mcfg->id.pvt_id;
- 	msg.dst_module_id = dst_mcfg->id.module_id;
--	msg.dst_instance_id = dst_mcfg->id.instance_id;
-+	msg.dst_instance_id = dst_mcfg->id.pvt_id;
- 	msg.bind = true;
- 
- 	ret = skl_ipc_bind_unbind(&ctx->ipc, &msg);
-@@ -1177,7 +1179,7 @@ int skl_set_module_params(struct skl_sst *ctx, u32 *params, int size,
- 	struct skl_ipc_large_config_msg msg;
- 
- 	msg.module_id = mcfg->id.module_id;
--	msg.instance_id = mcfg->id.instance_id;
-+	msg.instance_id = mcfg->id.pvt_id;
- 	msg.param_data_size = size;
- 	msg.large_param_id = param_id;
- 
-@@ -1190,7 +1192,7 @@ int skl_get_module_params(struct skl_sst *ctx, u32 *params, int size,
- 	struct skl_ipc_large_config_msg msg;
- 
- 	msg.module_id = mcfg->id.module_id;
--	msg.instance_id = mcfg->id.instance_id;
-+	msg.instance_id = mcfg->id.pvt_id;
- 	msg.param_data_size = size;
- 	msg.large_param_id = param_id;
- 
+ int skl_dsp_strip_extended_manifest(struct firmware *fw);
 diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
-index a8dab80e763e..78f1043dfb65 100644
+index 78f1043dfb65..d3120ba86072 100644
 --- a/sound/soc/intel/skylake/skl-sst-utils.c
 +++ b/sound/soc/intel/skylake/skl-sst-utils.c
-@@ -141,7 +141,7 @@ int snd_skl_get_module_info(struct skl_sst *ctx,
+@@ -102,6 +102,7 @@ struct uuid_module {
+ 	int is_loadable;
+ 	int max_instance;
+ 	u64 pvt_id[MAX_INSTANCE_BUFF];
++	int *instance_id;
+ 
+ 	struct list_head list;
+ };
+@@ -140,6 +141,31 @@ int snd_skl_get_module_info(struct skl_sst *ctx,
+ }
  EXPORT_SYMBOL_GPL(snd_skl_get_module_info);
  
++static int skl_get_pvtid_map(struct uuid_module *module, int instance_id)
++{
++	int pvt_id;
++
++	for (pvt_id = 0; pvt_id < module->max_instance; pvt_id++) {
++		if (module->instance_id[pvt_id] == instance_id)
++			return pvt_id;
++	}
++	return -EINVAL;
++}
++
++int skl_get_pvt_instance_id_map(struct skl_sst *ctx,
++				int module_id, int instance_id)
++{
++	struct uuid_module *module;
++
++	list_for_each_entry(module, &ctx->uuid_list, list) {
++		if (module->id == module_id)
++			return skl_get_pvtid_map(module, instance_id);
++	}
++
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(skl_get_pvt_instance_id_map);
++
  static inline int skl_getid_32(struct uuid_module *module, u64 *val,
--					int word1_mask, int word2_mask)
-+				int word1_mask, int word2_mask)
+ 				int word1_mask, int word2_mask)
  {
- 	int index, max_inst, pvt_id;
- 	u32 mask_val;
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 2d475b720963..b6fc374f38b5 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -505,12 +505,15 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
- 		 * FE/BE params
- 		 */
- 		skl_tplg_update_module_params(w, ctx);
--
-+		mconfig->id.pvt_id = skl_get_pvt_id(ctx, mconfig);
-+		if (mconfig->id.pvt_id < 0)
-+			return ret;
- 		skl_tplg_set_module_init_data(w);
- 		ret = skl_init_module(ctx, mconfig);
--		if (ret < 0)
-+		if (ret < 0) {
-+			skl_put_pvt_id(ctx, mconfig);
- 			return ret;
--
-+		}
- 		skl_tplg_alloc_pipe_mcps(skl, mconfig);
- 		ret = skl_tplg_set_module_params(w, ctx);
- 		if (ret < 0)
-@@ -537,6 +540,7 @@ static int skl_tplg_unload_pipe_modules(struct skl_sst *ctx,
- 			if (ret < 0)
- 				return -EIO;
+@@ -208,8 +234,11 @@ int skl_get_pvt_id(struct skl_sst *ctx, struct skl_module_cfg *mconfig)
+ 		if (uuid_le_cmp(*uuid_mod, module->uuid) == 0) {
+ 
+ 			pvt_id = skl_pvtid_128(module);
+-			if (pvt_id >= 0)
++			if (pvt_id >= 0) {
++				module->instance_id[pvt_id] =
++						mconfig->id.instance_id;
+ 				return pvt_id;
++			}
  		}
-+		skl_put_pvt_id(ctx, mconfig);
  	}
  
- 	/* no modules to unload in this path, so return */
+@@ -259,7 +288,7 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
+ {
+ 	struct adsp_fw_hdr *adsp_hdr;
+ 	struct adsp_module_entry *mod_entry;
+-	int i, num_entry;
++	int i, num_entry, size;
+ 	uuid_le *uuid_bin;
+ 	const char *buf;
+ 	struct skl_sst *skl = ctx->thread_context;
+@@ -323,6 +352,10 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
+ 		module->id = (i | (index << 12));
+ 		module->is_loadable = mod_entry->type.load_type;
+ 		module->max_instance = mod_entry->instance_max_count;
++		size = sizeof(int) * mod_entry->instance_max_count;
++		module->instance_id = devm_kzalloc(ctx->dev, size, GFP_KERNEL);
++		if (!module->instance_id)
++			return -ENOMEM;
+ 
+ 		list_add_tail(&module->list, &skl->uuid_list);
+ 
 -- 
 1.9.1
