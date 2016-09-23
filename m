@@ -1,17 +1,18 @@
-From: Max <abonnements@revolwear.com>
-Subject: Re: Tascam US-366 and Alsa Firmware
-Date: Fri, 23 Sep 2016 18:28:51 +0200
-Message-ID: <20234793-9c4a-19f8-1d9f-1945c5a4bfa5@revolwear.com>
-References: <2623497e-086d-52e5-2147-86019b0b30a1@revolwear.com>
- <33649D42-B412-44F7-94F3-70EB814BDF25@gmail.com>
+From: Antonio Ospite <ao2@ao2.it>
+Subject: Re: [alsa-utils] alsaucm should come with a man page
+Date: Fri, 23 Sep 2016 18:37:10 +0200
+Message-ID: <20160923183710.c7b5f2c0cc248472b9ce7f5e@ao2.it>
+References: <20160727114828.9d6c709d80084b659426e6cc@ao2.it>
+ <s5hmvkt975u.wl-tiwai@suse.de>
+ <20160808183041.783253de1e523d05bb529760@ao2.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dedi4226.your-server.de (dedi4226.your-server.de [78.46.143.55])
- by alsa0.perex.cz (Postfix) with ESMTP id 790722665E5
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2016 18:28:55 +0200 (CEST)
-In-Reply-To: <33649D42-B412-44F7-94F3-70EB814BDF25@gmail.com>
+Received: from ao2.it (ao2.it [92.243.12.208])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95E612665E5
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2016 18:37:12 +0200 (CEST)
+In-Reply-To: <20160808183041.783253de1e523d05bb529760@ao2.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,38 +22,282 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Burton Samograd <burton.samograd@gmail.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Justin Xu <justinx@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-VGhhdCdzIGEgcGl0eS4KVGhlIG90aGVyIGRldmljZXMgZnJvbSB0aGlzIHNlcmllcyBzZWVtIHRv
-IGJlIHdvcmtpbmcgd2l0aCB1c3gyeWxvYWRlciwgCndoYXQgd291bGQgYmUgbmVjY2Vzc2FyeSB0
-byBnZXQgdGhpcyBkZXZpY2UgcnVubmluZz8KCgoKT24gMjAxNuuFhCAwOeyblCAyMeydvCAwNjow
-OSwgQnVydG9uIFNhbW9ncmFkIHdyb3RlOgo+IE5vLCBJIG5ldmVyIGdvdCBpdCBydW5uaW5nIHVu
-Zm9ydHVuYXRlbHkuICBJdCBhbHNvIGJhcmVseSB3b3JrcyB1bmRlciBPU1ggd2l0aG91dCBsb2Nr
-aW5nIG15IHN5c3RlbSB3aGVuIEkgcGx1ZyBpdCBpbi4KPgo+IGtydWhmdAo+Cj4+IE9uIFNlcCAy
-MCwgMjAxNiwgYXQgNTozOSBBTSwgTWF4IDxhYm9ubmVtZW50c0ByZXZvbHdlYXIuY29tPiB3cm90
-ZToKPj4KPj4gSSBoYXZlIHRoaXMgZGV2aWNlIHRvbyBhbmQgd2FzIHdvbmRlcmluZyBpZiBPUCBv
-ciBhbnlvbmUgZWxzZSBldmVyIGdvdCBpdCBydW5uaW5nIGFuZCBob3cuCj4+Cj4+IFRoYW5rcy4K
-Pj4KPj4KPj4+IEhpLAo+Pj4KPj4+IEkgcmVjZW50bHkgYm91Z2h0IHRoZSBUYXNjYW0gVVMtMzY2
-IGFuZCBmb3Jnb3QgdG8gY2hlY2sgZm9yIExpbnV4IHN1cHBvcnQsCj4+PiB3aGljaCBpdCBkb2Vz
-bid0IGhhdmUgKHlldCEgOikuIExvb2tpbmcgdGhyb3VnaCB0aGUgQWxzYSBmaXJtd2FyZSBzb3Vy
-Y2VzLAo+Pj4gdGhlcmUgc2VlbXMgdG8gYmUgYSBmaXJtd2FyZSBsb2FkZXIgY2FsbGVkIHVzeDJ5
-bG9hZGVyIHdoaWNoIHN1cHBvcnRzIGEKPj4+IG51bWJlciBvZiBUYXNjYW0gY2FyZHMsIGJ1dCB0
-aGUgVVMtMzY2IGlzIG5vdCBsaXN0ZWQuICBJdCBsb29rcyBsaWtlIHJlYWxseQo+Pj4gdXN4Mnls
-b2FkZXIganVzdCBuZWVkcyB0aGUgZmlybXdhcmUgYW5kIGEgYHByZXBhZGAgZmlsZS4gSWB2ZSBm
-b3VuZCB0aGUKPj4+IGZpcm13YXJlIGZvciB0aGUgY2FyZCAoSSB0aGluaykgYnVyaWVkIGluIHRo
-ZSBPU1ggZmlybXdhcmUgZG93bmxvYWQKPj4+IHBhY2thZ2U6Cj4+Pgo+Pj4KPj4+IGh0dHA6Ly90
-YXNjYW0uY29tL2NvbnRlbnQvZG93bmxvYWRzL3Byb2R1Y3RzLzc4OS91cy0zMjJfdXMtMzY2X2Z3
-X3YxMDNfbWF2ZXJpY2tzLXlvc2VtaXRlLnppcAo+Pj4KPj4+IE5vdyBJIHRoaW5rIEkganVzdCBu
-ZWVkIHRoZSBwcmVwYWQgZmlsZSwgYnV0IHRoZXJlJ3MgbGl0dGxlIGRvY3VtZW50YXRpb24KPj4+
-IHJlZ2FyZGluZyBleGFjdGx5IHdoYXQgdGhhdCBpcyAoSSdtIGFzc3VtaW5nIGEgbnVtYmVyIG9m
-IDBzIGp1c3QgdG8gcGFkIHRoZQo+Pj4gZmlybXdhcmUgaW1hZ2UgdG8gYWxpZ25tZW50LCBidXQg
-SSdtIG5vdCBzdXJlIG9mIHdoYXQgYWxpZ25tZW50KS4KPj4+Cj4+PiBBbnkgaWRlYXMgaWYgdXN4
-Mnlsb2FkZXIgd2lsbCB3b3JrIGF0IGFsbCB3aXRoIHRoZSBVUy0zNjY/ICBEb2VzIGFueW9uZQo+
-Pj4ga25vdyB3aGF0IHRoZSBwcmUtcGFkIGZpbGUgc2hvdWxkIGJlL2NvbnRhaW4/ICBIYXMgYW55
-b25lIHRyaWVkIHRvIGdldCB0aGUKPj4+IFVTLTM2NiB3b3JraW5nIHlldCBhbmQgZmFpbGVkPwo+
-Pj4KPj4+IFJlZmVyZW5jZToKPj4+Cj4+PiAgICAgaHR0cDovL3Rhc2NhbS5jb20vcHJvZHVjdC91
-cy0zNjYvCj4+Pgo+Pj4gVGhhbmtzLgo+Pj4KPj4+IEJ1cnRvbiBTYW1vZ3JhZAo+PgoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Mon, 8 Aug 2016 18:30:41 +0200
+Antonio Ospite <ao2@ao2.it> wrote:
+
+> On Wed, 03 Aug 2016 17:57:49 +0200
+> Takashi Iwai <tiwai@suse.de> wrote:
+> 
+[...]
+> > Go ahead, please post your draft version.  That's already helpful.
+> > 
+> 
+> OK, I will.
+> 
+> The first version will be in a readable text format (maybe asciidoc),
+> this makes writing and reviewing the content a lot easier.
+[...]
+
+Hi, I am inlining below a man page written in reStructuredText, I saw
+that other kernel subsystem are using this format.
+
+The document can be converted to a unix man page with the rst2man
+command available in the python3-docutils package (on Debian systems).
+BTW, there is also a rst2html which can be handy.
+
+Let's just review the content for now, but let me also know if you want
+the groff man page in the final patch or if shipping this .rst and
+generating the man page at compile time is OK.
+
+Ciao,
+   Antonio
+
+=========
+ alsaucm
+=========
+
+---------------------
+ALSA Use Case Manager
+---------------------
+
+:Author: Antonio Ospite <ao2@ao2.it>
+:Date:   2016-09-22
+:Copyright: GPLv2+
+:Manual section: 1
+:Manual group: General Commands Manual
+
+SYNOPSIS
+========
+
+*alsaucm* <options> [command]
+
+DESCRIPTION
+===========
+
+alsaucm (ALSA Use Case Manager) is a program to use the ALSA `Use Case
+Interface`_ from the command line.
+
+On complex sound cards, setting up audio routes is not trivial and mixer
+settings can conflict one another preventing the audio card to work at all.
+
+The ALSA Use Case Manager is a mechanism for controlling complex audio
+hardware establishing a relationship between hardware configurations and
+meaningful use cases that the end-user can relate with.
+
+The use case manager can also be used to switch between use cases when
+necessary, in a consistent way.
+
+At a lower level, the use case manager works by configuring the sound card
+ALSA kcontrols to change the hardware digital and analog audio routing to
+match the requested device use case.
+
+The use case manager kcontrol configurations are stored in easy to modify text
+files. An audio use case can be defined by a **verb** and **device** parameter.
+
+The verb describes the use case action i.e. a phone call, listening to music,
+recording a conversation etc. The device describes the physical audio capture
+and playback hardware i.e. headphones, phone handset, bluetooth headset, etc.
+
+
+OPTIONS
+=======
+
+Available options:
+
+  **-h**, **--help**
+    this help
+
+  **-c**, **--card** `NAME`
+    open card NAME
+
+  **-i**, **--interactive**
+    interactive mode
+
+  **-b**, **--batch** `FILE`
+    batch mode (use ``'-'`` for the stdin input)
+
+  **-n**, **--no-open**
+    do not open first card found
+
+
+Available commands:
+
+  ``open`` `NAME`
+    open card NAME.
+
+    valid names are sound card names as listed in ``/usr/share/alsa/ucm``.
+
+  ``reset``
+    reset sound card to default state.
+
+  ``reload``
+    reload configuration.
+
+  ``listcards``
+    list available cards.
+
+  ``list`` `IDENTIFIER`
+    list command, for items returning two entries (value+comment).
+
+    the value of the `IDENTIFIER` argument can can be:
+
+    - ``_verbs`` - get verb list (in pair verb+comment)
+    - ``_devices[/{verb}]`` - get list of supported devices (in pair device+comment)
+    - ``_modifiers[/{verb}]`` - get list of supported modifiers (in pair modifier+comment)
+
+    The forms without the trailing ``/{verb}`` are valid only after a specific
+    verb has been set.
+
+  ``list1`` `IDENTIFIER`
+    list command, for lists returning one item per entry.
+
+    the value of the `IDENTIFIER` argument can vary depending on the context,
+    it can be:
+
+    - ``TQ[/{verb}]`` - get list of Tone Quality identifiers
+    - ``_enadevs`` - get list of enabled devices
+    - ``_enamods`` - get list of enabled modifiers
+    - ``_supporteddevs/{modifier}|{device}[/{verb}]`` - list of supported devices
+    - ``_conflictingdevs/{modifier}|{device}[/{verb}]`` - list of conflicting devices
+
+  ``get`` `IDENTIFIER`
+    get string value.
+
+    the value of the `IDENTIFIER` argument can can be:
+
+    - ``_verb`` - return current verb
+    - ``[=]{NAME}[/[{modifier}|{/device}][/{verb}]]`` (For valid NAMEs look at the
+      ALSA `Use Case Interface`_)
+
+
+  ``geti`` `IDENTIFIER`
+    get integer value.
+
+    the value of the `IDENTIFIER` argument can can be:
+
+    - ``_devstatus/{device}``
+    - ``_modtstaus/{device}``
+
+  ``set`` `IDENTIFIER` `VALUE`
+    set string value
+
+    The value of the `IDENTIFIER` argument can can be:
+
+    - ``_verb`` - set the verb to `VALUE`
+    - ``_enadev`` - enable the device specified by `VALUE`
+    - ``_disdev`` - disable the device specified by `VALUE`
+    - ``_swdev/{old_device}`` - switche device:
+
+      - disable `old_device` and then enable the device specified by
+        `VALUE`
+      - if no device was enabled just return
+
+    - ``_enamod`` - enable the modifier specified by `VALUE`
+    - ``_dismod`` - disable the modifier specified by `VALUE`
+    - ``_swmod/{old_modifier}`` - switch modifier:
+
+      - disable `old_modifier` and then enable the modifier specified by
+        `VALUE`
+      - if no modifier was enabled just return
+
+    Note that the identifiers referring to devices and modifiers are valid
+    only after setting a verb.
+
+  ``h``, ``help``
+    help
+
+  ``q``, ``quit``
+    quit
+
+
+FILES
+=====
+
+The master use case files for each supported sound card are in ``/usr/share/alsa/ucm``.
+
+For example, the master use case file for the `Pandaboard` card is in
+``/usr/share/alsa/ucm/PandaBoard/PandaBoard.conf``, this file lists all the
+supported use cases, e.g.
+
+::
+
+  SectionUseCase."HiFi" {
+                  File "hifi"
+                  Comment "Play HiFi quality Music."
+  }
+  ...
+
+
+Each use case defines a _verb, which is described in the file specified in
+the ``File`` directive, like above.
+
+The ``HiFi`` verb above is described in
+``/usr/share/alsa/ucm/PandaBoard/hifi``.
+
+For more details on the syntax of UCM files, see the alsa-lib source code:
+http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/ucm/parser.c
+
+
+EXAMPLES OF USE
+===============
+
+Some commands, like for instance ``list _devices``,
+can only work after setting a ``_verb`` in the **same execution**, for
+instance this sequence doesn't work:
+
+::
+
+  # alsaucm -c bytcr-rt5640 set _verb HiFi
+  # alsaucm -c bytcr-rt5640 list _devices
+
+
+However this command does:
+
+::
+
+  # alsaucm -n -b - <<EOM
+  open bytcr-rt5640
+  set _verb HiFi
+  list _devices
+  EOM
+
+
+An example of setting the `Speaker` device for the `HiFi` verb of the
+`bytcr-rt5640` card:
+
+::
+
+  # alsaucm -n -b - <<EOM
+  open bytcr-rt5640
+  reset
+  set _verb HiFi
+  set _enadev Speaker
+  EOM
+
+
+
+SEE ALSO
+========
+
+* Use Case Interface: http://www.alsa-project.org/alsa-doc/alsa-lib/group__ucm.html
+
+.. _Use Case Interface: http://www.alsa-project.org/alsa-doc/alsa-lib/group__ucm.html
+
+BUGS
+====
+
+None known.
+
+
+-- 
+Antonio Ospite
+https://ao2.it
+https://twitter.com/ao2it
+
+A: Because it messes up the order in which people normally read text.
+   See http://en.wikipedia.org/wiki/Posting_style
+Q: Why is top-posting such a bad thing?
