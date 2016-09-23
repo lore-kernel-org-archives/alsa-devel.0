@@ -1,15 +1,15 @@
 From: Antonio Ospite <ao2@ao2.it>
-Subject: [alsa-lib][PATCH] ucm: fix crash when calling
-	snd_use_case_geti() with no device or modifier
-Date: Fri, 23 Sep 2016 18:11:16 +0200
-Message-ID: <20160923161116.26359-1-ao2@ao2.it>
+Subject: [alsa-lib][PATCHv2] ucm: docs: typeset lists of
+	identifiers explicitly
+Date: Fri, 23 Sep 2016 18:18:57 +0200
+Message-ID: <20160923161857.26573-1-ao2@ao2.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp205.alice.it (smtp205.alice.it [82.57.200.101])
- by alsa0.perex.cz (Postfix) with ESMTP id A16D62665D9
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2016 18:11:31 +0200 (CEST)
+Received: from smtp207.alice.it (smtp207.alice.it [82.57.200.103])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8736C2665D9
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2016 18:19:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,84 +20,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Antonio Ospite <ao2@ao2.it>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Antonio Ospite <ao2@ao2.it>
 List-Id: alsa-devel@alsa-project.org
 
-When calling snd_use_case_geti(uc_mgr, "_devstatus", &lvalue) the code
-ends up calling device_status(uc_mgr, NULL), which result in a crash in
-strcmp(dev->name, NULL), when there are enabled devices.
+Doxygen doesn't preserve formatting that relies only on indentation,
+typeset lists of identifiers explicitly.
 
-This happens because snd_use_case_geti() allows a "_devstatus"
-identifier even if it's only supposed to allow the form
-"_devstatus/{device}".
+This makes the HTML docs a lot more readable.
 
-So check that the device name is not null.
+This change comes along the lines of commit 72aa0f8332fb ("ucm: reformat
+snd_use_case_get() doc").
 
-The same issue occurs with "_modstatus", this change fixes that as well.
+Some TABs has been added too in order to preserve the aligned look when
+reading the source code.
 
 Signed-off-by: Antonio Ospite <ao2@ao2.it>
 ---
 
-Hi,
+Changes since v1:
 
-the bug can be reproduced with a command like this:
+  * fix a typo where a '=' (equal) was used instead of a '-' (minus) at the
+    start of one line.
 
-  # alsaucm -n -b - <<EOM
-  open bytcr-rt5640
-  reset
-  set _verb HiFi
-  set _device Speaker
-  geti _devstatus
-  EOM
-  Segmentation fault
-
-I decided to add the check once per command instead of doing this:
-
-  @@ -1525,7 +1525,8 @@ int snd_use_case_geti(snd_use_case_mgr_t *uc_mgr,
-                                  goto __end;
-                           }
-                   } else {
-  -                       str = NULL;
-  +                       err = -EINVAL;
-  +                       goto __end;
-                   }
-
-because the function body seems to be prepared to accept other forms of
-identifiers, possibly even without a "prefix/suffix" structure.
-
-Ciao ciao,
+Thanks,
    Antonio
 
-P.S. the source code in src/ucm has a mixed indentation style of TABs and
-spaces, would you accept a patch to uniform the style?
+ include/use-case.h | 57 +++++++++++++++++++++++++++---------------------------
+ 1 file changed, 29 insertions(+), 28 deletions(-)
 
- src/ucm/main.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 24d9510..d5e418e 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -1528,12 +1528,20 @@ int snd_use_case_geti(snd_use_case_mgr_t *uc_mgr,
-                         str = NULL;
-                 }
-                 if (check_identifier(identifier, "_devstatus")) {
-+			if(!str) {
-+				err = -EINVAL;
-+				goto __end;
-+			}
-                         err = device_status(uc_mgr, str);
- 			if (err >= 0) {
- 				*value = err;
- 				err = 0;
- 			}
- 		} else if (check_identifier(identifier, "_modstatus")) {
-+			if(!str) {
-+				err = -EINVAL;
-+				goto __end;
-+			}
-                         err = modifier_status(uc_mgr, str);
- 			if (err >= 0) {
- 				*value = err;
+diff --git a/include/use-case.h b/include/use-case.h
+index 9aac6e2..8911645 100644
+--- a/include/use-case.h
++++ b/include/use-case.h
+@@ -192,20 +192,21 @@ int snd_use_case_free_list(const char *list[], int items);
+  * \return Number of list entries if success, otherwise a negative error code
+  *
+  * Defined identifiers:
+- *   NULL 		- get card list
+- *			  (in pair cardname+comment)
+- *   _verbs		- get verb list
+- *			  (in pair verb+comment)
+- *   _devices[/{verb}]	- get list of supported devices
+- *			  (in pair device+comment)
+- *   _modifiers[/{verb}]- get list of supported modifiers
+- *			  (in pair modifier+comment)
+- *   TQ[/{verb}]	- get list of TQ identifiers
+- *   _enadevs		- get list of enabled devices
+- *   _enamods		- get list of enabled modifiers
++ *   - NULL			- get card list
++ *				 (in pair cardname+comment)
++ *   - _verbs			- get verb list
++ *				  (in pair verb+comment)
++ *   - _devices[/{verb}]	- get list of supported devices
++ *				  (in pair device+comment)
++ *   - _modifiers[/{verb}]	- get list of supported modifiers
++ *				  (in pair modifier+comment)
++ *   - TQ[/{verb}]		- get list of TQ identifiers
++ *   - _enadevs			- get list of enabled devices
++ *   - _enamods			- get list of enabled modifiers
++ *
++ *   - _supporteddevs/{modifier}|{device}[/{verb}]   - list of supported devices
++ *   - _conflictingdevs/{modifier}|{device}[/{verb}] - list of conflicting devices
+  *
+- *   _supporteddevs/{modifier}|{device}[/{verb}]   - list of supported devices
+- *   _conflictingdevs/{modifier}|{device}[/{verb}] - list of conflicting devices
+  *   Note that at most one of the supported/conflicting devs lists has
+  *   any entries, and when neither is present, all devices are supported.
+  *
+@@ -331,8 +332,8 @@ int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
+  * \return Zero if success, otherwise a negative error code
+  *
+  * Known identifiers:
+- *   _devstatus/{device}	- return status for given device
+- *   _modstatus/{modifier}	- return status for given modifier
++ *   - _devstatus/{device}	- return status for given device
++ *   - _modstatus/{modifier}	- return status for given modifier
+  */
+ int snd_use_case_geti(snd_use_case_mgr_t *uc_mgr,
+ 		      const char *identifier,
+@@ -346,19 +347,19 @@ int snd_use_case_geti(snd_use_case_mgr_t *uc_mgr,
+  * \return Zero if success, otherwise a negative error code
+  *
+  * Known identifiers:
+- *   _verb 		- set current verb = value
+- *   _enadev		- enable given device = value
+- *   _disdev		- disable given device = value
+- *   _swdev/{old_device} - new_device = value
+- *			- disable old_device and then enable new_device
+- *			- if old_device is not enabled just return
+- *			- check transmit sequence firstly
+- *   _enamod		- enable given modifier = value
+- *   _dismod		- disable given modifier = value
+- *   _swmod/{old_modifier} - new_modifier = value
+- *			- disable old_modifier and then enable new_modifier
+- *			- if old_modifier is not enabled just return
+- *			- check transmit sequence firstly
++ *   - _verb			- set current verb = value
++ *   - _enadev			- enable given device = value
++ *   - _disdev			- disable given device = value
++ *   - _swdev/{old_device}	- new_device = value
++ *				  - disable old_device and then enable new_device
++ *				  - if old_device is not enabled just return
++ *				  - check transmit sequence firstly
++ *   - _enamod			- enable given modifier = value
++ *   - _dismod			- disable given modifier = value
++ *   - _swmod/{old_modifier}	- new_modifier = value
++ *				  - disable old_modifier and then enable new_modifier
++ *				  - if old_modifier is not enabled just return
++ *				  - check transmit sequence firstly
+  */
+ int snd_use_case_set(snd_use_case_mgr_t *uc_mgr,
+                      const char *identifier,
 -- 
 2.9.3
