@@ -1,303 +1,118 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: Re: [alsa-utils] alsaucm should come with a man page
-Date: Fri, 23 Sep 2016 18:37:10 +0200
-Message-ID: <20160923183710.c7b5f2c0cc248472b9ce7f5e@ao2.it>
-References: <20160727114828.9d6c709d80084b659426e6cc@ao2.it>
- <s5hmvkt975u.wl-tiwai@suse.de>
- <20160808183041.783253de1e523d05bb529760@ao2.it>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/2] ASoC: cs35l34: Add device tree bindings file for
+ cs35l34
+Date: Fri, 23 Sep 2016 12:34:03 -0500
+Message-ID: <20160923173403.GA24394@rob-hp-laptop>
+References: <1474062521-16911-1-git-send-email-Paul.Handrigan@cirrus.com>
+ <c61a1616-e5c3-4443-9f98-8cadc7fd44ea@EX3.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ao2.it (ao2.it [92.243.12.208])
- by alsa0.perex.cz (Postfix) with ESMTP id 95E612665E5
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2016 18:37:12 +0200 (CEST)
-In-Reply-To: <20160808183041.783253de1e523d05bb529760@ao2.it>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Justin Xu <justinx@slimlogic.co.uk>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <c61a1616-e5c3-4443-9f98-8cadc7fd44ea-XU/xxMRwCJnfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 8 Aug 2016 18:30:41 +0200
-Antonio Ospite <ao2@ao2.it> wrote:
-
-> On Wed, 03 Aug 2016 17:57:49 +0200
-> Takashi Iwai <tiwai@suse.de> wrote:
+On Fri, Sep 16, 2016 at 04:48:41PM -0500, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org wrote:
+> From: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 > 
-[...]
-> > Go ahead, please post your draft version.  That's already helpful.
-> > 
+> Add device tree bindings file for the cs35l34 8V boosted
+> class D amplifier.
 > 
-> OK, I will.
+> Signed-off-by: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+> ---
+>  .../devicetree/bindings/sound/cs35l34.txt          | 64 ++++++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/cs35l34.txt
 > 
-> The first version will be in a readable text format (maybe asciidoc),
-> this makes writing and reviewing the content a lot easier.
-[...]
-
-Hi, I am inlining below a man page written in reStructuredText, I saw
-that other kernel subsystem are using this format.
-
-The document can be converted to a unix man page with the rst2man
-command available in the python3-docutils package (on Debian systems).
-BTW, there is also a rst2html which can be handy.
-
-Let's just review the content for now, but let me also know if you want
-the groff man page in the final patch or if shipping this .rst and
-generating the man page at compile time is OK.
-
-Ciao,
-   Antonio
-
-=========
- alsaucm
-=========
-
----------------------
-ALSA Use Case Manager
----------------------
-
-:Author: Antonio Ospite <ao2@ao2.it>
-:Date:   2016-09-22
-:Copyright: GPLv2+
-:Manual section: 1
-:Manual group: General Commands Manual
-
-SYNOPSIS
-========
-
-*alsaucm* <options> [command]
-
-DESCRIPTION
-===========
-
-alsaucm (ALSA Use Case Manager) is a program to use the ALSA `Use Case
-Interface`_ from the command line.
-
-On complex sound cards, setting up audio routes is not trivial and mixer
-settings can conflict one another preventing the audio card to work at all.
-
-The ALSA Use Case Manager is a mechanism for controlling complex audio
-hardware establishing a relationship between hardware configurations and
-meaningful use cases that the end-user can relate with.
-
-The use case manager can also be used to switch between use cases when
-necessary, in a consistent way.
-
-At a lower level, the use case manager works by configuring the sound card
-ALSA kcontrols to change the hardware digital and analog audio routing to
-match the requested device use case.
-
-The use case manager kcontrol configurations are stored in easy to modify text
-files. An audio use case can be defined by a **verb** and **device** parameter.
-
-The verb describes the use case action i.e. a phone call, listening to music,
-recording a conversation etc. The device describes the physical audio capture
-and playback hardware i.e. headphones, phone handset, bluetooth headset, etc.
-
-
-OPTIONS
-=======
-
-Available options:
-
-  **-h**, **--help**
-    this help
-
-  **-c**, **--card** `NAME`
-    open card NAME
-
-  **-i**, **--interactive**
-    interactive mode
-
-  **-b**, **--batch** `FILE`
-    batch mode (use ``'-'`` for the stdin input)
-
-  **-n**, **--no-open**
-    do not open first card found
-
-
-Available commands:
-
-  ``open`` `NAME`
-    open card NAME.
-
-    valid names are sound card names as listed in ``/usr/share/alsa/ucm``.
-
-  ``reset``
-    reset sound card to default state.
-
-  ``reload``
-    reload configuration.
-
-  ``listcards``
-    list available cards.
-
-  ``list`` `IDENTIFIER`
-    list command, for items returning two entries (value+comment).
-
-    the value of the `IDENTIFIER` argument can can be:
-
-    - ``_verbs`` - get verb list (in pair verb+comment)
-    - ``_devices[/{verb}]`` - get list of supported devices (in pair device+comment)
-    - ``_modifiers[/{verb}]`` - get list of supported modifiers (in pair modifier+comment)
-
-    The forms without the trailing ``/{verb}`` are valid only after a specific
-    verb has been set.
-
-  ``list1`` `IDENTIFIER`
-    list command, for lists returning one item per entry.
-
-    the value of the `IDENTIFIER` argument can vary depending on the context,
-    it can be:
-
-    - ``TQ[/{verb}]`` - get list of Tone Quality identifiers
-    - ``_enadevs`` - get list of enabled devices
-    - ``_enamods`` - get list of enabled modifiers
-    - ``_supporteddevs/{modifier}|{device}[/{verb}]`` - list of supported devices
-    - ``_conflictingdevs/{modifier}|{device}[/{verb}]`` - list of conflicting devices
-
-  ``get`` `IDENTIFIER`
-    get string value.
-
-    the value of the `IDENTIFIER` argument can can be:
-
-    - ``_verb`` - return current verb
-    - ``[=]{NAME}[/[{modifier}|{/device}][/{verb}]]`` (For valid NAMEs look at the
-      ALSA `Use Case Interface`_)
-
-
-  ``geti`` `IDENTIFIER`
-    get integer value.
-
-    the value of the `IDENTIFIER` argument can can be:
-
-    - ``_devstatus/{device}``
-    - ``_modtstaus/{device}``
-
-  ``set`` `IDENTIFIER` `VALUE`
-    set string value
-
-    The value of the `IDENTIFIER` argument can can be:
-
-    - ``_verb`` - set the verb to `VALUE`
-    - ``_enadev`` - enable the device specified by `VALUE`
-    - ``_disdev`` - disable the device specified by `VALUE`
-    - ``_swdev/{old_device}`` - switche device:
-
-      - disable `old_device` and then enable the device specified by
-        `VALUE`
-      - if no device was enabled just return
-
-    - ``_enamod`` - enable the modifier specified by `VALUE`
-    - ``_dismod`` - disable the modifier specified by `VALUE`
-    - ``_swmod/{old_modifier}`` - switch modifier:
-
-      - disable `old_modifier` and then enable the modifier specified by
-        `VALUE`
-      - if no modifier was enabled just return
-
-    Note that the identifiers referring to devices and modifiers are valid
-    only after setting a verb.
-
-  ``h``, ``help``
-    help
-
-  ``q``, ``quit``
-    quit
-
-
-FILES
-=====
-
-The master use case files for each supported sound card are in ``/usr/share/alsa/ucm``.
-
-For example, the master use case file for the `Pandaboard` card is in
-``/usr/share/alsa/ucm/PandaBoard/PandaBoard.conf``, this file lists all the
-supported use cases, e.g.
-
-::
-
-  SectionUseCase."HiFi" {
-                  File "hifi"
-                  Comment "Play HiFi quality Music."
-  }
-  ...
-
-
-Each use case defines a _verb, which is described in the file specified in
-the ``File`` directive, like above.
-
-The ``HiFi`` verb above is described in
-``/usr/share/alsa/ucm/PandaBoard/hifi``.
-
-For more details on the syntax of UCM files, see the alsa-lib source code:
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/ucm/parser.c
-
-
-EXAMPLES OF USE
-===============
-
-Some commands, like for instance ``list _devices``,
-can only work after setting a ``_verb`` in the **same execution**, for
-instance this sequence doesn't work:
-
-::
-
-  # alsaucm -c bytcr-rt5640 set _verb HiFi
-  # alsaucm -c bytcr-rt5640 list _devices
-
-
-However this command does:
-
-::
-
-  # alsaucm -n -b - <<EOM
-  open bytcr-rt5640
-  set _verb HiFi
-  list _devices
-  EOM
-
-
-An example of setting the `Speaker` device for the `HiFi` verb of the
-`bytcr-rt5640` card:
-
-::
-
-  # alsaucm -n -b - <<EOM
-  open bytcr-rt5640
-  reset
-  set _verb HiFi
-  set _enadev Speaker
-  EOM
-
-
-
-SEE ALSO
-========
-
-* Use Case Interface: http://www.alsa-project.org/alsa-doc/alsa-lib/group__ucm.html
-
-.. _Use Case Interface: http://www.alsa-project.org/alsa-doc/alsa-lib/group__ucm.html
-
-BUGS
-====
-
-None known.
-
-
--- 
-Antonio Ospite
-https://ao2.it
-https://twitter.com/ao2it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+> diff --git a/Documentation/devicetree/bindings/sound/cs35l34.txt b/Documentation/devicetree/bindings/sound/cs35l34.txt
+> new file mode 100644
+> index 0000000..df62e77
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/cs35l34.txt
+> @@ -0,0 +1,64 @@
+> +CS35L34 Speaker Amplifier
+> +
+> +Required properties:
+> +
+> +  - compatible : "cirrus,cs35l34"
+> +
+> +  - reg : the I2C address of the device for I2C.
+> +
+> +  - VA-supply, VP-supply : power supplies for the device,
+> +    as covered in
+> +    Documentation/devicetree/bindings/regulator/regulator.txt.
+> +
+> +  - cirrus,boost-vtge : Boost Voltage Value.  Configures the boost converter's
+> +    output voltage in mV. The range is from VP to 8V with increments of 100mV.
+
+Needs a unit suffix and -microvolt is preferred.
+
+> +
+> +  - cirrus,boost-ind: Inductor value for boost converter. The value is in nH
+> +    and they can be values of 1000nH, 1100nH, 1200nH, 1500nH, and 2200nH.
+
+Please add this unit to property-units.txt and use the suffix here.
+
+> +
+> +Optional properties:
+> +
+> +  - reset-gpios: GPIO used to reset the amplifier.
+> +
+> +  - interrupt-parent : Specifies the phandle of the interrupt controller to
+> +    which the IRQs from CS35L34 are delivered to.
+> +  - interrupts : IRQ line info CS35L34.
+> +    (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
+> +    for further information relating to interrupt properties)
+> +
+> +  - cirrus,boost-peak : Boost converter peak current limit in mA. The range
+> +    starts at 1200mA and goes to a maximum of 3840mA with increments of 80mA.
+> +    The default value is 2480mA.
+
+unit suffix.
+
+> +
+> +  - cirrus,i2s-sdinloc : ADSP SDIN I2S channel location. Indicates whether the
+> +    received mono data is in the left or right portion of the I2S frame
+> +    according to the AD0 pin or directly via this configuration.
+> +    0x0 (Default) = Selected by AD0 input (if AD0 = LOW, use left channel),
+> +    0x2 = Left,
+> +    0x1 = Selected by the inversion of the AD0 input (if AD0 = LOW, use right
+> +    channel),
+> +    0x3 = Right.
+> +
+> +  - cirrus,gain-zc-disable: Boolean property. If set, the gain change will take
+> +    effect without waiting for a zero cross.
+> +
+> +  - cirrus,tdm_rising_edge: Boolean property. If set, data is on the rising edge of
+> +    SCLK. Otherwise, data is on the falling edge of SCLK.
+
+Use '-', not '_'.
+
+> +
+> +
+> +Example:
+> +
+> +cs35l34: cs35l34@40 {
+> +	compatible = "cirrus,cs35l34";
+> +	reg = <0x40>;
+> +
+> +	interrupt-parent = <&gpio8>;
+> +	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
+> +
+> +	reset-gpios = <&gpio 10 0>;
+> +
+> +	cirrus,boost-vtge = <8000>; /* 8V */
+> +	cirrus,boost-ind = <1000>; /* 1uH */
+> +	cirrus,boost-peak = <3000>; /* 3A */
+> +};
+> +
+> -- 
+> 1.9.1
+> 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
