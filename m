@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Use private instance id
-	of modules in IPC" to the asoc tree
-Date: Sat, 24 Sep 2016 22:58:40 -0700
-Message-ID: <E1bo2SW-00031T-7E@finisterre>
-References: <1472042001-9582-7-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: nau8825: erase pop noise by soft mute
+Date: Sat, 24 Sep 2016 20:11:56 +0100
+Message-ID: <20160924191156.e6mu2vlhhaltkeua@sirena.org.uk>
+References: <1473839252-18868-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7430814626086127553=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 420912665B0
- for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 07:58:57 +0200 (CEST)
-In-Reply-To: <1472042001-9582-7-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 314FB2665B0
+ for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 07:59:41 +0200 (CEST)
+In-Reply-To: <1473839252-18868-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,191 +20,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dharageswari R <dharageswari.r@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: Skylake: Use private instance id of modules in IPC
+--===============7430814626086127553==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="oifhoa2jdupt6j2d"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--oifhoa2jdupt6j2d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Sep 14, 2016 at 03:47:32PM +0800, John Hsu wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> + * Enable soft mute to gradually lower DAC volume to zero;
+> + * Soft unmute will gradually increase DAC volume to volume setting.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> +		regmap_write(nau8825->regmap, NAU8825_REG_DAC_DGAIN_CTRL, 0);
+> +		regmap_update_bits(nau8825->regmap, NAU8825_REG_MUTE_CTRL,
+> +			NAU8825_DAC_SOFT_MUTE, NAU8825_DAC_SOFT_MUTE);
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Why are we not just exposing soft mute as a userspace control like other
+drivers do?  It seems like there's some weird interaction between
+sidetones and the soft mute which this is trying to work around but
+that's not really explained, it seems to be the main point here.
+Basically I can't figure out what's intended here.
 
-Thanks,
-Mark
+> +EXPORT_SYMBOL_GPL(nau8825_soft_mute);
 
->From ef2a352cfb2a536ae8718065b43702a97f9fba9f Mon Sep 17 00:00:00 2001
-From: Dharageswari R <dharageswari.r@intel.com>
-Date: Thu, 22 Sep 2016 14:00:38 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Use private instance id of modules in
- IPC
+Why is this exported, how will it be used?  The function seems to be
+called from inside this driver as well...
 
-Use private id's of module instances that are generated during
-init_module for the IPC messages to DSP. These id's are freed
-up during delete pipeline.
+--oifhoa2jdupt6j2d
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-messages.c  | 22 ++++++++++++----------
- sound/soc/intel/skylake/skl-sst-utils.c |  2 +-
- sound/soc/intel/skylake/skl-topology.c  | 10 +++++++---
- 3 files changed, 20 insertions(+), 14 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 8eb5ba2dae3a..ac0c58e170c3 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -787,6 +787,7 @@ static int skl_alloc_queue(struct skl_module_pin *mpin,
- 				mpin[i].in_use = true;
- 				mpin[i].id.module_id = id.module_id;
- 				mpin[i].id.instance_id = id.instance_id;
-+				mpin[i].id.pvt_id = id.pvt_id;
- 				mpin[i].tgt_mcfg = tgt_cfg;
- 				return i;
- 			}
-@@ -810,6 +811,7 @@ static void skl_free_queue(struct skl_module_pin *mpin, int q_index)
- 		mpin[q_index].in_use = false;
- 		mpin[q_index].id.module_id = 0;
- 		mpin[q_index].id.instance_id = 0;
-+		mpin[q_index].id.pvt_id = 0;
- 	}
- 	mpin[q_index].pin_state = SKL_PIN_UNBIND;
- 	mpin[q_index].tgt_mcfg = NULL;
-@@ -850,7 +852,7 @@ int skl_init_module(struct skl_sst *ctx,
- 	struct skl_ipc_init_instance_msg msg;
- 
- 	dev_dbg(ctx->dev, "%s: module_id = %d instance=%d\n", __func__,
--		 mconfig->id.module_id, mconfig->id.instance_id);
-+		 mconfig->id.module_id, mconfig->id.pvt_id);
- 
- 	if (mconfig->pipe->state != SKL_PIPE_CREATED) {
- 		dev_err(ctx->dev, "Pipe not created state= %d pipe_id= %d\n",
-@@ -866,7 +868,7 @@ int skl_init_module(struct skl_sst *ctx,
- 	}
- 
- 	msg.module_id = mconfig->id.module_id;
--	msg.instance_id = mconfig->id.instance_id;
-+	msg.instance_id = mconfig->id.pvt_id;
- 	msg.ppl_instance_id = mconfig->pipe->ppl_id;
- 	msg.param_data_size = module_config_size;
- 	msg.core_id = mconfig->core_id;
-@@ -887,9 +889,9 @@ static void skl_dump_bind_info(struct skl_sst *ctx, struct skl_module_cfg
- 	*src_module, struct skl_module_cfg *dst_module)
- {
- 	dev_dbg(ctx->dev, "%s: src module_id = %d  src_instance=%d\n",
--		__func__, src_module->id.module_id, src_module->id.instance_id);
-+		__func__, src_module->id.module_id, src_module->id.pvt_id);
- 	dev_dbg(ctx->dev, "%s: dst_module=%d dst_instacne=%d\n", __func__,
--		 dst_module->id.module_id, dst_module->id.instance_id);
-+		 dst_module->id.module_id, dst_module->id.pvt_id);
- 
- 	dev_dbg(ctx->dev, "src_module state = %d dst module state = %d\n",
- 		src_module->m_state, dst_module->m_state);
-@@ -936,9 +938,9 @@ int skl_unbind_modules(struct skl_sst *ctx,
- 		return 0;
- 
- 	msg.module_id = src_mcfg->id.module_id;
--	msg.instance_id = src_mcfg->id.instance_id;
-+	msg.instance_id = src_mcfg->id.pvt_id;
- 	msg.dst_module_id = dst_mcfg->id.module_id;
--	msg.dst_instance_id = dst_mcfg->id.instance_id;
-+	msg.dst_instance_id = dst_mcfg->id.pvt_id;
- 	msg.bind = false;
- 
- 	ret = skl_ipc_bind_unbind(&ctx->ipc, &msg);
-@@ -997,9 +999,9 @@ int skl_bind_modules(struct skl_sst *ctx,
- 			 msg.src_queue, msg.dst_queue);
- 
- 	msg.module_id = src_mcfg->id.module_id;
--	msg.instance_id = src_mcfg->id.instance_id;
-+	msg.instance_id = src_mcfg->id.pvt_id;
- 	msg.dst_module_id = dst_mcfg->id.module_id;
--	msg.dst_instance_id = dst_mcfg->id.instance_id;
-+	msg.dst_instance_id = dst_mcfg->id.pvt_id;
- 	msg.bind = true;
- 
- 	ret = skl_ipc_bind_unbind(&ctx->ipc, &msg);
-@@ -1177,7 +1179,7 @@ int skl_set_module_params(struct skl_sst *ctx, u32 *params, int size,
- 	struct skl_ipc_large_config_msg msg;
- 
- 	msg.module_id = mcfg->id.module_id;
--	msg.instance_id = mcfg->id.instance_id;
-+	msg.instance_id = mcfg->id.pvt_id;
- 	msg.param_data_size = size;
- 	msg.large_param_id = param_id;
- 
-@@ -1190,7 +1192,7 @@ int skl_get_module_params(struct skl_sst *ctx, u32 *params, int size,
- 	struct skl_ipc_large_config_msg msg;
- 
- 	msg.module_id = mcfg->id.module_id;
--	msg.instance_id = mcfg->id.instance_id;
-+	msg.instance_id = mcfg->id.pvt_id;
- 	msg.param_data_size = size;
- 	msg.large_param_id = param_id;
- 
-diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
-index 5f1c203a448e..876b9e04e880 100644
---- a/sound/soc/intel/skylake/skl-sst-utils.c
-+++ b/sound/soc/intel/skylake/skl-sst-utils.c
-@@ -136,7 +136,7 @@ int snd_skl_get_module_info(struct skl_sst *ctx,
- EXPORT_SYMBOL_GPL(snd_skl_get_module_info);
- 
- static inline int skl_getid_32(struct uuid_module *module, u64 *val,
--					int word1_mask, int word2_mask)
-+				int word1_mask, int word2_mask)
- {
- 	int index, max_inst, pvt_id;
- 	u32 mask_val;
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 2d475b720963..b6fc374f38b5 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -505,12 +505,15 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
- 		 * FE/BE params
- 		 */
- 		skl_tplg_update_module_params(w, ctx);
--
-+		mconfig->id.pvt_id = skl_get_pvt_id(ctx, mconfig);
-+		if (mconfig->id.pvt_id < 0)
-+			return ret;
- 		skl_tplg_set_module_init_data(w);
- 		ret = skl_init_module(ctx, mconfig);
--		if (ret < 0)
-+		if (ret < 0) {
-+			skl_put_pvt_id(ctx, mconfig);
- 			return ret;
--
-+		}
- 		skl_tplg_alloc_pipe_mcps(skl, mconfig);
- 		ret = skl_tplg_set_module_params(w, ctx);
- 		if (ret < 0)
-@@ -537,6 +540,7 @@ static int skl_tplg_unload_pipe_modules(struct skl_sst *ctx,
- 			if (ret < 0)
- 				return -EIO;
- 		}
-+		skl_put_pvt_id(ctx, mconfig);
- 	}
- 
- 	/* no modules to unload in this path, so return */
--- 
-2.9.3
+iQEcBAABCAAGBQJX5s/7AAoJECTWi3JdVIfQYngH/3MndJWwlm833q0CnSIQbhd4
+r0WP9+4n/Z7HpHt6bvTH58v5e6TFOWlUX2MswWTD51N4D6wfzsysfkj6qtlAr7rv
+LKpMVN/VJ0WfoS1f+6rj9yarNCZdCQZ/+IGRLg+FmyLLFiYgj/cE2z6VR+oRmvtQ
+pQ9twW4M5GRqmR2V5jpGHWNTrUmfb5LELfiDkoh6jHQDZlFdJvn8vQPln0xWVzGr
+xR2q8x9ezKOvrRxE9q2cGldrH2GueBSte1Ajf95ltKY3lIeTteaI/YEKSbAWUeA7
+idkNs66irFn2BTCqBsA1tKDm/GZu2UmQ1WO0p1UAHMBBWunDwPG/jNld2A+zu34=
+=Ujm5
+-----END PGP SIGNATURE-----
+
+--oifhoa2jdupt6j2d--
+
+--===============7430814626086127553==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7430814626086127553==--
