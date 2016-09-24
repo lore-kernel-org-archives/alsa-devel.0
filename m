@@ -1,12 +1,12 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 Subject: Re: [PATCH v2] ASoC: simple-card: add support for aux devices
-Date: Sat, 24 Sep 2016 18:58:15 +0100
-Message-ID: <20160924175815.7sfoguqipwwzfwbs@sirena.org.uk>
+Date: Sat, 24 Sep 2016 19:00:45 +0100
+Message-ID: <20160924180045.g7ayhbpbaxle34pt@sirena.org.uk>
 References: <1474614673-12350-1-git-send-email-nikita.yoush@cogentembedded.com>
  <20160923222541.GA25693@rob-hp-laptop>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lhggdlhk33pnzdzu"
+        protocol="application/pgp-signature"; boundary="juilldp5ueknfzut"
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
 In-Reply-To: <20160923222541.GA25693@rob-hp-laptop>
@@ -16,38 +16,43 @@ Cc: Nikita Yushchenko <nikita.yoush-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gman
 List-Id: alsa-devel@alsa-project.org
 
 
---lhggdlhk33pnzdzu
+--juilldp5ueknfzut
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 On Fri, Sep 23, 2016 at 05:25:41PM -0500, Rob Herring wrote:
+> On Fri, Sep 23, 2016 at 10:11:12AM +0300, Nikita Yushchenko wrote:
 
-> Ah, one more property to the "simple" card. At what point in adding=20
-> properties is it not simple?
+> > +- simple-audio-card,aux-devs		: List of phandles pointing to auxiliary=
+ devices, such
+> > +					  as amplifiers, to be added to the sound card.
 
-There are a *lot* of tunables for audio subsystems and a lot of ways
-they can be designed, this is why complaining at the less realistic DT
-advocates who object to having a card at all.  Probably most cards won't
-use anything like all the properties but simple-card does cover a large
-proportion of common place cards and keeps those DT advocates who object
-to having a card object at all happier.
+> I think the property should be specific as to the type of device. What=20
+> if you have 2 amps? Maybe simple-card can't have 2 outputs. What if you=
+=20
+> have a chain of devices and need to know the order of them?
 
---lhggdlhk33pnzdzu
+Sorry, missed this bit...  We already have the audio routing properties
+which define how things are interconnected, this exists to get pure
+analogue components into the set of things that can be routed to.  The
+abstraction we're using hides what the device is well enough.
+
+--juilldp5ueknfzut
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAABCAAGBQJX5r62AAoJECTWi3JdVIfQ+eEH/1zn1hgWfoQiMQeIyRQADr9O
-JesbxbkowEUZ0Ms9NZoQG7ndGw5aogJezAs6+71MCRzlb9I5cF+hdE0mKZqMKNpL
-nTC9b5cX8FRqnqXWQdGjJQ/5dku8Ev2dTsQScBwMP7tpAGorzD1+WY6y9vF8hFQa
-xoBEHD//2SG2Z83/PdxUPxy7P2+FX8bOP0LLZKKOzTAVQjFd+yqZ8wqjJhf5ZyOn
-ySIa5rB9wGvMQ87c541/PWLipNuRsJSxMOm+pl8Ob6xTkH5DfM2CE3EsIgHuqHlj
-rivcO0Dvk2XB8wCz5IZ56pAWHvZUMcw4J0KRqnT+4JKr1420GcpvMaH8ilSkk0A=
-=Moex
+iQEcBAABCAAGBQJX5r9MAAoJECTWi3JdVIfQO8kH/RPjkaokLHO+mmnnrUZu7Edx
+nOCR6HGJbGP22fz1glZyoYhMH9xZdjQA6fCzuIQZLtypS8DX9SkfB9qfxOdmOLNk
+t8ZwnLZ+/EKxd0QXLUBpSkyfVkQPIh7mk/zb96TAqFJQiIl+q8xGfjEbxn+odHYu
+e/o5t1wGqepxXXM5wlEaNy1Hp9oLtjxKvPwY0BfQONj5FwV1lx8kesvMUINgJtsM
+NBLmVenbJZzuHxAH8YTxhzjq8qYWh9Ycrh0wzAEDWL/JqTrfOwQjwQBWjjqP264S
+OodEpg6n2Qq+/pNY8HrK/KnuhuG1+jrFI98eeHrUt7t3T+nJ9d3yKWeDLfSiIkA=
+=x1D7
 -----END PGP SIGNATURE-----
 
---lhggdlhk33pnzdzu--
+--juilldp5ueknfzut--
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
