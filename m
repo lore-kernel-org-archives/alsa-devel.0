@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8825: erase pop noise by soft mute
-Date: Sat, 24 Sep 2016 20:11:56 +0100
-Message-ID: <20160924191156.e6mu2vlhhaltkeua@sirena.org.uk>
-References: <1473839252-18868-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: Re: [PATCH 1/2] ASoC: cs4341: Add driver for CS4341
+	CODEC
+Date: Sat, 24 Sep 2016 20:07:16 +0100
+Message-ID: <20160924190716.33m7mkq73zdnb7ur@sirena.org.uk>
+References: <1473352169-23954-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7430814626086127553=="
+Content-Type: multipart/mixed; boundary="===============7763285164989737048=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 314FB2665B0
- for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 07:59:41 +0200 (CEST)
-In-Reply-To: <1473839252-18868-1-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 488FB265372
+ for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 08:01:50 +0200 (CEST)
+In-Reply-To: <1473352169-23954-1-git-send-email-shc_work@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,62 +21,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Brian Austin <brian.austin@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7430814626086127553==
+--===============7763285164989737048==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="oifhoa2jdupt6j2d"
+	protocol="application/pgp-signature"; boundary="bsuzrdc5uvufc6eq"
 Content-Disposition: inline
 
 
---oifhoa2jdupt6j2d
+--bsuzrdc5uvufc6eq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Sep 14, 2016 at 03:47:32PM +0800, John Hsu wrote:
+On Thu, Sep 08, 2016 at 07:29:29PM +0300, Alexander Shiyan wrote:
 
-> + * Enable soft mute to gradually lower DAC volume to zero;
-> + * Soft unmute will gradually increase DAC volume to volume setting.
+> +	switch (format & SND_SOC_DAIFMT_INV_MASK) {
+> +	case SND_SOC_DAIFMT_NB_NF:
+> +		break;
+> +	default:
+> +		goto fmt_err;
+> +	}
 
-> +		regmap_write(nau8825->regmap, NAU8825_REG_DAC_DGAIN_CTRL, 0);
-> +		regmap_update_bits(nau8825->regmap, NAU8825_REG_MUTE_CTRL,
-> +			NAU8825_DAC_SOFT_MUTE, NAU8825_DAC_SOFT_MUTE);
+Why the goto?  Just put the error handling code in here directly.
 
-Why are we not just exposing soft mute as a userspace control like other
-drivers do?  It seems like there's some weird interaction between
-sidetones and the soft mute which this is trying to work around but
-that's not really explained, it seems to be the main point here.
-Basically I can't figure out what's intended here.
+> +	switch (format & SND_SOC_DAIFMT_FORMAT_MASK) {
+> +	case SND_SOC_DAIFMT_I2S:
+> +	case SND_SOC_DAIFMT_LEFT_J:
+> +	case SND_SOC_DAIFMT_RIGHT_J:
+> +		cs4341->fmt = format & SND_SOC_DAIFMT_FORMAT_MASK;
+> +		return 0;
+> +	default:
+> +		break;
 
-> +EXPORT_SYMBOL_GPL(nau8825_soft_mute);
+We silently ignore invalid formats here...
 
-Why is this exported, how will it be used?  The function seems to be
-called from inside this driver as well...
+> +	SOC_SINGLE("Popguard Transient Control", CS4341_REG_MODE2, 1, 1, 0),
 
---oifhoa2jdupt6j2d
+Popguard Transient Switch so that userspace tools know how to handle
+this.
+
+> +	spi->bits_per_word = spi->bits_per_word ? : 8;
+> +	spi->max_speed_hz = spi->max_speed_hz ? : 6000000;
+
+Please write normal if statements, it's easier to read..
+
+--bsuzrdc5uvufc6eq
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAABCAAGBQJX5s/7AAoJECTWi3JdVIfQYngH/3MndJWwlm833q0CnSIQbhd4
-r0WP9+4n/Z7HpHt6bvTH58v5e6TFOWlUX2MswWTD51N4D6wfzsysfkj6qtlAr7rv
-LKpMVN/VJ0WfoS1f+6rj9yarNCZdCQZ/+IGRLg+FmyLLFiYgj/cE2z6VR+oRmvtQ
-pQ9twW4M5GRqmR2V5jpGHWNTrUmfb5LELfiDkoh6jHQDZlFdJvn8vQPln0xWVzGr
-xR2q8x9ezKOvrRxE9q2cGldrH2GueBSte1Ajf95ltKY3lIeTteaI/YEKSbAWUeA7
-idkNs66irFn2BTCqBsA1tKDm/GZu2UmQ1WO0p1UAHMBBWunDwPG/jNld2A+zu34=
-=Ujm5
+iQEcBAABCAAGBQJX5s7jAAoJECTWi3JdVIfQddEH/25F/LwBTZ6c27qFEmUCKiso
+ObX+uu27Nvv9B6WiyLKBvYTq1p+cjpNlDAtcSzHvN/qs0EHwUumn/V0cdXZecLHK
+D3oysJDqLKheH70EsKPbMi3kZRXhkpVwkNb6alVNWTE7TMA5g0h9X2eJRARrZigX
+wE6EahkQb8foRRVy2SxKN2Ww027Lj+nwKdyc+YpgMVAZCQ+JXCkBfFKfnN9Iy0Xq
+ZDqWCRhj8176u6g6sUWjCPm1mUS3WJm4Roqb226YNNN/Xk2RAaZTukvFpVkpWsaD
+e/OSpZ9eBQD1A79aqpf5y6pWfQ6JaemdVr9qE46LaAIMm+aB9aGmHiM0lrXTj/g=
+=F5oV
 -----END PGP SIGNATURE-----
 
---oifhoa2jdupt6j2d--
+--bsuzrdc5uvufc6eq--
 
---===============7430814626086127553==
+--===============7763285164989737048==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7430814626086127553==--
+--===============7763285164989737048==--
