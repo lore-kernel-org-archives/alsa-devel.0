@@ -1,54 +1,90 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tpa6130a2: fix volume setting when no stream is
- running
-Date: Sat, 24 Sep 2016 19:31:10 +0100
-Message-ID: <20160924183110.s4lxuigycpxegamq@sirena.org.uk>
-References: <1474539040-25347-1-git-send-email-nikita.yoush@cogentembedded.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2] ASoC: rk3399_gru_sound: fix recording pop at first
+ attempt
+Date: Sat, 24 Sep 2016 19:10:42 +0100
+Message-ID: <20160924181042.7odqqbae2sixdeyx@sirena.org.uk>
+References: <1474552206-31742-1-git-send-email-zhengxing@rock-chips.com>
+ <20160923212737.GA17658@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5lza74ydcdml6yj6"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1474539040-25347-1-git-send-email-nikita.yoush@cogentembedded.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Helen Koike <helen.koike@collabora.co.uk>, Lars-Peter Clausen <lars@metafoo.de>, Sebastian Reichel <sre@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Chris Healy <cphealy@gmail.com>
+Content-Type: multipart/mixed; boundary="===============2831427539561862994=="
+Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <20160923212737.GA17658@rob-hp-laptop>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
+List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, cychiang-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, Xing Zheng <zhengxing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, dianders-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, smbarber-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, hychao-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---5lza74ydcdml6yj6
-Content-Type: text/plain; charset=us-ascii
+--===============2831427539561862994==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="74ywsfvevlsgndw7"
 Content-Disposition: inline
 
-On Thu, Sep 22, 2016 at 01:10:40PM +0300, Nikita Yushchenko wrote:
 
-> -		ret = regulator_disable(data->supply);
-> -		if (ret != 0) {
-> +		ret2 = regulator_disable(data->supply);
-> +		if (ret2 != 0) {
->  			dev_err(data->dev,
-> -				"Failed to disable supply: %d\n", ret);
-> -			return ret;
-> +				"Failed to disable supply: %d\n", ret2);
-> +			return ret ? ret : ret2;
->  		}
+--74ywsfvevlsgndw7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The ternery operator to save the error handling block is a bit too cute
-to be clear, it'd be better to just handle each error directly.  Can you
-please send a followup patch fixing this?
+On Fri, Sep 23, 2016 at 04:27:37PM -0500, Rob Herring wrote:
+> On Thu, Sep 22, 2016 at 09:50:06PM +0800, Xing Zheng wrote:
+> > From: Wonjoon Lee <woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 
---5lza74ydcdml6yj6
+> > Pop happens when mclk applied but dmic's own boot-time
+
+> This statement doesn't make sense.
+
+It is very clear if you're familiar with the problem domain - because a
+DMIC is digital it's got an on/off state which means that when it
+transitions from off and not outputting anything to outputting something
+you get a sudden DC transition which manifests as a pop in the audio
+output.
+
+> > Specify dmic delay times in dt to make sure
+> > clocks are ready earlier than dmic working
+
+> I don't think this really belongs in DT. Seems like better control of=20
+> the init order is needed. Or why not just a fixed delay in the driver?
+
+The changelog says this is due to the DMICs having a startup time of
+their own so needing a delay after they've started.  That's going to be
+a system dependent thing since it'll depend on the specific component
+selected and DMICs are easily interchangable.
+
+--74ywsfvevlsgndw7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAABCAAGBQJX5sZtAAoJECTWi3JdVIfQ+J0H+wccpU8R59tkdgSS0jvbPCvt
-8ItN3JUfdoXosH6sSOHKVYNcUTX3wgM9MFQm3pZmORbl+5xS4vgFnKxFeW4dtMK5
-vW1FfvUgGP436sDxWDXIyKoIGPpbi2V2aFacXXjwMsy5jbM7N49rbq3Ux018L2cU
-HJ215f0DP9Pscik/2CPaucTlqffCAStDlO7X4TCoaaKpDb3k2LrjUFerFLI19wvY
-oMYv3p3omsWegXd0KxZlTm9L/8Xgu3MfpiF979cJFeleL8vOzb3XzDJB39O59isP
-n4lKC/CB9808hDxtwoomS5I6/I5+4FvH1s5jQNhMnuiw4HCGxuZBV30FYZRxadY=
-=kIGW
+iQEcBAABCAAGBQJX5sGhAAoJECTWi3JdVIfQb3EH/03yJ0kjMHCIoNGPcdCfEnNc
+WgzImLpEQpNfLf5iN7h+n0N0z1RGsgPiss8hj33TYRqqBXsgvJvRx2X5g0DtuVwn
+TKxGmnQTqiwCZCk5RdT3sNu+PgYxIX8L3Vg/03+2rYfbc5Ua+77MeKM4mcxOGl9+
+Qt7WhxZo/oMjVoyh5V+GjZScDvdFPQsvQabJ417MkOwfm506OlsuQ/VhJWA1TocG
+8PAvloEpR/ZWifYByE0pFSM6ZRlJB85ftTyV8Qxy4opCNg+QS/ik/QlKmZAx9eXw
+nDQmhMYjaYYF6Dmz6nzztGOgViM3SQ9tPXIWbeI8lnD4T1UoAKi1p9ucgqutvBI=
+=oOfW
 -----END PGP SIGNATURE-----
 
---5lza74ydcdml6yj6--
+--74ywsfvevlsgndw7--
+
+
+--===============2831427539561862994==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Linux-rockchip mailing list
+Linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+http://lists.infradead.org/mailman/listinfo/linux-rockchip
+
+--===============2831427539561862994==--
