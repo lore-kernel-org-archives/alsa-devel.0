@@ -1,91 +1,54 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: control: cage TLV_DB_RANGE_HEAD in
-	kernel land because it was obsoleted
-Date: Sat, 24 Sep 2016 19:28:23 +0900
-Message-ID: <1474712903-32427-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Subject: [PATCH v6 2/3] ASoC: sun4i-codec: Rename some
+ sun7i-only registers
+Date: Sat, 24 Sep 2016 22:05:02 +0200
+Message-ID: <20160924200503.10728-3-dannym@scratchpost.org>
+References: <20160924200503.10728-1-dannym@scratchpost.org>
+Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id D556F261A81
- for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2016 12:28:28 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBB7NYTO7QKGQEI7WSVTQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20160924200503.10728-1-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Cc: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-In commit bf1d1c9b6179 ("ALSA: tlv: add DECLARE_TLV_DB_RANGE()"), the new
-macro was added so that "dB range information can be specified without
-having to count the items manually for TLV_DB_RANGE_HEAD()". In short,
-TLV_DB_RANGE_HEAD macro was obsoleted.
+Some of the registers defined in the driver are only usable on the
+A20. Rename these registers.
 
-In commit 46e860f76804 ("ALSA: rename TLV-related macros so that they're
-friendly to user applications"), TLV-related macros are exposed for
-applications in user land to get content of data structured by
-Type/Length/Value shape. The commit managed to expose TLV-related macros
-as many as possible, while obsoleted TLV_DB_RANGE_HEAD() was included to
-the list of exposed macros.
-
-This situation brings some confusions to application developers because
-they might think all exposed macros have their own purpose and useful for
-applications.
-
-For the reason, this commit moves TLV_DB_RANGE_HEAD macro from UAPI header
-to a header for kernel land, again. The above commit is done within the
-same development period for kernel 4.9, thus not published yet. This
-commit might certainly brings no confusions to user land.
-
-Reference: commit bf1d1c9b6179 ("ALSA: tlv: add DECLARE_TLV_DB_RANGE()")
-Reference: commit 46e860f76804 ("ALSA: rename TLV-related macros so that they're friendly to user applications")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 ---
- include/sound/tlv.h      | 9 ++++++++-
- include/uapi/sound/tlv.h | 3 ---
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/tlv.h b/include/sound/tlv.h
-index 6e2e773..3677ebb 100644
---- a/include/sound/tlv.h
-+++ b/include/sound/tlv.h
-@@ -46,8 +46,15 @@
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index c2c0583..3b53b78 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -96,8 +96,8 @@
+ /* Other various ADC registers */
+ #define SUN4I_CODEC_DAC_TXCNT			(0x30)
+ #define SUN4I_CODEC_ADC_RXCNT			(0x34)
+-#define SUN4I_CODEC_AC_SYS_VERI			(0x38)
+-#define SUN4I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
++#define SUN7I_CODEC_AC_DAC_CAL			(0x38)
++#define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
  
- #define TLV_DB_RANGE_ITEM		SNDRV_CTL_TLVD_DB_RANGE_ITEM
- #define DECLARE_TLV_DB_RANGE		SNDRV_CTL_TLVD_DECLARE_DB_RANGE
--#define TLV_DB_RANGE_HEAD		SNDRV_CTL_TLVD_DB_RANGE_HEAD
+ struct sun4i_codec {
+ 	struct device	*dev;
+@@ -682,7 +682,7 @@ static const struct regmap_config sun4i_codec_regmap_config = {
+ 	.reg_bits	= 32,
+ 	.reg_stride	= 4,
+ 	.val_bits	= 32,
+-	.max_register	= SUN4I_CODEC_AC_MIC_PHONE_CAL,
++	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
+ };
  
- #define TLV_DB_GAIN_MUTE		SNDRV_CTL_TLVD_DB_GAIN_MUTE
- 
-+/*
-+ * The below assumes that each item TLV is 4 words like DB_SCALE or LINEAR.
-+ * This is an old fasion and obsoleted by commit bf1d1c9b6179("ALSA: tlv: add
-+ * DECLARE_TLV_DB_RANGE()").
-+ */
-+#define TLV_DB_RANGE_HEAD(num) \
-+	SNDRV_CTL_TLVT_DB_RANGE, 6 * (num) * sizeof(unsigned int)
-+
- #endif /* __SOUND_TLV_H */
-diff --git a/include/uapi/sound/tlv.h b/include/uapi/sound/tlv.h
-index f3c198f..b4df440 100644
---- a/include/uapi/sound/tlv.h
-+++ b/include/uapi/sound/tlv.h
-@@ -94,9 +94,6 @@
- 	unsigned int name[] = { \
- 		SNDRV_CTL_TLVD_DB_RANGE_ITEM(__VA_ARGS__) \
- 	}
--/* The below assumes that each item TLV is 4 words like DB_SCALE or LINEAR */
--#define SNDRV_CTL_TLVD_DB_RANGE_HEAD(num) \
--	SNDRV_CTL_TLVT_DB_RANGE, 6 * (num) * sizeof(unsigned int)
- 
- #define SNDRV_CTL_TLVD_DB_GAIN_MUTE	-9999999
- 
--- 
-2.7.4
+ static const struct of_device_id sun4i_codec_of_match[] = {
