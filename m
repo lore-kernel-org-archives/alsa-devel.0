@@ -1,55 +1,54 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: A small bug in soc-pcm.c
-Date: Sat, 24 Sep 2016 18:56:07 +0100
-Message-ID: <20160924175607.c2pmsitvvjs67bv5@sirena.org.uk>
-References: <2427cb7f.ab0.15759e58bdd.Coremail.pengdonglin137@163.com>
+Subject: Re: [PATCH] ASoC: tpa6130a2: fix volume setting when no stream is
+ running
+Date: Sat, 24 Sep 2016 19:31:10 +0100
+Message-ID: <20160924183110.s4lxuigycpxegamq@sirena.org.uk>
+References: <1474539040-25347-1-git-send-email-nikita.yoush@cogentembedded.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="pljyxinhmj7m3trw"
+        protocol="application/pgp-signature"; boundary="5lza74ydcdml6yj6"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <2427cb7f.ab0.15759e58bdd.Coremail.pengdonglin137@163.com>
+In-Reply-To: <1474539040-25347-1-git-send-email-nikita.yoush@cogentembedded.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: pengdonglin137 <pengdonglin137@163.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Helen Koike <helen.koike@collabora.co.uk>, Lars-Peter Clausen <lars@metafoo.de>, Sebastian Reichel <sre@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Chris Healy <cphealy@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---pljyxinhmj7m3trw
+--5lza74ydcdml6yj6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Sep 24, 2016 at 09:53:18AM +0800, pengdonglin137 wrote:
-> Hi All,
-> I found a small bug in soc-pcm.c. For example, we can see kernel logs as =
-follows:
->=20
-> [  518.707401]  SLIMBUS_0_TX: ASoC: trigger BE MSM8996 Media1 cmd 0    //=
- should be SLIMBUS_0_TX other than MSM8996 Media1
-> [  518.707414]  MSM8996 Media1: ASoC: post trigger FE MSM8996 Media1 cmd 0
->=20
-> Here is the patch.
->=20
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 60d702f..8c037ef 100644
+On Thu, Sep 22, 2016 at 01:10:40PM +0300, Nikita Yushchenko wrote:
 
-Please resend this patch using the process covered in the kernel in
-Documentation/SubmittingPatches.  In particular it is very important
-that you provide a Signed-off-by - this is needed for licensing reasons.
+> -		ret = regulator_disable(data->supply);
+> -		if (ret != 0) {
+> +		ret2 = regulator_disable(data->supply);
+> +		if (ret2 != 0) {
+>  			dev_err(data->dev,
+> -				"Failed to disable supply: %d\n", ret);
+> -			return ret;
+> +				"Failed to disable supply: %d\n", ret2);
+> +			return ret ? ret : ret2;
+>  		}
 
---pljyxinhmj7m3trw
+The ternery operator to save the error handling block is a bit too cute
+to be clear, it'd be better to just handle each error directly.  Can you
+please send a followup patch fixing this?
+
+--5lza74ydcdml6yj6
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAABCAAGBQJX5r42AAoJECTWi3JdVIfQ2XUH+gMJJ/5vNFWRZfo9lnLnt9G3
-EYpvZdJaTkolT2f3zka8r1dUv3lKcLJPwyHVtcxpGWaz7MrCMbvyHyDqX8jaFBK8
-/2VSIIj0rIiy4n10dRVqYFmCsLYeTGq1HIu4AmoGIj29wcT00CknvoebYYpgo+qM
-3DzkqWWqAZmfbLL8DVvqwz7+xarisw+1oKeTskfXzTji+dgWkWttqri8kMfpbOyR
-YF6O+bDviRZ8udORjgPN4syMoPQB9vn9+YF1J+AIWbKioMMUPeHBHXpIJ+JBRTEW
-AyWpc3Aydo6KU2a6pAPuMsiIY1YuTjfsCLB2UT/K6XzJgAtEnJ4OWGcKvYDKXmw=
-=7rxM
+iQEcBAABCAAGBQJX5sZtAAoJECTWi3JdVIfQ+J0H+wccpU8R59tkdgSS0jvbPCvt
+8ItN3JUfdoXosH6sSOHKVYNcUTX3wgM9MFQm3pZmORbl+5xS4vgFnKxFeW4dtMK5
+vW1FfvUgGP436sDxWDXIyKoIGPpbi2V2aFacXXjwMsy5jbM7N49rbq3Ux018L2cU
+HJ215f0DP9Pscik/2CPaucTlqffCAStDlO7X4TCoaaKpDb3k2LrjUFerFLI19wvY
+oMYv3p3omsWegXd0KxZlTm9L/8Xgu3MfpiF979cJFeleL8vOzb3XzDJB39O59isP
+n4lKC/CB9808hDxtwoomS5I6/I5+4FvH1s5jQNhMnuiw4HCGxuZBV30FYZRxadY=
+=kIGW
 -----END PGP SIGNATURE-----
 
---pljyxinhmj7m3trw--
+--5lza74ydcdml6yj6--
