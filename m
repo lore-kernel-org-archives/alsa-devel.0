@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-codec: Rename some sun7i-only registers" to the asoc tree
-Date: Sat, 24 Sep 2016 22:58:53 -0700
-Message-ID: <E1bo2Sj-00034S-2z@finisterre>
-References: <20160915143922.4890-3-dannym@scratchpost.org>
+Subject: Applied "ASoC: samsung: add missing \n to end of pr_err messages" to the asoc tree
+Date: Sat, 24 Sep 2016 22:58:11 -0700
+Message-ID: <E1bo2S3-0002rS-9Z@finisterre>
+References: <20160916173053.13138-1-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160915143922.4890-3-dannym@scratchpost.org>
+In-Reply-To: <20160916173053.13138-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Danny Milosavljevic <dannym@scratchpost.org>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>Maxime Ripard <maxime.ripard@free-electrons.com>Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi@googlegroups.comalsa-devel@alsa-project.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, trivial@kernel.org, Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-codec: Rename some sun7i-only registers
+   ASoC: samsung: add missing \n to end of pr_err messages
 
 has been applied to the asoc tree at
 
@@ -37,44 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From 4f0c4e99312d8887483474d60e47ab4e24713114 Mon Sep 17 00:00:00 2001
-From: Danny Milosavljevic <dannym@scratchpost.org>
-Date: Thu, 22 Sep 2016 09:13:12 +0200
-Subject: [PATCH] ASoC: sun4i-codec: Rename some sun7i-only registers
+>From 5f6af6a75ef3fed8eb220217ecd7d1c7ef8571d9 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Fri, 16 Sep 2016 18:30:53 +0100
+Subject: [PATCH] ASoC: samsung: add missing \n to end of pr_err messages
 
-Some of the registers defined in the driver are only usable on the
-A20. Rename these registers.
+Trival fix, some pr_err messages are missing a \n, so add it.
 
-Signed-off-by: Danny Milosavljevic <dannym@scratchpost.org>
-Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 6 +++---
+ sound/soc/samsung/ac97.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 44f170c73b06..9d8c027f7c55 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -96,8 +96,8 @@
- /* Other various ADC registers */
- #define SUN4I_CODEC_DAC_TXCNT			(0x30)
- #define SUN4I_CODEC_ADC_RXCNT			(0x34)
--#define SUN4I_CODEC_AC_SYS_VERI			(0x38)
--#define SUN4I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
-+#define SUN7I_CODEC_AC_DAC_CAL			(0x38)
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
+diff --git a/sound/soc/samsung/ac97.c b/sound/soc/samsung/ac97.c
+index 5eafb6667a3b..97d6700b1009 100644
+--- a/sound/soc/samsung/ac97.c
++++ b/sound/soc/samsung/ac97.c
+@@ -74,7 +74,7 @@ static void s3c_ac97_activate(struct snd_ac97 *ac97)
+ 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
  
- struct sun4i_codec {
- 	struct device	*dev;
-@@ -680,7 +680,7 @@ static const struct regmap_config sun4i_codec_regmap_config = {
- 	.reg_bits	= 32,
- 	.reg_stride	= 4,
- 	.val_bits	= 32,
--	.max_register	= SUN4I_CODEC_AC_MIC_PHONE_CAL,
-+	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
- };
+ 	if (!wait_for_completion_timeout(&s3c_ac97.done, HZ))
+-		pr_err("AC97: Unable to activate!");
++		pr_err("AC97: Unable to activate!\n");
+ }
  
- static const struct of_device_id sun4i_codec_of_match[] = {
+ static unsigned short s3c_ac97_read(struct snd_ac97 *ac97,
+@@ -100,7 +100,7 @@ static unsigned short s3c_ac97_read(struct snd_ac97 *ac97,
+ 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
+ 
+ 	if (!wait_for_completion_timeout(&s3c_ac97.done, HZ))
+-		pr_err("AC97: Unable to read!");
++		pr_err("AC97: Unable to read!\n");
+ 
+ 	stat = readl(s3c_ac97.regs + S3C_AC97_STAT);
+ 	addr = (stat >> 16) & 0x7f;
+@@ -137,7 +137,7 @@ static void s3c_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
+ 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
+ 
+ 	if (!wait_for_completion_timeout(&s3c_ac97.done, HZ))
+-		pr_err("AC97: Unable to write!");
++		pr_err("AC97: Unable to write!\n");
+ 
+ 	ac_codec_cmd = readl(s3c_ac97.regs + S3C_AC97_CODEC_CMD);
+ 	ac_codec_cmd |= S3C_AC97_CODEC_CMD_READ;
 -- 
 2.9.3
