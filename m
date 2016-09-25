@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Make DSP preloader a supply
-	widget" to the asoc tree
-Date: Sat, 24 Sep 2016 22:58:20 -0700
-Message-ID: <E1bo2SC-0002ve-KA@finisterre>
-References: <1474375956-10443-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: arizona: Attach SYSCLK to DSP
+	preloaders" to the asoc tree
+Date: Sat, 24 Sep 2016 22:58:22 -0700
+Message-ID: <E1bo2SE-0002wT-Nf@finisterre>
+References: <1474375956-10443-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2482D2665B1
- for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 07:58:35 +0200 (CEST)
-In-Reply-To: <1474375956-10443-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D0F82665CC
+ for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 07:58:36 +0200 (CEST)
+In-Reply-To: <1474375956-10443-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Make DSP preloader a supply widget
+   ASoC: arizona: Attach SYSCLK to DSP preloaders
 
 has been applied to the asoc tree at
 
@@ -53,83 +53,89 @@ to this mail.
 Thanks,
 Mark
 
->From 5ca7e170e331781fe71acb4919667993bb9fbab6 Mon Sep 17 00:00:00 2001
+>From 3577357a1680543b8acb98d69d23e87c1175db2b Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 20 Sep 2016 13:52:31 +0100
-Subject: [PATCH] ASoC: wm_adsp: Make DSP preloader a supply widget
+Date: Tue, 20 Sep 2016 13:52:30 +0100
+Subject: [PATCH] ASoC: arizona: Attach SYSCLK to DSP preloaders
 
-Currently the DSP loading is split into two widgets, the preloader that
-is a snd_soc_dapm_dai_link widget which starts a thread to download
-the firmware, and the DSP itself which is a snd_soc_dapm_out_drv and
-synchronises the thread back in to the DAPM sequence. This allows the
-firmware download to be overlapped with the rest of the path bring up.
+Currently SYSCLK is attached to every compressed DAI as this follows the
+pattern of attaching clocks to the chips inputs and outputs, however, it is
+really the DSP that requires the clock here. As firmware download can be a
+significant part of the path startup time for these devices occasionally it
+would be desirable to download the firmware in advance of the path being
+brought up.
 
-The use of a snd_soc_dapm_dai_link widget requires the preloader to be part
-of the audio path in DAPM, really a supply widget is a better fit for the
-preloader. The preloader is something that needs to be done for the DSP to
-function, not a part of the audio path itself.
-
-This change makes the DSP preloader widget a supply widget, which as well
-as probably being a better fit will also make it much simpler to power up
-the preloader widget to trigger firmware download to the core independently
-of the audio path coming up.
+To help facilitate this early firmware loading this patch attaches the
+SYSCLK to the DSP preloader widget. This also saves us adding a new route
+to SYSCLK every time a new compressed DAI is created.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.h | 16 ++++++++--------
- sound/soc/codecs/wm_adsp.h |  5 +++--
- 2 files changed, 11 insertions(+), 10 deletions(-)
+ sound/soc/codecs/arizona.h | 1 +
+ sound/soc/codecs/cs47l24.c | 2 --
+ sound/soc/codecs/wm5102.c  | 1 -
+ sound/soc/codecs/wm5110.c  | 2 --
+ 4 files changed, 1 insertion(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index e49955d834f0..850aa338ba29 100644
+index 69da1ef3a17c..e49955d834f0 100644
 --- a/sound/soc/codecs/arizona.h
 +++ b/sound/soc/codecs/arizona.h
-@@ -191,20 +191,20 @@ extern unsigned int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
+@@ -190,6 +190,7 @@ extern unsigned int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
+ 
  #define ARIZONA_DSP_ROUTES(name) \
  	{ name, NULL, name " Preloader"}, \
- 	{ name " Preloader", NULL, "SYSCLK" }, \
--	{ name " Preloader", NULL, name " Aux 1" }, \
--	{ name " Preloader", NULL, name " Aux 2" }, \
--	{ name " Preloader", NULL, name " Aux 3" }, \
--	{ name " Preloader", NULL, name " Aux 4" }, \
--	{ name " Preloader", NULL, name " Aux 5" }, \
--	{ name " Preloader", NULL, name " Aux 6" }, \
-+	{ name, NULL, name " Aux 1" }, \
-+	{ name, NULL, name " Aux 2" }, \
-+	{ name, NULL, name " Aux 3" }, \
-+	{ name, NULL, name " Aux 4" }, \
-+	{ name, NULL, name " Aux 5" }, \
-+	{ name, NULL, name " Aux 6" }, \
- 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 1"), \
- 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 2"), \
- 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 3"), \
- 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 4"), \
- 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 5"), \
- 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 6"), \
--	ARIZONA_MIXER_ROUTES(name " Preloader", name "L"), \
--	ARIZONA_MIXER_ROUTES(name " Preloader", name "R")
-+	ARIZONA_MIXER_ROUTES(name, name "L"), \
-+	ARIZONA_MIXER_ROUTES(name, name "R")
++	{ name " Preloader", NULL, "SYSCLK" }, \
+ 	{ name " Preloader", NULL, name " Aux 1" }, \
+ 	{ name " Preloader", NULL, name " Aux 2" }, \
+ 	{ name " Preloader", NULL, name " Aux 3" }, \
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index f8d8139b2d42..9576dbd116ac 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -814,7 +814,6 @@ static const struct snd_soc_dapm_route cs47l24_dapm_routes[] = {
+ 	{ "AIF3 Capture", NULL, "SYSCLK" },
  
- #define ARIZONA_EQ_CONTROL(xname, xbase)                      \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,   \
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 6a054e744068..228b1f9e9a68 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -87,9 +87,10 @@ struct wm_adsp {
- 		wm_adsp1_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
+ 	{ "Voice Control DSP", NULL, "DSP3" },
+-	{ "Voice Control DSP", NULL, "SYSCLK" },
  
- #define WM_ADSP2(wname, num, event_fn) \
--{	.id = snd_soc_dapm_dai_link, .name = wname " Preloader", \
-+{	.id = snd_soc_dapm_supply, .name = wname " Preloader", \
- 	.reg = SND_SOC_NOPM, .shift = num, .event = event_fn, \
--	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }, \
-+	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD, \
-+	.subseq = 100, /* Ensure we run after SYSCLK supply widget */ }, \
- {	.id = snd_soc_dapm_out_drv, .name = wname, \
- 	.reg = SND_SOC_NOPM, .shift = num, .event = wm_adsp2_event, \
- 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD }
+ 	{ "IN1L PGA", NULL, "IN1L" },
+ 	{ "IN1R PGA", NULL, "IN1R" },
+@@ -823,7 +822,6 @@ static const struct snd_soc_dapm_route cs47l24_dapm_routes[] = {
+ 	{ "IN2R PGA", NULL, "IN2R" },
+ 
+ 	{ "Audio Trace DSP", NULL, "DSP2" },
+-	{ "Audio Trace DSP", NULL, "SYSCLK" },
+ 
+ 	ARIZONA_MIXER_ROUTES("OUT1L", "HPOUT1L"),
+ 	ARIZONA_MIXER_ROUTES("OUT1R", "HPOUT1R"),
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index 16a1c5b46243..8ce76806a78b 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -1610,7 +1610,6 @@ static const struct snd_soc_dapm_route wm5102_dapm_routes[] = {
+ 	{ "Slim3 Capture", NULL, "SYSCLK" },
+ 
+ 	{ "Audio Trace DSP", NULL, "DSP1" },
+-	{ "Audio Trace DSP", NULL, "SYSCLK" },
+ 
+ 	{ "IN1L PGA", NULL, "IN1L" },
+ 	{ "IN1R PGA", NULL, "IN1R" },
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 673dc598c234..5d8c5b67ed42 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -1842,10 +1842,8 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
+ 	{ "Slim3 Capture", NULL, "SYSCLK" },
+ 
+ 	{ "Voice Control DSP", NULL, "DSP3" },
+-	{ "Voice Control DSP", NULL, "SYSCLK" },
+ 
+ 	{ "Audio Trace DSP", NULL, "DSP1" },
+-	{ "Audio Trace DSP", NULL, "SYSCLK" },
+ 
+ 	{ "IN1L PGA", NULL, "IN1L" },
+ 	{ "IN1R PGA", NULL, "IN1R" },
 -- 
 2.9.3
