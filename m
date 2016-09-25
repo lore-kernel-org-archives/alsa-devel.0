@@ -1,97 +1,150 @@
-From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Subject: [PATCH v6 3/3] ASoC: sun4i-codec: Add custom regmap configs
-Date: Sat, 24 Sep 2016 22:05:03 +0200
-Message-ID: <20160924200503.10728-4-dannym@scratchpost.org>
-References: <20160924200503.10728-1-dannym@scratchpost.org>
-Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCPKHTHNWIPBB7VYTO7QKGQEDBB23VA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20160924200503.10728-1-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Cc: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5677: Add ACPI support" to the asoc tree
+Date: Sat, 24 Sep 2016 22:57:37 -0700
+Message-ID: <E1bo2RV-0002lr-2q@finisterre>
+References: <89438b4e87725c528e325ce278a0f4319402db28.1472071966.git.john@metanate.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <89438b4e87725c528e325ce278a0f4319402db28.1472071966.git.john@metanate.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: John Keeping <john@metanate.com>
+Cc: Tom Rini <trini@konsulko.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Oder Chiou <oder_chiou@realtek.com>Tom Rini <trini@konsulko.com>, Genki Marshall <genki@genki.is>, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Ben Zhang <benzh@chromium.org>Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Dylan Reid <dgreid@chromium.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The A20 has a few extra registers that the A10 doesn't have.
-Therefore, use different regmaps for A10 as compared to A20.
+The patch
 
-Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+   ASoC: rt5677: Add ACPI support
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 89128534f925711eea1653c264683b7d14a46530 Mon Sep 17 00:00:00 2001
+From: John Keeping <john@metanate.com>
+Date: Wed, 24 Aug 2016 22:06:35 +0100
+Subject: [PATCH] ASoC: rt5677: Add ACPI support
+
+The Chromebook Pixel 2015 uses this codec with the ACPI ID RT5677CE, but
+does not use the standard DT property names so add a new function to
+parse the codec properties from these ACPI properties.
+
+Also, the GPIOs are only available by index, so we need to register a
+mapping to allow machine drivers to access the GPIOs by name.
+
+Signed-off-by: John Keeping <john@metanate.com>
+Tested-by: Tom Rini <trini@konsulko.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 38 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 35 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rt5677.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 52 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 3b53b78..e047ec0 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -682,12 +682,37 @@ static const struct regmap_config sun4i_codec_regmap_config = {
- 	.reg_bits	= 32,
- 	.reg_stride	= 4,
- 	.val_bits	= 32,
-+	.max_register	= SUN4I_CODEC_ADC_RXCNT,
-+};
-+
-+static const struct regmap_config sun7i_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
- 	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
- };
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index da9483c1c6fb..0e7aba1af881 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -9,6 +9,7 @@
+  * published by the Free Software Foundation.
+  */
  
-+struct sun4i_codec_quirks {
-+	const struct regmap_config *regmap_config;
++#include <linux/acpi.h>
+ #include <linux/fs.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+@@ -40,6 +41,15 @@
+ 
+ #define RT5677_PR_BASE (RT5677_PR_RANGE_BASE + (0 * RT5677_PR_SPACING))
+ 
++/* GPIO indexes defined by ACPI */
++enum {
++	RT5677_GPIO_PLUG_DET		= 0,
++	RT5677_GPIO_MIC_PRESENT_L	= 1,
++	RT5677_GPIO_HOTWORD_DET_L	= 2,
++	RT5677_GPIO_DSP_INT		= 3,
++	RT5677_GPIO_HP_AMP_SHDN_L	= 4,
 +};
 +
-+static const struct sun4i_codec_quirks sun4i_codec_quirks = {
-+	.regmap_config = &sun4i_codec_regmap_config,
-+};
-+
-+static const struct sun4i_codec_quirks sun7i_codec_quirks = {
-+	.regmap_config = &sun7i_codec_regmap_config,
-+};
-+
- static const struct of_device_id sun4i_codec_of_match[] = {
--	{ .compatible = "allwinner,sun4i-a10-codec" },
--	{ .compatible = "allwinner,sun7i-a20-codec" },
-+	{
-+		.compatible = "allwinner,sun4i-a10-codec",
-+		.data = &sun4i_codec_quirks,
-+	},
-+	{
-+		.compatible = "allwinner,sun7i-a20-codec",
-+		.data = &sun7i_codec_quirks,
-+	},
- 	{}
+ static const struct regmap_range_cfg rt5677_ranges[] = {
+ 	{
+ 		.name = "PR",
+@@ -5018,10 +5028,47 @@ static const struct regmap_config rt5677_regmap = {
+ static const struct i2c_device_id rt5677_i2c_id[] = {
+ 	{ "rt5677", RT5677 },
+ 	{ "rt5676", RT5676 },
++	{ "RT5677CE:00", RT5677 },
+ 	{ }
  };
- MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
-@@ -760,6 +785,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
+ 
++static const struct acpi_gpio_params plug_det_gpio = { RT5677_GPIO_PLUG_DET, 0, false };
++static const struct acpi_gpio_params mic_present_gpio = { RT5677_GPIO_MIC_PRESENT_L, 0, false };
++static const struct acpi_gpio_params headphone_enable_gpio = { RT5677_GPIO_HP_AMP_SHDN_L, 0, false };
++
++static const struct acpi_gpio_mapping bdw_rt5677_gpios[] = {
++	{ "plug-det-gpios", &plug_det_gpio, 1 },
++	{ "mic-present-gpios", &mic_present_gpio, 1 },
++	{ "headphone-enable-gpios", &headphone_enable_gpio, 1 },
++	{ NULL },
++};
++
++static void rt5677_read_acpi_properties(struct rt5677_priv *rt5677,
++		struct device *dev)
++{
++	int ret;
++	u32 val;
++
++	ret = acpi_dev_add_driver_gpios(ACPI_COMPANION(dev),
++			bdw_rt5677_gpios);
++	if (ret)
++		dev_warn(dev, "Failed to add driver gpios\n");
++
++	if (!device_property_read_u32(dev, "DCLK", &val))
++		rt5677->pdata.dmic2_clk_pin = val;
++
++	rt5677->pdata.in1_diff = device_property_read_bool(dev, "IN1");
++	rt5677->pdata.in2_diff = device_property_read_bool(dev, "IN2");
++	rt5677->pdata.lout1_diff = device_property_read_bool(dev, "OUT1");
++	rt5677->pdata.lout2_diff = device_property_read_bool(dev, "OUT2");
++	rt5677->pdata.lout3_diff = device_property_read_bool(dev, "OUT3");
++
++	device_property_read_u32(dev, "JD1", &rt5677->pdata.jd1_gpio);
++	device_property_read_u32(dev, "JD2", &rt5677->pdata.jd2_gpio);
++	device_property_read_u32(dev, "JD3", &rt5677->pdata.jd3_gpio);
++}
++
+ static void rt5677_read_device_properties(struct rt5677_priv *rt5677,
+ 		struct device *dev)
  {
- 	struct snd_soc_card *card;
- 	struct sun4i_codec *scodec;
-+	const struct sun4i_codec_quirks *quirks;
- 	struct resource *res;
- 	void __iomem *base;
- 	int ret;
-@@ -777,8 +803,14 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 		return PTR_ERR(base);
- 	}
+@@ -5127,8 +5174,12 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
  
-+	quirks = of_device_get_match_data(&pdev->dev);
-+	if (quirks == NULL) {
-+		dev_err(&pdev->dev, "Failed to determine the quirks to use\n");
-+		return -ENODEV;
-+	}
-+
- 	scodec->regmap = devm_regmap_init_mmio(&pdev->dev, base,
--					     &sun4i_codec_regmap_config);
-+					       quirks->regmap_config);
- 	if (IS_ERR(scodec->regmap)) {
- 		dev_err(&pdev->dev, "Failed to create our regmap\n");
- 		return PTR_ERR(scodec->regmap);
+ 	if (pdata)
+ 		rt5677->pdata = *pdata;
+-	else
++	else if (i2c->dev.of_node)
+ 		rt5677_read_device_properties(rt5677, &i2c->dev);
++	else if (ACPI_HANDLE(&i2c->dev))
++		rt5677_read_acpi_properties(rt5677, &i2c->dev);
++	else
++		return -EINVAL;
+ 
+ 	/* pow-ldo2 and reset are optional. The codec pins may be statically
+ 	 * connected on the board without gpios. If the gpio device property
+-- 
+2.9.3
