@@ -1,59 +1,135 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2] ASoC: simple-card: add support for aux devices
-Date: Sat, 24 Sep 2016 19:00:45 +0100
-Message-ID: <20160924180045.g7ayhbpbaxle34pt@sirena.org.uk>
-References: <1474614673-12350-1-git-send-email-nikita.yoush@cogentembedded.com>
- <20160923222541.GA25693@rob-hp-laptop>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: wm_adsp: Make DSP preloader a supply
+	widget" to the asoc tree
+Date: Sat, 24 Sep 2016 22:58:20 -0700
+Message-ID: <E1bo2SC-0002ve-KA@finisterre>
+References: <1474375956-10443-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="juilldp5ueknfzut"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20160923222541.GA25693@rob-hp-laptop>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Nikita Yushchenko <nikita.yoush-M4DtvfQ/ZS1MRgGoP+s0PdBPR1lH4CV8@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Otto =?iso-8859-1?Q?Kek=E4l=E4inen?= <otto-Gh1NM5ZPXYb1KXRcyAk9cg@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Mengdong Lin <mengdong.lin-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Aaro Koskinen <aaro.koskinen-X3B1VOXEql0@public.gmane.org>, Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Chris Healy <cphealy-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2482D2665B1
+ for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 07:58:35 +0200 (CEST)
+In-Reply-To: <1474375956-10443-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---juilldp5ueknfzut
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: wm_adsp: Make DSP preloader a supply widget
 
-On Fri, Sep 23, 2016 at 05:25:41PM -0500, Rob Herring wrote:
-> On Fri, Sep 23, 2016 at 10:11:12AM +0300, Nikita Yushchenko wrote:
+has been applied to the asoc tree at
 
-> > +- simple-audio-card,aux-devs		: List of phandles pointing to auxiliary=
- devices, such
-> > +					  as amplifiers, to be added to the sound card.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> I think the property should be specific as to the type of device. What=20
-> if you have 2 amps? Maybe simple-card can't have 2 outputs. What if you=
-=20
-> have a chain of devices and need to know the order of them?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Sorry, missed this bit...  We already have the audio routing properties
-which define how things are interconnected, this exists to get pure
-analogue components into the set of things that can be routed to.  The
-abstraction we're using hides what the device is well enough.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---juilldp5ueknfzut
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAABCAAGBQJX5r9MAAoJECTWi3JdVIfQO8kH/RPjkaokLHO+mmnnrUZu7Edx
-nOCR6HGJbGP22fz1glZyoYhMH9xZdjQA6fCzuIQZLtypS8DX9SkfB9qfxOdmOLNk
-t8ZwnLZ+/EKxd0QXLUBpSkyfVkQPIh7mk/zb96TAqFJQiIl+q8xGfjEbxn+odHYu
-e/o5t1wGqepxXXM5wlEaNy1Hp9oLtjxKvPwY0BfQONj5FwV1lx8kesvMUINgJtsM
-NBLmVenbJZzuHxAH8YTxhzjq8qYWh9Ycrh0wzAEDWL/JqTrfOwQjwQBWjjqP264S
-OodEpg6n2Qq+/pNY8HrK/KnuhuG1+jrFI98eeHrUt7t3T+nJ9d3yKWeDLfSiIkA=
-=x1D7
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---juilldp5ueknfzut--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>From 5ca7e170e331781fe71acb4919667993bb9fbab6 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Tue, 20 Sep 2016 13:52:31 +0100
+Subject: [PATCH] ASoC: wm_adsp: Make DSP preloader a supply widget
+
+Currently the DSP loading is split into two widgets, the preloader that
+is a snd_soc_dapm_dai_link widget which starts a thread to download
+the firmware, and the DSP itself which is a snd_soc_dapm_out_drv and
+synchronises the thread back in to the DAPM sequence. This allows the
+firmware download to be overlapped with the rest of the path bring up.
+
+The use of a snd_soc_dapm_dai_link widget requires the preloader to be part
+of the audio path in DAPM, really a supply widget is a better fit for the
+preloader. The preloader is something that needs to be done for the DSP to
+function, not a part of the audio path itself.
+
+This change makes the DSP preloader widget a supply widget, which as well
+as probably being a better fit will also make it much simpler to power up
+the preloader widget to trigger firmware download to the core independently
+of the audio path coming up.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/arizona.h | 16 ++++++++--------
+ sound/soc/codecs/wm_adsp.h |  5 +++--
+ 2 files changed, 11 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index e49955d834f0..850aa338ba29 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -191,20 +191,20 @@ extern unsigned int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
+ #define ARIZONA_DSP_ROUTES(name) \
+ 	{ name, NULL, name " Preloader"}, \
+ 	{ name " Preloader", NULL, "SYSCLK" }, \
+-	{ name " Preloader", NULL, name " Aux 1" }, \
+-	{ name " Preloader", NULL, name " Aux 2" }, \
+-	{ name " Preloader", NULL, name " Aux 3" }, \
+-	{ name " Preloader", NULL, name " Aux 4" }, \
+-	{ name " Preloader", NULL, name " Aux 5" }, \
+-	{ name " Preloader", NULL, name " Aux 6" }, \
++	{ name, NULL, name " Aux 1" }, \
++	{ name, NULL, name " Aux 2" }, \
++	{ name, NULL, name " Aux 3" }, \
++	{ name, NULL, name " Aux 4" }, \
++	{ name, NULL, name " Aux 5" }, \
++	{ name, NULL, name " Aux 6" }, \
+ 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 1"), \
+ 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 2"), \
+ 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 3"), \
+ 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 4"), \
+ 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 5"), \
+ 	ARIZONA_MIXER_INPUT_ROUTES(name " Aux 6"), \
+-	ARIZONA_MIXER_ROUTES(name " Preloader", name "L"), \
+-	ARIZONA_MIXER_ROUTES(name " Preloader", name "R")
++	ARIZONA_MIXER_ROUTES(name, name "L"), \
++	ARIZONA_MIXER_ROUTES(name, name "R")
+ 
+ #define ARIZONA_EQ_CONTROL(xname, xbase)                      \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,   \
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 6a054e744068..228b1f9e9a68 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -87,9 +87,10 @@ struct wm_adsp {
+ 		wm_adsp1_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
+ 
+ #define WM_ADSP2(wname, num, event_fn) \
+-{	.id = snd_soc_dapm_dai_link, .name = wname " Preloader", \
++{	.id = snd_soc_dapm_supply, .name = wname " Preloader", \
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = event_fn, \
+-	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }, \
++	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD, \
++	.subseq = 100, /* Ensure we run after SYSCLK supply widget */ }, \
+ {	.id = snd_soc_dapm_out_drv, .name = wname, \
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = wm_adsp2_event, \
+ 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD }
+-- 
+2.9.3
