@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Move control cache sync out of
-	preloader" to the asoc tree
-Date: Sat, 24 Sep 2016 22:58:27 -0700
-Message-ID: <E1bo2SJ-0002xI-3T@finisterre>
-References: <1474375956-10443-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm_adsp: Separate concept of booted and
+	running" to the asoc tree
+Date: Sat, 24 Sep 2016 22:58:29 -0700
+Message-ID: <E1bo2SL-0002y7-Cz@finisterre>
+References: <1474375956-10443-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E08712665B6
- for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 07:58:40 +0200 (CEST)
-In-Reply-To: <1474375956-10443-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A9C222665CC
+ for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 07:58:43 +0200 (CEST)
+In-Reply-To: <1474375956-10443-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Move control cache sync out of preloader
+   ASoC: wm_adsp: Separate concept of booted and running
 
 has been applied to the asoc tree at
 
@@ -53,103 +53,188 @@ to this mail.
 Thanks,
 Mark
 
->From cef45771c141fdccebe4cb7e0ce79f4687275494 Mon Sep 17 00:00:00 2001
+>From 28823ebad5e73bd717ca820929de2d18415d9822 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 20 Sep 2016 13:52:33 +0100
-Subject: [PATCH] ASoC: wm_adsp: Move control cache sync out of preloader
+Date: Tue, 20 Sep 2016 13:52:32 +0100
+Subject: [PATCH] ASoC: wm_adsp: Separate concept of booted and running
 
-As part of the work to download firmware before the audio path is brought
-up the DSP will be put into a low power state between downloading firmware
-to the core and starting it running. This will mean that the firmware ALSA
-controls are not accessible in the hardware during this period of time.
+Currently the wm_adsp driver has a flag that indicates the DSP is
+"running", this flag is used to gate access to the hardware.  However this
+flag is actually set in the firmware download thread after the firmware has
+been downloaded, but this is before the core is actually started running,
+so really it currently indicates that the core has been booted and is
+perhaps running.
 
-To prepare for this change we gate access to the hardware in the ALSA
-control handlers on the DSP being running rather than simply booted and
-move the synchronisation of the control caches out of the preloader delayed
-work and into the main DAPM thread after the DSP will have been brought out
-of its low power state.
+This patch clearly separates out the concepts of booted (firmware is
+downloaded) and running (code is executing on the DSP) within the wm_adsp
+driver.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 36 +++++++++++++++++++++++++-----------
+ sound/soc/codecs/wm_adsp.h |  2 ++
+ 2 files changed, 27 insertions(+), 11 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index ae2f2b6e82ed..24485ec5866f 100644
+index 21fbe7d07063..ae2f2b6e82ed 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -792,7 +792,7 @@ static int wm_coeff_put(struct snd_kcontrol *kctl,
+@@ -480,7 +480,7 @@ static ssize_t wm_adsp_debugfs_wmfw_read(struct file *file,
+ 
+ 	mutex_lock(&dsp->pwr_lock);
+ 
+-	if (!dsp->wmfw_file_name || !dsp->running)
++	if (!dsp->wmfw_file_name || !dsp->booted)
+ 		ret = 0;
+ 	else
+ 		ret = simple_read_from_buffer(user_buf, count, ppos,
+@@ -500,7 +500,7 @@ static ssize_t wm_adsp_debugfs_bin_read(struct file *file,
+ 
+ 	mutex_lock(&dsp->pwr_lock);
+ 
+-	if (!dsp->bin_file_name || !dsp->running)
++	if (!dsp->bin_file_name || !dsp->booted)
+ 		ret = 0;
+ 	else
+ 		ret = simple_read_from_buffer(user_buf, count, ppos,
+@@ -554,6 +554,9 @@ static void wm_adsp2_init_debugfs(struct wm_adsp *dsp,
+ 	if (!root)
+ 		goto err;
+ 
++	if (!debugfs_create_bool("booted", S_IRUGO, root, &dsp->booted))
++		goto err;
++
+ 	if (!debugfs_create_bool("running", S_IRUGO, root, &dsp->running))
+ 		goto err;
+ 
+@@ -637,7 +640,7 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+ 
+ 	mutex_lock(&dsp[e->shift_l].pwr_lock);
+ 
+-	if (dsp[e->shift_l].running || dsp[e->shift_l].compr)
++	if (dsp[e->shift_l].booted || dsp[e->shift_l].compr)
+ 		ret = -EBUSY;
+ 	else
+ 		dsp[e->shift_l].fw = ucontrol->value.enumerated.item[0];
+@@ -789,7 +792,7 @@ static int wm_coeff_put(struct snd_kcontrol *kctl,
  	memcpy(ctl->cache, p, ctl->len);
  
  	ctl->set = 1;
--	if (ctl->enabled && ctl->dsp->booted)
-+	if (ctl->enabled && ctl->dsp->running)
+-	if (ctl->enabled)
++	if (ctl->enabled && ctl->dsp->booted)
  		ret = wm_coeff_write_control(ctl, p, ctl->len);
  
  	mutex_unlock(&ctl->dsp->pwr_lock);
-@@ -814,7 +814,7 @@ static int wm_coeff_tlv_put(struct snd_kcontrol *kctl,
+@@ -811,7 +814,7 @@ static int wm_coeff_tlv_put(struct snd_kcontrol *kctl,
  		ret = -EFAULT;
  	} else {
  		ctl->set = 1;
--		if (ctl->enabled && ctl->dsp->booted)
-+		if (ctl->enabled && ctl->dsp->running)
+-		if (ctl->enabled)
++		if (ctl->enabled && ctl->dsp->booted)
  			ret = wm_coeff_write_control(ctl, ctl->cache, size);
  	}
  
-@@ -874,12 +874,12 @@ static int wm_coeff_get(struct snd_kcontrol *kctl,
+@@ -871,12 +874,12 @@ static int wm_coeff_get(struct snd_kcontrol *kctl,
  	mutex_lock(&ctl->dsp->pwr_lock);
  
  	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
--		if (ctl->enabled && ctl->dsp->booted)
-+		if (ctl->enabled && ctl->dsp->running)
+-		if (ctl->enabled)
++		if (ctl->enabled && ctl->dsp->booted)
  			ret = wm_coeff_read_control(ctl, p, ctl->len);
  		else
  			ret = -EPERM;
  	} else {
--		if (!ctl->flags && ctl->enabled && ctl->dsp->booted)
-+		if (!ctl->flags && ctl->enabled && ctl->dsp->running)
+-		if (!ctl->flags && ctl->enabled)
++		if (!ctl->flags && ctl->enabled && ctl->dsp->booted)
  			ret = wm_coeff_read_control(ctl, ctl->cache, ctl->len);
  
  		memcpy(p, ctl->cache, ctl->len);
-@@ -901,12 +901,12 @@ static int wm_coeff_tlv_get(struct snd_kcontrol *kctl,
+@@ -898,12 +901,12 @@ static int wm_coeff_tlv_get(struct snd_kcontrol *kctl,
  	mutex_lock(&ctl->dsp->pwr_lock);
  
  	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
--		if (ctl->enabled && ctl->dsp->booted)
-+		if (ctl->enabled && ctl->dsp->running)
+-		if (ctl->enabled)
++		if (ctl->enabled && ctl->dsp->booted)
  			ret = wm_coeff_read_control(ctl, ctl->cache, size);
  		else
  			ret = -EPERM;
  	} else {
--		if (!ctl->flags && ctl->enabled && ctl->dsp->booted)
-+		if (!ctl->flags && ctl->enabled && ctl->dsp->running)
+-		if (!ctl->flags && ctl->enabled)
++		if (!ctl->flags && ctl->enabled && ctl->dsp->booted)
  			ret = wm_coeff_read_control(ctl, ctl->cache, size);
  	}
  
-@@ -2280,11 +2280,6 @@ static void wm_adsp2_boot_work(struct work_struct *work)
+@@ -2166,13 +2169,20 @@ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
+ 		if (ret != 0)
+ 			goto err_ena;
+ 
++		dsp->booted = true;
++
+ 		/* Start the core running */
+ 		regmap_update_bits(dsp->regmap, dsp->base + ADSP1_CONTROL_30,
+ 				   ADSP1_CORE_ENA | ADSP1_START,
+ 				   ADSP1_CORE_ENA | ADSP1_START);
++
++		dsp->running = true;
+ 		break;
+ 
+ 	case SND_SOC_DAPM_PRE_PMD:
++		dsp->running = false;
++		dsp->booted = false;
++
+ 		/* Halt the core */
+ 		regmap_update_bits(dsp->regmap, dsp->base + ADSP1_CONTROL_30,
+ 				   ADSP1_CORE_ENA | ADSP1_START, 0);
+@@ -2275,7 +2285,7 @@ static void wm_adsp2_boot_work(struct work_struct *work)
  	if (ret != 0)
  		goto err_ena;
  
--	/* Sync set controls */
--	ret = wm_coeff_sync_controls(dsp);
--	if (ret != 0)
--		goto err_ena;
--
- 	dsp->booted = true;
+-	dsp->running = true;
++	dsp->booted = true;
  
  	mutex_unlock(&dsp->pwr_lock);
-@@ -2349,6 +2344,11 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		if (!dsp->booted)
+ 
+@@ -2336,7 +2346,7 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		flush_work(&dsp->boot_work);
+ 
+-		if (!dsp->running)
++		if (!dsp->booted)
  			return -EIO;
  
-+		/* Sync set controls */
-+		ret = wm_coeff_sync_controls(dsp);
-+		if (ret != 0)
-+			goto err;
-+
  		ret = regmap_update_bits(dsp->regmap,
- 					 dsp->base + ADSP2_CONTROL,
- 					 ADSP2_CORE_ENA | ADSP2_START,
+@@ -2346,6 +2356,8 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		if (ret != 0)
+ 			goto err;
+ 
++		dsp->running = true;
++
+ 		mutex_lock(&dsp->pwr_lock);
+ 
+ 		if (wm_adsp_fw[dsp->fw].num_caps != 0)
+@@ -2365,7 +2377,9 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 
+ 		dsp->fw_id = 0;
+ 		dsp->fw_id_version = 0;
++
+ 		dsp->running = false;
++		dsp->booted = false;
+ 
+ 		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
+ 				   ADSP2_CORE_ENA | ADSP2_START, 0);
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index be3b5bcb7f17..6a054e744068 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -61,6 +61,8 @@ struct wm_adsp {
+ 
+ 	int fw;
+ 	int fw_ver;
++
++	bool booted;
+ 	bool running;
+ 
+ 	struct list_head ctl_list;
 -- 
 2.9.3
