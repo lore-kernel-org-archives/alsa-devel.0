@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: atom: add missing \n to end of dev_err/dev_dbg messages" to the asoc tree
-Date: Sat, 24 Sep 2016 22:58:09 -0700
-Message-ID: <E1bo2S1-0002qR-2F@finisterre>
-References: <20160916173731.13302-1-colin.king@canonical.com>
+Subject: Applied "ASoC: exynos: organize the asoc audio into a menu" to the asoc tree
+Date: Sat, 24 Sep 2016 22:58:18 -0700
+Message-ID: <E1bo2SA-0002up-G3@finisterre>
+References: <1474311470-23175-1-git-send-email-ayaka@soulik.info>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160916173731.13302-1-colin.king@canonical.com>
+In-Reply-To: <1474311470-23175-1-git-send-email-ayaka@soulik.info>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, trivial@kernel.org, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Sachin Mokashi <sachinx.mokashi@intel.com>, Jorge Fernandez Monteagudo <jorgefm@cirsa.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Randy Li <ayaka@soulik.info>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, linux-kernel@vger.kernel.org, tiwai@suse.com, krzk@kernel.org, lgirdwood@gmail.combroonie@kernel.org, s.nawrocki@samsung.com, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: atom: add missing \n to end of dev_err/dev_dbg messages
+   ASoC: exynos: organize the asoc audio into a menu
 
 has been applied to the asoc tree at
 
@@ -37,95 +37,263 @@ to this mail.
 Thanks,
 Mark
 
->From 1635c694124fe66933ae3db0d39dacb44c53f4b9 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 16 Sep 2016 18:37:31 +0100
-Subject: [PATCH] ASoC: Intel: atom: add missing \n to end of dev_err/dev_dbg
- messages
+>From 090d93488135c8422d7711a8cefa4ed1cff7744a Mon Sep 17 00:00:00 2001
+From: Randy Li <ayaka@soulik.info>
+Date: Tue, 20 Sep 2016 02:57:50 +0800
+Subject: [PATCH] ASoC: exynos: organize the asoc audio into a menu
 
-Trival fix, some dev_err/deb_dbg messages are missing a \n, so add it.
+It is simple sound card time, we could assign different codec
+to a interface without making a specific driver for it. The SPDIF
+and I2S interface for Samsung would be possible used by
+simple-sound-card, but not sure about the PCM.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Those S3C time entries are left alone as I don't think any new board
+would need them.
+
+Signed-off-by: Randy Li <ayaka@soulik.info>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/samsung/Kconfig | 57 ++++++++++++++++++++++++-----------------------
+ 1 file changed, 29 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 773acfbaaf2f..9718e8249224 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -166,7 +166,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	rsrc = platform_get_resource(pdev, IORESOURCE_MEM,
- 					ctx->pdata->res_info->acpi_lpe_res_index);
- 	if (!rsrc) {
--		dev_err(ctx->dev, "Invalid SHIM base from IFWI");
-+		dev_err(ctx->dev, "Invalid SHIM base from IFWI\n");
- 		return -EIO;
- 	}
- 	dev_info(ctx->dev, "LPE base: %#x size:%#x", (unsigned int) rsrc->start,
-@@ -178,7 +178,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	ctx->iram = devm_ioremap_nocache(ctx->dev, ctx->iram_base,
- 					 ctx->pdata->res_info->iram_size);
- 	if (!ctx->iram) {
--		dev_err(ctx->dev, "unable to map IRAM");
-+		dev_err(ctx->dev, "unable to map IRAM\n");
- 		return -EIO;
- 	}
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 7b722b0094d9..f6023b46c107 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -1,12 +1,14 @@
+-config SND_SOC_SAMSUNG
++menuconfig SND_SOC_SAMSUNG
+ 	tristate "ASoC support for Samsung"
+ 	depends on (PLAT_SAMSUNG || ARCH_EXYNOS)
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+-	help
++	---help---
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the Samsung SoCs' Audio interfaces. You will also need to
+ 	  select the audio interfaces to support below.
  
-@@ -188,7 +188,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	ctx->dram = devm_ioremap_nocache(ctx->dev, ctx->dram_base,
- 					 ctx->pdata->res_info->dram_size);
- 	if (!ctx->dram) {
--		dev_err(ctx->dev, "unable to map DRAM");
-+		dev_err(ctx->dev, "unable to map DRAM\n");
- 		return -EIO;
- 	}
++if SND_SOC_SAMSUNG
++
+ config SND_S3C24XX_I2S
+ 	tristate
  
-@@ -197,7 +197,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	ctx->shim = devm_ioremap_nocache(ctx->dev, ctx->shim_phy_add,
- 					ctx->pdata->res_info->shim_size);
- 	if (!ctx->shim) {
--		dev_err(ctx->dev, "unable to map SHIM");
-+		dev_err(ctx->dev, "unable to map SHIM\n");
- 		return -EIO;
- 	}
+@@ -18,22 +20,22 @@ config SND_S3C2412_SOC_I2S
+ 	select SND_S3C_I2SV2_SOC
  
-@@ -210,7 +210,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	ctx->mailbox = devm_ioremap_nocache(ctx->dev, ctx->mailbox_add,
- 					    ctx->pdata->res_info->mbox_size);
- 	if (!ctx->mailbox) {
--		dev_err(ctx->dev, "unable to map mailbox");
-+		dev_err(ctx->dev, "unable to map mailbox\n");
- 		return -EIO;
- 	}
+ config SND_SAMSUNG_PCM
+-	tristate
++	tristate "Samsung PCM interface support"
  
-@@ -220,7 +220,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	rsrc = platform_get_resource(pdev, IORESOURCE_MEM,
- 					ctx->pdata->res_info->acpi_ddr_index);
- 	if (!rsrc) {
--		dev_err(ctx->dev, "Invalid DDR base from IFWI");
-+		dev_err(ctx->dev, "Invalid DDR base from IFWI\n");
- 		return -EIO;
- 	}
- 	ctx->ddr_base = rsrc->start;
-@@ -229,7 +229,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	ctx->ddr = devm_ioremap_nocache(ctx->dev, ctx->ddr_base,
- 					resource_size(rsrc));
- 	if (!ctx->ddr) {
--		dev_err(ctx->dev, "unable to map DDR");
-+		dev_err(ctx->dev, "unable to map DDR\n");
- 		return -EIO;
- 	}
+ config SND_SAMSUNG_AC97
+ 	tristate
+ 	select SND_SOC_AC97_BUS
  
-@@ -296,7 +296,7 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 	id = acpi_match_device(dev->driver->acpi_match_table, dev);
- 	if (!id)
- 		return -ENODEV;
--	dev_dbg(dev, "for %s", id->id);
-+	dev_dbg(dev, "for %s\n", id->id);
+ config SND_SAMSUNG_SPDIF
+-	tristate
++	tristate "Samsung SPDIF transmitter support"
+ 	select SND_SOC_SPDIF
  
- 	mach = (struct sst_acpi_mach *)id->driver_data;
- 	mach = sst_acpi_find_machine(mach);
+ config SND_SAMSUNG_I2S
+-	tristate
++	tristate "Samsung I2S interface support"
+ 
+ config SND_SOC_SAMSUNG_NEO1973_WM8753
+ 	tristate "Audio support for Openmoko Neo1973 Smartphones (GTA02)"
+-	depends on SND_SOC_SAMSUNG && MACH_NEO1973_GTA02
++	depends on MACH_NEO1973_GTA02
+ 	select SND_S3C24XX_I2S
+ 	select SND_SOC_WM8753
+ 	select SND_SOC_BT_SCO
+@@ -43,7 +45,7 @@ config SND_SOC_SAMSUNG_NEO1973_WM8753
+ 
+ config SND_SOC_SAMSUNG_JIVE_WM8750
+ 	tristate "SoC I2S Audio support for Jive"
+-	depends on SND_SOC_SAMSUNG && MACH_JIVE && I2C
++	depends on MACH_JIVE && I2C
+ 	select SND_SOC_WM8750
+ 	select SND_S3C2412_SOC_I2S
+ 	help
+@@ -51,7 +53,7 @@ config SND_SOC_SAMSUNG_JIVE_WM8750
+ 
+ config SND_SOC_SAMSUNG_SMDK_WM8580
+ 	tristate "SoC I2S Audio support for WM8580 on SMDK"
+-	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110)
++	depends on MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110
+ 	depends on I2C
+ 	select SND_SOC_WM8580
+ 	select SND_SAMSUNG_I2S
+@@ -60,7 +62,6 @@ config SND_SOC_SAMSUNG_SMDK_WM8580
+ 
+ config SND_SOC_SAMSUNG_SMDK_WM8994
+ 	tristate "SoC I2S Audio support for WM8994 on SMDK"
+-	depends on SND_SOC_SAMSUNG
+ 	depends on I2C=y
+ 	select MFD_WM8994
+ 	select SND_SOC_WM8994
+@@ -70,7 +71,7 @@ config SND_SOC_SAMSUNG_SMDK_WM8994
+ 
+ config SND_SOC_SAMSUNG_SMDK2443_WM9710
+ 	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
+-	depends on SND_SOC_SAMSUNG && MACH_SMDK2443
++	depends on MACH_SMDK2443
+ 	select AC97_BUS
+ 	select SND_SOC_AC97_CODEC
+ 	select SND_SAMSUNG_AC97
+@@ -80,7 +81,7 @@ config SND_SOC_SAMSUNG_SMDK2443_WM9710
+ 
+ config SND_SOC_SAMSUNG_LN2440SBC_ALC650
+ 	tristate "SoC AC97 Audio support for LN2440SBC - ALC650"
+-	depends on SND_SOC_SAMSUNG && ARCH_S3C24XX
++	depends on ARCH_S3C24XX
+ 	select AC97_BUS
+ 	select SND_SOC_AC97_CODEC
+ 	select SND_SAMSUNG_AC97
+@@ -90,7 +91,7 @@ config SND_SOC_SAMSUNG_LN2440SBC_ALC650
+ 
+ config SND_SOC_SAMSUNG_S3C24XX_UDA134X
+ 	tristate "SoC I2S Audio support UDA134X wired to a S3C24XX"
+-	depends on SND_SOC_SAMSUNG && ARCH_S3C24XX
++	depends on ARCH_S3C24XX
+ 	select SND_S3C24XX_I2S
+ 	select SND_SOC_L3
+ 	select SND_SOC_UDA134X
+@@ -102,21 +103,21 @@ config SND_SOC_SAMSUNG_SIMTEC
+ 
+ config SND_SOC_SAMSUNG_SIMTEC_TLV320AIC23
+ 	tristate "SoC I2S Audio support for TLV320AIC23 on Simtec boards"
+-	depends on SND_SOC_SAMSUNG && ARCH_S3C24XX && I2C
++	depends on ARCH_S3C24XX && I2C
+ 	select SND_S3C24XX_I2S
+ 	select SND_SOC_TLV320AIC23_I2C
+ 	select SND_SOC_SAMSUNG_SIMTEC
+ 
+ config SND_SOC_SAMSUNG_SIMTEC_HERMES
+ 	tristate "SoC I2S Audio support for Simtec Hermes board"
+-	depends on SND_SOC_SAMSUNG && ARCH_S3C24XX && I2C
++	depends on ARCH_S3C24XX && I2C
+ 	select SND_S3C24XX_I2S
+ 	select SND_SOC_TLV320AIC3X
+ 	select SND_SOC_SAMSUNG_SIMTEC
+ 
+ config SND_SOC_SAMSUNG_H1940_UDA1380
+ 	tristate "Audio support for the HP iPAQ H1940"
+-	depends on SND_SOC_SAMSUNG && ARCH_H1940 && I2C
++	depends on ARCH_H1940 && I2C
+ 	select SND_S3C24XX_I2S
+ 	select SND_SOC_UDA1380
+ 	help
+@@ -124,7 +125,7 @@ config SND_SOC_SAMSUNG_H1940_UDA1380
+ 
+ config SND_SOC_SAMSUNG_RX1950_UDA1380
+ 	tristate "Audio support for the HP iPAQ RX1950"
+-	depends on SND_SOC_SAMSUNG && MACH_RX1950 && I2C
++	depends on MACH_RX1950 && I2C
+ 	select SND_S3C24XX_I2S
+ 	select SND_SOC_UDA1380
+ 	help
+@@ -132,7 +133,7 @@ config SND_SOC_SAMSUNG_RX1950_UDA1380
+ 
+ config SND_SOC_SAMSUNG_SMDK_WM9713
+ 	tristate "SoC AC97 Audio support for SMDK with WM9713"
+-	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110)
++	depends on MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110
+ 	select SND_SOC_WM9713
+ 	select SND_SAMSUNG_AC97
+ 	help
+@@ -140,20 +141,19 @@ config SND_SOC_SAMSUNG_SMDK_WM9713
+ 
+ config SND_SOC_SMARTQ
+ 	tristate "SoC I2S Audio support for SmartQ board"
+-	depends on SND_SOC_SAMSUNG && MACH_SMARTQ && I2C
++	depends on MACH_SMARTQ && I2C
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM8750
+ 
+ config SND_SOC_SAMSUNG_SMDK_SPDIF
+ 	tristate "SoC S/PDIF Audio support for SMDK"
+-	depends on SND_SOC_SAMSUNG
+ 	select SND_SAMSUNG_SPDIF
+ 	help
+ 	  Say Y if you want to add support for SoC S/PDIF audio on the SMDK.
+ 
+ config SND_SOC_SMDK_WM8580_PCM
+ 	tristate "SoC PCM Audio support for WM8580 on SMDK"
+-	depends on SND_SOC_SAMSUNG && (MACH_SMDKV210 || MACH_SMDKC110)
++	depends on MACH_SMDKV210 || MACH_SMDKC110
+ 	depends on I2C
+ 	select SND_SOC_WM8580
+ 	select SND_SAMSUNG_PCM
+@@ -162,7 +162,6 @@ config SND_SOC_SMDK_WM8580_PCM
+ 
+ config SND_SOC_SMDK_WM8994_PCM
+ 	tristate "SoC PCM Audio support for WM8994 on SMDK"
+-	depends on SND_SOC_SAMSUNG
+ 	depends on I2C=y
+ 	select MFD_WM8994
+ 	select SND_SOC_WM8994
+@@ -172,7 +171,7 @@ config SND_SOC_SMDK_WM8994_PCM
+ 
+ config SND_SOC_SPEYSIDE
+ 	tristate "Audio support for Wolfson Speyside"
+-	depends on SND_SOC_SAMSUNG && I2C && SPI_MASTER
++	depends on I2C && SPI_MASTER
+ 	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM8996
+@@ -182,14 +181,14 @@ config SND_SOC_SPEYSIDE
+ 
+ config SND_SOC_TOBERMORY
+ 	tristate "Audio support for Wolfson Tobermory"
+-	depends on SND_SOC_SAMSUNG && INPUT && I2C
++	depends on INPUT && I2C
+ 	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM8962
+ 
+ config SND_SOC_BELLS
+ 	tristate "Audio support for Wolfson Bells"
+-	depends on SND_SOC_SAMSUNG && MFD_ARIZONA && I2C && SPI_MASTER
++	depends on MFD_ARIZONA && I2C && SPI_MASTER
+ 	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM5102
+@@ -200,7 +199,7 @@ config SND_SOC_BELLS
+ 
+ config SND_SOC_LOWLAND
+ 	tristate "Audio support for Wolfson Lowland"
+-	depends on SND_SOC_SAMSUNG && I2C
++	depends on I2C
+ 	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM5100
+@@ -208,7 +207,7 @@ config SND_SOC_LOWLAND
+ 
+ config SND_SOC_LITTLEMILL
+ 	tristate "Audio support for Wolfson Littlemill"
+-	depends on SND_SOC_SAMSUNG && I2C
++	depends on I2C
+ 	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
+ 	select SND_SAMSUNG_I2S
+ 	select MFD_WM8994
+@@ -216,7 +215,7 @@ config SND_SOC_LITTLEMILL
+ 
+ config SND_SOC_SNOW
+ 	tristate "Audio support for Google Snow boards"
+-	depends on SND_SOC_SAMSUNG && I2C
++	depends on I2C
+ 	select SND_SOC_MAX98090
+ 	select SND_SOC_MAX98095
+ 	select SND_SAMSUNG_I2S
+@@ -226,6 +225,8 @@ config SND_SOC_SNOW
+ 
+ config SND_SOC_ARNDALE_RT5631_ALC5631
+         tristate "Audio support for RT5631(ALC5631) on Arndale Board"
+-        depends on SND_SOC_SAMSUNG && I2C
++        depends on I2C
+         select SND_SAMSUNG_I2S
+         select SND_SOC_RT5631
++
++endif #SND_SOC_SAMSUNG
 -- 
 2.9.3
