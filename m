@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: add missing \n to end of dev_* messages" to the asoc tree
-Date: Sat, 24 Sep 2016 22:58:16 -0700
-Message-ID: <E1bo2S8-0002to-AS@finisterre>
-References: <20160916175121.13838-1-colin.king@canonical.com>
+Subject: Applied "ASoC: sun4i-codec: Add custom regmap configs" to the asoc tree
+Date: Sat, 24 Sep 2016 22:58:48 -0700
+Message-ID: <E1bo2Se-00033P-Gr@finisterre>
+References: <20160922071313.12891-4-dannym@scratchpost.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20160916175121.13838-1-colin.king@canonical.com>
+In-Reply-To: <20160922071313.12891-4-dannym@scratchpost.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, trivial@kernel.org, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Jayachandran B <jayachandran.b@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Vedang Patel <vedang.patel@intel.com>, Dharageswari R <dharageswari.r@intel.com>, Mousami Jana <mousami.janax@intel.com>, Petr Mladek <pmladek@suse.com>, =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Shreyas NC <shreyas.nc@intel.com>, Hardik T Shah <hardik.t.shah@intel.com>, alsa-devel@al
+To: Danny Milosavljevic <dannym@scratchpost.org>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>Maxime Ripard <maxime.ripard@free-electrons.com>Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi@googlegroups.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: add missing \n to end of dev_* messages
+   ASoC: sun4i-codec: Add custom regmap configs
 
 has been applied to the asoc tree at
 
@@ -37,238 +37,88 @@ to this mail.
 Thanks,
 Mark
 
->From ecd286a9d8a75771f73110b990512f10dc342356 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 16 Sep 2016 18:51:21 +0100
-Subject: [PATCH] ASoC: Intel: Skylake: add missing \n to end of dev_* messages
+>From c1d5065a0bd09bac783120b73bfa768ba6a493d9 Mon Sep 17 00:00:00 2001
+From: Danny Milosavljevic <dannym@scratchpost.org>
+Date: Thu, 22 Sep 2016 09:13:13 +0200
+Subject: [PATCH] ASoC: sun4i-codec: Add custom regmap configs
 
-Trival fix, some dev_* messages are missing a \n, so add it.
+The A20 has a few extra registers that the A10 doesn't have.
+Therefore, use different regmaps for A10 as compared to A20.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Danny Milosavljevic <dannym@scratchpost.org>
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c       |  6 +++---
- sound/soc/intel/skylake/skl-sst-cldma.c |  4 ++--
- sound/soc/intel/skylake/skl-sst-ipc.c   | 12 ++++++------
- sound/soc/intel/skylake/skl-sst.c       |  6 +++---
- sound/soc/intel/skylake/skl-topology.c  | 18 +++++++++---------
- 5 files changed, 23 insertions(+), 23 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 38 +++++++++++++++++++++++++++++++++++---
+ 1 file changed, 35 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 48a4ae583dd9..1d251d59bcb9 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -404,7 +404,7 @@ static int bxt_set_dsp_D3(struct sst_dsp *ctx, unsigned int core_id)
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 9d8c027f7c55..eb6808842208 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -680,12 +680,37 @@ static const struct regmap_config sun4i_codec_regmap_config = {
+ 	.reg_bits	= 32,
+ 	.reg_stride	= 4,
+ 	.val_bits	= 32,
++	.max_register	= SUN4I_CODEC_ADC_RXCNT,
++};
++
++static const struct regmap_config sun7i_codec_regmap_config = {
++	.reg_bits	= 32,
++	.reg_stride	= 4,
++	.val_bits	= 32,
+ 	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
+ };
  
- 	ret = skl_dsp_disable_core(ctx, core_mask);
- 	if (ret < 0) {
--		dev_err(ctx->dev, "Failed to disable core %d", ret);
-+		dev_err(ctx->dev, "Failed to disable core %d\n", ret);
- 		return ret;
- 	}
- 	skl->cores.state[core_id] = SKL_DSP_RESET;
-@@ -489,7 +489,7 @@ int bxt_sst_init_fw(struct device *dev, struct skl_sst *ctx)
- 
- 	ret = sst->fw_ops.load_fw(sst);
- 	if (ret < 0) {
--		dev_err(dev, "Load base fw failed: %x", ret);
-+		dev_err(dev, "Load base fw failed: %x\n", ret);
- 		return ret;
- 	}
- 
-@@ -498,7 +498,7 @@ int bxt_sst_init_fw(struct device *dev, struct skl_sst *ctx)
- 	if (ctx->manifest.lib_count > 1) {
- 		ret = sst->fw_ops.load_library(sst, &ctx->manifest);
- 		if (ret < 0) {
--			dev_err(dev, "Load Library failed : %x", ret);
-+			dev_err(dev, "Load Library failed : %x\n", ret);
- 			return ret;
- 		}
- 	}
-diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
-index da2329d17f4d..efa2532114ba 100644
---- a/sound/soc/intel/skylake/skl-sst-cldma.c
-+++ b/sound/soc/intel/skylake/skl-sst-cldma.c
-@@ -341,14 +341,14 @@ int skl_cldma_prepare(struct sst_dsp *ctx)
- 	ret = ctx->dsp_ops.alloc_dma_buf(ctx->dev,
- 			&ctx->cl_dev.dmab_data, ctx->cl_dev.bufsize);
- 	if (ret < 0) {
--		dev_err(ctx->dev, "Alloc buffer for base fw failed: %x", ret);
-+		dev_err(ctx->dev, "Alloc buffer for base fw failed: %x\n", ret);
- 		return ret;
- 	}
- 	/* Setup Code loader BDL */
- 	ret = ctx->dsp_ops.alloc_dma_buf(ctx->dev,
- 			&ctx->cl_dev.dmab_bdl, PAGE_SIZE);
- 	if (ret < 0) {
--		dev_err(ctx->dev, "Alloc buffer for blde failed: %x", ret);
-+		dev_err(ctx->dev, "Alloc buffer for blde failed: %x\n", ret);
- 		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
- 		return ret;
- 	}
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 74dbecc3afaa..0bd01e62622c 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -344,7 +344,7 @@ static int skl_ipc_process_notification(struct sst_generic_ipc *ipc,
- 			break;
- 
- 		default:
--			dev_err(ipc->dev, "ipc: Unhandled error msg=%x",
-+			dev_err(ipc->dev, "ipc: Unhandled error msg=%x\n",
- 						header.primary);
- 			break;
- 		}
-@@ -385,13 +385,13 @@ static void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
- 		break;
- 
- 	default:
--		dev_err(ipc->dev, "Unknown ipc reply: 0x%x", reply);
-+		dev_err(ipc->dev, "Unknown ipc reply: 0x%x\n", reply);
- 		msg->errno = -EINVAL;
- 		break;
++struct sun4i_codec_quirks {
++	const struct regmap_config *regmap_config;
++};
++
++static const struct sun4i_codec_quirks sun4i_codec_quirks = {
++	.regmap_config = &sun4i_codec_regmap_config,
++};
++
++static const struct sun4i_codec_quirks sun7i_codec_quirks = {
++	.regmap_config = &sun7i_codec_regmap_config,
++};
++
+ static const struct of_device_id sun4i_codec_of_match[] = {
+-	{ .compatible = "allwinner,sun4i-a10-codec" },
+-	{ .compatible = "allwinner,sun7i-a20-codec" },
++	{
++		.compatible = "allwinner,sun4i-a10-codec",
++		.data = &sun4i_codec_quirks,
++	},
++	{
++		.compatible = "allwinner,sun7i-a20-codec",
++		.data = &sun7i_codec_quirks,
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
+@@ -758,6 +783,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card;
+ 	struct sun4i_codec *scodec;
++	const struct sun4i_codec_quirks *quirks;
+ 	struct resource *res;
+ 	void __iomem *base;
+ 	int ret;
+@@ -775,8 +801,14 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 		return PTR_ERR(base);
  	}
  
- 	if (reply != IPC_GLB_REPLY_SUCCESS) {
--		dev_err(ipc->dev, "ipc FW reply: reply=%d", reply);
-+		dev_err(ipc->dev, "ipc FW reply: reply=%d\n", reply);
- 		dev_err(ipc->dev, "FW Error Code: %u\n",
- 			ipc->dsp->fw_ops.get_fw_errcode(ipc->dsp));
- 	}
-@@ -440,9 +440,9 @@ irqreturn_t skl_dsp_irq_thread_handler(int irq, void *context)
- 		hipcte = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCTE);
- 		header.primary = hipct;
- 		header.extension = hipcte;
--		dev_dbg(dsp->dev, "IPC irq: Firmware respond primary:%x",
-+		dev_dbg(dsp->dev, "IPC irq: Firmware respond primary:%x\n",
- 						header.primary);
--		dev_dbg(dsp->dev, "IPC irq: Firmware respond extension:%x",
-+		dev_dbg(dsp->dev, "IPC irq: Firmware respond extension:%x\n",
- 						header.extension);
- 
- 		if (IPC_GLB_NOTIFY_RSP_TYPE(header.primary)) {
-@@ -749,7 +749,7 @@ int skl_ipc_bind_unbind(struct sst_generic_ipc *ipc,
- 			 header.extension);
- 	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, NULL, 0, NULL, 0);
- 	if (ret < 0) {
--		dev_err(ipc->dev, "ipc: bind/unbind faileden");
-+		dev_err(ipc->dev, "ipc: bind/unbind failed\n");
- 		return ret;
- 	}
- 
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index 064fc7ee3d88..8fc3178bc79c 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -107,13 +107,13 @@ static int skl_load_base_firmware(struct sst_dsp *ctx)
- 
- 	ret = skl_dsp_boot(ctx);
- 	if (ret < 0) {
--		dev_err(ctx->dev, "Boot dsp core failed ret: %d", ret);
-+		dev_err(ctx->dev, "Boot dsp core failed ret: %d\n", ret);
- 		goto skl_load_base_firmware_failed;
- 	}
- 
- 	ret = skl_cldma_prepare(ctx);
- 	if (ret < 0) {
--		dev_err(ctx->dev, "CL dma prepare failed : %d", ret);
-+		dev_err(ctx->dev, "CL dma prepare failed : %d\n", ret);
- 		goto skl_load_base_firmware_failed;
- 	}
- 
-@@ -502,7 +502,7 @@ int skl_sst_init_fw(struct device *dev, struct skl_sst *ctx)
- 
- 	ret = sst->fw_ops.load_fw(sst);
- 	if (ret < 0) {
--		dev_err(dev, "Load base fw failed : %d", ret);
-+		dev_err(dev, "Load base fw failed : %d\n", ret);
- 		return ret;
- 	}
- 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index e48f872505b1..b5b1934d8550 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1614,7 +1614,7 @@ static int skl_tplg_fill_pins_info(struct device *dev,
- 		break;
- 
- 	default:
--		dev_err(dev, "Invalid direction value");
-+		dev_err(dev, "Invalid direction value\n");
- 		return -EINVAL;
- 	}
- 
-@@ -1652,7 +1652,7 @@ static int skl_tplg_fill_fmt(struct device *dev,
- 		break;
- 
- 	default:
--		dev_err(dev, "Invalid direction value");
-+		dev_err(dev, "Invalid direction value\n");
- 		return -EINVAL;
- 	}
- 
-@@ -1690,7 +1690,7 @@ static int skl_tplg_fill_fmt(struct device *dev,
- 		break;
- 
- 	default:
--		dev_err(dev, "Invalid token %d", tkn);
-+		dev_err(dev, "Invalid token %d\n", tkn);
- 		return -EINVAL;
- 	}
- 
-@@ -1703,7 +1703,7 @@ static int skl_tplg_get_uuid(struct device *dev, struct skl_module_cfg *mconfig,
- 	if (uuid_tkn->token == SKL_TKN_UUID)
- 		memcpy(&mconfig->guid, &uuid_tkn->uuid, 16);
- 	else {
--		dev_err(dev, "Not an UUID token tkn %d", uuid_tkn->token);
-+		dev_err(dev, "Not an UUID token tkn %d\n", uuid_tkn->token);
- 		return -EINVAL;
- 	}
- 
-@@ -1939,7 +1939,7 @@ static int skl_tplg_get_tokens(struct device *dev,
- 
- 		switch (array->type) {
- 		case SND_SOC_TPLG_TUPLE_TYPE_STRING:
--			dev_warn(dev, "no string tokens expected for skl tplg");
-+			dev_warn(dev, "no string tokens expected for skl tplg\n");
- 			continue;
- 
- 		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
-@@ -1992,7 +1992,7 @@ static int skl_tplg_get_desc_blocks(struct device *dev,
- 		return tkn_elem->value;
- 
- 	default:
--		dev_err(dev, "Invalid descriptor token %d", tkn_elem->token);
-+		dev_err(dev, "Invalid descriptor token %d\n", tkn_elem->token);
- 		break;
- 	}
- 
-@@ -2252,7 +2252,7 @@ static int skl_tplg_fill_str_mfest_tkn(struct device *dev,
- 		break;
- 
- 	default:
--		dev_err(dev, "Not a string token %d", str_elem->token);
-+		dev_err(dev, "Not a string token %d\n", str_elem->token);
- 		break;
- 	}
- 
-@@ -2293,7 +2293,7 @@ static int skl_tplg_get_int_tkn(struct device *dev,
- 		break;
- 
- 	default:
--		dev_err(dev, "Not a manifest token %d", tkn_elem->token);
-+		dev_err(dev, "Not a manifest token %d\n", tkn_elem->token);
- 		return -EINVAL;
- 	}
- 
-@@ -2332,7 +2332,7 @@ static int skl_tplg_get_manifest_tkn(struct device *dev,
- 			continue;
- 
- 		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
--			dev_warn(dev, "no uuid tokens for skl tplf manifest");
-+			dev_warn(dev, "no uuid tokens for skl tplf manifest\n");
- 			continue;
- 
- 		default:
++	quirks = of_device_get_match_data(&pdev->dev);
++	if (quirks == NULL) {
++		dev_err(&pdev->dev, "Failed to determine the quirks to use\n");
++		return -ENODEV;
++	}
++
+ 	scodec->regmap = devm_regmap_init_mmio(&pdev->dev, base,
+-					     &sun4i_codec_regmap_config);
++					       quirks->regmap_config);
+ 	if (IS_ERR(scodec->regmap)) {
+ 		dev_err(&pdev->dev, "Failed to create our regmap\n");
+ 		return PTR_ERR(scodec->regmap);
 -- 
 2.9.3
