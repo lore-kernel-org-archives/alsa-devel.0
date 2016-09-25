@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5660: add rt5660 codec driver" to the
-	asoc tree
-Date: Sat, 24 Sep 2016 22:58:03 -0700
-Message-ID: <E1bo2Rv-0002pO-RS@finisterre>
-References: <1474284368-25992-1-git-send-email-oder_chiou@realtek.com>
+From: kbuild test robot <fengguang.wu@intel.com>
+Subject: [asoc:topic/intel 53/55]
+ sound/soc/codecs/hdac_hdmi.c:1028:5: warning: passing argument 4 of
+ 'snd_hdac_acomp_get_eld' from incompatible pointer type
+Date: Sun, 25 Sep 2016 16:13:04 +0800
+Message-ID: <201609251657.PliXFIzK%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="WIyZ46R2i8wDzkSu"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FC5A265338
- for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 07:58:22 +0200 (CEST)
-In-Reply-To: <1474284368-25992-1-git-send-email-oder_chiou@realtek.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id F031D260083
+ for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 10:14:01 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,2418 +20,518 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: Sandeep Tayal <sandeepx.tayal@intel.com>
+Cc: Jeeja KP <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rt5660: add rt5660 codec driver
+--WIyZ46R2i8wDzkSu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/intel
+head:   2d995e5dc283adbfbf9c1eb81bf35ca7af2d22a6
+commit: fe27f4e0545d3fc1b0518fafb4fe0460d757651d [53/55] ASoC: hdac_hdmi: use audio component framework to read ELD
+config: x86_64-randconfig-n0-09251512 (attached as .config)
+compiler: gcc-4.8 (Debian 4.8.4-1) 4.8.4
+reproduce:
+        git checkout fe27f4e0545d3fc1b0518fafb4fe0460d757651d
+        # save the attached .config to linux build tree
+        make ARCH=x86_64 
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+All warnings (new ones prefixed by >>):
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+   sound/soc/codecs/hdac_hdmi.c: In function 'hdac_hdmi_present_sense':
+   sound/soc/codecs/hdac_hdmi.c:1028:5: warning: passing argument 3 of 'snd_hdac_acomp_get_eld' makes pointer from integer without a cast [enabled by default]
+        ELD_MAX_SIZE);
+        ^
+   In file included from sound/soc/codecs/hdac_hdmi.c:30:0:
+   include/sound/hda_i915.h:14:5: note: expected 'bool *' but argument is of type 'int'
+    int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid,
+        ^
+>> sound/soc/codecs/hdac_hdmi.c:1028:5: warning: passing argument 4 of 'snd_hdac_acomp_get_eld' from incompatible pointer type [enabled by default]
+        ELD_MAX_SIZE);
+        ^
+   In file included from sound/soc/codecs/hdac_hdmi.c:30:0:
+   include/sound/hda_i915.h:14:5: note: expected 'char *' but argument is of type 'bool *'
+    int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid,
+        ^
+   sound/soc/codecs/hdac_hdmi.c:1028:5: warning: passing argument 5 of 'snd_hdac_acomp_get_eld' makes integer from pointer without a cast [enabled by default]
+        ELD_MAX_SIZE);
+        ^
+   In file included from sound/soc/codecs/hdac_hdmi.c:30:0:
+   include/sound/hda_i915.h:14:5: note: expected 'int' but argument is of type 'char *'
+    int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid,
+        ^
+   sound/soc/codecs/hdac_hdmi.c:1028:5: error: too many arguments to function 'snd_hdac_acomp_get_eld'
+        ELD_MAX_SIZE);
+        ^
+   In file included from sound/soc/codecs/hdac_hdmi.c:30:0:
+   include/sound/hda_i915.h:14:5: note: declared here
+    int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid,
+        ^
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+vim +/snd_hdac_acomp_get_eld +1028 sound/soc/codecs/hdac_hdmi.c
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+  1012	
+  1013		return 0;
+  1014	}
+  1015	
+  1016	static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin)
+  1017	{
+  1018		struct hdac_ext_device *edev = pin->edev;
+  1019		struct hdac_hdmi_priv *hdmi = edev->private_data;
+  1020		struct hdac_hdmi_pcm *pcm;
+  1021		int size;
+  1022	
+  1023		mutex_lock(&hdmi->pin_mutex);
+  1024		pin->eld.monitor_present = false;
+  1025	
+  1026		size = snd_hdac_acomp_get_eld(&edev->hdac, pin->nid, -1,
+  1027					&pin->eld.monitor_present, pin->eld.eld_buffer,
+> 1028					ELD_MAX_SIZE);
+  1029	
+  1030		if (size > 0) {
+  1031			size = min(size, ELD_MAX_SIZE);
+  1032			if (hdac_hdmi_parse_eld(edev, pin) < 0)
+  1033				size = -EINVAL;
+  1034		}
+  1035	
+  1036		if (size > 0) {
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 2b26dd4c1fc5f83bc088f4a053120ca03817045e Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Mon, 19 Sep 2016 19:26:08 +0800
-Subject: [PATCH] ASoC: rt5660: add rt5660 codec driver
-
-This is the initial codec driver for rt5660
-
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rt5660.txt |   47 +
- include/sound/rt5660.h                             |   31 +
- sound/soc/codecs/Kconfig                           |    6 +
- sound/soc/codecs/Makefile                          |    2 +
- sound/soc/codecs/rt5660.c                          | 1353 ++++++++++++++++++++
- sound/soc/codecs/rt5660.h                          |  847 ++++++++++++
- 6 files changed, 2286 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/rt5660.txt
- create mode 100644 include/sound/rt5660.h
- create mode 100644 sound/soc/codecs/rt5660.c
- create mode 100644 sound/soc/codecs/rt5660.h
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5660.txt b/Documentation/devicetree/bindings/sound/rt5660.txt
-new file mode 100644
-index 000000000000..30be5f921930
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rt5660.txt
-@@ -0,0 +1,47 @@
-+RT5660 audio CODEC
-+
-+This device supports I2C only.
-+
-+Required properties:
-+
-+- compatible : "realtek,rt5660".
-+
-+- reg : The I2C address of the device.
-+
-+Optional properties:
-+
-+- clocks: The phandle of the master clock to the CODEC
-+- clock-names: Should be "mclk"
-+
-+- realtek,in1-differential
-+- realtek,in3-differential
-+  Boolean. Indicate MIC1/3 input are differential, rather than single-ended.
-+
-+- realtek,poweroff-in-suspend
-+  Boolean. If the codec will be powered off in suspend, the resume should be
-+  added delay time for waiting codec power ready.
-+
-+- realtek,dmic1-data-pin
-+  0: dmic1 is not used
-+  1: using GPIO2 pin as dmic1 data pin
-+  2: using IN1P pin as dmic1 data pin
-+
-+Pins on the device (for linking into audio routes) for RT5660:
-+
-+  * DMIC L1
-+  * DMIC R1
-+  * IN1P
-+  * IN1N
-+  * IN2P
-+  * IN3P
-+  * IN3N
-+  * SPO
-+  * LOUTL
-+  * LOUTR
-+
-+Example:
-+
-+rt5660 {
-+	compatible = "realtek,rt5660";
-+	reg = <0x1c>;
-+};
-diff --git a/include/sound/rt5660.h b/include/sound/rt5660.h
-new file mode 100644
-index 000000000000..065f83a24db6
---- /dev/null
-+++ b/include/sound/rt5660.h
-@@ -0,0 +1,31 @@
-+/*
-+ * linux/sound/rt5660.h -- Platform data for RT5660
-+ *
-+ * Copyright 2016 Realtek Semiconductor Corp.
-+ * Author: Oder Chiou <oder_chiou@realtek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __LINUX_SND_RT5660_H
-+#define __LINUX_SND_RT5660_H
-+
-+enum rt5660_dmic1_data_pin {
-+	RT5660_DMIC1_NULL,
-+	RT5660_DMIC1_DATA_GPIO2,
-+	RT5660_DMIC1_DATA_IN1P,
-+};
-+
-+struct rt5660_platform_data {
-+	/* IN1 & IN3 can optionally be differential */
-+	bool in1_diff;
-+	bool in3_diff;
-+	bool use_ldo2;
-+	bool poweroff_codec_in_suspend;
-+
-+	enum rt5660_dmic1_data_pin dmic1_data_pin;
-+};
-+
-+#endif
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 1cd6ab344d67..890affe5eb65 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -112,6 +112,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_RT5645 if I2C
- 	select SND_SOC_RT5651 if I2C
- 	select SND_SOC_RT5659 if I2C
-+	select SND_SOC_RT5660 if I2C
- 	select SND_SOC_RT5670 if I2C
- 	select SND_SOC_RT5677 if I2C && SPI_MASTER
- 	select SND_SOC_SGTL5000 if I2C
-@@ -645,6 +646,7 @@ config SND_SOC_RL6231
- 	default y if SND_SOC_RT5645=y
- 	default y if SND_SOC_RT5651=y
- 	default y if SND_SOC_RT5659=y
-+	default y if SND_SOC_RT5660=y
- 	default y if SND_SOC_RT5670=y
- 	default y if SND_SOC_RT5677=y
- 	default m if SND_SOC_RT5514=m
-@@ -653,6 +655,7 @@ config SND_SOC_RL6231
- 	default m if SND_SOC_RT5645=m
- 	default m if SND_SOC_RT5651=m
- 	default m if SND_SOC_RT5659=m
-+	default m if SND_SOC_RT5660=m
- 	default m if SND_SOC_RT5670=m
- 	default m if SND_SOC_RT5677=m
- 
-@@ -697,6 +700,9 @@ config SND_SOC_RT5651
- config SND_SOC_RT5659
- 	tristate
- 
-+config SND_SOC_RT5660
-+	tristate
-+
- config SND_SOC_RT5670
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 58036af2c7d9..68fed20ccfaf 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -112,6 +112,7 @@ snd-soc-rt5640-objs := rt5640.o
- snd-soc-rt5645-objs := rt5645.o
- snd-soc-rt5651-objs := rt5651.o
- snd-soc-rt5659-objs := rt5659.o
-+snd-soc-rt5660-objs := rt5660.o
- snd-soc-rt5670-objs := rt5670.o
- snd-soc-rt5677-objs := rt5677.o
- snd-soc-rt5677-spi-objs := rt5677-spi.o
-@@ -333,6 +334,7 @@ obj-$(CONFIG_SND_SOC_RT5640)	+= snd-soc-rt5640.o
- obj-$(CONFIG_SND_SOC_RT5645)	+= snd-soc-rt5645.o
- obj-$(CONFIG_SND_SOC_RT5651)	+= snd-soc-rt5651.o
- obj-$(CONFIG_SND_SOC_RT5659)	+= snd-soc-rt5659.o
-+obj-$(CONFIG_SND_SOC_RT5660)	+= snd-soc-rt5660.o
- obj-$(CONFIG_SND_SOC_RT5670)	+= snd-soc-rt5670.o
- obj-$(CONFIG_SND_SOC_RT5677)	+= snd-soc-rt5677.o
- obj-$(CONFIG_SND_SOC_RT5677_SPI)	+= snd-soc-rt5677-spi.o
-diff --git a/sound/soc/codecs/rt5660.c b/sound/soc/codecs/rt5660.c
-new file mode 100644
-index 000000000000..9f0933ced804
---- /dev/null
-+++ b/sound/soc/codecs/rt5660.c
-@@ -0,0 +1,1353 @@
-+/*
-+ * rt5660.c  --  RT5660 ALSA SoC audio codec driver
-+ *
-+ * Copyright 2016 Realtek Semiconductor Corp.
-+ * Author: Oder Chiou <oder_chiou@realtek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/pm.h>
-+#include <linux/gpio.h>
-+#include <linux/i2c.h>
-+#include <linux/regmap.h>
-+#include <linux/of.h>
-+#include <linux/of_gpio.h>
-+#include <linux/platform_device.h>
-+#include <linux/spi/spi.h>
-+#include <linux/acpi.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/initval.h>
-+#include <sound/tlv.h>
-+
-+#include "rl6231.h"
-+#include "rt5660.h"
-+
-+#define RT5660_DEVICE_ID 0x6338
-+
-+#define RT5660_PR_RANGE_BASE (0xff + 1)
-+#define RT5660_PR_SPACING 0x100
-+
-+#define RT5660_PR_BASE (RT5660_PR_RANGE_BASE + (0 * RT5660_PR_SPACING))
-+
-+static const struct regmap_range_cfg rt5660_ranges[] = {
-+	{ .name = "PR", .range_min = RT5660_PR_BASE,
-+	  .range_max = RT5660_PR_BASE + 0xf3,
-+	  .selector_reg = RT5660_PRIV_INDEX,
-+	  .selector_mask = 0xff,
-+	  .selector_shift = 0x0,
-+	  .window_start = RT5660_PRIV_DATA,
-+	  .window_len = 0x1, },
-+};
-+
-+static const struct reg_sequence rt5660_patch[] = {
-+	{ RT5660_ALC_PGA_CTRL2,		0x44c3 },
-+	{ RT5660_PR_BASE + 0x3d,	0x2600 },
-+};
-+
-+static const struct reg_default rt5660_reg[] = {
-+	{ 0x00, 0x0000 },
-+	{ 0x01, 0xc800 },
-+	{ 0x02, 0xc8c8 },
-+	{ 0x0d, 0x1010 },
-+	{ 0x0e, 0x1010 },
-+	{ 0x19, 0xafaf },
-+	{ 0x1c, 0x2f2f },
-+	{ 0x1e, 0x0000 },
-+	{ 0x27, 0x6060 },
-+	{ 0x29, 0x8080 },
-+	{ 0x2a, 0x4242 },
-+	{ 0x2f, 0x0000 },
-+	{ 0x3b, 0x0000 },
-+	{ 0x3c, 0x007f },
-+	{ 0x3d, 0x0000 },
-+	{ 0x3e, 0x007f },
-+	{ 0x45, 0xe000 },
-+	{ 0x46, 0x003e },
-+	{ 0x48, 0xf800 },
-+	{ 0x4a, 0x0004 },
-+	{ 0x4d, 0x0000 },
-+	{ 0x4e, 0x0000 },
-+	{ 0x4f, 0x01ff },
-+	{ 0x50, 0x0000 },
-+	{ 0x51, 0x0000 },
-+	{ 0x52, 0x01ff },
-+	{ 0x61, 0x0000 },
-+	{ 0x62, 0x0000 },
-+	{ 0x63, 0x00c0 },
-+	{ 0x64, 0x0000 },
-+	{ 0x65, 0x0000 },
-+	{ 0x66, 0x0000 },
-+	{ 0x70, 0x8000 },
-+	{ 0x73, 0x7000 },
-+	{ 0x74, 0x3c00 },
-+	{ 0x75, 0x2800 },
-+	{ 0x80, 0x0000 },
-+	{ 0x81, 0x0000 },
-+	{ 0x82, 0x0000 },
-+	{ 0x8c, 0x0228 },
-+	{ 0x8d, 0xa000 },
-+	{ 0x8e, 0x0000 },
-+	{ 0x92, 0x0000 },
-+	{ 0x93, 0x3000 },
-+	{ 0xa1, 0x0059 },
-+	{ 0xa2, 0x0001 },
-+	{ 0xa3, 0x5c80 },
-+	{ 0xa4, 0x0146 },
-+	{ 0xa5, 0x1f1f },
-+	{ 0xa6, 0x78c6 },
-+	{ 0xa7, 0xe5ec },
-+	{ 0xa8, 0xba61 },
-+	{ 0xa9, 0x3c78 },
-+	{ 0xaa, 0x8ae2 },
-+	{ 0xab, 0xe5ec },
-+	{ 0xac, 0xc600 },
-+	{ 0xad, 0xba61 },
-+	{ 0xae, 0x17ed },
-+	{ 0xb0, 0x2080 },
-+	{ 0xb1, 0x0000 },
-+	{ 0xb3, 0x001f },
-+	{ 0xb4, 0x020c },
-+	{ 0xb5, 0x1f00 },
-+	{ 0xb6, 0x0000 },
-+	{ 0xb7, 0x4000 },
-+	{ 0xbb, 0x0000 },
-+	{ 0xbd, 0x0000 },
-+	{ 0xbe, 0x0000 },
-+	{ 0xbf, 0x0100 },
-+	{ 0xc0, 0x0000 },
-+	{ 0xc2, 0x0000 },
-+	{ 0xd3, 0xa220 },
-+	{ 0xd9, 0x0809 },
-+	{ 0xda, 0x0000 },
-+	{ 0xe0, 0x8000 },
-+	{ 0xe1, 0x0200 },
-+	{ 0xe2, 0x8000 },
-+	{ 0xe3, 0x0200 },
-+	{ 0xe4, 0x0f20 },
-+	{ 0xe5, 0x001f },
-+	{ 0xe6, 0x020c },
-+	{ 0xe7, 0x1f00 },
-+	{ 0xe8, 0x0000 },
-+	{ 0xe9, 0x4000 },
-+	{ 0xea, 0x00a6 },
-+	{ 0xeb, 0x04c3 },
-+	{ 0xec, 0x27c8 },
-+	{ 0xed, 0x7418 },
-+	{ 0xee, 0xbf50 },
-+	{ 0xef, 0x0045 },
-+	{ 0xf0, 0x0007 },
-+	{ 0xfa, 0x0000 },
-+	{ 0xfd, 0x0000 },
-+	{ 0xfe, 0x10ec },
-+	{ 0xff, 0x6338 },
-+};
-+
-+static bool rt5660_volatile_register(struct device *dev, unsigned int reg)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(rt5660_ranges); i++)
-+		if ((reg >= rt5660_ranges[i].window_start &&
-+		     reg <= rt5660_ranges[i].window_start +
-+		     rt5660_ranges[i].window_len) ||
-+		    (reg >= rt5660_ranges[i].range_min &&
-+		     reg <= rt5660_ranges[i].range_max))
-+			return true;
-+
-+	switch (reg) {
-+	case RT5660_RESET:
-+	case RT5660_PRIV_DATA:
-+	case RT5660_EQ_CTRL1:
-+	case RT5660_IRQ_CTRL2:
-+	case RT5660_INT_IRQ_ST:
-+	case RT5660_VENDOR_ID:
-+	case RT5660_VENDOR_ID1:
-+	case RT5660_VENDOR_ID2:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool rt5660_readable_register(struct device *dev, unsigned int reg)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(rt5660_ranges); i++)
-+		if ((reg >= rt5660_ranges[i].window_start &&
-+		     reg <= rt5660_ranges[i].window_start +
-+		     rt5660_ranges[i].window_len) ||
-+		    (reg >= rt5660_ranges[i].range_min &&
-+		     reg <= rt5660_ranges[i].range_max))
-+			return true;
-+
-+	switch (reg) {
-+	case RT5660_RESET:
-+	case RT5660_SPK_VOL:
-+	case RT5660_LOUT_VOL:
-+	case RT5660_IN1_IN2:
-+	case RT5660_IN3_IN4:
-+	case RT5660_DAC1_DIG_VOL:
-+	case RT5660_STO1_ADC_DIG_VOL:
-+	case RT5660_ADC_BST_VOL1:
-+	case RT5660_STO1_ADC_MIXER:
-+	case RT5660_AD_DA_MIXER:
-+	case RT5660_STO_DAC_MIXER:
-+	case RT5660_DIG_INF1_DATA:
-+	case RT5660_REC_L1_MIXER:
-+	case RT5660_REC_L2_MIXER:
-+	case RT5660_REC_R1_MIXER:
-+	case RT5660_REC_R2_MIXER:
-+	case RT5660_LOUT_MIXER:
-+	case RT5660_SPK_MIXER:
-+	case RT5660_SPO_MIXER:
-+	case RT5660_SPO_CLSD_RATIO:
-+	case RT5660_OUT_L_GAIN1:
-+	case RT5660_OUT_L_GAIN2:
-+	case RT5660_OUT_L1_MIXER:
-+	case RT5660_OUT_R_GAIN1:
-+	case RT5660_OUT_R_GAIN2:
-+	case RT5660_OUT_R1_MIXER:
-+	case RT5660_PWR_DIG1:
-+	case RT5660_PWR_DIG2:
-+	case RT5660_PWR_ANLG1:
-+	case RT5660_PWR_ANLG2:
-+	case RT5660_PWR_MIXER:
-+	case RT5660_PWR_VOL:
-+	case RT5660_PRIV_INDEX:
-+	case RT5660_PRIV_DATA:
-+	case RT5660_I2S1_SDP:
-+	case RT5660_ADDA_CLK1:
-+	case RT5660_ADDA_CLK2:
-+	case RT5660_DMIC_CTRL1:
-+	case RT5660_GLB_CLK:
-+	case RT5660_PLL_CTRL1:
-+	case RT5660_PLL_CTRL2:
-+	case RT5660_CLSD_AMP_OC_CTRL:
-+	case RT5660_CLSD_AMP_CTRL:
-+	case RT5660_LOUT_AMP_CTRL:
-+	case RT5660_SPK_AMP_SPKVDD:
-+	case RT5660_MICBIAS:
-+	case RT5660_CLSD_OUT_CTRL1:
-+	case RT5660_CLSD_OUT_CTRL2:
-+	case RT5660_DIPOLE_MIC_CTRL1:
-+	case RT5660_DIPOLE_MIC_CTRL2:
-+	case RT5660_DIPOLE_MIC_CTRL3:
-+	case RT5660_DIPOLE_MIC_CTRL4:
-+	case RT5660_DIPOLE_MIC_CTRL5:
-+	case RT5660_DIPOLE_MIC_CTRL6:
-+	case RT5660_DIPOLE_MIC_CTRL7:
-+	case RT5660_DIPOLE_MIC_CTRL8:
-+	case RT5660_DIPOLE_MIC_CTRL9:
-+	case RT5660_DIPOLE_MIC_CTRL10:
-+	case RT5660_DIPOLE_MIC_CTRL11:
-+	case RT5660_DIPOLE_MIC_CTRL12:
-+	case RT5660_EQ_CTRL1:
-+	case RT5660_EQ_CTRL2:
-+	case RT5660_DRC_AGC_CTRL1:
-+	case RT5660_DRC_AGC_CTRL2:
-+	case RT5660_DRC_AGC_CTRL3:
-+	case RT5660_DRC_AGC_CTRL4:
-+	case RT5660_DRC_AGC_CTRL5:
-+	case RT5660_JD_CTRL:
-+	case RT5660_IRQ_CTRL1:
-+	case RT5660_IRQ_CTRL2:
-+	case RT5660_INT_IRQ_ST:
-+	case RT5660_GPIO_CTRL1:
-+	case RT5660_GPIO_CTRL2:
-+	case RT5660_WIND_FILTER_CTRL1:
-+	case RT5660_SV_ZCD1:
-+	case RT5660_SV_ZCD2:
-+	case RT5660_DRC1_LM_CTRL1:
-+	case RT5660_DRC1_LM_CTRL2:
-+	case RT5660_DRC2_LM_CTRL1:
-+	case RT5660_DRC2_LM_CTRL2:
-+	case RT5660_MULTI_DRC_CTRL:
-+	case RT5660_DRC2_CTRL1:
-+	case RT5660_DRC2_CTRL2:
-+	case RT5660_DRC2_CTRL3:
-+	case RT5660_DRC2_CTRL4:
-+	case RT5660_DRC2_CTRL5:
-+	case RT5660_ALC_PGA_CTRL1:
-+	case RT5660_ALC_PGA_CTRL2:
-+	case RT5660_ALC_PGA_CTRL3:
-+	case RT5660_ALC_PGA_CTRL4:
-+	case RT5660_ALC_PGA_CTRL5:
-+	case RT5660_ALC_PGA_CTRL6:
-+	case RT5660_ALC_PGA_CTRL7:
-+	case RT5660_GEN_CTRL1:
-+	case RT5660_GEN_CTRL2:
-+	case RT5660_GEN_CTRL3:
-+	case RT5660_VENDOR_ID:
-+	case RT5660_VENDOR_ID1:
-+	case RT5660_VENDOR_ID2:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static const DECLARE_TLV_DB_SCALE(rt5660_out_vol_tlv, -4650, 150, 0);
-+static const DECLARE_TLV_DB_SCALE(rt5660_dac_vol_tlv, -6525, 75, 0);
-+static const DECLARE_TLV_DB_SCALE(rt5660_adc_vol_tlv, -1725, 75, 0);
-+static const DECLARE_TLV_DB_SCALE(rt5660_adc_bst_tlv, 0, 1200, 0);
-+static const DECLARE_TLV_DB_SCALE(rt5660_bst_tlv, -1200, 75, 0);
-+
-+static const struct snd_kcontrol_new rt5660_snd_controls[] = {
-+	/* Speaker Output Volume */
-+	SOC_SINGLE("Speaker Playback Switch", RT5660_SPK_VOL, RT5660_L_MUTE_SFT,
-+		1, 1),
-+	SOC_SINGLE_TLV("Speaker Playback Volume", RT5660_SPK_VOL,
-+		RT5660_L_VOL_SFT, 39, 1, rt5660_out_vol_tlv),
-+
-+	/* OUTPUT Control */
-+	SOC_DOUBLE("OUT Playback Switch", RT5660_LOUT_VOL, RT5660_L_MUTE_SFT,
-+		RT5660_R_MUTE_SFT, 1, 1),
-+	SOC_DOUBLE_TLV("OUT Playback Volume", RT5660_LOUT_VOL, RT5660_L_VOL_SFT,
-+		RT5660_R_VOL_SFT, 39, 1, rt5660_out_vol_tlv),
-+
-+	/* DAC Digital Volume */
-+	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5660_DAC1_DIG_VOL,
-+		RT5660_DAC_L1_VOL_SFT, RT5660_DAC_R1_VOL_SFT, 87, 0,
-+		rt5660_dac_vol_tlv),
-+
-+	/* IN1/IN2/IN3 Control */
-+	SOC_SINGLE_TLV("IN1 Boost Volume", RT5660_IN1_IN2, RT5660_BST_SFT1, 69,
-+		0, rt5660_bst_tlv),
-+	SOC_SINGLE_TLV("IN2 Boost Volume", RT5660_IN1_IN2, RT5660_BST_SFT2, 69,
-+		0, rt5660_bst_tlv),
-+	SOC_SINGLE_TLV("IN3 Boost Volume", RT5660_IN3_IN4, RT5660_BST_SFT3, 69,
-+		0, rt5660_bst_tlv),
-+
-+	/* ADC Digital Volume Control */
-+	SOC_DOUBLE("ADC Capture Switch", RT5660_STO1_ADC_DIG_VOL,
-+		RT5660_L_MUTE_SFT, RT5660_R_MUTE_SFT, 1, 1),
-+	SOC_DOUBLE_TLV("ADC Capture Volume", RT5660_STO1_ADC_DIG_VOL,
-+		RT5660_ADC_L_VOL_SFT, RT5660_ADC_R_VOL_SFT, 63, 0,
-+		rt5660_adc_vol_tlv),
-+
-+	/* ADC Boost Volume Control */
-+	SOC_DOUBLE_TLV("STO1 ADC Boost Gain Volume", RT5660_ADC_BST_VOL1,
-+		RT5660_STO1_ADC_L_BST_SFT, RT5660_STO1_ADC_R_BST_SFT, 3, 0,
-+		rt5660_adc_bst_tlv),
-+};
-+
-+/**
-+ * rt5660_set_dmic_clk - Set parameter of dmic.
-+ *
-+ * @w: DAPM widget.
-+ * @kcontrol: The kcontrol of this widget.
-+ * @event: Event id.
-+ *
-+ */
-+static int rt5660_set_dmic_clk(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
-+	int idx, rate;
-+
-+	rate = rt5660->sysclk / rl6231_get_pre_div(rt5660->regmap,
-+		RT5660_ADDA_CLK1, RT5660_I2S_PD1_SFT);
-+	idx = rl6231_calc_dmic_clk(rate);
-+	if (idx < 0)
-+		dev_err(codec->dev, "Failed to set DMIC clock\n");
-+	else
-+		snd_soc_update_bits(codec, RT5660_DMIC_CTRL1,
-+			RT5660_DMIC_CLK_MASK, idx << RT5660_DMIC_CLK_SFT);
-+
-+	return idx;
-+}
-+
-+static int rt5660_is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
-+			 struct snd_soc_dapm_widget *sink)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
-+	unsigned int val;
-+
-+	val = snd_soc_read(codec, RT5660_GLB_CLK);
-+	val &= RT5660_SCLK_SRC_MASK;
-+	if (val == RT5660_SCLK_SRC_PLL1)
-+		return 1;
-+	else
-+		return 0;
-+}
-+
-+/* Digital Mixer */
-+static const struct snd_kcontrol_new rt5660_sto1_adc_l_mix[] = {
-+	SOC_DAPM_SINGLE("ADC1 Switch", RT5660_STO1_ADC_MIXER,
-+			RT5660_M_ADC_L1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("ADC2 Switch", RT5660_STO1_ADC_MIXER,
-+			RT5660_M_ADC_L2_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5660_sto1_adc_r_mix[] = {
-+	SOC_DAPM_SINGLE("ADC1 Switch", RT5660_STO1_ADC_MIXER,
-+			RT5660_M_ADC_R1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("ADC2 Switch", RT5660_STO1_ADC_MIXER,
-+			RT5660_M_ADC_R2_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5660_dac_l_mix[] = {
-+	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5660_AD_DA_MIXER,
-+			RT5660_M_ADCMIX_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC1 Switch", RT5660_AD_DA_MIXER,
-+			RT5660_M_DAC1_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5660_dac_r_mix[] = {
-+	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5660_AD_DA_MIXER,
-+			RT5660_M_ADCMIX_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC1 Switch", RT5660_AD_DA_MIXER,
-+			RT5660_M_DAC1_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5660_sto_dac_l_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L1 Switch", RT5660_STO_DAC_MIXER,
-+			RT5660_M_DAC_L1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R1 Switch", RT5660_STO_DAC_MIXER,
-+			RT5660_M_DAC_R1_STO_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5660_sto_dac_r_mix[] = {
-+	SOC_DAPM_SINGLE("DAC R1 Switch", RT5660_STO_DAC_MIXER,
-+			RT5660_M_DAC_R1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC L1 Switch", RT5660_STO_DAC_MIXER,
-+			RT5660_M_DAC_L1_STO_R_SFT, 1, 1),
-+};
-+
-+/* Analog Input Mixer */
-+static const struct snd_kcontrol_new rt5660_rec_l_mix[] = {
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5660_REC_L2_MIXER,
-+			RT5660_M_BST3_RM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5660_REC_L2_MIXER,
-+			RT5660_M_BST2_RM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5660_REC_L2_MIXER,
-+			RT5660_M_BST1_RM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("OUT MIXL Switch", RT5660_REC_L2_MIXER,
-+			RT5660_M_OM_L_RM_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5660_rec_r_mix[] = {
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5660_REC_R2_MIXER,
-+			RT5660_M_BST3_RM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5660_REC_R2_MIXER,
-+			RT5660_M_BST2_RM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5660_REC_R2_MIXER,
-+			RT5660_M_BST1_RM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("OUT MIXR Switch", RT5660_REC_R2_MIXER,
-+			RT5660_M_OM_R_RM_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5660_spk_mix[] = {
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5660_SPK_MIXER,
-+			RT5660_M_BST3_SM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5660_SPK_MIXER,
-+			RT5660_M_BST1_SM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DACL Switch", RT5660_SPK_MIXER,
-+			RT5660_M_DACL_SM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DACR Switch", RT5660_SPK_MIXER,
-+			RT5660_M_DACR_SM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("OUTMIXL Switch", RT5660_SPK_MIXER,
-+			RT5660_M_OM_L_SM_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5660_out_l_mix[] = {
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5660_OUT_L1_MIXER,
-+			RT5660_M_BST3_OM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5660_OUT_L1_MIXER,
-+			RT5660_M_BST2_OM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5660_OUT_L1_MIXER,
-+			RT5660_M_BST1_OM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("RECMIXL Switch", RT5660_OUT_L1_MIXER,
-+			RT5660_M_RM_L_OM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DACR Switch", RT5660_OUT_L1_MIXER,
-+			RT5660_M_DAC_R_OM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DACL Switch", RT5660_OUT_L1_MIXER,
-+			RT5660_M_DAC_L_OM_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5660_out_r_mix[] = {
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5660_OUT_R1_MIXER,
-+			RT5660_M_BST2_OM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5660_OUT_R1_MIXER,
-+			RT5660_M_BST1_OM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("RECMIXR Switch", RT5660_OUT_R1_MIXER,
-+			RT5660_M_RM_R_OM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DACR Switch", RT5660_OUT_R1_MIXER,
-+			RT5660_M_DAC_R_OM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DACL Switch", RT5660_OUT_R1_MIXER,
-+			RT5660_M_DAC_L_OM_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5660_spo_mix[] = {
-+	SOC_DAPM_SINGLE("DACR Switch", RT5660_SPO_MIXER,
-+			RT5660_M_DAC_R_SPM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DACL Switch", RT5660_SPO_MIXER,
-+			RT5660_M_DAC_L_SPM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("SPKVOL Switch", RT5660_SPO_MIXER,
-+			RT5660_M_SV_SPM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5660_SPO_MIXER,
-+			RT5660_M_BST1_SPM_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5660_lout_mix[] = {
-+	SOC_DAPM_SINGLE("DAC Switch", RT5660_LOUT_MIXER,
-+			RT5660_M_DAC1_LM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("OUTMIX Switch", RT5660_LOUT_MIXER,
-+			RT5660_M_LOVOL_LM_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new spk_vol_control =
-+	SOC_DAPM_SINGLE("Switch", RT5660_SPK_VOL,
-+		RT5660_VOL_L_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new lout_l_vol_control =
-+	SOC_DAPM_SINGLE("Switch", RT5660_LOUT_VOL,
-+		RT5660_VOL_L_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new lout_r_vol_control =
-+	SOC_DAPM_SINGLE("Switch", RT5660_LOUT_VOL,
-+		RT5660_VOL_R_SFT, 1, 1);
-+
-+/* Interface data select */
-+static const char * const rt5660_data_select[] = {
-+	"L/R", "R/L", "L/L", "R/R"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5660_if1_dac_enum,
-+	RT5660_DIG_INF1_DATA, RT5660_IF1_DAC_IN_SFT, rt5660_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5660_if1_adc_enum,
-+	RT5660_DIG_INF1_DATA, RT5660_IF1_ADC_IN_SFT, rt5660_data_select);
-+
-+static const struct snd_kcontrol_new rt5660_if1_dac_swap_mux =
-+	SOC_DAPM_ENUM("IF1 DAC Swap Source", rt5660_if1_dac_enum);
-+
-+static const struct snd_kcontrol_new rt5660_if1_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF1 ADC Swap Source", rt5660_if1_adc_enum);
-+
-+static int rt5660_lout_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		snd_soc_update_bits(codec, RT5660_LOUT_AMP_CTRL,
-+			RT5660_LOUT_CO_MASK | RT5660_LOUT_CB_MASK,
-+			RT5660_LOUT_CO_EN | RT5660_LOUT_CB_PU);
-+		break;
-+
-+	case SND_SOC_DAPM_PRE_PMD:
-+		snd_soc_update_bits(codec, RT5660_LOUT_AMP_CTRL,
-+			RT5660_LOUT_CO_MASK | RT5660_LOUT_CB_MASK,
-+			RT5660_LOUT_CO_DIS | RT5660_LOUT_CB_PD);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget rt5660_dapm_widgets[] = {
-+	SND_SOC_DAPM_SUPPLY("LDO2", RT5660_PWR_ANLG1,
-+		RT5660_PWR_LDO2_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("PLL1", RT5660_PWR_ANLG2,
-+		RT5660_PWR_PLL_BIT, 0, NULL, 0),
-+
-+	/* MICBIAS */
-+	SND_SOC_DAPM_SUPPLY("MICBIAS1", RT5660_PWR_ANLG2,
-+			RT5660_PWR_MB1_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("MICBIAS2", RT5660_PWR_ANLG2,
-+			RT5660_PWR_MB2_BIT, 0, NULL, 0),
-+
-+	/* Input Side */
-+	/* Input Lines */
-+	SND_SOC_DAPM_INPUT("DMIC L1"),
-+	SND_SOC_DAPM_INPUT("DMIC R1"),
-+
-+	SND_SOC_DAPM_INPUT("IN1P"),
-+	SND_SOC_DAPM_INPUT("IN1N"),
-+	SND_SOC_DAPM_INPUT("IN2P"),
-+	SND_SOC_DAPM_INPUT("IN3P"),
-+	SND_SOC_DAPM_INPUT("IN3N"),
-+
-+	SND_SOC_DAPM_SUPPLY("DMIC CLK", SND_SOC_NOPM, 0, 0,
-+		rt5660_set_dmic_clk, SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_SUPPLY("DMIC Power", RT5660_DMIC_CTRL1,
-+		RT5660_DMIC_1_EN_SFT, 0, NULL, 0),
-+
-+	/* Boost */
-+	SND_SOC_DAPM_PGA("BST1", RT5660_PWR_ANLG2, RT5660_PWR_BST1_BIT, 0,
-+		NULL, 0),
-+	SND_SOC_DAPM_PGA("BST2", RT5660_PWR_ANLG2, RT5660_PWR_BST2_BIT, 0,
-+		NULL, 0),
-+	SND_SOC_DAPM_PGA("BST3", RT5660_PWR_ANLG2, RT5660_PWR_BST3_BIT, 0,
-+		NULL, 0),
-+
-+	/* REC Mixer */
-+	SND_SOC_DAPM_MIXER("RECMIXL", RT5660_PWR_MIXER, RT5660_PWR_RM_L_BIT,
-+			0, rt5660_rec_l_mix, ARRAY_SIZE(rt5660_rec_l_mix)),
-+	SND_SOC_DAPM_MIXER("RECMIXR", RT5660_PWR_MIXER, RT5660_PWR_RM_R_BIT,
-+			0, rt5660_rec_r_mix, ARRAY_SIZE(rt5660_rec_r_mix)),
-+
-+	/* ADCs */
-+	SND_SOC_DAPM_ADC("ADC L", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC R", NULL, SND_SOC_NOPM, 0, 0),
-+
-+	SND_SOC_DAPM_SUPPLY("ADC L power", RT5660_PWR_DIG1,
-+			RT5660_PWR_ADC_L_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC R power", RT5660_PWR_DIG1,
-+			RT5660_PWR_ADC_R_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC clock", RT5660_PR_BASE + RT5660_CHOP_DAC_ADC,
-+			12, 0, NULL, 0),
-+
-+	/* ADC Mixer */
-+	SND_SOC_DAPM_SUPPLY("adc stereo1 filter", RT5660_PWR_DIG2,
-+		RT5660_PWR_ADC_S1F_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Sto1 ADC MIXL", SND_SOC_NOPM, 0, 0,
-+		rt5660_sto1_adc_l_mix, ARRAY_SIZE(rt5660_sto1_adc_l_mix)),
-+	SND_SOC_DAPM_MIXER("Sto1 ADC MIXR", SND_SOC_NOPM, 0, 0,
-+		rt5660_sto1_adc_r_mix, ARRAY_SIZE(rt5660_sto1_adc_r_mix)),
-+
-+	/* ADC */
-+	SND_SOC_DAPM_ADC("Stereo1 ADC MIXL", NULL, RT5660_STO1_ADC_DIG_VOL,
-+		RT5660_L_MUTE_SFT, 1),
-+	SND_SOC_DAPM_ADC("Stereo1 ADC MIXR", NULL, RT5660_STO1_ADC_DIG_VOL,
-+		RT5660_R_MUTE_SFT, 1),
-+
-+	/* Digital Interface */
-+	SND_SOC_DAPM_SUPPLY("I2S1", RT5660_PWR_DIG1, RT5660_PWR_I2S1_BIT, 0,
-+		NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC L", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC R", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MUX("IF1 DAC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5660_if1_dac_swap_mux),
-+	SND_SOC_DAPM_PGA("IF1 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MUX("IF1 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5660_if1_adc_swap_mux),
-+
-+	/* Audio Interface */
-+	SND_SOC_DAPM_AIF_IN("AIF1RX", "AIF1 Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1TX", "AIF1 Capture", 0, SND_SOC_NOPM, 0, 0),
-+
-+	/* Output Side */
-+	/* DAC mixer before sound effect  */
-+	SND_SOC_DAPM_MIXER("DAC1 MIXL", SND_SOC_NOPM, 0, 0, rt5660_dac_l_mix,
-+		ARRAY_SIZE(rt5660_dac_l_mix)),
-+	SND_SOC_DAPM_MIXER("DAC1 MIXR", SND_SOC_NOPM, 0, 0, rt5660_dac_r_mix,
-+		ARRAY_SIZE(rt5660_dac_r_mix)),
-+
-+	/* DAC Mixer */
-+	SND_SOC_DAPM_SUPPLY("dac stereo1 filter", RT5660_PWR_DIG2,
-+		RT5660_PWR_DAC_S1F_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Stereo DAC MIXL", SND_SOC_NOPM, 0, 0,
-+		rt5660_sto_dac_l_mix, ARRAY_SIZE(rt5660_sto_dac_l_mix)),
-+	SND_SOC_DAPM_MIXER("Stereo DAC MIXR", SND_SOC_NOPM, 0, 0,
-+		rt5660_sto_dac_r_mix, ARRAY_SIZE(rt5660_sto_dac_r_mix)),
-+
-+	/* DACs */
-+	SND_SOC_DAPM_DAC("DAC L1", NULL, RT5660_PWR_DIG1,
-+			RT5660_PWR_DAC_L1_BIT, 0),
-+	SND_SOC_DAPM_DAC("DAC R1", NULL, RT5660_PWR_DIG1,
-+			RT5660_PWR_DAC_R1_BIT, 0),
-+
-+	/* OUT Mixer */
-+	SND_SOC_DAPM_MIXER("SPK MIX", RT5660_PWR_MIXER, RT5660_PWR_SM_BIT,
-+		0, rt5660_spk_mix, ARRAY_SIZE(rt5660_spk_mix)),
-+	SND_SOC_DAPM_MIXER("OUT MIXL", RT5660_PWR_MIXER, RT5660_PWR_OM_L_BIT,
-+		0, rt5660_out_l_mix, ARRAY_SIZE(rt5660_out_l_mix)),
-+	SND_SOC_DAPM_MIXER("OUT MIXR", RT5660_PWR_MIXER, RT5660_PWR_OM_R_BIT,
-+		0, rt5660_out_r_mix, ARRAY_SIZE(rt5660_out_r_mix)),
-+
-+	/* Output Volume */
-+	SND_SOC_DAPM_SWITCH("SPKVOL", RT5660_PWR_VOL,
-+		RT5660_PWR_SV_BIT, 0, &spk_vol_control),
-+	SND_SOC_DAPM_PGA("DAC 1", SND_SOC_NOPM,
-+		0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("LOUTVOL", SND_SOC_NOPM,
-+		0, 0, NULL, 0),
-+	SND_SOC_DAPM_SWITCH("LOUTVOL L", SND_SOC_NOPM,
-+		RT5660_PWR_LV_L_BIT, 0, &lout_l_vol_control),
-+	SND_SOC_DAPM_SWITCH("LOUTVOL R", SND_SOC_NOPM,
-+		RT5660_PWR_LV_R_BIT, 0, &lout_r_vol_control),
-+
-+	/* HPO/LOUT/Mono Mixer */
-+	SND_SOC_DAPM_MIXER("SPO MIX", SND_SOC_NOPM, 0,
-+		0, rt5660_spo_mix, ARRAY_SIZE(rt5660_spo_mix)),
-+	SND_SOC_DAPM_MIXER("LOUT MIX", SND_SOC_NOPM, 0, 0,
-+		rt5660_lout_mix, ARRAY_SIZE(rt5660_lout_mix)),
-+	SND_SOC_DAPM_SUPPLY("VREF HP", RT5660_GEN_CTRL1,
-+		RT5660_PWR_VREF_HP_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA_S("LOUT amp", 1, RT5660_PWR_ANLG1,
-+		RT5660_PWR_HA_BIT, 0, rt5660_lout_event,
-+		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_PGA_S("SPK amp", 1, RT5660_PWR_DIG1,
-+		RT5660_PWR_CLS_D_BIT, 0, NULL, 0),
-+
-+	/* Output Lines */
-+	SND_SOC_DAPM_OUTPUT("LOUTL"),
-+	SND_SOC_DAPM_OUTPUT("LOUTR"),
-+	SND_SOC_DAPM_OUTPUT("SPO"),
-+};
-+
-+static const struct snd_soc_dapm_route rt5660_dapm_routes[] = {
-+	{ "MICBIAS1", NULL, "LDO2" },
-+	{ "MICBIAS2", NULL, "LDO2" },
-+
-+	{ "BST1", NULL, "IN1P" },
-+	{ "BST1", NULL, "IN1N" },
-+	{ "BST2", NULL, "IN2P" },
-+	{ "BST3", NULL, "IN3P" },
-+	{ "BST3", NULL, "IN3N" },
-+
-+	{ "RECMIXL", "BST3 Switch", "BST3" },
-+	{ "RECMIXL", "BST2 Switch", "BST2" },
-+	{ "RECMIXL", "BST1 Switch", "BST1" },
-+	{ "RECMIXL", "OUT MIXL Switch", "OUT MIXL" },
-+
-+	{ "RECMIXR", "BST3 Switch", "BST3" },
-+	{ "RECMIXR", "BST2 Switch", "BST2" },
-+	{ "RECMIXR", "BST1 Switch", "BST1" },
-+	{ "RECMIXR", "OUT MIXR Switch", "OUT MIXR" },
-+
-+	{ "ADC L", NULL, "RECMIXL" },
-+	{ "ADC L", NULL, "ADC L power" },
-+	{ "ADC L", NULL, "ADC clock" },
-+	{ "ADC R", NULL, "RECMIXR" },
-+	{ "ADC R", NULL, "ADC R power" },
-+	{ "ADC R", NULL, "ADC clock" },
-+
-+	{"DMIC L1", NULL, "DMIC CLK"},
-+	{"DMIC L1", NULL, "DMIC Power"},
-+	{"DMIC R1", NULL, "DMIC CLK"},
-+	{"DMIC R1", NULL, "DMIC Power"},
-+
-+	{ "Sto1 ADC MIXL", "ADC1 Switch", "ADC L" },
-+	{ "Sto1 ADC MIXL", "ADC2 Switch", "DMIC L1" },
-+	{ "Sto1 ADC MIXR", "ADC1 Switch", "ADC R" },
-+	{ "Sto1 ADC MIXR", "ADC2 Switch", "DMIC R1" },
-+
-+	{ "Stereo1 ADC MIXL", NULL, "Sto1 ADC MIXL" },
-+	{ "Stereo1 ADC MIXL", NULL, "adc stereo1 filter" },
-+	{ "adc stereo1 filter", NULL, "PLL1", rt5660_is_sys_clk_from_pll },
-+
-+	{ "Stereo1 ADC MIXR", NULL, "Sto1 ADC MIXR" },
-+	{ "Stereo1 ADC MIXR", NULL, "adc stereo1 filter" },
-+	{ "adc stereo1 filter", NULL, "PLL1", rt5660_is_sys_clk_from_pll },
-+
-+	{ "IF1 ADC", NULL, "Stereo1 ADC MIXL" },
-+	{ "IF1 ADC", NULL, "Stereo1 ADC MIXR" },
-+	{ "IF1 ADC", NULL, "I2S1" },
-+
-+	{ "IF1 ADC Swap Mux", "L/R", "IF1 ADC" },
-+	{ "IF1 ADC Swap Mux", "R/L", "IF1 ADC" },
-+	{ "IF1 ADC Swap Mux", "L/L", "IF1 ADC" },
-+	{ "IF1 ADC Swap Mux", "R/R", "IF1 ADC" },
-+	{ "AIF1TX", NULL, "IF1 ADC Swap Mux" },
-+
-+	{ "IF1 DAC", NULL, "AIF1RX" },
-+	{ "IF1 DAC", NULL, "I2S1" },
-+
-+	{ "IF1 DAC Swap Mux", "L/R", "IF1 DAC" },
-+	{ "IF1 DAC Swap Mux", "R/L", "IF1 DAC" },
-+	{ "IF1 DAC Swap Mux", "L/L", "IF1 DAC" },
-+	{ "IF1 DAC Swap Mux", "R/R", "IF1 DAC" },
-+
-+	{ "IF1 DAC L", NULL, "IF1 DAC Swap Mux" },
-+	{ "IF1 DAC R", NULL, "IF1 DAC Swap Mux" },
-+
-+	{ "DAC1 MIXL", "Stereo ADC Switch", "Stereo1 ADC MIXL" },
-+	{ "DAC1 MIXL", "DAC1 Switch", "IF1 DAC L" },
-+	{ "DAC1 MIXR", "Stereo ADC Switch", "Stereo1 ADC MIXR" },
-+	{ "DAC1 MIXR", "DAC1 Switch", "IF1 DAC R" },
-+
-+	{ "Stereo DAC MIXL", "DAC L1 Switch", "DAC1 MIXL" },
-+	{ "Stereo DAC MIXL", "DAC R1 Switch", "DAC1 MIXR" },
-+	{ "Stereo DAC MIXL", NULL, "dac stereo1 filter" },
-+	{ "dac stereo1 filter", NULL, "PLL1", rt5660_is_sys_clk_from_pll },
-+	{ "Stereo DAC MIXR", "DAC R1 Switch", "DAC1 MIXR" },
-+	{ "Stereo DAC MIXR", "DAC L1 Switch", "DAC1 MIXL" },
-+	{ "Stereo DAC MIXR", NULL, "dac stereo1 filter" },
-+	{ "dac stereo1 filter", NULL, "PLL1", rt5660_is_sys_clk_from_pll },
-+
-+	{ "DAC L1", NULL, "Stereo DAC MIXL" },
-+	{ "DAC R1", NULL, "Stereo DAC MIXR" },
-+
-+	{ "SPK MIX", "BST3 Switch", "BST3" },
-+	{ "SPK MIX", "BST1 Switch", "BST1" },
-+	{ "SPK MIX", "DACL Switch", "DAC L1" },
-+	{ "SPK MIX", "DACR Switch", "DAC R1" },
-+	{ "SPK MIX", "OUTMIXL Switch", "OUT MIXL" },
-+
-+	{ "OUT MIXL", "BST3 Switch", "BST3" },
-+	{ "OUT MIXL", "BST2 Switch", "BST2" },
-+	{ "OUT MIXL", "BST1 Switch", "BST1" },
-+	{ "OUT MIXL", "RECMIXL Switch", "RECMIXL" },
-+	{ "OUT MIXL", "DACR Switch", "DAC R1" },
-+	{ "OUT MIXL", "DACL Switch", "DAC L1" },
-+
-+	{ "OUT MIXR", "BST2 Switch", "BST2" },
-+	{ "OUT MIXR", "BST1 Switch", "BST1" },
-+	{ "OUT MIXR", "RECMIXR Switch", "RECMIXR" },
-+	{ "OUT MIXR", "DACR Switch", "DAC R1" },
-+	{ "OUT MIXR", "DACL Switch", "DAC L1" },
-+
-+	{ "SPO MIX", "DACR Switch", "DAC R1" },
-+	{ "SPO MIX", "DACL Switch", "DAC L1" },
-+	{ "SPO MIX", "SPKVOL Switch", "SPKVOL" },
-+	{ "SPO MIX", "BST1 Switch", "BST1" },
-+
-+	{ "SPKVOL", "Switch", "SPK MIX" },
-+	{ "LOUTVOL L", "Switch", "OUT MIXL" },
-+	{ "LOUTVOL R", "Switch", "OUT MIXR" },
-+
-+	{ "LOUTVOL", NULL, "LOUTVOL L" },
-+	{ "LOUTVOL", NULL, "LOUTVOL R" },
-+
-+	{ "DAC 1", NULL, "DAC L1" },
-+	{ "DAC 1", NULL, "DAC R1" },
-+
-+	{ "LOUT MIX", "DAC Switch", "DAC 1" },
-+	{ "LOUT MIX", "OUTMIX Switch", "LOUTVOL" },
-+
-+	{ "LOUT amp", NULL, "LOUT MIX" },
-+	{ "LOUT amp", NULL, "VREF HP" },
-+	{ "LOUTL", NULL, "LOUT amp" },
-+	{ "LOUTR", NULL, "LOUT amp" },
-+
-+	{ "SPK amp", NULL, "SPO MIX" },
-+	{ "SPO", NULL, "SPK amp" },
-+};
-+
-+static int rt5660_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int val_len = 0, val_clk, mask_clk;
-+	int pre_div, bclk_ms, frame_size;
-+
-+	rt5660->lrck[dai->id] = params_rate(params);
-+	pre_div = rl6231_get_clk_info(rt5660->sysclk, rt5660->lrck[dai->id]);
-+	if (pre_div < 0) {
-+		dev_err(codec->dev, "Unsupported clock setting %d for DAI %d\n",
-+			rt5660->lrck[dai->id], dai->id);
-+		return -EINVAL;
-+	}
-+
-+	frame_size = snd_soc_params_to_frame_size(params);
-+	if (frame_size < 0) {
-+		dev_err(codec->dev, "Unsupported frame size: %d\n", frame_size);
-+		return frame_size;
-+	}
-+
-+	if (frame_size > 32)
-+		bclk_ms = 1;
-+	else
-+		bclk_ms = 0;
-+
-+	rt5660->bclk[dai->id] = rt5660->lrck[dai->id] * (32 << bclk_ms);
-+
-+	dev_dbg(dai->dev, "bclk is %dHz and lrck is %dHz\n",
-+		rt5660->bclk[dai->id], rt5660->lrck[dai->id]);
-+	dev_dbg(dai->dev, "bclk_ms is %d and pre_div is %d for iis %d\n",
-+				bclk_ms, pre_div, dai->id);
-+
-+	switch (params_width(params)) {
-+	case 16:
-+		break;
-+	case 20:
-+		val_len |= RT5660_I2S_DL_20;
-+		break;
-+	case 24:
-+		val_len |= RT5660_I2S_DL_24;
-+		break;
-+	case 8:
-+		val_len |= RT5660_I2S_DL_8;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (dai->id) {
-+	case RT5660_AIF1:
-+		mask_clk = RT5660_I2S_BCLK_MS1_MASK | RT5660_I2S_PD1_MASK;
-+		val_clk = bclk_ms << RT5660_I2S_BCLK_MS1_SFT |
-+			pre_div << RT5660_I2S_PD1_SFT;
-+		snd_soc_update_bits(codec, RT5660_I2S1_SDP, RT5660_I2S_DL_MASK,
-+			val_len);
-+		snd_soc_update_bits(codec, RT5660_ADDA_CLK1, mask_clk, val_clk);
-+		break;
-+
-+	default:
-+		dev_err(codec->dev, "Invalid dai->id: %d\n", dai->id);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt5660_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int reg_val = 0;
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		rt5660->master[dai->id] = 1;
-+		break;
-+
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		reg_val |= RT5660_I2S_MS_S;
-+		rt5660->master[dai->id] = 0;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+
-+	case SND_SOC_DAIFMT_IB_NF:
-+		reg_val |= RT5660_I2S_BP_INV;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		break;
-+
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		reg_val |= RT5660_I2S_DF_LEFT;
-+		break;
-+
-+	case SND_SOC_DAIFMT_DSP_A:
-+		reg_val |= RT5660_I2S_DF_PCM_A;
-+		break;
-+
-+	case SND_SOC_DAIFMT_DSP_B:
-+		reg_val  |= RT5660_I2S_DF_PCM_B;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (dai->id) {
-+	case RT5660_AIF1:
-+		snd_soc_update_bits(codec, RT5660_I2S1_SDP,
-+			RT5660_I2S_MS_MASK | RT5660_I2S_BP_MASK |
-+			RT5660_I2S_DF_MASK, reg_val);
-+		break;
-+
-+	default:
-+		dev_err(codec->dev, "Invalid dai->id: %d\n", dai->id);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt5660_set_dai_sysclk(struct snd_soc_dai *dai,
-+		int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int reg_val = 0;
-+
-+	if (freq == rt5660->sysclk && clk_id == rt5660->sysclk_src)
-+		return 0;
-+
-+	switch (clk_id) {
-+	case RT5660_SCLK_S_MCLK:
-+		reg_val |= RT5660_SCLK_SRC_MCLK;
-+		break;
-+
-+	case RT5660_SCLK_S_PLL1:
-+		reg_val |= RT5660_SCLK_SRC_PLL1;
-+		break;
-+
-+	case RT5660_SCLK_S_RCCLK:
-+		reg_val |= RT5660_SCLK_SRC_RCCLK;
-+		break;
-+
-+	default:
-+		dev_err(codec->dev, "Invalid clock id (%d)\n", clk_id);
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_update_bits(codec, RT5660_GLB_CLK, RT5660_SCLK_SRC_MASK,
-+		reg_val);
-+
-+	rt5660->sysclk = freq;
-+	rt5660->sysclk_src = clk_id;
-+
-+	dev_dbg(dai->dev, "Sysclk is %dHz and clock id is %d\n", freq, clk_id);
-+
-+	return 0;
-+}
-+
-+static int rt5660_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
-+			unsigned int freq_in, unsigned int freq_out)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
-+	struct rl6231_pll_code pll_code;
-+	int ret;
-+
-+	if (source == rt5660->pll_src && freq_in == rt5660->pll_in &&
-+		freq_out == rt5660->pll_out)
-+		return 0;
-+
-+	if (!freq_in || !freq_out) {
-+		dev_dbg(codec->dev, "PLL disabled\n");
-+
-+		rt5660->pll_in = 0;
-+		rt5660->pll_out = 0;
-+		snd_soc_update_bits(codec, RT5660_GLB_CLK,
-+			RT5660_SCLK_SRC_MASK, RT5660_SCLK_SRC_MCLK);
-+		return 0;
-+	}
-+
-+	switch (source) {
-+	case RT5660_PLL1_S_MCLK:
-+		snd_soc_update_bits(codec, RT5660_GLB_CLK,
-+			RT5660_PLL1_SRC_MASK, RT5660_PLL1_SRC_MCLK);
-+		break;
-+
-+	case RT5660_PLL1_S_BCLK:
-+		snd_soc_update_bits(codec, RT5660_GLB_CLK,
-+			RT5660_PLL1_SRC_MASK, RT5660_PLL1_SRC_BCLK1);
-+		break;
-+
-+	default:
-+		dev_err(codec->dev, "Unknown PLL source %d\n", source);
-+		return -EINVAL;
-+	}
-+
-+	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Unsupport input clock %d\n", freq_in);
-+		return ret;
-+	}
-+
-+	dev_dbg(codec->dev, "bypass=%d m=%d n=%d k=%d\n",
-+		pll_code.m_bp, (pll_code.m_bp ? 0 : pll_code.m_code),
-+		pll_code.n_code, pll_code.k_code);
-+
-+	snd_soc_write(codec, RT5660_PLL_CTRL1,
-+		pll_code.n_code << RT5660_PLL_N_SFT | pll_code.k_code);
-+	snd_soc_write(codec, RT5660_PLL_CTRL2,
-+		(pll_code.m_bp ? 0 : pll_code.m_code) << RT5660_PLL_M_SFT |
-+		pll_code.m_bp << RT5660_PLL_M_BP_SFT);
-+
-+	rt5660->pll_in = freq_in;
-+	rt5660->pll_out = freq_out;
-+	rt5660->pll_src = source;
-+
-+	return 0;
-+}
-+
-+static int rt5660_set_bias_level(struct snd_soc_codec *codec,
-+			enum snd_soc_bias_level level)
-+{
-+	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_ON:
-+		break;
-+
-+	case SND_SOC_BIAS_PREPARE:
-+		snd_soc_update_bits(codec, RT5660_GEN_CTRL1,
-+			RT5660_DIG_GATE_CTRL, RT5660_DIG_GATE_CTRL);
-+
-+		if (IS_ERR(rt5660->mclk))
-+			break;
-+
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_ON) {
-+			clk_disable_unprepare(rt5660->mclk);
-+		} else {
-+			ret = clk_prepare_enable(rt5660->mclk);
-+			if (ret)
-+				return ret;
-+		}
-+		break;
-+
-+	case SND_SOC_BIAS_STANDBY:
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
-+			snd_soc_update_bits(codec, RT5660_PWR_ANLG1,
-+				RT5660_PWR_VREF1 | RT5660_PWR_MB |
-+				RT5660_PWR_BG | RT5660_PWR_VREF2,
-+				RT5660_PWR_VREF1 | RT5660_PWR_MB |
-+				RT5660_PWR_BG | RT5660_PWR_VREF2);
-+			usleep_range(10000, 15000);
-+			snd_soc_update_bits(codec, RT5660_PWR_ANLG1,
-+				RT5660_PWR_FV1 | RT5660_PWR_FV2,
-+				RT5660_PWR_FV1 | RT5660_PWR_FV2);
-+		}
-+		break;
-+
-+	case SND_SOC_BIAS_OFF:
-+		snd_soc_update_bits(codec, RT5660_GEN_CTRL1,
-+			RT5660_DIG_GATE_CTRL, 0);
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt5660_probe(struct snd_soc_codec *codec)
-+{
-+	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
-+
-+	rt5660->codec = codec;
-+
-+	return 0;
-+}
-+
-+static int rt5660_remove(struct snd_soc_codec *codec)
-+{
-+	return snd_soc_write(codec, RT5660_RESET, 0);
-+}
-+
-+#ifdef CONFIG_PM
-+static int rt5660_suspend(struct snd_soc_codec *codec)
-+{
-+	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
-+
-+	regcache_cache_only(rt5660->regmap, true);
-+	regcache_mark_dirty(rt5660->regmap);
-+
-+	return 0;
-+}
-+
-+static int rt5660_resume(struct snd_soc_codec *codec)
-+{
-+	struct rt5660_priv *rt5660 = snd_soc_codec_get_drvdata(codec);
-+
-+	if (rt5660->pdata.poweroff_codec_in_suspend)
-+		usleep_range(350000, 400000);
-+
-+	regcache_cache_only(rt5660->regmap, false);
-+	regcache_sync(rt5660->regmap);
-+
-+	return 0;
-+}
-+#else
-+#define rt5660_suspend NULL
-+#define rt5660_resume NULL
-+#endif
-+
-+#define RT5660_STEREO_RATES SNDRV_PCM_RATE_8000_192000
-+#define RT5660_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
-+			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
-+
-+static const struct snd_soc_dai_ops rt5660_aif_dai_ops = {
-+	.hw_params = rt5660_hw_params,
-+	.set_fmt = rt5660_set_dai_fmt,
-+	.set_sysclk = rt5660_set_dai_sysclk,
-+	.set_pll = rt5660_set_dai_pll,
-+};
-+
-+static struct snd_soc_dai_driver rt5660_dai[] = {
-+	{
-+		.name = "rt5660-aif1",
-+		.id = RT5660_AIF1,
-+		.playback = {
-+			.stream_name = "AIF1 Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5660_STEREO_RATES,
-+			.formats = RT5660_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "AIF1 Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5660_STEREO_RATES,
-+			.formats = RT5660_FORMATS,
-+		},
-+		.ops = &rt5660_aif_dai_ops,
-+	},
-+};
-+
-+static struct snd_soc_codec_driver soc_codec_dev_rt5660 = {
-+	.probe = rt5660_probe,
-+	.remove = rt5660_remove,
-+	.suspend = rt5660_suspend,
-+	.resume = rt5660_resume,
-+	.set_bias_level = rt5660_set_bias_level,
-+	.idle_bias_off = true,
-+	.component_driver = {
-+		.controls		= rt5660_snd_controls,
-+		.num_controls		= ARRAY_SIZE(rt5660_snd_controls),
-+		.dapm_widgets		= rt5660_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(rt5660_dapm_widgets),
-+		.dapm_routes		= rt5660_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(rt5660_dapm_routes),
-+	},
-+};
-+
-+static const struct regmap_config rt5660_regmap = {
-+	.reg_bits = 8,
-+	.val_bits = 16,
-+	.use_single_rw = true,
-+
-+	.max_register = RT5660_VENDOR_ID2 + 1 + (ARRAY_SIZE(rt5660_ranges) *
-+					       RT5660_PR_SPACING),
-+	.volatile_reg = rt5660_volatile_register,
-+	.readable_reg = rt5660_readable_register,
-+
-+	.cache_type = REGCACHE_RBTREE,
-+	.reg_defaults = rt5660_reg,
-+	.num_reg_defaults = ARRAY_SIZE(rt5660_reg),
-+	.ranges = rt5660_ranges,
-+	.num_ranges = ARRAY_SIZE(rt5660_ranges),
-+};
-+
-+static const struct i2c_device_id rt5660_i2c_id[] = {
-+	{ "rt5660", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, rt5660_i2c_id);
-+
-+static const struct of_device_id rt5660_of_match[] = {
-+	{ .compatible = "realtek,rt5660", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, rt5660_of_match);
-+
-+static const struct acpi_device_id rt5660_acpi_match[] = {
-+	{ "10EC5660", 0 },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(acpi, rt5660_acpi_match);
-+
-+static int rt5660_parse_dt(struct rt5660_priv *rt5660, struct device *dev)
-+{
-+	rt5660->pdata.in1_diff = device_property_read_bool(dev,
-+					"realtek,in1-differential");
-+	rt5660->pdata.in3_diff = device_property_read_bool(dev,
-+					"realtek,in3-differential");
-+	rt5660->pdata.poweroff_codec_in_suspend = device_property_read_bool(dev,
-+					"realtek,poweroff-in-suspend");
-+	device_property_read_u32(dev, "realtek,dmic1-data-pin",
-+		&rt5660->pdata.dmic1_data_pin);
-+
-+	return 0;
-+}
-+
-+static int rt5660_i2c_probe(struct i2c_client *i2c,
-+		    const struct i2c_device_id *id)
-+{
-+	struct rt5660_platform_data *pdata = dev_get_platdata(&i2c->dev);
-+	struct rt5660_priv *rt5660;
-+	int ret;
-+	unsigned int val;
-+
-+	rt5660 = devm_kzalloc(&i2c->dev, sizeof(struct rt5660_priv),
-+		GFP_KERNEL);
-+
-+	if (rt5660 == NULL)
-+		return -ENOMEM;
-+
-+	/* Check if MCLK provided */
-+	rt5660->mclk = devm_clk_get(&i2c->dev, "mclk");
-+	if (PTR_ERR(rt5660->mclk) == -EPROBE_DEFER)
-+		return -EPROBE_DEFER;
-+
-+	i2c_set_clientdata(i2c, rt5660);
-+
-+	if (pdata)
-+		rt5660->pdata = *pdata;
-+	else if (i2c->dev.of_node)
-+		rt5660_parse_dt(rt5660, &i2c->dev);
-+
-+	rt5660->regmap = devm_regmap_init_i2c(i2c, &rt5660_regmap);
-+	if (IS_ERR(rt5660->regmap)) {
-+		ret = PTR_ERR(rt5660->regmap);
-+		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	regmap_read(rt5660->regmap, RT5660_VENDOR_ID2, &val);
-+	if (val != RT5660_DEVICE_ID) {
-+		dev_err(&i2c->dev,
-+			"Device with ID register %#x is not rt5660\n", val);
-+		return -ENODEV;
-+	}
-+
-+	regmap_write(rt5660->regmap, RT5660_RESET, 0);
-+
-+	ret = regmap_register_patch(rt5660->regmap, rt5660_patch,
-+				    ARRAY_SIZE(rt5660_patch));
-+	if (ret != 0)
-+		dev_warn(&i2c->dev, "Failed to apply regmap patch: %d\n", ret);
-+
-+	if (rt5660->pdata.dmic1_data_pin) {
-+		regmap_update_bits(rt5660->regmap, RT5660_GPIO_CTRL1,
-+			RT5660_GP1_PIN_MASK, RT5660_GP1_PIN_DMIC1_SCL);
-+
-+		if (rt5660->pdata.dmic1_data_pin == RT5660_DMIC1_DATA_GPIO2)
-+			regmap_update_bits(rt5660->regmap, RT5660_DMIC_CTRL1,
-+				RT5660_SEL_DMIC_DATA_MASK,
-+				RT5660_SEL_DMIC_DATA_GPIO2);
-+		else if (rt5660->pdata.dmic1_data_pin == RT5660_DMIC1_DATA_IN1P)
-+			regmap_update_bits(rt5660->regmap, RT5660_DMIC_CTRL1,
-+				RT5660_SEL_DMIC_DATA_MASK,
-+				RT5660_SEL_DMIC_DATA_IN1P);
-+	}
-+
-+	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5660,
-+				      rt5660_dai, ARRAY_SIZE(rt5660_dai));
-+}
-+
-+static int rt5660_i2c_remove(struct i2c_client *i2c)
-+{
-+	snd_soc_unregister_codec(&i2c->dev);
-+
-+	return 0;
-+}
-+
-+static struct i2c_driver rt5660_i2c_driver = {
-+	.driver = {
-+		.name = "rt5660",
-+		.acpi_match_table = ACPI_PTR(rt5660_acpi_match),
-+		.of_match_table = of_match_ptr(rt5660_of_match),
-+	},
-+	.probe = rt5660_i2c_probe,
-+	.remove   = rt5660_i2c_remove,
-+	.id_table = rt5660_i2c_id,
-+};
-+module_i2c_driver(rt5660_i2c_driver);
-+
-+MODULE_DESCRIPTION("ASoC RT5660 driver");
-+MODULE_AUTHOR("Oder Chiou <oder_chiou@realtek.com>");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/codecs/rt5660.h b/sound/soc/codecs/rt5660.h
-new file mode 100644
-index 000000000000..6cdb9269ec9e
---- /dev/null
-+++ b/sound/soc/codecs/rt5660.h
-@@ -0,0 +1,847 @@
-+/*
-+ * rt5660.h  --  RT5660 ALSA SoC audio driver
-+ *
-+ * Copyright 2016 Realtek Semiconductor Corp.
-+ * Author: Oder Chiou <oder_chiou@realtek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef _RT5660_H
-+#define _RT5660_H
-+
-+#include <linux/clk.h>
-+#include <sound/rt5660.h>
-+
-+/* Info */
-+#define RT5660_RESET				0x00
-+#define RT5660_VENDOR_ID			0xfd
-+#define RT5660_VENDOR_ID1			0xfe
-+#define RT5660_VENDOR_ID2			0xff
-+/*  I/O - Output */
-+#define RT5660_SPK_VOL				0x01
-+#define RT5660_LOUT_VOL				0x02
-+/* I/O - Input */
-+#define RT5660_IN1_IN2				0x0d
-+#define RT5660_IN3_IN4				0x0e
-+/* I/O - ADC/DAC/DMIC */
-+#define RT5660_DAC1_DIG_VOL			0x19
-+#define RT5660_STO1_ADC_DIG_VOL			0x1c
-+#define RT5660_ADC_BST_VOL1			0x1e
-+/* Mixer - D-D */
-+#define RT5660_STO1_ADC_MIXER			0x27
-+#define RT5660_AD_DA_MIXER			0x29
-+#define RT5660_STO_DAC_MIXER			0x2a
-+#define RT5660_DIG_INF1_DATA			0x2f
-+/* Mixer - ADC */
-+#define RT5660_REC_L1_MIXER			0x3b
-+#define RT5660_REC_L2_MIXER			0x3c
-+#define RT5660_REC_R1_MIXER			0x3d
-+#define RT5660_REC_R2_MIXER			0x3e
-+/* Mixer - DAC */
-+#define RT5660_LOUT_MIXER			0x45
-+#define RT5660_SPK_MIXER			0x46
-+#define RT5660_SPO_MIXER			0x48
-+#define RT5660_SPO_CLSD_RATIO			0x4a
-+#define RT5660_OUT_L_GAIN1			0x4d
-+#define RT5660_OUT_L_GAIN2			0x4e
-+#define RT5660_OUT_L1_MIXER			0x4f
-+#define RT5660_OUT_R_GAIN1			0x50
-+#define RT5660_OUT_R_GAIN2			0x51
-+#define RT5660_OUT_R1_MIXER			0x52
-+/* Power */
-+#define RT5660_PWR_DIG1				0x61
-+#define RT5660_PWR_DIG2				0x62
-+#define RT5660_PWR_ANLG1			0x63
-+#define RT5660_PWR_ANLG2			0x64
-+#define RT5660_PWR_MIXER			0x65
-+#define RT5660_PWR_VOL				0x66
-+/* Private Register Control */
-+#define RT5660_PRIV_INDEX			0x6a
-+#define RT5660_PRIV_DATA			0x6c
-+/* Format - ADC/DAC */
-+#define RT5660_I2S1_SDP				0x70
-+#define RT5660_ADDA_CLK1			0x73
-+#define RT5660_ADDA_CLK2			0x74
-+#define RT5660_DMIC_CTRL1			0x75
-+/* Function - Analog */
-+#define RT5660_GLB_CLK				0x80
-+#define RT5660_PLL_CTRL1			0x81
-+#define RT5660_PLL_CTRL2			0x82
-+#define RT5660_CLSD_AMP_OC_CTRL			0x8c
-+#define RT5660_CLSD_AMP_CTRL			0x8d
-+#define RT5660_LOUT_AMP_CTRL			0x8e
-+#define RT5660_SPK_AMP_SPKVDD			0x92
-+#define RT5660_MICBIAS				0x93
-+#define RT5660_CLSD_OUT_CTRL1			0xa1
-+#define RT5660_CLSD_OUT_CTRL2			0xa2
-+#define RT5660_DIPOLE_MIC_CTRL1			0xa3
-+#define RT5660_DIPOLE_MIC_CTRL2			0xa4
-+#define RT5660_DIPOLE_MIC_CTRL3			0xa5
-+#define RT5660_DIPOLE_MIC_CTRL4			0xa6
-+#define RT5660_DIPOLE_MIC_CTRL5			0xa7
-+#define RT5660_DIPOLE_MIC_CTRL6			0xa8
-+#define RT5660_DIPOLE_MIC_CTRL7			0xa9
-+#define RT5660_DIPOLE_MIC_CTRL8			0xaa
-+#define RT5660_DIPOLE_MIC_CTRL9			0xab
-+#define RT5660_DIPOLE_MIC_CTRL10		0xac
-+#define RT5660_DIPOLE_MIC_CTRL11		0xad
-+#define RT5660_DIPOLE_MIC_CTRL12		0xae
-+/* Function - Digital */
-+#define RT5660_EQ_CTRL1				0xb0
-+#define RT5660_EQ_CTRL2				0xb1
-+#define RT5660_DRC_AGC_CTRL1			0xb3
-+#define RT5660_DRC_AGC_CTRL2			0xb4
-+#define RT5660_DRC_AGC_CTRL3			0xb5
-+#define RT5660_DRC_AGC_CTRL4			0xb6
-+#define RT5660_DRC_AGC_CTRL5			0xb7
-+#define RT5660_JD_CTRL				0xbb
-+#define RT5660_IRQ_CTRL1			0xbd
-+#define RT5660_IRQ_CTRL2			0xbe
-+#define RT5660_INT_IRQ_ST			0xbf
-+#define RT5660_GPIO_CTRL1			0xc0
-+#define RT5660_GPIO_CTRL2			0xc2
-+#define RT5660_WIND_FILTER_CTRL1		0xd3
-+#define RT5660_SV_ZCD1				0xd9
-+#define RT5660_SV_ZCD2				0xda
-+#define RT5660_DRC1_LM_CTRL1			0xe0
-+#define RT5660_DRC1_LM_CTRL2			0xe1
-+#define RT5660_DRC2_LM_CTRL1			0xe2
-+#define RT5660_DRC2_LM_CTRL2			0xe3
-+#define RT5660_MULTI_DRC_CTRL			0xe4
-+#define RT5660_DRC2_CTRL1			0xe5
-+#define RT5660_DRC2_CTRL2			0xe6
-+#define RT5660_DRC2_CTRL3			0xe7
-+#define RT5660_DRC2_CTRL4			0xe8
-+#define RT5660_DRC2_CTRL5			0xe9
-+#define RT5660_ALC_PGA_CTRL1			0xea
-+#define RT5660_ALC_PGA_CTRL2			0xeb
-+#define RT5660_ALC_PGA_CTRL3			0xec
-+#define RT5660_ALC_PGA_CTRL4			0xed
-+#define RT5660_ALC_PGA_CTRL5			0xee
-+#define RT5660_ALC_PGA_CTRL6			0xef
-+#define RT5660_ALC_PGA_CTRL7			0xf0
-+
-+/* General Control */
-+#define RT5660_GEN_CTRL1			0xfa
-+#define RT5660_GEN_CTRL2			0xfb
-+#define RT5660_GEN_CTRL3			0xfc
-+
-+/* Index of Codec Private Register definition */
-+#define RT5660_CHOP_DAC_ADC			0x3d
-+
-+/* Global Definition */
-+#define RT5660_L_MUTE				(0x1 << 15)
-+#define RT5660_L_MUTE_SFT			15
-+#define RT5660_VOL_L_MUTE			(0x1 << 14)
-+#define RT5660_VOL_L_SFT			14
-+#define RT5660_R_MUTE				(0x1 << 7)
-+#define RT5660_R_MUTE_SFT			7
-+#define RT5660_VOL_R_MUTE			(0x1 << 6)
-+#define RT5660_VOL_R_SFT			6
-+#define RT5660_L_VOL_MASK			(0x3f << 8)
-+#define RT5660_L_VOL_SFT			8
-+#define RT5660_R_VOL_MASK			(0x3f)
-+#define RT5660_R_VOL_SFT			0
-+
-+/* IN1 and IN2 Control (0x0d) */
-+#define RT5660_IN_DF1				(0x1 << 15)
-+#define RT5660_IN_SFT1				15
-+#define RT5660_BST_MASK1			(0x7f << 8)
-+#define RT5660_BST_SFT1				8
-+#define RT5660_IN_DF2				(0x1 << 7)
-+#define RT5660_IN_SFT2				7
-+#define RT5660_BST_MASK2			(0x7f << 0)
-+#define RT5660_BST_SFT2				0
-+
-+/* IN3 and IN4 Control (0x0e) */
-+#define RT5660_IN_DF3				(0x1 << 15)
-+#define RT5660_IN_SFT3				15
-+#define RT5660_BST_MASK3			(0x7f << 8)
-+#define RT5660_BST_SFT3				8
-+#define RT5660_IN_DF4				(0x1 << 7)
-+#define RT5660_IN_SFT4				7
-+#define RT5660_BST_MASK4			(0x7f << 0)
-+#define RT5660_BST_SFT4				0
-+
-+/* DAC1 Digital Volume (0x19) */
-+#define RT5660_DAC_L1_VOL_MASK			(0x7f << 9)
-+#define RT5660_DAC_L1_VOL_SFT			9
-+#define RT5660_DAC_R1_VOL_MASK			(0x7f << 1)
-+#define RT5660_DAC_R1_VOL_SFT			1
-+
-+/* ADC Digital Volume Control (0x1c) */
-+#define RT5660_ADC_L_VOL_MASK			(0x3f << 9)
-+#define RT5660_ADC_L_VOL_SFT			9
-+#define RT5660_ADC_R_VOL_MASK			(0x3f << 1)
-+#define RT5660_ADC_R_VOL_SFT			1
-+
-+/* ADC Boost Volume Control (0x1e) */
-+#define RT5660_STO1_ADC_L_BST_MASK		(0x3 << 14)
-+#define RT5660_STO1_ADC_L_BST_SFT		14
-+#define RT5660_STO1_ADC_R_BST_MASK		(0x3 << 12)
-+#define RT5660_STO1_ADC_R_BST_SFT		12
-+
-+/* Stereo ADC Mixer Control (0x27) */
-+#define RT5660_M_ADC_L1				(0x1 << 14)
-+#define RT5660_M_ADC_L1_SFT			14
-+#define RT5660_M_ADC_L2				(0x1 << 13)
-+#define RT5660_M_ADC_L2_SFT			13
-+#define RT5660_M_ADC_R1				(0x1 << 6)
-+#define RT5660_M_ADC_R1_SFT			6
-+#define RT5660_M_ADC_R2				(0x1 << 5)
-+#define RT5660_M_ADC_R2_SFT			5
-+
-+/* ADC Mixer to DAC Mixer Control (0x29) */
-+#define RT5660_M_ADCMIX_L			(0x1 << 15)
-+#define RT5660_M_ADCMIX_L_SFT			15
-+#define RT5660_M_DAC1_L				(0x1 << 14)
-+#define RT5660_M_DAC1_L_SFT			14
-+#define RT5660_M_ADCMIX_R			(0x1 << 7)
-+#define RT5660_M_ADCMIX_R_SFT			7
-+#define RT5660_M_DAC1_R				(0x1 << 6)
-+#define RT5660_M_DAC1_R_SFT			6
-+
-+/* Stereo DAC Mixer Control (0x2a) */
-+#define RT5660_M_DAC_L1				(0x1 << 14)
-+#define RT5660_M_DAC_L1_SFT			14
-+#define RT5660_DAC_L1_STO_L_VOL_MASK		(0x1 << 13)
-+#define RT5660_DAC_L1_STO_L_VOL_SFT		13
-+#define RT5660_M_DAC_R1_STO_L			(0x1 << 9)
-+#define RT5660_M_DAC_R1_STO_L_SFT		9
-+#define RT5660_DAC_R1_STO_L_VOL_MASK		(0x1 << 8)
-+#define RT5660_DAC_R1_STO_L_VOL_SFT		8
-+#define RT5660_M_DAC_R1				(0x1 << 6)
-+#define RT5660_M_DAC_R1_SFT			6
-+#define RT5660_DAC_R1_STO_R_VOL_MASK		(0x1 << 5)
-+#define RT5660_DAC_R1_STO_R_VOL_SFT		5
-+#define RT5660_M_DAC_L1_STO_R			(0x1 << 1)
-+#define RT5660_M_DAC_L1_STO_R_SFT		1
-+#define RT5660_DAC_L1_STO_R_VOL_MASK		(0x1)
-+#define RT5660_DAC_L1_STO_R_VOL_SFT		0
-+
-+/* Digital Interface Data Control (0x2f) */
-+#define RT5660_IF1_DAC_IN_SEL			(0x3 << 14)
-+#define RT5660_IF1_DAC_IN_SFT			14
-+#define RT5660_IF1_ADC_IN_SEL			(0x3 << 12)
-+#define RT5660_IF1_ADC_IN_SFT			12
-+
-+/* REC Left Mixer Control 1 (0x3b) */
-+#define RT5660_G_BST3_RM_L_MASK			(0x7 << 4)
-+#define RT5660_G_BST3_RM_L_SFT			4
-+#define RT5660_G_BST2_RM_L_MASK			(0x7 << 1)
-+#define RT5660_G_BST2_RM_L_SFT			1
-+
-+/* REC Left Mixer Control 2 (0x3c) */
-+#define RT5660_G_BST1_RM_L_MASK			(0x7 << 13)
-+#define RT5660_G_BST1_RM_L_SFT			13
-+#define RT5660_G_OM_L_RM_L_MASK			(0x7 << 10)
-+#define RT5660_G_OM_L_RM_L_SFT			10
-+#define RT5660_M_BST3_RM_L			(0x1 << 3)
-+#define RT5660_M_BST3_RM_L_SFT			3
-+#define RT5660_M_BST2_RM_L			(0x1 << 2)
-+#define RT5660_M_BST2_RM_L_SFT			2
-+#define RT5660_M_BST1_RM_L			(0x1 << 1)
-+#define RT5660_M_BST1_RM_L_SFT			1
-+#define RT5660_M_OM_L_RM_L			(0x1)
-+#define RT5660_M_OM_L_RM_L_SFT			0
-+
-+/* REC Right Mixer Control 1 (0x3d) */
-+#define RT5660_G_BST3_RM_R_MASK			(0x7 << 4)
-+#define RT5660_G_BST3_RM_R_SFT			4
-+#define RT5660_G_BST2_RM_R_MASK			(0x7 << 1)
-+#define RT5660_G_BST2_RM_R_SFT			1
-+
-+/* REC Right Mixer Control 2 (0x3e) */
-+#define RT5660_G_BST1_RM_R_MASK			(0x7 << 13)
-+#define RT5660_G_BST1_RM_R_SFT			13
-+#define RT5660_G_OM_R_RM_R_MASK			(0x7 << 10)
-+#define RT5660_G_OM_R_RM_R_SFT			10
-+#define RT5660_M_BST3_RM_R			(0x1 << 3)
-+#define RT5660_M_BST3_RM_R_SFT			3
-+#define RT5660_M_BST2_RM_R			(0x1 << 2)
-+#define RT5660_M_BST2_RM_R_SFT			2
-+#define RT5660_M_BST1_RM_R			(0x1 << 1)
-+#define RT5660_M_BST1_RM_R_SFT			1
-+#define RT5660_M_OM_R_RM_R			(0x1)
-+#define RT5660_M_OM_R_RM_R_SFT			0
-+
-+/* LOUTMIX Control (0x45) */
-+#define RT5660_M_DAC1_LM			(0x1 << 14)
-+#define RT5660_M_DAC1_LM_SFT			14
-+#define RT5660_M_LOVOL_M			(0x1 << 13)
-+#define RT5660_M_LOVOL_LM_SFT			13
-+
-+/* SPK Mixer Control (0x46) */
-+#define RT5660_G_BST3_SM_MASK			(0x3 << 14)
-+#define RT5660_G_BST3_SM_SFT			14
-+#define RT5660_G_BST1_SM_MASK			(0x3 << 12)
-+#define RT5660_G_BST1_SM_SFT			12
-+#define RT5660_G_DACl_SM_MASK			(0x3 << 10)
-+#define RT5660_G_DACl_SM_SFT			10
-+#define RT5660_G_DACR_SM_MASK			(0x3 << 8)
-+#define RT5660_G_DACR_SM_SFT			8
-+#define RT5660_G_OM_L_SM_MASK			(0x3 << 6)
-+#define RT5660_G_OM_L_SM_SFT			6
-+#define RT5660_M_DACR_SM			(0x1 << 5)
-+#define RT5660_M_DACR_SM_SFT			5
-+#define RT5660_M_BST1_SM			(0x1 << 4)
-+#define RT5660_M_BST1_SM_SFT			4
-+#define RT5660_M_BST3_SM			(0x1 << 3)
-+#define RT5660_M_BST3_SM_SFT			3
-+#define RT5660_M_DACL_SM			(0x1 << 2)
-+#define RT5660_M_DACL_SM_SFT			2
-+#define RT5660_M_OM_L_SM			(0x1 << 1)
-+#define RT5660_M_OM_L_SM_SFT			1
-+
-+/* SPOMIX Control (0x48) */
-+#define RT5660_M_DAC_R_SPM			(0x1 << 14)
-+#define RT5660_M_DAC_R_SPM_SFT			14
-+#define RT5660_M_DAC_L_SPM			(0x1 << 13)
-+#define RT5660_M_DAC_L_SPM_SFT			13
-+#define RT5660_M_SV_SPM				(0x1 << 12)
-+#define RT5660_M_SV_SPM_SFT			12
-+#define RT5660_M_BST1_SPM			(0x1 << 11)
-+#define RT5660_M_BST1_SPM_SFT			11
-+
-+/* Output Left Mixer Control 1 (0x4d) */
-+#define RT5660_G_BST3_OM_L_MASK			(0x7 << 13)
-+#define RT5660_G_BST3_OM_L_SFT			13
-+#define RT5660_G_BST2_OM_L_MASK			(0x7 << 10)
-+#define RT5660_G_BST2_OM_L_SFT			10
-+#define RT5660_G_BST1_OM_L_MASK			(0x7 << 7)
-+#define RT5660_G_BST1_OM_L_SFT			7
-+#define RT5660_G_RM_L_OM_L_MASK			(0x7 << 1)
-+#define RT5660_G_RM_L_OM_L_SFT			1
-+
-+/* Output Left Mixer Control 2 (0x4e) */
-+#define RT5660_G_DAC_R1_OM_L_MASK		(0x7 << 10)
-+#define RT5660_G_DAC_R1_OM_L_SFT		10
-+#define RT5660_G_DAC_L1_OM_L_MASK		(0x7 << 7)
-+#define RT5660_G_DAC_L1_OM_L_SFT		7
-+
-+/* Output Left Mixer Control 3 (0x4f) */
-+#define RT5660_M_BST3_OM_L			(0x1 << 5)
-+#define RT5660_M_BST3_OM_L_SFT			5
-+#define RT5660_M_BST2_OM_L			(0x1 << 4)
-+#define RT5660_M_BST2_OM_L_SFT			4
-+#define RT5660_M_BST1_OM_L			(0x1 << 3)
-+#define RT5660_M_BST1_OM_L_SFT			3
-+#define RT5660_M_RM_L_OM_L			(0x1 << 2)
-+#define RT5660_M_RM_L_OM_L_SFT			2
-+#define RT5660_M_DAC_R_OM_L			(0x1 << 1)
-+#define RT5660_M_DAC_R_OM_L_SFT			1
-+#define RT5660_M_DAC_L_OM_L			(0x1)
-+#define RT5660_M_DAC_L_OM_L_SFT			0
-+
-+/* Output Right Mixer Control 1 (0x50) */
-+#define RT5660_G_BST2_OM_R_MASK			(0x7 << 10)
-+#define RT5660_G_BST2_OM_R_SFT			10
-+#define RT5660_G_BST1_OM_R_MASK			(0x7 << 7)
-+#define RT5660_G_BST1_OM_R_SFT			7
-+#define RT5660_G_RM_R_OM_R_MASK			(0x7 << 1)
-+#define RT5660_G_RM_R_OM_R_SFT			1
-+
-+/* Output Right Mixer Control 2 (0x51) */
-+#define RT5660_G_DAC_L_OM_R_MASK		(0x7 << 10)
-+#define RT5660_G_DAC_L_OM_R_SFT			10
-+#define RT5660_G_DAC_R_OM_R_MASK		(0x7 << 7)
-+#define RT5660_G_DAC_R_OM_R_SFT			7
-+
-+/* Output Right Mixer Control 3 (0x52) */
-+#define RT5660_M_BST2_OM_R			(0x1 << 4)
-+#define RT5660_M_BST2_OM_R_SFT			4
-+#define RT5660_M_BST1_OM_R			(0x1 << 3)
-+#define RT5660_M_BST1_OM_R_SFT			3
-+#define RT5660_M_RM_R_OM_R			(0x1 << 2)
-+#define RT5660_M_RM_R_OM_R_SFT			2
-+#define RT5660_M_DAC_L_OM_R			(0x1 << 1)
-+#define RT5660_M_DAC_L_OM_R_SFT			1
-+#define RT5660_M_DAC_R_OM_R			(0x1)
-+#define RT5660_M_DAC_R_OM_R_SFT			0
-+
-+/* Power Management for Digital 1 (0x61) */
-+#define RT5660_PWR_I2S1				(0x1 << 15)
-+#define RT5660_PWR_I2S1_BIT			15
-+#define RT5660_PWR_DAC_L1			(0x1 << 12)
-+#define RT5660_PWR_DAC_L1_BIT			12
-+#define RT5660_PWR_DAC_R1			(0x1 << 11)
-+#define RT5660_PWR_DAC_R1_BIT			11
-+#define RT5660_PWR_ADC_L			(0x1 << 2)
-+#define RT5660_PWR_ADC_L_BIT			2
-+#define RT5660_PWR_ADC_R			(0x1 << 1)
-+#define RT5660_PWR_ADC_R_BIT			1
-+#define RT5660_PWR_CLS_D			(0x1)
-+#define RT5660_PWR_CLS_D_BIT			0
-+
-+/* Power Management for Digital 2 (0x62) */
-+#define RT5660_PWR_ADC_S1F			(0x1 << 15)
-+#define RT5660_PWR_ADC_S1F_BIT			15
-+#define RT5660_PWR_DAC_S1F			(0x1 << 11)
-+#define RT5660_PWR_DAC_S1F_BIT			11
-+
-+/* Power Management for Analog 1 (0x63) */
-+#define RT5660_PWR_VREF1			(0x1 << 15)
-+#define RT5660_PWR_VREF1_BIT			15
-+#define RT5660_PWR_FV1				(0x1 << 14)
-+#define RT5660_PWR_FV1_BIT			14
-+#define RT5660_PWR_MB				(0x1 << 13)
-+#define RT5660_PWR_MB_BIT			13
-+#define RT5660_PWR_BG				(0x1 << 11)
-+#define RT5660_PWR_BG_BIT			11
-+#define RT5660_PWR_HP_L				(0x1 << 7)
-+#define RT5660_PWR_HP_L_BIT			7
-+#define RT5660_PWR_HP_R				(0x1 << 6)
-+#define RT5660_PWR_HP_R_BIT			6
-+#define RT5660_PWR_HA				(0x1 << 5)
-+#define RT5660_PWR_HA_BIT			5
-+#define RT5660_PWR_VREF2			(0x1 << 4)
-+#define RT5660_PWR_VREF2_BIT			4
-+#define RT5660_PWR_FV2				(0x1 << 3)
-+#define RT5660_PWR_FV2_BIT			3
-+#define RT5660_PWR_LDO2				(0x1 << 2)
-+#define RT5660_PWR_LDO2_BIT			2
-+
-+/* Power Management for Analog 2 (0x64) */
-+#define RT5660_PWR_BST1				(0x1 << 15)
-+#define RT5660_PWR_BST1_BIT			15
-+#define RT5660_PWR_BST2				(0x1 << 14)
-+#define RT5660_PWR_BST2_BIT			14
-+#define RT5660_PWR_BST3				(0x1 << 13)
-+#define RT5660_PWR_BST3_BIT			13
-+#define RT5660_PWR_MB1				(0x1 << 11)
-+#define RT5660_PWR_MB1_BIT			11
-+#define RT5660_PWR_MB2				(0x1 << 10)
-+#define RT5660_PWR_MB2_BIT			10
-+#define RT5660_PWR_PLL				(0x1 << 9)
-+#define RT5660_PWR_PLL_BIT			9
-+
-+/* Power Management for Mixer (0x65) */
-+#define RT5660_PWR_OM_L				(0x1 << 15)
-+#define RT5660_PWR_OM_L_BIT			15
-+#define RT5660_PWR_OM_R				(0x1 << 14)
-+#define RT5660_PWR_OM_R_BIT			14
-+#define RT5660_PWR_SM				(0x1 << 13)
-+#define RT5660_PWR_SM_BIT			13
-+#define RT5660_PWR_RM_L				(0x1 << 11)
-+#define RT5660_PWR_RM_L_BIT			11
-+#define RT5660_PWR_RM_R				(0x1 << 10)
-+#define RT5660_PWR_RM_R_BIT			10
-+
-+/* Power Management for Volume (0x66) */
-+#define RT5660_PWR_SV				(0x1 << 15)
-+#define RT5660_PWR_SV_BIT			15
-+#define RT5660_PWR_LV_L				(0x1 << 11)
-+#define RT5660_PWR_LV_L_BIT			11
-+#define RT5660_PWR_LV_R				(0x1 << 10)
-+#define RT5660_PWR_LV_R_BIT			10
-+
-+/* I2S1 Audio Serial Data Port Control (0x70) */
-+#define RT5660_I2S_MS_MASK			(0x1 << 15)
-+#define RT5660_I2S_MS_SFT			15
-+#define RT5660_I2S_MS_M				(0x0 << 15)
-+#define RT5660_I2S_MS_S				(0x1 << 15)
-+#define RT5660_I2S_O_CP_MASK			(0x3 << 10)
-+#define RT5660_I2S_O_CP_SFT			10
-+#define RT5660_I2S_O_CP_OFF			(0x0 << 10)
-+#define RT5660_I2S_O_CP_U_LAW			(0x1 << 10)
-+#define RT5660_I2S_O_CP_A_LAW			(0x2 << 10)
-+#define RT5660_I2S_I_CP_MASK			(0x3 << 8)
-+#define RT5660_I2S_I_CP_SFT			8
-+#define RT5660_I2S_I_CP_OFF			(0x0 << 8)
-+#define RT5660_I2S_I_CP_U_LAW			(0x1 << 8)
-+#define RT5660_I2S_I_CP_A_LAW			(0x2 << 8)
-+#define RT5660_I2S_BP_MASK			(0x1 << 7)
-+#define RT5660_I2S_BP_SFT			7
-+#define RT5660_I2S_BP_NOR			(0x0 << 7)
-+#define RT5660_I2S_BP_INV			(0x1 << 7)
-+#define RT5660_I2S_DL_MASK			(0x3 << 2)
-+#define RT5660_I2S_DL_SFT			2
-+#define RT5660_I2S_DL_16			(0x0 << 2)
-+#define RT5660_I2S_DL_20			(0x1 << 2)
-+#define RT5660_I2S_DL_24			(0x2 << 2)
-+#define RT5660_I2S_DL_8				(0x3 << 2)
-+#define RT5660_I2S_DF_MASK			(0x3)
-+#define RT5660_I2S_DF_SFT			0
-+#define RT5660_I2S_DF_I2S			(0x0)
-+#define RT5660_I2S_DF_LEFT			(0x1)
-+#define RT5660_I2S_DF_PCM_A			(0x2)
-+#define RT5660_I2S_DF_PCM_B			(0x3)
-+
-+/* ADC/DAC Clock Control 1 (0x73) */
-+#define RT5660_I2S_BCLK_MS1_MASK		(0x1 << 15)
-+#define RT5660_I2S_BCLK_MS1_SFT			15
-+#define RT5660_I2S_BCLK_MS1_32			(0x0 << 15)
-+#define RT5660_I2S_BCLK_MS1_64			(0x1 << 15)
-+#define RT5660_I2S_PD1_MASK			(0x7 << 12)
-+#define RT5660_I2S_PD1_SFT			12
-+#define RT5660_I2S_PD1_1			(0x0 << 12)
-+#define RT5660_I2S_PD1_2			(0x1 << 12)
-+#define RT5660_I2S_PD1_3			(0x2 << 12)
-+#define RT5660_I2S_PD1_4			(0x3 << 12)
-+#define RT5660_I2S_PD1_6			(0x4 << 12)
-+#define RT5660_I2S_PD1_8			(0x5 << 12)
-+#define RT5660_I2S_PD1_12			(0x6 << 12)
-+#define RT5660_I2S_PD1_16			(0x7 << 12)
-+#define RT5660_DAC_OSR_MASK			(0x3 << 2)
-+#define RT5660_DAC_OSR_SFT			2
-+#define RT5660_DAC_OSR_128			(0x0 << 2)
-+#define RT5660_DAC_OSR_64			(0x1 << 2)
-+#define RT5660_DAC_OSR_32			(0x2 << 2)
-+#define RT5660_DAC_OSR_16			(0x3 << 2)
-+#define RT5660_ADC_OSR_MASK			(0x3)
-+#define RT5660_ADC_OSR_SFT			0
-+#define RT5660_ADC_OSR_128			(0x0)
-+#define RT5660_ADC_OSR_64			(0x1)
-+#define RT5660_ADC_OSR_32			(0x2)
-+#define RT5660_ADC_OSR_16			(0x3)
-+
-+/* ADC/DAC Clock Control 2 (0x74) */
-+#define RT5660_RESET_ADF			(0x1 << 13)
-+#define RT5660_RESET_ADF_SFT			13
-+#define RT5660_RESET_DAF			(0x1 << 12)
-+#define RT5660_RESET_DAF_SFT			12
-+#define RT5660_DAHPF_EN				(0x1 << 11)
-+#define RT5660_DAHPF_EN_SFT			11
-+#define RT5660_ADHPF_EN				(0x1 << 10)
-+#define RT5660_ADHPF_EN_SFT			10
-+
-+/* Digital Microphone Control (0x75) */
-+#define RT5660_DMIC_1_EN_MASK			(0x1 << 15)
-+#define RT5660_DMIC_1_EN_SFT			15
-+#define RT5660_DMIC_1_DIS			(0x0 << 15)
-+#define RT5660_DMIC_1_EN			(0x1 << 15)
-+#define RT5660_DMIC_1L_LH_MASK			(0x1 << 13)
-+#define RT5660_DMIC_1L_LH_SFT			13
-+#define RT5660_DMIC_1L_LH_RISING		(0x0 << 13)
-+#define RT5660_DMIC_1L_LH_FALLING		(0x1 << 13)
-+#define RT5660_DMIC_1R_LH_MASK			(0x1 << 12)
-+#define RT5660_DMIC_1R_LH_SFT			12
-+#define RT5660_DMIC_1R_LH_RISING		(0x0 << 12)
-+#define RT5660_DMIC_1R_LH_FALLING		(0x1 << 12)
-+#define RT5660_SEL_DMIC_DATA_MASK		(0x1 << 11)
-+#define RT5660_SEL_DMIC_DATA_SFT		11
-+#define RT5660_SEL_DMIC_DATA_GPIO2		(0x0 << 11)
-+#define RT5660_SEL_DMIC_DATA_IN1P		(0x1 << 11)
-+#define RT5660_DMIC_CLK_MASK			(0x7 << 5)
-+#define RT5660_DMIC_CLK_SFT			5
-+
-+/* Global Clock Control (0x80) */
-+#define RT5660_SCLK_SRC_MASK			(0x3 << 14)
-+#define RT5660_SCLK_SRC_SFT			14
-+#define RT5660_SCLK_SRC_MCLK			(0x0 << 14)
-+#define RT5660_SCLK_SRC_PLL1			(0x1 << 14)
-+#define RT5660_SCLK_SRC_RCCLK			(0x2 << 14)
-+#define RT5660_PLL1_SRC_MASK			(0x3 << 12)
-+#define RT5660_PLL1_SRC_SFT			12
-+#define RT5660_PLL1_SRC_MCLK			(0x0 << 12)
-+#define RT5660_PLL1_SRC_BCLK1			(0x1 << 12)
-+#define RT5660_PLL1_SRC_RCCLK			(0x2 << 12)
-+#define RT5660_PLL1_PD_MASK			(0x1 << 3)
-+#define RT5660_PLL1_PD_SFT			3
-+#define RT5660_PLL1_PD_1			(0x0 << 3)
-+#define RT5660_PLL1_PD_2			(0x1 << 3)
-+
-+#define RT5660_PLL_INP_MAX			40000000
-+#define RT5660_PLL_INP_MIN			256000
-+/* PLL M/N/K Code Control 1 (0x81) */
-+#define RT5660_PLL_N_MAX			0x1ff
-+#define RT5660_PLL_N_MASK			(RT5660_PLL_N_MAX << 7)
-+#define RT5660_PLL_N_SFT			7
-+#define RT5660_PLL_K_MAX			0x1f
-+#define RT5660_PLL_K_MASK			(RT5660_PLL_K_MAX)
-+#define RT5660_PLL_K_SFT			0
-+
-+/* PLL M/N/K Code Control 2 (0x82) */
-+#define RT5660_PLL_M_MAX			0xf
-+#define RT5660_PLL_M_MASK			(RT5660_PLL_M_MAX << 12)
-+#define RT5660_PLL_M_SFT			12
-+#define RT5660_PLL_M_BP				(0x1 << 11)
-+#define RT5660_PLL_M_BP_SFT			11
-+
-+/* Class D Over Current Control (0x8c) */
-+#define RT5660_CLSD_OC_MASK			(0x1 << 9)
-+#define RT5660_CLSD_OC_SFT			9
-+#define RT5660_CLSD_OC_PU			(0x0 << 9)
-+#define RT5660_CLSD_OC_PD			(0x1 << 9)
-+#define RT5660_AUTO_PD_MASK			(0x1 << 8)
-+#define RT5660_AUTO_PD_SFT			8
-+#define RT5660_AUTO_PD_DIS			(0x0 << 8)
-+#define RT5660_AUTO_PD_EN			(0x1 << 8)
-+#define RT5660_CLSD_OC_TH_MASK			(0x3f)
-+#define RT5660_CLSD_OC_TH_SFT			0
-+
-+/* Class D Output Control (0x8d) */
-+#define RT5660_CLSD_RATIO_MASK			(0xf << 12)
-+#define RT5660_CLSD_RATIO_SFT			12
-+
-+/* Lout Amp Control 1 (0x8e) */
-+#define RT5660_LOUT_CO_MASK			(0x1 << 4)
-+#define RT5660_LOUT_CO_SFT			4
-+#define RT5660_LOUT_CO_DIS			(0x0 << 4)
-+#define RT5660_LOUT_CO_EN			(0x1 << 4)
-+#define RT5660_LOUT_CB_MASK			(0x1)
-+#define RT5660_LOUT_CB_SFT			0
-+#define RT5660_LOUT_CB_PD			(0x0)
-+#define RT5660_LOUT_CB_PU			(0x1)
-+
-+/* SPKVDD detection control (0x92) */
-+#define RT5660_SPKVDD_DET_MASK			(0x1 << 15)
-+#define RT5660_SPKVDD_DET_SFT			15
-+#define RT5660_SPKVDD_DET_DIS			(0x0 << 15)
-+#define RT5660_SPKVDD_DET_EN			(0x1 << 15)
-+#define RT5660_SPK_AG_MASK			(0x1 << 14)
-+#define RT5660_SPK_AG_SFT			14
-+#define RT5660_SPK_AG_DIS			(0x0 << 14)
-+#define RT5660_SPK_AG_EN			(0x1 << 14)
-+
-+/* Micbias Control (0x93) */
-+#define RT5660_MIC1_BS_MASK			(0x1 << 15)
-+#define RT5660_MIC1_BS_SFT			15
-+#define RT5660_MIC1_BS_9AV			(0x0 << 15)
-+#define RT5660_MIC1_BS_75AV			(0x1 << 15)
-+#define RT5660_MIC2_BS_MASK			(0x1 << 14)
-+#define RT5660_MIC2_BS_SFT			14
-+#define RT5660_MIC2_BS_9AV			(0x0 << 14)
-+#define RT5660_MIC2_BS_75AV			(0x1 << 14)
-+#define RT5660_MIC1_OVCD_MASK			(0x1 << 11)
-+#define RT5660_MIC1_OVCD_SFT			11
-+#define RT5660_MIC1_OVCD_DIS			(0x0 << 11)
-+#define RT5660_MIC1_OVCD_EN			(0x1 << 11)
-+#define RT5660_MIC1_OVTH_MASK			(0x3 << 9)
-+#define RT5660_MIC1_OVTH_SFT			9
-+#define RT5660_MIC1_OVTH_600UA			(0x0 << 9)
-+#define RT5660_MIC1_OVTH_1500UA			(0x1 << 9)
-+#define RT5660_MIC1_OVTH_2000UA			(0x2 << 9)
-+#define RT5660_MIC2_OVCD_MASK			(0x1 << 8)
-+#define RT5660_MIC2_OVCD_SFT			8
-+#define RT5660_MIC2_OVCD_DIS			(0x0 << 8)
-+#define RT5660_MIC2_OVCD_EN			(0x1 << 8)
-+#define RT5660_MIC2_OVTH_MASK			(0x3 << 6)
-+#define RT5660_MIC2_OVTH_SFT			6
-+#define RT5660_MIC2_OVTH_600UA			(0x0 << 6)
-+#define RT5660_MIC2_OVTH_1500UA			(0x1 << 6)
-+#define RT5660_MIC2_OVTH_2000UA			(0x2 << 6)
-+#define RT5660_PWR_CLK25M_MASK			(0x1 << 4)
-+#define RT5660_PWR_CLK25M_SFT			4
-+#define RT5660_PWR_CLK25M_PD			(0x0 << 4)
-+#define RT5660_PWR_CLK25M_PU			(0x1 << 4)
-+
-+/* EQ Control 1 (0xb0) */
-+#define RT5660_EQ_SRC_MASK			(0x1 << 15)
-+#define RT5660_EQ_SRC_SFT			15
-+#define RT5660_EQ_SRC_DAC			(0x0 << 15)
-+#define RT5660_EQ_SRC_ADC			(0x1 << 15)
-+#define RT5660_EQ_UPD				(0x1 << 14)
-+#define RT5660_EQ_UPD_BIT			14
-+
-+/* Jack Detect Control (0xbb) */
-+#define RT5660_JD_MASK				(0x3 << 14)
-+#define RT5660_JD_SFT				14
-+#define RT5660_JD_DIS				(0x0 << 14)
-+#define RT5660_JD_GPIO1				(0x1 << 14)
-+#define RT5660_JD_GPIO2				(0x2 << 14)
-+#define RT5660_JD_LOUT_MASK			(0x1 << 11)
-+#define RT5660_JD_LOUT_SFT			11
-+#define RT5660_JD_LOUT_DIS			(0x0 << 11)
-+#define RT5660_JD_LOUT_EN			(0x1 << 11)
-+#define RT5660_JD_LOUT_TRG_MASK			(0x1 << 10)
-+#define RT5660_JD_LOUT_TRG_SFT			10
-+#define RT5660_JD_LOUT_TRG_LO			(0x0 << 10)
-+#define RT5660_JD_LOUT_TRG_HI			(0x1 << 10)
-+#define RT5660_JD_SPO_MASK			(0x1 << 9)
-+#define RT5660_JD_SPO_SFT			9
-+#define RT5660_JD_SPO_DIS			(0x0 << 9)
-+#define RT5660_JD_SPO_EN			(0x1 << 9)
-+#define RT5660_JD_SPO_TRG_MASK			(0x1 << 8)
-+#define RT5660_JD_SPO_TRG_SFT			8
-+#define RT5660_JD_SPO_TRG_LO			(0x0 << 8)
-+#define RT5660_JD_SPO_TRG_HI			(0x1 << 8)
-+
-+/* IRQ Control 1 (0xbd) */
-+#define RT5660_IRQ_JD_MASK			(0x1 << 15)
-+#define RT5660_IRQ_JD_SFT			15
-+#define RT5660_IRQ_JD_BP			(0x0 << 15)
-+#define RT5660_IRQ_JD_NOR			(0x1 << 15)
-+#define RT5660_IRQ_OT_MASK			(0x1 << 14)
-+#define RT5660_IRQ_OT_SFT			14
-+#define RT5660_IRQ_OT_BP			(0x0 << 14)
-+#define RT5660_IRQ_OT_NOR			(0x1 << 14)
-+#define RT5660_JD_STKY_MASK			(0x1 << 13)
-+#define RT5660_JD_STKY_SFT			13
-+#define RT5660_JD_STKY_DIS			(0x0 << 13)
-+#define RT5660_JD_STKY_EN			(0x1 << 13)
-+#define RT5660_OT_STKY_MASK			(0x1 << 12)
-+#define RT5660_OT_STKY_SFT			12
-+#define RT5660_OT_STKY_DIS			(0x0 << 12)
-+#define RT5660_OT_STKY_EN			(0x1 << 12)
-+#define RT5660_JD_P_MASK			(0x1 << 11)
-+#define RT5660_JD_P_SFT				11
-+#define RT5660_JD_P_NOR				(0x0 << 11)
-+#define RT5660_JD_P_INV				(0x1 << 11)
-+#define RT5660_OT_P_MASK			(0x1 << 10)
-+#define RT5660_OT_P_SFT				10
-+#define RT5660_OT_P_NOR				(0x0 << 10)
-+#define RT5660_OT_P_INV				(0x1 << 10)
-+
-+/* IRQ Control 2 (0xbe) */
-+#define RT5660_IRQ_MB1_OC_MASK			(0x1 << 15)
-+#define RT5660_IRQ_MB1_OC_SFT			15
-+#define RT5660_IRQ_MB1_OC_BP			(0x0 << 15)
-+#define RT5660_IRQ_MB1_OC_NOR			(0x1 << 15)
-+#define RT5660_IRQ_MB2_OC_MASK			(0x1 << 14)
-+#define RT5660_IRQ_MB2_OC_SFT			14
-+#define RT5660_IRQ_MB2_OC_BP			(0x0 << 14)
-+#define RT5660_IRQ_MB2_OC_NOR			(0x1 << 14)
-+#define RT5660_MB1_OC_STKY_MASK			(0x1 << 11)
-+#define RT5660_MB1_OC_STKY_SFT			11
-+#define RT5660_MB1_OC_STKY_DIS			(0x0 << 11)
-+#define RT5660_MB1_OC_STKY_EN			(0x1 << 11)
-+#define RT5660_MB2_OC_STKY_MASK			(0x1 << 10)
-+#define RT5660_MB2_OC_STKY_SFT			10
-+#define RT5660_MB2_OC_STKY_DIS			(0x0 << 10)
-+#define RT5660_MB2_OC_STKY_EN			(0x1 << 10)
-+#define RT5660_MB1_OC_P_MASK			(0x1 << 7)
-+#define RT5660_MB1_OC_P_SFT			7
-+#define RT5660_MB1_OC_P_NOR			(0x0 << 7)
-+#define RT5660_MB1_OC_P_INV			(0x1 << 7)
-+#define RT5660_MB2_OC_P_MASK			(0x1 << 6)
-+#define RT5660_MB2_OC_P_SFT			6
-+#define RT5660_MB2_OC_P_NOR			(0x0 << 6)
-+#define RT5660_MB2_OC_P_INV			(0x1 << 6)
-+#define RT5660_MB1_OC_CLR			(0x1 << 3)
-+#define RT5660_MB1_OC_CLR_SFT			3
-+#define RT5660_MB2_OC_CLR			(0x1 << 2)
-+#define RT5660_MB2_OC_CLR_SFT			2
-+
-+/* GPIO Control 1 (0xc0) */
-+#define RT5660_GP2_PIN_MASK			(0x1 << 14)
-+#define RT5660_GP2_PIN_SFT			14
-+#define RT5660_GP2_PIN_GPIO2			(0x0 << 14)
-+#define RT5660_GP2_PIN_DMIC1_SDA		(0x1 << 14)
-+#define RT5660_GP1_PIN_MASK			(0x3 << 12)
-+#define RT5660_GP1_PIN_SFT			12
-+#define RT5660_GP1_PIN_GPIO1			(0x0 << 12)
-+#define RT5660_GP1_PIN_DMIC1_SCL		(0x1 << 12)
-+#define RT5660_GP1_PIN_IRQ			(0x2 << 12)
-+#define RT5660_GPIO_M_MASK			(0x1 << 9)
-+#define RT5660_GPIO_M_SFT			9
-+#define RT5660_GPIO_M_FLT			(0x0 << 9)
-+#define RT5660_GPIO_M_PH			(0x1 << 9)
-+
-+/* GPIO Control 3 (0xc2) */
-+#define RT5660_GP2_PF_MASK			(0x1 << 5)
-+#define RT5660_GP2_PF_SFT			5
-+#define RT5660_GP2_PF_IN			(0x0 << 5)
-+#define RT5660_GP2_PF_OUT			(0x1 << 5)
-+#define RT5660_GP2_OUT_MASK			(0x1 << 4)
-+#define RT5660_GP2_OUT_SFT			4
-+#define RT5660_GP2_OUT_LO			(0x0 << 4)
-+#define RT5660_GP2_OUT_HI			(0x1 << 4)
-+#define RT5660_GP2_P_MASK			(0x1 << 3)
-+#define RT5660_GP2_P_SFT			3
-+#define RT5660_GP2_P_NOR			(0x0 << 3)
-+#define RT5660_GP2_P_INV			(0x1 << 3)
-+#define RT5660_GP1_PF_MASK			(0x1 << 2)
-+#define RT5660_GP1_PF_SFT			2
-+#define RT5660_GP1_PF_IN			(0x0 << 2)
-+#define RT5660_GP1_PF_OUT			(0x1 << 2)
-+#define RT5660_GP1_OUT_MASK			(0x1 << 1)
-+#define RT5660_GP1_OUT_SFT			1
-+#define RT5660_GP1_OUT_LO			(0x0 << 1)
-+#define RT5660_GP1_OUT_HI			(0x1 << 1)
-+#define RT5660_GP1_P_MASK			(0x1)
-+#define RT5660_GP1_P_SFT			0
-+#define RT5660_GP1_P_NOR			(0x0)
-+#define RT5660_GP1_P_INV			(0x1)
-+
-+/* Soft volume and zero cross control 1 (0xd9) */
-+#define RT5660_SV_MASK				(0x1 << 15)
-+#define RT5660_SV_SFT				15
-+#define RT5660_SV_DIS				(0x0 << 15)
-+#define RT5660_SV_EN				(0x1 << 15)
-+#define RT5660_SPO_SV_MASK			(0x1 << 14)
-+#define RT5660_SPO_SV_SFT			14
-+#define RT5660_SPO_SV_DIS			(0x0 << 14)
-+#define RT5660_SPO_SV_EN			(0x1 << 14)
-+#define RT5660_OUT_SV_MASK			(0x1 << 12)
-+#define RT5660_OUT_SV_SFT			12
-+#define RT5660_OUT_SV_DIS			(0x0 << 12)
-+#define RT5660_OUT_SV_EN			(0x1 << 12)
-+#define RT5660_ZCD_DIG_MASK			(0x1 << 11)
-+#define RT5660_ZCD_DIG_SFT			11
-+#define RT5660_ZCD_DIG_DIS			(0x0 << 11)
-+#define RT5660_ZCD_DIG_EN			(0x1 << 11)
-+#define RT5660_ZCD_MASK				(0x1 << 10)
-+#define RT5660_ZCD_SFT				10
-+#define RT5660_ZCD_PD				(0x0 << 10)
-+#define RT5660_ZCD_PU				(0x1 << 10)
-+#define RT5660_SV_DLY_MASK			(0xf)
-+#define RT5660_SV_DLY_SFT			0
-+
-+/* Soft volume and zero cross control 2 (0xda) */
-+#define RT5660_ZCD_SPO_MASK			(0x1 << 15)
-+#define RT5660_ZCD_SPO_SFT			15
-+#define RT5660_ZCD_SPO_DIS			(0x0 << 15)
-+#define RT5660_ZCD_SPO_EN			(0x1 << 15)
-+#define RT5660_ZCD_OMR_MASK			(0x1 << 8)
-+#define RT5660_ZCD_OMR_SFT			8
-+#define RT5660_ZCD_OMR_DIS			(0x0 << 8)
-+#define RT5660_ZCD_OMR_EN			(0x1 << 8)
-+#define RT5660_ZCD_OML_MASK			(0x1 << 7)
-+#define RT5660_ZCD_OML_SFT			7
-+#define RT5660_ZCD_OML_DIS			(0x0 << 7)
-+#define RT5660_ZCD_OML_EN			(0x1 << 7)
-+#define RT5660_ZCD_SPM_MASK			(0x1 << 6)
-+#define RT5660_ZCD_SPM_SFT			6
-+#define RT5660_ZCD_SPM_DIS			(0x0 << 6)
-+#define RT5660_ZCD_SPM_EN			(0x1 << 6)
-+#define RT5660_ZCD_RMR_MASK			(0x1 << 5)
-+#define RT5660_ZCD_RMR_SFT			5
-+#define RT5660_ZCD_RMR_DIS			(0x0 << 5)
-+#define RT5660_ZCD_RMR_EN			(0x1 << 5)
-+#define RT5660_ZCD_RML_MASK			(0x1 << 4)
-+#define RT5660_ZCD_RML_SFT			4
-+#define RT5660_ZCD_RML_DIS			(0x0 << 4)
-+#define RT5660_ZCD_RML_EN			(0x1 << 4)
-+
-+/* General Control 1 (0xfa) */
-+#define RT5660_PWR_VREF_HP			(0x1 << 11)
-+#define RT5660_PWR_VREF_HP_SFT			11
-+#define RT5660_DIG_GATE_CTRL			(0x1)
-+#define RT5660_DIG_GATE_CTRL_SFT		0
-+
-+/* System Clock Source */
-+#define RT5660_SCLK_S_MCLK			0
-+#define RT5660_SCLK_S_PLL1			1
-+#define RT5660_SCLK_S_RCCLK			2
-+
-+/* PLL1 Source */
-+#define RT5660_PLL1_S_MCLK			0
-+#define RT5660_PLL1_S_BCLK			1
-+
-+enum {
-+	RT5660_AIF1,
-+	RT5660_AIFS,
-+};
-+
-+struct rt5660_priv {
-+	struct snd_soc_codec *codec;
-+	struct rt5660_platform_data pdata;
-+	struct regmap *regmap;
-+	struct clk *mclk;
-+
-+	int sysclk;
-+	int sysclk_src;
-+	int lrck[RT5660_AIFS];
-+	int bclk[RT5660_AIFS];
-+	int master[RT5660_AIFS];
-+
-+	int pll_src;
-+	int pll_in;
-+	int pll_out;
-+};
-+
-+#endif
--- 
-2.9.3
+--WIyZ46R2i8wDzkSu
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+HX9EqWhRziWc8pVIeFXiHv4/Q4kHGG9cAQA=
+
+--WIyZ46R2i8wDzkSu
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--WIyZ46R2i8wDzkSu--
