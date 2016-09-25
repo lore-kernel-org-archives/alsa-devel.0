@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Update to use instance
-	ids generated" to the asoc tree
-Date: Sat, 24 Sep 2016 22:58:37 -0700
-Message-ID: <E1bo2ST-00030a-Ti@finisterre>
-References: <1472042001-9582-9-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add module instance id
+	generation APIs" to the asoc tree
+Date: Sat, 24 Sep 2016 22:58:43 -0700
+Message-ID: <E1bo2SZ-00032M-K1@finisterre>
+References: <1474533040-14222-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 64B612665B1
- for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 07:58:52 +0200 (CEST)
-In-Reply-To: <1472042001-9582-9-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 36A2F2665B1
+ for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 07:58:59 +0200 (CEST)
+In-Reply-To: <1474533040-14222-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Update to use instance ids generated
+   ASoC: Intel: Skylake: Add module instance id generation APIs
 
 has been applied to the asoc tree at
 
@@ -53,121 +53,204 @@ to this mail.
 Thanks,
 Mark
 
->From 5e8f0ee46de46e709e19675726a46cf5838b9bca Mon Sep 17 00:00:00 2001
+>From 700a9a63f9c1bc13abaa956eacc0bfcaf3a201c2 Mon Sep 17 00:00:00 2001
 From: Dharageswari R <dharageswari.r@intel.com>
-Date: Thu, 22 Sep 2016 14:00:40 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Update to use instance ids generated
+Date: Thu, 22 Sep 2016 14:00:37 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add module instance id generation APIs
 
-Post bind parameters of KPB module contains the instance id's of
-neighbouring modules in the sink path
+Driver needs to send unique module instance id to firmware while
+creating the module and uses this id to communicate with DSP for setting
+parameters while audio use case is ongoing.
 
-Now that module instance ids are generated dynamically we need to update
-these parameters as well, so use the table created and update the ids
+But, we have upper bound of instance ID. The current IDs are coming from
+topology but it doesn't know the upper bound and can't assign unique
+id's subject to upper bounds as we can create a big graph but not all
+parts running at same time.
+
+This patch adds a 128bit unique id management routines which are built
+on top of ffz() for faster implementation. Unfortunately ffz() works on
+32bits values, so additional code is added on top of ffz() to create a
+128bit unique id.
 
 Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c       |  2 ++
- sound/soc/intel/skylake/skl-topology.c       | 22 ++++++++++++++++++++++
- sound/soc/intel/skylake/skl-topology.h       | 10 ++++++++++
- sound/soc/intel/skylake/skl-tplg-interface.h |  3 ++-
- 4 files changed, 36 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-sst-dsp.h   |   4 ++
+ sound/soc/intel/skylake/skl-sst-utils.c | 115 ++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h  |   1 +
+ 3 files changed, 120 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index ac0c58e170c3..805b7f2173f3 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -680,6 +680,7 @@ static u16 skl_get_module_param_size(struct skl_sst *ctx,
- 		return param_size;
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index 6ad5cab4b0d5..b61bd03ee4f0 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -215,6 +215,10 @@ int snd_skl_get_module_info(struct skl_sst *ctx,
+ 				struct skl_module_cfg *mconfig);
+ int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
+ 				unsigned int offset, int index);
++int skl_get_pvt_id(struct skl_sst *ctx,
++				struct skl_module_cfg *mconfig);
++int skl_put_pvt_id(struct skl_sst *ctx,
++				struct skl_module_cfg *mconfig);
+ void skl_freeup_uuid_list(struct skl_sst *ctx);
  
- 	case SKL_MODULE_TYPE_BASE_OUTFMT:
-+	case SKL_MODULE_TYPE_KPB:
- 		return sizeof(struct skl_base_outfmt_cfg);
+ int skl_dsp_strip_extended_manifest(struct firmware *fw);
+diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
+index 9ce93e9a03b5..5f1c203a448e 100644
+--- a/sound/soc/intel/skylake/skl-sst-utils.c
++++ b/sound/soc/intel/skylake/skl-sst-utils.c
+@@ -94,10 +94,14 @@ struct adsp_fw_hdr {
+ 	u32 load_offset;
+ } __packed;
  
- 	default:
-@@ -733,6 +734,7 @@ static int skl_set_module_format(struct skl_sst *ctx,
- 		break;
++#define MAX_INSTANCE_BUFF 2
++
+ struct uuid_module {
+ 	uuid_le uuid;
+ 	int id;
+ 	int is_loadable;
++	int max_instance;
++	u64 pvt_id[MAX_INSTANCE_BUFF];
  
- 	case SKL_MODULE_TYPE_BASE_OUTFMT:
-+	case SKL_MODULE_TYPE_KPB:
- 		skl_set_base_outfmt_format(ctx, module_config, *param_data);
- 		break;
- 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index b6fc374f38b5..e48f872505b1 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -607,6 +607,26 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 	return 0;
+ 	struct list_head list;
+ };
+@@ -131,6 +135,116 @@ int snd_skl_get_module_info(struct skl_sst *ctx,
  }
+ EXPORT_SYMBOL_GPL(snd_skl_get_module_info);
  
-+static int skl_fill_sink_instance_id(struct skl_sst *ctx,
-+				struct skl_algo_data *alg_data)
++static inline int skl_getid_32(struct uuid_module *module, u64 *val,
++					int word1_mask, int word2_mask)
 +{
-+	struct skl_kpb_params *params = (struct skl_kpb_params *)alg_data->params;
-+	struct skl_mod_inst_map *inst;
-+	int i, pvt_id;
++	int index, max_inst, pvt_id;
++	u32 mask_val;
 +
-+	inst = params->map;
++	max_inst =  module->max_instance;
++	mask_val = (u32)(*val >> word1_mask);
 +
-+	for (i = 0; i < params->num_modules; i++) {
-+		pvt_id = skl_get_pvt_instance_id_map(ctx,
-+					inst->mod_id, inst->inst_id);
-+		if (pvt_id < 0)
-+			return -EINVAL;
-+		inst->inst_id = pvt_id;
-+		inst++;
++	if (mask_val != 0xffffffff) {
++		index = ffz(mask_val);
++		pvt_id = index + word1_mask + word2_mask;
++		if (pvt_id <= (max_inst - 1)) {
++			*val |= 1 << (index + word1_mask);
++			return pvt_id;
++		}
 +	}
-+	return 0;
++
++	return -EINVAL;
 +}
 +
++static inline int skl_pvtid_128(struct uuid_module *module)
++{
++	int j, i, word1_mask, word2_mask = 0, pvt_id;
++
++	for (j = 0; j < MAX_INSTANCE_BUFF; j++) {
++		word1_mask = 0;
++
++		for (i = 0; i < 2; i++) {
++			pvt_id = skl_getid_32(module, &module->pvt_id[j],
++						word1_mask, word2_mask);
++			if (pvt_id >= 0)
++				return pvt_id;
++
++			word1_mask += 32;
++			if ((word1_mask + word2_mask) >= module->max_instance)
++				return -EINVAL;
++		}
++
++		word2_mask += 64;
++		if (word2_mask >= module->max_instance)
++			return -EINVAL;
++	}
++
++	return -EINVAL;
++}
++
++/**
++ * skl_get_pvt_id: generate a private id for use as module id
++ *
++ * @ctx: driver context
++ * @mconfig: module configuration data
++ *
++ * This generates a 128 bit private unique id for a module TYPE so that
++ * module instance is unique
++ */
++int skl_get_pvt_id(struct skl_sst *ctx, struct skl_module_cfg *mconfig)
++{
++	struct uuid_module *module;
++	uuid_le *uuid_mod;
++	int pvt_id;
++
++	uuid_mod = (uuid_le *)mconfig->guid;
++
++	list_for_each_entry(module, &ctx->uuid_list, list) {
++		if (uuid_le_cmp(*uuid_mod, module->uuid) == 0) {
++
++			pvt_id = skl_pvtid_128(module);
++			if (pvt_id >= 0)
++				return pvt_id;
++		}
++	}
++
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(skl_get_pvt_id);
++
++/**
++ * skl_put_pvt_id: free up the private id allocated
++ *
++ * @ctx: driver context
++ * @mconfig: module configuration data
++ *
++ * This frees a 128 bit private unique id previously generated
++ */
++int skl_put_pvt_id(struct skl_sst *ctx, struct skl_module_cfg *mconfig)
++{
++	int i;
++	uuid_le *uuid_mod;
++	struct uuid_module *module;
++
++	uuid_mod = (uuid_le *)mconfig->guid;
++	list_for_each_entry(module, &ctx->uuid_list, list) {
++		if (uuid_le_cmp(*uuid_mod, module->uuid) == 0) {
++
++			if (mconfig->id.pvt_id != 0)
++				i = (mconfig->id.pvt_id) / 64;
++			else
++				i = 0;
++
++			module->pvt_id[i] &= ~(1 << (mconfig->id.pvt_id));
++			mconfig->id.pvt_id = -1;
++			return 0;
++		}
++	}
++
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(skl_put_pvt_id);
++
  /*
-  * Some modules require params to be set after the module is bound to
-  * all pins connected.
-@@ -655,6 +675,8 @@ static int skl_tplg_set_module_bind_params(struct snd_soc_dapm_widget *w,
- 			bc = (struct skl_algo_data *)sb->dobj.private;
+  * Parse the firmware binary to get the UUID, module id
+  * and loadable flags
+@@ -203,6 +317,7 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
  
- 			if (bc->set_params == SKL_PARAM_BIND) {
-+				if (mconfig->m_type == SKL_MODULE_TYPE_KPB)
-+					skl_fill_sink_instance_id(ctx, bc);
- 				ret = skl_set_module_params(ctx,
- 						(u32 *)bc->params, bc->max,
- 						bc->param_id, mconfig);
+ 		module->id = (i | (index << 12));
+ 		module->is_loadable = mod_entry->type.load_type;
++		module->max_instance = mod_entry->instance_max_count;
+ 
+ 		list_add_tail(&module->list, &skl->uuid_list);
+ 
 diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index def03912b1bd..a519360f42a6 100644
+index 37f45cc32a44..def03912b1bd 100644
 --- a/sound/soc/intel/skylake/skl-topology.h
 +++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -215,6 +215,16 @@ struct skl_module_fmt {
- 
- struct skl_module_cfg;
- 
-+struct skl_mod_inst_map {
-+	u16 mod_id;
-+	u16 inst_id;
-+};
-+
-+struct skl_kpb_params {
-+	u32 num_modules;
-+	struct skl_mod_inst_map map[0];
-+};
-+
+@@ -218,6 +218,7 @@ struct skl_module_cfg;
  struct skl_module_inst_id {
  	int module_id;
  	u32 instance_id;
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index e208724f9db3..2f6281e056d6 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -80,7 +80,8 @@ enum skl_module_type {
- 	SKL_MODULE_TYPE_UPDWMIX,
- 	SKL_MODULE_TYPE_SRCINT,
- 	SKL_MODULE_TYPE_ALGO,
--	SKL_MODULE_TYPE_BASE_OUTFMT
-+	SKL_MODULE_TYPE_BASE_OUTFMT,
-+	SKL_MODULE_TYPE_KPB,
++	int pvt_id;
  };
  
- enum skl_core_affinity {
+ enum skl_module_pin_state {
 -- 
 2.9.3
