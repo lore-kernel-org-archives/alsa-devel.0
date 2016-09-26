@@ -1,122 +1,47 @@
-From: Jeeja KP <jeeja.kp@intel.com>
-Subject: Re: [asoc:topic/intel 53/55]
- sound/soc/codecs/hdac_hdmi.c:1028:5: warning: passing argument 4 of
- 'snd_hdac_acomp_get_eld' from incompatible pointer type
-Date: Mon, 26 Sep 2016 14:09:51 +0530
-Message-ID: <20160926083843.GA21213@kpjeeja-desk>
-References: <201609251657.PliXFIzK%fengguang.wu@intel.com>
+From: =?gb2312?B?xe22q8HW?= <pengdonglin@smartisan.com>
+Subject: [PATCH] ASoC: dpcm: print dai_link name of BE other than FE.
+Date: Mon, 26 Sep 2016 08:29:31 +0000
+Message-ID: <HK2PR03MB1522B3B1CCE6C5C9F2081F01ACCD0@HK2PR03MB1522.apcprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 40ED52665B0
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 10:31:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <201609251657.PliXFIzK%fengguang.wu@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: Sandeep Tayal <sandeepx.tayal@intel.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Sep 25, 2016 at 04:13:04PM +0800, kbuild test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/intel
-> head:   2d995e5dc283adbfbf9c1eb81bf35ca7af2d22a6
-> commit: fe27f4e0545d3fc1b0518fafb4fe0460d757651d [53/55] ASoC: hdac_hdmi: use audio component framework to read ELD
-> config: x86_64-randconfig-n0-09251512 (attached as .config)
-> compiler: gcc-4.8 (Debian 4.8.4-1) 4.8.4
-> reproduce:
->         git checkout fe27f4e0545d3fc1b0518fafb4fe0460d757651d
->         # save the attached .config to linux build tree
->         make ARCH=x86_64 
-> 
-Hi Mark,
-
-This patch has dependency [1] with the i915 API changes for MST. This is
-not merged yet
- 
-Can this patch be reverted or staged until the i915 API changes are
-merged?
-
-Sorry I should have explicitly mention this in cover letter
-
-[1]: https://patchwork.freedesktop.org/series/10571/.
-
--- 
-Jeeja
-
-> All warnings (new ones prefixed by >>):
-> 
->    sound/soc/codecs/hdac_hdmi.c: In function 'hdac_hdmi_present_sense':
->    sound/soc/codecs/hdac_hdmi.c:1028:5: warning: passing argument 3 of 'snd_hdac_acomp_get_eld' makes pointer from integer without a cast [enabled by default]
->         ELD_MAX_SIZE);
->         ^
->    In file included from sound/soc/codecs/hdac_hdmi.c:30:0:
->    include/sound/hda_i915.h:14:5: note: expected 'bool *' but argument is of type 'int'
->     int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid,
->         ^
-> >> sound/soc/codecs/hdac_hdmi.c:1028:5: warning: passing argument 4 of 'snd_hdac_acomp_get_eld' from incompatible pointer type [enabled by default]
->         ELD_MAX_SIZE);
->         ^
->    In file included from sound/soc/codecs/hdac_hdmi.c:30:0:
->    include/sound/hda_i915.h:14:5: note: expected 'char *' but argument is of type 'bool *'
->     int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid,
->         ^
->    sound/soc/codecs/hdac_hdmi.c:1028:5: warning: passing argument 5 of 'snd_hdac_acomp_get_eld' makes integer from pointer without a cast [enabled by default]
->         ELD_MAX_SIZE);
->         ^
->    In file included from sound/soc/codecs/hdac_hdmi.c:30:0:
->    include/sound/hda_i915.h:14:5: note: expected 'int' but argument is of type 'char *'
->     int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid,
->         ^
->    sound/soc/codecs/hdac_hdmi.c:1028:5: error: too many arguments to function 'snd_hdac_acomp_get_eld'
->         ELD_MAX_SIZE);
->         ^
->    In file included from sound/soc/codecs/hdac_hdmi.c:30:0:
->    include/sound/hda_i915.h:14:5: note: declared here
->     int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid,
->         ^
-> 
-> vim +/snd_hdac_acomp_get_eld +1028 sound/soc/codecs/hdac_hdmi.c
-> 
->   1012	
->   1013		return 0;
->   1014	}
->   1015	
->   1016	static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin)
->   1017	{
->   1018		struct hdac_ext_device *edev = pin->edev;
->   1019		struct hdac_hdmi_priv *hdmi = edev->private_data;
->   1020		struct hdac_hdmi_pcm *pcm;
->   1021		int size;
->   1022	
->   1023		mutex_lock(&hdmi->pin_mutex);
->   1024		pin->eld.monitor_present = false;
->   1025	
->   1026		size = snd_hdac_acomp_get_eld(&edev->hdac, pin->nid, -1,
->   1027					&pin->eld.monitor_present, pin->eld.eld_buffer,
-> > 1028					ELD_MAX_SIZE);
->   1029	
->   1030		if (size > 0) {
->   1031			size = min(size, ELD_MAX_SIZE);
->   1032			if (hdac_hdmi_parse_eld(edev, pin) < 0)
->   1033				size = -EINVAL;
->   1034		}
->   1035	
->   1036		if (size > 0) {
-> 
-> ---
-> 0-DAY kernel test infrastructure                Open Source Technology Center
-> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
-
-
-
--- 
+V2hlbiBvcGVyYXRpbmcgdGhlIEJFLCB3ZSBzaG91bGQgcHJpbnQgb3V0IHRoZSBkYWlfbGluayBu
+YW1lIG9mIEJFIG90aGVyDQp0aGFuIEZFLiBUaGlzIGlzIHVzZWZ1bCB3aGVuIGFuYWx5emluZyB0
+aGUga2VybmVsIGxvZy4NCg0KU2lnbmVkLW9mZi1ieTogRG9uZ2xpbiBQZW5nIDxwZW5nZG9uZ2xp
+bkBzbWFydGlzYW4uY29tPg0KLS0tDQogc291bmQvc29jL3NvYy1wY20uYyB8IDEwICsrKysrLS0t
+LS0NCiAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQ0KDQpk
+aWZmIC0tZ2l0IGEvc291bmQvc29jL3NvYy1wY20uYyBiL3NvdW5kL3NvYy9zb2MtcGNtLmMNCmlu
+ZGV4IDYwZDcwMmYuLjg2YjNmMTcgMTAwNjQ0DQotLS0gYS9zb3VuZC9zb2Mvc29jLXBjbS5jDQor
+KysgYi9zb3VuZC9zb2Mvc29jLXBjbS5jDQpAQCAtMTc5MCw3ICsxNzkwLDcgQEAgaW50IGRwY21f
+YmVfZGFpX3NodXRkb3duKHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpmZSwgaW50IHN0cmVh
+bSkNCiAJCQljb250aW51ZTsNCiANCiAJCWRldl9kYmcoYmUtPmRldiwgIkFTb0M6IGNsb3NlIEJF
+ICVzXG4iLA0KLQkJCWRwY20tPmZlLT5kYWlfbGluay0+bmFtZSk7DQorCQkJYmUtPmRhaV9saW5r
+LT5uYW1lKTsNCiANCiAJCXNvY19wY21fY2xvc2UoYmVfc3Vic3RyZWFtKTsNCiAJCWJlX3N1YnN0
+cmVhbS0+cnVudGltZSA9IE5VTEw7DQpAQCAtMTg1Niw3ICsxODU2LDcgQEAgaW50IGRwY21fYmVf
+ZGFpX2h3X2ZyZWUoc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKmZlLCBpbnQgc3RyZWFtKQ0K
+IAkJCWNvbnRpbnVlOw0KIA0KIAkJZGV2X2RiZyhiZS0+ZGV2LCAiQVNvQzogaHdfZnJlZSBCRSAl
+c1xuIiwNCi0JCQlkcGNtLT5mZS0+ZGFpX2xpbmstPm5hbWUpOw0KKwkJCWJlLT5kYWlfbGluay0+
+bmFtZSk7DQogDQogCQlzb2NfcGNtX2h3X2ZyZWUoYmVfc3Vic3RyZWFtKTsNCiANCkBAIC0xOTM0
+LDcgKzE5MzQsNyBAQCBpbnQgZHBjbV9iZV9kYWlfaHdfcGFyYW1zKHN0cnVjdCBzbmRfc29jX3Bj
+bV9ydW50aW1lICpmZSwgaW50IHN0cmVhbSkNCiAJCQljb250aW51ZTsNCiANCiAJCWRldl9kYmco
+YmUtPmRldiwgIkFTb0M6IGh3X3BhcmFtcyBCRSAlc1xuIiwNCi0JCQlkcGNtLT5mZS0+ZGFpX2xp
+bmstPm5hbWUpOw0KKwkJCWJlLT5kYWlfbGluay0+bmFtZSk7DQogDQogCQlyZXQgPSBzb2NfcGNt
+X2h3X3BhcmFtcyhiZV9zdWJzdHJlYW0sICZkcGNtLT5od19wYXJhbXMpOw0KIAkJaWYgKHJldCA8
+IDApIHsNCkBAIC0yMDE0LDcgKzIwMTQsNyBAQCBzdGF0aWMgaW50IGRwY21fZG9fdHJpZ2dlcihz
+dHJ1Y3Qgc25kX3NvY19kcGNtICpkcGNtLA0KIAlpbnQgcmV0Ow0KIA0KIAlkZXZfZGJnKGRwY20t
+PmJlLT5kZXYsICJBU29DOiB0cmlnZ2VyIEJFICVzIGNtZCAlZFxuIiwNCi0JCQlkcGNtLT5mZS0+
+ZGFpX2xpbmstPm5hbWUsIGNtZCk7DQorCQkJZHBjbS0+YmUtPmRhaV9saW5rLT5uYW1lLCBjbWQp
+Ow0KIA0KIAlyZXQgPSBzb2NfcGNtX3RyaWdnZXIoc3Vic3RyZWFtLCBjbWQpOw0KIAlpZiAocmV0
+IDwgMCkNCkBAIC0yMjI5LDcgKzIyMjksNyBAQCBpbnQgZHBjbV9iZV9kYWlfcHJlcGFyZShzdHJ1
+Y3Qgc25kX3NvY19wY21fcnVudGltZSAqZmUsIGludCBzdHJlYW0pDQogCQkJY29udGludWU7DQog
+DQogCQlkZXZfZGJnKGJlLT5kZXYsICJBU29DOiBwcmVwYXJlIEJFICVzXG4iLA0KLQkJCWRwY20t
+PmZlLT5kYWlfbGluay0+bmFtZSk7DQorCQkJYmUtPmRhaV9saW5rLT5uYW1lKTsNCiANCiAJCXJl
+dCA9IHNvY19wY21fcHJlcGFyZShiZV9zdWJzdHJlYW0pOw0KIAkJaWYgKHJldCA8IDApIHsNCi0t
+IA0KMi45LjMNCg0K
