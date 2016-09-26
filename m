@@ -1,262 +1,44 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Disable AAD if codec is not a wake-up source" to the asoc tree
-Date: Mon, 26 Sep 2016 09:43:50 -0700
-Message-ID: <E1boZ0Q-0007AC-7a@finisterre>
-References: <3e8afb3b15da512bc7adff946ffdb1320c246498.1474896038.git.Adam.Thomson.Opensource@diasemi.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <3e8afb3b15da512bc7adff946ffdb1320c246498.1474896038.git.Adam.Thomson.Opensource@diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, Xing Zheng <zhengxing@rock-chips.com>, linux-kernel@vger.kernel.org, Hsin-Yu Chao <hychao@chromium.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>alsa-devel@alsa-project.org
+From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Subject: Re: [PATCH] ASoC: tpa6130a2: unmerge power enable
+ error path from power disable path
+Date: Mon, 26 Sep 2016 19:11:10 +0300
+Message-ID: <af03a3b5-3598-844e-1de8-10e7d8ab344e@cogentembedded.com>
+References: <20160924183110.s4lxuigycpxegamq@sirena.org.uk>
+ <1474886150-16207-1-git-send-email-nikita.yoush@cogentembedded.com>
+ <20160926160831.e5gd4t4fqhkxgzii@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf0-f49.google.com (mail-lf0-f49.google.com
+ [209.85.215.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB4062606F7
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 18:11:22 +0200 (CEST)
+Received: by mail-lf0-f49.google.com with SMTP id g62so147350154lfe.3
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 09:11:22 -0700 (PDT)
+In-Reply-To: <20160926160831.e5gd4t4fqhkxgzii@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Sebastian Reichel <sre@kernel.org>, Takashi Iwai <tiwai@suse.com>, Helen Koike <helen.koike@collabora.co.uk>, Chris Healy <cphealy@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: da7219: Disable AAD if codec is not a wake-up source
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From bb0c35fcaf8f2ad3383dd43ca8abf5203cd06cc3 Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Mon, 26 Sep 2016 14:29:21 +0100
-Subject: [PATCH] ASoC: da7219: Disable AAD if codec is not a wake-up source
-
-Currently if AAD is enabled in the device, during system suspend
-the feature remains, regardless of whether the codec is a wake-up
-source or not. This means some additional power is being used
-which is unnecessary, and can causes issues with some platforms'
-IRQ handlers where state changes during system suspend aren't
-captured.
-
-This patch updates the driver to disable AAD during suspend, if
-we're not a wake-up source, and then re-enables this on resume.
-
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/da7219.h        |  2 ++
- sound/soc/codecs/da7219-aad.c | 56 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/da7219-aad.h |  5 ++++
- sound/soc/codecs/da7219.c     | 30 +++++++++++++----------
- sound/soc/codecs/da7219.h     |  1 +
- 5 files changed, 81 insertions(+), 13 deletions(-)
-
-diff --git a/include/sound/da7219.h b/include/sound/da7219.h
-index 02876acdc840..409ef1397fd3 100644
---- a/include/sound/da7219.h
-+++ b/include/sound/da7219.h
-@@ -34,6 +34,8 @@ enum da7219_mic_amp_in_sel {
- struct da7219_aad_pdata;
- 
- struct da7219_pdata {
-+	bool wakeup_source;
-+
- 	/* Mic */
- 	enum da7219_micbias_voltage micbias_lvl;
- 	enum da7219_mic_amp_in_sel mic_amp_in_sel;
-diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
-index fc27dab3d6ba..2b8914dd5990 100644
---- a/sound/soc/codecs/da7219-aad.c
-+++ b/sound/soc/codecs/da7219-aad.c
-@@ -797,6 +797,62 @@ static void da7219_aad_handle_pdata(struct snd_soc_codec *codec)
- 
- 
- /*
-+ * Suspend/Resume
-+ */
-+
-+void da7219_aad_suspend(struct snd_soc_codec *codec)
-+{
-+	struct da7219_priv *da7219 = snd_soc_codec_get_drvdata(codec);
-+	struct da7219_aad_priv *da7219_aad = da7219->aad;
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	u8 micbias_ctrl;
-+
-+	if (da7219_aad->jack) {
-+		/* Disable jack detection during suspend */
-+		snd_soc_update_bits(codec, DA7219_ACCDET_CONFIG_1,
-+				    DA7219_ACCDET_EN_MASK, 0);
-+
-+		/*
-+		 * If we have a 4-pole jack inserted, then micbias will be
-+		 * enabled. We can disable micbias here, and keep a note to
-+		 * re-enable it on resume. If jack removal occurred during
-+		 * suspend then this will be dealt with through the IRQ handler.
-+		 */
-+		if (da7219_aad->jack_inserted) {
-+			micbias_ctrl = snd_soc_read(codec, DA7219_MICBIAS_CTRL);
-+			if (micbias_ctrl & DA7219_MICBIAS1_EN_MASK) {
-+				snd_soc_dapm_disable_pin(dapm, "Mic Bias");
-+				snd_soc_dapm_sync(dapm);
-+				da7219_aad->micbias_resume_enable = true;
-+			}
-+		}
-+	}
-+}
-+
-+void da7219_aad_resume(struct snd_soc_codec *codec)
-+{
-+	struct da7219_priv *da7219 = snd_soc_codec_get_drvdata(codec);
-+	struct da7219_aad_priv *da7219_aad = da7219->aad;
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+
-+	if (da7219_aad->jack) {
-+		/* Re-enable micbias if previously enabled for 4-pole jack */
-+		if (da7219_aad->jack_inserted &&
-+		    da7219_aad->micbias_resume_enable) {
-+			snd_soc_dapm_force_enable_pin(dapm, "Mic Bias");
-+			snd_soc_dapm_sync(dapm);
-+			da7219_aad->micbias_resume_enable = false;
-+		}
-+
-+		/* Re-enable jack detection */
-+		snd_soc_update_bits(codec, DA7219_ACCDET_CONFIG_1,
-+				    DA7219_ACCDET_EN_MASK,
-+				    DA7219_ACCDET_EN_MASK);
-+	}
-+}
-+
-+
-+/*
-  * Init/Exit
-  */
- 
-diff --git a/sound/soc/codecs/da7219-aad.h b/sound/soc/codecs/da7219-aad.h
-index a34be4828f97..117a3d7ccd31 100644
---- a/sound/soc/codecs/da7219-aad.h
-+++ b/sound/soc/codecs/da7219-aad.h
-@@ -201,12 +201,17 @@ struct da7219_aad_priv {
- 	struct work_struct hptest_work;
- 
- 	struct snd_soc_jack *jack;
-+	bool micbias_resume_enable;
- 	bool jack_inserted;
- };
- 
- /* AAD control */
- void da7219_aad_jack_det(struct snd_soc_codec *codec, struct snd_soc_jack *jack);
- 
-+/* Suspend/Resume */
-+void da7219_aad_suspend(struct snd_soc_codec *codec);
-+void da7219_aad_resume(struct snd_soc_codec *codec);
-+
- /* Init/Exit */
- int da7219_aad_init(struct snd_soc_codec *codec);
- void da7219_aad_exit(struct snd_soc_codec *codec);
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index eecb6d6c29cf..65f7e9807659 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1482,6 +1482,8 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_codec *codec)
- 	if (!pdata)
- 		return NULL;
- 
-+	pdata->wakeup_source = device_property_read_bool(dev, "wakeup-source");
-+
- 	if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) >= 0)
- 		pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
- 	else
-@@ -1524,20 +1526,21 @@ static int da7219_set_bias_level(struct snd_soc_codec *codec,
- 
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
--		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF)
- 			/* Master bias */
- 			snd_soc_update_bits(codec, DA7219_REFERENCES,
- 					    DA7219_BIAS_EN_MASK,
- 					    DA7219_BIAS_EN_MASK);
--		} else {
-+
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_PREPARE) {
- 			/* Remove MCLK */
- 			if (da7219->mclk)
- 				clk_disable_unprepare(da7219->mclk);
- 		}
- 		break;
- 	case SND_SOC_BIAS_OFF:
--		/* Only disable master bias if jack detection not active */
--		if (!da7219->aad->jack)
-+		/* Only disable master bias if we're not a wake-up source */
-+		if (!da7219->wakeup_source)
- 			snd_soc_update_bits(codec, DA7219_REFERENCES,
- 					    DA7219_BIAS_EN_MASK, 0);
- 
-@@ -1603,6 +1606,8 @@ static void da7219_handle_pdata(struct snd_soc_codec *codec)
- 	if (pdata) {
- 		u8 micbias_lvl = 0;
- 
-+		da7219->wakeup_source = pdata->wakeup_source;
-+
- 		/* Mic Bias voltages */
- 		switch (pdata->micbias_lvl) {
- 		case DA7219_MICBIAS_1_6V:
-@@ -1737,11 +1742,11 @@ static int da7219_suspend(struct snd_soc_codec *codec)
- {
- 	struct da7219_priv *da7219 = snd_soc_codec_get_drvdata(codec);
- 
--	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
-+	/* Suspend AAD if we're not a wake-up source */
-+	if (!da7219->wakeup_source)
-+		da7219_aad_suspend(codec);
- 
--	/* Put device into standby mode if jack detection disabled */
--	if (!da7219->aad->jack)
--		snd_soc_write(codec, DA7219_SYSTEM_ACTIVE, 0);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
- 
- 	return 0;
- }
-@@ -1750,13 +1755,12 @@ static int da7219_resume(struct snd_soc_codec *codec)
- {
- 	struct da7219_priv *da7219 = snd_soc_codec_get_drvdata(codec);
- 
--	/* Put device into active mode if previously pushed to standby */
--	if (!da7219->aad->jack)
--		snd_soc_write(codec, DA7219_SYSTEM_ACTIVE,
--			      DA7219_SYSTEM_ACTIVE_MASK);
--
- 	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
-+	/* Resume AAD if previously suspended */
-+	if (!da7219->wakeup_source)
-+		da7219_aad_resume(codec);
-+
- 	return 0;
- }
- #else
-diff --git a/sound/soc/codecs/da7219.h b/sound/soc/codecs/da7219.h
-index f1b3ad835270..66d3bad86739 100644
---- a/sound/soc/codecs/da7219.h
-+++ b/sound/soc/codecs/da7219.h
-@@ -803,6 +803,7 @@ struct da7219_priv {
- 	struct da7219_aad_priv *aad;
- 	struct da7219_pdata *pdata;
- 
-+	bool wakeup_source;
- 	struct regulator_bulk_data supplies[DA7219_NUM_SUPPLIES];
- 	struct regmap *regmap;
- 	struct mutex lock;
--- 
-2.9.3
+CgoyNi4wOS4yMDE2IDE5OjA4LCBNYXJrIEJyb3duINC/0LjRiNC10YI6Cj4gT24gTW9uLCBTZXAg
+MjYsIDIwMTYgYXQgMDE6MzU6NTBQTSArMDMwMCwgTmlraXRhIFl1c2hjaGVua28gd3JvdGU6Cj4g
+Cj4+IEkgZG91YnQgdGhhdCBjb3B5aW5nIDcgbGluZXMgaW50byBlcnJvciBwYXRoIGlzIGJldHRl
+ciB0aGFuIGhhdmluZyBhIHRpbnkKPj4gbG9naWMgd2l0aCByZXR1cm4gdmFsdWVzLCBidXQgc3Rp
+bGwgaGVyZSBpdCBpcy4KPiAKPiBDb25zaWRlciB3aGF0IGhhcHBlbnMgaWYgc29tZW9uZSB3YW50
+cyB0byBjaGFuZ2UgdGhlIGNvZGUuLi4gCgpJIGJlbGlldmUgdGhhdCAidW5kbyBwb3dlcm9uIiBh
+bmQgInBvd2Vyb2ZmIiBzZXF1ZW5jZXMgc3RpbGwgd2lsbCBoYXZlCnRvIHJlbWFpbiB0aGUgc2Ft
+ZS4gVGhpcyBoYXZpbmcgdHdvIGNvcGllcyBvZiBjb2RlIGlzIG1vcmUgZXJyb3ItcHJvbmUKdGhh
+biBoYXZpbmcgb25lLgoKTmlraXRhCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
