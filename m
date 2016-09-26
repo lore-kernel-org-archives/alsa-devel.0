@@ -1,22 +1,18 @@
-From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: Re: [PATCH] ASoC: tpa6130a2: unmerge power enable
- error path from power disable path
-Date: Mon, 26 Sep 2016 19:11:10 +0300
-Message-ID: <af03a3b5-3598-844e-1de8-10e7d8ab344e@cogentembedded.com>
-References: <20160924183110.s4lxuigycpxegamq@sirena.org.uk>
- <1474886150-16207-1-git-send-email-nikita.yoush@cogentembedded.com>
- <20160926160831.e5gd4t4fqhkxgzii@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: wm_adsp: Use usleep_range for short
+	delay" to the asoc tree
+Date: Mon, 26 Sep 2016 09:15:40 -0700
+Message-ID: <E1boYZA-0005PN-Aw@finisterre>
+References: <1474881325-9466-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f49.google.com (mail-lf0-f49.google.com
- [209.85.215.49])
- by alsa0.perex.cz (Postfix) with ESMTP id BB4062606F7
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 18:11:22 +0200 (CEST)
-Received: by mail-lf0-f49.google.com with SMTP id g62so147350154lfe.3
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 09:11:22 -0700 (PDT)
-In-Reply-To: <20160926160831.e5gd4t4fqhkxgzii@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B696265598
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 18:15:53 +0200 (CEST)
+In-Reply-To: <1474881325-9466-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,19 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Sebastian Reichel <sre@kernel.org>, Takashi Iwai <tiwai@suse.com>, Helen Koike <helen.koike@collabora.co.uk>, Chris Healy <cphealy@gmail.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-CgoyNi4wOS4yMDE2IDE5OjA4LCBNYXJrIEJyb3duINC/0LjRiNC10YI6Cj4gT24gTW9uLCBTZXAg
-MjYsIDIwMTYgYXQgMDE6MzU6NTBQTSArMDMwMCwgTmlraXRhIFl1c2hjaGVua28gd3JvdGU6Cj4g
-Cj4+IEkgZG91YnQgdGhhdCBjb3B5aW5nIDcgbGluZXMgaW50byBlcnJvciBwYXRoIGlzIGJldHRl
-ciB0aGFuIGhhdmluZyBhIHRpbnkKPj4gbG9naWMgd2l0aCByZXR1cm4gdmFsdWVzLCBidXQgc3Rp
-bGwgaGVyZSBpdCBpcy4KPiAKPiBDb25zaWRlciB3aGF0IGhhcHBlbnMgaWYgc29tZW9uZSB3YW50
-cyB0byBjaGFuZ2UgdGhlIGNvZGUuLi4gCgpJIGJlbGlldmUgdGhhdCAidW5kbyBwb3dlcm9uIiBh
-bmQgInBvd2Vyb2ZmIiBzZXF1ZW5jZXMgc3RpbGwgd2lsbCBoYXZlCnRvIHJlbWFpbiB0aGUgc2Ft
-ZS4gVGhpcyBoYXZpbmcgdHdvIGNvcGllcyBvZiBjb2RlIGlzIG1vcmUgZXJyb3ItcHJvbmUKdGhh
-biBoYXZpbmcgb25lLgoKTmlraXRhCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+The patch
+
+   ASoC: wm_adsp: Use usleep_range for short delay
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 1fa96f3fdad7cef5d043a502682580d2bc3d5ace Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Mon, 26 Sep 2016 10:15:22 +0100
+Subject: [PATCH] ASoC: wm_adsp: Use usleep_range for short delay
+
+Replace the 1ms msleep in wm_adsp2_ena with a usleep_range, as per
+normal guidance on delay functions. Also tighten up the delay a little
+as 1ms was quite generous.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/wm_adsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 24485ec5866f..4188c3763bc3 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2237,7 +2237,7 @@ static int wm_adsp2_ena(struct wm_adsp *dsp)
+ 		if (val & ADSP2_RAM_RDY)
+ 			break;
+ 
+-		msleep(1);
++		usleep_range(250, 500);
+ 	}
+ 
+ 	if (!(val & ADSP2_RAM_RDY)) {
+-- 
+2.9.3
