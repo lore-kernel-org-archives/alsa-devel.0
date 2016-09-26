@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 5/5] ASOC: tpa6130a2: add static qualifier
-	for file local symbols
-Date: Tue, 27 Sep 2016 07:45:11 +0900
-Message-ID: <1474929911-6005-6-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 1/5] ASOC: da7219: fix inappropriate
+	condition statement
+Date: Tue, 27 Sep 2016 07:45:07 +0900
+Message-ID: <1474929911-6005-2-git-send-email-o-takashi@sakamocchi.jp>
 References: <1474929911-6005-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E6E57266E53
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 00:45:30 +0200 (CEST)
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 89673266947
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 00:45:28 +0200 (CEST)
 In-Reply-To: <1474929911-6005-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,37 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de, broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, Helen Koike <helen.koike@collabora.co.uk>
+Cc: alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
 Sparse reports a below warning.
 
-tpa6130a2.c:193:33: warning: symbol 'tpa6130a2_component_driver' was not declared. Should it be static?
+sound/soc/codecs/da7219.c:804:57: warning: dubious: x & !y
 
-The symbol is just used inner the file. Forthermore, it's constant. Thus,
-it's better to add static and const qualifier.
+The line includes a condition statement; '(a < b) & !c'. Practically, the
+evaluated value of this statement equals to the value of '(a < b) && !c'.
+Although, it's not an usual way to use bitwise operations as logical
+operations to several conditions.
 
-This commit adds it.
+This commit fixes the bug.
 
-Fixes: cb7e62256e99 ("ASoC: tpa6130a2: Register component")
-Cc: Helen Koike <helen.koike@collabora.co.uk>
+Fixes: 6d817c0e9fd7 ("ASoC: codecs: Add da7219 codec driver")
+Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: Support Opensource <support.opensource@diasemi.com>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/codecs/tpa6130a2.c | 2 +-
+ sound/soc/codecs/da7219.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
-index f1ea052..47e63a1 100644
---- a/sound/soc/codecs/tpa6130a2.c
-+++ b/sound/soc/codecs/tpa6130a2.c
-@@ -190,7 +190,7 @@ static const struct snd_soc_dapm_route tpa6130a2_dapm_routes[] = {
- 	{ "Right PGA", NULL, "Power" },
- };
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 50ea943..b9fa8fe 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -801,7 +801,7 @@ static int da7219_dai_event(struct snd_soc_dapm_widget *w,
+ 				++i;
+ 				msleep(50);
+ 			}
+-		} while ((i < DA7219_SRM_CHECK_RETRIES) & (!srm_lock));
++		} while ((i < DA7219_SRM_CHECK_RETRIES) && (!srm_lock));
  
--struct snd_soc_component_driver tpa6130a2_component_driver = {
-+static const struct snd_soc_component_driver tpa6130a2_component_driver = {
- 	.name = "tpa6130a2",
- 	.probe = tpa6130a2_component_probe,
- 	.dapm_widgets = tpa6130a2_dapm_widgets,
+ 		if (!srm_lock)
+ 			dev_warn(codec->dev, "SRM failed to lock\n");
 -- 
 2.7.4
