@@ -1,20 +1,19 @@
-From: anish kumar <yesanishhere@gmail.com>
-Subject: Re: DAPM: codec to codec link documentation[RFC]
-Date: Sun, 25 Sep 2016 22:53:25 -0700
-Message-ID: <CABCoZhC6OhDo90+WzVzSs8xcr8VmWjkAPdsdNG4fsWQJf0v9GA@mail.gmail.com>
-References: <CABCoZhDD3QhFXCKM59Di9zUTJ1=TT42D-HN=bD05yOUORHVSsg@mail.gmail.com>
- <20160915083321.GO21682@localhost.localdomain>
+From: Jeeja KP <jeeja.kp@intel.com>
+Subject: Re: [asoc:topic/intel 53/55]
+ sound/soc/codecs/hdac_hdmi.c:1028:5: warning: passing argument 4 of
+ 'snd_hdac_acomp_get_eld' from incompatible pointer type
+Date: Mon, 26 Sep 2016 14:09:51 +0530
+Message-ID: <20160926083843.GA21213@kpjeeja-desk>
+References: <201609251657.PliXFIzK%fengguang.wu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f68.google.com (mail-vk0-f68.google.com
- [209.85.213.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 45AC7266632
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 07:53:27 +0200 (CEST)
-Received: by mail-vk0-f68.google.com with SMTP id z126so1892527vkd.0
- for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2016 22:53:26 -0700 (PDT)
-In-Reply-To: <20160915083321.GO21682@localhost.localdomain>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 40ED52665B0
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 10:31:05 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201609251657.PliXFIzK%fengguang.wu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,148 +23,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Charles <Charles.Keepax@cirrus.com>
+To: kbuild test robot <fengguang.wu@intel.com>
+Cc: Sandeep Tayal <sandeepx.tayal@intel.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 15, 2016 at 1:33 AM, Charles Keepax
-<ckeepax@opensource.wolfsonmicro.com> wrote:
-> On Wed, Sep 14, 2016 at 12:08:56PM -0700, anish kumar wrote:
->> Hello,
->>
->> I had a tough time figuring out how to get codec to codec link to work.
->> So thought of making it easier for other people who wants to use the same.
->>
->> I will appreciate any inputs for below documentation. Excuse my diagrams
->> if it doesn't render on your browser. I am still learning as how to best
->> draw txt diagrams.
->>
->> Mostly the flow of audio is always from CPU to codec so your system
->> will look as below:
->>
->>  ----------               ----------
->> |            |  dai      |            |
->>     CPU  ------->    codec
->> |            |             |            |
->>  ----------               ----------
->>
->> In case your system looks as below:
->>                             ----------
->>                            |            |
->>                             codec-2
->>                            |            |
->>                             ----------
->>                                  |
->>                               dai-2
->>                                  |
->>  ----------               ----------
->> |            |  dai-1    |            |
->>     CPU    ------->  codec-1
->> |            |              |            |
->>  ----------                ----------
->>                                  |
->>                               dai-3
->>                                  |
->>                              ----------
->>                             |            |
->>                              codec-3
->>                             |            |
->>                              ----------
->>
->> Suppose codec-2 is a bluetooth chip and codec-3 is connected to
->> a speaker and you have a below scenario:
->> codec-2 will receive the audio data and the user wants to play that
->> audio through codec-3 without involving the CPU.This
->> aforementioned case is the ideal case when codec to codec
->> connection should be used.
->>
->> Your dai_link should appear as below in your machine
->> file:
->>
->> static const struct snd_soc_pcm_stream dummy_params = {
->>         .formats = SNDRV_PCM_FMTBIT_S24_LE,
->>         .rate_min = 48000,
->>         .rate_max = 48000,
->>         .channels_min = 2,
->>         .channels_max = 2,
->> };
->>
->
-> Dummy params is probably not the best name here as this is
-> setting the actual params for the link.
+On Sun, Sep 25, 2016 at 04:13:04PM +0800, kbuild test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/intel
+> head:   2d995e5dc283adbfbf9c1eb81bf35ca7af2d22a6
+> commit: fe27f4e0545d3fc1b0518fafb4fe0460d757651d [53/55] ASoC: hdac_hdmi: use audio component framework to read ELD
+> config: x86_64-randconfig-n0-09251512 (attached as .config)
+> compiler: gcc-4.8 (Debian 4.8.4-1) 4.8.4
+> reproduce:
+>         git checkout fe27f4e0545d3fc1b0518fafb4fe0460d757651d
+>         # save the attached .config to linux build tree
+>         make ARCH=x86_64 
+> 
+Hi Mark,
 
-I think naming it codec_params would do.
->
->> {
->>     .name = "your_name",
->>     .stream_name = "your_stream_name",
->>     .cpu_dai_name = "snd-soc-dummy-dai",
->>     .codec_name = "codec-2,
->>     .codec_dai_name = "codec-2-dai_name",
->>     .dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
->>                     | SND_SOC_DAIFMT_CBM_CFM,
->>     .ignore_suspend = 1,
->>     .params = &dummy_params,
->> },
->> {
->>     .name = "your_name",
->>     .stream_name = "your_stream_name",
->>     .cpu_dai_name = "snd-soc-dummy-dai",
->>     .codec_name = "codec-3,
->>     .codec_dai_name = "codec-3-dai_name",
->>     .dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
->>                     | SND_SOC_DAIFMT_CBM_CFM,
->>     .ignore_suspend = 1,
->>     .params = &dummy_params,
->> },
->>
->
-> Probably worth having a look at DT options as well, not sure how
-> well would be supported for c2c links at the mo but probably
-> worth mentioning something about it.
+This patch has dependency [1] with the i915 API changes for MST. This is
+not merged yet
+ 
+Can this patch be reverted or staged until the i915 API changes are
+merged?
 
-I didn't get you. Do you mean using DT option to specify if
-a particular node is c2c?
->
->> Note the "params" callback which lets the dapm know that this
->> dai_link is a codec to codec connection.
->> Also, in above code cpu_dai should be replaced with your actual
->> cpu dai but in case you don't have a actual cpu dai then dummy will
->> do.
->>
->> You can browse the speyside.c for an actual example code in mainline.
->>
->> In dapm core a route is created between cpu_dai playback widget
->> and codec_dai capture widget for playback path and vice-versa is
->> true for capture path. In order for this aforementioned route to get
->> triggered, DAPM needs to find a valid endpoint which could be either
->> a sink or source widget corresponding to playback and capture path
->> respectively.
->>
->> Below is what you can use it to trigger the widgets provided you have
->> stream name ending with "Playback" and "Capture" for cpu and
->> codec dai's.
->>
->> static const struct snd_soc_dapm_widget aif_dapm_widgets[] = {
->>         SND_SOC_DAPM_SPK("dummyspk", NULL),
->>         SND_SOC_DAPM_MIC("dummymic", NULL),
->> };
->>
->> static const struct snd_soc_dapm_route audio_i2s_map[] = {
->>         {"dummyspk", NULL, "Playback"},
->>         {"Capture", NULL, "dummymic"},
->> };
->
-> For mainline it would likely be expected you would create a very
-> thin codec driver for the speaker amp rather than doing this sort
-> of thing, as that at least sets appropriate constraints for the
-> device even if it needs no control. For an example of such a
-> driver you can see:
->
-> sound/soc/codecs/wm8727.c
+Sorry I should have explicitly mention this in cover letter
 
-I will include a note about creating a thin codec driver for speaker
-amp instead of doing this.
->
-> Thanks,
-> Charles
+[1]: https://patchwork.freedesktop.org/series/10571/.
+
+-- 
+Jeeja
+
+> All warnings (new ones prefixed by >>):
+> 
+>    sound/soc/codecs/hdac_hdmi.c: In function 'hdac_hdmi_present_sense':
+>    sound/soc/codecs/hdac_hdmi.c:1028:5: warning: passing argument 3 of 'snd_hdac_acomp_get_eld' makes pointer from integer without a cast [enabled by default]
+>         ELD_MAX_SIZE);
+>         ^
+>    In file included from sound/soc/codecs/hdac_hdmi.c:30:0:
+>    include/sound/hda_i915.h:14:5: note: expected 'bool *' but argument is of type 'int'
+>     int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid,
+>         ^
+> >> sound/soc/codecs/hdac_hdmi.c:1028:5: warning: passing argument 4 of 'snd_hdac_acomp_get_eld' from incompatible pointer type [enabled by default]
+>         ELD_MAX_SIZE);
+>         ^
+>    In file included from sound/soc/codecs/hdac_hdmi.c:30:0:
+>    include/sound/hda_i915.h:14:5: note: expected 'char *' but argument is of type 'bool *'
+>     int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid,
+>         ^
+>    sound/soc/codecs/hdac_hdmi.c:1028:5: warning: passing argument 5 of 'snd_hdac_acomp_get_eld' makes integer from pointer without a cast [enabled by default]
+>         ELD_MAX_SIZE);
+>         ^
+>    In file included from sound/soc/codecs/hdac_hdmi.c:30:0:
+>    include/sound/hda_i915.h:14:5: note: expected 'int' but argument is of type 'char *'
+>     int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid,
+>         ^
+>    sound/soc/codecs/hdac_hdmi.c:1028:5: error: too many arguments to function 'snd_hdac_acomp_get_eld'
+>         ELD_MAX_SIZE);
+>         ^
+>    In file included from sound/soc/codecs/hdac_hdmi.c:30:0:
+>    include/sound/hda_i915.h:14:5: note: declared here
+>     int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid,
+>         ^
+> 
+> vim +/snd_hdac_acomp_get_eld +1028 sound/soc/codecs/hdac_hdmi.c
+> 
+>   1012	
+>   1013		return 0;
+>   1014	}
+>   1015	
+>   1016	static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin)
+>   1017	{
+>   1018		struct hdac_ext_device *edev = pin->edev;
+>   1019		struct hdac_hdmi_priv *hdmi = edev->private_data;
+>   1020		struct hdac_hdmi_pcm *pcm;
+>   1021		int size;
+>   1022	
+>   1023		mutex_lock(&hdmi->pin_mutex);
+>   1024		pin->eld.monitor_present = false;
+>   1025	
+>   1026		size = snd_hdac_acomp_get_eld(&edev->hdac, pin->nid, -1,
+>   1027					&pin->eld.monitor_present, pin->eld.eld_buffer,
+> > 1028					ELD_MAX_SIZE);
+>   1029	
+>   1030		if (size > 0) {
+>   1031			size = min(size, ELD_MAX_SIZE);
+>   1032			if (hdac_hdmi_parse_eld(edev, pin) < 0)
+>   1033				size = -EINVAL;
+>   1034		}
+>   1035	
+>   1036		if (size > 0) {
+> 
+> ---
+> 0-DAY kernel test infrastructure                Open Source Technology Center
+> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+
+
+
+-- 
