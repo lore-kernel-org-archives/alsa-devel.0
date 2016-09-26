@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 07/10] ASoC: Intel: Skylake: Add support for
-	specifying D0i3 configuration
-Date: Mon, 26 Sep 2016 11:05:34 +0530
-Message-ID: <1474868137-29712-8-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 08/10] ASoC: Intel: Skylake: Add D0i3 mode ref
+	counting
+Date: Mon, 26 Sep 2016 11:05:35 +0530
+Message-ID: <1474868137-29712-9-git-send-email-vinod.koul@intel.com>
 References: <1474868137-29712-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E7F6266632
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 07:27:25 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 93D08266C73
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 07:27:28 +0200 (CEST)
 In-Reply-To: <1474868137-29712-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,82 +25,188 @@ To: alsa-devel@alsa-project.org
 Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jayachandran B <jayachandran.b@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Not all use cases can support Doi3. Only certain use cases like hot word
-detection, deep buffering can support D0i3 based on resource requirement.
+For device opened/closed, we check the D0i3 capability for the device
+and invoke skl_tplg_d0i3_get/put, which counts the use case based on the
+mode supported.
 
-So, pass the D0i3 capability for the FE/BE copier using topology. This will
-be used to take a decision for D0i3 mode entry/exit.
+These counters are then used to decide if the device can enter D0i3 mode
+of streaming or non-streaming or no D0i3.
 
 Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/uapi/sound/snd_sst_tokens.h    | 5 ++++-
- sound/soc/intel/skylake/skl-topology.c | 4 ++++
- sound/soc/intel/skylake/skl-topology.h | 7 +++++++
- 3 files changed, 15 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/bxt-sst.c      |  5 +++++
+ sound/soc/intel/skylake/skl-pcm.c      |  9 ++++++++
+ sound/soc/intel/skylake/skl-sst-ipc.c  | 17 +++++++++++++++
+ sound/soc/intel/skylake/skl-sst-ipc.h  |  2 ++
+ sound/soc/intel/skylake/skl-topology.c | 38 ++++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h |  3 +++
+ 6 files changed, 74 insertions(+)
 
-diff --git a/include/uapi/sound/snd_sst_tokens.h b/include/uapi/sound/snd_sst_tokens.h
-index f4b8b34de519..93392bedcc58 100644
---- a/include/uapi/sound/snd_sst_tokens.h
-+++ b/include/uapi/sound/snd_sst_tokens.h
-@@ -159,6 +159,8 @@
-  *
-  * %SKL_TKN_U32_PMODE:		Specifies the power mode for pipe
-  *
-+ * %SKL_TKL_U32_D0I3_CAPS:	Specifies the D0i3 capability for module
-+ *
-  * module_id and loadable flags dont have tokens as these values will be
-  * read from the DSP FW manifest
-  */
-@@ -211,7 +213,8 @@ enum SKL_TKNS {
- 	SKL_TKN_U32_LIB_COUNT,
- 	SKL_TKN_STR_LIB_NAME,
- 	SKL_TKN_U32_PMODE,
--	SKL_TKN_MAX = SKL_TKN_U32_PMODE,
-+	SKL_TKL_U32_D0I3_CAPS,
-+	SKL_TKN_MAX = SKL_TKL_U32_D0I3_CAPS,
- };
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index fed818fe2e69..1f9f33d34000 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -610,10 +610,15 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 	if (ret)
+ 		return ret;
  
- #endif
++	/* set the D0i3 check */
++	skl->ipc.ops.check_dsp_lp_on = skl_ipc_check_D0i0;
++
+ 	skl->cores.count = 2;
+ 	skl->boot_complete = false;
+ 	init_waitqueue_head(&skl->boot_wait);
+ 	skl->is_first_boot = true;
++	INIT_DELAYED_WORK(&skl->d0i3.work, bxt_set_dsp_D0i3);
++	skl->d0i3.state = SKL_DSP_D0I3_NONE;
+ 
+ 	if (dsp)
+ 		*dsp = skl;
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 792b989733bf..082a79513ff5 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -144,6 +144,8 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_stream *stream;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct skl_dma_params *dma_params;
++	struct skl *skl = get_skl_ctx(dai->dev);
++	struct skl_module_cfg *mconfig;
+ 
+ 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+ 
+@@ -177,6 +179,9 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
+ 	skl_set_suspend_active(substream, dai, true);
+ 	snd_pcm_set_sync(substream);
+ 
++	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
++	skl_tplg_d0i3_get(skl, mconfig->d0i3_caps);
++
+ 	return 0;
+ }
+ 
+@@ -302,6 +307,7 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
+ 	struct skl_dma_params *dma_params = NULL;
+ 	struct skl *skl = ebus_to_skl(ebus);
++	struct skl_module_cfg *mconfig;
+ 
+ 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+ 
+@@ -325,6 +331,9 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
+ 		skl->skl_sst->miscbdcg_disabled = false;
+ 	}
+ 
++	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
++	skl_tplg_d0i3_put(skl, mconfig->d0i3_caps);
++
+ 	kfree(dma_params);
+ }
+ 
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index f30512bba44e..3646e7b6ff4c 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -306,6 +306,23 @@ static void skl_ipc_tx_msg(struct sst_generic_ipc *ipc, struct ipc_message *msg)
+ 		header->primary | SKL_ADSP_REG_HIPCI_BUSY);
+ }
+ 
++int skl_ipc_check_D0i0(struct sst_dsp *dsp, bool state)
++{
++	int ret;
++
++	/* check D0i3 support */
++	if (!dsp->fw_ops.set_state_D0i0)
++		return 0;
++
++	/* Attempt D0i0 or D0i3 based on state */
++	if (state)
++		ret = dsp->fw_ops.set_state_D0i0(dsp);
++	else
++		ret = dsp->fw_ops.set_state_D0i3(dsp);
++
++	return ret;
++}
++
+ static struct ipc_message *skl_ipc_reply_get_msg(struct sst_generic_ipc *ipc,
+ 				u64 ipc_header)
+ {
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index 83bf1689f62e..0568f2e8fc57 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -187,6 +187,8 @@ int skl_sst_ipc_load_library(struct sst_generic_ipc *ipc,
+ int skl_ipc_set_d0ix(struct sst_generic_ipc *ipc,
+ 		struct skl_ipc_d0ix_msg *msg);
+ 
++int skl_ipc_check_D0i0(struct sst_dsp *dsp, bool state);
++
+ void skl_ipc_int_enable(struct sst_dsp *dsp);
+ void skl_ipc_op_int_enable(struct sst_dsp *ctx);
+ void skl_ipc_op_int_disable(struct sst_dsp *ctx);
 diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 9a7a008f6689..86597d491982 100644
+index 86597d491982..bd313c907b20 100644
 --- a/sound/soc/intel/skylake/skl-topology.c
 +++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1830,6 +1830,10 @@ static int skl_tplg_get_token(struct device *dev,
- 		mconfig->converter = tkn_elem->value;
- 		break;
+@@ -36,6 +36,44 @@
+ #define SKL_IN_DIR_BIT_MASK		BIT(0)
+ #define SKL_PIN_COUNT_MASK		GENMASK(7, 4)
  
-+	case SKL_TKL_U32_D0I3_CAPS:
-+		mconfig->d0i3_caps = tkn_elem->value;
++void skl_tplg_d0i3_get(struct skl *skl, enum d0i3_capability caps)
++{
++	struct skl_d0i3_data *d0i3 =  &skl->skl_sst->d0i3;
++
++	switch (caps) {
++	case SKL_D0I3_NONE:
++		d0i3->non_d0i3++;
 +		break;
 +
- 	case SKL_TKN_U32_PIPE_ID:
- 		ret = skl_tplg_add_pipe(dev,
- 				mconfig, skl, tkn_elem);
++	case SKL_D0I3_STREAMING:
++		d0i3->streaming++;
++		break;
++
++	case SKL_D0I3_NON_STREAMING:
++		d0i3->non_streaming++;
++		break;
++	}
++}
++
++void skl_tplg_d0i3_put(struct skl *skl, enum d0i3_capability caps)
++{
++	struct skl_d0i3_data *d0i3 =  &skl->skl_sst->d0i3;
++
++	switch (caps) {
++	case SKL_D0I3_NONE:
++		d0i3->non_d0i3--;
++		break;
++
++	case SKL_D0I3_STREAMING:
++		d0i3->streaming--;
++		break;
++
++	case SKL_D0I3_NON_STREAMING:
++		d0i3->non_streaming--;
++		break;
++	}
++}
++
+ /*
+  * SKL DSP driver modelling uses only few DAPM widgets so for rest we will
+  * ignore. This helpers checks if the SKL driver handles this widget type
 diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 11fd0a4b6603..38809f6d20d6 100644
+index 38809f6d20d6..3b962d84bcb8 100644
 --- a/sound/soc/intel/skylake/skl-topology.h
 +++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -294,6 +294,12 @@ enum skl_module_state {
- 	SKL_MODULE_UNLOADED = 4,
- };
+@@ -369,6 +369,9 @@ struct skl_module_cfg *skl_tplg_fe_get_cpr_module(
+ int skl_tplg_update_pipe_params(struct device *dev,
+ 		struct skl_module_cfg *mconfig, struct skl_pipe_params *params);
  
-+enum d0i3_capability {
-+	SKL_D0I3_NONE = 0,
-+	SKL_D0I3_STREAMING = 1,
-+	SKL_D0I3_NON_STREAMING = 2,
-+};
++void skl_tplg_d0i3_get(struct skl *skl, enum d0i3_capability caps);
++void skl_tplg_d0i3_put(struct skl *skl, enum d0i3_capability caps);
 +
- struct skl_module_cfg {
- 	u8 guid[16];
- 	struct skl_module_inst_id id;
-@@ -320,6 +326,7 @@ struct skl_module_cfg {
- 	u32 converter;
- 	u32 vbus_id;
- 	u32 mem_pages;
-+	enum d0i3_capability d0i3_caps;
- 	struct skl_module_pin *m_in_pin;
- 	struct skl_module_pin *m_out_pin;
- 	enum skl_module_type m_type;
+ int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe);
+ 
+ int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
 -- 
 1.9.1
