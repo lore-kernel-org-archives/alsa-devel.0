@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Put DSP into low power state
-	between loading and running" to the asoc tree
-Date: Mon, 26 Sep 2016 09:15:39 -0700
-Message-ID: <E1boYZ9-0005OY-4p@finisterre>
-References: <1474881325-9466-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm_adsp: Allow preloader to do the
+	final shutdown of the DSP" to the asoc tree
+Date: Mon, 26 Sep 2016 09:15:36 -0700
+Message-ID: <E1boYZ6-0005Nj-Hs@finisterre>
+References: <1474881325-9466-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E0B82668C1
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 18:15:53 +0200 (CEST)
-In-Reply-To: <1474881325-9466-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 296722606F7
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 18:15:50 +0200 (CEST)
+In-Reply-To: <1474881325-9466-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Put DSP into low power state between loading and running
+   ASoC: wm_adsp: Allow preloader to do the final shutdown of the DSP
 
 has been applied to the asoc tree at
 
@@ -53,71 +53,124 @@ to this mail.
 Thanks,
 Mark
 
->From 90d19ba54b428a6bc8cc51ef6c60c6e65e6e2f35 Mon Sep 17 00:00:00 2001
+>From 57a60cc3616c8f5447d914b646a1d6df2ba9cc9d Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Mon, 26 Sep 2016 10:15:23 +0100
-Subject: [PATCH] ASoC: wm_adsp: Put DSP into low power state between loading
- and running
+Date: Mon, 26 Sep 2016 10:15:24 +0100
+Subject: [PATCH] ASoC: wm_adsp: Allow preloader to do the final shutdown of
+ the DSP
 
-Between when we load the DSP and when it actually starts running put the
-core into a lower power state where the memory is retained but nothing
-is clocked.
+The booting process for the DSP is clearly separated into two parts, the
+preloader brings up the core and downloads code, then the main widget
+starts the code actually executing. However the shutdown sequence is all
+handled with the main widget.
+
+To allow the preloading to be run independently of the main audio bring
+up it makes sense, and is generally just cleaner, for the preloader
+widget to shutdown those things it initialised. This patch moves the
+appropriate parts of the shutdown process into the preloader widget.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 36 +++++++++++++++++++++---------------
+ sound/soc/codecs/wm_adsp.h |  2 +-
+ 2 files changed, 22 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 4188c3763bc3..446f0297733f 100644
+index 446f0297733f..b943dde8dbe5 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -2259,6 +2259,11 @@ static void wm_adsp2_boot_work(struct work_struct *work)
+@@ -2323,6 +2323,7 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
+ 	struct wm_adsp *dsp = &dsps[w->shift];
++	struct wm_coeff_ctl *ctl;
  
- 	mutex_lock(&dsp->pwr_lock);
+ 	dsp->card = codec->component.card;
  
-+	ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
-+				 ADSP2_MEM_ENA, ADSP2_MEM_ENA);
-+	if (ret != 0)
-+		goto err_mutex;
+@@ -2331,6 +2332,24 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ 		wm_adsp2_set_dspclk(dsp, freq);
+ 		queue_work(system_unbound_wq, &dsp->boot_work);
+ 		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		wm_adsp_debugfs_clear(dsp);
 +
- 	ret = wm_adsp2_ena(dsp);
- 	if (ret != 0)
- 		goto err_mutex;
-@@ -2282,6 +2287,12 @@ static void wm_adsp2_boot_work(struct work_struct *work)
- 
- 	dsp->booted = true;
- 
-+	/* Turn DSP back off until we are ready to run */
-+	ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
-+				 ADSP2_SYS_ENA, 0);
-+	if (ret != 0)
-+		goto err_ena;
++		dsp->fw_id = 0;
++		dsp->fw_id_version = 0;
 +
- 	mutex_unlock(&dsp->pwr_lock);
- 
- 	return;
-@@ -2344,6 +2355,10 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		if (!dsp->booted)
- 			return -EIO;
- 
-+		ret = wm_adsp2_ena(dsp);
-+		if (ret != 0)
-+			goto err;
++		dsp->booted = false;
 +
- 		/* Sync set controls */
- 		ret = wm_coeff_sync_controls(dsp);
- 		if (ret != 0)
-@@ -2382,7 +2397,8 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		dsp->booted = false;
++		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
++				   ADSP2_MEM_ENA, 0);
++
++		list_for_each_entry(ctl, &dsp->ctl_list, list)
++			ctl->enabled = 0;
++
++		wm_adsp_free_alg_regions(dsp);
++
++		adsp_dbg(dsp, "Shutdown complete\n");
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -2345,7 +2364,6 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+ 	struct wm_adsp *dsps = snd_soc_codec_get_drvdata(codec);
+ 	struct wm_adsp *dsp = &dsps[w->shift];
+-	struct wm_coeff_ctl *ctl;
+ 	int ret;
+ 
+ 	switch (event) {
+@@ -2388,17 +2406,10 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 
+ 		mutex_lock(&dsp->pwr_lock);
+ 
+-		wm_adsp_debugfs_clear(dsp);
+-
+-		dsp->fw_id = 0;
+-		dsp->fw_id_version = 0;
+-
+ 		dsp->running = false;
+-		dsp->booted = false;
  
  		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
--				   ADSP2_CORE_ENA | ADSP2_START, 0);
-+				   ADSP2_MEM_ENA | ADSP2_CORE_ENA | ADSP2_START,
-+				   0);
+-				   ADSP2_MEM_ENA | ADSP2_CORE_ENA | ADSP2_START,
+-				   0);
++				   ADSP2_CORE_ENA | ADSP2_START, 0);
  
  		/* Make sure DMAs are quiesced */
  		regmap_write(dsp->regmap, dsp->base + ADSP2_RDMA_CONFIG_1, 0);
+@@ -2408,17 +2419,12 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
+ 				   ADSP2_SYS_ENA, 0);
+ 
+-		list_for_each_entry(ctl, &dsp->ctl_list, list)
+-			ctl->enabled = 0;
+-
+-		wm_adsp_free_alg_regions(dsp);
+-
+ 		if (wm_adsp_fw[dsp->fw].num_caps != 0)
+ 			wm_adsp_buffer_free(dsp);
+ 
+ 		mutex_unlock(&dsp->pwr_lock);
+ 
+-		adsp_dbg(dsp, "Shutdown complete\n");
++		adsp_dbg(dsp, "Execution stopped\n");
+ 		break;
+ 
+ 	default:
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 228b1f9e9a68..362dd7ce60d8 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -89,7 +89,7 @@ struct wm_adsp {
+ #define WM_ADSP2(wname, num, event_fn) \
+ {	.id = snd_soc_dapm_supply, .name = wname " Preloader", \
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = event_fn, \
+-	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD, \
++	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD, \
+ 	.subseq = 100, /* Ensure we run after SYSCLK supply widget */ }, \
+ {	.id = snd_soc_dapm_out_drv, .name = wname, \
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = wm_adsp2_event, \
 -- 
 2.9.3
