@@ -1,54 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [linux-sunxi] [PATCH v6 0/3] ASoC: sun4i-codec: Distinguish
- sun4i from sun7i
-Date: Mon, 26 Sep 2016 09:33:22 -0700
-Message-ID: <20160926163322.bwnmgwkq4v45epa3@sirena.org.uk>
-References: <20160924200503.10728-1-dannym@scratchpost.org>
- <20160925100827.5dc3240d@scratchpost.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zlcfsuhj5er5pu7t"
+Subject: Applied "ASoC: sun4i-codec: Rename sun4i_codec_widgets for consistency" to the asoc tree
+Date: Mon, 26 Sep 2016 09:43:55 -0700
+Message-ID: <E1boZ0V-0007DI-BU@finisterre>
+References: <20160915143922.4890-2-dannym@scratchpost.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160925100827.5dc3240d@scratchpost.org>
+In-Reply-To: <20160915143922.4890-2-dannym@scratchpost.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Danny Milosavljevic <dannym@scratchpost.org>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi@googlegroups.com
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>Maxime Ripard <maxime.ripard@free-electrons.com>Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi@googlegroups.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---zlcfsuhj5er5pu7t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: sun4i-codec: Rename sun4i_codec_widgets for consistency
 
-On Sun, Sep 25, 2016 at 10:08:27AM +0200, Danny Milosavljevic wrote:
+has been applied to the asoc tree at
 
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> I see that the v5 patches 2 and 3 have already been applied in the mean time  - and the functional content in v6 is identical.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Therefore, the only thing that needs to be looked at is patch 1 - where I modified the commit message only compared to v5.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Please do not submit new versions of already applied patches, please
-submit incremental updates to the existing code.  Modifying existing
-commits creates problems for other users building on top of those
-commits so it's best practice to only change pubished git commits if
-absolutely essential.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---zlcfsuhj5er5pu7t
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEcBAABCAAGBQJX6U3RAAoJECTWi3JdVIfQOs0H/AinPd3jA8T9xGlP600SO4IG
-HKreJY/S9uXEPdFUQDKojuzO7FXZTA42Z+p4HwJX+jSXvuy6o+X/wX1kEwSkS4Cy
-GHCnsRNfTyArIcgQYvlTROA3oQ4LefVizvs6zIt+deiou//AopakIr8+7wT/z2QD
-STbm4p3mros3qRDdtPBdwg8f75I37kouGCGyioeOduVtyEXHbdYArBE2YilFyY7C
-IDmLK7Yawfql96zO8qu4Yc+eZT5JDy7qwSPGv/x+O7lz/6k2NgsioVgdlRELXlnt
-mlaGCcK74nwuKnQ57yc0mj8nPV89CuwXcb2KKRLDd1OJlN9WMpjsMIMJFY5ZOGw=
-=SB32
------END PGP SIGNATURE-----
+>From c9e902f4b37a3c108eb5dc51f1340c09becd7232 Mon Sep 17 00:00:00 2001
+From: Danny Milosavljevic <dannym@scratchpost.org>
+Date: Sat, 24 Sep 2016 22:05:01 +0200
+Subject: [PATCH] ASoC: sun4i-codec: Rename sun4i_codec_widgets for consistency
 
---zlcfsuhj5er5pu7t--
+Rename "sun4i_codec_widgets" to "sun4i_codec_controls" for
+consistency with the struct field name.
+
+Signed-off-by: Danny Milosavljevic <dannym@scratchpost.org>
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sunxi/sun4i-codec.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index e51f363ff786..e047ec06d538 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -509,7 +509,7 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
+ 
+ static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
+ 
+-static const struct snd_kcontrol_new sun4i_codec_widgets[] = {
++static const struct snd_kcontrol_new sun4i_codec_controls[] = {
+ 	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
+ 		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
+ 		       sun4i_codec_pa_volume_scale),
+@@ -629,8 +629,8 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+ 
+ static struct snd_soc_codec_driver sun4i_codec_codec = {
+ 	.component_driver = {
+-		.controls		= sun4i_codec_widgets,
+-		.num_controls		= ARRAY_SIZE(sun4i_codec_widgets),
++		.controls		= sun4i_codec_controls,
++		.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
+ 		.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
+ 		.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
+ 		.dapm_routes		= sun4i_codec_codec_dapm_routes,
+-- 
+2.9.3
