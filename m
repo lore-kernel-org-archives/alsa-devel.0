@@ -1,65 +1,46 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 10/10] ASoC: Intel: Skylake: remove pci device
-	enabling calls on suspend
-Date: Mon, 26 Sep 2016 11:05:37 +0530
-Message-ID: <1474868137-29712-11-git-send-email-vinod.koul@intel.com>
-References: <1474868137-29712-1-git-send-email-vinod.koul@intel.com>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v6 1/3] ASoC: sun4i-codec: Rename
+ sun4i_codec_widgets for consistency
+Date: Mon, 26 Sep 2016 10:35:54 +0200
+Message-ID: <20160926083554.GB4972@lukather>
+References: <20160924200503.10728-1-dannym@scratchpost.org>
+ <20160924200503.10728-2-dannym@scratchpost.org>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D366266C6B
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 07:27:32 +0200 (CEST)
-In-Reply-To: <1474868137-29712-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jayachandran B <jayachandran.b@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="98e8jtXdkpgskNou"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBB253UO7QKGQELS3PQCQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Disposition: inline
+In-Reply-To: <20160924200503.10728-2-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jayachandran B <jayachandran.b@intel.com>
 
-We were invoking pci_disable_device() while going to suspend-to-idle and
-pci_enable_device() while coming back to active state.
+--98e8jtXdkpgskNou
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-Turns out that we do not need these calls as we only need system to be
-wake capable when in suspend-to-idle state. The wake capability is
-already done by enable_irq_wake() calls, so remove these unwanted calls
-in driver.
+On Sat, Sep 24, 2016 at 10:05:01PM +0200, Danny Milosavljevic wrote:
+> Rename "sun4i_codec_widgets" to "sun4i_codec_controls" for
+> consistency with the struct field name.
+> 
+> Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 
-Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/skylake/skl.c | 2 --
- 1 file changed, 2 deletions(-)
+Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index ff08c8ec93a1..61a484888cfa 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -299,7 +299,6 @@ static int skl_suspend(struct device *dev)
- 
- 		enable_irq_wake(bus->irq);
- 		pci_save_state(pci);
--		pci_disable_device(pci);
- 	} else {
- 		ret = _skl_suspend(ebus);
- 		if (ret < 0)
-@@ -342,7 +341,6 @@ static int skl_resume(struct device *dev)
- 	 */
- 	if (skl->supend_active) {
- 		pci_restore_state(pci);
--		ret = pci_enable_device(pci);
- 		snd_hdac_ext_bus_link_power_up_all(ebus);
- 		disable_irq_wake(bus->irq);
- 		/*
+Thanks!
+Maxime
+
 -- 
-1.9.1
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+--98e8jtXdkpgskNou--
