@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dpcm: print dai_link name of BE other
-	than FE." to the asoc tree
-Date: Mon, 26 Sep 2016 09:43:48 -0700
-Message-ID: <E1boZ0O-00078A-19@finisterre>
+Subject: Applied "ASoC: ak4104: Limit the supported sample
+	rates" to the asoc tree
+Date: Mon, 26 Sep 2016 09:43:54 -0700
+Message-ID: <E1boZ0U-0007CB-8T@finisterre>
+References: <1474896859-31069-1-git-send-email-vishalthanki@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B994266D6B
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 18:44:04 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F9A7265598
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 18:44:43 +0200 (CEST)
+In-Reply-To: <1474896859-31069-1-git-send-email-vishalthanki@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Donglin Peng <pengdonglin@smartisan.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Vishal Thanki <vishalthanki@gmail.com>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, afd@ti.com, jic23@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dpcm: print dai_link name of BE other than FE.
+   ASoC: ak4104: Limit the supported sample rates
 
 has been applied to the asoc tree at
 
@@ -51,68 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From 94d215cc6fc5f0a5d202ed2b12fa0b14392cc2e4 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?=E5=BD=AD=E4=B8=9C=E6=9E=97?= <pengdonglin@smartisan.com>
-Date: Mon, 26 Sep 2016 08:29:31 +0000
-Subject: [PATCH] ASoC: dpcm: print dai_link name of BE other than FE.
+>From c14c59f2e9ca2dc3ddb3af67b71a11feaaacbbce Mon Sep 17 00:00:00 2001
+From: Vishal Thanki <vishalthanki@gmail.com>
+Date: Mon, 26 Sep 2016 15:34:19 +0200
+Subject: [PATCH] ASoC: ak4104: Limit the supported sample rates
 
-When operating the BE, we should print out the dai_link name of BE other
-than FE. This is useful when analyzing the kernel log.
+Currently the driver exposes range of sample rates between 8KHz to
+192KHz as a part of dai_driver. This does not hold true as the limited
+number sample rates are allowed in hw_params DAI callback. This patch
+limits the sample rates exposed via dai_driver.
 
-Signed-off-by: Donglin Peng <pengdonglin@smartisan.com>
+Signed-off-by: Vishal Thanki <vishalthanki@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/ak4104.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index c1bfe9d8406d..d56a16a0f6fa 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1793,7 +1793,7 @@ int dpcm_be_dai_shutdown(struct snd_soc_pcm_runtime *fe, int stream)
- 			continue;
- 
- 		dev_dbg(be->dev, "ASoC: close BE %s\n",
--			dpcm->fe->dai_link->name);
-+			be->dai_link->name);
- 
- 		soc_pcm_close(be_substream);
- 		be_substream->runtime = NULL;
-@@ -1859,7 +1859,7 @@ int dpcm_be_dai_hw_free(struct snd_soc_pcm_runtime *fe, int stream)
- 			continue;
- 
- 		dev_dbg(be->dev, "ASoC: hw_free BE %s\n",
--			dpcm->fe->dai_link->name);
-+			be->dai_link->name);
- 
- 		soc_pcm_hw_free(be_substream);
- 
-@@ -1937,7 +1937,7 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
- 			continue;
- 
- 		dev_dbg(be->dev, "ASoC: hw_params BE %s\n",
--			dpcm->fe->dai_link->name);
-+			be->dai_link->name);
- 
- 		ret = soc_pcm_hw_params(be_substream, &dpcm->hw_params);
- 		if (ret < 0) {
-@@ -2017,7 +2017,7 @@ static int dpcm_do_trigger(struct snd_soc_dpcm *dpcm,
- 	int ret;
- 
- 	dev_dbg(dpcm->be->dev, "ASoC: trigger BE %s cmd %d\n",
--			dpcm->fe->dai_link->name, cmd);
-+			dpcm->be->dai_link->name, cmd);
- 
- 	ret = soc_pcm_trigger(substream, cmd);
- 	if (ret < 0)
-@@ -2232,7 +2232,7 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
- 			continue;
- 
- 		dev_dbg(be->dev, "ASoC: prepare BE %s\n",
--			dpcm->fe->dai_link->name);
-+			be->dai_link->name);
- 
- 		ret = soc_pcm_prepare(be_substream);
- 		if (ret < 0) {
+diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
+index 595d02d7602c..bc5c8705bd8f 100644
+--- a/sound/soc/codecs/ak4104.c
++++ b/sound/soc/codecs/ak4104.c
+@@ -163,7 +163,10 @@ static struct snd_soc_dai_driver ak4104_dai = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+-		.rates = SNDRV_PCM_RATE_8000_192000,
++		.rates = SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
++			 SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
++			 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
++			 SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE  |
+ 			   SNDRV_PCM_FMTBIT_S24_3LE |
+ 			   SNDRV_PCM_FMTBIT_S24_LE
 -- 
 2.9.3
