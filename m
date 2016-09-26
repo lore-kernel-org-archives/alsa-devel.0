@@ -1,7 +1,7 @@
-From: Mark Brown <broonie@kernel.org>
+From: Marek Vasut <marex@denx.de>
 Subject: Re: [PATCH 4/5] ASoC: fsl_ssi: use flat regmap cache
-Date: Mon, 26 Sep 2016 12:13:38 -0700
-Message-ID: <20160926191338.cxqqqq5eybxqxqss@sirena.org.uk>
+Date: Mon, 26 Sep 2016 21:25:51 +0200
+Message-ID: <4f47f4e7-2d13-93b0-52bd-c9aadc492cf8@denx.de>
 References: <20160919193029.8119-1-marex@denx.de>
  <20160919193029.8119-4-marex@denx.de>
  <57E2B53C.6080708@maciej.szmigiero.name>
@@ -12,14 +12,15 @@ References: <20160919193029.8119-1-marex@denx.de>
  <20160922104530.GL7994@sirena.org.uk>
  <0ae54910-0712-006c-0afa-a59b63a904be@maciej.szmigiero.name>
  <5506d5e4-4480-3a7d-9455-b314070bda7c@denx.de>
+ <20160926191338.cxqqqq5eybxqxqss@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0581716719778743328=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 17CBD265598
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 21:13:56 +0200 (CEST)
-In-Reply-To: <5506d5e4-4480-3a7d-9455-b314070bda7c@denx.de>
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3478F265598
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 21:25:54 +0200 (CEST)
+In-Reply-To: <20160926191338.cxqqqq5eybxqxqss@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,61 +30,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marex@denx.de>
+To: Mark Brown <broonie@kernel.org>
 Cc: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 09/26/2016 09:13 PM, Mark Brown wrote:
+> On Thu, Sep 22, 2016 at 05:27:42PM +0200, Marek Vasut wrote:
+>> On 09/22/2016 04:37 PM, Maciej S. Szmigiero wrote:
+> 
+>>> There are three possible solutions:
+>>> 1) Go back to RB tree cache (revert patch 4) and debug the lockdep warning,
+>>> 2) Keep the flat cache introduced by patch 4 but debug the oops at
+>>> cache init time (while keeping defaults read from hardware),
+>>> 3) Keep both patches and risk the same issues that were previously
+>>> caused by hardcoded register defaults in driver.
+>>> However, Marek says the device works fine for him with the patches.
+> 
+>> I believe switching to flat cache is harmless and it should be a better
+>> mode for devices with small mmio address spaces. After some discussion
+>> on IRC, I believe [1] should resolve the RBTREE crash (?).
+> 
+> So, can we get a clear decision on this after testing?  The discussion
+> here and the discussion on IRC are a bit disjointed and I'd like to make
+> sure we end up with something that definitely works.
+> 
+I think 1,2,3,4 are certainly harmless. I think even 5 is harmless (at
+least according to my testing on MX6Q and MX6SX, which is not the
+greatest sample), but can be safely reverted if there are concerns.
 
---===============0581716719778743328==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4ths4ov45hazh6ev"
-Content-Disposition: inline
+I also believe the following two patches should be backported for stable
+4.7 (they were part of tag 'regmap-fix-v4.8-rc5' of
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap):
 
+commit b2c7f5d9c939a37c1ce7f86a642de70e3033ee9e
+Author: Maarten ter Huurne <maarten@treewalker.org>
+Date:   Fri Jul 29 23:42:12 2016 +0200
 
---4ths4ov45hazh6ev
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+    regmap: cache: Fix num_reg_defaults computation from reg_defaults_raw
 
-On Thu, Sep 22, 2016 at 05:27:42PM +0200, Marek Vasut wrote:
-> On 09/22/2016 04:37 PM, Maciej S. Szmigiero wrote:
+commit 1bc8da4e143c0fd8807e061a66d91d5972601ab1
+Author: Lars-Peter Clausen <lars@metafoo.de>
+Date:   Thu Aug 4 17:22:16 2016 +0200
 
-> > There are three possible solutions:
-> > 1) Go back to RB tree cache (revert patch 4) and debug the lockdep warning,
-> > 2) Keep the flat cache introduced by patch 4 but debug the oops at
-> > cache init time (while keeping defaults read from hardware),
-> > 3) Keep both patches and risk the same issues that were previously
-> > caused by hardcoded register defaults in driver.
-> > However, Marek says the device works fine for him with the patches.
+    regmap: rbtree: Avoid overlapping nodes
 
-> I believe switching to flat cache is harmless and it should be a better
-> mode for devices with small mmio address spaces. After some discussion
-> on IRC, I believe [1] should resolve the RBTREE crash (?).
-
-So, can we get a clear decision on this after testing?  The discussion
-here and the discussion on IRC are a bit disjointed and I'd like to make
-sure we end up with something that definitely works.
-
---4ths4ov45hazh6ev
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAABCAAGBQJX6XNeAAoJECTWi3JdVIfQpsMH/iq/5JeraXT3XLTSl/ZVQazm
-CYZ6GIBKshC0Gfs4d/ZmtHkkdo8ehJeO7OD1N/1FOCWmLFLaPptFk632WhvL7r1P
-yKeoQgJ4gLbqvtx8zGEAEiOFRWtqZKGGM3zB0vpobEgkqiLbyjD8ToBOVpaK/uVj
-v8f9FpXFPFL+OLBuO5np9H5PhfOWQcyklsifvy5sFdYVhvx+zT32hu5ePn/cmaMa
-mgnNqoTdxiKlZQb9qVj67p4QqAtCM30rvF05hpovLKpiCrcrQhr1NcRO3cfi7i0N
-dflRSnylLmT4Y+QMBGq6zDvb3vF1mQKdbqZJf/N67SPxlU5byDbHFdl3C1CzkPg=
-=uSKu
------END PGP SIGNATURE-----
-
---4ths4ov45hazh6ev--
-
---===============0581716719778743328==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0581716719778743328==--
+-- 
+Best regards,
+Marek Vasut
