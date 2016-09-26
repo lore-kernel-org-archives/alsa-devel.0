@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rk3399_gru_sound: fix recording pop at first attempt" to the asoc tree
-Date: Mon, 26 Sep 2016 09:15:42 -0700
-Message-ID: <E1boYZC-0005RL-8m@finisterre>
-References: <1474552206-31742-1-git-send-email-zhengxing@rock-chips.com>
+Subject: Applied "ASoC: tpa6130a2: unmerge power enable error path from power disable path" to the asoc tree
+Date: Mon, 26 Sep 2016 09:15:29 -0700
+Message-ID: <E1boYYz-0005Lq-B6@finisterre>
+References: <1474886150-16207-1-git-send-email-nikita.yoush@cogentembedded.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1474552206-31742-1-git-send-email-zhengxing@rock-chips.com>
+In-Reply-To: <1474886150-16207-1-git-send-email-nikita.yoush@cogentembedded.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: Xing Zheng <zhengxing@rock-chips.com>, Mark Brown <broonie@kernel.org>, linux-rockchip@lists.infradead.org, woojoo.lee@samsung.com, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.deXing Zheng <zhengxing@rock-chips.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, dianders@google.comMark Brown <broonie@kernel.org>, smbarber@google.com, hychao@google.com, linux-arm-kernel@lists.infradead.org, cychiang@google.comalsa-devel@alsa-project.org
+To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Helen Koike <helen.koike@collabora.co.uk>, Lars-Peter Clausen <lars@metafoo.de>, Sebastian Reichel <sre@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Chris Healy <cphealy@gmail.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rk3399_gru_sound: fix recording pop at first attempt
+   ASoC: tpa6130a2: unmerge power enable error path from power disable path
 
 has been applied to the asoc tree at
 
@@ -36,83 +37,63 @@ to this mail.
 Thanks,
 Mark
 
->From 3a6f9dce6116cc54e31dc10d176ceecb1a7e4e7f Mon Sep 17 00:00:00 2001
-From: Wonjoon Lee <woojoo.lee@samsung.com>
-Date: Thu, 22 Sep 2016 21:50:06 +0800
-Subject: [PATCH] ASoC: rk3399_gru_sound: fix recording pop at first attempt
+>From 020eab35390b976e6b93b61805002d3e2cd195de Mon Sep 17 00:00:00 2001
+From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Date: Mon, 26 Sep 2016 13:35:50 +0300
+Subject: [PATCH] ASoC: tpa6130a2: unmerge power enable error path from power
+ disable path
 
-Pop happens when mclk applied but dmic's own boot-time
-Specify dmic delay times in dt to make sure
-clocks are ready earlier than dmic working
+Code undo operations in power enable errror path explicitly, instead of
+reusing power disable path and playing with return values there.
 
-Signed-off-by: Wonjoon Lee <woojoo.lee@samsung.com>
-Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
+Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/rockchip,rk3399-gru-sound.txt           |  7 +++++++
- sound/soc/rockchip/rk3399_gru_sound.c                      | 14 ++++++++++++++
- 2 files changed, 21 insertions(+)
+ sound/soc/codecs/tpa6130a2.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-index f19b6c830a34..eac91db07178 100644
---- a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-@@ -6,10 +6,17 @@ Required properties:
-   connected to the codecs
- - rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 3b6faed91d7e..3712db0881d0 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -71,7 +71,14 @@ static int tpa6130a2_power(struct tpa6130a2_data *data, bool enable)
+ 		if (ret != 0) {
+ 			dev_err(data->dev,
+ 				"Failed to sync registers: %d\n", ret);
+-			goto regcache_sync_failed;
++			regcache_cache_only(data->regmap, true);
++			if (data->power_gpio >= 0)
++				gpio_set_value(data->power_gpio, 0);
++			ret2 = regulator_disable(data->supply);
++			if (ret2 != 0)
++				dev_err(data->dev,
++					"Failed to disable supply: %d\n", ret2);
++			return ret;
+ 		}
+ 	} else {
+ 		/* Powered off device does not retain registers. While device
+@@ -79,18 +86,17 @@ static int tpa6130a2_power(struct tpa6130a2_data *data, bool enable)
+ 		 * happen in cache only.
+ 		 */
+ 		regcache_mark_dirty(data->regmap);
+-regcache_sync_failed:
+ 		regcache_cache_only(data->regmap, true);
  
-+Optional properties:
-+- dmic-wakeup-delay-ms : specify delay time (ms) for DMIC ready.
-+  If this option is specified, which means it's required dmic need
-+  delay for DMIC to ready so that rt5514 can avoid recording before
-+  DMIC send valid data
-+
- Example:
+ 		/* Power off */
+ 		if (data->power_gpio >= 0)
+ 			gpio_set_value(data->power_gpio, 0);
  
- sound {
- 	compatible = "rockchip,rk3399-gru-sound";
- 	rockchip,cpu = <&i2s0>;
- 	rockchip,codec = <&max98357a &rt5514 &da7219>;
-+	dmic-wakeup-delay-ms = <20>;
- };
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index ee0648927afc..9ed735a6cf49 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -38,6 +38,8 @@
- 
- #define SOUND_FS	256
- 
-+unsigned int rt5514_dmic_delay;
-+
- static struct snd_soc_jack rockchip_sound_jack;
- 
- static const struct snd_soc_dapm_widget rockchip_dapm_widgets[] = {
-@@ -123,6 +125,9 @@ static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
+-		ret2 = regulator_disable(data->supply);
+-		if (ret2 != 0) {
++		ret = regulator_disable(data->supply);
++		if (ret != 0) {
+ 			dev_err(data->dev,
+-				"Failed to disable supply: %d\n", ret2);
+-			return ret ? ret : ret2;
++				"Failed to disable supply: %d\n", ret);
++			return ret;
+ 		}
  	}
  
-+	/* Wait for DMIC stable */
-+	msleep(rt5514_dmic_delay);
-+
- 	return 0;
- }
- 
-@@ -343,6 +348,15 @@ static int rockchip_sound_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
-+	/* Set DMIC delay */
-+	ret = device_property_read_u32(&pdev->dev, "dmic-delay",
-+					&rt5514_dmic_delay);
-+	if (ret) {
-+		rt5514_dmic_delay = 0;
-+		dev_dbg(&pdev->dev,
-+			"no optional property 'dmic-delay' found, default: no delay\n");
-+	}
-+
- 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
- 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
- 	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
 -- 
 2.9.3
