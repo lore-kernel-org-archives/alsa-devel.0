@@ -1,121 +1,38 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: control: cage TLV_DB_RANGE_HEAD in
- kernel land because it was obsoleted
-Date: Mon, 26 Sep 2016 08:14:29 +0900
-Message-ID: <fdbbf3a5-7ce5-15cd-3ad8-fde155c89c55@sakamocchi.jp>
-References: <1474712903-32427-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5hwphzenu4.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 33AFC266629
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 01:14:33 +0200 (CEST)
-In-Reply-To: <s5hwphzenu4.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, clemens@ladisch.de
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - Adding one more ALC255 pin definition for headset problem
+Date: Mon, 26 Sep 2016 10:59:38 +0800
+Message-ID: <1474858778-22986-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-(CCed to Mark Brown)
+We have two new Dell laptop models, they have the same ALC255 pin
+definition, but not in the pin quirk table yet, as a result, the
+headset microphone can't work. After adding the definition in the
+table, the headset microphone works well.
 
-On Sep 26 2016 05:17, Takashi Iwai wrote:
-> On Sat, 24 Sep 2016 12:28:23 +0200,
-> Takashi Sakamoto wrote:
->>
->> In commit bf1d1c9b6179 ("ALSA: tlv: add DECLARE_TLV_DB_RANGE()"), the new
->> macro was added so that "dB range information can be specified without
->> having to count the items manually for TLV_DB_RANGE_HEAD()". In short,
->> TLV_DB_RANGE_HEAD macro was obsoleted.
->>
->> In commit 46e860f76804 ("ALSA: rename TLV-related macros so that they're
->> friendly to user applications"), TLV-related macros are exposed for
->> applications in user land to get content of data structured by
->> Type/Length/Value shape. The commit managed to expose TLV-related macros
->> as many as possible, while obsoleted TLV_DB_RANGE_HEAD() was included to
->> the list of exposed macros.
->>
->> This situation brings some confusions to application developers because
->> they might think all exposed macros have their own purpose and useful for
->> applications.
->>
->> For the reason, this commit moves TLV_DB_RANGE_HEAD macro from UAPI header
->> to a header for kernel land, again. The above commit is done within the
->> same development period for kernel 4.9, thus not published yet. This
->> commit might certainly brings no confusions to user land.
->>
->> Reference: commit bf1d1c9b6179 ("ALSA: tlv: add DECLARE_TLV_DB_RANGE()")
->> Reference: commit 46e860f76804 ("ALSA: rename TLV-related macros so that they're friendly to user applications")
->> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> 
-> Fair enough, applied now.  Thanks.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-And I think it better to replace usage of this macro with
-SNDRV_CTL_TLVD_DECLARE_DB_RANGE. In your linux-next tree, addressed
-macro is used by three drivers:
-
-$ git grep TLV_DB_RANGE_HEAD
-include/sound/tlv.h:#define TLV_DB_RANGE_HEAD
-SNDRV_CTL_TLVD_DB_RANGE_HEAD
-sound/soc/codecs/max9867.c:     TLV_DB_RANGE_HEAD(2),
-sound/soc/codecs/rt5616.c:      TLV_DB_RANGE_HEAD(7),
-sound/soc/codecs/wm8960.c:      TLV_DB_RANGE_HEAD(2),
-
-How do you think about doing it in time of kernel 4.9 merge window?
-
-
-Regards
-
-Takashi Sakamoto
-
->> ---
->>  include/sound/tlv.h      | 9 ++++++++-
->>  include/uapi/sound/tlv.h | 3 ---
->>  2 files changed, 8 insertions(+), 4 deletions(-)
->>
->> diff --git a/include/sound/tlv.h b/include/sound/tlv.h
->> index 6e2e773..3677ebb 100644
->> --- a/include/sound/tlv.h
->> +++ b/include/sound/tlv.h
->> @@ -46,8 +46,15 @@
->>  
->>  #define TLV_DB_RANGE_ITEM		SNDRV_CTL_TLVD_DB_RANGE_ITEM
->>  #define DECLARE_TLV_DB_RANGE		SNDRV_CTL_TLVD_DECLARE_DB_RANGE
->> -#define TLV_DB_RANGE_HEAD		SNDRV_CTL_TLVD_DB_RANGE_HEAD
->>  
->>  #define TLV_DB_GAIN_MUTE		SNDRV_CTL_TLVD_DB_GAIN_MUTE
->>  
->> +/*
->> + * The below assumes that each item TLV is 4 words like DB_SCALE or LINEAR.
->> + * This is an old fasion and obsoleted by commit bf1d1c9b6179("ALSA: tlv: add
->> + * DECLARE_TLV_DB_RANGE()").
->> + */
->> +#define TLV_DB_RANGE_HEAD(num) \
->> +	SNDRV_CTL_TLVT_DB_RANGE, 6 * (num) * sizeof(unsigned int)
->> +
->>  #endif /* __SOUND_TLV_H */
->> diff --git a/include/uapi/sound/tlv.h b/include/uapi/sound/tlv.h
->> index f3c198f..b4df440 100644
->> --- a/include/uapi/sound/tlv.h
->> +++ b/include/uapi/sound/tlv.h
->> @@ -94,9 +94,6 @@
->>  	unsigned int name[] = { \
->>  		SNDRV_CTL_TLVD_DB_RANGE_ITEM(__VA_ARGS__) \
->>  	}
->> -/* The below assumes that each item TLV is 4 words like DB_SCALE or LINEAR */
->> -#define SNDRV_CTL_TLVD_DB_RANGE_HEAD(num) \
->> -	SNDRV_CTL_TLVT_DB_RANGE, 6 * (num) * sizeof(unsigned int)
->>  
->>  #define SNDRV_CTL_TLVD_DB_GAIN_MUTE	-9999999
->>  
->> -- 
->> 2.7.4
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 1fe8750..b58e8c7 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5855,6 +5855,10 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x14, 0x90170120},
+ 		{0x21, 0x02211030}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		{0x14, 0x90170110},
++		{0x1b, 0x02011020},
++		{0x21, 0x0221101f}),
++	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		{0x14, 0x90170130},
+ 		{0x1b, 0x01014020},
+ 		{0x21, 0x0221103f}),
+-- 
+1.9.1
