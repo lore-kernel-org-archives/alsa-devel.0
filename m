@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 3/5] ASOC: sst-bxt-da7219_max98357a: fix
-	obsoleted initializers for array
-Date: Tue, 27 Sep 2016 07:45:09 +0900
-Message-ID: <1474929911-6005-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 5/5] ASOC: tpa6130a2: add static qualifier
+	for file local symbols
+Date: Tue, 27 Sep 2016 07:45:11 +0900
+Message-ID: <1474929911-6005-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1474929911-6005-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 8B3DA266E2C
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 00:45:28 +0200 (CEST)
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E6E57266E53
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 00:45:30 +0200 (CEST)
 In-Reply-To: <1474929911-6005-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,83 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de, broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Helen Koike <helen.koike@collabora.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Sparse reports below warnings.
+Sparse reports a below warning.
 
-bxt_da7219_max98357a.c:250:9: warning: obsolete array initializer, use C99 syntax
-bxt_da7219_max98357a.c:275:9: warning: obsolete array initializer, use C99 syntax
-bxt_da7219_max98357a.c:290:9: warning: obsolete array initializer, use C99 syntax
-bxt_da7219_max98357a.c:304:9: warning: obsolete array initializer, use C99 syntax
-bxt_da7219_max98357a.c:317:9: warning: obsolete array initializer, use C99 syntax
+tpa6130a2.c:193:33: warning: symbol 'tpa6130a2_component_driver' was not declared. Should it be static?
 
-There's no need to use obsoleted way. This commit fixes it.
+The symbol is just used inner the file. Forthermore, it's constant. Thus,
+it's better to add static and const qualifier.
 
-Fixes: 723bad3fef8b ("ASoC: Intel: Add Broxton-P Dialog Maxim machine driver")
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+This commit adds it.
+
+Fixes: cb7e62256e99 ("ASoC: tpa6130a2: Register component")
+Cc: Helen Koike <helen.koike@collabora.co.uk>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/tpa6130a2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 3774b11..49b65d4 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -255,7 +255,7 @@ static struct snd_soc_ops broxton_da7219_ops = {
- /* broxton digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link broxton_dais[] = {
- 	/* Front End DAI links */
--	[BXT_DPCM_AUDIO_PB]
-+	[BXT_DPCM_AUDIO_PB] =
- 	{
- 		.name = "Bxt Audio Port",
- 		.stream_name = "Audio",
-@@ -271,7 +271,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.dpcm_playback = 1,
- 		.ops = &broxton_da7219_fe_ops,
- 	},
--	[BXT_DPCM_AUDIO_CP]
-+	[BXT_DPCM_AUDIO_CP] =
- 	{
- 		.name = "Bxt Audio Capture Port",
- 		.stream_name = "Audio Record",
-@@ -286,7 +286,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.dpcm_capture = 1,
- 		.ops = &broxton_da7219_fe_ops,
- 	},
--	[BXT_DPCM_AUDIO_REF_CP]
-+	[BXT_DPCM_AUDIO_REF_CP] =
- 	{
- 		.name = "Bxt Audio Reference cap",
- 		.stream_name = "Refcap",
-@@ -300,7 +300,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 	},
--	[BXT_DPCM_AUDIO_HDMI1_PB]
-+	[BXT_DPCM_AUDIO_HDMI1_PB] =
- 	{
- 		.name = "Bxt HDMI Port1",
- 		.stream_name = "Hdmi1",
-@@ -313,7 +313,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 	},
--	[BXT_DPCM_AUDIO_HDMI2_PB]
-+	[BXT_DPCM_AUDIO_HDMI2_PB] =
- 	{
- 		.name = "Bxt HDMI Port2",
- 		.stream_name = "Hdmi2",
-@@ -326,7 +326,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 	},
--	[BXT_DPCM_AUDIO_HDMI3_PB]
-+	[BXT_DPCM_AUDIO_HDMI3_PB] =
- 	{
- 		.name = "Bxt HDMI Port3",
- 		.stream_name = "Hdmi3",
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index f1ea052..47e63a1 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -190,7 +190,7 @@ static const struct snd_soc_dapm_route tpa6130a2_dapm_routes[] = {
+ 	{ "Right PGA", NULL, "Power" },
+ };
+ 
+-struct snd_soc_component_driver tpa6130a2_component_driver = {
++static const struct snd_soc_component_driver tpa6130a2_component_driver = {
+ 	.name = "tpa6130a2",
+ 	.probe = tpa6130a2_component_probe,
+ 	.dapm_widgets = tpa6130a2_dapm_widgets,
 -- 
 2.7.4
