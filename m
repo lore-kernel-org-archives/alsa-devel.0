@@ -1,46 +1,118 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tpa6130a2: unmerge power enable error path from
- power disable path
-Date: Mon, 26 Sep 2016 09:08:31 -0700
-Message-ID: <20160926160831.e5gd4t4fqhkxgzii@sirena.org.uk>
-References: <20160924183110.s4lxuigycpxegamq@sirena.org.uk>
- <1474886150-16207-1-git-send-email-nikita.yoush@cogentembedded.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rpv3qvk5vjbklofs"
+Subject: Applied "ASoC: rk3399_gru_sound: fix recording pop at first attempt" to the asoc tree
+Date: Mon, 26 Sep 2016 09:15:42 -0700
+Message-ID: <E1boYZC-0005RL-8m@finisterre>
+References: <1474552206-31742-1-git-send-email-zhengxing@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1474886150-16207-1-git-send-email-nikita.yoush@cogentembedded.com>
+In-Reply-To: <1474552206-31742-1-git-send-email-zhengxing@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Helen Koike <helen.koike@collabora.co.uk>, Lars-Peter Clausen <lars@metafoo.de>, Sebastian Reichel <sre@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Chris Healy <cphealy@gmail.com>
+Cc: Xing Zheng <zhengxing@rock-chips.com>, Mark Brown <broonie@kernel.org>, linux-rockchip@lists.infradead.org, woojoo.lee@samsung.com, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.deXing Zheng <zhengxing@rock-chips.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, dianders@google.comMark Brown <broonie@kernel.org>, smbarber@google.com, hychao@google.com, linux-arm-kernel@lists.infradead.org, cychiang@google.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---rpv3qvk5vjbklofs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: rk3399_gru_sound: fix recording pop at first attempt
 
-On Mon, Sep 26, 2016 at 01:35:50PM +0300, Nikita Yushchenko wrote:
+has been applied to the asoc tree at
 
-> I doubt that copying 7 lines into error path is better than having a tiny
-> logic with return values, but still here it is.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Consider what happens if someone wants to change the code...=20
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---rpv3qvk5vjbklofs
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEcBAABCAAGBQJX6Uf+AAoJECTWi3JdVIfQx9wH/jl9XJm7PegFAsSqnMmmB8tk
-gWdAGF+59A85eI3n/SXmThAGGK9V2XXeAwPnm1gIuK4JB6wbVz6S1e/XqYvmk60p
-+nTAU77zxyvZQjdL2DdT4essBu4SifpwobU2YvTD4wLTgiKwN4u13RV4k10AsAmj
-lpj1POWyWWpYEOF/WxLa7VpjfG7r8FMrm7gHpm2YlJkt6uACHJhafFbhUy9B5TJH
-pcRu6ErPv12ry8bK0uwsk3v8Nc8v4GESv39ujA/BGb2J01oY0ALPwJbNV3R1zXtM
-giCPkq29vJg/9n/bOplyzgMaKPyDm33JbjH6lBp0cbNAOLRZSkEJONbXrFQRCSg=
-=zwMh
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---rpv3qvk5vjbklofs--
+Thanks,
+Mark
+
+>From 3a6f9dce6116cc54e31dc10d176ceecb1a7e4e7f Mon Sep 17 00:00:00 2001
+From: Wonjoon Lee <woojoo.lee@samsung.com>
+Date: Thu, 22 Sep 2016 21:50:06 +0800
+Subject: [PATCH] ASoC: rk3399_gru_sound: fix recording pop at first attempt
+
+Pop happens when mclk applied but dmic's own boot-time
+Specify dmic delay times in dt to make sure
+clocks are ready earlier than dmic working
+
+Signed-off-by: Wonjoon Lee <woojoo.lee@samsung.com>
+Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../bindings/sound/rockchip,rk3399-gru-sound.txt           |  7 +++++++
+ sound/soc/rockchip/rk3399_gru_sound.c                      | 14 ++++++++++++++
+ 2 files changed, 21 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
+index f19b6c830a34..eac91db07178 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
+@@ -6,10 +6,17 @@ Required properties:
+   connected to the codecs
+ - rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
+ 
++Optional properties:
++- dmic-wakeup-delay-ms : specify delay time (ms) for DMIC ready.
++  If this option is specified, which means it's required dmic need
++  delay for DMIC to ready so that rt5514 can avoid recording before
++  DMIC send valid data
++
+ Example:
+ 
+ sound {
+ 	compatible = "rockchip,rk3399-gru-sound";
+ 	rockchip,cpu = <&i2s0>;
+ 	rockchip,codec = <&max98357a &rt5514 &da7219>;
++	dmic-wakeup-delay-ms = <20>;
+ };
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index ee0648927afc..9ed735a6cf49 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -38,6 +38,8 @@
+ 
+ #define SOUND_FS	256
+ 
++unsigned int rt5514_dmic_delay;
++
+ static struct snd_soc_jack rockchip_sound_jack;
+ 
+ static const struct snd_soc_dapm_widget rockchip_dapm_widgets[] = {
+@@ -123,6 +125,9 @@ static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
+ 
++	/* Wait for DMIC stable */
++	msleep(rt5514_dmic_delay);
++
+ 	return 0;
+ }
+ 
+@@ -343,6 +348,15 @@ static int rockchip_sound_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
++	/* Set DMIC delay */
++	ret = device_property_read_u32(&pdev->dev, "dmic-delay",
++					&rt5514_dmic_delay);
++	if (ret) {
++		rt5514_dmic_delay = 0;
++		dev_dbg(&pdev->dev,
++			"no optional property 'dmic-delay' found, default: no delay\n");
++	}
++
+ 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+ 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+ 	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+-- 
+2.9.3
