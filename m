@@ -1,101 +1,54 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [RFC PATCH 0/3] support DP MST audio
-Date: Mon, 26 Sep 2016 16:07:51 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D194FA2EDC7@SHSMSX103.ccr.corp.intel.com>
-References: <1474878938-10260-1-git-send-email-libin.yang@linux.intel.com>
- <s5hlgyebssi.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [linux-sunxi] [PATCH v6 0/3] ASoC: sun4i-codec: Distinguish
+ sun4i from sun7i
+Date: Mon, 26 Sep 2016 09:33:22 -0700
+Message-ID: <20160926163322.bwnmgwkq4v45epa3@sirena.org.uk>
+References: <20160924200503.10728-1-dannym@scratchpost.org>
+ <20160925100827.5dc3240d@scratchpost.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (unknown [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3CF8426673A
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 18:08:17 +0200 (CEST)
-In-Reply-To: <s5hlgyebssi.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zlcfsuhj5er5pu7t"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20160925100827.5dc3240d@scratchpost.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Danny Milosavljevic <dannym@scratchpost.org>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi@googlegroups.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, September 26, 2016 11:11 PM
-> To: libin.yang@linux.intel.com
-> Cc: alsa-devel@alsa-project.org; Lin, Mengdong <mengdong.lin@intel.com>;
-> Yang, Libin <libin.yang@intel.com>
-> Subject: Re: [alsa-devel] [RFC PATCH 0/3] support DP MST audio
-> 
-> On Mon, 26 Sep 2016 10:35:35 +0200,
-> libin.yang@linux.intel.com wrote:
-> >
-> > From: Libin Yang <libin.yang@linux.intel.com>
-> >
-> > This patchset starts to support DP MST audio.
-> >
-> > This patchset is based on drm-intel-nightly on
-> > git://anongit.freedesktop.org/drm-intel
-> >
-> > Libin Yang (3):
-> >   ALSA: hda - codec add DP MST support for connection list
-> >   ALSA: hda - add DP mst verb support
-> >   ALSA: hda - add DP mst audio support
-> 
-> I read the patchset again, and I'm still not convinced enough by this change.
+--zlcfsuhj5er5pu7t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yes and I'm sorry that this patchset is delayed for a long time. 
-Our gfx driver has been redesigned and some APIs have been changed.
-The change is done in Pandiyan, Dhinakaran's patches:
-Patchset: Prep. for DP audio MST support
-  drm/i915: Standardize port type for DVO encoders
-  drm/i915: Store port enum in intel_encoder
-  drm/i915: Switch to using port stored in intel_encoder
-  drm/i915: Move audio_connector to intel_encoder
-  drm/i915: start adding dp mst audio
-Patch: drm/i915/dp: DP audio API changes for MST
+On Sun, Sep 25, 2016 at 10:08:27AM +0200, Danny Milosavljevic wrote:
 
-> 
-> The connection list is coded in the current way under the assumption that
-> connections are more or less static.  The connections are cached in snd_array,
-> which is only for growing up, and not suitable for the entries that might be
-> frequently removed.  The removal is done only at overriding, and it happens
-> only once at boot.
-> 
-> OTOH, with DP-MST case, the connection list is basically dynamic.  It may
-> increase or decrease depending on the connected monitors...  Is my
-> understanding correct?  Or is the DP-MST connection list is static, too?  Then I
-> do wonder how it covers the whole connections with arbitrary device indices.
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.
 
-For the connection list, the driver will setup all the connection list at the beginning
-for each device entry, even it is non-MST. We statically allocate the connection
-list and will never remove them.
+> I see that the v5 patches 2 and 3 have already been applied in the mean time  - and the functional content in v6 is identical.
 
-> 
-> So, the connection cache management is one thing.  Another thing is that the
-> patchset doesn't consider about the pin ELD notification.
-> Basically we switched to ELD notification instead of the pin unsol event for
-> Intel chips.  How does it fit?
+> Therefore, the only thing that needs to be looked at is patch 1 - where I modified the commit message only compared to v5.
 
-For the ELD notification, in the patch 0003, if there is monitor hotplug,
-gfx driver will notify audio driver with acomp. Gfx driver will tell which
-port (pin), pipe (device entry) occurs the hotplug event. And then audio
-driver will call snd_hdac_acomp_get_eld() to get the eld information.
+Please do not submit new versions of already applied patches, please
+submit incremental updates to the existing code.  Modifying existing
+commits creates problems for other users building on top of those
+commits so it's best practice to only change pubished git commits if
+absolutely essential.
 
-Regards,
-Libin
+--zlcfsuhj5er5pu7t
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
-> 
-> thanks,
-> 
-> Takashi
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJX6U3RAAoJECTWi3JdVIfQOs0H/AinPd3jA8T9xGlP600SO4IG
+HKreJY/S9uXEPdFUQDKojuzO7FXZTA42Z+p4HwJX+jSXvuy6o+X/wX1kEwSkS4Cy
+GHCnsRNfTyArIcgQYvlTROA3oQ4LefVizvs6zIt+deiou//AopakIr8+7wT/z2QD
+STbm4p3mros3qRDdtPBdwg8f75I37kouGCGyioeOduVtyEXHbdYArBE2YilFyY7C
+IDmLK7Yawfql96zO8qu4Yc+eZT5JDy7qwSPGv/x+O7lz/6k2NgsioVgdlRELXlnt
+mlaGCcK74nwuKnQ57yc0mj8nPV89CuwXcb2KKRLDd1OJlN9WMpjsMIMJFY5ZOGw=
+=SB32
+-----END PGP SIGNATURE-----
+
+--zlcfsuhj5er5pu7t--
