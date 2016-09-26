@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 04/10] ASoC: Intel: Skylake: Add support for
-	programming D0i3C
-Date: Mon, 26 Sep 2016 11:05:31 +0530
-Message-ID: <1474868137-29712-5-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 06/10] ASoC: Intel: Skylake: Add support for
+	LPMode
+Date: Mon, 26 Sep 2016 11:05:33 +0530
+Message-ID: <1474868137-29712-7-git-send-email-vinod.koul@intel.com>
 References: <1474868137-29712-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E597266C6D
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 07:27:21 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 68472266C71
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 07:27:23 +0200 (CEST)
 In-Reply-To: <1474868137-29712-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,136 +22,144 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, Jayachandran B <jayachandran.b@intel.com>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jayachandran B <jayachandran.b@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+For D0i3, we need to tell DSP to run the pipelines in LP mode. This
+information is kept in topology and passed to driver as an attribute for
+pipe.
 
-To set the controller in D0i3 mode, the driver needs to set D0i3C
-register after DSP is quiesced. Since the D0iX entry/exit is done by IPC,
-add this as callback so that it can be invoked from IPC module.
+So add a new tuple for lpmode and program the pipe based on value set.
 
-Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
 Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c     |  1 +
- sound/soc/intel/skylake/skl-sst-ipc.h |  3 +++
- sound/soc/intel/skylake/skl.c         | 47 +++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl.h         |  5 ++++
- 4 files changed, 56 insertions(+)
+ include/uapi/sound/snd_sst_tokens.h    | 5 ++++-
+ sound/soc/intel/skylake/skl-messages.c | 3 ++-
+ sound/soc/intel/skylake/skl-sst-ipc.c  | 9 ++++++++-
+ sound/soc/intel/skylake/skl-sst-ipc.h  | 2 +-
+ sound/soc/intel/skylake/skl-topology.c | 5 +++++
+ sound/soc/intel/skylake/skl-topology.h | 1 +
+ 6 files changed, 21 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index c7cdcba04c5d..792b989733bf 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1197,6 +1197,7 @@ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
- 			return ret;
- 		}
- 		skl_populate_modules(skl);
-+		skl->skl_sst->update_d0i3c = skl_update_d0i3c;
- 	}
- 	pm_runtime_mark_last_busy(platform->dev);
- 	pm_runtime_put_autosuspend(platform->dev);
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index 1ae265d8ee08..ef2182d21934 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -83,6 +83,9 @@ struct skl_sst {
- 
- 	/* tplg manifest */
- 	struct skl_dfw_manifest manifest;
-+
-+	/* Callback to update D0i3C register */
-+	void (*update_d0i3c)(struct device *dev, bool enable);
+diff --git a/include/uapi/sound/snd_sst_tokens.h b/include/uapi/sound/snd_sst_tokens.h
+index 1ee2e943d66a..f4b8b34de519 100644
+--- a/include/uapi/sound/snd_sst_tokens.h
++++ b/include/uapi/sound/snd_sst_tokens.h
+@@ -157,6 +157,8 @@
+  *
+  * %SKL_TKN_STR_LIB_NAME:       Specifies the library name
+  *
++ * %SKL_TKN_U32_PMODE:		Specifies the power mode for pipe
++ *
+  * module_id and loadable flags dont have tokens as these values will be
+  * read from the DSP FW manifest
+  */
+@@ -208,7 +210,8 @@ enum SKL_TKNS {
+ 	SKL_TKN_U32_PROC_DOMAIN,
+ 	SKL_TKN_U32_LIB_COUNT,
+ 	SKL_TKN_STR_LIB_NAME,
+-	SKL_TKN_MAX = SKL_TKN_STR_LIB_NAME,
++	SKL_TKN_U32_PMODE,
++	SKL_TKN_MAX = SKL_TKN_U32_PMODE,
  };
  
- struct skl_ipc_init_instance_msg {
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 2989c164dafe..b9209af89915 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -26,6 +26,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/platform_device.h>
- #include <linux/firmware.h>
-+#include <linux/delay.h>
- #include <sound/pcm.h>
- #include "../common/sst-acpi.h"
- #include <sound/hda_register.h>
-@@ -109,6 +110,52 @@ static int skl_init_chip(struct hdac_bus *bus, bool full_reset)
- 	return ret;
+ #endif
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 805b7f2173f3..87fc647fa04c 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -1042,7 +1042,8 @@ int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe)
+ 	dev_dbg(ctx->dev, "%s: pipe_id = %d\n", __func__, pipe->ppl_id);
+ 
+ 	ret = skl_ipc_create_pipeline(&ctx->ipc, pipe->memory_pages,
+-				pipe->pipe_priority, pipe->ppl_id);
++				pipe->pipe_priority, pipe->ppl_id,
++				pipe->lp_mode);
+ 	if (ret < 0) {
+ 		dev_err(ctx->dev, "Failed to create pipeline\n");
+ 		return ret;
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 95120771a4f6..f30512bba44e 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -81,6 +81,11 @@
+ #define IPC_INSTANCE_ID(x)		(((x) & IPC_INSTANCE_ID_MASK) \
+ 					<< IPC_INSTANCE_ID_SHIFT)
+ 
++#define IPC_PPL_LP_MODE_SHIFT           0
++#define IPC_PPL_LP_MODE_MASK            0x1
++#define IPC_PPL_LP_MODE(x)              (((x) & IPC_PPL_LP_MODE_MASK) \
++					<< IPC_PPL_LP_MODE_SHIFT)
++
+ /* Set pipeline state message */
+ #define IPC_PPL_STATE_SHIFT		0
+ #define IPC_PPL_STATE_MASK		0x1F
+@@ -559,7 +564,7 @@ void skl_ipc_free(struct sst_generic_ipc *ipc)
  }
  
-+void skl_update_d0i3c(struct device *dev, bool enable)
-+{
-+	struct pci_dev *pci = to_pci_dev(dev);
-+	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	u8 reg;
-+	int timeout = 50;
-+
-+	reg = snd_hdac_chip_readb(bus, VS_D0I3C);
-+	/* Do not write to D0I3C until command in progress bit is cleared */
-+	while ((reg & AZX_REG_VS_D0I3C_CIP) && --timeout) {
-+		udelay(10);
-+		reg = snd_hdac_chip_readb(bus, VS_D0I3C);
-+	}
-+
-+	/* Highly unlikely. But if it happens, flag error explicitly */
-+	if (!timeout) {
-+		dev_err(bus->dev, "Before D0I3C update: D0I3C CIP timeout\n");
-+		return;
-+	}
-+
-+	if (enable)
-+		reg = reg | AZX_REG_VS_D0I3C_I3;
-+	else
-+		reg = reg & (~AZX_REG_VS_D0I3C_I3);
-+
-+	snd_hdac_chip_writeb(bus, VS_D0I3C, reg);
-+
-+	timeout = 50;
-+	/* Wait for cmd in progress to be cleared before exiting the function */
-+	reg = snd_hdac_chip_readb(bus, VS_D0I3C);
-+	while ((reg & AZX_REG_VS_D0I3C_CIP) && --timeout) {
-+		udelay(10);
-+		reg = snd_hdac_chip_readb(bus, VS_D0I3C);
-+	}
-+
-+	/* Highly unlikely. But if it happens, flag error explicitly */
-+	if (!timeout) {
-+		dev_err(bus->dev, "After D0I3C update: D0I3C CIP timeout\n");
-+		return;
-+	}
-+
-+	dev_dbg(bus->dev, "D0I3C register = 0x%x\n",
-+			snd_hdac_chip_readb(bus, VS_D0I3C));
-+}
-+
- /* called from IRQ */
- static void skl_stream_update(struct hdac_bus *bus, struct hdac_stream *hstr)
+ int skl_ipc_create_pipeline(struct sst_generic_ipc *ipc,
+-		u16 ppl_mem_size, u8 ppl_type, u8 instance_id)
++		u16 ppl_mem_size, u8 ppl_type, u8 instance_id, u8 lp_mode)
  {
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 5d4fbb094c48..88ba54ba5f72 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -52,6 +52,9 @@
- #define AZX_PGCTL_LSRMD_MASK		(1 << 4)
- #define AZX_PCIREG_CGCTL		0x48
- #define AZX_CGCTL_MISCBDCGE_MASK	(1 << 6)
-+/* D0I3C Register fields */
-+#define AZX_REG_VS_D0I3C_CIP      0x1 /* Command in progress */
-+#define AZX_REG_VS_D0I3C_I3       0x4 /* D0i3 enable */
+ 	struct skl_ipc_header header = {0};
+ 	u64 *ipc_header = (u64 *)(&header);
+@@ -572,6 +577,8 @@ int skl_ipc_create_pipeline(struct sst_generic_ipc *ipc,
+ 	header.primary |= IPC_PPL_TYPE(ppl_type);
+ 	header.primary |= IPC_PPL_MEM_SIZE(ppl_mem_size);
  
- struct skl_dsp_resource {
- 	u32 max_mcps;
-@@ -125,4 +128,6 @@ int skl_suspend_dsp(struct skl *skl);
- int skl_resume_dsp(struct skl *skl);
- void skl_cleanup_resources(struct skl *skl);
- const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id);
-+void skl_update_d0i3c(struct device *dev, bool enable);
++	header.extension = IPC_PPL_LP_MODE(lp_mode);
 +
- #endif /* __SOUND_SOC_SKL_H */
+ 	dev_dbg(ipc->dev, "In %s header=%d\n", __func__, header.primary);
+ 	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, NULL, 0, NULL, 0);
+ 	if (ret < 0) {
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index a45c42046b64..83bf1689f62e 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -148,7 +148,7 @@ struct skl_ipc_d0ix_msg {
+ irqreturn_t skl_dsp_irq_thread_handler(int irq, void *context);
+ 
+ int skl_ipc_create_pipeline(struct sst_generic_ipc *sst_ipc,
+-		u16 ppl_mem_size, u8 ppl_type, u8 instance_id);
++		u16 ppl_mem_size, u8 ppl_type, u8 instance_id, u8 lp_mode);
+ 
+ int skl_ipc_delete_pipeline(struct sst_generic_ipc *sst_ipc, u8 instance_id);
+ 
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index b5b1934d8550..9a7a008f6689 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1519,6 +1519,10 @@ static int skl_tplg_fill_pipe_tkn(struct device *dev,
+ 		pipe->memory_pages = tkn_val;
+ 		break;
+ 
++	case SKL_TKN_U32_PMODE:
++		pipe->lp_mode = tkn_val;
++		break;
++
+ 	default:
+ 		dev_err(dev, "Token not handled %d\n", tkn);
+ 		return -EINVAL;
+@@ -1841,6 +1845,7 @@ static int skl_tplg_get_token(struct device *dev,
+ 	case SKL_TKN_U32_PIPE_CONN_TYPE:
+ 	case SKL_TKN_U32_PIPE_PRIORITY:
+ 	case SKL_TKN_U32_PIPE_MEM_PGS:
++	case SKL_TKN_U32_PMODE:
+ 		if (is_pipe_exists) {
+ 			ret = skl_tplg_fill_pipe_tkn(dev, mconfig->pipe,
+ 					tkn_elem->token, tkn_elem->value);
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index a519360f42a6..11fd0a4b6603 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -279,6 +279,7 @@ struct skl_pipe {
+ 	u8 pipe_priority;
+ 	u16 conn_type;
+ 	u32 memory_pages;
++	u8 lp_mode;
+ 	struct skl_pipe_params *p_params;
+ 	enum skl_pipe_state state;
+ 	struct list_head w_list;
 -- 
 1.9.1
