@@ -1,15 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 00/10] ASoC: Intel: Skylake: Add support for
-	D0i3
-Date: Mon, 26 Sep 2016 11:05:27 +0530
-Message-ID: <1474868137-29712-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 01/10] ASoC: Intel: Add check_dsp_lp_on
+	callback on IPC
+Date: Mon, 26 Sep 2016 11:05:28 +0530
+Message-ID: <1474868137-29712-2-git-send-email-vinod.koul@intel.com>
+References: <1474868137-29712-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E654266632
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 07:27:17 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id AEF92266726
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2016 07:27:19 +0200 (CEST)
+In-Reply-To: <1474868137-29712-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jayachandran B <jayachandran.b@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This series adds support for low power D0i3 mode which lets audio controller
-perform stream and non streaming usage scenarios while being in lower power
-D0i3 state.
+Some controllers support power modes which can't communicate using IPC.
 
-In this series, first we modify the sst_ipc_tx_message() API to check if
-the DSP is in lower powered D0i3 mode or not and if so bring it to
-active before sending any messages. This is followed by a new API
-sst_ipc_tx_message_nopm() to send message without checking the new PM
-method.
+So add a callback to check and wake DSP before sending IPC and then put
+to sleep if it is in these power modes.
 
-Then we start adding D0i3 refcounting which decides the entry to D0i3
-mode based on capability. This is derived from topology data.
-The new IPC to enter D0i3 is also required.
+Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/common/sst-ipc.c | 19 ++++++++++++++++++-
+ sound/soc/intel/common/sst-ipc.h |  1 +
+ 2 files changed, 19 insertions(+), 1 deletion(-)
 
-Finally we remove unwarranted pci device enabling calls on suspend.
-
-Jayachandran B (3):
-  ASoC: Intel: Skylake: Add D0iX callbacks
-  ASoC: Intel: Skylake: Flush pending D0i3 request on suspend
-  ASoC: Intel: Skylake: remove pci device enabling calls on suspend
-
-Pardha Saradhi K (2):
-  ASoC: Intel: Skylake: Add D0iX IPCs
-  ASoC: Intel: Skylake: Add support for programming D0i3C
-
-Vinod Koul (5):
-  ASoC: Intel: Add check_dsp_lp_on callback on IPC
-  ASoC: Intel: Add sst_ipc_tx_message_nopm
-  ASoC: Intel: Skylake: Add support for LPMode
-  ASoC: Intel: Skylake: Add support for specifying D0i3 configuration
-  ASoC: Intel: Skylake: Add D0i3 mode ref counting
-
- include/uapi/sound/snd_sst_tokens.h    |   8 +-
- sound/soc/intel/common/sst-ipc.c       |  27 +++++-
- sound/soc/intel/common/sst-ipc.h       |   4 +
- sound/soc/intel/skylake/bxt-sst.c      | 145 +++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-messages.c |  30 ++++++-
- sound/soc/intel/skylake/skl-pcm.c      |  10 +++
- sound/soc/intel/skylake/skl-sst-dsp.h  |  12 +++
- sound/soc/intel/skylake/skl-sst-ipc.c  |  69 +++++++++++++++-
- sound/soc/intel/skylake/skl-sst-ipc.h  |  36 +++++++-
- sound/soc/intel/skylake/skl-topology.c |  47 +++++++++++
- sound/soc/intel/skylake/skl-topology.h |  11 +++
- sound/soc/intel/skylake/skl.c          |  59 +++++++++++++-
- sound/soc/intel/skylake/skl.h          |   6 ++
- 13 files changed, 456 insertions(+), 8 deletions(-)
-
+diff --git a/sound/soc/intel/common/sst-ipc.c b/sound/soc/intel/common/sst-ipc.c
+index a12c7bb08d3b..6ac9a8484635 100644
+--- a/sound/soc/intel/common/sst-ipc.c
++++ b/sound/soc/intel/common/sst-ipc.c
+@@ -190,8 +190,25 @@ static void ipc_tx_msgs(struct kthread_work *work)
+ int sst_ipc_tx_message_wait(struct sst_generic_ipc *ipc, u64 header,
+ 	void *tx_data, size_t tx_bytes, void *rx_data, size_t rx_bytes)
+ {
+-	return ipc_tx_message(ipc, header, tx_data, tx_bytes,
++	int ret;
++
++	/*
++	 * DSP maybe in lower power active state, so
++	 * check if the DSP supports DSP lp On method
++	 * if so invoke that before sending IPC
++	 */
++	if (ipc->ops.check_dsp_lp_on)
++		if (ipc->ops.check_dsp_lp_on(ipc->dsp, true))
++			return -EIO;
++
++	ret = ipc_tx_message(ipc, header, tx_data, tx_bytes,
+ 		rx_data, rx_bytes, 1);
++
++	if (ipc->ops.check_dsp_lp_on)
++		if (ipc->ops.check_dsp_lp_on(ipc->dsp, false))
++			return -EIO;
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(sst_ipc_tx_message_wait);
+ 
+diff --git a/sound/soc/intel/common/sst-ipc.h b/sound/soc/intel/common/sst-ipc.h
+index ceb7e468a3fa..46871a5dff1d 100644
+--- a/sound/soc/intel/common/sst-ipc.h
++++ b/sound/soc/intel/common/sst-ipc.h
+@@ -52,6 +52,7 @@ struct sst_plat_ipc_ops {
+ 	void (*tx_data_copy)(struct ipc_message *, char *, size_t);
+ 	u64  (*reply_msg_match)(u64 header, u64 *mask);
+ 	bool (*is_dsp_busy)(struct sst_dsp *dsp);
++	int (*check_dsp_lp_on)(struct sst_dsp *dsp, bool state);
+ };
+ 
+ /* SST generic IPC data */
 -- 
 1.9.1
