@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sst-bxt-rt298: fix obsoleted
+Subject: Applied "ASoC: sst-bxt-da7219_max98357a: fix obsoleted
 	initializers for array" to the asoc tree
-Date: Tue, 27 Sep 2016 09:18:06 -0700
-Message-ID: <E1bov54-0003dv-Bt@finisterre>
-References: <1469540517-32466-3-git-send-email-o-takashi@sakamocchi.jp>
+Date: Tue, 27 Sep 2016 09:18:08 -0700
+Message-ID: <E1bov56-0003ee-7r@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CC83F266707
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 18:18:20 +0200 (CEST)
-In-Reply-To: <1469540517-32466-3-git-send-email-o-takashi@sakamocchi.jp>
+ by alsa0.perex.cz (Postfix) with ESMTP id E44F3266860
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 18:18:21 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Vinod Koul <vinod.koul@intel.com>, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Ramesh Babu <ramesh.babu@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sst-bxt-rt298: fix obsoleted initializers for array
+   ASoC: sst-bxt-da7219_max98357a: fix obsoleted initializers for array
 
 has been applied to the asoc tree at
 
@@ -53,72 +52,62 @@ to this mail.
 Thanks,
 Mark
 
->From 5919a3898136aae4d2cb4b18b44f70f7b185aa47 Mon Sep 17 00:00:00 2001
+>From 43d443dc257c00ef3a3f940b6abfb7537c4fcbe8 Mon Sep 17 00:00:00 2001
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 Sep 2016 07:45:08 +0900
-Subject: [PATCH] ASoC: sst-bxt-rt298: fix obsoleted initializers for array
+Date: Tue, 27 Sep 2016 07:45:09 +0900
+Subject: [PATCH] ASoC: sst-bxt-da7219_max98357a: fix obsoleted initializers
+ for array
 
 Sparse reports below warnings.
 
-bxt_rt298.c:275:9: warning: obsolete array initializer, use C99 syntax
-bxt_rt298.c:290:9: warning: obsolete array initializer, use C99 syntax
-bxt_rt298.c:304:9: warning: obsolete array initializer, use C99 syntax
-bxt_rt298.c:317:9: warning: obsolete array initializer, use C99 syntax
-bxt_rt298.c:331:9: warning: obsolete array initializer, use C99 syntax
-bxt_rt298.c:344:9: warning: obsolete array initializer, use C99 syntax
-bxt_rt298.c:357:9: warning: obsolete array initializer, use C99 syntax
+bxt_da7219_max98357a.c:250:9: warning: obsolete array initializer, use C99 syntax
+bxt_da7219_max98357a.c:275:9: warning: obsolete array initializer, use C99 syntax
+bxt_da7219_max98357a.c:290:9: warning: obsolete array initializer, use C99 syntax
+bxt_da7219_max98357a.c:304:9: warning: obsolete array initializer, use C99 syntax
+bxt_da7219_max98357a.c:317:9: warning: obsolete array initializer, use C99 syntax
 
 There's no need to use obsoleted way. This commit fixes it.
 
-Fixes: 76016322ec56 (ASoC: Intel: Add Broxton-P machine driver)
+Fixes: 723bad3fef8b (ASoC: Intel: Add Broxton-P Dialog Maxim machine driver)
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bxt_rt298.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index 253d7bfbf511..d610bdca1608 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -271,7 +271,7 @@ static const struct snd_soc_ops broxton_rt286_fe_ops = {
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index bb4533c305c7..6532b8f0ab2f 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -302,7 +302,7 @@ static struct snd_soc_ops broxton_refcap_ops = {
  /* broxton digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link broxton_rt298_dais[] = {
+ static struct snd_soc_dai_link broxton_dais[] = {
  	/* Front End DAI links */
 -	[BXT_DPCM_AUDIO_PB]
 +	[BXT_DPCM_AUDIO_PB] =
  	{
  		.name = "Bxt Audio Port",
  		.stream_name = "Audio",
-@@ -286,7 +286,7 @@ static struct snd_soc_dai_link broxton_rt298_dais[] = {
+@@ -318,7 +318,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
  		.dpcm_playback = 1,
- 		.ops = &broxton_rt286_fe_ops,
+ 		.ops = &broxton_da7219_fe_ops,
  	},
 -	[BXT_DPCM_AUDIO_CP]
 +	[BXT_DPCM_AUDIO_CP] =
  	{
  		.name = "Bxt Audio Capture Port",
  		.stream_name = "Audio Record",
-@@ -300,7 +300,7 @@ static struct snd_soc_dai_link broxton_rt298_dais[] = {
+@@ -333,7 +333,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
  		.dpcm_capture = 1,
- 		.ops = &broxton_rt286_fe_ops,
+ 		.ops = &broxton_da7219_fe_ops,
  	},
 -	[BXT_DPCM_AUDIO_REF_CP]
 +	[BXT_DPCM_AUDIO_REF_CP] =
  	{
  		.name = "Bxt Audio Reference cap",
- 		.stream_name = "refcap",
-@@ -313,7 +313,7 @@ static struct snd_soc_dai_link broxton_rt298_dais[] = {
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 	},
--	[BXT_DPCM_AUDIO_DMIC_CP]
-+	[BXT_DPCM_AUDIO_DMIC_CP] =
- 	{
- 		.name = "Bxt Audio DMIC cap",
- 		.stream_name = "dmiccap",
-@@ -327,7 +327,7 @@ static struct snd_soc_dai_link broxton_rt298_dais[] = {
+ 		.stream_name = "Refcap",
+@@ -362,7 +362,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
  		.dynamic = 1,
  		.ops = &broxton_dmic_ops,
  	},
@@ -127,7 +116,7 @@ index 253d7bfbf511..d610bdca1608 100644
  	{
  		.name = "Bxt HDMI Port1",
  		.stream_name = "Hdmi1",
-@@ -340,7 +340,7 @@ static struct snd_soc_dai_link broxton_rt298_dais[] = {
+@@ -375,7 +375,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
  		.nonatomic = 1,
  		.dynamic = 1,
  	},
@@ -136,7 +125,7 @@ index 253d7bfbf511..d610bdca1608 100644
  	{
  		.name = "Bxt HDMI Port2",
  		.stream_name = "Hdmi2",
-@@ -353,7 +353,7 @@ static struct snd_soc_dai_link broxton_rt298_dais[] = {
+@@ -388,7 +388,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
  		.nonatomic = 1,
  		.dynamic = 1,
  	},
