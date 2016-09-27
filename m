@@ -1,15 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ASOC: max9867/rt5616/wm8960: remove usage of
-	obsoleted TLV-related macro
-Date: Tue, 27 Sep 2016 08:51:00 +0900
-Message-ID: <1474933860-15692-1-git-send-email-o-takashi@sakamocchi.jp>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [RFC PATCH 0/3] support DP MST audio
+Date: Tue, 27 Sep 2016 07:47:38 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D194FA3011E@SHSMSX103.ccr.corp.intel.com>
+References: <1474878938-10260-1-git-send-email-libin.yang@linux.intel.com>
+ <s5hlgyebssi.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D194FA2EDC7@SHSMSX103.ccr.corp.intel.com>
+ <s5hintipn2f.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 2F58C266928
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 01:51:13 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52858266CB9
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 09:47:45 +0200 (CEST)
+In-Reply-To: <s5hintipn2f.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,85 +24,132 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, anish kumar <yesanishhere@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-TLV_DB_RANGE_HEAD macro was obsoleted by commit bf1d1c9b6179 ("ALSA: tlv:
-add DECLARE_TLV_DB_RANGE()").
+Hi Takashi,
 
-This commit removes usage of the macro, with the obsoleting macro renamed
-to SNDRV_CTL_TLVD_DECLARE_DB_RANGE().
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, September 27, 2016 1:51 AM
+> To: Yang, Libin <libin.yang@intel.com>
+> Cc: libin.yang@linux.intel.com; alsa-devel@alsa-project.org; Lin, Mengdong
+> <mengdong.lin@intel.com>
+> Subject: Re: [alsa-devel] [RFC PATCH 0/3] support DP MST audio
+> 
+> On Mon, 26 Sep 2016 18:07:51 +0200,
+> Yang, Libin wrote:
+> >
+> > Hi Takashi,
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Monday, September 26, 2016 11:11 PM
+> > > To: libin.yang@linux.intel.com
+> > > Cc: alsa-devel@alsa-project.org; Lin, Mengdong
+> > > <mengdong.lin@intel.com>; Yang, Libin <libin.yang@intel.com>
+> > > Subject: Re: [alsa-devel] [RFC PATCH 0/3] support DP MST audio
+> > >
+> > > On Mon, 26 Sep 2016 10:35:35 +0200,
+> > > libin.yang@linux.intel.com wrote:
+> > > >
+> > > > From: Libin Yang <libin.yang@linux.intel.com>
+> > > >
+> > > > This patchset starts to support DP MST audio.
+> > > >
+> > > > This patchset is based on drm-intel-nightly on
+> > > > git://anongit.freedesktop.org/drm-intel
+> > > >
+> > > > Libin Yang (3):
+> > > >   ALSA: hda - codec add DP MST support for connection list
+> > > >   ALSA: hda - add DP mst verb support
+> > > >   ALSA: hda - add DP mst audio support
+> > >
+> > > I read the patchset again, and I'm still not convinced enough by this
+> change.
+> >
+> > Yes and I'm sorry that this patchset is delayed for a long time.
+> > Our gfx driver has been redesigned and some APIs have been changed.
+> > The change is done in Pandiyan, Dhinakaran's patches:
+> > Patchset: Prep. for DP audio MST support
+> >   drm/i915: Standardize port type for DVO encoders
+> >   drm/i915: Store port enum in intel_encoder
+> >   drm/i915: Switch to using port stored in intel_encoder
+> >   drm/i915: Move audio_connector to intel_encoder
+> >   drm/i915: start adding dp mst audio
+> > Patch: drm/i915/dp: DP audio API changes for MST
+> >
+> > >
+> > > The connection list is coded in the current way under the assumption
+> > > that connections are more or less static.  The connections are
+> > > cached in snd_array, which is only for growing up, and not suitable
+> > > for the entries that might be frequently removed.  The removal is
+> > > done only at overriding, and it happens only once at boot.
+> > >
+> > > OTOH, with DP-MST case, the connection list is basically dynamic.
+> > > It may increase or decrease depending on the connected monitors...
+> > > Is my understanding correct?  Or is the DP-MST connection list is
+> > > static, too?  Then I do wonder how it covers the whole connections with
+> arbitrary device indices.
+> >
+> > For the connection list, the driver will setup all the connection list
+> > at the beginning for each device entry, even it is non-MST. We
+> > statically allocate the connection list and will never remove them.
+> 
+> Hrm, so how will it actually be?  Are the device indices fixed through the
+> whole operations, no matter which monitor is connected?  How many will
+> they be?
+> 
+> It'd be helpful if you give an example of the actual typical setup.
+> Then we can judge whether the proposed implementation is suitable.
 
-Cc: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>
-Cc: patches@opensource.wolfsonmicro.com
-Cc: anish kumar <yesanishhere@gmail.com>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/soc/codecs/max9867.c | 5 ++---
- sound/soc/codecs/rt5616.c  | 5 ++---
- sound/soc/codecs/wm8960.c  | 5 ++---
- 3 files changed, 6 insertions(+), 9 deletions(-)
+Even it is in non-MST mode, the connection list is setup with the per_pin
+initialization.  And as the device entries under the same pin have the
+same connection list, I use the device entry 0's connection list for other
+device entries. This avoids connection list is invalid for other device entries
+in non-MST. After initialization, the connection list will never change even
+the non-MST/MST mode is changed.
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 2a22fdd..1aa838f 100644
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -38,11 +38,10 @@ static DECLARE_TLV_DB_SCALE(max9860_capture_tlv, -600, 200, 0);
- static DECLARE_TLV_DB_SCALE(max9860_mic_tlv, 2000, 100, 1);
- static DECLARE_TLV_DB_SCALE(max9860_adc_left_tlv, -1200, 100, 1);
- static DECLARE_TLV_DB_SCALE(max9860_adc_right_tlv, -1200, 100, 1);
--static const unsigned int max98088_micboost_tlv[] = {
--	TLV_DB_RANGE_HEAD(2),
-+static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(max98088_micboost_tlv,
- 	0, 1, TLV_DB_SCALE_ITEM(0, 2000, 0),
- 	2, 2, TLV_DB_SCALE_ITEM(3000, 0, 0),
--};
-+);
- 
- static const struct snd_kcontrol_new max9867_snd_controls[] = {
- 	SOC_DOUBLE_R("Master Playback Volume", MAX9867_LEFTVOL,
-diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
-index f527b5b..851704f 100644
---- a/sound/soc/codecs/rt5616.c
-+++ b/sound/soc/codecs/rt5616.c
-@@ -294,8 +294,7 @@ static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
- static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
- 
- /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
--static unsigned int bst_tlv[] = {
--	TLV_DB_RANGE_HEAD(7),
-+static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(bst_tlv,
- 	0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
- 	1, 1, TLV_DB_SCALE_ITEM(2000, 0, 0),
- 	2, 2, TLV_DB_SCALE_ITEM(2400, 0, 0),
-@@ -303,7 +302,7 @@ static unsigned int bst_tlv[] = {
- 	6, 6, TLV_DB_SCALE_ITEM(4400, 0, 0),
- 	7, 7, TLV_DB_SCALE_ITEM(5000, 0, 0),
- 	8, 8, TLV_DB_SCALE_ITEM(5200, 0, 0),
--};
-+);
- 
- static const struct snd_kcontrol_new rt5616_snd_controls[] = {
- 	/* Headphone Output Volume */
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index d7f444f..3d8c756 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -226,11 +226,10 @@ static const DECLARE_TLV_DB_SCALE(dac_tlv, -12750, 50, 1);
- static const DECLARE_TLV_DB_SCALE(bypass_tlv, -2100, 300, 0);
- static const DECLARE_TLV_DB_SCALE(out_tlv, -12100, 100, 1);
- static const DECLARE_TLV_DB_SCALE(lineinboost_tlv, -1500, 300, 1);
--static const unsigned int micboost_tlv[] = {
--	TLV_DB_RANGE_HEAD(2),
-+static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(micboost_tlv,
- 	0, 1, TLV_DB_SCALE_ITEM(0, 1300, 0),
- 	2, 3, TLV_DB_SCALE_ITEM(2000, 900, 0),
--};
-+);
- 
- static const struct snd_kcontrol_new wm8960_snd_controls[] = {
- SOC_DOUBLE_R_TLV("Capture Volume", WM8960_LINVOL, WM8960_RINVOL,
--- 
-2.7.4
+> 
+> 
+> > > So, the connection cache management is one thing.  Another thing is
+> > > that the patchset doesn't consider about the pin ELD notification.
+> > > Basically we switched to ELD notification instead of the pin unsol
+> > > event for Intel chips.  How does it fit?
+> >
+> > For the ELD notification, in the patch 0003, if there is monitor
+> > hotplug, gfx driver will notify audio driver with acomp. Gfx driver
+> > will tell which port (pin), pipe (device entry) occurs the hotplug
+> > event. And then audio driver will call snd_hdac_acomp_get_eld() to get the
+> eld information.
+> 
+> OK, then drop the patch 1 and try to implement without messing around the
+> connection list.  The patch 1 is what I really don't like from the beginning.  It
+> makes things complicated.
+
+As the connection list is the same for the device entries under same pin,
+what do you think if we use the original APIs, ignoring the device id. This
+will not change the connection list code or be a very small change.
+
+If you agree on that, I will have a try on it.
+
+On the same time, I will check with our silicon if my understanding
+"the connection list is the same for the device entries under same pin"
+is right.
+
+> 
+> Is there anything else than haswell fixup that touches the connection list with
+> the dev id?  If it's the only place, there can be an alternative way to hack it.
+
+If we always use the device entry 0 as all the device entries under the same pin,
+I think we can ignore the dev id now.
+
+Regards,
+Libin
+
+> 
+> 
+> thanks,
+> 
+> Takashi
