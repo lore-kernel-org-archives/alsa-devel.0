@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASOC: max9867/rt5616/wm8960: remove usage
- of obsoleted TLV-related macro
-Date: Tue, 27 Sep 2016 09:17:29 -0700
-Message-ID: <20160927161729.wdw2uywiux2szhc3@sirena.org.uk>
-References: <1474933860-15692-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: Applied "ASOC: tpa6130a2: add static qualifier for
+	file local symbols" to the asoc tree
+Date: Tue, 27 Sep 2016 09:18:04 -0700
+Message-ID: <E1bov52-0003d4-4M@finisterre>
+References: <1474929911-6005-6-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0043652425720877259=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 77091265D93
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 18:17:43 +0200 (CEST)
-In-Reply-To: <1474933860-15692-1-git-send-email-o-takashi@sakamocchi.jp>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FA7E265D93
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 18:18:19 +0200 (CEST)
+In-Reply-To: <1474929911-6005-6-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +23,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, anish kumar <yesanishhere@gmail.com>, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Bard Liao <bardliao@realtek.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, Helen Koike <helen.koike@collabora.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0043652425720877259==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jqtg7sssfqbszh3y"
-Content-Disposition: inline
+   ASOC: tpa6130a2: add static qualifier for file local symbols
 
+has been applied to the asoc tree at
 
---jqtg7sssfqbszh3y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Sep 27, 2016 at 08:51:00AM +0900, Takashi Sakamoto wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> ---
->  sound/soc/codecs/max9867.c | 5 ++---
->  sound/soc/codecs/rt5616.c  | 5 ++---
->  sound/soc/codecs/wm8960.c  | 5 ++---
->  3 files changed, 6 insertions(+), 9 deletions(-)
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Please send one patch per driver where there is no interdependency
-between changes, this makes it much easier to apply your changes since
-I keep changes for each driver on a separate branch.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---jqtg7sssfqbszh3y
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEcBAABCAAGBQJX6puYAAoJECTWi3JdVIfQ8m4H/jReNDOTfVuVTgncWIlk2LbU
-k8VLdrWIYR280i9l5/eOSWajz74iPWbRd+kkxHUjf5HwNr6A3R7Ot+Mj6wakBD00
-bPuz5JTs2rPb75PCRRhWbG7RJI0HpfjfFM/cI4D+w3vOUxCMJiLoXTsbJiBzN5fR
-Cz1ZFzXZvwbMv+aO8wKs8iB7RcEE0hQaM8J5NzdHpzhsniWpOdc3e+Hvmia/ZcgR
-fcl2CCl7/u7bbU2hDgcPi4K/klUwmml3GwHMlE8KJkSjnUuVYRXY1ypf/i0VX6y+
-GwVlJ0xXi2yHIQ6UMiBqB8YUjbrKOXwCk7txtxbPL4FBi33tnWti2V2BadDN/P0=
-=YcaQ
------END PGP SIGNATURE-----
+>From 3cadd224474d60ee06cebafc63db9cd5f8cc47f7 Mon Sep 17 00:00:00 2001
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Date: Tue, 27 Sep 2016 07:45:11 +0900
+Subject: [PATCH] ASOC: tpa6130a2: add static qualifier for file local symbols
 
---jqtg7sssfqbszh3y--
+Sparse reports a below warning.
 
---===============0043652425720877259==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+tpa6130a2.c:193:33: warning: symbol 'tpa6130a2_component_driver' was not declared. Should it be static?
 
+The symbol is just used inner the file. Forthermore, it's constant. Thus,
+it's better to add static and const qualifier.
 
---===============0043652425720877259==--
+This commit adds it.
+
+Fixes: cb7e62256e99 (ASoC: tpa6130a2: Register component)
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/tpa6130a2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 3712db0881d0..2e014c80d113 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -199,7 +199,7 @@ static const struct snd_soc_dapm_route tpa6130a2_dapm_routes[] = {
+ 	{ "Right PGA", NULL, "Power" },
+ };
+ 
+-struct snd_soc_component_driver tpa6130a2_component_driver = {
++static const struct snd_soc_component_driver tpa6130a2_component_driver = {
+ 	.name = "tpa6130a2",
+ 	.probe = tpa6130a2_component_probe,
+ 	.dapm_widgets = tpa6130a2_dapm_widgets,
+-- 
+2.9.3
