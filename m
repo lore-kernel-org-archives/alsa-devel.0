@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sst-bxt-da7219_max98357a: fix obsoleted
-	initializers for array" to the asoc tree
-Date: Tue, 27 Sep 2016 09:18:08 -0700
-Message-ID: <E1bov56-0003ee-7r@finisterre>
+Subject: Applied "ASoC: rt5616: add static qualifier for file
+	local symbols" to the asoc tree
+Date: Tue, 27 Sep 2016 09:18:10 -0700
+Message-ID: <E1bov58-0003fT-6G@finisterre>
+References: <1469540517-32466-5-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E44F3266860
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 18:18:21 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 44852266917
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 18:18:23 +0200 (CEST)
+In-Reply-To: <1469540517-32466-5-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sst-bxt-da7219_max98357a: fix obsoleted initializers for array
+   ASoC: rt5616: add static qualifier for file local symbols
 
 has been applied to the asoc tree at
 
@@ -52,87 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From 43d443dc257c00ef3a3f940b6abfb7537c4fcbe8 Mon Sep 17 00:00:00 2001
+>From b74e7a26311a14f61fbcd516fb475dd79ea9c4b0 Mon Sep 17 00:00:00 2001
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 Sep 2016 07:45:09 +0900
-Subject: [PATCH] ASoC: sst-bxt-da7219_max98357a: fix obsoleted initializers
- for array
+Date: Tue, 27 Sep 2016 07:45:10 +0900
+Subject: [PATCH] ASoC: rt5616: add static qualifier for file local symbols
 
 Sparse reports below warnings.
 
-bxt_da7219_max98357a.c:250:9: warning: obsolete array initializer, use C99 syntax
-bxt_da7219_max98357a.c:275:9: warning: obsolete array initializer, use C99 syntax
-bxt_da7219_max98357a.c:290:9: warning: obsolete array initializer, use C99 syntax
-bxt_da7219_max98357a.c:304:9: warning: obsolete array initializer, use C99 syntax
-bxt_da7219_max98357a.c:317:9: warning: obsolete array initializer, use C99 syntax
+rt5616.c:1270:24: warning: symbol 'rt5616_aif_dai_ops' was not declared. Should it be static?
+rt5616.c:1277:27: warning: symbol 'rt5616_dai' was not declared. Should it be static?
 
-There's no need to use obsoleted way. This commit fixes it.
+These two symbols are just used inner the file, thus it's better to add
+static qualifier.
 
-Fixes: 723bad3fef8b (ASoC: Intel: Add Broxton-P Dialog Maxim machine driver)
+This commit adds it.
+
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/rt5616.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index bb4533c305c7..6532b8f0ab2f 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -302,7 +302,7 @@ static struct snd_soc_ops broxton_refcap_ops = {
- /* broxton digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link broxton_dais[] = {
- 	/* Front End DAI links */
--	[BXT_DPCM_AUDIO_PB]
-+	[BXT_DPCM_AUDIO_PB] =
+diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
+index f527b5b2817b..98ae326c62fa 100644
+--- a/sound/soc/codecs/rt5616.c
++++ b/sound/soc/codecs/rt5616.c
+@@ -1267,14 +1267,14 @@ static int rt5616_resume(struct snd_soc_codec *codec)
+ #define RT5616_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
+ 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
+ 
+-struct snd_soc_dai_ops rt5616_aif_dai_ops = {
++static struct snd_soc_dai_ops rt5616_aif_dai_ops = {
+ 	.hw_params = rt5616_hw_params,
+ 	.set_fmt = rt5616_set_dai_fmt,
+ 	.set_sysclk = rt5616_set_dai_sysclk,
+ 	.set_pll = rt5616_set_dai_pll,
+ };
+ 
+-struct snd_soc_dai_driver rt5616_dai[] = {
++static struct snd_soc_dai_driver rt5616_dai[] = {
  	{
- 		.name = "Bxt Audio Port",
- 		.stream_name = "Audio",
-@@ -318,7 +318,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.dpcm_playback = 1,
- 		.ops = &broxton_da7219_fe_ops,
- 	},
--	[BXT_DPCM_AUDIO_CP]
-+	[BXT_DPCM_AUDIO_CP] =
- 	{
- 		.name = "Bxt Audio Capture Port",
- 		.stream_name = "Audio Record",
-@@ -333,7 +333,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.dpcm_capture = 1,
- 		.ops = &broxton_da7219_fe_ops,
- 	},
--	[BXT_DPCM_AUDIO_REF_CP]
-+	[BXT_DPCM_AUDIO_REF_CP] =
- 	{
- 		.name = "Bxt Audio Reference cap",
- 		.stream_name = "Refcap",
-@@ -362,7 +362,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.dynamic = 1,
- 		.ops = &broxton_dmic_ops,
- 	},
--	[BXT_DPCM_AUDIO_HDMI1_PB]
-+	[BXT_DPCM_AUDIO_HDMI1_PB] =
- 	{
- 		.name = "Bxt HDMI Port1",
- 		.stream_name = "Hdmi1",
-@@ -375,7 +375,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 	},
--	[BXT_DPCM_AUDIO_HDMI2_PB]
-+	[BXT_DPCM_AUDIO_HDMI2_PB] =
- 	{
- 		.name = "Bxt HDMI Port2",
- 		.stream_name = "Hdmi2",
-@@ -388,7 +388,7 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 	},
--	[BXT_DPCM_AUDIO_HDMI3_PB]
-+	[BXT_DPCM_AUDIO_HDMI3_PB] =
- 	{
- 		.name = "Bxt HDMI Port3",
- 		.stream_name = "Hdmi3",
+ 		.name = "rt5616-aif1",
+ 		.id = RT5616_AIF1,
 -- 
 2.9.3
