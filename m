@@ -1,16 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: arizona: Add debug prints for output
-	power up/down times
-Date: Tue, 27 Sep 2016 16:35:44 +0100
-Message-ID: <1474990545-29282-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: arizona: Add debug prints for
+ output power up/down times
+Date: Tue, 27 Sep 2016 09:04:26 -0700
+Message-ID: <20160927160426.oq732bocrykujwoi@sirena.org.uk>
+References: <1474990545-29282-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8030461745232411597=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id A058C266F4E
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 17:35:54 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8983B266552
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 18:04:41 +0200 (CEST)
+In-Reply-To: <1474990545-29282-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,40 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-When debugging it is useful to check the total power up/down delay that
-is executed as part of the coalesced output delay. This patch adds some
-debug prints for this.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c | 4 ++++
- 1 file changed, 4 insertions(+)
+--===============8030461745232411597==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gn3swbjnhcepstxs"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 780cf4f..eaf1dbb 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -891,6 +891,8 @@ int arizona_out_ev(struct snd_soc_dapm_widget *w,
- 		case ARIZONA_OUT3R_ENA_SHIFT:
- 			priv->out_up_pending--;
- 			if (!priv->out_up_pending) {
-+				dev_dbg(codec->dev, "Power up delay: %d\n",
-+					priv->out_up_delay);
- 				msleep(priv->out_up_delay);
- 				priv->out_up_delay = 0;
- 			}
-@@ -925,6 +927,8 @@ int arizona_out_ev(struct snd_soc_dapm_widget *w,
- 		case ARIZONA_OUT3R_ENA_SHIFT:
- 			priv->out_down_pending--;
- 			if (!priv->out_down_pending) {
-+				dev_dbg(codec->dev, "Power down delay: %d\n",
-+					priv->out_down_delay);
- 				msleep(priv->out_down_delay);
- 				priv->out_down_delay = 0;
- 			}
--- 
-2.1.4
+
+--gn3swbjnhcepstxs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Sep 27, 2016 at 04:35:44PM +0100, Charles Keepax wrote:
+> When debugging it is useful to check the total power up/down delay that
+> is executed as part of the coalesced output delay. This patch adds some
+> debug prints for this.
+
+This doesn't apply against current code, please check and resend.
+
+--gn3swbjnhcepstxs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJX6piKAAoJECTWi3JdVIfQhswH/jJCbDBkVGSNyiWaTvZ/Fx0k
+NyiPjTnsneC5zhPheH5bFnZ8unGO8OCZklzMWwnV7IQgXI5eLtJWW2sj2y9j1bbe
+gW36wE5AEb28wdziyFgT0X/yi6L3eYAdjWv6eo1spLNws+hsxbYAAXAorQVMhuH8
+RO13k0od5DarMRSD3U7VZYuhrh+qBCwvwLNKIQPQFTtcoHve2oY/ptuIOuEXsXlZ
+76mZQ73PLz16yY7wJVwWuRbroOOMr2HzKpsYXO1ZWev6JbeTrILNFdJ03MTLksXK
+RKBBtq6qCC+l1THocfI1QPa66Y95JdJ3xIxrM+YQKwI118sWv7G4K4rwWPkqtUo=
+=Egb2
+-----END PGP SIGNATURE-----
+
+--gn3swbjnhcepstxs--
+
+--===============8030461745232411597==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8030461745232411597==--
