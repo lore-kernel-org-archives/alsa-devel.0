@@ -1,71 +1,88 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/5] ASOC: fix sparse warnings
-Date: Tue, 27 Sep 2016 09:07:54 -0700
-Message-ID: <20160927160754.27y4b4e3h57tbogs@sirena.org.uk>
-References: <1474929911-6005-1-git-send-email-o-takashi@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6306359218029001587=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 512D6266F4E
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 18:08:08 +0200 (CEST)
-In-Reply-To: <1474929911-6005-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Subject: Applied "ASoC: tlv320aic31xx: do not declare support for mono DAI" to the asoc tree
+Date: Tue, 27 Sep 2016 09:36:27 -0700
+Message-ID: <E1bovMp-0005Es-6Q@finisterre>
+References: <1474965015-29243-1-git-send-email-nikita.yoush@cogentembedded.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1474965015-29243-1-git-send-email-nikita.yoush@cogentembedded.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bastien Nocera <hadess@hadess.net>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Chris Healy <cphealy@gmail.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6306359218029001587==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xkkeaivdbxz4c2cc"
-Content-Disposition: inline
+   ASoC: tlv320aic31xx: do not declare support for mono DAI
 
+has been applied to the asoc tree at
 
---xkkeaivdbxz4c2cc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Sep 27, 2016 at 07:45:06AM +0900, Takashi Sakamoto wrote:
-> Hi,
->=20
-> This patchset updates my previous one, and for Linux 4.8-rc8.
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-July/110466.html
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Please use subject lines matching the style for the subsystem.  This
-makes it easier for people to identify relevant patches.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---xkkeaivdbxz4c2cc
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAABCAAGBQJX6plZAAoJECTWi3JdVIfQj2wH/iw/+m2P4nWJWRvjJhGK1x17
-HfPu52WRp/aqt1rYmDqSBGS3dPlctHmbdLnPF3KnIGeY7oTljVxZRNUtSlYdNkIN
-Xoyymgwim9wJeyWNwUjsaNBkbaMymZiV+5LXEzq/aeita6tPez0q7klBRYG+YBqY
-vvMD576ChhJmwM2hDhVxLMl4H2Cmu7yVC8XW8K9n1SU9++zzV62A+qG+J/YBVcy7
-w/QRXpfhjueSv2cIBxb5gNm1mpbbQWyUzjKwYRFLI0wNnKGx9ydWVJ4KId98NsdC
-6UOr0JTmh61ikcNGiPUVh9C41zE4f/sLq1RV5mvZbHS/2YBTO4NzRaXcOmIaqGw=
-=F7Lz
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---xkkeaivdbxz4c2cc--
+>From 3520646dbb22832fa65dae6899d8cb068257d4aa Mon Sep 17 00:00:00 2001
+From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Date: Tue, 27 Sep 2016 11:30:15 +0300
+Subject: [PATCH] ASoC: tlv320aic31xx: do not declare support for mono DAI
 
---===============6306359218029001587==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This hardware supports only 2-channel DAI, even mono ADC digital output
+has two channels with the same data.
 
+Having min_channels=1 results in broken playback of mono files in setups
+where CPU DAI supports mono.
 
---===============6306359218029001587==--
+Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/tlv320aic31xx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 725173b12725..be1a64bfd320 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1213,7 +1213,7 @@ static struct snd_soc_dai_driver dac31xx_dai_driver[] = {
+ 		.name = "tlv32dac31xx-hifi",
+ 		.playback = {
+ 			.stream_name	 = "Playback",
+-			.channels_min	 = 1,
++			.channels_min	 = 2,
+ 			.channels_max	 = 2,
+ 			.rates		 = AIC31XX_RATES,
+ 			.formats	 = AIC31XX_FORMATS,
+@@ -1228,14 +1228,14 @@ static struct snd_soc_dai_driver aic31xx_dai_driver[] = {
+ 		.name = "tlv320aic31xx-hifi",
+ 		.playback = {
+ 			.stream_name	 = "Playback",
+-			.channels_min	 = 1,
++			.channels_min	 = 2,
+ 			.channels_max	 = 2,
+ 			.rates		 = AIC31XX_RATES,
+ 			.formats	 = AIC31XX_FORMATS,
+ 		},
+ 		.capture = {
+ 			.stream_name	 = "Capture",
+-			.channels_min	 = 1,
++			.channels_min	 = 2,
+ 			.channels_max	 = 2,
+ 			.rates		 = AIC31XX_RATES,
+ 			.formats	 = AIC31XX_FORMATS,
+-- 
+2.9.3
