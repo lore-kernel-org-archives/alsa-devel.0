@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Add debug prints for output
-	power up/down times" to the asoc tree
-Date: Tue, 27 Sep 2016 09:18:15 -0700
-Message-ID: <E1bov5D-0003h7-1s@finisterre>
-References: <1474990545-29282-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: stac9766: fix wrong usage of
+	DECLARE_TLV_DB_LINEAR()" to the asoc tree
+Date: Tue, 27 Sep 2016 09:24:48 -0700
+Message-ID: <E1bovBY-0004Ad-LU@finisterre>
+References: <1474932329-10640-4-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 33274265D93
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 18:18:30 +0200 (CEST)
-In-Reply-To: <1474990545-29282-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CC002266F89
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2016 18:25:01 +0200 (CEST)
+In-Reply-To: <1474932329-10640-4-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Add debug prints for output power up/down times
+   ASoC: stac9766: fix wrong usage of DECLARE_TLV_DB_LINEAR()
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,60 @@ to this mail.
 Thanks,
 Mark
 
->From d605bd024e085ba7fe0fbedf1707d339ea9cc0af Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 27 Sep 2016 16:35:44 +0100
-Subject: [PATCH] ASoC: arizona: Add debug prints for output power up/down
- times
+>From f2b2f6dcd48adf81007b66e39bb7ca21d9bde250 Mon Sep 17 00:00:00 2001
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Date: Tue, 27 Sep 2016 08:25:29 +0900
+Subject: [PATCH] ASoC: stac9766: fix wrong usage of DECLARE_TLV_DB_LINEAR()
 
-When debugging it is useful to check the total power up/down delay that
-is executed as part of the coalesced output delay. This patch adds some
-debug prints for this.
+As long as reading datasheet of STAC9766/9767, this driver includes wrong
+usage of DECLARE_TLV_DB_LINEAR().
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+In "8.1.2. Master Volume Registers", attenuation of lineout volumes is
+represented in 5 bits by -1.5 dB/step from 0 to -46.5 dB. Thus,
+'master_tlv' should be dB step representation.
+
+In "8.1.14. Record Gain", gain of volumes is represented in 4 bits by
+1.5 dB/step from 0 to 22.5 dB. Thus, 'record_tlv' should be dB step
+representation.
+
+In "8.1.5. PC BEEP Volume", attenuation of volume is represented in 4 bits
+by -3 dB/step from 0 to 45 dB. Thus, 'beep_tlv' should be dB step
+representation.
+
+In "8.1.7. Stereo or Mic Volume" and so on, gain of volumes is represented
+in 5 bits by -1.5 dB from 12 to -34.5 dB. Thus, 'mix_tlv' should be dB
+step representation.
+
+Totally, current implementation includes misuse of TLV-related macro.
+
+This commit replaces usage of DECLARE_TLV_DB_LINEAR() with
+SNDRV_CTL_TLVD_DECLARE_DB_SCALE(), to give proper information to
+applications in user land.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/codecs/stac9766.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index fae6ccf8405b..7a99f77bbe84 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -891,6 +891,8 @@ int arizona_out_ev(struct snd_soc_dapm_widget *w,
- 		case ARIZONA_OUT3R_ENA_SHIFT:
- 			priv->out_up_pending--;
- 			if (!priv->out_up_pending) {
-+				dev_dbg(codec->dev, "Power up delay: %d\n",
-+					priv->out_up_delay);
- 				msleep(priv->out_up_delay);
- 				priv->out_up_delay = 0;
- 			}
-@@ -925,6 +927,8 @@ int arizona_out_ev(struct snd_soc_dapm_widget *w,
- 		case ARIZONA_OUT3R_ENA_SHIFT:
- 			priv->out_down_pending--;
- 			if (!priv->out_down_pending) {
-+				dev_dbg(codec->dev, "Power down delay: %d\n",
-+					priv->out_down_delay);
- 				msleep(priv->out_down_delay);
- 				priv->out_down_delay = 0;
- 			}
+diff --git a/sound/soc/codecs/stac9766.c b/sound/soc/codecs/stac9766.c
+index 0945c51df003..a718c653dab3 100644
+--- a/sound/soc/codecs/stac9766.c
++++ b/sound/soc/codecs/stac9766.c
+@@ -85,10 +85,10 @@ static SOC_ENUM_SINGLE_DECL(stac9766_boost2_enum,
+ static SOC_ENUM_SINGLE_DECL(stac9766_stereo_mic_enum,
+ 			    AC97_STAC_STEREO_MIC, 2, stac9766_stereo_mic);
+ 
+-static const DECLARE_TLV_DB_LINEAR(master_tlv, -4600, 0);
+-static const DECLARE_TLV_DB_LINEAR(record_tlv, 0, 2250);
+-static const DECLARE_TLV_DB_LINEAR(beep_tlv, -4500, 0);
+-static const DECLARE_TLV_DB_LINEAR(mix_tlv, -3450, 1200);
++static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(master_tlv, -4650, 150, 0);
++static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(record_tlv,     0, 150, 0);
++static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(beep_tlv,   -4500, 300, 0);
++static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(mix_tlv,    -3450, 150, 0);
+ 
+ static const struct snd_kcontrol_new stac9766_snd_ac97_controls[] = {
+ 	SOC_DOUBLE_TLV("Speaker Volume", AC97_MASTER, 8, 0, 31, 1, master_tlv),
 -- 
 2.9.3
