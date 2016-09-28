@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8960: remove usage of obsoleted
-	TLV-related macro" to the asoc tree
-Date: Wed, 28 Sep 2016 11:27:23 -0700
-Message-ID: <E1bpJZj-0003nY-NG@finisterre>
-References: <1475022561-5968-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: Applied "ASoC: trivial: system spelling fix" to the
+	asoc tree
+Date: Wed, 28 Sep 2016 11:27:27 -0700
+Message-ID: <E1bpJZn-0003q3-Nb@finisterre>
+References: <20160928102410.5369-1-marex@denx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CF79267030
- for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2016 20:27:39 +0200 (CEST)
-In-Reply-To: <1475022561-5968-4-git-send-email-o-takashi@sakamocchi.jp>
+ by alsa0.perex.cz (Postfix) with ESMTP id E17DA267041
+ for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2016 20:27:40 +0200 (CEST)
+In-Reply-To: <20160928102410.5369-1-marex@denx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+To: Marek Vasut <marex@denx.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8960: remove usage of obsoleted TLV-related macro
+   ASoC: trivial: system spelling fix
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,28 @@ to this mail.
 Thanks,
 Mark
 
->From b269cebf72d3591cd889a25f81ead43166a45fb9 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Wed, 28 Sep 2016 09:29:21 +0900
-Subject: [PATCH] ASoC: wm8960: remove usage of obsoleted TLV-related macro
+>From 97b4bc76d9f7ab1fab375bc6d6143804a7bc2256 Mon Sep 17 00:00:00 2001
+From: Marek Vasut <marex@denx.de>
+Date: Wed, 28 Sep 2016 12:24:10 +0200
+Subject: [PATCH] ASoC: trivial: system spelling fix
 
-TLV_DB_RANGE_HEAD macro was obsoleted by commit bf1d1c9b6179 ("ALSA: tlv:
-add DECLARE_TLV_DB_RANGE()").
+Do s/ststem/system/ .
 
-This commit removes usage of the macro, with the obsoleting macro renamed
-to SNDRV_CTL_TLVD_DECLARE_DB_RANGE().
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8960.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/generic/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index d7f444f87460..3d8c75617d8d 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -226,11 +226,10 @@ static const DECLARE_TLV_DB_SCALE(dac_tlv, -12750, 50, 1);
- static const DECLARE_TLV_DB_SCALE(bypass_tlv, -2100, 300, 0);
- static const DECLARE_TLV_DB_SCALE(out_tlv, -12100, 100, 1);
- static const DECLARE_TLV_DB_SCALE(lineinboost_tlv, -1500, 300, 1);
--static const unsigned int micboost_tlv[] = {
--	TLV_DB_RANGE_HEAD(2),
-+static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(micboost_tlv,
- 	0, 1, TLV_DB_SCALE_ITEM(0, 1300, 0),
- 	2, 3, TLV_DB_SCALE_ITEM(2000, 900, 0),
--};
-+);
- 
- static const struct snd_kcontrol_new wm8960_snd_controls[] = {
- SOC_DOUBLE_R_TLV("Capture Volume", WM8960_LINVOL, WM8960_RINVOL,
+diff --git a/sound/soc/generic/Kconfig b/sound/soc/generic/Kconfig
+index b95ae4918fca..d023959b8cd6 100644
+--- a/sound/soc/generic/Kconfig
++++ b/sound/soc/generic/Kconfig
+@@ -13,4 +13,4 @@ config SND_SIMPLE_SCU_CARD
+ 	select SND_SIMPLE_CARD_UTILS
+ 	help
+ 	  This option enables generic simple SCU sound card support.
+-	  It supports DPCM of multi CPU single Codec ststem.
++	  It supports DPCM of multi CPU single Codec system.
 -- 
 2.9.3
