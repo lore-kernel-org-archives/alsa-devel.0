@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5616: remove usage of obsoleted
+Subject: Applied "ASoC: wm8960: remove usage of obsoleted
 	TLV-related macro" to the asoc tree
-Date: Wed, 28 Sep 2016 11:27:25 -0700
-Message-ID: <E1bpJZl-0003oR-0J@finisterre>
-References: <1475022561-5968-3-git-send-email-o-takashi@sakamocchi.jp>
+Date: Wed, 28 Sep 2016 11:27:23 -0700
+Message-ID: <E1bpJZj-0003nY-NG@finisterre>
+References: <1475022561-5968-4-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4CE68266991
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CF79267030
  for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2016 20:27:39 +0200 (CEST)
-In-Reply-To: <1475022561-5968-3-git-send-email-o-takashi@sakamocchi.jp>
+In-Reply-To: <1475022561-5968-4-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, Bard Liao <bardliao@realtek.com>
+Cc: tiwai@suse.de, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5616: remove usage of obsoleted TLV-related macro
+   ASoC: wm8960: remove usage of obsoleted TLV-related macro
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 51a576400ea46fec0df1672b373de91b00aa4a30 Mon Sep 17 00:00:00 2001
+>From b269cebf72d3591cd889a25f81ead43166a45fb9 Mon Sep 17 00:00:00 2001
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Wed, 28 Sep 2016 09:29:20 +0900
-Subject: [PATCH] ASoC: rt5616: remove usage of obsoleted TLV-related macro
+Date: Wed, 28 Sep 2016 09:29:21 +0900
+Subject: [PATCH] ASoC: wm8960: remove usage of obsoleted TLV-related macro
 
 TLV_DB_RANGE_HEAD macro was obsoleted by commit bf1d1c9b6179 ("ALSA: tlv:
 add DECLARE_TLV_DB_RANGE()").
@@ -65,33 +65,29 @@ This commit removes usage of the macro, with the obsoleting macro renamed
 to SNDRV_CTL_TLVD_DECLARE_DB_RANGE().
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5616.c | 5 ++---
+ sound/soc/codecs/wm8960.c | 5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
-index 98ae326c62fa..e6433254c720 100644
---- a/sound/soc/codecs/rt5616.c
-+++ b/sound/soc/codecs/rt5616.c
-@@ -294,8 +294,7 @@ static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
- static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
- 
- /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
--static unsigned int bst_tlv[] = {
--	TLV_DB_RANGE_HEAD(7),
-+static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(bst_tlv,
- 	0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
- 	1, 1, TLV_DB_SCALE_ITEM(2000, 0, 0),
- 	2, 2, TLV_DB_SCALE_ITEM(2400, 0, 0),
-@@ -303,7 +302,7 @@ static unsigned int bst_tlv[] = {
- 	6, 6, TLV_DB_SCALE_ITEM(4400, 0, 0),
- 	7, 7, TLV_DB_SCALE_ITEM(5000, 0, 0),
- 	8, 8, TLV_DB_SCALE_ITEM(5200, 0, 0),
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index d7f444f87460..3d8c75617d8d 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -226,11 +226,10 @@ static const DECLARE_TLV_DB_SCALE(dac_tlv, -12750, 50, 1);
+ static const DECLARE_TLV_DB_SCALE(bypass_tlv, -2100, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(out_tlv, -12100, 100, 1);
+ static const DECLARE_TLV_DB_SCALE(lineinboost_tlv, -1500, 300, 1);
+-static const unsigned int micboost_tlv[] = {
+-	TLV_DB_RANGE_HEAD(2),
++static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(micboost_tlv,
+ 	0, 1, TLV_DB_SCALE_ITEM(0, 1300, 0),
+ 	2, 3, TLV_DB_SCALE_ITEM(2000, 900, 0),
 -};
 +);
  
- static const struct snd_kcontrol_new rt5616_snd_controls[] = {
- 	/* Headphone Output Volume */
+ static const struct snd_kcontrol_new wm8960_snd_controls[] = {
+ SOC_DOUBLE_R_TLV("Capture Volume", WM8960_LINVOL, WM8960_RINVOL,
 -- 
 2.9.3
