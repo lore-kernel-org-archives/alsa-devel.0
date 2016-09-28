@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 3/3] ASoC: wm8960: remove usage of
- obsoleted TLV-related macro
-Date: Wed, 28 Sep 2016 11:26:26 -0700
-Message-ID: <20160928182626.lke2j3bnsu7cp6k5@sirena.org.uk>
-References: <1475022561-5968-1-git-send-email-o-takashi@sakamocchi.jp>
- <1475022561-5968-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: Applied "ASoC: max9867: remove usage of obsoleted
+	TLV-related macro" to the asoc tree
+Date: Wed, 28 Sep 2016 11:27:26 -0700
+Message-ID: <E1bpJZm-0003pI-Jg@finisterre>
+References: <1475022561-5968-2-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6105066912787682902=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B45812667C9
- for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2016 20:26:40 +0200 (CEST)
-In-Reply-To: <1475022561-5968-4-git-send-email-o-takashi@sakamocchi.jp>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A8DD2667C9
+ for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2016 20:27:39 +0200 (CEST)
+In-Reply-To: <1475022561-5968-2-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,49 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6105066912787682902==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nsu5ftrlz3ye2csy"
-Content-Disposition: inline
+   ASoC: max9867: remove usage of obsoleted TLV-related macro
 
+has been applied to the asoc tree at
 
---nsu5ftrlz3ye2csy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Sep 28, 2016 at 09:29:21AM +0900, Takashi Sakamoto wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Normally if someone else provides an ack or similar that goes *after*
-your own signoff showing where things get added in the chain.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---nsu5ftrlz3ye2csy
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEcBAABCAAGBQJX7AtOAAoJECTWi3JdVIfQYZkH/iUcXlg9K5bSOVohVXYBKBQy
-HPs81/4W10MeCh98sEYTDiT6kanEJGsSsPHciwUNG9PdBsSXxR/nqrzKQrzjoWSW
-jO12GXUU2V7lH4sBDLHq9VcWmHQH2F4xBtK78ijtRmclAMWTLB+qT3ccy5I5fJTw
-w8SXkiEdJ+QsqcU4ayXqgxN0kBsi8tomW22gglmY3Hrw2D+UceSFcxYO3/exoJ7O
-vj6awAQC/HVnqVPoTOQ8Tf6IjfPhtSJTwLaeOa+4Ts0rHd6zZyCK2xFN7QU5aoMm
-Jn8VDtZVYHFyVRyDov9PArS99LkeKiHZQbvPI/a/rdMex3FyGJcKB12tpNkyplQ=
-=xqAJ
------END PGP SIGNATURE-----
+>From 349fa18c061a485a7928e9d3b998d464deaea8c4 Mon Sep 17 00:00:00 2001
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Date: Wed, 28 Sep 2016 09:29:19 +0900
+Subject: [PATCH] ASoC: max9867: remove usage of obsoleted TLV-related macro
 
---nsu5ftrlz3ye2csy--
+TLV_DB_RANGE_HEAD macro was obsoleted by commit bf1d1c9b6179 ("ALSA: tlv:
+add DECLARE_TLV_DB_RANGE()").
 
---===============6105066912787682902==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This commit removes usage of the macro, with the obsoleting macro renamed
+to SNDRV_CTL_TLVD_DECLARE_DB_RANGE().
 
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/max9867.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---===============6105066912787682902==--
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 2a22fddeb6af..1aa838ff7430 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -38,11 +38,10 @@ static DECLARE_TLV_DB_SCALE(max9860_capture_tlv, -600, 200, 0);
+ static DECLARE_TLV_DB_SCALE(max9860_mic_tlv, 2000, 100, 1);
+ static DECLARE_TLV_DB_SCALE(max9860_adc_left_tlv, -1200, 100, 1);
+ static DECLARE_TLV_DB_SCALE(max9860_adc_right_tlv, -1200, 100, 1);
+-static const unsigned int max98088_micboost_tlv[] = {
+-	TLV_DB_RANGE_HEAD(2),
++static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(max98088_micboost_tlv,
+ 	0, 1, TLV_DB_SCALE_ITEM(0, 2000, 0),
+ 	2, 2, TLV_DB_SCALE_ITEM(3000, 0, 0),
+-};
++);
+ 
+ static const struct snd_kcontrol_new max9867_snd_controls[] = {
+ 	SOC_DOUBLE_R("Master Playback Volume", MAX9867_LEFTVOL,
+-- 
+2.9.3
