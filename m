@@ -1,17 +1,18 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 2/3] ASoC: rt5616: remove usage of obsoleted
-	TLV-related macro
-Date: Wed, 28 Sep 2016 09:29:20 +0900
-Message-ID: <1475022561-5968-3-git-send-email-o-takashi@sakamocchi.jp>
-References: <1475022561-5968-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH v2 1/5] ASOC: da7219: fix inappropriate
+ condition statement
+Date: Wed, 28 Sep 2016 09:38:31 +0900
+Message-ID: <c2589b20-a5e3-0026-8f76-3d749ce006d5@sakamocchi.jp>
+References: <1474929911-6005-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1474929911-6005-2-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 3BD75266A2F
- for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2016 02:29:27 +0200 (CEST)
-In-Reply-To: <1475022561-5968-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 9BE5E2606F8
+ for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2016 02:38:36 +0200 (CEST)
+In-Reply-To: <1474929911-6005-2-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,44 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de, broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-TLV_DB_RANGE_HEAD macro was obsoleted by commit bf1d1c9b6179 ("ALSA: tlv:
-add DECLARE_TLV_DB_RANGE()").
+Mark,
 
-This commit removes usage of the macro, with the obsoleting macro renamed
-to SNDRV_CTL_TLVD_DECLARE_DB_RANGE().
+On Sep 27 2016 07:45, Takashi Sakamoto wrote:
+> Sparse reports a below warning.
+> 
+> sound/soc/codecs/da7219.c:804:57: warning: dubious: x & !y
+> 
+> The line includes a condition statement; '(a < b) & !c'. Practically, the
+> evaluated value of this statement equals to the value of '(a < b) && !c'.
+> Although, it's not an usual way to use bitwise operations as logical
+> operations to several conditions.
+> 
+> This commit fixes the bug.
+> 
+> Fixes: 6d817c0e9fd7 ("ASoC: codecs: Add da7219 codec driver")
+> Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+> Cc: Support Opensource <support.opensource@diasemi.com>
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> ---
+>  sound/soc/codecs/da7219.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+> index 50ea943..b9fa8fe 100644
+> --- a/sound/soc/codecs/da7219.c
+> +++ b/sound/soc/codecs/da7219.c
+> @@ -801,7 +801,7 @@ static int da7219_dai_event(struct snd_soc_dapm_widget *w,
+>  				++i;
+>  				msleep(50);
+>  			}
+> -		} while ((i < DA7219_SRM_CHECK_RETRIES) & (!srm_lock));
+> +		} while ((i < DA7219_SRM_CHECK_RETRIES) && (!srm_lock));
+>  
+>  		if (!srm_lock)
+>  			dev_warn(codec->dev, "SRM failed to lock\n");
 
-Cc: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/soc/codecs/rt5616.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+I have never received your 'applied' message to this patch, while
+received the others.
 
-diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
-index f527b5b..851704f 100644
---- a/sound/soc/codecs/rt5616.c
-+++ b/sound/soc/codecs/rt5616.c
-@@ -294,8 +294,7 @@ static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
- static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
- 
- /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
--static unsigned int bst_tlv[] = {
--	TLV_DB_RANGE_HEAD(7),
-+static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(bst_tlv,
- 	0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
- 	1, 1, TLV_DB_SCALE_ITEM(2000, 0, 0),
- 	2, 2, TLV_DB_SCALE_ITEM(2400, 0, 0),
-@@ -303,7 +302,7 @@ static unsigned int bst_tlv[] = {
- 	6, 6, TLV_DB_SCALE_ITEM(4400, 0, 0),
- 	7, 7, TLV_DB_SCALE_ITEM(5000, 0, 0),
- 	8, 8, TLV_DB_SCALE_ITEM(5200, 0, 0),
--};
-+);
- 
- static const struct snd_kcontrol_new rt5616_snd_controls[] = {
- 	/* Headphone Output Volume */
--- 
-2.7.4
+This patch should be abandoned? or I should send v2 with corrected
+subject line?
+
+
+Regards
+
+Takashi Sakamoto
