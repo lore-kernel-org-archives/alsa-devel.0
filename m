@@ -1,18 +1,24 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v2 1/5] ASOC: da7219: fix inappropriate
- condition statement
-Date: Wed, 28 Sep 2016 09:38:31 +0900
-Message-ID: <c2589b20-a5e3-0026-8f76-3d749ce006d5@sakamocchi.jp>
-References: <1474929911-6005-1-git-send-email-o-takashi@sakamocchi.jp>
- <1474929911-6005-2-git-send-email-o-takashi@sakamocchi.jp>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [RFC PATCH 0/3] support DP MST audio
+Date: Wed, 28 Sep 2016 02:50:53 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D194FA3050F@SHSMSX103.ccr.corp.intel.com>
+References: <1474878938-10260-1-git-send-email-libin.yang@linux.intel.com>
+ <s5hlgyebssi.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D194FA2EDC7@SHSMSX103.ccr.corp.intel.com>
+ <s5hintipn2f.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D194FA3011E@SHSMSX103.ccr.corp.intel.com>
+ <s5hr385ojt8.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D194FA30164@SHSMSX103.ccr.corp.intel.com>
+ <s5hinthohn7.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 9BE5E2606F8
- for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2016 02:38:36 +0200 (CEST)
-In-Reply-To: <1474929911-6005-2-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0631D2606F8
+ for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2016 04:51:03 +0200 (CEST)
+In-Reply-To: <s5hinthohn7.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +28,238 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
+Hi Takashi,
 
-On Sep 27 2016 07:45, Takashi Sakamoto wrote:
-> Sparse reports a below warning.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, September 27, 2016 4:46 PM
+> To: Yang, Libin <libin.yang@intel.com>
+> Cc: libin.yang@linux.intel.com; alsa-devel@alsa-project.org; Lin, Mengdong
+> <mengdong.lin@intel.com>
+> Subject: Re: [alsa-devel] [RFC PATCH 0/3] support DP MST audio
 > 
-> sound/soc/codecs/da7219.c:804:57: warning: dubious: x & !y
+> On Tue, 27 Sep 2016 10:18:13 +0200,
+> Yang, Libin wrote:
+> >
+> > Hi Takashi,
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Tuesday, September 27, 2016 3:59 PM
+> > > To: Yang, Libin <libin.yang@intel.com>
+> > > Cc: libin.yang@linux.intel.com; alsa-devel@alsa-project.org; Lin,
+> > > Mengdong <mengdong.lin@intel.com>
+> > > Subject: Re: [alsa-devel] [RFC PATCH 0/3] support DP MST audio
+> > >
+> > > On Tue, 27 Sep 2016 09:47:38 +0200,
+> > > Yang, Libin wrote:
+> > > >
+> > > > Hi Takashi,
+> > > >
+> > > > > -----Original Message-----
+> > > > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > > Sent: Tuesday, September 27, 2016 1:51 AM
+> > > > > To: Yang, Libin <libin.yang@intel.com>
+> > > > > Cc: libin.yang@linux.intel.com; alsa-devel@alsa-project.org;
+> > > > > Lin, Mengdong <mengdong.lin@intel.com>
+> > > > > Subject: Re: [alsa-devel] [RFC PATCH 0/3] support DP MST audio
+> > > > >
+> > > > > On Mon, 26 Sep 2016 18:07:51 +0200, Yang, Libin wrote:
+> > > > > >
+> > > > > > Hi Takashi,
+> > > > > >
+> > > > > > > -----Original Message-----
+> > > > > > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > > > > Sent: Monday, September 26, 2016 11:11 PM
+> > > > > > > To: libin.yang@linux.intel.com
+> > > > > > > Cc: alsa-devel@alsa-project.org; Lin, Mengdong
+> > > > > > > <mengdong.lin@intel.com>; Yang, Libin <libin.yang@intel.com>
+> > > > > > > Subject: Re: [alsa-devel] [RFC PATCH 0/3] support DP MST
+> > > > > > > audio
+> > > > > > >
+> > > > > > > On Mon, 26 Sep 2016 10:35:35 +0200,
+> > > > > > > libin.yang@linux.intel.com
+> > > > > > > wrote:
+> > > > > > > >
+> > > > > > > > From: Libin Yang <libin.yang@linux.intel.com>
+> > > > > > > >
+> > > > > > > > This patchset starts to support DP MST audio.
+> > > > > > > >
+> > > > > > > > This patchset is based on drm-intel-nightly on
+> > > > > > > > git://anongit.freedesktop.org/drm-intel
+> > > > > > > >
+> > > > > > > > Libin Yang (3):
+> > > > > > > >   ALSA: hda - codec add DP MST support for connection list
+> > > > > > > >   ALSA: hda - add DP mst verb support
+> > > > > > > >   ALSA: hda - add DP mst audio support
+> > > > > > >
+> > > > > > > I read the patchset again, and I'm still not convinced
+> > > > > > > enough by this
+> > > > > change.
+> > > > > >
+> > > > > > Yes and I'm sorry that this patchset is delayed for a long time.
+> > > > > > Our gfx driver has been redesigned and some APIs have been
+> changed.
+> > > > > > The change is done in Pandiyan, Dhinakaran's patches:
+> > > > > > Patchset: Prep. for DP audio MST support
+> > > > > >   drm/i915: Standardize port type for DVO encoders
+> > > > > >   drm/i915: Store port enum in intel_encoder
+> > > > > >   drm/i915: Switch to using port stored in intel_encoder
+> > > > > >   drm/i915: Move audio_connector to intel_encoder
+> > > > > >   drm/i915: start adding dp mst audio
+> > > > > > Patch: drm/i915/dp: DP audio API changes for MST
+> > > > > >
+> > > > > > >
+> > > > > > > The connection list is coded in the current way under the
+> > > > > > > assumption that connections are more or less static.  The
+> > > > > > > connections are cached in snd_array, which is only for
+> > > > > > > growing up, and not suitable for the entries that might be
+> > > > > > > frequently removed.  The removal is done only at overriding,
+> > > > > > > and it happens only
+> > > once at boot.
+> > > > > > >
+> > > > > > > OTOH, with DP-MST case, the connection list is basically dynamic.
+> > > > > > > It may increase or decrease depending on the connected
+> monitors...
+> > > > > > > Is my understanding correct?  Or is the DP-MST connection
+> > > > > > > list is static, too?  Then I do wonder how it covers the
+> > > > > > > whole connections with
+> > > > > arbitrary device indices.
+> > > > > >
+> > > > > > For the connection list, the driver will setup all the
+> > > > > > connection list at the beginning for each device entry, even it is non-
+> MST.
+> > > > > > We statically allocate the connection list and will never remove them.
+> > > > >
+> > > > > Hrm, so how will it actually be?  Are the device indices fixed
+> > > > > through the whole operations, no matter which monitor is connected?
+> > > > > How many will they be?
+> > > > >
+> > > > > It'd be helpful if you give an example of the actual typical setup.
+> > > > > Then we can judge whether the proposed implementation is suitable.
+> > > >
+> > > > Even it is in non-MST mode, the connection list is setup with the
+> > > > per_pin initialization.  And as the device entries under the same
+> > > > pin have the same connection list, I use the device entry 0's
+> > > > connection list for other device entries. This avoids connection
+> > > > list is invalid for other device entries in non-MST. After
+> > > > initialization, the connection list will never change even the non-
+> MST/MST mode is changed.
+> > >
+> > > The devid=0 case is fine.  This is identical with the normal widget
+> connections.
+> > > But you wrote that these connections are static even for devid!=0.
+> > > Is it correct?
+> > >
+> > > If so, now my question again: for devid!=0, which connections are
+> > > given statically?  In other words, how many devid would be passed?
+> >
+> > For the connection list, it is static. It will be initialized at bootup.
 > 
-> The line includes a condition statement; '(a < b) & !c'. Practically, the
-> evaluated value of this statement equals to the value of '(a < b) && !c'.
-> Although, it's not an usual way to use bitwise operations as logical
-> operations to several conditions.
+> So this is only about devid=0, right?  For devid!=0, there wouldn't be anything
+> else than pin/cvt connections, correct?
+
+Devid != 0 is the same as devid = 0. And there is only pin/cvt connections.
+
+My basic idea is:
+1. Every device entry use a virtual pin
+2. Each device entry will be initialized at bootup even it is not in MST mode.
+    This means after bootup, mode change will not add/remove the per_pin.
+3. All device entries under the same pin will use the same connection list.
+    And the connection list is initialized at bootup. It will be saved in
+    per_pin->mux_nids. This will never be changed after bootup.
+    (However the pin-cvt connection is dynamically assigned when necessary.)
+
 > 
-> This commit fixes the bug.
+> > For the pin and cvt actual connection, it is dynamically assigned.
 > 
-> Fixes: 6d817c0e9fd7 ("ASoC: codecs: Add da7219 codec driver")
-> Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-> Cc: Support Opensource <support.opensource@diasemi.com>
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> ---
->  sound/soc/codecs/da7219.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> ... but you still want to cache this to an (ever-growing) array for the standard
+> connection lists.  That's what I was concerned.
+
+Do you mean codec->conn_list? If we don't use the dev_id and all
+the device entries under the same pin use the same one, it will be
+exactly the same as before.
+
+Or do you mean the array of spec->pins? spec->pins is setup at bootup
+and will not be changed later.
+
+Regards,
+Libin
+
 > 
-> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-> index 50ea943..b9fa8fe 100644
-> --- a/sound/soc/codecs/da7219.c
-> +++ b/sound/soc/codecs/da7219.c
-> @@ -801,7 +801,7 @@ static int da7219_dai_event(struct snd_soc_dapm_widget *w,
->  				++i;
->  				msleep(50);
->  			}
-> -		} while ((i < DA7219_SRM_CHECK_RETRIES) & (!srm_lock));
-> +		} while ((i < DA7219_SRM_CHECK_RETRIES) && (!srm_lock));
->  
->  		if (!srm_lock)
->  			dev_warn(codec->dev, "SRM failed to lock\n");
-
-I have never received your 'applied' message to this patch, while
-received the others.
-
-This patch should be abandoned? or I should send v2 with corrected
-subject line?
-
-
-Regards
-
-Takashi Sakamoto
+> > In hdmi_pcm_open(), it will call hdmi_choose_cvt() to pick up a cvt
+> > (based on the connection list and the cvt is used or not).
+> > Actually, I think the connection list is only useful when picking up
+> > the cvt (or other nodes). Please correct me if I'm wrong.
+> 
+> Yes, since HDMI/DP codec has only pretty simple connections.
+> 
+> > When we try to connect device entry 2, pin 1 to cvt A, for example, we
+> > will call snd_hda_set_dev_select(pin_nid, dev_id) to select the device
+> > entry on the pin. And then we will use the verb
+> > AC_VERB_SET_CONNECT_SEL to setup the connection as before.
+> 
+> OK, that sounds straightforward.  So we just need to set up these verbs at
+> opening the device (and likely at suspend/resume, too).
+> 
+> 
+> > > > > > > So, the connection cache management is one thing.  Another
+> > > > > > > thing is that the patchset doesn't consider about the pin ELD
+> notification.
+> > > > > > > Basically we switched to ELD notification instead of the pin
+> > > > > > > unsol event for Intel chips.  How does it fit?
+> > > > > >
+> > > > > > For the ELD notification, in the patch 0003, if there is
+> > > > > > monitor hotplug, gfx driver will notify audio driver with
+> > > > > > acomp. Gfx driver will tell which port (pin), pipe (device
+> > > > > > entry) occurs the hotplug event. And then audio driver will
+> > > > > > call
+> > > > > > snd_hdac_acomp_get_eld() to get the
+> > > > > eld information.
+> > > > >
+> > > > > OK, then drop the patch 1 and try to implement without messing
+> > > > > around the connection list.  The patch 1 is what I really don't
+> > > > > like from the beginning.  It makes things complicated.
+> > > >
+> > > > As the connection list is the same for the device entries under
+> > > > same pin, what do you think if we use the original APIs, ignoring
+> > > > the device id. This will not change the connection list code or be
+> > > > a very small
+> > > change.
+> > > >
+> > > > If you agree on that, I will have a try on it.
+> > > >
+> > > > On the same time, I will check with our silicon if my
+> > > > understanding "the connection list is the same for the device entries
+> under same pin"
+> > > > is right.
+> > > >
+> > > > > Is there anything else than haswell fixup that touches the
+> > > > > connection list with the dev id?  If it's the only place, there
+> > > > > can be an
+> > > alternative way to hack it.
+> > > >
+> > > > If we always use the device entry 0 as all the device entries
+> > > > under the same pin, I think we can ignore the dev id now.
+> > >
+> > > Well, it is only about the pin/cvt connection inside HDMI/DP codec,
+> > > and it should be easily covered in a different way even with devid!=0, I
+> suppose.
+> > > That said, the patchset looks way too complex than necessary.
+> > >
+> > > Though, it might be a good idea to start with devid=0 assumption if
+> > > it makes the changes simpler.
+> >
+> > Yes, the patches are too complex for this simple usage. I will try to
+> > see if it works without touching the connection list core.
+> 
+> Yes, please.  Let's keep KISS principle.
+> 
+> 
+> thanks,
+> 
+> Takashi
