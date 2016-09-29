@@ -1,14 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v3 0/8] ASoC: topology: Remaining kernel patches
-Date: Thu, 29 Sep 2016 13:55:50 +0800
-Message-ID: <cover.1475127338.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v3 1/8] ASoC: topology: ABI - Add flags to PCM
+Date: Thu, 29 Sep 2016 14:08:51 +0800
+Message-ID: <7e8185f7a2eb642b52efe0de1369354c3a902daf.1475127338.git.mengdong.lin@linux.intel.com>
+References: <cover.1475127338.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id AF9832614A0
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2016 07:49:19 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id E147F2614A0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2016 08:02:15 +0200 (CEST)
+In-Reply-To: <cover.1475127338.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,44 +26,65 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-This series contains all remaining kernel patches of topology, including
-some ABI update to PCM (FrontEnds) and link (BackEnds) objects.
+Add flags to PCM. These flags will be applied to FE (Front End) links.
 
-User will be able to config existing BE DAI links, configure more for FE
-links. Code are verified and can cover reqeust of Intel pre-release
-platforms for next year, so ABI should be stable.
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Current kernel topology code does not really touch Codec-Codec links
-since there is no user requst atm. We can add support for CC links later
-by reusing code and data structures for BE links, and no need to revise
-ABI.
-
-History:
-v2: Add the reason for creating BE DAI & DAI links by topology to commit
-    message.
-    Drop support for configuring DPCM trigger ordering in topology.
-
-v3: Topology no longer creates BE DAI or BE DAI links, but only configure
-    existing ones. The API to find a DAI link can also check the name and
-    stream name in case a soc card doesn't use unique ID for DAI links.
-    The user space code is also ready.
-
-Mengdong Lin (8):
-  ASoC: topology: ABI - Add flags to PCM
-  ASoC: topology: ABI - Add private data to PCM
-  ASoC: topology: ABI - Define DAI physical PCM data formats
-  ASoC: topology: ABI - Add HW configurations to BE DAI links
-  ASoC: topology: ABI - Add flags and private data to BE DAI links
-  ASoC: topology: ABI - Add name and stream name to BE DAI links
-  ASoC: Define API to find a dai link
-  ASoC: topology: Add support to configure existing BE DAI links
-
- include/sound/soc-dai.h   |  15 +++--
- include/sound/soc.h       |   3 +
- include/uapi/sound/asoc.h |  67 +++++++++++++++++++
- sound/soc/soc-core.c      |  42 ++++++++++++
- sound/soc/soc-topology.c  | 166 ++++++++++++++++++++++++++++++++++++++++++++--
- 5 files changed, 282 insertions(+), 11 deletions(-)
-
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index 33d00a4..a8d25be 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -130,6 +130,10 @@
+ #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
+ #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
+ 
++/* DAI link flags */
++#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND          (1 << 0)
++#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME   (1 << 1)
++
+ /*
+  * Block Header.
+  * This header precedes all object and object arrays below.
+@@ -440,6 +444,8 @@ struct snd_soc_tplg_pcm {
+ 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* for DAI link */
+ 	__le32 num_streams;	/* number of streams */
+ 	struct snd_soc_tplg_stream_caps caps[2]; /* playback and capture for DAI */
++	__le32 flag_mask;       /* bitmask of flags to configure */
++	__le32 flags;           /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
+ } __attribute__((packed));
+ 
+ 
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 6b05047..b6e7063 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1621,6 +1621,18 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
+ 	return snd_soc_register_dai(tplg->comp, dai_drv);
+ }
+ 
++static void set_link_flags(struct snd_soc_dai_link *link,
++		unsigned int flag_mask, unsigned int flags)
++{
++	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND)
++		link->ignore_suspend =
++			flags & SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND ? 1 : 0;
++
++	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME)
++		link->ignore_pmdown_time =
++		flags & SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME ? 1 : 0;
++}
++
+ /* create the FE DAI link */
+ static int soc_tplg_link_create(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_pcm *pcm)
+@@ -1644,6 +1656,8 @@ static int soc_tplg_link_create(struct soc_tplg *tplg,
+ 	link->dynamic = 1;
+ 	link->dpcm_playback = pcm->playback;
+ 	link->dpcm_capture = pcm->capture;
++	if (pcm->flag_mask)
++		set_link_flags(link, pcm->flag_mask, pcm->flags);
+ 
+ 	/* pass control to component driver for optional further init */
+ 	ret = soc_tplg_dai_link_load(tplg, link);
 -- 
 2.5.0
