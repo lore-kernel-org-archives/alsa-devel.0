@@ -1,63 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: fsl: Fix lockups with recent cache
-	changes
-Date: Thu, 29 Sep 2016 11:27:54 -0700
-Message-ID: <20160929182754.28719-1-broonie@kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E7EA2670CD
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2016 20:28:28 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marex@denx.de>, "Maciej S . Szmigiero" <mail@maciej.szmigiero.name>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Applied "ASoC: Intel: Skylake: fix memory leak of module on error exit path" to the asoc tree
+Date: Thu, 29 Sep 2016 11:32:26 -0700
+Message-ID: <E1bpg8A-0007fo-8t@finisterre>
+References: <20160929173212.13700-1-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20160929173212.13700-1-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Dharageswari R <dharageswari.r@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Shreyas NC <shreyas.nc@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The recent series of changes to the caching in the SSI driver have
-caused a number of problems to appear in some test systems.  These are
-still not fully understood but we're coming up to the merge window so
-for now let's revert commit 7de2763d9b3 (ASoC: fsl_ssi: Remove
-.num_reg_defaults_raw from regmap_config) as backing that out seems to
-resolve the problem on affected systems.
+The patch
 
-Reported-by: Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+   ASoC: Intel: Skylake: fix memory leak of module on error exit path
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 0730bd2e2ade00d88647b13a0c17cde254ddf56e Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Thu, 29 Sep 2016 18:32:12 +0100
+Subject: [PATCH] ASoC: Intel: Skylake: fix memory leak of module on error exit
+ path
+
+Currently there is a memory leak of module on a ENOMEM return path.
+Fix this by kfree'ing module before returning.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: Marek Vasut <marex@denx.de>
 ---
- sound/soc/fsl/fsl_ssi.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/skylake/skl-sst-utils.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index b73c102f1cf2..50349437d961 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -177,6 +177,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
- 	.val_bits = 32,
- 	.reg_stride = 4,
- 	.val_format_endian = REGMAP_ENDIAN_NATIVE,
-+	.num_reg_defaults_raw = CCSR_SSI_SACCDIS / sizeof(uint32_t) + 1,
- 	.readable_reg = fsl_ssi_readable_reg,
- 	.volatile_reg = fsl_ssi_volatile_reg,
- 	.precious_reg = fsl_ssi_precious_reg,
-@@ -1500,6 +1501,8 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		 * don't have SACC{ST,EN,DIS} regs.
- 		 */
- 		regconfig.max_register = CCSR_SSI_SRMSK;
-+		regconfig.num_reg_defaults_raw =
-+			CCSR_SSI_SRMSK / sizeof(uint32_t) + 1;
- 	}
+diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
+index 1aa0f371b381..3fe939c36e3a 100644
+--- a/sound/soc/intel/skylake/skl-sst-utils.c
++++ b/sound/soc/intel/skylake/skl-sst-utils.c
+@@ -349,8 +349,10 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
+ 		module->max_instance = mod_entry->instance_max_count;
+ 		size = sizeof(int) * mod_entry->instance_max_count;
+ 		module->instance_id = devm_kzalloc(ctx->dev, size, GFP_KERNEL);
+-		if (!module->instance_id)
++		if (!module->instance_id) {
++			kfree(module);
+ 			return -ENOMEM;
++		}
  
- 	ret = of_property_match_string(np, "clock-names", "ipg");
+ 		list_add_tail(&module->list, &skl->uuid_list);
+ 
 -- 
 2.9.3
