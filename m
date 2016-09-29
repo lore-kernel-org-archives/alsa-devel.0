@@ -1,15 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v3 7/8] ASoC: Define API to find a dai link
-Date: Thu, 29 Sep 2016 14:09:54 +0800
-Message-ID: <0ad5001040470e6b87034b0cdb9b58bc73ff6a1b.1475127338.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v3 6/8] ASoC: topology: ABI - Add name and
+	stream name to BE DAI links
+Date: Thu, 29 Sep 2016 14:09:44 +0800
+Message-ID: <4c6b520e1846e13f4d7e201c51f183d02bdbfed8.1475127338.git.mengdong.lin@linux.intel.com>
 References: <cover.1475127338.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 592142614A0
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2016 08:03:20 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E9082614A0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2016 08:03:24 +0200 (CEST)
 In-Reply-To: <cover.1475127338.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,84 +27,23 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Define the API to find an existing DAI link of the soc card by matching
-the ID, name and stream name.
-
-Some cards may use unique ID for each DAI link, so matching ID is enough,
-and name or stream name are not necessary. But user need to specify name
-or stream name as well if not sure whether link ID is unique since most
-cards use 0 as the default link ID.
-
-Topology can use this API to find an existing BE link and configure it.
+Topology can also use name or stream name to find an existing backend
+link and configure it.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 4f1c784..c3a38ee 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1671,6 +1671,9 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
- 				struct snd_soc_dai_link *dai_link);
- void snd_soc_remove_dai_link(struct snd_soc_card *card,
- 			     struct snd_soc_dai_link *dai_link);
-+struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
-+					       int id, const char *name,
-+					       const char *stream_name);
- 
- int snd_soc_register_dai(struct snd_soc_component *component,
- 	struct snd_soc_dai_driver *dai_drv);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c0bbcd9..a7a1ca4 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -972,6 +972,48 @@ struct snd_soc_dai *snd_soc_find_dai(
- }
- EXPORT_SYMBOL_GPL(snd_soc_find_dai);
- 
-+
-+/**
-+ * snd_soc_find_dai_link - Find a DAI link
-+ *
-+ * @card: soc card
-+ * @id: DAI link ID to match
-+ * @name: DAI link name to match, optional
-+ * @stream name: DAI link stream name to match, optional
-+ *
-+ * This function will search all existing DAI links of the soc card to
-+ * find the link of the same ID. Since DAI links may not have their
-+ * unique ID, so name and stream name should also match if being
-+ * specified.
-+ *
-+ * Return: pointer of DAI link, or NULL if not found.
-+ */
-+struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
-+					       int id, const char *name,
-+					       const char *stream_name)
-+{
-+	struct snd_soc_dai_link *link, *_link;
-+
-+	lockdep_assert_held(&client_mutex);
-+
-+	list_for_each_entry_safe(link, _link, &card->dai_link_list, list) {
-+		if (link->id != id)
-+			continue;
-+
-+		if (name && (!link->name || strcmp(name, link->name)))
-+			continue;
-+
-+		if (stream_name && (!link->stream_name
-+			|| strcmp(stream_name, link->stream_name)))
-+			continue;
-+
-+		return link;
-+	}
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_find_dai_link);
-+
- static bool soc_is_dai_link_bound(struct snd_soc_card *card,
- 		struct snd_soc_dai_link *dai_link)
- {
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index d440bb1..019c8af 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -515,6 +515,8 @@ struct snd_soc_tplg_pcm {
+ struct snd_soc_tplg_link_config {
+ 	__le32 size;            /* in bytes of this structure */
+ 	__le32 id;              /* unique ID - used to match */
++	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* name - used to match */
++	char stream_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* stream name - used to match */
+ 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback and captrure */
+ 	__le32 num_streams;     /* number of streams */
+ 	struct snd_soc_tplg_hw_config hw_config[SND_SOC_TPLG_HW_CONFIG_MAX]; /* hw configs */
 -- 
 2.5.0
