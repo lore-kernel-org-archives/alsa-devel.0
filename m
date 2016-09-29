@@ -1,17 +1,14 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 5/5] ctl: correct documentation about TLV
-	feature
-Date: Thu, 29 Sep 2016 08:57:24 +0900
-Message-ID: <1475107044-30647-6-git-send-email-o-takashi@sakamocchi.jp>
-References: <1475107044-30647-1-git-send-email-o-takashi@sakamocchi.jp>
+From: libin.yang@linux.intel.com
+Subject: [RFC PATCH v2 0/2] support DP MST audio
+Date: Thu, 29 Sep 2016 10:22:20 +0800
+Message-ID: <1475115742-146473-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 675F12669A9
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2016 01:57:31 +0200 (CEST)
-In-Reply-To: <1475107044-30647-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFE2C2614A0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2016 04:27:02 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +18,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
->From my misunderstanding, some explanations are wrong. This commit
-corrects them.
+From: Libin Yang <libin.yang@linux.intel.com>
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- src/control/control.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+This patchset starts to support DP MST audio.
 
-diff --git a/src/control/control.c b/src/control/control.c
-index 40ee9b7..134ba4c 100644
---- a/src/control/control.c
-+++ b/src/control/control.c
-@@ -59,27 +59,27 @@ elements included in the element set.
- When the value of member is changed, corresponding events are transferred to
- userspace applications. The applications should subscribe any events in advance.
- 
--\section tlv_blob Thredshold level and arbitrary data
-+\section tlv_blob Supplemental data for elements in an element set
- 
--TLV feature is designed to transfer data about threshold level between a driver
--and any userspace applications. The data is for an element set.
-+TLV feature is designed to transfer data in a shape of Type/Length/Value,
-+between a driver and any userspace applications. The main purpose is to attach
-+supplement information for elements to an element set; e.g. dB range.
- 
- At first, this feature was implemented to add pre-defined data readable to
- userspace applications. Soon, it was extended to handle several operations;
- read, write and command. The original implementation remains as the read
- operation. The command operation allows drivers to have own implementations
--against requests from userspace applications. As of 2016, simple write operation
--is not supported yet.
-+against requests from userspace applications.
- 
- This feature was introduced to ALSA control feature in 2006, at commit
- c7a0708a2362, corresponding to a series of work for Linux kernel (42750b04c5ba
- and 8aa9b586e420).
- 
--This feature can transfer arbitrary data in a shape of an array with members of
--unsigned int type, therefore it can be used to deliver quite large arbitrary
--data from userspace to in-kernel drivers via ALSA control character device.
--Focusing on this nature, some in-kernel implementations utilize this feature for
--I/O operations.
-+There's no limitation about maximum size of the data, therefore it can be used
-+to deliver quite large arbitrary data from userspace to in-kernel drivers via
-+ALSA control character device. Focusing on this nature, as of 2016, some
-+in-kernel implementations utilize this feature for I/O operations. This is
-+against the original design.
- */
- 
- #include <stdio.h>
+This patchset is based on drm-intel-nightly on
+git://anongit.freedesktop.org/drm-intel
+
+Libin Yang (2):
+  ALSA: hda - add DP mst verb support
+  ALSA: hda - add DP mst audio support
+
+ sound/pci/hda/hda_codec.c  |  77 +++++++++++++++-
+ sound/pci/hda/hda_codec.h  |   3 +
+ sound/pci/hda/patch_hdmi.c | 216 ++++++++++++++++++++++++++++++++++-----------
+ 3 files changed, 241 insertions(+), 55 deletions(-)
+
 -- 
-2.7.4
+1.9.1
