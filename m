@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v3 3/8] ASoC: topology: ABI - Define DAI
-	physical PCM data formats
-Date: Thu, 29 Sep 2016 14:09:14 +0800
-Message-ID: <d79da2b62f1910cfae6e79b790625e7ee6c38860.1475127338.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v3 4/8] ASoC: topology: ABI - Add HW
+	configurations to BE DAI links
+Date: Thu, 29 Sep 2016 14:09:24 +0800
+Message-ID: <c8b6f40c2407f173c4ac402df465c02f36fbb78a.1475127338.git.mengdong.lin@linux.intel.com>
 References: <cover.1475127338.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id D05EC2614A0
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2016 08:02:39 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 222482614A0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2016 08:02:48 +0200 (CEST)
 In-Reply-To: <cover.1475127338.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,72 +27,81 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Define DAI physical PCM data formats for user space, so users can
-configure the formats of backends by topology (e.g. the DAI format
-to set on backend link init).
+Define the types and ABI struct for runtime supported hardware configs
+of backend DAI links, e.g. audio hardware formats.
 
-The kernel will also refer to these formats.
+The default HW config ID will help topology to find the DAI format to set
+on init.
+
+Topology provides this as a fallback if such HW settings are not available
+in ACPI or device tree, to avoid hard code in drivers.
+
+It's only for config items that can be programmed by SW or FW, not for
+physical things like link connections or GPIO used for HP etc.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 964b7de..534aae2 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -15,6 +15,7 @@
- 
- 
- #include <linux/list.h>
-+#include <sound/asoc.h>
- 
- struct snd_pcm_substream;
- struct snd_soc_dapm_widget;
-@@ -26,13 +27,13 @@ struct snd_compr_stream;
-  * Describes the physical PCM data formating and clocking. Add new formats
-  * to the end.
-  */
--#define SND_SOC_DAIFMT_I2S		1 /* I2S mode */
--#define SND_SOC_DAIFMT_RIGHT_J		2 /* Right Justified mode */
--#define SND_SOC_DAIFMT_LEFT_J		3 /* Left Justified mode */
--#define SND_SOC_DAIFMT_DSP_A		4 /* L data MSB after FRM LRC */
--#define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
--#define SND_SOC_DAIFMT_AC97		6 /* AC97 */
--#define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
-+#define SND_SOC_DAIFMT_I2S		SND_SOC_DAI_FORMAT_I2S
-+#define SND_SOC_DAIFMT_RIGHT_J		SND_SOC_DAI_FORMAT_RIGHT_J
-+#define SND_SOC_DAIFMT_LEFT_J		SND_SOC_DAI_FORMAT_LEFT_J
-+#define SND_SOC_DAIFMT_DSP_A		SND_SOC_DAI_FORMAT_DSP_A
-+#define SND_SOC_DAIFMT_DSP_B		SND_SOC_DAI_FORMAT_DSP_B
-+#define SND_SOC_DAIFMT_AC97		SND_SOC_DAI_FORMAT_AC97
-+#define SND_SOC_DAIFMT_PDM		SND_SOC_DAI_FORMAT_PDM
- 
- /* left and right justified also known as MSB and LSB respectively */
- #define SND_SOC_DAIFMT_MSB		SND_SOC_DAIFMT_LEFT_J
 diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 309c9a7..de563d6 100644
+index de563d6..5d06d65 100644
 --- a/include/uapi/sound/asoc.h
 +++ b/include/uapi/sound/asoc.h
-@@ -134,6 +134,21 @@
- #define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND          (1 << 0)
- #define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME   (1 << 1)
+@@ -39,6 +39,11 @@
+  */
+ #define SND_SOC_TPLG_STREAM_CONFIG_MAX  8
  
-+/* DAI physical PCM data formats.
-+ * Add new formats to the end of the list.
++/*
++ * Maximum number of BE/CC link HW configs
 + */
-+#define SND_SOC_DAI_FORMAT_I2S          1 /* I2S mode */
-+#define SND_SOC_DAI_FORMAT_RIGHT_J      2 /* Right Justified mode */
-+#define SND_SOC_DAI_FORMAT_LEFT_J       3 /* Left Justified mode */
-+#define SND_SOC_DAI_FORMAT_DSP_A        4 /* L data MSB after FRM LRC */
-+#define SND_SOC_DAI_FORMAT_DSP_B        5 /* L data MSB during FRM LRC */
-+#define SND_SOC_DAI_FORMAT_AC97         6 /* AC97 */
-+#define SND_SOC_DAI_FORMAT_PDM          7 /* Pulse density modulation */
++#define SND_SOC_TPLG_HW_CONFIG_MAX	8
 +
-+/* left and right justified also known as MSB and LSB respectively */
-+#define SND_SOC_DAI_FORMAT_MSB          SND_SOC_DAI_FORMAT_LEFT_J
-+#define SND_SOC_DAI_FORMAT_LSB          SND_SOC_DAI_FORMAT_RIGHT_J
+ /* individual kcontrol info types - can be mixed with other types */
+ #define SND_SOC_TPLG_CTL_VOLSW		1
+ #define SND_SOC_TPLG_CTL_VOLSW_SX	2
+@@ -292,6 +297,35 @@ struct snd_soc_tplg_stream {
+ 	__le32 channels;	/* channels */
+ } __attribute__((packed));
+ 
++
++/*
++ * Describes a single BE or CC link runtime supported hardware config,
++ * i.e. hardware audio formats.
++ */
++struct snd_soc_tplg_hw_config {
++	__le32 size;            /* in bytes of this structure */
++	__le32 id;		/* unique ID - - used to match */
++	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
++	__u8 clock_gated;	/* 1 if clock can be gated to save power */
++	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
++	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
++	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
++	__u8 fsync_master;	/* 1 for master of FSYNC, 0 for slave */
++	__u8 mclk_direction;    /* 0 for input, 1 for output */
++	__le16 reserved;	/* for 32bit alignment */
++	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
++	__le32 bclk_rate;	/* BCLK freqency in Hz */
++	__le32 fsync_rate;	/* frame clock in Hz */
++	__le32 tdm_slots;	/* number of TDM slots in use */
++	__le32 tdm_slot_width;	/* width in bits for each slot */
++	__le32 tx_slots;	/* bit mask for active Tx slots */
++	__le32 rx_slots;	/* bit mask for active Rx slots */
++	__le32 tx_channels;	/* number of Tx channels */
++	__le32 tx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
++	__le32 rx_channels;	/* number of Rx channels */
++	__le32 rx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
++} __attribute__((packed));
 +
  /*
-  * Block Header.
-  * This header precedes all object and object arrays below.
+  * Manifest. List totals for each payload type. Not used in parsing, but will
+  * be passed to the component driver before any other objects in order for any
+@@ -480,6 +514,9 @@ struct snd_soc_tplg_link_config {
+ 	__le32 id;              /* unique ID - used to match */
+ 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback and captrure */
+ 	__le32 num_streams;     /* number of streams */
++	struct snd_soc_tplg_hw_config hw_config[SND_SOC_TPLG_HW_CONFIG_MAX]; /* hw configs */
++	__le32 num_hw_configs;         /* number of hw configs */
++	__le32 default_hw_config_id;   /* default hw config ID for init */
+ } __attribute__((packed));
+ 
+ /*
 -- 
 2.5.0
