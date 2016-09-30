@@ -1,17 +1,21 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [RFC PATCH v2 0/2] support DP MST audio
-Date: Fri, 30 Sep 2016 01:39:17 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D194FA30DC0@SHSMSX103.ccr.corp.intel.com>
-References: <1475115742-146473-1-git-send-email-libin.yang@linux.intel.com>
+From: David Henningsson <diwic@ubuntu.com>
+Subject: Alsa-lib strings?
+Date: Fri, 30 Sep 2016 08:39:35 +0200
+Message-ID: <3bf2ac97-49f1-8191-94c8-76368b554ab1@ubuntu.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 54DFE261B03
- for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2016 03:39:22 +0200 (CEST)
-In-Reply-To: <1475115742-146473-1-git-send-email-libin.yang@linux.intel.com>
-Content-Language: en-US
+Received: from smtp.egensajt.se (smtp.egensajt.se [193.42.159.246])
+ by alsa0.perex.cz (Postfix) with ESMTP id 880F9261A5E
+ for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2016 08:39:40 +0200 (CEST)
+Received: from [192.168.5.2] (c83-251-161-62.bredband.comhem.se
+ [83.251.161.62])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ (Authenticated sender: diwic@goetyuhd.org)
+ by smtp.egensajt.se (Postfix) with ESMTPSA id A16AB186C
+ for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2016 08:39:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,48 +25,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi and all,
+Hi,
 
-Some of DK's patches are being reverted in drm-intel-nightly branch of
-git://anongit.freedesktop.org/drm-intel
+I'm making some rust bindings for alsa-lib [1] and Rust is quite picky 
+about strings; i e, requires them to be UTF-8.
 
-This is because a flicker regression is found.
+1a) can I count on alsa-lib's strings (everything from card name and 
+mixer identifiers to various descriptions) to be UTF-8 or perhaps even 
+7-bit? If not, what encoding is to be expected?
 
-More detail of this issue can be found:
-https://bugs.freedesktop.org/show_bug.cgi?id=97907
+1b) In what way can buggy drivers violate the answers to 1a?
 
-Regards,
-Libin
+2) Can I count on the strings to be zero terminated? E g, I looked at 
+snd_ctl_elem_id_set_name 
+<http://www.alsa-project.org/alsa-doc/alsa-lib/group___control.html#ga813d02a44a9d01a4a2fe81eda7a8670a> 
+that sets all 44 characters without ensuring a zero at the last 
+character, but snd_ctl_elem_id_get_name 
+<http://www.alsa-project.org/alsa-doc/alsa-lib/group___control.html#gaa6cfea3ac963bfdaeb8189e03e927a76> 
+does not say anything about a max length, it just gives out a *const 
+char. The question applies to all other strings as well.
 
+// David
 
-> -----Original Message-----
-> From: libin.yang@linux.intel.com [mailto:libin.yang@linux.intel.com]
-> Sent: Thursday, September 29, 2016 10:22 AM
-> To: alsa-devel@alsa-project.org; tiwai@suse.de
-> Cc: Lin, Mengdong <mengdong.lin@intel.com>; Yang, Libin
-> <libin.yang@intel.com>; Libin Yang <libin.yang@linux.intel.com>
-> Subject: [alsa-devel] [RFC PATCH v2 0/2] support DP MST audio
-> 
-> From: Libin Yang <libin.yang@linux.intel.com>
-> 
-> This patchset starts to support DP MST audio.
-> 
-> This patchset is based on drm-intel-nightly on
-> git://anongit.freedesktop.org/drm-intel
-> 
-> Libin Yang (2):
->   ALSA: hda - add DP mst verb support
->   ALSA: hda - add DP mst audio support
-> 
->  sound/pci/hda/hda_codec.c  |  77 +++++++++++++++-
->  sound/pci/hda/hda_codec.h  |   3 +
->  sound/pci/hda/patch_hdmi.c | 216
-> ++++++++++++++++++++++++++++++++++-----------
->  3 files changed, 241 insertions(+), 55 deletions(-)
-> 
-> --
-> 1.9.1
+[1] https://docs.rs/alsa/
