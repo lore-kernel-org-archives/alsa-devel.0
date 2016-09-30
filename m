@@ -1,16 +1,15 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 6/7] ALSA: usb: no_period_wake and
-	max_inflight_bytes report
-Date: Fri, 30 Sep 2016 18:13:29 +0530
-Message-ID: <1475239410-16548-7-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 7/7] ALSA: usb: take startup delay into account
+Date: Fri, 30 Sep 2016 18:13:30 +0530
+Message-ID: <1475239410-16548-8-git-send-email-subhransu.s.prusty@intel.com>
 References: <1475239410-16548-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id ED9D0261A1A
- for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2016 14:50:21 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 154DB2665C3
+ for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2016 14:50:23 +0200 (CEST)
 In-Reply-To: <1475239410-16548-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,100 +26,113 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Enable no_period_wake and report max_inflight_bytes.
+For playback usages, the endpoints are started before the prepare
+step, and valid audio data will be rendered with a delay that
+cannot be recovered.
+Worst-case the initial delay due to buffering of empty URBS can
+be up to 12ms
 
-The estimate is a worst-case, it could be refined based on
-actual number of packets per URB and total URBs, however this
-information is only available in the prepare step
+Tested with audio_time:
 
+Timestamps without delay taken into account:
+test$ ./audio_time -Dhw:1,0 -p
+playback: systime: 120093327 nsec, audio time 125000000 nsec, systime delta -4906673
+playback: systime: 245090755 nsec, audio time 250000000 nsec, systime delta -4909245
+playback: systime: 370034641 nsec, audio time 375000000 nsec, systime delta -4965359
+playback: systime: 495089634 nsec, audio time 500000000 nsec, systime delta -4910366
+
+Timestamps with delay taken into account (12ms delay shown)
+test$ ./audio_time -Dhw:1,0 -p -d
+playback: systime: 120095090 nsec, audio time 108000000 nsec, systime delta 12095090
+playback: systime: 245090932 nsec, audio time 232000000 nsec, systime delta 13090932
+playback: systime: 370091792 nsec, audio time 357000000 nsec, systime delta 13091792
+playback: systime: 495092309 nsec, audio time 482000000 nsec, systime delta 13092309
+
+Suggested-by: Rakesh Ughreja <rakesh.ughreja@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/usb/pcm.c | 30 ++++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
+ sound/usb/card.h |  1 +
+ sound/usb/pcm.c  | 32 +++++++++++++++++++++++++++++---
+ 2 files changed, 30 insertions(+), 3 deletions(-)
 
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 71778ca..d128058 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -148,6 +148,7 @@ struct snd_usb_substream {
+ 
+ 	int last_frame_number;          /* stored frame number */
+ 	int last_delay;                 /* stored delay */
++	int start_delay;                /* initial delay due to empty frames */
+ 
+ 	struct {
+ 		int marker;
 diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 44d178e..5bcc729 100644
+index 5bcc729..2bf7537 100644
 --- a/sound/usb/pcm.c
 +++ b/sound/usb/pcm.c
-@@ -713,7 +713,8 @@ static int configure_endpoint(struct snd_usb_substream *subs)
- static int snd_usb_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *hw_params)
- {
--	struct snd_usb_substream *subs = substream->runtime->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_usb_substream *subs = runtime->private_data;
- 	struct audioformat *fmt;
- 	int ret;
+@@ -86,6 +86,7 @@ static snd_pcm_uframes_t snd_usb_pcm_pointer(struct snd_pcm_substream *substream
+ 	hwptr_done = subs->hwptr_done;
+ 	substream->runtime->delay = snd_usb_pcm_delay(subs,
+ 						substream->runtime->rate);
++	substream->runtime->delay += subs->start_delay;
+ 	spin_unlock(&subs->lock);
+ 	return hwptr_done / (substream->runtime->frame_bits >> 3);
+ }
+@@ -858,9 +859,34 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
  
-@@ -728,7 +729,6 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
- 	subs->buffer_periods = params_periods(hw_params);
- 	subs->channels = params_channels(hw_params);
- 	subs->cur_rate = params_rate(hw_params);
+ 	/* for playback, submit the URBs now; otherwise, the first hwptr_done
+ 	 * updates for all URBs would happen at the same time when starting */
+-	if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK)
++	if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		ret = start_endpoints(subs, true);
+ 
++		/*
++		 * Since we submit empty URBS, the constant initial delay will
++		 * not be recovered and will be added to the dynamic delay
++		 * measured with the frame counter. Worst-case the
++		 * startup delay can be (MAX_URBS-1) * MAX_PACKS = 12ms
++		 */
++		if (ret == 0) {
++			struct snd_usb_endpoint *ep = subs->data_endpoint;
++			int total_packs = 0;
++			int i;
++
++			for (i = 0; i < ep->nurbs - 1; i++) {
++				struct snd_urb_ctx *u = &ep->urb[i];
++
++				total_packs += u->packets;
++			}
++			subs->start_delay = DIV_ROUND_UP(total_packs *
++							 subs->cur_rate, 1000);
++			if (subs->start_delay)
++				dev_dbg(&subs->dev->dev,
++					"Initial delay for EP @%p: %d frames\n",
++					ep, subs->start_delay);
++		}
++	}
++
+  unlock:
+ 	snd_usb_unlock_shutdown(subs->stream->chip);
+ 	return ret;
+@@ -1549,6 +1575,7 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
+ 	runtime->delay = subs->last_delay;
+ 	runtime->delay += frames;
+ 	subs->last_delay = runtime->delay;
++	runtime->delay += subs->start_delay;
+ 
+ 	/* realign last_frame_number */
+ 	subs->last_frame_number = usb_get_current_frame_number(subs->dev);
+@@ -1597,8 +1624,7 @@ static void retire_playback_urb(struct snd_usb_substream *subs,
+ 		subs->last_delay = 0;
+ 	else
+ 		subs->last_delay -= processed;
+-	runtime->delay = subs->last_delay;
 -
- 	fmt = find_format(subs);
- 	if (!fmt) {
- 		dev_dbg(&subs->dev->dev,
-@@ -749,6 +749,26 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
- 	subs->altset_idx = fmt->altset_idx;
- 	subs->need_setup_ep = true;
- 
-+	/*
-+	 * worst-case max_inflight_bytes is one URB (MAX_PACKS ms),
-+	 * multiply by size of 1ms packet for this format. The delay
-+	 * can be larger since there are up to MAX_URBS submitted,
-+	 * we only track the max number of bytes transferred when one
-+	 * URB is submitted.
-+	 */
-+	runtime->hw.max_inflight_bytes = DIV_ROUND_UP(
-+		MAX_PACKS * subs->cur_rate * subs->channels *
-+		snd_pcm_format_width(subs->pcm_format), 8 * 1000);
-+
-+	/*
-+	 * The number of packets cannot exceed the ring buffer size, reflect
-+	 * constraints for low-latency usages
-+	 */
-+	if (runtime->hw.max_inflight_bytes >
-+		subs->period_bytes * subs->buffer_periods)
-+		runtime->hw.max_inflight_bytes =
-+			subs->period_bytes * subs->buffer_periods;
-+
- 	return 0;
- }
- 
-@@ -851,6 +871,7 @@ static struct snd_pcm_hardware snd_usb_hardware =
- 	.info =			SNDRV_PCM_INFO_MMAP |
- 				SNDRV_PCM_INFO_MMAP_VALID |
- 				SNDRV_PCM_INFO_BATCH |
-+				SNDRV_PCM_INFO_NO_PERIOD_WAKEUP |
- 				SNDRV_PCM_INFO_INTERLEAVED |
- 				SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 				SNDRV_PCM_INFO_PAUSE,
-@@ -1225,6 +1246,7 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream, int direction)
- 	subs->interface = -1;
- 	subs->altset_idx = 0;
- 	runtime->hw = snd_usb_hardware;
-+	runtime->hw.max_inflight_bytes = 0; /* will be set in hw_params() */
- 	runtime->private_data = subs;
- 	subs->pcm_substream = substream;
- 	/* runtime PM is also done there */
-@@ -1328,7 +1350,7 @@ static void retire_capture_urb(struct snd_usb_substream *subs,
- 		}
- 	}
- 
--	if (period_elapsed)
-+	if (period_elapsed && !runtime->no_period_wakeup)
- 		snd_pcm_period_elapsed(subs->pcm_substream);
- }
- 
-@@ -1542,7 +1564,7 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 
- 	spin_unlock_irqrestore(&subs->lock, flags);
- 	urb->transfer_buffer_length = bytes;
--	if (period_elapsed)
-+	if (period_elapsed && !runtime->no_period_wakeup)
- 		snd_pcm_period_elapsed(subs->pcm_substream);
- }
- 
++	runtime->delay = subs->last_delay + subs->start_delay;
+ 	/*
+ 	 * Report when delay estimate is off by more than 2ms.
+ 	 * The error should be lower than 2ms since the estimate relies
 -- 
 1.9.1
