@@ -1,59 +1,64 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/6] mfd: arizona: Add gating of external MCLKn clocks
-Date: Fri, 30 Sep 2016 10:29:29 +0100
-Message-ID: <20160930092929.GD21682@localhost.localdomain>
-References: <1472831568-466-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1472831568-466-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20160913124457.GA31412@dell>
- <20160913125707.GN21682@localhost.localdomain>
- <20160913131150.GB31719@dell>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH 0/7] ALSA: Add rewinds disabled, delays,
+	max_inflight_bytes
+Date: Fri, 30 Sep 2016 18:13:23 +0530
+Message-ID: <1475239410-16548-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160913131150.GB31719@dell>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, s.nawrocki@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CC0C260083
+ for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2016 14:50:06 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 13, 2016 at 02:11:50PM +0100, Lee Jones wrote:
-> On Tue, 13 Sep 2016, Charles Keepax wrote:
-> 
-> > On Tue, Sep 13, 2016 at 01:44:57PM +0100, Lee Jones wrote:
-> > > On Fri, 02 Sep 2016, Charles Keepax wrote:
-> > > 
-> > > > From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> > > > 
-> > > > This patch adds requesting of the clocks supplied on MCLK1, MCLK2 pins,
-> > > > gating of the 32k clock is added to the arizona_clk32k_enable(),
-> > > > arizona_clk32k_disable() helpers.
-> > > > 
-> > > > It's a temporary change until the CODEC's clock controller gets exposed
-> > > > through the clk API and is helpful for board configurations where the
-> > > > MCLK clocks are not provided by always on oscillators.
-> > > > 
-> > > > Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> > > > Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-> > > > ---
-> > > >  drivers/mfd/arizona-core.c       | 30 ++++++++++++++++++++++++++++--
-> > > >  include/linux/mfd/arizona/core.h |  9 +++++++++
-> > > >  2 files changed, 37 insertions(+), 2 deletions(-)
-> > > 
-> > > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> > > 
-> > > Can I take this?
-> > > 
-> > 
-> > The two following ASoC patches depend on it, so its probably
-> > slightly easier if they go through together.
-> 
-> Okay, let me know when you have all your Acks.
-> 
+Set of patches to fix issues with delays, hw_ptr fuzziness [1] and
+increased buffering w/ DSPs
 
-Hi Lee, I see you have merged this patch on your public MFD
-branch, is it possible to send Mark a branch to pull from now? So
-we can get the other two patches merged.
+1. Rewinds can be disabled  when data written in ring buffer will never be
+validated. This allow for new HDaudio SPIB DMA functionality(allow fetch up to the
+application pointer, no rewind supported)
 
-Thanks,
-Charles
+2. Report max in-flight bytes to avoid problems with stale data (like late
+wake-ups, rewinds)
+
+3. add new estimate for USB startup delay.
+
+[1]
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-June/093646.html
+
+
+Pierre-Louis Bossart (6):
+  ALSA: core: let low-level driver or userspace disable rewinds
+  ALSA: core: add .update_appl_ptr callback for pcm ops
+  ALSA: core: add report of max inflight bytes
+  ALSA: hda: add default value for max_inflight_bytes
+  ALSA: usb: no_period_wake and max_inflight_bytes report
+  ALSA: usb: take startup delay into account
+
+Ramesh Babu (1):
+  ALSA: pcm: avoid mmap of control data if .update_appl_ptr is
+    implemented
+
+ include/sound/pcm.h            |  4 +++
+ include/uapi/sound/asound.h    |  6 ++--
+ sound/core/pcm_lib.c           | 26 ++++++++++++++++++
+ sound/core/pcm_native.c        | 51 +++++++++++++++++++++++++++++++++-
+ sound/pci/hda/hda_controller.c |  1 +
+ sound/usb/card.h               |  1 +
+ sound/usb/pcm.c                | 62 +++++++++++++++++++++++++++++++++++++-----
+ 7 files changed, 141 insertions(+), 10 deletions(-)
+
+-- 
+1.9.1
