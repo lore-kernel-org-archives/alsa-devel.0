@@ -1,15 +1,17 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 0/7] ALSA: Add rewinds disabled, delays,
-	max_inflight_bytes
-Date: Fri, 30 Sep 2016 18:13:23 +0530
-Message-ID: <1475239410-16548-1-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 1/7] ALSA: core: let low-level driver or
+	userspace disable rewinds
+Date: Fri, 30 Sep 2016 18:13:24 +0530
+Message-ID: <1475239410-16548-2-git-send-email-subhransu.s.prusty@intel.com>
+References: <1475239410-16548-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CC0C260083
- for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2016 14:50:06 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id EFE85261740
+ for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2016 14:50:08 +0200 (CEST)
+In-Reply-To: <1475239410-16548-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,45 +22,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+Cc: tiwai@suse.de, lgirdwood@gmail.com, Ramesh Babu <ramesh.babu@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Set of patches to fix issues with delays, hw_ptr fuzziness [1] and
-increased buffering w/ DSPs
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-1. Rewinds can be disabled  when data written in ring buffer will never be
-validated. This allow for new HDaudio SPIB DMA functionality(allow fetch up to the
-application pointer, no rewind supported)
+Add new hw_params flag to explicitly tell driver that rewinds will never
+be used. This can be used by low-level driver to optimize DMA operations
+and reduce power consumption. Use this flag only when data written in
+ring buffer will never be invalidated, e.g. any update of appl_ptr is
+final.
 
-2. Report max in-flight bytes to avoid problems with stale data (like late
-wake-ups, rewinds)
+Note that the update of appl_ptr include both a read/write data
+operation as well as snd_pcm_forward() whose behavior is not modified.
 
-3. add new estimate for USB startup delay.
+Caveat: there is currently no way to query capabilities without opening
+a pcm stream, so applications might need to serially open all exposed
+devices, check what they support by looking at hw_params->info and close
+them (this is what PulseAudio does so might not be an issue)
 
-[1]
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-June/093646.html
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+---
+ include/sound/pcm.h         | 1 +
+ include/uapi/sound/asound.h | 1 +
+ sound/core/pcm_native.c     | 8 ++++++++
+ 3 files changed, 10 insertions(+)
 
-
-Pierre-Louis Bossart (6):
-  ALSA: core: let low-level driver or userspace disable rewinds
-  ALSA: core: add .update_appl_ptr callback for pcm ops
-  ALSA: core: add report of max inflight bytes
-  ALSA: hda: add default value for max_inflight_bytes
-  ALSA: usb: no_period_wake and max_inflight_bytes report
-  ALSA: usb: take startup delay into account
-
-Ramesh Babu (1):
-  ALSA: pcm: avoid mmap of control data if .update_appl_ptr is
-    implemented
-
- include/sound/pcm.h            |  4 +++
- include/uapi/sound/asound.h    |  6 ++--
- sound/core/pcm_lib.c           | 26 ++++++++++++++++++
- sound/core/pcm_native.c        | 51 +++++++++++++++++++++++++++++++++-
- sound/pci/hda/hda_controller.c |  1 +
- sound/usb/card.h               |  1 +
- sound/usb/pcm.c                | 62 +++++++++++++++++++++++++++++++++++++-----
- 7 files changed, 141 insertions(+), 10 deletions(-)
-
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index af1fb37..5344c16 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -368,6 +368,7 @@ struct snd_pcm_runtime {
+ 	unsigned int rate_num;
+ 	unsigned int rate_den;
+ 	unsigned int no_period_wakeup: 1;
++	unsigned int no_rewinds:1;
+ 
+ 	/* -- SW params -- */
+ 	int tstamp_mode;		/* mmap timestamp is updated */
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 609cadb..6828ed2 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -362,6 +362,7 @@ typedef int snd_pcm_hw_param_t;
+ #define SNDRV_PCM_HW_PARAMS_NORESAMPLE	(1<<0)	/* avoid rate resampling */
+ #define SNDRV_PCM_HW_PARAMS_EXPORT_BUFFER	(1<<1)	/* export buffer */
+ #define SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP	(1<<2)	/* disable period wakeups */
++#define SNDRV_PCM_HW_PARAMS_NO_REWINDS	        (1<<3)	/* disable rewinds */
+ 
+ struct snd_interval {
+ 	unsigned int min, max;
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index c61fd50..be8617b 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -565,6 +565,8 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	runtime->no_period_wakeup =
+ 			(params->info & SNDRV_PCM_INFO_NO_PERIOD_WAKEUP) &&
+ 			(params->flags & SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP);
++	runtime->no_rewinds =
++		(params->flags & SNDRV_PCM_HW_PARAMS_NO_REWINDS) ? 1 : 0;
+ 
+ 	bits = snd_pcm_format_physical_width(runtime->format);
+ 	runtime->sample_bits = bits;
+@@ -2438,6 +2440,9 @@ static snd_pcm_sframes_t snd_pcm_playback_rewind(struct snd_pcm_substream *subst
+ 	if (frames == 0)
+ 		return 0;
+ 
++	if (runtime->no_rewinds)
++		return 0;
++
+ 	snd_pcm_stream_lock_irq(substream);
+ 	switch (runtime->status->state) {
+ 	case SNDRV_PCM_STATE_PREPARED:
+@@ -2486,6 +2491,9 @@ static snd_pcm_sframes_t snd_pcm_capture_rewind(struct snd_pcm_substream *substr
+ 	if (frames == 0)
+ 		return 0;
+ 
++	if (runtime->no_rewinds)
++		return 0;
++
+ 	snd_pcm_stream_lock_irq(substream);
+ 	switch (runtime->status->state) {
+ 	case SNDRV_PCM_STATE_PREPARED:
 -- 
 1.9.1
