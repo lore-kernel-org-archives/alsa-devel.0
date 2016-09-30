@@ -1,17 +1,17 @@
-From: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] ASoC: fsl: Fix lockups with recent cache
-	changes
-Date: Thu, 29 Sep 2016 21:23:49 +0200
-Message-ID: <0a653c4f-f0e4-b2f4-78f3-93acb5755e88@denx.de>
-References: <20160929182754.28719-1-broonie@kernel.org>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [RFC PATCH v2 0/2] support DP MST audio
+Date: Fri, 30 Sep 2016 01:39:17 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D194FA30DC0@SHSMSX103.ccr.corp.intel.com>
+References: <1475115742-146473-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
- by alsa0.perex.cz (Postfix) with ESMTP id BE842264EFA
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2016 21:23:52 +0200 (CEST)
-In-Reply-To: <20160929182754.28719-1-broonie@kernel.org>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54DFE261B03
+ for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2016 03:39:22 +0200 (CEST)
+In-Reply-To: <1475115742-146473-1-git-send-email-libin.yang@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +21,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "Maciej S . Szmigiero" <mail@maciej.szmigiero.name>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/29/2016 08:27 PM, Mark Brown wrote:
-> The recent series of changes to the caching in the SSI driver have
-> caused a number of problems to appear in some test systems.  These are
-> still not fully understood but we're coming up to the merge window so
-> for now let's revert commit 7de2763d9b3 (ASoC: fsl_ssi: Remove
-> .num_reg_defaults_raw from regmap_config) as backing that out seems to
-> resolve the problem on affected systems.
+Hi Takashi and all,
+
+Some of DK's patches are being reverted in drm-intel-nightly branch of
+git://anongit.freedesktop.org/drm-intel
+
+This is because a flicker regression is found.
+
+More detail of this issue can be found:
+https://bugs.freedesktop.org/show_bug.cgi?id=97907
+
+Regards,
+Libin
+
+
+> -----Original Message-----
+> From: libin.yang@linux.intel.com [mailto:libin.yang@linux.intel.com]
+> Sent: Thursday, September 29, 2016 10:22 AM
+> To: alsa-devel@alsa-project.org; tiwai@suse.de
+> Cc: Lin, Mengdong <mengdong.lin@intel.com>; Yang, Libin
+> <libin.yang@intel.com>; Libin Yang <libin.yang@linux.intel.com>
+> Subject: [alsa-devel] [RFC PATCH v2 0/2] support DP MST audio
 > 
-> Reported-by: Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> Cc: Marek Vasut <marex@denx.de>
-
-Reviewed-by: Marek Vasut <marex@denx.de>
-
-I'll keep my eyes peeled for the issue, thanks for all the time you and
-Lars invested.
-
-> ---
->  sound/soc/fsl/fsl_ssi.c | 3 +++
->  1 file changed, 3 insertions(+)
+> From: Libin Yang <libin.yang@linux.intel.com>
 > 
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index b73c102f1cf2..50349437d961 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -177,6 +177,7 @@ static const struct regmap_config fsl_ssi_regconfig = {
->  	.val_bits = 32,
->  	.reg_stride = 4,
->  	.val_format_endian = REGMAP_ENDIAN_NATIVE,
-> +	.num_reg_defaults_raw = CCSR_SSI_SACCDIS / sizeof(uint32_t) + 1,
->  	.readable_reg = fsl_ssi_readable_reg,
->  	.volatile_reg = fsl_ssi_volatile_reg,
->  	.precious_reg = fsl_ssi_precious_reg,
-> @@ -1500,6 +1501,8 @@ static int fsl_ssi_probe(struct platform_device *pdev)
->  		 * don't have SACC{ST,EN,DIS} regs.
->  		 */
->  		regconfig.max_register = CCSR_SSI_SRMSK;
-> +		regconfig.num_reg_defaults_raw =
-> +			CCSR_SSI_SRMSK / sizeof(uint32_t) + 1;
->  	}
->  
->  	ret = of_property_match_string(np, "clock-names", "ipg");
+> This patchset starts to support DP MST audio.
 > 
-
-
--- 
-Best regards,
-Marek Vasut
+> This patchset is based on drm-intel-nightly on
+> git://anongit.freedesktop.org/drm-intel
+> 
+> Libin Yang (2):
+>   ALSA: hda - add DP mst verb support
+>   ALSA: hda - add DP mst audio support
+> 
+>  sound/pci/hda/hda_codec.c  |  77 +++++++++++++++-
+>  sound/pci/hda/hda_codec.h  |   3 +
+>  sound/pci/hda/patch_hdmi.c | 216
+> ++++++++++++++++++++++++++++++++++-----------
+>  3 files changed, 241 insertions(+), 55 deletions(-)
+> 
+> --
+> 1.9.1
