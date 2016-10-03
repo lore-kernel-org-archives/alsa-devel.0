@@ -1,21 +1,19 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 2/7] ALSA: core: add .update_appl_ptr
-	callback for pcm ops
-Date: Mon, 3 Oct 2016 10:06:14 +0530
-Message-ID: <20161003043613.GS2467@localhost>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH 0/7] ALSA: Add rewinds disabled, delays,
+ max_inflight_bytes
+Date: Mon, 3 Oct 2016 09:58:44 +0530
+Message-ID: <20161003042840.GA23816@subhransu-desktop>
 References: <1475239410-16548-1-git-send-email-subhransu.s.prusty@intel.com>
- <1475239410-16548-3-git-send-email-subhransu.s.prusty@intel.com>
- <s5h8tu934gk.wl-tiwai@suse.de> <20160930172009.GU2467@localhost>
- <s5hintdkzbl.wl-tiwai@suse.de>
+ <s5hbmz53500.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 7410426644C
- for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2016 06:27:37 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B22A26644C
+ for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2016 06:35:21 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hintdkzbl.wl-tiwai@suse.de>
+In-Reply-To: <s5hbmz53500.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,43 +24,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, "Babu, Ramesh" <ramesh.babu@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 30, 2016 at 08:38:38PM +0200, Takashi Iwai wrote:
-> On Fri, 30 Sep 2016 19:20:10 +0200,
-> Vinod Koul wrote:
+On Fri, Sep 30, 2016 at 03:13:19PM +0200, Takashi Iwai wrote:
+> On Fri, 30 Sep 2016 14:43:23 +0200,
+> Subhransu S. Prusty wrote:
 > > 
-> > On Fri, Sep 30, 2016 at 03:24:59PM +0200, Takashi Iwai wrote:
-> > > On Fri, 30 Sep 2016 14:43:25 +0200,
-> > > Subhransu S. Prusty wrote:
-> > > > 
-> > > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > > 
-> > > > When appl_ptr is updated let low-level driver know, e.g.  to let the
-> > > > low-level driver/hardware pre-fetch data opportunistically.
-> > > > 
-> > > > The existing .ack callback could be used but it would need to be
-> > > > extended with new arguments, resulting in multiple changes in legacy
-> > > > code.
-> > > 
-> > > I wouldn't mind changing these callers.  They aren't so many, after
-> > > all. 
+> > Set of patches to fix issues with delays, hw_ptr fuzziness [1] and
+> > increased buffering w/ DSPs
 > > 
-> > Yes this was one of the discussions we had in the past. I don't recall the
-> > conclusion so had recommened to keep as is and discuss here.
+> > 1. Rewinds can be disabled  when data written in ring buffer will never be
+> > validated. This allow for new HDaudio SPIB DMA functionality(allow fetch up to the
+> > application pointer, no rewind supported)
 > > 
-> > Do you think it's better to do that or use a new one :)
+> > 2. Report max in-flight bytes to avoid problems with stale data (like late
+> > wake-ups, rewinds)
+> > 
+> > 3. add new estimate for USB startup delay.
 > 
-> It's OK to change ack callback, and actually it'll be cleaner.
-> But then it'll be a problem in the next patch, I suppose :)
+> Well, all these three are really individual and independent features.
+> So, please send three patch sets instead.
 
-Yes and one of the reason is that we are using one flag to advertise two
-capabilities, one is no rewind and second is appl_ptr update.
+Sure. I will send separate patch series for each of them.
 
-We feel we should deal with them by using two flags so that code can be
-made cleaner.
+> 
+> For example, I would apply the USB startup delay fix easily, while the
+> inflight bytes feature needs more discussion.  The rewind disablement
+> needs a bit more discussion (e.g. can it be disabled from the driver
+> side as well?).
 
-Thanks
+No I think. Considering the SPIB usecases, user may decide to use SPIB or not.
+
+Regards,
+Subhransu
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > 
+> > [1]
+> > http://mailman.alsa-project.org/pipermail/alsa-devel/2015-June/093646.html
+> > 
+> > 
+> > Pierre-Louis Bossart (6):
+> >   ALSA: core: let low-level driver or userspace disable rewinds
+> >   ALSA: core: add .update_appl_ptr callback for pcm ops
+> >   ALSA: core: add report of max inflight bytes
+> >   ALSA: hda: add default value for max_inflight_bytes
+> >   ALSA: usb: no_period_wake and max_inflight_bytes report
+> >   ALSA: usb: take startup delay into account
+> > 
+> > Ramesh Babu (1):
+> >   ALSA: pcm: avoid mmap of control data if .update_appl_ptr is
+> >     implemented
+> > 
+> >  include/sound/pcm.h            |  4 +++
+> >  include/uapi/sound/asound.h    |  6 ++--
+> >  sound/core/pcm_lib.c           | 26 ++++++++++++++++++
+> >  sound/core/pcm_native.c        | 51 +++++++++++++++++++++++++++++++++-
+> >  sound/pci/hda/hda_controller.c |  1 +
+> >  sound/usb/card.h               |  1 +
+> >  sound/usb/pcm.c                | 62 +++++++++++++++++++++++++++++++++++++-----
+> >  7 files changed, 141 insertions(+), 10 deletions(-)
+> > 
+> > -- 
+> > 1.9.1
+> > 
+
 -- 
-~Vinod
