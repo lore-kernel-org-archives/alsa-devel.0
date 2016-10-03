@@ -1,20 +1,24 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 7/7] ALSA: usb: take startup delay into
-	account
-Date: Tue, 4 Oct 2016 02:31:47 +0900
-Message-ID: <9078cb95-5d56-c46f-2da1-43d7e9f0937e@sakamocchi.jp>
-References: <1475239410-16548-1-git-send-email-subhransu.s.prusty@intel.com>
- <1475239410-16548-8-git-send-email-subhransu.s.prusty@intel.com>
- <bcf3ecf2-04ba-8b4b-2659-aeea4c25f09b@sakamocchi.jp>
- <5bd1695b-4425-34a7-923e-894f01889117@linux.intel.com>
+From: Petr Kulhavy <brain@jikos.cz>
+Subject: Re: [PATCH 1/5] ASoC: tas571x: fix missing bias save
+ level
+Date: Mon, 3 Oct 2016 21:00:57 +0200
+Message-ID: <429a96e7-1eb4-9d30-9b38-ea7d8c95ffd3@jikos.cz>
+References: <1475505650-8572-1-git-send-email-brain@jikos.cz>
+ <1475505650-8572-2-git-send-email-brain@jikos.cz>
+ <505a8248-dcc6-ee31-b381-72c661d1b373@metafoo.de>
+Reply-To: brain@jikos.cz
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 60E0C26697F
- for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2016 19:31:51 +0200 (CEST)
-In-Reply-To: <5bd1695b-4425-34a7-923e-894f01889117@linux.intel.com>
+Received: from fep14.mx.upcmail.net (fep14.mx.upcmail.net [62.179.121.34])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7FD9266971
+ for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2016 21:00:58 +0200 (CEST)
+Received: from edge03.upcmail.net ([192.168.13.238]) by viefep14-int.chello.at
+ (InterMail vM.8.01.05.18 201-2260-151-151-20140610) with ESMTP
+ id <20161003190058.TZZX29981.viefep14-int.chello.at@edge03.upcmail.net>
+ for <alsa-devel@alsa-project.org>; Mon, 3 Oct 2016 21:00:58 +0200
+In-Reply-To: <505a8248-dcc6-ee31-b381-72c661d1b373@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,64 +28,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, lgirdwood@gmail.com
+To: Lars-Peter Clausen <lars@metafoo.de>, broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Louis,
 
-On Oct 4 2016 00:08, Pierre-Louis Bossart wrote:
-> On 10/3/16 1:46 AM, Takashi Sakamoto wrote:
->> Hi,
+On 03/10/16 19:09, Lars-Peter Clausen wrote:
+> On 10/03/2016 04:40 PM, Petr Kulhavy wrote:
+>> The tas571x_set_bias_level() was not saving the new bias level to
+>> codec->dapm.bias_level. This had the effect that bias was switching between
+>> standby and off levels and never entered the on level.
 >>
->> On Sep 30 2016 21:43, Subhransu S. Prusty wrote:
->>> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>>
->>> For playback usages, the endpoints are started before the prepare
->>> step,
+>> This fix saves the bias level before returning from the function.
 >>
->> As long as I understand, in ALSA USB audio device class driver,
->> submitting URBs starts at .prepare called by PCM core. So not before it
->> as long as the 'prepare step' means .prepare call.
-> 
-> The comment should have said 'started during the prepare step', you're
-> right.
+> This is done by the ASoC core after the function completes, so this should
+> not be necessary.
+Hi Lars,
 
-OK. Thanks for your confirmation.
-
-We have the similar design in drivers with IEC 61883-1/6 packet
-streaming engine for Audio and Music units on IEEE 1394 bus (locates in
-sound/firewire/*). This is the reason I have interests in this patchset.
-
->>> and valid audio data will be rendered with a delay that
->>> cannot be recovered.
->>> Worst-case the initial delay due to buffering of empty URBS can
->>> be up to 12ms
->>
->> I thinks the aim of this patch is to add proper delay to current
->> calculation of estimated delay, due to the URBs accumulated between
->> .prepare and .trigger call. If so, it's better to explain about it in
->> the comment so that the other developers such as me can follow this
->> improvement.
-> 
-> Yes indeed. will fix but as replied to Takashi Iwai there are wider
-> questions on why endpoints can't be linked and why the start times can't
-> be set by the class driver.
-
->From me, an additional question.
-
-There's no guarantee that applications call ioctl() with
-SNDRV_PCM_IOCTL_START within 12 msec after ioctl() with
-SNDRV_PCM_IOCTL_PREPARE. In this case, more URBs might be sumitted by
-usb_submit_urb/snd_complete_urb() cycle, as long as I understand. So
-it's quite rough to compute based on MAX_URBS (=12).
-
-I think it better to use actual time (monotonic time or something
-suitable) to compute the additional delay between .prepare and .trigger
-calls. Or calculate queued packet between the two calls, then compute
-the delay.
-
+since what kernel version is it handled by the ASoC core?
+I've been testing it on a 4.1 based iMX kernel and there the bias levels 
+were handled improperly...
 
 Thanks
-
-Takashi Sakamoto
+Petr
