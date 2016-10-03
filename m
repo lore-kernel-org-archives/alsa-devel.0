@@ -1,17 +1,19 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: Re: [PATCH] ASoC: nau8825: erase pop noise by soft mute
-Date: Mon, 3 Oct 2016 19:21:40 +0800
-Message-ID: <57F23F44.40308@nuvoton.com>
-References: <1473839252-18868-1-git-send-email-KCHSU0@nuvoton.com>
- <20160924191156.e6mu2vlhhaltkeua@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/7] ALSA: core: let low-level driver or
+ userspace disable rewinds
+Date: Mon, 3 Oct 2016 09:39:41 -0500
+Message-ID: <1cfa9993-cdfb-9ef5-907b-845633173965@linux.intel.com>
+References: <1475239410-16548-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1475239410-16548-2-git-send-email-subhransu.s.prusty@intel.com>
+ <s5ha8ep34kf.wl-tiwai@suse.de> <20161003044056.GB23816@subhransu-desktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C6A382668C6
- for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2016 13:21:45 +0200 (CEST)
-In-Reply-To: <20160924191156.e6mu2vlhhaltkeua@sirena.org.uk>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BD00266B91
+ for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2016 16:39:34 +0200 (CEST)
+In-Reply-To: <20161003044056.GB23816@subhransu-desktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, AC30 WTLi <WTLI@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, Ramesh Babu <ramesh.babu@intel.com>, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 9/25/2016 3:11 AM, Mark Brown wrote:
-> On Wed, Sep 14, 2016 at 03:47:32PM +0800, John Hsu wrote:
->
->   
->> + * Enable soft mute to gradually lower DAC volume to zero;
->> + * Soft unmute will gradually increase DAC volume to volume setting.
->>     
->
->   
->> +		regmap_write(nau8825->regmap, NAU8825_REG_DAC_DGAIN_CTRL, 0);
->> +		regmap_update_bits(nau8825->regmap, NAU8825_REG_MUTE_CTRL,
->> +			NAU8825_DAC_SOFT_MUTE, NAU8825_DAC_SOFT_MUTE);
->>     
->
-> Why are we not just exposing soft mute as a userspace control like other
-> drivers do?  It seems like there's some weird interaction between
-> sidetones and the soft mute which this is trying to work around but
-> that's not really explained, it seems to be the main point here.
-> Basically I can't figure out what's intended here.
->
->   
 
-The issue only happens in the begin of playback. The amplitude of
-output signal has abnormal change in a short time and then recover
-to the level by user configuration. The amplitude change makes pop
-noise. For the reason, we use soft mute to fix the pop noise because
-the signal will output from small to normal case gradually. But the
-steps of soft mute is not enough to cover the period of amplitude
-change. Thus, we need to defer the soft mute and put the triggered
-point near the signal output. The userspace control can't catch the
-point as we wish.
-
->> +EXPORT_SYMBOL_GPL(nau8825_soft_mute);
->>     
+>>> @@ -2438,6 +2440,9 @@ static snd_pcm_sframes_t snd_pcm_playback_rewind(struct snd_pcm_substream *subst
+>>>  	if (frames == 0)
+>>>  		return 0;
+>>>
+>>> +	if (runtime->no_rewinds)
+>>> +		return 0;
+>>
+>> Better to return an error instead?
 >
-> Why is this exported, how will it be used?  The function seems to be
-> called from inside this driver as well...
->   
+> As the number of frames rewinded is zero, it looks appropriate. Any reason
+> why returning an error code would help?
 
-The function is exported for the machine driver. When the platform
-stops the playback and it makes soft mute. When the playback starts,
-the playform makes soft unmute in trigger start function. The trigger
-function is the closest point of output signal, and the codec driver
-can make the soft unmute deferring as short as possible.
+The return type is also snd_sframes_t, not sure how a error code would 
+be returned without additional changes.
