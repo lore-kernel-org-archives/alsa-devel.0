@@ -1,19 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/7] ALSA: core: let low-level driver or
- userspace disable rewinds
-Date: Mon, 3 Oct 2016 09:39:41 -0500
-Message-ID: <1cfa9993-cdfb-9ef5-907b-845633173965@linux.intel.com>
-References: <1475239410-16548-1-git-send-email-subhransu.s.prusty@intel.com>
- <1475239410-16548-2-git-send-email-subhransu.s.prusty@intel.com>
- <s5ha8ep34kf.wl-tiwai@suse.de> <20161003044056.GB23816@subhransu-desktop>
+From: Petr Kulhavy <brain@jikos.cz>
+Subject: [PATCH 1/5] ASoC: tas571x: fix missing bias save level
+Date: Mon,  3 Oct 2016 16:40:46 +0200
+Message-ID: <1475505650-8572-2-git-send-email-brain@jikos.cz>
+References: <1475505650-8572-1-git-send-email-brain@jikos.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BD00266B91
- for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2016 16:39:34 +0200 (CEST)
-In-Reply-To: <20161003044056.GB23816@subhransu-desktop>
+Received: from fep23.mx.upcmail.net (fep23.mx.upcmail.net [62.179.121.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B9C0266B93
+ for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2016 16:41:08 +0200 (CEST)
+Received: from edge01.upcmail.net ([192.168.13.236]) by viefep23-int.chello.at
+ (InterMail vM.8.01.05.21 201-2260-151-156-20141103) with ESMTP
+ id <20161003144107.FDMQ3040.viefep23-int.chello.at@edge01.upcmail.net>
+ for <alsa-devel@alsa-project.org>; Mon, 3 Oct 2016 16:41:07 +0200
+In-Reply-To: <1475505650-8572-1-git-send-email-brain@jikos.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,22 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, Ramesh Babu <ramesh.babu@intel.com>, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, Petr Kulhavy <brain@jikos.cz>
 List-Id: alsa-devel@alsa-project.org
 
+The tas571x_set_bias_level() was not saving the new bias level to
+codec->dapm.bias_level. This had the effect that bias was switching between
+standby and off levels and never entered the on level.
 
->>> @@ -2438,6 +2440,9 @@ static snd_pcm_sframes_t snd_pcm_playback_rewind(struct snd_pcm_substream *subst
->>>  	if (frames == 0)
->>>  		return 0;
->>>
->>> +	if (runtime->no_rewinds)
->>> +		return 0;
->>
->> Better to return an error instead?
->
-> As the number of frames rewinded is zero, it looks appropriate. Any reason
-> why returning an error code would help?
+This fix saves the bias level before returning from the function.
 
-The return type is also snd_sframes_t, not sure how a error code would 
-be returned without additional changes.
+Signed-off-by: Petr Kulhavy <brain@jikos.cz>
+---
+ sound/soc/codecs/tas571x.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
+index df5e5cb..e996313 100644
+--- a/sound/soc/codecs/tas571x.c
++++ b/sound/soc/codecs/tas571x.c
+@@ -360,6 +360,7 @@ static int tas571x_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
++	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+-- 
+2.7.4
