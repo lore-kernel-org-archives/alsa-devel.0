@@ -1,71 +1,140 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH 00/12] ASoC: sun4i-codec: Add support for A31 Codec
-Date: Mon,  3 Oct 2016 19:07:52 +0800
-Message-ID: <20161003110804.28235-1-wens@csie.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Russell King <linux@armlinux.org.uk>, Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: [PATCH 09/12] ASoC: sun4i-codec: Add support for A31
+ ADC capture path
+Date: Mon,  3 Oct 2016 19:08:01 +0800
+Message-ID: <20161003110804.28235-10-wens@csie.org>
+References: <20161003110804.28235-1-wens@csie.org>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBIXYZC7QKGQED76CF7I-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20161003110804.28235-1-wens-jdAy2FN1RRM@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi everyone,
+The A31's internal codec capture path has a mixer in front of the ADC
+for each channel, capable of selecting various inputs, including
+microphones, line in, phone in, and the main output mixer.
 
-This series adds support for stereo mixer controls in DAPM and uses them
-to add support for Allwinner A31's internal codec. This series is for
-4.10. I'm sending them out now, so if there are any issues we can discuss
-them at ELCE next week.
+This patch adds the various controls, widgets and routes needed for
+audio capture from the already supported inputs on the A31.
 
-The A31's internal codec is similar (in terms of DMA, interface and
-control layouts) to the one found in the A10/A13/A20 SoCs. However
-it has more external inputs and outputs, the mixer controls are now
-stereo (left/right separated), and it also has some audio processing
-features (not supported).
+Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+---
+ sound/soc/sunxi/sun4i-codec.c | 65 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 65 insertions(+)
 
-To fully support DAPM but also provide a sane interface to userspace,
-the first 4 patches attempt to implement stereo support to DAPM controls.
-Otherwise we end up with a bunch of mono controls labeled "X Left" and
-"X Right".
-
-Patches 5 through 10 add support for the A31's internal codec, one
-feature per patch. Hopefully this makes it easier to review. Some
-features, such as PHONE inputs/outputs, audio processing, headset
-jack detection and buttons, aren't supported yet.
-
-Patch 11 adds a device node for the codec to the A31 dtsi.
-
-Patch 12 enables the codec for the Hummingbird A31 board.
-
-
-Regards
-ChenYu
-
-Chen-Yu Tsai (12):
-  ASoC: dapm: Support second register for DAPM control updates
-  ASoC: dapm: Implement stereo mixer control support
-  ASoC: dapm: Introduce DAPM_DOUBLE dual channel control type
-  ASoC: dapm: Introduce DAPM_DOUBLE_R dual channel dual register control
-    type
-  ASoC: sun4i-codec: Add support for A31 playback through headphone
-    output
-  ASoC: sun4i-codec: Add support for A31 Line In playback
-  ASoC: sun4i-codec: Add support for A31 Line Out playback
-  ASoC: sun4i-codec: Add support for A31 analog microphone inputs
-  ASoC: sun4i-codec: Add support for A31 ADC capture path
-  ASoC: sun4i-codec: Add support for A31 board level audio routing
-  ARM: dts: sun6i: Add audio codec device node
-  ARM: dts: sun6i: hummingbird: Enable internal audio codec
-
- .../devicetree/bindings/sound/sun4i-codec.txt      |  41 +-
- arch/arm/boot/dts/sun6i-a31-hummingbird.dts        |  12 +
- arch/arm/boot/dts/sun6i-a31.dtsi                   |  12 +
- include/sound/soc-dapm.h                           |  14 +
- sound/soc/codecs/adau17x1.c                        |   2 +-
- sound/soc/codecs/tlv320aic3x.c                     |   2 +-
- sound/soc/codecs/wm9712.c                          |   2 +-
- sound/soc/codecs/wm9713.c                          |   2 +-
- sound/soc/soc-dapm.c                               | 116 ++--
- sound/soc/sunxi/sun4i-codec.c                      | 599 ++++++++++++++++++---
- 10 files changed, 699 insertions(+), 103 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 727f54e3bd13..cd21914fd01f 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -761,6 +761,30 @@ static const struct snd_kcontrol_new sun6i_codec_mixer_controls[] = {
+ 			SUN6I_CODEC_OM_DACA_CTRL_RMIX_MIC2, 1, 0),
+ };
+ 
++/* ADC mixer controls */
++static const struct snd_kcontrol_new sun6i_codec_adc_mixer_controls[] = {
++	SOC_DAPM_DOUBLE("Mixer Capture Switch",
++			SUN6I_CODEC_ADC_ACTL,
++			SUN6I_CODEC_ADC_ACTL_LADCMIX_OMIXL,
++			SUN6I_CODEC_ADC_ACTL_RADCMIX_OMIXR, 1, 0),
++	SOC_DAPM_DOUBLE("Mixer Reversed Capture Switch",
++			SUN6I_CODEC_ADC_ACTL,
++			SUN6I_CODEC_ADC_ACTL_LADCMIX_OMIXR,
++			SUN6I_CODEC_ADC_ACTL_RADCMIX_OMIXL, 1, 0),
++	SOC_DAPM_DOUBLE("Line In Capture Switch",
++			SUN6I_CODEC_ADC_ACTL,
++			SUN6I_CODEC_ADC_ACTL_LADCMIX_LINEINL,
++			SUN6I_CODEC_ADC_ACTL_RADCMIX_LINEINR, 1, 0),
++	SOC_DAPM_DOUBLE("Mic1 Capture Switch",
++			SUN6I_CODEC_ADC_ACTL,
++			SUN6I_CODEC_ADC_ACTL_LADCMIX_MIC1,
++			SUN6I_CODEC_ADC_ACTL_RADCMIX_MIC1, 1, 0),
++	SOC_DAPM_DOUBLE("Mic2 Capture Switch",
++			SUN6I_CODEC_ADC_ACTL,
++			SUN6I_CODEC_ADC_ACTL_LADCMIX_MIC2,
++			SUN6I_CODEC_ADC_ACTL_RADCMIX_MIC2, 1, 0),
++};
++
+ /* headphone controls */
+ static const char * const sun6i_codec_hp_src_enum_text[] = {
+ 	"DAC", "Mixer",
+@@ -856,6 +880,10 @@ static const struct snd_kcontrol_new sun6i_codec_codec_widgets[] = {
+ 	SOC_SINGLE_TLV("Mic2 Boost Volume", SUN6I_CODEC_MIC_CTRL,
+ 		       SUN6I_CODEC_MIC_CTRL_MIC2BOOST, 0x7, 0,
+ 		       sun6i_codec_mic_gain_scale),
++	SOC_DOUBLE_TLV("ADC Capture Volume",
++		       SUN6I_CODEC_ADC_ACTL, SUN6I_CODEC_ADC_ACTL_ADCLG,
++		       SUN6I_CODEC_ADC_ACTL_ADCRG, 0x7, 0,
++		       sun6i_codec_out_mixer_pregain_scale),
+ };
+ 
+ static const struct snd_soc_dapm_widget sun6i_codec_codec_dapm_widgets[] = {
+@@ -881,6 +909,23 @@ static const struct snd_soc_dapm_widget sun6i_codec_codec_dapm_widgets[] = {
+ 	/* Line In */
+ 	SND_SOC_DAPM_INPUT("LINEIN"),
+ 
++	/* Digital parts of the ADCs */
++	SND_SOC_DAPM_SUPPLY("ADC Enable", SUN6I_CODEC_ADC_FIFOC,
++			    SUN6I_CODEC_ADC_FIFOC_EN_AD, 0,
++			    NULL, 0),
++
++	/* Analog parts of the ADCs */
++	SND_SOC_DAPM_ADC("Left ADC", "Codec Capture", SUN6I_CODEC_ADC_ACTL,
++			 SUN6I_CODEC_ADC_ACTL_ADCLEN, 0),
++	SND_SOC_DAPM_ADC("Right ADC", "Codec Capture", SUN6I_CODEC_ADC_ACTL,
++			 SUN6I_CODEC_ADC_ACTL_ADCREN, 0),
++
++	/* ADC Mixers */
++	SOC_MIXER_ARRAY("Left ADC Mixer", SND_SOC_NOPM, 0, 0,
++			sun6i_codec_adc_mixer_controls),
++	SOC_MIXER_ARRAY("Right ADC Mixer", SND_SOC_NOPM, 0, 0,
++			sun6i_codec_adc_mixer_controls),
++
+ 	/* Digital parts of the DACs */
+ 	SND_SOC_DAPM_SUPPLY("DAC Enable", SUN4I_CODEC_DAC_DPC,
+ 			    SUN4I_CODEC_DAC_DPC_EN_DA, 0,
+@@ -938,6 +983,20 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
+ 	{ "Right Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
+ 	{ "Right Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
+ 
++	/* Left ADC Mixer Routes */
++	{ "Left ADC Mixer", "Mixer Capture Switch", "Left Mixer" },
++	{ "Left ADC Mixer", "Mixer Reversed Capture Switch", "Right Mixer" },
++	{ "Left ADC Mixer", "Line In Capture Switch", "LINEIN" },
++	{ "Left ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
++	{ "Left ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
++
++	/* Right ADC Mixer Routes */
++	{ "Right ADC Mixer", "Mixer Capture Switch", "Right Mixer" },
++	{ "Right ADC Mixer", "Mixer Reversed Capture Switch", "Left Mixer" },
++	{ "Right ADC Mixer", "Line In Capture Switch", "LINEIN" },
++	{ "Right ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
++	{ "Right ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
++
+ 	/* Headphone Routes */
+ 	{ "Headphone Source Playback Route", "DAC", "Left DAC" },
+ 	{ "Headphone Source Playback Route", "DAC", "Right DAC" },
+@@ -951,6 +1010,12 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
+ 	{ "Line Out Source Playback Route", "Stereo", "Right Mixer" },
+ 	{ "Line Out Source Playback Route", "Mono Differential", "Left Mixer" },
+ 	{ "LINEOUT", NULL, "Line Out Source Playback Route" },
++
++	/* ADC Routes */
++	{ "Left ADC", NULL, "ADC Enable" },
++	{ "Right ADC", NULL, "ADC Enable" },
++	{ "Left ADC", NULL, "Left ADC Mixer" },
++	{ "Right ADC", NULL, "Right ADC Mixer" },
+ };
+ 
+ static struct snd_soc_codec_driver sun6i_codec_codec = {
 -- 
 2.9.3
