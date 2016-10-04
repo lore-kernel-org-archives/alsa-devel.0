@@ -1,57 +1,68 @@
 From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
-        <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: [PATCH 10/14] dt-bindings: sound: Add sun8i audio card documentation
-Date: Tue,  4 Oct 2016 11:46:23 +0200
-Message-ID: <c317ce9f180a24611e79086944feca00d416b7b4.1475571575.git.mylene.josserand@free-electrons.com>
+        <mylene.josserand@free-electrons.com>
+Subject: [PATCH 03/14] ASoC: sun4i-i2s: Add apb reset
+Date: Tue,  4 Oct 2016 11:46:16 +0200
+Message-ID: <2c5abe6578c8e4e841cb59357d88ce397551a593.1475571575.git.mylene.josserand@free-electrons.com>
 References: <cover.1475569400.git.mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <cover.1475569400.git.mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-In-Reply-To: <cover.1475571575.git.mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-References: <cover.1475571575.git.mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1475569400.git.mylene.josserand@free-electrons.com>
+In-Reply-To: <cover.1475571575.git.mylene.josserand@free-electrons.com>
+References: <cover.1475571575.git.mylene.josserand@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: vinod.koul@intel.com, maxime.ripard@free-electrons.com, wens@csie.org, mturquette@baylibre.com, sboyd@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, lee.jones@linaro.org, mark.rutland@arm.com, robh+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com, thomas.petazzoni@free-electrons.com, mylene.josserand@free-electrons.com, alexandre.belloni@free-electrons.com
 List-Id: alsa-devel@alsa-project.org
 
-Add the documentation for dt-binding of the audio card driver
-for sun8i SoC.
+Add APB deassert function for sun4i-i2s driver.
 
-Signed-off-by: Mylène Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
 ---
- Documentation/devicetree/bindings/sound/sun8i-audio.txt | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/sun8i-audio.txt
+ sound/soc/sunxi/sun4i-i2s.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sun8i-audio.txt b/Documentation/devicetree/bindings/sound/sun8i-audio.txt
-new file mode 100644
-index 0000000..2403983
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sun8i-audio.txt
-@@ -0,0 +1,17 @@
-+* Allwinner A23/A33 audio card
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 687a8f8..f3f7026 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -17,6 +17,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
++#include <linux/reset.h>
+ 
+ #include <sound/dmaengine_pcm.h>
+ #include <sound/pcm_params.h>
+@@ -589,6 +590,7 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+ {
+ 	struct sun4i_i2s *i2s;
+ 	struct resource *res;
++	struct reset_control *reset_apb;
+ 	void __iomem *regs;
+ 	int irq, ret;
+ 
+@@ -626,7 +628,19 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "Can't get our mod clock\n");
+ 		return PTR_ERR(i2s->mod_clk);
+ 	}
+-	
 +
-+This binding implements the A33 audio card.
++	reset_apb = devm_reset_control_get(&pdev->dev, "apb_reset");
++	if (IS_ERR(reset_apb)) {
++		dev_err(&pdev->dev, "Can't get apb reset\n");
++		return PTR_ERR(i2s->mod_clk);
++	}
 +
-+Required properties:
-+- compatible: must be "allwinner,sun8i-audio"
-+- allwinner,audio-codec: must have the phandle of the audio codec
-+  ("sun8i-a33-codec", for example).
-+- allwinner,i2s-controller: must have the phandle of the DAI
-+  ("allwinner,sun4i-a10-i2s", for example)
++	ret = reset_control_deassert(reset_apb);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Can't deassert apb reset (%d)\n", ret);
++		return ret;
++	}
 +
-+Example:
-+sound {
-+	compatible = "allwinner,sun8i-audio";
-+	allwinner,audio-codec = <&codec>;
-+	allwinner,i2s-controller = <&dai>;
-+};
+ 	i2s->playback_dma_data.addr = res->start + SUN4I_I2S_FIFO_TX_REG;
+ 	i2s->playback_dma_data.maxburst = 4;
+ 
 -- 
 2.9.3
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
