@@ -1,62 +1,72 @@
 From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH 08/14] dt-bindings: sound: Add sun8i analog codec
- documentation
-Date: Tue, 4 Oct 2016 18:24:30 +0200
-Message-ID: <20161004162430.GQ5228@lukather>
+Subject: Re: [PATCH 10/14] dt-bindings: sound: Add sun8i audio
+ card documentation
+Date: Tue, 4 Oct 2016 18:32:29 +0200
+Message-ID: <20161004163229.GR5228@lukather>
 References: <cover.1475571575.git.mylene.josserand@free-electrons.com>
- <06ea14939405c3eb0fb9be655d26ee564a04a53d.1475571575.git.mylene.josserand@free-electrons.com>
+ <c317ce9f180a24611e79086944feca00d416b7b4.1475571575.git.mylene.josserand@free-electrons.com>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="p2u4WfPhYOuYlOsk"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="h1wVxq8aeHrvhZJz"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBHVTZ67QKGQEVFIDBNY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <06ea14939405c3eb0fb9be655d26ee564a04a53d.1475571575.git.mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+In-Reply-To: <c317ce9f180a24611e79086944feca00d416b7b4.1475571575.git.mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
 To: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 Cc: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---p2u4WfPhYOuYlOsk
-Content-Type: text/plain; charset=iso-8859-1
+--h1wVxq8aeHrvhZJz
+Content-Type: text/plain; charset=UTF-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Tue, Oct 04, 2016 at 11:46:21AM +0200, Myl=E8ne Josserand wrote:
-> Add the documentation for dt-binding of the analog audiocodec
-> driver for SUN8I SoC.
+On Tue, Oct 04, 2016 at 11:46:23AM +0200, Myl=C3=A8ne Josserand wrote:
+> Add the documentation for dt-binding of the audio card driver
+> for sun8i SoC.
 >=20
-> Signed-off-by: Myl=E8ne Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+> Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org=
+>
 > ---
->  .../devicetree/bindings/sound/sun8i-codec-analog.txt | 20 ++++++++++++++=
+>  Documentation/devicetree/bindings/sound/sun8i-audio.txt | 17 +++++++++++=
 ++++++
->  1 file changed, 20 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/sun8i-codec-a=
-nalog.txt
+>  1 file changed, 17 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/sun8i-audio.t=
+xt
 >=20
-> diff --git a/Documentation/devicetree/bindings/sound/sun8i-codec-analog.t=
-xt b/Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
+> diff --git a/Documentation/devicetree/bindings/sound/sun8i-audio.txt b/Do=
+cumentation/devicetree/bindings/sound/sun8i-audio.txt
 > new file mode 100644
-> index 0000000..a03ec20
+> index 0000000..2403983
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
-> @@ -0,0 +1,20 @@
-> +* Allwinner A23/A33 Analog Codec
+> +++ b/Documentation/devicetree/bindings/sound/sun8i-audio.txt
+> @@ -0,0 +1,17 @@
+> +* Allwinner A23/A33 audio card
 > +
-> +This codec must be handled as a PRCM subnode.
-
-Like Mark was saying, you should probably reference the sun6i-prcm.txt
-binding here
-
+> +This binding implements the A33 audio card.
+> +
 > +Required properties:
-> +- compatible: must be either "allwinner,sun8i-codec-analog"
+> +- compatible: must be "allwinner,sun8i-audio"
+> +- allwinner,audio-codec: must have the phandle of the audio codec
+> +  ("sun8i-a33-codec", for example).
+> +- allwinner,i2s-controller: must have the phandle of the DAI
+> +  ("allwinner,sun4i-a10-i2s", for example)
 
-Our compatible prefix is <family>-<soc>, and using the older SoC that
-introduced that block.
+You should probably have a link to the PRCM too, instead of relying on
+the name of the device in your card, which is quite fragile.
 
-In this case, that would be sun6i-a31, I think?
+Also, I'm wondering, shouldn't all these nodes be part of a single
+MFD? They share the same address space (even though it's split
+nicely), the same clocks, and really are just one big device. Chen-Yu,
+Mark, any opinion?
 
 Thanks,
 Maxime
@@ -66,29 +76,32 @@ Maxime Ripard, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
 
---p2u4WfPhYOuYlOsk
+--=20
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
+
+--h1wVxq8aeHrvhZJz
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJX89e+AAoJEBx+YmzsjxAg4vIP/A+feM0Z7SRv5eTtt5g+yqeA
-RG/N/G1nJt32ENjJvDAMh67S5dUWLcb+4RsmdxfDkdQHjFBVxfCVINI/2/mxo1B2
-0MdSlvMKvWgZsUFUzVpRf9Lmx7/u7zzljcK+z+vvF8mnLGfwB0a6T5j2JIzAWrrw
-218qh4xkDJpwdxseKgqFAS/J0aH2j9cRU/woxk8mwGyFCMQiVrzKS0j0+I/sc8jC
-BtTJPqOIEUCspqGQzg0mDIMsgMbdio23J1F5guOqs43BE9tDKCofaob2PACrVcvj
-ze9IlAd7YnPUma3ijOCEO7iAkhpujq3SMDNMCWbwNIXzMfY7y0WD5nHEatxEERhQ
-iYwi1z2TDtw9MLWVMGtCLQ6Go0V16OQhnOFPR0Ps2Wyv3gNWV11XrpDqLh1rDmdU
-TpUQl4ows57z9jalbd7X7qhwd8G1ESpwA5iLHTnJ7Ec8cby5rkIPWdiXxy9k1pqX
-TjAM4f6ALHeX/VV2z0u787PQt5skpsM7EHiLoklrsxDWTyF0VwtKtltC+VffTn7t
-9cCLn6nOOcmMIcnrmZwAeccSCvPCnkrtSu1fRx3TutudpgkpUgXw2KUuOMhiTEs2
-F4Yqwx6glIzmTQY0BNe+fmL8GqNpKPQ7st9htsUUVNtKOqX/BhsRlhZtdLMSmzGn
-PPLgo4ehUi+6//MOCg6D
-=3pp+
+iQIcBAEBAgAGBQJX89mdAAoJEBx+YmzsjxAgkAIP/2djagaL2twRMaHwJ5ApV6uo
+Dt3DdjLOG8zgNHdN0MWV8jfotG7UnMwlk5paFMUG+hv4UH9GwjopiKd81bORZNW4
+fBDjCCspPHp7UaJC56Ij8i+D+HFEahRFbxvhnkds9/00Rlz4x0cq9GEuPwa9XiiV
+xxwJo8aJ7ULpSCCtJfotIIPBzabIGU++zok+NsdtjhtO0sUw2pmh+orVY+skMHyT
+KKPzWzWk7Cf345AKwgzQvw1QLHj9cPEQFyy3rnZX2ceXJA9qkvP7GQFuCa+7Fz2h
+23tqt3iEaHBPsMVFit2WV+PLxuIwrHcQanaROF4TTMcC9m0TxvUOk2GexBHI3D34
+nOdK8/i8yOrKeC8kDW5oVQ9NkWHPvoMqktNLwOhoOSXyvUDoVqHWLFZjXnhw8nvB
+DTa/motexRjwdz7dZIVv8Q4In7ZFPTTCsfEtGADlEkGMM/pICJbyiZRcmwEHICsf
+I/k83ubjbv2bQFHWEDC4C8g96S/oUMw4mD/6aCHYeWe3EdyRHA3JNub5QwJ4lKFP
+O+3qAbN884JEg5owuODPJtV4DcKWjbXZ1Vo4tvrXk0pAO/6mDFIedOnxbFsgwpNx
+6H5XNb0wCt25U83gwzS8LVC44IFOeYDzyfb9okgE6pA8jG7EczC+F4LK/dyEnlDN
+TUvCZzVYKY0CaxlK9OI8
+=Wubi
 -----END PGP SIGNATURE-----
 
---p2u4WfPhYOuYlOsk--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--h1wVxq8aeHrvhZJz--
