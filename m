@@ -1,62 +1,88 @@
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PATCH 06/14] ASoC: Add sun8i digital audio codec
-Date: Tue, 4 Oct 2016 15:16:03 +0200
-Message-ID: <20161004151603.38aac5b2@free-electrons.com>
+From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Subject: Re: [PATCH 01/14] dma: sun6i-dma: Add burst case of 4
+Date: Tue, 4 Oct 2016 15:46:51 +0200
+Message-ID: <20161004154651.3d0eb02badb6dc66758dd3aa@free.fr>
 References: <cover.1475569400.git.mylene.josserand@free-electrons.com>
-        <85cbd9926e52d0aa03f6bbfd8794373d8db491e0.1475571575.git.mylene.josserand@free-electrons.com>
-        <20161004144008.0d07d18c@free-electrons.com>
-        <20161004130727.srmaielkvd2z5k3s@sirena.org.uk>
+	<3a2404510b5f8b16ae3bb193982d70f158700b2b.1475571575.git.mylene.josserand@free-electrons.com>
+	<20161004124011.d7f5754a082d5f17d5185fc4@free.fr>
+	<20161004141221.55327f1b@free-electrons.com>
+Reply-To: moinejf-GANU6spQydw@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161004130727.srmaielkvd2z5k3s@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: =?UTF-8?B?TXlsw6huZQ==?= Josserand <mylene.josserand@free-electrons.com>, vinod.koul@intel.com, maxime.ripard@free-electrons.com, wens@csie.org, mturquette@baylibre.com, sboyd@codeaurora.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, lee.jones@linaro.org, mark.rutland@arm.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com, alexandre.belloni@free-electrons.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-sunxi+bncBCV6DL6LYMNBBUHFZ27QKGQERW4HSUY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20161004141221.55327f1b-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Thomas Petazzoni <thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: =?ISO-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Tue, 4 Oct 2016 14:12:21 +0200
+Thomas Petazzoni <thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
 
-On Tue, 4 Oct 2016 15:07:27 +0200, Mark Brown wrote:
+> > > Add the case of a burst of 4 which is handled by the SoC.
+> > >=20
+> > > Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand@free-electrons=
+.com>
+> > > ---
+> > >  drivers/dma/sun6i-dma.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >=20
+> > > diff --git a/drivers/dma/sun6i-dma.c b/drivers/dma/sun6i-dma.c
+> > > index 8346199..0485204 100644
+> > > --- a/drivers/dma/sun6i-dma.c
+> > > +++ b/drivers/dma/sun6i-dma.c
+> > > @@ -240,6 +240,8 @@ static inline s8 convert_burst(u32 maxburst)
+> > >  	switch (maxburst) {
+> > >  	case 1:
+> > >  		return 0;
+> > > +	case 4:
+> > > +		return 1;
+> > >  	case 8:
+> > >  		return 2;
+> > >  	default:
+> > > --=20
+> > > 2.9.3 =20
+> >=20
+> > This patch has already been rejected by Maxime in the threads
+> > 	http://www.spinics.net/lists/dmaengine/msg08610.html
+> > and
+> > 	http://www.spinics.net/lists/dmaengine/msg08719.html
+> >=20
+> > I hope you will find the way he wants for this maxburst to be added.
+>=20
+> I was about to reply to Mylene's e-mail, suggesting that she should add
+> a comment in the code (and maybe in the commit log) to explain why this
+> addition is needed, and also that even though the schematics say that
+> value "1" (max burst size of 4 bytes) is reserved, it is in fact
+> incorrect. The Allwinner BSP code is really using this value, and it's
+> the value that makes audio work, so we believe the datasheet is simply
+> incorrect.
+>=20
+> We already discussed it with Maxime, so I believe he should agree this
+> time. But I would suggest to have such details explained in the commit
+> log and in a comment in the code.
 
-> > /*
-> >  * ...
-> >  */  
-> 
-> I don't care, IIRC that's something from CodingStyle which checkpatch
-> moans about.
+Strange. Looking at the datasheets of the A23, A31, A33, A83T and H3
+(these are the SoCs using the DMA sun6i), only the H3 can have 4 as the
+burst size (the doc is unclear for the A31).
 
-Correct. The
+Well, I was submitting for the H3, Myl=C3=A8ne is submitting for the A33.
+So, what about the A23, A31 and A83T?
 
-/* ..
- * ..
- */
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
 
-style is mandatory for net/ and crypto code, but not in the rest of the
-kernel.
-
-> > I'm probably missing something, but in the sun4i-codec.c driver, those
-> > fields are initialized directly in the snd_soc_codec_driver structure,
-> > not in the .component_driver sub-structure.  
-> 
-> We're in the process of pushing everything out to component level, this
-> update should be made in the old code if it's not happened already.
-
-OK.
-
-> > > +	if (clk_prepare_enable(scodec->clk_module))
-> > > +		pr_err("err:open failed;\n");  
-> 
-> > Grr, pr_err, not good. Plus you want to return with an error from the
-> > probe() function.  
-> 
-> Also when printing an error message use dev_err().
-
-That's why I said "Grr, pr_err, not good" :)
-
-Thomas
--- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+--=20
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
