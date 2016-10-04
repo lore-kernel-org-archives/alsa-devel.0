@@ -1,79 +1,64 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH 09/14] dt-bindings: sound: Add sun8i codec documentation
-Date: Tue, 4 Oct 2016 18:19:50 +0200
-Message-ID: <20161004161950.GP5228@lukather>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH 08/14] dt-bindings: sound: Add sun8i analog codec
+ documentation
+Date: Tue, 4 Oct 2016 18:24:30 +0200
+Message-ID: <20161004162430.GQ5228@lukather>
 References: <cover.1475571575.git.mylene.josserand@free-electrons.com>
- <a5b0bdc6b50dfcc2dc0145d00edd08fee3ce7764.1475571575.git.mylene.josserand@free-electrons.com>
+ <06ea14939405c3eb0fb9be655d26ee564a04a53d.1475571575.git.mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="Bi+HF1AHjw0mn3zx"
-Return-path: <linux-clk-owner@vger.kernel.org>
+        protocol="application/pgp-signature"; boundary="p2u4WfPhYOuYlOsk"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <a5b0bdc6b50dfcc2dc0145d00edd08fee3ce7764.1475571575.git.mylene.josserand@free-electrons.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>
-Cc: vinod.koul@intel.com, wens@csie.org, mturquette@baylibre.com, sboyd@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, lee.jones@linaro.org, mark.rutland@arm.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com, thomas.petazzoni@free-electrons.com, alexandre.belloni@free-electrons.com
+In-Reply-To: <06ea14939405c3eb0fb9be655d26ee564a04a53d.1475571575.git.mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Bi+HF1AHjw0mn3zx
+--p2u4WfPhYOuYlOsk
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 04, 2016 at 11:46:22AM +0200, Myl=E8ne Josserand wrote:
-> Add the documentation for dt-binding of the digital audio codec driver
-> for sun8i SoC.
+Hi,
+
+On Tue, Oct 04, 2016 at 11:46:21AM +0200, Myl=E8ne Josserand wrote:
+> Add the documentation for dt-binding of the analog audiocodec
+> driver for SUN8I SoC.
 >=20
-> Signed-off-by: Myl=E8ne Josserand <mylene.josserand@free-electrons.com>
+> Signed-off-by: Myl=E8ne Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 > ---
->  .../devicetree/bindings/sound/sun8i-codec.txt      | 24 ++++++++++++++++=
+>  .../devicetree/bindings/sound/sun8i-codec-analog.txt | 20 ++++++++++++++=
 ++++++
->  1 file changed, 24 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/sun8i-codec.t=
-xt
+>  1 file changed, 20 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/sun8i-codec-a=
+nalog.txt
 >=20
-> diff --git a/Documentation/devicetree/bindings/sound/sun8i-codec.txt b/Do=
-cumentation/devicetree/bindings/sound/sun8i-codec.txt
+> diff --git a/Documentation/devicetree/bindings/sound/sun8i-codec-analog.t=
+xt b/Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
 > new file mode 100644
-> index 0000000..1808869
+> index 0000000..a03ec20
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/sun8i-codec.txt
-> @@ -0,0 +1,24 @@
-> +* Allwinner A23/A33 Codec
+> +++ b/Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
+> @@ -0,0 +1,20 @@
+> +* Allwinner A23/A33 Analog Codec
 > +
+> +This codec must be handled as a PRCM subnode.
+
+Like Mark was saying, you should probably reference the sun6i-prcm.txt
+binding here
+
 > +Required properties:
-> +- compatible: must be either "allwinner,sun4i-a23-codec" or
-> +  "allwinner,sun7i-a33-codec"
+> +- compatible: must be either "allwinner,sun8i-codec-analog"
 
-Copy and paste issue ? :)
+Our compatible prefix is <family>-<soc>, and using the older SoC that
+introduced that block.
 
-One compatible by line is usually favored, since when you'll add new
-compatibles, you don't have to modify the context.xs
+In this case, that would be sun6i-a31, I think?
 
-> +- reg: must contain the registers location and length
-> +- interrupts: must contain the codec interrupt
-> +- clocks: a list of phandle + clock-specifer pairs, one for each entry
-> +  in clock-names.
-> +- clock-names: should contain followings:
-> +   - "apb": the parent APB clock for this controller
-> +   - "codec": the parent module clock
-
-We're usually calling them "bus" and "mod".
-
-> +
-> +Example:
-> +codec: codec@01c22e00 {
-> +	#sound-dai-cells =3D <0>;
-> +	compatible =3D "allwinner,sun8i-a33-codec";
-> +	reg =3D <0x01c22e00 0x400>; /* SUNXI_AUDIO_PBASE + 0x200 */
-> +	reg-names =3D "audio";
-
-You don't define reg-names in your bindings, while your code relies on
-it. It isn't really needed, since you have only one couple of base +
-size, so it should just go away.
-
-Thanks!
+Thanks,
 Maxime
 
 --=20
@@ -81,25 +66,29 @@ Maxime Ripard, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
 
---Bi+HF1AHjw0mn3zx
+--p2u4WfPhYOuYlOsk
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJX89amAAoJEBx+YmzsjxAgAvsP/0g2m6b5C2k2QAmN/LjCdE9v
-p2o912Ypsefw2Cx4Bi1hvgMFq5+6mRNZIH7qoypMSCO3FL5mAtRWcFz9d0Ej4KMp
-SnRxfCtfa68t54V677eDTGp0gEhS0iCiehxgz5hkNJnw5r6FXpUM0HzTq8fbPiI6
-vUhwOF+wGKqVYfpwEL9lA7tDixtspnDAJlbTQEH7EXkeR03HKPD2DB9eG1LfHYMl
-M+cNv17eBlG3xuMl58jvrhJr2ndk/rpEgieoBPagJr6lU3WFLRCQovL8hiJjHbyl
-alISLNzhKWdq34xfSw8Jw8UB5ViFtbYUDPTkM5PAwU2Qud29KbRir1vXFCL1KpeW
-kOcDrRK0UjWYn7tKHJz4/Tx9mYFYlCNvl+okOL6OgkfdhFXCJXM5srGHjaUi2BR6
-5pwbHB3OTc5VD7LGk1av0+OCN0TUxYuC+lS+ppXmqqjtIRh5pKo+fSrTgFoBe47Q
-Zd+pHYdoHrvPflcx6A2LI3eqQKH8Xajcq3RClkZV06x0+hO3IjDEG+TBd/yA1MS+
-sn6hBjfXN4H8Wrnz2qTNng5vzH7TO0D5fUpz1GP1Y93lnQ2Xg10486vMcC4AsLUh
-AwJe1qzqe+bTSDYfFW0FkQWpqSAEMMUKcJ6yMUb2JxW+nhundREUTRvgp++SDTte
-1SvrCsYrmBwzi/cCNo6L
-=PCFx
+iQIcBAEBAgAGBQJX89e+AAoJEBx+YmzsjxAg4vIP/A+feM0Z7SRv5eTtt5g+yqeA
+RG/N/G1nJt32ENjJvDAMh67S5dUWLcb+4RsmdxfDkdQHjFBVxfCVINI/2/mxo1B2
+0MdSlvMKvWgZsUFUzVpRf9Lmx7/u7zzljcK+z+vvF8mnLGfwB0a6T5j2JIzAWrrw
+218qh4xkDJpwdxseKgqFAS/J0aH2j9cRU/woxk8mwGyFCMQiVrzKS0j0+I/sc8jC
+BtTJPqOIEUCspqGQzg0mDIMsgMbdio23J1F5guOqs43BE9tDKCofaob2PACrVcvj
+ze9IlAd7YnPUma3ijOCEO7iAkhpujq3SMDNMCWbwNIXzMfY7y0WD5nHEatxEERhQ
+iYwi1z2TDtw9MLWVMGtCLQ6Go0V16OQhnOFPR0Ps2Wyv3gNWV11XrpDqLh1rDmdU
+TpUQl4ows57z9jalbd7X7qhwd8G1ESpwA5iLHTnJ7Ec8cby5rkIPWdiXxy9k1pqX
+TjAM4f6ALHeX/VV2z0u787PQt5skpsM7EHiLoklrsxDWTyF0VwtKtltC+VffTn7t
+9cCLn6nOOcmMIcnrmZwAeccSCvPCnkrtSu1fRx3TutudpgkpUgXw2KUuOMhiTEs2
+F4Yqwx6glIzmTQY0BNe+fmL8GqNpKPQ7st9htsUUVNtKOqX/BhsRlhZtdLMSmzGn
+PPLgo4ehUi+6//MOCg6D
+=3pp+
 -----END PGP SIGNATURE-----
 
---Bi+HF1AHjw0mn3zx--
+--p2u4WfPhYOuYlOsk--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
