@@ -1,57 +1,79 @@
 From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH 06/14] ASoC: Add sun8i digital audio codec
-Date: Tue, 4 Oct 2016 18:15:49 +0200
-Message-ID: <20161004161549.GO5228@lukather>
+Subject: Re: [PATCH 09/14] dt-bindings: sound: Add sun8i codec documentation
+Date: Tue, 4 Oct 2016 18:19:50 +0200
+Message-ID: <20161004161950.GP5228@lukather>
 References: <cover.1475571575.git.mylene.josserand@free-electrons.com>
- <85cbd9926e52d0aa03f6bbfd8794373d8db491e0.1475571575.git.mylene.josserand@free-electrons.com>
+ <a5b0bdc6b50dfcc2dc0145d00edd08fee3ce7764.1475571575.git.mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="i13qRg9tmWEwo36p"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+        protocol="application/pgp-signature"; boundary="Bi+HF1AHjw0mn3zx"
+Return-path: <linux-clk-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <85cbd9926e52d0aa03f6bbfd8794373d8db491e0.1475571575.git.mylene.josserand@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <a5b0bdc6b50dfcc2dc0145d00edd08fee3ce7764.1475571575.git.mylene.josserand@free-electrons.com>
+Sender: linux-clk-owner@vger.kernel.org
 To: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>
 Cc: vinod.koul@intel.com, wens@csie.org, mturquette@baylibre.com, sboyd@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, lee.jones@linaro.org, mark.rutland@arm.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com, thomas.petazzoni@free-electrons.com, alexandre.belloni@free-electrons.com
 List-Id: alsa-devel@alsa-project.org
 
 
---i13qRg9tmWEwo36p
-Content-Type: text/plain; charset=us-ascii
+--Bi+HF1AHjw0mn3zx
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-> +static const struct of_device_id sun8i_codec_of_match[] =3D {
-> +	{ .compatible =3D "allwinner,sun8i-a33-codec" },
-> +	{ .compatible =3D "allwinner,sun8i-a23-codec" },
-
-I thought that the A23 and A33 had different codecs? In that case, it
-wouldn't be a good assumption to make
-
-
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, sun8i_codec_of_match);
+On Tue, Oct 04, 2016 at 11:46:22AM +0200, Myl=E8ne Josserand wrote:
+> Add the documentation for dt-binding of the digital audio codec driver
+> for sun8i SoC.
+>=20
+> Signed-off-by: Myl=E8ne Josserand <mylene.josserand@free-electrons.com>
+> ---
+>  .../devicetree/bindings/sound/sun8i-codec.txt      | 24 ++++++++++++++++=
+++++++
+>  1 file changed, 24 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/sun8i-codec.t=
+xt
+>=20
+> diff --git a/Documentation/devicetree/bindings/sound/sun8i-codec.txt b/Do=
+cumentation/devicetree/bindings/sound/sun8i-codec.txt
+> new file mode 100644
+> index 0000000..1808869
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/sun8i-codec.txt
+> @@ -0,0 +1,24 @@
+> +* Allwinner A23/A33 Codec
 > +
-> +static struct platform_driver sun8i_codec_driver =3D {
-> +	.driver =3D {
-> +		.name =3D "sun8i-codec",
-> +		.owner =3D THIS_MODULE,
-> +		.of_match_table =3D sun8i_codec_of_match,
-> +	},
-> +	.probe =3D sun8i_codec_probe,
-> +	.remove =3D sun8i_codec_remove,
-> +};
-> +module_platform_driver(sun8i_codec_driver);
+> +Required properties:
+> +- compatible: must be either "allwinner,sun4i-a23-codec" or
+> +  "allwinner,sun7i-a33-codec"
+
+Copy and paste issue ? :)
+
+One compatible by line is usually favored, since when you'll add new
+compatibles, you don't have to modify the context.xs
+
+> +- reg: must contain the registers location and length
+> +- interrupts: must contain the codec interrupt
+> +- clocks: a list of phandle + clock-specifer pairs, one for each entry
+> +  in clock-names.
+> +- clock-names: should contain followings:
+> +   - "apb": the parent APB clock for this controller
+> +   - "codec": the parent module clock
+
+We're usually calling them "bus" and "mod".
+
 > +
-> +MODULE_DESCRIPTION("Allwinner A33 (sun8i) codec driver");
-> +MODULE_AUTHOR("huanxin<huanxin@reuuimllatech.com>");
+> +Example:
+> +codec: codec@01c22e00 {
+> +	#sound-dai-cells =3D <0>;
+> +	compatible =3D "allwinner,sun8i-a33-codec";
+> +	reg =3D <0x01c22e00 0x400>; /* SUNXI_AUDIO_PBASE + 0x200 */
+> +	reg-names =3D "audio";
 
-Those obfuscated email adresses are not really helpful :)
+You don't define reg-names in your bindings, while your code relies on
+it. It isn't really needed, since you have only one couple of base +
+size, so it should just go away.
 
-Thanks,
+Thanks!
 Maxime
 
 --=20
@@ -59,25 +81,25 @@ Maxime Ripard, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
 
---i13qRg9tmWEwo36p
+--Bi+HF1AHjw0mn3zx
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJX89W1AAoJEBx+YmzsjxAgYs0P/3yLT9JFd/95GjY91ERJXpJW
-+TmIcYJl4KHCHktAu0ldpvWWpGlO9PqOSylW7hVz8eUsHY85gS6gKImDSMNROGQj
-n5ZXTGM4dYE2NGDC6Kn2gry3K3ZoIOTNxLk/hIX05ifcR8+leVlTv/xR/BbJBzmZ
-cq7KbeWlIKXyx+XLv0tF+eHOfLqh5jyZ1DZRnUByoo4ndAxluqRSZP7iDQRaB+d6
-ieZ63UiHnDxzQJs7nHRmzZ8IxxHq/gIrRDG1mIYZnF+a4QqLhN9FVMY3xH/85eNr
-UBU2DyY2sQNmRzwPntc9WVRzqGgU/pskCVuTHNOA7rgEX++vrOWyqB5PnRdhZ38M
-PidQSP1GSRTRTtvU+2PMEnhEjlKtmbvNarAyWtng1EY5fmqh1Mha8s9TO9oUGnP0
-uqfufigLmkqRxojQGY0Z0IaKu069+Z4K2eWZZW11qkPlgH1HupyxCjwQ7VlhmFEN
-F8Mw/j8beN8zQm+yqCgYR21xpqQSLUMCyC5qr9TZDqy3jZI0YSoBmaT7OJ9Gggwh
-7k5l1Q9iWI8YYqnC5mhP82H+BcyO6cTed/3NIJrnTAiXdfM028lcAkWvZX9UCOsi
-q9Md7Ad+UjHNIQenNgMLjqPhWBqyd08VydnsUUr6lSpM/knP5rOiJAV4uOtW2222
-BFZOUG4cXnTFsxtzEL0O
-=modN
+iQIcBAEBAgAGBQJX89amAAoJEBx+YmzsjxAgAvsP/0g2m6b5C2k2QAmN/LjCdE9v
+p2o912Ypsefw2Cx4Bi1hvgMFq5+6mRNZIH7qoypMSCO3FL5mAtRWcFz9d0Ej4KMp
+SnRxfCtfa68t54V677eDTGp0gEhS0iCiehxgz5hkNJnw5r6FXpUM0HzTq8fbPiI6
+vUhwOF+wGKqVYfpwEL9lA7tDixtspnDAJlbTQEH7EXkeR03HKPD2DB9eG1LfHYMl
+M+cNv17eBlG3xuMl58jvrhJr2ndk/rpEgieoBPagJr6lU3WFLRCQovL8hiJjHbyl
+alISLNzhKWdq34xfSw8Jw8UB5ViFtbYUDPTkM5PAwU2Qud29KbRir1vXFCL1KpeW
+kOcDrRK0UjWYn7tKHJz4/Tx9mYFYlCNvl+okOL6OgkfdhFXCJXM5srGHjaUi2BR6
+5pwbHB3OTc5VD7LGk1av0+OCN0TUxYuC+lS+ppXmqqjtIRh5pKo+fSrTgFoBe47Q
+Zd+pHYdoHrvPflcx6A2LI3eqQKH8Xajcq3RClkZV06x0+hO3IjDEG+TBd/yA1MS+
+sn6hBjfXN4H8Wrnz2qTNng5vzH7TO0D5fUpz1GP1Y93lnQ2Xg10486vMcC4AsLUh
+AwJe1qzqe+bTSDYfFW0FkQWpqSAEMMUKcJ6yMUb2JxW+nhundREUTRvgp++SDTte
+1SvrCsYrmBwzi/cCNo6L
+=PCFx
 -----END PGP SIGNATURE-----
 
---i13qRg9tmWEwo36p--
+--Bi+HF1AHjw0mn3zx--
