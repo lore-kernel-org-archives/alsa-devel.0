@@ -1,34 +1,67 @@
-From: Thomas Petazzoni <thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH 02/14] clk: ccu-sun8i-a33: Add CLK_SET_RATE_PARENT to
- ac-dig
-Date: Tue, 4 Oct 2016 14:12:51 +0200
-Message-ID: <20161004141251.4e82378e@free-electrons.com>
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: Re: [PATCH 03/14] ASoC: sun4i-i2s: Add apb reset
+Date: Tue, 4 Oct 2016 14:15:16 +0200
+Message-ID: <20161004141516.53c6fa8c@free-electrons.com>
 References: <cover.1475569400.git.mylene.josserand@free-electrons.com>
-        <8dfe0935d35b8a218ebf39d37113e27289a0de9b.1475571575.git.mylene.josserand@free-electrons.com>
+        <2c5abe6578c8e4e841cb59357d88ce397551a593.1475571575.git.mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <8dfe0935d35b8a218ebf39d37113e27289a0de9b.1475571575.git.mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: =?UTF-8?B?TXlsw6huZQ==?= Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <2c5abe6578c8e4e841cb59357d88ce397551a593.1475571575.git.mylene.josserand@free-electrons.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: =?UTF-8?B?TXlsw6huZQ==?= Josserand <mylene.josserand@free-electrons.com>
+Cc: vinod.koul@intel.com, maxime.ripard@free-electrons.com, wens@csie.org, mturquette@baylibre.com, sboyd@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, lee.jones@linaro.org, mark.rutland@arm.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com, alexandre.belloni@free-electrons.com
 List-Id: alsa-devel@alsa-project.org
 
 Hello,
 
-On Tue,  4 Oct 2016 11:46:15 +0200, Mylène Josserand wrote:
-> Add the flag CLK_SET_RATE_PARENT to 'ac-dig' clock.
+On Tue,  4 Oct 2016 11:46:16 +0200, Mylène Josserand wrote:
 
-There is no need to repeat the commit title inside the commit log
-itself. What would be more useful is to explain *why* this is needed.
+>  #include <sound/dmaengine_pcm.h>
+>  #include <sound/pcm_params.h>
+> @@ -589,6 +590,7 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+>  {
+>  	struct sun4i_i2s *i2s;
+>  	struct resource *res;
+> +	struct reset_control *reset_apb;
+>  	void __iomem *regs;
+>  	int irq, ret;
+>  
+> @@ -626,7 +628,19 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+>  		dev_err(&pdev->dev, "Can't get our mod clock\n");
+>  		return PTR_ERR(i2s->mod_clk);
+>  	}
+> -	
+> +
+> +	reset_apb = devm_reset_control_get(&pdev->dev, "apb_reset");
+
+I believe this is a change in the Device Tree binding, since you're
+adding support for a new resource. Perhaps the Device Tree binding
+documentation should be updated accordingly?
+
+> +	if (IS_ERR(reset_apb)) {
+> +		dev_err(&pdev->dev, "Can't get apb reset\n");
+> +		return PTR_ERR(i2s->mod_clk);
+
+This should be:
+
+		return PTR_ERR(reset_apb);
+
+> +	}
+> +
+> +	ret = reset_control_deassert(reset_apb);
+> +	if (ret < 0) {
+> +		dev_err(&pdev->dev, "Can't deassert apb reset (%d)\n", ret);
+> +		return ret;
+> +	}
+
+Do you need to re-assert the reset line in the ->remove() hook?
+
+Best regards,
 
 Thomas
 -- 
 Thomas Petazzoni, CTO, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
