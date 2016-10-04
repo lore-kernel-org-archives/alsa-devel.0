@@ -1,74 +1,127 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH 10/14] dt-bindings: sound: Add sun8i audio
- card documentation
-Date: Tue, 4 Oct 2016 18:32:29 +0200
-Message-ID: <20161004163229.GR5228@lukather>
-References: <cover.1475571575.git.mylene.josserand@free-electrons.com>
- <c317ce9f180a24611e79086944feca00d416b7b4.1475571575.git.mylene.josserand@free-electrons.com>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH 01/14] dma: sun6i-dma: Add burst case of 4
+Date: Tue, 4 Oct 2016 18:55:54 +0200
+Message-ID: <20161004165553.GS5228@lukather>
+References: <cover.1475569400.git.mylene.josserand@free-electrons.com>
+ <3a2404510b5f8b16ae3bb193982d70f158700b2b.1475571575.git.mylene.josserand@free-electrons.com>
+ <20161004124011.d7f5754a082d5f17d5185fc4@free.fr>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="h1wVxq8aeHrvhZJz"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBHVTZ67QKGQEVFIDBNY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+        protocol="application/pgp-signature"; boundary="REOXmE5zpOGz6VLu"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <c317ce9f180a24611e79086944feca00d416b7b4.1475571575.git.mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+In-Reply-To: <20161004124011.d7f5754a082d5f17d5185fc4@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>, vinod.koul@intel.com, wens@csie.org, mturquette@baylibre.com, sboyd@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, lee.jones@linaro.org, mark.rutland@arm.com, robh+dt@kernel.org, thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com, alexandre.belloni@free-electrons.com, dmaengine@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---h1wVxq8aeHrvhZJz
-Content-Type: text/plain; charset=UTF-8
+--REOXmE5zpOGz6VLu
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 04, 2016 at 11:46:23AM +0200, Myl=C3=A8ne Josserand wrote:
-> Add the documentation for dt-binding of the audio card driver
-> for sun8i SoC.
+On Tue, Oct 04, 2016 at 12:40:11PM +0200, Jean-Francois Moine wrote:
+> On Tue,  4 Oct 2016 11:46:14 +0200
+> Myl=E8ne Josserand <mylene.josserand@free-electrons.com> wrote:
 >=20
-> Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org=
->
-> ---
->  Documentation/devicetree/bindings/sound/sun8i-audio.txt | 17 +++++++++++=
-++++++
->  1 file changed, 17 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/sun8i-audio.t=
-xt
+> > Add the case of a burst of 4 which is handled by the SoC.
+> >=20
+> > Signed-off-by: Myl=E8ne Josserand <mylene.josserand@free-electrons.com>
+> > ---
+> >  drivers/dma/sun6i-dma.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >=20
+> > diff --git a/drivers/dma/sun6i-dma.c b/drivers/dma/sun6i-dma.c
+> > index 8346199..0485204 100644
+> > --- a/drivers/dma/sun6i-dma.c
+> > +++ b/drivers/dma/sun6i-dma.c
+> > @@ -240,6 +240,8 @@ static inline s8 convert_burst(u32 maxburst)
+> >  	switch (maxburst) {
+> >  	case 1:
+> >  		return 0;
+> > +	case 4:
+> > +		return 1;
+> >  	case 8:
+> >  		return 2;
+> >  	default:
+> > --=20
+> > 2.9.3
 >=20
-> diff --git a/Documentation/devicetree/bindings/sound/sun8i-audio.txt b/Do=
-cumentation/devicetree/bindings/sound/sun8i-audio.txt
-> new file mode 100644
-> index 0000000..2403983
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/sun8i-audio.txt
-> @@ -0,0 +1,17 @@
-> +* Allwinner A23/A33 audio card
-> +
-> +This binding implements the A33 audio card.
-> +
-> +Required properties:
-> +- compatible: must be "allwinner,sun8i-audio"
-> +- allwinner,audio-codec: must have the phandle of the audio codec
-> +  ("sun8i-a33-codec", for example).
-> +- allwinner,i2s-controller: must have the phandle of the DAI
-> +  ("allwinner,sun4i-a10-i2s", for example)
+> This patch has already been rejected by Maxime in the threads
+> 	http://www.spinics.net/lists/dmaengine/msg08610.html
+> and
+> 	http://www.spinics.net/lists/dmaengine/msg08719.html
+>=20
+> I hope you will find the way he wants for this maxburst to be added.
 
-You should probably have a link to the PRCM too, instead of relying on
-the name of the device in your card, which is quite fragile.
+I was talking about something along these lines (not tested):
 
-Also, I'm wondering, shouldn't all these nodes be part of a single
-MFD? They share the same address space (even though it's split
-nicely), the same clocks, and really are just one big device. Chen-Yu,
-Mark, any opinion?
+-------8<---------
+diff --git a/drivers/dma/sun6i-dma.c b/drivers/dma/sun6i-dma.c
+index 83461994e418..573ac4608293 100644
+--- a/drivers/dma/sun6i-dma.c
++++ b/drivers/dma/sun6i-dma.c
+@@ -240,6 +240,8 @@ static inline s8 convert_burst(u32 maxburst)
+ 	switch (maxburst) {
+ 	case 1:
+ 		return 0;
++	case 4:
++		return 1;
+ 	case 8:
+ 		return 2;
+ 	default:
+@@ -1110,11 +1112,19 @@ static int sun6i_dma_probe(struct platform_device *=
+pdev)
+ 	sdc->slave.dst_addr_widths		=3D BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
+ 						  BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
+ 						  BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
++	sdc->slave.dst_bursts			=3D BIT(1) | BIT(8);
++	sdc->slave.src_bursts			=3D BIT(1) | BIT(8);
+ 	sdc->slave.directions			=3D BIT(DMA_DEV_TO_MEM) |
+ 						  BIT(DMA_MEM_TO_DEV);
+ 	sdc->slave.residue_granularity		=3D DMA_RESIDUE_GRANULARITY_BURST;
+ 	sdc->slave.dev =3D &pdev->dev;
+=20
++	if (of_device_is_compatible(pdev->dev.of_node,
++				    "allwinner,sun8i-h3-dma")) {
++		sdc->slave.dst_bursts |=3D BIT(4);
++		sdc->slave.src_bursts |=3D BIT(4);
++	}
++
+ 	sdc->pchans =3D devm_kcalloc(&pdev->dev, sdc->cfg->nr_max_channels,
+ 				   sizeof(struct sun6i_pchan), GFP_KERNEL);
+ 	if (!sdc->pchans)
+diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+index cc535a478bae..f7bbec24bb58 100644
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -673,6 +673,8 @@ struct dma_filter {
+  * 	each type of direction, the dma controller should fill (1 <<
+  * 	<TYPE>) and same should be checked by controller as well
+  * @max_burst: max burst capability per-transfer
++ * @dst_bursts: bitfield of the available burst sizes for the destination
++ * @src_bursts: bitfield of the available burst sizes for the source
+  * @residue_granularity: granularity of the transfer residue reported
+  *	by tx_status
+  * @device_alloc_chan_resources: allocate resources and return the
+@@ -800,6 +802,14 @@ struct dma_device {
+ static inline int dmaengine_slave_config(struct dma_chan *chan,
+ 					  struct dma_slave_config *config)
+ {
++	if (config->src_maxburst && config->device->src_bursts &&
++	    !(BIT(config->src_maxburst) & config->device->src_bursts))
++		return -EINVAL;
++
++	if (config->dst_maxburst && config->device->dst_bursts &&
++	    !(BIT(config->dst_maxburst) & config->device->dst_bursts))
++		return -EINVAL;
++
+ 	if (chan->device->device_config)
+ 		return chan->device->device_config(chan, config);
+-------8<------------=20
 
-Thanks,
 Maxime
 
 --=20
@@ -76,32 +129,25 @@ Maxime Ripard, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
 
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
-
---h1wVxq8aeHrvhZJz
+--REOXmE5zpOGz6VLu
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJX89mdAAoJEBx+YmzsjxAgkAIP/2djagaL2twRMaHwJ5ApV6uo
-Dt3DdjLOG8zgNHdN0MWV8jfotG7UnMwlk5paFMUG+hv4UH9GwjopiKd81bORZNW4
-fBDjCCspPHp7UaJC56Ij8i+D+HFEahRFbxvhnkds9/00Rlz4x0cq9GEuPwa9XiiV
-xxwJo8aJ7ULpSCCtJfotIIPBzabIGU++zok+NsdtjhtO0sUw2pmh+orVY+skMHyT
-KKPzWzWk7Cf345AKwgzQvw1QLHj9cPEQFyy3rnZX2ceXJA9qkvP7GQFuCa+7Fz2h
-23tqt3iEaHBPsMVFit2WV+PLxuIwrHcQanaROF4TTMcC9m0TxvUOk2GexBHI3D34
-nOdK8/i8yOrKeC8kDW5oVQ9NkWHPvoMqktNLwOhoOSXyvUDoVqHWLFZjXnhw8nvB
-DTa/motexRjwdz7dZIVv8Q4In7ZFPTTCsfEtGADlEkGMM/pICJbyiZRcmwEHICsf
-I/k83ubjbv2bQFHWEDC4C8g96S/oUMw4mD/6aCHYeWe3EdyRHA3JNub5QwJ4lKFP
-O+3qAbN884JEg5owuODPJtV4DcKWjbXZ1Vo4tvrXk0pAO/6mDFIedOnxbFsgwpNx
-6H5XNb0wCt25U83gwzS8LVC44IFOeYDzyfb9okgE6pA8jG7EczC+F4LK/dyEnlDN
-TUvCZzVYKY0CaxlK9OI8
-=Wubi
+iQIcBAEBAgAGBQJX898ZAAoJEBx+YmzsjxAgltQQALVv8yT8BEcrCxqFcFnSbog1
+dhFSw+o5Xz62P+r7DA41uoQR/R8cWoShprC3xlFXFnnMgqtm31tRllRns6sUkeXR
+aEuePrPHiBj17RVrYDv+zEfm29KOqP2sipC2uMLFx7i3w0ii/udFcPqprFXfKibi
+nLSBqKN9PD7mlFLSzxy7VF9ikbjTc+g0k5TS668BJ6QIgr9J+n99nm4y77SzJQS4
+tyyv4AZ3pW6JZDqYjgSqd1OHHHmewjYuumd0/1KMS6P5IsM1h98Su/xlBG+hTR0o
+4X24hSmV+3XCdGnOZHZ3/7UZ0ru/Pp5u05wR0A9VI49rCrFJ37X3pYf/ULxpBIJf
++M2CTILXk6IMCiKcbIQvIcMUHHPCibTuoj87FZ/3Szb/YHens+5DnRmkf1BXX8bh
+ynAYnDj/gSuTapZJjMp/K8wRPas6xSM4KJnc3GVth2MKCN2th+a5ZDRr7VJZAYNl
+libY1vwjPZigiHvuZ9fDiWa3kFY+wQZ6edZQvry9im/9AhMWuo9B0oulQOVZH5SP
++VWBaASlfB/MsMOFKdsLKODk8LscpEZWwHP/Qwt5MNXJNVcaD1RW/Bty/tpac57N
+JWxbi3krOOK9HHbMccAQ+YMM8tyrk/Fi4ocBEOfhSM1o/0WvttdU6odVHoXvPQtj
+ITzrol1xjKT5pGR1VuKt
+=rGp+
 -----END PGP SIGNATURE-----
 
---h1wVxq8aeHrvhZJz--
+--REOXmE5zpOGz6VLu--
