@@ -1,64 +1,52 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 08/14] dt-bindings: sound: Add sun8i analog
- codec documentation
-Date: Tue, 4 Oct 2016 12:32:31 +0200
-Message-ID: <20161004103231.hmi3pk2bz6epcg5h@sirena.org.uk>
-References: <cover.1475571575.git.mylene.josserand@free-electrons.com>
- <06ea14939405c3eb0fb9be655d26ee564a04a53d.1475571575.git.mylene.josserand@free-electrons.com>
-Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH 01/14] dma: sun6i-dma: Add burst case of 4
+Date: Tue, 4 Oct 2016 12:40:11 +0200
+Message-ID: <20161004124011.d7f5754a082d5f17d5185fc4@free.fr>
+References: <cover.1475569400.git.mylene.josserand@free-electrons.com>
+        <3a2404510b5f8b16ae3bb193982d70f158700b2b.1475571575.git.mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bw762y3qiukiubf2"
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBBDELZ27QKGQE7N6MKCY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <06ea14939405c3eb0fb9be655d26ee564a04a53d.1475571575.git.mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <3a2404510b5f8b16ae3bb193982d70f158700b2b.1475571575.git.mylene.josserand@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?ISO-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>
+Cc: vinod.koul@intel.com, maxime.ripard@free-electrons.com, wens@csie.org, mturquette@baylibre.com, sboyd@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, lee.jones@linaro.org, mark.rutland@arm.com, robh+dt@kernel.org, thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com, alexandre.belloni@free-electrons.com, dmaengine@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue,  4 Oct 2016 11:46:14 +0200
+Mylène Josserand <mylene.josserand@free-electrons.com> wrote:
 
---bw762y3qiukiubf2
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Add the case of a burst of 4 which is handled by the SoC.
+> 
+> Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
+> ---
+>  drivers/dma/sun6i-dma.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/dma/sun6i-dma.c b/drivers/dma/sun6i-dma.c
+> index 8346199..0485204 100644
+> --- a/drivers/dma/sun6i-dma.c
+> +++ b/drivers/dma/sun6i-dma.c
+> @@ -240,6 +240,8 @@ static inline s8 convert_burst(u32 maxburst)
+>  	switch (maxburst) {
+>  	case 1:
+>  		return 0;
+> +	case 4:
+> +		return 1;
+>  	case 8:
+>  		return 2;
+>  	default:
+> -- 
+> 2.9.3
 
-On Tue, Oct 04, 2016 at 11:46:21AM +0200, Myl=C3=A8ne Josserand wrote:
+This patch has already been rejected by Maxime in the threads
+	http://www.spinics.net/lists/dmaengine/msg08610.html
+and
+	http://www.spinics.net/lists/dmaengine/msg08719.html
 
-> +* Allwinner A23/A33 Analog Codec
-> +
-> +This codec must be handled as a PRCM subnode.
+I hope you will find the way he wants for this maxburst to be added.
 
-What does this mean - how does one handle something as a "PRCM subnode"?
-
-Please use subject lines matching the style for the subsystem.  This
-makes it easier for people to identify relevant patches.
-
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
-
---bw762y3qiukiubf2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAABCAAGBQJX84U8AAoJECTWi3JdVIfQodwH/0sWJPgCadPLU/4aoJ44Li/J
-O8DohFC4BSsTQ7OMzITg3KOc26bmEpcu787K7TCq4ZFWsnfUwxBKi640kx+wQRE9
-Mx4cRi67cB7EuvERRMGc43Tx/pOvB3Vh1Rg5WcltlhqxBWx2aG5CQhzHL0Olnyr3
-xPWAoeTGYyCtGn5/mGGCRi4DR6rkhaR6zOSvUO+2vKBYBJaBfLR1m2ovbJrkznP8
-NEirRfrk74LokfxUdAKUZxQVRhSKege8NRzJPajmCS8oK72A3h2R5FFyL2/yBBMk
-5oh99N1mj2fLNVpw6/WEJ9/81cOfx9Y6KUPKBFYXrER+5jY90DDe7PIzUErGjeg=
-=lcJE
------END PGP SIGNATURE-----
-
---bw762y3qiukiubf2--
+-- 
+Ken ar c'hentañ	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
