@@ -1,192 +1,74 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH 07/14] ASoC: Add sun8i audio card
-Date: Tue, 4 Oct 2016 18:59:55 +0800
-Message-ID: <CAGb2v65hS0=ZDHJhR80t-KP8ATu_f+vs8qf5Vn3eyyHDh-4ABg@mail.gmail.com>
-References: <cover.1475571575.git.mylene.josserand@free-electrons.com>
- <cover.1475569400.git.mylene.josserand@free-electrons.com>
- <33d641ff43f0c0349cdfa2cdbbfdcdde66205596.1475571575.git.mylene.josserand@free-electrons.com>
- <CAEKpxB=JLwqd_wKv1bUAifiQqVpX_RzXq6TSbjVWwza4LT6fhg@mail.gmail.com>
+From: Thomas Petazzoni <thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH 01/14] dma: sun6i-dma: Add burst case of 4
+Date: Tue, 4 Oct 2016 14:12:21 +0200
+Message-ID: <20161004141221.55327f1b@free-electrons.com>
+References: <cover.1475569400.git.mylene.josserand@free-electrons.com>
+        <3a2404510b5f8b16ae3bb193982d70f158700b2b.1475571575.git.mylene.josserand@free-electrons.com>
+        <20161004124011.d7f5754a082d5f17d5185fc4@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <CAEKpxB=JLwqd_wKv1bUAifiQqVpX_RzXq6TSbjVWwza4LT6fhg@mail.gmail.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: Code Kipper <codekipper@gmail.com>
-Cc: =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@free-electrons.com>, Vinod Koul <vinod.koul@intel.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Lee Jones <lee.jones@linaro.org>, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, dmaengine@vger.kernel.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-clk <linux-clk@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, devicetree <devicetree@>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20161004124011.d7f5754a082d5f17d5185fc4-GANU6spQydw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: =?UTF-8?B?TXlsw6huZQ==?= Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 4, 2016 at 6:16 PM, Code Kipper <codekipper@gmail.com> wrote:
-> On 4 October 2016 at 11:46, Mylène Josserand
-> <mylene.josserand@free-electrons.com> wrote:
->> Add the audio card for sun8i SoC. This card links the codec driver
->> (digital part) with the DAI driver. The analog codec driver is
->> added as an aux_device.
->>
->> Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
->> ---
->>  sound/soc/sunxi/Kconfig  |  14 +++++++
->>  sound/soc/sunxi/Makefile |   1 +
->>  sound/soc/sunxi/sun8i.c  | 101 +++++++++++++++++++++++++++++++++++++++++++++++
->>  3 files changed, 116 insertions(+)
->>  create mode 100644 sound/soc/sunxi/sun8i.c
->>
->> diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
->> index 9e287b0..7b97395 100644
->> --- a/sound/soc/sunxi/Kconfig
->> +++ b/sound/soc/sunxi/Kconfig
->> @@ -27,6 +27,20 @@ config SND_SUN4I_SPDIF
->>           Say Y or M to add support for the S/PDIF audio block in the Allwinner
->>           A10 and affiliated SoCs.
->>
->> +config SND_SUN8I
->> +       tristate "Allwinner SUN6I/SUN8I audio card support"
->> +       select SND_SUN8I_CODEC
->> +       select SND_SUN4I_I2S
->> +       select SND_SUN8I_CODEC_ANALOG
->> +       select REGMAP_MMIO
->> +       help
->> +         This option enables the audio card for Allwinner A33 (sun8i) SoC.
->> +         It enables the DAI driver (SND_SUN4I_I2S), the digital audio
->> +         codec driver (SND_SUN8I_CODEC) and the analog codec driver
->> +         (SND_SUN8I_CODEC_ANALOG).
->> +
->> +         Say Y or M if you want to add sun8i/6i card support
->> +
->>  config SND_SUN8I_CODEC
->>         tristate "Allwinner SUN8I audio codec"
->>         select REGMAP_MMIO
->> diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
->> index 1da63d3..7f1bab9 100644
->> --- a/sound/soc/sunxi/Makefile
->> +++ b/sound/soc/sunxi/Makefile
->> @@ -1,5 +1,6 @@
->>  obj-$(CONFIG_SND_SUN4I_CODEC) += sun4i-codec.o
->>  obj-$(CONFIG_SND_SUN4I_I2S) += sun4i-i2s.o
->>  obj-$(CONFIG_SND_SUN4I_SPDIF) += sun4i-spdif.o
->> +obj-$(CONFIG_SND_SUN8I) += sun8i.o
-> Great work with this...I've been battling with the audio codec for the
-> h3 for a while and it looks like almost everything that I need is
-> delivered here.
->>  obj-$(CONFIG_SND_SUN8I_CODEC) += sun8i-codec.o
->>  obj-$(CONFIG_SND_SUN8I_CODEC_ANALOG) += sun8i-codec-analog.o
->> diff --git a/sound/soc/sunxi/sun8i.c b/sound/soc/sunxi/sun8i.c
->> new file mode 100644
->> index 0000000..565cd88
->> --- /dev/null
->> +++ b/sound/soc/sunxi/sun8i.c
->> @@ -0,0 +1,101 @@
->> +/*
->> + * ALSA SoC driver for Allwinner sun8i SoC
->> + *
->> + * Copyright (C) 2016 Mylène Josserand <mylene.josserand@free-electrons.com>
->> + *
->> + * This program is free software; you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License as published by
->> + * the Free Software Foundation; either version 2 of the License, or
->> + * (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + * GNU General Public License for more details.
->> + */
->> +
->> +#include <linux/firmware.h>
->> +#include <linux/module.h>
->> +
->> +#include <sound/soc.h>
->> +
->> +static struct snd_soc_aux_dev sun8i_audio_prcm_aux_devs[] = {
->> +       {
->> +               .name = "sun8i-codec-analog",
->> +               .codec_name = "sun8i-codec-analog.0",
->> +       },
->> +};
->> +
->> +static struct snd_soc_dai_link sun8i_dai_link = {
->> +       .name           = "sun4i-i2s",
->> +       .stream_name    = "Playback",
->> +       .codec_dai_name = "sun8i",
->> +       .dai_fmt        = SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_I2S |
->> +                       SND_SOC_DAIFMT_CBM_CFM,
->> +};
->> +
->> +static struct snd_soc_card sun8i_card = {
->> +       .name           = "sun8i-card",
->> +       .owner          = THIS_MODULE,
->> +       .dai_link       = &sun8i_dai_link,
->> +       .num_links      = 1,
->> +       .aux_dev        = sun8i_audio_prcm_aux_devs,
->> +       .num_aux_devs   = ARRAY_SIZE(sun8i_audio_prcm_aux_devs),
->> +};
->> +
->> +static int sun8i_probe(struct platform_device *pdev)
->> +{
->> +       struct snd_soc_dai_link *link = &sun8i_dai_link;
->> +       struct device_node *np = pdev->dev.of_node;
->> +       int ret;
->> +
->> +       /* register the soc card */
->> +       sun8i_card.dev = &pdev->dev;
->> +
->> +       /* Retrieve the audio-codec from DT */
->> +       link->codec_of_node = of_parse_phandle(np, "allwinner,audio-codec", 0);
->> +       if (!link->codec_of_node) {
->> +               dev_err(&pdev->dev, "Missing audio codec\n");
->> +               return -EINVAL;
->> +       }
->> +
->> +       /* Retrieve DAI from DT */
->> +       link->cpu_of_node = of_parse_phandle(np, "allwinner,i2s-controller", 0);
->> +       if (!link->cpu_of_node) {
->> +               dev_err(&pdev->dev, "Missing I2S controller\n");
->> +               return -EINVAL;
->> +       }
->> +
-> My one question is that we have sun8i-a23 and sun8i-a33, and I think
-> we need to distinguish them here. The sun8i-a23 doesn't use the i2s
-> block but does use the prcm.
+Hello,
 
-Agreed. Both the A23 and H3 follow the A31s, that is the codec is similar
-to the A10/A31, but the analog controls are moved to the PRCM. We should
-support these kinds with the existing codec driver.
+On Tue, 4 Oct 2016 12:40:11 +0200, Jean-Francois Moine wrote:
 
-ChenYu
+> > Add the case of a burst of 4 which is handled by the SoC.
+> > 
+> > Signed-off-by: Mylène Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+> > ---
+> >  drivers/dma/sun6i-dma.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/drivers/dma/sun6i-dma.c b/drivers/dma/sun6i-dma.c
+> > index 8346199..0485204 100644
+> > --- a/drivers/dma/sun6i-dma.c
+> > +++ b/drivers/dma/sun6i-dma.c
+> > @@ -240,6 +240,8 @@ static inline s8 convert_burst(u32 maxburst)
+> >  	switch (maxburst) {
+> >  	case 1:
+> >  		return 0;
+> > +	case 4:
+> > +		return 1;
+> >  	case 8:
+> >  		return 2;
+> >  	default:
+> > -- 
+> > 2.9.3  
+> 
+> This patch has already been rejected by Maxime in the threads
+> 	http://www.spinics.net/lists/dmaengine/msg08610.html
+> and
+> 	http://www.spinics.net/lists/dmaengine/msg08719.html
+> 
+> I hope you will find the way he wants for this maxburst to be added.
 
->> +       link->platform_of_node = link->cpu_of_node;
->> +
->> +       /* Register the sound card */
->> +       ret = devm_snd_soc_register_card(&pdev->dev, &sun8i_card);
->> +       if (ret) {
->> +               dev_err(&pdev->dev,
->> +                       "Soc register card failed %d\n", ret);
->> +               return ret;
->> +       }
->> +
->> +       return ret;
->> +}
->> +
->> +static const struct of_device_id sun8i_of_match[] = {
->> +       { .compatible = "allwinner,sun8i-audio", },
->> +       {},
->> +};
->> +
->> +MODULE_DEVICE_TABLE(of, sun8i_of_match);
->> +
->> +static struct platform_driver sun8i_card_driver = {
->> +       .probe = sun8i_probe,
->> +       .driver = {
->> +               .name   = "sun8i-audio",
->> +               .of_match_table = sun8i_of_match,
->> +       },
->> +};
->> +
->> +module_platform_driver(sun8i_card_driver);
->> +
->> +MODULE_AUTHOR("Mylène Josserand <mylene.josserand@free-electrons.com>");
->> +MODULE_DESCRIPTION("Allwinner sun8i machine ASoC driver");
->> +MODULE_LICENSE("GPL v2");
->> --
->> 2.9.3
->>
+I was about to reply to Mylene's e-mail, suggesting that she should add
+a comment in the code (and maybe in the commit log) to explain why this
+addition is needed, and also that even though the schematics say that
+value "1" (max burst size of 4 bytes) is reserved, it is in fact
+incorrect. The Allwinner BSP code is really using this value, and it's
+the value that makes audio work, so we believe the datasheet is simply
+incorrect.
+
+We already discussed it with Maxime, so I believe he should agree this
+time. But I would suggest to have such details explained in the commit
+log and in a comment in the code.
+
+Best regards,
+
+Thomas
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
