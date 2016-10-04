@@ -1,8 +1,8 @@
 From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
         <mylene.josserand@free-electrons.com>
-Subject: [PATCH 03/14] ASoC: sun4i-i2s: Add apb reset
-Date: Tue,  4 Oct 2016 11:46:16 +0200
-Message-ID: <2c5abe6578c8e4e841cb59357d88ce397551a593.1475571575.git.mylene.josserand@free-electrons.com>
+Subject: [PATCH 05/14] mfd: sun6i-prcm: Add sun8i analog codec as subnode
+Date: Tue,  4 Oct 2016 11:46:18 +0200
+Message-ID: <c74aea452bd1831f439dd67884cb2879e0849f03.1475571575.git.mylene.josserand@free-electrons.com>
 References: <cover.1475569400.git.mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -16,53 +16,55 @@ To: vinod.koul@intel.com, maxime.ripard@free-electrons.com, wens@csie.org, mturq
 Cc: linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com, thomas.petazzoni@free-electrons.com, mylene.josserand@free-electrons.com, alexandre.belloni@free-electrons.com
 List-Id: alsa-devel@alsa-project.org
 
-Add APB deassert function for sun4i-i2s driver.
+The sun8i audio codec is using PRCM registers to configure all the
+analog part of the audio codec. It is added as a subnode of the PRCM
+with his resource (offset of 0x1c0).
 
 Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/mfd/sun6i-prcm.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 687a8f8..f3f7026 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -17,6 +17,7 @@
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-+#include <linux/reset.h>
+diff --git a/drivers/mfd/sun6i-prcm.c b/drivers/mfd/sun6i-prcm.c
+index 011fcc5..e0c6bf5 100644
+--- a/drivers/mfd/sun6i-prcm.c
++++ b/drivers/mfd/sun6i-prcm.c
+@@ -12,6 +12,8 @@
+ #include <linux/init.h>
+ #include <linux/of.h>
  
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm_params.h>
-@@ -589,6 +590,7 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- {
- 	struct sun4i_i2s *i2s;
- 	struct resource *res;
-+	struct reset_control *reset_apb;
- 	void __iomem *regs;
- 	int irq, ret;
++#define SUN6I_AUDIO_CODEC_ANALOG	0x1c0
++
+ struct prcm_data {
+ 	int nsubdevs;
+ 	const struct mfd_cell *subdevs;
+@@ -57,6 +59,14 @@ static const struct resource sun6i_a31_apb0_rstc_res[] = {
+ 	},
+ };
  
-@@ -626,7 +628,19 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "Can't get our mod clock\n");
- 		return PTR_ERR(i2s->mod_clk);
- 	}
--	
++static const struct resource sun8i_adda_res[] = {
++	{
++		.start = SUN6I_AUDIO_CODEC_ANALOG,
++		.end = 0x1c3,
++		.flags = IORESOURCE_MEM,
++	},
++};
 +
-+	reset_apb = devm_reset_control_get(&pdev->dev, "apb_reset");
-+	if (IS_ERR(reset_apb)) {
-+		dev_err(&pdev->dev, "Can't get apb reset\n");
-+		return PTR_ERR(i2s->mod_clk);
-+	}
-+
-+	ret = reset_control_deassert(reset_apb);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Can't deassert apb reset (%d)\n", ret);
-+		return ret;
-+	}
-+
- 	i2s->playback_dma_data.addr = res->start + SUN4I_I2S_FIFO_TX_REG;
- 	i2s->playback_dma_data.maxburst = 4;
+ static const struct mfd_cell sun6i_a31_prcm_subdevs[] = {
+ 	{
+ 		.name = "sun6i-a31-ar100-clk",
+@@ -109,6 +119,12 @@ static const struct mfd_cell sun8i_a23_prcm_subdevs[] = {
+ 		.num_resources = ARRAY_SIZE(sun6i_a31_apb0_rstc_res),
+ 		.resources = sun6i_a31_apb0_rstc_res,
+ 	},
++	{
++		.name = "sun8i-codec-analog",
++		.of_compatible = "allwinner,sun8i-codec-analog",
++		.num_resources = ARRAY_SIZE(sun8i_adda_res),
++		.resources = sun8i_adda_res,
++	},
+ };
  
+ static const struct prcm_data sun6i_a31_prcm_data = {
 -- 
 2.9.3
