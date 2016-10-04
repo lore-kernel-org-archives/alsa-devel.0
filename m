@@ -1,88 +1,64 @@
-From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: Re: [PATCH 01/14] dma: sun6i-dma: Add burst case of 4
-Date: Tue, 4 Oct 2016 15:46:51 +0200
-Message-ID: <20161004154651.3d0eb02badb6dc66758dd3aa@free.fr>
-References: <cover.1475569400.git.mylene.josserand@free-electrons.com>
-	<3a2404510b5f8b16ae3bb193982d70f158700b2b.1475571575.git.mylene.josserand@free-electrons.com>
-	<20161004124011.d7f5754a082d5f17d5185fc4@free.fr>
-	<20161004141221.55327f1b@free-electrons.com>
-Reply-To: moinejf-GANU6spQydw@public.gmane.org
+From: Lee Jones <lee.jones@linaro.org>
+Subject: [GIT PULL] Immutable branch between MFD and Regulator due for the
+ v4.9 merge window
+Date: Tue, 4 Oct 2016 15:52:32 +0100
+Message-ID: <20161004145232.GC29257@dell>
+References: <1472831568-466-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1472831568-466-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20160913124457.GA31412@dell>
+ <20160914131106.GV27946@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBCV6DL6LYMNBBUHFZ27QKGQERW4HSUY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20161004141221.55327f1b-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Thomas Petazzoni <thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: =?ISO-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20160914131106.GV27946@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, s.nawrocki@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 4 Oct 2016 14:12:21 +0200
-Thomas Petazzoni <thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+Mark,
 
-> > > Add the case of a burst of 4 which is handled by the SoC.
-> > >=20
-> > > Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand@free-electrons=
-.com>
-> > > ---
-> > >  drivers/dma/sun6i-dma.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >=20
-> > > diff --git a/drivers/dma/sun6i-dma.c b/drivers/dma/sun6i-dma.c
-> > > index 8346199..0485204 100644
-> > > --- a/drivers/dma/sun6i-dma.c
-> > > +++ b/drivers/dma/sun6i-dma.c
-> > > @@ -240,6 +240,8 @@ static inline s8 convert_burst(u32 maxburst)
-> > >  	switch (maxburst) {
-> > >  	case 1:
-> > >  		return 0;
-> > > +	case 4:
-> > > +		return 1;
-> > >  	case 8:
-> > >  		return 2;
-> > >  	default:
-> > > --=20
-> > > 2.9.3 =20
-> >=20
-> > This patch has already been rejected by Maxime in the threads
-> > 	http://www.spinics.net/lists/dmaengine/msg08610.html
-> > and
-> > 	http://www.spinics.net/lists/dmaengine/msg08719.html
-> >=20
-> > I hope you will find the way he wants for this maxburst to be added.
->=20
-> I was about to reply to Mylene's e-mail, suggesting that she should add
-> a comment in the code (and maybe in the commit log) to explain why this
-> addition is needed, and also that even though the schematics say that
-> value "1" (max burst size of 4 bytes) is reserved, it is in fact
-> incorrect. The Allwinner BSP code is really using this value, and it's
-> the value that makes audio work, so we believe the datasheet is simply
-> incorrect.
->=20
-> We already discussed it with Maxime, so I believe he should agree this
-> time. But I would suggest to have such details explained in the commit
-> log and in a comment in the code.
+As requested.
 
-Strange. Looking at the datasheets of the A23, A31, A33, A83T and H3
-(these are the SoCs using the DMA sun6i), only the H3 can have 4 as the
-burst size (the doc is unclear for the A31).
+On Wed, 14 Sep 2016, Mark Brown wrote:
+> On Tue, Sep 13, 2016 at 01:44:57PM +0100, Lee Jones wrote:
+> > On Fri, 02 Sep 2016, Charles Keepax wrote:
+> 
+> > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> 
+> > Can I take this?
+> 
+> The easiest thing would be if you applied it and then sent me a pull
+> request.
 
-Well, I was submitting for the H3, Myl=C3=A8ne is submitting for the A33.
-So, what about the A23, A31 and A83T?
+The following changes since commit 29b4817d4018df78086157ea3a55c1d9424a7cfc:
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+  Linux 4.8-rc1 (2016-08-07 18:18:00 -0700)
 
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-regulator-v4.9-1
+
+for you to fetch changes up to cdd8da8cc66b3d205120560649e530978ccbc567:
+
+  mfd: arizona: Add gating of external MCLKn clocks (2016-10-04 15:46:07 +0100)
+
+----------------------------------------------------------------
+Immutable branch between MFD and Regulator due for the v4.9 merge window
+
+----------------------------------------------------------------
+Sylwester Nawrocki (1):
+      mfd: arizona: Add gating of external MCLKn clocks
+
+ drivers/mfd/arizona-core.c       | 30 ++++++++++++++++++++++++++++--
+ include/linux/mfd/arizona/core.h |  9 +++++++++
+ 2 files changed, 37 insertions(+), 2 deletions(-)
+
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
