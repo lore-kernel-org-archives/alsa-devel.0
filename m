@@ -1,77 +1,50 @@
-From: Mylene Josserand <mylene.josserand@free-electrons.com>
-Subject: Re: [PATCH 08/14] dt-bindings: sound: Add sun8i analog codec
- documentation
-Date: Wed, 5 Oct 2016 14:08:54 +0200
-Message-ID: <b94e3b11-8edb-a632-f7f1-217a594f310c@free-electrons.com>
-References: <cover.1475571575.git.mylene.josserand@free-electrons.com>
- <06ea14939405c3eb0fb9be655d26ee564a04a53d.1475571575.git.mylene.josserand@free-electrons.com>
- <20161004162430.GQ5228@lukather>
- <CAGb2v67gT9j6-NYj04+et2PNHRGFUzhgCnVgX+eoPGybArL60A@mail.gmail.com>
+From: Petr Kulhavy <brain@jikos.cz>
+Subject: [PATCH v2 0/4] ASoC: tas571x: fix of several issues
+	for TAS5717
+Date: Wed,  5 Oct 2016 15:51:03 +0200
+Message-ID: <1475675467-5575-1-git-send-email-brain@jikos.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <CAGb2v67gT9j6-NYj04+et2PNHRGFUzhgCnVgX+eoPGybArL60A@mail.gmail.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Lee Jones <lee.jones@linaro.org>, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, dmaengine@vger.kernel.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-clk <linux-clk@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, devicetree <devicetree@vger.kernel.org>, linux-sunxi <linux-sunxi@googlegroups.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Alexandre Belloni <alexandre.belloni@free-el>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fep12.mx.upcmail.net (fep12.mx.upcmail.net [62.179.121.32])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9966260083
+ for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2016 15:51:21 +0200 (CEST)
+Received: from edge03.upcmail.net ([192.168.13.238]) by viefep12-int.chello.at
+ (InterMail vM.8.01.05.13 201-2260-151-135-20130320) with ESMTP
+ id <20161005135121.WWVH657.viefep12-int.chello.at@edge03.upcmail.net>
+ for <alsa-devel@alsa-project.org>; Wed, 5 Oct 2016 15:51:21 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, Petr Kulhavy <brain@jikos.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+An extensive usage of the TAS571x driver with the TAS5717 chip revealed several
+issues which in the first place caused audio to fail to play. This set of
+one-line and trivial patches fixes them. 
+
+The issues were:
+* improper handling of the power-down signal
+* some timings not obeyed
+* channel mixer volume controls in the wrong chip structure ;-)
 
 
-On 05/10/2016 04:59, Chen-Yu Tsai wrote:
-> On Wed, Oct 5, 2016 at 12:24 AM, Maxime Ripard
-> <maxime.ripard@free-electrons.com> wrote:
->> Hi,
->>
->> On Tue, Oct 04, 2016 at 11:46:21AM +0200, Mylène Josserand wrote:
->>> Add the documentation for dt-binding of the analog audiocodec
->>> driver for SUN8I SoC.
->>>
->>> Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
->>> ---
->>>  .../devicetree/bindings/sound/sun8i-codec-analog.txt | 20 ++++++++++++++++++++
->>>  1 file changed, 20 insertions(+)
->>>  create mode 100644 Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
->>>
->>> diff --git a/Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt b/Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
->>> new file mode 100644
->>> index 0000000..a03ec20
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
->>> @@ -0,0 +1,20 @@
->>> +* Allwinner A23/A33 Analog Codec
->>> +
->>> +This codec must be handled as a PRCM subnode.
->>
->> Like Mark was saying, you should probably reference the sun6i-prcm.txt
->> binding here
+Petr Kulhavy (4):
+  ASoC: tas571x: extend the t_i2c time to comply with TAS5721
+  ASoC: tas571x: remove improper PDN signal usage in set_bias_level
+  ASoC: tas571x: wait 50ms after oscillator trim
+  ASoC: tas571x: move mixer volume controls from TAS5711 to TAS5717
 
-
-Okay, I will explain more how it works.
-
-
->>
->>> +Required properties:
->>> +- compatible: must be either "allwinner,sun8i-codec-analog"
->>
->> Our compatible prefix is <family>-<soc>, and using the older SoC that
->> introduced that block.
->>
->> In this case, that would be sun6i-a31, I think?
->
-> sun6i-a31s actually, but a31s has extra line out controls,
-> so the right one would be sun8i-a23. Both are listed in my
-> original driver.
-
-
-It is noted.
-
-Thanks!
-
+ sound/soc/codecs/tas571x.c | 37 ++++++++++++-------------------------
+ 1 file changed, 12 insertions(+), 25 deletions(-)
 
 -- 
-Mylène Josserand, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.7.4
