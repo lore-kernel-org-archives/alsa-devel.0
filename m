@@ -1,88 +1,76 @@
-From: Mylene Josserand <mylene.josserand@free-electrons.com>
-Subject: Re: [PATCH 03/14] ASoC: sun4i-i2s: Add apb reset
-Date: Wed, 5 Oct 2016 11:43:10 +0200
-Message-ID: <efd96516-c5f4-91d0-450d-7521b1b76ed7@free-electrons.com>
-References: <cover.1475569400.git.mylene.josserand@free-electrons.com>
- <2c5abe6578c8e4e841cb59357d88ce397551a593.1475571575.git.mylene.josserand@free-electrons.com>
- <20161004141516.53c6fa8c@free-electrons.com> <20161004154218.GM5228@lukather>
+From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Subject: Re: [PATCH 07/14] ASoC: Add sun8i audio card
+Date: Wed, 5 Oct 2016 12:03:03 +0200
+Message-ID: <20161005120303.93eb05294d189e04461bb314@free.fr>
+References: <cover.1475571575.git.mylene.josserand@free-electrons.com>
+	<cover.1475569400.git.mylene.josserand@free-electrons.com>
+	<33d641ff43f0c0349cdfa2cdbbfdcdde66205596.1475571575.git.mylene.josserand@free-electrons.com>
+	<CAEKpxBkUbCGJdToReQx7P+5i92doUdNeMvA5fiDACGcniY=nJg@mail.gmail.com>
+Reply-To: moinejf-GANU6spQydw@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161004154218.GM5228@lukather>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, vinod.koul@intel.com, linux-kernel@vger.kernel.org, mturquette@baylibre.com, tiwai@suse.com, sboyd@codeaurora.org, lgirdwood@gmail.com, robh+dt@kernel.org, perex@perex.cz, wens@csie.org, broonie@kernel.org, alexandre.belloni@free-electrons.com, dmaengine@vger.kernel.org, lee.jones@linaro.org, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-sunxi+bncBCV6DL6LYMNBBXM72O7QKGQEJSMHRAY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <CAEKpxBkUbCGJdToReQx7P+5i92doUdNeMvA5fiDACGcniY=nJg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: =?ISO-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Michael Turquette <mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Wed, 5 Oct 2016 08:04:26 +0200
+Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
 
+> > +static int sun8i_probe(struct platform_device *pdev)
+> > +{
+> > +       struct snd_soc_dai_link *link =3D &sun8i_dai_link;
+> > +       struct device_node *np =3D pdev->dev.of_node;
+> > +       int ret;
+> > +
+> > +       /* register the soc card */
+> > +       sun8i_card.dev =3D &pdev->dev;
+> > +
+> > +       /* Retrieve the audio-codec from DT */
+> > +       link->codec_of_node =3D of_parse_phandle(np, "allwinner,audio-c=
+odec", 0);
+> > +       if (!link->codec_of_node) {
+> > +               dev_err(&pdev->dev, "Missing audio codec\n");
+> > +               return -EINVAL;
+> > +       }
+> > +
+> > +       /* Retrieve DAI from DT */
+> > +       link->cpu_of_node =3D of_parse_phandle(np, "allwinner,i2s-contr=
+oller", 0);
+> Now that I've spent some time trying to add my changes for the H3
+> ontop of your code,  I think this file should be more generic and rely
+> on the dtsi more. It's pretty A33 specific but with little effort it
+> can be worked to cover all of the sun8i type drivers. I would change
+> "allwinner,i2s-controller" to "allwinner,audio-dai" for starters and
+> then maybe pull in some info for the dai-link from the dtsi.
+> CK
+	[snip]
 
-On 04/10/2016 17:42, Maxime Ripard wrote:
-> Hi,
->
-> On Tue, Oct 04, 2016 at 02:15:16PM +0200, Thomas Petazzoni wrote:
->> Hello,
->>
->> On Tue,  4 Oct 2016 11:46:16 +0200, Mylène Josserand wrote:
->>
->>>  #include <sound/dmaengine_pcm.h>
->>>  #include <sound/pcm_params.h>
->>> @@ -589,6 +590,7 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
->>>  {
->>>  	struct sun4i_i2s *i2s;
->>>  	struct resource *res;
->>> +	struct reset_control *reset_apb;
->>>  	void __iomem *regs;
->>>  	int irq, ret;
->>>
->>> @@ -626,7 +628,19 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
->>>  		dev_err(&pdev->dev, "Can't get our mod clock\n");
->>>  		return PTR_ERR(i2s->mod_clk);
->>>  	}
->>> -	
->>> +
->>> +	reset_apb = devm_reset_control_get(&pdev->dev, "apb_reset");
->>
->> I believe this is a change in the Device Tree binding, since you're
->> adding support for a new resource. Perhaps the Device Tree binding
->> documentation should be updated accordingly?
->
-> Indeed.
->
-> You have two solutions to do that:
->   - Either mark it as optional and use reset_control_get_optional
->     (because here, you broke the other SoCs that have that controller
->     but no reset line)
->   - Or introduce a new compatible, and make the reset property
->     mandatory for that new compatible.
->
-> I prefer the latter, since you get a stricter error check, and you
-> cannot end up in a situation where your driver probes but is
-> useless. But you'll find both in our drivers.
->
+In fact, there should be no audio card driver as proposed here:
+with such a simple layout
+	CPU DAI (sun4i-a10-i2s) -> CODEC DAI (sun8i-a33-codec)
+the 'simple-card' does the job.
 
+BTW, I have a I2S/PCM/TDM driver for the H3 and A83T.
+But, as it works with HDMI and contains echanges with the DRM driver,
+it cannot go yet to the mainline...
 
-Okay, thank you for the hints!
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
 
-
->>> +	}
->>> +
->>> +	ret = reset_control_deassert(reset_apb);
->>> +	if (ret < 0) {
->>> +		dev_err(&pdev->dev, "Can't deassert apb reset (%d)\n", ret);
->>> +		return ret;
->>> +	}
->>
->> Do you need to re-assert the reset line in the ->remove() hook?
->
-> Even better, you can add it to the runtime_pm hooks! :)
-
-
-I will have a look to runtime_pm and update it for a V2.
-
-
--- 
-Mylène Josserand, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+--=20
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
