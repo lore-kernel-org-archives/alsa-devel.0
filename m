@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas571x: remove improper PDN signal
-	usage in set_bias_level" to the asoc tree
-Date: Wed, 05 Oct 2016 17:21:51 +0200
-Message-ID: <E1bro11-0004im-5r@finisterre>
-References: <1475505650-8572-4-git-send-email-brain@jikos.cz>
+Subject: Applied "ASoC: tas571x: extend the t_i2c time to
+	comply with TAS5721" to the asoc tree
+Date: Wed, 05 Oct 2016 17:21:55 +0200
+Message-ID: <E1bro15-0004ja-6z@finisterre>
+References: <1475505650-8572-3-git-send-email-brain@jikos.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A8EED261740
- for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2016 17:22:07 +0200 (CEST)
-In-Reply-To: <1475505650-8572-4-git-send-email-brain@jikos.cz>
+ by alsa0.perex.cz (Postfix) with ESMTP id A68DE266671
+ for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2016 17:22:10 +0200 (CEST)
+In-Reply-To: <1475505650-8572-3-git-send-email-brain@jikos.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tas571x: remove improper PDN signal usage in set_bias_level
+   ASoC: tas571x: extend the t_i2c time to comply with TAS5721
 
 has been applied to the asoc tree at
 
@@ -53,68 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 8b0678dc914271e9ad4317fe82555ead92ce1cb9 Mon Sep 17 00:00:00 2001
+>From e54de7f555970915c3856e7709a7ff74d352f315 Mon Sep 17 00:00:00 2001
 From: Petr Kulhavy <brain@jikos.cz>
-Date: Mon, 3 Oct 2016 16:40:48 +0200
-Subject: [PATCH] ASoC: tas571x: remove improper PDN signal usage in
- set_bias_level
+Date: Mon, 3 Oct 2016 16:40:47 +0200
+Subject: [PATCH] ASoC: tas571x: extend the t_i2c time to comply with TAS5721
 
-The set_bias_level toggles the PDN signal when entering
-SND_SOC_BIAS_STANDBY and SND_SOC_BIAS_OFF. However this has no effect and
-actually breaks things down (tested with TAS5717) due to the following
-reasons:
+TAS5721 datasheet recommends to wait at least 13.5ms after deasserting the
+RESET signal. For TAS5717 this time is only 12ms, which was the original
+value in the code.
 
-1) holding down PDN does not save power but holding down RST does
-2) now hard mute via register 0x5 is implemented and therefore it is no
-   longer needed to toggle PDN to enter all channel shut down
-3) in order to leave PDN it is required to toggle the RST signal (see
-   TAS5721 datasheet), which was not implemented
-4) toggling PDN as implemented actually mutes PWMs and there is no audio
-   output (tested on TAS5717)
-
-For these reasons remove the PDN signal toggling and just initialize it to
-inactive in probe().
+Extend the wait time after deasserting RESET from 12 to 13.5ms to comply
+with the TAS5721 specification.
 
 Signed-off-by: Petr Kulhavy <brain@jikos.cz>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas571x.c | 14 --------------
- 1 file changed, 14 deletions(-)
+ sound/soc/codecs/tas571x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index 512b9e663e89..810369f687d7 100644
+index 34e4ce6f23d8..512b9e663e89 100644
 --- a/sound/soc/codecs/tas571x.c
 +++ b/sound/soc/codecs/tas571x.c
-@@ -341,20 +341,9 @@ static int tas571x_set_bias_level(struct snd_soc_codec *codec,
- 					return ret;
- 				}
- 			}
--
--			gpiod_set_value(priv->pdn_gpio, 0);
--			usleep_range(5000, 6000);
--
--			regcache_cache_only(priv->regmap, false);
--			ret = regcache_sync(priv->regmap);
--			if (ret)
--				return ret;
- 		}
- 		break;
- 	case SND_SOC_BIAS_OFF:
--		regcache_cache_only(priv->regmap, true);
--		gpiod_set_value(priv->pdn_gpio, 1);
--
- 		if (!IS_ERR(priv->mclk))
- 			clk_disable_unprepare(priv->mclk);
- 		break;
-@@ -771,9 +760,6 @@ static int tas571x_i2c_probe(struct i2c_client *client,
- 			return ret;
+@@ -747,7 +747,7 @@ static int tas571x_i2c_probe(struct i2c_client *client,
+ 		/* pulse the active low reset line for ~100us */
+ 		usleep_range(100, 200);
+ 		gpiod_set_value(priv->reset_gpio, 0);
+-		usleep_range(12000, 20000);
++		usleep_range(13500, 20000);
  	}
  
--	regcache_cache_only(priv->regmap, true);
--	gpiod_set_value(priv->pdn_gpio, 1);
--
- 	return snd_soc_register_codec(&client->dev, &priv->codec_driver,
- 				      &tas571x_dai, 1);
- }
+ 	ret = regmap_write(priv->regmap, TAS571X_OSC_TRIM_REG, 0);
 -- 
 2.9.3
