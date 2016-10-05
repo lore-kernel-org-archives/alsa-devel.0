@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: report JACK_LINEOUT event" to
-	the asoc tree
-Date: Wed, 05 Oct 2016 17:21:46 +0200
-Message-ID: <E1bro0w-0004hz-KB@finisterre>
-References: <20161004173320.1556-1-sathyanarayana.nujella@intel.com>
+Subject: Applied "ASoC: tas571x: remove improper PDN signal
+	usage in set_bias_level" to the asoc tree
+Date: Wed, 05 Oct 2016 17:21:51 +0200
+Message-ID: <E1bro11-0004im-5r@finisterre>
+References: <1475505650-8572-4-git-send-email-brain@jikos.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5963C266638
- for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2016 17:22:01 +0200 (CEST)
-In-Reply-To: <20161004173320.1556-1-sathyanarayana.nujella@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A8EED261740
+ for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2016 17:22:07 +0200 (CEST)
+In-Reply-To: <1475505650-8572-4-git-send-email-brain@jikos.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, yang.a.fang@intel.com, broonie@kernel.org, harshapriya.n@intel.com
+To: Petr Kulhavy <brain@jikos.cz>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: report JACK_LINEOUT event
+   ASoC: tas571x: remove improper PDN signal usage in set_bias_level
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,68 @@ to this mail.
 Thanks,
 Mark
 
->From 64d94b9fbcd4518b0fc695243107d5baded7b154 Mon Sep 17 00:00:00 2001
-From: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Date: Tue, 4 Oct 2016 10:33:20 -0700
-Subject: [PATCH] ASoC: Intel: report JACK_LINEOUT event
+>From 8b0678dc914271e9ad4317fe82555ead92ce1cb9 Mon Sep 17 00:00:00 2001
+From: Petr Kulhavy <brain@jikos.cz>
+Date: Mon, 3 Oct 2016 16:40:48 +0200
+Subject: [PATCH] ASoC: tas571x: remove improper PDN signal usage in
+ set_bias_level
 
-This patch updates Jack type bitmask to include SND_JACK_LINEOUT while
-creating a new jack, so that LINEOUT events are reported properly.
+The set_bias_level toggles the PDN signal when entering
+SND_SOC_BIAS_STANDBY and SND_SOC_BIAS_OFF. However this has no effect and
+actually breaks things down (tested with TAS5717) due to the following
+reasons:
 
-Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+1) holding down PDN does not save power but holding down RST does
+2) now hard mute via register 0x5 is implemented and therefore it is no
+   longer needed to toggle PDN to enter all channel shut down
+3) in order to leave PDN it is required to toggle the RST signal (see
+   TAS5721 datasheet), which was not implemented
+4) toggling PDN as implemented actually mutes PWMs and there is no audio
+   output (tested on TAS5717)
+
+For these reasons remove the PDN signal toggling and just initialize it to
+inactive in probe().
+
+Signed-off-by: Petr Kulhavy <brain@jikos.cz>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tas571x.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 6532b8f0ab2f..865a21e557cc 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -130,8 +130,8 @@ static int broxton_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	 */
- 	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack",
- 			SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
--			SND_JACK_BTN_2 | SND_JACK_BTN_3, &broxton_headset,
--			NULL, 0);
-+			SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_LINEOUT,
-+			&broxton_headset, NULL, 0);
- 	if (ret) {
- 		dev_err(rtd->dev, "Headset Jack creation failed: %d\n", ret);
- 		return ret;
+diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
+index 512b9e663e89..810369f687d7 100644
+--- a/sound/soc/codecs/tas571x.c
++++ b/sound/soc/codecs/tas571x.c
+@@ -341,20 +341,9 @@ static int tas571x_set_bias_level(struct snd_soc_codec *codec,
+ 					return ret;
+ 				}
+ 			}
+-
+-			gpiod_set_value(priv->pdn_gpio, 0);
+-			usleep_range(5000, 6000);
+-
+-			regcache_cache_only(priv->regmap, false);
+-			ret = regcache_sync(priv->regmap);
+-			if (ret)
+-				return ret;
+ 		}
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+-		regcache_cache_only(priv->regmap, true);
+-		gpiod_set_value(priv->pdn_gpio, 1);
+-
+ 		if (!IS_ERR(priv->mclk))
+ 			clk_disable_unprepare(priv->mclk);
+ 		break;
+@@ -771,9 +760,6 @@ static int tas571x_i2c_probe(struct i2c_client *client,
+ 			return ret;
+ 	}
+ 
+-	regcache_cache_only(priv->regmap, true);
+-	gpiod_set_value(priv->pdn_gpio, 1);
+-
+ 	return snd_soc_register_codec(&client->dev, &priv->codec_driver,
+ 				      &tas571x_dai, 1);
+ }
 -- 
 2.9.3
