@@ -1,21 +1,17 @@
-From: Petr Kulhavy <brain@jikos.cz>
-Subject: [PATCH v2 1/4] ASoC: tas571x: extend the t_i2c time to
-	comply with TAS5721
-Date: Wed,  5 Oct 2016 15:51:04 +0200
-Message-ID: <1475675467-5575-2-git-send-email-brain@jikos.cz>
-References: <1475675467-5575-1-git-send-email-brain@jikos.cz>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: wm_adsp: Remove duplicate set of
+	kcontrol->iface" to the asoc tree
+Date: Wed, 05 Oct 2016 17:21:41 +0200
+Message-ID: <E1bro0r-0004h2-TF@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fep23.mx.upcmail.net (fep23.mx.upcmail.net [62.179.121.43])
- by alsa0.perex.cz (Postfix) with ESMTP id B48382665C3
- for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2016 15:51:21 +0200 (CEST)
-Received: from edge03.upcmail.net ([192.168.13.238]) by viefep23-int.chello.at
- (InterMail vM.8.01.05.21 201-2260-151-156-20141103) with ESMTP
- id <20161005135121.LSRI12996.viefep23-int.chello.at@edge03.upcmail.net>
- for <alsa-devel@alsa-project.org>; Wed, 5 Oct 2016 15:51:21 +0200
-In-Reply-To: <1475675467-5575-1-git-send-email-brain@jikos.cz>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A7D3261740
+ for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2016 17:22:00 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,34 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, Petr Kulhavy <brain@jikos.cz>
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-TAS5721 datasheet recommends to wait at least 13.5ms after deasserting the
-RESET signal. For TAS5717 this time is only 12ms, which was the original
-value in the code.
+The patch
 
-Extend the wait time after deasserting RESET from 12 to 13.5ms to comply
-with the TAS5721 specification.
+   ASoC: wm_adsp: Remove duplicate set of kcontrol->iface
 
-Signed-off-by: Petr Kulhavy <brain@jikos.cz>
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From e23cd27da59cd2245fc4450f183e4c1223021eca Mon Sep 17 00:00:00 2001
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Date: Mon, 3 Oct 2016 11:40:38 +0100
+Subject: [PATCH] ASoC: wm_adsp: Remove duplicate set of kcontrol->iface
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas571x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index e996313..4d61357 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -748,7 +748,7 @@ static int tas571x_i2c_probe(struct i2c_client *client,
- 		/* pulse the active low reset line for ~100us */
- 		usleep_range(100, 200);
- 		gpiod_set_value(priv->reset_gpio, 0);
--		usleep_range(12000, 20000);
-+		usleep_range(13500, 20000);
- 	}
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index b943dde8dbe5..7320fcacd86a 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -967,7 +967,6 @@ static int wmfw_add_ctl(struct wm_adsp *dsp, struct wm_coeff_ctl *ctl)
+ 	kcontrol = kzalloc(sizeof(*kcontrol), GFP_KERNEL);
+ 	if (!kcontrol)
+ 		return -ENOMEM;
+-	kcontrol->iface = SNDRV_CTL_ELEM_IFACE_MIXER;
  
- 	ret = regmap_write(priv->regmap, TAS571X_OSC_TRIM_REG, 0);
+ 	kcontrol->name = ctl->name;
+ 	kcontrol->info = wm_coeff_info;
 -- 
-2.7.4
+2.9.3
