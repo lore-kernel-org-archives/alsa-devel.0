@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas571x: wait 50ms after oscillator
-	trim" to the asoc tree
-Date: Wed, 05 Oct 2016 17:22:02 +0200
-Message-ID: <E1bro1C-0004lS-Lw@finisterre>
-References: <1475505650-8572-5-git-send-email-brain@jikos.cz>
+From: Andrej Krutak <dev@andree.sk>
+Subject: [PATCH] ALSA: line6: Fix POD X3 Live audio input
+Date: Wed,  5 Oct 2016 17:46:09 +0200
+Message-ID: <1475682369-5084-1-git-send-email-dev@andree.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3380C261740
- for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2016 17:22:18 +0200 (CEST)
-In-Reply-To: <1475505650-8572-5-git-send-email-brain@jikos.cz>
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5DD0261740
+ for <alsa-devel@alsa-project.org>; Wed,  5 Oct 2016 17:46:16 +0200 (CEST)
+Received: by mail-wm0-f67.google.com with SMTP id b184so25185821wma.3
+ for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2016 08:46:16 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Kulhavy <brain@jikos.cz>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: tiwai@suse.com, perex@perex.cz, stefanha@gmail.com, grabner@icg.tugraz.at, alsa-devel@alsa-project.org, eddi@depieri.net
+Cc: Andrej Krutak <dev@andree.sk>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+The commit c039aaa77a7d1d9375665a8b59ec16dc7d23e259 was incomplete,
+missing part of the setup for Live. This makes also audio input work,
+in addition to audio output.
 
-   ASoC: tas571x: wait 50ms after oscillator trim
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 5e549a0c18fc0321c18e7b6842cb7afc90aab396 Mon Sep 17 00:00:00 2001
-From: Petr Kulhavy <brain@jikos.cz>
-Date: Mon, 3 Oct 2016 16:40:49 +0200
-Subject: [PATCH] ASoC: tas571x: wait 50ms after oscillator trim
-
-Wait extra 50ms after writing the oscillator trim register in probe(), as
-recommended by the TAS5721 and TAS5711 datasheets.
-
-Signed-off-by: Petr Kulhavy <brain@jikos.cz>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Andrej Krutak <dev@andree.sk>
+Reported-by: Eddi De Pieri <eddi@depieri.net>
+Fixes: c039aaa77a7d1d9375665a8b59ec16dc7d23e259
 ---
- sound/soc/codecs/tas571x.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/usb/line6/podhd.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index df5e5cb33baa..de65ecf534af 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -754,6 +754,7 @@ static int tas571x_i2c_probe(struct i2c_client *client,
- 	if (ret)
- 		return ret;
- 
-+	usleep_range(50000, 60000);
- 
- 	memcpy(&priv->codec_driver, &tas571x_codec, sizeof(priv->codec_driver));
- 	priv->codec_driver.component_driver.controls = priv->chip->controls;
+diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
+index 193eb29..ac40525 100644
+--- a/sound/usb/line6/podhd.c
++++ b/sound/usb/line6/podhd.c
+@@ -317,7 +317,8 @@ static int podhd_init(struct usb_line6 *line6,
+ 	if (pod->line6.properties->capabilities & LINE6_CAP_PCM) {
+ 		/* initialize PCM subsystem: */
+ 		err = line6_init_pcm(line6,
+-			(id->driver_info == LINE6_PODX3) ? &podx3_pcm_properties :
++			(id->driver_info == LINE6_PODX3 ||
++			id->driver_info == LINE6_PODX3LIVE) ? &podx3_pcm_properties :
+ 			&podhd_pcm_properties);
+ 		if (err < 0)
+ 			return err;
 -- 
-2.9.3
+2.7.4
