@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH v2] ASoC: cs4270: fix DAPM stream name
-	mismatch
-Date: Thu, 6 Oct 2016 21:50:46 +0200
-Message-ID: <20161006195046.7npbynjhnfpdr3gx@sirena.org.uk>
+ mismatch
+Date: Thu, 6 Oct 2016 23:39:15 +0200
+Message-ID: <20161006213915.ixkwvqyqtipsi7es@sirena.org.uk>
 References: <D3A5836B.155CA%Paul.Handrigan@cirrus.com>
  <alpine.LNX.2.00.1610061119480.16794@acc-1004367-dev>
+ <57ec0d1d-c019-6155-85ce-2a8ea6922f1f@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8162020425987344433=="
+Content-Type: multipart/mixed; boundary="===============2638700321728983195=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 75962266AC3
- for <alsa-devel@alsa-project.org>; Thu,  6 Oct 2016 21:51:02 +0200 (CEST)
-In-Reply-To: <alpine.LNX.2.00.1610061119480.16794@acc-1004367-dev>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6141B266ABC
+ for <alsa-devel@alsa-project.org>; Fri,  7 Oct 2016 00:00:34 +0200 (CEST)
+In-Reply-To: <57ec0d1d-c019-6155-85ce-2a8ea6922f1f@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: murray foster <mrafoster@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: "Austin, Brian" <Brian.Austin@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, "Handrigan,
- Paul" <Paul.Handrigan@cirrus.com>
+ Paul" <Paul.Handrigan@cirrus.com>, murray foster <mrafoster@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8162020425987344433==
+--===============2638700321728983195==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="clsunjwmbywu2o7c"
+	protocol="application/pgp-signature"; boundary="uisyt5ktjhjvgcu2"
 Content-Disposition: inline
 
 
---clsunjwmbywu2o7c
+--uisyt5ktjhjvgcu2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 06, 2016 at 11:43:09AM -0700, murray foster wrote:
+On Thu, Oct 06, 2016 at 09:41:13PM +0200, Lars-Peter Clausen wrote:
 
-> What's the next step after patch acknowledgement? I'm a newbie on the list
-> so I'm sure there's some step I've missed or misinterpreted.
+> Best is to re-send the patch with the Acked-by added to the commit message
+> and make sure send the patch to maintainers (Mark and Liam) with the ALSA
+> list on Cc. This will make sure that they see the patch and it gets applied.
 
-As documented in SubmittingPatches please send patches to the=20
-maintainers for the code you would like to change.  The normal kernel
-workflow is that people apply patches from their inboxes, if they aren't
-copied they are likely to not see the patch at all and it is much more
-difficult to apply patches.
+I didn't get sent the original e-mail in the first place :(
 
---clsunjwmbywu2o7c
+--uisyt5ktjhjvgcu2
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAABCAAGBQJX9qsVAAoJECTWi3JdVIfQgHkH/iV4tMDVLaTazUMt0Tze0Rzr
-J4heMtYVWTxVEvowq1RBwBBdbiROAJlK5nf4ZOkAgXt/axx+LmQOVxfevJO5sDVT
-20olfdaQhquJx8xIb628HttvL7UcD6PDXnYq4awM3vrWZA/buxeyMswmIOA5q6d9
-oP7vrr+0btOvt6vYqkayaB0gq5mgROJCArrfVThwQf019DWhyf/SueYNvn3QEO2m
-KDSmEAUpKaa9NEind8DJJGv+QvGCEAZ4XVtQ1hxU5gdbVFO2cTEisjBjbVKG/Pvx
-oG/1Hc8LO1hiHzDhHWCEmDZzKRaa4dlvJHmq7SD10CFfAz4Mk4JPnpdCWAJKZjg=
-=mMsj
+iQEcBAABCAAGBQJX9sSDAAoJECTWi3JdVIfQLgsH/R8OrNFUHDH+G+CybbZmgaYJ
+qkekUjjaMMq7JS1Eb+DWALfEeTNufokMbbIm6ks6nD0PxwKUkjglpb/h6AR9z4tr
+mBAsfYcltprVNitJFi2CxIV7yTyBOPIapSApN+oT5UKp2o1kP1jBFRjIZE5ZoRFs
+amqrs7fTRBWHw54a0xQA5JXGVVKybwGoBorChkAzYIozeNNClkhZDHakTQv8NJOF
+sTTokGr/QmV/Gkpbm7nvkBzVnJPz0VU5/tZPtnhaMW/sc8S1+KtaCo58suDw4od2
+U5s4RQXYX7t0LX0N295rTuYTM5hdhIAJvuo61hrQb4yOsgbUi9OcbPHJ7Jk4DzA=
+=LS4P
 -----END PGP SIGNATURE-----
 
---clsunjwmbywu2o7c--
+--uisyt5ktjhjvgcu2--
 
---===============8162020425987344433==
+--===============2638700321728983195==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8162020425987344433==--
+--===============2638700321728983195==--
