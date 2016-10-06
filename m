@@ -1,85 +1,81 @@
-From: "Tirdea, Irina" <irina.tirdea@intel.com>
-Subject: RE: [PATCH v3] clk: x86: Add Atom PMC platform clocks
-Date: Thu, 6 Oct 2016 18:09:04 +0000
-Message-ID: <1F3AC3675D538145B1661F571FE1805F2F36B1A9@irsmsx105.ger.corp.intel.com>
-References: <1473427417-9166-1-git-send-email-irina.tirdea@intel.com>
- <20160914213025.GE7243@codeaurora.org>
+From: Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH 06/14] ASoC: Add sun8i digital audio codec
+Date: Thu, 6 Oct 2016 20:23:03 +0200
+Message-ID: <20161006182303.sftz3c7hjhv7xell@piout.net>
+References: <cover.1475571575.git.mylene.josserand@free-electrons.com>
+ <85cbd9926e52d0aa03f6bbfd8794373d8db491e0.1475571575.git.mylene.josserand@free-electrons.com>
+ <20161004161549.GO5228@lukather>
+ <901741475770017@web21g.yandex.ru>
+Reply-To: alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <20160914213025.GE7243@codeaurora.org>
-Content-Language: en-US
-Sender: linux-clk-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@codeaurora.org>, "x86@kernel.org" <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>
-Cc: "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, "Bossart, Pierre-louis" <pierre-louis.bossart@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-sunxi+bncBCKYNX7Y3IMBBCFN3K7QKGQEC7BRKMA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Disposition: inline
+In-Reply-To: <901741475770017-TgaBlLcPqFtxpj1cXAZ9Bg@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org" <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, "thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org" <thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, "vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org" <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org" <mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, "tiwai-IBi9RG/b67k@public.gmane.org" <tiwai-IBi9RG/b67k@public.gmane.org>, "sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org" <sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "wens-jdAy2FN1RRM@public.gmane.org" <wens-jdAy2FN1RRM@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, dma
 List-Id: alsa-devel@alsa-project.org
 
+On 07/10/2016 at 00:06:57 +0800, Icenowy Zheng wrote :
+> 05.10.2016, 00:20, "Maxime Ripard" <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>:
+> > Hi,
+> >
+> >> =C2=A0+static const struct of_device_id sun8i_codec_of_match[] =3D {
+> >> =C2=A0+ { .compatible =3D "allwinner,sun8i-a33-codec" },
+> >> =C2=A0+ { .compatible =3D "allwinner,sun8i-a23-codec" },
+> >
+> > I thought that the A23 and A33 had different codecs? In that case, it
+> > wouldn't be a good assumption to make
+>=20
+> Yes.
+>=20
+> >
+> >> =C2=A0+ {}
+> >> =C2=A0+};
+> >> =C2=A0+MODULE_DEVICE_TABLE(of, sun8i_codec_of_match);
+> >> =C2=A0+
+> >> =C2=A0+static struct platform_driver sun8i_codec_driver =3D {
+> >> =C2=A0+ .driver =3D {
+> >> =C2=A0+ .name =3D "sun8i-codec",
+> >> =C2=A0+ .owner =3D THIS_MODULE,
+> >> =C2=A0+ .of_match_table =3D sun8i_codec_of_match,
+> >> =C2=A0+ },
+> >> =C2=A0+ .probe =3D sun8i_codec_probe,
+> >> =C2=A0+ .remove =3D sun8i_codec_remove,
+> >> =C2=A0+};
+> >> =C2=A0+module_platform_driver(sun8i_codec_driver);
+> >> =C2=A0+
+> >> =C2=A0+MODULE_DESCRIPTION("Allwinner A33 (sun8i) codec driver");
+> >> =C2=A0+MODULE_AUTHOR("huanxin<huanxin-jFKXxz0WcGyYHARAtoI1EgC/G2K4zDHf@public.gmane.org>");
+> >
+> > Those obfuscated email adresses are not really helpful :)
+>=20
+> This kind of email addresses  are kept in many places in mainline kernel.
+>=20
+> e.g. drivers/mmc/host/sunxi-mmc.c have 'Aaron Maoye <leafy.myeh@reuuimlla=
+tech.com>'
+>=20
 
+Well, that is only one place and it is a comment, not in the
+MODULE_AUTHOR macro. I would agree that it is not useful to have a stale
+email address in MODULE_AUTHOR.
 
-> -----Original Message-----
-> From: linux-clk-owner@vger.kernel.org [mailto:linux-clk-owner@vger.kernel.org] On Behalf Of Stephen Boyd
-> Sent: 15 September, 2016 0:30
-> To: Tirdea, Irina
-> Cc: linux-clk@vger.kernel.org; Michael Turquette; alsa-devel@alsa-project.org; Mark Brown; Takashi Iwai; Bossart, Pierre-louis; Pierre-
-> Louis Bossart
-> Subject: Re: [PATCH v3] clk: x86: Add Atom PMC platform clocks
-> 
-> On 09/09, Irina Tirdea wrote:
-> > The BayTrail and CherryTrail platforms provide platform clocks
-> > through their Power Management Controller (PMC).
-> >
-> > The SoC supports up to 6 clocks (PMC_PLT_CLK[5:0]) with a
-> > frequency of either 19.2 MHz (PLL) or 25 MHz (XTAL) for BayTrail
-> > an a frequency of 19.2 MHz (XTAL) for CherryTrail. These clocks
-> > are available for general system use, where appropriate, and each
-> > have Control & Frequency register fields associated with them.
-> >
-> > For example, the usage for platform clocks suggested in the datasheet
-> > is the following:
-> >   PLT_CLK[2:0] - Camera
-> >   PLT_CLK[3] - Audio Codec
-> >   PLT_CLK[4] -
-> >   PLT_CLK[5] - COMMs
-> >
-> > Signed-off-by: Irina Tirdea <irina.tirdea@intel.com>
-> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > ---
-> >
-> > Notes:
-> >     Submitting this patch through the clock tree as requested by
-> >     Mark Brown. This patch specifically enables the audio MCLK
-> >     required by Baytrail CR devices (support already merged in
-> >     Mark's tree)
-> >
-> > Changes from v2:
-> >  - move clk platform data structures to a separate include file
-> >  - store clk_hw pointer for the fixed rate clocks
-> >
-> > Changes from v1:
-> >  - register the clk device as child of pmc device
-> >  - pass iomem pointer from pmc driver to clk driver to avoid using
-> > pmc_atom_read()/write() and use readl/writel API instead
-> >  - use devm_clk_hw_register/clkdev_hw_create instead of
-> > clk_register/clkdev_create
-> >
-> >  arch/x86/Kconfig                          |   1 +
-> >  arch/x86/include/asm/pmc_atom.h           |   3 +
-> >  arch/x86/platform/atom/pmc_atom.c         |  78 +++++-
-> 
-> Will there be problems if this merges through clk tree? If so we
-> could take the clk driver part and the platform data include part
-> could be duplicated into both trees. Or clk tree could be pulled
-> into x86?
-> 
-> The patch looks fine to me.
+--=20
+Alexandre Belloni, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
 
-Adding the x86 list and maintainers to this thread, as they should be able
-to answer this question. I already sent a new version of this patch, this
-time also including the x86 platform list and maintainers [1].
-
-Thanks,
-Irina
-
-[1] http://www.spinics.net/lists/linux-clk/msg12169.html
-
+--=20
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
