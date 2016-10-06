@@ -1,84 +1,79 @@
-From: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-Subject: Re: [PATCH 06/14] ASoC: Add sun8i digital audio codec
-Date: Fri, 07 Oct 2016 00:06:57 +0800
-Message-ID: <901741475770017@web21g.yandex.ru>
-References: <cover.1475571575.git.mylene.josserand@free-electrons.com>
-	 <85cbd9926e52d0aa03f6bbfd8794373d8db491e0.1475571575.git.mylene.josserand@free-electrons.com> <20161004161549.GO5228@lukather>
-Reply-To: icenowy-ymACFijhrKM@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rl6347a: Use dev_err_once for I2C
+ communication error prints
+Date: Thu, 6 Oct 2016 18:26:24 +0200
+Message-ID: <20161006162624.bvnn2s7u7s2uex6j@sirena.org.uk>
+References: <20161005140536.12166-1-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBCZLPFN5Q4OBBJHN3G7QKGQE53HDGLA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20161004161549.GO5228@lukather>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, =?utf-8?B?TXlsw6huZSBKb3NzZXJhbmQ=?= <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org" <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, "thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org" <thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, "vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org" <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org" <mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, "tiwai-IBi9RG/b67k@public.gmane.org" <tiwai-IBi9RG/b67k@public.gmane.org>, "sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org" <sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "wens-jdAy2FN1RRM@public.gmane.org" <wens-jdAy2FN1RRM@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org" <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, "dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <dmaengine-u79uwXL29TZUIDd8j+nm9g@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============9069609231401909588=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9767E266820
+ for <alsa-devel@alsa-project.org>; Thu,  6 Oct 2016 18:26:40 +0200 (CEST)
+In-Reply-To: <20161005140536.12166-1-jarkko.nikula@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============9069609231401909588==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="yspduknmwsjm3uyv"
+Content-Disposition: inline
 
-05.10.2016, 00:20, "Maxime Ripard" <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>:
-> Hi,
->
->> =C2=A0+static const struct of_device_id sun8i_codec_of_match[] =3D {
->> =C2=A0+ { .compatible =3D "allwinner,sun8i-a33-codec" },
->> =C2=A0+ { .compatible =3D "allwinner,sun8i-a23-codec" },
->
-> I thought that the A23 and A33 had different codecs? In that case, it
-> wouldn't be a good assumption to make
 
-Yes.
+--yspduknmwsjm3uyv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
->> =C2=A0+ {}
->> =C2=A0+};
->> =C2=A0+MODULE_DEVICE_TABLE(of, sun8i_codec_of_match);
->> =C2=A0+
->> =C2=A0+static struct platform_driver sun8i_codec_driver =3D {
->> =C2=A0+ .driver =3D {
->> =C2=A0+ .name =3D "sun8i-codec",
->> =C2=A0+ .owner =3D THIS_MODULE,
->> =C2=A0+ .of_match_table =3D sun8i_codec_of_match,
->> =C2=A0+ },
->> =C2=A0+ .probe =3D sun8i_codec_probe,
->> =C2=A0+ .remove =3D sun8i_codec_remove,
->> =C2=A0+};
->> =C2=A0+module_platform_driver(sun8i_codec_driver);
->> =C2=A0+
->> =C2=A0+MODULE_DESCRIPTION("Allwinner A33 (sun8i) codec driver");
->> =C2=A0+MODULE_AUTHOR("huanxin<huanxin-jFKXxz0WcGyYHARAtoI1EgC/G2K4zDHf@public.gmane.org>");
->
-> Those obfuscated email adresses are not really helpful :)
+On Wed, Oct 05, 2016 at 05:05:36PM +0300, Jarkko Nikula wrote:
 
-This kind of email addresses  are kept in many places in mainline kernel.
+> It's difficult to guess from bunch of "ret=-121" errors what driver and
+> device actually caused them. Since struct i2c_client has the dev pointer
+> use that for dev_err_once() in order to see the device and not spam the
+> log needlessly.
 
-e.g. drivers/mmc/host/sunxi-mmc.c have 'Aaron Maoye <leafy.myeh@reuuimllate=
-ch.com>'
+dev_err() is obviously an improvement (as would a better message be) but
+dev_err_once() seems like a big jump that we don't normally do for our
+I/O errors - transient errors do happen from time to time (especially
+when people get their power up sequences wrong) and it can be useful to
+know if something is just dead, failed gradually over time or just had a
+single transient error.  It's also helpful since a lot of the errors
+that do occur result in long timeouts so it's not always clear that
+we're grinding through lots of I/Os if we don't say anything.  Am I
+missing something about this case?
 
->
-> Thanks,
-> Maxime
->
-> --
-> Maxime Ripard, Free Electrons
-> Embedded Linux and Kernel engineering
-> http://free-electrons.com
-> ,
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+--yspduknmwsjm3uyv
+Content-Type: application/pgp-signature; name="signature.asc"
 
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJX9nsvAAoJECTWi3JdVIfQ+H4H/jqg4FN8Fph/PjSsQsV5w60n
+DuADHAwhzvcZeRWkBnd4sMXbKSueSvMwmfZyZwu1uRUs9CHROwykaxMk8vQlbfDu
+yswCiIlW4grR83wh7fZioXptCMi8GXQtjcZJoE9/0fRlsa6bVjSvRHg1lEkfBkTy
+R69mRPMMlIWAQUiHSqL6KmN6pMGMpbMcWqCQCwPWkg7KHJHsQECe/vWS8dRsFjS+
+feZ5XsdGxSINGwZ5J0v96kciM6yAIjTQAGc9UC/HDT4njp8HIT7wfRvVQYF2dUay
+tlvRw243UAOm+OXSmduLsrCdHRzMyvIBXvbtQOj6g9t0qwP4CEdGsaaCj6eWRug=
+=7Av1
+-----END PGP SIGNATURE-----
+
+--yspduknmwsjm3uyv--
+
+--===============9069609231401909588==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9069609231401909588==--
