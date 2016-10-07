@@ -1,15 +1,15 @@
 From: Harsha Priya <harshapriya.n@intel.com>
-Subject: [PATCH] [PATCH REPOST] ASoC: Intel: Atom: Fix message
-	handling during drop stream
-Date: Fri,  7 Oct 2016 03:38:32 -0700
-Message-ID: <1475836712-16258-1-git-send-email-harshapriya.n@intel.com>
+Subject: [PATCH REPOST] ASoC: Intel: Atom: Fix message handling
+	during drop stream
+Date: Fri,  7 Oct 2016 03:45:38 -0700
+Message-ID: <1475837138-16398-1-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id CC452266DBF
- for <alsa-devel@alsa-project.org>; Fri,  7 Oct 2016 12:38:37 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id DAC95266DBF
+ for <alsa-devel@alsa-project.org>; Fri,  7 Oct 2016 12:45:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
