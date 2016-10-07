@@ -1,15 +1,14 @@
-From: Harsha Priya <harshapriya.n@intel.com>
-Subject: [PATCH REPOST] ASoC: Intel: Atom: Fix message handling
-	during drop stream
-Date: Fri,  7 Oct 2016 03:45:38 -0700
-Message-ID: <1475837138-16398-1-git-send-email-harshapriya.n@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH] conf/ucm: skylake: add skylake-rt296 conf files
+Date: Fri,  7 Oct 2016 16:26:21 +0530
+Message-ID: <1475837781-7256-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id DAC95266DBF
- for <alsa-devel@alsa-project.org>; Fri,  7 Oct 2016 12:45:42 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 67449266DBF
+ for <alsa-devel@alsa-project.org>; Fri,  7 Oct 2016 12:47:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,35 +18,313 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, vinod.koul@intel.com, lgirdwood@gmail.com, broonie@kernel.org
-Cc: Harsha Priya <harshapriya.n@intel.com>, Naveen M <naveen.m@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: Nishit Sharma <nishitx.sharma@intel.com>, tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Karthik D M <karthik.d.m@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-If a stream is being dropped, the period_elapsed received then after
-need not be processed. Processing of the period_elapsed message causes
-a time out in drop stream response processing. This patch adds a condition
-to skip period_elapsed message processing if the stream is in INIT state.
+This add the UCM conf files for skylake enabling I2S audio, HDMI and DMIC
+ports.
 
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-Signed-off-by: Naveen M <naveen.m@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Karthik D M <karthik.d.m@intel.com>
+Signed-off-by: Nishit Sharma <nishitx.sharma@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/atom/sst/sst_ipc.c | 3 +++
- 1 file changed, 3 insertions(+)
+ configure.ac                                  |   1 +
+ src/conf/ucm/Makefile.am                      |   2 +-
+ src/conf/ucm/skylake-rt286/Hdmi1              |  20 ++++
+ src/conf/ucm/skylake-rt286/Hdmi2              |  20 ++++
+ src/conf/ucm/skylake-rt286/HiFi               | 129 ++++++++++++++++++++++++++
+ src/conf/ucm/skylake-rt286/Makefile.am        |   4 +
+ src/conf/ucm/skylake-rt286/skylake-rt286.conf |  60 ++++++++++++
+ 7 files changed, 235 insertions(+), 1 deletion(-)
+ create mode 100644 src/conf/ucm/skylake-rt286/Hdmi1
+ create mode 100644 src/conf/ucm/skylake-rt286/Hdmi2
+ create mode 100644 src/conf/ucm/skylake-rt286/HiFi
+ create mode 100644 src/conf/ucm/skylake-rt286/Makefile.am
+ create mode 100644 src/conf/ucm/skylake-rt286/skylake-rt286.conf
 
-diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
-index 8afa6fe..bfc8899 100644
---- a/sound/soc/intel/atom/sst/sst_ipc.c
-+++ b/sound/soc/intel/atom/sst/sst_ipc.c
-@@ -267,6 +267,9 @@ static void process_fw_async_msg(struct intel_sst_drv *sst_drv_ctx,
- 				"Period elapsed rcvd for pipe id 0x%x\n",
- 				pipe_id);
- 			stream = &sst_drv_ctx->streams[str_id];
-+			/* If stream is dropped, skip processing this message*/
-+			if (stream->status == STREAM_INIT)
-+				break;
- 			if (stream->period_elapsed)
- 				stream->period_elapsed(stream->pcm_substream);
- 			if (stream->compr_cb)
+diff --git a/configure.ac b/configure.ac
+index a1de230e588c..0dfbe81c6595 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -673,6 +673,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+ 	  src/conf/ucm/PAZ00/Makefile \
+ 	  src/conf/ucm/GoogleNyan/Makefile \
+ 	  src/conf/ucm/broadwell-rt286/Makefile \
++	  src/conf/ucm/skylake-rt286/Makefile \
+ 	  src/conf/ucm/VEYRON-I2S/Makefile \
+ 	  src/conf/ucm/chtrt5645/Makefile \
+ 	  src/conf/ucm/DB410c/Makefile \
+diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
+index 7bf432e70e26..a11d324e785b 100644
+--- a/src/conf/ucm/Makefile.am
++++ b/src/conf/ucm/Makefile.am
+@@ -1 +1 @@
+-SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan broadwell-rt286 VEYRON-I2S chtrt5645 DB410c
++SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan broadwell-rt286 skylake-rt286 VEYRON-I2S chtrt5645 DB410c
+diff --git a/src/conf/ucm/skylake-rt286/Hdmi1 b/src/conf/ucm/skylake-rt286/Hdmi1
+new file mode 100644
+index 000000000000..0e00fc844301
+--- /dev/null
++++ b/src/conf/ucm/skylake-rt286/Hdmi1
+@@ -0,0 +1,20 @@
++# Usecase for device HDMI1/Display Port stereo playback on Intel SKYLAKE/KABYLAKE platforms
++# For Audio in I2S mode
++
++SectionDevice."Hdmi1" {
++        Comment "HDMI/Display Port 1 Stereo"
++
++        EnableSequence [
++        ]
++
++        DisableSequence [
++        ]
++
++        Value {
++                PlaybackPCM "hw:skylakert286,4"
++                PlaybackChannels "2"
++                PlaybackPriority "3"
++                JackControl "HDMI/DP, pcm=4 Jack"
++        }
++}
++
+diff --git a/src/conf/ucm/skylake-rt286/Hdmi2 b/src/conf/ucm/skylake-rt286/Hdmi2
+new file mode 100644
+index 000000000000..89b31aa4b8f9
+--- /dev/null
++++ b/src/conf/ucm/skylake-rt286/Hdmi2
+@@ -0,0 +1,20 @@
++# Usecase for device HDMI2/Display Port stereo playback on Intel SKYLAKE/KABYLAKE platforms
++# For Audio in I2S mode
++
++SectionDevice."Hdmi2" {
++        Comment "HDMI/Display Port 2 Stereo"
++
++        EnableSequence [
++        ]
++
++        DisableSequence [
++        ]
++
++        Value {
++                PlaybackPCM "hw:skylakert286,5"
++                PlaybackChannels "2"
++                PlaybackPriority "4"
++                JackControl "HDMI/DP, pcm=5 Jack"
++        }
++}
++
+diff --git a/src/conf/ucm/skylake-rt286/HiFi b/src/conf/ucm/skylake-rt286/HiFi
+new file mode 100644
+index 000000000000..41638f4cb9c8
+--- /dev/null
++++ b/src/conf/ucm/skylake-rt286/HiFi
+@@ -0,0 +1,129 @@
++# Usecase for stereo playback Speaker and Headset, Recording on DMIC and Headset MIC.
++# For Audio in I2S mode on Intel SKYLAKE/KABYLAKE platforms
++
++SectionVerb {
++
++	EnableSequence [
++		cdev "hw:skylakert286"
++		cset "name='media0_out mo dmic01_hifi_in mi Switch' 1"
++	]
++
++	DisableSequence [
++		cdev "hw:skylakert286"
++	]
++
++	Value {
++		TQ "HiFi"
++		CapturePCM "hw:skylakert286,1"
++		PlaybackPCM "hw:skylakert286,0"
++	}
++}
++
++SectionDevice."Headphones" {
++	Comment "Headphones"
++
++	ConflictingDevice [
++		"Speaker"
++	]
++	EnableSequence [
++		cdev "hw:skylakert286"
++		cset "name='HPO L Switch' 1"
++		cset "name='HPO R Switch' 1"
++		cset "name='Headphone Jack Switch' 1"
++		cset "name='Speaker Playback Switch' 0,0"
++	]
++
++	DisableSequence [
++	]
++	Value {
++		PlaybackChannels "2"
++		PlaybackPriority "1"
++		JackControl "Headphone Jack"
++		JackHWMute "Speaker"
++	}
++}
++
++SectionDevice."Speaker" {
++	Comment "Speaker"
++
++	ConflictingDevice [
++		"Headphones"
++	]
++	EnableSequence [
++		cdev "hw:skylakert286"
++		cset "name='SPO Switch' 1"
++		cset "name='Speaker Playback Switch' 1,1"
++		cset "name='Speaker Switch' 1"
++		cset "name='HPO L Switch' 0"
++		cset "name='HPO R Switch' 0"
++	]
++
++	DisableSequence [
++	]
++	Value {
++		PlaybackChannels "2"
++		PlaybackPriority "1"
++		JackHWMute "Headphones"
++	}
++}
++
++SectionDevice."Headset" {
++	Comment "Headset Mic"
++
++	ConflictingDevice [
++		"dmiccap"
++	]
++	EnableSequence [
++		cdev "hw:skylakert286"
++		cset "name='media0_out mo codec0_in mi Switch' 1"
++		cset "name='ADC0 Capture Switch' 1,1"
++		cset "name='ADC 0 Mux' 0"
++		cset "name='Mic Jack Switch' 1"
++		cset "name='media0_out mo dmic01_hifi_in mi Switch' 0"
++	]
++
++	DisableSequence [
++		cdev "hw:skylakert286"
++		cset "name='media0_out mo dmic01_hifi_in mi Switch' 1"
++		cset "name='media0_out mo codec0_in mi Switch' 0"
++	]
++	Value {
++		CaptureChannels "2"
++		CapturePriority "2"
++		JackControl "Mic Jack"
++	}
++}
++
++
++SectionDevice."dmiccap" {
++	Comment "DMIC Stereo"
++
++	ConflictingDevice [
++		"Headpset"
++	]
++
++	EnableSequence [
++
++		cdev "hw:skylakert286"
++		cset "name='media0_out mo dmic01_hifi_in mi Switch' 1"
++		cset "name='media0_out mo codec0_in mi Switch' 0"
++		cset "name='ADC0 Capture Switch' 0,0"
++		cset "name='Mic Jack Switch' 0"
++		cset "name='ADC 0 Mux' 0"
++		
++	]
++
++	DisableSequence [
++		cdev "hw:skylakert286"
++		cset "name='media0_out mo codec0_in mi Switch' 1"
++		cset "name='media0_out mo dmic01_hifi_in mi Switch' 0"
++		cset "name='ADC0 Capture Switch' 1,1"
++		cset "name='Mic Jack Switch' 1"
++		cset "name='ADC 0 Mux' 2"
++	]
++	Value {
++		CaptureChannels "2"
++		CapturePriority "2"
++	}
++}
++
+diff --git a/src/conf/ucm/skylake-rt286/Makefile.am b/src/conf/ucm/skylake-rt286/Makefile.am
+new file mode 100644
+index 000000000000..9d6a85a5bdcf
+--- /dev/null
++++ b/src/conf/ucm/skylake-rt286/Makefile.am
+@@ -0,0 +1,4 @@
++alsaconfigdir = @ALSA_CONFIG_DIR@
++ucmdir = $(alsaconfigdir)/ucm/skylake-rt286
++ucm_DATA = skylake-rt286.conf HiFi Hdmi1 Hdmi2
++EXTRA_DIST = $(ucm_DATA)
+diff --git a/src/conf/ucm/skylake-rt286/skylake-rt286.conf b/src/conf/ucm/skylake-rt286/skylake-rt286.conf
+new file mode 100644
+index 000000000000..64e852c479e3
+--- /dev/null
++++ b/src/conf/ucm/skylake-rt286/skylake-rt286.conf
+@@ -0,0 +1,60 @@
++# UCM for Intel SKYLAKE/KABYLAKE platforms
++# For Audio in I2S mode
++
++SectionUseCase."HiFi" {
++	File "HiFi"
++	Comment "Play and record HiFi quality Music"
++}
++
++SectionUseCase."Hdmi1" {
++        File "Hdmi1"
++        Comment "Play on Hdmi/DP 1"
++}
++
++SectionUseCase."Hdmi2" {
++        File "Hdmi2"
++        Comment "Play on Hdmi/DP 2"
++}
++
++ValueDefaults {
++	PlaybackCTL "hw:skylakert286"
++	CaptureCTL "hw:skylakert286"
++	CaptureChannels "2"
++	CapturePriority "2"	
++}
++
++SectionDefaults [
++	cdev "hw:skylakert286"
++	cset "name='Headphone Jack Switch' 1"
++	cset "name='Speaker Switch' 1"
++	cset "name='Speaker Playback Switch' 0,0"
++	cset "name='Front DAC Switch' 1"
++	cset "name='Front RECMIX Switch' 0"
++	cset "name='Mic Jack Switch' 1"
++	cset "name='ADC 0 Mux' 2"
++	cset "name='ADC 1 Mux' 0"
++	cset "name='ADC0 Capture Volume' 105,105"
++	cset "name='ADC0 Capture Switch' 1,1"
++	cset "name='AMIC Volume' 3"
++	cset "name='DAC0 Playback Volume' 100,100"
++	cset "name='HPO L Switch' 0"
++	cset "name='HPO Mux' 0"
++	cset "name='HPO R Switch' 0"
++	cset "name='Pin 5 Mux' 1"
++	cset "name='Pin 6 Mux' 2"
++	cset "name='Pin 7 Mux' 3"
++	cset "name='RECMIX Beep Switch' 0"
++	cset "name='RECMIX Line1 Switch' 0"
++	cset "name='RECMIX Mic1 Switch' 0"
++	cset "name='SPK Mux' 0"
++	cset "name='SPO Switch' 1"
++	cset "name='codec0_out mo codec0_in mi Switch' 0"
++	cset "name='codec0_out mo dmic01_hifi_in mi Switch' 0"
++	cset "name='codec0_out mo media0_in mi Switch' 1"
++	cset "name='codec1_out mo codec0_in mi Switch' 0"
++	cset "name='codec1_out mo dmic01_hifi_in mi Switch' 0"
++	cset "name='codec1_out mo media0_in mi Switch' 0"
++	cset "name='media0_out mo codec0_in mi Switch' 1"
++	cset "name='media0_out mo dmic01_hifi_in mi Switch' 1"
++	cset "name='media0_out mo media0_in mi Switch' 0"
++]
 -- 
 1.9.1
