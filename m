@@ -1,33 +1,54 @@
-From: Scott Branden <scott.branden@broadcom.com>
-Subject: [PATCH] sound: soc: cygnus: add depends on HAS_DMA
-Date: Fri,  7 Oct 2016 12:24:18 -0700
-Message-ID: <1475868258-10689-1-git-send-email-scott.branden@broadcom.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Scott Branden <scott.branden@broadcom.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH v3 1/8] ASoC: topology: ABI - Add flags to
+	PCM
+Date: Sat, 8 Oct 2016 15:39:27 +0800
+Message-ID: <57F8A2AF.3080909@linux.intel.com>
+References: <cover.1475127338.git.mengdong.lin@linux.intel.com>
+ <7e8185f7a2eb642b52efe0de1369354c3a902daf.1475127338.git.mengdong.lin@linux.intel.com>
+ <20161006144419.z6ntryxtrxpwsqad@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89963265654
+ for <alsa-devel@alsa-project.org>; Sat,  8 Oct 2016 09:38:41 +0200 (CEST)
+In-Reply-To: <20161006144419.z6ntryxtrxpwsqad@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-add depends on HAS_DMA to Kconfig.  This fixes error reported
-by kbuild test robot when building for ARCH=m32r:
-ERROR: "bad_dma_ops" [sound/soc/bcm/snd-soc-cygnus.ko] undefined!
 
-Signed-off-by: Scott Branden <scott.branden@broadcom.com>
----
- sound/soc/bcm/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/bcm/Kconfig b/sound/soc/bcm/Kconfig
-index d528aac..edf3671 100644
---- a/sound/soc/bcm/Kconfig
-+++ b/sound/soc/bcm/Kconfig
-@@ -11,6 +11,7 @@ config SND_BCM2835_SOC_I2S
- config SND_SOC_CYGNUS
- 	tristate "SoC platform audio for Broadcom Cygnus chips"
- 	depends on ARCH_BCM_CYGNUS || COMPILE_TEST
-+	depends on HAS_DMA
- 	help
- 	  Say Y if you want to add support for ASoC audio on Broadcom
- 	  Cygnus chips (bcm958300, bcm958305, bcm911360)
--- 
-2.5.0
+On 10/06/2016 10:44 PM, Mark Brown wrote:
+> On Thu, Sep 29, 2016 at 02:08:51PM +0800, mengdong.lin@linux.intel.com wrote:
+>
+>> +	__le32 flag_mask;       /* bitmask of flags to configure */
+>> +	__le32 flags;           /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
+>>   } __attribute__((packed));
+>
+> I just followed up on the userspace patches but to repeat what I was
+> saying there I think given that users are actively complaining about
+> topology ABI files breaking we need to handle any extensions in a
+> backwards compatible fashion.
+>
+
+Thanks for your comments!
+
+We'll try to solve this backward compatible issue in kernel. And we'll 
+support from topology ABI version 4.
+
+Version 4 is now used by alsa-lib. Before version 4, only Intel use it 
+internally and later we moved to version 4.
+
+Thanks
+Mengdong
