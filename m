@@ -1,42 +1,46 @@
-From: Ray Jui <ray.jui@broadcom.com>
-Subject: Re: [PATCH] sound: soc: cygnus: add depends on HAS_DMA
-Date: Sat, 8 Oct 2016 13:26:13 -0700
-Message-ID: <caa6a348-9a5f-7f08-ea24-35c3e9d78b31@broadcom.com>
-References: <1475868258-10689-1-git-send-email-scott.branden@broadcom.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 05/12] ASoC: sun4i-codec: Add support for
+ A31 playback through headphone output
+Date: Sat, 8 Oct 2016 20:29:03 -0500
+Message-ID: <20161009012903.GN18158@rob-hp-laptop>
+References: <20161003110804.28235-1-wens@csie.org>
+ <20161003110804.28235-6-wens@csie.org>
+Reply-To: robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1475868258-10689-1-git-send-email-scott.branden@broadcom.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Scott Branden <scott.branden@broadcom.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBDJIP47K7MERBYN2427QKGQEGTQYPPA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Disposition: inline
+In-Reply-To: <20161003110804.28235-6-wens-jdAy2FN1RRM@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Scott,
-
-On 10/7/2016 12:24 PM, Scott Branden wrote:
-> add depends on HAS_DMA to Kconfig.  This fixes error reported
-> by kbuild test robot when building for ARCH=m32r:
-> ERROR: "bad_dma_ops" [sound/soc/bcm/snd-soc-cygnus.ko] undefined!
->
-> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+On Mon, Oct 03, 2016 at 07:07:57PM +0800, Chen-Yu Tsai wrote:
+> The A31 has a similar codec to the A10/A20. The PCM parts are very
+> similar, with just different register offsets. The analog paths are
+> very different. There are more inputs and outputs.
+> 
+> The quirks structure is expanded to include different register offsets
+> and separate callbacks for creating the ASoC card. Also the DMA burst
+> length is increased to 8. While the A10 DMA engine supports bursts of
+> 1, 4 and 8, the A31 engine only supports 1 and 8.
+> 
+> This patch adds support for the basic playback path of the A31 codec,
+> from the DAC to the headphones. Headphone detection, microphone,
+> signaling, other inputs/outputs and capture will be added later.
+> 
+> Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 > ---
->   sound/soc/bcm/Kconfig | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/sound/soc/bcm/Kconfig b/sound/soc/bcm/Kconfig
-> index d528aac..edf3671 100644
-> --- a/sound/soc/bcm/Kconfig
-> +++ b/sound/soc/bcm/Kconfig
-> @@ -11,6 +11,7 @@ config SND_BCM2835_SOC_I2S
->   config SND_SOC_CYGNUS
->   	tristate "SoC platform audio for Broadcom Cygnus chips"
->   	depends on ARCH_BCM_CYGNUS || COMPILE_TEST
-> +	depends on HAS_DMA
->   	help
->   	  Say Y if you want to add support for ASoC audio on Broadcom
->   	  Cygnus chips (bcm958300, bcm958305, bcm911360)
-Looks good to me.
+>  .../devicetree/bindings/sound/sun4i-codec.txt      |   6 +-
 
-Reviewed-by: Ray Jui <ray.jui@broadcom.com>
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+
+>  sound/soc/sunxi/sun4i-codec.c                      | 396 +++++++++++++++++----
+>  2 files changed, 334 insertions(+), 68 deletions(-)
