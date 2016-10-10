@@ -1,15 +1,17 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v4 00/11] ASoC: topology: Remaining kernel
-	patches
-Date: Mon, 10 Oct 2016 22:23:08 +0800
-Message-ID: <cover.1476108863.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v4 01/11] ASoC: topology: Make manifest
+	backward compatible from ABI v4
+Date: Mon, 10 Oct 2016 22:24:11 +0800
+Message-ID: <c5bb9199d27f4fd4d54dbac861f6fee9c9895483.1476108863.git.mengdong.lin@linux.intel.com>
+References: <cover.1476108863.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id BE215260083
- for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2016 16:22:20 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DE3E260083
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2016 16:23:23 +0200 (CEST)
+In-Reply-To: <cover.1476108863.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,54 +27,130 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-This version can support old topology ABI v4 in a backward compatible way,
-assuming users start to use topology from ABI v4.
+This patch adds support for old version 4 of manifest.
 
-This series contains all remaining kernel patches of topology, including
-some ABI update to PCM (FrontEnds) and link (BackEnds) objects.
+Topology ABI v5 added new fields to manifest while user space may still
+uses v4. So kernel will check the ABI version by comparing the object
+size. If user space uses v4 of manifest, kernel will create the latest
+version of manifest from the old one, and use the new one internally.
 
-User will be able to config existing BE DAI links, configure more for FE
-links. Code are verified and can cover reqeust of Intel pre-release
-platforms for next year, so ABI should be stable.
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Current kernel topology code does not really touch Codec-Codec links
-since there is no user requst atm. We can add support for CC links later
-by reusing code and data structures for BE links, and no need to revise
-ABI.
-
-History:
-v2: Add the reason for creating BE DAI & DAI links by topology to commit
-    message.
-    Drop support for configuring DPCM trigger ordering in topology.
-
-v3: Topology no longer creates BE DAI or BE DAI links, but only configure
-    existing ones. The API to find a DAI link can also check the name and
-    stream name in case a soc card doesn't use unique ID for DAI links.
-    The user space code is also ready.
-
-v4: Support ABI udpate and be backward compatible for topology ABI v4.
-    Code refactoring to configure physical DAIs.
-
-Mengdong Lin (11):
-  ASoC: topology: Make manifest backward compatible from ABI v4
-  ASoC: topology: Make PCM backward compatible from ABI v4
-  ASoC: topology: Not quit on topology file of ABI version 4
-  ASoC: topology: ABI - Add flags and private data to PCM
-  ASoC: topology: ABI - Define DAI physical PCM data formats
-  ASoC: topology: ABI - Update physical DAI link configuration for
-    version 5
-  ASoC: Define API to find a dai link
-  ASoC: topology: Add support to configure existing physical DAI links
-  ASoC: topology: Rename the function to create a FE link
-  ASoC: topology: ABI - Rename struct and type for physical DAIs
-  ASoC: topology: Rename functions & variables for physical links
-
- include/sound/soc-dai.h   |  15 +-
- include/sound/soc.h       |   3 +
- include/uapi/sound/asoc.h |  91 +++++++-
- sound/soc/soc-core.c      |  42 ++++
- sound/soc/soc-topology.c  | 544 +++++++++++++++++++++++++++++++++++++++++-----
- 5 files changed, 623 insertions(+), 72 deletions(-)
-
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 6b05047..735e1b4 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -53,6 +53,23 @@
+ #define SOC_TPLG_PASS_START	SOC_TPLG_PASS_MANIFEST
+ #define SOC_TPLG_PASS_END	SOC_TPLG_PASS_BE_DAI
+ 
++
++/*
++ * Old version of ABI structs, supported for backward compatibility.
++ */
++
++/* Manifest v4 */
++struct snd_soc_tplg_manifest_v4 {
++	__le32 size;		/* in bytes of this structure */
++	__le32 control_elems;	/* number of control elements */
++	__le32 widget_elems;	/* number of widget elements */
++	__le32 graph_elems;	/* number of graph elements */
++	__le32 pcm_elems;	/* number of PCM elements */
++	__le32 dai_link_elems;	/* number of DAI link elements */
++	struct snd_soc_tplg_private priv;
++} __packed;
++
++
+ struct soc_tplg {
+ 	const struct firmware *fw;
+ 
+@@ -1798,27 +1815,79 @@ static int soc_tplg_be_dai_elems_load(struct soc_tplg *tplg,
+ 	return 0;
+ }
+ 
++/**
++ * manifest_new_ver - Create the new manifest from an old version of source.
++ * @toplogy: topology context
++ * @src: old version of manifest as a source
++ * @manifest: latest version of manifest created from the source
++ *
++ * Support from vesion 4. User need free the returned manifest manually.
++ */
++static int manifest_new_ver(struct soc_tplg *tplg,
++			struct snd_soc_tplg_manifest *src,
++			struct snd_soc_tplg_manifest **manifest)
++{
++	struct snd_soc_tplg_manifest *dest;
++	struct snd_soc_tplg_manifest_v4 *src_v4;
++
++	*manifest = NULL;
++
++	if (src->size != sizeof(struct snd_soc_tplg_manifest_v4)) {
++		dev_err(tplg->dev, "ASoC: invalid manifest size\n");
++		return -EINVAL;
++	}
++
++	dev_warn(tplg->dev, "ASoC: old version of manifest\n");
++
++	src_v4 = (struct snd_soc_tplg_manifest_v4 *)src;
++	dest = kzalloc(sizeof(*dest) + src_v4->priv.size, GFP_KERNEL);
++	if (!dest)
++		return -ENOMEM;
++
++	dest->size = sizeof(*dest);	/* size of latest abi version */
++	dest->control_elems = src_v4->control_elems;
++	dest->widget_elems = src_v4->widget_elems;
++	dest->graph_elems = src_v4->graph_elems;
++	dest->pcm_elems = src_v4->pcm_elems;
++	dest->dai_link_elems = src_v4->dai_link_elems;
++	dest->priv.size = src_v4->priv.size;
++	if (dest->priv.size)
++		memcpy(dest->priv.data, src_v4->priv.data,
++		       src_v4->priv.size);
++
++	*manifest = dest;
++	return 0;
++}
+ 
+ static int soc_tplg_manifest_load(struct soc_tplg *tplg,
+ 				  struct snd_soc_tplg_hdr *hdr)
+ {
+-	struct snd_soc_tplg_manifest *manifest;
++	struct snd_soc_tplg_manifest *manifest, *_manifest;
++	bool size_mismatch = false;
++	int err;
+ 
+ 	if (tplg->pass != SOC_TPLG_PASS_MANIFEST)
+ 		return 0;
+ 
+ 	manifest = (struct snd_soc_tplg_manifest *)tplg->pos;
+-	if (manifest->size != sizeof(*manifest)) {
+-		dev_err(tplg->dev, "ASoC: invalid manifest size\n");
+-		return -EINVAL;
+-	}
+ 
+-	tplg->pos += sizeof(struct snd_soc_tplg_manifest);
++	/* check ABI version by size, create a new one if version not match */
++	if (manifest->size == sizeof(*manifest)) {
++		_manifest = manifest;
++	} else {
++		size_mismatch = true;
++		err = manifest_new_ver(tplg, manifest, &_manifest);
++		if (err < 0)
++			return err;
++	}
+ 
++	/* pass control to component driver for optional further init */
+ 	if (tplg->comp && tplg->ops && tplg->ops->manifest)
+-		return tplg->ops->manifest(tplg->comp, manifest);
++		return tplg->ops->manifest(tplg->comp, _manifest);
++
++	if (size_mismatch)	/* free the duplicated one */
++		kfree(_manifest);
+ 
+-	dev_err(tplg->dev, "ASoC: Firmware manifest not supported\n");
+ 	return 0;
+ }
+ 
 -- 
 2.5.0
