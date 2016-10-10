@@ -1,156 +1,58 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v4 01/11] ASoC: topology: Make manifest
-	backward compatible from ABI v4
-Date: Mon, 10 Oct 2016 22:24:11 +0800
-Message-ID: <c5bb9199d27f4fd4d54dbac861f6fee9c9895483.1476108863.git.mengdong.lin@linux.intel.com>
-References: <cover.1476108863.git.mengdong.lin@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: sgtl5000: add headphone and LINEOUT mute
+ controls
+Date: Mon, 10 Oct 2016 16:24:33 +0200
+Message-ID: <20161010142433.qrvjrmhvo3u3oxx6@sirena.org.uk>
+References: <20160830202501.19323-1-dev@g0hl1n.net>
+ <20160831092631.013c8170@g0hl1n.net>
+ <20160909094645.64b7744a@g0hl1n.net>
+ <20160909101719.GD27946@sirena.org.uk>
+ <4b11fbea-6a04-a157-4225-592326aa76bd@g0hl1n.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DE3E260083
- for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2016 16:23:23 +0200 (CEST)
-In-Reply-To: <cover.1476108863.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ebegjyqjk3znccsi"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4b11fbea-6a04-a157-4225-592326aa76bd@g0hl1n.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Leitner <me@g0hl1n.net>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, eric@nelint.com, clemens.gruber@pqgruber.com, tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-This patch adds support for old version 4 of manifest.
+--ebegjyqjk3znccsi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Topology ABI v5 added new fields to manifest while user space may still
-uses v4. So kernel will check the ABI version by comparing the object
-size. If user space uses v4 of manifest, kernel will create the latest
-version of manifest from the old one, and use the new one internally.
+On Mon, Oct 10, 2016 at 02:52:38PM +0200, Richard Leitner wrote:
+> On 09/09/2016 12:17 PM, Mark Brown wrote:
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+> > Please don't send content free pings and please allow a reasonable time
+> > for review.  People get busy, go on holiday, attend conferences and so
+> > on so unless there is some reason for urgency (like critical bug fixes)
+> > please allow at least a couple of weeks for review.  If there have been
+> > review comments then people may be waiting for those to be addressed.
+> > Sending content free pings just adds to the mail volume (if they are
+> > seen at all) and if something has gone wrong you'll have to resend the
+> > patches anyway.
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 6b05047..735e1b4 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -53,6 +53,23 @@
- #define SOC_TPLG_PASS_START	SOC_TPLG_PASS_MANIFEST
- #define SOC_TPLG_PASS_END	SOC_TPLG_PASS_BE_DAI
- 
-+
-+/*
-+ * Old version of ABI structs, supported for backward compatibility.
-+ */
-+
-+/* Manifest v4 */
-+struct snd_soc_tplg_manifest_v4 {
-+	__le32 size;		/* in bytes of this structure */
-+	__le32 control_elems;	/* number of control elements */
-+	__le32 widget_elems;	/* number of widget elements */
-+	__le32 graph_elems;	/* number of graph elements */
-+	__le32 pcm_elems;	/* number of PCM elements */
-+	__le32 dai_link_elems;	/* number of DAI link elements */
-+	struct snd_soc_tplg_private priv;
-+} __packed;
-+
-+
- struct soc_tplg {
- 	const struct firmware *fw;
- 
-@@ -1798,27 +1815,79 @@ static int soc_tplg_be_dai_elems_load(struct soc_tplg *tplg,
- 	return 0;
- }
- 
-+/**
-+ * manifest_new_ver - Create the new manifest from an old version of source.
-+ * @toplogy: topology context
-+ * @src: old version of manifest as a source
-+ * @manifest: latest version of manifest created from the source
-+ *
-+ * Support from vesion 4. User need free the returned manifest manually.
-+ */
-+static int manifest_new_ver(struct soc_tplg *tplg,
-+			struct snd_soc_tplg_manifest *src,
-+			struct snd_soc_tplg_manifest **manifest)
-+{
-+	struct snd_soc_tplg_manifest *dest;
-+	struct snd_soc_tplg_manifest_v4 *src_v4;
-+
-+	*manifest = NULL;
-+
-+	if (src->size != sizeof(struct snd_soc_tplg_manifest_v4)) {
-+		dev_err(tplg->dev, "ASoC: invalid manifest size\n");
-+		return -EINVAL;
-+	}
-+
-+	dev_warn(tplg->dev, "ASoC: old version of manifest\n");
-+
-+	src_v4 = (struct snd_soc_tplg_manifest_v4 *)src;
-+	dest = kzalloc(sizeof(*dest) + src_v4->priv.size, GFP_KERNEL);
-+	if (!dest)
-+		return -ENOMEM;
-+
-+	dest->size = sizeof(*dest);	/* size of latest abi version */
-+	dest->control_elems = src_v4->control_elems;
-+	dest->widget_elems = src_v4->widget_elems;
-+	dest->graph_elems = src_v4->graph_elems;
-+	dest->pcm_elems = src_v4->pcm_elems;
-+	dest->dai_link_elems = src_v4->dai_link_elems;
-+	dest->priv.size = src_v4->priv.size;
-+	if (dest->priv.size)
-+		memcpy(dest->priv.data, src_v4->priv.data,
-+		       src_v4->priv.size);
-+
-+	*manifest = dest;
-+	return 0;
-+}
- 
- static int soc_tplg_manifest_load(struct soc_tplg *tplg,
- 				  struct snd_soc_tplg_hdr *hdr)
- {
--	struct snd_soc_tplg_manifest *manifest;
-+	struct snd_soc_tplg_manifest *manifest, *_manifest;
-+	bool size_mismatch = false;
-+	int err;
- 
- 	if (tplg->pass != SOC_TPLG_PASS_MANIFEST)
- 		return 0;
- 
- 	manifest = (struct snd_soc_tplg_manifest *)tplg->pos;
--	if (manifest->size != sizeof(*manifest)) {
--		dev_err(tplg->dev, "ASoC: invalid manifest size\n");
--		return -EINVAL;
--	}
- 
--	tplg->pos += sizeof(struct snd_soc_tplg_manifest);
-+	/* check ABI version by size, create a new one if version not match */
-+	if (manifest->size == sizeof(*manifest)) {
-+		_manifest = manifest;
-+	} else {
-+		size_mismatch = true;
-+		err = manifest_new_ver(tplg, manifest, &_manifest);
-+		if (err < 0)
-+			return err;
-+	}
- 
-+	/* pass control to component driver for optional further init */
- 	if (tplg->comp && tplg->ops && tplg->ops->manifest)
--		return tplg->ops->manifest(tplg->comp, manifest);
-+		return tplg->ops->manifest(tplg->comp, _manifest);
-+
-+	if (size_mismatch)	/* free the duplicated one */
-+		kfree(_manifest);
- 
--	dev_err(tplg->dev, "ASoC: Firmware manifest not supported\n");
- 	return 0;
- }
- 
--- 
-2.5.0
+> So it's been a month now, is this a reasonable time to ping?
+
+To repeat please don't send content free pings at all for the reasons
+explained above.
+
+--ebegjyqjk3znccsi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJX+6SeAAoJECTWi3JdVIfQ9+4H/A5WERxARPboePCFsO86EBUE
+49CT4xj2YYqERdv7SpiLFyohBWdpQHpyG8J9VIo215kcejpvNa+188Cuw2O39j3r
+U79ZoJW0YRZwP4MEdFnjpabZ/j9ae1eFEev9IO9mArNfWX90nuGhMAfYKhaOdhoO
+MHhCRBeESHW4RrUcSkWGKHZOYoovP9+lDkN8GDvi6nfxjo488rxR2mDw4a33kl4D
+cDDrKjJV5h6goV6A/Eqwz95zy3XbhOq4qFnU5KB7V4Ns2uKvNVOwMxQy9G8zoxvH
+v8/ZFIuNROwO+pytADfwX1KRwAnnywTwyCGh1qDZ5gKYNouACJn4ZepuzYuwQhA=
+=E/ZO
+-----END PGP SIGNATURE-----
+
+--ebegjyqjk3znccsi--
