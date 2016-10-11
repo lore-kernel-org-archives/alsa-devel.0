@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Reenable use from userspace"
-	to the asoc tree
-Date: Tue, 11 Oct 2016 12:28:12 +0200
-Message-ID: <E1btuI8-0008Cn-GF@finisterre>
-References: <1445830900-1752-1-git-send-email-broonie@kernel.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ALSA: seq: obsolete change of address
+	limit
+Date: Tue, 11 Oct 2016 14:06:14 +0300
+Message-ID: <20161011110614.GA1290@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 56E16261560
- for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2016 12:28:39 +0200 (CEST)
-In-Reply-To: <1445830900-1752-1-git-send-email-broonie@kernel.org>
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52EB4261560
+ for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2016 13:06:28 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,76 +20,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mendong Lin <mengdong.lin@intel.com>
+To: o-takashi@sakamocchi.jp
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hello Takashi Sakamoto,
 
-   ASoC: topology: Reenable use from userspace
+The patch e12ec251e4db: "ALSA: seq: obsolete change of address limit"
+from Aug 13, 2016, leads to the following static checker warning:
 
-has been applied to the asoc tree at
+	sound/core/seq/seq_compat.c:61 snd_seq_call_port_info_ioctl()
+	warn: did you mean to pass the address of 'data'
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+sound/core/seq/seq_compat.c
+    45  static int snd_seq_call_port_info_ioctl(struct snd_seq_client *client, unsigned int cmd,
+    46                                          struct snd_seq_port_info32 __user *data32)
+    47  {
+    48          int err = -EFAULT;
+    49          struct snd_seq_port_info *data;
+    50  
+    51          data = kmalloc(sizeof(*data), GFP_KERNEL);
+    52          if (!data)
+    53                  return -ENOMEM;
+    54  
+    55          if (copy_from_user(data, data32, sizeof(*data32)) ||
+    56              get_user(data->flags, &data32->flags) ||
+    57              get_user(data->time_queue, &data32->time_queue))
+    58                  goto error;
+    59          data->kernel = NULL;
+    60  
+    61          err = snd_seq_kernel_client_ctl(client->number, cmd, &data);
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+This should almost certainly be "cmd, data);" without the &.  Have you
+tested this?  It eventually gets passed to functions like
+snd_seq_ioctl_create_port().
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+    62          if (err < 0)
+    63                  goto error;
+    64  
+    65          if (copy_to_user(data32, data, sizeof(*data32)) ||
+    66              put_user(data->flags, &data32->flags) ||
+    67              put_user(data->time_queue, &data32->time_queue))
+    68                  err = -EFAULT;
+    69  
+    70   error:
+    71          kfree(data);
+    72          return err;
+    73  }
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 7c45e3cc6a59fb00edea65dfb6d3ae60403e4539 Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@kernel.org>
-Date: Mon, 26 Oct 2015 12:35:02 +0900
-Subject: [PATCH] ASoC: topology: Reenable use from userspace
-
-We had inserted a #error into the topology UAPI code to ensure that the
-ABI was not adopted by userspace while final review and testing was
-ongoing.  The idea was that some finishing touches would be made to the
-ABI before declaring it stable and suitable for use in production but
-this has not yet happened as more than a year later revisions to the ABI
-are still onging.
-
-The reality however is that people are shipping topology files in
-production and these ABI changes are causing practical issues for users
-and we can't break userspace.  This makes this error pointless so we
-should remove it.
-
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
----
- include/uapi/sound/asoc.h | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 33d00a4ce656..819d895edfdc 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -18,12 +18,6 @@
- #include <linux/types.h>
- #include <sound/asound.h>
- 
--#ifndef __KERNEL__
--#error This API is an early revision and not enabled in the current
--#error kernel release, it will be enabled in a future kernel version
--#error with incompatible changes to what is here.
--#endif
--
- /*
-  * Maximum number of channels topology kcontrol can represent.
-  */
--- 
-2.9.3
+regards,
+dan carpenter
