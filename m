@@ -1,113 +1,109 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: haswell depends on sst-firmware" to the asoc tree
-Date: Tue, 11 Oct 2016 12:28:08 +0200
-Message-ID: <E1btuI4-0008Bv-OG@finisterre>
-References: <20161010123345.1363113-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161010123345.1363113-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Tom Rini <trini@konsulko.com>, alsa-devel@alsa-project.org, Genki Marshall <genki@genki.is>, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, John Keeping <john@metanate.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Jeeja KP <jeeja.kp@intel.com>alsa-devel@alsa-project.org
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v6 07/11] ASoC: Define API to find a dai link
+Date: Tue, 11 Oct 2016 14:37:50 +0800
+Message-ID: <5400bcd3fe2e09bbb1d9693cf7b2d4fbb8b91ab8.1476166990.git.mengdong.lin@linux.intel.com>
+References: <cover.1476166990.git.mengdong.lin@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2ACFF265284
+ for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2016 08:37:00 +0200 (CEST)
+In-Reply-To: <cover.1476166990.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-   ASoC: Intel: haswell depends on sst-firmware
+Define the API to find an existing DAI link of the soc card by matching
+the ID, name and stream name.
 
-has been applied to the asoc tree at
+Some cards may use unique ID for each DAI link, so matching ID is enough,
+and name or stream name are not necessary. But user need to specify name
+or stream name as well if not sure whether link ID is unique since most
+cards use 0 as the default link ID.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Topology can use this API to find an existing BE link and configure it.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From c3474e211576fc88ddd1f3e8ce3b06a2051438e7 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 10 Oct 2016 14:33:20 +0200
-Subject: [PATCH] ASoC: Intel: haswell depends on sst-firmware
-
-The Intel Haswell audio support fails to link if
-CONFIG_SND_SOC_INTEL_SST_FIRMWARE is disabled:
-
-sst-haswell-dsp.c: undefined reference to `sst_mem_block_register'
-sst-haswell-dsp.c: undefined reference to `sst_mem_block_unregister_all'
-sst-haswell-dsp.c: undefined reference to `sst_module_alloc_blocks'
-sst-haswell-dsp.c: undefined reference to `sst_module_free'
-sst-haswell-dsp.c: undefined reference to `sst_module_new'
-sst-haswell-pcm.c: undefined reference to `sst_module_get_from_id'
-sst-haswell-pcm.c: undefined reference to `sst_module_runtime_restore'
-sst-haswell-pcm.c: undefined reference to `sst_module_runtime_save'
-ERROR: "sst_block_alloc_scratch" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_block_free_scratch" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_dsp_dma_copyfrom" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_dsp_dma_copyto" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_dsp_dma_get_channel" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_dsp_dma_put_channel" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_dsp_free" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_dsp_get_offset" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_dsp_new" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_fw_free_all" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_fw_new" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_fw_reload" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_fw_unload" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_module_runtime_alloc_blocks" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_module_runtime_get_from_id" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-ERROR: "sst_module_runtime_new" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
-
-This moves the 'select' statement from two of the three haswell based users
-into the line that is used by all of them, so make it harder to get wrong
-and to fix the existing randconfig regressions.
-
-Fixes: 2d995e5dc283 ("ASoC: Intel: boards: Add bdw-rt5677 machine driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/Kconfig | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index a20c3dfbcb5d..54dec9161cef 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -46,6 +46,7 @@ config SND_SOC_INTEL_SST_MATCH
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 4f1c784..c3a38ee 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1671,6 +1671,9 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
+ 				struct snd_soc_dai_link *dai_link);
+ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+ 			     struct snd_soc_dai_link *dai_link);
++struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
++					       int id, const char *name,
++					       const char *stream_name);
  
- config SND_SOC_INTEL_HASWELL
- 	tristate
-+	select SND_SOC_INTEL_SST_FIRMWARE
+ int snd_soc_register_dai(struct snd_soc_component *component,
+ 	struct snd_soc_dai_driver *dai_drv);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c0bbcd9..a7a1ca4 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -972,6 +972,48 @@ struct snd_soc_dai *snd_soc_find_dai(
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_find_dai);
  
- config SND_SOC_INTEL_BAYTRAIL
- 	tristate
-@@ -55,7 +56,6 @@ config SND_SOC_INTEL_HASWELL_MACH
- 	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
- 	depends on DW_DMAC_CORE
- 	select SND_SOC_INTEL_SST
--	select SND_SOC_INTEL_SST_FIRMWARE
- 	select SND_SOC_INTEL_HASWELL
- 	select SND_SOC_RT5640
- 	help
-@@ -126,7 +126,6 @@ config SND_SOC_INTEL_BROADWELL_MACH
- 		   I2C_DESIGNWARE_PLATFORM
- 	depends on DW_DMAC_CORE
- 	select SND_SOC_INTEL_SST
--	select SND_SOC_INTEL_SST_FIRMWARE
- 	select SND_SOC_INTEL_HASWELL
- 	select SND_SOC_RT286
- 	help
++
++/**
++ * snd_soc_find_dai_link - Find a DAI link
++ *
++ * @card: soc card
++ * @id: DAI link ID to match
++ * @name: DAI link name to match, optional
++ * @stream name: DAI link stream name to match, optional
++ *
++ * This function will search all existing DAI links of the soc card to
++ * find the link of the same ID. Since DAI links may not have their
++ * unique ID, so name and stream name should also match if being
++ * specified.
++ *
++ * Return: pointer of DAI link, or NULL if not found.
++ */
++struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
++					       int id, const char *name,
++					       const char *stream_name)
++{
++	struct snd_soc_dai_link *link, *_link;
++
++	lockdep_assert_held(&client_mutex);
++
++	list_for_each_entry_safe(link, _link, &card->dai_link_list, list) {
++		if (link->id != id)
++			continue;
++
++		if (name && (!link->name || strcmp(name, link->name)))
++			continue;
++
++		if (stream_name && (!link->stream_name
++			|| strcmp(stream_name, link->stream_name)))
++			continue;
++
++		return link;
++	}
++
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(snd_soc_find_dai_link);
++
+ static bool soc_is_dai_link_bound(struct snd_soc_card *card,
+ 		struct snd_soc_dai_link *dai_link)
+ {
 -- 
-2.9.3
+2.5.0
