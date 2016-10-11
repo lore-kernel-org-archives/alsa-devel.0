@@ -1,138 +1,113 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v6 06/11] ASoC: topology: ABI - Update physical
-	DAI link configuration for version 5
-Date: Tue, 11 Oct 2016 14:37:43 +0800
-Message-ID: <b93d0dc7b9233155eb7ec13e1875b7dab8fb8554.1476166990.git.mengdong.lin@linux.intel.com>
-References: <cover.1476166990.git.mengdong.lin@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id A583F265284
- for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2016 08:36:52 +0200 (CEST)
-In-Reply-To: <cover.1476166990.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: haswell depends on sst-firmware" to the asoc tree
+Date: Tue, 11 Oct 2016 12:28:08 +0200
+Message-ID: <E1btuI4-0008Bv-OG@finisterre>
+References: <20161010123345.1363113-1-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20161010123345.1363113-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Tom Rini <trini@konsulko.com>, alsa-devel@alsa-project.org, Genki Marshall <genki@genki.is>, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, John Keeping <john@metanate.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Jeeja KP <jeeja.kp@intel.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+The patch
 
-The following fields are added to physical link configuration struct
-(snd_soc_tplg_link_config) in ABI v5:
+   ASoC: Intel: haswell depends on sst-firmware
 
-- name and stream name
-  Topology will use them to find an existing physical link and configure
-  it.
+has been applied to the asoc tree at
 
-- HW configurations
-  Define the types and ABI struct for runtime supported hardware configs
-  of physical DAI links, e.g. audio hardware formats. The default HW
-  config ID will help topology to find the DAI format to set on init.
-  Topology provides this as a fallback if such HW settings are not
-  available in ACPI or device tree, to avoid hard code in drivers. It's
-  only for config items that can be programmed by SW or FW, not for
-  physical things like link connections or GPIO used for HP etc.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-- flags and private data
-  The flags will be used to configure an existing physical DAI link.
-  The private data is reserved for future extension.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-NOTE: Current kernel has no support for physical links. A later patch
-will add support for configuring physical links and make the support
-backward compatible for ABI v4.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index a686c88..ae2284c 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -39,6 +39,11 @@
-  */
- #define SND_SOC_TPLG_STREAM_CONFIG_MAX  8
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From c3474e211576fc88ddd1f3e8ce3b06a2051438e7 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 10 Oct 2016 14:33:20 +0200
+Subject: [PATCH] ASoC: Intel: haswell depends on sst-firmware
+
+The Intel Haswell audio support fails to link if
+CONFIG_SND_SOC_INTEL_SST_FIRMWARE is disabled:
+
+sst-haswell-dsp.c: undefined reference to `sst_mem_block_register'
+sst-haswell-dsp.c: undefined reference to `sst_mem_block_unregister_all'
+sst-haswell-dsp.c: undefined reference to `sst_module_alloc_blocks'
+sst-haswell-dsp.c: undefined reference to `sst_module_free'
+sst-haswell-dsp.c: undefined reference to `sst_module_new'
+sst-haswell-pcm.c: undefined reference to `sst_module_get_from_id'
+sst-haswell-pcm.c: undefined reference to `sst_module_runtime_restore'
+sst-haswell-pcm.c: undefined reference to `sst_module_runtime_save'
+ERROR: "sst_block_alloc_scratch" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_block_free_scratch" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_dsp_dma_copyfrom" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_dsp_dma_copyto" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_dsp_dma_get_channel" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_dsp_dma_put_channel" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_dsp_free" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_dsp_get_offset" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_dsp_new" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_fw_free_all" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_fw_new" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_fw_reload" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_fw_unload" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_module_runtime_alloc_blocks" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_module_runtime_get_from_id" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+ERROR: "sst_module_runtime_new" [sound/soc/intel/haswell/snd-soc-sst-haswell-pcm.ko] undefined!
+
+This moves the 'select' statement from two of the three haswell based users
+into the line that is used by all of them, so make it harder to get wrong
+and to fix the existing randconfig regressions.
+
+Fixes: 2d995e5dc283 ("ASoC: Intel: boards: Add bdw-rt5677 machine driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/Kconfig | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index a20c3dfbcb5d..54dec9161cef 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -46,6 +46,7 @@ config SND_SOC_INTEL_SST_MATCH
  
-+/*
-+ * Maximum number of physical link's hardware configs
-+ */
-+#define SND_SOC_TPLG_HW_CONFIG_MAX	8
-+
- /* individual kcontrol info types - can be mixed with other types */
- #define SND_SOC_TPLG_CTL_VOLSW		1
- #define SND_SOC_TPLG_CTL_VOLSW_SX	2
-@@ -296,6 +301,35 @@ struct snd_soc_tplg_stream {
- 	__le32 channels;	/* channels */
- } __attribute__((packed));
+ config SND_SOC_INTEL_HASWELL
+ 	tristate
++	select SND_SOC_INTEL_SST_FIRMWARE
  
-+
-+/*
-+ * Describes a physical link's runtime supported hardware config,
-+ * i.e. hardware audio formats.
-+ */
-+struct snd_soc_tplg_hw_config {
-+	__le32 size;            /* in bytes of this structure */
-+	__le32 id;		/* unique ID - - used to match */
-+	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
-+	__u8 clock_gated;	/* 1 if clock can be gated to save power */
-+	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
-+	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
-+	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
-+	__u8 fsync_master;	/* 1 for master of FSYNC, 0 for slave */
-+	__u8 mclk_direction;    /* 0 for input, 1 for output */
-+	__le16 reserved;	/* for 32bit alignment */
-+	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
-+	__le32 bclk_rate;	/* BCLK freqency in Hz */
-+	__le32 fsync_rate;	/* frame clock in Hz */
-+	__le32 tdm_slots;	/* number of TDM slots in use */
-+	__le32 tdm_slot_width;	/* width in bits for each slot */
-+	__le32 tx_slots;	/* bit mask for active Tx slots */
-+	__le32 rx_slots;	/* bit mask for active Rx slots */
-+	__le32 tx_channels;	/* number of Tx channels */
-+	__le32 tx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
-+	__le32 rx_channels;	/* number of Rx channels */
-+	__le32 rx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
-+} __attribute__((packed));
-+
- /*
-  * Manifest. List totals for each payload type. Not used in parsing, but will
-  * be passed to the component driver before any other objects in order for any
-@@ -470,9 +504,9 @@ struct snd_soc_tplg_pcm {
- 
- 
- /*
-- * Describes the BE or CC link runtime supported configs or params
-+ * Describes the physical link runtime supported configs or params
-  *
-- * File block representation for BE/CC link config :-
-+ * File block representation for physical link config :-
-  * +-----------------------------------+-----+
-  * | struct snd_soc_tplg_hdr           |  1  |
-  * +-----------------------------------+-----+
-@@ -482,8 +516,16 @@ struct snd_soc_tplg_pcm {
- struct snd_soc_tplg_link_config {
- 	__le32 size;            /* in bytes of this structure */
- 	__le32 id;              /* unique ID - used to match */
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* name - used to match */
-+	char stream_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* stream name - used to match */
- 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback and captrure */
- 	__le32 num_streams;     /* number of streams */
-+	struct snd_soc_tplg_hw_config hw_config[SND_SOC_TPLG_HW_CONFIG_MAX]; /* hw configs */
-+	__le32 num_hw_configs;         /* number of hw configs */
-+	__le32 default_hw_config_id;   /* default hw config ID for init */
-+	__le32 flag_mask;       /* bitmask of flags to configure */
-+	__le32 flags;           /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
-+	struct snd_soc_tplg_private priv;
- } __attribute__((packed));
- 
- /*
+ config SND_SOC_INTEL_BAYTRAIL
+ 	tristate
+@@ -55,7 +56,6 @@ config SND_SOC_INTEL_HASWELL_MACH
+ 	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
+ 	depends on DW_DMAC_CORE
+ 	select SND_SOC_INTEL_SST
+-	select SND_SOC_INTEL_SST_FIRMWARE
+ 	select SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT5640
+ 	help
+@@ -126,7 +126,6 @@ config SND_SOC_INTEL_BROADWELL_MACH
+ 		   I2C_DESIGNWARE_PLATFORM
+ 	depends on DW_DMAC_CORE
+ 	select SND_SOC_INTEL_SST
+-	select SND_SOC_INTEL_SST_FIRMWARE
+ 	select SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT286
+ 	help
 -- 
-2.5.0
+2.9.3
