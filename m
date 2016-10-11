@@ -1,16 +1,17 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [bug report] ALSA: seq: obsolete change of address
-	limit
-Date: Tue, 11 Oct 2016 14:06:14 +0300
-Message-ID: <20161011110614.GA1290@mwanda>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: cs4270: fix DAPM stream name
+	mismatch
+Date: Tue, 11 Oct 2016 15:23:20 +0200
+Message-ID: <20161011132319.illdmbeqrjzc3kdv@sirena.org.uk>
+References: <alpine.LNX.2.00.1610091322540.27835@acc-1004367-dev>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7200285894357025383=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id 52EB4261560
- for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2016 13:06:28 +0200 (CEST)
-Content-Disposition: inline
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3A722666D2
+ for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2016 15:23:33 +0200 (CEST)
+In-Reply-To: <alpine.LNX.2.00.1610091322540.27835@acc-1004367-dev>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,53 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: o-takashi@sakamocchi.jp
-Cc: alsa-devel@alsa-project.org
+To: murray foster <mrafoster@gmail.com>
+Cc: "Austin, Brian" <Brian.Austin@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, "Handrigan,
+ Paul" <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Takashi Sakamoto,
 
-The patch e12ec251e4db: "ALSA: seq: obsolete change of address limit"
-from Aug 13, 2016, leads to the following static checker warning:
+--===============7200285894357025383==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="fmqjbsmb2bkef7o4"
+Content-Disposition: inline
 
-	sound/core/seq/seq_compat.c:61 snd_seq_call_port_info_ioctl()
-	warn: did you mean to pass the address of 'data'
 
-sound/core/seq/seq_compat.c
-    45  static int snd_seq_call_port_info_ioctl(struct snd_seq_client *client, unsigned int cmd,
-    46                                          struct snd_seq_port_info32 __user *data32)
-    47  {
-    48          int err = -EFAULT;
-    49          struct snd_seq_port_info *data;
-    50  
-    51          data = kmalloc(sizeof(*data), GFP_KERNEL);
-    52          if (!data)
-    53                  return -ENOMEM;
-    54  
-    55          if (copy_from_user(data, data32, sizeof(*data32)) ||
-    56              get_user(data->flags, &data32->flags) ||
-    57              get_user(data->time_queue, &data32->time_queue))
-    58                  goto error;
-    59          data->kernel = NULL;
-    60  
-    61          err = snd_seq_kernel_client_ctl(client->number, cmd, &data);
+--fmqjbsmb2bkef7o4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This should almost certainly be "cmd, data);" without the &.  Have you
-tested this?  It eventually gets passed to functions like
-snd_seq_ioctl_create_port().
+On Sun, Oct 09, 2016 at 01:28:45PM -0700, murray foster wrote:
 
-    62          if (err < 0)
-    63                  goto error;
-    64  
-    65          if (copy_to_user(data32, data, sizeof(*data32)) ||
-    66              put_user(data->flags, &data32->flags) ||
-    67              put_user(data->time_queue, &data32->time_queue))
-    68                  err = -EFAULT;
-    69  
-    70   error:
-    71          kfree(data);
-    72          return err;
-    73  }
+> Mismatching stream names in DAPM route and widget definitions are
+> causing compilation errors. Fixing these names allows the cs4270
+> driver to compile and function.
 
-regards,
-dan carpenter
+This commit log can't be right, we've got extensive build coverage and
+there's no way build coverage could spot a mismatch between strings.
+I'm assuming this happens at probe time?
+
+--fmqjbsmb2bkef7o4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJX/OfHAAoJECTWi3JdVIfQdCAH/39m7kg5RYSYzpfzV5fyAmcD
+xCMZTwPiXA/euhYlKMSHE3qX+Am/cf1X2n5vy7P0+fRG3Ai+zhgKo30Yzt+Fw1mY
+QX8HIsKVocln99NzBU+7oe9xtfGwOjhqU9zfRn9lQNeRzLU+fZI/NqZBy0PmTtga
+4Ot1HU2n3oJh3Q/jUvWt/Ekkem590Q+keRS1G3pQu4arqEoZGgxJuUKtW8oKNLhB
+MWDVFDXFk1Su0/717BnZvd+PbaKMAJlu6GS486k++RbOu+8htcFf4AhsYcXLInzj
+nGGF3U6FrxFuHulFIawrxX/JVfmJ3WDr5FVvilcFsbyrMu9hQWyVTAFCDekgsbM=
+=aHla
+-----END PGP SIGNATURE-----
+
+--fmqjbsmb2bkef7o4--
+
+--===============7200285894357025383==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7200285894357025383==--
