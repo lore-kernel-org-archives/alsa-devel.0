@@ -1,19 +1,25 @@
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Subject: Re: [PATCH 1/5] topology: ABI - Add the types for BE
-	DAI
-Date: Tue, 11 Oct 2016 14:45:15 +0800
-Message-ID: <57FC8A7B.1030401@linux.intel.com>
-References: <cover.1475505267.git.mengdong.lin@linux.intel.com>
- <943bbdf62e4d0d3f297fa59b9804236c82778185.1475505267.git.mengdong.lin@linux.intel.com>
- <20161006143731.53vyuwhyyca3vdbm@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: core: allow control index different
+ from 0
+Date: Tue, 11 Oct 2016 09:30:24 +0100
+Message-ID: <20161011083024.GD1952@localhost.localdomain>
+References: <1475595361-12128-1-git-send-email-arnaud.pouliquen@st.com>
+ <57F4A4B4.5070400@sakamocchi.jp>
+ <20be7e11-aaf3-37ad-df0f-b191dfc563d3@st.com>
+ <57F6592A.5030004@sakamocchi.jp>
+ <b9f83da7-faea-ce1b-ba9c-33c61b6686f0@st.com>
+ <b8205913-8357-ff8a-5f13-2787a1144471@sakamocchi.jp>
+ <75636c51-baf2-8793-b39b-5961845793c1@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 83C58265284
- for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2016 08:44:24 +0200 (CEST)
-In-Reply-To: <20161006143731.53vyuwhyyca3vdbm@sirena.org.uk>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 371D2266B49
+ for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2016 10:30:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <75636c51-baf2-8793-b39b-5961845793c1@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +29,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, mengdong.lin@intel.com
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kernel@stlinux.com" <kernel@stlinux.com>, Takashi Iwai <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Vinod Koul <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, Moise GERGAUD <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Oct 10, 2016 at 11:26:00AM +0200, Arnaud Pouliquen wrote:
+> 
+> 
+> On 10/09/2016 05:05 AM, Takashi Sakamoto wrote:
+> > Sorry to be late. I've review your driver in for-next branch of
+> > maintainer's tree.
+> > 
+> > On Oct 8 2016 01:41, Arnaud Pouliquen wrote:
+> > But I still oppose this idea. This idea allows drivers to add control
+> > element sets of different types (int/int64/bytes etc...) with the same
+> > name and different index number. This certainly brings confusions to
+> > applications.
+> Today is already possible using the device or subdevice field instead of
+> index.
+> > 
+> > In a framework of ALSA SoC part, several drivers are associated to one
+> > sound card instance can add their own control element sets. There's no
+> > mechanism to prevent my concern. This idea is bad.
+> Please tell me if i misunderstand. So for you, there is no real solution
+> to do it in a generic way. Drivers has to implement it, if they want to
+> support.
+> 
+> Another solution is to declare a card per instance of control.
+> This should work for my use case and for use cases with several codecs
+> that declare same controls. But this should not work for DPCM...
+> The drawback for my use case, would be that i need to declare one card
+> per PCM device.
 
-On 10/06/2016 10:37 PM, Mark Brown wrote:
-> On Mon, Oct 03, 2016 at 11:03:50PM +0800, mengdong.lin@linux.intel.com wrote:
->
->> Pump the version number to 5.
->
-> So, we just had a user on IRC complaining that the last round of
-> incompatible changes in v4.7 broke their laptop audio - they had a
-> laptop that shipped with Linux and suddenly the topology file didn't
-> work.  I think that's an indication that at this point we have an ABI we
-> need to maintain compatibility with rather than just break things.  That
-> doesn't explicitly affect this patch but does mean that the parsing code
-> ought to cope which is likely to have some impact here.
->
->> Topology kernel driver will check size of ABI objects to detect version
->> mismatch between user space and kernel.
->
-> The ABI wasn't explicitly reved which suggests that it's this that
-> triggered the issue for the user.
+Apologies if I am missing the mark here, I haven't been following
+this thread in great detail. But if your main concern here is
+multiple instances of the same CODEC creating the same controls
+the normal way to handle that in ASoC is using a
+snd_soc_codec_conf struct which lets you add a prefix to all the
+controls from a specific instance of a CODEC. See
+sound/soc/samsung/bells.c for an example using it.
 
-I've submitted topology kernel patches v6 to solve the compatibility 
-issue caused by ABI mismatch. Now the kernel can handle topology files
-generated by ABI v4, which is published by alsa-lib v1.1.0 in last 
-November. Please review.
-
-So we can hold on user space ABI updates until all kernel patches being 
-reviewed and merged.
-
->> +/* BE DAI flags */
->> +#define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_RATES         (1 << 0)
->> +#define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
->> +#define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
->
-> These don't seem specific to back ends, people can use topologies for
-> DSPs on off-SoC devices which might also want to use these.
-
-'BE' is removed in the comments, in kernel side at first.
-
->
->> +	__le32 be_dai_elems;	/* number of BE DAI elements */
->> +	__le32 reserved[20];	/* reserved for new ABI element types */
->
-> Thinking about the above I'm wondering if it doesn't make more sense to
-> call these physical links rather than back ends - that term is going to
-> be clearer to people who don't use DPCM.
->
-
-"be_dai_elems" is renamed to "dai_elems" in kernel side at first, and 
-this change is backward compatible.
-
-Thanks
-Mengdong
+Thanks,
+Charles
