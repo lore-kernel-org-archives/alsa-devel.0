@@ -1,71 +1,65 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [bug report] ALSA: seq: obsolete change of address
-	limit
-Date: Wed, 12 Oct 2016 09:09:46 +0900
-Message-ID: <6480d3a5-d5a6-2def-714b-4c4b186d6461@sakamocchi.jp>
-References: <20161011110614.GA1290@mwanda>
+From: Bastien Nocera <hadess-0MeiytkfxGOsTnJN9+BGXg@public.gmane.org>
+Subject: Jack sensing in snd_usb_audio ?
+Date: Wed, 12 Oct 2016 07:10:11 +0200
+Message-ID: <1476249011.6699.15.camel@hadess.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id E152E266666
- for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2016 02:09:52 +0200 (CEST)
-In-Reply-To: <20161011110614.GA1290@mwanda>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Dan,
+Hey,
 
-On Oct 11 2016 20:06, Dan Carpenter wrote:
-> Hello Takashi Sakamoto,
-> 
-> The patch e12ec251e4db: "ALSA: seq: obsolete change of address limit"
-> from Aug 13, 2016, leads to the following static checker warning:
-> 
-> 	sound/core/seq/seq_compat.c:61 snd_seq_call_port_info_ioctl()
-> 	warn: did you mean to pass the address of 'data'
-> 
-> sound/core/seq/seq_compat.c
->     45  static int snd_seq_call_port_info_ioctl(struct snd_seq_client *client, unsigned int cmd,
->     46                                          struct snd_seq_port_info32 __user *data32)
->     47  {
->     48          int err = -EFAULT;
->     49          struct snd_seq_port_info *data;
->     50  
->     51          data = kmalloc(sizeof(*data), GFP_KERNEL);
->     52          if (!data)
->     53                  return -ENOMEM;
->     54  
->     55          if (copy_from_user(data, data32, sizeof(*data32)) ||
->     56              get_user(data->flags, &data32->flags) ||
->     57              get_user(data->time_queue, &data32->time_queue))
->     58                  goto error;
->     59          data->kernel = NULL;
->     60  
->     61          err = snd_seq_kernel_client_ctl(client->number, cmd, &data);
-> 
-> This should almost certainly be "cmd, data);" without the &.  Have you
-> tested this?  It eventually gets passed to functions like
-> snd_seq_ioctl_create_port().
+I recently bought some cheap USB soundcards for a computer that doesn't
+have any audio output other than through the HDMI output, and the
+screen I'm attaching doesn't have an audio output.
 
-Indeed. This is a bug. I might not have tested compatibility layer...
+So I'm looking to plug in 2 of those USB soundcards, and switch between
+them depending on whether I'm using headphones, or want to use the
+standalone speaker.
 
-Just now I posted a fix for this bug. With this patch, it passes this
-simple ioctl test.
-https://github.com/takaswie/alsa-ioctl-test
+Obviously, it would be so much nicer if I didn't have to switch between
+the outputs by hand, and ignored the "headphones" sound card when not
+plugged in.
 
+My questions are:
+- does the USB audio driver support jack sensing?
+- is this something standard that's just not implemented yet? In which
+case, I'd be up for at least trying, given specs.
+- or is it something that depends on the device, and in which case, how
+would I find out?
 
-Thanks!
+Some details about the device itself below.
 
-Takashi Sakamoto
+Cheers
+
+/proc/asound/cards:
+ 4 [Device         ]: USB-Audio - USB Audio Device
+                      GeneralPlus USB Audio Device at usb-0000:00:14.0-9, full speed
+
+$ amixer -c 4
+Simple mixer control 'Speaker',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 30
+  Mono:
+  Front Left: Playback 16 [53%] [-21.00dB] [on]
+  Front Right: Playback 16 [53%] [-21.00dB] [on]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pvolume-joined cvolume cvolume-joined pswitch
+pswitch-joined cswitch cswitch-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: Playback 0 - 14 Capture 0 - 30
+  Mono: Playback 1 [7%] [-10.50dB] [off] Capture 26 [87%] [27.00dB]
+[on]
+Simple mixer control 'Auto Gain Control',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
