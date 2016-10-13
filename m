@@ -1,68 +1,32 @@
-From: libin.yang@linux.intel.com
-Subject: [RFC PATCH v3 3/3] ALSA: Documentation about HDA DP
-	MST pin init and connection
-Date: Thu, 13 Oct 2016 15:49:37 +0800
-Message-ID: <1476344977-147193-4-git-send-email-libin.yang@linux.intel.com>
-References: <1476344977-147193-1-git-send-email-libin.yang@linux.intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ASoC: Intel: Skylake: Fix a shift wrapping bug
+Date: Thu, 13 Oct 2016 11:55:48 +0300
+Message-ID: <20161013085548.GK16198@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 9AAC8265A98
- for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2016 09:54:50 +0200 (CEST)
-In-Reply-To: <1476344977-147193-1-git-send-email-libin.yang@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Dharageswari R <dharageswari.r@intel.com>
+Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Shreyas NC <shreyas.nc@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, Colin Ian King <colin.king@canonical.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@linux.intel.com>
+"*val" is a u64.  It definitely looks like we intend to use the high 32
+bits as well.
 
-Add the documentation about HD-audio DP MST:
-1. pin initialization
-2. device entry connection list
+Fixes: 700a9a63f9c1 ("ASoC: Intel: Skylake: Add module instance id generation APIs")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
----
- Documentation/sound/alsa/HD-Audio-DP-MST-audio.txt | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/Documentation/sound/alsa/HD-Audio-DP-MST-audio.txt b/Documentation/sound/alsa/HD-Audio-DP-MST-audio.txt
-index 82744ac..0c5ea7d 100644
---- a/Documentation/sound/alsa/HD-Audio-DP-MST-audio.txt
-+++ b/Documentation/sound/alsa/HD-Audio-DP-MST-audio.txt
-@@ -15,6 +15,23 @@ PCM
- ===
- To be added
- 
-+Pin Initialization
-+==================
-+Each pin may have several device entries (virtual pins). On Intel platform,
-+the device entries number is dynamically changed. If DP MST hub is connected,
-+it is in DP MST mode, and the device entries number is 3. Otherwise, the
-+device entries number is 1.
-+
-+To simplify the implementation, all the device entries will be initialized
-+when bootup no matter whether it is in DP MST mode or not.
-+
-+Connection list
-+===============
-+DP MST reuses connection list code. The code can be reused because
-+device entries on the same pin have the same connection list.
-+
-+This means DP MST gets the device entry connection list without the
-+device entry setting.
- 
- Jack
- ====
--- 
-1.9.1
+diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
+index 8dc0303..ea162fb 100644
+--- a/sound/soc/intel/skylake/skl-sst-utils.c
++++ b/sound/soc/intel/skylake/skl-sst-utils.c
+@@ -179,7 +179,7 @@ static inline int skl_getid_32(struct uuid_module *module, u64 *val,
+ 		index = ffz(mask_val);
+ 		pvt_id = index + word1_mask + word2_mask;
+ 		if (pvt_id <= (max_inst - 1)) {
+-			*val |= 1 << (index + word1_mask);
++			*val |= 1ULL << (index + word1_mask);
+ 			return pvt_id;
+ 		}
+ 	}
