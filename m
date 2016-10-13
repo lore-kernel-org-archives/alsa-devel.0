@@ -1,17 +1,17 @@
-From: Vlad Tsyrklevich <vlad@tsyrklevich.net>
-Subject: [PATCH] sound/pci/asihpi: fix kernel memory disclosure
-Date: Thu, 13 Oct 2016 14:36:41 +0200
-Message-ID: <1476362201-58016-1-git-send-email-vlad@tsyrklevich.net>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: inconsistent reference counting for snd-soc-skl
+Date: Thu, 13 Oct 2016 19:11:06 +0530
+Message-ID: <20161013134102.GA24627@subhransu-desktop>
+References: <120ab1f8-002d-de8e-358e-f3b486dc1012@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
- [209.85.215.66])
- by alsa0.perex.cz (Postfix) with ESMTP id B4F2B26640F
- for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2016 14:38:00 +0200 (CEST)
-Received: by mail-lf0-f66.google.com with SMTP id x23so6758713lfi.1
- for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2016 05:38:00 -0700 (PDT)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3094626640F
+ for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2016 15:48:03 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <120ab1f8-002d-de8e-358e-f3b486dc1012@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,32 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vlad Tsyrklevich <vlad@tsyrklevich.net>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, dharageswari.r@intel.com, vinod.koul@intel.com, jayachandran.b@intel.com, broonie@kernel.org, jeeja.kp@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Some elements in hr are not cleared before being copied to user space,
-leaking kernel heap memory to user space. For example, this happens in
-the error handling code for the HPI_ADAPTER_DELETE case. Zero the memory
-before it's copied.
+On Thu, Oct 13, 2016 at 10:19:37PM +0900, Takashi Sakamoto wrote:
+> Hi,
+> 
+> I find an issue of snd-soc-skl due to inconsistent reference counting.
+> See this call graph.
+> 
+> skl_probe()
+> ->skl_first_init()
+>   ->skl_i915_init()
+>     ->snd_hdac_display_power() (CONFIG_SND_SOC_HDAC_HDMI is enabled)
+>       ->bus->i915_power_refcount++
+> ->all error pathes
+>   ->skl_free()
+>     ->snd_hda_i915_exit()
+>       ->WARN_ON(!bus->i915_power_refcount)
+> 
+> This might be also hit by rmmod(8). I see this bug in kernel 4.8 and
+> pre-4.9.
 
-Signed-off-by: Vlad Tsyrklevich <vlad@tsyrklevich.net>
----
- sound/pci/asihpi/hpioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks Takashi for reporting. We will fix this.
 
-diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
-index d17937b..7e3aa50 100644
---- a/sound/pci/asihpi/hpioctl.c
-+++ b/sound/pci/asihpi/hpioctl.c
-@@ -111,7 +111,7 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 		return -EINVAL;
- 
- 	hm = kmalloc(sizeof(*hm), GFP_KERNEL);
--	hr = kmalloc(sizeof(*hr), GFP_KERNEL);
-+	hr = kzalloc(sizeof(*hr), GFP_KERNEL);
- 	if (!hm || !hr) {
- 		err = -ENOMEM;
- 		goto out;
+Regards,
+Subhransu
+
+> 
+> 
+> Regards
+> 
+> Takashi Sakamoto
+
 -- 
-2.7.0
