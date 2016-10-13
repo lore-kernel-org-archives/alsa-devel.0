@@ -1,15 +1,18 @@
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Subject: [PATCH] SoC: mxs-saif: check validity of ids in
-	mxs_saif_probe()
-Date: Sat, 15 Oct 2016 00:53:36 +0300
-Message-ID: <1476482016-27659-1-git-send-email-khoroshilov@ispras.ru>
+From: Jordi Torres <majosamaso@gmail.com>
+Subject: Re: [FFADO-devel] Clicking issues with the output of
+	an Onyx Blackbird
+Date: Thu, 13 Oct 2016 10:36:30 +0200
+Message-ID: <CACF1cz+RnRfOBwZBRghV0Hmqdn2HHVhwxbdW18pvFHtFSsAKjQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 95F9A261B36
- for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2016 23:53:43 +0200 (CEST)
+Received: from mail-qk0-f169.google.com (mail-qk0-f169.google.com
+ [209.85.220.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7720C266499
+ for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2016 10:36:52 +0200 (CEST)
+Received: by mail-qk0-f169.google.com with SMTP id n189so74866416qke.0
+ for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2016 01:36:52 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,53 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: ldv-project@linuxtesting.org, alsa-devel@alsa-project.org, Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Alexey Khoroshilov <khoroshilov@ispras.ru>
+To: o-takashi@sakamocchi.jp
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-There is a check for validity of one of ids in mxs_saif_probe(),
-while array dereferece is made by the other id.
+> (CCed to alsa-devel)
+I sent this issue to alsa mailist 6 days ago but I supouse that hit
+the spam filter. Even I published an alsa-info
+http://www.alsa-project.org/db/?f=cb6745b6d0acdb5d9375096ec8dc008f6ff49cd7
 
-The patch adds the check for the second saif id.
+When I read the wiki about reporting bugs, I understood that kernel
+related bugs goes to bugzilla.kernel.org and user-land bugs goes to
+the devel mail-list. So I supouse that I should sent this issue to the
+bugzilla as it's considered a kernel bug
 
-Found by Linux Driver Verification project (linuxtesting.org).
+> Well, could I request you to gather information of packet sequence?
 
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
----
- sound/soc/mxs/mxs-saif.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+Here is the trace of packets:
+https://drive.google.com/file/d/0Bz44Dr5G2FeJSXBHMzc5WTFmOWs/view?usp=sharing
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 13631003cb7c..a002ab892772 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -735,6 +735,11 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	else
- 		saif->id = ret;
- 
-+	if (saif->id >= ARRAY_SIZE(mxs_saif)) {
-+		dev_err(&pdev->dev, "get wrong saif id\n");
-+		return -EINVAL;
-+	}
-+
- 	/*
- 	 * If there is no "fsl,saif-master" phandle, it's a saif
- 	 * master.  Otherwise, it's a slave and its phandle points
-@@ -749,11 +754,11 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 			return ret;
- 		else
- 			saif->master_id = ret;
--	}
- 
--	if (saif->master_id >= ARRAY_SIZE(mxs_saif)) {
--		dev_err(&pdev->dev, "get wrong master id\n");
--		return -EINVAL;
-+		if (saif->master_id >= ARRAY_SIZE(mxs_saif)) {
-+			dev_err(&pdev->dev, "get wrong master id\n");
-+			return -EINVAL;
-+		}
- 	}
- 
- 	mxs_saif[saif->id] = saif;
--- 
-2.7.4
+The trace includes the opening of alsa device and playing a sine wave
+for 30 seconds
+
+My linux box has two firewire ports I don't know the details about the
+host controller but could be feasible sniff the connection between the
+other computer with official drivers and the DAW? Could that be
+useful?
