@@ -1,32 +1,160 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ASoC: Intel: Skylake: Fix a shift wrapping bug
-Date: Thu, 13 Oct 2016 11:55:48 +0300
-Message-ID: <20161013085548.GK16198@mwanda>
+From: libin.yang@linux.intel.com
+Subject: [RFC PATCH v3 1/3] ALSA: hda - add DP mst verb support
+Date: Thu, 13 Oct 2016 15:49:35 +0800
+Message-ID: <1476344977-147193-2-git-send-email-libin.yang@linux.intel.com>
+References: <1476344977-147193-1-git-send-email-libin.yang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Dharageswari R <dharageswari.r@intel.com>
-Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Shreyas NC <shreyas.nc@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, Colin Ian King <colin.king@canonical.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71B05266C5E
+ for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2016 09:54:52 +0200 (CEST)
+In-Reply-To: <1476344977-147193-1-git-send-email-libin.yang@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-"*val" is a u64.  It definitely looks like we intend to use the high 32
-bits as well.
+From: Libin Yang <libin.yang@linux.intel.com>
 
-Fixes: 700a9a63f9c1 ("ASoC: Intel: Skylake: Add module instance id generation APIs")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Add snd_hda_get_dev_select() and snd_hda_set_dev_select() functions
+for DP MST audio support.
 
-diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
-index 8dc0303..ea162fb 100644
---- a/sound/soc/intel/skylake/skl-sst-utils.c
-+++ b/sound/soc/intel/skylake/skl-sst-utils.c
-@@ -179,7 +179,7 @@ static inline int skl_getid_32(struct uuid_module *module, u64 *val,
- 		index = ffz(mask_val);
- 		pvt_id = index + word1_mask + word2_mask;
- 		if (pvt_id <= (max_inst - 1)) {
--			*val |= 1 << (index + word1_mask);
-+			*val |= 1ULL << (index + word1_mask);
- 			return pvt_id;
- 		}
- 	}
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+---
+ sound/pci/hda/hda_codec.c | 73 ++++++++++++++++++++++++++++++++++++++++++++---
+ sound/pci/hda/hda_codec.h |  3 ++
+ 2 files changed, 72 insertions(+), 4 deletions(-)
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 9913be8..caa2c9d 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -311,9 +311,16 @@ int snd_hda_get_conn_index(struct hda_codec *codec, hda_nid_t mux,
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_get_conn_index);
+ 
+-
+-/* return DEVLIST_LEN parameter of the given widget */
+-static unsigned int get_num_devices(struct hda_codec *codec, hda_nid_t nid)
++/**
++ * snd_hda_get_num_devices - get DEVLIST_LEN parameter of the given widget
++ *  @codec: the HDA codec
++ *  @nid: NID of the pin to parse
++ *
++ * Get the device entry number on the given widget.
++ * This is a feature of DP MST audio. Each pin can
++ * have several device entries in it.
++ */
++unsigned int snd_hda_get_num_devices(struct hda_codec *codec, hda_nid_t nid)
+ {
+ 	unsigned int wcaps = get_wcaps(codec, nid);
+ 	unsigned int parm;
+@@ -327,6 +334,7 @@ static unsigned int get_num_devices(struct hda_codec *codec, hda_nid_t nid)
+ 		parm = 0;
+ 	return parm & AC_DEV_LIST_LEN_MASK;
+ }
++EXPORT_SYMBOL_GPL(snd_hda_get_num_devices);
+ 
+ /**
+  * snd_hda_get_devices - copy device list without cache
+@@ -344,7 +352,7 @@ int snd_hda_get_devices(struct hda_codec *codec, hda_nid_t nid,
+ 	unsigned int parm;
+ 	int i, dev_len, devices;
+ 
+-	parm = get_num_devices(codec, nid);
++	parm = snd_hda_get_num_devices(codec, nid);
+ 	if (!parm)	/* not multi-stream capable */
+ 		return 0;
+ 
+@@ -368,6 +376,63 @@ int snd_hda_get_devices(struct hda_codec *codec, hda_nid_t nid,
+ 	return devices;
+ }
+ 
++/**
++ * snd_hda_get_dev_select - get device entry select on the pin
++ * @codec: the HDA codec
++ * @nid: NID of the pin to get device entry select
++ *
++ * Get the devcie entry select on the pin. Return the device entry
++ * id selected on the pin. Return 0 means the first device entry
++ * is selected or MST is not supported.
++ */
++int snd_hda_get_dev_select(struct hda_codec *codec, hda_nid_t nid)
++{
++	/* not support dp_mst will always return 0, using first dev_entry */
++	if (!codec->dp_mst)
++		return 0;
++
++	return snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_DEVICE_SEL, 0);
++}
++EXPORT_SYMBOL_GPL(snd_hda_get_dev_select);
++
++/**
++ * snd_hda_set_dev_select - set device entry select on the pin
++ * @codec: the HDA codec
++ * @nid: NID of the pin to set device entry select
++ * @dev_id: device entry id to be set
++ *
++ * Set the device entry select on the pin nid.
++ */
++int snd_hda_set_dev_select(struct hda_codec *codec, hda_nid_t nid, int dev_id)
++{
++	int ret, num_devices;
++
++	/* not support dp_mst will always return 0, using first dev_entry */
++	if (!codec->dp_mst)
++		return 0;
++
++	/* AC_PAR_DEVLIST_LEN is 0 based. */
++	num_devices = snd_hda_get_num_devices(codec, nid) + 1;
++	/* If Device List Length is 0 (num_device = 1),
++	 * the pin is not multi stream capable.
++	 * Do nothing in this case.
++	 */
++	if (num_devices == 1)
++		return 0;
++
++	/* Behavior of setting index being equal to or greater than
++	 * Device List Length is not predictable
++	 */
++	if (num_devices <= dev_id)
++		return -EINVAL;
++
++	ret = snd_hda_codec_write(codec, nid, 0,
++			AC_VERB_SET_DEVICE_SEL, dev_id);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_hda_set_dev_select);
++
+ /*
+  * read widget caps for each widget and store in cache
+  */
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 373fcad..f17f252 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -347,8 +347,11 @@ int snd_hda_override_conn_list(struct hda_codec *codec, hda_nid_t nid, int nums,
+ 			  const hda_nid_t *list);
+ int snd_hda_get_conn_index(struct hda_codec *codec, hda_nid_t mux,
+ 			   hda_nid_t nid, int recursive);
++unsigned int snd_hda_get_num_devices(struct hda_codec *codec, hda_nid_t nid);
+ int snd_hda_get_devices(struct hda_codec *codec, hda_nid_t nid,
+ 			u8 *dev_list, int max_devices);
++int snd_hda_get_dev_select(struct hda_codec *codec, hda_nid_t nid);
++int snd_hda_set_dev_select(struct hda_codec *codec, hda_nid_t nid, int dev_id);
+ 
+ struct hda_verb {
+ 	hda_nid_t nid;
+-- 
+1.9.1
