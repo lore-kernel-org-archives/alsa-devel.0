@@ -1,18 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Clicking issues with the output of an Onyx
-	Blackbird
-Date: Thu, 13 Oct 2016 08:17:11 +0900
-Message-ID: <ef1aaf43-d7d6-0df3-0898-f52f59181f65@sakamocchi.jp>
-References: <CACF1cz+9Y9cGL1W7_t2y0jm=WUWaw1uc8q5AWrrnVjzAdVvykw@mail.gmail.com>
- <CACF1czJDEDoXt_pEiwvS0CQzmXujWUS8EctJbD5izBr4-ieiGg@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: cs4270: fix DAPM stream name mismatch"
+	to the asoc tree
+Date: Thu, 13 Oct 2016 09:40:16 +0200
+Message-ID: <E1buaci-00026O-Sz@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 0596E266C5E
- for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2016 01:17:16 +0200 (CEST)
-In-Reply-To: <CACF1czJDEDoXt_pEiwvS0CQzmXujWUS8EctJbD5izBr4-ieiGg@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FE66265119
+ for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2016 09:40:33 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,70 +21,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jordi Torres <clubmajo@yahoo.es>, ffado-devel@lists.sourceforge.net
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Murray Foster <mrafoster@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-(CCed to alsa-devel)
+The patch
 
-I'm an ALSA developer currently commits to drivers for Audio and Music
-units on IEEE 1394 bus.
+   ASoC: cs4270: fix DAPM stream name mismatch
 
-On Oct 13 2016 04:15, Jordi Torres wrote:
-> I have an Onyx Blackbird that uses a firewire DICE II chip. This
-> device works correctly using a Power Mac G5 with Mac OS X 10.5 but
-> using another computer with linux, all works but there is a clicking
-> issue in the output of the device.
-> 
-> I tested the input and works correctly without the clicking. I tried
-> use the alsa stack without jackd and it has the same issue. I tried vary
-> a lot of configurations and I found that clicking sound varies when
-> the sample rate is different
-> 
-> ffado-diag: http://pastebin.com/u7g93GqD
-> ffado-test Discover: http://pastebin.com/qBMQwWMq
-> 
-> I provide samples of the clicking sound in the next file:
-> https://drive.google.com/file/d/0Bz44Dr5G2FeJOEdCT21sLUFFWlU/view?usp=sharing
-> These samples are Audacity projects where 1st track is the original
-> sound and 2nd track is the Blackbird ouput sound that was recorded in
-> a Focusrite Saffire PRO I/O 10 using input line
-> The spectrum shows regular patterns that could be useful to the issue
-> 
-> If anyone needs more info, please don't hesitate to ask
+has been applied to the asoc tree at
 
-Current ALSA dice driver has an issue of packet timestamping, which
-causes periodical noises. This issue comes from quirks of packet
-sequence to/from Dice chipset. In detail, see:
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-[alsa-devel] Dice packet sequence quirk and ALSA firewire stack in Linux 4.6
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-May/107715.html
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-I know this issue is potentially in current FFADO implementation, too.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Well, could I request you to gather information of packet sequence? In
-Linux 4.7, ALSA firewire stack get tracepoints. Via the tracepoints, we
-can gather enough information to diagnose the sequence from user space.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-To gather the information, please use trace-cmd (or perf) command, like:
-$ sudo trace-cmd list | grep fire
-snd_firewire_lib:in_packet
-snd_firewire_lib:out_packet
-$ sudo trace-cmd record -e snd_firewire_lib:in_packet -e
-snd_firewire_lib:out_packet
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Then execute ALSA applications. When terminate trace-cmd, you can get
-trace.dat in your current working directory. Please send it to me via
-some better ways (it may be too big to attach e-mail).
+Thanks,
+Mark
 
-When read the content of data, run:
-$ trace-cmd report trace.dat
+>From aa5f920993bda2095952177eea79bc8e58ae6065 Mon Sep 17 00:00:00 2001
+From: murray foster <mrafoster@gmail.com>
+Date: Sun, 9 Oct 2016 13:28:45 -0700
+Subject: [PATCH] ASoC: cs4270: fix DAPM stream name mismatch
 
-In detail, read:
-http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/firewire/amdtp-stream-trace.h?id=0c95c1d6197f3edd3f6ef76f927d67e8ec0794ed
+Mismatching stream names in DAPM route and widget definitions are
+causing compilation errors. Fixing these names allows the cs4270
+driver to compile and function.
 
+[Errors must be at probe time not compile time -- broonie]
 
-Regards
+Signed-off-by: Murray Foster <mrafoster@gmail.com>
+Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/cs4270.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Takashi Sakamoto
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index 18baea2f7d65..84f86745c30e 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -148,11 +148,11 @@ SND_SOC_DAPM_OUTPUT("AOUTR"),
+ };
+ 
+ static const struct snd_soc_dapm_route cs4270_dapm_routes[] = {
+-	{ "Capture", NULL, "AINA" },
+-	{ "Capture", NULL, "AINB" },
++	{ "Capture", NULL, "AINL" },
++	{ "Capture", NULL, "AINR" },
+ 
+-	{ "AOUTA", NULL, "Playback" },
+-	{ "AOUTB", NULL, "Playback" },
++	{ "AOUTL", NULL, "Playback" },
++	{ "AOUTR", NULL, "Playback" },
+ };
+ 
+ /**
+-- 
+2.9.3
