@@ -1,44 +1,37 @@
-From: libin.yang@linux.intel.com
-Subject: [RFC PATCH v3 0/3] support DP MST audio
-Date: Thu, 13 Oct 2016 15:49:34 +0800
-Message-ID: <1476344977-147193-1-git-send-email-libin.yang@linux.intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ASoC: rt5663: fix a debug statement
+Date: Thu, 13 Oct 2016 11:47:13 +0300
+Message-ID: <20161013084712.GB16198@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id BA42926576D
- for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2016 09:54:48 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: libin.yang@intel.com, mengdong.lin@intel.com, Libin Yang <libin.yang@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@linux.intel.com>
+We increment "i" before printing the debug statement.  That makes it
+the wrong sleep_time[] information and Smatch complains that the last
+increment could be beyond the end of the array.
 
-This patchset starts to support DP MST audio.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-This patchset is based on drm-intel-nightly on
-git://anongit.freedesktop.org/drm-intel
-
-Libin Yang (3):
-  ALSA: hda - add DP mst verb support
-  ALSA: hda - add DP mst audio support
-  ALSA: Documentation about HDA DP MST pin init and connection
-
- Documentation/sound/alsa/HD-Audio-DP-MST-audio.txt |  17 ++
- sound/pci/hda/hda_codec.c                          |  77 ++++++-
- sound/pci/hda/hda_codec.h                          |   3 +
- sound/pci/hda/patch_hdmi.c                         | 243 ++++++++++++++++-----
- 4 files changed, 285 insertions(+), 55 deletions(-)
-
--- 
-1.9.1
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index 01a18d8..00ff278 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -1547,11 +1547,11 @@ static int rt5663_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 			msleep(sleep_time[i]);
+ 			val = snd_soc_read(codec, RT5663_EM_JACK_TYPE_2) &
+ 				0x0003;
++			dev_dbg(codec->dev, "%s: MX-00e7 val=%x sleep %d\n",
++				__func__, val, sleep_time[i]);
+ 			i++;
+ 			if (val == 0x1 || val == 0x2 || val == 0x3)
+ 				break;
+-			dev_dbg(codec->dev, "%s: MX-00e7 val=%x sleep %d\n",
+-				__func__, val, sleep_time[i]);
+ 		}
+ 		dev_dbg(codec->dev, "%s val = %d\n", __func__, val);
+ 		switch (val) {
