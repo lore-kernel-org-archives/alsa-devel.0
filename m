@@ -1,59 +1,71 @@
-From: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 3/3] dt/bindings: Add milivolt, milliamps, and
- nanohenry units
-Date: Fri, 14 Oct 2016 07:35:22 -0500
-Message-ID: <CAL_JsqKdV7133oo5jECZn2SwVjMM3E_ZNr+JS=9Wtkx8BZVuEQ@mail.gmail.com>
-References: <1476298410-1157-1-git-send-email-Paul.Handrigan@cirrus.com> <e4a605af-3b2d-4e29-a5c4-991e34f1205f@EX3.ad.cirrus.com>
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Subject: [PATCH] SoC: mxs-saif: check validity of ids in
+	mxs_saif_probe()
+Date: Sat, 15 Oct 2016 00:53:36 +0300
+Message-ID: <1476482016-27659-1-git-send-email-khoroshilov@ispras.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <e4a605af-3b2d-4e29-a5c4-991e34f1205f-XU/xxMRwCJnfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95F9A261B36
+ for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2016 23:53:43 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: ldv-project@linuxtesting.org, alsa-devel@alsa-project.org, Mans Rullgard <mans@mansr.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Alexey Khoroshilov <khoroshilov@ispras.ru>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 12, 2016 at 1:53 PM,  <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org> wrote:
-> From: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
->
-> Add millivolt, milliamp, and nanohenry units to the Electricity
-> category.
->
-> Signed-off-by: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-> ---
->  Documentation/devicetree/bindings/property-units.txt | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/property-units.txt b/Documentation/devicetree/bindings/property-units.txt
-> index 12278d7..92d6793 100644
-> --- a/Documentation/devicetree/bindings/property-units.txt
-> +++ b/Documentation/devicetree/bindings/property-units.txt
-> @@ -25,9 +25,12 @@ Distance
->  Electricity
->  ----------------------------------------
->  -microamp      : micro amps
-> +-milliamp      : milli amps
+There is a check for validity of one of ids in mxs_saif_probe(),
+while array dereferece is made by the other id.
 
-Please explain why you need need this. Is 2^32 uA not enough range for
-you? While we do have multiple units for some, that's because people
-picked arbitrary units for their properties before this doc existed.
-Ideally, we only have 1 unit to prevent that problem.
+The patch adds the check for the second saif id.
 
->  -ohms          : Ohms
->  -micro-ohms    : micro Ohms
->  -microvolt     : micro volts
-> +-millivolt     : micro volts
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Same question.
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+---
+ sound/soc/mxs/mxs-saif.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-> +-nanohenry     : nano henries
->
->  Temperature
->  ----------------------------------------
-> --
-> 1.9.1
->
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index 13631003cb7c..a002ab892772 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -735,6 +735,11 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 	else
+ 		saif->id = ret;
+ 
++	if (saif->id >= ARRAY_SIZE(mxs_saif)) {
++		dev_err(&pdev->dev, "get wrong saif id\n");
++		return -EINVAL;
++	}
++
+ 	/*
+ 	 * If there is no "fsl,saif-master" phandle, it's a saif
+ 	 * master.  Otherwise, it's a slave and its phandle points
+@@ -749,11 +754,11 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 			return ret;
+ 		else
+ 			saif->master_id = ret;
+-	}
+ 
+-	if (saif->master_id >= ARRAY_SIZE(mxs_saif)) {
+-		dev_err(&pdev->dev, "get wrong master id\n");
+-		return -EINVAL;
++		if (saif->master_id >= ARRAY_SIZE(mxs_saif)) {
++			dev_err(&pdev->dev, "get wrong master id\n");
++			return -EINVAL;
++		}
+ 	}
+ 
+ 	mxs_saif[saif->id] = saif;
+-- 
+2.7.4
