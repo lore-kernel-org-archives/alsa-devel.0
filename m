@@ -1,70 +1,49 @@
-From: Matt Flax <flatmax@flatmax.org>
-Subject: Re: [TDM help please] multiplex out a stereo I2S line
-Date: Fri, 14 Oct 2016 20:18:05 +1100
-Message-ID: <e2df9677-23c5-8994-61c1-3884d003d1c8@flatmax.org>
-References: <fafbe67e-a126-f682-5d5c-cae9b5c09fc4@flatmax.org>
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 3/3] dt/bindings: Add milivolt,
+ milliamps, and nanohenry units
+Date: Fri, 14 Oct 2016 11:03:11 +0100
+Message-ID: <20161014100311.GE1952@localhost.localdomain>
+References: <1476298410-1157-1-git-send-email-Paul.Handrigan@cirrus.com>
+ <e4a605af-3b2d-4e29-a5c4-991e34f1205f@EX3.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nschwmtas02p.mx.bigpond.com (nschwmtas02p.mx.bigpond.com
- [61.9.189.140]) by alsa0.perex.cz (Postfix) with ESMTP id 2AA68265DB7
- for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2016 11:18:11 +0200 (CEST)
-Received: from nschwcmgw07p ([61.9.190.167]) by nschwmtas02p.mx.bigpond.com
- with ESMTP
- id <20161014091808.JXDJ2129.nschwmtas02p.mx.bigpond.com@nschwcmgw07p>
- for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2016 09:18:08 +0000
-Received: from monstilationax2 ([192.168.0.51]) by meb with esmtp (Exim 4.84_2)
- (envelope-from <flatmax@flatmax.org>) id 1buyhF-0001IP-D5
- for alsa-devel@alsa-project.org; Fri, 14 Oct 2016 20:22:35 +1100
-In-Reply-To: <fafbe67e-a126-f682-5d5c-cae9b5c09fc4@flatmax.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <e4a605af-3b2d-4e29-a5c4-991e34f1205f-XU/xxMRwCJnfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Oct 12, 2016 at 01:53:30PM -0500, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org wrote:
+> From: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+> 
+> Add millivolt, milliamp, and nanohenry units to the Electricity
+> category.
+> 
+> Signed-off-by: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+> ---
+>  Documentation/devicetree/bindings/property-units.txt | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/property-units.txt b/Documentation/devicetree/bindings/property-units.txt
+> index 12278d7..92d6793 100644
+> --- a/Documentation/devicetree/bindings/property-units.txt
+> +++ b/Documentation/devicetree/bindings/property-units.txt
+> @@ -25,9 +25,12 @@ Distance
+>  Electricity
+>  ----------------------------------------
+>  -microamp	: micro amps
+> +-milliamp	: milli amps
+>  -ohms		: Ohms
+>  -micro-ohms	: micro Ohms
+>  -microvolt	: micro volts
+> +-millivolt	: micro volts
+Typo here         ^^^^^
 
-On 14/10/16 15:34, Matt Flax wrote:
-> Hi there,
->
-> Problem is that I need multiplex all 6 channels out a stereo I2S line.
->
-> I have a working system ... the CPU thinks it is stereo I2S, but the 
-> codec thinks it is TDM multichannel. When I aplay a pre-interleaved 
-> wav file, it works ! Check the video here : 
-> https://www.kickstarter.com/projects/1250664710/1299781340?token=e465b540
->
-> Problem is that I need to multiplex all 6 channels down the stereo I2S 
-> line. I have tried to do this with the asoundrc by attempting to 
-> declare the same device 3 times and interleaving there, however have 
-> failed.
->
-
-Does anyone know if there is a ALSA plugin which allows multiplexing of 
-N channels to a single interleaved stream ?
-It is simple, it seems to do the opposite and interleave multiple sound 
-card streams into one stream... but I can't see how to do the opposite 
-... have a virtual sound card of N channels which muxes down to one 
-stream on a stereo machine/cpu/codec line.
-
-> I am happy to alter my machine driver to implement this ... Is there a 
-> way to present 3 stereo subdevices to the user, where each of these 
-> subdevcies is interleaved to form the TDM before sending to the codec ?
->
-> Is there perhaps a better or more elegant way to go about this ?
->
-> thanks
->
-> Matt
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Thanks,
+Charles
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
