@@ -1,16 +1,15 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 6/7] ASoC: pxa2xx-i2s: Remove unused DAI ID
-	defines
-Date: Sat, 15 Oct 2016 19:32:56 +0200
-Message-ID: <1476552777-1849-6-git-send-email-lars@metafoo.de>
+Subject: [PATCH 7/7] ASoC: pxa-ssp: Remove unused DAI ID defines
+Date: Sat, 15 Oct 2016 19:32:57 +0200
+Message-ID: <1476552777-1849-7-git-send-email-lars@metafoo.de>
 References: <1476552777-1849-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 35A732666EA
- for <alsa-devel@alsa-project.org>; Sat, 15 Oct 2016 19:33:10 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 45FCA261740
+ for <alsa-devel@alsa-project.org>; Sat, 15 Oct 2016 20:00:54 +0200 (CEST)
 In-Reply-To: <1476552777-1849-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,27 +26,31 @@ List-Id: alsa-devel@alsa-project.org
 
 The DAI ID defines are back from the time when DAIs were referenced by a
 numerical ID. These days a string is used for matching instead and the
-defines are unused. This particular ID was never used and presumably never
-will be, so remove it.
+defines are unused. The last user of these defines was removed in commit
+f0fba2ad1b6b ("ASoC: multi-component - ASoC Multi-Component Support"). So
+remove the defines as well.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/pxa/pxa2xx-i2s.h | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/pxa/pxa-ssp.h | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/pxa/pxa2xx-i2s.h b/sound/soc/pxa/pxa2xx-i2s.h
-index 070f3c6..7e218e2 100644
---- a/sound/soc/pxa/pxa2xx-i2s.h
-+++ b/sound/soc/pxa/pxa2xx-i2s.h
-@@ -9,9 +9,6 @@
- #ifndef _PXA2XX_I2S_H
- #define _PXA2XX_I2S_H
+diff --git a/sound/soc/pxa/pxa-ssp.h b/sound/soc/pxa/pxa-ssp.h
+index bc79da2..abf6ec0 100644
+--- a/sound/soc/pxa/pxa-ssp.h
++++ b/sound/soc/pxa/pxa-ssp.h
+@@ -9,12 +9,6 @@
+ #ifndef _PXA_SSP_H
+ #define _PXA_SSP_H
  
--/* pxa2xx DAI ID's */
--#define PXA2XX_DAI_I2S			0
+-/* pxa DAI SSP IDs */
+-#define PXA_DAI_SSP1			0
+-#define PXA_DAI_SSP2			1
+-#define PXA_DAI_SSP3			2
+-#define PXA_DAI_SSP4			3
 -
- /* I2S clock */
- #define PXA2XX_I2S_SYSCLK		0
- 
+ /* SSP clock sources */
+ #define PXA_SSP_CLK_PLL	0
+ #define PXA_SSP_CLK_EXT	1
 -- 
 2.1.4
