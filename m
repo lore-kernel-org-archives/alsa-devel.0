@@ -1,422 +1,125 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 5/7] ASoC: constify snd_soc_ops structures
-Date: Sat, 15 Oct 2016 16:55:49 +0200
-Message-ID: <1476543351-17858-6-git-send-email-Julia.Lawall@lip6.fr>
-References: <1476543351-17858-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1476543351-17858-1-git-send-email-Julia.Lawall@lip6.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 2/7] ASoC: wm9712: Remove unused DAI ID defines
+Date: Sat, 15 Oct 2016 19:32:52 +0200
+Message-ID: <1476552777-1849-2-git-send-email-lars@metafoo.de>
+References: <1476552777-1849-1-git-send-email-lars@metafoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id A64EB261B03
+ for <alsa-devel@alsa-project.org>; Sat, 15 Oct 2016 19:33:08 +0200 (CEST)
+In-Reply-To: <1476552777-1849-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Robert Jarzmik <robert.jarzmik@free.fr>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Check for snd_soc_ops structures that are only stored in the ops field of a
-snd_soc_dai_link structure.  This field is declared const, so snd_soc_ops
-structures that have this property can be declared as const also.
+The DAI ID defines are back from the time when DAIs were referenced by a
+numerical ID. These days a string is used for matching instead and the
+defines are unused. The last user of these defines was removed in commit
+f0fba2ad1b6b ("ASoC: multi-component - ASoC Multi-Component Support"). So
+remove the defines as well.
 
-The semantic patch that makes this change is as follows:
-(http://coccinelle.lip6.fr/)
+This also means the wm9712.h file no longer has any content and can be
+removed.
 
-// <smpl>
-@r disable optional_qualifier@
-identifier i;
-position p;
-@@
-static struct snd_soc_ops i@p = { ... };
-
-@ok1@
-identifier r.i;
-struct snd_soc_dai_link e;
-position p;
-@@
-e.ops = &i@p;
-
-@ok2@
-identifier r.i, e;
-position p;
-@@
-struct snd_soc_dai_link e[] = { ..., { .ops = &i@p, }, ..., };
-
-@bad@
-position p != {r.p,ok1.p,ok2.p};
-identifier r.i;
-struct snd_soc_ops e;
-@@
-e@i@p
-
-@depends on !bad disable optional_qualifier@
-identifier r.i;
-@@
-static
-+const
- struct snd_soc_ops i = { ... };
-// </smpl>
-
-The effect on the layout of the .o files is shown by the following output
-of the size command, first before then after the transformation:
-
-   text    data     bss     dec     hex filename
-   4500     696       0    5196    144c sound/soc/generic/simple-card.o
-   4564     632       0    5196    144c sound/soc/generic/simple-card.o
-
-   text    data     bss     dec     hex filename
-   3018     608       0    3626     e2a sound/soc/generic/simple-scu-card.o
-   3074     544       0    3618     e22 sound/soc/generic/simple-scu-card.o
-
-   text    data     bss     dec     hex filename
-   4148    2448     768    7364    1cc4 sound/soc/intel/boards/bdw-rt5677.o
-   4212    2384     768    7364    1cc4 sound/soc/intel/boards/bdw-rt5677.o
-
-   text    data     bss     dec     hex filename
-   5403    4628     384   10415    28af sound/soc/intel/boards/bxt_da7219_max98357a.o
-   5531    4516     384   10431    28bf sound/soc/intel/boards/bxt_da7219_max98357a.o
-
-   text    data     bss     dec     hex filename
-   5275    4496     384   10155    27ab sound/soc/intel/boards/bxt_rt298.o
-   5403    4368     384   10155    27ab sound/soc/intel/boards/bxt_rt298.o
-
-   text    data     bss     dec     hex filename
-  10017    2344      48   12409    3079 sound/soc/intel/boards/bytcr_rt5640.o
-  10145    2232      48   12425    3089 sound/soc/intel/boards/bytcr_rt5640.o
-
-   text    data     bss     dec     hex filename
-   3719    2356       0    6075    17bb sound/soc/intel/boards/bytcr_rt5651.o
-   3847    2244       0    6091    17cb sound/soc/intel/boards/bytcr_rt5651.o
-
-   text    data     bss     dec     hex filename
-   3598    2392       0    5990    1766 sound/soc/intel/boards/cht_bsw_max98090_ti.o
-   3726    2280       0    6006    1776 sound/soc/intel/boards/cht_bsw_max98090_ti.o
-
-   text    data     bss     dec     hex filename
-   5343    3624      16    8983    2317 sound/soc/intel/boards/cht_bsw_rt5645.o
-   5471    3496      16    8983    2317 sound/soc/intel/boards/cht_bsw_rt5645.o
-
-   text    data     bss     dec     hex filename
-   4662    2592     384    7638    1dd6 sound/soc/intel/boards/cht_bsw_rt5672.o
-   4790    2464     384    7638    1dd6 sound/soc/intel/boards/cht_bsw_rt5672.o
-
-   text    data     bss     dec     hex filename
-   1595    2528       0    4123    101b sound/soc/intel/boards/haswell.o
-   1659    2472       0    4131    1023 sound/soc/intel/boards/haswell.o
-
-   text    data     bss     dec     hex filename
-   6272    4760     416   11448    2cb8 sound/soc/intel/boards/skl_nau88l25_max98357a.o
-   6464    4568     416   11448    2cb8 sound/soc/intel/boards/skl_nau88l25_max98357a.o
-
-   text    data     bss     dec     hex filename
-   7075    4888     416   12379    305b sound/soc/intel/boards/skl_nau88l25_ssm4567.o
-   7267    4696     416   12379    305b sound/soc/intel/boards/skl_nau88l25_ssm4567.o
-
-   text    data     bss     dec     hex filename
-   5659    4496     384   10539    292b sound/soc/intel/boards/skl_rt286.o
-   5787    4368     384   10539    292b sound/soc/intel/boards/skl_rt286.o
-
-   text    data     bss     dec     hex filename
-   1721    2048       0    3769     eb9 sound/soc/kirkwood/armada-370-db.o
-   1769    1976       0    3745     ea1 sound/soc/kirkwood/armada-370-db.o
-
-   text    data     bss     dec     hex filename
-   1363    1792       0    3155     c53 sound/soc/mxs/mxs-sgtl5000.o
-   1427    1728       0    3155     c53 sound/soc/mxs/mxs-sgtl5000.o
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/generic/simple-card.c                 |    2 +-
- sound/soc/generic/simple-scu-card.c             |    2 +-
- sound/soc/intel/boards/bdw-rt5677.c             |    2 +-
- sound/soc/intel/boards/bxt_da7219_max98357a.c   |    4 ++--
- sound/soc/intel/boards/bxt_rt298.c              |    4 ++--
- sound/soc/intel/boards/bytcr_rt5640.c           |    4 ++--
- sound/soc/intel/boards/bytcr_rt5651.c           |    4 ++--
- sound/soc/intel/boards/cht_bsw_max98090_ti.c    |    4 ++--
- sound/soc/intel/boards/cht_bsw_rt5645.c         |    4 ++--
- sound/soc/intel/boards/cht_bsw_rt5672.c         |    4 ++--
- sound/soc/intel/boards/haswell.c                |    2 +-
- sound/soc/intel/boards/skl_nau88l25_max98357a.c |    6 +++---
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c   |    6 +++---
- sound/soc/intel/boards/skl_rt286.c              |    4 ++--
- sound/soc/kirkwood/armada-370-db.c              |    2 +-
- sound/soc/mxs/mxs-sgtl5000.c                    |    2 +-
- 16 files changed, 28 insertions(+), 28 deletions(-)
+ sound/soc/codecs/wm9712.c   |  1 -
+ sound/soc/codecs/wm9712.h   | 11 -----------
+ sound/soc/pxa/e800_wm9712.c |  1 -
+ sound/soc/pxa/em-x270.c     |  1 -
+ sound/soc/pxa/palm27x.c     |  1 -
+ sound/soc/pxa/tosa.c        |  1 -
+ 6 files changed, 16 deletions(-)
+ delete mode 100644 sound/soc/codecs/wm9712.h
 
-diff -u -p a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -174,7 +174,7 @@ err:
- 	return ret;
- }
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index 557709e..034879e 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -21,7 +21,6 @@
+ #include <sound/initval.h>
+ #include <sound/soc.h>
+ #include <sound/tlv.h>
+-#include "wm9712.h"
  
--static struct snd_soc_ops asoc_simple_card_ops = {
-+static const struct snd_soc_ops asoc_simple_card_ops = {
- 	.startup = asoc_simple_card_startup,
- 	.shutdown = asoc_simple_card_shutdown,
- 	.hw_params = asoc_simple_card_hw_params,
-diff -u -p a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -59,7 +59,7 @@ static void asoc_simple_card_shutdown(st
- 	clk_disable_unprepare(dai_props->clk);
- }
+ #define WM9712_VENDOR_ID 0x574d4c12
+ #define WM9712_VENDOR_ID_MASK 0xffffffff
+diff --git a/sound/soc/codecs/wm9712.h b/sound/soc/codecs/wm9712.h
+deleted file mode 100644
+index fb69c3a..0000000
+--- a/sound/soc/codecs/wm9712.h
++++ /dev/null
+@@ -1,11 +0,0 @@
+-/*
+- * wm9712.h  --  WM9712 Soc Audio driver
+- */
+-
+-#ifndef _WM9712_H
+-#define _WM9712_H
+-
+-#define WM9712_DAI_AC97_HIFI	0
+-#define WM9712_DAI_AC97_AUX		1
+-
+-#endif
+diff --git a/sound/soc/pxa/e800_wm9712.c b/sound/soc/pxa/e800_wm9712.c
+index 41bf714..07b9c6e 100644
+--- a/sound/soc/pxa/e800_wm9712.c
++++ b/sound/soc/pxa/e800_wm9712.c
+@@ -21,7 +21,6 @@
+ #include <mach/audio.h>
+ #include <mach/eseries-gpio.h>
  
--static struct snd_soc_ops asoc_simple_card_ops = {
-+static const struct snd_soc_ops asoc_simple_card_ops = {
- 	.startup = asoc_simple_card_startup,
- 	.shutdown = asoc_simple_card_shutdown,
- };
-diff -u -p a/sound/soc/kirkwood/armada-370-db.c b/sound/soc/kirkwood/armada-370-db.c
---- a/sound/soc/kirkwood/armada-370-db.c
-+++ b/sound/soc/kirkwood/armada-370-db.c
-@@ -42,7 +42,7 @@ static int a370db_hw_params(struct snd_p
- 	return snd_soc_dai_set_sysclk(codec_dai, 0, freq, SND_SOC_CLOCK_IN);
- }
+-#include "../codecs/wm9712.h"
+ #include "pxa2xx-ac97.h"
  
--static struct snd_soc_ops a370db_ops = {
-+static const struct snd_soc_ops a370db_ops = {
- 	.hw_params = a370db_hw_params,
- };
+ static int e800_spk_amp_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/pxa/em-x270.c b/sound/soc/pxa/em-x270.c
+index 64743a0..966163d 100644
+--- a/sound/soc/pxa/em-x270.c
++++ b/sound/soc/pxa/em-x270.c
+@@ -30,7 +30,6 @@
+ #include <asm/mach-types.h>
+ #include <mach/audio.h>
  
-diff -u -p a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
---- a/sound/soc/mxs/mxs-sgtl5000.c
-+++ b/sound/soc/mxs/mxs-sgtl5000.c
-@@ -68,7 +68,7 @@ static int mxs_sgtl5000_hw_params(struct
- 	return 0;
- }
+-#include "../codecs/wm9712.h"
+ #include "pxa2xx-ac97.h"
  
--static struct snd_soc_ops mxs_sgtl5000_hifi_ops = {
-+static const struct snd_soc_ops mxs_sgtl5000_hifi_ops = {
- 	.hw_params = mxs_sgtl5000_hw_params,
- };
+ static struct snd_soc_dai_link em_x270_dai[] = {
+diff --git a/sound/soc/pxa/palm27x.c b/sound/soc/pxa/palm27x.c
+index bcc81e9..387492d 100644
+--- a/sound/soc/pxa/palm27x.c
++++ b/sound/soc/pxa/palm27x.c
+@@ -27,7 +27,6 @@
+ #include <mach/audio.h>
+ #include <linux/platform_data/asoc-palm27x.h>
  
-diff -u -p a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
---- a/sound/soc/intel/boards/bdw-rt5677.c
-+++ b/sound/soc/intel/boards/bdw-rt5677.c
-@@ -156,7 +156,7 @@ static int bdw_rt5677_hw_params(struct s
- 	return ret;
- }
+-#include "../codecs/wm9712.h"
+ #include "pxa2xx-ac97.h"
  
--static struct snd_soc_ops bdw_rt5677_ops = {
-+static const struct snd_soc_ops bdw_rt5677_ops = {
- 	.hw_params = bdw_rt5677_hw_params,
- };
+ static struct snd_soc_jack hs_jack;
+diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
+index c508f02..daed981 100644
+--- a/sound/soc/pxa/tosa.c
++++ b/sound/soc/pxa/tosa.c
+@@ -31,7 +31,6 @@
+ #include <mach/tosa.h>
+ #include <mach/audio.h>
  
-diff -u -p a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -248,7 +248,7 @@ static int broxton_da7219_hw_free(struct
- 	return ret;
- }
+-#include "../codecs/wm9712.h"
+ #include "pxa2xx-ac97.h"
  
--static struct snd_soc_ops broxton_da7219_ops = {
-+static const struct snd_soc_ops broxton_da7219_ops = {
- 	.hw_params = broxton_da7219_hw_params,
- 	.hw_free = broxton_da7219_hw_free,
- };
-@@ -295,7 +295,7 @@ static int broxton_refcap_startup(struct
- 			&constraints_16000);
- };
- 
--static struct snd_soc_ops broxton_refcap_ops = {
-+static const struct snd_soc_ops broxton_refcap_ops = {
- 	.startup = broxton_refcap_startup,
- };
- 
-diff -u -p a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -181,7 +181,7 @@ static int broxton_rt298_hw_params(struc
- 	return ret;
- }
- 
--static struct snd_soc_ops broxton_rt298_ops = {
-+static const struct snd_soc_ops broxton_rt298_ops = {
- 	.hw_params = broxton_rt298_hw_params,
- };
- 
-@@ -230,7 +230,7 @@ static int broxton_dmic_startup(struct s
- 				SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
- }
- 
--static struct snd_soc_ops broxton_dmic_ops = {
-+static const struct snd_soc_ops broxton_dmic_ops = {
- 	.startup = broxton_dmic_startup,
- };
- 
-diff -u -p a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -597,11 +597,11 @@ static int byt_rt5640_aif1_startup(struc
- 			SNDRV_PCM_HW_PARAM_RATE, 48000);
- }
- 
--static struct snd_soc_ops byt_rt5640_aif1_ops = {
-+static const struct snd_soc_ops byt_rt5640_aif1_ops = {
- 	.startup = byt_rt5640_aif1_startup,
- };
- 
--static struct snd_soc_ops byt_rt5640_be_ssp2_ops = {
-+static const struct snd_soc_ops byt_rt5640_be_ssp2_ops = {
- 	.hw_params = byt_rt5640_aif1_hw_params,
- };
- 
-diff -u -p a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -219,11 +219,11 @@ static int byt_rt5651_aif1_startup(struc
- 			&constraints_48000);
- }
- 
--static struct snd_soc_ops byt_rt5651_aif1_ops = {
-+static const struct snd_soc_ops byt_rt5651_aif1_ops = {
- 	.startup = byt_rt5651_aif1_startup,
- };
- 
--static struct snd_soc_ops byt_rt5651_be_ssp2_ops = {
-+static const struct snd_soc_ops byt_rt5651_be_ssp2_ops = {
- 	.hw_params = byt_rt5651_aif1_hw_params,
- };
- 
-diff -u -p a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -204,11 +204,11 @@ static int cht_max98090_headset_init(str
- 	return ts3a227e_enable_jack_detect(component, &ctx->jack);
- }
- 
--static struct snd_soc_ops cht_aif1_ops = {
-+static const struct snd_soc_ops cht_aif1_ops = {
- 	.startup = cht_aif1_startup,
- };
- 
--static struct snd_soc_ops cht_be_ssp2_ops = {
-+static const struct snd_soc_ops cht_be_ssp2_ops = {
- 	.hw_params = cht_aif1_hw_params,
- };
- 
-diff -u -p a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -250,11 +250,11 @@ static int cht_aif1_startup(struct snd_p
- 			SNDRV_PCM_HW_PARAM_RATE, 48000);
- }
- 
--static struct snd_soc_ops cht_aif1_ops = {
-+static const struct snd_soc_ops cht_aif1_ops = {
- 	.startup = cht_aif1_startup,
- };
- 
--static struct snd_soc_ops cht_be_ssp2_ops = {
-+static const struct snd_soc_ops cht_be_ssp2_ops = {
- 	.hw_params = cht_aif1_hw_params,
- };
- 
-diff -u -p a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -225,11 +225,11 @@ static int cht_aif1_startup(struct snd_p
- 			SNDRV_PCM_HW_PARAM_RATE, 48000);
- }
- 
--static struct snd_soc_ops cht_aif1_ops = {
-+static const struct snd_soc_ops cht_aif1_ops = {
- 	.startup = cht_aif1_startup,
- };
- 
--static struct snd_soc_ops cht_be_ssp2_ops = {
-+static const struct snd_soc_ops cht_be_ssp2_ops = {
- 	.hw_params = cht_aif1_hw_params,
- };
- 
-diff -u -p a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
---- a/sound/soc/intel/boards/haswell.c
-+++ b/sound/soc/intel/boards/haswell.c
-@@ -81,7 +81,7 @@ static int haswell_rt5640_hw_params(stru
- 	return ret;
- }
- 
--static struct snd_soc_ops haswell_rt5640_ops = {
-+static const struct snd_soc_ops haswell_rt5640_ops = {
- 	.hw_params = haswell_rt5640_hw_params,
- };
- 
-diff -u -p a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -332,7 +332,7 @@ static int skylake_nau8825_hw_params(str
- 	return ret;
- }
- 
--static struct snd_soc_ops skylake_nau8825_ops = {
-+static const struct snd_soc_ops skylake_nau8825_ops = {
- 	.hw_params = skylake_nau8825_hw_params,
- };
- 
-@@ -382,7 +382,7 @@ static int skylake_dmic_startup(struct s
- 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
- }
- 
--static struct snd_soc_ops skylake_dmic_ops = {
-+static const struct snd_soc_ops skylake_dmic_ops = {
- 	.startup = skylake_dmic_startup,
- };
- 
-@@ -416,7 +416,7 @@ static int skylake_refcap_startup(struct
- 				&constraints_16000);
- }
- 
--static struct snd_soc_ops skylaye_refcap_ops = {
-+static const struct snd_soc_ops skylaye_refcap_ops = {
- 	.startup = skylake_refcap_startup,
- };
- 
-diff -u -p a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -394,7 +394,7 @@ static int skylake_nau8825_hw_params(str
- 	return ret;
- }
- 
--static struct snd_soc_ops skylake_nau8825_ops = {
-+static const struct snd_soc_ops skylake_nau8825_ops = {
- 	.hw_params = skylake_nau8825_hw_params,
- };
- 
-@@ -430,7 +430,7 @@ static int skylake_dmic_startup(struct s
- 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
- }
- 
--static struct snd_soc_ops skylake_dmic_ops = {
-+static const struct snd_soc_ops skylake_dmic_ops = {
- 	.startup = skylake_dmic_startup,
- };
- 
-@@ -464,7 +464,7 @@ static int skylake_refcap_startup(struct
- 			&constraints_16000);
- }
- 
--static struct snd_soc_ops skylaye_refcap_ops = {
-+static const struct snd_soc_ops skylaye_refcap_ops = {
- 	.startup = skylake_refcap_startup,
- };
- 
-diff -u -p a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
---- a/sound/soc/intel/boards/skl_rt286.c
-+++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -250,7 +250,7 @@ static int skylake_rt286_hw_params(struc
- 	return ret;
- }
- 
--static struct snd_soc_ops skylake_rt286_ops = {
-+static const struct snd_soc_ops skylake_rt286_ops = {
- 	.hw_params = skylake_rt286_hw_params,
- };
- 
-@@ -289,7 +289,7 @@ static int skylake_dmic_startup(struct s
- 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
- }
- 
--static struct snd_soc_ops skylake_dmic_ops = {
-+static const struct snd_soc_ops skylake_dmic_ops = {
- 	.startup = skylake_dmic_startup,
- };
- 
+ #define TOSA_HP        0
+-- 
+2.1.4
