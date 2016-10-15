@@ -1,14 +1,14 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/7] ASoC: wm9713: Remove unused DAI ID defines
-Date: Sat, 15 Oct 2016 19:32:53 +0200
-Message-ID: <1476552777-1849-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH 4/7] ASoC: wm8753: Remove unused DAI ID defines
+Date: Sat, 15 Oct 2016 19:32:54 +0200
+Message-ID: <1476552777-1849-4-git-send-email-lars@metafoo.de>
 References: <1476552777-1849-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id A75A6266638
+ by alsa0.perex.cz (Postfix) with ESMTP id 16C99266649
  for <alsa-devel@alsa-project.org>; Sat, 15 Oct 2016 19:33:08 +0200 (CEST)
 In-Reply-To: <1476552777-1849-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,26 +26,24 @@ List-Id: alsa-devel@alsa-project.org
 
 The DAI ID defines are back from the time when DAIs were referenced by a
 numerical ID. These days a string is used for matching instead and the
-defines are unused. The last user of these defines was removed in commit
-f0fba2ad1b6b ("ASoC: multi-component - ASoC Multi-Component Support"). So
-remove the defines as well.
+defines are unused. These particular IDs were never used and presumably
+never will be, so remove them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm9713.h | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/codecs/wm8753.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9713.h b/sound/soc/codecs/wm9713.h
-index 53df11b..7ecffc5 100644
---- a/sound/soc/codecs/wm9713.h
-+++ b/sound/soc/codecs/wm9713.h
-@@ -41,8 +41,4 @@
- #define WM9713_PCMBCLK_DIV_8	(3 << 9)
- #define WM9713_PCMBCLK_DIV_16	(4 << 9)
+diff --git a/sound/soc/codecs/wm8753.h b/sound/soc/codecs/wm8753.h
+index 94edac1..8b39e36 100644
+--- a/sound/soc/codecs/wm8753.h
++++ b/sound/soc/codecs/wm8753.h
+@@ -112,7 +112,4 @@
+ #define WM8753_VXCLK_DIV_8	(3 << 6)
+ #define WM8753_VXCLK_DIV_16	(4 << 6)
  
--#define WM9713_DAI_AC97_HIFI	0
--#define WM9713_DAI_AC97_AUX		1
--#define WM9713_DAI_PCM_VOICE	2
+-#define WM8753_DAI_HIFI		0
+-#define WM8753_DAI_VOICE		1
 -
  #endif
 -- 
