@@ -1,13 +1,13 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 1/7] ASoC: intel: broadwell: constify snd_soc_ops structures
-Date: Sat, 15 Oct 2016 16:55:45 +0200
-Message-ID: <1476543351-17858-2-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 6/7] ASoC: constify snd_soc_ops structures
+Date: Sat, 15 Oct 2016 16:55:50 +0200
+Message-ID: <1476543351-17858-7-git-send-email-Julia.Lawall@lip6.fr>
 References: <1476543351-17858-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
 In-Reply-To: <1476543351-17858-1-git-send-email-Julia.Lawall@lip6.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jie Yang <yang.jie@linux.intel.com>
-Cc: kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Timur Tabi <timur@tabi.org>
+Cc: kernel-janitors@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 Check for snd_soc_ops structures that are only stored in the ops field of a
@@ -52,28 +52,46 @@ static
  struct snd_soc_ops i = { ... };
 // </smpl>
 
-The effect on the layout of the .o file is shown by the following output of
+The effect on the layout of the .o files is shown by the following output of
 the size command, first before then after the transformation:
 
+  text    data     bss     dec     hex filename
+   8748    1024       0    9772    262c sound/soc/fsl/fsl-asoc-card.o
+   8812     952       0    9764    2624 sound/soc/fsl/fsl-asoc-card.o
+
    text    data     bss     dec     hex filename
-   3865    2784     384    7033    1b79 sound/soc/intel/boards/broadwell.o
-   3929    2720     384    7033    1b79 sound/soc/intel/boards/broadwell.o
+   4165     264       8    4437    1155 sound/soc/fsl/imx-wm8962.o
+   4229     200       8    4437    1155 sound/soc/fsl/imx-wm8962.o
 
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
- sound/soc/intel/boards/broadwell.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/fsl-asoc-card.c |    2 +-
+ sound/soc/fsl/imx-wm8962.c    |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff -u -p a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
---- a/sound/soc/intel/boards/broadwell.c
-+++ b/sound/soc/intel/boards/broadwell.c
-@@ -126,7 +126,7 @@ static int broadwell_rt286_hw_params(str
- 	return ret;
+diff -u -p a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -183,7 +183,7 @@ static int fsl_asoc_card_hw_params(struc
+ 	return 0;
  }
  
--static struct snd_soc_ops broadwell_rt286_ops = {
-+static const struct snd_soc_ops broadwell_rt286_ops = {
- 	.hw_params = broadwell_rt286_hw_params,
+-static struct snd_soc_ops fsl_asoc_card_ops = {
++static const struct snd_soc_ops fsl_asoc_card_ops = {
+ 	.hw_params = fsl_asoc_card_hw_params,
  };
  
+diff -u -p a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
+--- a/sound/soc/fsl/imx-wm8962.c
++++ b/sound/soc/fsl/imx-wm8962.c
+@@ -61,7 +61,7 @@ static int imx_hifi_hw_params(struct snd
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops imx_hifi_ops = {
++static const struct snd_soc_ops imx_hifi_ops = {
+ 	.hw_params = imx_hifi_hw_params,
+ };
+ 
+
