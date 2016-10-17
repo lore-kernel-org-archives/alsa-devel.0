@@ -1,15 +1,15 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Para-virtualized audio drivers
-Date: Mon, 17 Oct 2016 03:01:47 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60552C5B457@BGSMSX104.gar.corp.intel.com>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH 0/2] topology: Support widgets' stream name and
+	file inclusion for text conf file
+Date: Mon, 17 Oct 2016 13:55:21 +0800
+Message-ID: <cover.1476683054.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 11655261560
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2016 05:01:55 +0200 (CEST)
-Content-Language: en-US
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9A17261560
+ for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2016 07:54:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,29 +19,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
-Cc: 'Takashi Iwai' <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi and all,
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-I have some need to develop para virtualized audio drivers which can
-work with XEN hypervisor.
+This series doesn't require or cause any ABI updates. It doesn't need the
+kernel patches that trying to udpate ABI from v4 or v5.
 
-I see some attempt was made in the past.
-https://lists.xen.org/archives/html/xen-devel/2015-01/msg02125.html
+It just fix a missing feature and enhance text conf file to support
+including files to control the increasing size of text conf files.
 
-I see one more material but with no code.
-http://rd.springer.com/chapter/10.1007%2F978-94-007-2105-0_46
+Mengdong Lin (2):
+  topology: Fix missing stream name of widgets in text conf file
+  topology: Add support for included files
 
-I am thinking to develop pv-audio-frontend (running on Dom1) and 
-pv-audio-backend (running on Dom0) drivers all at kernel level.
-Backend driver owns the hardware. Frontend driver communicates with 
-backend driver using XENbus framework just like storage and network PV
-drivers.
+ include/topology.h        |  38 +++++
+ src/topology/dapm.c       |  10 ++
+ src/topology/parser.c     | 374 +++++++++++++++++++++++++++++++++++++++++++++-
+ src/topology/tplg_local.h |  17 +++
+ 4 files changed, 434 insertions(+), 5 deletions(-)
 
-Before I start, I wanted to check if there is any other
-work that has been done which I can take as base ?
-
-Regards,
-Rakesh
+-- 
+2.5.0
