@@ -1,8 +1,8 @@
 From: Matt Flax <flatmax@flatmax.org>
 Subject: Re: [PATCH] ASoc: wm8580: Add the wm8581 codec to the
  driver
-Date: Tue, 18 Oct 2016 06:14:47 +1100
-Message-ID: <1bd1550e-fe26-2c8e-37e8-b283de149a3a@flatmax.org>
+Date: Tue, 18 Oct 2016 06:15:28 +1100
+Message-ID: <54546e80-7d07-6959-af28-b7905980fc5d@flatmax.org>
 References: <1476657738-17020-1-git-send-email-flatmax@flatmax.org>
  <20161017103700.GA3207@localhost.localdomain>
  <8a0452ed-fab3-7ba4-b61c-c7f99e00a4b3@flatmax.org>
@@ -11,16 +11,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nskntmtas06p.mx.bigpond.com (nskntmtas06p.mx.bigpond.com
- [61.9.168.152]) by alsa0.perex.cz (Postfix) with ESMTP id D0908266B69
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2016 21:14:52 +0200 (CEST)
-Received: from nskntcmgw07p ([61.9.169.167]) by nskntmtas06p.mx.bigpond.com
- with ESMTP
- id <20161017191449.JXUJ2096.nskntmtas06p.mx.bigpond.com@nskntcmgw07p>
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2016 19:14:49 +0000
-Received: from monstilationax2 ([192.168.0.51]) by meb with esmtp (Exim 4.84_2)
- (envelope-from <flatmax@flatmax.org>) id 1bwDRM-0003RT-Vj
- for alsa-devel@alsa-project.org; Tue, 18 Oct 2016 06:19:17 +1100
+Received: from nskntmtas04p.mx.bigpond.com (nskntmtas04p.mx.bigpond.com
+ [61.9.168.146]) by alsa0.perex.cz (Postfix) with ESMTP id BA3DF266B69
+ for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2016 21:15:33 +0200 (CEST)
 In-Reply-To: <20161017105950.GF3207@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,7 +24,8 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
