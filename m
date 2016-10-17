@@ -1,21 +1,14 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoc: wm8580: Add the wm8581 codec to the
-	driver
-Date: Mon, 17 Oct 2016 11:59:50 +0100
-Message-ID: <20161017105950.GF3207@localhost.localdomain>
-References: <1476657738-17020-1-git-send-email-flatmax@flatmax.org>
- <20161017103700.GA3207@localhost.localdomain>
- <8a0452ed-fab3-7ba4-b61c-c7f99e00a4b3@flatmax.org>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH v2] ASoC: rt5640: enable MCLK detection
+Date: Mon, 17 Oct 2016 19:14:04 +0800
+Message-ID: <1476702844-31473-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id E28AA266A8F
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2016 12:59:38 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <8a0452ed-fab3-7ba4-b61c-c7f99e00a4b3@flatmax.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id DEBC9266A8F
+ for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2016 13:14:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,86 +18,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 17, 2016 at 09:46:20PM +1100, Matt Flax wrote:
-> 
-> 
-> On 17/10/16 21:37, Charles Keepax wrote:
-> >On Mon, Oct 17, 2016 at 09:42:18AM +1100, Matt Flax wrote:
-> >>This patch adds support for the wm8581 codec to the wm8580 driver.
-> >>The wm8581 codec hardware adds a fourth DAC and otherwise is
-> >>compatible with the wm8580 codec.
-> >>
-> >>of_device_id data is used to allow the driver to select the
-> >>suitable software variables from the device tree codec selection.
-> >>The wm8580_driver_data struct is used to store the number of DACs
-> >>as well as the required stream names for both codecs.
-> >>
-> >>The snd_soc_dai_driver no longer lists the stream names and for
-> >>playback the channels_max. These variables are set during i2c
-> >>probe from the of_device_id supplied wm8580_driver_data struct.
-> >>
-> >>With knowledge of the number of DACs in use, the DAC4 controls,
-> >>widgets and routes are added as required for DAC4.
-> >>
-> >>The device tree documentation for the wm8580 is altered to list
-> >>the wm8581 codec support, as is the Kconfig file.
-> >>
-> >>Signed-off-by: Matt Flax <flatmax@flatmax.org>
-> >>---
-<snip>
-> >>+static const struct snd_kcontrol_new wm8580_dac4_snd_controls[] = {
-> >>+SOC_DOUBLE_R_EXT_TLV("DAC4 Playback Volume",
-> >>+		     WM8580_DIGITAL_ATTENUATION_DACL4,
-> >>+		     WM8580_DIGITAL_ATTENUATION_DACR4,
-> >>+		     0, 0xff, 0, snd_soc_get_volsw, wm8580_out_vu, dac_tlv),
-> >>+
-> >>+SOC_SINGLE("DAC4 Deemphasis Switch", WM8580_DAC_CONTROL3, 3, 1, 0),
-> >>+
-> >>+SOC_DOUBLE("DAC4 Invert Switch", WM8580_DAC_CONTROL4,  8, 7, 1, 0),
-> >>+
-> >>+SOC_SINGLE("DAC4 Switch", WM8580_DAC_CONTROL5, 3, 1, 1),
-> >>+};
-> >Ditto here and so on for the next couple.
-> That would mean replicating the WM8580_DAC_CONTROL[345] definitions where :
-> WM8581_DAC_CONTROL3==WM8580_DAC_CONTROL3
-> WM8581_DAC_CONTROL4==WM8580_DAC_CONTROL4
-> WM8581_DAC_CONTROL5==WM8580_DAC_CONTROL5
-> Is that what you are after ?
+There is a power saving mechanism in rt5640. It will turn off some
+unused power when MCLK is not present. We call that "MCLK detection"
+and it should be enabled by default.
 
-Ah apologies that wasn't what I meant if the register already
-exists then don't change the name. I was referring to
-wm8580_dac4_snd_controls I would probably name that
-wm8581_dac4_snd_controls.
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+* Improve commit message.
+---
+ sound/soc/codecs/rt5640.c | 3 +++
+ sound/soc/codecs/rt5640.h | 2 ++
+ 2 files changed, 5 insertions(+)
 
-> >>+	/* Each dac supports stereo input */
-> >>+	wm8580_dai[0].playback.channels_max = wm8580->drvdata->num_dacs * 2;
-> >>+	wm8580_dai[0].name = wm8580->drvdata->name_playback;
-> >>+	wm8580_dai[1].name = wm8580->drvdata->name_capture;
-> >You can't patch the dai_driver struct like this its a static
-> >struct that is shared between all instanciations of the driver it
-> >is possible someone could put a 8580 and 8581 on the same board.
-> Oh  - That is a good point. Strangely, the cs42xx8 driver has the same
-> problem ! Hmmm ...
-
-Yeah someone should probably look at fixing that at some point,
-I will try to find some time to have a gander.
-
-> >I guess you really have two options here, you could specify the
-> >maximum in the dai_driver and then apply constraints in the
-> >startup callback to limit things to the correct chip dependant
-> >number of channels, or just have two copies of the dai_driver
-> >struct one for each chip.
-> I didn't understand your first suggestion, can you give an example of how to
-> do that in the startup callback ? Sounds like a good idea.
-
-If you look in arizona_startup in sound/soc/codecs/arizona.c we
-specify constraints for the sample rates based off our clocking,
-there is an equivalent SNDRV_PCM_HW_PARAM_CHANNELS that you
-should be able to you to specify the supported channels with.
-
-Thanks,
-Charles
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 3cc1135..0a7378f 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2407,6 +2407,9 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
+ 	if (ret != 0)
+ 		dev_warn(&i2c->dev, "Failed to apply regmap patch: %d\n", ret);
+ 
++	regmap_update_bits(rt5640->regmap, RT5640_DUMMY1,
++				RT5640_MCLK_DET, RT5640_MCLK_DET);
++
+ 	if (rt5640->pdata.in1_diff)
+ 		regmap_update_bits(rt5640->regmap, RT5640_IN1_IN2,
+ 					RT5640_IN_DF1, RT5640_IN_DF1);
+diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+index 90c8871..22c017c 100644
+--- a/sound/soc/codecs/rt5640.h
++++ b/sound/soc/codecs/rt5640.h
+@@ -1970,6 +1970,8 @@
+ #define RT5640_ZCD_HP_DIS			(0x0 << 15)
+ #define RT5640_ZCD_HP_EN			(0x1 << 15)
+ 
++/* General Control 1 (0xfa) */
++#define RT5640_MCLK_DET				(0x1 << 11)
+ 
+ /* Codec Private Register definition */
+ /* 3D Speaker Control (0x63) */
+-- 
+1.8.1.1.439.g50a6b54
