@@ -1,20 +1,16 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/7] ASoC: wm9713: Remove unused DAI ID
-	defines
-Date: Mon, 17 Oct 2016 11:49:56 +0100
-Message-ID: <20161017104956.GD3207@localhost.localdomain>
-References: <1476552777-1849-1-git-send-email-lars@metafoo.de>
- <1476552777-1849-3-git-send-email-lars@metafoo.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: rt5640: enable MCLK detection
+Date: Mon, 17 Oct 2016 12:49:41 +0200
+Message-ID: <b6427164-56a0-acdf-438a-f0b339016e23@metafoo.de>
+References: <1476699970-16751-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 213E9266A34
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2016 12:49:43 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1476552777-1849-3-git-send-email-lars@metafoo.de>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC235266A34
+ for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2016 12:49:49 +0200 (CEST)
+In-Reply-To: <1476699970-16751-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,21 +20,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com
+To: Bard Liao <bardliao@realtek.com>, broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Oct 15, 2016 at 07:32:53PM +0200, Lars-Peter Clausen wrote:
-> The DAI ID defines are back from the time when DAIs were referenced by a
-> numerical ID. These days a string is used for matching instead and the
-> defines are unused. The last user of these defines was removed in commit
-> f0fba2ad1b6b ("ASoC: multi-component - ASoC Multi-Component Support"). So
-> remove the defines as well.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
+On 10/17/2016 12:26 PM, Bard Liao wrote:
+> Enable MCLK detection.
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-
-Thanks,
-Charles
+The commit message can be a bit improved. It should explain what MCLK
+detection is and why it should be enabled and what the advantages of that are.
