@@ -1,65 +1,84 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [alsa-devel] [PATCH 0/23] ASoC: add OF graph base simple-card
-Date: Tue, 18 Oct 2016 09:10:30 +0200
-Message-ID: <20161018091030.ed9eea657480f6a20bcfea81@free.fr>
+From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 08/23] ASoC: soc-core:
+ snd_soc_get_dai_name() become non static
+Date: Tue, 18 Oct 2016 09:27:15 +0200
+Message-ID: <20161018092715.16e0943b481f9bc6885eb4f4@free.fr>
 References: <87shrv4c8x.wl%kuninori.morimoto.gx@renesas.com>
+        <87h98b4c30.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87shrv4c8x.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux-Kernel <linux-kernel@vger.kernel.org>, Simon <horms@verge.net.au>, Laurent <laurent.pinchart@ideasonboard.com>, Grant Likely <grant.likely@linaro.org>, Frank Rowand <frowand.list@gmail.com>, Guennadi <g.liakhovetski@gmx.de>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <87h98b4c30.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-Kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Laurent <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Guennadi <g.liakhovetski-Mmb7MZpHnFY@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 17 Oct 2016 08:30:49 +0000
-Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
+On Mon, 17 Oct 2016 08:34:19 +0000
+Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org> wrote:
 
-> These are OF graph base simple-card patch-set.
->  1) -  3) : simple-scu-card cleanup
->  4) - 10) : soc-core prepare for OF graph card
-> 11) - 17) : OF graph new feature
-> 18) - 23) : OF graph base simple-card
+> From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 > 
-> I posted 11) - 17) OF graph new feature patches before, and then Rob requested
-> about usecase. 18) - 23) can be usecase for it.
->  1) - 10) are independent (= Mark)
-> 11) - 17) are independent (= Rob)
-> 18) - 23) are depends on 1) - 10) and 11) - 17) (= Mark)
+> snd_soc_get_dai_name() is used from snd_soc_of_get_dai_name(),
+> and it is assuming that DT is using "sound-dai" / "#sound-dai-cells".
+> But graph base DT is using "remote-endpoint". This patch makes
+> snd_soc_get_dai_name() non static for graph support.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+> ---
+>  include/sound/soc.h  | 2 ++
+>  sound/soc/soc-core.c | 3 ++-
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/sound/soc.h b/include/sound/soc.h
+> index fd63d23..77b01c4 100644
+> --- a/include/sound/soc.h
+> +++ b/include/sound/soc.h
+> @@ -1677,6 +1677,8 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+>  				     const char *prefix,
+>  				     struct device_node **bitclkmaster,
+>  				     struct device_node **framemaster);
+> +int snd_soc_get_dai_name(struct of_phandle_args *args,
+> +			 const char **dai_name);
+>  int snd_soc_of_get_dai_name(struct device_node *of_node,
+>  			    const char **dai_name);
+>  int snd_soc_of_get_dai_link_codecs(struct device *dev,
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 8371488..6f911f4 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -3794,7 +3794,7 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+>  }
+>  EXPORT_SYMBOL_GPL(snd_soc_of_parse_daifmt);
 >  
-> Kuninori Morimoto (23):
->        1) ASoC: simple-scu-card: code sync: follow to simple family style
->        2) ASoC: simple-scu-card: code sync: rename asoc_simple_card_priv
->        3) ASoC: simple-scu-card: code sync: tidyup props/link naming
->        4) ASoC: soc-core: adjust for graph on snd_soc_of_parse_card_name
->        5) ASoC: soc-core: adjust for graph on snd_soc_of_parse_audio_simple_widgets
->        6) ASoC: soc-core: adjust for graph on snd_soc_of_parse_audio_routing
->        7) ASoC: soc-core: adjust for graph on snd_soc_of_parse_audio_prefix
->        8) ASoC: soc-core: snd_soc_get_dai_name() become non static
->        9) ASoC: simple-card-utils: remove unnecessary cpu/codec pointer check
->       10) ASoC: simple-card-utils: adjust for graph on asoc_simple_card_parse_card_name
->       11) Documentation: of: add type property
->       12) of_graph: add of_graph_get_remote_endpoint()
->       13) of_graph: add of_graph_port_type_is()
->       14) of_graph: add of_graph_get_port_parent()
->       15) of_graph: add of_graph_get_top_port()
->       16) of_graph: add for_each_of_port() / for_each_of_endpoint_in_port()
->       17) of_graph: add of_graph_get_endpoint_count()
->       18) ASoC: simple-card-utils: add asoc_simple_card_parse_graph_dai()
->       19) ASoC: simple-card-utils: add asoc_simple_card_try_to_probe_graph_card()
->       20) ASoC: add simple-graph-card document
->       21) ASoC: add simple-graph-card support
->       22) ASoC: add simple-graph-scu-card document
->       23) ASoC: add simple-graph-scu-card support
-	[snip]
+> -static int snd_soc_get_dai_name(struct of_phandle_args *args,
+> +int snd_soc_get_dai_name(struct of_phandle_args *args,
+>  				const char **dai_name)
+>  {
+>  	struct snd_soc_component *pos;
+> @@ -3846,6 +3846,7 @@ static int snd_soc_get_dai_name(struct of_phandle_args *args,
+>  	mutex_unlock(&client_mutex);
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL_GPL(snd_soc_get_dai_name);
+>  
+>  int snd_soc_of_get_dai_name(struct device_node *of_node,
+>  			    const char **dai_name)
+> -- 
+> 1.9.1
 
-Hi Kuninori,
+I already proposed this patch
+ http://mailman.alsa-project.org/pipermail/alsa-devel/2015-January/086870.html
+but it seems people were not interested.
+I hope now is the right time.
 
-The patches 11..17 put trivial functions in the OF core. As they are
-used by only a few systems, it would be better to define them as
-macros, or in a module or in the simple-card-utils.
+Acked-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
 
 -- 
 Ken ar c'hentañ	|	      ** Breizh ha Linux atav! **
 Jef		|		http://moinejf.free.fr/
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
