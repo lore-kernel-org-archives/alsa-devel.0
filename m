@@ -1,51 +1,57 @@
-From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Subject: Re: [PATCH] ALSA: hda - allow 40 bit DMA mask for NVidia devices
-Date: Tue, 18 Oct 2016 14:15:15 +0100
-Message-ID: <CAKv+Gu9QhknPp9k5X77vbbtELWqUzHLO26hpiv+rab5zjtHtOw@mail.gmail.com>
-References: <1476721439-29519-1-git-send-email-ard.biesheuvel@linaro.org>
- <s5hmvi254yx.wl-tiwai@suse.de> <fd423738-3b5a-6d04-682e-8c93dd16f6ec@sgi.com>
- <CAKv+Gu9xTbnt+qoDjj3CHMbFTf_TWsF-QdCZnAS3dKZ+EBfOpQ@mail.gmail.com> <40321a07-bff4-4293-d85b-bddba31d1c33@sgi.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 3/3] dt/bindings: Add milivolt, milliamps, and
+ nanohenry units
+Date: Tue, 18 Oct 2016 08:28:47 -0500
+Message-ID: <20161018132847.hwaij5j5ohyvwoed@rob-hp-laptop>
+References: <CAL_JsqKdV7133oo5jECZn2SwVjMM3E_ZNr+JS=9Wtkx8BZVuEQ@mail.gmail.com>
+ <6ca3d940-4822-42d5-8606-cfc4c815c7ad@EX4.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <40321a07-bff4-4293-d85b-bddba31d1c33@sgi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mike Travis <travis@sgi.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, perex@perex.cz, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <6ca3d940-4822-42d5-8606-cfc4c815c7ad-k7YZYYsDncjfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Handrigan, Paul" <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "Austin, Brian" <Brian.Austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 18 October 2016 at 14:04, Mike Travis <travis@sgi.com> wrote:
->
->
-> On 10/18/2016 5:49 AM, Ard Biesheuvel wrote:
->> On 18 October 2016 at 13:46, Mike Travis <travis@sgi.com> wrote:
->>>
->>> Have you tested this change on a system which has physical
->>> addressing > 40 bits to insure that addresses > 40 bits are
->>> not simply truncated to an incorrect (mod 40) address?
->>
->> The device should never see addresses > 40 bits, given that the DMA
->> mask is set to 40 bits not 64.
->
-> I agree that the device should never see that.  But how is that
-> restriction imposed?  If a user presents an buffer address > 40 bits
-> how would that be converted to useful buffer at <= 40 bits?
->
-> I believe I tried this (at the time the kernel was at version 2.6)
-> and it did not work.  Since audio I/O was such a low (relative)
-> bandwidth, it was not worth the effort to rework the audio code
-> to allow buffers > 32 bits but <= 40 bits.  It may have changed
-> since then?
->
+On Tue, Oct 18, 2016 at 12:43:48AM +0000, Handrigan, Paul wrote:
+> 
+> 
+> 
+> >>  Electricity
+> >>  ----------------------------------------
+> >>  -microamp      : micro amps
+> >> +-milliamp      : milli amps
+> >
+> >Please explain why you need need this. Is 2^32 uA not enough range for
+> >you? While we do have multiple units for some, that's because people
+> >picked arbitrary units for their properties before this doc existed.
+> >Ideally, we only have 1 unit to prevent that problem.
+> 
+> 2^32 would be enough, however, microamps would not be a good
+> representation for
+> this particular entry. For example, if the current limit is 2.1A the
+> entry will have to be 2100000.  Micro amps will not be the best
+> representation for this value from a scientific notation perspective.
+> Since the scale is in miiliamps as it is defined in the data sheet of
+> this device, it will be best to stay consistent since an error in
+> conversion
+> could cause serious problems.
+> 
+> Also, I really don¹t see why adding milliamps and millivolts as being a
+> major
+> problems since both of them are commonly used.
 
-This is very platform dependent. Note that the 40 bit DMA mask
-describes the memory view from the PCI side, which may not be mapped
-1:1 with system memory (although it usually is on x86)
+As I explained, we want to have some uniformity in properties especially 
+across different bindings. That's not something I want to check in every
+review. Telling people to add units is enough.
 
-In general, a platform will wire up the device to a struct dma_map_ops
-{} instance that describes how DMA is performed for this particular
-device on this platform. Whether it resorts to bounce buffering or
-simply maps the buffer into the device accessible window using an
-IOMMU is thus also platform dependent. But in general, all these
-drivers ensure that the device address that results from a mapping
-adheres to the DMA mask that has been set at probe time.
+I don't see how adding '000' is a problem.
+
+Rob
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
