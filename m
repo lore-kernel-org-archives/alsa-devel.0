@@ -1,15 +1,15 @@
 From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH v2] ASoC: rt5514: Add the DMIC initial delay to
+Subject: [PATCH v3] ASoC: rt5514: Add the DMIC initial delay to
 	wait it ready.
-Date: Tue, 18 Oct 2016 10:55:42 +0800
-Message-ID: <1476759342-23425-1-git-send-email-oder_chiou@realtek.com>
+Date: Tue, 18 Oct 2016 10:58:17 +0800
+Message-ID: <1476759497-23660-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 8AFD2266CDA
- for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2016 04:55:48 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 10AB4266CDA
+ for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2016 04:58:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,12 +28,27 @@ field of delay time is implemented by the platform data.
 
 Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 ---
- include/sound/rt5514.h    | 20 ++++++++++++++++++++
- sound/soc/codecs/rt5514.c | 17 +++++++++++++++++
- sound/soc/codecs/rt5514.h |  2 ++
- 3 files changed, 39 insertions(+)
+ Documentation/devicetree/bindings/sound/rt5514.txt |  3 +++
+ include/sound/rt5514.h                             | 20 ++++++++++++++++++++
+ sound/soc/codecs/rt5514.c                          | 17 +++++++++++++++++
+ sound/soc/codecs/rt5514.h                          |  2 ++
+ 4 files changed, 42 insertions(+)
  create mode 100644 include/sound/rt5514.h
 
+diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
+index 9cabfc1..a8074e7 100644
+--- a/Documentation/devicetree/bindings/sound/rt5514.txt
++++ b/Documentation/devicetree/bindings/sound/rt5514.txt
+@@ -13,6 +13,9 @@ Optional properties:
+ - clocks: The phandle of the master clock to the CODEC
+ - clock-names: Should be "mclk"
+ 
++- realtek,dmic-init-delay
++  Set the DMIC initial delay to wait it ready.
++
+ Pins on the device (for linking into audio routes) for RT5514:
+ 
+   * DMIC1L
 diff --git a/include/sound/rt5514.h b/include/sound/rt5514.h
 new file mode 100644
 index 0000000..ef18494
