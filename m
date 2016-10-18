@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: configuring machine specific DAPM for codec +
-	headset jack detect
-Date: Tue, 18 Oct 2016 12:02:36 +0100
-Message-ID: <20161018110236.GD10208@sirena.org.uk>
-References: <CAJ+vNU2a5G8HxJjZ+0g_NkC1jtMg1jKVq6xOfWqx94tbyA=rLA@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ASoC: sst-bxt-da7219_max98357a: fix
+ obsoleted initializer for array
+Date: Tue, 18 Oct 2016 20:16:38 +0900
+Message-ID: <98283b5c-0ddb-c2c6-0ac7-352c47ed5835@sakamocchi.jp>
+References: <20161017220256.32008-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5877309752250280800=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 85C4E2614A0
- for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2016 13:02:44 +0200 (CEST)
-In-Reply-To: <CAJ+vNU2a5G8HxJjZ+0g_NkC1jtMg1jKVq6xOfWqx94tbyA=rLA@mail.gmail.com>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id E85792614A0
+ for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2016 13:16:42 +0200 (CEST)
+In-Reply-To: <20161017220256.32008-1-colin.king@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tim Harvey <tharvey@gateworks.com>
-Cc: alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>
+To: Colin King <colin.king@canonical.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Vinod Koul <vinod.koul@intel.com>, Yong Zhi <yong.zhi@intel.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5877309752250280800==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2Z2K0IlrPCVsbNpk"
-Content-Disposition: inline
-
-
---2Z2K0IlrPCVsbNpk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Oct 17, 2016 at 04:33:10PM -0700, Tim Harvey wrote:
-
-> I have a TI TLV320AIC3105 codec on a board connected to a TS3A227E
-> headset detect chip (which handles switching pins for OMTP vs std
-> jacks as well as jack detect and headset buttons). The AIC3105 doesn't
-> use several of the inputs and outputs yet those inputs and outputs
-> still have mux widgets volume widgets that are not 'off'.
-
-> Is there a way to easily disable them so they a) are not muxed into
-> mixers, b) have their gains set to 0, and c) are pruned from the list
-> of widgets so users don't have to muddle through them in mixers?
-
-No, you need to write that code if you want it - we do mark not
-connected things with the intention that someone could implement this
-but nobody did yet.
-
-> I am also fighting both a pop/click issue and am wondering if there is
-> any easy way to disable the DAPM power up/down sequence upon playback
-> start/complete (my application is not power sensitive). I'm still
-> trying to understand the source of the pop/click.
-
-You can ramp the power down time up but no, there's no way to disable it
-completely in the kernel - this is normally done in the sound server and
-tends to work better that way as starting and stopping the digital audio
-stream tends to be glitchy.
-
-> Additionally the TS3A227E requires MIC bias to be kept enabled in
-> order to detect headset button presses. I see that setting
-> idle_bias_off to false will keep the MIC bias enabled but I don't see
-> a way to specify that via device-tree.
-
-Your machine driver should force enable any widgets it needs.
-idle_bias_off should have no effect on microphone biases, if it does
-that sounds like a bug.
-
---2Z2K0IlrPCVsbNpk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJYBgFLAAoJECTWi3JdVIfQrnoH/0fgDA6tglbkaHuLKShhDG7z
-AuGG93c97kxN5MZj9UMPai4klq4X8MoroUfzg635kby5Az2gl5A267tp6xeLXV3D
-mERIIScUELgaHptZPAv8K5SXxcl2WsD9AGMuW+SPHaoRMVuOD7QrYL6uBeX5ZjdV
-HdfAQWOmSBEdKhaaeqslu5xACer4gwgJEjXO309BTSK08PEcZO9yzaLn0pJnsqSj
-XTd8aIgKW2AHJU+ezTlPViVazt0BmgEVDUc6RPYOz/vlngUC4tLEuizz72wKsrAk
-mWD1HA28w7LZ5U99N7eFZHyxxmuETCXVn6XxPCGQEmgHOvpTp/xU4kvUQVF+PfM=
-=FvU7
------END PGP SIGNATURE-----
-
---2Z2K0IlrPCVsbNpk--
-
---===============5877309752250280800==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5877309752250280800==--
+T24gMjAxNuW5tDEw5pyIMTjml6UgMDc6MDIsIENvbGluIEtpbmcgd3JvdGU6Cj4gRnJvbTogQ29s
+aW4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4KPiAKPiBTbWF0Y2ggcmVwb3J0
+cyBiZWxvdyB3YXJuaW5nczoKPiAKPiAgICAgYnh0X2RhNzIxOV9tYXg5ODM1N2EuYzozNTI6OTog
+d2FybmluZzogb2Jzb2xldGUgYXJyYXkgaW5pdGlhbGl6ZXIsCj4gICAgIHVzZSBDOTkgc3ludGF4
+Cj4gCj4gQW4gZWFybGllciBjb21taXQgY2xlYW5lZCB1cCBzaW1pbGFyIHdhcm5pbmdzLCBob3dl
+dmVyLCBhIHJlY2VudAo+IGNvbW1pdCA0M2MwMmVkZTc2YTYwZGUgKCJBU29DOiBJbnRlbDogQWRk
+IERNSUMgY2hhbm5lbCBjb25zdHJhaW50IGZvcgo+IGJ4dCBtYWNoaW5lIikgcmUtaW50cm9kdWNl
+ZCB0aGUgb2xkZXIgaW5pdGlhbGl6ZXIgc3R5bGUuIFNvIGZpeAo+IHRoaXMgd2FybmluZyB0byBt
+YWtlIHRoZSBjb2RlIGNvbnNpc3RlbnQuCj4gCj4gU2lnbmVkLW9mZi1ieTogQ29saW4gSWFuIEtp
+bmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4KPiAtLS0KPiAgc291bmQvc29jL2ludGVsL2Jv
+YXJkcy9ieHRfZGE3MjE5X21heDk4MzU3YS5jIHwgMiArLQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBp
+bnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKClJldmlld2VkLWJ5OiBUYWthc2hpIFNha2Ftb3Rv
+IDxvLXRha2FzaGlAc2FrYW1vY2NoaS5qcD4KCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRl
+bC9ib2FyZHMvYnh0X2RhNzIxOV9tYXg5ODM1N2EuYyBiL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMv
+Ynh0X2RhNzIxOV9tYXg5ODM1N2EuYwo+IGluZGV4IDg2NWEyMWUuLmJmZjgwYjQgMTAwNjQ0Cj4g
+LS0tIGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9ieHRfZGE3MjE5X21heDk4MzU3YS5jCj4gKysr
+IGIvc291bmQvc29jL2ludGVsL2JvYXJkcy9ieHRfZGE3MjE5X21heDk4MzU3YS5jCj4gQEAgLTM0
+OCw3ICszNDgsNyBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgYnJveHRvbl9kYWlz
+W10gPSB7Cj4gIAkJLmR5bmFtaWMgPSAxLAo+ICAJCS5vcHMgPSAmYnJveHRvbl9yZWZjYXBfb3Bz
+LAo+ICAJfSwKPiAtCVtCWFRfRFBDTV9BVURJT19ETUlDX0NQXQo+ICsJW0JYVF9EUENNX0FVRElP
+X0RNSUNfQ1BdID0KPiAgCXsKPiAgCQkubmFtZSA9ICJCeHQgQXVkaW8gRE1JQyBjYXAiLAo+ICAJ
+CS5zdHJlYW1fbmFtZSA9ICJkbWljY2FwIiwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
