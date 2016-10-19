@@ -1,20 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [SAMPLE-PATCH 0/x] ASoC: replace snd_soc_read/write
-Date: Wed, 19 Oct 2016 10:39:56 +0200
-Message-ID: <4bc24e6a-af85-863f-9051-00ab4a45df19@metafoo.de>
-References: <87oa2g3nhl.wl%kuninori.morimoto.gx@renesas.com>
- <s5hh988g5ie.wl-tiwai@suse.de>
- <87d1iw3i9d.wl%kuninori.morimoto.gx@renesas.com>
- <2e008145-062d-948e-0839-0aef9acf11db@metafoo.de>
- <87bmyg3gk0.wl%kuninori.morimoto.gx@renesas.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoc: wm8580: Add the wm8581 codec to the
+	driver
+Date: Wed, 19 Oct 2016 10:22:27 +0100
+Message-ID: <20161019092227.GJ3207@localhost.localdomain>
+References: <1476815075-12976-1-git-send-email-flatmax@flatmax.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 33BFF2666D3
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2016 10:40:02 +0200 (CEST)
-In-Reply-To: <87bmyg3gk0.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7530D2666D3
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2016 11:22:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1476815075-12976-1-git-send-email-flatmax@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,55 +23,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 10/19/2016 10:19 AM, Kuninori Morimoto wrote:
+On Wed, Oct 19, 2016 at 05:24:35AM +1100, Matt Flax wrote:
+> This patch adds support for the wm8581 codec to the wm8580 driver.
+> The wm8581 codec hardware adds a fourth DAC and otherwise is
+> compatible with the wm8580 codec.
 > 
-> Hi Lars
+> of_device_id data is used to allow the driver to select the
+> suitable DAC count specified in the device tree codec selection.
+> The wm8580_driver_data struct is used to store the number of DACs.
 > 
->> The problematic bits are in the ASoC core where we have code that needs to
->> know whether a component is a CODEC or not. These are the issue we need to
->> resolve before we can think about converting more driver snd_soc_codec to
->> snd_soc_component.
+> The snd_soc_dai_driver no longer lists the channels_max for the
+> playback substream. This variable is set during the i2c probe
+> from the of_device_id supplied wm8580_driver_data struct.
 > 
-> Yeah, I agree about this, but
+> With knowledge of the number of DACs in use, the DAC4 controls,
+> widgets and routes are added as required for DAC4.
 > 
->> I agree with Takashi, in my opinion this is not the right change at this
->> point in time. snd_soc_{write,read}() are not problematic they are simple
->> wrapper functions around snd_soc_component_{write,read}() that make it more
->> convenient to use them in a CODEC driver. Same for the CODEC specific
->> probe()/remove() callbacks.
->>
->> And while we are phasing out the concept of differentiating between
->> different types of components, since the hardware landscape has changed so
->> that there is no longer a really meaningful differentiating factor,
->> snd_soc_codec and snd_soc_codec drivers will still be around for a while.
-> (snip)
->> Doing these partial conversions only leaves us with a lot of drivers that
->> are more convoluted than they need to be. In my opinion a driver should be
->> converted in one go, making it a complete component driver. But not leave it
->> partially component and partially CODEC. We've done this for the drivers
->> where it is possible, e.g. see [1].
+> The device tree documentation for the wm8580 is altered to list
+> the wm8581 codec support, as is the Kconfig file.
 > 
-> Your "converted in one go" includes many conversion in 1 patch, right ?
-> But it will be difficult to review, and is big risk.
-> 
-> I talked this topic with Mark in Berlin, and if my understand was correct,
-> he agreed about step-by-step approach, because current driver is very complex.
-> many conversion in 1 patch x 100 driver is very big risk IMO.
+> Signed-off-by: Matt Flax <flatmax@flatmax.org>
+> ---
 
-It does not have to be in one patch, but it should be in one series. A patch
-series should result in a overall improvement of the code. Just changing
-snd_soc_read() to snd_soc_component_read() does not improve the code, it
-makes it slightly worse since as you can see from the diffstat of your
-patches it requires more boilerplate code.
+When doing a respin of a patch its usually considered good
+practice to do something like [PATCH v2] in the subject line,
+lets people clearly see that its a new version not a resend.
 
-So such a change needs to be paired with other changes so that the overall
-result of the patch series is a improvement.
+>  Documentation/devicetree/bindings/sound/wm8580.txt |  4 +-
+>  sound/soc/codecs/Kconfig                           |  2 +-
+>  sound/soc/codecs/wm8580.c                          | 98 ++++++++++++++++++++--
+>  3 files changed, 92 insertions(+), 12 deletions(-)
+<snip>
+> @@ -65,6 +68,8 @@
+>  #define WM8580_DIGITAL_ATTENUATION_DACR2     0x17
+>  #define WM8580_DIGITAL_ATTENUATION_DACL3     0x18
+>  #define WM8580_DIGITAL_ATTENUATION_DACR3     0x19
+> +#define WM8580_DIGITAL_ATTENUATION_DACL4     0x1A
+> +#define WM8580_DIGITAL_ATTENUATION_DACR4     0x1B
 
-You said in your earlier mail "and 3rd, 4th... I don't know how many steps
-are exist.". We need to figure those steps out before we start converting a
-driver, otherwise we'll be left with lots of frankenstein drivers that are
-part snd_soc_component, part snd_soc_codec.
+Apologies my fault for still not being clear these two new
+defines would still be best called WM8581...
+
+<snip>
+> +static int wm8580_playback_startup(struct snd_pcm_substream *substream,
+> +			   struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	struct wm8580_priv *wm8580 = snd_soc_codec_get_drvdata(codec);
+> +
+> +	return snd_pcm_hw_constraint_single(substream->runtime,
+> +		SNDRV_PCM_HW_PARAM_CHANNELS, wm8580->drvdata->num_dacs * 2);
+
+Won't this limit us to exactly num_dacs * 2 channels? I would
+have expected a contraint_minmax, I haven't checked the core
+code but would be good to know you have tested smaller numbers
+of channels and they are working. Bearing in mind that some
+user-space applications will do things like pad out to the number
+of channels the hardware claims to require. For example for aplay
+I believe -v will show you if it does any conversion and
+--disable-channels will stop it attempting to convert the number
+of channels.
+
+Apart from those very small comments this all looks fine to me.
+
+Thanks,
+Charles
