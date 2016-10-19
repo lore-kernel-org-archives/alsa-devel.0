@@ -1,44 +1,49 @@
 From: Javier Martinez Canillas <javier@osg.samsung.com>
-Subject: [RFC PATCH 0/2] ASoC: Prevent the snow ASoC driver to spam due probe deferrals
-Date: Wed, 19 Oct 2016 14:21:04 -0300
-Message-ID: <1476897666-13974-1-git-send-email-javier@osg.samsung.com>
+Subject: [RFC PATCH 2/2] ASoC: samsung: Print a one-time message if the snow driver's probe defers
+Date: Wed, 19 Oct 2016 14:21:06 -0300
+Message-ID: <1476897666-13974-3-git-send-email-javier@osg.samsung.com>
+References: <1476897666-13974-1-git-send-email-javier@osg.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1476897666-13974-1-git-send-email-javier@osg.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Javier Martinez Canillas <javier@osg.samsung.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Javier Martinez Canillas <javier@osg.samsung.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark,
+If the snd_soc_register_card() fails due a missing resource and the probe
+has to be deferred, the driver prints an error message.
 
-Since v4.8 the Samsung snow ASoC driver needs more probe deferrals to
-wait for all the resources to be available before its probe succeeds.
+But since many probe retries can happen before a resource is available,
+the printed messages can spam the kernel log buffer and slow the boot.
 
-But this makes the error messages printed in the deferral path to do a
-lot of spam in the kernel log. Slowing the boot process and even making
-some boot testing to fail due timeouts [0].
+The information is useful to know that a dependency was not meet and a
+defer happened, but isn't necessary to print it on each probe deferral.
 
-This is an RFC series to prevent this to happen by limiting to one-time
-messages in the case of deferrals. I know you mentioned in the past that
-the correct fix for this is to have a proper dependency handling and be
-able to probe in the correct order. But I'm sending as RFC in case you
-think this can be a workaround to avoid the log spamming, until we have
-support for that.
+Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
 
-[0]: http://arm-soc.lixom.net/bootlogs/mainline/v4.8-14644-ge9f8f48/pi-arm-exynos_defconfig.html
+---
 
-Best regards,
-Javier
+ sound/soc/samsung/snow.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-
-Javier Martinez Canillas (2):
-  ASoC: core: Print one-time messages if missing resources when binding
-    DAIs
-  ASoC: samsung: Print a one-time message if the snow driver's probe
-    defers
-
- sound/soc/samsung/snow.c |  8 +++++++-
- sound/soc/soc-core.c     | 13 +++++++------
- 2 files changed, 14 insertions(+), 7 deletions(-)
-
+diff --git a/sound/soc/samsung/snow.c b/sound/soc/samsung/snow.c
+index d8ac907bbb0d..068bfb78a668 100644
+--- a/sound/soc/samsung/snow.c
++++ b/sound/soc/samsung/snow.c
+@@ -103,7 +103,13 @@ static int snow_probe(struct platform_device *pdev)
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
++		if (ret == -EPROBE_DEFER)
++			dev_err_once(&pdev->dev,
++				     "snd_soc_register_card deferred (%d)\n",
++				     ret);
++		else
++			dev_err(&pdev->dev,
++				"snd_soc_register_card failed (%d)\n", ret);
+ 		return ret;
+ 	}
+ 
 -- 
 2.7.4
