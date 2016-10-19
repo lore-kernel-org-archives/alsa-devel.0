@@ -1,91 +1,131 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH v2 3/3] dt/bindings: Add milivolt, milliamps,
- and nanohenry units
-Date: Wed, 19 Oct 2016 08:15:49 -0500
-Message-ID: <1e00c694-4001-4beb-8564-a40fbafca297@EX4.ad.cirrus.com>
-References: <CAL_JsqKdV7133oo5jECZn2SwVjMM3E_ZNr+JS=9Wtkx8BZVuEQ@mail.gmail.com>
- <6ca3d940-4822-42d5-8606-cfc4c815c7ad@EX4.ad.cirrus.com>
- <20161018132847.hwaij5j5ohyvwoed@rob-hp-laptop>
+From: Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
+Subject: Re: [PATCH v2 34/37] docs: fix locations of several
+ documents that got moved
+Date: Wed, 19 Oct 2016 11:59:18 -0200
+Message-ID: <20161019115918.1162d16e@vento.lan>
+References: <cover.1476801354.git.mchehab@s-opensource.com>
+	<28c1f5d3867174a7017e3f3d9e9e4ebb096ceed8.1476801354.git.mchehab@s-opensource.com>
+	<20161019103442.GD1461@amd>
+Reply-To: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1605296000-1476882949=:3197"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 323592667EA
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2016 15:15:51 +0200 (CEST)
-In-Reply-To: <20161018132847.hwaij5j5ohyvwoed@rob-hp-laptop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Austin,
- Brian" <Brian.Austin@cirrus.com>, Linux-ALSA <alsa-devel@alsa-project.org>, "Handrigan, Paul" <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <rtc-linux+bncBAABBWXYTXAAKGQESCP26LQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20161019103442.GD1461@amd>
+List-Post: <https://groups.google.com/group/rtc-linux/post>, <mailto:rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:rtc-linux+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/rtc-linux
+List-Subscribe: <https://groups.google.com/group/rtc-linux/subscribe>, <mailto:rtc-linux+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+712029733259+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/rtc-linux/subscribe>
+To: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>
+Cc: Linux Doc Mailing List <linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mauro Carvalho Chehab <mchehab-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>, Jonathan Corbet <corbet-T1hC0tSOHrs@public.gmane.org>, "Rafael
+ J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>, Len Brown <lenb-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jens Axboe <axboe-tSWWG44O7X1aa/9Udqfwiw@public.gmane.org>, Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jean Delvare <jdelvare-IBi9RG/b67k@public.gmane.org>, Guenter Roeck <linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org>, Karsten Keil <isdn-iHCpqvpFUx0uJkBD2foKsQ@public.gmane.org>, Mauro Carvalho Chehab <mchehab-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steffen Klassert <klassert-H0bhvm5RIPI+B2oLq8eQJv4efur1V5z/s0AfqQuZ5sE@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Johannes Berg <johannes-cdvu00un1VgdHxzADdlk8Q@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Paolo Bonzini <pbonzini-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Radim =?UTF-8?B?S3LEjW3DocWZ?= <rkrcmar-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Wim Van Sebroeck <wim@iguana.>
 List-Id: alsa-devel@alsa-project.org
 
---8323329-1605296000-1476882949=:3197
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+Em Wed, 19 Oct 2016 12:34:42 +0200
+Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org> escreveu:
 
-On Tue, 18 Oct 2016, Rob Herring wrote:
-
-> On Tue, Oct 18, 2016 at 12:43:48AM +0000, Handrigan, Paul wrote:
-> > 
-> > 
-> > 
-> > >>  Electricity
-> > >>  ----------------------------------------
-> > >>  -microamp      : micro amps
-> > >> +-milliamp      : milli amps
-> > >
-> > >Please explain why you need need this. Is 2^32 uA not enough range for
-> > >you? While we do have multiple units for some, that's because people
-> > >picked arbitrary units for their properties before this doc existed.
-> > >Ideally, we only have 1 unit to prevent that problem.
-> > 
-> > 2^32 would be enough, however, microamps would not be a good
-> > representation for
-> > this particular entry. For example, if the current limit is 2.1A the
-> > entry will have to be 2100000.  Micro amps will not be the best
-> > representation for this value from a scientific notation perspective.
-> > Since the scale is in miiliamps as it is defined in the data sheet of
-> > this device, it will be best to stay consistent since an error in
-> > conversion
-> > could cause serious problems.
-> > 
-> > Also, I really don¹t see why adding milliamps and millivolts as being a
-> > major
-> > problems since both of them are commonly used.
+> Hi!
 > 
-> As I explained, we want to have some uniformity in properties especially 
-> across different bindings. That's not something I want to check in every
-> review. Telling people to add units is enough.
 > 
-> I don't see how adding '000' is a problem.
+> > --- a/Documentation/ABI/testing/sysfs-kernel-slab
+> > +++ b/Documentation/ABI/testing/sysfs-kernel-slab
+> > @@ -347,7 +347,7 @@ Description:
+> >  		because of fragmentation, SLUB will retry with the minimum order
+> >  		possible depending on its characteristics.
+> >  		When debug_guardpage_minorder=N (N > 0) parameter is specified
+> > -		(see Documentation/kernel-parameters.txt), the minimum possible
+> > +		(see Documentation/admin-guide/kernel-parameters.rst), the minimum possible
+> >  		order is used and this sysfs entry can not be used to change
+> >  		the order at run time.  
 > 
-> Rob
-> 
-Why is it such a big deal to not have a representation for all the common 
-units of measurement? They are already defined so why not add them to your 
-suffix file? I would think that if you are going to make us use this 
-suffix devicetree thing, you would not restrict us to use only the units 
-you think are appropriate.
+> Dunno, but kernel-parameters.txt was already quite long... for a file
+> that is referenced quite often. Adding admin-guide/ into the path does
+> not really help.
 
-I wouldn't think you would restrict us to saying it is a 5700ml Hemi V8 
-would you?
+The big string name starts with Documentation/ :) There are some discussions 
+about changing it to doc/ (or docs/). Also, as you said, kernel-parameters
+is already a big name. Perhaps we could use, instead, "kernel-parms".
 
+If we rename kernel-parameters.rst to kernel-parms.rst, plus the doc/ rename,
+then the string size will actually reduce:
 
-Brian
---8323329-1605296000-1476882949=:3197
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-		(see Documentation/kernel-parameters.txt), the minimum possible
++		(see doc/admin-guide/kernel-parms.rst), the minimum possible
 
+> Maybe admin-guide should go directly into Documentation/ , as that's
+> what our users are interested in?
 
---8323329-1605296000-1476882949=:3197--
+There are several problems if we keep them at Documentation/ dir:
+
+- We'll end by mixing documents already converted to ReST with documents
+  not converted yet;
+
+- A rename is needed anyway, as Sphinx only accepts ReST files that end
+  with the extension(s) defined at Documentation/conf.py (currently,
+  .rst);
+
+- A partial documentation build is made by sub-directory. If we put
+  files under /Documentation, there's no way to build just one
+  book.
+
+> Plus, I'm not sure how many developers will figure out that process/
+> is what describes kernel patch submission process. We have processes
+> in the kernel, after all...
+
+Do you have a better idea?
+
+> Could we leave symlinks in place? 
+
+My initial patch did that. It created symlinks on the
+Documentation/user (with was the previous name for the admin's guide).
+
+The big issue is how to identify what files at Documentation/ that
+were not converted yet.
+
+On this patch series, we opted to move the file and keep just a
+reference to the most relevant ones, pointing to the new location:
+	https://git.linuxtv.org/mchehab/experimental.git/commit/?h=lkml-books-v2&id=217462c76ee1c12b45750723059a3461018b6975
+	https://git.linuxtv.org/mchehab/experimental.git/commit/?h=lkml-books-v2&id=d15595a318356804ed1bc42f509e72de9d031513
+
+We could do something similar to Documentation/kernel-parameters.txt.
+Yet, the best is, IMHO, to keep this on the absolute minimum of files,
+as it also makes harder to identify what txt files still require conversion.
+
+> People say "please follow
+> CodingStyle" when reviewing patches. Saying "please follow
+> process/conding-style.rst" ... somehow I don't think that's going to
+> happen.
+
+As we have a Documentation/CodingStyle (pointing to the new location),
+this should still work. 
+
+That's said, using my maintainer's hat, when I review patches from a newbie,
+I actually prefer to point them to some location with the current
+practices, as they usually don't know much about the Kernel's way to
+receive patch. So, I reply with something like:
+
+	"Please read this:
+		https://mchehab.fedorapeople.org/kernel_docs/process/index.html
+	 with instructions about how to submit your work"
+
+For an old contributor, I just say: "please follow the coding style" 
+or I reply with the output of checkpatch.pl.
+
+Maybe it is just me, but I very much prefer to point to some URL with
+everything packed altogether than to do several reviews until someone
+RTFM (Read The Fine Manual), and starts to submit it right.
+
+Thanks,
+Mauro
+
+-- 
+You received this message because you are subscribed to "rtc-linux".
+Membership options at http://groups.google.com/group/rtc-linux .
+Please read http://groups.google.com/group/rtc-linux/web/checklist
+before submitting a driver.
+--- 
+You received this message because you are subscribed to the Google Groups "rtc-linux" group.
+To unsubscribe from this group and stop receiving emails from it, send an email to rtc-linux+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
