@@ -1,57 +1,46 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v2 0/3] topology: Support widgets' stream name
-	and file inclusion for text conf file
-Date: Thu, 20 Oct 2016 13:46:05 +0800
-Message-ID: <cover.1476941614.git.mengdong.lin@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id EE6B72666CF
- for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2016 07:45:03 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - Fix headset mic detection problem for two Dell laptops
+Date: Thu, 20 Oct 2016 14:03:33 +0800
+Message-ID: <1476943413-7155-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+They uses the codec ALC255, and have the different pin cfg definition
+from the ones in the existing pin quirk table. Now adding them into
+the table to fix the problem.
 
-This series doesn't require or cause any ABI updates. It doesn't need the
-kernel patches that trying to udpate ABI from v4 or v5.
+Cc: stable@vger.kernel.org
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Patch 1 fixes a missing topology feature for text conf file to configure
-	stream name of a widget.
-
-Patch 2 allows alsaconf to search included files under global
-        configuration directories. This will benefit topology and UCM.
-
-Patch 3 adds document about how to include files for topology
-	configuration. There is no c code change but actually it depends
-	on patch 2.
-
-History:
-v2: 	No longer use topology-specific code to support searching included
-	files, but extend alsaconf to support this and user can just use
-	alsaconf syntax <xxx> and <confdir:xxx>. 
-
-Mengdong Lin (3):
-  topology: Fix missing stream name of widgets in text conf file
-  alsaconf: Search included files under global configuration directories
-  topology: Add doc for including other files in the text conf file
-
- include/topology.h  |  31 ++++++++++++
- src/conf.c          | 141 +++++++++++++++++++++++++++++++++++++++++++++++++++-
- src/topology/dapm.c |  10 ++++
- 3 files changed, 180 insertions(+), 2 deletions(-)
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8483fc2..b582d57 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5857,11 +5857,19 @@ enum {
+ 		{0x1b, 0x02011020},
+ 		{0x21, 0x0221101f}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		{0x14, 0x90170110},
++		{0x1b, 0x01011020},
++		{0x21, 0x0221101f}),
++	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		{0x14, 0x90170130},
+ 		{0x1b, 0x01014020},
+ 		{0x21, 0x0221103f}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		{0x14, 0x90170130},
++		{0x1b, 0x01011020},
++		{0x21, 0x0221103f}),
++	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		{0x14, 0x90170130},
+ 		{0x1b, 0x02011020},
+ 		{0x21, 0x0221103f}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
 -- 
-2.5.0
+1.9.1
