@@ -1,19 +1,14 @@
-From: Michael Forney <mforney@mforney.org>
-Subject: [PATCH] pcm_plug: Clear plugins on all error conditions
-Date: Wed, 19 Oct 2016 18:22:56 -0700
-Message-ID: <1476926576-16679-1-git-send-email-mforney@mforney.org>
-References: <s5hzim0ds8v.wl-tiwai@suse.de>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5660: enable MCLK detection
+Date: Thu, 20 Oct 2016 10:13:44 +0800
+Message-ID: <1476929624-6761-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
- [209.85.192.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C22F2665FC
- for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2016 03:24:13 +0200 (CEST)
-Received: by mail-pf0-f193.google.com with SMTP id s8so3873263pfj.2
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2016 18:24:13 -0700 (PDT)
-In-Reply-To: <s5hzim0ds8v.wl-tiwai@suse.de>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 128D92665FC
+ for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2016 04:14:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,34 +18,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Otherwise, they will linger after the error is returned (but pcm->setup == 0).
-Then, if the caller tries to clean up and call snd_pcm_close(), the assertion
-plug->gen.slave == plug->req_slave will fail.
+There is a power saving mechanism in rt5660. It will turn off some
+unused power when MCLK is not present. We call that "MCLK detection"
+and it should be enabled by default.
 
-Signed-off-by: Michael Forney <mforney@mforney.org>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- src/pcm/pcm_plug.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5660.c | 4 ++++
+ sound/soc/codecs/rt5660.h | 3 +++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c
-index 5639b9e..266707b 100644
---- a/src/pcm/pcm_plug.c
-+++ b/src/pcm/pcm_plug.c
-@@ -652,8 +652,10 @@ static int snd_pcm_plug_insert_plugins(snd_pcm_t *pcm,
- 	       (plug->ttable && !plug->ttable_ok)) {
- 		snd_pcm_t *new;
- 		int err;
--		if (k >= sizeof(funcs)/sizeof(*funcs))
-+		if (k >= sizeof(funcs)/sizeof(*funcs)) {
-+			snd_pcm_plug_clear(pcm);
- 			return -EINVAL;
-+		}
- 		err = funcs[k](pcm, &new, client, &p);
- 		if (err < 0) {
- 			snd_pcm_plug_clear(pcm);
+diff --git a/sound/soc/codecs/rt5660.c b/sound/soc/codecs/rt5660.c
+index 9f0933c..76cf76a 100644
+--- a/sound/soc/codecs/rt5660.c
++++ b/sound/soc/codecs/rt5660.c
+@@ -1311,6 +1311,10 @@ static int rt5660_i2c_probe(struct i2c_client *i2c,
+ 	if (ret != 0)
+ 		dev_warn(&i2c->dev, "Failed to apply regmap patch: %d\n", ret);
+ 
++	regmap_update_bits(rt5660->regmap, RT5660_GEN_CTRL1,
++		RT5660_AUTO_DIS_AMP | RT5660_MCLK_DET | RT5660_POW_CLKDET,
++		RT5660_AUTO_DIS_AMP | RT5660_MCLK_DET | RT5660_POW_CLKDET);
++
+ 	if (rt5660->pdata.dmic1_data_pin) {
+ 		regmap_update_bits(rt5660->regmap, RT5660_GPIO_CTRL1,
+ 			RT5660_GP1_PIN_MASK, RT5660_GP1_PIN_DMIC1_SCL);
+diff --git a/sound/soc/codecs/rt5660.h b/sound/soc/codecs/rt5660.h
+index 6cdb926..bba18fb6 100644
+--- a/sound/soc/codecs/rt5660.h
++++ b/sound/soc/codecs/rt5660.h
+@@ -810,6 +810,9 @@
+ /* General Control 1 (0xfa) */
+ #define RT5660_PWR_VREF_HP			(0x1 << 11)
+ #define RT5660_PWR_VREF_HP_SFT			11
++#define RT5660_AUTO_DIS_AMP			(0x1 << 6)
++#define RT5660_MCLK_DET				(0x1 << 5)
++#define RT5660_POW_CLKDET			(0x1 << 1)
+ #define RT5660_DIG_GATE_CTRL			(0x1)
+ #define RT5660_DIG_GATE_CTRL_SFT		0
+ 
 -- 
-2.10.1
+1.8.1.1.439.g50a6b54
