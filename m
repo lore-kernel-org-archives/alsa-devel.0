@@ -1,84 +1,62 @@
-From: Javier Martinez Canillas <javier@osg.samsung.com>
-Subject: Re: [alsa-devel] [RFC PATCH 2/2] ASoC: samsung: Print a one-time
- message if the snow driver's probe defers
-Date: Thu, 20 Oct 2016 08:37:29 -0300
-Message-ID: <1465966b-0c24-e23c-0f66-69cae77c50c9@osg.samsung.com>
-References: <1476897666-13974-1-git-send-email-javier@osg.samsung.com>
- <CGME20161019181043eucas1p2d52e28825ae57bbfd19c6d290c6ceb05@eucas1p2.samsung.com>
- <1476897666-13974-3-git-send-email-javier@osg.samsung.com>
- <29147d0b-ecf7-726a-b12b-f93d548f0c99@samsung.com>
- <06ba6563-2792-cb08-694e-4582618ae7fb@osg.samsung.com>
- <7a730a84-ce97-2148-87d9-64211a1aaa6b@samsung.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Audio miniconference at LPC/KS confirmed-
+Date: Thu, 20 Oct 2016 22:30:16 +0900
+Message-ID: <4788d7ff-0fd7-9d62-be74-72c5a143c999@sakamocchi.jp>
+References: <20160701155438.GU6247@sirena.org.uk>
+ <20160825153940.GF6635@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <7a730a84-ce97-2148-87d9-64211a1aaa6b@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy005.phy.lolipop.jp (smtp-proxy005.phy.lolipop.jp
+ [157.7.104.40]) by alsa0.perex.cz (Postfix) with ESMTP id 3D28526640F
+ for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2016 15:30:21 +0200 (CEST)
+In-Reply-To: <20160825153940.GF6635@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girgwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Sylwester,
+Hi Mark,
 
-On 10/20/2016 08:27 AM, Sylwester Nawrocki wrote:
-> On 10/20/2016 12:41 PM, Javier Martinez Canillas wrote:
->> I see no relevant changes in exynos_defconfig between v4.7..v4.8 and
->> also no changes in drivers/Makefile that could cause things to be
->> initialized on a different order.
+On Aug 26 2016 00:39, Mark Brown wrote:
+> As in previous years we're organizing an audio miniconference so we can
+> get together and talk through issues, especially design decisons, face
+> to face.  This year we're holding it as part of the workshops day shared
+> between Kernel Summit and Linux Plumbers Conference 1st to 4th November
+> (the workshops will be on the 2nd).  This has now been confirmed and I
+> hope to see many of you there!
 > 
-> I remember this
+> To attend you will NEED to have either a Kernel Summit invite (these
+> are going out now) or a Linux Plumbers Conference ticket.  The number of
+> attendees at Plumbers is limited so I'd strongly encoruage you to sign
+> up early.  The next batch of tickets go on sale on Saturday, the
+> registration site is here:
 > 
-> commit 6eb1c9496b81680f2cd2e0eda06c531317e2e28d
-> clk: probe common clock drivers earlier
+>     https://www.regonline.com/register/login.aspx?eventID=1759990
 > 
-> going in recently, but it's rather dubious it could cause such trouble.
->
+> (or go to the main http://linuxplumbersconf.org site for full details).
+> If you have trouble please let me know.
+> 
+> There is a wiki page with an initial list of proposed topics here:
+> 
+>     http://wiki.linuxplumbersconf.org/2016:workshops
+> 
+> If there's other topics you'd like to see covered please follow up here
+> and add to the wiki.
 
-Yes, I'm aware of this change (and in fact it broke MMC in the Peach Pi
-Chromebook) but that commit landed in v4.9-rc1, not v4.8.
- 
-> Anyway, I'd try to add some debug prints to samsung_i2s_probe() to see
-> what's the issue with the CPU DAI registration.
->
+Are there any spaces for me to join in the audio workshop at 1st day of
+the conference? (I already have my ticket for the conference itself.)
 
-Sure, I'm busy with other stuff now but I'll dig again this next week.
- 
->> But I thought the patches had merits on its own since probe deferral
->> can make a driver probe many times and the error logs were noisy. I
->> wasn't sure though and that's why are marked as RFC.
-> 
-> In general I wouldn't be disabling those err logs unless proper
-> EPROBE_DEFER handling is added on related error paths and we can
-> differentiate between probe deferral and real unrecoverable errors
-> and can disable logging only for EPROBE_DEFER cases.
->
 
-Yes, the sound core change (patch 1/2) is only for the EPROBE_DEFER path.
- 
->>> As far as the error log is concerned, I would just not print anything
->>> in snow_probe() when register_card() returns EPROBE_DEFER.
->>>
->>
->> I believe it may be useful to know that a driver's probe is deferring 
->> due a missing dependency but have no strong opinion and can remove the
->> message.
-> 
-> I'd rather rely on core code to inform about missing resources when
-> registering components.  Otherwise booting unnecessarily takes more
-> time when there is more probe deferring logs printed on the console.
->
+Regards
 
-Fair enough.
- 
-> 
-> --
-> Thanks,
-> Sylwester
-> 
-
-Best regards,
--- 
-Javier Martinez Canillas
-Open Source Group
-Samsung Research America
+Takashi Sakamoto
