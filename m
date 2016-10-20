@@ -1,69 +1,32 @@
-From: Benjamin Valentin <benpicco@googlemail.com>
-Subject: Re: No surround sound with ALC892 on B150M Pro4/D3 -
- fixed with hdajackretask
-Date: Thu, 20 Oct 2016 23:47:47 +0200
-Message-ID: <20161020234747.5d1da301@nashorn>
-References: <20161018005049.79d55d0b@nashorn>
-	<s5hpomv1fyv.wl-tiwai@suse.de>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [RESEND PATCH v4] clk: x86: Add Atom PMC platform clocks
+Date: Thu, 20 Oct 2016 23:52:38 +0200 (CEST)
+Message-ID: <alpine.DEB.2.20.1610202349200.4938@nanos>
+References: <1476735320-4315-1-git-send-email-irina.tirdea@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
- [209.85.215.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 293DB261B03
- for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2016 23:47:50 +0200 (CEST)
-Received: by mail-lf0-f66.google.com with SMTP id x79so2295326lff.2
- for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2016 14:47:50 -0700 (PDT)
-In-Reply-To: <s5hpomv1fyv.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=US-ASCII
+Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <1476735320-4315-1-git-send-email-irina.tirdea@intel.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: Irina Tirdea <irina.tirdea@intel.com>
+Cc: linux-clk@vger.kernel.org, x86@kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Ingo Molnar <mingo@redhat.com>, Michael Turquette <mturquette@baylibre.com>, "H. Peter Anvin" <hpa@zytor.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, LKML <linux-kernel@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Darren Hart <dvhart@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Oct 2016 12:18:16 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+On Mon, 17 Oct 2016, Irina Tirdea wrote:
+> The patch has already been reviewed by Stephen Boyd [1].
+> The only remaining question is the one pointed out by Stephen:
+> "Will there be problems if this merges through clk tree? If so we
+> could take the clk driver part and the platform data include part
+> could be duplicated into both trees. Or clk tree could be pulled
+> into x86?" [1]
 
-> Does the patch below work for you?
+The proper thing to do is:
 
-Thank you, that works - there is only one typo ;)
+Move all that cruft including arch/x86/platform/atom/pmc_atom.c into
+drivers/platform/x86. There is nothing architecture specific in these
+files. It's pure peripheral driver enablement. So drivers/platform/x86 is
+the proper location for this. Please discuss this with Darren Hart (cc'ed).
 
-> ---
->  sound/pci/hda/patch_realtek.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c
-> b/sound/pci/hda/patch_realtek.c index b582d57fe184..284315555229
-> 100644 --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
->  static const struct hda_fixup alc662_fixups[] = {
-> @@ -6901,6 +6902,16 @@ static const struct hda_fixup alc662_fixups[]
-> = { { }
->  		}
->  	},
-> +	[ALC892_FIXUP_ASROCK_MOBO] = {
-> +		.type = HDA_FIXUP_PINS,
-> +		.v.pins = (const struct hda_pintbl[]) {
-> +			{ 0x15, 0x40f000f0 }, /* disabled */
-> +			{ 0x16, 0x40f000f0 }, /* disabled */
-> +			{ 0x18, 0x01014011 }, /* LO */
-> +			{ 0x18, 0x01014012 }, /* LO */
-			^^^^^^
-should be
-  +			{ 0x15, 0x40f000f0 }, /* disabled */
-  +			{ 0x16, 0x40f000f0 }, /* disabled */
-  +			{ 0x18, 0x01014011 }, /* LO */
-  +			{ 0x1a, 0x01014012 }, /* LO */
+Thanks,
 
-otherwise there will be no center/lfe channel.
-
-Thanks!
-Benjamin
+	tglx
