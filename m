@@ -1,134 +1,145 @@
 From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: [PATCH v5 4/7] ASoC: sunxi: Add sun8i I2S driver
-Date: Fri, 21 Oct 2016 10:36:19 +0200
-Message-ID: <bee315efb909c1ee8b5fe7d3aeb9a33d713cb562.1477142934.git.moinejf@free.fr>
+Subject: [PATCH v5 3/7] drm: sunxi: add DE2 HDMI support
+Date: Fri, 21 Oct 2016 10:08:06 +0200
+Message-ID: <36bd5454897c8ab77749e0294e4a4ecc2450dd12.1477142934.git.moinejf@free.fr>
 References: <cover.1477142934.git.moinejf@free.fr>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Reply-To: moinejf-GANU6spQydw@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-sunxi+bncBCV6DL6LYMNBB255V3AAKGQE3PZX5DI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <cover.1477142934.git.moinejf-GANU6spQydw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
 To: Dave Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds I2S support to sun8i SoCs as the A83T and H3.
+This patch adds a HDMI driver to the DE2 based Allwinner's SoCs
+as A83T and H3.
+Audio and video are supported.
 
 Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
 ---
-Note: This driver is closed to the sun4i-i2s except that:
-- it handles the H3
-- it creates the sound card (with sun4i-i2s, the sound card is created
-  by the CODECs)
----
- .../devicetree/bindings/sound/sun4i-i2s.txt        |  38 +-
- sound/soc/sunxi/Kconfig                            |   8 +
- sound/soc/sunxi/Makefile                           |   3 +
- sound/soc/sunxi/sun8i-i2s.c                        | 700 +++++++++++++++++++++
- 4 files changed, 744 insertions(+), 5 deletions(-)
- create mode 100644 sound/soc/sunxi/sun8i-i2s.c
+ .../devicetree/bindings/display/sunxi/hdmi.txt     |  52 ++
+ drivers/gpu/drm/sunxi/Kconfig                      |   8 +
+ drivers/gpu/drm/sunxi/Makefile                     |   2 +
+ drivers/gpu/drm/sunxi/de2_hdmi.c                   | 396 +++++++++
+ drivers/gpu/drm/sunxi/de2_hdmi.h                   |  40 +
+ drivers/gpu/drm/sunxi/de2_hdmi_io.c                | 927 +++++++++++++++++=
+++++
+ drivers/gpu/drm/sunxi/de2_hdmi_io.h                |  25 +
+ 7 files changed, 1450 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/sunxi/hdmi.tx=
+t
+ create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi.c
+ create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi.h
+ create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi_io.c
+ create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi_io.h
 
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-index 7b526ec..2fb0a7a 100644
---- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-@@ -1,4 +1,4 @@
--* Allwinner A10 I2S controller
-+* Allwinner A10/A38T/H3 I2S controller
- 
- The I2S bus (Inter-IC sound bus) is a serial link for digital
- audio data transfer between devices in the system.
-@@ -6,20 +6,30 @@ audio data transfer between devices in the system.
- Required properties:
- 
- - compatible: should be one of the followings
--   - "allwinner,sun4i-a10-i2s"
-+  - "allwinner,sun4i-a10-i2s"
-+	"allwinner,sun8i-a83t-i2s"
-+	"allwinner,sun8i-h3-i2s"
- - reg: physical base address of the controller and length of memory mapped
-   region.
--- interrupts: should contain the I2S interrupt.
- - dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
- 	Documentation/devicetree/bindings/dma/dma.txt
--- dma-names: should include "tx" and "rx".
-+- dma-names: must include "tx" and/or "rx".
- - clocks: a list of phandle + clock-specifer pairs, one for each entry in clock-names.
- - clock-names: should contain followings:
-    - "apb" : clock for the I2S bus interface
-    - "mod" : module clock for the I2S controller
- - #sound-dai-cells : Must be equal to 0
- 
--Example:
-+Optional properties:
+diff --git a/Documentation/devicetree/bindings/display/sunxi/hdmi.txt b/Doc=
+umentation/devicetree/bindings/display/sunxi/hdmi.txt
+new file mode 100644
+index 0000000..0558c07
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/sunxi/hdmi.txt
+@@ -0,0 +1,52 @@
++Allwinner HDMI Transmitter
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
 +
-+- interrupts: I2S interrupt
-+- resets: phandle to the reset of the device
++The Allwinner HDMI transmitters are included in the SoCs.
++They support audio and video.
++
++Required properties:
++ - #address-cells : should be <1>
++ - #size-cells : should be <0>
++ - compatible : should be
++		"allwinner,sun8i-a83t-hdmi" or
++		"allwinner,sun8i-h3-hdmi"
++ - clocks : phandles to the HDMI clocks as described in
++	Documentation/devicetree/bindings/clock/clock-bindings.txt
++ - clock-names : must be
++		"gate" : bus gate
++		"clock" : streaming clock
++		"ddc-clock" : DDC clock
++ - resets : One or two phandles to the HDMI resets
++ - reset-names : must be
++		"hdmi0" and "hdmi1"
 +
 +Required nodes:
++ - port: Audio and video input port nodes with endpoint definitions
++	as defined in Documentation/devicetree/bindings/graph.txt.
 +
-+ - port: link to the associated CODEC (DAC, HDMI...)
++Example:
 +
-+Example 1:
- 
- i2s0: i2s@01c22400 {
- 	#sound-dai-cells = <0>;
-@@ -32,3 +42,21 @@ i2s0: i2s@01c22400 {
- 	       <&dma SUN4I_DMA_NORMAL 3>;
- 	dma-names = "rx", "tx";
- };
-+
-+Example 2:
-+
-+i2s2: i2s@1c22800 {
-+	compatible = "allwinner,sun8i-a83t-i2s";
-+	reg = <0x01c22800 0x60>;
-+	clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
-+	clock-names = "apb", "mod";
-+	resets = <&ccu RST_I2S2>;
-+	dmas = <&dma 27>;
-+	dma-names = "tx";
-+	status = "disabled";
-+	port {
-+		i2s2_hdmi: endpoint {
-+			remote-endpoint = <&hdmi_i2s2>;
++	hdmi: hdmi@01ee0000 {
++		compatible =3D "allwinner,sun8i-a83t-hdmi";
++		reg =3D <0x01ee0000 0x20000>;
++		clocks =3D <&ccu CLK_BUS_HDMI>, <&ccu CLK_HDMI>,
++			 <&ccu CLK_HDMI_DDC>;
++		clock-names =3D "gate", "clock", "ddc-clock";
++		resets =3D <&ccu RST_HDMI0>, <&ccu RST_HDMI1>;
++		reset-names =3D "hdmi0", "hdmi1";
++		...
++		#address-cells =3D <1>;
++		#size-cells =3D <0>;
++		port@0 {			/* video */
++			reg =3D <0>;
++			hdmi_lcd1: endpoint {
++				remote-endpoint =3D <&lcd1_hdmi>;
++			};
++		};
++		port@1 {			/* audio */
++			reg =3D <1>;
++			hdmi_i2s2: endpoint {
++				remote-endpoint =3D <&i2s2_hdmi>;
++			};
 +		};
 +	};
-+};
-diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-index dd23682..d89b2da 100644
---- a/sound/soc/sunxi/Kconfig
-+++ b/sound/soc/sunxi/Kconfig
-@@ -26,4 +26,12 @@ config SND_SUN4I_SPDIF
- 	help
- 	  Say Y or M to add support for the S/PDIF audio block in the Allwinner
- 	  A10 and affiliated SoCs.
+diff --git a/drivers/gpu/drm/sunxi/Kconfig b/drivers/gpu/drm/sunxi/Kconfig
+index 56bde2e..4c82153 100644
+--- a/drivers/gpu/drm/sunxi/Kconfig
++++ b/drivers/gpu/drm/sunxi/Kconfig
+@@ -19,3 +19,11 @@ config DRM_SUNXI_DE2
+ 	  Choose this option if your Allwinner chipset has the DE2 interface
+ 	  as the A64, A83T and H3. If M is selected the module will be called
+ 	  sunxi-de2-drm.
 +
-+config SND_SUN8I_I2S
-+	tristate "Allwinner sun8i I2S Support"
-+	depends on OF
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
++config DRM_SUNXI_DE2_HDMI
++	tristate "Support for DE2 HDMI"
++	depends on DRM_SUNXI_DE2
++	select SND_SOC_SUNXI_HDMI if SND_SOC
 +	help
-+	  Say Y or M if you want to add support for SoC audio on
-+	  Allwinner sun8i boards.
- endmenu
-diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
-index 604c7b84..bcb871b 100644
---- a/sound/soc/sunxi/Makefile
-+++ b/sound/soc/sunxi/Makefile
-@@ -1,3 +1,6 @@
- obj-$(CONFIG_SND_SUN4I_CODEC) += sun4i-codec.o
- obj-$(CONFIG_SND_SUN4I_I2S) += sun4i-i2s.o
- obj-$(CONFIG_SND_SUN4I_SPDIF) += sun4i-spdif.o
-+
-+snd-soc-sun8i-i2s-objs := sun8i-i2s.o
-+obj-$(CONFIG_SND_SUN8I_I2S) += snd-soc-sun8i-i2s.o
-diff --git a/sound/soc/sunxi/sun8i-i2s.c b/sound/soc/sunxi/sun8i-i2s.c
++	  Choose this option if you use want HDMI on DE2.
++	  If M is selected the module will be called sunxi-de2-hdmi.
+diff --git a/drivers/gpu/drm/sunxi/Makefile b/drivers/gpu/drm/sunxi/Makefil=
+e
+index 62220cb..a268069 100644
+--- a/drivers/gpu/drm/sunxi/Makefile
++++ b/drivers/gpu/drm/sunxi/Makefile
+@@ -3,5 +3,7 @@
+ #
+=20
+ sunxi-de2-drm-objs :=3D de2_drv.o de2_de.o de2_crtc.o de2_plane.o
++sunxi-de2-hdmi-objs :=3D de2_hdmi.o de2_hdmi_io.o
+=20
+ obj-$(CONFIG_DRM_SUNXI_DE2) +=3D sunxi-de2-drm.o
++obj-$(CONFIG_DRM_SUNXI_DE2_HDMI) +=3D sunxi-de2-hdmi.o
+diff --git a/drivers/gpu/drm/sunxi/de2_hdmi.c b/drivers/gpu/drm/sunxi/de2_h=
+dmi.c
 new file mode 100644
-index 0000000..ba15d62
+index 0000000..a2324cc
 --- /dev/null
-+++ b/sound/soc/sunxi/sun8i-i2s.c
-@@ -0,0 +1,700 @@
++++ b/drivers/gpu/drm/sunxi/de2_hdmi.c
+@@ -0,0 +1,396 @@
 +/*
-+ * Allwinner sun8i I2S sound card
++ * Allwinner DRM driver - HDMI
 + *
 + * Copyright (C) 2016 Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
 + *
@@ -138,699 +149,1414 @@ index 0000000..ba15d62
 + * the License, or (at your option) any later version.
 + */
 +
-+#include <linux/init.h>
 +#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/delay.h>
++#include <linux/component.h>
 +#include <linux/clk.h>
-+#include <linux/reset.h>
-+#include <sound/pcm_params.h>
-+#include <sound/dmaengine_pcm.h>
++#include <linux/hdmi.h>
 +#include <linux/of_device.h>
 +#include <linux/of_graph.h>
 +
-+/* --- hardware --- */
++#include <drm/drmP.h>
++#include <drm/drm_atomic_helper.h>
++#include <drm/drm_crtc_helper.h>
++#include <drm/drm_edid.h>
++#include <drm/drm_of.h>
 +
-+#define I2S_CTL 	  	0x00
-+	/* common */
-+	#define I2S_CTL_SDO3EN		BIT(11)
-+	#define I2S_CTL_SDO2EN		BIT(10)
-+	#define I2S_CTL_SDO1EN		BIT(9)
-+	#define I2S_CTL_SDO0EN		BIT(8)
-+	#define I2S_CTL_TXEN		BIT(2)
-+	#define I2S_CTL_RXEN		BIT(1)
-+	#define I2S_CTL_GEN		BIT(0)
-+	/* a83t */
-+	#define I2S_CTL_A83T_MS		BIT(5)
-+	#define I2S_CTL_A83T_PCM	BIT(4)
-+	/* h3 */
-+	#define I2S_CTL_H3_BCLKOUT	BIT(18)
-+	#define I2S_CTL_H3_LRCKOUT	BIT(17)
-+	#define I2S_CTL_H3_MODE_MSK	(3 << 4)
-+		#define I2S_CTL_H3_MODE_I2S	(1 << 4)
++#include "de2_hdmi.h"
++#include "de2_hdmi_io.h"
 +
-+#define I2S_FAT0 		0x04
-+	/* common */
-+	/* a83t */
-+	#define I2S_FAT0_A83T_LRCP		BIT(7)
-+	#define I2S_FAT0_A83T_BCP		BIT(6)
-+	#define I2S_FAT0_A83T_SR_16BIT		(0 << 4)
-+	#define I2S_FAT0_A83T_SR_24BIT		(2 << 4)
-+	#define I2S_FAT0_A83T_SR_MSK		(3 << 4)
-+	#define I2S_FAT0_A83T_WSS_32BCLK	(3 << 2)
-+	#define I2S_FAT0_A83T_FMT_I2S1		(0 << 0)
-+	#define I2S_FAT0_A83T_FMT_LFT		(1 << 0)
-+	#define I2S_FAT0_A83T_FMT_RGT		(2 << 0)
-+	#define I2S_FAT0_A83T_FMT_MSK		(3 << 0)
-+	/* h3 */
-+	#define I2S_FAT0_H3_LRCKR_PERIOD(v) ((v) << 20)
-+	#define I2S_FAT0_H3_LRCKR_PERIOD_MSK (0x3ff << 20)
-+	#define I2S_FAT0_H3_LRCK_POLARITY	BIT(19)
-+	#define I2S_FAT0_H3_LRCK_PERIOD(v)	((v) << 8)
-+	#define I2S_FAT0_H3_LRCK_PERIOD_MSK (0x3ff << 8)
-+	#define I2S_FAT0_H3_BCLK_POLARITY	BIT(7)
-+	#define I2S_FAT0_H3_SR_16		(3 << 4)
-+	#define I2S_FAT0_H3_SR_24		(5 << 4)
-+	#define I2S_FAT0_H3_SR_MSK		(7 << 4)
-+	#define I2S_FAT0_H3_SW_16		(3 << 0)
-+	#define I2S_FAT0_H3_SW_32		(7 << 0)
-+	#define I2S_FAT0_H3_SW_MSK		(7 << 0)
-+
-+#define I2S_FAT1		0x08
-+
-+#define I2S_FCTL		0x14
-+	#define I2S_FCTL_FTX		BIT(25)
-+	#define I2S_FCTL_FRX		BIT(24)
-+	#define I2S_FCTL_TXTL(v)	((v) << 12)
-+	#define I2S_FCTL_TXIM		BIT(2)
-+
-+#define I2S_INT    		0x1c
-+	#define I2S_INT_TXDRQEN		BIT(7)
-+
-+#define I2S_TXFIFO		0x20
-+	
-+#define I2S_CLKD   		0x24
-+	/* common */
-+	#define I2S_CLKD_BCLKDIV(v)	((v) << 4)
-+	#define I2S_CLKD_MCLKDIV(v)	((v) << 0)
-+	/* a83t */
-+	#define I2S_CLKD_A83T_MCLKOEN	BIT(7)
-+	/* h3 */
-+	#define I2S_CLKD_H3_MCLKOEN	BIT(8)
-+
-+#define I2S_TXCNT  		0x28
-+
-+#define I2S_RXCNT  		0x2c
-+
-+/* --- A83T --- */
-+#define I2S_TXCHSEL_A83T	0x30
-+	#define I2S_TXCHSEL_A83T_CHNUM(v)	(((v) - 1) << 0)
-+	#define I2S_TXCHSEL_A83T_CHNUM_MSK	(7 << 0)
-+
-+#define I2S_TXCHMAP_A83T	0x34
-+
-+/* --- H3 --- */
-+#define I2S_TXCHCFG_H3		0x30
-+	#define I2S_TXCHCFG_H3_TX_SLOT_NUM_MSK (7 << 0)
-+	#define I2S_TXCHCFG_H3_TX_SLOT_NUM(v) ((v) << 0)
-+
-+#define I2S_TX0CHSEL_H3		0x34		/* 0..3 */
-+	#define I2S_TXn_H3_OFFSET_MSK	(3 << 12)
-+	#define I2S_TXn_H3_OFFSET(v)	((v) << 12)
-+	#define I2S_TXn_H3_CHEN_MSK	(0xff << 4)
-+	#define I2S_TXn_H3_CHEN(v)	((v) << 4)
-+	#define I2S_TXn_H3_CHSEL_MSK	(7 << 0)
-+	#define I2S_TXn_H3_CHSEL(v)	((v) << 0)
-+
-+#define I2S_TX0CHMAP_H3		0x44		/* 0..3 */
-+
-+/* --- driver --- */
-+
-+#define DRV_NAME "sun8i-audio"
-+
-+#define I2S_FORMATS \
-+	(SNDRV_PCM_FMTBIT_S16_LE | \
-+	 SNDRV_PCM_FMTBIT_S20_3LE | \
-+	 SNDRV_PCM_FMTBIT_S24_LE | \
-+	 SNDRV_PCM_FMTBIT_S32_LE)
-+
-+#define PCM_LRCK_PERIOD 32
-+#define PCM_LRCKR_PERIOD 1
-+
-+struct priv {
-+	void __iomem *mmio;
-+	struct clk *clk;
-+	struct clk *gate;
-+	struct reset_control *rstc;
-+	int type;
-+#define SOC_A83T 0
-+#define SOC_H3 1
-+	struct snd_dmaengine_dai_dma_data dma_data;
-+};
-+
-+static const struct of_device_id sun8i_i2s_of_match[] = {
-+	{ .compatible = "allwinner,sun8i-a83t-i2s",
-+				.data = (void *) SOC_A83T },
-+	{ .compatible = "allwinner,sun8i-h3-i2s",
-+				.data = (void *) SOC_H3 },
++static const struct of_device_id de2_hdmi_dt_ids[] =3D {
++	{ .compatible =3D "allwinner,sun8i-a83t-hdmi",
++					.data =3D (void *) SOC_A83T },
++	{ .compatible =3D "allwinner,sun8i-h3-hdmi",
++					.data =3D (void *) SOC_H3 },
 +	{ }
 +};
-+MODULE_DEVICE_TABLE(of, sun8i_i2s_of_match);
++MODULE_DEVICE_TABLE(of, de2_hdmi_dt_ids);
 +
-+/* --- CPU DAI --- */
++#define conn_to_priv(x) \
++	container_of(x, struct de2_hdmi_priv, connector)
 +
-+static void sun8i_i2s_init(struct priv *priv)
++#define enc_to_priv(x) \
++	container_of(x, struct de2_hdmi_priv, encoder)
++
++#define codec_to_priv(x) \
++	container_of(x, struct de2_hdmi_priv, codec)
++
++#if IS_ENABLED(CONFIG_SND_SOC_SUNXI_HDMI)
++/* --- audio functions --- */
++static int de2_hdmi_set_audio_input(struct device *dev,
++				    int enable,
++				    unsigned sample_rate,
++				    unsigned sample_bit)
 +{
-+	u32 reg;
-+
-+	/* disable global */
-+	reg = readl(priv->mmio + I2S_CTL);
-+	reg &= ~(I2S_CTL_GEN |
-+		 I2S_CTL_RXEN |
-+		 I2S_CTL_TXEN);
-+	writel(reg, priv->mmio + I2S_CTL);
-+
-+	/* A83T */
-+	if (priv->type == SOC_A83T) {
-+		reg &= ~(I2S_CTL_A83T_MS |	/* codec clk & FRM slave */
-+			 I2S_CTL_A83T_PCM);	/* I2S mode */
-+		writel(reg, priv->mmio + I2S_CTL);
-+
-+		reg = readl(priv->mmio + I2S_FAT0);
-+		reg &= ~I2S_FAT0_A83T_FMT_MSK;
-+		reg |= I2S_FAT0_A83T_FMT_I2S1;
-+
-+		reg &= ~(I2S_FAT0_A83T_LRCP | I2S_FAT0_A83T_BCP);
-+		writel(reg, priv->mmio + I2S_FAT0);
-+
-+		reg = I2S_FCTL_TXIM |			/* fifo */
-+			 I2S_FCTL_TXTL(0x40);
-+		writel(reg, priv->mmio + I2S_FCTL);
-+
-+		reg = readl(priv->mmio + I2S_FAT0);
-+		reg &= ~(I2S_FAT0_A83T_LRCP |	/* normal bit clock + frame */
-+			 I2S_FAT0_A83T_BCP);
-+		writel(reg, priv->mmio + I2S_FAT0);
-+
-+	/* H3 */
-+	} else {
-+		reg = readl(priv->mmio + I2S_FCTL);
-+		reg &= ~(I2S_FCTL_FRX | I2S_FCTL_FTX);	/* clear the FIFOs */
-+		writel(reg, priv->mmio + I2S_FCTL);
-+
-+		writel(0, priv->mmio + I2S_TXCNT);	/* FIFO counters */
-+		writel(0, priv->mmio + I2S_RXCNT);
-+
-+		reg = readl(priv->mmio + I2S_CTL);
-+		reg |= I2S_CTL_H3_LRCKOUT | I2S_CTL_H3_BCLKOUT;
-+						/* codec clk & FRM slave */
-+
-+		reg &= ~I2S_CTL_H3_MODE_MSK;
-+		reg |= I2S_CTL_H3_MODE_I2S;		/* I2S mode */
-+		writel(reg, priv->mmio + I2S_CTL);
-+
-+		reg = readl(priv->mmio + I2S_TX0CHSEL_H3) &
-+					~I2S_TXn_H3_OFFSET_MSK;
-+		reg |= I2S_TXn_H3_OFFSET(1);
-+		writel(reg, priv->mmio + I2S_TX0CHSEL_H3);
-+
-+		reg = readl(priv->mmio + I2S_FAT0);
-+		reg &= ~(I2S_FAT0_H3_BCLK_POLARITY | /* normal bclk & frame */
-+			 I2S_FAT0_H3_LRCK_POLARITY);
-+		writel(reg, priv->mmio + I2S_FAT0);
-+	}
-+}
-+
-+static int sun8i_i2s_set_clock(struct priv *priv,
-+				unsigned long rate)
-+{
-+	unsigned long freq;
-+	int ret, i, div;
-+	u32 reg;
-+	static const u8 div_tb[] = {
-+		1, 2, 4, 6, 8, 12, 16, 24,
-+	};
-+
-+	/* compute the sys clock rate and divide values */
-+	if (rate % 1000 == 0)
-+		freq = 24576000;
-+	else
-+		freq = 22579200;
-+	div = freq / 2 / PCM_LRCK_PERIOD / rate;
-+	if (priv->type == SOC_A83T)
-+		div /= 2;			/* bclk_div==0 => mclk/2 */
-+	for (i = 0; i < ARRAY_SIZE(div_tb) - 1; i++)
-+		if (div_tb[i] >= div)
-+			break;
-+
-+	ret = clk_set_rate(priv->clk, freq);
-+	if (ret) {
-+		pr_info("Setting sysclk rate failed %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* set the mclk and bclk dividor register */
-+	if (priv->type == SOC_A83T) {
-+		reg = I2S_CLKD_A83T_MCLKOEN | I2S_CLKD_MCLKDIV(i);
-+	} else {
-+		reg = I2S_CLKD_H3_MCLKOEN | I2S_CLKD_MCLKDIV(1) |
-+				I2S_CLKD_BCLKDIV(i + 1);
-+	}
-+	writel(reg, priv->mmio + I2S_CLKD);
-+
-+	/* format */
-+	reg = readl(priv->mmio + I2S_FAT0);
-+	if (priv->type == SOC_A83T) {
-+		reg |= I2S_FAT0_A83T_WSS_32BCLK;
-+		reg &= ~I2S_FAT0_A83T_SR_MSK;
-+		reg |= I2S_FAT0_A83T_SR_16BIT;
-+	} else {
-+		reg &= ~(I2S_FAT0_H3_LRCKR_PERIOD_MSK |
-+			 I2S_FAT0_H3_LRCK_PERIOD_MSK);
-+		reg |= I2S_FAT0_H3_LRCK_PERIOD(PCM_LRCK_PERIOD - 1) |
-+			I2S_FAT0_H3_LRCKR_PERIOD(PCM_LRCKR_PERIOD - 1);
-+
-+		reg &= ~I2S_FAT0_H3_SW_MSK;
-+		reg |= I2S_FAT0_H3_SW_16;
-+
-+		reg &= ~I2S_FAT0_H3_SR_MSK;
-+		reg |= I2S_FAT0_H3_SR_16;
-+	}
-+	writel(reg, priv->mmio + I2S_FAT0);
-+
-+	writel(0, priv->mmio + I2S_FAT1);
-+
-+	return 0;
-+}
-+
-+static int sun8i_i2s_prepare(struct snd_pcm_substream *substream,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_card *card = snd_soc_dai_get_drvdata(dai);
-+	struct priv *priv = snd_soc_card_get_drvdata(card);
-+	int nchan = substream->runtime->channels;
-+	u32 reg;
-+
-+	if (priv->type == SOC_A83T) {
-+		reg = readl(priv->mmio + I2S_TXCHSEL_A83T);
-+		reg &= ~I2S_TXCHSEL_A83T_CHNUM_MSK;
-+		reg |= I2S_TXCHSEL_A83T_CHNUM(substream->runtime->channels);
-+		writel(reg, priv->mmio + I2S_TXCHSEL_A83T);
-+
-+		switch (substream->runtime->channels) {
-+		case 1:
-+			reg = 0x76543200;
-+			break;
-+		case 8:
-+			reg = 0x54762310;
-+			break;
-+		default:
-+/* left/right inversion of channels 0 and 1 */
-+			reg = 0x76543201;
-+			break;
-+		}
-+		writel(reg, priv->mmio + I2S_TXCHMAP_A83T);
-+	} else {
-+		reg = readl(priv->mmio + I2S_TXCHCFG_H3) &
-+					~I2S_TXCHCFG_H3_TX_SLOT_NUM_MSK;
-+		if (nchan != 1)
-+			reg |= I2S_TXCHCFG_H3_TX_SLOT_NUM(1);
-+		writel(reg, priv->mmio + I2S_TXCHCFG_H3);
-+
-+		reg = readl(priv->mmio + I2S_TX0CHSEL_H3);
-+		reg &= ~(I2S_TXn_H3_CHEN_MSK |
-+			 I2S_TXn_H3_CHSEL_MSK);
-+		reg |= I2S_TXn_H3_CHEN(3) |
-+			I2S_TXn_H3_CHSEL(1);
-+		writel(reg, priv->mmio + I2S_TX0CHSEL_H3);
-+
-+		reg = nchan == 1 ? 0 : 0x10;
-+		writel(reg, priv->mmio + I2S_TX0CHMAP_H3);
-+	}
-+
-+	reg = readl(priv->mmio + I2S_CTL);
-+	reg &= ~(I2S_CTL_SDO3EN |
-+		 I2S_CTL_SDO2EN |
-+		 I2S_CTL_SDO1EN);
-+	if (nchan >= 7)
-+		reg |= I2S_CTL_SDO3EN;
-+	if (nchan >= 5)
-+		reg |= I2S_CTL_SDO2EN;
-+	if (nchan >= 3)
-+		reg |= I2S_CTL_SDO1EN;
-+	reg |= I2S_CTL_SDO0EN;
-+	writel(reg, priv->mmio + I2S_CTL);
-+
-+	writel(0, priv->mmio + I2S_TXCNT);
-+
-+	return 0;
-+}
-+
-+static void sun8i_i2s_shutdown(struct snd_pcm_substream *substream,
-+			      struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_card *card = snd_soc_dai_get_drvdata(dai);
-+	struct priv *priv = snd_soc_card_get_drvdata(card);
-+	u32 reg;
-+
-+	reg = readl(priv->mmio + I2S_CTL);
-+	reg &= ~I2S_CTL_GEN;
-+	writel(reg, priv->mmio + I2S_CTL);
-+}
-+
-+static int sun8i_i2s_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params,
-+				struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_card *card = snd_soc_dai_get_drvdata(dai);
-+	struct priv *priv = snd_soc_card_get_drvdata(card);
-+	u32 reg, reg2;
-+	int sample_resolution;
++	struct de2_hdmi_priv *priv =3D codec_to_priv(dev_get_drvdata(dev));
 +	int ret;
 +
-+	ret = sun8i_i2s_set_clock(priv, params_rate(params));
-+	if (ret)
-+		return ret;
++	if (!enable)
++		return 0;
 +
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		priv->dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+		sample_resolution = 16;
-+		break;
-+	case SNDRV_PCM_FORMAT_S20_3LE:
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		priv->dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+		sample_resolution = 24;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	reg = readl(priv->mmio + I2S_FAT0);
-+	reg2 = readl(priv->mmio + I2S_FCTL);
-+	if (priv->type == SOC_A83T) {
-+		reg &= ~I2S_FAT0_A83T_SR_MSK;
-+		if (sample_resolution == 16) {
-+			reg |= I2S_FAT0_A83T_SR_16BIT;
-+			reg2 |= I2S_FCTL_TXIM;
-+		} else {
-+			reg |= I2S_FAT0_A83T_SR_24BIT;
-+			reg2 &= ~I2S_FCTL_TXIM;
-+		}
-+	} else {
-+		reg &= ~(I2S_FAT0_H3_SR_MSK | I2S_FAT0_H3_SW_MSK);
-+		if (sample_resolution == 16) {
-+			reg |= I2S_FAT0_H3_SR_16 |
-+					I2S_FAT0_H3_SW_16;
-+			reg2 |= I2S_FCTL_TXIM;
-+		} else {
-+			reg |= I2S_FAT0_H3_SR_24 |
-+					I2S_FAT0_H3_SW_32;
-+			reg2 &= ~I2S_FCTL_TXIM;
-+		}
-+	}
-+	writel(reg, priv->mmio + I2S_FAT0);
-+	writel(reg2, priv->mmio + I2S_FCTL);
++	mutex_lock(&priv->mutex);
++	ret =3D hdmi_io_audio(priv, sample_rate, sample_bit);
++	mutex_unlock(&priv->mutex);
 +
-+	/* enable audio interface */
-+	reg = readl(priv->mmio + I2S_CTL);
-+	reg |= I2S_CTL_GEN;
-+	writel(reg, priv->mmio + I2S_CTL);
-+	msleep(10);
++	return ret;
++}
++#endif
 +
-+	/* flush TX FIFO */
-+	reg = readl(priv->mmio + I2S_FCTL);
-+	reg |= I2S_FCTL_FTX;
-+	writel(reg, priv->mmio + I2S_FCTL);
++/* --- encoder functions --- */
 +
-+	return 0;
++static void de2_hdmi_encoder_mode_set(struct drm_encoder *encoder,
++				      struct drm_display_mode *mode,
++				      struct drm_display_mode *adjusted_mode)
++{
++	struct de2_hdmi_priv *priv =3D enc_to_priv(encoder);
++
++	priv->cea_mode =3D drm_match_cea_mode(mode);
++
++	DRM_DEBUG_DRIVER("cea_mode %d\n", priv->cea_mode);
++
++	clk_set_rate(priv->clk, mode->clock * 1000);
++
++	mutex_lock(&priv->mutex);
++	hdmi_io_video_mode(priv);
++	mutex_unlock(&priv->mutex);
 +}
 +
-+static int sun8i_i2s_trigger(struct snd_pcm_substream *substream,
-+				int cmd, struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_card *card = snd_soc_dai_get_drvdata(dai);
-+	struct priv *priv = snd_soc_card_get_drvdata(card);
-+	u32 reg;
++static void de2_hdmi_encoder_enable(struct drm_encoder *encoder)
++{=20
++	struct de2_hdmi_priv *priv =3D enc_to_priv(encoder);
 +
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		reg = readl(priv->mmio + I2S_CTL);
-+		reg |= I2S_CTL_TXEN;
-+		writel(reg, priv->mmio + I2S_CTL);
-+
-+		/* enable DMA DRQ mode */
-+		reg = readl(priv->mmio + I2S_INT);
-+		reg |= I2S_INT_TXDRQEN;
-+		writel(reg, priv->mmio + I2S_INT);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		reg = readl(priv->mmio + I2S_INT);
-+		reg &= ~I2S_INT_TXDRQEN;
-+		writel(reg, priv->mmio + I2S_INT);
-+
-+		reg = readl(priv->mmio + I2S_CTL);
-+		reg &= ~I2S_CTL_TXEN;
-+		writel(reg, priv->mmio + I2S_CTL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
++	mutex_lock(&priv->mutex);
++	hdmi_io_video_on(priv);
++	mutex_unlock(&priv->mutex);
 +}
 +
-+static const struct snd_soc_dai_ops sun8i_i2s_dai_ops = {
-+	.hw_params = sun8i_i2s_hw_params,
-+	.prepare = sun8i_i2s_prepare,
-+	.trigger = sun8i_i2s_trigger,
-+	.shutdown = sun8i_i2s_shutdown,
-+};
++static void de2_hdmi_encoder_disable(struct drm_encoder *encoder)
++{=20
++	struct de2_hdmi_priv *priv =3D enc_to_priv(encoder);
 +
-+static int sun8i_i2s_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_card *card = snd_soc_dai_get_drvdata(dai);
-+	struct priv *priv = snd_soc_card_get_drvdata(card);
-+
-+	snd_soc_dai_init_dma_data(dai, &priv->dma_data, NULL);
-+
-+	return 0;
++	mutex_lock(&priv->mutex);
++	hdmi_io_video_off(priv);
++	mutex_unlock(&priv->mutex);
 +}
 +
-+static struct snd_soc_dai_driver sun8i_i2s_dai = {
-+	.probe = sun8i_i2s_dai_probe,
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 8,
-+		.rates = SNDRV_PCM_RATE_CONTINUOUS,
-+		.rate_min = 32000,
-+		.rate_max = 192000,
-+		.formats = I2S_FORMATS,
-+	},
-+	.ops = &sun8i_i2s_dai_ops,
++static const struct drm_encoder_helper_funcs de2_hdmi_encoder_helper_funcs=
+ =3D {
++	.mode_set =3D de2_hdmi_encoder_mode_set,
++	.enable =3D de2_hdmi_encoder_enable,
++	.disable =3D de2_hdmi_encoder_disable,
 +};
 +
-+static const struct snd_soc_component_driver i2s_component = {
-+	.name = DRV_NAME,
++static const struct drm_encoder_funcs de2_hdmi_encoder_funcs =3D {
++	.destroy =3D drm_encoder_cleanup,
 +};
 +
-+/* --- dma --- */
-+
-+static const struct snd_pcm_hardware sun8i_i2s_pcm_hardware = {
-+	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+		SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
-+		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
-+	.formats = I2S_FORMATS,
-+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
-+	.rate_min = 32000,
-+	.rate_max = 192000,
-+	.channels_min = 1,
-+	.channels_max = 8,
-+	.buffer_bytes_max = 1024 * 1024,
-+	.period_bytes_min = 156,
-+	.period_bytes_max = 1024 * 1024,
-+	.periods_min = 1,
-+	.periods_max = 8,
-+	.fifo_size = 128,
-+};
-+
-+static const struct snd_dmaengine_pcm_config sun8i_i2s_config = {
-+	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-+	.pcm_hardware = &sun8i_i2s_pcm_hardware,
-+	.prealloc_buffer_size = 1024 * 1024,
-+};
-+
-+/* --- audio card --- */
-+
-+static struct device_node *sun8i_get_codec(struct device *dev)
++/* --- connector functions --- */
++static int de2_hdmi_connector_mode_valid(struct drm_connector *connector,
++					struct drm_display_mode *mode)
 +{
-+	struct device_node *ep, *remote;
++	struct de2_hdmi_priv *priv =3D conn_to_priv(connector);
++	int cea_mode =3D drm_match_cea_mode(mode);
 +
-+	ep = of_graph_get_next_endpoint(dev->of_node, NULL);
-+	if (!ep)
-+		return NULL;
-+	remote = of_graph_get_remote_port_parent(ep);
-+	of_node_put(ep);
++	if (hdmi_io_mode_valid(cea_mode) < 0)
++		return MODE_NOMODE;
 +
-+	return remote;
++	if (connector->eld[0])
++		priv->codec.eld =3D connector->eld;	/* audio parameters */
++
++	return MODE_OK;
 +}
 +
-+static int sun8i_card_create(struct device *dev, struct priv *priv)
++static enum drm_connector_status de2_hdmi_connector_detect(
++				struct drm_connector *connector, bool force)
 +{
-+	struct snd_soc_card *card;
-+	struct snd_soc_dai_link *dai_link;
-+	struct snd_soc_dai_link_component *codec;
-+
-+	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
-+	if (!card)
-+		return -ENOMEM;
-+	dai_link = devm_kzalloc(dev, sizeof(*dai_link), GFP_KERNEL);
-+	if (!dai_link)
-+		return -ENOMEM;
-+	codec = devm_kzalloc(dev, sizeof(*codec), GFP_KERNEL);
-+	if (!codec)
-+		return -ENOMEM;
-+
-+	codec->of_node = sun8i_get_codec(dev);
-+	if (!codec->of_node) {
-+		dev_err(dev, "no port node\n");
-+		return -ENXIO;
-+	}
-+
-+	card->name = codec->of_node->name;
-+	card->dai_link = dai_link;
-+	card->num_links = 1;
-+	dai_link->name = codec->of_node->name;
-+	dai_link->stream_name = codec->of_node->name;
-+	dai_link->platform_name = dev_name(dev);
-+	dai_link->cpu_name = dev_name(dev);
-+
-+	dai_link->codecs = codec;
-+	dai_link->num_codecs = 1;
-+
-+	/* the DAI name must be the name of codec node */
-+	codec->dai_name = codec->of_node->name;
-+
-+	card->dev = dev;
-+	dev_set_drvdata(dev, card);
-+	snd_soc_card_set_drvdata(card, priv);
-+
-+	return devm_snd_soc_register_card(dev, card);
-+}
-+
-+/* --- module init --- */
-+
-+static int sun8i_i2s_dev_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct priv *priv;
-+	struct resource *mem;
++	struct de2_hdmi_priv *priv =3D conn_to_priv(connector);
 +	int ret;
 +
-+	if (!dev->of_node) {
-+		dev_err(dev, "no DT!\n");
-+		return -EINVAL;
-+	}
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
++	mutex_lock(&priv->mutex);
++	ret =3D hdmi_io_get_hpd(priv);
++	mutex_unlock(&priv->mutex);
 +
-+	/* get the resources */
-+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	priv->mmio = devm_ioremap_resource(dev, mem);
-+	if (IS_ERR(priv->mmio))
-+		return PTR_ERR(priv->mmio);
++	return ret ? connector_status_connected :
++			connector_status_disconnected;
++}
 +
-+	/* get SoC type */
-+	priv->type = (int) of_match_device(sun8i_i2s_of_match,
-+						&pdev->dev)->data;
++static int read_edid_block(void *data, u8 *buf,
++			   unsigned int blk, size_t length)
++{
++	struct de2_hdmi_priv *priv =3D data;
++	int ret;
 +
-+	/* get and enable the clocks */
-+	priv->gate = devm_clk_get(dev, "apb");	/* optional */
-+	priv->clk = devm_clk_get(dev, "mod");
-+	if (IS_ERR(priv->clk)) {
-+		dev_err(dev, "no clock\n");
-+		return PTR_ERR(priv->clk);
-+	}
-+	ret = clk_set_rate(priv->clk, 24576000);
-+	if (ret) {
-+		dev_err(dev, "cannot set rate of i2s clock %d\n", ret);
-+		return ret;
-+	}
-+
-+	priv->rstc = devm_reset_control_get_optional(dev, NULL);
-+	if (!IS_ERR(priv->rstc)) {
-+		ret = reset_control_deassert(priv->rstc);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	if (!IS_ERR(priv->gate)) {
-+		ret = clk_prepare_enable(priv->gate);
-+		if (ret < 0)
-+			goto err_gate;
-+	}
-+
-+	ret = clk_prepare_enable(priv->clk);
-+	if (ret < 0)
-+		goto err_enable;
-+
-+	/* activate the audio subsystem */
-+	sun8i_i2s_init(priv);
-+
-+	ret = devm_snd_soc_register_component(dev, &i2s_component,
-+						&sun8i_i2s_dai, 1);
-+	if (ret) {
-+		dev_err(dev, "snd_soc_register_component failed %d\n", ret);
-+		goto err_register;
-+	}
-+
-+	ret = devm_snd_dmaengine_pcm_register(dev, &sun8i_i2s_config, 0);
-+	if (ret) {
-+		dev_err(dev, "pcm_register failed %d\n", ret);
-+		goto err_register;
-+	}
-+
-+	priv->dma_data.maxburst = priv->type == SOC_A83T ? 8 : 4;
-+	priv->dma_data.addr = mem->start + I2S_TXFIFO;
-+	priv->dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+
-+	ret = sun8i_card_create(dev, priv);
-+	if (ret) {
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "register card failed %d\n", ret);
-+		goto err_register;
-+	}
-+
-+	return 0;
-+
-+err_register:
-+	clk_disable_unprepare(priv->clk);
-+err_enable:
-+	clk_disable_unprepare(priv->gate);
-+err_gate:
-+	if (!IS_ERR(priv->rstc))
-+		reset_control_assert(priv->rstc);
++	mutex_lock(&priv->mutex);
++	ret =3D hdmi_io_ddc_read(priv,
++				blk / 2, (blk & 1) ? 128 : 0,
++				length, buf);
++	mutex_unlock(&priv->mutex);
 +
 +	return ret;
 +}
 +
-+static int sun8i_i2s_dev_remove(struct platform_device *pdev)
++static int de2_hdmi_connector_get_modes(struct drm_connector *connector)
 +{
-+	struct snd_soc_card *card = dev_get_drvdata(&pdev->dev);
-+	struct priv *priv = snd_soc_card_get_drvdata(card); 
++	struct de2_hdmi_priv *priv =3D conn_to_priv(connector);
++	struct edid *edid;
++	int n;
 +
++	DRM_DEBUG_DRIVER("\n");
++
++	priv->codec.eld =3D NULL;
++
++	edid =3D drm_do_get_edid(connector, read_edid_block, priv);
++
++	if (!edid) {
++		dev_warn(priv->dev, "failed to read EDID\n");
++		if (!connector->cmdline_mode.specified)
++			return 0;
++
++		return drm_add_modes_noedid(connector,
++					connector->cmdline_mode.xres,
++					connector->cmdline_mode.yres);
++	}
++
++	drm_mode_connector_update_edid_property(connector, edid);
++	n =3D drm_add_edid_modes(connector, edid);
++
++	drm_edid_to_eld(connector, edid);
++
++	kfree(edid);
++
++	DRM_DEBUG_DRIVER("%s EDID ok %d modes\n",
++		connector->eld[0] ? "HDMI" : "DVI", n);
++
++	return n;
++}
++
++static const
++struct drm_connector_helper_funcs de2_hdmi_connector_helper_funcs =3D {
++	.get_modes =3D de2_hdmi_connector_get_modes,
++	.mode_valid =3D de2_hdmi_connector_mode_valid,
++};
++
++static const struct drm_connector_funcs de2_hdmi_connector_funcs =3D {
++	.dpms =3D drm_atomic_helper_connector_dpms,
++	.reset =3D drm_atomic_helper_connector_reset,
++	.fill_modes =3D drm_helper_probe_single_connector_modes,
++	.detect =3D de2_hdmi_connector_detect,
++	.destroy =3D drm_connector_cleanup,
++	.atomic_duplicate_state =3D drm_atomic_helper_connector_duplicate_state,
++	.atomic_destroy_state =3D drm_atomic_helper_connector_destroy_state,
++};
++
++static void de2_hdmi_cleanup(struct de2_hdmi_priv *priv)
++{
++	clk_disable_unprepare(priv->clk_ddc);
 +	clk_disable_unprepare(priv->clk);
 +	clk_disable_unprepare(priv->gate);
-+	if (!IS_ERR_OR_NULL(priv->rstc))
-+		reset_control_assert(priv->rstc);
++	if (!IS_ERR_OR_NULL(priv->rstc1))
++		reset_control_assert(priv->rstc1);
++	if (!IS_ERR_OR_NULL(priv->rstc0))
++		reset_control_assert(priv->rstc0);
++}
++
++static int de2_hdmi_bind(struct device *dev, struct device *master, void *=
+data)
++{
++	struct drm_device *drm =3D data;
++	struct de2_hdmi_priv *priv =3D codec_to_priv(dev_get_drvdata(dev));
++	struct drm_encoder *encoder =3D &priv->encoder;
++	struct drm_connector *connector =3D &priv->connector;
++	int ret;
++
++	encoder->possible_crtcs =3D
++			drm_of_find_possible_crtcs(drm, dev->of_node);
++
++	/* if no CRTC, delay */
++	if (encoder->possible_crtcs =3D=3D 0)
++		return -EPROBE_DEFER;
++
++	/* HDMI init */
++	ret =3D reset_control_deassert(priv->rstc0);
++	if (ret)
++		goto err;
++	ret =3D reset_control_deassert(priv->rstc1);
++	if (ret)
++		goto err;
++	if (!IS_ERR(priv->gate)) {
++		ret =3D clk_prepare_enable(priv->gate);
++		if (ret)
++			goto err;
++	}
++	ret =3D clk_prepare_enable(priv->clk);
++	if (ret)
++		goto err;
++	ret =3D clk_prepare_enable(priv->clk_ddc);
++	if (ret)
++		goto err;
++
++	mutex_lock(&priv->mutex);
++	hdmi_io_init(priv);
++	hdmi_io_reset(priv);		/* hpd reset */
++	mutex_unlock(&priv->mutex);
++
++	/* encoder init */
++	ret =3D drm_encoder_init(drm, encoder, &de2_hdmi_encoder_funcs,
++			       DRM_MODE_ENCODER_TMDS, NULL);
++	if (ret)
++		goto err;
++
++	drm_encoder_helper_add(encoder, &de2_hdmi_encoder_helper_funcs);
++
++	/* connector init */
++	ret =3D drm_connector_init(drm, connector,
++				 &de2_hdmi_connector_funcs,
++				 DRM_MODE_CONNECTOR_HDMIA);
++	if (ret)
++		goto err_connector;
++
++	connector->interlace_allowed =3D 1;
++	connector->polled =3D DRM_CONNECTOR_POLL_CONNECT |
++				 DRM_CONNECTOR_POLL_DISCONNECT;
++	drm_connector_helper_add(connector,
++				 &de2_hdmi_connector_helper_funcs);
++
++	drm_mode_connector_attach_encoder(connector, encoder);
++
++	return 0;
++
++err_connector:
++	drm_encoder_cleanup(encoder);
++err:
++	de2_hdmi_cleanup(priv);
++	DRM_DEBUG_DRIVER("err %d\n", ret);
++	return ret;
++}
++
++static void de2_hdmi_unbind(struct device *dev, struct device *master,
++			   void *data)
++{
++	struct de2_hdmi_priv *priv =3D codec_to_priv(dev_get_drvdata(dev));
++
++	drm_connector_cleanup(&priv->connector);
++	drm_encoder_cleanup(&priv->encoder);
++	de2_hdmi_cleanup(priv);
++}
++
++static const struct component_ops de2_hdmi_ops =3D {
++	.bind =3D de2_hdmi_bind,
++	.unbind =3D de2_hdmi_unbind,
++};
++
++static int de2_hdmi_probe(struct platform_device *pdev)
++{
++	struct device *dev =3D &pdev->dev;
++	struct de2_hdmi_priv *priv;
++	struct resource *res;
++
++	priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	dev_set_drvdata(dev, &priv->codec);
++	priv->dev =3D dev;
++
++	mutex_init(&priv->mutex);
++
++	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(dev, "failed to get memory resource\n");
++		return -ENXIO;
++	}
++	priv->mmio =3D devm_ioremap_resource(dev, res);
++	if (IS_ERR(priv->mmio)) {
++		dev_err(dev, "failed to map registers\n");
++		return PTR_ERR(priv->mmio);
++	}
++
++	priv->gate =3D devm_clk_get(dev, "gate");	/* optional */
++
++	priv->clk =3D devm_clk_get(dev, "clock");
++	if (IS_ERR(priv->clk)) {
++		dev_err(dev, "hdmi clock err %d\n",
++					(int) PTR_ERR(priv->clk));
++		return PTR_ERR(priv->clk);
++	}
++	priv->clk_ddc =3D devm_clk_get(dev, "ddc-clock");
++	if (IS_ERR(priv->clk_ddc)) {
++		dev_err(dev, "hdmi-ddc clock err %d\n",
++					(int) PTR_ERR(priv->clk_ddc));
++		return PTR_ERR(priv->clk_ddc);
++	}
++
++	priv->rstc0 =3D devm_reset_control_get(dev, "hdmi0");
++	if (IS_ERR(priv->rstc0)) {
++		dev_err(dev, "reset controller err %d\n",
++				(int) PTR_ERR(priv->rstc0));
++		return PTR_ERR(priv->rstc0);
++	}
++
++	priv->rstc1 =3D devm_reset_control_get(dev, "hdmi1");
++	if (IS_ERR(priv->rstc1)) {
++		dev_err(dev, "reset controller err %d\n",
++				(int) PTR_ERR(priv->rstc1));
++		return PTR_ERR(priv->rstc1);
++	}
++
++	priv->soc_type =3D (int) of_match_device(de2_hdmi_dt_ids,
++						&pdev->dev)->data;
++
++	if (IS_ENABLED(CONFIG_SND_SOC_SUNXI_HDMI)) {
++		priv->codec.set_audio_input =3D de2_hdmi_set_audio_input;
++		sunxi_hdmi_codec_register(dev);
++	}
++
++	return component_add(dev, &de2_hdmi_ops);
++}
++
++static int de2_hdmi_remove(struct platform_device *pdev)
++{
++	if (IS_ENABLED(CONFIG_SND_SOC_SUNXI_HDMI))
++		sunxi_hdmi_codec_unregister(&pdev->dev);
++	component_del(&pdev->dev, &de2_hdmi_ops);
 +
 +	return 0;
 +}
 +
-+static struct platform_driver sun8i_i2s_driver = {
-+	.probe  = sun8i_i2s_dev_probe,
-+	.remove = sun8i_i2s_dev_remove,
-+	.driver = {
-+		.name = DRV_NAME,
-+		.of_match_table = of_match_ptr(sun8i_i2s_of_match),
++static struct platform_driver de2_hdmi_driver =3D {
++	.probe =3D de2_hdmi_probe,
++	.remove =3D de2_hdmi_remove,
++	.driver =3D {
++		.name =3D "sunxi-de2-hdmi",
++		.of_match_table =3D of_match_ptr(de2_hdmi_dt_ids),
 +	},
 +};
 +
-+module_platform_driver(sun8i_i2s_driver);
++module_platform_driver(de2_hdmi_driver);
 +
 +MODULE_AUTHOR("Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>");
-+MODULE_DESCRIPTION("Allwinner sun8i I2S ASoC Interface");
-+MODULE_LICENSE("GPL v2");
--- 
++MODULE_DESCRIPTION("Allwinner DE2 HDMI encoder/connector");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/gpu/drm/sunxi/de2_hdmi.h b/drivers/gpu/drm/sunxi/de2_h=
+dmi.h
+new file mode 100644
+index 0000000..915d609
+--- /dev/null
++++ b/drivers/gpu/drm/sunxi/de2_hdmi.h
+@@ -0,0 +1,40 @@
++#ifndef __DE2_HDMI_H__
++#define __DE2_HDMI_H__
++/*
++ * Copyright (C) 2016 Jean-Fran=C3=A7ois Moine
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ */
++
++#include <linux/clk.h>
++#include <linux/reset.h>
++#include <drm/drmP.h>
++#include <sound/sunxi_hdmi.h>
++
++/* SoC types */
++#define SOC_A83T 0
++#define SOC_H3 1
++
++struct de2_hdmi_priv {
++	struct device *dev;
++	void __iomem *mmio;
++
++	struct drm_encoder encoder;
++	struct drm_connector connector;
++
++	struct clk *clk;
++	struct clk *clk_ddc;
++	struct clk *gate;
++	struct reset_control *rstc0;
++	struct reset_control *rstc1;
++
++	struct mutex mutex;
++	u8 soc_type;
++	u8 cea_mode;
++	struct sunxi_hdmi_codec codec;
++};
++
++#endif /* __DE2_HDMI_H__ */
+diff --git a/drivers/gpu/drm/sunxi/de2_hdmi_io.c b/drivers/gpu/drm/sunxi/de=
+2_hdmi_io.c
+new file mode 100644
+index 0000000..127b220
+--- /dev/null
++++ b/drivers/gpu/drm/sunxi/de2_hdmi_io.c
+@@ -0,0 +1,927 @@
++/*
++ * Allwinner A83T and H3 HDMI lowlevel functions
++ *
++ * Copyright (C) 2016 Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
++ * Copyright (c) 2016 Allwinnertech Co., Ltd.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ */
++
++/*
++ * The HDMI controller in the A83T and H3 seems to be a
++ * Synopsys DesignWare HDMI controller.
++ * The PHYs are unknown.
++ * Documentation:
++ *	https://linux-sunxi.org/DWC_HDMI_Controller
++ *	https://www.synopsys.com/dw/doc.php/ds/c/dwc_hdmi_tx_csds.pdf
++ */
++
++#include <linux/hdmi.h>
++
++#include "de2_hdmi.h"
++#include "de2_hdmi_io.h"
++
++/* DW registers (obfuscated addresses) */
++
++/* Interrupt Registers */
++#define R_0100_HDMI_IH_FC_STAT0 0x0010
++#define R_0101_HDMI_IH_FC_STAT1 0x0011
++#define R_0102_HDMI_IH_FC_STAT2 0x8010
++#define R_0103_HDMI_IH_AS_STAT0 0x8011
++#define R_0104_HDMI_IH_PHY_STAT0 0x0012
++#define R_0105_HDMI_IH_I2CM_STAT0 0x0013
++#define R_0106_HDMI_IH_CEC_STAT0 0x8012
++#define R_0107_HDMI_IH_VP_STAT0 0x8013
++#define R_0108_HDMI_IH_I2CMPHY_STAT0 0x4010
++#define R_01ff_HDMI_IH_MUTE 0xf01f
++
++/* Video Sample Registers */
++#define R_0200_HDMI_TX_INVID0 0x0800
++#define R_0201_HDMI_TX_INSTUFFING 0x0801
++#define R_0202_HDMI_TX_GYDATA0 0x8800
++#define R_0203_HDMI_TX_GYDATA1 0x8801
++#define R_0204_HDMI_TX_RCRDATA0 0x0802
++#define R_0205_HDMI_TX_RCRDATA1 0x0803
++#define R_0206_HDMI_TX_BCBDATA0 0x8802
++#define R_0207_HDMI_TX_BCBDATA1 0x8803
++
++/* Video Packetizer Registers */
++#define R_0801_HDMI_VP_PR_CD 0x0401
++#define R_0802_HDMI_VP_STUFF 0x8400
++#define R_0803_HDMI_VP_REMAP 0x8401
++#define R_0804_HDMI_VP_CONF 0x0402
++#define R_0807_HDMI_VP_MASK 0x8403
++
++/* Frame Composer Registers */
++#define R_1000_HDMI_FC_INVIDCONF 0x0040
++#define		HDMI_FC_INVIDCONF_DE_IN_POLARITY_ACTIVE_HIGH 0x10
++#define R_1001_HDMI_FC_INHACTV0 0x0041
++#define R_1002_HDMI_FC_INHACTV1 0x8040
++#define R_1003_HDMI_FC_INHBLANK0 0x8041
++#define R_1004_HDMI_FC_INHBLANK1 0x0042
++#define R_1005_HDMI_FC_INVACTV0 0x0043
++#define R_1006_HDMI_FC_INVACTV1 0x8042
++#define R_1007_HDMI_FC_INVBLANK 0x8043
++#define R_1008_HDMI_FC_HSYNCINDELAY0 0x4040
++#define R_1009_HDMI_FC_HSYNCINDELAY1 0x4041
++#define R_100a_HDMI_FC_HSYNCINWIDTH1 0xc040
++#define R_100b_HDMI_FC_HSYNCINWIDTH1 0xc041
++#define R_100c_HDMI_FC_VSYNCINDELAY 0x4042
++#define R_100d_HDMI_FC_VSYNCINWIDTH 0x4043
++#define R_1011_HDMI_FC_CTRLDUR 0x0045
++#define R_1012_HDMI_FC_EXCTRLDUR 0x8044
++#define R_1013_HDMI_FC_EXCTRLSPAC 0x8045
++#define R_1014_HDMI_FC_CH0PREAM 0x0046
++#define R_1015_HDMI_FC_CH1PREAM 0x0047
++#define R_1016_HDMI_FC_CH2PREAM 0x8046
++#define R_1018_HDMI_FC_GCP 0x4044
++#define R_1019_HDMI_FC_AVICONF0 0x4045
++#define		HDMI_FC_AVICONF0_SCAN_INFO_UNDERSCAN 0x20
++#define R_101a_HDMI_FC_AVICONF1 0xc044
++#define R_101b_HDMI_FC_AVICONF2 0xc045
++#define R_101c_HDMI_FC_AVIVID 0x4046
++#define R_1025_HDMI_FC_AUDICONF0 0x2043
++#define R_1026_HDMI_FC_AUDICONF1 0xa042
++#define R_1027_HDMI_FC_AUDICONF2 0xa043
++#define R_1028_HDMI_FC_AUDICONF3 0x6040
++#define R_1029_HDMI_FC_VSDIEEEID0 0x6041
++#define R_1030_HDMI_FC_VSDIEEEID1 0x2044
++#define R_1031_HDMI_FC_VSDIEEEID2 0x2045
++#define R_1032_HDMI_FC_VSDPAYLOAD0 0xa044
++#define R_1033_HDMI_FC_VSDPAYLOAD1 0xa045
++#define R_1034_HDMI_FC_VSDPAYLOAD2 0x2046
++#define R_1063_HDMI_FC_AUDSCONF 0xa049
++#define R_1065_HDMI_FC_AUDSV 0x204b
++#define R_1066_HDMI_FC_AUDSU 0xa04a
++#define R_1067_HDMI_FC_AUDSCHNLS0 0xa04b
++#define		HDMI_FC_AUDSCHNLS0_CGMSA 0x30
++#define R_1068_HDMI_FC_AUDSCHNLS1 0x6048
++#define R_1069_HDMI_FC_AUDSCHNLS2 0x6049
++#define R_106a_HDMI_FC_AUDSCHNLS3 0xe048
++#define		HDMI_FC_AUDSCHNLS3_OIEC_CH0(v) (v)
++#define		HDMI_FC_AUDSCHNLS3_OIEC_CH1(v) (v << 4)
++#define R_106b_HDMI_FC_AUDSCHNLS4 0xe049
++#define		HDMI_FC_AUDSCHNLS4_OIEC_CH2(v) (v)
++#define		HDMI_FC_AUDSCHNLS4_OIEC_CH3(v) (v << 4)
++#define R_106c_HDMI_FC_AUDSCHNLS5 0x604a
++#define		HDMI_FC_AUDSCHNLS5_OIEC_CH0(v) (v)
++#define		HDMI_FC_AUDSCHNLS5_OIEC_CH1(v) (v << 4)
++#define R_106d_HDMI_FC_AUDSCHNLS6 0x604b
++#define		HDMI_FC_AUDSCHNLS6_OIEC_CH2(v) (v)
++#define		HDMI_FC_AUDSCHNLS6_OIEC_CH3(v) (v << 4)
++#define R_106e_HDMI_FC_AUDSCHNLS7 0xe04a
++#define R_106f_HDMI_FC_AUDSCHNLS8 0xe04b
++#define		HDMI_FC_AUDSCHNLS8_WORDLENGTH(v) (v)
++#define R_10b3_HDMI_FC_DATAUTO0 0xb045
++#define R_10b4_HDMI_FC_DATAUTO1 0x3046
++#define R_10b5_HDMI_FC_DATAUTO2 0x3047
++#define R_10d2_HDMI_FC_MASK0 0x904c
++#define R_10d6_HDMI_FC_MASK1 0x904e
++#define R_10da_HDMI_FC_MASK2 0xd04c
++#define R_10e0_HDMI_FC_PRCONF 0x3048
++#define R_1103_HDMI_FC_GMD_CONF 0x8051
++#define R_1104_HDMI_FC_GMD_HB 0x0052
++#define R_1200_HDMI_FC_DBGFORCE 0x0840
++#define		HDMI_FC_DBGFORCE_FORCEAUDIO BIT(4)
++#define		HDMI_FC_DBGFORCE_FORCEVIDEO BIT(0)
++#define R_1219_HDMI_FC_DBGTMDS0 0x4845
++
++/* HDMI Source PHY Registers */
++#define R_3000_HDMI_PHY_CONF0 0x0240
++#define		HDMI_PHY_CONF0_PDZ BIT(7)
++#define		HDMI_PHY_CONF0_ENTMDS BIT(6)
++#define		HDMI_PHY_CONF0_SPARECTRL BIT(5)
++#define		HDMI_PHY_CONF0_GEN2_PDDQ BIT(4)
++#define		HDMI_PHY_CONF0_GEN2_TXPWRON BIT(3)
++#define		HDMI_PHY_CONF0_GEN2_ENHPDRXSENSE BIT(2)
++#define		HDMI_PHY_CONF0_SELDATAENPOL BIT(1)
++#define		HDMI_PHY_CONF0_SELDIPIF BIT(0)
++#define R_3001_HDMI_PHY_TST0 0x0241
++#define		HDMI_PHY_TST0_TSTCLR BIT(5)
++#define R_3005_HDMI_PHY_INT0 0x0243
++#define R_3006_HDMI_PHY_MASK0 0x8242
++
++/* HDMI Master PHY Registers */
++#define R_3020_HDMI_PHY_I2CM_SLAVE_ADDR 0x2240
++#define		HDMI_PHY_I2CM_SLAVE_ADDR_PHY_GEN2 0x69
++#define R_3021_HDMI_PHY_I2CM_ADDRESS_ADDR 0x2241
++#define R_3022_HDMI_PHY_I2CM_DATAO_1_ADDR 0xa240
++#define R_3023_HDMI_PHY_I2CM_DATAO_0_ADDR 0xa241
++#define R_3026_HDMI_PHY_I2CM_OPERATION_ADDR 0xa242
++#define		HDMI_PHY_I2CM_OPERATION_ADDR_WRITE 0x10
++#define R_3027_HDMI_PHY_I2CM_INT_ADDR 0xa243
++#define R_3028_HDMI_PHY_I2CM_CTLINT_ADDR 0x6240
++
++/* Audio Sampler Registers */
++#define R_3100_HDMI_AUD_CONF0 0x0250
++#define R_3101_HDMI_AUD_CONF1 0x0251
++#define R_3102_HDMI_AUD_INT 0x8250
++#define R_3103_HDMI_AUD_CONF2 0x8251
++#define R_3200_HDMI_AUD_N1 0x0a40
++#define R_3201_HDMI_AUD_N2 0x0a41
++#define R_3202_HDMI_AUD_N3 0x8a40
++#define R_3205_HDMI_AUD_CTS3 0x0a43
++#define R_3206_HDMI_AUD_INPUTCLKFS 0x8a42
++#define R_3302_HDMI_AUD_SPDIFINT 0x8a50
++
++/* Generic Parallel Audio Interface Registers */
++#define R_3506_HDMI_GP_POL 0x8272
++
++/* Main Controller Registers */
++#define R_4001_HDMI_MC_CLKDIS 0x0081
++#define		HDMI_MC_CLKDIS_HDCPCLK_DISABLE BIT(6)
++#define		HDMI_MC_CLKDIS_AUDCLK_DISABLE BIT(3)
++#define		HDMI_MC_CLKDIS_TMDSCLK_DISABLE BIT(1)
++#define R_4002_HDMI_MC_SWRSTZ 0x8080
++#define R_4004_HDMI_MC_FLOWCTRL 0x0082
++#define R_4005_HDMI_MC_PHYRSTZ 0x0083
++#define		HDMI_MC_PHYRSTZ_DEASSERT BIT(0)
++
++/* HDCP Encryption Engine Registers */
++#define R_5000_HDMI_A_HDCPCFG0 0x00c0
++#define R_5001_HDMI_A_HDCPCFG1 0x00c1
++#define		HDMI_A_HDCPCFG1_PH2UPSHFTENC BIT(2)
++#define		HDMI_A_HDCPCFG1_ENCRYPTIONDISABLE BIT(1)
++#define		HDMI_A_HDCPCFG1_SWRESET BIT(0)
++#define R_5008_HDMI_A_APIINTMSK 0x40c0
++#define R_5009_HDMI_A_VIDPOLCFG 0x40c1
++#define		HDMI_A_VIDPOLCFG_DATAENPOL_ACTIVE_HIGH BIT(4)
++
++/* CEC Engine Registers */
++#define R_7d02_HDMI_CEC_MASK 0x86f0
++
++/* I2C Master Registers (E-DDC) */
++#define R_7e00_HDMI_I2CM_SLAVE 0x0ee0
++#define R_7e01_HDMI_I2CM_ADDRESS 0x0ee1
++#define R_7e03_HDMI_I2CM_DATAI 0x8ee1
++#define R_7e04_HDMI_I2CM_OPERATION 0x0ee2
++#define		HDMI_I2CM_OPERATION_DDC_READ 0x02
++#define R_7e05_HDMI_I2CM_INT 0x0ee3
++#define R_7e06_HDMI_I2CM_CTLINT 0x8ee2
++#define R_7e07_HDMI_I2CM_DIV 0x8ee3
++#define R_7e08_HDMI_I2CM_SEGADDR 0x4ee0
++#define R_7e09_HDMI_I2CM_SOFTRSTZ 0x4ee1
++#define R_7e0a_HDMI_I2CM_SEGPTR 0xcee0
++#define R_7e0b_HDMI_I2CM_SS_SCL_HCNT_1_ADDR 0xcee1
++#define R_7e0c_HDMI_I2CM_SS_SCL_HCNT_0_ADDR 0x4ee2
++#define R_7e0d_HDMI_I2CM_SS_SCL_LCNT_1_ADDR 0x4ee3
++#define R_7e0e_HDMI_I2CM_SS_SCL_LCNT_0_ADDR 0xcee2
++#define R_7e0f_HDMI_I2CM_FS_SCL_HCNT_1_ADDR 0xcee3
++#define R_7e10_HDMI_I2CM_FS_SCL_HCNT_0_ADDR 0x0ee4
++#define R_7e11_HDMI_I2CM_FS_SCL_LCNT_1_ADDR 0x0ee5
++
++/*
++ * [0] =3D vic (CEA Video ID)
++ * [1] used in hdmi_phy_set / hdmi_io_audio
++ * [2..16] used in hdmi_io_video_mode
++ */
++static const struct para_tab {
++	u32 para[17];
++} ptbl[] =3D {
++	{{  6,  1, 1,    1,  5,  3, 0, 1, 4, 0, 0, 160,  20,  38, 124, 240, 22}},
++	{{ 21, 11, 1,    1,  5,  3, 1, 1, 2, 0, 0, 160,  32,  24, 126,  32, 24}},
++	{{  2, 11, 0,    0,  2,  6, 1, 0, 9, 0, 0, 208, 138,  16,  62, 224, 45}},
++	{{ 17, 11, 0,    0,  2,  5, 2, 0, 5, 0, 0, 208, 144,  12,  64,  64, 49}},
++	{{ 19,  4, 0, 0x60,  5,  5, 2, 2, 5, 1, 0,   0, 188, 184,  40, 208, 30}},
++	{{  4,  4, 0, 0x60,  5,  5, 2, 1, 5, 0, 0,   0, 114, 110,  40, 208, 30}},
++	{{ 20,  4, 0, 0x61,  7,  5, 4, 2, 2, 2, 0, 128, 208,  16,  44,  56, 22}},
++	{{  5,  4, 0, 0x60,  7,  5, 4, 1, 2, 0, 0, 128,  24,  88,  44,  56, 22}},
++	{{ 31,  2, 0, 0x60,  7,  5, 4, 2, 4, 2, 0, 128, 208,  16,  44,  56, 45}},
++	{{ 16,  2, 0, 0x60,  7,  5, 4, 1, 4, 0, 0, 128,  24,  88,  44,  56, 45}},
++	{{ 32,  4, 0, 0x60,  7,  5, 4, 3, 4, 2, 0, 128,  62, 126,  44,  56, 45}},
++	{{ 33,  4, 0,    0,  7,  5, 4, 2, 4, 2, 0, 128, 208,  16,  44,  56, 45}},
++	{{ 34,  4, 0,    0,  7,  5, 4, 1, 4, 0, 0, 128,  24,  88,  44,  56, 45}},
++#if 0
++	{{160,  2, 0, 0x60,  7,  5, 8, 3, 4, 1, 0, 128,  62, 126,  44, 157, 45}},
++	{{147,  2, 0, 0x60,  5,  5, 5, 2, 5, 1, 0,   0, 188, 184,  40, 190, 30}},
++	{{132,  2, 0, 0x60,  5,  5, 5, 1, 5, 0, 0,   0, 114, 110,  40, 160, 30}},
++	{{257,  1, 0, 0x60, 15, 10, 8, 2, 8, 0, 0,   0,  48, 176,  88, 112, 90}},
++	{{258,  1, 0, 0x60, 15, 10, 8, 5, 8, 4, 0,   0, 160,  32,  88, 112, 90}},
++#endif
++};
++
++#if IS_ENABLED(CONFIG_SND_SOC_SUNXI_HDMI)
++/* HDMI_FC_AUDSCHNLS7 values */
++static const struct pcm_sf {
++	u32 	sf;
++	unsigned char	cs_sf;
++} sf[] =3D {
++	{44100,	0x00},
++	{48000, 0x02},
++	{96000, 0x0a},
++	{192000,0x0e},
++	{22050,	0x04},
++	{24000,	0x06},
++	{32000, 0x03},
++	{88200,	0x08},
++	{768000,0x09},
++	{176400,0x0c},
++};
++
++static const struct {
++	int rate;
++	unsigned short n1, n2;
++} n_table[] =3D {
++	{32000,	3072,	4096},
++	{44100,	4704,	6272},
++	{88200,	4704*2,	6272*2},
++	{176400,4704*4,	6272*4},
++	{48000,	5120,	6144},
++	{96000,	5120*2,	6144*2},
++	{192000,5120*4,	6144*4},
++};
++#endif
++
++static inline void hdmi_writeb(struct de2_hdmi_priv *priv, u32 addr, u8 da=
+ta)
++{
++	writeb_relaxed(data, priv->mmio + addr);
++}
++
++static inline void hdmi_writel(struct de2_hdmi_priv *priv, u32 addr, u32 d=
+ata)
++{
++	writel_relaxed(data, priv->mmio + addr);
++}
++
++static inline u8 hdmi_readb(struct de2_hdmi_priv *priv, u32 addr)
++{
++	return readb_relaxed(priv->mmio + addr);
++}
++
++static inline u32 hdmi_readl(struct de2_hdmi_priv *priv, u32 addr)
++{
++	return readl_relaxed(priv->mmio + addr);
++}
++
++static void hdmi_lock(struct de2_hdmi_priv *priv)
++{
++	hdmi_writeb(priv, 0x10010, 0x45);
++	hdmi_writeb(priv, 0x10011, 0x45);
++	hdmi_writeb(priv, 0x10012, 0x52);
++	hdmi_writeb(priv, 0x10013, 0x54);
++}
++static void hdmi_unlock(struct de2_hdmi_priv *priv)
++{
++	hdmi_writeb(priv, 0x10010, 0x52);
++	hdmi_writeb(priv, 0x10011, 0x54);
++	hdmi_writeb(priv, 0x10012, 0x41);
++	hdmi_writeb(priv, 0x10013, 0x57);
++}
++
++static void hdmi_inner_init(struct de2_hdmi_priv *priv)
++{
++	u8 clkdis =3D priv->soc_type =3D=3D SOC_H3 ?
++				~HDMI_MC_CLKDIS_TMDSCLK_DISABLE : 0xff;
++
++	hdmi_lock(priv);
++
++	/* software reset */
++	hdmi_writeb(priv, R_4002_HDMI_MC_SWRSTZ,  0x00);
++	udelay(2);
++
++	/* mask all interrupts */
++	hdmi_writeb(priv, R_01ff_HDMI_IH_MUTE, 0x00);
++	hdmi_writeb(priv, R_0807_HDMI_VP_MASK, 0xff);
++	hdmi_writeb(priv, R_10d2_HDMI_FC_MASK0, 0xff);
++	hdmi_writeb(priv, R_10d6_HDMI_FC_MASK1, 0xff);
++	hdmi_writeb(priv, R_10da_HDMI_FC_MASK2, 0xff);
++	hdmi_writeb(priv, R_3102_HDMI_AUD_INT, 0xff);
++	hdmi_writeb(priv, R_3302_HDMI_AUD_SPDIFINT, 0xff);
++	hdmi_writeb(priv, R_3506_HDMI_GP_POL, 0xff);
++	hdmi_writeb(priv, R_5008_HDMI_A_APIINTMSK, 0xff);
++	hdmi_writeb(priv, R_7d02_HDMI_CEC_MASK, 0xff);
++	hdmi_writeb(priv, R_7e05_HDMI_I2CM_INT, 0xff);
++	hdmi_writeb(priv, R_7e06_HDMI_I2CM_CTLINT, 0xff);
++
++	hdmi_writeb(priv, R_1063_HDMI_FC_AUDSCONF, 0xf0);
++	hdmi_writeb(priv, R_10b3_HDMI_FC_DATAUTO0, 0x1e);
++	hdmi_writeb(priv, R_5001_HDMI_A_HDCPCFG1, 0x00);
++	hdmi_writeb(priv, R_5001_HDMI_A_HDCPCFG1,
++				HDMI_A_HDCPCFG1_ENCRYPTIONDISABLE |
++				HDMI_A_HDCPCFG1_SWRESET);
++	hdmi_writeb(priv, R_5000_HDMI_A_HDCPCFG0, 0x00);
++	hdmi_writeb(priv, R_5009_HDMI_A_VIDPOLCFG,
++				HDMI_A_VIDPOLCFG_DATAENPOL_ACTIVE_HIGH);
++	hdmi_writeb(priv, R_4001_HDMI_MC_CLKDIS, clkdis);
++	hdmi_writeb(priv, R_4001_HDMI_MC_CLKDIS, 0x00);
++	hdmi_writeb(priv, R_4001_HDMI_MC_CLKDIS, clkdis);
++	hdmi_writeb(priv, R_0100_HDMI_IH_FC_STAT0, 0xff);
++	hdmi_writeb(priv, R_0101_HDMI_IH_FC_STAT1, 0xff);
++	hdmi_writeb(priv, R_0102_HDMI_IH_FC_STAT2, 0xff);
++	hdmi_writeb(priv, R_0103_HDMI_IH_AS_STAT0, 0xff);
++	hdmi_writeb(priv, R_0105_HDMI_IH_I2CM_STAT0, 0xff);
++	hdmi_writeb(priv, R_0106_HDMI_IH_CEC_STAT0, 0xff);
++	hdmi_writeb(priv, R_0107_HDMI_IH_VP_STAT0, 0xff);
++}
++
++static void hdmi_phy_init_a83t(struct de2_hdmi_priv *priv)
++{
++	hdmi_inner_init(priv);
++
++	hdmi_writeb(priv, 0x10000, 0x01);
++	hdmi_writeb(priv, 0x10001, 0x00);
++	hdmi_writeb(priv, 0x10002, HDMI_PHY_I2CM_SLAVE_ADDR_PHY_GEN2);
++	hdmi_writeb(priv, 0x10003, 0x00);
++	hdmi_writeb(priv, 0x10007, 0xa0);
++	hdmi_writeb(priv, R_4005_HDMI_MC_PHYRSTZ,
++					HDMI_MC_PHYRSTZ_DEASSERT);
++	udelay(1);
++	hdmi_writeb(priv, R_3000_HDMI_PHY_CONF0,
++					HDMI_PHY_CONF0_GEN2_ENHPDRXSENSE |
++					HDMI_PHY_CONF0_SELDATAENPOL);
++	hdmi_writeb(priv, R_3000_HDMI_PHY_CONF0,
++					HDMI_PHY_CONF0_GEN2_PDDQ |
++					HDMI_PHY_CONF0_GEN2_ENHPDRXSENSE |
++					HDMI_PHY_CONF0_SELDATAENPOL);
++	hdmi_writeb(priv, R_3000_HDMI_PHY_CONF0,
++					HDMI_PHY_CONF0_GEN2_PDDQ |
++					HDMI_PHY_CONF0_SELDATAENPOL);
++	hdmi_writeb(priv, R_3006_HDMI_PHY_MASK0, 0xf0);
++	hdmi_writeb(priv, R_3027_HDMI_PHY_I2CM_INT_ADDR, 0xff);
++	hdmi_writeb(priv, R_3028_HDMI_PHY_I2CM_CTLINT_ADDR, 0xff);
++	hdmi_writeb(priv, R_0104_HDMI_IH_PHY_STAT0, 0xff);
++	hdmi_writeb(priv, R_0108_HDMI_IH_I2CMPHY_STAT0, 0xff);
++	hdmi_writeb(priv, R_4005_HDMI_MC_PHYRSTZ, 0x00);
++	hdmi_writeb(priv, R_3000_HDMI_PHY_CONF0,
++					HDMI_PHY_CONF0_GEN2_PDDQ |
++					HDMI_PHY_CONF0_GEN2_ENHPDRXSENSE |
++					HDMI_PHY_CONF0_SELDATAENPOL);
++	hdmi_writeb(priv, R_3000_HDMI_PHY_CONF0,
++					HDMI_PHY_CONF0_GEN2_ENHPDRXSENSE |
++					HDMI_PHY_CONF0_SELDATAENPOL);
++	hdmi_writeb(priv, R_3001_HDMI_PHY_TST0, HDMI_PHY_TST0_TSTCLR);
++	hdmi_writeb(priv, R_3020_HDMI_PHY_I2CM_SLAVE_ADDR,
++					HDMI_PHY_I2CM_SLAVE_ADDR_PHY_GEN2);
++	hdmi_writeb(priv, R_3001_HDMI_PHY_TST0, 0x00);
++}
++
++static void hdmi_phy_init_h3(struct de2_hdmi_priv *priv)
++{
++	int to_cnt;
++	u32 tmp;
++
++	hdmi_writel(priv, 0x10020, 0);
++	hdmi_writel(priv, 0x10020, 1 << 0);
++	udelay(5);
++	hdmi_writel(priv, 0x10020, hdmi_readl(priv, 0x10020) | (1 << 16));
++	hdmi_writel(priv, 0x10020, hdmi_readl(priv, 0x10020) | (1 << 1));
++	udelay(10);
++	hdmi_writel(priv, 0x10020, hdmi_readl(priv, 0x10020) | (1 << 2));
++	udelay(5);
++	hdmi_writel(priv, 0x10020, hdmi_readl(priv, 0x10020) | (1 << 3));
++	usleep_range(40, 50);
++	hdmi_writel(priv, 0x10020, hdmi_readl(priv, 0x10020) | (1 << 19));
++	usleep_range(100, 120);
++	hdmi_writel(priv, 0x10020, hdmi_readl(priv, 0x10020) | (1 << 18));
++	hdmi_writel(priv, 0x10020, hdmi_readl(priv, 0x10020) | (7 << 4));
++
++	to_cnt =3D 10;
++	while (1) {
++		if (hdmi_readl(priv, 0x10038) & 0x80)
++			break;
++		usleep_range(200, 250);
++		if (--to_cnt =3D=3D 0) {
++			pr_warn("hdmi phy init timeout\n");
++			break;
++		}
++	}
++
++	hdmi_writel(priv, 0x10020, hdmi_readl(priv, 0x10020) | (0xf << 8));
++	hdmi_writel(priv, 0x10020, hdmi_readl(priv, 0x10020) | (1 << 7));
++
++	hdmi_writel(priv, 0x1002c, 0x39dc5040);
++	hdmi_writel(priv, 0x10030, 0x80084343);
++	msleep(10);
++	hdmi_writel(priv, 0x10034, 0x00000001);
++	hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) | 0x02000000);
++	msleep(100);
++	tmp =3D hdmi_readl(priv, 0x10038);
++	hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) | 0xc0000000);
++	hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) |
++						((tmp >> 11) & 0x3f));
++	hdmi_writel(priv, 0x10020, 0x01ff0f7f);
++	hdmi_writel(priv, 0x10024, 0x80639000);
++	hdmi_writel(priv, 0x10028, 0x0f81c405);
++
++	hdmi_inner_init(priv);
++}
++
++void hdmi_io_init(struct de2_hdmi_priv *priv)
++{
++	if (priv->soc_type =3D=3D SOC_H3)
++		hdmi_phy_init_h3(priv);
++	else
++		hdmi_phy_init_a83t(priv);
++}
++
++static int get_vid(u32 id)
++{
++	u32 i;
++
++	for (i =3D 0; i < ARRAY_SIZE(ptbl); i++) {
++		if (id =3D=3D ptbl[i].para[0])
++			return i;
++	}
++
++	return -1;
++}
++
++static void hdmi_i2cm_write(struct de2_hdmi_priv *priv,
++			    int addr, u8 valh, u8 vall)
++{
++	hdmi_writeb(priv, R_3021_HDMI_PHY_I2CM_ADDRESS_ADDR, addr);
++	hdmi_writeb(priv, R_3022_HDMI_PHY_I2CM_DATAO_1_ADDR, valh);
++	hdmi_writeb(priv, R_3023_HDMI_PHY_I2CM_DATAO_0_ADDR, vall);
++	hdmi_writeb(priv, R_3026_HDMI_PHY_I2CM_OPERATION_ADDR,
++					HDMI_PHY_I2CM_OPERATION_ADDR_WRITE);
++	usleep_range(2000, 2500);
++}
++
++static int hdmi_phy_set_a83t(struct de2_hdmi_priv *priv, int i)
++{
++	switch (ptbl[i].para[1]) {
++	case 1:
++		hdmi_i2cm_write(priv, 0x06, 0x00, 0x00);
++		hdmi_i2cm_write(priv, 0x15, 0x00, 0x0f);
++		hdmi_i2cm_write(priv, 0x10, 0x00, 0x00);
++		hdmi_i2cm_write(priv, 0x19, 0x00, 0x02);
++		hdmi_i2cm_write(priv, 0x0e, 0x00, 0x00);
++		hdmi_i2cm_write(priv, 0x09, 0x80, 0x2b);
++		break;
++	case 2:				/* 1080P @ 60 & 50 */
++		hdmi_i2cm_write(priv, 0x06, 0x04, 0xa0);
++		hdmi_i2cm_write(priv, 0x15, 0x00, 0x0a);
++		hdmi_i2cm_write(priv, 0x10, 0x00, 0x00);
++		hdmi_i2cm_write(priv, 0x19, 0x00, 0x02);
++		hdmi_i2cm_write(priv, 0x0e, 0x00, 0x21);
++		hdmi_i2cm_write(priv, 0x09, 0x80, 0x29);
++		break;
++	case 4:				/* 720P @ 50 & 60, 1080I, 1080P */
++		hdmi_i2cm_write(priv, 0x06, 0x05, 0x40);
++		hdmi_i2cm_write(priv, 0x15, 0x00, 0x05);
++		hdmi_i2cm_write(priv, 0x10, 0x00, 0x00);
++		hdmi_i2cm_write(priv, 0x19, 0x00, 0x07);
++		hdmi_i2cm_write(priv, 0x0e, 0x02, 0xb5);
++		hdmi_i2cm_write(priv, 0x09, 0x80, 0x09);
++		break;
++	case 11:			/* 480P/576P */
++		hdmi_i2cm_write(priv, 0x06, 0x01,
++					ptbl[i].para[2] ? 0xe3 : 0xe0);
++		hdmi_i2cm_write(priv, 0x15, 0x00, 0x00);
++		hdmi_i2cm_write(priv, 0x10, 0x08, 0xda);
++		hdmi_i2cm_write(priv, 0x19, 0x00, 0x07);
++		hdmi_i2cm_write(priv, 0x0e, 0x03, 0x18);
++		hdmi_i2cm_write(priv, 0x09, 0x80, 0x09);
++		break;
++	default:
++		return -1;
++	}
++	hdmi_i2cm_write(priv, 0x1e, 0x00, 0x00);
++	hdmi_i2cm_write(priv, 0x13, 0x00, 0x00);
++	hdmi_i2cm_write(priv, 0x17, 0x00, 0x00);
++	hdmi_writeb(priv, R_3000_HDMI_PHY_CONF0,
++					HDMI_PHY_CONF0_GEN2_TXPWRON |
++					HDMI_PHY_CONF0_GEN2_ENHPDRXSENSE |
++					HDMI_PHY_CONF0_SELDATAENPOL);
++
++	return 0;
++}
++
++static int hdmi_phy_set_h3(struct de2_hdmi_priv *priv, int i)
++{
++	u32 tmp;
++
++	hdmi_writel(priv, 0x10020, hdmi_readl(priv, 0x10020) & ~0xf000);
++	switch (ptbl[i].para[1]) {
++	case 1:
++		hdmi_writel(priv, 0x1002c, 0x31dc5fc0);	/* or 0x30dc5fc0 ? */
++		hdmi_writel(priv, 0x10030, 0x800863c0);
++		msleep(10);
++		hdmi_writel(priv, 0x10034, 0x00000001);
++		hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) |
++							0x02000000);
++		msleep(200);
++		tmp =3D (hdmi_readl(priv, 0x10038) >> 11) & 0x3f;
++		hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) |
++							0xc0000000);
++		if (tmp < 0x3d)
++			tmp +=3D 2;
++		else
++			tmp =3D 0x3f;
++		hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) | tmp);
++		msleep(100);
++		hdmi_writel(priv, 0x10020, 0x01ffff7f);
++		hdmi_writel(priv, 0x10024, 0x8063b000);
++		hdmi_writel(priv, 0x10028, 0x0f8246b5);
++		break;
++	case 2:				/* 1080P @ 60 & 50 */
++		hdmi_writel(priv, 0x1002c, 0x39dc5040);
++		hdmi_writel(priv, 0x10030, 0x80084381);
++		msleep(10);
++		hdmi_writel(priv, 0x10034, 0x00000001);
++		hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) |
++							0x02000000);
++		msleep(100);
++		tmp =3D (hdmi_readl(priv, 0x10038) >> 11) & 0x3f;
++		hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) |
++							0xc0000000);
++		hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) | tmp);
++		hdmi_writel(priv, 0x10020, 0x01ffff7f);
++		hdmi_writel(priv, 0x10024, 0x8063a800);
++		hdmi_writel(priv, 0x10028, 0x0f81c485);
++		break;
++	case 4:				/* 720P @ 50 & 60, 1080I, 1080P */
++		hdmi_writel(priv, 0x1002c, 0x39dc5040);
++		hdmi_writel(priv, 0x10030, 0x80084343);
++		msleep(10);
++		hdmi_writel(priv, 0x10034, 0x00000001);
++		hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) |
++							0x02000000);
++		msleep(100);
++		tmp =3D (hdmi_readl(priv, 0x10038) >> 11) & 0x3f;
++		hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) |
++							0xc0000000);
++		hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) | tmp);
++		hdmi_writel(priv, 0x10020, 0x01ffff7f);
++		hdmi_writel(priv, 0x10024, 0x8063b000);
++		hdmi_writel(priv, 0x10028, 0x0f81c405);
++		break;
++	case 11:				/* 480P/576P */
++		hdmi_writel(priv, 0x1002c, 0x39dc5040);
++		hdmi_writel(priv, 0x10030, 0x8008430a);
++		msleep(10);
++		hdmi_writel(priv, 0x10034, 0x00000001);
++		hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) |
++							0x02000000);
++		msleep(100);
++		tmp =3D (hdmi_readl(priv, 0x10038) >> 11) & 0x3f;
++		hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) |
++							0xc0000000);
++		hdmi_writel(priv, 0x1002c, hdmi_readl(priv, 0x1002c) | tmp);
++		hdmi_writel(priv, 0x10020, 0x01ffff7f);
++		hdmi_writel(priv, 0x10024, 0x8063b000);
++		hdmi_writel(priv, 0x10028, 0x0f81c405);
++		break;
++	default:
++		return -1;
++	}
++
++	return 0;
++}
++
++void hdmi_io_video_on(struct de2_hdmi_priv *priv)
++{
++	if (priv->soc_type =3D=3D SOC_H3)
++		hdmi_writel(priv, 0x10020,
++				hdmi_readl(priv, 0x10020) | (0x0f << 12));
++#if 0
++	else
++		hdmi_writeb(priv, R_1200_HDMI_FC_DBGFORCE, 0);
++#endif
++}
++
++void hdmi_io_video_off(struct de2_hdmi_priv *priv)
++{
++	if (priv->soc_type =3D=3D SOC_H3)
++		hdmi_writel(priv, 0x10020,
++				hdmi_readl(priv, 0x10020) & ~(0x0f << 12));
++#if 0
++	else
++		hdmi_writeb(priv, R_1200_HDMI_FC_DBGFORCE,
++					HDMI_FC_DBGFORCE_FORCEVIDEO);
++#endif
++}
++
++#if IS_ENABLED(CONFIG_SND_SOC_SUNXI_HDMI)
++/* start audio */
++int hdmi_io_audio(struct de2_hdmi_priv *priv,
++		int sample_rate, int sample_bit)
++{
++	int id =3D get_vid(priv->cea_mode);	/* ptbl index */
++	unsigned int i, n;
++
++	if (id < 0)
++		return id;
++
++	/* (2 channels) */
++	hdmi_writeb(priv, R_1063_HDMI_FC_AUDSCONF, 0xf0);
++
++	hdmi_writeb(priv, R_1065_HDMI_FC_AUDSV, ~0x11);
++
++	hdmi_writeb(priv, R_1066_HDMI_FC_AUDSU, 0x00);
++	hdmi_writeb(priv, R_1067_HDMI_FC_AUDSCHNLS0,
++					HDMI_FC_AUDSCHNLS0_CGMSA);
++	hdmi_writeb(priv, R_1068_HDMI_FC_AUDSCHNLS1, 0x00);
++	hdmi_writeb(priv, R_1069_HDMI_FC_AUDSCHNLS2, 0x01);
++	hdmi_writeb(priv, R_106a_HDMI_FC_AUDSCHNLS3,
++					HDMI_FC_AUDSCHNLS3_OIEC_CH0(2) |
++					HDMI_FC_AUDSCHNLS3_OIEC_CH1(4));
++	hdmi_writeb(priv, R_106b_HDMI_FC_AUDSCHNLS4,
++					HDMI_FC_AUDSCHNLS4_OIEC_CH2(6) |
++					HDMI_FC_AUDSCHNLS4_OIEC_CH3(8));
++	hdmi_writeb(priv, R_106c_HDMI_FC_AUDSCHNLS5,
++					HDMI_FC_AUDSCHNLS5_OIEC_CH0(1) |
++					HDMI_FC_AUDSCHNLS5_OIEC_CH1(3));
++	hdmi_writeb(priv, R_106d_HDMI_FC_AUDSCHNLS6,
++					HDMI_FC_AUDSCHNLS6_OIEC_CH2(5) |
++					HDMI_FC_AUDSCHNLS6_OIEC_CH3(7));
++	hdmi_writeb(priv, R_106e_HDMI_FC_AUDSCHNLS7, 0x01);
++	for (i =3D 0; i < ARRAY_SIZE(sf); i++) {
++		if (sample_rate =3D=3D sf[i].sf) {
++			hdmi_writeb(priv, R_106e_HDMI_FC_AUDSCHNLS7,
++							sf[i].cs_sf);
++			break;
++		}
++	}
++	hdmi_writeb(priv, R_106f_HDMI_FC_AUDSCHNLS8,
++		(sample_bit =3D=3D 16) ? HDMI_FC_AUDSCHNLS8_WORDLENGTH(2) :
++		(sample_bit =3D=3D 24 ? HDMI_FC_AUDSCHNLS8_WORDLENGTH(11) :
++				    HDMI_FC_AUDSCHNLS8_WORDLENGTH(0)));
++
++	hdmi_writeb(priv, R_3101_HDMI_AUD_CONF1, sample_bit);
++
++	n =3D 6272;
++	for (i =3D 0; i < ARRAY_SIZE(n_table); i++) {
++		if (sample_rate =3D=3D n_table[i].rate) {
++			if (ptbl[id].para[1] =3D=3D 1)
++				n =3D n_table[i].n1;
++			else
++				n =3D n_table[i].n2;
++			break;
++		}
++	}
++
++	hdmi_writeb(priv, R_3200_HDMI_AUD_N1, n);
++	hdmi_writeb(priv, R_3201_HDMI_AUD_N2, n >> 8);
++	hdmi_writeb(priv, R_3202_HDMI_AUD_N3, n >> 16);
++	hdmi_writeb(priv, R_3205_HDMI_AUD_CTS3, 0x00);
++	hdmi_writeb(priv, R_3206_HDMI_AUD_INPUTCLKFS, 0x04);
++	hdmi_writeb(priv, R_1063_HDMI_FC_AUDSCONF, 0x00);	/* layout0 */
++	hdmi_writeb(priv, R_1025_HDMI_FC_AUDICONF0, 2 * 16);	/* 2 channels */
++	hdmi_writeb(priv, R_1026_HDMI_FC_AUDICONF1, 0x00);
++	hdmi_writeb(priv, R_1027_HDMI_FC_AUDICONF2, 0x00);
++	hdmi_writeb(priv, R_1028_HDMI_FC_AUDICONF3, 0x00);
++
++	hdmi_writeb(priv, R_3103_HDMI_AUD_CONF2, 0x00);		/* PCM only */
++
++	hdmi_writeb(priv, R_3100_HDMI_AUD_CONF0, 0x00);
++	hdmi_writeb(priv, R_4001_HDMI_MC_CLKDIS,
++					HDMI_MC_CLKDIS_AUDCLK_DISABLE);
++	hdmi_writeb(priv, R_4002_HDMI_MC_SWRSTZ, 0xf7);
++	usleep_range(100, 120);
++	hdmi_writeb(priv, R_3100_HDMI_AUD_CONF0, 0xaf);
++	usleep_range(100, 120);
++	hdmi_writeb(priv, R_4001_HDMI_MC_CLKDIS, 0x00);	/* enable all clocks */
++
++	return 0;
++}
++#endif
++
++
++/* initialize */
++int hdmi_io_video_mode(struct de2_hdmi_priv *priv)
++{
++	int i =3D get_vid(priv->cea_mode);	/* ptbl index */
++	u8 avi_d2;			/* AVI InfoFrame Data Byte 2 */
++
++	if (i < 0)
++		return i;
++
++	/* colorimetry and aspect ratio */
++	switch (priv->cea_mode) {
++	case 2:				/* 480P */
++	case 6:				/* 1440x480I */
++	case 17:			/* 576P */
++	case 21:			/* 1440x576I */
++		avi_d2 =3D (HDMI_COLORIMETRY_ITU_601 << 6) |
++			(HDMI_PICTURE_ASPECT_4_3 << 4) | 0x08;
++		break;
++	default:
++		avi_d2 =3D (HDMI_COLORIMETRY_ITU_709 << 6) |
++			(HDMI_PICTURE_ASPECT_16_9 << 4) | 0x08;
++		break;
++	}
++	if (priv->soc_type =3D=3D SOC_H3) {
++		if (hdmi_phy_set_h3(priv, i) !=3D 0)
++			return -1;
++		hdmi_inner_init(priv);
++	} else {
++		hdmi_io_init(priv);
++	}
++
++	hdmi_writeb(priv, R_1200_HDMI_FC_DBGFORCE,
++					HDMI_FC_DBGFORCE_FORCEVIDEO);
++	hdmi_writeb(priv, R_1219_HDMI_FC_DBGTMDS0, 0x00);
++	hdmi_writeb(priv, R_1000_HDMI_FC_INVIDCONF, ptbl[i].para[3] |
++				HDMI_FC_INVIDCONF_DE_IN_POLARITY_ACTIVE_HIGH);
++	hdmi_writeb(priv, 0x10001, ptbl[i].para[3] < 0x60 ? 0x03 : 0x00);
++	hdmi_writeb(priv, R_1002_HDMI_FC_INHACTV1, ptbl[i].para[4]);
++	hdmi_writeb(priv, R_100d_HDMI_FC_VSYNCINWIDTH, ptbl[i].para[5]);
++	hdmi_writeb(priv, R_1006_HDMI_FC_INVACTV1, ptbl[i].para[6]);
++	hdmi_writeb(priv, R_1004_HDMI_FC_INHBLANK1, ptbl[i].para[7]);
++	hdmi_writeb(priv, R_100c_HDMI_FC_VSYNCINDELAY, ptbl[i].para[8]);
++	hdmi_writeb(priv, R_1009_HDMI_FC_HSYNCINDELAY1, ptbl[i].para[9]);
++	hdmi_writeb(priv, R_100b_HDMI_FC_HSYNCINWIDTH1, ptbl[i].para[10]);
++	hdmi_writeb(priv, R_1001_HDMI_FC_INHACTV0, ptbl[i].para[11]);
++	hdmi_writeb(priv, R_1003_HDMI_FC_INHBLANK0, ptbl[i].para[12]);
++	hdmi_writeb(priv, R_1008_HDMI_FC_HSYNCINDELAY0, ptbl[i].para[13]);
++	hdmi_writeb(priv, R_100a_HDMI_FC_HSYNCINWIDTH1, ptbl[i].para[14]);
++	hdmi_writeb(priv, R_1005_HDMI_FC_INVACTV0, ptbl[i].para[15]);
++	hdmi_writeb(priv, R_1007_HDMI_FC_INVBLANK, ptbl[i].para[16]);
++	hdmi_writeb(priv, R_1011_HDMI_FC_CTRLDUR, 12);
++	hdmi_writeb(priv, R_1012_HDMI_FC_EXCTRLDUR, 32);
++	hdmi_writeb(priv, R_1013_HDMI_FC_EXCTRLSPAC, 1);
++	hdmi_writeb(priv, R_1014_HDMI_FC_CH0PREAM, 0x0b);
++	hdmi_writeb(priv, R_1015_HDMI_FC_CH1PREAM, 0x16);
++	hdmi_writeb(priv, R_1016_HDMI_FC_CH2PREAM, 0x21);
++	hdmi_writeb(priv, R_10e0_HDMI_FC_PRCONF, ptbl[i].para[2] ? 0x21 : 0x10);
++	hdmi_writeb(priv, R_0801_HDMI_VP_PR_CD, ptbl[i].para[2] ? 0x41 : 0x40);
++	hdmi_writeb(priv, R_0802_HDMI_VP_STUFF, 0x07);
++	hdmi_writeb(priv, R_0803_HDMI_VP_REMAP, 0x00);
++	hdmi_writeb(priv, R_0804_HDMI_VP_CONF, 0x47);
++	hdmi_writeb(priv, R_0200_HDMI_TX_INVID0, 0x01);
++	hdmi_writeb(priv, R_0201_HDMI_TX_INSTUFFING, 0x07);
++	hdmi_writeb(priv, R_0202_HDMI_TX_GYDATA0, 0x00);
++	hdmi_writeb(priv, R_0203_HDMI_TX_GYDATA1, 0x00);
++	hdmi_writeb(priv, R_0204_HDMI_TX_RCRDATA0, 0x00);
++	hdmi_writeb(priv, R_0205_HDMI_TX_RCRDATA1, 0x00);
++	hdmi_writeb(priv, R_0206_HDMI_TX_BCBDATA0, 0x00);
++	hdmi_writeb(priv, R_0207_HDMI_TX_BCBDATA1, 0x00);
++
++	if (priv->codec.eld) {			/* if audio/HDMI */
++		hdmi_writeb(priv, R_10b3_HDMI_FC_DATAUTO0, 0x08);
++		hdmi_writeb(priv, R_1031_HDMI_FC_VSDIEEEID2, 0x00);
++		hdmi_writeb(priv, R_1030_HDMI_FC_VSDIEEEID1,
++						HDMI_IEEE_OUI >> 8);
++		hdmi_writeb(priv, R_1029_HDMI_FC_VSDIEEEID0,
++						HDMI_IEEE_OUI & 0xff);
++		hdmi_writeb(priv, R_1032_HDMI_FC_VSDPAYLOAD0, 0x00);
++		hdmi_writeb(priv, R_1033_HDMI_FC_VSDPAYLOAD1, 0x00);
++		hdmi_writeb(priv, R_1034_HDMI_FC_VSDPAYLOAD2, 0x00);
++		hdmi_writeb(priv, R_10b4_HDMI_FC_DATAUTO1, 0x01);
++		hdmi_writeb(priv, R_10b5_HDMI_FC_DATAUTO2, 0x11);
++		hdmi_writeb(priv, R_1018_HDMI_FC_GCP, 0x00);
++		hdmi_writeb(priv, R_1104_HDMI_FC_GMD_HB, 0x00);
++		hdmi_writeb(priv, R_1103_HDMI_FC_GMD_CONF, 0x11);
++
++		hdmi_lock(priv);
++		hdmi_writeb(priv, R_1000_HDMI_FC_INVIDCONF,
++			hdmi_readb(priv, R_1000_HDMI_FC_INVIDCONF) | 0x08);
++		hdmi_unlock(priv);
++
++		/* AVI */
++		hdmi_writeb(priv, R_1019_HDMI_FC_AVICONF0,
++					HDMI_FC_AVICONF0_SCAN_INFO_UNDERSCAN);
++		hdmi_writeb(priv, R_101a_HDMI_FC_AVICONF1, avi_d2);
++		hdmi_writeb(priv, R_101b_HDMI_FC_AVICONF2, 0x08);
++		hdmi_writeb(priv, R_101c_HDMI_FC_AVIVID, priv->cea_mode);
++	}
++
++	hdmi_writeb(priv, R_4004_HDMI_MC_FLOWCTRL, 0x00);
++	hdmi_writeb(priv, R_4001_HDMI_MC_CLKDIS, 0x00);	/* enable all clocks */
++
++	if (priv->soc_type !=3D SOC_H3) {
++		if (hdmi_phy_set_a83t(priv, i) !=3D 0)
++			return -1;
++	}
++
++	hdmi_writeb(priv, R_1200_HDMI_FC_DBGFORCE, 0x00);
++
++	return 0;
++}
++
++/* get a block of EDID */
++int hdmi_io_ddc_read(struct de2_hdmi_priv *priv,
++			char pointer, char off,
++			int nbyte, char *pbuf)
++{
++	unsigned to_cnt;
++	u8 reg;
++	int ret =3D 0;
++
++	hdmi_lock(priv);
++	hdmi_writeb(priv, R_7e09_HDMI_I2CM_SOFTRSTZ, 0x00);
++	to_cnt =3D 50;
++	while (!(hdmi_readb(priv, R_7e09_HDMI_I2CM_SOFTRSTZ) & 0x01)) {
++		udelay(10);
++		if (--to_cnt =3D=3D 0) {	/* wait for 500us for timeout */
++			pr_warn("hdmi ddc reset timeout\n");
++			break;
++		}
++	}
++
++	hdmi_writeb(priv, R_7e07_HDMI_I2CM_DIV, 0x05);
++	hdmi_writeb(priv, R_7e05_HDMI_I2CM_INT, 0x08);
++	hdmi_writeb(priv, R_7e0c_HDMI_I2CM_SS_SCL_HCNT_0_ADDR, 0xd8);
++	hdmi_writeb(priv, R_7e0e_HDMI_I2CM_SS_SCL_LCNT_0_ADDR, 0xfe);
++
++	while (nbyte > 0) {
++		hdmi_writeb(priv, R_7e00_HDMI_I2CM_SLAVE, 0xa0 >> 1);
++		hdmi_writeb(priv, R_7e01_HDMI_I2CM_ADDRESS, off);
++		hdmi_writeb(priv, R_7e08_HDMI_I2CM_SEGADDR, 0x60 >> 1);
++		hdmi_writeb(priv, R_7e0a_HDMI_I2CM_SEGPTR, pointer);
++		hdmi_writeb(priv, R_7e04_HDMI_I2CM_OPERATION,
++					HDMI_I2CM_OPERATION_DDC_READ);
++
++		to_cnt =3D 200;				/* timeout 100ms */
++		while (1) {
++			reg =3D hdmi_readb(priv, R_0105_HDMI_IH_I2CM_STAT0);
++			hdmi_writeb(priv, R_0105_HDMI_IH_I2CM_STAT0, reg);
++			if (reg & 0x02) {
++				*pbuf++ =3D hdmi_readb(priv, R_7e03_HDMI_I2CM_DATAI);
++				break;
++			}
++			if (reg & 0x01) {
++				pr_warn("hdmi ddc read error\n");
++				ret =3D -1;
++				break;
++			}
++			if (--to_cnt =3D=3D 0) {
++				if (!ret) {
++					pr_warn("hdmi ddc read timeout\n");
++					ret =3D -1;
++				}
++				break;
++			}
++			usleep_range(800, 1000);
++		}
++		if (ret)
++			break;
++		nbyte--;
++		off++;
++	}
++	hdmi_unlock(priv);
++
++	return ret;
++}
++
++int hdmi_io_get_hpd(struct de2_hdmi_priv *priv)
++{
++	int ret;
++
++	hdmi_lock(priv);
++
++	if (priv->soc_type =3D=3D SOC_H3)
++		ret =3D hdmi_readl(priv, 0x10038) & 0x80000;
++	else
++		ret =3D hdmi_readb(priv, R_3005_HDMI_PHY_INT0) & 0x02;
++
++	hdmi_unlock(priv);
++
++	return ret !=3D 0;
++}
++
++void hdmi_io_reset(struct de2_hdmi_priv *priv)
++{
++	hdmi_writeb(priv, R_5001_HDMI_A_HDCPCFG1,
++					HDMI_A_HDCPCFG1_PH2UPSHFTENC);
++	hdmi_writeb(priv, R_4001_HDMI_MC_CLKDIS,
++					HDMI_MC_CLKDIS_HDCPCLK_DISABLE);
++}
++
++int hdmi_io_mode_valid(int cea_mode)
++{
++	return get_vid(cea_mode);
++}
+diff --git a/drivers/gpu/drm/sunxi/de2_hdmi_io.h b/drivers/gpu/drm/sunxi/de=
+2_hdmi_io.h
+new file mode 100644
+index 0000000..2577f0b
+--- /dev/null
++++ b/drivers/gpu/drm/sunxi/de2_hdmi_io.h
+@@ -0,0 +1,25 @@
++#ifndef __DE2_HDMI_IO_H__
++#define __DE2_HDMI_IO_H__
++/*
++ * Copyright (C) 2016 Jean-Fran=C3=A7ois Moine
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ */                            =20
++
++void hdmi_io_video_on(struct de2_hdmi_priv *priv);
++void hdmi_io_video_off(struct de2_hdmi_priv *priv);
++int hdmi_io_audio(struct de2_hdmi_priv *priv,
++		int sample_rate, int sample_bit);
++int hdmi_io_video_mode(struct de2_hdmi_priv *priv);
++int hdmi_io_ddc_read(struct de2_hdmi_priv *priv,
++			char pointer, char offset,
++			int nbyte, char *pbuf);
++int hdmi_io_get_hpd(struct de2_hdmi_priv *priv);
++void hdmi_io_init(struct de2_hdmi_priv *priv);
++void hdmi_io_reset(struct de2_hdmi_priv *priv);
++int hdmi_io_mode_valid(int cea_mode);
++
++#endif /* __DE2_HDMI_IO_H__ */
+--=20
 2.10.1
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--=20
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
