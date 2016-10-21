@@ -1,7 +1,7 @@
 From: Hardik Shah <hardik.t.shah@intel.com>
-Subject: [RFC 03/14] SoundWire: Add error handling and locking documentation
-Date: Fri, 21 Oct 2016 18:11:01 +0530
-Message-ID: <1477053673-16021-4-git-send-email-hardik.t.shah@intel.com>
+Subject: [RFC 01/14] SoundWire: Add SoundWire bus driver documentation
+Date: Fri, 21 Oct 2016 18:10:59 +0530
+Message-ID: <1477053673-16021-2-git-send-email-hardik.t.shah@intel.com>
 References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
@@ -10,166 +10,275 @@ To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 Cc: tiwai@suse.de, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Hardik Shah <hardik.t.shah@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds following documentation:
-    1. Bus driver locking mechanism.
-    2. Bus driver error handling.
+This patch adds summary documentation of SoundWire bus driver support in
+Linux.
 
 Signed-off-by: Hardik Shah <hardik.t.shah@intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- Documentation/sound/alsa/sdw/error_handling.txt |   71 +++++++++++++++++++++++
- Documentation/sound/alsa/sdw/locking.txt        |   64 ++++++++++++++++++++
- 2 files changed, 135 insertions(+)
- create mode 100644 Documentation/sound/alsa/sdw/error_handling.txt
- create mode 100644 Documentation/sound/alsa/sdw/locking.txt
+ Documentation/sound/alsa/sdw/summary.txt |  253 ++++++++++++++++++++++++++++++
+ 1 file changed, 253 insertions(+)
+ create mode 100644 Documentation/sound/alsa/sdw/summary.txt
 
-diff --git a/Documentation/sound/alsa/sdw/error_handling.txt b/Documentation/sound/alsa/sdw/error_handling.txt
+diff --git a/Documentation/sound/alsa/sdw/summary.txt b/Documentation/sound/alsa/sdw/summary.txt
 new file mode 100644
-index 0000000..9441cfa
+index 0000000..dc62817
 --- /dev/null
-+++ b/Documentation/sound/alsa/sdw/error_handling.txt
-@@ -0,0 +1,71 @@
-+The SoundWire PHY was designed with care and errors on the bus are going
-+to be very unlikely, and if they happen they should be limited to single
-+bit errors. Examples of this design can be found in the the
-+synchronization mechanism (sync loss after two errors) and short CRCs
-+used for the Bulk Register Access.
++++ b/Documentation/sound/alsa/sdw/summary.txt
+@@ -0,0 +1,253 @@
++SoundWire
++===========
 +
-+The errors can be detected with multiple mechanisms:
++SoundWire is a new interface ratified in 2015 by the MIPI Alliance.
++SoundWire is used for transporting data typically related to audio
++functions. SoundWire interface is optimized to integrate audio devices
++in mobile or mobile inspired systems.
 +
-+1. Bus clash or parity errors: This mechanism relies on low-level
-+detectors that are independent of the payload and usages, and they
-+cover both control and audio data. The current implementation only logs
-+such errors. Improvements could consist in invalidating an entire
-+programming sequence and restarting from a known position. In the case
-+of such errors happening outside of a control/command sequence, there is
-+no concealment or recovery for audio data enabled by the SoundWire
-+protocol, the location of the error will also impact its audibility
-+(most-significant bits will be more impacted in PCM), and after a number
-+of such errors are detected the bus might be reset. Note that bus
-+clashes due to programming errors (two streams using the same bit slots)
-+or electrical issues during the transmit/receive transition cannot be
-+distinguished, although a recurring bus clash when audio is enabled is a
-+clear hint of a bus allocation issue. The interrupt mechanism can also
-+help identify Slaves which detected a Bus Clash or a Parity Error, but
-+they may not be responsible for the errors so resetting them
-+individually is not a viable recovery strategy.
++SoundWire is a 2-Pin interface with data and clock line. It facilitates
++development of low cost, efficient, high performance systems. Broad
++level key features of SoundWire interface include:
 +
-+2. Command status: Each command is associated with a status, which only
-+covers transmission of the data between devices. The ACK status
-+indicates that the command was received and will be executed by the end
-+of the current frame. A NAK indicates that the command was in error and
-+will not be applied. In case of a bad programming (command sent to
-+non-existent Slave or to a non-implemented register) or electrical
-+issue, no response signals the command was ignored. Some Master
-+implementations allow for a command to be retransmitted several times.
-+If the retransmission fails, backtracking and restarting the entire
-+programming sequence might be a solution. Alternatively some
-+implementations might directly issue a bus reset and re-enumerate all
-+devices.
++1. Transporting all of payload data channels, control information, and
++setup commands over a single two-pin interface.
++2. Lower clock frequency, and hence lower power consumption, by use of
++DDR (Dual Data Rate) data transmission.
++3. Clock scaling and optional multiple data lanes to give wide
++flexibility in data rate to match system requirements.
++4. Device status monitoring, including interrupt-style alerts to the
++Master.
 +
-+3. Timeouts: In a number of cases such as ChannelPrepare or
-+ClockStopPrepare, the bus driver is supposed to poll a register field
-+until it transitions to a NotFinished value of zero. The MIPI SoundWire
-+spec 1.1 does not define timeouts but the MIPI SoundWire DisCo document
-+adds recommendation on timeouts. If such configurations do not complete,
-+the driver will return a -ETIMEOUT. Such timeouts are symptoms of a
-+faulty Slave device and are likely impossible to recover from.
++The SoundWire protocol supports up to eleven Slave interfaces. All the
++interfaces share the common bus containing data and clock line. Each of
++the Slaves can support up to 14 Data Ports. 13 Data Ports are dedicated
++to audio transport. Data Port0 is dedicated to transport of Bulk control
++information, each of the audio Data Ports (1..14) can support up to 8
++Channels in transmit or receiving mode (typically fixed direction but
++configurable direction is enabled by the specification). Bandwidth
++restrictions to ~19.2..24.576Mbits/s don't however allow for 11*13*8
++channels to be transmitted simultaneously.
 +
++Below figure shows the SoundWire Master and Slave devices sample
++connectivity.
 +
-+Errors during global reconfiguration sequences are extremely difficult
-+to handle:
++|---------------|                       Clock Signal    |---------------|
++|    Master     |-------|-------------------------------|    Slave      |
++|   Interface   |       |               Data Signal     |   Interface   |
++|               |-------|-------|-----------------------|       1       |
++|---------------|       |       |                       |---------------|
++                        |       |
++                        |       |
++                        |       |
++                     |---------------|
++                     |    Slave      |
++                     |   Interface   |
++                     |       2       |
++                     |---------------|
 +
-+1. BankSwitch: An error during the last command issuing a BankSwitch is
-+difficult to backtrack from. Retransmitting the Bank Switch command
-+may be possible in a single segment setup, but this can lead to
-+synchronization problems when enabling multiple bus segments (a command
-+with side effects such as frame reconfiguration would be handled at
-+different times). A global hard-reset might be the best solution.
++Terminology
++=============
 +
-+2. ClockStop: If one Slave is not capable of engaging the clock stop and
-+the system still needs to suspend, the priority might be to suspend
-+anyway and reset the bus on startup. This would prevent any active
-+standby/always-on activity but would not impact power targets.
++Following is the terminology used in Linux kernel driver. SoundWire
++Master interfaces registers as SoundWire Master device and Slave
++interfaces as SoundWire Slave device.
 +
-+Note that SoundWire does not provide a detection mechanism for writing
-+illegal values in valid registers. In a number of cases the standard
-+even mentions that the Slave might behave in implementation-defined
-+registers. The bus driver implementation does not provide a recovery
-+mechanism for such errors, Slave or Master driver implementers are
-+responsible for writing valid values in valid registers and implement
-+additional range checking if needed.
++Bus:
++Similar to I2C/AC97 bus driver, implements Linux bus for SoundWire
++handles the SoundWire protocol and manages bus. Programs all the MIPI
++defined Slave registers.
 +
-diff --git a/Documentation/sound/alsa/sdw/locking.txt b/Documentation/sound/alsa/sdw/locking.txt
-new file mode 100644
-index 0000000..650162f
---- /dev/null
-+++ b/Documentation/sound/alsa/sdw/locking.txt
-@@ -0,0 +1,64 @@
-+This document explains locking mechanism of the SoundWire bus driver.
-+Following types of lock are used in SoundWire bus driver.
++Master:
++Registers as SoundWire Master device (Linux Device). Similar to
++i2c_adapter. One bus instance is created for every Master interface
++registered to the bus driver.
 +
-+1. Core lock
-+2. Master lock
-+3. Stream lock
-+4. Message lock
++Slave:
++Registers as SoundWire Slave device (Linux Device). Similar to
++i2c_client.  Multiple Slave interfaces can register to same bus.
 +
-+1. Core lock: Global SoundWire bus driver lock. Core lock is used to
-+serialize each of the following operation(s) within SoundWire bus
-+driver.
-+	- Addition and removal of Master.
-+	- Acquire "Master lock" of each Master associated with the
-+	  aggregated stream.
++Master driver:
++Driver controlling the Master device. Registers a set of ops to abstract
++Master registers away, so that the bus driver can control the bus in a
++hardware-agnostic manner.
++
++Slave driver:
++Driver controlling the Slave device. MIPI-specified registers are
++controlled directly by the bus driver (and transmitted through the
++Master driver/interface). Any implementation-defined Slave register is
++controlled by Slave driver. In practice, it is expected that the Slave
++driver relies on regmap and does not request direct register access.
 +
 +
-+2. Master lock: SoundWire bus instance lock. Master lock is used to
-+serialize each of the following operation(s) within SoundWire bus
-+instance.
-+	- Addition and removal of Slave(s).
-+	- Prepare and enable, disable and de-prepare.
++Programming interfaces (SoundWire Master interface Driver)
++==========================================================
++
++SoundWire bus driver supports programming interfaces for the SoundWire
++Master and SoundWire Slave devices. All the code uses the "sdw" prefix
++commonly used by SOC designers and 3rd party vendors.
++
++Each of the SoundWire Master interface needs to be registered to the Bus
++driver.  Master interface capabilities also needs to be registered to
++bus driver since there is no discovery mechanism as a part of SoundWire
++protocol.
++
++The Master interface along with the Master interface capabilities are
++registered based on board file, DT or ACPI.
++
++Following is the API to register the SoundWire Master device.
++
++static int my_sdw_register_master()
++{
++	struct sdw_master master;
++	struct sdw_master_capabilities *m_cap;
++
++	m_cap = &master.mstr_capabilities;
++
++	/*
++	 * Fill the Master device capability, this is required
++	 * by bus driver to handle bus configurations.
++	 */
++	m_cap->highphy_capable = false;
++	m_cap->monitor_handover_supported = false;
++	m_cap->sdw_dp0_supported = 1;
++	m_cap->num_data_ports = INTEL_SDW_MAX_PORTS;
++
++	return snd_sdw_master_add(&master);
++}
++
++Master driver gets registered for controlling the Master device. It
++provides the callback functions to the bus driver to control the bus in
++device specific way. Device and Driver binds according to the standard
++Linux device-driver bind model. Master driver is registered from the
++driver init code. Below code shows the sample Master driver
++registration.
++
++static struct sdw_master_driver intel_sdw_mstr_driver = {
++	.driver_type = SDW_DRIVER_TYPE_MASTER,
++	.driver = {
++		.name   = "intel_sdw_mstr",
++		.pm     = &intel_sdw_pm_ops,
++	},
++
++	.probe          = intel_sdw_probe,
++	.remove         = intel_sdw_remove,
++	.mstr_ops       = &intel_sdw_master_ops,
++	.mstr_port_ops = &intel_sdw_master_port_ops,
++};
++
++static int __init intel_sdw_init(void) {
++	return snd_sdw_master_register_driver(&intel_sdw_mstr_driver);
++}
++
++As shown above Master driver registers itself with  bus using
++"sdw_mstr_driver_register" API, It registers using set of "mstr_ops" and
++"mstr_port_ops" callback functions to the bus driver.
++
++"mstr_ops" is used by bus driver to control the bus in the hardware
++specific way. It includes bus control functions such as sending the
++SoundWire read/write messages on bus. The Bus driver also defines the
++clock frequency and frameshape allocation needed by active stream and
++configuration messages that need to be transmitted over the bus, to
++maximize the bandwidth needed while minimizing the power. The "mstr_ops"
++structure abstracts the hardware details of the Master from the bus
++driver for setting up of the clock frequency and frameshape.
++
++"mstr_port_ops" is used by bus driver to setup the Port parameters of
++the Master interface Port. Master interface Port register map is not
++defined by MIPI specification, so bus driver calls the "mstr_port_ops"
++call back function to do Port operations like "Port Prepare", "Port
++Transport params set", "Port enable and disable". The implementation of
++the Master driver can then perform hardware-specific configurations.
++
++Programming interfaces (SoundWire Slave Driver)
++===============================================
++
++The MIPI specification requires each Slave interface to expose a unique
++48-bit identifier, stored in 6 read only dev_id registers. This dev_id
++identifier contains vendor and part information, as well as a field
++enabling to differentiate between identical components. An additional
++class field is currently unused.  Slave driver is written for the
++specific 48-bit identifier, Bus driver enumerates the Slave device based
++on in 48-bit identifier. Slave device and driver match is done based on
++this 48-bit identifier. Probe of the Slave driver is called by bus on
++successful match between device and driver id. A parent/child
++relationship is enforced between Slave and Master devices (the logical
++representation is aligned with the physical connectivity).
++
++The information on Master/Slave dependencies is stored in platform data,
++board-file, ACPI or DT. The MIPI Software specification defines an
++additional link_id parameters for controllers that have multiple Master
++interfaces. The dev_id registers are only unique in the scope of a link,
++and the link_ID unique in the scope of a controller. Both dev_id and
++link_id are not necessarily unique at the system level but the
++parent/child information is used to avoid ambiguity.
 +
 +
-+3. Stream lock: SoundWire stream lock. Stream lock is used to serialize
-+access of stream data structure for a SoundWire stream.
++static const struct sdw_slave_id intel_id[] = {
++	{"0b:00:f9:84:01:02", 0},
++	{},
++};
 +
++MODULE_DEVICE_TABLE(sdw, intel_id);
 +
-+4. Message lock: SoundWire message transfer lock. This lock is used to
-+serialize the message transfers(read/write) within the SoundWire bus
-+instance.
++static struct sdw_slave_driver intel_sdw_driver = {
++	.driver_type = SDW_DRIVER_TYPE_SLAVE,
++	.driver = {
++		.name = "intel",
++	},
++	.probe = intel_sdw_probe,
++	.remove = intel_sdw_remove,
++	.id_table = intel_id,
++};
 +
++module_sdw_slave_driver(intel_sdw_driver);
 +
-+Lock Hierarchy
-+==============
++Slave driver needs to register the capabilities (number of ports,
++formats supported, etc) of the Slave device to the bus driver after
++registration.  This is the first call to be called by Slave driver on
++probe. Bus driver needs to know a set of Slave capabilities to program
++Slave registers and to control the bus reconfigurations.
 +
-+- Core lock is the parent of Master and Stream lock.
-+- Master lock is parent of Message lock.
-+- Master and Stream locks are independent of each other.
++Below code shows the sample for it. Bus drivers programs the MIPI
++defined registers of the Slave.
 +
-+Example
-+=======
++static int slave_register_sdw_capabilities(struct sdw_slave *sdw,
++                                 const struct sdw_slave_id *sdw_id)
++{
++	struct sdw_slv_capabilities cap;
++	struct sdw_slv_dpn_capabilities *dpn_cap = NULL;
++	struct port_audio_mode_properties *prop = NULL;
++	int i, j;
 +
-+Below example shows how locks are acquired during prepare and enable
-+operation for aggregated stream. In this example, stream 1 is associated
-+with Master 1 and Master 2.
++	cap.wake_up_unavailable = true;
++	cap.test_mode_supported = false;
++	cap.clock_stop1_mode_supported = false;
++	cap.simplified_clock_stop_prepare = false;
++	cap.highphy_capable = true;
++	cap.paging_supported = false;
++	cap.bank_delay_support = false;
++	cap.port_15_read_behavior = 0;
++	cap.sdw_dp0_supported = false;
++	cap.num_of_sdw_ports = 3;
++	[...] additional configuration.
 +
-+1. Acquire Core lock.
-+2. Acquire Master 1 lock.
-+3. Acquire Master 2 lock.
-+4. Release Core lock.
++		return snd_sdw_slave_register_caps(sdw, &cap);
 +
-+5. Prepare operation.
-+	5.1 Acquire Message lock.
-+	5.2 Transfer message on bus (Single message transfer example).
-+	5.3 Release Message lock.
-+6. Enable operation.
-+	6.1 Acquire Message lock.
-+	6.2 Transfer message on bus (Single message transfer example).
-+	6.3 Release Message lock.
++}
 +
-+7. Acquire Core lock.
-+8. Release Master 1 lock.
-+9. Release Master 2 lock.
-+10. Release Core lock.
++Future enhancements to be done:
++===============================
++
++1. Currently BRA transfers is not supported.
++2. Bus driver supports only Single Data lane Slaves and Masters
++interfaces.
++
++Links:
++=====
++
++SoundWire MIPI specification 1.1 is available at:
++https://members.mipi.org/wg/All-Members/document/70290
++
++SoundWire MIPI DisCo (Discovery and Configuration) specification is in
++press.
 -- 
 1.7.9.5
