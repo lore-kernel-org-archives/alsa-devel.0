@@ -1,7 +1,7 @@
 From: Hardik Shah <hardik.t.shah@intel.com>
-Subject: [RFC 07/14] SoundWire: Add SoundWire Slaves register definitions
-Date: Fri, 21 Oct 2016 18:11:05 +0530
-Message-ID: <1477053673-16021-8-git-send-email-hardik.t.shah@intel.com>
+Subject: [RFC 11/14] SoundWire: Add tracing for Slave register read/write
+Date: Fri, 21 Oct 2016 18:11:09 +0530
+Message-ID: <1477053673-16021-12-git-send-email-hardik.t.shah@intel.com>
 References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
@@ -10,42 +10,43 @@ To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 Cc: tiwai@suse.de, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Hardik Shah <hardik.t.shah@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add register definitions for the SoundWire Slave. This is
-as per MIPI SoundWire spec 1.1.
-
 Signed-off-by: Hardik Shah <hardik.t.shah@intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/sdw/sdw_registers.h |  277 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 277 insertions(+)
- create mode 100644 include/sound/sdw/sdw_registers.h
+ include/sound/sdw_bus.h    |    7 ++
+ include/trace/events/sdw.h |  209 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/sdw/sdw.c            |   37 ++++++++
+ 3 files changed, 253 insertions(+)
+ create mode 100644 include/trace/events/sdw.h
 
-diff --git a/include/sound/sdw/sdw_registers.h b/include/sound/sdw/sdw_registers.h
+diff --git a/include/sound/sdw_bus.h b/include/sound/sdw_bus.h
+index 3ea0c71..ad3586e 100644
+--- a/include/sound/sdw_bus.h
++++ b/include/sound/sdw_bus.h
+@@ -894,5 +894,12 @@ int snd_sdw_config_ports(struct sdw_master *mstr, struct sdw_slave *slave,
+  */
+ int snd_sdw_slave_transfer(struct sdw_master *master, struct sdw_msg *msg,
+ 						unsigned int num);
++
++/* Function to enable tracing */
++void sdw_transfer_trace_reg(void);
++
++/* Function to disable tracing */
++void sdw_transfer_trace_unreg(void);
++
+ #endif /*  _LINUX_SDW_BUS_H */
+ 
+diff --git a/include/trace/events/sdw.h b/include/trace/events/sdw.h
 new file mode 100644
-index 0000000..48ecdf5
+index 0000000..447b86e
 --- /dev/null
-+++ b/include/sound/sdw/sdw_registers.h
-@@ -0,0 +1,277 @@
++++ b/include/trace/events/sdw.h
+@@ -0,0 +1,209 @@
 +/*
-+ * sdw_registers.h - SoundWire MIPI spec 1.1 defined SoundWire Slave
-+ *	register definition file. This defines the register offsets, bit
-+ *	mask and bit shift in accordance with MIPI spec 1.1.
++ * sdw.h - SDW message transfer tracepoints.
 + *
 + * Author: Hardik Shah <hardik.t.shah@intel.com>
-+ *
-+ *
-+ * This header file refers to the MIPI SoundWire 1.1 Spec.
-+ * [1.1] https://members.mipi.org/wg/All-Members/document (accessible to
-+ * MIPI members).
-+ *
-+ * The comments in the file try to follow the same conventions with a
-+ * capital letter for all standard definitions such as Master, Slave,
-+ * Data Port, etc. When possible, the constant numeric values are kept
-+ * the same as in the MIPI specifications. All of the constants reflect
-+ * the MIPI SoundWire definitions and are not vendor specific. Some of
-+ * the constants are for bus driver usage and not MIPI defined. These
-+ * are specified at appropriate place in this file.
 + *
 + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
@@ -100,209 +101,225 @@ index 0000000..48ecdf5
 + *
 + */
 +
-+#ifndef _LINUX_SDW_REG_H
-+#define _LINUX_SDW_REG_H
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM sdw
 +
-+#define SDW_SCP_ADDRPAGE1_MASK				0xFF
-+#define SDW_SCP_ADDRPAGE1_SHIFT				15
++#if !defined(_TRACE_SDW_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_SDW_H
 +
-+#define SDW_SCP_ADDRPAGE2_MASK				0xFF
-+#define SDW_SCP_ADDRPAGE2_SHIFT				22
++#include <linux/mod_devicetable.h>
++#include <sound/sdw_bus.h>
++#include <linux/tracepoint.h>
 +
-+#define SDW_REGADDR_SHIFT				0x0
-+#define SDW_REGADDR_MASK				0xFFFF
++/*
++ * __sdw_transfer() write request
++ */
++TRACE_EVENT_FN(sdw_write,
++	       TP_PROTO(const struct sdw_master *mstr,
++			const struct sdw_msg *msg,
++			int num),
++	       TP_ARGS(mstr, msg, num),
++	       TP_STRUCT__entry(
++		       __field(int,	master_nr)
++		       __field(__u16,	msg_nr)
++		       __field(__u8,	addr_page1)
++		       __field(__u8,	addr_page2)
++		       __field(__u16,	addr)
++		       __field(__u16,	flag)
++		       __field(__u16,	len)
++		       __dynamic_array(__u8, buf, msg->len)),
++	       TP_fast_assign(
++		       __entry->master_nr = mstr->nr;
++		       __entry->msg_nr = num;
++		       __entry->addr = msg->addr;
++		       __entry->flag = msg->r_w_flag;
++		       __entry->len = msg->len;
++		       __entry->addr_page1 = msg->addr_page1;
++		       __entry->addr_page2 = msg->addr_page2;
++		       memcpy(__get_dynamic_array(buf), msg->buf, msg->len);
++			      ),
++	       TP_printk("sdw-%d #%u a=%03x addr_page1=%04x addr_page2=%04x f=%04x l=%u [%*phD]",
++			 __entry->master_nr,
++			 __entry->msg_nr,
++			 __entry->addr,
++			 __entry->addr_page1,
++			 __entry->addr_page2,
++			 __entry->flag,
++			 __entry->len,
++			 __entry->len, __get_dynamic_array(buf)
++			 ),
++	       sdw_transfer_trace_reg,
++	       sdw_transfer_trace_unreg);
 +
-+#define SDW_MAX_REG_ADDR				65536
++/*
++ * __sdw_transfer() read request
++ */
++TRACE_EVENT_FN(sdw_read,
++	       TP_PROTO(const struct sdw_master *mstr, const struct sdw_msg *msg,
++			int num),
++	       TP_ARGS(mstr, msg, num),
++	       TP_STRUCT__entry(
++		       __field(int,	master_nr)
++		       __field(__u16,	msg_nr)
++		       __field(__u8,	addr_page1)
++		       __field(__u8,	addr_page2)
++		       __field(__u16,	addr)
++		       __field(__u16,	flag)
++		       __field(__u16,	len)
++		       __dynamic_array(__u8, buf, msg->len)),
++	       TP_fast_assign(
++		       __entry->master_nr = mstr->nr;
++		       __entry->msg_nr = num;
++		       __entry->addr = msg->addr;
++		       __entry->flag = msg->r_w_flag;
++		       __entry->len = msg->len;
++		       __entry->addr_page1 = msg->addr_page1;
++		       __entry->addr_page2 = msg->addr_page2;
++		       memcpy(__get_dynamic_array(buf), msg->buf, msg->len);
++			      ),
++	       TP_printk("sdw-%d #%u a=%03x addr_page1=%04x addr_page2=%04x f=%04x l=%u [%*phD]",
++			 __entry->master_nr,
++			 __entry->msg_nr,
++			 __entry->addr,
++			 __entry->addr_page1,
++			 __entry->addr_page2,
++			 __entry->flag,
++			 __entry->len,
++			 __entry->len, __get_dynamic_array(buf)
++			 ),
++	       sdw_transfer_trace_reg,
++	sdw_transfer_trace_unreg);
 +
++/*
++ * __sdw_transfer() read reply
++ */
++TRACE_EVENT_FN(sdw_reply,
++	       TP_PROTO(const struct sdw_master *mstr,
++			const struct sdw_msg *msg,
++			int num),
++	       TP_ARGS(mstr, msg, num),
++	       TP_STRUCT__entry(
++		       __field(int,	master_nr)
++		       __field(__u16,	msg_nr)
++		       __field(__u16,	addr)
++		       __field(__u16,	flag)
++		       __field(__u16,	len)
++		       __dynamic_array(__u8, buf, msg->len)),
++	       TP_fast_assign(
++		       __entry->master_nr = mstr->nr;
++		       __entry->msg_nr = num;
++		       __entry->addr = msg->addr;
++		       __entry->flag = msg->r_w_flag;
++		       __entry->len = msg->len;
++		       memcpy(__get_dynamic_array(buf), msg->buf, msg->len);
++			      ),
++	       TP_printk("sdw-%d #%u a=%03x f=%04x l=%u [%*phD]",
++			 __entry->master_nr,
++			 __entry->msg_nr,
++			 __entry->addr,
++			 __entry->flag,
++			 __entry->len,
++			 __entry->len, __get_dynamic_array(buf)
++			 ),
++	       sdw_transfer_trace_reg,
++	       sdw_transfer_trace_unreg);
 +
-+#define SDW_NUM_DATA_PORT_REGISTERS			0x100
-+#define SDW_BANK1_REGISTER_OFFSET			0x10
++/*
++ * __sdw_transfer() result
++ */
++TRACE_EVENT_FN(sdw_result,
++	       TP_PROTO(const struct sdw_master *mstr, int num, int ret),
++	       TP_ARGS(mstr, num, ret),
++	       TP_STRUCT__entry(
++		       __field(int,	master_nr)
++		       __field(__u16,	nr_msgs)
++		       __field(__s16,	ret)
++				),
++	       TP_fast_assign(
++		       __entry->master_nr = mstr->nr;
++		       __entry->nr_msgs = num;
++		       __entry->ret = ret;
++			      ),
++	       TP_printk("sdw-%d n=%u ret=%d",
++			 __entry->master_nr,
++			 __entry->nr_msgs,
++			 __entry->ret
++			 ),
++	       sdw_transfer_trace_reg,
++	       sdw_transfer_trace_unreg);
 +
-+#define SDW_DP0_INTSTAT					0x0
-+#define SDW_DP0_INTSTAT_TEST_FAIL_MASK			BIT_MASK(0)
-+#define SDW_DP0_INTSTAT_PORT_READY_MASK			BIT_MASK(1)
-+#define SDW_DP0_INTSTAT_BRA_FAILURE_MASK		BIT_MASK(2)
-+#define SDW_DP0_INTSTAT_IMPDEF1_MASK			BIT_MASK(5)
-+#define SDW_DP0_INTSTAT_IMPDEF2_MASK			BIT_MASK(6)
-+#define SDW_DP0_INTSTAT_IMPDEF3_MASK			BIT_MASK(7)
++#endif /* _TRACE_SDW_H */
 +
-+#define SDW_DP0_INTCLEAR				0x0
-+#define SDW_DP0_INTCLEAR_TEST_FAIL_MASK			BIT_MASK(0)
-+#define SDW_DP0_INTCLEAR_PORT_READY_MASK		BIT_MASK(1)
-+#define SDW_DP0_INTCLEAR_BRA_FAILURE_MASK		BIT_MASK(2)
-+#define SDW_DP0_INTCLEAR_IMPDEF1_MASK			BIT_MASK(5)
-+#define SDW_DP0_INTCLEAR_IMPDEF2_MASK			BIT_MASK(6)
-+#define SDW_DP0_INTCLEAR_IMPDEF3_MASK			BIT_MASK(7)
++/* This part must be outside protection */
++#include <trace/define_trace.h>
+diff --git a/sound/sdw/sdw.c b/sound/sdw/sdw.c
+index 449060e..71d2550 100644
+--- a/sound/sdw/sdw.c
++++ b/sound/sdw/sdw.c
+@@ -70,6 +70,8 @@
+ 
+ #include "sdw_priv.h"
+ 
++#define CREATE_TRACE_POINTS
++#include <trace/events/sdw.h>
+ /*
+  * Global SoundWire core instance contains list of Masters registered, core
+  *	lock and SoundWire stream tags.
+@@ -335,6 +337,17 @@ static int sdw_match(struct device *dev, struct device_driver *driver)
+ 	.match		= sdw_match,
+ 	.pm		= &soundwire_pm,
+ };
++static struct static_key sdw_trace_msg = STATIC_KEY_INIT_FALSE;
 +
-+#define SDW_DP0_INTMASK					0x1
-+#define SDW_DP0_INTMASK_TEST_FAIL_MASK			BIT_MASK(0)
-+#define SDW_DP0_INTMASK_PORT_READY_MASK			BIT_MASK(1)
-+#define SDW_DP0_INTMASK_BRA_FAILURE_MASK		BIT_MASK(2)
-+#define SDW_DP0_INTMASK_IMPDEF1_MASK			BIT_MASK(5)
-+#define SDW_DP0_INTMASK_IMPDEF2_MASK			BIT_MASK(6)
-+#define SDW_DP0_INTMASK_IMPDEF3_MASK			BIT_MASK(7)
++void sdw_transfer_trace_reg(void)
++{
++	static_key_slow_inc(&sdw_trace_msg);
++}
 +
-+#define SDW_DP0_PORTCTRL				0x2
-+#define SDW_DP0_PORTCTRL_PORTDATAMODE_MASK		GENMASK(3, 2)
-+#define SDW_DP0_PORTCTRL_PORTDATAMODE_SHIFT		2
-+#define SDW_DP0_PORTCTRL_NEXTINVERTBANK_MASK		BIT_MASK(4)
-+#define SDW_DP0_PORTCTRL_NEXTINVERTBANK_SHIFT		4
-+#define SDW_DP0_PORTCTRL_BPT_PAYLD_TYPE_MASK		GENMASK(7, 6)
-+#define SDW_DP0_PORTCTRL_BPT_PAYLD_TYPE_SHIFT		6
++void sdw_transfer_trace_unreg(void)
++{
++	static_key_slow_dec(&sdw_trace_msg);
++}
+ 
+ static int sdw_find_free_dev_num(struct sdw_master *mstr,
+ 				struct sdw_msg *msg)
+@@ -601,6 +614,21 @@ static int sdw_transfer(struct sdw_master *mstr, struct sdw_msg *msg, int num,
+ 	u8 prev_adr_pg1 = 0;
+ 	u8 prev_adr_pg2 = 0;
+ 
++	/*
++	 * sdw_trace_msg gets enabled when trace point sdw_slave_transfer gets
++	 * enabled.  This is an efficient way of keeping the for-loop from
++	 * being executed when not needed.
++	 */
++	if (static_key_false(&sdw_trace_msg)) {
++		int j;
 +
++		for (j = 0; j < num; j++)
++			if (msg[j].r_w_flag & SDW_MSG_FLAG_READ)
++				trace_sdw_read(mstr, &msg[j], j);
++			else
++				trace_sdw_write(mstr, &msg[j], j);
++	}
 +
-+#define SDW_DP0_BLOCKCTRL1				0x3
+ 	for (i = 0; i < num; i++) {
+ 
+ 		/* Reset timeout for every message */
+@@ -665,6 +693,15 @@ static int sdw_transfer(struct sdw_master *mstr, struct sdw_msg *msg, int num,
+ 		}
+ 	}
+ 
++	if (static_key_false(&sdw_trace_msg)) {
++		int j;
 +
-+#define SDW_DP0_PREPARESTATUS				0x4
++		for (j = 0; j < msg->len; j++)
++			if (msg[j].r_w_flag & SDW_MSG_FLAG_READ)
++				trace_sdw_reply(mstr, &msg[j], j);
++		trace_sdw_result(mstr, j, ret);
++	}
 +
-+#define SDW_DP0_PREPARECTRL				0x5
-+
-+#define SDW_DP0_CHANNELEN				0x20
-+#define SDW_DP0_SAMPLECTRL1				0x22
-+#define SDW_DP0_SAMPLECTRL2				0x23
-+#define SDW_DP0_OFFSETCTRL1				0x24
-+#define SDW_DP0_OFFSETCTRL2				0x25
-+#define SDW_DP0_HCTRL					0x26
-+#define SDW_DP0_LANECTRL				0x28
-+
-+#define SDW_SCP_INTSTAT1				0x40
-+#define SDW_SCP_INTSTAT1_PARITY_MASK			BIT_MASK(0)
-+#define SDW_SCP_INTSTAT1_BUS_CLASH_MASK			BIT_MASK(1)
-+#define SDW_SCP_INTSTAT1_IMPL_DEF_MASK			BIT_MASK(2)
-+#define SDW_SCP_INTSTAT1_SCP2_CASCADE_MASK		BIT_MASK(7)
-+
-+#define SDW_SCP_INTCLEAR1				0x40
-+#define SDW_SCP_INTCLEAR1_PARITY_MASK			BIT_MASK(0)
-+#define SDW_SCP_INTCLEAR1_BUS_CLASH_MASK		BIT_MASK(1)
-+#define SDW_SCP_INTCLEAR1_IMPL_DEF_MASK			BIT_MASK(2)
-+
-+#define SDW_SCP_INTMASK1				0x41
-+#define SDW_SCP_INTMASK1_PARITY_MASK			BIT_MASK(0)
-+#define SDW_SCP_INTMASK1_BUS_CLASH_MASK			BIT_MASK(1)
-+#define SDW_SCP_INTMASK1_IMPL_DEF_MASK			BIT_MASK(2)
-+
-+
-+#define SDW_SCP_INTSTAT2				0x42
-+#define SDW_SCP_INTSTAT2_SCP3_CASCADE_MASK		BIT_MASK(7)
-+
-+
-+#define SDW_SCP_INTSTAT3				0x43
-+
-+/* Number of interrupt status registers */
-+#define SDW_NUM_INT_STAT_REGISTERS			3
-+
-+/* Number of interrupt clear registers */
-+#define SDW_NUM_INT_CLEAR_REGISTERS			1
-+
-+#define SDW_SCP_CTRL					0x44
-+#define SDW_SCP_CTRL_CLK_STP_NOW_MASK			BIT_MASK(1)
-+#define SDW_SCP_CTRL_FORCE_RESET_MASK			BIT_MASK(2)
-+#define SDW_SCP_CTRL_CLK_STP_NOW_SHIFT			0x1
-+
-+#define SDW_SCP_STAT					0x44
-+#define SDW_SCP_STAT_CLK_STP_NF_MASK			BIT_MASK(0)
-+
-+#define SDW_SCP_SYSTEMCTRL				0x45
-+#define SDW_SCP_SYSTEMCTRL_CLK_STP_PREP_MASK		BIT_MASK(0)
-+#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE_MASK		BIT_MASK(2)
-+#define SDW_SCP_SYSTEMCTRL_WAKE_UP_EN_MASK		BIT_MASK(3)
-+#define SDW_SCP_SYSTEMCTRL_HIGH_PHY_MASK		BIT_MASK(4)
-+
-+#define SDW_SCP_SYSTEMCTRL_CLK_STP_PREP_SHIFT		0x0
-+#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE_SHIFT		0x2
-+#define SDW_SCP_SYSTEMCTRL_WAKE_UP_EN_SHIFT		0x3
-+#define SDW_SCP_SYSTEMCTRL_HIGH_PHY_SHIFT		0x4
-+
-+#define SDW_SCP_DEVNUMBER				0x46
-+#define SDW_SCP_HIGH_PHY_CHECK				0x47
-+#define SDW_SCP_ADDRPAGE1				0x48
-+#define SDW_SCP_ADDRPAGE2				0x49
-+#define SDW_SCP_KEEPEREN				0x4A
-+#define SDW_SCP_BANKDELAY				0x4B
-+#define SDW_SCP_TESTMODE				0x4F
-+#define SDW_SCP_DEVID_0					0x50
-+#define SDW_SCP_DEVID_1					0x51
-+#define SDW_SCP_DEVID_2					0x52
-+#define SDW_SCP_DEVID_3					0x53
-+#define SDW_SCP_DEVID_4					0x54
-+#define SDW_SCP_DEVID_5					0x55
-+
-+/* Banked Registers */
-+#define SDW_SCP_FRAMECTRL				0x60
-+#define SDW_SCP_NEXTFRAME				0x61
-+
-+#define SDW_DPN_INTSTAT					0x0
-+#define SDW_DPN_INTSTAT_TEST_FAIL_MASK			BIT_MASK(0)
-+#define SDW_DPN_INTSTAT_PORT_READY_MASK			BIT_MASK(1)
-+#define SDW_DPN_INTSTAT_IMPDEF1_MASK			BIT_MASK(5)
-+#define SDW_DPN_INTSTAT_IMPDEF2_MASK			BIT_MASK(6)
-+#define SDW_DPN_INTSTAT_IMPDEF3_MASK			BIT_MASK(7)
-+
-+#define SDW_DPN_INTCLEAR				0x0
-+#define SDW_DPN_INTCLEAR_TEST_FAIL_MASK			BIT_MASK(0)
-+#define SDW_DPN_INTCLEAR_PORT_READY_MASK		BIT_MASK(1)
-+#define SDW_DPN_INTCLEAR_IMPDEF1_MASK			BIT_MASK(5)
-+#define SDW_DPN_INTCLEAR_IMPDEF2_MASK			BIT_MASK(6)
-+#define SDW_DPN_INTCLEAR_IMPDEF3_MASK			BIT_MASK(7)
-+
-+#define SDW_DPN_INTMASK					0x1
-+#define SDW_DPN_INTMASK_TEST_FAIL_MASK			BIT_MASK(0)
-+#define SDW_DPN_INTMASK_PORT_READY_MASK			BIT_MASK(1)
-+#define SDW_DPN_INTMASK_IMPDEF1_MASK			BIT_MASK(5)
-+#define SDW_DPN_INTMASK_IMPDEF2_MASK			BIT_MASK(6)
-+#define SDW_DPN_INTMASK_IMPDEF3_MASK			BIT_MASK(7)
-+
-+#define SDW_DPN_PORTCTRL				0x2
-+#define SDW_DPN_PORTCTRL_PORTFLOWMODE_MASK		GENMASK(1, 0)
-+#define SDW_DPN_PORTCTRL_PORTFLOWMODE_SHIFT		0
-+#define SDW_DPN_PORTCTRL_PORTDATAMODE_MASK		GENMASK(3, 2)
-+#define SDW_DPN_PORTCTRL_PORTDATAMODE_SHIFT		2
-+#define SDW_DPN_PORTCTRL_NEXTINVERTBANK_MASK		BIT_MASK(4)
-+#define SDW_DPN_PORTCTRL_NEXTINVERTBANK_SHIFT		4
-+
-+#define SDW_DPN_BLOCKCTRL1				0x3
-+#define SDW_DPN_BLOCKCTRL1_WORDLENGTH_MASK		GENMASK(5, 0)
-+#define SDW_DPN_BLOCKCTRL1_WORDLENGTH_SHIFT		0
-+
-+#define SDW_DPN_PREPARESTATUS				0x4
-+#define SDW_DPN_PREPARECTRL				0x5
-+#define SDW_DPN_PREPARECTRL_CH_PREPARE_MASK		GENMASK(7, 0)
-+
-+#define SDW_DPN_CHANNELEN				0x20
-+#define SDW_DPN_BLOCKCTRL2				0x21
-+#define SDW_DPN_SAMPLECTRL1				0x22
-+
-+#define SDW_DPN_SAMPLECTRL1_LOW_MASK			GENMASK(7, 0)
-+#define SDW_DPN_SAMPLECTRL2				0x23
-+#define SDW_DPN_SAMPLECTRL2_SHIFT			8
-+#define SDW_DPN_SAMPLECTRL2_LOW_MASK			GENMASK(7, 0)
-+#define SDW_DPN_OFFSETCTRL1				0x24
-+#define SDW_DPN_OFFSETCTRL2				0x25
-+#define SDW_DPN_HCTRL					0x26
-+#define SDW_DPN_HCTRL_HSTART_MASK			GENMASK(7, 4)
-+#define SDW_DPN_HCTRL_HSTOP_MASK			GENMASK(3, 0)
-+#define SDW_DPN_HCTRL_HSTART_SHIFT			4
-+#define SDW_DPN_HCTRL_HSTOP_SHIFT			0
-+#define SDW_DPN_BLOCKCTRL3				0x27
-+#define SDW_DPN_LANECTRL				0x28
-+
-+
-+#define SDW_NUM_CASC_PORT_INTSTAT1			4
-+#define SDW_CASC_PORT_START_INTSTAT1			0
-+#define SDW_CASC_PORT_MASK_INTSTAT1			0x8
-+#define SDW_CASC_PORT_REG_OFFSET_INTSTAT1		0x0
-+
-+#define SDW_NUM_CASC_PORT_INTSTAT2			7
-+#define SDW_CASC_PORT_START_INTSTAT2			4
-+#define SDW_CASC_PORT_MASK_INTSTAT2			1
-+#define SDW_CASC_PORT_REG_OFFSET_INTSTAT2		1
-+
-+#define SDW_NUM_CASC_PORT_INTSTAT3			4
-+#define SDW_CASC_PORT_START_INTSTAT3			11
-+#define SDW_CASC_PORT_MASK_INTSTAT3			1
-+#define SDW_CASC_PORT_REG_OFFSET_INTSTAT3		2
-+
-+
-+#endif
+ 	if (!ret)
+ 		return i + 1;
+ 
 -- 
 1.7.9.5
