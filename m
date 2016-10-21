@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.gmane.org>
-Subject: [PATCH v2 1/6] ARM: dts: STiH407: DT fix s/interrupts-names/interrupt-names/
-Date: Fri, 21 Oct 2016 10:51:12 +0200
-Message-ID: <1477039877-20227-2-git-send-email-geert+renesas@glider.be>
+Subject: [PATCH v2 4/6] ASoC: davinci-mcbsp: DT fix s/interrupts-names/interrupt-names/
+Date: Fri, 21 Oct 2016 10:51:15 +0200
+Message-ID: <1477039877-20227-5-git-send-email-geert+renesas@glider.be>
 References: <1477039877-20227-1-git-send-email-geert+renesas@glider.be>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <1477039877-20227-1-git-send-email-geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.gmane.org>
@@ -14,24 +14,25 @@ Signed-off-by: Geert Uytterhoeven <geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.g
 Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
 v2:
-  - Add Acked-by.
+  - Add Acked-by,
+  - Split off from a completely unrelated patch.
 ---
- arch/arm/boot/dts/stih407-pinctrl.dtsi | 2 +-
+ Documentation/devicetree/bindings/sound/davinci-mcbsp.txt | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stih407-pinctrl.dtsi b/arch/arm/boot/dts/stih407-pinctrl.dtsi
-index c325cc059ae4bc80..daab16b5ae645cee 100644
---- a/arch/arm/boot/dts/stih407-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/stih407-pinctrl.dtsi
-@@ -1157,7 +1157,7 @@
- 			reg = <0x0923f080 0x4>;
- 			reg-names = "irqmux";
- 			interrupts = <GIC_SPI 192 IRQ_TYPE_NONE>;
--			interrupts-names = "irqmux";
-+			interrupt-names = "irqmux";
- 			ranges = <0 0x09230000 0x3000>;
- 
- 			pio40: gpio@09230000 {
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt b/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
+index 55b53e1fd72c9d6e..e0b6165c9cfcec19 100644
+--- a/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
++++ b/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
+@@ -43,7 +43,7 @@ mcbsp0: mcbsp@1d10000 {
+ 		<0x00310000 0x1000>;
+ 	reg-names = "mpu", "dat";
+ 	interrupts = <97 98>;
+-	interrupts-names = "rx", "tx";
++	interrupt-names = "rx", "tx";
+ 	dmas = <&edma0 3 1
+ 		&edma0 2 1>;
+ 	dma-names = "tx", "rx";
 -- 
 1.9.1
 
