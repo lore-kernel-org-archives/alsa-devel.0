@@ -1,106 +1,131 @@
 From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: [PATCH v5 0/7] ARM: ASoC: drm: sun8i: Add DE2 HDMI audio and video
-Date: Sat, 22 Oct 2016 15:28:54 +0200
-Message-ID: <cover.1477142934.git.moinejf@free.fr>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Subject: [PATCH v5 5/7] ARM: dts: sun8i-h3: add HDMI audio and
+ video nodes
+Date: Fri, 21 Oct 2016 12:01:01 +0200
+Message-ID: <5911d108c994630d471f7a86cc59466e2b7a0250.1477142934.git.moinejf@free.fr>
+References: <cover.1477142934.git.moinejf@free.fr>
+Reply-To: moinejf-GANU6spQydw@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCV6DL6LYMNBB3F5V3AAKGQEYAUKR6Q-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <cover.1477142934.git.moinejf-GANU6spQydw@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
 To: Dave Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This patchset series adds HDMI audio and video support to the Allwinner
-sun8i SoCs which include the display engine 2 (DE2).
+Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+---
+The patch for the A83T DT is not included in this patchset because
+the clock driver sunxi-ng does not support the A83T clocks.
+---
+ arch/arm/boot/dts/sun8i-h3.dtsi | 67 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
-A first submission in January for video on the H3 could not enter into
-the mainline kernel due to the lack of license headers in Allwinner's
-sources.
-
-Recently, an announce about Tina OS for the R series
-	https://www.youtube.com/watch?v=h7KD-6HblAU
-was followed by the upload of a new linux-3.4 source tree
-	https://github.com/tinalinux/linux-3.4
-with files containing GPL headers.
-
-Well, I don't know if these sources are really from Allwinner, but
-anyway, this is the opportunity to propose a new version of my DRM
-HDMI driver.
-
-v5:
-	- add overlay plane
-	- add audio support
-	- add support for the A83T
-	- add back the HDMI driver
-	- many bug fixes
-v4: 
-	- drivers/clk/sunxi/Makefile was missing (Emil Velikov)
-v3:
-	- add the hardware cursor
-	- simplify and fix the DE2 init sequences
-	- generation for all SUNXI SoCs (Andre Przywara)
-v2:
-	- remove the HDMI driver
-	- remarks from Chen-Yu Tsai and Russell King
-	- DT documentation added
-
-Jean-Francois Moine (7):
-  drm: sunxi: Add a basic DRM driver for Allwinner DE2
-  ASoC: sunxi: Add a simple HDMI CODEC
-  drm: sunxi: add DE2 HDMI support
-  ASoC: sunxi: Add sun8i I2S driver
-  ARM: dts: sun8i-h3: add HDMI audio and video nodes
-  ARM: dts: sun8i-h3: Add HDMI audio and video to the Banana Pi M2+
-  ARM: dts: sun8i-h3: Add HDMI audio and video to the Orange PI 2
-
- .../devicetree/bindings/display/sunxi/hdmi.txt     |  52 ++
- .../bindings/display/sunxi/sunxi-de2.txt           |  83 ++
- .../devicetree/bindings/sound/sun4i-i2s.txt        |  38 +-
- arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts    |  17 +
- arch/arm/boot/dts/sun8i-h3-orangepi-2.dts          |  17 +
- arch/arm/boot/dts/sun8i-h3.dtsi                    |  67 ++
- drivers/gpu/drm/Kconfig                            |   2 +
- drivers/gpu/drm/Makefile                           |   1 +
- drivers/gpu/drm/sunxi/Kconfig                      |  29 +
- drivers/gpu/drm/sunxi/Makefile                     |   9 +
- drivers/gpu/drm/sunxi/de2_crtc.c                   | 475 +++++++++++
- drivers/gpu/drm/sunxi/de2_crtc.h                   |  63 ++
- drivers/gpu/drm/sunxi/de2_de.c                     | 591 +++++++++++++
- drivers/gpu/drm/sunxi/de2_drm.h                    |  47 ++
- drivers/gpu/drm/sunxi/de2_drv.c                    | 378 +++++++++
- drivers/gpu/drm/sunxi/de2_hdmi.c                   | 396 +++++++++
- drivers/gpu/drm/sunxi/de2_hdmi.h                   |  40 +
- drivers/gpu/drm/sunxi/de2_hdmi_io.c                | 927 +++++++++++++++++++++
- drivers/gpu/drm/sunxi/de2_hdmi_io.h                |  25 +
- drivers/gpu/drm/sunxi/de2_plane.c                  | 119 +++
- include/sound/sunxi_hdmi.h                         |  23 +
- sound/soc/codecs/Kconfig                           |   9 +
- sound/soc/codecs/Makefile                          |   2 +
- sound/soc/codecs/sunxi-hdmi.c                      | 106 +++
- sound/soc/sunxi/Kconfig                            |   8 +
- sound/soc/sunxi/Makefile                           |   3 +
- sound/soc/sunxi/sun8i-i2s.c                        | 700 ++++++++++++++++
- 27 files changed, 4222 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/display/sunxi/hdmi.txt
- create mode 100644 Documentation/devicetree/bindings/display/sunxi/sunxi-de2.txt
- create mode 100644 drivers/gpu/drm/sunxi/Kconfig
- create mode 100644 drivers/gpu/drm/sunxi/Makefile
- create mode 100644 drivers/gpu/drm/sunxi/de2_crtc.c
- create mode 100644 drivers/gpu/drm/sunxi/de2_crtc.h
- create mode 100644 drivers/gpu/drm/sunxi/de2_de.c
- create mode 100644 drivers/gpu/drm/sunxi/de2_drm.h
- create mode 100644 drivers/gpu/drm/sunxi/de2_drv.c
- create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi.c
- create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi.h
- create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi_io.c
- create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi_io.h
- create mode 100644 drivers/gpu/drm/sunxi/de2_plane.c
- create mode 100644 include/sound/sunxi_hdmi.h
- create mode 100644 sound/soc/codecs/sunxi-hdmi.c
- create mode 100644 sound/soc/sunxi/sun8i-i2s.c
-
+diff --git a/arch/arm/boot/dts/sun8i-h3.dtsi b/arch/arm/boot/dts/sun8i-h3.dtsi
+index 75a8654..869f3be 100644
+--- a/arch/arm/boot/dts/sun8i-h3.dtsi
++++ b/arch/arm/boot/dts/sun8i-h3.dtsi
+@@ -140,6 +140,16 @@
+ 		#size-cells = <1>;
+ 		ranges;
+ 
++		de: de-controller@01000000 {
++			compatible = "allwinner,sun8i-h3-display-engine";
++			reg = <0x01000000 0x400000>;
++			clocks = <&ccu CLK_BUS_DE>, <&ccu CLK_DE>;
++			clock-names = "gate", "clock";
++			resets = <&ccu RST_BUS_DE>;
++			ports = <&lcd0_p>;
++			status = "disabled";
++		};
++
+ 		dma: dma-controller@01c02000 {
+ 			compatible = "allwinner,sun8i-h3-dma";
+ 			reg = <0x01c02000 0x1000>;
+@@ -149,6 +159,23 @@
+ 			#dma-cells = <1>;
+ 		};
+ 
++		lcd0: lcd-controller@01c0c000 {
++			compatible = "allwinner,sun8i-a83t-lcd";
++			reg = <0x01c0c000 0x400>;
++			clocks = <&ccu CLK_BUS_TCON0>, <&ccu CLK_TCON0>;
++			clock-names = "gate", "clock";
++			resets = <&ccu RST_BUS_TCON0>;
++			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
++			status = "disabled";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			lcd0_p: port {
++				lcd0_hdmi: endpoint {
++					remote-endpoint = <&hdmi_lcd0>;
++				};
++			};
++		};
++
+ 		mmc0: mmc@01c0f000 {
+ 			compatible = "allwinner,sun7i-a20-mmc";
+ 			reg = <0x01c0f000 0x1000>;
+@@ -439,6 +466,22 @@
+ 			status = "disabled";
+ 		};
+ 
++		i2s2: i2s@1c22800 {
++			compatible = "allwinner,sun8i-h3-i2s";
++			reg = <0x01c22800 0x60>;
++			clocks = <&ccu CLK_I2S2>;
++			clock-names = "mod";
++			resets = <&ccu RST_BUS_I2S2>;
++			dmas = <&dma 27>;
++			dma-names = "tx";
++			status = "disabled";
++			port {
++				i2s2_hdmi: endpoint {
++					remote-endpoint = <&hdmi_i2s2>;
++				};
++			};
++		};
++
+ 		uart0: serial@01c28000 {
+ 			compatible = "snps,dw-apb-uart";
+ 			reg = <0x01c28000 0x400>;
+@@ -541,6 +584,30 @@
+ 			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+ 		};
+ 
++		hdmi: hdmi@01ee0000 {
++			compatible = "allwinner,sun8i-h3-hdmi";
++			reg = <0x01ee0000 0x20000>;
++			clocks = <&ccu CLK_HDMI>, <&ccu CLK_HDMI_DDC>;
++			clock-names = "clock", "ddc-clock";
++			resets = <&ccu RST_BUS_HDMI0>, <&ccu RST_BUS_HDMI1>;
++			reset-names = "hdmi0", "hdmi1";
++			status = "disabled";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			port@0 {
++				reg = <0>;
++				hdmi_lcd0: endpoint {
++					remote-endpoint = <&lcd0_hdmi>;
++				};
++			};
++			port@1 {
++				reg = <1>;
++				hdmi_i2s2: endpoint {
++					remote-endpoint = <&i2s2_hdmi>;
++				};
++			};
++		};
++
+ 		rtc: rtc@01f00000 {
+ 			compatible = "allwinner,sun6i-a31-rtc";
+ 			reg = <0x01f00000 0x54>;
 -- 
 2.10.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
