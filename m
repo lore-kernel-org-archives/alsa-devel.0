@@ -1,20 +1,15 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: wm9705: Remove
-	ac97_read/ac97_write wrappers
-Date: Fri, 21 Oct 2016 13:54:13 +0100
-Message-ID: <20161021125413.GO3207@localhost.localdomain>
-References: <1477038428-4480-1-git-send-email-lars@metafoo.de>
- <1477038428-4480-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH RESEND 0/2] Arizona Clocking Improvements
+Date: Fri, 21 Oct 2016 14:15:56 +0100
+Message-ID: <1477055758-11490-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id EAC8C2671D3
- for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2016 14:54:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1477038428-4480-2-git-send-email-lars@metafoo.de>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 038022671EC
+ for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2016 15:15:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,21 +19,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, s.nawrocki@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 21, 2016 at 10:27:08AM +0200, Lars-Peter Clausen wrote:
-> Since the regmap conversion ac97_read/ac97_write are just simple wrappers
-> around snd_soc_read/snd_soc_write. Use those instead directly and remove
-> the wrappers.
-> 
-> Also use snd_soc_update_bits() where appropriate.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
+Add support for requesting the input clocks for the CODEC through
+the clock framework. This is some what of an intermediate step
+until all the clocking itself in the CODEC can be brought under
+the clock framework but as there are machine drivers that want
+to be merged now with source clocks that require gating and
+difficult to resolve issues between the SPI and clock framework
+an intermediate solution seems warranted.
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+The first patch in the original sending of this series is now in
+mainline through the MFD tree so these just need to go through
+ASoC now.
 
 Thanks,
 Charles
+
+Charles Keepax (2):
+  ASoC: arizona: Add gating for clock when used for direct MCLK
+  ASoC: arizona: Add gating for source clocks of the FLLs
+
+ sound/soc/codecs/arizona.c | 100 ++++++++++++++++++++++++++++++++++++++++++---
+ sound/soc/codecs/arizona.h |   2 +
+ sound/soc/codecs/cs47l24.c |   6 ++-
+ sound/soc/codecs/wm5102.c  |   9 +++-
+ sound/soc/codecs/wm5110.c  |  10 +++--
+ sound/soc/codecs/wm8997.c  |   9 +++-
+ sound/soc/codecs/wm8998.c  |   6 ++-
+ 7 files changed, 125 insertions(+), 17 deletions(-)
+
+-- 
+2.1.4
