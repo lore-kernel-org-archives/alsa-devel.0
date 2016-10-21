@@ -1,75 +1,35 @@
-From: Geert Uytterhoeven <geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.gmane.org>
-Subject: [PATCH v2 0/6] DT: Fix spelling of standard properties
-Date: Fri, 21 Oct 2016 10:51:11 +0200
-Message-ID: <1477039877-20227-1-git-send-email-geert+renesas@glider.be>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Patrice Chotard <patrice.chotard-qxv4g6HH51o@public.gmane.org>, Chanho Min <chanho.min-Hm3cg6mZ9cc@public.gmane.org>, Michael Ellerman <mpe-Gsx/Oe8HsFggBc27wqDAHg@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Geert Uytterhoeven <geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.gmane.org>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2 3/6] arm64: dts: lg1313: DT fix s/#interrupts-cells/#interrupt-cells/
+Date: Fri, 21 Oct 2016 10:51:14 +0200
+Message-ID: <1477039877-20227-4-git-send-email-geert+renesas@glider.be>
+References: <1477039877-20227-1-git-send-email-geert+renesas@glider.be>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1477039877-20227-1-git-send-email-geert+renesas@glider.be>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Patrice Chotard <patrice.chotard@st.com>, Chanho Min <chanho.min@lge.com>, Michael Ellerman <mpe@ellerman.id.au>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
 List-Id: alsa-devel@alsa-project.org
 
-	Hi all,
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+v2:
+  - New.
+---
+ arch/arm64/boot/dts/lg/lg1313.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This patch series fixes misspellings of various standard DT properties
-in DT binding documentation, DTS files, and error messages.
-While most of these are harmless, some of them may cause hard-to-debug
-failures.
-
-Changes compared to v2:
-  - Dropped patches that have been applied already,
-  - Add Rob Herring's Acked-by,
-  - Split off "[PATCH v2 4/6] ASoC: davinci-mcbsp: DT fix
-    s/interrupts-names/interrupt-names/" from the unrelated "[PATCH 06/14]
-    dmaengine: bcm2835: DT spelling s/interrupts-names/interrupt-names/",
-  - Add new patch "[PATCH v2 3/6] arm64: dts: lg1313: DT fix
-    s/#interrupts-cells/#interrupt-cells/".
-
-Please apply where appropriate.
-
-Thanks!
-
-P.S. I used the following to detect misspellings:
-
-    words="(address|clock|cooling|dma|gpio|index|interrupt|mbox|msi|nvmem|phy|phys|power-domain|pwm|reset|size|sleep|sound-dai|thermal-sensor)"
-
-    git grep -Ew "${words}s-names"
-    git grep -E "[^-]\<${words}-name\>[^-]"
-    git grep -Ew "#${words}s-cells"             # false positive phys-cells
-    git grep -E "#${words}-cell\>[^-]"
-
-    git grep -w adress-cells
-    git grep -Ew "interrupts-(map|parent)"
-
-Geert Uytterhoeven (6):
-  ARM: dts: STiH407: DT fix s/interrupts-names/interrupt-names/
-  arm64: dts: lg1312: DT fix s/#interrupts-cells/#interrupt-cells/
-  arm64: dts: lg1313: DT fix s/#interrupts-cells/#interrupt-cells/
-  ASoC: davinci-mcbsp: DT fix s/interrupts-names/interrupt-names/
-  dt: booting-without-of: DT fix s/#interrupt-cell/#interrupt-cells/
-  powerpc: dts: acadia: DT fix s/#interrupts-parent/#interrupt-parent/
-
- Documentation/devicetree/bindings/sound/davinci-mcbsp.txt | 2 +-
- Documentation/devicetree/booting-without-of.txt           | 2 +-
- arch/arm/boot/dts/stih407-pinctrl.dtsi                    | 2 +-
- arch/arm64/boot/dts/lg/lg1312.dtsi                        | 2 +-
- arch/arm64/boot/dts/lg/lg1313.dtsi                        | 2 +-
- arch/powerpc/boot/dts/acadia.dts                          | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/lg/lg1313.dtsi b/arch/arm64/boot/dts/lg/lg1313.dtsi
+index e703e1149c757082..abb2162228e82d39 100644
+--- a/arch/arm64/boot/dts/lg/lg1313.dtsi
++++ b/arch/arm64/boot/dts/lg/lg1313.dtsi
+@@ -123,7 +123,7 @@
+ 	amba {
+ 		#address-cells = <2>;
+ 		#size-cells = <1>;
+-		#interrupts-cells = <3>;
++		#interrupt-cells = <3>;
+ 
+ 		compatible = "simple-bus";
+ 		interrupt-parent = <&gic>;
 -- 
 1.9.1
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
