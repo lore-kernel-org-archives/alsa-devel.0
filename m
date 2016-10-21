@@ -1,20 +1,14 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [RFC PATCH v3 2/3] ALSA: hda - add DP mst audio
- support
-Date: Fri, 21 Oct 2016 08:24:26 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D194FA4A381@SHSMSX103.ccr.corp.intel.com>
-References: <1476344977-147193-1-git-send-email-libin.yang@linux.intel.com>
- <1476344977-147193-3-git-send-email-libin.yang@linux.intel.com>
- <s5hmvhzghkq.wl-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/2] ASoC: wm9705: Convert to regmap
+Date: Fri, 21 Oct 2016 10:27:07 +0200
+Message-ID: <1477038428-4480-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 24DC5267167
- for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2016 10:24:31 +0200 (CEST)
-In-Reply-To: <s5hmvhzghkq.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 700EA267167
+ for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2016 10:27:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,220 +18,239 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Currently the wm9712 driver still uses custom snd_soc_codec_driver IO
+callbacks. This has been deprecated for a while, so convert the wm9705
+driver to use regmap for its IO.
 
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+Untested, but same changes as for all the other AC97 drivers, so hopefully
+it will just work.
+---
+ sound/soc/codecs/Kconfig  |   1 +
+ sound/soc/codecs/wm9705.c | 123 ++++++++++++++++++++++++----------------------
+ 2 files changed, 64 insertions(+), 60 deletions(-)
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Thursday, October 20, 2016 11:34 PM
-> To: libin.yang@linux.intel.com
-> Cc: alsa-devel@alsa-project.org; Yang, Libin <libin.yang@intel.com>; Lin,
-> Mengdong <mengdong.lin@intel.com>
-> Subject: Re: [alsa-devel] [RFC PATCH v3 2/3] ALSA: hda - add DP mst audio
-> support
-> 
-> On Thu, 13 Oct 2016 09:49:36 +0200,
-> libin.yang@linux.intel.com wrote:
-> >
-> > From: Libin Yang <libin.yang@linux.intel.com>
-> >
-> > This patch adds the DP mst audio support.
-> 
-> A bit more useful texts here please.  I know you'll give more explanations in
-> the document in the later patch, but still something better should be
-> mentioned here.
-
-Yes, I will add more description here.
-
-> 
-> >
-> > Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
-> > ---
-> >  sound/pci/hda/hda_codec.c  |   4 +
-> >  sound/pci/hda/patch_hdmi.c | 243
-> > +++++++++++++++++++++++++++++++++++----------
-> >  2 files changed, 196 insertions(+), 51 deletions(-)
-> >
-> > diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-> > index caa2c9d..8a6b0a2 100644
-> > --- a/sound/pci/hda/hda_codec.c
-> > +++ b/sound/pci/hda/hda_codec.c
-> > @@ -468,6 +468,10 @@ static int read_pin_defaults(struct hda_codec
-> *codec)
-> >  		pin->nid = nid;
-
-... 
-
-> > +
-> >
-> >  		/* choose an unassigned converter. The conveters in the
-> >  		 * connection list are in the same order as in the codec.
-> > @@ -1008,12 +1078,13 @@ static void intel_not_share_assigned_cvt(struct
-> hda_codec *codec,
-> >  				break;
-> >  			}
-> >  		}
-> > +		snd_hda_set_dev_select(codec, nid, dev_id_saved);
-> 
-> I guess this revert won't be reached when you break or continue the loop
-> beforehand?
-
-To make it easier to explain, please let me attach the full patched code here:
-
-for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
-		int dev_id_saved;
-		int dev_num;
-
-		per_pin = get_pin(spec, pin_idx);
-		/*
-		 * pin not connected to monitor
-		 * no need to operate on it
-		 */
-		if (!per_pin->pcm)
-			continue;
-
-		if ((per_pin->pin_nid == pin_nid) &&
-			(per_pin->dev_id == dev_id))
-			continue;
-
-		/*
-		 * if per_pin->dev_id >= dev_num,
-		 * snd_hda_get_dev_select() will fail,
-		 * and the following operation is unpredictable.
-		 * So skip this situation.
-		 */
-		dev_num = snd_hda_get_num_devices(codec, per_pin->pin_nid) + 1;
-		if (per_pin->dev_id >= dev_num)
-			continue;
-
-		nid = per_pin->pin_nid;
-
-		/*
-		 * Calling this function should not impact
-		 * on the device entry selection
-		 * So let's save the dev id for each pin,
-		 * and restore it when return
-		 */
-		dev_id_saved = snd_hda_get_dev_select(codec, nid);
-tag 1		snd_hda_set_dev_select(codec, nid, per_pin->dev_id); 
-		curr = snd_hda_codec_read(codec, nid, 0,
-					  AC_VERB_GET_CONNECT_SEL, 0);
-		if (curr != mux_idx) {
-tag 2			snd_hda_set_dev_select(codec, nid, dev_id_saved);
-			continue;
-		}
-
-
-		/* choose an unassigned converter. The conveters in the
-		 * connection list are in the same order as in the codec.
-		 */
-		for (cvt_idx = 0; cvt_idx < spec->num_cvts; cvt_idx++) {
-			per_cvt = get_cvt(spec, cvt_idx);
-			if (!per_cvt->assigned) {
-				codec_dbg(codec,
-					  "choose cvt %d for pin nid %d\n",
-					cvt_idx, nid);
-				snd_hda_codec_write_cache(codec, nid, 0,
-					    AC_VERB_SET_CONNECT_SEL,
-					    cvt_idx);
-tag 3				break;
-			}
-		}
-		snd_hda_set_dev_select(codec, nid, dev_id_saved);
-	}
-
-We need revert dev_id only after we change the dev_id setting before.
-This is done by: snd_hda_set_dev_select(codec, nid, per_pn->dev_id) (tag1)
-There is one "continue" and we have reverted dev_id before continue (tag 2)
-There is one "break" (tag 3). However, this is for another for loop.
-
-> 
-> Also, this rewrite changes the loop completely, so we you should update the
-> comment appropriately.  It's no longer scanning the all pins (including
-> unused ones).  And I'm not 100% sure whether it's OK to change in that way;
-> the function was written to do that (touching the unused pin as well) on
-> purpose, IIRC.
-> 
-> Hm, or is it OK because we are listing always the three pins?
-> More explanation please, either in comments or in the changelog.
-> 
-
-This function is a little complex now. Please let me explain it in detail.
-
-As you know, we need this function because we need fix: same cvt is
-connecting to several pins. In this situation, playback on one pin will also
-impact on other pins. Let's assume cvt 1 are connecting to pin 1, 2, 3.
-When we playback on pin1, we need call this function to make sure
-pin 2, 3 is connected to other cvts.
-
-In MST mode,  we are using dynamic pcm. If no pcm is attached to
-the pin, it means there is no monitor connected to the pin. So we
-don't need to set the cvt. Let's still assume the cvt 1 are connecting to 
-pin 1, 2, 3, 4, 5, 6, 7, 8, 9 (here pin is the virtual pin).
-
-Let's assume playback on pin 1 (which is connected to cvt 1). 
-So we should make sure all others pins are not connected to cvt1.
-
-1) For other pins:
-    if (!per_pin->pcm)
-        continue;
-This means no monitors is connected to the pin. So we don't care
-the cvt connection because the pin doesn't output sound to monitor.
-(when the virtual pin is connected to monitor later, this function will
-be called in present_sense(), which will make sure the cvt connected
-to the virtual pin is different from the cvt connected to pin 1)
-
-2) For the following situation:
-    dev_num = snd_hda_get_num_devices(codec, per_pin->pin_nid) + 1;
-        if (per_pin->dev_id >= dev_num)
-            continue;
-The per_pin->dev_id is greater than dev_num. This means no such
-virtual pin. We should skip this situation.
-
-3) For the following situation:
-    if (curr != mux_idx) {
-        snd_hda_set_dev_select(codec, nid, dev_id_saved);
-        continue;
-    }
-It means the cvt connected to the virtual pin is already different to 
-the cvt connected to the pin 1. So we don't need to do anything. 
-
-4) Otherwise (the cvt is the same to pin 1), we need change the cvt.
-
-I will add more description for this function in the next version patch.
-
-Regards,
-Libin
-
-> 
-> Takashi
-> 
-> >  	}
-> >  }
-> >
-> >  /* A wrapper of intel_not_share_asigned_cvt() */  static void
-> > intel_not_share_assigned_cvt_nid(struct hda_codec *codec,
-> > -			hda_nid_t pin_nid, hda_nid_t cvt_nid)
-> > +			hda_nid_t pin_nid, int dev_id, hda_nid_t cvt_nid)
-> >  {
-> >  	int mux_idx;
-> >  	struct hdmi_spec *spec = codec->spec; @@ -1025,7 +1096,7 @@
-> static
-> > void intel_not_share_assigned_cvt_nid(struct hda_codec *codec,
-> >  	 */
-> >  	mux_idx = intel_cvt_id_to_mux_idx(spec, cvt_nid);
-> >  	if (mux_idx >= 0)
-> > -		intel_not_share_assigned_cvt(codec, pin_nid, mux_idx);
-> > +		intel_not_share_assigned_cvt(codec, pin_nid, dev_id,
-> mux_idx);
-> >  }
-> >
-> >  /* skeleton caller of pin_cvt_fixup ops */ @@ -1140,6 +1211,7 @@
-> > static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
-> >  	per_pin->cvt_nid = per_cvt->cvt_nid;
-> >  	hinfo->nid = per_cvt->cvt_nid;
-> >
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 091c0f0..a92ea7c 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1059,6 +1059,7 @@ config SND_SOC_WM9090
+ 
+ config SND_SOC_WM9705
+ 	tristate
++	select REGMAP_AC97
+ 
+ config SND_SOC_WM9712
+ 	tristate
+diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
+index dcdd055..70ab607 100644
+--- a/sound/soc/codecs/wm9705.c
++++ b/sound/soc/codecs/wm9705.c
+@@ -14,6 +14,7 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/device.h>
++#include <linux/regmap.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/ac97_codec.h>
+@@ -25,26 +26,48 @@
+ #define WM9705_VENDOR_ID 0x574d4c05
+ #define WM9705_VENDOR_ID_MASK 0xffffffff
+ 
+-/*
+- * WM9705 register cache
+- */
+-static const u16 wm9705_reg[] = {
+-	0x6150, 0x8000, 0x8000, 0x8000, /* 0x0  */
+-	0x0000, 0x8000, 0x8008, 0x8008, /* 0x8  */
+-	0x8808, 0x8808, 0x8808, 0x8808, /* 0x10 */
+-	0x8808, 0x0000, 0x8000, 0x0000, /* 0x18 */
+-	0x0000, 0x0000, 0x0000, 0x000f, /* 0x20 */
+-	0x0605, 0x0000, 0xbb80, 0x0000, /* 0x28 */
+-	0x0000, 0xbb80, 0x0000, 0x0000, /* 0x30 */
+-	0x0000, 0x2000, 0x0000, 0x0000, /* 0x38 */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* 0x40 */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* 0x48 */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* 0x50 */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* 0x58 */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* 0x60 */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* 0x68 */
+-	0x0000, 0x0808, 0x0000, 0x0006, /* 0x70 */
+-	0x0000, 0x0000, 0x574d, 0x4c05, /* 0x78 */
++static const struct reg_default wm9705_reg_defaults[] = {
++	{ 0x02, 0x8000 },
++	{ 0x04, 0x8000 },
++	{ 0x06, 0x8000 },
++	{ 0x0a, 0x8000 },
++	{ 0x0c, 0x8008 },
++	{ 0x0e, 0x8008 },
++	{ 0x10, 0x8808 },
++	{ 0x12, 0x8808 },
++	{ 0x14, 0x8808 },
++	{ 0x16, 0x8808 },
++	{ 0x18, 0x8808 },
++	{ 0x1a, 0x0000 },
++	{ 0x1c, 0x8000 },
++	{ 0x20, 0x0000 },
++	{ 0x22, 0x0000 },
++	{ 0x26, 0x000f },
++	{ 0x28, 0x0605 },
++	{ 0x2a, 0x0000 },
++	{ 0x2c, 0xbb80 },
++	{ 0x32, 0xbb80 },
++	{ 0x34, 0x2000 },
++	{ 0x5a, 0x0000 },
++	{ 0x5c, 0x0000 },
++	{ 0x72, 0x0808 },
++	{ 0x74, 0x0000 },
++	{ 0x76, 0x0006 },
++	{ 0x78, 0x0000 },
++	{ 0x7a, 0x0000 },
++};
++
++static const struct regmap_config wm9705_regmap_config = {
++	.reg_bits = 16,
++	.reg_stride = 2,
++	.val_bits = 16,
++	.max_register = 0x7e,
++	.cache_type = REGCACHE_RBTREE,
++
++	.volatile_reg = regmap_ac97_default_volatile,
++
++	.reg_defaults = wm9705_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(wm9705_reg_defaults),
+ };
+ 
+ static const struct snd_kcontrol_new wm9705_snd_ac97_controls[] = {
+@@ -203,39 +226,15 @@ static const struct snd_soc_dapm_route wm9705_audio_map[] = {
+ 	{"Right ADC", NULL, "ADC PGA"},
+ };
+ 
+-/* We use a register cache to enhance read performance. */
+ static unsigned int ac97_read(struct snd_soc_codec *codec, unsigned int reg)
+ {
+-	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
+-	u16 *cache = codec->reg_cache;
+-
+-	switch (reg) {
+-	case AC97_RESET:
+-	case AC97_VENDOR_ID1:
+-	case AC97_VENDOR_ID2:
+-		return soc_ac97_ops->read(ac97, reg);
+-	default:
+-		reg = reg >> 1;
+-
+-		if (reg >= (ARRAY_SIZE(wm9705_reg)))
+-			return -EIO;
+-
+-		return cache[reg];
+-	}
++	return snd_soc_read(codec, reg);
+ }
+ 
+ static int ac97_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	unsigned int val)
+ {
+-	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
+-	u16 *cache = codec->reg_cache;
+-
+-	soc_ac97_ops->write(ac97, reg, val);
+-	reg = reg >> 1;
+-	if (reg < (ARRAY_SIZE(wm9705_reg)))
+-		cache[reg] = val;
+-
+-	return 0;
++	return snd_soc_write(codec, reg, val);
+ }
+ 
+ static int ac97_prepare(struct snd_pcm_substream *substream,
+@@ -299,9 +298,9 @@ static struct snd_soc_dai_driver wm9705_dai[] = {
+ #ifdef CONFIG_PM
+ static int wm9705_soc_suspend(struct snd_soc_codec *codec)
+ {
+-	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
+-
+-	soc_ac97_ops->write(ac97, AC97_POWERDOWN, 0xffff);
++	regcache_cache_bypass(codec->component.regmap, true);
++	ac97_write(codec, AC97_POWERDOWN, 0xffff);
++	regcache_cache_bypass(codec->component.regmap, false);
+ 
+ 	return 0;
+ }
+@@ -309,17 +308,14 @@ static int wm9705_soc_suspend(struct snd_soc_codec *codec)
+ static int wm9705_soc_resume(struct snd_soc_codec *codec)
+ {
+ 	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
+-	int i, ret;
+-	u16 *cache = codec->reg_cache;
++	int ret;
+ 
+ 	ret = snd_ac97_reset(ac97, true, WM9705_VENDOR_ID,
+ 		WM9705_VENDOR_ID_MASK);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	for (i = 2; i < ARRAY_SIZE(wm9705_reg) << 1; i += 2) {
+-		soc_ac97_ops->write(ac97, i, cache[i>>1]);
+-	}
++	regcache_sync(codec->component.regmap);
+ 
+ 	return 0;
+ }
+@@ -331,6 +327,8 @@ static int wm9705_soc_resume(struct snd_soc_codec *codec)
+ static int wm9705_soc_probe(struct snd_soc_codec *codec)
+ {
+ 	struct snd_ac97 *ac97;
++	struct regmap *regmap;
++	int ret;
+ 
+ 	ac97 = snd_soc_new_ac97_codec(codec, WM9705_VENDOR_ID,
+ 		WM9705_VENDOR_ID_MASK);
+@@ -339,15 +337,26 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
+ 		return PTR_ERR(ac97);
+ 	}
+ 
++	regmap = regmap_init_ac97(ac97, &wm9705_regmap_config);
++	if (IS_ERR(regmap)) {
++		ret = PTR_ERR(regmap);
++		goto err_free_ac97_codec;
++	}
++
+ 	snd_soc_codec_set_drvdata(codec, ac97);
++	snd_soc_codec_init_regmap(codec, regmap);
+ 
+ 	return 0;
++err_free_ac97_codec:
++	snd_soc_free_ac97_codec(ac97);
++	return ret;
+ }
+ 
+ static int wm9705_soc_remove(struct snd_soc_codec *codec)
+ {
+ 	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
+ 
++	snd_soc_codec_exit_regmap(codec);
+ 	snd_soc_free_ac97_codec(ac97);
+ 	return 0;
+ }
+@@ -357,12 +366,6 @@ static const struct snd_soc_codec_driver soc_codec_dev_wm9705 = {
+ 	.remove = 	wm9705_soc_remove,
+ 	.suspend =	wm9705_soc_suspend,
+ 	.resume =	wm9705_soc_resume,
+-	.read = ac97_read,
+-	.write = ac97_write,
+-	.reg_cache_size = ARRAY_SIZE(wm9705_reg),
+-	.reg_word_size = sizeof(u16),
+-	.reg_cache_step = 2,
+-	.reg_cache_default = wm9705_reg,
+ 
+ 	.component_driver = {
+ 		.controls		= wm9705_snd_ac97_controls,
+-- 
+2.1.4
