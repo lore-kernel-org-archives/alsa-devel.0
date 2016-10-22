@@ -1,13 +1,13 @@
 From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: [PATCH v5 7/7] ARM: dts: sun8i-h3: Add HDMI audio and
- video to the Orange PI 2
-Date: Sat, 22 Oct 2016 13:06:16 +0200
-Message-ID: <eea6f6326b384ded6e99181b561fcb57ea8bbd68.1477142934.git.moinejf@free.fr>
+Subject: [PATCH v5 6/7] ARM: dts: sun8i-h3: Add HDMI audio and
+ video to the Banana Pi M2+
+Date: Sat, 22 Oct 2016 12:29:31 +0200
+Message-ID: <f74815b2950325950264d7d0d5cfde89939a1d95.1477142934.git.moinejf@free.fr>
 References: <cover.1477142934.git.moinejf@free.fr>
 Reply-To: moinejf-GANU6spQydw@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCV6DL6LYMNBB3N5V3AAKGQEMYBVFEQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCV6DL6LYMNBB3F5V3AAKGQEYAUKR6Q-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <cover.1477142934.git.moinejf-GANU6spQydw@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -22,24 +22,24 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
 ---
-The same patch may be applied to other H3 based boards (Orange PI xx).
+The patch for the Banana Pi M3 (A83T) is the same as this one.
 ---
- arch/arm/boot/dts/sun8i-h3-orangepi-2.dts | 17 +++++++++++++++++
+ arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts | 17 +++++++++++++++++
  1 file changed, 17 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
-index e5bcaba..799ceb9 100644
---- a/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
-+++ b/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
-@@ -56,6 +56,7 @@
+diff --git a/arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts b/arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts
+index 06fddaa..2e81de8 100644
+--- a/arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts
++++ b/arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts
+@@ -55,6 +55,7 @@
+ 	aliases {
  		serial0 = &uart0;
- 		/* ethernet0 is the H3 emac, defined in sun8i-h3.dtsi */
- 		ethernet1 = &rtl8189;
+ 		serial1 = &uart1;
 +		lcd0 = &lcd0;
  	};
  
  	chosen {
-@@ -105,16 +106,32 @@
+@@ -93,6 +94,10 @@
  	};
  };
  
@@ -48,6 +48,9 @@ index e5bcaba..799ceb9 100644
 +};
 +
  &ehci1 {
+ 	status = "okay";
+ };
+@@ -101,12 +106,24 @@
  	status = "okay";
  };
  
