@@ -1,90 +1,119 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Audio miniconference at LPC/KS confirmed-
-Date: Sun, 23 Oct 2016 00:30:55 +0100
-Message-ID: <20161022233055.GS10208@sirena.org.uk>
-References: <20160701155438.GU6247@sirena.org.uk>
- <20160825153940.GF6635@sirena.org.uk>
- <4788d7ff-0fd7-9d62-be74-72c5a143c999@sakamocchi.jp>
- <20161020141138.GM10208@sirena.org.uk>
- <6cfff6e4-5aaa-d4e6-8d78-18207788ef9c@sakamocchi.jp>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: Re: [linux-sunxi] [PATCH v5 4/7] ASoC: sunxi: Add sun8i I2S driver
+Date: Sun, 23 Oct 2016 09:33:16 +0800
+Message-ID: <CAGb2v67gDd650TJk_-oHOehnzdH2qor=36HXdPt339Ji=ToAMg@mail.gmail.com>
+References: <cover.1477142934.git.moinejf@free.fr> <bee315efb909c1ee8b5fe7d3aeb9a33d713cb562.1477142934.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1004028334629468843=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D42B2668F1
- for <alsa-devel@alsa-project.org>; Sun, 23 Oct 2016 01:31:07 +0200 (CEST)
-In-Reply-To: <6cfff6e4-5aaa-d4e6-8d78-18207788ef9c@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girgwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <bee315efb909c1ee8b5fe7d3aeb9a33d713cb562.1477142934.git.moinejf-GANU6spQydw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: Dave Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, dri-devel <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============1004028334629468843==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zsAhXfiBV62A5hVr"
-Content-Disposition: inline
+On Fri, Oct 21, 2016 at 4:36 PM, Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org> wrote:
+> This patch adds I2S support to sun8i SoCs as the A83T and H3.
+>
+> Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+> ---
+> Note: This driver is closed to the sun4i-i2s except that:
+> - it handles the H3
 
+If it's close to sun4i-i2s, you should probably rework that one to support
+the newer SoCs.
 
---zsAhXfiBV62A5hVr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> - it creates the sound card (with sun4i-i2s, the sound card is created
+>   by the CODECs)
 
-On Sat, Oct 22, 2016 at 08:42:15AM +0900, Takashi Sakamoto wrote:
+I think this is wrong. I2S is only the DAI. You typically have a separate
+platform driver for the whole card, or just use simple-card.
 
-> 1. Add tracepoints to pcm parameter processing in ALSA PCM core
-> In my memory of our previous mini audio conference, some issuers are
-> addressed about pcm parameters. This is my WIP related to it. The aim is
-> to monitor changes of pcm parameter refinement processing just after
-> calling ioctl(HW_REFINE/HW_PARAMS). See my working branch:
-> https://github.com/takaswie/sound/tree/trace-rules
+> ---
+>  .../devicetree/bindings/sound/sun4i-i2s.txt        |  38 +-
+>  sound/soc/sunxi/Kconfig                            |   8 +
+>  sound/soc/sunxi/Makefile                           |   3 +
+>  sound/soc/sunxi/sun8i-i2s.c                        | 700 +++++++++++++++++++++
+>  4 files changed, 744 insertions(+), 5 deletions(-)
+>  create mode 100644 sound/soc/sunxi/sun8i-i2s.c
+>
+> diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+> index 7b526ec..2fb0a7a 100644
+> --- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+> +++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+> @@ -1,4 +1,4 @@
+> -* Allwinner A10 I2S controller
+> +* Allwinner A10/A38T/H3 I2S controller
+>
+>  The I2S bus (Inter-IC sound bus) is a serial link for digital
+>  audio data transfer between devices in the system.
+> @@ -6,20 +6,30 @@ audio data transfer between devices in the system.
+>  Required properties:
+>
+>  - compatible: should be one of the followings
+> -   - "allwinner,sun4i-a10-i2s"
+> +  - "allwinner,sun4i-a10-i2s"
+> +       "allwinner,sun8i-a83t-i2s"
+> +       "allwinner,sun8i-h3-i2s"
+>  - reg: physical base address of the controller and length of memory mapped
+>    region.
+> -- interrupts: should contain the I2S interrupt.
+>  - dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
+>         Documentation/devicetree/bindings/dma/dma.txt
+> -- dma-names: should include "tx" and "rx".
+> +- dma-names: must include "tx" and/or "rx".
+>  - clocks: a list of phandle + clock-specifer pairs, one for each entry in clock-names.
+>  - clock-names: should contain followings:
+>     - "apb" : clock for the I2S bus interface
+>     - "mod" : module clock for the I2S controller
+>  - #sound-dai-cells : Must be equal to 0
+>
+> -Example:
+> +Optional properties:
+> +
+> +- interrupts: I2S interrupt
+> +- resets: phandle to the reset of the device
+> +
+> +Required nodes:
+> +
+> + - port: link to the associated CODEC (DAC, HDMI...)
 
-Do we need to discuss this face to face - are there concerns people have
-about adding tracepoints or something?  I think it's a good idea to do
-the tracepoints, I'm just wondering if we're going to have much of a
-discussion or if it'd be a very brief thing.
+Note here you are changing an existing binding, adding a required node.
+If it were truely different, you probably should've started a new binding.
 
-> 3. Dropping dice driver from ALSA firewire stack
-> A fatal quirk apperard that the most of TCAT ASIC called as 'DICE'
-> breaks the least significant protocol as a sound device[1][2]. The
-> chipsets don't transfer PCM frames as the same as current sampling
-> frequency (it's sampling transfer frequency in IEC 61883-6 word).
-> This is my suggestion to drop dice driver from ALSA firewire stack.
+Regards
+ChenYu
 
-I guess this is something that is mainly going to be discussed by a few
-people?
-
---zsAhXfiBV62A5hVr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJYC/auAAoJECTWi3JdVIfQjAoH/2LCtPRlg3CmviJi/+fNIYZ4
-yl6SeHxDIkcdVA+95uM/7swPZ1aipfgy0l2DXT8+LGRRQmx7GykHzwyy55eQmUvh
-F9VIZl8Hh5+V/vgJpf+ikO+J1+Az1uyQ8H6q5k32sDpk3XXQZheelQf6k48OQR13
-b3H8uJCWuMzt7UN+tp/40Q9JDk5vmW9yW6QCFS3nSgcFwic73PKgY3GTkSIS5QSu
-gyJMyBSpTTIeyANeaKPJvvW42D0gcGwWFBtCy/b9T3t9v+9U2rHC/VuE9pRZBUas
-c2kK8fseGj2bM+KUVvGf7SLmPPc2eDb2u/4OVrxJ94T9of/AnpT8wl3H5WauHOU=
-=/yV2
------END PGP SIGNATURE-----
-
---zsAhXfiBV62A5hVr--
-
---===============1004028334629468843==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1004028334629468843==--
+> +
+> +Example 1:
+>
+>  i2s0: i2s@01c22400 {
+>         #sound-dai-cells = <0>;
+> @@ -32,3 +42,21 @@ i2s0: i2s@01c22400 {
+>                <&dma SUN4I_DMA_NORMAL 3>;
+>         dma-names = "rx", "tx";
+>  };
+> +
+> +Example 2:
+> +
+> +i2s2: i2s@1c22800 {
+> +       compatible = "allwinner,sun8i-a83t-i2s";
+> +       reg = <0x01c22800 0x60>;
+> +       clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
+> +       clock-names = "apb", "mod";
+> +       resets = <&ccu RST_I2S2>;
+> +       dmas = <&dma 27>;
+> +       dma-names = "tx";
+> +       status = "disabled";
+> +       port {
+> +               i2s2_hdmi: endpoint {
+> +                       remote-endpoint = <&hdmi_i2s2>;
+> +               };
+> +       };
+> +};
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
