@@ -1,51 +1,34 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: M-audio Audiophile Firewire
-Date: Sun, 23 Oct 2016 18:23:55 +0900
-Message-ID: <a2d308f4-1982-8418-40ec-e783065f7a96@sakamocchi.jp>
-References: <CAPzTivG=yDAbFZo+u5qauE_LdpqhUM5fT9MT9+hrmi3gTsTGqw@mail.gmail.com>
- <1f6dd683-f550-651b-93d2-87560dd298ff@sakamocchi.jp>
- <fd56b817-96b3-1784-725c-21a5bef7497a@sakamocchi.jp>
- <CAPzTivEubUhef5LR_p3y0_4TZtbwoLimvzU-tx=xmUhBnT+T0g@mail.gmail.com>
- <CAPzTivHypNMZvBVBks=wpx1XakELyeWsBVD9mpq-risb_DtH=Q@mail.gmail.com>
- <7f5bc2fc-7e45-2577-9286-be0e2ff74228@sakamocchi.jp>
- <CAPzTivHqY1aBH2hqHetmd7-hdZsPbPsC8e1iMjgL=2myH91fbg@mail.gmail.com>
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: [PATCH -next] ASoC: Intel: Atom: add terminate entry for dmi_system_id tables
+Date: Sun, 23 Oct 2016 11:41:09 +0000
+Message-ID: <1477222869-31970-1-git-send-email-weiyj.lk@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id ADE80265A98
- for <alsa-devel@alsa-project.org>; Sun, 23 Oct 2016 11:24:01 +0200 (CEST)
-In-Reply-To: <CAPzTivHqY1aBH2hqHetmd7-hdZsPbPsC8e1iMjgL=2myH91fbg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peti Pap <roachkiller44@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ffado-devel@lists.sf.net
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jorge Fernandez Monteagudo <jorgefm@cirsa.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Colin Ian King <colin.king@canonical.com>, Sachin Mokashi <sachinx.mokashi@intel.com>
+Cc: Wei Yongjun <weiyongjun1@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Oct 23 2016 18:03, Peti Pap wrote:
-> Excuse me;
-> 
-> "When the power LED turns at green color instead blinking, ALSA bebob
-> driver successfully makes the unit to load firmware"
-> 
-> The unit already stopped blinking after a basic linux installation (from
-> the first boot). But no any "green" LED, only(!) the power LED lighting,
-> but the power LED color is blue.
-> So, I reinstalled - again - my system, and now I dont know what can I do
-> :|
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-Ah, sorry. It shoud be turns at blue color... When you can see any ALSA
-PCM nodes for your unit, the unit loads firmware correctly.
+Make sure dmi_system_id tables are NULL terminated.
 
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ sound/soc/intel/atom/sst/sst_acpi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Regards
-
-Takashi Sakamoto
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index ba5c0d7..0a88537 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -416,6 +416,7 @@ static const struct dmi_system_id cht_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Surface 3"),
+ 		},
+ 	},
++	{ }
+ };
+ 
+ 
