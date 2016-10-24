@@ -1,74 +1,72 @@
-From: "Tirdea, Irina" <irina.tirdea@intel.com>
-Subject: RE: [RESEND PATCH v4] clk: x86: Add Atom PMC platform clocks
-Date: Mon, 24 Oct 2016 13:38:54 +0000
-Message-ID: <1F3AC3675D538145B1661F571FE1805F2F387575@irsmsx105.ger.corp.intel.com>
-References: <1476735320-4315-1-git-send-email-irina.tirdea@intel.com>
- <alpine.DEB.2.20.1610202349200.4938@nanos>
- <20161021045932.GA90338@f23x64.localdomain>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v4 1/3] topology: Fix missing stream name of
+	widgets in text conf file
+Date: Mon, 24 Oct 2016 21:22:02 +0800
+Message-ID: <339054338e10ef326cab2f1f7e893cda57999d27.1477315063.git.mengdong.lin@linux.intel.com>
+References: <cover.1477315063.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <20161021045932.GA90338@f23x64.localdomain>
-Content-Language: en-US
-Sender: linux-clk-owner@vger.kernel.org
-To: Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc: "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, Ingo Molnar <mingo@redhat.com>, Michael Turquette <mturquette@baylibre.com>, "H. Peter Anvin" <hpa@zytor.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, "Bossart, Pierre-louis" <pierre-louis.bossart@intel.com>, LKML <linux-kernel@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9DA75266C10
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 15:20:53 +0200 (CEST)
+In-Reply-To: <cover.1477315063.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
+User can define the stream name of an input/output widget in the text conf
+file, by setting "stream_name" of a SectionWidget.
 
-> -----Original Message-----
-> From: Darren Hart [mailto:dvhart@infradead.org]
-> Sent: 21 October, 2016 8:00
-> To: Thomas Gleixner
-> Cc: Tirdea, Irina; linux-clk@vger.kernel.org; x86@kernel.org; Stephen Boyd; Ingo Molnar; Michael Turquette; H. Peter Anvin; alsa-
-> devel@alsa-project.org; Mark Brown; Takashi Iwai; Bossart, Pierre-louis; LKML; Pierre-Louis Bossart
-> Subject: Re: [RESEND PATCH v4] clk: x86: Add Atom PMC platform clocks
-> 
-> On Thu, Oct 20, 2016 at 11:52:38PM +0200, Thomas Gleixner wrote:
-> > On Mon, 17 Oct 2016, Irina Tirdea wrote:
-> > > The patch has already been reviewed by Stephen Boyd [1].
-> > > The only remaining question is the one pointed out by Stephen:
-> > > "Will there be problems if this merges through clk tree? If so we
-> > > could take the clk driver part and the platform data include part
-> > > could be duplicated into both trees. Or clk tree could be pulled
-> > > into x86?" [1]
-> >
-> > The proper thing to do is:
-> >
-> > Move all that cruft including arch/x86/platform/atom/pmc_atom.c into
-> > drivers/platform/x86. There is nothing architecture specific in these
-> > files. It's pure peripheral driver enablement. So drivers/platform/x86 is
-> > the proper location for this. Please discuss this with Darren Hart (cc'ed).
-> 
+Topology C API and kernel already have support for configuring a widget's
+stream name. This patch just adds the missing part of the text conf file.
 
-Thanks for pointing me in the right direction, Thomas!
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-> We've been adding more of the pmc and punit drivers to drivers/platform/x86.
-> This makes more sense than being under "arch". Thomas and I have discussed
-> moving more of the non architectural stuff in arch/x86/platform to my tree under
-> platform/drivers/x86.
-> 
-
-Thanks for the reply, Darren.
-
-I could move the arch/x86/platform/atom/pmc_atom.c into drivers/platform/x86,
-but I'm not sure what the process is in this case. I took a look at your tree and noticed
-some intel_pmc_* drivers, but they are quite different from pmc_atom.c in terms of
-HW registers and capabilities. Should the code from pmc_atom.c be integrated in the
-intel_pmc_* drivers or is it enough to move it as a standalone driver for now?
-
-> Irina, please point me at the relevant context if it's more than just this
-> particular patch.
-
-This patch comes from a set of patches that enable sound for Baytrail CR devices
-(especially Asus T100TAF) [1]. The rest of the patches have been already merged in
-Mark's sound tree. This is the only change remaining for enabling sound on these
-platforms, so there are no additional changes to the x86 platform code.
-
-Thanks,
-Irina
-
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111704.html
-
+diff --git a/include/topology.h b/include/topology.h
+index 0675b52..a0d018e 100644
+--- a/include/topology.h
++++ b/include/topology.h
+@@ -483,6 +483,7 @@ extern "C" {
+  *	index "1"			# Index number
+  *
+  *	type "aif_in"			# Widget type - detailed above
++ *	stream_name "name"		# Stream name
+  *
+  *	no_pm "true"			# No PM control bit.
+  *	reg "20"			# PM bit register offset
+diff --git a/src/topology/dapm.c b/src/topology/dapm.c
+index e3c90d8..9fa0aac 100644
+--- a/src/topology/dapm.c
++++ b/src/topology/dapm.c
+@@ -507,6 +507,16 @@ int tplg_parse_dapm_widget(snd_tplg_t *tplg,
+ 			continue;
+ 		}
+ 
++		if (strcmp(id, "stream_name") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			elem_copy_text(widget->sname, val,
++				       SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++			tplg_dbg("\t%s: %s\n", id, val);
++			continue;
++		}
++
+ 		if (strcmp(id, "no_pm") == 0) {
+ 			if (snd_config_get_string(n, &val) < 0)
+ 				return -EINVAL;
+-- 
+2.5.0
