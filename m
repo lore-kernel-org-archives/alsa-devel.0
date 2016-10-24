@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rk3399_gru_sound: Fix non static symbol warning" to the asoc tree
-Date: Mon, 24 Oct 2016 19:03:36 +0100
-Message-ID: <E1byjay-000129-Lg@debutante>
-References: <1476717318-12684-1-git-send-email-weiyj.lk@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1476717318-12684-1-git-send-email-weiyj.lk@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: apq8016-sbc: dt bindings: remove incorrect property" to the asoc tree
+Date: Mon, 24 Oct 2016 19:04:11 +0100
+Message-ID: <E1byjbX-0001I5-M8@debutante>
+References: <1473339896-9409-4-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <1473339896-9409-4-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, mark.rutland@arm.com, devicetree@vger.kernel.org, kwestfie@codeaurora.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rk3399_gru_sound: Fix non static symbol warning
+   ASoC: apq8016-sbc: dt bindings: remove incorrect property
 
 has been applied to the asoc tree at
 
@@ -37,34 +37,35 @@ to this mail.
 Thanks,
 Mark
 
->From 818f76831992198121c8949789c71a1adb02e329 Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Mon, 17 Oct 2016 15:15:18 +0000
-Subject: [PATCH] ASoC: rk3399_gru_sound: Fix non static symbol warning
+>From 393ac586236c25d36f1a1ea9650ac3f3c3b91bce Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Thu, 20 Oct 2016 15:20:47 +0100
+Subject: [PATCH] ASoC: apq8016-sbc: dt bindings: remove incorrect property
 
-Fixes the following sparse warning:
+This patch removes capture-dai property which should not have existed
+in this document in the first place. It looks like leftover from old
+version of patches by mistake.
 
-sound/soc/rockchip/rk3399_gru_sound.c:41:14: warning:
- symbol 'rt5514_dmic_delay' was not declared. Should it be static?
+Remove it to avoid any confusion in future.
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rk3399_gru_sound.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 9ed735a6cf49..0cbd23555ba4 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -38,7 +38,7 @@
+diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
+index d9d8635ff94c..72c192801a69 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
+@@ -45,7 +45,6 @@ Required CPU/CODEC subnodes properties:
  
- #define SOUND_FS	256
+ -link-name		: Name of the dai link.
+ -sound-dai		: phandle and port of CPU/CODEC
+--capture-dai		: phandle and port of CPU/CODEC
  
--unsigned int rt5514_dmic_delay;
-+static unsigned int rt5514_dmic_delay;
- 
- static struct snd_soc_jack rockchip_sound_jack;
+ Example:
  
 -- 
 2.8.1
