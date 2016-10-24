@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel_wm8904: constify snd_soc_ops structures" to the asoc tree
-Date: Mon, 24 Oct 2016 19:01:35 +0100
-Message-ID: <E1byjZ1-0000tx-Ib@debutante>
-References: <1476543351-17858-3-git-send-email-Julia.Lawall@lip6.fr>
+Subject: Applied "ASoC: PXA: Brownstone needs I2C" to the asoc tree
+Date: Mon, 24 Oct 2016 19:03:33 +0100
+Message-ID: <E1byjav-000114-DL@debutante>
+References: <20161018151912.2742738-1-arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1476543351-17858-3-git-send-email-Julia.Lawall@lip6.fr>
+In-Reply-To: <20161018151912.2742738-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, Mark Brown <broonie@kernel.org>Nicolas Ferre <nicolas.ferre@atmel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel_wm8904: constify snd_soc_ops structures
+   ASoC: PXA: Brownstone needs I2C
 
 has been applied to the asoc tree at
 
@@ -37,79 +37,39 @@ to this mail.
 Thanks,
 Mark
 
->From 28549313da65cc8711401ee5466c526bd67de5f1 Mon Sep 17 00:00:00 2001
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Date: Sat, 15 Oct 2016 16:55:46 +0200
-Subject: [PATCH] ASoC: atmel_wm8904: constify snd_soc_ops structures
+>From 5229f1f4a4585f503a0683575bf38d9a1d2c1982 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 18 Oct 2016 17:18:58 +0200
+Subject: [PATCH] ASoC: PXA: Brownstone needs I2C
 
-Check for snd_soc_ops structures that are only stored in the ops field of a
-snd_soc_dai_link structure.  This field is declared const, so snd_soc_ops
-structures that have this property can be declared as const also.
+I rand into a new build error with SND_MMP_SOC_BROWNSTONE:
 
-The semantic patch that makes this change is as follows:
-(http://coccinelle.lip6.fr/)
+warning: (SND_MMP_SOC_BROWNSTONE && SND_SOC_SAMSUNG_SMDK_WM8994 && SND_SOC_SMDK_WM8994_PCM && SND_SOC_LITTLEMILL) selects MFD_WM8994 which has unmet direct dependencies (HAS_IOMEM && I2C)
+drivers/mfd/wm8994-core.c:688:1: error: data definition has no type or storage class [-Werror]
+drivers/mfd/wm8994-core.c:688:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
 
-// <smpl>
-@r disable optional_qualifier@
-identifier i;
-position p;
-@@
-static struct snd_soc_ops i@p = { ... };
+I don't see why this never showed up before, as the dependency seems to
+have been missing since the symbol was first introduced several years
+ago. This adds a dependency like the other drivers have.
 
-@ok1@
-identifier r.i;
-struct snd_soc_dai_link e;
-position p;
-@@
-e.ops = &i@p;
-
-@ok2@
-identifier r.i, e;
-position p;
-@@
-struct snd_soc_dai_link e[] = { ..., { .ops = &i@p, }, ..., };
-
-@bad@
-position p != {r.p,ok1.p,ok2.p};
-identifier r.i;
-struct snd_soc_ops e;
-@@
-e@i@p
-
-@depends on !bad disable optional_qualifier@
-identifier r.i;
-@@
-static
-+const
- struct snd_soc_ops i = { ... };
-// </smpl>
-
-The effect on the layout of the .o file is shown by the following output of
-the size command, first before then after the transformation:
-
-   text    data     bss     dec     hex filename
-   2611    1536       0    4147    1033 sound/soc/atmel/atmel_wm8904.o
-   2675    1480       0    4155    103b sound/soc/atmel/atmel_wm8904.o
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel_wm8904.c | 2 +-
+ sound/soc/pxa/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
-index fdd28ed3e0b9..fbc10f61eb55 100644
---- a/sound/soc/atmel/atmel_wm8904.c
-+++ b/sound/soc/atmel/atmel_wm8904.c
-@@ -53,7 +53,7 @@ static int atmel_asoc_wm8904_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index f2bf8661dd21..823b5a236d8d 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -208,7 +208,7 @@ config SND_PXA2XX_SOC_IMOTE2
  
--static struct snd_soc_ops atmel_asoc_wm8904_ops = {
-+static const struct snd_soc_ops atmel_asoc_wm8904_ops = {
- 	.hw_params = atmel_asoc_wm8904_hw_params,
- };
- 
+ config SND_MMP_SOC_BROWNSTONE
+ 	tristate "SoC Audio support for Marvell Brownstone"
+-	depends on SND_MMP_SOC && MACH_BROWNSTONE
++	depends on SND_MMP_SOC && MACH_BROWNSTONE && I2C
+ 	select SND_MMP_SOC_SSPA
+ 	select MFD_WM8994
+ 	select SND_SOC_WM8994
 -- 
 2.8.1
