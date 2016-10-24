@@ -1,71 +1,133 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/6] ASoC: cs42xx8: Mark chip ID as
- volatile and remove cache bypass
-Date: Mon, 24 Oct 2016 16:33:42 +0100
-Message-ID: <20161024153342.GA17252@sirena.org.uk>
-References: <1477302949-28049-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4533299102343989140=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4191E266C86
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 17:33:53 +0200 (CEST)
-In-Reply-To: <1477302949-28049-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, patches@opensource.wolfsonmicro.com
+Subject: Applied "ASoC: constify snd_soc_ops structures" to the asoc tree
+Date: Mon, 24 Oct 2016 19:01:20 +0100
+Message-ID: <E1byjYm-0000o7-JA@debutante>
+References: <1476543351-17858-7-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <1476543351-17858-7-git-send-email-Julia.Lawall@lip6.fr>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Mark Brown <broonie@kernel.org>, Timur Tabi <timur@tabi.org>, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============4533299102343989140==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
-Content-Disposition: inline
+   ASoC: constify snd_soc_ops structures
 
+has been applied to the asoc tree at
 
---WIyZ46R2i8wDzkSu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Oct 24, 2016 at 10:55:44AM +0100, Charles Keepax wrote:
-> Rather than manually enabling cache bypass when reading the ID registers
-> simply mark them as volatile. The old code worked this is simply the
-> more standard way to implement this. There is a comment included in the
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Even better just remove the register default, with rbtree regmap will do
-the read and then cache it - no need to mark as volatile.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---WIyZ46R2i8wDzkSu
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJYDinVAAoJECTWi3JdVIfQwxgH+wXJDBXY/hsChku5YsonVNle
-PAy68yPesR+EF7I2kkjl84nARi4HLEUVg3T9SAL59rFuW89vz4tH6ju08Zr3tmH4
-Bth4zFHV0EJzJq+5EgbR9UGxrQuq5q3x0Qyj75seXpIy0NvpmsunzWRsQDcSTHO+
-lMragRouVb5pAUR6LGmLfrjmVpYGSzVp2X8G1D5wOXH2TDKZXsxGuna3pWdb/nwO
-RfCDhZ+meClyunigJiMb6lm1Y/7CdxEaiaFZ6xTtIaNk69SXd3QIFGvUtQuC7TJn
-2sZX0iHROLeEUHHKS4LanN0JsUgvk2qgLHmW2ga3mnRipmxQ1Ti6apeI+9Zl3IQ=
-=hiu7
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---WIyZ46R2i8wDzkSu--
+>From ddba7fa4cfd16b10adcbe24fa1d3b7de470af863 Mon Sep 17 00:00:00 2001
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Date: Sat, 15 Oct 2016 16:55:50 +0200
+Subject: [PATCH] ASoC: constify snd_soc_ops structures
 
---===============4533299102343989140==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Check for snd_soc_ops structures that are only stored in the ops field of a
+snd_soc_dai_link structure.  This field is declared const, so snd_soc_ops
+structures that have this property can be declared as const also.
 
+The semantic patch that makes this change is as follows:
+(http://coccinelle.lip6.fr/)
 
---===============4533299102343989140==--
+// <smpl>
+@r disable optional_qualifier@
+identifier i;
+position p;
+@@
+static struct snd_soc_ops i@p = { ... };
+
+@ok1@
+identifier r.i;
+struct snd_soc_dai_link e;
+position p;
+@@
+e.ops = &i@p;
+
+@ok2@
+identifier r.i, e;
+position p;
+@@
+struct snd_soc_dai_link e[] = { ..., { .ops = &i@p, }, ..., };
+
+@bad@
+position p != {r.p,ok1.p,ok2.p};
+identifier r.i;
+struct snd_soc_ops e;
+@@
+e@i@p
+
+@depends on !bad disable optional_qualifier@
+identifier r.i;
+@@
+static
++const
+ struct snd_soc_ops i = { ... };
+// </smpl>
+
+The effect on the layout of the .o files is shown by the following output of
+the size command, first before then after the transformation:
+
+  text    data     bss     dec     hex filename
+   8748    1024       0    9772    262c sound/soc/fsl/fsl-asoc-card.o
+   8812     952       0    9764    2624 sound/soc/fsl/fsl-asoc-card.o
+
+   text    data     bss     dec     hex filename
+   4165     264       8    4437    1155 sound/soc/fsl/imx-wm8962.o
+   4229     200       8    4437    1155 sound/soc/fsl/imx-wm8962.o
+
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl-asoc-card.c | 2 +-
+ sound/soc/fsl/imx-wm8962.c    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index dffd549a0e2a..9998aea23597 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -183,7 +183,7 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops fsl_asoc_card_ops = {
++static const struct snd_soc_ops fsl_asoc_card_ops = {
+ 	.hw_params = fsl_asoc_card_hw_params,
+ };
+ 
+diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
+index 201a70d1027a..1b60958e2080 100644
+--- a/sound/soc/fsl/imx-wm8962.c
++++ b/sound/soc/fsl/imx-wm8962.c
+@@ -61,7 +61,7 @@ static int imx_hifi_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops imx_hifi_ops = {
++static const struct snd_soc_ops imx_hifi_ops = {
+ 	.hw_params = imx_hifi_hw_params,
+ };
+ 
+-- 
+2.8.1
+
