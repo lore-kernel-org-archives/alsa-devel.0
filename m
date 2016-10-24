@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: PXA: Brownstone needs I2C" to the asoc tree
-Date: Mon, 24 Oct 2016 19:03:33 +0100
-Message-ID: <E1byjav-000114-DL@debutante>
-References: <20161018151912.2742738-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161018151912.2742738-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: qcom: apq8016-sbc: Add support to multi codec." to the asoc tree
+Date: Mon, 24 Oct 2016 19:04:08 +0100
+Message-ID: <E1byjbU-0001Gw-Gi@debutante>
+References: <1473339896-9409-5-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <1473339896-9409-5-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, mark.rutland@arm.com, devicetree@vger.kernel.org, kwestfie@codeaurora.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: PXA: Brownstone needs I2C
+   ASoC: qcom: apq8016-sbc: Add support to multi codec.
 
 has been applied to the asoc tree at
 
@@ -37,39 +37,74 @@ to this mail.
 Thanks,
 Mark
 
->From 5229f1f4a4585f503a0683575bf38d9a1d2c1982 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 18 Oct 2016 17:18:58 +0200
-Subject: [PATCH] ASoC: PXA: Brownstone needs I2C
+>From 09065f8b44a3e2a742565368b89b5848387eaf38 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Thu, 20 Oct 2016 15:20:48 +0100
+Subject: [PATCH] ASoC: qcom: apq8016-sbc: Add support to multi codec.
 
-I rand into a new build error with SND_MMP_SOC_BROWNSTONE:
+This patch adds support to multi codec, as the msm8916 codec is now
+split into two codecs, Analog and Digital.
 
-warning: (SND_MMP_SOC_BROWNSTONE && SND_SOC_SAMSUNG_SMDK_WM8994 && SND_SOC_SMDK_WM8994_PCM && SND_SOC_LITTLEMILL) selects MFD_WM8994 which has unmet direct dependencies (HAS_IOMEM && I2C)
-drivers/mfd/wm8994-core.c:688:1: error: data definition has no type or storage class [-Werror]
-drivers/mfd/wm8994-core.c:688:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
+Also update the bindings and example to show that the card supports
+multicodec.
 
-I don't see why this never showed up before, as the dependency seems to
-have been missing since the symbol was first introduced several years
-ago. This adds a dependency like the other drivers have.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt |  4 ++--
+ sound/soc/qcom/apq8016_sbc.c                                 | 11 +++--------
+ 2 files changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index f2bf8661dd21..823b5a236d8d 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -208,7 +208,7 @@ config SND_PXA2XX_SOC_IMOTE2
+diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
+index 72c192801a69..6a4aadc4ce06 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
+@@ -44,7 +44,7 @@ Required dai-link subnodes:
+ Required CPU/CODEC subnodes properties:
  
- config SND_MMP_SOC_BROWNSTONE
- 	tristate "SoC Audio support for Marvell Brownstone"
--	depends on SND_MMP_SOC && MACH_BROWNSTONE
-+	depends on SND_MMP_SOC && MACH_BROWNSTONE && I2C
- 	select SND_MMP_SOC_SSPA
- 	select MFD_WM8994
- 	select SND_SOC_WM8994
+ -link-name		: Name of the dai link.
+--sound-dai		: phandle and port of CPU/CODEC
++-sound-dai		: phandle/s and port of CPU/CODEC
+ 
+ Example:
+ 
+@@ -72,7 +72,7 @@ sound: sound {
+ 			sound-dai = <&lpass MI2S_PRIMARY>;
+ 		};
+ 		codec {
+-			sound-dai = <&wcd_codec 0>;
++			sound-dai = <&lpass_codec 0>, <&wcd_codec 0>;
+ 		};
+ 	};
+ 
+diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
+index 07f91e918b23..d084d7468299 100644
+--- a/sound/soc/qcom/apq8016_sbc.c
++++ b/sound/soc/qcom/apq8016_sbc.c
+@@ -123,20 +123,15 @@ static struct apq8016_sbc_data *apq8016_sbc_parse_of(struct snd_soc_card *card)
+ 			return ERR_PTR(-EINVAL);
+ 		}
+ 
+-		link->codec_of_node = of_parse_phandle(codec, "sound-dai", 0);
+-		if (!link->codec_of_node) {
+-			dev_err(card->dev, "error getting codec phandle\n");
+-			return ERR_PTR(-EINVAL);
+-		}
+-
+ 		ret = snd_soc_of_get_dai_name(cpu, &link->cpu_dai_name);
+ 		if (ret) {
+ 			dev_err(card->dev, "error getting cpu dai name\n");
+ 			return ERR_PTR(ret);
+ 		}
+ 
+-		ret = snd_soc_of_get_dai_name(codec, &link->codec_dai_name);
+-		if (ret) {
++		ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
++
++		if (ret < 0) {
+ 			dev_err(card->dev, "error getting codec dai name\n");
+ 			return ERR_PTR(ret);
+ 		}
 -- 
 2.8.1
