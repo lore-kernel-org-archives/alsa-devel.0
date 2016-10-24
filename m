@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: apq8016-sbc: Add support to multi codec." to the asoc tree
-Date: Mon, 24 Oct 2016 19:04:08 +0100
-Message-ID: <E1byjbU-0001Gw-Gi@debutante>
-References: <1473339896-9409-5-git-send-email-srinivas.kandagatla@linaro.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <1473339896-9409-5-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, mark.rutland@arm.com, devicetree@vger.kernel.org, kwestfie@codeaurora.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org
+Subject: Applied "ASoC: rk3399_gru_sound: Fix non static symbol warning" to the asoc tree
+Date: Mon, 24 Oct 2016 19:03:36 +0100
+Message-ID: <E1byjay-000129-Lg@debutante>
+References: <1476717318-12684-1-git-send-email-weiyj.lk@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1476717318-12684-1-git-send-email-weiyj.lk@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: apq8016-sbc: Add support to multi codec.
+   ASoC: rk3399_gru_sound: Fix non static symbol warning
 
 has been applied to the asoc tree at
 
@@ -37,74 +37,34 @@ to this mail.
 Thanks,
 Mark
 
->From 09065f8b44a3e2a742565368b89b5848387eaf38 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 20 Oct 2016 15:20:48 +0100
-Subject: [PATCH] ASoC: qcom: apq8016-sbc: Add support to multi codec.
+>From 818f76831992198121c8949789c71a1adb02e329 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Mon, 17 Oct 2016 15:15:18 +0000
+Subject: [PATCH] ASoC: rk3399_gru_sound: Fix non static symbol warning
 
-This patch adds support to multi codec, as the msm8916 codec is now
-split into two codecs, Analog and Digital.
+Fixes the following sparse warning:
 
-Also update the bindings and example to show that the card supports
-multicodec.
+sound/soc/rockchip/rk3399_gru_sound.c:41:14: warning:
+ symbol 'rt5514_dmic_delay' was not declared. Should it be static?
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt |  4 ++--
- sound/soc/qcom/apq8016_sbc.c                                 | 11 +++--------
- 2 files changed, 5 insertions(+), 10 deletions(-)
+ sound/soc/rockchip/rk3399_gru_sound.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
-index 72c192801a69..6a4aadc4ce06 100644
---- a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
-@@ -44,7 +44,7 @@ Required dai-link subnodes:
- Required CPU/CODEC subnodes properties:
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 9ed735a6cf49..0cbd23555ba4 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -38,7 +38,7 @@
  
- -link-name		: Name of the dai link.
---sound-dai		: phandle and port of CPU/CODEC
-+-sound-dai		: phandle/s and port of CPU/CODEC
+ #define SOUND_FS	256
  
- Example:
+-unsigned int rt5514_dmic_delay;
++static unsigned int rt5514_dmic_delay;
  
-@@ -72,7 +72,7 @@ sound: sound {
- 			sound-dai = <&lpass MI2S_PRIMARY>;
- 		};
- 		codec {
--			sound-dai = <&wcd_codec 0>;
-+			sound-dai = <&lpass_codec 0>, <&wcd_codec 0>;
- 		};
- 	};
+ static struct snd_soc_jack rockchip_sound_jack;
  
-diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-index 07f91e918b23..d084d7468299 100644
---- a/sound/soc/qcom/apq8016_sbc.c
-+++ b/sound/soc/qcom/apq8016_sbc.c
-@@ -123,20 +123,15 @@ static struct apq8016_sbc_data *apq8016_sbc_parse_of(struct snd_soc_card *card)
- 			return ERR_PTR(-EINVAL);
- 		}
- 
--		link->codec_of_node = of_parse_phandle(codec, "sound-dai", 0);
--		if (!link->codec_of_node) {
--			dev_err(card->dev, "error getting codec phandle\n");
--			return ERR_PTR(-EINVAL);
--		}
--
- 		ret = snd_soc_of_get_dai_name(cpu, &link->cpu_dai_name);
- 		if (ret) {
- 			dev_err(card->dev, "error getting cpu dai name\n");
- 			return ERR_PTR(ret);
- 		}
- 
--		ret = snd_soc_of_get_dai_name(codec, &link->codec_dai_name);
--		if (ret) {
-+		ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
-+
-+		if (ret < 0) {
- 			dev_err(card->dev, "error getting codec dai name\n");
- 			return ERR_PTR(ret);
- 		}
 -- 
 2.8.1
