@@ -1,28 +1,21 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [RFC PATCH v3 2/3] ALSA: hda - add DP mst audio
- support
-Date: Mon, 24 Oct 2016 08:52:52 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D194FA4ADB3@SHSMSX103.ccr.corp.intel.com>
-References: <1476344977-147193-1-git-send-email-libin.yang@linux.intel.com>
- <1476344977-147193-3-git-send-email-libin.yang@linux.intel.com>
- <s5hmvhzghkq.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D194FA4A381@SHSMSX103.ccr.corp.intel.com>
- <s5hfunqgkhs.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D194FA4A3D4@SHSMSX103.ccr.corp.intel.com>
- <s5hd1iugji5.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D194FA4A49B@SHSMSX103.ccr.corp.intel.com>
- <s5hvawlg9vg.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D194FA4ACE3@SHSMSX103.ccr.corp.intel.com>
- <s5h7f8yf8b8.wl-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/4] ASoC: rt286: rt286_mic_detect() uses
+ component
+Date: Mon, 24 Oct 2016 11:19:17 +0200
+Message-ID: <5a1187a2-521a-0cd7-856a-ffdc69a045ed@metafoo.de>
+References: <87eg3a2v32.wl%kuninori.morimoto.gx@renesas.com>
+ <87d1iu2v1j.wl%kuninori.morimoto.gx@renesas.com>
+ <s5hshrmnsj2.wl-tiwai@suse.de>
+ <e615912f-f6e7-a696-31f2-009c927838ec@metafoo.de>
+ <87insi2obs.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A4E0A266B6D
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 10:52:57 +0200 (CEST)
-In-Reply-To: <s5h7f8yf8b8.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5980266B53
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 11:19:27 +0200 (CEST)
+In-Reply-To: <87insi2obs.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,171 +25,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Takashi Iwai <tiwai@suse.de>, Mengdong Lin <mengdong.lin@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jin Yao <yao.jin@linux.intel.co>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On 10/24/2016 09:43 AM, Kuninori Morimoto wrote:
+> Hi
+> 
+>>>> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>>>>
+>>>> Intel broadwell is using card->codec_dev_list, but it will be
+>>>> replaced to component list soon. Then, it will not be able to use
+>>>> "codec".
+>>>
+>>> Can't it be deduced by a simple container_of()?
+>>
+>> There is the snd_soc_component_to_codec() helper for this.
+> 
+> The points are
+>  1) We would like to remove "codec" related functions
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, October 24, 2016 4:41 PM
-> To: Yang, Libin <libin.yang@intel.com>
-> Cc: libin.yang@linux.intel.com; alsa-devel@alsa-project.org; Lin, Mengdong
-> <mengdong.lin@intel.com>
-> Subject: Re: [alsa-devel] [RFC PATCH v3 2/3] ALSA: hda - add DP mst audio
-> support
-> 
-> On Mon, 24 Oct 2016 09:09:07 +0200,
-> Yang, Libin wrote:
-> >
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Friday, October 21, 2016 8:33 PM
-> > > To: Yang, Libin <libin.yang@intel.com>
-> > > Cc: libin.yang@linux.intel.com; alsa-devel@alsa-project.org; Lin,
-> > > Mengdong <mengdong.lin@intel.com>
-> > > Subject: Re: [alsa-devel] [RFC PATCH v3 2/3] ALSA: hda - add DP mst
-> > > audio support
-> > >
-> > > On Fri, 21 Oct 2016 14:25:28 +0200,
-> > > Yang, Libin wrote:
-> > > >
-> > > > > > > > > Also, this rewrite changes the loop completely, so we
-> > > > > > > > > you should update the comment appropriately.  It's no
-> > > > > > > > > longer scanning the all pins (including unused ones).
-> > > > > > > > > And I'm not 100% sure whether it's OK to change in that
-> > > > > > > > > way; the function was written to do that (touching the
-> > > > > > > > > unused pin as well)
-> > > on purpose, IIRC.
-> > > > > > > > >
-> > > > > > > > > Hm, or is it OK because we are listing always the three pins?
-> > > > > > > > > More explanation please, either in comments or in the
-> changelog.
-> > > > > > > > >
-> > > > > > > >
-> > > > > > > > This function is a little complex now. Please let me explain it in
-> detail.
-> > > > > > > >
-> > > > > > > > As you know, we need this function because we need fix:
-> > > > > > > > same cvt is connecting to several pins. In this situation,
-> > > > > > > > playback on one pin will also impact on other pins. Let's
-> > > > > > > > assume cvt 1 are connecting to pin 1, 2,
-> > > > > > > 3.
-> > > > > > > > When we playback on pin1, we need call this function to
-> > > > > > > > make sure pin 2, 3 is connected to other cvts.
-> > > > > > > >
-> > > > > > > > In MST mode,  we are using dynamic pcm. If no pcm is
-> > > > > > > > attached to the pin, it means there is no monitor connected to
-> the pin.
-> > > > > > > > So we don't need to set the cvt. Let's still assume the
-> > > > > > > > cvt 1 are connecting to pin 1, 2, 3, 4, 5, 6, 7, 8, 9
-> > > > > > > > (here pin is the virtual
-> > > pin).
-> > > > > > > >
-> > > > > > > > Let's assume playback on pin 1 (which is connected to cvt 1).
-> > > > > > > > So we should make sure all others pins are not connected to cvt1.
-> > > > > > > >
-> > > > > > > > 1) For other pins:
-> > > > > > > >     if (!per_pin->pcm)
-> > > > > > > >         continue;
-> > > > > > > > This means no monitors is connected to the pin. So we
-> > > > > > > > don't care the cvt connection because the pin doesn't
-> > > > > > > > output sound to
-> > > monitor.
-> > > > > > > > (when the virtual pin is connected to monitor later, this
-> > > > > > > > function will be called in present_sense(), which will
-> > > > > > > > make sure the cvt connected to the virtual pin is
-> > > > > > > > different from the cvt connected to pin 1)
-> > > > > > > >
-> > > > > > > > 2) For the following situation:
-> > > > > > > >     dev_num = snd_hda_get_num_devices(codec,
-> > > > > > > > per_pin->pin_nid)
-> > > + 1;
-> > > > > > > >         if (per_pin->dev_id >= dev_num)
-> > > > > > > >             continue;
-> > > > > > > > The per_pin->dev_id is greater than dev_num. This means no
-> > > > > > > > such virtual pin. We should skip this situation.
-> > > > > > > >
-> > > > > > > > 3) For the following situation:
-> > > > > > > >     if (curr != mux_idx) {
-> > > > > > > >         snd_hda_set_dev_select(codec, nid, dev_id_saved);
-> > > > > > > >         continue;
-> > > > > > > >     }
-> > > > > > > > It means the cvt connected to the virtual pin is already
-> > > > > > > > different to the cvt connected to the pin 1. So we don't
-> > > > > > > > need to do
-> > > anything.
-> > > > > > > >
-> > > > > > > > 4) Otherwise (the cvt is the same to pin 1), we need change the
-> cvt.
-> > > > > > > >
-> > > > > > > > I will add more description for this function in the next version
-> patch.
-> > > > > > >
-> > > > > > > One thing that is still unclear to me is how to deal with
-> > > > > > > the unconfigured
-> > > > > pins.
-> > > > > > > I thought that the pins with port=non pincfg are still
-> > > > > > > ignored in
-> > > > > > > hdmi_add_pin() even after your patch.  So they won't be
-> > > > > > > listed in the pins / nids arrays.
-> > > > > >
-> > > > > > Actually, MST code doesn't touch port=non code. It exists before.
-> > > > > >
-> > > > > > My understanding of this code is that port=non is HW
-> > > > > > connection related. If this pin is not connected to any jack,
-> > > > > > it means it is not lined out and the pin is useless for the special
-> machine.
-> > > > > >
-> > > > > > >
-> > > > > > > Now, your new code only loops over the enumerated pins, i.e.
-> > > > > > > these unconfigured pins are ignored.  What if these pins are
-> > > > > > > connected to the active converters?  I thought excluding
-> > > > > > > such a connection is one of the purposes of this function,
-> > > > > > > judging from the
-> > > function description.
-> > > > > >
-> > > > > > If the pin is not lined out, no monitor will be connected to the pin.
-> > > > > > So even the cvt is connected to the pin, it will impact nothing.
-> > > > > > For MST mode, if it is not lined out, there will be never pcm
-> > > > > > attached to the pin. This means you will never have chance to
-> > > > > > operate the cvt
-> > > > > connected to the pin.
-> > > > > > Besides, I found if there is no monitor connected to the pin,
-> > > > > > the connection list is not actually connecting to any cvt for the pin.
-> > > > >
-> > > > > But why the current function explicitly states that it does care
-> > > > > about the unused pins?  There must be a reason to do so.  I
-> > > > > vaguely remember that it was mentioned like that connecting to
-> > > > > the unused pin causing some unexpected behavior.
-> > > >
-> > > > I don't know the story. Maybe in this situation, mute/unmute will
-> > > > be messed. I will check with our internal team to see if someone
-> > > > knows this reason.
-> > >
-> > > Mengdong?
-> >
-> > The patch of checking AC_JACK_PORT_NONE is from Stephen Warren, who
-> is
-> > from nvidia. I have checked with Mengdong, and she didn't know the
-> > patch. But it seems to be similar with intel_not_share_xxx() function.
-> 
-> Well, ignoring the unused port there is basically irrelevant with the behavior
-> in intel_not_share_*().  It was introduced in commit
-> 116dcde638065a6b94344ca570e1e79c8e857826
->     ALSA: HDA: Remove unconnected PCM devices for Intel HDMI
-> 
-> Meanwhile intel_not_share_*() stuff was introduced much later in commit
-> 7ef166b831237e67b2ea83ce0c933c46ddd6eb26
->     ALSA: hda - Avoid choose same converter for unused pins
+The focus at the moment is to remove all special handling of CODECs from the
+ASoC core. And trying to do this without being too invasive and causing too
+many changes all over the place.
 
-Get it. It is used to reduce the user confusion. Thanks.
-
-Regards,
-Libin
-
+>  2) We can get "codec" pointer by above function/macro,
+>     but "codec" function/macro is using codec->component inside.
 > 
-> 
-> Takashi
+
+That's not a problem though.
+
+This is slightly unrelated to this series, but these drivers should not be
+poking the internal data structures of snd_soc_card in the first place. The
+best way to get the pointer to the CODEC is by using the DAI link init
+callback. This also means that there is no need to run a lookup each time
+the CODEC is needed. An alternative is to add a helper function in the core
+that allows to lookup a component by name.
+
+Maybe somebody from the Intel side can look into fixing this. The affected
+boards are cht_bsw_rt5672 and broadwell, which both access the cards
+codec_dev_list field.
