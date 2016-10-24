@@ -1,21 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/4] ASoC: rt286: rt286_mic_detect() uses
- component
-Date: Mon, 24 Oct 2016 11:19:17 +0200
-Message-ID: <5a1187a2-521a-0cd7-856a-ffdc69a045ed@metafoo.de>
-References: <87eg3a2v32.wl%kuninori.morimoto.gx@renesas.com>
- <87d1iu2v1j.wl%kuninori.morimoto.gx@renesas.com>
- <s5hshrmnsj2.wl-tiwai@suse.de>
- <e615912f-f6e7-a696-31f2-009c927838ec@metafoo.de>
- <87insi2obs.wl%kuninori.morimoto.gx@renesas.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/6] ASoC: cs4265: Mark chip ID register as
+	volatile
+Date: Mon, 24 Oct 2016 10:55:47 +0100
+Message-ID: <1477302949-28049-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1477302949-28049-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id C5980266B53
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 11:19:27 +0200 (CEST)
-In-Reply-To: <87insi2obs.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 238652667EA
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 11:55:38 +0200 (CEST)
+In-Reply-To: <1477302949-28049-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,43 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Takashi Iwai <tiwai@suse.de>, Mengdong Lin <mengdong.lin@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jin Yao <yao.jin@linux.intel.co>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: broonie@kernel.org
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 10/24/2016 09:43 AM, Kuninori Morimoto wrote:
-> Hi
-> 
->>>> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->>>>
->>>> Intel broadwell is using card->codec_dev_list, but it will be
->>>> replaced to component list soon. Then, it will not be able to use
->>>> "codec".
->>>
->>> Can't it be deduced by a simple container_of()?
->>
->> There is the snd_soc_component_to_codec() helper for this.
-> 
-> The points are
->  1) We would like to remove "codec" related functions
+Mark the chip ID register as volatile, the current code does work as
+without a default value regmap will read from the hardware the first
+time, however, this makes it more explicit that this register should be
+read from the hardware.
 
-The focus at the moment is to remove all special handling of CODECs from the
-ASoC core. And trying to do this without being too invasive and causing too
-many changes all over the place.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/cs4265.c | 1 +
+ 1 file changed, 1 insertion(+)
 
->  2) We can get "codec" pointer by above function/macro,
->     but "codec" function/macro is using codec->component inside.
-> 
-
-That's not a problem though.
-
-This is slightly unrelated to this series, but these drivers should not be
-poking the internal data structures of snd_soc_card in the first place. The
-best way to get the pointer to the CODEC is by using the DAI link init
-callback. This also means that there is no need to run a lookup each time
-the CODEC is needed. An alternative is to add a helper function in the core
-that allows to lookup a component by name.
-
-Maybe somebody from the Intel side can look into fixing this. The affected
-boards are cht_bsw_rt5672 and broadwell, which both access the cards
-codec_dev_list field.
+diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
+index fd966bb..f8ad458 100644
+--- a/sound/soc/codecs/cs4265.c
++++ b/sound/soc/codecs/cs4265.c
+@@ -70,6 +70,7 @@ static bool cs4265_readable_register(struct device *dev, unsigned int reg)
+ static bool cs4265_volatile_register(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
++	case CS4265_CHIP_ID:
+ 	case CS4265_INT_STATUS:
+ 		return true;
+ 	default:
+-- 
+2.1.4
