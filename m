@@ -1,16 +1,15 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH 3/7] ASoC: sti: reset refactoring
-Date: Mon, 24 Oct 2016 16:42:53 +0200
-Message-ID: <1477320177-30130-4-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH 5/7] ASoC: codec: clean legacy in sti-sas
+Date: Mon, 24 Oct 2016 16:42:55 +0200
+Message-ID: <1477320177-30130-6-git-send-email-arnaud.pouliquen@st.com>
 References: <1477320177-30130-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D4667266CB9
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 16:43:15 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 09934266CA1
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 16:43:18 +0200 (CEST)
 In-Reply-To: <1477320177-30130-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,183 +24,264 @@ To: alsa-devel@alsa-project.org
 Cc: kernel@stlinux.com, Takashi Iwai <tiwai@suse.de>, arnaud.pouliquen@st.com, lgirdwood@gmail.com, broonie@kernel.org, Moise Gergaud <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-Reset is common to player and reader, migrate function in sti_uniperif.c
+stih416 is no more supported, clean associated code.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- sound/soc/sti/sti_uniperif.c    | 23 +++++++++++++++++++++++
- sound/soc/sti/uniperif.h        |  2 ++
- sound/soc/sti/uniperif_player.c | 34 +++-------------------------------
- sound/soc/sti/uniperif_reader.c | 15 +--------------
- 4 files changed, 29 insertions(+), 45 deletions(-)
+ sound/soc/codecs/sti-sas.c | 169 ++++-----------------------------------------
+ 1 file changed, 15 insertions(+), 154 deletions(-)
 
-diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
-index ee91ae5..98eb205 100644
---- a/sound/soc/sti/sti_uniperif.c
-+++ b/sound/soc/sti/sti_uniperif.c
-@@ -7,6 +7,7 @@
+diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
+index 7b31ee9..1488f4f 100644
+--- a/sound/soc/codecs/sti-sas.c
++++ b/sound/soc/codecs/sti-sas.c
+@@ -14,28 +14,8 @@
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
  
- #include <linux/module.h>
- #include <linux/pinctrl/consumer.h>
-+#include <linux/delay.h>
+-/* chipID supported */
+-#define CHIPID_STIH416 0
+-#define CHIPID_STIH407 1
+-
+ /* DAC definitions */
  
- #include "uniperif.h"
- 
-@@ -97,6 +98,28 @@ struct sti_uniperiph_dev_data {
- 	{},
+-/* stih416 DAC registers */
+-/* sysconf 2517: Audio-DAC-Control */
+-#define STIH416_AUDIO_DAC_CTRL 0x00000814
+-/* sysconf 2519: Audio-Gue-Control */
+-#define STIH416_AUDIO_GLUE_CTRL 0x0000081C
+-
+-#define STIH416_DAC_NOT_STANDBY	0x3
+-#define STIH416_DAC_SOFTMUTE	0x4
+-#define STIH416_DAC_ANA_NOT_PWR	0x5
+-#define STIH416_DAC_NOT_PNDBG	0x6
+-
+-#define STIH416_DAC_NOT_STANDBY_MASK	BIT(STIH416_DAC_NOT_STANDBY)
+-#define STIH416_DAC_SOFTMUTE_MASK	BIT(STIH416_DAC_SOFTMUTE)
+-#define STIH416_DAC_ANA_NOT_PWR_MASK	BIT(STIH416_DAC_ANA_NOT_PWR)
+-#define STIH416_DAC_NOT_PNDBG_MASK	BIT(STIH416_DAC_NOT_PNDBG)
+-
+ /* stih407 DAC registers */
+ /* sysconf 5041: Audio-Gue-Control */
+ #define STIH407_AUDIO_GLUE_CTRL 0x000000A4
+@@ -63,14 +43,9 @@ enum {
+ 	STI_SAS_DAI_ANALOG_OUT,
  };
  
-+int  sti_uniperiph_reset(struct uniperif *uni)
-+{
-+	int count = 10;
+-static const struct reg_default stih416_sas_reg_defaults[] = {
+-	{ STIH407_AUDIO_GLUE_CTRL, 0x00000040 },
+-	{ STIH407_AUDIO_DAC_CTRL, 0x000000000 },
+-};
+-
+ static const struct reg_default stih407_sas_reg_defaults[] = {
+-	{ STIH416_AUDIO_DAC_CTRL, 0x000000000 },
+-	{ STIH416_AUDIO_GLUE_CTRL, 0x00000040 },
++	{ STIH407_AUDIO_DAC_CTRL, 0x000000000 },
++	{ STIH407_AUDIO_GLUE_CTRL, 0x00000040 },
+ };
+ 
+ struct sti_dac_audio {
+@@ -89,7 +64,6 @@ struct sti_spdif_audio {
+ 
+ /* device data structure */
+ struct sti_sas_dev_data {
+-	const int chipid; /* IC version */
+ 	const struct regmap_config *regmap;
+ 	const struct snd_soc_dai_ops *dac_ops;  /* DAC function callbacks */
+ 	const struct snd_soc_dapm_widget *dapm_widgets; /* dapms declaration */
+@@ -155,43 +129,19 @@ static int  sti_sas_init_sas_registers(struct snd_soc_codec *codec,
+ 	}
+ 
+ 	/* Init DAC configuration */
+-	switch (data->dev_data->chipid) {
+-	case CHIPID_STIH407:
+-		/* init configuration */
+-		ret =  snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
+-					   STIH407_DAC_STANDBY_MASK,
+-					   STIH407_DAC_STANDBY_MASK);
+-
+-		if (!ret)
+-			ret = snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
+-						  STIH407_DAC_STANDBY_ANA_MASK,
+-						  STIH407_DAC_STANDBY_ANA_MASK);
+-		if (!ret)
+-			ret = snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
+-						  STIH407_DAC_SOFTMUTE_MASK,
+-						  STIH407_DAC_SOFTMUTE_MASK);
+-		break;
+-	case CHIPID_STIH416:
+-		ret =  snd_soc_update_bits(codec, STIH416_AUDIO_DAC_CTRL,
+-					   STIH416_DAC_NOT_STANDBY_MASK, 0);
+-		if (!ret)
+-			ret =  snd_soc_update_bits(codec,
+-						   STIH416_AUDIO_DAC_CTRL,
+-						   STIH416_DAC_ANA_NOT_PWR, 0);
+-		if (!ret)
+-			ret =  snd_soc_update_bits(codec,
+-						   STIH416_AUDIO_DAC_CTRL,
+-						   STIH416_DAC_NOT_PNDBG_MASK,
+-						   0);
+-		if (!ret)
+-			ret =  snd_soc_update_bits(codec,
+-						   STIH416_AUDIO_DAC_CTRL,
+-						   STIH416_DAC_SOFTMUTE_MASK,
+-						   STIH416_DAC_SOFTMUTE_MASK);
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
++	/* init configuration */
++	ret =  snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
++				   STIH407_DAC_STANDBY_MASK,
++				   STIH407_DAC_STANDBY_MASK);
 +
-+	/* Reset uniperipheral uni */
-+	SET_UNIPERIF_SOFT_RST_SOFT_RST(uni);
-+
-+	if (uni->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0) {
-+		while (GET_UNIPERIF_SOFT_RST_SOFT_RST(uni) && count) {
-+			udelay(5);
-+			count--;
-+		}
-+	}
-+
-+	if (!count) {
-+		dev_err(uni->dev, "Failed to reset uniperif\n");
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
- int sti_uniperiph_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 			       unsigned int rx_mask, int slots,
- 			       int slot_width)
-diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-index 1993c65..d487dd2 100644
---- a/sound/soc/sti/uniperif.h
-+++ b/sound/soc/sti/uniperif.h
-@@ -1397,6 +1397,8 @@ static inline int sti_uniperiph_get_unip_tdm_frame_size(struct uniperif *uni)
- 	return (uni->tdm_slot.slots * uni->tdm_slot.slot_width / 8);
++	if (!ret)
++		ret = snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
++					  STIH407_DAC_STANDBY_ANA_MASK,
++					  STIH407_DAC_STANDBY_ANA_MASK);
++	if (!ret)
++		ret = snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
++					  STIH407_DAC_SOFTMUTE_MASK,
++					  STIH407_DAC_SOFTMUTE_MASK);
+ 
+ 	if (ret < 0) {
+ 		dev_err(codec->dev, "Failed to update DAC registers");
+@@ -217,37 +167,6 @@ static int sti_sas_dac_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	return 0;
  }
  
-+int  sti_uniperiph_reset(struct uniperif *uni);
-+
- int sti_uniperiph_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 			       unsigned int rx_mask, int slots,
- 			       int slot_width);
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index 00a0fb3..d59ec90 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -6,7 +6,6 @@
-  */
- 
- #include <linux/clk.h>
--#include <linux/delay.h>
- #include <linux/io.h>
- #include <linux/mfd/syscon.h>
- 
-@@ -55,25 +54,6 @@
- 	.buffer_bytes_max = 256 * PAGE_SIZE
- };
- 
--static inline int reset_player(struct uniperif *player)
+-static int stih416_dac_probe(struct snd_soc_dai *dai)
 -{
--	int count = 10;
+-	struct snd_soc_codec *codec = dai->codec;
+-	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
+-	struct sti_dac_audio *dac = &drvdata->dac;
 -
--	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0) {
--		while (GET_UNIPERIF_SOFT_RST_SOFT_RST(player) && count) {
--			udelay(5);
--			count--;
--		}
+-	/* Get reset control */
+-	dac->rst = devm_reset_control_get(codec->dev, "dac_rst");
+-	if (IS_ERR(dac->rst)) {
+-		dev_err(dai->codec->dev,
+-			"%s: ERROR: DAC reset control not defined !\n",
+-			__func__);
+-		dac->rst = NULL;
+-		return -EFAULT;
 -	}
--
--	if (!count) {
--		dev_err(player->dev, "Failed to reset uniperif\n");
--		return -EIO;
--	}
+-	/* Put the DAC into reset */
+-	reset_control_assert(dac->rst);
 -
 -	return 0;
 -}
 -
- /*
-  * uni_player_irq_handler
-  * In case of error audio stream is stopped; stop action is protected via PCM
-@@ -862,10 +842,8 @@ static int uni_player_prepare(struct snd_pcm_substream *substream,
+-static const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
+-	SND_SOC_DAPM_PGA("DAC bandgap", STIH416_AUDIO_DAC_CTRL,
+-			 STIH416_DAC_NOT_PNDBG_MASK, 0, NULL, 0),
+-	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH416_AUDIO_DAC_CTRL,
+-			     STIH416_DAC_ANA_NOT_PWR, 0, NULL, 0),
+-	SND_SOC_DAPM_DAC("DAC standby",  "dac_p", STIH416_AUDIO_DAC_CTRL,
+-			 STIH416_DAC_NOT_STANDBY, 0),
+-	SND_SOC_DAPM_OUTPUT("DAC Output"),
+-};
+-
+ static const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH407_AUDIO_DAC_CTRL,
+ 			     STIH407_DAC_STANDBY_ANA, 1, NULL, 0),
+@@ -256,30 +175,11 @@ static int stih416_dac_probe(struct snd_soc_dai *dai)
+ 	SND_SOC_DAPM_OUTPUT("DAC Output"),
+ };
  
- 	SET_UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ(player, 0);
+-static const struct snd_soc_dapm_route stih416_sas_route[] = {
+-	{"DAC Output", NULL, "DAC bandgap"},
+-	{"DAC Output", NULL, "DAC standby ana"},
+-	{"DAC standby ana", NULL, "DAC standby"},
+-};
+-
+ static const struct snd_soc_dapm_route stih407_sas_route[] = {
+ 	{"DAC Output", NULL, "DAC standby ana"},
+ 	{"DAC standby ana", NULL, "DAC standby"},
+ };
  
--	/* Reset uniperipheral player */
--	SET_UNIPERIF_SOFT_RST_SOFT_RST(player);
+-static int stih416_sas_dac_mute(struct snd_soc_dai *dai, int mute, int stream)
+-{
+-	struct snd_soc_codec *codec = dai->codec;
+-
+-	if (mute) {
+-		return snd_soc_update_bits(codec, STIH416_AUDIO_DAC_CTRL,
+-					    STIH416_DAC_SOFTMUTE_MASK,
+-					    STIH416_DAC_SOFTMUTE_MASK);
+-	} else {
+-		return snd_soc_update_bits(codec, STIH416_AUDIO_DAC_CTRL,
+-					    STIH416_DAC_SOFTMUTE_MASK, 0);
+-	}
+-}
  
--	return reset_player(player);
-+	return sti_uniperiph_reset(player);
+ static int stih407_sas_dac_mute(struct snd_soc_dai *dai, int mute, int stream)
+ {
+@@ -407,13 +307,6 @@ static int sti_sas_prepare(struct snd_pcm_substream *substream,
+ 	return 0;
  }
  
- static int uni_player_start(struct uniperif *player)
-@@ -897,10 +875,7 @@ static int uni_player_start(struct uniperif *player)
- 		SET_UNIPERIF_ITM_BSET_UNDERFLOW_REC_FAILED(player);
+-static const struct snd_soc_dai_ops stih416_dac_ops = {
+-	.set_fmt = sti_sas_dac_set_fmt,
+-	.mute_stream = stih416_sas_dac_mute,
+-	.prepare = sti_sas_prepare,
+-	.set_sysclk = sti_sas_set_sysclk,
+-};
+-
+ static const struct snd_soc_dai_ops stih407_dac_ops = {
+ 	.set_fmt = sti_sas_dac_set_fmt,
+ 	.mute_stream = stih407_sas_dac_mute,
+@@ -434,31 +327,7 @@ static int sti_sas_prepare(struct snd_pcm_substream *substream,
+ 	.reg_write = sti_sas_write_reg,
+ };
+ 
+-static const struct regmap_config stih416_sas_regmap = {
+-	.reg_bits = 32,
+-	.val_bits = 32,
+-
+-	.max_register = STIH416_AUDIO_DAC_CTRL,
+-	.reg_defaults = stih416_sas_reg_defaults,
+-	.num_reg_defaults = ARRAY_SIZE(stih416_sas_reg_defaults),
+-	.volatile_reg = sti_sas_volatile_register,
+-	.cache_type = REGCACHE_RBTREE,
+-	.reg_read = sti_sas_read_reg,
+-	.reg_write = sti_sas_write_reg,
+-};
+-
+-static const struct sti_sas_dev_data stih416_data = {
+-	.chipid = CHIPID_STIH416,
+-	.regmap = &stih416_sas_regmap,
+-	.dac_ops = &stih416_dac_ops,
+-	.dapm_widgets = stih416_sas_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(stih416_sas_dapm_widgets),
+-	.dapm_routes =	stih416_sas_route,
+-	.num_dapm_routes = ARRAY_SIZE(stih416_sas_route),
+-};
+-
+ static const struct sti_sas_dev_data stih407_data = {
+-	.chipid = CHIPID_STIH407,
+ 	.regmap = &stih407_sas_regmap,
+ 	.dac_ops = &stih407_dac_ops,
+ 	.dapm_widgets = stih407_sas_dapm_widgets,
+@@ -533,10 +402,6 @@ static int sti_sas_codec_probe(struct snd_soc_codec *codec)
+ 
+ static const struct of_device_id sti_sas_dev_match[] = {
+ 	{
+-		.compatible = "st,stih416-sas-codec",
+-		.data = &stih416_data,
+-	},
+-	{
+ 		.compatible = "st,stih407-sas-codec",
+ 		.data = &stih407_data,
+ 	},
+@@ -584,10 +449,6 @@ static int sti_sas_driver_probe(struct platform_device *pdev)
  	}
+ 	drvdata->spdif.regmap = drvdata->dac.regmap;
  
--	/* Reset uniperipheral player */
--	SET_UNIPERIF_SOFT_RST_SOFT_RST(player);
+-	/* Set DAC dai probe */
+-	if (drvdata->dev_data->chipid == CHIPID_STIH416)
+-		sti_sas_dai[STI_SAS_DAI_ANALOG_OUT].probe = stih416_dac_probe;
 -
--	ret = reset_player(player);
-+	ret = sti_uniperiph_reset(player);
- 	if (ret < 0) {
- 		clk_disable_unprepare(player->clk);
- 		return ret;
-@@ -949,10 +924,7 @@ static int uni_player_stop(struct uniperif *player)
- 	/* Turn the player off */
- 	SET_UNIPERIF_CTRL_OPERATION_OFF(player);
+ 	sti_sas_dai[STI_SAS_DAI_ANALOG_OUT].ops = drvdata->dev_data->dac_ops;
  
--	/* Soft reset the player */
--	SET_UNIPERIF_SOFT_RST_SOFT_RST(player);
--
--	ret = reset_player(player);
-+	ret = sti_uniperiph_reset(player);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
-index 09314f8..59043f7 100644
---- a/sound/soc/sti/uniperif_reader.c
-+++ b/sound/soc/sti/uniperif_reader.c
-@@ -6,7 +6,6 @@
-  */
- 
- #include <linux/clk.h>
--#include <linux/delay.h>
- #include <linux/io.h>
- 
- #include <sound/soc.h>
-@@ -186,7 +185,6 @@ static int uni_reader_prepare(struct snd_pcm_substream *substream,
- 	struct uniperif *reader = priv->dai_data.uni;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int transfer_size, trigger_limit, ret;
--	int count = 10;
- 
- 	/* The reader should be stopped */
- 	if (reader->state != UNIPERIF_STATE_STOPPED) {
-@@ -288,18 +286,7 @@ static int uni_reader_prepare(struct snd_pcm_substream *substream,
- 	}
- 
- 	/* Reset uniperipheral reader */
--	SET_UNIPERIF_SOFT_RST_SOFT_RST(reader);
--
--	while (GET_UNIPERIF_SOFT_RST_SOFT_RST(reader)) {
--		udelay(5);
--		count--;
--	}
--	if (!count) {
--		dev_err(reader->dev, "Failed to reset uniperif\n");
--		return -EIO;
--	}
--
--	return 0;
-+	return sti_uniperiph_reset(reader);
- }
- 
- static int uni_reader_start(struct uniperif *reader)
+ 	/* Set dapms*/
 -- 
 1.9.1
