@@ -1,63 +1,49 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v6 1/5] ASoC: codecs: Add msm8916-wcd analog codec
-Date: Mon, 24 Oct 2016 18:00:52 +0100
-Message-ID: <20161024170052.GD17252@sirena.org.uk>
-References: <1476973249-14547-1-git-send-email-srinivas.kandagatla@linaro.org>
- <1476973249-14547-2-git-send-email-srinivas.kandagatla@linaro.org>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH 7/7] ASoc: codec: sti enable fast io for regmap
+Date: Mon, 24 Oct 2016 16:42:57 +0200
+Message-ID: <1477320177-30130-8-git-send-email-arnaud.pouliquen@st.com>
+References: <1477320177-30130-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jousvV0MzM2p6OtC"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1476973249-14547-2-git-send-email-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id DDDED266CAE
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 16:43:20 +0200 (CEST)
+In-Reply-To: <1477320177-30130-1-git-send-email-arnaud.pouliquen@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: kernel@stlinux.com, Takashi Iwai <tiwai@suse.de>, arnaud.pouliquen@st.com, lgirdwood@gmail.com, broonie@kernel.org, Moise Gergaud <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
+Some registers accesses are done in atomic context.
+Enable fast io to use spinlock instead of mutex to protect access.
 
---jousvV0MzM2p6OtC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+ sound/soc/codecs/sti-sas.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Thu, Oct 20, 2016 at 03:20:45PM +0100, Srinivas Kandagatla wrote:
-
-> +static int pm8916_wcd_analog_parse_dt(struct device *dev,
-> +				       struct pm8916_wcd_analog_priv *priv)
-> +{
-
-> +	priv->mclk = devm_clk_get(dev, "mclk");
-> +	if (IS_ERR(priv->mclk)) {
-> +		dev_err(dev, "failed to get mclk\n");
-> +		return PTR_ERR(priv->mclk);
-> +	}
-> +	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
-> +		priv->supplies[i].supply = supply_names[i];
-> +
-> +	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(priv->supplies),
-> +				    priv->supplies);
-
-The above isn't parsing the DT, it's just requesting resources - how
-those resources are mapped is hidden behind the clock and regulator
-APIs.  Please send a followup fixing this.
-
---jousvV0MzM2p6OtC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJYDj5DAAoJECTWi3JdVIfQ2PkH/R/r0cT2Yn5nVCI17bn1529G
-pTyHOfL+LALn+Yz4Qq/v03SAWI5RM9skZIPQNw2e9Hf/a2AiURN0spdTDywULeri
-5RGPQ0fIDZnbvdjhvmSq31pXI7FyMEIaJY0tgsPC0C9xrMRaMCBltRmt9YXYSWGb
-bBNOoabVotmP6SP3MuRlI/n6tAF0Hv8Jhdt41U4hqGG+Dh6anmYxllTaRq5Xz3b5
-WDYMDgX083hz/6RjKWrLNW+EuQHUC1OTt3Qhm37d6EsRaU4OWmD1eSKdIkBY+isy
-Sz4umrnZ6FPIhwlMwEtj+ohtbTxFbYoRdizt9RjPyS9RvUVbHelTGapKf+jKa64=
-=btLn
------END PGP SIGNATURE-----
-
---jousvV0MzM2p6OtC--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
+index 21d087b..62c6187 100644
+--- a/sound/soc/codecs/sti-sas.c
++++ b/sound/soc/codecs/sti-sas.c
+@@ -317,7 +317,7 @@ static int sti_sas_prepare(struct snd_pcm_substream *substream,
+ static const struct regmap_config stih407_sas_regmap = {
+ 	.reg_bits = 32,
+ 	.val_bits = 32,
+-
++	.fast_io = true,
+ 	.max_register = STIH407_AUDIO_DAC_CTRL,
+ 	.reg_defaults = stih407_sas_reg_defaults,
+ 	.num_reg_defaults = ARRAY_SIZE(stih407_sas_reg_defaults),
+-- 
+1.9.1
