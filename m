@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/6] ASoC: cs42l56: Make ID registers volatile
+Subject: [PATCH 2/6] ASoC: cs42l73: Make ID registers volatile
 	and remove cache bypass
-Date: Mon, 24 Oct 2016 10:55:46 +0100
-Message-ID: <1477302949-28049-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Date: Mon, 24 Oct 2016 10:55:45 +0100
+Message-ID: <1477302949-28049-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1477302949-28049-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 23BD7266B76
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 11:55:38 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 99BB9266B76
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 11:55:45 +0200 (CEST)
 In-Reply-To: <1477302949-28049-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,54 +27,46 @@ Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, P
 List-Id: alsa-devel@alsa-project.org
 
 Rather than manually enabling cache bypass when reading the ID registers
-simply mark them as volatile, also remove the default values since
-defaults for volatile registers don't make sense. The old code worked
-this is simply the more standard way to implement this.
+simply mark them as volatile. The old code worked this is simply the
+more standard way to implement this.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/cs42l56.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ sound/soc/codecs/cs42l73.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index 54c1768..9bfca5d 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -64,8 +64,6 @@ struct  cs42l56_private {
- };
- 
- static const struct reg_default cs42l56_reg_defaults[] = {
--	{ 1, 0x56 },	/* r01	- ID 1 */
--	{ 2, 0x04 },	/* r02	- ID 2 */
- 	{ 3, 0x7f },	/* r03	- Power Ctl 1 */
- 	{ 4, 0xff },	/* r04	- Power Ctl 2 */
- 	{ 5, 0x00 },	/* ro5	- Clocking Ctl 1 */
-@@ -125,6 +123,8 @@ static bool cs42l56_readable_register(struct device *dev, unsigned int reg)
- static bool cs42l56_volatile_register(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index 71ba560..0f9378f 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -142,6 +142,10 @@ static const struct reg_default cs42l73_reg_defaults[] = {
+ static bool cs42l73_volatile_register(struct device *dev, unsigned int reg)
  {
  	switch (reg) {
-+	case CS42L56_CHIP_ID_1:
-+	case CS42L56_CHIP_ID_2:
- 	case CS42L56_INT_STATUS:
++	case CS42L73_DEVID_AB:
++	case CS42L73_DEVID_CD:
++	case CS42L73_DEVID_E:
++	case CS42L73_REVID:
+ 	case CS42L73_IS1:
+ 	case CS42L73_IS2:
  		return true;
- 	default:
-@@ -1262,8 +1262,6 @@ static int cs42l56_i2c_probe(struct i2c_client *i2c_client,
- 		return ret;
+@@ -1337,8 +1341,6 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
+ 		gpio_set_value_cansleep(cs42l73->pdata.reset_gpio, 1);
  	}
  
--	regcache_cache_bypass(cs42l56->regmap, true);
+-	regcache_cache_bypass(cs42l73->regmap, true);
 -
- 	ret = regmap_read(cs42l56->regmap, CS42L56_CHIP_ID_1, &reg);
- 	devid = reg & CS42L56_CHIP_ID_MASK;
- 	if (devid != CS42L56_DEVID) {
-@@ -1279,8 +1277,6 @@ static int cs42l56_i2c_probe(struct i2c_client *i2c_client,
- 	dev_info(&i2c_client->dev, "Alpha Rev %X Metal Rev %X\n",
- 		 alpha_rev, metal_rev);
+ 	/* initialize codec */
+ 	ret = regmap_read(cs42l73->regmap, CS42L73_DEVID_AB, &reg);
+ 	devid = (reg & 0xFF) << 12;
+@@ -1366,8 +1368,6 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
+ 	dev_info(&i2c_client->dev,
+ 		 "Cirrus Logic CS42L73, Revision: %02X\n", reg & 0xFF);
  
--	regcache_cache_bypass(cs42l56->regmap, false);
+-	regcache_cache_bypass(cs42l73->regmap, false);
 -
- 	if (cs42l56->pdata.ain1a_ref_cfg)
- 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
- 				   CS42L56_AIN1A_REF_MASK, 1);
+ 	ret =  snd_soc_register_codec(&i2c_client->dev,
+ 			&soc_codec_dev_cs42l73, cs42l73_dai,
+ 			ARRAY_SIZE(cs42l73_dai));
 -- 
 2.1.4
