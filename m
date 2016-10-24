@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: broadwell: constify snd_soc_ops structures" to the asoc tree
-Date: Mon, 24 Oct 2016 19:01:47 +0100
-Message-ID: <E1byjZD-0000uw-LA@debutante>
-References: <1476543351-17858-2-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <1476543351-17858-2-git-send-email-Julia.Lawall@lip6.fr>
-Sender: kernel-janitors-owner@vger.kernel.org
+Subject: Applied "ASoC: atmel_wm8904: constify snd_soc_ops structures" to the asoc tree
+Date: Mon, 24 Oct 2016 19:01:35 +0100
+Message-ID: <E1byjZ1-0000tx-Ib@debutante>
+References: <1476543351-17858-3-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1476543351-17858-3-git-send-email-Julia.Lawall@lip6.fr>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: Jie Yang <yang.jie@intel.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, Mark Brown <broonie@kernel.org>Nicolas Ferre <nicolas.ferre@atmel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: broadwell: constify snd_soc_ops structures
+   ASoC: atmel_wm8904: constify snd_soc_ops structures
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From d5bc18c148fd3d3ab7cbd3d976f7e27226f74dd8 Mon Sep 17 00:00:00 2001
+>From 28549313da65cc8711401ee5466c526bd67de5f1 Mon Sep 17 00:00:00 2001
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Date: Sat, 15 Oct 2016 16:55:45 +0200
-Subject: [PATCH] ASoC: intel: broadwell: constify snd_soc_ops structures
+Date: Sat, 15 Oct 2016 16:55:46 +0200
+Subject: [PATCH] ASoC: atmel_wm8904: constify snd_soc_ops structures
 
 Check for snd_soc_ops structures that are only stored in the ops field of a
 snd_soc_dai_link structure.  This field is declared const, so snd_soc_ops
@@ -88,29 +88,28 @@ The effect on the layout of the .o file is shown by the following output of
 the size command, first before then after the transformation:
 
    text    data     bss     dec     hex filename
-   3865    2784     384    7033    1b79 sound/soc/intel/boards/broadwell.o
-   3929    2720     384    7033    1b79 sound/soc/intel/boards/broadwell.o
+   2611    1536       0    4147    1033 sound/soc/atmel/atmel_wm8904.o
+   2675    1480       0    4155    103b sound/soc/atmel/atmel_wm8904.o
 
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-Acked-by: Jie Yang <yang.jie@intel.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/broadwell.c | 2 +-
+ sound/soc/atmel/atmel_wm8904.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-index 7486a0022fde..5bb64d164877 100644
---- a/sound/soc/intel/boards/broadwell.c
-+++ b/sound/soc/intel/boards/broadwell.c
-@@ -126,7 +126,7 @@ static int broadwell_rt286_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
+diff --git a/sound/soc/atmel/atmel_wm8904.c b/sound/soc/atmel/atmel_wm8904.c
+index fdd28ed3e0b9..fbc10f61eb55 100644
+--- a/sound/soc/atmel/atmel_wm8904.c
++++ b/sound/soc/atmel/atmel_wm8904.c
+@@ -53,7 +53,7 @@ static int atmel_asoc_wm8904_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
  }
  
--static struct snd_soc_ops broadwell_rt286_ops = {
-+static const struct snd_soc_ops broadwell_rt286_ops = {
- 	.hw_params = broadwell_rt286_hw_params,
+-static struct snd_soc_ops atmel_asoc_wm8904_ops = {
++static const struct snd_soc_ops atmel_asoc_wm8904_ops = {
+ 	.hw_params = atmel_asoc_wm8904_hw_params,
  };
  
 -- 
 2.8.1
-
