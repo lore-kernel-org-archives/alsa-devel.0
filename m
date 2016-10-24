@@ -1,14 +1,16 @@
 From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 1/2] ASoC: rt298: fix jack type detect error
-Date: Mon, 24 Oct 2016 18:32:18 +0800
-Message-ID: <1477305139-10513-1-git-send-email-bardliao@realtek.com>
+Subject: [PATCH 2/2] ASoC: rt298: disable IRQ when jack is NULL
+Date: Mon, 24 Oct 2016 18:32:19 +0800
+Message-ID: <1477305139-10513-2-git-send-email-bardliao@realtek.com>
+References: <1477305139-10513-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id C99EF266B76
+ by alsa0.perex.cz (Postfix) with ESMTP id C9C86266BBC
  for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 12:32:41 +0200 (CEST)
+In-Reply-To: <1477305139-10513-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +24,51 @@ To: broonie@kernel.org, lgirdwood@gmail.com
 Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, vinod.koul@intel.com, Bard Liao <bardliao@realtek.com>, shumingf@realtek.com, senthilnathanx.veppur@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-rt298_jack_detect may be called before card is instantiated. And
-snd_soc_dapm_force_enable_pin will not work in that case. So, update
-bit manually by regmap_update_bits.
+Disable IRQ when jack is NULL in rt298_mic_detect. So machine driver
+can use it in suspend/resume.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- sound/soc/codecs/rt298.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/codecs/rt298.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index f80cfe4..dceffe9 100644
+index dceffe9..f7ec8c7 100644
 --- a/sound/soc/codecs/rt298.c
 +++ b/sound/soc/codecs/rt298.c
-@@ -249,6 +249,11 @@ static int rt298_jack_detect(struct rt298_priv *rt298, bool *hp, bool *mic)
- 			snd_soc_dapm_force_enable_pin(dapm, "LDO1");
- 			snd_soc_dapm_sync(dapm);
- 
-+			regmap_update_bits(rt298->regmap,
-+				RT298_POWER_CTRL1, 0x1001, 0);
-+			regmap_update_bits(rt298->regmap,
-+				RT298_POWER_CTRL2, 0x4, 0x4);
+@@ -326,11 +326,31 @@ static void rt298_jack_detect_work(struct work_struct *work)
+ int rt298_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
+ {
+ 	struct rt298_priv *rt298 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm;
++	bool hp = false;
++	bool mic = false;
++	int status = 0;
 +
- 			regmap_write(rt298->regmap, RT298_SET_MIC1, 0x24);
- 			msleep(50);
++	/* If jack in NULL, disable HS jack */
++	if (!jack) {
++		regmap_update_bits(rt298->regmap, RT298_IRQ_CTRL, 0x2, 0x0);
++		dapm = snd_soc_codec_get_dapm(codec);
++		snd_soc_dapm_disable_pin(dapm, "LDO1");
++		snd_soc_dapm_sync(dapm);
++		return 0;
++	}
  
+ 	rt298->jack = jack;
++	regmap_update_bits(rt298->regmap, RT298_IRQ_CTRL, 0x2, 0x2);
+ 
+-	/* Send an initial empty report */
+-	snd_soc_jack_report(rt298->jack, 0,
++	rt298_jack_detect(rt298, &hp, &mic);
++	if (hp == true)
++		status |= SND_JACK_HEADPHONE;
++
++	if (mic == true)
++		status |= SND_JACK_MICROPHONE;
++
++	snd_soc_jack_report(rt298->jack, status,
+ 		SND_JACK_MICROPHONE | SND_JACK_HEADPHONE);
+ 
+ 	return 0;
 -- 
 1.8.1.1.439.g50a6b54
