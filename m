@@ -1,62 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/7] ASoC: constify snd_soc_ops structures
-Date: Mon, 24 Oct 2016 18:34:23 +0100
-Message-ID: <20161024173423.GL17252@sirena.org.uk>
-References: <1476543351-17858-1-git-send-email-Julia.Lawall@lip6.fr>
- <1476543351-17858-6-git-send-email-Julia.Lawall@lip6.fr>
+Subject: Re: [PATCH 1/6] ASoC: cs42xx8: Mark chip ID as
+ volatile and remove cache bypass
+Date: Mon, 24 Oct 2016 16:33:42 +0100
+Message-ID: <20161024153342.GA17252@sirena.org.uk>
+References: <1477302949-28049-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="sdEQJo40s7ofW8iR"
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1476543351-17858-6-git-send-email-Julia.Lawall@lip6.fr>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, kernel-janitors@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4533299102343989140=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4191E266C86
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 17:33:53 +0200 (CEST)
+In-Reply-To: <1477302949-28049-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---sdEQJo40s7ofW8iR
+--===============4533299102343989140==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
+Content-Disposition: inline
+
+
+--WIyZ46R2i8wDzkSu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Oct 15, 2016 at 04:55:49PM +0200, Julia Lawall wrote:
+On Mon, Oct 24, 2016 at 10:55:44AM +0100, Charles Keepax wrote:
+> Rather than manually enabling cache bypass when reading the ID registers
+> simply mark them as volatile. The old code worked this is simply the
+> more standard way to implement this. There is a comment included in the
 
-> ---
->  sound/soc/generic/simple-card.c                 |    2 +-
->  sound/soc/generic/simple-scu-card.c             |    2 +-
->  sound/soc/intel/boards/bdw-rt5677.c             |    2 +-
->  sound/soc/intel/boards/bxt_da7219_max98357a.c   |    4 ++--
->  sound/soc/intel/boards/bxt_rt298.c              |    4 ++--
->  sound/soc/intel/boards/bytcr_rt5640.c           |    4 ++--
->  sound/soc/intel/boards/bytcr_rt5651.c           |    4 ++--
->  sound/soc/intel/boards/cht_bsw_max98090_ti.c    |    4 ++--
->  sound/soc/intel/boards/cht_bsw_rt5645.c         |    4 ++--
->  sound/soc/intel/boards/cht_bsw_rt5672.c         |    4 ++--
->  sound/soc/intel/boards/haswell.c                |    2 +-
->  sound/soc/intel/boards/skl_nau88l25_max98357a.c |    6 +++---
->  sound/soc/intel/boards/skl_nau88l25_ssm4567.c   |    6 +++---
->  sound/soc/intel/boards/skl_rt286.c              |    4 ++--
->  sound/soc/kirkwood/armada-370-db.c              |    2 +-
->  sound/soc/mxs/mxs-sgtl5000.c                    |    2 +-
->  16 files changed, 28 insertions(+), 28 deletions(-)
+Even better just remove the register default, with rbtree regmap will do
+the read and then cache it - no need to mark as volatile.
 
-You split out a few drivers as separate patches but not these ones -
-what's special about these ones?
-
---sdEQJo40s7ofW8iR
+--WIyZ46R2i8wDzkSu
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJYDkYdAAoJECTWi3JdVIfQ3WwH/1ggOjwECxJfjaf8P0e4eSVk
-pJkaxP/SvSxy9Fpckht0VlU3y45EfGSkRJDSu2SLw+FmkONLy2wDk7qVr5pQ2FB9
-/RKawocNL7l484qkvAGB0obuAc3yiM3cxDQlTYiKYzFraTzRmjs2ayPHQSfTKixo
-5ZR7Uqh1plZwXYe4laz2poJ9GSgwK/1MsGDhmeUGSuaTqd3X/P1K8sfkQxCjt8AT
-5GFxZEWYtXbFwDqo9fiBJF5+WQGl5SSgbcITC8OYkH1eJ6TPfDq9RY7wdHPtl9qO
-v+Ms9aHWPS+7roiUV7yi/c5i4eNH0fy1fP8833/14AjBJa5pwY7rr1zxvnkTEb8=
-=4tvI
+iQEcBAEBCAAGBQJYDinVAAoJECTWi3JdVIfQwxgH+wXJDBXY/hsChku5YsonVNle
+PAy68yPesR+EF7I2kkjl84nARi4HLEUVg3T9SAL59rFuW89vz4tH6ju08Zr3tmH4
+Bth4zFHV0EJzJq+5EgbR9UGxrQuq5q3x0Qyj75seXpIy0NvpmsunzWRsQDcSTHO+
+lMragRouVb5pAUR6LGmLfrjmVpYGSzVp2X8G1D5wOXH2TDKZXsxGuna3pWdb/nwO
+RfCDhZ+meClyunigJiMb6lm1Y/7CdxEaiaFZ6xTtIaNk69SXd3QIFGvUtQuC7TJn
+2sZX0iHROLeEUHHKS4LanN0JsUgvk2qgLHmW2ga3mnRipmxQ1Ti6apeI+9Zl3IQ=
+=hiu7
 -----END PGP SIGNATURE-----
 
---sdEQJo40s7ofW8iR--
+--WIyZ46R2i8wDzkSu--
+
+--===============4533299102343989140==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4533299102343989140==--
