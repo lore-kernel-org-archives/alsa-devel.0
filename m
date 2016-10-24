@@ -1,76 +1,67 @@
-From: Fernando Rodriguez <cyklonite@gmail.com>
-Subject: Choppy audio with non-blocking writes
-Date: Mon, 24 Oct 2016 12:02:55 -0400
-Message-ID: <5b7fdbff-edb0-da87-62d5-1f90ab2b4b8f@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb0-f172.google.com (mail-yb0-f172.google.com
- [209.85.213.172])
- by alsa0.perex.cz (Postfix) with ESMTP id ACEAC266CE7
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 18:00:36 +0200 (CEST)
-Received: by mail-yb0-f172.google.com with SMTP id f196so2728951yba.4
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 09:00:36 -0700 (PDT)
-Received: from [10.10.0.10] (67-8-110-87.res.bhn.net. [67.8.110.87])
- by smtp.gmail.com with ESMTPSA id e72sm6037162ywa.54.2016.10.24.09.00.34
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 24 Oct 2016 09:00:34 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: Atom: add terminate entry for dmi_system_id tables" to the asoc tree
+Date: Mon, 24 Oct 2016 19:04:57 +0100
+Message-ID: <E1byjcH-0001bc-M5@debutante>
+References: <1477222869-31970-1-git-send-email-weiyj.lk@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1477222869-31970-1-git-send-email-weiyj.lk@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jorge Fernandez Monteagudo <jorgefm@cirsa.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Colin Ian King <colin.king@canonical.com>, Sachin Mokashi <sachinx.mokashi@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+The patch
 
-Hello,
+   ASoC: Intel: Atom: add terminate entry for dmi_system_id tables
 
-I'm using non-blocking writes to play an audio stream. When snd_pcm_writei()
-return -EGAIN I put the thread to sleep for the time it would take to play 
-the packet that I'm trying to write and the packet size it's capped at 1/4 the 
-ALSA buffer so that should ensure that the buffer never gets more than half 
-empty. And it works as I don't get underruns. But sometimes the audio gets 
-choppy and it sounds like it's playing out of time. Like periodically for a 
-fraction of a second it plays a bit of audio that should've been played about 
-a second ago.
+has been applied to the asoc tree at
 
-Triggering an underrun or a call to snd_pcm_drain(), either by pausing the stream
-or overloading the CPU corrects the problem so I think the internal ALSA ring buffer
-pointers are getting out of sync somehow. Also it only happens with non-blocking 
-writes. If I use blocking writes it works fine but there are other problems with that.
-So I think either  I'm handling -EAGAIN incorrectly, or not configuring it properly?
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-You can look at the code here:
-https://bitbucket.org/frodzdev/mediabox/src/84dced5b84eba4e6e639615dd3d30fccfb0c805b/src/audio.c?at=staging&fileviewer=file-view-default#audio.c-503
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Any help will be appreciated.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-- -- 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Fernando Rodriguez
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQIcBAEBCAAGBQJYDjCvAAoJEPbOFX/5UlwcG/MP/2WAuJKy4WhU5h/yauDyuv1S
-h5H2Lj2orQcx0R55Qy3xewYz+HEgM+k0p2chJXUsB7dxp6zrnXCven1H0lZqhm0o
-dVFZ+E3r/rUBpfIOmlvT27uUTFyQcdz9h+WViAFvCbldEOEa7DALEXqLvNLeC1S7
-C6dfuV/L7/Dq0W5sNtErZpzH7YY715zzZCIGncAd7LGteTaMND/p6F02CqwEm343
-E4zNL6+Ac3N1eEmlRWI/Vo8QC1Yafo7BbPuR0kYornkqigNgK3yL/+FSwAcHZC4V
-Ge8Q0Ba1DCFMWC6BEfPwSyZ4hUeillQQbPMYhgu4QCKiKUrD8QOFSu16e2A1d+hU
-usn9WQwyisheDavqxvNN+6pr2Gi9r2BxzWbqLQKJ8L+bSLvuaDGEWmUDgVjjGm89
-NKcL6yjucJamjjn8ZMfcx6T4e+ieyU9IOMNteXz54QKG9ltX2IqWgoBG6S+S4cjL
-SggGePoQHq2e7WwWjKqDQ5lOx0aZsb5SZqrgllR4/ROL4Dk+52DRjYChdOG4Prim
-kFRmcdHrvlBmunCXIaIu5+Ec0GuoBEjPfTKwlo1gylrZEYAfjU8iLpoTDkP3J4SK
-FPY5ibUD9IKF/cbdFUzx+oAZoBFlC3oAPLqt80VgsLVEI/1d9Z36+xPRE6PidihP
-Orn2dggcwqfbR1v+x+Ot
-=RfWT
------END PGP SIGNATURE-----
+Thanks,
+Mark
+
+>From 4690481060f3c6b557b01f18319c6382f0fd63ab Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Sun, 23 Oct 2016 11:41:09 +0000
+Subject: [PATCH] ASoC: Intel: Atom: add terminate entry for dmi_system_id
+ tables
+
+Make sure dmi_system_id tables are NULL terminated.
+
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/atom/sst/sst_acpi.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 4d3184971227..748a0f68fc6c 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -343,6 +343,7 @@ static const struct dmi_system_id cht_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Surface 3"),
+ 		},
+ 	},
++	{ }
+ };
+ 
+ 
+-- 
+2.8.1
