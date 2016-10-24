@@ -1,16 +1,15 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 2/2] ASoC: rt298: disable IRQ when jack is NULL
-Date: Mon, 24 Oct 2016 18:32:19 +0800
-Message-ID: <1477305139-10513-2-git-send-email-bardliao@realtek.com>
-References: <1477305139-10513-1-git-send-email-bardliao@realtek.com>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v3 0/3] topology: Support widgets' stream name
+	and file inclusion for text conf file
+Date: Mon, 24 Oct 2016 19:37:24 +0800
+Message-ID: <cover.1477308877.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id C9C86266BBC
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 12:32:41 +0200 (CEST)
-In-Reply-To: <1477305139-10513-1-git-send-email-bardliao@realtek.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82667266806
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 13:36:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, vinod.koul@intel.com, Bard Liao <bardliao@realtek.com>, shumingf@realtek.com, senthilnathanx.veppur@intel.com, flove@realtek.com
+To: alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Disable IRQ when jack is NULL in rt298_mic_detect. So machine driver
-can use it in suspend/resume.
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt298.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+This series doesn't require or cause any ABI updates. It doesn't need the
+kernel patches that trying to udpate ABI from v4 or v5.
 
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index dceffe9..f7ec8c7 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -326,11 +326,31 @@ static void rt298_jack_detect_work(struct work_struct *work)
- int rt298_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
- {
- 	struct rt298_priv *rt298 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_dapm_context *dapm;
-+	bool hp = false;
-+	bool mic = false;
-+	int status = 0;
-+
-+	/* If jack in NULL, disable HS jack */
-+	if (!jack) {
-+		regmap_update_bits(rt298->regmap, RT298_IRQ_CTRL, 0x2, 0x0);
-+		dapm = snd_soc_codec_get_dapm(codec);
-+		snd_soc_dapm_disable_pin(dapm, "LDO1");
-+		snd_soc_dapm_sync(dapm);
-+		return 0;
-+	}
- 
- 	rt298->jack = jack;
-+	regmap_update_bits(rt298->regmap, RT298_IRQ_CTRL, 0x2, 0x2);
- 
--	/* Send an initial empty report */
--	snd_soc_jack_report(rt298->jack, 0,
-+	rt298_jack_detect(rt298, &hp, &mic);
-+	if (hp == true)
-+		status |= SND_JACK_HEADPHONE;
-+
-+	if (mic == true)
-+		status |= SND_JACK_MICROPHONE;
-+
-+	snd_soc_jack_report(rt298->jack, status,
- 		SND_JACK_MICROPHONE | SND_JACK_HEADPHONE);
- 
- 	return 0;
+Patch 1 fixes a missing topology feature for text conf file to configure
+        stream name of a widget.
+
+Patch 2 allows alsaconf to search included files under global
+        configuration directories. This will benefit topology and UCM.
+
+Patch 3 adds document about how to include files for topology
+        configuration. There is no c code change but actually it depends
+        on patch 2.
+
+History:
+v2:     No longer use topology-specific code to support searching included
+        files, but extend alsaconf to support this and user can just use
+        alsaconf syntax <xxx> and <confdir:xxx>.
+
+v3:     Not use <confdir:xxx> but define new syntax <searchdir:xxx> to
+        define directories for searching included file.
+
+Mengdong Lin (3):
+  topology: Fix missing stream name of widgets in text conf file
+  alsaconf: Search included files under user specified configuration
+    directories
+  topology: Add doc for including other files in the text conf file
+
+ include/topology.h  |  31 ++++++++++
+ src/conf.c          | 170 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+ src/topology/dapm.c |  10 ++++
+ 3 files changed, 210 insertions(+), 1 deletion(-)
+
 -- 
-1.8.1.1.439.g50a6b54
+2.5.0
