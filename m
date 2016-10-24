@@ -1,15 +1,18 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH 0/7] ASoC: sti audio fixes and legacy cleaning
-Date: Mon, 24 Oct 2016 16:42:50 +0200
-Message-ID: <1477320177-30130-1-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH 2/7] ASoC: sti: fix channel status update after
+	playback start
+Date: Mon, 24 Oct 2016 16:42:52 +0200
+Message-ID: <1477320177-30130-3-git-send-email-arnaud.pouliquen@st.com>
+References: <1477320177-30130-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 417B0266CA1
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 16:43:13 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D8CEE266CAE
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 16:43:14 +0200 (CEST)
+In-Reply-To: <1477320177-30130-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,23 +26,30 @@ To: alsa-devel@alsa-project.org
 Cc: kernel@stlinux.com, Takashi Iwai <tiwai@suse.de>, arnaud.pouliquen@st.com, lgirdwood@gmail.com, broonie@kernel.org, Moise Gergaud <moise.gergaud@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-Audio fixes and cleaning of code associated to stih416 platform.
+If 'IEC958 Playback Default' control is updated during playback,
+Channel status needs to be set according to the runtime structure.
 
-Arnaud Pouliquen (7):
-  ASoC: sti: fix errors management
-  ASoC: sti: fix channel status update after playback start
-  ASoC: sti: reset refactoring
-  ASoC: sti: clean unused include
-  ASoC: codec: clean legacy in sti-sas
-  ASoC: sti: sti-sas: add missing return in messages strings
-  ASoc: codec: sti enable fast io for regmap
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+ sound/soc/sti/uniperif_player.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
- sound/soc/codecs/sti-sas.c      | 181 +++++-----------------------------------
- sound/soc/sti/sti_uniperif.c    |  43 ++++++++--
- sound/soc/sti/uniperif.h        |   2 +
- sound/soc/sti/uniperif_player.c |  97 +++++++++------------
- sound/soc/sti/uniperif_reader.c |  41 +++------
- 5 files changed, 111 insertions(+), 253 deletions(-)
-
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+index c9b4670..00a0fb3 100644
+--- a/sound/soc/sti/uniperif_player.c
++++ b/sound/soc/sti/uniperif_player.c
+@@ -617,7 +617,11 @@ static int uni_player_ctl_iec958_put(struct snd_kcontrol *kcontrol,
+ 	iec958->status[3] = ucontrol->value.iec958.status[3];
+ 	mutex_unlock(&player->ctrl_lock);
+ 
+-	uni_player_set_channel_status(player, NULL);
++	if (player->substream && player->substream->runtime)
++		uni_player_set_channel_status(player,
++					      player->substream->runtime);
++	else
++		uni_player_set_channel_status(player, NULL);
+ 
+ 	return 0;
+ }
 -- 
 1.9.1
