@@ -1,21 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Audio miniconference at LPC/KS confirmed-
-Date: Mon, 24 Oct 2016 21:57:05 +0900
-Message-ID: <e02689cb-1eea-9a6f-ef73-7c1fade4a24d@sakamocchi.jp>
-References: <20160701155438.GU6247@sirena.org.uk>
- <20160825153940.GF6635@sirena.org.uk>
- <4788d7ff-0fd7-9d62-be74-72c5a143c999@sakamocchi.jp>
- <20161020141138.GM10208@sirena.org.uk>
- <6cfff6e4-5aaa-d4e6-8d78-18207788ef9c@sakamocchi.jp>
- <20161022233055.GS10208@sirena.org.uk>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v4 0/3] topology: Support widgets' stream name
+	and file inclusion for text conf file
+Date: Mon, 24 Oct 2016 21:18:46 +0800
+Message-ID: <cover.1477315063.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id ACD162667E7
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 14:57:10 +0200 (CEST)
-In-Reply-To: <20161022233055.GS10208@sirena.org.uk>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id C50792667E7
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 15:17:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,41 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girgwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Oct 23 2016 08:30, Mark Brown wrote:
-> On Sat, Oct 22, 2016 at 08:42:15AM +0900, Takashi Sakamoto wrote:
-> 
->> 1. Add tracepoints to pcm parameter processing in ALSA PCM core
->> In my memory of our previous mini audio conference, some issuers are
->> addressed about pcm parameters. This is my WIP related to it. The aim is
->> to monitor changes of pcm parameter refinement processing just after
->> calling ioctl(HW_REFINE/HW_PARAMS). See my working branch:
->> https://github.com/takaswie/sound/tree/trace-rules
-> 
-> Do we need to discuss this face to face - are there concerns people have
-> about adding tracepoints or something?  I think it's a good idea to do
-> the tracepoints, I'm just wondering if we're going to have much of a
-> discussion or if it'd be a very brief thing.
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-A disadvantage we have; to enlarge binary size of snd-pcm.ko. Anyway,
-I'll propose it on this mailing list, later.
+This series doesn't require or cause any ABI updates. It doesn't need the
+kernel patches that trying to udpate ABI from v4 or v5.
 
->> 3. Dropping dice driver from ALSA firewire stack
->> A fatal quirk apperard that the most of TCAT ASIC called as 'DICE'
->> breaks the least significant protocol as a sound device[1][2]. The
->> chipsets don't transfer PCM frames as the same as current sampling
->> frequency (it's sampling transfer frequency in IEC 61883-6 word).
->> This is my suggestion to drop dice driver from ALSA firewire stack.
-> 
-> I guess this is something that is mainly going to be discussed by a few
-> people?
+Patch 1 fixes a missing topology feature for text conf file to configure
+        stream name of a widget.
 
-Yep.
+Patch 2 allows alsaconf to search included files under global
+        configuration directories. This will benefit topology and UCM.
 
+Patch 3 adds document about how to include files for topology
+        configuration. There is no c code change but actually it depends
+        on patch 2.
 
-Regards
+History:
+v2:     No longer use topology-specific code to support searching included
+        files, but extend alsaconf to support this and user can just use
+        alsaconf syntax <xxx> and <confdir:xxx>.
 
-Takashi Sakamoto
+v3:     Not use <confdir:xxx>, but define new syntax <searchdir:xxx> to
+        define directories for searching included file.
+
+v4:     Not use doxygen comments for static functins. Fix memory leak,
+        Use snprintf to avoid overflow, use auto variable to cook file
+        path, and list_for_each for non-deletion cases.
+
+Mengdong Lin (3):
+  topology: Fix missing stream name of widgets in text conf file
+  alsaconf: Search included files under user specified configuration
+    directories
+  topology: Add doc for including other files in the text conf file
+
+ include/topology.h  |  31 ++++++++++
+ src/conf.c          | 159 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+ src/topology/dapm.c |  10 ++++
+ 3 files changed, 199 insertions(+), 1 deletion(-)
+
+-- 
+2.5.0
