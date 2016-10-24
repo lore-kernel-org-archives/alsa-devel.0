@@ -1,81 +1,62 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH 6/7] ASoC: sti: sti-sas: add missing return in
-	messages strings
-Date: Mon, 24 Oct 2016 16:42:56 +0200
-Message-ID: <1477320177-30130-7-git-send-email-arnaud.pouliquen@st.com>
-References: <1477320177-30130-1-git-send-email-arnaud.pouliquen@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 5/7] ASoC: constify snd_soc_ops structures
+Date: Mon, 24 Oct 2016 18:34:23 +0100
+Message-ID: <20161024173423.GL17252@sirena.org.uk>
+References: <1476543351-17858-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1476543351-17858-6-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id C8859266CC0
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2016 16:43:19 +0200 (CEST)
-In-Reply-To: <1477320177-30130-1-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: kernel@stlinux.com, Takashi Iwai <tiwai@suse.de>, arnaud.pouliquen@st.com, lgirdwood@gmail.com, broonie@kernel.org, Moise Gergaud <moise.gergaud@st.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="sdEQJo40s7ofW8iR"
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1476543351-17858-6-git-send-email-Julia.Lawall@lip6.fr>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, kernel-janitors@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- sound/soc/codecs/sti-sas.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
-index 1488f4f..21d087b 100644
---- a/sound/soc/codecs/sti-sas.c
-+++ b/sound/soc/codecs/sti-sas.c
-@@ -124,7 +124,7 @@ static int  sti_sas_init_sas_registers(struct snd_soc_codec *codec,
- 		ret = snd_soc_update_bits(codec, STIH407_AUDIO_GLUE_CTRL,
- 					  SPDIF_BIPHASE_IDLE_MASK, 0);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to update SPDIF registers");
-+		dev_err(codec->dev, "Failed to update SPDIF registers\n");
- 		return ret;
- 	}
- 
-@@ -144,7 +144,7 @@ static int  sti_sas_init_sas_registers(struct snd_soc_codec *codec,
- 					  STIH407_DAC_SOFTMUTE_MASK);
- 
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to update DAC registers");
-+		dev_err(codec->dev, "Failed to update DAC registers\n");
- 		return ret;
- 	}
- 
-@@ -292,13 +292,13 @@ static int sti_sas_prepare(struct snd_pcm_substream *substream,
- 	switch (dai->id) {
- 	case STI_SAS_DAI_SPDIF_OUT:
- 		if ((drvdata->spdif.mclk / runtime->rate) != 128) {
--			dev_err(codec->dev, "unexpected mclk-fs ratio");
-+			dev_err(codec->dev, "unexpected mclk-fs ratio\n");
- 			return -EINVAL;
- 		}
- 		break;
- 	case STI_SAS_DAI_ANALOG_OUT:
- 		if ((drvdata->dac.mclk / runtime->rate) != 256) {
--			dev_err(codec->dev, "unexpected mclk-fs ratio");
-+			dev_err(codec->dev, "unexpected mclk-fs ratio\n");
- 			return -EINVAL;
- 		}
- 		break;
-@@ -423,7 +423,7 @@ static int sti_sas_driver_probe(struct platform_device *pdev)
- 	/* Populate data structure depending on compatibility */
- 	of_id = of_match_node(sti_sas_dev_match, pnode);
- 	if (!of_id->data) {
--		dev_err(&pdev->dev, "data associated to device is missing");
-+		dev_err(&pdev->dev, "data associated to device is missing\n");
- 		return -EINVAL;
- 	}
- 
--- 
-1.9.1
+--sdEQJo40s7ofW8iR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Oct 15, 2016 at 04:55:49PM +0200, Julia Lawall wrote:
+
+> ---
+>  sound/soc/generic/simple-card.c                 |    2 +-
+>  sound/soc/generic/simple-scu-card.c             |    2 +-
+>  sound/soc/intel/boards/bdw-rt5677.c             |    2 +-
+>  sound/soc/intel/boards/bxt_da7219_max98357a.c   |    4 ++--
+>  sound/soc/intel/boards/bxt_rt298.c              |    4 ++--
+>  sound/soc/intel/boards/bytcr_rt5640.c           |    4 ++--
+>  sound/soc/intel/boards/bytcr_rt5651.c           |    4 ++--
+>  sound/soc/intel/boards/cht_bsw_max98090_ti.c    |    4 ++--
+>  sound/soc/intel/boards/cht_bsw_rt5645.c         |    4 ++--
+>  sound/soc/intel/boards/cht_bsw_rt5672.c         |    4 ++--
+>  sound/soc/intel/boards/haswell.c                |    2 +-
+>  sound/soc/intel/boards/skl_nau88l25_max98357a.c |    6 +++---
+>  sound/soc/intel/boards/skl_nau88l25_ssm4567.c   |    6 +++---
+>  sound/soc/intel/boards/skl_rt286.c              |    4 ++--
+>  sound/soc/kirkwood/armada-370-db.c              |    2 +-
+>  sound/soc/mxs/mxs-sgtl5000.c                    |    2 +-
+>  16 files changed, 28 insertions(+), 28 deletions(-)
+
+You split out a few drivers as separate patches but not these ones -
+what's special about these ones?
+
+--sdEQJo40s7ofW8iR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJYDkYdAAoJECTWi3JdVIfQ3WwH/1ggOjwECxJfjaf8P0e4eSVk
+pJkaxP/SvSxy9Fpckht0VlU3y45EfGSkRJDSu2SLw+FmkONLy2wDk7qVr5pQ2FB9
+/RKawocNL7l484qkvAGB0obuAc3yiM3cxDQlTYiKYzFraTzRmjs2ayPHQSfTKixo
+5ZR7Uqh1plZwXYe4laz2poJ9GSgwK/1MsGDhmeUGSuaTqd3X/P1K8sfkQxCjt8AT
+5GFxZEWYtXbFwDqo9fiBJF5+WQGl5SSgbcITC8OYkH1eJ6TPfDq9RY7wdHPtl9qO
+v+Ms9aHWPS+7roiUV7yi/c5i4eNH0fy1fP8833/14AjBJa5pwY7rr1zxvnkTEb8=
+=4tvI
+-----END PGP SIGNATURE-----
+
+--sdEQJo40s7ofW8iR--
