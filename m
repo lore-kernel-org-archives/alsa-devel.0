@@ -1,60 +1,76 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: Drop
- SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag
-Date: Tue, 25 Oct 2016 15:39:29 +0200
-Message-ID: <298f24ca-8c11-6625-b5e4-41570a882c6e@samsung.com>
-References: <1477392991-10604-1-git-send-email-s.nawrocki@samsung.com>
- <CGME20161025122302eucas1p220a7fdc6b412e42d83efe9bbf721a237@eucas1p2.samsung.com>
- <4abcead6-1f2a-e604-97f6-96e6f26ff9f0@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 7/8] ASoC: rsnd: Request/Release DMA
+	channel each time
+Date: Tue, 25 Oct 2016 15:02:31 +0100
+Message-ID: <20161025140231.GU17252@sirena.org.uk>
+References: <878ttdcm17.wl%kuninori.morimoto.gx@renesas.com>
+ <87y41db7c0.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <4abcead6-1f2a-e604-97f6-96e6f26ff9f0@metafoo.de>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, lgirdwood@gmail.com, krzk@kernel.org
+Content-Type: multipart/mixed; boundary="===============2973678926132222081=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB3432614A0
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 16:02:39 +0200 (CEST)
+In-Reply-To: <87y41db7c0.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/25/2016 02:22 PM, Lars-Peter Clausen wrote:
-> On 10/25/2016 12:56 PM, Sylwester Nawrocki wrote:
-<...>
-> Nice patch. One nice-to-have change request, can you split this into two
-> patches, one which removes the last users and one patch which removes
-> support for it from the framework?
 
-OK, I've made such split, looks cleaner this way indeed.
+--===============2973678926132222081==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gSSGYPGSs0dvYOj7"
+Content-Disposition: inline
 
-> Having the new DMA map framework should also allow us to eventually remove
-> the channel request in dmaengine_pcm_new() once all users of filter
-> functions have gone.
 
-I've started working on removing all DMA filter uses from sound/soc/samsung,
-hopefully it's ready in coming or next kernel release.  I need to add couple
-more DMA map tables and support for DMA slave map to the PL080 controller.
+--gSSGYPGSs0dvYOj7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> [...]
->> @@ -284,12 +283,9 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
->>  		if (!substream)
->>  			continue;
->>  
->> -		dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
->> -
->> -		if (!pcm->chan[i] &&
->> -		    (pcm->flags & SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME))
->> +		if (!pcm->chan[i] && config->chan_names[i])
->>  			pcm->chan[i] = dma_request_slave_channel(dev,
->> -				dma_data->chan_name);
->> +				config->chan_names[i]);
-> 
-> I think this can be removed altogether. The only reason why we did the
-> delayed request is because the name would have not been available when
-> initially trying to request the channel when the PCM device is registered.
+On Tue, Oct 25, 2016 at 12:37:59AM +0000, Kuninori Morimoto wrote:
 
-Thanks for the hint, I will remove that call in v2.  I suspected it might
-not be necessary any more but was afraid a bit of introducing a breakage.
+> Current Renesas Sound driver requests DMA channel when .probe timing,
+> and release it when .remove timing. And use DMA on .start/.stop
+> But, Audio DMAC power ON was handled when request timing (= .probe),
+> and power OFF was when release timing (= .remove).
+> This means Audio DMAC power is always ON during driver was enabled.
+> This patch fixup to request/release DMA channel each time.
 
-Now the patch will be basically a revert of
+Isn't this something which should be handled by better power management
+in the DMA driver rather than this?
 
-commit ea73b7ddf13548afd666373dc5e26ee7c812a3fe
-ASoC: dmaengine: Support custom channel names
+--gSSGYPGSs0dvYOj7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJYD2X2AAoJECTWi3JdVIfQA0AH/2USYLXUkS7aWHeyAZ0Go4lb
+9sKt+f6Ml1coPdY/BNWSsz0oD3PxKUlm0rB3PCIRXY8tpw3DcSxgZI0F+DXqiQKK
+euq1Wbic3vEN9ZQZSThJerfsuoxasnPHnMqIbcI1p+HQ5r8uEQqBL9PT4uuWEYUD
+A7Q7oSuirfin+jpgb8svKW1ctLNT6tOKSfrdMndE3z8J9CMIO0eNKmXZoBE1WLPu
+V8Bp89RQytMw3Vbkdscn/m8goqomsj8288bY/B1pr78lMWQVBNAjB7Vdxn8XDUBC
+JS1ZMAq7xcY/qKHKZ+5ViPM2VSJm3YlAGLkYbmwKV3hobqqArxPJrrUBjn6pifI=
+=BUTu
+-----END PGP SIGNATURE-----
+
+--gSSGYPGSs0dvYOj7--
+
+--===============2973678926132222081==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2973678926132222081==--
