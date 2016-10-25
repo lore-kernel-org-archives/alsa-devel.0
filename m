@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: don't call unneeded of_node_put()
-	on dma.c" to the asoc tree
-Date: Tue, 25 Oct 2016 20:23:43 +0100
-Message-ID: <E1bz7K3-0004nW-CM@debutante>
-References: <871sz5clxh.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: remove rsnd_dma_detach()" to the
+	asoc tree
+Date: Tue, 25 Oct 2016 20:23:46 +0100
+Message-ID: <E1bz7K6-0004oK-Ka@debutante>
+References: <8737jlcly4.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E17CE2606F8
- for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 21:23:50 +0200 (CEST)
-In-Reply-To: <871sz5clxh.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 68881265B3E
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 21:23:53 +0200 (CEST)
+In-Reply-To: <8737jlcly4.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: don't call unneeded of_node_put() on dma.c
+   ASoC: rsnd: remove rsnd_dma_detach()
 
 has been applied to the asoc tree at
 
@@ -53,48 +53,69 @@ to this mail.
 Thanks,
 Mark
 
->From 161ba1f1a5c99c4525eb39cc71ec984e0a39e6d7 Mon Sep 17 00:00:00 2001
+>From dae4b83295ae50a86b5e3c60e7b6e2c597a1b69d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 25 Oct 2016 00:37:18 +0000
-Subject: [PATCH] ASoC: rsnd: don't call unneeded of_node_put() on dma.c
+Date: Tue, 25 Oct 2016 00:36:56 +0000
+Subject: [PATCH] ASoC: rsnd: remove rsnd_dma_detach()
 
-Current rsnd_dmaen_start() is calling of_node_put() for np,
-but it is not needed if it goes through this loop.
-This patch tidyup it
+DMA mod is now connected to stream via rsnd_dai_connect().
+This means DMA mod can use .remove for its clearance.
+rsnd_dma_detach() is no longer needed.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dma.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/sh/rcar/dma.c  | 11 -----------
+ sound/soc/sh/rcar/rsnd.h |  1 -
+ sound/soc/sh/rcar/ssi.c  |  2 --
+ 3 files changed, 14 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index c85a55111392..2f0327714625 100644
+index e0761cac0ab7..c85a55111392 100644
 --- a/sound/soc/sh/rcar/dma.c
 +++ b/sound/soc/sh/rcar/dma.c
-@@ -143,19 +143,17 @@ static int rsnd_dmaen_start(struct rsnd_mod *mod,
- struct dma_chan *rsnd_dma_request_channel(struct device_node *of_node,
- 					  struct rsnd_mod *mod, char *name)
- {
--	struct dma_chan *chan;
-+	struct dma_chan *chan = NULL;
- 	struct device_node *np;
- 	int i = 0;
+@@ -698,17 +698,6 @@ int rsnd_dma_attach(struct rsnd_dai_stream *io, struct rsnd_mod *mod,
+ 	return 0;
+ }
  
- 	for_each_child_of_node(of_node, np) {
--		if (i == rsnd_mod_id(mod))
--			break;
-+		if (i == rsnd_mod_id(mod) && (!chan))
-+			chan = of_dma_request_slave_channel(np, name);
- 		i++;
- 	}
- 
--	chan = of_dma_request_slave_channel(np, name);
+-void rsnd_dma_detach(struct rsnd_mod *mod, struct rsnd_mod **dma_mod)
+-{
+-	if (*dma_mod) {
+-		struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+-		struct device *dev = rsnd_priv_to_dev(priv);
 -
--	of_node_put(np);
-+	/* It should call of_node_put(), since, it is rsnd_xxx_of_node() */
- 	of_node_put(of_node);
+-		devm_kfree(dev, *dma_mod);
+-		*dma_mod = NULL;
+-	}
+-}
+-
+ int rsnd_dma_probe(struct rsnd_priv *priv)
+ {
+ 	struct platform_device *pdev = rsnd_priv_to_pdev(priv);
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 2460d1fbf775..c1cee1ab3e62 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -200,7 +200,6 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io);
+  */
+ int rsnd_dma_attach(struct rsnd_dai_stream *io,
+ 		    struct rsnd_mod *mod, struct rsnd_mod **dma_mod);
+-void rsnd_dma_detach(struct rsnd_mod *mod, struct rsnd_mod **dma_mod);
+ int rsnd_dma_probe(struct rsnd_priv *priv);
+ struct dma_chan *rsnd_dma_request_channel(struct device_node *of_node,
+ 					  struct rsnd_mod *mod, char *name);
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index b0338d0a4cde..e23e07b54d8c 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -701,8 +701,6 @@ static int rsnd_ssi_dma_remove(struct rsnd_mod *mod,
+ 	/* PIO will request IRQ again */
+ 	free_irq(ssi->irq, mod);
  
- 	return chan;
+-	rsnd_dma_detach(mod, &ssi->dma);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.8.1
