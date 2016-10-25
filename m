@@ -1,81 +1,77 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: Drop
- SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag
-Date: Tue, 25 Oct 2016 14:22:51 +0200
-Message-ID: <4abcead6-1f2a-e604-97f6-96e6f26ff9f0@metafoo.de>
-References: <1477392991-10604-1-git-send-email-s.nawrocki@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/8] ASoC: rsnd: depends on OF
+Date: Tue, 25 Oct 2016 14:28:31 +0100
+Message-ID: <20161025132831.GT17252@sirena.org.uk>
+References: <878ttdcm17.wl%kuninori.morimoto.gx@renesas.com>
+ <877f8xclzq.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1477392991-10604-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, lgirdwood@gmail.com, krzk@kernel.org
+Content-Type: multipart/mixed; boundary="===============7184377963612330489=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C08D12614A0
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 15:28:40 +0200 (CEST)
+In-Reply-To: <877f8xclzq.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/25/2016 12:56 PM, Sylwester Nawrocki wrote:
-> Since commit 194c7dea00c68c1b1f8ff26304fa937a006f66dd
-> "ASoC: dmaengine: add custom DMA config to snd_dmaengine_pcm_config"
-> custom DMA channels can be also specified in chan_names[] field of
-> struct snd_dmaengine_pcm_config.  This patch drops chan_name field
-> of struct snd_dmaengine_dai_dma_data and makes soc-generic-dmaengine-pcm
-> module using config->chan_names instead.  Remaining users of struct
-> snd_dmaengine_dai_dma_data::chan_name are updated to not require
-> that field.
-> 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-Nice patch. One nice-to-have change request, can you split this into two
-patches, one which removes the last users and one patch which removes
-support for it from the framework?
+--===============7184377963612330489==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="HywJcj55HbA57jnN"
+Content-Disposition: inline
 
-Having the new DMA map framework should also allow us to eventually remove
-the channel request in dmaengine_pcm_new() once all users of filter
-functions have gone.
 
-[...]
-> diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-> index 6cef397..f2d372d 100644
-> --- a/sound/soc/soc-generic-dmaengine-pcm.c
-> +++ b/sound/soc/soc-generic-dmaengine-pcm.c
-> @@ -263,7 +263,6 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
->  	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
->  	const struct snd_dmaengine_pcm_config *config = pcm->config;
->  	struct device *dev = rtd->platform->dev;
-> -	struct snd_dmaengine_dai_dma_data *dma_data;
->  	struct snd_pcm_substream *substream;
->  	size_t prealloc_buffer_size;
->  	size_t max_buffer_size;
-> @@ -284,12 +283,9 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
->  		if (!substream)
->  			continue;
->  
-> -		dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-> -
-> -		if (!pcm->chan[i] &&
-> -		    (pcm->flags & SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME))
-> +		if (!pcm->chan[i] && config->chan_names[i])
->  			pcm->chan[i] = dma_request_slave_channel(dev,
-> -				dma_data->chan_name);
-> +				config->chan_names[i]);
+--HywJcj55HbA57jnN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I think this can be removed altogether. The only reason why we did the
-delayed request is because the name would have not been available when
-initially trying to request the channel when the PCM device is registered.
+On Tue, Oct 25, 2016 at 12:35:53AM +0000, Kuninori Morimoto wrote:
 
->  
->  		if (!pcm->chan[i] && (pcm->flags & SND_DMAENGINE_PCM_FLAG_COMPAT)) {
->  			pcm->chan[i] = dmaengine_pcm_compat_request_channel(rtd,
-> @@ -359,9 +355,7 @@ static int dmaengine_pcm_request_chan_of(struct dmaengine_pcm *pcm,
->  	const char *name;
->  	struct dma_chan *chan;
->  
-> -	if ((pcm->flags & (SND_DMAENGINE_PCM_FLAG_NO_DT |
-> -			   SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME)) ||
-> -	    !dev->of_node)
-> +	if ((pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_DT) || !dev->of_node)
->  		return 0;
->  
->  	if (config && config->dma_dev) {
-> 
+> @@ -37,6 +37,7 @@ config SND_SOC_SH4_SIU
+>  config SND_SOC_RCAR
+>  	tristate "R-Car series SRU/SCU/SSIU/SSI support"
+>  	depends on COMMON_CLK
+> +	depends on OF
+>  	select SND_SIMPLE_CARD
+>  	select REGMAP_MMIO
+>  	help
+
+Can we have an || COMPILE_TEST to help build coverage if there isn't a
+build time dependency on DT please?
+
+--HywJcj55HbA57jnN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJYD13HAAoJECTWi3JdVIfQ6aAH/AjbjuLbAQa6eYPOLH+MxMcw
+0a1CbzFZ0BJLlVMa4IwYxl747EoCoXUDnOIVw0bV8i0gD9ZLJXaqScpc/lC4m8iv
+IBebwe3t9GaIng6CJhpi3xyjoRCBNASjEs/0kbQRT+vida7X/YFSInzh3AcGqepk
+vebAa4a7SQU5oW2s4nu0JVJrIDJQ1onO2W08OcPu9PpYK3YC0II8120fYKiIYx5P
+xHh2WKnjs+TBSlubtcQeWD3ZKtNpbG2GxdcZBcj/E0S1bxihJmIGmM6pYEV/5Rpa
+DrIz2/NaeSmVVxoyq6A02KKK5heA9npB6aa7qdleUwT7gewZ3wG9E7bxvhOx5Vk=
+=VCVq
+-----END PGP SIGNATURE-----
+
+--HywJcj55HbA57jnN--
+
+--===============7184377963612330489==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7184377963612330489==--
