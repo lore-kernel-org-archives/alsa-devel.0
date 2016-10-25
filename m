@@ -1,29 +1,47 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 2/4] ASoC: Drop
- SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag
-Date: Tue, 25 Oct 2016 18:28:20 +0200
-Message-ID: <a5e0592d-3034-1ec2-31fd-6c1ceb8d1052@metafoo.de>
-References: <1477408121-24716-1-git-send-email-s.nawrocki@samsung.com>
- <1477408121-24716-2-git-send-email-s.nawrocki@samsung.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/6] ASoC: cs42xx8: Mark chip ID as
+ volatile and remove cache bypass
+Date: Tue, 25 Oct 2016 16:16:05 +0100
+Message-ID: <20161025151605.GC28180@localhost.localdomain>
+References: <1477302949-28049-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20161024153342.GA17252@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1477408121-24716-2-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>, broonie@kernel.org
-Cc: krzk@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CDA12614A0
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 17:15:53 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20161024153342.GA17252@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 10/25/2016 05:08 PM, Sylwester Nawrocki wrote:
-> Since commit 194c7dea00c68c1b1f8ff26304fa937a006f66dd
-> "ASoC: dmaengine: add custom DMA config to snd_dmaengine_pcm_config"
-> custom DMA channels can be also specified in chan_names[] field of
-> struct snd_dmaengine_pcm_config.  This patch removes chan_name field
-> of struct snd_dmaengine_dai_dma_data as it is now unused.
+On Mon, Oct 24, 2016 at 04:33:42PM +0100, Mark Brown wrote:
+> On Mon, Oct 24, 2016 at 10:55:44AM +0100, Charles Keepax wrote:
+> > Rather than manually enabling cache bypass when reading the ID registers
+> > simply mark them as volatile. The old code worked this is simply the
+> > more standard way to implement this. There is a comment included in the
 > 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> Even better just remove the register default, with rbtree regmap will do
+> the read and then cache it - no need to mark as volatile.
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+:-) well if we are preferring that then some of the series can
+just be dropped, as they were changing exactly that to be
+explicitly marked volatile.
 
-Thanks.
+I will fixup the remaining patches and resend.
+
+Thanks,
+Charles
