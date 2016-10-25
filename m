@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: s3c24xx-i2s: Don't use platform_data for DMA parameters" to the asoc tree
-Date: Tue, 25 Oct 2016 20:26:49 +0100
-Message-ID: <E1bz7N3-00057Y-Lj@debutante>
-References: <1477392991-10604-2-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1477392991-10604-2-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, lgirdwood@gmail.com, krzk@kernel.org
+Subject: Applied "ASoC: cs42l56: Make ID registers volatile and
+	remove cache bypass" to the asoc tree
+Date: Tue, 25 Oct 2016 20:23:33 +0100
+Message-ID: <E1bz7Jt-0004l2-B2@debutante>
+References: <1477410151-17515-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34263265142
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 21:23:40 +0200 (CEST)
+In-Reply-To: <1477410151-17515-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: brian.austin@cirrus.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: s3c24xx-i2s: Don't use platform_data for DMA parameters
+   ASoC: cs42l56: Make ID registers volatile and remove cache bypass
 
 has been applied to the asoc tree at
 
@@ -37,70 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From b57a089bd4213b5e33007f8293bf83a8b14e4729 Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Tue, 25 Oct 2016 17:08:40 +0200
-Subject: [PATCH] ASoC: samsung: s3c24xx-i2s: Don't use platform_data for DMA
- parameters
+>From da5eb41763c750d1660ca0a962f15f268821b3e6 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Tue, 25 Oct 2016 16:42:30 +0100
+Subject: [PATCH] ASoC: cs42l56: Make ID registers volatile and remove cache
+ bypass
 
-Since the s3c24xx-dma is converted to use DMA map we can rely on the
-DMA subsystem to match DMA channels and slave devices, rather than
-passing DMA details from platform_data.
+Rather than manually enabling cache bypass when reading the ID registers
+simply remove the default which will cause the first read to go to the
+hardware. The old code worked this is simply the more standard way to
+implement this.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Acked-by: Brian Austin <brian.austin@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/s3c24xx-i2s.c | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
+ sound/soc/codecs/cs42l56.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-index d59a47d8ca0f..29196a9933a6 100644
---- a/sound/soc/samsung/s3c24xx-i2s.c
-+++ b/sound/soc/samsung/s3c24xx-i2s.c
-@@ -30,8 +30,6 @@
- #include "dma.h"
- #include "s3c24xx-i2s.h"
- 
--#include <linux/platform_data/asoc-s3c.h>
--
- static struct snd_dmaengine_dai_dma_data s3c24xx_i2s_pcm_stereo_out = {
- 	.addr_width	= 2,
+diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+index 54c1768bc818..3e2c04642f1e 100644
+--- a/sound/soc/codecs/cs42l56.c
++++ b/sound/soc/codecs/cs42l56.c
+@@ -64,8 +64,6 @@ struct  cs42l56_private {
  };
-@@ -449,14 +447,8 @@ static const struct snd_soc_component_driver s3c24xx_i2s_component = {
  
- static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
- {
--	int ret = 0;
- 	struct resource *res;
--	struct s3c_audio_pdata *pdata = dev_get_platdata(&pdev->dev);
--
--	if (!pdata) {
--		dev_err(&pdev->dev, "missing platform data");
--		return -ENXIO;
--	}
-+	int ret = 0;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!res) {
-@@ -468,9 +460,7 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
- 		return PTR_ERR(s3c24xx_i2s.regs);
- 
- 	s3c24xx_i2s_pcm_stereo_out.addr = res->start + S3C2410_IISFIFO;
--	s3c24xx_i2s_pcm_stereo_out.filter_data = pdata->dma_playback;
- 	s3c24xx_i2s_pcm_stereo_in.addr = res->start + S3C2410_IISFIFO;
--	s3c24xx_i2s_pcm_stereo_in.filter_data = pdata->dma_capture;
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 			&s3c24xx_i2s_component, &s3c24xx_i2s_dai, 1);
-@@ -479,8 +469,7 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
+ static const struct reg_default cs42l56_reg_defaults[] = {
+-	{ 1, 0x56 },	/* r01	- ID 1 */
+-	{ 2, 0x04 },	/* r02	- ID 2 */
+ 	{ 3, 0x7f },	/* r03	- Power Ctl 1 */
+ 	{ 4, 0xff },	/* r04	- Power Ctl 2 */
+ 	{ 5, 0x00 },	/* ro5	- Clocking Ctl 1 */
+@@ -1262,8 +1260,6 @@ static int cs42l56_i2c_probe(struct i2c_client *i2c_client,
  		return ret;
  	}
  
--	ret = samsung_asoc_dma_platform_register(&pdev->dev,
--						 pdata->dma_filter,
-+	ret = samsung_asoc_dma_platform_register(&pdev->dev, NULL,
- 						 NULL, NULL);
- 	if (ret)
- 		pr_err("failed to register the dma: %d\n", ret);
+-	regcache_cache_bypass(cs42l56->regmap, true);
+-
+ 	ret = regmap_read(cs42l56->regmap, CS42L56_CHIP_ID_1, &reg);
+ 	devid = reg & CS42L56_CHIP_ID_MASK;
+ 	if (devid != CS42L56_DEVID) {
+@@ -1279,8 +1275,6 @@ static int cs42l56_i2c_probe(struct i2c_client *i2c_client,
+ 	dev_info(&i2c_client->dev, "Alpha Rev %X Metal Rev %X\n",
+ 		 alpha_rev, metal_rev);
+ 
+-	regcache_cache_bypass(cs42l56->regmap, false);
+-
+ 	if (cs42l56->pdata.ain1a_ref_cfg)
+ 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
+ 				   CS42L56_AIN1A_REF_MASK, 1);
 -- 
 2.8.1
