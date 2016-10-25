@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: remove rsnd_dma_detach()" to the
-	asoc tree
-Date: Tue, 25 Oct 2016 20:23:46 +0100
-Message-ID: <E1bz7K6-0004oK-Ka@debutante>
-References: <8737jlcly4.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: don't use devm_request_irq() for
+	SSI" to the asoc tree
+Date: Tue, 25 Oct 2016 20:23:57 +0100
+Message-ID: <E1bz7KH-0004p9-2M@debutante>
+References: <874m41clyo.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 68881265B3E
- for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 21:23:53 +0200 (CEST)
-In-Reply-To: <8737jlcly4.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DEF922606F8
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 21:24:03 +0200 (CEST)
+In-Reply-To: <874m41clyo.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: remove rsnd_dma_detach()
+   ASoC: rsnd: don't use devm_request_irq() for SSI
 
 has been applied to the asoc tree at
 
@@ -53,69 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From dae4b83295ae50a86b5e3c60e7b6e2c597a1b69d Mon Sep 17 00:00:00 2001
+>From 701172dca15ba9860ba73d3e18082fbd2a78f2c9 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 25 Oct 2016 00:36:56 +0000
-Subject: [PATCH] ASoC: rsnd: remove rsnd_dma_detach()
+Date: Tue, 25 Oct 2016 00:36:34 +0000
+Subject: [PATCH] ASoC: rsnd: don't use devm_request_irq() for SSI
 
-DMA mod is now connected to stream via rsnd_dai_connect().
-This means DMA mod can use .remove for its clearance.
-rsnd_dma_detach() is no longer needed.
+SSI will use DMA mode, and migh be fallback to PIO mode.
+Using devm_request_irq() makes its operation more complex when
+it fallbacks to PIO mode.
+Let's use manual request_irq()/free_irq()
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dma.c  | 11 -----------
- sound/soc/sh/rcar/rsnd.h |  1 -
- sound/soc/sh/rcar/ssi.c  |  2 --
- 3 files changed, 14 deletions(-)
+ sound/soc/sh/rcar/ssi.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index e0761cac0ab7..c85a55111392 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -698,17 +698,6 @@ int rsnd_dma_attach(struct rsnd_dai_stream *io, struct rsnd_mod *mod,
- 	return 0;
- }
- 
--void rsnd_dma_detach(struct rsnd_mod *mod, struct rsnd_mod **dma_mod)
--{
--	if (*dma_mod) {
--		struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
--		struct device *dev = rsnd_priv_to_dev(priv);
--
--		devm_kfree(dev, *dma_mod);
--		*dma_mod = NULL;
--	}
--}
--
- int rsnd_dma_probe(struct rsnd_priv *priv)
- {
- 	struct platform_device *pdev = rsnd_priv_to_pdev(priv);
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 2460d1fbf775..c1cee1ab3e62 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -200,7 +200,6 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io);
-  */
- int rsnd_dma_attach(struct rsnd_dai_stream *io,
- 		    struct rsnd_mod *mod, struct rsnd_mod **dma_mod);
--void rsnd_dma_detach(struct rsnd_mod *mod, struct rsnd_mod **dma_mod);
- int rsnd_dma_probe(struct rsnd_priv *priv);
- struct dma_chan *rsnd_dma_request_channel(struct device_node *of_node,
- 					  struct rsnd_mod *mod, char *name);
 diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index b0338d0a4cde..e23e07b54d8c 100644
+index 59cd9824d8a4..b0338d0a4cde 100644
 --- a/sound/soc/sh/rcar/ssi.c
 +++ b/sound/soc/sh/rcar/ssi.c
-@@ -701,8 +701,6 @@ static int rsnd_ssi_dma_remove(struct rsnd_mod *mod,
- 	/* PIO will request IRQ again */
- 	free_irq(ssi->irq, mod);
+@@ -644,10 +644,14 @@ static int rsnd_ssi_common_probe(struct rsnd_mod *mod,
+ 	if (ret < 0)
+ 		return ret;
  
--	rsnd_dma_detach(mod, &ssi->dma);
--
- 	return 0;
+-	ret = devm_request_irq(dev, ssi->irq,
+-			       rsnd_ssi_interrupt,
+-			       IRQF_SHARED,
+-			       dev_name(dev), mod);
++	/*
++	 * SSI might be called again as PIO fallback
++	 * It is easy to manual handling for IRQ request/free
++	 */
++	ret = request_irq(ssi->irq,
++			  rsnd_ssi_interrupt,
++			  IRQF_SHARED,
++			  dev_name(dev), mod);
+ 
+ 	return ret;
  }
+@@ -693,12 +697,9 @@ static int rsnd_ssi_dma_remove(struct rsnd_mod *mod,
+ 			       struct rsnd_priv *priv)
+ {
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+-	struct device *dev = rsnd_priv_to_dev(priv);
+-	int irq = ssi->irq;
+ 
+ 	/* PIO will request IRQ again */
+-	if (ssi->dma)
+-		devm_free_irq(dev, irq, mod);
++	free_irq(ssi->irq, mod);
+ 
+ 	rsnd_dma_detach(mod, &ssi->dma);
  
 -- 
 2.8.1
