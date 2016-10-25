@@ -1,52 +1,62 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/7] ASoC: constify snd_soc_ops structures
-Date: Tue, 25 Oct 2016 15:08:52 +0100
-Message-ID: <20161025140852.GV17252@sirena.org.uk>
-References: <1476543351-17858-1-git-send-email-Julia.Lawall@lip6.fr>
- <1476543351-17858-6-git-send-email-Julia.Lawall@lip6.fr>
- <20161024173423.GL17252@sirena.org.uk>
- <alpine.DEB.2.20.1610250754220.2084@hadrien>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: seq: Fix time account regression
+Date: Tue, 25 Oct 2016 16:03:28 +0200
+Message-ID: <20161025140328.23778-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vBRosIkLXbYTRpGW"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.20.1610250754220.2084@hadrien>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Julia Lawall <julia.lawall@lip6.fr>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, kernel-janitors@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2F592614A0
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 16:03:30 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 0379EAAD1
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 14:03:29 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The recent rewrite of the sequencer time accounting using timespec64
+in the commit [3915bf294652: ALSA: seq_timer: use monotonic times
+internally] introduced a bad regression.  Namely, the time reported
+back doesn't increase but goes back and forth.
 
---vBRosIkLXbYTRpGW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The culprit was obvious: the delta is stored to the result (cur_time =
+delta), instead of adding the delta (cur_time += delta)!
 
-On Tue, Oct 25, 2016 at 07:55:00AM +0200, Julia Lawall wrote:
-> On Mon, 24 Oct 2016, Mark Brown wrote:
+Let's fix it.
 
-> > You split out a few drivers as separate patches but not these ones -
-> > what's special about these ones?
+Fixes: 3915bf294652 ('ALSA: seq_timer: use monotonic times internally')
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=177571
+Reported-by: Yves Guillemot <yc.guillemot@wanadoo.fr>
+Cc: <stable@vger.kernel.org> # v4.8+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/seq/seq_timer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> If it's preferred, I could send them all one file at a time, or when the
-> maintainers are very similar just send one patch to all the maintainers.
-
-For something like this it doesn't matter so much, it was mainly just
-the consistency that was bothering me.
-
---vBRosIkLXbYTRpGW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJYD2dyAAoJECTWi3JdVIfQyFQH/2reJtBjxKHyZw1cpy3P+eBZ
-cpyfQwjv9rAgx9kygQH9AKylMKBjsIm7Ovfl9sudsA7UMTQyh16MtTgjMKSGI370
-9ki58iFkg8L0BlZKilOUS7db2wkWiT31lyxetncrmeiePRmNh+NDHuo4ySuLxrYE
-CsPjQXak1lBGOWb1icxJnRrP7OZjIkNLPxGI+o5oXDQTGJHU7Fbub9Xn7+5BmmrU
-O9VhzqRldxH/YEGp+P2e8O5iUm2L+ZHNYWsEkcvQyXZR9eKtQfX6U+upoWJD2zvk
-ZmOKLGwB68vc06E3nYjYX++FlPl3VoWuVAoFNLtZDXc1s9DbuBQ+9Td/SfEE5DU=
-=xw73
------END PGP SIGNATURE-----
-
---vBRosIkLXbYTRpGW--
+diff --git a/sound/core/seq/seq_timer.c b/sound/core/seq/seq_timer.c
+index dcc102813aef..37d9cfbc29f9 100644
+--- a/sound/core/seq/seq_timer.c
++++ b/sound/core/seq/seq_timer.c
+@@ -448,8 +448,8 @@ snd_seq_real_time_t snd_seq_timer_get_cur_time(struct snd_seq_timer *tmr)
+ 
+ 		ktime_get_ts64(&tm);
+ 		tm = timespec64_sub(tm, tmr->last_update);
+-		cur_time.tv_nsec = tm.tv_nsec;
+-		cur_time.tv_sec = tm.tv_sec;
++		cur_time.tv_nsec += tm.tv_nsec;
++		cur_time.tv_sec += tm.tv_sec;
+ 		snd_seq_sanity_real_time(&cur_time);
+ 	}
+ 	spin_unlock_irqrestore(&tmr->lock, flags);
+-- 
+2.10.1
