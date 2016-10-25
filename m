@@ -1,144 +1,81 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH v4] ASoC: rt5514: Add the DMIC initial delay to
-	wait it ready.
-Date: Tue, 25 Oct 2016 19:27:26 +0800
-Message-ID: <1477394846-14205-1-git-send-email-oder_chiou@realtek.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: Drop
+ SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag
+Date: Tue, 25 Oct 2016 14:22:51 +0200
+Message-ID: <4abcead6-1f2a-e604-97f6-96e6f26ff9f0@metafoo.de>
+References: <1477392991-10604-1-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 15044260083
- for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 13:27:43 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, woojoo.lee@samsung.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1477392991-10604-1-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, lgirdwood@gmail.com, krzk@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Due to the DMIC that needs time to initial after the MCLK is provided, the
-field of delay time is implemented by the platform data.
+On 10/25/2016 12:56 PM, Sylwester Nawrocki wrote:
+> Since commit 194c7dea00c68c1b1f8ff26304fa937a006f66dd
+> "ASoC: dmaengine: add custom DMA config to snd_dmaengine_pcm_config"
+> custom DMA channels can be also specified in chan_names[] field of
+> struct snd_dmaengine_pcm_config.  This patch drops chan_name field
+> of struct snd_dmaengine_dai_dma_data and makes soc-generic-dmaengine-pcm
+> module using config->chan_names instead.  Remaining users of struct
+> snd_dmaengine_dai_dma_data::chan_name are updated to not require
+> that field.
+> 
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- Documentation/devicetree/bindings/sound/rt5514.txt |  3 +++
- include/sound/rt5514.h                             | 20 ++++++++++++++++++++
- sound/soc/codecs/rt5514.c                          | 17 +++++++++++++++++
- sound/soc/codecs/rt5514.h                          |  2 ++
- 4 files changed, 42 insertions(+)
- create mode 100644 include/sound/rt5514.h
+Nice patch. One nice-to-have change request, can you split this into two
+patches, one which removes the last users and one patch which removes
+support for it from the framework?
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
-index 9cabfc1..929ca67 100644
---- a/Documentation/devicetree/bindings/sound/rt5514.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5514.txt
-@@ -13,6 +13,9 @@ Optional properties:
- - clocks: The phandle of the master clock to the CODEC
- - clock-names: Should be "mclk"
- 
-+- realtek,dmic-init-delay-ms
-+  Set the DMIC initial delay (ms) to wait it ready.
-+
- Pins on the device (for linking into audio routes) for RT5514:
- 
-   * DMIC1L
-diff --git a/include/sound/rt5514.h b/include/sound/rt5514.h
-new file mode 100644
-index 0000000..ef18494
---- /dev/null
-+++ b/include/sound/rt5514.h
-@@ -0,0 +1,20 @@
-+/*
-+ * linux/sound/rt5514.h -- Platform data for RT5514
-+ *
-+ * Copyright 2016 Realtek Semiconductor Corp.
-+ * Author: Oder Chiou <oder_chiou@realtek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __LINUX_SND_RT5514_H
-+#define __LINUX_SND_RT5514_H
-+
-+struct rt5514_platform_data {
-+	unsigned int dmic_init_delay;
-+};
-+
-+#endif
-+
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index f24b7cf..b281a46 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -452,6 +452,9 @@ static int rt5514_set_dmic_clk(struct snd_soc_dapm_widget *w,
- 			RT5514_CLK_DMIC_OUT_SEL_MASK,
- 			idx << RT5514_CLK_DMIC_OUT_SEL_SFT);
- 
-+	if (rt5514->pdata.dmic_init_delay)
-+		msleep(rt5514->pdata.dmic_init_delay);
-+
- 	return idx;
- }
- 
-@@ -1073,9 +1076,18 @@ static const struct of_device_id rt5514_of_match[] = {
- MODULE_DEVICE_TABLE(of, rt5514_of_match);
- #endif
- 
-+static int rt5514_parse_dt(struct rt5514_priv *rt5514, struct device *dev)
-+{
-+	device_property_read_u32(dev, "realtek,dmic-init-delay-ms",
-+		&rt5514->pdata.dmic_init_delay);
-+
-+	return 0;
-+}
-+
- static int rt5514_i2c_probe(struct i2c_client *i2c,
- 		    const struct i2c_device_id *id)
- {
-+	struct rt5514_platform_data *pdata = dev_get_platdata(&i2c->dev);
- 	struct rt5514_priv *rt5514;
- 	int ret;
- 	unsigned int val;
-@@ -1087,6 +1099,11 @@ static int rt5514_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, rt5514);
- 
-+	if (pdata)
-+		rt5514->pdata = *pdata;
-+	else if (i2c->dev.of_node)
-+		rt5514_parse_dt(rt5514, &i2c->dev);
-+
- 	rt5514->i2c_regmap = devm_regmap_init_i2c(i2c, &rt5514_i2c_regmap);
- 	if (IS_ERR(rt5514->i2c_regmap)) {
- 		ret = PTR_ERR(rt5514->i2c_regmap);
-diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
-index 229de0e..5d343fb 100644
---- a/sound/soc/codecs/rt5514.h
-+++ b/sound/soc/codecs/rt5514.h
-@@ -13,6 +13,7 @@
- #define __RT5514_H__
- 
- #include <linux/clk.h>
-+#include <sound/rt5514.h>
- 
- #define RT5514_DEVICE_ID			0x10ec5514
- 
-@@ -243,6 +244,7 @@ enum {
- };
- 
- struct rt5514_priv {
-+	struct rt5514_platform_data pdata;
- 	struct snd_soc_codec *codec;
- 	struct regmap *i2c_regmap, *regmap;
- 	struct clk *mclk;
--- 
-1.8.1.1.439.g50a6b54
+Having the new DMA map framework should also allow us to eventually remove
+the channel request in dmaengine_pcm_new() once all users of filter
+functions have gone.
+
+[...]
+> diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+> index 6cef397..f2d372d 100644
+> --- a/sound/soc/soc-generic-dmaengine-pcm.c
+> +++ b/sound/soc/soc-generic-dmaengine-pcm.c
+> @@ -263,7 +263,6 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
+>  	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
+>  	const struct snd_dmaengine_pcm_config *config = pcm->config;
+>  	struct device *dev = rtd->platform->dev;
+> -	struct snd_dmaengine_dai_dma_data *dma_data;
+>  	struct snd_pcm_substream *substream;
+>  	size_t prealloc_buffer_size;
+>  	size_t max_buffer_size;
+> @@ -284,12 +283,9 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
+>  		if (!substream)
+>  			continue;
+>  
+> -		dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+> -
+> -		if (!pcm->chan[i] &&
+> -		    (pcm->flags & SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME))
+> +		if (!pcm->chan[i] && config->chan_names[i])
+>  			pcm->chan[i] = dma_request_slave_channel(dev,
+> -				dma_data->chan_name);
+> +				config->chan_names[i]);
+
+I think this can be removed altogether. The only reason why we did the
+delayed request is because the name would have not been available when
+initially trying to request the channel when the PCM device is registered.
+
+>  
+>  		if (!pcm->chan[i] && (pcm->flags & SND_DMAENGINE_PCM_FLAG_COMPAT)) {
+>  			pcm->chan[i] = dmaengine_pcm_compat_request_channel(rtd,
+> @@ -359,9 +355,7 @@ static int dmaengine_pcm_request_chan_of(struct dmaengine_pcm *pcm,
+>  	const char *name;
+>  	struct dma_chan *chan;
+>  
+> -	if ((pcm->flags & (SND_DMAENGINE_PCM_FLAG_NO_DT |
+> -			   SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME)) ||
+> -	    !dev->of_node)
+> +	if ((pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_DT) || !dev->of_node)
+>  		return 0;
+>  
+>  	if (config && config->dma_dev) {
+> 
