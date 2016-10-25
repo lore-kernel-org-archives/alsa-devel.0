@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42xx8: Mark chip ID as volatile and
-	remove cache bypass" to the asoc tree
-Date: Tue, 25 Oct 2016 20:23:37 +0100
-Message-ID: <E1bz7Jx-0004ly-1G@debutante>
-References: <1477410151-17515-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: rsnd: add nolock_start/stop callback"
+	to the asoc tree
+Date: Tue, 25 Oct 2016 20:23:40 +0100
+Message-ID: <E1bz7K0-0004mk-6z@debutante>
+References: <87ziltb7ch.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D4CAF2606F8
- for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 21:23:43 +0200 (CEST)
-In-Reply-To: <1477410151-17515-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 92AFD2606F8
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 21:23:48 +0200 (CEST)
+In-Reply-To: <87ziltb7ch.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: brian.austin@cirrus.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42xx8: Mark chip ID as volatile and remove cache bypass
+   ASoC: rsnd: add nolock_start/stop callback
 
 has been applied to the asoc tree at
 
@@ -53,63 +53,122 @@ to this mail.
 Thanks,
 Mark
 
->From 03d2ec460f126d8f4409d137b5865bc4eca253c0 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 25 Oct 2016 16:42:29 +0100
-Subject: [PATCH] ASoC: cs42xx8: Mark chip ID as volatile and remove cache
- bypass
+>From 10a9cca13220888c20a259abbd42ea117cddfdb0 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 25 Oct 2016 00:37:35 +0000
+Subject: [PATCH] ASoC: rsnd: add nolock_start/stop callback
 
-Rather than manually enabling cache bypass when reading the ID registers
-simply remove the default which will cause the first read to go to the
-hardware. The old code worked this is simply the more standard way to
-implement this. There is a comment included in the code that claims the
-chip ID register also contains the right input volume, however this is
-clearly not the case from the rest of the driver. Further investigation
-reveals exactly the same comment in the wm8962 driver, where this is the
-case, so this is almost certainly a copy and paste error from when the
-driver was created.
+Current Renesas Sound driver requests DMA channel when .probe timing,
+and release it when .remove timing. And use DMA on .start/.stop
+But, Audio DMAC power ON was handled when request timing (= .probe),
+and power OFF was when release timing (= .remove).
+This means Audio DMAC power is always ON during driver was enabled.
+To fixup this issue, it should request/release DMA channel on each
+playback/recorde timing.
+But, DMA channel request/release function uses mutex lock inside.
+This means it will breaks current spinlock's interrupt protect.
+To solve this issue, DMA channel request/release function needs to
+be called from non-spinlock area. This patch adds its callback.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42xx8.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ sound/soc/sh/rcar/core.c | 26 ++++++++++++++++++++++++++
+ sound/soc/sh/rcar/rsnd.h | 15 ++++++++++++++-
+ 2 files changed, 40 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
-index b4d87379d2bc..c1785bd4ff19 100644
---- a/sound/soc/codecs/cs42xx8.c
-+++ b/sound/soc/codecs/cs42xx8.c
-@@ -321,7 +321,6 @@ static struct snd_soc_dai_driver cs42xx8_dai = {
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index ea14a1470de2..9ffa29941ceb 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -716,7 +716,33 @@ static int rsnd_soc_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ 	return 0;
+ }
+ 
++static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
++{
++	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
++	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
++
++	/*
++	 * call rsnd_dai_call without spinlock
++	 */
++	return rsnd_dai_call(nolock_start, io, priv);
++}
++
++static void rsnd_soc_dai_shutdown(struct snd_pcm_substream *substream,
++				  struct snd_soc_dai *dai)
++{
++	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
++	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
++
++	/*
++	 * call rsnd_dai_call without spinlock
++	 */
++	rsnd_dai_call(nolock_stop, io, priv);
++}
++
+ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
++	.startup	= rsnd_soc_dai_startup,
++	.shutdown	= rsnd_soc_dai_shutdown,
+ 	.trigger	= rsnd_soc_dai_trigger,
+ 	.set_fmt	= rsnd_soc_dai_set_fmt,
+ 	.set_tdm_slot	= rsnd_soc_set_dai_tdm_slot,
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index c1cee1ab3e62..422b5344b687 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -259,6 +259,12 @@ struct rsnd_mod_ops {
+ 	int (*fallback)(struct rsnd_mod *mod,
+ 			struct rsnd_dai_stream *io,
+ 			struct rsnd_priv *priv);
++	int (*nolock_start)(struct rsnd_mod *mod,
++		    struct rsnd_dai_stream *io,
++		    struct rsnd_priv *priv);
++	int (*nolock_stop)(struct rsnd_mod *mod,
++		    struct rsnd_dai_stream *io,
++		    struct rsnd_priv *priv);
  };
  
- static const struct reg_default cs42xx8_reg[] = {
--	{ 0x01, 0x01 },   /* Chip I.D. and Revision Register */
- 	{ 0x02, 0x00 },   /* Power Control */
- 	{ 0x03, 0xF0 },   /* Functional Mode */
- 	{ 0x04, 0x46 },   /* Interface Formats */
-@@ -498,13 +497,6 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap)
- 	/* Make sure hardware reset done */
- 	msleep(5);
+ struct rsnd_dai_stream;
+@@ -276,8 +282,9 @@ struct rsnd_mod {
+ /*
+  * status
+  *
+- * 0xH0000CB0
++ * 0xH0000CBA
+  *
++ * A	0: nolock_start	1: nolock_stop
+  * B	0: init		1: quit
+  * C	0: start	1: stop
+  *
+@@ -287,6 +294,8 @@ struct rsnd_mod {
+  * H	0: fallback
+  * H	0: hw_params
+  */
++#define __rsnd_mod_shift_nolock_start	0
++#define __rsnd_mod_shift_nolock_stop	0
+ #define __rsnd_mod_shift_init		4
+ #define __rsnd_mod_shift_quit		4
+ #define __rsnd_mod_shift_start		8
+@@ -300,6 +309,8 @@ struct rsnd_mod {
  
--	/*
--	 * We haven't marked the chip revision as volatile due to
--	 * sharing a register with the right input volume; explicitly
--	 * bypass the cache to read it.
--	 */
--	regcache_cache_bypass(cs42xx8->regmap, true);
--
- 	/* Validate the chip ID */
- 	ret = regmap_read(cs42xx8->regmap, CS42XX8_CHIPID, &val);
- 	if (ret < 0) {
-@@ -523,8 +515,6 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap)
- 	dev_info(dev, "found device, revision %X\n",
- 			val & CS42XX8_CHIPID_REV_ID_MASK);
+ #define __rsnd_mod_add_probe		0
+ #define __rsnd_mod_add_remove		0
++#define __rsnd_mod_add_nolock_start	 1
++#define __rsnd_mod_add_nolock_stop	-1
+ #define __rsnd_mod_add_init		 1
+ #define __rsnd_mod_add_quit		-1
+ #define __rsnd_mod_add_start		 1
+@@ -319,6 +330,8 @@ struct rsnd_mod {
+ #define __rsnd_mod_call_pcm_new		0
+ #define __rsnd_mod_call_fallback	0
+ #define __rsnd_mod_call_hw_params	0
++#define __rsnd_mod_call_nolock_start	0
++#define __rsnd_mod_call_nolock_stop	1
  
--	regcache_cache_bypass(cs42xx8->regmap, false);
--
- 	cs42xx8_dai.name = cs42xx8->drvdata->name;
- 
- 	/* Each adc supports stereo input */
+ #define rsnd_mod_to_priv(mod) ((mod)->priv)
+ #define rsnd_mod_id(mod) ((mod) ? (mod)->id : -1)
 -- 
 2.8.1
