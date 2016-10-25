@@ -1,84 +1,231 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs35l34: Remove CS35L34_CHIP_ID from
-	cs35l34_readable_register" to the asoc tree
-Date: Tue, 25 Oct 2016 20:28:55 +0100
-Message-ID: <E1bz7P5-0005It-GB@debutante>
-References: <1477406376-16054-1-git-send-email-axel.lin@ingics.com>
+From: =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara-5wv7dgnIgG8@public.gmane.org>
+Subject: Re: [linux-sunxi] Re: [PATCH v5 1/7] drm: sunxi: Add a basic DRM
+ driver for Allwinner DE2
+Date: Wed, 26 Oct 2016 00:52:28 +0100
+Message-ID: <94958c6b-22e9-7ba7-c9dd-d79924551f2d@arm.com>
+References: <cover.1477142934.git.moinejf@free.fr>
+ <8afc5e020c5767face34fe3a9ab300ce9e67ba00.1477142934.git.moinejf@free.fr>
+ <20161024140419.ah6hywf3b24pj3fv@lukather>
+ <20161025161441.6b248efe9229bd80e3f7a33c@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F82D2664F7
- for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 21:29:04 +0200 (CEST)
-In-Reply-To: <1477406376-16054-1-git-send-email-axel.lin@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20161025161441.6b248efe9229bd80e3f7a33c-GANU6spQydw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: moinejf-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: Dave Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 25/10/16 15:14, Jean-Francois Moine wrote:
+> On Mon, 24 Oct 2016 16:04:19 +0200
+> Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+> 
+>> Hi,
+> 
+> Hi Maxime,
+> 
+>> On Fri, Oct 21, 2016 at 09:26:18AM +0200, Jean-Francois Moine wrote:
+>>> Allwinner's recent SoCs, as A64, A83T and H3, contain a new display
+>>> engine, DE2.
+>>> This patch adds a DRM video driver for this device.
+>>>
+>>> Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+>>
+>> Output from checkpatch:
+>> total: 0 errors, 20 warnings, 83 checks, 1799 lines checked
+>>
+>>> ---
+>>>  .../bindings/display/sunxi/sunxi-de2.txt           |  83 +++
+>>>  drivers/gpu/drm/Kconfig                            |   2 +
+>>>  drivers/gpu/drm/Makefile                           |   1 +
+>>>  drivers/gpu/drm/sunxi/Kconfig                      |  21 +
+>>>  drivers/gpu/drm/sunxi/Makefile                     |   7 +
+>>>  drivers/gpu/drm/sunxi/de2_crtc.c                   | 475 +++++++++++++++++
+>>>  drivers/gpu/drm/sunxi/de2_crtc.h                   |  63 +++
+>>>  drivers/gpu/drm/sunxi/de2_de.c                     | 591 +++++++++++++++++++++
+>>>  drivers/gpu/drm/sunxi/de2_drm.h                    |  47 ++
+>>>  drivers/gpu/drm/sunxi/de2_drv.c                    | 378 +++++++++++++
+>>>  drivers/gpu/drm/sunxi/de2_plane.c                  | 119 +++++
+>>>  11 files changed, 1787 insertions(+)
+>>>  create mode 100644 Documentation/devicetree/bindings/display/sunxi/sunxi-de2.txt
+>>>  create mode 100644 drivers/gpu/drm/sunxi/Kconfig
+>>>  create mode 100644 drivers/gpu/drm/sunxi/Makefile
+>>>  create mode 100644 drivers/gpu/drm/sunxi/de2_crtc.c
+>>>  create mode 100644 drivers/gpu/drm/sunxi/de2_crtc.h
+>>>  create mode 100644 drivers/gpu/drm/sunxi/de2_de.c
+>>>  create mode 100644 drivers/gpu/drm/sunxi/de2_drm.h
+>>>  create mode 100644 drivers/gpu/drm/sunxi/de2_drv.c
+>>>  create mode 100644 drivers/gpu/drm/sunxi/de2_plane.c
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/display/sunxi/sunxi-de2.txt b/Documentation/devicetree/bindings/display/sunxi/sunxi-de2.txt
+>>> new file mode 100644
+>>> index 0000000..f9cd67a
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/display/sunxi/sunxi-de2.txt
+>>> @@ -0,0 +1,83 @@
+>>> +Allwinner sunxi Display Engine 2 subsystem
+>>> +==========================================
+>>> +
+>>> +The sunxi DE2 subsystem contains a display controller (DE2),
+>>
+>> sunxi is a made up name, and doesn't really mean anything. You can
+>> call it either sun8i (because it was introduced in that family).
+> 
+> OK.
+> 
+>>> +one or two LCD controllers (TCON) and their external interfaces.
+>>> +
+>>> +Display controller
+>>> +==================
+>>> +
+>>> +Required properties:
+>>> +
+>>> +- compatible: value should be one of the following
+>>> +		"allwinner,sun8i-a83t-display-engine"
+>>> +		"allwinner,sun8i-h3-display-engine"
+>>> +
+>>> +- clocks: must include clock specifiers corresponding to entries in the
+>>> +		clock-names property.
+>>> +
+>>> +- clock-names: must contain
+>>> +		"gate": for DE activation
+>>> +		"clock": DE clock
+>>
+>> We've been calling them bus and mod.
+> 
+> I can understand "bus" (which is better than "apb"), but why "mod"?
+> 
+>>> +
+>>> +- resets: phandle to the reset of the device
+>>> +
+>>> +- ports: phandle's to the LCD ports
+>>
+>> Please use the OF graph.
+> 
+> These ports are references to the graph of nodes. See
+> 	http://www.kernelhub.org/?msg=911825&p=2
+> 
+> 	[snip]
+>>> diff --git a/drivers/gpu/drm/sunxi/de2_crtc.c b/drivers/gpu/drm/sunxi/de2_crtc.c
+>>> new file mode 100644
+>>> index 0000000..dae0fab
+>>> --- /dev/null
+>>> +++ b/drivers/gpu/drm/sunxi/de2_crtc.c
+>>> @@ -0,0 +1,475 @@
+>>> +/*
+>>> + * Allwinner DRM driver - DE2 CRTC
+>>> + *
+>>> + * Copyright (C) 2016 Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+>>> + *
+>>> + * This program is free software; you can redistribute it and/or
+>>> + * modify it under the terms of the GNU General Public License as
+>>> + * published by the Free Software Foundation; either version 2 of
+>>> + * the License, or (at your option) any later version.
+>>> + */
+>>> +
+>>> +#include <linux/component.h>
+>>> +#include <drm/drm_crtc_helper.h>
+>>> +#include <drm/drm_atomic_helper.h>
+>>> +#include <asm/io.h>
+>>> +#include <linux/of_irq.h>
+>>> +
+>>> +#include "de2_drm.h"
+>>> +#include "de2_crtc.h"
+>>> +
+>>> +/* I/O map */
+>>> +
+>>> +struct tcon {
+>>> +	u32 gctl;
+>>> +#define		TCON_GCTL_TCON_En BIT(31)
+>>> +	u32 gint0;
+>>> +#define		TCON_GINT0_TCON1_Vb_Int_En BIT(30)
+>>> +#define		TCON_GINT0_TCON1_Vb_Int_Flag BIT(14)
+>>> +	u32 gint1;
+>>> +	u32 dum0[13];
+>>> +	u32 tcon0_ctl;				/* 0x40 */
+>>> +#define		TCON0_CTL_TCON_En BIT(31)
+>>> +	u32 dum1[19];
+>>> +	u32 tcon1_ctl;				/* 0x90 */
+>>> +#define		TCON1_CTL_TCON_En BIT(31)
+>>> +#define		TCON1_CTL_Interlace_En BIT(20)
+>>> +#define		TCON1_CTL_Start_Delay_SHIFT 4
+>>> +#define		TCON1_CTL_Start_Delay_MASK GENMASK(8, 4)
+>>> +	u32 basic0;			/* XI/YI */
+>>> +	u32 basic1;			/* LS_XO/LS_YO */
+>>> +	u32 basic2;			/* XO/YO */
+>>> +	u32 basic3;			/* HT/HBP */
+>>> +	u32 basic4;			/* VT/VBP */
+>>> +	u32 basic5;			/* HSPW/VSPW */
+>>> +	u32 dum2;
+>>> +	u32 ps_sync;				/* 0xb0 */
+>>> +	u32 dum3[15];
+>>> +	u32 io_pol;				/* 0xf0 */
+>>> +#define		TCON1_IO_POL_IO0_inv BIT(24)
+>>> +#define		TCON1_IO_POL_IO1_inv BIT(25)
+>>> +#define		TCON1_IO_POL_IO2_inv BIT(26)
+>>> +	u32 io_tri;
+>>> +	u32 dum4[2];
+>>> +
+>>> +	u32 ceu_ctl;				/* 0x100 */
+>>> +#define     TCON_CEU_CTL_ceu_en BIT(31)
+>>> +	u32 dum5[3];
+>>> +	u32 ceu_rr;
+>>> +	u32 ceu_rg;
+>>> +	u32 ceu_rb;
+>>> +	u32 ceu_rc;
+>>> +	u32 ceu_gr;
+>>> +	u32 ceu_gg;
+>>> +	u32 ceu_gb;
+>>> +	u32 ceu_gc;
+>>> +	u32 ceu_br;
+>>> +	u32 ceu_bg;
+>>> +	u32 ceu_bb;
+>>> +	u32 ceu_bc;
+>>> +	u32 ceu_rv;
+>>> +	u32 ceu_gv;
+>>> +	u32 ceu_bv;
+>>> +	u32 dum6[45];
+>>> +
+>>> +	u32 mux_ctl;				/* 0x200 */
+>>> +	u32 dum7[63];
+>>> +
+>>> +	u32 fill_ctl;				/* 0x300 */
+>>> +	u32 fill_start0;
+>>> +	u32 fill_end0;
+>>> +	u32 fill_data0;
+>>> +};
+>>
+>> Please use defines instead of the structures.
+> 
+> I think that structures are more readable.
 
-   ASoC: cs35l34: Remove CS35L34_CHIP_ID from cs35l34_readable_register
+I think for the kernel we don't use C structs to model register frames.
+The main argument against it is that putting them into a structure puts
+the actual offset into the hands of the compiler, which is free to
+insert padding and alignment - within the rules of the ABI. This happens
+to work when we use 32-bit registers and maybe char fillers only. Most
+ABIs seem to agree on this part, but there is no guarantee.
+In fact all those various ABIs used by the kernel could have subtle
+differences between architectures (for instance for alignment of 64-bit
+members), so we produce potentially non-portable code.
 
-has been applied to the asoc tree at
+Also I find it actually harder to read, since the manual refers to
+register offset addresses, which makes it hard to match with the code,
+especially if we deviate with the register naming. The fact that we have
+occasional *comments* to denote the actual offset is a hint that
+something is sub-optimal.
+Also having these dummy fillers is really error prone once we insert new
+registers, as the fill value has to be adjusted accordingly.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+So can we stick with what the kernel uses elsewhere and don't pretend
+that because the current GCC compiles that fine on ARM it will be good
+forever?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Thanks!
+Andre.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 55060feefcdff692ace47b1a2346998dfcd4bcb5 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Tue, 25 Oct 2016 22:39:36 +0800
-Subject: [PATCH] ASoC: cs35l34: Remove CS35L34_CHIP_ID from
- cs35l34_readable_register
-
-CS35L34_CHIP_ID is not a register address, it's the value read from
-CS35L34_DEVID_AB/CD/E registers.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/cs35l34.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/codecs/cs35l34.c b/sound/soc/codecs/cs35l34.c
-index 404538379586..e0f672af1d84 100644
---- a/sound/soc/codecs/cs35l34.c
-+++ b/sound/soc/codecs/cs35l34.c
-@@ -145,7 +145,6 @@ static bool cs35l34_volatile_register(struct device *dev, unsigned int reg)
- static bool cs35l34_readable_register(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
--	case	CS35L34_CHIP_ID:
- 	case	CS35L34_DEVID_AB:
- 	case	CS35L34_DEVID_CD:
- 	case	CS35L34_DEVID_E:
--- 
-2.8.1
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
