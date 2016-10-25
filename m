@@ -1,170 +1,144 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH] ASoC: s3c24xx_uda134x: Move global variables to driver's data
- structure
-Date: Tue, 25 Oct 2016 12:57:57 +0200
-Message-ID: <1477393077-10669-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: krzk@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH v4] ASoC: rt5514: Add the DMIC initial delay to
+	wait it ready.
+Date: Tue, 25 Oct 2016 19:27:26 +0800
+Message-ID: <1477394846-14205-1-git-send-email-oder_chiou@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 15044260083
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 13:27:43 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, woojoo.lee@samsung.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Gather all driver's private variables in common data structure
-and allocate the data structure dynamically.
+Due to the DMIC that needs time to initial after the MCLK is provided, the
+field of delay time is implemented by the platform data.
 
-Also unused ENFORCE_RATES symbol and local variable (leftovers
-from an erroneous rebase) are removed.
-
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 ---
- sound/soc/samsung/s3c24xx_uda134x.c | 79 ++++++++++++++++++++-----------------
- 1 file changed, 43 insertions(+), 36 deletions(-)
+ Documentation/devicetree/bindings/sound/rt5514.txt |  3 +++
+ include/sound/rt5514.h                             | 20 ++++++++++++++++++++
+ sound/soc/codecs/rt5514.c                          | 17 +++++++++++++++++
+ sound/soc/codecs/rt5514.h                          |  2 ++
+ 4 files changed, 42 insertions(+)
+ create mode 100644 include/sound/rt5514.h
 
-diff --git a/sound/soc/samsung/s3c24xx_uda134x.c b/sound/soc/samsung/s3c24xx_uda134x.c
-index 7853fbe..81a7894 100644
---- a/sound/soc/samsung/s3c24xx_uda134x.c
-+++ b/sound/soc/samsung/s3c24xx_uda134x.c
-@@ -19,9 +19,15 @@
- #include <sound/s3c24xx_uda134x.h>
+diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
+index 9cabfc1..929ca67 100644
+--- a/Documentation/devicetree/bindings/sound/rt5514.txt
++++ b/Documentation/devicetree/bindings/sound/rt5514.txt
+@@ -13,6 +13,9 @@ Optional properties:
+ - clocks: The phandle of the master clock to the CODEC
+ - clock-names: Should be "mclk"
  
- #include "regs-iis.h"
--
- #include "s3c24xx-i2s.h"
++- realtek,dmic-init-delay-ms
++  Set the DMIC initial delay (ms) to wait it ready.
++
+ Pins on the device (for linking into audio routes) for RT5514:
  
-+struct s3c24xx_uda134x {
-+	struct clk *xtal;
-+	struct clk *pclk;
-+	struct mutex clk_lock;
-+	int clk_users;
+   * DMIC1L
+diff --git a/include/sound/rt5514.h b/include/sound/rt5514.h
+new file mode 100644
+index 0000000..ef18494
+--- /dev/null
++++ b/include/sound/rt5514.h
+@@ -0,0 +1,20 @@
++/*
++ * linux/sound/rt5514.h -- Platform data for RT5514
++ *
++ * Copyright 2016 Realtek Semiconductor Corp.
++ * Author: Oder Chiou <oder_chiou@realtek.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef __LINUX_SND_RT5514_H
++#define __LINUX_SND_RT5514_H
++
++struct rt5514_platform_data {
++	unsigned int dmic_init_delay;
 +};
 +
- /* #define ENFORCE_RATES 1 */
- /*
-   Unfortunately the S3C24XX in master mode has a limited capacity of
-@@ -36,15 +42,6 @@
-   possible an error will be returned.
- */
- 
--static struct clk *xtal;
--static struct clk *pclk;
--/* this is need because we don't have a place where to keep the
-- * pointers to the clocks in each substream. We get the clocks only
-- * when we are actually using them so we don't block stuff like
-- * frequency change or oscillator power-off */
--static int clk_users;
--static DEFINE_MUTEX(clk_lock);
--
- static unsigned int rates[33 * 2];
- #ifdef ENFORCE_RATES
- static struct snd_pcm_hw_constraint_list hw_constraints_rates = {
-@@ -57,26 +54,24 @@
- static int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct s3c24xx_uda134x *priv = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--#ifdef ENFORCE_RATES
--	struct snd_pcm_runtime *runtime = substream->runtime;
--#endif
- 	int ret = 0;
- 
--	mutex_lock(&clk_lock);
-+	mutex_lock(&priv->clk_lock);
- 
--	if (clk_users == 0) {
--		xtal = clk_get(rtd->dev, "xtal");
--		if (IS_ERR(xtal)) {
-+	if (priv->clk_users == 0) {
-+		priv->xtal = clk_get(rtd->dev, "xtal");
-+		if (IS_ERR(priv->xtal)) {
- 			dev_err(rtd->dev, "%s cannot get xtal\n", __func__);
--			ret = PTR_ERR(xtal);
-+			ret = PTR_ERR(priv->xtal);
- 		} else {
--			pclk = clk_get(cpu_dai->dev, "iis");
--			if (IS_ERR(pclk)) {
-+			priv->pclk = clk_get(cpu_dai->dev, "iis");
-+			if (IS_ERR(priv->pclk)) {
- 				dev_err(rtd->dev, "%s cannot get pclk\n",
- 					__func__);
--				clk_put(xtal);
--				ret = PTR_ERR(pclk);
-+				clk_put(priv->xtal);
-+				ret = PTR_ERR(priv->pclk);
- 			}
- 		}
- 		if (!ret) {
-@@ -85,18 +80,19 @@ static int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
- 			for (i = 0; i < 2; i++) {
- 				int fs = i ? 256 : 384;
- 
--				rates[i*33] = clk_get_rate(xtal) / fs;
-+				rates[i*33] = clk_get_rate(priv->xtal) / fs;
- 				for (j = 1; j < 33; j++)
--					rates[i*33 + j] = clk_get_rate(pclk) /
-+					rates[i*33 + j] = clk_get_rate(priv->pclk) /
- 						(j * fs);
- 			}
- 		}
- 	}
--	clk_users += 1;
--	mutex_unlock(&clk_lock);
-+	priv->clk_users += 1;
-+	mutex_unlock(&priv->clk_lock);
++#endif
 +
- 	if (!ret) {
- #ifdef ENFORCE_RATES
--		ret = snd_pcm_hw_constraint_list(runtime, 0,
-+		ret = snd_pcm_hw_constraint_list(substream->runtime, 0,
- 						 SNDRV_PCM_HW_PARAM_RATE,
- 						 &hw_constraints_rates);
- 		if (ret < 0)
-@@ -109,15 +105,18 @@ static int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index f24b7cf..b281a46 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -452,6 +452,9 @@ static int rt5514_set_dmic_clk(struct snd_soc_dapm_widget *w,
+ 			RT5514_CLK_DMIC_OUT_SEL_MASK,
+ 			idx << RT5514_CLK_DMIC_OUT_SEL_SFT);
  
- static void s3c24xx_uda134x_shutdown(struct snd_pcm_substream *substream)
- {
--	mutex_lock(&clk_lock);
--	clk_users -= 1;
--	if (clk_users == 0) {
--		clk_put(xtal);
--		xtal = NULL;
--		clk_put(pclk);
--		pclk = NULL;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct s3c24xx_uda134x *priv = snd_soc_card_get_drvdata(rtd->card);
++	if (rt5514->pdata.dmic_init_delay)
++		msleep(rt5514->pdata.dmic_init_delay);
 +
-+	mutex_lock(&priv->clk_lock);
-+	priv->clk_users -= 1;
-+	if (priv->clk_users == 0) {
-+		clk_put(priv->xtal);
-+		priv->xtal = NULL;
-+		clk_put(priv->pclk);
-+		priv->pclk = NULL;
- 	}
--	mutex_unlock(&clk_lock);
-+	mutex_unlock(&priv->clk_lock);
+ 	return idx;
  }
  
- static int s3c24xx_uda134x_hw_params(struct snd_pcm_substream *substream,
-@@ -228,10 +227,18 @@ static int s3c24xx_uda134x_hw_params(struct snd_pcm_substream *substream,
- static int s3c24xx_uda134x_probe(struct platform_device *pdev)
+@@ -1073,9 +1076,18 @@ static const struct of_device_id rt5514_of_match[] = {
+ MODULE_DEVICE_TABLE(of, rt5514_of_match);
+ #endif
+ 
++static int rt5514_parse_dt(struct rt5514_priv *rt5514, struct device *dev)
++{
++	device_property_read_u32(dev, "realtek,dmic-init-delay-ms",
++		&rt5514->pdata.dmic_init_delay);
++
++	return 0;
++}
++
+ static int rt5514_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
  {
- 	struct snd_soc_card *card = &snd_soc_s3c24xx_uda134x;
-+	struct s3c24xx_uda134x *priv;
++	struct rt5514_platform_data *pdata = dev_get_platdata(&i2c->dev);
+ 	struct rt5514_priv *rt5514;
  	int ret;
+ 	unsigned int val;
+@@ -1087,6 +1099,11 @@ static int rt5514_i2c_probe(struct i2c_client *i2c,
  
--	platform_set_drvdata(pdev, card);
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	mutex_init(&priv->clk_lock);
-+
- 	card->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, card);
-+	snd_soc_card_set_drvdata(card, priv);
+ 	i2c_set_clientdata(i2c, rt5514);
  
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret)
++	if (pdata)
++		rt5514->pdata = *pdata;
++	else if (i2c->dev.of_node)
++		rt5514_parse_dt(rt5514, &i2c->dev);
++
+ 	rt5514->i2c_regmap = devm_regmap_init_i2c(i2c, &rt5514_i2c_regmap);
+ 	if (IS_ERR(rt5514->i2c_regmap)) {
+ 		ret = PTR_ERR(rt5514->i2c_regmap);
+diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
+index 229de0e..5d343fb 100644
+--- a/sound/soc/codecs/rt5514.h
++++ b/sound/soc/codecs/rt5514.h
+@@ -13,6 +13,7 @@
+ #define __RT5514_H__
+ 
+ #include <linux/clk.h>
++#include <sound/rt5514.h>
+ 
+ #define RT5514_DEVICE_ID			0x10ec5514
+ 
+@@ -243,6 +244,7 @@ enum {
+ };
+ 
+ struct rt5514_priv {
++	struct rt5514_platform_data pdata;
+ 	struct snd_soc_codec *codec;
+ 	struct regmap *i2c_regmap, *regmap;
+ 	struct clk *mclk;
 -- 
-1.9.1
+1.8.1.1.439.g50a6b54
