@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add nolock_start/stop callback"
-	to the asoc tree
-Date: Tue, 25 Oct 2016 20:23:40 +0100
-Message-ID: <E1bz7K0-0004mk-6z@debutante>
-References: <87ziltb7ch.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: don't call unneeded of_node_put()
+	on dma.c" to the asoc tree
+Date: Tue, 25 Oct 2016 20:23:43 +0100
+Message-ID: <E1bz7K3-0004nW-CM@debutante>
+References: <871sz5clxh.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 92AFD2606F8
- for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 21:23:48 +0200 (CEST)
-In-Reply-To: <87ziltb7ch.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E17CE2606F8
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 21:23:50 +0200 (CEST)
+In-Reply-To: <871sz5clxh.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add nolock_start/stop callback
+   ASoC: rsnd: don't call unneeded of_node_put() on dma.c
 
 has been applied to the asoc tree at
 
@@ -53,122 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From 10a9cca13220888c20a259abbd42ea117cddfdb0 Mon Sep 17 00:00:00 2001
+>From 161ba1f1a5c99c4525eb39cc71ec984e0a39e6d7 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 25 Oct 2016 00:37:35 +0000
-Subject: [PATCH] ASoC: rsnd: add nolock_start/stop callback
+Date: Tue, 25 Oct 2016 00:37:18 +0000
+Subject: [PATCH] ASoC: rsnd: don't call unneeded of_node_put() on dma.c
 
-Current Renesas Sound driver requests DMA channel when .probe timing,
-and release it when .remove timing. And use DMA on .start/.stop
-But, Audio DMAC power ON was handled when request timing (= .probe),
-and power OFF was when release timing (= .remove).
-This means Audio DMAC power is always ON during driver was enabled.
-To fixup this issue, it should request/release DMA channel on each
-playback/recorde timing.
-But, DMA channel request/release function uses mutex lock inside.
-This means it will breaks current spinlock's interrupt protect.
-To solve this issue, DMA channel request/release function needs to
-be called from non-spinlock area. This patch adds its callback.
+Current rsnd_dmaen_start() is calling of_node_put() for np,
+but it is not needed if it goes through this loop.
+This patch tidyup it
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 26 ++++++++++++++++++++++++++
- sound/soc/sh/rcar/rsnd.h | 15 ++++++++++++++-
- 2 files changed, 40 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/dma.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index ea14a1470de2..9ffa29941ceb 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -716,7 +716,33 @@ static int rsnd_soc_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 	return 0;
- }
+diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
+index c85a55111392..2f0327714625 100644
+--- a/sound/soc/sh/rcar/dma.c
++++ b/sound/soc/sh/rcar/dma.c
+@@ -143,19 +143,17 @@ static int rsnd_dmaen_start(struct rsnd_mod *mod,
+ struct dma_chan *rsnd_dma_request_channel(struct device_node *of_node,
+ 					  struct rsnd_mod *mod, char *name)
+ {
+-	struct dma_chan *chan;
++	struct dma_chan *chan = NULL;
+ 	struct device_node *np;
+ 	int i = 0;
  
-+static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
-+	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
-+
-+	/*
-+	 * call rsnd_dai_call without spinlock
-+	 */
-+	return rsnd_dai_call(nolock_start, io, priv);
-+}
-+
-+static void rsnd_soc_dai_shutdown(struct snd_pcm_substream *substream,
-+				  struct snd_soc_dai *dai)
-+{
-+	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
-+	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
-+
-+	/*
-+	 * call rsnd_dai_call without spinlock
-+	 */
-+	rsnd_dai_call(nolock_stop, io, priv);
-+}
-+
- static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
-+	.startup	= rsnd_soc_dai_startup,
-+	.shutdown	= rsnd_soc_dai_shutdown,
- 	.trigger	= rsnd_soc_dai_trigger,
- 	.set_fmt	= rsnd_soc_dai_set_fmt,
- 	.set_tdm_slot	= rsnd_soc_set_dai_tdm_slot,
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index c1cee1ab3e62..422b5344b687 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -259,6 +259,12 @@ struct rsnd_mod_ops {
- 	int (*fallback)(struct rsnd_mod *mod,
- 			struct rsnd_dai_stream *io,
- 			struct rsnd_priv *priv);
-+	int (*nolock_start)(struct rsnd_mod *mod,
-+		    struct rsnd_dai_stream *io,
-+		    struct rsnd_priv *priv);
-+	int (*nolock_stop)(struct rsnd_mod *mod,
-+		    struct rsnd_dai_stream *io,
-+		    struct rsnd_priv *priv);
- };
+ 	for_each_child_of_node(of_node, np) {
+-		if (i == rsnd_mod_id(mod))
+-			break;
++		if (i == rsnd_mod_id(mod) && (!chan))
++			chan = of_dma_request_slave_channel(np, name);
+ 		i++;
+ 	}
  
- struct rsnd_dai_stream;
-@@ -276,8 +282,9 @@ struct rsnd_mod {
- /*
-  * status
-  *
-- * 0xH0000CB0
-+ * 0xH0000CBA
-  *
-+ * A	0: nolock_start	1: nolock_stop
-  * B	0: init		1: quit
-  * C	0: start	1: stop
-  *
-@@ -287,6 +294,8 @@ struct rsnd_mod {
-  * H	0: fallback
-  * H	0: hw_params
-  */
-+#define __rsnd_mod_shift_nolock_start	0
-+#define __rsnd_mod_shift_nolock_stop	0
- #define __rsnd_mod_shift_init		4
- #define __rsnd_mod_shift_quit		4
- #define __rsnd_mod_shift_start		8
-@@ -300,6 +309,8 @@ struct rsnd_mod {
+-	chan = of_dma_request_slave_channel(np, name);
+-
+-	of_node_put(np);
++	/* It should call of_node_put(), since, it is rsnd_xxx_of_node() */
+ 	of_node_put(of_node);
  
- #define __rsnd_mod_add_probe		0
- #define __rsnd_mod_add_remove		0
-+#define __rsnd_mod_add_nolock_start	 1
-+#define __rsnd_mod_add_nolock_stop	-1
- #define __rsnd_mod_add_init		 1
- #define __rsnd_mod_add_quit		-1
- #define __rsnd_mod_add_start		 1
-@@ -319,6 +330,8 @@ struct rsnd_mod {
- #define __rsnd_mod_call_pcm_new		0
- #define __rsnd_mod_call_fallback	0
- #define __rsnd_mod_call_hw_params	0
-+#define __rsnd_mod_call_nolock_start	0
-+#define __rsnd_mod_call_nolock_stop	1
- 
- #define rsnd_mod_to_priv(mod) ((mod)->priv)
- #define rsnd_mod_id(mod) ((mod) ? (mod)->id : -1)
+ 	return chan;
 -- 
 2.8.1
