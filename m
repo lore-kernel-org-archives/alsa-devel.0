@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l73: Remove cache bypass for read
-	of ID registers" to the asoc tree
-Date: Tue, 25 Oct 2016 20:23:30 +0100
-Message-ID: <E1bz7Jq-0004k6-5V@debutante>
-References: <1477410151-17515-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 51E1A2606F8
- for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2016 21:23:38 +0200 (CEST)
-In-Reply-To: <1477410151-17515-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: brian.austin@cirrus.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org
+Subject: Applied "ASoC: samsung: s3c24xx-i2s: Debug/error trace cleanup" to the asoc tree
+Date: Tue, 25 Oct 2016 20:26:46 +0100
+Message-ID: <E1bz7N0-00056b-GC@debutante>
+References: <1477392991-10604-3-git-send-email-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1477392991-10604-3-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, lgirdwood@gmail.com, krzk@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l73: Remove cache bypass for read of ID registers
+   ASoC: samsung: s3c24xx-i2s: Debug/error trace cleanup
 
 has been applied to the asoc tree at
 
@@ -53,44 +37,175 @@ to this mail.
 Thanks,
 Mark
 
->From ca493dabbc77a20c1df9a386f192126b863a2437 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 25 Oct 2016 16:42:31 +0100
-Subject: [PATCH] ASoC: cs42l73: Remove cache bypass for read of ID registers
+>From 2ef9555bd13d00c63fdbe3cdca6ab0e2ded42695 Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Tue, 25 Oct 2016 17:08:41 +0200
+Subject: [PATCH] ASoC: samsung: s3c24xx-i2s: Debug/error trace cleanup
 
-Don't manually enable cache_bypass for reading the ID registers they
-don't have a default anyway so the first read will always hit the
-hardware. The old code worked this is simply the more standard way
-to implement this.
+pr_err() are replaced with dev_err() so information about
+device the error logs refer to is also included.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+pr_debug() at beginning of each function are removed
+as they are likely very rarely used and can always be
+added again when doing any serious debugging.
+
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l73.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/samsung/s3c24xx-i2s.c | 30 ++++--------------------------
+ 1 file changed, 4 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 71ba5605495f..3df2c473ab88 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -1337,8 +1337,6 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
- 		gpio_set_value_cansleep(cs42l73->pdata.reset_gpio, 1);
+diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+index 29196a9933a6..7c7061bc0ded 100644
+--- a/sound/soc/samsung/s3c24xx-i2s.c
++++ b/sound/soc/samsung/s3c24xx-i2s.c
+@@ -54,8 +54,6 @@ static void s3c24xx_snd_txctrl(int on)
+ 	u32 iiscon;
+ 	u32 iismod;
+ 
+-	pr_debug("Entered %s\n", __func__);
+-
+ 	iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
+ 	iiscon  = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
+ 	iismod  = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
+@@ -99,8 +97,6 @@ static void s3c24xx_snd_rxctrl(int on)
+ 	u32 iiscon;
+ 	u32 iismod;
+ 
+-	pr_debug("Entered %s\n", __func__);
+-
+ 	iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
+ 	iiscon  = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
+ 	iismod  = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
+@@ -147,8 +143,6 @@ static int s3c24xx_snd_lrsync(void)
+ 	u32 iiscon;
+ 	int timeout = 50; /* 5ms */
+ 
+-	pr_debug("Entered %s\n", __func__);
+-
+ 	while (1) {
+ 		iiscon = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
+ 		if (iiscon & S3C2410_IISCON_LRINDEX)
+@@ -167,8 +161,6 @@ static int s3c24xx_snd_lrsync(void)
+  */
+ static inline int s3c24xx_snd_is_clkmaster(void)
+ {
+-	pr_debug("Entered %s\n", __func__);
+-
+ 	return (readl(s3c24xx_i2s.regs + S3C2410_IISMOD) & S3C2410_IISMOD_SLAVE) ? 0:1;
+ }
+ 
+@@ -180,8 +172,6 @@ static int s3c24xx_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ {
+ 	u32 iismod;
+ 
+-	pr_debug("Entered %s\n", __func__);
+-
+ 	iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
+ 	pr_debug("hw_params r: IISMOD: %x \n", iismod);
+ 
+@@ -209,6 +199,7 @@ static int s3c24xx_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 
+ 	writel(iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
+ 	pr_debug("hw_params w: IISMOD: %x \n", iismod);
++
+ 	return 0;
+ }
+ 
+@@ -219,8 +210,6 @@ static int s3c24xx_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_dmaengine_dai_dma_data *dma_data;
+ 	u32 iismod;
+ 
+-	pr_debug("Entered %s\n", __func__);
+-
+ 	dma_data = snd_soc_dai_get_dma_data(dai, substream);
+ 
+ 	/* Working copies of register */
+@@ -242,6 +231,7 @@ static int s3c24xx_i2s_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	writel(iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
+ 	pr_debug("hw_params w: IISMOD: %x\n", iismod);
++
+ 	return 0;
+ }
+ 
+@@ -250,8 +240,6 @@ static int s3c24xx_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ {
+ 	int ret = 0;
+ 
+-	pr_debug("Entered %s\n", __func__);
+-
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+@@ -293,8 +281,6 @@ static int s3c24xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+ {
+ 	u32 iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
+ 
+-	pr_debug("Entered %s\n", __func__);
+-
+ 	iismod &= ~S3C2440_IISMOD_MPLL;
+ 
+ 	switch (clk_id) {
+@@ -319,8 +305,6 @@ static int s3c24xx_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai,
+ {
+ 	u32 reg;
+ 
+-	pr_debug("Entered %s\n", __func__);
+-
+ 	switch (div_id) {
+ 	case S3C24XX_DIV_BCLK:
+ 		reg = readl(s3c24xx_i2s.regs + S3C2410_IISMOD) & ~S3C2410_IISMOD_FS_MASK;
+@@ -354,8 +338,6 @@ EXPORT_SYMBOL_GPL(s3c24xx_i2s_get_clockrate);
+ 
+ static int s3c24xx_i2s_probe(struct snd_soc_dai *dai)
+ {
+-	pr_debug("Entered %s\n", __func__);
+-
+ 	snd_soc_dai_init_dma_data(dai, &s3c24xx_i2s_pcm_stereo_out,
+ 					&s3c24xx_i2s_pcm_stereo_in);
+ 
+@@ -381,8 +363,6 @@ static int s3c24xx_i2s_probe(struct snd_soc_dai *dai)
+ #ifdef CONFIG_PM
+ static int s3c24xx_i2s_suspend(struct snd_soc_dai *cpu_dai)
+ {
+-	pr_debug("Entered %s\n", __func__);
+-
+ 	s3c24xx_i2s.iiscon = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
+ 	s3c24xx_i2s.iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
+ 	s3c24xx_i2s.iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
+@@ -395,7 +375,6 @@ static int s3c24xx_i2s_suspend(struct snd_soc_dai *cpu_dai)
+ 
+ static int s3c24xx_i2s_resume(struct snd_soc_dai *cpu_dai)
+ {
+-	pr_debug("Entered %s\n", __func__);
+ 	clk_prepare_enable(s3c24xx_i2s.iis_clk);
+ 
+ 	writel(s3c24xx_i2s.iiscon, s3c24xx_i2s.regs + S3C2410_IISCON);
+@@ -410,7 +389,6 @@ static int s3c24xx_i2s_resume(struct snd_soc_dai *cpu_dai)
+ #define s3c24xx_i2s_resume NULL
+ #endif
+ 
+-
+ #define S3C24XX_I2S_RATES \
+ 	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
+ 	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
+@@ -465,14 +443,14 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 			&s3c24xx_i2s_component, &s3c24xx_i2s_dai, 1);
+ 	if (ret) {
+-		pr_err("failed to register the dai\n");
++		dev_err(&pdev->dev, "Failed to register the DAI\n");
+ 		return ret;
  	}
  
--	regcache_cache_bypass(cs42l73->regmap, true);
--
- 	/* initialize codec */
- 	ret = regmap_read(cs42l73->regmap, CS42L73_DEVID_AB, &reg);
- 	devid = (reg & 0xFF) << 12;
-@@ -1366,8 +1364,6 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
- 	dev_info(&i2c_client->dev,
- 		 "Cirrus Logic CS42L73, Revision: %02X\n", reg & 0xFF);
+ 	ret = samsung_asoc_dma_platform_register(&pdev->dev, NULL,
+ 						 NULL, NULL);
+ 	if (ret)
+-		pr_err("failed to register the dma: %d\n", ret);
++		dev_err(&pdev->dev, "Failed to register the DMA: %d\n", ret);
  
--	regcache_cache_bypass(cs42l73->regmap, false);
--
- 	ret =  snd_soc_register_codec(&i2c_client->dev,
- 			&soc_codec_dev_cs42l73, cs42l73_dai,
- 			ARRAY_SIZE(cs42l73_dai));
+ 	return ret;
+ }
 -- 
 2.8.1
