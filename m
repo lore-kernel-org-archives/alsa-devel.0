@@ -1,62 +1,88 @@
-From: Darren Hart <dvhart@infradead.org>
-Subject: Re: [RESEND PATCH v4] clk: x86: Add Atom PMC platform clocks
-Date: Wed, 26 Oct 2016 15:02:12 -0700
-Message-ID: <20161026220212.GA24422@f23x64.localdomain>
-References: <1476735320-4315-1-git-send-email-irina.tirdea@intel.com>
- <alpine.DEB.2.20.1610202349200.4938@nanos>
- <20161021045932.GA90338@f23x64.localdomain>
- <1F3AC3675D538145B1661F571FE1805F2F387575@irsmsx105.ger.corp.intel.com>
- <20161026213323.GB23374@f23x64.localdomain>
- <alpine.DEB.2.20.1610262341020.5013@nanos>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: M-audio Audiophile Firewire
+Date: Thu, 27 Oct 2016 08:47:15 +0900
+Message-ID: <6f6374d3-f616-0d9d-31ac-2d463573f889@sakamocchi.jp>
+References: <CAPzTivG=yDAbFZo+u5qauE_LdpqhUM5fT9MT9+hrmi3gTsTGqw@mail.gmail.com>
+ <1f6dd683-f550-651b-93d2-87560dd298ff@sakamocchi.jp>
+ <fd56b817-96b3-1784-725c-21a5bef7497a@sakamocchi.jp>
+ <CAPzTivEubUhef5LR_p3y0_4TZtbwoLimvzU-tx=xmUhBnT+T0g@mail.gmail.com>
+ <CAPzTivHypNMZvBVBks=wpx1XakELyeWsBVD9mpq-risb_DtH=Q@mail.gmail.com>
+ <7f5bc2fc-7e45-2577-9286-be0e2ff74228@sakamocchi.jp>
+ <CAPzTivHqY1aBH2hqHetmd7-hdZsPbPsC8e1iMjgL=2myH91fbg@mail.gmail.com>
+ <a2d308f4-1982-8418-40ec-e783065f7a96@sakamocchi.jp>
+ <CAPzTivFtjdmpEOYJo=a=B12_Zf9UVV+SjRUKA9hNWLop3w5nbg@mail.gmail.com>
+ <CAPzTivEPwnerkvH-Y5j9bvGzsM5GhLKvF69zFAkVHpDt-8g1Lw@mail.gmail.com>
+ <20161023224350.GB12315@marvin.atrad.com.au>
+ <5951c05f-3fe4-a2fc-aab2-407fddf8a817@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.20.1610262341020.5013@nanos>
-Sender: linux-clk-owner@vger.kernel.org
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: "Tirdea, Irina" <irina.tirdea@intel.com>, "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, Ingo Molnar <mingo@redhat.com>, Michael Turquette <mturquette@baylibre.com>, "H. Peter Anvin" <hpa@zytor.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, "Bossart, Pierre-louis" <pierre-louis.bossart@intel.com>, LKML <linux-kernel@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 11BB1265284
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 01:47:20 +0200 (CEST)
+In-Reply-To: <5951c05f-3fe4-a2fc-aab2-407fddf8a817@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pap Peti <roachkiller44@gmail.com>, Jonathan Woithe <jwoithe@just42.net>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 26, 2016 at 11:43:24PM +0200, Thomas Gleixner wrote:
-> On Wed, 26 Oct 2016, Darren Hart wrote:
-> > On Mon, Oct 24, 2016 at 01:38:54PM +0000, Tirdea, Irina wrote:
-> > > intel_pmc_* drivers or is it enough to move it as a standalone driver for now?
-> > 
-> > If the functionality is substantially different, then I don't see a
-> > compelling, and certainly not an immediate, need to merge them. Assume
-> > for now they are to remain as separate drivers. I suggest keeping the
-> > existing name for now as well. Let's just complete the move with as
-> > little user-visible changes as possible.
-> > 
-> > The placement of the header file is a bit tricky as it is being used in
-> > drivers/clk/x86 in addition to the pmc_atom driver in
-> > drivers/platform/x86.
-> > 
-> > The best existing location would appear to be include/platform_data/
-> > 
-> > Thomas, is that acceptable to you?
+On Oct 27 2016 04:25, Pap Peti wrote:
+> I think my things still belongs to the 'alsa-devel' topic, because I use 
+> the 'ffado-mixer' only to 'turn on' my audio input(s)/output(s)
 > 
-> Yes
+> I added my username to the "audio" anyway, and already I wont noticed 
+> noise (but sometimes the audio 'stream(?)' stuck a ~half second when I 
+> listen music and e.g.: meanwhile run a long file copy, or come some 
+> sound from the browser. I think its a 'multi-threaded' problem, and/or 
+> different audio sampling rate in same time.
 > 
-> > arch/x86/platform/atom/pmc_atom.c -> drivers/platform/x86
-> > arch/x86/include/asm/pmc_atom.h -> include/platform_data/
-> > 
-> > If there are enough of these, it might make sense to create:
-> > 
-> > include/platform/x86/
-> > 
-> > but I suggest we start with minimal change.
+> So I use to make live records, and do some electric tracks too, but I 
+> dont feel I need Jack, because ALSA also can work with low latency (at 
+> least in the Tracktion). And - strange - but I feel on this platform the 
+> sound quality better than on Windows (with Win10 and the latest Win7 
+> 64bit drivers).
+
+If you need "sham" latency value, using libffado stuff is suitable to
+your aim.
+
+In a point of packet streaming protocol for IEC 61883-1/6 and interrupt
+interval of OHCI 1394 context, ALSA bebob driver has minimum value for
+PCM frames in one buffer period. Currently tt's 5msec. In detail, see
+comment of corresponding code:
+http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/firewire/amdtp-stream.c#n140
+
+Jackd with firewire backend just displays value convenient to users,
+although it's not reasonable in a technical point.
+
+
+Well, about the noise you heard, I can't re-generate the issue. So we
+could judge it depending on environment. Do you explain more details?
+Which application you use? What OHCI 1394 controller you use? And so on.
+
+> My main problem already only;
 > 
-> No. Make that x86 directory right away. include/platform_data is already a
-> maze of 224 files. Start structuring it now.
+> After when I turn off the soundcard and/or the laptop, I need to start 
+> again the ffado-mixer to turning on the channels (default: every channel 
+> muted, or inactive). I'd appreciate some stuff that resolves the basic 
+> settings, I only need the 1/2 sreaming out and 1/2 analog input. Thats all.
+> 
+> (sometimes when I restart the system and the soundcard still on power 
+> (external ps) the settings are retained)
 
-OK, that's fine with me too.
+This is not supported in ALSA bebob driver because it can be implemented
+in user land. Please use ffado-dbus-server/ffado-mixer or
+libhinawa/hinawa-utils.
 
-(but I typo'd, should have been: include/linux/platform_data/x86)
 
-Irina, does this give you enough to go on?
+Regards
 
--- 
-Darren Hart
-Intel Open Source Technology Center
+Takashi Sakamoto
