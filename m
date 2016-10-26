@@ -1,65 +1,62 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/4] ASoC: rt286: rt286_mic_detect() uses
- component
-Date: Wed, 26 Oct 2016 21:38:43 +0530
-Message-ID: <20161026160843.GE3000@localhost>
-References: <87eg3a2v32.wl%kuninori.morimoto.gx@renesas.com>
- <87d1iu2v1j.wl%kuninori.morimoto.gx@renesas.com>
- <s5hshrmnsj2.wl-tiwai@suse.de>
- <e615912f-f6e7-a696-31f2-009c927838ec@metafoo.de>
- <87insi2obs.wl%kuninori.morimoto.gx@renesas.com>
- <5a1187a2-521a-0cd7-856a-ffdc69a045ed@metafoo.de>
- <20161026035045.GB3000@localhost>
- <08be64ec-236a-dcc2-5936-9edec930629a@metafoo.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 02/12] ASoC: dapm: Implement stereo mixer
+ control support
+Date: Wed, 26 Oct 2016 18:50:52 +0100
+Message-ID: <20161026175052.GE25322@sirena.org.uk>
+References: <20161003110804.28235-1-wens@csie.org>
+ <20161003110804.28235-3-wens@csie.org>
+Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E89F267131
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 17:59:41 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bi5JUZtvcfApsciF"
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBWW2YPAAKGQEIRR3Y2A-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <08be64ec-236a-dcc2-5936-9edec930629a@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Mengdong Lin <mengdong.lin@intel.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jin Yao <yao.jin@linux.intel.co>, Simon <horms@verge.net.au>
+In-Reply-To: <20161003110804.28235-3-wens-jdAy2FN1RRM@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 26, 2016 at 08:56:15AM +0200, Lars-Peter Clausen wrote:
-> On 10/26/2016 05:50 AM, Vinod Koul wrote:
-> >>
-> >> Maybe somebody from the Intel side can look into fixing this. The affected
-> >> boards are cht_bsw_rt5672 and broadwell, which both access the cards
-> >> codec_dev_list field.
-> > 
-> > This also exists in some customer SKL machines.
-> > 
-> > I agree that this may not be best implementation so I can send a patch for
-> > this.
-> > 
-> > As Lars suggested we can use DAI link init callback, but then I dont feel it
-> > is right to use rtd->codec to get codec pointer, again we will be looking
-> > into rtd internals. So would make sense to combine two suggestion and add an
-> > API:
-> > 
-> > struct snd_soc_codec *snd_soc_get_codec(struct snd_soc_pcm_runtime *rtd)
-> > {
-> > 	return rtd->codec;
-> > }
-> 
-> I've started working on this series[1] a while ago with the intention of
-> eventually removing the CODEC field from the rtd struct. Maybe you can use
-> it as a base.
 
-Sure thing :)
+--bi5JUZtvcfApsciF
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
--- 
-~Vinod
+On Mon, Oct 03, 2016 at 07:07:54PM +0800, Chen-Yu Tsai wrote:
+
+>  	/* find dapm widget path assoc with kcontrol */
+>  	dapm_kcontrol_for_each_path(path, kcontrol) {
+> +		/*
+> +		 * If status for the second channel was given ( >= 0 ),
+> +		 * consider the second and later paths as the second
+> +		 * channel.
+> +		 */
+> +		if (found && rconnect >= 0)
+> +			soc_dapm_connect_path(path, rconnect, "mixer update");
+> +		else
+> +			soc_dapm_connect_path(path, connect, "mixer update");
+>  		found = 1;
+> -		soc_dapm_connect_path(path, connect, "mixer update");
+
+This really only works for two channels with the current inteface - the
+comment makes it sound like it'll work for more but we can only pass in
+two (and there's only support for specifying two everywhere).
+
+> -	change = dapm_kcontrol_set_value(kcontrol, val);
+> +	/* This assumes field width < (bits in unsigned int / 2) */
+> +	change = dapm_kcontrol_set_value(kcontrol, val | (rval << width));
+
+That seems like a bit of an assumption in cases where we've got a single
+control for both power and volume?  They're very rare though, I'm not
+even sure any exist.  It'd be good to have a check in the code just in
+case it does come up, it'll likely be a nightmare to debug if someone
+does run into it.
+
+Otherwise I think this makes sense.
+--bi5JUZtvcfApsciF--
