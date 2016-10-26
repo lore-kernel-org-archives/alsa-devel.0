@@ -1,50 +1,81 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 02/12] ASoC: dapm: Implement stereo mixer
- control support
-Date: Wed, 26 Oct 2016 17:57:53 +0100
-Message-ID: <20161026165753.GC25322@sirena.org.uk>
-References: <20161003110804.28235-1-wens@csie.org>
- <20161003110804.28235-3-wens@csie.org>
-Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: depends on OF" to the asoc tree
+Date: Wed, 26 Oct 2016 16:12:54 +0100
+Message-ID: <E1bzPss-00089o-QS@debutante>
+References: <877f8xclzq.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="NU0Ex4SbNnrxsi6C"
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBBWOBYPAAKGQE4GR2HJI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <20161003110804.28235-3-wens-jdAy2FN1RRM@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC870267119
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 17:13:02 +0200 (CEST)
+In-Reply-To: <877f8xclzq.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---NU0Ex4SbNnrxsi6C
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
+   ASoC: rsnd: depends on OF
 
-On Mon, Oct 03, 2016 at 07:07:54PM +0800, Chen-Yu Tsai wrote:
+has been applied to the asoc tree at
 
-> While DAPM is mono or single channel, its controls can be shared between
-> widgets, such as sharing one stereo mixer control between the left and
-> right channel widgets.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> This patch introduces support for such shared mixer controls.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Based on this changelog I'm really not sure what the intended semantic
-of this change is which makes it difficult to review.  What are you
-expecting these controls to look like and how are you expecting them to
-work?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> -static void dapm_set_mixer_path_status(struct snd_soc_dapm_path *p, int i)
-> +static void dapm_set_mixer_path_status(struct snd_soc_dapm_path *p, int i,
-> +				       int nth_path)
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-It looks like the goal is to attach more than one path to a single
-control somehow?
---NU0Ex4SbNnrxsi6C--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 609c94865adcef3dba070a2d3905e4b67b4e6919 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 26 Oct 2016 04:12:34 +0000
+Subject: [PATCH] ASoC: rsnd: depends on OF
+
+Current Renesas sound driver is completely depends on CONFIG_OF
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index 6db6405d952f..610fa85b3acd 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -37,6 +37,7 @@ config SND_SOC_SH4_SIU
+ config SND_SOC_RCAR
+ 	tristate "R-Car series SRU/SCU/SSIU/SSI support"
+ 	depends on COMMON_CLK
++	depends on OF
+ 	select SND_SIMPLE_CARD
+ 	select REGMAP_MMIO
+ 	help
+-- 
+2.8.1
