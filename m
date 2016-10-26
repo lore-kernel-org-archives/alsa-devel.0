@@ -1,62 +1,82 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 02/12] ASoC: dapm: Implement stereo mixer
- control support
-Date: Wed, 26 Oct 2016 18:50:52 +0100
-Message-ID: <20161026175052.GE25322@sirena.org.uk>
-References: <20161003110804.28235-1-wens@csie.org>
- <20161003110804.28235-3-wens@csie.org>
-Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: Access driver data through
+	platform from compressed ops
+Date: Wed, 26 Oct 2016 17:06:40 +0100
+Message-ID: <1477498000-10104-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bi5JUZtvcfApsciF"
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBBWW2YPAAKGQEIRR3Y2A-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <20161003110804.28235-3-wens-jdAy2FN1RRM@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 84682266834
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 18:06:29 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+As the compressed ops run on the platform side of things we should
+really access the driver data through the platform pointer rather than
+the CODEC pointer. As the compressed DAIs in our systems always connect
+our CODEC to our platform this has never been an issue, but should still
+be corrected. Additionally it clears the way for future core refactoring
+work.
 
---bi5JUZtvcfApsciF
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/cs47l24.c | 2 +-
+ sound/soc/codecs/wm5102.c  | 2 +-
+ sound/soc/codecs/wm5110.c  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-On Mon, Oct 03, 2016 at 07:07:54PM +0800, Chen-Yu Tsai wrote:
-
->  	/* find dapm widget path assoc with kcontrol */
->  	dapm_kcontrol_for_each_path(path, kcontrol) {
-> +		/*
-> +		 * If status for the second channel was given ( >= 0 ),
-> +		 * consider the second and later paths as the second
-> +		 * channel.
-> +		 */
-> +		if (found && rconnect >= 0)
-> +			soc_dapm_connect_path(path, rconnect, "mixer update");
-> +		else
-> +			soc_dapm_connect_path(path, connect, "mixer update");
->  		found = 1;
-> -		soc_dapm_connect_path(path, connect, "mixer update");
-
-This really only works for two channels with the current inteface - the
-comment makes it sound like it'll work for more but we can only pass in
-two (and there's only support for specifying two everywhere).
-
-> -	change = dapm_kcontrol_set_value(kcontrol, val);
-> +	/* This assumes field width < (bits in unsigned int / 2) */
-> +	change = dapm_kcontrol_set_value(kcontrol, val | (rval << width));
-
-That seems like a bit of an assumption in cases where we've got a single
-control for both power and volume?  They're very rare though, I'm not
-even sure any exist.  It'd be good to have a check in the code just in
-case it does come up, it'll likely be a nightmare to debug if someone
-does run into it.
-
-Otherwise I think this makes sense.
---bi5JUZtvcfApsciF--
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index f9e720b..1ed1329 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -1066,7 +1066,7 @@ static struct snd_soc_dai_driver cs47l24_dai[] = {
+ static int cs47l24_open(struct snd_compr_stream *stream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = stream->private_data;
+-	struct cs47l24_priv *priv = snd_soc_codec_get_drvdata(rtd->codec);
++	struct cs47l24_priv *priv = snd_soc_platform_get_drvdata(rtd->platform);
+ 	struct arizona *arizona = priv->core.arizona;
+ 	int n_adsp;
+ 
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index a80a680..0136234 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -1908,7 +1908,7 @@ static struct snd_soc_dai_driver wm5102_dai[] = {
+ static int wm5102_open(struct snd_compr_stream *stream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = stream->private_data;
+-	struct wm5102_priv *priv = snd_soc_codec_get_drvdata(rtd->codec);
++	struct wm5102_priv *priv = snd_soc_platform_get_drvdata(rtd->platform);
+ 
+ 	return wm_adsp_compr_open(&priv->core.adsp[0], stream);
+ }
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index f1a4113..a9a8bc9 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2224,7 +2224,7 @@ static struct snd_soc_dai_driver wm5110_dai[] = {
+ static int wm5110_open(struct snd_compr_stream *stream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = stream->private_data;
+-	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(rtd->codec);
++	struct wm5110_priv *priv = snd_soc_platform_get_drvdata(rtd->platform);
+ 	struct arizona *arizona = priv->core.arizona;
+ 	int n_adsp;
+ 
+-- 
+2.1.4
