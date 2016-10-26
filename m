@@ -1,96 +1,179 @@
-From: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 05/14] mfd: sun6i-prcm: Add sun8i analog
- codec as subnode
-Date: Wed, 26 Oct 2016 15:05:01 +0100
-Message-ID: <20161026140501.GH13127@dell>
-References: <cover.1475571575.git.mylene.josserand@free-electrons.com>
- <c74aea452bd1831f439dd67884cb2879e0849f03.1475571575.git.mylene.josserand@free-electrons.com>
-Reply-To: lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Codec to codec dai link description" to
+	the asoc tree
+Date: Wed, 26 Oct 2016 11:46:16 +0100
+Message-ID: <E1bzLiq-0005QH-CP@debutante>
+References: <CABCoZhB6F9J0677swtrHdp=Yg_v6b=C9Ph5KhWqaDN=3UjwqkA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBDA7X7F2WUEBB5HOYLAAKGQE4CBMNKI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <c74aea452bd1831f439dd67884cb2879e0849f03.1475571575.git.mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB95B266875
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 12:46:25 +0200 (CEST)
+In-Reply-To: <CABCoZhB6F9J0677swtrHdp=Yg_v6b=C9Ph5KhWqaDN=3UjwqkA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: anish kumar <yesanishhere@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, "broonie@kernel.org" <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 04 Oct 2016, Myl=C3=A8ne Josserand wrote:
+The patch
 
-> The sun8i audio codec is using PRCM registers to configure all the
-> analog part of the audio codec. It is added as a subnode of the PRCM
-> with his resource (offset of 0x1c0).
->=20
-> Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org=
->
-> ---
->  drivers/mfd/sun6i-prcm.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
->=20
-> diff --git a/drivers/mfd/sun6i-prcm.c b/drivers/mfd/sun6i-prcm.c
-> index 011fcc5..e0c6bf5 100644
-> --- a/drivers/mfd/sun6i-prcm.c
-> +++ b/drivers/mfd/sun6i-prcm.c
-> @@ -12,6 +12,8 @@
->  #include <linux/init.h>
->  #include <linux/of.h>
-> =20
-> +#define SUN6I_AUDIO_CODEC_ANALOG	0x1c0
-> +
->  struct prcm_data {
->  	int nsubdevs;
->  	const struct mfd_cell *subdevs;
-> @@ -57,6 +59,14 @@ static const struct resource sun6i_a31_apb0_rstc_res[]=
- =3D {
->  	},
->  };
-> =20
-> +static const struct resource sun8i_adda_res[] =3D {
-> +	{
-> +		.start =3D SUN6I_AUDIO_CODEC_ANALOG,
-> +		.end =3D 0x1c3,
+   ASoC: Codec to codec dai link description
 
-This also needs defining.  No magic numbers please.
+has been applied to the asoc tree at
 
-> +		.flags =3D IORESOURCE_MEM,
-> +	},
-> +};
-> +
->  static const struct mfd_cell sun6i_a31_prcm_subdevs[] =3D {
->  	{
->  		.name =3D "sun6i-a31-ar100-clk",
-> @@ -109,6 +119,12 @@ static const struct mfd_cell sun8i_a23_prcm_subdevs[=
-] =3D {
->  		.num_resources =3D ARRAY_SIZE(sun6i_a31_apb0_rstc_res),
->  		.resources =3D sun6i_a31_apb0_rstc_res,
->  	},
-> +	{
-> +		.name =3D "sun8i-codec-analog",
-> +		.of_compatible =3D "allwinner,sun8i-codec-analog",
-> +		.num_resources =3D ARRAY_SIZE(sun8i_adda_res),
-> +		.resources =3D sun8i_adda_res,
-> +	},
->  };
-> =20
->  static const struct prcm_data sun6i_a31_prcm_data =3D {
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 452a256898e7ca88115aa02d3851e67994ce3e19 Mon Sep 17 00:00:00 2001
+From: anish kumar <yesanishhere@gmail.com>
+Date: Sun, 23 Oct 2016 21:03:53 -0700
+Subject: [PATCH] ASoC: Codec to codec dai link description
+
+Signed-off-by: anish kumar <yesanishhere@gmail.com>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/sound/alsa/soc/codec_to_codec.txt | 103 ++++++++++++++++++++++++
+ 1 file changed, 103 insertions(+)
+ create mode 100644 Documentation/sound/alsa/soc/codec_to_codec.txt
+
+diff --git a/Documentation/sound/alsa/soc/codec_to_codec.txt b/Documentation/sound/alsa/soc/codec_to_codec.txt
+new file mode 100644
+index 000000000000..704a6483652c
+--- /dev/null
++++ b/Documentation/sound/alsa/soc/codec_to_codec.txt
+@@ -0,0 +1,103 @@
++Creating codec to codec dai link for ALSA dapm
++===================================================
++
++Mostly the flow of audio is always from CPU to codec so your system
++will look as below:
++
++ ---------          ---------
++|         |  dai   |         |
++    CPU    ------->    codec
++|         |        |         |
++ ---------          ---------
++
++In case your system looks as below:
++                     ---------
++                    |         |
++                      codec-2
++                    |         |
++                     ---------
++                         |
++                       dai-2
++                         |
++ ----------          ---------
++|          |  dai-1 |         |
++    CPU     ------->  codec-1
++|          |        |         |
++ ----------          ---------
++                         |
++                       dai-3
++                         |
++                     ---------
++                    |         |
++                      codec-3
++                    |         |
++                     ---------
++
++Suppose codec-2 is a bluetooth chip and codec-3 is connected to
++a speaker and you have a below scenario:
++codec-2 will receive the audio data and the user wants to play that
++audio through codec-3 without involving the CPU.This
++aforementioned case is the ideal case when codec to codec
++connection should be used.
++
++Your dai_link should appear as below in your machine
++file:
++
++/*
++ * this pcm stream only supports 24 bit, 2 channel and
++ * 48k sampling rate.
++ */
++static const struct snd_soc_pcm_stream dsp_codec_params = {
++        .formats = SNDRV_PCM_FMTBIT_S24_LE,
++        .rate_min = 48000,
++        .rate_max = 48000,
++        .channels_min = 2,
++        .channels_max = 2,
++};
++
++{
++    .name = "CPU-DSP",
++    .stream_name = "CPU-DSP",
++    .cpu_dai_name = "samsung-i2s.0",
++    .codec_name = "codec-2,
++    .codec_dai_name = "codec-2-dai_name",
++    .platform_name = "samsung-i2s.0",
++    .dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++            | SND_SOC_DAIFMT_CBM_CFM,
++    .ignore_suspend = 1,
++    .params = &dsp_codec_params,
++},
++{
++    .name = "DSP-CODEC",
++    .stream_name = "DSP-CODEC",
++    .cpu_dai_name = "wm0010-sdi2",
++    .codec_name = "codec-3,
++    .codec_dai_name = "codec-3-dai_name",
++    .dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++            | SND_SOC_DAIFMT_CBM_CFM,
++    .ignore_suspend = 1,
++    .params = &dsp_codec_params,
++},
++
++Above code snippet is motivated from sound/soc/samsung/speyside.c.
++
++Note the "params" callback which lets the dapm know that this
++dai_link is a codec to codec connection.
++
++In dapm core a route is created between cpu_dai playback widget
++and codec_dai capture widget for playback path and vice-versa is
++true for capture path. In order for this aforementioned route to get
++triggered, DAPM needs to find a valid endpoint which could be either
++a sink or source widget corresponding to playback and capture path
++respectively.
++
++In order to trigger this dai_link widget, a thin codec driver for
++the speaker amp can be created as demonstrated in wm8727.c file, it
++sets appropriate constraints for the device even if it needs no control.
++
++Make sure to name your corresponding cpu and codec playback and capture
++dai names ending with "Playback" and "Capture" respectively as dapm core
++will link and power those dais based on the name.
++
++Note that in current device tree there is no way to mark a dai_link
++as codec to codec. However, it may change in future.
+-- 
+2.8.1
