@@ -1,15 +1,23 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt5640: add Mono ADC Capture Switch
-	control
-Date: Wed, 26 Oct 2016 09:40:44 +0800
-Message-ID: <1477446044-15127-1-git-send-email-bardliao@realtek.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/4] ASoC: rt286: rt286_mic_detect() uses
+ component
+Date: Wed, 26 Oct 2016 09:20:45 +0530
+Message-ID: <20161026035045.GB3000@localhost>
+References: <87eg3a2v32.wl%kuninori.morimoto.gx@renesas.com>
+ <87d1iu2v1j.wl%kuninori.morimoto.gx@renesas.com>
+ <s5hshrmnsj2.wl-tiwai@suse.de>
+ <e615912f-f6e7-a696-31f2-009c927838ec@metafoo.de>
+ <87insi2obs.wl%kuninori.morimoto.gx@renesas.com>
+ <5a1187a2-521a-0cd7-856a-ffdc69a045ed@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 1396426702B
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 03:40:59 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF95D266669
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 05:41:45 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <5a1187a2-521a-0cd7-856a-ffdc69a045ed@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,46 +27,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, pierre-louis.bossart@linux.intel.com, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Mengdong Lin <mengdong.lin@intel.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jin Yao <yao.jin@linux.intel.co>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-Mono ADC Capture Switch control is missing in the driver. So, add it.
+On Mon, Oct 24, 2016 at 11:19:17AM +0200, Lars-Peter Clausen wrote:
+> On 10/24/2016 09:43 AM, Kuninori Morimoto wrote:
+> > Hi
+> > 
+> >>>> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> >>>>
+> >>>> Intel broadwell is using card->codec_dev_list, but it will be
+> >>>> replaced to component list soon. Then, it will not be able to use
+> >>>> "codec".
+> >>>
+> >>> Can't it be deduced by a simple container_of()?
+> >>
+> >> There is the snd_soc_component_to_codec() helper for this.
+> > 
+> > The points are
+> >  1) We would like to remove "codec" related functions
+> 
+> The focus at the moment is to remove all special handling of CODECs from the
+> ASoC core. And trying to do this without being too invasive and causing too
+> many changes all over the place.
+> 
+> >  2) We can get "codec" pointer by above function/macro,
+> >     but "codec" function/macro is using codec->component inside.
+> > 
+> 
+> That's not a problem though.
+> 
+> This is slightly unrelated to this series, but these drivers should not be
+> poking the internal data structures of snd_soc_card in the first place. The
+> best way to get the pointer to the CODEC is by using the DAI link init
+> callback. This also means that there is no need to run a lookup each time
+> the CODEC is needed. An alternative is to add a helper function in the core
+> that allows to lookup a component by name.
+> 
+> Maybe somebody from the Intel side can look into fixing this. The affected
+> boards are cht_bsw_rt5672 and broadwell, which both access the cards
+> codec_dev_list field.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/codecs/rt5640.c | 2 ++
- sound/soc/codecs/rt5640.h | 4 ++++
- 2 files changed, 6 insertions(+)
+This also exists in some customer SKL machines.
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 0a7378f..e29a6de 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -423,6 +423,8 @@ static const struct snd_kcontrol_new rt5640_snd_controls[] = {
- 	SOC_DOUBLE_TLV("ADC Capture Volume", RT5640_ADC_DIG_VOL,
- 			RT5640_L_VOL_SFT, RT5640_R_VOL_SFT,
- 			127, 0, adc_vol_tlv),
-+	SOC_DOUBLE("Mono ADC Capture Switch", RT5640_DUMMY1,
-+		RT5640_M_MONO_ADC_L_SFT, RT5640_M_MONO_ADC_R_SFT, 1, 1),
- 	SOC_DOUBLE_TLV("Mono ADC Capture Volume", RT5640_ADC_DATA,
- 			RT5640_L_VOL_SFT, RT5640_R_VOL_SFT,
- 			127, 0, adc_vol_tlv),
-diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
-index 22c017c..b8a81173 100644
---- a/sound/soc/codecs/rt5640.h
-+++ b/sound/soc/codecs/rt5640.h
-@@ -1971,6 +1971,10 @@
- #define RT5640_ZCD_HP_EN			(0x1 << 15)
- 
- /* General Control 1 (0xfa) */
-+#define RT5640_M_MONO_ADC_L			(0x1 << 13)
-+#define RT5640_M_MONO_ADC_L_SFT			13
-+#define RT5640_M_MONO_ADC_R			(0x1 << 12)
-+#define RT5640_M_MONO_ADC_R_SFT			12
- #define RT5640_MCLK_DET				(0x1 << 11)
- 
- /* Codec Private Register definition */
+I agree that this may not be best implementation so I can send a patch for
+this.
+
+As Lars suggested we can use DAI link init callback, but then I dont feel it
+is right to use rtd->codec to get codec pointer, again we will be looking
+into rtd internals. So would make sense to combine two suggestion and add an
+API:
+
+struct snd_soc_codec *snd_soc_get_codec(struct snd_soc_pcm_runtime *rtd)
+{
+	return rtd->codec;
+}
+
+then we can use this is drivers.
+
+Let me know if all are in agreement, I can test this and send out..
+
+Thanks
 -- 
-1.8.1.1.439.g50a6b54
+~Vinod
