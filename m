@@ -1,16 +1,18 @@
-From: Alan Young <Alan.Young@IEE.org>
-Subject: Accurate delay reporting from dshare
-Date: Wed, 26 Oct 2016 15:30:17 +0100
-Message-ID: <5810BDF9.1020204@IEE.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: enable COMPILE_TEST" to the asoc
+	tree
+Date: Wed, 26 Oct 2016 16:12:51 +0100
+Message-ID: <E1bzPsp-000892-NP@debutante>
+References: <871sz3ycxo.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id E4AC12670FF
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 16:30:18 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id y138so3596016wme.1
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 07:30:18 -0700 (PDT)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCB79267131
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 17:13:02 +0200 (CEST)
+In-Reply-To: <871sz3ycxo.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,31 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The patch
 
-When the kernel reports current (playback) delay via a call to 
-snd_pcm_status() or snd_pcm_delay() for a normal hardware PCM, then the 
-delay value reported is the sum of space used in the ring buffer plus 
-any delay reported from the underlying runtime driver.
+   ASoC: rsnd: enable COMPILE_TEST
 
-snd_pcm_dshare_status() and snd_pcm_dshare_delay() discard this 
-refinement and simply report the use of some ring buffer. Why does it do 
-this and how could the reporting be improved? In particular I am 
-struggling to understand the relationship between a dshare instance's 
-(view of a) ring buffer and the slave (hw) PCM's ring buffer.
+has been applied to the asoc tree at
 
-I understand that the *slowptr* configuration item can be set to get 
-more accurate position updates as part of this reporting but I get the 
-feeling that this will not on its own solve the problem. If it did then 
-one could simply use the delay value reported by the slave PCM.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-The context of these questions is using dshare to expose 4 logical 
-stereo devices on a platform using an ARM-based SoC with a single 
-8-channel hardware driver. I need to get the same level of delay report 
-accuracy as I would do without using dshare.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Alan.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From e144e5d06d0207c0b1631545fc1821565ee0fe6b Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 26 Oct 2016 04:12:53 +0000
+Subject: [PATCH] ASoC: rsnd: enable COMPILE_TEST
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index 610fa85b3acd..147ebecfed94 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -1,5 +1,5 @@
+ menu "SoC Audio support for SuperH"
+-	depends on SUPERH || ARCH_SHMOBILE
++	depends on SUPERH || ARCH_SHMOBILE || COMPILE_TEST
+ 
+ config SND_SOC_PCM_SH7760
+ 	tristate "SoC Audio support for Renesas SH7760"
+@@ -37,7 +37,7 @@ config SND_SOC_SH4_SIU
+ config SND_SOC_RCAR
+ 	tristate "R-Car series SRU/SCU/SSIU/SSI support"
+ 	depends on COMMON_CLK
+-	depends on OF
++	depends on OF || COMPILE_TEST
+ 	select SND_SIMPLE_CARD
+ 	select REGMAP_MMIO
+ 	help
+-- 
+2.8.1
