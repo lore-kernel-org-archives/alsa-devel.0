@@ -1,7 +1,7 @@
 From: Pap Peti <roachkiller44@gmail.com>
 Subject: Re: [FFADO-devel] M-audio Audiophile Firewire
-Date: Wed, 26 Oct 2016 21:03:20 +0200
-Message-ID: <a7eedc84-d29e-838a-64d3-cdf0db748826@gmail.com>
+Date: Wed, 26 Oct 2016 21:25:48 +0200
+Message-ID: <5951c05f-3fe4-a2fc-aab2-407fddf8a817@gmail.com>
 References: <CAPzTivG=yDAbFZo+u5qauE_LdpqhUM5fT9MT9+hrmi3gTsTGqw@mail.gmail.com>
  <1f6dd683-f550-651b-93d2-87560dd298ff@sakamocchi.jp>
  <fd56b817-96b3-1784-725c-21a5bef7497a@sakamocchi.jp>
@@ -18,10 +18,10 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wm0-f41.google.com (mail-wm0-f41.google.com [74.125.82.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C8402671EC
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 21:03:24 +0200 (CEST)
-Received: by mail-wm0-f41.google.com with SMTP id 140so33414580wmv.0
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 12:03:24 -0700 (PDT)
+ by alsa0.perex.cz (Postfix) with ESMTP id E6528267153
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 21:25:51 +0200 (CEST)
+Received: by mail-wm0-f41.google.com with SMTP id d128so101732033wmf.1
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 12:25:51 -0700 (PDT)
 In-Reply-To: <20161023224350.GB12315@marvin.atrad.com.au>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -36,6 +36,36 @@ To: Jonathan Woithe <jwoithe@just42.net>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi again (and again many thanks),
+
+I think my things still belongs to the 'alsa-devel' topic, because I use 
+the 'ffado-mixer' only to 'turn on' my audio input(s)/output(s)
+
+I added my username to the "audio" anyway, and already I wont noticed 
+noise (but sometimes the audio 'stream(?)' stuck a ~half second when I 
+listen music and e.g.: meanwhile run a long file copy, or come some 
+sound from the browser. I think its a 'multi-threaded' problem, and/or 
+different audio sampling rate in same time.
+
+So I use to make live records, and do some electric tracks too, but I 
+dont feel I need Jack, because ALSA also can work with low latency (at 
+least in the Tracktion). And - strange - but I feel on this platform the 
+sound quality better than on Windows (with Win10 and the latest Win7 
+64bit drivers).
+
+My main problem already only;
+
+After when I turn off the soundcard and/or the laptop, I need to start 
+again the ffado-mixer to turning on the channels (default: every channel 
+muted, or inactive). I'd appreciate some stuff that resolves the basic 
+settings, I only need the 1/2 sreaming out and 1/2 analog input. Thats all.
+
+(sometimes when I restart the system and the soundcard still on power 
+(external ps) the settings are retained)
+
+Regards,
+
+Peti
 
 
 On 2016-10-24 00:43, Jonathan Woithe wrote:
