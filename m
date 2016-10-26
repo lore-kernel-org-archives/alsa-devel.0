@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti: fix channel status update after
-	playback start" to the asoc tree
-Date: Wed, 26 Oct 2016 11:46:03 +0100
-Message-ID: <E1bzLid-0005MY-Iq@debutante>
-References: <1477320177-30130-3-git-send-email-arnaud.pouliquen@st.com>
+Subject: Applied "ASoC: sti: clean unused include" to the asoc
+	tree
+Date: Wed, 26 Oct 2016 11:46:06 +0100
+Message-ID: <E1bzLig-0005NS-Mq@debutante>
+References: <1477320177-30130-5-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4D9DB266FBB
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 12:46:10 +0200 (CEST)
-In-Reply-To: <1477320177-30130-3-git-send-email-arnaud.pouliquen@st.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E8A126697D
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2016 12:46:13 +0200 (CEST)
+In-Reply-To: <1477320177-30130-5-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sti: fix channel status update after playback start
+   ASoC: sti: clean unused include
 
 has been applied to the asoc tree at
 
@@ -52,36 +52,43 @@ to this mail.
 Thanks,
 Mark
 
->From 1e6d304431958929b601b013687b73293ba27b88 Mon Sep 17 00:00:00 2001
+>From 4db61af068f50948a41b32a32fc3361f7ad152df Mon Sep 17 00:00:00 2001
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Date: Mon, 24 Oct 2016 16:42:52 +0200
-Subject: [PATCH] ASoC: sti: fix channel status update after playback start
-
-If 'IEC958 Playback Default' control is updated during playback,
-Channel status needs to be set according to the runtime structure.
+Date: Mon, 24 Oct 2016 16:42:54 +0200
+Subject: [PATCH] ASoC: sti: clean unused include
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sti/uniperif_player.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/sti/uniperif_player.c | 1 -
+ sound/soc/sti/uniperif_reader.c | 3 ---
+ 2 files changed, 4 deletions(-)
 
 diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index 1bc8ebc2528e..ad54d4cf58ad 100644
+index 00022aa48280..bea352a1504e 100644
 --- a/sound/soc/sti/uniperif_player.c
 +++ b/sound/soc/sti/uniperif_player.c
-@@ -614,7 +614,11 @@ static int uni_player_ctl_iec958_put(struct snd_kcontrol *kcontrol,
- 	iec958->status[3] = ucontrol->value.iec958.status[3];
- 	mutex_unlock(&player->ctrl_lock);
+@@ -6,7 +6,6 @@
+  */
  
--	uni_player_set_channel_status(player, NULL);
-+	if (player->substream && player->substream->runtime)
-+		uni_player_set_channel_status(player,
-+					      player->substream->runtime);
-+	else
-+		uni_player_set_channel_status(player, NULL);
+ #include <linux/clk.h>
+-#include <linux/io.h>
+ #include <linux/mfd/syscon.h>
  
- 	return 0;
- }
+ #include <sound/asoundef.h>
+diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
+index 59043f7a0e5c..5992c6ab3833 100644
+--- a/sound/soc/sti/uniperif_reader.c
++++ b/sound/soc/sti/uniperif_reader.c
+@@ -5,9 +5,6 @@
+  * License terms:  GNU General Public License (GPL), version 2
+  */
+ 
+-#include <linux/clk.h>
+-#include <linux/io.h>
+-
+ #include <sound/soc.h>
+ 
+ #include "uniperif.h"
 -- 
 2.8.1
