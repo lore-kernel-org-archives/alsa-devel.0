@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: remove "Gen2 only" comment" to
-	the asoc tree
-Date: Thu, 27 Oct 2016 17:47:42 +0100
-Message-ID: <E1bznqA-0007jg-Ja@debutante>
-References: <87vawfwxp3.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: arizona: Access driver data through
+	platform from compressed ops" to the asoc tree
+Date: Thu, 27 Oct 2016 17:47:45 +0100
+Message-ID: <E1bznqD-0007kb-OI@debutante>
+References: <1477498000-10104-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 063052669A9
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 18:47:50 +0200 (CEST)
-In-Reply-To: <87vawfwxp3.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E81512669A9
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 18:47:55 +0200 (CEST)
+In-Reply-To: <1477498000-10104-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: patches@opensource.wolfsonmicro.com, broonie@kernel.org, lars@metafoo.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: remove "Gen2 only" comment
+   ASoC: arizona: Access driver data through platform from compressed ops
 
 has been applied to the asoc tree at
 
@@ -53,120 +53,66 @@ to this mail.
 Thanks,
 Mark
 
->From f0b20e7120849ea68b2d7f0ec36ea45643265b09 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 26 Oct 2016 04:27:22 +0000
-Subject: [PATCH] ASoC: rsnd: remove "Gen2 only" comment
+>From 1095e281559d61ed05c1b33aa4c6b305fcc211df Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Wed, 26 Oct 2016 17:06:40 +0100
+Subject: [PATCH] ASoC: arizona: Access driver data through platform from
+ compressed ops
 
-Gen1 support had been removed. "Gen2 only" comment is
-no longer needed.
+As the compressed ops run on the platform side of things we should
+really access the driver data through the platform pointer rather than
+the CODEC pointer. As the compressed DAIs in our systems always connect
+our CODEC to our platform this has never been an issue, but should still
+be corrected. Additionally it clears the way for future core refactoring
+work.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rsnd.h | 62 ++++++++++++++++++++++++------------------------
- 1 file changed, 31 insertions(+), 31 deletions(-)
+ sound/soc/codecs/cs47l24.c | 2 +-
+ sound/soc/codecs/wm5102.c  | 2 +-
+ sound/soc/codecs/wm5110.c  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 422b5344b687..ff8c03601810 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -44,16 +44,16 @@
-  */
- enum rsnd_reg {
- 	/* SCU (SRC/SSIU/MIX/CTU/DVC) */
--	RSND_REG_SSI_MODE,		/* Gen2 only */
-+	RSND_REG_SSI_MODE,
- 	RSND_REG_SSI_MODE0,
- 	RSND_REG_SSI_MODE1,
- 	RSND_REG_SSI_MODE2,
- 	RSND_REG_SSI_CONTROL,
--	RSND_REG_SSI_CTRL,		/* Gen2 only */
--	RSND_REG_SSI_BUSIF_MODE,	/* Gen2 only */
--	RSND_REG_SSI_BUSIF_ADINR,	/* Gen2 only */
--	RSND_REG_SSI_BUSIF_DALIGN,	/* Gen2 only */
--	RSND_REG_SSI_INT_ENABLE,	/* Gen2 only */
-+	RSND_REG_SSI_CTRL,
-+	RSND_REG_SSI_BUSIF_MODE,
-+	RSND_REG_SSI_BUSIF_ADINR,
-+	RSND_REG_SSI_BUSIF_DALIGN,
-+	RSND_REG_SSI_INT_ENABLE,
- 	RSND_REG_SRC_I_BUSIF_MODE,
- 	RSND_REG_SRC_O_BUSIF_MODE,
- 	RSND_REG_SRC_ROUTE_MODE0,
-@@ -63,29 +63,29 @@ enum rsnd_reg {
- 	RSND_REG_SRC_IFSCR,
- 	RSND_REG_SRC_IFSVR,
- 	RSND_REG_SRC_SRCCR,
--	RSND_REG_SRC_CTRL,		/* Gen2 only */
--	RSND_REG_SRC_BSDSR,		/* Gen2 only */
--	RSND_REG_SRC_BSISR,		/* Gen2 only */
--	RSND_REG_SRC_INT_ENABLE0,	/* Gen2 only */
--	RSND_REG_SRC_BUSIF_DALIGN,	/* Gen2 only */
--	RSND_REG_SRCIN_TIMSEL0,		/* Gen2 only */
--	RSND_REG_SRCIN_TIMSEL1,		/* Gen2 only */
--	RSND_REG_SRCIN_TIMSEL2,		/* Gen2 only */
--	RSND_REG_SRCIN_TIMSEL3,		/* Gen2 only */
--	RSND_REG_SRCIN_TIMSEL4,		/* Gen2 only */
--	RSND_REG_SRCOUT_TIMSEL0,	/* Gen2 only */
--	RSND_REG_SRCOUT_TIMSEL1,	/* Gen2 only */
--	RSND_REG_SRCOUT_TIMSEL2,	/* Gen2 only */
--	RSND_REG_SRCOUT_TIMSEL3,	/* Gen2 only */
--	RSND_REG_SRCOUT_TIMSEL4,	/* Gen2 only */
-+	RSND_REG_SRC_CTRL,
-+	RSND_REG_SRC_BSDSR,
-+	RSND_REG_SRC_BSISR,
-+	RSND_REG_SRC_INT_ENABLE0,
-+	RSND_REG_SRC_BUSIF_DALIGN,
-+	RSND_REG_SRCIN_TIMSEL0,
-+	RSND_REG_SRCIN_TIMSEL1,
-+	RSND_REG_SRCIN_TIMSEL2,
-+	RSND_REG_SRCIN_TIMSEL3,
-+	RSND_REG_SRCIN_TIMSEL4,
-+	RSND_REG_SRCOUT_TIMSEL0,
-+	RSND_REG_SRCOUT_TIMSEL1,
-+	RSND_REG_SRCOUT_TIMSEL2,
-+	RSND_REG_SRCOUT_TIMSEL3,
-+	RSND_REG_SRCOUT_TIMSEL4,
- 	RSND_REG_SCU_SYS_STATUS0,
--	RSND_REG_SCU_SYS_STATUS1,	/* Gen2 only */
-+	RSND_REG_SCU_SYS_STATUS1,
- 	RSND_REG_SCU_SYS_INT_EN0,
--	RSND_REG_SCU_SYS_INT_EN1,	/* Gen2 only */
--	RSND_REG_CMD_CTRL,		/* Gen2 only */
--	RSND_REG_CMD_BUSIF_DALIGN,	/* Gen2 only */
-+	RSND_REG_SCU_SYS_INT_EN1,
-+	RSND_REG_CMD_CTRL,
-+	RSND_REG_CMD_BUSIF_DALIGN,
- 	RSND_REG_CMD_ROUTE_SLCT,
--	RSND_REG_CMDOUT_TIMSEL,		/* Gen2 only */
-+	RSND_REG_CMDOUT_TIMSEL,
- 	RSND_REG_CTU_SWRSR,
- 	RSND_REG_CTU_CTUIR,
- 	RSND_REG_CTU_ADINR,
-@@ -147,18 +147,18 @@ enum rsnd_reg {
- 	RSND_REG_DVC_VOL6R,
- 	RSND_REG_DVC_VOL7R,
- 	RSND_REG_DVC_DVUER,
--	RSND_REG_DVC_VRCTR,		/* Gen2 only */
--	RSND_REG_DVC_VRPDR,		/* Gen2 only */
--	RSND_REG_DVC_VRDBR,		/* Gen2 only */
-+	RSND_REG_DVC_VRCTR,
-+	RSND_REG_DVC_VRPDR,
-+	RSND_REG_DVC_VRDBR,
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index f9e720b65454..1ed1329c31cc 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -1066,7 +1066,7 @@ static struct snd_soc_dai_driver cs47l24_dai[] = {
+ static int cs47l24_open(struct snd_compr_stream *stream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = stream->private_data;
+-	struct cs47l24_priv *priv = snd_soc_codec_get_drvdata(rtd->codec);
++	struct cs47l24_priv *priv = snd_soc_platform_get_drvdata(rtd->platform);
+ 	struct arizona *arizona = priv->core.arizona;
+ 	int n_adsp;
  
- 	/* ADG */
- 	RSND_REG_BRRA,
- 	RSND_REG_BRRB,
- 	RSND_REG_SSICKR,
--	RSND_REG_DIV_EN,		/* Gen2 only */
-+	RSND_REG_DIV_EN,
- 	RSND_REG_AUDIO_CLK_SEL0,
- 	RSND_REG_AUDIO_CLK_SEL1,
--	RSND_REG_AUDIO_CLK_SEL2,	/* Gen2 only */
-+	RSND_REG_AUDIO_CLK_SEL2,
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index a80a680d1b5b..0136234e6e66 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -1908,7 +1908,7 @@ static struct snd_soc_dai_driver wm5102_dai[] = {
+ static int wm5102_open(struct snd_compr_stream *stream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = stream->private_data;
+-	struct wm5102_priv *priv = snd_soc_codec_get_drvdata(rtd->codec);
++	struct wm5102_priv *priv = snd_soc_platform_get_drvdata(rtd->platform);
  
- 	/* SSI */
- 	RSND_REG_SSICR,
+ 	return wm_adsp_compr_open(&priv->core.adsp[0], stream);
+ }
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index f1a41139caf6..a9a8bc98fb29 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2224,7 +2224,7 @@ static struct snd_soc_dai_driver wm5110_dai[] = {
+ static int wm5110_open(struct snd_compr_stream *stream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = stream->private_data;
+-	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(rtd->codec);
++	struct wm5110_priv *priv = snd_soc_platform_get_drvdata(rtd->platform);
+ 	struct arizona *arizona = priv->core.arizona;
+ 	int n_adsp;
+ 
 -- 
 2.8.1
