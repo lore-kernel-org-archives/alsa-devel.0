@@ -1,22 +1,15 @@
-From: holger@dehnhardt.org
-Subject: Re: MOTU Midi Express XT
-Date: Thu, 27 Oct 2016 07:03:34 +0000
-Message-ID: <1c23cd414c5ecbe6f102b0fc3e6ccffe@owncloud.dehnhardt.org>
-References: <1bdf9e49-1bbb-4f45-5122-bd0f6f4315bf@ladisch.de>
- <bf3281416a57f2788d4772e9f7926b3a@owncloud.dehnhardt.org>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH 00/22] topology: Remaining user space patches
+	of ABI v5
+Date: Thu, 27 Oct 2016 15:09:44 +0800
+Message-ID: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from punkt-k.de (punkt-k.de [84.200.50.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C7ED2672CA
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:03:50 +0200 (CEST)
-Received: from [84.200.50.24] (port=47474 helo=owncloud.dehnhardt.org)
- by punkt-k.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
- (Exim 4.84_2) (envelope-from <holger@dehnhardt.org>)
- id 1bzeis-0001zx-8O
- for alsa-devel@alsa-project.org; Thu, 27 Oct 2016 09:03:34 +0200
-In-Reply-To: <1bdf9e49-1bbb-4f45-5122-bd0f6f4315bf@ladisch.de>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 922E926688A
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:08:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,23 +20,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-27. Oktober 2016 08:40 Uhr, "Clemens Ladisch" <clemens@ladisch.de> schrieb:
-> holger@dehnhardt.org wrote:
-> 
->> I own a MOTU Midi Express XT 8x8 interface which is connected through the parallel port. Recently
->> I upgraded my system and the new motherboard does not have an ISA parallel port anymore...
->> So I bought a PCI parallel port extension card
-> 
-> Does it happen to have a name? 
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Hmm, I did not now it could be card specific... 
-I have to investigate tonight when I'm back home.
+This series has all remaining topology user space patches for ABI update
+of version 5.
 
-> Is it compatible with the ISA parallel port?
-> 
+Backward compatibility from ABI v4 is assured by the kernel series
+"ASoC: topology: Remaining kernel patches of ABI v5", submitted as well.
 
-Is this possible? An ISA compatible PCI card? I did not found anything like this when I was searching for it.
+Guneshwor Singh (3):
+  topology: ABI - Define new types for physical DAI
+  topology: Support configuring physical DAIs by C API
+  topology: Export physical DAIs to the binary for kernel
 
-Holger
+Mengdong Lin (19):
+  topology: ABI - Update stream caps and PCM objects to ABI v5
+  topology: Parse sig_bits of stream caps
+  topology: Parse flags for PCM
+  topology: Define a function to build a single PCM element
+  topology: Parse and build private data for PCM
+  topology: tplg_elem_lookup() checks parameter before searching
+  topology: Merge an element's be & cc pointer to one link pointer
+  topology: Define a function to build a single physical DAI link
+  topology: ABI - Define DAI physical PCM data formats
+  topology: ABI - Update physical DAI link configurations to ABI v5
+  topology: Rename varaibles for add physical links by C API
+  topology: Define new type and section name to configure physical links
+  topology: Parse HW configurations of physical DAI links defined by C
+    API
+  topology: Parse HW configurations of physical DAI links in text conf
+    file
+  topology: Parse link flags of physical DAI links
+  topology: Parse and build private data of physical links
+  topology: Parse name and stream name of physical DAI links
+  topology: ABI - Update manifest to ABI v5
+  topology: Parse physical DAIs in text conf file
+
+ include/sound/asoc.h      | 108 ++++++-
+ include/topology.h        | 149 ++++++++-
+ src/topology/builder.c    |  11 +
+ src/topology/data.c       |   4 +
+ src/topology/elem.c       |  12 +
+ src/topology/parser.c     |  38 ++-
+ src/topology/pcm.c        | 775 +++++++++++++++++++++++++++++++++++++++++++---
+ src/topology/tplg_local.h |  21 +-
+ 8 files changed, 1064 insertions(+), 54 deletions(-)
+
+-- 
+2.5.0
