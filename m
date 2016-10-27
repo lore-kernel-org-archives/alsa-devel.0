@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 05/22] topology: Parse and build private data
-	for PCM
-Date: Thu, 27 Oct 2016 15:11:55 +0800
-Message-ID: <ff2241783d7ab3e91b2e19a6c44ded6e381e6d14.1477549962.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 06/22] topology: tplg_elem_lookup() checks
+	parameter before searching
+Date: Thu, 27 Oct 2016 15:12:06 +0800
+Message-ID: <71fe37d22156ec663c2841e994c4881b9678ed78.1477549962.git.mengdong.lin@linux.intel.com>
 References: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AB7426688A
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:10:40 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id D180D2672CA
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:10:51 +0200 (CEST)
 In-Reply-To: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,143 +27,23 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Users can define private for PCM (FE DAI & DAI links) elements by both
-text conf file and C API:
-
-- Text conf file may define multiple data blocks for a PCM and they will
-  be merged in building phase;
-
-- Add private data to C API template of PCM object.
+Check the parameters at first in case of misuse.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/topology.h b/include/topology.h
-index 0a07c94..f9e8285 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -613,6 +613,8 @@ extern "C" {
-  *	symmetric_sample_bits		"true or false"
-  *	ignore_suspend			"true or false"
-  *	ignore_powerdown_time		"true or false"
-+ *
-+ *	data "name"		# optional private data
-  * }
-  * </pre>
-  *
-@@ -872,6 +874,7 @@ struct snd_tplg_pcm_template {
- 	struct snd_tplg_stream_caps_template *caps[2]; /*!< playback & capture for DAI */
- 	unsigned int flag_mask; /*!< bitmask of flags to configure */
- 	unsigned int flags;     /*!< flag value */
-+	struct snd_soc_tplg_private *priv;      /*!< private data */
- 	int num_streams;	/*!< number of supported configs */
- 	struct snd_tplg_stream_template stream[0]; /*!< supported configs */
- };
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 72bab94..33940c6 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -73,12 +73,32 @@ static int tplg_build_stream_caps(snd_tplg_t *tplg,
- /* build a PCM (FE DAI & DAI link) element */
- static int build_pcm(snd_tplg_t *tplg, struct tplg_elem *elem)
- {
-+	struct tplg_ref *ref;
-+	struct list_head *base, *pos;
- 	int err;
- 
- 	err = tplg_build_stream_caps(tplg, elem->id, elem->pcm->caps);
- 		if (err < 0)
- 			return err;
- 
-+	/* merge private data from the referenced data elements */
-+	base = &elem->ref_list;
-+	list_for_each(pos, base) {
-+
-+		ref = list_entry(pos, struct tplg_ref, list);
-+		if (ref->type == SND_TPLG_TYPE_DATA) {
-+			err = tplg_copy_data(tplg, elem, ref);
-+			if (err < 0)
-+				return err;
-+		}
-+		if (!ref->elem) {
-+			SNDERR("error: cannot find '%s' referenced by"
-+				" PCM '%s'\n", ref->id, elem->id);
-+			return -EINVAL;
-+		} else if (err < 0)
-+			return err;
-+	}
-+
- 	return 0;
- }
- 
-@@ -394,7 +414,7 @@ static int parse_flag(snd_config_t *n, unsigned int mask_in,
- 	return 0;
- }
- 
--/* Parse pcm (for front end DAI & DAI link) */
-+/* Parse PCM (for front end DAI & DAI link) in text conf file */
- int tplg_parse_pcm(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
- {
-@@ -520,6 +540,7 @@ int tplg_parse_be(snd_tplg_t *tplg,
- 	snd_config_iterator_t i, next;
- 	snd_config_t *n;
- 	const char *id, *val = NULL;
-+	int err;
- 
- 	elem = tplg_elem_new_common(tplg, cfg, NULL, SND_TPLG_TYPE_BE);
- 	if (!elem)
-@@ -559,6 +580,13 @@ int tplg_parse_be(snd_tplg_t *tplg,
- 			tplg_dbg("\t%s: %d\n", id, link->id);
- 			continue;
- 		}
-+
-+		if (strcmp(id, "data") == 0) {
-+			err = tplg_parse_data_refs(n, elem);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
- 	}
- 
- 	return 0;
-@@ -652,10 +680,11 @@ static void tplg_add_stream_caps(struct snd_soc_tplg_stream_caps *caps,
- 	caps->sig_bits = caps_tpl->sig_bits;
- }
- 
-+/* Add a PCM element (FE DAI & DAI link) from C API */
- int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
- {
- 	struct snd_tplg_pcm_template *pcm_tpl = t->pcm;
--	struct snd_soc_tplg_pcm *pcm;
-+	struct snd_soc_tplg_pcm *pcm, *_pcm;
+diff --git a/src/topology/elem.c b/src/topology/elem.c
+index 029c9ab..724bf26 100644
+--- a/src/topology/elem.c
++++ b/src/topology/elem.c
+@@ -111,6 +111,9 @@ struct tplg_elem *tplg_elem_lookup(struct list_head *base, const char* id,
+ 	struct list_head *pos;
  	struct tplg_elem *elem;
- 	int i;
  
-@@ -694,6 +723,25 @@ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
- 	for (i = 0; i < pcm_tpl->num_streams; i++)
- 		tplg_add_stream_object(&pcm->stream[i], &pcm_tpl->stream[i]);
++	if (!base || !id)
++		return NULL;
++
+ 	list_for_each(pos, base) {
  
-+	/* private data */
-+	if (pcm_tpl->priv != NULL && pcm_tpl->priv->size) {
-+		tplg_dbg("\t priv data size %d\n", pcm_tpl->priv->size);
-+		_pcm = realloc(pcm,
-+			elem->size + pcm_tpl->priv->size);
-+		if (!_pcm) {
-+			tplg_elem_free(elem);
-+			return -ENOMEM;
-+		}
-+
-+		pcm = _pcm;
-+		elem->pcm = pcm;
-+		elem->size += pcm_tpl->priv->size;
-+
-+		memcpy(pcm->priv.data, pcm_tpl->priv->data,
-+			pcm_tpl->priv->size);
-+		pcm->priv.size = pcm_tpl->priv->size;
-+	}
-+
- 	return 0;
- }
- 
+ 		elem = list_entry(pos, struct tplg_elem, list);
 -- 
 2.5.0
