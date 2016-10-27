@@ -1,317 +1,96 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH 20/22] topology: Parse physical DAIs in text
-	conf file
-Date: Thu, 27 Oct 2016 15:14:49 +0800
-Message-ID: <fbaa2a375126c658bc84c6ed496aeca6f8014b0a.1477549962.git.mengdong.lin@linux.intel.com>
-References: <cover.1477549962.git.mengdong.lin@linux.intel.com>
+From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Subject: Re: [alsa-devel] [linux-sunxi] [PATCH v5 4/7] ASoC: sunxi: Add
+ sun8i I2S driver
+Date: Thu, 27 Oct 2016 17:13:25 +0200
+Message-ID: <20161027171325.d68baa5ff51da4921ff8b94d@free.fr>
+References: <cover.1477142934.git.moinejf@free.fr>
+        <bee315efb909c1ee8b5fe7d3aeb9a33d713cb562.1477142934.git.moinejf@free.fr>
+        <CAGb2v67gDd650TJk_-oHOehnzdH2qor=36HXdPt339Ji=ToAMg@mail.gmail.com>
+        <20161023094503.fbb22dd0701e3f2785828609@free.fr>
+        <20161024123449.npo4grdlbrj4tcsj@lukather>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EBD22672C7
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:14:39 +0200 (CEST)
-In-Reply-To: <cover.1477549962.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20161024123449.npo4grdlbrj4tcsj@lukather>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Dave Airlie <airlied-cv59FeDIM0c@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, dri-devel <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+On Mon, 24 Oct 2016 14:34:49 +0200
+Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
 
-Add support for parsing physical DAIs in the text configuration file.
-The syntax of physical DAIs is described in document in topology.h
+> Hi,
+> 
+> On Sun, Oct 23, 2016 at 09:45:03AM +0200, Jean-Francois Moine wrote:
+> > On Sun, 23 Oct 2016 09:33:16 +0800
+> > Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org> wrote:
+> > 
+> > > > Note: This driver is closed to the sun4i-i2s except that:
+> > > > - it handles the H3
+> > > 
+> > > If it's close to sun4i-i2s, you should probably rework that one to support
+> > > the newer SoCs.
+> > > 
+> > > > - it creates the sound card (with sun4i-i2s, the sound card is created
+> > > >   by the CODECs)
+> > > 
+> > > I think this is wrong. I2S is only the DAI. You typically have a separate
+> > > platform driver for the whole card, or just use simple-card.
+> > 
+> > An other device is not needed. The layout is simple:
+> > 	I2S_controller (CPU DAI) <-> HDMI_CODEC (CODEC DAI)
+> > The HDMI CODEC is supported by the HDMI video driver (only one device),
+> > so, it cannot be the card device.
+> > ASoC does not use the CPU DAI device (I2S_controller), so, it is
+> > natural to use it to handle the card.
+> 
+> Still, duplicating the driver is not the solution. I agree with
+> Chen-Yu that we want to leverage the driver that is already there.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+Hi Maxime and Chen-Yu,
 
-diff --git a/include/topology.h b/include/topology.h
-index f7ab7fe..c0a4f07 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -666,6 +666,36 @@ extern "C" {
-  * }
-  * </pre>
-  *
-+ * <h4>Physical DAI</h4>
-+ * A physical DAI (e.g. backend DAI for DPCM) is defined as a new section
-+ * that can include a unique ID, playback and capture stream capabilities,
-+ * optional flags, and private data. <br>
-+ * Its PCM stream capablities are same as those for PCM objects,
-+ * please refer to section 'PCM Capabilities'.
-+ *
-+ * <pre>
-+ * SectionDAI."name" {
-+ *
-+ *	index "1"			# Index number
-+ *
-+ *	id "0"				# used for binding to the Backend DAI
-+ *
-+ *	pcm."playback" {
-+ *		capabilities "capabilities1"	# capabilities for playback
-+ *	}
-+ *
-+ *	pcm."capture" {
-+ *		capabilities "capabilities2"	# capabilities for capture
-+ *	}
-+ *
-+ *	symmetric_rates "true"			# optional flags
-+ *	symmetric_channels "true"
-+ *	symmetric_sample_bits "false"
-+ *
-+ *	data "name"			# optional private data
-+ * }
-+ * </pre>
-+ *
-  * <h4>Manifest Private Data</h4>
-  * Manfiest may have private data. Users need to define a manifest section
-  * and add the references to 1 or multiple data sections. Please refer to
-@@ -708,6 +738,7 @@ enum snd_tplg_type {
- 	SND_TPLG_TYPE_TUPLE,		/*!< Vendor tuples */
- 	SND_TPLG_TYPE_LINK,		/*!< Physical DAI link */
- 	SND_TPLG_TYPE_HW_CONFIG,	/*!< Link HW config */
-+	SND_TPLG_TYPE_DAI,		/*!< Physical DAI */
- };
- 
- /**
-diff --git a/src/topology/data.c b/src/topology/data.c
-index 59bc970..0d5c430 100644
---- a/src/topology/data.c
-+++ b/src/topology/data.c
-@@ -46,6 +46,10 @@ struct snd_soc_tplg_private *get_priv_data(struct tplg_elem *elem)
- 		priv = &elem->widget->priv;
- 		break;
- 
-+	case SND_TPLG_TYPE_DAI:
-+		priv = &elem->dai->priv;
-+		break;
-+
- 	default:
- 		SNDERR("error: '%s': no support for private data for type %d\n",
- 			elem->id, elem->type);
-diff --git a/src/topology/elem.c b/src/topology/elem.c
-index 01dce1f..1a5ac84 100644
---- a/src/topology/elem.c
-+++ b/src/topology/elem.c
-@@ -192,6 +192,10 @@ struct tplg_elem* tplg_elem_new_common(snd_tplg_t *tplg,
- 		list_add_tail(&elem->list, &tplg->pcm_list);
- 		obj_size = sizeof(struct snd_soc_tplg_pcm);
- 		break;
-+	case SND_TPLG_TYPE_DAI:
-+		list_add_tail(&elem->list, &tplg->dai_list);
-+		obj_size = sizeof(struct snd_soc_tplg_dai);
-+		break;
- 	case SND_TPLG_TYPE_BE:
- 	case SND_TPLG_TYPE_LINK:
- 		list_add_tail(&elem->list, &tplg->be_list);
-diff --git a/src/topology/parser.c b/src/topology/parser.c
-index 7d0486c..72efef4 100644
---- a/src/topology/parser.c
-+++ b/src/topology/parser.c
-@@ -133,6 +133,14 @@ static int tplg_parse_config(snd_tplg_t *tplg, snd_config_t *cfg)
- 			continue;
- 		}
- 
-+		if (strcmp(id, "SectionDAI") == 0) {
-+			err = tplg_parse_compound(tplg, n,
-+				tplg_parse_dai, NULL);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
- 		if (strcmp(id, "SectionHWConfig") == 0) {
- 			err = tplg_parse_compound(tplg, n, tplg_parse_hw_config,
- 				NULL);
-@@ -450,6 +458,7 @@ snd_tplg_t *snd_tplg_new(void)
- 	INIT_LIST_HEAD(&tplg->tlv_list);
- 	INIT_LIST_HEAD(&tplg->widget_list);
- 	INIT_LIST_HEAD(&tplg->pcm_list);
-+	INIT_LIST_HEAD(&tplg->dai_list);
- 	INIT_LIST_HEAD(&tplg->be_list);
- 	INIT_LIST_HEAD(&tplg->cc_list);
- 	INIT_LIST_HEAD(&tplg->route_list);
-@@ -476,6 +485,7 @@ void snd_tplg_free(snd_tplg_t *tplg)
- 	tplg_elem_free_list(&tplg->tlv_list);
- 	tplg_elem_free_list(&tplg->widget_list);
- 	tplg_elem_free_list(&tplg->pcm_list);
-+	tplg_elem_free_list(&tplg->dai_list);
- 	tplg_elem_free_list(&tplg->be_list);
- 	tplg_elem_free_list(&tplg->cc_list);
- 	tplg_elem_free_list(&tplg->route_list);
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 67d647b..b255978 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -341,6 +341,7 @@ static int tplg_parse_streams(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
- 	snd_config_t *n;
- 	struct tplg_elem *elem = private;
- 	struct snd_soc_tplg_pcm *pcm;
-+	struct snd_soc_tplg_dai *dai;
- 	unsigned int *playback, *capture;
- 	struct snd_soc_tplg_stream_caps *caps;
- 	const char *id, *value;
-@@ -357,6 +358,14 @@ static int tplg_parse_streams(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
- 		capture = &pcm->capture;
- 		caps = pcm->caps;
- 		break;
-+
-+	case SND_TPLG_TYPE_DAI:
-+		dai = elem->dai;
-+		playback = &dai->playback;
-+		capture = &dai->capture;
-+		caps = dai->caps;
-+		break;
-+
- 	default:
- 		return -EINVAL;
- 	}
-@@ -575,6 +584,109 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
- 	return 0;
- }
- 
-+/* Parse physical DAI */
-+int tplg_parse_dai(snd_tplg_t *tplg,
-+	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
-+{
-+	struct snd_soc_tplg_dai *dai;
-+	struct tplg_elem *elem;
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	const char *id, *val = NULL;
-+	int err;
-+
-+	elem = tplg_elem_new_common(tplg, cfg, NULL, SND_TPLG_TYPE_DAI);
-+	if (!elem)
-+		return -ENOMEM;
-+
-+	dai = elem->dai;
-+	dai->size = elem->size;
-+	elem_copy_text(dai->dai_name, elem->id,
-+		SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+
-+	tplg_dbg(" DAI: %s\n", elem->id);
-+
-+	snd_config_for_each(i, next, cfg) {
-+
-+		n = snd_config_iterator_entry(i);
-+		if (snd_config_get_id(n, &id) < 0)
-+			continue;
-+
-+		/* skip comments */
-+		if (strcmp(id, "comment") == 0)
-+			continue;
-+		if (id[0] == '#')
-+			continue;
-+
-+		if (strcmp(id, "index") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return -EINVAL;
-+
-+			elem->index = atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, elem->index);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "id") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return -EINVAL;
-+
-+			dai->dai_id = atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, dai->dai_id);
-+			continue;
-+		}
-+
-+		/* stream capabilities */
-+		if (strcmp(id, "pcm") == 0) {
-+			err = tplg_parse_compound(tplg, n,
-+				tplg_parse_streams, elem);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		/* flags */
-+		if (strcmp(id, "symmetric_rates") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_RATES,
-+				&dai->flag_mask, &dai->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		if (strcmp(id, "symmetric_channels") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS,
-+				&dai->flag_mask, &dai->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		if (strcmp(id, "symmetric_sample_bits") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS,
-+				&dai->flag_mask, &dai->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		/* private data */
-+		if (strcmp(id, "data") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return -EINVAL;
-+
-+			tplg_ref_add(elem, SND_TPLG_TYPE_DATA, val);
-+			tplg_dbg("\t%s: %s\n", id, val);
-+			continue;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- /* parse physical link runtime supported HW configs in text conf file */
- static int parse_hw_config_refs(snd_tplg_t *tplg, snd_config_t *cfg,
- 				struct tplg_elem *elem)
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index 9e67bf8..eeeb0f1 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -64,6 +64,7 @@ struct snd_tplg {
- 	struct list_head tlv_list;
- 	struct list_head widget_list;
- 	struct list_head pcm_list;
-+	struct list_head dai_list;
- 	struct list_head be_list;
- 	struct list_head cc_list;
- 	struct list_head route_list;
-@@ -145,6 +146,7 @@ struct tplg_elem {
- 		struct snd_soc_tplg_bytes_control *bytes_ext;
- 		struct snd_soc_tplg_dapm_widget *widget;
- 		struct snd_soc_tplg_pcm *pcm;
-+		struct snd_soc_tplg_dai *dai;
- 		struct snd_soc_tplg_link_config *link;/* physical link */
- 		struct snd_soc_tplg_dapm_graph_elem *route;
- 		struct snd_soc_tplg_stream *stream_cfg;
-@@ -222,6 +224,9 @@ int tplg_parse_stream_caps(snd_tplg_t *tplg,
- int tplg_parse_pcm(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
- 
-+int tplg_parse_dai(snd_tplg_t *tplg, snd_config_t *cfg,
-+		   void *private ATTRIBUTE_UNUSED);
-+
- int tplg_parse_link(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
- 
+After looking at the sun4i-i2s, I found 2 solutions for re-using its
+code in the DE2 HDMI context:
+
+1) either to split the sun4i-i2s driver into common I/O functions and
+   slave CPU DAI,
+
+2) or to move the sun4i-i2s into a master CPU DAI.
+
+(
+ some explanation about 'master' and 'slave': the master is the
+ component the device of which is also the sound card.
+ As the sound card uses the 'drvdata' of the device, this drvdata pointer
+ cannot be used by the master.
+ In the actual implementations:
+  - sun4i-i2s
+	master:	card dev = codec dev, drvdata -> card
+	slave:	i2s dev (CPU DAI), drvdata -> i2s data
+  - sun8i-i2s
+	master:	card dev = i2s dev (CPU DAI), drvdata -> card
+	slave:	codec dev (hdmi), drvdata -> codec data (audio/video)
+)
+
+In the case 1, there is no functional change, just a source split.
+The sun8i-i2s will then use the common I/O functions.
+
+In the case 2, the CODECs using the sun4i-i2s would have to move to
+slave CODEC DAI, i.e. the card is created by the sun4i-i2s code.
+In the 4.9, there is only one codec (sun4i-codec), so, the change
+is just to move the card creation and the use of drvdata in both
+codes.
+
+In either cases, I could not check if this changes raise some
+regression on the sun4i SoCs side. Then, I'd be glad to know:
+- which solution suits you?
+- are you ready to do and test the needed changes at the sun4i side?
+
 -- 
-2.5.0
+Ken ar c'hentañ	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
