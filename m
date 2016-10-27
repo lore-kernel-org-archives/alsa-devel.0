@@ -1,71 +1,67 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: hdmi-codec: Fix hdmi_of_xlate_dai_name when
- #sound-dai-cells = <0>
-Date: Thu, 27 Oct 2016 15:19:56 +0100
-Message-ID: <20161027141956.GL25322@sirena.org.uk>
-References: <1477568568.2908.14.camel@linaro.org>
+Subject: Re: [PATCH v2 2/4] ASoC: Drop
+ SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag
+Date: Thu, 27 Oct 2016 15:23:05 +0100
+Message-ID: <20161027142305.GM25322@sirena.org.uk>
+References: <1477408121-24716-1-git-send-email-s.nawrocki@samsung.com>
+ <CGME20161025150901epcas5p39c8cc9b980e71ee184fd831ad854a046@epcas5p3.samsung.com>
+ <1477408121-24716-2-git-send-email-s.nawrocki@samsung.com>
+ <a06af81c-32e0-69d9-1653-0154616b8dc3@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3395490107521733783=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1477568568.2908.14.camel@linaro.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: "Jon Medhurst (Tixy)" <tixy@linaro.org>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="x38akuY2VS0PywU3"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <a06af81c-32e0-69d9-1653-0154616b8dc3@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, krzk@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3395490107521733783==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="CqfQkoYPE/jGoa5Q"
-Content-Disposition: inline
-
-
---CqfQkoYPE/jGoa5Q
+--x38akuY2VS0PywU3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 27, 2016 at 12:42:48PM +0100, Jon Medhurst (Tixy) wrote:
+On Thu, Oct 27, 2016 at 01:21:21PM +0200, Sylwester Nawrocki wrote:
+> On 10/25/2016 05:08 PM, Sylwester Nawrocki wrote:
+> > Since commit 194c7dea00c68c1b1f8ff26304fa937a006f66dd
+> > "ASoC: dmaengine: add custom DMA config to snd_dmaengine_pcm_config"
+> > custom DMA channels can be also specified in chan_names[] field of
+> > struct snd_dmaengine_pcm_config.  This patch removes chan_name field
+> > of struct snd_dmaengine_dai_dma_data as it is now unused.
+> >=20
+> > Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+>=20
+> I'm afraid this patch needs to be reverted :/ I didn't notice earlier
+> the Samsung AC97 controller has 3 substreams per a platform device and
+> this cannot be handled with struct snd_dmaengine_pcm_config, which
+> allows to specify up to 2 DMA channel names.
 
-> -	int id = args->args[0];
-> +	int id = args->args_count ? args->args[0] : 0;
+Can you send a revert patch with an explanation though...
 
-Please write normal if statements for legibility.
+> The AC97 driver (sound/soc/samsung/ac97.c) seems to have been broken
+> for a long time as it currently doesn't have the channel names
+> specified at all [1].  It seems in order to fix it the best would
+> be to restore the feature the $subject patch removes.
 
---CqfQkoYPE/jGoa5Q
+=2E..if the driver just doesn't work and hasn't worked for a long time
+perhaps it's better to just drop the driver?
+
+--x38akuY2VS0PywU3
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJYEg0LAAoJECTWi3JdVIfQRBEH/RfX4LLKEGy1jBsZpIBfS9gs
-APHPpV8l/rX0smyLszZZmnFjFi3o3AEf+4bxapeKC00eiz6uVMKNDuCpu+RA0FJ7
-LsM+IVy8AUHR/NXAd0xoTPzXO3vBW0jOKy8iMg0nGPKc9tC6cjw5jj2n/PWyAylu
-QuXcPseqDsSHbjYXxejmFO0qzWOVZ13/tdi3Tq8+tdYp32+QNlIZGG2W2kL5bw9z
-DUwqyEz5XZlOVOarhP9D2yWzOEkijaKu44+l5w5wIwkL9b63B4bqicRDZfh4SG6g
-N8OzXs6yYompaMr27oMrI6eXJybOe3aS7sOkZzJm1cPdeeDoRREAjJFqKJK5KaM=
-=4aYk
+iQEcBAEBCAAGBQJYEg2IAAoJECTWi3JdVIfQwLUH/jsghczwE0b6coAkETEk3Lsw
+AhUf4Gm9YF02SCSOjrmPpvKQvq/ZmrEFddW01dPCYpF4k4WDS7oKaXr7udXg7yk/
+7kTBFsMrSqcqSSrGDFyj+sVskBoOs3Tq9KYiIt72CXCe0JLrMPoCdhoc2WH4fuqS
+/+koHrg3caeOE4ottc7M4WVjiVi5KPdQegzjmpiMvsBG3iSbpjtLmldcVCmWXGCg
+W1BOkS8qBzSf0lm8XZaEq3IJDJ6pBsuyBUakvIRLaETUJleclWbb/uynTEtaUtXZ
+ODD4HZLLhY+IKaw5GYR83soP08Ubb6KjyKU4CZHR089GiPDYFZEtibdGu7dYqd8=
+=RpQb
 -----END PGP SIGNATURE-----
 
---CqfQkoYPE/jGoa5Q--
-
-
---===============3395490107521733783==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============3395490107521733783==--
+--x38akuY2VS0PywU3--
