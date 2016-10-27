@@ -1,69 +1,65 @@
-From: "Tirdea, Irina" <irina.tirdea@intel.com>
-Subject: RE: [RESEND PATCH v4] clk: x86: Add Atom PMC platform clocks
-Date: Thu, 27 Oct 2016 13:50:02 +0000
-Message-ID: <1F3AC3675D538145B1661F571FE1805F2F38B3E2@irsmsx105.ger.corp.intel.com>
-References: <1476735320-4315-1-git-send-email-irina.tirdea@intel.com>
- <alpine.DEB.2.20.1610202349200.4938@nanos>
- <20161021045932.GA90338@f23x64.localdomain>
- <1F3AC3675D538145B1661F571FE1805F2F387575@irsmsx105.ger.corp.intel.com>
- <20161026213323.GB23374@f23x64.localdomain>
- <alpine.DEB.2.20.1610262341020.5013@nanos>
- <20161026220212.GA24422@f23x64.localdomain>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH 18/22] topology: ABI - Update manifest to ABI v5
+Date: Thu, 27 Oct 2016 15:14:32 +0800
+Message-ID: <ff88fb770eec5bd9fd2f3a8909e46c66c0d51ac9.1477549962.git.mengdong.lin@linux.intel.com>
+References: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161026220212.GA24422@f23x64.localdomain>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc: "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, Ingo Molnar <mingo@redhat.com>, Michael Turquette <mturquette@baylibre.com>, "H. Peter Anvin" <hpa@zytor.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, "Bossart, Pierre-louis" <pierre-louis.bossart@intel.com>, LKML <linux-kernel@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80A512672C7
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:13:17 +0200 (CEST)
+In-Reply-To: <cover.1477549962.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Darren Hart wrote:
-> On Wed, Oct 26, 2016 at 11:43:24PM +0200, Thomas Gleixner wrote:
-> > On Wed, 26 Oct 2016, Darren Hart wrote:
-> > > On Mon, Oct 24, 2016 at 01:38:54PM +0000, Tirdea, Irina wrote:
-> > > > intel_pmc_* drivers or is it enough to move it as a standalone
-> > > > driver for now?
-> > > 
-> > > If the functionality is substantially different, then I don't see a
-> > > compelling, and certainly not an immediate, need to merge them.
-> > > Assume for now they are to remain as separate drivers. I suggest
-> > > keeping the existing name for now as well. Let's just complete the
-> > > move with as little user-visible changes as possible.
-> > > 
-> > > The placement of the header file is a bit tricky as it is being used
-> > > in drivers/clk/x86 in addition to the pmc_atom driver in
-> > > drivers/platform/x86.
-> > > 
-> > > The best existing location would appear to be include/platform_data/
-> > > 
-> > > Thomas, is that acceptable to you?
-> > 
-> > Yes
-> > 
-> > > arch/x86/platform/atom/pmc_atom.c -> drivers/platform/x86
-> > > arch/x86/include/asm/pmc_atom.h -> include/platform_data/
-> > > 
-> > > If there are enough of these, it might make sense to create:
-> > > 
-> > > include/platform/x86/
-> > > 
-> > > but I suggest we start with minimal change.
-> > 
-> > No. Make that x86 directory right away. include/platform_data is
-> > already a maze of 224 files. Start structuring it now.
-> 
-> OK, that's fine with me too.
-> 
-> (but I typo'd, should have been: include/linux/platform_data/x86)
-> 
-> Irina, does this give you enough to go on?
-> 
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Yes, everything is clear now. I will make the change and send a patch
-in a few days.
+Add the following fields to manifest:
+- a count of physical DAIs. Later patches will add new ABI types for
+  physical DAIs.
+- some reserved fields for future extenstion.
 
-Thanks,
-Irina
+Pump ABI version to 5.
+
+Kerel will handle this ABI update in a backward compatible way, via patch
+'ASoC: topology: Make manifest backward compatible from ABI v4'.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+
+diff --git a/include/sound/asoc.h b/include/sound/asoc.h
+index 9dd4d53..5169153 100644
+--- a/include/sound/asoc.h
++++ b/include/sound/asoc.h
+@@ -79,7 +79,8 @@
+ #define SND_SOC_TPLG_NUM_TEXTS		16
+ 
+ /* ABI version */
+-#define SND_SOC_TPLG_ABI_VERSION	0x4
++#define SND_SOC_TPLG_ABI_VERSION	0x5	/* current version */
++#define SND_SOC_TPLG_ABI_VERSION_MIN	0x4	/* oldest version supported */
+ 
+ /* Max size of TLV data */
+ #define SND_SOC_TPLG_TLV_SIZE		32
+@@ -333,6 +334,8 @@ struct snd_soc_tplg_manifest {
+ 	__le32 graph_elems;	/* number of graph elements */
+ 	__le32 pcm_elems;	/* number of PCM elements */
+ 	__le32 dai_link_elems;	/* number of DAI link elements */
++	__le32 dai_elems;	/* number of physical DAI elements */
++	__le32 reserved[20];	/* reserved for new ABI element types */
+ 	struct snd_soc_tplg_private priv;
+ } __attribute__((packed));
+ 
+-- 
+2.5.0
