@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 12/22] topology: Define new type and section
-	name to configure physical links
-Date: Thu, 27 Oct 2016 15:13:35 +0800
-Message-ID: <e1c9c0aa4b25063d8079bb41ae794975f5233728.1477549962.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 13/22] topology: Parse HW configurations of
+	physical DAI links defined by C API
+Date: Thu, 27 Oct 2016 15:13:42 +0800
+Message-ID: <b4997cf09aba52de6cf591913128f9f6081429cc.1477549962.git.mengdong.lin@linux.intel.com>
 References: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B44F267330
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:12:20 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 15B6F267330
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:12:27 +0200 (CEST)
 In-Reply-To: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,133 +27,178 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Users may not use DPCM but still need to configure the physical links.
-So we should not only consider backend links for DPCM.
-
-- SND_TPLG_TYPE_LINK is defined to configure physical links by C API.
-  And SND_TPLG_TYPE_BE is still supported to configure Backend links for
-  DPCM cases.
-
-- SectionLink can be used to configure physical links in text conf file.
-  And SectionBE is still supported to config Backend links for DPCM cases.
-
-Actually, users can also use SND_TPLG_TYPE_LINK and SectionLink to
-configure backend links for DPCM cases, because BE links are physical
-links. So the parsing is same and we rename the function from
-tplg_parse_be to tplg_parse_link.
+Add HW configurations to C API template of physical link configuration.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
 diff --git a/include/topology.h b/include/topology.h
-index f9e8285..d1ce69c 100644
+index d1ce69c..8323dd9 100644
 --- a/include/topology.h
 +++ b/include/topology.h
-@@ -618,6 +618,24 @@ extern "C" {
-  * }
-  * </pre>
-  *
-+ * <h4>Physical DAI Link Configurations</h4>
-+ * The runtime configurations of a physical DAI link can be defined by
-+ * SectionLink. <br> Backend DAI links belong to physical links, and can
-+ * be configured by either SectionLink or SectionBE, with same syntax.
-+ * But SectionBE is deprecated atm since the internal processing is
-+ * actually same.
-+ *
-+ * <pre>
-+ * SectionLink."name" {
-+ *
-+ *	index "1"			# Index number
-+ *
-+ *	id "0"				# used for binding to the link
-+ *
-+ *	data "name"			# optional private data
-+ * }
-+ * </pre>
-+ *
-  * <h4>Manifest Private Data</h4>
-  * Manfiest may have private data. Users need to define a manifest section
-  * and add the references to 1 or multiple data sections. Please refer to
-@@ -658,6 +676,7 @@ enum snd_tplg_type {
- 	SND_TPLG_TYPE_MANIFEST,		/*!< Topology manifest */
- 	SND_TPLG_TYPE_TOKEN,		/*!< Vendor tokens */
- 	SND_TPLG_TYPE_TUPLE,		/*!< Vendor tuples */
-+	SND_TPLG_TYPE_LINK,		/*!< Physical DAI link */
+@@ -898,6 +898,33 @@ struct snd_tplg_pcm_template {
+ 	struct snd_tplg_stream_template stream[0]; /*!< supported configs */
  };
  
- /**
++ /** \struct snd_tplg_hw_config_template
++ * \brief Template type to describe a physical link runtime supported
++ * hardware config, i.e. hardware audio formats.
++ */
++struct snd_tplg_hw_config_template {
++	int id;                         /* unique ID - - used to match */
++	unsigned int fmt;               /* SND_SOC_DAI_FORMAT_ format value */
++	unsigned char clock_gated;      /* 1 if clock can be gated to save power */
++	unsigned char  invert_bclk;     /* 1 for inverted BCLK, 0 for normal */
++	unsigned char  invert_fsync;    /* 1 for inverted frame clock, 0 for normal */
++	unsigned char  bclk_master;     /* 1 for master of BCLK, 0 for slave */
++	unsigned char  fsync_master;    /* 1 for master of FSYNC, 0 for slave */
++	unsigned char  mclk_direction;  /* 0 for input, 1 for output */
++	unsigned short reserved;        /* for 32bit alignment */
++	unsigned int mclk_rate;	        /* MCLK or SYSCLK freqency in Hz */
++	unsigned int bclk_rate;	        /* BCLK freqency in Hz */
++	unsigned int fsync_rate;        /* frame clock in Hz */
++	unsigned int tdm_slots;         /* number of TDM slots in use */
++	unsigned int tdm_slot_width;    /* width in bits for each slot */
++	unsigned int tx_slots;          /* bit mask for active Tx slots */
++	unsigned int rx_slots;          /* bit mask for active Rx slots */
++	unsigned int tx_channels;       /* number of Tx channels */
++	unsigned int *tx_chanmap;       /* array of slot number */
++	unsigned int rx_channels;       /* number of Rx channels */
++	unsigned int *rx_chanmap;       /* array of slot number */
++};
++
+ /** \struct snd_tplg_link_template
+  * \brief Template type for BE and CC DAI Links.
+  */
+@@ -905,7 +932,11 @@ struct snd_tplg_link_template {
+ 	const char *name;	/*!< link name */
+ 	int id;	/*!< unique ID - used to match with existing BE and CC links */
+ 	int num_streams;	/*!< number of configs */
+-	struct snd_tplg_stream_template stream[0]; /*!< supported configs */
++	struct snd_tplg_stream_template *stream;       /*!< supported configs */
++
++	struct snd_tplg_hw_config_template *hw_config; /*!< supported HW configs */
++	int num_hw_configs;		/* number of hw configs */
++	int default_hw_config_id;       /* default hw config ID for init */
+ };
+ 
+ /** \struct snd_tplg_obj_template
+diff --git a/src/topology/elem.c b/src/topology/elem.c
+index 724bf26..f7ff070 100644
+--- a/src/topology/elem.c
++++ b/src/topology/elem.c
+@@ -193,6 +193,7 @@ struct tplg_elem* tplg_elem_new_common(snd_tplg_t *tplg,
+ 		obj_size = sizeof(struct snd_soc_tplg_pcm);
+ 		break;
+ 	case SND_TPLG_TYPE_BE:
++	case SND_TPLG_TYPE_LINK:
+ 		list_add_tail(&elem->list, &tplg->be_list);
+ 		obj_size = sizeof(struct snd_soc_tplg_link_config);
+ 		break;
 diff --git a/src/topology/parser.c b/src/topology/parser.c
-index ded2eb7..ed5da87 100644
+index ed5da87..238943c 100644
 --- a/src/topology/parser.c
 +++ b/src/topology/parser.c
-@@ -133,8 +133,9 @@ static int tplg_parse_config(snd_tplg_t *tplg, snd_config_t *cfg)
- 			continue;
- 		}
- 
--		if (strcmp(id, "SectionBE") == 0) {
--			err = tplg_parse_compound(tplg, n, tplg_parse_be,
-+		if (strcmp(id, "SectionLink") == 0
-+			|| strcmp(id, "SectionBE") == 0) {
-+			err = tplg_parse_compound(tplg, n, tplg_parse_link,
- 				NULL);
- 			if (err < 0)
- 				return err;
+@@ -348,6 +348,7 @@ int snd_tplg_add_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 		return tplg_add_graph_object(tplg, t);
+ 	case SND_TPLG_TYPE_PCM:
+ 		return tplg_add_pcm_object(tplg, t);
++	case SND_TPLG_TYPE_LINK:
+ 	case SND_TPLG_TYPE_BE:
+ 	case SND_TPLG_TYPE_CC:
+ 		return tplg_add_link_object(tplg, t);
 diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 3fe77aa..32beeb7 100644
+index 32beeb7..58efc2f 100644
 --- a/src/topology/pcm.c
 +++ b/src/topology/pcm.c
-@@ -545,7 +545,8 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
+@@ -168,7 +168,7 @@ static int build_link(snd_tplg_t *tplg, struct tplg_elem *elem)
  	return 0;
  }
  
--int tplg_parse_be(snd_tplg_t *tplg,
-+/* Parse a physical link element in text conf file */
-+int tplg_parse_link(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
+-/* build BE/CC DAI link configurations */
++/* build physical DAI link configurations */
+ int tplg_build_links(snd_tplg_t *tplg, unsigned int type)
  {
- 	struct snd_soc_tplg_link_config *link;
-@@ -562,7 +563,7 @@ int tplg_parse_be(snd_tplg_t *tplg,
- 	link = elem->link;
- 	link->size = elem->size;
+ 	struct list_head *base, *pos;
+@@ -176,6 +176,7 @@ int tplg_build_links(snd_tplg_t *tplg, unsigned int type)
+ 	int err = 0;
  
--	tplg_dbg(" BE: %s\n", elem->id);
-+	tplg_dbg(" Link: %s\n", elem->id);
+ 	switch (type) {
++	case SND_TPLG_TYPE_LINK:
+ 	case SND_TPLG_TYPE_BE:
+ 		base = &tplg->be_list;
+ 		break;
+@@ -189,11 +190,6 @@ int tplg_build_links(snd_tplg_t *tplg, unsigned int type)
+ 	list_for_each(pos, base) {
  
- 	snd_config_for_each(i, next, cfg) {
+ 		elem = list_entry(pos, struct tplg_elem, list);
+-		if (elem->type != type) {
+-			SNDERR("error: invalid elem '%s'\n", elem->id);
+-			return -EINVAL;
+-		}
+-
+ 		err =  build_link(tplg, elem);
+ 		if (err < 0)
+ 			return err;
+@@ -759,6 +755,47 @@ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 	return 0;
+ }
  
-@@ -766,7 +767,8 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
- 	struct tplg_elem *elem;
- 	int i;
++/* Set link HW config from C API template */
++static int set_link_hw_config(struct snd_soc_tplg_hw_config *cfg,
++			struct snd_tplg_hw_config_template *tpl)
++{
++	int i;
++
++	cfg->size = sizeof(*cfg);
++	cfg->id = tpl->id;
++
++	cfg->fmt = tpl->fmt;
++	cfg->clock_gated = tpl->clock_gated;
++	cfg->invert_bclk = tpl->invert_bclk;
++	cfg->invert_fsync = tpl->invert_fsync;
++	cfg->bclk_master = tpl->bclk_master;
++	cfg->fsync_master = tpl->fsync_master;
++	cfg->mclk_direction = tpl->mclk_direction;
++	cfg->reserved = tpl->reserved;
++	cfg->mclk_rate = tpl->mclk_rate;
++	cfg->bclk_rate = tpl->bclk_rate;
++	cfg->fsync_rate = tpl->fsync_rate;
++
++	cfg->tdm_slots = tpl->tdm_slots;
++	cfg->tdm_slot_width = tpl->tdm_slot_width;
++	cfg->tx_slots = tpl->tx_slots;
++	cfg->rx_slots = tpl->rx_slots;
++
++	if (cfg->tx_channels > SND_SOC_TPLG_MAX_CHAN
++		|| cfg->rx_channels > SND_SOC_TPLG_MAX_CHAN)
++		return -EINVAL;
++
++	cfg->tx_channels = tpl->tx_channels;
++	for (i = 0; i < cfg->tx_channels; i++)
++		cfg->tx_chanmap[i] = tpl->tx_chanmap[i];
++
++	cfg->rx_channels = tpl->rx_channels;
++	for (i = 0; i < cfg->rx_channels; i++)
++		cfg->rx_chanmap[i] = tpl->rx_chanmap[i];
++
++	return 0;
++}
++
+ /* Add a physical DAI link element from C API */
+ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ {
+@@ -789,5 +826,12 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 	for (i = 0; i < link->num_streams; i++)
+ 		tplg_add_stream_object(&link->stream[i], &link_tpl->stream[i]);
  
--	if (t->type != SND_TPLG_TYPE_BE && t->type != SND_TPLG_TYPE_CC)
-+	if (t->type != SND_TPLG_TYPE_LINK && t->type != SND_TPLG_TYPE_BE
-+	    && t->type != SND_TPLG_TYPE_CC)
- 		return -EINVAL;
- 
- 	/* here type can be either BE or CC. */
-@@ -774,10 +776,7 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
- 	if (!elem)
- 		return -ENOMEM;
- 
--	if (t->type == SND_TPLG_TYPE_BE)
--		tplg_dbg("BE Link: %s", link_tpl->name);
--	else
--		tplg_dbg("CC Link: %s", link_tpl->name);
-+	tplg_dbg("Link: %s", link_tpl->name);
- 
- 	link = elem->link;
- 	link->size = elem->size;
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index 548f42d..947f27e 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -220,7 +220,7 @@ int tplg_parse_stream_caps(snd_tplg_t *tplg,
- int tplg_parse_pcm(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
- 
--int tplg_parse_be(snd_tplg_t *tplg,
-+int tplg_parse_link(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
- 
- int tplg_parse_cc(snd_tplg_t *tplg,
++	/* HW configs */
++	if (link_tpl->num_hw_configs > SND_SOC_TPLG_HW_CONFIG_MAX)
++		return -EINVAL;
++	link->num_hw_configs = link_tpl->num_hw_configs;
++	link->default_hw_config_id = link_tpl->default_hw_config_id;
++	for (i = 0; i < link->num_hw_configs; i++)
++		set_link_hw_config(&link->hw_config[i], &link_tpl->hw_config[i]);
+ 	return 0;
+ }
 -- 
 2.5.0
