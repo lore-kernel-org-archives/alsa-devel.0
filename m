@@ -1,160 +1,249 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH 22/22] topology: Export physical DAIs to the
-	binary for kernel
-Date: Thu, 27 Oct 2016 15:15:20 +0800
-Message-ID: <03fcedf1c5941cde4d6a6e0184f06727330d56b6.1477549962.git.mengdong.lin@linux.intel.com>
-References: <cover.1477549962.git.mengdong.lin@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 30ABE2672C7
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:14:05 +0200 (CEST)
-In-Reply-To: <cover.1477549962.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH] ASoC: samsung: get access to DMA engine early to defer probe
+ properly
+Date: Thu, 27 Oct 2016 12:34:02 +0200
+Message-ID: <1477564442-19772-1-git-send-email-m.szyprowski@samsung.com>
+References: <CGME20161027103418eucas1p1628aa0c578b8470d537abaa92c6bf10c@eucas1p1.samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Inki Dae <inki.dae@samsung.com>, Javier Martinez Canillas <javier@osg.samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+ASoC Samsung sub-drivers tried to get access to their DMA engine
+controllers as a last step in driver probe. If a DMA engine was not
+available yet, samsung_asoc_dma_platform_register() function ended in
+-EPROBE_DEFER, but the driver already registered its component to ASoC
+core. This patch moves samsung_asoc_dma_platform_register() call before
+registering any components, to the common place, where driver was gathering
+all needed resources.
 
-Export the physical DAI objects to the binary output file for kernel.
-For physical DAIs defined by the text conf file, find and merge their
-stream capablities and private data before exporting.
+In case of Samsung Exynos i2s driver the issue was even worse. The driver
+managed already to register its secondary DAI platform device before
+even getting the DMA engine access. That together with -EPROBE_DEFER error
+code from samsung_i2s_probe() immediately triggered another round of
+deferred probe retry and in turn endless loop of driver probing.
 
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+This patch fixes broken boot on Odroid XU3 and other Exynos5422-based
+boards.
 
-diff --git a/src/topology/builder.c b/src/topology/builder.c
-index b0ba54e..20fa925 100644
---- a/src/topology/builder.c
-+++ b/src/topology/builder.c
-@@ -204,6 +204,9 @@ static int write_block(snd_tplg_t *tplg, struct list_head *base,
- 	case SND_TPLG_TYPE_DATA:
- 		return write_elem_block(tplg, base, size,
- 			SND_SOC_TPLG_TYPE_PDATA, "data");
-+	case SND_TPLG_TYPE_DAI:
-+		return write_elem_block(tplg, base, size,
-+			SND_SOC_TPLG_TYPE_DAI, "dai");
- 	default:
- 		return -EINVAL;
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+---
+ sound/soc/samsung/ac97.c        | 10 +++++-----
+ sound/soc/samsung/i2s.c         | 19 ++++++++++---------
+ sound/soc/samsung/pcm.c         | 19 ++++++++++---------
+ sound/soc/samsung/s3c2412-i2s.c | 16 ++++++++--------
+ sound/soc/samsung/s3c24xx-i2s.c | 14 +++++++-------
+ sound/soc/samsung/spdif.c       | 14 +++++++-------
+ 6 files changed, 47 insertions(+), 45 deletions(-)
+
+diff --git a/sound/soc/samsung/ac97.c b/sound/soc/samsung/ac97.c
+index 97d6700b1009..cbc0023c2bc8 100644
+--- a/sound/soc/samsung/ac97.c
++++ b/sound/soc/samsung/ac97.c
+@@ -383,11 +383,6 @@ static int s3c_ac97_probe(struct platform_device *pdev)
+ 		goto err4;
  	}
-@@ -293,6 +296,14 @@ int tplg_write_data(snd_tplg_t *tplg)
+ 
+-	ret = devm_snd_soc_register_component(&pdev->dev, &s3c_ac97_component,
+-					 s3c_ac97_dai, ARRAY_SIZE(s3c_ac97_dai));
+-	if (ret)
+-		goto err5;
+-
+ 	ret = samsung_asoc_dma_platform_register(&pdev->dev,
+ 						 ac97_pdata->dma_filter,
+ 						 NULL, NULL);
+@@ -396,6 +391,11 @@ static int s3c_ac97_probe(struct platform_device *pdev)
+ 		goto err5;
+ 	}
+ 
++	ret = devm_snd_soc_register_component(&pdev->dev, &s3c_ac97_component,
++					 s3c_ac97_dai, ARRAY_SIZE(s3c_ac97_dai));
++	if (ret)
++		goto err5;
++
+ 	return 0;
+ err5:
+ 	free_irq(irq_res->start, NULL);
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 7e32cf4581f8..7825bff45ae3 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1237,14 +1237,14 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 			dev_err(&pdev->dev, "Unable to get drvdata\n");
+ 			return -EFAULT;
+ 		}
+-		ret = devm_snd_soc_register_component(&sec_dai->pdev->dev,
+-						&samsung_i2s_component,
+-						&sec_dai->i2s_dai_drv, 1);
++		ret = samsung_asoc_dma_platform_register(&pdev->dev,
++					sec_dai->filter, "tx-sec", NULL);
+ 		if (ret != 0)
+ 			return ret;
+ 
+-		return samsung_asoc_dma_platform_register(&pdev->dev,
+-					sec_dai->filter, "tx-sec", NULL);
++		return devm_snd_soc_register_component(&sec_dai->pdev->dev,
++						&samsung_i2s_component,
++						&sec_dai->i2s_dai_drv, 1);
+ 	}
+ 
+ 	pri_dai = i2s_alloc_dai(pdev, false);
+@@ -1314,6 +1314,11 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 	if (quirks & QUIRK_PRI_6CHAN)
+ 		pri_dai->i2s_dai_drv.playback.channels_max = 6;
+ 
++	ret = samsung_asoc_dma_platform_register(&pdev->dev, pri_dai->filter,
++						 NULL, NULL);
++	if (ret < 0)
++		goto err_disable_clk;
++
+ 	if (quirks & QUIRK_SEC_DAI) {
+ 		sec_dai = i2s_alloc_dai(pdev, true);
+ 		if (!sec_dai) {
+@@ -1353,10 +1358,6 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		goto err_free_dai;
+ 
+-	ret = samsung_asoc_dma_platform_register(&pdev->dev, pri_dai->filter,
+-						 NULL, NULL);
+-	if (ret < 0)
+-		goto err_free_dai;
+ 
+ 	pm_runtime_enable(&pdev->dev);
+ 
+diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
+index 43e367a9acc3..c484985812ed 100644
+--- a/sound/soc/samsung/pcm.c
++++ b/sound/soc/samsung/pcm.c
+@@ -565,24 +565,25 @@ static int s3c_pcm_dev_probe(struct platform_device *pdev)
+ 	pcm->dma_capture = &s3c_pcm_stereo_in[pdev->id];
+ 	pcm->dma_playback = &s3c_pcm_stereo_out[pdev->id];
+ 
++	ret = samsung_asoc_dma_platform_register(&pdev->dev, filter,
++						 NULL, NULL);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to get register DMA: %d\n", ret);
++		goto err5;
++	}
++
+ 	pm_runtime_enable(&pdev->dev);
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &s3c_pcm_component,
+ 					 &s3c_pcm_dai[pdev->id], 1);
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev, "failed to get register DAI: %d\n", ret);
+-		goto err5;
+-	}
+-
+-	ret = samsung_asoc_dma_platform_register(&pdev->dev, filter,
+-						 NULL, NULL);
+-	if (ret) {
+-		dev_err(&pdev->dev, "failed to get register DMA: %d\n", ret);
+-		goto err5;
++		goto err6;
+ 	}
+ 
+ 	return 0;
+-
++err6:
++	pm_runtime_disable(&pdev->dev);
+ err5:
+ 	clk_disable_unprepare(pcm->pclk);
+ err4:
+diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+index 3e89fbc0c51d..0a4718207e6e 100644
+--- a/sound/soc/samsung/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -168,19 +168,19 @@ static int s3c2412_iis_dev_probe(struct platform_device *pdev)
+ 	s3c2412_i2s_pcm_stereo_in.addr = res->start + S3C2412_IISRXD;
+ 	s3c2412_i2s_pcm_stereo_in.filter_data = pdata->dma_capture;
+ 
+-	ret = s3c_i2sv2_register_component(&pdev->dev, -1,
+-					   &s3c2412_i2s_component,
+-					   &s3c2412_i2s_dai);
++	ret = samsung_asoc_dma_platform_register(&pdev->dev,
++						 pdata->dma_filter,
++						 NULL, NULL);
+ 	if (ret) {
+-		pr_err("failed to register the dai\n");
++		pr_err("failed to register the DMA: %d\n", ret);
  		return ret;
  	}
  
-+	/* write physical dai elems */
-+	ret = write_block(tplg, &tplg->dai_list,
-+		SND_TPLG_TYPE_DAI);
-+	if (ret < 0) {
-+		SNDERR("failed to write physical dai elems %d\n", ret);
-+		return ret;
-+	}
-+
- 	/* write be elems */
- 	ret = write_block(tplg, &tplg->be_list,
- 		SND_TPLG_TYPE_BE);
-diff --git a/src/topology/parser.c b/src/topology/parser.c
-index 4afa576..c5f9757 100644
---- a/src/topology/parser.c
-+++ b/src/topology/parser.c
-@@ -288,6 +288,10 @@ static int tplg_build_integ(snd_tplg_t *tplg)
- 	if (err <  0)
- 		return err;
+-	ret = samsung_asoc_dma_platform_register(&pdev->dev,
+-						 pdata->dma_filter,
+-						 NULL, NULL);
++	ret = s3c_i2sv2_register_component(&pdev->dev, -1,
++					   &s3c2412_i2s_component,
++					   &s3c2412_i2s_dai);
+ 	if (ret)
+-		pr_err("failed to register the DMA: %d\n", ret);
++		pr_err("failed to register the dai\n");
  
-+	err = tplg_build_dais(tplg, SND_TPLG_TYPE_DAI);
-+	if (err <  0)
-+		return err;
-+
- 	err = tplg_build_links(tplg, SND_TPLG_TYPE_BE);
- 	if (err <  0)
- 		return err;
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index e1d266a..c41831c 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -129,6 +129,61 @@ int tplg_build_pcms(snd_tplg_t *tplg, unsigned int type)
- 	return 0;
+ 	return ret;
  }
+diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+index c78a936a3099..9052f6a7073e 100644
+--- a/sound/soc/samsung/s3c24xx-i2s.c
++++ b/sound/soc/samsung/s3c24xx-i2s.c
+@@ -474,18 +474,18 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
+ 	s3c24xx_i2s_pcm_stereo_in.addr = res->start + S3C2410_IISFIFO;
+ 	s3c24xx_i2s_pcm_stereo_in.filter_data = pdata->dma_capture;
  
-+/* build a physical DAI */
-+static int tplg_build_dai(snd_tplg_t *tplg, struct tplg_elem *elem)
-+{
-+	struct tplg_ref *ref;
-+	struct list_head *base, *pos;
-+	int err = 0;
-+
-+	/* get playback & capture stream caps */
-+	err = tplg_build_stream_caps(tplg, elem->id, elem->dai->caps);
-+	if (err < 0)
-+		return err;
-+
-+	/* get private data */
-+	base = &elem->ref_list;
-+	list_for_each(pos, base) {
-+
-+		ref = list_entry(pos, struct tplg_ref, list);
-+
-+		if (ref->type == SND_TPLG_TYPE_DATA) {
-+			err = tplg_copy_data(tplg, elem, ref);
-+			if (err < 0)
-+				return err;
-+		}
+-	ret = devm_snd_soc_register_component(&pdev->dev,
+-			&s3c24xx_i2s_component, &s3c24xx_i2s_dai, 1);
++	ret = samsung_asoc_dma_platform_register(&pdev->dev,
++						 pdata->dma_filter,
++						 NULL, NULL);
+ 	if (ret) {
+-		pr_err("failed to register the dai\n");
++		pr_err("failed to register the dma: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	ret = samsung_asoc_dma_platform_register(&pdev->dev,
+-						 pdata->dma_filter,
+-						 NULL, NULL);
++	ret = devm_snd_soc_register_component(&pdev->dev,
++			&s3c24xx_i2s_component, &s3c24xx_i2s_dai, 1);
+ 	if (ret)
+-		pr_err("failed to register the dma: %d\n", ret);
++		pr_err("failed to register the dai\n");
+ 
+ 	return ret;
+ }
+diff --git a/sound/soc/samsung/spdif.c b/sound/soc/samsung/spdif.c
+index 26c1fbed4d35..704b7b12bf8b 100644
+--- a/sound/soc/samsung/spdif.c
++++ b/sound/soc/samsung/spdif.c
+@@ -416,6 +416,13 @@ static int spdif_probe(struct platform_device *pdev)
+ 		goto err3;
+ 	}
+ 
++	ret = samsung_asoc_dma_platform_register(&pdev->dev, filter,
++						 NULL, NULL);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to register DMA: %d\n", ret);
++		goto err4;
 +	}
 +
-+	/* add DAI to manifest */
-+	tplg->manifest.dai_elems++;
-+
-+	return 0;
-+}
-+
-+/* build physical DAIs*/
-+int tplg_build_dais(snd_tplg_t *tplg, unsigned int type)
-+{
-+	struct list_head *base, *pos;
-+	struct tplg_elem *elem;
-+	int err = 0;
-+
-+	base = &tplg->dai_list;
-+	list_for_each(pos, base) {
-+
-+		elem = list_entry(pos, struct tplg_elem, list);
-+		if (elem->type != type) {
-+			SNDERR("error: invalid elem '%s'\n", elem->id);
-+			return -EINVAL;
-+		}
-+
-+		err = tplg_build_dai(tplg, elem);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- static int tplg_build_stream_cfg(snd_tplg_t *tplg,
- 	struct snd_soc_tplg_stream *stream, int num_streams)
- {
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index 807462b..f913563 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -294,6 +294,7 @@ int tplg_add_bytes(snd_tplg_t *tplg, struct snd_tplg_bytes_template *bytes_ctl,
- 		   struct tplg_elem **e);
+ 	dev_set_drvdata(&pdev->dev, spdif);
  
- int tplg_build_pcms(snd_tplg_t *tplg, unsigned int type);
-+int tplg_build_dais(snd_tplg_t *tplg, unsigned int type);
- int tplg_build_links(snd_tplg_t *tplg, unsigned int type);
- int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
- int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+@@ -435,13 +442,6 @@ static int spdif_probe(struct platform_device *pdev)
+ 
+ 	spdif->dma_playback = &spdif_stereo_out;
+ 
+-	ret = samsung_asoc_dma_platform_register(&pdev->dev, filter,
+-						 NULL, NULL);
+-	if (ret) {
+-		dev_err(&pdev->dev, "failed to register DMA: %d\n", ret);
+-		goto err4;
+-	}
+-
+ 	return 0;
+ err4:
+ 	iounmap(spdif->regs);
 -- 
-2.5.0
+1.9.1
