@@ -1,49 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: cq93vc: remove MFD_DAVINCI_VOICECODEC
- dependency from CQ0093VC
-Date: Thu, 27 Oct 2016 11:17:07 +0100
-Message-ID: <20161027101707.GI25322@sirena.org.uk>
-References: <878ttafb84.wl%kuninori.morimoto.gx@renesas.com>
- <8760oefb59.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: hdmi-codec: Fix hdmi_of_xlate_dai_name when
+ #sound-dai-cells = <0>
+Date: Thu, 27 Oct 2016 15:19:56 +0100
+Message-ID: <20161027141956.GL25322@sirena.org.uk>
+References: <1477568568.2908.14.camel@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="LYw3s/afESlflPpp"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <8760oefb59.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Lee Jones <lee.jones@linaro.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Arnd Bergmann <arnd@arndb.de>, anish kumar <yesanishhere@gmail.com>, Michael Trimarchi <michael@amarulasolutions.com>, Jacob Siverskog <jacob@teenage.engineering>, "Damien.Horsley" <Damien.Horsley@imgtec.com>, Jeremy McDermond <nh6z@nh6z.net>, Bard Liao <bardliao@realtek.com>, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============3395490107521733783=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1477568568.2908.14.camel@linaro.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: "Jon Medhurst (Tixy)" <tixy@linaro.org>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---LYw3s/afESlflPpp
+--===============3395490107521733783==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="CqfQkoYPE/jGoa5Q"
+Content-Disposition: inline
+
+
+--CqfQkoYPE/jGoa5Q
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 27, 2016 at 08:38:45AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> CQ0093VC is no longer dependent on MFD_DAVINCI_VOICECODEC,
-> let's remove it. Otherwise, we can't compile it by COMPILE_TEST
-> on non-DAVINCE platform
+On Thu, Oct 27, 2016 at 12:42:48PM +0100, Jon Medhurst (Tixy) wrote:
 
-Acked-by: Mark Brown <broonie@kernel.org>
+> -	int id = args->args[0];
+> +	int id = args->args_count ? args->args[0] : 0;
 
---LYw3s/afESlflPpp
+Please write normal if statements for legibility.
+
+--CqfQkoYPE/jGoa5Q
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJYEdQiAAoJECTWi3JdVIfQg7oH/iQzlwPU+zaxz49XVJHARJ5x
-+njbwIJVDPabPQLUiKGw9hSvboLSIWT1r+44TOIKLzDynBNGX4Eq+F2yy30B4SpM
-lnyGIEsg/NTFbRvX5uvPsT2VItj5MS7/od4/S3+hQ8VP4pBkOjDaeWrkJ/lg/dBS
-k+jr5OMoCtBCPxaOdQ8E81hAL16OuFyJQrXVb2r85ddDChYB6I7Un+n8KihvjEHX
-4Qp8PE3qUf52MCMHv7YtQUF6H2eWCIZG3pij7xBrhSvw2N8HfyojZV7mCXA8ApVB
-hogScd9dUnTlOqydQVY2amzA5shQXye6z1mXnCrSCY6umdoCAzzMK7iLGLIMdJI=
-=t25E
+iQEcBAEBCAAGBQJYEg0LAAoJECTWi3JdVIfQRBEH/RfX4LLKEGy1jBsZpIBfS9gs
+APHPpV8l/rX0smyLszZZmnFjFi3o3AEf+4bxapeKC00eiz6uVMKNDuCpu+RA0FJ7
+LsM+IVy8AUHR/NXAd0xoTPzXO3vBW0jOKy8iMg0nGPKc9tC6cjw5jj2n/PWyAylu
+QuXcPseqDsSHbjYXxejmFO0qzWOVZ13/tdi3Tq8+tdYp32+QNlIZGG2W2kL5bw9z
+DUwqyEz5XZlOVOarhP9D2yWzOEkijaKu44+l5w5wIwkL9b63B4bqicRDZfh4SG6g
+N8OzXs6yYompaMr27oMrI6eXJybOe3aS7sOkZzJm1cPdeeDoRREAjJFqKJK5KaM=
+=4aYk
 -----END PGP SIGNATURE-----
 
---LYw3s/afESlflPpp--
+--CqfQkoYPE/jGoa5Q--
+
+
+--===============3395490107521733783==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============3395490107521733783==--
