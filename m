@@ -1,78 +1,66 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH 01/22] topology: ABI - Update stream caps and
-	PCM objects to ABI v5
-Date: Thu, 27 Oct 2016 15:11:19 +0800
-Message-ID: <432fe25e7529a52a99df059d5aeb06268ac34a22.1477549962.git.mengdong.lin@linux.intel.com>
-References: <cover.1477549962.git.mengdong.lin@linux.intel.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 7/9] Input: wm97xx: split out touchscreen registering
+Date: Thu, 27 Oct 2016 10:02:33 +0100
+Message-ID: <20161027090233.GF28180@localhost.localdomain>
+References: <1477510907-23495-1-git-send-email-robert.jarzmik@free.fr>
+ <1477510907-23495-8-git-send-email-robert.jarzmik@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id D4AC826688A
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:10:04 +0200 (CEST)
-In-Reply-To: <cover.1477549962.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <1477510907-23495-8-git-send-email-robert.jarzmik@free.fr>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+On Wed, Oct 26, 2016 at 09:41:45PM +0200, Robert Jarzmik wrote:
+> wm97xx-core does several things in it initialization :
+>  - touchscreen input device setup
+>  - battery device creation
+> 
+> As the wm97xx is actually a multi-function device handling an audio
+> codec, a touchscreen, a gpio block and an ADC, reshape the probing to
+> isolate what is truly input/touchscreen specific from the remaining
+> part.
+> 
+> This is only code shuffling, there is no functional change.
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> ---
+>  drivers/input/touchscreen/wm97xx-core.c | 193 ++++++++++++++++++--------------
+>  1 file changed, 112 insertions(+), 81 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/wm97xx-core.c b/drivers/input/touchscreen/wm97xx-core.c
+> index 83cf11312fd9..50a110e2988b 100644
+<snip>
+> +static void wm97xx_remove_battery(struct wm97xx *wm)
+> +{
+> +	platform_device_put(wm->battery_dev);
+> +}
+<snip>
+> @@ -724,10 +757,8 @@ static int wm97xx_remove(struct device *dev)
+>  {
+>  	struct wm97xx *wm = dev_get_drvdata(dev);
+>  
+> -	platform_device_unregister(wm->battery_dev);
+> -	platform_device_unregister(wm->touch_dev);
+> -	input_unregister_device(wm->input_dev);
+> -	kfree(wm);
+> +	wm97xx_remove_battery(wm);
 
-Pump ABI version to 5, with the updates for PCM (Front DAI & DAI link)
-objects:
+The commit message says this is just shifting code around but the
+platform_device_unregister for the battery_dev seems to have
+turned into a platform_device_put here.
 
-- add sig_bits to stream caps.
-- add flags and private data to PCM.
-
-The kernel can handle the ABI update in a backward compatible way with
-the patch "ASoC: topology: Make PCM backward compatible from ABI v4".
-
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-
-diff --git a/include/sound/asoc.h b/include/sound/asoc.h
-index abe49c5..45872c1 100644
---- a/include/sound/asoc.h
-+++ b/include/sound/asoc.h
-@@ -115,6 +115,13 @@
- #define SND_SOC_TPLG_TUPLE_TYPE_WORD	4
- #define SND_SOC_TPLG_TUPLE_TYPE_SHORT	5
- 
-+/* DAI link flags */
-+#define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES         (1 << 0)
-+#define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
-+#define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
-+#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND          (1 << 3)
-+#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME   (1 << 4)
-+
- /*
-  * Block Header.
-  * This header precedes all object and object arrays below.
-@@ -242,6 +249,7 @@ struct snd_soc_tplg_stream_caps {
- 	__le32 period_size_max;	/* max period size bytes */
- 	__le32 buffer_size_min;	/* min buffer size bytes */
- 	__le32 buffer_size_max;	/* max buffer size bytes */
-+	__le32 sig_bits;        /* number of bits of content */
- } __attribute__((packed));
- 
- /*
-@@ -422,6 +430,9 @@ struct snd_soc_tplg_pcm {
- 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* for DAI link */
- 	__le32 num_streams;	/* number of streams */
- 	struct snd_soc_tplg_stream_caps caps[2]; /* playback and capture for DAI */
-+	__le32 flag_mask;       /* bitmask of flags to configure */
-+	__le32 flags;           /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
-+	struct snd_soc_tplg_private priv;
- } __attribute__((packed));
- 
- 
--- 
-2.5.0
+Thanks,
+Charles
