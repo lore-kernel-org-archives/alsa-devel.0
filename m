@@ -1,15 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 03/22] topology: Parse flags for PCM
-Date: Thu, 27 Oct 2016 15:11:36 +0800
-Message-ID: <ed04f45a78bbef651af54d71a4b8b8790dabf05b.1477549962.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 04/22] topology: Define a function to build a
+	single PCM element
+Date: Thu, 27 Oct 2016 15:11:44 +0800
+Message-ID: <673326614f862544308b68b06feec96eaf9ee4c2.1477549962.git.mengdong.lin@linux.intel.com>
 References: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id A22DF26688A
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:10:22 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A32326688A
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:10:30 +0200 (CEST)
 In-Reply-To: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,130 +27,75 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Users can define flags by both text conf file and C API.
-Add flags and flag_mask to C API template of PCM object.
+Code refactoring. Rename tplg_build_pcm() to tplg_build_pcms() to build
+all PCM (FE DAI & DAI link) elements. It will call a new function
+build_pcm() to build a single PCM elemement.
+
+build_pcm() will be extended to handle more properties of a PCM.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/topology.h b/include/topology.h
-index ccd8401..0a07c94 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -606,6 +606,13 @@ extern "C" {
-  *			"config3"
-  *		]
-  *	}
-+ *
-+ *	# Optional flags, the default value is "false".
-+ *	symmetric_rates			"true or false"
-+ *	symmetric_channels		"true or false"
-+ *	symmetric_sample_bits		"true or false"
-+ *	ignore_suspend			"true or false"
-+ *	ignore_powerdown_time		"true or false"
-  * }
-  * </pre>
-  *
-@@ -863,6 +870,8 @@ struct snd_tplg_pcm_template {
- 	unsigned int capture;	/*!< supports capture mode */
- 	unsigned int compress;	/*!< 1 = compressed; 0 = PCM */
- 	struct snd_tplg_stream_caps_template *caps[2]; /*!< playback & capture for DAI */
-+	unsigned int flag_mask; /*!< bitmask of flags to configure */
-+	unsigned int flags;     /*!< flag value */
- 	int num_streams;	/*!< number of supported configs */
- 	struct snd_tplg_stream_template stream[0]; /*!< supported configs */
- };
+diff --git a/src/topology/parser.c b/src/topology/parser.c
+index 3ab64f4..7b2c879 100644
+--- a/src/topology/parser.c
++++ b/src/topology/parser.c
+@@ -267,7 +267,7 @@ static int tplg_build_integ(snd_tplg_t *tplg)
+ 	if (err <  0)
+ 		return err;
+ 
+-	err = tplg_build_pcm(tplg, SND_TPLG_TYPE_PCM);
++	err = tplg_build_pcms(tplg, SND_TPLG_TYPE_PCM);
+ 	if (err <  0)
+ 		return err;
+ 
 diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 6fdf047..3d9feb0 100644
+index 3d9feb0..72bab94 100644
 --- a/src/topology/pcm.c
 +++ b/src/topology/pcm.c
-@@ -364,6 +364,24 @@ static int tplg_parse_fe_dai(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
+@@ -70,8 +70,20 @@ static int tplg_build_stream_caps(snd_tplg_t *tplg,
  	return 0;
  }
  
-+/* parse a flag bit of the given mask */
-+static int parse_flag(snd_config_t *n, unsigned int mask_in,
-+		      unsigned int *mask, unsigned int *flags)
+-/* build FE DAI/PCM configurations */
+-int tplg_build_pcm(snd_tplg_t *tplg, unsigned int type)
++/* build a PCM (FE DAI & DAI link) element */
++static int build_pcm(snd_tplg_t *tplg, struct tplg_elem *elem)
 +{
-+	const char *val = NULL;
++	int err;
 +
-+	if (snd_config_get_string(n, &val) < 0)
-+		return -EINVAL;
-+
-+	*mask |= mask_in;
-+	if (strcmp(val, "true") == 0)
-+		*flags |= mask_in;
-+	else
-+		*flags &= ~mask_in;
++	err = tplg_build_stream_caps(tplg, elem->id, elem->pcm->caps);
++		if (err < 0)
++			return err;
 +
 +	return 0;
 +}
 +
- /* Parse pcm (for front end DAI & DAI link) */
- int tplg_parse_pcm(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
-@@ -430,6 +448,53 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
- 				return err;
- 			continue;
++/* build all PCM (FE DAI & DAI link) elements */
++int tplg_build_pcms(snd_tplg_t *tplg, unsigned int type)
+ {
+ 	struct list_head *base, *pos;
+ 	struct tplg_elem *elem;
+@@ -86,7 +98,7 @@ int tplg_build_pcm(snd_tplg_t *tplg, unsigned int type)
+ 			return -EINVAL;
  		}
-+
-+		/* flags */
-+		if (strcmp(id, "symmetric_rates") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES,
-+				&pcm->flag_mask, &pcm->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		if (strcmp(id, "symmetric_channels") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS,
-+				&pcm->flag_mask, &pcm->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		if (strcmp(id, "symmetric_sample_bits") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS,
-+				&pcm->flag_mask, &pcm->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		if (strcmp(id, "ignore_suspend") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND,
-+				&pcm->flag_mask, &pcm->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		if (strcmp(id, "ignore_powerdown_time") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME,
-+				&pcm->flag_mask, &pcm->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
- 	}
  
- 	return 0;
-@@ -610,6 +675,9 @@ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
- 			tplg_add_stream_caps(&pcm->caps[i], pcm_tpl->caps[i]);
- 	}
+-		err = tplg_build_stream_caps(tplg, elem->id, elem->pcm->caps);
++		err = build_pcm(tplg, elem);
+ 		if (err < 0)
+ 			return err;
  
-+	pcm->flag_mask = pcm_tpl->flag_mask;
-+	pcm->flags = pcm_tpl->flags;
-+
- 	pcm->num_streams = pcm_tpl->num_streams;
- 	for (i = 0; i < pcm_tpl->num_streams; i++)
- 		tplg_add_stream_object(&pcm->stream[i], &pcm_tpl->stream[i]);
+diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+index cfde4cc..7b30b84 100644
+--- a/src/topology/tplg_local.h
++++ b/src/topology/tplg_local.h
+@@ -284,7 +284,7 @@ int tplg_add_enum(snd_tplg_t *tplg, struct snd_tplg_enum_template *enum_ctl,
+ int tplg_add_bytes(snd_tplg_t *tplg, struct snd_tplg_bytes_template *bytes_ctl,
+ 		   struct tplg_elem **e);
+ 
+-int tplg_build_pcm(snd_tplg_t *tplg, unsigned int type);
++int tplg_build_pcms(snd_tplg_t *tplg, unsigned int type);
+ int tplg_build_link_cfg(snd_tplg_t *tplg, unsigned int type);
+ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
+ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
 -- 
 2.5.0
