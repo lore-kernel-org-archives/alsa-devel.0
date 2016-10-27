@@ -1,14 +1,19 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt5670: increse LDO power
-Date: Thu, 27 Oct 2016 13:21:54 +0800
-Message-ID: <1477545714-26188-1-git-send-email-bardliao@realtek.com>
+From: holger@dehnhardt.org
+Subject: MOTU Midi Express XT
+Date: Thu, 27 Oct 2016 06:16:50 +0000
+Message-ID: <bf3281416a57f2788d4772e9f7926b3a@owncloud.dehnhardt.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E77D26664F
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 07:22:23 +0200 (CEST)
+Received: from punkt-k.de (punkt-k.de [84.200.50.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F135261560
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 08:17:08 +0200 (CEST)
+Received: from [84.200.50.24] (port=45340 helo=owncloud.dehnhardt.org)
+ by punkt-k.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+ (Exim 4.84_2) (envelope-from <holger@dehnhardt.org>)
+ id 1bzdze-0001SJ-D2
+ for alsa-devel@alsa-project.org; Thu, 27 Oct 2016 08:16:51 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,38 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Inrecse LDO power for better performance.
+I own a MOTU Midi Express XT 8x8 interface which is connected through the parallel port. Recently
+I upgraded my system and the new motherboard does not have an ISA parallel port anymore...
+So I bought a PCI parallel port extension card - hoping that it will work with the ALSA driver
+(mtpav).
+So I changed the interrupt an port address in modules.conf but the driver is no longer recognized
+as an ALSA driver even though it loads without errors.
+As the device still perfectly fits my needs I would like to modify the driver to get it working
+again. 
+Can anyone give me advice what should be changed in the drivers code to make it work on a pci port?
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5670.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 6caac92..12d3bc1 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2618,7 +2618,7 @@ static int rt5670_set_bias_level(struct snd_soc_codec *codec,
- 				RT5670_OSW_L_DIS | RT5670_OSW_R_DIS);
- 			snd_soc_update_bits(codec, RT5670_DIG_MISC, 0x1, 0x1);
- 			snd_soc_update_bits(codec, RT5670_PWR_ANLG1,
--				RT5670_LDO_SEL_MASK, 0x3);
-+				RT5670_LDO_SEL_MASK, 0x5);
- 		}
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
-@@ -2626,7 +2626,7 @@ static int rt5670_set_bias_level(struct snd_soc_codec *codec,
- 				RT5670_PWR_VREF1 | RT5670_PWR_VREF2 |
- 				RT5670_PWR_FV1 | RT5670_PWR_FV2, 0);
- 		snd_soc_update_bits(codec, RT5670_PWR_ANLG1,
--				RT5670_LDO_SEL_MASK, 0x1);
-+				RT5670_LDO_SEL_MASK, 0x3);
- 		break;
- 	case SND_SOC_BIAS_OFF:
- 		if (rt5670->pdata.jd_mode)
--- 
-1.8.1.1.439.g50a6b54
+Holger
