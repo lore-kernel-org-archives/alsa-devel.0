@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5670: increse LDO power" to the asoc
-	tree
-Date: Thu, 27 Oct 2016 17:47:30 +0100
-Message-ID: <E1bznpy-0007gP-40@debutante>
-References: <1477545714-26188-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: rsnd: fixup SCU_SYS_STATUSx access" to
+	the asoc tree
+Date: Thu, 27 Oct 2016 17:47:36 +0100
+Message-ID: <E1bznq4-0007i8-Dv@debutante>
+References: <87shrjwxmv.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 512422669DD
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 18:47:40 +0200 (CEST)
-In-Reply-To: <1477545714-26188-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CED752669E2
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 18:47:42 +0200 (CEST)
+In-Reply-To: <87shrjwxmv.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5670: increse LDO power
+   ASoC: rsnd: fixup SCU_SYS_STATUSx access
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From c8c6f0d81de67198522e3f31142986c27d3cba81 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Thu, 27 Oct 2016 13:21:54 +0800
-Subject: [PATCH] ASoC: rt5670: increse LDO power
+>From 42b197e794dbe961cbcebd9e4963252c96cc77f9 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 26 Oct 2016 04:28:42 +0000
+Subject: [PATCH] ASoC: rsnd: fixup SCU_SYS_STATUSx access
 
-Inrecse LDO power for better performance.
+SCU_SYS_STATUSx is the register that writing 1 initializes the bit,
+and writing 0 is ignored. So, it should use rsnd_mod_write()
+instead of rsnd_mod_bset(), otherwise all bit will be cleared.
+Thanks Shimoda-san
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Reported-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5670.c | 4 ++--
+ sound/soc/sh/rcar/src.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 6caac92143d4..12d3bc14a558 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2618,7 +2618,7 @@ static int rt5670_set_bias_level(struct snd_soc_codec *codec,
- 				RT5670_OSW_L_DIS | RT5670_OSW_R_DIS);
- 			snd_soc_update_bits(codec, RT5670_DIG_MISC, 0x1, 0x1);
- 			snd_soc_update_bits(codec, RT5670_PWR_ANLG1,
--				RT5670_LDO_SEL_MASK, 0x3);
-+				RT5670_LDO_SEL_MASK, 0x5);
- 		}
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
-@@ -2626,7 +2626,7 @@ static int rt5670_set_bias_level(struct snd_soc_codec *codec,
- 				RT5670_PWR_VREF1 | RT5670_PWR_VREF2 |
- 				RT5670_PWR_FV1 | RT5670_PWR_FV2, 0);
- 		snd_soc_update_bits(codec, RT5670_PWR_ANLG1,
--				RT5670_LDO_SEL_MASK, 0x1);
-+				RT5670_LDO_SEL_MASK, 0x3);
- 		break;
- 	case SND_SOC_BIAS_OFF:
- 		if (rt5670->pdata.jd_mode)
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index e13d6d439b32..aa24258b9b14 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -327,8 +327,8 @@ static void rsnd_src_status_clear(struct rsnd_mod *mod)
+ {
+ 	u32 val = OUF_SRC(rsnd_mod_id(mod));
+ 
+-	rsnd_mod_bset(mod, SCU_SYS_STATUS0, val, val);
+-	rsnd_mod_bset(mod, SCU_SYS_STATUS1, val, val);
++	rsnd_mod_write(mod, SCU_SYS_STATUS0, val);
++	rsnd_mod_write(mod, SCU_SYS_STATUS1, val);
+ }
+ 
+ static bool rsnd_src_error_occurred(struct rsnd_mod *mod)
 -- 
 2.8.1
