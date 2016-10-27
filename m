@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 08/22] topology: Define a function to build a
-	single physical DAI link
-Date: Thu, 27 Oct 2016 15:12:23 +0800
-Message-ID: <03075fbd4e3aed4033075e005f260dda3d348979.1477549962.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 09/22] topology: ABI - Define DAI physical PCM
+	data formats
+Date: Thu, 27 Oct 2016 15:13:01 +0800
+Message-ID: <d0f0c487d4894542b58ce86d56a196b70de91828.1477549962.git.mengdong.lin@linux.intel.com>
 References: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 89AE726688A
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:11:09 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9FE226688A
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:11:47 +0200 (CEST)
 In-Reply-To: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,93 +27,39 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Code refactoring. Rename the function to build all physical links from
-tplg_build_link_config() to tplg_build_links(). And define a new function
-build_link() to build a single physical DAI link element.
+Define DAI physical PCM data formats for user space, so users can specify
+the formats of backends by topology (e.g. the DAI format to set on backend
+link init).
 
-The function build_link() will be extended to handle more properties
-of a physical DAI link (e.g. backend or codec-codec link).
+The kernel will also refer to these formats.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/src/topology/parser.c b/src/topology/parser.c
-index 7b2c879..ded2eb7 100644
---- a/src/topology/parser.c
-+++ b/src/topology/parser.c
-@@ -271,11 +271,11 @@ static int tplg_build_integ(snd_tplg_t *tplg)
- 	if (err <  0)
- 		return err;
+diff --git a/include/sound/asoc.h b/include/sound/asoc.h
+index 45872c1..8e9ee39 100644
+--- a/include/sound/asoc.h
++++ b/include/sound/asoc.h
+@@ -122,6 +122,21 @@
+ #define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND          (1 << 3)
+ #define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME   (1 << 4)
  
--	err = tplg_build_link_cfg(tplg, SND_TPLG_TYPE_BE);
-+	err = tplg_build_links(tplg, SND_TPLG_TYPE_BE);
- 	if (err <  0)
- 		return err;
- 
--	err = tplg_build_link_cfg(tplg, SND_TPLG_TYPE_CC);
-+	err = tplg_build_links(tplg, SND_TPLG_TYPE_CC);
- 	if (err <  0)
- 		return err;
- 
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 64c8fd9..08f2ca8 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -148,12 +148,31 @@ static int tplg_build_stream_cfg(snd_tplg_t *tplg,
- 	return 0;
- }
- 
-+static int build_link(snd_tplg_t *tplg, struct tplg_elem *elem)
-+{
-+	struct snd_soc_tplg_link_config *link = elem->link;
-+	struct tplg_elem *ref_elem = NULL;
-+	struct snd_soc_tplg_link_cmpnt  *codec, *cmpnt;
-+	struct tplg_ref *ref;
-+	struct list_head *base, *pos;
-+	int i, num_hw_configs = 0, err = 0;
++/* DAI physical PCM data formats.
++ * Add new formats to the end of the list.
++ */
++#define SND_SOC_DAI_FORMAT_I2S          1 /* I2S mode */
++#define SND_SOC_DAI_FORMAT_RIGHT_J      2 /* Right Justified mode */
++#define SND_SOC_DAI_FORMAT_LEFT_J       3 /* Left Justified mode */
++#define SND_SOC_DAI_FORMAT_DSP_A        4 /* L data MSB after FRM LRC */
++#define SND_SOC_DAI_FORMAT_DSP_B        5 /* L data MSB during FRM LRC */
++#define SND_SOC_DAI_FORMAT_AC97         6 /* AC97 */
++#define SND_SOC_DAI_FORMAT_PDM          7 /* Pulse density modulation */
 +
-+	err = tplg_build_stream_cfg(tplg, link->stream,
-+				    link->num_streams);
-+	if (err < 0)
-+		return err;
++/* left and right justified also known as MSB and LSB respectively */
++#define SND_SOC_DAI_FORMAT_MSB          SND_SOC_DAI_FORMAT_LEFT_J
++#define SND_SOC_DAI_FORMAT_LSB          SND_SOC_DAI_FORMAT_RIGHT_J
 +
-+	/* add link to manifest */
-+	tplg->manifest.dai_link_elems++;
-+
-+	return 0;
-+}
-+
- /* build BE/CC DAI link configurations */
--int tplg_build_link_cfg(snd_tplg_t *tplg, unsigned int type)
-+int tplg_build_links(snd_tplg_t *tplg, unsigned int type)
- {
- 	struct list_head *base, *pos;
- 	struct tplg_elem *elem;
--	struct snd_soc_tplg_link_config *link;
- 	int err = 0;
- 
- 	switch (type) {
-@@ -175,9 +194,7 @@ int tplg_build_link_cfg(snd_tplg_t *tplg, unsigned int type)
- 			return -EINVAL;
- 		}
- 
--		link = elem->link;
--		err = tplg_build_stream_cfg(tplg, link->stream,
--			link->num_streams);
-+		err =  build_link(tplg, elem);
- 		if (err < 0)
- 			return err;
- 	}
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index 3aa51ee..548f42d 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -284,6 +284,6 @@ int tplg_add_bytes(snd_tplg_t *tplg, struct snd_tplg_bytes_template *bytes_ctl,
- 		   struct tplg_elem **e);
- 
- int tplg_build_pcms(snd_tplg_t *tplg, unsigned int type);
--int tplg_build_link_cfg(snd_tplg_t *tplg, unsigned int type);
-+int tplg_build_links(snd_tplg_t *tplg, unsigned int type);
- int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
- int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
+ /*
+  * Block Header.
+  * This header precedes all object and object arrays below.
 -- 
 2.5.0
