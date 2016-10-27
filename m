@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 13/22] topology: Parse HW configurations of
-	physical DAI links defined by C API
-Date: Thu, 27 Oct 2016 15:13:42 +0800
-Message-ID: <b4997cf09aba52de6cf591913128f9f6081429cc.1477549962.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 14/22] topology: Parse HW configurations of
+	physical DAI links in text conf file
+Date: Thu, 27 Oct 2016 15:13:55 +0800
+Message-ID: <554154dd9a7d28c1a868b8cad66ef1169b6c5741.1477549962.git.mengdong.lin@linux.intel.com>
 References: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 15B6F267330
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:12:27 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF8AF2672C7
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:12:41 +0200 (CEST)
 In-Reply-To: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,178 +27,362 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Add HW configurations to C API template of physical link configuration.
+Users can configure the runtime supported HW configurations of a physical
+link by SectionHWConfig. A physical link can refer multiple HW config
+sections in SectionLink.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
 diff --git a/include/topology.h b/include/topology.h
-index d1ce69c..8323dd9 100644
+index 8323dd9..cf25de5 100644
 --- a/include/topology.h
 +++ b/include/topology.h
-@@ -898,6 +898,33 @@ struct snd_tplg_pcm_template {
- 	struct snd_tplg_stream_template stream[0]; /*!< supported configs */
+@@ -632,10 +632,31 @@ extern "C" {
+  *
+  *	id "0"				# used for binding to the link
+  *
++ *	hw_configs [	# runtime supported HW configurations, optional
++ *		"config1"
++ *		"config2"
++ *		...
++ *	]
++ *
++ *	default_hw_conf_id "1"		#default HW config ID for init
++ *
+  *	data "name"			# optional private data
+  * }
+  * </pre>
+  *
++ * A physical link can refer to multiple runtime supported hardware
++ * configurations, which is defined by SectionHWConfig.
++ *
++ * <pre>
++ * SectionHWConfig."name" {
++ *
++ *	id "1"				# used for binding to the config
++ *	format "I2S"			# physical audio format.
++ *	bclk   "master"			# Platform is master of bit clock
++ *	fsync  "slave"			# Platform is slave of fsync
++ * }
++ * </pre>
++ *
+  * <h4>Manifest Private Data</h4>
+  * Manfiest may have private data. Users need to define a manifest section
+  * and add the references to 1 or multiple data sections. Please refer to
+@@ -677,6 +698,7 @@ enum snd_tplg_type {
+ 	SND_TPLG_TYPE_TOKEN,		/*!< Vendor tokens */
+ 	SND_TPLG_TYPE_TUPLE,		/*!< Vendor tuples */
+ 	SND_TPLG_TYPE_LINK,		/*!< Physical DAI link */
++	SND_TPLG_TYPE_HW_CONFIG,	/*!< Link HW config */
  };
  
-+ /** \struct snd_tplg_hw_config_template
-+ * \brief Template type to describe a physical link runtime supported
-+ * hardware config, i.e. hardware audio formats.
-+ */
-+struct snd_tplg_hw_config_template {
-+	int id;                         /* unique ID - - used to match */
-+	unsigned int fmt;               /* SND_SOC_DAI_FORMAT_ format value */
-+	unsigned char clock_gated;      /* 1 if clock can be gated to save power */
-+	unsigned char  invert_bclk;     /* 1 for inverted BCLK, 0 for normal */
-+	unsigned char  invert_fsync;    /* 1 for inverted frame clock, 0 for normal */
-+	unsigned char  bclk_master;     /* 1 for master of BCLK, 0 for slave */
-+	unsigned char  fsync_master;    /* 1 for master of FSYNC, 0 for slave */
-+	unsigned char  mclk_direction;  /* 0 for input, 1 for output */
-+	unsigned short reserved;        /* for 32bit alignment */
-+	unsigned int mclk_rate;	        /* MCLK or SYSCLK freqency in Hz */
-+	unsigned int bclk_rate;	        /* BCLK freqency in Hz */
-+	unsigned int fsync_rate;        /* frame clock in Hz */
-+	unsigned int tdm_slots;         /* number of TDM slots in use */
-+	unsigned int tdm_slot_width;    /* width in bits for each slot */
-+	unsigned int tx_slots;          /* bit mask for active Tx slots */
-+	unsigned int rx_slots;          /* bit mask for active Rx slots */
-+	unsigned int tx_channels;       /* number of Tx channels */
-+	unsigned int *tx_chanmap;       /* array of slot number */
-+	unsigned int rx_channels;       /* number of Rx channels */
-+	unsigned int *rx_chanmap;       /* array of slot number */
-+};
-+
- /** \struct snd_tplg_link_template
-  * \brief Template type for BE and CC DAI Links.
-  */
-@@ -905,7 +932,11 @@ struct snd_tplg_link_template {
- 	const char *name;	/*!< link name */
- 	int id;	/*!< unique ID - used to match with existing BE and CC links */
- 	int num_streams;	/*!< number of configs */
--	struct snd_tplg_stream_template stream[0]; /*!< supported configs */
-+	struct snd_tplg_stream_template *stream;       /*!< supported configs */
-+
-+	struct snd_tplg_hw_config_template *hw_config; /*!< supported HW configs */
-+	int num_hw_configs;		/* number of hw configs */
-+	int default_hw_config_id;       /* default hw config ID for init */
- };
- 
- /** \struct snd_tplg_obj_template
+ /**
 diff --git a/src/topology/elem.c b/src/topology/elem.c
-index 724bf26..f7ff070 100644
+index f7ff070..01dce1f 100644
 --- a/src/topology/elem.c
 +++ b/src/topology/elem.c
-@@ -193,6 +193,7 @@ struct tplg_elem* tplg_elem_new_common(snd_tplg_t *tplg,
- 		obj_size = sizeof(struct snd_soc_tplg_pcm);
+@@ -208,6 +208,10 @@ struct tplg_elem* tplg_elem_new_common(snd_tplg_t *tplg,
+ 		list_add_tail(&elem->list, &tplg->tuple_list);
+ 		elem->free = tplg_free_tuples;
  		break;
- 	case SND_TPLG_TYPE_BE:
-+	case SND_TPLG_TYPE_LINK:
- 		list_add_tail(&elem->list, &tplg->be_list);
- 		obj_size = sizeof(struct snd_soc_tplg_link_config);
- 		break;
++	case SND_TPLG_TYPE_HW_CONFIG:
++		list_add_tail(&elem->list, &tplg->hw_cfg_list);
++		obj_size = sizeof(struct snd_soc_tplg_hw_config);
++		break;
+ 	default:
+ 		free(elem);
+ 		return NULL;
 diff --git a/src/topology/parser.c b/src/topology/parser.c
-index ed5da87..238943c 100644
+index 238943c..7d0486c 100644
 --- a/src/topology/parser.c
 +++ b/src/topology/parser.c
-@@ -348,6 +348,7 @@ int snd_tplg_add_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
- 		return tplg_add_graph_object(tplg, t);
- 	case SND_TPLG_TYPE_PCM:
- 		return tplg_add_pcm_object(tplg, t);
-+	case SND_TPLG_TYPE_LINK:
- 	case SND_TPLG_TYPE_BE:
- 	case SND_TPLG_TYPE_CC:
- 		return tplg_add_link_object(tplg, t);
+@@ -133,6 +133,14 @@ static int tplg_parse_config(snd_tplg_t *tplg, snd_config_t *cfg)
+ 			continue;
+ 		}
+ 
++		if (strcmp(id, "SectionHWConfig") == 0) {
++			err = tplg_parse_compound(tplg, n, tplg_parse_hw_config,
++				NULL);
++			if (err < 0)
++				return err;
++			continue;
++		}
++
+ 		if (strcmp(id, "SectionLink") == 0
+ 			|| strcmp(id, "SectionBE") == 0) {
+ 			err = tplg_parse_compound(tplg, n, tplg_parse_link,
+@@ -455,6 +463,7 @@ snd_tplg_t *snd_tplg_new(void)
+ 	INIT_LIST_HEAD(&tplg->bytes_ext_list);
+ 	INIT_LIST_HEAD(&tplg->token_list);
+ 	INIT_LIST_HEAD(&tplg->tuple_list);
++	INIT_LIST_HEAD(&tplg->hw_cfg_list);
+ 
+ 	return tplg;
+ }
+@@ -480,6 +489,7 @@ void snd_tplg_free(snd_tplg_t *tplg)
+ 	tplg_elem_free_list(&tplg->bytes_ext_list);
+ 	tplg_elem_free_list(&tplg->token_list);
+ 	tplg_elem_free_list(&tplg->tuple_list);
++	tplg_elem_free_list(&tplg->hw_cfg_list);
+ 
+ 	free(tplg);
+ }
 diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 32beeb7..58efc2f 100644
+index 58efc2f..9e5bb8e 100644
 --- a/src/topology/pcm.c
 +++ b/src/topology/pcm.c
-@@ -168,7 +168,7 @@ static int build_link(snd_tplg_t *tplg, struct tplg_elem *elem)
+@@ -162,6 +162,34 @@ static int build_link(snd_tplg_t *tplg, struct tplg_elem *elem)
+ 	if (err < 0)
+ 		return err;
+ 
++	/* hw configs */
++	base = &elem->ref_list;
++	list_for_each(pos, base) {
++
++		ref = list_entry(pos, struct tplg_ref, list);
++
++		switch (ref->type) {
++		case SND_TPLG_TYPE_HW_CONFIG:
++			ref->elem = tplg_elem_lookup(&tplg->hw_cfg_list,
++					ref->id, SND_TPLG_TYPE_HW_CONFIG);
++			if (!ref->elem) {
++				SNDERR("error: cannot find HW config '%s'"
++				" referenced by link '%s'\n",
++				ref->id, elem->id);
++				return -EINVAL;
++			}
++
++			memcpy(&link->hw_config[num_hw_configs],
++				ref->elem->hw_cfg,
++				sizeof(struct snd_soc_tplg_hw_config));
++			num_hw_configs++;
++			break;
++
++		default:
++			break;
++		}
++	}
++
+ 	/* add link to manifest */
+ 	tplg->manifest.dai_link_elems++;
+ 
+@@ -541,6 +569,54 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
  	return 0;
  }
  
--/* build BE/CC DAI link configurations */
-+/* build physical DAI link configurations */
- int tplg_build_links(snd_tplg_t *tplg, unsigned int type)
- {
- 	struct list_head *base, *pos;
-@@ -176,6 +176,7 @@ int tplg_build_links(snd_tplg_t *tplg, unsigned int type)
- 	int err = 0;
- 
- 	switch (type) {
-+	case SND_TPLG_TYPE_LINK:
- 	case SND_TPLG_TYPE_BE:
- 		base = &tplg->be_list;
- 		break;
-@@ -189,11 +190,6 @@ int tplg_build_links(snd_tplg_t *tplg, unsigned int type)
- 	list_for_each(pos, base) {
- 
- 		elem = list_entry(pos, struct tplg_elem, list);
--		if (elem->type != type) {
--			SNDERR("error: invalid elem '%s'\n", elem->id);
--			return -EINVAL;
--		}
--
- 		err =  build_link(tplg, elem);
- 		if (err < 0)
- 			return err;
-@@ -759,6 +755,47 @@ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
- 	return 0;
- }
- 
-+/* Set link HW config from C API template */
-+static int set_link_hw_config(struct snd_soc_tplg_hw_config *cfg,
-+			struct snd_tplg_hw_config_template *tpl)
++/* parse physical link runtime supported HW configs in text conf file */
++static int parse_hw_config_refs(snd_tplg_t *tplg, snd_config_t *cfg,
++				struct tplg_elem *elem)
 +{
-+	int i;
++	struct snd_soc_tplg_link_config *link = elem->link;
++	snd_config_type_t  type;
++	snd_config_iterator_t i, next;
++	snd_config_t *n;
++	const char *id, *val = NULL;
 +
-+	cfg->size = sizeof(*cfg);
-+	cfg->id = tpl->id;
-+
-+	cfg->fmt = tpl->fmt;
-+	cfg->clock_gated = tpl->clock_gated;
-+	cfg->invert_bclk = tpl->invert_bclk;
-+	cfg->invert_fsync = tpl->invert_fsync;
-+	cfg->bclk_master = tpl->bclk_master;
-+	cfg->fsync_master = tpl->fsync_master;
-+	cfg->mclk_direction = tpl->mclk_direction;
-+	cfg->reserved = tpl->reserved;
-+	cfg->mclk_rate = tpl->mclk_rate;
-+	cfg->bclk_rate = tpl->bclk_rate;
-+	cfg->fsync_rate = tpl->fsync_rate;
-+
-+	cfg->tdm_slots = tpl->tdm_slots;
-+	cfg->tdm_slot_width = tpl->tdm_slot_width;
-+	cfg->tx_slots = tpl->tx_slots;
-+	cfg->rx_slots = tpl->rx_slots;
-+
-+	if (cfg->tx_channels > SND_SOC_TPLG_MAX_CHAN
-+		|| cfg->rx_channels > SND_SOC_TPLG_MAX_CHAN)
++	if (snd_config_get_id(cfg, &id) < 0)
 +		return -EINVAL;
++	type = snd_config_get_type(cfg);
 +
-+	cfg->tx_channels = tpl->tx_channels;
-+	for (i = 0; i < cfg->tx_channels; i++)
-+		cfg->tx_chanmap[i] = tpl->tx_chanmap[i];
++	/* refer to a single HW config */
++	if (type == SND_CONFIG_TYPE_STRING) {
++		if (snd_config_get_string(cfg, &val) < 0)
++			return -EINVAL;
 +
-+	cfg->rx_channels = tpl->rx_channels;
-+	for (i = 0; i < cfg->rx_channels; i++)
-+		cfg->rx_chanmap[i] = tpl->rx_chanmap[i];
++		link->num_hw_configs = 1;
++		return tplg_ref_add(elem, SND_TPLG_TYPE_HW_CONFIG, val);
++	}
++
++	if (type != SND_CONFIG_TYPE_COMPOUND) {
++		SNDERR("error: compound type expected for %s", id);
++		return -EINVAL;
++	}
++
++	/* refer to a list of HW configs */
++	snd_config_for_each(i, next, cfg) {
++		const char *val;
++
++		n = snd_config_iterator_entry(i);
++		if (snd_config_get_string(n, &val) < 0)
++			continue;
++
++		if (link->num_hw_configs >= SND_SOC_TPLG_HW_CONFIG_MAX) {
++			SNDERR("error: exceed max hw configs for link %s", id);
++			return -EINVAL;
++		}
++
++		link->num_hw_configs++;
++		return tplg_ref_add(elem, SND_TPLG_TYPE_HW_CONFIG, val);
++	}
 +
 +	return 0;
 +}
 +
- /* Add a physical DAI link element from C API */
- int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
- {
-@@ -789,5 +826,12 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
- 	for (i = 0; i < link->num_streams; i++)
- 		tplg_add_stream_object(&link->stream[i], &link_tpl->stream[i]);
+ /* Parse a physical link element in text conf file */
+ int tplg_parse_link(snd_tplg_t *tplg,
+ 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
+@@ -591,6 +667,21 @@ int tplg_parse_link(snd_tplg_t *tplg,
+ 			continue;
+ 		}
  
-+	/* HW configs */
-+	if (link_tpl->num_hw_configs > SND_SOC_TPLG_HW_CONFIG_MAX)
-+		return -EINVAL;
-+	link->num_hw_configs = link_tpl->num_hw_configs;
-+	link->default_hw_config_id = link_tpl->default_hw_config_id;
-+	for (i = 0; i < link->num_hw_configs; i++)
-+		set_link_hw_config(&link->hw_config[i], &link_tpl->hw_config[i]);
++		if (strcmp(id, "hw_configs") == 0) {
++			err = parse_hw_config_refs(tplg, n, elem);
++			if (err < 0)
++				return err;
++			continue;
++		}
++
++		if (strcmp(id, "default_hw_conf_id") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			link->default_hw_config_id = atoi(val);
++			continue;
++		}
++
+ 		if (strcmp(id, "data") == 0) {
+ 			err = tplg_parse_data_refs(n, elem);
+ 			if (err < 0)
+@@ -656,6 +747,110 @@ int tplg_parse_cc(snd_tplg_t *tplg,
  	return 0;
  }
+ 
++static int get_audio_hw_format(const char *val)
++{
++	if (!strlen(val))
++		return -EINVAL;
++
++	if (!strcmp(val, "I2S"))
++		return SND_SOC_DAI_FORMAT_I2S;
++
++	if (!strcmp(val, "RIGHT_J"))
++		return SND_SOC_DAI_FORMAT_RIGHT_J;
++
++	if (!strcmp(val, "LEFT_J"))
++		return SND_SOC_DAI_FORMAT_LEFT_J;
++
++	if (!strcmp(val, "DSP_A"))
++		return SND_SOC_DAI_FORMAT_DSP_A;
++
++	if (!strcmp(val, "LEFT_B"))
++		return SND_SOC_DAI_FORMAT_DSP_B;
++
++	if (!strcmp(val, "AC97"))
++		return SND_SOC_DAI_FORMAT_AC97;
++
++	if (!strcmp(val, "PDM"))
++		return SND_SOC_DAI_FORMAT_PDM;
++
++	SNDERR("error: invalid audio HW format %s\n", val);
++	return -EINVAL;
++}
++
++int tplg_parse_hw_config(snd_tplg_t *tplg, snd_config_t *cfg,
++			 void *private ATTRIBUTE_UNUSED)
++{
++
++	struct snd_soc_tplg_hw_config *hw_cfg;
++	struct tplg_elem *elem;
++	snd_config_iterator_t i, next;
++	snd_config_t *n;
++	const char *id, *val = NULL;
++	int ret;
++
++	elem = tplg_elem_new_common(tplg, cfg, NULL, SND_TPLG_TYPE_HW_CONFIG);
++	if (!elem)
++		return -ENOMEM;
++
++	hw_cfg = elem->hw_cfg;
++	hw_cfg->size = elem->size;
++
++	tplg_dbg(" Link HW config: %s\n", elem->id);
++
++	snd_config_for_each(i, next, cfg) {
++
++		n = snd_config_iterator_entry(i);
++		if (snd_config_get_id(n, &id) < 0)
++			continue;
++
++		/* skip comments */
++		if (strcmp(id, "comment") == 0)
++			continue;
++		if (id[0] == '#')
++			continue;
++
++		if (strcmp(id, "id") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			hw_cfg->id = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, hw_cfg->id);
++			continue;
++		}
++
++		if (strcmp(id, "format") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			ret = get_audio_hw_format(val);
++			if (ret < 0)
++				return ret;
++			hw_cfg->fmt = ret;
++			continue;
++		}
++
++		if (strcmp(id, "bclk") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			if (!strcmp(val, "master"))
++				hw_cfg->bclk_master = true;
++			continue;
++		}
++
++		if (strcmp(id, "fsync") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			if (!strcmp(val, "master"))
++				hw_cfg->fsync_master = true;
++			continue;
++		}
++	}
++
++	return 0;
++}
++
+ /* copy stream object */
+ static void tplg_add_stream_object(struct snd_soc_tplg_stream *strm,
+ 				struct snd_tplg_stream_template *strm_tpl)
+diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+index 947f27e..9e67bf8 100644
+--- a/src/topology/tplg_local.h
++++ b/src/topology/tplg_local.h
+@@ -74,6 +74,7 @@ struct snd_tplg {
+ 	struct list_head manifest_list;
+ 	struct list_head pcm_config_list;
+ 	struct list_head pcm_caps_list;
++	struct list_head hw_cfg_list;
+ 
+ 	/* type-specific control lists */
+ 	struct list_head mixer_list;
+@@ -148,6 +149,7 @@ struct tplg_elem {
+ 		struct snd_soc_tplg_dapm_graph_elem *route;
+ 		struct snd_soc_tplg_stream *stream_cfg;
+ 		struct snd_soc_tplg_stream_caps *stream_caps;
++		struct snd_soc_tplg_hw_config *hw_cfg;
+ 
+ 		/* these do not map to UAPI structs but are internal only */
+ 		struct snd_soc_tplg_ctl_tlv *tlv;
+@@ -226,6 +228,9 @@ int tplg_parse_link(snd_tplg_t *tplg,
+ int tplg_parse_cc(snd_tplg_t *tplg,
+ 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
+ 
++int tplg_parse_hw_config(snd_tplg_t *tplg, snd_config_t *cfg,
++			 void *private ATTRIBUTE_UNUSED);
++
+ int tplg_build_data(snd_tplg_t *tplg);
+ int tplg_build_manifest_data(snd_tplg_t *tplg);
+ int tplg_build_controls(snd_tplg_t *tplg);
 -- 
 2.5.0
