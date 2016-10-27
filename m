@@ -1,58 +1,91 @@
-From: "Jon Medhurst (Tixy)" <tixy@linaro.org>
-Subject: [PATCH] ASoC: hdmi-codec: Fix hdmi_of_xlate_dai_name when
- #sound-dai-cells = <0>
-Date: Thu, 27 Oct 2016 12:42:48 +0100
-Message-ID: <1477568568.2908.14.camel@linaro.org>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH 11/22] topology: Rename varaibles for add
+	physical links by C API
+Date: Thu, 27 Oct 2016 15:13:21 +0800
+Message-ID: <3784a595dba646244bbcb134ff039108763c0709.1477549962.git.mengdong.lin@linux.intel.com>
+References: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC5702672C7
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:12:13 +0200 (CEST)
+In-Reply-To: <cover.1477549962.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-If a DAI specifies "#sound-dai-cells = <0>" in device-tree then
-hdmi_of_xlate_dai_name() will be called with zero args, which it isn't
-implemented to cope with. The resulting use of an uninitialised variable
-for the id will usually result in an error like:
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-  asoc-simple-card sound: parse error -11
-  asoc-simple-card: probe of sound failed with error -11
+Code refactoring. When adding a physical link element from C API:
+- Rename "link" to "link_tpl" for physical link config template for
+  C API users.
+- Rename "lk" to "link" for physical link elements created by topology
+  internally.
 
-Fix this by using and id of zero if no arg is provided.
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Fixes: 9731f82d6016 ("ASoC: hdmi-codec: enable multi probe for same device")
-
-Signed-off-by: Jon Medhurst <tixy@linaro.org>
----
-
-Jyri, FYI, I believe this issue broke your commit df0bd1e8f3c508 ("ARM: dts:
-am335x-boneblack: Add HDMI audio support")
-
- sound/soc/codecs/hdmi-codec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index b904492..6661ace 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -364,7 +364,7 @@ static int hdmi_of_xlate_dai_name(struct snd_soc_component *component,
- 				  struct of_phandle_args *args,
- 				  const char **dai_name)
- {
--	int id = args->args[0];
-+	int id = args->args_count ? args->args[0] : 0;
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index 08f2ca8..3fe77aa 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -758,10 +758,11 @@ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 	return 0;
+ }
  
- 	if (id < ARRAY_SIZE(hdmi_dai_name)) {
- 		*dai_name = hdmi_dai_name[id];
++/* Add a physical DAI link element from C API */
+ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ {
+-	struct snd_tplg_link_template *link = t->link;
+-	struct snd_soc_tplg_link_config *lk;
++	struct snd_tplg_link_template *link_tpl = t->link;
++	struct snd_soc_tplg_link_config *link, *_link;
+ 	struct tplg_elem *elem;
+ 	int i;
+ 
+@@ -769,22 +770,25 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 		return -EINVAL;
+ 
+ 	/* here type can be either BE or CC. */
+-	elem = tplg_elem_new_common(tplg, NULL, link->name, t->type);
++	elem = tplg_elem_new_common(tplg, NULL, link_tpl->name, t->type);
+ 	if (!elem)
+ 		return -ENOMEM;
+ 
+ 	if (t->type == SND_TPLG_TYPE_BE)
+-		tplg_dbg("BE Link: %s", link->name);
++		tplg_dbg("BE Link: %s", link_tpl->name);
+ 	else
+-		tplg_dbg("CC Link: %s", link->name);
++		tplg_dbg("CC Link: %s", link_tpl->name);
+ 
+-	lk = elem->link;
+-	lk->size = elem->size;
+-	lk->id = link->id;
+-	lk->num_streams = link->num_streams;
++	link = elem->link;
++	link->size = elem->size;
+ 
++	link->id = link_tpl->id;
++	/* stream configs */
++	if (link_tpl->num_streams > SND_SOC_TPLG_STREAM_CONFIG_MAX)
++		return -EINVAL;
++	link->num_streams = link_tpl->num_streams;
+ 	for (i = 0; i < link->num_streams; i++)
+-		tplg_add_stream_object(&lk->stream[i], &link->stream[i]);
++		tplg_add_stream_object(&link->stream[i], &link_tpl->stream[i]);
+ 
+ 	return 0;
+ }
 -- 
-2.1.4
+2.5.0
