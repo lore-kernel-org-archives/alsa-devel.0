@@ -1,66 +1,58 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 7/9] Input: wm97xx: split out touchscreen registering
-Date: Thu, 27 Oct 2016 10:02:33 +0100
-Message-ID: <20161027090233.GF28180@localhost.localdomain>
-References: <1477510907-23495-1-git-send-email-robert.jarzmik@free.fr>
- <1477510907-23495-8-git-send-email-robert.jarzmik@free.fr>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH 02/22] topology: Parse sig_bits of stream caps
+Date: Thu, 27 Oct 2016 15:11:28 +0800
+Message-ID: <86df240bbe358f40076bd8723fe81352f8d52052.1477549962.git.mengdong.lin@linux.intel.com>
+References: <cover.1477549962.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <1477510907-23495-8-git-send-email-robert.jarzmik@free.fr>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id F363826688A
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 09:10:13 +0200 (CEST)
+In-Reply-To: <cover.1477549962.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 26, 2016 at 09:41:45PM +0200, Robert Jarzmik wrote:
-> wm97xx-core does several things in it initialization :
->  - touchscreen input device setup
->  - battery device creation
-> 
-> As the wm97xx is actually a multi-function device handling an audio
-> codec, a touchscreen, a gpio block and an ADC, reshape the probing to
-> isolate what is truly input/touchscreen specific from the remaining
-> part.
-> 
-> This is only code shuffling, there is no functional change.
-> 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> ---
->  drivers/input/touchscreen/wm97xx-core.c | 193 ++++++++++++++++++--------------
->  1 file changed, 112 insertions(+), 81 deletions(-)
-> 
-> diff --git a/drivers/input/touchscreen/wm97xx-core.c b/drivers/input/touchscreen/wm97xx-core.c
-> index 83cf11312fd9..50a110e2988b 100644
-<snip>
-> +static void wm97xx_remove_battery(struct wm97xx *wm)
-> +{
-> +	platform_device_put(wm->battery_dev);
-> +}
-<snip>
-> @@ -724,10 +757,8 @@ static int wm97xx_remove(struct device *dev)
->  {
->  	struct wm97xx *wm = dev_get_drvdata(dev);
->  
-> -	platform_device_unregister(wm->battery_dev);
-> -	platform_device_unregister(wm->touch_dev);
-> -	input_unregister_device(wm->input_dev);
-> -	kfree(wm);
-> +	wm97xx_remove_battery(wm);
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-The commit message says this is just shifting code around but the
-platform_device_unregister for the battery_dev seems to have
-turned into a platform_device_put here.
+Add sig_bits to stream caps template of C API and parse it.
 
-Thanks,
-Charles
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+
+diff --git a/include/topology.h b/include/topology.h
+index 0675b52..ccd8401 100644
+--- a/include/topology.h
++++ b/include/topology.h
+@@ -848,6 +848,7 @@ struct snd_tplg_stream_caps_template {
+ 	unsigned int period_size_max;	/*!< max period size bytes */
+ 	unsigned int buffer_size_min;	/*!< min buffer size bytes */
+ 	unsigned int buffer_size_max;	/*!< max buffer size bytes */
++	unsigned int sig_bits;		/*!< number of bits of content */
+ };
+ 
+ /** \struct snd_tplg_pcm_template
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index 0a90cb9..6fdf047 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -572,6 +572,7 @@ static void tplg_add_stream_caps(struct snd_soc_tplg_stream_caps *caps,
+ 	caps->period_size_max = caps_tpl->period_size_max;
+ 	caps->buffer_size_min = caps_tpl->buffer_size_min;
+ 	caps->buffer_size_max = caps_tpl->buffer_size_max;
++	caps->sig_bits = caps_tpl->sig_bits;
+ }
+ 
+ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+-- 
+2.5.0
