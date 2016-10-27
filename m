@@ -1,7 +1,7 @@
 From: holger@dehnhardt.org
 Subject: Re: MOTU Midi Express XT
-Date: Thu, 27 Oct 2016 19:11:09 +0000
-Message-ID: <5914c0a6e96511492aa04a0868af3978@owncloud.dehnhardt.org>
+Date: Thu, 27 Oct 2016 20:28:10 +0000
+Message-ID: <2e5e4e51f4f2c63ecab719a1937d695f@owncloud.dehnhardt.org>
 References: <9d5810a657a4fb63805acea778570a49@owncloud.dehnhardt.org>
  <1bdf9e49-1bbb-4f45-5122-bd0f6f4315bf@ladisch.de>
  <bf3281416a57f2788d4772e9f7926b3a@owncloud.dehnhardt.org>
@@ -10,8 +10,13 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from punkt-k.de (punkt-k.de [84.200.50.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F6AC2668DF
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 21:11:26 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CC4126690D
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2016 22:28:28 +0200 (CEST)
+Received: from [84.200.50.24] (port=46883 helo=owncloud.dehnhardt.org)
+ by punkt-k.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+ (Exim 4.84_2) (envelope-from <holger@dehnhardt.org>)
+ id 1bzrHX-0000gQ-3d
+ for alsa-devel@alsa-project.org; Thu, 27 Oct 2016 22:28:11 +0200
 In-Reply-To: <9d5810a657a4fb63805acea778570a49@owncloud.dehnhardt.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,7 +27,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 27. Oktober 2016 18:22 Uhr, holger@dehnhardt.org schrieb:
@@ -63,7 +68,9 @@ List-Id: alsa-devel@alsa-project.org
 > 
 > Holger
 
-I made a new observation. When loading the driver the PC-port LED blinks. At line 339 function snd_mtpav_portscan some bytes are send to the device. This seems to work - which means the communication between the PC and the device seems to work.
+I made a new observation. When loading the driver the PC-port LED blinks. At line 339 function
+snd_mtpav_portscan some bytes are send to the device. This seems to work - which means the
+communication between the PC and the device seems to work.
 
 But why is the driver loaded but not registered?
 
