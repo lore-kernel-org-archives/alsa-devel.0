@@ -1,14 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Audio miniconference at LPC/KS - draft schedule
-Date: Thu, 27 Oct 2016 23:17:54 +0100
-Message-ID: <20161027221754.GW25322@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: M-audio Audiophile Firewire
+Date: Fri, 28 Oct 2016 10:30:03 +0900
+Message-ID: <f677dfd1-c67d-7669-f4d4-d0dd5d8ff99e@sakamocchi.jp>
+References: <CAPzTivG=yDAbFZo+u5qauE_LdpqhUM5fT9MT9+hrmi3gTsTGqw@mail.gmail.com>
+ <1f6dd683-f550-651b-93d2-87560dd298ff@sakamocchi.jp>
+ <fd56b817-96b3-1784-725c-21a5bef7497a@sakamocchi.jp>
+ <CAPzTivEubUhef5LR_p3y0_4TZtbwoLimvzU-tx=xmUhBnT+T0g@mail.gmail.com>
+ <CAPzTivHypNMZvBVBks=wpx1XakELyeWsBVD9mpq-risb_DtH=Q@mail.gmail.com>
+ <7f5bc2fc-7e45-2577-9286-be0e2ff74228@sakamocchi.jp>
+ <CAPzTivHqY1aBH2hqHetmd7-hdZsPbPsC8e1iMjgL=2myH91fbg@mail.gmail.com>
+ <a2d308f4-1982-8418-40ec-e783065f7a96@sakamocchi.jp>
+ <CAPzTivFtjdmpEOYJo=a=B12_Zf9UVV+SjRUKA9hNWLop3w5nbg@mail.gmail.com>
+ <CAPzTivEPwnerkvH-Y5j9bvGzsM5GhLKvF69zFAkVHpDt-8g1Lw@mail.gmail.com>
+ <20161023224350.GB12315@marvin.atrad.com.au>
+ <5951c05f-3fe4-a2fc-aab2-407fddf8a817@gmail.com>
+ <6f6374d3-f616-0d9d-31ac-2d463573f889@sakamocchi.jp>
+ <80a6876e-6ced-7daa-7268-1277850c8270@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0890770642584847087=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 57BE0260083
- for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2016 00:18:08 +0200 (CEST)
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 6597D266AE2
+ for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2016 03:30:06 +0200 (CEST)
+In-Reply-To: <80a6876e-6ced-7daa-7268-1277850c8270@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,88 +33,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, vinod.koul@intel.com, "Luis R. Rodriguez" <mcgrof@kernel.org>, Eric Laurent <elaurent@google.com>
+To: Pap Peti <roachkiller44@gmail.com>, Jonathan Woithe <jwoithe@just42.net>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+On Oct 27 2016 23:10, Pap Peti wrote:
+> My controller:
+>
+>
+> *-firewire
+>                    description: FireWire (IEEE 1394)
+>                    product: XIO2200A IEEE-1394a-2000 Controller (PHY/Link)
+>                    vendor: Texas Instruments
+>                    physical id: 0
+>                    bus info: pci@0000:06:00.0
+>                    version: 01
+>                    width: 32 bits
+>                    clock: 66MHz
+>                    capabilities: ohci bus_master cap_list
+>                    configuration: driver=firewire_ohci latency=32
+> maxlatency=4 mingnt=2
+>                    resources: irq:19 memory:f1c04000-f1c047ff
+> memory:f1c00000-f1c03fff
 
---===============0890770642584847087==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Wt10+cXOThorkX0z"
-Content-Disposition: inline
-
-
---Wt10+cXOThorkX0z
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-The audio miniconference is next Tuesday, starting at 9am in Sweeney CDE
-at the Santa Fe Convention Center.
-
-Currently the set of topics we have on the wiki and from e-mail for
-discussion is:
-
- - mmap/no IRQ mode
- - Time stamp reporting (both current APIs and addition of ability to
-   push down PCM sync)
- - USB audio power and latency performance
- - Standardizing HDMI / DP interface
- - SoundWire support
- - Tracepoints for PCM parameter support
- - Low latency audio
- - Propagating digital configuration through the DAPM graph
- - Userspace and configuration integration (how will topology etc get
-   integrated in OSes)
- - Move of ASoC clocking into the clock API
- - HDA/ASoC integration
- - UCM scaling, does it scale well=E2=80=A6?
- - How to improve upstreaming vendor drivers?
- - Stable / LTS kernel maintenance
- - Para Virtualized audio driver support
- - Userspace drivers (for IEEE 1394 and other things)
- - Dropping the DICE driver
- - Media Controller API integration
-  - Is there anything new here or should we just drop this entirely?
-
-which is quite a list but some of those should be fairly simple to
-discuss so hopefully fairly quick.  I've made some effort to sort this
-into a rough order but it's very much a first pass so suggestions for
-changes are welcome.  Similarly are there are other things people think
-we should discuss?
-
-There's also some discussion of incoporating the kernel wide topic of
-inter-device dependenices into the audio miniconference since this
-affects audio (especially ASoC) quite a bit as well as several other
-subsystems, that is likely to be just after a break or first thing in
-the morning in order to allow others who aren't interested in audio
-specifically to join (and hopefully if this happens we can convince them
-to get involved in working on audio!).
-
-I look forward to seeing many of you in Santa Fe next week!
-
---Wt10+cXOThorkX0z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJYEn0QAAoJECTWi3JdVIfQ+VsIAIcIhAUPM9zhi7H0pPvchhQM
-ZWSkojvBCQRSTEGFiR/Y3pqZTVzpgH9isjAaxkhCr8wE074zkIFvbq1VIBneIGi0
-a/QqpyMo+d52Cf7rWe3xG/fjmnStL58V4Ux27Tfndh+bin2oUBMuyybFsPLf42fC
-v0G9rP4EsRvRhuRyX4rzyiDamqGTxPsH93y2H9HnNgnWr1vGeMqQtTYyVcb3uxNb
-H3MtxlxuaaBAl3y5eF+W+5/rUiPj5XJgjx9aN2225++nNv4Ro7nF3OVwv7WfQ3Z1
-jHQ6JKOA9NZ+zXZpBiQZKkwv7q5LtgD2OMswfXx7cg4mgXDrGcHg1RL17w+pFCo=
-=8Jb4
------END PGP SIGNATURE-----
-
---Wt10+cXOThorkX0z--
-
---===============0890770642584847087==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Not enough to re-generate your issue in my hand. Please inform below 
+information to me:
+  - applications in your test
+  - operations in your test
+  - the environment of your test; distribution, kernel version, and so on
 
 
---===============0890770642584847087==--
+Regards
+
+Takashi Sakamoto
