@@ -1,75 +1,70 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: atom: Add debug information
- related to FW version
-Date: Fri, 28 Oct 2016 17:33:44 +0100
-Message-ID: <20161028163344.llazgdgico5qu26t@sirena.org.uk>
-References: <20161028143250.10711-1-sebastien.guiriec@intel.com>
+Subject: Re: [RFC 12/14] regmap: SoundWire: Add regmap support for SoundWire
+ bus
+Date: Fri, 28 Oct 2016 19:03:55 +0100
+Message-ID: <20161028180355.o7byx4llwurfpnut@sirena.org.uk>
+References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
+ <1477053673-16021-13-git-send-email-hardik.t.shah@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7196555006888034105=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 62841266B24
- for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2016 18:34:04 +0200 (CEST)
-In-Reply-To: <20161028143250.10711-1-sebastien.guiriec@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Cc: vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fkcotvwlbyebc3qq"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1477053673-16021-13-git-send-email-hardik.t.shah@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hardik Shah <hardik.t.shah@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7196555006888034105==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ffm3qruaxci4bvos"
-Content-Disposition: inline
-
-
---ffm3qruaxci4bvos
+--fkcotvwlbyebc3qq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Oct 28, 2016 at 04:32:50PM +0200, Sebastien Guiriec wrote:
+On Fri, Oct 21, 2016 at 06:11:10PM +0530, Hardik Shah wrote:
 
-> +	dev_info(sst_drv_ctx->dev, "FW Version %02x.%02x.%02x.%02x\n",
-> +			init->fw_version.type, init->fw_version.major,
-> +			init->fw_version.minor, init->fw_version.build);
-> +	dev_dbg(sst_drv_ctx->dev, "Build date %s Time %s\n",
-> +			init->build_info.date, init->build_info.time);
+> +static inline void get_t_size(size_t *t_val_size, size_t *t_size,
+> +						int *reg_addr,
+> +						int *offset,
+> +						size_t *val_size)
+> +{
+> +
+> +		*t_val_size += *t_size;
+> +		*offset += *t_size;
 
-Seems like an odd mix of info/dbg but whatever.  I'd also recommend
-adding sysfs or at least debugfs files exposing this information, that
-way you can still get at it even if the kernel log has been filled with
-other things.
+So, I started by taking a look at this patch to get a sense of what the
+API would look like and I see that we're not following CodingStyle with
+everything indented twice :(
 
---ffm3qruaxci4bvos
+> +static int regmap_sdw_gather_write(void *context,
+> +			   const void *reg, size_t reg_size,
+> +			   const void *val, size_t val_size)
+> +{
+
+> +	if (!sdw)
+> +		return 0;
+
+Silently ignoring errors :(
+
+> +	if (val_size > SDW_MAX_REG_ADDR)
+> +		t_size = SDW_MAX_REG_ADDR - reg_command;
+> +	else
+> +		t_size = val_size;
+
+This needs at least some kind of comment?
+
+--fkcotvwlbyebc3qq
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAABCAAGBQJYE33lAAoJECTWi3JdVIfQiD0H/2uxLlAXNnZiHQAmBQ7y/hzo
-4ZQZsn5PwuC2pnOCHPPeprmYCsC/sazp4vPEJQoXArc7M7wE9z2nAudriXokkBAi
-Yxv0zQiKZZUB5/X6roD4hxhg0vQhgkmjsFJhaJkKfpKV3UOlENhRBg87m/mldq+8
-1eZ1d6yRjRPu6gMVY7lNeAxcUXWG8ZSffyUvT6WzUs+Mw3TIFxjZhiQMnmPXxLfB
-X5FdCiPm3DKRHAxSGwMIxUB6e1H7BNaku1340fyasA0M8WNGCiWTUs5GA+35utMa
-rKl8zUDS8jYmbvbSmyZlY0IzMuV6PTOl+4iz0Vbjt7apyGfP/ddKQmcr+ZuZCNY=
-=EPE7
+iQEcBAABCAAGBQJYE5MKAAoJECTWi3JdVIfQnMAH/ROdP3VRxUt/q9EMlMTMYYOk
+O/z1STg3POmSst9Lp1GEQwZO5yQ/iDXbxmaQ2PPwqO+Uf6Dhbaaa/Fr6nxylbhku
+SqmWp6fmbbe29rJ41t6E2v4wNTORTLcRVv/a4Ko++MFfPrjxbSbyvD7qgwduEI67
+Xn09n2hD/SSLsS/ezLTIctCG0lE3gNs6AaB1uNZRoX9/W/efbmawIpW6QC1jz9Xz
+ZG9lIU4RbRqQObsIfwPU9rqJu+2uqs2RrmA82gtCsO0uVAawrqeu7MA1gQpi46WY
+E4cFvL9m3eEhmOLHNf6kA19DLkVrbmha/2lHjXLyGT6ZIEA4yloptfFdK7FP7Hw=
+=L5yI
 -----END PGP SIGNATURE-----
 
---ffm3qruaxci4bvos--
-
---===============7196555006888034105==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7196555006888034105==--
+--fkcotvwlbyebc3qq--
