@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5640: add Mono ADC Capture Switch
-	control" to the asoc tree
-Date: Fri, 28 Oct 2016 19:47:46 +0100
-Message-ID: <E1c0CBu-0005u4-UO@finisterre>
-References: <1477446044-15127-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: Intel: Skylake: Use DPIB to update
+	position for Playback stream" to the asoc tree
+Date: Fri, 28 Oct 2016 19:49:35 +0100
+Message-ID: <E1c0CDf-0005zN-Bj@finisterre>
+References: <1475724081-15129-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F64E265D93
- for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2016 20:48:20 +0200 (CEST)
-In-Reply-To: <1477446044-15127-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A33C6265D93
+ for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2016 20:49:59 +0200 (CEST)
+In-Reply-To: <1475724081-15129-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+To: Dharageswari R <dharageswari.r@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5640: add Mono ADC Capture Switch control
+   ASoC: Intel: Skylake: Use DPIB to update position for Playback stream
 
 has been applied to the asoc tree at
 
@@ -53,48 +53,62 @@ to this mail.
 Thanks,
 Mark
 
->From ca5f17c59b63c3e52f8fad887c27c6eaa5ced81f Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Wed, 26 Oct 2016 09:40:44 +0800
-Subject: [PATCH] ASoC: rt5640: add Mono ADC Capture Switch control
+>From 9a58725ba533b46db31d10a6dcc5ab7f9fa370ed Mon Sep 17 00:00:00 2001
+From: Dharageswari R <dharageswari.r@intel.com>
+Date: Thu, 6 Oct 2016 08:51:21 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Use DPIB to update position for
+ Playback stream
 
-Mono ADC Capture Switch control is missing in the driver. So, add it.
+DPIB is read currently from a buffer position in memory (indicated by
+the registers DPIB[U|L]BASE).Driver reads the position buffer on BDL
+completion interrupts to report the DMA position. But the BDL completion
+interrupt only indicates the last DMA transfer of the buffer is
+completed at the Intel HD Audio subsystem boundary. The periodic DMA
+Position-in-Buffer writes may be scheduled at the same time or later
+than the MSI and does not guarantee to reflect the position of the last
+buffer that was transferred.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Whereas DPIB register in HDA space(vendor specific register indicated by
+SDxDPIB) reflects the actual data that is transferred. Hence update the
+position based on DPIB for playback.
+
+Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5640.c | 2 ++
- sound/soc/codecs/rt5640.h | 4 ++++
- 2 files changed, 6 insertions(+)
+ sound/soc/intel/skylake/skl-pcm.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 0a7378f81acb..e29a6defefa0 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -423,6 +423,8 @@ static const struct snd_kcontrol_new rt5640_snd_controls[] = {
- 	SOC_DOUBLE_TLV("ADC Capture Volume", RT5640_ADC_DIG_VOL,
- 			RT5640_L_VOL_SFT, RT5640_R_VOL_SFT,
- 			127, 0, adc_vol_tlv),
-+	SOC_DOUBLE("Mono ADC Capture Switch", RT5640_DUMMY1,
-+		RT5640_M_MONO_ADC_L_SFT, RT5640_M_MONO_ADC_R_SFT, 1, 1),
- 	SOC_DOUBLE_TLV("Mono ADC Capture Volume", RT5640_ADC_DATA,
- 			RT5640_L_VOL_SFT, RT5640_R_VOL_SFT,
- 			127, 0, adc_vol_tlv),
-diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
-index 22c017c58d5b..b8a811732a52 100644
---- a/sound/soc/codecs/rt5640.h
-+++ b/sound/soc/codecs/rt5640.h
-@@ -1971,6 +1971,10 @@
- #define RT5640_ZCD_HP_EN			(0x1 << 15)
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 58c728662600..c966b40da180 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1031,10 +1031,24 @@ static snd_pcm_uframes_t skl_platform_pcm_pointer
+ 			(struct snd_pcm_substream *substream)
+ {
+ 	struct hdac_ext_stream *hstream = get_hdac_ext_stream(substream);
++	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
+ 	unsigned int pos;
  
- /* General Control 1 (0xfa) */
-+#define RT5640_M_MONO_ADC_L			(0x1 << 13)
-+#define RT5640_M_MONO_ADC_L_SFT			13
-+#define RT5640_M_MONO_ADC_R			(0x1 << 12)
-+#define RT5640_M_MONO_ADC_R_SFT			12
- #define RT5640_MCLK_DET				(0x1 << 11)
+-	/* use the position buffer as default */
+-	pos = snd_hdac_stream_get_pos_posbuf(hdac_stream(hstream));
++	/*
++	 * Use DPIB for Playback stream as the periodic DMA Position-in-
++	 * Buffer Writes may be scheduled at the same time or later than
++	 * the MSI and does not guarantee to reflect the Position of the
++	 * last buffer that was transferred. Whereas DPIB register in
++	 * HAD space reflects the actual data that is transferred.
++	 * Use the position buffer for capture, as DPIB write gets
++	 * completed earlier than the actual data written to the DDR.
++	 */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		pos = readl(ebus->bus.remap_addr + AZX_REG_VS_SDXDPIB_XBASE +
++				(AZX_REG_VS_SDXDPIB_XINTERVAL *
++				hdac_stream(hstream)->index));
++	else
++		pos = snd_hdac_stream_get_pos_posbuf(hdac_stream(hstream));
  
- /* Codec Private Register definition */
+ 	if (pos >= hdac_stream(hstream)->bufsize)
+ 		pos = 0;
 -- 
 2.10.1
