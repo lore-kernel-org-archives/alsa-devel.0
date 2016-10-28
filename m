@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 03/10] ASoC: Intel: Skylake: Add D0iX IPCs
-Date: Fri, 28 Oct 2016 19:06:28 +0100
-Message-ID: <20161028180628.2wylswqs7rddvcds@sirena.org.uk>
-References: <1474868137-29712-1-git-send-email-vinod.koul@intel.com>
- <1474868137-29712-4-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH v6 01/11] ASoC: topology: Make manifest
+ backward compatible from ABI v4
+Date: Fri, 28 Oct 2016 19:47:21 +0100
+Message-ID: <20161028184721.ttqte2jot5crlz2y@sirena.org.uk>
+References: <cover.1476166990.git.mengdong.lin@linux.intel.com>
+ <39acbd6c55ca9ac0855001d5a67d7d96fddd0c7b.1476166990.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4397412651911681245=="
+Content-Type: multipart/mixed; boundary="===============0516826825007277303=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A0235265D93
- for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2016 20:06:46 +0200 (CEST)
-In-Reply-To: <1474868137-29712-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 472A8265D93
+ for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2016 20:47:42 +0200 (CEST)
+In-Reply-To: <39acbd6c55ca9ac0855001d5a67d7d96fddd0c7b.1476166990.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Jayachandran B <jayachandran.b@intel.com>, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+To: mengdong.lin@linux.intel.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4397412651911681245==
+--===============0516826825007277303==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="24hikfu7l6sm2mmz"
+	protocol="application/pgp-signature"; boundary="wjcwa235dngeqyk4"
 Content-Disposition: inline
 
 
---24hikfu7l6sm2mmz
+--wjcwa235dngeqyk4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Sep 26, 2016 at 11:05:30AM +0530, Vinod Koul wrote:
+On Tue, Oct 11, 2016 at 02:36:42PM +0800, mengdong.lin@linux.intel.com wrote:
 
-> To set D0iX, driver needs to tell the DSP to go into D0iX mode by
-> sending "Set D0iX IPC". Add support for that IPC.
+> +static int manifest_new_ver(struct soc_tplg *tplg,
+> +			    struct snd_soc_tplg_manifest *src,
+> +			    struct snd_soc_tplg_manifest **manifest)
+> +{
+> +	struct snd_soc_tplg_manifest *dest;
+> +	struct snd_soc_tplg_manifest_v4 *src_v4;
+> +
+> +	*manifest = NULL;
+> +
+> +	if (src->size != sizeof(*src_v4)) {
+> +		dev_err(tplg->dev, "ASoC: invalid manifest size\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	dev_warn(tplg->dev, "ASoC: old version of manifest\n");
 
-What is "D0iX"?
+The way this function is written it's not going to scale to any future
+ABI churn, it's not set up to handle multiple versions at all.
 
---24hikfu7l6sm2mmz
+--wjcwa235dngeqyk4
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAABCAAGBQJYE5OjAAoJECTWi3JdVIfQhEMH/0FSGjervktIej5ZR6q+dmJK
-O5SSikJt/KU8VC6IwfwKbqGwCxQN0WnB4ghdZVnsQXjrqBNMOowJUiszg6vtmhhE
-bdVGn4ZVWKoKvytiF2qeNNuN4xJEBNAoOaf8OABqFw3n+PtqqGWpcVccrYlN/hym
-hh4m4gQcfNTUjXujo2aTOyEkP/9ChGLRLV3Tl//SnaNrU73/fFF6C483F8LuO4+a
-lFpoHBV0RP7c5jEAehMWLRiRJqhGodamtZoU0s7ROUzCl0ZRiPutQvqEdeQkK7qn
-O1lq63HV3nO2t1Ph7nyLnfMPR0qAw6AJk+ceYKg7NIwvLO6ArjK+IvaWJwaGJOY=
-=D9Cg
+iQEcBAABCAAGBQJYE504AAoJECTWi3JdVIfQv9AH/Az5AIC6coDSZwMR1eiicR7u
+rGQDvrqW3o89ePIIMP42eBWUmvWApGGKiNGbQBIxOHXRew6Ay9dBtG3qbtOgmfyq
+Ml4iSh3vwJ4akPYOuz7EMkL5ZYBwYKY5CdFlYTiuLwBHXAlmyhqU76sWqMGJQLP4
+xGrekeSCpkquzgSss7Hv4Z42EOEkdpiH7mTs+Gw9GIkYMDnG6VOK0tIYEM37TUaH
+ZFZYR5Z5P9Em8Z0gWraSjU3JzbaMxkoKUZRfz1X7BcpW7wpmaCXG7f+mg2xPfaYy
+E5yT751htAi6bhQfTlWHl1AdqZvwffn039rtesU3QE+8bbzq4skQBDe914ythx4=
+=Tnxh
 -----END PGP SIGNATURE-----
 
---24hikfu7l6sm2mmz--
+--wjcwa235dngeqyk4--
 
---===============4397412651911681245==
+--===============0516826825007277303==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4397412651911681245==--
+--===============0516826825007277303==--
