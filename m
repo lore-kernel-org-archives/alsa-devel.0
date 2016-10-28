@@ -1,70 +1,114 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 12/14] regmap: SoundWire: Add regmap support for SoundWire
- bus
-Date: Fri, 28 Oct 2016 19:03:55 +0100
-Message-ID: <20161028180355.o7byx4llwurfpnut@sirena.org.uk>
-References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
- <1477053673-16021-13-git-send-email-hardik.t.shah@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Use DPIB to update
+	position for Playback stream" to the asoc tree
+Date: Fri, 28 Oct 2016 18:02:49 +0100
+Message-ID: <E1c0AYL-0003WW-Cc@finisterre>
+References: <1475724081-15129-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fkcotvwlbyebc3qq"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1477053673-16021-13-git-send-email-hardik.t.shah@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Hardik Shah <hardik.t.shah@intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D058266731
+ for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2016 19:03:18 +0200 (CEST)
+In-Reply-To: <1475724081-15129-1-git-send-email-jeeja.kp@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dharageswari R <dharageswari.r@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---fkcotvwlbyebc3qq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: Intel: Skylake: Use DPIB to update position for Playback stream
 
-On Fri, Oct 21, 2016 at 06:11:10PM +0530, Hardik Shah wrote:
+has been applied to the asoc tree at
 
-> +static inline void get_t_size(size_t *t_val_size, size_t *t_size,
-> +						int *reg_addr,
-> +						int *offset,
-> +						size_t *val_size)
-> +{
-> +
-> +		*t_val_size += *t_size;
-> +		*offset += *t_size;
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-So, I started by taking a look at this patch to get a sense of what the
-API would look like and I see that we're not following CodingStyle with
-everything indented twice :(
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +static int regmap_sdw_gather_write(void *context,
-> +			   const void *reg, size_t reg_size,
-> +			   const void *val, size_t val_size)
-> +{
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> +	if (!sdw)
-> +		return 0;
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Silently ignoring errors :(
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> +	if (val_size > SDW_MAX_REG_ADDR)
-> +		t_size = SDW_MAX_REG_ADDR - reg_command;
-> +	else
-> +		t_size = val_size;
+Thanks,
+Mark
 
-This needs at least some kind of comment?
+>From ca590c1c45d1d06f842a82f6a591b94af95952b0 Mon Sep 17 00:00:00 2001
+From: Dharageswari R <dharageswari.r@intel.com>
+Date: Thu, 6 Oct 2016 08:51:21 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Use DPIB to update position for
+ Playback stream
 
---fkcotvwlbyebc3qq
-Content-Type: application/pgp-signature; name="signature.asc"
+DPIB is read currently from a buffer position in memory (indicated by
+the registers DPIB[U|L]BASE).Driver reads the position buffer on BDL
+completion interrupts to report the DMA position. But the BDL completion
+interrupt only indicates the last DMA transfer of the buffer is
+completed at the Intel HD Audio subsystem boundary. The periodic DMA
+Position-in-Buffer writes may be scheduled at the same time or later
+than the MSI and does not guarantee to reflect the position of the last
+buffer that was transferred.
 
------BEGIN PGP SIGNATURE-----
+Whereas DPIB register in HDA space(vendor specific register indicated by
+SDxDPIB) reflects the actual data that is transferred. Hence update the
+position based on DPIB for playback.
 
-iQEcBAABCAAGBQJYE5MKAAoJECTWi3JdVIfQnMAH/ROdP3VRxUt/q9EMlMTMYYOk
-O/z1STg3POmSst9Lp1GEQwZO5yQ/iDXbxmaQ2PPwqO+Uf6Dhbaaa/Fr6nxylbhku
-SqmWp6fmbbe29rJ41t6E2v4wNTORTLcRVv/a4Ko++MFfPrjxbSbyvD7qgwduEI67
-Xn09n2hD/SSLsS/ezLTIctCG0lE3gNs6AaB1uNZRoX9/W/efbmawIpW6QC1jz9Xz
-ZG9lIU4RbRqQObsIfwPU9rqJu+2uqs2RrmA82gtCsO0uVAawrqeu7MA1gQpi46WY
-E4cFvL9m3eEhmOLHNf6kA19DLkVrbmha/2lHjXLyGT6ZIEA4yloptfFdK7FP7Hw=
-=L5yI
------END PGP SIGNATURE-----
+Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/skylake/skl-pcm.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
---fkcotvwlbyebc3qq--
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 58c728662600..c966b40da180 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1031,10 +1031,24 @@ static snd_pcm_uframes_t skl_platform_pcm_pointer
+ 			(struct snd_pcm_substream *substream)
+ {
+ 	struct hdac_ext_stream *hstream = get_hdac_ext_stream(substream);
++	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
+ 	unsigned int pos;
+ 
+-	/* use the position buffer as default */
+-	pos = snd_hdac_stream_get_pos_posbuf(hdac_stream(hstream));
++	/*
++	 * Use DPIB for Playback stream as the periodic DMA Position-in-
++	 * Buffer Writes may be scheduled at the same time or later than
++	 * the MSI and does not guarantee to reflect the Position of the
++	 * last buffer that was transferred. Whereas DPIB register in
++	 * HAD space reflects the actual data that is transferred.
++	 * Use the position buffer for capture, as DPIB write gets
++	 * completed earlier than the actual data written to the DDR.
++	 */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		pos = readl(ebus->bus.remap_addr + AZX_REG_VS_SDXDPIB_XBASE +
++				(AZX_REG_VS_SDXDPIB_XINTERVAL *
++				hdac_stream(hstream)->index));
++	else
++		pos = snd_hdac_stream_get_pos_posbuf(hdac_stream(hstream));
+ 
+ 	if (pos >= hdac_stream(hstream)->bufsize)
+ 		pos = 0;
+-- 
+2.10.1
