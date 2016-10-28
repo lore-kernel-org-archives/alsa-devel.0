@@ -1,62 +1,38 @@
-From: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Subject: [PATCH] ASoC: Intel: atom: Add debug information
-	related to FW version
-Date: Fri, 28 Oct 2016 16:32:50 +0200
-Message-ID: <20161028143250.10711-1-sebastien.guiriec@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id F1602266671
- for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2016 16:36:42 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com
-Cc: liam.r.girdwood@linux.intel.com, broonie@kernel.org, Sebastien Guiriec <sebastien.guiriec@intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/3] ASoC: lpass-platform: Fixes and Cleanup.
+Date: Fri, 28 Oct 2016 16:32:17 +0100
+Message-ID: <1477668740-30389-1-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Kenneth Westfield <kwestfie@codeaurora.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch is adding debug information related to SST FW version.
+Hi Mark,
 
-Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
----
- sound/soc/intel/atom/sst/sst_ipc.c | 5 +++++
- 1 file changed, 5 insertions(+)
+This patchset fixes broken lpass-platform driver in v4.9-rc1, and also
+fixes problem while using lpass as kernel module.
+There is also a cleanup patch in this series just to tidy up the code
+in the same area where there is regression.
 
-diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
-index 8afa6fe..8cbbdcf 100644
---- a/sound/soc/intel/atom/sst/sst_ipc.c
-+++ b/sound/soc/intel/atom/sst/sst_ipc.c
-@@ -236,6 +236,11 @@ static void process_fw_init(struct intel_sst_drv *sst_drv_ctx,
- 		retval = init->result;
- 		goto ret;
- 	}
-+	dev_info(sst_drv_ctx->dev, "FW Version %02x.%02x.%02x.%02x\n",
-+			init->fw_version.type, init->fw_version.major,
-+			init->fw_version.minor, init->fw_version.build);
-+	dev_dbg(sst_drv_ctx->dev, "Build date %s Time %s\n",
-+			init->build_info.date, init->build_info.time);
- 
- ret:
- 	sst_wake_up_block(sst_drv_ctx, retval, FW_DWNL_ID, 0 , NULL, 0);
--- 
-2.9.3
+Tested this patchset with msm8916 codec patchset in linux-next on
+v4.9-rc1 on DB410c.
 
----------------------------------------------------------------------
-Intel Corporation SAS (French simplified joint stock company)
-Registered headquarters: "Les Montalets"- 2, rue de Paris, 
-92196 Meudon Cedex, France
-Registration Number:  302 456 199 R.C.S. NANTERRE
-Capital: 4,572,000 Euros
+Without this patchset lpass-platform driver can not play audio or
+even load/unload as module.
 
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+Thanks,
+srini
+
+Srinivas Kandagatla (3):
+  ASoC: lpass-platform: use dma_ch instead of rdma_ch/wrdma_ch
+  ASoC: lpass-platform: Fix broken pcm data usage
+  ASoC: lpass-cpu: add module licence and description
+
+ sound/soc/qcom/lpass-cpu.c      |   3 +
+ sound/soc/qcom/lpass-platform.c | 182 ++++++++++++++++------------------------
+ sound/soc/qcom/lpass.h          |   1 -
+ 3 files changed, 76 insertions(+), 110 deletions(-)
+
+--
+2.10.1
