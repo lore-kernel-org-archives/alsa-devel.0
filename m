@@ -1,44 +1,42 @@
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH -next] ASoC: wm8580: Fix non static symbol warnings
-Date: Sat, 29 Oct 2016 16:28:53 +0000
-Message-ID: <1477758533-5893-1-git-send-email-weiyj.lk@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: MOTU Midi Express XT
+Date: Sat, 29 Oct 2016 18:33:15 +0200
+Message-ID: <c04f2a54-3b2e-9a07-dd83-97a81c0123f8@ladisch.de>
+References: <2e5e4e51f4f2c63ecab719a1937d695f@owncloud.dehnhardt.org>
+ <9d5810a657a4fb63805acea778570a49@owncloud.dehnhardt.org>
+ <1bdf9e49-1bbb-4f45-5122-bd0f6f4315bf@ladisch.de>
+ <bf3281416a57f2788d4772e9f7926b3a@owncloud.dehnhardt.org>
+ <9393708728a54b11ca4bd1edc65d90f8@owncloud.dehnhardt.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matt Flax <flatmax@flatmax.org>
-Cc: Wei Yongjun <weiyongjun1@huawei.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 8A5182667AC
+ for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2016 18:33:45 +0200 (CEST)
+Received: from [192.168.42.78] (tmo-103-66.customers.d1-online.com
+ [80.187.103.66])
+ by dehamd003.servertools24.de (Postfix) with ESMTPSA id 5C50AF520013
+ for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2016 18:33:44 +0200 (CEST)
+In-Reply-To: <9393708728a54b11ca4bd1edc65d90f8@owncloud.dehnhardt.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+holger@dehnhardt.org wrote:
+> As the driver is loaded and gives no error while loading, is there
+> a way to investigate, why no alsa device is shown?
 
-Fixes the following sparse warnings:
+Is there any message in the system log?
 
-sound/soc/codecs/wm8580.c:988:33: warning:
- symbol 'wm8580_data' was not declared. Should it be static?
-sound/soc/codecs/wm8580.c:992:33: warning:
- symbol 'wm8581_data' was not declared. Should it be static?
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- sound/soc/codecs/wm8580.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
-index aecd3c9..da93b70 100644
---- a/sound/soc/codecs/wm8580.c
-+++ b/sound/soc/codecs/wm8580.c
-@@ -985,11 +985,11 @@ static const struct regmap_config wm8580_regmap = {
- 	.volatile_reg = wm8580_volatile,
- };
- 
--const struct wm8580_driver_data wm8580_data = {
-+static const struct wm8580_driver_data wm8580_data = {
- 	.num_dacs = 3,
- };
- 
--const struct wm8580_driver_data wm8581_data = {
-+static const struct wm8580_driver_data wm8581_data = {
- 	.num_dacs = 4,
- };
+Regards,
+Clemens
