@@ -1,77 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8580: Fix non static symbol warnings" to the asoc tree
-Date: Sat, 29 Oct 2016 12:12:51 -0600
-Message-ID: <E1c0Y7f-0007fI-Vh@finisterre>
-References: <1477758443-5682-1-git-send-email-weiyj.lk@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1477758443-5682-1-git-send-email-weiyj.lk@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matt Flax <flatmax@flatmax.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Re: [PATCH v6 04/11] ASoC: topology: ABI - Add flags
+ and private data to PCM
+Date: Sat, 29 Oct 2016 12:43:01 -0600
+Message-ID: <20161029184301.i6nau4cmjy2vmmlr@sirena.org.uk>
+References: <cover.1476166990.git.mengdong.lin@linux.intel.com>
+ <ca7df25320660c431215fab29e74727029048702.1476166990.git.mengdong.lin@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============7402500142608437493=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5766266702
+ for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2016 20:43:17 +0200 (CEST)
+In-Reply-To: <ca7df25320660c431215fab29e74727029048702.1476166990.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: mengdong.lin@linux.intel.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: wm8580: Fix non static symbol warnings
+--===============7402500142608437493==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ayxxdmjlvno7aggt"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--ayxxdmjlvno7aggt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Oct 11, 2016 at 02:37:26PM +0800, mengdong.lin@linux.intel.com wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +/* DAI link flags */
+> +#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND          (1 << 3)
+> +#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME   (1 << 4)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+This still feels *really* ASoC specific - both suspend and pmdown_time
+are very much ASoC internal implementations of generic ideas about how
+and when to manage things.  They don't talk about what the intended
+effect is which makes things a bit more obscure if we come back and try
+to change the implementation later.  Why are you using these flags, and
+can we add *that* information to the topology file instead?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--ayxxdmjlvno7aggt
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From 2f3d1b659344ad28bd559dcb2176e9ae84a2b044 Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Sat, 29 Oct 2016 16:27:23 +0000
-Subject: [PATCH] ASoC: wm8580: Fix non static symbol warnings
+iQEcBAABCAAGBQJYFO20AAoJECTWi3JdVIfQltYH/Ajs/PDkVrjtrvsi4t2e+Xrk
+FnjWou3XTVPj5Hh23lFXHakPdKF3udgWC5J2yxvRSV0U0+U0r+BT4LPVlSwKicDi
+ySHNZrC7zK4djQxcrhqGBGXnboyGsM8O2VaQ7UtAfV/tZPusF5y3/AoOTv6hhCkR
+2zVQg3ev1yAyhUPrABgAsSJZxjXOGWwvsBr/KN3bGrV1CHnTVRflJW3PKURg4ndb
+fD0BuAoWX0n7vOO3B1SjXOPFEM5LIHIes1TlRO5W+FbDieZexSgoQGNi1fSR6tbL
+vZu3zKlBg5A4KD4qYkn7/UzijyRF0otmVB18+z3dJHidZkTWfYMUEwVgDXPT6Pg=
+=gTlC
+-----END PGP SIGNATURE-----
 
-Fixes the following sparse warnings:
+--ayxxdmjlvno7aggt--
 
-sound/soc/codecs/wm8580.c:988:33: warning:
- symbol 'wm8580_data' was not declared. Should it be static?
-sound/soc/codecs/wm8580.c:992:33: warning:
- symbol 'wm8581_data' was not declared. Should it be static?
+--===============7402500142608437493==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm8580.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
-index aecd3c99e604..da93b703ed49 100644
---- a/sound/soc/codecs/wm8580.c
-+++ b/sound/soc/codecs/wm8580.c
-@@ -985,11 +985,11 @@ static const struct regmap_config wm8580_regmap = {
- 	.volatile_reg = wm8580_volatile,
- };
- 
--const struct wm8580_driver_data wm8580_data = {
-+static const struct wm8580_driver_data wm8580_data = {
- 	.num_dacs = 3,
- };
- 
--const struct wm8580_driver_data wm8581_data = {
-+static const struct wm8580_driver_data wm8581_data = {
- 	.num_dacs = 4,
- };
- 
--- 
-2.10.1
+--===============7402500142608437493==--
