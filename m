@@ -1,7 +1,7 @@
 From: Wei Yongjun <weiyj.lk@gmail.com>
 Subject: [PATCH -next] ASoC: wm8580: Fix non static symbol warnings
-Date: Sat, 29 Oct 2016 16:27:23 +0000
-Message-ID: <1477758443-5682-1-git-send-email-weiyj.lk@gmail.com>
+Date: Sat, 29 Oct 2016 16:28:53 +0000
+Message-ID: <1477758533-5893-1-git-send-email-weiyj.lk@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
