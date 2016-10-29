@@ -1,55 +1,106 @@
-From: holger@dehnhardt.org
-Subject: Re: MOTU Midi Express XT
-Date: Sat, 29 Oct 2016 19:25:52 +0000
-Message-ID: <26f710a4f67283761948a697c1d6e698@owncloud.dehnhardt.org>
-References: <c04f2a54-3b2e-9a07-dd83-97a81c0123f8@ladisch.de>
- <2e5e4e51f4f2c63ecab719a1937d695f@owncloud.dehnhardt.org>
- <9d5810a657a4fb63805acea778570a49@owncloud.dehnhardt.org>
- <1bdf9e49-1bbb-4f45-5122-bd0f6f4315bf@ladisch.de>
- <bf3281416a57f2788d4772e9f7926b3a@owncloud.dehnhardt.org>
- <9393708728a54b11ca4bd1edc65d90f8@owncloud.dehnhardt.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from punkt-k.de (punkt-k.de [84.200.50.24])
- by alsa0.perex.cz (Postfix) with ESMTP id BDD92266702
- for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2016 21:26:15 +0200 (CEST)
-In-Reply-To: <c04f2a54-3b2e-9a07-dd83-97a81c0123f8@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH 00/15] use permission-specific DEVICE_ATTR variants
+Date: Sat, 29 Oct 2016 21:36:54 +0200
+Message-ID: <1477769829-22230-1-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-mips@linux-mips.org, linux-pm@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org, linux-pci@vger.kernel.org, linux-atm-general@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-MjkuIE9rdG9iZXIgMjAxNiAxOToyOCBVaHIsICJDbGVtZW5zIExhZGlzY2giIDxjbGVtZW5zQGxh
-ZGlzY2guZGU+IHNjaHJpZWI6Cj4gaG9sZ2VyQGRlaG5oYXJkdC5vcmcgd3JvdGU6Cj4gCj4+IEFz
-IHRoZSBkcml2ZXIgaXMgbG9hZGVkIGFuZCBnaXZlcyBubyBlcnJvciB3aGlsZSBsb2FkaW5nLCBp
-cyB0aGVyZQo+PiBhIHdheSB0byBpbnZlc3RpZ2F0ZSwgd2h5IG5vIGFsc2EgZGV2aWNlIGlzIHNo
-b3duPwo+IAo+IElzIHRoZXJlIGFueSBtZXNzYWdlIGluIHRoZSBzeXN0ZW0gbG9nPwo+IAoKWWVz
-OgoKTW90dSBNaWRpVGltZVBpZWNlIG9uIHBhcmFsbGVsIHBvcnQgaXJxOiAxMCBpb3BvcnQ6IDB4
-YjAxMAoKVGhhdCdzIGFsbCAtIG5vdCB2ZXJ5IHZlcmJvc2UsIG9yPwoKYXBsYXkgLWwgc2hvd3MK
-CioqKiogTGlzdGUgZGVyIEhhcmR3YXJlLUdlcsOkdGUgKFBMQVlCQUNLKSAqKioqCkthcnRlIDA6
-IFNCIFtIREEgQVRJIFNCXSwgR2Vyw6R0IDA6IEFMQzg5MiBBbmFsb2cgW0FMQzg5MiBBbmFsb2dd
-CiAgU3ViLUdlcsOkdGU6IDEvMQogIFN1Yi1HZXLDpHQgIzA6IHN1YmRldmljZSAjMApLYXJ0ZSAw
-OiBTQiBbSERBIEFUSSBTQl0sIEdlcsOkdCAxOiBBTEM4OTIgRGlnaXRhbCBbQUxDODkyIERpZ2l0
-YWxdCiAgU3ViLUdlcsOkdGU6IDEvMQogIFN1Yi1HZXLDpHQgIzA6IHN1YmRldmljZSAjMApLYXJ0
-ZSAxOiBOVmlkaWEgW0hEQSBOVmlkaWFdLCBHZXLDpHQgMzogSERNSSAwIFtIRE1JIDBdCiAgU3Vi
-LUdlcsOkdGU6IDEvMQogIFN1Yi1HZXLDpHQgIzA6IHN1YmRldmljZSAjMApLYXJ0ZSAxOiBOVmlk
-aWEgW0hEQSBOVmlkaWFdLCBHZXLDpHQgNzogSERNSSAwIFtIRE1JIDBdCiAgU3ViLUdlcsOkdGU6
-IDEvMQogIFN1Yi1HZXLDpHQgIzA6IHN1YmRldmljZSAjMApLYXJ0ZSAxOiBOVmlkaWEgW0hEQSBO
-VmlkaWFdLCBHZXLDpHQgODogSERNSSAwIFtIRE1JIDBdCiAgU3ViLUdlcsOkdGU6IDEvMQogIFN1
-Yi1HZXLDpHQgIzA6IHN1YmRldmljZSAjMApLYXJ0ZSAxOiBOVmlkaWEgW0hEQSBOVmlkaWFdLCBH
-ZXLDpHQgOTogSERNSSAwIFtIRE1JIDBdCiAgU3ViLUdlcsOkdGU6IDEvMQogIFN1Yi1HZXLDpHQg
-IzA6IHN1YmRldmljZSAjMApLYXJ0ZSAyOiBNNDQgW00gQXVkaW8gRGVsdGEgNDRdLCBHZXLDpHQg
-MDogSUNFMTcxMiBtdWx0aSBbSUNFMTcxMiBtdWx0aV0KICBTdWItR2Vyw6R0ZTogMS8xCiAgU3Vi
-LUdlcsOkdCAjMDogc3ViZGV2aWNlICMwCgpIb2xnZXIKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+Use DEVICE_ATTR_RO etc. for read only attributes etc.  This simplifies the
+source code, improves readbility, and reduces the chance of
+inconsistencies.
+
+The complete semantic patch is as follows:
+(http://coccinelle.lip6.fr/)
+
+// <smpl>
+@ro@
+declarer name DEVICE_ATTR;
+identifier x,x_show;
+@@
+
+DEVICE_ATTR(x, \(0444\|S_IRUGO\), x_show, NULL);
+
+@wo@
+declarer name DEVICE_ATTR;
+identifier x,x_store;
+@@
+
+DEVICE_ATTR(x, \(0200\|S_IWUSR\), NULL, x_store);
+
+@rw@
+declarer name DEVICE_ATTR;
+identifier x,x_show,x_store;
+@@
+
+DEVICE_ATTR(x, \(0644\|S_IRUGO|S_IWUSR\), x_show, x_store);
+
+@script:ocaml@
+x << ro.x;
+x_show << ro.x_show;
+@@
+
+if not (x^"_show" = x_show) then Coccilib.include_match false
+
+@script:ocaml@
+x << wo.x;
+x_store << wo.x_store;
+@@
+
+if not (x^"_store" = x_store) then Coccilib.include_match false
+
+@script:ocaml@
+x << rw.x;
+x_show << rw.x_show;
+x_store << rw.x_store;
+@@
+
+if not (x^"_show" = x_show && x^"_store" = x_store)
+then Coccilib.include_match false
+
+@@
+declarer name DEVICE_ATTR_RO;
+identifier ro.x,ro.x_show;
+@@
+
+- DEVICE_ATTR(x, \(0444\|S_IRUGO\), x_show, NULL);
++ DEVICE_ATTR_RO(x);
+
+@@
+declarer name DEVICE_ATTR_WO;
+identifier wo.x,wo.x_store;
+@@
+
+- DEVICE_ATTR(x, \(0200\|S_IWUSR\), NULL, x_store);
++ DEVICE_ATTR_WO(x);
+
+@@
+declarer name DEVICE_ATTR_RW;
+identifier rw.x,rw.x_show,rw.x_store;
+@@
+
+- DEVICE_ATTR(x, \(0644\|S_IRUGO|S_IWUSR\), x_show, x_store);
++ DEVICE_ATTR_RW(x);
+// </smpl>
+
+---
+
+ arch/mips/txx9/generic/7segled.c                  |    4 ++--
+ arch/powerpc/kernel/iommu.c                       |    3 +--
+ arch/tile/kernel/sysfs.c                          |   14 +++++++-------
+ drivers/atm/solos-pci.c                           |    2 +-
+ drivers/pci/pcie/aspm.c                           |    4 ++--
+ drivers/power/supply/wm8350_power.c               |    2 +-
+ drivers/ptp/ptp_sysfs.c                           |    2 +-
+ drivers/thermal/int340x_thermal/int3400_thermal.c |    2 +-
+ drivers/thermal/thermal_hwmon.c                   |    2 +-
+ drivers/tty/nozomi.c                              |    4 ++--
+ drivers/usb/wusbcore/dev-sysfs.c                  |    6 +++---
+ drivers/usb/wusbcore/wusbhc.c                     |   13 +++++--------
+ drivers/video/fbdev/wm8505fb.c                    |    2 +-
+ sound/soc/omap/mcbsp.c                            |    4 ++--
+ sound/soc/soc-dapm.c                              |    2 +-
+ 15 files changed, 31 insertions(+), 35 deletions(-)
