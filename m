@@ -1,16 +1,24 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Audio miniconference at LPC/KS - draft schedule
-Date: Sat, 29 Oct 2016 23:05:30 +0900
-Message-ID: <25b28ec4-29ce-e690-8c89-f591965574cc@sakamocchi.jp>
-References: <20161027221754.GW25322@sirena.org.uk>
+From: holger@dehnhardt.org
+Subject: Re: MOTU Midi Express XT
+Date: Sat, 29 Oct 2016 15:52:15 +0000
+Message-ID: <9393708728a54b11ca4bd1edc65d90f8@owncloud.dehnhardt.org>
+References: <2e5e4e51f4f2c63ecab719a1937d695f@owncloud.dehnhardt.org>
+ <9d5810a657a4fb63805acea778570a49@owncloud.dehnhardt.org>
+ <1bdf9e49-1bbb-4f45-5122-bd0f6f4315bf@ladisch.de>
+ <bf3281416a57f2788d4772e9f7926b3a@owncloud.dehnhardt.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id F39E3266649
- for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2016 16:05:37 +0200 (CEST)
-In-Reply-To: <20161027221754.GW25322@sirena.org.uk>
+Received: from punkt-k.de (punkt-k.de [84.200.50.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48CAA266702
+ for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2016 17:52:38 +0200 (CEST)
+Received: from [84.200.50.24] (port=48453 helo=owncloud.dehnhardt.org)
+ by punkt-k.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+ (Exim 4.84_2) (envelope-from <holger@dehnhardt.org>)
+ id 1c0Vvb-0004ne-C9
+ for alsa-devel@alsa-project.org; Sat, 29 Oct 2016 17:52:15 +0200
+In-Reply-To: <2e5e4e51f4f2c63ecab719a1937d695f@owncloud.dehnhardt.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,30 +28,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Luis R. Rodriguez" <mcgrof@kernel.org>, vinod.koul@intel.com, Eric Laurent <elaurent@google.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxNuW5tDEw5pyIMjjml6UgMDc6MTcsIE1hcmsgQnJvd24gd3JvdGU6Cj4gQ3VycmVudGx5
-IHRoZSBzZXQgb2YgdG9waWNzIHdlIGhhdmUgb24gdGhlIHdpa2kgYW5kIGZyb20gZS1tYWlsIGZv
-cgo+IGRpc2N1c3Npb24gaXM6Cj4gCj4gIC0gbW1hcC9ubyBJUlEgbW9kZQo+ICAtIFRpbWUgc3Rh
-bXAgcmVwb3J0aW5nIChib3RoIGN1cnJlbnQgQVBJcyBhbmQgYWRkaXRpb24gb2YgYWJpbGl0eSB0
-bwo+ICAgIHB1c2ggZG93biBQQ00gc3luYykKPiAgLSBVU0IgYXVkaW8gcG93ZXIgYW5kIGxhdGVu
-Y3kgcGVyZm9ybWFuY2UKPiAgLSBTdGFuZGFyZGl6aW5nIEhETUkgLyBEUCBpbnRlcmZhY2UKPiAg
-LSBTb3VuZFdpcmUgc3VwcG9ydAo+ICAtIFRyYWNlcG9pbnRzIGZvciBQQ00gcGFyYW1ldGVyIHN1
-cHBvcnQKPiAgLSBMb3cgbGF0ZW5jeSBhdWRpbwo+ICAtIFByb3BhZ2F0aW5nIGRpZ2l0YWwgY29u
-ZmlndXJhdGlvbiB0aHJvdWdoIHRoZSBEQVBNIGdyYXBoCj4gIC0gVXNlcnNwYWNlIGFuZCBjb25m
-aWd1cmF0aW9uIGludGVncmF0aW9uIChob3cgd2lsbCB0b3BvbG9neSBldGMgZ2V0Cj4gICAgaW50
-ZWdyYXRlZCBpbiBPU2VzKQo+ICAtIE1vdmUgb2YgQVNvQyBjbG9ja2luZyBpbnRvIHRoZSBjbG9j
-ayBBUEkKPiAgLSBIREEvQVNvQyBpbnRlZ3JhdGlvbgo+ICAtIFVDTSBzY2FsaW5nLCBkb2VzIGl0
-IHNjYWxlIHdlbGzigKY/Cj4gIC0gSG93IHRvIGltcHJvdmUgdXBzdHJlYW1pbmcgdmVuZG9yIGRy
-aXZlcnM/Cj4gIC0gU3RhYmxlIC8gTFRTIGtlcm5lbCBtYWludGVuYW5jZQo+ICAtIFBhcmEgVmly
-dHVhbGl6ZWQgYXVkaW8gZHJpdmVyIHN1cHBvcnQKPiAgLSBVc2Vyc3BhY2UgZHJpdmVycyAoZm9y
-IElFRUUgMTM5NCBhbmQgb3RoZXIgdGhpbmdzKQoKSSB1cGRhdGVkIHRoZSB3aWtpIHdpdGggYSBs
-aW5rIHRvIG15IHByZXNlbnRhdGlvbi4KaHR0cDovL3dpa2kubGludXhwbHVtYmVyc2NvbmYub3Jn
-LzIwMTY6YXVkaW8KCj4gIC0gRHJvcHBpbmcgdGhlIERJQ0UgZHJpdmVyCj4gIC0gTWVkaWEgQ29u
-dHJvbGxlciBBUEkgaW50ZWdyYXRpb24KPiAgIC0gSXMgdGhlcmUgYW55dGhpbmcgbmV3IGhlcmUg
-b3Igc2hvdWxkIHdlIGp1c3QgZHJvcCB0aGlzIGVudGlyZWx5PwoKClJlZ2FyZHMKClRha2FzaGkg
-U2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+28. Oktober 2016 09:51 Uhr, holger@dehnhardt.org schrieb:
+> 27. Oktober 2016 18:22 Uhr, holger@dehnhardt.org schrieb:
+> 
+>> 27. Oktober 2016 08:42 Uhr, "Clemens Ladisch" <clemens@ladisch.de> schrieb:
+>> 
+>>> holger@dehnhardt.org wrote:
+>>> 
+>>>> I own a MOTU Midi Express XT 8x8 interface which is connected through the parallel port. Recently
+>>>> I upgraded my system and the new motherboard does not have an ISA parallel port anymore...
+>>>> So I bought a PCI parallel port extension card
+>>> 
+>>> Does it happen to have a name? Is it compatible with the ISA parallel port?
+>>> 
+>>> Regards,
+>>> Clemens
+>> 
+>> Ok, this is the lspci output for the card:
+>> 
+>> 06:00.0 Parallel controller: MosChip Semiconductor Technology Ltd. Device 9900 (prog-if 03
+>> [IEEE1284])
+>> Subsystem: Device a000:2000
+>> Flags: bus master, fast devsel, latency 0, IRQ 10
+>> I/O ports at b010 [size=8]
+>> I/O ports at b000 [size=8]
+>> Memory at fe201000 (32-bit, non-prefetchable) [size=4K]
+>> Memory at fe200000 (32-bit, non-prefetchable) [size=4K]
+>> Capabilities: [50] MSI: Enable- Count=1/1 Maskable- 64bit+
+>> Capabilities: [78] Power Management version 3
+>> Capabilities: [80] Express Legacy Endpoint, MSI 00
+>> Capabilities: [100] Virtual Channel
+>> Capabilities: [800] Advanced Error Reporting
+>> 
+>> The card is the following:
+>> https://www.conrad.de/de/1-port-serielle-steckkarte-pcie-972542.html
+>> 
+>> Can such a card be compatible with an ISA-Port?
+>> 
+>> Holger
+> 
+> I made a new observation. When loading the driver the PC-port LED blinks. At line 339 function
+> snd_mtpav_portscan some bytes are send to the device. This seems to work - which means the
+> communication between the PC and the device seems to work.
+> 
+> But why is the driver loaded but not registered?
+> 
+> Holger
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+As the driver is loaded and gives no error while loading, is there a way to investigate, why no alsa device is shown? 
+Can I provide some more useful information? 
+
+Holger
