@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 04/11] ASoC: topology: ABI - Add flags
- and private data to PCM
-Date: Sat, 29 Oct 2016 12:43:01 -0600
-Message-ID: <20161029184301.i6nau4cmjy2vmmlr@sirena.org.uk>
-References: <cover.1476166990.git.mengdong.lin@linux.intel.com>
- <ca7df25320660c431215fab29e74727029048702.1476166990.git.mengdong.lin@linux.intel.com>
+From: holger@dehnhardt.org
+Subject: Re: MOTU Midi Express XT
+Date: Sat, 29 Oct 2016 19:25:52 +0000
+Message-ID: <26f710a4f67283761948a697c1d6e698@owncloud.dehnhardt.org>
+References: <c04f2a54-3b2e-9a07-dd83-97a81c0123f8@ladisch.de>
+ <2e5e4e51f4f2c63ecab719a1937d695f@owncloud.dehnhardt.org>
+ <9d5810a657a4fb63805acea778570a49@owncloud.dehnhardt.org>
+ <1bdf9e49-1bbb-4f45-5122-bd0f6f4315bf@ladisch.de>
+ <bf3281416a57f2788d4772e9f7926b3a@owncloud.dehnhardt.org>
+ <9393708728a54b11ca4bd1edc65d90f8@owncloud.dehnhardt.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7402500142608437493=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B5766266702
- for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2016 20:43:17 +0200 (CEST)
-In-Reply-To: <ca7df25320660c431215fab29e74727029048702.1476166990.git.mengdong.lin@linux.intel.com>
+Received: from punkt-k.de (punkt-k.de [84.200.50.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDD92266702
+ for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2016 21:26:15 +0200 (CEST)
+In-Reply-To: <c04f2a54-3b2e-9a07-dd83-97a81c0123f8@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============7402500142608437493==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ayxxdmjlvno7aggt"
-Content-Disposition: inline
-
-
---ayxxdmjlvno7aggt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Oct 11, 2016 at 02:37:26PM +0800, mengdong.lin@linux.intel.com wrote:
-
-> +/* DAI link flags */
-> +#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND          (1 << 3)
-> +#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME   (1 << 4)
-
-This still feels *really* ASoC specific - both suspend and pmdown_time
-are very much ASoC internal implementations of generic ideas about how
-and when to manage things.  They don't talk about what the intended
-effect is which makes things a bit more obscure if we come back and try
-to change the implementation later.  Why are you using these flags, and
-can we add *that* information to the topology file instead?
-
---ayxxdmjlvno7aggt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAABCAAGBQJYFO20AAoJECTWi3JdVIfQltYH/Ajs/PDkVrjtrvsi4t2e+Xrk
-FnjWou3XTVPj5Hh23lFXHakPdKF3udgWC5J2yxvRSV0U0+U0r+BT4LPVlSwKicDi
-ySHNZrC7zK4djQxcrhqGBGXnboyGsM8O2VaQ7UtAfV/tZPusF5y3/AoOTv6hhCkR
-2zVQg3ev1yAyhUPrABgAsSJZxjXOGWwvsBr/KN3bGrV1CHnTVRflJW3PKURg4ndb
-fD0BuAoWX0n7vOO3B1SjXOPFEM5LIHIes1TlRO5W+FbDieZexSgoQGNi1fSR6tbL
-vZu3zKlBg5A4KD4qYkn7/UzijyRF0otmVB18+z3dJHidZkTWfYMUEwVgDXPT6Pg=
-=gTlC
------END PGP SIGNATURE-----
-
---ayxxdmjlvno7aggt--
-
---===============7402500142608437493==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7402500142608437493==--
+MjkuIE9rdG9iZXIgMjAxNiAxOToyOCBVaHIsICJDbGVtZW5zIExhZGlzY2giIDxjbGVtZW5zQGxh
+ZGlzY2guZGU+IHNjaHJpZWI6Cj4gaG9sZ2VyQGRlaG5oYXJkdC5vcmcgd3JvdGU6Cj4gCj4+IEFz
+IHRoZSBkcml2ZXIgaXMgbG9hZGVkIGFuZCBnaXZlcyBubyBlcnJvciB3aGlsZSBsb2FkaW5nLCBp
+cyB0aGVyZQo+PiBhIHdheSB0byBpbnZlc3RpZ2F0ZSwgd2h5IG5vIGFsc2EgZGV2aWNlIGlzIHNo
+b3duPwo+IAo+IElzIHRoZXJlIGFueSBtZXNzYWdlIGluIHRoZSBzeXN0ZW0gbG9nPwo+IAoKWWVz
+OgoKTW90dSBNaWRpVGltZVBpZWNlIG9uIHBhcmFsbGVsIHBvcnQgaXJxOiAxMCBpb3BvcnQ6IDB4
+YjAxMAoKVGhhdCdzIGFsbCAtIG5vdCB2ZXJ5IHZlcmJvc2UsIG9yPwoKYXBsYXkgLWwgc2hvd3MK
+CioqKiogTGlzdGUgZGVyIEhhcmR3YXJlLUdlcsOkdGUgKFBMQVlCQUNLKSAqKioqCkthcnRlIDA6
+IFNCIFtIREEgQVRJIFNCXSwgR2Vyw6R0IDA6IEFMQzg5MiBBbmFsb2cgW0FMQzg5MiBBbmFsb2dd
+CiAgU3ViLUdlcsOkdGU6IDEvMQogIFN1Yi1HZXLDpHQgIzA6IHN1YmRldmljZSAjMApLYXJ0ZSAw
+OiBTQiBbSERBIEFUSSBTQl0sIEdlcsOkdCAxOiBBTEM4OTIgRGlnaXRhbCBbQUxDODkyIERpZ2l0
+YWxdCiAgU3ViLUdlcsOkdGU6IDEvMQogIFN1Yi1HZXLDpHQgIzA6IHN1YmRldmljZSAjMApLYXJ0
+ZSAxOiBOVmlkaWEgW0hEQSBOVmlkaWFdLCBHZXLDpHQgMzogSERNSSAwIFtIRE1JIDBdCiAgU3Vi
+LUdlcsOkdGU6IDEvMQogIFN1Yi1HZXLDpHQgIzA6IHN1YmRldmljZSAjMApLYXJ0ZSAxOiBOVmlk
+aWEgW0hEQSBOVmlkaWFdLCBHZXLDpHQgNzogSERNSSAwIFtIRE1JIDBdCiAgU3ViLUdlcsOkdGU6
+IDEvMQogIFN1Yi1HZXLDpHQgIzA6IHN1YmRldmljZSAjMApLYXJ0ZSAxOiBOVmlkaWEgW0hEQSBO
+VmlkaWFdLCBHZXLDpHQgODogSERNSSAwIFtIRE1JIDBdCiAgU3ViLUdlcsOkdGU6IDEvMQogIFN1
+Yi1HZXLDpHQgIzA6IHN1YmRldmljZSAjMApLYXJ0ZSAxOiBOVmlkaWEgW0hEQSBOVmlkaWFdLCBH
+ZXLDpHQgOTogSERNSSAwIFtIRE1JIDBdCiAgU3ViLUdlcsOkdGU6IDEvMQogIFN1Yi1HZXLDpHQg
+IzA6IHN1YmRldmljZSAjMApLYXJ0ZSAyOiBNNDQgW00gQXVkaW8gRGVsdGEgNDRdLCBHZXLDpHQg
+MDogSUNFMTcxMiBtdWx0aSBbSUNFMTcxMiBtdWx0aV0KICBTdWItR2Vyw6R0ZTogMS8xCiAgU3Vi
+LUdlcsOkdCAjMDogc3ViZGV2aWNlICMwCgpIb2xnZXIKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
