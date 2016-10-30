@@ -1,76 +1,66 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v5 3/7] drm: sunxi: add DE2 HDMI support
-Date: Sun, 30 Oct 2016 15:41:09 -0500
-Message-ID: <20161030204109.pr4m5wx5umi6wl2z@rob-hp-laptop>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v5 1/7] drm: sunxi: Add a basic DRM driver for Allwinner
+ DE2
+Date: Sun, 30 Oct 2016 15:41:08 -0500
+Message-ID: <20161030204108.rpeipal6hkao5zjv@rob-hp-laptop>
 References: <cover.1477142934.git.moinejf@free.fr>
- <36bd5454897c8ab77749e0294e4a4ecc2450dd12.1477142934.git.moinejf@free.fr>
+ <8afc5e020c5767face34fe3a9ab300ce9e67ba00.1477142934.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <36bd5454897c8ab77749e0294e4a4ecc2450dd12.1477142934.git.moinejf-GANU6spQydw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Cc: Dave Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <8afc5e020c5767face34fe3a9ab300ce9e67ba00.1477142934.git.moinejf@free.fr>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, dri-devel@lists.freedesktop.org, linux-sunxi@googlegroups.com, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 21, 2016 at 10:08:06AM +0200, Jean-Francois Moine wrote:
-> This patch adds a HDMI driver to the DE2 based Allwinner's SoCs
-> as A83T and H3.
-> Audio and video are supported.
-> 
-> Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-> ---
->  .../devicetree/bindings/display/sunxi/hdmi.txt     |  52 ++
->  drivers/gpu/drm/sunxi/Kconfig                      |   8 +
->  drivers/gpu/drm/sunxi/Makefile                     |   2 +
->  drivers/gpu/drm/sunxi/de2_hdmi.c                   | 396 +++++++++
->  drivers/gpu/drm/sunxi/de2_hdmi.h                   |  40 +
->  drivers/gpu/drm/sunxi/de2_hdmi_io.c                | 927 +++++++++++++++++++++
->  drivers/gpu/drm/sunxi/de2_hdmi_io.h                |  25 +
->  7 files changed, 1450 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/sunxi/hdmi.txt
->  create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi.c
->  create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi.h
->  create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi_io.c
->  create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi_io.h
-> 
-> diff --git a/Documentation/devicetree/bindings/display/sunxi/hdmi.txt b/Documentation/devicetree/bindings/display/sunxi/hdmi.txt
-> new file mode 100644
-> index 0000000..0558c07
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/sunxi/hdmi.txt
-> @@ -0,0 +1,52 @@
-> +Allwinner HDMI Transmitter
-> +==========================
-> +
-> +The Allwinner HDMI transmitters are included in the SoCs.
-> +They support audio and video.
-> +
-> +Required properties:
-> + - #address-cells : should be <1>
-> + - #size-cells : should be <0>
-> + - compatible : should be
-> +		"allwinner,sun8i-a83t-hdmi" or
-> +		"allwinner,sun8i-h3-hdmi"
-> + - clocks : phandles to the HDMI clocks as described in
-> +	Documentation/devicetree/bindings/clock/clock-bindings.txt
-> + - clock-names : must be
-> +		"gate" : bus gate
-> +		"clock" : streaming clock
-> +		"ddc-clock" : DDC clock
-> + - resets : One or two phandles to the HDMI resets
-> + - reset-names : must be
-> +		"hdmi0" and "hdmi1"
-> +
-> +Required nodes:
-> + - port: Audio and video input port nodes with endpoint definitions
-> +	as defined in Documentation/devicetree/bindings/graph.txt.
-
-Please define which port number is audio and which is video.
-
-Rob
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T24gRnJpLCBPY3QgMjEsIDIwMTYgYXQgMDk6MjY6MThBTSArMDIwMCwgSmVhbi1GcmFuY29pcyBN
+b2luZSB3cm90ZToKPiBBbGx3aW5uZXIncyByZWNlbnQgU29DcywgYXMgQTY0LCBBODNUIGFuZCBI
+MywgY29udGFpbiBhIG5ldyBkaXNwbGF5Cj4gZW5naW5lLCBERTIuCj4gVGhpcyBwYXRjaCBhZGRz
+IGEgRFJNIHZpZGVvIGRyaXZlciBmb3IgdGhpcyBkZXZpY2UuCj4gCj4gU2lnbmVkLW9mZi1ieTog
+SmVhbi1GcmFuY29pcyBNb2luZSA8bW9pbmVqZkBmcmVlLmZyPgo+IC0tLQo+ICAuLi4vYmluZGlu
+Z3MvZGlzcGxheS9zdW54aS9zdW54aS1kZTIudHh0ICAgICAgICAgICB8ICA4MyArKysKPiAgZHJp
+dmVycy9ncHUvZHJtL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKwo+
+ICBkcml2ZXJzL2dwdS9kcm0vTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAg
+MSArCj4gIGRyaXZlcnMvZ3B1L2RybS9zdW54aS9LY29uZmlnICAgICAgICAgICAgICAgICAgICAg
+IHwgIDIxICsKPiAgZHJpdmVycy9ncHUvZHJtL3N1bnhpL01ha2VmaWxlICAgICAgICAgICAgICAg
+ICAgICAgfCAgIDcgKwo+ICBkcml2ZXJzL2dwdS9kcm0vc3VueGkvZGUyX2NydGMuYyAgICAgICAg
+ICAgICAgICAgICB8IDQ3NSArKysrKysrKysrKysrKysrKwo+ICBkcml2ZXJzL2dwdS9kcm0vc3Vu
+eGkvZGUyX2NydGMuaCAgICAgICAgICAgICAgICAgICB8ICA2MyArKysKPiAgZHJpdmVycy9ncHUv
+ZHJtL3N1bnhpL2RlMl9kZS5jICAgICAgICAgICAgICAgICAgICAgfCA1OTEgKysrKysrKysrKysr
+KysrKysrKysrCj4gIGRyaXZlcnMvZ3B1L2RybS9zdW54aS9kZTJfZHJtLmggICAgICAgICAgICAg
+ICAgICAgIHwgIDQ3ICsrCj4gIGRyaXZlcnMvZ3B1L2RybS9zdW54aS9kZTJfZHJ2LmMgICAgICAg
+ICAgICAgICAgICAgIHwgMzc4ICsrKysrKysrKysrKysKPiAgZHJpdmVycy9ncHUvZHJtL3N1bnhp
+L2RlMl9wbGFuZS5jICAgICAgICAgICAgICAgICAgfCAxMTkgKysrKysKPiAgMTEgZmlsZXMgY2hh
+bmdlZCwgMTc4NyBpbnNlcnRpb25zKCspCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0
+aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9zdW54aS9zdW54aS1kZTIudHh0Cj4gIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vc3VueGkvS2NvbmZpZwo+ICBjcmVhdGUg
+bW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL3N1bnhpL01ha2VmaWxlCj4gIGNyZWF0ZSBtb2Rl
+IDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vc3VueGkvZGUyX2NydGMuYwo+ICBjcmVhdGUgbW9kZSAx
+MDA2NDQgZHJpdmVycy9ncHUvZHJtL3N1bnhpL2RlMl9jcnRjLmgKPiAgY3JlYXRlIG1vZGUgMTAw
+NjQ0IGRyaXZlcnMvZ3B1L2RybS9zdW54aS9kZTJfZGUuYwo+ICBjcmVhdGUgbW9kZSAxMDA2NDQg
+ZHJpdmVycy9ncHUvZHJtL3N1bnhpL2RlMl9kcm0uaAo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJp
+dmVycy9ncHUvZHJtL3N1bnhpL2RlMl9kcnYuYwo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVy
+cy9ncHUvZHJtL3N1bnhpL2RlMl9wbGFuZS5jCj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L3N1bnhpL3N1bnhpLWRlMi50eHQgYi9Eb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9zdW54aS9zdW54aS1kZTIudHh0
+Cj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwLi5mOWNkNjdhCj4gLS0tIC9k
+ZXYvbnVsbAo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5
+L3N1bnhpL3N1bnhpLWRlMi50eHQKCj4gKwloZG1pOiBoZG1pQDAxZWUwMDAwIHsKPiArCQkuLi4K
+PiArCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsKPiArCQkjc2l6ZS1jZWxscyA9IDwwPjsKPiArCQlw
+b3J0IHsKPiArCQkJdHlwZSA9ICJ2aWRlbyI7CgpUaGlzIGlzIHByb3Bvc2VkLCBidXQgbm90IGFu
+IGFjY2VwdGVkIHByb3BlcnR5LiBQbGVhc2UgZHJvcC4KCj4gKwkJCWhkbWlfZXA6IGVuZHBvaW50
+IHsKPiArCQkJCXJlbW90ZS1lbmRwb2ludCA9IDwmbGNkMF9lcD47Cj4gKwkJCX07Cj4gKwkJfTsK
+PiArCX07Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRy
+aS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
+czovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
