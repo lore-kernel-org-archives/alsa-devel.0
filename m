@@ -1,44 +1,76 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH 10/15] ASoC: omap-mcbsp: use permission-specific DEVICE_ATTR
- variants
-Date: Sun, 30 Oct 2016 12:50:12 +0100 (CET)
-Message-ID: <alpine.DEB.2.20.1610301246120.2074@hadrien>
-References: <1477769829-22230-1-git-send-email-Julia.Lawall@lip6.fr>        <1477769829-22230-11-git-send-email-Julia.Lawall@lip6.fr> <20161030125851.bd0e74854c52ce7d4ab3570c@bitmer.com>
+From: holger@dehnhardt.org
+Subject: Re: MOTU Midi Express XT
+Date: Sun, 30 Oct 2016 20:12:15 +0000
+Message-ID: <56dad789446d6e7477f82b06ce68e941@owncloud.dehnhardt.org>
+References: <26f710a4f67283761948a697c1d6e698@owncloud.dehnhardt.org>
+ <c04f2a54-3b2e-9a07-dd83-97a81c0123f8@ladisch.de>
+ <2e5e4e51f4f2c63ecab719a1937d695f@owncloud.dehnhardt.org>
+ <9d5810a657a4fb63805acea778570a49@owncloud.dehnhardt.org>
+ <1bdf9e49-1bbb-4f45-5122-bd0f6f4315bf@ladisch.de>
+ <bf3281416a57f2788d4772e9f7926b3a@owncloud.dehnhardt.org>
+ <9393708728a54b11ca4bd1edc65d90f8@owncloud.dehnhardt.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161030125851.bd0e74854c52ce7d4ab3570c@bitmer.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from punkt-k.de (punkt-k.de [84.200.50.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBE032614A0
+ for <alsa-devel@alsa-project.org>; Sun, 30 Oct 2016 21:12:40 +0100 (CET)
+In-Reply-To: <26f710a4f67283761948a697c1d6e698@owncloud.dehnhardt.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On Sun, 30 Oct 2016, Jarkko Nikula wrote:
-
-> Hi
->
-> On Sat, 29 Oct 2016 21:37:04 +0200
-> Julia Lawall <Julia.Lawall@lip6.fr> wrote:
->
-> > Use DEVICE_ATTR_RW for read-write attributes.  This simplifies the
-> > source code, improves readbility, and reduces the chance of
-> > inconsistencies.
-> >
-> ...
-> >
-> > - DEVICE_ATTR(x, \(0644\|S_IRUGO|S_IWUSR\), x_show, x_store);
-> > + DEVICE_ATTR_RW(x);
->
-> I'm not so sure does this improve readability. 644 is pretty obvious but
-> for DEVICE_ATTR_RW() one has to dive into include/linux/device.h and
-> include/linux/sysfs.h to see for what users it grants the write access.
-
-OK, as you like.  It does help ensure that the functions that are supposed
-to be defined are available.  There were a couple of occurrences of 0644
-with no show or no store function.  Among the three declarers, there are
-currently in total over 800 uses in the kernel, so they are also not so
-obscure.
-
-julia
+MjkuIE9rdG9iZXIgMjAxNiAyMToyOCBVaHIsIGhvbGdlckBkZWhuaGFyZHQub3JnIHNjaHJpZWI6
+Cj4gMjkuIE9rdG9iZXIgMjAxNiAxOToyOCBVaHIsICJDbGVtZW5zIExhZGlzY2giIDxjbGVtZW5z
+QGxhZGlzY2guZGU+IHNjaHJpZWI6Cj4gCj4+IGhvbGdlckBkZWhuaGFyZHQub3JnIHdyb3RlOgo+
+PiAKPj4+IEFzIHRoZSBkcml2ZXIgaXMgbG9hZGVkIGFuZCBnaXZlcyBubyBlcnJvciB3aGlsZSBs
+b2FkaW5nLCBpcyB0aGVyZQo+Pj4gYSB3YXkgdG8gaW52ZXN0aWdhdGUsIHdoeSBubyBhbHNhIGRl
+dmljZSBpcyBzaG93bj8KPj4gCj4+IElzIHRoZXJlIGFueSBtZXNzYWdlIGluIHRoZSBzeXN0ZW0g
+bG9nPwo+IAo+IFllczoKPiAKPiBNb3R1IE1pZGlUaW1lUGllY2Ugb24gcGFyYWxsZWwgcG9ydCBp
+cnE6IDEwIGlvcG9ydDogMHhiMDEwCj4gCj4gVGhhdCdzIGFsbCAtIG5vdCB2ZXJ5IHZlcmJvc2Us
+IG9yPwo+IAo+IGFwbGF5IC1sIHNob3dzCj4gCj4gKioqKiBMaXN0ZSBkZXIgSGFyZHdhcmUtR2Vy
+w6R0ZSAoUExBWUJBQ0spICoqKioKPiBLYXJ0ZSAwOiBTQiBbSERBIEFUSSBTQl0sIEdlcsOkdCAw
+OiBBTEM4OTIgQW5hbG9nIFtBTEM4OTIgQW5hbG9nXQo+IFN1Yi1HZXLDpHRlOiAxLzEKPiBTdWIt
+R2Vyw6R0ICMwOiBzdWJkZXZpY2UgIzAKPiBLYXJ0ZSAwOiBTQiBbSERBIEFUSSBTQl0sIEdlcsOk
+dCAxOiBBTEM4OTIgRGlnaXRhbCBbQUxDODkyIERpZ2l0YWxdCj4gU3ViLUdlcsOkdGU6IDEvMQo+
+IFN1Yi1HZXLDpHQgIzA6IHN1YmRldmljZSAjMAo+IEthcnRlIDE6IE5WaWRpYSBbSERBIE5WaWRp
+YV0sIEdlcsOkdCAzOiBIRE1JIDAgW0hETUkgMF0KPiBTdWItR2Vyw6R0ZTogMS8xCj4gU3ViLUdl
+csOkdCAjMDogc3ViZGV2aWNlICMwCj4gS2FydGUgMTogTlZpZGlhIFtIREEgTlZpZGlhXSwgR2Vy
+w6R0IDc6IEhETUkgMCBbSERNSSAwXQo+IFN1Yi1HZXLDpHRlOiAxLzEKPiBTdWItR2Vyw6R0ICMw
+OiBzdWJkZXZpY2UgIzAKPiBLYXJ0ZSAxOiBOVmlkaWEgW0hEQSBOVmlkaWFdLCBHZXLDpHQgODog
+SERNSSAwIFtIRE1JIDBdCj4gU3ViLUdlcsOkdGU6IDEvMQo+IFN1Yi1HZXLDpHQgIzA6IHN1YmRl
+dmljZSAjMAo+IEthcnRlIDE6IE5WaWRpYSBbSERBIE5WaWRpYV0sIEdlcsOkdCA5OiBIRE1JIDAg
+W0hETUkgMF0KPiBTdWItR2Vyw6R0ZTogMS8xCj4gU3ViLUdlcsOkdCAjMDogc3ViZGV2aWNlICMw
+Cj4gS2FydGUgMjogTTQ0IFtNIEF1ZGlvIERlbHRhIDQ0XSwgR2Vyw6R0IDA6IElDRTE3MTIgbXVs
+dGkgW0lDRTE3MTIgbXVsdGldCj4gU3ViLUdlcsOkdGU6IDEvMQo+IFN1Yi1HZXLDpHQgIzA6IHN1
+YmRldmljZSAjMAo+IAo+IEhvbGdlcgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAoKb25lIG1vcmUgdGVzdDoKCkkgYWRkZWQgYSBwcmludCBzdGF0
+ZW1lbnQgdG8gdG8gX19pbml0IGZ1bmN0aW9uIChzZWUgdGhlIGNvZGUgYW5kIGFycm93IC0+IGJl
+bG93KS4KSXQgaW5pdGlhbGlzZXMgd2l0aG91dCBlcnJvci4gCgoKc3RhdGljIGludCBfX2luaXQg
+YWxzYV9jYXJkX210cGF2X2luaXQodm9pZCkKewogICAgICAgIGludCBlcnI7CgogICAgICAgIGlm
+ICgoZXJyID0gcGxhdGZvcm1fZHJpdmVyX3JlZ2lzdGVyKCZzbmRfbXRwYXZfZHJpdmVyKSkgPCAw
+KQogICAgICAgICAgICAgICAgcmV0dXJuIGVycjsKCiAgICAgICAgZGV2aWNlID0gcGxhdGZvcm1f
+ZGV2aWNlX3JlZ2lzdGVyX3NpbXBsZShTTkRfTVRQQVZfRFJJVkVSLCAtMSwgTlVMTCwgMCk7CiAg
+ICAgICAgaWYgKCFJU19FUlIoZGV2aWNlKSkgewogICAgICAgICAgICAgICAgaWYgKHBsYXRmb3Jt
+X2dldF9kcnZkYXRhKGRldmljZSkpewotPiAgICAgICAgICAgICAgICAgICAgICAgIHByaW50ayhL
+RVJOX0lORk8gIkFMU0EgaW5pdCBva1xuIik7CiAgICAgICAgICAgICAgICAgICAgICAgIHJldHVy
+biAwOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgcGxhdGZvcm1fZGV2aWNlX3Vu
+cmVnaXN0ZXIoZGV2aWNlKTsKICAgICAgICAgICAgICAgIGVyciA9IC1FTk9ERVY7CiAgICAgICAg
+fSBlbHNlCiAgICAgICAgICAgICAgICBlcnIgPSBQVFJfRVJSKGRldmljZSk7CiAgICAgICAgcGxh
+dGZvcm1fZHJpdmVyX3VucmVnaXN0ZXIoJnNuZF9tdHBhdl9kcml2ZXIpOwogICAgICAgIHByaW50
+ayhLRVJOX0lORk8gIkFMU0EgaW5pdCB3aXRoIHJldHVybiBjb2RlICAlZFxuIiwgZXJyKTsKICAg
+ICAgICByZXR1cm4gZXJyOwp9CgpTaG91bGRuJ3QgSSBmaW5kIHRoZSBkcml2ZXIgYWZ0ZXJ3YXJk
+cz8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
