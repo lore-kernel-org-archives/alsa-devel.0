@@ -1,78 +1,76 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5 1/7] drm: sunxi: Add a basic DRM driver for Allwinner
- DE2
-Date: Sun, 30 Oct 2016 15:41:05 -0500
-Message-ID: <20161030204104.cexblg73q4owe2gt@rob-hp-laptop>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v5 3/7] drm: sunxi: add DE2 HDMI support
+Date: Sun, 30 Oct 2016 15:41:09 -0500
+Message-ID: <20161030204109.pr4m5wx5umi6wl2z@rob-hp-laptop>
 References: <cover.1477142934.git.moinejf@free.fr>
- <8afc5e020c5767face34fe3a9ab300ce9e67ba00.1477142934.git.moinejf@free.fr>
- <20161024140419.ah6hywf3b24pj3fv@lukather>
- <20161025161441.6b248efe9229bd80e3f7a33c@free.fr>
+ <36bd5454897c8ab77749e0294e4a4ecc2450dd12.1477142934.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <20161025161441.6b248efe9229bd80e3f7a33c@free.fr>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, dri-devel@lists.freedesktop.org, linux-sunxi@googlegroups.com, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <36bd5454897c8ab77749e0294e4a4ecc2450dd12.1477142934.git.moinejf-GANU6spQydw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: Dave Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBPY3QgMjUsIDIwMTYgYXQgMDQ6MTQ6NDFQTSArMDIwMCwgSmVhbi1GcmFuY29pcyBN
-b2luZSB3cm90ZToKPiBPbiBNb24sIDI0IE9jdCAyMDE2IDE2OjA0OjE5ICswMjAwCj4gTWF4aW1l
-IFJpcGFyZCA8bWF4aW1lLnJpcGFyZEBmcmVlLWVsZWN0cm9ucy5jb20+IHdyb3RlOgo+IAo+ID4g
-SGksCj4gCj4gSGkgTWF4aW1lLAo+IAo+ID4gT24gRnJpLCBPY3QgMjEsIDIwMTYgYXQgMDk6MjY6
-MThBTSArMDIwMCwgSmVhbi1GcmFuY29pcyBNb2luZSB3cm90ZToKPiA+ID4gQWxsd2lubmVyJ3Mg
-cmVjZW50IFNvQ3MsIGFzIEE2NCwgQTgzVCBhbmQgSDMsIGNvbnRhaW4gYSBuZXcgZGlzcGxheQo+
-ID4gPiBlbmdpbmUsIERFMi4KPiA+ID4gVGhpcyBwYXRjaCBhZGRzIGEgRFJNIHZpZGVvIGRyaXZl
-ciBmb3IgdGhpcyBkZXZpY2UuCj4gPiA+IAo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBKZWFuLUZyYW5j
-b2lzIE1vaW5lIDxtb2luZWpmQGZyZWUuZnI+Cj4gPiAKPiA+IE91dHB1dCBmcm9tIGNoZWNrcGF0
-Y2g6Cj4gPiB0b3RhbDogMCBlcnJvcnMsIDIwIHdhcm5pbmdzLCA4MyBjaGVja3MsIDE3OTkgbGlu
-ZXMgY2hlY2tlZAo+ID4gCj4gPiA+IC0tLQo+ID4gPiAgLi4uL2JpbmRpbmdzL2Rpc3BsYXkvc3Vu
-eGkvc3VueGktZGUyLnR4dCAgICAgICAgICAgfCAgODMgKysrCj4gPiA+ICBkcml2ZXJzL2dwdS9k
-cm0vS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArCj4gPiA+ICBkcml2
-ZXJzL2dwdS9kcm0vTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArCj4g
-PiA+ICBkcml2ZXJzL2dwdS9kcm0vc3VueGkvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICB8
-ICAyMSArCj4gPiA+ICBkcml2ZXJzL2dwdS9kcm0vc3VueGkvTWFrZWZpbGUgICAgICAgICAgICAg
-ICAgICAgICB8ICAgNyArCj4gPiA+ICBkcml2ZXJzL2dwdS9kcm0vc3VueGkvZGUyX2NydGMuYyAg
-ICAgICAgICAgICAgICAgICB8IDQ3NSArKysrKysrKysrKysrKysrKwo+ID4gPiAgZHJpdmVycy9n
-cHUvZHJtL3N1bnhpL2RlMl9jcnRjLmggICAgICAgICAgICAgICAgICAgfCAgNjMgKysrCj4gPiA+
-ICBkcml2ZXJzL2dwdS9kcm0vc3VueGkvZGUyX2RlLmMgICAgICAgICAgICAgICAgICAgICB8IDU5
-MSArKysrKysrKysrKysrKysrKysrKysKPiA+ID4gIGRyaXZlcnMvZ3B1L2RybS9zdW54aS9kZTJf
-ZHJtLmggICAgICAgICAgICAgICAgICAgIHwgIDQ3ICsrCj4gPiA+ICBkcml2ZXJzL2dwdS9kcm0v
-c3VueGkvZGUyX2Rydi5jICAgICAgICAgICAgICAgICAgICB8IDM3OCArKysrKysrKysrKysrCj4g
-PiA+ICBkcml2ZXJzL2dwdS9kcm0vc3VueGkvZGUyX3BsYW5lLmMgICAgICAgICAgICAgICAgICB8
-IDExOSArKysrKwo+ID4gPiAgMTEgZmlsZXMgY2hhbmdlZCwgMTc4NyBpbnNlcnRpb25zKCspCj4g
-PiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L2Rpc3BsYXkvc3VueGkvc3VueGktZGUyLnR4dAo+ID4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRy
-aXZlcnMvZ3B1L2RybS9zdW54aS9LY29uZmlnCj4gPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJp
-dmVycy9ncHUvZHJtL3N1bnhpL01ha2VmaWxlCj4gPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJp
-dmVycy9ncHUvZHJtL3N1bnhpL2RlMl9jcnRjLmMKPiA+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBk
-cml2ZXJzL2dwdS9kcm0vc3VueGkvZGUyX2NydGMuaAo+ID4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0
-IGRyaXZlcnMvZ3B1L2RybS9zdW54aS9kZTJfZGUuYwo+ID4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0
-IGRyaXZlcnMvZ3B1L2RybS9zdW54aS9kZTJfZHJtLmgKPiA+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0
-NCBkcml2ZXJzL2dwdS9kcm0vc3VueGkvZGUyX2Rydi5jCj4gPiA+ICBjcmVhdGUgbW9kZSAxMDA2
-NDQgZHJpdmVycy9ncHUvZHJtL3N1bnhpL2RlMl9wbGFuZS5jCj4gPiA+IAo+ID4gPiBkaWZmIC0t
-Z2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvc3VueGkvc3Vu
-eGktZGUyLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L3N1
-bnhpL3N1bnhpLWRlMi50eHQKPiA+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiA+ID4gaW5kZXgg
-MDAwMDAwMC4uZjljZDY3YQo+ID4gPiAtLS0gL2Rldi9udWxsCj4gPiA+ICsrKyBiL0RvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L3N1bnhpL3N1bnhpLWRlMi50eHQKClsu
-Li5dCgo+ID4gPiArCj4gPiA+ICstIHJlc2V0czogcGhhbmRsZSB0byB0aGUgcmVzZXQgb2YgdGhl
-IGRldmljZQo+ID4gPiArCj4gPiA+ICstIHBvcnRzOiBwaGFuZGxlJ3MgdG8gdGhlIExDRCBwb3J0
-cwo+ID4gCj4gPiBQbGVhc2UgdXNlIHRoZSBPRiBncmFwaC4KPiAKPiBUaGVzZSBwb3J0cyBhcmUg
-cmVmZXJlbmNlcyB0byB0aGUgZ3JhcGggb2Ygbm9kZXMuIFNlZQo+IAlodHRwOi8vd3d3Lmtlcm5l
-bGh1Yi5vcmcvP21zZz05MTE4MjUmcD0yCgpJIHRoaW5rIHdoYXQgTWF4aW1lIG1lYW5zIGlzIGRl
-c2NyaWJlIHRoZSBERSB0byBMQ0QgY29ubmVjdGlvbiB3aXRoIE9GIApncmFwaCwgbm90IGp1c3Qg
-YSBwaGFuZGxlLgoKUm9iCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9w
-Lm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1k
-ZXZlbAo=
+On Fri, Oct 21, 2016 at 10:08:06AM +0200, Jean-Francois Moine wrote:
+> This patch adds a HDMI driver to the DE2 based Allwinner's SoCs
+> as A83T and H3.
+> Audio and video are supported.
+> 
+> Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+> ---
+>  .../devicetree/bindings/display/sunxi/hdmi.txt     |  52 ++
+>  drivers/gpu/drm/sunxi/Kconfig                      |   8 +
+>  drivers/gpu/drm/sunxi/Makefile                     |   2 +
+>  drivers/gpu/drm/sunxi/de2_hdmi.c                   | 396 +++++++++
+>  drivers/gpu/drm/sunxi/de2_hdmi.h                   |  40 +
+>  drivers/gpu/drm/sunxi/de2_hdmi_io.c                | 927 +++++++++++++++++++++
+>  drivers/gpu/drm/sunxi/de2_hdmi_io.h                |  25 +
+>  7 files changed, 1450 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/sunxi/hdmi.txt
+>  create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi.c
+>  create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi.h
+>  create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi_io.c
+>  create mode 100644 drivers/gpu/drm/sunxi/de2_hdmi_io.h
+> 
+> diff --git a/Documentation/devicetree/bindings/display/sunxi/hdmi.txt b/Documentation/devicetree/bindings/display/sunxi/hdmi.txt
+> new file mode 100644
+> index 0000000..0558c07
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/sunxi/hdmi.txt
+> @@ -0,0 +1,52 @@
+> +Allwinner HDMI Transmitter
+> +==========================
+> +
+> +The Allwinner HDMI transmitters are included in the SoCs.
+> +They support audio and video.
+> +
+> +Required properties:
+> + - #address-cells : should be <1>
+> + - #size-cells : should be <0>
+> + - compatible : should be
+> +		"allwinner,sun8i-a83t-hdmi" or
+> +		"allwinner,sun8i-h3-hdmi"
+> + - clocks : phandles to the HDMI clocks as described in
+> +	Documentation/devicetree/bindings/clock/clock-bindings.txt
+> + - clock-names : must be
+> +		"gate" : bus gate
+> +		"clock" : streaming clock
+> +		"ddc-clock" : DDC clock
+> + - resets : One or two phandles to the HDMI resets
+> + - reset-names : must be
+> +		"hdmi0" and "hdmi1"
+> +
+> +Required nodes:
+> + - port: Audio and video input port nodes with endpoint definitions
+> +	as defined in Documentation/devicetree/bindings/graph.txt.
+
+Please define which port number is audio and which is video.
+
+Rob
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
