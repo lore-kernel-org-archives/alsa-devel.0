@@ -1,27 +1,24 @@
-From: Fernando Rodriguez <cyklonite@gmail.com>
-Subject: Re: Question about the buffer length in the transfer
- callback of the PCM External Plugin
-Date: Mon, 31 Oct 2016 14:47:49 -0400
-Message-ID: <20161031184748.GB25567@navi.local>
-References: <a68475dd084f4a45b224791224c7c244@LGNMSXB01.prod.bk.dfs>
- <20161031181116.GA25567@navi.local>
+From: holger@dehnhardt.org
+Subject: Re: MOTU Midi Express XT
+Date: Mon, 31 Oct 2016 20:10:39 +0000
+Message-ID: <dfc508c06ed983cc3b712adea386d873@owncloud.dehnhardt.org>
+References: <0ee7780b-d697-ace0-99bb-07ac36b710e1@ladisch.de>
+ <26f710a4f67283761948a697c1d6e698@owncloud.dehnhardt.org>
+ <c04f2a54-3b2e-9a07-dd83-97a81c0123f8@ladisch.de>
+ <2e5e4e51f4f2c63ecab719a1937d695f@owncloud.dehnhardt.org>
+ <9d5810a657a4fb63805acea778570a49@owncloud.dehnhardt.org>
+ <1bdf9e49-1bbb-4f45-5122-bd0f6f4315bf@ladisch.de>
+ <bf3281416a57f2788d4772e9f7926b3a@owncloud.dehnhardt.org>
+ <9393708728a54b11ca4bd1edc65d90f8@owncloud.dehnhardt.org>
+ <56dad789446d6e7477f82b06ce68e941@owncloud.dehnhardt.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb0-f177.google.com (mail-yb0-f177.google.com
- [209.85.213.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DAB1266D44
- for <Alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 19:45:27 +0100 (CET)
-Received: by mail-yb0-f177.google.com with SMTP id o7so11722897ybb.0
- for <Alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 11:45:27 -0700 (PDT)
-Received: from navi.local (67-8-110-87.res.bhn.net. [67.8.110.87])
- by smtp.gmail.com with ESMTPSA id h15sm9986656ywc.22.2016.10.31.11.45.25
- for <Alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 31 Oct 2016 11:45:25 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20161031181116.GA25567@navi.local>
+Received: from punkt-k.de (punkt-k.de [84.200.50.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 315C4261B03
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 21:11:05 +0100 (CET)
+In-Reply-To: <0ee7780b-d697-ace0-99bb-07ac36b710e1@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,57 +28,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBPY3QgMzEsIDIwMTYgYXQgMDI6MTE6MTdQTSAtMDQwMCwgRmVybmFuZG8gUm9kcmln
-dWV6IHdyb3RlOgo+IE9uIE1vbiwgT2N0IDMxLCAyMDE2IGF0IDA5OjAxOjAyQU0gKzAwMDAsIEJh
-Y2gsIEFuZHJlYSB3cm90ZToKPiA+IEhlbGxvLAo+ID4gCj4gPiBob3cgY2FuIEkgY2hhbmdlIHRo
-ZSBzaXplIHRoYXQgaXMgcHJvdmlkZWQgaW5zaWRlIHRoZSDigJ50cmFuc2ZlcuKAnC1jYWxsYmFj
-ayBvZiBhbiBleHRlcm5hbCBQQ00gcGx1Z2luPwo+ID4gCj4gPiBCYWNrZ3JvdW5kOgo+ID4gSSBu
-ZWVkIHRvIHdyaXRlIGEgZmlsdGVyIHBsdWdpbiBhbmQgSSBoYXZlIHRvIHVzZSBmb3IgcHJvY2Vz
-c2luZyBhIGNodW5rIHNpemUgb2YgcG93ZXIgb2YgdHdvICgzMiwgNjQsIG9yIDEyOCBieXRlcyDi
-gKYgdGhhdOKAmXMgYmVjYXVzZSBvZiB0aGUgdXNlIG9mIEZGVCkuIEJ1dCBJIGdldCBpbnNpZGUg
-dGhlIHRyYW5zZmVyIGNhbGxiYWNrIGEgYnVmZmVyIG9mIGxlbmd0aCAxMDAwLiBUaGF0IHdvdWxk
-IGJlIG9rIGlmIEkgY291bGQganVzdCByZXR1cm4gbGV0J3Mgc2F5ICA5NjAgYnl0ZXMg4oCTIGJ1
-dCBhZnRlciBzb21lIHN0cnVnZ2xpbmcgSSBoYXZlIHNvbWUgZG91YnQgYWJvdXQgaXQgYmVjYXVz
-ZSBJIGdvdCB0aGUgaW1wcmVzc2lvbiB0aGF0IEFMU0EgY2Fubm90IGNoYW5nZSB0aGUgYml0cmF0
-ZSBpbnNpZGUgc3VjaCBhIHBsdWdpbiDigJMgdGhlIGRvY3VtZW50YXRpb24gc3RhdGVzIGl0IGNv
-dWxkIG5vdCBjaGFuZ2UgdGhlIHNhbXBsZSByYXRlIOKAkyBidXQgYWN0dWFsbHkgaG93IGNhbiBJ
-IHJldHVybiBsZXNzIG9yIG1vcmUgYnl0ZXMg4oCTIHNvIG1heWJlIHRoZSBiaXRyYXRlIHNob3Vs
-ZCBhbHNvIGJlIGNvbnN0YW50PyBNYXliZSBJIG1pc3VuZGVyc3Rvb2QgdGhlIGNvbmNlcHRzIG9m
-IEFMU0EgY29tcGxldGVseT8KPiA+IAo+IAo+IFllcy4KPiBZb3UncmUgd29ya2luZyB3aXRoIHJh
-dyBQQ00gZGF0YSwgc28gdGhlIGJpdHJhdGUgKGJpdHMgcGVyIHNlY29uZCkgaXMKPiBjb25zdGFu
-dCAoKGJpdF9kZXB0aC84KSAqIHNhbXBsZXJhdGUgKiBjaGFubmVscykuIFRoZSB0ZXJtIHVzdWFs
-bHkKPiByZWZlcnMgdG8gY29tcHJlc3NlZCBhdWRpbyBzdHJlYW1zLgoKT29wcywgdGhhdCB3YXMg
-aW4gYnl0ZXMuIEl0J3MgYml0ZGVwdGggKiBzYW1wbGVyYXRlICogY2hhbm5lbHMuCgo+IAo+IEkg
-aGF2ZW4ndCBkb25lIHRoaXMgYnV0IGJ5IGxvb2tpbmcgYXQgdGhlIGRlZmluaXRpb24gZm9yIHRo
-ZSB0cmFuc2Zlcgo+IGNhbGxiYWNrIGl0IGxvb2tzIHByZXR0eSBzdGFuZGFyZC4gSXQgcmV0dXJu
-cyBzbmRfcGNtX3NmcmFtZXNfdCBzbyBJCj4gc3VwcG9zZSB5b3UgY2FuIHdyaXRlIGxlc3MgdGhh
-biAqc2l6ZSogZnJhbWVzIGFuZCByZXR1cm4gd2hhdCB3YXMKPiBhY3R1YWxseSB3cml0dGVuLiBJ
-dCBpcyBzaWduZWQgc28gYSBuZWdhdGl2ZSB2YWx1ZSB3b3VsZCBpbmRpY2F0ZSBhbgo+IGVycm9y
-LiBTbyB5b3UnbGwgcHJvYmFibHkgaGF2ZSB0byBidWZmZXIgYW55IGxlZnRvdmVycyBhbmQgd3Jp
-dGUgdGhlbSBvbgo+IHRoZSBuZXh0IGNhbGwuIFRoYXQncyBub3QgdGhlIHNhbWUgYXMgY2hhbmdp
-bmcgdGhlIGZyYW1lcmF0ZSBiZWNhdXNlCj4gYXQgdGhlIGVuZCBvZiB0aGUgcGlwZWxpbmUgYWxz
-YSB3aWxsIHRha2UgY2FyZSBvZiBwbGF5aW5nIGl0IGF0IHRoZQo+IHJpZ2h0IHJhdGUpLgo+IAo+
-IFRoYXQgc2hvdWxkIGNsZWFyIHNvbWUgb2YgdGhlIGNvbmZ1c3Npb24uIFlvdSdsbCBwcm9iYWJs
-eSBoYXZlIHRvIGxvb2sKPiBhdCBhbHNhLWxpYiBvciBzb21lIHBsdWdpbidzIHNvdXJjZSBjb2Rl
-IGZvciBtb3JlIGRldGFpbHMuCj4gCj4gCj4gPiBLaW5kIHJlZ2FyZHMKPiA+IAo+ID4gRHIuIEEu
-IEJhY2gsIFNvZnR3YXJlLUVudHdpY2tsdW5nIFNpbXVsYXRvcmVuCj4gPiBERlMgRGV1dHNjaGUg
-Rmx1Z3NpY2hlcnVuZyBHbWJICj4gPiBGb3JzY2h1bmdzemVudHJ1bQo+ID4gQW0gREZTLUNhbXB1
-cyA1Cj4gPiA2MzIyNSBMYW5nZW4KPiA+IDA2MTAzLTcwNy01NzA5Cj4gPiAKPiA+IERGUyBEZXV0
-c2NoZSBGbHVnc2ljaGVydW5nIEdtYkgKPiA+IEFtIERGUy1DYW1wdXMKPiA+IEQgLSA2MzIyNSBM
-YW5nZW4KPiA+IAo+ID4gVGVsLjogKzQ5LSgwKTYxMDMtNzA3LTAKPiA+IAo+ID4gU2l0eiBkZXIg
-R2VzZWxsc2NoYWZ0OiBMYW5nZW4vSGVzc2VuCj4gPiBadXN0w6RuZGlnZXMgUmVnaXN0ZXJnZXJp
-Y2h0OiBBRyBPZmZlbmJhY2ggYW0gTWFpbiwgSFJCIDM0OTc3Cj4gPiBWb3JzaXR6ZW5kZSBkZXMg
-QXVmc2ljaHRzcmF0czogRHIuIE1hcnRpbmEgSGlucmljaGVyCj4gPiBHZXNjaMOkZnRzZsO8aHJl
-cjogUHJvZi4gS2xhdXMtRGlldGVyIFNjaGV1cmxlIChWb3JzLiksIFJvYmVydCBTY2hpY2tsaW5n
-LCBEci4gTWljaGFlbCBIYW5uCj4gPiAKPiA+IEludGVybmV0OiBodHRwOi8vd3d3LmRmcy5kZQo+
-ID4gUHVibGljLUtleSBkZXIgREZTOiBodHRwOi8vd3d3LmRmcy5kZS9kZnMvcHVibGljX2tleS5h
-c2MKPiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
-PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+ID4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cj4gPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo+IAo+IC0tIAo+IEZlcm5hbmRvIFJvZHJpZ3VlegoKLS0gCkZlcm5hbmRvIFJvZHJp
-Z3VlegpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Thanks for answering, Clemens. Comments are inline.
+
+> In theory, this indicates that the driver has been initialized correctly.
+> But it doesn't actually check if the device is there.
+> 
+> A PCI device needs to be enabled before it can be used, and this driver
+> does not know about PCI.
+
+It looks like the driver does not care about that. 
+
+> 
+> The partport-serial driver gets loaded, doesn't it?
+
+It can be loaded but is not loaded by default as mtpav does not work if any other parport driver is
+loaded.
+
+>> I added a print statement to to __init function (see the code and arrow -> below).
+>> It initialises without error.
+>> 
+>> static int __init alsa_card_mtpav_init(void)
+> 
+> The actual device initialization is in snd_mptav_probe().
+
+Ok, this is where the default message: "Motu MidiTimePiece on parallel port irq: %d ioport: 0x%lx\n" is written from. So there is no error too.
+
+BTW: lsmod |grep snd_mtpav shows, that it is using snd_rawmidi...
+
+snd_mtpav              16384  0
+snd_rawmidi            32768  2 snd_mtpav,snd_seq_midi
+snd                    81920  5 snd_mtpav,snd_timer,snd_seq,snd_rawmidi,snd_seq_device
+
+Was there a recent api change? More and more it looks like there is a problem with registering the driver / the port to the ALSA system.
+
+
+
+Holger
