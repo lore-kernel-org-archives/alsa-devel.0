@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-codec: return error code instead of NULL when create_card fails" to the asoc tree
-Date: Mon, 31 Oct 2016 09:49:25 -0600
-Message-ID: <E1c1Epx-0000n0-CM@finisterre>
-References: <20161031064209.12241-1-wens@csie.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161031064209.12241-1-wens@csie.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-sunxi@googlegroups.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt286: remove unnecessary selection in
+	Kconfig" to the asoc tree
+Date: Mon, 31 Oct 2016 09:49:27 -0600
+Message-ID: <E1c1Epz-0000nx-AF@finisterre>
+References: <1477905594-12081-1-git-send-email-bardliao@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCF67261B03
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 16:49:46 +0100 (CET)
+In-Reply-To: <1477905594-12081-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-codec: return error code instead of NULL when create_card fails
+   ASoC: rt286: remove unnecessary selection in Kconfig
 
 has been applied to the asoc tree at
 
@@ -37,56 +53,30 @@ to this mail.
 Thanks,
 Mark
 
->From 85915b63ad8b796848f431b66c9ba5e356e722e5 Mon Sep 17 00:00:00 2001
-From: Chen-Yu Tsai <wens@csie.org>
-Date: Mon, 31 Oct 2016 14:42:09 +0800
-Subject: [PATCH] ASoC: sun4i-codec: return error code instead of NULL when
- create_card fails
+>From 4774e27ab8206f4a959a8c9054f55545e2dff42c Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Mon, 31 Oct 2016 17:19:54 +0800
+Subject: [PATCH] ASoC: rt286: remove unnecessary selection in Kconfig
 
-When sun4i_codec_create_card fails, we do not assign a proper error
-code to the return value. The return value would be 0 from the previous
-function call, or we would have bailed out sooner. This would confuse
-the driver core into thinking the device probe succeeded, when in fact
-it didn't, leaving various devres based resources lingering.
+SND_SOC_RT5663 is not required for SND_SOC_RT286.
 
-Make the create_card function pass back a meaningful error code, and
-assign it to the return value.
-
-Fixes: 45fb6b6f2aa3 ("ASoC: sunxi: add support for the on-chip codec on
-		      early Allwinner SoCs")
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/codecs/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index e047ec06d538..a60707761abf 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -765,11 +765,11 @@ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index c67667bb970f..22aaf63616a2 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -672,7 +672,6 @@ config SND_SOC_RL6347A
  
- 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
- 	if (!card)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
+ config SND_SOC_RT286
+ 	tristate
+-	select SND_SOC_RT5663
+ 	depends on I2C
  
- 	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
- 	if (!card->dai_link)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 
- 	card->dev		= dev;
- 	card->name		= "sun4i-codec";
-@@ -876,7 +876,8 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 	}
- 
- 	card = sun4i_codec_create_card(&pdev->dev);
--	if (!card) {
-+	if (IS_ERR(card)) {
-+		ret = PTR_ERR(card);
- 		dev_err(&pdev->dev, "Failed to create our card\n");
- 		goto err_unregister_codec;
- 	}
+ config SND_SOC_RT298
 -- 
 2.10.1
