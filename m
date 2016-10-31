@@ -1,31 +1,65 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 5/9] ASoC: pxa: switch to new ac97 bus support
-Date: Mon, 31 Oct 2016 09:37:17 +0100
-Message-ID: <87bmy029tu.fsf@belgarion.home>
-References: <1477510907-23495-1-git-send-email-robert.jarzmik@free.fr>
-        <1477510907-23495-6-git-send-email-robert.jarzmik@free.fr>
+From: "Bach, Andrea" <andrea.bach@dfs.de>
+Subject: Question about the buffer length in the transfer
+ callback of the PCM External Plugin
+Date: Mon, 31 Oct 2016 09:01:02 +0000
+Message-ID: <a68475dd084f4a45b224791224c7c244@LGNMSXB01.prod.bk.dfs>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-pm-owner@vger.kernel.org>
-In-Reply-To: <1477510907-23495-6-git-send-email-robert.jarzmik@free.fr>
-        (Robert Jarzmik's message of "Wed, 26 Oct 2016 21:41:43 +0200")
-Sender: linux-pm-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Sebastian Reichel <sre@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-pm@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp2.dfs.de (smtp2.dfs.de [194.49.205.202])
+ by alsa0.perex.cz (Postfix) with ESMTP id BEA2226663B
+ for <Alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 10:01:04 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by smtp2.dfs.de (Postfix) with ESMTP id 4907710171
+ for <Alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 09:01:04 +0000 (UTC)
+Received: from smtp2.dfs.de ([127.0.0.1])
+ by localhost (.dfs.de [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id jpDUm4n0JNpE for <Alsa-devel@alsa-project.org>;
+ Mon, 31 Oct 2016 09:01:02 +0000 (UTC)
+Received: from lgnmfk02.prod.bk.dfs (lgnmfk02 [10.240.120.102])
+ by smtp2.dfs.de (Postfix) with ESMTPS
+ for <Alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 09:01:02 +0000 (UTC)
+Received: from LGNMSXB01.prod.bk.dfs (lgnmsxb01.prod.bk.dfs [10.247.176.25])
+ by lgnmfk02.prod.bk.dfs (Postfix) with ESMTP id DFA047C1FA
+ for <Alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 09:01:02 +0000 (UTC)
+Content-Language: de-DE
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Robert Jarzmik <robert.jarzmik@free.fr> writes:
-
-> Switch to the new ac97 bus support in sound/ac97 instead of the legacy
-> snd_ac97 one.
->
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-I realized this one impacts sound/arm/pxa2xx-ac97.c.
-This deserves a v2, with this patch being split into 2 pieces :
- - one for pxa2xx-ac97-lib.*
- - one which will be the true switch to the new ac97 bus.
-
-Cheers.
-
---
-Robert
+SGVsbG8sDQoNCmhvdyBjYW4gSSBjaGFuZ2UgdGhlIHNpemUgdGhhdCBpcyBwcm92aWRlZCBpbnNp
+ZGUgdGhlIOKAnnRyYW5zZmVy4oCcLWNhbGxiYWNrIG9mIGFuIGV4dGVybmFsIFBDTSBwbHVnaW4/
+DQoNCkJhY2tncm91bmQ6DQpJIG5lZWQgdG8gd3JpdGUgYSBmaWx0ZXIgcGx1Z2luIGFuZCBJIGhh
+dmUgdG8gdXNlIGZvciBwcm9jZXNzaW5nIGEgY2h1bmsgc2l6ZSBvZiBwb3dlciBvZiB0d28gKDMy
+LCA2NCwgb3IgMTI4IGJ5dGVzIOKApiB0aGF04oCZcyBiZWNhdXNlIG9mIHRoZSB1c2Ugb2YgRkZU
+KS4gQnV0IEkgZ2V0IGluc2lkZSB0aGUgdHJhbnNmZXIgY2FsbGJhY2sgYSBidWZmZXIgb2YgbGVu
+Z3RoIDEwMDAuIFRoYXQgd291bGQgYmUgb2sgaWYgSSBjb3VsZCBqdXN0IHJldHVybiBsZXQncyBz
+YXkgIDk2MCBieXRlcyDigJMgYnV0IGFmdGVyIHNvbWUgc3RydWdnbGluZyBJIGhhdmUgc29tZSBk
+b3VidCBhYm91dCBpdCBiZWNhdXNlIEkgZ290IHRoZSBpbXByZXNzaW9uIHRoYXQgQUxTQSBjYW5u
+b3QgY2hhbmdlIHRoZSBiaXRyYXRlIGluc2lkZSBzdWNoIGEgcGx1Z2luIOKAkyB0aGUgZG9jdW1l
+bnRhdGlvbiBzdGF0ZXMgaXQgY291bGQgbm90IGNoYW5nZSB0aGUgc2FtcGxlIHJhdGUg4oCTIGJ1
+dCBhY3R1YWxseSBob3cgY2FuIEkgcmV0dXJuIGxlc3Mgb3IgbW9yZSBieXRlcyDigJMgc28gbWF5
+YmUgdGhlIGJpdHJhdGUgc2hvdWxkIGFsc28gYmUgY29uc3RhbnQ/IE1heWJlIEkgbWlzdW5kZXJz
+dG9vZCB0aGUgY29uY2VwdHMgb2YgQUxTQSBjb21wbGV0ZWx5Pw0KDQpLaW5kIHJlZ2FyZHMNCg0K
+RHIuIEEuIEJhY2gsIFNvZnR3YXJlLUVudHdpY2tsdW5nIFNpbXVsYXRvcmVuDQpERlMgRGV1dHNj
+aGUgRmx1Z3NpY2hlcnVuZyBHbWJIDQpGb3JzY2h1bmdzemVudHJ1bQ0KQW0gREZTLUNhbXB1cyA1
+DQo2MzIyNSBMYW5nZW4NCjA2MTAzLTcwNy01NzA5DQoNCkRGUyBEZXV0c2NoZSBGbHVnc2ljaGVy
+dW5nIEdtYkgNCkFtIERGUy1DYW1wdXMNCkQgLSA2MzIyNSBMYW5nZW4NCg0KVGVsLjogKzQ5LSgw
+KTYxMDMtNzA3LTANCg0KU2l0eiBkZXIgR2VzZWxsc2NoYWZ0OiBMYW5nZW4vSGVzc2VuDQpadXN0
+w6RuZGlnZXMgUmVnaXN0ZXJnZXJpY2h0OiBBRyBPZmZlbmJhY2ggYW0gTWFpbiwgSFJCIDM0OTc3
+DQpWb3JzaXR6ZW5kZSBkZXMgQXVmc2ljaHRzcmF0czogRHIuIE1hcnRpbmEgSGlucmljaGVyDQpH
+ZXNjaMOkZnRzZsO8aHJlcjogUHJvZi4gS2xhdXMtRGlldGVyIFNjaGV1cmxlIChWb3JzLiksIFJv
+YmVydCBTY2hpY2tsaW5nLCBEci4gTWljaGFlbCBIYW5uDQoNCkludGVybmV0OiBodHRwOi8vd3d3
+LmRmcy5kZQ0KUHVibGljLUtleSBkZXIgREZTOiBodHRwOi8vd3d3LmRmcy5kZS9kZnMvcHVibGlj
+X2tleS5hc2MNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
