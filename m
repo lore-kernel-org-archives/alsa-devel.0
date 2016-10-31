@@ -1,27 +1,82 @@
-From: Russell King - ARM Linux <linux@armlinux.org.uk>
-Subject: Re: [PATCH][resend] drm: bridge: add DesignWare HDMI I2S audio
- support
-Date: Mon, 31 Oct 2016 16:06:21 +0000
-Message-ID: <20161031160621.GE1041@n2100.armlinux.org.uk>
-References: <87lgx9wa2d.wl%kuninori.morimoto.gx@renesas.com>
+From: Fernando Rodriguez <cyklonite@gmail.com>
+Subject: Re: Question about the buffer length in the transfer
+ callback of the PCM External Plugin
+Date: Mon, 31 Oct 2016 14:11:17 -0400
+Message-ID: <20161031181116.GA25567@navi.local>
+References: <a68475dd084f4a45b224791224c7c244@LGNMSXB01.prod.bk.dfs>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yb0-f174.google.com (mail-yb0-f174.google.com
+ [209.85.213.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8D44261B03
+ for <Alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 19:08:55 +0100 (CET)
+Received: by mail-yb0-f174.google.com with SMTP id o7so11143399ybb.0
+ for <Alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 11:08:55 -0700 (PDT)
+Received: from navi.local (67-8-110-87.res.bhn.net. [67.8.110.87])
+ by smtp.gmail.com with ESMTPSA id r9sm9900913ywb.51.2016.10.31.11.08.53
+ for <Alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 31 Oct 2016 11:08:53 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <87lgx9wa2d.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Archit Taneja <architt@codeaurora.org>, Mark Brown <broonie@kernel.org>, David Airlie <airlied@linux.ie>, Fabio Estevam <fabio.estevam@freescale.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, Koji Matsuoka <koji.matsuoka.xm@renesas.com>, Thierry Reding <treding@nvidia.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+In-Reply-To: <a68475dd084f4a45b224791224c7c244@LGNMSXB01.prod.bk.dfs>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 28, 2016 at 01:22:21AM +0000, Kuninori Morimoto wrote:
-> +static struct platform_driver snd_dw_hdmi_driver = {
-> +	.probe	= snd_dw_hdmi_probe,
-
-The driver must have a .remove function, because the platform device it
-is binding against can appear and disappear.
-
--- 
-RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+T24gTW9uLCBPY3QgMzEsIDIwMTYgYXQgMDk6MDE6MDJBTSArMDAwMCwgQmFjaCwgQW5kcmVhIHdy
+b3RlOgo+IEhlbGxvLAo+IAo+IGhvdyBjYW4gSSBjaGFuZ2UgdGhlIHNpemUgdGhhdCBpcyBwcm92
+aWRlZCBpbnNpZGUgdGhlIOKAnnRyYW5zZmVy4oCcLWNhbGxiYWNrIG9mIGFuIGV4dGVybmFsIFBD
+TSBwbHVnaW4/Cj4gCj4gQmFja2dyb3VuZDoKPiBJIG5lZWQgdG8gd3JpdGUgYSBmaWx0ZXIgcGx1
+Z2luIGFuZCBJIGhhdmUgdG8gdXNlIGZvciBwcm9jZXNzaW5nIGEgY2h1bmsgc2l6ZSBvZiBwb3dl
+ciBvZiB0d28gKDMyLCA2NCwgb3IgMTI4IGJ5dGVzIOKApiB0aGF04oCZcyBiZWNhdXNlIG9mIHRo
+ZSB1c2Ugb2YgRkZUKS4gQnV0IEkgZ2V0IGluc2lkZSB0aGUgdHJhbnNmZXIgY2FsbGJhY2sgYSBi
+dWZmZXIgb2YgbGVuZ3RoIDEwMDAuIFRoYXQgd291bGQgYmUgb2sgaWYgSSBjb3VsZCBqdXN0IHJl
+dHVybiBsZXQncyBzYXkgIDk2MCBieXRlcyDigJMgYnV0IGFmdGVyIHNvbWUgc3RydWdnbGluZyBJ
+IGhhdmUgc29tZSBkb3VidCBhYm91dCBpdCBiZWNhdXNlIEkgZ290IHRoZSBpbXByZXNzaW9uIHRo
+YXQgQUxTQSBjYW5ub3QgY2hhbmdlIHRoZSBiaXRyYXRlIGluc2lkZSBzdWNoIGEgcGx1Z2luIOKA
+kyB0aGUgZG9jdW1lbnRhdGlvbiBzdGF0ZXMgaXQgY291bGQgbm90IGNoYW5nZSB0aGUgc2FtcGxl
+IHJhdGUg4oCTIGJ1dCBhY3R1YWxseSBob3cgY2FuIEkgcmV0dXJuIGxlc3Mgb3IgbW9yZSBieXRl
+cyDigJMgc28gbWF5YmUgdGhlIGJpdHJhdGUgc2hvdWxkIGFsc28gYmUgY29uc3RhbnQ/IE1heWJl
+IEkgbWlzdW5kZXJzdG9vZCB0aGUgY29uY2VwdHMgb2YgQUxTQSBjb21wbGV0ZWx5Pwo+IAoKWWVz
+LgpZb3UncmUgd29ya2luZyB3aXRoIHJhdyBQQ00gZGF0YSwgc28gdGhlIGJpdHJhdGUgKGJpdHMg
+cGVyIHNlY29uZCkgaXMKY29uc3RhbnQgKChiaXRfZGVwdGgvOCkgKiBzYW1wbGVyYXRlICogY2hh
+bm5lbHMpLiBUaGUgdGVybSB1c3VhbGx5CnJlZmVycyB0byBjb21wcmVzc2VkIGF1ZGlvIHN0cmVh
+bXMuCgpJIGhhdmVuJ3QgZG9uZSB0aGlzIGJ1dCBieSBsb29raW5nIGF0IHRoZSBkZWZpbml0aW9u
+IGZvciB0aGUgdHJhbnNmZXIKY2FsbGJhY2sgaXQgbG9va3MgcHJldHR5IHN0YW5kYXJkLiBJdCBy
+ZXR1cm5zIHNuZF9wY21fc2ZyYW1lc190IHNvIEkKc3VwcG9zZSB5b3UgY2FuIHdyaXRlIGxlc3Mg
+dGhhbiAqc2l6ZSogZnJhbWVzIGFuZCByZXR1cm4gd2hhdCB3YXMKYWN0dWFsbHkgd3JpdHRlbi4g
+SXQgaXMgc2lnbmVkIHNvIGEgbmVnYXRpdmUgdmFsdWUgd291bGQgaW5kaWNhdGUgYW4KZXJyb3Iu
+IFNvIHlvdSdsbCBwcm9iYWJseSBoYXZlIHRvIGJ1ZmZlciBhbnkgbGVmdG92ZXJzIGFuZCB3cml0
+ZSB0aGVtIG9uCnRoZSBuZXh0IGNhbGwuIFRoYXQncyBub3QgdGhlIHNhbWUgYXMgY2hhbmdpbmcg
+dGhlIGZyYW1lcmF0ZSBiZWNhdXNlCmF0IHRoZSBlbmQgb2YgdGhlIHBpcGVsaW5lIGFsc2Egd2ls
+bCB0YWtlIGNhcmUgb2YgcGxheWluZyBpdCBhdCB0aGUKcmlnaHQgcmF0ZSkuCgpUaGF0IHNob3Vs
+ZCBjbGVhciBzb21lIG9mIHRoZSBjb25mdXNzaW9uLiBZb3UnbGwgcHJvYmFibHkgaGF2ZSB0byBs
+b29rCmF0IGFsc2EtbGliIG9yIHNvbWUgcGx1Z2luJ3Mgc291cmNlIGNvZGUgZm9yIG1vcmUgZGV0
+YWlscy4KCgo+IEtpbmQgcmVnYXJkcwo+IAo+IERyLiBBLiBCYWNoLCBTb2Z0d2FyZS1FbnR3aWNr
+bHVuZyBTaW11bGF0b3Jlbgo+IERGUyBEZXV0c2NoZSBGbHVnc2ljaGVydW5nIEdtYkgKPiBGb3Jz
+Y2h1bmdzemVudHJ1bQo+IEFtIERGUy1DYW1wdXMgNQo+IDYzMjI1IExhbmdlbgo+IDA2MTAzLTcw
+Ny01NzA5Cj4gCj4gREZTIERldXRzY2hlIEZsdWdzaWNoZXJ1bmcgR21iSAo+IEFtIERGUy1DYW1w
+dXMKPiBEIC0gNjMyMjUgTGFuZ2VuCj4gCj4gVGVsLjogKzQ5LSgwKTYxMDMtNzA3LTAKPiAKPiBT
+aXR6IGRlciBHZXNlbGxzY2hhZnQ6IExhbmdlbi9IZXNzZW4KPiBadXN0w6RuZGlnZXMgUmVnaXN0
+ZXJnZXJpY2h0OiBBRyBPZmZlbmJhY2ggYW0gTWFpbiwgSFJCIDM0OTc3Cj4gVm9yc2l0emVuZGUg
+ZGVzIEF1ZnNpY2h0c3JhdHM6IERyLiBNYXJ0aW5hIEhpbnJpY2hlcgo+IEdlc2Now6RmdHNmw7xo
+cmVyOiBQcm9mLiBLbGF1cy1EaWV0ZXIgU2NoZXVybGUgKFZvcnMuKSwgUm9iZXJ0IFNjaGlja2xp
+bmcsIERyLiBNaWNoYWVsIEhhbm4KPiAKPiBJbnRlcm5ldDogaHR0cDovL3d3dy5kZnMuZGUKPiBQ
+dWJsaWMtS2V5IGRlciBERlM6IGh0dHA6Ly93d3cuZGZzLmRlL2Rmcy9wdWJsaWNfa2V5LmFzYwo+
+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoKLS0g
+CkZlcm5hbmRvIFJvZHJpZ3VlegpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
