@@ -1,92 +1,73 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: add rt5665 codec driver
-Date: Mon, 31 Oct 2016 12:19:33 -0600
-Message-ID: <20161031181933.vya7yy5fniaimxvw@sirena.org.uk>
-References: <1477903079-11883-1-git-send-email-bardliao@realtek.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1841799390692723692=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 23E93266D48
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 19:19:55 +0100 (CET)
-In-Reply-To: <1477903079-11883-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, shumingf@realtek.com, flove@realtek.com
+Subject: Applied "ASoC: lpass-cpu: add module licence and description" to the asoc tree
+Date: Mon, 31 Oct 2016 12:30:50 -0600
+Message-ID: <E1c1HMA-0002At-5t@finisterre>
+References: <1465824197-7735-1-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1465824197-7735-1-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Kenneth Westfield <kwestfie@codeaurora.org>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.orgkwestfie@codeaurora.org, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1841799390692723692==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qubvd33c7flhekna"
-Content-Disposition: inline
+   ASoC: lpass-cpu: add module licence and description
 
+has been applied to the asoc tree at
 
---qubvd33c7flhekna
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Oct 31, 2016 at 04:37:59PM +0800, Bard Liao wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +	{"TDM2 Data Mux", "1324", "IF1_2 ADC TDM"},
-> +	{"TDM2 Data Mux", "1342", "IF1_2 ADC TDM"},
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-These aren't really done properly - they're squashing all the data paths
-down into one.  Ideally there'd be a separate AIF widget for each
-channel.  It's not super urgent right now since it won't make a
-practical difference.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +	regulator_1v8 = devm_regulator_get_optional(&i2c->dev,
-> +						rt5665->pdata.regulator_1v8);
-> +	if (IS_ERR(regulator_1v8))
-> +		dev_err(&i2c->dev, "Fail to get regulator_1v8\n");
-> +	else if (regulator_enable(regulator_1v8))
-> +		dev_err(&i2c->dev, "Fail to enable regulator_1v8\n");
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-This isn't good, while we log if we fail to enable the regulator we
-don't otherwise handle the error.  If the we failed to power on a power
-supply the chances are that the device isn't going to work so I'd expect
-us to fail the proble.
+Thanks,
+Mark
 
-> +	regulator_3v3 = devm_regulator_get_optional(&i2c->dev,
-> +						rt5665->pdata.regulator_3v3);
+>From 94201798dbce1cfd242407f1f422819a735c838f Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Mon, 31 Oct 2016 11:25:45 +0000
+Subject: [PATCH] ASoC: lpass-cpu: add module licence and description
 
-> +	regulator_5v = devm_regulator_get_optional(&i2c->dev,
-> +						rt5665->pdata.regulator_5v);
+This patch adds module licence to lpass-cpu driver, without this
+patch lpass-cpu module would taint with below error:
 
-I also just don't believe that *all* of the regulators the device has
-are optional.
+snd_soc_lpass_cpu: module license 'unspecified' taints kernel.
+Disabling lock debugging due to kernel taint
+snd_soc_lpass_cpu: Unknown symbol regmap_write (err 0)
+snd_soc_lpass_cpu: Unknown symbol devm_kmalloc (err 0)
+...
 
---qubvd33c7flhekna
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/qcom/lpass-cpu.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
------BEGIN PGP SIGNATURE-----
-
-iQEcBAABCAAGBQJYF4s0AAoJECTWi3JdVIfQjpMH/RWWRSbLmwZf42kz2q9gu3kH
-k+HL8GeqeD8+Rv296DqlMbatezul1I91S/7KGBRnK/ghLHyljsegbIjqyMZKZS85
-VFPr9hiy/tL0FzVQh4rcdHhX1B5RoV1oT8q0Uly0b6ipDv83ZcAnpeqXERThnZmO
-9p5rQIRPuOn029qSUyNrBrW5eeANfL7cBVVMQe80Dvyls1n3tRofA9DjzHFqbvTs
-PgFqp5Rd5+DDx5QKbBOyiQ8IrDHojMBC1e1osJowgihlsryVgTKg4P8EzlosKRI4
-iPHrK5nhtyPJegXSIEMiL6eNJPVmvaAy+E7yQl11N1VT33diM/KR11qORnN1+ls=
-=pPRB
------END PGP SIGNATURE-----
-
---qubvd33c7flhekna--
-
---===============1841799390692723692==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1841799390692723692==--
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index 3cde9fb977fa..eff3f9a8b685 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -586,3 +586,6 @@ int asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_platform_remove);
++
++MODULE_DESCRIPTION("QTi LPASS CPU Driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.10.1
