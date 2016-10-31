@@ -1,58 +1,92 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: MOTU Midi Express XT
-Date: Mon, 31 Oct 2016 16:01:02 +0100
-Message-ID: <0ee7780b-d697-ace0-99bb-07ac36b710e1@ladisch.de>
-References: <26f710a4f67283761948a697c1d6e698@owncloud.dehnhardt.org>
- <c04f2a54-3b2e-9a07-dd83-97a81c0123f8@ladisch.de>
- <2e5e4e51f4f2c63ecab719a1937d695f@owncloud.dehnhardt.org>
- <9d5810a657a4fb63805acea778570a49@owncloud.dehnhardt.org>
- <1bdf9e49-1bbb-4f45-5122-bd0f6f4315bf@ladisch.de>
- <bf3281416a57f2788d4772e9f7926b3a@owncloud.dehnhardt.org>
- <9393708728a54b11ca4bd1edc65d90f8@owncloud.dehnhardt.org>
- <56dad789446d6e7477f82b06ce68e941@owncloud.dehnhardt.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 6F5B4261B03
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 16:01:34 +0100 (CET)
-In-Reply-To: <56dad789446d6e7477f82b06ce68e941@owncloud.dehnhardt.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: holger@dehnhardt.org
-Cc: alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: sun4i-codec: return error code instead of NULL when create_card fails" to the asoc tree
+Date: Mon, 31 Oct 2016 09:49:25 -0600
+Message-ID: <E1c1Epx-0000n0-CM@finisterre>
+References: <20161031064209.12241-1-wens@csie.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20161031064209.12241-1-wens@csie.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-sunxi@googlegroups.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-holger@dehnhardt.org wrote:
-> 29. Oktober 2016 21:28 Uhr, holger@dehnhardt.org schrieb:
->> 29. Oktober 2016 19:28 Uhr, "Clemens Ladisch" <clemens@ladisch.de> schrieb:
->>> Is there any message in the system log?
->>
->> Motu MidiTimePiece on parallel port irq: 10 ioport: 0xb010
+The patch
 
-In theory, this indicates that the driver has been initialized correctly.
-But it doesn't actually check if the device is there.
+   ASoC: sun4i-codec: return error code instead of NULL when create_card fails
 
-A PCI device needs to be enabled before it can be used, and this driver
-does not know about PCI.
+has been applied to the asoc tree at
 
-The partport-serial driver gets loaded, doesn't it?
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> I added a print statement to to __init function (see the code and arrow -> below).
-> It initialises without error.
->
-> static int __init alsa_card_mtpav_init(void)
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-The actual device initialization is in snd_mptav_probe().
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Regards,
-Clemens
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 85915b63ad8b796848f431b66c9ba5e356e722e5 Mon Sep 17 00:00:00 2001
+From: Chen-Yu Tsai <wens@csie.org>
+Date: Mon, 31 Oct 2016 14:42:09 +0800
+Subject: [PATCH] ASoC: sun4i-codec: return error code instead of NULL when
+ create_card fails
+
+When sun4i_codec_create_card fails, we do not assign a proper error
+code to the return value. The return value would be 0 from the previous
+function call, or we would have bailed out sooner. This would confuse
+the driver core into thinking the device probe succeeded, when in fact
+it didn't, leaving various devres based resources lingering.
+
+Make the create_card function pass back a meaningful error code, and
+assign it to the return value.
+
+Fixes: 45fb6b6f2aa3 ("ASoC: sunxi: add support for the on-chip codec on
+		      early Allwinner SoCs")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sunxi/sun4i-codec.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index e047ec06d538..a60707761abf 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -765,11 +765,11 @@ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
+ 
+ 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
+ 	if (!card)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
+ 	if (!card->dai_link)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	card->dev		= dev;
+ 	card->name		= "sun4i-codec";
+@@ -876,7 +876,8 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	card = sun4i_codec_create_card(&pdev->dev);
+-	if (!card) {
++	if (IS_ERR(card)) {
++		ret = PTR_ERR(card);
+ 		dev_err(&pdev->dev, "Failed to create our card\n");
+ 		goto err_unregister_codec;
+ 	}
+-- 
+2.10.1
