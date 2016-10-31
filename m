@@ -1,167 +1,87 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: lpass-platform: use dma_ch instead of rdma_ch/wrdma_ch" to the asoc tree
-Date: Mon, 31 Oct 2016 12:31:32 -0600
-Message-ID: <E1c1HMq-0002Ou-O6@finisterre>
-References: <1477913145-8259-3-git-send-email-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1477913145-8259-3-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Kenneth Westfield <kwestfie@codeaurora.org>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.orgKenneth Westfield <kwestfie@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
+From: Fernando Rodriguez <cyklonite@gmail.com>
+Subject: Re: Question about the buffer length in the transfer
+ callback of the PCM External Plugin
+Date: Mon, 31 Oct 2016 14:47:49 -0400
+Message-ID: <20161031184748.GB25567@navi.local>
+References: <a68475dd084f4a45b224791224c7c244@LGNMSXB01.prod.bk.dfs>
+ <20161031181116.GA25567@navi.local>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yb0-f177.google.com (mail-yb0-f177.google.com
+ [209.85.213.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DAB1266D44
+ for <Alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 19:45:27 +0100 (CET)
+Received: by mail-yb0-f177.google.com with SMTP id o7so11722897ybb.0
+ for <Alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 11:45:27 -0700 (PDT)
+Received: from navi.local (67-8-110-87.res.bhn.net. [67.8.110.87])
+ by smtp.gmail.com with ESMTPSA id h15sm9986656ywc.22.2016.10.31.11.45.25
+ for <Alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 31 Oct 2016 11:45:25 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20161031181116.GA25567@navi.local>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: lpass-platform: use dma_ch instead of rdma_ch/wrdma_ch
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 4314f928f79f816367a4f09539aeebf7c5b4f5fa Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Mon, 31 Oct 2016 11:25:44 +0000
-Subject: [PATCH] ASoC: lpass-platform: use dma_ch instead of rdma_ch/wrdma_ch
-
-This patch cleans up usage of wrdma_ch and rdma_ch variables into a
-common variable dma_ch, As there is no real use of tracking the dma
-channel in two different variables based on stream direction.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/qcom/lpass-platform.c | 46 ++++++++---------------------------------
- 1 file changed, 9 insertions(+), 37 deletions(-)
-
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 07000f53db44..ca5e19f55a28 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -25,8 +25,7 @@
- #include "lpass.h"
- 
- struct lpass_pcm_data {
--	int rdma_ch;
--	int wrdma_ch;
-+	int dma_ch;
- 	int i2s_port;
- };
- 
-@@ -91,10 +90,7 @@ static int lpass_platform_pcmops_open(struct snd_pcm_substream *substream)
- 			return ret;
- 	}
- 
--	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
--		data->rdma_ch = dma_ch;
--	else
--		data->wrdma_ch = dma_ch;
-+	data->dma_ch = dma_ch;
- 
- 	snd_soc_set_runtime_hwparams(substream, &lpass_platform_pcm_hardware);
- 
-@@ -121,20 +117,12 @@ static int lpass_platform_pcmops_close(struct snd_pcm_substream *substream)
- 		snd_soc_platform_get_drvdata(soc_runtime->platform);
- 	struct lpass_variant *v = drvdata->variant;
- 	struct lpass_pcm_data *data;
--	int dma_ch, dir = substream->stream;
- 
- 	data = runtime->private_data;
- 	v = drvdata->variant;
--
--	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
--		dma_ch = data->rdma_ch;
--	else
--		dma_ch = data->wrdma_ch;
--
--	drvdata->substream[dma_ch] = NULL;
--
-+	drvdata->substream[data->dma_ch] = NULL;
- 	if (v->free_dma_channel)
--		v->free_dma_channel(drvdata, dma_ch);
-+		v->free_dma_channel(drvdata, data->dma_ch);
- 
- 	return 0;
- }
-@@ -155,10 +143,7 @@ static int lpass_platform_pcmops_hw_params(struct snd_pcm_substream *substream,
- 	int bitwidth;
- 	int ret, dma_port = pcm_data->i2s_port + v->dmactl_audif_start;
- 
--	if (dir ==  SNDRV_PCM_STREAM_PLAYBACK)
--		ch = pcm_data->rdma_ch;
--	else
--		ch = pcm_data->wrdma_ch;
-+	ch = pcm_data->dma_ch;
- 
- 	bitwidth = snd_pcm_format_width(format);
- 	if (bitwidth < 0) {
-@@ -245,11 +230,7 @@ static int lpass_platform_pcmops_hw_free(struct snd_pcm_substream *substream)
- 	unsigned int reg;
- 	int ret;
- 
--	if (substream->stream ==  SNDRV_PCM_STREAM_PLAYBACK)
--		reg = LPAIF_RDMACTL_REG(v, pcm_data->rdma_ch);
--	else
--		reg = LPAIF_WRDMACTL_REG(v, pcm_data->wrdma_ch);
--
-+	reg = LPAIF_DMACTL_REG(v, pcm_data->dma_ch, substream->stream);
- 	ret = regmap_write(drvdata->lpaif_map, reg, 0);
- 	if (ret)
- 		dev_err(soc_runtime->dev, "%s() error writing to rdmactl reg: %d\n",
-@@ -269,10 +250,7 @@ static int lpass_platform_pcmops_prepare(struct snd_pcm_substream *substream)
- 	struct lpass_variant *v = drvdata->variant;
- 	int ret, ch, dir = substream->stream;
- 
--	if (dir ==  SNDRV_PCM_STREAM_PLAYBACK)
--		ch = pcm_data->rdma_ch;
--	else
--		ch = pcm_data->wrdma_ch;
-+	ch = pcm_data->dma_ch;
- 
- 	ret = regmap_write(drvdata->lpaif_map,
- 			LPAIF_DMABASE_REG(v, ch, dir),
-@@ -324,10 +302,7 @@ static int lpass_platform_pcmops_trigger(struct snd_pcm_substream *substream,
- 	struct lpass_variant *v = drvdata->variant;
- 	int ret, ch, dir = substream->stream;
- 
--	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
--		ch = pcm_data->rdma_ch;
--	else
--		ch = pcm_data->wrdma_ch;
-+	ch = pcm_data->dma_ch;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -402,10 +377,7 @@ static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
- 	unsigned int base_addr, curr_addr;
- 	int ret, ch, dir = substream->stream;
- 
--	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
--		ch = pcm_data->rdma_ch;
--	else
--		ch = pcm_data->wrdma_ch;
-+	ch = pcm_data->dma_ch;
- 
- 	ret = regmap_read(drvdata->lpaif_map,
- 			LPAIF_DMABASE_REG(v, ch, dir), &base_addr);
--- 
-2.10.1
+T24gTW9uLCBPY3QgMzEsIDIwMTYgYXQgMDI6MTE6MTdQTSAtMDQwMCwgRmVybmFuZG8gUm9kcmln
+dWV6IHdyb3RlOgo+IE9uIE1vbiwgT2N0IDMxLCAyMDE2IGF0IDA5OjAxOjAyQU0gKzAwMDAsIEJh
+Y2gsIEFuZHJlYSB3cm90ZToKPiA+IEhlbGxvLAo+ID4gCj4gPiBob3cgY2FuIEkgY2hhbmdlIHRo
+ZSBzaXplIHRoYXQgaXMgcHJvdmlkZWQgaW5zaWRlIHRoZSDigJ50cmFuc2ZlcuKAnC1jYWxsYmFj
+ayBvZiBhbiBleHRlcm5hbCBQQ00gcGx1Z2luPwo+ID4gCj4gPiBCYWNrZ3JvdW5kOgo+ID4gSSBu
+ZWVkIHRvIHdyaXRlIGEgZmlsdGVyIHBsdWdpbiBhbmQgSSBoYXZlIHRvIHVzZSBmb3IgcHJvY2Vz
+c2luZyBhIGNodW5rIHNpemUgb2YgcG93ZXIgb2YgdHdvICgzMiwgNjQsIG9yIDEyOCBieXRlcyDi
+gKYgdGhhdOKAmXMgYmVjYXVzZSBvZiB0aGUgdXNlIG9mIEZGVCkuIEJ1dCBJIGdldCBpbnNpZGUg
+dGhlIHRyYW5zZmVyIGNhbGxiYWNrIGEgYnVmZmVyIG9mIGxlbmd0aCAxMDAwLiBUaGF0IHdvdWxk
+IGJlIG9rIGlmIEkgY291bGQganVzdCByZXR1cm4gbGV0J3Mgc2F5ICA5NjAgYnl0ZXMg4oCTIGJ1
+dCBhZnRlciBzb21lIHN0cnVnZ2xpbmcgSSBoYXZlIHNvbWUgZG91YnQgYWJvdXQgaXQgYmVjYXVz
+ZSBJIGdvdCB0aGUgaW1wcmVzc2lvbiB0aGF0IEFMU0EgY2Fubm90IGNoYW5nZSB0aGUgYml0cmF0
+ZSBpbnNpZGUgc3VjaCBhIHBsdWdpbiDigJMgdGhlIGRvY3VtZW50YXRpb24gc3RhdGVzIGl0IGNv
+dWxkIG5vdCBjaGFuZ2UgdGhlIHNhbXBsZSByYXRlIOKAkyBidXQgYWN0dWFsbHkgaG93IGNhbiBJ
+IHJldHVybiBsZXNzIG9yIG1vcmUgYnl0ZXMg4oCTIHNvIG1heWJlIHRoZSBiaXRyYXRlIHNob3Vs
+ZCBhbHNvIGJlIGNvbnN0YW50PyBNYXliZSBJIG1pc3VuZGVyc3Rvb2QgdGhlIGNvbmNlcHRzIG9m
+IEFMU0EgY29tcGxldGVseT8KPiA+IAo+IAo+IFllcy4KPiBZb3UncmUgd29ya2luZyB3aXRoIHJh
+dyBQQ00gZGF0YSwgc28gdGhlIGJpdHJhdGUgKGJpdHMgcGVyIHNlY29uZCkgaXMKPiBjb25zdGFu
+dCAoKGJpdF9kZXB0aC84KSAqIHNhbXBsZXJhdGUgKiBjaGFubmVscykuIFRoZSB0ZXJtIHVzdWFs
+bHkKPiByZWZlcnMgdG8gY29tcHJlc3NlZCBhdWRpbyBzdHJlYW1zLgoKT29wcywgdGhhdCB3YXMg
+aW4gYnl0ZXMuIEl0J3MgYml0ZGVwdGggKiBzYW1wbGVyYXRlICogY2hhbm5lbHMuCgo+IAo+IEkg
+aGF2ZW4ndCBkb25lIHRoaXMgYnV0IGJ5IGxvb2tpbmcgYXQgdGhlIGRlZmluaXRpb24gZm9yIHRo
+ZSB0cmFuc2Zlcgo+IGNhbGxiYWNrIGl0IGxvb2tzIHByZXR0eSBzdGFuZGFyZC4gSXQgcmV0dXJu
+cyBzbmRfcGNtX3NmcmFtZXNfdCBzbyBJCj4gc3VwcG9zZSB5b3UgY2FuIHdyaXRlIGxlc3MgdGhh
+biAqc2l6ZSogZnJhbWVzIGFuZCByZXR1cm4gd2hhdCB3YXMKPiBhY3R1YWxseSB3cml0dGVuLiBJ
+dCBpcyBzaWduZWQgc28gYSBuZWdhdGl2ZSB2YWx1ZSB3b3VsZCBpbmRpY2F0ZSBhbgo+IGVycm9y
+LiBTbyB5b3UnbGwgcHJvYmFibHkgaGF2ZSB0byBidWZmZXIgYW55IGxlZnRvdmVycyBhbmQgd3Jp
+dGUgdGhlbSBvbgo+IHRoZSBuZXh0IGNhbGwuIFRoYXQncyBub3QgdGhlIHNhbWUgYXMgY2hhbmdp
+bmcgdGhlIGZyYW1lcmF0ZSBiZWNhdXNlCj4gYXQgdGhlIGVuZCBvZiB0aGUgcGlwZWxpbmUgYWxz
+YSB3aWxsIHRha2UgY2FyZSBvZiBwbGF5aW5nIGl0IGF0IHRoZQo+IHJpZ2h0IHJhdGUpLgo+IAo+
+IFRoYXQgc2hvdWxkIGNsZWFyIHNvbWUgb2YgdGhlIGNvbmZ1c3Npb24uIFlvdSdsbCBwcm9iYWJs
+eSBoYXZlIHRvIGxvb2sKPiBhdCBhbHNhLWxpYiBvciBzb21lIHBsdWdpbidzIHNvdXJjZSBjb2Rl
+IGZvciBtb3JlIGRldGFpbHMuCj4gCj4gCj4gPiBLaW5kIHJlZ2FyZHMKPiA+IAo+ID4gRHIuIEEu
+IEJhY2gsIFNvZnR3YXJlLUVudHdpY2tsdW5nIFNpbXVsYXRvcmVuCj4gPiBERlMgRGV1dHNjaGUg
+Rmx1Z3NpY2hlcnVuZyBHbWJICj4gPiBGb3JzY2h1bmdzemVudHJ1bQo+ID4gQW0gREZTLUNhbXB1
+cyA1Cj4gPiA2MzIyNSBMYW5nZW4KPiA+IDA2MTAzLTcwNy01NzA5Cj4gPiAKPiA+IERGUyBEZXV0
+c2NoZSBGbHVnc2ljaGVydW5nIEdtYkgKPiA+IEFtIERGUy1DYW1wdXMKPiA+IEQgLSA2MzIyNSBM
+YW5nZW4KPiA+IAo+ID4gVGVsLjogKzQ5LSgwKTYxMDMtNzA3LTAKPiA+IAo+ID4gU2l0eiBkZXIg
+R2VzZWxsc2NoYWZ0OiBMYW5nZW4vSGVzc2VuCj4gPiBadXN0w6RuZGlnZXMgUmVnaXN0ZXJnZXJp
+Y2h0OiBBRyBPZmZlbmJhY2ggYW0gTWFpbiwgSFJCIDM0OTc3Cj4gPiBWb3JzaXR6ZW5kZSBkZXMg
+QXVmc2ljaHRzcmF0czogRHIuIE1hcnRpbmEgSGlucmljaGVyCj4gPiBHZXNjaMOkZnRzZsO8aHJl
+cjogUHJvZi4gS2xhdXMtRGlldGVyIFNjaGV1cmxlIChWb3JzLiksIFJvYmVydCBTY2hpY2tsaW5n
+LCBEci4gTWljaGFlbCBIYW5uCj4gPiAKPiA+IEludGVybmV0OiBodHRwOi8vd3d3LmRmcy5kZQo+
+ID4gUHVibGljLUtleSBkZXIgREZTOiBodHRwOi8vd3d3LmRmcy5kZS9kZnMvcHVibGljX2tleS5h
+c2MKPiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+ID4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cj4gPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo+IAo+IC0tIAo+IEZlcm5hbmRvIFJvZHJpZ3VlegoKLS0gCkZlcm5hbmRvIFJvZHJp
+Z3VlegpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
