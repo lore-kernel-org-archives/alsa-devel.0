@@ -1,26 +1,16 @@
-From: Fernando Rodriguez <cyklonite@gmail.com>
-Subject: Re: Question about the buffer length in the transfer
- callback of the PCM External Plugin
-Date: Mon, 31 Oct 2016 14:11:17 -0400
-Message-ID: <20161031181116.GA25567@navi.local>
-References: <a68475dd084f4a45b224791224c7c244@LGNMSXB01.prod.bk.dfs>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: add rt5665 codec driver
+Date: Mon, 31 Oct 2016 12:19:33 -0600
+Message-ID: <20161031181933.vya7yy5fniaimxvw@sirena.org.uk>
+References: <1477903079-11883-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1841799390692723692=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb0-f174.google.com (mail-yb0-f174.google.com
- [209.85.213.174])
- by alsa0.perex.cz (Postfix) with ESMTP id A8D44261B03
- for <Alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 19:08:55 +0100 (CET)
-Received: by mail-yb0-f174.google.com with SMTP id o7so11143399ybb.0
- for <Alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 11:08:55 -0700 (PDT)
-Received: from navi.local (67-8-110-87.res.bhn.net. [67.8.110.87])
- by smtp.gmail.com with ESMTPSA id r9sm9900913ywb.51.2016.10.31.11.08.53
- for <Alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 31 Oct 2016 11:08:53 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <a68475dd084f4a45b224791224c7c244@LGNMSXB01.prod.bk.dfs>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23E93266D48
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 19:19:55 +0100 (CET)
+In-Reply-To: <1477903079-11883-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,53 +20,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBPY3QgMzEsIDIwMTYgYXQgMDk6MDE6MDJBTSArMDAwMCwgQmFjaCwgQW5kcmVhIHdy
-b3RlOgo+IEhlbGxvLAo+IAo+IGhvdyBjYW4gSSBjaGFuZ2UgdGhlIHNpemUgdGhhdCBpcyBwcm92
-aWRlZCBpbnNpZGUgdGhlIOKAnnRyYW5zZmVy4oCcLWNhbGxiYWNrIG9mIGFuIGV4dGVybmFsIFBD
-TSBwbHVnaW4/Cj4gCj4gQmFja2dyb3VuZDoKPiBJIG5lZWQgdG8gd3JpdGUgYSBmaWx0ZXIgcGx1
-Z2luIGFuZCBJIGhhdmUgdG8gdXNlIGZvciBwcm9jZXNzaW5nIGEgY2h1bmsgc2l6ZSBvZiBwb3dl
-ciBvZiB0d28gKDMyLCA2NCwgb3IgMTI4IGJ5dGVzIOKApiB0aGF04oCZcyBiZWNhdXNlIG9mIHRo
-ZSB1c2Ugb2YgRkZUKS4gQnV0IEkgZ2V0IGluc2lkZSB0aGUgdHJhbnNmZXIgY2FsbGJhY2sgYSBi
-dWZmZXIgb2YgbGVuZ3RoIDEwMDAuIFRoYXQgd291bGQgYmUgb2sgaWYgSSBjb3VsZCBqdXN0IHJl
-dHVybiBsZXQncyBzYXkgIDk2MCBieXRlcyDigJMgYnV0IGFmdGVyIHNvbWUgc3RydWdnbGluZyBJ
-IGhhdmUgc29tZSBkb3VidCBhYm91dCBpdCBiZWNhdXNlIEkgZ290IHRoZSBpbXByZXNzaW9uIHRo
-YXQgQUxTQSBjYW5ub3QgY2hhbmdlIHRoZSBiaXRyYXRlIGluc2lkZSBzdWNoIGEgcGx1Z2luIOKA
-kyB0aGUgZG9jdW1lbnRhdGlvbiBzdGF0ZXMgaXQgY291bGQgbm90IGNoYW5nZSB0aGUgc2FtcGxl
-IHJhdGUg4oCTIGJ1dCBhY3R1YWxseSBob3cgY2FuIEkgcmV0dXJuIGxlc3Mgb3IgbW9yZSBieXRl
-cyDigJMgc28gbWF5YmUgdGhlIGJpdHJhdGUgc2hvdWxkIGFsc28gYmUgY29uc3RhbnQ/IE1heWJl
-IEkgbWlzdW5kZXJzdG9vZCB0aGUgY29uY2VwdHMgb2YgQUxTQSBjb21wbGV0ZWx5Pwo+IAoKWWVz
-LgpZb3UncmUgd29ya2luZyB3aXRoIHJhdyBQQ00gZGF0YSwgc28gdGhlIGJpdHJhdGUgKGJpdHMg
-cGVyIHNlY29uZCkgaXMKY29uc3RhbnQgKChiaXRfZGVwdGgvOCkgKiBzYW1wbGVyYXRlICogY2hh
-bm5lbHMpLiBUaGUgdGVybSB1c3VhbGx5CnJlZmVycyB0byBjb21wcmVzc2VkIGF1ZGlvIHN0cmVh
-bXMuCgpJIGhhdmVuJ3QgZG9uZSB0aGlzIGJ1dCBieSBsb29raW5nIGF0IHRoZSBkZWZpbml0aW9u
-IGZvciB0aGUgdHJhbnNmZXIKY2FsbGJhY2sgaXQgbG9va3MgcHJldHR5IHN0YW5kYXJkLiBJdCBy
-ZXR1cm5zIHNuZF9wY21fc2ZyYW1lc190IHNvIEkKc3VwcG9zZSB5b3UgY2FuIHdyaXRlIGxlc3Mg
-dGhhbiAqc2l6ZSogZnJhbWVzIGFuZCByZXR1cm4gd2hhdCB3YXMKYWN0dWFsbHkgd3JpdHRlbi4g
-SXQgaXMgc2lnbmVkIHNvIGEgbmVnYXRpdmUgdmFsdWUgd291bGQgaW5kaWNhdGUgYW4KZXJyb3Iu
-IFNvIHlvdSdsbCBwcm9iYWJseSBoYXZlIHRvIGJ1ZmZlciBhbnkgbGVmdG92ZXJzIGFuZCB3cml0
-ZSB0aGVtIG9uCnRoZSBuZXh0IGNhbGwuIFRoYXQncyBub3QgdGhlIHNhbWUgYXMgY2hhbmdpbmcg
-dGhlIGZyYW1lcmF0ZSBiZWNhdXNlCmF0IHRoZSBlbmQgb2YgdGhlIHBpcGVsaW5lIGFsc2Egd2ls
-bCB0YWtlIGNhcmUgb2YgcGxheWluZyBpdCBhdCB0aGUKcmlnaHQgcmF0ZSkuCgpUaGF0IHNob3Vs
-ZCBjbGVhciBzb21lIG9mIHRoZSBjb25mdXNzaW9uLiBZb3UnbGwgcHJvYmFibHkgaGF2ZSB0byBs
-b29rCmF0IGFsc2EtbGliIG9yIHNvbWUgcGx1Z2luJ3Mgc291cmNlIGNvZGUgZm9yIG1vcmUgZGV0
-YWlscy4KCgo+IEtpbmQgcmVnYXJkcwo+IAo+IERyLiBBLiBCYWNoLCBTb2Z0d2FyZS1FbnR3aWNr
-bHVuZyBTaW11bGF0b3Jlbgo+IERGUyBEZXV0c2NoZSBGbHVnc2ljaGVydW5nIEdtYkgKPiBGb3Jz
-Y2h1bmdzemVudHJ1bQo+IEFtIERGUy1DYW1wdXMgNQo+IDYzMjI1IExhbmdlbgo+IDA2MTAzLTcw
-Ny01NzA5Cj4gCj4gREZTIERldXRzY2hlIEZsdWdzaWNoZXJ1bmcgR21iSAo+IEFtIERGUy1DYW1w
-dXMKPiBEIC0gNjMyMjUgTGFuZ2VuCj4gCj4gVGVsLjogKzQ5LSgwKTYxMDMtNzA3LTAKPiAKPiBT
-aXR6IGRlciBHZXNlbGxzY2hhZnQ6IExhbmdlbi9IZXNzZW4KPiBadXN0w6RuZGlnZXMgUmVnaXN0
-ZXJnZXJpY2h0OiBBRyBPZmZlbmJhY2ggYW0gTWFpbiwgSFJCIDM0OTc3Cj4gVm9yc2l0emVuZGUg
-ZGVzIEF1ZnNpY2h0c3JhdHM6IERyLiBNYXJ0aW5hIEhpbnJpY2hlcgo+IEdlc2Now6RmdHNmw7xo
-cmVyOiBQcm9mLiBLbGF1cy1EaWV0ZXIgU2NoZXVybGUgKFZvcnMuKSwgUm9iZXJ0IFNjaGlja2xp
-bmcsIERyLiBNaWNoYWVsIEhhbm4KPiAKPiBJbnRlcm5ldDogaHR0cDovL3d3dy5kZnMuZGUKPiBQ
-dWJsaWMtS2V5IGRlciBERlM6IGh0dHA6Ly93d3cuZGZzLmRlL2Rmcy9wdWJsaWNfa2V5LmFzYwo+
-IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoKLS0g
-CkZlcm5hbmRvIFJvZHJpZ3VlegpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+
+--===============1841799390692723692==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qubvd33c7flhekna"
+Content-Disposition: inline
+
+
+--qubvd33c7flhekna
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Oct 31, 2016 at 04:37:59PM +0800, Bard Liao wrote:
+
+> +	{"TDM2 Data Mux", "1324", "IF1_2 ADC TDM"},
+> +	{"TDM2 Data Mux", "1342", "IF1_2 ADC TDM"},
+
+These aren't really done properly - they're squashing all the data paths
+down into one.  Ideally there'd be a separate AIF widget for each
+channel.  It's not super urgent right now since it won't make a
+practical difference.
+
+> +	regulator_1v8 = devm_regulator_get_optional(&i2c->dev,
+> +						rt5665->pdata.regulator_1v8);
+> +	if (IS_ERR(regulator_1v8))
+> +		dev_err(&i2c->dev, "Fail to get regulator_1v8\n");
+> +	else if (regulator_enable(regulator_1v8))
+> +		dev_err(&i2c->dev, "Fail to enable regulator_1v8\n");
+
+This isn't good, while we log if we fail to enable the regulator we
+don't otherwise handle the error.  If the we failed to power on a power
+supply the chances are that the device isn't going to work so I'd expect
+us to fail the proble.
+
+> +	regulator_3v3 = devm_regulator_get_optional(&i2c->dev,
+> +						rt5665->pdata.regulator_3v3);
+
+> +	regulator_5v = devm_regulator_get_optional(&i2c->dev,
+> +						rt5665->pdata.regulator_5v);
+
+I also just don't believe that *all* of the regulators the device has
+are optional.
+
+--qubvd33c7flhekna
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJYF4s0AAoJECTWi3JdVIfQjpMH/RWWRSbLmwZf42kz2q9gu3kH
+k+HL8GeqeD8+Rv296DqlMbatezul1I91S/7KGBRnK/ghLHyljsegbIjqyMZKZS85
+VFPr9hiy/tL0FzVQh4rcdHhX1B5RoV1oT8q0Uly0b6ipDv83ZcAnpeqXERThnZmO
+9p5rQIRPuOn029qSUyNrBrW5eeANfL7cBVVMQe80Dvyls1n3tRofA9DjzHFqbvTs
+PgFqp5Rd5+DDx5QKbBOyiQ8IrDHojMBC1e1osJowgihlsryVgTKg4P8EzlosKRI4
+iPHrK5nhtyPJegXSIEMiL6eNJPVmvaAy+E7yQl11N1VT33diM/KR11qORnN1+ls=
+=pPRB
+-----END PGP SIGNATURE-----
+
+--qubvd33c7flhekna--
+
+--===============1841799390692723692==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1841799390692723692==--
