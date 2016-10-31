@@ -1,24 +1,18 @@
-From: holger@dehnhardt.org
-Subject: Re: MOTU Midi Express XT
-Date: Mon, 31 Oct 2016 20:10:39 +0000
-Message-ID: <dfc508c06ed983cc3b712adea386d873@owncloud.dehnhardt.org>
-References: <0ee7780b-d697-ace0-99bb-07ac36b710e1@ladisch.de>
- <26f710a4f67283761948a697c1d6e698@owncloud.dehnhardt.org>
- <c04f2a54-3b2e-9a07-dd83-97a81c0123f8@ladisch.de>
- <2e5e4e51f4f2c63ecab719a1937d695f@owncloud.dehnhardt.org>
- <9d5810a657a4fb63805acea778570a49@owncloud.dehnhardt.org>
- <1bdf9e49-1bbb-4f45-5122-bd0f6f4315bf@ladisch.de>
- <bf3281416a57f2788d4772e9f7926b3a@owncloud.dehnhardt.org>
- <9393708728a54b11ca4bd1edc65d90f8@owncloud.dehnhardt.org>
- <56dad789446d6e7477f82b06ce68e941@owncloud.dehnhardt.org>
+From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Subject: Re: Audio miniconference at LPC/KS - draft schedule
+Date: Mon, 31 Oct 2016 23:39:28 +0000
+Message-ID: <85DFEED57DC57344B2483EF7BF8CB60552C67E82@BGSMSX104.gar.corp.intel.com>
+References: <20161027221754.GW25322@sirena.org.uk>
+ <25b28ec4-29ce-e690-8c89-f591965574cc@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from punkt-k.de (punkt-k.de [84.200.50.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 315C4261B03
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 21:11:05 +0100 (CET)
-In-Reply-To: <0ee7780b-d697-ace0-99bb-07ac36b710e1@ladisch.de>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9BFDC266675
+ for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2016 00:39:34 +0100 (CET)
+In-Reply-To: <25b28ec4-29ce-e690-8c89-f591965574cc@sakamocchi.jp>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,43 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "Shah, Hardik T" <hardik.t.shah@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "Luis R. Rodriguez" <mcgrof@kernel.org>, Eric Laurent <elaurent@google.com>, "Kale, Sanyog R" <sanyog.r.kale@intel.com>, "Bossart, Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for answering, Clemens. Comments are inline.
-
-> In theory, this indicates that the driver has been initialized correctly.
-> But it doesn't actually check if the device is there.
-> 
-> A PCI device needs to be enabled before it can be used, and this driver
-> does not know about PCI.
-
-It looks like the driver does not care about that. 
-
-> 
-> The partport-serial driver gets loaded, doesn't it?
-
-It can be loaded but is not loaded by default as mtpav does not work if any other parport driver is
-loaded.
-
->> I added a print statement to to __init function (see the code and arrow -> below).
->> It initialises without error.
->> 
->> static int __init alsa_card_mtpav_init(void)
-> 
-> The actual device initialization is in snd_mptav_probe().
-
-Ok, this is where the default message: "Motu MidiTimePiece on parallel port irq: %d ioport: 0x%lx\n" is written from. So there is no error too.
-
-BTW: lsmod |grep snd_mtpav shows, that it is using snd_rawmidi...
-
-snd_mtpav              16384  0
-snd_rawmidi            32768  2 snd_mtpav,snd_seq_midi
-snd                    81920  5 snd_mtpav,snd_timer,snd_seq,snd_rawmidi,snd_seq_device
-
-Was there a recent api change? More and more it looks like there is a problem with registering the driver / the port to the ALSA system.
-
-
-
-Holger
+VXBkYXRlZCB0aGUgU291bmRXaXJlIHByZXNlbnRhdGlvbiBsaW5rIGluIFdpS2kNCmh0dHA6Ly93
+aWtpLmxpbnV4cGx1bWJlcnNjb25mLm9yZy8yMDE2OmF1ZGlvI3RvcGljX3Byb3Bvc2Fscw0KDQpE
+aXJlY3QgbGluayB0byBwcmVzZW50YXRpb24NCmh0dHBzOi8vZ2l0aHViLmNvbS9yYWtlc2h1Z2hy
+ZWphL3NvdW5kd2lyZS9ibG9iL21hc3Rlci9Tb3VuZFdpcmVfUGx1bWJlcnMucGRmDQoNClJlZ2Fy
+ZHMsDQpSYWtlc2gNCg0KDQoNCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPkZyb206IGFs
+c2EtZGV2ZWwtYm91bmNlc0BhbHNhLXByb2plY3Qub3JnIFttYWlsdG86YWxzYS1kZXZlbC1ib3Vu
+Y2VzQGFsc2EtDQo+cHJvamVjdC5vcmddIE9uIEJlaGFsZiBPZiBUYWthc2hpIFNha2Ftb3RvDQo+
+U2VudDogU2F0dXJkYXksIE9jdG9iZXIgMjksIDIwMTYgNzowNiBBTQ0KPlRvOiBNYXJrIEJyb3du
+IDxicm9vbmllQGtlcm5lbC5vcmc+OyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcNCj5DYzog
+VGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPjsgTGlhbSBHaXJkd29vZA0KPjxsaWFtLnIuZ2ly
+ZHdvb2RAbGludXguaW50ZWwuY29tPjsgTHVpcyBSLiBSb2RyaWd1ZXogPG1jZ3JvZkBrZXJuZWwu
+b3JnPjsNCj5Lb3VsLCBWaW5vZCA8dmlub2Qua291bEBpbnRlbC5jb20+OyBFcmljIExhdXJlbnQg
+PGVsYXVyZW50QGdvb2dsZS5jb20+DQo+U3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBBdWRpbyBt
+aW5pY29uZmVyZW5jZSBhdCBMUEMvS1MgLSBkcmFmdCBzY2hlZHVsZQ0KPg0KPk9uIDIwMTblubQx
+MOaciDI45pelIDA3OjE3LCBNYXJrIEJyb3duIHdyb3RlOg0KPj4gQ3VycmVudGx5IHRoZSBzZXQg
+b2YgdG9waWNzIHdlIGhhdmUgb24gdGhlIHdpa2kgYW5kIGZyb20gZS1tYWlsIGZvcg0KPj4gZGlz
+Y3Vzc2lvbiBpczoNCj4+DQo+PiAgLSBtbWFwL25vIElSUSBtb2RlDQo+PiAgLSBUaW1lIHN0YW1w
+IHJlcG9ydGluZyAoYm90aCBjdXJyZW50IEFQSXMgYW5kIGFkZGl0aW9uIG9mIGFiaWxpdHkgdG8N
+Cj4+ICAgIHB1c2ggZG93biBQQ00gc3luYykNCj4+ICAtIFVTQiBhdWRpbyBwb3dlciBhbmQgbGF0
+ZW5jeSBwZXJmb3JtYW5jZQ0KPj4gIC0gU3RhbmRhcmRpemluZyBIRE1JIC8gRFAgaW50ZXJmYWNl
+DQo+PiAgLSBTb3VuZFdpcmUgc3VwcG9ydA0KPj4gIC0gVHJhY2Vwb2ludHMgZm9yIFBDTSBwYXJh
+bWV0ZXIgc3VwcG9ydA0KPj4gIC0gTG93IGxhdGVuY3kgYXVkaW8NCj4+ICAtIFByb3BhZ2F0aW5n
+IGRpZ2l0YWwgY29uZmlndXJhdGlvbiB0aHJvdWdoIHRoZSBEQVBNIGdyYXBoDQo+PiAgLSBVc2Vy
+c3BhY2UgYW5kIGNvbmZpZ3VyYXRpb24gaW50ZWdyYXRpb24gKGhvdyB3aWxsIHRvcG9sb2d5IGV0
+YyBnZXQNCj4+ICAgIGludGVncmF0ZWQgaW4gT1NlcykNCj4+ICAtIE1vdmUgb2YgQVNvQyBjbG9j
+a2luZyBpbnRvIHRoZSBjbG9jayBBUEkNCj4+ICAtIEhEQS9BU29DIGludGVncmF0aW9uDQo+PiAg
+LSBVQ00gc2NhbGluZywgZG9lcyBpdCBzY2FsZSB3ZWxs4oCmPw0KPj4gIC0gSG93IHRvIGltcHJv
+dmUgdXBzdHJlYW1pbmcgdmVuZG9yIGRyaXZlcnM/DQo+PiAgLSBTdGFibGUgLyBMVFMga2VybmVs
+IG1haW50ZW5hbmNlDQo+PiAgLSBQYXJhIFZpcnR1YWxpemVkIGF1ZGlvIGRyaXZlciBzdXBwb3J0
+DQo+PiAgLSBVc2Vyc3BhY2UgZHJpdmVycyAoZm9yIElFRUUgMTM5NCBhbmQgb3RoZXIgdGhpbmdz
+KQ0KPg0KPkkgdXBkYXRlZCB0aGUgd2lraSB3aXRoIGEgbGluayB0byBteSBwcmVzZW50YXRpb24u
+DQo+aHR0cDovL3dpa2kubGludXhwbHVtYmVyc2NvbmYub3JnLzIwMTY6YXVkaW8NCj4NCj4+ICAt
+IERyb3BwaW5nIHRoZSBESUNFIGRyaXZlcg0KPj4gIC0gTWVkaWEgQ29udHJvbGxlciBBUEkgaW50
+ZWdyYXRpb24NCj4+ICAgLSBJcyB0aGVyZSBhbnl0aGluZyBuZXcgaGVyZSBvciBzaG91bGQgd2Ug
+anVzdCBkcm9wIHRoaXMgZW50aXJlbHk/DQo+DQo+DQo+UmVnYXJkcw0KPg0KPlRha2FzaGkgU2Fr
+YW1vdG8NCj5fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0K
+PkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0DQo+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnDQo+
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
