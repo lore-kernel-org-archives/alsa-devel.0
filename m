@@ -1,82 +1,27 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt286: remove unnecessary selection in
-	Kconfig" to the asoc tree
-Date: Mon, 31 Oct 2016 09:49:27 -0600
-Message-ID: <E1c1Epz-0000nx-AF@finisterre>
-References: <1477905594-12081-1-git-send-email-bardliao@realtek.com>
+From: Russell King - ARM Linux <linux@armlinux.org.uk>
+Subject: Re: [PATCH][resend] drm: bridge: add DesignWare HDMI I2S audio
+ support
+Date: Mon, 31 Oct 2016 16:06:21 +0000
+Message-ID: <20161031160621.GE1041@n2100.armlinux.org.uk>
+References: <87lgx9wa2d.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CCF67261B03
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2016 16:49:46 +0100 (CET)
-In-Reply-To: <1477905594-12081-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87lgx9wa2d.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Archit Taneja <architt@codeaurora.org>, Mark Brown <broonie@kernel.org>, David Airlie <airlied@linux.ie>, Fabio Estevam <fabio.estevam@freescale.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, Koji Matsuoka <koji.matsuoka.xm@renesas.com>, Thierry Reding <treding@nvidia.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Oct 28, 2016 at 01:22:21AM +0000, Kuninori Morimoto wrote:
+> +static struct platform_driver snd_dw_hdmi_driver = {
+> +	.probe	= snd_dw_hdmi_probe,
 
-   ASoC: rt286: remove unnecessary selection in Kconfig
+The driver must have a .remove function, because the platform device it
+is binding against can appear and disappear.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 4774e27ab8206f4a959a8c9054f55545e2dff42c Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Mon, 31 Oct 2016 17:19:54 +0800
-Subject: [PATCH] ASoC: rt286: remove unnecessary selection in Kconfig
-
-SND_SOC_RT5663 is not required for SND_SOC_RT286.
-
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index c67667bb970f..22aaf63616a2 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -672,7 +672,6 @@ config SND_SOC_RL6347A
- 
- config SND_SOC_RT286
- 	tristate
--	select SND_SOC_RT5663
- 	depends on I2C
- 
- config SND_SOC_RT298
 -- 
-2.10.1
+RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
