@@ -1,40 +1,95 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 5/9] ASoC: pxa: switch to new ac97 bus support
-Date: Tue, 01 Nov 2016 20:55:10 +0100
-Message-ID: <8737jb0ych.fsf@belgarion.home>
-References: <1477510907-23495-1-git-send-email-robert.jarzmik@free.fr>
-        <1477510907-23495-6-git-send-email-robert.jarzmik@free.fr>
-        <87bmy029tu.fsf@belgarion.home>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: add rt5665 codec driver
+Date: Tue, 1 Nov 2016 14:14:33 -0600
+Message-ID: <20161101201433.4l2ruiczhbveaeif@sirena.org.uk>
+References: <1477903079-11883-1-git-send-email-bardliao@realtek.com>
+ <20161031181933.vya7yy5fniaimxvw@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D7011D28D9@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87bmy029tu.fsf@belgarion.home> (Robert Jarzmik's message of
-        "Mon, 31 Oct 2016 09:37:17 +0100")
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Sebastian Reichel <sre@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-pm@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============3945226004146254901=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CC35266917
+ for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2016 21:14:51 +0100 (CET)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D7011D28D9@RTITMBSV03.realtek.com.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Robert Jarzmik <robert.jarzmik@free.fr> writes:
 
-> Robert Jarzmik <robert.jarzmik@free.fr> writes:
->
->> Switch to the new ac97 bus support in sound/ac97 instead of the legacy
->> snd_ac97 one.
->>
->> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> I realized this one impacts sound/arm/pxa2xx-ac97.c.
-> This deserves a v2, with this patch being split into 2 pieces :
->  - one for pxa2xx-ac97-lib.*
->  - one which will be the true switch to the new ac97 bus.
+--===============3945226004146254901==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gj4yb45rra3ddzhl"
+Content-Disposition: inline
 
-And as another consequence, all pxa ac97 based codecs should be converted. So
-far, machine drivers in sound/soc/pxa/*.c using ac97 all use either wm9705,
-wm9712 or wm9713.
 
-Therefore for this patch to be usable, I must also convert wm9705 and wm9712.
+--gj4yb45rra3ddzhl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cheers.
+On Tue, Nov 01, 2016 at 03:16:02AM +0000, Bard Liao wrote:
 
--- 
-Robert
+> > These aren't really done properly - they're squashing all the data path=
+s down
+> > into one.  Ideally there'd be a separate AIF widget for each channel.  =
+It's not
+> > super urgent right now since it won't make a practical difference.
+
+> I will modify that. Something like below, right?
+> SND_SOC_DAPM_AIF_OUT("AIFOUTL", "Capture", 0, SND_SOC_NOPM, 0, 0),
+> SND_SOC_DAPM_AIF_OUT("AIFOUTR", "Capture", 1, SND_SOC_NOPM, 0, 0),
+
+Yes, exactly
+
+> > > +	regulator_3v3 =3D devm_regulator_get_optional(&i2c->dev,
+> > > +						rt5665->pdata.regulator_3v3);
+> >=20
+> > > +	regulator_5v =3D devm_regulator_get_optional(&i2c->dev,
+> > > +						rt5665->pdata.regulator_5v);
+
+> > I also just don't believe that *all* of the regulators the device has a=
+re optional.
+
+> That is because we don't know how customers design their schematic.
+> All regulators can be connected by hardware pin. It means we don't
+> need to use a regular to supply it.
+
+No, that's something the regulator API will handle for you - individual
+drivers should be written with sensible error handling, the regulator
+API will handle stubbing out things that are needed.
+
+--gj4yb45rra3ddzhl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJYGPemAAoJECTWi3JdVIfQYsMH+gI2O9zILrbLefD4bS/p7hPd
+YLD3jHILszwRSO9CQYWaQFjgTnNcPDJPpbwiewgMdm9DNIQ6GE60X93CSJHB0tdj
+PMkPFjfi27LwXHBM8054voj3WKCvmYpEefRqkwSndvW0lH8wkMig0qWFPZebt9Tm
+/KSWebFxEgQ3De0wQ1E9As/CQ5Mub9TtNXbVjwBz74oKoiB6XVCtqKJNg/iOdgBN
+0uSPY62blJ0X1ikwy1SbbhEzEa0/9s/FOMEe26BoWw8EPGRLtGbvWagpXZmxPvr/
+ABsgFAXA9s5uch/c3nd8kKQzHCWxseBwaq4b7edsIfBSqxdio4/3/gL5Wg6HvNA=
+=74oT
+-----END PGP SIGNATURE-----
+
+--gj4yb45rra3ddzhl--
+
+--===============3945226004146254901==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3945226004146254901==--
