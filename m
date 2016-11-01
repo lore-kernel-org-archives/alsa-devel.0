@@ -1,52 +1,40 @@
-From: Scott Branden <scott.branden@broadcom.com>
-Subject: Re: [PATCH] sound: soc: cygnus: add depends on HAS_DMA
-Date: Tue, 1 Nov 2016 10:53:21 -0700
-Message-ID: <5feb3eea-ba7c-93b7-2708-f0c68c215a17@broadcom.com>
-References: <1475868258-10689-1-git-send-email-scott.branden@broadcom.com>
- <caa6a348-9a5f-7f08-ea24-35c3e9d78b31@broadcom.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH 5/9] ASoC: pxa: switch to new ac97 bus support
+Date: Tue, 01 Nov 2016 20:55:10 +0100
+Message-ID: <8737jb0ych.fsf@belgarion.home>
+References: <1477510907-23495-1-git-send-email-robert.jarzmik@free.fr>
+        <1477510907-23495-6-git-send-email-robert.jarzmik@free.fr>
+        <87bmy029tu.fsf@belgarion.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <caa6a348-9a5f-7f08-ea24-35c3e9d78b31@broadcom.com>
+In-Reply-To: <87bmy029tu.fsf@belgarion.home> (Robert Jarzmik's message of
+        "Mon, 31 Oct 2016 09:37:17 +0100")
 Sender: linux-kernel-owner@vger.kernel.org
-To: Ray Jui <ray.jui@broadcom.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Sebastian Reichel <sre@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-pm@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi/Jaroslav,
+Robert Jarzmik <robert.jarzmik@free.fr> writes:
 
-Could you pick up this patch?
-
-On 16-10-08 01:26 PM, Ray Jui wrote:
-> Hi Scott,
+> Robert Jarzmik <robert.jarzmik@free.fr> writes:
 >
-> On 10/7/2016 12:24 PM, Scott Branden wrote:
->> add depends on HAS_DMA to Kconfig.  This fixes error reported
->> by kbuild test robot when building for ARCH=m32r:
->> ERROR: "bad_dma_ops" [sound/soc/bcm/snd-soc-cygnus.ko] undefined!
+>> Switch to the new ac97 bus support in sound/ac97 instead of the legacy
+>> snd_ac97 one.
 >>
->> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
->> ---
->>   sound/soc/bcm/Kconfig | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/sound/soc/bcm/Kconfig b/sound/soc/bcm/Kconfig
->> index d528aac..edf3671 100644
->> --- a/sound/soc/bcm/Kconfig
->> +++ b/sound/soc/bcm/Kconfig
->> @@ -11,6 +11,7 @@ config SND_BCM2835_SOC_I2S
->>   config SND_SOC_CYGNUS
->>       tristate "SoC platform audio for Broadcom Cygnus chips"
->>       depends on ARCH_BCM_CYGNUS || COMPILE_TEST
->> +    depends on HAS_DMA
->>       help
->>         Say Y if you want to add support for ASoC audio on Broadcom
->>         Cygnus chips (bcm958300, bcm958305, bcm911360)
-> Looks good to me.
->
-> Reviewed-by: Ray Jui <ray.jui@broadcom.com>
->
+>> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> I realized this one impacts sound/arm/pxa2xx-ac97.c.
+> This deserves a v2, with this patch being split into 2 pieces :
+>  - one for pxa2xx-ac97-lib.*
+>  - one which will be the true switch to the new ac97 bus.
 
-Thanks,
-  Scott
+And as another consequence, all pxa ac97 based codecs should be converted. So
+far, machine drivers in sound/soc/pxa/*.c using ac97 all use either wm9705,
+wm9712 or wm9713.
+
+Therefore for this patch to be usable, I must also convert wm9705 and wm9712.
+
+Cheers.
+
+-- 
+Robert
