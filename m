@@ -1,43 +1,43 @@
-From: Russell King - ARM Linux <linux@armlinux.org.uk>
-Subject: Re: [PATCH][resend] drm: bridge: add DesignWare HDMI I2S audio
- support
-Date: Tue, 1 Nov 2016 09:38:18 +0000
-Message-ID: <20161101093818.GQ1041@n2100.armlinux.org.uk>
-References: <87lgx9wa2d.wl%kuninori.morimoto.gx@renesas.com>
- <20161031160621.GE1041@n2100.armlinux.org.uk>
- <87y414dpue.wl%kuninori.morimoto.gx@renesas.com>
- <87wpgodozh.wl%kuninori.morimoto.gx@renesas.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Question about the buffer length in the
+	transfer	callback of the PCM External Plugin
+Date: Tue, 1 Nov 2016 12:49:13 +0100
+Message-ID: <2dc2c73c-9d7c-3d3e-4d23-9797de2d1ec4@ladisch.de>
+References: <a68475dd084f4a45b224791224c7c244@LGNMSXB01.prod.bk.dfs>
+ <19904f93-f0ba-56a9-2980-ed52fe2a32bb@ladisch.de>
+ <6c2af613d3b64138bc6e7c6cf69486cf@LGNMSXB01.prod.bk.dfs>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87wpgodozh.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Archit Taneja <architt@codeaurora.org>, Mark Brown <broonie@kernel.org>, David Airlie <airlied@linux.ie>, Fabio Estevam <fabio.estevam@freescale.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, Koji Matsuoka <koji.matsuoka.xm@renesas.com>, Thierry Reding <treding@nvidia.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 6657E2666E3
+ for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2016 12:49:17 +0100 (CET)
+In-Reply-To: <6c2af613d3b64138bc6e7c6cf69486cf@LGNMSXB01.prod.bk.dfs>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Bach, Andrea" <andrea.bach@dfs.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 01, 2016 at 12:36:29AM +0000, Kuninori Morimoto wrote:
-> 
-> Hi Russell again
-> 
-> > > > +static struct platform_driver snd_dw_hdmi_driver = {
-> > > > +	.probe	= snd_dw_hdmi_probe,
-> > > 
-> > > The driver must have a .remove function, because the platform device it
-> > > is binding against can appear and disappear.
-> > 
-> > Thank you for your feedback
-> > OK, I will add it
-> 
-> This driver uses platform_device_register_full() and calls hdmi-codec
-> driver. This driver itself doesn't register sound card, like dw-hdmi-ahb-audio.c
-> Then, what does .remove should do in this case ?
+Bach, Andrea wrote:
+> Ok, what about the output buffer?
 
-Remove the platform device that was created by
-platform_device_register_full().
+"Output" from which point of view?  Playback or capture?
 
--- 
-RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+> When just 960 bytes are ready to be returned but I have to return 1000 bytes?
+
+In theory, this is an underrun.
+
+You could wait until the next 40 bytes are available.
+
+
+Regards,
+Clemens
