@@ -1,66 +1,43 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: [PATCH] ASoC: sun4i-codec: Enable bus clock after
- getting GPIO
-Date: Tue,  1 Nov 2016 14:31:55 +0800
-Message-ID: <20161101063155.15826-1-wens@csie.org>
-Reply-To: wens-jdAy2FN1RRM@public.gmane.org
+From: Russell King - ARM Linux <linux@armlinux.org.uk>
+Subject: Re: [PATCH][resend] drm: bridge: add DesignWare HDMI I2S audio
+ support
+Date: Tue, 1 Nov 2016 09:38:18 +0000
+Message-ID: <20161101093818.GQ1041@n2100.armlinux.org.uk>
+References: <87lgx9wa2d.wl%kuninori.morimoto.gx@renesas.com>
+ <20161031160621.GE1041@n2100.armlinux.org.uk>
+ <87y414dpue.wl%kuninori.morimoto.gx@renesas.com>
+ <87wpgodozh.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCMILY6JWQBBB2XN4DAAKGQELQPDPSI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87wpgodozh.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Archit Taneja <architt@codeaurora.org>, Mark Brown <broonie@kernel.org>, David Airlie <airlied@linux.ie>, Fabio Estevam <fabio.estevam@freescale.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, Koji Matsuoka <koji.matsuoka.xm@renesas.com>, Thierry Reding <treding@nvidia.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In the current probe function the GPIO is acquired after the codec's
-bus clock is enabled. However if it fails to acquire the GPIO due to
-a deferred probe, it does not disable the bus clock before bailing out.
-This would result in the clock being enabled multiple times.
+On Tue, Nov 01, 2016 at 12:36:29AM +0000, Kuninori Morimoto wrote:
+> 
+> Hi Russell again
+> 
+> > > > +static struct platform_driver snd_dw_hdmi_driver = {
+> > > > +	.probe	= snd_dw_hdmi_probe,
+> > > 
+> > > The driver must have a .remove function, because the platform device it
+> > > is binding against can appear and disappear.
+> > 
+> > Thank you for your feedback
+> > OK, I will add it
+> 
+> This driver uses platform_device_register_full() and calls hdmi-codec
+> driver. This driver itself doesn't register sound card, like dw-hdmi-ahb-audio.c
+> Then, what does .remove should do in this case ?
 
-Move the code that enables the bus clock after the part that gets the
-GPIO, maintaining a separation between resource acquisition and device
-enablement in the probe function.
+Remove the platform device that was created by
+platform_device_register_full().
 
-Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
----
- sound/soc/sunxi/sun4i-codec.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index a60707761abf..56ed9472e89f 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -829,12 +829,6 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 		return PTR_ERR(scodec->clk_module);
- 	}
- 
--	/* Enable the bus clock */
--	if (clk_prepare_enable(scodec->clk_apb)) {
--		dev_err(&pdev->dev, "Failed to enable the APB clock\n");
--		return -EINVAL;
--	}
--
- 	scodec->gpio_pa = devm_gpiod_get_optional(&pdev->dev, "allwinner,pa",
- 						  GPIOD_OUT_LOW);
- 	if (IS_ERR(scodec->gpio_pa)) {
-@@ -844,6 +838,12 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	/* Enable the bus clock */
-+	if (clk_prepare_enable(scodec->clk_apb)) {
-+		dev_err(&pdev->dev, "Failed to enable the APB clock\n");
-+		return -EINVAL;
-+	}
-+
- 	/* DMA configuration for TX FIFO */
- 	scodec->playback_dma_data.addr = res->start + SUN4I_CODEC_DAC_TXDATA;
- 	scodec->playback_dma_data.maxburst = 4;
 -- 
-2.10.1
+RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
