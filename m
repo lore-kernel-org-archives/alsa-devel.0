@@ -1,16 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: CREATIVE EMU 0202 driver in 192khz
-Date: Wed, 2 Nov 2016 12:35:00 +0100
-Message-ID: <c550014d-d1cb-cef0-499b-db9f209dbdf0@ladisch.de>
-References: <CALzsnJSbzNHvNZp8O=arZq29Qo224=E8mjZRQwpAithbokEnXg@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Audio miniconference at LPC/KS - draft schedule
+Date: Wed, 2 Nov 2016 14:17:08 +0100
+Message-ID: <3cad09e4-86ba-b99e-a600-30ebddc7afa0@metafoo.de>
+References: <20161027221754.GW25322@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id EBB79266B4B
- for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 12:35:04 +0100 (CET)
-In-Reply-To: <CALzsnJSbzNHvNZp8O=arZq29Qo224=E8mjZRQwpAithbokEnXg@mail.gmail.com>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F24326583C
+ for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 14:17:17 +0100 (CET)
+In-Reply-To: <20161027221754.GW25322@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,17 +20,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Olivier Schmitt <sc.olivier@gmail.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, vinod.koul@intel.com, "Luis R. Rodriguez" <mcgrof@kernel.org>, Eric Laurent <elaurent@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-Olivier Schmitt wrote:
-> When the clock Rate is to 5, we see on our watterfall that the sample rate
-> will change on the hardware but alsa dont let somme software to use 192khz.
+On 10/28/2016 12:17 AM, Mark Brown wrote:
+>  - Propagating digital configuration through the DAPM graph
 
-How exactly did you observe this?
-
-Does "aplay -D hw:USB -t raw -c 2 -f S16_LE -r 192000 -d 1 /dev/zero" work?
-
-
-Regards,
-Clemens
+The diagrams can be found at http://metafoo.de/the_new_asoc.svg
