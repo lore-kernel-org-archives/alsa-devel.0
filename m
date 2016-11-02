@@ -1,29 +1,51 @@
-From: Russell King - ARM Linux <linux@armlinux.org.uk>
-Subject: Re: [PATCH v3] drm: bridge: add DesignWare HDMI I2S audio support
-Date: Wed, 2 Nov 2016 08:27:58 +0000
-Message-ID: <20161102082758.GV1041@n2100.armlinux.org.uk>
-References: <871syu4r3x.wl%kuninori.morimoto.gx@renesas.com>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH] ASoC: sun4i-codec: Enable bus clock after
+ getting GPIO
+Date: Wed, 2 Nov 2016 09:44:58 +0100
+Message-ID: <20161102084458.xhuwy5bsmacgs2wm@lukather>
+References: <20161101063155.15826-1-wens@csie.org>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="acpdzj2giirnoufn"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBFWP43AAKGQEQO6UG7A-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <871syu4r3x.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Archit Taneja <architt@codeaurora.org>, Mark Brown <broonie@kernel.org>, David Airlie <airlied@linux.ie>, Fabio Estevam <fabio.estevam@freescale.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, Koji Matsuoka <koji.matsuoka.xm@renesas.com>, Thierry Reding <treding@nvidia.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Jose Abreu <joabreu@synopsys.com>
+In-Reply-To: <20161101063155.15826-1-wens-jdAy2FN1RRM@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 02, 2016 at 01:18:35AM +0000, Kuninori Morimoto wrote:
-> +	platform = platform_device_register_full(&pdevinfo);
-> +	if (IS_ERR_OR_NULL(platform))
-> +		return PTR_ERR(platform);
 
-This is wrong.  If platform is NULL, PTR_ERR() will return zero, which
-will be interpreted as success.  Please, avoid using IS_ERR_OR_NULL(),
-it leads to exactly this kind of cockup - and it's unnecessary here
-because platform_device_register_full() does not return NULL.
+--acpdzj2giirnoufn
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
+
+On Tue, Nov 01, 2016 at 02:31:55PM +0800, Chen-Yu Tsai wrote:
+> In the current probe function the GPIO is acquired after the codec's
+> bus clock is enabled. However if it fails to acquire the GPIO due to
+> a deferred probe, it does not disable the bus clock before bailing out.
+> This would result in the clock being enabled multiple times.
+> 
+> Move the code that enables the bus clock after the part that gets the
+> GPIO, maintaining a separation between resource acquisition and device
+> enablement in the probe function.
+> 
+> Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+
+Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+
+Thanks,
+Maxime
 
 -- 
-RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+--acpdzj2giirnoufn--
