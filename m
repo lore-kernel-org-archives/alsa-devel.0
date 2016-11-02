@@ -1,18 +1,28 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: pcm: Conversion to use devm_ioremap_resource()" to the asoc tree
-Date: Wed, 02 Nov 2016 10:49:55 -0600
-Message-ID: <E1c1yjb-0006Fn-3e@finisterre>
-References: <1478086097-24523-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1478086097-24523-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, krzk@kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: sun4i-codec: Enable bus clock after
+ getting GPIO" to the asoc tree
+Date: Wed, 02 Nov 2016 10:50:48 -0600
+Message-ID: <E1c1ykS-0006Gt-1N@finisterre>
+References: <20161101063155.15826-1-wens@csie.org>
+Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBLFU5DAAKGQECUXKOYA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20161101063155.15826-1-wens-jdAy2FN1RRM@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: pcm: Conversion to use devm_ioremap_resource()
+   ASoC: sun4i-codec: Enable bus clock after getting GPIO
 
 has been applied to the asoc tree at
 
@@ -37,135 +47,55 @@ to this mail.
 Thanks,
 Mark
 
->From d8dbb4b327a84a7d373c8c4bf173bcab22f102ff Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Wed, 2 Nov 2016 12:28:17 +0100
-Subject: [PATCH] ASoC: samsung: pcm: Conversion to use devm_ioremap_resource()
+>From 3716a891d65cc04217da1af5f2bccb7eaf6092c2 Mon Sep 17 00:00:00 2001
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Date: Tue, 1 Nov 2016 14:31:55 +0800
+Subject: [PATCH] ASoC: sun4i-codec: Enable bus clock after getting GPIO
 
-This simplifies the code a bit and removes a hard coded IO memory
-region size.
+In the current probe function the GPIO is acquired after the codec's
+bus clock is enabled. However if it fails to acquire the GPIO due to
+a deferred probe, it does not disable the bus clock before bailing out.
+This would result in the clock being enabled multiple times.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Move the code that enables the bus clock after the part that gets the
+GPIO, maintaining a separation between resource acquisition and device
+enablement in the probe function.
+
+Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/samsung/pcm.c | 60 +++++++++++++------------------------------------
- 1 file changed, 16 insertions(+), 44 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
-index c484985812ed..d50a6377c23d 100644
---- a/sound/soc/samsung/pcm.c
-+++ b/sound/soc/samsung/pcm.c
-@@ -499,13 +499,6 @@ static int s3c_pcm_dev_probe(struct platform_device *pdev)
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index a60707761abf..56ed9472e89f 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -829,12 +829,6 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 		return PTR_ERR(scodec->clk_module);
+ 	}
  
- 	pcm_pdata = pdev->dev.platform_data;
- 
--	/* Check for availability of necessary resource */
--	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!mem_res) {
--		dev_err(&pdev->dev, "Unable to get register resource\n");
--		return -ENXIO;
+-	/* Enable the bus clock */
+-	if (clk_prepare_enable(scodec->clk_apb)) {
+-		dev_err(&pdev->dev, "Failed to enable the APB clock\n");
+-		return -EINVAL;
 -	}
 -
- 	if (pcm_pdata && pcm_pdata->cfg_gpio && pcm_pdata->cfg_gpio(pdev)) {
- 		dev_err(&pdev->dev, "Unable to configure gpio\n");
- 		return -EINVAL;
-@@ -519,36 +512,26 @@ static int s3c_pcm_dev_probe(struct platform_device *pdev)
- 	/* Default is 128fs */
- 	pcm->sclk_per_fs = 128;
+ 	scodec->gpio_pa = devm_gpiod_get_optional(&pdev->dev, "allwinner,pa",
+ 						  GPIOD_OUT_LOW);
+ 	if (IS_ERR(scodec->gpio_pa)) {
+@@ -844,6 +838,12 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
-+	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	pcm->regs = devm_ioremap_resource(&pdev->dev, mem_res);
-+	if (IS_ERR(pcm->regs))
-+		return PTR_ERR(pcm->regs);
++	/* Enable the bus clock */
++	if (clk_prepare_enable(scodec->clk_apb)) {
++		dev_err(&pdev->dev, "Failed to enable the APB clock\n");
++		return -EINVAL;
++	}
 +
- 	pcm->cclk = devm_clk_get(&pdev->dev, "audio-bus");
- 	if (IS_ERR(pcm->cclk)) {
--		dev_err(&pdev->dev, "failed to get audio-bus\n");
--		ret = PTR_ERR(pcm->cclk);
--		goto err1;
-+		dev_err(&pdev->dev, "failed to get audio-bus clock\n");
-+		return PTR_ERR(pcm->cclk);
- 	}
- 	clk_prepare_enable(pcm->cclk);
- 
- 	/* record our pcm structure for later use in the callbacks */
- 	dev_set_drvdata(&pdev->dev, pcm);
- 
--	if (!request_mem_region(mem_res->start,
--				resource_size(mem_res), "samsung-pcm")) {
--		dev_err(&pdev->dev, "Unable to request register region\n");
--		ret = -EBUSY;
--		goto err2;
--	}
--
--	pcm->regs = ioremap(mem_res->start, 0x100);
--	if (pcm->regs == NULL) {
--		dev_err(&pdev->dev, "cannot ioremap registers\n");
--		ret = -ENXIO;
--		goto err3;
--	}
--
- 	pcm->pclk = devm_clk_get(&pdev->dev, "pcm");
- 	if (IS_ERR(pcm->pclk)) {
--		dev_err(&pdev->dev, "failed to get pcm_clock\n");
--		ret = -ENOENT;
--		goto err4;
-+		dev_err(&pdev->dev, "failed to get pcm clock\n");
-+		ret = PTR_ERR(pcm->pclk);
-+		goto err_dis_cclk;
- 	}
- 	clk_prepare_enable(pcm->pclk);
- 
-@@ -569,7 +552,7 @@ static int s3c_pcm_dev_probe(struct platform_device *pdev)
- 						 NULL, NULL);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to get register DMA: %d\n", ret);
--		goto err5;
-+		goto err_dis_pclk;
- 	}
- 
- 	pm_runtime_enable(&pdev->dev);
-@@ -578,36 +561,25 @@ static int s3c_pcm_dev_probe(struct platform_device *pdev)
- 					 &s3c_pcm_dai[pdev->id], 1);
- 	if (ret != 0) {
- 		dev_err(&pdev->dev, "failed to get register DAI: %d\n", ret);
--		goto err6;
-+		goto err_dis_pm;
- 	}
- 
- 	return 0;
--err6:
-+
-+err_dis_pm:
- 	pm_runtime_disable(&pdev->dev);
--err5:
-+err_dis_pclk:
- 	clk_disable_unprepare(pcm->pclk);
--err4:
--	iounmap(pcm->regs);
--err3:
--	release_mem_region(mem_res->start, resource_size(mem_res));
--err2:
-+err_dis_cclk:
- 	clk_disable_unprepare(pcm->cclk);
--err1:
- 	return ret;
- }
- 
- static int s3c_pcm_dev_remove(struct platform_device *pdev)
- {
- 	struct s3c_pcm_info *pcm = &s3c_pcm[pdev->id];
--	struct resource *mem_res;
- 
- 	pm_runtime_disable(&pdev->dev);
--
--	iounmap(pcm->regs);
--
--	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	release_mem_region(mem_res->start, resource_size(mem_res));
--
- 	clk_disable_unprepare(pcm->cclk);
- 	clk_disable_unprepare(pcm->pclk);
- 
+ 	/* DMA configuration for TX FIFO */
+ 	scodec->playback_dma_data.addr = res->start + SUN4I_CODEC_DAC_TXDATA;
+ 	scodec->playback_dma_data.maxburst = 4;
 -- 
 2.10.1
