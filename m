@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Introduce DAPM_DOUBLE dual channel control type" to the asoc tree
-Date: Wed, 02 Nov 2016 10:47:03 -0600
-Message-ID: <E1c1ygp-00069E-3q@finisterre>
-References: <20161003110804.28235-4-wens@csie.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161003110804.28235-4-wens@csie.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Russell King <linux@armlinux.org.uk>, Maxime Ripard <maxime.ripard@free-electrons.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-sunxi@googlegroups.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: samsung: s3c24xx-i2s.c merge fixup" to the asoc tree
+Date: Wed, 02 Nov 2016 10:48:25 -0600
+Message-ID: <E1c1yi9-0006CN-Tq@finisterre>
+References: <1478084676-30536-1-git-send-email-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1478084676-30536-1-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, krzk@kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Introduce DAPM_DOUBLE dual channel control type
+   ASoC: samsung: s3c24xx-i2s.c merge fixup
 
 has been applied to the asoc tree at
 
@@ -37,40 +37,52 @@ to this mail.
 Thanks,
 Mark
 
->From 9ee7ef31b5a07cdca88cae023c613e045af935b9 Mon Sep 17 00:00:00 2001
-From: Chen-Yu Tsai <wens@csie.org>
-Date: Wed, 2 Nov 2016 15:36:00 +0800
-Subject: [PATCH] ASoC: dapm: Introduce DAPM_DOUBLE dual channel control type
+>From 6c9473c55e7bb93dd4086f74e8e727dd3350855d Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Wed, 2 Nov 2016 12:04:36 +0100
+Subject: [PATCH] ASoC: samsung: s3c24xx-i2s.c merge fixup
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-A DAPM_DOUBLE control type can be used for dual channel mixer input
-selectors / mute controls in one register, possibly toggling both
-channels together.
+This fixes a build error as below which appeared after merging
+branch fix/samsung and also proper error messages are restored.
 
-The control is meant to be shared by 2 widgets, 1 for each channel,
-such that the mixer control exposed to userspace remains a combined
-stereo control.
+sound/soc/samsung/s3c24xx-i2s.c: In function ‘s3c24xx_iis_dev_probe’:
+sound/soc/samsung/s3c24xx-i2s.c:444:8: error: ‘pdata’ undeclared (first use in this function)
+sound/soc/samsung/s3c24xx-i2s.c:444:8: note: each undeclared identifier is reported only once for each function it appears in
 
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dapm.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/samsung/s3c24xx-i2s.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index d5f4677776ce..f74ec19687f8 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -272,6 +272,11 @@ struct device;
+diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+index c93169823c7c..07f5091b33e8 100644
+--- a/sound/soc/samsung/s3c24xx-i2s.c
++++ b/sound/soc/samsung/s3c24xx-i2s.c
+@@ -436,18 +436,17 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
+ 	s3c24xx_i2s_pcm_stereo_out.addr = res->start + S3C2410_IISFIFO;
+ 	s3c24xx_i2s_pcm_stereo_in.addr = res->start + S3C2410_IISFIFO;
  
+-	ret = samsung_asoc_dma_platform_register(&pdev->dev,
+-						 pdata->dma_filter,
++	ret = samsung_asoc_dma_platform_register(&pdev->dev, NULL,
+ 						 NULL, NULL);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "Failed to register the DAI\n");
++		dev_err(&pdev->dev, "Failed to register the DMA: %d\n", ret);
+ 		return ret;
+ 	}
  
- /* dapm kcontrol types */
-+#define SOC_DAPM_DOUBLE(xname, reg, lshift, rshift, max, invert) \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-+	.info = snd_soc_info_volsw, \
-+	.get = snd_soc_dapm_get_volsw, .put = snd_soc_dapm_put_volsw, \
-+	.private_value = SOC_DOUBLE_VALUE(reg, lshift, rshift, max, invert, 0) }
- #define SOC_DAPM_SINGLE(xname, reg, shift, max, invert) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
- 	.info = snd_soc_info_volsw, \
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 			&s3c24xx_i2s_component, &s3c24xx_i2s_dai, 1);
+ 	if (ret)
+-		pr_err("failed to register the dai\n");
++		dev_err(&pdev->dev, "Failed to register the DAI\n");
+ 
+ 	return ret;
+ }
 -- 
 2.10.1
