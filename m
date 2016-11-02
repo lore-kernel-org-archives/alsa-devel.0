@@ -1,7 +1,7 @@
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH] ASoC: samsung: spdif: Fix DMA filter initialization
-Date: Wed, 02 Nov 2016 12:03:03 +0100
-Message-ID: <1478084583-30460-1-git-send-email-s.nawrocki@samsung.com>
+Subject: [PATCH] ASoC: samsung: s3c24xx-i2s.c merge fixup
+Date: Wed, 02 Nov 2016 12:04:36 +0100
+Message-ID: <1478084676-30536-1-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
@@ -11,56 +11,43 @@ To: broonie@kernel.org
 Cc: krzk@kernel.org, m.szyprowski@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes issues introduced in commit 73f5dfc68316bef2ab7062ec
-"ASoC: samsung: get access to DMA engine early to defer probe properly"
-and indicated by a following compilation warning:
+This fixes a build error as below which appeared after merging
+branch fix/samsung and also proper error messages are restored.
 
-  CC [M]  sound/soc/samsung/spdif.o
-sound/soc/samsung/spdif.c: In function ‘spdif_probe’:
-sound/soc/samsung/spdif.c:419:6: warning: ‘filter’ may be used uninitialized
-in this function [-Wuninitialized]
+sound/soc/samsung/s3c24xx-i2s.c: In function ‘s3c24xx_iis_dev_probe’:
+sound/soc/samsung/s3c24xx-i2s.c:444:8: error: ‘pdata’ undeclared (first use in this function)
+sound/soc/samsung/s3c24xx-i2s.c:444:8: note: each undeclared identifier is reported only once for each function it appears in
 
 Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 ---
- sound/soc/samsung/spdif.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ sound/soc/samsung/s3c24xx-i2s.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/samsung/spdif.c b/sound/soc/samsung/spdif.c
-index 704b7b1..779504f 100644
---- a/sound/soc/samsung/spdif.c
-+++ b/sound/soc/samsung/spdif.c
-@@ -416,6 +416,15 @@ static int spdif_probe(struct platform_device *pdev)
- 		goto err3;
- 	}
-
-+	spdif_stereo_out.addr_width = 2;
-+	spdif_stereo_out.addr = mem_res->start + DATA_OUTBUF;
-+	filter = NULL;
-+	if (spdif_pdata) {
-+		spdif_stereo_out.filter_data = spdif_pdata->dma_playback;
-+		filter = spdif_pdata->dma_filter;
-+	}
-+	spdif->dma_playback = &spdif_stereo_out;
-+
- 	ret = samsung_asoc_dma_platform_register(&pdev->dev, filter,
+diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+index 3b4bef9..bc5809a 100644
+--- a/sound/soc/samsung/s3c24xx-i2s.c
++++ b/sound/soc/samsung/s3c24xx-i2s.c
+@@ -440,18 +440,17 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
+ 	s3c24xx_i2s_pcm_stereo_out.addr = res->start + S3C2410_IISFIFO;
+ 	s3c24xx_i2s_pcm_stereo_in.addr = res->start + S3C2410_IISFIFO;
+ 
+-	ret = samsung_asoc_dma_platform_register(&pdev->dev,
+-						 pdata->dma_filter,
++	ret = samsung_asoc_dma_platform_register(&pdev->dev, NULL,
  						 NULL, NULL);
  	if (ret) {
-@@ -432,16 +441,6 @@ static int spdif_probe(struct platform_device *pdev)
- 		goto err4;
+-		dev_err(&pdev->dev, "Failed to register the DAI\n");
++		dev_err(&pdev->dev, "Failed to register the DMA: %d\n", ret);
+ 		return ret;
  	}
-
--	spdif_stereo_out.addr_width = 2;
--	spdif_stereo_out.addr = mem_res->start + DATA_OUTBUF;
--	filter = NULL;
--	if (spdif_pdata) {
--		spdif_stereo_out.filter_data = spdif_pdata->dma_playback;
--		filter = spdif_pdata->dma_filter;
--	}
--
--	spdif->dma_playback = &spdif_stereo_out;
--
- 	return 0;
- err4:
- 	iounmap(spdif->regs);
---
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 			&s3c24xx_i2s_component, &s3c24xx_i2s_dai, 1);
+ 	if (ret)
+-		pr_err("failed to register the dai\n");
++		dev_err(&pdev->dev, "Failed to register the DAI\n");
+ 
+ 	return ret;
+ }
+-- 
 1.9.1
