@@ -1,17 +1,20 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v7 11/11] ASoC: topology: ABI - Add voice wake
-	up flag for DAI links
-Date: Thu,  3 Nov 2016 01:05:32 +0800
-Message-ID: <4ec58db3621474cd8acf664483b18c30628f6cad.1478071138.git.mengdong.lin@linux.intel.com>
-References: <cover.1478071138.git.mengdong.lin@linux.intel.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v6 04/11] ASoC: topology: ABI - Add flags
+ and private data to PCM
+Date: Wed, 2 Nov 2016 17:13:17 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F88198B58A@shsmsx102.ccr.corp.intel.com>
+References: <cover.1476166990.git.mengdong.lin@linux.intel.com>
+ <ca7df25320660c431215fab29e74727029048702.1476166990.git.mengdong.lin@linux.intel.com>
+ <20161029184301.i6nau4cmjy2vmmlr@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C2FF2666FA
- for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 18:04:29 +0100 (CET)
-In-Reply-To: <cover.1478071138.git.mengdong.lin@linux.intel.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9B36266A39
+ for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 18:13:22 +0100 (CET)
+In-Reply-To: <20161029184301.i6nau4cmjy2vmmlr@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,47 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+To: Mark Brown <broonie@kernel.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "Shah, Hardik T" <hardik.t.shah@intel.com>, "Singh, Guneshwor O" <guneshwor.o.singh@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-
-Add a new flag bit SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP to link flags.
-If a link is used for voice wake up, users can set this flag bit and
-topology will set the link's 'ignore_suspend' to true.
-
-This ABI update is backward compatible.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 3c3fcc8..6a4280c 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -155,6 +155,7 @@
- #define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES         (1 << 0)
- #define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
- #define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
-+#define SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP            (1 << 3)
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Sunday, October 30, 2016 2:43 AM
  
- /*
-  * Block Header.
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index f44f12e..8772fd9 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1701,6 +1701,11 @@ static void set_link_flags(struct snd_soc_dai_link *link,
- 		link->symmetric_samplebits =
- 			flags & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS ?
- 			1 : 0;
-+
-+	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP)
-+		link->ignore_suspend =
-+		flags & SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP ?
-+		1 : 0;
- }
- 
- /* create the FE DAI link */
--- 
-2.7.4
+> On Tue, Oct 11, 2016 at 02:37:26PM +0800, mengdong.lin@linux.intel.com
+> wrote:
+> 
+> > +/* DAI link flags */
+> > +#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_SUSPEND          (1 << 3)
+> > +#define SND_SOC_TPLG_LNK_FLGBIT_IGNORE_POWERDOWN_TIME   (1 <<
+> 4)
+> 
+> This still feels *really* ASoC specific - both suspend and pmdown_time are
+> very much ASoC internal implementations of generic ideas about how and
+> when to manage things.  They don't talk about what the intended effect is
+> which makes things a bit more obscure if we come back and try to change
+> the implementation later.  Why are you using these flags, and can we add
+> *that* information to the topology file instead?
+
+The flag IGNORE_SUSPEND is used by the link for voice wake up, there is a DMIC connected to the SOC on our platrform. I use a new flag VOICE_WAKEUP to replace it in the last patch of the v7 series. If this flag still seems not good, please overlook the last patch, and we can configure it in device drivers.
+
+And IGNORE_POWERDOWN_TIME is to configure the ignore_pmdown_time of the link. Since it's ASoC specific, I removed it from ABI and device driver can configure it in callbacks.
+
+Thanks
+Mengdong
