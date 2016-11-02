@@ -1,17 +1,19 @@
-From: Kai Riedel <kairiedel@yahoo.de>
-Subject: Re: BeagleBone with TLV320AIC3100
-Date: Wed, 2 Nov 2016 17:10:45 +0000 (UTC)
-Message-ID: <1999385385.1095094.1478106645510@mail.yahoo.com>
-References: <1999385385.1095094.1478106645510.ref@mail.yahoo.com>
-Reply-To: Kai Riedel <kairiedel@yahoo.de>
+From: Alan Young <Alan.Young@IEE.org>
+Subject: Re: Accurate delay reporting from dshare
+Date: Wed, 2 Nov 2016 17:34:49 +0000
+Message-ID: <581A23B9.3050609@IEE.org>
+References: <5810BDF9.1020204@IEE.org> <s5hinseoygk.wl-tiwai@suse.de>
+ <5819F566.2000404@IEE.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=_Part_1095093_1863223925.1478106645510"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm32-vm6.bullet.mail.gq1.yahoo.com
- (nm32-vm6.bullet.mail.gq1.yahoo.com [98.136.216.229])
- by alsa0.perex.cz (Postfix) with ESMTP id 025F6266F62
- for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 18:13:52 +0100 (CET)
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0ED16265654
+ for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 18:34:51 +0100 (CET)
+Received: by mail-wm0-f68.google.com with SMTP id u144so4129631wmu.0
+ for <alsa-devel@alsa-project.org>; Wed, 02 Nov 2016 10:34:51 -0700 (PDT)
+In-Reply-To: <5819F566.2000404@IEE.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,93 +23,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_1095093_1863223925.1478106645510
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+On 02/11/16 14:17, Alan Young wrote:
+> I am wondering if the earlier call to snd_pcm_dshare_sync_ptr(pcm), 
+> which I guess forms the basis for the result of 
+> snd_pcm_mmap_playback_delay(pcm), may be operating on a different set 
+> of data (because of an intervening interrupt) to that returned by 
+> snd_pcm_status().
 
-Hi,
+How about this for a revised patch. It seems to be working well for me 
+(so far). I am not suggesting that this should be considered final yet.
 
-is there a possibility (parameter in dts file) to get the mclk from the sitara and not from an external oscillator?
-With external clock it works fine now.
+Alan.
 
-BR,
-
-Kai
-------=_Part_1095093_1863223925.1478106645510
-Content-Type: application/octet-stream
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=BB-BONE-AUDI-04-00A0.dts
-Content-ID: <agVYCFLXCrmnvcAiu3yH>
-
-LyoKICogQ29weXJpZ2h0IChDKSAyMDEyIFRleGFzIEluc3RydW1lbnRzIEluY29ycG9yYXRlZCAt
-IGh0dHA6Ly93d3cudGkuY29tLwogKgogKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsg
-eW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQogKiBpdCB1bmRlciB0aGUgdGVy
-bXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIHZlcnNpb24gMiBhcwogKiBwdWJs
-aXNoZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbi4KICovCi9kdHMtdjEvOwovcGx1
-Z2luLzsKCiNpbmNsdWRlIDxkdC1iaW5kaW5ncy9ncGlvL2dwaW8uaD4KI2luY2x1ZGUgPGR0LWJp
-bmRpbmdzL3BpbmN0cmwvYW0zM3h4Lmg+CgovIHsKCWNvbXBhdGlibGUgPSAidGksYmVhZ2xlYm9u
-ZSIsICJ0aSxiZWFnbGVib25lLWJsYWNrIiwgInRpLGJlYWdsZWJvbmUtZ3JlZW4iOwoKCS8qIGlk
-ZW50aWZpY2F0aW9uICovCglwYXJ0LW51bWJlciA9ICJCQi1CT05FLUFVREktMDQiOwoJdmVyc2lv
-biA9ICIwMEEwIiwgIkEwIjsKCgkvKiBzdGF0ZSB0aGUgcmVzb3VyY2VzIHRoaXMgY2FwZSB1c2Vz
-ICovCglleGNsdXNpdmUtdXNlID0KCQkvKiB0aGUgcGluIGhlYWRlciB1c2VzICovCgkJIlA5LjMx
-IiwJLyogbWNhc3AwOiBtY2FzcDBfYWNsa3ggKi8KCQkiUDkuMjkiLAkvKiBtY2FzcDA6IG1jYXNw
-MF9mc3ggKi8KCQkiUDkuMjgiLAkvKiBtY2FzcDA6IG1jYXNwMF9heHIyICovCgkJIlA5LjI1IiwJ
-LyogbWNhc3AwOiBtY2FzcDBfYWhjbGt4ICovCgkJIlA5LjMwIiwgCS8qIG1jYXNwMDogbWNhc3Aw
-X2F4cjAgKi8KCQkvKiB0aGUgaGFyZHdhcmUgaXAgdXNlcyAiZ3BpbzFfMTgiLCAiZ3BpbzFfMTki
-LCAqLwoJCSJncGlvM18yMSIsCQkKCQkibWNhc3AwIjsKCglmcmFnbWVudEAwIHsKCQl0YXJnZXQg
-PSA8JmFtMzN4eF9waW5tdXg+OwoJCV9fb3ZlcmxheV9fIHsKCQkJYm9uZV9hdWRpb19jYXBlX2F1
-ZGlvX3BpbnM6IHBpbm11eF9ib25lX2F1ZGlvX2NhcGVfYXVkaW9fcGlucyB7CgkJCQlwaW5jdHJs
-LXNpbmdsZSxwaW5zID0gPAoJCQkJCTB4MTkwIChQSU5fSU5QVVRfUFVMTERPV04gfCBNVVhfTU9E
-RTApCS8qIEJDTEssIG1jYXNwMF9hY2xreC5tY2FzcDBfYWNsa3ggKi8KCQkJCQkweDE5NCAoUElO
-X0lOUFVUX1BVTExET1dOIHwgTVVYX01PREUwKQkvKiBXQ0xLLCBtY2FzcDBfZnN4Lm1jYXNwMF9m
-c3gsIElOUFVUICovCgkJCQkJMHgxOTggKFBJTl9JTlBVVF9QVUxMRE9XTiB8IE1VWF9NT0RFMCkJ
-LyogbWNhc3AwX2F4cjAubWNhc3AwX2F4cjAgKi8KCQkJCQkweDE5YyAoUElOX0lOUFVUX1BVTExE
-T1dOIHwgTVVYX01PREUyKQkvKiBtY2FzcDBfYWhjbGtyLm1jYXNwMF9heHIyICovCgkJCQkJMHgx
-YWMgKFBJTl9JTlBVVF9QVUxMRE9XTiB8IE1VWF9NT0RFMCkgIC8qIE1DTEsgTUNBU1AwX0FIQ0xL
-WCAtPiBNQ0FTUDBfQUhDTEtYIChJMlNfTUNMS19PVVQpLSBpbiAqLwoJCQkJPjsKCQkJfTsKCQl9
-OwoJfTsKCglmcmFnbWVudEAxIHsKCQl0YXJnZXQgPSA8JmkyYzI+OwoJCV9fb3ZlcmxheV9fIHsK
-CQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47CgkJCSNzaXplLWNlbGxzID0gPDA+OwoJCQljbG9jay1m
-cmVxdWVuY3kgPSA8MTAwMDAwPjsKCQkJc3RhdHVzID0gIm9rYXkiOwoJCQlwaW5jdHJsLW5hbWVz
-ID0gImRlZmF1bHQiOwoJCQlwaW5jdHJsLTAgPSA8JmkyYzJfcGlucz47CgoJCQl0bHYzMjBhaWMz
-MTAwOiB0bHYzMjBhaWMzMTAwQDE4IHsKCQkJCSNzb3VuZC1kYWktY2VsbHMgPSA8MD47CgkJCQlj
-b21wYXRpYmxlID0gInRpLHRsdjMyMGFpYzMxMDAiOwoJCQkJcmVnID0gPDB4MTg+OwoJCQkJc3Rh
-dHVzID0gIm9rYXkiOwoJCQkJLyogUmVndWxhdG9ycyAqLwoJCSAgIEFWREQtc3VwcGx5ID0gPCZs
-ZG80X3JlZz47CgkJICAgSU9WREQtc3VwcGx5ID0gPCZsZG80X3JlZz47CgkJICAgRFZERC1zdXBw
-bHkgPSA8JmxkbzRfcmVnPjsKCQkgICBIUFZERC1zdXBwbHkgPSA8JmxkbzRfcmVnPjsKCQkgICBT
-UFJWREQtc3VwcGx5ID0gPCZsZG80X3JlZz47CgkJICAgU1BMVkRELXN1cHBseSA9IDwmbGRvNF9y
-ZWc+OwoJCQl9OwoJCX07Cgl9OwoKIGZyYWdtZW50QDIgewoJCXRhcmdldCA9IDwmbWNhc3AwPjsK
-CQlfX292ZXJsYXlfXyB7CgkJCSNzb3VuZC1kYWktY2VsbHMgPSA8MD47CgkJCXBpbmN0cmwtbmFt
-ZXMgPSAiZGVmYXVsdCI7CgkJCXBpbmN0cmwtMCA9IDwmYm9uZV9hdWRpb19jYXBlX2F1ZGlvX3Bp
-bnM+OwoJCQlzdGF0dXMgPSAib2theSI7CgkJCW9wLW1vZGUgPSA8MD47ICAgICAgICAgIC8qIE1D
-QVNQX0lJU19NT0RFICovCgkJCXRkbS1zbG90cyA9IDwyPjsKCQkJbnVtLXNlcmlhbGl6ZXIgPSA8
-MTY+OwoJCQlzZXJpYWwtZGlyID0gPCAgLyogMDogSU5BQ1RJVkUsIDE6IFRYLCAyOiBSWCAqLwoJ
-CQkJMiAwIDEgMAoJCQkJMCAwIDAgMAoJCQkJMCAwIDAgMAoJCQkJMCAwIDAgMAoJCQk+OwoJCQl0
-eC1udW0tZXZ0ID0gPDE+OwoJCQlyeC1udW0tZXZ0ID0gPDE+OwoJCX07Cgl9OwoJCglmcmFnbWVu
-dEAzIHsKCQl0YXJnZXQtcGF0aD0iLyI7CgkJX19vdmVybGF5X18gewoJCQlzb3VuZCB7CgkJCQlj
-b21wYXRpYmxlID0gInNpbXBsZS1hdWRpby1jYXJkIjsKCQkJCXNpbXBsZS1hdWRpby1jYXJkLG5h
-bWUgPSAiQXVkaW9DYXBlIFJldiBCIjsKCQkJCXNpbXBsZS1hdWRpby1jYXJkLHdpZGdldHMgPQoJ
-CQkJCSJTcGVha2VyIiwgIkhlYWRwaG9uZSBKYWNrIjsKCQkJCXNpbXBsZS1hdWRpby1jYXJkLHJv
-dXRpbmcgPQoJCQkJCSJIZWFkcGhvbmUgSmFjayIsICAgICAgICJIUEwiLAoJCQkJCSJIZWFkcGhv
-bmUgSmFjayIsICAgICAgICJIUFIiLAoJCQkJCSJTcGVha2VyIiwgICAgICAgICAgICAgICJTUEsi
-OwoJCQkJc2ltcGxlLWF1ZGlvLWNhcmQsZm9ybWF0ID0gImRzcF9iIjsKCQkJCXNpbXBsZS1hdWRp
-by1jYXJkLGJpdGNsb2NrLW1hc3RlciA9IDwmc291bmRfbWFzdGVyPjsKCQkJCXNpbXBsZS1hdWRp
-by1jYXJkLGZyYW1lLW1hc3RlciA9IDwmc291bmRfbWFzdGVyPjsKCQkJCXNpbXBsZS1hdWRpby1j
-YXJkLGJpdGNsb2NrLWludmVyc2lvbjsKCgkJCQlzaW1wbGUtYXVkaW8tY2FyZCxjcHUgewoJCQkJ
-CXNvdW5kLWRhaSA9IDwmbWNhc3AwPjsKCQkJCXN5c3RlbS1jbG9jay1mcmVxdWVuY3kgPSA8MTIw
-MDAwMDA+OwoJCQkJfTsKCgkJICAgICAgICAgc291bmRfbWFzdGVyOiBzaW1wbGUtYXVkaW8tY2Fy
-ZCxjb2RlYyB7CgkJCQkJI3NvdW5kLWRhaS1jZWxscyA9IDwwPjsKCQkJCQlzb3VuZC1kYWkgPSA8
-JnRsdjMyMGFpYzMxMDA+OwoJIAkJCQlzeXN0ZW0tY2xvY2stZnJlcXVlbmN5ID0gPDEyMDAwMDAw
-PjsKCQkJCQljbG9jay1uYW1lcyA9ICJtY2xrIjsKCQkJCX07CgkJCX07CgkJfTsKCgl9Owp9Owo=
-
-------=_Part_1095093_1863223925.1478106645510
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
-------=_Part_1095093_1863223925.1478106645510--
+diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
+index 58e47bb..568448c 100644
+--- a/src/pcm/pcm_dshare.c
++++ b/src/pcm/pcm_dshare.c
+@@ -157,23 +157,14 @@ static void snd_pcm_dshare_sync_area(snd_pcm_t *pcm)
+  /*
+   *  synchronize hardware pointer (hw_ptr) with ours
+   */
+-static int snd_pcm_dshare_sync_ptr(snd_pcm_t *pcm)
++static int snd_pcm_dshare_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_ptr)
+  {
+  	snd_pcm_direct_t *dshare = pcm->private_data;
+-	snd_pcm_uframes_t slave_hw_ptr, old_slave_hw_ptr, avail;
++	snd_pcm_uframes_t old_slave_hw_ptr, avail;
+  	snd_pcm_sframes_t diff;
+  	
+-	switch (snd_pcm_state(dshare->spcm)) {
+-	case SND_PCM_STATE_DISCONNECTED:
+-		dshare->state = SNDRV_PCM_STATE_DISCONNECTED;
+-		return -ENODEV;
+-	default:
+-		break;
+-	}
+-	if (dshare->slowptr)
+-		snd_pcm_hwsync(dshare->spcm);
+  	old_slave_hw_ptr = dshare->slave_hw_ptr;
+-	slave_hw_ptr = dshare->slave_hw_ptr = *dshare->spcm->hw.ptr;
++	dshare->slave_hw_ptr = slave_hw_ptr;
+  	diff = slave_hw_ptr - old_slave_hw_ptr;
+  	if (diff == 0)		/* fast path */
+  		return 0;
+@@ -207,6 +198,24 @@ static int snd_pcm_dshare_sync_ptr(snd_pcm_t *pcm)
+  	return 0;
+  }
+  
++static int snd_pcm_dshare_sync_ptr(snd_pcm_t *pcm)
++{
++	snd_pcm_direct_t *dshare = pcm->private_data;
++
++	switch (snd_pcm_state(dshare->spcm)) {
++	case SND_PCM_STATE_DISCONNECTED:
++		dshare->state = SNDRV_PCM_STATE_DISCONNECTED;
++		return -ENODEV;
++	default:
++		break;
++	}
++
++	if (dshare->slowptr)
++		snd_pcm_hwsync(dshare->spcm);
++
++	return snd_pcm_dshare_sync_ptr0(pcm, *dshare->spcm->hw.ptr);
++}
++
+  /*
+   *  plugin implementation
+   */
+@@ -215,22 +224,24 @@ static int snd_pcm_dshare_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
+  {
+  	snd_pcm_direct_t *dshare = pcm->private_data;
+  
++	memset(status, 0, sizeof(*status));
++	snd_pcm_status(dshare->spcm, status);
++
+  	switch (dshare->state) {
+  	case SNDRV_PCM_STATE_DRAINING:
+  	case SNDRV_PCM_STATE_RUNNING:
+-		snd_pcm_dshare_sync_ptr(pcm);
++		snd_pcm_dshare_sync_ptr0(pcm, status->hw_ptr);
++		status->delay += snd_pcm_mmap_playback_delay(pcm)
++				+ status->avail - dshare->spcm->buffer_size;
+  		break;
+  	default:
+  		break;
+  	}
+-	memset(status, 0, sizeof(*status));
+-	snd_pcm_status(dshare->spcm, status);
+-	status->state = snd_pcm_state(dshare->spcm);
++
+  	status->trigger_tstamp = dshare->trigger_tstamp;
+  	status->avail = snd_pcm_mmap_playback_avail(pcm);
+  	status->avail_max = status->avail > dshare->avail_max ? status->avail : dshare->avail_max;
+  	dshare->avail_max = 0;
+-	status->delay = snd_pcm_mmap_playback_delay(pcm);
+  	return 0;
+  }
+  
