@@ -1,108 +1,83 @@
-From: Alan Young <Alan.Young@IEE.org>
-Subject: Re: Accurate delay reporting from dshare
-Date: Wed, 2 Nov 2016 14:17:10 +0000
-Message-ID: <5819F566.2000404@IEE.org>
-References: <5810BDF9.1020204@IEE.org> <s5hinseoygk.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 1384A26583C
- for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 15:17:12 +0100 (CET)
-Received: by mail-wm0-f67.google.com with SMTP id u144so3298075wmu.0
- for <alsa-devel@alsa-project.org>; Wed, 02 Nov 2016 07:17:12 -0700 (PDT)
-In-Reply-To: <s5hinseoygk.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH v7 RESEND 1/2] ASoC: samsung: Add DT bindings documentation for
+ TM2 sound subsystem
+Date: Wed, 02 Nov 2016 17:02:37 +0100
+Message-ID: <1478102558-12524-1-git-send-email-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: broonie@kernel.org, linux-samsung-soc@vger.kernel.org
+Cc: krzk@kernel.org, alsa-devel@alsa-project.org, sbkim73@samsung.com, b.zolnierkie@samsung.com, linux-arm-kernel@lists.infradead.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 27/10/16 11:52, Takashi Iwai wrote:
-> On Wed, 26 Oct 2016 16:30:17 +0200,
-> Alan Young wrote:
->> Hi,
->>
->> When the kernel reports current (playback) delay via a call to
->> snd_pcm_status() or snd_pcm_delay() for a normal hardware PCM, then
->> the delay value reported is the sum of space used in the ring buffer
->> plus any delay reported from the underlying runtime driver.
->>
->> snd_pcm_dshare_status() and snd_pcm_dshare_delay() discard this
->> refinement and simply report the use of some ring buffer. Why does it
->> do this and how could the reporting be improved?
-> The lack of delay calculation is just for simplicity.  We're tracking
-> the different hw_avail per each d-* PCM, the delay value has to be
-> re-calculated for each as in the current way. But we may put the
-> additional delay computed from the slave PCM, indeed.
+This patch adds DT binding documentation for Exnos5433 based TM2
+and TM2E boards sound subsystem.
 
-Why does it have to be re-calculated? Under what circumstances would 
-"snd_pcm_mmap_playback_delay(pcm)" and "slave_status.avail -  
-dshare->spcm->buffer_size" (from your patched source) yield different 
-results?
-> Basically d*-plugins share the same ring buffer as the underlying
-> slave PCM hw layer.  The d-plugins have the buffers in shared memory
-> in addition for keeping the 32bit data for clipping.
-This is only the case for dmix, right?
-> But in general
-> the ring buffer size and the position are same as the hw.
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+Changes since v5:
+ - none.
 
-> Well, basically the additional delay can be deduced from
->    delay - buffer_size - avail
-> (This is applied for playback.  For capture, it's slightly different.)
->
-> A patch like below *might* work (totally untested!)
->
+Changes since v4:
+ - indentation changes.
 
-Thanks, this does seem to help but is not totally reliable.
+Changes since v2:
+ - none.
 
-I am wondering if the earlier call to snd_pcm_dshare_sync_ptr(pcm), 
-which I guess forms the basis for the result of 
-snd_pcm_mmap_playback_delay(pcm), may be operating on a different set of 
-data (because of an intervening interrupt) to that returned by 
-snd_pcm_status().
+Changes since initial version:
+ - dropped clocks, clock-names properties, instead properties from
+   the CODEC node will be used,
+ - property renames: 'samsung,model' -> 'model', 'samsung,i2s-controller'
+   -> 'i2s-controller', 'samsung,speaker-amplifier' -> 'audio-amplifier',
+ - added 'audio-codec' property.
+---
+ .../bindings/sound/samsung,tm2-audio.txt           | 38 ++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
 
-Thanks,
-Alan.
-
-> thanks,
->
-> Takashi
->
-> ---
-> diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-> index c5b3178a4990..8e21a6ec5fc2 100644
-> --- a/src/pcm/pcm_dshare.c
-> +++ b/src/pcm/pcm_dshare.c
-> @@ -214,6 +214,7 @@ static int snd_pcm_dshare_sync_ptr(snd_pcm_t *pcm)
->   static int snd_pcm_dshare_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
->   {
->   	snd_pcm_direct_t *dshare = pcm->private_data;
-> +	snd_pcm_status_t slave_status;
->   
->   	switch (dshare->state) {
->   	case SNDRV_PCM_STATE_DRAINING:
-> @@ -225,12 +226,15 @@ static int snd_pcm_dshare_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
->   	}
->   	memset(status, 0, sizeof(*status));
->   	snd_pcm_status(dshare->spcm, status);
-> +	slave_status = *status;
->   	status->state = snd_pcm_state(dshare->spcm);
->   	status->trigger_tstamp = dshare->trigger_tstamp;
->   	status->avail = snd_pcm_mmap_playback_avail(pcm);
->   	status->avail_max = status->avail > dshare->avail_max ? status->avail : dshare->avail_max;
->   	dshare->avail_max = 0;
->   	status->delay = snd_pcm_mmap_playback_delay(pcm);
-> +	status->delay += slave_status.delay + slave_status.avail -
-> +		dshare->spcm->buffer_size;
->   	return 0;
->   }
->   
+diff --git a/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt b/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
+new file mode 100644
+index 0000000..94442e5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
+@@ -0,0 +1,38 @@
++Samsung Exynos5433 TM2(E) audio complex with WM5110 codec
++
++Required properties:
++
++ - compatible		 : "samsung,tm2-audio"
++ - model		 : the user-visible name of this sound complex
++ - audio-codec		 : the phandle of the wm5110 audio codec node,
++			   as described in ../mfd/arizona.txt
++ - i2s-controller	 : the phandle of the I2S controller
++ - audio-amplifier	 : the phandle of the MAX98504 amplifier
++ - samsung,audio-routing : a list of the connections between audio components;
++			   each entry is a pair of strings, the first being the
++			   connection's sink, the second being the connection's
++			   source; valid names for sources and sinks are the
++			   WM5110's and MAX98504's pins and the jacks on the
++			   board: HP, SPK, Main Mic, Sub Mic, Third Mic,
++			   Headset Mic
++ - mic-bias-gpios	 : GPIO pin that enables the Main Mic bias regulator
++
++
++Example:
++
++sound {
++	compatible = "samsung,tm2-audio";
++	audio-codec = <&wm5110>;
++	i2s-controller = <&i2s0>;
++	audio-amplifier = <&max98504>;
++	mic-bias-gpios = <&gpr3 2 0>;
++	model = "wm5110";
++	samsung,audio-routing =
++		"HP", "HPOUT1L",
++		"HP", "HPOUT1R",
++		"SPK", "SPKOUT",
++		"SPKOUT", "HPOUT2L",
++		"SPKOUT", "HPOUT2R",
++		"Main Mic", "MICBIAS2",
++		"IN1R", "Main Mic";
++};
+--
+1.9.1
