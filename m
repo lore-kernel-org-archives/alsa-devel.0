@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: s3c24xx-i2s.c merge fixup" to the asoc tree
-Date: Wed, 02 Nov 2016 10:48:25 -0600
-Message-ID: <E1c1yi9-0006CN-Tq@finisterre>
-References: <1478084676-30536-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1478084676-30536-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, krzk@kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: dapm: Support second register for DAPM control updates" to the asoc tree
+Date: Wed, 02 Nov 2016 10:47:58 -0600
+Message-ID: <E1c1yhi-0006BO-W3@finisterre>
+References: <20161102073601.8659-2-wens@csie.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20161102073601.8659-2-wens@csie.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>, Mylene Josserand <mylene.josserand@free-electrons.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: s3c24xx-i2s.c merge fixup
+   ASoC: dapm: Support second register for DAPM control updates
 
 has been applied to the asoc tree at
 
@@ -37,52 +37,136 @@ to this mail.
 Thanks,
 Mark
 
->From 6c9473c55e7bb93dd4086f74e8e727dd3350855d Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Wed, 2 Nov 2016 12:04:36 +0100
-Subject: [PATCH] ASoC: samsung: s3c24xx-i2s.c merge fixup
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From e411b0b5eb9b65257a050eac333d181d6e00e2c6 Mon Sep 17 00:00:00 2001
+From: Chen-Yu Tsai <wens@csie.org>
+Date: Wed, 2 Nov 2016 15:35:58 +0800
+Subject: [PATCH] ASoC: dapm: Support second register for DAPM control updates
 
-This fixes a build error as below which appeared after merging
-branch fix/samsung and also proper error messages are restored.
+To support double channel shared controls split across 2 registers, one
+for each channel, we must be able to update both registers together.
 
-sound/soc/samsung/s3c24xx-i2s.c: In function ‘s3c24xx_iis_dev_probe’:
-sound/soc/samsung/s3c24xx-i2s.c:444:8: error: ‘pdata’ undeclared (first use in this function)
-sound/soc/samsung/s3c24xx-i2s.c:444:8: note: each undeclared identifier is reported only once for each function it appears in
+Add a second set of register fields to struct snd_soc_dapm_update, and
+update the DAPM control writeback (put) callbacks to support this.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+For codecs that use custom events which call into DAPM to do updates,
+also clear struct snd_soc_dapm_update before using it, so the second
+set of fields remains clean.
+
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/s3c24xx-i2s.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ include/sound/soc-dapm.h       |  4 ++++
+ sound/soc/codecs/adau17x1.c    |  2 +-
+ sound/soc/codecs/tlv320aic3x.c |  2 +-
+ sound/soc/codecs/wm9712.c      |  2 +-
+ sound/soc/codecs/wm9713.c      |  2 +-
+ sound/soc/soc-dapm.c           | 13 +++++++++++--
+ 6 files changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-index c93169823c7c..07f5091b33e8 100644
---- a/sound/soc/samsung/s3c24xx-i2s.c
-+++ b/sound/soc/samsung/s3c24xx-i2s.c
-@@ -436,18 +436,17 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
- 	s3c24xx_i2s_pcm_stereo_out.addr = res->start + S3C2410_IISFIFO;
- 	s3c24xx_i2s_pcm_stereo_in.addr = res->start + S3C2410_IISFIFO;
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index f60d755f7ac6..d5f4677776ce 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -615,6 +615,10 @@ struct snd_soc_dapm_update {
+ 	int reg;
+ 	int mask;
+ 	int val;
++	int reg2;
++	int mask2;
++	int val2;
++	bool has_second_set;
+ };
  
--	ret = samsung_asoc_dma_platform_register(&pdev->dev,
--						 pdata->dma_filter,
-+	ret = samsung_asoc_dma_platform_register(&pdev->dev, NULL,
- 						 NULL, NULL);
- 	if (ret) {
--		dev_err(&pdev->dev, "Failed to register the DAI\n");
-+		dev_err(&pdev->dev, "Failed to register the DMA: %d\n", ret);
- 		return ret;
- 	}
+ struct snd_soc_dapm_wcache {
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index 439aa3ff1f99..b36511d965c8 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -160,7 +160,7 @@ static int adau17x1_dsp_mux_enum_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+ 	struct adau *adau = snd_soc_codec_get_drvdata(codec);
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+-	struct snd_soc_dapm_update update;
++	struct snd_soc_dapm_update update = { 0 };
+ 	unsigned int stream = e->shift_l;
+ 	unsigned int val, change;
+ 	int reg;
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 5a8d96ec058c..8877b74b0510 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -157,7 +157,7 @@ static int snd_soc_dapm_put_volsw_aic3x(struct snd_kcontrol *kcontrol,
+ 	unsigned int mask = (1 << fls(max)) - 1;
+ 	unsigned int invert = mc->invert;
+ 	unsigned short val;
+-	struct snd_soc_dapm_update update;
++	struct snd_soc_dapm_update update = { 0 };
+ 	int connect, change;
  
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 			&s3c24xx_i2s_component, &s3c24xx_i2s_dai, 1);
- 	if (ret)
--		pr_err("failed to register the dai\n");
-+		dev_err(&pdev->dev, "Failed to register the DAI\n");
+ 	val = (ucontrol->value.integer.value[0] & mask);
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index 557709eac698..85f7c5bb8b82 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -187,7 +187,7 @@ static int wm9712_hp_mixer_put(struct snd_kcontrol *kcontrol,
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+ 	unsigned int mixer, mask, shift, old;
+-	struct snd_soc_dapm_update update;
++	struct snd_soc_dapm_update update = { 0 };
+ 	bool change;
  
- 	return ret;
- }
+ 	mixer = mc->shift >> 8;
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index e4301ddb1b84..7e4822185feb 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -231,7 +231,7 @@ static int wm9713_hp_mixer_put(struct snd_kcontrol *kcontrol,
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+ 	unsigned int mixer, mask, shift, old;
+-	struct snd_soc_dapm_update update;
++	struct snd_soc_dapm_update update = { 0 };
+ 	bool change;
+ 
+ 	mixer = mc->shift >> 8;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 3bbe32ee4630..32e7af9b93d5 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1626,6 +1626,15 @@ static void dapm_widget_update(struct snd_soc_card *card)
+ 		dev_err(w->dapm->dev, "ASoC: %s DAPM update failed: %d\n",
+ 			w->name, ret);
+ 
++	if (update->has_second_set) {
++		ret = soc_dapm_update_bits(w->dapm, update->reg2,
++					   update->mask2, update->val2);
++		if (ret < 0)
++			dev_err(w->dapm->dev,
++				"ASoC: %s DAPM update failed: %d\n",
++				w->name, ret);
++	}
++
+ 	for (wi = 0; wi < wlist->num_widgets; wi++) {
+ 		w = wlist->widgets[wi];
+ 
+@@ -3084,7 +3093,7 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+ 	unsigned int invert = mc->invert;
+ 	unsigned int val;
+ 	int connect, change, reg_change = 0;
+-	struct snd_soc_dapm_update update;
++	struct snd_soc_dapm_update update = { NULL };
+ 	int ret = 0;
+ 
+ 	if (snd_soc_volsw_is_stereo(mc))
+@@ -3192,7 +3201,7 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+ 	unsigned int *item = ucontrol->value.enumerated.item;
+ 	unsigned int val, change, reg_change = 0;
+ 	unsigned int mask;
+-	struct snd_soc_dapm_update update;
++	struct snd_soc_dapm_update update = { NULL };
+ 	int ret = 0;
+ 
+ 	if (item[0] >= e->items)
 -- 
 2.10.1
