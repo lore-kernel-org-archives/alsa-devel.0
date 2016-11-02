@@ -1,36 +1,30 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: s3c24xx-i2s.c merge fixup" to
-	the asoc tree
-Date: Wed, 02 Nov 2016 10:12:22 -0600
-Message-ID: <E1c1y9G-0004Kk-3b@finisterre>
-References: <1478084676-30536-1-git-send-email-s.nawrocki@samsung.com>
+Subject: Applied "ASoC: dapm: Introduce DAPM_DOUBLE_R dual channel dual
+ register control type" to the asoc tree
+Date: Wed, 02 Nov 2016 10:46:30 -0600
+Message-ID: <E1c1ygI-00067x-TN@finisterre>
+References: <20161003110804.28235-5-wens@csie.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9075680802140973477=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 94A6F26583C
- for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 17:13:16 +0100 (CET)
-In-Reply-To: <1478084676-30536-1-git-send-email-s.nawrocki@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20161003110804.28235-5-wens@csie.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi@googlegroups.com, Mark Brown <broonie@kernel.org>, Russell King <linux@armlinux.org.uk>, Maxime Ripard <maxime.ripard@free-electrons.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
-
---===============9075680802140973477==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: samsung: s3c24xx-i2s.c merge fixup
+   ASoC: dapm: Introduce DAPM_DOUBLE_R dual channel dual register control type
 
 has been applied to the asoc tree at
 
@@ -55,62 +49,41 @@ to this mail.
 Thanks,
 Mark
 
->From 6c9473c55e7bb93dd4086f74e8e727dd3350855d Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Wed, 2 Nov 2016 12:04:36 +0100
-Subject: [PATCH] ASoC: samsung: s3c24xx-i2s.c merge fixup
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 02866eab0f0d88c4b6a68de72022c2b26f0359b5 Mon Sep 17 00:00:00 2001
+From: Chen-Yu Tsai <wens@csie.org>
+Date: Wed, 2 Nov 2016 15:36:01 +0800
+Subject: [PATCH] ASoC: dapm: Introduce DAPM_DOUBLE_R dual channel dual
+ register control type
 
-This fixes a build error as below which appeared after merging
-branch fix/samsung and also proper error messages are restored.
+A DAPM_DOUBLE_R control type can be used for dual channel mixer input
+selectors / mute controls across 2 registers, possibly toggling both
+channels together.
 
-sound/soc/samsung/s3c24xx-i2s.c: In function ‘s3c24xx_iis_dev_probe’:
-sound/soc/samsung/s3c24xx-i2s.c:444:8: error: ‘pdata’ undeclared (first use in this function)
-sound/soc/samsung/s3c24xx-i2s.c:444:8: note: each undeclared identifier is reported only once for each function it appears in
+The control is meant to be shared by 2 widgets, 1 for each channel,
+such that the mixer control exposed to userspace remains a combined
+stereo control.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/s3c24xx-i2s.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ include/sound/soc-dapm.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-index c93169823c7c..07f5091b33e8 100644
---- a/sound/soc/samsung/s3c24xx-i2s.c
-+++ b/sound/soc/samsung/s3c24xx-i2s.c
-@@ -436,18 +436,17 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
- 	s3c24xx_i2s_pcm_stereo_out.addr = res->start + S3C2410_IISFIFO;
- 	s3c24xx_i2s_pcm_stereo_in.addr = res->start + S3C2410_IISFIFO;
- 
--	ret = samsung_asoc_dma_platform_register(&pdev->dev,
--						 pdata->dma_filter,
-+	ret = samsung_asoc_dma_platform_register(&pdev->dev, NULL,
- 						 NULL, NULL);
- 	if (ret) {
--		dev_err(&pdev->dev, "Failed to register the DAI\n");
-+		dev_err(&pdev->dev, "Failed to register the DMA: %d\n", ret);
- 		return ret;
- 	}
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 			&s3c24xx_i2s_component, &s3c24xx_i2s_dai, 1);
- 	if (ret)
--		pr_err("failed to register the dai\n");
-+		dev_err(&pdev->dev, "Failed to register the DAI\n");
- 
- 	return ret;
- }
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index f74ec19687f8..a466f4bdc835 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -277,6 +277,11 @@ struct device;
+ 	.info = snd_soc_info_volsw, \
+ 	.get = snd_soc_dapm_get_volsw, .put = snd_soc_dapm_put_volsw, \
+ 	.private_value = SOC_DOUBLE_VALUE(reg, lshift, rshift, max, invert, 0) }
++#define SOC_DAPM_DOUBLE_R(xname, lreg, rreg, shift, max, invert) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.info = snd_soc_info_volsw, \
++	.get = snd_soc_dapm_get_volsw, .put = snd_soc_dapm_put_volsw, \
++	.private_value = SOC_DOUBLE_R_VALUE(lreg, rreg, shift, max, invert) }
+ #define SOC_DAPM_SINGLE(xname, reg, shift, max, invert) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+ 	.info = snd_soc_info_volsw, \
 -- 
 2.10.1
-
-
---===============9075680802140973477==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9075680802140973477==--
