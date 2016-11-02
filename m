@@ -1,116 +1,72 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v2 34/37] docs: fix locations of several documents that
-	got moved
-Date: Wed, 2 Nov 2016 10:31:54 +0100
-Message-ID: <20161102093154.GC23350@amd>
-References: <cover.1476801354.git.mchehab@s-opensource.com>
-	<28c1f5d3867174a7017e3f3d9e9e4ebb096ceed8.1476801354.git.mchehab@s-opensource.com>
-	<20161019103442.GD1461@amd> <20161019115918.1162d16e@vento.lan>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: Audio miniconference at LPC/KS - draft schedule
+Date: Wed, 2 Nov 2016 08:30:29 +0000
+Message-ID: <1478075425.19762.10.camel@intel.com>
+References: <20161027221754.GW25322@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7680369000982517778=="
-Return-path: <virtualization-bounces@lists.linux-foundation.org>
-In-Reply-To: <20161019115918.1162d16e@vento.lan>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/virtualization>,
-	<mailto:virtualization-request@lists.linux-foundation.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/virtualization/>
-List-Post: <mailto:virtualization@lists.linux-foundation.org>
-List-Help: <mailto:virtualization-request@lists.linux-foundation.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/virtualization>,
-	<mailto:virtualization-request@lists.linux-foundation.org?subject=subscribe>
-Sender: virtualization-bounces@lists.linux-foundation.org
-Errors-To: virtualization-bounces@lists.linux-foundation.org
-To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Chris Metcalf <cmetcalf@ezchip.com>, Peter Loeffler <peter.loeffler@guruz.at>, Finn Thain <fthain@telegraphics.com.au>, Yaowei Bai <baiyaowei@cmss.chinamobile.com>, Jakub Wilk <jwilk@jwilk.net>, linux-acpi@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Guenter Roeck <linux@roeck-us.net>, Petr Mladek <pmladek@suse.com>, Jean Delvare <jdelvare@suse.com>, linux-pm@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Karsten Keil <isdn@linux-pingi.de>, Jiri Kosina <jkosina@suse.cz>, "seokhoon.yoon" <iamyooon@gmail.com>, Li Zefan <lizefan@huawei.com>, Ryan Swan <ryan@ryanswan.com>, Joe Perches <joe@perches.com>, Andrew Morton <akpm@linux-foundation.org>, Mark
+Content-Type: text/plain; charset="utf-7"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD397266AA1
+ for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 09:30:34 +0100 (CET)
+In-Reply-To: <20161027221754.GW25322@sirena.org.uk>
+Content-Language: en-US
+Content-ID: <9EF8A4BB024C664AB323302FF24F8005@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>, "o-takashi@sakamocchi.jp" <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============7680369000982517778==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+nBD6E3TurpgldQp"
-Content-Disposition: inline
-
-
---+nBD6E3TurpgldQp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> > Dunno, but kernel-parameters.txt was already quite long... for a file
-> > that is referenced quite often. Adding admin-guide/ into the path does
-> > not really help.
->=20
-> The big string name starts with Documentation/ :) There are some discussi=
-ons=20
-> about changing it to doc/ (or docs/). Also, as you said, kernel-parameters
-> is already a big name. Perhaps we could use, instead,
-> > "kernel-parms".
-
-cmdline?
-
-> If we rename kernel-parameters.rst to kernel-parms.rst, plus the doc/ ren=
-ame,
-> then the string size will actually reduce:
->=20
-> -		(see Documentation/kernel-parameters.txt), the minimum possible
-> +		(see doc/admin-guide/kernel-parms.rst), the minimum possible
->=20
-> > Maybe admin-guide should go directly into Documentation/ , as that's
-> > what our users are interested in?
->=20
-> There are several problems if we keep them at Documentation/ dir:
->=20
-> - We'll end by mixing documents already converted to ReST with documents
->   not converted yet;
->=20
-> - A rename is needed anyway, as Sphinx only accepts ReST files that end
->   with the extension(s) defined at Documentation/conf.py (currently,
->   .rst);
->=20
-> - A partial documentation build is made by sub-directory. If we put
->   files under /Documentation, there's no way to build just one
->   book.
-
-Well, documentation is primarily for users. I'm sure tools can adapt...
-
-> > Plus, I'm not sure how many developers will figure out that process/
-> > is what describes kernel patch submission process. We have processes
-> > in the kernel, after all...
->=20
-> Do you have a better idea?
-
-development/ ?
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---+nBD6E3TurpgldQp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlgZsooACgkQMOfwapXb+vKDEwCdEmlwjrrTY1HV6PoP/Pyie4I+
-oBMAnjN0WHtyXtQBydl/7WLL5tES6tZi
-=EDvv
------END PGP SIGNATURE-----
-
---+nBD6E3TurpgldQp--
-
---===============7680369000982517778==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Virtualization mailing list
-Virtualization@lists.linux-foundation.org
-https://lists.linuxfoundation.org/mailman/listinfo/virtualization
---===============7680369000982517778==--
+CkhpIE1hcmssIFRha2FzaGksCgpXZSBuZWVkIHRvIGZpbmQgc29tZSB0aW1lIHRvIGRpc2N1c3Mg
+dGhlc2UuLgoKLSBBU29DIEhEQS4uCi0gQnl0ZSBjb250cm9scyBUTFYgaXNzdWUgcmFpc2VkIGJ5
+IFNha29tb3RvLXNhbiAobmVlZCBjaGFybGVzIGhlcmUgYXMKd2VsbCkKClRoYW5rcworQUg0LVZp
+bm9kCgoKT24gVGh1LCAyMDE2LTEwLTI3IGF0IDIzOjE3ICstMDEwMCwgTWFyayBCcm93biB3cm90
+ZToKPiBUaGUgYXVkaW8gbWluaWNvbmZlcmVuY2UgaXMgbmV4dCBUdWVzZGF5LCBzdGFydGluZyBh
+dCA5YW0gaW4gU3dlZW5leQo+IENERQo+IGF0IHRoZSBTYW50YSBGZSBDb252ZW50aW9uIENlbnRl
+ci4KPiAKPiBDdXJyZW50bHkgdGhlIHNldCBvZiB0b3BpY3Mgd2UgaGF2ZSBvbiB0aGUgd2lraSBh
+bmQgZnJvbSBlLW1haWwgZm9yCj4gZGlzY3Vzc2lvbiBpczoKPiAKPiArQUtBLS0gbW1hcC9ubyBJ
+UlEgbW9kZQo+ICtBS0EtLSBUaW1lIHN0YW1wIHJlcG9ydGluZyAoYm90aCBjdXJyZW50IEFQSXMg
+YW5kIGFkZGl0aW9uIG9mIGFiaWxpdHkgdG8KPiArQUtBQW9BQ2ctcHVzaCBkb3duIFBDTSBzeW5j
+KQo+ICtBS0EtLSBVU0IgYXVkaW8gcG93ZXIgYW5kIGxhdGVuY3kgcGVyZm9ybWFuY2UKPiArQUtB
+LS0gU3RhbmRhcmRpemluZyBIRE1JIC8gRFAgaW50ZXJmYWNlCj4gK0FLQS0tIFNvdW5kV2lyZSBz
+dXBwb3J0Cj4gK0FLQS0tIFRyYWNlcG9pbnRzIGZvciBQQ00gcGFyYW1ldGVyIHN1cHBvcnQKPiAr
+QUtBLS0gTG93IGxhdGVuY3kgYXVkaW8KPiArQUtBLS0gUHJvcGFnYXRpbmcgZGlnaXRhbCBjb25m
+aWd1cmF0aW9uIHRocm91Z2ggdGhlIERBUE0gZ3JhcGgKPiArQUtBLS0gVXNlcnNwYWNlIGFuZCBj
+b25maWd1cmF0aW9uIGludGVncmF0aW9uIChob3cgd2lsbCB0b3BvbG9neSBldGMgZ2V0Cj4gK0FL
+QUFvQUNnLWludGVncmF0ZWQgaW4gT1NlcykKPiArQUtBLS0gTW92ZSBvZiBBU29DIGNsb2NraW5n
+IGludG8gdGhlIGNsb2NrIEFQSQo+ICtBS0EtLSBIREEvQVNvQyBpbnRlZ3JhdGlvbgo+ICtBS0Et
+LSBVQ00gc2NhbGluZywgZG9lcyBpdCBzY2FsZSB3ZWxsK0lDWT8KPiArQUtBLS0gSG93IHRvIGlt
+cHJvdmUgdXBzdHJlYW1pbmcgdmVuZG9yIGRyaXZlcnM/Cj4gK0FLQS0tIFN0YWJsZSAvIExUUyBr
+ZXJuZWwgbWFpbnRlbmFuY2UKPiArQUtBLS0gUGFyYSBWaXJ0dWFsaXplZCBhdWRpbyBkcml2ZXIg
+c3VwcG9ydAo+ICtBS0EtLSBVc2Vyc3BhY2UgZHJpdmVycyAoZm9yIElFRUUgMTM5NCBhbmQgb3Ro
+ZXIgdGhpbmdzKQo+ICtBS0EtLSBEcm9wcGluZyB0aGUgRElDRSBkcml2ZXIKPiArQUtBLS0gTWVk
+aWEgQ29udHJvbGxlciBBUEkgaW50ZWdyYXRpb24KPiArQUtBIC0gSXMgdGhlcmUgYW55dGhpbmcg
+bmV3IGhlcmUgb3Igc2hvdWxkIHdlIGp1c3QgZHJvcCB0aGlzIGVudGlyZWx5Pwo+IAo+IHdoaWNo
+IGlzIHF1aXRlIGEgbGlzdCBidXQgc29tZSBvZiB0aG9zZSBzaG91bGQgYmUgZmFpcmx5IHNpbXBs
+ZSB0bwo+IGRpc2N1c3Mgc28gaG9wZWZ1bGx5IGZhaXJseSBxdWljay4rQUtBQW9BLUkndmUgbWFk
+ZSBzb21lIGVmZm9ydCB0byBzb3J0IHRoaXMKPiBpbnRvIGEgcm91Z2ggb3JkZXIgYnV0IGl0J3Mg
+dmVyeSBtdWNoIGEgZmlyc3QgcGFzcyBzbyBzdWdnZXN0aW9ucyBmb3IKPiBjaGFuZ2VzIGFyZSB3
+ZWxjb21lLitBS0FBb0EtU2ltaWxhcmx5IGFyZSB0aGVyZSBhcmUgb3RoZXIgdGhpbmdzIHBlb3Bs
+ZQo+IHRoaW5rCj4gd2Ugc2hvdWxkIGRpc2N1c3M/Cj4gCj4gVGhlcmUncyBhbHNvIHNvbWUgZGlz
+Y3Vzc2lvbiBvZiBpbmNvcG9yYXRpbmcgdGhlIGtlcm5lbCB3aWRlIHRvcGljIG9mCj4gaW50ZXIt
+ZGV2aWNlIGRlcGVuZGVuaWNlcyBpbnRvIHRoZSBhdWRpbyBtaW5pY29uZmVyZW5jZSBzaW5jZSB0
+aGlzCj4gYWZmZWN0cyBhdWRpbyAoZXNwZWNpYWxseSBBU29DKSBxdWl0ZSBhIGJpdCBhcyB3ZWxs
+IGFzIHNldmVyYWwgb3RoZXIKPiBzdWJzeXN0ZW1zLCB0aGF0IGlzIGxpa2VseSB0byBiZSBqdXN0
+IGFmdGVyIGEgYnJlYWsgb3IgZmlyc3QgdGhpbmcgaW4KPiB0aGUgbW9ybmluZyBpbiBvcmRlciB0
+byBhbGxvdyBvdGhlcnMgd2hvIGFyZW4ndCBpbnRlcmVzdGVkIGluIGF1ZGlvCj4gc3BlY2lmaWNh
+bGx5IHRvIGpvaW4gKGFuZCBob3BlZnVsbHkgaWYgdGhpcyBoYXBwZW5zIHdlIGNhbiBjb252aW5j
+ZQo+IHRoZW0KPiB0byBnZXQgaW52b2x2ZWQgaW4gd29ya2luZyBvbiBhdWRpbyEpLgo+IAo+IEkg
+bG9vayBmb3J3YXJkIHRvIHNlZWluZyBtYW55IG9mIHlvdSBpbiBTYW50YSBGZSBuZXh0IHdlZWsh
+CgotLSAKK0FINC1WaW5vZApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
