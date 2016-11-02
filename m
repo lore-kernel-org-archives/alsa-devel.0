@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v7 05/11] ASoC: topology: ABI - Update physical
-	DAI link configuration for version 5
-Date: Thu,  3 Nov 2016 01:03:52 +0800
-Message-ID: <a0ff1c80eeff102cad5437d2b1060c3333a2d346.1478071138.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v7 09/11] ASoC: topology: ABI - Rename struct
+	and type for physical DAIs
+Date: Thu,  3 Nov 2016 01:05:01 +0800
+Message-ID: <7b854be4da302386509f9e20857fd8ab854f2b4b.1478071138.git.mengdong.lin@linux.intel.com>
 References: <cover.1478071138.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 6125E2666FA
- for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 18:03:04 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id D55F22666FA
+ for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 18:03:43 +0100 (CET)
 In-Reply-To: <cover.1478071138.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,112 +27,103 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-The following fields are added to physical link configuration struct
-(snd_soc_tplg_link_config) in ABI v5:
+Rename the ABI struct and type because they are for configuring physical
+DAIs, not only backend DAIs since users may not need DPCM:
+- Rename struct snd_soc_tplg_be_dai to snd_soc_tplg_dai.
+- Rename type SND_SOC_TPLG_TYPE_BE_DAI to SND_SOC_TPLG_TYPE_DAI.
 
-- name and stream name
-  Topology will use them to find an existing physical link and configure
-  it.
-
-- HW configurations
-  Define the types and ABI struct for runtime supported hardware configs
-  of physical DAI links, e.g. audio hardware formats. The default HW
-  config ID will help topology to find the DAI format to set on init.
-  Topology provides this as a fallback if such HW settings are not
-  available in ACPI or device tree, to avoid hard code in drivers. It's
-  only for config items that can be programmed by SW or FW, not for
-  physical things like link connections or GPIO used for HP etc.
-
-- flags and private data
-  The flags will be used to configure an existing physical DAI link.
-  The private data is reserved for future extension.
-
-NOTE: Current kernel has no support for physical links. A later patch
-will add support for configuring physical links and make the support
-backward compatible for ABI v4.
+This code refactoring is backward compatible because:
+- Both layout of the struct and type value has no change. Kernel can
+  find the same type value and map to same data layout.
+- This struct is not in ABI v4 at all. Now the user space uses ABI v4.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
 diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index aeb4082..ed28ebc 100644
+index ed28ebc..3c3fcc8 100644
 --- a/include/uapi/sound/asoc.h
 +++ b/include/uapi/sound/asoc.h
-@@ -39,6 +39,11 @@
-  */
- #define SND_SOC_TPLG_STREAM_CONFIG_MAX  8
+@@ -111,8 +111,8 @@
+ #define SND_SOC_TPLG_TYPE_CODEC_LINK	9
+ #define SND_SOC_TPLG_TYPE_BACKEND_LINK	10
+ #define SND_SOC_TPLG_TYPE_PDATA		11
+-#define SND_SOC_TPLG_TYPE_BE_DAI	12
+-#define SND_SOC_TPLG_TYPE_MAX		SND_SOC_TPLG_TYPE_BE_DAI
++#define SND_SOC_TPLG_TYPE_DAI		12
++#define SND_SOC_TPLG_TYPE_MAX		SND_SOC_TPLG_TYPE_DAI
  
-+/*
-+ * Maximum number of physical link's hardware configs
-+ */
-+#define SND_SOC_TPLG_HW_CONFIG_MAX	8
-+
- /* individual kcontrol info types - can be mixed with other types */
- #define SND_SOC_TPLG_CTL_VOLSW		1
- #define SND_SOC_TPLG_CTL_VOLSW_SX	2
-@@ -294,6 +299,35 @@ struct snd_soc_tplg_stream {
- 	__le32 channels;	/* channels */
+ /* vendor block IDs - please add new vendor types to end */
+ #define SND_SOC_TPLG_TYPE_VENDOR_FW	1000
+@@ -131,7 +131,7 @@
+ #define SND_SOC_TPLG_TUPLE_TYPE_WORD	4
+ #define SND_SOC_TPLG_TUPLE_TYPE_SHORT	5
+ 
+-/* BE DAI flags */
++/* DAI flags */
+ #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_RATES         (1 << 0)
+ #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
+ #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
+@@ -527,16 +527,17 @@ struct snd_soc_tplg_link_config {
  } __attribute__((packed));
  
-+
-+/*
-+ * Describes a physical link's runtime supported hardware config,
-+ * i.e. hardware audio formats.
-+ */
-+struct snd_soc_tplg_hw_config {
-+	__le32 size;            /* in bytes of this structure */
-+	__le32 id;		/* unique ID - - used to match */
-+	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
-+	__u8 clock_gated;	/* 1 if clock can be gated to save power */
-+	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
-+	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
-+	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
-+	__u8 fsync_master;	/* 1 for master of FSYNC, 0 for slave */
-+	__u8 mclk_direction;    /* 0 for input, 1 for output */
-+	__le16 reserved;	/* for 32bit alignment */
-+	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
-+	__le32 bclk_rate;	/* BCLK freqency in Hz */
-+	__le32 fsync_rate;	/* frame clock in Hz */
-+	__le32 tdm_slots;	/* number of TDM slots in use */
-+	__le32 tdm_slot_width;	/* width in bits for each slot */
-+	__le32 tx_slots;	/* bit mask for active Tx slots */
-+	__le32 rx_slots;	/* bit mask for active Rx slots */
-+	__le32 tx_channels;	/* number of Tx channels */
-+	__le32 tx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
-+	__le32 rx_channels;	/* number of Rx channels */
-+	__le32 rx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
-+} __attribute__((packed));
-+
  /*
-  * Manifest. List totals for each payload type. Not used in parsing, but will
-  * be passed to the component driver before any other objects in order for any
-@@ -468,9 +502,9 @@ struct snd_soc_tplg_pcm {
- 
- 
- /*
-- * Describes the BE or CC link runtime supported configs or params
-+ * Describes the physical link runtime supported configs or params
+- * Describes SW/FW specific features of BE DAI.
++ * Describes SW/FW specific features of physical DAI.
++ * It can be used to configure backend DAIs for DPCM.
   *
-- * File block representation for BE/CC link config :-
-+ * File block representation for physical link config :-
+- * File block representation for BE DAI :-
++ * File block representation for physical DAI :-
   * +-----------------------------------+-----+
   * | struct snd_soc_tplg_hdr           |  1  |
   * +-----------------------------------+-----+
-@@ -480,8 +514,16 @@ struct snd_soc_tplg_pcm {
- struct snd_soc_tplg_link_config {
+- * | struct snd_soc_tplg_be_dai        |  N  |
++ * | struct snd_soc_tplg_dai           |  N  |
+  * +-----------------------------------+-----+
+  */
+-struct snd_soc_tplg_be_dai {
++struct snd_soc_tplg_dai {
  	__le32 size;            /* in bytes of this structure */
- 	__le32 id;              /* unique ID - used to match */
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* name - used to match */
-+	char stream_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* stream name - used to match */
- 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback and captrure */
- 	__le32 num_streams;     /* number of streams */
-+	struct snd_soc_tplg_hw_config hw_config[SND_SOC_TPLG_HW_CONFIG_MAX]; /* hw configs */
-+	__le32 num_hw_configs;         /* number of hw configs */
-+	__le32 default_hw_config_id;   /* default hw config ID for init */
-+	__le32 flag_mask;       /* bitmask of flags to configure */
-+	__le32 flags;           /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
-+	struct snd_soc_tplg_private priv;
- } __attribute__((packed));
+ 	char dai_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* name - used to match */
+ 	__le32 dai_id;          /* unique ID - used to match */
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index eea28ad..a839dc8 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2090,7 +2090,7 @@ static int soc_tplg_link_elems_load(struct soc_tplg *tplg,
+  * platform driver should specify the BE DAI name and ID for matching.
+  */
+ static int soc_tplg_be_dai_config(struct soc_tplg *tplg,
+-				  struct snd_soc_tplg_be_dai *be)
++				  struct snd_soc_tplg_dai *be)
+ {
+ 	struct snd_soc_dai_link_component dai_component = {0};
+ 	struct snd_soc_dai *dai;
+@@ -2145,7 +2145,7 @@ static int soc_tplg_be_dai_config(struct soc_tplg *tplg,
+ static int soc_tplg_be_dai_elems_load(struct soc_tplg *tplg,
+ 				      struct snd_soc_tplg_hdr *hdr)
+ {
+-	struct snd_soc_tplg_be_dai *be;
++	struct snd_soc_tplg_dai *be;
+ 	int count = hdr->count;
+ 	int i;
  
- /*
+@@ -2154,7 +2154,7 @@ static int soc_tplg_be_dai_elems_load(struct soc_tplg *tplg,
+ 
+ 	/* config the existing BE DAIs */
+ 	for (i = 0; i < count; i++) {
+-		be = (struct snd_soc_tplg_be_dai *)tplg->pos;
++		be = (struct snd_soc_tplg_dai *)tplg->pos;
+ 		if (be->size != sizeof(*be)) {
+ 			dev_err(tplg->dev, "ASoC: invalid BE DAI size\n");
+ 			return -EINVAL;
+@@ -2328,7 +2328,7 @@ static int soc_tplg_load_header(struct soc_tplg *tplg,
+ 		return soc_tplg_dapm_widget_elems_load(tplg, hdr);
+ 	case SND_SOC_TPLG_TYPE_PCM:
+ 		return soc_tplg_pcm_elems_load(tplg, hdr);
+-	case SND_SOC_TPLG_TYPE_BE_DAI:
++	case SND_SOC_TPLG_TYPE_DAI:
+ 		return soc_tplg_be_dai_elems_load(tplg, hdr);
+ 	case SND_SOC_TPLG_TYPE_DAI_LINK:
+ 	case SND_SOC_TPLG_TYPE_BACKEND_LINK:
 -- 
 2.7.4
