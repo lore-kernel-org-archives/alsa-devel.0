@@ -1,72 +1,94 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: Audio miniconference at LPC/KS - draft schedule
-Date: Wed, 2 Nov 2016 08:30:29 +0000
-Message-ID: <1478075425.19762.10.camel@intel.com>
-References: <20161027221754.GW25322@sirena.org.uk>
+From: Prarit Bhargava <prarit-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH v2 34/37] docs: fix locations of several
+ documents that got moved
+Date: Wed, 02 Nov 2016 06:08:43 -0400
+Message-ID: <5819BB2B.7010404@redhat.com>
+References: <cover.1476801354.git.mchehab@s-opensource.com> <28c1f5d3867174a7017e3f3d9e9e4ebb096ceed8.1476801354.git.mchehab@s-opensource.com> <20161019103442.GD1461@amd> <20161019115918.1162d16e@vento.lan> <20161102093154.GC23350@amd>
+Reply-To: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-7"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id BD397266AA1
- for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 09:30:34 +0100 (CET)
-In-Reply-To: <20161027221754.GW25322@sirena.org.uk>
-Content-Language: en-US
-Content-ID: <9EF8A4BB024C664AB323302FF24F8005@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>, "o-takashi@sakamocchi.jp" <o-takashi@sakamocchi.jp>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <rtc-linux+bncBCWZZUED64BBBQ7W43AAKGQEGSPATFY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20161102093154.GC23350@amd>
+List-Post: <https://groups.google.com/group/rtc-linux/post>, <mailto:rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:rtc-linux+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/rtc-linux
+List-Subscribe: <https://groups.google.com/group/rtc-linux/subscribe>, <mailto:rtc-linux+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+712029733259+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/rtc-linux/subscribe>
+To: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
+Cc: Linux Doc Mailing List <linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mauro Carvalho Chehab <mchehab-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>, Jonathan Corbet <corbet-T1hC0tSOHrs@public.gmane.org>, "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>, Len Brown <lenb-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jens Axboe <axboe-tSWWG44O7X1aa/9Udqfwiw@public.gmane.org>, Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jean Delvare <jdelvare-IBi9RG/b67k@public.gmane.org>, Guenter Roeck <linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org>, Karsten Keil <isdn-iHCpqvpFUx0uJkBD2foKsQ@public.gmane.org>, Mauro Carvalho Chehab <mchehab-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steffen Klassert <klassert-H0bhvm5RIPI+B2oLq8eQJv4efur1V5z/s0AfqQuZ5sE@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Johannes Berg <johannes-cdvu00un1VgdHxzADdlk8Q@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Paolo Bonzini <pbon>
 List-Id: alsa-devel@alsa-project.org
 
-CkhpIE1hcmssIFRha2FzaGksCgpXZSBuZWVkIHRvIGZpbmQgc29tZSB0aW1lIHRvIGRpc2N1c3Mg
-dGhlc2UuLgoKLSBBU29DIEhEQS4uCi0gQnl0ZSBjb250cm9scyBUTFYgaXNzdWUgcmFpc2VkIGJ5
-IFNha29tb3RvLXNhbiAobmVlZCBjaGFybGVzIGhlcmUgYXMKd2VsbCkKClRoYW5rcworQUg0LVZp
-bm9kCgoKT24gVGh1LCAyMDE2LTEwLTI3IGF0IDIzOjE3ICstMDEwMCwgTWFyayBCcm93biB3cm90
-ZToKPiBUaGUgYXVkaW8gbWluaWNvbmZlcmVuY2UgaXMgbmV4dCBUdWVzZGF5LCBzdGFydGluZyBh
-dCA5YW0gaW4gU3dlZW5leQo+IENERQo+IGF0IHRoZSBTYW50YSBGZSBDb252ZW50aW9uIENlbnRl
-ci4KPiAKPiBDdXJyZW50bHkgdGhlIHNldCBvZiB0b3BpY3Mgd2UgaGF2ZSBvbiB0aGUgd2lraSBh
-bmQgZnJvbSBlLW1haWwgZm9yCj4gZGlzY3Vzc2lvbiBpczoKPiAKPiArQUtBLS0gbW1hcC9ubyBJ
-UlEgbW9kZQo+ICtBS0EtLSBUaW1lIHN0YW1wIHJlcG9ydGluZyAoYm90aCBjdXJyZW50IEFQSXMg
-YW5kIGFkZGl0aW9uIG9mIGFiaWxpdHkgdG8KPiArQUtBQW9BQ2ctcHVzaCBkb3duIFBDTSBzeW5j
-KQo+ICtBS0EtLSBVU0IgYXVkaW8gcG93ZXIgYW5kIGxhdGVuY3kgcGVyZm9ybWFuY2UKPiArQUtB
-LS0gU3RhbmRhcmRpemluZyBIRE1JIC8gRFAgaW50ZXJmYWNlCj4gK0FLQS0tIFNvdW5kV2lyZSBz
-dXBwb3J0Cj4gK0FLQS0tIFRyYWNlcG9pbnRzIGZvciBQQ00gcGFyYW1ldGVyIHN1cHBvcnQKPiAr
-QUtBLS0gTG93IGxhdGVuY3kgYXVkaW8KPiArQUtBLS0gUHJvcGFnYXRpbmcgZGlnaXRhbCBjb25m
-aWd1cmF0aW9uIHRocm91Z2ggdGhlIERBUE0gZ3JhcGgKPiArQUtBLS0gVXNlcnNwYWNlIGFuZCBj
-b25maWd1cmF0aW9uIGludGVncmF0aW9uIChob3cgd2lsbCB0b3BvbG9neSBldGMgZ2V0Cj4gK0FL
-QUFvQUNnLWludGVncmF0ZWQgaW4gT1NlcykKPiArQUtBLS0gTW92ZSBvZiBBU29DIGNsb2NraW5n
-IGludG8gdGhlIGNsb2NrIEFQSQo+ICtBS0EtLSBIREEvQVNvQyBpbnRlZ3JhdGlvbgo+ICtBS0Et
-LSBVQ00gc2NhbGluZywgZG9lcyBpdCBzY2FsZSB3ZWxsK0lDWT8KPiArQUtBLS0gSG93IHRvIGlt
-cHJvdmUgdXBzdHJlYW1pbmcgdmVuZG9yIGRyaXZlcnM/Cj4gK0FLQS0tIFN0YWJsZSAvIExUUyBr
-ZXJuZWwgbWFpbnRlbmFuY2UKPiArQUtBLS0gUGFyYSBWaXJ0dWFsaXplZCBhdWRpbyBkcml2ZXIg
-c3VwcG9ydAo+ICtBS0EtLSBVc2Vyc3BhY2UgZHJpdmVycyAoZm9yIElFRUUgMTM5NCBhbmQgb3Ro
-ZXIgdGhpbmdzKQo+ICtBS0EtLSBEcm9wcGluZyB0aGUgRElDRSBkcml2ZXIKPiArQUtBLS0gTWVk
-aWEgQ29udHJvbGxlciBBUEkgaW50ZWdyYXRpb24KPiArQUtBIC0gSXMgdGhlcmUgYW55dGhpbmcg
-bmV3IGhlcmUgb3Igc2hvdWxkIHdlIGp1c3QgZHJvcCB0aGlzIGVudGlyZWx5Pwo+IAo+IHdoaWNo
-IGlzIHF1aXRlIGEgbGlzdCBidXQgc29tZSBvZiB0aG9zZSBzaG91bGQgYmUgZmFpcmx5IHNpbXBs
-ZSB0bwo+IGRpc2N1c3Mgc28gaG9wZWZ1bGx5IGZhaXJseSBxdWljay4rQUtBQW9BLUkndmUgbWFk
-ZSBzb21lIGVmZm9ydCB0byBzb3J0IHRoaXMKPiBpbnRvIGEgcm91Z2ggb3JkZXIgYnV0IGl0J3Mg
-dmVyeSBtdWNoIGEgZmlyc3QgcGFzcyBzbyBzdWdnZXN0aW9ucyBmb3IKPiBjaGFuZ2VzIGFyZSB3
-ZWxjb21lLitBS0FBb0EtU2ltaWxhcmx5IGFyZSB0aGVyZSBhcmUgb3RoZXIgdGhpbmdzIHBlb3Bs
-ZQo+IHRoaW5rCj4gd2Ugc2hvdWxkIGRpc2N1c3M/Cj4gCj4gVGhlcmUncyBhbHNvIHNvbWUgZGlz
-Y3Vzc2lvbiBvZiBpbmNvcG9yYXRpbmcgdGhlIGtlcm5lbCB3aWRlIHRvcGljIG9mCj4gaW50ZXIt
-ZGV2aWNlIGRlcGVuZGVuaWNlcyBpbnRvIHRoZSBhdWRpbyBtaW5pY29uZmVyZW5jZSBzaW5jZSB0
-aGlzCj4gYWZmZWN0cyBhdWRpbyAoZXNwZWNpYWxseSBBU29DKSBxdWl0ZSBhIGJpdCBhcyB3ZWxs
-IGFzIHNldmVyYWwgb3RoZXIKPiBzdWJzeXN0ZW1zLCB0aGF0IGlzIGxpa2VseSB0byBiZSBqdXN0
-IGFmdGVyIGEgYnJlYWsgb3IgZmlyc3QgdGhpbmcgaW4KPiB0aGUgbW9ybmluZyBpbiBvcmRlciB0
-byBhbGxvdyBvdGhlcnMgd2hvIGFyZW4ndCBpbnRlcmVzdGVkIGluIGF1ZGlvCj4gc3BlY2lmaWNh
-bGx5IHRvIGpvaW4gKGFuZCBob3BlZnVsbHkgaWYgdGhpcyBoYXBwZW5zIHdlIGNhbiBjb252aW5j
-ZQo+IHRoZW0KPiB0byBnZXQgaW52b2x2ZWQgaW4gd29ya2luZyBvbiBhdWRpbyEpLgo+IAo+IEkg
-bG9vayBmb3J3YXJkIHRvIHNlZWluZyBtYW55IG9mIHlvdSBpbiBTYW50YSBGZSBuZXh0IHdlZWsh
-CgotLSAKK0FINC1WaW5vZApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+
+
+On 11/02/2016 05:31 AM, Pavel Machek wrote:
+> Hi!
+> 
+>>> Dunno, but kernel-parameters.txt was already quite long... for a file
+>>> that is referenced quite often. Adding admin-guide/ into the path does
+>>> not really help.
+>>
+>> The big string name starts with Documentation/ :) There are some discussions 
+>> about changing it to doc/ (or docs/). Also, as you said, kernel-parameters
+>> is already a big name. Perhaps we could use, instead,
+>>> "kernel-parms".
+> 
+> cmdline?
+
+You would not believe the number of users I've dealt with that have confused
+"cmdline/command line" (aka prompt) with "kernel parameter".  I go back and edit
+customer debug requests to make sure there's no use of cmdline in place of
+kernel parameter.
+
+For the love of every customer facing engineer out there, please stop using
+cmdline ;).
+
+P.
+
+> 
+>> If we rename kernel-parameters.rst to kernel-parms.rst, plus the doc/ rename,
+>> then the string size will actually reduce:
+>>
+>> -		(see Documentation/kernel-parameters.txt), the minimum possible
+>> +		(see doc/admin-guide/kernel-parms.rst), the minimum possible
+>>
+>>> Maybe admin-guide should go directly into Documentation/ , as that's
+>>> what our users are interested in?
+>>
+>> There are several problems if we keep them at Documentation/ dir:
+>>
+>> - We'll end by mixing documents already converted to ReST with documents
+>>   not converted yet;
+>>
+>> - A rename is needed anyway, as Sphinx only accepts ReST files that end
+>>   with the extension(s) defined at Documentation/conf.py (currently,
+>>   .rst);
+>>
+>> - A partial documentation build is made by sub-directory. If we put
+>>   files under /Documentation, there's no way to build just one
+>>   book.
+> 
+> Well, documentation is primarily for users. I'm sure tools can adapt...
+> 
+>>> Plus, I'm not sure how many developers will figure out that process/
+>>> is what describes kernel patch submission process. We have processes
+>>> in the kernel, after all...
+>>
+>> Do you have a better idea?
+> 
+> development/ ?
+> 
+> Best regards,
+> 									Pavel
+> 
+
+-- 
+You received this message because you are subscribed to "rtc-linux".
+Membership options at http://groups.google.com/group/rtc-linux .
+Please read http://groups.google.com/group/rtc-linux/web/checklist
+before submitting a driver.
+--- 
+You received this message because you are subscribed to the Google Groups "rtc-linux" group.
+To unsubscribe from this group and stop receiving emails from it, send an email to rtc-linux+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
