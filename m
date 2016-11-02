@@ -1,51 +1,116 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH] ASoC: sun4i-codec: Enable bus clock after
- getting GPIO
-Date: Wed, 2 Nov 2016 09:44:58 +0100
-Message-ID: <20161102084458.xhuwy5bsmacgs2wm@lukather>
-References: <20161101063155.15826-1-wens@csie.org>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH v2 34/37] docs: fix locations of several documents that
+	got moved
+Date: Wed, 2 Nov 2016 10:31:54 +0100
+Message-ID: <20161102093154.GC23350@amd>
+References: <cover.1476801354.git.mchehab@s-opensource.com>
+	<28c1f5d3867174a7017e3f3d9e9e4ebb096ceed8.1476801354.git.mchehab@s-opensource.com>
+	<20161019103442.GD1461@amd> <20161019115918.1162d16e@vento.lan>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="acpdzj2giirnoufn"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBFWP43AAKGQEQO6UG7A-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <20161101063155.15826-1-wens-jdAy2FN1RRM@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============7680369000982517778=="
+Return-path: <virtualization-bounces@lists.linux-foundation.org>
+In-Reply-To: <20161019115918.1162d16e@vento.lan>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/virtualization>,
+	<mailto:virtualization-request@lists.linux-foundation.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/virtualization/>
+List-Post: <mailto:virtualization@lists.linux-foundation.org>
+List-Help: <mailto:virtualization-request@lists.linux-foundation.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/virtualization>,
+	<mailto:virtualization-request@lists.linux-foundation.org?subject=subscribe>
+Sender: virtualization-bounces@lists.linux-foundation.org
+Errors-To: virtualization-bounces@lists.linux-foundation.org
+To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Chris Metcalf <cmetcalf@ezchip.com>, Peter Loeffler <peter.loeffler@guruz.at>, Finn Thain <fthain@telegraphics.com.au>, Yaowei Bai <baiyaowei@cmss.chinamobile.com>, Jakub Wilk <jwilk@jwilk.net>, linux-acpi@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Guenter Roeck <linux@roeck-us.net>, Petr Mladek <pmladek@suse.com>, Jean Delvare <jdelvare@suse.com>, linux-pm@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Karsten Keil <isdn@linux-pingi.de>, Jiri Kosina <jkosina@suse.cz>, "seokhoon.yoon" <iamyooon@gmail.com>, Li Zefan <lizefan@huawei.com>, Ryan Swan <ryan@ryanswan.com>, Joe Perches <joe@perches.com>, Andrew Morton <akpm@linux-foundation.org>, Mark
 List-Id: alsa-devel@alsa-project.org
 
 
---acpdzj2giirnoufn
-Content-Type: text/plain; charset=UTF-8
+--===============7680369000982517778==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+nBD6E3TurpgldQp"
 Content-Disposition: inline
 
-On Tue, Nov 01, 2016 at 02:31:55PM +0800, Chen-Yu Tsai wrote:
-> In the current probe function the GPIO is acquired after the codec's
-> bus clock is enabled. However if it fails to acquire the GPIO due to
-> a deferred probe, it does not disable the bus clock before bailing out.
-> This would result in the clock being enabled multiple times.
-> 
-> Move the code that enables the bus clock after the part that gets the
-> GPIO, maintaining a separation between resource acquisition and device
-> enablement in the probe function.
-> 
-> Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 
-Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+--+nBD6E3TurpgldQp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Maxime
+Hi!
 
--- 
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
---acpdzj2giirnoufn--
+> > Dunno, but kernel-parameters.txt was already quite long... for a file
+> > that is referenced quite often. Adding admin-guide/ into the path does
+> > not really help.
+>=20
+> The big string name starts with Documentation/ :) There are some discussi=
+ons=20
+> about changing it to doc/ (or docs/). Also, as you said, kernel-parameters
+> is already a big name. Perhaps we could use, instead,
+> > "kernel-parms".
+
+cmdline?
+
+> If we rename kernel-parameters.rst to kernel-parms.rst, plus the doc/ ren=
+ame,
+> then the string size will actually reduce:
+>=20
+> -		(see Documentation/kernel-parameters.txt), the minimum possible
+> +		(see doc/admin-guide/kernel-parms.rst), the minimum possible
+>=20
+> > Maybe admin-guide should go directly into Documentation/ , as that's
+> > what our users are interested in?
+>=20
+> There are several problems if we keep them at Documentation/ dir:
+>=20
+> - We'll end by mixing documents already converted to ReST with documents
+>   not converted yet;
+>=20
+> - A rename is needed anyway, as Sphinx only accepts ReST files that end
+>   with the extension(s) defined at Documentation/conf.py (currently,
+>   .rst);
+>=20
+> - A partial documentation build is made by sub-directory. If we put
+>   files under /Documentation, there's no way to build just one
+>   book.
+
+Well, documentation is primarily for users. I'm sure tools can adapt...
+
+> > Plus, I'm not sure how many developers will figure out that process/
+> > is what describes kernel patch submission process. We have processes
+> > in the kernel, after all...
+>=20
+> Do you have a better idea?
+
+development/ ?
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--+nBD6E3TurpgldQp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlgZsooACgkQMOfwapXb+vKDEwCdEmlwjrrTY1HV6PoP/Pyie4I+
+oBMAnjN0WHtyXtQBydl/7WLL5tES6tZi
+=EDvv
+-----END PGP SIGNATURE-----
+
+--+nBD6E3TurpgldQp--
+
+--===============7680369000982517778==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Virtualization mailing list
+Virtualization@lists.linux-foundation.org
+https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+--===============7680369000982517778==--
