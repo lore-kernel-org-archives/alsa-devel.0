@@ -1,16 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v7 04/11] ASoC: topology: ABI - Add flags and
-	private data to PCM
-Date: Thu,  3 Nov 2016 01:03:34 +0800
-Message-ID: <4b17e13ac1c24a6dab791c8fd9abf79f410e7d6e.1478071138.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v7 06/11] ASoC: Define API to find a dai link
+Date: Thu,  3 Nov 2016 01:04:12 +0800
+Message-ID: <3dc6e000bf95a0ec17c407b6d349b50f0d6568d0.1478071138.git.mengdong.lin@linux.intel.com>
 References: <cover.1478071138.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C95F2666FA
- for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 18:02:11 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A6562666FA
+ for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2016 18:02:48 +0100 (CET)
 In-Reply-To: <cover.1478071138.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,98 +26,84 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-This is the remaining update to PCM ABI object of version 5.
+Define the API to find an existing DAI link of the soc card by matching
+the ID, name and stream name.
 
-The flags will be applied to FE (Front End) links and can also be used
-by physical links. The private data is reserved for future extension, so
-offset update will add the private data size.
+Some cards may use unique ID for each DAI link, so matching ID is enough,
+and name or stream name are not necessary. But user need to specify name
+or stream name as well if not sure whether link ID is unique since most
+cards use 0 as the default link ID.
 
-Now user space is using ABI v4, and the previous patch "ASoC: topology:
-make PCM backward compatible from ABI v4" can assure the backward
-compatibility.
+Topology can use this API to find an existing BE link and configure it.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 69cae71..aeb4082 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -146,6 +146,11 @@
- #define SND_SOC_DAI_FORMAT_MSB          SND_SOC_DAI_FORMAT_LEFT_J
- #define SND_SOC_DAI_FORMAT_LSB          SND_SOC_DAI_FORMAT_RIGHT_J
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 4f1c784..c3a38ee 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1671,6 +1671,9 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
+ 				struct snd_soc_dai_link *dai_link);
+ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+ 			     struct snd_soc_dai_link *dai_link);
++struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
++					       int id, const char *name,
++					       const char *stream_name);
  
-+/* DAI link flags */
-+#define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES         (1 << 0)
-+#define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
-+#define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
-+
- /*
-  * Block Header.
-  * This header precedes all object and object arrays below.
-@@ -456,6 +461,9 @@ struct snd_soc_tplg_pcm {
- 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* for DAI link */
- 	__le32 num_streams;	/* number of streams */
- 	struct snd_soc_tplg_stream_caps caps[2]; /* playback and capture for DAI */
-+	__le32 flag_mask;       /* bitmask of flags to configure */
-+	__le32 flags;           /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
-+	struct snd_soc_tplg_private priv;
- } __attribute__((packed));
- 
- 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 2f9b64e..8baa176 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1676,6 +1676,24 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
- 	return snd_soc_register_dai(tplg->comp, dai_drv);
+ int snd_soc_register_dai(struct snd_soc_component *component,
+ 	struct snd_soc_dai_driver *dai_drv);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c0bbcd9..a7a1ca4 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -972,6 +972,48 @@ struct snd_soc_dai *snd_soc_find_dai(
  }
+ EXPORT_SYMBOL_GPL(snd_soc_find_dai);
  
-+static void set_link_flags(struct snd_soc_dai_link *link,
-+		unsigned int flag_mask, unsigned int flags)
++
++/**
++ * snd_soc_find_dai_link - Find a DAI link
++ *
++ * @card: soc card
++ * @id: DAI link ID to match
++ * @name: DAI link name to match, optional
++ * @stream name: DAI link stream name to match, optional
++ *
++ * This function will search all existing DAI links of the soc card to
++ * find the link of the same ID. Since DAI links may not have their
++ * unique ID, so name and stream name should also match if being
++ * specified.
++ *
++ * Return: pointer of DAI link, or NULL if not found.
++ */
++struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
++					       int id, const char *name,
++					       const char *stream_name)
 +{
-+	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES)
-+		link->symmetric_rates =
-+			flags & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES ? 1 : 0;
++	struct snd_soc_dai_link *link, *_link;
 +
-+	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS)
-+		link->symmetric_channels =
-+			flags & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS ?
-+			1 : 0;
++	lockdep_assert_held(&client_mutex);
 +
-+	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS)
-+		link->symmetric_samplebits =
-+			flags & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS ?
-+			1 : 0;
++	list_for_each_entry_safe(link, _link, &card->dai_link_list, list) {
++		if (link->id != id)
++			continue;
++
++		if (name && (!link->name || strcmp(name, link->name)))
++			continue;
++
++		if (stream_name && (!link->stream_name
++			|| strcmp(stream_name, link->stream_name)))
++			continue;
++
++		return link;
++	}
++
++	return NULL;
 +}
++EXPORT_SYMBOL_GPL(snd_soc_find_dai_link);
 +
- /* create the FE DAI link */
- static int soc_tplg_link_create(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_pcm *pcm)
-@@ -1703,6 +1721,8 @@ static int soc_tplg_link_create(struct soc_tplg *tplg,
- 	link->dynamic = 1;
- 	link->dpcm_playback = pcm->playback;
- 	link->dpcm_capture = pcm->capture;
-+	if (pcm->flag_mask)
-+		set_link_flags(link, pcm->flag_mask, pcm->flags);
- 
- 	/* pass control to component driver for optional further init */
- 	ret = soc_tplg_dai_link_load(tplg, link);
-@@ -1848,10 +1868,14 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
- 		/* create the FE DAIs and DAI links */
- 		soc_tplg_pcm_create(tplg, _pcm);
- 
-+
-+		/* offset by version-specific struct size and
-+		 * real priv data size
-+		 */
-+		tplg->pos += pcm->size + _pcm->priv.size;
-+
- 		if (!abi_match)
- 			kfree(_pcm); /* free the duplicated one */
--
--		tplg->pos += pcm->size; /* offset by version-specific size */
- 	}
- 
- 	dev_dbg(tplg->dev, "ASoC: adding %d PCM DAIs\n", count);
+ static bool soc_is_dai_link_bound(struct snd_soc_card *card,
+ 		struct snd_soc_dai_link *dai_link)
+ {
 -- 
 2.7.4
