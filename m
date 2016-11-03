@@ -1,16 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 3/9] ASoC: Intel: Skylake: Add support for
-	programming D0i3C
-Date: Thu,  3 Nov 2016 17:07:16 +0530
-Message-ID: <1478173042-9458-4-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 4/9] ASoC: Intel: Skylake: Add D0iX callbacks
+Date: Thu,  3 Nov 2016 17:07:17 +0530
+Message-ID: <1478173042-9458-5-git-send-email-vinod.koul@intel.com>
 References: <1478173042-9458-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A49A260083
- for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 12:28:24 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A7F952671BA
+ for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 12:28:26 +0100 (CET)
 In-Reply-To: <1478173042-9458-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,136 +21,260 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, Jayachandran B <jayachandran.b@intel.com>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jayachandran B <jayachandran.b@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+From: Jayachandran B <jayachandran.b@intel.com>
 
-To set the controller in D0i3 mode, the driver needs to set D0i3C
-register after DSP is quiesced. Since the D0iX entry/exit is done by IPC,
-add this as callback so that it can be invoked from IPC module.
+The driver needs two DSP callback, one to set D0i0 (active) and D0i3
+(low-power) states.
 
-Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Add these callbacks in dsp ops and implement them for broxton platforms.
+
 Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c     |  1 +
- sound/soc/intel/skylake/skl-sst-ipc.h |  3 +++
- sound/soc/intel/skylake/skl.c         | 47 +++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl.h         |  5 ++++
- 4 files changed, 56 insertions(+)
+ sound/soc/intel/skylake/bxt-sst.c     | 140 ++++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-sst-dsp.h |  12 +++
+ sound/soc/intel/skylake/skl-sst-ipc.h |  19 +++++
+ 3 files changed, 171 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index c966b40da180..b69e05ec6844 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1211,6 +1211,7 @@ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
- 			return ret;
- 		}
- 		skl_populate_modules(skl);
-+		skl->skl_sst->update_d0i3c = skl_update_d0i3c;
- 	}
- 	pm_runtime_mark_last_busy(platform->dev);
- 	pm_runtime_put_autosuspend(platform->dev);
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index 1ae265d8ee08..ef2182d21934 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -83,6 +83,9 @@ struct skl_sst {
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index 1d251d59bcb9..fed818fe2e69 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -43,6 +43,9 @@
  
- 	/* tplg manifest */
- 	struct skl_dfw_manifest manifest;
+ #define BXT_ADSP_FW_BIN_HDR_OFFSET 0x2000
+ 
++/* Delay before scheduling D0i3 entry */
++#define BXT_D0I3_DELAY 5000
 +
-+	/* Callback to update D0i3C register */
-+	void (*update_d0i3c)(struct device *dev, bool enable);
- };
- 
- struct skl_ipc_init_instance_msg {
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 06fa5e85dd0e..02c273137703 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -26,6 +26,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/platform_device.h>
- #include <linux/firmware.h>
-+#include <linux/delay.h>
- #include <sound/pcm.h>
- #include "../common/sst-acpi.h"
- #include <sound/hda_register.h>
-@@ -109,6 +110,52 @@ static int skl_init_chip(struct hdac_bus *bus, bool full_reset)
+ static unsigned int bxt_get_errorcode(struct sst_dsp *ctx)
+ {
+ 	 return sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE);
+@@ -288,6 +291,141 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
  	return ret;
  }
  
-+void skl_update_d0i3c(struct device *dev, bool enable)
++/*
++ * Decide the D0i3 state that can be targeted based on the usecase
++ * ref counts and DSP state
++ *
++ * Decision Matrix:  (X= dont care; state = target state)
++ *
++ * DSP state != SKL_DSP_RUNNING ; state = no d0i3
++ *
++ * DSP state == SKL_DSP_RUNNING , the following matrix applies
++ * non_d0i3 >0; streaming =X; non_streaming =X; state = no d0i3
++ * non_d0i3 =X; streaming =0; non_streaming =0; state = no d0i3
++ * non_d0i3 =0; streaming >0; non_streaming =X; state = streaming d0i3
++ * non_d0i3 =0; streaming =0; non_streaming =X; state = non-streaming d0i3
++ */
++static int bxt_d0i3_target_state(struct sst_dsp *ctx)
 +{
-+	struct pci_dev *pci = to_pci_dev(dev);
-+	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	u8 reg;
-+	int timeout = 50;
++	struct skl_sst *skl = ctx->thread_context;
++	struct skl_d0i3_data *d0i3 = &skl->d0i3;
 +
-+	reg = snd_hdac_chip_readb(bus, VS_D0I3C);
-+	/* Do not write to D0I3C until command in progress bit is cleared */
-+	while ((reg & AZX_REG_VS_D0I3C_CIP) && --timeout) {
-+		udelay(10);
-+		reg = snd_hdac_chip_readb(bus, VS_D0I3C);
-+	}
++	if (skl->cores.state[SKL_DSP_CORE0_ID] != SKL_DSP_RUNNING)
++		return SKL_DSP_D0I3_NONE;
 +
-+	/* Highly unlikely. But if it happens, flag error explicitly */
-+	if (!timeout) {
-+		dev_err(bus->dev, "Before D0I3C update: D0I3C CIP timeout\n");
-+		return;
-+	}
-+
-+	if (enable)
-+		reg = reg | AZX_REG_VS_D0I3C_I3;
++	if (d0i3->non_d0i3)
++		return SKL_DSP_D0I3_NONE;
++	else if (d0i3->streaming)
++		return SKL_DSP_D0I3_STREAMING;
++	else if (d0i3->non_streaming)
++		return SKL_DSP_D0I3_NON_STREAMING;
 +	else
-+		reg = reg & (~AZX_REG_VS_D0I3C_I3);
-+
-+	snd_hdac_chip_writeb(bus, VS_D0I3C, reg);
-+
-+	timeout = 50;
-+	/* Wait for cmd in progress to be cleared before exiting the function */
-+	reg = snd_hdac_chip_readb(bus, VS_D0I3C);
-+	while ((reg & AZX_REG_VS_D0I3C_CIP) && --timeout) {
-+		udelay(10);
-+		reg = snd_hdac_chip_readb(bus, VS_D0I3C);
-+	}
-+
-+	/* Highly unlikely. But if it happens, flag error explicitly */
-+	if (!timeout) {
-+		dev_err(bus->dev, "After D0I3C update: D0I3C CIP timeout\n");
-+		return;
-+	}
-+
-+	dev_dbg(bus->dev, "D0I3C register = 0x%x\n",
-+			snd_hdac_chip_readb(bus, VS_D0I3C));
++		return SKL_DSP_D0I3_NONE;
 +}
 +
- /* called from IRQ */
- static void skl_stream_update(struct hdac_bus *bus, struct hdac_stream *hstr)
- {
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 5d4fbb094c48..88ba54ba5f72 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -52,6 +52,9 @@
- #define AZX_PGCTL_LSRMD_MASK		(1 << 4)
- #define AZX_PCIREG_CGCTL		0x48
- #define AZX_CGCTL_MISCBDCGE_MASK	(1 << 6)
-+/* D0I3C Register fields */
-+#define AZX_REG_VS_D0I3C_CIP      0x1 /* Command in progress */
-+#define AZX_REG_VS_D0I3C_I3       0x4 /* D0i3 enable */
- 
- struct skl_dsp_resource {
- 	u32 max_mcps;
-@@ -125,4 +128,6 @@ struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
- int skl_resume_dsp(struct skl *skl);
- void skl_cleanup_resources(struct skl *skl);
- const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id);
-+void skl_update_d0i3c(struct device *dev, bool enable);
++static void bxt_set_dsp_D0i3(struct work_struct *work)
++{
++	int ret;
++	struct skl_ipc_d0ix_msg msg;
++	struct skl_sst *skl = container_of(work,
++			struct skl_sst, d0i3.work.work);
++	struct sst_dsp *ctx = skl->dsp;
++	struct skl_d0i3_data *d0i3 = &skl->d0i3;
++	int target_state;
 +
- #endif /* __SOUND_SOC_SKL_H */
++	dev_dbg(ctx->dev, "In %s:\n", __func__);
++
++	/* D0i3 entry allowed only if core 0 alone is running */
++	if (skl_dsp_get_enabled_cores(ctx) !=  SKL_DSP_CORE0_MASK) {
++		dev_warn(ctx->dev,
++				"D0i3 allowed when only core0 running:Exit\n");
++		return;
++	}
++
++	target_state = bxt_d0i3_target_state(ctx);
++	if (target_state == SKL_DSP_D0I3_NONE)
++		return;
++
++	msg.instance_id = 0;
++	msg.module_id = 0;
++	msg.wake = 1;
++	msg.streaming = 0;
++	if (target_state == SKL_DSP_D0I3_STREAMING)
++		msg.streaming = 1;
++
++	ret =  skl_ipc_set_d0ix(&skl->ipc, &msg);
++
++	if (ret < 0) {
++		dev_err(ctx->dev, "Failed to set DSP to D0i3 state\n");
++		return;
++	}
++
++	/* Set Vendor specific register D0I3C.I3 to enable D0i3*/
++	if (skl->update_d0i3c)
++		skl->update_d0i3c(skl->dev, true);
++
++	d0i3->state = target_state;
++	skl->cores.state[SKL_DSP_CORE0_ID] = SKL_DSP_RUNNING_D0I3;
++}
++
++static int bxt_schedule_dsp_D0i3(struct sst_dsp *ctx)
++{
++	struct skl_sst *skl = ctx->thread_context;
++	struct skl_d0i3_data *d0i3 = &skl->d0i3;
++
++	/* Schedule D0i3 only if the usecase ref counts are appropriate */
++	if (bxt_d0i3_target_state(ctx) != SKL_DSP_D0I3_NONE) {
++
++		dev_dbg(ctx->dev, "%s: Schedule D0i3\n", __func__);
++
++		schedule_delayed_work(&d0i3->work,
++				msecs_to_jiffies(BXT_D0I3_DELAY));
++	}
++
++	return 0;
++}
++
++static int bxt_set_dsp_D0i0(struct sst_dsp *ctx)
++{
++	int ret;
++	struct skl_ipc_d0ix_msg msg;
++	struct skl_sst *skl = ctx->thread_context;
++
++	dev_dbg(ctx->dev, "In %s:\n", __func__);
++
++	/* First Cancel any pending attempt to put DSP to D0i3 */
++	cancel_delayed_work_sync(&skl->d0i3.work);
++
++	/* If DSP is currently in D0i3, bring it to D0i0 */
++	if (skl->cores.state[SKL_DSP_CORE0_ID] != SKL_DSP_RUNNING_D0I3)
++		return 0;
++
++	dev_dbg(ctx->dev, "Set DSP to D0i0\n");
++
++	msg.instance_id = 0;
++	msg.module_id = 0;
++	msg.streaming = 0;
++	msg.wake = 0;
++
++	if (skl->d0i3.state == SKL_DSP_D0I3_STREAMING)
++		msg.streaming = 1;
++
++	/* Clear Vendor specific register D0I3C.I3 to disable D0i3*/
++	if (skl->update_d0i3c)
++		skl->update_d0i3c(skl->dev, false);
++
++	ret =  skl_ipc_set_d0ix(&skl->ipc, &msg);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Failed to set DSP to D0i0\n");
++		return ret;
++	}
++
++	skl->cores.state[SKL_DSP_CORE0_ID] = SKL_DSP_RUNNING;
++	skl->d0i3.state = SKL_DSP_D0I3_NONE;
++
++	return 0;
++}
++
+ static int bxt_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
+ {
+ 	struct skl_sst *skl = ctx->thread_context;
+@@ -414,6 +552,8 @@ static int bxt_set_dsp_D3(struct sst_dsp *ctx, unsigned int core_id)
+ static struct skl_dsp_fw_ops bxt_fw_ops = {
+ 	.set_state_D0 = bxt_set_dsp_D0,
+ 	.set_state_D3 = bxt_set_dsp_D3,
++	.set_state_D0i3 = bxt_schedule_dsp_D0i3,
++	.set_state_D0i0 = bxt_set_dsp_D0i0,
+ 	.load_fw = bxt_load_base_firmware,
+ 	.get_fw_errcode = bxt_get_errorcode,
+ 	.load_library = bxt_load_library,
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index b9e71d051fb1..7c272ba0f4b5 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -126,11 +126,21 @@
+ #define SKL_ADSPCS_CPA_SHIFT		24
+ #define SKL_ADSPCS_CPA_MASK(cm)		((cm) << SKL_ADSPCS_CPA_SHIFT)
+ 
++/* DSP Core state */
+ enum skl_dsp_states {
+ 	SKL_DSP_RUNNING = 1,
++	/* Running in D0i3 state; can be in streaming or non-streaming D0i3 */
++	SKL_DSP_RUNNING_D0I3, /* Running in D0i3 state*/
+ 	SKL_DSP_RESET,
+ };
+ 
++/* D0i3 substates */
++enum skl_dsp_d0i3_states {
++	SKL_DSP_D0I3_NONE = -1, /* No D0i3 */
++	SKL_DSP_D0I3_NON_STREAMING = 0,
++	SKL_DSP_D0I3_STREAMING = 1,
++};
++
+ struct skl_dsp_fw_ops {
+ 	int (*load_fw)(struct sst_dsp  *ctx);
+ 	/* FW module parser/loader */
+@@ -139,6 +149,8 @@ struct skl_dsp_fw_ops {
+ 	int (*parse_fw)(struct sst_dsp *ctx);
+ 	int (*set_state_D0)(struct sst_dsp *ctx, unsigned int core_id);
+ 	int (*set_state_D3)(struct sst_dsp *ctx, unsigned int core_id);
++	int (*set_state_D0i3)(struct sst_dsp *ctx);
++	int (*set_state_D0i0)(struct sst_dsp *ctx);
+ 	unsigned int (*get_fw_errcode)(struct sst_dsp *ctx);
+ 	int (*load_mod)(struct sst_dsp *ctx, u16 mod_id, u8 *mod_name);
+ 	int (*unload_mod)(struct sst_dsp *ctx, u16 mod_id);
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index ef2182d21934..a45c42046b64 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -53,6 +53,23 @@ struct skl_dsp_cores {
+ 	int usage_count[SKL_DSP_CORES_MAX];
+ };
+ 
++/**
++ * skl_d0i3_data: skl D0i3 counters data struct
++ *
++ * @streaming: Count of usecases that can attempt streaming D0i3
++ * @non_streaming: Count of usecases that can attempt non-streaming D0i3
++ * @non_d0i3: Count of usecases that cannot attempt D0i3
++ * @state: current state
++ * @work: D0i3 worker thread
++ */
++struct skl_d0i3_data {
++	int streaming;
++	int non_streaming;
++	int non_d0i3;
++	enum skl_dsp_d0i3_states state;
++	struct delayed_work work;
++};
++
+ struct skl_sst {
+ 	struct device *dev;
+ 	struct sst_dsp *dsp;
+@@ -86,6 +103,8 @@ struct skl_sst {
+ 
+ 	/* Callback to update D0i3C register */
+ 	void (*update_d0i3c)(struct device *dev, bool enable);
++
++	struct skl_d0i3_data d0i3;
+ };
+ 
+ struct skl_ipc_init_instance_msg {
 -- 
 1.9.1
