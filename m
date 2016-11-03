@@ -1,16 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 1/6] topology: ABI - Update stream caps and PCM
-	objects to ABI v5
-Date: Fri,  4 Nov 2016 07:05:53 +0800
-Message-ID: <61958d1edbeed6bacc9494a6dc04844a7270e6fe.1478212626.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 2/6] topology: Parse sig_bits of stream caps
+Date: Fri,  4 Nov 2016 07:06:53 +0800
+Message-ID: <449c3b100730b9f73897084b9736ede91553dcdf.1478212626.git.mengdong.lin@linux.intel.com>
 References: <cover.1478212626.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id C0693266B8C
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 00:04:28 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6376266B8C
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 00:05:27 +0100 (CET)
 In-Reply-To: <cover.1478212626.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,49 +26,33 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Here are the ABI updates for PCM (Front DAI & DAI link) objects:
-
-- add sig_bits to stream caps.
-- add flags and private data to PCM.
-
-The kernel can handle the ABI update in a backward compatible way with
-the patch "ASoC: topology: Make PCM backward compatible from ABI v4".
+Add sig_bits to stream caps template of C API and parse it.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/sound/asoc.h b/include/sound/asoc.h
-index abe49c5..1f2c230 100644
---- a/include/sound/asoc.h
-+++ b/include/sound/asoc.h
-@@ -115,6 +115,11 @@
- #define SND_SOC_TPLG_TUPLE_TYPE_WORD	4
- #define SND_SOC_TPLG_TUPLE_TYPE_SHORT	5
+diff --git a/include/topology.h b/include/topology.h
+index 0675b52..ccd8401 100644
+--- a/include/topology.h
++++ b/include/topology.h
+@@ -848,6 +848,7 @@ struct snd_tplg_stream_caps_template {
+ 	unsigned int period_size_max;	/*!< max period size bytes */
+ 	unsigned int buffer_size_min;	/*!< min buffer size bytes */
+ 	unsigned int buffer_size_max;	/*!< max buffer size bytes */
++	unsigned int sig_bits;		/*!< number of bits of content */
+ };
  
-+/* DAI link flags */
-+#define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES         (1 << 0)
-+#define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
-+#define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
-+
- /*
-  * Block Header.
-  * This header precedes all object and object arrays below.
-@@ -242,6 +247,7 @@ struct snd_soc_tplg_stream_caps {
- 	__le32 period_size_max;	/* max period size bytes */
- 	__le32 buffer_size_min;	/* min buffer size bytes */
- 	__le32 buffer_size_max;	/* max buffer size bytes */
-+	__le32 sig_bits;        /* number of bits of content */
- } __attribute__((packed));
+ /** \struct snd_tplg_pcm_template
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index 0a90cb9..6fdf047 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -572,6 +572,7 @@ static void tplg_add_stream_caps(struct snd_soc_tplg_stream_caps *caps,
+ 	caps->period_size_max = caps_tpl->period_size_max;
+ 	caps->buffer_size_min = caps_tpl->buffer_size_min;
+ 	caps->buffer_size_max = caps_tpl->buffer_size_max;
++	caps->sig_bits = caps_tpl->sig_bits;
+ }
  
- /*
-@@ -422,6 +428,9 @@ struct snd_soc_tplg_pcm {
- 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* for DAI link */
- 	__le32 num_streams;	/* number of streams */
- 	struct snd_soc_tplg_stream_caps caps[2]; /* playback and capture for DAI */
-+	__le32 flag_mask;       /* bitmask of flags to configure */
-+	__le32 flags;           /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
-+	struct snd_soc_tplg_private priv;
- } __attribute__((packed));
- 
- 
+ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
 -- 
 2.7.4
