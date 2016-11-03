@@ -1,13 +1,13 @@
 From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: [PATCH v2 05/14] ASoC: sun4i-codec: Add support for
- optional reset control to quirks
-Date: Thu,  3 Nov 2016 15:55:47 +0800
-Message-ID: <20161103075556.29018-6-wens@csie.org>
+Subject: [PATCH v2 03/14] ASoC: sun4i-codec: Revise comments for
+ register definition macros
+Date: Thu,  3 Nov 2016 15:55:45 +0800
+Message-ID: <20161103075556.29018-4-wens@csie.org>
 References: <20161103075556.29018-1-wens@csie.org>
 Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCMILY6JWQBBBHW35PAAKGQEWLPL4DI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBHO35PAAKGQET7JUSCA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20161103075556.29018-1-wens-jdAy2FN1RRM@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -20,104 +20,70 @@ To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brow
 Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The later Allwinner SoCs have a dedicated reset controller, and
-peripherals have dedicated reset controls which need to be deasserted
-before the associated peripheral can be used.
-
-Add support for this to the quirks structure and probe/remove functions.
+This revises existing comments in the register definition macros
+section, and adds a few more, so that readers can clearly identify
+the types of control registers.
 
 Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ sound/soc/sunxi/sun4i-codec.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index d867b96d367b..e502966abf8e 100644
+index dbb47f255bd8..61ae502a5061 100644
 --- a/sound/soc/sunxi/sun4i-codec.c
 +++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -30,6 +30,7 @@
- #include <linux/of_platform.h>
- #include <linux/clk.h>
- #include <linux/regmap.h>
-+#include <linux/reset.h>
- #include <linux/gpio/consumer.h>
+@@ -40,7 +40,7 @@
+ #include <sound/initval.h>
+ #include <sound/dmaengine_pcm.h>
  
- #include <sound/core.h>
-@@ -114,6 +115,7 @@ struct sun4i_codec {
- 	struct regmap	*regmap;
- 	struct clk	*clk_apb;
- 	struct clk	*clk_module;
-+	struct reset_control *rst;
- 	struct gpio_desc *gpio_pa;
- 
- 	/* ADC_FIFOC register is at different offset on different SoCs */
-@@ -777,6 +779,7 @@ struct sun4i_codec_quirks {
- 	struct reg_field reg_adc_fifoc;	/* used for regmap_field */
- 	unsigned int reg_dac_txdata;	/* TX FIFO offset for DMA config */
- 	unsigned int reg_adc_rxdata;	/* RX FIFO offset for DMA config */
-+	bool has_reset;
- };
- 
- static const struct sun4i_codec_quirks sun4i_codec_quirks = {
-@@ -858,6 +861,14 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 		return PTR_ERR(scodec->clk_module);
- 	}
- 
-+	if (quirks->has_reset) {
-+		scodec->rst = devm_reset_control_get(&pdev->dev, NULL);
-+		if (IS_ERR(scodec->rst)) {
-+			dev_err(&pdev->dev, "Failed to get reset control\n");
-+			return PTR_ERR(scodec->rst);
-+		}
-+	};
+-/* Codec DAC register offsets and bit fields */
++/* Codec DAC digital controls and FIFO registers */
+ #define SUN4I_CODEC_DAC_DPC			(0x00)
+ #define SUN4I_CODEC_DAC_DPC_EN_DA			(31)
+ #define SUN4I_CODEC_DAC_DPC_DVOL			(12)
+@@ -57,6 +57,8 @@
+ #define SUN4I_CODEC_DAC_FIFOC_FIFO_FLUSH		(0)
+ #define SUN4I_CODEC_DAC_FIFOS			(0x08)
+ #define SUN4I_CODEC_DAC_TXDATA			(0x0c)
 +
- 	scodec->gpio_pa = devm_gpiod_get_optional(&pdev->dev, "allwinner,pa",
- 						  GPIOD_OUT_LOW);
- 	if (IS_ERR(scodec->gpio_pa)) {
-@@ -884,6 +895,16 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
++/* Codec DAC side analog signal controls */
+ #define SUN4I_CODEC_DAC_ACTL			(0x10)
+ #define SUN4I_CODEC_DAC_ACTL_DACAENR			(31)
+ #define SUN4I_CODEC_DAC_ACTL_DACAENL			(30)
+@@ -71,7 +73,7 @@
+ #define SUN4I_CODEC_DAC_TUNE			(0x14)
+ #define SUN4I_CODEC_DAC_DEBUG			(0x18)
  
-+	/* Deassert the reset control */
-+	if (scodec->rst) {
-+		ret = reset_control_deassert(scodec->rst);
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"Failed to deassert the reset control\n");
-+			goto err_clk_disable;
-+		}
-+	}
+-/* Codec ADC register offsets and bit fields */
++/* Codec ADC digital controls and FIFO registers */
+ #define SUN4I_CODEC_ADC_FIFOC			(0x1c)
+ #define SUN4I_CODEC_ADC_FIFOC_ADC_FS			(29)
+ #define SUN4I_CODEC_ADC_FIFOC_EN_AD			(28)
+@@ -83,6 +85,8 @@
+ #define SUN4I_CODEC_ADC_FIFOC_FIFO_FLUSH		(0)
+ #define SUN4I_CODEC_ADC_FIFOS			(0x20)
+ #define SUN4I_CODEC_ADC_RXDATA			(0x24)
 +
- 	/* DMA configuration for TX FIFO */
- 	scodec->playback_dma_data.addr = res->start + quirks->reg_dac_txdata;
- 	scodec->playback_dma_data.maxburst = 8;
-@@ -898,7 +919,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 				     &sun4i_codec_dai, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to register our codec\n");
--		goto err_clk_disable;
-+		goto err_assert_reset;
- 	}
++/* Codec ADC side analog signal controls */
+ #define SUN4I_CODEC_ADC_ACTL			(0x28)
+ #define SUN4I_CODEC_ADC_ACTL_ADC_R_EN			(31)
+ #define SUN4I_CODEC_ADC_ACTL_ADC_L_EN			(30)
+@@ -95,10 +99,14 @@
+ #define SUN4I_CODEC_ADC_ACTL_DDE			(3)
+ #define SUN4I_CODEC_ADC_DEBUG			(0x2c)
  
- 	ret = devm_snd_soc_register_component(&pdev->dev,
-@@ -935,6 +956,9 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+-/* Other various ADC registers */
++/* FIFO counters */
+ #define SUN4I_CODEC_DAC_TXCNT			(0x30)
+ #define SUN4I_CODEC_ADC_RXCNT			(0x34)
++
++/* Calibration register (sun7i only) */
+ #define SUN7I_CODEC_AC_DAC_CAL			(0x38)
++
++/* Microphone controls (sun7i only) */
+ #define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
  
- err_unregister_codec:
- 	snd_soc_unregister_codec(&pdev->dev);
-+err_assert_reset:
-+	if (scodec->rst)
-+		reset_control_assert(scodec->rst);
- err_clk_disable:
- 	clk_disable_unprepare(scodec->clk_apb);
- 	return ret;
-@@ -947,6 +971,8 @@ static int sun4i_codec_remove(struct platform_device *pdev)
- 
- 	snd_soc_unregister_card(card);
- 	snd_soc_unregister_codec(&pdev->dev);
-+	if (scodec->rst)
-+		reset_control_assert(scodec->rst);
- 	clk_disable_unprepare(scodec->clk_apb);
- 
- 	return 0;
+ struct sun4i_codec {
 -- 
 2.10.2
