@@ -1,15 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 2/6] topology: Parse sig_bits of stream caps
-Date: Fri,  4 Nov 2016 07:06:53 +0800
-Message-ID: <449c3b100730b9f73897084b9736ede91553dcdf.1478212626.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 3/6] topology: Parse flags for PCM
+Date: Fri,  4 Nov 2016 07:07:06 +0800
+Message-ID: <34d6902914df281d29cb4f01ccb5e8ffe1b78d8a.1478212626.git.mengdong.lin@linux.intel.com>
 References: <cover.1478212626.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id E6376266B8C
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 00:05:27 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C6E5266B8C
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 00:05:40 +0100 (CET)
 In-Reply-To: <cover.1478212626.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,33 +26,109 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Add sig_bits to stream caps template of C API and parse it.
+Users can define flags by both text conf file and C API.
+Add flags and flag_mask to C API template of PCM object.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
 diff --git a/include/topology.h b/include/topology.h
-index 0675b52..ccd8401 100644
+index ccd8401..b6a6f19 100644
 --- a/include/topology.h
 +++ b/include/topology.h
-@@ -848,6 +848,7 @@ struct snd_tplg_stream_caps_template {
- 	unsigned int period_size_max;	/*!< max period size bytes */
- 	unsigned int buffer_size_min;	/*!< min buffer size bytes */
- 	unsigned int buffer_size_max;	/*!< max buffer size bytes */
-+	unsigned int sig_bits;		/*!< number of bits of content */
+@@ -606,6 +606,11 @@ extern "C" {
+  *			"config3"
+  *		]
+  *	}
++ *
++ *	# Optional boolean flags
++ *	symmetric_rates			"true"
++ *	symmetric_channels		"true"
++ *	symmetric_sample_bits		"false"
+  * }
+  * </pre>
+  *
+@@ -863,6 +868,8 @@ struct snd_tplg_pcm_template {
+ 	unsigned int capture;	/*!< supports capture mode */
+ 	unsigned int compress;	/*!< 1 = compressed; 0 = PCM */
+ 	struct snd_tplg_stream_caps_template *caps[2]; /*!< playback & capture for DAI */
++	unsigned int flag_mask; /*!< bitmask of flags to configure */
++	unsigned int flags;     /*!< flag value SND_SOC_TPLG_LNK_FLGBIT_* */
+ 	int num_streams;	/*!< number of supported configs */
+ 	struct snd_tplg_stream_template stream[0]; /*!< supported configs */
  };
- 
- /** \struct snd_tplg_pcm_template
 diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 0a90cb9..6fdf047 100644
+index 6fdf047..bd70dc9 100644
 --- a/src/topology/pcm.c
 +++ b/src/topology/pcm.c
-@@ -572,6 +572,7 @@ static void tplg_add_stream_caps(struct snd_soc_tplg_stream_caps *caps,
- 	caps->period_size_max = caps_tpl->period_size_max;
- 	caps->buffer_size_min = caps_tpl->buffer_size_min;
- 	caps->buffer_size_max = caps_tpl->buffer_size_max;
-+	caps->sig_bits = caps_tpl->sig_bits;
+@@ -364,6 +364,24 @@ static int tplg_parse_fe_dai(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
+ 	return 0;
  }
  
- int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
++/* parse a flag bit of the given mask */
++static int parse_flag(snd_config_t *n, unsigned int mask_in,
++		      unsigned int *mask, unsigned int *flags)
++{
++	const char *val = NULL;
++
++	if (snd_config_get_string(n, &val) < 0)
++		return -EINVAL;
++
++	*mask |= mask_in;
++	if (strcmp(val, "true") == 0)
++		*flags |= mask_in;
++	else
++		*flags &= ~mask_in;
++
++	return 0;
++}
++
+ /* Parse pcm (for front end DAI & DAI link) */
+ int tplg_parse_pcm(snd_tplg_t *tplg,
+ 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
+@@ -430,6 +448,34 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
+ 				return err;
+ 			continue;
+ 		}
++
++		/* flags */
++		if (strcmp(id, "symmetric_rates") == 0) {
++			err = parse_flag(n,
++				SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES,
++				&pcm->flag_mask, &pcm->flags);
++			if (err < 0)
++				return err;
++			continue;
++		}
++
++		if (strcmp(id, "symmetric_channels") == 0) {
++			err = parse_flag(n,
++				SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS,
++				&pcm->flag_mask, &pcm->flags);
++			if (err < 0)
++				return err;
++			continue;
++		}
++
++		if (strcmp(id, "symmetric_sample_bits") == 0) {
++			err = parse_flag(n,
++				SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS,
++				&pcm->flag_mask, &pcm->flags);
++			if (err < 0)
++				return err;
++			continue;
++		}
+ 	}
+ 
+ 	return 0;
+@@ -610,6 +656,9 @@ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 			tplg_add_stream_caps(&pcm->caps[i], pcm_tpl->caps[i]);
+ 	}
+ 
++	pcm->flag_mask = pcm_tpl->flag_mask;
++	pcm->flags = pcm_tpl->flags;
++
+ 	pcm->num_streams = pcm_tpl->num_streams;
+ 	for (i = 0; i < pcm_tpl->num_streams; i++)
+ 		tplg_add_stream_object(&pcm->stream[i], &pcm_tpl->stream[i]);
 -- 
 2.7.4
