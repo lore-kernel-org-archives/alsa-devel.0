@@ -1,54 +1,120 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Question about the buffer length in the
-	transfer	callback of the PCM External Plugin
-Date: Thu, 3 Nov 2016 15:44:29 +0100
-Message-ID: <23292d9e-2fb6-1805-96c8-b2d5fa336665@ladisch.de>
-References: <a68475dd084f4a45b224791224c7c244@LGNMSXB01.prod.bk.dfs>
- <19904f93-f0ba-56a9-2980-ed52fe2a32bb@ladisch.de>
- <6c2af613d3b64138bc6e7c6cf69486cf@LGNMSXB01.prod.bk.dfs>
- <2dc2c73c-9d7c-3d3e-4d23-9797de2d1ec4@ladisch.de>
- <165e6496dc554e18836006a6b77461ce@LGNMSXB01.prod.bk.dfs>
- <93708608-9498-de05-9256-d650a44e18d8@ladisch.de>
- <1ce46f88056b4b2caa2ecf770da07d76@LGNMSXB01.prod.bk.dfs>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: sun4i-codec: Add support for A31 Line In
+ playback" to the asoc tree
+Date: Thu, 03 Nov 2016 14:33:32 -0600
+Message-ID: <E1c2OhY-0004Mo-Sk@finisterre>
+References: <20161003110804.28235-7-wens@csie.org>
+Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id E7F2D26648D
- for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 15:44:30 +0100 (CET)
-In-Reply-To: <1ce46f88056b4b2caa2ecf770da07d76@LGNMSXB01.prod.bk.dfs>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Bach, Andrea" <andrea.bach@dfs.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBW5653AAKGQETRXUJVQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20161003110804.28235-7-wens-jdAy2FN1RRM@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-SSBtZWFuLCB3aGF0IGlzIHRoYXQgdGhpbmcgdGhhdCB5b3UncmUgaW50ZXJmYWNpbmcgQUxTQSB3
-aXRoPwpPYnZpb3VzbHksIGl0IHNvbWVob3cgZ2VuZXJhdGVzIHNhbXBsZXMsIGJ1dCBob3cgZXhh
-Y3RseT8KCgpSZWdhcmRzLApDbGVtZW5zCgpCYWNoLCBBbmRyZWEgd3JvdGU6Cj4gTW1oIC0gSSBn
-ZXQgdGhlbSBmcm9tIHRoZSBidWZmZXIgYXJndW1lbnQgb2YgdGhlIHRyYW5zZmVyIGNhbGxiYWNr
-IG9mIHRoZSBQQ00gZXh0ZXJuYWwgcGx1Z2luLgo+IEkgZG8gbm90IGhhdmUgYSBzZWNvbmQgc291
-cmNlLi4uIG1heWJlIEkgbWlzc2VkIHRoZSAibWFpbiB0aGluZyIgc28gaXMgdGhlcmUgYW4gZXhh
-bXBsZSBvZiBhIFBDTSBleHRlcm5hbCBwbHVnaW4gSSBjYW4gbG9vayBhdD8KPgo+IFRoYW5rIHlv
-dQo+IEFuZHJlYQo+Cj4+IGhvdyBjYW4gSSB3YWl0IGluc2lkZSB0aGUgdHJhbnNmZXIgY2FsbGJh
-Y2sgdW50aWwgdGhlIG5leHQgYnl0ZXMgYXJlIGF2YWlsYWJsZS4uLgo+Cj4gVGhhdCBkZXBlbmRz
-IG9uIHdoZXJlIHlvdSBnZXQgdGhlIGJ5dGVzIGZyb20uCj4KPgo+IFJlZ2FyZHMsCj4gQ2xlbWVu
-cwo+IERGUyBEZXV0c2NoZSBGbHVnc2ljaGVydW5nIEdtYkgKPiBBbSBERlMtQ2FtcHVzCj4gRCAt
-IDYzMjI1IExhbmdlbgo+Cj4gVGVsLjogKzQ5LSgwKTYxMDMtNzA3LTAKPgo+IFNpdHogZGVyIEdl
-c2VsbHNjaGFmdDogTGFuZ2VuL0hlc3Nlbgo+IFp1c3TDpG5kaWdlcyBSZWdpc3RlcmdlcmljaHQ6
-IEFHIE9mZmVuYmFjaCBhbSBNYWluLCBIUkIgMzQ5NzcKPiBWb3JzaXR6ZW5kZSBkZXMgQXVmc2lj
-aHRzcmF0czogRHIuIE1hcnRpbmEgSGlucmljaGVyCj4gR2VzY2jDpGZ0c2bDvGhyZXI6IFByb2Yu
-IEtsYXVzLURpZXRlciBTY2hldXJsZSAoVm9ycy4pLCBSb2JlcnQgU2NoaWNrbGluZywgRHIuIE1p
-Y2hhZWwgSGFubgo+Cj4gSW50ZXJuZXQ6IGh0dHA6Ly93d3cuZGZzLmRlCj4gUHVibGljLUtleSBk
-ZXIgREZTOiBodHRwOi8vd3d3LmRmcy5kZS9kZnMvcHVibGljX2tleS5hc2MKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The patch
+
+   ASoC: sun4i-codec: Add support for A31 Line In playback
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From dff5051250674fce575fa36c22b2f007363e42d0 Mon Sep 17 00:00:00 2001
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Date: Thu, 3 Nov 2016 15:55:49 +0800
+Subject: [PATCH] ASoC: sun4i-codec: Add support for A31 Line In playback
+
+The A31 integrated codec has a stereo "Line In" input. Add support for
+it to the playback paths.
+
+Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+---
+ sound/soc/sunxi/sun4i-codec.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index d4b2186b5d84..72a84f76aa57 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -772,6 +772,10 @@ static const struct snd_kcontrol_new sun6i_codec_mixer_controls[] = {
+ 			SUN6I_CODEC_OM_DACA_CTRL,
+ 			SUN6I_CODEC_OM_DACA_CTRL_LMIX_DACR,
+ 			SUN6I_CODEC_OM_DACA_CTRL_RMIX_DACL, 1, 0),
++	SOC_DAPM_DOUBLE("Line In Playback Switch",
++			SUN6I_CODEC_OM_DACA_CTRL,
++			SUN6I_CODEC_OM_DACA_CTRL_LMIX_LINEINL,
++			SUN6I_CODEC_OM_DACA_CTRL_RMIX_LINEINR, 1, 0),
+ };
+ 
+ /* headphone controls */
+@@ -793,6 +797,8 @@ static const struct snd_kcontrol_new sun6i_codec_hp_src[] = {
+ /* volume / mute controls */
+ static const DECLARE_TLV_DB_SCALE(sun6i_codec_dvol_scale, -7308, 116, 0);
+ static const DECLARE_TLV_DB_SCALE(sun6i_codec_hp_vol_scale, -6300, 100, 1);
++static const DECLARE_TLV_DB_SCALE(sun6i_codec_out_mixer_pregain_scale,
++				  -450, 150, 0);
+ 
+ static const struct snd_kcontrol_new sun6i_codec_codec_widgets[] = {
+ 	SOC_SINGLE_TLV("DAC Playback Volume", SUN4I_CODEC_DAC_DPC,
+@@ -806,9 +812,16 @@ static const struct snd_kcontrol_new sun6i_codec_codec_widgets[] = {
+ 		   SUN6I_CODEC_OM_DACA_CTRL,
+ 		   SUN6I_CODEC_OM_DACA_CTRL_LHPPAMUTE,
+ 		   SUN6I_CODEC_OM_DACA_CTRL_RHPPAMUTE, 1, 0),
++	/* Mixer pre-gains */
++	SOC_SINGLE_TLV("Line In Playback Volume",
++		       SUN6I_CODEC_OM_PA_CTRL, SUN6I_CODEC_OM_PA_CTRL_LINEING,
++		       0x7, 0, sun6i_codec_out_mixer_pregain_scale),
+ };
+ 
+ static const struct snd_soc_dapm_widget sun6i_codec_codec_dapm_widgets[] = {
++	/* Line In */
++	SND_SOC_DAPM_INPUT("LINEIN"),
++
+ 	/* Digital parts of the DACs */
+ 	SND_SOC_DAPM_SUPPLY("DAC Enable", SUN4I_CODEC_DAC_DPC,
+ 			    SUN4I_CODEC_DAC_DPC_EN_DA, 0,
+@@ -850,10 +863,12 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
+ 	/* Left Mixer Routes */
+ 	{ "Left Mixer", "DAC Playback Switch", "Left DAC" },
+ 	{ "Left Mixer", "DAC Reversed Playback Switch", "Right DAC" },
++	{ "Left Mixer", "Line In Playback Switch", "LINEIN" },
+ 
+ 	/* Right Mixer Routes */
+ 	{ "Right Mixer", "DAC Playback Switch", "Right DAC" },
+ 	{ "Right Mixer", "DAC Reversed Playback Switch", "Left DAC" },
++	{ "Right Mixer", "Line In Playback Switch", "LINEIN" },
+ 
+ 	/* Headphone Routes */
+ 	{ "Headphone Source Playback Route", "DAC", "Left DAC" },
+-- 
+2.10.1
