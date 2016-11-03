@@ -1,17 +1,14 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Difference between boundary and buffer_size
-Date: Thu, 3 Nov 2016 23:56:06 +0100
-Message-ID: <e0c27dac-e27d-e3cb-12da-611f19b01272@metafoo.de>
-References: <581AFF28.5060500@IEE.org>
- <4ed8e3d2-0597-e41c-ea49-91dd9a361ffa@metafoo.de>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH 0/6] topology: Updates for PCM object in ABI v5
+Date: Fri,  4 Nov 2016 07:00:19 +0800
+Message-ID: <cover.1478212626.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id CE6F9266B8C
- for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 23:56:10 +0100 (CET)
-In-Reply-To: <4ed8e3d2-0597-e41c-ea49-91dd9a361ffa@metafoo.de>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9542C266B59
+ for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 23:58:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,30 +18,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Young <Alan.Young@IEE.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 11/03/2016 05:45 PM, Lars-Peter Clausen wrote:
-> On 11/03/2016 10:11 AM, Alan Young wrote:
->> The code in the kernel, in /pcm_lib.c/ and /pcm_native.c/, uses fields
->> buffer_size and boundary in struct snd_pcm_runtime. As far as I can see,
->> there are always initialized to the same value. In what circumstance might
->> they be different? There is clearly some relationship to hw_ptr_base, as
->> illustrated by this repeated snipped from snd_pcm_update_hw_ptr0()
->>
->>         hw_base += runtime->buffer_size;
->>         if (hw_base >= runtime->boundary) {
->>             hw_base = 0;
->>             crossed_boundary++;
->>         }
->>         new_hw_ptr = hw_base + pos;
-> 
-> boundary is actually set to the largest possible power-of-two multiple of
-> buffer_size. This is done so that the hw_ptr that is reported to userspace
-> is continuously increasing (up to boundary) and does not wrap around after
-> just one buffer_size has elapsed. This is done so you can measure the
-> distance between two hw_ptr that were captured at different points in time,
-> but are more than half a buffer_size away from each other.
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-And the pointer that is reported to userspace is called appl_ptr, sorry for
-the confusion.
+These ABI updates for PCM have just been applied to ASoC kernel. And
+kernel can handle the PCM ABI updates in a backward compatible way.
+
+So we update the user space code for PCM now.
+
+The updates for physical DAI link and DAIs will come later after
+their kernel updates be applied at first.
+
+Mengdong Lin (6):
+  topology: ABI - Update stream caps and PCM objects to ABI v5
+  topology: Parse sig_bits of stream caps
+  topology: Parse flags for PCM
+  topology: Define a function to build a single PCM element
+  topology: Parse and build private data for PCM
+  topology: tplg_elem_lookup() checks parameter before searching
+
+ include/sound/asoc.h      |   9 ++++
+ include/topology.h        |  11 +++++
+ src/topology/elem.c       |   3 ++
+ src/topology/parser.c     |   2 +-
+ src/topology/pcm.c        | 120 ++++++++++++++++++++++++++++++++++++++++++++--
+ src/topology/tplg_local.h |   2 +-
+ 6 files changed, 140 insertions(+), 7 deletions(-)
+
+-- 
+2.7.4
