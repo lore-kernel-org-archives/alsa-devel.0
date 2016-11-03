@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Make PCM backward compatible
-	from ABI v4" to the asoc tree
-Date: Thu, 03 Nov 2016 10:23:36 -0600
-Message-ID: <E1c2Kng-0001Jb-Um@finisterre>
-References: <7a2aa610eaf6f0768936bdd2ec2ea34dba518ed6.1478071138.git.mengdong.lin@linux.intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Difference between boundary and buffer_size
+Date: Thu, 3 Nov 2016 17:45:15 +0100
+Message-ID: <4ed8e3d2-0597-e41c-ea49-91dd9a361ffa@metafoo.de>
+References: <581AFF28.5060500@IEE.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D62226681E
- for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 17:23:54 +0100 (CET)
-In-Reply-To: <7a2aa610eaf6f0768936bdd2ec2ea34dba518ed6.1478071138.git.mengdong.lin@linux.intel.com>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F6EB2667E7
+ for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 17:45:18 +0100 (CET)
+In-Reply-To: <581AFF28.5060500@IEE.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,248 +20,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mengdong Lin <mengdong.lin@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+To: Alan Young <Alan.Young@IEE.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 11/03/2016 10:11 AM, Alan Young wrote:
+> The code in the kernel, in /pcm_lib.c/ and /pcm_native.c/, uses fields
+> buffer_size and boundary in struct snd_pcm_runtime. As far as I can see,
+> there are always initialized to the same value. In what circumstance might
+> they be different? There is clearly some relationship to hw_ptr_base, as
+> illustrated by this repeated snipped from snd_pcm_update_hw_ptr0()
+> 
+>         hw_base += runtime->buffer_size;
+>         if (hw_base >= runtime->boundary) {
+>             hw_base = 0;
+>             crossed_boundary++;
+>         }
+>         new_hw_ptr = hw_base + pos;
 
-   ASoC: topology: Make PCM backward compatible from ABI v4
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 55726dc95b78da32454878ac2b8a76daa53db396 Mon Sep 17 00:00:00 2001
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Date: Thu, 3 Nov 2016 01:00:16 +0800
-Subject: [PATCH] ASoC: topology: Make PCM backward compatible from ABI v4
-
-This patch adds support for old version 4 of PCMs (FE DAI & DAI links).
-
-Topology ABI v5 added new fields to stream caps and thus changed PCMs.
-Since user space may still uses v4, kernel will check the ABI version by
-comparing the object size. If user space uses v4 of PCMs, kernel will
-create the latest version of PCMs from the old version, and use the new
-version internally to create FE DAI & DAI links. Because these new created
-PCM elements will be freed later, kernel need duplicate the name strings
-of DAI driver and DAI links when creating them.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-topology.c | 145 +++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 133 insertions(+), 12 deletions(-)
-
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index c832b24b0cde..03edde57bfea 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -53,7 +53,6 @@
- #define SOC_TPLG_PASS_START	SOC_TPLG_PASS_MANIFEST
- #define SOC_TPLG_PASS_END	SOC_TPLG_PASS_BE_DAI
- 
--
- /*
-  * Old version of ABI structs, supported for backward compatibility.
-  */
-@@ -69,6 +68,39 @@ struct snd_soc_tplg_manifest_v4 {
- 	struct snd_soc_tplg_private priv;
- } __packed;
- 
-+/* Stream Capabilities v4 */
-+struct snd_soc_tplg_stream_caps_v4 {
-+	__le32 size;		/* in bytes of this structure */
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+	__le64 formats;	/* supported formats SNDRV_PCM_FMTBIT_* */
-+	__le32 rates;		/* supported rates SNDRV_PCM_RATE_* */
-+	__le32 rate_min;	/* min rate */
-+	__le32 rate_max;	/* max rate */
-+	__le32 channels_min;	/* min channels */
-+	__le32 channels_max;	/* max channels */
-+	__le32 periods_min;	/* min number of periods */
-+	__le32 periods_max;	/* max number of periods */
-+	__le32 period_size_min;	/* min period size bytes */
-+	__le32 period_size_max;	/* max period size bytes */
-+	__le32 buffer_size_min;	/* min buffer size bytes */
-+	__le32 buffer_size_max;	/* max buffer size bytes */
-+} __packed;
-+
-+/* PCM v4 */
-+struct snd_soc_tplg_pcm_v4 {
-+	__le32 size;		/* in bytes of this structure */
-+	char pcm_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+	char dai_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+	__le32 pcm_id;		/* unique ID - used to match with DAI link */
-+	__le32 dai_id;		/* unique ID - used to match */
-+	__le32 playback;	/* supports playback mode */
-+	__le32 capture;		/* supports capture mode */
-+	__le32 compress;	/* 1 = compressed; 0 = PCM */
-+	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* for DAI link */
-+	__le32 num_streams;	/* number of streams */
-+	struct snd_soc_tplg_stream_caps_v4 caps[2]; /* playback and capture for DAI */
-+} __packed;
-+
- /* topology context */
- struct soc_tplg {
- 	const struct firmware *fw;
-@@ -1692,38 +1724,127 @@ static int soc_tplg_pcm_create(struct soc_tplg *tplg,
- 	return  soc_tplg_link_create(tplg, pcm);
- }
- 
-+/* copy stream caps from the old version 4 of source */
-+static void stream_caps_new_ver(struct snd_soc_tplg_stream_caps *dest,
-+				struct snd_soc_tplg_stream_caps_v4 *src)
-+{
-+	dest->size = sizeof(*dest);
-+	memcpy(dest->name, src->name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+	dest->formats = src->formats;
-+	dest->rates = src->rates;
-+	dest->rate_min = src->rate_min;
-+	dest->rate_max = src->rate_max;
-+	dest->channels_min = src->channels_min;
-+	dest->channels_max = src->channels_max;
-+	dest->periods_min = src->periods_min;
-+	dest->periods_max = src->periods_max;
-+	dest->period_size_min = src->period_size_min;
-+	dest->period_size_max = src->period_size_max;
-+	dest->buffer_size_min = src->buffer_size_min;
-+	dest->buffer_size_max = src->buffer_size_max;
-+}
-+
-+/**
-+ * pcm_new_ver - Create the new version of PCM from the old version.
-+ * @tplg: topology context
-+ * @src: older version of pcm as a source
-+ * @pcm: latest version of pcm created from the source
-+ *
-+ * Support from vesion 4. User should free the returned pcm manually.
-+ */
-+static int pcm_new_ver(struct soc_tplg *tplg,
-+		       struct snd_soc_tplg_pcm *src,
-+		       struct snd_soc_tplg_pcm **pcm)
-+{
-+	struct snd_soc_tplg_pcm *dest;
-+	struct snd_soc_tplg_pcm_v4 *src_v4;
-+	int i;
-+
-+	*pcm = NULL;
-+
-+	if (src->size != sizeof(*src_v4)) {
-+		dev_err(tplg->dev, "ASoC: invalid PCM size\n");
-+		return -EINVAL;
-+	}
-+
-+	dev_warn(tplg->dev, "ASoC: old version of PCM\n");
-+	src_v4 = (struct snd_soc_tplg_pcm_v4 *)src;
-+	dest = kzalloc(sizeof(*dest), GFP_KERNEL);
-+	if (!dest)
-+		return -ENOMEM;
-+
-+	dest->size = sizeof(*dest);	/* size of latest abi version */
-+	memcpy(dest->pcm_name, src_v4->pcm_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+	memcpy(dest->dai_name, src_v4->dai_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+	dest->pcm_id = src_v4->pcm_id;
-+	dest->dai_id = src_v4->dai_id;
-+	dest->playback = src_v4->playback;
-+	dest->capture = src_v4->capture;
-+	dest->compress = src_v4->compress;
-+	dest->num_streams = src_v4->num_streams;
-+	for (i = 0; i < dest->num_streams; i++)
-+		memcpy(&dest->stream[i], &src_v4->stream[i],
-+		       sizeof(struct snd_soc_tplg_stream));
-+
-+	for (i = 0; i < 2; i++)
-+		stream_caps_new_ver(&dest->caps[i], &src_v4->caps[i]);
-+
-+	*pcm = dest;
-+	return 0;
-+}
-+
- static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_hdr *hdr)
- {
--	struct snd_soc_tplg_pcm *pcm;
-+	struct snd_soc_tplg_pcm *pcm, *_pcm;
- 	int count = hdr->count;
--	int i;
-+	int i, err;
-+	bool abi_match;
- 
- 	if (tplg->pass != SOC_TPLG_PASS_PCM_DAI)
- 		return 0;
- 
-+	/* check the element size and count */
-+	pcm = (struct snd_soc_tplg_pcm *)tplg->pos;
-+	if (pcm->size > sizeof(struct snd_soc_tplg_pcm)
-+		|| pcm->size < sizeof(struct snd_soc_tplg_pcm_v4)) {
-+		dev_err(tplg->dev, "ASoC: invalid size %d for PCM elems\n",
-+			pcm->size);
-+		return -EINVAL;
-+	}
-+
- 	if (soc_tplg_check_elem_count(tplg,
--		sizeof(struct snd_soc_tplg_pcm), count,
-+		pcm->size, count,
- 		hdr->payload_size, "PCM DAI")) {
- 		dev_err(tplg->dev, "ASoC: invalid count %d for PCM DAI elems\n",
- 			count);
- 		return -EINVAL;
- 	}
- 
--	/* create the FE DAIs and DAI links */
--	pcm = (struct snd_soc_tplg_pcm *)tplg->pos;
- 	for (i = 0; i < count; i++) {
--		if (pcm->size != sizeof(*pcm)) {
--			dev_err(tplg->dev, "ASoC: invalid pcm size\n");
--			return -EINVAL;
-+		pcm = (struct snd_soc_tplg_pcm *)tplg->pos;
-+
-+		/* check ABI version by size, create a new version of pcm
-+		 * if abi not match.
-+		 */
-+		if (pcm->size == sizeof(*pcm)) {
-+			abi_match = true;
-+			_pcm = pcm;
-+		} else {
-+			abi_match = false;
-+			err = pcm_new_ver(tplg, pcm, &_pcm);
- 		}
- 
--		soc_tplg_pcm_create(tplg, pcm);
--		pcm++;
-+		/* create the FE DAIs and DAI links */
-+		soc_tplg_pcm_create(tplg, _pcm);
-+
-+		if (!abi_match)
-+			kfree(_pcm); /* free the duplicated one */
-+
-+		tplg->pos += pcm->size; /* offset by version-specific size */
- 	}
- 
- 	dev_dbg(tplg->dev, "ASoC: adding %d PCM DAIs\n", count);
--	tplg->pos += sizeof(struct snd_soc_tplg_pcm) * count;
- 
- 	return 0;
- }
--- 
-2.10.1
+boundary is actually set to the largest possible power-of-two multiple of
+buffer_size. This is done so that the hw_ptr that is reported to userspace
+is continuously increasing (up to boundary) and does not wrap around after
+just one buffer_size has elapsed. This is done so you can measure the
+distance between two hw_ptr that were captured at different points in time,
+but are more than half a buffer_size away from each other.
