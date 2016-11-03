@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: ABI - Add flags and private
-	data to PCM" to the asoc tree
-Date: Thu, 03 Nov 2016 10:55:20 -0600
-Message-ID: <E1c2LIO-0001hS-3d@finisterre>
-References: <4b17e13ac1c24a6dab791c8fd9abf79f410e7d6e.1478071138.git.mengdong.lin@linux.intel.com>
+Subject: Applied "ASoC: topology: Only use valid names of PCM
+	for the kernel DAI & DAI link" to the asoc tree
+Date: Thu, 03 Nov 2016 10:55:37 -0600
+Message-ID: <E1c2LIf-0001jP-KX@finisterre>
+References: <f2e808ea2d0185ee310a5bae58317d253838641b.1478071138.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0422B2667EA
+ by alsa0.perex.cz (Postfix) with ESMTP id C7E572667E7
  for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 17:55:48 +0100 (CET)
-In-Reply-To: <4b17e13ac1c24a6dab791c8fd9abf79f410e7d6e.1478071138.git.mengdong.lin@linux.intel.com>
+In-Reply-To: <f2e808ea2d0185ee310a5bae58317d253838641b.1478071138.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: ABI - Add flags and private data to PCM
+   ASoC: topology: Only use valid names of PCM for the kernel DAI & DAI link
 
 has been applied to the asoc tree at
 
@@ -53,108 +53,76 @@ to this mail.
 Thanks,
 Mark
 
->From 717a8e7235377fa50f074c407cc5d0486aa15aa2 Mon Sep 17 00:00:00 2001
+>From 8f27c4abc2cd7a31adb896a6b4861cdcb921d063 Mon Sep 17 00:00:00 2001
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Date: Thu, 3 Nov 2016 01:03:34 +0800
-Subject: [PATCH] ASoC: topology: ABI - Add flags and private data to PCM
+Date: Thu, 3 Nov 2016 01:02:59 +0800
+Subject: [PATCH] ASoC: topology: Only use valid names of PCM for the kernel
+ DAI & DAI link
 
-This is the remaining update to PCM ABI object of version 5.
-
-The flags will be applied to FE (Front End) links and can also be used
-by physical links. The private data is reserved for future extension, so
-offset update will add the private data size.
-
-Now user space is using ABI v4, and the previous patch "ASoC: topology:
-make PCM backward compatible from ABI v4" can assure the backward
-compatibility.
+User space may not always set a valid FE DAI driver's name, FE DAI link's
+name, stream name or cpu DAI name. In such cases, there are all ZERO in
+these name string buffers of a topology PCM object. This patch will only
+duplicate valid name strings for kernel FE DAI driver and DAI link when
+creating them from topology, and free the name strings when destroying
+them.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/asoc.h |  8 ++++++++
- sound/soc/soc-topology.c  | 28 ++++++++++++++++++++++++++--
- 2 files changed, 34 insertions(+), 2 deletions(-)
+ sound/soc/soc-topology.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 69cae7198b18..aeb408241bc3 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -146,6 +146,11 @@
- #define SND_SOC_DAI_FORMAT_MSB          SND_SOC_DAI_FORMAT_LEFT_J
- #define SND_SOC_DAI_FORMAT_LSB          SND_SOC_DAI_FORMAT_RIGHT_J
- 
-+/* DAI link flags */
-+#define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES         (1 << 0)
-+#define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
-+#define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
-+
- /*
-  * Block Header.
-  * This header precedes all object and object arrays below.
-@@ -456,6 +461,9 @@ struct snd_soc_tplg_pcm {
- 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* for DAI link */
- 	__le32 num_streams;	/* number of streams */
- 	struct snd_soc_tplg_stream_caps caps[2]; /* playback and capture for DAI */
-+	__le32 flag_mask;       /* bitmask of flags to configure */
-+	__le32 flags;           /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
-+	struct snd_soc_tplg_private priv;
- } __attribute__((packed));
- 
- 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 2f9b64ec5904..8baa1761b874 100644
+index 03edde57bfea..0f1c8ebf8cda 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -1676,6 +1676,24 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
- 	return snd_soc_register_dai(tplg->comp, dai_drv);
+@@ -523,6 +523,7 @@ static void remove_dai(struct snd_soc_component *comp,
+ 	if (dobj->ops && dobj->ops->dai_unload)
+ 		dobj->ops->dai_unload(comp, dobj);
+ 
++	kfree(dai_drv->name);
+ 	list_del(&dobj->list);
+ 	kfree(dai_drv);
  }
+@@ -540,6 +541,10 @@ static void remove_link(struct snd_soc_component *comp,
+ 	if (dobj->ops && dobj->ops->link_unload)
+ 		dobj->ops->link_unload(comp, dobj);
  
-+static void set_link_flags(struct snd_soc_dai_link *link,
-+		unsigned int flag_mask, unsigned int flags)
-+{
-+	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES)
-+		link->symmetric_rates =
-+			flags & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES ? 1 : 0;
++	kfree(link->name);
++	kfree(link->stream_name);
++	kfree(link->cpu_dai_name);
 +
-+	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS)
-+		link->symmetric_channels =
-+			flags & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS ?
-+			1 : 0;
-+
-+	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS)
-+		link->symmetric_samplebits =
-+			flags & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS ?
-+			1 : 0;
-+}
-+
- /* create the FE DAI link */
- static int soc_tplg_link_create(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_pcm *pcm)
-@@ -1703,6 +1721,8 @@ static int soc_tplg_link_create(struct soc_tplg *tplg,
- 	link->dynamic = 1;
- 	link->dpcm_playback = pcm->playback;
- 	link->dpcm_capture = pcm->capture;
-+	if (pcm->flag_mask)
-+		set_link_flags(link, pcm->flag_mask, pcm->flags);
+ 	list_del(&dobj->list);
+ 	snd_soc_remove_dai_link(comp->card, link);
+ 	kfree(link);
+@@ -1638,7 +1643,8 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
+ 	if (dai_drv == NULL)
+ 		return -ENOMEM;
  
- 	/* pass control to component driver for optional further init */
- 	ret = soc_tplg_dai_link_load(tplg, link);
-@@ -1848,10 +1868,14 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
- 		/* create the FE DAIs and DAI links */
- 		soc_tplg_pcm_create(tplg, _pcm);
+-	dai_drv->name = pcm->dai_name;
++	if (strlen(pcm->dai_name))
++		dai_drv->name = kstrdup(pcm->dai_name, GFP_KERNEL);
+ 	dai_drv->id = pcm->dai_id;
  
-+
-+		/* offset by version-specific struct size and
-+		 * real priv data size
-+		 */
-+		tplg->pos += pcm->size + _pcm->priv.size;
-+
- 		if (!abi_match)
- 			kfree(_pcm); /* free the duplicated one */
--
--		tplg->pos += pcm->size; /* offset by version-specific size */
- 	}
+ 	if (pcm->playback) {
+@@ -1681,11 +1687,15 @@ static int soc_tplg_link_create(struct soc_tplg *tplg,
+ 	if (link == NULL)
+ 		return -ENOMEM;
  
- 	dev_dbg(tplg->dev, "ASoC: adding %d PCM DAIs\n", count);
+-	link->name = pcm->pcm_name;
+-	link->stream_name = pcm->pcm_name;
++	if (strlen(pcm->pcm_name)) {
++		link->name = kstrdup(pcm->pcm_name, GFP_KERNEL);
++		link->stream_name = kstrdup(pcm->pcm_name, GFP_KERNEL);
++	}
+ 	link->id = pcm->pcm_id;
+ 
+-	link->cpu_dai_name = pcm->dai_name;
++	if (strlen(pcm->dai_name))
++		link->cpu_dai_name = kstrdup(pcm->dai_name, GFP_KERNEL);
++
+ 	link->codec_name = "snd-soc-dummy";
+ 	link->codec_dai_name = "snd-soc-dummy-dai";
+ 
 -- 
 2.10.1
