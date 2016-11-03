@@ -1,414 +1,56 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: [PATCH v2 06/14] ASoC: sun4i-codec: Add support for A31
- playback through headphone output
-Date: Thu,  3 Nov 2016 15:55:48 +0800
-Message-ID: <20161103075556.29018-7-wens@csie.org>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v2 01/14] ASoC: sun4i-codec: Move data
+ structures to add create_card call to quirks
+Date: Thu, 3 Nov 2016 09:23:14 +0100
+Message-ID: <20161103082314.gtrb42pttayndnbc@lukather>
 References: <20161103075556.29018-1-wens@csie.org>
-Reply-To: wens-jdAy2FN1RRM@public.gmane.org
+ <20161103075556.29018-2-wens@csie.org>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCMILY6JWQBBBHW35PAAKGQEWLPL4DI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="oby3df2u5a7cmzgr"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBB5HH5PAAKGQE2SLXSOY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20161103075556.29018-1-wens-jdAy2FN1RRM@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20161103075556.29018-2-wens-jdAy2FN1RRM@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
 List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
  <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The A31 has a similar codec to the A10/A20. The PCM parts are very
-similar, with different register offsets. The analog paths are very
-different. There are more inputs and outputs. The ADC mux has been
-replaced with a proper mixer.
 
-This patch adds support for the basic playback path of the A31 codec,
-from the DAC to the headphones. Headphone detection, microphone,
-signaling, other inputs/outputs and capture will be added later.
+--oby3df2u5a7cmzgr
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 
-Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
----
- .../devicetree/bindings/sound/sun4i-codec.txt      |  22 +-
- sound/soc/sunxi/sun4i-codec.c                      | 271 ++++++++++++++++++++-
- 2 files changed, 287 insertions(+), 6 deletions(-)
+On Thu, Nov 03, 2016 at 03:55:43PM +0800, Chen-Yu Tsai wrote:
+> The audio codec on later Allwinner SoCs have a different layout and
+> audio path compared to the A10/A20. However the PCM parts are still
+> the same.
+> 
+> The different layout and audio paths mean we need a different
+> create_card function for different families, so they can create
+> DAPM endpoint widgets and routes.
+> 
+> This patch moves the regmap configs, quirks and of_device_id
+> structures to just before the probe function, so we can, among other
+> things, include a pointer for the create_card function. None of the
+> lines of code were changed.
+> 
+> Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-codec.txt b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-index 0dce690f78f5..bf480e9683a3 100644
---- a/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-+++ b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-@@ -1,8 +1,10 @@
- * Allwinner A10 Codec
- 
- Required properties:
--- compatible: must be either "allwinner,sun4i-a10-codec" or
--  "allwinner,sun7i-a20-codec"
-+- compatible: must be one of the following compatibles:
-+		- "allwinner,sun4i-a10-codec"
-+		- "allwinner,sun6i-a31-codec"
-+		- "allwinner,sun7i-a20-codec"
- - reg: must contain the registers location and length
- - interrupts: must contain the codec interrupt
- - dmas: DMA channels for tx and rx dma. See the DMA client binding,
-@@ -17,6 +19,10 @@ Required properties:
- Optional properties:
- - allwinner,pa-gpios: gpio to enable external amplifier
- 
-+Required properties for the following compatibles:
-+		- "allwinner,sun6i-a31-codec"
-+- resets: phandle to the reset control for this device
-+
- Example:
- codec: codec@01c22c00 {
- 	#sound-dai-cells = <0>;
-@@ -28,3 +34,15 @@ codec: codec@01c22c00 {
- 	dmas = <&dma 0 19>, <&dma 0 19>;
- 	dma-names = "rx", "tx";
- };
-+
-+codec: codec@01c22c00 {
-+	#sound-dai-cells = <0>;
-+	compatible = "allwinner,sun6i-a31-codec";
-+	reg = <0x01c22c00 0x98>;
-+	interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-+	clocks = <&ccu CLK_APB1_CODEC>, <&ccu CLK_CODEC>;
-+	clock-names = "apb", "codec";
-+	resets = <&ccu RST_APB1_CODEC>;
-+	dmas = <&dma 15>, <&dma 15>;
-+	dma-names = "rx", "tx";
-+};
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index e502966abf8e..12b9e08a3e64 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -110,6 +110,109 @@
- /* Microphone controls (sun7i only) */
- #define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
- 
-+/*
-+ * sun6i specific registers
-+ *
-+ * sun6i shares the same digital control and FIFO registers as sun4i,
-+ * but only the DAC digital controls are at the same offset. The others
-+ * have been moved around to accommodate extra analog controls.
-+ */
-+
-+/* Codec DAC digital controls and FIFO registers */
-+#define SUN6I_CODEC_ADC_FIFOC			(0x10)
-+#define SUN6I_CODEC_ADC_FIFOC_EN_AD			(28)
-+#define SUN6I_CODEC_ADC_FIFOS			(0x14)
-+#define SUN6I_CODEC_ADC_RXDATA			(0x18)
-+
-+/* Output mixer and gain controls */
-+#define SUN6I_CODEC_OM_DACA_CTRL		(0x20)
-+#define SUN6I_CODEC_OM_DACA_CTRL_DACAREN		(31)
-+#define SUN6I_CODEC_OM_DACA_CTRL_DACALEN		(30)
-+#define SUN6I_CODEC_OM_DACA_CTRL_RMIXEN			(29)
-+#define SUN6I_CODEC_OM_DACA_CTRL_LMIXEN			(28)
-+#define SUN6I_CODEC_OM_DACA_CTRL_RMIX_MIC1		(23)
-+#define SUN6I_CODEC_OM_DACA_CTRL_RMIX_MIC2		(22)
-+#define SUN6I_CODEC_OM_DACA_CTRL_RMIX_PHONE		(21)
-+#define SUN6I_CODEC_OM_DACA_CTRL_RMIX_PHONEP		(20)
-+#define SUN6I_CODEC_OM_DACA_CTRL_RMIX_LINEINR		(19)
-+#define SUN6I_CODEC_OM_DACA_CTRL_RMIX_DACR		(18)
-+#define SUN6I_CODEC_OM_DACA_CTRL_RMIX_DACL		(17)
-+#define SUN6I_CODEC_OM_DACA_CTRL_LMIX_MIC1		(16)
-+#define SUN6I_CODEC_OM_DACA_CTRL_LMIX_MIC2		(15)
-+#define SUN6I_CODEC_OM_DACA_CTRL_LMIX_PHONE		(14)
-+#define SUN6I_CODEC_OM_DACA_CTRL_LMIX_PHONEN		(13)
-+#define SUN6I_CODEC_OM_DACA_CTRL_LMIX_LINEINL		(12)
-+#define SUN6I_CODEC_OM_DACA_CTRL_LMIX_DACL		(11)
-+#define SUN6I_CODEC_OM_DACA_CTRL_LMIX_DACR		(10)
-+#define SUN6I_CODEC_OM_DACA_CTRL_RHPIS			(9)
-+#define SUN6I_CODEC_OM_DACA_CTRL_LHPIS			(8)
-+#define SUN6I_CODEC_OM_DACA_CTRL_RHPPAMUTE		(7)
-+#define SUN6I_CODEC_OM_DACA_CTRL_LHPPAMUTE		(6)
-+#define SUN6I_CODEC_OM_DACA_CTRL_HPVOL			(0)
-+#define SUN6I_CODEC_OM_PA_CTRL			(0x24)
-+#define SUN6I_CODEC_OM_PA_CTRL_HPPAEN			(31)
-+#define SUN6I_CODEC_OM_PA_CTRL_HPCOM_CTL		(29)
-+#define SUN6I_CODEC_OM_PA_CTRL_COMPTEN			(28)
-+#define SUN6I_CODEC_OM_PA_CTRL_MIC1G			(15)
-+#define SUN6I_CODEC_OM_PA_CTRL_MIC2G			(12)
-+#define SUN6I_CODEC_OM_PA_CTRL_LINEING			(9)
-+#define SUN6I_CODEC_OM_PA_CTRL_PHONEG			(6)
-+#define SUN6I_CODEC_OM_PA_CTRL_PHONEPG			(3)
-+#define SUN6I_CODEC_OM_PA_CTRL_PHONENG			(0)
-+
-+/* Microphone, line out and phone out controls */
-+#define SUN6I_CODEC_MIC_CTRL			(0x28)
-+#define SUN6I_CODEC_MIC_CTRL_HBIASEN			(31)
-+#define SUN6I_CODEC_MIC_CTRL_MBIASEN			(30)
-+#define SUN6I_CODEC_MIC_CTRL_MIC1AMPEN			(28)
-+#define SUN6I_CODEC_MIC_CTRL_MIC1BOOST			(25)
-+#define SUN6I_CODEC_MIC_CTRL_MIC2AMPEN			(24)
-+#define SUN6I_CODEC_MIC_CTRL_MIC2BOOST			(21)
-+#define SUN6I_CODEC_MIC_CTRL_MIC2SLT			(20)
-+#define SUN6I_CODEC_MIC_CTRL_LINEOUTLEN			(19)
-+#define SUN6I_CODEC_MIC_CTRL_LINEOUTREN			(18)
-+#define SUN6I_CODEC_MIC_CTRL_LINEOUTLSRC		(17)
-+#define SUN6I_CODEC_MIC_CTRL_LINEOUTRSRC		(16)
-+#define SUN6I_CODEC_MIC_CTRL_LINEOUTVC			(11)
-+#define SUN6I_CODEC_MIC_CTRL_PHONEPREG			(8)
-+
-+/* ADC mixer controls */
-+#define SUN6I_CODEC_ADC_ACTL			(0x2c)
-+#define SUN6I_CODEC_ADC_ACTL_ADCREN			(31)
-+#define SUN6I_CODEC_ADC_ACTL_ADCLEN			(30)
-+#define SUN6I_CODEC_ADC_ACTL_ADCRG			(27)
-+#define SUN6I_CODEC_ADC_ACTL_ADCLG			(24)
-+#define SUN6I_CODEC_ADC_ACTL_RADCMIX_MIC1		(13)
-+#define SUN6I_CODEC_ADC_ACTL_RADCMIX_MIC2		(12)
-+#define SUN6I_CODEC_ADC_ACTL_RADCMIX_PHONE		(11)
-+#define SUN6I_CODEC_ADC_ACTL_RADCMIX_PHONEP		(10)
-+#define SUN6I_CODEC_ADC_ACTL_RADCMIX_LINEINR		(9)
-+#define SUN6I_CODEC_ADC_ACTL_RADCMIX_OMIXR		(8)
-+#define SUN6I_CODEC_ADC_ACTL_RADCMIX_OMIXL		(7)
-+#define SUN6I_CODEC_ADC_ACTL_LADCMIX_MIC1		(6)
-+#define SUN6I_CODEC_ADC_ACTL_LADCMIX_MIC2		(5)
-+#define SUN6I_CODEC_ADC_ACTL_LADCMIX_PHONE		(4)
-+#define SUN6I_CODEC_ADC_ACTL_LADCMIX_PHONEN		(3)
-+#define SUN6I_CODEC_ADC_ACTL_LADCMIX_LINEINL		(2)
-+#define SUN6I_CODEC_ADC_ACTL_LADCMIX_OMIXL		(1)
-+#define SUN6I_CODEC_ADC_ACTL_LADCMIX_OMIXR		(0)
-+
-+/* Analog performance tuning controls */
-+#define SUN6I_CODEC_ADDA_TUNE			(0x30)
-+
-+/* Calibration controls */
-+#define SUN6I_CODEC_CALIBRATION			(0x34)
-+
-+/* FIFO counters */
-+#define SUN6I_CODEC_DAC_TXCNT			(0x40)
-+#define SUN6I_CODEC_ADC_RXCNT			(0x44)
-+
-+/* headset jack detection and button support registers */
-+#define SUN6I_CODEC_HMIC_CTL			(0x50)
-+#define SUN6I_CODEC_HMIC_DATA			(0x54)
-+
-+/* TODO sun6i DAP (Digital Audio Processing) bits */
-+
- struct sun4i_codec {
- 	struct device	*dev;
- 	struct regmap	*regmap;
-@@ -216,9 +319,14 @@ static int sun4i_codec_prepare_capture(struct snd_pcm_substream *substream,
- 	 *        Allwinner's code mentions that it is related
- 	 *        related to microphone gain
- 	 */
--	regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_ACTL,
--			   0x3 << 25,
--			   0x1 << 25);
-+	if (of_device_is_compatible(scodec->dev->of_node,
-+				    "allwinner,sun4i-a10-codec") ||
-+	    of_device_is_compatible(scodec->dev->of_node,
-+				    "allwinner,sun7i-a20-codec")) {
-+		regmap_update_bits(scodec->regmap, SUN4I_CODEC_ADC_ACTL,
-+				   0x3 << 25,
-+				   0x1 << 25);
-+	}
- 
- 	if (of_device_is_compatible(scodec->dev->of_node,
- 				    "allwinner,sun7i-a20-codec"))
-@@ -518,7 +626,7 @@ static struct snd_soc_dai_driver sun4i_codec_dai = {
- 	},
- };
- 
--/*** Codec ***/
-+/*** sun4i Codec ***/
- static const struct snd_kcontrol_new sun4i_codec_pa_mute =
- 	SOC_DAPM_SINGLE("Switch", SUN4I_CODEC_DAC_ACTL,
- 			SUN4I_CODEC_DAC_ACTL_PA_MUTE, 1, 0);
-@@ -654,6 +762,122 @@ static struct snd_soc_codec_driver sun4i_codec_codec = {
- 	},
- };
- 
-+/*** sun6i Codec ***/
-+
-+/* mixer controls */
-+static const struct snd_kcontrol_new sun6i_codec_mixer_controls[] = {
-+	SOC_DAPM_DOUBLE("DAC Playback Switch",
-+			SUN6I_CODEC_OM_DACA_CTRL,
-+			SUN6I_CODEC_OM_DACA_CTRL_LMIX_DACL,
-+			SUN6I_CODEC_OM_DACA_CTRL_RMIX_DACR, 1, 0),
-+	SOC_DAPM_DOUBLE("DAC Reversed Playback Switch",
-+			SUN6I_CODEC_OM_DACA_CTRL,
-+			SUN6I_CODEC_OM_DACA_CTRL_LMIX_DACR,
-+			SUN6I_CODEC_OM_DACA_CTRL_RMIX_DACL, 1, 0),
-+};
-+
-+/* headphone controls */
-+static const char * const sun6i_codec_hp_src_enum_text[] = {
-+	"DAC", "Mixer",
-+};
-+
-+static SOC_ENUM_DOUBLE_DECL(sun6i_codec_hp_src_enum,
-+			    SUN6I_CODEC_OM_DACA_CTRL,
-+			    SUN6I_CODEC_OM_DACA_CTRL_LHPIS,
-+			    SUN6I_CODEC_OM_DACA_CTRL_RHPIS,
-+			    sun6i_codec_hp_src_enum_text);
-+
-+static const struct snd_kcontrol_new sun6i_codec_hp_src[] = {
-+	SOC_DAPM_ENUM("Headphone Source Playback Route",
-+		      sun6i_codec_hp_src_enum),
-+};
-+
-+/* volume / mute controls */
-+static const DECLARE_TLV_DB_SCALE(sun6i_codec_dvol_scale, -7308, 116, 0);
-+static const DECLARE_TLV_DB_SCALE(sun6i_codec_hp_vol_scale, -6300, 100, 1);
-+
-+static const struct snd_kcontrol_new sun6i_codec_codec_widgets[] = {
-+	SOC_SINGLE_TLV("DAC Playback Volume", SUN4I_CODEC_DAC_DPC,
-+		       SUN4I_CODEC_DAC_DPC_DVOL, 0x3f, 1,
-+		       sun6i_codec_dvol_scale),
-+	SOC_SINGLE_TLV("Headphone Playback Volume",
-+		       SUN6I_CODEC_OM_DACA_CTRL,
-+		       SUN6I_CODEC_OM_DACA_CTRL_HPVOL, 0x3f, 0,
-+		       sun6i_codec_hp_vol_scale),
-+	SOC_DOUBLE("Headphone Playback Switch",
-+		   SUN6I_CODEC_OM_DACA_CTRL,
-+		   SUN6I_CODEC_OM_DACA_CTRL_LHPPAMUTE,
-+		   SUN6I_CODEC_OM_DACA_CTRL_RHPPAMUTE, 1, 0),
-+};
-+
-+static const struct snd_soc_dapm_widget sun6i_codec_codec_dapm_widgets[] = {
-+	/* Digital parts of the DACs */
-+	SND_SOC_DAPM_SUPPLY("DAC Enable", SUN4I_CODEC_DAC_DPC,
-+			    SUN4I_CODEC_DAC_DPC_EN_DA, 0,
-+			    NULL, 0),
-+
-+	/* Analog parts of the DACs */
-+	SND_SOC_DAPM_DAC("Left DAC", "Codec Playback",
-+			 SUN6I_CODEC_OM_DACA_CTRL,
-+			 SUN6I_CODEC_OM_DACA_CTRL_DACALEN, 0),
-+	SND_SOC_DAPM_DAC("Right DAC", "Codec Playback",
-+			 SUN6I_CODEC_OM_DACA_CTRL,
-+			 SUN6I_CODEC_OM_DACA_CTRL_DACAREN, 0),
-+
-+	/* Mixers */
-+	SOC_MIXER_ARRAY("Left Mixer", SUN6I_CODEC_OM_DACA_CTRL,
-+			SUN6I_CODEC_OM_DACA_CTRL_LMIXEN, 0,
-+			sun6i_codec_mixer_controls),
-+	SOC_MIXER_ARRAY("Right Mixer", SUN6I_CODEC_OM_DACA_CTRL,
-+			SUN6I_CODEC_OM_DACA_CTRL_RMIXEN, 0,
-+			sun6i_codec_mixer_controls),
-+
-+	/* Headphone output path */
-+	SND_SOC_DAPM_MUX("Headphone Source Playback Route",
-+			 SND_SOC_NOPM, 0, 0, sun6i_codec_hp_src),
-+	SND_SOC_DAPM_OUT_DRV("Headphone Amp", SUN6I_CODEC_OM_PA_CTRL,
-+			     SUN6I_CODEC_OM_PA_CTRL_HPPAEN, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("HPCOM Protection", SUN6I_CODEC_OM_PA_CTRL,
-+			    SUN6I_CODEC_OM_PA_CTRL_COMPTEN, 0, NULL, 0),
-+	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "HPCOM", SUN6I_CODEC_OM_PA_CTRL,
-+			 SUN6I_CODEC_OM_PA_CTRL_HPCOM_CTL, 0x3, 0x3, 0),
-+	SND_SOC_DAPM_OUTPUT("HP"),
-+};
-+
-+static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
-+	/* DAC Routes */
-+	{ "Left DAC", NULL, "DAC Enable" },
-+	{ "Right DAC", NULL, "DAC Enable" },
-+
-+	/* Left Mixer Routes */
-+	{ "Left Mixer", "DAC Playback Switch", "Left DAC" },
-+	{ "Left Mixer", "DAC Reversed Playback Switch", "Right DAC" },
-+
-+	/* Right Mixer Routes */
-+	{ "Right Mixer", "DAC Playback Switch", "Right DAC" },
-+	{ "Right Mixer", "DAC Reversed Playback Switch", "Left DAC" },
-+
-+	/* Headphone Routes */
-+	{ "Headphone Source Playback Route", "DAC", "Left DAC" },
-+	{ "Headphone Source Playback Route", "DAC", "Right DAC" },
-+	{ "Headphone Source Playback Route", "Mixer", "Left Mixer" },
-+	{ "Headphone Source Playback Route", "Mixer", "Right Mixer" },
-+	{ "Headphone Amp", NULL, "Headphone Source Playback Route" },
-+	{ "HP", NULL, "Headphone Amp" },
-+	{ "HPCOM", NULL, "HPCOM Protection" },
-+};
-+
-+static struct snd_soc_codec_driver sun6i_codec_codec = {
-+	.component_driver = {
-+		.controls		= sun6i_codec_codec_widgets,
-+		.num_controls		= ARRAY_SIZE(sun6i_codec_codec_widgets),
-+		.dapm_widgets		= sun6i_codec_codec_dapm_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(sun6i_codec_codec_dapm_widgets),
-+		.dapm_routes		= sun6i_codec_codec_dapm_routes,
-+		.num_dapm_routes	= ARRAY_SIZE(sun6i_codec_codec_dapm_routes),
-+	},
-+};
-+
- static const struct snd_soc_component_driver sun4i_codec_component = {
- 	.name = "sun4i-codec",
- };
-@@ -758,6 +982,24 @@ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
- 	return card;
- };
- 
-+static struct snd_soc_card *sun6i_codec_create_card(struct device *dev)
-+{
-+	struct snd_soc_card *card;
-+
-+	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
-+	if (!card)
-+		return ERR_PTR(-ENOMEM);
-+
-+	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
-+	if (!card->dai_link)
-+		return ERR_PTR(-ENOMEM);
-+
-+	card->dev	= dev;
-+	card->name	= "A31 Audio Codec";
-+
-+	return card;
-+};
-+
- static const struct regmap_config sun4i_codec_regmap_config = {
- 	.reg_bits	= 32,
- 	.reg_stride	= 4,
-@@ -765,6 +1007,13 @@ static const struct regmap_config sun4i_codec_regmap_config = {
- 	.max_register	= SUN4I_CODEC_ADC_RXCNT,
- };
- 
-+static const struct regmap_config sun6i_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= SUN6I_CODEC_HMIC_DATA,
-+};
-+
- static const struct regmap_config sun7i_codec_regmap_config = {
- 	.reg_bits	= 32,
- 	.reg_stride	= 4,
-@@ -791,6 +1040,16 @@ static const struct sun4i_codec_quirks sun4i_codec_quirks = {
- 	.reg_adc_rxdata	= SUN4I_CODEC_ADC_RXDATA,
- };
- 
-+static const struct sun4i_codec_quirks sun6i_a31_codec_quirks = {
-+	.regmap_config	= &sun6i_codec_regmap_config,
-+	.codec		= &sun6i_codec_codec,
-+	.create_card	= sun6i_codec_create_card,
-+	.reg_adc_fifoc	= REG_FIELD(SUN6I_CODEC_ADC_FIFOC, 0, 31),
-+	.reg_dac_txdata	= SUN4I_CODEC_DAC_TXDATA,
-+	.reg_adc_rxdata	= SUN6I_CODEC_ADC_RXDATA,
-+	.has_reset	= true,
-+};
-+
- static const struct sun4i_codec_quirks sun7i_codec_quirks = {
- 	.regmap_config	= &sun7i_codec_regmap_config,
- 	.codec		= &sun4i_codec_codec,
-@@ -806,6 +1065,10 @@ static const struct of_device_id sun4i_codec_of_match[] = {
- 		.data = &sun4i_codec_quirks,
- 	},
- 	{
-+		.compatible = "allwinner,sun6i-a31-codec",
-+		.data = &sun6i_a31_codec_quirks,
-+	},
-+	{
- 		.compatible = "allwinner,sun7i-a20-codec",
- 		.data = &sun7i_codec_quirks,
- 	},
+Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+
+Thanks!
+Maxime
+
 -- 
-2.10.2
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+--oby3df2u5a7cmzgr--
