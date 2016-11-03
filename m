@@ -1,68 +1,39 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: bcm: add depends on HAS_DMA" to the asoc tree
-Date: Thu, 03 Nov 2016 09:42:35 -0600
-Message-ID: <E1c2K9z-00006D-3m@finisterre>
-References: <1475868258-10689-1-git-send-email-scott.branden@broadcom.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1475868258-10689-1-git-send-email-scott.branden@broadcom.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Scott Branden <scott.branden@broadcom.com>
-Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>alsa-devel@alsa-project.org
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Question about the buffer length in the
+	transfer	callback of the PCM External Plugin
+Date: Thu, 3 Nov 2016 11:26:51 +0100
+Message-ID: <93708608-9498-de05-9256-d650a44e18d8@ladisch.de>
+References: <a68475dd084f4a45b224791224c7c244@LGNMSXB01.prod.bk.dfs>
+ <19904f93-f0ba-56a9-2980-ed52fe2a32bb@ladisch.de>
+ <6c2af613d3b64138bc6e7c6cf69486cf@LGNMSXB01.prod.bk.dfs>
+ <2dc2c73c-9d7c-3d3e-4d23-9797de2d1ec4@ladisch.de>
+ <165e6496dc554e18836006a6b77461ce@LGNMSXB01.prod.bk.dfs>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 1347B266702
+ for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 11:26:55 +0100 (CET)
+In-Reply-To: <165e6496dc554e18836006a6b77461ce@LGNMSXB01.prod.bk.dfs>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Bach, Andrea" <andrea.bach@dfs.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Bach, Andrea wrote:
+> how can I wait inside the transfer callback until the next bytes are available...
 
-   ASoC: bcm: add depends on HAS_DMA
+That depends on where you get the bytes from.
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From fe3683779e0b20edf91c549bbff0d81785e1c7a0 Mon Sep 17 00:00:00 2001
-From: Scott Branden <scott.branden@broadcom.com>
-Date: Wed, 2 Nov 2016 13:43:24 -0700
-Subject: [PATCH] ASoC: bcm: add depends on HAS_DMA
-
-add depends on HAS_DMA to Kconfig.  This fixes error reported
-by kbuild test robot when building for ARCH=m32r:
-ERROR: "bad_dma_ops" [sound/soc/bcm/snd-soc-cygnus.ko] undefined!
-
-Signed-off-by: Scott Branden <scott.branden@broadcom.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/bcm/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/bcm/Kconfig b/sound/soc/bcm/Kconfig
-index d528aaceaad9..edf367100ebd 100644
---- a/sound/soc/bcm/Kconfig
-+++ b/sound/soc/bcm/Kconfig
-@@ -11,6 +11,7 @@ config SND_BCM2835_SOC_I2S
- config SND_SOC_CYGNUS
- 	tristate "SoC platform audio for Broadcom Cygnus chips"
- 	depends on ARCH_BCM_CYGNUS || COMPILE_TEST
-+	depends on HAS_DMA
- 	help
- 	  Say Y if you want to add support for ASoC audio on Broadcom
- 	  Cygnus chips (bcm958300, bcm958305, bcm911360)
--- 
-2.10.1
+Regards,
+Clemens
