@@ -1,173 +1,73 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: sun4i-codec: Move data structures to add
- create_card call to quirks" to the asoc tree
-Date: Thu, 03 Nov 2016 11:26:21 -0600
-Message-ID: <E1c2LmP-0002ac-DL@finisterre>
-References: <20161103075556.29018-2-wens@csie.org>
-Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH v2 02/14] ASoC: sun4i-codec: Expand quirks to handle
+ register offsets and card creation
+Date: Thu, 3 Nov 2016 18:34:13 +0100
+Message-ID: <20161103173413.xoljqlfpqlfaeiyj@lukather>
+References: <20161103075556.29018-1-wens@csie.org>
+ <20161103075556.29018-3-wens@csie.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBBYPG5XAAKGQE6E43GJY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20161103075556.29018-2-wens-jdAy2FN1RRM@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qm7lw7z5vypghuao"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20161103075556.29018-3-wens@csie.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: sun4i-codec: Move data structures to add create_card call to quirks
+--qm7lw7z5vypghuao
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been applied to the asoc tree at
+On Thu, Nov 03, 2016 at 03:55:44PM +0800, Chen-Yu Tsai wrote:
+> The A31 has a similar codec to the A10/A20. The PCM parts are very
+> similar, with just different register offsets. The analog paths are
+> very different. There are more inputs and outputs.
+>=20
+> The A31s, A23, and H3 have a similar PCM interface, again with register
+> offsets slightly rearranged. The analog path controls, while very
+> similar between them and the A31, have been moved a separate bus which
+> is accessed through a message box like interface in the PRCM address
+> range. This would be handled by a separate auxiliary device tied in
+> through the device tree in its supporting create_card function.
+>=20
+> The quirks structure is expanded to include different register offsets
+> and separate callbacks for creating the ASoC card. The regmap_config,
+> quirks, and of_device_match tables have been moved to facilitate this.
+>=20
+> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Thanks!
+Maxime
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--qm7lw7z5vypghuao
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQIcBAEBCAAGBQJYG3UQAAoJEBx+YmzsjxAgBjwQALYlQkBpWC8FXbTIggAhKEvu
+kO5daufDHU/5SFgLgN+1OoOWxCdhbUCU1VyzMFtO3PkrsxRprlyghOyQUjOTG0jZ
+li9mpM6fHIfGNpO0TdozGFqOn8EH7r8fkc8Axcyc16iYI+CdlS2tN/cpaTHSC8uj
+zfeiJXXJe2ACcQaXDCK5LikF1GnHIOV+dC3ibGpodBs/bNTMSozl9ZZlXSK1EEIw
+ooUtQZngYbfejGNiJz36vUHGDmfIDqzKAA/WOgfDYB4uIR/MS9clVdKUg9b8GUkI
+aYGLcF8VnG3ltFmNbzw3SZiv2tbSaDo2W8P2ORLeuoOQxI19FeYCH9iSxsPCCTGe
+iJle7mNALVt2b5sV0iDjuBX1sMNFcZa9pNjdtUKyqXb3jSIuqX8AW3ZPuLgOWV1+
+/vAb3x36r8ouaaJGrnjweeMZk9VaZVSn+DaXVFdhyhE/a1pgL6qsdUql+DM/d1nm
+P9zhDNPunnZVEcWPA23YXen/Qd4dAlUBABpXZuCEVP+7tLvgYeVtnDUbW3cSlz92
+LlmxJtUEmGradJtUFr0MgQrQfqEpeP4/YP5Y9vz2G1gbFu3NE1Ogw3xb88WBoSoT
+TUTbMS7wi1mPgqbr8q3IM429o0JlzzLfICoCowYhkVI3f+VQLYLtkgpQ6zU6mAt8
+7j+iHQ/gGiGCPOCEq+fP
+=iFgP
+-----END PGP SIGNATURE-----
 
->From 2f2a3462bc15e9613412ca186bf8a6611afa66c7 Mon Sep 17 00:00:00 2001
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Date: Thu, 3 Nov 2016 15:55:43 +0800
-Subject: [PATCH] ASoC: sun4i-codec: Move data structures to add create_card
- call to quirks
-
-The audio codec on later Allwinner SoCs have a different layout and
-audio path compared to the A10/A20. However the PCM parts are still
-the same.
-
-The different layout and audio paths mean we need a different
-create_card function for different families, so they can create
-DAPM endpoint widgets and routes.
-
-This patch moves the regmap configs, quirks and of_device_id
-structures to just before the probe function, so we can, among other
-things, include a pointer for the create_card function. None of the
-lines of code were changed.
-
-Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
----
- sound/soc/sunxi/sun4i-codec.c | 78 +++++++++++++++++++++----------------------
- 1 file changed, 39 insertions(+), 39 deletions(-)
-
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index a60707761abf..7b78f4045d38 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -678,45 +678,6 @@ static struct snd_soc_dai_driver dummy_cpu_dai = {
- 	 },
- };
- 
--static const struct regmap_config sun4i_codec_regmap_config = {
--	.reg_bits	= 32,
--	.reg_stride	= 4,
--	.val_bits	= 32,
--	.max_register	= SUN4I_CODEC_ADC_RXCNT,
--};
--
--static const struct regmap_config sun7i_codec_regmap_config = {
--	.reg_bits	= 32,
--	.reg_stride	= 4,
--	.val_bits	= 32,
--	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
--};
--
--struct sun4i_codec_quirks {
--	const struct regmap_config *regmap_config;
--};
--
--static const struct sun4i_codec_quirks sun4i_codec_quirks = {
--	.regmap_config = &sun4i_codec_regmap_config,
--};
--
--static const struct sun4i_codec_quirks sun7i_codec_quirks = {
--	.regmap_config = &sun7i_codec_regmap_config,
--};
--
--static const struct of_device_id sun4i_codec_of_match[] = {
--	{
--		.compatible = "allwinner,sun4i-a10-codec",
--		.data = &sun4i_codec_quirks,
--	},
--	{
--		.compatible = "allwinner,sun7i-a20-codec",
--		.data = &sun7i_codec_quirks,
--	},
--	{}
--};
--MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
--
- static struct snd_soc_dai_link *sun4i_codec_create_link(struct device *dev,
- 							int *num_links)
- {
-@@ -781,6 +742,45 @@ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
- 	return card;
- };
- 
-+static const struct regmap_config sun4i_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= SUN4I_CODEC_ADC_RXCNT,
-+};
-+
-+static const struct regmap_config sun7i_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
-+};
-+
-+struct sun4i_codec_quirks {
-+	const struct regmap_config *regmap_config;
-+};
-+
-+static const struct sun4i_codec_quirks sun4i_codec_quirks = {
-+	.regmap_config	= &sun4i_codec_regmap_config,
-+};
-+
-+static const struct sun4i_codec_quirks sun7i_codec_quirks = {
-+	.regmap_config	= &sun7i_codec_regmap_config,
-+};
-+
-+static const struct of_device_id sun4i_codec_of_match[] = {
-+	{
-+		.compatible = "allwinner,sun4i-a10-codec",
-+		.data = &sun4i_codec_quirks,
-+	},
-+	{
-+		.compatible = "allwinner,sun7i-a20-codec",
-+		.data = &sun7i_codec_quirks,
-+	},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
-+
- static int sun4i_codec_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card;
--- 
-2.10.1
+--qm7lw7z5vypghuao--
