@@ -1,105 +1,77 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: sun4i-codec: Increase DMA max burst to
- 8" to the asoc tree
-Date: Thu, 03 Nov 2016 14:33:53 -0600
-Message-ID: <E1c2Ohu-0004P5-01@finisterre>
-References: <20161103075556.29018-5-wens@csie.org>
-Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v7 01/11] ASoC: topology: Make PCM backward
+ compatible from ABI v4
+Date: Thu, 3 Nov 2016 10:12:20 -0600
+Message-ID: <20161103161220.jtyujjm3qu7je6l5@sirena.org.uk>
+References: <cover.1478071138.git.mengdong.lin@linux.intel.com>
+ <7a2aa610eaf6f0768936bdd2ec2ea34dba518ed6.1478071138.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBB2F653AAKGQEOSFZBWY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20161103075556.29018-5-wens-jdAy2FN1RRM@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============4425128297509834741=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D139F267256
+ for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 17:12:36 +0100 (CET)
+In-Reply-To: <7a2aa610eaf6f0768936bdd2ec2ea34dba518ed6.1478071138.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: mengdong.lin@linux.intel.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: sun4i-codec: Increase DMA max burst to 8
+--===============4425128297509834741==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="x5ucqcxcr6aw6tcc"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--x5ucqcxcr6aw6tcc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Nov 03, 2016 at 01:00:16AM +0800, mengdong.lin@linux.intel.com wrot=
+e:
+> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+>=20
+> This patch adds support for old version 4 of PCMs (FE DAI & DAI links).
+>=20
+> Topology ABI v5 added new fields to stream caps and thus changed PCMs.
+> Since user space may still uses v4, kernel will check the ABI version by
+> comparing the object size. If user space uses v4 of PCMs, kernel will
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+This only applies on -next, not on v4.9 but this is a bug fix which we
+should really get into v4.9. =20
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--x5ucqcxcr6aw6tcc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEcBAABCAAGBQJYG2HjAAoJECTWi3JdVIfQSzoH/3gqOni1AjnCj+LjffMxmtdp
+YMV3Ai8t/EL2eGsGm9A/L23YEQOa8WcGmlv1DtYzGtddeJAiwGVU+NlCe2VaJlLa
++zMhGPI41r0YeAy05s0cY0ZtzIyB3C4SH/E9G04+EH0vGJPoCe5P0KITRbAIiCNh
+QeLcMXnXfz0jgXVW0eqtFVwN4Js7IPpWzMGdk/fbuBTEo4g/otNLML5iVAyzuA8z
+KnWzii0lLdtaydDJn1otdKK7F/4541XjrnCWHs8NqF3kG+ohlH1tHuEWdF5/RHH8
+y+FRXbJOlWQ6VgCp93EL90LL3v6ia/R5i4lLu5Ukw2gTYGKlzENt4v5Qf0dqlZY=
+=pnDb
+-----END PGP SIGNATURE-----
 
->From 730e2dd0cbc7a7ec10174d9d291cdd8e8082a948 Mon Sep 17 00:00:00 2001
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Date: Thu, 3 Nov 2016 15:55:46 +0800
-Subject: [PATCH] ASoC: sun4i-codec: Increase DMA max burst to 8
+--x5ucqcxcr6aw6tcc--
 
-According to the DMA engine API documentation, maxburst denotes the
-largest possible size of a single transfer, so as not to overflow
-destination FIFOs as explained in this excerpt from dmaengine.h
+--===============4425128297509834741==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
- * @src_maxburst: the maximum number of words (note: words, as in
- * units of the src_addr_width member, not bytes) that can be sent
- * in one burst to the device. Typically something like half the
- * FIFO depth on I/O peripherals so you don't overflow it. This
- * may or may not be applicable on memory sources.
- * @dst_maxburst: same as src_maxburst but for destination target
- * mutatis mutandis.
 
-The TX FIFO is 64 samples deep for stereo, and the RX FIFO is 16
-samples deep. So maxburst could be 32 and 8 for TX and RX respectively.
-
-Unfortunately the sunxi DMA controller driver takes maxburst as
-the requested burst size, rather than a limit, and returns an error
-for unsupported values. The original value was 4, but some later
-SoCs do not officially support this burst size.
-
-This patch increases maxburst on the TX side to 8, which is supported
-by all variants of the sunxi DMA controller.
-
-Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
----
- sound/soc/sunxi/sun4i-codec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 61ae502a5061..d867b96d367b 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -886,12 +886,12 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 
- 	/* DMA configuration for TX FIFO */
- 	scodec->playback_dma_data.addr = res->start + quirks->reg_dac_txdata;
--	scodec->playback_dma_data.maxburst = 4;
-+	scodec->playback_dma_data.maxburst = 8;
- 	scodec->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
- 
- 	/* DMA configuration for RX FIFO */
- 	scodec->capture_dma_data.addr = res->start + quirks->reg_adc_rxdata;
--	scodec->capture_dma_data.maxburst = 4;
-+	scodec->capture_dma_data.maxburst = 8;
- 	scodec->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
- 
- 	ret = snd_soc_register_codec(&pdev->dev, quirks->codec,
--- 
-2.10.1
+--===============4425128297509834741==--
