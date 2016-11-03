@@ -1,74 +1,165 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH v2 06/14] ASoC: sun4i-codec: Add support for A31 playback
- through headphone output
-Date: Thu, 3 Nov 2016 18:36:02 +0100
-Message-ID: <20161103173602.zchyciwj66zdibc7@lukather>
-References: <20161103075556.29018-1-wens@csie.org>
- <20161103075556.29018-7-wens@csie.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v2 5/9] ASoC: Intel: Skylake: Add support for
+	LPMode
+Date: Thu,  3 Nov 2016 17:07:18 +0530
+Message-ID: <1478173042-9458-6-git-send-email-vinod.koul@intel.com>
+References: <1478173042-9458-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="722gtj5awfeftbfz"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20161103075556.29018-7-wens@csie.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 02B3F260083
+ for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 12:28:29 +0100 (CET)
+In-Reply-To: <1478173042-9458-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jayachandran B <jayachandran.b@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+For D0i3, we need to tell DSP to run the pipelines in LP mode. This
+information is kept in topology and passed to driver as an attribute
+for pipe.
 
---722gtj5awfeftbfz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So add a new tuple for lpmode and program the pipe based on value set.
 
-Hi,
+Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/uapi/sound/snd_sst_tokens.h    | 5 ++++-
+ sound/soc/intel/skylake/skl-messages.c | 3 ++-
+ sound/soc/intel/skylake/skl-sst-ipc.c  | 9 ++++++++-
+ sound/soc/intel/skylake/skl-sst-ipc.h  | 2 +-
+ sound/soc/intel/skylake/skl-topology.c | 5 +++++
+ sound/soc/intel/skylake/skl-topology.h | 1 +
+ 6 files changed, 21 insertions(+), 4 deletions(-)
 
-On Thu, Nov 03, 2016 at 03:55:48PM +0800, Chen-Yu Tsai wrote:
-> +/* headphone controls */
-> +static const char * const sun6i_codec_hp_src_enum_text[] =3D {
-> +	"DAC", "Mixer",
-> +};
-> +
-> +static SOC_ENUM_DOUBLE_DECL(sun6i_codec_hp_src_enum,
-> +			    SUN6I_CODEC_OM_DACA_CTRL,
-> +			    SUN6I_CODEC_OM_DACA_CTRL_LHPIS,
-> +			    SUN6I_CODEC_OM_DACA_CTRL_RHPIS,
-> +			    sun6i_codec_hp_src_enum_text);
-> +
-> +static const struct snd_kcontrol_new sun6i_codec_hp_src[] =3D {
-> +	SOC_DAPM_ENUM("Headphone Source Playback Route",
-> +		      sun6i_codec_hp_src_enum),
-> +};
-
-What is that route exactly? A muxer?
-
-Thanks,
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
-
---722gtj5awfeftbfz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAEBCAAGBQJYG3WCAAoJEBx+YmzsjxAgq4wQALRWFKhYj/BieOHHn5JFmJz2
-gPC7TG7c2Kgol53V4NyW+v5TGUxcqY/PTTd+yRdMcAldVEMNuZiZqAta7uGCZSDz
-THwbGPULp2ElFpDTuVi2tSDVixiMobOP7pNaT0OXUqeLDT/rRs3jq5sPbgZ729NB
-qkkhWs4Om7HxOTaSCZTHqPjSqHvoOimxnYRI9B1zEdASvF/Dm70P4g18MsDxcFP+
-xOxWomyKQtXfsG15F0nokvyavrTt3AN68Q5gpk2kum3hQ2SJ7KM6jzIOeAxc6HPq
-vwsSeqx7r54MDRXDYUlMThqrubkNXYHv838P0JxJB8zuHAhZcxPMhjNtZaywsg1y
-Z9dpzClMMd19eEy/0vpDoyZ/FkEmoS0jRyiUAzH1tJ/pZ8ESR6y+1XMrIsYHKYZ9
-Wc0RZOvJNe89F+k+ygFnK/hM/WtPK4b5PvOx9Et2/sM//fyLYfF4wCx+Nil/3gy4
-qPN3yW+/4lRlCWHdfRILy3HpeeUqybHPFWdSek67BtHf1GZW6i8pMKd6lN93Ou0T
-Q3PLAUsUrRM3aR1CwSe/Poq8ubF7b3O0Ih0I5XpLiit/F1qanJq0zun6WAB1uPRB
-EyLYcU6OTHaLvdl4Fgzovx2LG4vcSp3zRJ6AaF8cZyFdfVZpWVlT9PAuRjlIyJD0
-p4uqDK/ZL5rSTYHRgkxs
-=AduV
------END PGP SIGNATURE-----
-
---722gtj5awfeftbfz--
+diff --git a/include/uapi/sound/snd_sst_tokens.h b/include/uapi/sound/snd_sst_tokens.h
+index 1ee2e943d66a..f4b8b34de519 100644
+--- a/include/uapi/sound/snd_sst_tokens.h
++++ b/include/uapi/sound/snd_sst_tokens.h
+@@ -157,6 +157,8 @@
+  *
+  * %SKL_TKN_STR_LIB_NAME:       Specifies the library name
+  *
++ * %SKL_TKN_U32_PMODE:		Specifies the power mode for pipe
++ *
+  * module_id and loadable flags dont have tokens as these values will be
+  * read from the DSP FW manifest
+  */
+@@ -208,7 +210,8 @@ enum SKL_TKNS {
+ 	SKL_TKN_U32_PROC_DOMAIN,
+ 	SKL_TKN_U32_LIB_COUNT,
+ 	SKL_TKN_STR_LIB_NAME,
+-	SKL_TKN_MAX = SKL_TKN_STR_LIB_NAME,
++	SKL_TKN_U32_PMODE,
++	SKL_TKN_MAX = SKL_TKN_U32_PMODE,
+ };
+ 
+ #endif
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 805b7f2173f3..87fc647fa04c 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -1042,7 +1042,8 @@ int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe)
+ 	dev_dbg(ctx->dev, "%s: pipe_id = %d\n", __func__, pipe->ppl_id);
+ 
+ 	ret = skl_ipc_create_pipeline(&ctx->ipc, pipe->memory_pages,
+-				pipe->pipe_priority, pipe->ppl_id);
++				pipe->pipe_priority, pipe->ppl_id,
++				pipe->lp_mode);
+ 	if (ret < 0) {
+ 		dev_err(ctx->dev, "Failed to create pipeline\n");
+ 		return ret;
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 087b8d6e7186..734408a34a24 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -81,6 +81,11 @@
+ #define IPC_INSTANCE_ID(x)		(((x) & IPC_INSTANCE_ID_MASK) \
+ 					<< IPC_INSTANCE_ID_SHIFT)
+ 
++#define IPC_PPL_LP_MODE_SHIFT           0
++#define IPC_PPL_LP_MODE_MASK            0x1
++#define IPC_PPL_LP_MODE(x)              (((x) & IPC_PPL_LP_MODE_MASK) \
++					<< IPC_PPL_LP_MODE_SHIFT)
++
+ /* Set pipeline state message */
+ #define IPC_PPL_STATE_SHIFT		0
+ #define IPC_PPL_STATE_MASK		0x1F
+@@ -559,7 +564,7 @@ void skl_ipc_free(struct sst_generic_ipc *ipc)
+ }
+ 
+ int skl_ipc_create_pipeline(struct sst_generic_ipc *ipc,
+-		u16 ppl_mem_size, u8 ppl_type, u8 instance_id)
++		u16 ppl_mem_size, u8 ppl_type, u8 instance_id, u8 lp_mode)
+ {
+ 	struct skl_ipc_header header = {0};
+ 	u64 *ipc_header = (u64 *)(&header);
+@@ -572,6 +577,8 @@ int skl_ipc_create_pipeline(struct sst_generic_ipc *ipc,
+ 	header.primary |= IPC_PPL_TYPE(ppl_type);
+ 	header.primary |= IPC_PPL_MEM_SIZE(ppl_mem_size);
+ 
++	header.extension = IPC_PPL_LP_MODE(lp_mode);
++
+ 	dev_dbg(ipc->dev, "In %s header=%d\n", __func__, header.primary);
+ 	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, NULL, 0, NULL, 0);
+ 	if (ret < 0) {
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index a45c42046b64..83bf1689f62e 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -148,7 +148,7 @@ struct skl_ipc_d0ix_msg {
+ irqreturn_t skl_dsp_irq_thread_handler(int irq, void *context);
+ 
+ int skl_ipc_create_pipeline(struct sst_generic_ipc *sst_ipc,
+-		u16 ppl_mem_size, u8 ppl_type, u8 instance_id);
++		u16 ppl_mem_size, u8 ppl_type, u8 instance_id, u8 lp_mode);
+ 
+ int skl_ipc_delete_pipeline(struct sst_generic_ipc *sst_ipc, u8 instance_id);
+ 
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index b5b1934d8550..9a7a008f6689 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1519,6 +1519,10 @@ static int skl_tplg_fill_pipe_tkn(struct device *dev,
+ 		pipe->memory_pages = tkn_val;
+ 		break;
+ 
++	case SKL_TKN_U32_PMODE:
++		pipe->lp_mode = tkn_val;
++		break;
++
+ 	default:
+ 		dev_err(dev, "Token not handled %d\n", tkn);
+ 		return -EINVAL;
+@@ -1841,6 +1845,7 @@ static int skl_tplg_get_token(struct device *dev,
+ 	case SKL_TKN_U32_PIPE_CONN_TYPE:
+ 	case SKL_TKN_U32_PIPE_PRIORITY:
+ 	case SKL_TKN_U32_PIPE_MEM_PGS:
++	case SKL_TKN_U32_PMODE:
+ 		if (is_pipe_exists) {
+ 			ret = skl_tplg_fill_pipe_tkn(dev, mconfig->pipe,
+ 					tkn_elem->token, tkn_elem->value);
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index a519360f42a6..11fd0a4b6603 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -279,6 +279,7 @@ struct skl_pipe {
+ 	u8 pipe_priority;
+ 	u16 conn_type;
+ 	u32 memory_pages;
++	u8 lp_mode;
+ 	struct skl_pipe_params *p_params;
+ 	enum skl_pipe_state state;
+ 	struct list_head w_list;
+-- 
+1.9.1
