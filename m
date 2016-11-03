@@ -1,79 +1,101 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: Re: [PATCH v2 13/14] ARM: dts: sun6i: hummingbird:
- Enable internal audio codec
-Date: Fri, 4 Nov 2016 16:12:11 +0800
-Message-ID: <CAGb2v67N3G8+MC4iKFSg=fumLVv9hnswPXLEfBGHvADdVbdAGA@mail.gmail.com>
-References: <20161103075556.29018-1-wens@csie.org> <20161103075556.29018-14-wens@csie.org>
- <20161103084543.m4zvwhscpaa3y5ay@lukather>
-Reply-To: wens-jdAy2FN1RRM@public.gmane.org
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH 4/6] topology: Define a function to build a
+	single PCM element
+Date: Fri,  4 Nov 2016 07:07:58 +0800
+Message-ID: <deb820d71984bd0fcd74c473581b7b59a2926f45.1478212626.git.mengdong.lin@linux.intel.com>
+References: <cover.1478212626.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCMILY6JWQBBB5MF6HAAKGQEDNIKTIQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20161103084543.m4zvwhscpaa3y5ay@lukather>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69EF0266B8C
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 00:06:32 +0100 (CET)
+In-Reply-To: <cover.1478212626.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 3, 2016 at 4:45 PM, Maxime Ripard
-<maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
-> On Thu, Nov 03, 2016 at 03:55:55PM +0800, Chen-Yu Tsai wrote:
->> The Hummingbird A31 has headset and line in audio jacks and an onboard
->> mic routed to the pins for the SoC's internal codec. The line out pins
->> are routed to an onboard speaker amp, whose output is available on a
->> pin header.
->>
->> Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
->> ---
->>  arch/arm/boot/dts/sun6i-a31-hummingbird.dts | 20 ++++++++++++++++++++
->>  1 file changed, 20 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/sun6i-a31-hummingbird.dts b/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
->> index 9a74637f677f..48c041b75aab 100644
->> --- a/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
->> +++ b/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
->> @@ -69,6 +69,19 @@
->>       };
->>  };
->>
->> +&codec {
->> +     allwinner,audio-routing =
->> +             "Headphone", "HP",
->> +             "Speaker", "LINEOUT",
->> +             "LINEIN", "Line In",
->> +             "MIC1", "Mic",
->> +             "MIC2", "Headset Mic",
->> +             "Mic",  "MBIAS",
->> +             "Headset Mic", "HBIAS";
->> +     allwinner,pa-gpios = <&pio 7 22 GPIO_ACTIVE_HIGH>; /* PH22 */
->> +     status = "okay";
->> +};
->> +
->>  &cpu0 {
->>       cpu-supply = <&reg_dcdc3>;
->>  };
->> @@ -152,6 +165,13 @@
->>  };
->>
->>  &pio {
->> +     codec_pa_pin: codec_pa_pin@0 {
->> +             allwinner,pins = "PH22";
->> +             allwinner,function = "gpio_out";
->> +             allwinner,drive = <SUN4I_PINCTRL_10_MA>;
->> +             allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
->> +     };
->> +
->
-> This pin group isn't used anywhere. Because of the strict thing in
-> pinctrl, I'd say it's better to not set it, but then, the pin group is
-> useless.
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-I'll drop the pinmux setting then.
+Code refactoring. Rename tplg_build_pcm() to tplg_build_pcms() to build
+all PCM (FE DAI & DAI link) elements. It will call a new function
+build_pcm() to build a single PCM elemement.
 
-ChenYu
+build_pcm() will be extended to handle more properties of a PCM.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+
+diff --git a/src/topology/parser.c b/src/topology/parser.c
+index 3ab64f4..7b2c879 100644
+--- a/src/topology/parser.c
++++ b/src/topology/parser.c
+@@ -267,7 +267,7 @@ static int tplg_build_integ(snd_tplg_t *tplg)
+ 	if (err <  0)
+ 		return err;
+ 
+-	err = tplg_build_pcm(tplg, SND_TPLG_TYPE_PCM);
++	err = tplg_build_pcms(tplg, SND_TPLG_TYPE_PCM);
+ 	if (err <  0)
+ 		return err;
+ 
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index bd70dc9..77b7605 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -70,8 +70,20 @@ static int tplg_build_stream_caps(snd_tplg_t *tplg,
+ 	return 0;
+ }
+ 
+-/* build FE DAI/PCM configurations */
+-int tplg_build_pcm(snd_tplg_t *tplg, unsigned int type)
++/* build a PCM (FE DAI & DAI link) element */
++static int build_pcm(snd_tplg_t *tplg, struct tplg_elem *elem)
++{
++	int err;
++
++	err = tplg_build_stream_caps(tplg, elem->id, elem->pcm->caps);
++		if (err < 0)
++			return err;
++
++	return 0;
++}
++
++/* build all PCM (FE DAI & DAI link) elements */
++int tplg_build_pcms(snd_tplg_t *tplg, unsigned int type)
+ {
+ 	struct list_head *base, *pos;
+ 	struct tplg_elem *elem;
+@@ -86,7 +98,7 @@ int tplg_build_pcm(snd_tplg_t *tplg, unsigned int type)
+ 			return -EINVAL;
+ 		}
+ 
+-		err = tplg_build_stream_caps(tplg, elem->id, elem->pcm->caps);
++		err = build_pcm(tplg, elem);
+ 		if (err < 0)
+ 			return err;
+ 
+diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+index cfde4cc..7b30b84 100644
+--- a/src/topology/tplg_local.h
++++ b/src/topology/tplg_local.h
+@@ -284,7 +284,7 @@ int tplg_add_enum(snd_tplg_t *tplg, struct snd_tplg_enum_template *enum_ctl,
+ int tplg_add_bytes(snd_tplg_t *tplg, struct snd_tplg_bytes_template *bytes_ctl,
+ 		   struct tplg_elem **e);
+ 
+-int tplg_build_pcm(snd_tplg_t *tplg, unsigned int type);
++int tplg_build_pcms(snd_tplg_t *tplg, unsigned int type);
+ int tplg_build_link_cfg(snd_tplg_t *tplg, unsigned int type);
+ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
+ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
+-- 
+2.7.4
