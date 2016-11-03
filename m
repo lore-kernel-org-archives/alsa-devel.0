@@ -1,13 +1,13 @@
 From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: [PATCH v2 01/14] ASoC: sun4i-codec: Move data
- structures to add create_card call to quirks
-Date: Thu,  3 Nov 2016 15:55:43 +0800
-Message-ID: <20161103075556.29018-2-wens@csie.org>
+Subject: [PATCH v2 05/14] ASoC: sun4i-codec: Add support for
+ optional reset control to quirks
+Date: Thu,  3 Nov 2016 15:55:47 +0800
+Message-ID: <20161103075556.29018-6-wens@csie.org>
 References: <20161103075556.29018-1-wens@csie.org>
 Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCMILY6JWQBBBHO35PAAKGQET7JUSCA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBHW35PAAKGQEWLPL4DI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20161103075556.29018-1-wens-jdAy2FN1RRM@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -20,119 +20,104 @@ To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brow
 Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The audio codec on later Allwinner SoCs have a different layout and
-audio path compared to the A10/A20. However the PCM parts are still
-the same.
+The later Allwinner SoCs have a dedicated reset controller, and
+peripherals have dedicated reset controls which need to be deasserted
+before the associated peripheral can be used.
 
-The different layout and audio paths mean we need a different
-create_card function for different families, so they can create
-DAPM endpoint widgets and routes.
-
-This patch moves the regmap configs, quirks and of_device_id
-structures to just before the probe function, so we can, among other
-things, include a pointer for the create_card function. None of the
-lines of code were changed.
+Add support for this to the quirks structure and probe/remove functions.
 
 Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 78 +++++++++++++++++++++----------------------
- 1 file changed, 39 insertions(+), 39 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 56ed9472e89f..249fa5033361 100644
+index d867b96d367b..e502966abf8e 100644
 --- a/sound/soc/sunxi/sun4i-codec.c
 +++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -678,45 +678,6 @@ static struct snd_soc_dai_driver dummy_cpu_dai = {
- 	 },
+@@ -30,6 +30,7 @@
+ #include <linux/of_platform.h>
+ #include <linux/clk.h>
+ #include <linux/regmap.h>
++#include <linux/reset.h>
+ #include <linux/gpio/consumer.h>
+ 
+ #include <sound/core.h>
+@@ -114,6 +115,7 @@ struct sun4i_codec {
+ 	struct regmap	*regmap;
+ 	struct clk	*clk_apb;
+ 	struct clk	*clk_module;
++	struct reset_control *rst;
+ 	struct gpio_desc *gpio_pa;
+ 
+ 	/* ADC_FIFOC register is at different offset on different SoCs */
+@@ -777,6 +779,7 @@ struct sun4i_codec_quirks {
+ 	struct reg_field reg_adc_fifoc;	/* used for regmap_field */
+ 	unsigned int reg_dac_txdata;	/* TX FIFO offset for DMA config */
+ 	unsigned int reg_adc_rxdata;	/* RX FIFO offset for DMA config */
++	bool has_reset;
  };
  
--static const struct regmap_config sun4i_codec_regmap_config = {
--	.reg_bits	= 32,
--	.reg_stride	= 4,
--	.val_bits	= 32,
--	.max_register	= SUN4I_CODEC_ADC_RXCNT,
--};
--
--static const struct regmap_config sun7i_codec_regmap_config = {
--	.reg_bits	= 32,
--	.reg_stride	= 4,
--	.val_bits	= 32,
--	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
--};
--
--struct sun4i_codec_quirks {
--	const struct regmap_config *regmap_config;
--};
--
--static const struct sun4i_codec_quirks sun4i_codec_quirks = {
--	.regmap_config = &sun4i_codec_regmap_config,
--};
--
--static const struct sun4i_codec_quirks sun7i_codec_quirks = {
--	.regmap_config = &sun7i_codec_regmap_config,
--};
--
--static const struct of_device_id sun4i_codec_of_match[] = {
--	{
--		.compatible = "allwinner,sun4i-a10-codec",
--		.data = &sun4i_codec_quirks,
--	},
--	{
--		.compatible = "allwinner,sun7i-a20-codec",
--		.data = &sun7i_codec_quirks,
--	},
--	{}
--};
--MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
--
- static struct snd_soc_dai_link *sun4i_codec_create_link(struct device *dev,
- 							int *num_links)
- {
-@@ -781,6 +742,45 @@ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
- 	return card;
- };
+ static const struct sun4i_codec_quirks sun4i_codec_quirks = {
+@@ -858,6 +861,14 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 		return PTR_ERR(scodec->clk_module);
+ 	}
  
-+static const struct regmap_config sun4i_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= SUN4I_CODEC_ADC_RXCNT,
-+};
++	if (quirks->has_reset) {
++		scodec->rst = devm_reset_control_get(&pdev->dev, NULL);
++		if (IS_ERR(scodec->rst)) {
++			dev_err(&pdev->dev, "Failed to get reset control\n");
++			return PTR_ERR(scodec->rst);
++		}
++	};
 +
-+static const struct regmap_config sun7i_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
-+};
+ 	scodec->gpio_pa = devm_gpiod_get_optional(&pdev->dev, "allwinner,pa",
+ 						  GPIOD_OUT_LOW);
+ 	if (IS_ERR(scodec->gpio_pa)) {
+@@ -884,6 +895,16 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 
++	/* Deassert the reset control */
++	if (scodec->rst) {
++		ret = reset_control_deassert(scodec->rst);
++		if (ret) {
++			dev_err(&pdev->dev,
++				"Failed to deassert the reset control\n");
++			goto err_clk_disable;
++		}
++	}
 +
-+struct sun4i_codec_quirks {
-+	const struct regmap_config *regmap_config;
-+};
-+
-+static const struct sun4i_codec_quirks sun4i_codec_quirks = {
-+	.regmap_config	= &sun4i_codec_regmap_config,
-+};
-+
-+static const struct sun4i_codec_quirks sun7i_codec_quirks = {
-+	.regmap_config	= &sun7i_codec_regmap_config,
-+};
-+
-+static const struct of_device_id sun4i_codec_of_match[] = {
-+	{
-+		.compatible = "allwinner,sun4i-a10-codec",
-+		.data = &sun4i_codec_quirks,
-+	},
-+	{
-+		.compatible = "allwinner,sun7i-a20-codec",
-+		.data = &sun7i_codec_quirks,
-+	},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
-+
- static int sun4i_codec_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card;
+ 	/* DMA configuration for TX FIFO */
+ 	scodec->playback_dma_data.addr = res->start + quirks->reg_dac_txdata;
+ 	scodec->playback_dma_data.maxburst = 8;
+@@ -898,7 +919,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 				     &sun4i_codec_dai, 1);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to register our codec\n");
+-		goto err_clk_disable;
++		goto err_assert_reset;
+ 	}
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+@@ -935,6 +956,9 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 
+ err_unregister_codec:
+ 	snd_soc_unregister_codec(&pdev->dev);
++err_assert_reset:
++	if (scodec->rst)
++		reset_control_assert(scodec->rst);
+ err_clk_disable:
+ 	clk_disable_unprepare(scodec->clk_apb);
+ 	return ret;
+@@ -947,6 +971,8 @@ static int sun4i_codec_remove(struct platform_device *pdev)
+ 
+ 	snd_soc_unregister_card(card);
+ 	snd_soc_unregister_codec(&pdev->dev);
++	if (scodec->rst)
++		reset_control_assert(scodec->rst);
+ 	clk_disable_unprepare(scodec->clk_apb);
+ 
+ 	return 0;
 -- 
 2.10.2
