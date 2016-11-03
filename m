@@ -1,46 +1,189 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH v2 06/14] ASoC: sun4i-codec: Add support for A31 playback
- through headphone output
-Date: Fri, 4 Nov 2016 09:08:11 +0800
-Message-ID: <CAGb2v65CZJ+1LTWWk3+vABV8PDgsDta+nZ7o3H2Z--KFPe2kog@mail.gmail.com>
-References: <20161103075556.29018-1-wens@csie.org> <20161103075556.29018-7-wens@csie.org>
- <20161103173602.zchyciwj66zdibc7@lukather>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: Skylake: Add support for
+	programming D0i3C" to the asoc tree
+Date: Thu, 03 Nov 2016 11:27:00 -0600
+Message-ID: <E1c2Ln2-0002fJ-E7@finisterre>
+References: <1474868137-29712-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161103173602.zchyciwj66zdibc7@lukather>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Chen-Yu Tsai <wens@csie.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, devicetree <devicetree@vger.kernel.org>, linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7FCC2667EA
+ for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 18:27:24 +0100 (CET)
+In-Reply-To: <1474868137-29712-5-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Jayachandran B <jayachandran.b@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 4, 2016 at 1:36 AM, Maxime Ripard
-<maxime.ripard@free-electrons.com> wrote:
-> Hi,
->
-> On Thu, Nov 03, 2016 at 03:55:48PM +0800, Chen-Yu Tsai wrote:
->> +/* headphone controls */
->> +static const char * const sun6i_codec_hp_src_enum_text[] = {
->> +     "DAC", "Mixer",
->> +};
->> +
->> +static SOC_ENUM_DOUBLE_DECL(sun6i_codec_hp_src_enum,
->> +                         SUN6I_CODEC_OM_DACA_CTRL,
->> +                         SUN6I_CODEC_OM_DACA_CTRL_LHPIS,
->> +                         SUN6I_CODEC_OM_DACA_CTRL_RHPIS,
->> +                         sun6i_codec_hp_src_enum_text);
->> +
->> +static const struct snd_kcontrol_new sun6i_codec_hp_src[] = {
->> +     SOC_DAPM_ENUM("Headphone Source Playback Route",
->> +                   sun6i_codec_hp_src_enum),
->> +};
->
-> What is that route exactly? A muxer?
+The patch
 
-Yup. The following is part of the widgets list later in the code:
+   ASoC: Intel: Skylake: Add support for programming D0i3C
 
-+       /* Headphone output path */
-+       SND_SOC_DAPM_MUX("Headphone Source Playback Route",
-+                        SND_SOC_NOPM, 0, 0, sun6i_codec_hp_src),
+has been applied to the asoc tree at
 
-ChenYu
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From a26a3f53e3d2bfeb666ca31b5f86c65a1816eb89 Mon Sep 17 00:00:00 2001
+From: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Date: Thu, 3 Nov 2016 17:07:16 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add support for programming D0i3C
+
+To set the controller in D0i3 mode, the driver needs to set D0i3C
+register after DSP is quiesced. Since the D0iX entry/exit is done by IPC,
+add this as callback so that it can be invoked from IPC module.
+
+Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/skylake/skl-pcm.c     |  1 +
+ sound/soc/intel/skylake/skl-sst-ipc.h |  3 +++
+ sound/soc/intel/skylake/skl.c         | 47 +++++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl.h         |  5 ++++
+ 4 files changed, 56 insertions(+)
+
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index c966b40da180..b69e05ec6844 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1211,6 +1211,7 @@ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
+ 			return ret;
+ 		}
+ 		skl_populate_modules(skl);
++		skl->skl_sst->update_d0i3c = skl_update_d0i3c;
+ 	}
+ 	pm_runtime_mark_last_busy(platform->dev);
+ 	pm_runtime_put_autosuspend(platform->dev);
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index 1ae265d8ee08..ef2182d21934 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -83,6 +83,9 @@ struct skl_sst {
+ 
+ 	/* tplg manifest */
+ 	struct skl_dfw_manifest manifest;
++
++	/* Callback to update D0i3C register */
++	void (*update_d0i3c)(struct device *dev, bool enable);
+ };
+ 
+ struct skl_ipc_init_instance_msg {
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 2989c164dafe..b9209af89915 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -26,6 +26,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/platform_device.h>
+ #include <linux/firmware.h>
++#include <linux/delay.h>
+ #include <sound/pcm.h>
+ #include "../common/sst-acpi.h"
+ #include <sound/hda_register.h>
+@@ -109,6 +110,52 @@ static int skl_init_chip(struct hdac_bus *bus, bool full_reset)
+ 	return ret;
+ }
+ 
++void skl_update_d0i3c(struct device *dev, bool enable)
++{
++	struct pci_dev *pci = to_pci_dev(dev);
++	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	u8 reg;
++	int timeout = 50;
++
++	reg = snd_hdac_chip_readb(bus, VS_D0I3C);
++	/* Do not write to D0I3C until command in progress bit is cleared */
++	while ((reg & AZX_REG_VS_D0I3C_CIP) && --timeout) {
++		udelay(10);
++		reg = snd_hdac_chip_readb(bus, VS_D0I3C);
++	}
++
++	/* Highly unlikely. But if it happens, flag error explicitly */
++	if (!timeout) {
++		dev_err(bus->dev, "Before D0I3C update: D0I3C CIP timeout\n");
++		return;
++	}
++
++	if (enable)
++		reg = reg | AZX_REG_VS_D0I3C_I3;
++	else
++		reg = reg & (~AZX_REG_VS_D0I3C_I3);
++
++	snd_hdac_chip_writeb(bus, VS_D0I3C, reg);
++
++	timeout = 50;
++	/* Wait for cmd in progress to be cleared before exiting the function */
++	reg = snd_hdac_chip_readb(bus, VS_D0I3C);
++	while ((reg & AZX_REG_VS_D0I3C_CIP) && --timeout) {
++		udelay(10);
++		reg = snd_hdac_chip_readb(bus, VS_D0I3C);
++	}
++
++	/* Highly unlikely. But if it happens, flag error explicitly */
++	if (!timeout) {
++		dev_err(bus->dev, "After D0I3C update: D0I3C CIP timeout\n");
++		return;
++	}
++
++	dev_dbg(bus->dev, "D0I3C register = 0x%x\n",
++			snd_hdac_chip_readb(bus, VS_D0I3C));
++}
++
+ /* called from IRQ */
+ static void skl_stream_update(struct hdac_bus *bus, struct hdac_stream *hstr)
+ {
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 5d4fbb094c48..88ba54ba5f72 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -52,6 +52,9 @@
+ #define AZX_PGCTL_LSRMD_MASK		(1 << 4)
+ #define AZX_PCIREG_CGCTL		0x48
+ #define AZX_CGCTL_MISCBDCGE_MASK	(1 << 6)
++/* D0I3C Register fields */
++#define AZX_REG_VS_D0I3C_CIP      0x1 /* Command in progress */
++#define AZX_REG_VS_D0I3C_I3       0x4 /* D0i3 enable */
+ 
+ struct skl_dsp_resource {
+ 	u32 max_mcps;
+@@ -125,4 +128,6 @@ int skl_suspend_dsp(struct skl *skl);
+ int skl_resume_dsp(struct skl *skl);
+ void skl_cleanup_resources(struct skl *skl);
+ const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id);
++void skl_update_d0i3c(struct device *dev, bool enable);
++
+ #endif /* __SOUND_SOC_SKL_H */
+-- 
+2.10.1
