@@ -1,42 +1,68 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: sun4i-i2s: Implement capture support
-Date: Thu, 3 Nov 2016 09:32:18 -0600
-Message-ID: <20161103153218.fibbz7y7pqwqyo7r@sirena.org.uk>
-References: <20161103102048.17125-1-maxime.ripard@free-electrons.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jt5becywhts2tkuj"
+Subject: Applied "ASoC: bcm: add depends on HAS_DMA" to the asoc tree
+Date: Thu, 03 Nov 2016 09:42:35 -0600
+Message-ID: <E1c2K9z-00006D-3m@finisterre>
+References: <1475868258-10689-1-git-send-email-scott.branden@broadcom.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20161103102048.17125-1-maxime.ripard@free-electrons.com>
+In-Reply-To: <1475868258-10689-1-git-send-email-scott.branden@broadcom.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Scott Branden <scott.branden@broadcom.com>
+Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---jt5becywhts2tkuj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: bcm: add depends on HAS_DMA
 
-On Thu, Nov 03, 2016 at 11:20:48AM +0100, Maxime Ripard wrote:
-> The i2s driver was only implementing playback for now. Implement capture to
-> make sure that's not a limitation anymore.
+has been applied to the asoc tree at
 
-This doesn't apply against current code, please check and resend.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
---jt5becywhts2tkuj
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEcBAABCAAGBQJYG1hsAAoJECTWi3JdVIfQNykH/i8FZMx+cS2sqQf/93VYHsfu
-wD70jPED0qQeHVLby5NaUP9eC7j30avaj2/b8LqmXN8PMy34RPow2TjUM2m7RlUk
-R0QdAV8VSrp2SyMN4p9CrBOnYHGsdfkdBqOCMtvPrxZBwO1E1DfLYzU0MBxLu8Cl
-UV8b5a7unWhahqyD6XwoeERkW+1uBnXPjVjwkrwGkLl1fTvtNSt2gaO/rv49emjX
-ybz+H6SKaUP/7Yql40IA60TCIOwsBadwS+2Yazw712HzZQVbMJQvkSpKpmkCk7a5
-c/P/xThSax68YQhsYVuaFTxA4H7vyEQMkrY6os//ZOxxHWO4sFAcOpQDct9lauw=
-=A1Qh
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---jt5becywhts2tkuj--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From fe3683779e0b20edf91c549bbff0d81785e1c7a0 Mon Sep 17 00:00:00 2001
+From: Scott Branden <scott.branden@broadcom.com>
+Date: Wed, 2 Nov 2016 13:43:24 -0700
+Subject: [PATCH] ASoC: bcm: add depends on HAS_DMA
+
+add depends on HAS_DMA to Kconfig.  This fixes error reported
+by kbuild test robot when building for ARCH=m32r:
+ERROR: "bad_dma_ops" [sound/soc/bcm/snd-soc-cygnus.ko] undefined!
+
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/bcm/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/bcm/Kconfig b/sound/soc/bcm/Kconfig
+index d528aaceaad9..edf367100ebd 100644
+--- a/sound/soc/bcm/Kconfig
++++ b/sound/soc/bcm/Kconfig
+@@ -11,6 +11,7 @@ config SND_BCM2835_SOC_I2S
+ config SND_SOC_CYGNUS
+ 	tristate "SoC platform audio for Broadcom Cygnus chips"
+ 	depends on ARCH_BCM_CYGNUS || COMPILE_TEST
++	depends on HAS_DMA
+ 	help
+ 	  Say Y if you want to add support for ASoC audio on Broadcom
+ 	  Cygnus chips (bcm958300, bcm958305, bcm911360)
+-- 
+2.10.1
