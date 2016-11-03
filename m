@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add support for
-	programming D0i3C" to the asoc tree
-Date: Thu, 03 Nov 2016 11:27:00 -0600
-Message-ID: <E1c2Ln2-0002fJ-E7@finisterre>
-References: <1474868137-29712-5-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add D0iX IPCs" to the
+	asoc tree
+Date: Thu, 03 Nov 2016 11:27:25 -0600
+Message-ID: <E1c2LnR-0002gH-Pl@finisterre>
+References: <1474868137-29712-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B7FCC2667EA
- for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 18:27:24 +0100 (CET)
-In-Reply-To: <1474868137-29712-5-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B7E92667E0
+ for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2016 18:27:35 +0100 (CET)
+In-Reply-To: <1474868137-29712-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add support for programming D0i3C
+   ASoC: Intel: Skylake: Add D0iX IPCs
 
 has been applied to the asoc tree at
 
@@ -53,137 +53,122 @@ to this mail.
 Thanks,
 Mark
 
->From a26a3f53e3d2bfeb666ca31b5f86c65a1816eb89 Mon Sep 17 00:00:00 2001
+>From 41b7523f192bdf3804e3e18a61f91244e4a0cb25 Mon Sep 17 00:00:00 2001
 From: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
-Date: Thu, 3 Nov 2016 17:07:16 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add support for programming D0i3C
+Date: Thu, 3 Nov 2016 17:07:15 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add D0iX IPCs
 
-To set the controller in D0i3 mode, the driver needs to set D0i3C
-register after DSP is quiesced. Since the D0iX entry/exit is done by IPC,
-add this as callback so that it can be invoked from IPC module.
+The audio DSP supports intermediate power states between D0 and D3
+states. These states are D0i0 and D0i3 states.
+
+Collectively we refer these two states as D0iX states.
+
+To set or wake up from these states, driver also needs to send an IPC "Set D0iX
+IPC" before doing anything else.
+
+Add support for this new IPC messages.
 
 Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
 Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c     |  1 +
- sound/soc/intel/skylake/skl-sst-ipc.h |  3 +++
- sound/soc/intel/skylake/skl.c         | 47 +++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl.h         |  5 ++++
- 4 files changed, 56 insertions(+)
+ sound/soc/intel/skylake/skl-sst-ipc.c | 43 ++++++++++++++++++++++++++++++++++-
+ sound/soc/intel/skylake/skl-sst-ipc.h | 10 ++++++++
+ 2 files changed, 52 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index c966b40da180..b69e05ec6844 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1211,6 +1211,7 @@ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
- 			return ret;
- 		}
- 		skl_populate_modules(skl);
-+		skl->skl_sst->update_d0i3c = skl_update_d0i3c;
- 	}
- 	pm_runtime_mark_last_busy(platform->dev);
- 	pm_runtime_put_autosuspend(platform->dev);
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index 1ae265d8ee08..ef2182d21934 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -83,6 +83,9 @@ struct skl_sst {
- 
- 	/* tplg manifest */
- 	struct skl_dfw_manifest manifest;
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 797cf4053235..087b8d6e7186 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -172,6 +172,17 @@
+ 					<< IPC_INITIAL_BLOCK_SHIFT)
+ #define IPC_INITIAL_BLOCK_CLEAR		~(IPC_INITIAL_BLOCK_MASK \
+ 					  << IPC_INITIAL_BLOCK_SHIFT)
++/* Set D0ix IPC extension register */
++#define IPC_D0IX_WAKE_SHIFT		0
++#define IPC_D0IX_WAKE_MASK		0x1
++#define IPC_D0IX_WAKE(x)		(((x) & IPC_D0IX_WAKE_MASK) \
++					<< IPC_D0IX_WAKE_SHIFT)
 +
-+	/* Callback to update D0i3C register */
-+	void (*update_d0i3c)(struct device *dev, bool enable);
++#define IPC_D0IX_STREAMING_SHIFT	1
++#define IPC_D0IX_STREAMING_MASK		0x1
++#define IPC_D0IX_STREAMING(x)		(((x) & IPC_D0IX_STREAMING_MASK) \
++					<< IPC_D0IX_STREAMING_SHIFT)
++
+ 
+ enum skl_ipc_msg_target {
+ 	IPC_FW_GEN_MSG = 0,
+@@ -258,7 +269,8 @@ enum skl_ipc_module_msg {
+ 	IPC_MOD_LARGE_CONFIG_SET = 4,
+ 	IPC_MOD_BIND = 5,
+ 	IPC_MOD_UNBIND = 6,
+-	IPC_MOD_SET_DX = 7
++	IPC_MOD_SET_DX = 7,
++	IPC_MOD_SET_D0IX = 8
  };
  
- struct skl_ipc_init_instance_msg {
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 2989c164dafe..b9209af89915 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -26,6 +26,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/platform_device.h>
- #include <linux/firmware.h>
-+#include <linux/delay.h>
- #include <sound/pcm.h>
- #include "../common/sst-acpi.h"
- #include <sound/hda_register.h>
-@@ -109,6 +110,52 @@ static int skl_init_chip(struct hdac_bus *bus, bool full_reset)
+ static void skl_ipc_tx_data_copy(struct ipc_message *msg, char *tx_data,
+@@ -931,3 +943,32 @@ int skl_sst_ipc_load_library(struct sst_generic_ipc *ipc,
  	return ret;
  }
- 
-+void skl_update_d0i3c(struct device *dev, bool enable)
+ EXPORT_SYMBOL_GPL(skl_sst_ipc_load_library);
++
++int skl_ipc_set_d0ix(struct sst_generic_ipc *ipc, struct skl_ipc_d0ix_msg *msg)
 +{
-+	struct pci_dev *pci = to_pci_dev(dev);
-+	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	u8 reg;
-+	int timeout = 50;
++	struct skl_ipc_header header = {0};
++	u64 *ipc_header = (u64 *)(&header);
++	int ret;
 +
-+	reg = snd_hdac_chip_readb(bus, VS_D0I3C);
-+	/* Do not write to D0I3C until command in progress bit is cleared */
-+	while ((reg & AZX_REG_VS_D0I3C_CIP) && --timeout) {
-+		udelay(10);
-+		reg = snd_hdac_chip_readb(bus, VS_D0I3C);
-+	}
++	header.primary = IPC_MSG_TARGET(IPC_MOD_MSG);
++	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
++	header.primary |= IPC_GLB_TYPE(IPC_MOD_SET_D0IX);
++	header.primary |= IPC_MOD_INSTANCE_ID(msg->instance_id);
++	header.primary |= IPC_MOD_ID(msg->module_id);
 +
-+	/* Highly unlikely. But if it happens, flag error explicitly */
-+	if (!timeout) {
-+		dev_err(bus->dev, "Before D0I3C update: D0I3C CIP timeout\n");
-+		return;
-+	}
++	header.extension = IPC_D0IX_WAKE(msg->wake);
++	header.extension |= IPC_D0IX_STREAMING(msg->streaming);
 +
-+	if (enable)
-+		reg = reg | AZX_REG_VS_D0I3C_I3;
-+	else
-+		reg = reg & (~AZX_REG_VS_D0I3C_I3);
++	dev_dbg(ipc->dev, "In %s primary=%x ext=%x\n", __func__,
++			header.primary,	header.extension);
 +
-+	snd_hdac_chip_writeb(bus, VS_D0I3C, reg);
++	/*
++	 * Use the nopm IPC here as we dont want it checking for D0iX
++	 */
++	ret = sst_ipc_tx_message_nopm(ipc, *ipc_header, NULL, 0, NULL, 0);
++	if (ret < 0)
++		dev_err(ipc->dev, "ipc: set d0ix failed, err %d\n", ret);
 +
-+	timeout = 50;
-+	/* Wait for cmd in progress to be cleared before exiting the function */
-+	reg = snd_hdac_chip_readb(bus, VS_D0I3C);
-+	while ((reg & AZX_REG_VS_D0I3C_CIP) && --timeout) {
-+		udelay(10);
-+		reg = snd_hdac_chip_readb(bus, VS_D0I3C);
-+	}
-+
-+	/* Highly unlikely. But if it happens, flag error explicitly */
-+	if (!timeout) {
-+		dev_err(bus->dev, "After D0I3C update: D0I3C CIP timeout\n");
-+		return;
-+	}
-+
-+	dev_dbg(bus->dev, "D0I3C register = 0x%x\n",
-+			snd_hdac_chip_readb(bus, VS_D0I3C));
++	return ret;
 +}
-+
- /* called from IRQ */
- static void skl_stream_update(struct hdac_bus *bus, struct hdac_stream *hstr)
- {
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 5d4fbb094c48..88ba54ba5f72 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -52,6 +52,9 @@
- #define AZX_PGCTL_LSRMD_MASK		(1 << 4)
- #define AZX_PCIREG_CGCTL		0x48
- #define AZX_CGCTL_MISCBDCGE_MASK	(1 << 6)
-+/* D0I3C Register fields */
-+#define AZX_REG_VS_D0I3C_CIP      0x1 /* Command in progress */
-+#define AZX_REG_VS_D0I3C_I3       0x4 /* D0i3 enable */
++EXPORT_SYMBOL_GPL(skl_ipc_set_d0ix);
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
+index 0334ed4af031..1ae265d8ee08 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.h
++++ b/sound/soc/intel/skylake/skl-sst-ipc.h
+@@ -111,6 +111,13 @@ struct skl_ipc_large_config_msg {
+ 	u32 param_data_size;
+ };
  
- struct skl_dsp_resource {
- 	u32 max_mcps;
-@@ -125,4 +128,6 @@ int skl_suspend_dsp(struct skl *skl);
- int skl_resume_dsp(struct skl *skl);
- void skl_cleanup_resources(struct skl *skl);
- const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id);
-+void skl_update_d0i3c(struct device *dev, bool enable);
++struct skl_ipc_d0ix_msg {
++	u32 module_id;
++	u32 instance_id;
++	u8 streaming;
++	u8 wake;
++};
 +
- #endif /* __SOUND_SOC_SKL_H */
+ #define SKL_IPC_BOOT_MSECS		3000
+ 
+ #define SKL_IPC_D3_MASK	0
+@@ -155,6 +162,9 @@ int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
+ int skl_sst_ipc_load_library(struct sst_generic_ipc *ipc,
+ 			u8 dma_id, u8 table_id);
+ 
++int skl_ipc_set_d0ix(struct sst_generic_ipc *ipc,
++		struct skl_ipc_d0ix_msg *msg);
++
+ void skl_ipc_int_enable(struct sst_dsp *dsp);
+ void skl_ipc_op_int_enable(struct sst_dsp *ctx);
+ void skl_ipc_op_int_disable(struct sst_dsp *ctx);
 -- 
 2.10.1
