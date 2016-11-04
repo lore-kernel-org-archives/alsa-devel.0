@@ -1,78 +1,55 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7 11/11] ASoC: topology: ABI - Add voice
- wake up flag for DAI links
-Date: Fri, 4 Nov 2016 11:36:16 -0600
-Message-ID: <20161104173616.iqeuhkm7wwfzc5e2@sirena.org.uk>
-References: <cover.1478071138.git.mengdong.lin@linux.intel.com>
- <4ec58db3621474cd8acf664483b18c30628f6cad.1478071138.git.mengdong.lin@linux.intel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 05/17] ASoC: soc-core: snd_soc_get_dai_name() become non
+ static
+Date: Fri, 4 Nov 2016 14:24:32 -0600
+Message-ID: <20161104202432.sz7jlkhh32oqrahd@sirena.org.uk>
+References: <87pomhba6r.wl%kuninori.morimoto.gx@renesas.com>
+ <87ins9ba2c.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7139029624398087195=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1637E2674D6
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 18:36:22 +0100 (CET)
-In-Reply-To: <4ec58db3621474cd8acf664483b18c30628f6cad.1478071138.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6xtutlgqos3vhvb2"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <87ins9ba2c.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Laurent <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, Guennadi <g.liakhovetski-Mmb7MZpHnFY@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-Kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7139029624398087195==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="f277mnh3bie66jst"
-Content-Disposition: inline
-
-
---f277mnh3bie66jst
+--6xtutlgqos3vhvb2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 03, 2016 at 01:05:32AM +0800, mengdong.lin@linux.intel.com wrot=
-e:
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+On Mon, Oct 31, 2016 at 01:17:09AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 >=20
-> Add a new flag bit SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP to link flags.
-> If a link is used for voice wake up, users can set this flag bit and
-> topology will set the link's 'ignore_suspend' to true.
+> snd_soc_get_dai_name() is used from snd_soc_of_get_dai_name(),
+> and it is assuming that DT is using "sound-dai" / "#sound-dai-cells".
+> But graph base DT is using "remote-endpoint". This patch makes
+> snd_soc_get_dai_name() non static for graph support.
 
-So, as we discussed in person yesterday I'm not 100% convinced about the
-name here - there are other applications that might want to use this
-facility like other triggers or some sort of passthrough monitoring.
-I'm drawing a bit of blank on better names right now...  I'm going to
-apply this but we should continue to think about renaming.
+I was going to apply these first few patches but unless I'm missing
+something they don't seem to apply against current code - can you please
+check and resend?
 
---f277mnh3bie66jst
+--6xtutlgqos3vhvb2
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAABCAAGBQJYHMcPAAoJECTWi3JdVIfQqIAH/2t4VxwdgvJzrVSnLnLTK4KJ
-PPxvAGtFG1BWlipIetJ3XmD/ltWofe8DQcwumDypSC0ci68zO7DNgJyS62yF9LHm
-jnt9OE4dWinAJPZIGQocTV3i/UvTtsxej19pBkmTOH98OAG7rlAP+AFiS/b8LtcK
-242YHjQpRXSdeKk532P8kGFT5pvn4I46d3RyD926C1rRmQ7s0ppZO8ra220wKC1d
-x2qbv/fR3ZDblDMFq5Ej2VMkVsDtTF345dMqe2nYyYiNkSy9gW63BjGX4gudJiww
-iIGVk6Ht2nzP0dOMz2hMd4GPgb1FsK5zc5JXSkuJjIhRYU0wk1jJDx9CRfZu2Tg=
-=nIAg
+iQEcBAABCAAGBQJYHO59AAoJECTWi3JdVIfQvnMH/Al4aoLCKeG5bW87GVsKr1Kg
+z0+A+xEgPQ6JFryKtgVEzFDnQcDRwdWH/zBSR5BlseY3qMEEw/VvvvgVZjgJln4w
+/zjE8+hl+oNysP6648LoMrJfTkjjpRuRWg6pW6S5HtOgCDE0VAbnKPZyVo7s7+p7
++jwk+n47wV9CNqCbq4jXroeAaoHzhsCwNf+N3aTdxZ0vk9Hm9ffrI5Sac3dZDFdB
+r2XtUpsN/ueunr3rDskWCXDalCfbSAKgATnEKCpReUa/qqfHD/jIFPGiVd1afrkg
+hFmglP8/V8W11EFk6x4QT6Ps5BL9P5z0krIkYlgWKRTiZy9C4PlCr2J0aj7g8VM=
+=QEYi
 -----END PGP SIGNATURE-----
 
---f277mnh3bie66jst--
-
---===============7139029624398087195==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7139029624398087195==--
+--6xtutlgqos3vhvb2--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
