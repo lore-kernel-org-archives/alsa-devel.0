@@ -1,18 +1,15 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH 0/6] topology: Updates for PCM object in
-	ABI v5
-Date: Thu, 3 Nov 2016 23:09:29 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F88198C0D8@shsmsx102.ccr.corp.intel.com>
-References: <cover.1478212626.git.mengdong.lin@linux.intel.com>
+From: Sebastien Guiriec <sebastien.guiriec@intel.com>
+Subject: [PATCH 1/3] ASoC: intel: atom: Add debug information
+	related to FW version
+Date: Fri,  4 Nov 2016 09:04:09 +0100
+Message-ID: <20161104080411.12410-1-sebastien.guiriec@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 913A4266BC4
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 00:09:33 +0100 (CET)
-In-Reply-To: <cover.1478212626.git.mengdong.lin@linux.intel.com>
-Content-Language: en-US
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A553265A98
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 09:07:57 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org, vind.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com
+Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-I'm so sorry, please overlook the duplicated cover letters. I sent them out by mistake.
+This patch is adding debug information related to SST FW version.
 
-Thanks
-Mengdong
+Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
+---
+ sound/soc/intel/atom/sst/sst_ipc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> -----Original Message-----
-> From: mengdong.lin@linux.intel.com [mailto:mengdong.lin@linux.intel.com]
-> Sent: Friday, November 4, 2016 7:00 AM
-> To: alsa-devel@alsa-project.org
-> Cc: tiwai@suse.de; broonie@kernel.org; perex@perex.cz;
-> liam.r.girdwood@linux.intel.com; Shah, Hardik T <hardik.t.shah@intel.com>;
-> Singh, Guneshwor O <guneshwor.o.singh@intel.com>; Koul, Vinod
-> <vinod.koul@intel.com>; Lin, Mengdong <mengdong.lin@intel.com>;
-> Mengdong Lin <mengdong.lin@linux.intel.com>
-> Subject: [PATCH 0/6] topology: Updates for PCM object in ABI v5
-> 
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
-> 
-> These ABI updates for PCM have just been applied to ASoC kernel. And
-> kernel can handle the PCM ABI updates in a backward compatible way.
-> 
-> So we update the user space code for PCM now.
-> 
-> The updates for physical DAI link and DAIs will come later after their kernel
-> updates be applied at first.
-> 
-> Mengdong Lin (6):
->   topology: ABI - Update stream caps and PCM objects to ABI v5
->   topology: Parse sig_bits of stream caps
->   topology: Parse flags for PCM
->   topology: Define a function to build a single PCM element
->   topology: Parse and build private data for PCM
->   topology: tplg_elem_lookup() checks parameter before searching
-> 
->  include/sound/asoc.h      |   9 ++++
->  include/topology.h        |  11 +++++
->  src/topology/elem.c       |   3 ++
->  src/topology/parser.c     |   2 +-
->  src/topology/pcm.c        | 120
-> ++++++++++++++++++++++++++++++++++++++++++++--
->  src/topology/tplg_local.h |   2 +-
->  6 files changed, 140 insertions(+), 7 deletions(-)
-> 
-> --
-> 2.7.4
+diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
+index 8afa6fe..92ffeaa 100644
+--- a/sound/soc/intel/atom/sst/sst_ipc.c
++++ b/sound/soc/intel/atom/sst/sst_ipc.c
+@@ -236,6 +236,9 @@ static void process_fw_init(struct intel_sst_drv *sst_drv_ctx,
+ 		retval = init->result;
+ 		goto ret;
+ 	}
++	dev_info(sst_drv_ctx->dev, "FW Version %02x.%02x.%02x.%02x\n",
++			init->fw_version.type, init->fw_version.major,
++			init->fw_version.minor, init->fw_version.build);
+ 
+ ret:
+ 	sst_wake_up_block(sst_drv_ctx, retval, FW_DWNL_ID, 0 , NULL, 0);
+-- 
+2.9.3
+
+---------------------------------------------------------------------
+Intel Corporation SAS (French simplified joint stock company)
+Registered headquarters: "Les Montalets"- 2, rue de Paris, 
+92196 Meudon Cedex, France
+Registration Number:  302 456 199 R.C.S. NANTERRE
+Capital: 4,572,000 Euros
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
