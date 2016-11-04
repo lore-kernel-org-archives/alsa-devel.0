@@ -1,134 +1,79 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH 3/6] topology: Parse flags for PCM
-Date: Fri,  4 Nov 2016 07:07:06 +0800
-Message-ID: <34d6902914df281d29cb4f01ccb5e8ffe1b78d8a.1478212626.git.mengdong.lin@linux.intel.com>
-References: <cover.1478212626.git.mengdong.lin@linux.intel.com>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: Re: [PATCH v2 13/14] ARM: dts: sun6i: hummingbird:
+ Enable internal audio codec
+Date: Fri, 4 Nov 2016 16:12:11 +0800
+Message-ID: <CAGb2v67N3G8+MC4iKFSg=fumLVv9hnswPXLEfBGHvADdVbdAGA@mail.gmail.com>
+References: <20161103075556.29018-1-wens@csie.org> <20161103075556.29018-14-wens@csie.org>
+ <20161103084543.m4zvwhscpaa3y5ay@lukather>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C6E5266B8C
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 00:05:40 +0100 (CET)
-In-Reply-To: <cover.1478212626.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCMILY6JWQBBB5MF6HAAKGQEDNIKTIQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20161103084543.m4zvwhscpaa3y5ay@lukather>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+On Thu, Nov 3, 2016 at 4:45 PM, Maxime Ripard
+<maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+> On Thu, Nov 03, 2016 at 03:55:55PM +0800, Chen-Yu Tsai wrote:
+>> The Hummingbird A31 has headset and line in audio jacks and an onboard
+>> mic routed to the pins for the SoC's internal codec. The line out pins
+>> are routed to an onboard speaker amp, whose output is available on a
+>> pin header.
+>>
+>> Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+>> ---
+>>  arch/arm/boot/dts/sun6i-a31-hummingbird.dts | 20 ++++++++++++++++++++
+>>  1 file changed, 20 insertions(+)
+>>
+>> diff --git a/arch/arm/boot/dts/sun6i-a31-hummingbird.dts b/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
+>> index 9a74637f677f..48c041b75aab 100644
+>> --- a/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
+>> +++ b/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
+>> @@ -69,6 +69,19 @@
+>>       };
+>>  };
+>>
+>> +&codec {
+>> +     allwinner,audio-routing =
+>> +             "Headphone", "HP",
+>> +             "Speaker", "LINEOUT",
+>> +             "LINEIN", "Line In",
+>> +             "MIC1", "Mic",
+>> +             "MIC2", "Headset Mic",
+>> +             "Mic",  "MBIAS",
+>> +             "Headset Mic", "HBIAS";
+>> +     allwinner,pa-gpios = <&pio 7 22 GPIO_ACTIVE_HIGH>; /* PH22 */
+>> +     status = "okay";
+>> +};
+>> +
+>>  &cpu0 {
+>>       cpu-supply = <&reg_dcdc3>;
+>>  };
+>> @@ -152,6 +165,13 @@
+>>  };
+>>
+>>  &pio {
+>> +     codec_pa_pin: codec_pa_pin@0 {
+>> +             allwinner,pins = "PH22";
+>> +             allwinner,function = "gpio_out";
+>> +             allwinner,drive = <SUN4I_PINCTRL_10_MA>;
+>> +             allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
+>> +     };
+>> +
+>
+> This pin group isn't used anywhere. Because of the strict thing in
+> pinctrl, I'd say it's better to not set it, but then, the pin group is
+> useless.
 
-Users can define flags by both text conf file and C API.
-Add flags and flag_mask to C API template of PCM object.
+I'll drop the pinmux setting then.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-
-diff --git a/include/topology.h b/include/topology.h
-index ccd8401..b6a6f19 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -606,6 +606,11 @@ extern "C" {
-  *			"config3"
-  *		]
-  *	}
-+ *
-+ *	# Optional boolean flags
-+ *	symmetric_rates			"true"
-+ *	symmetric_channels		"true"
-+ *	symmetric_sample_bits		"false"
-  * }
-  * </pre>
-  *
-@@ -863,6 +868,8 @@ struct snd_tplg_pcm_template {
- 	unsigned int capture;	/*!< supports capture mode */
- 	unsigned int compress;	/*!< 1 = compressed; 0 = PCM */
- 	struct snd_tplg_stream_caps_template *caps[2]; /*!< playback & capture for DAI */
-+	unsigned int flag_mask; /*!< bitmask of flags to configure */
-+	unsigned int flags;     /*!< flag value SND_SOC_TPLG_LNK_FLGBIT_* */
- 	int num_streams;	/*!< number of supported configs */
- 	struct snd_tplg_stream_template stream[0]; /*!< supported configs */
- };
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 6fdf047..bd70dc9 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -364,6 +364,24 @@ static int tplg_parse_fe_dai(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
- 	return 0;
- }
- 
-+/* parse a flag bit of the given mask */
-+static int parse_flag(snd_config_t *n, unsigned int mask_in,
-+		      unsigned int *mask, unsigned int *flags)
-+{
-+	const char *val = NULL;
-+
-+	if (snd_config_get_string(n, &val) < 0)
-+		return -EINVAL;
-+
-+	*mask |= mask_in;
-+	if (strcmp(val, "true") == 0)
-+		*flags |= mask_in;
-+	else
-+		*flags &= ~mask_in;
-+
-+	return 0;
-+}
-+
- /* Parse pcm (for front end DAI & DAI link) */
- int tplg_parse_pcm(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
-@@ -430,6 +448,34 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
- 				return err;
- 			continue;
- 		}
-+
-+		/* flags */
-+		if (strcmp(id, "symmetric_rates") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES,
-+				&pcm->flag_mask, &pcm->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		if (strcmp(id, "symmetric_channels") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS,
-+				&pcm->flag_mask, &pcm->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		if (strcmp(id, "symmetric_sample_bits") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS,
-+				&pcm->flag_mask, &pcm->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
- 	}
- 
- 	return 0;
-@@ -610,6 +656,9 @@ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
- 			tplg_add_stream_caps(&pcm->caps[i], pcm_tpl->caps[i]);
- 	}
- 
-+	pcm->flag_mask = pcm_tpl->flag_mask;
-+	pcm->flags = pcm_tpl->flags;
-+
- 	pcm->num_streams = pcm_tpl->num_streams;
- 	for (i = 0; i < pcm_tpl->num_streams; i++)
- 		tplg_add_stream_object(&pcm->stream[i], &pcm_tpl->stream[i]);
--- 
-2.7.4
+ChenYu
