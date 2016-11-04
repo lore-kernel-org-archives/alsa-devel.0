@@ -1,15 +1,17 @@
 From: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Subject: [PATCH 1/3] ASoC: intel: atom: Add debug information
-	related to FW version
-Date: Fri,  4 Nov 2016 09:04:09 +0100
-Message-ID: <20161104080411.12410-1-sebastien.guiriec@intel.com>
+Subject: [PATCH 3/3] ASoC: Intel: atom: Add sysfs entry in
+	order to store FW version
+Date: Fri,  4 Nov 2016 09:04:11 +0100
+Message-ID: <20161104080411.12410-3-sebastien.guiriec@intel.com>
+References: <20161104080411.12410-1-sebastien.guiriec@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A553265A98
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 09:07:57 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BC42267371
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 09:08:00 +0100 (CET)
+In-Reply-To: <20161104080411.12410-1-sebastien.guiriec@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,27 +25,83 @@ To: alsa-devel@alsa-project.org, vind.koul@intel.com, pierre-louis.bossart@linux
 Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch is adding debug information related to SST FW version.
+This patch is adding a sysfs entry in order to be able to get
+access to SST FW version.
 
 Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
 ---
- sound/soc/intel/atom/sst/sst_ipc.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/atom/sst/sst.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
-index 8afa6fe..92ffeaa 100644
---- a/sound/soc/intel/atom/sst/sst_ipc.c
-+++ b/sound/soc/intel/atom/sst/sst_ipc.c
-@@ -236,6 +236,9 @@ static void process_fw_init(struct intel_sst_drv *sst_drv_ctx,
- 		retval = init->result;
- 		goto ret;
- 	}
-+	dev_info(sst_drv_ctx->dev, "FW Version %02x.%02x.%02x.%02x\n",
-+			init->fw_version.type, init->fw_version.major,
-+			init->fw_version.minor, init->fw_version.build);
+diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
+index a4b458e..dabbd06 100644
+--- a/sound/soc/intel/atom/sst/sst.c
++++ b/sound/soc/intel/atom/sst/sst.c
+@@ -27,6 +27,7 @@
+ #include <linux/pm_qos.h>
+ #include <linux/async.h>
+ #include <linux/acpi.h>
++#include <linux/sysfs.h>
+ #include <sound/core.h>
+ #include <sound/soc.h>
+ #include <asm/platform_sst_audio.h>
+@@ -241,6 +242,28 @@ int sst_alloc_drv_context(struct intel_sst_drv **ctx,
+ }
+ EXPORT_SYMBOL_GPL(sst_alloc_drv_context);
  
- ret:
- 	sst_wake_up_block(sst_drv_ctx, retval, FW_DWNL_ID, 0 , NULL, 0);
++static ssize_t firmware_version_show(struct device *dev,
++			    struct device_attribute *attr, char *buf)
++{
++	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++
++	return sprintf(buf, "v%02x.%02x.%02x.%02x\n",
++			ctx->fw_version.type, ctx->fw_version.major,
++			ctx->fw_version.minor, ctx->fw_version.build);
++
++}
++
++DEVICE_ATTR_RO(firmware_version);
++
++static const struct attribute *sst_fw_version_attrs[] = {
++	&dev_attr_firmware_version.attr,
++	NULL,
++};
++
++static const struct attribute_group sst_fw_version_attr_group = {
++	.attrs = (struct attribute **)sst_fw_version_attrs,
++};
++
+ int sst_context_init(struct intel_sst_drv *ctx)
+ {
+ 	int ret = 0, i;
+@@ -314,8 +337,19 @@ int sst_context_init(struct intel_sst_drv *ctx)
+ 		dev_err(ctx->dev, "Firmware download failed:%d\n", ret);
+ 		goto do_free_mem;
+ 	}
++
++	ret = sysfs_create_group(&ctx->dev->kobj,
++				 &sst_fw_version_attr_group);
++	if (ret) {
++		dev_err(ctx->dev,
++			"Unable to create sysfs\n");
++		goto err_sysfs;
++	}
++
+ 	sst_register(ctx->dev);
+ 	return 0;
++err_sysfs:
++	sysfs_remove_group(&ctx->dev->kobj, &sst_fw_version_attr_group);
+ 
+ do_free_mem:
+ 	destroy_workqueue(ctx->post_msg_wq);
+@@ -329,6 +363,7 @@ void sst_context_cleanup(struct intel_sst_drv *ctx)
+ 	pm_runtime_disable(ctx->dev);
+ 	sst_unregister(ctx->dev);
+ 	sst_set_fw_state_locked(ctx, SST_SHUTDOWN);
++	sysfs_remove_group(&ctx->dev->kobj, &sst_fw_version_attr_group);
+ 	flush_scheduled_work();
+ 	destroy_workqueue(ctx->post_msg_wq);
+ 	pm_qos_remove_request(ctx->qos);
 -- 
 2.9.3
 
