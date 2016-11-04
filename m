@@ -1,16 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [question] Sample rate IC followed by DAC
-Date: Fri, 4 Nov 2016 12:31:10 +0100
-Message-ID: <51ece116-aabb-21fa-b339-8a8bd95d6b52@ladisch.de>
-References: <5e9a9d77-4a01-b41c-32aa-130d76958bef@flatmax.org>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [MINUTES] Linux Plumbers Audio Mini Conference -
+ Santa Fe 2016
+Date: Fri, 04 Nov 2016 13:59:26 +0000
+Message-ID: <1478267966.27988.8.camel@loki>
+References: <1478213478.21597.13.camel@loki>
+ <e7fc9e49-6d6a-c224-d045-ef80308e11e0@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 84A98266218
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 12:31:11 +0100 (CET)
-In-Reply-To: <5e9a9d77-4a01-b41c-32aa-130d76958bef@flatmax.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id D3A89266499
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 14:59:39 +0100 (CET)
+In-Reply-To: <e7fc9e49-6d6a-c224-d045-ef80308e11e0@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,30 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>, alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin" <mengdong.lin@linux.intel.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Lai,
+ Patrick" <plai@quicinc.com>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>, Eric Laurent <elaurent@google.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Dylan Reid <dgreid@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-Matt Flax wrote:
-> I have a sample rate converter IC, which is followed by a DAC. This kind =
-of setup :
->
-> SoC chip -> Sample rate conv. chip -> DAC chip
+On Fri, 2016-11-04 at 10:54 +0200, Peter Ujfalusi wrote:
+> Liam,
+> 
+> On 11/04/2016 12:51 AM, Liam Girdwood wrote:
+> > Minutes below. Comments, corrections and omissions welcomed.
+> > 
+> > We are missing some links to some of the slides presented. Please reply with a link 
+> > if you have one.
+> 
+> Were there any discussion related to 'Move of ASoC clocking into the
+> clock API'? Any conclusions, plans?
+> 
 
-What is the purpose of the converter?  What problem does it solve?
+Sorry, yes this was discussed. Mark had pointed out there was a locking
+issue in the clk API preventing it being used in codecs (iirc, in I2C
+devices). I think Mark has now discussed with the clock maintainers.
 
-> How do you construct a machine driver for this setup ?
+The plan was to use the API after the locking issue was resolved.
 
-The original DAC driver will not work correctly, as far as sample rate
-settings are concerned.
+Thanks
 
-> Unfortunately the silicon only supports an older 3.14 kernel.
-
-You mean, you paid for _no support_?  And now are asking here instead?
-(Not that a newer kernel version would help ...)
-
-Well, if your goal isn't a proper driver for upstream, just hack the
-existing DAC driver to access the other I=B2C device, when needed.
-
-
-Regards,
-Clemens
+Liam
