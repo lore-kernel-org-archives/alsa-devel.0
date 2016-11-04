@@ -1,58 +1,140 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 14/17] ASoC: add simple-graph-card document
-Date: Fri, 4 Nov 2016 14:33:42 -0600
-Message-ID: <20161104203342.aizjufjokuqrlyhh@sirena.org.uk>
-References: <87pomhba6r.wl%kuninori.morimoto.gx@renesas.com>
- <8760o9b9xm.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vcshtpj3anbp2h2m"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <8760o9b9xm.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Laurent <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, Guennadi <g.liakhovetski-Mmb7MZpHnFY@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-Kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: sun4i-codec: Add support for A31 Line Out playback" to the asoc tree
+Date: Fri, 04 Nov 2016 14:40:12 -0600
+Message-ID: <E1c2lHY-0001Vl-4S@finisterre>
+References: <20161103075556.29018-9-wens@csie.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20161103075556.29018-9-wens@csie.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>Maxime Ripard <maxime.ripard@free-electrons.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-sunxi@googlegroups.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---vcshtpj3anbp2h2m
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: sun4i-codec: Add support for A31 Line Out playback
 
-On Mon, Oct 31, 2016 at 01:19:58AM +0000, Kuninori Morimoto wrote:
+has been applied to the asoc tree at
 
-> +This Simple-Graph-Card should be located as CPU driver's port[s].
-> +And then, CPU driver need to probe it by itself.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-This document really needs quite a bit of fleshing out but I'm not sure
-that should be a blocker for the series as a whole especially given that
-English is not your native language - we can build out later.  I think
-based on what I'm understanding here I like what I'm seeing.  It'd be
-good to get some confirmation from the people with more of_graph
-knowledge that this is a good usage.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-One thing I'm not 100% clear on here is why it has to be a CPU DAI (I'm
-guessing just one of them though the above says ports as an option?)
-that creates the card?  Is there a concrete reason for that or is it
-just being defined as good pracctice?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---vcshtpj3anbp2h2m
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAABCAAGBQJYHPClAAoJECTWi3JdVIfQiNgH/3unAu79po41rnmGcpxj9keq
-Y9Ot59ZAHJjPyrGS/yMvbo0mlgZ954uhlw4qG/A876C2XAn/usFdbOwBfcXR9UJ6
-lMhfVnnK9C5Wh5gmIYr3EhoihfRxAHzuxjNrvZsBH8qe6qGwHOhSx9AFdhGgfuuq
-7u7IE8gIH9ZZDYAch9fvAfnpVu1eFd3bQKWijNupQpiu51/0LWiPqC5D5ZA+2trB
-YTcIZ3YRzEwlfcYOQirBo1xdzP/oq/OB8hNQCoR1cw3oxMzyFB9rDwRJ+KFcE9aa
-M4CDP+uNSlwQpeTf8DWPJ6mV0UuZwrg9Yf3K3gQp/q9tMcRYpCCcfx+/Jxd3Mhg=
-=uorA
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---vcshtpj3anbp2h2m--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>From 0f909f98d7cbabc3641a45da9c6891444b929a92 Mon Sep 17 00:00:00 2001
+From: Chen-Yu Tsai <wens@csie.org>
+Date: Thu, 3 Nov 2016 15:55:50 +0800
+Subject: [PATCH] ASoC: sun4i-codec: Add support for A31 Line Out playback
+
+The A31 integrated codec has a second "Line Out" output which does not
+include an integrated amplifier in its path. This path does have a
+separate volume control.
+
+This patch adds support for the playback path from the DAC to the Line
+Out pins.
+
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sunxi/sun4i-codec.c | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 72a84f76aa57..a10251f4932e 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -794,11 +794,31 @@ static const struct snd_kcontrol_new sun6i_codec_hp_src[] = {
+ 		      sun6i_codec_hp_src_enum),
+ };
+ 
++/* line out controls */
++static const char * const sun6i_codec_lineout_src_enum_text[] = {
++	"Stereo", "Mono Differential",
++};
++
++static SOC_ENUM_DOUBLE_DECL(sun6i_codec_lineout_src_enum,
++			    SUN6I_CODEC_MIC_CTRL,
++			    SUN6I_CODEC_MIC_CTRL_LINEOUTLSRC,
++			    SUN6I_CODEC_MIC_CTRL_LINEOUTRSRC,
++			    sun6i_codec_lineout_src_enum_text);
++
++static const struct snd_kcontrol_new sun6i_codec_lineout_src[] = {
++	SOC_DAPM_ENUM("Line Out Source Playback Route",
++		      sun6i_codec_lineout_src_enum),
++};
++
+ /* volume / mute controls */
+ static const DECLARE_TLV_DB_SCALE(sun6i_codec_dvol_scale, -7308, 116, 0);
+ static const DECLARE_TLV_DB_SCALE(sun6i_codec_hp_vol_scale, -6300, 100, 1);
+ static const DECLARE_TLV_DB_SCALE(sun6i_codec_out_mixer_pregain_scale,
+ 				  -450, 150, 0);
++static const DECLARE_TLV_DB_RANGE(sun6i_codec_lineout_vol_scale,
++	0, 1, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
++	2, 31, TLV_DB_SCALE_ITEM(-4350, 150, 0),
++);
+ 
+ static const struct snd_kcontrol_new sun6i_codec_codec_widgets[] = {
+ 	SOC_SINGLE_TLV("DAC Playback Volume", SUN4I_CODEC_DAC_DPC,
+@@ -808,10 +828,18 @@ static const struct snd_kcontrol_new sun6i_codec_codec_widgets[] = {
+ 		       SUN6I_CODEC_OM_DACA_CTRL,
+ 		       SUN6I_CODEC_OM_DACA_CTRL_HPVOL, 0x3f, 0,
+ 		       sun6i_codec_hp_vol_scale),
++	SOC_SINGLE_TLV("Line Out Playback Volume",
++		       SUN6I_CODEC_MIC_CTRL,
++		       SUN6I_CODEC_MIC_CTRL_LINEOUTVC, 0x1f, 0,
++		       sun6i_codec_lineout_vol_scale),
+ 	SOC_DOUBLE("Headphone Playback Switch",
+ 		   SUN6I_CODEC_OM_DACA_CTRL,
+ 		   SUN6I_CODEC_OM_DACA_CTRL_LHPPAMUTE,
+ 		   SUN6I_CODEC_OM_DACA_CTRL_RHPPAMUTE, 1, 0),
++	SOC_DOUBLE("Line Out Playback Switch",
++		   SUN6I_CODEC_MIC_CTRL,
++		   SUN6I_CODEC_MIC_CTRL_LINEOUTLEN,
++		   SUN6I_CODEC_MIC_CTRL_LINEOUTREN, 1, 0),
+ 	/* Mixer pre-gains */
+ 	SOC_SINGLE_TLV("Line In Playback Volume",
+ 		       SUN6I_CODEC_OM_PA_CTRL, SUN6I_CODEC_OM_PA_CTRL_LINEING,
+@@ -853,6 +881,11 @@ static const struct snd_soc_dapm_widget sun6i_codec_codec_dapm_widgets[] = {
+ 	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "HPCOM", SUN6I_CODEC_OM_PA_CTRL,
+ 			 SUN6I_CODEC_OM_PA_CTRL_HPCOM_CTL, 0x3, 0x3, 0),
+ 	SND_SOC_DAPM_OUTPUT("HP"),
++
++	/* Line Out path */
++	SND_SOC_DAPM_MUX("Line Out Source Playback Route",
++			 SND_SOC_NOPM, 0, 0, sun6i_codec_lineout_src),
++	SND_SOC_DAPM_OUTPUT("LINEOUT"),
+ };
+ 
+ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
+@@ -878,6 +911,12 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
+ 	{ "Headphone Amp", NULL, "Headphone Source Playback Route" },
+ 	{ "HP", NULL, "Headphone Amp" },
+ 	{ "HPCOM", NULL, "HPCOM Protection" },
++
++	/* Line Out Routes */
++	{ "Line Out Source Playback Route", "Stereo", "Left Mixer" },
++	{ "Line Out Source Playback Route", "Stereo", "Right Mixer" },
++	{ "Line Out Source Playback Route", "Mono Differential", "Left Mixer" },
++	{ "LINEOUT", NULL, "Line Out Source Playback Route" },
+ };
+ 
+ static struct snd_soc_codec_driver sun6i_codec_codec = {
+-- 
+2.10.1
