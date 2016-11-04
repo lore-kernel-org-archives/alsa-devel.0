@@ -1,103 +1,58 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: ABI - Add voice wake up flag
-	for DAI links" to the asoc tree
-Date: Fri, 04 Nov 2016 11:38:02 -0600
-Message-ID: <E1c2iRG-0007AL-US@finisterre>
-References: <4ec58db3621474cd8acf664483b18c30628f6cad.1478071138.git.mengdong.lin@linux.intel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 14/17] ASoC: add simple-graph-card document
+Date: Fri, 4 Nov 2016 14:33:42 -0600
+Message-ID: <20161104203342.aizjufjokuqrlyhh@sirena.org.uk>
+References: <87pomhba6r.wl%kuninori.morimoto.gx@renesas.com>
+ <8760o9b9xm.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B9FB2674C4
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 18:38:32 +0100 (CET)
-In-Reply-To: <4ec58db3621474cd8acf664483b18c30628f6cad.1478071138.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mengdong Lin <mengdong.lin@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vcshtpj3anbp2h2m"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <8760o9b9xm.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Laurent <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, Guennadi <g.liakhovetski-Mmb7MZpHnFY@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-Kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: topology: ABI - Add voice wake up flag for DAI links
+--vcshtpj3anbp2h2m
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Mon, Oct 31, 2016 at 01:19:58AM +0000, Kuninori Morimoto wrote:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> +This Simple-Graph-Card should be located as CPU driver's port[s].
+> +And then, CPU driver need to probe it by itself.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+This document really needs quite a bit of fleshing out but I'm not sure
+that should be a blocker for the series as a whole especially given that
+English is not your native language - we can build out later.  I think
+based on what I'm understanding here I like what I'm seeing.  It'd be
+good to get some confirmation from the people with more of_graph
+knowledge that this is a good usage.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+One thing I'm not 100% clear on here is why it has to be a CPU DAI (I'm
+guessing just one of them though the above says ports as an option?)
+that creates the card?  Is there a concrete reason for that or is it
+just being defined as good pracctice?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--vcshtpj3anbp2h2m
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEcBAABCAAGBQJYHPClAAoJECTWi3JdVIfQiNgH/3unAu79po41rnmGcpxj9keq
+Y9Ot59ZAHJjPyrGS/yMvbo0mlgZ954uhlw4qG/A876C2XAn/usFdbOwBfcXR9UJ6
+lMhfVnnK9C5Wh5gmIYr3EhoihfRxAHzuxjNrvZsBH8qe6qGwHOhSx9AFdhGgfuuq
+7u7IE8gIH9ZZDYAch9fvAfnpVu1eFd3bQKWijNupQpiu51/0LWiPqC5D5ZA+2trB
+YTcIZ3YRzEwlfcYOQirBo1xdzP/oq/OB8hNQCoR1cw3oxMzyFB9rDwRJ+KFcE9aa
+M4CDP+uNSlwQpeTf8DWPJ6mV0UuZwrg9Yf3K3gQp/q9tMcRYpCCcfx+/Jxd3Mhg=
+=uorA
+-----END PGP SIGNATURE-----
 
->From 6ff67ccafdf4c782489de1ccc47e1ec8d8480b63 Mon Sep 17 00:00:00 2001
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Date: Thu, 3 Nov 2016 01:05:32 +0800
-Subject: [PATCH] ASoC: topology: ABI - Add voice wake up flag for DAI links
-
-Add a new flag bit SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP to link flags.
-If a link is used for voice wake up, users can set this flag bit and
-topology will set the link's 'ignore_suspend' to true.
-
-This ABI update is backward compatible.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/uapi/sound/asoc.h | 1 +
- sound/soc/soc-topology.c  | 5 +++++
- 2 files changed, 6 insertions(+)
-
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 3c3fcc86b9f4..6a4280c6e860 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -155,6 +155,7 @@
- #define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES         (1 << 0)
- #define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
- #define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
-+#define SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP            (1 << 3)
- 
- /*
-  * Block Header.
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index f44f12eb1798..8772fd994e82 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1701,6 +1701,11 @@ static void set_link_flags(struct snd_soc_dai_link *link,
- 		link->symmetric_samplebits =
- 			flags & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS ?
- 			1 : 0;
-+
-+	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP)
-+		link->ignore_suspend =
-+		flags & SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP ?
-+		1 : 0;
- }
- 
- /* create the FE DAI link */
--- 
-2.10.1
+--vcshtpj3anbp2h2m--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
