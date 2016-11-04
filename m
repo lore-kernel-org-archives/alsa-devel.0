@@ -1,183 +1,396 @@
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [RFC 00/17] clk: Add per-controller locks to fix deadlocks
-Date: Fri, 04 Nov 2016 11:53:16 +0100
-Message-ID: <7933d51e-92a8-ca6d-84f0-70b22fe17568@samsung.com>
-References: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
- <20160909002432.GE13062@codeaurora.org>
- <CGME20161104105318eucas1p2e9458dbe7039f2a81419fae8cf6bc4c8@eucas1p2.samsung.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [MINUTES] Linux Plumbers Audio Mini Conference -
+ Santa Fe 2016
+Date: Fri, 4 Nov 2016 10:54:55 +0200
+Message-ID: <e7fc9e49-6d6a-c224-d045-ef80308e11e0@ti.com>
+References: <1478213478.21597.13.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <20160909002432.GE13062@codeaurora.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@codeaurora.org>, Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene@kernel.org>, Russell King <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Javier
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6AC0126720A
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 09:54:59 +0100 (CET)
+In-Reply-To: <1478213478.21597.13.camel@loki>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "mengdong.lin" <mengdong.lin@linux.intel.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Lai,
+ Patrick" <plai@quicinc.com>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>, Eric Laurent <elaurent@google.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Dylan Reid <dgreid@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Stephen,
+Liam,
 
-Krzysztof has left Samsung, but we would like to continue this task, because
-the ABBA dead-locks related to global prepare lock becomes more and more
-problematic for us to workaround.
+On 11/04/2016 12:51 AM, Liam Girdwood wrote:
+> Minutes below. Comments, corrections and omissions welcomed.
+> =
 
-On 2016-09-09 02:24, Stephen Boyd wrote:
-> On 08/16, Krzysztof Kozlowski wrote:
->> RFC, please, do not apply, maybe except patch #1 which is harmless.
->>
->>
->> Introduction
->> ============
->> The patchset brings new entity: clock controller representing a hardware
->> block.  The clock controller comes with its own prepare lock which
->> is used then in many places.  The idea is to fix the deadlock mentioned
->> in commit 10ff4c5239a1 ("i2c: exynos5: Fix possible ABBA deadlock by keeping
->> I2C clock prepared") and commit 34e81ad5f0b6 ("i2c: s3c2410: fix ABBA deadlock
->> by keeping clock prepared").
->>
->>
->> Disclaimer
->> ==========
->> Request for comments, so:
->> 1. Only exynos_defconfig builds,
->> 2. A lot of FIXME/TODO note still,
->> 3. Checkpatch not run, lines not aligned,
->> 4. Other (non-exynos) drivers not converted,
->> 5. Probably not yet bisectable,
->> 6. Locking became quite complex.
->>     The previous one lock was simple.  Inefficient and dead-lock prone but
->>     simple.  Because of clock hierarchy spanning through controllers, the
->>     new locking became quite complicated.  I don't like it but...
->>
->>
->> Details
->> =======
->> In Exynos-based boards case the deadlock occurs between clock's
->> prepare_lock and regmap-i2c's lock:
->>
->> CPU #0:                             CPU #1:
->> lock(regmap)
->>                                      s2mps11-clk: clk_prepare_lock()
->>
->> i2c-exynos: clk_prepare_lock() - wait
->>                                      lock(regmap) - wait
->>
->> The clk_prepare_lock() on both CPUs come from different clock drivers
->> and components:
->> 1. I2C clock is part of SoC block and is required by i2c-s3c2410/i2c-exynos5
->>     driver,
->> 2. S2MPS11 clock is separate device, however driver uses I2C regmap.
->>
->> The deadlock was reported by lockdep (always) and was happening
->> in 20% of boots of Odroid XU3 with multi_v7 defconfig.  Workaround for
->> deadlock was implemented by removing prepare/unprepare calls from I2C
->> transfers.  However these are just workarounds... which after applying
->> this patch can be reverted.
->>
->> Additionally Marek Szyprowski's work on domains/clocks/pinctrl exposed
->> the deadlock again in different configuration.
->>
-> Per-controller locks seems to be a misnomer. These patches look
-> more like per-clk_register() locks. The clk registrant can decide
-> how fine grained to make the prepare locking scheme. They can
-> decide to have one lock per clk, one lock for the entire tree, or
-> one lock per arbitrary subtree. I'd prefer to drop the controller
-> concept unless it's really done that way, by attaching to the OF
-> clk provider or device pointer.
+> We are missing some links to some of the slides presented. Please reply w=
+ith a link =
 
-This was not phrased well but the idea was to let provider/controller
-have ability to define which clocks will use common lock. Probably
-removing the concept of clock controller and moving the lock to
-clk_provider will be much better approach.
+> if you have one.
 
-> Given that, it seems that conceptually these patches allow clk
-> registrants to carve out a set of clks that they want to be
-> treated as an atomic unit with regards to the prepare lock.
-> TL;DR trees of per-process recursive prepare mutex locks where
-> the locks cover one or more clks.
->
-> The locks are recursive per-process to simplify the problem where
-> we need to acquire the same lock multiple times while traversing
-> a tree that shares the same lock, right? Otherwise we would need
-> to track which locks we've already grabbed and refcount and we
-> wouldn't be able to re-enter the framework from within the clk
-> ops of the same atomic unit.
->
-> As long as we can guarantee that we always take the locks in the
-> same order we'll be fine. The burden to ensure that would be
-> placed on the clk registrants though, and verifying that will be
-> left up to humans? That seems fragile and error prone. We can
-> always say that we take the global lock and then traverse the
-> children up to the roots, but we can't be sure that during the
-> tree traversal we don't take locks in different order because of
-> how the clk registrant has structured things.
->
-> It would be great if the different clk APIs were listed, with the
-> order of how locks are taken BTW. And really overall just more
-> information about how the locking scheme works. I had to read
-> this patch series quite a few times to come to (hopefully the
-> right) conclusions.
+Were there any discussion related to 'Move of ASoC clocking into the
+clock API'? Any conclusions, plans?
 
-Right, such change requires much more documentation and especially
-that it took significant amount of time to figure out all(?)
-possible use cases and locking schemes.
+-- =
 
-> So I'm not very fond of this design because the locking scheme is
-> pretty much out of the hands of the framework and can be easily
-> broken.
+P=E9ter
 
-Well, switching from a single global lock to more granular locking
-is always a good approach. Please note that the global lock sooner
-or later became a serious bottleneck if one wants to make somehow
-more aggressive power management and clock gating.
+> Audio Mini Conference Minutes - Santa Fe 2016 =
 
->   I'm biased of course, because I'd prefer we go with my
-> wwmutex design of per-clk locks[1]. Taking locks in any order
-> works fine there, and we resolve quite a few long standing
-> locking problems that we have while improving scalability. The
-> problem there is that we don't get the recursive mutex design
-> (maybe that's a benefit!).
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
 
-Do you have any plan to continue working on your approach? per-clk
-wwmutex looks like an overkill on the first glance, but that's probably
-the only working solution if you want to get rid of recursive locks.
-I'm still not really convinced that we really need wwmutex here,
-especially if it is possible to guarantee the same order of locking
-operations inside the clock core. This requires a bit of cooperation
-from clock providers (with proper documentation and a list of
-DO/DON'T it shouldn't be that hard).
+> Present: Mark, Rakesh, Liam, Vinod, Mengdong, Pierre, Patrick, Takashi S,
+> Javilars, Takashi I, Eric, Dylan, Mauro, Shuah, Charles, Matthew, Lars, S=
+agar
+> and others.
+> =
 
-> Once a clk_op reenters the framework
-> with consumer APIs and tries to grab the same lock we deadlock.
-> This is why I've been slowly splitting consumers from providers
-> so we can easily identify these cases. If we had something like
-> coordinated clk rate switching, we could get rid of clk_ops
-> reentering the framework and avoid this problem (and we really do
-> need to do that).
+> =
 
-I'm not sure that this makes really sense split consumers and
-providers. You will get recursive calls to clk core anyway with
-consumers calls if you are implementing i2c clock, for which an i2c
-bus driver does it's own clock gating (i2c controller uses
-consumer clk api).
+> Android USB Audio - Eric
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
 
+> USB audio is becoming more important as analog jack can be removed. USB s=
+tack
+> is difficult to optimise for low power/latency audio (too many wake ups w=
+ith
+> USB 1ms tick). Aim to add no_irq (no IRQ for each period) and mmap suppor=
+t in
+> USB 3.0 stack to improve power and latency.
+> =
 
-> The one thing I do like about this patch series though is the
-> gradual movement of providers to the new locking scheme. Maybe if
-> we combined that idea with per-clk wwmutex locks we could have
-> the best of both worlds and fix reentrancy later when we need it?
-> There's wwmutex_trylock() that we could use. Perhaps always pass
-> a NULL context if some clk flag isn't set (CLK_USE_PER_CLK_LOCK).
-> Plus we could assign the same wwmutex all over the place when
-> that flag isn't set and allocate a unique wwmutex at clk_register
-> time otherwise. I haven't thought about it deeply, so there may
-> be some glaring problem that I'm missing like when we have half
-> the clks in a tree with the flag set or something. This is where
-> driving home from the office for 45 minutes helps.
->
-> [1] http://lists.infradead.org/pipermail/linux-arm-kernel/2014-April/251039.html
+> USB playback and capture with synchronised start API is missing from stac=
+k/ALSA.
+> Some patches were posted for synchronised endpoint but never made it to t=
+he
+> list, Pierre is going to resend.
+> =
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+> USB currently defines simple audio endpoints. Support is needed to define=
+ more
+> complex USB audio endpoints rather than just "playback" and "capture".
+> =
+
+> Sub 10ms latency (round trip ?) is difficult to achieve on USB due to sta=
+ck and
+> drivers. Mmap may help reduce latency by removing buffer copies.
+> =
+
+> =
+
+> Inter Device Dependencies
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> =
+
+> Kernel Summit joined for this discussion. There is complexity between dev=
+ices,
+> more than just a parent/child relationship for some devices making it dif=
+ficult
+> to order probing and PM ops.
+> =
+
+> Rafael, has created patch set to solve dependences for PM ops in Gregs tr=
+ee, =
+
+> the patches could also be used for probing. The patches add an API to all=
+ow
+> device relationships to be established as a graph. This API supports non
+> parent/child relationships to and allows PM ops to run in a deterministic
+> sequence. Relationship dependency discovery needs to come from DT/ACPI and
+> will need standardised bindings.
+> =
+
+> Mark described the current audio workarounds where the machine driver spe=
+cifies
+> relationships and deferred probe is used to manage the probing sequence.
+> Some people do not like the high number deferred probe messages in dmesg.
+> =
+
+> Relation graphs must be ordered so that cycles to do not exist.
+> =
+
+> Next steps are to use Rafaels patches for probe ordering.
+> =
+
+> =
+
+> AV Sync - Eric
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
+
+> A few frame counters are 32 bit (compressed API) and should be 64 bit.
+> Vinod will update compressed API to 64 bit.
+> =
+
+> Timers should also consider boot time and suspend/resume time as it's cur=
+rently =
+
+> difficult to keep AV syn over suspend/resume cycles.
+> =
+
+> AV sync on TV's hacky atm, we need AV sync API in ALSA. Takashi noted thi=
+s was
+> long time problem that needs solution. Some options for AV sync were pseu=
+do
+> transport streams (like existing mpeg format) but these were difficult for
+> mmap(). Other devices had used runtime PLL updating with patches sent in =
+the
+> past ?
+> =
+
+> Compressed API could be used to send transport stream for AV sync.
+> =
+
+> =
+
+> HDMI/DP glue to GFX - Vinod
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+> =
+
+> Currently several interlaces exist to pass DP/HDMI events and information
+> between audio and GFX stacks/drivers.  ARM devices using pdata interface, =
+
+> i915 has another solution, BYT uses another interface. Needs to be consis=
+tent
+> for user space ELD notification, jack detection/mapping. Currently HDA dr=
+ivers
+> have hack to assist userspace (PCM5).
+> =
+
+> There are also difficulties mapping PCMs, channels and jacks to multiple
+> HDMI/DP devices.
+> =
+
+> Tikashi and Vinod to investigate best solutions.
+> =
+
+> =
+
+> DP-MST - Vinod
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
+
+> Jack notifications more difficult with MST (extra complexity). How do we =
+map
+> multiple jacks from multiple monitors, disable unused pins when not rende=
+ring ?
+> The 5.1 use case for gaming has to split channels to multiple monitors.
+> Decision is that new devices would export topology to userpace so that us=
+erspace
+> know the jack, channel mappings. =
+
+> =
+
+> =
+
+> Soundwire Support - Rakesh and Pierre
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =
+
+> =
+
+> Soundwire new hardware interface for audio devices. Needs new subsystem s=
+upport
+> for soundwire master and slave devices. Hardik has posted initial RFC to =
+the =
+
+> list for review.
+> =
+
+> Rakesh presented slides . Link to the slides ?
+> =
+
+> Some people had reviewed the RFC. Some changes to strct device/driver usa=
+ge =
+
+> required to make it more like other subsystems upstream. There is also ne=
+ed
+> to deal with devices that can power off after or before enumeration. Some
+> confusion over the terminology used too, compared to other bus systems li=
+ke I2C.
+> Master should be device and not driver. Top level feedback is that it doe=
+s not
+> look like bus code.
+> =
+
+> There is also a need to consider objects in DT/ACPI. AR Vinod, to look at=
+ STIO. =
+
+> =
+
+> =
+
+> Topology and UCM file deployment - Vinod, Mengdong, Liam
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> =
+
+> Difficult to release and deploy topology/ucm updates with alsa-lib cadenc=
+e.
+> Distros to be contacted for best deployment where cadence can be faster t=
+han
+> alsa-lib. Liam and Vinod to contact distro package maintainers.
+> =
+
+> =
+
+> UCM - Liam, Mengdong
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
+
+> Which driver card name string to change, there are 3 - long, short and dr=
+iver.
+> CRAS uses the string in the []. Not sure about PA.
+> =
+
+> Liam to create patch that includes machine name in card name string.
+> =
+
+> Mengdong has added #include and #define like support to topology. Mengdong
+> will port this to UCM too so that a library of codecs can be built up and =
+
+> included by the machine ucm files. e.g.
+> =
+
+> Asus T100 UCM would include rt5640 codec and baytrail DSP UCM configs.
+> =
+
+> =
+
+> Tracepoint for audio - Lars, Takashi S
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
+
+> Lars and Takashi S have similar patchsets. Easy to make tooling for parsi=
+ng
+> traceout. This could replace printk and snd_printk, but builds bigger bin=
+ary.
+> Option to disable can be added to reduce size. Uses ftrace output and tim=
+estamp.
+> Used in the PCM operations. Patches are still WiP and will be posted as R=
+FC when
+> ready.
+> =
+
+> =
+
+> Dropping Dice Driver - Takashi S
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+> =
+
+> Dice hardware has serious problems making it unusable. Takashi S to discu=
+ss with
+> Clemens regarding any potential work around for HW issue. If no work arou=
+nd is
+> found then it could be marked as broken or moved to staging ?
+> =
+
+> =
+
+> Sound Open Firmware - Liam
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> =
+
+> Liam introduced SOF and took QA. Liam is also working on an ELF executable
+> firmware image that can run on the developers host PC.
+> =
+
+> http://alsa-project.org/main/index.php/Firmware
+> =
+
+> =
+
+> Paravirtualisation of Audio Drivers - Rakesh
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
+
+> Safety critical systems have requirements to play safety critcal sounds (=
+like
+> alarms, warnings) and regular non safety critical sound like media. Rakes=
+h =
+
+> proposed a Xen hypervisor method to guarantee the safety critical audio w=
+ould
+> always take precedence over the non safety critical audio.
+> =
+
+> Xen would run a privileged OS (for safety critical) and unprivileged OS (=
+for
+> non safety critical audio). A para virtualised audio driver would allow t=
+he
+> Unprivileged OS to play audio on the privileged OS.
+> =
+
+> Lars suggested Libvirt and KVM may make this task far easier and less res=
+tricted
+> than using Xen. Rakesh to investigate further.
+> =
+
+> =
+
+> Userspace driver for Firewire - Takashi S
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
+
+> Need to represent mixers for some USB and FW devices in userspace. Why ?.
+> Possibility of using topology for userspace. Nobody keen on exposing kern=
+el APIs
+> as userspavce ABIs. Possibility of looking at libvirt interfaces for user=
+space
+> drivers many similarities. Kernel component, already use FW sound card.
+> =
+
+> Mixer API not suitable, many bus so use control API.
+> =
+
+> =
+
+> ALSA Stream Configuration Domains - Lars
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
+
+> ALSA has powerful but complex system to configure and constrain stream
+> configurations at runtime but it does not scale well on modern ASoC based
+> sound devices with multiple components and DAIs.
+> =
+
+> Lars presented a solution that can break complex sound cards down to simp=
+le
+> domains where configuration can be set by userspace to exactly match each
+> use case. Userspace would also be able to read the configuration in each =
+domain.
+> New APIs calls would be needed in alsa-lib to achieve this.
+> =
+
+> Lars also requested that ASoC become a first class citizen with ALSA since
+> most new sound cards are ASoC based. Proposal was accepted.
+> =
+
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> =
