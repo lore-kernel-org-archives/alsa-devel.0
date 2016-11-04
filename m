@@ -1,17 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: msm8916-wcd-digital: rename parse_dt to get_clks" to the asoc tree
-Date: Fri, 04 Nov 2016 10:47:43 -0600
-Message-ID: <E1c2heZ-0005pN-Ur@finisterre>
-References: <1478270740-3037-2-git-send-email-srinivas.kandagatla@linaro.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <1478270740-3037-2-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, kwestfie@codeaurora.org, srinivas.kandagatla@linaro.org, tiwai@suse.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: topology: ABI - Update physical DAI
+	link configuration for version 5" to the asoc tree
+Date: Fri, 04 Nov 2016 10:47:39 -0600
+Message-ID: <E1c2heV-0005oU-Od@finisterre>
+References: <b93d0dc7b9233155eb7ec13e1875b7dab8fb8554.1476162939.git.mengdong.lin@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2AF3266623
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 17:48:07 +0100 (CET)
+In-Reply-To: <b93d0dc7b9233155eb7ec13e1875b7dab8fb8554.1476162939.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mengdong Lin <mengdong.lin@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: msm8916-wcd-digital: rename parse_dt to get_clks
+   ASoC: topology: ABI - Update physical DAI link configuration for version 5
 
 has been applied to the asoc tree at
 
@@ -36,45 +53,122 @@ to this mail.
 Thanks,
 Mark
 
->From ba9b8c42cff5aaf78229260c5622d6b699683e28 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Fri, 4 Nov 2016 14:45:40 +0000
-Subject: [PATCH] ASoC: codecs: msm8916-wcd-digital: rename parse_dt to
- get_clks
+>From 676c6b5208f7ce6ccc7933ab210f24358ca99a7a Mon Sep 17 00:00:00 2001
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Date: Thu, 3 Nov 2016 01:03:52 +0800
+Subject: [PATCH] ASoC: topology: ABI - Update physical DAI link configuration
+ for version 5
 
-This patch renames msm8916_wcd_digital_parse_dt() to
-msm8916_wcd_digital_get_clks() as the function is not directly dealing
-with dt parsing.
+The following fields are added to physical link configuration struct
+(snd_soc_tplg_link_config) in ABI v5:
 
-No functional changes done.
+- name and stream name
+  Topology will use them to find an existing physical link and configure
+  it.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+- HW configurations
+  Define the types and ABI struct for runtime supported hardware configs
+  of physical DAI links, e.g. audio hardware formats. The default HW
+  config ID will help topology to find the DAI format to set on init.
+  Topology provides this as a fallback if such HW settings are not
+  available in ACPI or device tree, to avoid hard code in drivers. It's
+  only for config items that can be programmed by SW or FW, not for
+  physical things like link connections or GPIO used for HP etc.
+
+- flags and private data
+  The flags will be used to configure an existing physical DAI link.
+  The private data is reserved for future extension.
+
+NOTE: Current kernel has no support for physical links. A later patch
+will add support for configuring physical links and make the support
+backward compatible for ABI v4.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/msm8916-wcd-digital.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/uapi/sound/asoc.h | 46 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 44 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
-index e35501af91ab..f690442af8c9 100644
---- a/sound/soc/codecs/msm8916-wcd-digital.c
-+++ b/sound/soc/codecs/msm8916-wcd-digital.c
-@@ -539,7 +539,7 @@ static const struct snd_soc_dapm_widget msm8916_wcd_digital_dapm_widgets[] = {
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index aeb408241bc3..ed28ebc392d1 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -39,6 +39,11 @@
+  */
+ #define SND_SOC_TPLG_STREAM_CONFIG_MAX  8
  
- };
++/*
++ * Maximum number of physical link's hardware configs
++ */
++#define SND_SOC_TPLG_HW_CONFIG_MAX	8
++
+ /* individual kcontrol info types - can be mixed with other types */
+ #define SND_SOC_TPLG_CTL_VOLSW		1
+ #define SND_SOC_TPLG_CTL_VOLSW_SX	2
+@@ -294,6 +299,35 @@ struct snd_soc_tplg_stream {
+ 	__le32 channels;	/* channels */
+ } __attribute__((packed));
  
--static int msm8916_wcd_digital_parse_dt(struct platform_device *pdev,
-+static int msm8916_wcd_digital_get_clks(struct platform_device *pdev,
- 					struct msm8916_wcd_digital_priv	*priv)
- {
- 	struct device *dev = &pdev->dev;
-@@ -866,7 +866,7 @@ static int msm8916_wcd_digital_probe(struct platform_device *pdev)
- 	if (IS_ERR(digital_map))
- 		return PTR_ERR(digital_map);
++
++/*
++ * Describes a physical link's runtime supported hardware config,
++ * i.e. hardware audio formats.
++ */
++struct snd_soc_tplg_hw_config {
++	__le32 size;            /* in bytes of this structure */
++	__le32 id;		/* unique ID - - used to match */
++	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
++	__u8 clock_gated;	/* 1 if clock can be gated to save power */
++	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
++	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
++	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
++	__u8 fsync_master;	/* 1 for master of FSYNC, 0 for slave */
++	__u8 mclk_direction;    /* 0 for input, 1 for output */
++	__le16 reserved;	/* for 32bit alignment */
++	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
++	__le32 bclk_rate;	/* BCLK freqency in Hz */
++	__le32 fsync_rate;	/* frame clock in Hz */
++	__le32 tdm_slots;	/* number of TDM slots in use */
++	__le32 tdm_slot_width;	/* width in bits for each slot */
++	__le32 tx_slots;	/* bit mask for active Tx slots */
++	__le32 rx_slots;	/* bit mask for active Rx slots */
++	__le32 tx_channels;	/* number of Tx channels */
++	__le32 tx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
++	__le32 rx_channels;	/* number of Rx channels */
++	__le32 rx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
++} __attribute__((packed));
++
+ /*
+  * Manifest. List totals for each payload type. Not used in parsing, but will
+  * be passed to the component driver before any other objects in order for any
+@@ -468,9 +502,9 @@ struct snd_soc_tplg_pcm {
  
--	ret = msm8916_wcd_digital_parse_dt(pdev, priv);
-+	ret = msm8916_wcd_digital_get_clks(pdev, priv);
- 	if (ret < 0)
- 		return ret;
  
+ /*
+- * Describes the BE or CC link runtime supported configs or params
++ * Describes the physical link runtime supported configs or params
+  *
+- * File block representation for BE/CC link config :-
++ * File block representation for physical link config :-
+  * +-----------------------------------+-----+
+  * | struct snd_soc_tplg_hdr           |  1  |
+  * +-----------------------------------+-----+
+@@ -480,8 +514,16 @@ struct snd_soc_tplg_pcm {
+ struct snd_soc_tplg_link_config {
+ 	__le32 size;            /* in bytes of this structure */
+ 	__le32 id;              /* unique ID - used to match */
++	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* name - used to match */
++	char stream_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* stream name - used to match */
+ 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback and captrure */
+ 	__le32 num_streams;     /* number of streams */
++	struct snd_soc_tplg_hw_config hw_config[SND_SOC_TPLG_HW_CONFIG_MAX]; /* hw configs */
++	__le32 num_hw_configs;         /* number of hw configs */
++	__le32 default_hw_config_id;   /* default hw config ID for init */
++	__le32 flag_mask;       /* bitmask of flags to configure */
++	__le32 flags;           /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
++	struct snd_soc_tplg_private priv;
+ } __attribute__((packed));
+ 
+ /*
 -- 
 2.10.1
