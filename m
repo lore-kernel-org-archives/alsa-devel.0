@@ -1,47 +1,94 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 2/2] ASoC: codecs: msm8916-wcd-digital: rename parse_dt to get_clks
-Date: Fri,  4 Nov 2016 14:45:40 +0000
-Message-ID: <1478270740-3037-2-git-send-email-srinivas.kandagatla@linaro.org>
-References: <1478270740-3037-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/2] ASoC: codecs: msm8916-wcd-analog: clean parse_dt()
+Date: Fri,  4 Nov 2016 14:45:39 +0000
+Message-ID: <1478270740-3037-1-git-send-email-srinivas.kandagatla@linaro.org>
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <1478270740-3037-1-git-send-email-srinivas.kandagatla@linaro.org>
 Sender: linux-arm-msm-owner@vger.kernel.org
 To: broonie@kernel.org, alsa-devel@alsa-project.org
 Cc: tiwai@suse.com, kwestfie@codeaurora.org, linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch renames msm8916_wcd_digital_parse_dt() to
-msm8916_wcd_digital_get_clks() as the function is not directly dealing
-with dt parsing.
+Move the code which is not parsing dt from pm8916_wcd_analog_parse_dt()
+to make it clear to reader.
 
 No functional changes done.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/msm8916-wcd-digital.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
-index e35501a..f690442 100644
---- a/sound/soc/codecs/msm8916-wcd-digital.c
-+++ b/sound/soc/codecs/msm8916-wcd-digital.c
-@@ -539,7 +539,7 @@ static const struct snd_soc_dapm_widget msm8916_wcd_digital_dapm_widgets[] = {
- 
- };
- 
--static int msm8916_wcd_digital_parse_dt(struct platform_device *pdev,
-+static int msm8916_wcd_digital_get_clks(struct platform_device *pdev,
- 					struct msm8916_wcd_digital_priv	*priv)
+This change was suggested by Mark http://www.spinics.net/lists/alsa-devel/msg55878.html
+
+thanks,
+srini
+
+ sound/soc/codecs/msm8916-wcd-analog.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
+
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index d9f999b..50ad75a 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -802,7 +802,6 @@ static struct snd_soc_codec_driver pm8916_wcd_analog = {
+ static int pm8916_wcd_analog_parse_dt(struct device *dev,
+ 				       struct pm8916_wcd_analog_priv *priv)
  {
+-	int ret, i;
+
+ 	if (of_property_read_bool(dev->of_node, "qcom,micbias1-ext-cap"))
+ 		priv->micbias1_cap_mode = MICB_1_EN_EXT_BYP_CAP;
+@@ -814,21 +813,6 @@ static int pm8916_wcd_analog_parse_dt(struct device *dev,
+ 	else
+ 		priv->micbias2_cap_mode = MICB_1_EN_NO_EXT_BYP_CAP;
+
+-	priv->mclk = devm_clk_get(dev, "mclk");
+-	if (IS_ERR(priv->mclk)) {
+-		dev_err(dev, "failed to get mclk\n");
+-		return PTR_ERR(priv->mclk);
+-	}
+-	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
+-		priv->supplies[i].supply = supply_names[i];
+-
+-	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(priv->supplies),
+-				    priv->supplies);
+-	if (ret) {
+-		dev_err(dev, "Failed to get regulator supplies %d\n", ret);
+-		return ret;
+-	}
+-
+ 	return 0;
+ }
+
+@@ -836,7 +820,7 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ {
+ 	struct pm8916_wcd_analog_priv *priv;
  	struct device *dev = &pdev->dev;
-@@ -866,7 +866,7 @@ static int msm8916_wcd_digital_probe(struct platform_device *pdev)
- 	if (IS_ERR(digital_map))
- 		return PTR_ERR(digital_map);
- 
--	ret = msm8916_wcd_digital_parse_dt(pdev, priv);
-+	ret = msm8916_wcd_digital_get_clks(pdev, priv);
+-	int ret;
++	int ret, i;
+
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+@@ -846,6 +830,22 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
  	if (ret < 0)
  		return ret;
- 
--- 
+
++	priv->mclk = devm_clk_get(dev, "mclk");
++	if (IS_ERR(priv->mclk)) {
++		dev_err(dev, "failed to get mclk\n");
++		return PTR_ERR(priv->mclk);
++	}
++
++	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
++		priv->supplies[i].supply = supply_names[i];
++
++	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(priv->supplies),
++				    priv->supplies);
++	if (ret) {
++		dev_err(dev, "Failed to get regulator supplies %d\n", ret);
++		return ret;
++	}
++
+ 	ret = clk_prepare_enable(priv->mclk);
+ 	if (ret < 0) {
+ 		dev_err(dev, "failed to enable mclk %d\n", ret);
+--
 2.10.1
