@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stac9766: Remove ac97_read/ac97_write
-	wrappers" to the asoc tree
-Date: Fri, 04 Nov 2016 12:16:05 -0600
-Message-ID: <E1c2j25-000845-KF@finisterre>
+Subject: Applied "ASoC: stac9766: Convert to regmap" to the
+	asoc tree
+Date: Fri, 04 Nov 2016 12:16:07 -0600
+Message-ID: <E1c2j27-00084l-Jg@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D8612674D5
+ by alsa0.perex.cz (Postfix) with ESMTP id A17952674DD
  for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 19:16:25 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stac9766: Remove ac97_read/ac97_write wrappers
+   ASoC: stac9766: Convert to regmap
 
 has been applied to the asoc tree at
 
@@ -52,107 +52,192 @@ to this mail.
 Thanks,
 Mark
 
->From 7aacbc7ff7f6da9ec6deb833154f0883497ab82f Mon Sep 17 00:00:00 2001
+>From 6bbf787bb70c8a16509a2d51182423a6f6977742 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Fri, 4 Nov 2016 18:26:57 +0100
-Subject: [PATCH] ASoC: stac9766: Remove ac97_read/ac97_write wrappers
+Date: Fri, 4 Nov 2016 18:26:56 +0100
+Subject: [PATCH] ASoC: stac9766: Convert to regmap
 
-Since the regmap conversion ac97_read/ac97_write are just simple wrappers
-around snd_soc_read/snd_soc_write. Use those instead directly and remove
-the wrappers.
-
-Also use snd_soc_update_bits() where appropriate.
+Currently the stac9766 driver still uses custom snd_soc_codec_driver IO
+callbacks. This has been deprecated for a while, so convert the stac9766
+driver to use regmap for its IO.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/stac9766.c | 40 +++++++++++-----------------------------
- 1 file changed, 11 insertions(+), 29 deletions(-)
+ sound/soc/codecs/stac9766.c | 108 ++++++++++++++++++++++++--------------------
+ 1 file changed, 59 insertions(+), 49 deletions(-)
 
 diff --git a/sound/soc/codecs/stac9766.c b/sound/soc/codecs/stac9766.c
-index 62cbeedf93b9..9de7fe8af255 100644
+index f675d343b529..62cbeedf93b9 100644
 --- a/sound/soc/codecs/stac9766.c
 +++ b/sound/soc/codecs/stac9766.c
-@@ -165,38 +165,22 @@ static const struct snd_kcontrol_new stac9766_snd_ac97_controls[] = {
- 	SOC_ENUM("Pop Bypass Mux", stac9766_popbypass_enum),
+@@ -18,6 +18,7 @@
+ #include <linux/slab.h>
+ #include <linux/module.h>
+ #include <linux/device.h>
++#include <linux/regmap.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/ac97_codec.h>
+@@ -33,26 +34,49 @@
+ #define AC97_STAC_ANALOG_SPECIAL 0x6E
+ #define AC97_STAC_STEREO_MIC 0x78
+ 
+-/*
+- * STAC9766 register cache
+- */
+-static const u16 stac9766_reg[] = {
+-	0x6A90, 0x8000, 0x8000, 0x8000, /* 6 */
+-	0x0000, 0x0000, 0x8008, 0x8008, /* e */
+-	0x8808, 0x8808, 0x8808, 0x8808, /* 16 */
+-	0x8808, 0x0000, 0x8000, 0x0000, /* 1e */
+-	0x0000, 0x0000, 0x0000, 0x000f, /* 26 */
+-	0x0a05, 0x0400, 0xbb80, 0x0000, /* 2e */
+-	0x0000, 0xbb80, 0x0000, 0x0000, /* 36 */
+-	0x0000, 0x2000, 0x0000, 0x0100, /* 3e */
+-	0x0000, 0x0000, 0x0080, 0x0000, /* 46 */
+-	0x0000, 0x0000, 0x0003, 0xffff, /* 4e */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* 56 */
+-	0x4000, 0x0000, 0x0000, 0x0000, /* 5e */
+-	0x1201, 0x0000, 0x0000, 0x0000, /* 66 */
+-	0x0000, 0x0000, 0x0000, 0x1000, /* 6e */
+-	0x0000, 0x0000, 0x0000, 0x0006, /* 76 */
+-	0x0000, 0x0000, 0x0000, 0x0000, /* 7e */
++static const struct reg_default stac9766_reg_defaults[] = {
++	{ 0x02, 0x8000 },
++	{ 0x04, 0x8000 },
++	{ 0x06, 0x8000 },
++	{ 0x0a, 0x0000 },
++	{ 0x0c, 0x8008 },
++	{ 0x0e, 0x8008 },
++	{ 0x10, 0x8808 },
++	{ 0x12, 0x8808 },
++	{ 0x14, 0x8808 },
++	{ 0x16, 0x8808 },
++	{ 0x18, 0x8808 },
++	{ 0x1a, 0x0000 },
++	{ 0x1c, 0x8000 },
++	{ 0x20, 0x0000 },
++	{ 0x22, 0x0000 },
++	{ 0x28, 0x0a05 },
++	{ 0x2c, 0xbb80 },
++	{ 0x32, 0xbb80 },
++	{ 0x3a, 0x2000 },
++	{ 0x3e, 0x0100 },
++	{ 0x4c, 0x0300 },
++	{ 0x4e, 0xffff },
++	{ 0x50, 0x0000 },
++	{ 0x52, 0x0000 },
++	{ 0x54, 0x0000 },
++	{ 0x6a, 0x0000 },
++	{ 0x6e, 0x1000 },
++	{ 0x72, 0x0000 },
++	{ 0x78, 0x0000 },
++};
++
++static const struct regmap_config stac9766_regmap_config = {
++	.reg_bits = 16,
++	.reg_stride = 2,
++	.val_bits = 16,
++	.max_register = 0x78,
++	.cache_type = REGCACHE_RBTREE,
++
++	.volatile_reg = regmap_ac97_default_volatile,
++
++	.reg_defaults = stac9766_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(stac9766_reg_defaults),
  };
  
--static int stac9766_ac97_write(struct snd_soc_codec *codec, unsigned int reg,
--			       unsigned int val)
--{
--	return snd_soc_write(codec, reg, val);
--}
+ static const char *stac9766_record_mux[] = {"Mic", "CD", "Video", "AUX",
+@@ -144,34 +168,13 @@ static const struct snd_kcontrol_new stac9766_snd_ac97_controls[] = {
+ static int stac9766_ac97_write(struct snd_soc_codec *codec, unsigned int reg,
+ 			       unsigned int val)
+ {
+-	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
+-	u16 *cache = codec->reg_cache;
 -
--static unsigned int stac9766_ac97_read(struct snd_soc_codec *codec,
--				       unsigned int reg)
--{
--	return snd_soc_read(codec, reg);
--}
+-	if (reg / 2 >= ARRAY_SIZE(stac9766_reg))
+-		return -EIO;
 -
+-	soc_ac97_ops->write(ac97, reg, val);
+-	cache[reg / 2] = val;
+-	return 0;
++	return snd_soc_write(codec, reg, val);
+ }
+ 
+ static unsigned int stac9766_ac97_read(struct snd_soc_codec *codec,
+ 				       unsigned int reg)
+ {
+-	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
+-	u16 val = 0, *cache = codec->reg_cache;
+-
+-	if (reg / 2 >= ARRAY_SIZE(stac9766_reg))
+-		return -EIO;
+-
+-	if (reg == AC97_RESET || reg == AC97_GPIO_STATUS ||
+-		reg == AC97_INT_PAGING || reg == AC97_VENDOR_ID1 ||
+-		reg == AC97_VENDOR_ID2) {
+-
+-		val = soc_ac97_ops->read(ac97, reg);
+-		return val;
+-	}
+-	return cache[reg / 2];
++	return snd_soc_read(codec, reg);
+ }
+ 
  static int ac97_analog_prepare(struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai)
+@@ -290,21 +293,34 @@ static struct snd_soc_dai_driver stac9766_dai[] = {
+ static int stac9766_codec_probe(struct snd_soc_codec *codec)
  {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	unsigned short reg, vra;
--
--	vra = stac9766_ac97_read(codec, AC97_EXTENDED_STATUS);
-+	unsigned short reg;
+ 	struct snd_ac97 *ac97;
++	struct regmap *regmap;
++	int ret;
  
--	vra |= 0x1; /* enable variable rate audio */
--	vra &= ~0x4; /* disable SPDIF output */
--
--	stac9766_ac97_write(codec, AC97_EXTENDED_STATUS, vra);
-+	/* enable variable rate audio, disable SPDIF output */
-+	snd_soc_update_bits(codec, AC97_EXTENDED_STATUS, 0x5, 0x1);
+ 	ac97 = snd_soc_new_ac97_codec(codec, STAC9766_VENDOR_ID,
+ 			STAC9766_VENDOR_ID_MASK);
+ 	if (IS_ERR(ac97))
+ 		return PTR_ERR(ac97);
  
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		reg = AC97_PCM_FRONT_DAC_RATE;
- 	else
- 		reg = AC97_PCM_LR_ADC_RATE;
++	regmap = regmap_init_ac97(ac97, &stac9766_regmap_config);
++	if (IS_ERR(regmap)) {
++		ret = PTR_ERR(regmap);
++		goto err_free_ac97;
++	}
++
++	snd_soc_codec_init_regmap(codec, regmap);
+ 	snd_soc_codec_set_drvdata(codec, ac97);
  
--	return stac9766_ac97_write(codec, reg, runtime->rate);
-+	return snd_soc_write(codec, reg, runtime->rate);
- }
- 
- static int ac97_digital_prepare(struct snd_pcm_substream *substream,
-@@ -204,18 +188,16 @@ static int ac97_digital_prepare(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	unsigned short reg, vra;
--
--	stac9766_ac97_write(codec, AC97_SPDIF, 0x2002);
-+	unsigned short reg;
- 
--	vra = stac9766_ac97_read(codec, AC97_EXTENDED_STATUS);
--	vra |= 0x5; /* Enable VRA and SPDIF out */
-+	snd_soc_write(codec, AC97_SPDIF, 0x2002);
- 
--	stac9766_ac97_write(codec, AC97_EXTENDED_STATUS, vra);
-+	/* Enable VRA and SPDIF out */
-+	snd_soc_update_bits(codec, AC97_EXTENDED_STATUS, 0x5, 0x5);
- 
- 	reg = AC97_PCM_FRONT_DAC_RATE;
- 
--	return stac9766_ac97_write(codec, reg, runtime->rate);
-+	return snd_soc_write(codec, reg, runtime->rate);
- }
- 
- static int stac9766_set_bias_level(struct snd_soc_codec *codec,
-@@ -225,11 +207,11 @@ static int stac9766_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_ON: /* full On */
- 	case SND_SOC_BIAS_PREPARE: /* partial On */
- 	case SND_SOC_BIAS_STANDBY: /* Off, with power */
--		stac9766_ac97_write(codec, AC97_POWERDOWN, 0x0000);
-+		snd_soc_write(codec, AC97_POWERDOWN, 0x0000);
- 		break;
- 	case SND_SOC_BIAS_OFF: /* Off, without power */
- 		/* disable everything including AC link */
--		stac9766_ac97_write(codec, AC97_POWERDOWN, 0xffff);
-+		snd_soc_write(codec, AC97_POWERDOWN, 0xffff);
- 		break;
- 	}
  	return 0;
++err_free_ac97:
++	snd_soc_free_ac97_codec(ac97);
++	return ret;
+ }
+ 
+ static int stac9766_codec_remove(struct snd_soc_codec *codec)
+ {
+ 	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
+ 
++	snd_soc_codec_exit_regmap(codec);
+ 	snd_soc_free_ac97_codec(ac97);
+ 	return 0;
+ }
+@@ -314,17 +330,11 @@ static struct snd_soc_codec_driver soc_codec_dev_stac9766 = {
+ 		.controls		= stac9766_snd_ac97_controls,
+ 		.num_controls		= ARRAY_SIZE(stac9766_snd_ac97_controls),
+ 	},
+-	.write = stac9766_ac97_write,
+-	.read = stac9766_ac97_read,
+ 	.set_bias_level = stac9766_set_bias_level,
+ 	.suspend_bias_off = true,
+ 	.probe = stac9766_codec_probe,
+ 	.remove = stac9766_codec_remove,
+ 	.resume = stac9766_codec_resume,
+-	.reg_cache_size = ARRAY_SIZE(stac9766_reg),
+-	.reg_word_size = sizeof(u16),
+-	.reg_cache_step = 2,
+-	.reg_cache_default = stac9766_reg,
+ };
+ 
+ static int stac9766_probe(struct platform_device *pdev)
 -- 
 2.10.1
