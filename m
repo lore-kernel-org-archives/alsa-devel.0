@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stac9766: Move register defines to main
-	source file" to the asoc tree
-Date: Fri, 04 Nov 2016 12:16:10 -0600
-Message-ID: <E1c2j2A-00085a-JA@finisterre>
+Subject: Applied "ASoC: stac9766: Remove unused DAI ID defines"
+	to the asoc tree
+Date: Fri, 04 Nov 2016 12:16:24 -0600
+Message-ID: <E1c2j2O-000871-D0@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 20B282674F8
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 19:16:28 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 46E582674D5
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 19:16:36 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stac9766: Move register defines to main source file
+   ASoC: stac9766: Remove unused DAI ID defines
 
 has been applied to the asoc tree at
 
@@ -52,73 +52,33 @@ to this mail.
 Thanks,
 Mark
 
->From dccb395c268e9f96dfaf3f3bb9933aa9a0ded8cc Mon Sep 17 00:00:00 2001
+>From 355602eb5af91ff8ddda435f0f9e910f3b18c438 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Fri, 4 Nov 2016 18:26:55 +0100
-Subject: [PATCH] ASoC: stac9766: Move register defines to main source file
+Date: Fri, 4 Nov 2016 18:26:53 +0100
+Subject: [PATCH] ASoC: stac9766: Remove unused DAI ID defines
 
-The stac9766 driver has a header file that defines 3 register locations.
-Move these to the main source file since it is not really worth it having a
-separate file for them. The header file is now empty and can be removed.
+The DAI ID defines are back from the time when DAIs were referenced by a
+numerical ID. These days a string is used instead and the defines are
+unused.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/stac9766.c        |  6 ++++--
- sound/soc/codecs/stac9766.h        | 12 ------------
- sound/soc/fsl/efika-audio-fabric.c |  1 -
- 3 files changed, 4 insertions(+), 15 deletions(-)
- delete mode 100644 sound/soc/codecs/stac9766.h
+ sound/soc/codecs/stac9766.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/sound/soc/codecs/stac9766.c b/sound/soc/codecs/stac9766.c
-index e54e4a4ce296..f675d343b529 100644
---- a/sound/soc/codecs/stac9766.c
-+++ b/sound/soc/codecs/stac9766.c
-@@ -26,11 +26,13 @@
- #include <sound/soc.h>
- #include <sound/tlv.h>
- 
--#include "stac9766.h"
--
- #define STAC9766_VENDOR_ID 0x83847666
- #define STAC9766_VENDOR_ID_MASK 0xffffffff
- 
-+#define AC97_STAC_DA_CONTROL 0x6A
-+#define AC97_STAC_ANALOG_SPECIAL 0x6E
-+#define AC97_STAC_STEREO_MIC 0x78
-+
- /*
-  * STAC9766 register cache
-  */
 diff --git a/sound/soc/codecs/stac9766.h b/sound/soc/codecs/stac9766.h
-deleted file mode 100644
-index e35cee82f416..000000000000
+index c726f907e2c0..cb0d5505d571 100644
 --- a/sound/soc/codecs/stac9766.h
-+++ /dev/null
-@@ -1,12 +0,0 @@
--/*
-- * stac9766.h  --  STAC9766 Soc Audio driver
-- */
--
--#ifndef _STAC9766_H
--#define _STAC9766_H
--
--#define AC97_STAC_DA_CONTROL 0x6A
--#define AC97_STAC_ANALOG_SPECIAL 0x6E
--#define AC97_STAC_STEREO_MIC 0x78
--
--#endif
-diff --git a/sound/soc/fsl/efika-audio-fabric.c b/sound/soc/fsl/efika-audio-fabric.c
-index b2acd3293ea8..f200d1cfc4bd 100644
---- a/sound/soc/fsl/efika-audio-fabric.c
-+++ b/sound/soc/fsl/efika-audio-fabric.c
-@@ -27,7 +27,6 @@
++++ b/sound/soc/codecs/stac9766.h
+@@ -10,8 +10,4 @@
+ #define AC97_STAC_ANALOG_SPECIAL (AC97_STAC_PAGE0 | 0x6E)
+ #define AC97_STAC_STEREO_MIC 0x78
  
- #include "mpc5200_dma.h"
- #include "mpc5200_psc_ac97.h"
--#include "../codecs/stac9766.h"
- 
- #define DRV_NAME "efika-audio-fabric"
- 
+-/* STAC9766 DAI ID's */
+-#define STAC9766_DAI_AC97_ANALOG		0
+-#define STAC9766_DAI_AC97_DIGITAL		1
+-
+ #endif
 -- 
 2.10.1
