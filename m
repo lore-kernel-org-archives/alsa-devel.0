@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: ABI - Rename struct and type
-	for physical DAIs" to the asoc tree
-Date: Fri, 04 Nov 2016 11:38:29 -0600
-Message-ID: <E1c2iRh-0007CR-0R@finisterre>
-References: <6f5e49eaf8a2b274ef400063d9296aa0286a309e.1476162939.git.mengdong.lin@linux.intel.com>
+Subject: Applied "ASoC: topology: Rename the function to create
+	a FE link" to the asoc tree
+Date: Fri, 04 Nov 2016 11:38:49 -0600
+Message-ID: <E1c2iS1-0007DR-FW@finisterre>
+References: <243c7826f847a15e149f0178e8d5d79d2fbcf37d.1476108863.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B35842674C4
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 18:38:43 +0100 (CET)
-In-Reply-To: <6f5e49eaf8a2b274ef400063d9296aa0286a309e.1476162939.git.mengdong.lin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 576BF2674D5
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 18:39:05 +0100 (CET)
+In-Reply-To: <243c7826f847a15e149f0178e8d5d79d2fbcf37d.1476108863.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: ABI - Rename struct and type for physical DAIs
+   ASoC: topology: Rename the function to create a FE link
 
 has been applied to the asoc tree at
 
@@ -53,114 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From 3fbf793510c7628248a965972112fab958e6e3cf Mon Sep 17 00:00:00 2001
+>From ab4bc5eed8e9c9fa36d80d58c55300dd1eef29a3 Mon Sep 17 00:00:00 2001
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Date: Thu, 3 Nov 2016 01:05:01 +0800
-Subject: [PATCH] ASoC: topology: ABI - Rename struct and type for physical
- DAIs
+Date: Thu, 3 Nov 2016 01:04:42 +0800
+Subject: [PATCH] ASoC: topology: Rename the function to create a FE link
 
-Rename the ABI struct and type because they are for configuring physical
-DAIs, not only backend DAIs since users may not need DPCM:
-- Rename struct snd_soc_tplg_be_dai to snd_soc_tplg_dai.
-- Rename type SND_SOC_TPLG_TYPE_BE_DAI to SND_SOC_TPLG_TYPE_DAI.
-
-This code refactoring is backward compatible because:
-- Both layout of the struct and type value has no change. Kernel can
-  find the same type value and map to same data layout.
-- This struct is not in ABI v4 at all. Now the user space uses ABI v4.
+Just code refactoring. The function soc_tplg_link_create() will
+create a front end link, not a physical link. So rename it to
+soc_tplg_fe_link_create().
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/asoc.h | 15 ++++++++-------
- sound/soc/soc-topology.c  |  8 ++++----
- 2 files changed, 12 insertions(+), 11 deletions(-)
+ sound/soc/soc-topology.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index ed28ebc392d1..3c3fcc86b9f4 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -111,8 +111,8 @@
- #define SND_SOC_TPLG_TYPE_CODEC_LINK	9
- #define SND_SOC_TPLG_TYPE_BACKEND_LINK	10
- #define SND_SOC_TPLG_TYPE_PDATA		11
--#define SND_SOC_TPLG_TYPE_BE_DAI	12
--#define SND_SOC_TPLG_TYPE_MAX		SND_SOC_TPLG_TYPE_BE_DAI
-+#define SND_SOC_TPLG_TYPE_DAI		12
-+#define SND_SOC_TPLG_TYPE_MAX		SND_SOC_TPLG_TYPE_DAI
- 
- /* vendor block IDs - please add new vendor types to end */
- #define SND_SOC_TPLG_TYPE_VENDOR_FW	1000
-@@ -131,7 +131,7 @@
- #define SND_SOC_TPLG_TUPLE_TYPE_WORD	4
- #define SND_SOC_TPLG_TUPLE_TYPE_SHORT	5
- 
--/* BE DAI flags */
-+/* DAI flags */
- #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_RATES         (1 << 0)
- #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
- #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
-@@ -527,16 +527,17 @@ struct snd_soc_tplg_link_config {
- } __attribute__((packed));
- 
- /*
-- * Describes SW/FW specific features of BE DAI.
-+ * Describes SW/FW specific features of physical DAI.
-+ * It can be used to configure backend DAIs for DPCM.
-  *
-- * File block representation for BE DAI :-
-+ * File block representation for physical DAI :-
-  * +-----------------------------------+-----+
-  * | struct snd_soc_tplg_hdr           |  1  |
-  * +-----------------------------------+-----+
-- * | struct snd_soc_tplg_be_dai        |  N  |
-+ * | struct snd_soc_tplg_dai           |  N  |
-  * +-----------------------------------+-----+
-  */
--struct snd_soc_tplg_be_dai {
-+struct snd_soc_tplg_dai {
- 	__le32 size;            /* in bytes of this structure */
- 	char dai_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* name - used to match */
- 	__le32 dai_id;          /* unique ID - used to match */
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index eea28ade5b32..a839dc857e0d 100644
+index b15a2049efcf..eea28ade5b32 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -2090,7 +2090,7 @@ static int soc_tplg_link_elems_load(struct soc_tplg *tplg,
-  * platform driver should specify the BE DAI name and ID for matching.
-  */
- static int soc_tplg_be_dai_config(struct soc_tplg *tplg,
--				  struct snd_soc_tplg_be_dai *be)
-+				  struct snd_soc_tplg_dai *be)
- {
- 	struct snd_soc_dai_link_component dai_component = {0};
- 	struct snd_soc_dai *dai;
-@@ -2145,7 +2145,7 @@ static int soc_tplg_be_dai_config(struct soc_tplg *tplg,
- static int soc_tplg_be_dai_elems_load(struct soc_tplg *tplg,
- 				      struct snd_soc_tplg_hdr *hdr)
- {
--	struct snd_soc_tplg_be_dai *be;
-+	struct snd_soc_tplg_dai *be;
- 	int count = hdr->count;
- 	int i;
+@@ -1704,7 +1704,7 @@ static void set_link_flags(struct snd_soc_dai_link *link,
+ }
  
-@@ -2154,7 +2154,7 @@ static int soc_tplg_be_dai_elems_load(struct soc_tplg *tplg,
+ /* create the FE DAI link */
+-static int soc_tplg_link_create(struct soc_tplg *tplg,
++static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_pcm *pcm)
+ {
+ 	struct snd_soc_dai_link *link;
+@@ -1760,7 +1760,7 @@ static int soc_tplg_pcm_create(struct soc_tplg *tplg,
+ 	if (ret < 0)
+ 		return ret;
  
- 	/* config the existing BE DAIs */
- 	for (i = 0; i < count; i++) {
--		be = (struct snd_soc_tplg_be_dai *)tplg->pos;
-+		be = (struct snd_soc_tplg_dai *)tplg->pos;
- 		if (be->size != sizeof(*be)) {
- 			dev_err(tplg->dev, "ASoC: invalid BE DAI size\n");
- 			return -EINVAL;
-@@ -2328,7 +2328,7 @@ static int soc_tplg_load_header(struct soc_tplg *tplg,
- 		return soc_tplg_dapm_widget_elems_load(tplg, hdr);
- 	case SND_SOC_TPLG_TYPE_PCM:
- 		return soc_tplg_pcm_elems_load(tplg, hdr);
--	case SND_SOC_TPLG_TYPE_BE_DAI:
-+	case SND_SOC_TPLG_TYPE_DAI:
- 		return soc_tplg_be_dai_elems_load(tplg, hdr);
- 	case SND_SOC_TPLG_TYPE_DAI_LINK:
- 	case SND_SOC_TPLG_TYPE_BACKEND_LINK:
+-	return  soc_tplg_link_create(tplg, pcm);
++	return  soc_tplg_fe_link_create(tplg, pcm);
+ }
+ 
+ /* copy stream caps from the old version 4 of source */
 -- 
 2.10.1
