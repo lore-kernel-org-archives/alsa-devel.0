@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stac9766: Remove register paging
-	support" to the asoc tree
-Date: Fri, 04 Nov 2016 12:16:17 -0600
-Message-ID: <E1c2j2H-00086I-Qc@finisterre>
+Subject: Applied "ASoC: stac9766: Move register defines to main
+	source file" to the asoc tree
+Date: Fri, 04 Nov 2016 12:16:10 -0600
+Message-ID: <E1c2j2A-00085a-JA@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 40E8B2674F7
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 19:16:27 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 20B282674F8
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 19:16:28 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stac9766: Remove register paging support
+   ASoC: stac9766: Move register defines to main source file
 
 has been applied to the asoc tree at
 
@@ -52,89 +52,73 @@ to this mail.
 Thanks,
 Mark
 
->From 2bea8f97d4c3aded4c71d72e8702aa7dbe9894cf Mon Sep 17 00:00:00 2001
+>From dccb395c268e9f96dfaf3f3bb9933aa9a0ded8cc Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Fri, 4 Nov 2016 18:26:54 +0100
-Subject: [PATCH] ASoC: stac9766: Remove register paging support
+Date: Fri, 4 Nov 2016 18:26:55 +0100
+Subject: [PATCH] ASoC: stac9766: Move register defines to main source file
 
-The AC'97 standard defines paging support for the register range 0x60-0x6f.
-Meaning registers in this window are mapped to different physical registers
-depending on the setting of the page select register (0x24).
-
-The stac9766 implements support for switching between page 0 and page 1
-depending on the addressed register. But the driver never accesses any
-registers from page 1, in addition page 0 is the page selected by default.
-
-Considering the development history it is unlikely that the driver will see
-any new features that require paging support. Removing the paging support
-makes transitioning the driver to regmap a bit more straight forward.
-
-The default register value table is update to contain the values from page
-0, rather than page 1.
+The stac9766 driver has a header file that defines 3 register locations.
+Move these to the main source file since it is not really worth it having a
+separate file for them. The header file is now empty and can be removed.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/stac9766.c | 16 ++--------------
- sound/soc/codecs/stac9766.h |  5 ++---
- 2 files changed, 4 insertions(+), 17 deletions(-)
+ sound/soc/codecs/stac9766.c        |  6 ++++--
+ sound/soc/codecs/stac9766.h        | 12 ------------
+ sound/soc/fsl/efika-audio-fabric.c |  1 -
+ 3 files changed, 4 insertions(+), 15 deletions(-)
+ delete mode 100644 sound/soc/codecs/stac9766.h
 
 diff --git a/sound/soc/codecs/stac9766.c b/sound/soc/codecs/stac9766.c
-index 27f30d352867..e54e4a4ce296 100644
+index e54e4a4ce296..f675d343b529 100644
 --- a/sound/soc/codecs/stac9766.c
 +++ b/sound/soc/codecs/stac9766.c
-@@ -47,8 +47,8 @@ static const u16 stac9766_reg[] = {
- 	0x0000, 0x0000, 0x0003, 0xffff, /* 4e */
- 	0x0000, 0x0000, 0x0000, 0x0000, /* 56 */
- 	0x4000, 0x0000, 0x0000, 0x0000, /* 5e */
--	0x1201, 0xFFFF, 0xFFFF, 0x0000, /* 66 */
--	0x0000, 0x0000, 0x0000, 0x0000, /* 6e */
-+	0x1201, 0x0000, 0x0000, 0x0000, /* 66 */
-+	0x0000, 0x0000, 0x0000, 0x1000, /* 6e */
- 	0x0000, 0x0000, 0x0000, 0x0006, /* 76 */
- 	0x0000, 0x0000, 0x0000, 0x0000, /* 7e */
- };
-@@ -145,12 +145,6 @@ static int stac9766_ac97_write(struct snd_soc_codec *codec, unsigned int reg,
- 	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
- 	u16 *cache = codec->reg_cache;
+@@ -26,11 +26,13 @@
+ #include <sound/soc.h>
+ #include <sound/tlv.h>
  
--	if (reg > AC97_STAC_PAGE0) {
--		stac9766_ac97_write(codec, AC97_INT_PAGING, 0);
--		soc_ac97_ops->write(ac97, reg, val);
--		stac9766_ac97_write(codec, AC97_INT_PAGING, 1);
--		return 0;
--	}
- 	if (reg / 2 >= ARRAY_SIZE(stac9766_reg))
- 		return -EIO;
+-#include "stac9766.h"
+-
+ #define STAC9766_VENDOR_ID 0x83847666
+ #define STAC9766_VENDOR_ID_MASK 0xffffffff
  
-@@ -165,12 +159,6 @@ static unsigned int stac9766_ac97_read(struct snd_soc_codec *codec,
- 	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
- 	u16 val = 0, *cache = codec->reg_cache;
- 
--	if (reg > AC97_STAC_PAGE0) {
--		stac9766_ac97_write(codec, AC97_INT_PAGING, 0);
--		val = soc_ac97_ops->read(ac97, reg - AC97_STAC_PAGE0);
--		stac9766_ac97_write(codec, AC97_INT_PAGING, 1);
--		return val;
--	}
- 	if (reg / 2 >= ARRAY_SIZE(stac9766_reg))
- 		return -EIO;
- 
-diff --git a/sound/soc/codecs/stac9766.h b/sound/soc/codecs/stac9766.h
-index cb0d5505d571..e35cee82f416 100644
---- a/sound/soc/codecs/stac9766.h
-+++ b/sound/soc/codecs/stac9766.h
-@@ -5,9 +5,8 @@
- #ifndef _STAC9766_H
- #define _STAC9766_H
- 
--#define AC97_STAC_PAGE0 0x1000
--#define AC97_STAC_DA_CONTROL (AC97_STAC_PAGE0 | 0x6A)
--#define AC97_STAC_ANALOG_SPECIAL (AC97_STAC_PAGE0 | 0x6E)
 +#define AC97_STAC_DA_CONTROL 0x6A
 +#define AC97_STAC_ANALOG_SPECIAL 0x6E
- #define AC97_STAC_STEREO_MIC 0x78
++#define AC97_STAC_STEREO_MIC 0x78
++
+ /*
+  * STAC9766 register cache
+  */
+diff --git a/sound/soc/codecs/stac9766.h b/sound/soc/codecs/stac9766.h
+deleted file mode 100644
+index e35cee82f416..000000000000
+--- a/sound/soc/codecs/stac9766.h
++++ /dev/null
+@@ -1,12 +0,0 @@
+-/*
+- * stac9766.h  --  STAC9766 Soc Audio driver
+- */
+-
+-#ifndef _STAC9766_H
+-#define _STAC9766_H
+-
+-#define AC97_STAC_DA_CONTROL 0x6A
+-#define AC97_STAC_ANALOG_SPECIAL 0x6E
+-#define AC97_STAC_STEREO_MIC 0x78
+-
+-#endif
+diff --git a/sound/soc/fsl/efika-audio-fabric.c b/sound/soc/fsl/efika-audio-fabric.c
+index b2acd3293ea8..f200d1cfc4bd 100644
+--- a/sound/soc/fsl/efika-audio-fabric.c
++++ b/sound/soc/fsl/efika-audio-fabric.c
+@@ -27,7 +27,6 @@
  
- #endif
+ #include "mpc5200_dma.h"
+ #include "mpc5200_psc_ac97.h"
+-#include "../codecs/stac9766.h"
+ 
+ #define DRV_NAME "efika-audio-fabric"
+ 
 -- 
 2.10.1
