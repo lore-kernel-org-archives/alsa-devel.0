@@ -1,28 +1,34 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: sun4i-codec: Add support for A31 analog
- microphone inputs" to the asoc tree
-Date: Fri, 04 Nov 2016 14:40:02 -0600
-Message-ID: <E1c2lHO-0001UZ-Ss@finisterre>
-References: <20161103075556.29018-10-wens@csie.org>
-Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: topology: Rename functions & variables
+	for physical DAIs" to the asoc tree
+Date: Fri, 04 Nov 2016 11:38:14 -0600
+Message-ID: <E1c2iRS-0007BQ-FR@finisterre>
+References: <a118d55b819c5b0eda822e7348edcd2ec2b948df.1476162939.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBBYPE6PAAKGQEKNLF77I-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20161103075556.29018-10-wens-jdAy2FN1RRM@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD2512674C4
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2016 18:38:33 +0100 (CET)
+In-Reply-To: <a118d55b819c5b0eda822e7348edcd2ec2b948df.1476162939.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mengdong Lin <mengdong.lin@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-codec: Add support for A31 analog microphone inputs
+   ASoC: topology: Rename functions & variables for physical DAIs
 
 has been applied to the asoc tree at
 
@@ -47,150 +53,145 @@ to this mail.
 Thanks,
 Mark
 
->From ecd5cdb4fd818b1cec55863d5de3683dad1c2f53 Mon Sep 17 00:00:00 2001
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Date: Thu, 3 Nov 2016 15:55:51 +0800
-Subject: [PATCH] ASoC: sun4i-codec: Add support for A31 analog microphone
- inputs
+>From 9aa3f03473ce1187062bb0c68aeacf7b3ac52831 Mon Sep 17 00:00:00 2001
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Date: Thu, 3 Nov 2016 01:05:15 +0800
+Subject: [PATCH] ASoC: topology: Rename functions & variables for physical
+ DAIs
 
-The A31 internal codec has 3 microphone outputs, of which MIC2 and MIC3
-are muxed internally. The resulting two microphone inputs have separate
-gain controls and mixer inputs.
+Code refactoring. These functions and variables are for configuring
+physical DAIs, not only backend DAIs since users may not need DPCM.
+So remove 'be' from the function names, and rename variables 'be'
+to 'd' or 'dai'.
 
-The codec also has 2 microphone bias pins. HBIAS is specifically for the
-headphone jack, which also supports headphone detection and control
-buttons. These extra functions are not supported yet. The other, MBIAS,
-is for all other analog microphones.
-
-There is also mention of digital microphone support, but documentation
-is scarce, and no hardware with it is available.
-
-Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 70 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
+ sound/soc/soc-topology.c | 57 ++++++++++++++++++++++++------------------------
+ 1 file changed, 29 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index a10251f4932e..f55718fe7c5b 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -776,6 +776,14 @@ static const struct snd_kcontrol_new sun6i_codec_mixer_controls[] = {
- 			SUN6I_CODEC_OM_DACA_CTRL,
- 			SUN6I_CODEC_OM_DACA_CTRL_LMIX_LINEINL,
- 			SUN6I_CODEC_OM_DACA_CTRL_RMIX_LINEINR, 1, 0),
-+	SOC_DAPM_DOUBLE("Mic1 Playback Switch",
-+			SUN6I_CODEC_OM_DACA_CTRL,
-+			SUN6I_CODEC_OM_DACA_CTRL_LMIX_MIC1,
-+			SUN6I_CODEC_OM_DACA_CTRL_RMIX_MIC1, 1, 0),
-+	SOC_DAPM_DOUBLE("Mic2 Playback Switch",
-+			SUN6I_CODEC_OM_DACA_CTRL,
-+			SUN6I_CODEC_OM_DACA_CTRL_LMIX_MIC2,
-+			SUN6I_CODEC_OM_DACA_CTRL_RMIX_MIC2, 1, 0),
- };
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index a839dc857e0d..f44f12eb1798 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2081,16 +2081,16 @@ static int soc_tplg_link_elems_load(struct soc_tplg *tplg,
+ 	return 0;
+ }
  
- /* headphone controls */
-@@ -794,6 +802,21 @@ static const struct snd_kcontrol_new sun6i_codec_hp_src[] = {
- 		      sun6i_codec_hp_src_enum),
- };
+-/* *
+- * soc_tplg_be_dai_config - Find and configure an existing BE DAI.
++/**
++ * soc_tplg_dai_config - Find and configure an existing physical DAI.
+  * @tplg: topology context
+- * @be: topology BE DAI configs.
++ * @d: physical DAI configs.
+  *
+- * The BE dai should already be registered by the platform driver. The
+- * platform driver should specify the BE DAI name and ID for matching.
++ * The physical dai should already be registered by the platform driver.
++ * The platform driver should specify the DAI name and ID for matching.
+  */
+-static int soc_tplg_be_dai_config(struct soc_tplg *tplg,
+-				  struct snd_soc_tplg_dai *be)
++static int soc_tplg_dai_config(struct soc_tplg *tplg,
++			       struct snd_soc_tplg_dai *d)
+ {
+ 	struct snd_soc_dai_link_component dai_component = {0};
+ 	struct snd_soc_dai *dai;
+@@ -2099,17 +2099,17 @@ static int soc_tplg_be_dai_config(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_stream_caps *caps;
+ 	int ret;
  
-+/* microphone controls */
-+static const char * const sun6i_codec_mic2_src_enum_text[] = {
-+	"Mic2", "Mic3",
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(sun6i_codec_mic2_src_enum,
-+			    SUN6I_CODEC_MIC_CTRL,
-+			    SUN6I_CODEC_MIC_CTRL_MIC2SLT,
-+			    sun6i_codec_mic2_src_enum_text);
-+
-+static const struct snd_kcontrol_new sun6i_codec_mic2_src[] = {
-+	SOC_DAPM_ENUM("Mic2 Amplifier Source Route",
-+		      sun6i_codec_mic2_src_enum),
-+};
-+
- /* line out controls */
- static const char * const sun6i_codec_lineout_src_enum_text[] = {
- 	"Stereo", "Mono Differential",
-@@ -819,6 +842,10 @@ static const DECLARE_TLV_DB_RANGE(sun6i_codec_lineout_vol_scale,
- 	0, 1, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
- 	2, 31, TLV_DB_SCALE_ITEM(-4350, 150, 0),
- );
-+static const DECLARE_TLV_DB_RANGE(sun6i_codec_mic_gain_scale,
-+	0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
-+	1, 7, TLV_DB_SCALE_ITEM(2400, 300, 0),
-+);
+-	dai_component.dai_name = be->dai_name;
++	dai_component.dai_name = d->dai_name;
+ 	dai = snd_soc_find_dai(&dai_component);
+ 	if (!dai) {
+-		dev_err(tplg->dev, "ASoC: BE DAI %s not registered\n",
+-			be->dai_name);
++		dev_err(tplg->dev, "ASoC: physical DAI %s not registered\n",
++			d->dai_name);
+ 		return -EINVAL;
+ 	}
  
- static const struct snd_kcontrol_new sun6i_codec_codec_widgets[] = {
- 	SOC_SINGLE_TLV("DAC Playback Volume", SUN4I_CODEC_DAC_DPC,
-@@ -844,9 +871,42 @@ static const struct snd_kcontrol_new sun6i_codec_codec_widgets[] = {
- 	SOC_SINGLE_TLV("Line In Playback Volume",
- 		       SUN6I_CODEC_OM_PA_CTRL, SUN6I_CODEC_OM_PA_CTRL_LINEING,
- 		       0x7, 0, sun6i_codec_out_mixer_pregain_scale),
-+	SOC_SINGLE_TLV("Mic1 Playback Volume",
-+		       SUN6I_CODEC_OM_PA_CTRL, SUN6I_CODEC_OM_PA_CTRL_MIC1G,
-+		       0x7, 0, sun6i_codec_out_mixer_pregain_scale),
-+	SOC_SINGLE_TLV("Mic2 Playback Volume",
-+		       SUN6I_CODEC_OM_PA_CTRL, SUN6I_CODEC_OM_PA_CTRL_MIC2G,
-+		       0x7, 0, sun6i_codec_out_mixer_pregain_scale),
-+
-+	/* Microphone Amp boost gains */
-+	SOC_SINGLE_TLV("Mic1 Boost Volume", SUN6I_CODEC_MIC_CTRL,
-+		       SUN6I_CODEC_MIC_CTRL_MIC1BOOST, 0x7, 0,
-+		       sun6i_codec_mic_gain_scale),
-+	SOC_SINGLE_TLV("Mic2 Boost Volume", SUN6I_CODEC_MIC_CTRL,
-+		       SUN6I_CODEC_MIC_CTRL_MIC2BOOST, 0x7, 0,
-+		       sun6i_codec_mic_gain_scale),
- };
+-	if (be->dai_id != dai->id) {
+-		dev_err(tplg->dev, "ASoC: BE DAI %s id mismatch\n",
+-			be->dai_name);
++	if (d->dai_id != dai->id) {
++		dev_err(tplg->dev, "ASoC: physical DAI %s id mismatch\n",
++			d->dai_name);
+ 		return -EINVAL;
+ 	}
  
- static const struct snd_soc_dapm_widget sun6i_codec_codec_dapm_widgets[] = {
-+	/* Microphone inputs */
-+	SND_SOC_DAPM_INPUT("MIC1"),
-+	SND_SOC_DAPM_INPUT("MIC2"),
-+	SND_SOC_DAPM_INPUT("MIC3"),
-+
-+	/* Microphone Bias */
-+	SND_SOC_DAPM_SUPPLY("HBIAS", SUN6I_CODEC_MIC_CTRL,
-+			    SUN6I_CODEC_MIC_CTRL_HBIASEN, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("MBIAS", SUN6I_CODEC_MIC_CTRL,
-+			    SUN6I_CODEC_MIC_CTRL_MBIASEN, 0, NULL, 0),
-+
-+	/* Mic input path */
-+	SND_SOC_DAPM_MUX("Mic2 Amplifier Source Route",
-+			 SND_SOC_NOPM, 0, 0, sun6i_codec_mic2_src),
-+	SND_SOC_DAPM_PGA("Mic1 Amplifier", SUN6I_CODEC_MIC_CTRL,
-+			 SUN6I_CODEC_MIC_CTRL_MIC1AMPEN, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Mic2 Amplifier", SUN6I_CODEC_MIC_CTRL,
-+			 SUN6I_CODEC_MIC_CTRL_MIC2AMPEN, 0, NULL, 0),
-+
- 	/* Line In */
- 	SND_SOC_DAPM_INPUT("LINEIN"),
+@@ -2117,20 +2117,20 @@ static int soc_tplg_be_dai_config(struct soc_tplg *tplg,
+ 	if (!dai_drv)
+ 		return -EINVAL;
  
-@@ -893,15 +953,25 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
- 	{ "Left DAC", NULL, "DAC Enable" },
- 	{ "Right DAC", NULL, "DAC Enable" },
+-	if (be->playback) {
++	if (d->playback) {
+ 		stream = &dai_drv->playback;
+-		caps = &be->caps[SND_SOC_TPLG_STREAM_PLAYBACK];
++		caps = &d->caps[SND_SOC_TPLG_STREAM_PLAYBACK];
+ 		set_stream_info(stream, caps);
+ 	}
  
-+	/* Microphone Routes */
-+	{ "Mic1 Amplifier", NULL, "MIC1"},
-+	{ "Mic2 Amplifier Source Route", "Mic2", "MIC2" },
-+	{ "Mic2 Amplifier Source Route", "Mic3", "MIC3" },
-+	{ "Mic2 Amplifier", NULL, "Mic2 Amplifier Source Route"},
-+
- 	/* Left Mixer Routes */
- 	{ "Left Mixer", "DAC Playback Switch", "Left DAC" },
- 	{ "Left Mixer", "DAC Reversed Playback Switch", "Right DAC" },
- 	{ "Left Mixer", "Line In Playback Switch", "LINEIN" },
-+	{ "Left Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
-+	{ "Left Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
+-	if (be->capture) {
++	if (d->capture) {
+ 		stream = &dai_drv->capture;
+-		caps = &be->caps[SND_SOC_TPLG_STREAM_CAPTURE];
++		caps = &d->caps[SND_SOC_TPLG_STREAM_CAPTURE];
+ 		set_stream_info(stream, caps);
+ 	}
  
- 	/* Right Mixer Routes */
- 	{ "Right Mixer", "DAC Playback Switch", "Right DAC" },
- 	{ "Right Mixer", "DAC Reversed Playback Switch", "Left DAC" },
- 	{ "Right Mixer", "Line In Playback Switch", "LINEIN" },
-+	{ "Right Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
-+	{ "Right Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
+-	if (be->flag_mask)
+-		set_dai_flags(dai_drv, be->flag_mask, be->flags);
++	if (d->flag_mask)
++		set_dai_flags(dai_drv, d->flag_mask, d->flags);
  
- 	/* Headphone Routes */
- 	{ "Headphone Source Playback Route", "DAC", "Left DAC" },
+ 	/* pass control to component driver for optional further init */
+ 	ret = soc_tplg_dai_load(tplg, dai_drv);
+@@ -2142,10 +2142,11 @@ static int soc_tplg_be_dai_config(struct soc_tplg *tplg,
+ 	return 0;
+ }
+ 
+-static int soc_tplg_be_dai_elems_load(struct soc_tplg *tplg,
+-				      struct snd_soc_tplg_hdr *hdr)
++/* load physical DAI elements */
++static int soc_tplg_dai_elems_load(struct soc_tplg *tplg,
++				   struct snd_soc_tplg_hdr *hdr)
+ {
+-	struct snd_soc_tplg_dai *be;
++	struct snd_soc_tplg_dai *dai;
+ 	int count = hdr->count;
+ 	int i;
+ 
+@@ -2154,14 +2155,14 @@ static int soc_tplg_be_dai_elems_load(struct soc_tplg *tplg,
+ 
+ 	/* config the existing BE DAIs */
+ 	for (i = 0; i < count; i++) {
+-		be = (struct snd_soc_tplg_dai *)tplg->pos;
+-		if (be->size != sizeof(*be)) {
+-			dev_err(tplg->dev, "ASoC: invalid BE DAI size\n");
++		dai = (struct snd_soc_tplg_dai *)tplg->pos;
++		if (dai->size != sizeof(*dai)) {
++			dev_err(tplg->dev, "ASoC: invalid physical DAI size\n");
+ 			return -EINVAL;
+ 		}
+ 
+-		soc_tplg_be_dai_config(tplg, be);
+-		tplg->pos += (sizeof(*be) + be->priv.size);
++		soc_tplg_dai_config(tplg, dai);
++		tplg->pos += (sizeof(*dai) + dai->priv.size);
+ 	}
+ 
+ 	dev_dbg(tplg->dev, "ASoC: Configure %d BE DAIs\n", count);
+@@ -2329,7 +2330,7 @@ static int soc_tplg_load_header(struct soc_tplg *tplg,
+ 	case SND_SOC_TPLG_TYPE_PCM:
+ 		return soc_tplg_pcm_elems_load(tplg, hdr);
+ 	case SND_SOC_TPLG_TYPE_DAI:
+-		return soc_tplg_be_dai_elems_load(tplg, hdr);
++		return soc_tplg_dai_elems_load(tplg, hdr);
+ 	case SND_SOC_TPLG_TYPE_DAI_LINK:
+ 	case SND_SOC_TPLG_TYPE_BACKEND_LINK:
+ 		/* physical link configurations */
 -- 
 2.10.1
