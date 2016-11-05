@@ -1,15 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 1/2] ASoC: topology: Check name strings of
-	physical DAI links
-Date: Sat,  5 Nov 2016 08:42:14 +0800
-Message-ID: <1478306534-23587-1-git-send-email-mengdong.lin@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: topology: ABI - Rename be_dai_elems
+	to dai_elems in manifest
+Date: Sat,  5 Nov 2016 08:42:24 +0800
+Message-ID: <1478306544-23631-1-git-send-email-mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A62D26759C
- for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2016 01:40:46 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 693A626759C
+ for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2016 01:40:56 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,41 +25,27 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Check if the name strings are properly terminated, and only use valid
-name strings to find existing physical DAI links to configure.
+User space uses this field to count physical DAIs, not only BE DAIs since
+users may not use DPCM. So we rename this field from be_dai_elems to
+dai_elems.
+
+This change is backward compatible, because it does not change the layout
+of the struct or data type.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 8772fd9..4dfdc65 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1994,10 +1994,24 @@ static int soc_tplg_link_config(struct soc_tplg *tplg,
- {
- 	struct snd_soc_dai_link *link;
- 	const char *name, *stream_name;
-+	size_t len;
- 	int ret;
- 
--	name = strlen(cfg->name) ? cfg->name : NULL;
--	stream_name = strlen(cfg->stream_name) ? cfg->stream_name : NULL;
-+	len = strnlen(cfg->name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+	if (len == SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
-+		return -EINVAL;
-+	else if (len)
-+		name = cfg->name;
-+	else
-+		name = NULL;
-+
-+	len = strnlen(cfg->stream_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+	if (len == SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
-+		return -EINVAL;
-+	else if (len)
-+		stream_name = cfg->stream_name;
-+	else
-+		stream_name = NULL;
- 
- 	link = snd_soc_find_dai_link(tplg->comp->card, cfg->id,
- 				     name, stream_name);
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index 3227073..03ee200 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -348,7 +348,7 @@ struct snd_soc_tplg_manifest {
+ 	__le32 graph_elems;	/* number of graph elements */
+ 	__le32 pcm_elems;	/* number of PCM elements */
+ 	__le32 dai_link_elems;	/* number of DAI link elements */
+-	__le32 be_dai_elems;	/* number of BE DAI elements */
++	__le32 dai_elems;	/* number of physical DAI elements */
+ 	__le32 reserved[20];	/* reserved for new ABI element types */
+ 	struct snd_soc_tplg_private priv;
+ } __attribute__((packed));
 -- 
 2.7.4
