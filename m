@@ -1,20 +1,18 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH v7 07/11] ASoC: topology: Add support to
- configure existing physical DAI links
-Date: Sat, 5 Nov 2016 13:35:15 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F88198D951@shsmsx102.ccr.corp.intel.com>
-References: <cover.1478071138.git.mengdong.lin@linux.intel.com>
- <6bc394d703dcaf3afbb8bf35c8dc983360fc7cd0.1478071138.git.mengdong.lin@linux.intel.com>
- <20161104172221.wrqkh24nkih6rihm@sirena.org.uk>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: Intel  Cherry Trail platform sound issue
+Date: Sat, 5 Nov 2016 15:01:52 +0000
+Message-ID: <1478358103.3405.7.camel@intel.com>
+References: <000301d11873$ac76af60$05640e20$@com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-7"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 99BFE26663B
- for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2016 14:35:23 +0100 (CET)
-In-Reply-To: <20161104172221.wrqkh24nkih6rihm@sirena.org.uk>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2AD126647B
+ for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2016 16:02:02 +0100 (CET)
+In-Reply-To: <000301d11873$ac76af60$05640e20$@com>
 Content-Language: en-US
+Content-ID: <ABE19D0FD0FB9544A26200E1829D9F0A@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,37 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "Shah, Hardik T" <hardik.t.shah@intel.com>, "Singh, Guneshwor O" <guneshwor.o.singh@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Koul,
- Vinod" <vinod.koul@intel.com>, "Ughreja,
- Rakesh A" <rakesh.a.ughreja@intel.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tuzhihe@pcasl.com" <tuzhihe@pcasl.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Saturday, November 5, 2016 1:22 AM
-> To: mengdong.lin@linux.intel.com
-> Cc: alsa-devel@alsa-project.org; tiwai@suse.de;
-> liam.r.girdwood@linux.intel.com; Shah, Hardik T <hardik.t.shah@intel.com>;
-> Singh, Guneshwor O <guneshwor.o.singh@intel.com>; Koul, Vinod
-> <vinod.koul@intel.com>; Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>;
-> Lin, Mengdong <mengdong.lin@intel.com>
-> Subject: Re: [PATCH v7 07/11] ASoC: topology: Add support to configure
-> existing physical DAI links
-> 
-> On Thu, Nov 03, 2016 at 01:04:27AM +0800, mengdong.lin@linux.intel.com
-> wrote:
-> 
-> > +	name = strlen(cfg->name) ? cfg->name : NULL;
-> > +	stream_name = strlen(cfg->stream_name) ? cfg->stream_name : NULL;
-> 
-> Please replace these with normal if statements.  Also, are we sure that we've
-> sufficiently audited the input paths to ensure that the strings are always
-> terminated?
-
-Okay. I submitted patch to fix this -  ASoC: topology: Check name strings of physical DAI links.
-
-This another minor ABI update, just a name change of a field and backward compatible.
-
-Thanks again for your review!
-Mengdong
+CgpPbiBGcmksIDIwMTUtMTEtMDYgYXQgMTc6MTUgKy0wODAwLCBaaGloZSBUdSB3cm90ZToKPitB
+S0EKPiBIaSBBbGwsCj4gCj4gSSBnZXQgY2hlcnJ5IHRyYWlsIHRhYmxldCwgYW5kIGluc3RhbGwg
+dWJ1bnR1MTQuMDQuMywgS2VybmVsIHZlcmlzb24KPiBpcyAzLjE5LitBS0FBb0EtVGhlIHRhYmxl
+IHVzaW5nIHJ0NTY3MiBjb2RlYyB3aXRoIG5vIHNvdW5kIG91dHB1dCBpbiB1YnVudHUsCj4gYnV0
+IGl0IHdvcmtzIGluIHdpbjguCj4gCj4gSSBnZXQgaW50ZWwgc3N0IGZpcm13YXJlIGZ3X3NzdF8y
+MmE4LmJpbiBmcm9tIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvYwo+IGdpdC9saW51eC9rZXJuZWwv
+Z2l0L2Zpcm13YXJlL2xpbnV4LWZpcm13YXJlLmdpdC90cmVlL2ludGVsCj4gVGhlIGRyaXZlciBs
+b2FkIHRoZSBmaXJtd2FyZSBzdWNjZXNzZnVsbHkgYW5kIEkgY2hhbmdlIHNvbWUgYWxzYSBtaXhl
+cgo+IGl0ZW1zOgo+IGFtaXhlciAtYzAgc3NldCAnY29kZWNfb3V0MCBtaXggMCBwY20wX2luJyBv
+bgo+IGFtaXhlciAtYzAgc3NldCAnbWVkaWEwX291dCBtaXggMCBtZWRpYTFfaW4nIG9uCj4gYW1p
+eGVyIC1jMCBzc2V0ICdtZWRpYTFfaW4gR2FpbiAwJyA4MCUrQUtBCj4gYW1peGVyIC1jMCBzc2V0
+ICdtZWRpYTFfaW4gR2FpbiAwIFJhbXAgRGVsYXknIDUwCj4gYW1peGVyIC1jMCBzc2V0ICdtZWRp
+YTFfaW4gR2FpbiAwJyBvZmYKPiBhbWl4ZXIgLWMwIHNzZXQgJ3BjbTBfaW4gR2FpbiAwJyA4MCUr
+QUtBCj4gYW1peGVyIC1jMCBzc2V0ICdwY20wX2luIEdhaW4gMCBSYW1wIERlbGF5JyA1MAo+IGFt
+aXhlciAtYzAgc3NldCAncGNtMF9pbiBHYWluIDAnIG9mZgo+IGFtaXhlciAtYzAgc3NldCAnY29k
+ZWNfb3V0MCBHYWluIDAnIDgwJQo+IGFtaXhlciAtYzAgc3NldCAnY29kZWNfb3V0MCBHYWluIDAg
+UmFtcCBEZWxheScgNTAKPiBhbWl4ZXIgLWMwIHNzZXQgJ2NvZGVjX291dDAgR2FpbiAwJyBvZmYK
+PiAKPiBCdXQgdGhlcmUgYXJlIHNvbWUgZXJyb3JzIHdpdGggZG1lc2c6Cj4gCj4gK0FLQVsrQUtB
+QW9BQ2ctMTYuMzU5NjQ2XStBS0FBb0EtQXVkaW8gUG9ydDogQVNvQzogbm8gYmFja2VuZCBEQUlz
+IGVuYWJsZWQgZm9yIEF1ZGlvCj4gUG9ydAo+ICtJQ1kKPiBbK0FLQUFvQUNnLTE2LjM4MjE1Nl0g
+c3N0LW1mbGQtcGxhdGZvcm0gc3N0LW1mbGQtcGxhdGZvcm06IEVudGVyOiBlbmFibGU9MAo+IHBv
+cnRfbmFtZT1zc3AyLXBvcnQKPiBbK0FLQUFvQUNnLTE2LjM4Mzk4NF0gc3N0LW1mbGQtcGxhdGZv
+cm0gc3N0LW1mbGQtcGxhdGZvcm06IEVudGVyOiBlbmFibGU9MQo+IHBvcnRfbmFtZT1zc3AyLXBv
+cnQKPiBbK0FLQUFvQUNnLTE2LjU0MTgwOV0gaW50ZWxfc3N0X2FjcGkgODA4NjIyQTg6MDA6IEFs
+bG9jIGZvciBzdHIgMSBwaXBlIDB4OTAKPiBbK0FLQUFvQUNnLTE3LjU0NTUxMl0gaW50ZWxfc3N0
+X2FjcGkgODA4NjIyQTg6MDA6IFdhaXQgdGltZWQtb3V0Cj4gY29uZGl0aW9uOjB4MCwgbXNnX2lk
+OjB4MSBmd19zdGF0ZSAweDIKClNvIGxvb2tzIGxpa2UgZncgbG9hZCBpcyBmYWlsaW5nIGhlcmUu
+K0FLQQoKQ2FuIHlvdSB0ZWxsIG1lIG91dHB1dCBvZiBiZWxvdyBjbWQKCmNhdCAvcHJvYy9pbnRl
+cnJ1cHRzCgoKVGhhbmtzCi0tIAorQUg0LVZpbm9kCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
