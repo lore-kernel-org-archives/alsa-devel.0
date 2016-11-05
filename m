@@ -1,15 +1,18 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH 2/2] ASoC: topology: ABI - Rename be_dai_elems
-	to dai_elems in manifest
-Date: Sat,  5 Nov 2016 08:42:24 +0800
-Message-ID: <1478306544-23631-1-git-send-email-mengdong.lin@linux.intel.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH RFT] ASoC: msm8916-wcd-analog: Update correct
+	register setting for MIC BIAS Internal1
+Date: Sat,  5 Nov 2016 15:28:55 +0800
+Message-ID: <1478330935-14724-1-git-send-email-axel.lin@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 693A626759C
- for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2016 01:40:56 +0100 (CET)
+Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
+ [209.85.192.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81F592614A0
+ for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2016 08:29:16 +0100 (CET)
+Received: by mail-pf0-f194.google.com with SMTP id 144so1705286pfv.0
+ for <alsa-devel@alsa-project.org>; Sat, 05 Nov 2016 00:29:16 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,33 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Axel Lin <axel.lin@ingics.com>, alsa-devel@alsa-project.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+pm8916_wcd_analog_enable_micbias_int1() should set micbias1_cap_mode
+rather than micbias2_cap_mode.
 
-User space uses this field to count physical DAIs, not only BE DAIs since
-users may not use DPCM. So we rename this field from be_dai_elems to
-dai_elems.
+Also change the order of pm8916_wcd_analog_enable_micbias_int1/init2
+functions for better readability.
 
-This change is backward compatible, because it does not change the layout
-of the struct or data type.
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+Hi Srinivas,
+I don't have this h/w.
+Appreciate if you can review and test this patch.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+Axel
+ sound/soc/codecs/msm8916-wcd-analog.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 3227073..03ee200 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -348,7 +348,7 @@ struct snd_soc_tplg_manifest {
- 	__le32 graph_elems;	/* number of graph elements */
- 	__le32 pcm_elems;	/* number of PCM elements */
- 	__le32 dai_link_elems;	/* number of DAI link elements */
--	__le32 be_dai_elems;	/* number of BE DAI elements */
-+	__le32 dai_elems;	/* number of physical DAI elements */
- 	__le32 reserved[20];	/* reserved for new ABI element types */
- 	struct snd_soc_tplg_private priv;
- } __attribute__((packed));
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index d9f999b..70ae687 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -349,7 +349,7 @@ static int pm8916_wcd_analog_enable_micbias_ext2(struct
+ 
+ }
+ 
+-static int pm8916_wcd_analog_enable_micbias_int2(struct
++static int pm8916_wcd_analog_enable_micbias_int1(struct
+ 						  snd_soc_dapm_widget
+ 						  *w, struct snd_kcontrol
+ 						  *kcontrol, int event)
+@@ -358,10 +358,10 @@ static int pm8916_wcd_analog_enable_micbias_int2(struct
+ 	struct pm8916_wcd_analog_priv *wcd = snd_soc_codec_get_drvdata(codec);
+ 
+ 	return pm8916_wcd_analog_enable_micbias_int(codec, event, w->reg,
+-						     wcd->micbias2_cap_mode);
++						     wcd->micbias1_cap_mode);
+ }
+ 
+-static int pm8916_wcd_analog_enable_micbias_int1(struct
++static int pm8916_wcd_analog_enable_micbias_int2(struct
+ 						  snd_soc_dapm_widget
+ 						  *w, struct snd_kcontrol
+ 						  *kcontrol, int event)
 -- 
 2.7.4
