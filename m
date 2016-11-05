@@ -1,18 +1,20 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH RFT] ASoC: msm8916-wcd-analog: Update correct
-	register setting for MIC BIAS Internal1
-Date: Sat,  5 Nov 2016 15:28:55 +0800
-Message-ID: <1478330935-14724-1-git-send-email-axel.lin@ingics.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v7 11/11] ASoC: topology: ABI - Add voice
+ wake up flag for DAI links
+Date: Sat, 5 Nov 2016 13:35:14 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F88198D94C@shsmsx102.ccr.corp.intel.com>
+References: <cover.1478071138.git.mengdong.lin@linux.intel.com>
+ <4ec58db3621474cd8acf664483b18c30628f6cad.1478071138.git.mengdong.lin@linux.intel.com>
+ <20161104173616.iqeuhkm7wwfzc5e2@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
- [209.85.192.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 81F592614A0
- for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2016 08:29:16 +0100 (CET)
-Received: by mail-pf0-f194.google.com with SMTP id 144so1705286pfv.0
- for <alsa-devel@alsa-project.org>; Sat, 05 Nov 2016 00:29:16 -0700 (PDT)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7085726647B
+ for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2016 14:35:20 +0100 (CET)
+In-Reply-To: <20161104173616.iqeuhkm7wwfzc5e2@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Axel Lin <axel.lin@ingics.com>, alsa-devel@alsa-project.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "Shah, Hardik T" <hardik.t.shah@intel.com>, "Singh, Guneshwor O" <guneshwor.o.singh@intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-pm8916_wcd_analog_enable_micbias_int1() should set micbias1_cap_mode
-rather than micbias2_cap_mode.
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Saturday, November 5, 2016 1:36 AM
+> To: mengdong.lin@linux.intel.com
+> Cc: alsa-devel@alsa-project.org; tiwai@suse.de;
+> liam.r.girdwood@linux.intel.com; Shah, Hardik T <hardik.t.shah@intel.com>;
+> Singh, Guneshwor O <guneshwor.o.singh@intel.com>; Koul, Vinod
+> <vinod.koul@intel.com>; Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>;
+> Lin, Mengdong <mengdong.lin@intel.com>
+> Subject: Re: [PATCH v7 11/11] ASoC: topology: ABI - Add voice wake up flag
+> for DAI links
+> 
+> On Thu, Nov 03, 2016 at 01:05:32AM +0800, mengdong.lin@linux.intel.com
+> wrote:
+> > From: Mengdong Lin <mengdong.lin@linux.intel.com>
+> >
+> > Add a new flag bit SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP to link
+> flags.
+> > If a link is used for voice wake up, users can set this flag bit and
+> > topology will set the link's 'ignore_suspend' to true.
+> 
+> So, as we discussed in person yesterday I'm not 100% convinced about the
+> name here - there are other applications that might want to use this facility
+> like other triggers or some sort of passthrough monitoring.
+> I'm drawing a bit of blank on better names right now...  I'm going to apply
+> this but we should continue to think about renaming.
 
-Also change the order of pm8916_wcd_analog_enable_micbias_int1/init2
-functions for better readability.
+Okay. We'll rename this once we find a better name.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
-Hi Srinivas,
-I don't have this h/w.
-Appreciate if you can review and test this patch.
-
-Axel
- sound/soc/codecs/msm8916-wcd-analog.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index d9f999b..70ae687 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -349,7 +349,7 @@ static int pm8916_wcd_analog_enable_micbias_ext2(struct
- 
- }
- 
--static int pm8916_wcd_analog_enable_micbias_int2(struct
-+static int pm8916_wcd_analog_enable_micbias_int1(struct
- 						  snd_soc_dapm_widget
- 						  *w, struct snd_kcontrol
- 						  *kcontrol, int event)
-@@ -358,10 +358,10 @@ static int pm8916_wcd_analog_enable_micbias_int2(struct
- 	struct pm8916_wcd_analog_priv *wcd = snd_soc_codec_get_drvdata(codec);
- 
- 	return pm8916_wcd_analog_enable_micbias_int(codec, event, w->reg,
--						     wcd->micbias2_cap_mode);
-+						     wcd->micbias1_cap_mode);
- }
- 
--static int pm8916_wcd_analog_enable_micbias_int1(struct
-+static int pm8916_wcd_analog_enable_micbias_int2(struct
- 						  snd_soc_dapm_widget
- 						  *w, struct snd_kcontrol
- 						  *kcontrol, int event)
--- 
-2.7.4
+Thanks
+Mengdong
