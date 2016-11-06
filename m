@@ -1,15 +1,17 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 00/13] topology: Update physical link support
-	for ABI v5
-Date: Sun,  6 Nov 2016 13:10:06 +0800
-Message-ID: <cover.1478407716.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 01/13] topology: Use snd_config_get_bool to
+	simplify boolean flag parsing
+Date: Sun,  6 Nov 2016 13:11:04 +0800
+Message-ID: <9b8b6816e96c655f4b9625be41b36eed91dd2464.1478407716.git.mengdong.lin@linux.intel.com>
+References: <cover.1478407716.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 26095265B04
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 06:08:37 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4AEDA265B04
+ for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 06:09:34 +0100 (CET)
+In-Reply-To: <cover.1478407716.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,36 +27,33 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-This series completes support for physical DAI links of ABI v5, including
-ABI updates and code refactoring. The kernel can support the ABI updates
-in a backward compatible way.
+The link flags in the text conf file are boolean, so this patch uses
+snd_config_get_bool() to simplify the code.
 
-There will be another small series for the remaining user space patches.
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Mengdong Lin (13):
-  topology: Use snd_config_get_bool to simplify boolean flag parsing
-  topology: Merge an element's be & cc pointer to one link pointer
-  topology: Define a function to build a single physical DAI link
-  topology: ABI - Define DAI physical PCM data formats
-  topology: ABI - Update physical DAI link configurations to ABI v5
-  topology: Rename varaibles for add physical links by C API
-  topology: Define new type and section name to configure physical links
-  topology: Parse HW configurations of physical DAI links defined by C
-    API
-  topology: Parse HW configurations of physical DAI links in text conf
-    file
-  topology: Parse link flags of physical DAI links
-  topology: Parse and build private data of physical links
-  topology: Parse name and stream name of physical DAI links
-  topology: Remove BE or CC in comments of physical links C API template
-
- include/sound/asoc.h      |  61 ++++++-
- include/topology.h        |  91 ++++++++++-
- src/topology/elem.c       |   5 +
- src/topology/parser.c     |  20 ++-
- src/topology/pcm.c        | 407 +++++++++++++++++++++++++++++++++++++++++-----
- src/topology/tplg_local.h |  12 +-
- 6 files changed, 545 insertions(+), 51 deletions(-)
-
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index 3f54e94..b7a2df7 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -400,13 +400,14 @@ static int tplg_parse_fe_dai(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
+ static int parse_flag(snd_config_t *n, unsigned int mask_in,
+ 		      unsigned int *mask, unsigned int *flags)
+ {
+-	const char *val = NULL;
++	int ret;
+ 
+-	if (snd_config_get_string(n, &val) < 0)
+-		return -EINVAL;
++	ret = snd_config_get_bool(n);
++	if (ret < 0)
++		return ret;
+ 
+ 	*mask |= mask_in;
+-	if (strcmp(val, "true") == 0)
++	if (ret)
+ 		*flags |= mask_in;
+ 	else
+ 		*flags &= ~mask_in;
 -- 
 2.7.4
