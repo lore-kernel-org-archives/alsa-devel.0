@@ -1,74 +1,42 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v2 06/14] ASoC: sun4i-codec: Add support for
- A31 playback through headphone output
-Date: Sun, 6 Nov 2016 19:57:15 +0100
-Message-ID: <20161106185715.tlvcakzqay2lamd5@lukather>
-References: <20161103075556.29018-1-wens@csie.org>
- <20161103075556.29018-7-wens@csie.org>
- <20161103173602.zchyciwj66zdibc7@lukather>
- <CAGb2v65CZJ+1LTWWk3+vABV8PDgsDta+nZ7o3H2Z--KFPe2kog@mail.gmail.com>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: fsl: fix fsl_spdif.c build errors
+Date: Sun, 6 Nov 2016 17:43:53 -0200
+Message-ID: <CAOMZO5DPP7suoCzSjkSzCugiC-nCNcLL8Xn68QdgaC3M9P_=cA@mail.gmail.com>
+References: <7ea1cd5a-9215-18ed-2412-b6860a0b708f@infradead.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="hupmdhuzwb6qkxbg"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBDH27XAAKGQEWZJT4NY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <CAGb2v65CZJ+1LTWWk3+vABV8PDgsDta+nZ7o3H2Z--KFPe2kog-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <7ea1cd5a-9215-18ed-2412-b6860a0b708f@infradead.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Geliang Tang <geliangtang@163.com>, moderated for non-subscribers <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Randy,
 
---hupmdhuzwb6qkxbg
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
+On Sat, Nov 5, 2016 at 9:16 PM, Randy Dunlap <rdunlap@infradead.org> wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
+>
+> Fix build errors in sound/soc/fsl/fsl_spdif.c by selecting BITREVERSE.
+> Fixes these build errors:
 
-On Fri, Nov 04, 2016 at 09:08:11AM +0800, Chen-Yu Tsai wrote:
-> On Fri, Nov 4, 2016 at 1:36 AM, Maxime Ripard
-> <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
-> > Hi,
-> >
-> > On Thu, Nov 03, 2016 at 03:55:48PM +0800, Chen-Yu Tsai wrote:
-> >> +/* headphone controls */
-> >> +static const char * const sun6i_codec_hp_src_enum_text[] = {
-> >> +     "DAC", "Mixer",
-> >> +};
-> >> +
-> >> +static SOC_ENUM_DOUBLE_DECL(sun6i_codec_hp_src_enum,
-> >> +                         SUN6I_CODEC_OM_DACA_CTRL,
-> >> +                         SUN6I_CODEC_OM_DACA_CTRL_LHPIS,
-> >> +                         SUN6I_CODEC_OM_DACA_CTRL_RHPIS,
-> >> +                         sun6i_codec_hp_src_enum_text);
-> >> +
-> >> +static const struct snd_kcontrol_new sun6i_codec_hp_src[] = {
-> >> +     SOC_DAPM_ENUM("Headphone Source Playback Route",
-> >> +                   sun6i_codec_hp_src_enum),
-> >> +};
-> >
-> > What is that route exactly? A muxer?
-> 
-> Yup. The following is part of the widgets list later in the code:
-> 
-> +       /* Headphone output path */
-> +       SND_SOC_DAPM_MUX("Headphone Source Playback Route",
-> +                        SND_SOC_NOPM, 0, 0, sun6i_codec_hp_src),
+Care to explain why the error is happening?
 
-Oh, right.
+> sound/built-in.o: In function `spdif_write_channel_status':
+> fsl_spdif.c:(.text+0xbe39d): undefined reference to `byte_rev_table'
+> fsl_spdif.c:(.text+0xbe3a8): undefined reference to `byte_rev_table'
+> fsl_spdif.c:(.text+0xbe3be): undefined reference to `byte_rev_table'
+> fsl_spdif.c:(.text+0xbe3d8): undefined reference to `byte_rev_table'
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kbuild test robot <fengguang.wu@intel.com>
+> Applies-to: all 3.x, all 4.x
 
-You can add my Acked-by on this one and the other patches too.
+Not sure if this last line is correct. The kbuild report says this
+error starts to happen with:
+commit: 8cfc8ddc99df9509a46043b14af81f5c6a223eab pstore: add lzo/lz4
+compression support
 
-Thanks!
-Maxime
+on a x86_64 randconfig.
 
--- 
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
---hupmdhuzwb6qkxbg--
+Also, why only SND_SOC_FSL_SPDIF needs to have BITREVERSE selected?
