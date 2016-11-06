@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 06/13] topology: Rename varaibles for add
-	physical links by C API
-Date: Sun,  6 Nov 2016 13:13:19 +0800
-Message-ID: <716aa62b2f50876e16e17a49c680869b473de78d.1478407716.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 07/13] topology: Define new type and section
+	name to configure physical links
+Date: Sun,  6 Nov 2016 13:13:36 +0800
+Message-ID: <2f89586da5cd5c944d85b051ee2ad808e8aa6c90.1478407716.git.mengdong.lin@linux.intel.com>
 References: <cover.1478407716.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 47BEF2665B0
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 06:11:49 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1ABD52665B0
+ for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 06:12:06 +0100 (CET)
 In-Reply-To: <cover.1478407716.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,65 +27,133 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Code refactoring. When adding a physical link element from C API:
-- Rename "link" to "link_tpl" for physical link config template for
-  C API users.
-- Rename "lk" to "link" for physical link elements created by topology
-  internally.
+Users may not use DPCM but still need to configure the physical links.
+So we should not only consider backend links for DPCM.
+
+- SND_TPLG_TYPE_LINK is defined to configure physical links by C API.
+  And SND_TPLG_TYPE_BE is still supported to configure Backend links for
+  DPCM cases.
+
+- SectionLink can be used to configure physical links in text conf file.
+  And SectionBE is still supported to config Backend links for DPCM cases.
+
+Actually, users can use SND_TPLG_TYPE_LINK and SectionLink to configure
+backend links for DPCM cases, because BE links are also physical links.
+The parsing is same and we rename the function from tplg_parse_be to
+tplg_parse_link.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
+diff --git a/include/topology.h b/include/topology.h
+index dbd18b3..1fbaeb8 100644
+--- a/include/topology.h
++++ b/include/topology.h
+@@ -617,6 +617,24 @@ extern "C" {
+  * }
+  * </pre>
+  *
++ * <h4>Physical DAI Link Configurations</h4>
++ * The runtime configurations of a physical DAI link can be defined by
++ * SectionLink. <br> Backend DAI links belong to physical links, and can
++ * be configured by either SectionLink or SectionBE, with same syntax.
++ * But SectionBE is deprecated atm since the internal processing is
++ * actually same.
++ *
++ * <pre>
++ * SectionLink."name" {
++ *
++ *	index "1"			# Index number
++ *
++ *	id "0"				# used for binding to the link
++ *
++ *	data "name"			# optional private data
++ * }
++ * </pre>
++ *
+  * <h4>Manifest Private Data</h4>
+  * Manfiest may have private data. Users need to define a manifest section
+  * and add the references to 1 or multiple data sections. Please refer to
+@@ -687,6 +705,7 @@ enum snd_tplg_type {
+ 	SND_TPLG_TYPE_MANIFEST,		/*!< Topology manifest */
+ 	SND_TPLG_TYPE_TOKEN,		/*!< Vendor tokens */
+ 	SND_TPLG_TYPE_TUPLE,		/*!< Vendor tuples */
++	SND_TPLG_TYPE_LINK,		/*!< Physical DAI link */
+ };
+ 
+ /**
+diff --git a/src/topology/parser.c b/src/topology/parser.c
+index ded2eb7..ed5da87 100644
+--- a/src/topology/parser.c
++++ b/src/topology/parser.c
+@@ -133,8 +133,9 @@ static int tplg_parse_config(snd_tplg_t *tplg, snd_config_t *cfg)
+ 			continue;
+ 		}
+ 
+-		if (strcmp(id, "SectionBE") == 0) {
+-			err = tplg_parse_compound(tplg, n, tplg_parse_be,
++		if (strcmp(id, "SectionLink") == 0
++			|| strcmp(id, "SectionBE") == 0) {
++			err = tplg_parse_compound(tplg, n, tplg_parse_link,
+ 				NULL);
+ 			if (err < 0)
+ 				return err;
 diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index d8dd96a..fe8af45 100644
+index fe8af45..96a64e7 100644
 --- a/src/topology/pcm.c
 +++ b/src/topology/pcm.c
-@@ -740,10 +740,11 @@ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+@@ -527,7 +527,8 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
  	return 0;
  }
  
-+/* Add a physical DAI link element from C API */
- int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+-int tplg_parse_be(snd_tplg_t *tplg,
++/* Parse a physical link element in text conf file */
++int tplg_parse_link(snd_tplg_t *tplg,
+ 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
  {
--	struct snd_tplg_link_template *link = t->link;
--	struct snd_soc_tplg_link_config *lk;
-+	struct snd_tplg_link_template *link_tpl = t->link;
-+	struct snd_soc_tplg_link_config *link, *_link;
+ 	struct snd_soc_tplg_link_config *link;
+@@ -544,7 +545,7 @@ int tplg_parse_be(snd_tplg_t *tplg,
+ 	link = elem->link;
+ 	link->size = elem->size;
+ 
+-	tplg_dbg(" BE: %s\n", elem->id);
++	tplg_dbg(" Link: %s\n", elem->id);
+ 
+ 	snd_config_for_each(i, next, cfg) {
+ 
+@@ -748,7 +749,8 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
  	struct tplg_elem *elem;
  	int i;
  
-@@ -751,22 +752,25 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+-	if (t->type != SND_TPLG_TYPE_BE && t->type != SND_TPLG_TYPE_CC)
++	if (t->type != SND_TPLG_TYPE_LINK && t->type != SND_TPLG_TYPE_BE
++	    && t->type != SND_TPLG_TYPE_CC)
  		return -EINVAL;
  
  	/* here type can be either BE or CC. */
--	elem = tplg_elem_new_common(tplg, NULL, link->name, t->type);
-+	elem = tplg_elem_new_common(tplg, NULL, link_tpl->name, t->type);
+@@ -756,10 +758,7 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
  	if (!elem)
  		return -ENOMEM;
  
- 	if (t->type == SND_TPLG_TYPE_BE)
--		tplg_dbg("BE Link: %s", link->name);
-+		tplg_dbg("BE Link: %s", link_tpl->name);
- 	else
--		tplg_dbg("CC Link: %s", link->name);
-+		tplg_dbg("CC Link: %s", link_tpl->name);
+-	if (t->type == SND_TPLG_TYPE_BE)
+-		tplg_dbg("BE Link: %s", link_tpl->name);
+-	else
+-		tplg_dbg("CC Link: %s", link_tpl->name);
++	tplg_dbg("Link: %s", link_tpl->name);
  
--	lk = elem->link;
--	lk->size = elem->size;
--	lk->id = link->id;
--	lk->num_streams = link->num_streams;
-+	link = elem->link;
-+	link->size = elem->size;
+ 	link = elem->link;
+ 	link->size = elem->size;
+diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+index 548f42d..947f27e 100644
+--- a/src/topology/tplg_local.h
++++ b/src/topology/tplg_local.h
+@@ -220,7 +220,7 @@ int tplg_parse_stream_caps(snd_tplg_t *tplg,
+ int tplg_parse_pcm(snd_tplg_t *tplg,
+ 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
  
-+	link->id = link_tpl->id;
-+	/* stream configs */
-+	if (link_tpl->num_streams > SND_SOC_TPLG_STREAM_CONFIG_MAX)
-+		return -EINVAL;
-+	link->num_streams = link_tpl->num_streams;
- 	for (i = 0; i < link->num_streams; i++)
--		tplg_add_stream_object(&lk->stream[i], &link->stream[i]);
-+		tplg_add_stream_object(&link->stream[i], &link_tpl->stream[i]);
+-int tplg_parse_be(snd_tplg_t *tplg,
++int tplg_parse_link(snd_tplg_t *tplg,
+ 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
  
- 	return 0;
- }
+ int tplg_parse_cc(snd_tplg_t *tplg,
 -- 
 2.7.4
