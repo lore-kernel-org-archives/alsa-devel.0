@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 11/13] topology: Parse and build private data
-	of physical links
-Date: Sun,  6 Nov 2016 13:14:25 +0800
-Message-ID: <6e4f9f694149a5f50154b68651dc34900d5e3949.1478407716.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 12/13] topology: Parse name and stream name of
+	physical DAI links
+Date: Sun,  6 Nov 2016 13:14:34 +0800
+Message-ID: <dfc0118040eef98ba0ed801f4f84426423d6c383.1478407716.git.mengdong.lin@linux.intel.com>
 References: <cover.1478407716.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D0F72665B0
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 06:12:54 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1E182665B0
+ for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 06:13:04 +0100 (CET)
 In-Reply-To: <cover.1478407716.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,73 +27,85 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Users can define private data for physical links by C API or text conf
-file. Private data pointer is added to C API template for physical links.
+Parse name and stream name of physical links defined by text conf file
+or C API. Add name and stream name to C API template of physical DAI
+links.
+
+These two fields will help topology kernel driver to find an existing
+physical link to configure, since the id of links are often the default
+value ZERO and useless for match.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
 diff --git a/include/topology.h b/include/topology.h
-index 3692da4..ad84c15 100644
+index ad84c15..66dd084 100644
 --- a/include/topology.h
 +++ b/include/topology.h
-@@ -996,6 +996,7 @@ struct snd_tplg_link_template {
+@@ -631,6 +631,8 @@ extern "C" {
+  *
+  *	id "0"				# used for binding to the link
+  *
++ *	stream_name "name"		# used for binding to the link
++ *
+  *	hw_configs [	# runtime supported HW configurations, optional
+  *		"config1"
+  *		"config2"
+@@ -985,8 +987,10 @@ struct snd_tplg_hw_config_template {
+  * \brief Template type for BE and CC DAI Links.
+  */
+ struct snd_tplg_link_template {
+-	const char *name;	/*!< link name */
++	const char *name;	/*!< link name, used to match */
+ 	int id;	/*!< unique ID - used to match with existing BE and CC links */
++	const char *stream_name;        /*!< link stream name, used to match */
++
+ 	int num_streams;	/*!< number of configs */
+ 	struct snd_tplg_stream_template *stream;       /*!< supported configs */
  
- 	unsigned int flag_mask;         /* bitmask of flags to configure */
- 	unsigned int flags;             /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
-+	struct snd_soc_tplg_private *priv; /*!< private data */
- };
- 
- /** \struct snd_tplg_obj_template
 diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index a751851..1d70396 100644
+index 1d70396..a9d3277 100644
 --- a/src/topology/pcm.c
 +++ b/src/topology/pcm.c
-@@ -162,7 +162,7 @@ static int build_link(snd_tplg_t *tplg, struct tplg_elem *elem)
- 	if (err < 0)
- 		return err;
+@@ -622,6 +622,7 @@ int tplg_parse_link(snd_tplg_t *tplg,
  
--	/* hw configs */
-+	/* hw configs & private data */
- 	base = &elem->ref_list;
- 	list_for_each(pos, base) {
+ 	link = elem->link;
+ 	link->size = elem->size;
++	elem_copy_text(link->name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
  
-@@ -185,6 +185,12 @@ static int build_link(snd_tplg_t *tplg, struct tplg_elem *elem)
- 			num_hw_configs++;
- 			break;
+ 	tplg_dbg(" Link: %s\n", elem->id);
  
-+		case SND_TPLG_TYPE_DATA: /* merge private data */
-+			err = tplg_copy_data(tplg, elem, ref);
-+			if (err < 0)
-+				return err;
-+			break;
-+
- 		default:
- 			break;
+@@ -655,6 +656,16 @@ int tplg_parse_link(snd_tplg_t *tplg,
+ 			continue;
  		}
-@@ -1043,5 +1049,24 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
- 	/* flags */
- 	link->flag_mask = link_tpl->flag_mask;
- 	link->flags = link_tpl->flags;
+ 
++		if (strcmp(id, "stream_name") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
 +
-+	/* private data */
-+	if (link_tpl->priv != NULL && link_tpl->priv->size) {
-+		_link = realloc(link,
-+			elem->size + link_tpl->priv->size);
-+		if (!_link) {
-+			tplg_elem_free(elem);
-+			return -ENOMEM;
++			elem_copy_text(link->stream_name, val,
++				       SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++			tplg_dbg("\t%s: %s\n", id, val);
++			continue;
 +		}
 +
-+		link = _link;
-+		elem->link = link;
-+		elem->size += link_tpl->priv->size;
+ 		if (strcmp(id, "hw_configs") == 0) {
+ 			err = parse_hw_config_refs(tplg, n, elem);
+ 			if (err < 0)
+@@ -1030,7 +1041,15 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 	link = elem->link;
+ 	link->size = elem->size;
+ 
++	/* ID and names */
+ 	link->id = link_tpl->id;
++	if (link->name)
++		elem_copy_text(link->name, link_tpl->name,
++			       SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++	if (link->stream_name)
++		elem_copy_text(link->stream_name, link_tpl->stream_name,
++			       SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
 +
-+		memcpy(link->priv.data, link_tpl->priv->data,
-+			link_tpl->priv->size);
-+		link->priv.size = link_tpl->priv->size;
-+	}
-+
- 	return 0;
- }
+ 	/* stream configs */
+ 	if (link_tpl->num_streams > SND_SOC_TPLG_STREAM_CONFIG_MAX)
+ 		return -EINVAL;
 -- 
 2.7.4
