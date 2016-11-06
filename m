@@ -1,18 +1,25 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [question] Sample rate IC followed by DAC
-Date: Sun, 6 Nov 2016 12:21:12 +0100
-Message-ID: <acb9e8a6-e4cf-3537-3ffa-e9bdf752fb4c@ladisch.de>
-References: <5e9a9d77-4a01-b41c-32aa-130d76958bef@flatmax.org>
- <51ece116-aabb-21fa-b339-8a8bd95d6b52@ladisch.de>
- <300f410b-60dc-608f-f551-26acd4e337a7@flatmax.org>
+Subject: Re: Question about the buffer length in the
+	transfer	callback of the PCM External Plugin
+Date: Sun, 6 Nov 2016 12:26:43 +0100
+Message-ID: <c50375c2-42df-f588-3c42-33cd3b2f8a08@ladisch.de>
+References: <a68475dd084f4a45b224791224c7c244@LGNMSXB01.prod.bk.dfs>
+ <19904f93-f0ba-56a9-2980-ed52fe2a32bb@ladisch.de>
+ <6c2af613d3b64138bc6e7c6cf69486cf@LGNMSXB01.prod.bk.dfs>
+ <2dc2c73c-9d7c-3d3e-4d23-9797de2d1ec4@ladisch.de>
+ <165e6496dc554e18836006a6b77461ce@LGNMSXB01.prod.bk.dfs>
+ <93708608-9498-de05-9256-d650a44e18d8@ladisch.de>
+ <1ce46f88056b4b2caa2ecf770da07d76@LGNMSXB01.prod.bk.dfs>
+ <23292d9e-2fb6-1805-96c8-b2d5fa336665@ladisch.de>
+ <e48b1619d89d4f7faf5640fd2d337555@LGNMSXB01.prod.bk.dfs>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 622B7266218
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 12:21:50 +0100 (CET)
-In-Reply-To: <300f410b-60dc-608f-f551-26acd4e337a7@flatmax.org>
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id D3998266629
+ for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 12:27:21 +0100 (CET)
+In-Reply-To: <e48b1619d89d4f7faf5640fd2d337555@LGNMSXB01.prod.bk.dfs>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,28 +29,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>, alsa-devel@alsa-project.org
+To: "Bach, Andrea" <andrea.bach@dfs.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-TWF0dCBGbGF4IHdyb3RlOgo+IE9uIDA0LzExLzE2IDIyOjMxLCBDbGVtZW5zIExhZGlzY2ggd3Jv
-dGU6Cj4+IE1hdHQgRmxheCB3cm90ZToKPj4+IEkgaGF2ZSBhIHNhbXBsZSByYXRlIGNvbnZlcnRl
-ciBJQywgd2hpY2ggaXMgZm9sbG93ZWQgYnkgYSBEQUMuIFRoaXMga2luZCBvZiBzZXR1cCA6Cj4+
-Pgo+Pj4gU29DIGNoaXAgLT4gU2FtcGxlIHJhdGUgY29udi4gY2hpcCAtPiBEQUMgY2hpcAo+Pgo+
-PiBXaGF0IGlzIHRoZSBwdXJwb3NlIG9mIHRoZSBjb252ZXJ0ZXI/ICBXaGF0IHByb2JsZW0gZG9l
-cyBpdCBzb2x2ZT8KPgo+IEl0IGhhcyBhIGxvd2VyIG5vaXNlIGZsb29yIHRoZW4gbGlic2FtcGxl
-cmF0ZS4KCldoaWNoIGNoaXAgaXMgYmV0dGVyIHRoYW4gMTQ1IGRCPwoKPj4+IEhvdyBkbyB5b3Ug
-Y29uc3RydWN0IGEgbWFjaGluZSBkcml2ZXIgZm9yIHRoaXMgc2V0dXAgPwo+Pgo+PiBUaGUgb3Jp
-Z2luYWwgREFDIGRyaXZlciB3aWxsIG5vdCB3b3JrIGNvcnJlY3RseSwgYXMgZmFyIGFzIHNhbXBs
-ZSByYXRlCj4+IHNldHRpbmdzIGFyZSBjb25jZXJuZWQuCj4KPiBZZXMsIEkgd2FzIGV4cGVjdGlu
-ZyB0aGF0LiBUZWxsIG1lLCBldmVuIGluIHRoZSBjdXJyZW50IEFMU0EgdmVyc2lvbiwgaXMgdGhl
-cmUKPiBhbnkgc3VwcG9ydCBmb3Igc2FtcGxlIHJhdGUgY29udmVydGVyIGhhcmR3YXJlIGNoYWlu
-cyA/CgpOby4KCj4+IFdlbGwsIGlmIHlvdXIgZ29hbCBpc24ndCBhIHByb3BlciBkcml2ZXIgZm9y
-IHVwc3RyZWFtLCBqdXN0IGhhY2sgdGhlCj4+IGV4aXN0aW5nIERBQyBkcml2ZXIgdG8gYWNjZXNz
-IHRoZSBvdGhlciBJwrJDIGRldmljZSwgd2hlbiBuZWVkZWQuCj4+Cj4gU3VyZSwgSSBjYW4gZG8g
-dGhpcy4gSSBjYW4ndCBmaW5kIGFueSBleGFtcGxlcyBvbiBvcGVyYXRpbmcgYSBjb2RlYyB3aXRo
-aW4KPiBhIGNvZGVjLiBXb3VsZCBJIGV4cG9ydCBhbGwgZnVuY3Rpb24gc3ltYm9scyBhbmQgZG8g
-aXQgdGhhdCB3YXkgPwoKRXhwb3J0IHRvIHdoZXJlPyAgWW91IHdvdWxkIGp1c3QgbW9kaWZ5IHRo
-ZSBleGlzdGluZyBEQUMgZHJpdmVyLgoKClJlZ2FyZHMsCkNsZW1lbnMKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Bach, Andrea wrote:
+> What I tried is to copy the buffer I get in chunks of a 64 bytes into
+> an intermediate buffer for processing and whenever I processed
+> 64 bytes I copied the result to the output buffer .... but what to do
+> with the remaining 40 bytes...
+
+Leave them in the intermediate buffer, and handle them later when you've
+got 24 more bytes.
+
+> and what to return in the output buffer when the remaining bytes could
+> not be processed??
+
+Delay the entire chain by 64 bytes, i.e., insert 64 byte at the start of
+the stream.  Then you always have too many bytes instead of too few
+bytes, and those can be handled with the intermediate buffer.
+
+
+Regards,
+Clemens
