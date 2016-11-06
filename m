@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 01/13] topology: Use snd_config_get_bool to
-	simplify boolean flag parsing
-Date: Sun,  6 Nov 2016 13:11:04 +0800
-Message-ID: <9b8b6816e96c655f4b9625be41b36eed91dd2464.1478407716.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 02/13] topology: Merge an element's be & cc
+	pointer to one link pointer
+Date: Sun,  6 Nov 2016 13:11:49 +0800
+Message-ID: <9b5fe3318b561348301acc9af4b7a7290dd041e2.1478407716.git.mengdong.lin@linux.intel.com>
 References: <cover.1478407716.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AEDA265B04
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 06:09:34 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id E61E9265B04
+ for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 06:10:20 +0100 (CET)
 In-Reply-To: <cover.1478407716.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,33 +27,80 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-The link flags in the text conf file are boolean, so this patch uses
-snd_config_get_bool() to simplify the code.
+Code refactoring. Previously an element has two pointers, 'be' and 'cc',
+for BE (Back End) and CC (Codec-Codec) link respectively. But actually
+the topology tool processes BE and CC links in the same way, so these
+two pointers can be merged into one 'link' pointer, which can be used
+configure any physical links.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
 diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 3f54e94..b7a2df7 100644
+index b7a2df7..64fd78f 100644
 --- a/src/topology/pcm.c
 +++ b/src/topology/pcm.c
-@@ -400,13 +400,14 @@ static int tplg_parse_fe_dai(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
- static int parse_flag(snd_config_t *n, unsigned int mask_in,
- 		      unsigned int *mask, unsigned int *flags)
- {
--	const char *val = NULL;
-+	int ret;
+@@ -175,11 +175,7 @@ int tplg_build_link_cfg(snd_tplg_t *tplg, unsigned int type)
+ 			return -EINVAL;
+ 		}
  
--	if (snd_config_get_string(n, &val) < 0)
--		return -EINVAL;
-+	ret = snd_config_get_bool(n);
-+	if (ret < 0)
-+		return ret;
+-		if (type == SND_TPLG_TYPE_BE)
+-			link = elem->be;
+-		else
+-			link = elem->cc;
+-
++		link = elem->link;
+ 		err = tplg_build_stream_cfg(tplg, link->stream,
+ 			link->num_streams);
+ 		if (err < 0)
+@@ -528,7 +524,7 @@ int tplg_parse_be(snd_tplg_t *tplg,
+ 	if (!elem)
+ 		return -ENOMEM;
  
- 	*mask |= mask_in;
--	if (strcmp(val, "true") == 0)
-+	if (ret)
- 		*flags |= mask_in;
- 	else
- 		*flags &= ~mask_in;
+-	link = elem->be;
++	link = elem->link;
+ 	link->size = elem->size;
+ 
+ 	tplg_dbg(" BE: %s\n", elem->id);
+@@ -588,7 +584,7 @@ int tplg_parse_cc(snd_tplg_t *tplg,
+ 	if (!elem)
+ 		return -ENOMEM;
+ 
+-	link = elem->cc;
++	link = elem->link;
+ 	link->size = elem->size;
+ 
+ 	tplg_dbg(" CC: %s\n", elem->id);
+@@ -742,14 +738,12 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 	if (!elem)
+ 		return -ENOMEM;
+ 
+-	if (t->type == SND_TPLG_TYPE_BE) {
++	if (t->type == SND_TPLG_TYPE_BE)
+ 		tplg_dbg("BE Link: %s", link->name);
+-		lk = elem->be;
+-	} else {
++	else
+ 		tplg_dbg("CC Link: %s", link->name);
+-		lk = elem->cc;
+-	}
+ 
++	lk = elem->link;
+ 	lk->size = elem->size;
+ 	lk->id = link->id;
+ 	lk->num_streams = link->num_streams;
+diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+index 7b30b84..3aa51ee 100644
+--- a/src/topology/tplg_local.h
++++ b/src/topology/tplg_local.h
+@@ -144,8 +144,7 @@ struct tplg_elem {
+ 		struct snd_soc_tplg_bytes_control *bytes_ext;
+ 		struct snd_soc_tplg_dapm_widget *widget;
+ 		struct snd_soc_tplg_pcm *pcm;
+-		struct snd_soc_tplg_link_config *be;
+-		struct snd_soc_tplg_link_config *cc;
++		struct snd_soc_tplg_link_config *link;/* physical link */
+ 		struct snd_soc_tplg_dapm_graph_elem *route;
+ 		struct snd_soc_tplg_stream *stream_cfg;
+ 		struct snd_soc_tplg_stream_caps *stream_caps;
 -- 
 2.7.4
