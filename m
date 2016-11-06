@@ -1,17 +1,20 @@
-From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: Re: [PATCH v5 4/7] ASoC: sunxi: Add sun8i I2S driver
-Date: Sun, 6 Nov 2016 19:02:48 +0100
-Message-ID: <20161106190248.48b59e166bcd9d6f0ebb4d04@free.fr>
-References: <cover.1477142934.git.moinejf@free.fr>
-	<bee315efb909c1ee8b5fe7d3aeb9a33d713cb562.1477142934.git.moinejf@free.fr>
-	<CAGb2v67gDd650TJk_-oHOehnzdH2qor=36HXdPt339Ji=ToAMg@mail.gmail.com>
-Reply-To: moinejf-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v2 06/14] ASoC: sun4i-codec: Add support for
+ A31 playback through headphone output
+Date: Sun, 6 Nov 2016 19:57:15 +0100
+Message-ID: <20161106185715.tlvcakzqay2lamd5@lukather>
+References: <20161103075556.29018-1-wens@csie.org>
+ <20161103075556.29018-7-wens@csie.org>
+ <20161103173602.zchyciwj66zdibc7@lukather>
+ <CAGb2v65CZJ+1LTWWk3+vABV8PDgsDta+nZ7o3H2Z--KFPe2kog@mail.gmail.com>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBCV6DL6LYMNBBTPA7XAAKGQEWKPDF7I-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hupmdhuzwb6qkxbg"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBDH27XAAKGQEWZJT4NY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <CAGb2v67gDd650TJk_-oHOehnzdH2qor=36HXdPt339Ji=ToAMg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CAGb2v65CZJ+1LTWWk3+vABV8PDgsDta+nZ7o3H2Z--KFPe2kog-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -19,52 +22,53 @@ List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto
 List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
  <https://groups.google.com/group/linux-sunxi/subscribe>
 To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: Dave Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, dri-devel <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 23 Oct 2016 09:33:16 +0800
-Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org> wrote:
 
-> On Fri, Oct 21, 2016 at 4:36 PM, Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org> wr=
-ote:
-> > This patch adds I2S support to sun8i SoCs as the A83T and H3.
+--hupmdhuzwb6qkxbg
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
+
+On Fri, Nov 04, 2016 at 09:08:11AM +0800, Chen-Yu Tsai wrote:
+> On Fri, Nov 4, 2016 at 1:36 AM, Maxime Ripard
+> <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+> > Hi,
 > >
-> > Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-> > ---
-> > Note: This driver is closed to the sun4i-i2s except that:
-> > - it handles the H3
->=20
-> If it's close to sun4i-i2s, you should probably rework that one to suppor=
-t
-> the newer SoCs.
+> > On Thu, Nov 03, 2016 at 03:55:48PM +0800, Chen-Yu Tsai wrote:
+> >> +/* headphone controls */
+> >> +static const char * const sun6i_codec_hp_src_enum_text[] = {
+> >> +     "DAC", "Mixer",
+> >> +};
+> >> +
+> >> +static SOC_ENUM_DOUBLE_DECL(sun6i_codec_hp_src_enum,
+> >> +                         SUN6I_CODEC_OM_DACA_CTRL,
+> >> +                         SUN6I_CODEC_OM_DACA_CTRL_LHPIS,
+> >> +                         SUN6I_CODEC_OM_DACA_CTRL_RHPIS,
+> >> +                         sun6i_codec_hp_src_enum_text);
+> >> +
+> >> +static const struct snd_kcontrol_new sun6i_codec_hp_src[] = {
+> >> +     SOC_DAPM_ENUM("Headphone Source Playback Route",
+> >> +                   sun6i_codec_hp_src_enum),
+> >> +};
+> >
+> > What is that route exactly? A muxer?
+> 
+> Yup. The following is part of the widgets list later in the code:
+> 
+> +       /* Headphone output path */
+> +       SND_SOC_DAPM_MUX("Headphone Source Playback Route",
+> +                        SND_SOC_NOPM, 0, 0, sun6i_codec_hp_src),
 
-I started to add the H3 into the sun4i-i2s, but I am blocked with
-regmap.
-Many H3 registers are common with the A10, but some of them have more
-or less fields, the fields may be at different offsets. And, finally,
-some registers are completely different.
-This would not raise any problem, except with regmap which is really
-painful.
+Oh, right.
 
-As I may understood, regmap is used to simplify suspend/resume, but, is
-it useful to save the I2S register on suspend?
-Practically, I am streaming some tune on my device. I suspend it for
-any reason. The next morning, I resume it. Are you sure I want to
-continue to hear the end of the tune?
+You can add my Acked-by on this one and the other patches too.
 
-I better think that streaming should be simply stopped on suspend.
-Then, there is no need to save the playing registers, and, here I am,
-there is no need to use regmap.
+Thanks!
+Maxime
 
-May I go this way?
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
-
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+-- 
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+--hupmdhuzwb6qkxbg--
