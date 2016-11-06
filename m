@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 05/13] topology: ABI - Update physical DAI link
-	configurations to ABI v5
-Date: Sun,  6 Nov 2016 13:13:08 +0800
-Message-ID: <7b408de9a95024076382a9d9e39d927ebfb06bc8.1478407716.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 06/13] topology: Rename varaibles for add
+	physical links by C API
+Date: Sun,  6 Nov 2016 13:13:19 +0800
+Message-ID: <716aa62b2f50876e16e17a49c680869b473de78d.1478407716.git.mengdong.lin@linux.intel.com>
 References: <cover.1478407716.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B3AE26648B
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 06:11:39 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47BEF2665B0
+ for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 06:11:49 +0100 (CET)
 In-Reply-To: <cover.1478407716.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,108 +27,65 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-This patch update physicals DAI link config to ABI v5:
-
-- Define the types and ABI struct for runtime supported hardware configs
-  e.g. audio hardware formats. The default HW config ID will help topology
-  to find the DAI format to set on init. Topology provides this as a
-  fallback if such HW settings are not available in ACPI or device tree,
-  to avoid hard code in drivers. It's only for config items that can be
-  programmed by SW or FW, not for physical things like link connections
-  or GPIO used for HP etc.
-
-- Add flags. The flags will be used to configure an existing physical
-  links.
-
-- Add private data. The private data is reserved for future extension.
-
-- Add name and stream name to physical DAI links. Kernel can also use name
-  and stream name to find an existing physical link and configure it.
-
-Kernel can handle the ABI update in a backward compatible way via patch
-'ASoC: topology: Add support to configure existing physical DAI links'.
+Code refactoring. When adding a physical link element from C API:
+- Rename "link" to "link_tpl" for physical link config template for
+  C API users.
+- Rename "lk" to "link" for physical link elements created by topology
+  internally.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/sound/asoc.h b/include/sound/asoc.h
-index d55ce8c..039ef3e 100644
---- a/include/sound/asoc.h
-+++ b/include/sound/asoc.h
-@@ -30,6 +30,11 @@
-  */
- #define SND_SOC_TPLG_STREAM_CONFIG_MAX  8
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index d8dd96a..fe8af45 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -740,10 +740,11 @@ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 	return 0;
+ }
  
-+/*
-+ * Maximum number of physical link's hardware configs
-+ */
-+#define SND_SOC_TPLG_HW_CONFIG_MAX	8
-+
- /* individual kcontrol info types - can be mixed with other types */
- #define SND_SOC_TPLG_CTL_VOLSW		1
- #define SND_SOC_TPLG_CTL_VOLSW_SX	2
-@@ -278,6 +283,35 @@ struct snd_soc_tplg_stream {
- 	__le32 channels;	/* channels */
- } __attribute__((packed));
++/* Add a physical DAI link element from C API */
+ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ {
+-	struct snd_tplg_link_template *link = t->link;
+-	struct snd_soc_tplg_link_config *lk;
++	struct snd_tplg_link_template *link_tpl = t->link;
++	struct snd_soc_tplg_link_config *link, *_link;
+ 	struct tplg_elem *elem;
+ 	int i;
  
-+
-+/*
-+ * Describes a physical link's runtime supported hardware config,
-+ * i.e. hardware audio formats.
-+ */
-+struct snd_soc_tplg_hw_config {
-+	__le32 size;            /* in bytes of this structure */
-+	__le32 id;		/* unique ID - - used to match */
-+	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
-+	__u8 clock_gated;	/* 1 if clock can be gated to save power */
-+	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
-+	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
-+	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
-+	__u8 fsync_master;	/* 1 for master of FSYNC, 0 for slave */
-+	__u8 mclk_direction;    /* 0 for input, 1 for output */
-+	__le16 reserved;	/* for 32bit alignment */
-+	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
-+	__le32 bclk_rate;	/* BCLK freqency in Hz */
-+	__le32 fsync_rate;	/* frame clock in Hz */
-+	__le32 tdm_slots;	/* number of TDM slots in use */
-+	__le32 tdm_slot_width;	/* width in bits for each slot */
-+	__le32 tx_slots;	/* bit mask for active Tx slots */
-+	__le32 rx_slots;	/* bit mask for active Rx slots */
-+	__le32 tx_channels;	/* number of Tx channels */
-+	__le32 tx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
-+	__le32 rx_channels;	/* number of Rx channels */
-+	__le32 rx_chanmap[SND_SOC_TPLG_MAX_CHAN]; /* array of slot number */
-+} __attribute__((packed));
-+
- /*
-  * Manifest. List totals for each payload type. Not used in parsing, but will
-  * be passed to the component driver before any other objects in order for any
-@@ -450,9 +484,9 @@ struct snd_soc_tplg_pcm {
+@@ -751,22 +752,25 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 		return -EINVAL;
  
+ 	/* here type can be either BE or CC. */
+-	elem = tplg_elem_new_common(tplg, NULL, link->name, t->type);
++	elem = tplg_elem_new_common(tplg, NULL, link_tpl->name, t->type);
+ 	if (!elem)
+ 		return -ENOMEM;
  
- /*
-- * Describes the BE or CC link runtime supported configs or params
-+ * Describes the physical link runtime supported configs or params
-  *
-- * File block representation for BE/CC link config :-
-+ * File block representation for physical link config :-
-  * +-----------------------------------+-----+
-  * | struct snd_soc_tplg_hdr           |  1  |
-  * +-----------------------------------+-----+
-@@ -462,7 +496,15 @@ struct snd_soc_tplg_pcm {
- struct snd_soc_tplg_link_config {
- 	__le32 size;            /* in bytes of this structure */
- 	__le32 id;              /* unique ID - used to match */
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* name - used to match */
-+	char stream_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN]; /* stream name - used to match */
- 	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback and captrure */
- 	__le32 num_streams;     /* number of streams */
-+	struct snd_soc_tplg_hw_config hw_config[SND_SOC_TPLG_HW_CONFIG_MAX]; /* hw configs */
-+	__le32 num_hw_configs;         /* number of hw configs */
-+	__le32 default_hw_config_id;   /* default hw config ID for init */
-+	__le32 flag_mask;       /* bitmask of flags to configure */
-+	__le32 flags;           /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
-+	struct snd_soc_tplg_private priv;
- } __attribute__((packed));
- #endif
+ 	if (t->type == SND_TPLG_TYPE_BE)
+-		tplg_dbg("BE Link: %s", link->name);
++		tplg_dbg("BE Link: %s", link_tpl->name);
+ 	else
+-		tplg_dbg("CC Link: %s", link->name);
++		tplg_dbg("CC Link: %s", link_tpl->name);
+ 
+-	lk = elem->link;
+-	lk->size = elem->size;
+-	lk->id = link->id;
+-	lk->num_streams = link->num_streams;
++	link = elem->link;
++	link->size = elem->size;
+ 
++	link->id = link_tpl->id;
++	/* stream configs */
++	if (link_tpl->num_streams > SND_SOC_TPLG_STREAM_CONFIG_MAX)
++		return -EINVAL;
++	link->num_streams = link_tpl->num_streams;
+ 	for (i = 0; i < link->num_streams; i++)
+-		tplg_add_stream_object(&lk->stream[i], &link->stream[i]);
++		tplg_add_stream_object(&link->stream[i], &link_tpl->stream[i]);
+ 
+ 	return 0;
+ }
 -- 
 2.7.4
