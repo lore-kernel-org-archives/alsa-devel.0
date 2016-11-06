@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 10/13] topology: Parse link flags of physical
-	DAI links
-Date: Sun,  6 Nov 2016 13:14:15 +0800
-Message-ID: <21b71a222fe1c7afb073012dd43fc9169999b4c2.1478407716.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 11/13] topology: Parse and build private data
+	of physical links
+Date: Sun,  6 Nov 2016 13:14:25 +0800
+Message-ID: <6e4f9f694149a5f50154b68651dc34900d5e3949.1478407716.git.mengdong.lin@linux.intel.com>
 References: <cover.1478407716.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 047792665B0
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 06:12:45 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D0F72665B0
+ for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2016 06:12:54 +0100 (CET)
 In-Reply-To: <cover.1478407716.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,86 +27,72 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Parse physical DAI link flags defined by text conf file or C API.
-The flag mask and flags are added to C API template for physical DAI
-links.
+Users can define private data for physical links by C API or text conf
+file. Private data pointer is added to C API template for physical links.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
 diff --git a/include/topology.h b/include/topology.h
-index 85818ac..3692da4 100644
+index 3692da4..ad84c15 100644
 --- a/include/topology.h
 +++ b/include/topology.h
-@@ -639,6 +639,11 @@ extern "C" {
-  *
-  *	default_hw_conf_id "1"		#default HW config ID for init
-  *
-+ *	# Optional boolean flags
-+ *	symmetric_rates			"true"
-+ *	symmetric_channels		"false"
-+ *	symmetric_sample_bits		"true"
-+ *
-  *	data "name"			# optional private data
-  * }
-  * </pre>
-@@ -988,6 +993,9 @@ struct snd_tplg_link_template {
- 	struct snd_tplg_hw_config_template *hw_config; /*!< supported HW configs */
- 	int num_hw_configs;		/* number of hw configs */
- 	int default_hw_config_id;       /* default hw config ID for init */
-+
-+	unsigned int flag_mask;         /* bitmask of flags to configure */
-+	unsigned int flags;             /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
+@@ -996,6 +996,7 @@ struct snd_tplg_link_template {
+ 
+ 	unsigned int flag_mask;         /* bitmask of flags to configure */
+ 	unsigned int flags;             /* SND_SOC_TPLG_LNK_FLGBIT_* flag value */
++	struct snd_soc_tplg_private *priv; /*!< private data */
  };
  
  /** \struct snd_tplg_obj_template
 diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index e92d2b9..a751851 100644
+index a751851..1d70396 100644
 --- a/src/topology/pcm.c
 +++ b/src/topology/pcm.c
-@@ -664,6 +664,35 @@ int tplg_parse_link(snd_tplg_t *tplg,
- 			continue;
- 		}
+@@ -162,7 +162,7 @@ static int build_link(snd_tplg_t *tplg, struct tplg_elem *elem)
+ 	if (err < 0)
+ 		return err;
  
-+		/* flags */
-+		if (strcmp(id, "symmetric_rates") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES,
-+				&link->flag_mask, &link->flags);
+-	/* hw configs */
++	/* hw configs & private data */
+ 	base = &elem->ref_list;
+ 	list_for_each(pos, base) {
+ 
+@@ -185,6 +185,12 @@ static int build_link(snd_tplg_t *tplg, struct tplg_elem *elem)
+ 			num_hw_configs++;
+ 			break;
+ 
++		case SND_TPLG_TYPE_DATA: /* merge private data */
++			err = tplg_copy_data(tplg, elem, ref);
 +			if (err < 0)
 +				return err;
-+			continue;
++			break;
++
+ 		default:
+ 			break;
+ 		}
+@@ -1043,5 +1049,24 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 	/* flags */
+ 	link->flag_mask = link_tpl->flag_mask;
+ 	link->flags = link_tpl->flags;
++
++	/* private data */
++	if (link_tpl->priv != NULL && link_tpl->priv->size) {
++		_link = realloc(link,
++			elem->size + link_tpl->priv->size);
++		if (!_link) {
++			tplg_elem_free(elem);
++			return -ENOMEM;
 +		}
 +
-+		if (strcmp(id, "symmetric_channels") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS,
-+				&link->flag_mask, &link->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
++		link = _link;
++		elem->link = link;
++		elem->size += link_tpl->priv->size;
 +
-+		if (strcmp(id, "symmetric_sample_bits") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS,
-+				&link->flag_mask, &link->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
++		memcpy(link->priv.data, link_tpl->priv->data,
++			link_tpl->priv->size);
++		link->priv.size = link_tpl->priv->size;
++	}
 +
-+		/* private data */
- 		if (strcmp(id, "data") == 0) {
- 			err = tplg_parse_data_refs(n, elem);
- 			if (err < 0)
-@@ -1010,5 +1039,9 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
- 	link->default_hw_config_id = link_tpl->default_hw_config_id;
- 	for (i = 0; i < link->num_hw_configs; i++)
- 		set_link_hw_config(&link->hw_config[i], &link_tpl->hw_config[i]);
-+
-+	/* flags */
-+	link->flag_mask = link_tpl->flag_mask;
-+	link->flags = link_tpl->flags;
  	return 0;
  }
 -- 
