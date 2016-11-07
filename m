@@ -1,7 +1,7 @@
 From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: [PATCH 2/3] ASoC: wm8978: Adjust clock indices so that simple card works
-Date: Mon,  7 Nov 2016 14:08:20 +0100
-Message-ID: <3d9c794b19e99745f0a98412c4cf8dcf26d728d4.1478524066.git-series.maxime.ripard@free-electrons.com>
+Subject: [PATCH 1/3] ASoC: sunxi: i2s: Implement set_sysclk
+Date: Mon,  7 Nov 2016 14:08:19 +0100
+Message-ID: <e86d676f28ff62bc0a56741f76afb2cbdfedbdd8.1478524066.git-series.maxime.ripard@free-electrons.com>
 References: <cover.9296840e0b7438e0ae63b4ec0d64957640b64a78.1478524066.git-series.maxime.ripard@free-electrons.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.9296840e0b7438e0ae63b4ec0d64957640b64a78.1478524066.git-series.maxime.ripard@free-electrons.com>
@@ -12,29 +12,116 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Using simple-card with the wm8978 doesn't work because simple card calls
-set_sysclk on the clock index 0, which is not the MCLK in the WM8978.
+In our i2s driver, we were previously trying to guess which oversample the
+user wanted to use by looking at the rate and trying to max it.
 
-Adjust the clock definition so that the clock 0 is the MCLK.
+However, the cards, and especially simple-card with its mclk-fs property
+will already provide the expected oversample ratio by using the set_sysclk
+callback.
+
+We can thus implement it and remove the logic to deal with the runtime
+guess.
 
 Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 ---
- sound/soc/codecs/wm8978.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sunxi/sun4i-i2s.c | 53 +++++++++++++++++++++++++++-----------
+ 1 file changed, 38 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8978.h b/sound/soc/codecs/wm8978.h
-index 6ae43495b7cf..0dcf6868dff6 100644
---- a/sound/soc/codecs/wm8978.h
-+++ b/sound/soc/codecs/wm8978.h
-@@ -78,8 +78,8 @@ enum wm8978_clk_id {
- };
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index a7653114e895..f24d19526603 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -93,6 +93,8 @@ struct sun4i_i2s {
+ 	struct clk	*mod_clk;
+ 	struct regmap	*regmap;
  
- enum wm8978_sysclk_src {
-+	WM8978_MCLK = 0,
- 	WM8978_PLL,
--	WM8978_MCLK
++	unsigned int	mclk_freq;
++
+ 	struct snd_dmaengine_dai_dma_data	capture_dma_data;
+ 	struct snd_dmaengine_dai_dma_data	playback_dma_data;
  };
+@@ -158,14 +160,24 @@ static int sun4i_i2s_get_mclk_div(struct sun4i_i2s *i2s,
+ }
  
- #endif	/* __WM8978_H__ */
+ static int sun4i_i2s_oversample_rates[] = { 128, 192, 256, 384, 512, 768 };
++static bool sun4i_i2s_oversample_is_valid(unsigned int oversample)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(sun4i_i2s_oversample_rates); i++)
++		if (sun4i_i2s_oversample_rates[i] == oversample)
++			return true;
++
++	return false;
++}
+ 
+ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
+ 				  unsigned int rate,
+ 				  unsigned int word_size)
+ {
+-	unsigned int clk_rate;
++	unsigned int oversample_rate, clk_rate;
+ 	int bclk_div, mclk_div;
+-	int ret, i;
++	int ret;
+ 
+ 	switch (rate) {
+ 	case 176400:
+@@ -197,21 +209,18 @@ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
+ 	if (ret)
+ 		return ret;
+ 
+-	/* Always favor the highest oversampling rate */
+-	for (i = (ARRAY_SIZE(sun4i_i2s_oversample_rates) - 1); i >= 0; i--) {
+-		unsigned int oversample_rate = sun4i_i2s_oversample_rates[i];
+-
+-		bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
+-						  word_size);
+-		mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
+-						  clk_rate,
+-						  rate);
++	oversample_rate = i2s->mclk_freq / rate;
++	if (!sun4i_i2s_oversample_is_valid(oversample_rate))
++		return -EINVAL;
+ 
+-		if ((bclk_div >= 0) && (mclk_div >= 0))
+-			break;
+-	}
++	bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
++					  word_size);
++	if (bclk_div < 0)
++		return -EINVAL;
+ 
+-	if ((bclk_div < 0) || (mclk_div < 0))
++	mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
++					  clk_rate, rate);
++	if (mclk_div < 0)
+ 		return -EINVAL;
+ 
+ 	regmap_write(i2s->regmap, SUN4I_I2S_CLK_DIV_REG,
+@@ -481,9 +490,23 @@ static void sun4i_i2s_shutdown(struct snd_pcm_substream *substream,
+ 	regmap_write(i2s->regmap, SUN4I_I2S_CTRL_REG, 0);
+ }
+ 
++static int sun4i_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
++				unsigned int freq, int dir)
++{
++	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++
++	if (clk_id != 0)
++		return -EINVAL;
++
++	i2s->mclk_freq = freq;
++
++	return 0;
++}
++
+ static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
+ 	.hw_params	= sun4i_i2s_hw_params,
+ 	.set_fmt	= sun4i_i2s_set_fmt,
++	.set_sysclk	= sun4i_i2s_set_sysclk,
+ 	.shutdown	= sun4i_i2s_shutdown,
+ 	.startup	= sun4i_i2s_startup,
+ 	.trigger	= sun4i_i2s_trigger,
 -- 
 git-series 0.8.11
