@@ -1,54 +1,74 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3 1/3] ASoC: atmel_ssc_dai: if not provided, default to
- sensible dividers
-Date: Fri, 11 Nov 2016 16:05:32 +0000
-Message-ID: <20161111160532.b4vyit6722nbvhk6@sirena.org.uk>
-References: <1478863752-10569-1-git-send-email-peda@axentia.se>
- <1478863752-10569-2-git-send-email-peda@axentia.se>
+From: "Bode, Michael (PED-DEAS)" <Michael.Bode@bshg.com>
+Subject: Re: Imx6 i2s master driver without i2c
+Date: Mon, 7 Nov 2016 16:17:53 +0000
+Message-ID: <d9c6b8ddfb414d63a6dbe05059ccde24@MCHSWIEXMB5A.bsh.corp.bshg.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4sm5dnfnpoaz5tnz"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1478863752-10569-2-git-send-email-peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Nicolas Ferre <nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout02.rmx.de (mailout02.rmx.de [62.245.148.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3D85266DE4
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 17:18:28 +0100 (CET)
+Received: from cryptout03.retarus.com (unknown [172.19.21.159])
+ by mailout02.rmx.de (Postfix) with ESMTP id 3tCHg610CZzNnND
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 17:18:26 +0100 (CET)
+Received: from cryptout03.dmz2.retloc (localhost [127.0.0.1])
+ by cryptout03.retarus.com (Postfix) with ESMTP id 025F51B421EE
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 17:18:21 +0100 (CET)
+Received: from mailcc09.dmz2.retloc (mailcc09.retarus.de [172.19.21.9])
+ by cryptout03.retarus.com (Postfix) with SMTP id D647A1B421EE
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 17:18:20 +0100 (CET)
+Content-Language: de-DE
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---4sm5dnfnpoaz5tnz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I know, it's some time ago since there was this discussion ongoing. I don't know if you already solved your problems.
+Because I had a similar task to solve I maybe have some information that could help here:
 
-On Fri, Nov 11, 2016 at 12:29:10PM +0100, Peter Rosin wrote:
-> When this driver masters BCLK and/or LRCLK, and noone has stated
-> differently, assume that all the bits of a frame are used.
->=20
-> This relieves the cpu dai users from the duty to fill in the dividers for
-> the common case.
+In my case calling function "snd_soc_dai_set_pll(cpu_dai, 0, 0, 688128000, itel_audio_fmts[i].sysclk);" was not working. When looking into the details I found that underlying
+Driver (in my case fsl_ssi.c) had not implemented function "set_pll", so calling this function was just a dummy. Then I tried to figure out how to manipulate the Audio PLL in i.MX6 and
+Found the file "clk-imx6q.c" which sets all clocks of i.MX6.  To register a clock the function clk_register_clkdev needs to be called for that clock. Now I found that this registration was missing for
+PLL4 which in my case should be used for audio. So I added "clk_register_clkdev(clk[IMX6QDL_CLK_PLL4_AUDIO_DIV], "pll4", NULL);".
+With this change I was able to call "pll4 = clk_get(NULL, "pll4");" from my SOC-driver and do a  pllRate = clk_round_rate(pll4, 688128000); and clk_set_rate(pll4, pllRate);
+Finally with this I was able to change Audio PLL according to sample rate to get proper SSI signals.
 
-This looks good and like what I was meaning with my earlier feedback
-(you sent a new version before I could reply to that).  I'll leave this
-for a little while to give others time to review though.
+A second thing I found in your chat was that you had the problem that no matter what sample frequency you use, you always get 44100. I also ran into that issue and found that there is an ALSA feature active
+That intentionally converts the audio rate. I found the config file asound.conf in /etc that defines:
 
---4sm5dnfnpoaz5tnz
-Content-Type: application/pgp-signature; name="signature.asc"
+pcm.dmix_44100{
+type dmix
+ipc_key 5678293
+ipc_key_add_uid yes
+slave{
+pcm "hw:0,0"
+period_time 40000
+buffer_time 360000
+format S16_LE
+rate 44100
+}
+}
 
------BEGIN PGP SIGNATURE-----
+pcm.asymed{
+type asym
+playback.pcm "dmix_44100"
+capture.pcm "dsnoop_44100"
+}
 
-iQEcBAABCAAGBQJYJexMAAoJECTWi3JdVIfQplcH/iQKF6W0HZL44QflWyRnGjsm
-QG35WcXZ4gyhqSihpwAQO1uEZc5ffYXsHIDAnm+WoadMxeuJYkFva0s4V8z1BDCo
-wgYY2YdbPEDd1tfmYf9qrjdP0prqDcmk88UuuOVVjj4Pq8B6So+A+7bqhHAj1b1R
-3yAbgYSziL1pv5ParBdZuPAHj+lx1Id1EYo8gC5uc1h17LfXWwF8Wy3gKCKiAXJ8
-Navdq6C1Uy6yAzG+jCBQcJCmfIRoQL1YyW9MD46ADioz4R1R53VmuTfnCTnQvksb
-xt7fVelWWwEuYtjoC6sFfyio1F8eXiYTcqNsJ4JycOStGajjdQqXofR0x+bqPW0=
-=BZEH
------END PGP SIGNATURE-----
+As a result all my frequencies were intentionally converted to 44100 Hz. So my solution was to just rename/delete asound.conf
 
---4sm5dnfnpoaz5tnz--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I hope this can help others to get an i.MX I2S Master running.
+
+
+Best regards,
+Michael Bode
