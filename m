@@ -1,18 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Locking/mutex for snd_pcm_update_hw_ptr0() call
-Date: Mon, 7 Nov 2016 16:40:01 +0100
-Message-ID: <c1cd24e6-bf1f-87fe-6ae5-8f15de091833@ladisch.de>
-References: <58207934.8080006@IEE.org>
- <6a229803-cfe2-81b0-d873-902831e3314d@ladisch.de>
- <58209600.1090908@IEE.org>
+From: David Jordan <david2@system76.com>
+Subject: Fixup set PCM/headphones volume from Master
+Date: Mon, 07 Nov 2016 08:59:39 -0800
+Message-ID: <1478537979.2123627.780087305.7503B79D@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id C262E266B02
- for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 16:40:04 +0100 (CET)
-In-Reply-To: <58209600.1090908@IEE.org>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 679EB2667B2
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 17:59:39 +0100 (CET)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailout.nyi.internal (Postfix) with ESMTP id 4A113208C9
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 11:59:39 -0500 (EST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,29 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Young <Alan.Young@IEE.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Alan Young wrote:
-> On 07/11/16 14:15, Clemens Ladisch wrote:
->> Alan Young wrote:
->>> It is possible that the DMA interrupt handler could call
->>> snd_pcm_update_hw_ptr0() while it is part way through a call
->>> from snd_pcm_status(), or vice versa?
->>
->> The *lock_irq* functions disable interrupts on the current CPU.
->
-> But only on the current CPU? So that would imply that multiple threads
-> could execute snd_pcm_update_hw_ptr0() simultaneously on multi-CPU
-> systems.
+I'm working on a kernel-level fixup for a set of hardware which uses a
+separate DAC for the "headphones" output.  So far, I've gotten
+everything but the volume control working correctly.  "PCM Playback
+Volume" controls the headphones volume since the same digital output
+drives both SPDIF and the analog headphones jack.  
 
-That's what the lock is for.
+So, "PCM Playback Volume" should always equal "Master Playback Volume"
+when headphones are plugged in. (You can't insert both an SPDIF and
+headphones at the same time anyway, since they use the same jack, so
+there's no downside there.)
 
-> I presume that the interrupt handler cannot be pre-empted by a user-
-> space call such as snd_pcm_status().
+Here's where I could really use some help from people who know ALSA
+plumbing better than I do.  It seems to me this should be possible by
+overriding the "Master Playback Volume" put function with one that finds
+the "PCM Playback Volume" control and sets the volume for both controls.
 
-During execution of an interrupt handler, interrupts also are disabled.
+For some reason, I can't seem to access the PCM control from my master
+put function.  Attempts to find it via snd_ctl_find_id or
+snd_ctl_find_numid result in kernel oops.  There might be something
+simple I'm missing, or perhaps there is a better way to link the two
+volume controls?
 
 
-Regards,
-Clemens
+-- 
+  David Jordan
+  david2@system76.com
