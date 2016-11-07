@@ -1,130 +1,156 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [linux-sunxi] [PATCH v5 4/7] ASoC: sunxi: Add sun8i I2S driver
-Date: Mon, 7 Nov 2016 21:05:05 +0100
-Message-ID: <20161107200505.g76zz7adtfy4ltku@lukather>
-References: <cover.1477142934.git.moinejf@free.fr>
- <bee315efb909c1ee8b5fe7d3aeb9a33d713cb562.1477142934.git.moinejf@free.fr>
- <CAGb2v67gDd650TJk_-oHOehnzdH2qor=36HXdPt339Ji=ToAMg@mail.gmail.com>
- <20161106190248.48b59e166bcd9d6f0ebb4d04@free.fr>
+From: James Schulman <james.schulman@cirrus.com>
+Subject: [PATCH 2/2] ASoC: cs42l42: Add devicetree bindings for
+	CS42L42
+Date: Mon, 7 Nov 2016 14:38:38 -0600
+Message-ID: <139006a2-bc5f-4a49-8269-89c1adc3acf0@EX4.ad.cirrus.com>
+References: <1478551118-14760-1-git-send-email-james.schulman@cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0842595860=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20161106190248.48b59e166bcd9d6f0ebb4d04@free.fr>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devicetree <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-sunxi <linux-sunxi@googlegroups.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id A604B266552
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 21:38:54 +0100 (CET)
+In-Reply-To: <1478551118-14760-1-git-send-email-james.schulman@cirrus.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, brian.austin@cirrus.com, broonie@kernel.org, lgirdwood@gmail.com, James Schulman <james.schulman@cirrus.com>, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Add devicetree bindings documentation file for Cirrus
+Logic CS42L42 codec.
 
---===============0842595860==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5mqrdtho4x2pm45f"
-Content-Disposition: inline
+Signed-off-by: James Schulman <james.schulman@cirrus.com>
+---
+ .../devicetree/bindings/sound/cs42l42.txt          | 110 +++++++++++++++++++++
+ 1 file changed, 110 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs42l42.txt
 
-
---5mqrdtho4x2pm45f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Sun, Nov 06, 2016 at 07:02:48PM +0100, Jean-Francois Moine wrote:
-> On Sun, 23 Oct 2016 09:33:16 +0800
-> Chen-Yu Tsai <wens@csie.org> wrote:
->=20
-> > On Fri, Oct 21, 2016 at 4:36 PM, Jean-Francois Moine <moinejf@free.fr> =
-wrote:
-> > > This patch adds I2S support to sun8i SoCs as the A83T and H3.
-> > >
-> > > Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
-> > > ---
-> > > Note: This driver is closed to the sun4i-i2s except that:
-> > > - it handles the H3
-> >=20
-> > If it's close to sun4i-i2s, you should probably rework that one to supp=
-ort
-> > the newer SoCs.
->=20
-> I started to add the H3 into the sun4i-i2s, but I am blocked with
-> regmap.
-> Many H3 registers are common with the A10, but some of them have more
-> or less fields, the fields may be at different offsets. And, finally,
-> some registers are completely different.
-> This would not raise any problem, except with regmap which is really
-> painful.
-
-That's weird, because regmap's regmap_field should make that much
-easier.
-
-> As I may understood, regmap is used to simplify suspend/resume, but, is
-> it useful to save the I2S register on suspend?
-> Practically, I am streaming some tune on my device. I suspend it for
-> any reason. The next morning, I resume it. Are you sure I want to
-> continue to hear the end of the tune?
->=20
-> I better think that streaming should be simply stopped on suspend.
-
-You're mistaken. The code in there is for *runtime* suspend, ie when
-the device is no longer used, so that case shouldn't even happen at
-all.
-
-(And real suspend isn't supported anyway)
-
-> Then, there is no need to save the playing registers, and, here I am,
-> there is no need to use regmap.
->=20
-> May I go this way?
-
-No, please don't. regmap is also providing very useful features, such
-as access to all the registers through debugfs, or tracing. What
-exactly feels painful to you?
-
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
-
---5mqrdtho4x2pm45f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAEBCAAGBQJYIN5sAAoJEBx+YmzsjxAgZDAQAIalAWDwR9jey/epeDiTOb3A
-vin599o3eGK+6CqAHSSrDoXujKCHerEVu9tsa1XnkPNXcAW4TdZJxswRxmcv/2W5
-4XT2EQqWRVBtJGSiQ1gaXcVIIGi9W3lu/YNs6DbuICxZcqSWLHOFvTYHiRV6Xr1r
-tL3xUb+nIGvnltUzb3o3PprbOH6yAPYN7AISuRqGp2TXj5eWFC8hH/lFjiT5wYSo
-7b3+82xXI9+ep7QYpnOzdpujNgPkLbdwZms7FFtNaJ/CIXqn7/RY5qkNy2ucXb98
-xSwYyGKq/K+xbc27qQJH7HzsC+dHIEdj6o4h29ZpevN7O6u5orrZAgFp8pKpkNAq
-YkzY5EvCbJJH0J0Z1jzQm2wNtuJlq4o55o4v3Q/dTOS1t10VRDlB1fWzAQGhdPLN
-ctbr/JYIOLzUUYm2fJ82T7ZfvGqCYqReYKvFUx4yZbUgJ1HdsSYGQ80FUWwdpl0A
-H71CWgMK5HxdALMc9eh/uDbBFyg+vet8khV6xdjjVo9JxcmBPebwLghBHAzlnnY5
-agRrtdibo8zdtNsoSM/C9NOBpKmPHJ39Ocv6OngwQU6yKNq8gv+EY6PNKyRfaKaa
-DuqzfD9FXGV1jBkrAI0pclvAOQ75OWbmkT9DkvEIImTvFfpE2lhVSPUqeKMUXhCK
-TrTpUoaCQUjE64cSA58v
-=X+8k
------END PGP SIGNATURE-----
-
---5mqrdtho4x2pm45f--
-
---===============0842595860==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
-
---===============0842595860==--
+diff --git a/Documentation/devicetree/bindings/sound/cs42l42.txt b/Documentation/devicetree/bindings/sound/cs42l42.txt
+new file mode 100644
+index 0000000..9a2c5e2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs42l42.txt
+@@ -0,0 +1,110 @@
++CS42L42 audio CODEC
++
++Required properties:
++
++  - compatible : "cirrus,cs42l42"
++
++  - reg : the I2C address of the device for I2C.
++
++  - VP-supply, VCP-supply, VD_FILT-supply, VL-supply, VA-supply :
++  power supplies for the device, as covered in
++  Documentation/devicetree/bindings/regulator/regulator.txt.
++
++Optional properties:
++
++  - reset-gpios : a GPIO spec for the reset pin. If specified, it will be
++  deasserted before communication to the codec starts.
++
++  - interrupt-parent : Specifies the phandle of the interrupt controller to
++  which the IRQs from CS42L42 are delivered to.
++
++  - interrupts : IRQ line info CS42L42.
++  (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
++  for further information relating to interrupt properties)
++
++  - cirrus,ts-inv : Boolean property. For jacks that invert the tip sense
++  polarity. Normal jacks will short tip sense pin to HS1 when headphones are
++  plugged in and leave tip sense floating when not plugged in. Inverting jacks
++  short tip sense when unplugged and float when plugged in.
++
++  0 = (Default) Non-inverted
++  1 = Inverted
++
++  - cirrus,ts-dbnc-rise : Debounce the rising edge of TIP_SENSE_PLUG. With no
++  debounce, the tip sense pin might be noisy on a plug event.
++
++  0 - 0ms,
++  1 - 125ms,
++  2 - 250ms,
++  3 - 500ms,
++  4 - 750ms,
++  5 - (Default) 1s,
++  6 - 1.25s,
++  7 - 1.5s,
++
++  - cirrus,ts-dbnc-fall : Debounce the falling edge of TIP_SENSE_UNPLUG.
++  With no debounce, the tip sense pin might be noisy on an unplug event.
++
++  0 - 0ms,
++  1 - 125ms,
++  2 - 250ms,
++  3 - 500ms,
++  4 - 750ms,
++  5 - (Default) 1s,
++  6 - 1.25s,
++  7 - 1.5s,
++
++  - cirrus,btn-det-init-dbnce : This sets how long the driver sleeps after
++  enabling button detection interrupts. After auto-detection and before
++  servicing button interrupts, the HS bias needs time to settle. If you
++  don't wait, there is possibility for erroneous button interrupt.
++
++  0ms - 200ms,
++  Default = 100ms
++
++  - cirrus,btn-det-event-dbnce : This sets how long the driver delays after
++  receiving a button press interrupt. With level detect interrupts, you want
++  to wait a small amount of time to make sure the button press is making a
++  clean connection with the bias resistors.
++
++  0ms - 20ms,
++  Default = 10ms
++
++  - cirrus,bias-lvls : For a level-detect headset button scheme, each button
++  will bias the mic pin to a certain voltage. To determine which button was
++  pressed, the driver will compare this biased voltage to sequential,
++  decreasing voltages and will stop when a comparator is tripped,
++  indicating a comparator voltage < bias voltage. This value represents a
++  percentage of the internally generated HS bias voltage. For different
++  hardware setups, a designer might want to tweak this. This is an array of
++  descending values for the comparator voltage.
++
++  Array of 4 values
++  Each 0-63
++  < x1 x2 x3 x4 >
++  Default = < 15 8 4 1>
++
++
++Example:
++
++cs42l42: cs42l42@48 {
++	compatible = "cirrus,cs42l42";
++	reg = <0x48>;
++	VA-supply = <&dummy_vreg>;
++	VP-supply = <&dummy_vreg>;
++	VCP-supply = <&dummy_vreg>;
++	VD_FILT-supply = <&dummy_vreg>;
++	VL-supply = <&dummy_vreg>;
++
++	reset-gpios = <&axi_gpio_0 1 0>;
++	interrupt-parent = <&gpio0>;
++	interrupts = <55 8>
++
++	cirrus,ts-inv = <0x00>;
++	cirrus,ts-dbnc-rise = <0x05>;
++	cirrus,ts-dbnc-fall = <0x00>;
++	cirrus,btn-det-init-dbnce = <100>;
++	cirrus,btn-det-event-dbnce = <10>;
++	cirrus,bias-lvls = <0x0F 0x08 0x04 0x01>;
++	cirrus,hs-bias-ramp-rate = <0x02>;
++};
+\ No newline at end of file
+-- 
+1.9.1
