@@ -1,53 +1,55 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: [PATCH v3 5/6] ARM: dts: sun6i: hummingbird: Enable internal audio codec
-Date: Mon,  7 Nov 2016 18:07:02 +0800
-Message-ID: <20161107100703.5586-6-wens@csie.org>
-References: <20161107100703.5586-1-wens@csie.org>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20161107100703.5586-1-wens-jdAy2FN1RRM@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: How to package the smixer modules?
+Date: Mon, 07 Nov 2016 14:43:49 +0200
+Message-ID: <1478522629.1939.3.camel@iki.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id A2A18265D2B
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 13:43:56 +0100 (CET)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 06FDF2088C
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 07:43:54 -0500 (EST)
+Received: from laptop (a88-113-211-72.elisa-laajakaista.fi [88.113.211.72])
+ by mail.messagingengine.com (Postfix) with ESMTPA id B9CD8CC02A
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 07:43:51 -0500 (EST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The Hummingbird A31 has headset and line in audio jacks and an onboard
-mic routed to the pins for the SoC's internal codec. The line out pins
-are routed to an onboard speaker amp, whose output is available on a
-pin header.
+Hi all!
 
-Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
----
- arch/arm/boot/dts/sun6i-a31-hummingbird.dts | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+What do the smixer modules do? I mean these files:
 
-diff --git a/arch/arm/boot/dts/sun6i-a31-hummingbird.dts b/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
-index 9a74637f677f..4e0516026596 100644
---- a/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
-+++ b/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
-@@ -69,6 +69,19 @@
- 	};
- };
- 
-+&codec {
-+	allwinner,audio-routing =
-+		"Headphone", "HP",
-+		"Speaker", "LINEOUT",
-+		"LINEIN", "Line In",
-+		"MIC1", "Mic",
-+		"MIC2", "Headset Mic",
-+		"Mic",	"MBIAS",
-+		"Headset Mic", "HBIAS";
-+	allwinner,pa-gpios = <&pio 7 22 GPIO_ACTIVE_HIGH>; /* PH22 */
-+	status = "okay";
-+};
-+
- &cpu0 {
- 	cpu-supply = <&reg_dcdc3>;
- };
+/usr/lib/alsa-lib/smixer/smixer-ac97.so
+/usr/lib/alsa-lib/smixer/smixer-hda.so
+/usr/lib/alsa-lib/smixer/smixer-sbase.so
+
+Should they always be shipped along with the main libasound library? I
+maintain the alsa-lib package in OpenEmbedded, and currently
+OpenEmbedded has separate packages for libasound and the smixer
+modules, and I wonder if that's a good idea. It looks like the smixer
+modules don't get installed by default when libasound is installed.
+Debian, in contrast, ships the smixer modules in the libasound package.
+
+After studying the source code a bit, it seems that the smixer modules
+are dynamically loaded by the "simple mixer" interface of libasound.
+I'm not familiar with the purpose of that interface. I don't know if
+there are many applications that use that interface, and I don't know
+if those applications that do use it suffer badly if the smixer modules
+aren't installed.
+
 -- 
-2.10.2
+Tanu
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+https://www.patreon.com/tanuk
