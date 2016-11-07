@@ -1,21 +1,18 @@
-From: Alan Young <Alan.Young@IEE.org>
-Subject: Use of snd_atomic_write_t for dshare and friends
-Date: Mon, 7 Nov 2016 15:29:29 +0000
-Message-ID: <58209DD9.8060905@IEE.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Locking/mutex for snd_pcm_update_hw_ptr0() call
+Date: Mon, 7 Nov 2016 16:40:01 +0100
+Message-ID: <c1cd24e6-bf1f-87fe-6ae5-8f15de091833@ladisch.de>
+References: <58207934.8080006@IEE.org>
+ <6a229803-cfe2-81b0-d873-902831e3314d@ladisch.de>
+ <58209600.1090908@IEE.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EF54266DE4
- for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 16:29:30 +0100 (CET)
-Received: by mail-wm0-f48.google.com with SMTP id a197so189574923wmd.0
- for <alsa-devel@alsa-project.org>; Mon, 07 Nov 2016 07:29:30 -0800 (PST)
-Received: from [192.168.11.11] (13.110.6.51.dyn.plus.net. [51.6.110.13])
- by smtp.googlemail.com with ESMTPSA id r72sm14120360wmd.21.2016.11.07.07.29.29
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 07 Nov 2016 07:29:30 -0800 (PST)
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id C262E266B02
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 16:40:04 +0100 (CET)
+In-Reply-To: <58209600.1090908@IEE.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,9 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alan Young <Alan.Young@IEE.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Would it make sense for dshare, and other d-* plugins, to use a shared 
-snd_atomic_write_t in the shared memory segment and associated 
-snd_atomic_write_xxx() & snd_atomic_read_xxx() calls?
+Alan Young wrote:
+> On 07/11/16 14:15, Clemens Ladisch wrote:
+>> Alan Young wrote:
+>>> It is possible that the DMA interrupt handler could call
+>>> snd_pcm_update_hw_ptr0() while it is part way through a call
+>>> from snd_pcm_status(), or vice versa?
+>>
+>> The *lock_irq* functions disable interrupts on the current CPU.
+>
+> But only on the current CPU? So that would imply that multiple threads
+> could execute snd_pcm_update_hw_ptr0() simultaneously on multi-CPU
+> systems.
+
+That's what the lock is for.
+
+> I presume that the interrupt handler cannot be pre-empted by a user-
+> space call such as snd_pcm_status().
+
+During execution of an interrupt handler, interrupts also are disabled.
+
+
+Regards,
+Clemens
