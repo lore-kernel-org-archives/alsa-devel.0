@@ -1,20 +1,21 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: How to package the smixer modules?
-Date: Mon, 07 Nov 2016 14:43:49 +0200
-Message-ID: <1478522629.1939.3.camel@iki.fi>
+From: Alan Young <Alan.Young@IEE.org>
+Subject: Locking/mutex for snd_pcm_update_hw_ptr0() call
+Date: Mon, 7 Nov 2016 12:53:08 +0000
+Message-ID: <58207934.8080006@IEE.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id A2A18265D2B
- for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 13:43:56 +0100 (CET)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id 06FDF2088C
- for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 07:43:54 -0500 (EST)
-Received: from laptop (a88-113-211-72.elisa-laajakaista.fi [88.113.211.72])
- by mail.messagingengine.com (Postfix) with ESMTPA id B9CD8CC02A
- for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 07:43:51 -0500 (EST)
+Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 788E6265D2B
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2016 13:53:10 +0100 (CET)
+Received: by mail-wm0-f43.google.com with SMTP id a197so180391040wmd.0
+ for <alsa-devel@alsa-project.org>; Mon, 07 Nov 2016 04:53:10 -0800 (PST)
+Received: from [192.168.11.11] (13.110.6.51.dyn.plus.net. [51.6.110.13])
+ by smtp.googlemail.com with ESMTPSA id o62sm13394636wmg.12.2016.11.07.04.53.08
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 07 Nov 2016 04:53:08 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +25,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all!
+As far as I can see, snd_pcm_update_hw_ptr0() is a critical section of 
+code that is protected by some form of mutex in all its call paths:
 
-What do the smixer modules do? I mean these files:
+     snd_pcm_period_elapsed() - snd_pcm_stream_lock_irqsave()
 
-/usr/lib/alsa-lib/smixer/smixer-ac97.so
-/usr/lib/alsa-lib/smixer/smixer-hda.so
-/usr/lib/alsa-lib/smixer/smixer-sbase.so
+     snd_pcm_update_hw_ptr()
 
-Should they always be shipped along with the main libasound library? I
-maintain the alsa-lib package in OpenEmbedded, and currently
-OpenEmbedded has separate packages for libasound and the smixer
-modules, and I wonder if that's a good idea. It looks like the smixer
-modules don't get installed by default when libasound is installed.
-Debian, in contrast, ships the smixer modules in the libasound package.
+         snd_pcm_lib_ioctl_reset() - snd_pcm_stream_lock_irqsave()
 
-After studying the source code a bit, it seems that the smixer modules
-are dynamically loaded by the "simple mixer" interface of libasound.
-I'm not familiar with the purpose of that interface. I don't know if
-there are many applications that use that interface, and I don't know
-if those applications that do use it suffer badly if the smixer modules
-aren't installed.
+         snd_pcm_lib_write1() - snd_pcm_stream_lock_irq()
 
--- 
-Tanu
+         snd_pcm_lib_read1() - snd_pcm_stream_lock_irq()
 
-https://www.patreon.com/tanuk
+         snd_pcm_status() - snd_pcm_stream_lock_irq()
+
+         snd_pcm_do_pause - I think via the locking in snd_pcm_action()
+
+         snd_pcm_playback_rewind() - snd_pcm_stream_lock_irq()
+
+         snd_pcm_capture_rewind() - snd_pcm_stream_lock_irq()
+
+         snd_pcm_playback_forward() - snd_pcm_stream_lock_irq()
+
+         snd_pcm_capture_forward() - snd_pcm_stream_lock_irq()
+
+         snd_pcm_hwsync() - snd_pcm_stream_lock_irq()
+
+         snd_pcm_delay() - snd_pcm_stream_lock_irq()
+
+
+
+However, I am not familiar with how kernel locking mechanisms work. It 
+is possible that the DMA interrupt handler (snd_pcm_period_elapsed()), 
+could call snd_pcm_update_hw_ptr0() while it is part way through a call 
+from snd_pcm_status(), or vice versa?
+
+Alan.
