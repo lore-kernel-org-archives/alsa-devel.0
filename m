@@ -1,60 +1,44 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH 3/3] ARM: gr8: evb: Add i2s codec
-Date: Mon, 7 Nov 2016 22:11:45 +0800
-Message-ID: <CAGb2v65bzWJpEnmwk89Qkn+_QawcPtpCJdA+90Dgc68FLRNQqw@mail.gmail.com>
-References: <cover.9296840e0b7438e0ae63b4ec0d64957640b64a78.1478524066.git-series.maxime.ripard@free-electrons.com>
- <4d99da31af41b26d9109113e19223ee8b88f76ae.1478524066.git-series.maxime.ripard@free-electrons.com>
+From: Russell King - ARM Linux <linux@armlinux.org.uk>
+Subject: Re: [PATCH v3] drm: bridge: add DesignWare HDMI I2S audio support
+Date: Mon, 7 Nov 2016 14:56:28 +0000
+Message-ID: <20161107145627.GG1041@n2100.armlinux.org.uk>
+References: <871syu4r3x.wl%kuninori.morimoto.gx@renesas.com>
+ <20161102082758.GV1041@n2100.armlinux.org.uk>
+ <87twbk9cg8.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4d99da31af41b26d9109113e19223ee8b88f76ae.1478524066.git-series.maxime.ripard@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87twbk9cg8.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Archit Taneja <architt@codeaurora.org>, Mark Brown <broonie@kernel.org>, David Airlie <airlied@linux.ie>, Fabio Estevam <fabio.estevam@freescale.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, Koji Matsuoka <koji.matsuoka.xm@renesas.com>, Thierry Reding <treding@nvidia.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Jose Abreu <joabreu@synopsys.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 7, 2016 at 9:08 PM, Maxime Ripard
-<maxime.ripard@free-electrons.com> wrote:
-> The GR8-EVB comes with a wm8978 codec connected to the i2s bus.
->
-> Add a card in order to have it working
->
-> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
-> ---
->  arch/arm/boot/dts/ntc-gr8-evb.dts | 14 ++++++++++++++
->  1 file changed, 14 insertions(+), 0 deletions(-)
->
-> diff --git a/arch/arm/boot/dts/ntc-gr8-evb.dts b/arch/arm/boot/dts/ntc-gr8-evb.dts
-> index 12b4317a4383..5291e425caf9 100644
-> --- a/arch/arm/boot/dts/ntc-gr8-evb.dts
-> +++ b/arch/arm/boot/dts/ntc-gr8-evb.dts
-> @@ -76,6 +76,20 @@
->                 default-brightness-level = <8>;
->         };
->
-> +       i2s {
+On Mon, Nov 07, 2016 at 03:50:00AM +0000, Kuninori Morimoto wrote:
+> 
+> Hi Russell
+> 
+> > > +	platform = platform_device_register_full(&pdevinfo);
+> > > +	if (IS_ERR_OR_NULL(platform))
+> > > +		return PTR_ERR(platform);
+> > 
+> > This is wrong.  If platform is NULL, PTR_ERR() will return zero, which
+> > will be interpreted as success.  Please, avoid using IS_ERR_OR_NULL(),
+> > it leads to exactly this kind of cockup - and it's unnecessary here
+> > because platform_device_register_full() does not return NULL.
+> 
+> Thank you for your feedback.
+> Before sending v4 patch, I would like to confirm. Do you meand this ?
+> # use IS_ERR() instead of IS_ERR_OR_NULL()
+> 
+> 	platform = platform_device_register_full(&pdevinfo);
+> 	if (IS_ERR(platform))
+> 		return PTR_ERR(platform);
 
-"sound" might be a better node name? The I2S controllers are also named "i2s".
+Yes, that's exactly correct.
 
-Otherwise,
-
-Acked-by: Chen-Yu Tsai <wens@csie.org>
-
-> +               compatible = "simple-audio-card";
-> +               simple-audio-card,name = "gr8-evb-wm8978";
-> +               simple-audio-card,format = "i2s";
-> +               simple-audio-card,mclk-fs = <512>;
-> +
-> +               simple-audio-card,cpu {
-> +                       sound-dai = <&i2s0>;
-> +               };
-> +
-> +               simple-audio-card,codec {
-> +                       sound-dai = <&wm8978>;
-> +               };
-> +       };
->
->         panel {
->                 compatible = "allwinner,sun4i-a10-sub-evb-5-lcd";
-> --
-> git-series 0.8.11
+-- 
+RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
