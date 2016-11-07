@@ -1,7 +1,8 @@
 From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: [PATCH v3 4/6] ARM: dts: sun6i: Add audio codec device node
-Date: Mon,  7 Nov 2016 18:07:01 +0800
-Message-ID: <20161107100703.5586-5-wens@csie.org>
+Subject: [PATCH v3 3/6] ASoC: sun4i-codec: Add "Right Mixer" to
+ "Line Out Mono Diff." route
+Date: Mon,  7 Nov 2016 18:07:00 +0800
+Message-ID: <20161107100703.5586-4-wens@csie.org>
 References: <20161107100703.5586-1-wens@csie.org>
 Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
@@ -19,37 +20,31 @@ To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brow
 Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The A31 SoC includes the Allwinner audio codec, capable of 24-bit
-playback up to 192 kHz and 24-bit capture up to 48 kHz.
+The mono differential output for "Line Out" downmixes the stereo audio
+from the mixer, instead of just taking the left channel.
 
+Add a route from the "Right Mixer" to "Line Out Source Playback Route"
+through the "Mono Differential" path, so DAPM doesn't shut down
+everything if the left channel is muted.
+
+Fixes: 0f909f98d7cb ("ASoC: sun4i-codec: Add support for A31 Line Out
+		      playback")
 Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 ---
- arch/arm/boot/dts/sun6i-a31.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/sunxi/sun4i-codec.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/sun6i-a31.dtsi b/arch/arm/boot/dts/sun6i-a31.dtsi
-index 2e8bf93dcfb2..f68e6102b01b 100644
---- a/arch/arm/boot/dts/sun6i-a31.dtsi
-+++ b/arch/arm/boot/dts/sun6i-a31.dtsi
-@@ -784,6 +784,19 @@
- 			reset-names = "ahb";
- 		};
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 6379efd21f00..006ca3c17e80 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -1047,6 +1047,7 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
+ 	{ "Line Out Source Playback Route", "Stereo", "Left Mixer" },
+ 	{ "Line Out Source Playback Route", "Stereo", "Right Mixer" },
+ 	{ "Line Out Source Playback Route", "Mono Differential", "Left Mixer" },
++	{ "Line Out Source Playback Route", "Mono Differential", "Right Mixer" },
+ 	{ "LINEOUT", NULL, "Line Out Source Playback Route" },
  
-+		codec: codec@01c22c00 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun6i-a31-codec";
-+			reg = <0x01c22c00 0x98>;
-+			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_APB1_CODEC>, <&ccu CLK_CODEC>;
-+			clock-names = "apb", "codec";
-+			resets = <&ccu RST_APB1_CODEC>;
-+			dmas = <&dma 15>, <&dma 15>;
-+			dma-names = "rx", "tx";
-+			status = "disabled";
-+		};
-+
- 		timer@01c60000 {
- 			compatible = "allwinner,sun6i-a31-hstimer",
- 				     "allwinner,sun7i-a20-hstimer";
+ 	/* ADC Routes */
 -- 
 2.10.2
