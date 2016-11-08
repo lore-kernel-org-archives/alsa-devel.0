@@ -1,14 +1,20 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH v2] ASoC: add rt5665 codec driver
-Date: Tue, 8 Nov 2016 14:53:07 +0800
-Message-ID: <1478587987-23999-1-git-send-email-bardliao@realtek.com>
+From: David Jordan <david2@system76.com>
+Subject: Re: Fixup set PCM/headphones volume from Master
+Date: Tue, 08 Nov 2016 11:17:58 -0800
+Message-ID: <1478632678.4150909.781504841.24A2A665@webmail.messagingengine.com>
+References: <1478537979.2123627.780087305.7503B79D@webmail.messagingengine.com>
+ <63dfc720-71c9-9556-61cc-9fec629ddef5@ladisch.de>
+ <1478554581.3026158.780400457.4CB1BFD6@webmail.messagingengine.com>
+ <s5hinry9gnm.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/mixed; boundary="_----------=_147863267841509092";
+ charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id CDF43261A1A
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2016 07:53:34 +0100 (CET)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id F3F6D266A24
+ for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2016 20:17:59 +0100 (CET)
+In-Reply-To: <s5hinry9gnm.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,7103 +24,1408 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-This is the initial codec driver for rt5665.
+This is a multi-part message in MIME format.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
-v2:
-* Use devm_regulator_bulk_get, and the regulator are not optional.
-* Separate each slot for the AIF interface .
----
- Documentation/devicetree/bindings/sound/rt5665.txt |   73 +
- include/sound/rt5665.h                             |   51 +
- sound/soc/codecs/Kconfig                           |    6 +
- sound/soc/codecs/Makefile                          |    2 +
- sound/soc/codecs/rt5665.c                          | 4878 ++++++++++++++++++++
- sound/soc/codecs/rt5665.h                          | 1990 ++++++++
- 6 files changed, 7000 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/rt5665.txt
- create mode 100644 include/sound/rt5665.h
- create mode 100644 sound/soc/codecs/rt5665.c
- create mode 100644 sound/soc/codecs/rt5665.h
+--_----------=_147863267841509092
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5665.txt b/Documentation/devicetree/bindings/sound/rt5665.txt
-new file mode 100644
-index 0000000..397edfd
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rt5665.txt
-@@ -0,0 +1,73 @@
-+RT5665/RT5666/RT5668 audio CODEC
-+
-+This device supports I2C only.
-+
-+Required properties:
-+
-+- compatible : One of "realtek,rt5665", "realtek,rt5666" or "realtek,rt5668".
-+
-+- reg : The I2C address of the device.
-+
-+- interrupts : The CODEC's interrupt output.
-+
-+- realtek,regulator_1v8
-+- realtek,regulator_3v3
-+- realtek,regulator_5v
-+  The name of regulators
-+
-+Optional properties:
-+
-+- realtek,in1-differential
-+- realtek,in2-differential
-+- realtek,in3-differential
-+- realtek,in4-differential
-+  Boolean. Indicate MIC1/2/3/4 input are differential, rather than single-ended.
-+
-+- realtek,dmic1-data-pin
-+  0: dmic1 is not used
-+  1: using GPIO4 pin as dmic1 data pin
-+  2: using IN2N pin as dmic2 data pin
-+
-+- realtek,dmic2-data-pin
-+  0: dmic2 is not used
-+  1: using GPIO5 pin as dmic2 data pin
-+  2: using IN2P pin as dmic2 data pin
-+
-+- realtek,jd-src
-+  0: No JD is used
-+  1: using JD1 as JD source
-+
-+- realtek,ldo1-en-gpios : The GPIO that controls the CODEC's LDO1_EN pin.
-+
-+Pins on the device (for linking into audio routes) for RT5659/RT5658:
-+
-+  * DMIC L1
-+  * DMIC R1
-+  * DMIC L2
-+  * DMIC R2
-+  * IN1P
-+  * IN1N
-+  * IN2P
-+  * IN2N
-+  * IN3P
-+  * IN3N
-+  * IN4P
-+  * IN4N
-+  * HPOL
-+  * HPOR
-+  * LOUTL
-+  * LOUTR
-+  * MONOOUT
-+  * PDML
-+  * PDMR
-+
-+Example:
-+
-+rt5659 {
-+	compatible = "realtek,rt5665";
-+	reg = <0x1b>;
-+	interrupt-parent = <&gpio>;
-+	interrupts = <TEGRA_GPIO(W, 3) GPIO_ACTIVE_HIGH>;
-+	realtek,ldo1-en-gpios =
-+		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
-+};
-diff --git a/include/sound/rt5665.h b/include/sound/rt5665.h
-new file mode 100644
-index 0000000..d73482e
---- /dev/null
-+++ b/include/sound/rt5665.h
-@@ -0,0 +1,51 @@
-+/*
-+ * linux/sound/rt5665.h -- Platform data for RT5665
-+ *
-+ * Copyright 2016 Realtek Microelectronics
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __LINUX_SND_RT5665_H
-+#define __LINUX_SND_RT5665_H
-+
-+enum rt5665_dmic1_data_pin {
-+	RT5665_DMIC1_NULL,
-+	RT5665_DMIC1_DATA_GPIO4,
-+	RT5665_DMIC1_DATA_IN2N,
-+};
-+
-+enum rt5665_dmic2_data_pin {
-+	RT5665_DMIC2_NULL,
-+	RT5665_DMIC2_DATA_GPIO5,
-+	RT5665_DMIC2_DATA_IN2P,
-+};
-+
-+enum rt5665_jd_src {
-+	RT5665_JD_NULL,
-+	RT5665_JD1,
-+};
-+
-+struct rt5665_platform_data {
-+	bool in1_diff;
-+	bool in2_diff;
-+	bool in3_diff;
-+	bool in4_diff;
-+
-+	const char *regulator_1v8;
-+	const char *regulator_3v3;
-+	const char *regulator_5v;
-+
-+	int ldo1_en; /* GPIO for LDO1_EN */
-+
-+	enum rt5665_dmic1_data_pin dmic1_data_pin;
-+	enum rt5665_dmic2_data_pin dmic2_data_pin;
-+	enum rt5665_jd_src jd_src;
-+
-+	unsigned int sar_hs_type;
-+};
-+
-+#endif
-+
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 0b1be61..8b9b0729 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -116,6 +116,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_RT5651 if I2C
- 	select SND_SOC_RT5659 if I2C
- 	select SND_SOC_RT5660 if I2C
-+	select SND_SOC_RT5665 if I2C
- 	select SND_SOC_RT5663 if I2C
- 	select SND_SOC_RT5670 if I2C
- 	select SND_SOC_RT5677 if I2C && SPI_MASTER
-@@ -662,6 +663,7 @@ config SND_SOC_RL6231
- 	default y if SND_SOC_RT5651=y
- 	default y if SND_SOC_RT5659=y
- 	default y if SND_SOC_RT5660=y
-+	default y if SND_SOC_RT5665=y
- 	default y if SND_SOC_RT5663=y
- 	default y if SND_SOC_RT5670=y
- 	default y if SND_SOC_RT5677=y
-@@ -672,6 +674,7 @@ config SND_SOC_RL6231
- 	default m if SND_SOC_RT5651=m
- 	default m if SND_SOC_RT5659=m
- 	default m if SND_SOC_RT5660=m
-+	default m if SND_SOC_RT5665=m
- 	default m if SND_SOC_RT5663=m
- 	default m if SND_SOC_RT5670=m
- 	default m if SND_SOC_RT5677=m
-@@ -721,6 +724,9 @@ config SND_SOC_RT5659
- config SND_SOC_RT5660
- 	tristate
- 
-+config SND_SOC_RT5665
-+	tristate
-+
- config SND_SOC_RT5663
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index d8984eb..4ab8dac 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -117,6 +117,7 @@ snd-soc-rt5645-objs := rt5645.o
- snd-soc-rt5651-objs := rt5651.o
- snd-soc-rt5659-objs := rt5659.o
- snd-soc-rt5660-objs := rt5660.o
-+snd-soc-rt5665-objs := rt5665.o
- snd-soc-rt5663-objs := rt5663.o
- snd-soc-rt5670-objs := rt5670.o
- snd-soc-rt5677-objs := rt5677.o
-@@ -343,6 +344,7 @@ obj-$(CONFIG_SND_SOC_RT5645)	+= snd-soc-rt5645.o
- obj-$(CONFIG_SND_SOC_RT5651)	+= snd-soc-rt5651.o
- obj-$(CONFIG_SND_SOC_RT5659)	+= snd-soc-rt5659.o
- obj-$(CONFIG_SND_SOC_RT5660)	+= snd-soc-rt5660.o
-+obj-$(CONFIG_SND_SOC_RT5665)	+= snd-soc-rt5665.o
- obj-$(CONFIG_SND_SOC_RT5663)	+= snd-soc-rt5663.o
- obj-$(CONFIG_SND_SOC_RT5670)	+= snd-soc-rt5670.o
- obj-$(CONFIG_SND_SOC_RT5677)	+= snd-soc-rt5677.o
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-new file mode 100644
-index 0000000..315e9c9
---- /dev/null
-+++ b/sound/soc/codecs/rt5665.c
-@@ -0,0 +1,4878 @@
-+/*
-+ * rt5665.c  --  RT5665/RT5658 ALSA SoC audio codec driver
-+ *
-+ * Copyright 2016 Realtek Semiconductor Corp.
-+ * Author: Bard Liao <bardliao@realtek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/pm.h>
-+#include <linux/i2c.h>
-+#include <linux/platform_device.h>
-+#include <linux/spi/spi.h>
-+#include <linux/acpi.h>
-+#include <linux/gpio.h>
-+#include <linux/of_gpio.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/mutex.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/jack.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/initval.h>
-+#include <sound/tlv.h>
-+#include <sound/rt5665.h>
-+
-+#include "rl6231.h"
-+#include "rt5665.h"
-+
-+#define RT5665_NUM_SUPPLIES 3
-+
-+struct rt5665_priv {
-+	struct snd_soc_codec *codec;
-+	struct rt5665_platform_data pdata;
-+	struct regmap *regmap;
-+	struct gpio_desc *gpiod_ldo1_en;
-+	struct gpio_desc *gpiod_reset;
-+	struct snd_soc_jack *hs_jack;
-+	struct regulator_bulk_data supplies[RT5665_NUM_SUPPLIES];
-+	struct delayed_work jack_detect_work;
-+	struct delayed_work calibrate_work;
-+	struct delayed_work jd_check_work;
-+	struct mutex calibrate_mutex;
-+
-+	int sysclk;
-+	int sysclk_src;
-+	int lrck[RT5665_AIFS];
-+	int bclk[RT5665_AIFS];
-+	int master[RT5665_AIFS];
-+	int id;
-+
-+	int pll_src;
-+	int pll_in;
-+	int pll_out;
-+
-+	int jack_type;
-+	int irq_work_delay_time;
-+	unsigned int sar_adc_value;
-+};
-+
-+static const struct reg_default rt5665_reg[] = {
-+	{0x0000, 0x0000},
-+	{0x0001, 0xc8c8},
-+	{0x0002, 0x8080},
-+	{0x0003, 0x8000},
-+	{0x0004, 0xc80a},
-+	{0x0005, 0x0000},
-+	{0x0006, 0x0000},
-+	{0x0007, 0x0000},
-+	{0x000a, 0x0000},
-+	{0x000b, 0x0000},
-+	{0x000c, 0x0000},
-+	{0x000d, 0x0000},
-+	{0x000f, 0x0808},
-+	{0x0010, 0x4040},
-+	{0x0011, 0x0000},
-+	{0x0012, 0x1404},
-+	{0x0013, 0x1000},
-+	{0x0014, 0xa00a},
-+	{0x0015, 0x0404},
-+	{0x0016, 0x0404},
-+	{0x0017, 0x0011},
-+	{0x0018, 0xafaf},
-+	{0x0019, 0xafaf},
-+	{0x001a, 0xafaf},
-+	{0x001b, 0x0011},
-+	{0x001c, 0x2f2f},
-+	{0x001d, 0x2f2f},
-+	{0x001e, 0x2f2f},
-+	{0x001f, 0x0000},
-+	{0x0020, 0x0000},
-+	{0x0021, 0x0000},
-+	{0x0022, 0x5757},
-+	{0x0023, 0x0039},
-+	{0x0026, 0xc0c0},
-+	{0x0027, 0xc0c0},
-+	{0x0028, 0xc0c0},
-+	{0x0029, 0x8080},
-+	{0x002a, 0xaaaa},
-+	{0x002b, 0xaaaa},
-+	{0x002c, 0xaba8},
-+	{0x002d, 0x0000},
-+	{0x002e, 0x0000},
-+	{0x002f, 0x0000},
-+	{0x0030, 0x0000},
-+	{0x0031, 0x5000},
-+	{0x0032, 0x0000},
-+	{0x0033, 0x0000},
-+	{0x0034, 0x0000},
-+	{0x0035, 0x0000},
-+	{0x003a, 0x0000},
-+	{0x003b, 0x0000},
-+	{0x003c, 0x00ff},
-+	{0x003d, 0x0000},
-+	{0x003e, 0x00ff},
-+	{0x003f, 0x0000},
-+	{0x0040, 0x0000},
-+	{0x0041, 0x00ff},
-+	{0x0042, 0x0000},
-+	{0x0043, 0x00ff},
-+	{0x0044, 0x0c0c},
-+	{0x0049, 0xc00b},
-+	{0x004a, 0x0000},
-+	{0x004b, 0x031f},
-+	{0x004d, 0x0000},
-+	{0x004e, 0x001f},
-+	{0x004f, 0x0000},
-+	{0x0050, 0x001f},
-+	{0x0052, 0xf000},
-+	{0x0061, 0x0000},
-+	{0x0062, 0x0000},
-+	{0x0063, 0x003e},
-+	{0x0064, 0x0000},
-+	{0x0065, 0x0000},
-+	{0x0066, 0x003f},
-+	{0x0067, 0x0000},
-+	{0x006b, 0x0000},
-+	{0x006d, 0xff00},
-+	{0x006e, 0x2808},
-+	{0x006f, 0x000a},
-+	{0x0070, 0x8000},
-+	{0x0071, 0x8000},
-+	{0x0072, 0x8000},
-+	{0x0073, 0x7000},
-+	{0x0074, 0x7770},
-+	{0x0075, 0x0002},
-+	{0x0076, 0x0001},
-+	{0x0078, 0x00f0},
-+	{0x0079, 0x0000},
-+	{0x007a, 0x0000},
-+	{0x007b, 0x0000},
-+	{0x007c, 0x0000},
-+	{0x007d, 0x0123},
-+	{0x007e, 0x4500},
-+	{0x007f, 0x8003},
-+	{0x0080, 0x0000},
-+	{0x0081, 0x0000},
-+	{0x0082, 0x0000},
-+	{0x0083, 0x0000},
-+	{0x0084, 0x0000},
-+	{0x0085, 0x0000},
-+	{0x0086, 0x0008},
-+	{0x0087, 0x0000},
-+	{0x0088, 0x0000},
-+	{0x0089, 0x0000},
-+	{0x008a, 0x0000},
-+	{0x008b, 0x0000},
-+	{0x008c, 0x0003},
-+	{0x008e, 0x0060},
-+	{0x008f, 0x1000},
-+	{0x0091, 0x0c26},
-+	{0x0092, 0x0073},
-+	{0x0093, 0x0000},
-+	{0x0094, 0x0080},
-+	{0x0098, 0x0000},
-+	{0x0099, 0x0000},
-+	{0x009a, 0x0007},
-+	{0x009f, 0x0000},
-+	{0x00a0, 0x0000},
-+	{0x00a1, 0x0002},
-+	{0x00a2, 0x0001},
-+	{0x00a3, 0x0002},
-+	{0x00a4, 0x0001},
-+	{0x00ae, 0x2040},
-+	{0x00af, 0x0000},
-+	{0x00b6, 0x0000},
-+	{0x00b7, 0x0000},
-+	{0x00b8, 0x0000},
-+	{0x00b9, 0x0000},
-+	{0x00ba, 0x0002},
-+	{0x00bb, 0x0000},
-+	{0x00be, 0x0000},
-+	{0x00c0, 0x0000},
-+	{0x00c1, 0x0aaa},
-+	{0x00c2, 0xaa80},
-+	{0x00c3, 0x0003},
-+	{0x00c4, 0x0000},
-+	{0x00d0, 0x0000},
-+	{0x00d1, 0x2244},
-+	{0x00d3, 0x3300},
-+	{0x00d4, 0x2200},
-+	{0x00d9, 0x0809},
-+	{0x00da, 0x0000},
-+	{0x00db, 0x0008},
-+	{0x00dc, 0x00c0},
-+	{0x00dd, 0x6724},
-+	{0x00de, 0x3131},
-+	{0x00df, 0x0008},
-+	{0x00e0, 0x4000},
-+	{0x00e1, 0x3131},
-+	{0x00e2, 0x600c},
-+	{0x00ea, 0xb320},
-+	{0x00eb, 0x0000},
-+	{0x00ec, 0xb300},
-+	{0x00ed, 0x0000},
-+	{0x00ee, 0xb320},
-+	{0x00ef, 0x0000},
-+	{0x00f0, 0x0201},
-+	{0x00f1, 0x0ddd},
-+	{0x00f2, 0x0ddd},
-+	{0x00f6, 0x0000},
-+	{0x00f7, 0x0000},
-+	{0x00f8, 0x0000},
-+	{0x00fa, 0x0000},
-+	{0x00fb, 0x0000},
-+	{0x00fc, 0x0000},
-+	{0x00fd, 0x0000},
-+	{0x00fe, 0x10ec},
-+	{0x00ff, 0x6451},
-+	{0x0100, 0xaaaa},
-+	{0x0101, 0x000a},
-+	{0x010a, 0xaaaa},
-+	{0x010b, 0xa0a0},
-+	{0x010c, 0xaeae},
-+	{0x010d, 0xaaaa},
-+	{0x010e, 0xaaaa},
-+	{0x010f, 0xaaaa},
-+	{0x0110, 0xe002},
-+	{0x0111, 0xa402},
-+	{0x0112, 0xaaaa},
-+	{0x0113, 0x2000},
-+	{0x0117, 0x0f00},
-+	{0x0125, 0x0410},
-+	{0x0132, 0x0000},
-+	{0x0133, 0x0000},
-+	{0x0137, 0x5540},
-+	{0x0138, 0x3700},
-+	{0x0139, 0x79a1},
-+	{0x013a, 0x2020},
-+	{0x013b, 0x2020},
-+	{0x013c, 0x2005},
-+	{0x013f, 0x0000},
-+	{0x0145, 0x0002},
-+	{0x0146, 0x0000},
-+	{0x0147, 0x0000},
-+	{0x0148, 0x0000},
-+	{0x0150, 0x0000},
-+	{0x0160, 0x4eff},
-+	{0x0161, 0x0080},
-+	{0x0162, 0x0200},
-+	{0x0163, 0x0800},
-+	{0x0164, 0x0000},
-+	{0x0165, 0x0000},
-+	{0x0166, 0x0000},
-+	{0x0167, 0x000f},
-+	{0x0170, 0x4e87},
-+	{0x0171, 0x0080},
-+	{0x0172, 0x0200},
-+	{0x0173, 0x0800},
-+	{0x0174, 0x00ff},
-+	{0x0175, 0x0000},
-+	{0x0190, 0x413d},
-+	{0x0191, 0x4139},
-+	{0x0192, 0x4135},
-+	{0x0193, 0x413d},
-+	{0x0194, 0x0000},
-+	{0x0195, 0x0000},
-+	{0x0196, 0x0000},
-+	{0x0197, 0x0000},
-+	{0x0198, 0x0000},
-+	{0x0199, 0x0000},
-+	{0x01a0, 0x1e64},
-+	{0x01a1, 0x06a3},
-+	{0x01a2, 0x0000},
-+	{0x01a3, 0x0000},
-+	{0x01a4, 0x0000},
-+	{0x01a5, 0x0000},
-+	{0x01a6, 0x0000},
-+	{0x01a7, 0x8000},
-+	{0x01a8, 0x0000},
-+	{0x01a9, 0x0000},
-+	{0x01aa, 0x0000},
-+	{0x01ab, 0x0000},
-+	{0x01b5, 0x0000},
-+	{0x01b6, 0x01c3},
-+	{0x01b7, 0x02a0},
-+	{0x01b8, 0x03e9},
-+	{0x01b9, 0x1389},
-+	{0x01ba, 0xc351},
-+	{0x01bb, 0x0009},
-+	{0x01bc, 0x0018},
-+	{0x01bd, 0x002a},
-+	{0x01be, 0x004c},
-+	{0x01bf, 0x0097},
-+	{0x01c0, 0x433d},
-+	{0x01c1, 0x0000},
-+	{0x01c2, 0x0000},
-+	{0x01c3, 0x0000},
-+	{0x01c4, 0x0000},
-+	{0x01c5, 0x0000},
-+	{0x01c6, 0x0000},
-+	{0x01c7, 0x0000},
-+	{0x01c8, 0x40af},
-+	{0x01c9, 0x0702},
-+	{0x01ca, 0x0000},
-+	{0x01cb, 0x0000},
-+	{0x01cc, 0x5757},
-+	{0x01cd, 0x5757},
-+	{0x01ce, 0x5757},
-+	{0x01cf, 0x5757},
-+	{0x01d0, 0x5757},
-+	{0x01d1, 0x5757},
-+	{0x01d2, 0x5757},
-+	{0x01d3, 0x5757},
-+	{0x01d4, 0x5757},
-+	{0x01d5, 0x5757},
-+	{0x01d6, 0x003c},
-+	{0x01da, 0x0000},
-+	{0x01db, 0x0000},
-+	{0x01dc, 0x0000},
-+	{0x01de, 0x7c00},
-+	{0x01df, 0x0320},
-+	{0x01e0, 0x06a1},
-+	{0x01e1, 0x0000},
-+	{0x01e2, 0x0000},
-+	{0x01e3, 0x0000},
-+	{0x01e4, 0x0000},
-+	{0x01e6, 0x0001},
-+	{0x01e7, 0x0000},
-+	{0x01e8, 0x0000},
-+	{0x01ea, 0xbf3f},
-+	{0x01eb, 0x0000},
-+	{0x01ec, 0x0000},
-+	{0x01ed, 0x0000},
-+	{0x01ee, 0x0000},
-+	{0x01ef, 0x0000},
-+	{0x01f0, 0x0000},
-+	{0x01f1, 0x0000},
-+	{0x01f2, 0x0000},
-+	{0x01f3, 0x0000},
-+	{0x01f4, 0x0000},
-+	{0x0200, 0x0000},
-+	{0x0201, 0x0000},
-+	{0x0202, 0x0000},
-+	{0x0203, 0x0000},
-+	{0x0204, 0x0000},
-+	{0x0205, 0x0000},
-+	{0x0206, 0x0000},
-+	{0x0207, 0x0000},
-+	{0x0208, 0x0000},
-+	{0x0210, 0x60b1},
-+	{0x0211, 0xa005},
-+	{0x0212, 0x024c},
-+	{0x0213, 0xf7ff},
-+	{0x0214, 0x024c},
-+	{0x0215, 0x0102},
-+	{0x0216, 0x00a3},
-+	{0x0217, 0x0048},
-+	{0x0218, 0xa2c0},
-+	{0x0219, 0x0400},
-+	{0x021a, 0x00c8},
-+	{0x021b, 0x00c0},
-+	{0x02ff, 0x0110},
-+	{0x0300, 0x001f},
-+	{0x0301, 0x032c},
-+	{0x0302, 0x5f21},
-+	{0x0303, 0x4000},
-+	{0x0304, 0x4000},
-+	{0x0305, 0x06d5},
-+	{0x0306, 0x8000},
-+	{0x0307, 0x0700},
-+	{0x0310, 0x4560},
-+	{0x0311, 0xa4a8},
-+	{0x0312, 0x7418},
-+	{0x0313, 0x0000},
-+	{0x0314, 0x0006},
-+	{0x0315, 0xffff},
-+	{0x0316, 0xc400},
-+	{0x0317, 0x0000},
-+	{0x0330, 0x00a6},
-+	{0x0331, 0x04c3},
-+	{0x0332, 0x27c8},
-+	{0x0333, 0xbf50},
-+	{0x0334, 0x0045},
-+	{0x0335, 0x0007},
-+	{0x0336, 0x7418},
-+	{0x0337, 0x0501},
-+	{0x0338, 0x0000},
-+	{0x0339, 0x0010},
-+	{0x033a, 0x1010},
-+	{0x03c0, 0x7e00},
-+	{0x03c1, 0x8000},
-+	{0x03c2, 0x8000},
-+	{0x03c3, 0x8000},
-+	{0x03c4, 0x8000},
-+	{0x03c5, 0x8000},
-+	{0x03c6, 0x8000},
-+	{0x03c7, 0x8000},
-+	{0x03c8, 0x8000},
-+	{0x03c9, 0x8000},
-+	{0x03ca, 0x8000},
-+	{0x03cb, 0x8000},
-+	{0x03cc, 0x8000},
-+	{0x03d0, 0x0000},
-+	{0x03d1, 0x0000},
-+	{0x03d2, 0x0000},
-+	{0x03d3, 0x0000},
-+	{0x03d4, 0x2000},
-+	{0x03d5, 0x2000},
-+	{0x03d6, 0x0000},
-+	{0x03d7, 0x0000},
-+	{0x03d8, 0x2000},
-+	{0x03d9, 0x2000},
-+	{0x03da, 0x2000},
-+	{0x03db, 0x2000},
-+	{0x03dc, 0x0000},
-+	{0x03dd, 0x0000},
-+	{0x03de, 0x0000},
-+	{0x03df, 0x2000},
-+	{0x03e0, 0x0000},
-+	{0x03e1, 0x0000},
-+	{0x03e2, 0x0000},
-+	{0x03e3, 0x0000},
-+	{0x03e4, 0x0000},
-+	{0x03e5, 0x0000},
-+	{0x03e6, 0x0000},
-+	{0x03e7, 0x0000},
-+	{0x03e8, 0x0000},
-+	{0x03e9, 0x0000},
-+	{0x03ea, 0x0000},
-+	{0x03eb, 0x0000},
-+	{0x03ec, 0x0000},
-+	{0x03ed, 0x0000},
-+	{0x03ee, 0x0000},
-+	{0x03ef, 0x0000},
-+	{0x03f0, 0x0800},
-+	{0x03f1, 0x0800},
-+	{0x03f2, 0x0800},
-+	{0x03f3, 0x0800},
-+};
-+
-+static bool rt5665_volatile_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case RT5665_RESET:
-+	case RT5665_EJD_CTRL_2:
-+	case RT5665_GPIO_STA:
-+	case RT5665_INT_ST_1:
-+	case RT5665_IL_CMD_1:
-+	case RT5665_4BTN_IL_CMD_1:
-+	case RT5665_PSV_IL_CMD_1:
-+	case RT5665_AJD1_CTRL:
-+	case RT5665_JD_CTRL_3:
-+	case RT5665_STO_NG2_CTRL_1:
-+	case RT5665_SAR_IL_CMD_4:
-+	case RT5665_DEVICE_ID:
-+	case RT5665_STO1_DAC_SIL_DET ... RT5665_STO2_DAC_SIL_DET:
-+	case RT5665_MONO_AMP_CALIB_STA1 ... RT5665_MONO_AMP_CALIB_STA6:
-+	case RT5665_HP_IMP_SENS_CTRL_12 ... RT5665_HP_IMP_SENS_CTRL_15:
-+	case RT5665_HP_CALIB_STA_1 ... RT5665_HP_CALIB_STA_11:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool rt5665_readable_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case RT5665_RESET:
-+	case RT5665_VENDOR_ID:
-+	case RT5665_VENDOR_ID_1:
-+	case RT5665_DEVICE_ID:
-+	case RT5665_LOUT:
-+	case RT5665_HP_CTRL_1:
-+	case RT5665_HP_CTRL_2:
-+	case RT5665_MONO_OUT:
-+	case RT5665_HPL_GAIN:
-+	case RT5665_HPR_GAIN:
-+	case RT5665_MONO_GAIN:
-+	case RT5665_CAL_BST_CTRL:
-+	case RT5665_CBJ_BST_CTRL:
-+	case RT5665_IN1_IN2:
-+	case RT5665_IN3_IN4:
-+	case RT5665_INL1_INR1_VOL:
-+	case RT5665_EJD_CTRL_1:
-+	case RT5665_EJD_CTRL_2:
-+	case RT5665_EJD_CTRL_3:
-+	case RT5665_EJD_CTRL_4:
-+	case RT5665_EJD_CTRL_5:
-+	case RT5665_EJD_CTRL_6:
-+	case RT5665_EJD_CTRL_7:
-+	case RT5665_DAC2_CTRL:
-+	case RT5665_DAC2_DIG_VOL:
-+	case RT5665_DAC1_DIG_VOL:
-+	case RT5665_DAC3_DIG_VOL:
-+	case RT5665_DAC3_CTRL:
-+	case RT5665_STO1_ADC_DIG_VOL:
-+	case RT5665_MONO_ADC_DIG_VOL:
-+	case RT5665_STO2_ADC_DIG_VOL:
-+	case RT5665_STO1_ADC_BOOST:
-+	case RT5665_MONO_ADC_BOOST:
-+	case RT5665_STO2_ADC_BOOST:
-+	case RT5665_HP_IMP_GAIN_1:
-+	case RT5665_HP_IMP_GAIN_2:
-+	case RT5665_STO1_ADC_MIXER:
-+	case RT5665_MONO_ADC_MIXER:
-+	case RT5665_STO2_ADC_MIXER:
-+	case RT5665_AD_DA_MIXER:
-+	case RT5665_STO1_DAC_MIXER:
-+	case RT5665_MONO_DAC_MIXER:
-+	case RT5665_STO2_DAC_MIXER:
-+	case RT5665_A_DAC1_MUX:
-+	case RT5665_A_DAC2_MUX:
-+	case RT5665_DIG_INF2_DATA:
-+	case RT5665_DIG_INF3_DATA:
-+	case RT5665_PDM_OUT_CTRL:
-+	case RT5665_PDM_DATA_CTRL_1:
-+	case RT5665_PDM_DATA_CTRL_2:
-+	case RT5665_PDM_DATA_CTRL_3:
-+	case RT5665_PDM_DATA_CTRL_4:
-+	case RT5665_REC1_GAIN:
-+	case RT5665_REC1_L1_MIXER:
-+	case RT5665_REC1_L2_MIXER:
-+	case RT5665_REC1_R1_MIXER:
-+	case RT5665_REC1_R2_MIXER:
-+	case RT5665_REC2_GAIN:
-+	case RT5665_REC2_L1_MIXER:
-+	case RT5665_REC2_L2_MIXER:
-+	case RT5665_REC2_R1_MIXER:
-+	case RT5665_REC2_R2_MIXER:
-+	case RT5665_CAL_REC:
-+	case RT5665_ALC_BACK_GAIN:
-+	case RT5665_MONOMIX_GAIN:
-+	case RT5665_MONOMIX_IN_GAIN:
-+	case RT5665_OUT_L_GAIN:
-+	case RT5665_OUT_L_MIXER:
-+	case RT5665_OUT_R_GAIN:
-+	case RT5665_OUT_R_MIXER:
-+	case RT5665_LOUT_MIXER:
-+	case RT5665_PWR_DIG_1:
-+	case RT5665_PWR_DIG_2:
-+	case RT5665_PWR_ANLG_1:
-+	case RT5665_PWR_ANLG_2:
-+	case RT5665_PWR_ANLG_3:
-+	case RT5665_PWR_MIXER:
-+	case RT5665_PWR_VOL:
-+	case RT5665_CLK_DET:
-+	case RT5665_HPF_CTRL1:
-+	case RT5665_DMIC_CTRL_1:
-+	case RT5665_DMIC_CTRL_2:
-+	case RT5665_I2S1_SDP:
-+	case RT5665_I2S2_SDP:
-+	case RT5665_I2S3_SDP:
-+	case RT5665_ADDA_CLK_1:
-+	case RT5665_ADDA_CLK_2:
-+	case RT5665_I2S1_F_DIV_CTRL_1:
-+	case RT5665_I2S1_F_DIV_CTRL_2:
-+	case RT5665_TDM_CTRL_1:
-+	case RT5665_TDM_CTRL_2:
-+	case RT5665_TDM_CTRL_3:
-+	case RT5665_TDM_CTRL_4:
-+	case RT5665_TDM_CTRL_5:
-+	case RT5665_TDM_CTRL_6:
-+	case RT5665_TDM_CTRL_7:
-+	case RT5665_TDM_CTRL_8:
-+	case RT5665_GLB_CLK:
-+	case RT5665_PLL_CTRL_1:
-+	case RT5665_PLL_CTRL_2:
-+	case RT5665_ASRC_1:
-+	case RT5665_ASRC_2:
-+	case RT5665_ASRC_3:
-+	case RT5665_ASRC_4:
-+	case RT5665_ASRC_5:
-+	case RT5665_ASRC_6:
-+	case RT5665_ASRC_7:
-+	case RT5665_ASRC_8:
-+	case RT5665_ASRC_9:
-+	case RT5665_ASRC_10:
-+	case RT5665_DEPOP_1:
-+	case RT5665_DEPOP_2:
-+	case RT5665_HP_CHARGE_PUMP_1:
-+	case RT5665_HP_CHARGE_PUMP_2:
-+	case RT5665_MICBIAS_1:
-+	case RT5665_MICBIAS_2:
-+	case RT5665_ASRC_12:
-+	case RT5665_ASRC_13:
-+	case RT5665_ASRC_14:
-+	case RT5665_RC_CLK_CTRL:
-+	case RT5665_I2S_M_CLK_CTRL_1:
-+	case RT5665_I2S2_F_DIV_CTRL_1:
-+	case RT5665_I2S2_F_DIV_CTRL_2:
-+	case RT5665_I2S3_F_DIV_CTRL_1:
-+	case RT5665_I2S3_F_DIV_CTRL_2:
-+	case RT5665_EQ_CTRL_1:
-+	case RT5665_EQ_CTRL_2:
-+	case RT5665_IRQ_CTRL_1:
-+	case RT5665_IRQ_CTRL_2:
-+	case RT5665_IRQ_CTRL_3:
-+	case RT5665_IRQ_CTRL_4:
-+	case RT5665_IRQ_CTRL_5:
-+	case RT5665_IRQ_CTRL_6:
-+	case RT5665_INT_ST_1:
-+	case RT5665_GPIO_CTRL_1:
-+	case RT5665_GPIO_CTRL_2:
-+	case RT5665_GPIO_CTRL_3:
-+	case RT5665_GPIO_CTRL_4:
-+	case RT5665_GPIO_STA:
-+	case RT5665_HP_AMP_DET_CTRL_1:
-+	case RT5665_HP_AMP_DET_CTRL_2:
-+	case RT5665_MID_HP_AMP_DET:
-+	case RT5665_LOW_HP_AMP_DET:
-+	case RT5665_SV_ZCD_1:
-+	case RT5665_SV_ZCD_2:
-+	case RT5665_IL_CMD_1:
-+	case RT5665_IL_CMD_2:
-+	case RT5665_IL_CMD_3:
-+	case RT5665_IL_CMD_4:
-+	case RT5665_4BTN_IL_CMD_1:
-+	case RT5665_4BTN_IL_CMD_2:
-+	case RT5665_4BTN_IL_CMD_3:
-+	case RT5665_PSV_IL_CMD_1:
-+	case RT5665_ADC_STO1_HP_CTRL_1:
-+	case RT5665_ADC_STO1_HP_CTRL_2:
-+	case RT5665_ADC_MONO_HP_CTRL_1:
-+	case RT5665_ADC_MONO_HP_CTRL_2:
-+	case RT5665_ADC_STO2_HP_CTRL_1:
-+	case RT5665_ADC_STO2_HP_CTRL_2:
-+	case RT5665_AJD1_CTRL:
-+	case RT5665_JD1_THD:
-+	case RT5665_JD2_THD:
-+	case RT5665_JD_CTRL_1:
-+	case RT5665_JD_CTRL_2:
-+	case RT5665_JD_CTRL_3:
-+	case RT5665_DIG_MISC:
-+	case RT5665_DUMMY_2:
-+	case RT5665_DUMMY_3:
-+	case RT5665_DAC_ADC_DIG_VOL1:
-+	case RT5665_DAC_ADC_DIG_VOL2:
-+	case RT5665_BIAS_CUR_CTRL_1:
-+	case RT5665_BIAS_CUR_CTRL_2:
-+	case RT5665_BIAS_CUR_CTRL_3:
-+	case RT5665_BIAS_CUR_CTRL_4:
-+	case RT5665_BIAS_CUR_CTRL_5:
-+	case RT5665_BIAS_CUR_CTRL_6:
-+	case RT5665_BIAS_CUR_CTRL_7:
-+	case RT5665_BIAS_CUR_CTRL_8:
-+	case RT5665_BIAS_CUR_CTRL_9:
-+	case RT5665_BIAS_CUR_CTRL_10:
-+	case RT5665_VREF_REC_OP_FB_CAP_CTRL:
-+	case RT5665_CHARGE_PUMP_1:
-+	case RT5665_DIG_IN_CTRL_1:
-+	case RT5665_DIG_IN_CTRL_2:
-+	case RT5665_PAD_DRIVING_CTRL:
-+	case RT5665_SOFT_RAMP_DEPOP:
-+	case RT5665_PLL:
-+	case RT5665_CHOP_DAC:
-+	case RT5665_CHOP_ADC:
-+	case RT5665_CALIB_ADC_CTRL:
-+	case RT5665_VOL_TEST:
-+	case RT5665_TEST_MODE_CTRL_1:
-+	case RT5665_TEST_MODE_CTRL_2:
-+	case RT5665_TEST_MODE_CTRL_3:
-+	case RT5665_TEST_MODE_CTRL_4:
-+	case RT5665_BASSBACK_CTRL:
-+	case RT5665_STO_NG2_CTRL_1:
-+	case RT5665_STO_NG2_CTRL_2:
-+	case RT5665_STO_NG2_CTRL_3:
-+	case RT5665_STO_NG2_CTRL_4:
-+	case RT5665_STO_NG2_CTRL_5:
-+	case RT5665_STO_NG2_CTRL_6:
-+	case RT5665_STO_NG2_CTRL_7:
-+	case RT5665_STO_NG2_CTRL_8:
-+	case RT5665_MONO_NG2_CTRL_1:
-+	case RT5665_MONO_NG2_CTRL_2:
-+	case RT5665_MONO_NG2_CTRL_3:
-+	case RT5665_MONO_NG2_CTRL_4:
-+	case RT5665_MONO_NG2_CTRL_5:
-+	case RT5665_MONO_NG2_CTRL_6:
-+	case RT5665_STO1_DAC_SIL_DET:
-+	case RT5665_MONOL_DAC_SIL_DET:
-+	case RT5665_MONOR_DAC_SIL_DET:
-+	case RT5665_STO2_DAC_SIL_DET:
-+	case RT5665_SIL_PSV_CTRL1:
-+	case RT5665_SIL_PSV_CTRL2:
-+	case RT5665_SIL_PSV_CTRL3:
-+	case RT5665_SIL_PSV_CTRL4:
-+	case RT5665_SIL_PSV_CTRL5:
-+	case RT5665_SIL_PSV_CTRL6:
-+	case RT5665_MONO_AMP_CALIB_CTRL_1:
-+	case RT5665_MONO_AMP_CALIB_CTRL_2:
-+	case RT5665_MONO_AMP_CALIB_CTRL_3:
-+	case RT5665_MONO_AMP_CALIB_CTRL_4:
-+	case RT5665_MONO_AMP_CALIB_CTRL_5:
-+	case RT5665_MONO_AMP_CALIB_CTRL_6:
-+	case RT5665_MONO_AMP_CALIB_CTRL_7:
-+	case RT5665_MONO_AMP_CALIB_STA1:
-+	case RT5665_MONO_AMP_CALIB_STA2:
-+	case RT5665_MONO_AMP_CALIB_STA3:
-+	case RT5665_MONO_AMP_CALIB_STA4:
-+	case RT5665_MONO_AMP_CALIB_STA6:
-+	case RT5665_HP_IMP_SENS_CTRL_01:
-+	case RT5665_HP_IMP_SENS_CTRL_02:
-+	case RT5665_HP_IMP_SENS_CTRL_03:
-+	case RT5665_HP_IMP_SENS_CTRL_04:
-+	case RT5665_HP_IMP_SENS_CTRL_05:
-+	case RT5665_HP_IMP_SENS_CTRL_06:
-+	case RT5665_HP_IMP_SENS_CTRL_07:
-+	case RT5665_HP_IMP_SENS_CTRL_08:
-+	case RT5665_HP_IMP_SENS_CTRL_09:
-+	case RT5665_HP_IMP_SENS_CTRL_10:
-+	case RT5665_HP_IMP_SENS_CTRL_11:
-+	case RT5665_HP_IMP_SENS_CTRL_12:
-+	case RT5665_HP_IMP_SENS_CTRL_13:
-+	case RT5665_HP_IMP_SENS_CTRL_14:
-+	case RT5665_HP_IMP_SENS_CTRL_15:
-+	case RT5665_HP_IMP_SENS_CTRL_16:
-+	case RT5665_HP_IMP_SENS_CTRL_17:
-+	case RT5665_HP_IMP_SENS_CTRL_18:
-+	case RT5665_HP_IMP_SENS_CTRL_19:
-+	case RT5665_HP_IMP_SENS_CTRL_20:
-+	case RT5665_HP_IMP_SENS_CTRL_21:
-+	case RT5665_HP_IMP_SENS_CTRL_22:
-+	case RT5665_HP_IMP_SENS_CTRL_23:
-+	case RT5665_HP_IMP_SENS_CTRL_24:
-+	case RT5665_HP_IMP_SENS_CTRL_25:
-+	case RT5665_HP_IMP_SENS_CTRL_26:
-+	case RT5665_HP_IMP_SENS_CTRL_27:
-+	case RT5665_HP_IMP_SENS_CTRL_28:
-+	case RT5665_HP_IMP_SENS_CTRL_29:
-+	case RT5665_HP_IMP_SENS_CTRL_30:
-+	case RT5665_HP_IMP_SENS_CTRL_31:
-+	case RT5665_HP_IMP_SENS_CTRL_32:
-+	case RT5665_HP_IMP_SENS_CTRL_33:
-+	case RT5665_HP_IMP_SENS_CTRL_34:
-+	case RT5665_HP_LOGIC_CTRL_1:
-+	case RT5665_HP_LOGIC_CTRL_2:
-+	case RT5665_HP_LOGIC_CTRL_3:
-+	case RT5665_HP_CALIB_CTRL_1:
-+	case RT5665_HP_CALIB_CTRL_2:
-+	case RT5665_HP_CALIB_CTRL_3:
-+	case RT5665_HP_CALIB_CTRL_4:
-+	case RT5665_HP_CALIB_CTRL_5:
-+	case RT5665_HP_CALIB_CTRL_6:
-+	case RT5665_HP_CALIB_CTRL_7:
-+	case RT5665_HP_CALIB_CTRL_9:
-+	case RT5665_HP_CALIB_CTRL_10:
-+	case RT5665_HP_CALIB_CTRL_11:
-+	case RT5665_HP_CALIB_STA_1:
-+	case RT5665_HP_CALIB_STA_2:
-+	case RT5665_HP_CALIB_STA_3:
-+	case RT5665_HP_CALIB_STA_4:
-+	case RT5665_HP_CALIB_STA_5:
-+	case RT5665_HP_CALIB_STA_6:
-+	case RT5665_HP_CALIB_STA_7:
-+	case RT5665_HP_CALIB_STA_8:
-+	case RT5665_HP_CALIB_STA_9:
-+	case RT5665_HP_CALIB_STA_10:
-+	case RT5665_HP_CALIB_STA_11:
-+	case RT5665_PGM_TAB_CTRL1:
-+	case RT5665_PGM_TAB_CTRL2:
-+	case RT5665_PGM_TAB_CTRL3:
-+	case RT5665_PGM_TAB_CTRL4:
-+	case RT5665_PGM_TAB_CTRL5:
-+	case RT5665_PGM_TAB_CTRL6:
-+	case RT5665_PGM_TAB_CTRL7:
-+	case RT5665_PGM_TAB_CTRL8:
-+	case RT5665_PGM_TAB_CTRL9:
-+	case RT5665_SAR_IL_CMD_1:
-+	case RT5665_SAR_IL_CMD_2:
-+	case RT5665_SAR_IL_CMD_3:
-+	case RT5665_SAR_IL_CMD_4:
-+	case RT5665_SAR_IL_CMD_5:
-+	case RT5665_SAR_IL_CMD_6:
-+	case RT5665_SAR_IL_CMD_7:
-+	case RT5665_SAR_IL_CMD_8:
-+	case RT5665_SAR_IL_CMD_9:
-+	case RT5665_SAR_IL_CMD_10:
-+	case RT5665_SAR_IL_CMD_11:
-+	case RT5665_SAR_IL_CMD_12:
-+	case RT5665_DRC1_CTRL_0:
-+	case RT5665_DRC1_CTRL_1:
-+	case RT5665_DRC1_CTRL_2:
-+	case RT5665_DRC1_CTRL_3:
-+	case RT5665_DRC1_CTRL_4:
-+	case RT5665_DRC1_CTRL_5:
-+	case RT5665_DRC1_CTRL_6:
-+	case RT5665_DRC1_HARD_LMT_CTRL_1:
-+	case RT5665_DRC1_HARD_LMT_CTRL_2:
-+	case RT5665_DRC1_PRIV_1:
-+	case RT5665_DRC1_PRIV_2:
-+	case RT5665_DRC1_PRIV_3:
-+	case RT5665_DRC1_PRIV_4:
-+	case RT5665_DRC1_PRIV_5:
-+	case RT5665_DRC1_PRIV_6:
-+	case RT5665_DRC1_PRIV_7:
-+	case RT5665_DRC1_PRIV_8:
-+	case RT5665_ALC_PGA_CTRL_1:
-+	case RT5665_ALC_PGA_CTRL_2:
-+	case RT5665_ALC_PGA_CTRL_3:
-+	case RT5665_ALC_PGA_CTRL_4:
-+	case RT5665_ALC_PGA_CTRL_5:
-+	case RT5665_ALC_PGA_CTRL_6:
-+	case RT5665_ALC_PGA_CTRL_7:
-+	case RT5665_ALC_PGA_CTRL_8:
-+	case RT5665_ALC_PGA_STA_1:
-+	case RT5665_ALC_PGA_STA_2:
-+	case RT5665_ALC_PGA_STA_3:
-+	case RT5665_EQ_AUTO_RCV_CTRL1:
-+	case RT5665_EQ_AUTO_RCV_CTRL2:
-+	case RT5665_EQ_AUTO_RCV_CTRL3:
-+	case RT5665_EQ_AUTO_RCV_CTRL4:
-+	case RT5665_EQ_AUTO_RCV_CTRL5:
-+	case RT5665_EQ_AUTO_RCV_CTRL6:
-+	case RT5665_EQ_AUTO_RCV_CTRL7:
-+	case RT5665_EQ_AUTO_RCV_CTRL8:
-+	case RT5665_EQ_AUTO_RCV_CTRL9:
-+	case RT5665_EQ_AUTO_RCV_CTRL10:
-+	case RT5665_EQ_AUTO_RCV_CTRL11:
-+	case RT5665_EQ_AUTO_RCV_CTRL12:
-+	case RT5665_EQ_AUTO_RCV_CTRL13:
-+	case RT5665_ADC_L_EQ_LPF1_A1:
-+	case RT5665_R_EQ_LPF1_A1:
-+	case RT5665_L_EQ_LPF1_H0:
-+	case RT5665_R_EQ_LPF1_H0:
-+	case RT5665_L_EQ_BPF1_A1:
-+	case RT5665_R_EQ_BPF1_A1:
-+	case RT5665_L_EQ_BPF1_A2:
-+	case RT5665_R_EQ_BPF1_A2:
-+	case RT5665_L_EQ_BPF1_H0:
-+	case RT5665_R_EQ_BPF1_H0:
-+	case RT5665_L_EQ_BPF2_A1:
-+	case RT5665_R_EQ_BPF2_A1:
-+	case RT5665_L_EQ_BPF2_A2:
-+	case RT5665_R_EQ_BPF2_A2:
-+	case RT5665_L_EQ_BPF2_H0:
-+	case RT5665_R_EQ_BPF2_H0:
-+	case RT5665_L_EQ_BPF3_A1:
-+	case RT5665_R_EQ_BPF3_A1:
-+	case RT5665_L_EQ_BPF3_A2:
-+	case RT5665_R_EQ_BPF3_A2:
-+	case RT5665_L_EQ_BPF3_H0:
-+	case RT5665_R_EQ_BPF3_H0:
-+	case RT5665_L_EQ_BPF4_A1:
-+	case RT5665_R_EQ_BPF4_A1:
-+	case RT5665_L_EQ_BPF4_A2:
-+	case RT5665_R_EQ_BPF4_A2:
-+	case RT5665_L_EQ_BPF4_H0:
-+	case RT5665_R_EQ_BPF4_H0:
-+	case RT5665_L_EQ_HPF1_A1:
-+	case RT5665_R_EQ_HPF1_A1:
-+	case RT5665_L_EQ_HPF1_H0:
-+	case RT5665_R_EQ_HPF1_H0:
-+	case RT5665_L_EQ_PRE_VOL:
-+	case RT5665_R_EQ_PRE_VOL:
-+	case RT5665_L_EQ_POST_VOL:
-+	case RT5665_R_EQ_POST_VOL:
-+	case RT5665_SCAN_MODE_CTRL:
-+	case RT5665_I2C_MODE:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static const DECLARE_TLV_DB_SCALE(hp_vol_tlv, -2250, 150, 0);
-+static const DECLARE_TLV_DB_SCALE(mono_vol_tlv, -1400, 150, 0);
-+static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
-+static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -65625, 375, 0);
-+static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
-+static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
-+static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
-+static const DECLARE_TLV_DB_SCALE(in_bst_tlv, -1200, 75, 0);
-+
-+/* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
-+static const DECLARE_TLV_DB_RANGE(bst_tlv,
-+	0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
-+	1, 1, TLV_DB_SCALE_ITEM(2000, 0, 0),
-+	2, 2, TLV_DB_SCALE_ITEM(2400, 0, 0),
-+	3, 5, TLV_DB_SCALE_ITEM(3000, 500, 0),
-+	6, 6, TLV_DB_SCALE_ITEM(4400, 0, 0),
-+	7, 7, TLV_DB_SCALE_ITEM(5000, 0, 0),
-+	8, 8, TLV_DB_SCALE_ITEM(5200, 0, 0)
-+);
-+
-+/* Interface data select */
-+static const char * const rt5665_data_select[] = {
-+	"L/R", "R/L", "L/L", "R/R"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if1_1_01_adc_enum,
-+	RT5665_TDM_CTRL_2, RT5665_I2S1_1_DS_ADC_SLOT01_SFT, rt5665_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if1_1_23_adc_enum,
-+	RT5665_TDM_CTRL_2, RT5665_I2S1_1_DS_ADC_SLOT23_SFT, rt5665_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if1_1_45_adc_enum,
-+	RT5665_TDM_CTRL_2, RT5665_I2S1_1_DS_ADC_SLOT45_SFT, rt5665_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if1_1_67_adc_enum,
-+	RT5665_TDM_CTRL_2, RT5665_I2S1_1_DS_ADC_SLOT67_SFT, rt5665_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if1_2_01_adc_enum,
-+	RT5665_TDM_CTRL_2, RT5665_I2S1_2_DS_ADC_SLOT01_SFT, rt5665_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if1_2_23_adc_enum,
-+	RT5665_TDM_CTRL_2, RT5665_I2S1_2_DS_ADC_SLOT23_SFT, rt5665_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if1_2_45_adc_enum,
-+	RT5665_TDM_CTRL_2, RT5665_I2S1_2_DS_ADC_SLOT45_SFT, rt5665_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if1_2_67_adc_enum,
-+	RT5665_TDM_CTRL_2, RT5665_I2S1_2_DS_ADC_SLOT67_SFT, rt5665_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if2_1_dac_enum,
-+	RT5665_DIG_INF2_DATA, RT5665_IF2_1_DAC_SEL_SFT, rt5665_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if2_1_adc_enum,
-+	RT5665_DIG_INF2_DATA, RT5665_IF2_1_ADC_SEL_SFT, rt5665_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if2_2_dac_enum,
-+	RT5665_DIG_INF2_DATA, RT5665_IF2_2_DAC_SEL_SFT, rt5665_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if2_2_adc_enum,
-+	RT5665_DIG_INF2_DATA, RT5665_IF2_2_ADC_SEL_SFT, rt5665_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if3_dac_enum,
-+	RT5665_DIG_INF3_DATA, RT5665_IF3_DAC_SEL_SFT, rt5665_data_select);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5665_if3_adc_enum,
-+	RT5665_DIG_INF3_DATA, RT5665_IF3_ADC_SEL_SFT, rt5665_data_select);
-+
-+static const struct snd_kcontrol_new rt5665_if1_1_01_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF1_1 01 ADC Swap Mux", rt5665_if1_1_01_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5665_if1_1_23_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF1_1 23 ADC Swap Mux", rt5665_if1_1_23_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5665_if1_1_45_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF1_1 45 ADC Swap Mux", rt5665_if1_1_45_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5665_if1_1_67_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF1_1 67 ADC Swap Mux", rt5665_if1_1_67_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5665_if1_2_01_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF1_2 01 ADC Swap Mux", rt5665_if1_2_01_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5665_if1_2_23_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF1_2 23 ADC1 Swap Mux", rt5665_if1_2_23_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5665_if1_2_45_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF1_2 45 ADC1 Swap Mux", rt5665_if1_2_45_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5665_if1_2_67_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF1_2 67 ADC1 Swap Mux", rt5665_if1_2_67_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5665_if2_1_dac_swap_mux =
-+	SOC_DAPM_ENUM("IF2_1 DAC Swap Source", rt5665_if2_1_dac_enum);
-+
-+static const struct snd_kcontrol_new rt5665_if2_1_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF2_1 ADC Swap Source", rt5665_if2_1_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5665_if2_2_dac_swap_mux =
-+	SOC_DAPM_ENUM("IF2_2 DAC Swap Source", rt5665_if2_2_dac_enum);
-+
-+static const struct snd_kcontrol_new rt5665_if2_2_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF2_2 ADC Swap Source", rt5665_if2_2_adc_enum);
-+
-+static const struct snd_kcontrol_new rt5665_if3_dac_swap_mux =
-+	SOC_DAPM_ENUM("IF3 DAC Swap Source", rt5665_if3_dac_enum);
-+
-+static const struct snd_kcontrol_new rt5665_if3_adc_swap_mux =
-+	SOC_DAPM_ENUM("IF3 ADC Swap Source", rt5665_if3_adc_enum);
-+
-+static int rt5665_hp_vol_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	int ret = snd_soc_put_volsw(kcontrol, ucontrol);
-+
-+	if (snd_soc_read(codec, RT5665_STO_NG2_CTRL_1) & RT5665_NG2_EN) {
-+		snd_soc_update_bits(codec, RT5665_STO_NG2_CTRL_1,
-+			RT5665_NG2_EN_MASK, RT5665_NG2_DIS);
-+		snd_soc_update_bits(codec, RT5665_STO_NG2_CTRL_1,
-+			RT5665_NG2_EN_MASK, RT5665_NG2_EN);
-+	}
-+
-+	return ret;
-+}
-+
-+static int rt5665_mono_vol_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	int ret = snd_soc_put_volsw(kcontrol, ucontrol);
-+
-+	if (snd_soc_read(codec, RT5665_MONO_NG2_CTRL_1) & RT5665_NG2_EN) {
-+		snd_soc_update_bits(codec, RT5665_MONO_NG2_CTRL_1,
-+			RT5665_NG2_EN_MASK, RT5665_NG2_DIS);
-+		snd_soc_update_bits(codec, RT5665_MONO_NG2_CTRL_1,
-+			RT5665_NG2_EN_MASK, RT5665_NG2_EN);
-+	}
-+
-+	return ret;
-+}
-+
-+/**
-+ * rt5665_sel_asrc_clk_src - select ASRC clock source for a set of filters
-+ * @codec: SoC audio codec device.
-+ * @filter_mask: mask of filters.
-+ * @clk_src: clock source
-+ *
-+ * The ASRC function is for asynchronous MCLK and LRCK. Also, since RT5665 can
-+ * only support standard 32fs or 64fs i2s format, ASRC should be enabled to
-+ * support special i2s clock format such as Intel's 100fs(100 * sampling rate).
-+ * ASRC function will track i2s clock and generate a corresponding system clock
-+ * for codec. This function provides an API to select the clock source for a
-+ * set of filters specified by the mask. And the codec driver will turn on ASRC
-+ * for these filters if ASRC is selected as their clock source.
-+ */
-+int rt5665_sel_asrc_clk_src(struct snd_soc_codec *codec,
-+		unsigned int filter_mask, unsigned int clk_src)
-+{
-+	unsigned int asrc2_mask = 0;
-+	unsigned int asrc2_value = 0;
-+	unsigned int asrc3_mask = 0;
-+	unsigned int asrc3_value = 0;
-+
-+	switch (clk_src) {
-+	case RT5665_CLK_SEL_SYS:
-+	case RT5665_CLK_SEL_I2S1_ASRC:
-+	case RT5665_CLK_SEL_I2S2_ASRC:
-+	case RT5665_CLK_SEL_I2S3_ASRC:
-+	case RT5665_CLK_SEL_SYS2:
-+	case RT5665_CLK_SEL_SYS3:
-+	case RT5665_CLK_SEL_SYS4:
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (filter_mask & RT5665_DA_STEREO1_FILTER) {
-+		asrc2_mask |= RT5665_DA_STO1_CLK_SEL_MASK;
-+		asrc2_value = (asrc2_value & ~RT5665_DA_STO1_CLK_SEL_MASK)
-+			| (clk_src << RT5665_DA_STO1_CLK_SEL_SFT);
-+	}
-+
-+	if (filter_mask & RT5665_DA_STEREO2_FILTER) {
-+		asrc2_mask |= RT5665_DA_STO2_CLK_SEL_MASK;
-+		asrc2_value = (asrc2_value & ~RT5665_DA_STO2_CLK_SEL_MASK)
-+			| (clk_src << RT5665_DA_STO2_CLK_SEL_SFT);
-+	}
-+
-+	if (filter_mask & RT5665_DA_MONO_L_FILTER) {
-+		asrc2_mask |= RT5665_DA_MONOL_CLK_SEL_MASK;
-+		asrc2_value = (asrc2_value & ~RT5665_DA_MONOL_CLK_SEL_MASK)
-+			| (clk_src << RT5665_DA_MONOL_CLK_SEL_SFT);
-+	}
-+
-+	if (filter_mask & RT5665_DA_MONO_R_FILTER) {
-+		asrc2_mask |= RT5665_DA_MONOR_CLK_SEL_MASK;
-+		asrc2_value = (asrc2_value & ~RT5665_DA_MONOR_CLK_SEL_MASK)
-+			| (clk_src << RT5665_DA_MONOR_CLK_SEL_SFT);
-+	}
-+
-+	if (filter_mask & RT5665_AD_STEREO1_FILTER) {
-+		asrc3_mask |= RT5665_AD_STO1_CLK_SEL_MASK;
-+		asrc3_value = (asrc2_value & ~RT5665_AD_STO1_CLK_SEL_MASK)
-+			| (clk_src << RT5665_AD_STO1_CLK_SEL_SFT);
-+	}
-+
-+	if (filter_mask & RT5665_AD_STEREO2_FILTER) {
-+		asrc3_mask |= RT5665_AD_STO2_CLK_SEL_MASK;
-+		asrc3_value = (asrc2_value & ~RT5665_AD_STO2_CLK_SEL_MASK)
-+			| (clk_src << RT5665_AD_STO2_CLK_SEL_SFT);
-+	}
-+
-+	if (filter_mask & RT5665_AD_MONO_L_FILTER) {
-+		asrc3_mask |= RT5665_AD_MONOL_CLK_SEL_MASK;
-+		asrc3_value = (asrc3_value & ~RT5665_AD_MONOL_CLK_SEL_MASK)
-+			| (clk_src << RT5665_AD_MONOL_CLK_SEL_SFT);
-+	}
-+
-+	if (filter_mask & RT5665_AD_MONO_R_FILTER)  {
-+		asrc3_mask |= RT5665_AD_MONOR_CLK_SEL_MASK;
-+		asrc3_value = (asrc3_value & ~RT5665_AD_MONOR_CLK_SEL_MASK)
-+			| (clk_src << RT5665_AD_MONOR_CLK_SEL_SFT);
-+	}
-+
-+	if (asrc2_mask)
-+		snd_soc_update_bits(codec, RT5665_ASRC_2,
-+			asrc2_mask, asrc2_value);
-+
-+	if (asrc3_mask)
-+		snd_soc_update_bits(codec, RT5665_ASRC_3,
-+			asrc3_mask, asrc3_value);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(rt5665_sel_asrc_clk_src);
-+
-+static int rt5665_button_detect(struct snd_soc_codec *codec)
-+{
-+	int btn_type, val;
-+
-+	val = snd_soc_read(codec, RT5665_4BTN_IL_CMD_1);
-+	btn_type = val & 0xfff0;
-+	snd_soc_write(codec, RT5665_4BTN_IL_CMD_1, val);
-+
-+	return btn_type;
-+}
-+
-+static void rt5665_enable_push_button_irq(struct snd_soc_codec *codec,
-+	bool enable)
-+{
-+	if (enable) {
-+		snd_soc_write(codec, RT5665_4BTN_IL_CMD_1, 0x000b);
-+		snd_soc_write(codec, RT5665_IL_CMD_1, 0x0048);
-+		snd_soc_update_bits(codec, RT5665_4BTN_IL_CMD_2,
-+				RT5665_4BTN_IL_MASK | RT5665_4BTN_IL_RST_MASK,
-+				RT5665_4BTN_IL_EN | RT5665_4BTN_IL_NOR);
-+		snd_soc_update_bits(codec, RT5665_IRQ_CTRL_3,
-+				RT5665_IL_IRQ_MASK, RT5665_IL_IRQ_EN);
-+	} else {
-+		snd_soc_update_bits(codec, RT5665_IRQ_CTRL_3,
-+				RT5665_IL_IRQ_MASK, RT5665_IL_IRQ_DIS);
-+		snd_soc_update_bits(codec, RT5665_4BTN_IL_CMD_2,
-+				RT5665_4BTN_IL_MASK, RT5665_4BTN_IL_DIS);
-+		snd_soc_update_bits(codec, RT5665_4BTN_IL_CMD_2,
-+				RT5665_4BTN_IL_RST_MASK, RT5665_4BTN_IL_RST);
-+	}
-+}
-+
-+/**
-+ * rt5665_headset_detect - Detect headset.
-+ * @codec: SoC audio codec device.
-+ * @jack_insert: Jack insert or not.
-+ *
-+ * Detect whether is headset or not when jack inserted.
-+ *
-+ * Returns detect status.
-+ */
-+static int rt5665_headset_detect(struct snd_soc_codec *codec, int jack_insert)
-+{
-+	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	unsigned int sar_hs_type, val;
-+
-+	if (jack_insert) {
-+		snd_soc_dapm_force_enable_pin(dapm, "MICBIAS1");
-+		snd_soc_dapm_sync(dapm);
-+
-+		regmap_update_bits(rt5665->regmap, RT5665_MICBIAS_2, 0x100,
-+			0x100);
-+
-+		regmap_read(rt5665->regmap, RT5665_GPIO_STA, &val);
-+		if (val & 0x4) {
-+			regmap_update_bits(rt5665->regmap, RT5665_EJD_CTRL_1,
-+				0x100, 0);
-+
-+			regmap_read(rt5665->regmap, RT5665_GPIO_STA, &val);
-+			while (val & 0x4) {
-+				usleep_range(10000, 15000);
-+				regmap_read(rt5665->regmap, RT5665_GPIO_STA,
-+					&val);
-+			}
-+		}
-+
-+		regmap_update_bits(rt5665->regmap, RT5665_EJD_CTRL_1,
-+			0x180, 0x180);
-+		regmap_write(rt5665->regmap, RT5665_EJD_CTRL_3, 0x3424);
-+		regmap_write(rt5665->regmap, RT5665_SAR_IL_CMD_1, 0xa291);
-+
-+		rt5665->sar_adc_value = snd_soc_read(rt5665->codec,
-+			RT5665_SAR_IL_CMD_4) & 0x7ff;
-+
-+		sar_hs_type = rt5665->pdata.sar_hs_type ?
-+			rt5665->pdata.sar_hs_type : 729;
-+
-+		if (rt5665->sar_adc_value > sar_hs_type) {
-+			rt5665->jack_type = SND_JACK_HEADSET;
-+			rt5665_enable_push_button_irq(codec, true);
-+			} else {
-+			rt5665->jack_type = SND_JACK_HEADPHONE;
-+			regmap_write(rt5665->regmap, RT5665_SAR_IL_CMD_1,
-+				0x2291);
-+			regmap_update_bits(rt5665->regmap, RT5665_MICBIAS_2,
-+				0x100, 0);
-+			snd_soc_dapm_disable_pin(dapm, "MICBIAS1");
-+			snd_soc_dapm_sync(dapm);
-+		}
-+	} else {
-+		regmap_write(rt5665->regmap, RT5665_SAR_IL_CMD_1, 0x2291);
-+		regmap_update_bits(rt5665->regmap, RT5665_MICBIAS_2, 0x100, 0);
-+		snd_soc_dapm_disable_pin(dapm, "MICBIAS1");
-+		snd_soc_dapm_sync(dapm);
-+		if (rt5665->jack_type == SND_JACK_HEADSET)
-+			rt5665_enable_push_button_irq(codec, false);
-+		rt5665->jack_type = 0;
-+	}
-+
-+	dev_dbg(codec->dev, "jack_type = %d\n", rt5665->jack_type);
-+	return rt5665->jack_type;
-+}
-+
-+static irqreturn_t rt5665_irq(int irq, void *data)
-+{
-+	struct rt5665_priv *rt5665 = data;
-+
-+	mod_delayed_work(system_power_efficient_wq,
-+			   &rt5665->jack_detect_work, msecs_to_jiffies(250));
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static void rt5665_jd_check_handler(struct work_struct *work)
-+{
-+	struct rt5665_priv *rt5665 = container_of(work, struct rt5665_priv,
-+		calibrate_work.work);
-+
-+	if (snd_soc_read(rt5665->codec, RT5665_AJD1_CTRL) & 0x0010) {
-+		/* jack out */
-+		rt5665->jack_type = rt5665_headset_detect(rt5665->codec, 0);
-+
-+		snd_soc_jack_report(rt5665->hs_jack, rt5665->jack_type,
-+				SND_JACK_HEADSET |
-+				SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+				SND_JACK_BTN_2 | SND_JACK_BTN_3);
-+	} else {
-+		schedule_delayed_work(&rt5665->jd_check_work, 500);
-+	}
-+}
-+
-+int rt5665_set_jack_detect(struct snd_soc_codec *codec,
-+	struct snd_soc_jack *hs_jack)
-+{
-+	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (rt5665->pdata.jd_src) {
-+	case RT5665_JD1:
-+		regmap_update_bits(rt5665->regmap, RT5665_GPIO_CTRL_1,
-+			RT5665_GP1_PIN_MASK, RT5665_GP1_PIN_IRQ);
-+		regmap_update_bits(rt5665->regmap, RT5665_RC_CLK_CTRL,
-+				0xc000, 0xc000);
-+		regmap_update_bits(rt5665->regmap, RT5665_PWR_ANLG_2,
-+			RT5665_PWR_JD1, RT5665_PWR_JD1);
-+		regmap_update_bits(rt5665->regmap, RT5665_IRQ_CTRL_1, 0x8, 0x8);
-+		break;
-+
-+	case RT5665_JD_NULL:
-+		break;
-+
-+	default:
-+		dev_warn(codec->dev, "Wrong JD source\n");
-+		break;
-+	}
-+
-+	rt5665->hs_jack = hs_jack;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(rt5665_set_jack_detect);
-+
-+static void rt5665_jack_detect_handler(struct work_struct *work)
-+{
-+	struct rt5665_priv *rt5665 =
-+		container_of(work, struct rt5665_priv, jack_detect_work.work);
-+	int val, btn_type;
-+
-+	while (!rt5665->codec) {
-+		pr_debug("%s codec = null\n", __func__);
-+		usleep_range(10000, 15000);
-+	}
-+
-+	while (!rt5665->codec->component.card->instantiated) {
-+		pr_debug("%s\n", __func__);
-+		usleep_range(10000, 15000);
-+	}
-+
-+	mutex_lock(&rt5665->calibrate_mutex);
-+
-+	val = snd_soc_read(rt5665->codec, RT5665_AJD1_CTRL) & 0x0010;
-+	if (!val) {
-+		/* jack in */
-+		if (rt5665->jack_type == 0) {
-+			/* jack was out, report jack type */
-+			rt5665->jack_type =
-+				rt5665_headset_detect(rt5665->codec, 1);
-+		} else {
-+			/* jack is already in, report button event */
-+			rt5665->jack_type = SND_JACK_HEADSET;
-+			btn_type = rt5665_button_detect(rt5665->codec);
-+			/**
-+			 * rt5665 can report three kinds of button behavior,
-+			 * one click, double click and hold. However,
-+			 * currently we will report button pressed/released
-+			 * event. So all the three button behaviors are
-+			 * treated as button pressed.
-+			 */
-+			switch (btn_type) {
-+			case 0x8000:
-+			case 0x4000:
-+			case 0x2000:
-+				rt5665->jack_type |= SND_JACK_BTN_0;
-+				break;
-+			case 0x1000:
-+			case 0x0800:
-+			case 0x0400:
-+				rt5665->jack_type |= SND_JACK_BTN_1;
-+				break;
-+			case 0x0200:
-+			case 0x0100:
-+			case 0x0080:
-+				rt5665->jack_type |= SND_JACK_BTN_2;
-+				break;
-+			case 0x0040:
-+			case 0x0020:
-+			case 0x0010:
-+				rt5665->jack_type |= SND_JACK_BTN_3;
-+				break;
-+			case 0x0000: /* unpressed */
-+				break;
-+			default:
-+				btn_type = 0;
-+				dev_err(rt5665->codec->dev,
-+					"Unexpected button code 0x%04x\n",
-+					btn_type);
-+				break;
-+			}
-+		}
-+	} else {
-+		/* jack out */
-+		rt5665->jack_type = rt5665_headset_detect(rt5665->codec, 0);
-+	}
-+
-+	snd_soc_jack_report(rt5665->hs_jack, rt5665->jack_type,
-+			SND_JACK_HEADSET |
-+			    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+			    SND_JACK_BTN_2 | SND_JACK_BTN_3);
-+
-+	if (rt5665->jack_type & (SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+		SND_JACK_BTN_2 | SND_JACK_BTN_3))
-+		schedule_delayed_work(&rt5665->jd_check_work, 0);
-+	else
-+		cancel_delayed_work_sync(&rt5665->jd_check_work);
-+
-+	mutex_unlock(&rt5665->calibrate_mutex);
-+}
-+
-+static const struct snd_kcontrol_new rt5665_snd_controls[] = {
-+	/* Headphone Output Volume */
-+	SOC_DOUBLE_R_EXT_TLV("Headphone Playback Volume", RT5665_HPL_GAIN,
-+		RT5665_HPR_GAIN, RT5665_G_HP_SFT, 15, 1, snd_soc_get_volsw,
-+		rt5665_hp_vol_put, hp_vol_tlv),
-+
-+	/* Mono Output Volume */
-+	SOC_SINGLE_EXT_TLV("Mono Playback Volume", RT5665_MONO_GAIN,
-+		RT5665_L_VOL_SFT, 15, 1, snd_soc_get_volsw,
-+		rt5665_mono_vol_put, mono_vol_tlv),
-+
-+	/* Output Volume */
-+	SOC_DOUBLE_TLV("OUT Playback Volume", RT5665_LOUT, RT5665_L_VOL_SFT,
-+		RT5665_R_VOL_SFT, 39, 1, out_vol_tlv),
-+
-+	/* DAC Digital Volume */
-+	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5665_DAC1_DIG_VOL,
-+		RT5665_L_VOL_SFT, RT5665_R_VOL_SFT, 175, 0, dac_vol_tlv),
-+	SOC_DOUBLE_TLV("DAC2 Playback Volume", RT5665_DAC2_DIG_VOL,
-+		RT5665_L_VOL_SFT, RT5665_R_VOL_SFT, 175, 0, dac_vol_tlv),
-+	SOC_DOUBLE("DAC2 Playback Switch", RT5665_DAC2_CTRL,
-+		RT5665_M_DAC2_L_VOL_SFT, RT5665_M_DAC2_R_VOL_SFT, 1, 1),
-+
-+	/* IN1/IN2/IN3/IN4 Volume */
-+	SOC_SINGLE_TLV("IN1 Boost Volume", RT5665_IN1_IN2,
-+		RT5665_BST1_SFT, 69, 0, in_bst_tlv),
-+	SOC_SINGLE_TLV("IN2 Boost Volume", RT5665_IN1_IN2,
-+		RT5665_BST2_SFT, 69, 0, in_bst_tlv),
-+	SOC_SINGLE_TLV("IN3 Boost Volume", RT5665_IN3_IN4,
-+		RT5665_BST3_SFT, 69, 0, in_bst_tlv),
-+	SOC_SINGLE_TLV("IN4 Boost Volume", RT5665_IN3_IN4,
-+		RT5665_BST4_SFT, 69, 0, in_bst_tlv),
-+	SOC_SINGLE_TLV("CBJ Boost Volume", RT5665_CBJ_BST_CTRL,
-+		RT5665_BST_CBJ_SFT, 8, 0, bst_tlv),
-+
-+	/* INL/INR Volume Control */
-+	SOC_DOUBLE_TLV("IN Capture Volume", RT5665_INL1_INR1_VOL,
-+		RT5665_INL_VOL_SFT, RT5665_INR_VOL_SFT, 31, 1, in_vol_tlv),
-+
-+	/* ADC Digital Volume Control */
-+	SOC_DOUBLE("STO1 ADC Capture Switch", RT5665_STO1_ADC_DIG_VOL,
-+		RT5665_L_MUTE_SFT, RT5665_R_MUTE_SFT, 1, 1),
-+	SOC_DOUBLE_TLV("STO1 ADC Capture Volume", RT5665_STO1_ADC_DIG_VOL,
-+		RT5665_L_VOL_SFT, RT5665_R_VOL_SFT, 127, 0, adc_vol_tlv),
-+	SOC_DOUBLE("Mono ADC Capture Switch", RT5665_MONO_ADC_DIG_VOL,
-+		RT5665_L_MUTE_SFT, RT5665_R_MUTE_SFT, 1, 1),
-+	SOC_DOUBLE_TLV("Mono ADC Capture Volume", RT5665_MONO_ADC_DIG_VOL,
-+		RT5665_L_VOL_SFT, RT5665_R_VOL_SFT, 127, 0, adc_vol_tlv),
-+	SOC_DOUBLE("STO2 ADC Capture Switch", RT5665_STO2_ADC_DIG_VOL,
-+		RT5665_L_MUTE_SFT, RT5665_R_MUTE_SFT, 1, 1),
-+	SOC_DOUBLE_TLV("STO2 ADC Capture Volume", RT5665_STO2_ADC_DIG_VOL,
-+		RT5665_L_VOL_SFT, RT5665_R_VOL_SFT, 127, 0, adc_vol_tlv),
-+
-+	/* ADC Boost Volume Control */
-+	SOC_DOUBLE_TLV("STO1 ADC Boost Gain Volume", RT5665_STO1_ADC_BOOST,
-+		RT5665_STO1_ADC_L_BST_SFT, RT5665_STO1_ADC_R_BST_SFT,
-+		3, 0, adc_bst_tlv),
-+
-+	SOC_DOUBLE_TLV("Mono ADC Boost Gain Volume", RT5665_MONO_ADC_BOOST,
-+		RT5665_MONO_ADC_L_BST_SFT, RT5665_MONO_ADC_R_BST_SFT,
-+		3, 0, adc_bst_tlv),
-+
-+	SOC_DOUBLE_TLV("STO2 ADC Boost Gain Volume", RT5665_STO2_ADC_BOOST,
-+		RT5665_STO2_ADC_L_BST_SFT, RT5665_STO2_ADC_R_BST_SFT,
-+		3, 0, adc_bst_tlv),
-+};
-+
-+/**
-+ * set_dmic_clk - Set parameter of dmic.
-+ *
-+ * @w: DAPM widget.
-+ * @kcontrol: The kcontrol of this widget.
-+ * @event: Event id.
-+ *
-+ * Choose dmic clock between 1MHz and 3MHz.
-+ * It is better for clock to approximate 3MHz.
-+ */
-+static int set_dmic_clk(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
-+	int pd, idx = -EINVAL;
-+
-+	pd = rl6231_get_pre_div(rt5665->regmap,
-+		RT5665_ADDA_CLK_1, RT5665_I2S_PD1_SFT);
-+	idx = rl6231_calc_dmic_clk(rt5665->sysclk / pd);
-+
-+	if (idx < 0)
-+		dev_err(codec->dev, "Failed to set DMIC clock\n");
-+	else {
-+		snd_soc_update_bits(codec, RT5665_DMIC_CTRL_1,
-+			RT5665_DMIC_CLK_MASK, idx << RT5665_DMIC_CLK_SFT);
-+	}
-+	return idx;
-+}
-+
-+static int rt5665_charge_pump_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_update_bits(codec, RT5665_HP_CHARGE_PUMP_1,
-+			RT5665_PM_HP_MASK | RT5665_OSW_L_MASK,
-+			RT5665_PM_HP_HV | RT5665_OSW_L_EN);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_update_bits(codec, RT5665_HP_CHARGE_PUMP_1,
-+			RT5665_PM_HP_MASK | RT5665_OSW_L_MASK,
-+			RT5665_PM_HP_LV | RT5665_OSW_L_DIS);
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int is_sys_clk_from_pll(struct snd_soc_dapm_widget *w,
-+			 struct snd_soc_dapm_widget *sink)
-+{
-+	unsigned int val;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	val = snd_soc_read(codec, RT5665_GLB_CLK);
-+	val &= RT5665_SCLK_SRC_MASK;
-+	if (val == RT5665_SCLK_SRC_PLL1)
-+		return 1;
-+	else
-+		return 0;
-+}
-+
-+static int is_using_asrc(struct snd_soc_dapm_widget *w,
-+			 struct snd_soc_dapm_widget *sink)
-+{
-+	unsigned int reg, shift, val;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (w->shift) {
-+	case RT5665_ADC_MONO_R_ASRC_SFT:
-+		reg = RT5665_ASRC_3;
-+		shift = RT5665_AD_MONOR_CLK_SEL_SFT;
-+		break;
-+	case RT5665_ADC_MONO_L_ASRC_SFT:
-+		reg = RT5665_ASRC_3;
-+		shift = RT5665_AD_MONOL_CLK_SEL_SFT;
-+		break;
-+	case RT5665_ADC_STO1_ASRC_SFT:
-+		reg = RT5665_ASRC_3;
-+		shift = RT5665_AD_STO1_CLK_SEL_SFT;
-+		break;
-+	case RT5665_ADC_STO2_ASRC_SFT:
-+		reg = RT5665_ASRC_3;
-+		shift = RT5665_AD_STO2_CLK_SEL_SFT;
-+		break;
-+	case RT5665_DAC_MONO_R_ASRC_SFT:
-+		reg = RT5665_ASRC_2;
-+		shift = RT5665_DA_MONOR_CLK_SEL_SFT;
-+		break;
-+	case RT5665_DAC_MONO_L_ASRC_SFT:
-+		reg = RT5665_ASRC_2;
-+		shift = RT5665_DA_MONOL_CLK_SEL_SFT;
-+		break;
-+	case RT5665_DAC_STO1_ASRC_SFT:
-+		reg = RT5665_ASRC_2;
-+		shift = RT5665_DA_STO1_CLK_SEL_SFT;
-+		break;
-+	case RT5665_DAC_STO2_ASRC_SFT:
-+		reg = RT5665_ASRC_2;
-+		shift = RT5665_DA_STO2_CLK_SEL_SFT;
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	val = (snd_soc_read(codec, reg) >> shift) & 0xf;
-+	switch (val) {
-+	case RT5665_CLK_SEL_I2S1_ASRC:
-+	case RT5665_CLK_SEL_I2S2_ASRC:
-+	case RT5665_CLK_SEL_I2S3_ASRC:
-+		/* I2S_Pre_Div1 should be 1 in asrc mode */
-+		snd_soc_update_bits(codec, RT5665_ADDA_CLK_1,
-+			RT5665_I2S_PD1_MASK, RT5665_I2S_PD1_2);
-+		return 1;
-+	default:
-+		return 0;
-+	}
-+
-+}
-+
-+/* Digital Mixer */
-+static const struct snd_kcontrol_new rt5665_sto1_adc_l_mix[] = {
-+	SOC_DAPM_SINGLE("ADC1 Switch", RT5665_STO1_ADC_MIXER,
-+			RT5665_M_STO1_ADC_L1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("ADC2 Switch", RT5665_STO1_ADC_MIXER,
-+			RT5665_M_STO1_ADC_L2_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_sto1_adc_r_mix[] = {
-+	SOC_DAPM_SINGLE("ADC1 Switch", RT5665_STO1_ADC_MIXER,
-+			RT5665_M_STO1_ADC_R1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("ADC2 Switch", RT5665_STO1_ADC_MIXER,
-+			RT5665_M_STO1_ADC_R2_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_sto2_adc_l_mix[] = {
-+	SOC_DAPM_SINGLE("ADC1 Switch", RT5665_STO2_ADC_MIXER,
-+			RT5665_M_STO2_ADC_L1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("ADC2 Switch", RT5665_STO2_ADC_MIXER,
-+			RT5665_M_STO2_ADC_L2_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_sto2_adc_r_mix[] = {
-+	SOC_DAPM_SINGLE("ADC1 Switch", RT5665_STO2_ADC_MIXER,
-+			RT5665_M_STO2_ADC_R1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("ADC2 Switch", RT5665_STO2_ADC_MIXER,
-+			RT5665_M_STO2_ADC_R2_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_mono_adc_l_mix[] = {
-+	SOC_DAPM_SINGLE("ADC1 Switch", RT5665_MONO_ADC_MIXER,
-+			RT5665_M_MONO_ADC_L1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("ADC2 Switch", RT5665_MONO_ADC_MIXER,
-+			RT5665_M_MONO_ADC_L2_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_mono_adc_r_mix[] = {
-+	SOC_DAPM_SINGLE("ADC1 Switch", RT5665_MONO_ADC_MIXER,
-+			RT5665_M_MONO_ADC_R1_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("ADC2 Switch", RT5665_MONO_ADC_MIXER,
-+			RT5665_M_MONO_ADC_R2_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_dac_l_mix[] = {
-+	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5665_AD_DA_MIXER,
-+			RT5665_M_ADCMIX_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC1 Switch", RT5665_AD_DA_MIXER,
-+			RT5665_M_DAC1_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_dac_r_mix[] = {
-+	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5665_AD_DA_MIXER,
-+			RT5665_M_ADCMIX_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC1 Switch", RT5665_AD_DA_MIXER,
-+			RT5665_M_DAC1_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_sto1_dac_l_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L1 Switch", RT5665_STO1_DAC_MIXER,
-+			RT5665_M_DAC_L1_STO_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R1 Switch", RT5665_STO1_DAC_MIXER,
-+			RT5665_M_DAC_R1_STO_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5665_STO1_DAC_MIXER,
-+			RT5665_M_DAC_L2_STO_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5665_STO1_DAC_MIXER,
-+			RT5665_M_DAC_R2_STO_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_sto1_dac_r_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L1 Switch", RT5665_STO1_DAC_MIXER,
-+			RT5665_M_DAC_L1_STO_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R1 Switch", RT5665_STO1_DAC_MIXER,
-+			RT5665_M_DAC_R1_STO_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5665_STO1_DAC_MIXER,
-+			RT5665_M_DAC_L2_STO_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5665_STO1_DAC_MIXER,
-+			RT5665_M_DAC_R2_STO_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_sto2_dac_l_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L1 Switch", RT5665_STO2_DAC_MIXER,
-+			RT5665_M_DAC_L1_STO2_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5665_STO2_DAC_MIXER,
-+			RT5665_M_DAC_L2_STO2_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC L3 Switch", RT5665_STO2_DAC_MIXER,
-+			RT5665_M_DAC_L3_STO2_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_sto2_dac_r_mix[] = {
-+	SOC_DAPM_SINGLE("DAC R1 Switch", RT5665_STO2_DAC_MIXER,
-+			RT5665_M_DAC_R1_STO2_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5665_STO2_DAC_MIXER,
-+			RT5665_M_DAC_R2_STO2_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R3 Switch", RT5665_STO2_DAC_MIXER,
-+			RT5665_M_DAC_R3_STO2_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_mono_dac_l_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L1 Switch", RT5665_MONO_DAC_MIXER,
-+			RT5665_M_DAC_L1_MONO_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R1 Switch", RT5665_MONO_DAC_MIXER,
-+			RT5665_M_DAC_R1_MONO_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5665_MONO_DAC_MIXER,
-+			RT5665_M_DAC_L2_MONO_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5665_MONO_DAC_MIXER,
-+			RT5665_M_DAC_R2_MONO_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_mono_dac_r_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L1 Switch", RT5665_MONO_DAC_MIXER,
-+			RT5665_M_DAC_L1_MONO_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R1 Switch", RT5665_MONO_DAC_MIXER,
-+			RT5665_M_DAC_R1_MONO_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5665_MONO_DAC_MIXER,
-+			RT5665_M_DAC_L2_MONO_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5665_MONO_DAC_MIXER,
-+			RT5665_M_DAC_R2_MONO_R_SFT, 1, 1),
-+};
-+
-+/* Analog Input Mixer */
-+static const struct snd_kcontrol_new rt5665_rec1_l_mix[] = {
-+	SOC_DAPM_SINGLE("CBJ Switch", RT5665_REC1_L2_MIXER,
-+			RT5665_M_CBJ_RM1_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INL Switch", RT5665_REC1_L2_MIXER,
-+			RT5665_M_INL_RM1_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INR Switch", RT5665_REC1_L2_MIXER,
-+			RT5665_M_INR_RM1_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST4 Switch", RT5665_REC1_L2_MIXER,
-+			RT5665_M_BST4_RM1_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5665_REC1_L2_MIXER,
-+			RT5665_M_BST3_RM1_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5665_REC1_L2_MIXER,
-+			RT5665_M_BST2_RM1_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5665_REC1_L2_MIXER,
-+			RT5665_M_BST1_RM1_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_rec1_r_mix[] = {
-+	SOC_DAPM_SINGLE("MONOVOL Switch", RT5665_REC1_R2_MIXER,
-+			RT5665_M_AEC_REF_RM1_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INR Switch", RT5665_REC1_R2_MIXER,
-+			RT5665_M_INR_RM1_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST4 Switch", RT5665_REC1_R2_MIXER,
-+			RT5665_M_BST4_RM1_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5665_REC1_R2_MIXER,
-+			RT5665_M_BST3_RM1_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5665_REC1_R2_MIXER,
-+			RT5665_M_BST2_RM1_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5665_REC1_R2_MIXER,
-+			RT5665_M_BST1_RM1_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_rec2_l_mix[] = {
-+	SOC_DAPM_SINGLE("INL Switch", RT5665_REC2_L2_MIXER,
-+			RT5665_M_INL_RM2_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INR Switch", RT5665_REC2_L2_MIXER,
-+			RT5665_M_INR_RM2_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("CBJ Switch", RT5665_REC2_L2_MIXER,
-+			RT5665_M_CBJ_RM2_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST4 Switch", RT5665_REC2_L2_MIXER,
-+			RT5665_M_BST4_RM2_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5665_REC2_L2_MIXER,
-+			RT5665_M_BST3_RM2_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5665_REC2_L2_MIXER,
-+			RT5665_M_BST2_RM2_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5665_REC2_L2_MIXER,
-+			RT5665_M_BST1_RM2_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_rec2_r_mix[] = {
-+	SOC_DAPM_SINGLE("MONOVOL Switch", RT5665_REC2_R2_MIXER,
-+			RT5665_M_MONOVOL_RM2_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INL Switch", RT5665_REC2_R2_MIXER,
-+			RT5665_M_INL_RM2_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INR Switch", RT5665_REC2_R2_MIXER,
-+			RT5665_M_INR_RM2_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST4 Switch", RT5665_REC2_R2_MIXER,
-+			RT5665_M_BST4_RM2_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5665_REC2_R2_MIXER,
-+			RT5665_M_BST3_RM2_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5665_REC2_R2_MIXER,
-+			RT5665_M_BST2_RM2_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5665_REC2_R2_MIXER,
-+			RT5665_M_BST1_RM2_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_monovol_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5665_MONOMIX_IN_GAIN,
-+			RT5665_M_DAC_L2_MM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("RECMIX2L Switch", RT5665_MONOMIX_IN_GAIN,
-+			RT5665_M_RECMIC2L_MM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5665_MONOMIX_IN_GAIN,
-+			RT5665_M_BST1_MM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5665_MONOMIX_IN_GAIN,
-+			RT5665_M_BST2_MM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5665_MONOMIX_IN_GAIN,
-+			RT5665_M_BST3_MM_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_out_l_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5665_OUT_L_MIXER,
-+			RT5665_M_DAC_L2_OM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INL Switch", RT5665_OUT_L_MIXER,
-+			RT5665_M_IN_L_OM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST1 Switch", RT5665_OUT_L_MIXER,
-+			RT5665_M_BST1_OM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5665_OUT_L_MIXER,
-+			RT5665_M_BST2_OM_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5665_OUT_L_MIXER,
-+			RT5665_M_BST3_OM_L_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_out_r_mix[] = {
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5665_OUT_R_MIXER,
-+			RT5665_M_DAC_R2_OM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("INR Switch", RT5665_OUT_R_MIXER,
-+			RT5665_M_IN_R_OM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST2 Switch", RT5665_OUT_R_MIXER,
-+			RT5665_M_BST2_OM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST3 Switch", RT5665_OUT_R_MIXER,
-+			RT5665_M_BST3_OM_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("BST4 Switch", RT5665_OUT_R_MIXER,
-+			RT5665_M_BST4_OM_R_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_mono_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5665_MONOMIX_IN_GAIN,
-+			RT5665_M_DAC_L2_MA_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("MONOVOL Switch", RT5665_MONOMIX_IN_GAIN,
-+			RT5665_M_MONOVOL_MA_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_lout_l_mix[] = {
-+	SOC_DAPM_SINGLE("DAC L2 Switch", RT5665_LOUT_MIXER,
-+			RT5665_M_DAC_L2_LM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("OUTVOL L Switch", RT5665_LOUT_MIXER,
-+			RT5665_M_OV_L_LM_SFT, 1, 1),
-+};
-+
-+static const struct snd_kcontrol_new rt5665_lout_r_mix[] = {
-+	SOC_DAPM_SINGLE("DAC R2 Switch", RT5665_LOUT_MIXER,
-+			RT5665_M_DAC_R2_LM_SFT, 1, 1),
-+	SOC_DAPM_SINGLE("OUTVOL R Switch", RT5665_LOUT_MIXER,
-+			RT5665_M_OV_R_LM_SFT, 1, 1),
-+};
-+
-+/*DAC L2, DAC R2*/
-+/*MX-17 [6:4], MX-17 [2:0]*/
-+static const char * const rt5665_dac2_src[] = {
-+	"IF1 DAC2", "IF2_1 DAC", "IF2_2 DAC", "IF3 DAC", "Mono ADC MIX"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_dac_l2_enum, RT5665_DAC2_CTRL,
-+	RT5665_DAC_L2_SEL_SFT, rt5665_dac2_src);
-+
-+static const struct snd_kcontrol_new rt5665_dac_l2_mux =
-+	SOC_DAPM_ENUM("Digital DAC L2 Source", rt5665_dac_l2_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_dac_r2_enum, RT5665_DAC2_CTRL,
-+	RT5665_DAC_R2_SEL_SFT, rt5665_dac2_src);
-+
-+static const struct snd_kcontrol_new rt5665_dac_r2_mux =
-+	SOC_DAPM_ENUM("Digital DAC R2 Source", rt5665_dac_r2_enum);
-+
-+/*DAC L3, DAC R3*/
-+/*MX-1B [6:4], MX-1B [2:0]*/
-+static const char * const rt5665_dac3_src[] = {
-+	"IF1 DAC2", "IF2_1 DAC", "IF2_2 DAC", "IF3 DAC", "STO2 ADC MIX"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_dac_l3_enum, RT5665_DAC3_CTRL,
-+	RT5665_DAC_L3_SEL_SFT, rt5665_dac3_src);
-+
-+static const struct snd_kcontrol_new rt5665_dac_l3_mux =
-+	SOC_DAPM_ENUM("Digital DAC L3 Source", rt5665_dac_l3_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_dac_r3_enum, RT5665_DAC3_CTRL,
-+	RT5665_DAC_R3_SEL_SFT, rt5665_dac3_src);
-+
-+static const struct snd_kcontrol_new rt5665_dac_r3_mux =
-+	SOC_DAPM_ENUM("Digital DAC R3 Source", rt5665_dac_r3_enum);
-+
-+/* STO1 ADC1 Source */
-+/* MX-26 [13] [5] */
-+static const char * const rt5665_sto1_adc1_src[] = {
-+	"DD Mux", "ADC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto1_adc1l_enum, RT5665_STO1_ADC_MIXER,
-+	RT5665_STO1_ADC1L_SRC_SFT, rt5665_sto1_adc1_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto1_adc1l_mux =
-+	SOC_DAPM_ENUM("Stereo1 ADC1L Source", rt5665_sto1_adc1l_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto1_adc1r_enum, RT5665_STO1_ADC_MIXER,
-+	RT5665_STO1_ADC1R_SRC_SFT, rt5665_sto1_adc1_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto1_adc1r_mux =
-+	SOC_DAPM_ENUM("Stereo1 ADC1L Source", rt5665_sto1_adc1r_enum);
-+
-+/* STO1 ADC Source */
-+/* MX-26 [11:10] [3:2] */
-+static const char * const rt5665_sto1_adc_src[] = {
-+	"ADC1 L", "ADC1 R", "ADC2 L", "ADC2 R"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto1_adcl_enum, RT5665_STO1_ADC_MIXER,
-+	RT5665_STO1_ADCL_SRC_SFT, rt5665_sto1_adc_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto1_adcl_mux =
-+	SOC_DAPM_ENUM("Stereo1 ADCL Source", rt5665_sto1_adcl_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto1_adcr_enum, RT5665_STO1_ADC_MIXER,
-+	RT5665_STO1_ADCR_SRC_SFT, rt5665_sto1_adc_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto1_adcr_mux =
-+	SOC_DAPM_ENUM("Stereo1 ADCR Source", rt5665_sto1_adcr_enum);
-+
-+/* STO1 ADC2 Source */
-+/* MX-26 [12] [4] */
-+static const char * const rt5665_sto1_adc2_src[] = {
-+	"DAC MIX", "DMIC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto1_adc2l_enum, RT5665_STO1_ADC_MIXER,
-+	RT5665_STO1_ADC2L_SRC_SFT, rt5665_sto1_adc2_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto1_adc2l_mux =
-+	SOC_DAPM_ENUM("Stereo1 ADC2L Source", rt5665_sto1_adc2l_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto1_adc2r_enum, RT5665_STO1_ADC_MIXER,
-+	RT5665_STO1_ADC2R_SRC_SFT, rt5665_sto1_adc2_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto1_adc2r_mux =
-+	SOC_DAPM_ENUM("Stereo1 ADC2R Source", rt5665_sto1_adc2r_enum);
-+
-+/* STO1 DMIC Source */
-+/* MX-26 [8] */
-+static const char * const rt5665_sto1_dmic_src[] = {
-+	"DMIC1", "DMIC2"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto1_dmic_enum, RT5665_STO1_ADC_MIXER,
-+	RT5665_STO1_DMIC_SRC_SFT, rt5665_sto1_dmic_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto1_dmic_mux =
-+	SOC_DAPM_ENUM("Stereo1 DMIC Mux", rt5665_sto1_dmic_enum);
-+
-+/* MX-26 [9] */
-+static const char * const rt5665_sto1_dd_l_src[] = {
-+	"STO2 DAC", "MONO DAC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto1_dd_l_enum, RT5665_STO1_ADC_MIXER,
-+	RT5665_STO1_DD_L_SRC_SFT, rt5665_sto1_dd_l_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto1_dd_l_mux =
-+	SOC_DAPM_ENUM("Stereo1 DD L Source", rt5665_sto1_dd_l_enum);
-+
-+/* MX-26 [1:0] */
-+static const char * const rt5665_sto1_dd_r_src[] = {
-+	"STO2 DAC", "MONO DAC", "AEC REF"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto1_dd_r_enum, RT5665_STO1_ADC_MIXER,
-+	RT5665_STO1_DD_R_SRC_SFT, rt5665_sto1_dd_r_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto1_dd_r_mux =
-+	SOC_DAPM_ENUM("Stereo1 DD R Source", rt5665_sto1_dd_r_enum);
-+
-+/* MONO ADC L2 Source */
-+/* MX-27 [12] */
-+static const char * const rt5665_mono_adc_l2_src[] = {
-+	"DAC MIXL", "DMIC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_mono_adc_l2_enum, RT5665_MONO_ADC_MIXER,
-+	RT5665_MONO_ADC_L2_SRC_SFT, rt5665_mono_adc_l2_src);
-+
-+static const struct snd_kcontrol_new rt5665_mono_adc_l2_mux =
-+	SOC_DAPM_ENUM("Mono ADC L2 Source", rt5665_mono_adc_l2_enum);
-+
-+
-+/* MONO ADC L1 Source */
-+/* MX-27 [13] */
-+static const char * const rt5665_mono_adc_l1_src[] = {
-+	"DD Mux", "ADC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_mono_adc_l1_enum, RT5665_MONO_ADC_MIXER,
-+	RT5665_MONO_ADC_L1_SRC_SFT, rt5665_mono_adc_l1_src);
-+
-+static const struct snd_kcontrol_new rt5665_mono_adc_l1_mux =
-+	SOC_DAPM_ENUM("Mono ADC L1 Source", rt5665_mono_adc_l1_enum);
-+
-+/* MX-27 [9][1]*/
-+static const char * const rt5665_mono_dd_src[] = {
-+	"STO2 DAC", "MONO DAC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_mono_dd_l_enum, RT5665_MONO_ADC_MIXER,
-+	RT5665_MONO_DD_L_SRC_SFT, rt5665_mono_dd_src);
-+
-+static const struct snd_kcontrol_new rt5665_mono_dd_l_mux =
-+	SOC_DAPM_ENUM("Mono DD L Source", rt5665_mono_dd_l_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_mono_dd_r_enum, RT5665_MONO_ADC_MIXER,
-+	RT5665_MONO_DD_R_SRC_SFT, rt5665_mono_dd_src);
-+
-+static const struct snd_kcontrol_new rt5665_mono_dd_r_mux =
-+	SOC_DAPM_ENUM("Mono DD R Source", rt5665_mono_dd_r_enum);
-+
-+/* MONO ADC L Source, MONO ADC R Source*/
-+/* MX-27 [11:10], MX-27 [3:2] */
-+static const char * const rt5665_mono_adc_src[] = {
-+	"ADC1 L", "ADC1 R", "ADC2 L", "ADC2 R"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_mono_adc_l_enum, RT5665_MONO_ADC_MIXER,
-+	RT5665_MONO_ADC_L_SRC_SFT, rt5665_mono_adc_src);
-+
-+static const struct snd_kcontrol_new rt5665_mono_adc_l_mux =
-+	SOC_DAPM_ENUM("Mono ADC L Source", rt5665_mono_adc_l_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_mono_adcr_enum, RT5665_MONO_ADC_MIXER,
-+	RT5665_MONO_ADC_R_SRC_SFT, rt5665_mono_adc_src);
-+
-+static const struct snd_kcontrol_new rt5665_mono_adc_r_mux =
-+	SOC_DAPM_ENUM("Mono ADC R Source", rt5665_mono_adcr_enum);
-+
-+/* MONO DMIC L Source */
-+/* MX-27 [8] */
-+static const char * const rt5665_mono_dmic_l_src[] = {
-+	"DMIC1 L", "DMIC2 L"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_mono_dmic_l_enum, RT5665_MONO_ADC_MIXER,
-+	RT5665_MONO_DMIC_L_SRC_SFT, rt5665_mono_dmic_l_src);
-+
-+static const struct snd_kcontrol_new rt5665_mono_dmic_l_mux =
-+	SOC_DAPM_ENUM("Mono DMIC L Source", rt5665_mono_dmic_l_enum);
-+
-+/* MONO ADC R2 Source */
-+/* MX-27 [4] */
-+static const char * const rt5665_mono_adc_r2_src[] = {
-+	"DAC MIXR", "DMIC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_mono_adc_r2_enum, RT5665_MONO_ADC_MIXER,
-+	RT5665_MONO_ADC_R2_SRC_SFT, rt5665_mono_adc_r2_src);
-+
-+static const struct snd_kcontrol_new rt5665_mono_adc_r2_mux =
-+	SOC_DAPM_ENUM("Mono ADC R2 Source", rt5665_mono_adc_r2_enum);
-+
-+/* MONO ADC R1 Source */
-+/* MX-27 [5] */
-+static const char * const rt5665_mono_adc_r1_src[] = {
-+	"DD Mux", "ADC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_mono_adc_r1_enum, RT5665_MONO_ADC_MIXER,
-+	RT5665_MONO_ADC_R1_SRC_SFT, rt5665_mono_adc_r1_src);
-+
-+static const struct snd_kcontrol_new rt5665_mono_adc_r1_mux =
-+	SOC_DAPM_ENUM("Mono ADC R1 Source", rt5665_mono_adc_r1_enum);
-+
-+/* MONO DMIC R Source */
-+/* MX-27 [0] */
-+static const char * const rt5665_mono_dmic_r_src[] = {
-+	"DMIC1 R", "DMIC2 R"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_mono_dmic_r_enum, RT5665_MONO_ADC_MIXER,
-+	RT5665_MONO_DMIC_R_SRC_SFT, rt5665_mono_dmic_r_src);
-+
-+static const struct snd_kcontrol_new rt5665_mono_dmic_r_mux =
-+	SOC_DAPM_ENUM("Mono DMIC R Source", rt5665_mono_dmic_r_enum);
-+
-+
-+/* STO2 ADC1 Source */
-+/* MX-28 [13] [5] */
-+static const char * const rt5665_sto2_adc1_src[] = {
-+	"DD Mux", "ADC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto2_adc1l_enum, RT5665_STO2_ADC_MIXER,
-+	RT5665_STO2_ADC1L_SRC_SFT, rt5665_sto2_adc1_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto2_adc1l_mux =
-+	SOC_DAPM_ENUM("Stereo2 ADC1L Source", rt5665_sto2_adc1l_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto2_adc1r_enum, RT5665_STO2_ADC_MIXER,
-+	RT5665_STO2_ADC1R_SRC_SFT, rt5665_sto2_adc1_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto2_adc1r_mux =
-+	SOC_DAPM_ENUM("Stereo2 ADC1L Source", rt5665_sto2_adc1r_enum);
-+
-+/* STO2 ADC Source */
-+/* MX-28 [11:10] [3:2] */
-+static const char * const rt5665_sto2_adc_src[] = {
-+	"ADC1 L", "ADC1 R", "ADC2 L"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto2_adcl_enum, RT5665_STO2_ADC_MIXER,
-+	RT5665_STO2_ADCL_SRC_SFT, rt5665_sto2_adc_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto2_adcl_mux =
-+	SOC_DAPM_ENUM("Stereo2 ADCL Source", rt5665_sto2_adcl_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto2_adcr_enum, RT5665_STO2_ADC_MIXER,
-+	RT5665_STO2_ADCR_SRC_SFT, rt5665_sto2_adc_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto2_adcr_mux =
-+	SOC_DAPM_ENUM("Stereo2 ADCR Source", rt5665_sto2_adcr_enum);
-+
-+/* STO2 ADC2 Source */
-+/* MX-28 [12] [4] */
-+static const char * const rt5665_sto2_adc2_src[] = {
-+	"DAC MIX", "DMIC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto2_adc2l_enum, RT5665_STO2_ADC_MIXER,
-+	RT5665_STO2_ADC2L_SRC_SFT, rt5665_sto2_adc2_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto2_adc2l_mux =
-+	SOC_DAPM_ENUM("Stereo2 ADC2L Source", rt5665_sto2_adc2l_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto2_adc2r_enum, RT5665_STO2_ADC_MIXER,
-+	RT5665_STO2_ADC2R_SRC_SFT, rt5665_sto2_adc2_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto2_adc2r_mux =
-+	SOC_DAPM_ENUM("Stereo2 ADC2R Source", rt5665_sto2_adc2r_enum);
-+
-+/* STO2 DMIC Source */
-+/* MX-28 [8] */
-+static const char * const rt5665_sto2_dmic_src[] = {
-+	"DMIC1", "DMIC2"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto2_dmic_enum, RT5665_STO2_ADC_MIXER,
-+	RT5665_STO2_DMIC_SRC_SFT, rt5665_sto2_dmic_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto2_dmic_mux =
-+	SOC_DAPM_ENUM("Stereo2 DMIC Source", rt5665_sto2_dmic_enum);
-+
-+/* MX-28 [9] */
-+static const char * const rt5665_sto2_dd_l_src[] = {
-+	"STO2 DAC", "MONO DAC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto2_dd_l_enum, RT5665_STO2_ADC_MIXER,
-+	RT5665_STO2_DD_L_SRC_SFT, rt5665_sto2_dd_l_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto2_dd_l_mux =
-+	SOC_DAPM_ENUM("Stereo2 DD L Source", rt5665_sto2_dd_l_enum);
-+
-+/* MX-28 [1] */
-+static const char * const rt5665_sto2_dd_r_src[] = {
-+	"STO2 DAC", "MONO DAC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_sto2_dd_r_enum, RT5665_STO2_ADC_MIXER,
-+	RT5665_STO2_DD_R_SRC_SFT, rt5665_sto2_dd_r_src);
-+
-+static const struct snd_kcontrol_new rt5665_sto2_dd_r_mux =
-+	SOC_DAPM_ENUM("Stereo2 DD R Source", rt5665_sto2_dd_r_enum);
-+
-+/* DAC R1 Source, DAC L1 Source*/
-+/* MX-29 [11:10], MX-29 [9:8]*/
-+static const char * const rt5665_dac1_src[] = {
-+	"IF1 DAC1", "IF2_1 DAC", "IF2_2 DAC", "IF3 DAC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_dac_r1_enum, RT5665_AD_DA_MIXER,
-+	RT5665_DAC1_R_SEL_SFT, rt5665_dac1_src);
-+
-+static const struct snd_kcontrol_new rt5665_dac_r1_mux =
-+	SOC_DAPM_ENUM("DAC R1 Source", rt5665_dac_r1_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_dac_l1_enum, RT5665_AD_DA_MIXER,
-+	RT5665_DAC1_L_SEL_SFT, rt5665_dac1_src);
-+
-+static const struct snd_kcontrol_new rt5665_dac_l1_mux =
-+	SOC_DAPM_ENUM("DAC L1 Source", rt5665_dac_l1_enum);
-+
-+/* DAC Digital Mixer L Source, DAC Digital Mixer R Source*/
-+/* MX-2D [13:12], MX-2D [9:8]*/
-+static const char * const rt5665_dig_dac_mix_src[] = {
-+	"Stereo1 DAC Mixer", "Stereo2 DAC Mixer", "Mono DAC Mixer"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_dig_dac_mixl_enum, RT5665_A_DAC1_MUX,
-+	RT5665_DAC_MIX_L_SFT, rt5665_dig_dac_mix_src);
-+
-+static const struct snd_kcontrol_new rt5665_dig_dac_mixl_mux =
-+	SOC_DAPM_ENUM("DAC Digital Mixer L Source", rt5665_dig_dac_mixl_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_dig_dac_mixr_enum, RT5665_A_DAC1_MUX,
-+	RT5665_DAC_MIX_R_SFT, rt5665_dig_dac_mix_src);
-+
-+static const struct snd_kcontrol_new rt5665_dig_dac_mixr_mux =
-+	SOC_DAPM_ENUM("DAC Digital Mixer R Source", rt5665_dig_dac_mixr_enum);
-+
-+/* Analog DAC L1 Source, Analog DAC R1 Source*/
-+/* MX-2D [5:4], MX-2D [1:0]*/
-+static const char * const rt5665_alg_dac1_src[] = {
-+	"Stereo1 DAC Mixer", "DAC1", "DMIC1"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_alg_dac_l1_enum, RT5665_A_DAC1_MUX,
-+	RT5665_A_DACL1_SFT, rt5665_alg_dac1_src);
-+
-+static const struct snd_kcontrol_new rt5665_alg_dac_l1_mux =
-+	SOC_DAPM_ENUM("Analog DAC L1 Source", rt5665_alg_dac_l1_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_alg_dac_r1_enum, RT5665_A_DAC1_MUX,
-+	RT5665_A_DACR1_SFT, rt5665_alg_dac1_src);
-+
-+static const struct snd_kcontrol_new rt5665_alg_dac_r1_mux =
-+	SOC_DAPM_ENUM("Analog DAC R1 Source", rt5665_alg_dac_r1_enum);
-+
-+/* Analog DAC LR Source, Analog DAC R2 Source*/
-+/* MX-2E [5:4], MX-2E [0]*/
-+static const char * const rt5665_alg_dac2_src[] = {
-+	"Mono DAC Mixer", "DAC2"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_alg_dac_l2_enum, RT5665_A_DAC2_MUX,
-+	RT5665_A_DACL2_SFT, rt5665_alg_dac2_src);
-+
-+static const struct snd_kcontrol_new rt5665_alg_dac_l2_mux =
-+	SOC_DAPM_ENUM("Analog DAC L2 Source", rt5665_alg_dac_l2_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_alg_dac_r2_enum, RT5665_A_DAC2_MUX,
-+	RT5665_A_DACR2_SFT, rt5665_alg_dac2_src);
-+
-+static const struct snd_kcontrol_new rt5665_alg_dac_r2_mux =
-+	SOC_DAPM_ENUM("Analog DAC R2 Source", rt5665_alg_dac_r2_enum);
-+
-+/* Interface2 ADC Data Input*/
-+/* MX-2F [14:12] */
-+static const char * const rt5665_if2_1_adc_in_src[] = {
-+	"STO1 ADC", "STO2 ADC", "MONO ADC", "IF1 DAC1",
-+	"IF1 DAC2", "IF2_2 DAC", "IF3 DAC", "DAC1 MIX"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_if2_1_adc_in_enum, RT5665_DIG_INF2_DATA,
-+	RT5665_IF3_ADC_IN_SFT, rt5665_if2_1_adc_in_src);
-+
-+static const struct snd_kcontrol_new rt5665_if2_1_adc_in_mux =
-+	SOC_DAPM_ENUM("IF2_1 ADC IN Source", rt5665_if2_1_adc_in_enum);
-+
-+/* MX-2F [6:4] */
-+static const char * const rt5665_if2_2_adc_in_src[] = {
-+	"STO1 ADC", "STO2 ADC", "MONO ADC", "IF1 DAC1",
-+	"IF1 DAC2", "IF2_1 DAC", "IF3 DAC", "DAC1 MIX"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_if2_2_adc_in_enum, RT5665_DIG_INF2_DATA,
-+	RT5665_IF2_2_ADC_IN_SFT, rt5665_if2_2_adc_in_src);
-+
-+static const struct snd_kcontrol_new rt5665_if2_2_adc_in_mux =
-+	SOC_DAPM_ENUM("IF2_1 ADC IN Source", rt5665_if2_2_adc_in_enum);
-+
-+/* Interface3 ADC Data Input*/
-+/* MX-30 [6:4] */
-+static const char * const rt5665_if3_adc_in_src[] = {
-+	"STO1 ADC", "STO2 ADC", "MONO ADC", "IF1 DAC1",
-+	"IF1 DAC2", "IF2_1 DAC", "IF2_2 DAC", "DAC1 MIX"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_if3_adc_in_enum, RT5665_DIG_INF3_DATA,
-+	RT5665_IF3_ADC_IN_SFT, rt5665_if3_adc_in_src);
-+
-+static const struct snd_kcontrol_new rt5665_if3_adc_in_mux =
-+	SOC_DAPM_ENUM("IF3 ADC IN Source", rt5665_if3_adc_in_enum);
-+
-+/* PDM 1 L/R*/
-+/* MX-31 [11:10] [9:8] */
-+static const char * const rt5665_pdm_src[] = {
-+	"Stereo1 DAC", "Stereo2 DAC", "Mono DAC"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_pdm_l_enum, RT5665_PDM_OUT_CTRL,
-+	RT5665_PDM1_L_SFT, rt5665_pdm_src);
-+
-+static const struct snd_kcontrol_new rt5665_pdm_l_mux =
-+	SOC_DAPM_ENUM("PDM L Source", rt5665_pdm_l_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_pdm_r_enum, RT5665_PDM_OUT_CTRL,
-+	RT5665_PDM1_R_SFT, rt5665_pdm_src);
-+
-+static const struct snd_kcontrol_new rt5665_pdm_r_mux =
-+	SOC_DAPM_ENUM("PDM R Source", rt5665_pdm_r_enum);
-+
-+
-+/* I2S1 TDM ADCDAT Source */
-+/* MX-7a[10] */
-+static const char * const rt5665_if1_1_adc1_data_src[] = {
-+	"STO1 ADC", "IF2_1 DAC",
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_if1_1_adc1_data_enum, RT5665_TDM_CTRL_3,
-+	RT5665_IF1_ADC1_SEL_SFT, rt5665_if1_1_adc1_data_src);
-+
-+static const struct snd_kcontrol_new rt5665_if1_1_adc1_mux =
-+	SOC_DAPM_ENUM("IF1_1 ADC1 Source", rt5665_if1_1_adc1_data_enum);
-+
-+/* MX-7a[9] */
-+static const char * const rt5665_if1_1_adc2_data_src[] = {
-+	"STO2 ADC", "IF2_2 DAC",
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_if1_1_adc2_data_enum, RT5665_TDM_CTRL_3,
-+	RT5665_IF1_ADC2_SEL_SFT, rt5665_if1_1_adc2_data_src);
-+
-+static const struct snd_kcontrol_new rt5665_if1_1_adc2_mux =
-+	SOC_DAPM_ENUM("IF1_1 ADC2 Source", rt5665_if1_1_adc2_data_enum);
-+
-+/* MX-7a[8] */
-+static const char * const rt5665_if1_1_adc3_data_src[] = {
-+	"MONO ADC", "IF3 DAC",
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_if1_1_adc3_data_enum, RT5665_TDM_CTRL_3,
-+	RT5665_IF1_ADC3_SEL_SFT, rt5665_if1_1_adc3_data_src);
-+
-+static const struct snd_kcontrol_new rt5665_if1_1_adc3_mux =
-+	SOC_DAPM_ENUM("IF1_1 ADC3 Source", rt5665_if1_1_adc3_data_enum);
-+
-+/* MX-7b[10] */
-+static const char * const rt5665_if1_2_adc1_data_src[] = {
-+	"STO1 ADC", "IF1 DAC",
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_if1_2_adc1_data_enum, RT5665_TDM_CTRL_4,
-+	RT5665_IF1_ADC1_SEL_SFT, rt5665_if1_2_adc1_data_src);
-+
-+static const struct snd_kcontrol_new rt5665_if1_2_adc1_mux =
-+	SOC_DAPM_ENUM("IF1_2 ADC1 Source", rt5665_if1_2_adc1_data_enum);
-+
-+/* MX-7b[9] */
-+static const char * const rt5665_if1_2_adc2_data_src[] = {
-+	"STO2 ADC", "IF2_1 DAC",
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_if1_2_adc2_data_enum, RT5665_TDM_CTRL_4,
-+	RT5665_IF1_ADC2_SEL_SFT, rt5665_if1_2_adc2_data_src);
-+
-+static const struct snd_kcontrol_new rt5665_if1_2_adc2_mux =
-+	SOC_DAPM_ENUM("IF1_2 ADC2 Source", rt5665_if1_2_adc2_data_enum);
-+
-+/* MX-7b[8] */
-+static const char * const rt5665_if1_2_adc3_data_src[] = {
-+	"MONO ADC", "IF2_2 DAC",
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_if1_2_adc3_data_enum, RT5665_TDM_CTRL_4,
-+	RT5665_IF1_ADC3_SEL_SFT, rt5665_if1_2_adc3_data_src);
-+
-+static const struct snd_kcontrol_new rt5665_if1_2_adc3_mux =
-+	SOC_DAPM_ENUM("IF1_2 ADC3 Source", rt5665_if1_2_adc3_data_enum);
-+
-+/* MX-7b[7] */
-+static const char * const rt5665_if1_2_adc4_data_src[] = {
-+	"DAC1", "IF3 DAC",
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_if1_2_adc4_data_enum, RT5665_TDM_CTRL_4,
-+	RT5665_IF1_ADC4_SEL_SFT, rt5665_if1_2_adc4_data_src);
-+
-+static const struct snd_kcontrol_new rt5665_if1_2_adc4_mux =
-+	SOC_DAPM_ENUM("IF1_2 ADC4 Source", rt5665_if1_2_adc4_data_enum);
-+
-+/* MX-7a[4:0] MX-7b[4:0] */
-+static const char * const rt5665_tdm_adc_data_src[] = {
-+	"1234", "1243", "1324",	"1342", "1432", "1423",
-+	"2134", "2143", "2314",	"2341", "2431", "2413",
-+	"3124", "3142", "3214", "3241", "3412", "3421",
-+	"4123", "4132", "4213", "4231", "4312", "4321"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_tdm1_adc_data_enum, RT5665_TDM_CTRL_3,
-+	RT5665_TDM_ADC_SEL_SFT, rt5665_tdm_adc_data_src);
-+
-+static const struct snd_kcontrol_new rt5665_tdm1_adc_mux =
-+	SOC_DAPM_ENUM("TDM1 ADC Mux", rt5665_tdm1_adc_data_enum);
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5665_tdm2_adc_data_enum, RT5665_TDM_CTRL_4,
-+	RT5665_TDM_ADC_SEL_SFT, rt5665_tdm_adc_data_src);
-+
-+static const struct snd_kcontrol_new rt5665_tdm2_adc_mux =
-+	SOC_DAPM_ENUM("TDM2 ADCDAT Source", rt5665_tdm2_adc_data_enum);
-+
-+/* Out Volume Switch */
-+static const struct snd_kcontrol_new monovol_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5665_MONO_OUT, RT5665_VOL_L_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new outvol_l_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5665_LOUT, RT5665_VOL_L_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new outvol_r_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5665_LOUT, RT5665_VOL_R_SFT, 1, 1);
-+
-+/* Out Switch */
-+static const struct snd_kcontrol_new mono_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5665_MONO_OUT, RT5665_L_MUTE_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new hpo_switch =
-+	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5665_HP_CTRL_2,
-+					RT5665_VOL_L_SFT, 1, 0);
-+
-+static const struct snd_kcontrol_new lout_l_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5665_LOUT, RT5665_L_MUTE_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new lout_r_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5665_LOUT, RT5665_R_MUTE_SFT, 1, 1);
-+
-+static const struct snd_kcontrol_new pdm_l_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5665_PDM_OUT_CTRL,
-+			RT5665_M_PDM1_L_SFT, 1,	1);
-+
-+static const struct snd_kcontrol_new pdm_r_switch =
-+	SOC_DAPM_SINGLE("Switch", RT5665_PDM_OUT_CTRL,
-+			RT5665_M_PDM1_R_SFT, 1,	1);
-+
-+static int rt5665_mono_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_update_bits(codec, RT5665_MONO_NG2_CTRL_1,
-+			RT5665_NG2_EN_MASK, RT5665_NG2_EN);
-+		snd_soc_update_bits(codec, RT5665_MONO_AMP_CALIB_CTRL_1, 0x40,
-+			0x0);
-+		snd_soc_update_bits(codec, RT5665_MONO_OUT, 0x10, 0x10);
-+		snd_soc_update_bits(codec, RT5665_MONO_OUT, 0x20, 0x20);
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_update_bits(codec, RT5665_MONO_OUT, 0x20, 0);
-+		snd_soc_update_bits(codec, RT5665_MONO_OUT, 0x10, 0);
-+		snd_soc_update_bits(codec, RT5665_MONO_AMP_CALIB_CTRL_1, 0x40,
-+			0x40);
-+		snd_soc_update_bits(codec, RT5665_MONO_NG2_CTRL_1,
-+			RT5665_NG2_EN_MASK, RT5665_NG2_DIS);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+
-+}
-+
-+static int rt5665_hp_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_update_bits(codec, RT5665_STO_NG2_CTRL_1,
-+			RT5665_NG2_EN_MASK, RT5665_NG2_EN);
-+		snd_soc_write(codec, RT5665_HP_LOGIC_CTRL_2, 0x0003);
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_write(codec, RT5665_HP_LOGIC_CTRL_2, 0x0002);
-+		snd_soc_update_bits(codec, RT5665_STO_NG2_CTRL_1,
-+			RT5665_NG2_EN_MASK, RT5665_NG2_DIS);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+
-+}
-+
-+static int rt5665_lout_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		snd_soc_update_bits(codec, RT5665_DEPOP_1,
-+			RT5665_PUMP_EN, RT5665_PUMP_EN);
-+		break;
-+
-+	case SND_SOC_DAPM_PRE_PMD:
-+		snd_soc_update_bits(codec, RT5665_DEPOP_1,
-+			RT5665_PUMP_EN, 0);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+
-+}
-+
-+static int set_dmic_power(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		/*Add delay to avoid pop noise*/
-+		msleep(150);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt5655_set_verf(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		switch (w->shift) {
-+		case RT5665_PWR_VREF1_BIT:
-+			snd_soc_update_bits(codec, RT5665_PWR_ANLG_1,
-+				RT5665_PWR_FV1, 0);
-+			break;
-+
-+		case RT5665_PWR_VREF2_BIT:
-+			snd_soc_update_bits(codec, RT5665_PWR_ANLG_1,
-+				RT5665_PWR_FV2, 0);
-+			break;
-+
-+		case RT5665_PWR_VREF3_BIT:
-+			snd_soc_update_bits(codec, RT5665_PWR_ANLG_1,
-+				RT5665_PWR_FV3, 0);
-+			break;
-+
-+		default:
-+			break;
-+		}
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMU:
-+		usleep_range(15000, 20000);
-+		switch (w->shift) {
-+		case RT5665_PWR_VREF1_BIT:
-+			snd_soc_update_bits(codec, RT5665_PWR_ANLG_1,
-+				RT5665_PWR_FV1, RT5665_PWR_FV1);
-+			break;
-+
-+		case RT5665_PWR_VREF2_BIT:
-+			snd_soc_update_bits(codec, RT5665_PWR_ANLG_1,
-+				RT5665_PWR_FV2, RT5665_PWR_FV2);
-+			break;
-+
-+		case RT5665_PWR_VREF3_BIT:
-+			snd_soc_update_bits(codec, RT5665_PWR_ANLG_1,
-+				RT5665_PWR_FV3, RT5665_PWR_FV3);
-+			break;
-+
-+		default:
-+			break;
-+		}
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
-+
-+static const struct snd_soc_dapm_widget rt5665_dapm_widgets[] = {
-+	SND_SOC_DAPM_SUPPLY("LDO2", RT5665_PWR_ANLG_3, RT5665_PWR_LDO2_BIT, 0,
-+		NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("PLL", RT5665_PWR_ANLG_3, RT5665_PWR_PLL_BIT, 0,
-+		NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Mic Det Power", RT5665_PWR_VOL,
-+		RT5665_PWR_MIC_DET_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Vref1", RT5665_PWR_ANLG_1, RT5665_PWR_VREF1_BIT, 0,
-+		rt5655_set_verf, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_SUPPLY("Vref2", RT5665_PWR_ANLG_1, RT5665_PWR_VREF2_BIT, 0,
-+		rt5655_set_verf, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_SUPPLY("Vref3", RT5665_PWR_ANLG_1, RT5665_PWR_VREF3_BIT, 0,
-+		rt5655_set_verf, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
-+
-+	/* ASRC */
-+	SND_SOC_DAPM_SUPPLY_S("I2S1 ASRC", 1, RT5665_ASRC_1,
-+		RT5665_I2S1_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("I2S2 ASRC", 1, RT5665_ASRC_1,
-+		RT5665_I2S2_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("I2S3 ASRC", 1, RT5665_ASRC_1,
-+		RT5665_I2S3_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC STO1 ASRC", 1, RT5665_ASRC_1,
-+		RT5665_DAC_STO1_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC STO2 ASRC", 1, RT5665_ASRC_1,
-+		RT5665_DAC_STO2_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC Mono L ASRC", 1, RT5665_ASRC_1,
-+		RT5665_DAC_MONO_L_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC Mono R ASRC", 1, RT5665_ASRC_1,
-+		RT5665_DAC_MONO_R_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("ADC STO1 ASRC", 1, RT5665_ASRC_1,
-+		RT5665_ADC_STO1_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("ADC Mono L ASRC", 1, RT5665_ASRC_1,
-+		RT5665_ADC_MONO_L_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("ADC Mono R ASRC", 1, RT5665_ASRC_1,
-+		RT5665_ADC_MONO_R_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC STO1 ASRC", 1, RT5665_ASRC_1,
-+		RT5665_DMIC_STO1_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC STO2 ASRC", 1, RT5665_ASRC_1,
-+		RT5665_DMIC_STO2_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC MONO L ASRC", 1, RT5665_ASRC_1,
-+		RT5665_DMIC_MONO_L_ASRC_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DMIC MONO R ASRC", 1, RT5665_ASRC_1,
-+		RT5665_DMIC_MONO_R_ASRC_SFT, 0, NULL, 0),
-+
-+	/* Input Side */
-+	SND_SOC_DAPM_SUPPLY("MICBIAS1", RT5665_PWR_ANLG_2, RT5665_PWR_MB1_BIT,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("MICBIAS2", RT5665_PWR_ANLG_2, RT5665_PWR_MB2_BIT,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("MICBIAS3", RT5665_PWR_ANLG_2, RT5665_PWR_MB3_BIT,
-+		0, NULL, 0),
-+
-+	/* Input Lines */
-+	SND_SOC_DAPM_INPUT("DMIC L1"),
-+	SND_SOC_DAPM_INPUT("DMIC R1"),
-+	SND_SOC_DAPM_INPUT("DMIC L2"),
-+	SND_SOC_DAPM_INPUT("DMIC R2"),
-+
-+	SND_SOC_DAPM_INPUT("IN1P"),
-+	SND_SOC_DAPM_INPUT("IN1N"),
-+	SND_SOC_DAPM_INPUT("IN2P"),
-+	SND_SOC_DAPM_INPUT("IN2N"),
-+	SND_SOC_DAPM_INPUT("IN3P"),
-+	SND_SOC_DAPM_INPUT("IN3N"),
-+	SND_SOC_DAPM_INPUT("IN4P"),
-+	SND_SOC_DAPM_INPUT("IN4N"),
-+
-+	SND_SOC_DAPM_PGA("DMIC1", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("DMIC2", SND_SOC_NOPM, 0, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_SUPPLY("DMIC CLK", SND_SOC_NOPM, 0, 0,
-+		set_dmic_clk, SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_SUPPLY("DMIC1 Power", RT5665_DMIC_CTRL_1,
-+		RT5665_DMIC_1_EN_SFT, 0, set_dmic_power, SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_SUPPLY("DMIC2 Power", RT5665_DMIC_CTRL_1,
-+		RT5665_DMIC_2_EN_SFT, 0, set_dmic_power, SND_SOC_DAPM_POST_PMU),
-+
-+	/* Boost */
-+	SND_SOC_DAPM_PGA("BST1", SND_SOC_NOPM,
-+		0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("BST2", SND_SOC_NOPM,
-+		0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("BST3", SND_SOC_NOPM,
-+		0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("BST4", SND_SOC_NOPM,
-+		0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("BST1 CBJ", SND_SOC_NOPM,
-+		0, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("BST1 Power", RT5665_PWR_ANLG_2,
-+		RT5665_PWR_BST1_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("BST2 Power", RT5665_PWR_ANLG_2,
-+		RT5665_PWR_BST2_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("BST3 Power", RT5665_PWR_ANLG_2,
-+		RT5665_PWR_BST3_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("BST4 Power", RT5665_PWR_ANLG_2,
-+		RT5665_PWR_BST4_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("BST1P Power", RT5665_PWR_ANLG_2,
-+		RT5665_PWR_BST1_P_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("BST2P Power", RT5665_PWR_ANLG_2,
-+		RT5665_PWR_BST2_P_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("BST3P Power", RT5665_PWR_ANLG_2,
-+		RT5665_PWR_BST3_P_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("BST4P Power", RT5665_PWR_ANLG_2,
-+		RT5665_PWR_BST4_P_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("CBJ Power", RT5665_PWR_ANLG_3,
-+		RT5665_PWR_CBJ_BIT, 0, NULL, 0),
-+
-+
-+	/* Input Volume */
-+	SND_SOC_DAPM_PGA("INL VOL", RT5665_PWR_VOL, RT5665_PWR_IN_L_BIT,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_PGA("INR VOL", RT5665_PWR_VOL, RT5665_PWR_IN_R_BIT,
-+		0, NULL, 0),
-+
-+	/* REC Mixer */
-+	SND_SOC_DAPM_MIXER("RECMIX1L", SND_SOC_NOPM, 0, 0, rt5665_rec1_l_mix,
-+		ARRAY_SIZE(rt5665_rec1_l_mix)),
-+	SND_SOC_DAPM_MIXER("RECMIX1R", SND_SOC_NOPM, 0, 0, rt5665_rec1_r_mix,
-+		ARRAY_SIZE(rt5665_rec1_r_mix)),
-+	SND_SOC_DAPM_MIXER("RECMIX2L", SND_SOC_NOPM, 0, 0, rt5665_rec2_l_mix,
-+		ARRAY_SIZE(rt5665_rec2_l_mix)),
-+	SND_SOC_DAPM_MIXER("RECMIX2R", SND_SOC_NOPM, 0, 0, rt5665_rec2_r_mix,
-+		ARRAY_SIZE(rt5665_rec2_r_mix)),
-+	SND_SOC_DAPM_SUPPLY("RECMIX1L Power", RT5665_PWR_ANLG_2,
-+		RT5665_PWR_RM1_L_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("RECMIX1R Power", RT5665_PWR_ANLG_2,
-+		RT5665_PWR_RM1_R_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("RECMIX2L Power", RT5665_PWR_MIXER,
-+		RT5665_PWR_RM2_L_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("RECMIX2R Power", RT5665_PWR_MIXER,
-+		RT5665_PWR_RM2_R_BIT, 0, NULL, 0),
-+
-+	/* ADCs */
-+	SND_SOC_DAPM_ADC("ADC1 L", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC1 R", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC2 L", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC2 R", NULL, SND_SOC_NOPM, 0, 0),
-+
-+	SND_SOC_DAPM_SUPPLY("ADC1 L Power", RT5665_PWR_DIG_1,
-+		RT5665_PWR_ADC_L1_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC1 R Power", RT5665_PWR_DIG_1,
-+		RT5665_PWR_ADC_R1_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC2 L Power", RT5665_PWR_DIG_1,
-+		RT5665_PWR_ADC_L2_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC2 R Power", RT5665_PWR_DIG_1,
-+		RT5665_PWR_ADC_R2_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC1 clock", RT5665_CHOP_ADC,
-+		RT5665_CKGEN_ADC1_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC2 clock", RT5665_CHOP_ADC,
-+		RT5665_CKGEN_ADC2_SFT, 0, NULL, 0),
-+
-+	/* ADC Mux */
-+	SND_SOC_DAPM_MUX("Stereo1 DMIC L Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto1_dmic_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 DMIC R Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto1_dmic_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 ADC L1 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto1_adc1l_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 ADC R1 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto1_adc1r_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 ADC L2 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto1_adc2l_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 ADC R2 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto1_adc2r_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 ADC L Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto1_adcl_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 ADC R Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto1_adcr_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 DD L Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto1_dd_l_mux),
-+	SND_SOC_DAPM_MUX("Stereo1 DD R Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto1_dd_r_mux),
-+	SND_SOC_DAPM_MUX("Mono ADC L2 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_mono_adc_l2_mux),
-+	SND_SOC_DAPM_MUX("Mono ADC R2 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_mono_adc_r2_mux),
-+	SND_SOC_DAPM_MUX("Mono ADC L1 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_mono_adc_l1_mux),
-+	SND_SOC_DAPM_MUX("Mono ADC R1 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_mono_adc_r1_mux),
-+	SND_SOC_DAPM_MUX("Mono DMIC L Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_mono_dmic_l_mux),
-+	SND_SOC_DAPM_MUX("Mono DMIC R Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_mono_dmic_r_mux),
-+	SND_SOC_DAPM_MUX("Mono ADC L Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_mono_adc_l_mux),
-+	SND_SOC_DAPM_MUX("Mono ADC R Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_mono_adc_r_mux),
-+	SND_SOC_DAPM_MUX("Mono DD L Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_mono_dd_l_mux),
-+	SND_SOC_DAPM_MUX("Mono DD R Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_mono_dd_r_mux),
-+	SND_SOC_DAPM_MUX("Stereo2 DMIC L Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto2_dmic_mux),
-+	SND_SOC_DAPM_MUX("Stereo2 DMIC R Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto2_dmic_mux),
-+	SND_SOC_DAPM_MUX("Stereo2 ADC L1 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto2_adc1l_mux),
-+	SND_SOC_DAPM_MUX("Stereo2 ADC R1 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto2_adc1r_mux),
-+	SND_SOC_DAPM_MUX("Stereo2 ADC L2 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto2_adc2l_mux),
-+	SND_SOC_DAPM_MUX("Stereo2 ADC R2 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto2_adc2r_mux),
-+	SND_SOC_DAPM_MUX("Stereo2 ADC L Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto2_adcl_mux),
-+	SND_SOC_DAPM_MUX("Stereo2 ADC R Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto2_adcr_mux),
-+	SND_SOC_DAPM_MUX("Stereo2 DD L Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto2_dd_l_mux),
-+	SND_SOC_DAPM_MUX("Stereo2 DD R Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_sto2_dd_r_mux),
-+	/* ADC Mixer */
-+	SND_SOC_DAPM_SUPPLY("ADC Stereo1 Filter", RT5665_PWR_DIG_2,
-+		RT5665_PWR_ADC_S1F_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC Stereo2 Filter", RT5665_PWR_DIG_2,
-+		RT5665_PWR_ADC_S2F_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Stereo1 ADC MIXL", RT5665_STO1_ADC_DIG_VOL,
-+		RT5665_L_MUTE_SFT, 1, rt5665_sto1_adc_l_mix,
-+		ARRAY_SIZE(rt5665_sto1_adc_l_mix)),
-+	SND_SOC_DAPM_MIXER("Stereo1 ADC MIXR", RT5665_STO1_ADC_DIG_VOL,
-+		RT5665_R_MUTE_SFT, 1, rt5665_sto1_adc_r_mix,
-+		ARRAY_SIZE(rt5665_sto1_adc_r_mix)),
-+	SND_SOC_DAPM_MIXER("Stereo2 ADC MIXL", RT5665_STO2_ADC_DIG_VOL,
-+		RT5665_L_MUTE_SFT, 1, rt5665_sto2_adc_l_mix,
-+		ARRAY_SIZE(rt5665_sto2_adc_l_mix)),
-+	SND_SOC_DAPM_MIXER("Stereo2 ADC MIXR", RT5665_STO2_ADC_DIG_VOL,
-+		RT5665_R_MUTE_SFT, 1, rt5665_sto2_adc_r_mix,
-+		ARRAY_SIZE(rt5665_sto2_adc_r_mix)),
-+	SND_SOC_DAPM_SUPPLY("ADC Mono Left Filter", RT5665_PWR_DIG_2,
-+		RT5665_PWR_ADC_MF_L_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Mono ADC MIXL", RT5665_MONO_ADC_DIG_VOL,
-+		RT5665_L_MUTE_SFT, 1, rt5665_mono_adc_l_mix,
-+		ARRAY_SIZE(rt5665_mono_adc_l_mix)),
-+	SND_SOC_DAPM_SUPPLY("ADC Mono Right Filter", RT5665_PWR_DIG_2,
-+		RT5665_PWR_ADC_MF_R_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Mono ADC MIXR", RT5665_MONO_ADC_DIG_VOL,
-+		RT5665_R_MUTE_SFT, 1, rt5665_mono_adc_r_mix,
-+		ARRAY_SIZE(rt5665_mono_adc_r_mix)),
-+
-+	/* ADC PGA */
-+	SND_SOC_DAPM_PGA("Stereo1 ADC MIX", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Stereo2 ADC MIX", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Mono ADC MIX", SND_SOC_NOPM, 0, 0, NULL, 0),
-+
-+	/* Digital Interface */
-+	SND_SOC_DAPM_SUPPLY("I2S1_1", RT5665_PWR_DIG_1, RT5665_PWR_I2S1_1_BIT,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("I2S1_2", RT5665_PWR_DIG_1, RT5665_PWR_I2S1_2_BIT,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("I2S2_1", RT5665_PWR_DIG_1, RT5665_PWR_I2S2_1_BIT,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("I2S2_2", RT5665_PWR_DIG_1, RT5665_PWR_I2S2_2_BIT,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("I2S3", RT5665_PWR_DIG_1, RT5665_PWR_I2S3_BIT,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC1", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC2", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC3", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC1 L", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC1 R", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC2 L", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC2 R", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC3 L", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 DAC3 R", SND_SOC_NOPM, 0, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_PGA("IF2_1 DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2_2 DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2_1 DAC L", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2_1 DAC R", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2_2 DAC L", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2_2 DAC R", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2_1 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2_2 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_PGA("IF3 DAC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF3 DAC L", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF3 DAC R", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF3 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+
-+	/* Digital Interface Select */
-+	SND_SOC_DAPM_MUX("IF1_1_ADC1 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_if1_1_adc1_mux),
-+	SND_SOC_DAPM_MUX("IF1_1_ADC2 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_if1_1_adc2_mux),
-+	SND_SOC_DAPM_MUX("IF1_1_ADC3 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_if1_1_adc3_mux),
-+	SND_SOC_DAPM_PGA("IF1_1_ADC4", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MUX("IF1_2_ADC1 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_if1_2_adc1_mux),
-+	SND_SOC_DAPM_MUX("IF1_2_ADC2 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_if1_2_adc2_mux),
-+	SND_SOC_DAPM_MUX("IF1_2_ADC3 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_if1_2_adc3_mux),
-+	SND_SOC_DAPM_MUX("IF1_2_ADC4 Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_if1_2_adc4_mux),
-+	SND_SOC_DAPM_MUX("TDM1 slot 01 Data Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_tdm1_adc_mux),
-+	SND_SOC_DAPM_MUX("TDM1 slot 23 Data Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_tdm1_adc_mux),
-+	SND_SOC_DAPM_MUX("TDM1 slot 45 Data Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_tdm1_adc_mux),
-+	SND_SOC_DAPM_MUX("TDM1 slot 67 Data Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_tdm1_adc_mux),
-+	SND_SOC_DAPM_MUX("TDM2 slot 01 Data Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_tdm2_adc_mux),
-+	SND_SOC_DAPM_MUX("TDM2 slot 23 Data Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_tdm2_adc_mux),
-+	SND_SOC_DAPM_MUX("TDM2 slot 45 Data Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_tdm2_adc_mux),
-+	SND_SOC_DAPM_MUX("TDM2 slot 67 Data Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_tdm2_adc_mux),
-+	SND_SOC_DAPM_MUX("IF2_1 ADC Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_if2_1_adc_in_mux),
-+	SND_SOC_DAPM_MUX("IF2_2 ADC Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_if2_2_adc_in_mux),
-+	SND_SOC_DAPM_MUX("IF3 ADC Mux", SND_SOC_NOPM, 0, 0,
-+		&rt5665_if3_adc_in_mux),
-+	SND_SOC_DAPM_MUX("IF1_1 0 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_1_01_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_1 1 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_1_01_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_1 2 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_1_23_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_1 3 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_1_23_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_1 4 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_1_45_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_1 5 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_1_45_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_1 6 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_1_67_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_1 7 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_1_67_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_2 0 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_2_01_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_2 1 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_2_01_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_2 2 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_2_23_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_2 3 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_2_23_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_2 4 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_2_45_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_2 5 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_2_45_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_2 6 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_2_67_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1_2 7 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if1_2_67_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF2_1 DAC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if2_1_dac_swap_mux),
-+	SND_SOC_DAPM_MUX("IF2_1 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if2_1_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF2_2 DAC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if2_2_dac_swap_mux),
-+	SND_SOC_DAPM_MUX("IF2_2 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if2_2_adc_swap_mux),
-+	SND_SOC_DAPM_MUX("IF3 DAC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if3_dac_swap_mux),
-+	SND_SOC_DAPM_MUX("IF3 ADC Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5665_if3_adc_swap_mux),
-+
-+	/* Audio Interface */
-+	SND_SOC_DAPM_AIF_OUT("AIF1_1TX slot 0", "AIF1_1 Capture",
-+				0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_1TX slot 1", "AIF1_1 Capture",
-+				1, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_1TX slot 2", "AIF1_1 Capture",
-+				2, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_1TX slot 3", "AIF1_1 Capture",
-+				3, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_1TX slot 4", "AIF1_1 Capture",
-+				4, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_1TX slot 5", "AIF1_1 Capture",
-+				5, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_1TX slot 6", "AIF1_1 Capture",
-+				6, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_1TX slot 7", "AIF1_1 Capture",
-+				7, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_2TX slot 0", "AIF1_2 Capture",
-+				0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_2TX slot 1", "AIF1_2 Capture",
-+				1, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_2TX slot 2", "AIF1_2 Capture",
-+				2, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_2TX slot 3", "AIF1_2 Capture",
-+				3, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_2TX slot 4", "AIF1_2 Capture",
-+				4, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_2TX slot 5", "AIF1_2 Capture",
-+				5, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_2TX slot 6", "AIF1_2 Capture",
-+				6, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF1_2TX slot 7", "AIF1_2 Capture",
-+				7, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF2_1TX", "AIF2_1 Capture",
-+				0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF2_2TX", "AIF2_2 Capture",
-+				0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIF3TX", "AIF3 Capture",
-+				0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("AIF1RX", "AIF1 Playback",
-+				0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("AIF2_1RX", "AIF2_1 Playback",
-+				0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("AIF2_2RX", "AIF2_2 Playback",
-+				0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("AIF3RX", "AIF3 Playback",
-+				0, SND_SOC_NOPM, 0, 0),
-+
-+	/* Output Side */
-+	/* DAC mixer before sound effect  */
-+	SND_SOC_DAPM_MIXER("DAC1 MIXL", SND_SOC_NOPM, 0, 0,
-+		rt5665_dac_l_mix, ARRAY_SIZE(rt5665_dac_l_mix)),
-+	SND_SOC_DAPM_MIXER("DAC1 MIXR", SND_SOC_NOPM, 0, 0,
-+		rt5665_dac_r_mix, ARRAY_SIZE(rt5665_dac_r_mix)),
-+
-+	/* DAC channel Mux */
-+	SND_SOC_DAPM_MUX("DAC L1 Mux", SND_SOC_NOPM, 0, 0, &rt5665_dac_l1_mux),
-+	SND_SOC_DAPM_MUX("DAC R1 Mux", SND_SOC_NOPM, 0, 0, &rt5665_dac_r1_mux),
-+	SND_SOC_DAPM_MUX("DAC L2 Mux", SND_SOC_NOPM, 0, 0, &rt5665_dac_l2_mux),
-+	SND_SOC_DAPM_MUX("DAC R2 Mux", SND_SOC_NOPM, 0, 0, &rt5665_dac_r2_mux),
-+	SND_SOC_DAPM_MUX("DAC L3 Mux", SND_SOC_NOPM, 0, 0, &rt5665_dac_l3_mux),
-+	SND_SOC_DAPM_MUX("DAC R3 Mux", SND_SOC_NOPM, 0, 0, &rt5665_dac_r3_mux),
-+
-+	SND_SOC_DAPM_MUX("DAC L1 Source", SND_SOC_NOPM, 0, 0,
-+		&rt5665_alg_dac_l1_mux),
-+	SND_SOC_DAPM_MUX("DAC R1 Source", SND_SOC_NOPM, 0, 0,
-+		&rt5665_alg_dac_r1_mux),
-+	SND_SOC_DAPM_MUX("DAC L2 Source", SND_SOC_NOPM, 0, 0,
-+		&rt5665_alg_dac_l2_mux),
-+	SND_SOC_DAPM_MUX("DAC R2 Source", SND_SOC_NOPM, 0, 0,
-+		&rt5665_alg_dac_r2_mux),
-+
-+	/* DAC Mixer */
-+	SND_SOC_DAPM_SUPPLY("DAC Stereo1 Filter", RT5665_PWR_DIG_2,
-+		RT5665_PWR_DAC_S1F_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("DAC Stereo2 Filter", RT5665_PWR_DIG_2,
-+		RT5665_PWR_DAC_S2F_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("DAC Mono Left Filter", RT5665_PWR_DIG_2,
-+		RT5665_PWR_DAC_MF_L_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("DAC Mono Right Filter", RT5665_PWR_DIG_2,
-+		RT5665_PWR_DAC_MF_R_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Stereo1 DAC MIXL", SND_SOC_NOPM, 0, 0,
-+		rt5665_sto1_dac_l_mix, ARRAY_SIZE(rt5665_sto1_dac_l_mix)),
-+	SND_SOC_DAPM_MIXER("Stereo1 DAC MIXR", SND_SOC_NOPM, 0, 0,
-+		rt5665_sto1_dac_r_mix, ARRAY_SIZE(rt5665_sto1_dac_r_mix)),
-+	SND_SOC_DAPM_MIXER("Stereo2 DAC MIXL", SND_SOC_NOPM, 0, 0,
-+		rt5665_sto2_dac_l_mix, ARRAY_SIZE(rt5665_sto2_dac_l_mix)),
-+	SND_SOC_DAPM_MIXER("Stereo2 DAC MIXR", SND_SOC_NOPM, 0, 0,
-+		rt5665_sto2_dac_r_mix, ARRAY_SIZE(rt5665_sto2_dac_r_mix)),
-+	SND_SOC_DAPM_MIXER("Mono DAC MIXL", SND_SOC_NOPM, 0, 0,
-+		rt5665_mono_dac_l_mix, ARRAY_SIZE(rt5665_mono_dac_l_mix)),
-+	SND_SOC_DAPM_MIXER("Mono DAC MIXR", SND_SOC_NOPM, 0, 0,
-+		rt5665_mono_dac_r_mix, ARRAY_SIZE(rt5665_mono_dac_r_mix)),
-+	SND_SOC_DAPM_MUX("DAC MIXL", SND_SOC_NOPM, 0, 0,
-+		&rt5665_dig_dac_mixl_mux),
-+	SND_SOC_DAPM_MUX("DAC MIXR", SND_SOC_NOPM, 0, 0,
-+		&rt5665_dig_dac_mixr_mux),
-+
-+	/* DACs */
-+	SND_SOC_DAPM_DAC("DAC L1", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC R1", NULL, SND_SOC_NOPM, 0, 0),
-+
-+	SND_SOC_DAPM_SUPPLY("DAC L2 Power", RT5665_PWR_DIG_1,
-+		RT5665_PWR_DAC_L2_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("DAC R2 Power", RT5665_PWR_DIG_1,
-+		RT5665_PWR_DAC_R2_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_DAC("DAC L2", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC R2", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_PGA("DAC1 MIX", SND_SOC_NOPM, 0, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_SUPPLY_S("DAC 1 Clock", 1, RT5665_CHOP_DAC,
-+		RT5665_CKGEN_DAC1_SFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("DAC 2 Clock", 1, RT5665_CHOP_DAC,
-+		RT5665_CKGEN_DAC2_SFT, 0, NULL, 0),
-+
-+	/* OUT Mixer */
-+	SND_SOC_DAPM_MIXER("MONOVOL MIX", RT5665_PWR_MIXER, RT5665_PWR_MM_BIT,
-+		0, rt5665_monovol_mix, ARRAY_SIZE(rt5665_monovol_mix)),
-+	SND_SOC_DAPM_MIXER("OUT MIXL", RT5665_PWR_MIXER, RT5665_PWR_OM_L_BIT,
-+		0, rt5665_out_l_mix, ARRAY_SIZE(rt5665_out_l_mix)),
-+	SND_SOC_DAPM_MIXER("OUT MIXR", RT5665_PWR_MIXER, RT5665_PWR_OM_R_BIT,
-+		0, rt5665_out_r_mix, ARRAY_SIZE(rt5665_out_r_mix)),
-+
-+	/* Output Volume */
-+	SND_SOC_DAPM_SWITCH("MONOVOL", RT5665_PWR_VOL, RT5665_PWR_MV_BIT, 0,
-+		&monovol_switch),
-+	SND_SOC_DAPM_SWITCH("OUTVOL L", RT5665_PWR_VOL, RT5665_PWR_OV_L_BIT, 0,
-+		&outvol_l_switch),
-+	SND_SOC_DAPM_SWITCH("OUTVOL R", RT5665_PWR_VOL, RT5665_PWR_OV_R_BIT, 0,
-+		&outvol_r_switch),
-+
-+	/* MONO/HPO/LOUT */
-+	SND_SOC_DAPM_MIXER("Mono MIX", SND_SOC_NOPM, 0,	0, rt5665_mono_mix,
-+		ARRAY_SIZE(rt5665_mono_mix)),
-+	SND_SOC_DAPM_MIXER("LOUT L MIX", SND_SOC_NOPM, 0, 0, rt5665_lout_l_mix,
-+		ARRAY_SIZE(rt5665_lout_l_mix)),
-+	SND_SOC_DAPM_MIXER("LOUT R MIX", SND_SOC_NOPM, 0, 0, rt5665_lout_r_mix,
-+		ARRAY_SIZE(rt5665_lout_r_mix)),
-+	SND_SOC_DAPM_PGA_S("Mono Amp", 1, RT5665_PWR_ANLG_1, RT5665_PWR_MA_BIT,
-+		0, rt5665_mono_event, SND_SOC_DAPM_POST_PMD |
-+		SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_PGA_S("HP Amp", 1, SND_SOC_NOPM, 0, 0, rt5665_hp_event,
-+		SND_SOC_DAPM_POST_PMD | SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_PGA_S("LOUT Amp", 1, RT5665_PWR_ANLG_1,
-+		RT5665_PWR_LM_BIT, 0, rt5665_lout_event,
-+		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD |
-+		SND_SOC_DAPM_POST_PMD | SND_SOC_DAPM_PRE_PMU),
-+
-+	SND_SOC_DAPM_SUPPLY("Charge Pump", SND_SOC_NOPM, 0, 0,
-+		rt5665_charge_pump_event, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
-+
-+	SND_SOC_DAPM_SWITCH("Mono Playback", SND_SOC_NOPM, 0, 0,
-+		&mono_switch),
-+	SND_SOC_DAPM_SWITCH("HPO Playback", SND_SOC_NOPM, 0, 0,
-+		&hpo_switch),
-+	SND_SOC_DAPM_SWITCH("LOUT L Playback", SND_SOC_NOPM, 0, 0,
-+		&lout_l_switch),
-+	SND_SOC_DAPM_SWITCH("LOUT R Playback", SND_SOC_NOPM, 0, 0,
-+		&lout_r_switch),
-+	SND_SOC_DAPM_SWITCH("PDM L Playback", SND_SOC_NOPM, 0, 0,
-+		&pdm_l_switch),
-+	SND_SOC_DAPM_SWITCH("PDM R Playback", SND_SOC_NOPM, 0, 0,
-+		&pdm_r_switch),
-+
-+	/* PDM */
-+	SND_SOC_DAPM_SUPPLY("PDM Power", RT5665_PWR_DIG_2,
-+		RT5665_PWR_PDM1_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_MUX("PDM L Mux", SND_SOC_NOPM,
-+		0, 1, &rt5665_pdm_l_mux),
-+	SND_SOC_DAPM_MUX("PDM R Mux", SND_SOC_NOPM,
-+		0, 1, &rt5665_pdm_r_mux),
-+
-+	/* CLK DET */
-+	SND_SOC_DAPM_SUPPLY("CLKDET SYS", RT5665_CLK_DET, RT5665_SYS_CLK_DET,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("CLKDET HP", RT5665_CLK_DET, RT5665_HP_CLK_DET,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("CLKDET MONO", RT5665_CLK_DET, RT5665_MONO_CLK_DET,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("CLKDET LOUT", RT5665_CLK_DET, RT5665_LOUT_CLK_DET,
-+		0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("CLKDET", RT5665_CLK_DET, RT5665_POW_CLK_DET,
-+		0, NULL, 0),
-+
-+	/* Output Lines */
-+	SND_SOC_DAPM_OUTPUT("HPOL"),
-+	SND_SOC_DAPM_OUTPUT("HPOR"),
-+	SND_SOC_DAPM_OUTPUT("LOUTL"),
-+	SND_SOC_DAPM_OUTPUT("LOUTR"),
-+	SND_SOC_DAPM_OUTPUT("MONOOUT"),
-+	SND_SOC_DAPM_OUTPUT("PDML"),
-+	SND_SOC_DAPM_OUTPUT("PDMR"),
-+};
-+
-+static const struct snd_soc_dapm_route rt5665_dapm_routes[] = {
-+	/*PLL*/
-+	{"ADC Stereo1 Filter", NULL, "PLL", is_sys_clk_from_pll},
-+	{"ADC Stereo2 Filter", NULL, "PLL", is_sys_clk_from_pll},
-+	{"ADC Mono Left Filter", NULL, "PLL", is_sys_clk_from_pll},
-+	{"ADC Mono Right Filter", NULL, "PLL", is_sys_clk_from_pll},
-+	{"DAC Stereo1 Filter", NULL, "PLL", is_sys_clk_from_pll},
-+	{"DAC Stereo2 Filter", NULL, "PLL", is_sys_clk_from_pll},
-+	{"DAC Mono Left Filter", NULL, "PLL", is_sys_clk_from_pll},
-+	{"DAC Mono Right Filter", NULL, "PLL", is_sys_clk_from_pll},
-+
-+	/*ASRC*/
-+	{"ADC Stereo1 Filter", NULL, "ADC STO1 ASRC", is_using_asrc},
-+	{"ADC Mono Left Filter", NULL, "ADC Mono L ASRC", is_using_asrc},
-+	{"ADC Mono Right Filter", NULL, "ADC Mono R ASRC", is_using_asrc},
-+	{"DAC Mono Left Filter", NULL, "DAC Mono L ASRC", is_using_asrc},
-+	{"DAC Mono Right Filter", NULL, "DAC Mono R ASRC", is_using_asrc},
-+	{"DAC Stereo1 Filter", NULL, "DAC STO1 ASRC", is_using_asrc},
-+	{"DAC Stereo2 Filter", NULL, "DAC STO2 ASRC", is_using_asrc},
-+
-+	/*Vref*/
-+	{"Mic Det Power", NULL, "Vref2"},
-+	{"MICBIAS1", NULL, "Vref1"},
-+	{"MICBIAS1", NULL, "Vref2"},
-+	{"MICBIAS2", NULL, "Vref1"},
-+	{"MICBIAS2", NULL, "Vref2"},
-+	{"MICBIAS3", NULL, "Vref1"},
-+	{"MICBIAS3", NULL, "Vref2"},
-+
-+	{"Stereo1 DMIC L Mux", NULL, "DMIC STO1 ASRC"},
-+	{"Stereo1 DMIC R Mux", NULL, "DMIC STO1 ASRC"},
-+	{"Stereo2 DMIC L Mux", NULL, "DMIC STO2 ASRC"},
-+	{"Stereo2 DMIC R Mux", NULL, "DMIC STO2 ASRC"},
-+	{"Mono DMIC L Mux", NULL, "DMIC MONO L ASRC"},
-+	{"Mono DMIC R Mux", NULL, "DMIC MONO R ASRC"},
-+
-+	{"I2S1_1", NULL, "I2S1 ASRC"},
-+	{"I2S1_2", NULL, "I2S1 ASRC"},
-+	{"I2S2_1", NULL, "I2S2 ASRC"},
-+	{"I2S2_2", NULL, "I2S2 ASRC"},
-+	{"I2S3", NULL, "I2S3 ASRC"},
-+
-+	{"CLKDET SYS", NULL, "CLKDET"},
-+	{"CLKDET HP", NULL, "CLKDET"},
-+	{"CLKDET MONO", NULL, "CLKDET"},
-+	{"CLKDET LOUT", NULL, "CLKDET"},
-+
-+	{"IN1P", NULL, "LDO2"},
-+	{"IN2P", NULL, "LDO2"},
-+	{"IN3P", NULL, "LDO2"},
-+	{"IN4P", NULL, "LDO2"},
-+
-+	{"DMIC1", NULL, "DMIC L1"},
-+	{"DMIC1", NULL, "DMIC R1"},
-+	{"DMIC2", NULL, "DMIC L2"},
-+	{"DMIC2", NULL, "DMIC R2"},
-+
-+	{"BST1", NULL, "IN1P"},
-+	{"BST1", NULL, "IN1N"},
-+	{"BST1", NULL, "BST1 Power"},
-+	{"BST1", NULL, "BST1P Power"},
-+	{"BST2", NULL, "IN2P"},
-+	{"BST2", NULL, "IN2N"},
-+	{"BST2", NULL, "BST2 Power"},
-+	{"BST2", NULL, "BST2P Power"},
-+	{"BST3", NULL, "IN3P"},
-+	{"BST3", NULL, "IN3N"},
-+	{"BST3", NULL, "BST3 Power"},
-+	{"BST3", NULL, "BST3P Power"},
-+	{"BST4", NULL, "IN4P"},
-+	{"BST4", NULL, "IN4N"},
-+	{"BST4", NULL, "BST4 Power"},
-+	{"BST4", NULL, "BST4P Power"},
-+	{"BST1 CBJ", NULL, "IN1P"},
-+	{"BST1 CBJ", NULL, "IN1N"},
-+	{"BST1 CBJ", NULL, "CBJ Power"},
-+	{"CBJ Power", NULL, "Vref2"},
-+
-+	{"INL VOL", NULL, "IN3P"},
-+	{"INR VOL", NULL, "IN3N"},
-+
-+	{"RECMIX1L", "CBJ Switch", "BST1 CBJ"},
-+	{"RECMIX1L", "INL Switch", "INL VOL"},
-+	{"RECMIX1L", "INR Switch", "INR VOL"},
-+	{"RECMIX1L", "BST4 Switch", "BST4"},
-+	{"RECMIX1L", "BST3 Switch", "BST3"},
-+	{"RECMIX1L", "BST2 Switch", "BST2"},
-+	{"RECMIX1L", "BST1 Switch", "BST1"},
-+	{"RECMIX1L", NULL, "RECMIX1L Power"},
-+
-+	{"RECMIX1R", "MONOVOL Switch", "MONOVOL"},
-+	{"RECMIX1R", "INR Switch", "INR VOL"},
-+	{"RECMIX1R", "BST4 Switch", "BST4"},
-+	{"RECMIX1R", "BST3 Switch", "BST3"},
-+	{"RECMIX1R", "BST2 Switch", "BST2"},
-+	{"RECMIX1R", "BST1 Switch", "BST1"},
-+	{"RECMIX1R", NULL, "RECMIX1R Power"},
-+
-+	{"RECMIX2L", "CBJ Switch", "BST1 CBJ"},
-+	{"RECMIX2L", "INL Switch", "INL VOL"},
-+	{"RECMIX2L", "INR Switch", "INR VOL"},
-+	{"RECMIX2L", "BST4 Switch", "BST4"},
-+	{"RECMIX2L", "BST3 Switch", "BST3"},
-+	{"RECMIX2L", "BST2 Switch", "BST2"},
-+	{"RECMIX2L", "BST1 Switch", "BST1"},
-+	{"RECMIX2L", NULL, "RECMIX2L Power"},
-+
-+	{"RECMIX2R", "MONOVOL Switch", "MONOVOL"},
-+	{"RECMIX2R", "INL Switch", "INL VOL"},
-+	{"RECMIX2R", "INR Switch", "INR VOL"},
-+	{"RECMIX2R", "BST4 Switch", "BST4"},
-+	{"RECMIX2R", "BST3 Switch", "BST3"},
-+	{"RECMIX2R", "BST2 Switch", "BST2"},
-+	{"RECMIX2R", "BST1 Switch", "BST1"},
-+	{"RECMIX2R", NULL, "RECMIX2R Power"},
-+
-+	{"ADC1 L", NULL, "RECMIX1L"},
-+	{"ADC1 L", NULL, "ADC1 L Power"},
-+	{"ADC1 L", NULL, "ADC1 clock"},
-+	{"ADC1 R", NULL, "RECMIX1R"},
-+	{"ADC1 R", NULL, "ADC1 R Power"},
-+	{"ADC1 R", NULL, "ADC1 clock"},
-+
-+	{"ADC2 L", NULL, "RECMIX2L"},
-+	{"ADC2 L", NULL, "ADC2 L Power"},
-+	{"ADC2 L", NULL, "ADC2 clock"},
-+	{"ADC2 R", NULL, "RECMIX2R"},
-+	{"ADC2 R", NULL, "ADC2 R Power"},
-+	{"ADC2 R", NULL, "ADC2 clock"},
-+
-+	{"DMIC L1", NULL, "DMIC CLK"},
-+	{"DMIC L1", NULL, "DMIC1 Power"},
-+	{"DMIC R1", NULL, "DMIC CLK"},
-+	{"DMIC R1", NULL, "DMIC1 Power"},
-+	{"DMIC L2", NULL, "DMIC CLK"},
-+	{"DMIC L2", NULL, "DMIC2 Power"},
-+	{"DMIC R2", NULL, "DMIC CLK"},
-+	{"DMIC R2", NULL, "DMIC2 Power"},
-+
-+	{"Stereo1 DMIC L Mux", "DMIC1", "DMIC L1"},
-+	{"Stereo1 DMIC L Mux", "DMIC2", "DMIC L2"},
-+
-+	{"Stereo1 DMIC R Mux", "DMIC1", "DMIC R1"},
-+	{"Stereo1 DMIC R Mux", "DMIC2", "DMIC R2"},
-+
-+	{"Mono DMIC L Mux", "DMIC1 L", "DMIC L1"},
-+	{"Mono DMIC L Mux", "DMIC2 L", "DMIC L2"},
-+
-+	{"Mono DMIC R Mux", "DMIC1 R", "DMIC R1"},
-+	{"Mono DMIC R Mux", "DMIC2 R", "DMIC R2"},
-+
-+	{"Stereo2 DMIC L Mux", "DMIC1", "DMIC L1"},
-+	{"Stereo2 DMIC L Mux", "DMIC2", "DMIC L2"},
-+
-+	{"Stereo2 DMIC R Mux", "DMIC1", "DMIC R1"},
-+	{"Stereo2 DMIC R Mux", "DMIC2", "DMIC R2"},
-+
-+	{"Stereo1 ADC L Mux", "ADC1 L", "ADC1 L"},
-+	{"Stereo1 ADC L Mux", "ADC1 R", "ADC1 R"},
-+	{"Stereo1 ADC L Mux", "ADC2 L", "ADC2 L"},
-+	{"Stereo1 ADC L Mux", "ADC2 R", "ADC2 R"},
-+	{"Stereo1 ADC R Mux", "ADC1 L", "ADC1 L"},
-+	{"Stereo1 ADC R Mux", "ADC1 R", "ADC1 R"},
-+	{"Stereo1 ADC R Mux", "ADC2 L", "ADC2 L"},
-+	{"Stereo1 ADC R Mux", "ADC2 R", "ADC2 R"},
-+
-+	{"Stereo1 DD L Mux", "STO2 DAC", "Stereo2 DAC MIXL"},
-+	{"Stereo1 DD L Mux", "MONO DAC", "Mono DAC MIXL"},
-+
-+	{"Stereo1 DD R Mux", "STO2 DAC", "Stereo2 DAC MIXR"},
-+	{"Stereo1 DD R Mux", "MONO DAC", "Mono DAC MIXR"},
-+
-+	{"Stereo1 ADC L1 Mux", "ADC", "Stereo1 ADC L Mux"},
-+	{"Stereo1 ADC L1 Mux", "DD Mux", "Stereo1 DD L Mux"},
-+	{"Stereo1 ADC L2 Mux", "DMIC", "Stereo1 DMIC L Mux"},
-+	{"Stereo1 ADC L2 Mux", "DAC MIX", "DAC MIXL"},
-+
-+	{"Stereo1 ADC R1 Mux", "ADC", "Stereo1 ADC R Mux"},
-+	{"Stereo1 ADC R1 Mux", "DD Mux", "Stereo1 DD R Mux"},
-+	{"Stereo1 ADC R2 Mux", "DMIC", "Stereo1 DMIC R Mux"},
-+	{"Stereo1 ADC R2 Mux", "DAC MIX", "DAC MIXR"},
-+
-+	{"Mono ADC L Mux", "ADC1 L", "ADC1 L"},
-+	{"Mono ADC L Mux", "ADC1 R", "ADC1 R"},
-+	{"Mono ADC L Mux", "ADC2 L", "ADC2 L"},
-+	{"Mono ADC L Mux", "ADC2 R", "ADC2 R"},
-+
-+	{"Mono ADC R Mux", "ADC1 L", "ADC1 L"},
-+	{"Mono ADC R Mux", "ADC1 R", "ADC1 R"},
-+	{"Mono ADC R Mux", "ADC2 L", "ADC2 L"},
-+	{"Mono ADC R Mux", "ADC2 R", "ADC2 R"},
-+
-+	{"Mono DD L Mux", "STO2 DAC", "Stereo2 DAC MIXL"},
-+	{"Mono DD L Mux", "MONO DAC", "Mono DAC MIXL"},
-+
-+	{"Mono DD R Mux", "STO2 DAC", "Stereo2 DAC MIXR"},
-+	{"Mono DD R Mux", "MONO DAC", "Mono DAC MIXR"},
-+
-+	{"Mono ADC L2 Mux", "DMIC", "Mono DMIC L Mux"},
-+	{"Mono ADC L2 Mux", "DAC MIXL", "DAC MIXL"},
-+	{"Mono ADC L1 Mux", "DD Mux", "Mono DD L Mux"},
-+	{"Mono ADC L1 Mux", "ADC",  "Mono ADC L Mux"},
-+
-+	{"Mono ADC R1 Mux", "DD Mux", "Mono DD R Mux"},
-+	{"Mono ADC R1 Mux", "ADC", "Mono ADC R Mux"},
-+	{"Mono ADC R2 Mux", "DMIC", "Mono DMIC R Mux"},
-+	{"Mono ADC R2 Mux", "DAC MIXR", "DAC MIXR"},
-+
-+	{"Stereo2 ADC L Mux", "ADC1 L", "ADC1 L"},
-+	{"Stereo2 ADC L Mux", "ADC2 L", "ADC2 L"},
-+	{"Stereo2 ADC L Mux", "ADC1 R", "ADC1 R"},
-+	{"Stereo2 ADC R Mux", "ADC1 L", "ADC1 L"},
-+	{"Stereo2 ADC R Mux", "ADC2 L", "ADC2 L"},
-+	{"Stereo2 ADC R Mux", "ADC1 R", "ADC1 R"},
-+
-+	{"Stereo2 DD L Mux", "STO2 DAC", "Stereo2 DAC MIXL"},
-+	{"Stereo2 DD L Mux", "MONO DAC", "Mono DAC MIXL"},
-+
-+	{"Stereo2 DD R Mux", "STO2 DAC", "Stereo2 DAC MIXR"},
-+	{"Stereo2 DD R Mux", "MONO DAC", "Mono DAC MIXR"},
-+
-+	{"Stereo2 ADC L1 Mux", "ADC", "Stereo2 ADC L Mux"},
-+	{"Stereo2 ADC L1 Mux", "DD Mux", "Stereo2 DD L Mux"},
-+	{"Stereo2 ADC L2 Mux", "DMIC", "Stereo2 DMIC L Mux"},
-+	{"Stereo2 ADC L2 Mux", "DAC MIX", "DAC MIXL"},
-+
-+	{"Stereo2 ADC R1 Mux", "ADC", "Stereo2 ADC R Mux"},
-+	{"Stereo2 ADC R1 Mux", "DD Mux", "Stereo2 DD R Mux"},
-+	{"Stereo2 ADC R2 Mux", "DMIC", "Stereo2 DMIC R Mux"},
-+	{"Stereo2 ADC R2 Mux", "DAC MIX", "DAC MIXR"},
-+
-+	{"Stereo1 ADC MIXL", "ADC1 Switch", "Stereo1 ADC L1 Mux"},
-+	{"Stereo1 ADC MIXL", "ADC2 Switch", "Stereo1 ADC L2 Mux"},
-+	{"Stereo1 ADC MIXL", NULL, "ADC Stereo1 Filter"},
-+
-+	{"Stereo1 ADC MIXR", "ADC1 Switch", "Stereo1 ADC R1 Mux"},
-+	{"Stereo1 ADC MIXR", "ADC2 Switch", "Stereo1 ADC R2 Mux"},
-+	{"Stereo1 ADC MIXR", NULL, "ADC Stereo1 Filter"},
-+
-+	{"Mono ADC MIXL", "ADC1 Switch", "Mono ADC L1 Mux"},
-+	{"Mono ADC MIXL", "ADC2 Switch", "Mono ADC L2 Mux"},
-+	{"Mono ADC MIXL", NULL, "ADC Mono Left Filter"},
-+
-+	{"Mono ADC MIXR", "ADC1 Switch", "Mono ADC R1 Mux"},
-+	{"Mono ADC MIXR", "ADC2 Switch", "Mono ADC R2 Mux"},
-+	{"Mono ADC MIXR", NULL, "ADC Mono Right Filter"},
-+
-+	{"Stereo2 ADC MIXL", "ADC1 Switch", "Stereo2 ADC L1 Mux"},
-+	{"Stereo2 ADC MIXL", "ADC2 Switch", "Stereo2 ADC L2 Mux"},
-+	{"Stereo2 ADC MIXL", NULL, "ADC Stereo2 Filter"},
-+
-+	{"Stereo2 ADC MIXR", "ADC1 Switch", "Stereo2 ADC R1 Mux"},
-+	{"Stereo2 ADC MIXR", "ADC2 Switch", "Stereo2 ADC R2 Mux"},
-+	{"Stereo2 ADC MIXR", NULL, "ADC Stereo2 Filter"},
-+
-+	{"Stereo1 ADC MIX", NULL, "Stereo1 ADC MIXL"},
-+	{"Stereo1 ADC MIX", NULL, "Stereo1 ADC MIXR"},
-+	{"Stereo2 ADC MIX", NULL, "Stereo2 ADC MIXL"},
-+	{"Stereo2 ADC MIX", NULL, "Stereo2 ADC MIXR"},
-+	{"Mono ADC MIX", NULL, "Mono ADC MIXL"},
-+	{"Mono ADC MIX", NULL, "Mono ADC MIXR"},
-+
-+	{"IF1_1_ADC1 Mux", "STO1 ADC", "Stereo1 ADC MIX"},
-+	{"IF1_1_ADC1 Mux", "IF2_1 DAC", "IF2_1 DAC"},
-+	{"IF1_1_ADC2 Mux", "STO2 ADC", "Stereo2 ADC MIX"},
-+	{"IF1_1_ADC2 Mux", "IF2_2 DAC", "IF2_2 DAC"},
-+	{"IF1_1_ADC3 Mux", "MONO ADC", "Mono ADC MIX"},
-+	{"IF1_1_ADC3 Mux", "IF3 DAC", "IF3 DAC"},
-+	{"IF1_1_ADC4", NULL, "DAC1 MIX"},
-+
-+	{"IF1_2_ADC1 Mux", "STO1 ADC", "Stereo1 ADC MIX"},
-+	{"IF1_2_ADC1 Mux", "IF1 DAC", "IF1 DAC1"},
-+	{"IF1_2_ADC2 Mux", "STO2 ADC", "Stereo2 ADC MIX"},
-+	{"IF1_2_ADC2 Mux", "IF2_1 DAC", "IF2_1 DAC"},
-+	{"IF1_2_ADC3 Mux", "MONO ADC", "Mono ADC MIX"},
-+	{"IF1_2_ADC3 Mux", "IF2_2 DAC", "IF2_2 DAC"},
-+	{"IF1_2_ADC4 Mux", "DAC1", "DAC1 MIX"},
-+	{"IF1_2_ADC4 Mux", "IF3 DAC", "IF3 DAC"},
-+
-+	{"TDM1 slot 01 Data Mux", "1234", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 01 Data Mux", "1243", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 01 Data Mux", "1324", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 01 Data Mux", "1342", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 01 Data Mux", "1432", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 01 Data Mux", "1423", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 01 Data Mux", "2134", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 01 Data Mux", "2143", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 01 Data Mux", "2314", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 01 Data Mux", "2341", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 01 Data Mux", "2431", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 01 Data Mux", "2413", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 01 Data Mux", "3124", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 01 Data Mux", "3142", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 01 Data Mux", "3214", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 01 Data Mux", "3241", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 01 Data Mux", "3412", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 01 Data Mux", "3421", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 01 Data Mux", "4123", "IF1_1_ADC4"},
-+	{"TDM1 slot 01 Data Mux", "4132", "IF1_1_ADC4"},
-+	{"TDM1 slot 01 Data Mux", "4213", "IF1_1_ADC4"},
-+	{"TDM1 slot 01 Data Mux", "4231", "IF1_1_ADC4"},
-+	{"TDM1 slot 01 Data Mux", "4312", "IF1_1_ADC4"},
-+	{"TDM1 slot 01 Data Mux", "4321", "IF1_1_ADC4"},
-+	{"TDM1 slot 01 Data Mux", NULL, "I2S1_1"},
-+
-+	{"TDM1 slot 23 Data Mux", "1234", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 23 Data Mux", "1243", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 23 Data Mux", "1324", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 23 Data Mux", "1342", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 23 Data Mux", "1432", "IF1_1_ADC4"},
-+	{"TDM1 slot 23 Data Mux", "1423", "IF1_1_ADC4"},
-+	{"TDM1 slot 23 Data Mux", "2134", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 23 Data Mux", "2143", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 23 Data Mux", "2314", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 23 Data Mux", "2341", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 23 Data Mux", "2431", "IF1_1_ADC4"},
-+	{"TDM1 slot 23 Data Mux", "2413", "IF1_1_ADC4"},
-+	{"TDM1 slot 23 Data Mux", "3124", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 23 Data Mux", "3142", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 23 Data Mux", "3214", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 23 Data Mux", "3241", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 23 Data Mux", "3412", "IF1_1_ADC4"},
-+	{"TDM1 slot 23 Data Mux", "3421", "IF1_1_ADC4"},
-+	{"TDM1 slot 23 Data Mux", "4123", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 23 Data Mux", "4132", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 23 Data Mux", "4213", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 23 Data Mux", "4231", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 23 Data Mux", "4312", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 23 Data Mux", "4321", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 23 Data Mux", NULL, "I2S1_1"},
-+
-+	{"TDM1 slot 45 Data Mux", "1234", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 45 Data Mux", "1243", "IF1_1_ADC4"},
-+	{"TDM1 slot 45 Data Mux", "1324", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 45 Data Mux", "1342", "IF1_1_ADC4"},
-+	{"TDM1 slot 45 Data Mux", "1432", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 45 Data Mux", "1423", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 45 Data Mux", "2134", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 45 Data Mux", "2143", "IF1_1_ADC4"},
-+	{"TDM1 slot 45 Data Mux", "2314", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 45 Data Mux", "2341", "IF1_1_ADC4"},
-+	{"TDM1 slot 45 Data Mux", "2431", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 45 Data Mux", "2413", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 45 Data Mux", "3124", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 45 Data Mux", "3142", "IF1_1_ADC4"},
-+	{"TDM1 slot 45 Data Mux", "3214", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 45 Data Mux", "3241", "IF1_1_ADC4"},
-+	{"TDM1 slot 45 Data Mux", "3412", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 45 Data Mux", "3421", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 45 Data Mux", "4123", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 45 Data Mux", "4132", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 45 Data Mux", "4213", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 45 Data Mux", "4231", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 45 Data Mux", "4312", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 45 Data Mux", "4321", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 45 Data Mux", NULL, "I2S1_1"},
-+
-+	{"TDM1 slot 67 Data Mux", "1234", "IF1_1_ADC4"},
-+	{"TDM1 slot 67 Data Mux", "1243", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 67 Data Mux", "1324", "IF1_1_ADC4"},
-+	{"TDM1 slot 67 Data Mux", "1342", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 67 Data Mux", "1432", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 67 Data Mux", "1423", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 67 Data Mux", "2134", "IF1_1_ADC4"},
-+	{"TDM1 slot 67 Data Mux", "2143", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 67 Data Mux", "2314", "IF1_1_ADC4"},
-+	{"TDM1 slot 67 Data Mux", "2341", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 67 Data Mux", "2431", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 67 Data Mux", "2413", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 67 Data Mux", "3124", "IF1_1_ADC4"},
-+	{"TDM1 slot 67 Data Mux", "3142", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 67 Data Mux", "3214", "IF1_1_ADC4"},
-+	{"TDM1 slot 67 Data Mux", "3241", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 67 Data Mux", "3412", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 67 Data Mux", "3421", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 67 Data Mux", "4123", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 67 Data Mux", "4132", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 67 Data Mux", "4213", "IF1_1_ADC3 Mux"},
-+	{"TDM1 slot 67 Data Mux", "4231", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 67 Data Mux", "4312", "IF1_1_ADC2 Mux"},
-+	{"TDM1 slot 67 Data Mux", "4321", "IF1_1_ADC1 Mux"},
-+	{"TDM1 slot 67 Data Mux", NULL, "I2S1_1"},
-+
-+
-+	{"TDM2 slot 01 Data Mux", "1234", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 01 Data Mux", "1243", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 01 Data Mux", "1324", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 01 Data Mux", "1342", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 01 Data Mux", "1432", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 01 Data Mux", "1423", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 01 Data Mux", "2134", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 01 Data Mux", "2143", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 01 Data Mux", "2314", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 01 Data Mux", "2341", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 01 Data Mux", "2431", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 01 Data Mux", "2413", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 01 Data Mux", "3124", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 01 Data Mux", "3142", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 01 Data Mux", "3214", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 01 Data Mux", "3241", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 01 Data Mux", "3412", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 01 Data Mux", "3421", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 01 Data Mux", "4123", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 01 Data Mux", "4132", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 01 Data Mux", "4213", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 01 Data Mux", "4231", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 01 Data Mux", "4312", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 01 Data Mux", "4321", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 01 Data Mux", NULL, "I2S1_2"},
-+
-+	{"TDM2 slot 23 Data Mux", "1234", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 23 Data Mux", "1243", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 23 Data Mux", "1324", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 23 Data Mux", "1342", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 23 Data Mux", "1432", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 23 Data Mux", "1423", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 23 Data Mux", "2134", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 23 Data Mux", "2143", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 23 Data Mux", "2314", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 23 Data Mux", "2341", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 23 Data Mux", "2431", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 23 Data Mux", "2413", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 23 Data Mux", "3124", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 23 Data Mux", "3142", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 23 Data Mux", "3214", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 23 Data Mux", "3241", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 23 Data Mux", "3412", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 23 Data Mux", "3421", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 23 Data Mux", "4123", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 23 Data Mux", "4132", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 23 Data Mux", "4213", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 23 Data Mux", "4231", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 23 Data Mux", "4312", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 23 Data Mux", "4321", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 23 Data Mux", NULL, "I2S1_2"},
-+
-+	{"TDM2 slot 45 Data Mux", "1234", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 45 Data Mux", "1243", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 45 Data Mux", "1324", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 45 Data Mux", "1342", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 45 Data Mux", "1432", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 45 Data Mux", "1423", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 45 Data Mux", "2134", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 45 Data Mux", "2143", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 45 Data Mux", "2314", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 45 Data Mux", "2341", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 45 Data Mux", "2431", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 45 Data Mux", "2413", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 45 Data Mux", "3124", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 45 Data Mux", "3142", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 45 Data Mux", "3214", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 45 Data Mux", "3241", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 45 Data Mux", "3412", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 45 Data Mux", "3421", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 45 Data Mux", "4123", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 45 Data Mux", "4132", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 45 Data Mux", "4213", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 45 Data Mux", "4231", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 45 Data Mux", "4312", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 45 Data Mux", "4321", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 45 Data Mux", NULL, "I2S1_2"},
-+
-+	{"TDM2 slot 67 Data Mux", "1234", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 67 Data Mux", "1243", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 67 Data Mux", "1324", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 67 Data Mux", "1342", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 67 Data Mux", "1432", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 67 Data Mux", "1423", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 67 Data Mux", "2134", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 67 Data Mux", "2143", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 67 Data Mux", "2314", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 67 Data Mux", "2341", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 67 Data Mux", "2431", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 67 Data Mux", "2413", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 67 Data Mux", "3124", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 67 Data Mux", "3142", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 67 Data Mux", "3214", "IF1_2_ADC4 Mux"},
-+	{"TDM2 slot 67 Data Mux", "3241", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 67 Data Mux", "3412", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 67 Data Mux", "3421", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 67 Data Mux", "4123", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 67 Data Mux", "4132", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 67 Data Mux", "4213", "IF1_2_ADC3 Mux"},
-+	{"TDM2 slot 67 Data Mux", "4231", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 67 Data Mux", "4312", "IF1_2_ADC2 Mux"},
-+	{"TDM2 slot 67 Data Mux", "4321", "IF1_2_ADC1 Mux"},
-+	{"TDM2 slot 67 Data Mux", NULL, "I2S1_2"},
-+
-+	{"IF1_1 0 ADC Swap Mux", "L/R", "TDM1 slot 01 Data Mux"},
-+	{"IF1_1 0 ADC Swap Mux", "L/L", "TDM1 slot 01 Data Mux"},
-+	{"IF1_1 1 ADC Swap Mux", "R/L", "TDM1 slot 01 Data Mux"},
-+	{"IF1_1 1 ADC Swap Mux", "R/R", "TDM1 slot 01 Data Mux"},
-+	{"IF1_1 2 ADC Swap Mux", "L/R", "TDM1 slot 23 Data Mux"},
-+	{"IF1_1 2 ADC Swap Mux", "R/L", "TDM1 slot 23 Data Mux"},
-+	{"IF1_1 3 ADC Swap Mux", "L/L", "TDM1 slot 23 Data Mux"},
-+	{"IF1_1 3 ADC Swap Mux", "R/R", "TDM1 slot 23 Data Mux"},
-+	{"IF1_1 4 ADC Swap Mux", "L/R", "TDM1 slot 45 Data Mux"},
-+	{"IF1_1 4 ADC Swap Mux", "R/L", "TDM1 slot 45 Data Mux"},
-+	{"IF1_1 5 ADC Swap Mux", "L/L", "TDM1 slot 45 Data Mux"},
-+	{"IF1_1 5 ADC Swap Mux", "R/R", "TDM1 slot 45 Data Mux"},
-+	{"IF1_1 6 ADC Swap Mux", "L/R", "TDM1 slot 67 Data Mux"},
-+	{"IF1_1 6 ADC Swap Mux", "R/L", "TDM1 slot 67 Data Mux"},
-+	{"IF1_1 7 ADC Swap Mux", "L/L", "TDM1 slot 67 Data Mux"},
-+	{"IF1_1 7 ADC Swap Mux", "R/R", "TDM1 slot 67 Data Mux"},
-+	{"IF1_2 0 ADC Swap Mux", "L/R", "TDM2 slot 01 Data Mux"},
-+	{"IF1_2 0 ADC Swap Mux", "R/L", "TDM2 slot 01 Data Mux"},
-+	{"IF1_2 1 ADC Swap Mux", "L/L", "TDM2 slot 01 Data Mux"},
-+	{"IF1_2 1 ADC Swap Mux", "R/R", "TDM2 slot 01 Data Mux"},
-+	{"IF1_2 2 ADC Swap Mux", "L/R", "TDM2 slot 23 Data Mux"},
-+	{"IF1_2 2 ADC Swap Mux", "R/L", "TDM2 slot 23 Data Mux"},
-+	{"IF1_2 3 ADC Swap Mux", "L/L", "TDM2 slot 23 Data Mux"},
-+	{"IF1_2 3 ADC Swap Mux", "R/R", "TDM2 slot 23 Data Mux"},
-+	{"IF1_2 4 ADC Swap Mux", "L/R", "TDM2 slot 45 Data Mux"},
-+	{"IF1_2 4 ADC Swap Mux", "R/L", "TDM2 slot 45 Data Mux"},
-+	{"IF1_2 5 ADC Swap Mux", "L/L", "TDM2 slot 45 Data Mux"},
-+	{"IF1_2 5 ADC Swap Mux", "R/R", "TDM2 slot 45 Data Mux"},
-+	{"IF1_2 6 ADC Swap Mux", "L/R", "TDM2 slot 67 Data Mux"},
-+	{"IF1_2 6 ADC Swap Mux", "R/L", "TDM2 slot 67 Data Mux"},
-+	{"IF1_2 7 ADC Swap Mux", "L/L", "TDM2 slot 67 Data Mux"},
-+	{"IF1_2 7 ADC Swap Mux", "R/R", "TDM2 slot 67 Data Mux"},
-+
-+	{"IF2_1 ADC Mux", "STO1 ADC", "Stereo1 ADC MIX"},
-+	{"IF2_1 ADC Mux", "STO2 ADC", "Stereo2 ADC MIX"},
-+	{"IF2_1 ADC Mux", "MONO ADC", "Mono ADC MIX"},
-+	{"IF2_1 ADC Mux", "IF1 DAC1", "IF1 DAC1"},
-+	{"IF2_1 ADC Mux", "IF1 DAC2", "IF1 DAC2"},
-+	{"IF2_1 ADC Mux", "IF2_2 DAC", "IF2_2 DAC"},
-+	{"IF2_1 ADC Mux", "IF3 DAC", "IF3 DAC"},
-+	{"IF2_1 ADC Mux", "DAC1 MIX", "DAC1 MIX"},
-+	{"IF2_1 ADC", NULL, "IF2_1 ADC Mux"},
-+	{"IF2_1 ADC", NULL, "I2S2_1"},
-+
-+	{"IF2_2 ADC Mux", "STO1 ADC", "Stereo1 ADC MIX"},
-+	{"IF2_2 ADC Mux", "STO2 ADC", "Stereo2 ADC MIX"},
-+	{"IF2_2 ADC Mux", "MONO ADC", "Mono ADC MIX"},
-+	{"IF2_2 ADC Mux", "IF1 DAC1", "IF1 DAC1"},
-+	{"IF2_2 ADC Mux", "IF1 DAC2", "IF1 DAC2"},
-+	{"IF2_2 ADC Mux", "IF2_1 DAC", "IF2_1 DAC"},
-+	{"IF2_2 ADC Mux", "IF3 DAC", "IF3 DAC"},
-+	{"IF2_2 ADC Mux", "DAC1 MIX", "DAC1 MIX"},
-+	{"IF2_2 ADC", NULL, "IF2_2 ADC Mux"},
-+	{"IF2_2 ADC", NULL, "I2S2_2"},
-+
-+	{"IF3 ADC Mux", "STO1 ADC", "Stereo1 ADC MIX"},
-+	{"IF3 ADC Mux", "STO2 ADC", "Stereo2 ADC MIX"},
-+	{"IF3 ADC Mux", "MONO ADC", "Mono ADC MIX"},
-+	{"IF3 ADC Mux", "IF1 DAC1", "IF1 DAC1"},
-+	{"IF3 ADC Mux", "IF1 DAC2", "IF1 DAC2"},
-+	{"IF3 ADC Mux", "IF2_1 DAC", "IF2_1 DAC"},
-+	{"IF3 ADC Mux", "IF2_2 DAC", "IF2_2 DAC"},
-+	{"IF3 ADC Mux", "DAC1 MIX", "DAC1 MIX"},
-+	{"IF3 ADC", NULL, "IF3 ADC Mux"},
-+	{"IF3 ADC", NULL, "I2S3"},
-+
-+	{"AIF1_1TX slot 0", NULL, "IF1_1 0 ADC Swap Mux"},
-+	{"AIF1_1TX slot 1", NULL, "IF1_1 1 ADC Swap Mux"},
-+	{"AIF1_1TX slot 2", NULL, "IF1_1 2 ADC Swap Mux"},
-+	{"AIF1_1TX slot 3", NULL, "IF1_1 3 ADC Swap Mux"},
-+	{"AIF1_1TX slot 4", NULL, "IF1_1 4 ADC Swap Mux"},
-+	{"AIF1_1TX slot 5", NULL, "IF1_1 5 ADC Swap Mux"},
-+	{"AIF1_1TX slot 6", NULL, "IF1_1 6 ADC Swap Mux"},
-+	{"AIF1_1TX slot 7", NULL, "IF1_1 7 ADC Swap Mux"},
-+	{"AIF1_2TX slot 0", NULL, "IF1_2 0 ADC Swap Mux"},
-+	{"AIF1_2TX slot 1", NULL, "IF1_2 1 ADC Swap Mux"},
-+	{"AIF1_2TX slot 2", NULL, "IF1_2 2 ADC Swap Mux"},
-+	{"AIF1_2TX slot 3", NULL, "IF1_2 3 ADC Swap Mux"},
-+	{"AIF1_2TX slot 4", NULL, "IF1_2 4 ADC Swap Mux"},
-+	{"AIF1_2TX slot 5", NULL, "IF1_2 5 ADC Swap Mux"},
-+	{"AIF1_2TX slot 6", NULL, "IF1_2 6 ADC Swap Mux"},
-+	{"AIF1_2TX slot 7", NULL, "IF1_2 7 ADC Swap Mux"},
-+	{"IF2_1 ADC Swap Mux", "L/R", "IF2_1 ADC"},
-+	{"IF2_1 ADC Swap Mux", "R/L", "IF2_1 ADC"},
-+	{"IF2_1 ADC Swap Mux", "L/L", "IF2_1 ADC"},
-+	{"IF2_1 ADC Swap Mux", "R/R", "IF2_1 ADC"},
-+	{"AIF2_1TX", NULL, "IF2_1 ADC Swap Mux"},
-+	{"IF2_2 ADC Swap Mux", "L/R", "IF2_2 ADC"},
-+	{"IF2_2 ADC Swap Mux", "R/L", "IF2_2 ADC"},
-+	{"IF2_2 ADC Swap Mux", "L/L", "IF2_2 ADC"},
-+	{"IF2_2 ADC Swap Mux", "R/R", "IF2_2 ADC"},
-+	{"AIF2_2TX", NULL, "IF2_2 ADC Swap Mux"},
-+	{"IF3 ADC Swap Mux", "L/R", "IF3 ADC"},
-+	{"IF3 ADC Swap Mux", "R/L", "IF3 ADC"},
-+	{"IF3 ADC Swap Mux", "L/L", "IF3 ADC"},
-+	{"IF3 ADC Swap Mux", "R/R", "IF3 ADC"},
-+	{"AIF3TX", NULL, "IF3 ADC Swap Mux"},
-+
-+	{"IF1 DAC1", NULL, "AIF1RX"},
-+	{"IF1 DAC2", NULL, "AIF1RX"},
-+	{"IF1 DAC3", NULL, "AIF1RX"},
-+	{"IF2_1 DAC Swap Mux", "L/R", "AIF2_1RX"},
-+	{"IF2_1 DAC Swap Mux", "R/L", "AIF2_1RX"},
-+	{"IF2_1 DAC Swap Mux", "L/L", "AIF2_1RX"},
-+	{"IF2_1 DAC Swap Mux", "R/R", "AIF2_1RX"},
-+	{"IF2_2 DAC Swap Mux", "L/R", "AIF2_2RX"},
-+	{"IF2_2 DAC Swap Mux", "R/L", "AIF2_2RX"},
-+	{"IF2_2 DAC Swap Mux", "L/L", "AIF2_2RX"},
-+	{"IF2_2 DAC Swap Mux", "R/R", "AIF2_2RX"},
-+	{"IF2_1 DAC", NULL, "IF2_1 DAC Swap Mux"},
-+	{"IF2_2 DAC", NULL, "IF2_2 DAC Swap Mux"},
-+	{"IF3 DAC Swap Mux", "L/R", "AIF3RX"},
-+	{"IF3 DAC Swap Mux", "R/L", "AIF3RX"},
-+	{"IF3 DAC Swap Mux", "L/L", "AIF3RX"},
-+	{"IF3 DAC Swap Mux", "R/R", "AIF3RX"},
-+	{"IF3 DAC", NULL, "IF3 DAC Swap Mux"},
-+
-+	{"IF1 DAC1", NULL, "I2S1_1"},
-+	{"IF1 DAC2", NULL, "I2S1_1"},
-+	{"IF1 DAC3", NULL, "I2S1_1"},
-+	{"IF2_1 DAC", NULL, "I2S2_1"},
-+	{"IF2_2 DAC", NULL, "I2S2_2"},
-+	{"IF3 DAC", NULL, "I2S3"},
-+
-+	{"IF1 DAC1 L", NULL, "IF1 DAC1"},
-+	{"IF1 DAC1 R", NULL, "IF1 DAC1"},
-+	{"IF1 DAC2 L", NULL, "IF1 DAC2"},
-+	{"IF1 DAC2 R", NULL, "IF1 DAC2"},
-+	{"IF1 DAC3 L", NULL, "IF1 DAC3"},
-+	{"IF1 DAC3 R", NULL, "IF1 DAC3"},
-+	{"IF2_1 DAC L", NULL, "IF2_1 DAC"},
-+	{"IF2_1 DAC R", NULL, "IF2_1 DAC"},
-+	{"IF2_2 DAC L", NULL, "IF2_2 DAC"},
-+	{"IF2_2 DAC R", NULL, "IF2_2 DAC"},
-+	{"IF3 DAC L", NULL, "IF3 DAC"},
-+	{"IF3 DAC R", NULL, "IF3 DAC"},
-+
-+	{"DAC L1 Mux", "IF1 DAC1", "IF1 DAC1 L"},
-+	{"DAC L1 Mux", "IF2_1 DAC", "IF2_1 DAC L"},
-+	{"DAC L1 Mux", "IF2_2 DAC", "IF2_2 DAC L"},
-+	{"DAC L1 Mux", "IF3 DAC", "IF3 DAC L"},
-+	{"DAC L1 Mux", NULL, "DAC Stereo1 Filter"},
-+
-+	{"DAC R1 Mux", "IF1 DAC1", "IF1 DAC1 R"},
-+	{"DAC R1 Mux", "IF2_1 DAC", "IF2_1 DAC R"},
-+	{"DAC R1 Mux", "IF2_2 DAC", "IF2_2 DAC R"},
-+	{"DAC R1 Mux", "IF3 DAC", "IF3 DAC R"},
-+	{"DAC R1 Mux", NULL, "DAC Stereo1 Filter"},
-+
-+	{"DAC1 MIXL", "Stereo ADC Switch", "Stereo1 ADC MIXL"},
-+	{"DAC1 MIXL", "DAC1 Switch", "DAC L1 Mux"},
-+	{"DAC1 MIXR", "Stereo ADC Switch", "Stereo1 ADC MIXR"},
-+	{"DAC1 MIXR", "DAC1 Switch", "DAC R1 Mux"},
-+
-+	{"DAC1 MIX", NULL, "DAC1 MIXL"},
-+	{"DAC1 MIX", NULL, "DAC1 MIXR"},
-+
-+	{"DAC L2 Mux", "IF1 DAC2", "IF1 DAC2 L"},
-+	{"DAC L2 Mux", "IF2_1 DAC", "IF2_1 DAC L"},
-+	{"DAC L2 Mux", "IF2_2 DAC", "IF2_2 DAC L"},
-+	{"DAC L2 Mux", "IF3 DAC", "IF3 DAC L"},
-+	{"DAC L2 Mux", "Mono ADC MIX", "Mono ADC MIXL"},
-+	{"DAC L2 Mux", NULL, "DAC Mono Left Filter"},
-+
-+	{"DAC R2 Mux", "IF1 DAC2", "IF1 DAC2 R"},
-+	{"DAC R2 Mux", "IF2_1 DAC", "IF2_1 DAC R"},
-+	{"DAC R2 Mux", "IF2_2 DAC", "IF2_2 DAC R"},
-+	{"DAC R2 Mux", "IF3 DAC", "IF3 DAC R"},
-+	{"DAC R2 Mux", "Mono ADC MIX", "Mono ADC MIXR"},
-+	{"DAC R2 Mux", NULL, "DAC Mono Right Filter"},
-+
-+	{"DAC L3 Mux", "IF1 DAC2", "IF1 DAC2 L"},
-+	{"DAC L3 Mux", "IF2_1 DAC", "IF2_1 DAC L"},
-+	{"DAC L3 Mux", "IF2_2 DAC", "IF2_2 DAC L"},
-+	{"DAC L3 Mux", "IF3 DAC", "IF3 DAC L"},
-+	{"DAC L3 Mux", "STO2 ADC MIX", "Stereo2 ADC MIXL"},
-+	{"DAC L3 Mux", NULL, "DAC Stereo2 Filter"},
-+
-+	{"DAC R3 Mux", "IF1 DAC2", "IF1 DAC2 R"},
-+	{"DAC R3 Mux", "IF2_1 DAC", "IF2_1 DAC R"},
-+	{"DAC R3 Mux", "IF2_2 DAC", "IF2_2 DAC R"},
-+	{"DAC R3 Mux", "IF3 DAC", "IF3 DAC R"},
-+	{"DAC R3 Mux", "STO2 ADC MIX", "Stereo2 ADC MIXR"},
-+	{"DAC R3 Mux", NULL, "DAC Stereo2 Filter"},
-+
-+	{"Stereo1 DAC MIXL", "DAC L1 Switch", "DAC1 MIXL"},
-+	{"Stereo1 DAC MIXL", "DAC R1 Switch", "DAC1 MIXR"},
-+	{"Stereo1 DAC MIXL", "DAC L2 Switch", "DAC L2 Mux"},
-+	{"Stereo1 DAC MIXL", "DAC R2 Switch", "DAC R2 Mux"},
-+
-+	{"Stereo1 DAC MIXR", "DAC R1 Switch", "DAC1 MIXR"},
-+	{"Stereo1 DAC MIXR", "DAC L1 Switch", "DAC1 MIXL"},
-+	{"Stereo1 DAC MIXR", "DAC L2 Switch", "DAC L2 Mux"},
-+	{"Stereo1 DAC MIXR", "DAC R2 Switch", "DAC R2 Mux"},
-+
-+	{"Stereo2 DAC MIXL", "DAC L1 Switch", "DAC1 MIXL"},
-+	{"Stereo2 DAC MIXL", "DAC L2 Switch", "DAC L2 Mux"},
-+	{"Stereo2 DAC MIXL", "DAC L3 Switch", "DAC L3 Mux"},
-+
-+	{"Stereo2 DAC MIXR", "DAC R1 Switch", "DAC1 MIXR"},
-+	{"Stereo2 DAC MIXR", "DAC R2 Switch", "DAC R2 Mux"},
-+	{"Stereo2 DAC MIXR", "DAC R3 Switch", "DAC R3 Mux"},
-+
-+	{"Mono DAC MIXL", "DAC L1 Switch", "DAC1 MIXL"},
-+	{"Mono DAC MIXL", "DAC R1 Switch", "DAC1 MIXR"},
-+	{"Mono DAC MIXL", "DAC L2 Switch", "DAC L2 Mux"},
-+	{"Mono DAC MIXL", "DAC R2 Switch", "DAC R2 Mux"},
-+	{"Mono DAC MIXR", "DAC L1 Switch", "DAC1 MIXL"},
-+	{"Mono DAC MIXR", "DAC R1 Switch", "DAC1 MIXR"},
-+	{"Mono DAC MIXR", "DAC L2 Switch", "DAC L2 Mux"},
-+	{"Mono DAC MIXR", "DAC R2 Switch", "DAC R2 Mux"},
-+
-+	{"DAC MIXL", "Stereo1 DAC Mixer", "Stereo1 DAC MIXL"},
-+	{"DAC MIXL", "Stereo2 DAC Mixer", "Stereo2 DAC MIXL"},
-+	{"DAC MIXL", "Mono DAC Mixer", "Mono DAC MIXL"},
-+	{"DAC MIXR", "Stereo1 DAC Mixer", "Stereo1 DAC MIXR"},
-+	{"DAC MIXR", "Stereo2 DAC Mixer", "Stereo2 DAC MIXR"},
-+	{"DAC MIXR", "Mono DAC Mixer", "Mono DAC MIXR"},
-+
-+	{"DAC L1 Source", "DAC1", "DAC1 MIXL"},
-+	{"DAC L1 Source", "Stereo1 DAC Mixer", "Stereo1 DAC MIXL"},
-+	{"DAC L1 Source", "DMIC1", "DMIC L1"},
-+	{"DAC R1 Source", "DAC1", "DAC1 MIXR"},
-+	{"DAC R1 Source", "Stereo1 DAC Mixer", "Stereo1 DAC MIXR"},
-+	{"DAC R1 Source", "DMIC1", "DMIC R1"},
-+
-+	{"DAC L2 Source", "DAC2", "DAC L2 Mux"},
-+	{"DAC L2 Source", "Mono DAC Mixer", "Mono DAC MIXL"},
-+	{"DAC L2 Source", NULL, "DAC L2 Power"},
-+	{"DAC R2 Source", "DAC2", "DAC R2 Mux"},
-+	{"DAC R2 Source", "Mono DAC Mixer", "Mono DAC MIXR"},
-+	{"DAC R2 Source", NULL, "DAC R2 Power"},
-+
-+	{"DAC L1", NULL, "DAC L1 Source"},
-+	{"DAC R1", NULL, "DAC R1 Source"},
-+	{"DAC L2", NULL, "DAC L2 Source"},
-+	{"DAC R2", NULL, "DAC R2 Source"},
-+
-+	{"DAC L1", NULL, "DAC 1 Clock"},
-+	{"DAC R1", NULL, "DAC 1 Clock"},
-+	{"DAC L2", NULL, "DAC 2 Clock"},
-+	{"DAC R2", NULL, "DAC 2 Clock"},
-+
-+	{"MONOVOL MIX", "DAC L2 Switch", "DAC L2"},
-+	{"MONOVOL MIX", "RECMIX2L Switch", "RECMIX2L"},
-+	{"MONOVOL MIX", "BST1 Switch", "BST1"},
-+	{"MONOVOL MIX", "BST2 Switch", "BST2"},
-+	{"MONOVOL MIX", "BST3 Switch", "BST3"},
-+
-+	{"OUT MIXL", "DAC L2 Switch", "DAC L2"},
-+	{"OUT MIXL", "INL Switch", "INL VOL"},
-+	{"OUT MIXL", "BST1 Switch", "BST1"},
-+	{"OUT MIXL", "BST2 Switch", "BST2"},
-+	{"OUT MIXL", "BST3 Switch", "BST3"},
-+	{"OUT MIXR", "DAC R2 Switch", "DAC R2"},
-+	{"OUT MIXR", "INR Switch", "INR VOL"},
-+	{"OUT MIXR", "BST2 Switch", "BST2"},
-+	{"OUT MIXR", "BST3 Switch", "BST3"},
-+	{"OUT MIXR", "BST4 Switch", "BST4"},
-+
-+	{"MONOVOL", "Switch", "MONOVOL MIX"},
-+	{"Mono MIX", "DAC L2 Switch", "DAC L2"},
-+	{"Mono MIX", "MONOVOL Switch", "MONOVOL"},
-+	{"Mono Amp", NULL, "Mono MIX"},
-+	{"Mono Amp", NULL, "Vref2"},
-+	{"Mono Amp", NULL, "CLKDET SYS"},
-+	{"Mono Amp", NULL, "CLKDET MONO"},
-+	{"Mono Playback", "Switch", "Mono Amp"},
-+	{"MONOOUT", NULL, "Mono Playback"},
-+
-+	{"HP Amp", NULL, "DAC L1"},
-+	{"HP Amp", NULL, "DAC R1"},
-+	{"HP Amp", NULL, "Charge Pump"},
-+	{"HP Amp", NULL, "CLKDET SYS"},
-+	{"HP Amp", NULL, "CLKDET HP"},
-+	{"HP Amp", NULL, "CBJ Power"},
-+	{"HP Amp", NULL, "Vref2"},
-+	{"HPO Playback", "Switch", "HP Amp"},
-+	{"HPOL", NULL, "HPO Playback"},
-+	{"HPOR", NULL, "HPO Playback"},
-+
-+	{"OUTVOL L", "Switch", "OUT MIXL"},
-+	{"OUTVOL R", "Switch", "OUT MIXR"},
-+	{"LOUT L MIX", "DAC L2 Switch", "DAC L2"},
-+	{"LOUT L MIX", "OUTVOL L Switch", "OUTVOL L"},
-+	{"LOUT R MIX", "DAC R2 Switch", "DAC R2"},
-+	{"LOUT R MIX", "OUTVOL R Switch", "OUTVOL R"},
-+	{"LOUT Amp", NULL, "LOUT L MIX"},
-+	{"LOUT Amp", NULL, "LOUT R MIX"},
-+	{"LOUT Amp", NULL, "Vref1"},
-+	{"LOUT Amp", NULL, "Vref2"},
-+	{"LOUT Amp", NULL, "CLKDET SYS"},
-+	{"LOUT Amp", NULL, "CLKDET LOUT"},
-+	{"LOUT L Playback", "Switch", "LOUT Amp"},
-+	{"LOUT R Playback", "Switch", "LOUT Amp"},
-+	{"LOUTL", NULL, "LOUT L Playback"},
-+	{"LOUTR", NULL, "LOUT R Playback"},
-+
-+	{"PDM L Mux", "Mono DAC", "Mono DAC MIXL"},
-+	{"PDM L Mux", "Stereo1 DAC", "Stereo1 DAC MIXL"},
-+	{"PDM L Mux", "Stereo2 DAC", "Stereo2 DAC MIXL"},
-+	{"PDM L Mux", NULL, "PDM Power"},
-+	{"PDM R Mux", "Mono DAC", "Mono DAC MIXR"},
-+	{"PDM R Mux", "Stereo1 DAC", "Stereo1 DAC MIXR"},
-+	{"PDM R Mux", "Stereo2 DAC", "Stereo2 DAC MIXR"},
-+	{"PDM R Mux", NULL, "PDM Power"},
-+	{"PDM L Playback", "Switch", "PDM L Mux"},
-+	{"PDM R Playback", "Switch", "PDM R Mux"},
-+	{"PDML", NULL, "PDM L Playback"},
-+	{"PDMR", NULL, "PDM R Playback"},
-+};
-+
-+static int rt5665_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int val_len = 0, val_clk, mask_clk, val_bits = 0x0100;
-+	int pre_div, frame_size;
-+
-+	rt5665->lrck[dai->id] = params_rate(params);
-+	pre_div = rl6231_get_clk_info(rt5665->sysclk, rt5665->lrck[dai->id]);
-+	if (pre_div < 0) {
-+		dev_err(codec->dev, "Unsupported clock setting %d for DAI %d\n",
-+			rt5665->lrck[dai->id], dai->id);
-+		return -EINVAL;
-+	}
-+	frame_size = snd_soc_params_to_frame_size(params);
-+	if (frame_size < 0) {
-+		dev_err(codec->dev, "Unsupported frame size: %d\n", frame_size);
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(dai->dev, "lrck is %dHz and pre_div is %d for iis %d\n",
-+				rt5665->lrck[dai->id], pre_div, dai->id);
-+
-+	switch (params_width(params)) {
-+	case 16:
-+		val_bits = 0x0100;
-+		break;
-+	case 20:
-+		val_len |= RT5665_I2S_DL_20;
-+		val_bits = 0x1300;
-+		break;
-+	case 24:
-+		val_len |= RT5665_I2S_DL_24;
-+		val_bits = 0x2500;
-+		break;
-+	case 8:
-+		val_len |= RT5665_I2S_DL_8;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (dai->id) {
-+	case RT5665_AIF1_1:
-+	case RT5665_AIF1_2:
-+		mask_clk = RT5665_I2S_PD1_MASK;
-+		val_clk = pre_div << RT5665_I2S_PD1_SFT;
-+		snd_soc_update_bits(codec, RT5665_I2S1_SDP,
-+			RT5665_I2S_DL_MASK, val_len);
-+		break;
-+	case RT5665_AIF2_1:
-+	case RT5665_AIF2_2:
-+		mask_clk = RT5665_I2S_PD2_MASK;
-+		val_clk = pre_div << RT5665_I2S_PD2_SFT;
-+		snd_soc_update_bits(codec, RT5665_I2S2_SDP,
-+			RT5665_I2S_DL_MASK, val_len);
-+		break;
-+	case RT5665_AIF3:
-+		mask_clk = RT5665_I2S_PD3_MASK;
-+		val_clk = pre_div << RT5665_I2S_PD3_SFT;
-+		snd_soc_update_bits(codec, RT5665_I2S3_SDP,
-+			RT5665_I2S_DL_MASK, val_len);
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid dai->id: %d\n", dai->id);
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_update_bits(codec, RT5665_ADDA_CLK_1, mask_clk, val_clk);
-+	snd_soc_update_bits(codec, RT5665_STO1_DAC_SIL_DET, 0x3700, val_bits);
-+
-+	switch (rt5665->lrck[dai->id]) {
-+	case 192000:
-+		snd_soc_update_bits(codec, RT5665_ADDA_CLK_1,
-+			RT5665_DAC_OSR_MASK | RT5665_ADC_OSR_MASK,
-+			RT5665_DAC_OSR_32 | RT5665_ADC_OSR_32);
-+		break;
-+	case 96000:
-+		snd_soc_update_bits(codec, RT5665_ADDA_CLK_1,
-+			RT5665_DAC_OSR_MASK | RT5665_ADC_OSR_MASK,
-+			RT5665_DAC_OSR_64 | RT5665_ADC_OSR_64);
-+		break;
-+	default:
-+		snd_soc_update_bits(codec, RT5665_ADDA_CLK_1,
-+			RT5665_DAC_OSR_MASK | RT5665_ADC_OSR_MASK,
-+			RT5665_DAC_OSR_128 | RT5665_ADC_OSR_128);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt5665_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int reg_val = 0;
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		rt5665->master[dai->id] = 1;
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		reg_val |= RT5665_I2S_MS_S;
-+		rt5665->master[dai->id] = 0;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		reg_val |= RT5665_I2S_BP_INV;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		reg_val |= RT5665_I2S_DF_LEFT;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		reg_val |= RT5665_I2S_DF_PCM_A;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		reg_val |= RT5665_I2S_DF_PCM_B;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (dai->id) {
-+	case RT5665_AIF1_1:
-+	case RT5665_AIF1_2:
-+		snd_soc_update_bits(codec, RT5665_I2S1_SDP,
-+			RT5665_I2S_MS_MASK | RT5665_I2S_BP_MASK |
-+			RT5665_I2S_DF_MASK, reg_val);
-+		break;
-+	case RT5665_AIF2_1:
-+	case RT5665_AIF2_2:
-+		snd_soc_update_bits(codec, RT5665_I2S2_SDP,
-+			RT5665_I2S_MS_MASK | RT5665_I2S_BP_MASK |
-+			RT5665_I2S_DF_MASK, reg_val);
-+		break;
-+	case RT5665_AIF3:
-+		snd_soc_update_bits(codec, RT5665_I2S3_SDP,
-+			RT5665_I2S_MS_MASK | RT5665_I2S_BP_MASK |
-+			RT5665_I2S_DF_MASK, reg_val);
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid dai->id: %d\n", dai->id);
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+static int rt5665_set_dai_sysclk(struct snd_soc_dai *dai,
-+		int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int reg_val = 0;
-+
-+	if (freq == rt5665->sysclk && clk_id == rt5665->sysclk_src)
-+		return 0;
-+
-+	switch (clk_id) {
-+	case RT5665_SCLK_S_MCLK:
-+		reg_val |= RT5665_SCLK_SRC_MCLK;
-+		break;
-+	case RT5665_SCLK_S_PLL1:
-+		reg_val |= RT5665_SCLK_SRC_PLL1;
-+		break;
-+	case RT5665_SCLK_S_RCCLK:
-+		reg_val |= RT5665_SCLK_SRC_RCCLK;
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid clock id (%d)\n", clk_id);
-+		return -EINVAL;
-+	}
-+	snd_soc_update_bits(codec, RT5665_GLB_CLK,
-+		RT5665_SCLK_SRC_MASK, reg_val);
-+	rt5665->sysclk = freq;
-+	rt5665->sysclk_src = clk_id;
-+
-+	dev_dbg(dai->dev, "Sysclk is %dHz and clock id is %d\n", freq, clk_id);
-+
-+	return 0;
-+}
-+
-+static int rt5665_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
-+			unsigned int freq_in, unsigned int freq_out)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
-+	struct rl6231_pll_code pll_code;
-+	int ret;
-+
-+	if (Source == rt5665->pll_src && freq_in == rt5665->pll_in &&
-+	    freq_out == rt5665->pll_out)
-+		return 0;
-+
-+	if (!freq_in || !freq_out) {
-+		dev_dbg(codec->dev, "PLL disabled\n");
-+
-+		rt5665->pll_in = 0;
-+		rt5665->pll_out = 0;
-+		snd_soc_update_bits(codec, RT5665_GLB_CLK,
-+			RT5665_SCLK_SRC_MASK, RT5665_SCLK_SRC_MCLK);
-+		return 0;
-+	}
-+
-+	switch (Source) {
-+	case RT5665_PLL1_S_MCLK:
-+		snd_soc_update_bits(codec, RT5665_GLB_CLK,
-+			RT5665_PLL1_SRC_MASK, RT5665_PLL1_SRC_MCLK);
-+		break;
-+	case RT5665_PLL1_S_BCLK1:
-+		snd_soc_update_bits(codec, RT5665_GLB_CLK,
-+				RT5665_PLL1_SRC_MASK, RT5665_PLL1_SRC_BCLK1);
-+		break;
-+	case RT5665_PLL1_S_BCLK2:
-+		snd_soc_update_bits(codec, RT5665_GLB_CLK,
-+				RT5665_PLL1_SRC_MASK, RT5665_PLL1_SRC_BCLK2);
-+		break;
-+	case RT5665_PLL1_S_BCLK3:
-+		snd_soc_update_bits(codec, RT5665_GLB_CLK,
-+				RT5665_PLL1_SRC_MASK, RT5665_PLL1_SRC_BCLK3);
-+		break;
-+	default:
-+		dev_err(codec->dev, "Unknown PLL Source %d\n", Source);
-+		return -EINVAL;
-+	}
-+
-+	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Unsupport input clock %d\n", freq_in);
-+		return ret;
-+	}
-+
-+	dev_dbg(codec->dev, "bypass=%d m=%d n=%d k=%d\n",
-+		pll_code.m_bp, (pll_code.m_bp ? 0 : pll_code.m_code),
-+		pll_code.n_code, pll_code.k_code);
-+
-+	snd_soc_write(codec, RT5665_PLL_CTRL_1,
-+		pll_code.n_code << RT5665_PLL_N_SFT | pll_code.k_code);
-+	snd_soc_write(codec, RT5665_PLL_CTRL_2,
-+		(pll_code.m_bp ? 0 : pll_code.m_code) << RT5665_PLL_M_SFT |
-+		pll_code.m_bp << RT5665_PLL_M_BP_SFT);
-+
-+	rt5665->pll_in = freq_in;
-+	rt5665->pll_out = freq_out;
-+	rt5665->pll_src = Source;
-+
-+	return 0;
-+}
-+
-+static int rt5665_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
-+			unsigned int rx_mask, int slots, int slot_width)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	unsigned int val = 0;
-+
-+	if (rx_mask || tx_mask)
-+		val |= RT5665_I2S1_MODE_TDM;
-+
-+	switch (slots) {
-+	case 4:
-+		val |= RT5665_TDM_IN_CH_4;
-+		val |= RT5665_TDM_OUT_CH_4;
-+		break;
-+	case 6:
-+		val |= RT5665_TDM_IN_CH_6;
-+		val |= RT5665_TDM_OUT_CH_6;
-+		break;
-+	case 8:
-+		val |= RT5665_TDM_IN_CH_8;
-+		val |= RT5665_TDM_OUT_CH_8;
-+		break;
-+	case 2:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (slot_width) {
-+	case 20:
-+		val |= RT5665_TDM_IN_LEN_20;
-+		val |= RT5665_TDM_OUT_LEN_20;
-+		break;
-+	case 24:
-+		val |= RT5665_TDM_IN_LEN_24;
-+		val |= RT5665_TDM_OUT_LEN_24;
-+		break;
-+	case 32:
-+		val |= RT5665_TDM_IN_LEN_32;
-+		val |= RT5665_TDM_OUT_LEN_32;
-+		break;
-+	case 16:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_update_bits(codec, RT5665_TDM_CTRL_1,
-+		RT5665_I2S1_MODE_MASK | RT5665_TDM_IN_CH_MASK |
-+		RT5665_TDM_OUT_CH_MASK | RT5665_TDM_IN_LEN_MASK |
-+		RT5665_TDM_OUT_LEN_MASK, val);
-+
-+	return 0;
-+}
-+
-+static int rt5665_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
-+
-+	dev_dbg(codec->dev, "%s ratio=%d\n", __func__, ratio);
-+
-+	rt5665->bclk[dai->id] = ratio;
-+
-+	if (ratio == 64) {
-+		switch (dai->id) {
-+		case RT5665_AIF2_1:
-+		case RT5665_AIF2_2:
-+			snd_soc_update_bits(codec, RT5665_ADDA_CLK_1,
-+				RT5665_I2S_BCLK_MS2_MASK,
-+				RT5665_I2S_BCLK_MS2_64);
-+			break;
-+		case RT5665_AIF3:
-+			snd_soc_update_bits(codec, RT5665_ADDA_CLK_1,
-+				RT5665_I2S_BCLK_MS3_MASK,
-+				RT5665_I2S_BCLK_MS3_64);
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt5665_set_bias_level(struct snd_soc_codec *codec,
-+			enum snd_soc_bias_level level)
-+{
-+	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_PREPARE:
-+		regmap_update_bits(rt5665->regmap, RT5665_DIG_MISC,
-+			RT5665_DIG_GATE_CTRL, RT5665_DIG_GATE_CTRL);
-+		break;
-+
-+	case SND_SOC_BIAS_STANDBY:
-+		regmap_update_bits(rt5665->regmap, RT5665_PWR_DIG_1,
-+			RT5665_PWR_LDO,	RT5665_PWR_LDO);
-+		regmap_update_bits(rt5665->regmap, RT5665_PWR_ANLG_1,
-+			RT5665_PWR_MB, RT5665_PWR_MB);
-+		regmap_update_bits(rt5665->regmap, RT5665_DIG_MISC,
-+			RT5665_DIG_GATE_CTRL, 0);
-+		break;
-+	case SND_SOC_BIAS_OFF:
-+		regmap_update_bits(rt5665->regmap, RT5665_PWR_DIG_1,
-+			RT5665_PWR_LDO, 0);
-+		regmap_update_bits(rt5665->regmap, RT5665_PWR_ANLG_1,
-+			RT5665_PWR_MB, 0);
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt5665_probe(struct snd_soc_codec *codec)
-+{
-+	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
-+
-+	rt5665->codec = codec;
-+
-+	schedule_delayed_work(&rt5665->calibrate_work, msecs_to_jiffies(100));
-+
-+	return 0;
-+}
-+
-+static int rt5665_remove(struct snd_soc_codec *codec)
-+{
-+	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
-+
-+	regmap_write(rt5665->regmap, RT5665_RESET, 0);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int rt5665_suspend(struct snd_soc_codec *codec)
-+{
-+	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
-+
-+	regcache_cache_only(rt5665->regmap, true);
-+	regcache_mark_dirty(rt5665->regmap);
-+	return 0;
-+}
-+
-+static int rt5665_resume(struct snd_soc_codec *codec)
-+{
-+	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
-+
-+	regcache_cache_only(rt5665->regmap, false);
-+	regcache_sync(rt5665->regmap);
-+
-+	return 0;
-+}
-+#else
-+#define rt5665_suspend NULL
-+#define rt5665_resume NULL
-+#endif
-+
-+#define RT5665_STEREO_RATES SNDRV_PCM_RATE_8000_192000
-+#define RT5665_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
-+		SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
-+
-+static const struct snd_soc_dai_ops rt5665_aif_dai_ops = {
-+	.hw_params = rt5665_hw_params,
-+	.set_fmt = rt5665_set_dai_fmt,
-+	.set_sysclk = rt5665_set_dai_sysclk,
-+	.set_tdm_slot = rt5665_set_tdm_slot,
-+	.set_pll = rt5665_set_dai_pll,
-+	.set_bclk_ratio = rt5665_set_bclk_ratio,
-+};
-+
-+static struct snd_soc_dai_driver rt5665_dai[] = {
-+	{
-+		.name = "rt5665-aif1_1",
-+		.id = RT5665_AIF1_1,
-+		.playback = {
-+			.stream_name = "AIF1 Playback",
-+			.channels_min = 1,
-+			.channels_max = 8,
-+			.rates = RT5665_STEREO_RATES,
-+			.formats = RT5665_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "AIF1_1 Capture",
-+			.channels_min = 1,
-+			.channels_max = 8,
-+			.rates = RT5665_STEREO_RATES,
-+			.formats = RT5665_FORMATS,
-+		},
-+		.ops = &rt5665_aif_dai_ops,
-+	},
-+	{
-+		.name = "rt5665-aif1_2",
-+		.id = RT5665_AIF1_2,
-+		.capture = {
-+			.stream_name = "AIF1_2 Capture",
-+			.channels_min = 1,
-+			.channels_max = 8,
-+			.rates = RT5665_STEREO_RATES,
-+			.formats = RT5665_FORMATS,
-+		},
-+		.ops = &rt5665_aif_dai_ops,
-+	},
-+	{
-+		.name = "rt5665-aif2_1",
-+		.id = RT5665_AIF2_1,
-+		.playback = {
-+			.stream_name = "AIF2_1 Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5665_STEREO_RATES,
-+			.formats = RT5665_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "AIF2_1 Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5665_STEREO_RATES,
-+			.formats = RT5665_FORMATS,
-+		},
-+		.ops = &rt5665_aif_dai_ops,
-+	},
-+	{
-+		.name = "rt5665-aif2_2",
-+		.id = RT5665_AIF2_2,
-+		.playback = {
-+			.stream_name = "AIF2_2 Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5665_STEREO_RATES,
-+			.formats = RT5665_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "AIF2_2 Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5665_STEREO_RATES,
-+			.formats = RT5665_FORMATS,
-+		},
-+		.ops = &rt5665_aif_dai_ops,
-+	},
-+	{
-+		.name = "rt5665-aif3",
-+		.id = RT5665_AIF3,
-+		.playback = {
-+			.stream_name = "AIF3 Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5665_STEREO_RATES,
-+			.formats = RT5665_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "AIF3 Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RT5665_STEREO_RATES,
-+			.formats = RT5665_FORMATS,
-+		},
-+		.ops = &rt5665_aif_dai_ops,
-+	},
-+};
-+
-+static struct snd_soc_codec_driver soc_codec_dev_rt5665 = {
-+	.probe = rt5665_probe,
-+	.remove = rt5665_remove,
-+	.suspend = rt5665_suspend,
-+	.resume = rt5665_resume,
-+	.set_bias_level = rt5665_set_bias_level,
-+	.idle_bias_off = true,
-+	.component_driver = {
-+		.controls = rt5665_snd_controls,
-+		.num_controls = ARRAY_SIZE(rt5665_snd_controls),
-+		.dapm_widgets = rt5665_dapm_widgets,
-+		.num_dapm_widgets = ARRAY_SIZE(rt5665_dapm_widgets),
-+		.dapm_routes = rt5665_dapm_routes,
-+		.num_dapm_routes = ARRAY_SIZE(rt5665_dapm_routes),
-+	}
-+};
-+
-+
-+static const struct regmap_config rt5665_regmap = {
-+	.reg_bits = 16,
-+	.val_bits = 16,
-+	.max_register = 0x0400,
-+	.volatile_reg = rt5665_volatile_register,
-+	.readable_reg = rt5665_readable_register,
-+	.cache_type = REGCACHE_RBTREE,
-+	.reg_defaults = rt5665_reg,
-+	.num_reg_defaults = ARRAY_SIZE(rt5665_reg),
-+	.use_single_rw = true,
-+};
-+
-+static const struct i2c_device_id rt5665_i2c_id[] = {
-+	{"rt5665", 0},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, rt5665_i2c_id);
-+
-+static int rt5665_parse_dt(struct rt5665_priv *rt5665, struct device *dev)
-+{
-+	rt5665->pdata.in1_diff = of_property_read_bool(dev->of_node,
-+					"realtek,in1-differential");
-+	rt5665->pdata.in2_diff = of_property_read_bool(dev->of_node,
-+					"realtek,in2-differential");
-+	rt5665->pdata.in3_diff = of_property_read_bool(dev->of_node,
-+					"realtek,in3-differential");
-+	rt5665->pdata.in4_diff = of_property_read_bool(dev->of_node,
-+					"realtek,in4-differential");
-+
-+
-+	of_property_read_u32(dev->of_node, "realtek,dmic1-data-pin",
-+		&rt5665->pdata.dmic1_data_pin);
-+	of_property_read_u32(dev->of_node, "realtek,dmic2-data-pin",
-+		&rt5665->pdata.dmic2_data_pin);
-+	of_property_read_u32(dev->of_node, "realtek,jd-src",
-+		&rt5665->pdata.jd_src);
-+
-+	of_property_read_string(dev->of_node, "realtek,regulator_1v8",
-+		&rt5665->pdata.regulator_1v8);
-+	of_property_read_string(dev->of_node, "realtek,regulator_3v3",
-+		&rt5665->pdata.regulator_3v3);
-+	of_property_read_string(dev->of_node, "realtek,regulator_5v",
-+		&rt5665->pdata.regulator_5v);
-+
-+	rt5665->pdata.ldo1_en = of_get_named_gpio(dev->of_node,
-+		"realtek,ldo1-en-gpios", 0);
-+
-+	return 0;
-+}
-+
-+static void rt5665_calibrate(struct rt5665_priv *rt5665)
-+{
-+	int value, count;
-+
-+	mutex_lock(&rt5665->calibrate_mutex);
-+
-+	regcache_cache_bypass(rt5665->regmap, true);
-+
-+	regmap_write(rt5665->regmap, RT5665_RESET, 0);
-+	regmap_write(rt5665->regmap, RT5665_BIAS_CUR_CTRL_8, 0xa602);
-+	regmap_write(rt5665->regmap, RT5665_HP_CHARGE_PUMP_1, 0x0c26);
-+	regmap_write(rt5665->regmap, RT5665_MONOMIX_IN_GAIN, 0x021f);
-+	regmap_write(rt5665->regmap, RT5665_MONO_OUT, 0x480a);
-+	regmap_write(rt5665->regmap, RT5665_PWR_MIXER, 0x083f);
-+	regmap_write(rt5665->regmap, RT5665_PWR_DIG_1, 0x0180);
-+	regmap_write(rt5665->regmap, RT5665_EJD_CTRL_1, 0x4040);
-+	regmap_write(rt5665->regmap, RT5665_HP_LOGIC_CTRL_2, 0x0000);
-+	regmap_write(rt5665->regmap, RT5665_DIG_MISC, 0x0001);
-+	regmap_write(rt5665->regmap, RT5665_MICBIAS_2, 0x0380);
-+	regmap_write(rt5665->regmap, RT5665_GLB_CLK, 0x8000);
-+	regmap_write(rt5665->regmap, RT5665_ADDA_CLK_1, 0x1000);
-+	regmap_write(rt5665->regmap, RT5665_CHOP_DAC, 0x3030);
-+	regmap_write(rt5665->regmap, RT5665_CALIB_ADC_CTRL, 0x3c05);
-+	regmap_write(rt5665->regmap, RT5665_PWR_ANLG_1, 0xaa3e);
-+	usleep_range(15000, 20000);
-+	regmap_write(rt5665->regmap, RT5665_PWR_ANLG_1, 0xfe7e);
-+	regmap_write(rt5665->regmap, RT5665_HP_CALIB_CTRL_2, 0x0321);
-+
-+	regmap_write(rt5665->regmap, RT5665_HP_CALIB_CTRL_1, 0xfc00);
-+	count = 0;
-+	while (true) {
-+		regmap_read(rt5665->regmap, RT5665_HP_CALIB_STA_1, &value);
-+		if (value & 0x8000)
-+			usleep_range(10000, 10005);
-+		else
-+			break;
-+
-+		if (count > 60) {
-+			pr_err("HP Calibration Failure\n");
-+			regmap_write(rt5665->regmap, RT5665_RESET, 0);
-+			regcache_cache_bypass(rt5665->regmap, false);
-+			return;
-+		}
-+
-+		count++;
-+	}
-+
-+	regmap_write(rt5665->regmap, RT5665_MONO_AMP_CALIB_CTRL_1, 0x9e24);
-+	count = 0;
-+	while (true) {
-+		regmap_read(rt5665->regmap, RT5665_MONO_AMP_CALIB_STA1, &value);
-+		if (value & 0x8000)
-+			usleep_range(10000, 10005);
-+		else
-+			break;
-+
-+		if (count > 60) {
-+			pr_err("MONO Calibration Failure\n");
-+			regmap_write(rt5665->regmap, RT5665_RESET, 0);
-+			regcache_cache_bypass(rt5665->regmap, false);
-+			return;
-+		}
-+
-+		count++;
-+	}
-+
-+	regmap_write(rt5665->regmap, RT5665_RESET, 0);
-+	regcache_cache_bypass(rt5665->regmap, false);
-+
-+	regcache_mark_dirty(rt5665->regmap);
-+	regcache_sync(rt5665->regmap);
-+
-+	regmap_write(rt5665->regmap, RT5665_BIAS_CUR_CTRL_8, 0xa602);
-+	regmap_write(rt5665->regmap, RT5665_ASRC_8, 0x0120);
-+
-+	mutex_unlock(&rt5665->calibrate_mutex);
-+}
-+
-+static void rt5665_calibrate_handler(struct work_struct *work)
-+{
-+	struct rt5665_priv *rt5665 = container_of(work, struct rt5665_priv,
-+		calibrate_work.work);
-+
-+	while (!rt5665->codec->component.card->instantiated) {
-+		pr_debug("%s\n", __func__);
-+		usleep_range(10000, 15000);
-+	}
-+
-+	rt5665_calibrate(rt5665);
-+}
-+
-+static int rt5665_i2c_probe(struct i2c_client *i2c,
-+		    const struct i2c_device_id *id)
-+{
-+	struct rt5665_platform_data *pdata = dev_get_platdata(&i2c->dev);
-+	struct rt5665_priv *rt5665;
-+	int ret;
-+	unsigned int val;
-+
-+	rt5665 = devm_kzalloc(&i2c->dev, sizeof(struct rt5665_priv),
-+		GFP_KERNEL);
-+
-+	if (rt5665 == NULL)
-+		return -ENOMEM;
-+
-+	i2c_set_clientdata(i2c, rt5665);
-+
-+	if (pdata)
-+		rt5665->pdata = *pdata;
-+	else
-+		rt5665_parse_dt(rt5665, &i2c->dev);
-+
-+	rt5665->supplies[0].supply = rt5665->pdata.regulator_1v8;
-+	rt5665->supplies[1].supply = rt5665->pdata.regulator_3v3;
-+	rt5665->supplies[2].supply = rt5665->pdata.regulator_5v;
-+
-+	ret = devm_regulator_bulk_get(&i2c->dev, ARRAY_SIZE(rt5665->supplies),
-+				      rt5665->supplies);
-+	if (ret != 0) {
-+		dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(rt5665->supplies),
-+				    rt5665->supplies);
-+	if (ret != 0) {
-+		dev_err(&i2c->dev, "Failed to enable supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	if (gpio_is_valid(rt5665->pdata.ldo1_en)) {
-+		if (devm_gpio_request(&i2c->dev, rt5665->pdata.ldo1_en,
-+			"rt5665"))
-+			dev_err(&i2c->dev, "Fail gpio_request gpio_ldo\n");
-+		else if (gpio_direction_output(rt5665->pdata.ldo1_en, 1))
-+			dev_err(&i2c->dev, "Fail gpio_direction gpio_ldo\n");
-+	}
-+
-+	/* Sleep for 300 ms miniumum */
-+	usleep_range(300000, 350000);
-+
-+	rt5665->regmap = devm_regmap_init_i2c(i2c, &rt5665_regmap);
-+	if (IS_ERR(rt5665->regmap)) {
-+		ret = PTR_ERR(rt5665->regmap);
-+		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	regmap_read(rt5665->regmap, RT5665_DEVICE_ID, &val);
-+	if (val != DEVICE_ID) {
-+		dev_err(&i2c->dev,
-+			"Device with ID register %x is not rt5665\n", val);
-+		return -ENODEV;
-+	}
-+
-+	regmap_read(rt5665->regmap, RT5665_RESET, &val);
-+	switch (val) {
-+	case 0x0:
-+		rt5665->id = CODEC_5666;
-+		break;
-+	case 0x6:
-+		rt5665->id = CODEC_5668;
-+		break;
-+	case 0x3:
-+	default:
-+		rt5665->id = CODEC_5665;
-+		break;
-+	}
-+
-+	regmap_write(rt5665->regmap, RT5665_RESET, 0);
-+
-+	/* line in diff mode*/
-+	if (rt5665->pdata.in1_diff)
-+		regmap_update_bits(rt5665->regmap, RT5665_IN1_IN2,
-+			RT5665_IN1_DF_MASK, RT5665_IN1_DF_MASK);
-+	if (rt5665->pdata.in2_diff)
-+		regmap_update_bits(rt5665->regmap, RT5665_IN1_IN2,
-+			RT5665_IN2_DF_MASK, RT5665_IN2_DF_MASK);
-+	if (rt5665->pdata.in3_diff)
-+		regmap_update_bits(rt5665->regmap, RT5665_IN3_IN4,
-+			RT5665_IN3_DF_MASK, RT5665_IN3_DF_MASK);
-+	if (rt5665->pdata.in4_diff)
-+		regmap_update_bits(rt5665->regmap, RT5665_IN3_IN4,
-+			RT5665_IN4_DF_MASK, RT5665_IN4_DF_MASK);
-+
-+	/* DMIC pin*/
-+	if (rt5665->pdata.dmic1_data_pin != RT5665_DMIC1_NULL ||
-+		rt5665->pdata.dmic2_data_pin != RT5665_DMIC2_NULL) {
-+		regmap_update_bits(rt5665->regmap, RT5665_GPIO_CTRL_2,
-+			RT5665_GP9_PIN_MASK, RT5665_GP9_PIN_DMIC1_SCL);
-+		regmap_update_bits(rt5665->regmap, RT5665_GPIO_CTRL_1,
-+				RT5665_GP8_PIN_MASK, RT5665_GP8_PIN_DMIC2_SCL);
-+		switch (rt5665->pdata.dmic1_data_pin) {
-+		case RT5665_DMIC1_DATA_IN2N:
-+			regmap_update_bits(rt5665->regmap, RT5665_DMIC_CTRL_1,
-+				RT5665_DMIC_1_DP_MASK, RT5665_DMIC_1_DP_IN2N);
-+			break;
-+
-+		case RT5665_DMIC1_DATA_GPIO4:
-+			regmap_update_bits(rt5665->regmap, RT5665_DMIC_CTRL_1,
-+				RT5665_DMIC_1_DP_MASK, RT5665_DMIC_1_DP_GPIO4);
-+			regmap_update_bits(rt5665->regmap, RT5665_GPIO_CTRL_1,
-+				RT5665_GP4_PIN_MASK, RT5665_GP4_PIN_DMIC1_SDA);
-+			break;
-+
-+		default:
-+			dev_dbg(&i2c->dev, "no DMIC1\n");
-+			break;
-+		}
-+
-+		switch (rt5665->pdata.dmic2_data_pin) {
-+		case RT5665_DMIC2_DATA_IN2P:
-+			regmap_update_bits(rt5665->regmap, RT5665_DMIC_CTRL_1,
-+				RT5665_DMIC_2_DP_MASK, RT5665_DMIC_2_DP_IN2P);
-+			break;
-+
-+		case RT5665_DMIC2_DATA_GPIO5:
-+			regmap_update_bits(rt5665->regmap,
-+				RT5665_DMIC_CTRL_1,
-+				RT5665_DMIC_2_DP_MASK,
-+				RT5665_DMIC_2_DP_GPIO5);
-+			regmap_update_bits(rt5665->regmap, RT5665_GPIO_CTRL_1,
-+				RT5665_GP5_PIN_MASK, RT5665_GP5_PIN_DMIC2_SDA);
-+			break;
-+
-+		default:
-+			dev_dbg(&i2c->dev, "no DMIC2\n");
-+			break;
-+
-+		}
-+	}
-+
-+	regmap_write(rt5665->regmap, RT5665_HP_LOGIC_CTRL_2, 0x0002);
-+	regmap_update_bits(rt5665->regmap, RT5665_EJD_CTRL_1,
-+		0xf000 | RT5665_VREF_POW_MASK, 0xd000 | RT5665_VREF_POW_REG);
-+	/* Work around for pow_pump */
-+	regmap_update_bits(rt5665->regmap, RT5665_STO1_DAC_SIL_DET,
-+		RT5665_DEB_STO_DAC_MASK, RT5665_DEB_80_MS);
-+
-+	regmap_update_bits(rt5665->regmap, RT5665_HP_CHARGE_PUMP_1,
-+		RT5665_PM_HP_MASK, RT5665_PM_HP_HV);
-+
-+	/* Set GPIO4,8 as input for combo jack */
-+	if (rt5665->id == CODEC_5666) {
-+		regmap_update_bits(rt5665->regmap, RT5665_GPIO_CTRL_2,
-+			RT5665_GP4_PF_MASK, RT5665_GP4_PF_IN);
-+		regmap_update_bits(rt5665->regmap, RT5665_GPIO_CTRL_3,
-+			RT5665_GP8_PF_MASK, RT5665_GP8_PF_IN);
-+	}
-+
-+	/* Enhance performance*/
-+	regmap_update_bits(rt5665->regmap, RT5665_PWR_ANLG_1,
-+		RT5665_HP_DRIVER_MASK | RT5665_LDO1_DVO_MASK,
-+		RT5665_HP_DRIVER_5X | RT5665_LDO1_DVO_09);
-+
-+	INIT_DELAYED_WORK(&rt5665->jack_detect_work,
-+				rt5665_jack_detect_handler);
-+	INIT_DELAYED_WORK(&rt5665->calibrate_work,
-+				rt5665_calibrate_handler);
-+	INIT_DELAYED_WORK(&rt5665->jd_check_work,
-+				rt5665_jd_check_handler);
-+
-+	mutex_init(&rt5665->calibrate_mutex);
-+
-+	if (i2c->irq) {
-+		ret = devm_request_threaded_irq(&i2c->dev, i2c->irq, NULL,
-+			rt5665_irq, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
-+			| IRQF_ONESHOT, "rt5665", rt5665);
-+		if (ret)
-+			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
-+
-+	}
-+
-+	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5665,
-+			rt5665_dai, ARRAY_SIZE(rt5665_dai));
-+}
-+
-+static int rt5665_i2c_remove(struct i2c_client *i2c)
-+{
-+	snd_soc_unregister_codec(&i2c->dev);
-+
-+	return 0;
-+}
-+
-+static void rt5665_i2c_shutdown(struct i2c_client *client)
-+{
-+	struct rt5665_priv *rt5665 = i2c_get_clientdata(client);
-+
-+	regmap_write(rt5665->regmap, RT5665_RESET, 0);
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id rt5665_of_match[] = {
-+	{.compatible = "realtek,rt5665"},
-+	{.compatible = "realtek,rt5666"},
-+	{.compatible = "realtek,rt5668"},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, rt5665_of_match);
-+#endif
-+
-+#ifdef CONFIG_ACPI
-+static struct acpi_device_id rt5665_acpi_match[] = {
-+	{"10EC5665", 0,},
-+	{"10EC5666", 0,},
-+	{"10EC5668", 0,},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, rt5665_acpi_match);
-+#endif
-+
-+struct i2c_driver rt5665_i2c_driver = {
-+	.driver = {
-+		.name = "rt5665",
-+		.of_match_table = of_match_ptr(rt5665_of_match),
-+		.acpi_match_table = ACPI_PTR(rt5665_acpi_match),
-+	},
-+	.probe = rt5665_i2c_probe,
-+	.remove = rt5665_i2c_remove,
-+	.shutdown = rt5665_i2c_shutdown,
-+	.id_table = rt5665_i2c_id,
-+};
-+module_i2c_driver(rt5665_i2c_driver);
-+
-+MODULE_DESCRIPTION("ASoC RT5665 driver");
-+MODULE_AUTHOR("Bard Liao <bardliao@realtek.com>");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/codecs/rt5665.h b/sound/soc/codecs/rt5665.h
-new file mode 100644
-index 0000000..12f7080
---- /dev/null
-+++ b/sound/soc/codecs/rt5665.h
-@@ -0,0 +1,1990 @@
-+/*
-+ * rt5665.h  --  RT5665/RT5658 ALSA SoC audio driver
-+ *
-+ * Copyright 2016 Realtek Microelectronics
-+ * Author: Bard Liao <bardliao@realtek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __RT5665_H__
-+#define __RT5665_H__
-+
-+#include <sound/rt5665.h>
-+
-+#define DEVICE_ID 0x6451
-+
-+/* Info */
-+#define RT5665_RESET				0x0000
-+#define RT5665_VENDOR_ID			0x00fd
-+#define RT5665_VENDOR_ID_1			0x00fe
-+#define RT5665_DEVICE_ID			0x00ff
-+/*  I/O - Output */
-+#define RT5665_LOUT				0x0001
-+#define RT5665_HP_CTRL_1			0x0002
-+#define RT5665_HP_CTRL_2			0x0003
-+#define RT5665_MONO_OUT				0x0004
-+#define RT5665_HPL_GAIN				0x0005
-+#define RT5665_HPR_GAIN				0x0006
-+#define RT5665_MONO_GAIN			0x0007
-+
-+/* I/O - Input */
-+#define RT5665_CAL_BST_CTRL			0x000a
-+#define RT5665_CBJ_BST_CTRL			0x000b
-+#define RT5665_IN1_IN2				0x000c
-+#define RT5665_IN3_IN4				0x000d
-+#define RT5665_INL1_INR1_VOL			0x000f
-+/* I/O - Speaker */
-+#define RT5665_EJD_CTRL_1			0x0010
-+#define RT5665_EJD_CTRL_2			0x0011
-+#define RT5665_EJD_CTRL_3			0x0012
-+#define RT5665_EJD_CTRL_4			0x0013
-+#define RT5665_EJD_CTRL_5			0x0014
-+#define RT5665_EJD_CTRL_6			0x0015
-+#define RT5665_EJD_CTRL_7			0x0016
-+/* I/O - ADC/DAC/DMIC */
-+#define RT5665_DAC2_CTRL			0x0017
-+#define RT5665_DAC2_DIG_VOL			0x0018
-+#define RT5665_DAC1_DIG_VOL			0x0019
-+#define RT5665_DAC3_DIG_VOL			0x001a
-+#define RT5665_DAC3_CTRL			0x001b
-+#define RT5665_STO1_ADC_DIG_VOL			0x001c
-+#define RT5665_MONO_ADC_DIG_VOL			0x001d
-+#define RT5665_STO2_ADC_DIG_VOL			0x001e
-+#define RT5665_STO1_ADC_BOOST			0x001f
-+#define RT5665_MONO_ADC_BOOST			0x0020
-+#define RT5665_STO2_ADC_BOOST			0x0021
-+#define RT5665_HP_IMP_GAIN_1			0x0022
-+#define RT5665_HP_IMP_GAIN_2			0x0023
-+/* Mixer - D-D */
-+#define RT5665_STO1_ADC_MIXER			0x0026
-+#define RT5665_MONO_ADC_MIXER			0x0027
-+#define RT5665_STO2_ADC_MIXER			0x0028
-+#define RT5665_AD_DA_MIXER			0x0029
-+#define RT5665_STO1_DAC_MIXER			0x002a
-+#define RT5665_MONO_DAC_MIXER			0x002b
-+#define RT5665_STO2_DAC_MIXER			0x002c
-+#define RT5665_A_DAC1_MUX			0x002d
-+#define RT5665_A_DAC2_MUX			0x002e
-+#define RT5665_DIG_INF2_DATA			0x002f
-+#define RT5665_DIG_INF3_DATA			0x0030
-+/* Mixer - PDM */
-+#define RT5665_PDM_OUT_CTRL			0x0031
-+#define RT5665_PDM_DATA_CTRL_1			0x0032
-+#define RT5665_PDM_DATA_CTRL_2			0x0033
-+#define RT5665_PDM_DATA_CTRL_3			0x0034
-+#define RT5665_PDM_DATA_CTRL_4			0x0035
-+/* Mixer - ADC */
-+#define RT5665_REC1_GAIN			0x003a
-+#define RT5665_REC1_L1_MIXER			0x003b
-+#define RT5665_REC1_L2_MIXER			0x003c
-+#define RT5665_REC1_R1_MIXER			0x003d
-+#define RT5665_REC1_R2_MIXER			0x003e
-+#define RT5665_REC2_GAIN			0x003f
-+#define RT5665_REC2_L1_MIXER			0x0040
-+#define RT5665_REC2_L2_MIXER			0x0041
-+#define RT5665_REC2_R1_MIXER			0x0042
-+#define RT5665_REC2_R2_MIXER			0x0043
-+#define RT5665_CAL_REC				0x0044
-+/* Mixer - DAC */
-+#define RT5665_ALC_BACK_GAIN			0x0049
-+#define RT5665_MONOMIX_GAIN			0x004a
-+#define RT5665_MONOMIX_IN_GAIN			0x004b
-+#define RT5665_OUT_L_GAIN			0x004d
-+#define RT5665_OUT_L_MIXER			0x004e
-+#define RT5665_OUT_R_GAIN			0x004f
-+#define RT5665_OUT_R_MIXER			0x0050
-+#define RT5665_LOUT_MIXER			0x0052
-+/* Power */
-+#define RT5665_PWR_DIG_1			0x0061
-+#define RT5665_PWR_DIG_2			0x0062
-+#define RT5665_PWR_ANLG_1			0x0063
-+#define RT5665_PWR_ANLG_2			0x0064
-+#define RT5665_PWR_ANLG_3			0x0065
-+#define RT5665_PWR_MIXER			0x0066
-+#define RT5665_PWR_VOL				0x0067
-+/* Clock Detect */
-+#define RT5665_CLK_DET				0x006b
-+/* Filter */
-+#define RT5665_HPF_CTRL1			0x006d
-+/* DMIC */
-+#define RT5665_DMIC_CTRL_1			0x006e
-+#define RT5665_DMIC_CTRL_2			0x006f
-+/* Format - ADC/DAC */
-+#define RT5665_I2S1_SDP				0x0070
-+#define RT5665_I2S2_SDP				0x0071
-+#define RT5665_I2S3_SDP				0x0072
-+#define RT5665_ADDA_CLK_1			0x0073
-+#define RT5665_ADDA_CLK_2			0x0074
-+#define RT5665_I2S1_F_DIV_CTRL_1		0x0075
-+#define RT5665_I2S1_F_DIV_CTRL_2		0x0076
-+/* Format - TDM Control */
-+#define RT5665_TDM_CTRL_1			0x0078
-+#define RT5665_TDM_CTRL_2			0x0079
-+#define RT5665_TDM_CTRL_3			0x007a
-+#define RT5665_TDM_CTRL_4			0x007b
-+#define RT5665_TDM_CTRL_5			0x007c
-+#define RT5665_TDM_CTRL_6			0x007d
-+#define RT5665_TDM_CTRL_7			0x007e
-+#define RT5665_TDM_CTRL_8			0x007f
-+/* Function - Analog */
-+#define RT5665_GLB_CLK				0x0080
-+#define RT5665_PLL_CTRL_1			0x0081
-+#define RT5665_PLL_CTRL_2			0x0082
-+#define RT5665_ASRC_1				0x0083
-+#define RT5665_ASRC_2				0x0084
-+#define RT5665_ASRC_3				0x0085
-+#define RT5665_ASRC_4				0x0086
-+#define RT5665_ASRC_5				0x0087
-+#define RT5665_ASRC_6				0x0088
-+#define RT5665_ASRC_7				0x0089
-+#define RT5665_ASRC_8				0x008a
-+#define RT5665_ASRC_9				0x008b
-+#define RT5665_ASRC_10				0x008c
-+#define RT5665_DEPOP_1				0x008e
-+#define RT5665_DEPOP_2				0x008f
-+#define RT5665_HP_CHARGE_PUMP_1			0x0091
-+#define RT5665_HP_CHARGE_PUMP_2			0x0092
-+#define RT5665_MICBIAS_1			0x0093
-+#define RT5665_MICBIAS_2			0x0094
-+#define RT5665_ASRC_12				0x0098
-+#define RT5665_ASRC_13				0x0099
-+#define RT5665_ASRC_14				0x009a
-+#define RT5665_RC_CLK_CTRL			0x009f
-+#define RT5665_I2S_M_CLK_CTRL_1			0x00a0
-+#define RT5665_I2S2_F_DIV_CTRL_1		0x00a1
-+#define RT5665_I2S2_F_DIV_CTRL_2		0x00a2
-+#define RT5665_I2S3_F_DIV_CTRL_1		0x00a3
-+#define RT5665_I2S3_F_DIV_CTRL_2		0x00a4
-+/* Function - Digital */
-+#define RT5665_EQ_CTRL_1			0x00ae
-+#define RT5665_EQ_CTRL_2			0x00af
-+#define RT5665_IRQ_CTRL_1			0x00b6
-+#define RT5665_IRQ_CTRL_2			0x00b7
-+#define RT5665_IRQ_CTRL_3			0x00b8
-+#define RT5665_IRQ_CTRL_4			0x00b9
-+#define RT5665_IRQ_CTRL_5			0x00ba
-+#define RT5665_IRQ_CTRL_6			0x00bb
-+#define RT5665_INT_ST_1				0x00be
-+#define RT5665_GPIO_CTRL_1			0x00c0
-+#define RT5665_GPIO_CTRL_2			0x00c1
-+#define RT5665_GPIO_CTRL_3			0x00c2
-+#define RT5665_GPIO_CTRL_4			0x00c3
-+#define RT5665_GPIO_STA				0x00c4
-+#define RT5665_HP_AMP_DET_CTRL_1		0x00d0
-+#define RT5665_HP_AMP_DET_CTRL_2		0x00d1
-+#define RT5665_MID_HP_AMP_DET			0x00d3
-+#define RT5665_LOW_HP_AMP_DET			0x00d4
-+#define RT5665_SV_ZCD_1				0x00d9
-+#define RT5665_SV_ZCD_2				0x00da
-+#define RT5665_IL_CMD_1				0x00db
-+#define RT5665_IL_CMD_2				0x00dc
-+#define RT5665_IL_CMD_3				0x00dd
-+#define RT5665_IL_CMD_4				0x00de
-+#define RT5665_4BTN_IL_CMD_1			0x00df
-+#define RT5665_4BTN_IL_CMD_2			0x00e0
-+#define RT5665_4BTN_IL_CMD_3			0x00e1
-+#define RT5665_PSV_IL_CMD_1			0x00e2
-+
-+#define RT5665_ADC_STO1_HP_CTRL_1		0x00ea
-+#define RT5665_ADC_STO1_HP_CTRL_2		0x00eb
-+#define RT5665_ADC_MONO_HP_CTRL_1		0x00ec
-+#define RT5665_ADC_MONO_HP_CTRL_2		0x00ed
-+#define RT5665_ADC_STO2_HP_CTRL_1		0x00ee
-+#define RT5665_ADC_STO2_HP_CTRL_2		0x00ef
-+#define RT5665_AJD1_CTRL			0x00f0
-+#define RT5665_JD1_THD				0x00f1
-+#define RT5665_JD2_THD				0x00f2
-+#define RT5665_JD_CTRL_1			0x00f6
-+#define RT5665_JD_CTRL_2			0x00f7
-+#define RT5665_JD_CTRL_3			0x00f8
-+/* General Control */
-+#define RT5665_DIG_MISC				0x00fa
-+#define RT5665_DUMMY_2				0x00fb
-+#define RT5665_DUMMY_3				0x00fc
-+
-+#define RT5665_DAC_ADC_DIG_VOL1			0x0100
-+#define RT5665_DAC_ADC_DIG_VOL2			0x0101
-+#define RT5665_BIAS_CUR_CTRL_1			0x010a
-+#define RT5665_BIAS_CUR_CTRL_2			0x010b
-+#define RT5665_BIAS_CUR_CTRL_3			0x010c
-+#define RT5665_BIAS_CUR_CTRL_4			0x010d
-+#define RT5665_BIAS_CUR_CTRL_5			0x010e
-+#define RT5665_BIAS_CUR_CTRL_6			0x010f
-+#define RT5665_BIAS_CUR_CTRL_7			0x0110
-+#define RT5665_BIAS_CUR_CTRL_8			0x0111
-+#define RT5665_BIAS_CUR_CTRL_9			0x0112
-+#define RT5665_BIAS_CUR_CTRL_10			0x0113
-+#define RT5665_VREF_REC_OP_FB_CAP_CTRL		0x0117
-+#define RT5665_CHARGE_PUMP_1			0x0125
-+#define RT5665_DIG_IN_CTRL_1			0x0132
-+#define RT5665_DIG_IN_CTRL_2			0x0133
-+#define RT5665_PAD_DRIVING_CTRL			0x0137
-+#define RT5665_SOFT_RAMP_DEPOP			0x0138
-+#define RT5665_PLL				0x0139
-+#define RT5665_CHOP_DAC				0x013a
-+#define RT5665_CHOP_ADC				0x013b
-+#define RT5665_CALIB_ADC_CTRL			0x013c
-+#define RT5665_VOL_TEST				0x013f
-+#define RT5665_TEST_MODE_CTRL_1			0x0145
-+#define RT5665_TEST_MODE_CTRL_2			0x0146
-+#define RT5665_TEST_MODE_CTRL_3			0x0147
-+#define RT5665_TEST_MODE_CTRL_4			0x0148
-+#define RT5665_BASSBACK_CTRL			0x0150
-+#define RT5665_STO_NG2_CTRL_1			0x0160
-+#define RT5665_STO_NG2_CTRL_2			0x0161
-+#define RT5665_STO_NG2_CTRL_3			0x0162
-+#define RT5665_STO_NG2_CTRL_4			0x0163
-+#define RT5665_STO_NG2_CTRL_5			0x0164
-+#define RT5665_STO_NG2_CTRL_6			0x0165
-+#define RT5665_STO_NG2_CTRL_7			0x0166
-+#define RT5665_STO_NG2_CTRL_8			0x0167
-+#define RT5665_MONO_NG2_CTRL_1			0x0170
-+#define RT5665_MONO_NG2_CTRL_2			0x0171
-+#define RT5665_MONO_NG2_CTRL_3			0x0172
-+#define RT5665_MONO_NG2_CTRL_4			0x0173
-+#define RT5665_MONO_NG2_CTRL_5			0x0174
-+#define RT5665_MONO_NG2_CTRL_6			0x0175
-+#define RT5665_STO1_DAC_SIL_DET			0x0190
-+#define RT5665_MONOL_DAC_SIL_DET		0x0191
-+#define RT5665_MONOR_DAC_SIL_DET		0x0192
-+#define RT5665_STO2_DAC_SIL_DET			0x0193
-+#define RT5665_SIL_PSV_CTRL1			0x0194
-+#define RT5665_SIL_PSV_CTRL2			0x0195
-+#define RT5665_SIL_PSV_CTRL3			0x0196
-+#define RT5665_SIL_PSV_CTRL4			0x0197
-+#define RT5665_SIL_PSV_CTRL5			0x0198
-+#define RT5665_SIL_PSV_CTRL6			0x0199
-+#define RT5665_MONO_AMP_CALIB_CTRL_1		0x01a0
-+#define RT5665_MONO_AMP_CALIB_CTRL_2		0x01a1
-+#define RT5665_MONO_AMP_CALIB_CTRL_3		0x01a2
-+#define RT5665_MONO_AMP_CALIB_CTRL_4		0x01a3
-+#define RT5665_MONO_AMP_CALIB_CTRL_5		0x01a4
-+#define RT5665_MONO_AMP_CALIB_CTRL_6		0x01a5
-+#define RT5665_MONO_AMP_CALIB_CTRL_7		0x01a6
-+#define RT5665_MONO_AMP_CALIB_STA1		0x01a7
-+#define RT5665_MONO_AMP_CALIB_STA2		0x01a8
-+#define RT5665_MONO_AMP_CALIB_STA3		0x01a9
-+#define RT5665_MONO_AMP_CALIB_STA4		0x01aa
-+#define RT5665_MONO_AMP_CALIB_STA6		0x01ab
-+#define RT5665_HP_IMP_SENS_CTRL_01		0x01b5
-+#define RT5665_HP_IMP_SENS_CTRL_02		0x01b6
-+#define RT5665_HP_IMP_SENS_CTRL_03		0x01b7
-+#define RT5665_HP_IMP_SENS_CTRL_04		0x01b8
-+#define RT5665_HP_IMP_SENS_CTRL_05		0x01b9
-+#define RT5665_HP_IMP_SENS_CTRL_06		0x01ba
-+#define RT5665_HP_IMP_SENS_CTRL_07		0x01bb
-+#define RT5665_HP_IMP_SENS_CTRL_08		0x01bc
-+#define RT5665_HP_IMP_SENS_CTRL_09		0x01bd
-+#define RT5665_HP_IMP_SENS_CTRL_10		0x01be
-+#define RT5665_HP_IMP_SENS_CTRL_11		0x01bf
-+#define RT5665_HP_IMP_SENS_CTRL_12		0x01c0
-+#define RT5665_HP_IMP_SENS_CTRL_13		0x01c1
-+#define RT5665_HP_IMP_SENS_CTRL_14		0x01c2
-+#define RT5665_HP_IMP_SENS_CTRL_15		0x01c3
-+#define RT5665_HP_IMP_SENS_CTRL_16		0x01c4
-+#define RT5665_HP_IMP_SENS_CTRL_17		0x01c5
-+#define RT5665_HP_IMP_SENS_CTRL_18		0x01c6
-+#define RT5665_HP_IMP_SENS_CTRL_19		0x01c7
-+#define RT5665_HP_IMP_SENS_CTRL_20		0x01c8
-+#define RT5665_HP_IMP_SENS_CTRL_21		0x01c9
-+#define RT5665_HP_IMP_SENS_CTRL_22		0x01ca
-+#define RT5665_HP_IMP_SENS_CTRL_23		0x01cb
-+#define RT5665_HP_IMP_SENS_CTRL_24		0x01cc
-+#define RT5665_HP_IMP_SENS_CTRL_25		0x01cd
-+#define RT5665_HP_IMP_SENS_CTRL_26		0x01ce
-+#define RT5665_HP_IMP_SENS_CTRL_27		0x01cf
-+#define RT5665_HP_IMP_SENS_CTRL_28		0x01d0
-+#define RT5665_HP_IMP_SENS_CTRL_29		0x01d1
-+#define RT5665_HP_IMP_SENS_CTRL_30		0x01d2
-+#define RT5665_HP_IMP_SENS_CTRL_31		0x01d3
-+#define RT5665_HP_IMP_SENS_CTRL_32		0x01d4
-+#define RT5665_HP_IMP_SENS_CTRL_33		0x01d5
-+#define RT5665_HP_IMP_SENS_CTRL_34		0x01d6
-+#define RT5665_HP_LOGIC_CTRL_1			0x01da
-+#define RT5665_HP_LOGIC_CTRL_2			0x01db
-+#define RT5665_HP_LOGIC_CTRL_3			0x01dc
-+#define RT5665_HP_CALIB_CTRL_1			0x01de
-+#define RT5665_HP_CALIB_CTRL_2			0x01df
-+#define RT5665_HP_CALIB_CTRL_3			0x01e0
-+#define RT5665_HP_CALIB_CTRL_4			0x01e1
-+#define RT5665_HP_CALIB_CTRL_5			0x01e2
-+#define RT5665_HP_CALIB_CTRL_6			0x01e3
-+#define RT5665_HP_CALIB_CTRL_7			0x01e4
-+#define RT5665_HP_CALIB_CTRL_9			0x01e6
-+#define RT5665_HP_CALIB_CTRL_10			0x01e7
-+#define RT5665_HP_CALIB_CTRL_11			0x01e8
-+#define RT5665_HP_CALIB_STA_1			0x01ea
-+#define RT5665_HP_CALIB_STA_2			0x01eb
-+#define RT5665_HP_CALIB_STA_3			0x01ec
-+#define RT5665_HP_CALIB_STA_4			0x01ed
-+#define RT5665_HP_CALIB_STA_5			0x01ee
-+#define RT5665_HP_CALIB_STA_6			0x01ef
-+#define RT5665_HP_CALIB_STA_7			0x01f0
-+#define RT5665_HP_CALIB_STA_8			0x01f1
-+#define RT5665_HP_CALIB_STA_9			0x01f2
-+#define RT5665_HP_CALIB_STA_10			0x01f3
-+#define RT5665_HP_CALIB_STA_11			0x01f4
-+#define RT5665_PGM_TAB_CTRL1			0x0200
-+#define RT5665_PGM_TAB_CTRL2			0x0201
-+#define RT5665_PGM_TAB_CTRL3			0x0202
-+#define RT5665_PGM_TAB_CTRL4			0x0203
-+#define RT5665_PGM_TAB_CTRL5			0x0204
-+#define RT5665_PGM_TAB_CTRL6			0x0205
-+#define RT5665_PGM_TAB_CTRL7			0x0206
-+#define RT5665_PGM_TAB_CTRL8			0x0207
-+#define RT5665_PGM_TAB_CTRL9			0x0208
-+#define RT5665_SAR_IL_CMD_1			0x0210
-+#define RT5665_SAR_IL_CMD_2			0x0211
-+#define RT5665_SAR_IL_CMD_3			0x0212
-+#define RT5665_SAR_IL_CMD_4			0x0213
-+#define RT5665_SAR_IL_CMD_5			0x0214
-+#define RT5665_SAR_IL_CMD_6			0x0215
-+#define RT5665_SAR_IL_CMD_7			0x0216
-+#define RT5665_SAR_IL_CMD_8			0x0217
-+#define RT5665_SAR_IL_CMD_9			0x0218
-+#define RT5665_SAR_IL_CMD_10			0x0219
-+#define RT5665_SAR_IL_CMD_11			0x021a
-+#define RT5665_SAR_IL_CMD_12			0x021b
-+#define RT5665_DRC1_CTRL_0			0x02ff
-+#define RT5665_DRC1_CTRL_1			0x0300
-+#define RT5665_DRC1_CTRL_2			0x0301
-+#define RT5665_DRC1_CTRL_3			0x0302
-+#define RT5665_DRC1_CTRL_4			0x0303
-+#define RT5665_DRC1_CTRL_5			0x0304
-+#define RT5665_DRC1_CTRL_6			0x0305
-+#define RT5665_DRC1_HARD_LMT_CTRL_1		0x0306
-+#define RT5665_DRC1_HARD_LMT_CTRL_2		0x0307
-+#define RT5665_DRC1_PRIV_1			0x0310
-+#define RT5665_DRC1_PRIV_2			0x0311
-+#define RT5665_DRC1_PRIV_3			0x0312
-+#define RT5665_DRC1_PRIV_4			0x0313
-+#define RT5665_DRC1_PRIV_5			0x0314
-+#define RT5665_DRC1_PRIV_6			0x0315
-+#define RT5665_DRC1_PRIV_7			0x0316
-+#define RT5665_DRC1_PRIV_8			0x0317
-+#define RT5665_ALC_PGA_CTRL_1			0x0330
-+#define RT5665_ALC_PGA_CTRL_2			0x0331
-+#define RT5665_ALC_PGA_CTRL_3			0x0332
-+#define RT5665_ALC_PGA_CTRL_4			0x0333
-+#define RT5665_ALC_PGA_CTRL_5			0x0334
-+#define RT5665_ALC_PGA_CTRL_6			0x0335
-+#define RT5665_ALC_PGA_CTRL_7			0x0336
-+#define RT5665_ALC_PGA_CTRL_8			0x0337
-+#define RT5665_ALC_PGA_STA_1			0x0338
-+#define RT5665_ALC_PGA_STA_2			0x0339
-+#define RT5665_ALC_PGA_STA_3			0x033a
-+#define RT5665_EQ_AUTO_RCV_CTRL1		0x03c0
-+#define RT5665_EQ_AUTO_RCV_CTRL2		0x03c1
-+#define RT5665_EQ_AUTO_RCV_CTRL3		0x03c2
-+#define RT5665_EQ_AUTO_RCV_CTRL4		0x03c3
-+#define RT5665_EQ_AUTO_RCV_CTRL5		0x03c4
-+#define RT5665_EQ_AUTO_RCV_CTRL6		0x03c5
-+#define RT5665_EQ_AUTO_RCV_CTRL7		0x03c6
-+#define RT5665_EQ_AUTO_RCV_CTRL8		0x03c7
-+#define RT5665_EQ_AUTO_RCV_CTRL9		0x03c8
-+#define RT5665_EQ_AUTO_RCV_CTRL10		0x03c9
-+#define RT5665_EQ_AUTO_RCV_CTRL11		0x03ca
-+#define RT5665_EQ_AUTO_RCV_CTRL12		0x03cb
-+#define RT5665_EQ_AUTO_RCV_CTRL13		0x03cc
-+#define RT5665_ADC_L_EQ_LPF1_A1			0x03d0
-+#define RT5665_R_EQ_LPF1_A1			0x03d1
-+#define RT5665_L_EQ_LPF1_H0			0x03d2
-+#define RT5665_R_EQ_LPF1_H0			0x03d3
-+#define RT5665_L_EQ_BPF1_A1			0x03d4
-+#define RT5665_R_EQ_BPF1_A1			0x03d5
-+#define RT5665_L_EQ_BPF1_A2			0x03d6
-+#define RT5665_R_EQ_BPF1_A2			0x03d7
-+#define RT5665_L_EQ_BPF1_H0			0x03d8
-+#define RT5665_R_EQ_BPF1_H0			0x03d9
-+#define RT5665_L_EQ_BPF2_A1			0x03da
-+#define RT5665_R_EQ_BPF2_A1			0x03db
-+#define RT5665_L_EQ_BPF2_A2			0x03dc
-+#define RT5665_R_EQ_BPF2_A2			0x03dd
-+#define RT5665_L_EQ_BPF2_H0			0x03de
-+#define RT5665_R_EQ_BPF2_H0			0x03df
-+#define RT5665_L_EQ_BPF3_A1			0x03e0
-+#define RT5665_R_EQ_BPF3_A1			0x03e1
-+#define RT5665_L_EQ_BPF3_A2			0x03e2
-+#define RT5665_R_EQ_BPF3_A2			0x03e3
-+#define RT5665_L_EQ_BPF3_H0			0x03e4
-+#define RT5665_R_EQ_BPF3_H0			0x03e5
-+#define RT5665_L_EQ_BPF4_A1			0x03e6
-+#define RT5665_R_EQ_BPF4_A1			0x03e7
-+#define RT5665_L_EQ_BPF4_A2			0x03e8
-+#define RT5665_R_EQ_BPF4_A2			0x03e9
-+#define RT5665_L_EQ_BPF4_H0			0x03ea
-+#define RT5665_R_EQ_BPF4_H0			0x03eb
-+#define RT5665_L_EQ_HPF1_A1			0x03ec
-+#define RT5665_R_EQ_HPF1_A1			0x03ed
-+#define RT5665_L_EQ_HPF1_H0			0x03ee
-+#define RT5665_R_EQ_HPF1_H0			0x03ef
-+#define RT5665_L_EQ_PRE_VOL			0x03f0
-+#define RT5665_R_EQ_PRE_VOL			0x03f1
-+#define RT5665_L_EQ_POST_VOL			0x03f2
-+#define RT5665_R_EQ_POST_VOL			0x03f3
-+#define RT5665_SCAN_MODE_CTRL			0x07f0
-+#define RT5665_I2C_MODE				0x07fa
-+
-+
-+
-+/* global definition */
-+#define RT5665_L_MUTE				(0x1 << 15)
-+#define RT5665_L_MUTE_SFT			15
-+#define RT5665_VOL_L_MUTE			(0x1 << 14)
-+#define RT5665_VOL_L_SFT			14
-+#define RT5665_R_MUTE				(0x1 << 7)
-+#define RT5665_R_MUTE_SFT			7
-+#define RT5665_VOL_R_MUTE			(0x1 << 6)
-+#define RT5665_VOL_R_SFT			6
-+#define RT5665_L_VOL_MASK			(0x3f << 8)
-+#define RT5665_L_VOL_SFT			8
-+#define RT5665_R_VOL_MASK			(0x3f)
-+#define RT5665_R_VOL_SFT			0
-+
-+/*Headphone Amp L/R Analog Gain and Digital NG2 Gain Control (0x0005 0x0006)*/
-+#define RT5665_G_HP				(0xf << 8)
-+#define RT5665_G_HP_SFT				8
-+#define RT5665_G_STO_DA_DMIX			(0xf)
-+#define RT5665_G_STO_DA_SFT			0
-+
-+/* CBJ Control (0x000b) */
-+#define RT5665_BST_CBJ_MASK			(0xf << 8)
-+#define RT5665_BST_CBJ_SFT			8
-+
-+/* IN1/IN2 Control (0x000c) */
-+#define RT5665_IN1_DF_MASK			(0x1 << 15)
-+#define RT5665_IN1_DF				15
-+#define RT5665_BST1_MASK			(0x7f << 8)
-+#define RT5665_BST1_SFT				8
-+#define RT5665_IN2_DF_MASK			(0x1 << 7)
-+#define RT5665_IN2_DF				7
-+#define RT5665_BST2_MASK			(0x7f)
-+#define RT5665_BST2_SFT				0
-+
-+/* IN3/IN4 Control (0x000d) */
-+#define RT5665_IN3_DF_MASK			(0x1 << 15)
-+#define RT5665_IN3_DF				15
-+#define RT5665_BST3_MASK			(0x7f << 8)
-+#define RT5665_BST3_SFT				8
-+#define RT5665_IN4_DF_MASK			(0x1 << 7)
-+#define RT5665_IN4_DF				7
-+#define RT5665_BST4_MASK			(0x7f)
-+#define RT5665_BST4_SFT				0
-+
-+/* INL and INR Volume Control (0x000f) */
-+#define RT5665_INL_VOL_MASK			(0x1f << 8)
-+#define RT5665_INL_VOL_SFT			8
-+#define RT5665_INR_VOL_MASK			(0x1f)
-+#define RT5665_INR_VOL_SFT			0
-+
-+/* Embeeded Jack and Type Detection Control 1 (0x0010) */
-+#define RT5665_EMB_JD_EN			(0x1 << 15)
-+#define RT5665_EMB_JD_EN_SFT			15
-+#define RT5665_JD_MODE				(0x1 << 13)
-+#define RT5665_JD_MODE_SFT			13
-+#define RT5665_POLA_EXT_JD_MASK			(0x1 << 11)
-+#define RT5665_POLA_EXT_JD_LOW			(0x1 << 11)
-+#define RT5665_POLA_EXT_JD_HIGH			(0x0 << 11)
-+#define RT5665_EXT_JD_DIG			(0x1 << 9)
-+#define RT5665_POL_FAST_OFF_MASK		(0x1 << 8)
-+#define RT5665_POL_FAST_OFF_HIGH		(0x1 << 8)
-+#define RT5665_POL_FAST_OFF_LOW			(0x0 << 8)
-+#define RT5665_VREF_POW_MASK			(0x1 << 6)
-+#define RT5665_VREF_POW_FSM			(0x0 << 6)
-+#define RT5665_VREF_POW_REG			(0x1 << 6)
-+#define RT5665_MB1_PATH_MASK			(0x1 << 5)
-+#define RT5665_CTRL_MB1_REG			(0x1 << 5)
-+#define RT5665_CTRL_MB1_FSM			(0x0 << 5)
-+#define RT5665_MB2_PATH_MASK			(0x1 << 4)
-+#define RT5665_CTRL_MB2_REG			(0x1 << 4)
-+#define RT5665_CTRL_MB2_FSM			(0x0 << 4)
-+#define RT5665_TRIG_JD_MASK			(0x1 << 3)
-+#define RT5665_TRIG_JD_HIGH			(0x1 << 3)
-+#define RT5665_TRIG_JD_LOW			(0x0 << 3)
-+
-+/* Embeeded Jack and Type Detection Control 2 (0x0011) */
-+#define RT5665_EXT_JD_SRC			(0x7 << 4)
-+#define RT5665_EXT_JD_SRC_SFT			4
-+#define RT5665_EXT_JD_SRC_GPIO_JD1		(0x0 << 4)
-+#define RT5665_EXT_JD_SRC_GPIO_JD2		(0x1 << 4)
-+#define RT5665_EXT_JD_SRC_JD1_1			(0x2 << 4)
-+#define RT5665_EXT_JD_SRC_JD1_2			(0x3 << 4)
-+#define RT5665_EXT_JD_SRC_JD2			(0x4 << 4)
-+#define RT5665_EXT_JD_SRC_JD3			(0x5 << 4)
-+#define RT5665_EXT_JD_SRC_MANUAL		(0x6 << 4)
-+
-+/* Combo Jack and Type Detection Control 4 (0x0013) */
-+#define RT5665_SEL_SHT_MID_TON_MASK		(0x3 << 12)
-+#define RT5665_SEL_SHT_MID_TON_2		(0x0 << 12)
-+#define RT5665_SEL_SHT_MID_TON_3		(0x1 << 12)
-+#define RT5665_CBJ_JD_TEST_MASK			(0x1 << 6)
-+#define RT5665_CBJ_JD_TEST_NORM			(0x0 << 6)
-+#define RT5665_CBJ_JD_TEST_MODE			(0x1 << 6)
-+
-+/* Slience Detection Control (0x0015) */
-+#define RT5665_SIL_DET_MASK			(0x1 << 15)
-+#define RT5665_SIL_DET_DIS			(0x0 << 15)
-+#define RT5665_SIL_DET_EN			(0x1 << 15)
-+
-+/* DAC2 Control (0x0017) */
-+#define RT5665_M_DAC2_L_VOL			(0x1 << 13)
-+#define RT5665_M_DAC2_L_VOL_SFT			13
-+#define RT5665_M_DAC2_R_VOL			(0x1 << 12)
-+#define RT5665_M_DAC2_R_VOL_SFT			12
-+#define RT5665_DAC_L2_SEL_MASK			(0x7 << 4)
-+#define RT5665_DAC_L2_SEL_SFT			4
-+#define RT5665_DAC_R2_SEL_MASK			(0x7 << 0)
-+#define RT5665_DAC_R2_SEL_SFT			0
-+
-+/* Sidetone Control (0x0018) */
-+#define RT5665_ST_SEL_MASK			(0x7 << 9)
-+#define RT5665_ST_SEL_SFT			9
-+#define RT5665_ST_EN				(0x1 << 6)
-+#define RT5665_ST_EN_SFT			6
-+
-+/* DAC1 Digital Volume (0x0019) */
-+#define RT5665_DAC_L1_VOL_MASK			(0xff << 8)
-+#define RT5665_DAC_L1_VOL_SFT			8
-+#define RT5665_DAC_R1_VOL_MASK			(0xff)
-+#define RT5665_DAC_R1_VOL_SFT			0
-+
-+/* DAC2 Digital Volume (0x001a) */
-+#define RT5665_DAC_L2_VOL_MASK			(0xff << 8)
-+#define RT5665_DAC_L2_VOL_SFT			8
-+#define RT5665_DAC_R2_VOL_MASK			(0xff)
-+#define RT5665_DAC_R2_VOL_SFT			0
-+
-+/* DAC3 Control (0x001b) */
-+#define RT5665_M_DAC3_L_VOL			(0x1 << 13)
-+#define RT5665_M_DAC3_L_VOL_SFT			13
-+#define RT5665_M_DAC3_R_VOL			(0x1 << 12)
-+#define RT5665_M_DAC3_R_VOL_SFT			12
-+#define RT5665_DAC_L3_SEL_MASK			(0x7 << 4)
-+#define RT5665_DAC_L3_SEL_SFT			4
-+#define RT5665_DAC_R3_SEL_MASK			(0x7 << 0)
-+#define RT5665_DAC_R3_SEL_SFT			0
-+
-+/* ADC Digital Volume Control (0x001c) */
-+#define RT5665_ADC_L_VOL_MASK			(0x7f << 8)
-+#define RT5665_ADC_L_VOL_SFT			8
-+#define RT5665_ADC_R_VOL_MASK			(0x7f)
-+#define RT5665_ADC_R_VOL_SFT			0
-+
-+/* Mono ADC Digital Volume Control (0x001d) */
-+#define RT5665_MONO_ADC_L_VOL_MASK		(0x7f << 8)
-+#define RT5665_MONO_ADC_L_VOL_SFT		8
-+#define RT5665_MONO_ADC_R_VOL_MASK		(0x7f)
-+#define RT5665_MONO_ADC_R_VOL_SFT		0
-+
-+/* Stereo1 ADC Boost Gain Control (0x001f) */
-+#define RT5665_STO1_ADC_L_BST_MASK		(0x3 << 14)
-+#define RT5665_STO1_ADC_L_BST_SFT		14
-+#define RT5665_STO1_ADC_R_BST_MASK		(0x3 << 12)
-+#define RT5665_STO1_ADC_R_BST_SFT		12
-+
-+/* Mono ADC Boost Gain Control (0x0020) */
-+#define RT5665_MONO_ADC_L_BST_MASK		(0x3 << 14)
-+#define RT5665_MONO_ADC_L_BST_SFT		14
-+#define RT5665_MONO_ADC_R_BST_MASK		(0x3 << 12)
-+#define RT5665_MONO_ADC_R_BST_SFT		12
-+
-+/* Stereo1 ADC Boost Gain Control (0x001f) */
-+#define RT5665_STO2_ADC_L_BST_MASK		(0x3 << 14)
-+#define RT5665_STO2_ADC_L_BST_SFT		14
-+#define RT5665_STO2_ADC_R_BST_MASK		(0x3 << 12)
-+#define RT5665_STO2_ADC_R_BST_SFT		12
-+
-+/* Stereo1 ADC Mixer Control (0x0026) */
-+#define RT5665_M_STO1_ADC_L1			(0x1 << 15)
-+#define RT5665_M_STO1_ADC_L1_SFT		15
-+#define RT5665_M_STO1_ADC_L2			(0x1 << 14)
-+#define RT5665_M_STO1_ADC_L2_SFT		14
-+#define RT5665_STO1_ADC1L_SRC_MASK		(0x1 << 13)
-+#define RT5665_STO1_ADC1L_SRC_SFT		13
-+#define RT5665_STO1_ADC1_SRC_ADC		(0x1 << 13)
-+#define RT5665_STO1_ADC1_SRC_DACMIX		(0x0 << 13)
-+#define RT5665_STO1_ADC2L_SRC_MASK		(0x1 << 12)
-+#define RT5665_STO1_ADC2L_SRC_SFT		12
-+#define RT5665_STO1_ADCL_SRC_MASK		(0x3 << 10)
-+#define RT5665_STO1_ADCL_SRC_SFT		10
-+#define RT5665_STO1_DD_L_SRC_MASK		(0x1 << 9)
-+#define RT5665_STO1_DD_L_SRC_SFT		9
-+#define RT5665_STO1_DMIC_SRC_MASK		(0x1 << 8)
-+#define RT5665_STO1_DMIC_SRC_SFT		8
-+#define RT5665_STO1_DMIC_SRC_DMIC2		(0x1 << 8)
-+#define RT5665_STO1_DMIC_SRC_DMIC1		(0x0 << 8)
-+#define RT5665_M_STO1_ADC_R1			(0x1 << 7)
-+#define RT5665_M_STO1_ADC_R1_SFT		7
-+#define RT5665_M_STO1_ADC_R2			(0x1 << 6)
-+#define RT5665_M_STO1_ADC_R2_SFT		6
-+#define RT5665_STO1_ADC1R_SRC_MASK		(0x1 << 5)
-+#define RT5665_STO1_ADC1R_SRC_SFT		5
-+#define RT5665_STO1_ADC2R_SRC_MASK		(0x1 << 4)
-+#define RT5665_STO1_ADC2R_SRC_SFT		4
-+#define RT5665_STO1_ADCR_SRC_MASK		(0x3 << 2)
-+#define RT5665_STO1_ADCR_SRC_SFT		2
-+#define RT5665_STO1_DD_R_SRC_MASK		(0x3)
-+#define RT5665_STO1_DD_R_SRC_SFT		0
-+
-+
-+/* Mono1 ADC Mixer control (0x0027) */
-+#define RT5665_M_MONO_ADC_L1			(0x1 << 15)
-+#define RT5665_M_MONO_ADC_L1_SFT		15
-+#define RT5665_M_MONO_ADC_L2			(0x1 << 14)
-+#define RT5665_M_MONO_ADC_L2_SFT		14
-+#define RT5665_MONO_ADC_L1_SRC_MASK		(0x1 << 13)
-+#define RT5665_MONO_ADC_L1_SRC_SFT		13
-+#define RT5665_MONO_ADC_L2_SRC_MASK		(0x1 << 12)
-+#define RT5665_MONO_ADC_L2_SRC_SFT		12
-+#define RT5665_MONO_ADC_L_SRC_MASK		(0x3 << 10)
-+#define RT5665_MONO_ADC_L_SRC_SFT		10
-+#define RT5665_MONO_DD_L_SRC_MASK		(0x1 << 9)
-+#define RT5665_MONO_DD_L_SRC_SFT		9
-+#define RT5665_MONO_DMIC_L_SRC_MASK		(0x1 << 8)
-+#define RT5665_MONO_DMIC_L_SRC_SFT		8
-+#define RT5665_M_MONO_ADC_R1			(0x1 << 7)
-+#define RT5665_M_MONO_ADC_R1_SFT		7
-+#define RT5665_M_MONO_ADC_R2			(0x1 << 6)
-+#define RT5665_M_MONO_ADC_R2_SFT		6
-+#define RT5665_MONO_ADC_R1_SRC_MASK		(0x1 << 5)
-+#define RT5665_MONO_ADC_R1_SRC_SFT		5
-+#define RT5665_MONO_ADC_R2_SRC_MASK		(0x1 << 4)
-+#define RT5665_MONO_ADC_R2_SRC_SFT		4
-+#define RT5665_MONO_ADC_R_SRC_MASK		(0x3 << 2)
-+#define RT5665_MONO_ADC_R_SRC_SFT		2
-+#define RT5665_MONO_DD_R_SRC_MASK		(0x1 << 1)
-+#define RT5665_MONO_DD_R_SRC_SFT		1
-+#define RT5665_MONO_DMIC_R_SRC_MASK		0x1
-+#define RT5665_MONO_DMIC_R_SRC_SFT		0
-+
-+/* Stereo2 ADC Mixer Control (0x0028) */
-+#define RT5665_M_STO2_ADC_L1			(0x1 << 15)
-+#define RT5665_M_STO2_ADC_L1_UN			(0x0 << 15)
-+#define RT5665_M_STO2_ADC_L1_SFT		15
-+#define RT5665_M_STO2_ADC_L2			(0x1 << 14)
-+#define RT5665_M_STO2_ADC_L2_SFT		14
-+#define RT5665_STO2_ADC1L_SRC_MASK		(0x1 << 13)
-+#define RT5665_STO2_ADC1L_SRC_SFT		13
-+#define RT5665_STO2_ADC1_SRC_ADC		(0x1 << 13)
-+#define RT5665_STO2_ADC1_SRC_DACMIX		(0x0 << 13)
-+#define RT5665_STO2_ADC2L_SRC_MASK		(0x1 << 12)
-+#define RT5665_STO2_ADC2L_SRC_SFT		12
-+#define RT5665_STO2_ADCL_SRC_MASK		(0x3 << 10)
-+#define RT5665_STO2_ADCL_SRC_SFT		10
-+#define RT5665_STO2_DD_L_SRC_MASK		(0x1 << 9)
-+#define RT5665_STO2_DD_L_SRC_SFT		9
-+#define RT5665_STO2_DMIC_SRC_MASK		(0x1 << 8)
-+#define RT5665_STO2_DMIC_SRC_SFT		8
-+#define RT5665_STO2_DMIC_SRC_DMIC2		(0x1 << 8)
-+#define RT5665_STO2_DMIC_SRC_DMIC1		(0x0 << 8)
-+#define RT5665_M_STO2_ADC_R1			(0x1 << 7)
-+#define RT5665_M_STO2_ADC_R1_UN			(0x0 << 7)
-+#define RT5665_M_STO2_ADC_R1_SFT		7
-+#define RT5665_M_STO2_ADC_R2			(0x1 << 6)
-+#define RT5665_M_STO2_ADC_R2_SFT		6
-+#define RT5665_STO2_ADC1R_SRC_MASK		(0x1 << 5)
-+#define RT5665_STO2_ADC1R_SRC_SFT		5
-+#define RT5665_STO2_ADC2R_SRC_MASK		(0x1 << 4)
-+#define RT5665_STO2_ADC2R_SRC_SFT		4
-+#define RT5665_STO2_ADCR_SRC_MASK		(0x3 << 2)
-+#define RT5665_STO2_ADCR_SRC_SFT		2
-+#define RT5665_STO2_DD_R_SRC_MASK		(0x1 << 1)
-+#define RT5665_STO2_DD_R_SRC_SFT		1
-+
-+/* ADC Mixer to DAC Mixer Control (0x0029) */
-+#define RT5665_M_ADCMIX_L			(0x1 << 15)
-+#define RT5665_M_ADCMIX_L_SFT			15
-+#define RT5665_M_DAC1_L				(0x1 << 14)
-+#define RT5665_M_DAC1_L_SFT			14
-+#define RT5665_DAC1_R_SEL_MASK			(0x3 << 10)
-+#define RT5665_DAC1_R_SEL_SFT			10
-+#define RT5665_DAC1_L_SEL_MASK			(0x3 << 8)
-+#define RT5665_DAC1_L_SEL_SFT			8
-+#define RT5665_M_ADCMIX_R			(0x1 << 7)
-+#define RT5665_M_ADCMIX_R_SFT			7
-+#define RT5665_M_DAC1_R				(0x1 << 6)
-+#define RT5665_M_DAC1_R_SFT			6
-+
-+/* Stereo1 DAC Mixer Control (0x002a) */
-+#define RT5665_M_DAC_L1_STO_L			(0x1 << 15)
-+#define RT5665_M_DAC_L1_STO_L_SFT		15
-+#define RT5665_G_DAC_L1_STO_L_MASK		(0x1 << 14)
-+#define RT5665_G_DAC_L1_STO_L_SFT		14
-+#define RT5665_M_DAC_R1_STO_L			(0x1 << 13)
-+#define RT5665_M_DAC_R1_STO_L_SFT		13
-+#define RT5665_G_DAC_R1_STO_L_MASK		(0x1 << 12)
-+#define RT5665_G_DAC_R1_STO_L_SFT		12
-+#define RT5665_M_DAC_L2_STO_L			(0x1 << 11)
-+#define RT5665_M_DAC_L2_STO_L_SFT		11
-+#define RT5665_G_DAC_L2_STO_L_MASK		(0x1 << 10)
-+#define RT5665_G_DAC_L2_STO_L_SFT		10
-+#define RT5665_M_DAC_R2_STO_L			(0x1 << 9)
-+#define RT5665_M_DAC_R2_STO_L_SFT		9
-+#define RT5665_G_DAC_R2_STO_L_MASK		(0x1 << 8)
-+#define RT5665_G_DAC_R2_STO_L_SFT		8
-+#define RT5665_M_DAC_L1_STO_R			(0x1 << 7)
-+#define RT5665_M_DAC_L1_STO_R_SFT		7
-+#define RT5665_G_DAC_L1_STO_R_MASK		(0x1 << 6)
-+#define RT5665_G_DAC_L1_STO_R_SFT		6
-+#define RT5665_M_DAC_R1_STO_R			(0x1 << 5)
-+#define RT5665_M_DAC_R1_STO_R_SFT		5
-+#define RT5665_G_DAC_R1_STO_R_MASK		(0x1 << 4)
-+#define RT5665_G_DAC_R1_STO_R_SFT		4
-+#define RT5665_M_DAC_L2_STO_R			(0x1 << 3)
-+#define RT5665_M_DAC_L2_STO_R_SFT		3
-+#define RT5665_G_DAC_L2_STO_R_MASK		(0x1 << 2)
-+#define RT5665_G_DAC_L2_STO_R_SFT		2
-+#define RT5665_M_DAC_R2_STO_R			(0x1 << 1)
-+#define RT5665_M_DAC_R2_STO_R_SFT		1
-+#define RT5665_G_DAC_R2_STO_R_MASK		(0x1)
-+#define RT5665_G_DAC_R2_STO_R_SFT		0
-+
-+/* Mono DAC Mixer Control (0x002b) */
-+#define RT5665_M_DAC_L1_MONO_L			(0x1 << 15)
-+#define RT5665_M_DAC_L1_MONO_L_SFT		15
-+#define RT5665_G_DAC_L1_MONO_L_MASK		(0x1 << 14)
-+#define RT5665_G_DAC_L1_MONO_L_SFT		14
-+#define RT5665_M_DAC_R1_MONO_L			(0x1 << 13)
-+#define RT5665_M_DAC_R1_MONO_L_SFT		13
-+#define RT5665_G_DAC_R1_MONO_L_MASK		(0x1 << 12)
-+#define RT5665_G_DAC_R1_MONO_L_SFT		12
-+#define RT5665_M_DAC_L2_MONO_L			(0x1 << 11)
-+#define RT5665_M_DAC_L2_MONO_L_SFT		11
-+#define RT5665_G_DAC_L2_MONO_L_MASK		(0x1 << 10)
-+#define RT5665_G_DAC_L2_MONO_L_SFT		10
-+#define RT5665_M_DAC_R2_MONO_L			(0x1 << 9)
-+#define RT5665_M_DAC_R2_MONO_L_SFT		9
-+#define RT5665_G_DAC_R2_MONO_L_MASK		(0x1 << 8)
-+#define RT5665_G_DAC_R2_MONO_L_SFT		8
-+#define RT5665_M_DAC_L1_MONO_R			(0x1 << 7)
-+#define RT5665_M_DAC_L1_MONO_R_SFT		7
-+#define RT5665_G_DAC_L1_MONO_R_MASK		(0x1 << 6)
-+#define RT5665_G_DAC_L1_MONO_R_SFT		6
-+#define RT5665_M_DAC_R1_MONO_R			(0x1 << 5)
-+#define RT5665_M_DAC_R1_MONO_R_SFT		5
-+#define RT5665_G_DAC_R1_MONO_R_MASK		(0x1 << 4)
-+#define RT5665_G_DAC_R1_MONO_R_SFT		4
-+#define RT5665_M_DAC_L2_MONO_R			(0x1 << 3)
-+#define RT5665_M_DAC_L2_MONO_R_SFT		3
-+#define RT5665_G_DAC_L2_MONO_R_MASK		(0x1 << 2)
-+#define RT5665_G_DAC_L2_MONO_R_SFT		2
-+#define RT5665_M_DAC_R2_MONO_R			(0x1 << 1)
-+#define RT5665_M_DAC_R2_MONO_R_SFT		1
-+#define RT5665_G_DAC_R2_MONO_R_MASK		(0x1)
-+#define RT5665_G_DAC_R2_MONO_R_SFT		0
-+
-+/* Stereo2 DAC Mixer Control (0x002c) */
-+#define RT5665_M_DAC_L1_STO2_L			(0x1 << 15)
-+#define RT5665_M_DAC_L1_STO2_L_SFT		15
-+#define RT5665_G_DAC_L1_STO2_L_MASK		(0x1 << 14)
-+#define RT5665_G_DAC_L1_STO2_L_SFT		14
-+#define RT5665_M_DAC_L2_STO2_L			(0x1 << 13)
-+#define RT5665_M_DAC_L2_STO2_L_SFT		13
-+#define RT5665_G_DAC_L2_STO2_L_MASK		(0x1 << 12)
-+#define RT5665_G_DAC_L2_STO2_L_SFT		12
-+#define RT5665_M_DAC_L3_STO2_L			(0x1 << 11)
-+#define RT5665_M_DAC_L3_STO2_L_SFT		11
-+#define RT5665_G_DAC_L3_STO2_L_MASK		(0x1 << 10)
-+#define RT5665_G_DAC_L3_STO2_L_SFT		10
-+#define RT5665_M_ST_DAC_L1			(0x1 << 9)
-+#define RT5665_M_ST_DAC_L1_SFT			9
-+#define RT5665_M_ST_DAC_R1			(0x1 << 8)
-+#define RT5665_M_ST_DAC_R1_SFT			8
-+#define RT5665_M_DAC_R1_STO2_R			(0x1 << 7)
-+#define RT5665_M_DAC_R1_STO2_R_SFT		7
-+#define RT5665_G_DAC_R1_STO2_R_MASK		(0x1 << 6)
-+#define RT5665_G_DAC_R1_STO2_R_SFT		6
-+#define RT5665_M_DAC_R2_STO2_R			(0x1 << 5)
-+#define RT5665_M_DAC_R2_STO2_R_SFT		5
-+#define RT5665_G_DAC_R2_STO2_R_MASK		(0x1 << 4)
-+#define RT5665_G_DAC_R2_STO2_R_SFT		4
-+#define RT5665_M_DAC_R3_STO2_R			(0x1 << 3)
-+#define RT5665_M_DAC_R3_STO2_R_SFT		3
-+#define RT5665_G_DAC_R3_STO2_R_MASK		(0x1 << 2)
-+#define RT5665_G_DAC_R3_STO2_R_SFT		2
-+
-+/* Analog DAC1 Input Source Control (0x002d) */
-+#define RT5665_DAC_MIX_L_MASK			(0x3 << 12)
-+#define RT5665_DAC_MIX_L_SFT			12
-+#define RT5665_DAC_MIX_R_MASK			(0x3 << 8)
-+#define RT5665_DAC_MIX_R_SFT			8
-+#define RT5665_DAC_L1_SRC_MASK			(0x3 << 4)
-+#define RT5665_A_DACL1_SFT			4
-+#define RT5665_DAC_R1_SRC_MASK			(0x3)
-+#define RT5665_A_DACR1_SFT			0
-+
-+/* Analog DAC Input Source Control (0x002e) */
-+#define RT5665_A_DACL2_SEL			(0x1 << 4)
-+#define RT5665_A_DACL2_SFT			4
-+#define RT5665_A_DACR2_SEL			(0x1 << 0)
-+#define RT5665_A_DACR2_SFT			0
-+
-+/* Digital Interface Data Control (0x002f) */
-+#define RT5665_IF2_1_ADC_IN_MASK		(0x7 << 12)
-+#define RT5665_IF2_1_ADC_IN_SFT			12
-+#define RT5665_IF2_1_DAC_SEL_MASK		(0x3 << 10)
-+#define RT5665_IF2_1_DAC_SEL_SFT		10
-+#define RT5665_IF2_1_ADC_SEL_MASK		(0x3 << 8)
-+#define RT5665_IF2_1_ADC_SEL_SFT		8
-+#define RT5665_IF2_2_ADC_IN_MASK		(0x7 << 4)
-+#define RT5665_IF2_2_ADC_IN_SFT			4
-+#define RT5665_IF2_2_DAC_SEL_MASK		(0x3 << 2)
-+#define RT5665_IF2_2_DAC_SEL_SFT		2
-+#define RT5665_IF2_2_ADC_SEL_MASK		(0x3 << 0)
-+#define RT5665_IF2_2_ADC_SEL_SFT		0
-+
-+/* Digital Interface Data Control (0x0030) */
-+#define RT5665_IF3_ADC_IN_MASK			(0x7 << 4)
-+#define RT5665_IF3_ADC_IN_SFT			4
-+#define RT5665_IF3_DAC_SEL_MASK			(0x3 << 2)
-+#define RT5665_IF3_DAC_SEL_SFT			2
-+#define RT5665_IF3_ADC_SEL_MASK			(0x3 << 0)
-+#define RT5665_IF3_ADC_SEL_SFT			0
-+
-+/* PDM Output Control (0x0031) */
-+#define RT5665_M_PDM1_L				(0x1 << 14)
-+#define RT5665_M_PDM1_L_SFT			14
-+#define RT5665_M_PDM1_R				(0x1 << 12)
-+#define RT5665_M_PDM1_R_SFT			12
-+#define RT5665_PDM1_L_MASK			(0x3 << 10)
-+#define RT5665_PDM1_L_SFT			10
-+#define RT5665_PDM1_R_MASK			(0x3 << 8)
-+#define RT5665_PDM1_R_SFT			8
-+#define RT5665_PDM1_BUSY			(0x1 << 6)
-+#define RT5665_PDM_PATTERN			(0x1 << 5)
-+#define RT5665_PDM_GAIN				(0x1 << 4)
-+#define RT5665_LRCK_PDM_PI2C			(0x1 << 3)
-+#define RT5665_PDM_DIV_MASK			(0x3)
-+
-+/*S/PDIF Output Control (0x0036) */
-+#define RT5665_SPDIF_SEL_MASK			(0x3 << 0)
-+#define RT5665_SPDIF_SEL_SFT			0
-+
-+/* REC Left Mixer Control 2 (0x003c) */
-+#define RT5665_M_CBJ_RM1_L			(0x1 << 7)
-+#define RT5665_M_CBJ_RM1_L_SFT			7
-+#define RT5665_M_BST1_RM1_L			(0x1 << 5)
-+#define RT5665_M_BST1_RM1_L_SFT			5
-+#define RT5665_M_BST2_RM1_L			(0x1 << 4)
-+#define RT5665_M_BST2_RM1_L_SFT			4
-+#define RT5665_M_BST3_RM1_L			(0x1 << 3)
-+#define RT5665_M_BST3_RM1_L_SFT			3
-+#define RT5665_M_BST4_RM1_L			(0x1 << 2)
-+#define RT5665_M_BST4_RM1_L_SFT			2
-+#define RT5665_M_INL_RM1_L			(0x1 << 1)
-+#define RT5665_M_INL_RM1_L_SFT			1
-+#define RT5665_M_INR_RM1_L			(0x1)
-+#define RT5665_M_INR_RM1_L_SFT			0
-+
-+/* REC Right Mixer Control 2 (0x003e) */
-+#define RT5665_M_AEC_REF_RM1_R			(0x1 << 7)
-+#define RT5665_M_AEC_REF_RM1_R_SFT		7
-+#define RT5665_M_BST1_RM1_R			(0x1 << 5)
-+#define RT5665_M_BST1_RM1_R_SFT			5
-+#define RT5665_M_BST2_RM1_R			(0x1 << 4)
-+#define RT5665_M_BST2_RM1_R_SFT			4
-+#define RT5665_M_BST3_RM1_R			(0x1 << 3)
-+#define RT5665_M_BST3_RM1_R_SFT			3
-+#define RT5665_M_BST4_RM1_R			(0x1 << 2)
-+#define RT5665_M_BST4_RM1_R_SFT			2
-+#define RT5665_M_INR_RM1_R			(0x1 << 1)
-+#define RT5665_M_INR_RM1_R_SFT			1
-+#define RT5665_M_MONOVOL_RM1_R			(0x1)
-+#define RT5665_M_MONOVOL_RM1_R_SFT		0
-+
-+/* REC Mixer 2 Left Control 2 (0x0041) */
-+#define RT5665_M_CBJ_RM2_L			(0x1 << 7)
-+#define RT5665_M_CBJ_RM2_L_SFT			7
-+#define RT5665_M_BST1_RM2_L			(0x1 << 5)
-+#define RT5665_M_BST1_RM2_L_SFT			5
-+#define RT5665_M_BST2_RM2_L			(0x1 << 4)
-+#define RT5665_M_BST2_RM2_L_SFT			4
-+#define RT5665_M_BST3_RM2_L			(0x1 << 3)
-+#define RT5665_M_BST3_RM2_L_SFT			3
-+#define RT5665_M_BST4_RM2_L			(0x1 << 2)
-+#define RT5665_M_BST4_RM2_L_SFT			2
-+#define RT5665_M_INL_RM2_L			(0x1 << 1)
-+#define RT5665_M_INL_RM2_L_SFT			1
-+#define RT5665_M_INR_RM2_L			(0x1)
-+#define RT5665_M_INR_RM2_L_SFT			0
-+
-+/* REC Mixer 2 Right Control 2 (0x0043) */
-+#define RT5665_M_MONOVOL_RM2_R			(0x1 << 7)
-+#define RT5665_M_MONOVOL_RM2_R_SFT		7
-+#define RT5665_M_BST1_RM2_R			(0x1 << 5)
-+#define RT5665_M_BST1_RM2_R_SFT			5
-+#define RT5665_M_BST2_RM2_R			(0x1 << 4)
-+#define RT5665_M_BST2_RM2_R_SFT			4
-+#define RT5665_M_BST3_RM2_R			(0x1 << 3)
-+#define RT5665_M_BST3_RM2_R_SFT			3
-+#define RT5665_M_BST4_RM2_R			(0x1 << 2)
-+#define RT5665_M_BST4_RM2_R_SFT			2
-+#define RT5665_M_INL_RM2_R			(0x1 << 1)
-+#define RT5665_M_INL_RM2_R_SFT			1
-+#define RT5665_M_INR_RM2_R			(0x1)
-+#define RT5665_M_INR_RM2_R_SFT			0
-+
-+/* SPK Left Mixer Control (0x0046) */
-+#define RT5665_M_BST3_SM_L			(0x1 << 4)
-+#define RT5665_M_BST3_SM_L_SFT			4
-+#define RT5665_M_IN_R_SM_L			(0x1 << 3)
-+#define RT5665_M_IN_R_SM_L_SFT			3
-+#define RT5665_M_IN_L_SM_L			(0x1 << 2)
-+#define RT5665_M_IN_L_SM_L_SFT			2
-+#define RT5665_M_BST1_SM_L			(0x1 << 1)
-+#define RT5665_M_BST1_SM_L_SFT			1
-+#define RT5665_M_DAC_L2_SM_L			(0x1)
-+#define RT5665_M_DAC_L2_SM_L_SFT		0
-+
-+/* SPK Right Mixer Control (0x0047) */
-+#define RT5665_M_BST3_SM_R			(0x1 << 4)
-+#define RT5665_M_BST3_SM_R_SFT			4
-+#define RT5665_M_IN_R_SM_R			(0x1 << 3)
-+#define RT5665_M_IN_R_SM_R_SFT			3
-+#define RT5665_M_IN_L_SM_R			(0x1 << 2)
-+#define RT5665_M_IN_L_SM_R_SFT			2
-+#define RT5665_M_BST4_SM_R			(0x1 << 1)
-+#define RT5665_M_BST4_SM_R_SFT			1
-+#define RT5665_M_DAC_R2_SM_R			(0x1)
-+#define RT5665_M_DAC_R2_SM_R_SFT		0
-+
-+/* SPO Amp Input and Gain Control (0x0048) */
-+#define RT5665_M_DAC_L2_SPKOMIX			(0x1 << 13)
-+#define RT5665_M_DAC_L2_SPKOMIX_SFT		13
-+#define RT5665_M_SPKVOLL_SPKOMIX		(0x1 << 12)
-+#define RT5665_M_SPKVOLL_SPKOMIX_SFT		12
-+#define RT5665_M_DAC_R2_SPKOMIX			(0x1 << 9)
-+#define RT5665_M_DAC_R2_SPKOMIX_SFT		9
-+#define RT5665_M_SPKVOLR_SPKOMIX		(0x1 << 8)
-+#define RT5665_M_SPKVOLR_SPKOMIX_SFT		8
-+
-+/* MONOMIX Input and Gain Control (0x004b) */
-+#define RT5665_G_MONOVOL_MA			(0x1 << 10)
-+#define RT5665_G_MONOVOL_MA_SFT			10
-+#define RT5665_M_MONOVOL_MA			(0x1 << 9)
-+#define RT5665_M_MONOVOL_MA_SFT			9
-+#define RT5665_M_DAC_L2_MA			(0x1 << 8)
-+#define RT5665_M_DAC_L2_MA_SFT			8
-+#define RT5665_M_BST3_MM			(0x1 << 4)
-+#define RT5665_M_BST3_MM_SFT			4
-+#define RT5665_M_BST2_MM			(0x1 << 3)
-+#define RT5665_M_BST2_MM_SFT			3
-+#define RT5665_M_BST1_MM			(0x1 << 2)
-+#define RT5665_M_BST1_MM_SFT			2
-+#define RT5665_M_RECMIC2L_MM			(0x1 << 1)
-+#define RT5665_M_RECMIC2L_MM_SFT		1
-+#define RT5665_M_DAC_L2_MM			(0x1)
-+#define RT5665_M_DAC_L2_MM_SFT			0
-+
-+/* Output Left Mixer Control 1 (0x004d) */
-+#define RT5665_G_BST3_OM_L_MASK			(0x7 << 12)
-+#define RT5665_G_BST3_OM_L_SFT			12
-+#define RT5665_G_BST2_OM_L_MASK			(0x7 << 9)
-+#define RT5665_G_BST2_OM_L_SFT			9
-+#define RT5665_G_BST1_OM_L_MASK			(0x7 << 6)
-+#define RT5665_G_BST1_OM_L_SFT			6
-+#define RT5665_G_IN_L_OM_L_MASK			(0x7 << 3)
-+#define RT5665_G_IN_L_OM_L_SFT			3
-+#define RT5665_G_DAC_L2_OM_L_MASK		(0x7 << 0)
-+#define RT5665_G_DAC_L2_OM_L_SFT		0
-+
-+/* Output Left Mixer Input Control (0x004e) */
-+#define RT5665_M_BST3_OM_L			(0x1 << 4)
-+#define RT5665_M_BST3_OM_L_SFT			4
-+#define RT5665_M_BST2_OM_L			(0x1 << 3)
-+#define RT5665_M_BST2_OM_L_SFT			3
-+#define RT5665_M_BST1_OM_L			(0x1 << 2)
-+#define RT5665_M_BST1_OM_L_SFT			2
-+#define RT5665_M_IN_L_OM_L			(0x1 << 1)
-+#define RT5665_M_IN_L_OM_L_SFT			1
-+#define RT5665_M_DAC_L2_OM_L			(0x1)
-+#define RT5665_M_DAC_L2_OM_L_SFT		0
-+
-+/* Output Right Mixer Input Control (0x0050) */
-+#define RT5665_M_BST4_OM_R			(0x1 << 4)
-+#define RT5665_M_BST4_OM_R_SFT			4
-+#define RT5665_M_BST3_OM_R			(0x1 << 3)
-+#define RT5665_M_BST3_OM_R_SFT			3
-+#define RT5665_M_BST2_OM_R			(0x1 << 2)
-+#define RT5665_M_BST2_OM_R_SFT			2
-+#define RT5665_M_IN_R_OM_R			(0x1 << 1)
-+#define RT5665_M_IN_R_OM_R_SFT			1
-+#define RT5665_M_DAC_R2_OM_R			(0x1)
-+#define RT5665_M_DAC_R2_OM_R_SFT		0
-+
-+/* LOUT Mixer Control (0x0052) */
-+#define RT5665_M_DAC_L2_LM			(0x1 << 15)
-+#define RT5665_M_DAC_L2_LM_SFT			15
-+#define RT5665_M_DAC_R2_LM			(0x1 << 14)
-+#define RT5665_M_DAC_R2_LM_SFT			14
-+#define RT5665_M_OV_L_LM			(0x1 << 13)
-+#define RT5665_M_OV_L_LM_SFT			13
-+#define RT5665_M_OV_R_LM			(0x1 << 12)
-+#define RT5665_M_OV_R_LM_SFT			12
-+#define RT5665_LOUT_BST_SFT			11
-+#define RT5665_LOUT_DF				(0x1 << 11)
-+#define RT5665_LOUT_DF_SFT			11
-+
-+/* Power Management for Digital 1 (0x0061) */
-+#define RT5665_PWR_I2S1_1			(0x1 << 15)
-+#define RT5665_PWR_I2S1_1_BIT			15
-+#define RT5665_PWR_I2S1_2			(0x1 << 14)
-+#define RT5665_PWR_I2S1_2_BIT			14
-+#define RT5665_PWR_I2S2_1			(0x1 << 13)
-+#define RT5665_PWR_I2S2_1_BIT			13
-+#define RT5665_PWR_I2S2_2			(0x1 << 12)
-+#define RT5665_PWR_I2S2_2_BIT			12
-+#define RT5665_PWR_DAC_L1			(0x1 << 11)
-+#define RT5665_PWR_DAC_L1_BIT			11
-+#define RT5665_PWR_DAC_R1			(0x1 << 10)
-+#define RT5665_PWR_DAC_R1_BIT			10
-+#define RT5665_PWR_I2S3				(0x1 << 9)
-+#define RT5665_PWR_I2S3_BIT			9
-+#define RT5665_PWR_LDO				(0x1 << 8)
-+#define RT5665_PWR_LDO_BIT			8
-+#define RT5665_PWR_DAC_L2			(0x1 << 7)
-+#define RT5665_PWR_DAC_L2_BIT			7
-+#define RT5665_PWR_DAC_R2			(0x1 << 6)
-+#define RT5665_PWR_DAC_R2_BIT			6
-+#define RT5665_PWR_ADC_L1			(0x1 << 4)
-+#define RT5665_PWR_ADC_L1_BIT			4
-+#define RT5665_PWR_ADC_R1			(0x1 << 3)
-+#define RT5665_PWR_ADC_R1_BIT			3
-+#define RT5665_PWR_ADC_L2			(0x1 << 2)
-+#define RT5665_PWR_ADC_L2_BIT			2
-+#define RT5665_PWR_ADC_R2			(0x1 << 1)
-+#define RT5665_PWR_ADC_R2_BIT			1
-+
-+/* Power Management for Digital 2 (0x0062) */
-+#define RT5665_PWR_ADC_S1F			(0x1 << 15)
-+#define RT5665_PWR_ADC_S1F_BIT			15
-+#define RT5665_PWR_ADC_S2F			(0x1 << 14)
-+#define RT5665_PWR_ADC_S2F_BIT			14
-+#define RT5665_PWR_ADC_MF_L			(0x1 << 13)
-+#define RT5665_PWR_ADC_MF_L_BIT			13
-+#define RT5665_PWR_ADC_MF_R			(0x1 << 12)
-+#define RT5665_PWR_ADC_MF_R_BIT			12
-+#define RT5665_PWR_DAC_S2F			(0x1 << 11)
-+#define RT5665_PWR_DAC_S2F_BIT			11
-+#define RT5665_PWR_DAC_S1F			(0x1 << 10)
-+#define RT5665_PWR_DAC_S1F_BIT			10
-+#define RT5665_PWR_DAC_MF_L			(0x1 << 9)
-+#define RT5665_PWR_DAC_MF_L_BIT			9
-+#define RT5665_PWR_DAC_MF_R			(0x1 << 8)
-+#define RT5665_PWR_DAC_MF_R_BIT			8
-+#define RT5665_PWR_PDM1				(0x1 << 7)
-+#define RT5665_PWR_PDM1_BIT			7
-+
-+/* Power Management for Analog 1 (0x0063) */
-+#define RT5665_PWR_VREF1			(0x1 << 15)
-+#define RT5665_PWR_VREF1_BIT			15
-+#define RT5665_PWR_FV1				(0x1 << 14)
-+#define RT5665_PWR_FV1_BIT			14
-+#define RT5665_PWR_VREF2			(0x1 << 13)
-+#define RT5665_PWR_VREF2_BIT			13
-+#define RT5665_PWR_FV2				(0x1 << 12)
-+#define RT5665_PWR_FV2_BIT			12
-+#define RT5665_PWR_VREF3			(0x1 << 11)
-+#define RT5665_PWR_VREF3_BIT			11
-+#define RT5665_PWR_FV3				(0x1 << 10)
-+#define RT5665_PWR_FV3_BIT			10
-+#define RT5665_PWR_MB				(0x1 << 9)
-+#define RT5665_PWR_MB_BIT			9
-+#define RT5665_PWR_LM				(0x1 << 8)
-+#define RT5665_PWR_LM_BIT			8
-+#define RT5665_PWR_BG				(0x1 << 7)
-+#define RT5665_PWR_BG_BIT			7
-+#define RT5665_PWR_MA				(0x1 << 6)
-+#define RT5665_PWR_MA_BIT			6
-+#define RT5665_PWR_HA_L				(0x1 << 5)
-+#define RT5665_PWR_HA_L_BIT			5
-+#define RT5665_PWR_HA_R				(0x1 << 4)
-+#define RT5665_PWR_HA_R_BIT			4
-+#define RT5665_HP_DRIVER_MASK			(0x3 << 2)
-+#define RT5665_HP_DRIVER_1X			(0x0 << 2)
-+#define RT5665_HP_DRIVER_3X			(0x1 << 2)
-+#define RT5665_HP_DRIVER_5X			(0x2 << 2)
-+#define RT5665_LDO1_DVO_MASK			(0x3)
-+#define RT5665_LDO1_DVO_09			(0x0)
-+#define RT5665_LDO1_DVO_10			(0x1)
-+#define RT5665_LDO1_DVO_12			(0x2)
-+#define RT5665_LDO1_DVO_14			(0x3)
-+
-+/* Power Management for Analog 2 (0x0064) */
-+#define RT5665_PWR_BST1				(0x1 << 15)
-+#define RT5665_PWR_BST1_BIT			15
-+#define RT5665_PWR_BST2				(0x1 << 14)
-+#define RT5665_PWR_BST2_BIT			14
-+#define RT5665_PWR_BST3				(0x1 << 13)
-+#define RT5665_PWR_BST3_BIT			13
-+#define RT5665_PWR_BST4				(0x1 << 12)
-+#define RT5665_PWR_BST4_BIT			12
-+#define RT5665_PWR_MB1				(0x1 << 11)
-+#define RT5665_PWR_MB1_PWR_DOWN			(0x0 << 11)
-+#define RT5665_PWR_MB1_BIT			11
-+#define RT5665_PWR_MB2				(0x1 << 10)
-+#define RT5665_PWR_MB2_PWR_DOWN			(0x0 << 10)
-+#define RT5665_PWR_MB2_BIT			10
-+#define RT5665_PWR_MB3				(0x1 << 9)
-+#define RT5665_PWR_MB3_BIT			9
-+#define RT5665_PWR_BST1_P			(0x1 << 7)
-+#define RT5665_PWR_BST1_P_BIT			7
-+#define RT5665_PWR_BST2_P			(0x1 << 6)
-+#define RT5665_PWR_BST2_P_BIT			6
-+#define RT5665_PWR_BST3_P			(0x1 << 5)
-+#define RT5665_PWR_BST3_P_BIT			5
-+#define RT5665_PWR_BST4_P			(0x1 << 4)
-+#define RT5665_PWR_BST4_P_BIT			4
-+#define RT5665_PWR_JD1				(0x1 << 3)
-+#define RT5665_PWR_JD1_BIT			3
-+#define RT5665_PWR_JD2				(0x1 << 2)
-+#define RT5665_PWR_JD2_BIT			2
-+#define RT5665_PWR_RM1_L			(0x1 << 1)
-+#define RT5665_PWR_RM1_L_BIT			1
-+#define RT5665_PWR_RM1_R			(0x1)
-+#define RT5665_PWR_RM1_R_BIT			0
-+
-+/* Power Management for Analog 3 (0x0065) */
-+#define RT5665_PWR_CBJ				(0x1 << 9)
-+#define RT5665_PWR_CBJ_BIT			9
-+#define RT5665_PWR_BST_L			(0x1 << 8)
-+#define RT5665_PWR_BST_L_BIT			8
-+#define RT5665_PWR_BST_R			(0x1 << 7)
-+#define RT5665_PWR_BST_R_BIT			7
-+#define RT5665_PWR_PLL				(0x1 << 6)
-+#define RT5665_PWR_PLL_BIT			6
-+#define RT5665_PWR_LDO2				(0x1 << 2)
-+#define RT5665_PWR_LDO2_BIT			2
-+#define RT5665_PWR_SVD				(0x1 << 1)
-+#define RT5665_PWR_SVD_BIT			1
-+
-+/* Power Management for Mixer (0x0066) */
-+#define RT5665_PWR_RM2_L			(0x1 << 15)
-+#define RT5665_PWR_RM2_L_BIT			15
-+#define RT5665_PWR_RM2_R			(0x1 << 14)
-+#define RT5665_PWR_RM2_R_BIT			14
-+#define RT5665_PWR_OM_L				(0x1 << 13)
-+#define RT5665_PWR_OM_L_BIT			13
-+#define RT5665_PWR_OM_R				(0x1 << 12)
-+#define RT5665_PWR_OM_R_BIT			12
-+#define RT5665_PWR_MM				(0x1 << 11)
-+#define RT5665_PWR_MM_BIT			11
-+#define RT5665_PWR_AEC_REF			(0x1 << 6)
-+#define RT5665_PWR_AEC_REF_BIT			6
-+#define RT5665_PWR_STO1_DAC_L			(0x1 << 5)
-+#define RT5665_PWR_STO1_DAC_L_BIT		5
-+#define RT5665_PWR_STO1_DAC_R			(0x1 << 4)
-+#define RT5665_PWR_STO1_DAC_R_BIT		4
-+#define RT5665_PWR_MONO_DAC_L			(0x1 << 3)
-+#define RT5665_PWR_MONO_DAC_L_BIT		3
-+#define RT5665_PWR_MONO_DAC_R			(0x1 << 2)
-+#define RT5665_PWR_MONO_DAC_R_BIT		2
-+#define RT5665_PWR_STO2_DAC_L			(0x1 << 1)
-+#define RT5665_PWR_STO2_DAC_L_BIT		1
-+#define RT5665_PWR_STO2_DAC_R			(0x1)
-+#define RT5665_PWR_STO2_DAC_R_BIT		0
-+
-+/* Power Management for Volume (0x0067) */
-+#define RT5665_PWR_OV_L				(0x1 << 13)
-+#define RT5665_PWR_OV_L_BIT			13
-+#define RT5665_PWR_OV_R				(0x1 << 12)
-+#define RT5665_PWR_OV_R_BIT			12
-+#define RT5665_PWR_IN_L				(0x1 << 9)
-+#define RT5665_PWR_IN_L_BIT			9
-+#define RT5665_PWR_IN_R				(0x1 << 8)
-+#define RT5665_PWR_IN_R_BIT			8
-+#define RT5665_PWR_MV				(0x1 << 7)
-+#define RT5665_PWR_MV_BIT			7
-+#define RT5665_PWR_MIC_DET			(0x1 << 5)
-+#define RT5665_PWR_MIC_DET_BIT			5
-+
-+/* (0x006b) */
-+#define RT5665_SYS_CLK_DET			15
-+#define RT5665_HP_CLK_DET			14
-+#define RT5665_MONO_CLK_DET			13
-+#define RT5665_LOUT_CLK_DET			12
-+#define RT5665_POW_CLK_DET			0
-+
-+/* Digital Microphone Control 1 (0x006e) */
-+#define RT5665_DMIC_1_EN_MASK			(0x1 << 15)
-+#define RT5665_DMIC_1_EN_SFT			15
-+#define RT5665_DMIC_1_DIS			(0x0 << 15)
-+#define RT5665_DMIC_1_EN			(0x1 << 15)
-+#define RT5665_DMIC_2_EN_MASK			(0x1 << 14)
-+#define RT5665_DMIC_2_EN_SFT			14
-+#define RT5665_DMIC_2_DIS			(0x0 << 14)
-+#define RT5665_DMIC_2_EN			(0x1 << 14)
-+#define RT5665_DMIC_2_DP_MASK			(0x1 << 9)
-+#define RT5665_DMIC_2_DP_SFT			9
-+#define RT5665_DMIC_2_DP_GPIO5			(0x0 << 9)
-+#define RT5665_DMIC_2_DP_IN2P			(0x1 << 9)
-+#define RT5665_DMIC_CLK_MASK			(0x7 << 5)
-+#define RT5665_DMIC_CLK_SFT			5
-+#define RT5665_DMIC_1_DP_MASK			(0x1 << 1)
-+#define RT5665_DMIC_1_DP_SFT			1
-+#define RT5665_DMIC_1_DP_GPIO4			(0x0 << 1)
-+#define RT5665_DMIC_1_DP_IN2N			(0x1 << 1)
-+
-+
-+/* Digital Microphone Control 1 (0x006f) */
-+#define RT5665_DMIC_2L_LH_MASK			(0x1 << 3)
-+#define RT5665_DMIC_2L_LH_SFT			3
-+#define RT5665_DMIC_2L_LH_RISING		(0x0 << 3)
-+#define RT5665_DMIC_2L_LH_FALLING		(0x1 << 3)
-+#define RT5665_DMIC_2R_LH_MASK			(0x1 << 2)
-+#define RT5665_DMIC_2R_LH_SFT			2
-+#define RT5665_DMIC_2R_LH_RISING		(0x0 << 2)
-+#define RT5665_DMIC_2R_LH_FALLING		(0x1 << 2)
-+#define RT5665_DMIC_1L_LH_MASK			(0x1 << 1)
-+#define RT5665_DMIC_1L_LH_SFT			1
-+#define RT5665_DMIC_1L_LH_RISING		(0x0 << 1)
-+#define RT5665_DMIC_1L_LH_FALLING		(0x1 << 1)
-+#define RT5665_DMIC_1R_LH_MASK			(0x1 << 0)
-+#define RT5665_DMIC_1R_LH_SFT			0
-+#define RT5665_DMIC_1R_LH_RISING		(0x0)
-+#define RT5665_DMIC_1R_LH_FALLING		(0x1)
-+
-+/* I2S1/2/3 Audio Serial Data Port Control (0x0070 0x0071 0x0072) */
-+#define RT5665_I2S_MS_MASK			(0x1 << 15)
-+#define RT5665_I2S_MS_SFT			15
-+#define RT5665_I2S_MS_M				(0x0 << 15)
-+#define RT5665_I2S_MS_S				(0x1 << 15)
-+#define RT5665_I2S_PIN_CFG_MASK			(0x1 << 14)
-+#define RT5665_I2S_PIN_CFG_SFT			14
-+#define RT5665_I2S_CLK_SEL_MASK			(0x1 << 11)
-+#define RT5665_I2S_CLK_SEL_SFT			11
-+#define RT5665_I2S_BP_MASK			(0x1 << 8)
-+#define RT5665_I2S_BP_SFT			8
-+#define RT5665_I2S_BP_NOR			(0x0 << 8)
-+#define RT5665_I2S_BP_INV			(0x1 << 8)
-+#define RT5665_I2S_DL_MASK			(0x3 << 4)
-+#define RT5665_I2S_DL_SFT			4
-+#define RT5665_I2S_DL_16			(0x0 << 4)
-+#define RT5665_I2S_DL_20			(0x1 << 4)
-+#define RT5665_I2S_DL_24			(0x2 << 4)
-+#define RT5665_I2S_DL_8				(0x3 << 4)
-+#define RT5665_I2S_DF_MASK			(0x7)
-+#define RT5665_I2S_DF_SFT			0
-+#define RT5665_I2S_DF_I2S			(0x0)
-+#define RT5665_I2S_DF_LEFT			(0x1)
-+#define RT5665_I2S_DF_PCM_A			(0x2)
-+#define RT5665_I2S_DF_PCM_B			(0x3)
-+#define RT5665_I2S_DF_PCM_A_N			(0x6)
-+#define RT5665_I2S_DF_PCM_B_N			(0x7)
-+
-+/* ADC/DAC Clock Control 1 (0x0073) */
-+#define RT5665_I2S_PD1_MASK			(0x7 << 12)
-+#define RT5665_I2S_PD1_SFT			12
-+#define RT5665_I2S_PD1_1			(0x0 << 12)
-+#define RT5665_I2S_PD1_2			(0x1 << 12)
-+#define RT5665_I2S_PD1_3			(0x2 << 12)
-+#define RT5665_I2S_PD1_4			(0x3 << 12)
-+#define RT5665_I2S_PD1_6			(0x4 << 12)
-+#define RT5665_I2S_PD1_8			(0x5 << 12)
-+#define RT5665_I2S_PD1_12			(0x6 << 12)
-+#define RT5665_I2S_PD1_16			(0x7 << 12)
-+#define RT5665_I2S_M_PD2_MASK			(0x7 << 8)
-+#define RT5665_I2S_M_PD2_SFT			8
-+#define RT5665_I2S_M_PD2_1			(0x0 << 8)
-+#define RT5665_I2S_M_PD2_2			(0x1 << 8)
-+#define RT5665_I2S_M_PD2_3			(0x2 << 8)
-+#define RT5665_I2S_M_PD2_4			(0x3 << 8)
-+#define RT5665_I2S_M_PD2_6			(0x4 << 8)
-+#define RT5665_I2S_M_PD2_8			(0x5 << 8)
-+#define RT5665_I2S_M_PD2_12			(0x6 << 8)
-+#define RT5665_I2S_M_PD2_16			(0x7 << 8)
-+#define RT5665_I2S_CLK_SRC_MASK			(0x3 << 4)
-+#define RT5665_I2S_CLK_SRC_SFT			4
-+#define RT5665_I2S_CLK_SRC_MCLK			(0x0 << 4)
-+#define RT5665_I2S_CLK_SRC_PLL1			(0x1 << 4)
-+#define RT5665_I2S_CLK_SRC_RCCLK		(0x2 << 4)
-+#define RT5665_DAC_OSR_MASK			(0x3 << 2)
-+#define RT5665_DAC_OSR_SFT			2
-+#define RT5665_DAC_OSR_128			(0x0 << 2)
-+#define RT5665_DAC_OSR_64			(0x1 << 2)
-+#define RT5665_DAC_OSR_32			(0x2 << 2)
-+#define RT5665_ADC_OSR_MASK			(0x3)
-+#define RT5665_ADC_OSR_SFT			0
-+#define RT5665_ADC_OSR_128			(0x0)
-+#define RT5665_ADC_OSR_64			(0x1)
-+#define RT5665_ADC_OSR_32			(0x2)
-+
-+/* ADC/DAC Clock Control 2 (0x0074) */
-+#define RT5665_I2S_BCLK_MS2_MASK		(0x1 << 15)
-+#define RT5665_I2S_BCLK_MS2_SFT			15
-+#define RT5665_I2S_BCLK_MS2_32			(0x0 << 15)
-+#define RT5665_I2S_BCLK_MS2_64			(0x1 << 15)
-+#define RT5665_I2S_PD2_MASK			(0x7 << 12)
-+#define RT5665_I2S_PD2_SFT			12
-+#define RT5665_I2S_PD2_1			(0x0 << 12)
-+#define RT5665_I2S_PD2_2			(0x1 << 12)
-+#define RT5665_I2S_PD2_3			(0x2 << 12)
-+#define RT5665_I2S_PD2_4			(0x3 << 12)
-+#define RT5665_I2S_PD2_6			(0x4 << 12)
-+#define RT5665_I2S_PD2_8			(0x5 << 12)
-+#define RT5665_I2S_PD2_12			(0x6 << 12)
-+#define RT5665_I2S_PD2_16			(0x7 << 12)
-+#define RT5665_I2S_BCLK_MS3_MASK		(0x1 << 11)
-+#define RT5665_I2S_BCLK_MS3_SFT			11
-+#define RT5665_I2S_BCLK_MS3_32			(0x0 << 11)
-+#define RT5665_I2S_BCLK_MS3_64			(0x1 << 11)
-+#define RT5665_I2S_PD3_MASK			(0x7 << 8)
-+#define RT5665_I2S_PD3_SFT			8
-+#define RT5665_I2S_PD3_1			(0x0 << 8)
-+#define RT5665_I2S_PD3_2			(0x1 << 8)
-+#define RT5665_I2S_PD3_3			(0x2 << 8)
-+#define RT5665_I2S_PD3_4			(0x3 << 8)
-+#define RT5665_I2S_PD3_6			(0x4 << 8)
-+#define RT5665_I2S_PD3_8			(0x5 << 8)
-+#define RT5665_I2S_PD3_12			(0x6 << 8)
-+#define RT5665_I2S_PD3_16			(0x7 << 8)
-+#define RT5665_I2S_PD4_MASK			(0x7 << 4)
-+#define RT5665_I2S_PD4_SFT			4
-+#define RT5665_I2S_PD4_1			(0x0 << 4)
-+#define RT5665_I2S_PD4_2			(0x1 << 4)
-+#define RT5665_I2S_PD4_3			(0x2 << 4)
-+#define RT5665_I2S_PD4_4			(0x3 << 4)
-+#define RT5665_I2S_PD4_6			(0x4 << 4)
-+#define RT5665_I2S_PD4_8			(0x5 << 4)
-+#define RT5665_I2S_PD4_12			(0x6 << 4)
-+#define RT5665_I2S_PD4_16			(0x7 << 4)
-+
-+/* TDM control 1 (0x0078) */
-+#define RT5665_I2S1_MODE_MASK			(0x1 << 15)
-+#define RT5665_I2S1_MODE_I2S			(0x0 << 15)
-+#define RT5665_I2S1_MODE_TDM			(0x1 << 15)
-+#define RT5665_TDM_IN_CH_MASK			(0x3 << 10)
-+#define RT5665_TDM_IN_CH_2			(0x0 << 10)
-+#define RT5665_TDM_IN_CH_4			(0x1 << 10)
-+#define RT5665_TDM_IN_CH_6			(0x2 << 10)
-+#define RT5665_TDM_IN_CH_8			(0x3 << 10)
-+#define RT5665_TDM_OUT_CH_MASK			(0x3 << 8)
-+#define RT5665_TDM_OUT_CH_2			(0x0 << 8)
-+#define RT5665_TDM_OUT_CH_4			(0x1 << 8)
-+#define RT5665_TDM_OUT_CH_6			(0x2 << 8)
-+#define RT5665_TDM_OUT_CH_8			(0x3 << 8)
-+#define RT5665_TDM_IN_LEN_MASK			(0x3 << 6)
-+#define RT5665_TDM_IN_LEN_16			(0x0 << 6)
-+#define RT5665_TDM_IN_LEN_20			(0x1 << 6)
-+#define RT5665_TDM_IN_LEN_24			(0x2 << 6)
-+#define RT5665_TDM_IN_LEN_32			(0x3 << 6)
-+#define RT5665_TDM_OUT_LEN_MASK			(0x3 << 4)
-+#define RT5665_TDM_OUT_LEN_16			(0x0 << 4)
-+#define RT5665_TDM_OUT_LEN_20			(0x1 << 4)
-+#define RT5665_TDM_OUT_LEN_24			(0x2 << 4)
-+#define RT5665_TDM_OUT_LEN_32			(0x3 << 4)
-+
-+
-+/* TDM control 2 (0x0079) */
-+#define RT5665_I2S1_1_DS_ADC_SLOT01_SFT		14
-+#define RT5665_I2S1_1_DS_ADC_SLOT23_SFT		12
-+#define RT5665_I2S1_1_DS_ADC_SLOT45_SFT		10
-+#define RT5665_I2S1_1_DS_ADC_SLOT67_SFT		8
-+#define RT5665_I2S1_2_DS_ADC_SLOT01_SFT		6
-+#define RT5665_I2S1_2_DS_ADC_SLOT23_SFT		4
-+#define RT5665_I2S1_2_DS_ADC_SLOT45_SFT		2
-+#define RT5665_I2S1_2_DS_ADC_SLOT67_SFT		0
-+
-+/* TDM control 3/4 (0x007a) (0x007b) */
-+#define RT5665_IF1_ADC1_SEL_SFT			10
-+#define RT5665_IF1_ADC2_SEL_SFT			9
-+#define RT5665_IF1_ADC3_SEL_SFT			8
-+#define RT5665_IF1_ADC4_SEL_SFT			7
-+#define RT5665_TDM_ADC_SEL_SFT			0
-+#define RT5665_TDM_ADC_CTRL_MASK		(0x1f << 0)
-+#define RT5665_TDM_ADC_DATA_06			(0x6 << 0)
-+
-+/* Global Clock Control (0x0080) */
-+#define RT5665_SCLK_SRC_MASK			(0x3 << 14)
-+#define RT5665_SCLK_SRC_SFT			14
-+#define RT5665_SCLK_SRC_MCLK			(0x0 << 14)
-+#define RT5665_SCLK_SRC_PLL1			(0x1 << 14)
-+#define RT5665_SCLK_SRC_RCCLK			(0x2 << 14)
-+#define RT5665_PLL1_SRC_MASK			(0x7 << 8)
-+#define RT5665_PLL1_SRC_SFT			8
-+#define RT5665_PLL1_SRC_MCLK			(0x0 << 8)
-+#define RT5665_PLL1_SRC_BCLK1			(0x1 << 8)
-+#define RT5665_PLL1_SRC_BCLK2			(0x2 << 8)
-+#define RT5665_PLL1_SRC_BCLK3			(0x3 << 8)
-+#define RT5665_PLL1_PD_MASK			(0x7 << 4)
-+#define RT5665_PLL1_PD_SFT			4
-+
-+
-+#define RT5665_PLL_INP_MAX			40000000
-+#define RT5665_PLL_INP_MIN			256000
-+/* PLL M/N/K Code Control 1 (0x0081) */
-+#define RT5665_PLL_N_MAX			0x001ff
-+#define RT5665_PLL_N_MASK			(RT5665_PLL_N_MAX << 7)
-+#define RT5665_PLL_N_SFT			7
-+#define RT5665_PLL_K_MAX			0x001f
-+#define RT5665_PLL_K_MASK			(RT5665_PLL_K_MAX)
-+#define RT5665_PLL_K_SFT			0
-+
-+/* PLL M/N/K Code Control 2 (0x0082) */
-+#define RT5665_PLL_M_MAX			0x00f
-+#define RT5665_PLL_M_MASK			(RT5665_PLL_M_MAX << 12)
-+#define RT5665_PLL_M_SFT			12
-+#define RT5665_PLL_M_BP				(0x1 << 11)
-+#define RT5665_PLL_M_BP_SFT			11
-+#define RT5665_PLL_K_BP				(0x1 << 10)
-+#define RT5665_PLL_K_BP_SFT			10
-+
-+/* PLL tracking mode 1 (0x0083) */
-+#define RT5665_I2S3_ASRC_MASK			(0x1 << 15)
-+#define RT5665_I2S3_ASRC_SFT			15
-+#define RT5665_I2S2_ASRC_MASK			(0x1 << 14)
-+#define RT5665_I2S2_ASRC_SFT			14
-+#define RT5665_I2S1_ASRC_MASK			(0x1 << 13)
-+#define RT5665_I2S1_ASRC_SFT			13
-+#define RT5665_DAC_STO1_ASRC_MASK		(0x1 << 12)
-+#define RT5665_DAC_STO1_ASRC_SFT		12
-+#define RT5665_DAC_STO2_ASRC_MASK		(0x1 << 11)
-+#define RT5665_DAC_STO2_ASRC_SFT		11
-+#define RT5665_DAC_MONO_L_ASRC_MASK		(0x1 << 10)
-+#define RT5665_DAC_MONO_L_ASRC_SFT		10
-+#define RT5665_DAC_MONO_R_ASRC_MASK		(0x1 << 9)
-+#define RT5665_DAC_MONO_R_ASRC_SFT		9
-+#define RT5665_DMIC_STO1_ASRC_MASK		(0x1 << 8)
-+#define RT5665_DMIC_STO1_ASRC_SFT		8
-+#define RT5665_DMIC_STO2_ASRC_MASK		(0x1 << 7)
-+#define RT5665_DMIC_STO2_ASRC_SFT		7
-+#define RT5665_DMIC_MONO_L_ASRC_MASK		(0x1 << 6)
-+#define RT5665_DMIC_MONO_L_ASRC_SFT		6
-+#define RT5665_DMIC_MONO_R_ASRC_MASK		(0x1 << 5)
-+#define RT5665_DMIC_MONO_R_ASRC_SFT		5
-+#define RT5665_ADC_STO1_ASRC_MASK		(0x1 << 4)
-+#define RT5665_ADC_STO1_ASRC_SFT		4
-+#define RT5665_ADC_STO2_ASRC_MASK		(0x1 << 3)
-+#define RT5665_ADC_STO2_ASRC_SFT		3
-+#define RT5665_ADC_MONO_L_ASRC_MASK		(0x1 << 2)
-+#define RT5665_ADC_MONO_L_ASRC_SFT		2
-+#define RT5665_ADC_MONO_R_ASRC_MASK		(0x1 << 1)
-+#define RT5665_ADC_MONO_R_ASRC_SFT		1
-+
-+/* PLL tracking mode 2 (0x0084)*/
-+#define RT5665_DA_STO1_CLK_SEL_MASK		(0x7 << 12)
-+#define RT5665_DA_STO1_CLK_SEL_SFT		12
-+#define RT5665_DA_STO2_CLK_SEL_MASK		(0x7 << 8)
-+#define RT5665_DA_STO2_CLK_SEL_SFT		8
-+#define RT5665_DA_MONOL_CLK_SEL_MASK		(0x7 << 4)
-+#define RT5665_DA_MONOL_CLK_SEL_SFT		4
-+#define RT5665_DA_MONOR_CLK_SEL_MASK		(0x7)
-+#define RT5665_DA_MONOR_CLK_SEL_SFT		0
-+
-+/* PLL tracking mode 3 (0x0085)*/
-+#define RT5665_AD_STO1_CLK_SEL_MASK		(0x7 << 12)
-+#define RT5665_AD_STO1_CLK_SEL_SFT		12
-+#define RT5665_AD_STO2_CLK_SEL_MASK		(0x7 << 8)
-+#define RT5665_AD_STO2_CLK_SEL_SFT		8
-+#define RT5665_AD_MONOL_CLK_SEL_MASK		(0x7 << 4)
-+#define RT5665_AD_MONOL_CLK_SEL_SFT		4
-+#define RT5665_AD_MONOR_CLK_SEL_MASK		(0x7)
-+#define RT5665_AD_MONOR_CLK_SEL_SFT		0
-+
-+/* ASRC Control 4 (0x0086) */
-+#define RT5665_I2S1_RATE_MASK			(0xf << 12)
-+#define RT5665_I2S1_RATE_SFT			12
-+#define RT5665_I2S2_RATE_MASK			(0xf << 8)
-+#define RT5665_I2S2_RATE_SFT			8
-+#define RT5665_I2S3_RATE_MASK			(0xf << 4)
-+#define RT5665_I2S3_RATE_SFT			4
-+
-+/* Depop Mode Control 1 (0x008e) */
-+#define RT5665_PUMP_EN				(0x1 << 3)
-+
-+/* Depop Mode Control 2 (0x8f) */
-+#define RT5665_DEPOP_MASK			(0x1 << 13)
-+#define RT5665_DEPOP_SFT			13
-+#define RT5665_DEPOP_AUTO			(0x0 << 13)
-+#define RT5665_DEPOP_MAN			(0x1 << 13)
-+#define RT5665_RAMP_MASK			(0x1 << 12)
-+#define RT5665_RAMP_SFT				12
-+#define RT5665_RAMP_DIS				(0x0 << 12)
-+#define RT5665_RAMP_EN				(0x1 << 12)
-+#define RT5665_BPS_MASK				(0x1 << 11)
-+#define RT5665_BPS_SFT				11
-+#define RT5665_BPS_DIS				(0x0 << 11)
-+#define RT5665_BPS_EN				(0x1 << 11)
-+#define RT5665_FAST_UPDN_MASK			(0x1 << 10)
-+#define RT5665_FAST_UPDN_SFT			10
-+#define RT5665_FAST_UPDN_DIS			(0x0 << 10)
-+#define RT5665_FAST_UPDN_EN			(0x1 << 10)
-+#define RT5665_MRES_MASK			(0x3 << 8)
-+#define RT5665_MRES_SFT				8
-+#define RT5665_MRES_15MO			(0x0 << 8)
-+#define RT5665_MRES_25MO			(0x1 << 8)
-+#define RT5665_MRES_35MO			(0x2 << 8)
-+#define RT5665_MRES_45MO			(0x3 << 8)
-+#define RT5665_VLO_MASK				(0x1 << 7)
-+#define RT5665_VLO_SFT				7
-+#define RT5665_VLO_3V				(0x0 << 7)
-+#define RT5665_VLO_32V				(0x1 << 7)
-+#define RT5665_DIG_DP_MASK			(0x1 << 6)
-+#define RT5665_DIG_DP_SFT			6
-+#define RT5665_DIG_DP_DIS			(0x0 << 6)
-+#define RT5665_DIG_DP_EN			(0x1 << 6)
-+#define RT5665_DP_TH_MASK			(0x3 << 4)
-+#define RT5665_DP_TH_SFT			4
-+
-+/* Depop Mode Control 3 (0x90) */
-+#define RT5665_CP_SYS_MASK			(0x7 << 12)
-+#define RT5665_CP_SYS_SFT			12
-+#define RT5665_CP_FQ1_MASK			(0x7 << 8)
-+#define RT5665_CP_FQ1_SFT			8
-+#define RT5665_CP_FQ2_MASK			(0x7 << 4)
-+#define RT5665_CP_FQ2_SFT			4
-+#define RT5665_CP_FQ3_MASK			(0x7)
-+#define RT5665_CP_FQ3_SFT			0
-+#define RT5665_CP_FQ_1_5_KHZ			0
-+#define RT5665_CP_FQ_3_KHZ			1
-+#define RT5665_CP_FQ_6_KHZ			2
-+#define RT5665_CP_FQ_12_KHZ			3
-+#define RT5665_CP_FQ_24_KHZ			4
-+#define RT5665_CP_FQ_48_KHZ			5
-+#define RT5665_CP_FQ_96_KHZ			6
-+#define RT5665_CP_FQ_192_KHZ			7
-+
-+/* HPOUT charge pump 1 (0x0091) */
-+#define RT5665_OSW_L_MASK			(0x1 << 11)
-+#define RT5665_OSW_L_SFT			11
-+#define RT5665_OSW_L_DIS			(0x0 << 11)
-+#define RT5665_OSW_L_EN				(0x1 << 11)
-+#define RT5665_OSW_R_MASK			(0x1 << 10)
-+#define RT5665_OSW_R_SFT			10
-+#define RT5665_OSW_R_DIS			(0x0 << 10)
-+#define RT5665_OSW_R_EN				(0x1 << 10)
-+#define RT5665_PM_HP_MASK			(0x3 << 8)
-+#define RT5665_PM_HP_SFT			8
-+#define RT5665_PM_HP_LV				(0x0 << 8)
-+#define RT5665_PM_HP_MV				(0x1 << 8)
-+#define RT5665_PM_HP_HV				(0x2 << 8)
-+#define RT5665_IB_HP_MASK			(0x3 << 6)
-+#define RT5665_IB_HP_SFT			6
-+#define RT5665_IB_HP_125IL			(0x0 << 6)
-+#define RT5665_IB_HP_25IL			(0x1 << 6)
-+#define RT5665_IB_HP_5IL			(0x2 << 6)
-+#define RT5665_IB_HP_1IL			(0x3 << 6)
-+
-+/* PV detection and SPK gain control (0x92) */
-+#define RT5665_PVDD_DET_MASK			(0x1 << 15)
-+#define RT5665_PVDD_DET_SFT			15
-+#define RT5665_PVDD_DET_DIS			(0x0 << 15)
-+#define RT5665_PVDD_DET_EN			(0x1 << 15)
-+#define RT5665_SPK_AG_MASK			(0x1 << 14)
-+#define RT5665_SPK_AG_SFT			14
-+#define RT5665_SPK_AG_DIS			(0x0 << 14)
-+#define RT5665_SPK_AG_EN			(0x1 << 14)
-+
-+/* Micbias Control1 (0x93) */
-+#define RT5665_MIC1_BS_MASK			(0x1 << 15)
-+#define RT5665_MIC1_BS_SFT			15
-+#define RT5665_MIC1_BS_9AV			(0x0 << 15)
-+#define RT5665_MIC1_BS_75AV			(0x1 << 15)
-+#define RT5665_MIC2_BS_MASK			(0x1 << 14)
-+#define RT5665_MIC2_BS_SFT			14
-+#define RT5665_MIC2_BS_9AV			(0x0 << 14)
-+#define RT5665_MIC2_BS_75AV			(0x1 << 14)
-+#define RT5665_MIC1_CLK_MASK			(0x1 << 13)
-+#define RT5665_MIC1_CLK_SFT			13
-+#define RT5665_MIC1_CLK_DIS			(0x0 << 13)
-+#define RT5665_MIC1_CLK_EN			(0x1 << 13)
-+#define RT5665_MIC2_CLK_MASK			(0x1 << 12)
-+#define RT5665_MIC2_CLK_SFT			12
-+#define RT5665_MIC2_CLK_DIS			(0x0 << 12)
-+#define RT5665_MIC2_CLK_EN			(0x1 << 12)
-+#define RT5665_MIC1_OVCD_MASK			(0x1 << 11)
-+#define RT5665_MIC1_OVCD_SFT			11
-+#define RT5665_MIC1_OVCD_DIS			(0x0 << 11)
-+#define RT5665_MIC1_OVCD_EN			(0x1 << 11)
-+#define RT5665_MIC1_OVTH_MASK			(0x3 << 9)
-+#define RT5665_MIC1_OVTH_SFT			9
-+#define RT5665_MIC1_OVTH_600UA			(0x0 << 9)
-+#define RT5665_MIC1_OVTH_1500UA			(0x1 << 9)
-+#define RT5665_MIC1_OVTH_2000UA			(0x2 << 9)
-+#define RT5665_MIC2_OVCD_MASK			(0x1 << 8)
-+#define RT5665_MIC2_OVCD_SFT			8
-+#define RT5665_MIC2_OVCD_DIS			(0x0 << 8)
-+#define RT5665_MIC2_OVCD_EN			(0x1 << 8)
-+#define RT5665_MIC2_OVTH_MASK			(0x3 << 6)
-+#define RT5665_MIC2_OVTH_SFT			6
-+#define RT5665_MIC2_OVTH_600UA			(0x0 << 6)
-+#define RT5665_MIC2_OVTH_1500UA			(0x1 << 6)
-+#define RT5665_MIC2_OVTH_2000UA			(0x2 << 6)
-+#define RT5665_PWR_MB_MASK			(0x1 << 5)
-+#define RT5665_PWR_MB_SFT			5
-+#define RT5665_PWR_MB_PD			(0x0 << 5)
-+#define RT5665_PWR_MB_PU			(0x1 << 5)
-+
-+/* Micbias Control2 (0x94) */
-+#define RT5665_PWR_CLK25M_MASK			(0x1 << 9)
-+#define RT5665_PWR_CLK25M_SFT			9
-+#define RT5665_PWR_CLK25M_PD			(0x0 << 9)
-+#define RT5665_PWR_CLK25M_PU			(0x1 << 9)
-+#define RT5665_PWR_CLK1M_MASK			(0x1 << 8)
-+#define RT5665_PWR_CLK1M_SFT			8
-+#define RT5665_PWR_CLK1M_PD			(0x0 << 8)
-+#define RT5665_PWR_CLK1M_PU			(0x1 << 8)
-+
-+
-+/* EQ Control 1 (0x00b0) */
-+#define RT5665_EQ_SRC_DAC			(0x0 << 15)
-+#define RT5665_EQ_SRC_ADC			(0x1 << 15)
-+#define RT5665_EQ_UPD				(0x1 << 14)
-+#define RT5665_EQ_UPD_BIT			14
-+#define RT5665_EQ_CD_MASK			(0x1 << 13)
-+#define RT5665_EQ_CD_SFT			13
-+#define RT5665_EQ_CD_DIS			(0x0 << 13)
-+#define RT5665_EQ_CD_EN				(0x1 << 13)
-+#define RT5665_EQ_DITH_MASK			(0x3 << 8)
-+#define RT5665_EQ_DITH_SFT			8
-+#define RT5665_EQ_DITH_NOR			(0x0 << 8)
-+#define RT5665_EQ_DITH_LSB			(0x1 << 8)
-+#define RT5665_EQ_DITH_LSB_1			(0x2 << 8)
-+#define RT5665_EQ_DITH_LSB_2			(0x3 << 8)
-+
-+/* IRQ Control 1 (0x00b7) */
-+#define RT5665_JD1_1_EN_MASK			(0x1 << 15)
-+#define RT5665_JD1_1_EN_SFT			15
-+#define RT5665_JD1_1_DIS			(0x0 << 15)
-+#define RT5665_JD1_1_EN				(0x1 << 15)
-+#define RT5665_JD1_2_EN_MASK			(0x1 << 12)
-+#define RT5665_JD1_2_EN_SFT			12
-+#define RT5665_JD1_2_DIS			(0x0 << 12)
-+#define RT5665_JD1_2_EN				(0x1 << 12)
-+
-+/* IRQ Control 2 (0x00b8) */
-+#define RT5665_IL_IRQ_MASK			(0x1 << 6)
-+#define RT5665_IL_IRQ_DIS			(0x0 << 6)
-+#define RT5665_IL_IRQ_EN			(0x1 << 6)
-+
-+/* IRQ Control 5 (0x00ba) */
-+#define RT5665_IRQ_JD_EN			(0x1 << 3)
-+#define RT5665_IRQ_JD_EN_SFT			3
-+
-+/* GPIO Control 1 (0x00c0) */
-+#define RT5665_GP1_PIN_MASK			(0x1 << 15)
-+#define RT5665_GP1_PIN_SFT			15
-+#define RT5665_GP1_PIN_GPIO1			(0x0 << 15)
-+#define RT5665_GP1_PIN_IRQ			(0x1 << 15)
-+#define RT5665_GP2_PIN_MASK			(0x3 << 13)
-+#define RT5665_GP2_PIN_SFT			13
-+#define RT5665_GP2_PIN_GPIO2			(0x0 << 13)
-+#define RT5665_GP2_PIN_BCLK2			(0x1 << 13)
-+#define RT5665_GP2_PIN_PDM_SCL			(0x2 << 13)
-+#define RT5665_GP3_PIN_MASK			(0x3 << 11)
-+#define RT5665_GP3_PIN_SFT			11
-+#define RT5665_GP3_PIN_GPIO3			(0x0 << 11)
-+#define RT5665_GP3_PIN_LRCK2			(0x1 << 11)
-+#define RT5665_GP3_PIN_PDM_SDA			(0x2 << 11)
-+#define RT5665_GP4_PIN_MASK			(0x3 << 9)
-+#define RT5665_GP4_PIN_SFT			9
-+#define RT5665_GP4_PIN_GPIO4			(0x0 << 9)
-+#define RT5665_GP4_PIN_DACDAT2_1		(0x1 << 9)
-+#define RT5665_GP4_PIN_DMIC1_SDA		(0x2 << 9)
-+#define RT5665_GP5_PIN_MASK			(0x3 << 7)
-+#define RT5665_GP5_PIN_SFT			7
-+#define RT5665_GP5_PIN_GPIO5			(0x0 << 7)
-+#define RT5665_GP5_PIN_ADCDAT2_1		(0x1 << 7)
-+#define RT5665_GP5_PIN_DMIC2_SDA		(0x2 << 7)
-+#define RT5665_GP6_PIN_MASK			(0x3 << 5)
-+#define RT5665_GP6_PIN_SFT			5
-+#define RT5665_GP6_PIN_GPIO6			(0x0 << 5)
-+#define RT5665_GP6_PIN_BCLK3			(0x0 << 5)
-+#define RT5665_GP6_PIN_PDM_SCL			(0x1 << 5)
-+#define RT5665_GP7_PIN_MASK			(0x3 << 3)
-+#define RT5665_GP7_PIN_SFT			3
-+#define RT5665_GP7_PIN_GPIO7			(0x0 << 3)
-+#define RT5665_GP7_PIN_LRCK3			(0x1 << 3)
-+#define RT5665_GP7_PIN_PDM_SDA			(0x2 << 3)
-+#define RT5665_GP8_PIN_MASK			(0x3 << 1)
-+#define RT5665_GP8_PIN_SFT			1
-+#define RT5665_GP8_PIN_GPIO8			(0x0 << 1)
-+#define RT5665_GP8_PIN_DACDAT3			(0x1 << 1)
-+#define RT5665_GP8_PIN_DMIC2_SCL		(0x2 << 1)
-+#define RT5665_GP8_PIN_DACDAT2_2		(0x3 << 1)
-+
-+
-+/* GPIO Control 2 (0x00c1)*/
-+#define RT5665_GP9_PIN_MASK			(0x3 << 14)
-+#define RT5665_GP9_PIN_SFT			14
-+#define RT5665_GP9_PIN_GPIO9			(0x0 << 14)
-+#define RT5665_GP9_PIN_ADCDAT3			(0x1 << 14)
-+#define RT5665_GP9_PIN_DMIC1_SCL		(0x2 << 14)
-+#define RT5665_GP9_PIN_ADCDAT2_2		(0x3 << 14)
-+#define RT5665_GP10_PIN_MASK			(0x3 << 12)
-+#define RT5665_GP10_PIN_SFT			12
-+#define RT5665_GP10_PIN_GPIO10			(0x0 << 12)
-+#define RT5665_GP10_PIN_ADCDAT1_2		(0x1 << 12)
-+#define RT5665_GP10_PIN_LPD			(0x2 << 12)
-+#define RT5665_GP1_PF_MASK			(0x1 << 11)
-+#define RT5665_GP1_PF_IN			(0x0 << 11)
-+#define RT5665_GP1_PF_OUT			(0x1 << 11)
-+#define RT5665_GP1_OUT_MASK			(0x1 << 10)
-+#define RT5665_GP1_OUT_H			(0x0 << 10)
-+#define RT5665_GP1_OUT_L			(0x1 << 10)
-+#define RT5665_GP2_PF_MASK			(0x1 << 9)
-+#define RT5665_GP2_PF_IN			(0x0 << 9)
-+#define RT5665_GP2_PF_OUT			(0x1 << 9)
-+#define RT5665_GP2_OUT_MASK			(0x1 << 8)
-+#define RT5665_GP2_OUT_H			(0x0 << 8)
-+#define RT5665_GP2_OUT_L			(0x1 << 8)
-+#define RT5665_GP3_PF_MASK			(0x1 << 7)
-+#define RT5665_GP3_PF_IN			(0x0 << 7)
-+#define RT5665_GP3_PF_OUT			(0x1 << 7)
-+#define RT5665_GP3_OUT_MASK			(0x1 << 6)
-+#define RT5665_GP3_OUT_H			(0x0 << 6)
-+#define RT5665_GP3_OUT_L			(0x1 << 6)
-+#define RT5665_GP4_PF_MASK			(0x1 << 5)
-+#define RT5665_GP4_PF_IN			(0x0 << 5)
-+#define RT5665_GP4_PF_OUT			(0x1 << 5)
-+#define RT5665_GP4_OUT_MASK			(0x1 << 4)
-+#define RT5665_GP4_OUT_H			(0x0 << 4)
-+#define RT5665_GP4_OUT_L			(0x1 << 4)
-+#define RT5665_GP5_PF_MASK			(0x1 << 3)
-+#define RT5665_GP5_PF_IN			(0x0 << 3)
-+#define RT5665_GP5_PF_OUT			(0x1 << 3)
-+#define RT5665_GP5_OUT_MASK			(0x1 << 2)
-+#define RT5665_GP5_OUT_H			(0x0 << 2)
-+#define RT5665_GP5_OUT_L			(0x1 << 2)
-+#define RT5665_GP6_PF_MASK			(0x1 << 1)
-+#define RT5665_GP6_PF_IN			(0x0 << 1)
-+#define RT5665_GP6_PF_OUT			(0x1 << 1)
-+#define RT5665_GP6_OUT_MASK			(0x1)
-+#define RT5665_GP6_OUT_H			(0x0)
-+#define RT5665_GP6_OUT_L			(0x1)
-+
-+
-+/* GPIO Control 3 (0x00c2) */
-+#define RT5665_GP7_PF_MASK			(0x1 << 15)
-+#define RT5665_GP7_PF_IN			(0x0 << 15)
-+#define RT5665_GP7_PF_OUT			(0x1 << 15)
-+#define RT5665_GP7_OUT_MASK			(0x1 << 14)
-+#define RT5665_GP7_OUT_H			(0x0 << 14)
-+#define RT5665_GP7_OUT_L			(0x1 << 14)
-+#define RT5665_GP8_PF_MASK			(0x1 << 13)
-+#define RT5665_GP8_PF_IN			(0x0 << 13)
-+#define RT5665_GP8_PF_OUT			(0x1 << 13)
-+#define RT5665_GP8_OUT_MASK			(0x1 << 12)
-+#define RT5665_GP8_OUT_H			(0x0 << 12)
-+#define RT5665_GP8_OUT_L			(0x1 << 12)
-+#define RT5665_GP9_PF_MASK			(0x1 << 11)
-+#define RT5665_GP9_PF_IN			(0x0 << 11)
-+#define RT5665_GP9_PF_OUT			(0x1 << 11)
-+#define RT5665_GP9_OUT_MASK			(0x1 << 10)
-+#define RT5665_GP9_OUT_H			(0x0 << 10)
-+#define RT5665_GP9_OUT_L			(0x1 << 10)
-+#define RT5665_GP10_PF_MASK			(0x1 << 9)
-+#define RT5665_GP10_PF_IN			(0x0 << 9)
-+#define RT5665_GP10_PF_OUT			(0x1 << 9)
-+#define RT5665_GP10_OUT_MASK			(0x1 << 8)
-+#define RT5665_GP10_OUT_H			(0x0 << 8)
-+#define RT5665_GP10_OUT_L			(0x1 << 8)
-+#define RT5665_GP11_PF_MASK			(0x1 << 7)
-+#define RT5665_GP11_PF_IN			(0x0 << 7)
-+#define RT5665_GP11_PF_OUT			(0x1 << 7)
-+#define RT5665_GP11_OUT_MASK			(0x1 << 6)
-+#define RT5665_GP11_OUT_H			(0x0 << 6)
-+#define RT5665_GP11_OUT_L			(0x1 << 6)
-+
-+/* Soft volume and zero cross control 1 (0x00d9) */
-+#define RT5665_SV_MASK				(0x1 << 15)
-+#define RT5665_SV_SFT				15
-+#define RT5665_SV_DIS				(0x0 << 15)
-+#define RT5665_SV_EN				(0x1 << 15)
-+#define RT5665_OUT_SV_MASK			(0x1 << 13)
-+#define RT5665_OUT_SV_SFT			13
-+#define RT5665_OUT_SV_DIS			(0x0 << 13)
-+#define RT5665_OUT_SV_EN			(0x1 << 13)
-+#define RT5665_HP_SV_MASK			(0x1 << 12)
-+#define RT5665_HP_SV_SFT			12
-+#define RT5665_HP_SV_DIS			(0x0 << 12)
-+#define RT5665_HP_SV_EN				(0x1 << 12)
-+#define RT5665_ZCD_DIG_MASK			(0x1 << 11)
-+#define RT5665_ZCD_DIG_SFT			11
-+#define RT5665_ZCD_DIG_DIS			(0x0 << 11)
-+#define RT5665_ZCD_DIG_EN			(0x1 << 11)
-+#define RT5665_ZCD_MASK				(0x1 << 10)
-+#define RT5665_ZCD_SFT				10
-+#define RT5665_ZCD_PD				(0x0 << 10)
-+#define RT5665_ZCD_PU				(0x1 << 10)
-+#define RT5665_SV_DLY_MASK			(0xf)
-+#define RT5665_SV_DLY_SFT			0
-+
-+/* Soft volume and zero cross control 2 (0x00da) */
-+#define RT5665_ZCD_HP_MASK			(0x1 << 15)
-+#define RT5665_ZCD_HP_SFT			15
-+#define RT5665_ZCD_HP_DIS			(0x0 << 15)
-+#define RT5665_ZCD_HP_EN			(0x1 << 15)
-+
-+/* 4 Button Inline Command Control 2 (0x00e0) */
-+#define RT5665_4BTN_IL_MASK			(0x1 << 15)
-+#define RT5665_4BTN_IL_EN			(0x1 << 15)
-+#define RT5665_4BTN_IL_DIS			(0x0 << 15)
-+#define RT5665_4BTN_IL_RST_MASK			(0x1 << 14)
-+#define RT5665_4BTN_IL_NOR			(0x1 << 14)
-+#define RT5665_4BTN_IL_RST			(0x0 << 14)
-+
-+/* Analog JD Control 1 (0x00f0) */
-+#define RT5665_JD1_MODE_MASK			(0x3 << 0)
-+#define RT5665_JD1_MODE_0			(0x0 << 0)
-+#define RT5665_JD1_MODE_1			(0x1 << 0)
-+#define RT5665_JD1_MODE_2			(0x2 << 0)
-+
-+/* Jack Detect Control 3 (0x00f8) */
-+#define RT5665_JD_TRI_HPO_SEL_MASK		(0x7)
-+#define RT5665_JD_TRI_HPO_SEL_SFT		(0)
-+#define RT5665_JD_HPO_GPIO_JD1			(0x0)
-+#define RT5665_JD_HPO_JD1_1			(0x1)
-+#define RT5665_JD_HPO_JD1_2			(0x2)
-+#define RT5665_JD_HPO_JD2			(0x3)
-+#define RT5665_JD_HPO_GPIO_JD2			(0x4)
-+#define RT5665_JD_HPO_JD3			(0x5)
-+#define RT5665_JD_HPO_JD_D			(0x6)
-+
-+/* Digital Misc Control (0x00fa) */
-+#define RT5665_AM_MASK				(0x1 << 7)
-+#define RT5665_AM_EN				(0x1 << 7)
-+#define RT5665_AM_DIS				(0x1 << 7)
-+#define RT5665_DIG_GATE_CTRL			0x1
-+#define RT5665_DIG_GATE_CTRL_SFT		(0)
-+
-+/* Chopper and Clock control for ADC (0x011c)*/
-+#define RT5665_M_RF_DIG_MASK			(0x1 << 12)
-+#define RT5665_M_RF_DIG_SFT			12
-+#define RT5665_M_RI_DIG				(0x1 << 11)
-+
-+/* Chopper and Clock control for DAC (0x013a)*/
-+#define RT5665_CKXEN_DAC1_MASK			(0x1 << 13)
-+#define RT5665_CKXEN_DAC1_SFT			13
-+#define RT5665_CKGEN_DAC1_MASK			(0x1 << 12)
-+#define RT5665_CKGEN_DAC1_SFT			12
-+#define RT5665_CKXEN_DAC2_MASK			(0x1 << 5)
-+#define RT5665_CKXEN_DAC2_SFT			5
-+#define RT5665_CKGEN_DAC2_MASK			(0x1 << 4)
-+#define RT5665_CKGEN_DAC2_SFT			4
-+
-+/* Chopper and Clock control for ADC (0x013b)*/
-+#define RT5665_CKXEN_ADC1_MASK			(0x1 << 13)
-+#define RT5665_CKXEN_ADC1_SFT			13
-+#define RT5665_CKGEN_ADC1_MASK			(0x1 << 12)
-+#define RT5665_CKGEN_ADC1_SFT			12
-+#define RT5665_CKXEN_ADC2_MASK			(0x1 << 5)
-+#define RT5665_CKXEN_ADC2_SFT			5
-+#define RT5665_CKGEN_ADC2_MASK			(0x1 << 4)
-+#define RT5665_CKGEN_ADC2_SFT			4
-+
-+/* Volume test (0x013f)*/
-+#define RT5665_SEL_CLK_VOL_MASK			(0x1 << 15)
-+#define RT5665_SEL_CLK_VOL_EN			(0x1 << 15)
-+#define RT5665_SEL_CLK_VOL_DIS			(0x0 << 15)
-+
-+/* Test Mode Control 1 (0x0145) */
-+#define RT5665_AD2DA_LB_MASK			(0x1 << 9)
-+#define RT5665_AD2DA_LB_SFT			9
-+
-+/* Stereo Noise Gate Control 1 (0x0160) */
-+#define RT5665_NG2_EN_MASK			(0x1 << 15)
-+#define RT5665_NG2_EN				(0x1 << 15)
-+#define RT5665_NG2_DIS				(0x0 << 15)
-+
-+/* Stereo1 DAC Silence Detection Control (0x0190) */
-+#define RT5665_DEB_STO_DAC_MASK			(0x7 << 4)
-+#define RT5665_DEB_80_MS			(0x0 << 4)
-+
-+/* SAR ADC Inline Command Control 1 (0x0210) */
-+#define RT5665_SAR_BUTT_DET_MASK		(0x1 << 15)
-+#define RT5665_SAR_BUTT_DET_EN			(0x1 << 15)
-+#define RT5665_SAR_BUTT_DET_DIS			(0x0 << 15)
-+#define RT5665_SAR_BUTDET_MODE_MASK		(0x1 << 14)
-+#define RT5665_SAR_BUTDET_POW_SAV		(0x1 << 14)
-+#define RT5665_SAR_BUTDET_POW_NORM		(0x0 << 14)
-+#define RT5665_SAR_BUTDET_RST_MASK		(0x1 << 13)
-+#define RT5665_SAR_BUTDET_RST_NORMAL		(0x1 << 13)
-+#define RT5665_SAR_BUTDET_RST			(0x0 << 13)
-+#define RT5665_SAR_POW_MASK			(0x1 << 12)
-+#define RT5665_SAR_POW_EN			(0x1 << 12)
-+#define RT5665_SAR_POW_DIS			(0x0 << 12)
-+#define RT5665_SAR_RST_MASK			(0x1 << 11)
-+#define RT5665_SAR_RST_NORMAL			(0x1 << 11)
-+#define RT5665_SAR_RST				(0x0 << 11)
-+#define RT5665_SAR_BYPASS_MASK			(0x1 << 10)
-+#define RT5665_SAR_BYPASS_EN			(0x1 << 10)
-+#define RT5665_SAR_BYPASS_DIS			(0x0 << 10)
-+#define RT5665_SAR_SEL_MB1_MASK			(0x1 << 9)
-+#define RT5665_SAR_SEL_MB1_SEL			(0x1 << 9)
-+#define RT5665_SAR_SEL_MB1_NOSEL		(0x0 << 9)
-+#define RT5665_SAR_SEL_MB2_MASK			(0x1 << 8)
-+#define RT5665_SAR_SEL_MB2_SEL			(0x1 << 8)
-+#define RT5665_SAR_SEL_MB2_NOSEL		(0x0 << 8)
-+#define RT5665_SAR_SEL_MODE_MASK		(0x1 << 7)
-+#define RT5665_SAR_SEL_MODE_CMP			(0x1 << 7)
-+#define RT5665_SAR_SEL_MODE_ADC			(0x0 << 7)
-+#define RT5665_SAR_SEL_MB1_MB2_MASK		(0x1 << 5)
-+#define RT5665_SAR_SEL_MB1_MB2_AUTO		(0x1 << 5)
-+#define RT5665_SAR_SEL_MB1_MB2_MANU		(0x0 << 5)
-+#define RT5665_SAR_SEL_SIGNAL_MASK		(0x1 << 4)
-+#define RT5665_SAR_SEL_SIGNAL_AUTO		(0x1 << 4)
-+#define RT5665_SAR_SEL_SIGNAL_MANU		(0x0 << 4)
-+
-+/* System Clock Source */
-+enum {
-+	RT5665_SCLK_S_MCLK,
-+	RT5665_SCLK_S_PLL1,
-+	RT5665_SCLK_S_RCCLK,
-+};
-+
-+/* PLL1 Source */
-+enum {
-+	RT5665_PLL1_S_MCLK,
-+	RT5665_PLL1_S_BCLK1,
-+	RT5665_PLL1_S_BCLK2,
-+	RT5665_PLL1_S_BCLK3,
-+	RT5665_PLL1_S_BCLK4,
-+};
-+
-+enum {
-+	RT5665_AIF1_1,
-+	RT5665_AIF1_2,
-+	RT5665_AIF2_1,
-+	RT5665_AIF2_2,
-+	RT5665_AIF3,
-+	RT5665_AIFS
-+};
-+
-+enum {
-+	CODEC_5665,
-+	CODEC_5666,
-+	CODEC_5668,
-+};
-+
-+/* filter mask */
-+enum {
-+	RT5665_DA_STEREO1_FILTER = 0x1,
-+	RT5665_DA_STEREO2_FILTER = (0x1 << 1),
-+	RT5665_DA_MONO_L_FILTER = (0x1 << 2),
-+	RT5665_DA_MONO_R_FILTER = (0x1 << 3),
-+	RT5665_AD_STEREO1_FILTER = (0x1 << 4),
-+	RT5665_AD_STEREO2_FILTER = (0x1 << 5),
-+	RT5665_AD_MONO_L_FILTER = (0x1 << 6),
-+	RT5665_AD_MONO_R_FILTER = (0x1 << 7),
-+};
-+
-+enum {
-+	RT5665_CLK_SEL_SYS,
-+	RT5665_CLK_SEL_I2S1_ASRC,
-+	RT5665_CLK_SEL_I2S2_ASRC,
-+	RT5665_CLK_SEL_I2S3_ASRC,
-+	RT5665_CLK_SEL_SYS2,
-+	RT5665_CLK_SEL_SYS3,
-+	RT5665_CLK_SEL_SYS4,
-+};
-+
-+int rt5665_sel_asrc_clk_src(struct snd_soc_codec *codec,
-+		unsigned int filter_mask, unsigned int clk_src);
-+int rt5665_set_jack_detect(struct snd_soc_codec *codec,
-+	struct snd_soc_jack *hs_jack);
-+
-+#endif /* __RT5665_H__ */
+I've attached both the patch I've been working with, and the
+alsa-info.txt for the hardware running an unmodified kernel.  
+
 -- 
-1.8.1.1.439.g50a6b54
+  David Jordan
+  david2@system76.com
+
+On Tue, Nov 8, 2016, at 06:42 AM, Takashi Iwai wrote:
+> On Mon, 07 Nov 2016 22:36:21 +0100,
+> David Jordan wrote:
+> > 
+> > It's HDA, Realtek ALC898.  The headphones jack (analog 3.5mm output)
+> > (0x1b) is connected to a separate ESS DAC, which takes sound input from
+> > the PCM SPDIF output.  
+> 
+> Note that the "Master" volume is a vmaster control, and usually it
+> covers all DAC volume controls.
+> 
+> It'd be better if you provide a patch you're fighting with, together
+> with alsa-info.sh output.  Then other people can track the issue
+> either with the real h/w or hda-emu.
+> 
+> 
+> Takashi
+> 
+> 
+> > 
+> > -- 
+> >   David Jordan
+> >   david2@system76.com
+> > 
+> > On Mon, Nov 7, 2016, at 01:19 PM, Clemens Ladisch wrote:
+> > > David Jordan wrote:
+> > > > I'm working on a kernel-level fixup for a set of hardware
+> > > 
+> > > What hardware?  If HDA, which codec, and how is it connected?
+> > > 
+> > > 
+> > > Regards,
+> > > Clemens
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
+
+--_----------=_147863267841509092
+Content-Disposition: attachment; filename="alsa-hda-alc898-pcm-hp-dac-vol-test.patch"
+Content-Id: <1478632407.4150018.e67d1955b6a9b625aa49dcf2fddd995cf149927f.7DD8087A@content.messagingengine.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/x-patch; name="alsa-hda-alc898-pcm-hp-dac-vol-test.patch"
+
+ZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIv
+c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKaW5kZXggNGI2ZDg2MS4u
+NDQxOWE3ZSAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFs
+dGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAg
+LTMyLDYgKzMyLDcgQEAKICNpbmNsdWRlIDxsaW51eC9pbnB1dC5oPgogI2lu
+Y2x1ZGUgPHNvdW5kL2NvcmUuaD4KICNpbmNsdWRlIDxzb3VuZC9qYWNrLmg+
+CisjaW5jbHVkZSA8c291bmQvdGx2Lmg+CiAjaW5jbHVkZSAiaGRhX2NvZGVj
+LmgiCiAjaW5jbHVkZSAiaGRhX2xvY2FsLmgiCiAjaW5jbHVkZSAiaGRhX2F1
+dG9fcGFyc2VyLmgiCkBAIC0xMjgsNiArMTI5LDE0IEBAIHN0cnVjdCBhbGNf
+c3BlYyB7CiAJdW5zaWduZWQgaW50IGNvZWYwOwogCXN0cnVjdCBpbnB1dF9k
+ZXYgKmtiX2RldjsKIAl1OCBhbGNfbXV0ZV9rZXljb2RlX21hcFsxXTsKKwkK
+KwkvKiBmb3IgY2xldm8gaGVhZHBob25lcyBmaXggKi8KKwl1bnNpZ25lZCBp
+bnQgaHBfdm9sdW1lOworCXVuc2lnbmVkIGludCBudW1faW5pdHM7CisJc3Ry
+dWN0IHNuZF9rY29udHJvbCAqbWFzdGVyX2tjdGw7CisJc3RydWN0IHNuZF9r
+Y29udHJvbCAqcGNtX2tjdGw7CisJc3RydWN0IHNuZF9rY29udHJvbCBlbWJl
+ZGRlZF9wY21fa2N0bDsKKy8qCXN0cnVjdCBzbmRfa2NvbnRyb2wgKm1hc3Rl
+cl9rY3RsOyovCiB9OwogCiAvKgpAQCAtMTc5Nyw2ICsxODA2LDcgQEAgZW51
+bSB7CiAJQUxDODgyX0ZJWFVQX05PX1BSSU1BUllfSFAsCiAJQUxDODg3X0ZJ
+WFVQX0FTVVNfQkFTUywKIAlBTEM4ODdfRklYVVBfQkFTU19DSE1BUCwKKwlB
+TEM4OThfRklYVVBfQ0xFVk9fU1BESUYsCiB9OwogCiBzdGF0aWMgdm9pZCBh
+bGM4ODlfZml4dXBfY29lZihzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKQEAg
+LTE5NTYsNiArMTk2NiwyMDUgQEAgc3RhdGljIHZvaWQgYWxjODgyX2ZpeHVw
+X25vX3ByaW1hcnlfaHAoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsCiAJfQog
+fQogCisKKworCisKKy8qIFNldCBQQ00gdm9sdW1lIGZyb20gTWFzdGVyLiAg
+SFAgdm9sdW1lIGlzIGJhc2VkIG9uIFBDTSB2b2x1bWUgZXhjbHVzaXZlbHku
+CisgKiBUT0RPOiBUcmlnZ2VyIHRoaXMgZnVuY3Rpb24gb24gTWFzdGVyIFZv
+bHVtZSBDaGFuZ2UuCisgKiBUT0RPOiBFbnN1cmUgYXBwcm9wcmlhdGUgc2Nh
+bGluZyBvZiBQQ00gbGV2ZWxzIHJlbGF0aXZlIHRvIE1hc3Rlci4KKyAqLwor
+IAorI2RlZmluZSBDTEVWT19QQ01fTUFYX1ZPTFVNRSAzMQorCitzdGF0aWMg
+aW50IHNuZF9jbGV2b19wY21fdm9sdW1lX2luZm8oc3RydWN0IHNuZF9rY29u
+dHJvbCAqa2NvbnRyb2wsCisJCQkJCSBzdHJ1Y3Qgc25kX2N0bF9lbGVtX2lu
+Zm8gKnVpbmZvKQoreworICAgIAorCXByaW50aygiU1lTNzY6IHNuZF9jbGV2
+b19wY21fdm9sdW1lX2luZm9cbiIpOworCXVpbmZvLT50eXBlID0gU05EUlZf
+Q1RMX0VMRU1fVFlQRV9JTlRFR0VSOworCXVpbmZvLT5jb3VudCA9IDI7CisJ
+dWluZm8tPnZhbHVlLmludGVnZXIubWluID0gMDsKKwl1aW5mby0+dmFsdWUu
+aW50ZWdlci5tYXggPSBDTEVWT19QQ01fTUFYX1ZPTFVNRTsKKyAgICByZXR1
+cm4gMDsKK30KKworc3RhdGljIGludCBzbmRfY2xldm9fcGNtX3ZvbHVtZV9n
+ZXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCisJCQkJCSBzdHJ1
+Y3Qgc25kX2N0bF9lbGVtX3ZhbHVlICp1Y29udHJvbCkKK3sKKyAgICAKKwlw
+cmludGsoIlNZUzc2OiBzbmRfY2xldm9fcGNtX3ZvbHVtZV9nZXRcbiIpOwor
+CXN0cnVjdCBoZGFfY29kZWMgKmNoaXAgPSBzbmRfa2NvbnRyb2xfY2hpcChr
+Y29udHJvbCk7CisJdW5zaWduZWQgaW50IGlkeCA9IGtjb250cm9sLT5pZC5z
+dWJkZXZpY2U7CisJCisJCisJc3RydWN0IGFsY19zcGVjICpzcGVjID0gY2hp
+cC0+c3BlYzsKKwkKKwlwcmludGsoIlNZUzc2OiBwY21fdm9sdW1lIGdldC4u
+LmFkZHJzXG4iKTsKKwlwcmludGsoImFkZHIgc3BlYyAlbHUgXG4iLCBzcGVj
+KTsKKwlwcmludGsoImFkZHIgY29kZWMgJWx1IFxuIiwgY2hpcCk7CisJcHJp
+bnRrKCJzcGVjLT5ocF92b2x1bWUgJXVcbiIsIHNwZWMtPmhwX3ZvbHVtZSk7
+CisgICAgCisgICAgaWYgKHNwZWMgIT0gMCkgeworICAgICAgICBwcmludGso
+Im1lZXAhXG4iKTsKKwkgICAgdWNvbnRyb2wtPnZhbHVlLmludGVnZXIudmFs
+dWVbMF0gPSBDTEVWT19QQ01fTUFYX1ZPTFVNRSAtIHNwZWMtPmhwX3ZvbHVt
+ZTsvL2NoaXAtPnBsYXliYWNrX3ZvbHVtZVtpZHhdWzBdOworCSAgICB1Y29u
+dHJvbC0+dmFsdWUuaW50ZWdlci52YWx1ZVsxXSA9IENMRVZPX1BDTV9NQVhf
+Vk9MVU1FIC0gc3BlYy0+aHBfdm9sdW1lOy8vY2hpcC0+cGxheWJhY2tfdm9s
+dW1lW2lkeF1bMV07CisJfQorCWVsc2UgeworCSAgICBwcmludGsoImxlZXAh
+XG4iKTsKKwkgICAgdWNvbnRyb2wtPnZhbHVlLmludGVnZXIudmFsdWVbMF0g
+PSBDTEVWT19QQ01fTUFYX1ZPTFVNRSAtIDE7Ly9jaGlwLT5wbGF5YmFja192
+b2x1bWVbaWR4XVswXTsKKwkgICAgdWNvbnRyb2wtPnZhbHVlLmludGVnZXIu
+dmFsdWVbMV0gPSBDTEVWT19QQ01fTUFYX1ZPTFVNRSAtIDE7Ly9jaGlwLT5w
+bGF5YmFja192b2x1bWVbaWR4XVsxXTsKKwl9CisgICAgcmV0dXJuIDA7Cit9
+CisKKy8vT2theSwgc28gdGhpcyBpcyBjcmVhdGluZyB0aGUgcGNtX3ZvbHVt
+ZV9jdGwsIGJ1dCBob3cgaXMgaGFyZD8KK3N0YXRpYyBpbnQgc25kX2NsZXZv
+X3BjbV92b2x1bWVfcHV0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9s
+LAorCQkJCQkgc3RydWN0IHNuZF9jdGxfZWxlbV92YWx1ZSAqdWNvbnRyb2wp
+Cit7CisJc3RydWN0IGhkYV9jb2RlYyAqY2hpcCA9IHNuZF9rY29udHJvbF9j
+aGlwKGtjb250cm9sKTsKKwl1bnNpZ25lZCBpbnQgaWR4OworCXVuc2lnbmVk
+IGNoYXIgdmFsOworCWludCBpLCBjaGFuZ2UgPSAwOworCQorCXByaW50aygi
+U1lTNzY6IHNuZF9jbGV2b19wY21fdm9sdW1lX3B1dFxuIik7CisJCisJc3Ry
+dWN0IGFsY19zcGVjICpzcGVjID0gY2hpcC0+c3BlYzsKKwlzdHJ1Y3Qgc25k
+X2NhcmQgKmNhcmQgPSBjaGlwLT5jYXJkOworCQorCXByaW50ayhrY29udHJv
+bC0+aWQubmFtZSk7CisJCisJCisJLyoJKi8KKy8qCXN0cnVjdCBzbmRfY3Rs
+X2VsZW1faWQgcGNtX2lkOyovCisvKglzdHJ1Y3Qgc25kX2tjb250cm9sICpw
+Y21fY29udHJvbDsqLworLyoJbWVtc2V0KCZwY21faWQsIDAsIHNpemVvZihw
+Y21faWQpKTsqLworLyoJcGNtX2lkLmlmYWNlID0gU05EUlZfQ1RMX0VMRU1f
+SUZBQ0VfTUlYRVI7Ki8KKy8qCXBjbV9pZC5kZXZpY2UgPSAwOyovCisvKglw
+Y21faWQuaW5kZXggPSAwOyovCisvKglzdHJjcHkocGNtX2lkLm5hbWUsICJQ
+Q00gUGxheWJhY2sgVm9sdW1lIik7Ki8KKy8qICAgIENyYXNoZXMgSGVyZToq
+LworLyoJcGNtX2NvbnRyb2wgPSBzbmRfY3RsX2ZpbmRfaWQoY2hpcC0+Y2Fy
+ZCwgJnBjbV9pZCk7Ki8KKy8qCSovCisJCisJcHJpbnRrKCJTWVM3NjogUFVU
+IHNuZCBiZWZvcmUgZmluZCBtaXhlciBjdGxcbiIpOworCQorLyoJR2V0IHRo
+ZSBQQ00gQ29udHJvbCB0byBzZXQgaXQuICBGb3Igc29tZSByZWFzb24gdGhp
+cyBmYWlscy4qLworCXN0cnVjdCBzbmRfa2NvbnRyb2wgKiBwY21fa2N0bCA9
+IHNuZF9oZGFfZmluZF9taXhlcl9jdGwoY2hpcCwgIlBDTSBQbGF5YmFjayBW
+b2x1bWUiKTsKKwlzdHJ1Y3Qgc25kX2N0bF9lbGVtX3ZhbHVlICpwY21fdWN0
+bDsKKwkKKwlwcmludGsoIlNZUzc2OiBQVVQgc25kX2hkYV9maW5kX21peGVy
+X2N0bFxuIik7CisJCisJaWYgKCFwY21fa2N0bCkKKwkgICAgcHJpbnRrKCJT
+WVM3NjogUFVUIG5vIGtjdGxcbiIpOworCQlyZXR1cm47CisJcGNtX3VjdGwg
+PSBremFsbG9jKHNpemVvZigqcGNtX3VjdGwpLCBHRlBfS0VSTkVMKTsKKwlp
+ZiAoIXBjbV91Y3RsKQorCQlyZXR1cm47CisJCQorLyoJU2V0IHRoZSBQQ00g
+dWNvbnRyb2wgZnJvbSBNYXN0ZXIgdWNvbnRyb2wqLworCXZhbCA9IHVjb250
+cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlWzBdOworCXZhbCAmPSBIREFfQU1Q
+X1ZPTE1BU0s7CisJCisJcGNtX3VjdGwtPnZhbHVlLmludGVnZXIudmFsdWVb
+MF0gPSB2YWw7CisJcGNtX3VjdGwtPnZhbHVlLmludGVnZXIudmFsdWVbMV0g
+PSB2YWw7CisJcGNtX2tjdGwtPnB1dChwY21fa2N0bCwgcGNtX3VjdGwpOwor
+CQorCWtmcmVlKHBjbV91Y3RsKTsKKwkKKwlyZXR1cm4gY2hhbmdlOworfQor
+CisKK3N0YXRpYyB2b2lkIGFsYzg5OF9jbGV2b19hdXRvbXV0ZV9ob29rKHN0
+cnVjdCBoZGFfY29kZWMgKmNvZGVjLAorCQkJCSAgICBzdHJ1Y3QgaGRhX2ph
+Y2tfY2FsbGJhY2sgKmphY2spCit7CisJaW50IHZhbDsKKwlzbmRfaGRhX2Nv
+ZGVjX3dyaXRlKGNvZGVjLCBjb2RlYy0+Y29yZS5hZmcsIDAsCisJCQkgICAg
+QUNfVkVSQl9TRVRfR1BJT19NQVNLLCAyKTsKKwlzbmRfaGRhX2NvZGVjX3dy
+aXRlKGNvZGVjLCBjb2RlYy0+Y29yZS5hZmcsIDAsCisJCQkgICAgQUNfVkVS
+Ql9TRVRfR1BJT19ESVJFQ1RJT04sIDApOworICAgIAorCXN0cnVjdCBhbGNf
+c3BlYyAqc3BlYyA9IGNvZGVjLT5zcGVjOworCQorCWlmIChzbmRfaGRhX2ph
+Y2tfZGV0ZWN0KGNvZGVjLCAweDFiKSAmJiAoc25kX2hkYV9jb2RlY19yZWFk
+KGNvZGVjLCBjb2RlYy0+Y29yZS5hZmcsIDAsCisJCQkJICAgICAgIEFDX1ZF
+UkJfR0VUX0dQSU9fREFUQSwgMCkgPj0gMCkpIHsKKwkJdmFsID0gc25kX2hk
+YV9jb2RlY19nZXRfcGluX3RhcmdldChjb2RlYywgMHgxYik7CisJCXZhbCB8
+PSBBQ19QSU5DVExfVlJFRl84MDsKKwkJc25kX2hkYV9zZXRfcGluX2N0bChj
+b2RlYywgMHgxYiwgdmFsKTsKKwkJc25kX2hkYV9nZW5faHBfYXV0b211dGUo
+Y29kZWMsIGphY2spOworCX0gZWxzZSB7CisJICAgIHByaW50aygiUzc2OiBh
+dXRvbXV0ZSBjYXNlIEJcbiIpOworCQl2YWwgPSBzbmRfaGRhX2NvZGVjX2dl
+dF9waW5fdGFyZ2V0KGNvZGVjLCAweDFiKTsKKwkJdmFsID0gdmFsICYgMHhm
+ZmY4OworCQlzbmRfaGRhX3NldF9waW5fY3RsKGNvZGVjLCAweDFiLCB2YWwp
+OworCQlzbmRfaGRhX2dlbl9ocF9hdXRvbXV0ZShjb2RlYywgamFjayk7CisJ
+CQorCQkvKiBEb24ndCBtdXRlIHRoZSBkaWdpdGFsIG91dHB1dCwgbmVlZGVk
+IGZvciBFU1MgREFDIG9wZXJhdGlvbiAqLworCQkvKiBUT0RPOiBUaGlzIG1p
+Z2h0IGJlbG9uZyBpbiBhbGM4OThfZml4dXBfY2xldm8gaW5zdGVhZC4gKi8K
+KwkJLyogc3RydWN0IHNuZF9rY29udHJvbCAqa2N0bDsKKwkJa2N0bCA9IHNu
+ZF9oZGFfZmluZF9taXhlcl9jdGwoY29kZWMsICJJRUM5NTggUGxheWJhY2sg
+U3dpdGNoIik7CisJCWlmICgha2N0bCkKKwkJCXJldHVybjsKKwkJa2N0bC0+
+cHV0ID0gTlVMTDsgKi8KKworCX0KK30JCQkJICAgIAorc3RhdGljIHZvaWQg
+YWxjODk4X2ZpeHVwX2NsZXZvKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAor
+CQkJCSAgICAgICBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwICpmaXgsIGludCBh
+Y3Rpb24pCit7CisJc3RydWN0IGFsY19zcGVjICpzcGVjID0gY29kZWMtPnNw
+ZWM7CisJCisJcHJpbnRrKCJTWVM3NjogdmVyc2lvbiAwMDIwXG4iKTsKKwlw
+cmludGsoIlNZUzc2OiBudW1fbWl4ZXJzID0gJXVcbiIsIHNwZWMtPm51bV9t
+aXhlcnMpOworCWlmIChhY3Rpb24gPT0gSERBX0ZJWFVQX0FDVF9QUkVfUFJP
+QkUpIHsKKwkJc3BlYy0+Z2VuLmRldGVjdF9ocCA9IDE7CisJCXNwZWMtPmdl
+bi5hdXRvbXV0ZV9zcGVha2VyID0gMTsKKwkJc3BlYy0+Z2VuLmF1dG9jZmcu
+aHBfcGluc1swXSA9IDB4MWI7IC8qIGNvcHkgaXQgZm9yIGF1dG9tdXRlICov
+CQorCQlzbmRfaGRhX2phY2tfZGV0ZWN0X2VuYWJsZV9jYWxsYmFjayhjb2Rl
+YywgMHgxYiwKKwkJCQkJCSAgICBhbGM4OThfY2xldm9fYXV0b211dGVfaG9v
+ayk7CisJCXNwZWMtPmdlbi5ocF9hdXRvbXV0ZV9ob29rID0gYWxjODk4X2Ns
+ZXZvX2F1dG9tdXRlX2hvb2s7CisJfQorCQorCQorCXN0cnVjdCBzbmRfY3Rs
+X2VsZW1faWQgbWlkOworCW1lbXNldCgmbWlkLCAwLCBzaXplb2YobWlkKSk7
+CisJc3RyY3B5KG1pZC5uYW1lLCAiUENNIFBsYXliYWNrIFZvbHVtZSIpOwor
+CW1pZC5pZmFjZSA9IFNORFJWX0NUTF9FTEVNX0lGQUNFX01JWEVSOworCXN0
+cnVjdCBzbmRfa2NvbnRyb2wgKiBwY21fa2NvbnRyb2w7CisJcGNtX2tjb250
+cm9sID0gc25kX2N0bF9maW5kX2lkKGNvZGVjLT5jYXJkLCAmbWlkKTsKKwlp
+ZiAoIXBjbV9rY29udHJvbCkgeworCSAgICBwcmludGsoIlNZUzc2OiBObyBQ
+Q01fa2NvbnRyb2xcbiIpOworCSAgICBwcmludGsoIlNZUzc2OiBvaCB3ZWxs
+XG4iKTsKKwkgICAgcmV0dXJuOyAvL3JldHVybmluZyBzbyB3ZSBkb24ndCBk
+byB0aGUgbWFzdGVyIHN0dWZmIHVudGlsIHBjbSBleGlzdHMuLi5tYXliZSBm
+aXgga2VybmVsIHBhbmljIHRoaXMgd2F5CisJfQorCWVsc2UgeworCSAgICBz
+cGVjLT5wY21fa2N0bCA9IHBjbV9rY29udHJvbDsKKwkgICAgc3BlYy0+ZW1i
+ZWRkZWRfcGNtX2tjdGwgPSAqcGNtX2tjb250cm9sOworCSAgICBwcmludGso
+Ik1ZIFBDTSBOVU1JRCBJUzogJXgiLCBwY21fa2NvbnRyb2wtPmlkLm51bWlk
+KTsKKwl9CisJCisJc3RydWN0IHNuZF9jdGxfZWxlbV9pZCBzaWQ7CisJbWVt
+c2V0KCZzaWQsIDAsIHNpemVvZihzaWQpKTsKKwlzdHJjcHkoc2lkLm5hbWUs
+ICJNYXN0ZXIgUGxheWJhY2sgVm9sdW1lIik7CisJc2lkLmlmYWNlID0gU05E
+UlZfQ1RMX0VMRU1fSUZBQ0VfTUlYRVI7CisJc3RydWN0IHNuZF9rY29udHJv
+bCAqIG5ld3NpZDsKKwkvL2h1aCwgZmluZF9pZCBhbmQgZmluZF9udW1pZCBh
+cmUgZGlmZmVyZW50Li4ubG9vayBpbnRvIHRoaXMKKwluZXdzaWQgPSBzbmRf
+Y3RsX2ZpbmRfaWQoY29kZWMtPmNhcmQsICZzaWQpOworCWlmICghbmV3c2lk
+KSB7CisJICAgIHByaW50aygiU1lTNzY6IE5vIFBDTSBQbGF5YmFjayBWb2x1
+bWUgY3RsXG4iKTsKKwkgICAgLy9Ob3cgdHJ5ICpyZXBsYWNpbmcqIHRoZSBo
+ZWFkcGhvbmUgY29udHJvbCBpbnN0ZWFkIG9mIGFkZGluZyBhbm90aGVyCisJ
+ICAgIC8vdGhlIHNuZF9jdGxfYWN0aXZhdGUgZnVuY3Rpb24gaXMgaW50ZXJl
+c3RpbmcgbWF5YmU/CisJICAgIC8vc25kX2N0bF9yZXBsYWNlKGNvZGVjLT5j
+YXJkLCBzbmRfY3RsX25ldzEoJnNuZF9jbGV2b19wY21fdm9sdW1lX2NvbnRy
+b2wsIGNvZGVjKSwgMCk7CisJfQorCWVsc2UgeworCSAgICBwcmludGsoIlNZ
+Uzc2OiBQQ00gUGxheWJhY2sgVm9sdW1lIGN0bCBpZCBpcyAlZFxuIiwgbmV3
+c2lkLT5pZC5udW1pZCk7CisJICAgIG5ld3NpZC0+cHV0ID0gc25kX2NsZXZv
+X3BjbV92b2x1bWVfcHV0OworCSAgICBwcmludGsoIlNZUzc2OiBNeSBJRCBo
+YWhhaGEhXG4iKTsKKwl9Cit9CisKKwogc3RhdGljIHZvaWQgYWxjX2ZpeHVw
+X2Jhc3NfY2htYXAoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsCiAJCQkJIGNv
+bnN0IHN0cnVjdCBoZGFfZml4dXAgKmZpeCwgaW50IGFjdGlvbik7CiAKQEAg
+LTIxOTUsNiArMjQwNCwxMCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9m
+aXh1cCBhbGM4ODJfZml4dXBzW10gPSB7CiAJCS50eXBlID0gSERBX0ZJWFVQ
+X0ZVTkMsCiAJCS52LmZ1bmMgPSBhbGNfZml4dXBfYmFzc19jaG1hcCwKIAl9
+LAorCVtBTEM4OThfRklYVVBfQ0xFVk9fU1BESUZdID0geworCQkudHlwZSA9
+IEhEQV9GSVhVUF9GVU5DLAorCQkudi5mdW5jID0gYWxjODk4X2ZpeHVwX2Ns
+ZXZvLAorCX0sCiB9OwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9wY2lf
+cXVpcmsgYWxjODgyX2ZpeHVwX3RibFtdID0gewpAQCAtMjI2NCw2ICsyNDc3
+LDQxIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBhbGM4
+ODJfZml4dXBfdGJsW10gPSB7CiAJU05EX1BDSV9RVUlSS19WRU5ET1IoMHgx
+NDYyLCAiTVNJIiwgQUxDODgyX0ZJWFVQX0dQSU8zKSwKIAlTTkRfUENJX1FV
+SVJLKDB4MTQ1OCwgMHhhMDAyLCAiR2lnYWJ5dGUgRVA0NS1EUzMvWjg3WC1V
+RDNIIiwgQUxDODg5X0ZJWFVQX0ZST05UX0hQX05PX1BSRVNFTkNFKSwKIAlT
+TkRfUENJX1FVSVJLKDB4MTQ3YiwgMHgxMDdhLCAiQWJpdCBBVzlELU1BWCIs
+IEFMQzg4Ml9GSVhVUF9BQklUX0FXOURfTUFYKSwKKwlTTkRfUENJX1FVSVJL
+KDB4MTU1OCwgMHgwODcyLCAiQ2xldm8gUDg3MERNMi9QODcwRE0zIiwgQUxD
+ODk4X0ZJWFVQX0NMRVZPX1NQRElGKSwKKwlTTkRfUENJX1FVSVJLKDB4MTU1
+OCwgMHgwODczLCAiQ2xldm8gUDg3MERNMi1HL1A4NzBETTMtRyIsIEFMQzg5
+OF9GSVhVUF9DTEVWT19TUERJRiksCisJU05EX1BDSV9RVUlSSygweDE1NTgs
+IDB4MDg3NCwgIkNsZXZvIFA4NzBETTItRy9QODcwRE0zLUciLCBBTEM4OThf
+RklYVVBfQ0xFVk9fU1BESUYpLAorCVNORF9QQ0lfUVVJUksoMHgxNTU4LCAw
+eDA4NzUsICJDbGV2byBQODcwS00vUDg3MEtNMSIsIEFMQzg5OF9GSVhVUF9D
+TEVWT19TUERJRiksCisJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4MDg3Niwg
+IkNsZXZvIFA4NzBLTS1HL1A4NzBLTTFfRyIsIEFMQzg5OF9GSVhVUF9DTEVW
+T19TUERJRiksCisJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4NjVhMSwgIkNs
+ZXZvIFA2NXhIU19IUC1EMCIsIEFMQzg5OF9GSVhVUF9DTEVWT19TUERJRiks
+CisJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4NjVhMiwgIkNsZXZvIFA2NXhI
+U19IUC1EIiwgQUxDODk4X0ZJWFVQX0NMRVZPX1NQRElGKSwKKwlTTkRfUENJ
+X1FVSVJLKDB4MTU1OCwgMHg2NWEzLCAiQ2xldm8gUDY1eEhTX0hQLUcwIiwg
+QUxDODk4X0ZJWFVQX0NMRVZPX1NQRElGKSwKKwlTTkRfUENJX1FVSVJLKDB4
+MTU1OCwgMHg2NWE0LCAiQ2xldm8gUDY1eEhTX0hQLUciLCBBTEM4OThfRklY
+VVBfQ0xFVk9fU1BESUYpLAorCVNORF9QQ0lfUVVJUksoMHgxNTU4LCAweDY3
+YTEsICJDbGV2byBQNjd4SFNfSFAtRDAiLCBBTEM4OThfRklYVVBfQ0xFVk9f
+U1BESUYpLAorCVNORF9QQ0lfUVVJUksoMHgxNTU4LCAweDY3YTIsICJDbGV2
+byBQNjd4SFNfSFAtRCIsIEFMQzg5OF9GSVhVUF9DTEVWT19TUERJRiksCisJ
+U05EX1BDSV9RVUlSSygweDE1NTgsIDB4NjdhMywgIkNsZXZvIFA2N3hIU19I
+UC1HMCIsIEFMQzg5OF9GSVhVUF9DTEVWT19TUERJRiksCisJU05EX1BDSV9R
+VUlSSygweDE1NTgsIDB4NjdhNCwgIkNsZXZvIFA2N3hIU19IUC1HIiwgQUxD
+ODk4X0ZJWFVQX0NMRVZPX1NQRElGKSwKKwlTTkRfUENJX1FVSVJLKDB4MTU1
+OCwgMHg2YTAxLCAiQ2xldm8gUDY1eFJTX1JQLUQwIiwgQUxDODk4X0ZJWFVQ
+X0NMRVZPX1NQRElGKSwKKwlTTkRfUENJX1FVSVJLKDB4MTU1OCwgMHg2YTAy
+LCAiQ2xldm8gUDY1eFJTX1JQLUQiLCBBTEM4OThfRklYVVBfQ0xFVk9fU1BE
+SUYpLAorCVNORF9QQ0lfUVVJUksoMHgxNTU4LCAweDZhMDMsICJDbGV2byBQ
+NjV4UlNfUlAtRzAiLCBBTEM4OThfRklYVVBfQ0xFVk9fU1BESUYpLAorCVNO
+RF9QQ0lfUVVJUksoMHgxNTU4LCAweDZhMDQsICJDbGV2byBQNjV4UlNfUlAt
+RyIsIEFMQzg5OF9GSVhVUF9DTEVWT19TUERJRiksCisJU05EX1BDSV9RVUlS
+SygweDE1NTgsIDB4NmEwNSwgIkNsZXZvIFA2NXhSU19SUC1WIiwgQUxDODk4
+X0ZJWFVQX0NMRVZPX1NQRElGKSwKKwlTTkRfUENJX1FVSVJLKDB4MTU1OCwg
+MHg2YTA2LCAiQ2xldm8gUDY1eFJTX1JQLURpcmVjdCIsIEFMQzg5OF9GSVhV
+UF9DTEVWT19TUERJRiksCisJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4NmIw
+MSwgIkNsZXZvIFA2N3hSU19SUC1EMCIsIEFMQzg5OF9GSVhVUF9DTEVWT19T
+UERJRiksCisJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4NmIwMiwgIkNsZXZv
+IFA2N3hSU19SUC1EIiwgQUxDODk4X0ZJWFVQX0NMRVZPX1NQRElGKSwKKwlT
+TkRfUENJX1FVSVJLKDB4MTU1OCwgMHg2YjAzLCAiQ2xldm8gUDY3eFJTX1JQ
+LUcwIiwgQUxDODk4X0ZJWFVQX0NMRVZPX1NQRElGKSwKKwlTTkRfUENJX1FV
+SVJLKDB4MTU1OCwgMHg2YjA0LCAiQ2xldm8gUDY3eFJTX1JQLUciLCBBTEM4
+OThfRklYVVBfQ0xFVk9fU1BESUYpLAorCVNORF9QQ0lfUVVJUksoMHgxNTU4
+LCAweDZiMDUsICJDbGV2byBQNjd4UlNfUlAtViIsIEFMQzg5OF9GSVhVUF9D
+TEVWT19TUERJRiksCisJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4NmIwNiwg
+IkNsZXZvIFA2N3hSU19SUC1EaXJlY3QiLCBBTEM4OThfRklYVVBfQ0xFVk9f
+U1BESUYpLAorCVNORF9QQ0lfUVVJUksoMHgxNTU4LCAweDc1MDQsICJDbGV2
+byBQNzUwRE0yIiwgQUxDODk4X0ZJWFVQX0NMRVZPX1NQRElGKSwKKwlTTkRf
+UENJX1FVSVJLKDB4MTU1OCwgMHg3NTA1LCAiQ2xldm8gUDc1MERNMkciLCBB
+TEM4OThfRklYVVBfQ0xFVk9fU1BESUYpLAorCVNORF9QQ0lfUVVJUksoMHgx
+NTU4LCAweDc1MDYsICJDbGV2byBQNzUwS00iLCBBTEM4OThfRklYVVBfQ0xF
+Vk9fU1BESUYpLAorCVNORF9QQ0lfUVVJUksoMHgxNTU4LCAweDc1MDcsICJD
+bGV2byBQNzUwS01HIiwgQUxDODk4X0ZJWFVQX0NMRVZPX1NQRElGKSwKKwlT
+TkRfUENJX1FVSVJLKDB4MTU1OCwgMHg3NzA1LCAiQ2xldm8gUDc3NURNMiIs
+IEFMQzg5OF9GSVhVUF9DTEVWT19TUERJRiksCisJU05EX1BDSV9RVUlSSygw
+eDE1NTgsIDB4NzcwNiwgIkNsZXZvIFA3NzVETTJHIiwgQUxDODk4X0ZJWFVQ
+X0NMRVZPX1NQRElGKSwKKwlTTkRfUENJX1FVSVJLKDB4MTU1OCwgMHg3NzA3
+LCAiQ2xldm8gUDc3NUtNIiwgQUxDODk4X0ZJWFVQX0NMRVZPX1NQRElGKSwK
+KwlTTkRfUENJX1FVSVJLKDB4MTU1OCwgMHg3NzA4LCAiQ2xldm8gUDc3NUtN
+RyIsIEFMQzg5OF9GSVhVUF9DTEVWT19TUERJRiksCisJU05EX1BDSV9RVUlS
+SygweDE1NTgsIDB4NzcwNSwgIlN5c3RlbTc2IHNlcncxMCIsIEFMQzg5OF9G
+SVhVUF9DTEVWT19TUERJRiksCisJU05EX1BDSV9RVUlSSygweDE1NTgsIDB4
+NmIwMSwgIlN5c3RlbTc2IG9yeXAyLWVzcyIsIEFMQzg5OF9GSVhVUF9DTEVW
+T19TUERJRiksCiAJU05EX1BDSV9RVUlSS19WRU5ET1IoMHgxNTU4LCAiQ2xl
+dm8gbGFwdG9wIiwgQUxDODgyX0ZJWFVQX0VBUEQpLAogCVNORF9QQ0lfUVVJ
+UksoMHgxNjFmLCAweDIwNTQsICJNZWRpb24gbGFwdG9wIiwgQUxDODgzX0ZJ
+WFVQX0VBUEQpLAogCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDNhMGQsICJM
+ZW5vdm8gWTUzMCIsIEFMQzg4Ml9GSVhVUF9MRU5PVk9fWTUzMCksCkBAIC0y
+Mjc3LDYgKzI1MjUsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9tb2Rl
+bF9maXh1cCBhbGM4ODJfZml4dXBfbW9kZWxzW10gPSB7CiAJey5pZCA9IEFM
+Qzg4M19GSVhVUF9BQ0VSX0VBUEQsIC5uYW1lID0gImFjZXItYXNwaXJlIn0s
+CiAJey5pZCA9IEFMQzg4Ml9GSVhVUF9JTlZfRE1JQywgLm5hbWUgPSAiaW52
+LWRtaWMifSwKIAl7LmlkID0gQUxDODgyX0ZJWFVQX05PX1BSSU1BUllfSFAs
+IC5uYW1lID0gIm5vLXByaW1hcnktaHAifSwKKwl7LmlkID0gQUxDODk4X0ZJ
+WFVQX0NMRVZPX1NQRElGLCAubmFtZSA9ICJzeXN0ZW03NiJ9LAogCXt9CiB9
+Owo=
+
+--_----------=_147863267841509092
+Content-Disposition: attachment; filename="alsa-info.txt"
+Content-Id: <1478632407.4150023.2cd597b05120048303e0bbf6f2f389ce1a1ea973.7EEB7FB2@content.messagingengine.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; name="alsa-info.txt"
+
+dXBsb2FkPXRydWUmc2NyaXB0PXRydWUmY2FyZGluZm89CiEhIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKISFBTFNBIEluZm9ybWF0aW9uIFNj
+cmlwdCB2IDAuNC42NAohISMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjCgohIVNjcmlwdCByYW4gb246IFR1ZSBOb3YgIDggMTg6Mjg6MDkgVVRD
+IDIwMTYKCgohIUxpbnV4IERpc3RyaWJ1dGlvbgohIS0tLS0tLS0tLS0tLS0t
+LS0tLQoKVWJ1bnR1IDE2LjA0LjEgTFRTIFxuIFxsIERJU1RSSUJfSUQ9VWJ1
+bnR1IERJU1RSSUJfREVTQ1JJUFRJT049IlVidW50dSAxNi4wNC4xIExUUyIg
+TkFNRT0iVWJ1bnR1IiBJRD11YnVudHUgSURfTElLRT1kZWJpYW4gUFJFVFRZ
+X05BTUU9IlVidW50dSAxNi4wNC4xIExUUyIgSE9NRV9VUkw9Imh0dHA6Ly93
+d3cudWJ1bnR1LmNvbS8iIFNVUFBPUlRfVVJMPSJodHRwOi8vaGVscC51YnVu
+dHUuY29tLyIgQlVHX1JFUE9SVF9VUkw9Imh0dHA6Ly9idWdzLmxhdW5jaHBh
+ZC5uZXQvdWJ1bnR1LyIgVUJVTlRVX0NPREVOQU1FPXhlbmlhbAoKCiEhRE1J
+IEluZm9ybWF0aW9uCiEhLS0tLS0tLS0tLS0tLS0tCgpNYW51ZmFjdHVyZXI6
+ICAgICAgIFN5c3RlbTc2LCBJbmMuClByb2R1Y3QgTmFtZTogICAgICAgT3J5
+eCBQcm8KUHJvZHVjdCBWZXJzaW9uOiAgICBvcnlwMi1lc3MKRmlybXdhcmUg
+VmVyc2lvbjogIDEuMDUuMDRSU0EyCgoKISFLZXJuZWwgSW5mb3JtYXRpb24K
+ISEtLS0tLS0tLS0tLS0tLS0tLS0KCktlcm5lbCByZWxlYXNlOiAgICA0LjQu
+MC0zOC1nZW5lcmljCk9wZXJhdGluZyBTeXN0ZW06ICBHTlUvTGludXgKQXJj
+aGl0ZWN0dXJlOiAgICAgIHg4Nl82NApQcm9jZXNzb3I6ICAgICAgICAgeDg2
+XzY0ClNNUCBFbmFibGVkOiAgICAgICBZZXMKCgohIUFMU0EgVmVyc2lvbgoh
+IS0tLS0tLS0tLS0tLQoKRHJpdmVyIHZlcnNpb246ICAgICBrNC40LjAtMzgt
+Z2VuZXJpYwpMaWJyYXJ5IHZlcnNpb246ICAgIDEuMS4wClV0aWxpdGllcyB2
+ZXJzaW9uOiAgMS4xLjAKCgohIUxvYWRlZCBBTFNBIG1vZHVsZXMKISEtLS0t
+LS0tLS0tLS0tLS0tLS0tCgpzbmRfaGRhX2ludGVsCnNuZF9oZGFfaW50ZWwK
+CgohIVNvdW5kIFNlcnZlcnMgb24gdGhpcyBzeXN0ZW0KISEtLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tCgpQdWxzZWF1ZGlvOgogICAgICBJbnN0YWxs
+ZWQgLSBZZXMgKC91c3IvYmluL3B1bHNlYXVkaW8pCiAgICAgIFJ1bm5pbmcg
+LSBZZXMKCgohIVNvdW5kY2FyZHMgcmVjb2duaXNlZCBieSBBTFNBCiEhLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCiAwIFtQQ0ggICAgICAgICAg
+ICBdOiBIREEtSW50ZWwgLSBIREEgSW50ZWwgUENICiAgICAgICAgICAgICAg
+ICAgICAgICBIREEgSW50ZWwgUENIIGF0IDB4MmZmZmYyMDAwMCBpcnEgMTI3
+CiAxIFtOVmlkaWEgICAgICAgICBdOiBIREEtSW50ZWwgLSBIREEgTlZpZGlh
+CiAgICAgICAgICAgICAgICAgICAgICBIREEgTlZpZGlhIGF0IDB4ZGMwODAw
+MDAgaXJxIDE3CgoKISFQQ0kgU291bmRjYXJkcyBpbnN0YWxsZWQgaW4gdGhl
+IHN5c3RlbQohIS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tCgowMDoxZi4zIEF1ZGlvIGRldmljZTogSW50ZWwgQ29ycG9yYXRpb24g
+U3VucmlzZSBQb2ludC1IIEhEIEF1ZGlvIChyZXYgMzEpCjAxOjAwLjEgQXVk
+aW8gZGV2aWNlOiBOVklESUEgQ29ycG9yYXRpb24gRGV2aWNlIDEwZjAgKHJl
+diBhMSkKCgohIUFkdmFuY2VkIGluZm9ybWF0aW9uIC0gUENJIFZlbmRvci9E
+ZXZpY2UvU3Vic3lzdGVtIElEJ3MKISEtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgowMDoxZi4zIDA0
+MDM6IDgwODY6YTE3MCAocmV2IDMxKQoJU3Vic3lzdGVtOiAxNTU4OjZiMDIK
+LS0KMDE6MDAuMSAwNDAzOiAxMGRlOjEwZjAgKHJldiBhMSkKCVN1YnN5c3Rl
+bTogMTU1ODo2YjAxCgoKISFNb2Rwcm9iZSBvcHRpb25zIChTb3VuZCByZWxh
+dGVkKQohIS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpzbmRf
+cGNzcDogaW5kZXg9LTIKc25kX3VzYl9hdWRpbzogaW5kZXg9LTIKc25kX2F0
+aWl4cF9tb2RlbTogaW5kZXg9LTIKc25kX2ludGVsOHgwbTogaW5kZXg9LTIK
+c25kX3ZpYTgyeHhfbW9kZW06IGluZGV4PS0yCnNuZF9hdGlpeHBfbW9kZW06
+IGluZGV4PS0yCnNuZF9pbnRlbDh4MG06IGluZGV4PS0yCnNuZF92aWE4Mnh4
+X21vZGVtOiBpbmRleD0tMgpzbmRfdXNiX2F1ZGlvOiBpbmRleD0tMgpzbmRf
+dXNiX2NhaWFxOiBpbmRleD0tMgpzbmRfdXNiX3VhMTAxOiBpbmRleD0tMgpz
+bmRfdXNiX3VzMTIybDogaW5kZXg9LTIKc25kX3VzYl91c3gyeTogaW5kZXg9
+LTIKc25kX2NtaXBjaTogbXB1X3BvcnQ9MHgzMzAgZm1fcG9ydD0weDM4OApz
+bmRfcGNzcDogaW5kZXg9LTIKc25kX3VzYl9hdWRpbzogaW5kZXg9LTIKc25k
+X2hkYV9pbnRlbDogc3lzdGVtNzYtYXVkaW8tcGF0Y2gKc25kX2hkYV9pbnRl
+bDogcGF0Y2g9c3lzdGVtNzYtYXVkaW8tcGF0Y2gKCgohIUxvYWRlZCBzb3Vu
+ZCBtb2R1bGUgb3B0aW9ucwohIS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQoKISFNb2R1bGU6IHNuZF9oZGFfaW50ZWwKCWFsaWduX2J1ZmZlcl9zaXpl
+IDogLTEKCWJkbF9wb3NfYWRqIDogMSwzMiwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMQoJYmVlcF9tb2RlIDogTixOLE4s
+TixOLE4sTixOLE4sTixOLE4sTixOLE4sTixOLE4sTixOLE4sTixOLE4sTixO
+LE4sTixOLE4sTixOCgllbmFibGUgOiBZLFksWSxZLFksWSxZLFksWSxZLFks
+WSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFkKCWVu
+YWJsZV9tc2kgOiAtMQoJaWQgOiAobnVsbCksKG51bGwpLChudWxsKSwobnVs
+bCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCks
+KG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51
+bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwp
+LChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChu
+dWxsKSwobnVsbCksKG51bGwpCglpbmRleCA6IC0xLC0xLC0xLC0xLC0xLC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xCglqYWNrcG9sbF9t
+cyA6IDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCww
+LDAsMCwwLDAsMCwwLDAsMCwwLDAsMAoJbW9kZWwgOiAobnVsbCksKG51bGwp
+LChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChu
+dWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxs
+KSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwo
+bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
+bCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpCglwYXRjaCA6IHN5c3Rl
+bTc2LWF1ZGlvLXBhdGNoLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwo
+bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
+bCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCks
+KG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51
+bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwp
+LChudWxsKQoJcG9zaXRpb25fZml4IDogLTEsLTEsLTEsLTEsLTEsLTEsLTEs
+LTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEs
+LTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEKCXBvd2VyX3NhdmUgOiAw
+Cglwb3dlcl9zYXZlX2NvbnRyb2xsZXIgOiBZCglwcm9iZV9tYXNrIDogLTEs
+LTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEs
+LTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEs
+LTEKCXByb2JlX29ubHkgOiAwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAs
+MCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAKCXNpbmdsZV9j
+bWQgOiBOCglzbm9vcCA6IC0xCgohIU1vZHVsZTogc25kX2hkYV9pbnRlbAoJ
+YWxpZ25fYnVmZmVyX3NpemUgOiAtMQoJYmRsX3Bvc19hZGogOiAxLDMyLC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0x
+LC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xLC0xCgli
+ZWVwX21vZGUgOiBOLE4sTixOLE4sTixOLE4sTixOLE4sTixOLE4sTixOLE4s
+TixOLE4sTixOLE4sTixOLE4sTixOLE4sTixOLE4KCWVuYWJsZSA6IFksWSxZ
+LFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFksWSxZLFks
+WSxZLFksWSxZLFksWQoJZW5hYmxlX21zaSA6IC0xCglpZCA6IChudWxsKSwo
+bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
+bCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCks
+KG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51
+bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwp
+LChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCkKCWluZGV4IDog
+LTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEs
+LTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEs
+LTEsLTEKCWphY2twb2xsX21zIDogMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAs
+MCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwCgltb2Rl
+bCA6IChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwp
+LChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChu
+dWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxs
+KSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwo
+bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
+bCkKCXBhdGNoIDogc3lzdGVtNzYtYXVkaW8tcGF0Y2gsKG51bGwpLChudWxs
+KSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwo
+bnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVs
+bCksKG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCks
+KG51bGwpLChudWxsKSwobnVsbCksKG51bGwpLChudWxsKSwobnVsbCksKG51
+bGwpLChudWxsKSwobnVsbCksKG51bGwpCglwb3NpdGlvbl9maXggOiAtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MQoJcG93ZXJfc2F2ZSA6IDAKCXBvd2VyX3NhdmVfY29udHJvbGxlciA6IFkK
+CXByb2JlX21hc2sgOiAtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwtMSwt
+MSwtMSwtMSwtMSwtMSwtMSwtMQoJcHJvYmVfb25seSA6IDAsMCwwLDAsMCww
+LDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAs
+MCwwLDAsMAoJc2luZ2xlX2NtZCA6IE4KCXNub29wIDogLTEKCgohIUhEQS1J
+bnRlbCBDb2RlYyBpbmZvcm1hdGlvbgohIS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQotLXN0YXJ0Y29sbGFwc2UtLQoKQ29kZWM6IFJlYWx0ZWsgQUxD
+ODk4CkFkZHJlc3M6IDAKQUZHIEZ1bmN0aW9uIElkOiAweDEgKHVuc29sIDEp
+ClZlbmRvciBJZDogMHgxMGVjMDg5OQpTdWJzeXN0ZW0gSWQ6IDB4MTU1ODZi
+MDIKUmV2aXNpb24gSWQ6IDB4MTAwMDAzCk5vIE1vZGVtIEZ1bmN0aW9uIEdy
+b3VwIGZvdW5kCkRlZmF1bHQgUENNOgogICAgcmF0ZXMgWzB4NWYwXTogMzIw
+MDAgNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAgMTkyMDAwCiAgICBiaXRzIFsw
+eGVdOiAxNiAyMCAyNAogICAgZm9ybWF0cyBbMHgxXTogUENNCkRlZmF1bHQg
+QW1wLUluIGNhcHM6IE4vQQpEZWZhdWx0IEFtcC1PdXQgY2FwczogTi9BClN0
+YXRlIG9mIEFGRyBub2RlIDB4MDE6CiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEg
+RDIgRDMgQ0xLU1RPUCBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVh
+bD1EMApHUElPOiBpbz0yLCBvPTAsIGk9MCwgdW5zb2xpY2l0ZWQ9MSwgd2Fr
+ZT0wCiAgSU9bMF06IGVuYWJsZT0wLCBkaXI9MCwgd2FrZT0wLCBzdGlja3k9
+MCwgZGF0YT0wLCB1bnNvbD0wCiAgSU9bMV06IGVuYWJsZT0wLCBkaXI9MCwg
+d2FrZT0wLCBzdGlja3k9MCwgZGF0YT0wLCB1bnNvbD0wCk5vZGUgMHgwMiBb
+QXVkaW8gT3V0cHV0XSB3Y2FwcyAweDQxMTogU3RlcmVvCiAgRGV2aWNlOiBu
+YW1lPSJBTEM4OTggQW5hbG9nIiwgdHlwZT0iQXVkaW8iLCBkZXZpY2U9MAog
+IENvbnZlcnRlcjogc3RyZWFtPTEsIGNoYW5uZWw9MAogIFBDTToKICAgIHJh
+dGVzIFsweDVlMF06IDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE5MjAwMAog
+ICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4MV06IFBD
+TQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjog
+c2V0dGluZz1EMCwgYWN0dWFsPUQwCk5vZGUgMHgwMyBbQXVkaW8gT3V0cHV0
+XSB3Y2FwcyAweDQxMTogU3RlcmVvCiAgQ29udmVydGVyOiBzdHJlYW09MSwg
+Y2hhbm5lbD0wCiAgUENNOgogICAgcmF0ZXMgWzB4NWUwXTogNDQxMDAgNDgw
+MDAgODgyMDAgOTYwMDAgMTkyMDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAy
+NAogICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93ZXIgc3RhdGVzOiAgRDAg
+RDEgRDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAK
+Tm9kZSAweDA0IFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4NDExOiBTdGVyZW8K
+ICBDb252ZXJ0ZXI6IHN0cmVhbT0xLCBjaGFubmVsPTAKICBQQ006CiAgICBy
+YXRlcyBbMHg1ZTBdOiA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMCAxOTIwMDAK
+ICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQ
+Q00KICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6
+IHNldHRpbmc9RDAsIGFjdHVhbD1EMApOb2RlIDB4MDUgW0F1ZGlvIE91dHB1
+dF0gd2NhcHMgMHg0MTE6IFN0ZXJlbwogIENvbnZlcnRlcjogc3RyZWFtPTAs
+IGNoYW5uZWw9MAogIFBDTToKICAgIHJhdGVzIFsweDVlMF06IDQ0MTAwIDQ4
+MDAwIDg4MjAwIDk2MDAwIDE5MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAg
+MjQKICAgIGZvcm1hdHMgWzB4MV06IFBDTQogIFBvd2VyIHN0YXRlczogIEQw
+IEQxIEQyIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQw
+Ck5vZGUgMHgwNiBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDYxMTogU3RlcmVv
+IERpZ2l0YWwKICBDb250cm9sOiBuYW1lPSJJRUM5NTggUGxheWJhY2sgQ29u
+IE1hc2siLCBpbmRleD0wLCBkZXZpY2U9MAogIENvbnRyb2w6IG5hbWU9IklF
+Qzk1OCBQbGF5YmFjayBQcm8gTWFzayIsIGluZGV4PTAsIGRldmljZT0wCiAg
+Q29udHJvbDogbmFtZT0iSUVDOTU4IFBsYXliYWNrIERlZmF1bHQiLCBpbmRl
+eD0wLCBkZXZpY2U9MAogIENvbnRyb2w6IG5hbWU9IklFQzk1OCBQbGF5YmFj
+ayBTd2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAogIENvbnRyb2w6IG5hbWU9
+IklFQzk1OCBEZWZhdWx0IFBDTSBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0w
+LCBkZXZpY2U9MAogIERldmljZTogbmFtZT0iQUxDODk4IERpZ2l0YWwiLCB0
+eXBlPSJTUERJRiIsIGRldmljZT0xCiAgQ29udmVydGVyOiBzdHJlYW09MSwg
+Y2hhbm5lbD0wCiAgRGlnaXRhbDoKICBEaWdpdGFsIGNhdGVnb3J5OiAweDAK
+ICBJRUMgQ29kaW5nIFR5cGU6IDB4MAogIFBDTToKICAgIHJhdGVzIFsweDVm
+MF06IDMyMDAwIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE5MjAwMAogICAg
+Yml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4MV06IFBDTQog
+IFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjogc2V0
+dGluZz1EMCwgYWN0dWFsPUQwCk5vZGUgMHgwNyBbQXVkaW8gSW5wdXRdIHdj
+YXBzIDB4MTAwNTFiOiBTdGVyZW8gQW1wLUluCiAgQ29udHJvbDogbmFtZT0i
+Q2FwdHVyZSBWb2x1bWUiLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJv
+bEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTAsIG9mcz0wCiAgQ29udHJvbDog
+bmFtZT0iQ2FwdHVyZSBTd2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAogICAg
+Q29udHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTAsIG9mcz0wCiAgRGV2
+aWNlOiBuYW1lPSJBTEM4OTggQW5hbG9nIiwgdHlwZT0iQXVkaW8iLCBkZXZp
+Y2U9MAogIEFtcC1JbiBjYXBzOiBvZnM9MHgxNywgbnN0ZXBzPTB4M2YsIHN0
+ZXBzaXplPTB4MDIsIG11dGU9MQogIEFtcC1JbiB2YWxzOiAgWzB4YjIgMHhi
+Ml0KICBDb252ZXJ0ZXI6IHN0cmVhbT0xLCBjaGFubmVsPTAKICBTREktU2Vs
+ZWN0OiAwCiAgUENNOgogICAgcmF0ZXMgWzB4NWUwXTogNDQxMDAgNDgwMDAg
+ODgyMDAgOTYwMDAgMTkyMDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAog
+ICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEg
+RDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBD
+b25uZWN0aW9uOiAxCiAgICAgMHgyNApOb2RlIDB4MDggW0F1ZGlvIElucHV0
+XSB3Y2FwcyAweDEwMDUxYjogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBz
+OiBvZnM9MHgxNywgbnN0ZXBzPTB4M2YsIHN0ZXBzaXplPTB4MDIsIG11dGU9
+MQogIEFtcC1JbiB2YWxzOiAgWzB4OTcgMHg5N10KICBDb252ZXJ0ZXI6IHN0
+cmVhbT0wLCBjaGFubmVsPTAKICBTREktU2VsZWN0OiAwCiAgUENNOgogICAg
+cmF0ZXMgWzB4NWUwXTogNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAgMTkyMDAw
+CiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0cyBbMHgxXTog
+UENNCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2Vy
+OiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAxCiAgICAg
+MHgyMwpOb2RlIDB4MDkgW0F1ZGlvIElucHV0XSB3Y2FwcyAweDEwMDUxYjog
+U3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBvZnM9MHgxNywgbnN0ZXBz
+PTB4M2YsIHN0ZXBzaXplPTB4MDIsIG11dGU9MQogIEFtcC1JbiB2YWxzOiAg
+WzB4OTcgMHg5N10KICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAK
+ICBTREktU2VsZWN0OiAwCiAgUENNOgogICAgcmF0ZXMgWzB4NWUwXTogNDQx
+MDAgNDgwMDAgODgyMDAgOTYwMDAgMTkyMDAwCiAgICBiaXRzIFsweGVdOiAx
+NiAyMCAyNAogICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93ZXIgc3RhdGVz
+OiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1
+YWw9RDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgyMgpOb2RlIDB4MGEgW0F1
+ZGlvIElucHV0XSB3Y2FwcyAweDEwMDc5MTogU3RlcmVvIERpZ2l0YWwKICBD
+b252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBTREktU2VsZWN0OiAw
+CiAgRGlnaXRhbDoKICBEaWdpdGFsIGNhdGVnb3J5OiAweDAKICBJRUMgQ29k
+aW5nIFR5cGU6IDB4MAogIFBDTToKICAgIHJhdGVzIFsweDU3MF06IDMyMDAw
+IDQ0MTAwIDQ4MDAwIDk2MDAwIDE5MjAwMAogICAgYml0cyBbMHhlXTogMTYg
+MjAgMjQKICAgIGZvcm1hdHMgWzB4MV06IFBDTQogIFVuc29saWNpdGVkOiB0
+YWc9MDAsIGVuYWJsZWQ9MAogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQz
+IEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVj
+dGlvbjogMQogICAgIDB4MWYKTm9kZSAweDBiIFtBdWRpbyBNaXhlcl0gd2Nh
+cHMgMHgyMDAxMGI6IFN0ZXJlbyBBbXAtSW4KICBDb250cm9sOiBuYW1lPSJN
+aWMgUGxheWJhY2sgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENv
+bnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0wLCBvZnM9MAogIENvbnRy
+b2w6IG5hbWU9Ik1pYyBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0wLCBkZXZp
+Y2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTAsIG9m
+cz0wCiAgQ29udHJvbDogbmFtZT0iQmVlcCBQbGF5YmFjayBWb2x1bWUiLCBp
+bmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1J
+biwgaWR4PTUsIG9mcz0wCiAgQ29udHJvbDogbmFtZT0iQmVlcCBQbGF5YmFj
+ayBTd2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDog
+Y2hzPTMsIGRpcj1JbiwgaWR4PTUsIG9mcz0wCiAgQW1wLUluIGNhcHM6IG9m
+cz0weDE3LCBuc3RlcHM9MHgxZiwgc3RlcHNpemU9MHgwNSwgbXV0ZT0xCiAg
+QW1wLUluIHZhbHM6ICBbMHg4MCAweDgwXSBbMHg4MCAweDgwXSBbMHg4MCAw
+eDgwXSBbMHg4MCAweDgwXSBbMHg4MCAweDgwXSBbMHg4MCAweDgwXSBbMHg4
+MCAweDgwXSBbMHg4MCAweDgwXSBbMHg4MCAweDgwXSBbMHg4MCAweDgwXQog
+IENvbm5lY3Rpb246IDEwCiAgICAgMHgxOCAweDE5IDB4MWEgMHgxYiAweDFj
+IDB4MWQgMHgxNCAweDE1IDB4MTYgMHgxNwpOb2RlIDB4MGMgW0F1ZGlvIE1p
+eGVyXSB3Y2FwcyAweDIwMDEwZjogU3RlcmVvIEFtcC1JbiBBbXAtT3V0CiAg
+Q29udHJvbDogbmFtZT0iTGluZSBPdXQgUGxheWJhY2sgVm9sdW1lIiwgaW5k
+ZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9T3V0
+LCBpZHg9MCwgb2ZzPTAKICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVw
+cz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtSW4gdmFsczog
+IFsweDAwIDB4MDBdIFsweDAwIDB4MDBdCiAgQW1wLU91dCBjYXBzOiBvZnM9
+MHg1NywgbnN0ZXBzPTB4NTcsIHN0ZXBzaXplPTB4MDIsIG11dGU9MAogIEFt
+cC1PdXQgdmFsczogIFsweDAwIDB4MDBdCiAgQ29ubmVjdGlvbjogMgogICAg
+IDB4MDIgMHgwYgpOb2RlIDB4MGQgW0F1ZGlvIE1peGVyXSB3Y2FwcyAweDIw
+MDEwZjogU3RlcmVvIEFtcC1JbiBBbXAtT3V0CiAgQ29udHJvbDogbmFtZT0i
+SGVhZHBob25lIFBsYXliYWNrIFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0w
+CiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPU91dCwgaWR4PTAsIG9mcz0w
+CiAgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNp
+emU9MHgwMCwgbXV0ZT0xCiAgQW1wLUluIHZhbHM6ICBbMHgwMCAweDAwXSBb
+MHgwMCAweDAwXQogIEFtcC1PdXQgY2Fwczogb2ZzPTB4NTcsIG5zdGVwcz0w
+eDU3LCBzdGVwc2l6ZT0weDAyLCBtdXRlPTAKICBBbXAtT3V0IHZhbHM6ICBb
+MHgwMCAweDAwXQogIENvbm5lY3Rpb246IDIKICAgICAweDAzIDB4MGIKTm9k
+ZSAweDBlIFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDAxMGY6IFN0ZXJlbyBB
+bXAtSW4gQW1wLU91dAogIENvbnRyb2w6IG5hbWU9IlNwZWFrZXIgUGxheWJh
+Y2sgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6
+IGNocz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKICBBbXAtSW4gY2Fwczog
+b2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEK
+ICBBbXAtSW4gdmFsczogIFsweDAwIDB4MDBdIFsweDAwIDB4MDBdCiAgQW1w
+LU91dCBjYXBzOiBvZnM9MHg1NywgbnN0ZXBzPTB4NTcsIHN0ZXBzaXplPTB4
+MDIsIG11dGU9MAogIEFtcC1PdXQgdmFsczogIFsweDAwIDB4MDBdCiAgQ29u
+bmVjdGlvbjogMgogICAgIDB4MDQgMHgwYgpOb2RlIDB4MGYgW0F1ZGlvIE1p
+eGVyXSB3Y2FwcyAweDIwMDEwZjogU3RlcmVvIEFtcC1JbiBBbXAtT3V0CiAg
+QW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9
+MHgwMCwgbXV0ZT0xCiAgQW1wLUluIHZhbHM6ICBbMHgwMCAweDAwXSBbMHg4
+MCAweDgwXQogIEFtcC1PdXQgY2Fwczogb2ZzPTB4NTcsIG5zdGVwcz0weDU3
+LCBzdGVwc2l6ZT0weDAyLCBtdXRlPTAKICBBbXAtT3V0IHZhbHM6ICBbMHg1
+NyAweDU3XQogIENvbm5lY3Rpb246IDIKICAgICAweDA1IDB4MGIKTm9kZSAw
+eDEwIFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4NjExOiBTdGVyZW8gRGlnaXRh
+bAogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIERpZ2l0YWw6
+CiAgRGlnaXRhbCBjYXRlZ29yeTogMHgwCiAgSUVDIENvZGluZyBUeXBlOiAw
+eDAKICBQQ006CiAgICByYXRlcyBbMHg1ZjBdOiAzMjAwMCA0NDEwMCA0ODAw
+MCA4ODIwMCA5NjAwMCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0
+CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQb3dlciBzdGF0ZXM6ICBEMCBE
+MSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMApO
+b2RlIDB4MTEgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDcwMTogU3RlcmVv
+IERpZ2l0YWwKICBQaW5jYXAgMHgwMDAwMDAxMDogT1VUCiAgUGluIERlZmF1
+bHQgMHg0MDAwZDAwMDogW04vQV0gTGluZSBPdXQgYXQgRXh0IE4vQQogICAg
+Q29ubiA9IFVua25vd24sIENvbG9yID0gVU5LTk9XTgogICAgRGVmQXNzb2Np
+YXRpb24gPSAweDAsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4NDA6
+IE9VVAogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dl
+cjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjogMQogICAg
+IDB4MTAKTm9kZSAweDEyIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA0MDE6
+IFN0ZXJlbwogIFBpbmNhcCAweDAwMDAwMDIwOiBJTgogIFBpbiBEZWZhdWx0
+IDB4OTBhNjAxNTA6IFtGaXhlZF0gTWljIGF0IEludCBOL0EKICAgIENvbm4g
+PSBEaWdpdGFsLCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9u
+ID0gMHg1LCBTZXF1ZW5jZSA9IDB4MAogICAgTWlzYyA9IE5PX1BSRVNFTkNF
+CiAgUGluLWN0bHM6IDB4MjA6IElOCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEg
+RDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKTm9k
+ZSAweDEzIFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAw
+OiBNb25vCk5vZGUgMHgxNCBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNThk
+OiBTdGVyZW8gQW1wLU91dAogIENvbnRyb2w6IG5hbWU9IlNwZWFrZXIgUGxh
+eWJhY2sgU3dpdGNoIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xB
+bXA6IGNocz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKICBBbXAtT3V0IGNh
+cHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0
+ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0KICBQaW5jYXAgMHgw
+MDAxMDAzYzogSU4gT1VUIEhQIEVBUEQgRGV0ZWN0CiAgRUFQRCAweDI6IEVB
+UEQKICBQaW4gRGVmYXVsdCAweDkwMTcwMTEwOiBbRml4ZWRdIFNwZWFrZXIg
+YXQgSW50IE4vQQogICAgQ29ubiA9IEFuYWxvZywgQ29sb3IgPSBVbmtub3du
+CiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MSwgU2VxdWVuY2UgPSAweDAKICAg
+IE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1jdGxzOiAweDQwOiBPVVQKICBV
+bnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6
+ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVh
+bD1EMAogIENvbm5lY3Rpb246IDUKICAgICAweDBjIDB4MGQgMHgwZSogMHgw
+ZiAweDI2Ck5vZGUgMHgxNSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNThk
+OiBTdGVyZW8gQW1wLU91dAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5z
+dGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0IHZh
+bHM6ICBbMHg4MCAweDgwXQogIFBpbmNhcCAweDAwMDAwMDNjOiBJTiBPVVQg
+SFAgRGV0ZWN0CiAgUGluIERlZmF1bHQgMHg0MTExMTFmMDogW04vQV0gU3Bl
+YWtlciBhdCBFeHQgUmVhcgogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFj
+awogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAg
+ICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHgyMDogSU4KICBV
+bnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6
+ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVh
+bD1EMAogIENvbm5lY3Rpb246IDUKICAgICAweDBjIDB4MGQqIDB4MGUgMHgw
+ZiAweDI2Ck5vZGUgMHgxNiBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNThk
+OiBTdGVyZW8gQW1wLU91dAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5z
+dGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0IHZh
+bHM6ICBbMHg4MCAweDgwXQogIFBpbmNhcCAweDAwMDAwMDNjOiBJTiBPVVQg
+SFAgRGV0ZWN0CiAgUGluIERlZmF1bHQgMHg0MTExMTFmMDogW04vQV0gU3Bl
+YWtlciBhdCBFeHQgUmVhcgogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFj
+awogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAg
+ICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHgyMDogSU4KICBV
+bnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6
+ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVh
+bD1EMAogIENvbm5lY3Rpb246IDUKICAgICAweDBjIDB4MGQgMHgwZSogMHgw
+ZiAweDI2Ck5vZGUgMHgxNyBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNThk
+OiBTdGVyZW8gQW1wLU91dAogIENvbnRyb2w6IG5hbWU9IkxpbmUgT3V0IFBs
+YXliYWNrIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9s
+QW1wOiBjaHM9MywgZGlyPU91dCwgaWR4PTAsIG9mcz0wCiAgQW1wLU91dCBj
+YXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11
+dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDAwIDB4MDBdCiAgUGluY2FwIDB4
+MDAwMDAwM2M6IElOIE9VVCBIUCBEZXRlY3QKICBQaW4gRGVmYXVsdCAweDAx
+MDExMDIwOiBbSmFja10gTGluZSBPdXQgYXQgRXh0IFJlYXIKICAgIENvbm4g
+PSAxLzgsIENvbG9yID0gQmxhY2sKICAgIERlZkFzc29jaWF0aW9uID0gMHgy
+LCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1jdGxzOiAweDQwOiBPVVQKICBVbnNv
+bGljaXRlZDogdGFnPTAyLCBlbmFibGVkPTEKICBQb3dlciBzdGF0ZXM6ICBE
+MCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1E
+MAogIENvbm5lY3Rpb246IDUKICAgICAweDBjKiAweDBkIDB4MGUgMHgwZiAw
+eDI2Ck5vZGUgMHgxOCBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNThmOiBT
+dGVyZW8gQW1wLUluIEFtcC1PdXQKICBDb250cm9sOiBuYW1lPSJNaWMgQm9v
+c3QgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6
+IGNocz0zLCBkaXI9SW4sIGlkeD0wLCBvZnM9MAogIEFtcC1JbiBjYXBzOiBv
+ZnM9MHgwMCwgbnN0ZXBzPTB4MDMsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAog
+IEFtcC1JbiB2YWxzOiAgWzB4MDAgMHgwMF0KICBBbXAtT3V0IGNhcHM6IG9m
+cz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCiAg
+QW1wLU91dCB2YWxzOiAgWzB4ODAgMHg4MF0KICBQaW5jYXAgMHgwMDAwMzcz
+YzogSU4gT1VUIEhQIERldGVjdAogICAgVnJlZiBjYXBzOiBISVogNTAgR1JE
+IDgwIDEwMAogIFBpbiBEZWZhdWx0IDB4MDFhMTEwNDA6IFtKYWNrXSBNaWMg
+YXQgRXh0IFJlYXIKICAgIENvbm4gPSAxLzgsIENvbG9yID0gQmxhY2sKICAg
+IERlZkFzc29jaWF0aW9uID0gMHg0LCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1j
+dGxzOiAweDIxOiBJTiBWUkVGXzUwCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMywg
+ZW5hYmxlZD0xCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwog
+IFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiA1
+CiAgICAgMHgwYyogMHgwZCAweDBlIDB4MGYgMHgyNgpOb2RlIDB4MTkgW1Bp
+biBDb21wbGV4XSB3Y2FwcyAweDQwMDU4ZjogU3RlcmVvIEFtcC1JbiBBbXAt
+T3V0CiAgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMywgc3Rl
+cHNpemU9MHgyNywgbXV0ZT0wCiAgQW1wLUluIHZhbHM6ICBbMHgwMCAweDAw
+XQogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVw
+c2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6ICBbMHg4MCAweDgw
+XQogIFBpbmNhcCAweDAwMDAzNzNjOiBJTiBPVVQgSFAgRGV0ZWN0CiAgICBW
+cmVmIGNhcHM6IEhJWiA1MCBHUkQgODAgMTAwCiAgUGluIERlZmF1bHQgMHg0
+MTExMTFmMDogW04vQV0gU3BlYWtlciBhdCBFeHQgUmVhcgogICAgQ29ubiA9
+IDEvOCwgQ29sb3IgPSBCbGFjawogICAgRGVmQXNzb2NpYXRpb24gPSAweGYs
+IFNlcXVlbmNlID0gMHgwCiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4t
+Y3RsczogMHgyMDogSU4gVlJFRl9ISVoKICBVbnNvbGljaXRlZDogdGFnPTAw
+LCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNT
+CiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246
+IDUKICAgICAweDBjKiAweDBkIDB4MGUgMHgwZiAweDI2Ck5vZGUgMHgxYSBb
+UGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNThmOiBTdGVyZW8gQW1wLUluIEFt
+cC1PdXQKICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAzLCBz
+dGVwc2l6ZT0weDI3LCBtdXRlPTAKICBBbXAtSW4gdmFsczogIFsweDAwIDB4
+MDBdCiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0
+ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDgwIDB4
+ODBdCiAgUGluY2FwIDB4MDAwMDM3M2M6IElOIE9VVCBIUCBEZXRlY3QKICAg
+IFZyZWYgY2FwczogSElaIDUwIEdSRCA4MCAxMDAKICBQaW4gRGVmYXVsdCAw
+eDQxMTExMWYwOiBbTi9BXSBTcGVha2VyIGF0IEV4dCBSZWFyCiAgICBDb25u
+ID0gMS84LCBDb2xvciA9IEJsYWNrCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4
+ZiwgU2VxdWVuY2UgPSAweDAKICAgIE1pc2MgPSBOT19QUkVTRU5DRQogIFBp
+bi1jdGxzOiAweDIwOiBJTiBWUkVGX0hJWgogIFVuc29saWNpdGVkOiB0YWc9
+MDAsIGVuYWJsZWQ9MAogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQ
+U1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlv
+bjogNQogICAgIDB4MGMqIDB4MGQgMHgwZSAweDBmIDB4MjYKTm9kZSAweDFi
+IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA1OGY6IFN0ZXJlbyBBbXAtSW4g
+QW1wLU91dAogIENvbnRyb2w6IG5hbWU9IkhlYWRwaG9uZSBQbGF5YmFjayBT
+d2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hz
+PTMsIGRpcj1PdXQsIGlkeD0wLCBvZnM9MAogIEFtcC1JbiBjYXBzOiBvZnM9
+MHgwMCwgbnN0ZXBzPTB4MDMsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAogIEFt
+cC1JbiB2YWxzOiAgWzB4MDAgMHgwMF0KICBBbXAtT3V0IGNhcHM6IG9mcz0w
+eDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCiAgQW1w
+LU91dCB2YWxzOiAgWzB4ODAgMHg4MF0KICBQaW5jYXAgMHgwMDAxMzczYzog
+SU4gT1VUIEhQIEVBUEQgRGV0ZWN0CiAgICBWcmVmIGNhcHM6IEhJWiA1MCBH
+UkQgODAgMTAwCiAgRUFQRCAweDI6IEVBUEQKICBQaW4gRGVmYXVsdCAweDQx
+MTExMWYwOiBbTi9BXSBTcGVha2VyIGF0IEV4dCBSZWFyCiAgICBDb25uID0g
+MS84LCBDb2xvciA9IEJsYWNrCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4Ziwg
+U2VxdWVuY2UgPSAweDAKICAgIE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1j
+dGxzOiAweGMwOiBPVVQgSFAgVlJFRl9ISVoKICBVbnNvbGljaXRlZDogdGFn
+PTAxLCBlbmFibGVkPTEKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBF
+UFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rp
+b246IDUKICAgICAweDBjIDB4MGQqIDB4MGUgMHgwZiAweDI2Ck5vZGUgMHgx
+YyBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNDgxOiBTdGVyZW8KICBQaW5j
+YXAgMHgwMDAwMDAyNDogSU4gRGV0ZWN0CiAgUGluIERlZmF1bHQgMHg0MTEx
+MTFmMDogW04vQV0gU3BlYWtlciBhdCBFeHQgUmVhcgogICAgQ29ubiA9IDEv
+OCwgQ29sb3IgPSBCbGFjawogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNl
+cXVlbmNlID0gMHgwCiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3Rs
+czogMHgyMDogSU4KICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAK
+ICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNl
+dHRpbmc9RDAsIGFjdHVhbD1EMApOb2RlIDB4MWQgW1BpbiBDb21wbGV4XSB3
+Y2FwcyAweDQwMDQwMDogTW9ubwogIFBpbmNhcCAweDAwMDAwMDIwOiBJTgog
+IFBpbiBEZWZhdWx0IDB4NDAzMzA4Mjk6IFtOL0FdIENEIGF0IEV4dCBOL0EK
+ICAgIENvbm4gPSBBVEFQSSwgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3Nv
+Y2lhdGlvbiA9IDB4MiwgU2VxdWVuY2UgPSAweDkKICBQaW4tY3RsczogMHgy
+MDogSU4KICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93
+ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMApOb2RlIDB4MWUgW1BpbiBDb21w
+bGV4XSB3Y2FwcyAweDQwMDcwMTogU3RlcmVvIERpZ2l0YWwKICBQaW5jYXAg
+MHgwMDAwMDAxMDogT1VUCiAgUGluIERlZmF1bHQgMHgwMTQ0MTEzMDogW0ph
+Y2tdIFNQRElGIE91dCBhdCBFeHQgUmVhcgogICAgQ29ubiA9IFJDQSwgQ29s
+b3IgPSBCbGFjawogICAgRGVmQXNzb2NpYXRpb24gPSAweDMsIFNlcXVlbmNl
+ID0gMHgwCiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHg0
+MDogT1VUCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBv
+d2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAxCiAg
+ICAgMHgwNgpOb2RlIDB4MWYgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDY4
+MTogU3RlcmVvIERpZ2l0YWwKICBQaW5jYXAgMHgwMDAwMDAyMDogSU4KICBQ
+aW4gRGVmYXVsdCAweDQxMTExMWYwOiBbTi9BXSBTcGVha2VyIGF0IEV4dCBS
+ZWFyCiAgICBDb25uID0gMS84LCBDb2xvciA9IEJsYWNrCiAgICBEZWZBc3Nv
+Y2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAweDAKICAgIE1pc2MgPSBOT19Q
+UkVTRU5DRQogIFBpbi1jdGxzOiAweDIwOiBJTgogIFVuc29saWNpdGVkOiB0
+YWc9MDAsIGVuYWJsZWQ9MAogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQz
+IEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCk5vZGUgMHgy
+MCBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDA0MDogTW9u
+bwogIFByb2Nlc3NpbmcgY2FwczogYmVuaWduPTAsIG5jb2VmZj0yOApOb2Rl
+IDB4MjEgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6
+IE1vbm8KTm9kZSAweDIyIFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDAxMGI6
+IFN0ZXJlbyBBbXAtSW4KICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVw
+cz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtSW4gdmFsczog
+IFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4
+ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgw
+IDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdCiAg
+Q29ubmVjdGlvbjogMTEKICAgICAweDE4IDB4MTkgMHgxYSAweDFiIDB4MWMg
+MHgxZCAweDE0IDB4MTUgMHgxNiAweDE3IDB4MGIKTm9kZSAweDIzIFtBdWRp
+byBNaXhlcl0gd2NhcHMgMHgyMDAxMGI6IFN0ZXJlbyBBbXAtSW4KICBBbXAt
+SW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAw
+LCBtdXRlPTEKICBBbXAtSW4gdmFsczogIFsweDgwIDB4ODBdIFsweDgwIDB4
+ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgw
+IDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsw
+eDgwIDB4ODBdIFsweDgwIDB4ODBdCiAgQ29ubmVjdGlvbjogMTEKICAgICAw
+eDE4IDB4MTkgMHgxYSAweDFiIDB4MWMgMHgxZCAweDE0IDB4MTUgMHgxNiAw
+eDE3IDB4MGIKTm9kZSAweDI0IFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgz
+MDAxMDE6IFN0ZXJlbwogIENvbm5lY3Rpb246IDEyCiAgICAgMHgxOCAweDE5
+IDB4MWEgMHgxYiAweDFjIDB4MWQgMHgxNCAweDE1IDB4MTYgMHgxNyAweDBi
+IDB4MTIqCk5vZGUgMHgyNSBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDQxMTog
+U3RlcmVvCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgUENN
+OgogICAgcmF0ZXMgWzB4NWUwXTogNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAg
+MTkyMDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0cyBb
+MHgxXTogUENNCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwog
+IFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKTm9kZSAweDI2IFtBdWRp
+byBNaXhlcl0gd2NhcHMgMHgyMDAxMGY6IFN0ZXJlbyBBbXAtSW4gQW1wLU91
+dAogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBz
+aXplPTB4MDAsIG11dGU9MQogIEFtcC1JbiB2YWxzOiAgWzB4MDAgMHgwMF0g
+WzB4ODAgMHg4MF0KICBBbXAtT3V0IGNhcHM6IG9mcz0weDU3LCBuc3RlcHM9
+MHg1Nywgc3RlcHNpemU9MHgwMiwgbXV0ZT0wCiAgQW1wLU91dCB2YWxzOiAg
+WzB4NTcgMHg1N10KICBDb25uZWN0aW9uOiAyCiAgICAgMHgyNSAweDBiCkNv
+ZGVjOiBOdmlkaWEgR2VuZXJpYyBIRE1JCkFkZHJlc3M6IDAKQUZHIEZ1bmN0
+aW9uIElkOiAweDEgKHVuc29sIDApClZlbmRvciBJZDogMHgxMGRlMDA4MwpT
+dWJzeXN0ZW0gSWQ6IDB4MTU1ODZiMDEKUmV2aXNpb24gSWQ6IDB4MTAwMTAw
+Ck5vIE1vZGVtIEZ1bmN0aW9uIEdyb3VwIGZvdW5kCkRlZmF1bHQgUENNOgog
+ICAgcmF0ZXMgWzB4MF06CiAgICBiaXRzIFsweDBdOgogICAgZm9ybWF0cyBb
+MHgwXToKRGVmYXVsdCBBbXAtSW4gY2FwczogTi9BCkRlZmF1bHQgQW1wLU91
+dCBjYXBzOiBOL0EKU3RhdGUgb2YgQUZHIG5vZGUgMHgwMToKICBQb3dlciBz
+dGF0ZXM6ICBEMCBEMSBEMiBEMyBDTEtTVE9QIEVQU1MKICBQb3dlcjogc2V0
+dGluZz1EMCwgYWN0dWFsPUQwCkdQSU86IGlvPTAsIG89MCwgaT0wLCB1bnNv
+bGljaXRlZD0wLCB3YWtlPTAKTm9kZSAweDA0IFtQaW4gQ29tcGxleF0gd2Nh
+cHMgMHg0MDczODE6IDgtQ2hhbm5lbHMgRGlnaXRhbCBDUAogIENvbnRyb2w6
+IG5hbWU9IklFQzk1OCBQbGF5YmFjayBDb24gTWFzayIsIGluZGV4PTAsIGRl
+dmljZT0wCiAgQ29udHJvbDogbmFtZT0iSUVDOTU4IFBsYXliYWNrIFBybyBN
+YXNrIiwgaW5kZXg9MCwgZGV2aWNlPTAKICBDb250cm9sOiBuYW1lPSJJRUM5
+NTggUGxheWJhY2sgRGVmYXVsdCIsIGluZGV4PTAsIGRldmljZT0wCiAgQ29u
+dHJvbDogbmFtZT0iSUVDOTU4IFBsYXliYWNrIFN3aXRjaCIsIGluZGV4PTAs
+IGRldmljZT0wCiAgQ29udHJvbDogbmFtZT0iRUxEIiwgaW5kZXg9MCwgZGV2
+aWNlPTMKICBQaW5jYXAgMHgwOTAwMDA5NDogT1VUIERldGVjdCBIQlIgSERN
+SSBEUAogIFBpbiBEZWZhdWx0IDB4MTg1NjAwZjA6IFtKYWNrXSBEaWdpdGFs
+IE91dCBhdCBJbnQgSERNSQogICAgQ29ubiA9IERpZ2l0YWwsIENvbG9yID0g
+VW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0g
+MHgwCiAgUGluLWN0bHM6IDB4NDA6IE9VVAogIFVuc29saWNpdGVkOiB0YWc9
+MDEsIGVuYWJsZWQ9MQogIENvbm5lY3Rpb246IDQKICAgICAweDBhKiAweDBi
+IDB4MGMgMHgwZApOb2RlIDB4MDUgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQw
+NzM4MTogOC1DaGFubmVscyBEaWdpdGFsIENQCiAgUGluY2FwIDB4MDkwMDAw
+OTQ6IE9VVCBEZXRlY3QgSEJSIEhETUkgRFAKICBQaW4gRGVmYXVsdCAweDU4
+NTYwMGYwOiBbTi9BXSBEaWdpdGFsIE91dCBhdCBJbnQgSERNSQogICAgQ29u
+biA9IERpZ2l0YWwsIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRp
+b24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4MDA6CiAg
+VW5zb2xpY2l0ZWQ6IHRhZz0wMCwgZW5hYmxlZD0wCiAgQ29ubmVjdGlvbjog
+NAogICAgIDB4MGEqIDB4MGIgMHgwYyAweDBkCk5vZGUgMHgwNiBbUGluIENv
+bXBsZXhdIHdjYXBzIDB4NDA3MzgxOiA4LUNoYW5uZWxzIERpZ2l0YWwgQ1AK
+ICBDb250cm9sOiBuYW1lPSJJRUM5NTggUGxheWJhY2sgQ29uIE1hc2siLCBp
+bmRleD0xLCBkZXZpY2U9MAogIENvbnRyb2w6IG5hbWU9IklFQzk1OCBQbGF5
+YmFjayBQcm8gTWFzayIsIGluZGV4PTEsIGRldmljZT0wCiAgQ29udHJvbDog
+bmFtZT0iSUVDOTU4IFBsYXliYWNrIERlZmF1bHQiLCBpbmRleD0xLCBkZXZp
+Y2U9MAogIENvbnRyb2w6IG5hbWU9IklFQzk1OCBQbGF5YmFjayBTd2l0Y2gi
+LCBpbmRleD0xLCBkZXZpY2U9MAogIENvbnRyb2w6IG5hbWU9IkVMRCIsIGlu
+ZGV4PTAsIGRldmljZT03CiAgUGluY2FwIDB4MDkwMDAwOTQ6IE9VVCBEZXRl
+Y3QgSEJSIEhETUkgRFAKICBQaW4gRGVmYXVsdCAweDE4NTYwMGYwOiBbSmFj
+a10gRGlnaXRhbCBPdXQgYXQgSW50IEhETUkKICAgIENvbm4gPSBEaWdpdGFs
+LCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBT
+ZXF1ZW5jZSA9IDB4MAogIFBpbi1jdGxzOiAweDQwOiBPVVQKICBVbnNvbGlj
+aXRlZDogdGFnPTAyLCBlbmFibGVkPTEKICBDb25uZWN0aW9uOiA0CiAgICAg
+MHgwYSogMHgwYiAweDBjIDB4MGQKTm9kZSAweDA3IFtQaW4gQ29tcGxleF0g
+d2NhcHMgMHg0MDczODE6IDgtQ2hhbm5lbHMgRGlnaXRhbCBDUAogIENvbnRy
+b2w6IG5hbWU9IklFQzk1OCBQbGF5YmFjayBDb24gTWFzayIsIGluZGV4PTIs
+IGRldmljZT0wCiAgQ29udHJvbDogbmFtZT0iSUVDOTU4IFBsYXliYWNrIFBy
+byBNYXNrIiwgaW5kZXg9MiwgZGV2aWNlPTAKICBDb250cm9sOiBuYW1lPSJJ
+RUM5NTggUGxheWJhY2sgRGVmYXVsdCIsIGluZGV4PTIsIGRldmljZT0wCiAg
+Q29udHJvbDogbmFtZT0iSUVDOTU4IFBsYXliYWNrIFN3aXRjaCIsIGluZGV4
+PTIsIGRldmljZT0wCiAgQ29udHJvbDogbmFtZT0iRUxEIiwgaW5kZXg9MCwg
+ZGV2aWNlPTgKICBQaW5jYXAgMHgwOTAwMDA5NDogT1VUIERldGVjdCBIQlIg
+SERNSSBEUAogIFBpbiBEZWZhdWx0IDB4MTg1NjAwZjA6IFtKYWNrXSBEaWdp
+dGFsIE91dCBhdCBJbnQgSERNSQogICAgQ29ubiA9IERpZ2l0YWwsIENvbG9y
+ID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNl
+ID0gMHgwCiAgUGluLWN0bHM6IDB4NDA6IE9VVAogIFVuc29saWNpdGVkOiB0
+YWc9MDMsIGVuYWJsZWQ9MQogIENvbm5lY3Rpb246IDQKICAgICAweDBhKiAw
+eDBiIDB4MGMgMHgwZApOb2RlIDB4MDggW1BpbiBDb21wbGV4XSB3Y2FwcyAw
+eDQwNzM4MTogOC1DaGFubmVscyBEaWdpdGFsIENQCiAgUGluY2FwIDB4MDkw
+MDAwOTQ6IE9VVCBEZXRlY3QgSEJSIEhETUkgRFAKICBQaW4gRGVmYXVsdCAw
+eDU4NTYwMGYwOiBbTi9BXSBEaWdpdGFsIE91dCBhdCBJbnQgSERNSQogICAg
+Q29ubiA9IERpZ2l0YWwsIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2Np
+YXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4MDA6
+CiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMCwgZW5hYmxlZD0wCiAgQ29ubmVjdGlv
+bjogNAogICAgIDB4MGEqIDB4MGIgMHgwYyAweDBkCk5vZGUgMHgwOSBbUGlu
+IENvbXBsZXhdIHdjYXBzIDB4NDA3MzgxOiA4LUNoYW5uZWxzIERpZ2l0YWwg
+Q1AKICBQaW5jYXAgMHgwOTAwMDA5NDogT1VUIERldGVjdCBIQlIgSERNSSBE
+UAogIFBpbiBEZWZhdWx0IDB4NTg1NjAwZjA6IFtOL0FdIERpZ2l0YWwgT3V0
+IGF0IEludCBIRE1JCiAgICBDb25uID0gRGlnaXRhbCwgQ29sb3IgPSBVbmtu
+b3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAweDAK
+ICBQaW4tY3RsczogMHgwMDoKICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFi
+bGVkPTAKICBDb25uZWN0aW9uOiA0CiAgICAgMHgwYSogMHgwYiAweDBjIDB4
+MGQKTm9kZSAweDBhIFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4NjJiMTogOC1D
+aGFubmVscyBEaWdpdGFsIFN0cmlwZQogIENvbnZlcnRlcjogc3RyZWFtPTUs
+IGNoYW5uZWw9MAogIERpZ2l0YWw6IEVuYWJsZWQKICBEaWdpdGFsIGNhdGVn
+b3J5OiAweDAKICBJRUMgQ29kaW5nIFR5cGU6IDB4MAogIFBDTToKICAgIHJh
+dGVzIFsweDdmMF06IDMyMDAwIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3
+NjQwMCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3Jt
+YXRzIFsweDVdOiBQQ00gQUMzCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMCwgZW5h
+YmxlZD0wCk5vZGUgMHgwYiBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDYyYjE6
+IDgtQ2hhbm5lbHMgRGlnaXRhbCBTdHJpcGUKICBDb252ZXJ0ZXI6IHN0cmVh
+bT0wLCBjaGFubmVsPTAKICBEaWdpdGFsOgogIERpZ2l0YWwgY2F0ZWdvcnk6
+IDB4MAogIElFQyBDb2RpbmcgVHlwZTogMHgwCiAgUENNOgogICAgcmF0ZXMg
+WzB4N2YwXTogMzIwMDAgNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAgMTc2NDAw
+IDE5MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMg
+WzB4NV06IFBDTSBBQzMKICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVk
+PTAKTm9kZSAweDBjIFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4NjJiMTogOC1D
+aGFubmVscyBEaWdpdGFsIFN0cmlwZQogIENvbnZlcnRlcjogc3RyZWFtPTAs
+IGNoYW5uZWw9MAogIERpZ2l0YWw6CiAgRGlnaXRhbCBjYXRlZ29yeTogMHgw
+CiAgSUVDIENvZGluZyBUeXBlOiAweDAKICBQQ006CiAgICByYXRlcyBbMHg3
+ZjBdOiAzMjAwMCA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMCAxNzY0MDAgMTky
+MDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0cyBbMHg1
+XTogUENNIEFDMwogIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MApO
+b2RlIDB4MGQgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg2MmIxOiA4LUNoYW5u
+ZWxzIERpZ2l0YWwgU3RyaXBlCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hh
+bm5lbD0wCiAgRGlnaXRhbDoKICBEaWdpdGFsIGNhdGVnb3J5OiAweDAKICBJ
+RUMgQ29kaW5nIFR5cGU6IDB4MAogIFBDTToKICAgIHJhdGVzIFsweDdmMF06
+IDMyMDAwIDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3NjQwMCAxOTIwMDAK
+ICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDVdOiBQ
+Q00gQUMzCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMCwgZW5hYmxlZD0wCi0tZW5k
+Y29sbGFwc2UtLQoKCiEhQUxTQSBEZXZpY2Ugbm9kZXMKISEtLS0tLS0tLS0t
+LS0tLS0tLQoKY3J3LXJ3LS0tLSsgMSByb290IGF1ZGlvIDExNiwgIDIgTm92
+ICA4IDExOjI2IC9kZXYvc25kL2NvbnRyb2xDMApjcnctcnctLS0tKyAxIHJv
+b3QgYXVkaW8gMTE2LCAgNyBOb3YgIDggMTE6MjYgL2Rldi9zbmQvY29udHJv
+bEMxCmNydy1ydy0tLS0rIDEgcm9vdCBhdWRpbyAxMTYsICA2IE5vdiAgOCAx
+MToyNiAvZGV2L3NuZC9od0MwRDAKY3J3LXJ3LS0tLSsgMSByb290IGF1ZGlv
+IDExNiwgMTEgTm92ICA4IDExOjI2IC9kZXYvc25kL2h3QzFEMApjcnctcnct
+LS0tKyAxIHJvb3QgYXVkaW8gMTE2LCAgNCBOb3YgIDggMTE6MjYgL2Rldi9z
+bmQvcGNtQzBEMGMKY3J3LXJ3LS0tLSsgMSByb290IGF1ZGlvIDExNiwgIDMg
+Tm92ICA4IDExOjI2IC9kZXYvc25kL3BjbUMwRDBwCmNydy1ydy0tLS0rIDEg
+cm9vdCBhdWRpbyAxMTYsICA1IE5vdiAgOCAxMToyNiAvZGV2L3NuZC9wY21D
+MEQxcApjcnctcnctLS0tKyAxIHJvb3QgYXVkaW8gMTE2LCAgOCBOb3YgIDgg
+MTE6MjcgL2Rldi9zbmQvcGNtQzFEM3AKY3J3LXJ3LS0tLSsgMSByb290IGF1
+ZGlvIDExNiwgIDkgTm92ICA4IDExOjI2IC9kZXYvc25kL3BjbUMxRDdwCmNy
+dy1ydy0tLS0rIDEgcm9vdCBhdWRpbyAxMTYsIDEwIE5vdiAgOCAxMToyNiAv
+ZGV2L3NuZC9wY21DMUQ4cApjcnctcnctLS0tKyAxIHJvb3QgYXVkaW8gMTE2
+LCAgMSBOb3YgIDggMTE6MjYgL2Rldi9zbmQvc2VxCmNydy1ydy0tLS0rIDEg
+cm9vdCBhdWRpbyAxMTYsIDMzIE5vdiAgOCAxMToyNiAvZGV2L3NuZC90aW1l
+cgoKL2Rldi9zbmQvYnktcGF0aDoKdG90YWwgMApkcnd4ci14ci14IDIgcm9v
+dCByb290ICA4MCBOb3YgIDggMTE6MjYgLgpkcnd4ci14ci14IDMgcm9vdCBy
+b290IDMwMCBOb3YgIDggMTE6MjYgLi4KbHJ3eHJ3eHJ3eCAxIHJvb3Qgcm9v
+dCAgMTIgTm92ICA4IDExOjI2IHBjaS0wMDAwOjAwOjFmLjMgLT4gLi4vY29u
+dHJvbEMwCmxyd3hyd3hyd3ggMSByb290IHJvb3QgIDEyIE5vdiAgOCAxMToy
+NiBwY2ktMDAwMDowMTowMC4xIC0+IC4uL2NvbnRyb2xDMQoKCiEhQXBsYXkv
+QXJlY29yZCBvdXRwdXQKISEtLS0tLS0tLS0tLS0tLS0tLS0tLQoKQVBMQVkK
+CioqKiogTGlzdCBvZiBQTEFZQkFDSyBIYXJkd2FyZSBEZXZpY2VzICoqKioK
+Y2FyZCAwOiBQQ0ggW0hEQSBJbnRlbCBQQ0hdLCBkZXZpY2UgMDogQUxDODk4
+IEFuYWxvZyBbQUxDODk4IEFuYWxvZ10KICBTdWJkZXZpY2VzOiAwLzEKICBT
+dWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMApjYXJkIDA6IFBDSCBbSERBIElu
+dGVsIFBDSF0sIGRldmljZSAxOiBBTEM4OTggRGlnaXRhbCBbQUxDODk4IERp
+Z2l0YWxdCiAgU3ViZGV2aWNlczogMS8xCiAgU3ViZGV2aWNlICMwOiBzdWJk
+ZXZpY2UgIzAKY2FyZCAxOiBOVmlkaWEgW0hEQSBOVmlkaWFdLCBkZXZpY2Ug
+MzogSERNSSAwIFtIRE1JIDBdCiAgU3ViZGV2aWNlczogMC8xCiAgU3ViZGV2
+aWNlICMwOiBzdWJkZXZpY2UgIzAKY2FyZCAxOiBOVmlkaWEgW0hEQSBOVmlk
+aWFdLCBkZXZpY2UgNzogSERNSSAxIFtIRE1JIDFdCiAgU3ViZGV2aWNlczog
+MS8xCiAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKY2FyZCAxOiBOVmlk
+aWEgW0hEQSBOVmlkaWFdLCBkZXZpY2UgODogSERNSSAyIFtIRE1JIDJdCiAg
+U3ViZGV2aWNlczogMS8xCiAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAK
+CkFSRUNPUkQKCioqKiogTGlzdCBvZiBDQVBUVVJFIEhhcmR3YXJlIERldmlj
+ZXMgKioqKgpjYXJkIDA6IFBDSCBbSERBIEludGVsIFBDSF0sIGRldmljZSAw
+OiBBTEM4OTggQW5hbG9nIFtBTEM4OTggQW5hbG9nXQogIFN1YmRldmljZXM6
+IDAvMQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCgohIUFtaXhlciBv
+dXRwdXQKISEtLS0tLS0tLS0tLS0tCgohIS0tLS0tLS1NaXhlciBjb250cm9s
+cyBmb3IgY2FyZCAwIFtQQ0hdCgpDYXJkIGh3OjAgJ1BDSCcvJ0hEQSBJbnRl
+bCBQQ0ggYXQgMHgyZmZmZjIwMDAwIGlycSAxMjcnCiAgTWl4ZXIgbmFtZQk6
+ICdSZWFsdGVrIEFMQzg5OCcKICBDb21wb25lbnRzCTogJ0hEQToxMGVjMDg5
+OSwxNTU4NmIwMiwwMDEwMDAwMycKICBDb250cm9scyAgICAgIDogMzIKICBT
+aW1wbGUgY3RybHMgIDogMTMKU2ltcGxlIG1peGVyIGNvbnRyb2wgJ01hc3Rl
+cicsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBwdm9sdW1lLWpvaW5lZCBw
+c3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1v
+bm8KICBMaW1pdHM6IFBsYXliYWNrIDAgLSA4NwogIE1vbm86IFBsYXliYWNr
+IDc4IFs5MCVdIFstNi43NWRCXSBbb25dClNpbXBsZSBtaXhlciBjb250cm9s
+ICdIZWFkcGhvbmUnLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUgcHN3aXRj
+aAogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmln
+aHQKICBMaW1pdHM6IFBsYXliYWNrIDAgLSA4NwogIE1vbm86CiAgRnJvbnQg
+TGVmdDogUGxheWJhY2sgMCBbMCVdIFstNjUuMjVkQl0gW29mZl0KICBGcm9u
+dCBSaWdodDogUGxheWJhY2sgMCBbMCVdIFstNjUuMjVkQl0gW29mZl0KU2lt
+cGxlIG1peGVyIGNvbnRyb2wgJ1NwZWFrZXInLDAKICBDYXBhYmlsaXRpZXM6
+IHB2b2x1bWUgcHN3aXRjaAogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBM
+ZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAgLSA4Nwog
+IE1vbm86CiAgRnJvbnQgTGVmdDogUGxheWJhY2sgODcgWzEwMCVdIFswLjAw
+ZEJdIFtvbl0KICBGcm9udCBSaWdodDogUGxheWJhY2sgODcgWzEwMCVdIFsw
+LjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ1BDTScsMAogIENh
+cGFiaWxpdGllczogcHZvbHVtZQogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9u
+dCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAgLSAy
+NTUKICBNb25vOgogIEZyb250IExlZnQ6IFBsYXliYWNrIDI1NSBbMTAwJV0g
+WzAuMDBkQl0KICBGcm9udCBSaWdodDogUGxheWJhY2sgMjU1IFsxMDAlXSBb
+MC4wMGRCXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnTGluZSBPdXQnLDAKICBD
+YXBhYmlsaXRpZXM6IHB2b2x1bWUgcHN3aXRjaAogIFBsYXliYWNrIGNoYW5u
+ZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXli
+YWNrIDAgLSA4NwogIE1vbm86CiAgRnJvbnQgTGVmdDogUGxheWJhY2sgODcg
+WzEwMCVdIFswLjAwZEJdIFtvbl0KICBGcm9udCBSaWdodDogUGxheWJhY2sg
+ODcgWzEwMCVdIFswLjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wg
+J01pYycsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBwc3dpdGNoCiAgUGxh
+eWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExp
+bWl0czogUGxheWJhY2sgMCAtIDMxCiAgTW9ubzoKICBGcm9udCBMZWZ0OiBQ
+bGF5YmFjayAwIFswJV0gWy0zNC41MGRCXSBbb2ZmXQogIEZyb250IFJpZ2h0
+OiBQbGF5YmFjayAwIFswJV0gWy0zNC41MGRCXSBbb2ZmXQpTaW1wbGUgbWl4
+ZXIgY29udHJvbCAnTWljIEJvb3N0JywwCiAgQ2FwYWJpbGl0aWVzOiB2b2x1
+bWUKICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJp
+Z2h0CiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJp
+Z2h0CiAgTGltaXRzOiAwIC0gMwogIEZyb250IExlZnQ6IDAgWzAlXSBbMC4w
+MGRCXQogIEZyb250IFJpZ2h0OiAwIFswJV0gWzAuMDBkQl0KU2ltcGxlIG1p
+eGVyIGNvbnRyb2wgJ0lFQzk1OCcsMAogIENhcGFiaWxpdGllczogcHN3aXRj
+aCBwc3dpdGNoLWpvaW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAg
+TW9ubzogUGxheWJhY2sgW29mZl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0lF
+Qzk1OCBEZWZhdWx0IFBDTScsMAogIENhcGFiaWxpdGllczogcHN3aXRjaCBw
+c3dpdGNoLWpvaW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTW9u
+bzogUGxheWJhY2sgW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnQmVlcCcs
+MAogIENhcGFiaWxpdGllczogcHZvbHVtZSBwc3dpdGNoCiAgUGxheWJhY2sg
+Y2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExpbWl0czog
+UGxheWJhY2sgMCAtIDMxCiAgTW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5YmFj
+ayAwIFswJV0gWy0zNC41MGRCXSBbb2ZmXQogIEZyb250IFJpZ2h0OiBQbGF5
+YmFjayAwIFswJV0gWy0zNC41MGRCXSBbb2ZmXQpTaW1wbGUgbWl4ZXIgY29u
+dHJvbCAnQ2FwdHVyZScsMAogIENhcGFiaWxpdGllczogY3ZvbHVtZSBjc3dp
+dGNoCiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJp
+Z2h0CiAgTGltaXRzOiBDYXB0dXJlIDAgLSA2MwogIEZyb250IExlZnQ6IENh
+cHR1cmUgNTAgWzc5JV0gWzIwLjI1ZEJdIFtvZmZdCiAgRnJvbnQgUmlnaHQ6
+IENhcHR1cmUgNTAgWzc5JV0gWzIwLjI1ZEJdIFtvZmZdClNpbXBsZSBtaXhl
+ciBjb250cm9sICdBdXRvLU11dGUgTW9kZScsMAogIENhcGFiaWxpdGllczog
+ZW51bQogIEl0ZW1zOiAnRGlzYWJsZWQnICdTcGVha2VyIE9ubHknICdMaW5l
+IE91dCtTcGVha2VyJwogIEl0ZW0wOiAnTGluZSBPdXQrU3BlYWtlcicKU2lt
+cGxlIG1peGVyIGNvbnRyb2wgJ0xvb3BiYWNrIE1peGluZycsMAogIENhcGFi
+aWxpdGllczogZW51bQogIEl0ZW1zOiAnRGlzYWJsZWQnICdFbmFibGVkJwog
+IEl0ZW0wOiAnRW5hYmxlZCcKCiEhLS0tLS0tLU1peGVyIGNvbnRyb2xzIGZv
+ciBjYXJkIDEgW05WaWRpYV0KCkNhcmQgaHc6MSAnTlZpZGlhJy8nSERBIE5W
+aWRpYSBhdCAweGRjMDgwMDAwIGlycSAxNycKICBNaXhlciBuYW1lCTogJ052
+aWRpYSBHZW5lcmljIEhETUknCiAgQ29tcG9uZW50cwk6ICdIREE6MTBkZTAw
+ODMsMTU1ODZiMDEsMDAxMDAxMDAnCiAgQ29udHJvbHMgICAgICA6IDIxCiAg
+U2ltcGxlIGN0cmxzICA6IDMKU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0lFQzk1
+OCcsMAogIENhcGFiaWxpdGllczogcHN3aXRjaCBwc3dpdGNoLWpvaW5lZAog
+IFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTW9ubzogUGxheWJhY2sgW29u
+XQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4JywxCiAgQ2FwYWJpbGl0
+aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5l
+bHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBbb25dClNpbXBsZSBtaXhlciBj
+b250cm9sICdJRUM5NTgnLDIKICBDYXBhYmlsaXRpZXM6IHBzd2l0Y2ggcHN3
+aXRjaC1qb2luZWQKICBQbGF5YmFjayBjaGFubmVsczogTW9ubwogIE1vbm86
+IFBsYXliYWNrIFtvbl0KCgohIUFsc2FjdGwgb3V0cHV0CiEhLS0tLS0tLS0t
+LS0tLS0KCi0tc3RhcnRjb2xsYXBzZS0tCnN0YXRlLlBDSCB7Cgljb250cm9s
+LjEgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTGluZSBPdXQgUGxheWJhY2sg
+Vm9sdW1lJwoJCXZhbHVlLjAgODcKCQl2YWx1ZS4xIDg3CgkJY29tbWVudCB7
+CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlwZSBJTlRFR0VSCgkJCWNv
+dW50IDIKCQkJcmFuZ2UgJzAgLSA4NycKCQkJZGJtaW4gLTY1MjUKCQkJZGJt
+YXggMAoJCQlkYnZhbHVlLjAgMAoJCQlkYnZhbHVlLjEgMAoJCX0KCX0KCWNv
+bnRyb2wuMiB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdMaW5lIE91dCBQbGF5
+YmFjayBTd2l0Y2gnCgkJdmFsdWUuMCB0cnVlCgkJdmFsdWUuMSB0cnVlCgkJ
+Y29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlwZSBCT09M
+RUFOCgkJCWNvdW50IDIKCQl9Cgl9Cgljb250cm9sLjMgewoJCWlmYWNlIE1J
+WEVSCgkJbmFtZSAnSGVhZHBob25lIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1
+ZS4wIDAKCQl2YWx1ZS4xIDAKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFk
+IHdyaXRlJwoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQgMgoJCQlyYW5nZSAn
+MCAtIDg3JwoJCQlkYm1pbiAtNjUyNQoJCQlkYm1heCAwCgkJCWRidmFsdWUu
+MCAtNjUyNQoJCQlkYnZhbHVlLjEgLTY1MjUKCQl9Cgl9Cgljb250cm9sLjQg
+ewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSGVhZHBob25lIFBsYXliYWNrIFN3
+aXRjaCcKCQl2YWx1ZS4wIGZhbHNlCgkJdmFsdWUuMSBmYWxzZQoJCWNvbW1l
+bnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgQk9PTEVBTgoJ
+CQljb3VudCAyCgkJfQoJfQoJY29udHJvbC41IHsKCQlpZmFjZSBNSVhFUgoJ
+CW5hbWUgJ1NwZWFrZXIgUGxheWJhY2sgVm9sdW1lJwoJCXZhbHVlLjAgODcK
+CQl2YWx1ZS4xIDg3CgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0
+ZScKCQkJdHlwZSBJTlRFR0VSCgkJCWNvdW50IDIKCQkJcmFuZ2UgJzAgLSA4
+NycKCQkJZGJtaW4gLTY1MjUKCQkJZGJtYXggMAoJCQlkYnZhbHVlLjAgMAoJ
+CQlkYnZhbHVlLjEgMAoJCX0KCX0KCWNvbnRyb2wuNiB7CgkJaWZhY2UgTUlY
+RVIKCQluYW1lICdTcGVha2VyIFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1ZS4w
+IHRydWUKCQl2YWx1ZS4xIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNzICdy
+ZWFkIHdyaXRlJwoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMgoJCX0KCX0K
+CWNvbnRyb2wuNyB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdMb29wYmFjayBN
+aXhpbmcnCgkJdmFsdWUgRW5hYmxlZAoJCWNvbW1lbnQgewoJCQlhY2Nlc3Mg
+J3JlYWQgd3JpdGUnCgkJCXR5cGUgRU5VTUVSQVRFRAoJCQljb3VudCAxCgkJ
+CWl0ZW0uMCBEaXNhYmxlZAoJCQlpdGVtLjEgRW5hYmxlZAoJCX0KCX0KCWNv
+bnRyb2wuOCB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdNaWMgUGxheWJhY2sg
+Vm9sdW1lJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJCWNvbW1lbnQgewoJ
+CQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdFUgoJCQljb3Vu
+dCAyCgkJCXJhbmdlICcwIC0gMzEnCgkJCWRibWluIC0zNDUwCgkJCWRibWF4
+IDEyMDAKCQkJZGJ2YWx1ZS4wIC0zNDUwCgkJCWRidmFsdWUuMSAtMzQ1MAoJ
+CX0KCX0KCWNvbnRyb2wuOSB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdNaWMg
+UGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlLjAgZmFsc2UKCQl2YWx1ZS4xIGZh
+bHNlCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlw
+ZSBCT09MRUFOCgkJCWNvdW50IDIKCQl9Cgl9Cgljb250cm9sLjEwIHsKCQlp
+ZmFjZSBNSVhFUgoJCW5hbWUgJ0F1dG8tTXV0ZSBNb2RlJwoJCXZhbHVlICdM
+aW5lIE91dCtTcGVha2VyJwoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQg
+d3JpdGUnCgkJCXR5cGUgRU5VTUVSQVRFRAoJCQljb3VudCAxCgkJCWl0ZW0u
+MCBEaXNhYmxlZAoJCQlpdGVtLjEgJ1NwZWFrZXIgT25seScKCQkJaXRlbS4y
+ICdMaW5lIE91dCtTcGVha2VyJwoJCX0KCX0KCWNvbnRyb2wuMTEgewoJCWlm
+YWNlIE1JWEVSCgkJbmFtZSAnQ2FwdHVyZSBWb2x1bWUnCgkJdmFsdWUuMCA1
+MAoJCXZhbHVlLjEgNTAKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdy
+aXRlJwoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQgMgoJCQlyYW5nZSAnMCAt
+IDYzJwoJCQlkYm1pbiAtMTcyNQoJCQlkYm1heCAzMDAwCgkJCWRidmFsdWUu
+MCAyMDI1CgkJCWRidmFsdWUuMSAyMDI1CgkJfQoJfQoJY29udHJvbC4xMiB7
+CgkJaWZhY2UgTUlYRVIKCQluYW1lICdDYXB0dXJlIFN3aXRjaCcKCQl2YWx1
+ZS4wIGZhbHNlCgkJdmFsdWUuMSBmYWxzZQoJCWNvbW1lbnQgewoJCQlhY2Nl
+c3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgQk9PTEVBTgoJCQljb3VudCAyCgkJ
+fQoJfQoJY29udHJvbC4xMyB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdNaWMg
+Qm9vc3QgVm9sdW1lJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJCWNvbW1l
+bnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdFUgoJ
+CQljb3VudCAyCgkJCXJhbmdlICcwIC0gMycKCQkJZGJtaW4gMAoJCQlkYm1h
+eCAzMDAwCgkJCWRidmFsdWUuMCAwCgkJCWRidmFsdWUuMSAwCgkJfQoJfQoJ
+Y29udHJvbC4xNCB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxh
+eWJhY2sgQ29uIE1hc2snCgkJdmFsdWUgJzBmZmYwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAnCgkJY29tbWVudCB7CgkJCWFjY2VzcyByZWFk
+CgkJCXR5cGUgSUVDOTU4CgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjE1
+IHsKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0lFQzk1OCBQbGF5YmFjayBQcm8g
+TWFzaycKCQl2YWx1ZSAnMGYwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMCcKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBJ
+RUM5NTgKCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMTYgewoJCWlmYWNl
+IE1JWEVSCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIERlZmF1bHQnCgkJdmFs
+dWUgJzA0MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAnCgkJ
+Y29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlwZSBJRUM5
+NTgKCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMTcgewoJCWlmYWNlIE1J
+WEVSCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1ZSBm
+YWxzZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5
+cGUgQk9PTEVBTgoJCQljb3VudCAxCgkJfQoJfQoJY29udHJvbC4xOCB7CgkJ
+aWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTggRGVmYXVsdCBQQ00gUGxheWJh
+Y2sgU3dpdGNoJwoJCXZhbHVlIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNz
+ICdyZWFkIHdyaXRlJwoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0K
+CX0KCWNvbnRyb2wuMTkgewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWFzdGVy
+IFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZSA3OAoJCWNvbW1lbnQgewoJCQlh
+Y2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdFUgoJCQljb3VudCAx
+CgkJCXJhbmdlICcwIC0gODcnCgkJCWRibWluIC02NTI1CgkJCWRibWF4IDAK
+CQkJZGJ2YWx1ZS4wIC02NzUKCQl9Cgl9Cgljb250cm9sLjIwIHsKCQlpZmFj
+ZSBNSVhFUgoJCW5hbWUgJ01hc3RlciBQbGF5YmFjayBTd2l0Y2gnCgkJdmFs
+dWUgdHJ1ZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJ
+CXR5cGUgQk9PTEVBTgoJCQljb3VudCAxCgkJfQoJfQoJY29udHJvbC4yMSB7
+CgkJaWZhY2UgQ0FSRAoJCW5hbWUgJ01pYyBKYWNrJwoJCXZhbHVlIGZhbHNl
+CgkJY29tbWVudCB7CgkJCWFjY2VzcyByZWFkCgkJCXR5cGUgQk9PTEVBTgoJ
+CQljb3VudCAxCgkJfQoJfQoJY29udHJvbC4yMiB7CgkJaWZhY2UgQ0FSRAoJ
+CW5hbWUgJ0ludGVybmFsIE1pYyBQaGFudG9tIEphY2snCgkJdmFsdWUgdHJ1
+ZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgcmVhZAoJCQl0eXBlIEJPT0xFQU4K
+CQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMjMgewoJCWlmYWNlIENBUkQK
+CQluYW1lICdMaW5lIE91dCBKYWNrJwoJCXZhbHVlIGZhbHNlCgkJY29tbWVu
+dCB7CgkJCWFjY2VzcyByZWFkCgkJCXR5cGUgQk9PTEVBTgoJCQljb3VudCAx
+CgkJfQoJfQoJY29udHJvbC4yNCB7CgkJaWZhY2UgQ0FSRAoJCW5hbWUgJ0hl
+YWRwaG9uZSBKYWNrJwoJCXZhbHVlIGZhbHNlCgkJY29tbWVudCB7CgkJCWFj
+Y2VzcyByZWFkCgkJCXR5cGUgQk9PTEVBTgoJCQljb3VudCAxCgkJfQoJfQoJ
+Y29udHJvbC4yNSB7CgkJaWZhY2UgQ0FSRAoJCW5hbWUgJ1NwZWFrZXIgUGhh
+bnRvbSBKYWNrJwoJCXZhbHVlIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNz
+IHJlYWQKCQkJdHlwZSBCT09MRUFOCgkJCWNvdW50IDEKCQl9Cgl9Cgljb250
+cm9sLjI2IHsKCQlpZmFjZSBDQVJECgkJbmFtZSAnU1BESUYgUGhhbnRvbSBK
+YWNrJwoJCXZhbHVlIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQK
+CQkJdHlwZSBCT09MRUFOCgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjI3
+IHsKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0JlZXAgUGxheWJhY2sgVm9sdW1l
+JwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJCWNvbW1lbnQgewoJCQlhY2Nl
+c3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5URUdFUgoJCQljb3VudCAyCgkJ
+CXJhbmdlICcwIC0gMzEnCgkJCWRibWluIC0zNDUwCgkJCWRibWF4IDEyMDAK
+CQkJZGJ2YWx1ZS4wIC0zNDUwCgkJCWRidmFsdWUuMSAtMzQ1MAoJCX0KCX0K
+CWNvbnRyb2wuMjggewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnQmVlcCBQbGF5
+YmFjayBTd2l0Y2gnCgkJdmFsdWUuMCBmYWxzZQoJCXZhbHVlLjEgZmFsc2UK
+CQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFkIHdyaXRlJwoJCQl0eXBlIEJP
+T0xFQU4KCQkJY291bnQgMgoJCX0KCX0KCWNvbnRyb2wuMjkgewoJCWlmYWNl
+IFBDTQoJCW5hbWUgJ1BsYXliYWNrIENoYW5uZWwgTWFwJwoJCXZhbHVlLjAg
+MwoJCXZhbHVlLjEgNAoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgcmVhZAoJCQl0
+eXBlIElOVEVHRVIKCQkJY291bnQgMgoJCQlyYW5nZSAnMCAtIDM2JwoJCX0K
+CX0KCWNvbnRyb2wuMzAgewoJCWlmYWNlIFBDTQoJCW5hbWUgJ0NhcHR1cmUg
+Q2hhbm5lbCBNYXAnCgkJdmFsdWUuMCAzCgkJdmFsdWUuMSA0CgkJY29tbWVu
+dCB7CgkJCWFjY2VzcyByZWFkCgkJCXR5cGUgSU5URUdFUgoJCQljb3VudCAy
+CgkJCXJhbmdlICcwIC0gMzYnCgkJfQoJfQoJY29udHJvbC4zMSB7CgkJaWZh
+Y2UgUENNCgkJZGV2aWNlIDEKCQluYW1lICdQbGF5YmFjayBDaGFubmVsIE1h
+cCcKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQljb21tZW50IHsKCQkJYWNj
+ZXNzIHJlYWQKCQkJdHlwZSBJTlRFR0VSCgkJCWNvdW50IDIKCQkJcmFuZ2Ug
+JzAgLSAzNicKCQl9Cgl9Cgljb250cm9sLjMyIHsKCQlpZmFjZSBNSVhFUgoJ
+CW5hbWUgJ1BDTSBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAyNTUKCQl2
+YWx1ZS4xIDI1NQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUg
+dXNlcicKCQkJdHlwZSBJTlRFR0VSCgkJCWNvdW50IDIKCQkJcmFuZ2UgJzAg
+LSAyNTUnCgkJCXRsdiAnMDAwMDAwMDEwMDAwMDAwOGZmZmZlYzE0MDAwMDAw
+MTQnCgkJCWRibWluIC01MTAwCgkJCWRibWF4IDAKCQkJZGJ2YWx1ZS4wIDAK
+CQkJZGJ2YWx1ZS4xIDAKCQl9Cgl9Cn0Kc3RhdGUuTlZpZGlhIHsKCWNvbnRy
+b2wuMSB7CgkJaWZhY2UgQ0FSRAoJCW5hbWUgJ0hETUkvRFAscGNtPTMgSmFj
+aycKCQl2YWx1ZSBmYWxzZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgcmVhZAoJ
+CQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMiB7
+CgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sgQ29uIE1h
+c2snCgkJdmFsdWUgJzBmZmYwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAnCgkJY29tbWVudCB7CgkJCWFjY2VzcyByZWFkCgkJCXR5cGUgSUVD
+OTU4CgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjMgewoJCWlmYWNlIE1J
+WEVSCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIFBybyBNYXNrJwoJCXZhbHVl
+ICcwZjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwJwoJCWNv
+bW1lbnQgewoJCQlhY2Nlc3MgcmVhZAoJCQl0eXBlIElFQzk1OAoJCQljb3Vu
+dCAxCgkJfQoJfQoJY29udHJvbC40IHsKCQlpZmFjZSBNSVhFUgoJCW5hbWUg
+J0lFQzk1OCBQbGF5YmFjayBEZWZhdWx0JwoJCXZhbHVlICcwNDgyMDAwMjAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwJwoJCWNvbW1lbnQgewoJCQlh
+Y2Nlc3MgJ3JlYWQgd3JpdGUgbG9ja2VkJwoJCQl0eXBlIElFQzk1OAoJCQlj
+b3VudCAxCgkJfQoJfQoJY29udHJvbC41IHsKCQlpZmFjZSBNSVhFUgoJCW5h
+bWUgJ0lFQzk1OCBQbGF5YmFjayBTd2l0Y2gnCgkJdmFsdWUgdHJ1ZQoJCWNv
+bW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgQk9PTEVB
+TgoJCQljb3VudCAxCgkJfQoJfQoJY29udHJvbC42IHsKCQlpZmFjZSBQQ00K
+CQlkZXZpY2UgMwoJCW5hbWUgRUxECgkJdmFsdWUgJycKCQljb21tZW50IHsK
+CQkJYWNjZXNzICdyZWFkIHZvbGF0aWxlJwoJCQl0eXBlIEJZVEVTCgkJCWNv
+dW50IDAKCQl9Cgl9Cgljb250cm9sLjcgewoJCWlmYWNlIENBUkQKCQluYW1l
+ICdIRE1JL0RQLHBjbT03IEphY2snCgkJdmFsdWUgZmFsc2UKCQljb21tZW50
+IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBCT09MRUFOCgkJCWNvdW50IDEK
+CQl9Cgl9Cgljb250cm9sLjggewoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSUVD
+OTU4IFBsYXliYWNrIENvbiBNYXNrJwoJCWluZGV4IDEKCQl2YWx1ZSAnMGZm
+ZjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCcKCQljb21tZW50
+IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBJRUM5NTgKCQkJY291bnQgMQoJ
+CX0KCX0KCWNvbnRyb2wuOSB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5
+NTggUGxheWJhY2sgUHJvIE1hc2snCgkJaW5kZXggMQoJCXZhbHVlICcwZjAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwJwoJCWNvbW1lbnQg
+ewoJCQlhY2Nlc3MgcmVhZAoJCQl0eXBlIElFQzk1OAoJCQljb3VudCAxCgkJ
+fQoJfQoJY29udHJvbC4xMCB7CgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5
+NTggUGxheWJhY2sgRGVmYXVsdCcKCQlpbmRleCAxCgkJdmFsdWUgJzA0MDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAnCgkJY29tbWVudCB7
+CgkJCWFjY2VzcyAncmVhZCB3cml0ZScKCQkJdHlwZSBJRUM5NTgKCQkJY291
+bnQgMQoJCX0KCX0KCWNvbnRyb2wuMTEgewoJCWlmYWNlIE1JWEVSCgkJbmFt
+ZSAnSUVDOTU4IFBsYXliYWNrIFN3aXRjaCcKCQlpbmRleCAxCgkJdmFsdWUg
+dHJ1ZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5
+cGUgQk9PTEVBTgoJCQljb3VudCAxCgkJfQoJfQoJY29udHJvbC4xMiB7CgkJ
+aWZhY2UgUENNCgkJZGV2aWNlIDcKCQluYW1lIEVMRAoJCXZhbHVlICcnCgkJ
+Y29tbWVudCB7CgkJCWFjY2VzcyAncmVhZCB2b2xhdGlsZScKCQkJdHlwZSBC
+WVRFUwoJCQljb3VudCAwCgkJfQoJfQoJY29udHJvbC4xMyB7CgkJaWZhY2Ug
+Q0FSRAoJCW5hbWUgJ0hETUkvRFAscGNtPTggSmFjaycKCQl2YWx1ZSBmYWxz
+ZQoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgcmVhZAoJCQl0eXBlIEJPT0xFQU4K
+CQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMTQgewoJCWlmYWNlIE1JWEVS
+CgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIENvbiBNYXNrJwoJCWluZGV4IDIK
+CQl2YWx1ZSAnMGZmZjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MCcKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBJRUM5NTgK
+CQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMTUgewoJCWlmYWNlIE1JWEVS
+CgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIFBybyBNYXNrJwoJCWluZGV4IDIK
+CQl2YWx1ZSAnMGYwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MCcKCQljb21tZW50IHsKCQkJYWNjZXNzIHJlYWQKCQkJdHlwZSBJRUM5NTgK
+CQkJY291bnQgMQoJCX0KCX0KCWNvbnRyb2wuMTYgewoJCWlmYWNlIE1JWEVS
+CgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIERlZmF1bHQnCgkJaW5kZXggMgoJ
+CXZhbHVlICcwNDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+JwoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUg
+SUVDOTU4CgkJCWNvdW50IDEKCQl9Cgl9Cgljb250cm9sLjE3IHsKCQlpZmFj
+ZSBNSVhFUgoJCW5hbWUgJ0lFQzk1OCBQbGF5YmFjayBTd2l0Y2gnCgkJaW5k
+ZXggMgoJCXZhbHVlIHRydWUKCQljb21tZW50IHsKCQkJYWNjZXNzICdyZWFk
+IHdyaXRlJwoJCQl0eXBlIEJPT0xFQU4KCQkJY291bnQgMQoJCX0KCX0KCWNv
+bnRyb2wuMTggewoJCWlmYWNlIFBDTQoJCWRldmljZSA4CgkJbmFtZSBFTEQK
+CQl2YWx1ZSAnJwoJCWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgdm9sYXRp
+bGUnCgkJCXR5cGUgQllURVMKCQkJY291bnQgMAoJCX0KCX0KCWNvbnRyb2wu
+MTkgewoJCWlmYWNlIFBDTQoJCWRldmljZSAzCgkJbmFtZSAnUGxheWJhY2sg
+Q2hhbm5lbCBNYXAnCgkJdmFsdWUuMCAzCgkJdmFsdWUuMSA0CgkJdmFsdWUu
+MiAwCgkJdmFsdWUuMyAwCgkJdmFsdWUuNCAwCgkJdmFsdWUuNSAwCgkJdmFs
+dWUuNiAwCgkJdmFsdWUuNyAwCgkJY29tbWVudCB7CgkJCWFjY2VzcyAncmVh
+ZCB3cml0ZScKCQkJdHlwZSBJTlRFR0VSCgkJCWNvdW50IDgKCQkJcmFuZ2Ug
+JzAgLSAzNicKCQl9Cgl9Cgljb250cm9sLjIwIHsKCQlpZmFjZSBQQ00KCQlk
+ZXZpY2UgNwoJCW5hbWUgJ1BsYXliYWNrIENoYW5uZWwgTWFwJwoJCXZhbHVl
+LjAgMAoJCXZhbHVlLjEgMAoJCXZhbHVlLjIgMAoJCXZhbHVlLjMgMAoJCXZh
+bHVlLjQgMAoJCXZhbHVlLjUgMAoJCXZhbHVlLjYgMAoJCXZhbHVlLjcgMAoJ
+CWNvbW1lbnQgewoJCQlhY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJCXR5cGUgSU5U
+RUdFUgoJCQljb3VudCA4CgkJCXJhbmdlICcwIC0gMzYnCgkJfQoJfQoJY29u
+dHJvbC4yMSB7CgkJaWZhY2UgUENNCgkJZGV2aWNlIDgKCQluYW1lICdQbGF5
+YmFjayBDaGFubmVsIE1hcCcKCQl2YWx1ZS4wIDAKCQl2YWx1ZS4xIDAKCQl2
+YWx1ZS4yIDAKCQl2YWx1ZS4zIDAKCQl2YWx1ZS40IDAKCQl2YWx1ZS41IDAK
+CQl2YWx1ZS42IDAKCQl2YWx1ZS43IDAKCQljb21tZW50IHsKCQkJYWNjZXNz
+ICdyZWFkIHdyaXRlJwoJCQl0eXBlIElOVEVHRVIKCQkJY291bnQgOAoJCQly
+YW5nZSAnMCAtIDM2JwoJCX0KCX0KfQotLWVuZGNvbGxhcHNlLS0KCgohIUFs
+bCBMb2FkZWQgTW9kdWxlcwohIS0tLS0tLS0tLS0tLS0tLS0tLQoKTW9kdWxl
+CmRyYmcKYW5zaV9jcHJuZwpjdHIKY2NtCnJmY29tbQpibmVwCm5sc19pc284
+ODU5XzEKc25kX2hkYV9jb2RlY19oZG1pCmFyYzQKaW50ZWxfcmFwbAp4ODZf
+cGtnX3RlbXBfdGhlcm1hbApzbmRfaGRhX2NvZGVjX3JlYWx0ZWsKaW50ZWxf
+cG93ZXJjbGFtcApzbmRfaGRhX2NvZGVjX2dlbmVyaWMKY29yZXRlbXAKa3Zt
+X2ludGVsCmt2bQppOTE1X2JwbwpteG1fd21pCmlycWJ5cGFzcwppd2xtdm0K
+Y3JjdDEwZGlmX3BjbG11bAppbnRlbF9pcHMKY3JjMzJfcGNsbXVsCmkyY19h
+bGdvX2JpdAptYWM4MDIxMQphZXNuaV9pbnRlbAphZXNfeDg2XzY0Cmxydwpn
+ZjEyOG11bApnbHVlX2hlbHBlcgphYmxrX2hlbHBlcgpjcnlwdGQKdXZjdmlk
+ZW8Kc25kX3NlcV9taWRpCnNuZF9zZXFfbWlkaV9ldmVudApzbmRfaGRhX2lu
+dGVsCnZpZGVvYnVmMl92bWFsbG9jCnZpZGVvYnVmMl9tZW1vcHMKam95ZGV2
+CmJ0dXNiCnZpZGVvYnVmMl92NGwyCnNuZF9oZGFfY29kZWMKYnRydGwKdmlk
+ZW9idWYyX2NvcmUKYnRiY20KaXdsd2lmaQp2NGwyX2NvbW1vbgpidGludGVs
+CnZpZGVvZGV2CnNuZF9oZGFfY29yZQpzbmRfcmF3bWlkaQptZWlfbWUKbWVk
+aWEKYmx1ZXRvb3RoCmlucHV0X2xlZHMKc25kX2h3ZGVwCmNmZzgwMjExCnNu
+ZF9zZXEKcnRzeF9wY2lfbXMKbWVpCnNuZF9wY20KbWVtc3RpY2sKc25kX3Nl
+cV9kZXZpY2UKc2VyaW9fcmF3CnNuZF90aW1lcgpzbmQKc291bmRjb3JlCnNo
+cGNocAp3bWkKbWFjX2hpZAphY3BpX3BhZApwYXJwb3J0X3BjCnBwZGV2Cmxw
+CnBhcnBvcnQKYXV0b2ZzNApidHJmcwp4b3IKdWFzCnVzYl9zdG9yYWdlCnJh
+aWQ2X3BxCmhpZF9nZW5lcmljCnVzYmhpZApoaWQKZG1fbWlycm9yCmRtX3Jl
+Z2lvbl9oYXNoCmRtX2xvZwpydHN4X3BjaV9zZG1tYwpudmlkaWFfZHJtCm52
+aWRpYV9tb2Rlc2V0CmRybV9rbXNfaGVscGVyCnN5c2NvcHlhcmVhCnN5c2Zp
+bGxyZWN0CnN5c2ltZ2JsdApmYl9zeXNfZm9wcwpkcm0KcHNtb3VzZQpyODE2
+OQpudmlkaWEKcnRzeF9wY2kKYWhjaQptaWkKbGliYWhjaQp2aWRlbwpmamVz
+CgoKISFTeXNmcyBGaWxlcwohIS0tLS0tLS0tLS0tCgovc3lzL2NsYXNzL3Nv
+dW5kL2h3QzBEMC9pbml0X3Bpbl9jb25maWdzOgoweDExIDB4NDAwMGQwMDAK
+MHgxMiAweDkwYTYwMTUwCjB4MTQgMHg5MDE3MDExMAoweDE1IDB4NDExMTEx
+ZjAKMHgxNiAweDQxMTExMWYwCjB4MTcgMHgwMTAxMTAyMAoweDE4IDB4MDFh
+MTEwNDAKMHgxOSAweDQxMTExMWYwCjB4MWEgMHg0MTExMTFmMAoweDFiIDB4
+NDExMTExZjAKMHgxYyAweDQxMTExMWYwCjB4MWQgMHg0MDMzMDgyOQoweDFl
+IDB4MDE0NDExMzAKMHgxZiAweDQxMTExMWYwCgovc3lzL2NsYXNzL3NvdW5k
+L2h3QzBEMC9kcml2ZXJfcGluX2NvbmZpZ3M6Cgovc3lzL2NsYXNzL3NvdW5k
+L2h3QzBEMC91c2VyX3Bpbl9jb25maWdzOgoweDFiIDB4MDEyMTEwMzAKCi9z
+eXMvY2xhc3Mvc291bmQvaHdDMEQwL2luaXRfdmVyYnM6Cgovc3lzL2NsYXNz
+L3NvdW5kL2h3QzBEMC9oaW50czoKCi9zeXMvY2xhc3Mvc291bmQvaHdDMUQw
+L2luaXRfcGluX2NvbmZpZ3M6CjB4MDQgMHgxODU2MDBmMAoweDA1IDB4NTg1
+NjAwZjAKMHgwNiAweDE4NTYwMGYwCjB4MDcgMHgxODU2MDBmMAoweDA4IDB4
+NTg1NjAwZjAKMHgwOSAweDU4NTYwMGYwCgovc3lzL2NsYXNzL3NvdW5kL2h3
+QzFEMC9kcml2ZXJfcGluX2NvbmZpZ3M6Cgovc3lzL2NsYXNzL3NvdW5kL2h3
+QzFEMC91c2VyX3Bpbl9jb25maWdzOgoKL3N5cy9jbGFzcy9zb3VuZC9od0Mx
+RDAvaW5pdF92ZXJiczoKCi9zeXMvY2xhc3Mvc291bmQvaHdDMUQwL2hpbnRz
+OgoKCiEhQUxTQS9IREEgZG1lc2cKISEtLS0tLS0tLS0tLS0tLQoKWyAgICAy
+LjkyNjczM10gQmx1ZXRvb3RoOiBoY2kwOiBCb290bG9hZGVyIHJldmlzaW9u
+IDAuMCBidWlsZCAyIHdlZWsgNTIgMjAxNApbICAgIDIuOTI4OTM1XSBzbmRf
+aGRhX2ludGVsOiB1bmtub3duIHBhcmFtZXRlciAnc3lzdGVtNzYtYXVkaW8t
+cGF0Y2gnIGlnbm9yZWQKWyAgICAyLjkzMDk4NV0gc25kX2hkYV9pbnRlbCAw
+MDAwOjAwOjFmLjM6IGVuYWJsaW5nIGRldmljZSAoMDAwMCAtPiAwMDAyKQpb
+ICAgIDIuOTMxMDcxXSBzbmRfaGRhX2ludGVsIDAwMDA6MDA6MWYuMzogQXBw
+bHlpbmcgcGF0Y2ggZmlybXdhcmUgJ3N5c3RlbTc2LWF1ZGlvLXBhdGNoJwpb
+ICAgIDIuOTMxMTE0XSBzbmRfaGRhX2ludGVsIDAwMDA6MDE6MDAuMTogZW5h
+YmxpbmcgZGV2aWNlICgwMDAwIC0+IDAwMDIpClsgICAgMi45MzExNTJdIHNu
+ZF9oZGFfaW50ZWwgMDAwMDowMTowMC4xOiBEaXNhYmxpbmcgTVNJClsgICAg
+Mi45MzExNTZdIHNuZF9oZGFfaW50ZWwgMDAwMDowMTowMC4xOiBIYW5kbGUg
+dmdhX3N3aXRjaGVyb28gYXVkaW8gY2xpZW50ClsgICAgMi45MzE3OTFdIEJs
+dWV0b290aDogaGNpMDogRGV2aWNlIHJldmlzaW9uIGlzIDUKLS0KWyAgICAz
+LjAwODUxOV0gY2ZnODAyMTE6ICAgKDU3MjQwMDAwIEtIeiAtIDYzNzIwMDAw
+IEtIeiBAIDIxNjAwMDAgS0h6KSwgKE4vQSwgMCBtQm0pLCAoTi9BKQpbICAg
+IDMuMDEwNDgxXSBzbmRfaGRhX2ludGVsIDAwMDA6MDA6MWYuMzogZmFpbGVk
+IHRvIGFkZCBpOTE1X2JwbyBjb21wb25lbnQgbWFzdGVyICgtMTkpClsgICAg
+My4wMjYzNDBdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMDog
+YXV0b2NvbmZpZyBmb3IgQUxDODk4OiBsaW5lX291dHM9MSAoMHgxNy8weDAv
+MHgwLzB4MC8weDApIHR5cGU6bGluZQpbICAgIDMuMDI2MzQyXSBzbmRfaGRh
+X2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDA6ICAgIHNwZWFrZXJfb3V0cz0x
+ICgweDE0LzB4MC8weDAvMHgwLzB4MCkKWyAgICAzLjAyNjM0NF0gc25kX2hk
+YV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMEQwOiAgICBocF9vdXRzPTEgKDB4
+MWIvMHgwLzB4MC8weDAvMHgwKQpbICAgIDMuMDI2MzQ1XSBzbmRfaGRhX2Nv
+ZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDA6ICAgIG1vbm86IG1vbm9fb3V0PTB4
+MApbICAgIDMuMDI2MzQ1XSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRp
+b0MwRDA6ICAgIGRpZy1vdXQ9MHgxZS8weDAKWyAgICAzLjAyNjM0Nl0gc25k
+X2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMEQwOiAgICBpbnB1dHM6Clsg
+ICAgMy4wMjYzNDddIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBE
+MDogICAgICBNaWM9MHgxOApbICAgIDMuMDI2MzQ4XSBzbmRfaGRhX2NvZGVj
+X3JlYWx0ZWsgaGRhdWRpb0MwRDA6ICAgICAgSW50ZXJuYWwgTWljPTB4MTIK
+WyAgICAzLjAzNDE5N10gaW50ZWxfcmFwbDogRm91bmQgUkFQTCBkb21haW4g
+cGFja2FnZQotLQpbICAgIDMuMDM0MjAzXSBpbnRlbF9yYXBsOiBGb3VuZCBS
+QVBMIGRvbWFpbiBkcmFtClsgICAgMy4wMzUzMjZdIGlucHV0OiBIREEgSW50
+ZWwgUENIIE1pYyBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWYu
+My9zb3VuZC9jYXJkMC9pbnB1dDE3ClsgICAgMy4wMzUzNzRdIGlucHV0OiBI
+REEgSW50ZWwgUENIIExpbmUgT3V0IGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAv
+MDAwMDowMDoxZi4zL3NvdW5kL2NhcmQwL2lucHV0MTgKWyAgICAzLjAzNTQx
+MV0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggSGVhZHBob25lIGFzIC9kZXZpY2Vz
+L3BjaTAwMDA6MDAvMDAwMDowMDoxZi4zL3NvdW5kL2NhcmQwL2lucHV0MTkK
+WyAgICAzLjEyMDg2N10gaWVlZTgwMjExIHBoeTA6IFNlbGVjdGVkIHJhdGUg
+Y29udHJvbCBhbGdvcml0aG0gJ2l3bC1tdm0tcnMnCi0tClsgICAgMy40NDY0
+MjVdIGF1ZGl0OiB0eXBlPTE0MDAgYXVkaXQoMTQ3ODYyOTYwNi4wMzg6MTAp
+OiBhcHBhcm1vcj0iU1RBVFVTIiBvcGVyYXRpb249InByb2ZpbGVfbG9hZCIg
+cHJvZmlsZT0idW5jb25maW5lZCIgbmFtZT0iL3Vzci9saWIvbGlnaHRkbS9s
+aWdodGRtLWd1ZXN0LXNlc3Npb24vL2Nocm9taXVtIiBwaWQ9NzQ3IGNvbW09
+ImFwcGFybW9yX3BhcnNlciIKWyAgICAzLjQ3NzM4N10gaW5wdXQ6IEhEQSBO
+VmlkaWEgSERNSS9EUCxwY209MyBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAw
+MDA6MDA6MDEuMC8wMDAwOjAxOjAwLjEvc291bmQvY2FyZDEvaW5wdXQyMApb
+ICAgIDMuNDc3NDg3XSBpbnB1dDogSERBIE5WaWRpYSBIRE1JL0RQLHBjbT03
+IGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDowMS4wLzAwMDA6MDE6
+MDAuMS9zb3VuZC9jYXJkMS9pbnB1dDIxClsgICAgMy40Nzg1OTFdIGlucHV0
+OiBIREEgTlZpZGlhIEhETUkvRFAscGNtPTggYXMgL2RldmljZXMvcGNpMDAw
+MDowMC8wMDAwOjAwOjAxLjAvMDAwMDowMTowMC4xL3NvdW5kL2NhcmQxL2lu
+cHV0MjIKWyAgICAzLjY2MzU5NF0gSVB2NjogQUREUkNPTkYoTkVUREVWX1VQ
+KTogd2xwMTEwczA6IGxpbmsgaXMgbm90IHJlYWR5CgoK
+
+--_----------=_147863267841509092
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_----------=_147863267841509092--
