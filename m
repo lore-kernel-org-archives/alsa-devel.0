@@ -1,18 +1,16 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [RFC 2/4] Alsa: control: increment index field for
-	duplicated control.
-Date: Tue, 8 Nov 2016 09:11:13 +0100
-Message-ID: <1478592675-23092-3-git-send-email-arnaud.pouliquen@st.com>
-References: <1478592675-23092-1-git-send-email-arnaud.pouliquen@st.com>
+Subject: [RFC 0/4] ALSA controls management using
+	index/device/sub-devices fields
+Date: Tue, 8 Nov 2016 09:11:11 +0100
+Message-ID: <1478592675-23092-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D91C8266ED4
+ by alsa0.perex.cz (Postfix) with ESMTP id D9401266EEF
  for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2016 09:13:11 +0100 (CET)
-In-Reply-To: <1478592675-23092-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,63 +24,122 @@ To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org, Cha
 Cc: Takashi Iwai <tiwai@suse.de>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Instead of returning an error when a control is already present, the
-index field is incremented and a warning message is printed.
-This allows drivers to instanciate same control without
-device and sub device number management ( MIXER type controls).
+I tried to summarize my observation based on discussions concerning the
+instantiation of the ALSA controls, initiate in following thread:
+[PATCH] ASoC: core: allow control index different from 0 
+    https://www.spinics.net/lists/ALSA-devel/msg55415.html
 
-Change-Id: Ifcc60dca9d1cf4c3a424bb9653296678aa7953cb
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- sound/core/control.c | 28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+My test environment: sti platform, 3 playback devices with associated instances of controls
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index fb096cb..014e3f4 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -365,6 +365,7 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
- 	struct snd_ctl_elem_id id;
- 	unsigned int idx;
- 	unsigned int count;
-+	struct snd_kcontrol *elem_set;
- 	int err = -EINVAL;
- 
- 	if (! kcontrol)
-@@ -376,17 +377,24 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
- 		goto error;
- 
- 	down_write(&card->controls_rwsem);
--	if (snd_ctl_find_id(card, &id)) {
--		up_write(&card->controls_rwsem);
--		dev_err(card->dev, "control %i:%i:%i:%s:%i is already present\n",
--					id.iface,
--					id.device,
--					id.subdevice,
--					id.name,
--					id.index);
--		err = -EBUSY;
--		goto error;
-+	while (elem_set = snd_ctl_find_id(card, &id)) {
-+		id.index++;
-+		if (id.index > UINT_MAX - kcontrol->count) {
-+			up_write(&card->controls_rwsem);
-+			dev_err(card->dev, "no more free index for control %i:%i:%i:%s\n",
-+				id.iface, id.device, id.subdevice, id.name);
-+			err = -ENOSPC;
-+			goto error;
-+		}
-+	}
-+	if (kcontrol->id.index != id.index) {
-+		dev_warn(card->dev, "control %i:%i:%i:%s:%i is already present\n",
-+			 id.iface, id.device, id.subdevice, id.name, id.index);
-+		dev_warn(card->dev, "control index updated from %i to %i\n",
-+			 kcontrol->id.index, id.index);
-+		kcontrol->id.index = id.index;
- 	}
-+
- 	if (snd_ctl_find_hole(card, kcontrol->count) < 0) {
- 		up_write(&card->controls_rwsem);
- 		err = -ENOMEM;
+card 0: STIB2120 [STI-B2120], device 0: Uni Player #0 (HDMI)-i2s-hifi 
+	numid=1,iface=PCM,name='ELD'
+	numid=3,iface=PCM,name='IEC958 Playback Default'
+	numid=2,iface=PCM,name='PCM Playback Oversampling Freq.
+				Adjustment'
+card 0: STIB2120 [STI-B2120], device 1: Uni Player #2 (DAC)-sas-dai-dac 
+	numid=4,iface=PCM,name='PCM Playback Oversampling Freq.
+				Adjustment',device=2
+card 0: STIB2120 [STI-B2120], device 2: Uni Player #3 (SPDIF)-sas-dai-
+spdif-out
+	numid=6,iface=PCM,name='IEC958 Playback Default',device=2
+	numid=5,iface=PCM,name='PCM Playback Oversampling Freq.
+				Adjustment',device=3
+
+1) From user land point of view 
+
+1-1) How to Instantiate generic ALSA control
+
+The  point is the handling of multi instance of generic ALSA controls.
+In this case "prefix" can not be used. Controls have to be identified
+by a combination of device/sub-device/index
+
+Examples of controls that seem generics:
+iface=PCM,name='Capture Channel Map'
+iface=PCM,name='Playback Channel Map'
+iface=PCM,name='ELD'
+
+iface=MIXER,name='Master Playback Switch'
+iface=MIXER,name='Master Playback Volume'
+iface=MIXER,name='Capture Switch'
+iface=MIXER,name='Capture Volume'
+
+iface=MIXER/PCM,name='IEC958 Playback Con Mask'
+iface=MIXER/PCM,name='IEC958 Playback Pro Mask'
+iface=MIXER/PCM,name='IEC958 Playback Default'
+iface=MIXER/PCM,name='IEC958 Playback Switch'
+
+1-2) Different ways of using control instantiation
+ Here is a short benchmark on applications using ALSA controls:
+- iecset and "amixer scontrols" base control instantiation on "index".
+- GStreamer and pulseaudio seems based on "device" (through the ALSA
+  card conf files).
+- "amixer controls" support both.
+
+ I supposse that this is the reason why "device" and "index fields
+  are  both fixed in HDA-intel.cong aligned with driver.  
+
+1-3) Questions:
+   - If i consider description provided by Takashi Sakamoto in thread:
+    https://www.spinics.net/lists/ALSA-devel/msg55451.html
+
+    Should we always apply this rules?
+      - MIXER control type: as it is not linked to PCM device but card,
+	"index" is used to instantiate control.
+      - PCM control type: as it is linked to PCM device,
+        "device/subdevice" is used to instantiate control.
+    Or could we consider that a control can be instantiated using
+      device/subdevice fields  and/or index fields?
+
+   - Concerning IEC controls, should we consider them as PCM or MIXER
+     type controls? In current implementations both are used...
+
+2) From driver point of view
+
+2-1) None SOC drivers:
+Today solution seems to base indexation on both "index" and "device"
+number. Device indexation seems not linked to PCM device number
+Example in  ea9b43addc4d ("ALSA: hda - Fix broken workaround for HDMI/SPDIF conflicts").
+http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/?id=ea9b43add
+
+=> The drawback is that each driver has to implement it. Could be nice
+   to have in generic code....
+
+2-2) SOC drivers:
+  -  it is not possible to use "index" using helper functions as
+    snd_soc_cnew forces index to 0.
+    Solution could be to implement in soc_core as done in HDA driver. 
+   => duplication of the code in ASoC and None ASoC drivers.
+  - Relation chip between control and PCM device. if rules mentioned
+    in 1-3 should be respected, need to link control to PCM device.
+    This point seems quite tricky... At least DAI controls can be
+    simply linked to PCM device during DAI-link probing. 	
+
+3) Patches proposed:
+Based on these observations, here are some patches that i tested in my
+environment. There are complementary,  and could answer to some 
+limitations mentioned above.
+  
+3-1) Alsa-utils patch
+
+- iecset: allow to select control with device and sub-device numbers
+  This patch allows to access to 2 iec controls differentiated by
+  device/sub-devices numbers
+=> For me, this patch is mandatory to be able to address the ASoC IEC
+   controls, in case of no fix is implemented to allows index field
+   update in ASoC.
+
+3-2) Alsa driver patches
+  - ASoC: core: allow PCM control binding to PCM device
+  	Add relationship between DAIs PCM controls and PCM device.
+
+  - ALSA: control: increment index field for duplicated control.
+   	Generic implementation of the patch proposed in HDA driver
+        (http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/?id=ea9b43add)
+
+  - ASoC: sti: use bind_pcm_ctl
+  	implementation of bind_pcm_ctl for sti driver.
+        
+ Best Regards,
+ Arnaud
 -- 
 1.9.1
