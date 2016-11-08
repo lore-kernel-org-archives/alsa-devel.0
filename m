@@ -1,67 +1,88 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH 3/3] ARM: gr8: evb: Add i2s codec
-Date: Tue, 8 Nov 2016 15:57:48 +0800
-Message-ID: <CAGb2v6557B5dooERbKc709Hbrzb3vP8eoSj3nh6rKek7UwrgEQ@mail.gmail.com>
-References: <cover.9296840e0b7438e0ae63b4ec0d64957640b64a78.1478524066.git-series.maxime.ripard@free-electrons.com>
- <4d99da31af41b26d9109113e19223ee8b88f76ae.1478524066.git-series.maxime.ripard@free-electrons.com>
- <CAGb2v65bzWJpEnmwk89Qkn+_QawcPtpCJdA+90Dgc68FLRNQqw@mail.gmail.com> <20161108074414.vvnjj7aa26sloi2f@lukather>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [RFC 2/4] Alsa: control: increment index field for
+	duplicated control.
+Date: Tue, 8 Nov 2016 09:11:13 +0100
+Message-ID: <1478592675-23092-3-git-send-email-arnaud.pouliquen@st.com>
+References: <1478592675-23092-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161108074414.vvnjj7aa26sloi2f@lukather>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Chen-Yu Tsai <wens@csie.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id D91C8266ED4
+ for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2016 09:13:11 +0100 (CET)
+In-Reply-To: <1478592675-23092-1-git-send-email-arnaud.pouliquen@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 8, 2016 at 3:44 PM, Maxime Ripard
-<maxime.ripard@free-electrons.com> wrote:
-> On Mon, Nov 07, 2016 at 10:11:45PM +0800, Chen-Yu Tsai wrote:
->> On Mon, Nov 7, 2016 at 9:08 PM, Maxime Ripard
->> <maxime.ripard@free-electrons.com> wrote:
->> > The GR8-EVB comes with a wm8978 codec connected to the i2s bus.
->> >
->> > Add a card in order to have it working
->> >
->> > Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
->> > ---
->> >  arch/arm/boot/dts/ntc-gr8-evb.dts | 14 ++++++++++++++
->> >  1 file changed, 14 insertions(+), 0 deletions(-)
->> >
->> > diff --git a/arch/arm/boot/dts/ntc-gr8-evb.dts b/arch/arm/boot/dts/ntc-gr8-evb.dts
->> > index 12b4317a4383..5291e425caf9 100644
->> > --- a/arch/arm/boot/dts/ntc-gr8-evb.dts
->> > +++ b/arch/arm/boot/dts/ntc-gr8-evb.dts
->> > @@ -76,6 +76,20 @@
->> >                 default-brightness-level = <8>;
->> >         };
->> >
->> > +       i2s {
->>
->> "sound" might be a better node name? The I2S controllers are also
->> named "i2s".
->
-> I know, but we also had the codec and SPDIF on this board, so sound
-> was too generic to be meaningful I guess. I don't really care about
-> the name though, if you have any suggestion...
+Instead of returning an error when a control is already present, the
+index field is incremented and a warning message is printed.
+This allows drivers to instanciate same control without
+device and sub device number management ( MIXER type controls).
 
-Well people seem to use "sound" for the sound card nodes...
+Change-Id: Ifcc60dca9d1cf4c3a424bb9653296678aa7953cb
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+ sound/core/control.c | 28 ++++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
 
-What about "sound-analog" for this one, and "sound-spdif" for the
-SPDIF simple card? Or "analog-sound" and "spdif-sound" if that looks
-better.
-
-
-ChenYu
-
->> Otherwise,
->>
->> Acked-by: Chen-Yu Tsai <wens@csie.org>
->
-> Thanks!
-> Maxime
->
-> --
-> Maxime Ripard, Free Electrons
-> Embedded Linux and Kernel engineering
-> http://free-electrons.com
+diff --git a/sound/core/control.c b/sound/core/control.c
+index fb096cb..014e3f4 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -365,6 +365,7 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
+ 	struct snd_ctl_elem_id id;
+ 	unsigned int idx;
+ 	unsigned int count;
++	struct snd_kcontrol *elem_set;
+ 	int err = -EINVAL;
+ 
+ 	if (! kcontrol)
+@@ -376,17 +377,24 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
+ 		goto error;
+ 
+ 	down_write(&card->controls_rwsem);
+-	if (snd_ctl_find_id(card, &id)) {
+-		up_write(&card->controls_rwsem);
+-		dev_err(card->dev, "control %i:%i:%i:%s:%i is already present\n",
+-					id.iface,
+-					id.device,
+-					id.subdevice,
+-					id.name,
+-					id.index);
+-		err = -EBUSY;
+-		goto error;
++	while (elem_set = snd_ctl_find_id(card, &id)) {
++		id.index++;
++		if (id.index > UINT_MAX - kcontrol->count) {
++			up_write(&card->controls_rwsem);
++			dev_err(card->dev, "no more free index for control %i:%i:%i:%s\n",
++				id.iface, id.device, id.subdevice, id.name);
++			err = -ENOSPC;
++			goto error;
++		}
++	}
++	if (kcontrol->id.index != id.index) {
++		dev_warn(card->dev, "control %i:%i:%i:%s:%i is already present\n",
++			 id.iface, id.device, id.subdevice, id.name, id.index);
++		dev_warn(card->dev, "control index updated from %i to %i\n",
++			 kcontrol->id.index, id.index);
++		kcontrol->id.index = id.index;
+ 	}
++
+ 	if (snd_ctl_find_hole(card, kcontrol->count) < 0) {
+ 		up_write(&card->controls_rwsem);
+ 		err = -ENOMEM;
+-- 
+1.9.1
