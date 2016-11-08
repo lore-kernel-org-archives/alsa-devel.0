@@ -1,38 +1,18 @@
-From: Hermes Zhang <chenhui.zhang@axis.com>
-Subject: How to transfer data to the endpoint (e.g. .wav file)
- in alsa external I/O plugin
-Date: Tue, 8 Nov 2016 06:45:07 +0000
-Message-ID: <c4e83708c1c94476809093f5c76ce69e@XBOX03.axis.com>
+From: Sebastien Guiriec <sebastien.guiriec@intel.com>
+Subject: Re: [PATCH 2/3] ASoC: Intel: atom: save FW version
+Date: Tue, 8 Nov 2016 08:15:06 +0100
+Message-ID: <f0900341-cf16-b165-a790-51005bc6c161@intel.com>
+References: <20161104080411.12410-1-sebastien.guiriec@intel.com>
+ <20161104080411.12410-2-sebastien.guiriec@intel.com>
+ <20161107210117.GO3000@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id C0C7A261A1A
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2016 07:45:09 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by bes.se.axis.com (Postfix) with ESMTP id B6DA336368
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2016 07:45:08 +0100 (CET)
-Received: from bes.se.axis.com ([IPv6:::ffff:127.0.0.1])
- by localhost (bes.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id YyaK8wPvXuex for <alsa-devel@alsa-project.org>;
- Tue,  8 Nov 2016 07:45:07 +0100 (CET)
-Received: from boulder03.se.axis.com (boulder03.se.axis.com [10.0.8.17])
- by bes.se.axis.com (Postfix) with ESMTPS id A8F1036367
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2016 07:45:07 +0100 (CET)
-Received: from boulder03.se.axis.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 6A2F11E0A7
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2016 07:45:07 +0100 (CET)
-Received: from boulder03.se.axis.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 5E1301E083
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2016 07:45:07 +0100 (CET)
-Received: from seth.se.axis.com (unknown [10.0.2.172])
- by boulder03.se.axis.com (Postfix) with ESMTP
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2016 07:45:07 +0100 (CET)
-Received: from XBOX02.axis.com (xbox02.axis.com [10.0.5.16])
- by seth.se.axis.com (Postfix) with ESMTP id 510E545F
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2016 07:45:07 +0100 (CET)
-Content-Language: en-US
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0508A2666FA
+ for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2016 08:18:44 +0100 (CET)
+In-Reply-To: <20161107210117.GO3000@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -42,32 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, viond.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I'm a new in alsa plugin develop. Now I'm try to implement an I/O plugin for my platform in alsa. I can config the alsa plugin and start it, but when I'm deal with the data in the transfer api, I could not flush the data to the endpoint, e.g. .wav file.
-
-I run below command to test my plugin:
-
-arecord -D my_plug -c 1 -f S16_LE raw
-
-I want to save the audio data to a wav file by my plugin. Then in my code, I try to write the data to the area structure like this:
-
-static snd_pcm_sframes_t
-my_read (snd_pcm_ioplug_t * io,
-     const snd_pcm_channel_area_t * areas,
-     snd_pcm_uframes_t offset, snd_pcm_uframes_t size)
-{
-     /* I got the audio data from other api here */
-
-memcpy(areas->addr + areas->first + areas->step * offset, my_data, size);
-
-}
-
-But I could not get a correct wav file, there will be a file named "raw" but only with some wav file head, not real data include. Does anyone know anything I'm wrong? Is this the right way to handle the transfer data? Thanks.
+Hi Vinod,
 
 
-Best  Regards,
-Hermes
+On 07/11/2016 22:01, Vinod Koul wrote:
+> On Fri, Nov 04, 2016 at 09:04:10AM +0100, Sebastien Guiriec wrote:
+>> After the boot of the SST FW the firmware version is send back
+>> to the driver. This patch is saving the FW version inside the
+>> driver.
+>>
+>> Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
+>> ---
+>>  sound/soc/intel/atom/sst/sst.h     | 1 +
+>>  sound/soc/intel/atom/sst/sst_ipc.c | 5 +++++
+>>  2 files changed, 6 insertions(+)
+>>
+>> diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
+>> index 3f49386..5c9a51cc 100644
+>> --- a/sound/soc/intel/atom/sst/sst.h
+>> +++ b/sound/soc/intel/atom/sst/sst.h
+>> @@ -436,6 +436,7 @@ struct intel_sst_drv {
+>>  	 */
+>>  	char firmware_name[FW_NAME_SIZE];
+>>
+>> +	struct snd_sst_fw_version fw_version;
+>
+> Can you check if this is initialzed to zero, otherwise we should reset it..
+>
+
+Driver is using devm_kzalloc so it is set to 0.
+
+Seb
+---------------------------------------------------------------------
+Intel Corporation SAS (French simplified joint stock company)
+Registered headquarters: "Les Montalets"- 2, rue de Paris, 
+92196 Meudon Cedex, France
+Registration Number:  302 456 199 R.C.S. NANTERRE
+Capital: 4,572,000 Euros
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
