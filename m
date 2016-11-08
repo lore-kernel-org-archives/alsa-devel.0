@@ -1,70 +1,113 @@
-From: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Subject: Re: [PATCH 2/3] ASoC: Intel: atom: save FW version
-Date: Tue, 8 Nov 2016 08:15:06 +0100
-Message-ID: <f0900341-cf16-b165-a790-51005bc6c161@intel.com>
-References: <20161104080411.12410-1-sebastien.guiriec@intel.com>
- <20161104080411.12410-2-sebastien.guiriec@intel.com>
- <20161107210117.GO3000@localhost>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH 3/3] ARM: gr8: evb: Add i2s codec
+Date: Tue, 8 Nov 2016 08:44:14 +0100
+Message-ID: <20161108074414.vvnjj7aa26sloi2f@lukather>
+References: <cover.9296840e0b7438e0ae63b4ec0d64957640b64a78.1478524066.git-series.maxime.ripard@free-electrons.com>
+ <4d99da31af41b26d9109113e19223ee8b88f76ae.1478524066.git-series.maxime.ripard@free-electrons.com>
+ <CAGb2v65bzWJpEnmwk89Qkn+_QawcPtpCJdA+90Dgc68FLRNQqw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 0508A2666FA
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2016 08:18:44 +0100 (CET)
-In-Reply-To: <20161107210117.GO3000@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, viond.koul@intel.com
+Content-Type: multipart/mixed; boundary="===============0392799188043817032=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <CAGb2v65bzWJpEnmwk89Qkn+_QawcPtpCJdA+90Dgc68FLRNQqw@mail.gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Vinod,
+
+--===============0392799188043817032==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qxjcnworssfre7k4"
+Content-Disposition: inline
 
 
-On 07/11/2016 22:01, Vinod Koul wrote:
-> On Fri, Nov 04, 2016 at 09:04:10AM +0100, Sebastien Guiriec wrote:
->> After the boot of the SST FW the firmware version is send back
->> to the driver. This patch is saving the FW version inside the
->> driver.
->>
->> Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
->> ---
->>  sound/soc/intel/atom/sst/sst.h     | 1 +
->>  sound/soc/intel/atom/sst/sst_ipc.c | 5 +++++
->>  2 files changed, 6 insertions(+)
->>
->> diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
->> index 3f49386..5c9a51cc 100644
->> --- a/sound/soc/intel/atom/sst/sst.h
->> +++ b/sound/soc/intel/atom/sst/sst.h
->> @@ -436,6 +436,7 @@ struct intel_sst_drv {
->>  	 */
->>  	char firmware_name[FW_NAME_SIZE];
->>
->> +	struct snd_sst_fw_version fw_version;
->
-> Can you check if this is initialzed to zero, otherwise we should reset it..
->
+--qxjcnworssfre7k4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Driver is using devm_kzalloc so it is set to 0.
+On Mon, Nov 07, 2016 at 10:11:45PM +0800, Chen-Yu Tsai wrote:
+> On Mon, Nov 7, 2016 at 9:08 PM, Maxime Ripard
+> <maxime.ripard@free-electrons.com> wrote:
+> > The GR8-EVB comes with a wm8978 codec connected to the i2s bus.
+> >
+> > Add a card in order to have it working
+> >
+> > Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+> > ---
+> >  arch/arm/boot/dts/ntc-gr8-evb.dts | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+), 0 deletions(-)
+> >
+> > diff --git a/arch/arm/boot/dts/ntc-gr8-evb.dts b/arch/arm/boot/dts/ntc-=
+gr8-evb.dts
+> > index 12b4317a4383..5291e425caf9 100644
+> > --- a/arch/arm/boot/dts/ntc-gr8-evb.dts
+> > +++ b/arch/arm/boot/dts/ntc-gr8-evb.dts
+> > @@ -76,6 +76,20 @@
+> >                 default-brightness-level =3D <8>;
+> >         };
+> >
+> > +       i2s {
+>=20
+> "sound" might be a better node name? The I2S controllers are also
+> named "i2s".
 
-Seb
----------------------------------------------------------------------
-Intel Corporation SAS (French simplified joint stock company)
-Registered headquarters: "Les Montalets"- 2, rue de Paris, 
-92196 Meudon Cedex, France
-Registration Number:  302 456 199 R.C.S. NANTERRE
-Capital: 4,572,000 Euros
+I know, but we also had the codec and SPDIF on this board, so sound
+was too generic to be meaningful I guess. I don't really care about
+the name though, if you have any suggestion...
 
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+> Otherwise,
+>=20
+> Acked-by: Chen-Yu Tsai <wens@csie.org>
+
+Thanks!
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+
+--qxjcnworssfre7k4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYIYJKAAoJEBx+YmzsjxAgo+cP/jkgGy+35Chjud7fSEEaIU9q
+Z4LoS7kN6w8T/yE2L7ZMVgLHrCKYPge3B5FYjFjSwHREXD+OUQbh9vgr8YiAx3Mm
+/lj7xXIX1deUVEAqYQMP+zgtI4Ud4HYbGm9vnORHuA0Df1HnXk7vv/olsD9+84cr
+Vrj3XoncmQzhyQ/cucgc42tXdbNPLlzQP+phftZD166PaMsXiDGTzZUszBgoJJTR
+GWNxGaxQAS+UjsawPrApW6TkecdvwHZ05B+s86/0yEzkBExkR8xnN3SAu6gg0Gqn
+k++5jjX28V4+SLjXUiueqN4jfT3V9Dlc9WSFanExGb93TfQqh1UnpBc6oNI6QRzk
+3YW8PLi6WRkrlUvKOVmQaoZDXKJm2JorrF2N9unuLKAei2f8Dp0cOABB9hZc5B1U
+CSVAQRkMc5pY3EKQhvB/szrlyvvi7HcfeOJEIwKDH3l0npXl9FB41KEU9IRGoLHO
+WVYusHxAZtcBby1GayPrOtI98ftXr+F4xGjS3CZrAP6g3gQjy8Vzco7dyr1VFPwI
+wI6gPVJ/EEgE/tcAh+ITGV38ENdFSzpeK8wpvdHZ3zTZ9bs3txagehRWJiASD5Bw
+WM9Oax7kqdiRayCQB1eMoVqUYa32dFa8wnktX1s6sTkAVmWnd8aEBLKdV8o2QPgY
+T0PwF6M/71Ysl/NtDo2E
+=uXVQ
+-----END PGP SIGNATURE-----
+
+--qxjcnworssfre7k4--
+
+
+--===============0392799188043817032==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============0392799188043817032==--
