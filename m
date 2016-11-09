@@ -1,15 +1,17 @@
 From: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Subject: [PATCH v2 0/3] ASoC: intel: atom: Add FW version
-	information
-Date: Wed,  9 Nov 2016 09:47:33 +0100
-Message-ID: <20161109084736.28265-1-sebastien.guiriec@intel.com>
+Subject: [PATCH v2 1/3] ASoC: intel: atom: Add debug
+	information related to FW version
+Date: Wed,  9 Nov 2016 09:47:34 +0100
+Message-ID: <20161109084736.28265-2-sebastien.guiriec@intel.com>
+References: <20161109084736.28265-1-sebastien.guiriec@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D756265DF3
- for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 09:51:20 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 38089265DF3
+ for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 09:51:45 +0100 (CET)
+In-Reply-To: <20161109084736.28265-1-sebastien.guiriec@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,23 +25,27 @@ To: alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linu
 Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch series is adding FW version information of SST. Version is both
-log as dev_info and sysfs entry.
+This patch is adding debug information related to SST FW version.
 
-Update since V1:
-- sysfs entry is set to "FW not yet loaded" in case we do not have
-loaded the FW once
+Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
+---
+ sound/soc/intel/atom/sst/sst_ipc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Sebastien Guiriec (3):
-  ASoC: intel: atom: Add debug information related to FW version
-  ASoC: Intel: atom: save FW version
-  ASoC: Intel: atom: Add sysfs entry in order to store FW version
-
- sound/soc/intel/atom/sst/sst.c     | 39 ++++++++++++++++++++++++++++++++++++++
- sound/soc/intel/atom/sst/sst.h     |  1 +
- sound/soc/intel/atom/sst/sst_ipc.c | 10 +++++++++-
- 3 files changed, 49 insertions(+), 1 deletion(-)
-
+diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
+index 8afa6fe..92ffeaa 100644
+--- a/sound/soc/intel/atom/sst/sst_ipc.c
++++ b/sound/soc/intel/atom/sst/sst_ipc.c
+@@ -236,6 +236,9 @@ static void process_fw_init(struct intel_sst_drv *sst_drv_ctx,
+ 		retval = init->result;
+ 		goto ret;
+ 	}
++	dev_info(sst_drv_ctx->dev, "FW Version %02x.%02x.%02x.%02x\n",
++			init->fw_version.type, init->fw_version.major,
++			init->fw_version.minor, init->fw_version.build);
+ 
+ ret:
+ 	sst_wake_up_block(sst_drv_ctx, retval, FW_DWNL_ID, 0 , NULL, 0);
 -- 
 2.9.3
 
