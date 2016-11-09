@@ -1,137 +1,104 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/5] ASoC: wm_adsp: Add support for SYSTEM firmware controls
-Date: Wed, 9 Nov 2016 17:14:16 +0000
-Message-ID: <1478711658-23696-3-git-send-email-rf@opensource.wolfsonmicro.com>
-References: <1478711658-23696-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/5] ASoC: wm_adsp: factor out getting base register for a control
+Date: Wed, 9 Nov 2016 17:14:14 +0000
+Message-ID: <1478711658-23696-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1478711658-23696-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
 Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>
+The lookup of the base register corresponding to a control is
+duplicated in read and write so factor it out into a separate
+function.
 
-Add support for firmware controls marked SYSTEM. These are
-internal to the driver-firmware interface and do not have
-a user-accessible ALSA control.
-
-Signed-off-by: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm_adsp.c | 28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 46 ++++++++++++++++++++++++----------------------
+ 1 file changed, 24 insertions(+), 22 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index eb2ca91..82bb3dc 100644
+index 7320fca..049ff20 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -444,6 +444,7 @@ struct wm_coeff_ctl {
- 	struct snd_kcontrol *kcontrol;
- 	struct soc_bytes_ext bytes_ext;
- 	unsigned int flags;
-+	unsigned int type;
- };
+@@ -727,6 +727,24 @@ static inline struct wm_coeff_ctl *bytes_ext_to_ctl(struct soc_bytes_ext *ext)
+ 	return container_of(ext, struct wm_coeff_ctl, bytes_ext);
+ }
  
- static const char *wm_adsp_mem_region_name(unsigned int type)
-@@ -1075,7 +1076,7 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
- 				  const struct wm_adsp_alg_region *alg_region,
- 				  unsigned int offset, unsigned int len,
- 				  const char *subname, unsigned int subname_len,
--				  unsigned int flags)
-+				  unsigned int flags, unsigned int type)
- {
- 	struct wm_coeff_ctl *ctl;
- 	struct wmfw_ctl_work *ctl_work;
-@@ -1083,9 +1084,6 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
- 	const char *region_name;
- 	int ret;
- 
--	if (flags & WMFW_CTL_FLAG_SYS)
--		return 0;
--
- 	region_name = wm_adsp_mem_region_name(alg_region->type);
- 	if (!region_name) {
- 		adsp_err(dsp, "Unknown region type: %d\n", alg_region->type);
-@@ -1143,6 +1141,7 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
- 	ctl->dsp = dsp;
- 
- 	ctl->flags = flags;
-+	ctl->type = type;
- 	ctl->offset = offset;
- 	ctl->len = len;
- 	ctl->cache = kzalloc(ctl->len, GFP_KERNEL);
-@@ -1153,6 +1152,9 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
- 
- 	list_add(&ctl->list, &dsp->ctl_list);
- 
-+	if (flags & WMFW_CTL_FLAG_SYS)
-+		return 0;
++static int wm_coeff_base_reg(struct wm_coeff_ctl *ctl, unsigned int *reg)
++{
++	const struct wm_adsp_alg_region *alg_region = &ctl->alg_region;
++	struct wm_adsp *dsp = ctl->dsp;
++	const struct wm_adsp_region *mem;
 +
- 	ctl_work = kzalloc(sizeof(*ctl_work), GFP_KERNEL);
- 	if (!ctl_work) {
- 		ret = -ENOMEM;
-@@ -1342,7 +1344,8 @@ static int wm_adsp_parse_coeff(struct wm_adsp *dsp,
- 					     coeff_blk.len,
- 					     coeff_blk.name,
- 					     coeff_blk.name_len,
--					     coeff_blk.flags);
-+					     coeff_blk.flags,
-+					     coeff_blk.ctl_type);
- 		if (ret < 0)
- 			adsp_err(dsp, "Failed to create control: %.*s, %d\n",
- 				 coeff_blk.name_len, coeff_blk.name, ret);
-@@ -1742,7 +1745,8 @@ static int wm_adsp1_setup_algs(struct wm_adsp *dsp)
- 				len -= be32_to_cpu(adsp1_alg[i].dm);
- 				len *= 4;
- 				wm_adsp_create_control(dsp, alg_region, 0,
--						       len, NULL, 0, 0);
-+						     len, NULL, 0, 0,
-+						     SNDRV_CTL_ELEM_TYPE_BYTES);
- 			} else {
- 				adsp_warn(dsp, "Missing length info for region DM with ID %x\n",
- 					  be32_to_cpu(adsp1_alg[i].alg.id));
-@@ -1762,7 +1766,8 @@ static int wm_adsp1_setup_algs(struct wm_adsp *dsp)
- 				len -= be32_to_cpu(adsp1_alg[i].zm);
- 				len *= 4;
- 				wm_adsp_create_control(dsp, alg_region, 0,
--						       len, NULL, 0, 0);
-+						     len, NULL, 0, 0,
-+						     SNDRV_CTL_ELEM_TYPE_BYTES);
- 			} else {
- 				adsp_warn(dsp, "Missing length info for region ZM with ID %x\n",
- 					  be32_to_cpu(adsp1_alg[i].alg.id));
-@@ -1853,7 +1858,8 @@ static int wm_adsp2_setup_algs(struct wm_adsp *dsp)
- 				len -= be32_to_cpu(adsp2_alg[i].xm);
- 				len *= 4;
- 				wm_adsp_create_control(dsp, alg_region, 0,
--						       len, NULL, 0, 0);
-+						     len, NULL, 0, 0,
-+						     SNDRV_CTL_ELEM_TYPE_BYTES);
- 			} else {
- 				adsp_warn(dsp, "Missing length info for region XM with ID %x\n",
- 					  be32_to_cpu(adsp2_alg[i].alg.id));
-@@ -1873,7 +1879,8 @@ static int wm_adsp2_setup_algs(struct wm_adsp *dsp)
- 				len -= be32_to_cpu(adsp2_alg[i].ym);
- 				len *= 4;
- 				wm_adsp_create_control(dsp, alg_region, 0,
--						       len, NULL, 0, 0);
-+						     len, NULL, 0, 0,
-+						     SNDRV_CTL_ELEM_TYPE_BYTES);
- 			} else {
- 				adsp_warn(dsp, "Missing length info for region YM with ID %x\n",
- 					  be32_to_cpu(adsp2_alg[i].alg.id));
-@@ -1893,7 +1900,8 @@ static int wm_adsp2_setup_algs(struct wm_adsp *dsp)
- 				len -= be32_to_cpu(adsp2_alg[i].zm);
- 				len *= 4;
- 				wm_adsp_create_control(dsp, alg_region, 0,
--						       len, NULL, 0, 0);
-+						     len, NULL, 0, 0,
-+						     SNDRV_CTL_ELEM_TYPE_BYTES);
- 			} else {
- 				adsp_warn(dsp, "Missing length info for region ZM with ID %x\n",
- 					  be32_to_cpu(adsp2_alg[i].alg.id));
++	mem = wm_adsp_find_region(dsp, alg_region->type);
++	if (!mem) {
++		adsp_err(dsp, "No base for region %x\n",
++			 alg_region->type);
++		return -EINVAL;
++	}
++
++	*reg = wm_adsp_region_to_reg(mem, ctl->alg_region.base + ctl->offset);
++
++	return 0;
++}
++
+ static int wm_coeff_info(struct snd_kcontrol *kctl,
+ 			 struct snd_ctl_elem_info *uinfo)
+ {
+@@ -742,22 +760,14 @@ static int wm_coeff_info(struct snd_kcontrol *kctl,
+ static int wm_coeff_write_control(struct wm_coeff_ctl *ctl,
+ 				  const void *buf, size_t len)
+ {
+-	struct wm_adsp_alg_region *alg_region = &ctl->alg_region;
+-	const struct wm_adsp_region *mem;
+ 	struct wm_adsp *dsp = ctl->dsp;
+ 	void *scratch;
+ 	int ret;
+ 	unsigned int reg;
+ 
+-	mem = wm_adsp_find_region(dsp, alg_region->type);
+-	if (!mem) {
+-		adsp_err(dsp, "No base for region %x\n",
+-			 alg_region->type);
+-		return -EINVAL;
+-	}
+-
+-	reg = ctl->alg_region.base + ctl->offset;
+-	reg = wm_adsp_region_to_reg(mem, reg);
++	ret = wm_coeff_base_reg(ctl, &reg);
++	if (ret)
++		return ret;
+ 
+ 	scratch = kmemdup(buf, len, GFP_KERNEL | GFP_DMA);
+ 	if (!scratch)
+@@ -826,22 +836,14 @@ static int wm_coeff_tlv_put(struct snd_kcontrol *kctl,
+ static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
+ 				 void *buf, size_t len)
+ {
+-	struct wm_adsp_alg_region *alg_region = &ctl->alg_region;
+-	const struct wm_adsp_region *mem;
+ 	struct wm_adsp *dsp = ctl->dsp;
+ 	void *scratch;
+ 	int ret;
+ 	unsigned int reg;
+ 
+-	mem = wm_adsp_find_region(dsp, alg_region->type);
+-	if (!mem) {
+-		adsp_err(dsp, "No base for region %x\n",
+-			 alg_region->type);
+-		return -EINVAL;
+-	}
+-
+-	reg = ctl->alg_region.base + ctl->offset;
+-	reg = wm_adsp_region_to_reg(mem, reg);
++	ret = wm_coeff_base_reg(ctl, &reg);
++	if (ret)
++		return ret;
+ 
+ 	scratch = kmalloc(len, GFP_KERNEL | GFP_DMA);
+ 	if (!scratch)
 -- 
 1.9.1
