@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: add rt5665 codec driver
-Date: Wed, 9 Nov 2016 14:51:44 +0000
-Message-ID: <20161109145144.7n5qyu7h4qzex4gx@sirena.org.uk>
-References: <1478587987-23999-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: topology: ABI - Rename be_dai_elems to
+	dai_elems in manifest" to the asoc tree
+Date: Wed, 09 Nov 2016 14:58:43 +0000
+Message-ID: <E1c4UKp-0002Yo-Ah@finisterre>
+References: <1478306544-23631-1-git-send-email-mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2710267439135190091=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D7684266802
- for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 15:52:02 +0100 (CET)
-In-Reply-To: <1478587987-23999-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 26B18266B53
+ for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 15:59:02 +0100 (CET)
+In-Reply-To: <1478306544-23631-1-git-send-email-mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,53 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, shumingf@realtek.com, flove@realtek.com
+To: Mengdong Lin <mengdong.lin@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2710267439135190091==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="drnmc5dtn67heub7"
-Content-Disposition: inline
+   ASoC: topology: ABI - Rename be_dai_elems to dai_elems in manifest
 
+has been applied to the asoc tree at
 
---drnmc5dtn67heub7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Nov 08, 2016 at 02:53:07PM +0800, Bard Liao wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +- realtek,regulator_1v8
-> +- realtek,regulator_3v3
-> +- realtek,regulator_5v
-> +  The name of regulators
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-No, this is not how regulator bindings work.  The driver should just
-request the supplies with the names they have in the datasheet.  Please
-look at other users of regulators for examples.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---drnmc5dtn67heub7
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEcBAABCAAGBQJYIzf/AAoJECTWi3JdVIfQ9zMH/0oxOMbcef3JoHCgRV/XITBI
-w4wd3+HkaLFc3Jnr4V9vvLi9CHly6r+jEZ77EtWEdpar7euEOTUxZTxgag5sVLUw
-PD3WDOV7cgTBRm2JnroEgFNJpV5OwSL5KIRJHpbgHBDu7WHv8YLXcI4L2MRM0Gpt
-x1d6fzWMZln5I7FtSXcmyLu/Ez8RA+2BdOlGxeE5hhORds+YUYtLaDesS9OB9dj6
-z/E5unZeTtFnnsHDv27qoCtJ7K1sGsO6Y7HgTAH6FouO1vOT64XJpIx28twrNvHx
-tWlSPJ8OJexlXPCisFPr0oT0xBCv6d4ujJuJvC74kknc4pSp5YyDi24hmT3fnKg=
-=qcgu
------END PGP SIGNATURE-----
+>From 17e593e32cebd0d79c7317d35b7e3b022fdfcefa Mon Sep 17 00:00:00 2001
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Date: Sat, 5 Nov 2016 08:42:24 +0800
+Subject: [PATCH] ASoC: topology: ABI - Rename be_dai_elems to dai_elems in
+ manifest
 
---drnmc5dtn67heub7--
+User space uses this field to count physical DAIs, not only BE DAIs since
+users may not use DPCM. So we rename this field from be_dai_elems to
+dai_elems.
 
---===============2710267439135190091==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This change is backward compatible, because it does not change the layout
+of the struct or data type.
 
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/uapi/sound/asoc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---===============2710267439135190091==--
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index 6a4280c6e860..721dd941f171 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -348,7 +348,7 @@ struct snd_soc_tplg_manifest {
+ 	__le32 graph_elems;	/* number of graph elements */
+ 	__le32 pcm_elems;	/* number of PCM elements */
+ 	__le32 dai_link_elems;	/* number of DAI link elements */
+-	__le32 be_dai_elems;	/* number of BE DAI elements */
++	__le32 dai_elems;	/* number of physical DAI elements */
+ 	__le32 reserved[20];	/* reserved for new ABI element types */
+ 	struct snd_soc_tplg_private priv;
+ } __attribute__((packed));
+-- 
+2.10.2
