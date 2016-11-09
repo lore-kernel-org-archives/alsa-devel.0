@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Check name strings of
-	physical DAI links" to the asoc tree
-Date: Wed, 09 Nov 2016 14:58:52 +0000
-Message-ID: <E1c4UKy-0002Zn-Bo@finisterre>
-References: <1478306534-23587-1-git-send-email-mengdong.lin@linux.intel.com>
+Subject: Applied "ASoC: msm8916-wcd-analog: Update correct
+	register setting for MIC BIAS Internal1" to the asoc tree
+Date: Wed, 09 Nov 2016 14:58:57 +0000
+Message-ID: <E1c4UL3-0002ae-Nt@finisterre>
+References: <1478330935-14724-1-git-send-email-axel.lin@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AFDC5266B53
- for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 15:59:11 +0100 (CET)
-In-Reply-To: <1478306534-23587-1-git-send-email-mengdong.lin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E80E7266B53
+ for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 15:59:13 +0100 (CET)
+In-Reply-To: <1478330935-14724-1-git-send-email-axel.lin@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mengdong Lin <mengdong.lin@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, rakesh.a.ughreja@intel.com, mengdong.lin@intel.com
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Check name strings of physical DAI links
+   ASoC: msm8916-wcd-analog: Update correct register setting for MIC BIAS Internal1
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From dbab1cb88e84813254091d0d02ab83d9929e6a27 Mon Sep 17 00:00:00 2001
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Date: Sat, 5 Nov 2016 08:42:14 +0800
-Subject: [PATCH] ASoC: topology: Check name strings of physical DAI links
+>From b4f89a0cce0d579fda6c1f6db72202c6bf2ae95f Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Sat, 5 Nov 2016 15:28:55 +0800
+Subject: [PATCH] ASoC: msm8916-wcd-analog: Update correct register setting for
+ MIC BIAS Internal1
 
-Check if the name strings are properly terminated, and only use valid
-name strings to find existing physical DAI links to configure.
+pm8916_wcd_analog_enable_micbias_int1() should set micbias1_cap_mode
+rather than micbias2_cap_mode.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+Also change the order of pm8916_wcd_analog_enable_micbias_int1/init2
+functions for better readability.
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ sound/soc/codecs/msm8916-wcd-analog.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 8772fd994e82..4dfdc656cce6 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1994,10 +1994,24 @@ static int soc_tplg_link_config(struct soc_tplg *tplg,
- {
- 	struct snd_soc_dai_link *link;
- 	const char *name, *stream_name;
-+	size_t len;
- 	int ret;
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 50ad75ab10ea..d8e8590746af 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -349,7 +349,7 @@ static int pm8916_wcd_analog_enable_micbias_ext2(struct
  
--	name = strlen(cfg->name) ? cfg->name : NULL;
--	stream_name = strlen(cfg->stream_name) ? cfg->stream_name : NULL;
-+	len = strnlen(cfg->name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+	if (len == SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
-+		return -EINVAL;
-+	else if (len)
-+		name = cfg->name;
-+	else
-+		name = NULL;
-+
-+	len = strnlen(cfg->stream_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+	if (len == SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
-+		return -EINVAL;
-+	else if (len)
-+		stream_name = cfg->stream_name;
-+	else
-+		stream_name = NULL;
+ }
  
- 	link = snd_soc_find_dai_link(tplg->comp->card, cfg->id,
- 				     name, stream_name);
+-static int pm8916_wcd_analog_enable_micbias_int2(struct
++static int pm8916_wcd_analog_enable_micbias_int1(struct
+ 						  snd_soc_dapm_widget
+ 						  *w, struct snd_kcontrol
+ 						  *kcontrol, int event)
+@@ -358,10 +358,10 @@ static int pm8916_wcd_analog_enable_micbias_int2(struct
+ 	struct pm8916_wcd_analog_priv *wcd = snd_soc_codec_get_drvdata(codec);
+ 
+ 	return pm8916_wcd_analog_enable_micbias_int(codec, event, w->reg,
+-						     wcd->micbias2_cap_mode);
++						     wcd->micbias1_cap_mode);
+ }
+ 
+-static int pm8916_wcd_analog_enable_micbias_int1(struct
++static int pm8916_wcd_analog_enable_micbias_int2(struct
+ 						  snd_soc_dapm_widget
+ 						  *w, struct snd_kcontrol
+ 						  *kcontrol, int event)
 -- 
 2.10.2
