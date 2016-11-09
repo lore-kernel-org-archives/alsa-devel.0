@@ -1,18 +1,30 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sunxi: i2s: Implement set_sysclk" to the asoc tree
-Date: Wed, 09 Nov 2016 14:59:36 +0000
-Message-ID: <E1c4ULg-0002gc-Hx@finisterre>
-References: <e86d676f28ff62bc0a56741f76afb2cbdfedbdd8.1478524066.git-series.maxime.ripard@free-electrons.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <e86d676f28ff62bc0a56741f76afb2cbdfedbdd8.1478524066.git-series.maxime.ripard@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: wm8978: Adjust clock indices so that simple card
+ works" to the asoc tree
+Date: Wed, 09 Nov 2016 14:59:30 +0000
+Message-ID: <E1c4ULa-0002fj-Mt@finisterre>
+References: <3d9c794b19e99745f0a98412c4cf8dcf26d728d4.1478524066.git-series.maxime.ripard@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <3d9c794b19e99745f0a98412c4cf8dcf26d728d4.1478524066.git-series.maxime.ripard@free-electrons.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sunxi: i2s: Implement set_sysclk
+   ASoC: wm8978: Adjust clock indices so that simple card works
 
 has been applied to the asoc tree at
 
@@ -37,122 +49,35 @@ to this mail.
 Thanks,
 Mark
 
->From b2b7b56f713ab833413548b119c53bbe2a9a9f8f Mon Sep 17 00:00:00 2001
+>From fbd972d7f4a60677f6fbe558dc23e4029dc2d45d Mon Sep 17 00:00:00 2001
 From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Date: Mon, 7 Nov 2016 14:08:19 +0100
-Subject: [PATCH] ASoC: sunxi: i2s: Implement set_sysclk
+Date: Mon, 7 Nov 2016 14:08:20 +0100
+Subject: [PATCH] ASoC: wm8978: Adjust clock indices so that simple card works
 
-In our i2s driver, we were previously trying to guess which oversample the
-user wanted to use by looking at the rate and trying to max it.
+Using simple-card with the wm8978 doesn't work because simple card calls
+set_sysclk on the clock index 0, which is not the MCLK in the WM8978.
 
-However, the cards, and especially simple-card with its mclk-fs property
-will already provide the expected oversample ratio by using the set_sysclk
-callback.
-
-We can thus implement it and remove the logic to deal with the runtime
-guess.
+Adjust the clock definition so that the clock 0 is the MCLK.
 
 Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 53 ++++++++++++++++++++++++++++++++-------------
- 1 file changed, 38 insertions(+), 15 deletions(-)
+ sound/soc/codecs/wm8978.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index a7653114e895..f24d19526603 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -93,6 +93,8 @@ struct sun4i_i2s {
- 	struct clk	*mod_clk;
- 	struct regmap	*regmap;
- 
-+	unsigned int	mclk_freq;
-+
- 	struct snd_dmaengine_dai_dma_data	capture_dma_data;
- 	struct snd_dmaengine_dai_dma_data	playback_dma_data;
+diff --git a/sound/soc/codecs/wm8978.h b/sound/soc/codecs/wm8978.h
+index 6ae43495b7cf..0dcf6868dff6 100644
+--- a/sound/soc/codecs/wm8978.h
++++ b/sound/soc/codecs/wm8978.h
+@@ -78,8 +78,8 @@ enum wm8978_clk_id {
  };
-@@ -158,14 +160,24 @@ static int sun4i_i2s_get_mclk_div(struct sun4i_i2s *i2s,
- }
  
- static int sun4i_i2s_oversample_rates[] = { 128, 192, 256, 384, 512, 768 };
-+static bool sun4i_i2s_oversample_is_valid(unsigned int oversample)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(sun4i_i2s_oversample_rates); i++)
-+		if (sun4i_i2s_oversample_rates[i] == oversample)
-+			return true;
-+
-+	return false;
-+}
+ enum wm8978_sysclk_src {
++	WM8978_MCLK = 0,
+ 	WM8978_PLL,
+-	WM8978_MCLK
+ };
  
- static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
- 				  unsigned int rate,
- 				  unsigned int word_size)
- {
--	unsigned int clk_rate;
-+	unsigned int oversample_rate, clk_rate;
- 	int bclk_div, mclk_div;
--	int ret, i;
-+	int ret;
- 
- 	switch (rate) {
- 	case 176400:
-@@ -197,21 +209,18 @@ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
- 	if (ret)
- 		return ret;
- 
--	/* Always favor the highest oversampling rate */
--	for (i = (ARRAY_SIZE(sun4i_i2s_oversample_rates) - 1); i >= 0; i--) {
--		unsigned int oversample_rate = sun4i_i2s_oversample_rates[i];
--
--		bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
--						  word_size);
--		mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
--						  clk_rate,
--						  rate);
-+	oversample_rate = i2s->mclk_freq / rate;
-+	if (!sun4i_i2s_oversample_is_valid(oversample_rate))
-+		return -EINVAL;
- 
--		if ((bclk_div >= 0) && (mclk_div >= 0))
--			break;
--	}
-+	bclk_div = sun4i_i2s_get_bclk_div(i2s, oversample_rate,
-+					  word_size);
-+	if (bclk_div < 0)
-+		return -EINVAL;
- 
--	if ((bclk_div < 0) || (mclk_div < 0))
-+	mclk_div = sun4i_i2s_get_mclk_div(i2s, oversample_rate,
-+					  clk_rate, rate);
-+	if (mclk_div < 0)
- 		return -EINVAL;
- 
- 	regmap_write(i2s->regmap, SUN4I_I2S_CLK_DIV_REG,
-@@ -481,9 +490,23 @@ static void sun4i_i2s_shutdown(struct snd_pcm_substream *substream,
- 	regmap_write(i2s->regmap, SUN4I_I2S_CTRL_REG, 0);
- }
- 
-+static int sun4i_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
-+				unsigned int freq, int dir)
-+{
-+	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+
-+	if (clk_id != 0)
-+		return -EINVAL;
-+
-+	i2s->mclk_freq = freq;
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
- 	.hw_params	= sun4i_i2s_hw_params,
- 	.set_fmt	= sun4i_i2s_set_fmt,
-+	.set_sysclk	= sun4i_i2s_set_sysclk,
- 	.shutdown	= sun4i_i2s_shutdown,
- 	.startup	= sun4i_i2s_startup,
- 	.trigger	= sun4i_i2s_trigger,
+ #endif	/* __WM8978_H__ */
 -- 
 2.10.2
