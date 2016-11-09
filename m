@@ -1,160 +1,95 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: Re: [PATCH 2/2] ASoC: axentia: tse850: add ASoC driver for the
- Axentia TSE-850
-Date: Wed, 9 Nov 2016 19:54:39 +0100
-Message-ID: <a9231718-c716-35a1-b704-0687518ded59@axentia.se>
-References: <1478622057-12426-1-git-send-email-peda@axentia.se>
- <1478622057-12426-3-git-send-email-peda@axentia.se>
- <20161109133852.nvlyiqow2xpbc6ga@sirena.org.uk>
- <3d6b99e8-f19f-51fd-1676-c3a4549ec312@axentia.se>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] sound: soc-core: make kernel complaints on
+ -EPROBE_DEFER dev_dbg
+Date: Wed, 9 Nov 2016 15:22:09 +0000
+Message-ID: <20161109152209.dzejborw53no26ew@sirena.org.uk>
+References: <20161109140036.GB20859@localhost.localdomain>
+ <20161109143642.7knvr63vwmcgunjf@sirena.org.uk>
+ <20161109151426.GA21280@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <3d6b99e8-f19f-51fd-1676-c3a4549ec312@axentia.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>
+Content-Type: multipart/mixed; boundary="===============3732377376898091345=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AEB9B267097
+ for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 16:22:25 +0100 (CET)
+In-Reply-To: <20161109151426.GA21280@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2016-11-09 17:27, Peter Rosin wrote:
-> On 2016-11-09 14:38, Mark Brown wrote:
->> On Tue, Nov 08, 2016 at 05:20:57PM +0100, Peter Rosin wrote:
->>> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->>> +	struct device *dev = rtd->dev;
->>> +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
->>> +	int dir = substream->stream != SNDRV_PCM_STREAM_PLAYBACK;
->>> +	int div_id = dir ? ATMEL_SSC_RCMR_PERIOD : ATMEL_SSC_TCMR_PERIOD;
->>> +	int period = snd_soc_params_to_frame_size(params) / 2 - 1;
->>
->> Please write the logic out as normal if statements for legibility.  It's
->> a bit concerning that we even need this function, it looks like pretty
->> basic stuff that I'd expect the CPU DAI to just be doing - why can't
->> this be the default behaviour of the CPU DAI?
-> 
-> I don't know and obviously don't have all the relevant HW to test
-> changes. Do you want me to attempt such a change anyway?
-> Adding Cc: Nicolas Ferre
 
-Something like this, perhaps?
-
-Cheers,
-Peter
+--===============3732377376898091345==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="t4vv5ikst5culyff"
+Content-Disposition: inline
 
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 16e459aedffe..059b0b63bd51 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -380,6 +380,7 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
- 		ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_SWRST));
- 		/* Clear the SSC dividers */
- 		ssc_p->cmr_div = ssc_p->tcmr_period = ssc_p->rcmr_period = 0;
-+		ssc_p->forced_divider = 0;
- 	}
- 	spin_unlock_irq(&ssc_p->lock);
- 
-@@ -429,10 +430,12 @@ static int atmel_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
- 		break;
- 
- 	case ATMEL_SSC_TCMR_PERIOD:
-+		ssc_p->forced_divider |= BIT(ATMEL_SSC_TCMR_PERIOD);
- 		ssc_p->tcmr_period = div;
- 		break;
- 
- 	case ATMEL_SSC_RCMR_PERIOD:
-+		ssc_p->forced_divider |= BIT(ATMEL_SSC_RCMR_PERIOD);
- 		ssc_p->rcmr_period = div;
- 		break;
- 
-@@ -459,6 +462,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 	u32 tfmr, rfmr, tcmr, rcmr;
- 	int ret;
- 	int fslen, fslen_ext;
-+	u32 tcmr_period;
-+	u32 rcmr_period;
- 
- 	/*
- 	 * Currently, there is only one set of dma params for
-@@ -470,6 +475,13 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 	else
- 		dir = 1;
- 
-+	tcmr_period = ssc_p->tcmr_period;
-+	if (!(ssc_p->forced_divider & BIT(ATMEL_SSC_TCMR_PERIOD)))
-+		tcmr_period = snd_soc_params_to_frame_size(params) / 2 - 1;
-+	rcmr_period = ssc_p->rcmr_period;
-+	if (!(ssc_p->forced_divider & BIT(ATMEL_SSC_RCMR_PERIOD)))
-+		rcmr_period = snd_soc_params_to_frame_size(params) / 2 - 1;
-+
- 	dma_params = ssc_p->dma_params[dir];
- 
- 	channels = params_channels(params);
-@@ -524,7 +536,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 		fslen_ext = (bits - 1) / 16;
- 		fslen = (bits - 1) % 16;
- 
--		rcmr =	  SSC_BF(RCMR_PERIOD, ssc_p->rcmr_period)
-+		rcmr =	  SSC_BF(RCMR_PERIOD, rcmr_period)
- 			| SSC_BF(RCMR_STTDLY, START_DELAY)
- 			| SSC_BF(RCMR_START, SSC_START_FALLING_RF)
- 			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
-@@ -540,7 +552,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 			| SSC_BF(RFMR_LOOP, 0)
- 			| SSC_BF(RFMR_DATLEN, (bits - 1));
- 
--		tcmr =	  SSC_BF(TCMR_PERIOD, ssc_p->tcmr_period)
-+		tcmr =	  SSC_BF(TCMR_PERIOD, tcmr_period)
- 			| SSC_BF(TCMR_STTDLY, START_DELAY)
- 			| SSC_BF(TCMR_START, SSC_START_FALLING_RF)
- 			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
-@@ -606,7 +618,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 		fslen_ext = (bits - 1) / 16;
- 		fslen = (bits - 1) % 16;
- 
--		rcmr =	  SSC_BF(RCMR_PERIOD, ssc_p->rcmr_period)
-+		rcmr =	  SSC_BF(RCMR_PERIOD, rcmr_period)
- 			| SSC_BF(RCMR_STTDLY, START_DELAY)
- 			| SSC_BF(RCMR_START, SSC_START_FALLING_RF)
- 			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
-@@ -623,7 +635,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 			| SSC_BF(RFMR_LOOP, 0)
- 			| SSC_BF(RFMR_DATLEN, (bits - 1));
- 
--		tcmr =	  SSC_BF(TCMR_PERIOD, ssc_p->tcmr_period)
-+		tcmr =	  SSC_BF(TCMR_PERIOD, tcmr_period)
- 			| SSC_BF(TCMR_STTDLY, START_DELAY)
- 			| SSC_BF(TCMR_START, SSC_START_FALLING_RF)
- 			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
-@@ -650,7 +662,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 		 * MCK divider, and the BCLK signal is output
- 		 * on the SSC TK line.
- 		 */
--		rcmr =	  SSC_BF(RCMR_PERIOD, ssc_p->rcmr_period)
-+		rcmr =	  SSC_BF(RCMR_PERIOD, rcmr_period)
- 			| SSC_BF(RCMR_STTDLY, 1)
- 			| SSC_BF(RCMR_START, SSC_START_RISING_RF)
- 			| SSC_BF(RCMR_CKI, SSC_CKI_RISING)
-@@ -665,7 +677,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 			| SSC_BF(RFMR_LOOP, 0)
- 			| SSC_BF(RFMR_DATLEN, (bits - 1));
- 
--		tcmr =	  SSC_BF(TCMR_PERIOD, ssc_p->tcmr_period)
-+		tcmr =	  SSC_BF(TCMR_PERIOD, tcmr_period)
- 			| SSC_BF(TCMR_STTDLY, 1)
- 			| SSC_BF(TCMR_START, SSC_START_RISING_RF)
- 			| SSC_BF(TCMR_CKI, SSC_CKI_FALLING)
-diff --git a/sound/soc/atmel/atmel_ssc_dai.h b/sound/soc/atmel/atmel_ssc_dai.h
-index 80b153857a88..75194f582131 100644
---- a/sound/soc/atmel/atmel_ssc_dai.h
-+++ b/sound/soc/atmel/atmel_ssc_dai.h
-@@ -113,6 +113,7 @@ struct atmel_ssc_info {
- 	unsigned short cmr_div;
- 	unsigned short tcmr_period;
- 	unsigned short rcmr_period;
-+	unsigned int forced_divider;
- 	struct atmel_pcm_dma_params *dma_params[2];
- 	struct atmel_ssc_state ssc_state;
- 	unsigned long mck_rate;
--- 
-2.1.4
+--t4vv5ikst5culyff
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 09, 2016 at 04:14:26PM +0100, Ladislav Michl wrote:
+> On Wed, Nov 09, 2016 at 02:36:42PM +0000, Mark Brown wrote:
+
+> > No, errors are errors and not displaying them just makes it harder for
+> > people to debug things.  If you don't want to see errors just change
+> > your system configuratiion to hide them.
+
+> For sure I want to see all errors, but this is not hardware error nor
+> kernel misconfiguration, so showing it to the user is a bit pointless.
+
+How do we know that it's not a kernel misconfiguration?  It's common for
+people to not build some of the component drivers they need.
+
+> > If you don't like deferred probing please contribute to the efforts
+> > to order probing.
+
+> I just tried to make it consistend to other subsystems where patches to
+> silence deferred probing warnings are accepted...
+
+Which subsystems are these?  We should look at fixing them...
+
+>=20
+> > Please use subject lines matching the style for the subsystem.  This
+> > makes it easier for people to identify relevant patches.
+>=20
+> I wasn't aware of it, sorry. Will fix it next time.
+>=20
+> Best regards,
+> 	ladis
+
+--t4vv5ikst5culyff
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJYIz8gAAoJECTWi3JdVIfQ+TMH/3sMYX2pkRcdGeJ/VHP55XJn
+H/Z17Ty5/PXchg72lGRGzJG+rZTFFgW8NbbgzCu4SCFaOFEQ+gjAPhVRUMP0lImx
+s3XFnIeC0X5sOJ5G4e0eOvUcXlygc1fK+3ftzh91rqMrii1wZpnZq447P4C+RgEf
+4FtfEksDsBZ4mIAGi8e6SAkgxSFBFK+LnUoRlycrEXmrLc+8tRRov+TyZxli9BmI
+rWfptai73fWzEen2LgW4cgna0tR2QP01UsIjRkwnqxprkYriZhjQf9mKGl0kjXvW
+weZeDX36UkKf5Vik19HGaHufp9W6yCjylKmBiKc2rfUS6TYFfwE6h7OsCzo4eiQ=
+=uXfk
+-----END PGP SIGNATURE-----
+
+--t4vv5ikst5culyff--
+
+--===============3732377376898091345==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3732377376898091345==--
