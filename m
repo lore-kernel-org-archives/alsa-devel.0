@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Flush pending D0i3
-	request on suspend" to the asoc tree
-Date: Wed, 09 Nov 2016 15:25:25 +0000
-Message-ID: <E1c4Ukf-0003gv-CY@finisterre>
-References: <1474868137-29712-10-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: remove pci device
+	enabling calls on suspend" to the asoc tree
+Date: Wed, 09 Nov 2016 15:25:30 +0000
+Message-ID: <E1c4Ukl-0003hp-05@finisterre>
+References: <1474868137-29712-11-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BD8B8267097
- for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 16:25:40 +0100 (CET)
-In-Reply-To: <1474868137-29712-10-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B1AAA267097
+ for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 16:25:45 +0100 (CET)
+In-Reply-To: <1474868137-29712-11-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Flush pending D0i3 request on suspend
+   ASoC: Intel: Skylake: remove pci device enabling calls on suspend
 
 has been applied to the asoc tree at
 
@@ -53,100 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 8b4a133c6145a34618c770117b65b33f1aa993aa Mon Sep 17 00:00:00 2001
+>From 68d03a3aa2747e1a33231950d2c8369f1cef4244 Mon Sep 17 00:00:00 2001
 From: Jayachandran B <jayachandran.b@intel.com>
-Date: Thu, 3 Nov 2016 17:07:21 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Flush pending D0i3 request on suspend
+Date: Thu, 3 Nov 2016 17:07:22 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: remove pci device enabling calls on
+ suspend
 
-While going to suspend, if we have any pending D0i3 work scheduled,
-flush that and force the DSP to goto D0i3 mode before going to suspend.
+We were invoking pci_disable_device() while going to suspend-to-idle and
+pci_enable_device() while coming back to active state.
+
+Turns out that we do not need these calls as we only need system to be
+wake capable when in suspend-to-idle state. The wake capability is
+already done by enable_irq_wake() calls, so remove these unwanted calls
+in driver.
 
 Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c | 27 +++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl.c          | 10 ++++++++++
- sound/soc/intel/skylake/skl.h          |  1 +
- 3 files changed, 38 insertions(+)
+ sound/soc/intel/skylake/skl.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 87fc647fa04c..4ae021aabc3a 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -294,6 +294,33 @@ int skl_free_dsp(struct skl *skl)
- 	return 0;
- }
- 
-+/*
-+ * In the case of "suspend_active" i.e, the Audio IP being active
-+ * during system suspend, immediately excecute any pending D0i3 work
-+ * before suspending. This is needed for the IP to work in low power
-+ * mode during system suspend. In the case of normal suspend, cancel
-+ * any pending D0i3 work.
-+ */
-+int skl_suspend_late_dsp(struct skl *skl)
-+{
-+	struct skl_sst *ctx = skl->skl_sst;
-+	struct delayed_work *dwork;
-+
-+	if (!ctx)
-+		return 0;
-+
-+	dwork = &ctx->d0i3.work;
-+
-+	if (dwork->work.func) {
-+		if (skl->supend_active)
-+			flush_delayed_work(dwork);
-+		else
-+			cancel_delayed_work_sync(dwork);
-+	}
-+
-+	return 0;
-+}
-+
- int skl_suspend_dsp(struct skl *skl)
- {
- 	struct skl_sst *ctx = skl->skl_sst;
 diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index ed59783e9846..61a484888cfa 100644
+index b9209af89915..ed59783e9846 100644
 --- a/sound/soc/intel/skylake/skl.c
 +++ b/sound/soc/intel/skylake/skl.c
-@@ -228,6 +228,15 @@ static int skl_acquire_irq(struct hdac_ext_bus *ebus, int do_disconnect)
- 	return 0;
- }
+@@ -290,7 +290,6 @@ static int skl_suspend(struct device *dev)
  
-+static int skl_suspend_late(struct device *dev)
-+{
-+	struct pci_dev *pci = to_pci_dev(dev);
-+	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
-+	struct skl *skl = ebus_to_skl(ebus);
-+
-+	return skl_suspend_late_dsp(skl);
-+}
-+
- #ifdef CONFIG_PM
- static int _skl_suspend(struct hdac_ext_bus *ebus)
- {
-@@ -390,6 +399,7 @@ static int skl_runtime_resume(struct device *dev)
- static const struct dev_pm_ops skl_pm = {
- 	SET_SYSTEM_SLEEP_PM_OPS(skl_suspend, skl_resume)
- 	SET_RUNTIME_PM_OPS(skl_runtime_suspend, skl_runtime_resume, NULL)
-+	.suspend_late = skl_suspend_late,
- };
- 
- /*
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 88ba54ba5f72..4986e3929dd3 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -124,6 +124,7 @@ int skl_get_dmic_geo(struct skl *skl);
- int skl_nhlt_update_topology_bin(struct skl *skl);
- int skl_init_dsp(struct skl *skl);
- int skl_free_dsp(struct skl *skl);
-+int skl_suspend_late_dsp(struct skl *skl);
- int skl_suspend_dsp(struct skl *skl);
- int skl_resume_dsp(struct skl *skl);
- void skl_cleanup_resources(struct skl *skl);
+ 		enable_irq_wake(bus->irq);
+ 		pci_save_state(pci);
+-		pci_disable_device(pci);
+ 	} else {
+ 		ret = _skl_suspend(ebus);
+ 		if (ret < 0)
+@@ -333,7 +332,6 @@ static int skl_resume(struct device *dev)
+ 	 */
+ 	if (skl->supend_active) {
+ 		pci_restore_state(pci);
+-		ret = pci_enable_device(pci);
+ 		snd_hdac_ext_bus_link_power_up_all(ebus);
+ 		disable_irq_wake(bus->irq);
+ 		/*
 -- 
 2.10.2
