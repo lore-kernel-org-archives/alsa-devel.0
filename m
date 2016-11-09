@@ -1,28 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: sun4i-codec: Add support for optional
- reset control to quirks" to the asoc tree
-Date: Wed, 09 Nov 2016 14:59:08 +0000
-Message-ID: <E1c4ULE-0002cs-8n@finisterre>
-References: <20161103075556.29018-6-wens@csie.org>
-Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBBZPTRTAQKGQENDQJHII-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20161103075556.29018-6-wens-jdAy2FN1RRM@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: sun4i-codec: Add support for A31 ADC capture path" to the asoc tree
+Date: Wed, 09 Nov 2016 14:59:14 +0000
+Message-ID: <E1c4ULK-0002e1-Qj@finisterre>
+References: <20161003110804.28235-10-wens@csie.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20161003110804.28235-10-wens@csie.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Russell King <linux@armlinux.org.uk>Maxime Ripard <maxime.ripard@free-electrons.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-sunxi@googlegroups.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-codec: Add support for optional reset control to quirks
+   ASoC: sun4i-codec: Add support for A31 ADC capture path
 
 has been applied to the asoc tree at
 
@@ -47,112 +37,128 @@ to this mail.
 Thanks,
 Mark
 
->From 9aead156c0665a362c8b007b51fe3396fea4d346 Mon Sep 17 00:00:00 2001
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Date: Mon, 7 Nov 2016 18:06:58 +0800
-Subject: [PATCH] ASoC: sun4i-codec: Add support for optional reset control to
- quirks
+>From 24c99f843208df70ec7d1e04aa405f7e4c36f228 Mon Sep 17 00:00:00 2001
+From: Chen-Yu Tsai <wens@csie.org>
+Date: Mon, 7 Nov 2016 18:06:59 +0800
+Subject: [PATCH] ASoC: sun4i-codec: Add support for A31 ADC capture path
 
-The later Allwinner SoCs have a dedicated reset controller, and
-peripherals have dedicated reset controls which need to be deasserted
-before the associated peripheral can be used.
+The A31's internal codec capture path has a mixer in front of the ADC
+for each channel, capable of selecting various inputs, including
+microphones, line in, phone in, and the main output mixer.
 
-Add support for this to the quirks structure and probe/remove functions.
+This patch adds the various controls, widgets and routes needed for
+audio capture from the already supported inputs on the A31.
 
-Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ sound/soc/sunxi/sun4i-codec.c | 65 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 65 insertions(+)
 
 diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 735115244b17..6379efd21f00 100644
+index 1934db29b2b5..735115244b17 100644
 --- a/sound/soc/sunxi/sun4i-codec.c
 +++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -30,6 +30,7 @@
- #include <linux/of_platform.h>
- #include <linux/clk.h>
- #include <linux/regmap.h>
-+#include <linux/reset.h>
- #include <linux/gpio/consumer.h>
- 
- #include <sound/core.h>
-@@ -217,6 +218,7 @@ struct sun4i_codec {
- 	struct regmap	*regmap;
- 	struct clk	*clk_apb;
- 	struct clk	*clk_module;
-+	struct reset_control *rst;
- 	struct gpio_desc *gpio_pa;
- 
- 	/* ADC_FIFOC register is at different offset on different SoCs */
-@@ -1232,6 +1234,7 @@ struct sun4i_codec_quirks {
- 	struct reg_field reg_adc_fifoc;	/* used for regmap_field */
- 	unsigned int reg_dac_txdata;	/* TX FIFO offset for DMA config */
- 	unsigned int reg_adc_rxdata;	/* RX FIFO offset for DMA config */
-+	bool has_reset;
+@@ -786,6 +786,30 @@ static const struct snd_kcontrol_new sun6i_codec_mixer_controls[] = {
+ 			SUN6I_CODEC_OM_DACA_CTRL_RMIX_MIC2, 1, 0),
  };
  
- static const struct sun4i_codec_quirks sun4i_codec_quirks = {
-@@ -1327,6 +1330,14 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 		return PTR_ERR(scodec->clk_module);
- 	}
- 
-+	if (quirks->has_reset) {
-+		scodec->rst = devm_reset_control_get(&pdev->dev, NULL);
-+		if (IS_ERR(scodec->rst)) {
-+			dev_err(&pdev->dev, "Failed to get reset control\n");
-+			return PTR_ERR(scodec->rst);
-+		}
-+	};
++/* ADC mixer controls */
++static const struct snd_kcontrol_new sun6i_codec_adc_mixer_controls[] = {
++	SOC_DAPM_DOUBLE("Mixer Capture Switch",
++			SUN6I_CODEC_ADC_ACTL,
++			SUN6I_CODEC_ADC_ACTL_LADCMIX_OMIXL,
++			SUN6I_CODEC_ADC_ACTL_RADCMIX_OMIXR, 1, 0),
++	SOC_DAPM_DOUBLE("Mixer Reversed Capture Switch",
++			SUN6I_CODEC_ADC_ACTL,
++			SUN6I_CODEC_ADC_ACTL_LADCMIX_OMIXR,
++			SUN6I_CODEC_ADC_ACTL_RADCMIX_OMIXL, 1, 0),
++	SOC_DAPM_DOUBLE("Line In Capture Switch",
++			SUN6I_CODEC_ADC_ACTL,
++			SUN6I_CODEC_ADC_ACTL_LADCMIX_LINEINL,
++			SUN6I_CODEC_ADC_ACTL_RADCMIX_LINEINR, 1, 0),
++	SOC_DAPM_DOUBLE("Mic1 Capture Switch",
++			SUN6I_CODEC_ADC_ACTL,
++			SUN6I_CODEC_ADC_ACTL_LADCMIX_MIC1,
++			SUN6I_CODEC_ADC_ACTL_RADCMIX_MIC1, 1, 0),
++	SOC_DAPM_DOUBLE("Mic2 Capture Switch",
++			SUN6I_CODEC_ADC_ACTL,
++			SUN6I_CODEC_ADC_ACTL_LADCMIX_MIC2,
++			SUN6I_CODEC_ADC_ACTL_RADCMIX_MIC2, 1, 0),
++};
 +
- 	scodec->gpio_pa = devm_gpiod_get_optional(&pdev->dev, "allwinner,pa",
- 						  GPIOD_OUT_LOW);
- 	if (IS_ERR(scodec->gpio_pa)) {
-@@ -1353,6 +1364,16 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
+ /* headphone controls */
+ static const char * const sun6i_codec_hp_src_enum_text[] = {
+ 	"DAC", "Mixer",
+@@ -885,6 +909,10 @@ static const struct snd_kcontrol_new sun6i_codec_codec_widgets[] = {
+ 	SOC_SINGLE_TLV("Mic2 Boost Volume", SUN6I_CODEC_MIC_CTRL,
+ 		       SUN6I_CODEC_MIC_CTRL_MIC2BOOST, 0x7, 0,
+ 		       sun6i_codec_mic_gain_scale),
++	SOC_DOUBLE_TLV("ADC Capture Volume",
++		       SUN6I_CODEC_ADC_ACTL, SUN6I_CODEC_ADC_ACTL_ADCLG,
++		       SUN6I_CODEC_ADC_ACTL_ADCRG, 0x7, 0,
++		       sun6i_codec_out_mixer_pregain_scale),
+ };
  
-+	/* Deassert the reset control */
-+	if (scodec->rst) {
-+		ret = reset_control_deassert(scodec->rst);
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"Failed to deassert the reset control\n");
-+			goto err_clk_disable;
-+		}
-+	}
+ static const struct snd_soc_dapm_widget sun6i_codec_codec_dapm_widgets[] = {
+@@ -910,6 +938,23 @@ static const struct snd_soc_dapm_widget sun6i_codec_codec_dapm_widgets[] = {
+ 	/* Line In */
+ 	SND_SOC_DAPM_INPUT("LINEIN"),
+ 
++	/* Digital parts of the ADCs */
++	SND_SOC_DAPM_SUPPLY("ADC Enable", SUN6I_CODEC_ADC_FIFOC,
++			    SUN6I_CODEC_ADC_FIFOC_EN_AD, 0,
++			    NULL, 0),
 +
- 	/* DMA configuration for TX FIFO */
- 	scodec->playback_dma_data.addr = res->start + quirks->reg_dac_txdata;
- 	scodec->playback_dma_data.maxburst = 8;
-@@ -1367,7 +1388,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
- 				     &sun4i_codec_dai, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to register our codec\n");
--		goto err_clk_disable;
-+		goto err_assert_reset;
- 	}
++	/* Analog parts of the ADCs */
++	SND_SOC_DAPM_ADC("Left ADC", "Codec Capture", SUN6I_CODEC_ADC_ACTL,
++			 SUN6I_CODEC_ADC_ACTL_ADCLEN, 0),
++	SND_SOC_DAPM_ADC("Right ADC", "Codec Capture", SUN6I_CODEC_ADC_ACTL,
++			 SUN6I_CODEC_ADC_ACTL_ADCREN, 0),
++
++	/* ADC Mixers */
++	SOC_MIXER_ARRAY("Left ADC Mixer", SND_SOC_NOPM, 0, 0,
++			sun6i_codec_adc_mixer_controls),
++	SOC_MIXER_ARRAY("Right ADC Mixer", SND_SOC_NOPM, 0, 0,
++			sun6i_codec_adc_mixer_controls),
++
+ 	/* Digital parts of the DACs */
+ 	SND_SOC_DAPM_SUPPLY("DAC Enable", SUN4I_CODEC_DAC_DPC,
+ 			    SUN4I_CODEC_DAC_DPC_EN_DA, 0,
+@@ -973,6 +1018,20 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
+ 	{ "Right Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
+ 	{ "Right Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
  
- 	ret = devm_snd_soc_register_component(&pdev->dev,
-@@ -1404,6 +1425,9 @@ static int sun4i_codec_probe(struct platform_device *pdev)
++	/* Left ADC Mixer Routes */
++	{ "Left ADC Mixer", "Mixer Capture Switch", "Left Mixer" },
++	{ "Left ADC Mixer", "Mixer Reversed Capture Switch", "Right Mixer" },
++	{ "Left ADC Mixer", "Line In Capture Switch", "LINEIN" },
++	{ "Left ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
++	{ "Left ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
++
++	/* Right ADC Mixer Routes */
++	{ "Right ADC Mixer", "Mixer Capture Switch", "Right Mixer" },
++	{ "Right ADC Mixer", "Mixer Reversed Capture Switch", "Left Mixer" },
++	{ "Right ADC Mixer", "Line In Capture Switch", "LINEIN" },
++	{ "Right ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
++	{ "Right ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
++
+ 	/* Headphone Routes */
+ 	{ "Headphone Source Playback Route", "DAC", "Left DAC" },
+ 	{ "Headphone Source Playback Route", "DAC", "Right DAC" },
+@@ -987,6 +1046,12 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
+ 	{ "Line Out Source Playback Route", "Stereo", "Right Mixer" },
+ 	{ "Line Out Source Playback Route", "Mono Differential", "Left Mixer" },
+ 	{ "LINEOUT", NULL, "Line Out Source Playback Route" },
++
++	/* ADC Routes */
++	{ "Left ADC", NULL, "ADC Enable" },
++	{ "Right ADC", NULL, "ADC Enable" },
++	{ "Left ADC", NULL, "Left ADC Mixer" },
++	{ "Right ADC", NULL, "Right ADC Mixer" },
+ };
  
- err_unregister_codec:
- 	snd_soc_unregister_codec(&pdev->dev);
-+err_assert_reset:
-+	if (scodec->rst)
-+		reset_control_assert(scodec->rst);
- err_clk_disable:
- 	clk_disable_unprepare(scodec->clk_apb);
- 	return ret;
-@@ -1416,6 +1440,8 @@ static int sun4i_codec_remove(struct platform_device *pdev)
- 
- 	snd_soc_unregister_card(card);
- 	snd_soc_unregister_codec(&pdev->dev);
-+	if (scodec->rst)
-+		reset_control_assert(scodec->rst);
- 	clk_disable_unprepare(scodec->clk_apb);
- 
- 	return 0;
+ static struct snd_soc_codec_driver sun6i_codec_codec = {
 -- 
 2.10.2
