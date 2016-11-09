@@ -1,108 +1,177 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC 0/4] ALSA controls management using
- index/device/sub-devices fields
-Date: Wed, 9 Nov 2016 21:33:28 +0900
-Message-ID: <c28a3623-3cf1-5fc1-1ba8-e6785fb967ca@sakamocchi.jp>
-References: <1478592675-23092-1-git-send-email-arnaud.pouliquen@st.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH 2/9] ALSA: ac97: add an ac97 bus
+Date: Wed, 9 Nov 2016 14:11:50 +0100
+Message-ID: <5ae15e01-eaaf-4996-27ec-1179041c0268@metafoo.de>
+References: <1477510907-23495-1-git-send-email-robert.jarzmik@free.fr>
+ <1477510907-23495-3-git-send-email-robert.jarzmik@free.fr>
+ <d57cdfba-da22-652d-3d75-6d1b754cf1d5@metafoo.de>
+ <87eg2ly8k6.fsf@belgarion.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 695852663ED
- for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 13:33:34 +0100 (CET)
-In-Reply-To: <1478592675-23092-1-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Vinod Koul <vinod.koul@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, broonie@kernel.org, lgirdwood@gmail.com
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87eg2ly8k6.fsf@belgarion.home>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Sebastian Reichel <sre@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-pm@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 11/08/2016 10:18 PM, Robert Jarzmik wrote:
+[...]
+>>> +/**
+>>> + * struct ac97_controller - The AC97 controller of the AC-Link
+>>> + * @ops:		the AC97 operations.
+>>> + * @controllers:	linked list of all existing controllers.
+>>> + * @dev:		the device providing the AC97 controller.
+>>> + * @slots_available:	the mask of accessible/scanable codecs.
+>>> + * @codecs:		the 4 possible AC97 codecs (NULL if none found).
+>>> + * @codecs_pdata:	platform_data for each codec (NULL if no pdata).
+>>> + *
+>>> + * This structure is internal to AC97 bus, and should not be used by the
+>>> + * controllers themselves, excepting for using @dev.
+>>> + */
+>>> +struct ac97_controller {
+>>> +	const struct ac97_controller_ops *ops;
+>>> +	struct list_head controllers;
+>>> +	struct device *dev;
+>>
+>> I'd make the controller itself a struct dev, rather than just having the
+>> pointer to the parent. This is more idiomatic and matches what other
+>> subsystems do. It has several advantages, you get proper refcounting of your
+>> controller structure, the controller gets its own sysfs directory where the
+>> CODECs appear as children, you don't need the manual sysfs attribute
+>> creation and removal in ac97_controler_{un,}register().
+> 
+> If you mean having "struct device dev" instead of "struct device *dev", it has
+> also a drawback : all the legacy platforms have already a probing method, be
+> that platform data, device-tree or something else.
+> 
+> I'm a bit converned about the conversion toll. Maybe I've not understood your
+> point fully, so please feel free to explain, with an actual example even better.
 
-On Nov 8 2016 17:11, Arnaud Pouliquen wrote:
-> 3) Patches proposed:
-> Based on these observations, here are some patches that i tested in my
-> environment. There are complementary,  and could answer to some
-> limitations mentioned above.
->
-> 3-1) Alsa-utils patch
->
-> - iecset: allow to select control with device and sub-device numbers
->   This patch allows to access to 2 iec controls differentiated by
->   device/sub-devices numbers
-> => For me, this patch is mandatory to be able to address the ASoC IEC
->    controls, in case of no fix is implemented to allows index field
->    update in ASoC.
->
-> 3-2) Alsa driver patches
->   - ASoC: core: allow PCM control binding to PCM device
->   	Add relationship between DAIs PCM controls and PCM device.
->
->   - ALSA: control: increment index field for duplicated control.
->    	Generic implementation of the patch proposed in HDA driver
->         (http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/?id=ea9b43add)
->
->   - ASoC: sti: use bind_pcm_ctl
->   	implementation of bind_pcm_ctl for sti driver.
+This would be a struct device that is not bound to a driver, but just acts
+as a shell for the controller and places it inside the device hierarchy. You
+get reference counting and other management functions as well as a
+consistent naming scheme. E.g. you can call the devices ac97c%d (or
+something similar) and then call the CODEC ac97c%d.%d.
 
-In my view, this patchset includes two attempts:
-1.to add a framework into ALSA SoC part to relate some control element 
-sets to PCM devices
-2.to allow drivers in ALSA SoC part to add some control element sets 
-from the same codes according to entries of dtb
+This is how most frameworks implementing some kind of control bus are
+structured in the Linux kernel. E.g. take a look at I2C or SPI.
 
-To achieve above 2nd attempt, it changes ALSA control core to accept 
-several control element sets with the same name by assigning proper 
-indexes to the sets.
+Your controller driver itself is unaffected by this, you still call
+snd_ac97_controller_register() from the probe function and so on.
 
-Well, since your former messages, you continue using the word, 'general' 
-or 'generic'. If it were somewhat general, it should satisfy 
-requirements in whole this subsystem. Actually, there's none of such 
-requirements outside of ALSA SoC part. For the drivers outside of ALSA 
-SoC part, design of target sound card is fixed in advance, therefore 
-programmers can assign control element sets to PCM devices in usual 
-ways. At least, current infrastructure in ALSA control core can satisfy 
-the programmers.
+> 
+>>> +	void (*wait)(struct ac97_controller *adrv, int slot);
+>>> +	void (*init)(struct ac97_controller *adrv, int slot);
+>>
+>> Neither wait nor init are ever used.
+> This is because I've not begun to porting sound/pci/ac97_codec.c into
+> sound/ac97.
 
-Therefore, I think that your attempts includes over-generalization. In 
-theory, it can bring over-specification easily and it causes code 
-complication or unmaintained codes.
+Ok, makes sense. But maybe just leave them out for now and add them when
+they are used.
 
+[...]
+>>> +	ret = sysfs_create_link(&codec->dev.kobj, &ac97_ctrl->dev->kobj,
+>>> +				"ac97_controller");
+>>
+>> Since the CODEC is a child of the controller this should not be necessary as
+>> this just points one directory up. It's like `ln -s .. parent`
+> This creates :
+> /sys/bus/ac97/devices/pxa2xx-ac97\:0/ac97_controller
+> 
+> Of course as you pointed out, it's a 'ln -s .. parent' like link, but it seems
+> to me very unfriendly to have :
+>  - /sys/bus/ac97/devices/pxa2xx-ac97\:0/../ac97_operations
+>  - while /sys/bus/ac97/devices/ac97_operations doesn't exist (obviously)
+> 
+> Mmm, I don't know for this one, my mind is not set, it's a bit hard to tell if
+> it's only an unecessary link bringing "comfort", or something usefull.
 
-Focusing on ALSA SoC part, there's a requirement to register control 
-element sets from the same code, in fact. So I wonder why you don't 
-start your explanation in an aspect of it. In short, I can't understand 
-the reason that you adhere to such an inappropriate generalization for 
-this subsystem.
+It is additional ABI and we do not have this for any other bus either (e.g.
+you don't see a backlink for a I2C or SPI device to the parent). In my
+opinion for the sake of keeping things consistent and simple we should not
+add this.
 
-In this patchset, you adhere to usage of 'index' field. But there's 
-another way; assigning different identification information to the 
-control element sets. Let us to start discussion from this point? At 
-least, Iwai-san said, former driver for Intel High Definition Audio is 
-necessarily not a good example for a model to c
-onsider about this issue and the usage of 'index' is not 
-well-generalized[1].
+>>
+>>> +	if (ret)
+>>> +		goto err_unregister_device;
+>>> +
+>>> +	return 0;
+>>> +err_unregister_device:
+>>> +	put_device(&codec->dev);
+>>> +err_free_codec:
+>>> +	kfree(codec);
+>>
+>> Since the struct is reference counted, the freeing is done in the release
+>> callback and this leads to a double free.
+> A yes in the "goto err_unregister_device" case right, while it's necessary in
+> the "goto err_free_codec" case ... I need to rework that a bit.
 
-Finally, it's better to clear main points of your issue, for practical 
-and meaningful discussion for better approaches, before starting this 
-discussion, I think. At least, there's over-generalization, 
-misunderstandings of design and interfaces, driver-specific historical 
-reasons and so on.
+It should use put_device() in both cases, check the the device_register()
+documentation. It says that put_device() must be used, even if
+device_register() fails.
 
+> 
+>>> +int snd_ac97_codec_driver_register(struct ac97_codec_driver *drv)
+>>> +{
+>>> +	int ret;
+>>> +
+>>> +	drv->driver.bus = &ac97_bus_type;
+>>> +
+>>> +	ret = driver_register(&drv->driver);
+>>> +	if (!ret)
+>>> +		ac97_rescan_all_controllers();
+>>
+>> Rescanning the bus when a new codec driver is registered should not be
+>> neccessary. The bus is scanned once when the controller is registered, this
+>> creates the device. The device driver core will take care of binding the
+>> device to the driver, if the driver is registered after thed evice.
+> That's because you suppose the initial scanning found all the ac97 codecs.
+> But that's an incomplete vision as a codec might be powered off at that time and
+> not seen by the first scanning, while the new scanning will discover it.
 
-[1] [alsa-devel] [RFC 0/4] ALSA controls management using 
-index/device/sub-devices fields
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-November/114430.html
+But why would the device become suddenly visible when the driver is
+registered. This seems to be an as arbitrary point in time as any other.
 
+Also consider that when you build a driver as a module, the module will
+typically only be auto-loaded after the device has been detected, based on
+the device ID. On the other hand, if the driver is built-in driver
+registration will happen either before or shortly after the controller
+registration.
 
-Regards
+If there is the expectation that the AC97 CODEC might randomly appear on the
+bus, the core should periodically scan the bus.
 
-Takashi Sakamoto
+[...]
+>>> +	ac97_ctrl->ops->warm_reset(ac97_ctrl);
+>>> +	return len;
+>>> +}
+>>> +static DEVICE_ATTR_WO(warm_reset);
+>>> +
+>>> +static struct attribute *ac97_controller_device_attrs[] = {
+>>> +	&dev_attr_cold_reset.attr,
+>>> +	&dev_attr_warm_reset.attr,
+>>> +	NULL
+>>> +};
+>>
+>> This adds new userspace ABI that is not documented at the moment.
+> Very true. And as all userspace interface, it needs to be discussed. If nobody
+> complains, I'll add the documentation for next patch round.
+>>
+>>> +int snd_ac97_controller_register(const struct ac97_controller_ops *ops,
+>>> +				 struct device *dev,
+>>> +				 unsigned short slots_available,
+>>> +				 void **codecs_pdata)
+>>
+>> In my opinion this should return a handle to a ac97 controller which can
+>> then be passed to snd_ac97_controller_unregister(). This is in my opinion
+>> the better approach rather than looking up the controller by parent device.
+> This is another "legacy drivers" issue.
+> 
+> The legacy driver (the one probed by platform_data or devicetree) doesn't
+> necessarily have a private structure to store this ac97_controller pointer.
+
+I might be missing something, but I'm not convinced by this. Can you point
+me to such a legacy driver where you think this would not work?
