@@ -1,109 +1,77 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: core: If a platform doesn't have an
-	of_node use parent's node" to the asoc tree
-Date: Wed, 09 Nov 2016 14:59:25 +0000
-Message-ID: <E1c4ULV-0002eq-6H@finisterre>
-References: <1478523797-22060-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 1/2] mfd: davinci_voicecodec: tidyup header difinitions
+Date: Wed, 9 Nov 2016 16:54:25 +0000
+Message-ID: <20161109165425.GK13127@dell>
+References: <878ttafb84.wl%kuninori.morimoto.gx@renesas.com>
+ <877f8ufb6b.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DBFF9267097
- for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 15:59:42 +0100 (CET)
-In-Reply-To: <1478523797-22060-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <877f8ufb6b.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Arnd Bergmann <arnd@arndb.de>, anish kumar <yesanishhere@gmail.com>, Michael Trimarchi <michael@amarulasolutions.com>, Jacob Siverskog <jacob@teenage.engineering>, "Damien.Horsley" <Damien.Horsley@imgtec.com>, Jeremy McDermond <nh6z@nh6z.net>, Bard Liao <bardliao@realtek.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Thu, 27 Oct 2016, Kuninori Morimoto wrote:
 
-   ASoC: core: If a platform doesn't have an of_node use parent's node
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-has been applied to the asoc tree at
+Please use `git send-mail` to submit your patches.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> mach/hardware.h is needed on C source code side, not header.
+> And struct davinci_vc is duplicated definition.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  drivers/mfd/davinci_voicecodec.c       | 1 +
+>  include/linux/mfd/davinci_voicecodec.h | 4 ----
+>  2 files changed, 1 insertion(+), 4 deletions(-)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Nice.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Applied, thanks.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> diff --git a/drivers/mfd/davinci_voicecodec.c b/drivers/mfd/davinci_voicecodec.c
+> index dff2f19..4d0a5f3 100644
+> --- a/drivers/mfd/davinci_voicecodec.c
+> +++ b/drivers/mfd/davinci_voicecodec.c
+> @@ -32,6 +32,7 @@
+>  #include <sound/pcm.h>
+>  
+>  #include <linux/mfd/davinci_voicecodec.h>
+> +#include <mach/hardware.h>
+>  
+>  static const struct regmap_config davinci_vc_regmap = {
+>  	.reg_bits = 32,
+> diff --git a/include/linux/mfd/davinci_voicecodec.h b/include/linux/mfd/davinci_voicecodec.h
+> index 8e1cdbe..2c0127c 100644
+> --- a/include/linux/mfd/davinci_voicecodec.h
+> +++ b/include/linux/mfd/davinci_voicecodec.h
+> @@ -28,8 +28,6 @@
+>  #include <linux/mfd/core.h>
+>  #include <linux/platform_data/edma.h>
+>  
+> -#include <mach/hardware.h>
+> -
+>  struct regmap;
+>  
+>  /*
+> @@ -99,8 +97,6 @@ struct davinci_vcif {
+>  	dma_addr_t dma_rx_addr;
+>  };
+>  
+> -struct davinci_vc;
+> -
+>  struct davinci_vc {
+>  	/* Device data */
+>  	struct device *dev;
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 06859fca4368c407d4acccf3948b8b825db5e569 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Mon, 7 Nov 2016 13:03:17 +0000
-Subject: [PATCH] ASoC: core: If a platform doesn't have an of_node use
- parent's node
-
-Support was added to allow location of both CPU and CODEC components
-of a DAI link from their parent's of_node if they did not have an
-of_node themselves in this commit:
-
-commit 3e0aa8d83bf8 ("ASoC: core: If component doesn't have of_node
-                      use parent's node instead")
-
-However this leaves platforms as something of a special case as the
-major DAI component that doesn't do this. Since this is useful for MFD
-devices which often utilise a single device tree entry for the whole
-device, add support for looking up platforms from the parent's of_node
-as well.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-core.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c0bbcd903261..26da0466126d 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -993,6 +993,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	struct snd_soc_dai_link_component cpu_dai_component;
- 	struct snd_soc_dai **codec_dais;
- 	struct snd_soc_platform *platform;
-+	struct device_node *platform_of_node;
- 	const char *platform_name;
- 	int i;
- 
-@@ -1042,9 +1043,12 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 
- 	/* find one from the set of registered platforms */
- 	list_for_each_entry(platform, &platform_list, list) {
-+		platform_of_node = platform->dev->of_node;
-+		if (!platform_of_node && platform->dev->parent->of_node)
-+			platform_of_node = platform->dev->parent->of_node;
-+
- 		if (dai_link->platform_of_node) {
--			if (platform->dev->of_node !=
--			    dai_link->platform_of_node)
-+			if (platform_of_node != dai_link->platform_of_node)
- 				continue;
- 		} else {
- 			if (strcmp(platform->component.name, platform_name))
 -- 
-2.10.2
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
