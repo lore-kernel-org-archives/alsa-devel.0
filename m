@@ -1,30 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8978: Adjust clock indices so that simple card
- works" to the asoc tree
-Date: Wed, 09 Nov 2016 14:59:30 +0000
-Message-ID: <E1c4ULa-0002fj-Mt@finisterre>
-References: <3d9c794b19e99745f0a98412c4cf8dcf26d728d4.1478524066.git-series.maxime.ripard@free-electrons.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <3d9c794b19e99745f0a98412c4cf8dcf26d728d4.1478524066.git-series.maxime.ripard@free-electrons.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: lpass-platform: initialize dma channel number" to the asoc tree
+Date: Wed, 09 Nov 2016 15:00:02 +0000
+Message-ID: <E1c4UM6-0002jH-7B@finisterre>
+References: <20161108133916.1742379-1-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20161108133916.1742379-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Kenneth Westfield <kwestfie@codeaurora.org>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>Kenneth Westfield <kwestfie@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, alsa-devel@alsa-project.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8978: Adjust clock indices so that simple card works
+   ASoC: lpass-platform: initialize dma channel number
 
 has been applied to the asoc tree at
 
@@ -49,35 +37,45 @@ to this mail.
 Thanks,
 Mark
 
->From fbd972d7f4a60677f6fbe558dc23e4029dc2d45d Mon Sep 17 00:00:00 2001
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Date: Mon, 7 Nov 2016 14:08:20 +0100
-Subject: [PATCH] ASoC: wm8978: Adjust clock indices so that simple card works
+>From 3b89e4b77ef9c2f985964fab17032db98f074ed0 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 8 Nov 2016 14:38:52 +0100
+Subject: [PATCH] ASoC: lpass-platform: initialize dma channel number
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Using simple-card with the wm8978 doesn't work because simple card calls
-set_sysclk on the clock index 0, which is not the MCLK in the WM8978.
+A bugfix accidentally removed the implicit initialization of the
+dma channel number, causing undefined behavior when
+v->alloc_dma_channel is NULL:
 
-Adjust the clock definition so that the clock 0 is the MCLK.
+sound/soc/qcom/lpass-platform.c: In function ‘lpass_platform_pcmops_open’:
+sound/soc/qcom/lpass-platform.c:83:29: error: ‘dma_ch’ may be used uninitialized in this function [-Werror=maybe-uninitialized]
 
-Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+This adds back an explicit initialization to zero, restoring the
+previous behavior for that case.
+
+Fixes: 022d00ee0b55 ("ASoC: lpass-platform: Fix broken pcm data usage")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8978.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/qcom/lpass-platform.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8978.h b/sound/soc/codecs/wm8978.h
-index 6ae43495b7cf..0dcf6868dff6 100644
---- a/sound/soc/codecs/wm8978.h
-+++ b/sound/soc/codecs/wm8978.h
-@@ -78,8 +78,8 @@ enum wm8978_clk_id {
- };
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index 07000f53db44..e223bc90b2ef 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -77,6 +77,9 @@ static int lpass_platform_pcmops_open(struct snd_pcm_substream *substream)
  
- enum wm8978_sysclk_src {
-+	WM8978_MCLK = 0,
- 	WM8978_PLL,
--	WM8978_MCLK
- };
+ 	if (v->alloc_dma_channel)
+ 		dma_ch = v->alloc_dma_channel(drvdata, dir);
++	else
++		dma_ch = 0;
++
+ 	if (dma_ch < 0)
+ 		return dma_ch;
  
- #endif	/* __WM8978_H__ */
 -- 
 2.10.2
