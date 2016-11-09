@@ -1,20 +1,19 @@
-From: =?UTF-8?B?6auY5LqV5ZKM5Lmf?= <ktakai@sun-denshi.co.jp>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: For playback method of stopping after the
 	execution aplay command
-Date: Wed, 9 Nov 2016 11:52:59 +0900
-Message-ID: <CAA_zGK11uWqgc1+_osMDbWy9Vz1O1AgdwKOVYj54HVEhTq7HWg@mail.gmail.com>
+Date: Wed, 9 Nov 2016 12:23:36 +0900
+Message-ID: <15be5f38-2710-5531-33c4-a1c1cd1a4179@sakamocchi.jp>
 References: <CAA_zGK07Ywm_RvXHvJfS9ZrTEy2CFAB7rG_nHauB-pmgh-3ggA@mail.gmail.com>
  <12a7a95a-8405-d69f-611e-5944f6b59ca5@sakamocchi.jp>
+ <CAA_zGK11uWqgc1+_osMDbWy9Vz1O1AgdwKOVYj54HVEhTq7HWg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f46.google.com (mail-wm0-f46.google.com [74.125.82.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E226266B7E
- for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 03:53:20 +0100 (CET)
-Received: by mail-wm0-f46.google.com with SMTP id t79so275025180wmt.0
- for <alsa-devel@alsa-project.org>; Tue, 08 Nov 2016 18:53:20 -0800 (PST)
-In-Reply-To: <12a7a95a-8405-d69f-611e-5944f6b59ca5@sakamocchi.jp>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 85BD4266B7E
+ for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 04:23:39 +0100 (CET)
+In-Reply-To: <CAA_zGK11uWqgc1+_osMDbWy9Vz1O1AgdwKOVYj54HVEhTq7HWg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,31 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: =?UTF-8?B?6auY5LqV5ZKM5Lmf?= <ktakai@sun-denshi.co.jp>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpUaGFuayB5b3UgZm9yIHlvdXIgcmVwbHkuCgpUaGUgaW5xdWlyeSBzb3JyeSB1bmNsZWFy
-LgoKQWZ0ZXIgSSB3YXMgcGxheWluZyBhdCBhcGxheSBjb21tYW5kLCB3ZSBhcmUgbG9va2luZyBm
-b3IgYSB3YXkgdG8gdGVybWluYXRlCmJ5IHRoZSBvdGhlciBwcm9jZXNzLgoKUmVnYXJkcwoKCjIw
-MTYtMTEtMDkgMTE6NDcgR01UKzA5OjAwIFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNoaUBzYWth
-bW9jY2hpLmpwPjoKCj4gSGksCj4KPiBPbiBOb3YgOSAyMDE2IDEwOjM2LCDpq5jkupXlkozkuZ8g
-d3JvdGU6Cj4KPj4gSGVsbG8KPj4KPj4gVXNlIEFMU0EgYXBsYXkgY29tbWFuZCB3ZSBoYXZlIGRl
-dmVsb3BlZCBhIGRldmljZSBmb3IgYXVkaW8gcmVwcm9kdWN0aW9uLgo+Pgo+PiBBZnRlciB0aGUg
-YXVkaW8gcGxheWJhY2sgYXQgYXBsYXkgY29tbWFuZCwgZm9yY2libHkgb3Igd2lsbCBub3QgdGVs
-bCB1cwo+PiB3aGF0IHNob3VsZCB0YWtlIHdoYXQgd2F5IHRvIGhhbHQgdGhlIHBsYXkuCj4+IChB
-ZnRlciBzdGFydGluZyB0aGUgYXBsYXkgY29tbWFuZCwgSSB0cmllZCBhIHdheSB0byBraWxsIHRo
-ZSBwcm9jZXNzLCBidXQKPj4gaXQgY291bGQgaGF2ZSB0YWtlbiB0byBzdG9wIHBsYXlpbmcsIHJh
-cmVseSBMaW51eCBUaGVyZSB3YXMgdG8gYmUgYQo+PiBpb3dhaXRzbGVlcCBzdGF0ZSkKPj4KPgo+
-IERvIHlvdSBsb29rIGZvciBhIHdheSB0byB0ZXJtaW5hdGUgYXBsYXkgcHJvY2VzcyBieSB0aGUg
-b3RoZXIgcHJvY2Vzc2VzIG9yCj4gYSB3YXkgdG8gY2hlY2sgYSBjYXVzZSB0byB0ZXJtaW5hdGUg
-cnVubmluZyBhcGxheSBwcm9jZXNzPwo+Cj4KPiBSZWdhcmRzCj4KPiBUYWthc2hpIFNha2Ftb3Rv
-Cj4KCgoKLS0gCi8vLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KLy8g44K1
-44Oz6Zu75a2Q5qCq5byP5Lya56S+Ci8vIOaKgOihk+mWi+eZuumDqCDplovnmbrvvJLoqrIKLy8g
-6auY5LqVIOWSjOS5nwovLyDjgJI0ODMtODU1NQovLyDmhJvnn6XnnIzmsZ/ljZfluILlj6Tnn6Xp
-h47nlLrmnJ3ml6UyNTAKLy8gVGVsOjA1ODctNTUtMjIwNCwgRmF4OjA1ODctNTMtODE4NQovLyBF
-LU1haWw6a3Rha2FpQHN1bi1kZW5zaGkuY28uanAKLy8tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+T24gTm92IDkgMjAxNiAxMTo1Miwg6auY5LqV5ZKM5LmfIHdyb3RlOgo+IEFmdGVyIEkgd2FzIHBs
+YXlpbmcgYXQgYXBsYXkgY29tbWFuZCwgd2UgYXJlIGxvb2tpbmcgZm9yIGEgd2F5IHRvCj4gdGVy
+bWluYXRlIGJ5IHRoZSBvdGhlciBwcm9jZXNzLgoKVGhlIGFwbGF5IGlzIHF1aXRlIHNpbXBsZSBw
+cm9ncmFtIGFuZCBpdCBoYXMgbm8gaW1wbGVtZW50YXRpb24gZm9yIAptb2Rlcm4gSVBDIChpbnRl
+ciBwcm9jZXNzIGNvbW11bmljYXRpb24pIG1lY2hhbmlzbS4gU28gd2UgbmVlZCB0byB1c2UgYSAK
+dHJhZGl0aW9uYWwgZmFzaGlvbiwgc2VuZGluZyBVTklYIHNpZ25hbHMgdG8gYXBsYXkgcHJvY2Vz
+cyB0byB0ZXJtaW5hdGUgCnRoZSBwcm9jZXNzLgoKSW4gZGV0YWlsLCBwbGVhc2Ugc2VlICdzaWdu
+YWxfaGFuZGxlcigpJyBhbmQgcmVsYXRlZCBjb2RlcyBpbiBhcGxheS5jOgpodHRwOi8vZ2l0LmFs
+c2EtcHJvamVjdC5vcmcvP3A9YWxzYS11dGlscy5naXQ7YT1ibG9iO2Y9YXBsYXkvYXBsYXkuYzto
+PTJkYTdkZGFjMWM4MWQyNGQyMDk4OGQyNzE5ZTRlNjY4MzMyNzcxNzc7aGI9SEVBRCNsMzg1CgoK
+UmVnYXJkcwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
