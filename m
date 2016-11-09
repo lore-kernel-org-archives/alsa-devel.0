@@ -1,559 +1,264 @@
-From: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Subject: [PATCH v2 3/3] ASoC: atmel: tse850: add ASoC driver for the Axentia TSE-850
-Date: Wed, 9 Nov 2016 23:40:58 +0100
-Message-ID: <1478731258-26084-4-git-send-email-peda@axentia.se>
-References: <1478731258-26084-1-git-send-email-peda@axentia.se>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: samsung: Remove unselectable
+	smdk_wm8580pcm
+Date: Wed,  9 Nov 2016 19:45:10 +0100
+Message-ID: <1478717110-18108-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1478731258-26084-1-git-send-email-peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Nicolas Ferre <nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CEEC267187
+ for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 19:45:18 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The TSE-850 is an FM Transmitter Station Equipment, designed to generate
-baseband signals for FM, mainly the DARC subcarrier, but other signals
-are also possible.
+The SND_SOC_SMDK_WM8580_PCM Kconfig entry depends on either MACH_SMDKV210
+or MACH_SMDKC110. Both of which were removed in commit 28c8331d386a ("ARM:
+S5PV210: Remove support for board files") over two years ago. The driver
+has been unselectable ever since.
 
-Signed-off-by: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+Considering the lack of complaints about this it can be concluded that the
+driver is unused and can be removed.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- MAINTAINERS                      |   1 +
- sound/soc/atmel/Kconfig          |  10 +
- sound/soc/atmel/Makefile         |   2 +
- sound/soc/atmel/tse850-pcm5142.c | 472 +++++++++++++++++++++++++++++++++++++++
- 4 files changed, 485 insertions(+)
- create mode 100644 sound/soc/atmel/tse850-pcm5142.c
+ sound/soc/samsung/Kconfig          |   9 --
+ sound/soc/samsung/Makefile         |   2 -
+ sound/soc/samsung/smdk_wm8580pcm.c | 175 -------------------------------------
+ 3 files changed, 186 deletions(-)
+ delete mode 100644 sound/soc/samsung/smdk_wm8580pcm.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4f2ebf3ab51a..4ce45f02d83f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2323,6 +2323,7 @@ M:	Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
- L:	alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org (moderated for non-subscribers)
- S:	Maintained
- F:	Documentation/devicetree/bindings/sound/axentia,*
-+F:	sound/soc/atmel/tse850-pcm5142.c
- 
- AZ6007 DVB DRIVER
- M:	Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 22aec9a1e9a4..4a56f3dfba51 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -78,4 +78,14 @@ config SND_ATMEL_SOC_PDMIC
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 1d2ef4c..79ae6a7c 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -119,15 +119,6 @@ config SND_SOC_SAMSUNG_SMDK_SPDIF
  	help
- 	  Say Y if you want to add support for Atmel ASoC driver for boards using
- 	  PDMIC.
-+
-+config SND_ATMEL_SOC_TSE850_PCM5142
-+	tristate "ASoC driver for the Axentia TSE-850"
-+	depends on ARCH_AT91 && OF
-+	depends on ATMEL_SSC && I2C
-+	select SND_ATMEL_SOC_SSC_DMA
-+	select SND_SOC_PCM512x_I2C
-+	help
-+	  Say Y if you want to add support for the ASoC driver for the
-+	  Axentia TSE-850 with a PCM5142 codec.
- endif
-diff --git a/sound/soc/atmel/Makefile b/sound/soc/atmel/Makefile
-index a2b127bd9c87..67e10cbd4ed7 100644
---- a/sound/soc/atmel/Makefile
-+++ b/sound/soc/atmel/Makefile
-@@ -13,9 +13,11 @@ snd-atmel-soc-wm8904-objs := atmel_wm8904.o
- snd-soc-sam9x5-wm8731-objs := sam9x5_wm8731.o
- snd-atmel-soc-classd-objs := atmel-classd.o
- snd-atmel-soc-pdmic-objs := atmel-pdmic.o
-+snd-atmel-soc-tse850-pcm5142-objs := tse850-pcm5142.o
+ 	  Say Y if you want to add support for SoC S/PDIF audio on the SMDK.
  
- obj-$(CONFIG_SND_AT91_SOC_SAM9G20_WM8731) += snd-soc-sam9g20-wm8731.o
- obj-$(CONFIG_SND_ATMEL_SOC_WM8904) += snd-atmel-soc-wm8904.o
- obj-$(CONFIG_SND_AT91_SOC_SAM9X5_WM8731) += snd-soc-sam9x5-wm8731.o
- obj-$(CONFIG_SND_ATMEL_SOC_CLASSD) += snd-atmel-soc-classd.o
- obj-$(CONFIG_SND_ATMEL_SOC_PDMIC) += snd-atmel-soc-pdmic.o
-+obj-$(CONFIG_SND_ATMEL_SOC_TSE850_PCM5142) += snd-atmel-soc-tse850-pcm5142.o
-diff --git a/sound/soc/atmel/tse850-pcm5142.c b/sound/soc/atmel/tse850-pcm5142.c
-new file mode 100644
-index 000000000000..ac6a814c8ecf
---- /dev/null
-+++ b/sound/soc/atmel/tse850-pcm5142.c
-@@ -0,0 +1,472 @@
-+/*
-+ * TSE-850 audio - ASoC driver for the Axentia TSE-850 with a PCM5142 codec
-+ *
-+ * Copyright (C) 2016 Axentia Technologies AB
-+ *
-+ * Author: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+/*
-+ *               loop1 relays
-+ *   IN1 +---o  +------------+  o---+ OUT1
-+ *            \                /
-+ *             +              +
-+ *             |   /          |
-+ *             +--o  +--.     |
-+ *             |  add   |     |
-+ *             |        V     |
-+ *             |      .---.   |
-+ *   DAC +----------->|Sum|---+
-+ *             |      '---'   |
-+ *             |              |
-+ *             +              +
-+ *
-+ *   IN2 +---o--+------------+--o---+ OUT2
-+ *               loop2 relays
-+ *
-+ * The 'loop1' gpio pin controlls two relays, which are either in loop
-+ * position, meaning that input and output are directly connected, or
-+ * they are in mixer position, meaning that the signal is passed through
-+ * the 'Sum' mixer. Similarly for 'loop2'.
-+ *
-+ * In the above, the 'loop1' relays are inactive, thus feeding IN1 to the
-+ * mixer (if 'add' is active) and feeding the mixer output to OUT1. The
-+ * 'loop2' relays are active, short-cutting the TSE-850 from channel 2.
-+ * IN1, IN2, OUT1 and OUT2 are TSE-850 connectors and DAC is the PCB name
-+ * of the (filtered) output from the PCM5142 codec.
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/gpio.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/of_gpio.h>
-+#include <linux/regulator/consumer.h>
-+
-+#include <sound/soc.h>
-+#include <sound/pcm_params.h>
-+
-+#include "atmel_ssc_dai.h"
-+
-+struct tse850_priv {
-+	int ssc_id;
-+
-+	struct gpio_desc *add;
-+	struct gpio_desc *loop1;
-+	struct gpio_desc *loop2;
-+
-+	struct regulator *ana;
-+
-+	int add_cache;
-+	int loop1_cache;
-+	int loop2_cache;
-+};
-+
-+static int tse850_get_mux1(struct snd_kcontrol *kctrl,
-+			   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
-+	struct snd_soc_card *card = dapm->card;
-+	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
-+
-+	ucontrol->value.enumerated.item[0] = tse850->loop1_cache;
-+
-+	return 0;
-+}
-+
-+static int tse850_put_mux1(struct snd_kcontrol *kctrl,
-+			   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
-+	struct snd_soc_card *card = dapm->card;
-+	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
-+	struct soc_enum *e = (struct soc_enum *)kctrl->private_value;
-+	unsigned int val = ucontrol->value.enumerated.item[0];
-+
-+	if (val >= e->items)
-+		return -EINVAL;
-+
-+	gpiod_set_value_cansleep(tse850->loop1, val);
-+	tse850->loop1_cache = val;
-+
-+	return snd_soc_dapm_put_enum_double(kctrl, ucontrol);
-+}
-+
-+static int tse850_get_mux2(struct snd_kcontrol *kctrl,
-+			   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
-+	struct snd_soc_card *card = dapm->card;
-+	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
-+
-+	ucontrol->value.enumerated.item[0] = tse850->loop2_cache;
-+
-+	return 0;
-+}
-+
-+static int tse850_put_mux2(struct snd_kcontrol *kctrl,
-+			   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
-+	struct snd_soc_card *card = dapm->card;
-+	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
-+	struct soc_enum *e = (struct soc_enum *)kctrl->private_value;
-+	unsigned int val = ucontrol->value.enumerated.item[0];
-+
-+	if (val >= e->items)
-+		return -EINVAL;
-+
-+	gpiod_set_value_cansleep(tse850->loop2, val);
-+	tse850->loop2_cache = val;
-+
-+	return snd_soc_dapm_put_enum_double(kctrl, ucontrol);
-+}
-+
-+int tse850_get_mix(struct snd_kcontrol *kctrl,
-+		   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
-+	struct snd_soc_card *card = dapm->card;
-+	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
-+
-+	ucontrol->value.enumerated.item[0] = tse850->add_cache;
-+
-+	return 0;
-+}
-+
-+int tse850_put_mix(struct snd_kcontrol *kctrl,
-+		   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
-+	struct snd_soc_card *card = dapm->card;
-+	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
-+	int connect = !!ucontrol->value.integer.value[0];
-+
-+	if (tse850->add_cache == connect)
-+		return 0;
-+
-+	/*
-+	 * Hmmm, this gpiod_set_value_cansleep call should probably happen
-+	 * inside snd_soc_dapm_mixer_update_power in the loop.
-+	 */
-+	gpiod_set_value_cansleep(tse850->add, connect);
-+	tse850->add_cache = connect;
-+
-+	snd_soc_dapm_mixer_update_power(dapm, kctrl, connect, NULL);
-+	return 1;
-+}
-+
-+int tse850_get_ana(struct snd_kcontrol *kctrl,
-+		   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
-+	struct snd_soc_card *card = dapm->card;
-+	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
-+	int ret;
-+
-+	ret = regulator_get_voltage(tse850->ana);
-+	if (ret < 0)
-+		return ret;
-+
-+	/*
-+	 * Map regulator output values like so:
-+	 *      -11.5V to "Low" (enum 0)
-+	 * 11.5V-12.5V to "12V" (enum 1)
-+	 * 12.5V-13.5V to "13V" (enum 2)
-+	 *     ...
-+	 * 18.5V-19.5V to "19V" (enum 8)
-+	 * 19.5V-      to "20V" (enum 9)
-+	 */
-+	if (ret < 11000000)
-+		ret = 11000000;
-+	else if (ret > 20000000)
-+		ret = 20000000;
-+	ret -= 11000000;
-+	ret = (ret + 500000) / 1000000;
-+
-+	ucontrol->value.enumerated.item[0] = ret;
-+
-+	return 0;
-+}
-+
-+int tse850_put_ana(struct snd_kcontrol *kctrl,
-+		   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
-+	struct snd_soc_card *card = dapm->card;
-+	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
-+	struct soc_enum *e = (struct soc_enum *)kctrl->private_value;
-+	unsigned int uV = ucontrol->value.enumerated.item[0];
-+	int ret;
-+
-+	if (uV >= e->items)
-+		return -EINVAL;
-+
-+	/*
-+	 * Map enum zero (Low) to 2 volts on the regulator, do this since
-+	 * the ana regulator is supplied by the system 12V voltage and
-+	 * requesting anything below the system voltage causes the system
-+	 * voltage to be passed through the regulator. Also, the ana
-+	 * regulator induces noise when requesting voltages near the
-+	 * system voltage. So, by mapping Low to 2V, that noise is
-+	 * eliminated when all that is needed is 12V (the system voltage).
-+	 */
-+	if (uV)
-+		uV = 11000000 + (1000000 * uV);
-+	else
-+		uV = 2000000;
-+
-+	ret = regulator_set_voltage(tse850->ana, uV, uV);
-+	if (ret < 0)
-+		return ret;
-+
-+	return snd_soc_dapm_put_enum_double(kctrl, ucontrol);
-+}
-+
-+static const char * const mux_text[] = { "Mixer", "Loop" };
-+
-+static const struct soc_enum mux_enum =
-+	SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, 2, mux_text);
-+
-+static const struct snd_kcontrol_new mux1 =
-+	SOC_DAPM_ENUM_EXT("MUX1", mux_enum, tse850_get_mux1, tse850_put_mux1);
-+
-+static const struct snd_kcontrol_new mux2 =
-+	SOC_DAPM_ENUM_EXT("MUX2", mux_enum, tse850_get_mux2, tse850_put_mux2);
-+
-+#define TSE850_DAPM_SINGLE_EXT(xname, reg, shift, max, invert, xget, xput) \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-+	.info = snd_soc_info_volsw, \
-+	.get = xget, \
-+	.put = xput, \
-+	.private_value = SOC_SINGLE_VALUE(reg, shift, max, invert, 0) }
-+
-+static const struct snd_kcontrol_new mix[] = {
-+	TSE850_DAPM_SINGLE_EXT("IN Switch", SND_SOC_NOPM, 0, 1, 0,
-+			       tse850_get_mix, tse850_put_mix),
-+};
-+
-+static const char * const ana_text[] = {
-+	"Low", "12V", "13V", "14V", "15V", "16V", "17V", "18V", "19V", "20V"
-+};
-+
-+static const struct soc_enum ana_enum =
-+	SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, 9, ana_text);
-+
-+static const struct snd_kcontrol_new out =
-+	SOC_DAPM_ENUM_EXT("ANA", ana_enum, tse850_get_ana, tse850_put_ana);
-+
-+static const struct snd_soc_dapm_widget tse850_dapm_widgets[] = {
-+	SND_SOC_DAPM_LINE("OUT1", NULL),
-+	SND_SOC_DAPM_LINE("OUT2", NULL),
-+	SND_SOC_DAPM_LINE("IN1", NULL),
-+	SND_SOC_DAPM_LINE("IN2", NULL),
-+	SND_SOC_DAPM_INPUT("DAC"),
-+	SND_SOC_DAPM_AIF_IN("AIFINL", "Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("AIFINR", "Playback", 1, SND_SOC_NOPM, 0, 0),
-+	SOC_MIXER_ARRAY("MIX", SND_SOC_NOPM, 0, 0, mix),
-+	SND_SOC_DAPM_MUX("MUX1", SND_SOC_NOPM, 0, 0, &mux1),
-+	SND_SOC_DAPM_MUX("MUX2", SND_SOC_NOPM, 0, 0, &mux2),
-+	SND_SOC_DAPM_OUT_DRV("OUT", SND_SOC_NOPM, 0, 0, &out, 1),
-+};
-+
-+/*
-+ * These connections are not entirely correct, since both IN1 and IN2
-+ * are always fed to MIX (if the "IN switch" is set so), i.e. without
-+ * regard to the loop1 and loop2 relays that according to this only
-+ * control MUX1 and MUX2 but in fact also control how the input signals
-+ * are routed.
-+ * But, 1) I don't know how to do it right, and 2) it doesn't seem to
-+ * matter in practice since nothing is powered in those sections anyway.
-+ */
-+static const struct snd_soc_dapm_route tse850_intercon[] = {
-+	{ "OUT1", NULL, "MUX1" },
-+	{ "OUT2", NULL, "MUX2" },
-+
-+	{ "MUX1", "Loop",  "IN1" },
-+	{ "MUX1", "Mixer", "OUT" },
-+
-+	{ "MUX2", "Loop",  "IN2" },
-+	{ "MUX2", "Mixer", "OUT" },
-+
-+	{ "OUT", NULL, "MIX" },
-+
-+	{ "MIX", NULL, "DAC" },
-+	{ "MIX", "IN Switch", "IN1" },
-+	{ "MIX", "IN Switch", "IN2" },
-+
-+	/* connect board input to the codec left channel output pin */
-+	{ "DAC", NULL, "OUTL" },
-+};
-+
-+static struct snd_soc_dai_link tse850_dailink = {
-+	.name = "TSE-850",
-+	.stream_name = "TSE-850-PCM",
-+	.codec_dai_name = "pcm512x-hifi",
-+	.dai_fmt = SND_SOC_DAIFMT_I2S
-+		 | SND_SOC_DAIFMT_NB_NF
-+		 | SND_SOC_DAIFMT_CBM_CFS,
-+};
-+
-+static struct snd_soc_card tse850_card = {
-+	.name = "TSE-850-ASoC",
-+	.owner = THIS_MODULE,
-+	.dai_link = &tse850_dailink,
-+	.num_links = 1,
-+	.dapm_widgets = tse850_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(tse850_dapm_widgets),
-+	.dapm_routes = tse850_intercon,
-+	.num_dapm_routes = ARRAY_SIZE(tse850_intercon),
-+	.fully_routed = true,
-+};
-+
-+static int tse850_dt_init(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *codec_np, *cpu_np;
-+	struct snd_soc_card *card = &tse850_card;
-+	struct snd_soc_dai_link *dailink = &tse850_dailink;
-+	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
-+
-+	if (!np) {
-+		dev_err(&pdev->dev, "only device tree supported\n");
-+		return -EINVAL;
-+	}
-+
-+	cpu_np = of_parse_phandle(np, "axentia,ssc-controller", 0);
-+	if (!cpu_np) {
-+		dev_err(&pdev->dev, "failed to get dai and pcm info\n");
-+		return -EINVAL;
-+	}
-+	dailink->cpu_of_node = cpu_np;
-+	dailink->platform_of_node = cpu_np;
-+	tse850->ssc_id = of_alias_get_id(cpu_np, "ssc");
-+	of_node_put(cpu_np);
-+
-+	codec_np = of_parse_phandle(np, "axentia,audio-codec", 0);
-+	if (!codec_np) {
-+		dev_err(&pdev->dev, "failed to get codec info\n");
-+		return -EINVAL;
-+	}
-+	dailink->codec_of_node = codec_np;
-+	of_node_put(codec_np);
-+
-+	return 0;
-+}
-+
-+static int tse850_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &tse850_card;
-+	struct device *dev = card->dev = &pdev->dev;
-+	struct tse850_priv *tse850;
-+	int ret;
-+
-+	tse850 = devm_kzalloc(dev, sizeof(*tse850), GFP_KERNEL);
-+	if (!tse850)
-+		return -ENOMEM;
-+
-+	snd_soc_card_set_drvdata(card, tse850);
-+
-+	ret = tse850_dt_init(pdev);
-+	if (ret) {
-+		dev_err(dev, "failed to init dt info\n");
-+		return ret;
-+	}
-+
-+	tse850->add = devm_gpiod_get(dev, "axentia,add", GPIOD_OUT_HIGH);
-+	if (IS_ERR(tse850->add)) {
-+		if (PTR_ERR(tse850->add) != -EPROBE_DEFER)
-+			dev_err(dev, "failed to get 'add' gpio\n");
-+		return PTR_ERR(tse850->add);
-+	}
-+	tse850->add_cache = 1;
-+
-+	tse850->loop1 = devm_gpiod_get(dev, "axentia,loop1", GPIOD_OUT_HIGH);
-+	if (IS_ERR(tse850->loop1)) {
-+		if (PTR_ERR(tse850->loop1) != -EPROBE_DEFER)
-+			dev_err(dev, "failed to get 'loop1' gpio\n");
-+		return PTR_ERR(tse850->loop1);
-+	}
-+	tse850->loop1_cache = 1;
-+
-+	tse850->loop2 = devm_gpiod_get(dev, "axentia,loop2", GPIOD_OUT_HIGH);
-+	if (IS_ERR(tse850->loop2)) {
-+		if (PTR_ERR(tse850->loop2) != -EPROBE_DEFER)
-+			dev_err(dev, "failed to get 'loop2' gpio\n");
-+		return PTR_ERR(tse850->loop2);
-+	}
-+	tse850->loop2_cache = 1;
-+
-+	tse850->ana = devm_regulator_get(dev, "axentia,ana");
-+	if (IS_ERR(tse850->ana)) {
-+		if (PTR_ERR(tse850->ana) != -EPROBE_DEFER)
-+			dev_err(dev, "failed to get 'ana' regulator\n");
-+		return PTR_ERR(tse850->ana);
-+	}
-+
-+	ret = regulator_enable(tse850->ana);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to enable the 'ana' regulator\n");
-+		return ret;
-+	}
-+
-+	ret = atmel_ssc_set_audio(tse850->ssc_id);
-+	if (ret != 0) {
-+		dev_err(dev,
-+			"failed to set SSC %d for audio\n", tse850->ssc_id);
-+		goto err_disable_ana;
-+	}
-+
-+	ret = snd_soc_register_card(card);
-+	if (ret) {
-+		dev_err(dev, "snd_soc_register_card failed\n");
-+		goto err_put_audio;
-+	}
-+
-+	return 0;
-+
-+err_put_audio:
-+	atmel_ssc_put_audio(tse850->ssc_id);
-+err_disable_ana:
-+	regulator_disable(tse850->ana);
-+	return ret;
-+}
-+
-+static int tse850_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
-+
-+	snd_soc_unregister_card(card);
-+	atmel_ssc_put_audio(tse850->ssc_id);
-+	regulator_disable(tse850->ana);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id tse850_dt_ids[] = {
-+	{ .compatible = "axentia,tse850-pcm5142", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, tse850_dt_ids);
-+
-+static struct platform_driver tse850_driver = {
-+	.driver = {
-+		.name = "axentia-tse850-pcm5142",
-+		.of_match_table = of_match_ptr(tse850_dt_ids),
-+	},
-+	.probe = tse850_probe,
-+	.remove = tse850_remove,
-+};
-+
-+module_platform_driver(tse850_driver);
-+
-+/* Module information */
-+MODULE_AUTHOR("Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>");
-+MODULE_DESCRIPTION("ALSA SoC driver for TSE-850 with PCM5142 codec");
-+MODULE_LICENSE("GPL");
+-config SND_SOC_SMDK_WM8580_PCM
+-	tristate "SoC PCM Audio support for WM8580 on SMDK"
+-	depends on MACH_SMDKV210 || MACH_SMDKC110
+-	depends on I2C
+-	select SND_SOC_WM8580
+-	select SND_SAMSUNG_PCM
+-	help
+-	  Say Y if you want to add support for SoC audio on the SMDK.
+-
+ config SND_SOC_SMDK_WM8994_PCM
+ 	tristate "SoC PCM Audio support for WM8994 on SMDK"
+ 	depends on I2C=y
+diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
+index f3f4a32..fed002a 100644
+--- a/sound/soc/samsung/Makefile
++++ b/sound/soc/samsung/Makefile
+@@ -34,7 +34,6 @@ snd-soc-snow-objs := snow.o
+ snd-soc-smdk-wm9713-objs := smdk_wm9713.o
+ snd-soc-s3c64xx-smartq-wm8987-objs := smartq_wm8987.o
+ snd-soc-smdk-spdif-objs := smdk_spdif.o
+-snd-soc-smdk-wm8580pcm-objs := smdk_wm8580pcm.o
+ snd-soc-smdk-wm8994pcm-objs := smdk_wm8994pcm.o
+ snd-soc-speyside-objs := speyside.o
+ snd-soc-tobermory-objs := tobermory.o
+@@ -59,7 +58,6 @@ obj-$(CONFIG_SND_SOC_SNOW) += snd-soc-snow.o
+ obj-$(CONFIG_SND_SOC_SAMSUNG_SMDK_WM9713) += snd-soc-smdk-wm9713.o
+ obj-$(CONFIG_SND_SOC_SMARTQ) += snd-soc-s3c64xx-smartq-wm8987.o
+ obj-$(CONFIG_SND_SOC_SAMSUNG_SMDK_SPDIF) += snd-soc-smdk-spdif.o
+-obj-$(CONFIG_SND_SOC_SMDK_WM8580_PCM) += snd-soc-smdk-wm8580pcm.o
+ obj-$(CONFIG_SND_SOC_SMDK_WM8994_PCM) += snd-soc-smdk-wm8994pcm.o
+ obj-$(CONFIG_SND_SOC_SPEYSIDE) += snd-soc-speyside.o
+ obj-$(CONFIG_SND_SOC_TOBERMORY) += snd-soc-tobermory.o
+diff --git a/sound/soc/samsung/smdk_wm8580pcm.c b/sound/soc/samsung/smdk_wm8580pcm.c
+deleted file mode 100644
+index a6d2233..0000000
+--- a/sound/soc/samsung/smdk_wm8580pcm.c
++++ /dev/null
+@@ -1,175 +0,0 @@
+-/*
+- *  sound/soc/samsung/smdk_wm8580pcm.c
+- *
+- *  Copyright (c) 2011 Samsung Electronics Co. Ltd
+- *
+- *  This program is free software; you can redistribute  it and/or  modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- */
+-#include <linux/module.h>
+-#include <sound/soc.h>
+-#include <sound/pcm_params.h>
+-#include <sound/pcm.h>
+-
+-#include <asm/mach-types.h>
+-
+-#include "../codecs/wm8580.h"
+-#include "pcm.h"
+-
+-/*
+- * Board Settings:
+- *  o '1' means 'ON'
+- *  o '0' means 'OFF'
+- *  o 'X' means 'Don't care'
+- *
+- * SMDK6410 Base B/D: CFG1-0000, CFG2-1111
+- * SMDKC110, SMDKV210: CFGB11-100100, CFGB12-0000
+- */
+-
+-#define SMDK_WM8580_EXT_OSC 12000000
+-#define SMDK_WM8580_EXT_MCLK 4096000
+-#define SMDK_WM8580_EXT_VOICE 2048000
+-
+-static unsigned long mclk_freq;
+-static unsigned long xtal_freq;
+-
+-/*
+- * If MCLK clock directly gets from XTAL, we don't have to use PLL
+- * to make MCLK, but if XTAL clock source connects with other codec
+- * pin (like XTI), we should have to set codec's PLL to make MCLK.
+- * Because Samsung SoC does not support pcmcdclk output like I2S.
+- */
+-
+-static int smdk_wm8580_pcm_hw_params(struct snd_pcm_substream *substream,
+-			      struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int rfs, ret;
+-
+-	switch (params_rate(params)) {
+-	case 8000:
+-		break;
+-	default:
+-		printk(KERN_ERR "%s:%d Sampling Rate %u not supported!\n",
+-		__func__, __LINE__, params_rate(params));
+-		return -EINVAL;
+-	}
+-
+-	rfs = mclk_freq / params_rate(params) / 2;
+-
+-	if (mclk_freq == xtal_freq) {
+-		ret = snd_soc_dai_set_sysclk(codec_dai, WM8580_CLKSRC_MCLK,
+-						mclk_freq, SND_SOC_CLOCK_IN);
+-		if (ret < 0)
+-			return ret;
+-
+-		ret = snd_soc_dai_set_clkdiv(codec_dai, WM8580_MCLK,
+-						WM8580_CLKSRC_MCLK);
+-		if (ret < 0)
+-			return ret;
+-	} else {
+-		ret = snd_soc_dai_set_sysclk(codec_dai, WM8580_CLKSRC_PLLA,
+-						mclk_freq, SND_SOC_CLOCK_IN);
+-		if (ret < 0)
+-			return ret;
+-
+-		ret = snd_soc_dai_set_clkdiv(codec_dai, WM8580_MCLK,
+-						WM8580_CLKSRC_PLLA);
+-		if (ret < 0)
+-			return ret;
+-
+-		ret = snd_soc_dai_set_pll(codec_dai, WM8580_PLLA, 0,
+-						xtal_freq, mclk_freq);
+-		if (ret < 0)
+-			return ret;
+-	}
+-
+-	/* Set PCM source clock on CPU */
+-	ret = snd_soc_dai_set_sysclk(cpu_dai, S3C_PCM_CLKSRC_MUX,
+-					mclk_freq, SND_SOC_CLOCK_IN);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* Set SCLK_DIV for making bclk */
+-	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C_PCM_SCLK_PER_FS, rfs);
+-	if (ret < 0)
+-		return ret;
+-
+-	return 0;
+-}
+-
+-static struct snd_soc_ops smdk_wm8580_pcm_ops = {
+-	.hw_params = smdk_wm8580_pcm_hw_params,
+-};
+-
+-#define SMDK_DAI_FMT (SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF | \
+-	SND_SOC_DAIFMT_CBS_CFS)
+-
+-static struct snd_soc_dai_link smdk_dai[] = {
+-	{
+-		.name = "WM8580 PAIF PCM RX",
+-		.stream_name = "Playback",
+-		.cpu_dai_name = "samsung-pcm.0",
+-		.codec_dai_name = "wm8580-hifi-playback",
+-		.platform_name = "samsung-audio",
+-		.codec_name = "wm8580.0-001b",
+-		.dai_fmt = SMDK_DAI_FMT,
+-		.ops = &smdk_wm8580_pcm_ops,
+-	}, {
+-		.name = "WM8580 PAIF PCM TX",
+-		.stream_name = "Capture",
+-		.cpu_dai_name = "samsung-pcm.0",
+-		.codec_dai_name = "wm8580-hifi-capture",
+-		.platform_name = "samsung-pcm.0",
+-		.codec_name = "wm8580.0-001b",
+-		.dai_fmt = SMDK_DAI_FMT,
+-		.ops = &smdk_wm8580_pcm_ops,
+-	},
+-};
+-
+-static struct snd_soc_card smdk_pcm = {
+-	.name = "SMDK-PCM",
+-	.owner = THIS_MODULE,
+-	.dai_link = smdk_dai,
+-	.num_links = 2,
+-};
+-
+-/*
+- * After SMDKC110 Base Board's Rev is '0.1', 12MHz External OSC(X1)
+- * is absent (or not connected), so we connect EXT_VOICE_CLK(OSC4),
+- * 2.0484Mhz, directly with MCLK both Codec and SoC.
+- */
+-static int snd_smdk_probe(struct platform_device *pdev)
+-{
+-	int ret = 0;
+-
+-	xtal_freq = SMDK_WM8580_EXT_OSC;
+-	mclk_freq = SMDK_WM8580_EXT_MCLK;
+-
+-	if (machine_is_smdkc110() || machine_is_smdkv210())
+-		xtal_freq = mclk_freq = SMDK_WM8580_EXT_VOICE;
+-
+-	smdk_pcm.dev = &pdev->dev;
+-	ret = devm_snd_soc_register_card(&pdev->dev, &smdk_pcm);
+-	if (ret)
+-		dev_err(&pdev->dev, "snd_soc_register_card failed %d\n", ret);
+-
+-	return ret;
+-}
+-
+-static struct platform_driver snd_smdk_driver = {
+-	.driver = {
+-		.name = "samsung-smdk-pcm",
+-	},
+-	.probe = snd_smdk_probe,
+-};
+-
+-module_platform_driver(snd_smdk_driver);
+-
+-MODULE_AUTHOR("Sangbeom Kim, <sbkim73@samsung.com>");
+-MODULE_DESCRIPTION("ALSA SoC SMDK WM8580 for PCM");
+-MODULE_LICENSE("GPL");
 -- 
 2.1.4
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
