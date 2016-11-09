@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: ABI - Rename be_dai_elems to
-	dai_elems in manifest" to the asoc tree
-Date: Wed, 09 Nov 2016 14:58:43 +0000
-Message-ID: <E1c4UKp-0002Yo-Ah@finisterre>
-References: <1478306544-23631-1-git-send-email-mengdong.lin@linux.intel.com>
+Subject: Applied "ASoC: topology: Check name strings of
+	physical DAI links" to the asoc tree
+Date: Wed, 09 Nov 2016 14:58:52 +0000
+Message-ID: <E1c4UKy-0002Zn-Bo@finisterre>
+References: <1478306534-23587-1-git-send-email-mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 26B18266B53
- for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 15:59:02 +0100 (CET)
-In-Reply-To: <1478306544-23631-1-git-send-email-mengdong.lin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AFDC5266B53
+ for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2016 15:59:11 +0100 (CET)
+In-Reply-To: <1478306534-23587-1-git-send-email-mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: ABI - Rename be_dai_elems to dai_elems in manifest
+   ASoC: topology: Check name strings of physical DAI links
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From 17e593e32cebd0d79c7317d35b7e3b022fdfcefa Mon Sep 17 00:00:00 2001
+>From dbab1cb88e84813254091d0d02ab83d9929e6a27 Mon Sep 17 00:00:00 2001
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Date: Sat, 5 Nov 2016 08:42:24 +0800
-Subject: [PATCH] ASoC: topology: ABI - Rename be_dai_elems to dai_elems in
- manifest
+Date: Sat, 5 Nov 2016 08:42:14 +0800
+Subject: [PATCH] ASoC: topology: Check name strings of physical DAI links
 
-User space uses this field to count physical DAIs, not only BE DAIs since
-users may not use DPCM. So we rename this field from be_dai_elems to
-dai_elems.
-
-This change is backward compatible, because it does not change the layout
-of the struct or data type.
+Check if the name strings are properly terminated, and only use valid
+name strings to find existing physical DAI links to configure.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/asoc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-topology.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 6a4280c6e860..721dd941f171 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -348,7 +348,7 @@ struct snd_soc_tplg_manifest {
- 	__le32 graph_elems;	/* number of graph elements */
- 	__le32 pcm_elems;	/* number of PCM elements */
- 	__le32 dai_link_elems;	/* number of DAI link elements */
--	__le32 be_dai_elems;	/* number of BE DAI elements */
-+	__le32 dai_elems;	/* number of physical DAI elements */
- 	__le32 reserved[20];	/* reserved for new ABI element types */
- 	struct snd_soc_tplg_private priv;
- } __attribute__((packed));
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 8772fd994e82..4dfdc656cce6 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1994,10 +1994,24 @@ static int soc_tplg_link_config(struct soc_tplg *tplg,
+ {
+ 	struct snd_soc_dai_link *link;
+ 	const char *name, *stream_name;
++	size_t len;
+ 	int ret;
+ 
+-	name = strlen(cfg->name) ? cfg->name : NULL;
+-	stream_name = strlen(cfg->stream_name) ? cfg->stream_name : NULL;
++	len = strnlen(cfg->name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++	if (len == SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
++		return -EINVAL;
++	else if (len)
++		name = cfg->name;
++	else
++		name = NULL;
++
++	len = strnlen(cfg->stream_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++	if (len == SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
++		return -EINVAL;
++	else if (len)
++		stream_name = cfg->stream_name;
++	else
++		stream_name = NULL;
+ 
+ 	link = snd_soc_find_dai_link(tplg->comp->card, cfg->id,
+ 				     name, stream_name);
 -- 
 2.10.2
