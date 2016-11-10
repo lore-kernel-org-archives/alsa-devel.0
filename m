@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm2200: Correct types of mixer texts
-	and values" to the asoc tree
-Date: Thu, 10 Nov 2016 17:29:21 +0000
-Message-ID: <E1c4tA9-00060F-Um@finisterre>
-References: <1478792092-5990-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: arizona: Move notifier functions to
+	header and make inline" to the asoc tree
+Date: Thu, 10 Nov 2016 17:29:12 +0000
+Message-ID: <E1c4tA0-0005zG-CC@finisterre>
+References: <1478791455-11246-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E26D126686A
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 18:29:35 +0100 (CET)
-In-Reply-To: <1478792092-5990-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9842A2668B6
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 18:29:36 +0100 (CET)
+In-Reply-To: <1478791455-11246-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm2200: Correct types of mixer texts and values
+   ASoC: arizona: Move notifier functions to header and make inline
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,114 @@ to this mail.
 Thanks,
 Mark
 
->From 4090d63b49d7d440ff984db3715d5c780209e8e8 Mon Sep 17 00:00:00 2001
+>From d3d5c90556301dc1f3afe5a4e1133ddd1f43858b Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Thu, 10 Nov 2016 15:34:52 +0000
-Subject: [PATCH] ASoC: wm2200: Correct types of mixer texts and values
+Date: Thu, 10 Nov 2016 15:24:14 +0000
+Subject: [PATCH] ASoC: arizona: Move notifier functions to header and make
+ inline
 
-The core expects "const char * const" and "unsigned int" for enum
-controls, the mixer control definitions in wm2200 use "const char *"
-and "int".  This patch corrects the type of these arrays.
+These functions are very thin wrappers around core functions, so they
+make sense as inline functions.  Also making them inline avoids build
+issues in the case where the machine driver is built in but the CODEC
+is built as a module.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm2200.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/arizona.c | 24 ------------------------
+ sound/soc/codecs/arizona.h | 32 ++++++++++++++++++++++++--------
+ 2 files changed, 24 insertions(+), 32 deletions(-)
 
-diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
-index 606bf88abfc4..d83dab57a1d1 100644
---- a/sound/soc/codecs/wm2200.c
-+++ b/sound/soc/codecs/wm2200.c
-@@ -999,7 +999,7 @@ static DECLARE_TLV_DB_SCALE(in_tlv, -6300, 100, 0);
- static DECLARE_TLV_DB_SCALE(digital_tlv, -6400, 50, 0);
- static DECLARE_TLV_DB_SCALE(out_tlv, -6400, 100, 0);
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 99ce6a0e73de..ca5ca9eac272 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -2691,30 +2691,6 @@ int arizona_lhpf_coeff_put(struct snd_kcontrol *kcontrol,
+ }
+ EXPORT_SYMBOL_GPL(arizona_lhpf_coeff_put);
  
--static const char *wm2200_mixer_texts[] = {
-+static const char * const wm2200_mixer_texts[] = {
- 	"None",
- 	"Tone Generator",
- 	"AEC Loopback",
-@@ -1033,7 +1033,7 @@ static const char *wm2200_mixer_texts[] = {
- 	"DSP2.6",
- };
+-int arizona_register_notifier(struct snd_soc_codec *codec,
+-			      struct notifier_block *nb,
+-			      int (*notify)(struct notifier_block *nb,
+-					    unsigned long action, void *data))
+-{
+-	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
+-	struct arizona *arizona = priv->arizona;
+-
+-	nb->notifier_call = notify;
+-
+-	return blocking_notifier_chain_register(&arizona->notifier, nb);
+-}
+-EXPORT_SYMBOL_GPL(arizona_register_notifier);
+-
+-int arizona_unregister_notifier(struct snd_soc_codec *codec,
+-				struct notifier_block *nb)
+-{
+-	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
+-	struct arizona *arizona = priv->arizona;
+-
+-	return blocking_notifier_chain_unregister(&arizona->notifier, nb);
+-}
+-EXPORT_SYMBOL_GPL(arizona_unregister_notifier);
+-
+ MODULE_DESCRIPTION("ASoC Wolfson Arizona class device support");
+ MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 34d65d1eafba..813f1cdb565d 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -14,6 +14,8 @@
+ #define _ASOC_ARIZONA_H
  
--static int wm2200_mixer_values[] = {
-+static unsigned int wm2200_mixer_values[] = {
- 	0x00,
- 	0x04,   /* Tone */
- 	0x08,   /* AEC */
+ #include <linux/completion.h>
++#include <linux/notifier.h>
++#include <linux/mfd/arizona/core.h>
+ 
+ #include <sound/soc.h>
+ 
+@@ -66,7 +68,6 @@
+ /* Notifier events */
+ #define ARIZONA_NOTIFY_VOICE_TRIGGER   0x1
+ 
+-struct arizona;
+ struct wm_adsp;
+ 
+ struct arizona_dai_priv {
+@@ -329,12 +330,27 @@ extern bool arizona_input_analog(struct snd_soc_codec *codec, int shift);
+ 
+ extern const char *arizona_sample_rate_val_to_name(unsigned int rate_val);
+ 
+-extern int arizona_register_notifier(struct snd_soc_codec *codec,
+-				     struct notifier_block *nb,
+-				     int (*notify)(struct notifier_block *nb,
+-						   unsigned long action,
+-						   void *data));
+-extern int arizona_unregister_notifier(struct snd_soc_codec *codec,
+-				       struct notifier_block *nb);
++static inline int arizona_register_notifier(struct snd_soc_codec *codec,
++					    struct notifier_block *nb,
++					    int (*notify)
++					    (struct notifier_block *nb,
++					    unsigned long action, void *data))
++{
++	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct arizona *arizona = priv->arizona;
++
++	nb->notifier_call = notify;
++
++	return blocking_notifier_chain_register(&arizona->notifier, nb);
++}
++
++static inline int arizona_unregister_notifier(struct snd_soc_codec *codec,
++					      struct notifier_block *nb)
++{
++	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct arizona *arizona = priv->arizona;
++
++	return blocking_notifier_chain_unregister(&arizona->notifier, nb);
++}
+ 
+ #endif
 -- 
 2.10.2
