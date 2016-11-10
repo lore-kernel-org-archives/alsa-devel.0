@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 18/30] ALSA: doc: ReSTize Joystick document
-Date: Thu, 10 Nov 2016 22:06:29 +0100
-Message-ID: <20161110210641.5907-19-tiwai@suse.de>
+Subject: [PATCH 30/30] ALSA: doc: ReSTize img,spdif-in.txt
+Date: Thu, 10 Nov 2016 22:06:41 +0100
+Message-ID: <20161110210641.5907-31-tiwai@suse.de>
 References: <20161110210641.5907-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 924182673C9
+ by alsa0.perex.cz (Postfix) with ESMTP id B620B2673CC
  for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 22:06:56 +0100 (CET)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D02A1ADF6
+ by mx2.suse.de (Postfix) with ESMTP id EA3A8ADFD
  for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 21:06:53 +0000 (UTC)
 In-Reply-To: <20161110210641.5907-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,141 +26,89 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A conversion from a simple text file.
-A new subdirectory, cards, was created to contain the card-specific
-information like this one.
+Yet another simple conversion from a plain text file.
+Put to cards directory.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- Documentation/sound/cards/index.rst                |  7 +++
- .../{alsa/Joystick.txt => cards/joystick.rst}      | 71 ++++++++++++----------
- Documentation/sound/index.rst                      |  1 +
- 3 files changed, 46 insertions(+), 33 deletions(-)
- create mode 100644 Documentation/sound/cards/index.rst
- rename Documentation/sound/{alsa/Joystick.txt => cards/joystick.rst} (56%)
+ .../img,spdif-in.txt => cards/img-spdif-in.rst}    | 24 +++++++++++++---------
+ Documentation/sound/cards/index.rst                |  1 +
+ 2 files changed, 15 insertions(+), 10 deletions(-)
+ rename Documentation/sound/{alsa/img,spdif-in.txt => cards/img-spdif-in.rst} (68%)
 
+diff --git a/Documentation/sound/alsa/img,spdif-in.txt b/Documentation/sound/cards/img-spdif-in.rst
+similarity index 68%
+rename from Documentation/sound/alsa/img,spdif-in.txt
+rename to Documentation/sound/cards/img-spdif-in.rst
+index 8b7505785fa6..7df9f5ae2609 100644
+--- a/Documentation/sound/alsa/img,spdif-in.txt
++++ b/Documentation/sound/cards/img-spdif-in.rst
+@@ -1,21 +1,25 @@
++================================================
++Imagination Technologies SPDIF Input Controllers
++================================================
++
+ The Imagination Technologies SPDIF Input controller contains the following
+ controls:
+ 
+-name='IEC958 Capture Mask',index=0
++* name='IEC958 Capture Mask',index=0
+ 
+ This control returns a mask that shows which of the IEC958 status bits
+ can be read using the 'IEC958 Capture Default' control.
+ 
+-name='IEC958 Capture Default',index=0
++* name='IEC958 Capture Default',index=0
+ 
+ This control returns the status bits contained within the SPDIF stream that
+ is being received. The 'IEC958 Capture Mask' shows which bits can be read
+ from this control.
+ 
+-name='SPDIF In Multi Frequency Acquire',index=0
+-name='SPDIF In Multi Frequency Acquire',index=1
+-name='SPDIF In Multi Frequency Acquire',index=2
+-name='SPDIF In Multi Frequency Acquire',index=3
++* name='SPDIF In Multi Frequency Acquire',index=0
++* name='SPDIF In Multi Frequency Acquire',index=1
++* name='SPDIF In Multi Frequency Acquire',index=2
++* name='SPDIF In Multi Frequency Acquire',index=3
+ 
+ This control is used to attempt acquisition of up to four different sample
+ rates. The active rate can be obtained by reading the 'SPDIF In Lock Frequency'
+@@ -29,21 +33,21 @@ four sample rates set here.
+ If less than four rates are required, the same rate can be specified more than
+ once
+ 
+-name='SPDIF In Lock Frequency',index=0
++* name='SPDIF In Lock Frequency',index=0
+ 
+ This control returns the active capture rate, or 0 if a lock has not been
+ acquired
+ 
+-name='SPDIF In Lock TRK',index=0
++* name='SPDIF In Lock TRK',index=0
+ 
+ This control is used to modify the locking/jitter rejection characteristics
+ of the block. Larger values increase the locking range, but reduce jitter
+ rejection.
+ 
+-name='SPDIF In Lock Acquire Threshold',index=0
++* name='SPDIF In Lock Acquire Threshold',index=0
+ 
+ This control is used to change the threshold at which a lock is acquired.
+ 
+-name='SPDIF In Lock Release Threshold',index=0
++* name='SPDIF In Lock Release Threshold',index=0
+ 
+ This control is used to change the threshold at which a lock is released.
 diff --git a/Documentation/sound/cards/index.rst b/Documentation/sound/cards/index.rst
-new file mode 100644
-index 000000000000..e1f4b78c75d6
---- /dev/null
+index 976ef5eb8f89..c016f8c3b88b 100644
+--- a/Documentation/sound/cards/index.rst
 +++ b/Documentation/sound/cards/index.rst
-@@ -0,0 +1,7 @@
-+Card-Specific Information
-+=========================
-+
-+.. toctree::
-+   :maxdepth: 2
-+
-+   joystick
-diff --git a/Documentation/sound/alsa/Joystick.txt b/Documentation/sound/cards/joystick.rst
-similarity index 56%
-rename from Documentation/sound/alsa/Joystick.txt
-rename to Documentation/sound/cards/joystick.rst
-index ccda41b10f8a..a6e468c81d02 100644
---- a/Documentation/sound/alsa/Joystick.txt
-+++ b/Documentation/sound/cards/joystick.rst
-@@ -1,7 +1,10 @@
-+=======================================
- Analog Joystick Support on ALSA Drivers
- =======================================
--                          Oct. 14, 2003
--           Takashi Iwai <tiwai@suse.de>
-+
-+Oct. 14, 2003
-+
-+Takashi Iwai <tiwai@suse.de>
- 
- General
- -------
-@@ -34,44 +37,46 @@ stability and the resource management.
- 
- The following PCI drivers support the joystick natively.
- 
--    Driver	Module Option	Available Values
--    ---------------------------------------------------------------------------
--    als4000	joystick_port	0 = disable (default), 1 = auto-detect,
--                                manual: any address (e.g. 0x200)
--    au88x0	N/A		N/A
--    azf3328	joystick	0 = disable, 1 = enable, -1 = auto (default)
--    ens1370	joystick	0 = disable (default), 1 = enable
--    ens1371	joystick_port	0 = disable (default), 1 = auto-detect,
--                                manual: 0x200, 0x208, 0x210, 0x218
--    cmipci	joystick_port	0 = disable (default), 1 = auto-detect,
--                                manual: any address (e.g. 0x200)
--    cs4281	N/A		N/A
--    cs46xx	N/A		N/A
--    es1938	N/A		N/A
--    es1968	joystick	0 = disable (default), 1 = enable
--    sonicvibes	N/A		N/A
--    trident	N/A		N/A
--    via82xx(*1)	joystick	0 = disable (default), 1 = enable
--    ymfpci	joystick_port	0 = disable (default), 1 = auto-detect,
--                                manual: 0x201, 0x202, 0x204, 0x205(*2)
--    ---------------------------------------------------------------------------
--
--    *1)  VIA686A/B only
--    *2)  With YMF744/754 chips, the port address can be chosen arbitrarily
-+==============	=============	============================================
-+Driver		Module Option	Available Values
-+==============	=============	============================================
-+als4000		joystick_port	0 = disable (default), 1 = auto-detect,
-+	                        manual: any address (e.g. 0x200)
-+au88x0		N/A		N/A
-+azf3328		joystick	0 = disable, 1 = enable, -1 = auto (default)
-+ens1370		joystick	0 = disable (default), 1 = enable
-+ens1371		joystick_port	0 = disable (default), 1 = auto-detect,
-+	                        manual: 0x200, 0x208, 0x210, 0x218
-+cmipci		joystick_port	0 = disable (default), 1 = auto-detect,
-+	                        manual: any address (e.g. 0x200)
-+cs4281		N/A		N/A
-+cs46xx		N/A		N/A
-+es1938		N/A		N/A
-+es1968		joystick	0 = disable (default), 1 = enable
-+sonicvibes	N/A		N/A
-+trident		N/A		N/A
-+via82xx [#f1]_	joystick	0 = disable (default), 1 = enable
-+ymfpci		joystick_port	0 = disable (default), 1 = auto-detect,
-+	                        manual: 0x201, 0x202, 0x204, 0x205 [#f2]_
-+==============	=============	============================================
-+
-+.. [#f1] VIA686A/B only
-+.. [#f2] With YMF744/754 chips, the port address can be chosen arbitrarily
- 
- The following drivers don't support gameport natively, but there are
- additional modules.  Load the corresponding module to add the gameport
- support.
- 
--    Driver	Additional Module
--    -----------------------------
--    emu10k1	emu10k1-gp
--    fm801	fm801-gp
--    -----------------------------
-+=======	=================
-+Driver	Additional Module
-+=======	=================
-+emu10k1	emu10k1-gp
-+fm801	fm801-gp
-+=======	=================
- 
- Note: the "pcigame" and "cs461x" modules are for the OSS drivers only.
--      These ALSA drivers (cs46xx, trident and au88x0) have the
--      built-in gameport support.
-+These ALSA drivers (cs46xx, trident and au88x0) have the
-+built-in gameport support.
- 
- As mentioned above, ALSA PCI drivers have the built-in gameport
- support, so you don't have to load ns558 module.  Just load "joydev"
-diff --git a/Documentation/sound/index.rst b/Documentation/sound/index.rst
-index e9fbbfff9d0d..1f5d166f81c4 100644
---- a/Documentation/sound/index.rst
-+++ b/Documentation/sound/index.rst
-@@ -9,6 +9,7 @@ Linux Sound Subsystem Documentation
-    designs/index
-    alsa-configuration
-    hd-audio/index
-+   cards/index
- 
- .. only::  subproject
- 
+@@ -16,3 +16,4 @@ Card-Specific Information
+    maya44
+    hdspm
+    serial-u16550
++   img-spdif-in
 -- 
 2.10.2
