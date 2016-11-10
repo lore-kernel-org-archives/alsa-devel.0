@@ -1,19 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 06/30] ALSA: doc: ReSTize HD-Audio-Controls
+Subject: [PATCH 11/30] ALSA: doc: ReSTize Channel-Mapping-API
 	document
-Date: Thu, 10 Nov 2016 22:06:17 +0100
-Message-ID: <20161110210641.5907-7-tiwai@suse.de>
+Date: Thu, 10 Nov 2016 22:06:22 +0100
+Message-ID: <20161110210641.5907-12-tiwai@suse.de>
 References: <20161110210641.5907-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C11A2673BC
+ by alsa0.perex.cz (Postfix) with ESMTP id 6AB4F2673B7
  for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 22:06:55 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 90B23ADE3
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 21:06:52 +0000 (UTC)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id B1F11ADE7
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 21:06:53 +0000 (UTC)
 In-Reply-To: <20161110210641.5907-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,150 +27,192 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A conversion from a simple text file.
-Put to hd-audio subdirectory with a rename.
+A simple conversion from a text file.
+Put to designs subdirectory.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- .../controls.rst}                                  | 33 +++++++++++++---------
- Documentation/sound/hd-audio/index.rst             |  1 +
- 2 files changed, 20 insertions(+), 14 deletions(-)
- rename Documentation/sound/{alsa/HD-Audio-Controls.txt => hd-audio/controls.rst} (92%)
+ .../channel-mapping-api.rst}                       | 77 ++++++++++++----------
+ Documentation/sound/designs/index.rst              |  1 +
+ 2 files changed, 45 insertions(+), 33 deletions(-)
+ rename Documentation/sound/{alsa/Channel-Mapping-API.txt => designs/channel-mapping-api.rst} (75%)
 
-diff --git a/Documentation/sound/alsa/HD-Audio-Controls.txt b/Documentation/sound/hd-audio/controls.rst
-similarity index 92%
-rename from Documentation/sound/alsa/HD-Audio-Controls.txt
-rename to Documentation/sound/hd-audio/controls.rst
-index e9621e349e17..f2ebc4f79b44 100644
---- a/Documentation/sound/alsa/HD-Audio-Controls.txt
-+++ b/Documentation/sound/hd-audio/controls.rst
-@@ -1,16 +1,21 @@
-+======================================
-+HD-Audio Codec-Specific Mixer Controls
-+======================================
+diff --git a/Documentation/sound/alsa/Channel-Mapping-API.txt b/Documentation/sound/designs/channel-mapping-api.rst
+similarity index 75%
+rename from Documentation/sound/alsa/Channel-Mapping-API.txt
+rename to Documentation/sound/designs/channel-mapping-api.rst
+index 3c43d1a4ca0e..58e6312a43c0 100644
+--- a/Documentation/sound/alsa/Channel-Mapping-API.txt
++++ b/Documentation/sound/designs/channel-mapping-api.rst
+@@ -1,9 +1,11 @@
++============================
+ ALSA PCM channel-mapping API
+ ============================
+-					Takashi Iwai <tiwai@suse.de>
+ 
+-GENERAL
+--------
++Takashi Iwai <tiwai@suse.de>
 +
++General
++=======
+ 
+ The channel mapping API allows user to query the possible channel maps
+ and the current channel map, also optionally to modify the channel map
+@@ -11,9 +13,9 @@ of the current stream.
+ 
+ A channel map is an array of position for each PCM channel.
+ Typically, a stereo PCM stream has a channel map of
+-  { front_left, front_right }
++``{ front_left, front_right }``
+ while a 4.0 surround PCM stream has a channel map of
+-  { front left, front right, rear left, rear right }.
++``{ front left, front right, rear left, rear right }.``
+ 
+ The problem, so far, was that we had no standard channel map
+ explicitly, and applications had no way to know which channel
+@@ -29,8 +31,8 @@ specification.  These are the main motivations for the new channel
+ mapping API.
+ 
+ 
+-DESIGN
+-------
++Design
++======
+ 
+ Actually, "the channel mapping API" doesn't introduce anything new in
+ the kernel/user-space ABI perspective.  It uses only the existing
+@@ -39,10 +41,11 @@ control element features.
+ As a ground design, each PCM substream may contain a control element
+ providing the channel mapping information and configuration.  This
+ element is specified by:
+-	iface = SNDRV_CTL_ELEM_IFACE_PCM
+-	name = "Playback Channel Map" or "Capture Channel Map"
+-	device = the same device number for the assigned PCM substream
+-	index = the same index number for the assigned PCM substream
 +
- This file explains the codec-specific mixer controls.
++* iface = SNDRV_CTL_ELEM_IFACE_PCM
++* name = "Playback Channel Map" or "Capture Channel Map"
++* device = the same device number for the assigned PCM substream
++* index = the same index number for the assigned PCM substream
  
- Realtek codecs
- --------------
+ Note the name is different depending on the PCM substream direction.
  
--* Channel Mode
-+Channel Mode
-   This is an enum control to change the surround-channel setup,
-   appears only when the surround channels are available.
-   It gives the number of channels to be used, "2ch", "4ch", "6ch",
-   and "8ch".  According to the configuration, this also controls the
-   jack-retasking of multi-I/O jacks.
+@@ -50,32 +53,35 @@ Each control element provides at least the TLV read operation and the
+ read operation.  Optionally, the write operation can be provided to
+ allow user to change the channel map dynamically.
  
--* Auto-Mute Mode
-+Auto-Mute Mode
-   This is an enum control to change the auto-mute behavior of the
-   headphone and line-out jacks.  If built-in speakers and headphone
-   and/or line-out jacks are available on a machine, this controls
-@@ -30,24 +35,24 @@ Realtek codecs
- IDT/Sigmatel codecs
- -------------------
+-* TLV
++TLV
++---
  
--* Analog Loopback
-+Analog Loopback
-   This control enables/disables the analog-loopback circuit.  This
-   appears only when "loopback" is set to true in a codec hint
-   (see HD-Audio.txt).  Note that on some codecs the analog-loopback
-   and the normal PCM playback are exclusive, i.e. when this is on, you
-   won't hear any PCM stream.
+ The TLV operation gives the list of available channel
+ maps.  A list item of a channel map is usually a TLV of
+-	type data-bytes ch0 ch1 ch2...
++``type data-bytes ch0 ch1 ch2...``
+ where type is the TLV type value, the second argument is the total
+ bytes (not the numbers) of channel values, and the rest are the
+ position value for each channel.
  
--* Swap Center/LFE
-+Swap Center/LFE
-   Swaps the center and LFE channel order.  Normally, the left
-   corresponds to the center and the right to the LFE.  When this is
-   ON, the left to the LFE and the right to the center.
+-As a TLV type, either SNDRV_CTL_TLVT_CHMAP_FIXED,
+-SNDRV_CTL_TLV_CHMAP_VAR or SNDRV_CTL_TLVT_CHMAP_PAIRED can be used.
+-The _FIXED type is for a channel map with the fixed channel position
+-while the latter two are for flexible channel positions.  _VAR type is
+-for a channel map where all channels are freely swappable and _PAIRED
++As a TLV type, either ``SNDRV_CTL_TLVT_CHMAP_FIXED``,
++``SNDRV_CTL_TLV_CHMAP_VAR`` or ``SNDRV_CTL_TLVT_CHMAP_PAIRED`` can be used.
++The ``_FIXED`` type is for a channel map with the fixed channel position
++while the latter two are for flexible channel positions. ``_VAR`` type is
++for a channel map where all channels are freely swappable and ``_PAIRED``
+ type is where pair-wise channels are swappable.  For example, when you
+-have {FL/FR/RL/RR} channel map, _PAIRED type would allow you to swap
+-only {RL/RR/FL/FR} while _VAR type would allow even swapping FL and
++have {FL/FR/RL/RR} channel map, ``_PAIRED`` type would allow you to swap
++only {RL/RR/FL/FR} while ``_VAR`` type would allow even swapping FL and
+ RR.
  
--* Headphone as Line Out
-+Headphone as Line Out
-   When this control is ON, treat the headphone jacks as line-out
-   jacks.  That is, the headphone won't auto-mute the other line-outs,
-   and no HP-amp is set to the pins.
+-These new TLV types are defined in sound/tlv.h.
++These new TLV types are defined in ``sound/tlv.h``.
  
--* Mic Jack Mode, Line Jack Mode, etc
-+Mic Jack Mode, Line Jack Mode, etc
-   These enum controls the direction and the bias of the input jack
-   pins.  Depending on the jack type, it can set as "Mic In" and "Line 
-   In", for determining the input bias, or it can be set to "Line Out"
-@@ -57,19 +62,19 @@ IDT/Sigmatel codecs
- VIA codecs
- ----------
+-The available channel position values are defined in sound/asound.h,
++The available channel position values are defined in ``sound/asound.h``,
+ here is a cut:
  
--* Smart 5.1
-+Smart 5.1
-   An enum control to re-task the multi-I/O jacks for surround outputs.
-   When it's ON, the corresponding input jacks (usually a line-in and a
-   mic-in) are switched as the surround and the CLFE output jacks.
+-/* channel positions */
+-enum {
++::
++
++  /* channel positions */
++  enum {
+ 	SNDRV_CHMAP_UNKNOWN = 0,
+ 	SNDRV_CHMAP_NA,		/* N/A, silent */
+ 	SNDRV_CHMAP_MONO,	/* mono stream */
+@@ -107,11 +113,13 @@ enum {
+ 	SNDRV_CHMAP_TRR,	/* top rear right */
+ 	SNDRV_CHMAP_TRC,	/* top rear center */
+ 	SNDRV_CHMAP_LAST = SNDRV_CHMAP_TRC,
+-};
++  };
  
--* Independent HP
-+Independent HP
-   When this enum control is enabled, the headphone output is routed
-   from an individual stream (the third PCM such as hw:0,2) instead of
-   the primary stream.  In the case the headphone DAC is shared with a
-   side or a CLFE-channel DAC, the DAC is switched to the headphone
-   automatically.
+ When a PCM stream can provide more than one channel map, you can
+ provide multiple channel maps in a TLV container type.  The TLV data
+ to be returned will contain such as:
++::
++
+ 	SNDRV_CTL_TLVT_CONTAINER 96
+ 	    SNDRV_CTL_TLVT_CHMAP_FIXED 4 SNDRV_CHMAP_FC
+ 	    SNDRV_CTL_TLVT_CHMAP_FIXED 8 SNDRV_CHMAP_FL SNDRV_CHMAP_FR
+@@ -120,19 +128,21 @@ to be returned will contain such as:
  
--* Loopback Mixing
-+Loopback Mixing
-   An enum control to determine whether the analog-loopback route is
-   enabled or not.  When it's enabled, the analog-loopback is mixed to
-   the front-channel.  Also, the same route is used for the headphone
-@@ -78,7 +83,7 @@ VIA codecs
-   headphones and speakers because there is only one DAC connected to a
-   mixer widget.
+ The channel position is provided in LSB 16bits.  The upper bits are
+ used for bit flags.
++::
  
--* Dynamic Power-Control
-+Dynamic Power-Control
-   This control determines whether the dynamic power-control per jack
-   detection is enabled or not.  When enabled, the widgets power state
-   (D0/D3) are changed dynamically depending on the jack plugging
-@@ -86,7 +91,7 @@ VIA codecs
-   doesn't provide a proper jack-detection, this won't work; in such a
-   case, turn this control OFF.
+-#define SNDRV_CHMAP_POSITION_MASK	0xffff
+-#define SNDRV_CHMAP_PHASE_INVERSE	(0x01 << 16)
+-#define SNDRV_CHMAP_DRIVER_SPEC		(0x02 << 16)
++	#define SNDRV_CHMAP_POSITION_MASK	0xffff
++	#define SNDRV_CHMAP_PHASE_INVERSE	(0x01 << 16)
++	#define SNDRV_CHMAP_DRIVER_SPEC		(0x02 << 16)
  
--* Jack Detect
-+Jack Detect
-   This control is provided only for VT1708 codec which gives no proper
-   unsolicited event per jack plug.  When this is on, the driver polls
-   the jack detection so that the headphone auto-mute can work, while 
-@@ -96,21 +101,21 @@ VIA codecs
- Conexant codecs
- ---------------
+-SNDRV_CHMAP_PHASE_INVERSE indicates the channel is phase inverted,
++``SNDRV_CHMAP_PHASE_INVERSE`` indicates the channel is phase inverted,
+ (thus summing left and right channels would result in almost silence).
+ Some digital mic devices have this.
  
--* Auto-Mute Mode
-+Auto-Mute Mode
-   See Reatek codecs.
+-When SNDRV_CHMAP_DRIVER_SPEC is set, all the channel position values
++When ``SNDRV_CHMAP_DRIVER_SPEC`` is set, all the channel position values
+ don't follow the standard definition above but driver-specific.
  
+-* READ OPERATION
++Read Operation
++--------------
  
- Analog codecs
- --------------
+ The control read operation is for providing the current channel map of
+ the given stream.  The control element returns an integer array
+@@ -140,9 +150,10 @@ containing the position of each channel.
  
--* Channel Mode
-+Channel Mode
-   This is an enum control to change the surround-channel setup,
-   appears only when the surround channels are available.
-   It gives the number of channels to be used, "2ch", "4ch" and "6ch".
-   According to the configuration, this also controls the
-   jack-retasking of multi-I/O jacks.
+ When this is performed before the number of the channel is specified
+ (i.e. hw_params is set), it should return all channels set to
+-UNKNOWN.
++``UNKNOWN``.
  
--* Independent HP
-+Independent HP
-   When this enum control is enabled, the headphone output is routed
-   from an individual stream (the third PCM such as hw:0,2) instead of
-   the primary stream.
-diff --git a/Documentation/sound/hd-audio/index.rst b/Documentation/sound/hd-audio/index.rst
-index 1e8376b0066c..c6efd55a219f 100644
---- a/Documentation/sound/hd-audio/index.rst
-+++ b/Documentation/sound/hd-audio/index.rst
-@@ -6,3 +6,4 @@ HD-Audio
+-* WRITE OPERATION
++Write Operation
++---------------
  
-    notes
-    models
-+   controls
+ The control write operation is optional, and only for devices that can
+ change the channel configuration on the fly, such as HDMI.  User needs
+diff --git a/Documentation/sound/designs/index.rst b/Documentation/sound/designs/index.rst
+index 362e1c23d51f..dd4fcbcb2b92 100644
+--- a/Documentation/sound/designs/index.rst
++++ b/Documentation/sound/designs/index.rst
+@@ -4,5 +4,6 @@ Designs and Implementations
+ .. toctree::
+    :maxdepth: 2
+ 
++   channel-mapping-api
+    procfile
+    powersave
 -- 
 2.10.2
