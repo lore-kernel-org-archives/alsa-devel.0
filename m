@@ -1,19 +1,16 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 27/30] ALSA: doc: ReSTize README.maya44
-Date: Thu, 10 Nov 2016 22:06:38 +0100
-Message-ID: <20161110210641.5907-28-tiwai@suse.de>
-References: <20161110210641.5907-1-tiwai@suse.de>
+Subject: [PATCH 02/10] ASoC: doc: ReSTize codec.txt
+Date: Thu, 10 Nov 2016 22:47:14 +0100
+Message-ID: <20161110214722.14698-3-tiwai@suse.de>
+References: <20161110214722.14698-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E33092673D6
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 22:06:56 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 08CCCAE04
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 21:06:54 +0000 (UTC)
-In-Reply-To: <20161110210641.5907-1-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id CBF7A266942
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 22:47:26 +0100 (CET)
+In-Reply-To: <20161110214722.14698-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,234 +21,232 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Another	simple conversion from a plain text file.
-Put to cards directory.
+A simple conversion from a plain text file.
+The section numbers are dropped to align with other documents.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- Documentation/sound/cards/index.rst                |   1 +
- .../sound/{alsa/README.maya44 => cards/maya44.rst} | 137 ++++++++++++---------
- 2 files changed, 81 insertions(+), 57 deletions(-)
- rename Documentation/sound/{alsa/README.maya44 => cards/maya44.rst} (65%)
+ .../sound/{alsa/soc/codec.txt => soc/codec.rst}    | 75 +++++++++++++---------
+ Documentation/sound/soc/index.rst                  |  1 +
+ 2 files changed, 44 insertions(+), 32 deletions(-)
+ rename Documentation/sound/{alsa/soc/codec.txt => soc/codec.rst} (84%)
 
-diff --git a/Documentation/sound/cards/index.rst b/Documentation/sound/cards/index.rst
-index 157372faae06..6c8e4141df9a 100644
---- a/Documentation/sound/cards/index.rst
-+++ b/Documentation/sound/cards/index.rst
-@@ -13,3 +13,4 @@ Card-Specific Information
-    audiophile-usb
-    mixart
-    bt87x
-+   maya44
-diff --git a/Documentation/sound/alsa/README.maya44 b/Documentation/sound/cards/maya44.rst
-similarity index 65%
-rename from Documentation/sound/alsa/README.maya44
-rename to Documentation/sound/cards/maya44.rst
-index 67b2ea1cc31d..bf09a584b443 100644
---- a/Documentation/sound/alsa/README.maya44
-+++ b/Documentation/sound/cards/maya44.rst
-@@ -1,10 +1,18 @@
--NOTE: The following is the original document of Rainer's patch that the
--current maya44 code based on.  Some contents might be obsoleted, but I
--keep here as reference -- tiwai
-+=================================
-+Notes on Maya44 USB Audio Support
-+=================================
+diff --git a/Documentation/sound/alsa/soc/codec.txt b/Documentation/sound/soc/codec.rst
+similarity index 84%
+rename from Documentation/sound/alsa/soc/codec.txt
+rename to Documentation/sound/soc/codec.rst
+index db5f9c9ae149..f87612b94812 100644
+--- a/Documentation/sound/alsa/soc/codec.txt
++++ b/Documentation/sound/soc/codec.rst
+@@ -1,3 +1,4 @@
++=======================
+ ASoC Codec Class Driver
+ =======================
  
------------------------------------------------------------------
-+.. note::
-+   The following is the original document of Rainer's patch that the
-+   current maya44 code based on.  Some contents might be obsoleted, but I
-+   keep here as reference -- tiwai
-+
-+Feb 14, 2008
-+
-+Rainer Zimmermann <mail@lightshed.de>
-  
--STATE OF DEVELOPMENT:
-+STATE OF DEVELOPMENT
-+====================
+@@ -9,16 +10,16 @@ machine drivers respectively.
  
- This driver is being developed on the initiative of Piotr Makowski (oponek@gmail.com) and financed by Lars Bergmann.
- Development is carried out by Rainer Zimmermann (mail@lightshed.de).
-@@ -44,16 +52,17 @@ Things that do not seem to work:
- - Ardour 2.1 seems to work only via JACK, not using ALSA directly or via OSS. This still needs to be tracked down.
+ Each codec class driver *must* provide the following features:-
  
+- 1) Codec DAI and PCM configuration
+- 2) Codec control IO - using RegMap API
+- 3) Mixers and audio controls
+- 4) Codec audio operations
+- 5) DAPM description.
+- 6) DAPM event handler.
++1. Codec DAI and PCM configuration
++2. Codec control IO - using RegMap API
++3. Mixers and audio controls
++4. Codec audio operations
++5. DAPM description.
++6. DAPM event handler.
  
--DRIVER DETAILS:
-+DRIVER DETAILS
-+==============
+ Optionally, codec drivers can also provide:-
  
- the following files were added:
+- 7) DAC Digital mute control.
++7. DAC Digital mute control.
  
--pci/ice1724/maya44.c        - Maya44 specific code
--pci/ice1724/maya44.h
--pci/ice1724/ice1724.patch
--pci/ice1724/ice1724.h.patch - PROPOSED patch to ice1724.h (see SAMPLING RATES)
--i2c/other/wm8776.c  - low-level access routines for Wolfson WM8776 codecs 
--include/wm8776.h
-+* pci/ice1724/maya44.c - Maya44 specific code
-+* pci/ice1724/maya44.h
-+* pci/ice1724/ice1724.patch
-+* pci/ice1724/ice1724.h.patch - PROPOSED patch to ice1724.h (see SAMPLING RATES)
-+* i2c/other/wm8776.c - low-level access routines for Wolfson WM8776 codecs 
-+* include/wm8776.h
+ Its probably best to use this guide in conjunction with the existing codec
+ driver code in sound/soc/codecs/
+@@ -26,24 +27,25 @@ driver code in sound/soc/codecs/
+ ASoC Codec driver breakdown
+ ===========================
  
+-1 - Codec DAI and PCM configuration
+------------------------------------
++Codec DAI and PCM configuration
++-------------------------------
+ Each codec driver must have a struct snd_soc_dai_driver to define its DAI and
+ PCM capabilities and operations. This struct is exported so that it can be
+ registered with the core by your machine driver.
  
- Note that the wm8776.c code is meant to be card-independent and does not actually register the codec with the ALSA infrastructure.
-@@ -62,25 +71,26 @@ This is done in maya44.c, mainly because some of the WM8776 controls are used in
+ e.g.
++::
  
- the following files were created in pci/ice1724, simply #including the corresponding file from the alsa-kernel tree:
- 
--wtm.h
--vt1720_mobo.h
--revo.h
--prodigy192.h
--pontis.h
--phase.h
--maya44.h
--juli.h
--aureon.h
--amp.h
--envy24ht.h
--se.h
--prodigy_hifi.h
-+* wtm.h
-+* vt1720_mobo.h
-+* revo.h
-+* prodigy192.h
-+* pontis.h
-+* phase.h
-+* maya44.h
-+* juli.h
-+* aureon.h
-+* amp.h
-+* envy24ht.h
-+* se.h
-+* prodigy_hifi.h
- 
- 
- *I hope this is the correct way to do things.*
- 
- 
--SAMPLING RATES:
-+SAMPLING RATES
-+==============
- 
- The Maya44 card (or more exactly, the Wolfson WM8776 codecs) allow a maximum sampling rate of 192 kHz for playback and 92 kHz for capture.
- 
-@@ -98,66 +108,79 @@ I propose some additional code for limiting the sampling rate when setting on a
- The proposed code (currently deactivated) is in ice1712.h.patch, ice1724.c and maya44.c (in pci/ice1712).
- 
- 
--SOUND DEVICES:
-+SOUND DEVICES
-+=============
- 
- PCM devices correspond to inputs/outputs as follows (assuming Maya44 is card #0):
- 
--hw:0,0 input - stereo, analog input 1+2
--hw:0,0 output - stereo, analog output 1+2
--hw:0,1 input - stereo, analog input 3+4 OR S/PDIF input
--hw:0,1 output - stereo, analog output 3+4 (and SPDIF out)
-+* hw:0,0 input - stereo, analog input 1+2
-+* hw:0,0 output - stereo, analog output 1+2
-+* hw:0,1 input - stereo, analog input 3+4 OR S/PDIF input
-+* hw:0,1 output - stereo, analog output 3+4 (and SPDIF out)
- 
- 
--NAMING OF MIXER CONTROLS:
-+NAMING OF MIXER CONTROLS
-+========================
- 
- (for more information about the signal flow, please refer to the block diagram on p.24 of the ESI Maya44 manual, or in the ESI windows software).
- 
- 
--PCM: (digital) output level for channel 1+2
--PCM 1: same for channel 3+4
-+PCM
-+    (digital) output level for channel 1+2
-+PCM 1
-+    same for channel 3+4
-+
-+Mic Phantom+48V
-+    switch for +48V phantom power for electrostatic microphones on input 1/2.
- 
--Mic Phantom+48V: switch for +48V phantom power for electrostatic microphones on input 1/2.
-     Make sure this is not turned on while any other source is connected to input 1/2.
-     It might damage the source and/or the maya44 card.
- 
--Mic/Line input: if switch is on, input jack 1/2 is microphone input (mono), otherwise line input (stereo).
-+Mic/Line input
-+    if switch is on, input jack 1/2 is microphone input (mono), otherwise line input (stereo).
-+
-+Bypass
-+    analogue bypass from ADC input to output for channel 1+2. Same as "Monitor" in the windows driver.
-+Bypass 1
-+    same for channel 3+4.
- 
--Bypass: analogue bypass from ADC input to output for channel 1+2. Same as "Monitor" in the windows driver.
--Bypass 1: same for channel 3+4.
-+Crossmix
-+    cross-mixer from channels 1+2 to channels 3+4
-+Crossmix 1
-+    cross-mixer from channels 3+4 to channels 1+2
- 
--Crossmix: cross-mixer from channels 1+2 to channels 3+4
--Crossmix 1: cross-mixer from channels 3+4 to channels 1+2
-+IEC958 Output
-+    switch for S/PDIF output.
- 
--IEC958 Output: switch for S/PDIF output.
-     This is not supported by the ESI windows driver.
-     S/PDIF should output the same signal as channel 3+4. [untested!]
- 
- 
--Digitial output selectors:
+-static struct snd_soc_dai_ops wm8731_dai_ops = {
++  static struct snd_soc_dai_ops wm8731_dai_ops = {
+ 	.prepare	= wm8731_pcm_prepare,
+ 	.hw_params	= wm8731_hw_params,
+ 	.shutdown	= wm8731_shutdown,
+ 	.digital_mute	= wm8731_mute,
+ 	.set_sysclk	= wm8731_set_dai_sysclk,
+ 	.set_fmt	= wm8731_set_dai_fmt,
+-};
 -
-+Digitial output selectors
-     These switches allow a direct digital routing from the ADCs to the DACs.
-     Each switch determines where the digital input data to one of the DACs comes from.
-     They are not supported by the ESI windows driver.
-     For normal operation, they should all be set to "PCM out".
+-struct snd_soc_dai_driver wm8731_dai = {
++  };
++  
++  struct snd_soc_dai_driver wm8731_dai = {
+ 	.name = "wm8731-hifi",
+ 	.playback = {
+ 		.stream_name = "Playback",
+@@ -59,25 +61,27 @@ struct snd_soc_dai_driver wm8731_dai = {
+ 		.formats = WM8731_FORMATS,},
+ 	.ops = &wm8731_dai_ops,
+ 	.symmetric_rates = 1,
+-};
++  };
  
--H/W: Output source channel 1
--H/W 1: Output source channel 2
--H/W 2: Output source channel 3
--H/W 3: Output source channel 4
-+H/W
-+    Output source channel 1
-+H/W 1
-+    Output source channel 2
-+H/W 2
-+    Output source channel 3
-+H/W 3
-+    Output source channel 4
-+
-+H/W 4 ... H/W 9
-+    unknown function, left in to enable testing.
  
--H/W 4 ... H/W 9: unknown function, left in to enable testing.
-     Possibly some of these control S/PDIF output(s).
-     If these turn out to be unused, they will go away in later driver versions.
+-2 - Codec control IO
+---------------------
++Codec control IO
++----------------
+ The codec can usually be controlled via an I2C or SPI style interface
+ (AC97 combines control with data in the DAI). The codec driver should use the
+ Regmap API for all codec IO. Please see include/linux/regmap.h and existing
+ codec drivers for example regmap usage.
  
- Selectable values for each of the digital output selectors are:
--   "PCM out" -> DAC output of the corresponding channel (default setting)
--   "Input 1"...
--   "Input 4" -> direct routing from ADC output of the selected input channel
--
  
----------
--
--Feb 14, 2008
--Rainer Zimmermann
--mail@lightshed.de
-+PCM out
-+	DAC output of the corresponding channel (default setting)
-+Input 1 ... Input 4
-+	direct routing from ADC output of the selected input channel
+-3 - Mixers and audio controls
+------------------------------
++Mixers and audio controls
++-------------------------
+ All the codec mixers and audio controls can be defined using the convenience
+ macros defined in soc.h.
++::
  
+     #define SOC_SINGLE(xname, reg, shift, mask, invert)
+ 
+ Defines a single control as follows:-
++::
+ 
+   xname = Control name e.g. "Playback Volume"
+   reg = codec register
+@@ -86,18 +90,22 @@ Defines a single control as follows:-
+   invert = the control is inverted
+ 
+ Other macros include:-
++::
+ 
+     #define SOC_DOUBLE(xname, reg, shift_left, shift_right, mask, invert)
+ 
+ A stereo control
++::
+ 
+     #define SOC_DOUBLE_R(xname, reg_left, reg_right, shift, mask, invert)
+ 
+ A stereo control spanning 2 registers
++::
+ 
+     #define SOC_ENUM_SINGLE(xreg, xshift, xmask, xtexts)
+ 
+ Defines an single enumerated control as follows:-
++::
+ 
+    xreg = register
+    xshift = control bit(s) offset in register
+@@ -109,25 +117,26 @@ Defines an single enumerated control as follows:-
+ Defines a stereo enumerated control
+ 
+ 
+-4 - Codec Audio Operations
+---------------------------
++Codec Audio Operations
++----------------------
+ The codec driver also supports the following ALSA PCM operations:-
++::
+ 
+-/* SoC audio ops */
+-struct snd_soc_ops {
++  /* SoC audio ops */
++  struct snd_soc_ops {
+ 	int (*startup)(struct snd_pcm_substream *);
+ 	void (*shutdown)(struct snd_pcm_substream *);
+ 	int (*hw_params)(struct snd_pcm_substream *, struct snd_pcm_hw_params *);
+ 	int (*hw_free)(struct snd_pcm_substream *);
+ 	int (*prepare)(struct snd_pcm_substream *);
+-};
++  };
+ 
+ Please refer to the ALSA driver PCM documentation for details.
+ http://www.alsa-project.org/~iwai/writing-an-alsa-driver/
+ 
+ 
+-5 - DAPM description.
+----------------------
++DAPM description
++----------------
+ The Dynamic Audio Power Management description describes the codec power
+ components and their relationships and registers to the ASoC core.
+ Please read dapm.txt for details of building the description.
+@@ -135,13 +144,14 @@ Please read dapm.txt for details of building the description.
+ Please also see the examples in other codec drivers.
+ 
+ 
+-6 - DAPM event handler
+-----------------------
++DAPM event handler
++------------------
+ This function is a callback that handles codec domain PM calls and system
+ domain PM calls (e.g. suspend and resume). It is used to put the codec
+ to sleep when not in use.
+ 
+ Power states:-
++::
+ 
+ 	SNDRV_CTL_POWER_D0: /* full On */
+ 	/* vref/mid, clk and osc on, active */
+@@ -155,8 +165,8 @@ Power states:-
+ 	SNDRV_CTL_POWER_D3cold: /* Everything Off, without power */
+ 
+ 
+-7 - Codec DAC digital mute control
+-----------------------------------
++Codec DAC digital mute control
++------------------------------
+ Most codecs have a digital mute before the DACs that can be used to
+ minimise any system noise.  The mute stops any digital data from
+ entering the DAC.
+@@ -165,9 +175,10 @@ A callback can be created that is called by the core for each codec DAI
+ when the mute is applied or freed.
+ 
+ i.e.
++::
+ 
+-static int wm8974_mute(struct snd_soc_dai *dai, int mute)
+-{
++  static int wm8974_mute(struct snd_soc_dai *dai, int mute)
++  {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	u16 mute_reg = snd_soc_read(codec, WM8974_DAC) & 0xffbf;
+ 
+@@ -176,4 +187,4 @@ static int wm8974_mute(struct snd_soc_dai *dai, int mute)
+ 	else
+ 		snd_soc_write(codec, WM8974_DAC, mute_reg);
+ 	return 0;
+-}
++  }
+diff --git a/Documentation/sound/soc/index.rst b/Documentation/sound/soc/index.rst
+index e974fd9f38a3..a2e023c91df2 100644
+--- a/Documentation/sound/soc/index.rst
++++ b/Documentation/sound/soc/index.rst
+@@ -8,3 +8,4 @@ The documentation is spilt into the following sections:-
+    :maxdepth: 2
+ 
+    overview
++   codec
 -- 
 2.10.2
