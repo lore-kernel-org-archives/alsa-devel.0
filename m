@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 21/30] ALSA: doc: ReSTize Audigy-mixer.txt
-Date: Thu, 10 Nov 2016 22:06:32 +0100
-Message-ID: <20161110210641.5907-22-tiwai@suse.de>
+Subject: [PATCH 27/30] ALSA: doc: ReSTize README.maya44
+Date: Thu, 10 Nov 2016 22:06:38 +0100
+Message-ID: <20161110210641.5907-28-tiwai@suse.de>
 References: <20161110210641.5907-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E0D222673D4
+ by alsa0.perex.cz (Postfix) with ESMTP id E33092673D6
  for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 22:06:56 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id EC162ADFF
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 21:06:53 +0000 (UTC)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 08CCCAE04
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 21:06:54 +0000 (UTC)
 In-Reply-To: <20161110210641.5907-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,531 +26,232 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Another simple conversion from a plain text file.
-Put to cards subdirectory.
+Another	simple conversion from a plain text file.
+Put to cards directory.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- .../Audigy-mixer.txt => cards/audigy-mixer.rst}    | 297 +++++++++++----------
- Documentation/sound/cards/index.rst                |   2 +
- 2 files changed, 162 insertions(+), 137 deletions(-)
- rename Documentation/sound/{alsa/Audigy-mixer.txt => cards/audigy-mixer.rst} (57%)
+ Documentation/sound/cards/index.rst                |   1 +
+ .../sound/{alsa/README.maya44 => cards/maya44.rst} | 137 ++++++++++++---------
+ 2 files changed, 81 insertions(+), 57 deletions(-)
+ rename Documentation/sound/{alsa/README.maya44 => cards/maya44.rst} (65%)
 
-diff --git a/Documentation/sound/alsa/Audigy-mixer.txt b/Documentation/sound/cards/audigy-mixer.rst
-similarity index 57%
-rename from Documentation/sound/alsa/Audigy-mixer.txt
-rename to Documentation/sound/cards/audigy-mixer.rst
-index 7f10dc6ff28c..86213234435f 100644
---- a/Documentation/sound/alsa/Audigy-mixer.txt
-+++ b/Documentation/sound/cards/audigy-mixer.rst
-@@ -1,8 +1,8 @@
-+=============================================
-+Sound Blaster Audigy mixer / default DSP code
-+=============================================
- 
--		Sound Blaster Audigy mixer / default DSP code
--		===========================================
--
--This is based on SB-Live-mixer.txt.
-+This is based on sb-live-mixer.rst.
- 
- The EMU10K2 chips have a DSP part which can be programmed to support 
- various ways of sample processing, which is described here.
-@@ -13,8 +13,8 @@ The ALSA driver programs this portion of chip by default code
- (can be altered later) which offers the following functionality:
- 
- 
--1) Digital mixer controls
---------------------------
-+Digital mixer controls
-+======================
- 
- These controls are built using the DSP instructions. They offer extended
- functionality. Only the default build-in code in the ALSA driver is described
-@@ -26,320 +26,343 @@ is mentioned in multiple controls, the signal is accumulated and can be wrapped
- 
- Explanation of used abbreviations:
- 
--DAC    - digital to analog converter
--ADC    - analog to digital converter
--I2S    - one-way three wire serial bus for digital sound by Philips Semiconductors
--         (this standard is used for connecting standalone DAC and ADC converters)
--LFE    - low frequency effects (subwoofer signal)
--AC97   - a chip containing an analog mixer, DAC and ADC converters
--IEC958 - S/PDIF
--FX-bus - the EMU10K2 chip has an effect bus containing 64 accumulators.
--         Each of the synthesizer voices can feed its output to these accumulators
--         and the DSP microcontroller can operate with the resulting sum.
-+DAC
-+	digital to analog converter
-+ADC
-+	analog to digital converter
-+I2S
-+	one-way three wire serial bus for digital sound by Philips Semiconductors
-+        (this standard is used for connecting standalone DAC and ADC converters)
-+LFE
-+	low frequency effects (subwoofer signal)
-+AC97
-+	a chip containing an analog mixer, DAC and ADC converters
-+IEC958
-+	S/PDIF
-+FX-bus
-+	the EMU10K2 chip has an effect bus containing 64 accumulators.
-+        Each of the synthesizer voices can feed its output to these accumulators
-+        and the DSP microcontroller can operate with the resulting sum.
- 
- name='PCM Front Playback Volume',index=0
--
-+----------------------------------------
- This control is used to attenuate samples for left and right front PCM FX-bus
- accumulators. ALSA uses accumulators 8 and 9 for left and right front PCM 
- samples for 5.1 playback. The result samples are forwarded to the front DAC PCM 
- slots of the Philips DAC.
- 
- name='PCM Surround Playback Volume',index=0
--
-+-------------------------------------------
- This control is used to attenuate samples for left and right surround PCM FX-bus
- accumulators. ALSA uses accumulators 2 and 3 for left and right surround PCM 
- samples for 5.1 playback. The result samples are forwarded to the surround DAC PCM 
- slots of the Philips DAC.
- 
- name='PCM Center Playback Volume',index=0
--
-+-----------------------------------------
- This control is used to attenuate samples for center PCM FX-bus accumulator.
- ALSA uses accumulator 6 for center PCM sample for 5.1 playback. The result sample
- is forwarded to the center DAC PCM slot of the Philips DAC.
- 
- name='PCM LFE Playback Volume',index=0
--
-+--------------------------------------
- This control is used to attenuate sample for LFE PCM FX-bus accumulator. 
- ALSA uses accumulator 7 for LFE PCM sample for 5.1 playback. The result sample 
- is forwarded to the LFE DAC PCM slot of the Philips DAC.
- 
- name='PCM Playback Volume',index=0
--
-+----------------------------------
- This control is used to attenuate samples for left and right PCM FX-bus
- accumulators. ALSA uses accumulators 0 and 1 for left and right PCM samples for
- stereo playback. The result samples are forwarded to the front DAC PCM slots 
- of the Philips DAC.
- 
- name='PCM Capture Volume',index=0
--
-+---------------------------------
- This control is used to attenuate samples for left and right PCM FX-bus
- accumulator. ALSA uses accumulators 0 and 1 for left and right PCM.
- The result is forwarded to the ADC capture FIFO (thus to the standard capture
- PCM device).
- 
- name='Music Playback Volume',index=0
--
-+------------------------------------
- This control is used to attenuate samples for left and right MIDI FX-bus
- accumulators. ALSA uses accumulators 4 and 5 for left and right MIDI samples.
- The result samples are forwarded to the front DAC PCM slots of the AC97 codec.
- 
- name='Music Capture Volume',index=0
--
-+-----------------------------------
- These controls are used to attenuate samples for left and right MIDI FX-bus
- accumulator. ALSA uses accumulators 4 and 5 for left and right PCM.
- The result is forwarded to the ADC capture FIFO (thus to the standard capture
- PCM device).
- 
- name='Mic Playback Volume',index=0
--
-+----------------------------------
- This control is used to attenuate samples for left and right Mic input.
- For Mic input is used AC97 codec. The result samples are forwarded to 
- the front DAC PCM slots of the Philips DAC. Samples are forwarded to Mic
- capture FIFO (device 1 - 16bit/8KHz mono) too without volume control.
- 
- name='Mic Capture Volume',index=0
--
-+---------------------------------
- This control is used to attenuate samples for left and right Mic input.
- The result is forwarded to the ADC capture FIFO (thus to the standard capture
- PCM device).
- 
- name='Audigy CD Playback Volume',index=0
--
-+----------------------------------------
- This control is used to attenuate samples from left and right IEC958 TTL
- digital inputs (usually used by a CDROM drive). The result samples are
- forwarded to the front DAC PCM slots of the Philips DAC.
- 
- name='Audigy CD Capture Volume',index=0
--
-+---------------------------------------
- This control is used to attenuate samples from left and right IEC958 TTL
- digital inputs (usually used by a CDROM drive). The result samples are
- forwarded to the ADC capture FIFO (thus to the standard capture PCM device).
- 
- name='IEC958 Optical Playback Volume',index=0
--
-+---------------------------------------------
- This control is used to attenuate samples from left and right IEC958 optical
- digital input. The result samples are forwarded to the front DAC PCM slots
- of the Philips DAC.
- 
- name='IEC958 Optical Capture Volume',index=0
--
-+--------------------------------------------
- This control is used to attenuate samples from left and right IEC958 optical
- digital inputs. The result samples are forwarded to the ADC capture FIFO
- (thus to the standard capture PCM device).
- 
- name='Line2 Playback Volume',index=0
--
-+------------------------------------
- This control is used to attenuate samples from left and right I2S ADC
- inputs (on the AudigyDrive). The result samples are forwarded to the front
- DAC PCM slots of the Philips DAC.
- 
- name='Line2 Capture Volume',index=1
--
-+-----------------------------------
- This control is used to attenuate samples from left and right I2S ADC
- inputs (on the AudigyDrive). The result samples are forwarded to the ADC
- capture FIFO (thus to the standard capture PCM device).
- 
- name='Analog Mix Playback Volume',index=0
--
-+-----------------------------------------
- This control is used to attenuate samples from left and right I2S ADC
- inputs from Philips ADC. The result samples are forwarded to the front
- DAC PCM slots of the Philips DAC. This contains mix from analog sources
- like CD, Line In, Aux, ....
- 
- name='Analog Mix Capture Volume',index=1
--
-+----------------------------------------
- This control is used to attenuate samples from left and right I2S ADC
- inputs Philips ADC. The result samples are forwarded to the ADC
- capture FIFO (thus to the standard capture PCM device).
- 
- name='Aux2 Playback Volume',index=0
--
-+-----------------------------------
- This control is used to attenuate samples from left and right I2S ADC
- inputs (on the AudigyDrive). The result samples are forwarded to the front
- DAC PCM slots of the Philips DAC.
- 
- name='Aux2 Capture Volume',index=1
--
-+----------------------------------
- This control is used to attenuate samples from left and right I2S ADC
- inputs (on the AudigyDrive). The result samples are forwarded to the ADC
- capture FIFO (thus to the standard capture PCM device).
- 
- name='Front Playback Volume',index=0
--
-+------------------------------------
- All stereo signals are mixed together and mirrored to surround, center and LFE.
- This control is used to attenuate samples for left and right front speakers of
- this mix.
- 
- name='Surround Playback Volume',index=0
--
-+---------------------------------------
- All stereo signals are mixed together and mirrored to surround, center and LFE.
- This control is used to attenuate samples for left and right surround speakers of
- this mix.
- 
- name='Center Playback Volume',index=0
--
-+-------------------------------------
- All stereo signals are mixed together and mirrored to surround, center and LFE.
- This control is used to attenuate sample for center speaker of this mix.
- 
- name='LFE Playback Volume',index=0
--
-+----------------------------------
- All stereo signals are mixed together and mirrored to surround, center and LFE.
- This control is used to attenuate sample for LFE speaker of this mix.
- 
- name='Tone Control - Switch',index=0
--
-+------------------------------------
- This control turns the tone control on or off. The samples for front, rear
- and center / LFE outputs are affected.
- 
- name='Tone Control - Bass',index=0
--
-+----------------------------------
- This control sets the bass intensity. There is no neutral value!!
- When the tone control code is activated, the samples are always modified.
- The closest value to pure signal is 20.
- 
- name='Tone Control - Treble',index=0
--
-+------------------------------------
- This control sets the treble intensity. There is no neutral value!!
- When the tone control code is activated, the samples are always modified.
- The closest value to pure signal is 20.
- 
- name='Master Playback Volume',index=0
--
-+-------------------------------------
- This control is used to attenuate samples for front, surround, center and 
- LFE outputs.
- 
- name='IEC958 Optical Raw Playback Switch',index=0
--
-+-------------------------------------------------
- If this switch is on, then the samples for the IEC958 (S/PDIF) digital
- output are taken only from the raw FX8010 PCM, otherwise standard front
- PCM samples are taken.
- 
- 
--2) PCM stream related controls
--------------------------------
-+PCM stream related controls
-+===========================
- 
- name='EMU10K1 PCM Volume',index 0-31
--
-+------------------------------------
- Channel volume attenuation in range 0-0xffff. The maximum value (no
- attenuation) is default. The channel mapping for three values is
- as follows:
- 
--	0 - mono, default 0xffff (no attenuation)
--	1 - left, default 0xffff (no attenuation)
--	2 - right, default 0xffff (no attenuation)
-+* 0 - mono, default 0xffff (no attenuation)
-+* 1 - left, default 0xffff (no attenuation)
-+* 2 - right, default 0xffff (no attenuation)
- 
- name='EMU10K1 PCM Send Routing',index 0-31
--
-+------------------------------------------
- This control specifies the destination - FX-bus accumulators. There 24
- values with this mapping:
- 
--	 0 -  mono, A destination (FX-bus 0-63), default 0
--	 1 -  mono, B destination (FX-bus 0-63), default 1
--	 2 -  mono, C destination (FX-bus 0-63), default 2
--	 3 -  mono, D destination (FX-bus 0-63), default 3
--	 4 -  mono, E destination (FX-bus 0-63), default 0
--	 5 -  mono, F destination (FX-bus 0-63), default 0
--	 6 -  mono, G destination (FX-bus 0-63), default 0
--	 7 -  mono, H destination (FX-bus 0-63), default 0
--	 8 -  left, A destination (FX-bus 0-63), default 0
--	 9 -  left, B destination (FX-bus 0-63), default 1
--	10 -  left, C destination (FX-bus 0-63), default 2
--	11 -  left, D destination (FX-bus 0-63), default 3
--	12 -  left, E destination (FX-bus 0-63), default 0
--	13 -  left, F destination (FX-bus 0-63), default 0
--	14 -  left, G destination (FX-bus 0-63), default 0
--	15 -  left, H destination (FX-bus 0-63), default 0
--	16 - right, A destination (FX-bus 0-63), default 0
--	17 - right, B destination (FX-bus 0-63), default 1
--	18 - right, C destination (FX-bus 0-63), default 2
--	19 - right, D destination (FX-bus 0-63), default 3
--	20 - right, E destination (FX-bus 0-63), default 0
--	21 - right, F destination (FX-bus 0-63), default 0
--	22 - right, G destination (FX-bus 0-63), default 0
--	23 - right, H destination (FX-bus 0-63), default 0
-+* 0 -  mono, A destination (FX-bus 0-63), default 0
-+* 1 -  mono, B destination (FX-bus 0-63), default 1
-+* 2 -  mono, C destination (FX-bus 0-63), default 2
-+* 3 -  mono, D destination (FX-bus 0-63), default 3
-+* 4 -  mono, E destination (FX-bus 0-63), default 0
-+* 5 -  mono, F destination (FX-bus 0-63), default 0
-+* 6 -  mono, G destination (FX-bus 0-63), default 0
-+* 7 -  mono, H destination (FX-bus 0-63), default 0
-+* 8 -  left, A destination (FX-bus 0-63), default 0
-+* 9 -  left, B destination (FX-bus 0-63), default 1
-+* 10 -  left, C destination (FX-bus 0-63), default 2
-+* 11 -  left, D destination (FX-bus 0-63), default 3
-+* 12 -  left, E destination (FX-bus 0-63), default 0
-+* 13 -  left, F destination (FX-bus 0-63), default 0
-+* 14 -  left, G destination (FX-bus 0-63), default 0
-+* 15 -  left, H destination (FX-bus 0-63), default 0
-+* 16 - right, A destination (FX-bus 0-63), default 0
-+* 17 - right, B destination (FX-bus 0-63), default 1
-+* 18 - right, C destination (FX-bus 0-63), default 2
-+* 19 - right, D destination (FX-bus 0-63), default 3
-+* 20 - right, E destination (FX-bus 0-63), default 0
-+* 21 - right, F destination (FX-bus 0-63), default 0
-+* 22 - right, G destination (FX-bus 0-63), default 0
-+* 23 - right, H destination (FX-bus 0-63), default 0
- 
- Don't forget that it's illegal to assign a channel to the same FX-bus accumulator 
- more than once (it means 0=0 && 1=0 is an invalid combination).
-  
- name='EMU10K1 PCM Send Volume',index 0-31
--
-+-----------------------------------------
- It specifies the attenuation (amount) for given destination in range 0-255.
- The channel mapping is following:
- 
--	 0 -  mono, A destination attn, default 255 (no attenuation)
--	 1 -  mono, B destination attn, default 255 (no attenuation)
--	 2 -  mono, C destination attn, default 0 (mute)
--	 3 -  mono, D destination attn, default 0 (mute)
--	 4 -  mono, E destination attn, default 0 (mute)
--	 5 -  mono, F destination attn, default 0 (mute)
--	 6 -  mono, G destination attn, default 0 (mute)
--	 7 -  mono, H destination attn, default 0 (mute)
--	 8 -  left, A destination attn, default 255 (no attenuation)
--	 9 -  left, B destination attn, default 0 (mute)
--	10 -  left, C destination attn, default 0 (mute)
--	11 -  left, D destination attn, default 0 (mute)
--	12 -  left, E destination attn, default 0 (mute)
--	13 -  left, F destination attn, default 0 (mute)
--	14 -  left, G destination attn, default 0 (mute)
--	15 -  left, H destination attn, default 0 (mute)
--	16 - right, A destination attn, default 0 (mute)
--	17 - right, B destination attn, default 255 (no attenuation)
--	18 - right, C destination attn, default 0 (mute)
--	19 - right, D destination attn, default 0 (mute)
--	20 - right, E destination attn, default 0 (mute)
--	21 - right, F destination attn, default 0 (mute)
--	22 - right, G destination attn, default 0 (mute)
--	23 - right, H destination attn, default 0 (mute)
--
--
--
--4) MANUALS/PATENTS:
---------------------
-+*  0 -  mono, A destination attn, default 255 (no attenuation)
-+*  1 -  mono, B destination attn, default 255 (no attenuation)
-+*  2 -  mono, C destination attn, default 0 (mute)
-+*  3 -  mono, D destination attn, default 0 (mute)
-+*  4 -  mono, E destination attn, default 0 (mute)
-+*  5 -  mono, F destination attn, default 0 (mute)
-+*  6 -  mono, G destination attn, default 0 (mute)
-+*  7 -  mono, H destination attn, default 0 (mute)
-+*  8 -  left, A destination attn, default 255 (no attenuation)
-+*  9 -  left, B destination attn, default 0 (mute)
-+* 10 -  left, C destination attn, default 0 (mute)
-+* 11 -  left, D destination attn, default 0 (mute)
-+* 12 -  left, E destination attn, default 0 (mute)
-+* 13 -  left, F destination attn, default 0 (mute)
-+* 14 -  left, G destination attn, default 0 (mute)
-+* 15 -  left, H destination attn, default 0 (mute)
-+* 16 - right, A destination attn, default 0 (mute)
-+* 17 - right, B destination attn, default 255 (no attenuation)
-+* 18 - right, C destination attn, default 0 (mute)
-+* 19 - right, D destination attn, default 0 (mute)
-+* 20 - right, E destination attn, default 0 (mute)
-+* 21 - right, F destination attn, default 0 (mute)
-+* 22 - right, G destination attn, default 0 (mute)
-+* 23 - right, H destination attn, default 0 (mute)
-+
-+
-+
-+MANUALS/PATENTS
-+===============
- 
- ftp://opensource.creative.com/pub/doc
- -------------------------------------
- 
--        Files:
--        LM4545.pdf      AC97 Codec
-+LM4545.pdf
-+	AC97 Codec
- 
--        m2049.pdf       The EMU10K1 Digital Audio Processor
-+m2049.pdf
-+	The EMU10K1 Digital Audio Processor
- 
--        hog63.ps        FX8010 - A DSP Chip Architecture for Audio Effects
-+hog63.ps
-+	FX8010 - A DSP Chip Architecture for Audio Effects
- 
- 
- WIPO Patents
- ------------
--        Patent numbers:
--        WO 9901813 (A1) Audio Effects Processor with multiple asynchronous (Jan. 14, 1999)
--                        streams
- 
--        WO 9901814 (A1) Processor with Instruction Set for Audio Effects (Jan. 14, 1999)
-+WO 9901813 (A1)
-+	Audio Effects Processor with multiple asynchronous streams
-+	(Jan. 14, 1999)
-+
-+WO 9901814 (A1)
-+	Processor with Instruction Set for Audio Effects (Jan. 14, 1999)
- 
--        WO 9901953 (A1) Audio Effects Processor having Decoupled Instruction
--                        Execution and Audio Data Sequencing (Jan. 14, 1999)
-+WO 9901953 (A1)
-+	Audio Effects Processor having Decoupled Instruction
-+        Execution and Audio Data Sequencing (Jan. 14, 1999)
- 
- 
- US Patents (http://www.uspto.gov/)
- ----------------------------------
- 
--        US 5925841      Digital Sampling Instrument employing cache memory (Jul. 20, 1999)
--
--        US 5928342      Audio Effects Processor integrated on a single chip (Jul. 27, 1999)
--                        with a multiport memory onto which multiple asynchronous
--                        digital sound samples can be concurrently loaded
--
--        US 5930158      Processor with Instruction Set for Audio Effects (Jul. 27, 1999)
--
--        US 6032235      Memory initialization circuit (Tram) (Feb. 29, 2000)
--
--        US 6138207      Interpolation looping of audio samples in cache connected to    (Oct. 24, 2000)
--                        system bus with prioritization and modification of bus transfers
--                        in accordance with loop ends and minimum block sizes
--
--        US 6151670      Method for conserving memory storage using a (Nov. 21, 2000)
--                        pool of  short term memory registers
--
--        US 6195715      Interrupt control for multiple programs communicating with      (Feb. 27, 2001)
--                        a common interrupt by associating programs to GP registers,
--                        defining interrupt register, polling GP registers, and invoking
--                        callback routine associated with defined interrupt register
-+US 5925841
-+	Digital Sampling Instrument employing cache memory (Jul. 20, 1999)
-+
-+US 5928342
-+	Audio Effects Processor integrated on a single chip
-+        with a multiport memory onto which multiple asynchronous
-+        digital sound samples can be concurrently loaded
-+	(Jul. 27, 1999)
-+
-+US 5930158
-+	Processor with Instruction Set for Audio Effects (Jul. 27, 1999)
-+
-+US 6032235
-+	Memory initialization circuit (Tram) (Feb. 29, 2000)
-+
-+US 6138207
-+	Interpolation looping of audio samples in cache connected to
-+        system bus with prioritization and modification of bus transfers
-+        in accordance with loop ends and minimum block sizes
-+	(Oct. 24, 2000)
-+
-+US 6151670
-+	Method for conserving memory storage using a
-+        pool of  short term memory registers
-+	(Nov. 21, 2000)
-+
-+US 6195715
-+	Interrupt control for multiple programs communicating with
-+        a common interrupt by associating programs to GP registers,
-+        defining interrupt register, polling GP registers, and invoking
-+        callback routine associated with defined interrupt register
-+	(Feb. 27, 2001)
 diff --git a/Documentation/sound/cards/index.rst b/Documentation/sound/cards/index.rst
-index 294efdb75bc9..c9d7ce4286b2 100644
+index 157372faae06..6c8e4141df9a 100644
 --- a/Documentation/sound/cards/index.rst
 +++ b/Documentation/sound/cards/index.rst
-@@ -7,3 +7,5 @@ Card-Specific Information
-    joystick
-    cmipci
-    sb-live-mixer
-+   audigy-mixer
-+  
+@@ -13,3 +13,4 @@ Card-Specific Information
+    audiophile-usb
+    mixart
+    bt87x
++   maya44
+diff --git a/Documentation/sound/alsa/README.maya44 b/Documentation/sound/cards/maya44.rst
+similarity index 65%
+rename from Documentation/sound/alsa/README.maya44
+rename to Documentation/sound/cards/maya44.rst
+index 67b2ea1cc31d..bf09a584b443 100644
+--- a/Documentation/sound/alsa/README.maya44
++++ b/Documentation/sound/cards/maya44.rst
+@@ -1,10 +1,18 @@
+-NOTE: The following is the original document of Rainer's patch that the
+-current maya44 code based on.  Some contents might be obsoleted, but I
+-keep here as reference -- tiwai
++=================================
++Notes on Maya44 USB Audio Support
++=================================
+ 
+-----------------------------------------------------------------
++.. note::
++   The following is the original document of Rainer's patch that the
++   current maya44 code based on.  Some contents might be obsoleted, but I
++   keep here as reference -- tiwai
++
++Feb 14, 2008
++
++Rainer Zimmermann <mail@lightshed.de>
+  
+-STATE OF DEVELOPMENT:
++STATE OF DEVELOPMENT
++====================
+ 
+ This driver is being developed on the initiative of Piotr Makowski (oponek@gmail.com) and financed by Lars Bergmann.
+ Development is carried out by Rainer Zimmermann (mail@lightshed.de).
+@@ -44,16 +52,17 @@ Things that do not seem to work:
+ - Ardour 2.1 seems to work only via JACK, not using ALSA directly or via OSS. This still needs to be tracked down.
+ 
+ 
+-DRIVER DETAILS:
++DRIVER DETAILS
++==============
+ 
+ the following files were added:
+ 
+-pci/ice1724/maya44.c        - Maya44 specific code
+-pci/ice1724/maya44.h
+-pci/ice1724/ice1724.patch
+-pci/ice1724/ice1724.h.patch - PROPOSED patch to ice1724.h (see SAMPLING RATES)
+-i2c/other/wm8776.c  - low-level access routines for Wolfson WM8776 codecs 
+-include/wm8776.h
++* pci/ice1724/maya44.c - Maya44 specific code
++* pci/ice1724/maya44.h
++* pci/ice1724/ice1724.patch
++* pci/ice1724/ice1724.h.patch - PROPOSED patch to ice1724.h (see SAMPLING RATES)
++* i2c/other/wm8776.c - low-level access routines for Wolfson WM8776 codecs 
++* include/wm8776.h
+ 
+ 
+ Note that the wm8776.c code is meant to be card-independent and does not actually register the codec with the ALSA infrastructure.
+@@ -62,25 +71,26 @@ This is done in maya44.c, mainly because some of the WM8776 controls are used in
+ 
+ the following files were created in pci/ice1724, simply #including the corresponding file from the alsa-kernel tree:
+ 
+-wtm.h
+-vt1720_mobo.h
+-revo.h
+-prodigy192.h
+-pontis.h
+-phase.h
+-maya44.h
+-juli.h
+-aureon.h
+-amp.h
+-envy24ht.h
+-se.h
+-prodigy_hifi.h
++* wtm.h
++* vt1720_mobo.h
++* revo.h
++* prodigy192.h
++* pontis.h
++* phase.h
++* maya44.h
++* juli.h
++* aureon.h
++* amp.h
++* envy24ht.h
++* se.h
++* prodigy_hifi.h
+ 
+ 
+ *I hope this is the correct way to do things.*
+ 
+ 
+-SAMPLING RATES:
++SAMPLING RATES
++==============
+ 
+ The Maya44 card (or more exactly, the Wolfson WM8776 codecs) allow a maximum sampling rate of 192 kHz for playback and 92 kHz for capture.
+ 
+@@ -98,66 +108,79 @@ I propose some additional code for limiting the sampling rate when setting on a
+ The proposed code (currently deactivated) is in ice1712.h.patch, ice1724.c and maya44.c (in pci/ice1712).
+ 
+ 
+-SOUND DEVICES:
++SOUND DEVICES
++=============
+ 
+ PCM devices correspond to inputs/outputs as follows (assuming Maya44 is card #0):
+ 
+-hw:0,0 input - stereo, analog input 1+2
+-hw:0,0 output - stereo, analog output 1+2
+-hw:0,1 input - stereo, analog input 3+4 OR S/PDIF input
+-hw:0,1 output - stereo, analog output 3+4 (and SPDIF out)
++* hw:0,0 input - stereo, analog input 1+2
++* hw:0,0 output - stereo, analog output 1+2
++* hw:0,1 input - stereo, analog input 3+4 OR S/PDIF input
++* hw:0,1 output - stereo, analog output 3+4 (and SPDIF out)
+ 
+ 
+-NAMING OF MIXER CONTROLS:
++NAMING OF MIXER CONTROLS
++========================
+ 
+ (for more information about the signal flow, please refer to the block diagram on p.24 of the ESI Maya44 manual, or in the ESI windows software).
+ 
+ 
+-PCM: (digital) output level for channel 1+2
+-PCM 1: same for channel 3+4
++PCM
++    (digital) output level for channel 1+2
++PCM 1
++    same for channel 3+4
++
++Mic Phantom+48V
++    switch for +48V phantom power for electrostatic microphones on input 1/2.
+ 
+-Mic Phantom+48V: switch for +48V phantom power for electrostatic microphones on input 1/2.
+     Make sure this is not turned on while any other source is connected to input 1/2.
+     It might damage the source and/or the maya44 card.
+ 
+-Mic/Line input: if switch is on, input jack 1/2 is microphone input (mono), otherwise line input (stereo).
++Mic/Line input
++    if switch is on, input jack 1/2 is microphone input (mono), otherwise line input (stereo).
++
++Bypass
++    analogue bypass from ADC input to output for channel 1+2. Same as "Monitor" in the windows driver.
++Bypass 1
++    same for channel 3+4.
+ 
+-Bypass: analogue bypass from ADC input to output for channel 1+2. Same as "Monitor" in the windows driver.
+-Bypass 1: same for channel 3+4.
++Crossmix
++    cross-mixer from channels 1+2 to channels 3+4
++Crossmix 1
++    cross-mixer from channels 3+4 to channels 1+2
+ 
+-Crossmix: cross-mixer from channels 1+2 to channels 3+4
+-Crossmix 1: cross-mixer from channels 3+4 to channels 1+2
++IEC958 Output
++    switch for S/PDIF output.
+ 
+-IEC958 Output: switch for S/PDIF output.
+     This is not supported by the ESI windows driver.
+     S/PDIF should output the same signal as channel 3+4. [untested!]
+ 
+ 
+-Digitial output selectors:
+-
++Digitial output selectors
+     These switches allow a direct digital routing from the ADCs to the DACs.
+     Each switch determines where the digital input data to one of the DACs comes from.
+     They are not supported by the ESI windows driver.
+     For normal operation, they should all be set to "PCM out".
+ 
+-H/W: Output source channel 1
+-H/W 1: Output source channel 2
+-H/W 2: Output source channel 3
+-H/W 3: Output source channel 4
++H/W
++    Output source channel 1
++H/W 1
++    Output source channel 2
++H/W 2
++    Output source channel 3
++H/W 3
++    Output source channel 4
++
++H/W 4 ... H/W 9
++    unknown function, left in to enable testing.
+ 
+-H/W 4 ... H/W 9: unknown function, left in to enable testing.
+     Possibly some of these control S/PDIF output(s).
+     If these turn out to be unused, they will go away in later driver versions.
+ 
+ Selectable values for each of the digital output selectors are:
+-   "PCM out" -> DAC output of the corresponding channel (default setting)
+-   "Input 1"...
+-   "Input 4" -> direct routing from ADC output of the selected input channel
+-
+ 
+---------
+-
+-Feb 14, 2008
+-Rainer Zimmermann
+-mail@lightshed.de
++PCM out
++	DAC output of the corresponding channel (default setting)
++Input 1 ... Input 4
++	direct routing from ADC output of the selected input channel
+ 
 -- 
 2.10.2
