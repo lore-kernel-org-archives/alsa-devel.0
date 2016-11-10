@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 15/30] ALSA: doc: ReSTize compress-offload
-	document
-Date: Thu, 10 Nov 2016 22:06:26 +0100
-Message-ID: <20161110210641.5907-16-tiwai@suse.de>
+Subject: [PATCH 20/30] ALSA: doc: ReSTize SB-Live-mixer document
+Date: Thu, 10 Nov 2016 22:06:31 +0100
+Message-ID: <20161110210641.5907-21-tiwai@suse.de>
 References: <20161110210641.5907-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D4612673C3
+ by alsa0.perex.cz (Postfix) with ESMTP id A0A322673C5
  for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 22:06:55 +0100 (CET)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C049AADEC
+ by mx2.suse.de (Postfix) with ESMTP id C5C22ADF5
  for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 21:06:53 +0000 (UTC)
 In-Reply-To: <20161110210641.5907-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,229 +26,550 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A simple conversion from a plain text file.
-Put to designs subdirectory.
+Another simple conversion from a plain text file.
+Put to cards subdirectory.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- .../compress-offload.rst}                          | 127 +++++++++++----------
- Documentation/sound/designs/index.rst              |   1 +
- 2 files changed, 70 insertions(+), 58 deletions(-)
- rename Documentation/sound/{alsa/compress_offload.txt => designs/compress-offload.rst} (73%)
+ Documentation/sound/cards/index.rst                |   1 +
+ .../SB-Live-mixer.txt => cards/sb-live-mixer.rst}  | 337 +++++++++++----------
+ 2 files changed, 177 insertions(+), 161 deletions(-)
+ rename Documentation/sound/{alsa/SB-Live-mixer.txt => cards/sb-live-mixer.rst} (54%)
 
-diff --git a/Documentation/sound/alsa/compress_offload.txt b/Documentation/sound/designs/compress-offload.rst
-similarity index 73%
-rename from Documentation/sound/alsa/compress_offload.txt
-rename to Documentation/sound/designs/compress-offload.rst
-index 8ba556a131c3..ad4bfbdacc83 100644
---- a/Documentation/sound/alsa/compress_offload.txt
-+++ b/Documentation/sound/designs/compress-offload.rst
-@@ -1,10 +1,14 @@
--		compress_offload.txt
--		=====================
--	Pierre-Louis.Bossart <pierre-louis.bossart@linux.intel.com>
--		Vinod Koul <vinod.koul@linux.intel.com>
-+=========================
-+ALSA Compress-Offload API
-+=========================
-+
-+Pierre-Louis.Bossart <pierre-louis.bossart@linux.intel.com>
-+
-+Vinod Koul <vinod.koul@linux.intel.com>
+diff --git a/Documentation/sound/cards/index.rst b/Documentation/sound/cards/index.rst
+index 67a3073157b9..294efdb75bc9 100644
+--- a/Documentation/sound/cards/index.rst
++++ b/Documentation/sound/cards/index.rst
+@@ -6,3 +6,4 @@ Card-Specific Information
  
--Overview
- 
-+Overview
-+========
- Since its early days, the ALSA API was defined with PCM support or
- constant bitrates payloads such as IEC61937 in mind. Arguments and
- returned values in frames are the norm, making it a challenge to
-@@ -27,8 +31,9 @@ Intel Moorestown SOC, with many corrections required to upstream the
- API in the mainline kernel instead of the staging tree and make it
- usable by others.
- 
--Requirements
- 
-+Requirements
-+============
- The main requirements are:
- 
- - separation between byte counts and time. Compressed formats may have
-@@ -63,7 +68,7 @@ The main requirements are:
-   streaming compressed data to a DSP, with the assumption that the
-   decoded samples are routed to a physical output or logical back-end.
- 
-- - Complexity hiding. Existing user-space multimedia frameworks all
-+- Complexity hiding. Existing user-space multimedia frameworks all
-   have existing enums/structures for each compressed format. This new
-   API assumes the existence of a platform-specific compatibility layer
-   to expose, translate and make use of the capabilities of the audio
-@@ -72,7 +77,7 @@ The main requirements are:
- 
- 
- Design
+    joystick
+    cmipci
++   sb-live-mixer
+diff --git a/Documentation/sound/alsa/SB-Live-mixer.txt b/Documentation/sound/cards/sb-live-mixer.rst
+similarity index 54%
+rename from Documentation/sound/alsa/SB-Live-mixer.txt
+rename to Documentation/sound/cards/sb-live-mixer.rst
+index f4b5988f450c..0f8164ec7aa3 100644
+--- a/Documentation/sound/alsa/SB-Live-mixer.txt
++++ b/Documentation/sound/cards/sb-live-mixer.rst
+@@ -1,6 +1,6 @@
 -
-+======
- The new API shares a number of concepts with the PCM API for flow
- control. Start, pause, resume, drain and stop commands have the same
- semantics no matter what the content is.
-@@ -95,43 +100,44 @@ mandatory routines and possibly make use of optional ones.
+-		Sound Blaster Live mixer / default DSP code
+-		===========================================
++===========================================
++Sound Blaster Live mixer / default DSP code
++===========================================
  
- The main additions are
  
--- get_caps
--This routine returns the list of audio formats supported. Querying the
--codecs on a capture stream will return encoders, decoders will be
--listed for playback streams.
+ The EMU10K1 chips have a DSP part which can be programmed to support
+@@ -12,8 +12,8 @@ The ALSA driver programs this portion of chip by default code
+ (can be altered later) which offers the following functionality:
+ 
+ 
+-1) IEC958 (S/PDIF) raw PCM
+---------------------------
++IEC958 (S/PDIF) raw PCM
++=======================
+ 
+ This PCM device (it's the 4th PCM device (index 3!) and first subdevice
+ (index 0) for a given card) allows to forward 48kHz, stereo, 16-bit
+@@ -27,8 +27,8 @@ at the time.
+ Look to tram_poke routines in lowlevel/emu10k1/emufx.c for more details.
+ 
+ 
+-2) Digital mixer controls
+--------------------------
++Digital mixer controls
++======================
+ 
+ These controls are built using the DSP instructions. They offer extended
+ functionality. Only the default build-in code in the ALSA driver is described
+@@ -40,317 +40,332 @@ is mentioned in multiple controls, the signal is accumulated and can be wrapped
+ 
+ Explanation of used abbreviations:
+ 
+-DAC    - digital to analog converter
+-ADC    - analog to digital converter
+-I2S    - one-way three wire serial bus for digital sound by Philips Semiconductors
+-         (this standard is used for connecting standalone DAC and ADC converters)
+-LFE    - low frequency effects (subwoofer signal)
+-AC97   - a chip containing an analog mixer, DAC and ADC converters
+-IEC958 - S/PDIF
+-FX-bus - the EMU10K1 chip has an effect bus containing 16 accumulators.
+-         Each of the synthesizer voices can feed its output to these accumulators
+-         and the DSP microcontroller can operate with the resulting sum.
 -
--- get_codec_caps For each codec, this routine returns a list of
--capabilities. The intent is to make sure all the capabilities
--correspond to valid settings, and to minimize the risks of
--configuration failures. For example, for a complex codec such as AAC,
--the number of channels supported may depend on a specific profile. If
--the capabilities were exposed with a single descriptor, it may happen
--that a specific combination of profiles/channels/formats may not be
--supported. Likewise, embedded DSPs have limited memory and cpu cycles,
--it is likely that some implementations make the list of capabilities
--dynamic and dependent on existing workloads. In addition to codec
--settings, this routine returns the minimum buffer size handled by the
--implementation. This information can be a function of the DMA buffer
--sizes, the number of bytes required to synchronize, etc, and can be
--used by userspace to define how much needs to be written in the ring
--buffer before playback can start.
 -
--- set_params
--This routine sets the configuration chosen for a specific codec. The
--most important field in the parameters is the codec type; in most
--cases decoders will ignore other fields, while encoders will strictly
--comply to the settings
+-name='Wave Playback Volume',index=0
 -
--- get_params
--This routines returns the actual settings used by the DSP. Changes to
--the settings should remain the exception.
++DAC
++	digital to analog converter
++ADC
++	analog to digital converter
++I2S
++	one-way three wire serial bus for digital sound by Philips Semiconductors
++        (this standard is used for connecting standalone DAC and ADC converters)
++LFE
++	low frequency effects (subwoofer signal)
++AC97
++	a chip containing an analog mixer, DAC and ADC converters
++IEC958
++	S/PDIF
++FX-bus
++	the EMU10K1 chip has an effect bus containing 16 accumulators.
++	Each of the synthesizer voices can feed its output to these accumulators
++	and the DSP microcontroller can operate with the resulting sum.
++
++
++``name='Wave Playback Volume',index=0``
++---------------------------------------
+ This control is used to attenuate samples for left and right PCM FX-bus
+ accumulators. ALSA uses accumulators 0 and 1 for left and right PCM samples.
+ The result samples are forwarded to the front DAC PCM slots of the AC97 codec.
+ 
+-name='Wave Surround Playback Volume',index=0
 -
--- get_timestamp
--The timestamp becomes a multiple field structure. It lists the number
--of bytes transferred, the number of samples processed and the number
--of samples rendered/grabbed. All these values can be used to determine
--the average bitrate, figure out if the ring buffer needs to be
--refilled or the delay due to decoding/encoding/io on the DSP.
-+get_caps
-+  This routine returns the list of audio formats supported. Querying the
-+  codecs on a capture stream will return encoders, decoders will be
-+  listed for playback streams.
++``name='Wave Surround Playback Volume',index=0``
++------------------------------------------------
+ This control is used to attenuate samples for left and right PCM FX-bus
+ accumulators. ALSA uses accumulators 0 and 1 for left and right PCM samples.
+ The result samples are forwarded to the rear I2S DACs. These DACs operates
+ separately (they are not inside the AC97 codec).
+ 
+-name='Wave Center Playback Volume',index=0
+-
++``name='Wave Center Playback Volume',index=0``
++----------------------------------------------
+ This control is used to attenuate samples for left and right PCM FX-bus
+ accumulators. ALSA uses accumulators 0 and 1 for left and right PCM samples.
+ The result is mixed to mono signal (single channel) and forwarded to
+ the ??rear?? right DAC PCM slot of the AC97 codec.
+ 
+-name='Wave LFE Playback Volume',index=0
+-
++``name='Wave LFE Playback Volume',index=0``
++-------------------------------------------
+ This control is used to attenuate samples for left and right PCM FX-bus
+ accumulators. ALSA uses accumulators 0 and 1 for left and right PCM.
+ The result is mixed to mono signal (single channel) and forwarded to
+ the ??rear?? left DAC PCM slot of the AC97 codec.
+ 
+-name='Wave Capture Volume',index=0
+-name='Wave Capture Switch',index=0
+-
++``name='Wave Capture Volume',index=0``, ``name='Wave Capture Switch',index=0``
++------------------------------------------------------------------------------
+ These controls are used to attenuate samples for left and right PCM FX-bus
+ accumulator. ALSA uses accumulators 0 and 1 for left and right PCM.
+ The result is forwarded to the ADC capture FIFO (thus to the standard capture
+ PCM device).
+ 
+-name='Synth Playback Volume',index=0
+-
++``name='Synth Playback Volume',index=0``
++----------------------------------------
+ This control is used to attenuate samples for left and right MIDI FX-bus
+ accumulators. ALSA uses accumulators 4 and 5 for left and right MIDI samples.
+ The result samples are forwarded to the front DAC PCM slots of the AC97 codec.
+ 
+-name='Synth Capture Volume',index=0
+-name='Synth Capture Switch',index=0
+-
++``name='Synth Capture Volume',index=0``, ``name='Synth Capture Switch',index=0``
++--------------------------------------------------------------------------------
+ These controls are used to attenuate samples for left and right MIDI FX-bus
+ accumulator. ALSA uses accumulators 4 and 5 for left and right PCM.
+ The result is forwarded to the ADC capture FIFO (thus to the standard capture
+ PCM device).
+ 
+-name='Surround Playback Volume',index=0
+-
++``name='Surround Playback Volume',index=0``
++-------------------------------------------
+ This control is used to attenuate samples for left and right rear PCM FX-bus
+ accumulators. ALSA uses accumulators 2 and 3 for left and right rear PCM samples.
+ The result samples are forwarded to the rear I2S DACs. These DACs operate
+ separately (they are not inside the AC97 codec).
+ 
+-name='Surround Capture Volume',index=0
+-name='Surround Capture Switch',index=0
+-
++``name='Surround Capture Volume',index=0``, ``name='Surround Capture Switch',index=0``
++--------------------------------------------------------------------------------------
+ These controls are used to attenuate samples for left and right rear PCM FX-bus
+ accumulators. ALSA uses accumulators 2 and 3 for left and right rear PCM samples.
+ The result is forwarded to the ADC capture FIFO (thus to the standard capture
+ PCM device).
+ 
+-name='Center Playback Volume',index=0
+-
++``name='Center Playback Volume',index=0``
++-----------------------------------------
+ This control is used to attenuate sample for center PCM FX-bus accumulator.
+ ALSA uses accumulator 6 for center PCM sample. The result sample is forwarded
+ to the ??rear?? right DAC PCM slot of the AC97 codec.
+ 
+-name='LFE Playback Volume',index=0
+-
++``name='LFE Playback Volume',index=0``
++--------------------------------------
+ This control is used to attenuate sample for center PCM FX-bus accumulator.
+ ALSA uses accumulator 6 for center PCM sample. The result sample is forwarded
+ to the ??rear?? left DAC PCM slot of the AC97 codec.
+ 
+-name='AC97 Playback Volume',index=0
+-
++``name='AC97 Playback Volume',index=0``
++---------------------------------------
+ This control is used to attenuate samples for left and right front ADC PCM slots
+ of the AC97 codec. The result samples are forwarded to the front DAC PCM
+ slots of the AC97 codec.
+-********************************************************************************
+-*** Note: This control should be zero for the standard operations, otherwise ***
+-*** a digital loopback is activated.                                         ***
+-********************************************************************************
++.. note::
++  This control should be zero for the standard operations, otherwise
++  a digital loopback is activated.
+ 
+-name='AC97 Capture Volume',index=0
+ 
++``name='AC97 Capture Volume',index=0``
++--------------------------------------
+ This control is used to attenuate samples for left and right front ADC PCM slots
+ of the AC97 codec. The result is forwarded to the ADC capture FIFO (thus to
+ the standard capture PCM device).
+-********************************************************************************
+-*** Note: This control should be 100 (maximal value), otherwise no analog    ***
+-*** inputs of the AC97 codec can be captured (recorded).                     ***
+-********************************************************************************
+-
+-name='IEC958 TTL Playback Volume',index=0
++.. note::
++   This control should be 100 (maximal value), otherwise no analog
++   inputs of the AC97 codec can be captured (recorded).
+ 
++``name='IEC958 TTL Playback Volume',index=0``
++---------------------------------------------
+ This control is used to attenuate samples from left and right IEC958 TTL
+ digital inputs (usually used by a CDROM drive). The result samples are
+ forwarded to the front DAC PCM slots of the AC97 codec.
+ 
+-name='IEC958 TTL Capture Volume',index=0
+-
++``name='IEC958 TTL Capture Volume',index=0``
++--------------------------------------------
+ This control is used to attenuate samples from left and right IEC958 TTL
+ digital inputs (usually used by a CDROM drive). The result samples are
+ forwarded to the ADC capture FIFO (thus to the standard capture PCM device).
+ 
+-name='Zoom Video Playback Volume',index=0
+-
++``name='Zoom Video Playback Volume',index=0``
++---------------------------------------------
+ This control is used to attenuate samples from left and right zoom video
+ digital inputs (usually used by a CDROM drive). The result samples are
+ forwarded to the front DAC PCM slots of the AC97 codec.
+ 
+-name='Zoom Video Capture Volume',index=0
+-
++``name='Zoom Video Capture Volume',index=0``
++--------------------------------------------
+ This control is used to attenuate samples from left and right zoom video
+ digital inputs (usually used by a CDROM drive). The result samples are
+ forwarded to the ADC capture FIFO (thus to the standard capture PCM device).
+ 
+-name='IEC958 LiveDrive Playback Volume',index=0
+-
++``name='IEC958 LiveDrive Playback Volume',index=0``
++---------------------------------------------------
+ This control is used to attenuate samples from left and right IEC958 optical
+ digital input. The result samples are forwarded to the front DAC PCM slots
+ of the AC97 codec.
+ 
+-name='IEC958 LiveDrive Capture Volume',index=0
+-
++``name='IEC958 LiveDrive Capture Volume',index=0``
++--------------------------------------------------
+ This control is used to attenuate samples from left and right IEC958 optical
+ digital inputs. The result samples are forwarded to the ADC capture FIFO
+ (thus to the standard capture PCM device).
+ 
+-name='IEC958 Coaxial Playback Volume',index=0
+-
++``name='IEC958 Coaxial Playback Volume',index=0``
++-------------------------------------------------
+ This control is used to attenuate samples from left and right IEC958 coaxial
+ digital inputs. The result samples are forwarded to the front DAC PCM slots
+ of the AC97 codec.
+ 
+-name='IEC958 Coaxial Capture Volume',index=0
+-
++``name='IEC958 Coaxial Capture Volume',index=0``
++------------------------------------------------
+ This control is used to attenuate samples from left and right IEC958 coaxial
+ digital inputs. The result samples are forwarded to the ADC capture FIFO
+ (thus to the standard capture PCM device).
+ 
+-name='Line LiveDrive Playback Volume',index=0
+-name='Line LiveDrive Playback Volume',index=1
+-
++``name='Line LiveDrive Playback Volume',index=0``, ``name='Line LiveDrive Playback Volume',index=1``
++----------------------------------------------------------------------------------------------------
+ This control is used to attenuate samples from left and right I2S ADC
+ inputs (on the LiveDrive). The result samples are forwarded to the front
+ DAC PCM slots of the AC97 codec.
+ 
+-name='Line LiveDrive Capture Volume',index=1
+-name='Line LiveDrive Capture Volume',index=1
+-
++``name='Line LiveDrive Capture Volume',index=1``, ``name='Line LiveDrive Capture Volume',index=1``
++--------------------------------------------------------------------------------------------------
+ This control is used to attenuate samples from left and right I2S ADC
+ inputs (on the LiveDrive). The result samples are forwarded to the ADC
+ capture FIFO (thus to the standard capture PCM device).
+ 
+-name='Tone Control - Switch',index=0
+-
++``name='Tone Control - Switch',index=0``
++----------------------------------------
+ This control turns the tone control on or off. The samples for front, rear
+ and center / LFE outputs are affected.
+ 
+-name='Tone Control - Bass',index=0
+-
++``name='Tone Control - Bass',index=0``
++--------------------------------------
+ This control sets the bass intensity. There is no neutral value!!
+ When the tone control code is activated, the samples are always modified.
+ The closest value to pure signal is 20.
+ 
+-name='Tone Control - Treble',index=0
+-
++``name='Tone Control - Treble',index=0``
++----------------------------------------
+ This control sets the treble intensity. There is no neutral value!!
+ When the tone control code is activated, the samples are always modified.
+ The closest value to pure signal is 20.
+ 
+-name='IEC958 Optical Raw Playback Switch',index=0
+-
++``name='IEC958 Optical Raw Playback Switch',index=0``
++-----------------------------------------------------
+ If this switch is on, then the samples for the IEC958 (S/PDIF) digital
+ output are taken only from the raw FX8010 PCM, otherwise standard front
+ PCM samples are taken.
+ 
+-name='Headphone Playback Volume',index=1
+-
++``name='Headphone Playback Volume',index=1``
++--------------------------------------------
+ This control attenuates the samples for the headphone output.
+ 
+-name='Headphone Center Playback Switch',index=1
+-
++``name='Headphone Center Playback Switch',index=1``
++---------------------------------------------------
+ If this switch is on, then the sample for the center PCM is put to the
+ left headphone output (useful for SB Live cards without separate center/LFE
+ output).
+ 
+-name='Headphone LFE Playback Switch',index=1
+-
++``name='Headphone LFE Playback Switch',index=1``
++------------------------------------------------
+ If this switch is on, then the sample for the center PCM is put to the
+ right headphone output (useful for SB Live cards without separate center/LFE
+ output).
+ 
+ 
+-3) PCM stream related controls
+-------------------------------
+-
+-name='EMU10K1 PCM Volume',index 0-31
++PCM stream related controls
++===========================
+ 
++``name='EMU10K1 PCM Volume',index 0-31``
++----------------------------------------
+ Channel volume attenuation in range 0-0xffff. The maximum value (no
+ attenuation) is default. The channel mapping for three values is
+ as follows:
+ 
+-	0 - mono, default 0xffff (no attenuation)
+-	1 - left, default 0xffff (no attenuation)
+-	2 - right, default 0xffff (no attenuation)
+-
+-name='EMU10K1 PCM Send Routing',index 0-31
++* 0 - mono, default 0xffff (no attenuation)
++* 1 - left, default 0xffff (no attenuation)
++* 2 - right, default 0xffff (no attenuation)
+ 
++``name='EMU10K1 PCM Send Routing',index 0-31``
++----------------------------------------------
+ This control specifies the destination - FX-bus accumulators. There are
+ twelve values with this mapping:
+ 
+-	 0 -  mono, A destination (FX-bus 0-15), default 0
+-	 1 -  mono, B destination (FX-bus 0-15), default 1
+-	 2 -  mono, C destination (FX-bus 0-15), default 2
+-	 3 -  mono, D destination (FX-bus 0-15), default 3
+-	 4 -  left, A destination (FX-bus 0-15), default 0
+-	 5 -  left, B destination (FX-bus 0-15), default 1
+-	 6 -  left, C destination (FX-bus 0-15), default 2
+-	 7 -  left, D destination (FX-bus 0-15), default 3
+-	 8 - right, A destination (FX-bus 0-15), default 0
+-	 9 - right, B destination (FX-bus 0-15), default 1
+-	10 - right, C destination (FX-bus 0-15), default 2
+-	11 - right, D destination (FX-bus 0-15), default 3
++*  0 -  mono, A destination (FX-bus 0-15), default 0
++*  1 -  mono, B destination (FX-bus 0-15), default 1
++*  2 -  mono, C destination (FX-bus 0-15), default 2
++*  3 -  mono, D destination (FX-bus 0-15), default 3
++*  4 -  left, A destination (FX-bus 0-15), default 0
++*  5 -  left, B destination (FX-bus 0-15), default 1
++*  6 -  left, C destination (FX-bus 0-15), default 2
++*  7 -  left, D destination (FX-bus 0-15), default 3
++*  8 - right, A destination (FX-bus 0-15), default 0
++*  9 - right, B destination (FX-bus 0-15), default 1
++* 10 - right, C destination (FX-bus 0-15), default 2
++* 11 - right, D destination (FX-bus 0-15), default 3
+ 
+ Don't forget that it's illegal to assign a channel to the same FX-bus accumulator 
+ more than once (it means 0=0 && 1=0 is an invalid combination).
+  
+-name='EMU10K1 PCM Send Volume',index 0-31
+-
++``name='EMU10K1 PCM Send Volume',index 0-31``
++---------------------------------------------
+ It specifies the attenuation (amount) for given destination in range 0-255.
+ The channel mapping is following:
+ 
+-	 0 -  mono, A destination attn, default 255 (no attenuation)
+-	 1 -  mono, B destination attn, default 255 (no attenuation)
+-	 2 -  mono, C destination attn, default 0 (mute)
+-	 3 -  mono, D destination attn, default 0 (mute)
+-	 4 -  left, A destination attn, default 255 (no attenuation)
+-	 5 -  left, B destination attn, default 0 (mute)
+-	 6 -  left, C destination attn, default 0 (mute)
+-	 7 -  left, D destination attn, default 0 (mute)
+-	 8 - right, A destination attn, default 0 (mute)
+-	 9 - right, B destination attn, default 255 (no attenuation)
+-	10 - right, C destination attn, default 0 (mute)
+-	11 - right, D destination attn, default 0 (mute)
++*  0 -  mono, A destination attn, default 255 (no attenuation)
++*  1 -  mono, B destination attn, default 255 (no attenuation)
++*  2 -  mono, C destination attn, default 0 (mute)
++*  3 -  mono, D destination attn, default 0 (mute)
++*  4 -  left, A destination attn, default 255 (no attenuation)
++*  5 -  left, B destination attn, default 0 (mute)
++*  6 -  left, C destination attn, default 0 (mute)
++*  7 -  left, D destination attn, default 0 (mute)
++*  8 - right, A destination attn, default 0 (mute)
++*  9 - right, B destination attn, default 255 (no attenuation)
++* 10 - right, C destination attn, default 0 (mute)
++* 11 - right, D destination attn, default 0 (mute)
+ 
+ 
+ 
+-4) MANUALS/PATENTS:
+--------------------
++MANUALS/PATENTS
++===============
+ 
+ ftp://opensource.creative.com/pub/doc
+ -------------------------------------
+ 
+-        Files:
+-        LM4545.pdf      AC97 Codec
+-
+-        m2049.pdf       The EMU10K1 Digital Audio Processor
+-
+-        hog63.ps        FX8010 - A DSP Chip Architecture for Audio Effects
++LM4545.pdf
++	AC97 Codec
++m2049.pdf
++	The EMU10K1 Digital Audio Processor
++hog63.ps
++	FX8010 - A DSP Chip Architecture for Audio Effects
+ 
+ 
+ WIPO Patents
+ ------------
+-        Patent numbers:
+-        WO 9901813 (A1) Audio Effects Processor with multiple asynchronous (Jan. 14, 1999)
+-                        streams
+ 
+-        WO 9901814 (A1) Processor with Instruction Set for Audio Effects (Jan. 14, 1999)
++WO 9901813 (A1)
++	Audio Effects Processor with multiple asynchronous streams
++	(Jan. 14, 1999)
 +
-+get_codec_caps
-+  For each codec, this routine returns a list of
-+  capabilities. The intent is to make sure all the capabilities
-+  correspond to valid settings, and to minimize the risks of
-+  configuration failures. For example, for a complex codec such as AAC,
-+  the number of channels supported may depend on a specific profile. If
-+  the capabilities were exposed with a single descriptor, it may happen
-+  that a specific combination of profiles/channels/formats may not be
-+  supported. Likewise, embedded DSPs have limited memory and cpu cycles,
-+  it is likely that some implementations make the list of capabilities
-+  dynamic and dependent on existing workloads. In addition to codec
-+  settings, this routine returns the minimum buffer size handled by the
-+  implementation. This information can be a function of the DMA buffer
-+  sizes, the number of bytes required to synchronize, etc, and can be
-+  used by userspace to define how much needs to be written in the ring
-+  buffer before playback can start.
++WO 9901814 (A1)
++	Processor with Instruction Set for Audio Effects (Jan. 14, 1999)
+ 
+-        WO 9901953 (A1) Audio Effects Processor having Decoupled Instruction
+-                        Execution and Audio Data Sequencing (Jan. 14, 1999)
++WO 9901953 (A1)
++	Audio Effects Processor having Decoupled Instruction
++        Execution and Audio Data Sequencing (Jan. 14, 1999)
+ 
+ 
+ US Patents (http://www.uspto.gov/)
+ ----------------------------------
+ 
+-        US 5925841      Digital Sampling Instrument employing cache memory (Jul. 20, 1999)
+-
+-        US 5928342      Audio Effects Processor integrated on a single chip (Jul. 27, 1999)
+-                        with a multiport memory onto which multiple asynchronous
+-                        digital sound samples can be concurrently loaded
+-
+-        US 5930158      Processor with Instruction Set for Audio Effects (Jul. 27, 1999)
+-
+-        US 6032235      Memory initialization circuit (Tram) (Feb. 29, 2000)
+-
+-        US 6138207      Interpolation looping of audio samples in cache connected to    (Oct. 24, 2000)
+-                        system bus with prioritization and modification of bus transfers
+-                        in accordance with loop ends and minimum block sizes
+-
+-        US 6151670      Method for conserving memory storage using a (Nov. 21, 2000)
+-                        pool of  short term memory registers
+-
+-        US 6195715      Interrupt control for multiple programs communicating with      (Feb. 27, 2001)
+-                        a common interrupt by associating programs to GP registers,
+-                        defining interrupt register, polling GP registers, and invoking
+-                        callback routine associated with defined interrupt register
++US 5925841
++	Digital Sampling Instrument employing cache memory (Jul. 20, 1999)
 +
-+set_params
-+  This routine sets the configuration chosen for a specific codec. The
-+  most important field in the parameters is the codec type; in most
-+  cases decoders will ignore other fields, while encoders will strictly
-+  comply to the settings
++US 5928342
++	Audio Effects Processor integrated on a single chip
++        with a multiport memory onto which multiple asynchronous
++        digital sound samples can be concurrently loaded
++	(Jul. 27, 1999)
 +
-+get_params
-+  This routines returns the actual settings used by the DSP. Changes to
-+  the settings should remain the exception.
++US 5930158
++	Processor with Instruction Set for Audio Effects (Jul. 27, 1999)
 +
-+get_timestamp
-+  The timestamp becomes a multiple field structure. It lists the number
-+  of bytes transferred, the number of samples processed and the number
-+  of samples rendered/grabbed. All these values can be used to determine
-+  the average bitrate, figure out if the ring buffer needs to be
-+  refilled or the delay due to decoding/encoding/io on the DSP.
- 
- Note that the list of codecs/profiles/modes was derived from the
- OpenMAX AL specification instead of reinventing the wheel.
-@@ -145,6 +151,7 @@ Modifications include:
- - Addition of encoding options when required (derived from OpenMAX IL)
- - Addition of rateControlSupported (missing in OpenMAX AL)
- 
++US 6032235
++	Memory initialization circuit (Tram) (Feb. 29, 2000)
 +
- Gapless Playback
- ================
- When playing thru an album, the decoders have the ability to skip the encoder
-@@ -162,19 +169,19 @@ switch from one track to another and start using data for second track.
- 
- The main additions are:
- 
--- set_metadata
--This routine sets the encoder delay and encoder padding. This can be used by
--decoder to strip the silence. This needs to be set before the data in the track
--is written.
-+set_metadata
-+  This routine sets the encoder delay and encoder padding. This can be used by
-+  decoder to strip the silence. This needs to be set before the data in the track
-+  is written.
- 
--- set_next_track
--This routine tells DSP that metadata and write operation sent after this would
--correspond to subsequent track
-+set_next_track
-+  This routine tells DSP that metadata and write operation sent after this would
-+  correspond to subsequent track
- 
--- partial drain
--This is called when end of file is reached. The userspace can inform DSP that
--EOF is reached and now DSP can start skipping padding delay. Also next write
--data would belong to next track
-+partial drain
-+  This is called when end of file is reached. The userspace can inform DSP that
-+  EOF is reached and now DSP can start skipping padding delay. Also next write
-+  data would belong to next track
- 
- Sequence flow for gapless would be:
- - Open
-@@ -189,10 +196,12 @@ Sequence flow for gapless would be:
- - then call partial_drain to flush most of buffer in DSP
- - Fill data of the next track
- - DSP switches to second track
++US 6138207
++	Interpolation looping of audio samples in cache connected to
++        system bus with prioritization and modification of bus transfers
++        in accordance with loop ends and minimum block sizes
++	(Oct. 24, 2000)
 +
- (note: order for partial_drain and write for next track can be reversed as well)
- 
--Not supported:
- 
-+Not supported
-+=============
- - Support for VoIP/circuit-switched calls is not the target of this
-   API. Support for dynamic bit-rate changes would require a tight
-   coupling between the DSP and the host stack, limiting power savings.
-@@ -225,7 +234,9 @@ Not supported:
-   rendered output in time, this does not deal with underrun/overrun and
-   maybe dealt in user-library
- 
--Credits:
++US 6151670
++	Method for conserving memory storage using a
++        pool of  short term memory registers
++	(Nov. 21, 2000)
 +
-+Credits
-+=======
- - Mark Brown and Liam Girdwood for discussions on the need for this API
- - Harsha Priya for her work on intel_sst compressed API
- - Rakesh Ughreja for valuable feedback
-diff --git a/Documentation/sound/designs/index.rst b/Documentation/sound/designs/index.rst
-index e53a5fac0acf..f7ca11307033 100644
---- a/Documentation/sound/designs/index.rst
-+++ b/Documentation/sound/designs/index.rst
-@@ -6,6 +6,7 @@ Designs and Implementations
- 
-    control-names
-    channel-mapping-api
-+   compress-offload
-    procfile
-    powersave
-    oss-emulation
++US 6195715
++	Interrupt control for multiple programs communicating with
++        a common interrupt by associating programs to GP registers,
++        defining interrupt register, polling GP registers, and invoking
++        callback routine associated with defined interrupt register
++	(Feb. 27, 2001)
 -- 
 2.10.2
