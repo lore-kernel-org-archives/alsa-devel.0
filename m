@@ -1,14 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 07/10] ASoC: doc: ReSTize pops_clicks.txt
-Date: Thu, 10 Nov 2016 22:47:19 +0100
-Message-ID: <20161110214722.14698-8-tiwai@suse.de>
+Subject: [PATCH 05/10] ASoC: doc: ReSTize platform.txt
+Date: Thu, 10 Nov 2016 22:47:17 +0100
+Message-ID: <20161110214722.14698-6-tiwai@suse.de>
 References: <20161110214722.14698-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 380F42673DA
+ by alsa0.perex.cz (Postfix) with ESMTP id 143DE2673D8
  for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 22:47:28 +0100 (CET)
 In-Reply-To: <20161110214722.14698-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,66 +25,102 @@ Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.
 List-Id: alsa-devel@alsa-project.org
 
 A simple conversion from a plain text file.
-The file name was changed from "pops_clicks" to "pops-clicks" to align
-with others.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- Documentation/sound/soc/index.rst                         |  1 +
- .../{alsa/soc/pops_clicks.txt => soc/pops-clicks.rst}     | 15 +++++++++------
- 2 files changed, 10 insertions(+), 6 deletions(-)
- rename Documentation/sound/{alsa/soc/pops_clicks.txt => soc/pops-clicks.rst} (87%)
+ Documentation/sound/soc/index.rst                  |  1 +
+ .../{alsa/soc/platform.txt => soc/platform.rst}    | 31 ++++++++++++----------
+ 2 files changed, 18 insertions(+), 14 deletions(-)
+ rename Documentation/sound/{alsa/soc/platform.txt => soc/platform.rst} (81%)
 
 diff --git a/Documentation/sound/soc/index.rst b/Documentation/sound/soc/index.rst
-index 4ac3585e7dd1..4dd679927a91 100644
+index 0c0c38e582b4..c5a55195bf4d 100644
 --- a/Documentation/sound/soc/index.rst
 +++ b/Documentation/sound/soc/index.rst
-@@ -13,3 +13,4 @@ The documentation is spilt into the following sections:-
+@@ -11,3 +11,4 @@ The documentation is spilt into the following sections:-
+    codec
+    dai
     dapm
-    platform
-    machine
-+   pops-clicks
-diff --git a/Documentation/sound/alsa/soc/pops_clicks.txt b/Documentation/sound/soc/pops-clicks.rst
-similarity index 87%
-rename from Documentation/sound/alsa/soc/pops_clicks.txt
-rename to Documentation/sound/soc/pops-clicks.rst
-index e1e74daa4497..de7eb2a6604a 100644
---- a/Documentation/sound/alsa/soc/pops_clicks.txt
-+++ b/Documentation/sound/soc/pops-clicks.rst
++   platform
+diff --git a/Documentation/sound/alsa/soc/platform.txt b/Documentation/sound/soc/platform.rst
+similarity index 81%
+rename from Documentation/sound/alsa/soc/platform.txt
+rename to Documentation/sound/soc/platform.rst
+index 3a08a2c9150c..d5574904d981 100644
+--- a/Documentation/sound/alsa/soc/platform.txt
++++ b/Documentation/sound/soc/platform.rst
 @@ -1,3 +1,4 @@
-+=====================
- Audio Pops and Clicks
- =====================
++====================
+ ASoC Platform Driver
+ ====================
  
-@@ -20,10 +21,11 @@ currently, however future audio codec hardware will have better pop and click
- suppression.  Pops can be reduced within playback by powering the audio
- components in a specific order. This order is different for startup and
- shutdown and follows some basic rules:-
+@@ -9,21 +10,23 @@ Audio DMA
+ =========
+ 
+ The platform DMA driver optionally supports the following ALSA operations:-
 +::
  
-- Startup Order :- DAC --> Mixers --> Output PGA --> Digital Unmute
--
-- Shutdown Order :- Digital Mute --> Output PGA --> Mixers --> DAC
-+   Startup Order :- DAC --> Mixers --> Output PGA --> Digital Unmute
-+  
-+   Shutdown Order :- Digital Mute --> Output PGA --> Mixers --> DAC
+-/* SoC audio ops */
+-struct snd_soc_ops {
++  /* SoC audio ops */
++  struct snd_soc_ops {
+ 	int (*startup)(struct snd_pcm_substream *);
+ 	void (*shutdown)(struct snd_pcm_substream *);
+ 	int (*hw_params)(struct snd_pcm_substream *, struct snd_pcm_hw_params *);
+ 	int (*hw_free)(struct snd_pcm_substream *);
+ 	int (*prepare)(struct snd_pcm_substream *);
+ 	int (*trigger)(struct snd_pcm_substream *, int);
+-};
++  };
  
- This assumes that the codec PCM output path from the DAC is via a mixer and then
- a PGA (programmable gain amplifier) before being output to the speakers.
-@@ -36,10 +38,11 @@ Capture artifacts are somewhat easier to get rid as we can delay activating the
- ADC until all the pops have occurred. This follows similar power rules to
- playback in that components are powered in a sequence depending upon stream
- startup or shutdown.
+ The platform driver exports its DMA functionality via struct
+ snd_soc_platform_driver:-
 +::
  
-- Startup Order - Input PGA --> Mixers --> ADC
--
-- Shutdown Order - ADC --> Mixers --> Input PGA
-+   Startup Order - Input PGA --> Mixers --> ADC
-+  
-+   Shutdown Order - ADC --> Mixers --> Input PGA
+-struct snd_soc_platform_driver {
++  struct snd_soc_platform_driver {
+ 	char *name;
  
+ 	int (*probe)(struct platform_device *pdev);
+@@ -44,7 +47,7 @@ struct snd_soc_platform_driver {
  
- Zipper Noise
+ 	/* platform stream ops */
+ 	struct snd_pcm_ops *pcm_ops;
+-};
++  };
+ 
+ Please refer to the ALSA driver documentation for details of audio DMA.
+ http://www.alsa-project.org/~iwai/writing-an-alsa-driver/
+@@ -57,11 +60,11 @@ SoC DAI Drivers
+ 
+ Each SoC DAI driver must provide the following features:-
+ 
+- 1) Digital audio interface (DAI) description
+- 2) Digital audio interface configuration
+- 3) PCM's description
+- 4) SYSCLK configuration
+- 5) Suspend and resume (optional)
++1. Digital audio interface (DAI) description
++2. Digital audio interface configuration
++3. PCM's description
++4. SYSCLK configuration
++5. Suspend and resume (optional)
+ 
+ Please see codec.txt for a description of items 1 - 4.
+ 
+@@ -71,9 +74,9 @@ SoC DSP Drivers
+ 
+ Each SoC DSP driver usually supplies the following features :-
+ 
+- 1) DAPM graph
+- 2) Mixer controls
+- 3) DMA IO to/from DSP buffers (if applicable)
+- 4) Definition of DSP front end (FE) PCM devices.
++1. DAPM graph
++2. Mixer controls
++3. DMA IO to/from DSP buffers (if applicable)
++4. Definition of DSP front end (FE) PCM devices.
+ 
+ Please see DPCM.txt for a description of item 4.
 -- 
 2.10.2
