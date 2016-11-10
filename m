@@ -1,64 +1,83 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [bug report] ASoC: cs35l34: Initial commit of the
- cs35l34 CODEC driver.
-Date: Thu, 10 Nov 2016 17:46:17 +0100
-Message-ID: <e3e2e43c-0fa2-6566-f5ca-67fbb519adae@metafoo.de>
-References: <D449EC6A.18966%Paul.Handrigan@cirrus.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: sun4i-codec: fix semicolon.cocci warnings" to the asoc
+ tree
+Date: Thu, 10 Nov 2016 17:29:30 +0000
+Message-ID: <E1c4tAI-00062L-GX@finisterre>
+References: <20161109163518.GA42508@lkp-nex06.lkp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 9862826663B
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 17:46:22 +0100 (CET)
-In-Reply-To: <D449EC6A.18966%Paul.Handrigan@cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Handrigan, Paul" <Paul.Handrigan@cirrus.com>, Dan Carpenter <dan.carpenter@oracle.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20161109163518.GA42508@lkp-nex06.lkp.intel.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Danny Milosavljevic <dannym@scratchpost.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Hans de Goede <hdegoede@redhat.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Maxime Ripard <maxime.ripard@free-electrons.com>, Fengguang Wu <fengguang.wu@intel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/10/2016 04:21 PM, Handrigan, Paul wrote:
-> 
-> 
-> On 11/10/16, 6:54 AM, "Dan Carpenter" <dan.carpenter@oracle.com> wrote:
-> 
->> Hello Paul Handrigan,
->>
->> The patch c1124c09e103: "ASoC: cs35l34: Initial commit of the cs35l34
->> CODEC driver." from Oct 12, 2016, leads to the following static
->> checker warning:
->>
->> 	sound/soc/codecs/cs35l34.c:613 cs35l34_dai_set_sysclk()
->> 	warn: odd binop '0xffffffffffffffef & 0x0'
->>
->> sound/soc/codecs/cs35l34.c
->>   604  static int cs35l34_dai_set_sysclk(struct snd_soc_dai *dai,
->>   605                                  int clk_id, unsigned int freq,
->> int dir)
->>   606  {
->>   607          struct snd_soc_codec *codec = dai->codec;
->>   608          struct cs35l34_private *cs35l34 =
->> snd_soc_codec_get_drvdata(codec);
->>   609          unsigned int value;
->>   610  
->>   611          switch (freq) {
->>   612          case CS35L34_MCLK_5644:
->>   613                  value = ~CS35L34_MCLK_DIV &
->> CS35L34_MCLK_RATE_5P6448;
->>                  
->> ^^^^^^^^^^^^^^^^^^^^^^^^
->> This is zero.  Maybe intentional?  If so just send a reply to this email
->> and I won't bother you again.
-> This is ok.
+The patch
 
-It is still a slightly unusual way to write this. And I can see why it'd
-confuse both humans as well as static checkers. Usually if you don't want to
-set a bit in a bitmask you just leave it out.
+   ASoC: sun4i-codec: fix semicolon.cocci warnings
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 35db57622c31af687d5cb14104e91897d778a8fc Mon Sep 17 00:00:00 2001
+From: kbuild test robot <fengguang.wu@intel.com>
+Date: Thu, 10 Nov 2016 00:35:18 +0800
+Subject: [PATCH] ASoC: sun4i-codec: fix semicolon.cocci warnings
+
+sound/soc/sunxi/sun4i-codec.c:1339:2-3: Unneeded semicolon
+
+ Remove unneeded semicolon.
+
+Generated by: scripts/coccinelle/misc/semicolon.cocci
+
+Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sunxi/sun4i-codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 6379efd21f00..092fdcf6de95 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -1336,7 +1336,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 			dev_err(&pdev->dev, "Failed to get reset control\n");
+ 			return PTR_ERR(scodec->rst);
+ 		}
+-	};
++	}
+ 
+ 	scodec->gpio_pa = devm_gpiod_get_optional(&pdev->dev, "allwinner,pa",
+ 						  GPIOD_OUT_LOW);
+-- 
+2.10.2
