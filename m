@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 29/30] ALSA: doc: ReSTize serial-u16550.txt
-Date: Thu, 10 Nov 2016 22:06:40 +0100
-Message-ID: <20161110210641.5907-30-tiwai@suse.de>
+Subject: [PATCH 26/30] ALSA: doc: ReSTize Bt87x.txt
+Date: Thu, 10 Nov 2016 22:06:37 +0100
+Message-ID: <20161110210641.5907-27-tiwai@suse.de>
 References: <20161110210641.5907-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DEAD62673D2
+ by alsa0.perex.cz (Postfix) with ESMTP id E20C42673D5
  for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 22:06:56 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DBA4CADF9
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 21:06:53 +0000 (UTC)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 10A45AE05
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 21:06:54 +0000 (UTC)
 In-Reply-To: <20161110210641.5907-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,92 +26,74 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Yet another simple conversion from a plain text file.
+Another	simple conversion from a plain text file.
 Put to cards directory.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- Documentation/sound/cards/index.rst                 |  1 +
- .../serial-u16550.txt => cards/serial-u16550.rst}   | 21 +++++++++++++--------
- 2 files changed, 14 insertions(+), 8 deletions(-)
- rename Documentation/sound/{alsa/serial-u16550.txt => cards/serial-u16550.rst} (92%)
+ .../sound/{alsa/Bt87x.txt => cards/bt87x.rst}      | 23 +++++++++++++---------
+ Documentation/sound/cards/index.rst                |  1 +
+ 2 files changed, 15 insertions(+), 9 deletions(-)
+ rename Documentation/sound/{alsa/Bt87x.txt => cards/bt87x.rst} (82%)
 
+diff --git a/Documentation/sound/alsa/Bt87x.txt b/Documentation/sound/cards/bt87x.rst
+similarity index 82%
+rename from Documentation/sound/alsa/Bt87x.txt
+rename to Documentation/sound/cards/bt87x.rst
+index f158cde8b065..912732d3ef9e 100644
+--- a/Documentation/sound/alsa/Bt87x.txt
++++ b/Documentation/sound/cards/bt87x.rst
+@@ -1,18 +1,23 @@
++=================
++ALSA BT87x Driver
++=================
++
+ Intro
+ =====
+ 
+ You might have noticed that the bt878 grabber cards have actually
+-_two_ PCI functions:
++*two* PCI functions:
++::
+ 
+-$ lspci
+-[ ... ]
+-00:0a.0 Multimedia video controller: Brooktree Corporation Bt878 (rev 02)
+-00:0a.1 Multimedia controller: Brooktree Corporation Bt878 (rev 02)
+-[ ... ]
++  $ lspci
++  [ ... ]
++  00:0a.0 Multimedia video controller: Brooktree Corporation Bt878 (rev 02)
++  00:0a.1 Multimedia controller: Brooktree Corporation Bt878 (rev 02)
++  [ ... ]
+ 
+ The first does video, it is backward compatible to the bt848.  The second
+ does audio.  snd-bt87x is a driver for the second function.  It's a sound
+-driver which can be used for recording sound (and _only_ recording, no
++driver which can be used for recording sound (and *only* recording, no
+ playback).  As most TV cards come with a short cable which can be plugged
+ into your sound card's line-in you probably don't need this driver if all
+ you want to do is just watching TV...
+@@ -30,9 +35,9 @@ The driver is now stable.  However, it doesn't know about many TV cards,
+ and it refuses to load for cards it doesn't know.
+ 
+ If the driver complains ("Unknown TV card found, the audio driver will
+-not load"), you can specify the load_all=1 option to force the driver to
++not load"), you can specify the ``load_all=1`` option to force the driver to
+ try to use the audio capture function of your card.  If the frequency of
+-recorded data is not right, try to specify the digital_rate option with
++recorded data is not right, try to specify the ``digital_rate`` option with
+ other values than the default 32000 (often it's 44100 or 64000).
+ 
+ If you have an unknown card, please mail the ID and board name to
 diff --git a/Documentation/sound/cards/index.rst b/Documentation/sound/cards/index.rst
-index b143eff93c87..976ef5eb8f89 100644
+index 0006bc547bb8..157372faae06 100644
 --- a/Documentation/sound/cards/index.rst
 +++ b/Documentation/sound/cards/index.rst
-@@ -15,3 +15,4 @@ Card-Specific Information
-    bt87x
-    maya44
-    hdspm
-+   serial-u16550
-diff --git a/Documentation/sound/alsa/serial-u16550.txt b/Documentation/sound/cards/serial-u16550.rst
-similarity index 92%
-rename from Documentation/sound/alsa/serial-u16550.txt
-rename to Documentation/sound/cards/serial-u16550.rst
-index c1919559d509..197aeacea3da 100644
---- a/Documentation/sound/alsa/serial-u16550.txt
-+++ b/Documentation/sound/cards/serial-u16550.rst
-@@ -1,14 +1,14 @@
--
--			Serial UART 16450/16550 MIDI driver
--			===================================
-+===================================
-+Serial UART 16450/16550 MIDI driver
-+===================================
- 
- The adaptor module parameter allows you to select either:
- 
--  0 - Roland Soundcanvas support (default)
--  1 - Midiator MS-124T support (1)
--  2 - Midiator MS-124W S/A mode (2)
--  3 - MS-124W M/B mode support (3)
--  4 - Generic device with multiple input support (4)
-+* 0 - Roland Soundcanvas support (default)
-+* 1 - Midiator MS-124T support (1)
-+* 2 - Midiator MS-124W S/A mode (2)
-+* 3 - MS-124W M/B mode support (3)
-+* 4 - Generic device with multiple input support (4)
- 
- For the Midiator MS-124W, you must set the physical M-S and A-B
- switches on the Midiator to match the driver mode you select.
-@@ -22,11 +22,13 @@ substream. The driver provides no way to send F5 00 (no selection) or to not
- send the F5 NN command sequence at all; perhaps it ought to.
- 
- Usage example for simple serial converter:
-+::
- 
- 	/sbin/setserial /dev/ttyS0 uart none
- 	/sbin/modprobe snd-serial-u16550 port=0x3f8 irq=4 speed=115200
- 
- Usage example for Roland SoundCanvas with 4 MIDI ports:
-+::
- 
- 	/sbin/setserial /dev/ttyS0 uart none
- 	/sbin/modprobe snd-serial-u16550 port=0x3f8 irq=4 outs=4
-@@ -37,6 +39,7 @@ all four MIDI Out connectors.  Set the A-B switch and the speed module
- parameter to match (A=19200, B=9600).
- 
- Usage example for MS-124T, with A-B switch in A position:
-+::
- 
- 	/sbin/setserial /dev/ttyS0 uart none
- 	/sbin/modprobe snd-serial-u16550 port=0x3f8 irq=4 adaptor=1 \
-@@ -47,6 +50,7 @@ the outs module parameter is automatically set to 1. The driver sends
- the same data to all four MIDI Out connectors at full MIDI speed.
- 
- Usage example for S/A mode:
-+::
- 
- 	/sbin/setserial /dev/ttyS0 uart none
- 	/sbin/modprobe snd-serial-u16550 port=0x3f8 irq=4 adaptor=2
-@@ -63,6 +67,7 @@ at most one byte every 520 us, as compared with the full MIDI data rate of
- one byte every 320 us per port.
- 
- Usage example for M/B mode:
-+::
- 
- 	/sbin/setserial /dev/ttyS0 uart none
- 	/sbin/modprobe snd-serial-u16550 port=0x3f8 irq=4 adaptor=3
+@@ -12,3 +12,4 @@ Card-Specific Information
+    via82xx-mixer
+    audiophile-usb
+    mixart
++   bt87x
 -- 
 2.10.2
