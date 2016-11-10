@@ -1,20 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 05/30] ALSA: doc: ReSTize HD-Audio-Models
-	document
-Date: Thu, 10 Nov 2016 22:06:16 +0100
-Message-ID: <20161110210641.5907-6-tiwai@suse.de>
-References: <20161110210641.5907-1-tiwai@suse.de>
+Subject: [PATCH 00/30] Modernize documents
+Date: Thu, 10 Nov 2016 22:06:11 +0100
+Message-ID: <20161110210641.5907-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B0A1266942
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 22:06:53 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 83D5FADCE
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B8612673BA
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 22:06:55 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 85B36ADD3
  for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 21:06:52 +0000 (UTC)
-In-Reply-To: <20161110210641.5907-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,880 +24,150 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A simple reformat with the description list of ReST, and the content
-was kept as is, but renamed as Documentation/sound/hd-audio/models.rst.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- Documentation/sound/alsa/HD-Audio-Models.txt | 324 -----------------
- Documentation/sound/hd-audio/index.rst       |   1 +
- Documentation/sound/hd-audio/models.rst      | 518 +++++++++++++++++++++++++++
- 3 files changed, 519 insertions(+), 324 deletions(-)
+this is a patch set to convert most of document files in
+Documentation/sound/alsa/ and Documentation/DocBook/ to the ReST
+format that has been recently introduced.
+
+The files are moved to a few different subdirectories depending on the
+contents, with renames to lower letters to be more consistent.
+
+I didn't try to correct / update the contents unless really needed,
+but only concentrate on reformatting.   Most of changes are trivial,
+and can be seen easily in git diff.  Some are more intrusive (e.g. the
+conversion from DocBook or HTML).
+
+The ASoC documents aren't included in this patch set.  They will
+follow later.
+
+The latest changes are found in topic/restize-docs branch of my sound
+git tree.
+
+
+Takashi
+
+===
+
+Takashi Iwai (30):
+  ALSA: doc: Remove alsa-parameters.txt
+  ALSA: doc: ReSTize alsa-driver-api document
+  ALSA: doc: ReSTize writing-an-alsa-driver document
+  ALSA: doc: ReSTize HD-Audio document
+  ALSA: doc: ReSTize HD-Audio-Models document
+  ALSA: doc: ReSTize HD-Audio-Controls document
+  ALSA: doc: ReSTize HD-Audio-DP-MST-audio.txt
+  ALSA: doc: ReSTize ALSA-Configuration document
+  ALSA: doc: ReSTize Procfile document
+  ALSA: doc: ReSTize powersave document
+  ALSA: doc: ReSTize Channel-Mapping-API document
+  ALSA: doc: ReSTize OSS-Emulation document
+  ALSA: doc: ReSTize seq_oss document
+  ALSA: doc: ReSTize ControlNames.txt
+  ALSA: doc: ReSTize compress-offload document
+  ALSA: doc: ReSTize timestamping document
+  ALSA: doc: ReSTize Jack-Controls.txt
+  ALSA: doc: ReSTize Joystick document
+  ALSA: doc: ReSTize CMIPCI document
+  ALSA: doc: ReSTize SB-Live-mixer document
+  ALSA: doc: ReSTize Audigy-mixer.txt
+  ALSA: doc: ReSTize emu10k1-jack.txt
+  ALSA: doc: ReSTize VIA82xx-mixer.txt
+  ALSA: doc: ReSTize Audiophile-USB.txt
+  ALSA: doc: ReSTize MIXART.txt
+  ALSA: doc: ReSTize Bt87x.txt
+  ALSA: doc: ReSTize README.maya44
+  ALSA: doc: ReSTize hdspm.txt
+  ALSA: doc: ReSTize serial-u16550.txt
+  ALSA: doc: ReSTize img,spdif-in.txt
+
+ Documentation/DocBook/Makefile                     |    3 +-
+ Documentation/DocBook/alsa-driver-api.tmpl         |  142 -
+ Documentation/DocBook/writing-an-alsa-driver.tmpl  | 6206 --------------------
+ Documentation/index.rst                            |    1 +
+ Documentation/sound/alsa-configuration.rst         | 2683 +++++++++
+ Documentation/sound/alsa/ALSA-Configuration.txt    | 2330 --------
+ Documentation/sound/alsa/ControlNames.txt          |  107 -
+ Documentation/sound/alsa/HD-Audio-Models.txt       |  324 -
+ Documentation/sound/alsa/VIA82xx-mixer.txt         |    8 -
+ Documentation/sound/alsa/alsa-parameters.txt       |  135 -
+ Documentation/sound/alsa/seq_oss.html              |  409 --
+ .../Audigy-mixer.txt => cards/audigy-mixer.rst}    |  297 +-
+ .../audiophile-usb.rst}                            |  258 +-
+ .../sound/{alsa/Bt87x.txt => cards/bt87x.rst}      |   23 +-
+ .../sound/{alsa/CMIPCI.txt => cards/cmipci.rst}    |   62 +-
+ .../emu10k1-jack.txt => cards/emu10k1-jack.rst}    |   20 +-
+ .../sound/{alsa/hdspm.txt => cards/hdspm.rst}      |  253 +-
+ .../img,spdif-in.txt => cards/img-spdif-in.rst}    |   24 +-
+ Documentation/sound/cards/index.rst                |   19 +
+ .../{alsa/Joystick.txt => cards/joystick.rst}      |   71 +-
+ .../sound/{alsa/README.maya44 => cards/maya44.rst} |  137 +-
+ .../sound/{alsa/MIXART.txt => cards/mixart.rst}    |   26 +-
+ .../SB-Live-mixer.txt => cards/sb-live-mixer.rst}  |  337 +-
+ .../serial-u16550.txt => cards/serial-u16550.rst}  |   21 +-
+ Documentation/sound/cards/via82xx-mixer.rst        |    8 +
+ .../channel-mapping-api.rst}                       |   77 +-
+ .../compress-offload.rst}                          |  127 +-
+ Documentation/sound/designs/control-names.rst      |  142 +
+ Documentation/sound/designs/index.rst              |   15 +
+ .../jack-controls.rst}                             |   13 +-
+ .../oss-emulation.rst}                             |  169 +-
+ .../{alsa/powersave.txt => designs/powersave.rst}  |   16 +-
+ .../{alsa/Procfile.txt => designs/procfile.rst}    |  106 +-
+ Documentation/sound/designs/seq-oss.rst            |  371 ++
+ .../timestamping.txt => designs/timestamping.rst}  |  143 +-
+ .../controls.rst}                                  |   33 +-
+ .../dp-mst.rst}                                    |   30 +-
+ Documentation/sound/hd-audio/index.rst             |   10 +
+ Documentation/sound/hd-audio/models.rst            |  518 ++
+ .../{alsa/HD-Audio.txt => hd-audio/notes.rst}      |  635 +-
+ Documentation/sound/index.rst                      |   19 +
+ Documentation/sound/kernel-api/alsa-driver-api.rst |  134 +
+ Documentation/sound/kernel-api/index.rst           |    8 +
+ .../sound/kernel-api/writing-an-alsa-driver.rst    | 4219 +++++++++++++
+ 44 files changed, 9766 insertions(+), 10923 deletions(-)
+ delete mode 100644 Documentation/DocBook/alsa-driver-api.tmpl
+ delete mode 100644 Documentation/DocBook/writing-an-alsa-driver.tmpl
+ create mode 100644 Documentation/sound/alsa-configuration.rst
+ delete mode 100644 Documentation/sound/alsa/ALSA-Configuration.txt
+ delete mode 100644 Documentation/sound/alsa/ControlNames.txt
  delete mode 100644 Documentation/sound/alsa/HD-Audio-Models.txt
+ delete mode 100644 Documentation/sound/alsa/VIA82xx-mixer.txt
+ delete mode 100644 Documentation/sound/alsa/alsa-parameters.txt
+ delete mode 100644 Documentation/sound/alsa/seq_oss.html
+ rename Documentation/sound/{alsa/Audigy-mixer.txt => cards/audigy-mixer.rst} (57%)
+ rename Documentation/sound/{alsa/Audiophile-Usb.txt => cards/audiophile-usb.rst} (81%)
+ rename Documentation/sound/{alsa/Bt87x.txt => cards/bt87x.rst} (82%)
+ rename Documentation/sound/{alsa/CMIPCI.txt => cards/cmipci.rst} (86%)
+ rename Documentation/sound/{alsa/emu10k1-jack.txt => cards/emu10k1-jack.rst} (89%)
+ rename Documentation/sound/{alsa/hdspm.txt => cards/hdspm.rst} (56%)
+ rename Documentation/sound/{alsa/img,spdif-in.txt => cards/img-spdif-in.rst} (68%)
+ create mode 100644 Documentation/sound/cards/index.rst
+ rename Documentation/sound/{alsa/Joystick.txt => cards/joystick.rst} (56%)
+ rename Documentation/sound/{alsa/README.maya44 => cards/maya44.rst} (65%)
+ rename Documentation/sound/{alsa/MIXART.txt => cards/mixart.rst} (83%)
+ rename Documentation/sound/{alsa/SB-Live-mixer.txt => cards/sb-live-mixer.rst} (54%)
+ rename Documentation/sound/{alsa/serial-u16550.txt => cards/serial-u16550.rst} (92%)
+ create mode 100644 Documentation/sound/cards/via82xx-mixer.rst
+ rename Documentation/sound/{alsa/Channel-Mapping-API.txt => designs/channel-mapping-api.rst} (75%)
+ rename Documentation/sound/{alsa/compress_offload.txt => designs/compress-offload.rst} (73%)
+ create mode 100644 Documentation/sound/designs/control-names.rst
+ create mode 100644 Documentation/sound/designs/index.rst
+ rename Documentation/sound/{alsa/Jack-Controls.txt => designs/jack-controls.rst} (86%)
+ rename Documentation/sound/{alsa/OSS-Emulation.txt => designs/oss-emulation.rst} (70%)
+ rename Documentation/sound/{alsa/powersave.txt => designs/powersave.rst} (76%)
+ rename Documentation/sound/{alsa/Procfile.txt => designs/procfile.rst} (71%)
+ create mode 100644 Documentation/sound/designs/seq-oss.rst
+ rename Documentation/sound/{alsa/timestamping.txt => designs/timestamping.rst} (56%)
+ rename Documentation/sound/{alsa/HD-Audio-Controls.txt => hd-audio/controls.rst} (92%)
+ rename Documentation/sound/{alsa/HD-Audio-DP-MST-audio.txt => hd-audio/dp-mst.rst} (69%)
+ create mode 100644 Documentation/sound/hd-audio/index.rst
  create mode 100644 Documentation/sound/hd-audio/models.rst
+ rename Documentation/sound/{alsa/HD-Audio.txt => hd-audio/notes.rst} (61%)
+ create mode 100644 Documentation/sound/index.rst
+ create mode 100644 Documentation/sound/kernel-api/alsa-driver-api.rst
+ create mode 100644 Documentation/sound/kernel-api/index.rst
+ create mode 100644 Documentation/sound/kernel-api/writing-an-alsa-driver.rst
 
-diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt b/Documentation/sound/alsa/HD-Audio-Models.txt
-deleted file mode 100644
-index ec099d4343f2..000000000000
---- a/Documentation/sound/alsa/HD-Audio-Models.txt
-+++ /dev/null
-@@ -1,324 +0,0 @@
--  Model name	Description
--  ----------    -----------
--ALC880
--======
--  3stack	3-jack in back and a headphone out
--  3stack-digout	3-jack in back, a HP out and a SPDIF out
--  5stack	5-jack in back, 2-jack in front
--  5stack-digout	5-jack in back, 2-jack in front, a SPDIF out
--  6stack	6-jack in back, 2-jack in front
--  6stack-digout	6-jack with a SPDIF out
--
--ALC260
--======
--  gpio1		Enable GPIO1
--  coef		Enable EAPD via COEF table
--  fujitsu	Quirk for FSC S7020
--  fujitsu-jwse	Quirk for FSC S7020 with jack modes and HP mic support
--
--ALC262
--======
--  inv-dmic	Inverted internal mic workaround
--
--ALC267/268
--==========
--  inv-dmic	Inverted internal mic workaround
--  hp-eapd	Disable HP EAPD on NID 0x15
--
--ALC22x/23x/25x/269/27x/28x/29x (and vendor-specific ALC3xxx models)
--======
--  laptop-amic		Laptops with analog-mic input
--  laptop-dmic		Laptops with digital-mic input
--  alc269-dmic		Enable ALC269(VA) digital mic workaround
--  alc271-dmic		Enable ALC271X digital mic workaround
--  inv-dmic		Inverted internal mic workaround
--  headset-mic		Indicates a combined headset (headphone+mic) jack
--  headset-mode		More comprehensive headset support for ALC269 & co
--  headset-mode-no-hp-mic Headset mode support without headphone mic
--  lenovo-dock   	Enables docking station I/O for some Lenovos
--  hp-gpio-led		GPIO LED support on HP laptops
--  dell-headset-multi	Headset jack, which can also be used as mic-in
--  dell-headset-dock	Headset jack (without mic-in), and also dock I/O
--  alc283-dac-wcaps	Fixups for Chromebook with ALC283
--  alc283-sense-combo	Combo jack sensing on ALC283
--  tpt440-dock		Pin configs for Lenovo Thinkpad Dock support
--
--ALC66x/67x/892
--==============
--  mario			Chromebook mario model fixup
--  asus-mode1		ASUS
--  asus-mode2		ASUS
--  asus-mode3		ASUS
--  asus-mode4		ASUS
--  asus-mode5		ASUS
--  asus-mode6		ASUS
--  asus-mode7		ASUS
--  asus-mode8		ASUS
--  inv-dmic		Inverted internal mic workaround
--  dell-headset-multi	Headset jack, which can also be used as mic-in
--
--ALC680
--======
--  N/A
--
--ALC88x/898/1150
--======================
--  acer-aspire-4930g	Acer Aspire 4930G/5930G/6530G/6930G/7730G
--  acer-aspire-8930g	Acer Aspire 8330G/6935G
--  acer-aspire		Acer Aspire others
--  inv-dmic		Inverted internal mic workaround
--  no-primary-hp		VAIO Z/VGC-LN51JGB workaround (for fixed speaker DAC)
--
--ALC861/660
--==========
--  N/A
--
--ALC861VD/660VD
--==============
--  N/A
--
--CMI9880
--=======
--  minimal	3-jack in back
--  min_fp	3-jack in back, 2-jack in front
--  full		6-jack in back, 2-jack in front
--  full_dig	6-jack in back, 2-jack in front, SPDIF I/O
--  allout	5-jack in back, 2-jack in front, SPDIF out
--  auto		auto-config reading BIOS (default)
--
--AD1882 / AD1882A
--================
--  3stack	3-stack mode
--  3stack-automute 3-stack with automute front HP (default)
--  6stack	6-stack mode
--
--AD1884A / AD1883 / AD1984A / AD1984B
--====================================
--  desktop	3-stack desktop (default)
--  laptop	laptop with HP jack sensing
--  mobile	mobile devices with HP jack sensing
--  thinkpad	Lenovo Thinkpad X300
--  touchsmart	HP Touchsmart
--
--AD1884
--======
--  N/A
--
--AD1981
--======
--  basic		3-jack (default)
--  hp		HP nx6320
--  thinkpad	Lenovo Thinkpad T60/X60/Z60
--  toshiba	Toshiba U205
--
--AD1983
--======
--  N/A
--
--AD1984
--======
--  basic		default configuration
--  thinkpad	Lenovo Thinkpad T61/X61
--  dell_desktop	Dell T3400
--
--AD1986A
--=======
--  3stack	3-stack, shared surrounds
--  laptop	2-channel only (FSC V2060, Samsung M50)
--  laptop-imic	2-channel with built-in mic
--  eapd		Turn on EAPD constantly
--
--AD1988/AD1988B/AD1989A/AD1989B
--==============================
--  6stack	6-jack
--  6stack-dig	ditto with SPDIF
--  3stack	3-jack
--  3stack-dig	ditto with SPDIF
--  laptop	3-jack with hp-jack automute
--  laptop-dig	ditto with SPDIF
--  auto		auto-config reading BIOS (default)
--
--Conexant 5045
--=============
--  laptop-hpsense    Laptop with HP sense (old model laptop)
--  laptop-micsense   Laptop with Mic sense (old model fujitsu)
--  laptop-hpmicsense Laptop with HP and Mic senses
--  benq		Benq R55E
--  laptop-hp530	HP 530 laptop
--  test		for testing/debugging purpose, almost all controls
--		can be adjusted.  Appearing only when compiled with
--		$CONFIG_SND_DEBUG=y
--
--Conexant 5047
--=============
--  laptop	Basic Laptop config 
--  laptop-hp	Laptop config for some HP models (subdevice 30A5)
--  laptop-eapd	Laptop config with EAPD support
--  test		for testing/debugging purpose, almost all controls
--		can be adjusted.  Appearing only when compiled with
--		$CONFIG_SND_DEBUG=y
--
--Conexant 5051
--=============
--  laptop	Basic Laptop config (default)
--  hp		HP Spartan laptop
--  hp-dv6736	HP dv6736
--  hp-f700	HP Compaq Presario F700
--  ideapad	Lenovo IdeaPad laptop
--  toshiba	Toshiba Satellite M300
--
--Conexant 5066
--=============
--  laptop	Basic Laptop config (default)
--  hp-laptop	HP laptops, e g G60
--  asus		Asus K52JU, Lenovo G560
--  dell-laptop	Dell laptops
--  dell-vostro	Dell Vostro
--  olpc-xo-1_5	OLPC XO 1.5
--  ideapad       Lenovo IdeaPad U150
--  thinkpad	Lenovo Thinkpad
--
--STAC9200
--========
--  ref		Reference board
--  oqo		OQO Model 2
--  dell-d21	Dell (unknown)
--  dell-d22	Dell (unknown)
--  dell-d23	Dell (unknown)
--  dell-m21	Dell Inspiron 630m, Dell Inspiron 640m
--  dell-m22	Dell Latitude D620, Dell Latitude D820
--  dell-m23	Dell XPS M1710, Dell Precision M90
--  dell-m24	Dell Latitude 120L
--  dell-m25	Dell Inspiron E1505n
--  dell-m26	Dell Inspiron 1501
--  dell-m27	Dell Inspiron E1705/9400
--  gateway-m4	Gateway laptops with EAPD control
--  gateway-m4-2	Gateway laptops with EAPD control
--  panasonic	Panasonic CF-74
--  auto		BIOS setup (default)
--
--STAC9205/9254
--=============
--  ref		Reference board
--  dell-m42	Dell (unknown)
--  dell-m43	Dell Precision
--  dell-m44	Dell Inspiron
--  eapd		Keep EAPD on (e.g. Gateway T1616)
--  auto		BIOS setup (default)
--
--STAC9220/9221
--=============
--  ref		Reference board
--  3stack	D945 3stack
--  5stack	D945 5stack + SPDIF
--  intel-mac-v1	Intel Mac Type 1
--  intel-mac-v2	Intel Mac Type 2
--  intel-mac-v3	Intel Mac Type 3
--  intel-mac-v4	Intel Mac Type 4
--  intel-mac-v5	Intel Mac Type 5
--  intel-mac-auto Intel Mac (detect type according to subsystem id)
--  macmini	Intel Mac Mini (equivalent with type 3)
--  macbook	Intel Mac Book (eq. type 5)
--  macbook-pro-v1 Intel Mac Book Pro 1st generation (eq. type 3)
--  macbook-pro	Intel Mac Book Pro 2nd generation (eq. type 3)
--  imac-intel	Intel iMac (eq. type 2)
--  imac-intel-20	Intel iMac (newer version) (eq. type 3)
--  ecs202	ECS/PC chips
--  dell-d81	Dell (unknown)
--  dell-d82	Dell (unknown)
--  dell-m81	Dell (unknown)
--  dell-m82	Dell XPS M1210
--  auto		BIOS setup (default)
--
--STAC9202/9250/9251
--==================
--  ref		Reference board, base config
--  m1		Some Gateway MX series laptops (NX560XL)
--  m1-2		Some Gateway MX series laptops (MX6453)
--  m2		Some Gateway MX series laptops (M255)
--  m2-2		Some Gateway MX series laptops
--  m3		Some Gateway MX series laptops
--  m5		Some Gateway MX series laptops (MP6954)
--  m6		Some Gateway NX series laptops
--  auto		BIOS setup (default)
--
--STAC9227/9228/9229/927x
--=======================
--  ref		Reference board
--  ref-no-jd	Reference board without HP/Mic jack detection
--  3stack	D965 3stack
--  5stack	D965 5stack + SPDIF
--  5stack-no-fp	D965 5stack without front panel
--  dell-3stack	Dell Dimension E520
--  dell-bios	Fixes with Dell BIOS setup
--  dell-bios-amic Fixes with Dell BIOS setup including analog mic
--  volknob	Fixes with volume-knob widget 0x24
--  auto		BIOS setup (default)
--
--STAC92HD71B*
--============
--  ref		Reference board
--  dell-m4-1	Dell desktops
--  dell-m4-2	Dell desktops
--  dell-m4-3	Dell desktops
--  hp-m4		HP mini 1000
--  hp-dv5	HP dv series
--  hp-hdx	HP HDX series
--  hp-dv4-1222nr	HP dv4-1222nr (with LED support)
--  auto		BIOS setup (default)
--
--STAC92HD73*
--===========
--  ref		Reference board
--  no-jd		BIOS setup but without jack-detection
--  intel		Intel DG45* mobos
--  dell-m6-amic	Dell desktops/laptops with analog mics
--  dell-m6-dmic	Dell desktops/laptops with digital mics
--  dell-m6	Dell desktops/laptops with both type of mics
--  dell-eq	Dell desktops/laptops
--  alienware	Alienware M17x
--  auto		BIOS setup (default)
--
--STAC92HD83*
--===========
--  ref		Reference board
--  mic-ref	Reference board with power management for ports
--  dell-s14	Dell laptop
--  dell-vostro-3500	Dell Vostro 3500 laptop
--  hp-dv7-4000	HP dv-7 4000
--  hp_cNB11_intquad HP CNB models with 4 speakers
--  hp-zephyr	HP Zephyr
--  hp-led	HP with broken BIOS for mute LED
--  hp-inv-led	HP with broken BIOS for inverted mute LED
--  hp-mic-led	HP with mic-mute LED
--  headset-jack	Dell Latitude with a 4-pin headset jack
--  hp-envy-bass	Pin fixup for HP Envy bass speaker (NID 0x0f)
--  hp-envy-ts-bass Pin fixup for HP Envy TS bass speaker (NID 0x10)
--  hp-bnb13-eq	Hardware equalizer setup for HP laptops
--  auto		BIOS setup (default)
--
--STAC92HD95
--==========
--  hp-led	LED support for HP laptops
--  hp-bass	Bass HPF setup for HP Spectre 13
--
--STAC9872
--========
--  vaio		VAIO laptop without SPDIF
--  auto		BIOS setup (default)
--
--Cirrus Logic CS4206/4207
--========================
--  mbp55		MacBook Pro 5,5
--  imac27	IMac 27 Inch
--  auto		BIOS setup (default)
--
--Cirrus Logic CS4208
--===================
--  mba6		MacBook Air 6,1 and 6,2
--  gpio0		Enable GPIO 0 amp
--  auto		BIOS setup (default)
--
--VIA VT17xx/VT18xx/VT20xx
--========================
--  auto		BIOS setup (default)
-diff --git a/Documentation/sound/hd-audio/index.rst b/Documentation/sound/hd-audio/index.rst
-index f2dc29019f12..1e8376b0066c 100644
---- a/Documentation/sound/hd-audio/index.rst
-+++ b/Documentation/sound/hd-audio/index.rst
-@@ -5,3 +5,4 @@ HD-Audio
-    :maxdepth: 2
- 
-    notes
-+   models
-diff --git a/Documentation/sound/hd-audio/models.rst b/Documentation/sound/hd-audio/models.rst
-new file mode 100644
-index 000000000000..5338673c88d9
---- /dev/null
-+++ b/Documentation/sound/hd-audio/models.rst
-@@ -0,0 +1,518 @@
-+==============================
-+HD-Audio Codec-Specific Models
-+==============================
-+
-+ALC880
-+======
-+3stack
-+    3-jack in back and a headphone out
-+3stack-digout
-+    3-jack in back, a HP out and a SPDIF out
-+5stack
-+    5-jack in back, 2-jack in front
-+5stack-digout
-+    5-jack in back, 2-jack in front, a SPDIF out
-+6stack
-+    6-jack in back, 2-jack in front
-+6stack-digout
-+    6-jack with a SPDIF out
-+
-+ALC260
-+======
-+gpio1
-+    Enable GPIO1
-+coef
-+    Enable EAPD via COEF table
-+fujitsu
-+    Quirk for FSC S7020
-+fujitsu-jwse
-+    Quirk for FSC S7020 with jack modes and HP mic support
-+
-+ALC262
-+======
-+inv-dmic
-+    Inverted internal mic workaround
-+
-+ALC267/268
-+==========
-+inv-dmic
-+    Inverted internal mic workaround
-+hp-eapd
-+    Disable HP EAPD on NID 0x15
-+
-+ALC22x/23x/25x/269/27x/28x/29x (and vendor-specific ALC3xxx models)
-+===================================================================
-+laptop-amic
-+    Laptops with analog-mic input
-+laptop-dmic
-+    Laptops with digital-mic input
-+alc269-dmic
-+    Enable ALC269(VA) digital mic workaround
-+alc271-dmic
-+    Enable ALC271X digital mic workaround
-+inv-dmic
-+    Inverted internal mic workaround
-+headset-mic
-+    Indicates a combined headset (headphone+mic) jack
-+headset-mode
-+    More comprehensive headset support for ALC269 & co
-+headset-mode-no-hp-mic
-+    Headset mode support without headphone mic
-+lenovo-dock
-+    Enables docking station I/O for some Lenovos
-+hp-gpio-led
-+    GPIO LED support on HP laptops
-+dell-headset-multi
-+    Headset jack, which can also be used as mic-in
-+dell-headset-dock
-+    Headset jack (without mic-in), and also dock I/O
-+alc283-dac-wcaps
-+    Fixups for Chromebook with ALC283
-+alc283-sense-combo
-+    Combo jack sensing on ALC283
-+tpt440-dock
-+    Pin configs for Lenovo Thinkpad Dock support
-+
-+ALC66x/67x/892
-+==============
-+mario
-+    Chromebook mario model fixup
-+asus-mode1
-+    ASUS
-+asus-mode2
-+    ASUS
-+asus-mode3
-+    ASUS
-+asus-mode4
-+    ASUS
-+asus-mode5
-+    ASUS
-+asus-mode6
-+    ASUS
-+asus-mode7
-+    ASUS
-+asus-mode8
-+    ASUS
-+inv-dmic
-+    Inverted internal mic workaround
-+dell-headset-multi
-+    Headset jack, which can also be used as mic-in
-+
-+ALC680
-+======
-+N/A
-+
-+ALC88x/898/1150
-+======================
-+acer-aspire-4930g
-+    Acer Aspire 4930G/5930G/6530G/6930G/7730G
-+acer-aspire-8930g
-+    Acer Aspire 8330G/6935G
-+acer-aspire
-+    Acer Aspire others
-+inv-dmic
-+    Inverted internal mic workaround
-+no-primary-hp
-+    VAIO Z/VGC-LN51JGB workaround (for fixed speaker DAC)
-+
-+ALC861/660
-+==========
-+N/A
-+
-+ALC861VD/660VD
-+==============
-+N/A
-+
-+CMI9880
-+=======
-+minimal
-+    3-jack in back
-+min_fp
-+    3-jack in back, 2-jack in front
-+full
-+    6-jack in back, 2-jack in front
-+full_dig
-+    6-jack in back, 2-jack in front, SPDIF I/O
-+allout
-+    5-jack in back, 2-jack in front, SPDIF out
-+auto
-+    auto-config reading BIOS (default)
-+
-+AD1882 / AD1882A
-+================
-+3stack
-+    3-stack mode
-+3stack-automute
-+    3-stack with automute front HP (default)
-+6stack
-+    6-stack mode
-+
-+AD1884A / AD1883 / AD1984A / AD1984B
-+====================================
-+desktop	3-stack desktop (default)
-+laptop	laptop with HP jack sensing
-+mobile	mobile devices with HP jack sensing
-+thinkpad	Lenovo Thinkpad X300
-+touchsmart	HP Touchsmart
-+
-+AD1884
-+======
-+N/A
-+
-+AD1981
-+======
-+basic		3-jack (default)
-+hp		HP nx6320
-+thinkpad	Lenovo Thinkpad T60/X60/Z60
-+toshiba	Toshiba U205
-+
-+AD1983
-+======
-+N/A
-+
-+AD1984
-+======
-+basic		default configuration
-+thinkpad	Lenovo Thinkpad T61/X61
-+dell_desktop	Dell T3400
-+
-+AD1986A
-+=======
-+3stack
-+    3-stack, shared surrounds
-+laptop
-+    2-channel only (FSC V2060, Samsung M50)
-+laptop-imic
-+    2-channel with built-in mic
-+eapd
-+    Turn on EAPD constantly
-+
-+AD1988/AD1988B/AD1989A/AD1989B
-+==============================
-+6stack
-+    6-jack
-+6stack-dig
-+    ditto with SPDIF
-+3stack
-+    3-jack
-+3stack-dig
-+    ditto with SPDIF
-+laptop
-+    3-jack with hp-jack automute
-+laptop-dig
-+    ditto with SPDIF
-+auto
-+    auto-config reading BIOS (default)
-+
-+Conexant 5045
-+=============
-+laptop-hpsense
-+    Laptop with HP sense (old model laptop)
-+laptop-micsense
-+    Laptop with Mic sense (old model fujitsu)
-+laptop-hpmicsense
-+    Laptop with HP and Mic senses
-+benq
-+    Benq R55E
-+laptop-hp530
-+    HP 530 laptop
-+test
-+    for testing/debugging purpose, almost all controls can be
-+    adjusted.  Appearing only when compiled with $CONFIG_SND_DEBUG=y
-+
-+Conexant 5047
-+=============
-+laptop
-+    Basic Laptop config 
-+laptop-hp
-+    Laptop config for some HP models (subdevice 30A5)
-+laptop-eapd
-+    Laptop config with EAPD support
-+test
-+    for testing/debugging purpose, almost all controls can be
-+    adjusted.  Appearing only when compiled with $CONFIG_SND_DEBUG=y
-+
-+Conexant 5051
-+=============
-+laptop
-+    Basic Laptop config (default)
-+hp
-+    HP Spartan laptop
-+hp-dv6736
-+    HP dv6736
-+hp-f700
-+    HP Compaq Presario F700
-+ideapad
-+    Lenovo IdeaPad laptop
-+toshiba
-+    Toshiba Satellite M300
-+
-+Conexant 5066
-+=============
-+laptop
-+    Basic Laptop config (default)
-+hp-laptop
-+    HP laptops, e g G60
-+asus
-+    Asus K52JU, Lenovo G560
-+dell-laptop
-+    Dell laptops
-+dell-vostro
-+    Dell Vostro
-+olpc-xo-1_5
-+    OLPC XO 1.5
-+ideapad
-+    Lenovo IdeaPad U150
-+thinkpad
-+    Lenovo Thinkpad
-+
-+STAC9200
-+========
-+ref
-+    Reference board
-+oqo
-+    OQO Model 2
-+dell-d21
-+    Dell (unknown)
-+dell-d22
-+    Dell (unknown)
-+dell-d23
-+    Dell (unknown)
-+dell-m21
-+    Dell Inspiron 630m, Dell Inspiron 640m
-+dell-m22
-+    Dell Latitude D620, Dell Latitude D820
-+dell-m23
-+    Dell XPS M1710, Dell Precision M90
-+dell-m24
-+    Dell Latitude 120L
-+dell-m25
-+    Dell Inspiron E1505n
-+dell-m26
-+    Dell Inspiron 1501
-+dell-m27
-+    Dell Inspiron E1705/9400
-+gateway-m4
-+    Gateway laptops with EAPD control
-+gateway-m4-2
-+    Gateway laptops with EAPD control
-+panasonic
-+    Panasonic CF-74
-+auto
-+    BIOS setup (default)
-+
-+STAC9205/9254
-+=============
-+ref
-+    Reference board
-+dell-m42
-+    Dell (unknown)
-+dell-m43
-+    Dell Precision
-+dell-m44
-+    Dell Inspiron
-+eapd
-+    Keep EAPD on (e.g. Gateway T1616)
-+auto
-+    BIOS setup (default)
-+
-+STAC9220/9221
-+=============
-+ref
-+    Reference board
-+3stack
-+    D945 3stack
-+5stack
-+    D945 5stack + SPDIF
-+intel-mac-v1
-+    Intel Mac Type 1
-+intel-mac-v2
-+    Intel Mac Type 2
-+intel-mac-v3
-+    Intel Mac Type 3
-+intel-mac-v4
-+    Intel Mac Type 4
-+intel-mac-v5
-+    Intel Mac Type 5
-+intel-mac-auto
-+    Intel Mac (detect type according to subsystem id)
-+macmini
-+    Intel Mac Mini (equivalent with type 3)
-+macbook
-+    Intel Mac Book (eq. type 5)
-+macbook-pro-v1
-+    Intel Mac Book Pro 1st generation (eq. type 3)
-+macbook-pro
-+    Intel Mac Book Pro 2nd generation (eq. type 3)
-+imac-intel
-+    Intel iMac (eq. type 2)
-+imac-intel-20
-+    Intel iMac (newer version) (eq. type 3)
-+ecs202
-+    ECS/PC chips
-+dell-d81
-+    Dell (unknown)
-+dell-d82
-+    Dell (unknown)
-+dell-m81
-+    Dell (unknown)
-+dell-m82
-+    Dell XPS M1210
-+auto
-+    BIOS setup (default)
-+
-+STAC9202/9250/9251
-+==================
-+ref
-+    Reference board, base config
-+m1
-+    Some Gateway MX series laptops (NX560XL)
-+m1-2
-+    Some Gateway MX series laptops (MX6453)
-+m2
-+    Some Gateway MX series laptops (M255)
-+m2-2
-+    Some Gateway MX series laptops
-+m3
-+    Some Gateway MX series laptops
-+m5
-+    Some Gateway MX series laptops (MP6954)
-+m6
-+    Some Gateway NX series laptops
-+auto
-+    BIOS setup (default)
-+
-+STAC9227/9228/9229/927x
-+=======================
-+ref
-+    Reference board
-+ref-no-jd
-+    Reference board without HP/Mic jack detection
-+3stack
-+    D965 3stack
-+5stack
-+    D965 5stack + SPDIF
-+5stack-no-fp
-+    D965 5stack without front panel
-+dell-3stack
-+    Dell Dimension E520
-+dell-bios
-+    Fixes with Dell BIOS setup
-+dell-bios-amic
-+    Fixes with Dell BIOS setup including analog mic
-+volknob
-+    Fixes with volume-knob widget 0x24
-+auto
-+    BIOS setup (default)
-+
-+STAC92HD71B*
-+============
-+ref
-+    Reference board
-+dell-m4-1
-+    Dell desktops
-+dell-m4-2
-+    Dell desktops
-+dell-m4-3
-+    Dell desktops
-+hp-m4
-+    HP mini 1000
-+hp-dv5
-+    HP dv series
-+hp-hdx
-+    HP HDX series
-+hp-dv4-1222nr
-+    HP dv4-1222nr (with LED support)
-+auto
-+    BIOS setup (default)
-+
-+STAC92HD73*
-+===========
-+ref
-+    Reference board
-+no-jd
-+    BIOS setup but without jack-detection
-+intel
-+    Intel DG45* mobos
-+dell-m6-amic
-+    Dell desktops/laptops with analog mics
-+dell-m6-dmic
-+    Dell desktops/laptops with digital mics
-+dell-m6
-+    Dell desktops/laptops with both type of mics
-+dell-eq
-+    Dell desktops/laptops
-+alienware
-+    Alienware M17x
-+auto
-+    BIOS setup (default)
-+
-+STAC92HD83*
-+===========
-+ref
-+    Reference board
-+mic-ref
-+    Reference board with power management for ports
-+dell-s14
-+    Dell laptop
-+dell-vostro-3500
-+    Dell Vostro 3500 laptop
-+hp-dv7-4000
-+    HP dv-7 4000
-+hp_cNB11_intquad
-+    HP CNB models with 4 speakers
-+hp-zephyr
-+    HP Zephyr
-+hp-led
-+    HP with broken BIOS for mute LED
-+hp-inv-led
-+    HP with broken BIOS for inverted mute LED
-+hp-mic-led
-+    HP with mic-mute LED
-+headset-jack
-+    Dell Latitude with a 4-pin headset jack
-+hp-envy-bass
-+    Pin fixup for HP Envy bass speaker (NID 0x0f)
-+hp-envy-ts-bass
-+    Pin fixup for HP Envy TS bass speaker (NID 0x10)
-+hp-bnb13-eq
-+    Hardware equalizer setup for HP laptops
-+auto
-+    BIOS setup (default)
-+
-+STAC92HD95
-+==========
-+hp-led
-+    LED support for HP laptops
-+hp-bass
-+    Bass HPF setup for HP Spectre 13
-+
-+STAC9872
-+========
-+vaio
-+    VAIO laptop without SPDIF
-+auto
-+    BIOS setup (default)
-+
-+Cirrus Logic CS4206/4207
-+========================
-+mbp55
-+    MacBook Pro 5,5
-+imac27
-+    IMac 27 Inch
-+auto
-+    BIOS setup (default)
-+
-+Cirrus Logic CS4208
-+===================
-+mba6
-+    MacBook Air 6,1 and 6,2
-+gpio0
-+    Enable GPIO 0 amp
-+auto
-+    BIOS setup (default)
-+
-+VIA VT17xx/VT18xx/VT20xx
-+========================
-+auto
-+    BIOS setup (default)
 -- 
 2.10.2
