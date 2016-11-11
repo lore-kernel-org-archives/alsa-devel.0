@@ -1,104 +1,65 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [RFC 00/17] clk: Add per-controller locks to fix deadlocks
-Date: Fri, 11 Nov 2016 18:38:44 -0800
-Message-ID: <20161112023844.GG5177@codeaurora.org>
-References: <1471354514-24224-1-git-send-email-k.kozlowski@samsung.com>
- <20160909002432.GE13062@codeaurora.org>
- <CGME20161104105318eucas1p2e9458dbe7039f2a81419fae8cf6bc4c8@eucas1p2.samsung.com>
- <7933d51e-92a8-ca6d-84f0-70b22fe17568@samsung.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix mic regression by ASRock mobo
+	fixup
+Date: Fri, 11 Nov 2016 17:04:41 +0100
+Message-ID: <20161111160441.3734-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <7933d51e-92a8-ca6d-84f0-70b22fe17568@samsung.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Michael Turquette <mturquette@baylibre.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Kukjin Kim <kgene@kernel.org>, Russell King <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, Charles Keepax <ckeep>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CB03267415
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2016 17:04:43 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 34D27AD48
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2016 16:04:43 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/04, Marek Szyprowski wrote:
-> Hi Stephen,
-> 
-> Krzysztof has left Samsung, but we would like to continue this task, because
-> the ABBA dead-locks related to global prepare lock becomes more and more
-> problematic for us to workaround.
+The commit [1a3f099101b8: ALSA: hda - Fix surround output pins for
+ASRock B150M mobo] introduced a fixup of pin configs for ASRock
+mobos to fix the surround outputs.  However, this overrides the pin
+configs of the mic pins as if they are outputs-only, effectively
+disabling the mic inputs.  Of course, it's a regression wrt mic
+functionality.
 
-Hmm. Ok. Thanks for the info.
+Actually the pins 0x18 and 0x1a don't need to be changed; we just need
+to disable the bogus pins 0x14 and 0x15.  Then the auto-parser will
+pick up mic pins as switchable and assign the surround outputs there.
 
-> 
-> On 2016-09-09 02:24, Stephen Boyd wrote:
-> 
-> >So I'm not very fond of this design because the locking scheme is
-> >pretty much out of the hands of the framework and can be easily
-> >broken.
-> 
-> Well, switching from a single global lock to more granular locking
-> is always a good approach. Please note that the global lock sooner
-> or later became a serious bottleneck if one wants to make somehow
-> more aggressive power management and clock gating.
+This patch removes the incorrect pin overrides of NID 0x18 and 0x1a
+from the ASRock fixup.
 
-I'm not so sure switching from a global lock to a more granular
-lock is _always_ a great idea. Sometimes simpler code is better,
-even if it doesn't scale to a million clk nodes. The largest
-systems I've seen only have clocks in the hundreds, and a
-majority of those aren't rate changing in parallel, so it's not
-like we're suffering from VFS type scalability problems here with
-tens of thousands of inodes.
+Fixes: 1a3f099101b8 ('ALSA: hda - Fix surround output pins for ASRock...')
+Reported-and-tested-by: Vitor Antunes <vitor.hda@gmail.com>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=187431
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-That isn't to say I don't agree there's a scalability problem
-here, but I'd like to actually see numbers to prove that there's
-some sort of scalability problem before making drastic changes.
-
-> 
-> >  I'm biased of course, because I'd prefer we go with my
-> >wwmutex design of per-clk locks[1]. Taking locks in any order
-> >works fine there, and we resolve quite a few long standing
-> >locking problems that we have while improving scalability. The
-> >problem there is that we don't get the recursive mutex design
-> >(maybe that's a benefit!).
-> 
-> Do you have any plan to continue working on your approach? per-clk
-> wwmutex looks like an overkill on the first glance, but that's probably
-> the only working solution if you want to get rid of recursive locks.
-> I'm still not really convinced that we really need wwmutex here,
-> especially if it is possible to guarantee the same order of locking
-> operations inside the clock core. This requires a bit of cooperation
-> from clock providers (with proper documentation and a list of
-> DO/DON'T it shouldn't be that hard).
-
-So far I haven't gotten around to resurrecting the wwmutex stuff.
-If you have interest in doing it that's great. Having a locking
-scheme with rules of DO/DON'T sounds brittle to me, unless it can
-be automated to find problems. I know that I'm not going to spend
-time policing that.
-
-> 
-> >Once a clk_op reenters the framework
-> >with consumer APIs and tries to grab the same lock we deadlock.
-> >This is why I've been slowly splitting consumers from providers
-> >so we can easily identify these cases. If we had something like
-> >coordinated clk rate switching, we could get rid of clk_ops
-> >reentering the framework and avoid this problem (and we really do
-> >need to do that).
-> 
-> I'm not sure that this makes really sense split consumers and
-> providers. You will get recursive calls to clk core anyway with
-> consumers calls if you are implementing i2c clock, for which an i2c
-> bus driver does it's own clock gating (i2c controller uses
-> consumer clk api).
-> 
-> 
-
-I suppose this is a different topic. Regardless of the recursive
-call or not, we can easily see that a clk consumer is also a clk
-provider and just knowing that is useful. Once we know that, we
-can look to see if they're calling clk consumer APIs from their
-provider callbacks which is not desired because it makes it
-impossible to get rid of the recursive lock design. If the lock
-is per-clock, then recursion doesn't happen when the provider is
-also a consumer. If it does, that's bad and lockdep should tell
-us.
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 2f909dd8b7b8..ea81c08ddc7a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6907,8 +6907,6 @@ static const struct hda_fixup alc662_fixups[] = {
+ 		.v.pins = (const struct hda_pintbl[]) {
+ 			{ 0x15, 0x40f000f0 }, /* disabled */
+ 			{ 0x16, 0x40f000f0 }, /* disabled */
+-			{ 0x18, 0x01014011 }, /* LO */
+-			{ 0x1a, 0x01014012 }, /* LO */
+ 			{ }
+ 		}
+ 	},
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.10.2
