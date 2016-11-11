@@ -1,17 +1,17 @@
-From: Kai Riedel <kairiedel@yahoo.de>
+From: Jyri Sarha <jsarha@ti.com>
 Subject: Re: BeagleBone with TLV320AIC3100
-Date: Fri, 11 Nov 2016 14:52:22 +0000 (UTC)
-Message-ID: <235852582.3755112.1478875942989@mail.yahoo.com>
+Date: Fri, 11 Nov 2016 17:04:20 +0200
+Message-ID: <f0ae360f-ce2e-53c4-4cc2-6c177ee0a0f2@ti.com>
 References: <235852582.3755112.1478875942989.ref@mail.yahoo.com>
-Reply-To: Kai Riedel <kairiedel@yahoo.de>
+ <235852582.3755112.1478875942989@mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=_Part_3755111_1288505294.1478875942989"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm24-vm5.bullet.mail.ir2.yahoo.com
- (nm24-vm5.bullet.mail.ir2.yahoo.com [212.82.97.29])
- by alsa0.perex.cz (Postfix) with ESMTP id 8059E266629
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2016 15:52:24 +0100 (CET)
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id 160C9266D07
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2016 16:04:24 +0100 (CET)
+In-Reply-To: <235852582.3755112.1478875942989@mail.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,93 +21,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: peter.ujfalusi@ti.com, Jyri Sarha <jsarha@ti.com>
+To: Kai Riedel <kairiedel@yahoo.de>, alsa-devel@alsa-project.org
+Cc: peter.ujfalusi@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_3755111_1288505294.1478875942989
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+On 11/11/16 16:52, Kai Riedel wrote:
+> Hi,
+> 
+> is there a possibility (parameter in dts file) to get the mclk from the sitara and not from an external oscillator?
+> With external clock it works fine now.
+> 
 
-Hi,
+In theory all you need is to route some clock from sitara to aic3100's
+mclk pin (or so some of the other possible PLL input pins) with suitable
+pin-control configuration and refer that clock with phandle in the
+simple-card codec node. In practice I have not done it and at the moment
+I do not have time to study how it could be done.
 
-is there a possibility (parameter in dts file) to get the mclk from the sitara and not from an external oscillator?
-With external clock it works fine now.
+Peter, do you know how to do this? Could, for instance, the McASP fclk
+be routed to codec mclk for pll input?
 
-BR,
-
-Kai
-------=_Part_3755111_1288505294.1478875942989
-Content-Type: application/octet-stream
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=BB-BONE-AUDI-04-00A0.dts
-Content-ID: <pVrhDRzMBxUDMXsMUGNe>
-
-LyoKICogQ29weXJpZ2h0IChDKSAyMDEyIFRleGFzIEluc3RydW1lbnRzIEluY29ycG9yYXRlZCAt
-IGh0dHA6Ly93d3cudGkuY29tLwogKgogKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsg
-eW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQogKiBpdCB1bmRlciB0aGUgdGVy
-bXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIHZlcnNpb24gMiBhcwogKiBwdWJs
-aXNoZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbi4KICovCi9kdHMtdjEvOwovcGx1
-Z2luLzsKCiNpbmNsdWRlIDxkdC1iaW5kaW5ncy9ncGlvL2dwaW8uaD4KI2luY2x1ZGUgPGR0LWJp
-bmRpbmdzL3BpbmN0cmwvYW0zM3h4Lmg+CgovIHsKCWNvbXBhdGlibGUgPSAidGksYmVhZ2xlYm9u
-ZSIsICJ0aSxiZWFnbGVib25lLWJsYWNrIiwgInRpLGJlYWdsZWJvbmUtZ3JlZW4iOwoKCS8qIGlk
-ZW50aWZpY2F0aW9uICovCglwYXJ0LW51bWJlciA9ICJCQi1CT05FLUFVREktMDQiOwoJdmVyc2lv
-biA9ICIwMEEwIiwgIkEwIjsKCgkvKiBzdGF0ZSB0aGUgcmVzb3VyY2VzIHRoaXMgY2FwZSB1c2Vz
-ICovCglleGNsdXNpdmUtdXNlID0KCQkvKiB0aGUgcGluIGhlYWRlciB1c2VzICovCgkJIlA5LjMx
-IiwJLyogbWNhc3AwOiBtY2FzcDBfYWNsa3ggKi8KCQkiUDkuMjkiLAkvKiBtY2FzcDA6IG1jYXNw
-MF9mc3ggKi8KCQkiUDkuMjgiLAkvKiBtY2FzcDA6IG1jYXNwMF9heHIyICovCgkJIlA5LjI1IiwJ
-LyogbWNhc3AwOiBtY2FzcDBfYWhjbGt4ICovCgkJIlA5LjMwIiwgCS8qIG1jYXNwMDogbWNhc3Aw
-X2F4cjAgKi8KCQkvKiB0aGUgaGFyZHdhcmUgaXAgdXNlcyAiZ3BpbzFfMTgiLCAiZ3BpbzFfMTki
-LCAqLwoJCSJncGlvM18yMSIsCQkKCQkibWNhc3AwIjsKCglmcmFnbWVudEAwIHsKCQl0YXJnZXQg
-PSA8JmFtMzN4eF9waW5tdXg+OwoJCV9fb3ZlcmxheV9fIHsKCQkJYm9uZV9hdWRpb19jYXBlX2F1
-ZGlvX3BpbnM6IHBpbm11eF9ib25lX2F1ZGlvX2NhcGVfYXVkaW9fcGlucyB7CgkJCQlwaW5jdHJs
-LXNpbmdsZSxwaW5zID0gPAoJCQkJCTB4MTkwIChQSU5fSU5QVVRfUFVMTERPV04gfCBNVVhfTU9E
-RTApCS8qIEJDTEssIG1jYXNwMF9hY2xreC5tY2FzcDBfYWNsa3ggKi8KCQkJCQkweDE5NCAoUElO
-X0lOUFVUX1BVTExET1dOIHwgTVVYX01PREUwKQkvKiBXQ0xLLCBtY2FzcDBfZnN4Lm1jYXNwMF9m
-c3gsIElOUFVUICovCgkJCQkJMHgxOTggKFBJTl9JTlBVVF9QVUxMRE9XTiB8IE1VWF9NT0RFMCkJ
-LyogbWNhc3AwX2F4cjAubWNhc3AwX2F4cjAgKi8KCQkJCQkweDE5YyAoUElOX0lOUFVUX1BVTExE
-T1dOIHwgTVVYX01PREUyKQkvKiBtY2FzcDBfYWhjbGtyLm1jYXNwMF9heHIyICovCgkJCQkJMHgx
-YWMgKFBJTl9JTlBVVF9QVUxMRE9XTiB8IE1VWF9NT0RFMCkgIC8qIE1DTEsgTUNBU1AwX0FIQ0xL
-WCAtPiBNQ0FTUDBfQUhDTEtYIChJMlNfTUNMS19PVVQpLSBpbiAqLwoJCQkJPjsKCQkJfTsKCQl9
-OwoJfTsKCglmcmFnbWVudEAxIHsKCQl0YXJnZXQgPSA8JmkyYzI+OwoJCV9fb3ZlcmxheV9fIHsK
-CQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47CgkJCSNzaXplLWNlbGxzID0gPDA+OwoJCQljbG9jay1m
-cmVxdWVuY3kgPSA8MTAwMDAwPjsKCQkJc3RhdHVzID0gIm9rYXkiOwoJCQlwaW5jdHJsLW5hbWVz
-ID0gImRlZmF1bHQiOwoJCQlwaW5jdHJsLTAgPSA8JmkyYzJfcGlucz47CgoJCQl0bHYzMjBhaWMz
-MTAwOiB0bHYzMjBhaWMzMTAwQDE4IHsKCQkJCSNzb3VuZC1kYWktY2VsbHMgPSA8MD47CgkJCQlj
-b21wYXRpYmxlID0gInRpLHRsdjMyMGFpYzMxMDAiOwoJCQkJcmVnID0gPDB4MTg+OwoJCQkJc3Rh
-dHVzID0gIm9rYXkiOwoJCQkJLyogUmVndWxhdG9ycyAqLwoJCSAgIEFWREQtc3VwcGx5ID0gPCZs
-ZG80X3JlZz47CgkJICAgSU9WREQtc3VwcGx5ID0gPCZsZG80X3JlZz47CgkJICAgRFZERC1zdXBw
-bHkgPSA8JmxkbzRfcmVnPjsKCQkgICBIUFZERC1zdXBwbHkgPSA8JmxkbzRfcmVnPjsKCQkgICBT
-UFJWREQtc3VwcGx5ID0gPCZsZG80X3JlZz47CgkJICAgU1BMVkRELXN1cHBseSA9IDwmbGRvNF9y
-ZWc+OwoJCQl9OwoJCX07Cgl9OwoKIGZyYWdtZW50QDIgewoJCXRhcmdldCA9IDwmbWNhc3AwPjsK
-CQlfX292ZXJsYXlfXyB7CgkJCSNzb3VuZC1kYWktY2VsbHMgPSA8MD47CgkJCXBpbmN0cmwtbmFt
-ZXMgPSAiZGVmYXVsdCI7CgkJCXBpbmN0cmwtMCA9IDwmYm9uZV9hdWRpb19jYXBlX2F1ZGlvX3Bp
-bnM+OwoJCQlzdGF0dXMgPSAib2theSI7CgkJCW9wLW1vZGUgPSA8MD47ICAgICAgICAgIC8qIE1D
-QVNQX0lJU19NT0RFICovCgkJCXRkbS1zbG90cyA9IDwyPjsKCQkJbnVtLXNlcmlhbGl6ZXIgPSA8
-MTY+OwoJCQlzZXJpYWwtZGlyID0gPCAgLyogMDogSU5BQ1RJVkUsIDE6IFRYLCAyOiBSWCAqLwoJ
-CQkJMiAwIDEgMAoJCQkJMCAwIDAgMAoJCQkJMCAwIDAgMAoJCQkJMCAwIDAgMAoJCQk+OwoJCQl0
-eC1udW0tZXZ0ID0gPDE+OwoJCQlyeC1udW0tZXZ0ID0gPDE+OwoJCX07Cgl9OwoJCglmcmFnbWVu
-dEAzIHsKCQl0YXJnZXQtcGF0aD0iLyI7CgkJX19vdmVybGF5X18gewoJCQlzb3VuZCB7CgkJCQlj
-b21wYXRpYmxlID0gInNpbXBsZS1hdWRpby1jYXJkIjsKCQkJCXNpbXBsZS1hdWRpby1jYXJkLG5h
-bWUgPSAiQXVkaW9DYXBlIFJldiBCIjsKCQkJCXNpbXBsZS1hdWRpby1jYXJkLHdpZGdldHMgPQoJ
-CQkJCSJTcGVha2VyIiwgIkhlYWRwaG9uZSBKYWNrIjsKCQkJCXNpbXBsZS1hdWRpby1jYXJkLHJv
-dXRpbmcgPQoJCQkJCSJIZWFkcGhvbmUgSmFjayIsICAgICAgICJIUEwiLAoJCQkJCSJIZWFkcGhv
-bmUgSmFjayIsICAgICAgICJIUFIiLAoJCQkJCSJTcGVha2VyIiwgICAgICAgICAgICAgICJTUEsi
-OwoJCQkJc2ltcGxlLWF1ZGlvLWNhcmQsZm9ybWF0ID0gImRzcF9iIjsKCQkJCXNpbXBsZS1hdWRp
-by1jYXJkLGJpdGNsb2NrLW1hc3RlciA9IDwmc291bmRfbWFzdGVyPjsKCQkJCXNpbXBsZS1hdWRp
-by1jYXJkLGZyYW1lLW1hc3RlciA9IDwmc291bmRfbWFzdGVyPjsKCQkJCXNpbXBsZS1hdWRpby1j
-YXJkLGJpdGNsb2NrLWludmVyc2lvbjsKCgkJCQlzaW1wbGUtYXVkaW8tY2FyZCxjcHUgewoJCQkJ
-CXNvdW5kLWRhaSA9IDwmbWNhc3AwPjsKCQkJCXN5c3RlbS1jbG9jay1mcmVxdWVuY3kgPSA8MTIw
-MDAwMDA+OwoJCQkJfTsKCgkJICAgICAgICAgc291bmRfbWFzdGVyOiBzaW1wbGUtYXVkaW8tY2Fy
-ZCxjb2RlYyB7CgkJCQkJI3NvdW5kLWRhaS1jZWxscyA9IDwwPjsKCQkJCQlzb3VuZC1kYWkgPSA8
-JnRsdjMyMGFpYzMxMDA+OwoJIAkJCQlzeXN0ZW0tY2xvY2stZnJlcXVlbmN5ID0gPDEyMDAwMDAw
-PjsKCQkJCQljbG9jay1uYW1lcyA9ICJtY2xrIjsKCQkJCX07CgkJCX07CgkJfTsKCgl9Owp9Owo=
-
-------=_Part_3755111_1288505294.1478875942989
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
-------=_Part_3755111_1288505294.1478875942989--
+Best regards,
+Jyri
