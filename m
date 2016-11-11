@@ -1,184 +1,92 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: nau8825: AD/DA over sampling rate
-	configuration
-Date: Fri, 11 Nov 2016 11:34:42 +0800
-Message-ID: <1478835282-10687-1-git-send-email-KCHSU0@nuvoton.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F0CC266C2E
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2016 04:34:55 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: soc-core: snd_soc_get_dai_name() become non static" to the asoc tree
+Date: Fri, 11 Nov 2016 15:28:59 +0000
+Message-ID: <E1c5DlD-0002Ab-8P@finisterre>
+References: <87h98b4c30.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87h98b4c30.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>Mark Brown <broonie@kernel.org>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux-Kernel <linux-kernel@vger.kernel.org>, Simon <horms@verge.net.au>, Laurent <laurent.pinchart@ideasonboard.com>, Grant Likely <grant.likely@linaro.org>, Frank Rowand <frowand.list@gmail.com>, Guennadi <g.liakhovetski@gmx.de>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Over Sampling Rate (OSR) is defined as CLK_ADC frequency divided by the
-audio sample rate (Fs).
-OSR = CLK_ADC / FS
-The available OSRs are 32, 64, 128 or 256. Note that the OSR and Fs
-values must be selected such that the maximum frequency of CLK_ADC
-is less than 6.144 MHz. It is recommended to match the relationship
-between OSR and clock SRC according to following Table.
-ADC_RATE: 00(OSR=32)  | CLK_ADC_SRC: 11(CODEC 1/8)
-ADC_RATE: 01(OSR=64)  | CLK_ADC_SRC: 10(CODEC1/4)
-ADC_RATE: 10(OSR=128) | CLK_ADC_SRC: 01(CODEC 1/2)
-ADC_RATE: 11(OSR=256) | CLK_ADC_SRC: 00(CODEC CLK)
+The patch
 
-The over sampling rate about DAC follows the same rule with ADCs.
-The driver changes the OSR to 64 value when initiation for better FLL
-performance and applies the dynamic SRC change by different OSR.
+   ASoC: soc-core: snd_soc_get_dai_name() become non static
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 1ad8ec535b997ed36c0f32c2616206725258dd30 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 11 Nov 2016 01:19:28 +0000
+Subject: [PATCH] ASoC: soc-core: snd_soc_get_dai_name() become non static
+
+snd_soc_get_dai_name() is used from snd_soc_of_get_dai_name(),
+and it is assuming that DT is using "sound-dai" / "#sound-dai-cells".
+But graph base DT is using "remote-endpoint". This patch makes
+snd_soc_get_dai_name() non static for graph support.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8825.c | 78 ++++++++++++++++++++++++++++++++++++++++++++--
- sound/soc/codecs/nau8825.h |  4 +++
- 2 files changed, 79 insertions(+), 3 deletions(-)
+ include/sound/soc.h  | 2 ++
+ sound/soc/soc-core.c | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index e643be9..d74f642 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -43,6 +43,8 @@
- #define GAIN_AUGMENT 22500
- #define SIDETONE_BASE 207000
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 148bf553d598..6dffa9540a30 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1666,6 +1666,8 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+ 				     const char *prefix,
+ 				     struct device_node **bitclkmaster,
+ 				     struct device_node **framemaster);
++int snd_soc_get_dai_name(struct of_phandle_args *args,
++			 const char **dai_name);
+ int snd_soc_of_get_dai_name(struct device_node *of_node,
+ 			    const char **dai_name);
+ int snd_soc_of_get_dai_link_codecs(struct device *dev,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index ec881b8825b6..81b604151f26 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3787,7 +3787,7 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_of_parse_daifmt);
  
-+/* the maximum frequency of CLK_ADC and CLK_DAC */
-+#define CLK_DA_AD_MAX 6144000
- 
- static int nau8825_configure_sysclk(struct nau8825 *nau8825,
- 		int clk_id, unsigned int freq);
-@@ -95,6 +97,27 @@ static const struct nau8825_fll_attr fll_pre_scalar[] = {
- 	{ 8, 0x3 },
- };
- 
-+/* over sampling rate */
-+struct nau8825_osr_attr {
-+	unsigned int osr;
-+	unsigned int clk_src;
-+};
-+
-+static const struct nau8825_osr_attr osr_dac_sel[] = {
-+	{ 64, 2 },	/* OSR 64, SRC 1/4 */
-+	{ 256, 0 },	/* OSR 256, SRC 1 */
-+	{ 128, 1 },	/* OSR 128, SRC 1/2 */
-+	{ 0, 0 },
-+	{ 32, 3 },	/* OSR 32, SRC 1/8 */
-+};
-+
-+static const struct nau8825_osr_attr osr_adc_sel[] = {
-+	{ 32, 3 },	/* OSR 32, SRC 1/8 */
-+	{ 64, 2 },	/* OSR 64, SRC 1/4 */
-+	{ 128, 1 },	/* OSR 128, SRC 1/2 */
-+	{ 256, 0 },	/* OSR 256, SRC 1 */
-+};
-+
- static const struct reg_default nau8825_reg_defaults[] = {
- 	{ NAU8825_REG_ENA_CTRL, 0x00ff },
- 	{ NAU8825_REG_IIC_ADDR_SET, 0x0 },
-@@ -1179,16 +1202,65 @@ static const struct snd_soc_dapm_route nau8825_dapm_routes[] = {
- 	{"HPOR", NULL, "Class G"},
- };
- 
-+static int nau8825_clock_check(struct nau8825 *nau8825,
-+	int stream, int rate, int osr)
-+{
-+	int osrate;
-+
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		if (osr >= ARRAY_SIZE(osr_dac_sel))
-+			return -EINVAL;
-+		osrate = osr_dac_sel[osr].osr;
-+	} else {
-+		if (osr >= ARRAY_SIZE(osr_adc_sel))
-+			return -EINVAL;
-+		osrate = osr_adc_sel[osr].osr;
-+	}
-+
-+	if (!osrate || rate * osr > CLK_DA_AD_MAX) {
-+		dev_err(nau8825->dev, "exceed the maximum frequency of CLK_ADC or CLK_DAC\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int nau8825_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
+-static int snd_soc_get_dai_name(struct of_phandle_args *args,
++int snd_soc_get_dai_name(struct of_phandle_args *args,
+ 				const char **dai_name)
  {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
--	unsigned int val_len = 0;
-+	unsigned int val_len = 0, osr;
+ 	struct snd_soc_component *pos;
+@@ -3839,6 +3839,7 @@ static int snd_soc_get_dai_name(struct of_phandle_args *args,
+ 	mutex_unlock(&client_mutex);
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(snd_soc_get_dai_name);
  
- 	nau8825_sema_acquire(nau8825, 2 * HZ);
- 
-+	/* CLK_DAC or CLK_ADC = OSR * FS
-+	 * DAC or ADC clock frequency is defined as Over Sampling Rate (OSR)
-+	 * multiplied by the audio sample rate (Fs). Note that the OSR and Fs
-+	 * values must be selected such that the maximum frequency is less
-+	 * than 6.144 MHz.
-+	 */
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		regmap_read(nau8825->regmap, NAU8825_REG_DAC_CTRL1, &osr);
-+		osr &= NAU8825_DAC_OVERSAMPLE_MASK;
-+		if (nau8825_clock_check(nau8825, substream->stream,
-+			params_rate(params), osr))
-+			return -EINVAL;
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_CLK_DIVIDER,
-+			NAU8825_CLK_DAC_SRC_MASK,
-+			osr_dac_sel[osr].clk_src << NAU8825_CLK_DAC_SRC_SFT);
-+	} else {
-+		regmap_read(nau8825->regmap, NAU8825_REG_ADC_RATE, &osr);
-+		osr &= NAU8825_ADC_SYNC_DOWN_MASK;
-+		if (nau8825_clock_check(nau8825, substream->stream,
-+			params_rate(params), osr))
-+			return -EINVAL;
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_CLK_DIVIDER,
-+			NAU8825_CLK_ADC_SRC_MASK,
-+			osr_adc_sel[osr].clk_src << NAU8825_CLK_ADC_SRC_SFT);
-+	}
-+
- 	switch (params_width(params)) {
- 	case 16:
- 		val_len |= NAU8825_I2S_DL_16;
-@@ -1774,9 +1846,9 @@ static void nau8825_init_regs(struct nau8825 *nau8825)
- 	 * (audible hiss). Set it to something better.
- 	 */
- 	regmap_update_bits(regmap, NAU8825_REG_ADC_RATE,
--		NAU8825_ADC_SYNC_DOWN_MASK, NAU8825_ADC_SYNC_DOWN_128);
-+		NAU8825_ADC_SYNC_DOWN_MASK, NAU8825_ADC_SYNC_DOWN_64);
- 	regmap_update_bits(regmap, NAU8825_REG_DAC_CTRL1,
--		NAU8825_DAC_OVERSAMPLE_MASK, NAU8825_DAC_OVERSAMPLE_128);
-+		NAU8825_DAC_OVERSAMPLE_MASK, NAU8825_DAC_OVERSAMPLE_64);
- 	/* Disable DACR/L power */
- 	regmap_update_bits(regmap, NAU8825_REG_CHARGE_PUMP,
- 		NAU8825_POWER_DOWN_DACR | NAU8825_POWER_DOWN_DACL,
-diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
-index 1c63e2a..58ea95b 100644
---- a/sound/soc/codecs/nau8825.h
-+++ b/sound/soc/codecs/nau8825.h
-@@ -115,6 +115,10 @@
- #define NAU8825_CLK_SRC_MASK			(1 << NAU8825_CLK_SRC_SFT)
- #define NAU8825_CLK_SRC_VCO			(1 << NAU8825_CLK_SRC_SFT)
- #define NAU8825_CLK_SRC_MCLK			(0 << NAU8825_CLK_SRC_SFT)
-+#define NAU8825_CLK_ADC_SRC_SFT		6
-+#define NAU8825_CLK_ADC_SRC_MASK		(0x3 << NAU8825_CLK_ADC_SRC_SFT)
-+#define NAU8825_CLK_DAC_SRC_SFT		4
-+#define NAU8825_CLK_DAC_SRC_MASK		(0x3 << NAU8825_CLK_DAC_SRC_SFT)
- #define NAU8825_CLK_MCLK_SRC_MASK		(0xf << 0)
- 
- /* FLL1 (0x04) */
+ int snd_soc_of_get_dai_name(struct device_node *of_node,
+ 			    const char **dai_name)
 -- 
-2.6.4
+2.10.2
