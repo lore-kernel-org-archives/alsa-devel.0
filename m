@@ -1,17 +1,16 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: BeagleBone with TLV320AIC3100
-Date: Fri, 11 Nov 2016 17:04:20 +0200
-Message-ID: <f0ae360f-ce2e-53c4-4cc2-6c177ee0a0f2@ti.com>
-References: <235852582.3755112.1478875942989.ref@mail.yahoo.com>
- <235852582.3755112.1478875942989@mail.yahoo.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 00/10] ASoC: Modernize documents
+Date: Fri, 11 Nov 2016 15:16:39 +0000
+Message-ID: <20161111151639.skwnpeiyuo42d5wv@sirena.org.uk>
+References: <20161110214722.14698-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7598215725289880194=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 160C9266D07
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2016 16:04:24 +0100 (CET)
-In-Reply-To: <235852582.3755112.1478875942989@mail.yahoo.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 870F1266D06
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2016 16:17:44 +0100 (CET)
+In-Reply-To: <20161110214722.14698-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +20,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kai Riedel <kairiedel@yahoo.de>, alsa-devel@alsa-project.org
-Cc: peter.ujfalusi@ti.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/11/16 16:52, Kai Riedel wrote:
-> Hi,
-> 
-> is there a possibility (parameter in dts file) to get the mclk from the sitara and not from an external oscillator?
-> With external clock it works fine now.
-> 
 
-In theory all you need is to route some clock from sitara to aic3100's
-mclk pin (or so some of the other possible PLL input pins) with suitable
-pin-control configuration and refer that clock with phandle in the
-simple-card codec node. In practice I have not done it and at the moment
-I do not have time to study how it could be done.
+--===============7598215725289880194==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="lg34hsika5faiiuz"
+Content-Disposition: inline
 
-Peter, do you know how to do this? Could, for instance, the McASP fclk
-be routed to codec mclk for pll input?
 
-Best regards,
-Jyri
+--lg34hsika5faiiuz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Nov 10, 2016 at 10:47:12PM +0100, Takashi Iwai wrote:
+
+> The new file after 4.9 isn't covered yet, as the branch is based on
+> 4.9-rc4.  I found only soc/codec_to_codec.txt in linux-next, and it
+> seems easy to convert.  Mark, let me know how you'd like to organize.
+> I can pull your branch and convert in my side, or you pull mine and do
+> it on yours.
+
+If you want to pull my branch in that's fine.
+
+--lg34hsika5faiiuz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJYJeDXAAoJECTWi3JdVIfQyBUH/0J+bS7kpKdUy/7A9JCEZWM9
+rVFX2BkM/ka8vGNIj0h8Zk2aSfvN/1hUooKQzIZ58IRONW+geRG2rs0aqA9AJly2
+lNvoNij2YF8oQpIjj/9idAsm0sBdVUbMN2Qh0WqounIV5q3L2nPkCyfP6JBtC/iT
+xVHmbccKDDY1mO9imm6lEA8bZHXb/uE9soo+DPVRan/u1r1dFgcyz6op1+dD2gRX
+6B+PGJfiE8wMpF/WxAYjzCMnVuzsQia9X6x4cAzJya/Nzzrn9UBAUlXq2gC93t8K
+KfZeI2eNFR3N0+zNbmnU/CLkCXTsJlkGCcjckKOZrr63P51nUyCDngIYyECPOWk=
+=/ojD
+-----END PGP SIGNATURE-----
+
+--lg34hsika5faiiuz--
+
+--===============7598215725289880194==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7598215725289880194==--
