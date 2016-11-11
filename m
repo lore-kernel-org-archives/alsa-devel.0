@@ -1,491 +1,554 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 10/10] ASoC: doc: ReSTize DPCM.txt
-Date: Thu, 10 Nov 2016 22:47:22 +0100
-Message-ID: <20161110214722.14698-11-tiwai@suse.de>
-References: <20161110214722.14698-1-tiwai@suse.de>
+From: Peter Rosin <peda@axentia.se>
+Subject: [PATCH v3 3/3] ASoC: atmel: tse850: add ASoC driver for the Axentia TSE-850
+Date: Fri, 11 Nov 2016 12:29:12 +0100
+Message-ID: <1478863752-10569-4-git-send-email-peda@axentia.se>
+References: <1478863752-10569-1-git-send-email-peda@axentia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 14F8E2673D9
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 22:47:28 +0100 (CET)
-In-Reply-To: <20161110214722.14698-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1478863752-10569-1-git-send-email-peda@axentia.se>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Peter Rosin <peda@axentia.se>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-A simple conversion from a plain text file.
-The file name was renamed to lower letters to align with others.
+The TSE-850 is an FM Transmitter Station Equipment, designed to generate
+baseband signals for FM, mainly the DARC subcarrier, but other signals
+are also possible.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Peter Rosin <peda@axentia.se>
 ---
- .../sound/{alsa/soc/DPCM.txt => soc/dpcm.rst}      | 280 +++++++++++----------
- Documentation/sound/soc/index.rst                  |   1 +
- 2 files changed, 147 insertions(+), 134 deletions(-)
- rename Documentation/sound/{alsa/soc/DPCM.txt => soc/dpcm.rst} (57%)
+ MAINTAINERS                      |   1 +
+ sound/soc/atmel/Kconfig          |  10 +
+ sound/soc/atmel/Makefile         |   2 +
+ sound/soc/atmel/tse850-pcm5142.c | 472 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 485 insertions(+)
+ create mode 100644 sound/soc/atmel/tse850-pcm5142.c
 
-diff --git a/Documentation/sound/alsa/soc/DPCM.txt b/Documentation/sound/soc/dpcm.rst
-similarity index 57%
-rename from Documentation/sound/alsa/soc/DPCM.txt
-rename to Documentation/sound/soc/dpcm.rst
-index 0110180b7ac6..395e5a516282 100644
---- a/Documentation/sound/alsa/soc/DPCM.txt
-+++ b/Documentation/sound/soc/dpcm.rst
-@@ -1,8 +1,9 @@
-+===========
- Dynamic PCM
- ===========
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4f2ebf3ab51a..4ce45f02d83f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2323,6 +2323,7 @@ M:	Peter Rosin <peda@axentia.se>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/sound/axentia,*
++F:	sound/soc/atmel/tse850-pcm5142.c
  
--1. Description
--==============
-+Description
-+===========
- 
- Dynamic PCM allows an ALSA PCM device to digitally route its PCM audio to
- various digital endpoints during the PCM stream runtime. e.g. PCM0 can route
-@@ -23,22 +24,23 @@ Phone Audio System with SoC based DSP
- 
- Consider the following phone audio subsystem. This will be used in this
- document for all examples :-
--
--| Front End PCMs    |  SoC DSP  | Back End DAIs | Audio devices |
--
--                    *************
--PCM0 <------------> *           * <----DAI0-----> Codec Headset
--                    *           *
--PCM1 <------------> *           * <----DAI1-----> Codec Speakers
--                    *   DSP     *
--PCM2 <------------> *           * <----DAI2-----> MODEM
--                    *           *
--PCM3 <------------> *           * <----DAI3-----> BT
--                    *           *
--                    *           * <----DAI4-----> DMIC
--                    *           *
--                    *           * <----DAI5-----> FM
--                    *************
-+::
+ AZ6007 DVB DRIVER
+ M:	Mauro Carvalho Chehab <mchehab@s-opensource.com>
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 22aec9a1e9a4..4a56f3dfba51 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -78,4 +78,14 @@ config SND_ATMEL_SOC_PDMIC
+ 	help
+ 	  Say Y if you want to add support for Atmel ASoC driver for boards using
+ 	  PDMIC.
 +
-+  | Front End PCMs    |  SoC DSP  | Back End DAIs | Audio devices |
-+  
-+                      *************
-+  PCM0 <------------> *           * <----DAI0-----> Codec Headset
-+                      *           *
-+  PCM1 <------------> *           * <----DAI1-----> Codec Speakers
-+                      *   DSP     *
-+  PCM2 <------------> *           * <----DAI2-----> MODEM
-+                      *           *
-+  PCM3 <------------> *           * <----DAI3-----> BT
-+                      *           *
-+                      *           * <----DAI4-----> DMIC
-+                      *           *
-+                      *           * <----DAI5-----> FM
-+                      *************
++config SND_ATMEL_SOC_TSE850_PCM5142
++	tristate "ASoC driver for the Axentia TSE-850"
++	depends on ARCH_AT91 && OF
++	depends on ATMEL_SSC && I2C
++	select SND_ATMEL_SOC_SSC_DMA
++	select SND_SOC_PCM512x_I2C
++	help
++	  Say Y if you want to add support for the ASoC driver for the
++	  Axentia TSE-850 with a PCM5142 codec.
+ endif
+diff --git a/sound/soc/atmel/Makefile b/sound/soc/atmel/Makefile
+index a2b127bd9c87..67e10cbd4ed7 100644
+--- a/sound/soc/atmel/Makefile
++++ b/sound/soc/atmel/Makefile
+@@ -13,9 +13,11 @@ snd-atmel-soc-wm8904-objs := atmel_wm8904.o
+ snd-soc-sam9x5-wm8731-objs := sam9x5_wm8731.o
+ snd-atmel-soc-classd-objs := atmel-classd.o
+ snd-atmel-soc-pdmic-objs := atmel-pdmic.o
++snd-atmel-soc-tse850-pcm5142-objs := tse850-pcm5142.o
  
- This diagram shows a simple smart phone audio subsystem. It supports Bluetooth,
- FM digital radio, Speakers, Headset Jack, digital microphones and cellular
-@@ -55,50 +57,52 @@ Audio is being played to the Headset. After a while the user removes the headset
- and audio continues playing on the speakers.
- 
- Playback on PCM0 to Headset would look like :-
--
--                    *************
--PCM0 <============> *           * <====DAI0=====> Codec Headset
--                    *           *
--PCM1 <------------> *           * <----DAI1-----> Codec Speakers
--                    *   DSP     *
--PCM2 <------------> *           * <----DAI2-----> MODEM
--                    *           *
--PCM3 <------------> *           * <----DAI3-----> BT
--                    *           *
--                    *           * <----DAI4-----> DMIC
--                    *           *
--                    *           * <----DAI5-----> FM
--                    *************
-+::
+ obj-$(CONFIG_SND_AT91_SOC_SAM9G20_WM8731) += snd-soc-sam9g20-wm8731.o
+ obj-$(CONFIG_SND_ATMEL_SOC_WM8904) += snd-atmel-soc-wm8904.o
+ obj-$(CONFIG_SND_AT91_SOC_SAM9X5_WM8731) += snd-soc-sam9x5-wm8731.o
+ obj-$(CONFIG_SND_ATMEL_SOC_CLASSD) += snd-atmel-soc-classd.o
+ obj-$(CONFIG_SND_ATMEL_SOC_PDMIC) += snd-atmel-soc-pdmic.o
++obj-$(CONFIG_SND_ATMEL_SOC_TSE850_PCM5142) += snd-atmel-soc-tse850-pcm5142.o
+diff --git a/sound/soc/atmel/tse850-pcm5142.c b/sound/soc/atmel/tse850-pcm5142.c
+new file mode 100644
+index 000000000000..ac6a814c8ecf
+--- /dev/null
++++ b/sound/soc/atmel/tse850-pcm5142.c
+@@ -0,0 +1,472 @@
++/*
++ * TSE-850 audio - ASoC driver for the Axentia TSE-850 with a PCM5142 codec
++ *
++ * Copyright (C) 2016 Axentia Technologies AB
++ *
++ * Author: Peter Rosin <peda@axentia.se>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
 +
-+                      *************
-+  PCM0 <============> *           * <====DAI0=====> Codec Headset
-+                      *           *
-+  PCM1 <------------> *           * <----DAI1-----> Codec Speakers
-+                      *   DSP     *
-+  PCM2 <------------> *           * <----DAI2-----> MODEM
-+                      *           *
-+  PCM3 <------------> *           * <----DAI3-----> BT
-+                      *           *
-+                      *           * <----DAI4-----> DMIC
-+                      *           *
-+                      *           * <----DAI5-----> FM
-+                      *************
- 
- The headset is removed from the jack by user so the speakers must now be used :-
--
--                    *************
--PCM0 <============> *           * <----DAI0-----> Codec Headset
--                    *           *
--PCM1 <------------> *           * <====DAI1=====> Codec Speakers
--                    *   DSP     *
--PCM2 <------------> *           * <----DAI2-----> MODEM
--                    *           *
--PCM3 <------------> *           * <----DAI3-----> BT
--                    *           *
--                    *           * <----DAI4-----> DMIC
--                    *           *
--                    *           * <----DAI5-----> FM
--                    *************
-+::
++/*
++ *               loop1 relays
++ *   IN1 +---o  +------------+  o---+ OUT1
++ *            \                /
++ *             +              +
++ *             |   /          |
++ *             +--o  +--.     |
++ *             |  add   |     |
++ *             |        V     |
++ *             |      .---.   |
++ *   DAC +----------->|Sum|---+
++ *             |      '---'   |
++ *             |              |
++ *             +              +
++ *
++ *   IN2 +---o--+------------+--o---+ OUT2
++ *               loop2 relays
++ *
++ * The 'loop1' gpio pin controlls two relays, which are either in loop
++ * position, meaning that input and output are directly connected, or
++ * they are in mixer position, meaning that the signal is passed through
++ * the 'Sum' mixer. Similarly for 'loop2'.
++ *
++ * In the above, the 'loop1' relays are inactive, thus feeding IN1 to the
++ * mixer (if 'add' is active) and feeding the mixer output to OUT1. The
++ * 'loop2' relays are active, short-cutting the TSE-850 from channel 2.
++ * IN1, IN2, OUT1 and OUT2 are TSE-850 connectors and DAC is the PCB name
++ * of the (filtered) output from the PCM5142 codec.
++ */
 +
-+                      *************
-+  PCM0 <============> *           * <----DAI0-----> Codec Headset
-+                      *           *
-+  PCM1 <------------> *           * <====DAI1=====> Codec Speakers
-+                      *   DSP     *
-+  PCM2 <------------> *           * <----DAI2-----> MODEM
-+                      *           *
-+  PCM3 <------------> *           * <----DAI3-----> BT
-+                      *           *
-+                      *           * <----DAI4-----> DMIC
-+                      *           *
-+                      *           * <----DAI5-----> FM
-+                      *************
- 
- The audio driver processes this as follows :-
- 
-- 1) Machine driver receives Jack removal event.
-+1. Machine driver receives Jack removal event.
- 
-- 2) Machine driver OR audio HAL disables the Headset path.
-+2. Machine driver OR audio HAL disables the Headset path.
- 
-- 3) DPCM runs the PCM trigger(stop), hw_free(), shutdown() operations on DAI0
--    for headset since the path is now disabled.
-+3. DPCM runs the PCM trigger(stop), hw_free(), shutdown() operations on DAI0
-+   for headset since the path is now disabled.
- 
-- 4) Machine driver or audio HAL enables the speaker path.
-+4. Machine driver or audio HAL enables the speaker path.
- 
-- 5) DPCM runs the PCM ops for startup(), hw_params(), prepapre() and
--    trigger(start) for DAI1 Speakers since the path is enabled.
-+5. DPCM runs the PCM ops for startup(), hw_params(), prepapre() and
-+   trigger(start) for DAI1 Speakers since the path is enabled.
- 
- In this example, the machine driver or userspace audio HAL can alter the routing
- and then DPCM will take care of managing the DAI PCM operations to either bring
-@@ -112,36 +116,38 @@ DPCM machine driver
- The DPCM enabled ASoC machine driver is similar to normal machine drivers
- except that we also have to :-
- 
-- 1) Define the FE and BE DAI links.
-+1. Define the FE and BE DAI links.
- 
-- 2) Define any FE/BE PCM operations.
-+2. Define any FE/BE PCM operations.
- 
-- 3) Define widget graph connections.
-+3. Define widget graph connections.
- 
- 
--1 FE and BE DAI links
-----------------------
-+FE and BE DAI links
-+-------------------
-+::
- 
--| Front End PCMs    |  SoC DSP  | Back End DAIs | Audio devices |
--
--                    *************
--PCM0 <------------> *           * <----DAI0-----> Codec Headset
--                    *           *
--PCM1 <------------> *           * <----DAI1-----> Codec Speakers
--                    *   DSP     *
--PCM2 <------------> *           * <----DAI2-----> MODEM
--                    *           *
--PCM3 <------------> *           * <----DAI3-----> BT
--                    *           *
--                    *           * <----DAI4-----> DMIC
--                    *           *
--                    *           * <----DAI5-----> FM
--                    *************
-+  | Front End PCMs    |  SoC DSP  | Back End DAIs | Audio devices |
-+  
-+                      *************
-+  PCM0 <------------> *           * <----DAI0-----> Codec Headset
-+                      *           *
-+  PCM1 <------------> *           * <----DAI1-----> Codec Speakers
-+                      *   DSP     *
-+  PCM2 <------------> *           * <----DAI2-----> MODEM
-+                      *           *
-+  PCM3 <------------> *           * <----DAI3-----> BT
-+                      *           *
-+                      *           * <----DAI4-----> DMIC
-+                      *           *
-+                      *           * <----DAI5-----> FM
-+                      *************
- 
- For the example above we have to define 4 FE DAI links and 6 BE DAI links. The
- FE DAI links are defined as follows :-
-+::
- 
--static struct snd_soc_dai_link machine_dais[] = {
-+  static struct snd_soc_dai_link machine_dais[] = {
- 	{
- 		.name = "PCM0 System",
- 		.stream_name = "System Playback",
-@@ -154,11 +160,11 @@ static struct snd_soc_dai_link machine_dais[] = {
- 		.dpcm_playback = 1,
- 	},
- 	.....< other FE and BE DAI links here >
--};
-+  };
- 
- This FE DAI link is pretty similar to a regular DAI link except that we also
--set the DAI link to a DPCM FE with the "dynamic = 1". The supported FE stream
--directions should also be set with the "dpcm_playback" and "dpcm_capture"
-+set the DAI link to a DPCM FE with the ``dynamic = 1``. The supported FE stream
-+directions should also be set with the ``dpcm_playback`` and ``dpcm_capture``
- flags. There is also an option to specify the ordering of the trigger call for
- each FE. This allows the ASoC core to trigger the DSP before or after the other
- components (as some DSPs have strong requirements for the ordering DAI/DSP
-@@ -168,8 +174,9 @@ The FE DAI above sets the codec and code DAIs to dummy devices since the BE is
- dynamic and will change depending on runtime config.
- 
- The BE DAIs are configured as follows :-
-+::
- 
--static struct snd_soc_dai_link machine_dais[] = {
-+  static struct snd_soc_dai_link machine_dais[] = {
- 	.....< FE DAI links here >
- 	{
- 		.name = "Codec Headset",
-@@ -186,29 +193,30 @@ static struct snd_soc_dai_link machine_dais[] = {
- 		.dpcm_capture = 1,
- 	},
- 	.....< other BE DAI links here >
--};
-+  };
- 
- This BE DAI link connects DAI0 to the codec (in this case RT5460 AIF1). It sets
--the "no_pcm" flag to mark it has a BE and sets flags for supported stream
--directions using "dpcm_playback" and "dpcm_capture" above.
-+the ``no_pcm`` flag to mark it has a BE and sets flags for supported stream
-+directions using ``dpcm_playback`` and ``dpcm_capture`` above.
- 
- The BE has also flags set for ignoring suspend and PM down time. This allows
- the BE to work in a hostless mode where the host CPU is not transferring data
- like a BT phone call :-
--
--                    *************
--PCM0 <------------> *           * <----DAI0-----> Codec Headset
--                    *           *
--PCM1 <------------> *           * <----DAI1-----> Codec Speakers
--                    *   DSP     *
--PCM2 <------------> *           * <====DAI2=====> MODEM
--                    *           *
--PCM3 <------------> *           * <====DAI3=====> BT
--                    *           *
--                    *           * <----DAI4-----> DMIC
--                    *           *
--                    *           * <----DAI5-----> FM
--                    *************
-+::
++#include <linux/clk.h>
++#include <linux/gpio.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/of_gpio.h>
++#include <linux/regulator/consumer.h>
 +
-+                      *************
-+  PCM0 <------------> *           * <----DAI0-----> Codec Headset
-+                      *           *
-+  PCM1 <------------> *           * <----DAI1-----> Codec Speakers
-+                      *   DSP     *
-+  PCM2 <------------> *           * <====DAI2=====> MODEM
-+                      *           *
-+  PCM3 <------------> *           * <====DAI3=====> BT
-+                      *           *
-+                      *           * <----DAI4-----> DMIC
-+                      *           *
-+                      *           * <----DAI5-----> FM
-+                      *************
- 
- This allows the host CPU to sleep whilst the DSP, MODEM DAI and the BT DAI are
- still in operation.
-@@ -220,10 +228,10 @@ Likewise a BE DAI can also set a dummy cpu DAI if the CPU DAI is managed by the
- DSP firmware.
- 
- 
--2 FE/BE PCM operations
------------------------
-+FE/BE PCM operations
-+--------------------
- 
--The BE above also exports some PCM operations and a "fixup" callback. The fixup
-+The BE above also exports some PCM operations and a ``fixup`` callback. The fixup
- callback is used by the machine driver to (re)configure the DAI based upon the
- FE hw params. i.e. the DSP may perform SRC or ASRC from the FE to BE.
- 
-@@ -231,10 +239,11 @@ e.g. DSP converts all FE hw params to run at fixed rate of 48k, 16bit, stereo fo
- DAI0. This means all FE hw_params have to be fixed in the machine driver for
- DAI0 so that the DAI is running at desired configuration regardless of the FE
- configuration.
-+::
- 
--static int dai0_fixup(struct snd_soc_pcm_runtime *rtd,
-+  static int dai0_fixup(struct snd_soc_pcm_runtime *rtd,
- 			struct snd_pcm_hw_params *params)
--{
-+  {
- 	struct snd_interval *rate = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_RATE);
- 	struct snd_interval *channels = hw_param_interval(params,
-@@ -249,21 +258,22 @@ static int dai0_fixup(struct snd_soc_pcm_runtime *rtd,
- 				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
- 				    SNDRV_PCM_FORMAT_S16_LE);
- 	return 0;
--}
-+  }
- 
- The other PCM operation are the same as for regular DAI links. Use as necessary.
- 
- 
--3 Widget graph connections
----------------------------
-+Widget graph connections
-+------------------------
- 
- The BE DAI links will normally be connected to the graph at initialisation time
- by the ASoC DAPM core. However, if the BE codec or BE DAI is a dummy then this
- has to be set explicitly in the driver :-
-+::
- 
--/* BE for codec Headset -  DAI0 is dummy and managed by DSP FW */
--{"DAI0 CODEC IN", NULL, "AIF1 Capture"},
--{"AIF1 Playback", NULL, "DAI0 CODEC OUT"},
-+  /* BE for codec Headset -  DAI0 is dummy and managed by DSP FW */
-+  {"DAI0 CODEC IN", NULL, "AIF1 Capture"},
-+  {"AIF1 Playback", NULL, "DAI0 CODEC OUT"},
- 
- 
- Writing a DPCM DSP driver
-@@ -273,24 +283,25 @@ The DPCM DSP driver looks much like a standard platform class ASoC driver
- combined with elements from a codec class driver. A DSP platform driver must
- implement :-
- 
-- 1) Front End PCM DAIs - i.e. struct snd_soc_dai_driver.
-+1. Front End PCM DAIs - i.e. struct snd_soc_dai_driver.
- 
-- 2) DAPM graph showing DSP audio routing from FE DAIs to BEs.
-+2. DAPM graph showing DSP audio routing from FE DAIs to BEs.
- 
-- 3) DAPM widgets from DSP graph.
-+3. DAPM widgets from DSP graph.
- 
-- 4) Mixers for gains, routing, etc.
-+4. Mixers for gains, routing, etc.
- 
-- 5) DMA configuration.
-+5. DMA configuration.
- 
-- 6) BE AIF widgets.
-+6. BE AIF widgets.
- 
- Items 6 is important for routing the audio outside of the DSP. AIF need to be
- defined for each BE and each stream direction. e.g for BE DAI0 above we would
- have :-
-+::
- 
--SND_SOC_DAPM_AIF_IN("DAI0 RX", NULL, 0, SND_SOC_NOPM, 0, 0),
--SND_SOC_DAPM_AIF_OUT("DAI0 TX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+  SND_SOC_DAPM_AIF_IN("DAI0 RX", NULL, 0, SND_SOC_NOPM, 0, 0),
-+  SND_SOC_DAPM_AIF_OUT("DAI0 TX", NULL, 0, SND_SOC_NOPM, 0, 0),
- 
- The BE AIF are used to connect the DSP graph to the graphs for the other
- component drivers (e.g. codec graph).
-@@ -301,33 +312,33 @@ Hostless PCM streams
- 
- A hostless PCM stream is a stream that is not routed through the host CPU. An
- example of this would be a phone call from handset to modem.
--
--
--                    *************
--PCM0 <------------> *           * <----DAI0-----> Codec Headset
--                    *           *
--PCM1 <------------> *           * <====DAI1=====> Codec Speakers/Mic
--                    *   DSP     *
--PCM2 <------------> *           * <====DAI2=====> MODEM
--                    *           *
--PCM3 <------------> *           * <----DAI3-----> BT
--                    *           *
--                    *           * <----DAI4-----> DMIC
--                    *           *
--                    *           * <----DAI5-----> FM
--                    *************
-+::
++#include <sound/soc.h>
++#include <sound/pcm_params.h>
 +
-+                      *************
-+  PCM0 <------------> *           * <----DAI0-----> Codec Headset
-+                      *           *
-+  PCM1 <------------> *           * <====DAI1=====> Codec Speakers/Mic
-+                      *   DSP     *
-+  PCM2 <------------> *           * <====DAI2=====> MODEM
-+                      *           *
-+  PCM3 <------------> *           * <----DAI3-----> BT
-+                      *           *
-+                      *           * <----DAI4-----> DMIC
-+                      *           *
-+                      *           * <----DAI5-----> FM
-+                      *************
- 
- In this case the PCM data is routed via the DSP. The host CPU in this use case
- is only used for control and can sleep during the runtime of the stream.
- 
- The host can control the hostless link either by :-
- 
-- 1) Configuring the link as a CODEC <-> CODEC style link. In this case the link
-+ 1. Configuring the link as a CODEC <-> CODEC style link. In this case the link
-     is enabled or disabled by the state of the DAPM graph. This usually means
-     there is a mixer control that can be used to connect or disconnect the path
-     between both DAIs.
- 
-- 2) Hostless FE. This FE has a virtual connection to the BE DAI links on the DAPM
-+ 2. Hostless FE. This FE has a virtual connection to the BE DAI links on the DAPM
-     graph. Control is then carried out by the FE as regular PCM operations.
-     This method gives more control over the DAI links, but requires much more
-     userspace code to control the link. Its recommended to use CODEC<->CODEC
-@@ -339,16 +350,17 @@ CODEC <-> CODEC link
- 
- This DAI link is enabled when DAPM detects a valid path within the DAPM graph.
- The machine driver sets some additional parameters to the DAI link i.e.
-+::
- 
--static const struct snd_soc_pcm_stream dai_params = {
-+  static const struct snd_soc_pcm_stream dai_params = {
- 	.formats = SNDRV_PCM_FMTBIT_S32_LE,
- 	.rate_min = 8000,
- 	.rate_max = 8000,
- 	.channels_min = 2,
- 	.channels_max = 2,
--};
-+  };
- 
--static struct snd_soc_dai_link dais[] = {
-+  static struct snd_soc_dai_link dais[] = {
- 	< ... more DAI links above ... >
- 	{
- 		.name = "MODEM",
-diff --git a/Documentation/sound/soc/index.rst b/Documentation/sound/soc/index.rst
-index 85ec51764e83..e142a0f25c5b 100644
---- a/Documentation/sound/soc/index.rst
-+++ b/Documentation/sound/soc/index.rst
-@@ -16,3 +16,4 @@ The documentation is spilt into the following sections:-
-    pops-clicks
-    clocking
-    jack
-+   dpcm
++#include "atmel_ssc_dai.h"
++
++struct tse850_priv {
++	int ssc_id;
++
++	struct gpio_desc *add;
++	struct gpio_desc *loop1;
++	struct gpio_desc *loop2;
++
++	struct regulator *ana;
++
++	int add_cache;
++	int loop1_cache;
++	int loop2_cache;
++};
++
++static int tse850_get_mux1(struct snd_kcontrol *kctrl,
++			   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
++	struct snd_soc_card *card = dapm->card;
++	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
++
++	ucontrol->value.enumerated.item[0] = tse850->loop1_cache;
++
++	return 0;
++}
++
++static int tse850_put_mux1(struct snd_kcontrol *kctrl,
++			   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
++	struct snd_soc_card *card = dapm->card;
++	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
++	struct soc_enum *e = (struct soc_enum *)kctrl->private_value;
++	unsigned int val = ucontrol->value.enumerated.item[0];
++
++	if (val >= e->items)
++		return -EINVAL;
++
++	gpiod_set_value_cansleep(tse850->loop1, val);
++	tse850->loop1_cache = val;
++
++	return snd_soc_dapm_put_enum_double(kctrl, ucontrol);
++}
++
++static int tse850_get_mux2(struct snd_kcontrol *kctrl,
++			   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
++	struct snd_soc_card *card = dapm->card;
++	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
++
++	ucontrol->value.enumerated.item[0] = tse850->loop2_cache;
++
++	return 0;
++}
++
++static int tse850_put_mux2(struct snd_kcontrol *kctrl,
++			   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
++	struct snd_soc_card *card = dapm->card;
++	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
++	struct soc_enum *e = (struct soc_enum *)kctrl->private_value;
++	unsigned int val = ucontrol->value.enumerated.item[0];
++
++	if (val >= e->items)
++		return -EINVAL;
++
++	gpiod_set_value_cansleep(tse850->loop2, val);
++	tse850->loop2_cache = val;
++
++	return snd_soc_dapm_put_enum_double(kctrl, ucontrol);
++}
++
++int tse850_get_mix(struct snd_kcontrol *kctrl,
++		   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
++	struct snd_soc_card *card = dapm->card;
++	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
++
++	ucontrol->value.enumerated.item[0] = tse850->add_cache;
++
++	return 0;
++}
++
++int tse850_put_mix(struct snd_kcontrol *kctrl,
++		   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
++	struct snd_soc_card *card = dapm->card;
++	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
++	int connect = !!ucontrol->value.integer.value[0];
++
++	if (tse850->add_cache == connect)
++		return 0;
++
++	/*
++	 * Hmmm, this gpiod_set_value_cansleep call should probably happen
++	 * inside snd_soc_dapm_mixer_update_power in the loop.
++	 */
++	gpiod_set_value_cansleep(tse850->add, connect);
++	tse850->add_cache = connect;
++
++	snd_soc_dapm_mixer_update_power(dapm, kctrl, connect, NULL);
++	return 1;
++}
++
++int tse850_get_ana(struct snd_kcontrol *kctrl,
++		   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
++	struct snd_soc_card *card = dapm->card;
++	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
++	int ret;
++
++	ret = regulator_get_voltage(tse850->ana);
++	if (ret < 0)
++		return ret;
++
++	/*
++	 * Map regulator output values like so:
++	 *      -11.5V to "Low" (enum 0)
++	 * 11.5V-12.5V to "12V" (enum 1)
++	 * 12.5V-13.5V to "13V" (enum 2)
++	 *     ...
++	 * 18.5V-19.5V to "19V" (enum 8)
++	 * 19.5V-      to "20V" (enum 9)
++	 */
++	if (ret < 11000000)
++		ret = 11000000;
++	else if (ret > 20000000)
++		ret = 20000000;
++	ret -= 11000000;
++	ret = (ret + 500000) / 1000000;
++
++	ucontrol->value.enumerated.item[0] = ret;
++
++	return 0;
++}
++
++int tse850_put_ana(struct snd_kcontrol *kctrl,
++		   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
++	struct snd_soc_card *card = dapm->card;
++	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
++	struct soc_enum *e = (struct soc_enum *)kctrl->private_value;
++	unsigned int uV = ucontrol->value.enumerated.item[0];
++	int ret;
++
++	if (uV >= e->items)
++		return -EINVAL;
++
++	/*
++	 * Map enum zero (Low) to 2 volts on the regulator, do this since
++	 * the ana regulator is supplied by the system 12V voltage and
++	 * requesting anything below the system voltage causes the system
++	 * voltage to be passed through the regulator. Also, the ana
++	 * regulator induces noise when requesting voltages near the
++	 * system voltage. So, by mapping Low to 2V, that noise is
++	 * eliminated when all that is needed is 12V (the system voltage).
++	 */
++	if (uV)
++		uV = 11000000 + (1000000 * uV);
++	else
++		uV = 2000000;
++
++	ret = regulator_set_voltage(tse850->ana, uV, uV);
++	if (ret < 0)
++		return ret;
++
++	return snd_soc_dapm_put_enum_double(kctrl, ucontrol);
++}
++
++static const char * const mux_text[] = { "Mixer", "Loop" };
++
++static const struct soc_enum mux_enum =
++	SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, 2, mux_text);
++
++static const struct snd_kcontrol_new mux1 =
++	SOC_DAPM_ENUM_EXT("MUX1", mux_enum, tse850_get_mux1, tse850_put_mux1);
++
++static const struct snd_kcontrol_new mux2 =
++	SOC_DAPM_ENUM_EXT("MUX2", mux_enum, tse850_get_mux2, tse850_put_mux2);
++
++#define TSE850_DAPM_SINGLE_EXT(xname, reg, shift, max, invert, xget, xput) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.info = snd_soc_info_volsw, \
++	.get = xget, \
++	.put = xput, \
++	.private_value = SOC_SINGLE_VALUE(reg, shift, max, invert, 0) }
++
++static const struct snd_kcontrol_new mix[] = {
++	TSE850_DAPM_SINGLE_EXT("IN Switch", SND_SOC_NOPM, 0, 1, 0,
++			       tse850_get_mix, tse850_put_mix),
++};
++
++static const char * const ana_text[] = {
++	"Low", "12V", "13V", "14V", "15V", "16V", "17V", "18V", "19V", "20V"
++};
++
++static const struct soc_enum ana_enum =
++	SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, 9, ana_text);
++
++static const struct snd_kcontrol_new out =
++	SOC_DAPM_ENUM_EXT("ANA", ana_enum, tse850_get_ana, tse850_put_ana);
++
++static const struct snd_soc_dapm_widget tse850_dapm_widgets[] = {
++	SND_SOC_DAPM_LINE("OUT1", NULL),
++	SND_SOC_DAPM_LINE("OUT2", NULL),
++	SND_SOC_DAPM_LINE("IN1", NULL),
++	SND_SOC_DAPM_LINE("IN2", NULL),
++	SND_SOC_DAPM_INPUT("DAC"),
++	SND_SOC_DAPM_AIF_IN("AIFINL", "Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_IN("AIFINR", "Playback", 1, SND_SOC_NOPM, 0, 0),
++	SOC_MIXER_ARRAY("MIX", SND_SOC_NOPM, 0, 0, mix),
++	SND_SOC_DAPM_MUX("MUX1", SND_SOC_NOPM, 0, 0, &mux1),
++	SND_SOC_DAPM_MUX("MUX2", SND_SOC_NOPM, 0, 0, &mux2),
++	SND_SOC_DAPM_OUT_DRV("OUT", SND_SOC_NOPM, 0, 0, &out, 1),
++};
++
++/*
++ * These connections are not entirely correct, since both IN1 and IN2
++ * are always fed to MIX (if the "IN switch" is set so), i.e. without
++ * regard to the loop1 and loop2 relays that according to this only
++ * control MUX1 and MUX2 but in fact also control how the input signals
++ * are routed.
++ * But, 1) I don't know how to do it right, and 2) it doesn't seem to
++ * matter in practice since nothing is powered in those sections anyway.
++ */
++static const struct snd_soc_dapm_route tse850_intercon[] = {
++	{ "OUT1", NULL, "MUX1" },
++	{ "OUT2", NULL, "MUX2" },
++
++	{ "MUX1", "Loop",  "IN1" },
++	{ "MUX1", "Mixer", "OUT" },
++
++	{ "MUX2", "Loop",  "IN2" },
++	{ "MUX2", "Mixer", "OUT" },
++
++	{ "OUT", NULL, "MIX" },
++
++	{ "MIX", NULL, "DAC" },
++	{ "MIX", "IN Switch", "IN1" },
++	{ "MIX", "IN Switch", "IN2" },
++
++	/* connect board input to the codec left channel output pin */
++	{ "DAC", NULL, "OUTL" },
++};
++
++static struct snd_soc_dai_link tse850_dailink = {
++	.name = "TSE-850",
++	.stream_name = "TSE-850-PCM",
++	.codec_dai_name = "pcm512x-hifi",
++	.dai_fmt = SND_SOC_DAIFMT_I2S
++		 | SND_SOC_DAIFMT_NB_NF
++		 | SND_SOC_DAIFMT_CBM_CFS,
++};
++
++static struct snd_soc_card tse850_card = {
++	.name = "TSE-850-ASoC",
++	.owner = THIS_MODULE,
++	.dai_link = &tse850_dailink,
++	.num_links = 1,
++	.dapm_widgets = tse850_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(tse850_dapm_widgets),
++	.dapm_routes = tse850_intercon,
++	.num_dapm_routes = ARRAY_SIZE(tse850_intercon),
++	.fully_routed = true,
++};
++
++static int tse850_dt_init(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *codec_np, *cpu_np;
++	struct snd_soc_card *card = &tse850_card;
++	struct snd_soc_dai_link *dailink = &tse850_dailink;
++	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
++
++	if (!np) {
++		dev_err(&pdev->dev, "only device tree supported\n");
++		return -EINVAL;
++	}
++
++	cpu_np = of_parse_phandle(np, "axentia,ssc-controller", 0);
++	if (!cpu_np) {
++		dev_err(&pdev->dev, "failed to get dai and pcm info\n");
++		return -EINVAL;
++	}
++	dailink->cpu_of_node = cpu_np;
++	dailink->platform_of_node = cpu_np;
++	tse850->ssc_id = of_alias_get_id(cpu_np, "ssc");
++	of_node_put(cpu_np);
++
++	codec_np = of_parse_phandle(np, "axentia,audio-codec", 0);
++	if (!codec_np) {
++		dev_err(&pdev->dev, "failed to get codec info\n");
++		return -EINVAL;
++	}
++	dailink->codec_of_node = codec_np;
++	of_node_put(codec_np);
++
++	return 0;
++}
++
++static int tse850_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &tse850_card;
++	struct device *dev = card->dev = &pdev->dev;
++	struct tse850_priv *tse850;
++	int ret;
++
++	tse850 = devm_kzalloc(dev, sizeof(*tse850), GFP_KERNEL);
++	if (!tse850)
++		return -ENOMEM;
++
++	snd_soc_card_set_drvdata(card, tse850);
++
++	ret = tse850_dt_init(pdev);
++	if (ret) {
++		dev_err(dev, "failed to init dt info\n");
++		return ret;
++	}
++
++	tse850->add = devm_gpiod_get(dev, "axentia,add", GPIOD_OUT_HIGH);
++	if (IS_ERR(tse850->add)) {
++		if (PTR_ERR(tse850->add) != -EPROBE_DEFER)
++			dev_err(dev, "failed to get 'add' gpio\n");
++		return PTR_ERR(tse850->add);
++	}
++	tse850->add_cache = 1;
++
++	tse850->loop1 = devm_gpiod_get(dev, "axentia,loop1", GPIOD_OUT_HIGH);
++	if (IS_ERR(tse850->loop1)) {
++		if (PTR_ERR(tse850->loop1) != -EPROBE_DEFER)
++			dev_err(dev, "failed to get 'loop1' gpio\n");
++		return PTR_ERR(tse850->loop1);
++	}
++	tse850->loop1_cache = 1;
++
++	tse850->loop2 = devm_gpiod_get(dev, "axentia,loop2", GPIOD_OUT_HIGH);
++	if (IS_ERR(tse850->loop2)) {
++		if (PTR_ERR(tse850->loop2) != -EPROBE_DEFER)
++			dev_err(dev, "failed to get 'loop2' gpio\n");
++		return PTR_ERR(tse850->loop2);
++	}
++	tse850->loop2_cache = 1;
++
++	tse850->ana = devm_regulator_get(dev, "axentia,ana");
++	if (IS_ERR(tse850->ana)) {
++		if (PTR_ERR(tse850->ana) != -EPROBE_DEFER)
++			dev_err(dev, "failed to get 'ana' regulator\n");
++		return PTR_ERR(tse850->ana);
++	}
++
++	ret = regulator_enable(tse850->ana);
++	if (ret < 0) {
++		dev_err(dev, "failed to enable the 'ana' regulator\n");
++		return ret;
++	}
++
++	ret = atmel_ssc_set_audio(tse850->ssc_id);
++	if (ret != 0) {
++		dev_err(dev,
++			"failed to set SSC %d for audio\n", tse850->ssc_id);
++		goto err_disable_ana;
++	}
++
++	ret = snd_soc_register_card(card);
++	if (ret) {
++		dev_err(dev, "snd_soc_register_card failed\n");
++		goto err_put_audio;
++	}
++
++	return 0;
++
++err_put_audio:
++	atmel_ssc_put_audio(tse850->ssc_id);
++err_disable_ana:
++	regulator_disable(tse850->ana);
++	return ret;
++}
++
++static int tse850_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	struct tse850_priv *tse850 = snd_soc_card_get_drvdata(card);
++
++	snd_soc_unregister_card(card);
++	atmel_ssc_put_audio(tse850->ssc_id);
++	regulator_disable(tse850->ana);
++
++	return 0;
++}
++
++static const struct of_device_id tse850_dt_ids[] = {
++	{ .compatible = "axentia,tse850-pcm5142", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, tse850_dt_ids);
++
++static struct platform_driver tse850_driver = {
++	.driver = {
++		.name = "axentia-tse850-pcm5142",
++		.of_match_table = of_match_ptr(tse850_dt_ids),
++	},
++	.probe = tse850_probe,
++	.remove = tse850_remove,
++};
++
++module_platform_driver(tse850_driver);
++
++/* Module information */
++MODULE_AUTHOR("Peter Rosin <peda@axentia.se>");
++MODULE_DESCRIPTION("ALSA SoC driver for TSE-850 with PCM5142 codec");
++MODULE_LICENSE("GPL");
 -- 
-2.10.2
+2.1.4
