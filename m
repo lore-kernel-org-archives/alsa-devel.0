@@ -1,18 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: soc-core: adjust for graph on snd_soc_of_parse_card_name" to the asoc tree
-Date: Fri, 11 Nov 2016 15:28:48 +0000
-Message-ID: <E1c5Dl2-00028V-KU@finisterre>
-References: <87mvi34c51.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <87mvi34c51.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-Kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Laurent <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Guennadi <g.liakhovetski-Mmb7MZpHnFY@public.gmane.org>alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: soc-core: adjust for graph on snd_soc_of_parse_audio_routing" to the asoc tree
+Date: Fri, 11 Nov 2016 15:29:11 +0000
+Message-ID: <E1c5DlP-0002Be-69@finisterre>
+References: <87k2d74c43.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87k2d74c43.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>Mark Brown <broonie@kernel.org>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux-Kernel <linux-kernel@vger.kernel.org>, Simon <horms@verge.net.au>, Laurent <laurent.pinchart@ideasonboard.com>, Grant Likely <grant.likely@linaro.org>, Frank Rowand <frowand.list@gmail.com>, Guennadi <g.liakhovetski@gmx.de>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: adjust for graph on snd_soc_of_parse_card_name
+   ASoC: soc-core: adjust for graph on snd_soc_of_parse_audio_routing
 
 has been applied to the asoc tree at
 
@@ -37,82 +37,75 @@ to this mail.
 Thanks,
 Mark
 
->From 8f5ebb1bee15b5720741a98414767bb86f6c2b23 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Date: Fri, 11 Nov 2016 01:17:27 +0000
+>From 7364c8dc255232db33bcd1c5b19eb8f34cf6108a Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 11 Nov 2016 01:18:35 +0000
 Subject: [PATCH] ASoC: soc-core: adjust for graph on
- snd_soc_of_parse_card_name
+ snd_soc_of_parse_audio_routing
 
 It is assuming that the card related information is located on
 "card" node, but graph case doesn't have it.
 This patch adds node parameter to adjust for graph support
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  7 +++++--
- sound/soc/soc-core.c | 11 ++++++-----
- 2 files changed, 11 insertions(+), 7 deletions(-)
+ include/sound/soc.h  | 9 +++++++--
+ sound/soc/soc-core.c | 9 ++++++---
+ 2 files changed, 13 insertions(+), 5 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 346223b38e0d..8457aab9eab0 100644
+index 4f1c784e44f6..148bf553d598 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -1642,8 +1642,11 @@ static inline struct snd_soc_platform *snd_soc_kcontrol_platform(
- int snd_soc_util_init(void);
- void snd_soc_util_exit(void);
- 
--int snd_soc_of_parse_card_name(struct snd_soc_card *card,
--			       const char *propname);
-+#define snd_soc_of_parse_card_name(card, propname) \
-+	snd_soc_of_parse_card_name_from_node(card, NULL, propname)
-+int snd_soc_of_parse_card_name_from_node(struct snd_soc_card *card,
-+					 struct device_node *np,
-+					 const char *propname);
- int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
- 					  const char *propname);
- int snd_soc_of_parse_tdm_slot(struct device_node *np,
+@@ -1655,8 +1655,13 @@ void snd_soc_of_parse_audio_prefix(struct snd_soc_card *card,
+ 				   struct snd_soc_codec_conf *codec_conf,
+ 				   struct device_node *of_node,
+ 				   const char *propname);
+-int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+-				   const char *propname);
++
++#define snd_soc_of_parse_audio_routing(card, propname) \
++	snd_soc_of_parse_audio_routing_from_node(card, NULL, propname)
++int snd_soc_of_parse_audio_routing_from_node(struct snd_soc_card *card,
++					     struct device_node *np,
++					     const char *propname);
++
+ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+ 				     const char *prefix,
+ 				     struct device_node **bitclkmaster,
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e4c90806fa10..17132fb57930 100644
+index c0bbcd903261..ec881b8825b6 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -3424,10 +3424,10 @@ void snd_soc_unregister_codec(struct device *dev)
- EXPORT_SYMBOL_GPL(snd_soc_unregister_codec);
+@@ -3615,14 +3615,17 @@ void snd_soc_of_parse_audio_prefix(struct snd_soc_card *card,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_prefix);
  
- /* Retrieve a card's name from device tree */
--int snd_soc_of_parse_card_name(struct snd_soc_card *card,
--			       const char *propname)
-+int snd_soc_of_parse_card_name_from_node(struct snd_soc_card *card,
-+					 struct device_node *np,
-+					 const char *propname)
+-int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
++int snd_soc_of_parse_audio_routing_from_node(struct snd_soc_card *card,
++				   struct device_node *np,
+ 				   const char *propname)
  {
--	struct device_node *np;
- 	int ret;
+-	struct device_node *np = card->dev->of_node;
+ 	int num_routes;
+ 	struct snd_soc_dapm_route *routes;
+ 	int i, ret;
  
- 	if (!card->dev) {
-@@ -3435,7 +3435,8 @@ int snd_soc_of_parse_card_name(struct snd_soc_card *card,
- 		return -EINVAL;
- 	}
- 
--	np = card->dev->of_node;
 +	if (!np)
 +		np = card->dev->of_node;
- 
- 	ret = of_property_read_string_index(np, propname, 0, &card->name);
- 	/*
-@@ -3452,7 +3453,7 @@ int snd_soc_of_parse_card_name(struct snd_soc_card *card,
++
+ 	num_routes = of_property_count_strings(np, propname);
+ 	if (num_routes < 0 || num_routes & 1) {
+ 		dev_err(card->dev,
+@@ -3669,7 +3672,7 @@ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
  
  	return 0;
  }
--EXPORT_SYMBOL_GPL(snd_soc_of_parse_card_name);
-+EXPORT_SYMBOL_GPL(snd_soc_of_parse_card_name_from_node);
+-EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_routing);
++EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_routing_from_node);
  
- static const struct snd_soc_dapm_widget simple_widgets[] = {
- 	SND_SOC_DAPM_MIC("Microphone", NULL),
+ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+ 				     const char *prefix,
 -- 
 2.10.2
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
