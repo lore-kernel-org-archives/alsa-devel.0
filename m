@@ -1,18 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix mic regression by ASRock mobo
-	fixup
-Date: Fri, 11 Nov 2016 17:04:41 +0100
-Message-ID: <20161111160441.3734-1-tiwai@suse.de>
+Subject: [PATCH] ASoC: doc: ReSTize codec_to_codec.txt
+Date: Fri, 11 Nov 2016 17:11:06 +0100
+Message-ID: <20161111161106.4286-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CB03267415
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2016 17:04:43 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 34D27AD48
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2016 16:04:43 +0000 (UTC)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9228126741B
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2016 17:11:08 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,43 +19,157 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The commit [1a3f099101b8: ALSA: hda - Fix surround output pins for
-ASRock B150M mobo] introduced a fixup of pin configs for ASRock
-mobos to fix the surround outputs.  However, this overrides the pin
-configs of the mic pins as if they are outputs-only, effectively
-disabling the mic inputs.  Of course, it's a regression wrt mic
-functionality.
+Yet another simple conversion from a plain text file.
+Renamed to codec-to-codec.rst to align with others.
 
-Actually the pins 0x18 and 0x1a don't need to be changed; we just need
-to disable the bogus pins 0x14 and 0x15.  Then the auto-parser will
-pick up mic pins as switchable and assign the surround outputs there.
-
-This patch removes the incorrect pin overrides of NID 0x18 and 0x1a
-from the ASRock fixup.
-
-Fixes: 1a3f099101b8 ('ALSA: hda - Fix surround output pins for ASRock...')
-Reported-and-tested-by: Vitor Antunes <vitor.hda@gmail.com>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=187431
-Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 2 --
- 1 file changed, 2 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 2f909dd8b7b8..ea81c08ddc7a 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6907,8 +6907,6 @@ static const struct hda_fixup alc662_fixups[] = {
- 		.v.pins = (const struct hda_pintbl[]) {
- 			{ 0x15, 0x40f000f0 }, /* disabled */
- 			{ 0x16, 0x40f000f0 }, /* disabled */
--			{ 0x18, 0x01014011 }, /* LO */
--			{ 0x1a, 0x01014012 }, /* LO */
- 			{ }
- 		}
- 	},
+Mark, this is the rest one in your branch, which I pulled now.
+It's already in topic/restize-docs branch, so I can merge to for-next
+as is if it's OK.
+
+ .../codec_to_codec.txt => soc/codec-to-codec.rst}  | 79 ++++++++++++----------
+ Documentation/sound/soc/index.rst                  |  1 +
+ 2 files changed, 43 insertions(+), 37 deletions(-)
+ rename Documentation/sound/{alsa/soc/codec_to_codec.txt => soc/codec-to-codec.rst} (68%)
+
+diff --git a/Documentation/sound/alsa/soc/codec_to_codec.txt b/Documentation/sound/soc/codec-to-codec.rst
+similarity index 68%
+rename from Documentation/sound/alsa/soc/codec_to_codec.txt
+rename to Documentation/sound/soc/codec-to-codec.rst
+index 704a6483652c..810109d7500d 100644
+--- a/Documentation/sound/alsa/soc/codec_to_codec.txt
++++ b/Documentation/sound/soc/codec-to-codec.rst
+@@ -1,37 +1,41 @@
++==============================================
+ Creating codec to codec dai link for ALSA dapm
+-===================================================
++==============================================
+ 
+ Mostly the flow of audio is always from CPU to codec so your system
+ will look as below:
++::
+ 
+- ---------          ---------
+-|         |  dai   |         |
+-    CPU    ------->    codec
+-|         |        |         |
+- ---------          ---------
++   ---------          ---------
++  |         |  dai   |         |
++      CPU    ------->    codec
++  |         |        |         |
++   ---------          ---------
+ 
+ In case your system looks as below:
+-                     ---------
+-                    |         |
+-                      codec-2
+-                    |         |
+-                     ---------
+-                         |
+-                       dai-2
+-                         |
+- ----------          ---------
+-|          |  dai-1 |         |
+-    CPU     ------->  codec-1
+-|          |        |         |
+- ----------          ---------
+-                         |
+-                       dai-3
+-                         |
+-                     ---------
+-                    |         |
+-                      codec-3
+-                    |         |
+-                     ---------
++::
++
++                       ---------
++                      |         |
++                        codec-2
++                      |         |
++                      ---------
++                           |
++                         dai-2
++                           |
++   ----------          ---------
++  |          |  dai-1 |         |
++      CPU     ------->  codec-1
++  |          |        |         |
++   ----------          ---------
++                           |
++                         dai-3
++                           |
++                       ---------
++                      |         |
++                        codec-3
++                      |         |
++                       ---------
+ 
+ Suppose codec-2 is a bluetooth chip and codec-3 is connected to
+ a speaker and you have a below scenario:
+@@ -42,20 +46,21 @@ connection should be used.
+ 
+ Your dai_link should appear as below in your machine
+ file:
++::
+ 
+-/*
+- * this pcm stream only supports 24 bit, 2 channel and
+- * 48k sampling rate.
+- */
+-static const struct snd_soc_pcm_stream dsp_codec_params = {
++ /*
++  * this pcm stream only supports 24 bit, 2 channel and
++  * 48k sampling rate.
++  */
++ static const struct snd_soc_pcm_stream dsp_codec_params = {
+         .formats = SNDRV_PCM_FMTBIT_S24_LE,
+         .rate_min = 48000,
+         .rate_max = 48000,
+         .channels_min = 2,
+         .channels_max = 2,
+-};
++ };
+ 
+-{
++ {
+     .name = "CPU-DSP",
+     .stream_name = "CPU-DSP",
+     .cpu_dai_name = "samsung-i2s.0",
+@@ -66,8 +71,8 @@ static const struct snd_soc_pcm_stream dsp_codec_params = {
+             | SND_SOC_DAIFMT_CBM_CFM,
+     .ignore_suspend = 1,
+     .params = &dsp_codec_params,
+-},
+-{
++ },
++ {
+     .name = "DSP-CODEC",
+     .stream_name = "DSP-CODEC",
+     .cpu_dai_name = "wm0010-sdi2",
+@@ -77,7 +82,7 @@ static const struct snd_soc_pcm_stream dsp_codec_params = {
+             | SND_SOC_DAIFMT_CBM_CFM,
+     .ignore_suspend = 1,
+     .params = &dsp_codec_params,
+-},
++ },
+ 
+ Above code snippet is motivated from sound/soc/samsung/speyside.c.
+ 
+diff --git a/Documentation/sound/soc/index.rst b/Documentation/sound/soc/index.rst
+index e142a0f25c5b..e57df2dab2fd 100644
+--- a/Documentation/sound/soc/index.rst
++++ b/Documentation/sound/soc/index.rst
+@@ -17,3 +17,4 @@ The documentation is spilt into the following sections:-
+    clocking
+    jack
+    dpcm
++   codec-to-codec
 -- 
 2.10.2
