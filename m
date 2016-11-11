@@ -1,843 +1,514 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 13/30] ALSA: doc: ReSTize seq_oss document
-Date: Thu, 10 Nov 2016 22:06:24 +0100
-Message-ID: <20161110210641.5907-14-tiwai@suse.de>
-References: <20161110210641.5907-1-tiwai@suse.de>
+From: kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH v3 12/17] ASoC: simple-card-utils: add
+ asoc_simple_card_try_to_probe_graph_card()
+Date: Fri, 11 Nov 2016 10:07:17 +0800
+Message-ID: <201611111036.Ye7DcBzl%fengguang.wu@intel.com>
+References: <87eg2ireua.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 90B382673C6
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 22:06:56 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C1614ADED
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2016 21:06:53 +0000 (UTC)
-In-Reply-To: <20161110210641.5907-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="Q68bSM7Ycu6FN28Q"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87eg2ireua.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: kbuild-all@01.org, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Laurent <laurent.pinchart@ideasonboard.com>, Guennadi <g.liakhovetski@gmx.de>, Grant Likely <grant.likely@linaro.org>, Frank Rowand <frowand.list@gmail.com>, Linux-DT <devicetree@vger.kernel.org>, Linux-Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Converted from an ancient plain HTML document. It's much readable now!
-Put to designs subdirectory with a slight rename.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+--Q68bSM7Ycu6FN28Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Kuninori,
+
+[auto build test ERROR on asoc/for-next]
+[also build test ERROR on v4.9-rc4 next-20161110]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+
+url:    https://github.com/0day-ci/linux/commits/Kuninori-Morimoto/ASoC-add-OF-graph-base-simple-card/20161111-093231
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+config: x86_64-randconfig-x010-201645 (attached as .config)
+compiler: gcc-6 (Debian 6.2.0-3) 6.2.0 20160901
+reproduce:
+        # save the attached .config to linux build tree
+        make ARCH=x86_64 
+
+All error/warnings (new ones prefixed by >>):
+
+   sound/soc/generic/simple-card-utils.c: In function 'asoc_simple_card_try_to_probe_graph_card':
+>> sound/soc/generic/simple-card-utils.c:297:9: error: implicit declaration of function 'of_graph_get_top_port' [-Werror=implicit-function-declaration]
+     node = of_graph_get_top_port(dev);
+            ^~~~~~~~~~~~~~~~~~~~~
+>> sound/soc/generic/simple-card-utils.c:297:7: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+     node = of_graph_get_top_port(dev);
+          ^
+   cc1: some warnings being treated as errors
+
+vim +/of_graph_get_top_port +297 sound/soc/generic/simple-card-utils.c
+
+   291	{
+   292		struct platform_device_info pdevinfo;
+   293		struct device_node *node;
+   294		const char *compatible;
+   295		int ret;
+   296	
+ > 297		node = of_graph_get_top_port(dev);
+   298		if (!node || !info)
+   299			/*
+   300			 * It doesn't have graph base sound DT, or its infomation.
+
 ---
- Documentation/sound/alsa/seq_oss.html   | 409 --------------------------------
- Documentation/sound/designs/index.rst   |   1 +
- Documentation/sound/designs/seq-oss.rst | 371 +++++++++++++++++++++++++++++
- 3 files changed, 372 insertions(+), 409 deletions(-)
- delete mode 100644 Documentation/sound/alsa/seq_oss.html
- create mode 100644 Documentation/sound/designs/seq-oss.rst
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
-diff --git a/Documentation/sound/alsa/seq_oss.html b/Documentation/sound/alsa/seq_oss.html
-deleted file mode 100644
-index 9663b45f6fde..000000000000
---- a/Documentation/sound/alsa/seq_oss.html
-+++ /dev/null
-@@ -1,409 +0,0 @@
--<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
--<HTML>
--<HEAD>
--   <TITLE>OSS Sequencer Emulation on ALSA</TITLE>
--</HEAD>
--<BODY>
--
--<CENTER>
--<H1>
--
--<HR WIDTH="100%"></H1></CENTER>
--
--<CENTER>
--<H1>
--OSS Sequencer Emulation on ALSA</H1></CENTER>
--
--<HR WIDTH="100%">
--<P>Copyright (c) 1998,1999 by Takashi Iwai
--<TT><A HREF="mailto:iwai@ww.uni-erlangen.de">&lt;iwai@ww.uni-erlangen.de></A></TT>
--<P>ver.0.1.8; Nov. 16, 1999
--<H2>
--
--<HR WIDTH="100%"></H2>
--
--<H2>
--1. Description</H2>
--This directory contains the OSS sequencer emulation driver on ALSA. Note
--that this program is still in the development state.
--<P>What this does - it provides the emulation of the OSS sequencer, access
--via
--<TT>/dev/sequencer</TT> and <TT>/dev/music</TT> devices.
--The most of applications using OSS can run if the appropriate ALSA
--sequencer is prepared.
--<P>The following features are emulated by this driver:
--<UL>
--<LI>
--Normal sequencer and MIDI events:</LI>
--
--<BR>They are converted to the ALSA sequencer events, and sent to the corresponding
--port.
--<LI>
--Timer events:</LI>
--
--<BR>The timer is not selectable by ioctl. The control rate is fixed to
--100 regardless of HZ. That is, even on Alpha system, a tick is always
--1/100 second. The base rate and tempo can be changed in <TT>/dev/music</TT>.
--
--<LI>
--Patch loading:</LI>
--
--<BR>It purely depends on the synth drivers whether it's supported since
--the patch loading is realized by callback to the synth driver.
--<LI>
--I/O controls:</LI>
--
--<BR>Most of controls are accepted. Some controls
--are dependent on the synth driver, as well as even on original OSS.</UL>
--Furthermore, you can find the following advanced features:
--<UL>
--<LI>
--Better queue mechanism:</LI>
--
--<BR>The events are queued before processing them.
--<LI>
--Multiple applications:</LI>
--
--<BR>You can run two or more applications simultaneously (even for OSS sequencer)!
--However, each MIDI device is exclusive - that is, if a MIDI device is opened
--once by some application, other applications can't use it. No such a restriction
--in synth devices.
--<LI>
--Real-time event processing:</LI>
--
--<BR>The events can be processed in real time without using out of bound
--ioctl. To switch to real-time mode, send ABSTIME 0 event. The followed
--events will be processed in real-time without queued. To switch off the
--real-time mode, send RELTIME 0 event.
--<LI>
--<TT>/proc</TT> interface:</LI>
--
--<BR>The status of applications and devices can be shown via <TT>/proc/asound/seq/oss</TT>
--at any time. In the later version, configuration will be changed via <TT>/proc</TT>
--interface, too.</UL>
--
--<H2>
--2. Installation</H2>
--Run configure script with both sequencer support (<TT>--with-sequencer=yes</TT>)
--and OSS emulation (<TT>--with-oss=yes</TT>) options. A module <TT>snd-seq-oss.o</TT>
--will be created. If the synth module of your sound card supports for OSS
--emulation (so far, only Emu8000 driver), this module will be loaded automatically.
--Otherwise, you need to load this module manually.
--<P>At beginning, this module probes all the MIDI ports which have been
--already connected to the sequencer. Once after that, the creation and deletion
--of ports are watched by announcement mechanism of ALSA sequencer.
--<P>The available synth and MIDI devices can be found in proc interface.
--Run "<TT>cat /proc/asound/seq/oss</TT>", and check the devices. For example,
--if you use an AWE64 card, you'll see like the following:
--<PRE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OSS sequencer emulation version 0.1.8
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ALSA client number 63
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ALSA receiver port 0
--
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Number of applications: 0
--
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Number of synth devices: 1
--
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; synth 0: [EMU8000]
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type 0x1 : subtype 0x20 : voices 32
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; capabilties : ioctl enabled / load_patch enabled
--
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Number of MIDI devices: 3
--
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; midi 0: [Emu8000 Port-0] ALSA port 65:0
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; capability write / opened none
--
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; midi 1: [Emu8000 Port-1] ALSA port 65:1
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; capability write / opened none
--
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; midi 2: [0: MPU-401 (UART)] ALSA port 64:0
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; capability read/write / opened none</PRE>
--Note that the device number may be different from the information of
--<TT>/proc/asound/oss-devices</TT>
--or ones of the original OSS driver. Use the device number listed in <TT>/proc/asound/seq/oss</TT>
--to play via OSS sequencer emulation.
--<H2>
--3. Using Synthesizer Devices</H2>
--Run your favorite program. I've tested playmidi-2.4, awemidi-0.4.3, gmod-3.1
--and xmp-1.1.5. You can load samples via <TT>/dev/sequencer</TT> like sfxload,
--too.
--<P>If the lowlevel driver supports multiple access to synth devices (like
--Emu8000 driver), two or more applications are allowed to run at the same
--time.
--<H2>
--4. Using MIDI Devices</H2>
--So far, only MIDI output was tested. MIDI input was not checked at all,
--but hopefully it will work. Use the device number listed in <TT>/proc/asound/seq/oss</TT>.
--Be aware that these numbers are mostly different from the list in
--<TT>/proc/asound/oss-devices</TT>.
--<H2>
--5. Module Options</H2>
--The following module options are available:
--<UL>
--<LI>
--<TT>maxqlen</TT></LI>
--
--<BR>specifies the maximum read/write queue length. This queue is private
--for OSS sequencer, so that it is independent from the queue length of ALSA
--sequencer. Default value is 1024.
--<LI>
--<TT>seq_oss_debug</TT></LI>
--
--<BR>specifies the debug level and accepts zero (= no debug message) or
--positive integer. Default value is 0.</UL>
--
--<H2>
--6. Queue Mechanism</H2>
--OSS sequencer emulation uses an ALSA priority queue. The
--events from <TT>/dev/sequencer</TT> are processed and put onto the queue
--specified by module option.
--<P>All the events from <TT>/dev/sequencer</TT> are parsed at beginning.
--The timing events are also parsed at this moment, so that the events may
--be processed in real-time. Sending an event ABSTIME 0 switches the operation
--mode to real-time mode, and sending an event RELTIME 0 switches it off.
--In the real-time mode, all events are dispatched immediately.
--<P>The queued events are dispatched to the corresponding ALSA sequencer
--ports after scheduled time by ALSA sequencer dispatcher.
--<P>If the write-queue is full, the application sleeps until a certain amount
--(as default one half) becomes empty in blocking mode. The synchronization
--to write timing was implemented, too.
--<P>The input from MIDI devices or echo-back events are stored on read FIFO
--queue. If application reads <TT>/dev/sequencer</TT> in blocking mode, the
--process will be awaked.
--
--<H2>
--7. Interface to Synthesizer Device</H2>
--
--<H3>
--7.1. Registration</H3>
--To register an OSS synthesizer device, use <TT>snd_seq_oss_synth_register</TT>
--function.
--<PRE>int snd_seq_oss_synth_register(char *name, int type, int subtype, int nvoices,
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; snd_seq_oss_callback_t *oper, void *private_data)</PRE>
--The arguments <TT>name</TT>, <TT>type</TT>, <TT>subtype</TT> and
--<TT>nvoices</TT>
--are used for making the appropriate synth_info structure for ioctl. The
--return value is an index number of this device. This index must be remembered
--for unregister. If registration is failed, -errno will be returned.
--<P>To release this device, call <TT>snd_seq_oss_synth_unregister function</TT>:
--<PRE>int snd_seq_oss_synth_unregister(int index),</PRE>
--where the <TT>index</TT> is the index number returned by register function.
--<H3>
--7.2. Callbacks</H3>
--OSS synthesizer devices have capability for sample downloading and ioctls
--like sample reset. In OSS emulation, these special features are realized
--by using callbacks. The registration argument oper is used to specify these
--callbacks. The following callback functions must be defined:
--<PRE>snd_seq_oss_callback_t:
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int (*open)(snd_seq_oss_arg_t *p, void *closure);
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int (*close)(snd_seq_oss_arg_t *p);
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int (*ioctl)(snd_seq_oss_arg_t *p, unsigned int cmd, unsigned long arg);
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int (*load_patch)(snd_seq_oss_arg_t *p, int format, const char *buf, int offs, int count);
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int (*reset)(snd_seq_oss_arg_t *p);
--Except for <TT>open</TT> and <TT>close</TT> callbacks, they are allowed
--to be NULL.
--<P>Each callback function takes the argument type snd_seq_oss_arg_t as the
--first argument.
--<PRE>struct snd_seq_oss_arg_t {
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int app_index;
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int file_mode;
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int seq_mode;
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; snd_seq_addr_t addr;
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void *private_data;
--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int event_passing;
--};</PRE>
--The first three fields, <TT>app_index</TT>, <TT>file_mode</TT> and
--<TT>seq_mode</TT>
--are initialized by OSS sequencer. The <TT>app_index</TT> is the application
--index which is unique to each application opening OSS sequencer. The
--<TT>file_mode</TT>
--is bit-flags indicating the file operation mode. See
--<TT>seq_oss.h</TT>
--for its meaning. The <TT>seq_mode</TT> is sequencer operation mode. In
--the current version, only <TT>SND_OSSSEQ_MODE_SYNTH</TT> is used.
--<P>The next two fields, <TT>addr</TT> and <TT>private_data</TT>, must be
--filled by the synth driver at open callback. The <TT>addr</TT> contains
--the address of ALSA sequencer port which is assigned to this device. If
--the driver allocates memory for <TT>private_data</TT>, it must be released
--in close callback by itself.
--<P>The last field, <TT>event_passing</TT>, indicates how to translate note-on
--/ off events. In <TT>PROCESS_EVENTS</TT> mode, the note 255 is regarded
--as velocity change, and key pressure event is passed to the port. In <TT>PASS_EVENTS</TT>
--mode, all note on/off events are passed to the port without modified. <TT>PROCESS_KEYPRESS</TT>
--mode checks the note above 128 and regards it as key pressure event (mainly
--for Emu8000 driver).
--<H4>
--7.2.1. Open Callback</H4>
--The <TT>open</TT> is called at each time this device is opened by an application
--using OSS sequencer. This must not be NULL. Typically, the open callback
--does the following procedure:
--<OL>
--<LI>
--Allocate private data record.</LI>
--
--<LI>
--Create an ALSA sequencer port.</LI>
--
--<LI>
--Set the new port address on arg->addr.</LI>
--
--<LI>
--Set the private data record pointer on arg->private_data.</LI>
--</OL>
--Note that the type bit-flags in port_info of this synth port must NOT contain
--<TT>TYPE_MIDI_GENERIC</TT>
--bit. Instead, <TT>TYPE_SPECIFIC</TT> should be used. Also, <TT>CAP_SUBSCRIPTION</TT>
--bit should NOT be included, too. This is necessary to tell it from other
--normal MIDI devices. If the open procedure succeeded, return zero. Otherwise,
--return -errno.
--<H4>
--7.2.2 Ioctl Callback</H4>
--The <TT>ioctl</TT> callback is called when the sequencer receives device-specific
--ioctls. The following two ioctls should be processed by this callback:
--<UL>
--<LI>
--<TT>IOCTL_SEQ_RESET_SAMPLES</TT></LI>
--
--<BR>reset all samples on memory -- return 0
--<LI>
--<TT>IOCTL_SYNTH_MEMAVL</TT></LI>
--
--<BR>return the available memory size
--<LI>
--<TT>FM_4OP_ENABLE</TT></LI>
--
--<BR>can be ignored usually</UL>
--The other ioctls are processed inside the sequencer without passing to
--the lowlevel driver.
--<H4>
--7.2.3 Load_Patch Callback</H4>
--The <TT>load_patch</TT> callback is used for sample-downloading. This callback
--must read the data on user-space and transfer to each device. Return 0
--if succeeded, and -errno if failed. The format argument is the patch key
--in patch_info record. The buf is user-space pointer where patch_info record
--is stored. The offs can be ignored. The count is total data size of this
--sample data.
--<H4>
--7.2.4 Close Callback</H4>
--The <TT>close</TT> callback is called when this device is closed by the
--application. If any private data was allocated in open callback, it must
--be released in the close callback. The deletion of ALSA port should be
--done here, too. This callback must not be NULL.
--<H4>
--7.2.5 Reset Callback</H4>
--The <TT>reset</TT> callback is called when sequencer device is reset or
--closed by applications. The callback should turn off the sounds on the
--relevant port immediately, and initialize the status of the port. If this
--callback is undefined, OSS seq sends a <TT>HEARTBEAT</TT> event to the
--port.
--<H3>
--7.3 Events</H3>
--Most of the events are processed by sequencer and translated to the adequate
--ALSA sequencer events, so that each synth device can receive by input_event
--callback of ALSA sequencer port. The following ALSA events should be implemented
--by the driver:
--<BR>&nbsp;
--<TABLE BORDER WIDTH="75%" NOSAVE >
--<TR NOSAVE>
--<TD NOSAVE><B>ALSA event</B></TD>
--
--<TD><B>Original OSS events</B></TD>
--</TR>
--
--<TR>
--<TD>NOTEON</TD>
--
--<TD>SEQ_NOTEON
--<BR>MIDI_NOTEON</TD>
--</TR>
--
--<TR>
--<TD>NOTE</TD>
--
--<TD>SEQ_NOTEOFF
--<BR>MIDI_NOTEOFF</TD>
--</TR>
--
--<TR NOSAVE>
--<TD NOSAVE>KEYPRESS</TD>
--
--<TD>MIDI_KEY_PRESSURE</TD>
--</TR>
--
--<TR NOSAVE>
--<TD>CHANPRESS</TD>
--
--<TD NOSAVE>SEQ_AFTERTOUCH
--<BR>MIDI_CHN_PRESSURE</TD>
--</TR>
--
--<TR NOSAVE>
--<TD NOSAVE>PGMCHANGE</TD>
--
--<TD NOSAVE>SEQ_PGMCHANGE
--<BR>MIDI_PGM_CHANGE</TD>
--</TR>
--
--<TR>
--<TD>PITCHBEND</TD>
--
--<TD>SEQ_CONTROLLER(CTRL_PITCH_BENDER)
--<BR>MIDI_PITCH_BEND</TD>
--</TR>
--
--<TR>
--<TD>CONTROLLER</TD>
--
--<TD>MIDI_CTL_CHANGE
--<BR>SEQ_BALANCE (with CTL_PAN)</TD>
--</TR>
--
--<TR>
--<TD>CONTROL14</TD>
--
--<TD>SEQ_CONTROLLER</TD>
--</TR>
--
--<TR>
--<TD>REGPARAM</TD>
--
--<TD>SEQ_CONTROLLER(CTRL_PITCH_BENDER_RANGE)</TD>
--</TR>
--
--<TR>
--<TD>SYSEX</TD>
--
--<TD>SEQ_SYSEX</TD>
--</TR>
--</TABLE>
--
--<P>The most of these behavior can be realized by MIDI emulation driver
--included in the Emu8000 lowlevel driver. In the future release, this module
--will be independent.
--<P>Some OSS events (<TT>SEQ_PRIVATE</TT> and <TT>SEQ_VOLUME</TT> events) are passed as event
--type SND_SEQ_OSS_PRIVATE.  The OSS sequencer passes these event 8 byte
--packets without any modification. The lowlevel driver should process these
--events appropriately.
--<H2>
--8. Interface to MIDI Device</H2>
--Since the OSS emulation probes the creation and deletion of ALSA MIDI sequencer
--ports automatically by receiving announcement from ALSA sequencer, the
--MIDI devices don't need to be registered explicitly like synth devices.
--However, the MIDI port_info registered to ALSA sequencer must include a group
--name <TT>SND_SEQ_GROUP_DEVICE</TT> and a capability-bit <TT>CAP_READ</TT> or
--<TT>CAP_WRITE</TT>. Also, subscription capabilities, <TT>CAP_SUBS_READ</TT> or <TT>CAP_SUBS_WRITE</TT>,
--must be defined, too. If these conditions are not satisfied, the port is not
--registered as OSS sequencer MIDI device.
--<P>The events via MIDI devices are parsed in OSS sequencer and converted
--to the corresponding ALSA sequencer events. The input from MIDI sequencer
--is also converted to MIDI byte events by OSS sequencer. This works just
--a reverse way of seq_midi module.
--<H2>
--9. Known Problems / TODO's</H2>
--
--<UL>
--<LI>
--Patch loading via ALSA instrument layer is not implemented yet.</LI>
--</UL>
--
--</BODY>
--</HTML>
-diff --git a/Documentation/sound/designs/index.rst b/Documentation/sound/designs/index.rst
-index 5b3033c556d0..0ca3a6b0a5ce 100644
---- a/Documentation/sound/designs/index.rst
-+++ b/Documentation/sound/designs/index.rst
-@@ -8,3 +8,4 @@ Designs and Implementations
-    procfile
-    powersave
-    oss-emulation
-+   seq-oss
-diff --git a/Documentation/sound/designs/seq-oss.rst b/Documentation/sound/designs/seq-oss.rst
-new file mode 100644
-index 000000000000..e82ffe0e7f43
---- /dev/null
-+++ b/Documentation/sound/designs/seq-oss.rst
-@@ -0,0 +1,371 @@
-+===============================
-+OSS Sequencer Emulation on ALSA
-+===============================
-+
-+Copyright (c) 1998,1999 by Takashi Iwai
-+
-+ver.0.1.8; Nov. 16, 1999
-+
-+Description
-+===========
-+
-+This directory contains the OSS sequencer emulation driver on ALSA. Note
-+that this program is still in the development state.
-+
-+What this does - it provides the emulation of the OSS sequencer, access
-+via ``/dev/sequencer`` and ``/dev/music`` devices.
-+The most of applications using OSS can run if the appropriate ALSA
-+sequencer is prepared.
-+
-+The following features are emulated by this driver:
-+
-+* Normal sequencer and MIDI events:
-+
-+    They are converted to the ALSA sequencer events, and sent to the
-+    corresponding port.
-+
-+* Timer events:
-+
-+    The timer is not selectable by ioctl. The control rate is fixed to
-+    100 regardless of HZ. That is, even on Alpha system, a tick is always
-+    1/100 second. The base rate and tempo can be changed in ``/dev/music``.
-+
-+* Patch loading:
-+
-+    It purely depends on the synth drivers whether it's supported since
-+    the patch loading is realized by callback to the synth driver.
-+
-+* I/O controls:
-+
-+    Most of controls are accepted. Some controls
-+    are dependent on the synth driver, as well as even on original OSS.
-+
-+Furthermore, you can find the following advanced features:
-+
-+* Better queue mechanism:
-+
-+    The events are queued before processing them.
-+
-+* Multiple applications:
-+
-+    You can run two or more applications simultaneously (even for OSS
-+    sequencer)!
-+    However, each MIDI device is exclusive - that is, if a MIDI device
-+    is opened once by some application, other applications can't use
-+    it. No such a restriction in synth devices.
-+
-+* Real-time event processing:
-+
-+    The events can be processed in real time without using out of bound
-+    ioctl. To switch to real-time mode, send ABSTIME 0 event. The followed
-+    events will be processed in real-time without queued. To switch off the
-+    real-time mode, send RELTIME 0 event.
-+
-+* ``/proc`` interface:
-+
-+    The status of applications and devices can be shown via
-+    ``/proc/asound/seq/oss`` at any time. In the later version,
-+    configuration will be changed via ``/proc`` interface, too.
-+
-+
-+Installation
-+============
-+
-+Run configure script with both sequencer support (``--with-sequencer=yes``)
-+and OSS emulation (``--with-oss=yes``) options. A module ``snd-seq-oss.o``
-+will be created. If the synth module of your sound card supports for OSS
-+emulation (so far, only Emu8000 driver), this module will be loaded
-+automatically.
-+Otherwise, you need to load this module manually.
-+
-+At beginning, this module probes all the MIDI ports which have been
-+already connected to the sequencer. Once after that, the creation and deletion
-+of ports are watched by announcement mechanism of ALSA sequencer.
-+
-+The available synth and MIDI devices can be found in proc interface.
-+Run ``cat /proc/asound/seq/oss``, and check the devices. For example,
-+if you use an AWE64 card, you'll see like the following:
-+::
-+
-+    OSS sequencer emulation version 0.1.8
-+    ALSA client number 63
-+    ALSA receiver port 0
-+
-+    Number of applications: 0
-+
-+    Number of synth devices: 1
-+    synth 0: [EMU8000]
-+      type 0x1 : subtype 0x20 : voices 32
-+      capabilties : ioctl enabled / load_patch enabled
-+
-+    Number of MIDI devices: 3
-+    midi 0: [Emu8000 Port-0] ALSA port 65:0
-+      capability write / opened none
-+
-+    midi 1: [Emu8000 Port-1] ALSA port 65:1
-+      capability write / opened none
-+
-+    midi 2: [0: MPU-401 (UART)] ALSA port 64:0
-+      capability read/write / opened none
-+
-+Note that the device number may be different from the information of
-+``/proc/asound/oss-devices`` or ones of the original OSS driver.
-+Use the device number listed in ``/proc/asound/seq/oss``
-+to play via OSS sequencer emulation.
-+
-+Using Synthesizer Devices
-+=========================
-+
-+Run your favorite program. I've tested playmidi-2.4, awemidi-0.4.3, gmod-3.1
-+and xmp-1.1.5. You can load samples via ``/dev/sequencer`` like sfxload,
-+too.
-+
-+If the lowlevel driver supports multiple access to synth devices (like
-+Emu8000 driver), two or more applications are allowed to run at the same
-+time.
-+
-+Using MIDI Devices
-+==================
-+
-+So far, only MIDI output was tested. MIDI input was not checked at all,
-+but hopefully it will work. Use the device number listed in
-+``/proc/asound/seq/oss``.
-+Be aware that these numbers are mostly different from the list in
-+``/proc/asound/oss-devices``.
-+
-+Module Options
-+==============
-+
-+The following module options are available:
-+
-+maxqlen
-+  specifies the maximum read/write queue length. This queue is private
-+  for OSS sequencer, so that it is independent from the queue length of ALSA
-+  sequencer. Default value is 1024.
-+
-+seq_oss_debug
-+  specifies the debug level and accepts zero (= no debug message) or
-+  positive integer. Default value is 0.
-+
-+Queue Mechanism
-+===============
-+
-+OSS sequencer emulation uses an ALSA priority queue. The
-+events from ``/dev/sequencer`` are processed and put onto the queue
-+specified by module option.
-+
-+All the events from ``/dev/sequencer`` are parsed at beginning.
-+The timing events are also parsed at this moment, so that the events may
-+be processed in real-time. Sending an event ABSTIME 0 switches the operation
-+mode to real-time mode, and sending an event RELTIME 0 switches it off.
-+In the real-time mode, all events are dispatched immediately.
-+
-+The queued events are dispatched to the corresponding ALSA sequencer
-+ports after scheduled time by ALSA sequencer dispatcher.
-+
-+If the write-queue is full, the application sleeps until a certain amount
-+(as default one half) becomes empty in blocking mode. The synchronization
-+to write timing was implemented, too.
-+
-+The input from MIDI devices or echo-back events are stored on read FIFO
-+queue. If application reads ``/dev/sequencer`` in blocking mode, the
-+process will be awaked.
-+
-+Interface to Synthesizer Device
-+===============================
-+
-+Registration
-+------------
-+
-+To register an OSS synthesizer device, use snd_seq_oss_synth_register()
-+function:
-+::
-+
-+  int snd_seq_oss_synth_register(char *name, int type, int subtype, int nvoices,
-+          snd_seq_oss_callback_t *oper, void *private_data)
-+
-+The arguments ``name``, ``type``, ``subtype`` and ``nvoices``
-+are used for making the appropriate synth_info structure for ioctl. The
-+return value is an index number of this device. This index must be remembered
-+for unregister. If registration is failed, -errno will be returned.
-+
-+To release this device, call snd_seq_oss_synth_unregister() function:
-+::
-+
-+  int snd_seq_oss_synth_unregister(int index)
-+
-+where the ``index`` is the index number returned by register function.
-+
-+Callbacks
-+---------
-+
-+OSS synthesizer devices have capability for sample downloading and ioctls
-+like sample reset. In OSS emulation, these special features are realized
-+by using callbacks. The registration argument oper is used to specify these
-+callbacks. The following callback functions must be defined:
-+::
-+
-+  snd_seq_oss_callback_t:
-+   int (*open)(snd_seq_oss_arg_t *p, void *closure);
-+   int (*close)(snd_seq_oss_arg_t *p);
-+   int (*ioctl)(snd_seq_oss_arg_t *p, unsigned int cmd, unsigned long arg);
-+   int (*load_patch)(snd_seq_oss_arg_t *p, int format, const char *buf, int offs, int count);
-+   int (*reset)(snd_seq_oss_arg_t *p);
-+
-+Except for ``open`` and ``close`` callbacks, they are allowed to be NULL.
-+
-+Each callback function takes the argument type ``snd_seq_oss_arg_t`` as the
-+first argument.
-+::
-+
-+  struct snd_seq_oss_arg_t {
-+      int app_index;
-+      int file_mode;
-+      int seq_mode;
-+      snd_seq_addr_t addr;
-+      void *private_data;
-+      int event_passing;
-+  };
-+
-+The first three fields, ``app_index``, ``file_mode`` and ``seq_mode``
-+are initialized by OSS sequencer. The ``app_index`` is the application
-+index which is unique to each application opening OSS sequencer. The
-+``file_mode`` is bit-flags indicating the file operation mode. See
-+``seq_oss.h`` for its meaning. The ``seq_mode`` is sequencer operation
-+mode. In the current version, only ``SND_OSSSEQ_MODE_SYNTH`` is used.
-+
-+The next two fields, ``addr`` and ``private_data``, must be
-+filled by the synth driver at open callback. The ``addr`` contains
-+the address of ALSA sequencer port which is assigned to this device. If
-+the driver allocates memory for ``private_data``, it must be released
-+in close callback by itself.
-+
-+The last field, ``event_passing``, indicates how to translate note-on
-+/ off events. In ``PROCESS_EVENTS`` mode, the note 255 is regarded
-+as velocity change, and key pressure event is passed to the port. In
-+``PASS_EVENTS`` mode, all note on/off events are passed to the port
-+without modified. ``PROCESS_KEYPRESS`` mode checks the note above 128
-+and regards it as key pressure event (mainly for Emu8000 driver).
-+
-+Open Callback
-+-------------
-+
-+The ``open`` is called at each time this device is opened by an application
-+using OSS sequencer. This must not be NULL. Typically, the open callback
-+does the following procedure:
-+
-+#. Allocate private data record.
-+#. Create an ALSA sequencer port.
-+#. Set the new port address on ``arg->addr``.
-+#. Set the private data record pointer on ``arg->private_data``.
-+
-+Note that the type bit-flags in port_info of this synth port must NOT contain
-+``TYPE_MIDI_GENERIC``
-+bit. Instead, ``TYPE_SPECIFIC`` should be used. Also, ``CAP_SUBSCRIPTION``
-+bit should NOT be included, too. This is necessary to tell it from other
-+normal MIDI devices. If the open procedure succeeded, return zero. Otherwise,
-+return -errno.
-+
-+Ioctl Callback
-+--------------
-+
-+The ``ioctl`` callback is called when the sequencer receives device-specific
-+ioctls. The following two ioctls should be processed by this callback:
-+
-+IOCTL_SEQ_RESET_SAMPLES
-+    reset all samples on memory -- return 0
-+
-+IOCTL_SYNTH_MEMAVL
-+    return the available memory size
-+
-+FM_4OP_ENABLE
-+    can be ignored usually
-+
-+The other ioctls are processed inside the sequencer without passing to
-+the lowlevel driver.
-+
-+Load_Patch Callback
-+-------------------
-+
-+The ``load_patch`` callback is used for sample-downloading. This callback
-+must read the data on user-space and transfer to each device. Return 0
-+if succeeded, and -errno if failed. The format argument is the patch key
-+in patch_info record. The buf is user-space pointer where patch_info record
-+is stored. The offs can be ignored. The count is total data size of this
-+sample data.
-+
-+Close Callback
-+--------------
-+
-+The ``close`` callback is called when this device is closed by the
-+application. If any private data was allocated in open callback, it must
-+be released in the close callback. The deletion of ALSA port should be
-+done here, too. This callback must not be NULL.
-+
-+Reset Callback
-+--------------
-+
-+The ``reset`` callback is called when sequencer device is reset or
-+closed by applications. The callback should turn off the sounds on the
-+relevant port immediately, and initialize the status of the port. If this
-+callback is undefined, OSS seq sends a ``HEARTBEAT`` event to the
-+port.
-+
-+Events
-+======
-+
-+Most of the events are processed by sequencer and translated to the adequate
-+ALSA sequencer events, so that each synth device can receive by input_event
-+callback of ALSA sequencer port. The following ALSA events should be
-+implemented by the driver:
-+
-+=============	===================
-+ALSA event	Original OSS events
-+=============	===================
-+NOTEON		SEQ_NOTEON, MIDI_NOTEON
-+NOTE		SEQ_NOTEOFF, MIDI_NOTEOFF
-+KEYPRESS	MIDI_KEY_PRESSURE
-+CHANPRESS	SEQ_AFTERTOUCH, MIDI_CHN_PRESSURE
-+PGMCHANGE	SEQ_PGMCHANGE, MIDI_PGM_CHANGE
-+PITCHBEND	SEQ_CONTROLLER(CTRL_PITCH_BENDER),
-+		MIDI_PITCH_BEND
-+CONTROLLER	MIDI_CTL_CHANGE,
-+		SEQ_BALANCE (with CTL_PAN)
-+CONTROL14	SEQ_CONTROLLER
-+REGPARAM	SEQ_CONTROLLER(CTRL_PITCH_BENDER_RANGE)
-+SYSEX		SEQ_SYSEX
-+=============	===================
-+
-+The most of these behavior can be realized by MIDI emulation driver
-+included in the Emu8000 lowlevel driver. In the future release, this module
-+will be independent.
-+
-+Some OSS events (``SEQ_PRIVATE`` and ``SEQ_VOLUME`` events) are passed as event
-+type SND_SEQ_OSS_PRIVATE.  The OSS sequencer passes these event 8 byte
-+packets without any modification. The lowlevel driver should process these
-+events appropriately.
-+
-+Interface to MIDI Device
-+========================
-+
-+Since the OSS emulation probes the creation and deletion of ALSA MIDI
-+sequencer ports automatically by receiving announcement from ALSA
-+sequencer, the MIDI devices don't need to be registered explicitly
-+like synth devices.
-+However, the MIDI port_info registered to ALSA sequencer must include
-+a group name ``SND_SEQ_GROUP_DEVICE`` and a capability-bit
-+``CAP_READ`` or ``CAP_WRITE``. Also, subscription capabilities,
-+``CAP_SUBS_READ`` or ``CAP_SUBS_WRITE``, must be defined, too. If
-+these conditions are not satisfied, the port is not registered as OSS
-+sequencer MIDI device.
-+
-+The events via MIDI devices are parsed in OSS sequencer and converted
-+to the corresponding ALSA sequencer events. The input from MIDI sequencer
-+is also converted to MIDI byte events by OSS sequencer. This works just
-+a reverse way of seq_midi module.
-+
-+Known Problems / TODO's
-+=======================
-+
-+* Patch loading via ALSA instrument layer is not implemented yet.
-+
--- 
-2.10.2
+--Q68bSM7Ycu6FN28Q
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+71EigUX3Ft3V0Rt3/D+1ZjkPF28BAA==
+
+--Q68bSM7Ycu6FN28Q--
