@@ -1,143 +1,184 @@
-From: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Subject: [PATCH v3 2/3] ASoC: tse850: document axentia,tse850-pcm5142 bindings
-Date: Fri, 11 Nov 2016 12:29:11 +0100
-Message-ID: <1478863752-10569-3-git-send-email-peda@axentia.se>
-References: <1478863752-10569-1-git-send-email-peda@axentia.se>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: [PATCH] ASoC: nau8825: AD/DA over sampling rate
+	configuration
+Date: Fri, 11 Nov 2016 11:34:42 +0800
+Message-ID: <1478835282-10687-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1478863752-10569-1-git-send-email-peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Nicolas Ferre <nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F0CC266C2E
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2016 04:34:55 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The TSE-850 is an FM Transmitter Station Equipment, designed to generate
-baseband signals for FM, mainly the DARC subcarrier, but other signals
-are also possible.
+Over Sampling Rate (OSR) is defined as CLK_ADC frequency divided by the
+audio sample rate (Fs).
+OSR = CLK_ADC / FS
+The available OSRs are 32, 64, 128 or 256. Note that the OSR and Fs
+values must be selected such that the maximum frequency of CLK_ADC
+is less than 6.144 MHz. It is recommended to match the relationship
+between OSR and clock SRC according to following Table.
+ADC_RATE: 00(OSR=32)  | CLK_ADC_SRC: 11(CODEC 1/8)
+ADC_RATE: 01(OSR=64)  | CLK_ADC_SRC: 10(CODEC1/4)
+ADC_RATE: 10(OSR=128) | CLK_ADC_SRC: 01(CODEC 1/2)
+ADC_RATE: 11(OSR=256) | CLK_ADC_SRC: 00(CODEC CLK)
 
-Signed-off-by: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+The over sampling rate about DAC follows the same rule with ADCs.
+The driver changes the OSR to 64 value when initiation for better FLL
+performance and applies the dynamic SRC change by different OSR.
+
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 ---
- .../bindings/sound/axentia,tse850-pcm5142.txt      | 88 ++++++++++++++++++++++
- MAINTAINERS                                        |  6 ++
- 2 files changed, 94 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/axentia,tse850-pcm5142.txt
+ sound/soc/codecs/nau8825.c | 78 ++++++++++++++++++++++++++++++++++++++++++++--
+ sound/soc/codecs/nau8825.h |  4 +++
+ 2 files changed, 79 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/axentia,tse850-pcm5142.txt b/Documentation/devicetree/bindings/sound/axentia,tse850-pcm5142.txt
-new file mode 100644
-index 000000000000..0c2d44fda17e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/axentia,tse850-pcm5142.txt
-@@ -0,0 +1,88 @@
-+ASoC driver for the Axentia TSE-850 with a PCM5142 codec
-+
-+Required properties:
-+  - compatible: "axentia,tse850-pcm5142"
-+  - axentia,ssc-controller: The phandle of the atmel SSC controller used as
-+    cpu dai.
-+  - axentia,audio-codec: The phandle of the PCM5142 codec.
-+  - axentia,add-gpios: gpio specifier that controls the mixer.
-+  - axentia,loop1-gpios: gpio specifier that controls loop relays on channel 1.
-+  - axentia,loop2-gpios: gpio specifier that controls loop relays on channel 2.
-+  - axentia,ana-supply: Regulator that supplies the output amplifier. Must
-+    support voltages in the 2V - 20V range, in 1V steps.
-+
-+The schematics explaining the gpios are as follows:
-+
-+               loop1 relays
-+   IN1 +---o  +------------+  o---+ OUT1
-+            \                /
-+             +              +
-+             |   /          |
-+             +--o  +--.     |
-+             |  add   |     |
-+             |        V     |
-+             |      .---.   |
-+   DAC +----------->|Sum|---+
-+             |      '---'   |
-+             |              |
-+             +              +
-+
-+   IN2 +---o--+------------+--o---+ OUT2
-+               loop2 relays
-+
-+The 'loop1' gpio pin controlls two relays, which are either in loop position,
-+meaning that input and output are directly connected, or they are in mixer
-+position, meaning that the signal is passed through the 'Sum' mixer. Similarly
-+for 'loop2'.
-+
-+In the above, the 'loop1' relays are inactive, thus feeding IN1 to the mixer
-+(if 'add' is active) and feeding the mixer output to OUT1. The 'loop2' relays
-+are active, short-cutting the TSE-850 from channel 2. IN1, IN2, OUT1 and OUT2
-+are TSE-850 connectors and DAC is the PCB name of the (filtered) output from
-+the PCM5142 codec.
-+
-+Example:
-+
-+	&i2c {
-+		codec: pcm5142@4c {
-+			compatible = "ti,pcm5142";
-+
-+			reg = <0x4c>;
-+
-+			AVDD-supply = <&reg_3v3>;
-+			DVDD-supply = <&reg_3v3>;
-+			CPVDD-supply = <&reg_3v3>;
-+
-+			clocks = <&sck>;
-+
-+			pll-in = <3>;
-+			pll-out = <6>;
-+		};
-+	};
-+
-+	ana: ana-reg {
-+		compatible = "pwm-regulator";
-+
-+		regulator-name = "ANA";
-+
-+		pwms = <&pwm0 2 1000 PWM_POLARITY_INVERTED>;
-+		pwm-dutycycle-unit = <1000>;
-+		pwm-dutycycle-range = <100 1000>;
-+
-+		regulator-min-microvolt = <2000000>;
-+		regulator-max-microvolt = <20000000>;
-+		regulator-ramp-delay = <1000>;
-+	};
-+
-+	sound {
-+		compatible = "axentia,tse850-pcm5142";
-+
-+		axentia,ssc-controller = <&ssc0>;
-+		axentia,audio-codec = <&codec>;
-+
-+		axentia,add-gpios = <&pioA 8 GPIO_ACTIVE_LOW>;
-+		axentia,loop1-gpios = <&pioA 10 GPIO_ACTIVE_LOW>;
-+		axentia,loop2-gpios = <&pioA 11 GPIO_ACTIVE_LOW>;
-+
-+		axentia,ana-supply = <&ana>;
-+	};
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 539b20baf791..4f2ebf3ab51a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2318,6 +2318,12 @@ F:	include/uapi/linux/ax25.h
- F:	include/net/ax25.h
- F:	net/ax25/
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index e643be9..d74f642 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -43,6 +43,8 @@
+ #define GAIN_AUGMENT 22500
+ #define SIDETONE_BASE 207000
  
-+AXENTIA ASOC DRIVERS
-+M:	Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-+L:	alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/axentia,*
++/* the maximum frequency of CLK_ADC and CLK_DAC */
++#define CLK_DA_AD_MAX 6144000
+ 
+ static int nau8825_configure_sysclk(struct nau8825 *nau8825,
+ 		int clk_id, unsigned int freq);
+@@ -95,6 +97,27 @@ static const struct nau8825_fll_attr fll_pre_scalar[] = {
+ 	{ 8, 0x3 },
+ };
+ 
++/* over sampling rate */
++struct nau8825_osr_attr {
++	unsigned int osr;
++	unsigned int clk_src;
++};
 +
- AZ6007 DVB DRIVER
- M:	Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
- M:	Mauro Carvalho Chehab <mchehab-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
++static const struct nau8825_osr_attr osr_dac_sel[] = {
++	{ 64, 2 },	/* OSR 64, SRC 1/4 */
++	{ 256, 0 },	/* OSR 256, SRC 1 */
++	{ 128, 1 },	/* OSR 128, SRC 1/2 */
++	{ 0, 0 },
++	{ 32, 3 },	/* OSR 32, SRC 1/8 */
++};
++
++static const struct nau8825_osr_attr osr_adc_sel[] = {
++	{ 32, 3 },	/* OSR 32, SRC 1/8 */
++	{ 64, 2 },	/* OSR 64, SRC 1/4 */
++	{ 128, 1 },	/* OSR 128, SRC 1/2 */
++	{ 256, 0 },	/* OSR 256, SRC 1 */
++};
++
+ static const struct reg_default nau8825_reg_defaults[] = {
+ 	{ NAU8825_REG_ENA_CTRL, 0x00ff },
+ 	{ NAU8825_REG_IIC_ADDR_SET, 0x0 },
+@@ -1179,16 +1202,65 @@ static const struct snd_soc_dapm_route nau8825_dapm_routes[] = {
+ 	{"HPOR", NULL, "Class G"},
+ };
+ 
++static int nau8825_clock_check(struct nau8825 *nau8825,
++	int stream, int rate, int osr)
++{
++	int osrate;
++
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		if (osr >= ARRAY_SIZE(osr_dac_sel))
++			return -EINVAL;
++		osrate = osr_dac_sel[osr].osr;
++	} else {
++		if (osr >= ARRAY_SIZE(osr_adc_sel))
++			return -EINVAL;
++		osrate = osr_adc_sel[osr].osr;
++	}
++
++	if (!osrate || rate * osr > CLK_DA_AD_MAX) {
++		dev_err(nau8825->dev, "exceed the maximum frequency of CLK_ADC or CLK_DAC\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int nau8825_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
+-	unsigned int val_len = 0;
++	unsigned int val_len = 0, osr;
+ 
+ 	nau8825_sema_acquire(nau8825, 2 * HZ);
+ 
++	/* CLK_DAC or CLK_ADC = OSR * FS
++	 * DAC or ADC clock frequency is defined as Over Sampling Rate (OSR)
++	 * multiplied by the audio sample rate (Fs). Note that the OSR and Fs
++	 * values must be selected such that the maximum frequency is less
++	 * than 6.144 MHz.
++	 */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		regmap_read(nau8825->regmap, NAU8825_REG_DAC_CTRL1, &osr);
++		osr &= NAU8825_DAC_OVERSAMPLE_MASK;
++		if (nau8825_clock_check(nau8825, substream->stream,
++			params_rate(params), osr))
++			return -EINVAL;
++		regmap_update_bits(nau8825->regmap, NAU8825_REG_CLK_DIVIDER,
++			NAU8825_CLK_DAC_SRC_MASK,
++			osr_dac_sel[osr].clk_src << NAU8825_CLK_DAC_SRC_SFT);
++	} else {
++		regmap_read(nau8825->regmap, NAU8825_REG_ADC_RATE, &osr);
++		osr &= NAU8825_ADC_SYNC_DOWN_MASK;
++		if (nau8825_clock_check(nau8825, substream->stream,
++			params_rate(params), osr))
++			return -EINVAL;
++		regmap_update_bits(nau8825->regmap, NAU8825_REG_CLK_DIVIDER,
++			NAU8825_CLK_ADC_SRC_MASK,
++			osr_adc_sel[osr].clk_src << NAU8825_CLK_ADC_SRC_SFT);
++	}
++
+ 	switch (params_width(params)) {
+ 	case 16:
+ 		val_len |= NAU8825_I2S_DL_16;
+@@ -1774,9 +1846,9 @@ static void nau8825_init_regs(struct nau8825 *nau8825)
+ 	 * (audible hiss). Set it to something better.
+ 	 */
+ 	regmap_update_bits(regmap, NAU8825_REG_ADC_RATE,
+-		NAU8825_ADC_SYNC_DOWN_MASK, NAU8825_ADC_SYNC_DOWN_128);
++		NAU8825_ADC_SYNC_DOWN_MASK, NAU8825_ADC_SYNC_DOWN_64);
+ 	regmap_update_bits(regmap, NAU8825_REG_DAC_CTRL1,
+-		NAU8825_DAC_OVERSAMPLE_MASK, NAU8825_DAC_OVERSAMPLE_128);
++		NAU8825_DAC_OVERSAMPLE_MASK, NAU8825_DAC_OVERSAMPLE_64);
+ 	/* Disable DACR/L power */
+ 	regmap_update_bits(regmap, NAU8825_REG_CHARGE_PUMP,
+ 		NAU8825_POWER_DOWN_DACR | NAU8825_POWER_DOWN_DACL,
+diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
+index 1c63e2a..58ea95b 100644
+--- a/sound/soc/codecs/nau8825.h
++++ b/sound/soc/codecs/nau8825.h
+@@ -115,6 +115,10 @@
+ #define NAU8825_CLK_SRC_MASK			(1 << NAU8825_CLK_SRC_SFT)
+ #define NAU8825_CLK_SRC_VCO			(1 << NAU8825_CLK_SRC_SFT)
+ #define NAU8825_CLK_SRC_MCLK			(0 << NAU8825_CLK_SRC_SFT)
++#define NAU8825_CLK_ADC_SRC_SFT		6
++#define NAU8825_CLK_ADC_SRC_MASK		(0x3 << NAU8825_CLK_ADC_SRC_SFT)
++#define NAU8825_CLK_DAC_SRC_SFT		4
++#define NAU8825_CLK_DAC_SRC_MASK		(0x3 << NAU8825_CLK_DAC_SRC_SFT)
+ #define NAU8825_CLK_MCLK_SRC_MASK		(0xf << 0)
+ 
+ /* FLL1 (0x04) */
 -- 
-2.1.4
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.6.4
