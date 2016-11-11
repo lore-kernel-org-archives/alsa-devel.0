@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Support acknowledged controls" to the asoc tree
-Date: Fri, 11 Nov 2016 16:00:38 +0000
-Message-ID: <E1c5EFq-0003gL-J8@finisterre>
-References: <1478711658-23696-5-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm_adsp: Add support for SYSTEM firmware controls" to the asoc tree
+Date: Fri, 11 Nov 2016 16:00:54 +0000
+Message-ID: <E1c5EG6-0003hR-LZ@finisterre>
+References: <1478711658-23696-3-git-send-email-rf@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1478711658-23696-5-git-send-email-rf@opensource.wolfsonmicro.com>
+In-Reply-To: <1478711658-23696-3-git-send-email-rf@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>
+Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Support acknowledged controls
+   ASoC: wm_adsp: Add support for SYSTEM firmware controls
 
 has been applied to the asoc tree at
 
@@ -37,179 +37,130 @@ to this mail.
 Thanks,
 Mark
 
->From a23ebba845fee07cce00659c06844845b24da290 Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Date: Wed, 9 Nov 2016 17:14:18 +0000
-Subject: [PATCH] ASoC: wm_adsp: Support acknowledged controls
+>From 8eb084d066baeca2b2911632bb4edddbc2b762c1 Mon Sep 17 00:00:00 2001
+From: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>
+Date: Wed, 9 Nov 2016 17:14:16 +0000
+Subject: [PATCH] ASoC: wm_adsp: Add support for SYSTEM firmware controls
 
-This patch handles publishing acknowledged controls through ALSA.
-These controls allow user-side to send events to the firmware and
-wait for the firmware to acknowledge it.
+Add support for firmware controls marked SYSTEM. These are
+internal to the driver-firmware interface and do not have
+a user-accessible ALSA control.
 
-Note that although acked controls only operate in the direction
-host->firmware, and therefore they are write-only as seen from user-
-side code, we have to make them readable to account for all the code
-out there that assumes that ALSA controls are always readable (amixer
-for example.)
-
+Signed-off-by: Stuart Henderson <stuarth@opensource.wolfsonmicro.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 89 +++++++++++++++++++++++++++++++++++++++++-----
- sound/soc/codecs/wmfw.h    |  1 +
- 2 files changed, 82 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 28 ++++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index d13dd9a9c817..0f705bfd76b4 100644
+index ef33de651028..d13dd9a9c817 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -164,6 +164,8 @@
+@@ -452,6 +452,7 @@ struct wm_coeff_ctl {
+ 	struct snd_kcontrol *kcontrol;
+ 	struct soc_bytes_ext bytes_ext;
+ 	unsigned int flags;
++	unsigned int type;
+ };
  
- #define WM_ADSP_ACKED_CTL_TIMEOUT_MS         100
- #define WM_ADSP_ACKED_CTL_N_QUICKPOLLS       10
-+#define WM_ADSP_ACKED_CTL_MIN_VALUE          0
-+#define WM_ADSP_ACKED_CTL_MAX_VALUE          0xFFFFFF
- 
- /*
-  * Event control messages
-@@ -761,8 +763,20 @@ static int wm_coeff_info(struct snd_kcontrol *kctl,
- 		(struct soc_bytes_ext *)kctl->private_value;
- 	struct wm_coeff_ctl *ctl = bytes_ext_to_ctl(bytes_ext);
- 
--	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
--	uinfo->count = ctl->len;
-+	switch (ctl->type) {
-+	case WMFW_CTL_TYPE_ACKED:
-+		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+		uinfo->value.integer.min = WM_ADSP_ACKED_CTL_MIN_VALUE;
-+		uinfo->value.integer.max = WM_ADSP_ACKED_CTL_MAX_VALUE;
-+		uinfo->value.integer.step = 1;
-+		uinfo->count = 1;
-+		break;
-+	default:
-+		uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-+		uinfo->count = ctl->len;
-+		break;
-+	}
-+
- 	return 0;
- }
- 
-@@ -910,6 +924,30 @@ static int wm_coeff_tlv_put(struct snd_kcontrol *kctl,
- 	return ret;
- }
- 
-+static int wm_coeff_put_acked(struct snd_kcontrol *kctl,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_bytes_ext *bytes_ext =
-+		(struct soc_bytes_ext *)kctl->private_value;
-+	struct wm_coeff_ctl *ctl = bytes_ext_to_ctl(bytes_ext);
-+	unsigned int val = ucontrol->value.integer.value[0];
-+	int ret;
-+
-+	if (val == 0)
-+		return 0;	/* 0 means no event */
-+
-+	mutex_lock(&ctl->dsp->pwr_lock);
-+
-+	if (ctl->enabled)
-+		ret = wm_coeff_write_acked_control(ctl, val);
-+	else
-+		ret = -EPERM;
-+
-+	mutex_unlock(&ctl->dsp->pwr_lock);
-+
-+	return ret;
-+}
-+
- static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
- 				 void *buf, size_t len)
+ static const char *wm_adsp_mem_region_name(unsigned int type)
+@@ -1159,7 +1160,7 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
+ 				  const struct wm_adsp_alg_region *alg_region,
+ 				  unsigned int offset, unsigned int len,
+ 				  const char *subname, unsigned int subname_len,
+-				  unsigned int flags)
++				  unsigned int flags, unsigned int type)
  {
-@@ -1005,6 +1043,21 @@ static int wm_coeff_tlv_get(struct snd_kcontrol *kctl,
- 	return ret;
- }
- 
-+static int wm_coeff_get_acked(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	/*
-+	 * Although it's not useful to read an acked control, we must satisfy
-+	 * user-side assumptions that all controls are readable and that a
-+	 * write of the same value should be filtered out (it's valid to send
-+	 * the same event number again to the firmware). We therefore return 0,
-+	 * meaning "no event" so valid event numbers will always be a change
-+	 */
-+	ucontrol->value.integer.value[0] = 0;
-+
-+	return 0;
-+}
-+
- struct wmfw_ctl_work {
- 	struct wm_adsp *dsp;
  	struct wm_coeff_ctl *ctl;
-@@ -1057,17 +1110,25 @@ static int wmfw_add_ctl(struct wm_adsp *dsp, struct wm_coeff_ctl *ctl)
+ 	struct wmfw_ctl_work *ctl_work;
+@@ -1167,9 +1168,6 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
+ 	const char *region_name;
+ 	int ret;
  
- 	kcontrol->name = ctl->name;
- 	kcontrol->info = wm_coeff_info;
--	kcontrol->get = wm_coeff_get;
--	kcontrol->put = wm_coeff_put;
- 	kcontrol->iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 	kcontrol->tlv.c = snd_soc_bytes_tlv_callback;
- 	kcontrol->private_value = (unsigned long)&ctl->bytes_ext;
-+	kcontrol->access = wmfw_convert_flags(ctl->flags, ctl->len);
+-	if (flags & WMFW_CTL_FLAG_SYS)
+-		return 0;
+-
+ 	region_name = wm_adsp_mem_region_name(alg_region->type);
+ 	if (!region_name) {
+ 		adsp_err(dsp, "Unknown region type: %d\n", alg_region->type);
+@@ -1227,6 +1225,7 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
+ 	ctl->dsp = dsp;
  
--	ctl->bytes_ext.max = ctl->len;
--	ctl->bytes_ext.get = wm_coeff_tlv_get;
--	ctl->bytes_ext.put = wm_coeff_tlv_put;
-+	switch (ctl->type) {
-+	case WMFW_CTL_TYPE_ACKED:
-+		kcontrol->get = wm_coeff_get_acked;
-+		kcontrol->put = wm_coeff_put_acked;
-+		break;
-+	default:
-+		kcontrol->get = wm_coeff_get;
-+		kcontrol->put = wm_coeff_put;
+ 	ctl->flags = flags;
++	ctl->type = type;
+ 	ctl->offset = offset;
+ 	ctl->len = len;
+ 	ctl->cache = kzalloc(ctl->len, GFP_KERNEL);
+@@ -1237,6 +1236,9 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
  
--	kcontrol->access = wmfw_convert_flags(ctl->flags, ctl->len);
-+		ctl->bytes_ext.max = ctl->len;
-+		ctl->bytes_ext.get = wm_coeff_tlv_get;
-+		ctl->bytes_ext.put = wm_coeff_tlv_put;
-+		break;
-+	}
+ 	list_add(&ctl->list, &dsp->ctl_list);
  
- 	ret = snd_soc_add_card_controls(dsp->card, kcontrol, 1);
- 	if (ret < 0)
-@@ -1429,6 +1490,18 @@ static int wm_adsp_parse_coeff(struct wm_adsp *dsp,
- 		switch (coeff_blk.ctl_type) {
- 		case SNDRV_CTL_ELEM_TYPE_BYTES:
- 			break;
-+		case WMFW_CTL_TYPE_ACKED:
-+			if (coeff_blk.flags & WMFW_CTL_FLAG_SYS)
-+				continue;	/* ignore */
++	if (flags & WMFW_CTL_FLAG_SYS)
++		return 0;
 +
-+			ret = wm_adsp_check_coeff_flags(dsp, &coeff_blk,
-+						WMFW_CTL_FLAG_VOLATILE |
-+						WMFW_CTL_FLAG_WRITEABLE |
-+						WMFW_CTL_FLAG_READABLE,
-+						0);
-+			if (ret)
-+				return -EINVAL;
-+			break;
- 		case WMFW_CTL_TYPE_HOSTEVENT:
- 			ret = wm_adsp_check_coeff_flags(dsp, &coeff_blk,
- 						WMFW_CTL_FLAG_SYS |
-diff --git a/sound/soc/codecs/wmfw.h b/sound/soc/codecs/wmfw.h
-index 892fc7490f3b..ec78b9da020f 100644
---- a/sound/soc/codecs/wmfw.h
-+++ b/sound/soc/codecs/wmfw.h
-@@ -27,6 +27,7 @@
- #define WMFW_CTL_FLAG_READABLE    0x0001
- 
- /* Non-ALSA coefficient types start at 0x1000 */
-+#define WMFW_CTL_TYPE_ACKED       0x1000 /* acked control */
- #define WMFW_CTL_TYPE_HOSTEVENT   0x1001 /* event control */
- 
- struct wmfw_header {
+ 	ctl_work = kzalloc(sizeof(*ctl_work), GFP_KERNEL);
+ 	if (!ctl_work) {
+ 		ret = -ENOMEM;
+@@ -1451,7 +1453,8 @@ static int wm_adsp_parse_coeff(struct wm_adsp *dsp,
+ 					     coeff_blk.len,
+ 					     coeff_blk.name,
+ 					     coeff_blk.name_len,
+-					     coeff_blk.flags);
++					     coeff_blk.flags,
++					     coeff_blk.ctl_type);
+ 		if (ret < 0)
+ 			adsp_err(dsp, "Failed to create control: %.*s, %d\n",
+ 				 coeff_blk.name_len, coeff_blk.name, ret);
+@@ -1851,7 +1854,8 @@ static int wm_adsp1_setup_algs(struct wm_adsp *dsp)
+ 				len -= be32_to_cpu(adsp1_alg[i].dm);
+ 				len *= 4;
+ 				wm_adsp_create_control(dsp, alg_region, 0,
+-						       len, NULL, 0, 0);
++						     len, NULL, 0, 0,
++						     SNDRV_CTL_ELEM_TYPE_BYTES);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region DM with ID %x\n",
+ 					  be32_to_cpu(adsp1_alg[i].alg.id));
+@@ -1871,7 +1875,8 @@ static int wm_adsp1_setup_algs(struct wm_adsp *dsp)
+ 				len -= be32_to_cpu(adsp1_alg[i].zm);
+ 				len *= 4;
+ 				wm_adsp_create_control(dsp, alg_region, 0,
+-						       len, NULL, 0, 0);
++						     len, NULL, 0, 0,
++						     SNDRV_CTL_ELEM_TYPE_BYTES);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region ZM with ID %x\n",
+ 					  be32_to_cpu(adsp1_alg[i].alg.id));
+@@ -1962,7 +1967,8 @@ static int wm_adsp2_setup_algs(struct wm_adsp *dsp)
+ 				len -= be32_to_cpu(adsp2_alg[i].xm);
+ 				len *= 4;
+ 				wm_adsp_create_control(dsp, alg_region, 0,
+-						       len, NULL, 0, 0);
++						     len, NULL, 0, 0,
++						     SNDRV_CTL_ELEM_TYPE_BYTES);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region XM with ID %x\n",
+ 					  be32_to_cpu(adsp2_alg[i].alg.id));
+@@ -1982,7 +1988,8 @@ static int wm_adsp2_setup_algs(struct wm_adsp *dsp)
+ 				len -= be32_to_cpu(adsp2_alg[i].ym);
+ 				len *= 4;
+ 				wm_adsp_create_control(dsp, alg_region, 0,
+-						       len, NULL, 0, 0);
++						     len, NULL, 0, 0,
++						     SNDRV_CTL_ELEM_TYPE_BYTES);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region YM with ID %x\n",
+ 					  be32_to_cpu(adsp2_alg[i].alg.id));
+@@ -2002,7 +2009,8 @@ static int wm_adsp2_setup_algs(struct wm_adsp *dsp)
+ 				len -= be32_to_cpu(adsp2_alg[i].zm);
+ 				len *= 4;
+ 				wm_adsp_create_control(dsp, alg_region, 0,
+-						       len, NULL, 0, 0);
++						     len, NULL, 0, 0,
++						     SNDRV_CTL_ELEM_TYPE_BYTES);
+ 			} else {
+ 				adsp_warn(dsp, "Missing length info for region ZM with ID %x\n",
+ 					  be32_to_cpu(adsp2_alg[i].alg.id));
 -- 
 2.10.2
