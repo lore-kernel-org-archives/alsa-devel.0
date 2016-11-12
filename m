@@ -1,59 +1,39 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH 09/10] ARM: dts: sun8i-h3: Add device nodes for audio codec and its analog controls
-Date: Sat, 12 Nov 2016 14:46:47 +0800
-Message-ID: <20161112064648.26779-10-wens@csie.org>
-References: <20161112064648.26779-1-wens@csie.org>
+From: Fabian Frederick <fabf@skynet.be>
+Subject: [PATCH 1/1 linux-next] ALSA: opl4: don't opencode IS_REACHABLE()
+Date: Sat, 12 Nov 2016 09:33:45 +0100
+Message-ID: <1478939625-1625-1-git-send-email-fabf@skynet.be>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161112064648.26779-1-wens@csie.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Mylene Josserand <mylene.josserand@free-electrons.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, fabf@skynet.be
 List-Id: alsa-devel@alsa-project.org
 
-Now that we support the audio codec found on the Allwinner H3 SoC, add
-device nodes for it.
-
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
 ---
- arch/arm/boot/dts/sun8i-h3.dtsi | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ sound/drivers/opl4/opl4_lib.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-h3.dtsi b/arch/arm/boot/dts/sun8i-h3.dtsi
-index c38b028cac83..ceec979f57e4 100644
---- a/arch/arm/boot/dts/sun8i-h3.dtsi
-+++ b/arch/arm/boot/dts/sun8i-h3.dtsi
-@@ -485,6 +485,20 @@
- 			status = "disabled";
- 		};
+diff --git a/sound/drivers/opl4/opl4_lib.c b/sound/drivers/opl4/opl4_lib.c
+index 89c7aa0..240656e 100644
+--- a/sound/drivers/opl4/opl4_lib.c
++++ b/sound/drivers/opl4/opl4_lib.c
+@@ -153,7 +153,7 @@ static int snd_opl4_detect(struct snd_opl4 *opl4)
+ 	return 0;
+ }
  
-+		codec: codec@01c22c00 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun8i-h3-codec";
-+			reg = <0x01c22c00 0x400>;
-+			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
-+			clock-names = "apb", "codec";
-+			resets = <&ccu RST_BUS_CODEC>;
-+			dmas = <&dma 15>, <&dma 15>;
-+			dma-names = "rx", "tx";
-+			allwinner,codec-analog-controls = <&codec_analog>;
-+			status = "disabled";
-+		};
-+
- 		uart0: serial@01c28000 {
- 			compatible = "snps,dw-apb-uart";
- 			reg = <0x01c28000 0x400>;
-@@ -600,6 +614,11 @@
- 			#reset-cells = <1>;
- 		};
+-#if defined(CONFIG_SND_SEQUENCER) || (defined(MODULE) && defined(CONFIG_SND_SEQUENCER_MODULE))
++#if IS_REACHABLE(CONFIG_SND_SEQUENCER)
+ static void snd_opl4_seq_dev_free(struct snd_seq_device *seq_dev)
+ {
+ 	struct snd_opl4 *opl4 = seq_dev->private_data;
+@@ -249,7 +249,7 @@ int snd_opl4_create(struct snd_card *card,
+ 	snd_opl4_create_mixer(opl4);
+ 	snd_opl4_create_proc(opl4);
  
-+		codec_analog: codec-analog@01f015c0 {
-+			compatible = "allwinner,sun8i-h3-codec-analog";
-+			reg = <0x01f015c0 0x4>;
-+		};
-+
- 		ir: ir@01f02000 {
- 			compatible = "allwinner,sun5i-a13-ir";
- 			clocks = <&apb0_gates 1>, <&ir_clk>;
+-#if defined(CONFIG_SND_SEQUENCER) || (defined(MODULE) && defined(CONFIG_SND_SEQUENCER_MODULE))
++#if IS_REACHABLE(CONFIG_SND_SEQUENCER)
+ 	opl4->seq_client = -1;
+ 	if (opl4->hardware < OPL3_HW_OPL4_ML)
+ 		snd_opl4_create_seq_dev(opl4, seq_device);
 -- 
-2.10.2
+2.7.4
