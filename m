@@ -1,18 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: Add support for
-	tlv320dac3101" to the asoc tree
-Date: Sat, 12 Nov 2016 09:58:54 +0000
-Message-ID: <E1c5V5K-000564-Lm@finisterre>
-References: <20161110075555.7878-3-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] sound: soc-core: make kernel complaints on
+ -EPROBE_DEFER dev_dbg
+Date: Sat, 12 Nov 2016 10:00:14 +0000
+Message-ID: <20161112100014.cwbwkls3kgphj5bz@sirena.org.uk>
+References: <20161109140036.GB20859@localhost.localdomain>
+ <20161109143642.7knvr63vwmcgunjf@sirena.org.uk>
+ <20161109151426.GA21280@localhost.localdomain>
+ <20161109152209.dzejborw53no26ew@sirena.org.uk>
+ <20161109163658.GA21606@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1459904555033900324=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9554C2676B4
- for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2016 10:59:16 +0100 (CET)
-In-Reply-To: <20161110075555.7878-3-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 362B72676B4
+ for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2016 11:00:29 +0100 (CET)
+In-Reply-To: <20161109163658.GA21606@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,96 +25,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: nikita.yoush@cogentembedded.com, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: tlv320aic31xx: Add support for tlv320dac3101
+--===============1459904555033900324==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bnuockyhtcniyh7d"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--bnuockyhtcniyh7d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Nov 09, 2016 at 05:36:58PM +0100, Ladislav Michl wrote:
+> On Wed, Nov 09, 2016 at 03:22:09PM +0000, Mark Brown wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > How do we know that it's not a kernel misconfiguration?  It's common for
+> > people to not build some of the component drivers they need.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> Is what you described really a misconfiguration? Enabling debug when
+> something does not work seems obvious thing to do, but okay, perhaps
+> anything bellow error level would make me happy enough.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Yes, it's something that's really common when people configure their own
+kernels.
 
-Thanks,
-Mark
+> > > > If you don't like deferred probing please contribute to the efforts
+> > > > to order probing.
 
->From 4e2cc814eb2755df286ea890078fb636e1aa0f69 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Thu, 10 Nov 2016 09:55:55 +0200
-Subject: [PATCH] ASoC: tlv320aic31xx: Add support for tlv320dac3101
+> As a side note, which efforts are you reffering to here?
 
-The DAC3101 is mostly identical to DAC3100 with the exception that it has
-stereo speaker AMP instead of mono used in DAC3100.
+Things like Raphael's device dependencies work.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- Documentation/devicetree/bindings/sound/tlv320aic31xx.txt | 1 +
- sound/soc/codecs/tlv320aic31xx.c                          | 2 ++
- sound/soc/codecs/tlv320aic31xx.h                          | 1 +
- 3 files changed, 4 insertions(+)
+> > > I just tried to make it consistend to other subsystems where patches to
+> > > silence deferred probing warnings are accepted...
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-index 9340d2ddcc54..6fbba562eaa7 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-@@ -12,6 +12,7 @@ Required properties:
-     "ti,tlv320aic3120" - TLV320AIC3120 (mono speaker amp, MiniDSP)
-     "ti,tlv320aic3111" - TLV320AIC3111 (stereo speaker amp, MiniDSP)
-     "ti,tlv320dac3100" - TLV320DAC3100 (no ADC, mono speaker amp, no MiniDSP)
-+    "ti,tlv320dac3101" - TLV320DAC3101 (no ADC, stereo speaker amp, no MiniDSP)
- 
- - reg - <int> -  I2C slave address
- - HPVDD-supply, SPRVDD-supply, SPLVDD-supply, AVDD-supply, IOVDD-supply,
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 8880f6be3336..f8a90ba8cd71 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1254,6 +1254,7 @@ static const struct of_device_id tlv320aic31xx_of_match[] = {
- 	{ .compatible = "ti,tlv320aic3120" },
- 	{ .compatible = "ti,tlv320aic3111" },
- 	{ .compatible = "ti,tlv320dac3100" },
-+	{ .compatible = "ti,tlv320dac3101" },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, tlv320aic31xx_of_match);
-@@ -1380,6 +1381,7 @@ static const struct i2c_device_id aic31xx_i2c_id[] = {
- 	{ "tlv320aic3120", AIC3120 },
- 	{ "tlv320aic3111", AIC3111 },
- 	{ "tlv320dac3100", DAC3100 },
-+	{ "tlv320dac3101", DAC3101 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, aic31xx_i2c_id);
-diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
-index 5acd5b69fb83..730fb2058869 100644
---- a/sound/soc/codecs/tlv320aic31xx.h
-+++ b/sound/soc/codecs/tlv320aic31xx.h
-@@ -32,6 +32,7 @@ enum aic31xx_type {
- 	AIC3120 = AIC31XX_MINIDSP_BIT,
- 	AIC3111 = (AIC31XX_STEREO_CLASS_D_BIT | AIC31XX_MINIDSP_BIT),
- 	DAC3100 = DAC31XX_BIT,
-+	DAC3101 = DAC31XX_BIT | AIC31XX_STEREO_CLASS_D_BIT,
- };
- 
- struct aic31xx_pdata {
--- 
-2.10.2
+> > Which subsystems are these?  We should look at fixing them...
+
+> tty and usb for example. I do not consider wise to looking at them until
+> this very subsystem gets fixed first to not distract ourselves ;-)
+> (Also I have admit, that accepted patches hide error message on deferred
+> probe only, but above occurs _also_ on deferred probe and yes, it would be
+> nice to have that fixed)
+
+This really does make it harder to figure out what's going on when the
+dependency is actually missing - it transforms things into a silent
+failure.
+
+--bnuockyhtcniyh7d
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJYJugtAAoJECTWi3JdVIfQuPAH/1JgnkgzbZVT+8gT1ikr40B6
+sZbwlA40thLBsddPapTk4pFS016qbFaB/qjWEacnqe22k0n0B8WKmrj7SE1tOHR3
+yRKzqianuyq9xLf7XFx23Acm5eVsX3tyuVK466wTYeNfHS/BTw4L+YFkqjL+sLBk
+Rfg53mWhjEGRaa+VrJHiU8w+Bd30cEFa6NsLpbDUNKddqhqW3/6ho+dAqFU5gsTT
+B94mTJN9JSROrPkZTMAl4Wn0j7yOPg8BxONwqWrXEbNHLECP003mmhrHwFyQ3Jpi
+HmA1bZ99DlNr9JUGQitPRAxrizRBBs3Aa52eN3mfIzsfozwlDmjCMFBVyF5ycX8=
+=ORRr
+-----END PGP SIGNATURE-----
+
+--bnuockyhtcniyh7d--
+
+--===============1459904555033900324==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1459904555033900324==--
