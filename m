@@ -1,39 +1,117 @@
-From: Fabian Frederick <fabf@skynet.be>
-Subject: [PATCH 1/1 linux-next] ALSA: opl4: don't opencode IS_REACHABLE()
-Date: Sat, 12 Nov 2016 09:33:45 +0100
-Message-ID: <1478939625-1625-1-git-send-email-fabf@skynet.be>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, fabf@skynet.be
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: tlv320aic31xx: Add support for
+	tlv320dac3101" to the asoc tree
+Date: Sat, 12 Nov 2016 09:58:54 +0000
+Message-ID: <E1c5V5K-000564-Lm@finisterre>
+References: <20161110075555.7878-3-peter.ujfalusi@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9554C2676B4
+ for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2016 10:59:16 +0100 (CET)
+In-Reply-To: <20161110075555.7878-3-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: nikita.yoush@cogentembedded.com, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Fabian Frederick <fabf@skynet.be>
----
- sound/drivers/opl4/opl4_lib.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The patch
 
-diff --git a/sound/drivers/opl4/opl4_lib.c b/sound/drivers/opl4/opl4_lib.c
-index 89c7aa0..240656e 100644
---- a/sound/drivers/opl4/opl4_lib.c
-+++ b/sound/drivers/opl4/opl4_lib.c
-@@ -153,7 +153,7 @@ static int snd_opl4_detect(struct snd_opl4 *opl4)
- 	return 0;
- }
+   ASoC: tlv320aic31xx: Add support for tlv320dac3101
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 4e2cc814eb2755df286ea890078fb636e1aa0f69 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Thu, 10 Nov 2016 09:55:55 +0200
+Subject: [PATCH] ASoC: tlv320aic31xx: Add support for tlv320dac3101
+
+The DAC3101 is mostly identical to DAC3100 with the exception that it has
+stereo speaker AMP instead of mono used in DAC3100.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/tlv320aic31xx.txt | 1 +
+ sound/soc/codecs/tlv320aic31xx.c                          | 2 ++
+ sound/soc/codecs/tlv320aic31xx.h                          | 1 +
+ 3 files changed, 4 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
+index 9340d2ddcc54..6fbba562eaa7 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
++++ b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
+@@ -12,6 +12,7 @@ Required properties:
+     "ti,tlv320aic3120" - TLV320AIC3120 (mono speaker amp, MiniDSP)
+     "ti,tlv320aic3111" - TLV320AIC3111 (stereo speaker amp, MiniDSP)
+     "ti,tlv320dac3100" - TLV320DAC3100 (no ADC, mono speaker amp, no MiniDSP)
++    "ti,tlv320dac3101" - TLV320DAC3101 (no ADC, stereo speaker amp, no MiniDSP)
  
--#if defined(CONFIG_SND_SEQUENCER) || (defined(MODULE) && defined(CONFIG_SND_SEQUENCER_MODULE))
-+#if IS_REACHABLE(CONFIG_SND_SEQUENCER)
- static void snd_opl4_seq_dev_free(struct snd_seq_device *seq_dev)
- {
- 	struct snd_opl4 *opl4 = seq_dev->private_data;
-@@ -249,7 +249,7 @@ int snd_opl4_create(struct snd_card *card,
- 	snd_opl4_create_mixer(opl4);
- 	snd_opl4_create_proc(opl4);
+ - reg - <int> -  I2C slave address
+ - HPVDD-supply, SPRVDD-supply, SPLVDD-supply, AVDD-supply, IOVDD-supply,
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 8880f6be3336..f8a90ba8cd71 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1254,6 +1254,7 @@ static const struct of_device_id tlv320aic31xx_of_match[] = {
+ 	{ .compatible = "ti,tlv320aic3120" },
+ 	{ .compatible = "ti,tlv320aic3111" },
+ 	{ .compatible = "ti,tlv320dac3100" },
++	{ .compatible = "ti,tlv320dac3101" },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, tlv320aic31xx_of_match);
+@@ -1380,6 +1381,7 @@ static const struct i2c_device_id aic31xx_i2c_id[] = {
+ 	{ "tlv320aic3120", AIC3120 },
+ 	{ "tlv320aic3111", AIC3111 },
+ 	{ "tlv320dac3100", DAC3100 },
++	{ "tlv320dac3101", DAC3101 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, aic31xx_i2c_id);
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index 5acd5b69fb83..730fb2058869 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -32,6 +32,7 @@ enum aic31xx_type {
+ 	AIC3120 = AIC31XX_MINIDSP_BIT,
+ 	AIC3111 = (AIC31XX_STEREO_CLASS_D_BIT | AIC31XX_MINIDSP_BIT),
+ 	DAC3100 = DAC31XX_BIT,
++	DAC3101 = DAC31XX_BIT | AIC31XX_STEREO_CLASS_D_BIT,
+ };
  
--#if defined(CONFIG_SND_SEQUENCER) || (defined(MODULE) && defined(CONFIG_SND_SEQUENCER_MODULE))
-+#if IS_REACHABLE(CONFIG_SND_SEQUENCER)
- 	opl4->seq_client = -1;
- 	if (opl4->hardware < OPL3_HW_OPL4_ML)
- 		snd_opl4_create_seq_dev(opl4, seq_device);
+ struct aic31xx_pdata {
 -- 
-2.7.4
+2.10.2
