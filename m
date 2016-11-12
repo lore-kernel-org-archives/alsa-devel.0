@@ -1,66 +1,47 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH 03/10] mfd: sun6i-prcm: Add codec analog controls sub-device for Allwinner A23
-Date: Sat, 12 Nov 2016 14:46:41 +0800
-Message-ID: <20161112064648.26779-4-wens@csie.org>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: [PATCH 10/10] ARM: dts: sun8i-h3: orange-pi-pc: Enable audio codec
+Date: Sat, 12 Nov 2016 14:46:48 +0800
+Message-ID: <20161112064648.26779-11-wens@csie.org>
 References: <20161112064648.26779-1-wens@csie.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161112064648.26779-1-wens@csie.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Mylene Josserand <mylene.josserand@free-electrons.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20161112064648.26779-1-wens-jdAy2FN1RRM@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mylene Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The PRCM block on the A23 contains a message box like interface to
-the registers for the analog path controls of the internal codec.
+The Orange Pi PC routes the LINEOUT pins to the audio out jack on the
+board. The onboard microphone is routed to MIC1, with MBIAS providing
+power.
 
-Add a sub-device for it.
-
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 ---
- drivers/mfd/sun6i-prcm.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/mfd/sun6i-prcm.c b/drivers/mfd/sun6i-prcm.c
-index 011fcc555945..4abbf2ede944 100644
---- a/drivers/mfd/sun6i-prcm.c
-+++ b/drivers/mfd/sun6i-prcm.c
-@@ -12,6 +12,9 @@
- #include <linux/init.h>
- #include <linux/of.h>
- 
-+#define SUN8I_CODEC_ANALOG_BASE	0x1c0
-+#define SUN8I_CODEC_ANALOG_END	(SUN8I_CODEC_ANALOG_BASE + 0x4 - 1)
-+
- struct prcm_data {
- 	int nsubdevs;
- 	const struct mfd_cell *subdevs;
-@@ -57,6 +60,14 @@ static const struct resource sun6i_a31_apb0_rstc_res[] = {
- 	},
+diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
+index 3ec971285aa3..2b1e68d0f2fa 100644
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
+@@ -90,6 +90,14 @@
+ 	};
  };
  
-+static const struct resource sun8i_codec_analog_res[] = {
-+	{
-+		.start	= SUN8I_CODEC_ANALOG_BASE,
-+		.end	= SUN8I_CODEC_ANALOG_END,
-+		.flags	= IORESOURCE_MEM,
-+	},
++&codec {
++	allwinner,audio-routing =
++		"Line Out", "LINEOUT",
++		"MIC1", "Mic",
++		"Mic",  "MBIAS";
++	status = "okay";
 +};
 +
- static const struct mfd_cell sun6i_a31_prcm_subdevs[] = {
- 	{
- 		.name = "sun6i-a31-ar100-clk",
-@@ -109,6 +120,12 @@ static const struct mfd_cell sun8i_a23_prcm_subdevs[] = {
- 		.num_resources = ARRAY_SIZE(sun6i_a31_apb0_rstc_res),
- 		.resources = sun6i_a31_apb0_rstc_res,
- 	},
-+	{
-+		.name		= "sun8i-codec-analog",
-+		.of_compatible	= "allwinner,sun8i-a23-codec-analog",
-+		.num_resources	= ARRAY_SIZE(sun8i_codec_analog_res),
-+		.resources	= sun8i_codec_analog_res,
-+	},
+ &ehci1 {
+ 	status = "okay";
  };
- 
- static const struct prcm_data sun6i_a31_prcm_data = {
 -- 
 2.10.2
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
