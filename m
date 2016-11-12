@@ -1,21 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] sound: soc-core: make kernel complaints on
- -EPROBE_DEFER dev_dbg
-Date: Sat, 12 Nov 2016 10:00:14 +0000
-Message-ID: <20161112100014.cwbwkls3kgphj5bz@sirena.org.uk>
-References: <20161109140036.GB20859@localhost.localdomain>
- <20161109143642.7knvr63vwmcgunjf@sirena.org.uk>
- <20161109151426.GA21280@localhost.localdomain>
- <20161109152209.dzejborw53no26ew@sirena.org.uk>
- <20161109163658.GA21606@localhost.localdomain>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [RFC 0/4] ALSA controls management using
+ index/device/sub-devices fields
+Date: Sat, 12 Nov 2016 22:17:21 +0900
+Message-ID: <dccae745-113d-7baa-47d4-aed0784260bf@sakamocchi.jp>
+References: <1478592675-23092-1-git-send-email-arnaud.pouliquen@st.com>
+ <c28a3623-3cf1-5fc1-1ba8-e6785fb967ca@sakamocchi.jp>
+ <cb9cf7f0-ae86-307b-c4d6-b4d3120d4e88@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1459904555033900324=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 362B72676B4
- for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2016 11:00:29 +0100 (CET)
-In-Reply-To: <20161109163658.GA21606@localhost.localdomain>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id CA11B266218
+ for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2016 14:17:28 +0100 (CET)
+In-Reply-To: <cb9cf7f0-ae86-307b-c4d6-b4d3120d4e88@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,77 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Nov 9 2016 23:38, Arnaud Pouliquen wrote:
+> Other solution: use control "prefix"? not possible as control has a
+> pre-defined name.
 
---===============1459904555033900324==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bnuockyhtcniyh7d"
-Content-Disposition: inline
+I note that we can give unique names to control element set for IEC 
+60958. According to this document, Between "IEC958" and the rest, we can 
+put arbitrary string.
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/Documentation/sound/designs/control-names.rst
 
-
---bnuockyhtcniyh7d
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Nov 09, 2016 at 05:36:58PM +0100, Ladislav Michl wrote:
-> On Wed, Nov 09, 2016 at 03:22:09PM +0000, Mark Brown wrote:
-
-> > How do we know that it's not a kernel misconfiguration?  It's common for
-> > people to not build some of the component drivers they need.
-
-> Is what you described really a misconfiguration? Enabling debug when
-> something does not work seems obvious thing to do, but okay, perhaps
-> anything bellow error level would make me happy enough.
-
-Yes, it's something that's really common when people configure their own
-kernels.
-
-> > > > If you don't like deferred probing please contribute to the efforts
-> > > > to order probing.
-
-> As a side note, which efforts are you reffering to here?
-
-Things like Raphael's device dependencies work.
-
-> > > I just tried to make it consistend to other subsystems where patches to
-> > > silence deferred probing warnings are accepted...
-
-> > Which subsystems are these?  We should look at fixing them...
-
-> tty and usb for example. I do not consider wise to looking at them until
-> this very subsystem gets fixed first to not distract ourselves ;-)
-> (Also I have admit, that accepted patches hide error message on deferred
-> probe only, but above occurs _also_ on deferred probe and yes, it would be
-> nice to have that fixed)
-
-This really does make it harder to figure out what's going on when the
-dependency is actually missing - it transforms things into a silent
-failure.
-
---bnuockyhtcniyh7d
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAABCAAGBQJYJugtAAoJECTWi3JdVIfQuPAH/1JgnkgzbZVT+8gT1ikr40B6
-sZbwlA40thLBsddPapTk4pFS016qbFaB/qjWEacnqe22k0n0B8WKmrj7SE1tOHR3
-yRKzqianuyq9xLf7XFx23Acm5eVsX3tyuVK466wTYeNfHS/BTw4L+YFkqjL+sLBk
-Rfg53mWhjEGRaa+VrJHiU8w+Bd30cEFa6NsLpbDUNKddqhqW3/6ho+dAqFU5gsTT
-B94mTJN9JSROrPkZTMAl4Wn0j7yOPg8BxONwqWrXEbNHLECP003mmhrHwFyQ3Jpi
-HmA1bZ99DlNr9JUGQitPRAxrizRBBs3Aa52eN3mfIzsfozwlDmjCMFBVyF5ycX8=
-=ORRr
------END PGP SIGNATURE-----
-
---bnuockyhtcniyh7d--
-
---===============1459904555033900324==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+For your information.
 
 
---===============1459904555033900324==--
+Takashi Sakamoto
