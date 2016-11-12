@@ -1,7 +1,7 @@
 From: Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH 05/10] ARM: dts: sun8i: Add codec analog path controls node in PRCM for A23/A33
-Date: Sat, 12 Nov 2016 14:46:43 +0800
-Message-ID: <20161112064648.26779-6-wens@csie.org>
+Subject: [PATCH 07/10] ARM: dts: sun8i-a23: q8-tablet: Enable internal audio codec
+Date: Sat, 12 Nov 2016 14:46:45 +0800
+Message-ID: <20161112064648.26779-8-wens@csie.org>
 References: <20161112064648.26779-1-wens@csie.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20161112064648.26779-1-wens@csie.org>
@@ -10,30 +10,52 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime
 Cc: Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Mylene Josserand <mylene.josserand@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-On the A23/A33, the internal codec's analog path controls are located in
-the PRCM node.
+The A23 Q8 tablets have an internal mono speaker w/ external amp
+which has a shutdown control tied to a GPIO pin. Both the speaker
+amp and the headphone jack are tied to the HP output pins. While
+the speaker is mono, the headset jack is stereo. Unfortunately
+the driver does not support automatic switching of this.
 
-Add a sub-device node to the PRCM for it.
+In addition, the headset is DC coupled, or "direct drive" enabled.
+The headset's microphone is tied to MIC2 with HBIAS providing power.
+A separate internal microphone is tied to MIC1 with MBIAS providing
+power.
 
 Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 ---
- arch/arm/boot/dts/sun8i-a23-a33.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm/boot/dts/sun8i-a23-q8-tablet.dts | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-a23-a33.dtsi b/arch/arm/boot/dts/sun8i-a23-a33.dtsi
-index 300a1bd5a6ec..ac0d281f4489 100644
---- a/arch/arm/boot/dts/sun8i-a23-a33.dtsi
-+++ b/arch/arm/boot/dts/sun8i-a23-a33.dtsi
-@@ -553,6 +553,10 @@
- 				compatible = "allwinner,sun6i-a31-clock-reset";
- 				#reset-cells = <1>;
- 			};
+diff --git a/arch/arm/boot/dts/sun8i-a23-q8-tablet.dts b/arch/arm/boot/dts/sun8i-a23-q8-tablet.dts
+index 956320a6cc78..3ab5c0c09d93 100644
+--- a/arch/arm/boot/dts/sun8i-a23-q8-tablet.dts
++++ b/arch/arm/boot/dts/sun8i-a23-q8-tablet.dts
+@@ -48,3 +48,26 @@
+ 	model = "Q8 A23 Tablet";
+ 	compatible = "allwinner,q8-a23", "allwinner,sun8i-a23";
+ };
 +
-+			codec_analog: codec-analog {
-+				compatible = "allwinner,sun8i-a23-codec-analog";
-+			};
- 		};
- 
- 		cpucfg@01f01c00 {
++&codec {
++	pinctrl-0 = <&codec_pa_pin>;
++	allwinner,pa-gpios = <&pio 7 9 GPIO_ACTIVE_HIGH>; /* PH9 */
++	allwinner,audio-routing =
++		"Headphone", "HP",
++		"Headphone", "HPCOM",
++		"Speaker", "HP",
++		"MIC1", "Mic",
++		"MIC2", "Headset Mic",
++		"Mic",  "MBIAS",
++		"Headset Mic", "HBIAS";
++	status = "okay";
++};
++
++&pio {
++	codec_pa_pin: codec_pa_pin@0 {
++		allwinner,pins = "PH9";
++		allwinner,function = "gpio_out";
++		allwinner,drive = <SUN4I_PINCTRL_10_MA>;
++		allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
++	};
++};
 -- 
 2.10.2
