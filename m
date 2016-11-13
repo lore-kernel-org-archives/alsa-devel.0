@@ -1,64 +1,69 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH] ASoC: pxa: Make static string arrays
-	'const 'char * const []'
-Date: Sun, 13 Nov 2016 11:12:14 +0100
-Message-ID: <87y40nu1s1.fsf@belgarion.home>
-References: <1478956993-10065-1-git-send-email-lars@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp04.smtpout.orange.fr
- [80.12.242.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 75FC9266C73
- for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2016 11:12:20 +0100 (CET)
-In-Reply-To: <1478956993-10065-1-git-send-email-lars@metafoo.de> (Lars-Peter
- Clausen's message of "Sat, 12 Nov 2016 14:23:13 +0100")
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: mioa701_wm9713: add missing white space in dev_err message" to the asoc tree
+Date: Sun, 13 Nov 2016 11:40:58 +0000
+Message-ID: <E1c5t9e-0008OI-W7@finisterre>
+References: <20161112163025.4801-1-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20161112163025.4801-1-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lars-Peter Clausen <lars@metafoo.de> writes:
+The patch
 
-> const char * const [] is the preferred type for static string arrays since
-> this states explicitly that the individual entries are not going to be
-> changed. Due to limitations in the ASoC API it was not possible to use it
-> for enum text arrays. Commit 87023ff74 ('ASoC: Declare const properly for
-> enum texts') changed this, but most drivers still use 'const char
-> * []' as the type for their enum text arrays.
->
-> Change these occurrences of 'static * const char * []' to 'static const
-> char * const []'.
->
-> The conversion was done automatically using the following coccinelle semantic
-> patch:
-> // <smpl>
-> @disable optional_qualifier@
-> identifier s;
-> @@
->  static
-> -const char *
-> +const char * const
->  s[] = ...;
-> // </smpl>
->
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+   ASoC: mioa701_wm9713: add missing white space in dev_err message
 
-Hi,
+has been applied to the asoc tree at
 
-Could you amend your commit message so that checkpatch doesn't complain anymore
-? This being done, looks good to me.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Cheers.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---
-Robert
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 28ab49bf9bd9185d8221392a5195bb6c989ed7c7 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Sat, 12 Nov 2016 16:30:25 +0000
+Subject: [PATCH] ASoC: mioa701_wm9713: add missing white space in dev_err
+ message
+
+There is a missing whitespace in the dev_err message between
+"will" and "lead".  Add the whitespace.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/pxa/mioa701_wm9713.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
+index d1661fa6ee08..0fe0abec8fc4 100644
+--- a/sound/soc/pxa/mioa701_wm9713.c
++++ b/sound/soc/pxa/mioa701_wm9713.c
+@@ -187,7 +187,7 @@ static int mioa701_wm9713_probe(struct platform_device *pdev)
+ 	mioa701.dev = &pdev->dev;
+ 	rc = devm_snd_soc_register_card(&pdev->dev, &mioa701);
+ 	if (!rc)
+-		dev_warn(&pdev->dev, "Be warned that incorrect mixers/muxes setup will"
++		dev_warn(&pdev->dev, "Be warned that incorrect mixers/muxes setup will "
+ 			 "lead to overheating and possible destruction of your device."
+ 			 " Do not use without a good knowledge of mio's board design!\n");
+ 	return rc;
+-- 
+2.10.2
