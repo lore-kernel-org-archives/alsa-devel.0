@@ -1,17 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 3/3] ASoC: Intel: bytct_rt5640: change default
-	capture settings
-Date: Sat, 12 Nov 2016 18:07:46 -0600
-Message-ID: <1478995666-3866-4-git-send-email-pierre-louis.bossart@linux.intel.com>
-References: <1478995666-3866-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Audio miniconference at LPC/KS - draft schedule
+Date: Sun, 13 Nov 2016 12:33:05 +0900
+Message-ID: <607ea0f5-0391-d837-77ca-3dd2f1831fe7@sakamocchi.jp>
+References: <20161027221754.GW25322@sirena.org.uk>
+ <1478075425.19762.10.camel@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CEC3266819
- for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2016 01:07:56 +0100 (CET)
-In-Reply-To: <1478995666-3866-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 8DD7F26547F
+ for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2016 04:33:11 +0100 (CET)
+In-Reply-To: <1478075425.19762.10.camel@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,47 +21,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: "Koul, Vinod" <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Most Baytrail-CR devices use analog differential microphones,
-modify capture default to avoid DMI quirks. Keep digital mics
-for all other configurations.
+Hi,
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/bytcr_rt5640.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+On Nov 2 2016 17:30, Koul, Vinod wrote:
+>
+> Hi Mark, Takashi,
+>
+> We need to find some time to discuss these..
+>
+> - ASoC HDA..
+> - Byte controls TLV issue raised by Sakomoto-san (need charles here as
+> well)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 63a7993..507a86a 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -57,9 +57,7 @@ struct byt_rt5640_private {
- 	struct clk *mclk;
- };
- 
--static unsigned long byt_rt5640_quirk = BYT_RT5640_DMIC1_MAP |
--					BYT_RT5640_DMIC_EN |
--					BYT_RT5640_MCLK_EN;
-+static unsigned long byt_rt5640_quirk = BYT_RT5640_MCLK_EN;
- 
- static void log_quirks(struct device *dev)
- {
-@@ -787,6 +785,13 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 			/* no BIOS indications, assume SSP0-AIF2 connection */
- 			byt_rt5640_quirk |= BYT_RT5640_SSP0_AIF2;
- 		}
-+
-+		/* change defaults for Baytrail-CR capture */
-+		byt_rt5640_quirk |= BYT_RT5640_IN1_MAP;
-+		byt_rt5640_quirk |= BYT_RT5640_DIFF_MIC;
-+	} else {
-+		byt_rt5640_quirk |= (BYT_RT5640_DMIC1_MAP |
-+				BYT_RT5640_DMIC_EN);
- 	}
- 
- 	/* check quirks before creating card */
--- 
-2.7.4
+I find this message now.
+(Hobbyists don't have so much time for their hobbies, against your 
+expectation.)
+
+If you really hope to discuss this issue, please prepare for it with
+enough time. At least, you, Charles and Mark don't realize
+disadvantages of the abuse and its negative effects to user space, and
+it takes a long time for me to change your minds.
+
+On the other hand, I have little motivation to this issue. I have a
+batch of tasks for my commitment to this subsystem. So I don't mind
+that you continue the abuse, as long as it's just within ALSA SoC
+part.
+
+Anyway, in next time, please inform this kind of proposals in advance. 
+Then, I can use my time to prepare for sharing fundamental information, 
+for good discussion.
+
+
+Regards
+
+Takashi Sakamoto
