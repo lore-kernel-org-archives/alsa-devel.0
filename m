@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/3] ASoC: Intel: common: add ACPI package
-	extraction utility
-Date: Sat, 12 Nov 2016 18:07:44 -0600
-Message-ID: <1478995666-3866-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/3] ASoC: Intel: detect audio routing with
+	CHAN package
+Date: Sat, 12 Nov 2016 18:07:45 -0600
+Message-ID: <1478995666-3866-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1478995666-3866-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C08A266703
- for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2016 01:07:53 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id BFD45266731
+ for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2016 01:07:55 +0100 (CET)
 In-Reply-To: <1478995666-3866-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,121 +25,124 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add a new common routine to extract a package exposed by a
-device indexed with the HID value. The functionality is
-implemented without assumptions on the package type or
-structure to allow for reuse. The caller is responsible for
-defining the name and allocating structures to store the
-results, ACPICA will complain in case of type mismatches
-or buffer size issues.
+Baytrail-CR devices usually expose information in the DSDT
+which can be used to auto-detect AIF1/AIF2 connections.
+The CHAN package contains two integers, the first one describes
+the AIF number (1: AIF1, 2: AIF2) and the second the MCLK
+value (ignored in this patch)
+
+For example the following information is found in Lenovo 100s:
+
+Device (RTEK) {
+[...]
+    Name (CHAN, Package (0x02)
+    {
+        One,
+        0x017D7840
+    })
+
+While on Asus T100TAF the package values are:
+
+    Name (CHAN, Package (0x02)
+    {
+        0x02,
+        0x017D7840
+    })
+
+This patch relies on the new common routine to extract
+a package exposed by a device indexed with the HID value.
+The CHAN package contents are queried from the machine driver
+and stored in a structure.
+
+If this auto-detection fails (missing or bad package in the
+BIOS), the routing falls back to SSP0-AIF2.
+
+Note that quirks may still be needed to support mono speakers
+or microphone, but this should reduce the number of issues with
+Baytrail significantly.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/common/sst-acpi.h       | 17 +++++++++-
- sound/soc/intel/common/sst-match-acpi.c | 57 +++++++++++++++++++++++++++++++++
- 2 files changed, 73 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 53 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 51 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/common/sst-acpi.h b/sound/soc/intel/common/sst-acpi.h
-index 0127422..214e000 100644
---- a/sound/soc/intel/common/sst-acpi.h
-+++ b/sound/soc/intel/common/sst-acpi.h
-@@ -15,14 +15,29 @@
- #include <linux/stddef.h>
- #include <linux/acpi.h>
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 751e009..63a7993 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -689,6 +689,10 @@ static bool is_valleyview(void)
+ 	return true;
+ }
  
--/* translation fron HID to I2C name, needed for DAI codec_name */
-+struct sst_acpi_package_context {
-+	char *name;           /* package name */
-+	int length;           /* number of elements */
-+	struct acpi_buffer *format;
-+	struct acpi_buffer *state;
-+	bool data_valid;
++struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
++	u64 aif_value;       /* 1: AIF1, 2: AIF2 */
++	u64 mclock_value;    /* usually 25MHz (0x17d7940), ignored */
 +};
-+
- #if IS_ENABLED(CONFIG_ACPI)
-+/* translation fron HID to I2C name, needed for DAI codec_name */
- const char *sst_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN]);
-+bool sst_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
-+				    struct sst_acpi_package_context *ctx);
- #else
- static inline const char *sst_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
+ 
+ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
  {
- 	return NULL;
- }
-+static inline bool sst_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
-+					   struct sst_acpi_package_context *ctx)
-+{
-+	return false;
-+}
- #endif
+@@ -698,6 +702,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	int i;
+ 	int dai_index;
+ 	struct byt_rt5640_private *priv;
++	bool is_bytcr = false;
  
- /* acpi match */
-diff --git a/sound/soc/intel/common/sst-match-acpi.c b/sound/soc/intel/common/sst-match-acpi.c
-index 7898433..1070f3a 100644
---- a/sound/soc/intel/common/sst-match-acpi.c
-+++ b/sound/soc/intel/common/sst-match-acpi.c
-@@ -77,5 +77,62 @@ struct sst_acpi_mach *sst_acpi_find_machine(struct sst_acpi_mach *machines)
- }
- EXPORT_SYMBOL_GPL(sst_acpi_find_machine);
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
+ 	if (!priv)
+@@ -734,8 +739,52 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 		struct sst_platform_info *p_info = mach->pdata;
+ 		const struct sst_res_info *res_info = p_info->res_info;
  
-+static acpi_status sst_acpi_find_package(acpi_handle handle, u32 level,
-+					void *context, void **ret)
-+{
-+	struct acpi_device *adev;
-+	acpi_status status = AE_OK;
-+	struct sst_acpi_package_context *pkg_ctx = context;
-+
-+	pkg_ctx->data_valid = false;
-+
-+	if (acpi_bus_get_device(handle, &adev))
-+		return AE_OK;
-+
-+	if (adev->status.present && adev->status.functional) {
-+		struct acpi_buffer buffer = {ACPI_ALLOCATE_BUFFER, NULL};
-+		union acpi_object  *myobj = NULL;
-+
-+		status = acpi_evaluate_object_typed(handle, pkg_ctx->name,
-+						NULL, &buffer,
-+						ACPI_TYPE_PACKAGE);
-+		if (ACPI_FAILURE(status))
-+			return AE_OK;
-+
-+		myobj = buffer.pointer;
-+		if (!myobj || myobj->package.count != pkg_ctx->length) {
-+			kfree(buffer.pointer);
-+			return AE_OK;
-+		}
-+
-+		status = acpi_extract_package(myobj,
-+					pkg_ctx->format, pkg_ctx->state);
-+		if (ACPI_FAILURE(status)) {
-+			kfree(buffer.pointer);
-+			return AE_OK;
-+		}
-+
-+		kfree(buffer.pointer);
-+		pkg_ctx->data_valid = true;
-+		return AE_CTRL_TERMINATE;
+-		/* TODO: use CHAN package info from BIOS to detect AIF1/AIF2 */
+-		if (res_info->acpi_ipc_irq_index == 0) {
++		if (res_info->acpi_ipc_irq_index == 0)
++			is_bytcr = true;
 +	}
 +
-+	return AE_OK;
-+}
++	if (is_bytcr) {
++		/*
++		 * Baytrail CR platforms may have CHAN package in BIOS, try
++		 * to find relevant routing quirk based as done on Windows
++		 * platforms. We have to read the information directly from the
++		 * BIOS, at this stage the card is not created and the links
++		 * with the codec driver/pdata are non-existent
++		 */
 +
-+bool sst_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
-+				struct sst_acpi_package_context *ctx)
-+{
-+	acpi_status status;
++		struct acpi_chan_package chan_package;
 +
-+	status = acpi_get_devices(hid, sst_acpi_find_package, ctx, NULL);
++		/* format specified: 2 64-bit integers */
++		struct acpi_buffer format = {sizeof("NN"), "NN"};
++		struct acpi_buffer state = {0, NULL};
++		struct sst_acpi_package_context pkg_ctx;
++		bool pkg_found = false;
 +
-+	if (ACPI_FAILURE(status) || !ctx->data_valid)
-+		return false;
++		state.length = sizeof(chan_package);
++		state.pointer = &chan_package;
 +
-+	return true;
-+}
-+EXPORT_SYMBOL_GPL(sst_acpi_find_package_from_hid);
++		pkg_ctx.name = "CHAN";
++		pkg_ctx.length = 2;
++		pkg_ctx.format = &format;
++		pkg_ctx.state = &state;
++		pkg_ctx.data_valid = false;
 +
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("Intel Common ACPI Match module");
++		pkg_found = sst_acpi_find_package_from_hid(mach->id, &pkg_ctx);
++		if (pkg_found) {
++			if (chan_package.aif_value == 1) {
++				dev_info(&pdev->dev, "BIOS Routing: AIF1 connected\n");
++				byt_rt5640_quirk |= BYT_RT5640_SSP0_AIF1;
++			} else  if (chan_package.aif_value == 2) {
++				dev_info(&pdev->dev, "BIOS Routing: AIF2 connected\n");
++				byt_rt5640_quirk |= BYT_RT5640_SSP0_AIF2;
++			} else {
++				dev_info(&pdev->dev, "BIOS Routing isn't valid, ignored\n");
++				pkg_found = false;
++			}
++		}
++
++		if (!pkg_found) {
++			/* no BIOS indications, assume SSP0-AIF2 connection */
+ 			byt_rt5640_quirk |= BYT_RT5640_SSP0_AIF2;
+ 		}
+ 	}
 -- 
 2.7.4
