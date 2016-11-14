@@ -1,67 +1,90 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: How to package the smixer modules?
-Date: Mon, 14 Nov 2016 16:44:03 +0200
-Message-ID: <1479134643.1949.3.camel@iki.fi>
-References: <1478522629.1939.3.camel@iki.fi> <s5hlgwu9gtx.wl-tiwai@suse.de>
- <1478702366.1952.1.camel@iki.fi> <s5hoa1i2vo0.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [RFC 03/14] SoundWire: Add error handling and locking
+ documentation
+Date: Mon, 14 Nov 2016 15:44:35 +0000
+Message-ID: <20161114154435.GN1575@localhost.localdomain>
+References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
+ <1477053673-16021-4-git-send-email-hardik.t.shah@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id B4835265A82
- for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2016 15:44:06 +0100 (CET)
-In-Reply-To: <s5hoa1i2vo0.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1477053673-16021-4-git-send-email-hardik.t.shah@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hardik Shah <hardik.t.shah@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAyMDE2LTExLTE0IGF0IDExOjM4ICswMTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-T24gV2VkLCAwOSBOb3YgMjAxNiAxNTozOToyNiArMDEwMCwKPiBUYW51IEthc2tpbmVuIHdyb3Rl
-Ogo+ID4gCj4gPiBPbiBUdWUsIDIwMTYtMTEtMDggYXQgMTU6MzkgKzAxMDAsIFRha2FzaGkgSXdh
-aSB3cm90ZToKPiA+ID4gVGhlIHNpbXBsZSBtaXhlciBpcyBhbm90aGVyIGxheWVyIGluIEFMU0Eg
-bWl4ZXIgQVBJLCBhbmQgYWN0dWFsbHkgaXQncwo+ID4gPiBtYW5kYXRvcnkuICBTbywgYXQgbGVh
-c3QsIHNiYXNlIHBsdWdpbiBzaG91bGQgYmUgcHJvdmlkZWQgYWx3YXlzIHdoZW4KPiA+ID4gYWxz
-YS1saWIgbWl4ZXIgQVBJIGlzIHVzZWQuICBPdGhlciBwbHVnaW5zIGFyZSBiYXNpY2FsbHkgbmV2
-ZXIgdXNlZAo+ID4gPiBwcmFjdGljYWxseS4KPiA+ID4gCj4gPiA+IEl0IGRvZXNuJ3QgbWF0dGVy
-IHdoZXRoZXIgdG8gcGFja2FnZSB0aGVtIHNlcGFyYXRlbHkgb3Igbm90LiAgVGhlIG9ubHkKPiA+
-ID4gcG9pbnQgaXMgdGhhdCBzYmFzZSBwbHVnaW4gc2hvdWxkIGJlIGF2YWlsYWJsZSB3aGVuIGFs
-c2EtbGliIG1peGVyIEFQSQo+ID4gPiBpcyB1c2VkLgo+ID4gCj4gPiBUaGFua3MgZm9yIHRoZSBl
-eHBsYW5hdGlvbiEgSWYgdGhlIHNiYXNlIHBsdWdpbiBpcyBlc3NlbnRpYWxseSBhCj4gPiBtYW5k
-YXRvcnkgYWNjb21wYW5pbWVudCBvZiBsaWJhc291bmQsIEknbGwgbW92ZSBpdCB0byB0aGUgbGli
-YXNvdW5kCj4gPiBwYWNrYWdlLCBhbmQgc2luY2UgSSBkb24ndCBzZWUgbXVjaCBiZW5lZml0IGlu
-IGtlZXBpbmcgdGhlIGhkYSBhbmQgYWM5Nwo+ID4gcGx1Z2lucyBpbiBhIHNlcGFyYXRlIHBhY2th
-Z2UgZWl0aGVyLCBJJ2xsIG1vdmUgdGhvc2UgdG9vIGFuZCBnZXQgcmlkCj4gPiBvZiB0aGUgd2hv
-bGUgc21peGVyIHBsdWdpbiBwYWNrYWdlLgo+ID4gCj4gPiBPdXQgb2YgY3VyaW9zaXR5LCBpbiB3
-aGF0IHNpdHVhdGlvbiBhcmUgdGhlIGhkYSBhbmQgYWM5NyBwbHVnaW5zIHVzZWQ/Cj4gPiBZb3Ug
-c2FpZCB0aGF0IHRoZXkgYXJlIHByYWN0aWNhbGx5IG5ldmVyIHVzZWQsIGJ1dCBzdXJlbHkgdGhl
-eSBoYXZlCj4gPiBzb21lIHB1cnBvc2U/Cj4gCj4gQWN0dWFsbHksIEkgd2FzIHdyb25nLiAgRXZl
-biBzYmFzZS5zbyBpc24ndCBuZWVkZWQgZm9yIHRoZSBub3JtYWwKPiBhbHNhbWl4ZXIgLyBhbWl4
-ZXIgb3BlcmF0aW9ucy4gIFRoaXMgaXMgYSBiYXNlIHNoYXJlZCBvYmplY3QgdGhhdCBpcwo+IG5l
-ZWRlZCBmb3IgImJhc2ljIiBhYnN0cmFjdGlvbiBtb2RlLCBidXQgdGhlIG5vcm1hbCBtb2RlIChh
-YnN0cmFjdGlvbgo+ICJub25lIikgZG9lc24ndCBuZWVkIGl0Lgo+IAo+IFRoYXQgc2FpZCwgdGhl
-IHdob2xlIC91c3IvbGliKi9hbHNhLWxpYi9zbWl4ZXIvKiBzdHVmZiBjYW4gYmUgcmVtb3ZlZAo+
-IGZyb20geW91ciBwYWNrYWdlIGFzIGxvbmcgYXMgdGhlIG5vcm1hbCBtb2RlIGlzIHVzZWQuCj4g
-Cj4gVGhlcmUgaXMgYW4gb3B0aW9uIC1hIHRvIHBhc3MgdGhlIGFic3RyYWN0aW9uIGxldmVsLiAg
-V2hlbiB5b3UgcGFzcwo+ICJiYXNpYyIsIHRoZSBweXRob24gbW9kdWxlIGdldHMgbG9hZGVkLiAg
-SXQgd2FzIHN1cHBvc2VkIHRvIGhhbmRsZSB0aGUKPiBjYXJkLXNwZWNpZmljIGFic3RyYWN0aW9u
-IHBhcnNlZCB2aWEgcHl0aG9uLCBidXQgdGhpcyBzZWVtcyBjdXJyZW50bHkKPiBicm9rZW4uICBT
-byBpdCdzIG1heWJlIHNhZmVyIHRvIGRpc2FibGUgYXMgZGVmYXVsdC4uLgoKT2ssIHRoYW5rcyBm
-b3IgdGhlIHVwZGF0ZSEgSSBzZWUgeW91IHN1Ym1pdHRlZCBhIHBhdGNoIHRoYXQgZGlzYWJsZXMK
-dGhlc2UgcGx1Z2lucyBpZiBQeXRob24gaXMgZGlzYWJsZWQuIE9wZW5FbWJlZGRlZCBidWlsZHMg
-YWxzYS1saWIKd2l0aG91dCBQeXRob24gc3VwcG9ydCwgc2/CoEkgZ3Vlc3MgdGhlc2UgcGx1Z2lu
-cyB3b24ndCBiZSBhdmFpbGFibGUgdG8KT3BlbkVtYmVkZGVkIHVzZXJzIHN0YXJ0aW5nIGZyb20g
-YWxzYS1saWIgMS4xLjMuIEZvciBub3cgdGhlcmUncwpub3RoaW5nIEkgbmVlZCB0byBjaGFuZ2Ug
-aW4gdGhlIHBhY2thZ2luZy4KCi0tIApUYW51CgpodHRwczovL3d3dy5wYXRyZW9uLmNvbS90YW51
-awpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Fri, Oct 21, 2016 at 06:11:01PM +0530, Hardik Shah wrote:
+> This patch adds following documentation:
+>     1. Bus driver locking mechanism.
+>     2. Bus driver error handling.
+> 
+> Signed-off-by: Hardik Shah <hardik.t.shah@intel.com>
+> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  Documentation/sound/alsa/sdw/error_handling.txt |   71 +++++++++++++++++++++++
+>  Documentation/sound/alsa/sdw/locking.txt        |   64 ++++++++++++++++++++
+>  2 files changed, 135 insertions(+)
+>  create mode 100644 Documentation/sound/alsa/sdw/error_handling.txt
+>  create mode 100644 Documentation/sound/alsa/sdw/locking.txt
+> 
+> diff --git a/Documentation/sound/alsa/sdw/error_handling.txt b/Documentation/sound/alsa/sdw/error_handling.txt
+> new file mode 100644
+> index 0000000..9441cfa
+> --- /dev/null
+> +++ b/Documentation/sound/alsa/sdw/error_handling.txt
+> @@ -0,0 +1,71 @@
+<snip>
+> diff --git a/Documentation/sound/alsa/sdw/locking.txt b/Documentation/sound/alsa/sdw/locking.txt
+> new file mode 100644
+> index 0000000..650162f
+> --- /dev/null
+> +++ b/Documentation/sound/alsa/sdw/locking.txt
+> @@ -0,0 +1,64 @@
+> +This document explains locking mechanism of the SoundWire bus driver.
+> +Following types of lock are used in SoundWire bus driver.
+> +
+> +1. Core lock
+> +2. Master lock
+> +3. Stream lock
+> +4. Message lock
+> +
+> +1. Core lock: Global SoundWire bus driver lock. Core lock is used to
+> +serialize each of the following operation(s) within SoundWire bus
+> +driver.
+> +	- Addition and removal of Master.
+> +	- Acquire "Master lock" of each Master associated with the
+> +	  aggregated stream.
+> +
+> +
+> +2. Master lock: SoundWire bus instance lock. Master lock is used to
+> +serialize each of the following operation(s) within SoundWire bus
+> +instance.
+> +	- Addition and removal of Slave(s).
+> +	- Prepare and enable, disable and de-prepare.
+> +
+> +
+> +3. Stream lock: SoundWire stream lock. Stream lock is used to serialize
+> +access of stream data structure for a SoundWire stream.
+> +
+> +
+> +4. Message lock: SoundWire message transfer lock. This lock is used to
+> +serialize the message transfers(read/write) within the SoundWire bus
+> +instance.
+> +
+> +
+> +Lock Hierarchy
+> +==============
+> +
+> +- Core lock is the parent of Master and Stream lock.
+> +- Master lock is parent of Message lock.
+> +- Master and Stream locks are independent of each other.
+> +
+
+A small diagram might be nice here, just would make it easier to
+see the hierarchy at a glance.
+
+Thanks,
+Charles
