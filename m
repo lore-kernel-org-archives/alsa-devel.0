@@ -1,130 +1,137 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 06/14] SoundWire: Add register/unregister APIs
-Date: Mon, 14 Nov 2016 13:37:51 +0000
-Message-ID: <20161114133751.kqjgrtc7y2ltwbe7@sirena.org.uk>
-References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
- <1477053673-16021-7-git-send-email-hardik.t.shah@intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="usu34cv7hsv6khfh"
+Subject: Applied "ASoC: wm_adsp: factor out getting base register for a control" to the asoc tree
+Date: Mon, 14 Nov 2016 13:52:35 +0000
+Message-ID: <E1c6HgZ-0003C8-39@finisterre>
+References: <1478711658-23696-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1477053673-16021-7-git-send-email-hardik.t.shah@intel.com>
+In-Reply-To: <1478711658-23696-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Hardik Shah <hardik.t.shah@intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---usu34cv7hsv6khfh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: wm_adsp: factor out getting base register for a control
 
-On Fri, Oct 21, 2016 at 06:11:04PM +0530, Hardik Shah wrote:
+has been applied to the asoc tree at
 
-> +static void sdw_mstr_release(struct device *dev)
-> +{
-> +	struct sdw_master *mstr = to_sdw_master(dev);
-> +
-> +	complete(&mstr->slv_released_complete);
-> +}
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Other buses don't do this...  this is a big warning sign that you're
-abusing the driver model.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +/**
-> + * sdw_slv_verify - return parameter as sdw_slave, or NULL
-> + * @dev: device, probably from some driver model iterator
-> + *
-> + * When traversing the driver model tree, perhaps using driver model
-> + * iterators like @device_for_each_child(), you can't assume very much
-> + * about the nodes you find. Use this function to avoid oopses caused
-> + * by wrongly treating some non-SDW device as an sdw_slave.
-> + */
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-This is also *very* scary, especially given that there's no analysis
-presented as to why there might be random other things on the bus.  Why
-does SoundWire need this when other buses don't?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +static struct sdw_slave *sdw_slv_verify(struct device *dev)
-> +{
-> +	return (dev->type == &sdw_slv_type)
-> +			? to_sdw_slave(dev)
-> +			: NULL;
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-This is needlessly obfuscated, if you want to write an if statement
-write an if statement.
+Thanks,
+Mark
 
-> +static int sdw_slv_match(struct device *dev, struct device_driver *driver)
-> +{
-> +	struct sdw_slave *sdw_slv;
-> +	struct sdw_driver *sdw_drv = to_sdw_driver(driver);
-> +	struct sdw_slave_driver *drv;
-> +	int ret = 0;
-> +
-> +
-> +	if (sdw_drv->driver_type != SDW_DRIVER_TYPE_SLAVE)
-> +		return ret;
+>From b396ebca736f94a1a18bdc9a518ad0ca58fbd842 Mon Sep 17 00:00:00 2001
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Date: Wed, 9 Nov 2016 17:14:14 +0000
+Subject: [PATCH] ASoC: wm_adsp: factor out getting base register for a control
 
-Why do we need a check like this?
+The lookup of the base register corresponding to a control is
+duplicated in read and write so factor it out into a separate
+function.
 
-> +static int sdw_mstr_probe(struct device *dev)
-> +{
-> +	const struct sdw_master_driver *sdrv =
-> +					to_sdw_master_driver(dev->driver);
-> +	struct sdw_master *mstr = to_sdw_master(dev);
-> +	int ret;
-> +
-> +	ret = dev_pm_domain_attach(dev, true);
-> +
-> +	if (ret != -EPROBE_DEFER) {
-> +		ret = sdrv->probe(mstr, sdw_match_mstr(sdrv->id_table, mstr));
-> +		if (ret < 0)
-> +			dev_pm_domain_detach(dev, true);
-> +	}
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/wm_adsp.c | 46 ++++++++++++++++++++++++----------------------
+ 1 file changed, 24 insertions(+), 22 deletions(-)
 
-This looks *very* broken.  Surely if we fail to attach a pm_domain for
-any reason other than one not being there to attach we shouldn't be
-trying to probe the device?
-
-> +EXPORT_SYMBOL_GPL(snd_sdw_master_register_driver);
-
-This is EXPORT_SYMBOL_GPL() but the bus itself is dual licensed GPL/BSD
-- seems a bit inconsistent.
-
-> +/**
-> + * snd_sdw_master_add: Registers the SoundWire Master interface. This needs
-> + *	to be called for each Master interface supported by SoC. This
-> + *	represents One clock and data line (Optionally multiple data lanes)
-> + *	of Master interface.
-> + *
-> + * @master: the Master to be added.
-> + */
-> +int snd_sdw_master_add(struct sdw_master *master)
-
-This lies at the heart of the issues that seem to exist with the misuse
-of the driver model in this code.  Normally what we see is that the
-controller would instantiate as whatever bus type the controller is
-attached by (typically a PCI or platform device) and then it wouild
-register a bus with the bus subsystem which would then instantiate
-slaves.  Instead we have this system where the bus is registered by
-something in the system and then the master is a driver on the bus
-parallel to the slaves but with a separate driver type that causes
-confusion.  Without having seen a master driver it's not even clear how
-this is going to work and allow the master to talk to its own hardware.
-
---usu34cv7hsv6khfh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAABCAAGBQJYKb4vAAoJECTWi3JdVIfQd+AH/iAap+IHAEGpgWigQVKV5pfd
-vRGJCda5wO74fTGtdIoAcwOFfbB0Z/ZFvsRL7B6ZE2n878nPIYgsEwW+dTukoY9g
-0CJjErNpgrWOyi5momDrRJAABC+fASVSQ2YS9fJkHXee7eZcJkHTANCfi1khz1DL
-sDRmyVl9eTF03hnOa82iwbQLMLlGRobDrkpFenCQgW9mMUaGtZBw5mvawmJipuqj
-Tkz137VyT9zHq4e90VzCIorgvYLJuG2Ig9STocXsc9XyQfdXbK4mPAOVfFOIqvGm
-XHY6prRIG4O0hgyANkpQ6y3JI7BfEDhQwYe4DSVUhFENzRxEQmNCB7IVqQ4FyyE=
-=lia7
------END PGP SIGNATURE-----
-
---usu34cv7hsv6khfh--
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 0f705bfd76b4..4fb6e2f035e0 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -756,6 +756,24 @@ static inline struct wm_coeff_ctl *bytes_ext_to_ctl(struct soc_bytes_ext *ext)
+ 	return container_of(ext, struct wm_coeff_ctl, bytes_ext);
+ }
+ 
++static int wm_coeff_base_reg(struct wm_coeff_ctl *ctl, unsigned int *reg)
++{
++	const struct wm_adsp_alg_region *alg_region = &ctl->alg_region;
++	struct wm_adsp *dsp = ctl->dsp;
++	const struct wm_adsp_region *mem;
++
++	mem = wm_adsp_find_region(dsp, alg_region->type);
++	if (!mem) {
++		adsp_err(dsp, "No base for region %x\n",
++			 alg_region->type);
++		return -EINVAL;
++	}
++
++	*reg = wm_adsp_region_to_reg(mem, ctl->alg_region.base + ctl->offset);
++
++	return 0;
++}
++
+ static int wm_coeff_info(struct snd_kcontrol *kctl,
+ 			 struct snd_ctl_elem_info *uinfo)
+ {
+@@ -843,22 +861,14 @@ static int wm_coeff_write_acked_control(struct wm_coeff_ctl *ctl,
+ static int wm_coeff_write_control(struct wm_coeff_ctl *ctl,
+ 				  const void *buf, size_t len)
+ {
+-	struct wm_adsp_alg_region *alg_region = &ctl->alg_region;
+-	const struct wm_adsp_region *mem;
+ 	struct wm_adsp *dsp = ctl->dsp;
+ 	void *scratch;
+ 	int ret;
+ 	unsigned int reg;
+ 
+-	mem = wm_adsp_find_region(dsp, alg_region->type);
+-	if (!mem) {
+-		adsp_err(dsp, "No base for region %x\n",
+-			 alg_region->type);
+-		return -EINVAL;
+-	}
+-
+-	reg = ctl->alg_region.base + ctl->offset;
+-	reg = wm_adsp_region_to_reg(mem, reg);
++	ret = wm_coeff_base_reg(ctl, &reg);
++	if (ret)
++		return ret;
+ 
+ 	scratch = kmemdup(buf, len, GFP_KERNEL | GFP_DMA);
+ 	if (!scratch)
+@@ -951,22 +961,14 @@ static int wm_coeff_put_acked(struct snd_kcontrol *kctl,
+ static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
+ 				 void *buf, size_t len)
+ {
+-	struct wm_adsp_alg_region *alg_region = &ctl->alg_region;
+-	const struct wm_adsp_region *mem;
+ 	struct wm_adsp *dsp = ctl->dsp;
+ 	void *scratch;
+ 	int ret;
+ 	unsigned int reg;
+ 
+-	mem = wm_adsp_find_region(dsp, alg_region->type);
+-	if (!mem) {
+-		adsp_err(dsp, "No base for region %x\n",
+-			 alg_region->type);
+-		return -EINVAL;
+-	}
+-
+-	reg = ctl->alg_region.base + ctl->offset;
+-	reg = wm_adsp_region_to_reg(mem, reg);
++	ret = wm_coeff_base_reg(ctl, &reg);
++	if (ret)
++		return ret;
+ 
+ 	scratch = kmalloc(len, GFP_KERNEL | GFP_DMA);
+ 	if (!scratch)
+-- 
+2.10.2
