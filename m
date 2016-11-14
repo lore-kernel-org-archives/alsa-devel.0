@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5616: Don't use rtd->codec" to the
-	asoc tree
-Date: Mon, 14 Nov 2016 13:53:56 +0000
-Message-ID: <E1c6Hhs-0003DD-TT@finisterre>
-References: <1479067576-3589-1-git-send-email-lars@metafoo.de>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [RFC 0/4] ALSA controls management using
+ index/device/sub-devices fields
+Date: Mon, 14 Nov 2016 14:58:06 +0100
+Message-ID: <3c7b55b7-0b7f-fd55-9c30-745822a21d33@st.com>
+References: <1478592675-23092-1-git-send-email-arnaud.pouliquen@st.com>
+ <c28a3623-3cf1-5fc1-1ba8-e6785fb967ca@sakamocchi.jp>
+ <cb9cf7f0-ae86-307b-c4d6-b4d3120d4e88@st.com>
+ <a92aab32-03a1-5d89-0f3b-c080cc6bb938@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B90F266B59
- for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2016 14:54:09 +0100 (CET)
-In-Reply-To: <1479067576-3589-1-git-send-email-lars@metafoo.de>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 0C4292663ED
+ for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2016 14:58:18 +0100 (CET)
+In-Reply-To: <a92aab32-03a1-5d89-0f3b-c080cc6bb938@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +24,285 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+hello Takashi,
 
-   ASoC: rt5616: Don't use rtd->codec
+On 11/12/2016 05:23 AM, Takashi Sakamoto wrote:
+>> So I propose to continue discussion on a simple and concrete use case:
+>> The 'IEC958 Playback Default' control.
+>>
+>> In my ASoC driver i have one HDMI and one SPDIF outputs.
+>> so I have 2'IEC958 Playback Default' PCM controls.
+>> => Each control can be set independently.
+> 
+> Yes. It's a demand in your issue.
+> (here, I ignore a process to generalize the issue for wider range in 
+> this subsystem because it's another issue.)
+> 
+>> Regarding control identification field (struct snd_ctl_elem_i):
+>>  .numid;  => set by ALSA framework
+>>  .iface;  => must be SNDRV_CTL_ELEM_IFACE_PCM
+>>  .device; => must be linked to PCM device , but not possible for
+>>              ASoC DAI...
+>>  .subdevice => not used in ASoC implementation
+>>  .name      => 'IEC958 Playback Default'
+>>  .index     => not used in ASoC, forced to 0 by snd_soc_cnew
+>>
+>> Other solution: use control "prefix"? not possible as control has a
+>> pre-defined name.
+>>
+>> => Only solution to differentiate the control: "device" field.
+>>    (that seems coherent as it a PCM device).
+> 
+> This is one of solutions we can perform for this issue. As a feasibility 
+> study, in the end of this message, I wrote a small program with a 
+> feature of 'user-defined control element set' in ALSA control core.
+> 
+> I think usage of 'device' field is better than usage of prefix for 
+> 'name' field. It clearly represents the relationship between control 
+> element set and PCM devices. And it's just suitable for this issue.
+> 
+This is also my view.
+Now base on your mail, that point possibility to extend name
+(http://www.spinics.net/lists/alsa-devel/msg56713.html):
+> I note that we can give unique names to control element set for IEC
+> 60958. According to this document, Between "IEC958" and the rest, we can
+> put arbitrary string.
+>
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/Documentation/sound/designs/control-names.rst
 
-has been applied to the asoc tree at
+I missed this, Seems that name is also another solution for IEC controls.
+Gstreamer and pulseaudio use PCM name to set the AES value (e.g.
+'B2120.pcm.hdmi.0:CARD=0,AES0=4,AES1=130,AES2=0,AES3=2' so simple
+to adapt alsa conf file with good name.
+iecset could be adapted in a quite simple way using device name or an
+new option ( e.g. "-e name control name extension IEC958 <name> Playback
+Default")
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+But, perhaps better to use device... as it match with expected PCM
+control rule and as it could be applied for controls
+based on standard syntax: [LOCATION] SOURCE [CHANNEL] [DIRECTION] FUNCTION
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+>> Issues:
+>>      - use "device" in ASOC DAI driver means that driver needs to
+>>        define a "virtual" PCM device value, not the PCM device.
+>> 	=> this break the rule that mention that PCM control should be
+>>         linked to a PCM device.
+> 
+> Please show me where related codes and structures are. At least, I 
+> cannot understand what you said because it's really abstracted.
+As example, here is my current implementation (correspond to the piece
+of code i would like to rework):
+http://www.lingrok.org/xref/linux-linus/sound/soc/sti/sti_uniperif.c#232
+- "device" field is set to the instance ID of the DAI uniperiph player.
+- "index" filed is also set but overwritten by ASoC core.
+In this implementation what i name "virtual device is the "device" value
+uni->id
+HDMI: uni->id = 0 ( PCM device associated is hw:0,0)
+SPDIF: uni->id = 3 ( PCM device associated is hw:0,2)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+If i don't set the device value then i can not create both controls.
+A better way should be to set device to PCM device.
+This was the topic of [RFC 1/4] ASoC: core: allow PCM control binding to
+PCM device (http://www.spinics.net/lists/alsa-devel/msg56482.html).
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> 
+>>        Furthermore, this "virtual" value has to be aligned with the one
+>>        defined in alsa-lib conf file(s).
+> 
+> Ditto.
+I have not upstreamed my card conf file but an example is available at
+end of my mail.
+Value of the device field must be aligned with ASoC driver device values:
+HDMI: STI-B2120.pcm.hdmi.0.hooks.0.device=0
+SPDIF: STI-B2120.pcm.iec958.0.hooks.0.device=3
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+If these controls were associated to the PCM device, I should not have
+to fix the value but I should be able to retrieve it.
 
-Thanks,
-Mark
+> 
+>>      - iecset uses only index to differentiate IEC controls. But in
+>>        ASoC implementation this is not possible as index is forced to 0.
+> 
+> _Apparently_, mixer APIs in alsa-lib is not well-designed to represent 
+> capacity of ALSA control core. It's not better to judge somwthing 
+> according to its design.
+Not sure to follow you... I can not see any issue in alsa-lib. Just a
+limitation of using iecset with ASoC implementation.
+> 
+> Although we need to improve iecset tool, this is another issue.
+> 
+>From my point of view, iecset is part of the topic even if i agree that
+details on potential update could/should be discuss in a separate thread.
+In case, PCM control device value is not aligned with PCM device, a
+workaround exists, even if it does not respect the alignment between PCM
+control and PCM device...
+For iecset, i have no solution except patch it, if we consider that
+index field incrementation is not the good solution for PCM controls.
+So for me it is important to keep it in mind in discussions.
 
->From 134340b33f2ddf4869519d728ad0ca4bc67154f3 Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 13 Nov 2016 21:06:16 +0100
-Subject: [PATCH] ASoC: rt5616: Don't use rtd->codec
+-------------
 
-rtd->codec does not necessarily point to the CODEC instance for which the
-callback was called (e.g. for CODEC<->CODEC or multi-CODEC links). Use
-dai->codec instead.
+<confdir:pcm/iec958.conf>
+<confdir:pcm/hdmi.conf>
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5616.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+STI-B2120.pcm.iec958.common {
+	@args [ CARD DEVICE CTLINDEX AES0 AES1 AES2 AES3 ]
+	@args.CARD {
+		type string
+	}
+	@args.DEVICE {
+		type integer
+	}
+	@args.CTLINDEX {
+		type integer
+	}
+	@args.AES0 {
+		type integer
+		# consumer, not-copyright, emphasis-none, mode=0
+		default 0x00
+	}
+	@args.AES1 {
+		type integer
+		# original, PCM coder
+		default 0x00
+	}
+	@args.AES2 {
+		type integer
+		# source and channel
+		default 0x00
+	}
+	@args.AES3 {
+		type integer
+		# fs=48000Hz, clock accuracy=1000ppm
+		default 0x00
+	}
+	type hooks
+	slave.pcm {
+		type hw
+		card $CARD
+		device $DEVICE
+	}
+	hooks.0 {
+		type ctl_elems
+		hook_args [
+		{
+			interface PCM
+			name "IEC958 Playback Default"
+			device 3
+			lock true
+			preserve true
+			value [ $AES0 $AES1 $AES2 $AES3 ]
+		}
+		]
+	}
+	hint.device $DEVICE
+}
 
-diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
-index d1f273b24991..7d6e0823f98f 100644
---- a/sound/soc/codecs/rt5616.c
-+++ b/sound/soc/codecs/rt5616.c
-@@ -960,8 +960,7 @@ static int rt5616_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params,
- 			    struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_codec *codec = dai->codec;
- 	struct rt5616_priv *rt5616 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int val_len = 0, val_clk, mask_clk;
- 	int pre_div, bclk_ms, frame_size;
--- 
-2.10.2
+STI-B2120.pcm.iec958.0 {
+	@args [ CARD AES0 AES1 AES2 AES3 ]
+	@args.CARD { type string }
+	@args.AES0 { type integer }
+	@args.AES1 { type integer }
+	@args.AES2 { type integer }
+	@args.AES3 { type integer }
+	@func refer
+	name {
+		@func concat
+		strings [
+			"cards.STI-B2120.pcm.iec958.common:"
+			"CARD=" $CARD ","
+			"DEVICE=2,"
+			"CTLINDEX=0,"
+			"AES0=" $AES0 ","
+			"AES1=" $AES1 ","
+			"AES2=" $AES2 ","
+			"AES3=" $AES3
+		]
+	}
+}
+
+STI-B2120.pcm.hdmi.common {
+	@args [ CARD DEVICE CTLINDEX AES0 AES1 AES2 AES3 ]
+	@args.CARD {
+		type string
+		default 0
+	}
+	@args.DEVICE {
+		type integer
+		default 0
+	}
+	@args.CTLINDEX {
+		type integer
+	}
+	@args.AES0 {
+		type integer
+		# consumer, not-copyright, emphasis-none, mode=0
+		default 0x00
+	}
+	@args.AES1 {
+		type integer
+		# original, PCM coder
+		default 0x00
+	}
+	@args.AES2 {
+		type integer
+		# source and channel
+		default 0x00
+	}
+	@args.AES3 {
+		type integer
+		# fs=48000Hz, clock accuracy=1000ppm
+		default 0x00I missed this, Seems that name is also another solution
+for IEC controls.
+
+	}
+	type hooks
+	slave.pcm {
+		type hw
+		card $CARD
+		device $DEVICE
+	}
+	hooks.0 {
+		type ctl_elems
+		hook_args [
+			{
+				interface PCM
+				name "IEC958 Playback Default"
+				device 0
+				lock true
+				preserve true
+				value [ $AES0 $AES1 $AES2 $AES3 ]
+			}
+		]
+	}
+	hint.device $DEVICE
+}
+STI-B2120.pcm.hdmi.0 {
+	@args [ CARD AES0 AES1 AES2 AES3 ]
+	@args.CARD { type string }
+	@args.AES0 { type integer }
+	@args.AES1 { type integer }
+	@args.AES2 { type integer }
+	@args.AES3 { type integer }
+	@func refer
+	name {
+		@func concat
+		strings [
+			"cards.STI-B2120.pcm.hdmi.common:"
+			"CARD=" $CARD ","
+			"DEVICE=0,"
+			"CTLINDEX=0,"
+			"AES0=" $AES0 ","
+			"AES1=" $AES1 ","
+			"AES2=" $AES2 ","
+			"AES3=" $AES3
+		]
+	}
+}
+
+Thanks and Regards
+Arnaud
