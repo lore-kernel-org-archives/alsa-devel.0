@@ -1,247 +1,130 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 05/14] SoundWire: Add SoundWire bus driver interfaces
-Date: Mon, 14 Nov 2016 13:17:26 +0000
-Message-ID: <20161114131726.qo5gqfqoey5usxiy@sirena.org.uk>
+Subject: Re: [RFC 06/14] SoundWire: Add register/unregister APIs
+Date: Mon, 14 Nov 2016 13:37:51 +0000
+Message-ID: <20161114133751.kqjgrtc7y2ltwbe7@sirena.org.uk>
 References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
- <1477053673-16021-6-git-send-email-hardik.t.shah@intel.com>
+ <1477053673-16021-7-git-send-email-hardik.t.shah@intel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3withbypivnzpel3"
+        protocol="application/pgp-signature"; boundary="usu34cv7hsv6khfh"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1477053673-16021-6-git-send-email-hardik.t.shah@intel.com>
+In-Reply-To: <1477053673-16021-7-git-send-email-hardik.t.shah@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Hardik Shah <hardik.t.shah@intel.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---3withbypivnzpel3
+--usu34cv7hsv6khfh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 21, 2016 at 06:11:03PM +0530, Hardik Shah wrote:
-> This patch adds the SoundWire bus driver interfaces for following.
->=20
-> 1. APIs to register/unregister SoundWire Master device and driver.
-> 2. APIs to register/unregister SoundWire Slave driver.
-> 3. API to Read/Write Slave registers.
-> 4. API for Master driver to update Slave status to bus driver.
-> 5. APIs for Master driver to prepare and initiate clock stop.
-> 6. APIs for SoundWire stream configuration.
-> 7. APIs to prepare, enable, deprepare and disable SoundWire stream.
+On Fri, Oct 21, 2016 at 06:11:04PM +0530, Hardik Shah wrote:
 
-This is a very large patch (85K, 2000 lines) and the changelog is just a
-long list of different things being added.  This suggests that you could
-easily split the patch up along the lines you've given above which would
-make it a lot more digestable, as it is it's really hard to review.  It
-is also very hard to review because it's pure header, there's none of
-the implementation in here, which makes it hard to see how things are
-going to be used.
+> +static void sdw_mstr_release(struct device *dev)
+> +{
+> +	struct sdw_master *mstr = to_sdw_master(dev);
+> +
+> +	complete(&mstr->slv_released_complete);
+> +}
 
-At a very high level this doesn't look or feel like normal Linux code,
-there's some obvious coding style stuff, a bunch of things that look
-like this was copied from legacy code and perhaps most worryingly all
-the stuff about a "bus driver" which doesn't seem to fit with the normal
-Linux models at all.
+Other buses don't do this...  this is a big warning sign that you're
+abusing the driver model.
 
 > +/**
-> + * sdw_slave_addr: Structure representing the read-only unique device ID
-> + *	and the SoundWire logical device number (assigned by bus driver).
-
-With the name of this structure I was expecting it to represent an
-address in the same way that an in_addr is an IP address but really it's
-a bundle of several different addresses and runtime state associated
-with them.  This is going to cause confusion I imagine, it seems better
-to rename it or bundle it into the slave struct.
-
-> +/**
-> + * sdw_dpn_caps: Capabilities of the Data Port, other than Data Port 0 f=
-or
-> + *	SoundWire Master and Slave. This follows the definitions in the
-
-Why not just _dp_caps?
-
-> + * @max_bps: Maximum bits per sample supported by Port. This is same as =
-word
-> + *	length in SoundWire Spec.
-
-Might be better to rename all these _bps variables to _wl or something -
-bps looks like bits per second which is going to confuse people.
-
-> +/**
-> + * sdw_prepare_ch: Prepare/De-prepare the Data Port channel. This is sim=
-ilar
-> + *	to the prepare API of Alsa, where most of the hardware interfaces
-> + *	are prepared for the playback/capture to start. All the parameters
-> + *	are known to the hardware at this point for starting
-> + *	playback/capture next.
-
-This is information used for preparing or depreparing, the description
-reads like this is a function.
-
-> + * @num: Port number.
-> + * @ch_mask: Channels to be prepared/deprepared specified by ch_mask.
-> + * @prepare: Prepare/de-prepare channel, true (prepare) or false
-> + *	(de-prepare).
-
-Do actual implementations look like something other than an if
-statement with two unrelated halves?
-
-> + * @bank: Register bank, which bank Slave/Master driver should program f=
-or
-> + *	implementation defined registers. This is the inverted value of the
-> + *	current bank.
-
-If this is the inverted value of the current bank should we not just
-look at the current bank?
-
-> + * @r_w_flag: Read/Write operation. Read(0) or Write(1) based on above #=
-def
-
-Which above #define?  (please write out #define fully too).  I'm also
-noticing lots of random capitalisation in the comments in this patch.
-
-> +/**
-> + * sdw_msg: Message to be sent on bus. This is similar to i2c_msg on I2C
-> + *	bus. Message is sent from the bus driver to the Slave device. Slave
-> + *	driver can also initiate transfer of the message to program
-> + *	implementation defined registers. Message is formatted and
-> + *	transmitted on to the bus by Master interface in hardware-specific
-> + *	way. Bus driver initiates the Master interface callback to transmit
-> + *	the message on bus.
+> + * sdw_slv_verify - return parameter as sdw_slave, or NULL
+> + * @dev: device, probably from some driver model iterator
 > + *
-> + * @addr: Address of the register to be read.
-
-Only reads?
-
-> + * @frame_rate: Audio frame rate of the stream (not the bus frame rate
-> + *	defining command bandwidth).
-
-In units of...?
-
-> +/**
-> + * snd_sdw_alloc_stream_tag: Allocates unique stream_tag. Stream tag is
-> + *	a unique identifier for each SoundWire stream across all SoundWire
-> + *	bus instances. Stream tag is a software concept defined by bus
-> + *	driver for stream management and not by MIPI SoundWire Spec. Each
-> + *	SoundWire Stream is individually configured and controlled using the
-> + *	stream tag. Multiple Master(s) and Slave(s) associated with the
-> + *	stream, uses stream tag as an identifier. All the operations on the
-> + *	stream e.g. stream configuration, port configuration, prepare and
-> + *	enable of the ports are done based on stream tag. This API shall be
-> + *	called once per SoundWire stream either by the Master or Slave
-> + *	associated with the stream.
-> + *
-> + * @stream_tag: Stream tag returned by bus driver.
+> + * When traversing the driver model tree, perhaps using driver model
+> + * iterators like @device_for_each_child(), you can't assume very much
+> + * about the nodes you find. Use this function to avoid oopses caused
+> + * by wrongly treating some non-SDW device as an sdw_slave.
 > + */
-> +int snd_sdw_alloc_stream_tag(unsigned int *stream_tag);
 
-In Linux we put documentation for functions next to their
-implementation not their prototype.  This also doesn't look like good
-kerneldoc - normally we'd have a separate paragraph for the summary.
+This is also *very* scary, especially given that there's no analysis
+presented as to why there might be random other things on the bus.  Why
+does SoundWire need this when other buses don't?
 
-This sort of stylistic stuff is important not just for itself but also
-because it's a warning sign that the code hasn't been written by someone
-who's really familiar with how things are expected to look and work in
-terms of the kernel internal abstractions.
+> +static struct sdw_slave *sdw_slv_verify(struct device *dev)
+> +{
+> +	return (dev->type == &sdw_slv_type)
+> +			? to_sdw_slave(dev)
+> +			: NULL;
 
-> + * @slv_list: List of SoundWire Slaves registered to the bus.
+This is needlessly obfuscated, if you want to write an if statement
+write an if statement.
 
-The driver model already maintains a list of devices on a bus, why are
-we maintaining a separate one?
+> +static int sdw_slv_match(struct device *dev, struct device_driver *driver)
+> +{
+> +	struct sdw_slave *sdw_slv;
+> +	struct sdw_driver *sdw_drv = to_sdw_driver(driver);
+> +	struct sdw_slave_driver *drv;
+> +	int ret = 0;
+> +
+> +
+> +	if (sdw_drv->driver_type != SDW_DRIVER_TYPE_SLAVE)
+> +		return ret;
 
-> + * @sdw_addr: Array containing Slave SoundWire bus Slave address
-> + *	information. Its a part of Slave list as well, but for easier access
-> + *	its part of array to find the Slave reference by directly indexing
-> + *	the Slave number into the array.
+Why do we need a check like this?
 
-This seems like a worrying idea...  I'd be entirely unsurprised if this
-cache went wrong, are we sure we need the optimisation?
+> +static int sdw_mstr_probe(struct device *dev)
+> +{
+> +	const struct sdw_master_driver *sdrv =
+> +					to_sdw_master_driver(dev->driver);
+> +	struct sdw_master *mstr = to_sdw_master(dev);
+> +	int ret;
+> +
+> +	ret = dev_pm_domain_attach(dev, true);
+> +
+> +	if (ret != -EPROBE_DEFER) {
+> +		ret = sdrv->probe(mstr, sdw_match_mstr(sdrv->id_table, mstr));
+> +		if (ret < 0)
+> +			dev_pm_domain_detach(dev, true);
+> +	}
 
-> + * @num_slv: Number of SoundWire Slaves assigned DeviceNumber after
-> + *	enumeration. The SoundWire specification does not place a
-> + *	restriction on how many Slaves are physically connected, as long as
-> + *	only 11 are active concurrently. This bus driver adds a pragmatic
-> + *	restriction to 11 Slaves, the current implementation assigns a
-> + *	DeviceNumber once and will never use the same DeviceNumber for
-> + *	different devices.
+This looks *very* broken.  Surely if we fail to attach a pm_domain for
+any reason other than one not being there to attach we shouldn't be
+trying to probe the device?
 
-This is not a driver, it is a bus.  Please do not refer to it as a
-driver, that's at best confusing and at worst worrying.  It's also
-unclear why we're maintaining this count separately to the driver model.
+> +EXPORT_SYMBOL_GPL(snd_sdw_master_register_driver);
 
-> +	char name[SOUNDWIRE_NAME_SIZE];
-> +	struct sdw_slave_addr sdw_addr[SDW_MAX_DEVICES];
-
-Best to use SDW_ consistently.
-
-> +/**
-> + * sdw_master_driver: Manage SoundWire Master device driver.
-> + *
-> + * @driver_type: To distinguish between Master and Slave driver. This sh=
-ould
-> + *	be set by driver based on its handling Slave or Master SoundWire
-> + *	interface.
-> + *
-> + * @probe: Binds this driver to a SoundWire Master.
-> + * @remove: Unbinds this driver from the SoundWire Master.
-> + * @shutdown: Standard shutdown callback used during power down/halt.
-> + * @suspend: Standard suspend callback used during system suspend
-> + * @resume: Standard resume callback used during system resume
-
-Modern buses have moved to using dev_pm_ops which enables them to use a
-lot of generic code for power management implementation.
-
-> + * @driver: SoundWire device drivers should initialize name and owner fi=
-eld
-> + *	of this structure.
-
-Initializing .owner shouldn't be required with kernels from the past few
-years.
+This is EXPORT_SYMBOL_GPL() but the bus itself is dual licensed GPL/BSD
+- seems a bit inconsistent.
 
 > +/**
-> + * snd_sdw_master_get: Return the Master handle from Master number.
-> + *	Increments the reference count of the module. Similar to
-> + *	i2c_get_adapter.
+> + * snd_sdw_master_add: Registers the SoundWire Master interface. This needs
+> + *	to be called for each Master interface supported by SoC. This
+> + *	represents One clock and data line (Optionally multiple data lanes)
+> + *	of Master interface.
 > + *
-> + * @nr: Master number.
-> + *
-> + * Returns Master handle on success, else NULL
+> + * @master: the Master to be added.
 > + */
-> +struct sdw_master *snd_sdw_master_get(int nr);
+> +int snd_sdw_master_add(struct sdw_master *master)
 
-This is a legacy interface for I2C, why are we adding it for a new bus?
+This lies at the heart of the issues that seem to exist with the misuse
+of the driver model in this code.  Normally what we see is that the
+controller would instantiate as whatever bus type the controller is
+attached by (typically a PCI or platform device) and then it wouild
+register a bus with the bus subsystem which would then instantiate
+slaves.  Instead we have this system where the bus is registered by
+something in the system and then the master is a driver on the bus
+parallel to the slaves but with a separate driver type that causes
+confusion.  Without having seen a master driver it's not even clear how
+this is going to work and allow the master to talk to its own hardware.
 
-> + * @portn_mask: Implementation defined mask for Slave Ports other than p=
-ort0.
-> + *	Mask bits are exactly same as defined in MIPI Spec 1.1. Array size
-> + *	shall be same as number of Ports in Slave. For bidirectional ports,
-> + *	masks can be different for Source and Sink ports.
-
-Is this implementation defined or spec defined?  It's really non-obvious
-what these implementation defined things actually mean or do.
-
-> +struct sdw_slave {
-> +	struct device dev;
-> +	struct sdw_master *mstr;
-
-Why do we have a direct reference to the master here?  Shouldn't this
-just be the parent of the device?
-
---3withbypivnzpel3
+--usu34cv7hsv6khfh
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAABCAAGBQJYKblmAAoJECTWi3JdVIfQEBQH+wddusN8xkVSH19rNe08hf2J
-zJXouCkTyTWr3swIcBHBcXzPqKHLACIY7meYWCdz7jiZFImxlXbMxQDd40WY2hYU
-Xy7Vz9Y6V9T8kDBnZfIugyLemuLFZe9F2l1FuiWm/JbOJZaGmv06GcJn/c/iJXSH
-pPmwY3zznZmIT8YX4RSXgy9QUc/hvHO3Ft2TQCUo8rYTeezv9Qmb0W+eT18uRP4T
-h0ISreglClTm7Sb0/G4mmg7ZnVLHIANG93XwT+HNZlvnWsM+Iq7xKg4tng54bjHi
-YwnFe0z/vq2V2cSw0Zcuxwn0a4rFjAoedFXi2mUpr48BwW7ByO6WuvxJe3Izyl4=
-=/UW2
+iQEcBAABCAAGBQJYKb4vAAoJECTWi3JdVIfQd+AH/iAap+IHAEGpgWigQVKV5pfd
+vRGJCda5wO74fTGtdIoAcwOFfbB0Z/ZFvsRL7B6ZE2n878nPIYgsEwW+dTukoY9g
+0CJjErNpgrWOyi5momDrRJAABC+fASVSQ2YS9fJkHXee7eZcJkHTANCfi1khz1DL
+sDRmyVl9eTF03hnOa82iwbQLMLlGRobDrkpFenCQgW9mMUaGtZBw5mvawmJipuqj
+Tkz137VyT9zHq4e90VzCIorgvYLJuG2Ig9STocXsc9XyQfdXbK4mPAOVfFOIqvGm
+XHY6prRIG4O0hgyANkpQ6y3JI7BfEDhQwYe4DSVUhFENzRxEQmNCB7IVqQ4FyyE=
+=lia7
 -----END PGP SIGNATURE-----
 
---3withbypivnzpel3--
+--usu34cv7hsv6khfh--
