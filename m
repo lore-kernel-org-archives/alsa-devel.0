@@ -1,128 +1,86 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 01/14] SoundWire: Add SoundWire bus driver documentation
-Date: Mon, 14 Nov 2016 14:15:48 +0000
-Message-ID: <20161114141548.GL1575@localhost.localdomain>
-References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
- <1477053673-16021-2-git-send-email-hardik.t.shah@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5616: Don't use rtd->codec" to the
+	asoc tree
+Date: Mon, 14 Nov 2016 13:53:56 +0000
+Message-ID: <E1c6Hhs-0003DD-TT@finisterre>
+References: <1479067576-3589-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1477053673-16021-2-git-send-email-hardik.t.shah@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Hardik Shah <hardik.t.shah@intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B90F266B59
+ for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2016 14:54:09 +0100 (CET)
+In-Reply-To: <1479067576-3589-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 21, 2016 at 06:10:59PM +0530, Hardik Shah wrote:
-> This patch adds summary documentation of SoundWire bus driver support in
-> Linux.
-> 
-> Signed-off-by: Hardik Shah <hardik.t.shah@intel.com>
-> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  Documentation/sound/alsa/sdw/summary.txt |  253 ++++++++++++++++++++++++++++++
->  1 file changed, 253 insertions(+)
->  create mode 100644 Documentation/sound/alsa/sdw/summary.txt
-> 
-> diff --git a/Documentation/sound/alsa/sdw/summary.txt b/Documentation/sound/alsa/sdw/summary.txt
-> new file mode 100644
-> index 0000000..dc62817
-> --- /dev/null
-> +++ b/Documentation/sound/alsa/sdw/summary.txt
-> @@ -0,0 +1,253 @@
-<snip>
-> +Programming interfaces (SoundWire Master interface Driver)
-> +==========================================================
-> +
-> +SoundWire bus driver supports programming interfaces for the SoundWire
-> +Master and SoundWire Slave devices. All the code uses the "sdw" prefix
-> +commonly used by SOC designers and 3rd party vendors.
-> +
-> +Each of the SoundWire Master interface needs to be registered to the Bus
-> +driver.  Master interface capabilities also needs to be registered to
-> +bus driver since there is no discovery mechanism as a part of SoundWire
-> +protocol.
-> +
-> +The Master interface along with the Master interface capabilities are
-> +registered based on board file, DT or ACPI.
-> +
-> +Following is the API to register the SoundWire Master device.
-> +
-> +static int my_sdw_register_master()
-> +{
-> +	struct sdw_master master;
-> +	struct sdw_master_capabilities *m_cap;
-> +
-> +	m_cap = &master.mstr_capabilities;
-> +
-> +	/*
-> +	 * Fill the Master device capability, this is required
-> +	 * by bus driver to handle bus configurations.
-> +	 */
-> +	m_cap->highphy_capable = false;
-> +	m_cap->monitor_handover_supported = false;
-> +	m_cap->sdw_dp0_supported = 1;
-> +	m_cap->num_data_ports = INTEL_SDW_MAX_PORTS;
-> +
-> +	return snd_sdw_master_add(&master);
-> +}
-> +
-> +Master driver gets registered for controlling the Master device. It
-> +provides the callback functions to the bus driver to control the bus in
-> +device specific way. Device and Driver binds according to the standard
-> +Linux device-driver bind model. Master driver is registered from the
-> +driver init code. Below code shows the sample Master driver
-> +registration.
-> +
-> +static struct sdw_master_driver intel_sdw_mstr_driver = {
-> +	.driver_type = SDW_DRIVER_TYPE_MASTER,
-> +	.driver = {
-> +		.name   = "intel_sdw_mstr",
-> +		.pm     = &intel_sdw_pm_ops,
-> +	},
-> +
-> +	.probe          = intel_sdw_probe,
-> +	.remove         = intel_sdw_remove,
-> +	.mstr_ops       = &intel_sdw_master_ops,
-> +	.mstr_port_ops = &intel_sdw_master_port_ops,
-> +};
-> +
-> +static int __init intel_sdw_init(void) {
-> +	return snd_sdw_master_register_driver(&intel_sdw_mstr_driver);
-> +}
+The patch
 
-Would be good to hear some detail the reasoning for the design
-choices here? Normally (I2C/SPI) the master sits on whatever bus
-the host uses to talk to the master so often this might be the
-platform bus for memory mapped devices, it then creates a bus and
-slaves register to that. This also has the nice property that its
-easy to create devices that sit behind other buses, for example
-here we might want a SoundWire master that sits behind a SPI bus.
-But you seem to have gone in the other direction and have the
-master sitting on the same bus as the slaves.
+   ASoC: rt5616: Don't use rtd->codec
 
-> +
-> +As shown above Master driver registers itself with  bus using
-> +"sdw_mstr_driver_register" API, It registers using set of "mstr_ops" and
-> +"mstr_port_ops" callback functions to the bus driver.
-> +
-> +"mstr_ops" is used by bus driver to control the bus in the hardware
-> +specific way. It includes bus control functions such as sending the
-> +SoundWire read/write messages on bus. The Bus driver also defines the
-> +clock frequency and frameshape allocation needed by active stream and
-> +configuration messages that need to be transmitted over the bus, to
-> +maximize the bandwidth needed while minimizing the power. The "mstr_ops"
-> +structure abstracts the hardware details of the Master from the bus
-> +driver for setting up of the clock frequency and frameshape.
-> +
-> +"mstr_port_ops" is used by bus driver to setup the Port parameters of
-> +the Master interface Port. Master interface Port register map is not
-> +defined by MIPI specification, so bus driver calls the "mstr_port_ops"
-> +call back function to do Port operations like "Port Prepare", "Port
-> +Transport params set", "Port enable and disable". The implementation of
-> +the Master driver can then perform hardware-specific configurations.
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Charles
+Mark
+
+>From 134340b33f2ddf4869519d728ad0ca4bc67154f3 Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Sun, 13 Nov 2016 21:06:16 +0100
+Subject: [PATCH] ASoC: rt5616: Don't use rtd->codec
+
+rtd->codec does not necessarily point to the CODEC instance for which the
+callback was called (e.g. for CODEC<->CODEC or multi-CODEC links). Use
+dai->codec instead.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5616.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
+index d1f273b24991..7d6e0823f98f 100644
+--- a/sound/soc/codecs/rt5616.c
++++ b/sound/soc/codecs/rt5616.c
+@@ -960,8 +960,7 @@ static int rt5616_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *params,
+ 			    struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_codec *codec = rtd->codec;
++	struct snd_soc_codec *codec = dai->codec;
+ 	struct rt5616_priv *rt5616 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int val_len = 0, val_clk, mask_clk;
+ 	int pre_div, bclk_ms, frame_size;
+-- 
+2.10.2
