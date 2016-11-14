@@ -1,165 +1,67 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 02/14] SoundWire: Add SoundWire stream documentation
-Date: Mon, 14 Nov 2016 15:31:59 +0000
-Message-ID: <20161114153159.GM1575@localhost.localdomain>
-References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
- <1477053673-16021-3-git-send-email-hardik.t.shah@intel.com>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: How to package the smixer modules?
+Date: Mon, 14 Nov 2016 16:44:03 +0200
+Message-ID: <1479134643.1949.3.camel@iki.fi>
+References: <1478522629.1939.3.camel@iki.fi> <s5hlgwu9gtx.wl-tiwai@suse.de>
+ <1478702366.1952.1.camel@iki.fi> <s5hoa1i2vo0.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1477053673-16021-3-git-send-email-hardik.t.shah@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Hardik Shah <hardik.t.shah@intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id B4835265A82
+ for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2016 15:44:06 +0100 (CET)
+In-Reply-To: <s5hoa1i2vo0.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 21, 2016 at 06:11:00PM +0530, Hardik Shah wrote:
-> This patch adds stream documentation describing SoundWire stream and
-> stream states.
-> 
-> Signed-off-by: Hardik Shah <hardik.t.shah@intel.com>
-> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  Documentation/sound/alsa/sdw/stream.txt |  346 +++++++++++++++++++++++++++++++
->  1 file changed, 346 insertions(+)
->  create mode 100644 Documentation/sound/alsa/sdw/stream.txt
-> 
-> diff --git a/Documentation/sound/alsa/sdw/stream.txt b/Documentation/sound/alsa/sdw/stream.txt
-> new file mode 100644
-> index 0000000..a1a2ed0
-> --- /dev/null
-> +++ b/Documentation/sound/alsa/sdw/stream.txt
-> @@ -0,0 +1,346 @@
-<snip>
-> +
-> +SoundWire stream states
-> +=======================
-> +Below figure shows the SoundWire stream states and possible state
-> +transition diagram.
-> +
-> +|--------------|     |-------------|     |--------------|     |--------------|
-> +|     ALLOC    |---->|    CONFIG   |---->|   PREPARE    |---->|    ENABLE    |
-> +|     STATE    |     |    STATE    |     |    STATE     |     |    STATE     |
-> +|--------------|     |-------------|     |--------------|     |--------------|
-> +                                                ^                       |
-> +                                                |                       |
-> +                                                |                       |
-> +                                                |                       |
-> +                                                |                       \/
-> +    |--------------|                     |--------------|     |--------------|
-> +    |    RELEASE   |<--------------------|   DEPREPARE  |<----|    DISABLE   |
-> +    |     STATE    |                     |    STATE     |     |    STATE     |
-> +    |--------------|                     |--------------|     |--------------|
-> +
-
-One minor comment, this looks very similar to the clock
-frameworks state model, but the clock framework calls it
-unprepare would there be some milage in aligning to?
-
-> +
-> +SoundWire Stream State Operations
-> +==================================
-> +Below section explains the operations done by the bus driver on
-> +Master(s) and Slave(s) as part of stream state transitions.
-> +
-> +SDW_STATE_STRM_ALLOC: Allocation state for stream. This is the entry
-> +state of the stream. Operations performed before entering in this
-> +state:
-> +1. An unique stream tag is assigned to stream. This stream tag is used
-
-A unique
-
-> +as a reference for all the operations performed on stream.
-> +
-> +2. The resources required for holding stream runtime information are
-> +allocated and initialized. This holds all stream related information
-> +such as stream type (PCM/PDM) and parameters, Master and Slave interface
-> +associated with the stream, reference counting, stream state etc.
-> +
-> +After all above operations are successful, stream state is set to
-> +SDW_STATE_STRM_ALLOC.
-> +
-> +
-> +SDW_STATE_STRM_CONFIG: Configuration state of stream. Operations
-> +performed before entering in this state:
-> +1. The resources allocated for stream information in
-> +SDW_STATE_STRM_ALLOC state are updated. This includes stream parameters,
-> +Masters and Slaves runtime information associated with the stream.
-> +
-> +2. All the Masters and Slaves associated with the stream updates the
-> +port configuration to bus driver. This includes port numbers allocated
-> +by Master(s) and Slave(s) for this stream.
-> +
-> +After all above operations are successful, stream state is set to
-> +SDW_STATE_STRM_CONFIG.
-> +
-> +
-> +SDW_STATE_STRM_PREPARE: Prepare state of stream. Operations performed
-> +before entering in this state:
-> +1. Bus parameters such as bandwidth, frame shape, clock frequency, SSP
-> +interval are computed based on current stream as well as already active
-> +streams on bus. Re-computation is required to accommodate current stream
-> +on the bus.
-> +
-> +2. Transport parameters of all Master and Slave ports are computed for
-> +the current as well as already active stream based on above calculated
-> +frame shape and clock frequency.
-> +
-> +3. Computed bus and transport parameters are programmed in Master and
-> +Slave registers. The banked registers programming is done on the
-> +alternate bank (bank currently unused). Port channels are enabled for
-> +the already active streams on the alternate bank (bank currently
-> +unused). This is done in order to not to disrupt already active
-> +stream(s).
-> +
-> +4. Once all the new values are programmed, bus initiates switch to
-> +alternate  bank. Once switch is successful, the port channels enabled on
-> +previous bank for already active streams are disabled.
-> +
-> +5. Ports of Master and Slave for current stream are prepared.
-> +
-> +After all above operations are successful, stream state is set to
-> +SDW_STATE_STRM_PREPARE.
-> +
-> +
-> +SDW_STATE_STRM_ENABLE: Enable state of stream. Operations performed
-> +before entering in this state:
-> +1. All the values computed in SDW_STATE_STRM_PREPARE state are
-> +programmed in alternate bank (bank currently unused). It includes
-> +programming of already active streams as well.
-> +
-> +2. All the Master and Slave port channels for the current stream are
-> +enabled on alternate bank (bank currently unused).
-> +
-
-This could probably use a little more explaination to show how it
-differs from step 3/4 in PREPARE, as it looks like all the
-computed values where applied there. I imagine this is just my lack
-of understanding rather than an actual issue but even looking at
-the code I am having a little difficulty tying up these two.
-
-sdw_prepare_op
-- sdw_compute_params (prepare step 1/2)
-- sdw_program_params (prepare step 3)
-- sdw_update_bus_params (prepare step 4)
-
-sdw_enable_op
-- sdw_program_params (enable step 1)
-- sdw_update_bus_params (enable step 2)
-
-It looks like the params are still basically the same as they
-were when we called sdw_program_params in prepare.
-
-> +3. Once all the new values are programmed, bus initiates switch to
-> +alternate bank. Once the switch is successful, the port channels enabled
-> +on previous bank for already active streams are disabled.
-> +
-> +After all above operations are successful, stream state is set to
-> +SDW_STATE_STRM_ENABLE.
-> +
-> +
-
-Thanks,
-Charles
+T24gTW9uLCAyMDE2LTExLTE0IGF0IDExOjM4ICswMTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
+T24gV2VkLCAwOSBOb3YgMjAxNiAxNTozOToyNiArMDEwMCwKPiBUYW51IEthc2tpbmVuIHdyb3Rl
+Ogo+ID4gCj4gPiBPbiBUdWUsIDIwMTYtMTEtMDggYXQgMTU6MzkgKzAxMDAsIFRha2FzaGkgSXdh
+aSB3cm90ZToKPiA+ID4gVGhlIHNpbXBsZSBtaXhlciBpcyBhbm90aGVyIGxheWVyIGluIEFMU0Eg
+bWl4ZXIgQVBJLCBhbmQgYWN0dWFsbHkgaXQncwo+ID4gPiBtYW5kYXRvcnkuICBTbywgYXQgbGVh
+c3QsIHNiYXNlIHBsdWdpbiBzaG91bGQgYmUgcHJvdmlkZWQgYWx3YXlzIHdoZW4KPiA+ID4gYWxz
+YS1saWIgbWl4ZXIgQVBJIGlzIHVzZWQuICBPdGhlciBwbHVnaW5zIGFyZSBiYXNpY2FsbHkgbmV2
+ZXIgdXNlZAo+ID4gPiBwcmFjdGljYWxseS4KPiA+ID4gCj4gPiA+IEl0IGRvZXNuJ3QgbWF0dGVy
+IHdoZXRoZXIgdG8gcGFja2FnZSB0aGVtIHNlcGFyYXRlbHkgb3Igbm90LiAgVGhlIG9ubHkKPiA+
+ID4gcG9pbnQgaXMgdGhhdCBzYmFzZSBwbHVnaW4gc2hvdWxkIGJlIGF2YWlsYWJsZSB3aGVuIGFs
+c2EtbGliIG1peGVyIEFQSQo+ID4gPiBpcyB1c2VkLgo+ID4gCj4gPiBUaGFua3MgZm9yIHRoZSBl
+eHBsYW5hdGlvbiEgSWYgdGhlIHNiYXNlIHBsdWdpbiBpcyBlc3NlbnRpYWxseSBhCj4gPiBtYW5k
+YXRvcnkgYWNjb21wYW5pbWVudCBvZiBsaWJhc291bmQsIEknbGwgbW92ZSBpdCB0byB0aGUgbGli
+YXNvdW5kCj4gPiBwYWNrYWdlLCBhbmQgc2luY2UgSSBkb24ndCBzZWUgbXVjaCBiZW5lZml0IGlu
+IGtlZXBpbmcgdGhlIGhkYSBhbmQgYWM5Nwo+ID4gcGx1Z2lucyBpbiBhIHNlcGFyYXRlIHBhY2th
+Z2UgZWl0aGVyLCBJJ2xsIG1vdmUgdGhvc2UgdG9vIGFuZCBnZXQgcmlkCj4gPiBvZiB0aGUgd2hv
+bGUgc21peGVyIHBsdWdpbiBwYWNrYWdlLgo+ID4gCj4gPiBPdXQgb2YgY3VyaW9zaXR5LCBpbiB3
+aGF0IHNpdHVhdGlvbiBhcmUgdGhlIGhkYSBhbmQgYWM5NyBwbHVnaW5zIHVzZWQ/Cj4gPiBZb3Ug
+c2FpZCB0aGF0IHRoZXkgYXJlIHByYWN0aWNhbGx5IG5ldmVyIHVzZWQsIGJ1dCBzdXJlbHkgdGhl
+eSBoYXZlCj4gPiBzb21lIHB1cnBvc2U/Cj4gCj4gQWN0dWFsbHksIEkgd2FzIHdyb25nLiAgRXZl
+biBzYmFzZS5zbyBpc24ndCBuZWVkZWQgZm9yIHRoZSBub3JtYWwKPiBhbHNhbWl4ZXIgLyBhbWl4
+ZXIgb3BlcmF0aW9ucy4gIFRoaXMgaXMgYSBiYXNlIHNoYXJlZCBvYmplY3QgdGhhdCBpcwo+IG5l
+ZWRlZCBmb3IgImJhc2ljIiBhYnN0cmFjdGlvbiBtb2RlLCBidXQgdGhlIG5vcm1hbCBtb2RlIChh
+YnN0cmFjdGlvbgo+ICJub25lIikgZG9lc24ndCBuZWVkIGl0Lgo+IAo+IFRoYXQgc2FpZCwgdGhl
+IHdob2xlIC91c3IvbGliKi9hbHNhLWxpYi9zbWl4ZXIvKiBzdHVmZiBjYW4gYmUgcmVtb3ZlZAo+
+IGZyb20geW91ciBwYWNrYWdlIGFzIGxvbmcgYXMgdGhlIG5vcm1hbCBtb2RlIGlzIHVzZWQuCj4g
+Cj4gVGhlcmUgaXMgYW4gb3B0aW9uIC1hIHRvIHBhc3MgdGhlIGFic3RyYWN0aW9uIGxldmVsLiAg
+V2hlbiB5b3UgcGFzcwo+ICJiYXNpYyIsIHRoZSBweXRob24gbW9kdWxlIGdldHMgbG9hZGVkLiAg
+SXQgd2FzIHN1cHBvc2VkIHRvIGhhbmRsZSB0aGUKPiBjYXJkLXNwZWNpZmljIGFic3RyYWN0aW9u
+IHBhcnNlZCB2aWEgcHl0aG9uLCBidXQgdGhpcyBzZWVtcyBjdXJyZW50bHkKPiBicm9rZW4uICBT
+byBpdCdzIG1heWJlIHNhZmVyIHRvIGRpc2FibGUgYXMgZGVmYXVsdC4uLgoKT2ssIHRoYW5rcyBm
+b3IgdGhlIHVwZGF0ZSEgSSBzZWUgeW91IHN1Ym1pdHRlZCBhIHBhdGNoIHRoYXQgZGlzYWJsZXMK
+dGhlc2UgcGx1Z2lucyBpZiBQeXRob24gaXMgZGlzYWJsZWQuIE9wZW5FbWJlZGRlZCBidWlsZHMg
+YWxzYS1saWIKd2l0aG91dCBQeXRob24gc3VwcG9ydCwgc2/CoEkgZ3Vlc3MgdGhlc2UgcGx1Z2lu
+cyB3b24ndCBiZSBhdmFpbGFibGUgdG8KT3BlbkVtYmVkZGVkIHVzZXJzIHN0YXJ0aW5nIGZyb20g
+YWxzYS1saWIgMS4xLjMuIEZvciBub3cgdGhlcmUncwpub3RoaW5nIEkgbmVlZCB0byBjaGFuZ2Ug
+aW4gdGhlIHBhY2thZ2luZy4KCi0tIApUYW51CgpodHRwczovL3d3dy5wYXRyZW9uLmNvbS90YW51
+awpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
