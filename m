@@ -1,161 +1,153 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 09/14] SoundWire: Add support to handle Slave status change
-Date: Mon, 14 Nov 2016 16:08:05 +0000
-Message-ID: <20161114160805.GO1575@localhost.localdomain>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC 02/14] SoundWire: Add SoundWire stream documentation
+Date: Mon, 14 Nov 2016 10:50:10 -0600
+Message-ID: <b0d67cc6-f7fb-ea61-29b3-02a7f7c0aac3@linux.intel.com>
 References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
- <1477053673-16021-10-git-send-email-hardik.t.shah@intel.com>
+ <1477053673-16021-3-git-send-email-hardik.t.shah@intel.com>
+ <20161114153159.GM1575@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1477053673-16021-10-git-send-email-hardik.t.shah@intel.com>
+In-Reply-To: <20161114153159.GM1575@localhost.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Hardik Shah <hardik.t.shah@intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Hardik Shah <hardik.t.shah@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 21, 2016 at 06:11:07PM +0530, Hardik Shah wrote:
-> This patch adds the support for updating the Slave status to bus driver.
-> Master driver updates Slave status change to the bus driver. Bus driver
-> takes appropriate action on Slave status change like.
-> 
-> 	1. Registering new device if new Slave got enumerated on bus.
-> 	2. Assigning the device number to the Slave device
-> 	3. Marking Slave as un-attached if Slave got detached from bus.
-> 	4. Handling Slave alerts.
-> 
-> Signed-off-by: Hardik Shah <hardik.t.shah@intel.com>
-> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  sound/sdw/sdw.c      | 1074 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  sound/sdw/sdw_priv.h |   66 ++++
->  2 files changed, 1140 insertions(+)
-> 
-<snip>
-> +static int sdw_slv_register(struct sdw_master *mstr)
-> +{
-> +	int ret, i;
-> +	struct sdw_msg msg;
-> +	u8 buf[SDW_NUM_DEV_ID_REGISTERS];
-> +	struct sdw_slave *sdw_slave;
-> +	int dev_num = -1;
-> +	bool found = false;
-> +
-> +	/* Create message to read the 6 dev_id registers */
-> +	sdw_create_rd_msg(&msg, 0, SDW_SCP_DEVID_0, SDW_NUM_DEV_ID_REGISTERS,
-> +								buf, 0x0);
-> +
-> +	/*
-> +	 * Multiple Slaves may report an Attached_OK status as Device0.
-> +	 * Since the enumeration relies on a hardware arbitration and is
-> +	 * done one Slave at a time, a loop needs to run until all Slaves
-> +	 * have been assigned a non-zero DeviceNumber. The loop exits when
-> +	 * the reads from Device0 devID registers are no longer successful,
-> +	 * i.e. there is no Slave left to enumerate
-> +	 */
-> +	while ((ret = (snd_sdw_slave_transfer(mstr, &msg, SDW_NUM_OF_MSG1_XFRD))
-> +					== SDW_NUM_OF_MSG1_XFRD)) {
-> +
-> +		/*
-> +		 * Find is Slave is re-enumerating, and was already
-> +		 * registered earlier.
-> +		 */
-> +		found = sdw_find_slv(mstr, &msg, &dev_num);
-> +
-> +		/*
-> +		 * Reprogram the Slave device number if its getting
-> +		 * re-enumerated. If that fails we continue finding new
-> +		 * slaves, we flag error but don't stop since there may be
-> +		 * new Slaves trying to get enumerated.
-> +		 */
-> +		if (found) {
-> +			ret = sdw_program_dev_num(mstr, dev_num);
-> +			if (ret < 0)
-> +				dev_err(&mstr->dev, "Re-registering slave failed ret = %d", ret);
-> +
-> +			continue;
-> +
-> +		}
-> +
-> +		/*
-> +		 * Find the free device_number for the new Slave getting
-> +		 * enumerated 1st time.
-> +		 */
-> +		dev_num = sdw_find_free_dev_num(mstr, &msg);
-> +		if (dev_num < 0) {
-> +			dev_err(&mstr->dev, "Failed to find free dev_num ret = %d\n", ret);
-> +			goto dev_num_assign_fail;
-> +		}
-> +
-> +		/*
-> +		 * Allocate and initialize the Slave device on first
-> +		 * enumeration
-> +		 */
-> +		sdw_slave = kzalloc(sizeof(*sdw_slave), GFP_KERNEL);
-> +		if (!sdw_slave) {
-> +			ret = -ENOMEM;
-> +			goto mem_alloc_failed;
-> +		}
-> +
-> +		/*
-> +		 * Initialize the allocated Slave device, set bus type and
-> +		 * device type to SoundWire.
-> +		 */
-> +		sdw_slave->mstr = mstr;
-> +		sdw_slave->dev.parent = &sdw_slave->mstr->dev;
-> +		sdw_slave->dev.bus = &sdw_bus_type;
-> +		sdw_slave->dev.type = &sdw_slv_type;
-> +		sdw_slave->priv.addr = &mstr->sdw_addr[dev_num];
-> +		sdw_slave->priv.addr->slave = sdw_slave;
-> +
-> +		for (i = 0; i < SDW_NUM_DEV_ID_REGISTERS; i++)
-> +			sdw_slave->priv.dev_id[i] = msg.buf[i];
-> +
-> +		dev_dbg(&mstr->dev, "SDW slave slave id found with values\n");
-> +		dev_dbg(&mstr->dev, "dev_id0 to dev_id5: %x:%x:%x:%x:%x:%x\n",
-> +			msg.buf[0], msg.buf[1], msg.buf[2],
-> +			msg.buf[3], msg.buf[4], msg.buf[5]);
-> +		dev_dbg(&mstr->dev, "Dev number assigned is %x\n", dev_num);
-> +
-> +		/*
-> +		 * Set the Slave device name, its based on the dev_id and
-> +		 * to bus which it is attached.
-> +		 */
-> +		dev_set_name(&sdw_slave->dev, "sdw-slave%d-%02x:%02x:%02x:%02x:%02x:%02x",
-> +			sdw_master_get_id(mstr),
-> +			sdw_slave->priv.dev_id[0],
-> +			sdw_slave->priv.dev_id[1],
-> +			sdw_slave->priv.dev_id[2],
-> +			sdw_slave->priv.dev_id[3],
-> +			sdw_slave->priv.dev_id[4],
-> +			sdw_slave->priv.dev_id[5]);
-> +
-> +		/*
-> +		 * Set name based on dev_id. This will be used in match
-> +		 * function to bind the device and driver.
-> +		 */
-> +		sprintf(sdw_slave->priv.name, "%02x:%02x:%02x:%02x:%02x:%02x",
-> +				sdw_slave->priv.dev_id[0],
-> +				sdw_slave->priv.dev_id[1],
-> +				sdw_slave->priv.dev_id[2],
-> +				sdw_slave->priv.dev_id[3],
-> +				sdw_slave->priv.dev_id[4],
-> +				sdw_slave->priv.dev_id[5]);
-> +		ret = device_register(&sdw_slave->dev);
-> +		if (ret) {
-> +			dev_err(&mstr->dev, "Register slave failed ret = %d\n", ret);
-> +			goto reg_slv_failed;
-> +		}
 
-There are some issues with this, as the slave driver only probes
-when the device actually shows up on the bus. However often
-(especially in embedded contexts) some things may need to be
-done to enable the slave. For example it may be held in reset or
-its power supplies switched off until they are need. As such it
-generally helps if the device probe can be called before it shows
-up on the bus, the device probe can then do the necessary actions
-to enable the device at which point it will show up on the bus.
+>> +SoundWire stream states
+>> +=======================
+>> +Below figure shows the SoundWire stream states and possible state
+>> +transition diagram.
+>> +
+>> +|--------------|     |-------------|     |--------------|     |--------------|
+>> +|     ALLOC    |---->|    CONFIG   |---->|   PREPARE    |---->|    ENABLE    |
+>> +|     STATE    |     |    STATE    |     |    STATE     |     |    STATE     |
+>> +|--------------|     |-------------|     |--------------|     |--------------|
+>> +                                                ^                       |
+>> +                                                |                       |
+>> +                                                |                       |
+>> +                                                |                       |
+>> +                                                |                       \/
+>> +    |--------------|                     |--------------|     |--------------|
+>> +    |    RELEASE   |<--------------------|   DEPREPARE  |<----|    DISABLE   |
+>> +    |     STATE    |                     |    STATE     |     |    STATE     |
+>> +    |--------------|                     |--------------|     |--------------|
+>> +
+>
+> One minor comment, this looks very similar to the clock
+> frameworks state model, but the clock framework calls it
+> unprepare would there be some milage in aligning to?
 
-Thanks,
-Charles
+The SoundWire spec uses de-prepare, e.g. "De-prepare_Finished"
+I'd rather stick to the wording between a spec and the implementation of 
+said spec, rather than introduce a term/concept from an unrelated framework.
+>
+>> +
+>> +SoundWire Stream State Operations
+>> +==================================
+>> +Below section explains the operations done by the bus driver on
+>> +Master(s) and Slave(s) as part of stream state transitions.
+>> +
+>> +SDW_STATE_STRM_ALLOC: Allocation state for stream. This is the entry
+>> +state of the stream. Operations performed before entering in this
+>> +state:
+>> +1. An unique stream tag is assigned to stream. This stream tag is used
+>
+> A unique
+
+ok
+
+>
+>> +as a reference for all the operations performed on stream.
+>> +
+>> +2. The resources required for holding stream runtime information are
+>> +allocated and initialized. This holds all stream related information
+>> +such as stream type (PCM/PDM) and parameters, Master and Slave interface
+>> +associated with the stream, reference counting, stream state etc.
+>> +
+>> +After all above operations are successful, stream state is set to
+>> +SDW_STATE_STRM_ALLOC.
+>> +
+>> +
+>> +SDW_STATE_STRM_CONFIG: Configuration state of stream. Operations
+>> +performed before entering in this state:
+>> +1. The resources allocated for stream information in
+>> +SDW_STATE_STRM_ALLOC state are updated. This includes stream parameters,
+>> +Masters and Slaves runtime information associated with the stream.
+>> +
+>> +2. All the Masters and Slaves associated with the stream updates the
+>> +port configuration to bus driver. This includes port numbers allocated
+>> +by Master(s) and Slave(s) for this stream.
+>> +
+>> +After all above operations are successful, stream state is set to
+>> +SDW_STATE_STRM_CONFIG.
+>> +
+>> +
+>> +SDW_STATE_STRM_PREPARE: Prepare state of stream. Operations performed
+>> +before entering in this state:
+>> +1. Bus parameters such as bandwidth, frame shape, clock frequency, SSP
+>> +interval are computed based on current stream as well as already active
+>> +streams on bus. Re-computation is required to accommodate current stream
+>> +on the bus.
+>> +
+>> +2. Transport parameters of all Master and Slave ports are computed for
+>> +the current as well as already active stream based on above calculated
+>> +frame shape and clock frequency.
+>> +
+>> +3. Computed bus and transport parameters are programmed in Master and
+>> +Slave registers. The banked registers programming is done on the
+>> +alternate bank (bank currently unused). Port channels are enabled for
+>> +the already active streams on the alternate bank (bank currently
+>> +unused). This is done in order to not to disrupt already active
+>> +stream(s).
+>> +
+>> +4. Once all the new values are programmed, bus initiates switch to
+>> +alternate  bank. Once switch is successful, the port channels enabled on
+>> +previous bank for already active streams are disabled.
+
+This last sentence makes no sense in this context, probably a copy/paste 
+that shouldn't be there. The previously active streams remain active in 
+this prepare step.
+
+>> +
+>> +5. Ports of Master and Slave for current stream are prepared.
+>> +
+>> +After all above operations are successful, stream state is set to
+>> +SDW_STATE_STRM_PREPARE.
+>> +
+>> +
+>> +SDW_STATE_STRM_ENABLE: Enable state of stream. Operations performed
+>> +before entering in this state:
+>> +1. All the values computed in SDW_STATE_STRM_PREPARE state are
+>> +programmed in alternate bank (bank currently unused). It includes
+>> +programming of already active streams as well.
+>> +
+>> +2. All the Master and Slave port channels for the current stream are
+>> +enabled on alternate bank (bank currently unused).
+>> +
+>
+> This could probably use a little more explaination to show how it
+> differs from step 3/4 in PREPARE, as it looks like all the
+> computed values where applied there. I imagine this is just my lack
+> of understanding rather than an actual issue but even looking at
+> the code I am having a little difficulty tying up these two.
+
+Yes, see above there was an extra sentence that isn't right.
+
+>
+> sdw_prepare_op
+> - sdw_compute_params (prepare step 1/2)
+> - sdw_program_params (prepare step 3)
+> - sdw_update_bus_params (prepare step 4)
+>
+> sdw_enable_op
+> - sdw_program_params (enable step 1)
+> - sdw_update_bus_params (enable step 2)
+>
+> It looks like the params are still basically the same as they
+> were when we called sdw_program_params in prepare.
+
+The parameters are the same except for the channel-enable flags which 
+are only programmed and activated via a bank switch in the enable step.
