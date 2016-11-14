@@ -1,14 +1,17 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH v3] ASoC: add rt5665 codec driver
-Date: Mon, 14 Nov 2016 11:00:10 +0800
-Message-ID: <1479092410-3923-1-git-send-email-bardliao@realtek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: add rt5665 codec driver" to the asoc
+	tree
+Date: Mon, 14 Nov 2016 13:52:28 +0000
+Message-ID: <E1c6HgS-0003BI-ED@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 62C1D2667E0
- for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2016 04:00:21 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA1E5266E37
+ for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2016 14:53:04 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,19 +21,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
+
+The patch
+
+   ASoC: add rt5665 codec driver
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 33ada14a26c8f174dac8765f4236ca66c64ae5be Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Mon, 14 Nov 2016 11:00:10 +0800
+Subject: [PATCH] ASoC: add rt5665 codec driver
 
 This is the initial codec driver for rt5665.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
----
-v2:
-* Use devm_regulator_bulk_get, and the regulator are not optional.
-* Separate each slot for the AIF interface.
-v3:
-* Use constant supply names.
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
  Documentation/devicetree/bindings/sound/rt5665.txt |   68 +
  include/sound/rt5665.h                             |   47 +
@@ -46,7 +76,7 @@ v3:
 
 diff --git a/Documentation/devicetree/bindings/sound/rt5665.txt b/Documentation/devicetree/bindings/sound/rt5665.txt
 new file mode 100755
-index 0000000..419c892
+index 000000000000..419c89219681
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/sound/rt5665.txt
 @@ -0,0 +1,68 @@
@@ -120,7 +150,7 @@ index 0000000..419c892
 +};
 diff --git a/include/sound/rt5665.h b/include/sound/rt5665.h
 new file mode 100755
-index 0000000..963229e
+index 000000000000..963229e71dc7
 --- /dev/null
 +++ b/include/sound/rt5665.h
 @@ -0,0 +1,47 @@
@@ -172,10 +202,10 @@ index 0000000..963229e
 +#endif
 +
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 0b1be61..8b9b0729 100644
+index c67667bb970f..f1de9720d9d3 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
-@@ -116,6 +116,7 @@ config SND_SOC_ALL_CODECS
+@@ -114,6 +114,7 @@ config SND_SOC_ALL_CODECS
  	select SND_SOC_RT5651 if I2C
  	select SND_SOC_RT5659 if I2C
  	select SND_SOC_RT5660 if I2C
@@ -183,7 +213,7 @@ index 0b1be61..8b9b0729 100644
  	select SND_SOC_RT5663 if I2C
  	select SND_SOC_RT5670 if I2C
  	select SND_SOC_RT5677 if I2C && SPI_MASTER
-@@ -662,6 +663,7 @@ config SND_SOC_RL6231
+@@ -649,6 +650,7 @@ config SND_SOC_RL6231
  	default y if SND_SOC_RT5651=y
  	default y if SND_SOC_RT5659=y
  	default y if SND_SOC_RT5660=y
@@ -191,7 +221,7 @@ index 0b1be61..8b9b0729 100644
  	default y if SND_SOC_RT5663=y
  	default y if SND_SOC_RT5670=y
  	default y if SND_SOC_RT5677=y
-@@ -672,6 +674,7 @@ config SND_SOC_RL6231
+@@ -659,6 +661,7 @@ config SND_SOC_RL6231
  	default m if SND_SOC_RT5651=m
  	default m if SND_SOC_RT5659=m
  	default m if SND_SOC_RT5660=m
@@ -199,7 +229,7 @@ index 0b1be61..8b9b0729 100644
  	default m if SND_SOC_RT5663=m
  	default m if SND_SOC_RT5670=m
  	default m if SND_SOC_RT5677=m
-@@ -721,6 +724,9 @@ config SND_SOC_RT5659
+@@ -708,6 +711,9 @@ config SND_SOC_RT5659
  config SND_SOC_RT5660
  	tristate
  
@@ -210,10 +240,10 @@ index 0b1be61..8b9b0729 100644
  	tristate
  
 diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index d8984eb..4ab8dac 100644
+index 958cd4912fbc..e1704e09806c 100644
 --- a/sound/soc/codecs/Makefile
 +++ b/sound/soc/codecs/Makefile
-@@ -117,6 +117,7 @@ snd-soc-rt5645-objs := rt5645.o
+@@ -114,6 +114,7 @@ snd-soc-rt5645-objs := rt5645.o
  snd-soc-rt5651-objs := rt5651.o
  snd-soc-rt5659-objs := rt5659.o
  snd-soc-rt5660-objs := rt5660.o
@@ -221,7 +251,7 @@ index d8984eb..4ab8dac 100644
  snd-soc-rt5663-objs := rt5663.o
  snd-soc-rt5670-objs := rt5670.o
  snd-soc-rt5677-objs := rt5677.o
-@@ -343,6 +344,7 @@ obj-$(CONFIG_SND_SOC_RT5645)	+= snd-soc-rt5645.o
+@@ -338,6 +339,7 @@ obj-$(CONFIG_SND_SOC_RT5645)	+= snd-soc-rt5645.o
  obj-$(CONFIG_SND_SOC_RT5651)	+= snd-soc-rt5651.o
  obj-$(CONFIG_SND_SOC_RT5659)	+= snd-soc-rt5659.o
  obj-$(CONFIG_SND_SOC_RT5660)	+= snd-soc-rt5660.o
@@ -231,7 +261,7 @@ index d8984eb..4ab8dac 100644
  obj-$(CONFIG_SND_SOC_RT5677)	+= snd-soc-rt5677.o
 diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
 new file mode 100644
-index 0000000..34254fd
+index 000000000000..34254fd47efe
 --- /dev/null
 +++ b/sound/soc/codecs/rt5665.c
 @@ -0,0 +1,4875 @@
@@ -5112,7 +5142,7 @@ index 0000000..34254fd
 +MODULE_LICENSE("GPL v2");
 diff --git a/sound/soc/codecs/rt5665.h b/sound/soc/codecs/rt5665.h
 new file mode 100644
-index 0000000..12f7080
+index 000000000000..12f7080a0d3c
 --- /dev/null
 +++ b/sound/soc/codecs/rt5665.h
 @@ -0,0 +1,1990 @@
@@ -7107,4 +7137,4 @@ index 0000000..12f7080
 +
 +#endif /* __RT5665_H__ */
 -- 
-1.8.1.1.439.g50a6b54
+2.10.2
