@@ -1,20 +1,18 @@
-From: Paulo Fidalgo <paulo.fidalgo.pt@gmail.com>
-Subject: Re: Mic detection on Mackbook Pro 12,1 (CS4208)
-Date: Mon, 14 Nov 2016 22:21:58 +0000
-Message-ID: <CAKbjie6aTCYCuf+328kaBUCH2CcHrd4QeUYE4zBq4E8GBLqJYw@mail.gmail.com>
-References: <CAKbjie4D=iSKs_+HNpspZufF1GpB6BZATsS=2=9XhyCEe09PSw@mail.gmail.com>
- <s5h1syhg3h9.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [MINUTES] Linux Plumbers Audio Mini Conference -
+	Santa Fe 2016
+Date: Tue, 15 Nov 2016 08:03:19 +0900
+Message-ID: <327e8d7d-d567-f984-5c35-bd9dc1f6abaa@sakamocchi.jp>
+References: <1478213478.21597.13.camel@loki> <58289B1F.2010109@codeaurora.org>
+ <20161114140830.rqibtdy4xjat7uis@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
- [209.85.214.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 3904F2665A6
- for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2016 23:22:02 +0100 (CET)
-Received: by mail-it0-f68.google.com with SMTP id b123so17343409itb.2
- for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2016 14:22:02 -0800 (PST)
-In-Reply-To: <s5h1syhg3h9.wl-tiwai@suse.de>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 89DCD266580
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 00:03:25 +0100 (CET)
+In-Reply-To: <20161114140830.rqibtdy4xjat7uis@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,100 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Patrick Lai <plai@codeaurora.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin" <mengdong.lin@linux.intel.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Lai,
+ Patrick" <plai@quicinc.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>, Eric Laurent <elaurent@google.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Dylan Reid <dgreid@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Takashi for point out, but that document is overwhelming.
-I understand that developing drivers for unknown hardware should be
-like running in the woods with our eyes covered, but I don't feel I
-have the enough knowledge and time to be able to do it.
-
-If helps, when I connect the headset running hda-analyzer tool in
-monitor mode I only have events related to the OUTPUT:
-
-Watching 2 cards
-======================================
-Diff for codec 1/0 (0x10134208):
----
-+++
-@@ -7,17 +7,17 @@
- No Modem Function Group found
- Default PCM:
-     rates [0x0]:
-     bits [0x0]:
-     formats [0x0]:
- Default Amp-In caps: N/A
- Default Amp-Out caps: N/A
- GPIO: io=6, o=2, i=0, unsolicited=1, wake=1
--  IO[0]: enable=1, dir=1, wake=0, sticky=0, data=1, unsol=0
-+  IO[0]: enable=1, dir=1, wake=0, sticky=0, data=0, unsol=0
-   IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[4]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[5]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
- Node 0x02 [Audio Output] wcaps 0xd043d: Stereo Amp-Out Stripe
-   Control: name="Headphone Playback Volume", index=0, device=0
-     ControlAmp: chs=3, dir=1, idx=0, ofs=0
-@@ -225,26 +225,24 @@
-   Power: setting=D3, actual=D3
-   Connection: 1
-      0x02
- Node 0x12 [Pin Complex] wcaps 0x400501: Stereo
-   Pincap 0x00000050: OUT Balance
-   Pin Default 0x90170011: [Fixed] Speaker at Int N/A
-     Conn = Analog, Color = Unknown
-     DefAssociation = 0x1, Sequence = 0x1
--  Pin-ctls: 0x40: OUT
-   Power: setting=D3, actual=D3
-   Connection: 1
-      0x03
- Node 0x13 [Pin Complex] wcaps 0x400501: Stereo
-   Pincap 0x00000050: OUT Balance
-   Pin Default 0x90170012: [Fixed] Speaker at Int N/A
-     Conn = Analog, Color = Unknown
-     DefAssociation = 0x1, Sequence = 0x2
--  Pin-ctls: 0x40: OUT
-   Power: setting=D3, actual=D3
-   Connection: 1
-      0x04
- Node 0x14 [Pin Complex] wcaps 0x400501: Stereo
-   Pincap 0x00000050: OUT Balance
-   Pin Default 0x90170014: [Fixed] Speaker at Int N/A
-     Conn = Analog, Color = Unknown
-     DefAssociation = 0x1, Sequence = 0x4
-
-
-Is there any other info I can provide to help?
-
-Kind regards,
-
-Paulo Fidalgo
-
-On 11 November 2016 at 20:34, Takashi Iwai <tiwai@suse.de> wrote:
-> On Thu, 10 Nov 2016 22:52:52 +0100,
-> Paulo Fidalgo wrote:
->>
->> Hi,
->>
->> After reporting the issue on bugzilla
->> (https://bugzilla.kernel.org/show_bug.cgi?id=155601) I felt I could do
->> more in order to try to get a patch to fix the issue.
->>
->> Basically when I plug an headset(mic+headphone), it only detects the
->> headphone not the mic.
->>
->> Since I assumed the "memory address" of the 0x18 pin is wrong, I've
->> tried to change some values in order to get it working.
->
-> The value you're referring to isn't a "memory address" at all.
-> It's a "pin configuration" value, containing the information like
-> the location, purpose, sequence number of the given pin, and it's
-> encoded in 32bit integer.  Basically it's merely a hint for drivers to
-> configure the system properly.
->
-> Refer to the HD-audio specification document for more details.
->
->
-> Takashi
+TWFyaywKCk9uIDIwMTblubQxMeaciDE05pelIDIzOjA4LCBNYXJrIEJyb3duIHdyb3RlOgo+IE9u
+IFN1biwgTm92IDEzLCAyMDE2IGF0IDA4OjU1OjU5QU0gLTA4MDAsIFBhdHJpY2sgTGFpIHdyb3Rl
+Ogo+Cj4+IENhbiBwZW9wbGUgdXBsb2FkIHRoZWlyIHNsaWRlcz8gSXMgdGhlcmUgYSBjZW50cmFs
+IHBsYWNlIHRvIHVwbG9hZCB0aGUKPj4gc2xpZGVzPyBJIGFtIGluIHByb2Nlc3Mgb2YgcHJlcGFy
+aW5nIHdvcmtzaG9wIHByZXNlbnRhdGlvbiB0byBRdWFsY29tbSB0ZWFtCj4+IG1lbWJlcnMuCj4K
+PiBUaGVyZSdzIG5vIGNlbnRyYWwgcGxhY2UgZm9yIHVwbG9hZGluZyBzbGlkZXMgLSBndWVzcyBz
+ZW5kaW5nIHRoZW0gaW4KPiBlLW1haWwgaW4gZm9sbG93dXAgdG8gdGhlIG1pbnV0ZXMgaXMgYXMg
+Z29vZCBhcyBhbnl0aGluZz8KCkxldCB1cyB1cGxvYWQgb3VyIHJlc291cmNlcyBhbmQgYWRkIHRo
+ZSBtaW51dGVzIHRvIHBsdW1iZXJzJyB3aWtpIHBhZ2UgCnlvdSBjcmVhdGVkPwpodHRwOi8vd2lr
+aS5saW51eHBsdW1iZXJzY29uZi5vcmcvMjAxNjphdWRpbwoKClJlZ2FyZHMKClRha2FzaGkgU2Fr
+YW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
