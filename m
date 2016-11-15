@@ -1,17 +1,17 @@
 From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH 12/19] ASoC: wm8753: Convert to
+Subject: Re: [PATCH 08/19] ASoC: wm8985: Convert to
  module_i2c/spi_driver()
-Date: Wed, 16 Nov 2016 01:35:32 +0800
-Message-ID: <201611160110.HzseKi6W%fengguang.wu@intel.com>
-References: <87k2c58gz2.wl%kuninori.morimoto.gx@renesas.com>
+Date: Wed, 16 Nov 2016 01:40:28 +0800
+Message-ID: <201611160130.M45PSXXG%fengguang.wu@intel.com>
+References: <87polx8h17.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="4Ckj6UjgE2iN1+kY"
+Content-Type: multipart/mixed; boundary="82I3+IH0IqGh5yIs"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F3EF2665AB
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 18:36:22 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07A4F2665AB
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 18:41:22 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <87k2c58gz2.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87polx8h17.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,7 +26,7 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, k
 List-Id: alsa-devel@alsa-project.org
 
 
---4Ckj6UjgE2iN1+kY
+--82I3+IH0IqGh5yIs
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -45,7 +45,7 @@ reproduce:
 
 All warnings (new ones prefixed by >>):
 
-   In file included from sound/soc/codecs/wm8753.c:34:0:
+   In file included from sound/soc/codecs/wm8985.c:19:0:
    include/linux/module.h:130:27: error: redefinition of '__inittest'
      static inline initcall_t __inittest(void)  \
                               ^
@@ -55,8 +55,8 @@ All warnings (new ones prefixed by >>):
    include/linux/i2c.h:751:2: note: in expansion of macro 'module_driver'
      module_driver(__i2c_driver, i2c_add_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8753.c:1612:1: note: in expansion of macro 'module_i2c_driver'
-    module_i2c_driver(wm8753_i2c_driver);
+>> sound/soc/codecs/wm8985.c:1227:1: note: in expansion of macro 'module_i2c_driver'
+    module_i2c_driver(wm8985_i2c_driver);
     ^~~~~~~~~~~~~~~~~
    include/linux/module.h:130:27: note: previous definition of '__inittest' was here
      static inline initcall_t __inittest(void)  \
@@ -67,8 +67,8 @@ All warnings (new ones prefixed by >>):
    include/linux/spi/spi.h:290:2: note: in expansion of macro 'module_driver'
      module_driver(__spi_driver, spi_register_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8753.c:1558:1: note: in expansion of macro 'module_spi_driver'
-    module_spi_driver(wm8753_spi_driver);
+>> sound/soc/codecs/wm8985.c:1175:1: note: in expansion of macro 'module_spi_driver'
+    module_spi_driver(wm8985_spi_driver);
     ^~~~~~~~~~~~~~~~~
    include/linux/module.h:132:6: error: redefinition of 'init_module'
      int init_module(void) __attribute__((alias(#initfn)));
@@ -79,8 +79,8 @@ All warnings (new ones prefixed by >>):
    include/linux/i2c.h:751:2: note: in expansion of macro 'module_driver'
      module_driver(__i2c_driver, i2c_add_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8753.c:1612:1: note: in expansion of macro 'module_i2c_driver'
-    module_i2c_driver(wm8753_i2c_driver);
+>> sound/soc/codecs/wm8985.c:1227:1: note: in expansion of macro 'module_i2c_driver'
+    module_i2c_driver(wm8985_i2c_driver);
     ^~~~~~~~~~~~~~~~~
    include/linux/module.h:132:6: note: previous definition of 'init_module' was here
      int init_module(void) __attribute__((alias(#initfn)));
@@ -91,8 +91,8 @@ All warnings (new ones prefixed by >>):
    include/linux/spi/spi.h:290:2: note: in expansion of macro 'module_driver'
      module_driver(__spi_driver, spi_register_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8753.c:1558:1: note: in expansion of macro 'module_spi_driver'
-    module_spi_driver(wm8753_spi_driver);
+>> sound/soc/codecs/wm8985.c:1175:1: note: in expansion of macro 'module_spi_driver'
+    module_spi_driver(wm8985_spi_driver);
     ^~~~~~~~~~~~~~~~~
    include/linux/module.h:136:27: error: redefinition of '__exittest'
      static inline exitcall_t __exittest(void)  \
@@ -103,8 +103,8 @@ All warnings (new ones prefixed by >>):
    include/linux/i2c.h:751:2: note: in expansion of macro 'module_driver'
      module_driver(__i2c_driver, i2c_add_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8753.c:1612:1: note: in expansion of macro 'module_i2c_driver'
-    module_i2c_driver(wm8753_i2c_driver);
+>> sound/soc/codecs/wm8985.c:1227:1: note: in expansion of macro 'module_i2c_driver'
+    module_i2c_driver(wm8985_i2c_driver);
     ^~~~~~~~~~~~~~~~~
    include/linux/module.h:136:27: note: previous definition of '__exittest' was here
      static inline exitcall_t __exittest(void)  \
@@ -115,8 +115,8 @@ All warnings (new ones prefixed by >>):
    include/linux/spi/spi.h:290:2: note: in expansion of macro 'module_driver'
      module_driver(__spi_driver, spi_register_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8753.c:1558:1: note: in expansion of macro 'module_spi_driver'
-    module_spi_driver(wm8753_spi_driver);
+>> sound/soc/codecs/wm8985.c:1175:1: note: in expansion of macro 'module_spi_driver'
+    module_spi_driver(wm8985_spi_driver);
     ^~~~~~~~~~~~~~~~~
    include/linux/module.h:138:7: error: redefinition of 'cleanup_module'
      void cleanup_module(void) __attribute__((alias(#exitfn)));
@@ -127,8 +127,8 @@ All warnings (new ones prefixed by >>):
    include/linux/i2c.h:751:2: note: in expansion of macro 'module_driver'
      module_driver(__i2c_driver, i2c_add_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8753.c:1612:1: note: in expansion of macro 'module_i2c_driver'
-    module_i2c_driver(wm8753_i2c_driver);
+>> sound/soc/codecs/wm8985.c:1227:1: note: in expansion of macro 'module_i2c_driver'
+    module_i2c_driver(wm8985_i2c_driver);
     ^~~~~~~~~~~~~~~~~
    include/linux/module.h:138:7: note: previous definition of 'cleanup_module' was here
      void cleanup_module(void) __attribute__((alias(#exitfn)));
@@ -139,87 +139,85 @@ All warnings (new ones prefixed by >>):
    include/linux/spi/spi.h:290:2: note: in expansion of macro 'module_driver'
      module_driver(__spi_driver, spi_register_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8753.c:1558:1: note: in expansion of macro 'module_spi_driver'
-    module_spi_driver(wm8753_spi_driver);
+>> sound/soc/codecs/wm8985.c:1175:1: note: in expansion of macro 'module_spi_driver'
+    module_spi_driver(wm8985_spi_driver);
     ^~~~~~~~~~~~~~~~~
 
-vim +/module_i2c_driver +1612 sound/soc/codecs/wm8753.c
+vim +/module_i2c_driver +1227 sound/soc/codecs/wm8985.c
 
-  1552			.name	= "wm8753",
-  1553			.of_match_table = wm8753_of_match,
-  1554		},
-  1555		.probe		= wm8753_spi_probe,
-  1556		.remove		= wm8753_spi_remove,
-  1557	};
-> 1558	module_spi_driver(wm8753_spi_driver);
-  1559	#endif /* CONFIG_SPI_MASTER */
-  1560	
-  1561	#if IS_ENABLED(CONFIG_I2C)
-  1562	static int wm8753_i2c_probe(struct i2c_client *i2c,
-  1563				    const struct i2c_device_id *id)
-  1564	{
-  1565		struct wm8753_priv *wm8753;
-  1566		int ret;
-  1567	
-  1568		wm8753 = devm_kzalloc(&i2c->dev, sizeof(struct wm8753_priv),
-  1569				      GFP_KERNEL);
-  1570		if (wm8753 == NULL)
-  1571			return -ENOMEM;
-  1572	
-  1573		i2c_set_clientdata(i2c, wm8753);
-  1574	
-  1575		wm8753->regmap = devm_regmap_init_i2c(i2c, &wm8753_regmap);
-  1576		if (IS_ERR(wm8753->regmap)) {
-  1577			ret = PTR_ERR(wm8753->regmap);
-  1578			dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
-  1579				ret);
-  1580			return ret;
-  1581		}
-  1582	
-  1583		ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_wm8753,
-  1584					     wm8753_dai, ARRAY_SIZE(wm8753_dai));
-  1585		if (ret != 0)
-  1586			dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
-  1587	
-  1588		return ret;
-  1589	}
-  1590	
-  1591	static int wm8753_i2c_remove(struct i2c_client *client)
-  1592	{
-  1593		snd_soc_unregister_codec(&client->dev);
-  1594		return 0;
-  1595	}
-  1596	
-  1597	static const struct i2c_device_id wm8753_i2c_id[] = {
-  1598		{ "wm8753", 0 },
-  1599		{ }
-  1600	};
-  1601	MODULE_DEVICE_TABLE(i2c, wm8753_i2c_id);
-  1602	
-  1603	static struct i2c_driver wm8753_i2c_driver = {
-  1604		.driver = {
-  1605			.name = "wm8753",
-  1606			.of_match_table = wm8753_of_match,
-  1607		},
-  1608		.probe =    wm8753_i2c_probe,
-  1609		.remove =   wm8753_i2c_remove,
-  1610		.id_table = wm8753_i2c_id,
-  1611	};
-> 1612	module_i2c_driver(wm8753_i2c_driver);
-  1613	#endif
-  1614	
-  1615	MODULE_DESCRIPTION("ASoC WM8753 driver");
+  1169		.driver = {
+  1170			.name = "wm8985",
+  1171		},
+  1172		.probe = wm8985_spi_probe,
+  1173		.remove = wm8985_spi_remove
+  1174	};
+> 1175	module_spi_driver(wm8985_spi_driver);
+  1176	#endif
+  1177	
+  1178	#if IS_ENABLED(CONFIG_I2C)
+  1179	static int wm8985_i2c_probe(struct i2c_client *i2c,
+  1180				    const struct i2c_device_id *id)
+  1181	{
+  1182		struct wm8985_priv *wm8985;
+  1183		int ret;
+  1184	
+  1185		wm8985 = devm_kzalloc(&i2c->dev, sizeof *wm8985, GFP_KERNEL);
+  1186		if (!wm8985)
+  1187			return -ENOMEM;
+  1188	
+  1189		i2c_set_clientdata(i2c, wm8985);
+  1190	
+  1191		wm8985->dev_type = id->driver_data;
+  1192	
+  1193		wm8985->regmap = devm_regmap_init_i2c(i2c, &wm8985_regmap);
+  1194		if (IS_ERR(wm8985->regmap)) {
+  1195			ret = PTR_ERR(wm8985->regmap);
+  1196			dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
+  1197				ret);
+  1198			return ret;
+  1199		}
+  1200	
+  1201		ret = snd_soc_register_codec(&i2c->dev,
+  1202					     &soc_codec_dev_wm8985, &wm8985_dai, 1);
+  1203		return ret;
+  1204	}
+  1205	
+  1206	static int wm8985_i2c_remove(struct i2c_client *i2c)
+  1207	{
+  1208		snd_soc_unregister_codec(&i2c->dev);
+  1209		return 0;
+  1210	}
+  1211	
+  1212	static const struct i2c_device_id wm8985_i2c_id[] = {
+  1213		{ "wm8985", WM8985 },
+  1214		{ "wm8758", WM8758 },
+  1215		{ }
+  1216	};
+  1217	MODULE_DEVICE_TABLE(i2c, wm8985_i2c_id);
+  1218	
+  1219	static struct i2c_driver wm8985_i2c_driver = {
+  1220		.driver = {
+  1221			.name = "wm8985",
+  1222		},
+  1223		.probe = wm8985_i2c_probe,
+  1224		.remove = wm8985_i2c_remove,
+  1225		.id_table = wm8985_i2c_id
+  1226	};
+> 1227	module_i2c_driver(wm8985_i2c_driver);
+  1228	#endif
+  1229	
+  1230	MODULE_DESCRIPTION("ASoC WM8985 / WM8758 driver");
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---4Ckj6UjgE2iN1+kY
+--82I3+IH0IqGh5yIs
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICGhCK1gAAy5jb25maWcAhDxLd9u20vv+Cp30Lu5dtIkfcdNzjxcQCUqoCIIBQMnyhsd1
+H4sICHFGK1gAAy5jb25maWcAhDxLd9u20vv+Cp30Lu5dtIkfcdNzjxcQCUqoCIIBQMnyhsd1
 lNanjp3Pknubf//NAKQIgEMliyTEDN7znoF+/OHHGXs9PH+5Ozzc3z0+fpv9sXvavdwddp9m
 nx8ed/+d5WpWKTvjubA/A3L58PT6z9uHiw9Xs8uff/353U8v9+9nq93L0+5xlj0/fX744xV6
 Pzw//fAjYGeqKsSivbqcCzt72M+eng+z/e7wQ9d+8+GqvTi//hZ8Dx+iMlY3mRWqanOeqZzr
@@ -768,11 +766,11 @@ yQCUdWxnzscxrX2k9TWaj2RhnSq1rmtOSlR+vZSL0oq0S6L1x9qDTC3bTQJXH1O6+qLEfvqw
 C4eZuAqDN0Q3DF68IOB4AK5bfJBDoAzR/lULctgAn84+ApXdJcV08jFdk+gGc8Sy0A0xWP2o
 PBs/AxLpxyHkMMZpOhnqGZGNivAC4P8BxEbxqeTGAQA=
 
---4Ckj6UjgE2iN1+kY
+--82I3+IH0IqGh5yIs
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---4Ckj6UjgE2iN1+kY--
+--82I3+IH0IqGh5yIs--
