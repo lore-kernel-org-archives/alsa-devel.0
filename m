@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [RFC PATCH 2/3] ucm: Parse sequence of component
+Subject: [RFC PATCH 3/3] ucm: Execute sequence of component
 	devices
-Date: Tue, 15 Nov 2016 16:02:16 +0800
-Message-ID: <9baaf7a3d55a86e417826715e8e63d1a76582156.1479195801.git.mengdong.lin@linux.intel.com>
+Date: Tue, 15 Nov 2016 16:02:38 +0800
+Message-ID: <b610787835a8530f0b3105321e8f15661fc55b0b.1479195801.git.mengdong.lin@linux.intel.com>
 References: <cover.1479195801.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id DD5E8266FF6
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 09:00:31 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3859C266FF1
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 09:00:53 +0100 (CET)
 In-Reply-To: <cover.1479195801.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,211 +27,232 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-A machine device's verb file (e.g.HiFi) can include configuration files
-of component devices via alsaconf syntax <searchdir:xxx> and <file_name>.
-Then the machine device's sequence can enable or disable a component
-device by keyword 'enadev' and 'disdev' followed the name of the component
-device.
+A machine device's sequence can enable or disable a component device. So
+when executing a machine device's sequence, the enable or disable sequence
+of its component devices will also be excecuted.
 
-UCM sequence parser will find the component device and mark if its enable
-or disable sequence is needed by the parent, the machine device.
-
-New element type and struct are defined for the sequence of a component
-device. Component devices will be removed from the machine device list
-'device_list' of a verb, since we don't want to expose them to audio
-servers with original API to list devices for backward compatibility.
-A new list 'cmpt_device_list' is used for the component devices of a verb.
+Add a parameter 'cdev_in' to function execute_sequence(). This function
+is used to execute a sequence of either machine or component devices.
+Since the sequence of a component device does not define the card device,
+when executing its sequence, this parameter can pass the cdev defined by
+the sequence of its parent, the machine device. When executing sequence of
+machine devices, this parameter should be set to NULL.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/src/ucm/parser.c b/src/ucm/parser.c
-index 5fc98a1..fe1dfbc 100644
---- a/src/ucm/parser.c
-+++ b/src/ucm/parser.c
-@@ -235,6 +235,81 @@ static int parse_device_list(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
- 	return 0;
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 8cc9208..a852cf4 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -48,6 +48,13 @@ static int get_value3(char **value,
+ 		      struct list_head *value_list2,
+ 		      struct list_head *value_list3);
+ 
++static int execute_component_seq(snd_use_case_mgr_t *uc_mgr,
++				 struct component_sequence *cmpt_seq,
++				 struct list_head *value_list1,
++				 struct list_head *value_list2,
++				 struct list_head *value_list3,
++				 char *cdev_in);
++
+ static int check_identifier(const char *identifier, const char *prefix)
+ {
+ 	int len;
+@@ -341,13 +348,22 @@ static int execute_cset(snd_ctl_t *ctl, const char *cset, unsigned int type)
+  * \brief Execute the sequence
+  * \param uc_mgr Use case manager
+  * \param seq Sequence
++ * \param cdev_in input cdev,  parenet's cdev for a component device,
++ *				or NULL for a machine device.
+  * \return zero on success, otherwise a negative error code
++ *
++ * A machine device's sequence can enable or disable a component device.
++ * But the enable/disable sequence of a component device does not define
++ * cdev, the card device. So when executing a component device's sequence,
++ * we need to pass the cdev defined by the sequence of its parent, the
++ * machine device. And for machine device, cdev should be set to NULL.
+  */
+ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 			    struct list_head *seq,
+ 			    struct list_head *value_list1,
+ 			    struct list_head *value_list2,
+-			    struct list_head *value_list3)
++			    struct list_head *value_list3,
++			    char *cdev_in)
+ {
+ 	struct list_head *pos;
+ 	struct sequence_element *s;
+@@ -366,7 +382,16 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 		case SEQUENCE_ELEMENT_TYPE_CSET:
+ 		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
+ 		case SEQUENCE_ELEMENT_TYPE_CSET_TLV:
+-			if (cdev == NULL) {
++			if (cdev == NULL && cdev_in) {
++				/* Sequence of a component device, should use
++				 * the input cdev defined by sequence of its
++				 * parent, the machine device.
++				 */
++				cdev = strdup(cdev_in);
++				if (cdev == NULL)
++					goto __fail_nomem;
++
++			} else if (cdev == NULL) {
+ 				char *playback_ctl = NULL;
+ 				char *capture_ctl = NULL;
+ 
+@@ -405,7 +430,9 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 					free(capture_ctl);
+ 				} else
+ 					cdev = capture_ctl;
++
+ 			}
++
+ 			if (ctl == NULL) {
+ 				err = open_ctl(uc_mgr, &ctl, cdev);
+ 				if (err < 0) {
+@@ -427,6 +454,19 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 			if (err < 0)
+ 				goto __fail;
+ 			break;
++		case SEQUENCE_ELEMENT_TYPE_CMPT_SEQ:
++			/* Execute enable or disable sequence of a component
++			 * device. Pass the cdev defined by the machine device.
++			 */
++			err = execute_component_seq(uc_mgr,
++							&s->data.cmpt_seq,
++							value_list1,
++							value_list2,
++							value_list3,
++							cdev);
++			if (err < 0)
++				goto __fail;
++			break;
+ 		default:
+ 			uc_error("unknown sequence command %i", s->type);
+ 			break;
+@@ -442,6 +482,39 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 
  }
  
-+/* find a component device by its name
++/* Execute enable or disable sequence of a component device.
 + *
-+ * Component devices are defined by machine components (usually off-soc
-+ * codes or DSP embeded in SoC). Since alsaconf imports their configuration
-+ * files automatically, we don't know which devices are component devices
-+ * until they are referenced by a machine device sequence. So here when we
-+ * find a referenced device, we move it from the machine device list to the
-+ * component device list. Component devices will not be exposed to applications
-+ * by the original API to list devices for backward compatibility. So audio
-+ * servers can only see the machine devices.
++ * For a component device (a codec or embedded DSP), its sequence doesn't
++ * specify the sound card device 'cdev', because a component can be reused
++ * by different sound cards (machines). So when executing its sequence, a
++ * parameter 'cdev_in' is used to pass cdev defined by the sequence of its
++ * parent, the machine device.
 + */
-+struct use_case_device *find_component_dev(snd_use_case_mgr_t *uc_mgr,
-+	const char *name)
++static int execute_component_seq(snd_use_case_mgr_t *uc_mgr,
++				 struct component_sequence *cmpt_seq,
++				 struct list_head *value_list1,
++				 struct list_head *value_list2,
++				 struct list_head *value_list3,
++				 char *cdev_in)
 +{
-+	struct list_head *pos, *posdev, *_posdev;
-+	struct use_case_verb *verb;
-+	struct use_case_device *dev;
-+
-+	list_for_each(pos, &uc_mgr->verb_list) {
-+		verb = list_entry(pos, struct use_case_verb, list);
-+
-+		/* search in the component device list */
-+		list_for_each(posdev, &verb->cmpt_device_list) {
-+			dev = list_entry(posdev, struct use_case_device, list);
-+			if (!strcmp(dev->name, name))
-+				return dev;
-+		}
-+
-+		/* search the machine device list */
-+		list_for_each_safe(posdev, _posdev, &verb->device_list) {
-+			dev = list_entry(posdev, struct use_case_device, list);
-+			if (!strcmp(dev->name, name)) {
-+				/* find the component device, move it from the
-+				 * machine device list to the component device
-+				 * list.
-+				 */
-+				list_del(&dev->list);
-+				list_add_tail(&dev->list,
-+					      &verb->cmpt_device_list);
-+				return dev;
-+			}
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+/* parse sequence of a component device
-+ *
-+ * This function will find the component device and mark if its enable or
-+ * disable sequence is needed by its parenet device.
-+ */
-+static int parse_component_seq(snd_use_case_mgr_t *uc_mgr,
-+			  snd_config_t *n, int enable,
-+			  struct component_sequence *cmpt_seq)
-+{
-+	const char *val;
++	struct use_case_device *device = cmpt_seq->device;
++	struct list_head *seq;
 +	int err;
 +
-+	err = snd_config_get_string(n, &val);
-+	if (err < 0)
-+		return err;
 +
-+	cmpt_seq->device = find_component_dev(uc_mgr, val);
-+	if (!cmpt_seq->device) {
-+		uc_error("error: Cannot find component device %s", val);
-+		return -EINVAL;
-+	}
++	if (cmpt_seq->enable)
++		seq = &device->enable_list;
++	else
++		seq = &device->disable_list;
 +
-+	/* Parent needs its enable or disable sequence */
-+	cmpt_seq->enable = enable;
-+
-+	return 0;
++	err = execute_sequence(uc_mgr, seq,
++			       &device->value_list,
++			       &uc_mgr->active_verb->value_list,
++			       &uc_mgr->value_list,
++			       cdev_in);
++	return err;
 +}
 +
- /*
-  * Parse sequences.
-  *
-@@ -249,7 +324,7 @@ static int parse_device_list(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
-  *	cset "name='Master Playback Switch' 0,0"
-  *      cset "iface=PCM,name='Disable HDMI',index=1 0"
-  */
--static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
-+static int parse_sequence(snd_use_case_mgr_t *uc_mgr,
- 			  struct list_head *base,
- 			  snd_config_t *cfg)
- {
-@@ -306,6 +381,30 @@ static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
- 			continue;
- 		}
+ /**
+  * \brief Import master config and execute the default sequence
+  * \param uc_mgr Use case manager
+@@ -455,7 +528,7 @@ static int import_master_config(snd_use_case_mgr_t *uc_mgr)
+ 	if (err < 0)
+ 		return err;
+ 	err = execute_sequence(uc_mgr, &uc_mgr->default_list,
+-			       &uc_mgr->value_list, NULL, NULL);
++			       &uc_mgr->value_list, NULL, NULL, NULL);
+ 	if (err < 0)
+ 		uc_error("Unable to execute default sequence");
+ 	return err;
+@@ -761,7 +834,7 @@ static int set_verb(snd_use_case_mgr_t *uc_mgr,
+ 	err = execute_sequence(uc_mgr, seq,
+ 			       &verb->value_list,
+ 			       &uc_mgr->value_list,
+-			       NULL);
++			       NULL, NULL);
+ 	if (enable && err >= 0)
+ 		uc_mgr->active_verb = verb;
+ 	return err;
+@@ -792,7 +865,8 @@ static int set_modifier(snd_use_case_mgr_t *uc_mgr,
+ 	err = execute_sequence(uc_mgr, seq,
+ 			       &modifier->value_list,
+ 			       &uc_mgr->active_verb->value_list,
+-			       &uc_mgr->value_list);
++			       &uc_mgr->value_list,
++			       NULL);
+ 	if (enable && err >= 0) {
+ 		list_add_tail(&modifier->active_list, &uc_mgr->active_modifiers);
+ 	} else if (!enable) {
+@@ -826,7 +900,8 @@ static int set_device(snd_use_case_mgr_t *uc_mgr,
+ 	err = execute_sequence(uc_mgr, seq,
+ 			       &device->value_list,
+ 			       &uc_mgr->active_verb->value_list,
+-			       &uc_mgr->value_list);
++			       &uc_mgr->value_list,
++			       NULL);
+ 	if (enable && err >= 0) {
+ 		list_add_tail(&device->active_list, &uc_mgr->active_devices);
+ 	} else if (!enable) {
+@@ -953,7 +1028,7 @@ static int dismantle_use_case(snd_use_case_mgr_t *uc_mgr)
+ 	uc_mgr->active_verb = NULL;
  
-+		if (strcmp(cmd, "enadev") == 0) {
-+			/* need to enable a component device */
-+			curr->type = SEQUENCE_ELEMENT_TYPE_CMPT_SEQ;
-+			err = parse_component_seq(uc_mgr, n, 1,
-+						&curr->data.cmpt_seq);
-+			if (err < 0) {
-+				uc_error("error: enadev requires a valid device!");
-+				return err;
-+			}
-+			continue;
-+		}
-+
-+		if (strcmp(cmd, "disdev") == 0) {
-+			/* need to disable a component device */
-+			curr->type = SEQUENCE_ELEMENT_TYPE_CMPT_SEQ;
-+			err = parse_component_seq(uc_mgr, n, 0,
-+						&curr->data.cmpt_seq);
-+			if (err < 0) {
-+				uc_error("error: disdev requires a valid device!");
-+				return err;
-+			}
-+			continue;
-+		}
-+
- 		if (strcmp(cmd, "cset-bin-file") == 0) {
- 			curr->type = SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE;
- 			err = parse_string(n, &curr->data.cset);
-@@ -938,6 +1037,7 @@ static int parse_verb_file(snd_use_case_mgr_t *uc_mgr,
- 	INIT_LIST_HEAD(&verb->disable_list);
- 	INIT_LIST_HEAD(&verb->transition_list);
- 	INIT_LIST_HEAD(&verb->device_list);
-+	INIT_LIST_HEAD(&verb->cmpt_device_list);
- 	INIT_LIST_HEAD(&verb->modifier_list);
- 	INIT_LIST_HEAD(&verb->value_list);
- 	list_add_tail(&verb->list, &uc_mgr->verb_list);
-diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
-index b89de2a..3bfdd67 100644
---- a/src/ucm/ucm_local.h
-+++ b/src/ucm/ucm_local.h
-@@ -49,6 +49,7 @@
- #define SEQUENCE_ELEMENT_TYPE_EXEC	4
- #define SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE	5
- #define SEQUENCE_ELEMENT_TYPE_CSET_TLV	6
-+#define SEQUENCE_ELEMENT_TYPE_CMPT_SEQ	7
+ 	err = execute_sequence(uc_mgr, &uc_mgr->default_list,
+-			       &uc_mgr->value_list, NULL, NULL);
++			       &uc_mgr->value_list, NULL, NULL, NULL);
+ 	
+ 	return err;
+ }
+@@ -969,7 +1044,7 @@ int snd_use_case_mgr_reset(snd_use_case_mgr_t *uc_mgr)
  
- struct ucm_value {
-         struct list_head list;
-@@ -56,6 +57,12 @@ struct ucm_value {
-         char *data;
- };
- 
-+/* sequence of a component device */
-+struct component_sequence {
-+	struct use_case_device *device; /* component device */
-+	int enable; /* flag to choose enable or disable list of the device */
-+};
-+
- struct sequence_element {
- 	struct list_head list;
- 	unsigned int type;
-@@ -64,6 +71,7 @@ struct sequence_element {
- 		char *cdev;
- 		char *cset;
- 		char *exec;
-+		struct component_sequence cmpt_seq; /* component sequence */
- 	} data;
- };
- 
-@@ -167,6 +175,9 @@ struct use_case_verb {
- 	/* hardware devices that can be used with this use case */
- 	struct list_head device_list;
- 
-+	/* component device list */
-+	struct list_head cmpt_device_list;
-+
- 	/* modifiers that can be used with this use case */
- 	struct list_head modifier_list;
- 
-diff --git a/src/ucm/utils.c b/src/ucm/utils.c
-index 45307b0..0fba85a 100644
---- a/src/ucm/utils.c
-+++ b/src/ucm/utils.c
-@@ -210,6 +210,7 @@ void uc_mgr_free_verb(snd_use_case_mgr_t *uc_mgr)
- 		uc_mgr_free_transition(&verb->transition_list);
- 		uc_mgr_free_value(&verb->value_list);
- 		uc_mgr_free_device(&verb->device_list);
-+		uc_mgr_free_device(&verb->cmpt_device_list);
- 		uc_mgr_free_modifier(&verb->modifier_list);
- 		list_del(&verb->list);
- 		free(verb);
+ 	pthread_mutex_lock(&uc_mgr->mutex);
+ 	err = execute_sequence(uc_mgr, &uc_mgr->default_list,
+-			       &uc_mgr->value_list, NULL, NULL);
++			       &uc_mgr->value_list, NULL, NULL, NULL);
+ 	INIT_LIST_HEAD(&uc_mgr->active_modifiers);
+ 	INIT_LIST_HEAD(&uc_mgr->active_devices);
+ 	uc_mgr->active_verb = NULL;
+@@ -1578,6 +1653,7 @@ static int handle_transition_verb(snd_use_case_mgr_t *uc_mgr,
+                         err = execute_sequence(uc_mgr, &trans->transition_list,
+ 					       &uc_mgr->active_verb->value_list,
+ 					       &uc_mgr->value_list,
++					       NULL,
+ 					       NULL);
+                         if (err >= 0)
+                                 return 1;
+@@ -1689,7 +1765,8 @@ static int switch_device(snd_use_case_mgr_t *uc_mgr,
+                         err = execute_sequence(uc_mgr, &trans->transition_list,
+ 					       &xold->value_list,
+ 					       &uc_mgr->active_verb->value_list,
+-					       &uc_mgr->value_list);
++					       &uc_mgr->value_list,
++					       NULL);
+                         if (err >= 0) {
+                                 list_del(&xold->active_list);
+                                 list_add_tail(&xnew->active_list, &uc_mgr->active_devices);
+@@ -1741,7 +1818,8 @@ static int switch_modifier(snd_use_case_mgr_t *uc_mgr,
+                         err = execute_sequence(uc_mgr, &trans->transition_list,
+ 					       &xold->value_list,
+ 					       &uc_mgr->active_verb->value_list,
+-					       &uc_mgr->value_list);
++					       &uc_mgr->value_list,
++					       NULL);
+                         if (err >= 0) {
+                                 list_del(&xold->active_list);
+                                 list_add_tail(&xnew->active_list, &uc_mgr->active_modifiers);
 -- 
 2.7.4
