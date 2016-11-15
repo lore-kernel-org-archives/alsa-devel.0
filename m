@@ -1,17 +1,17 @@
 From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH 14/19] ASoC: wm8741: Convert to
+Subject: Re: [PATCH 15/19] ASoC: wm8731: Convert to
  module_i2c/spi_driver()
-Date: Wed, 16 Nov 2016 01:51:52 +0800
-Message-ID: <201611160141.eEo8Uf6K%fengguang.wu@intel.com>
-References: <87h9798gy4.wl%kuninori.morimoto.gx@renesas.com>
+Date: Wed, 16 Nov 2016 02:07:00 +0800
+Message-ID: <201611160222.D2rVzleO%fengguang.wu@intel.com>
+References: <87fumt8gxo.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="a8Wt8u1KmwUX3Y2C"
+Content-Type: multipart/mixed; boundary="oyUTqETQ0mS9luUI"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 736412665AB
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 18:52:24 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F89A266925
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 19:07:25 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <87h9798gy4.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87fumt8gxo.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,7 +26,7 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, k
 List-Id: alsa-devel@alsa-project.org
 
 
---a8Wt8u1KmwUX3Y2C
+--oyUTqETQ0mS9luUI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -45,18 +45,18 @@ reproduce:
 
 All warnings (new ones prefixed by >>):
 
-   In file included from sound/soc/codecs/wm8741.c:14:0:
+   In file included from sound/soc/codecs/wm8731.c:16:0:
    include/linux/module.h:130:27: error: redefinition of '__inittest'
      static inline initcall_t __inittest(void)  \
                               ^
    include/linux/device.h:1353:1: note: in expansion of macro 'module_init'
     module_init(__driver##_init); \
     ^~~~~~~~~~~
-   include/linux/spi/spi.h:290:2: note: in expansion of macro 'module_driver'
-     module_driver(__spi_driver, spi_register_driver, \
+   include/linux/i2c.h:751:2: note: in expansion of macro 'module_driver'
+     module_driver(__i2c_driver, i2c_add_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8741.c:668:1: note: in expansion of macro 'module_spi_driver'
-    module_spi_driver(wm8741_spi_driver);
+>> sound/soc/codecs/wm8731.c:810:1: note: in expansion of macro 'module_i2c_driver'
+    module_i2c_driver(wm8731_i2c_driver);
     ^~~~~~~~~~~~~~~~~
    include/linux/module.h:130:27: note: previous definition of '__inittest' was here
      static inline initcall_t __inittest(void)  \
@@ -64,11 +64,11 @@ All warnings (new ones prefixed by >>):
    include/linux/device.h:1353:1: note: in expansion of macro 'module_init'
     module_init(__driver##_init); \
     ^~~~~~~~~~~
-   include/linux/i2c.h:751:2: note: in expansion of macro 'module_driver'
-     module_driver(__i2c_driver, i2c_add_driver, \
+   include/linux/spi/spi.h:290:2: note: in expansion of macro 'module_driver'
+     module_driver(__spi_driver, spi_register_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8741.c:610:1: note: in expansion of macro 'module_i2c_driver'
-    module_i2c_driver(wm8741_i2c_driver);
+>> sound/soc/codecs/wm8731.c:731:1: note: in expansion of macro 'module_spi_driver'
+    module_spi_driver(wm8731_spi_driver);
     ^~~~~~~~~~~~~~~~~
    include/linux/module.h:132:6: error: redefinition of 'init_module'
      int init_module(void) __attribute__((alias(#initfn)));
@@ -76,11 +76,11 @@ All warnings (new ones prefixed by >>):
    include/linux/device.h:1353:1: note: in expansion of macro 'module_init'
     module_init(__driver##_init); \
     ^~~~~~~~~~~
-   include/linux/spi/spi.h:290:2: note: in expansion of macro 'module_driver'
-     module_driver(__spi_driver, spi_register_driver, \
+   include/linux/i2c.h:751:2: note: in expansion of macro 'module_driver'
+     module_driver(__i2c_driver, i2c_add_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8741.c:668:1: note: in expansion of macro 'module_spi_driver'
-    module_spi_driver(wm8741_spi_driver);
+>> sound/soc/codecs/wm8731.c:810:1: note: in expansion of macro 'module_i2c_driver'
+    module_i2c_driver(wm8731_i2c_driver);
     ^~~~~~~~~~~~~~~~~
    include/linux/module.h:132:6: note: previous definition of 'init_module' was here
      int init_module(void) __attribute__((alias(#initfn)));
@@ -88,11 +88,11 @@ All warnings (new ones prefixed by >>):
    include/linux/device.h:1353:1: note: in expansion of macro 'module_init'
     module_init(__driver##_init); \
     ^~~~~~~~~~~
-   include/linux/i2c.h:751:2: note: in expansion of macro 'module_driver'
-     module_driver(__i2c_driver, i2c_add_driver, \
+   include/linux/spi/spi.h:290:2: note: in expansion of macro 'module_driver'
+     module_driver(__spi_driver, spi_register_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8741.c:610:1: note: in expansion of macro 'module_i2c_driver'
-    module_i2c_driver(wm8741_i2c_driver);
+>> sound/soc/codecs/wm8731.c:731:1: note: in expansion of macro 'module_spi_driver'
+    module_spi_driver(wm8731_spi_driver);
     ^~~~~~~~~~~~~~~~~
    include/linux/module.h:136:27: error: redefinition of '__exittest'
      static inline exitcall_t __exittest(void)  \
@@ -100,11 +100,11 @@ All warnings (new ones prefixed by >>):
    include/linux/device.h:1358:1: note: in expansion of macro 'module_exit'
     module_exit(__driver##_exit);
     ^~~~~~~~~~~
-   include/linux/spi/spi.h:290:2: note: in expansion of macro 'module_driver'
-     module_driver(__spi_driver, spi_register_driver, \
+   include/linux/i2c.h:751:2: note: in expansion of macro 'module_driver'
+     module_driver(__i2c_driver, i2c_add_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8741.c:668:1: note: in expansion of macro 'module_spi_driver'
-    module_spi_driver(wm8741_spi_driver);
+>> sound/soc/codecs/wm8731.c:810:1: note: in expansion of macro 'module_i2c_driver'
+    module_i2c_driver(wm8731_i2c_driver);
     ^~~~~~~~~~~~~~~~~
    include/linux/module.h:136:27: note: previous definition of '__exittest' was here
      static inline exitcall_t __exittest(void)  \
@@ -112,13 +112,25 @@ All warnings (new ones prefixed by >>):
    include/linux/device.h:1358:1: note: in expansion of macro 'module_exit'
     module_exit(__driver##_exit);
     ^~~~~~~~~~~
+   include/linux/spi/spi.h:290:2: note: in expansion of macro 'module_driver'
+     module_driver(__spi_driver, spi_register_driver, \
+     ^~~~~~~~~~~~~
+>> sound/soc/codecs/wm8731.c:731:1: note: in expansion of macro 'module_spi_driver'
+    module_spi_driver(wm8731_spi_driver);
+    ^~~~~~~~~~~~~~~~~
+   include/linux/module.h:138:7: error: redefinition of 'cleanup_module'
+     void cleanup_module(void) __attribute__((alias(#exitfn)));
+          ^
+   include/linux/device.h:1358:1: note: in expansion of macro 'module_exit'
+    module_exit(__driver##_exit);
+    ^~~~~~~~~~~
    include/linux/i2c.h:751:2: note: in expansion of macro 'module_driver'
      module_driver(__i2c_driver, i2c_add_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8741.c:610:1: note: in expansion of macro 'module_i2c_driver'
-    module_i2c_driver(wm8741_i2c_driver);
+>> sound/soc/codecs/wm8731.c:810:1: note: in expansion of macro 'module_i2c_driver'
+    module_i2c_driver(wm8731_i2c_driver);
     ^~~~~~~~~~~~~~~~~
-   include/linux/module.h:138:7: error: redefinition of 'cleanup_module'
+   include/linux/module.h:138:7: note: previous definition of 'cleanup_module' was here
      void cleanup_module(void) __attribute__((alias(#exitfn)));
           ^
    include/linux/device.h:1358:1: note: in expansion of macro 'module_exit'
@@ -127,103 +139,112 @@ All warnings (new ones prefixed by >>):
    include/linux/spi/spi.h:290:2: note: in expansion of macro 'module_driver'
      module_driver(__spi_driver, spi_register_driver, \
      ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8741.c:668:1: note: in expansion of macro 'module_spi_driver'
-    module_spi_driver(wm8741_spi_driver);
-    ^~~~~~~~~~~~~~~~~
-   include/linux/module.h:138:7: note: previous definition of 'cleanup_module' was here
-     void cleanup_module(void) __attribute__((alias(#exitfn)));
-          ^
-   include/linux/device.h:1358:1: note: in expansion of macro 'module_exit'
-    module_exit(__driver##_exit);
-    ^~~~~~~~~~~
-   include/linux/i2c.h:751:2: note: in expansion of macro 'module_driver'
-     module_driver(__i2c_driver, i2c_add_driver, \
-     ^~~~~~~~~~~~~
->> sound/soc/codecs/wm8741.c:610:1: note: in expansion of macro 'module_i2c_driver'
-    module_i2c_driver(wm8741_i2c_driver);
+>> sound/soc/codecs/wm8731.c:731:1: note: in expansion of macro 'module_spi_driver'
+    module_spi_driver(wm8731_spi_driver);
     ^~~~~~~~~~~~~~~~~
 
-vim +/module_spi_driver +668 sound/soc/codecs/wm8741.c
+vim +/module_i2c_driver +810 sound/soc/codecs/wm8731.c
 
-   604			.of_match_table = wm8741_of_match,
-   605		},
-   606		.probe =    wm8741_i2c_probe,
-   607		.remove =   wm8741_i2c_remove,
-   608		.id_table = wm8741_i2c_id,
-   609	};
- > 610	module_i2c_driver(wm8741_i2c_driver);
-   611	#endif
-   612	
-   613	#if defined(CONFIG_SPI_MASTER)
-   614	static int wm8741_spi_probe(struct spi_device *spi)
-   615	{
-   616		struct wm8741_priv *wm8741;
-   617		int ret, i;
-   618	
-   619		wm8741 = devm_kzalloc(&spi->dev, sizeof(struct wm8741_priv),
-   620				     GFP_KERNEL);
-   621		if (wm8741 == NULL)
-   622			return -ENOMEM;
-   623	
-   624		for (i = 0; i < ARRAY_SIZE(wm8741->supplies); i++)
-   625			wm8741->supplies[i].supply = wm8741_supply_names[i];
-   626	
-   627		ret = devm_regulator_bulk_get(&spi->dev, ARRAY_SIZE(wm8741->supplies),
-   628					      wm8741->supplies);
-   629		if (ret != 0) {
-   630			dev_err(&spi->dev, "Failed to request supplies: %d\n", ret);
-   631			return ret;
-   632		}
-   633	
-   634		wm8741->regmap = devm_regmap_init_spi(spi, &wm8741_regmap);
-   635		if (IS_ERR(wm8741->regmap)) {
-   636			ret = PTR_ERR(wm8741->regmap);
-   637			dev_err(&spi->dev, "Failed to init regmap: %d\n", ret);
-   638			return ret;
-   639		}
-   640	
-   641		ret = wm8741_set_pdata(&spi->dev, wm8741);
-   642		if (ret != 0) {
-   643			dev_err(&spi->dev, "Failed to set pdata: %d\n", ret);
-   644			return ret;
-   645		}
-   646	
-   647		spi_set_drvdata(spi, wm8741);
-   648	
-   649		ret = snd_soc_register_codec(&spi->dev,
-   650				&soc_codec_dev_wm8741, &wm8741_dai, 1);
-   651		return ret;
-   652	}
-   653	
-   654	static int wm8741_spi_remove(struct spi_device *spi)
-   655	{
-   656		snd_soc_unregister_codec(&spi->dev);
-   657		return 0;
-   658	}
-   659	
-   660	static struct spi_driver wm8741_spi_driver = {
-   661		.driver = {
-   662			.name	= "wm8741",
-   663			.of_match_table = wm8741_of_match,
-   664		},
-   665		.probe		= wm8741_spi_probe,
-   666		.remove		= wm8741_spi_remove,
-   667	};
- > 668	module_spi_driver(wm8741_spi_driver);
-   669	#endif /* CONFIG_SPI_MASTER */
-   670	
-   671	MODULE_DESCRIPTION("ASoC WM8741 driver");
+   725			.name	= "wm8731",
+   726			.of_match_table = wm8731_of_match,
+   727		},
+   728		.probe		= wm8731_spi_probe,
+   729		.remove		= wm8731_spi_remove,
+   730	};
+ > 731	module_spi_driver(wm8731_spi_driver);
+   732	#endif /* CONFIG_SPI_MASTER */
+   733	
+   734	#if IS_ENABLED(CONFIG_I2C)
+   735	static int wm8731_i2c_probe(struct i2c_client *i2c,
+   736				    const struct i2c_device_id *id)
+   737	{
+   738		struct wm8731_priv *wm8731;
+   739		int ret;
+   740	
+   741		wm8731 = devm_kzalloc(&i2c->dev, sizeof(struct wm8731_priv),
+   742				      GFP_KERNEL);
+   743		if (wm8731 == NULL)
+   744			return -ENOMEM;
+   745	
+   746		wm8731->mclk = devm_clk_get(&i2c->dev, "mclk");
+   747		if (IS_ERR(wm8731->mclk)) {
+   748			ret = PTR_ERR(wm8731->mclk);
+   749			if (ret == -ENOENT) {
+   750				wm8731->mclk = NULL;
+   751				dev_warn(&i2c->dev, "Assuming static MCLK\n");
+   752			} else {
+   753				dev_err(&i2c->dev, "Failed to get MCLK: %d\n",
+   754					ret);
+   755				return ret;
+   756			}
+   757		}
+   758	
+   759		mutex_init(&wm8731->lock);
+   760	
+   761		i2c_set_clientdata(i2c, wm8731);
+   762	
+   763		ret = wm8731_request_supplies(&i2c->dev, wm8731);
+   764		if (ret != 0)
+   765			return ret;
+   766	
+   767		wm8731->regmap = devm_regmap_init_i2c(i2c, &wm8731_regmap);
+   768		if (IS_ERR(wm8731->regmap)) {
+   769			ret = PTR_ERR(wm8731->regmap);
+   770			dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
+   771				ret);
+   772			return ret;
+   773		}
+   774	
+   775		ret = wm8731_hw_init(&i2c->dev, wm8731);
+   776		if (ret != 0)
+   777			return ret;
+   778	
+   779		ret = snd_soc_register_codec(&i2c->dev,
+   780				&soc_codec_dev_wm8731, &wm8731_dai, 1);
+   781		if (ret != 0) {
+   782			dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
+   783			return ret;
+   784		}
+   785	
+   786		return 0;
+   787	}
+   788	
+   789	static int wm8731_i2c_remove(struct i2c_client *client)
+   790	{
+   791		snd_soc_unregister_codec(&client->dev);
+   792		return 0;
+   793	}
+   794	
+   795	static const struct i2c_device_id wm8731_i2c_id[] = {
+   796		{ "wm8731", 0 },
+   797		{ }
+   798	};
+   799	MODULE_DEVICE_TABLE(i2c, wm8731_i2c_id);
+   800	
+   801	static struct i2c_driver wm8731_i2c_driver = {
+   802		.driver = {
+   803			.name = "wm8731",
+   804			.of_match_table = wm8731_of_match,
+   805		},
+   806		.probe =    wm8731_i2c_probe,
+   807		.remove =   wm8731_i2c_remove,
+   808		.id_table = wm8731_i2c_id,
+   809	};
+ > 810	module_i2c_driver(wm8731_i2c_driver);
+   811	#endif
+   812	
+   813	MODULE_DESCRIPTION("ASoC WM8731 driver");
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---a8Wt8u1KmwUX3Y2C
+--oyUTqETQ0mS9luUI
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICAJJK1gAAy5jb25maWcAhDxLd9u20vv+Cp30Lu5dtIkfcdNzjxcQCUqoCIIBQMnyhsd1
+H4sICDtNK1gAAy5jb25maWcAhDxLd9u20vv+Cp30Lu5dtIkfcdNzjxcQCUqoCIIBQMnyhsd1
 lNanjp3Pknubf//NAKQIgEMliyTEDN7znoF+/OHHGXs9PH+5Ozzc3z0+fpv9sXvavdwddp9m
 nx8ed/+d5WpWKTvjubA/A3L58PT6z9uHiw9Xs8uff/353U8v9+9nq93L0+5xlj0/fX744xV6
 Pzw//fAjYGeqKsSivbqcCzt72M+eng+z/e7wQ9d+8+GqvTi//hZ8Dx+iMlY3mRWqanOeqZzr
@@ -772,11 +793,11 @@ yQCUdWxnzscxrX2k9TWaj2RhnSq1rmtOSlR+vZSL0oq0S6L1x9qDTC3bTQJXH1O6+qLEfvqw
 C4eZuAqDN0Q3DF68IOB4AK5bfJBDoAzR/lULctgAn84+ApXdJcV08jFdk+gGc8Sy0A0xWP2o
 PBs/AxLpxyHkMMZpOhnqGZGNivAC4P8BxEbxqeTGAQA=
 
---a8Wt8u1KmwUX3Y2C
+--oyUTqETQ0mS9luUI
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---a8Wt8u1KmwUX3Y2C--
+--oyUTqETQ0mS9luUI--
