@@ -1,8 +1,8 @@
 From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v9 3/3] ASoC: mediatek: Add jack detection support to the
- mt8173-rt5650 machine driver
-Date: Tue, 15 Nov 2016 19:52:40 +0100
-Message-ID: <1479235960-23696-4-git-send-email-p.zabel@pengutronix.de>
+Subject: [PATCH v9 2/3] ASoC: mediatek: Add jack detection support to
+ mt8173-rt5650-rt5676 machine driver
+Date: Tue, 15 Nov 2016 19:52:39 +0100
+Message-ID: <1479235960-23696-3-git-send-email-p.zabel@pengutronix.de>
 References: <1479235960-23696-1-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -28,17 +28,17 @@ to hdmi-codec.
 Signed-off-by: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
 ---
 Changes since v8:
- - Rebased onto the "video: add HDMI state notifier support" patch.
+ - Rebased onto the "video: add HDMI state notifier support" patch [1].
    Now we look for the CEC device in the device tree to pass it to
    hdmi_codec_set_jack_detect.
 ---
- sound/soc/mediatek/mt8173/mt8173-rt5650.c | 42 +++++++++++++++++++++++++++++++
+ sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c | 42 ++++++++++++++++++++++++
  1 file changed, 42 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-index ba65f41..daf00cf 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
+index 1b8b2a7..58fa01e 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
 @@ -17,7 +17,9 @@
  #include <linux/module.h>
  #include <linux/gpio.h>
@@ -48,8 +48,8 @@ index ba65f41..daf00cf 100644
 +#include <sound/hdmi-codec.h>
  #include <sound/jack.h>
  #include "../../codecs/rt5645.h"
- 
-@@ -166,6 +168,27 @@ static struct snd_soc_dai_link_component mt8173_rt5650_codecs[] = {
+ #include "../../codecs/rt5677.h"
+@@ -131,6 +133,27 @@ static struct snd_soc_dai_link_component mt8173_rt5650_rt5676_codecs[] = {
  	},
  };
  
@@ -77,24 +77,24 @@ index ba65f41..daf00cf 100644
  enum {
  	DAI_LINK_PLAYBACK,
  	DAI_LINK_CAPTURE,
-@@ -228,6 +251,7 @@ static struct snd_soc_dai_link mt8173_rt5650_dais[] = {
+@@ -195,6 +218,7 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
  		.no_pcm = 1,
  		.codec_dai_name = "i2s-hifi",
  		.dpcm_playback = 1,
 +		.init = mt8173_hdmi_init,
  	},
- };
- 
-@@ -249,6 +273,8 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
- 	struct snd_soc_card *card = &mt8173_rt5650_card;
+ 	/* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
+ 	[DAI_LINK_INTERCODEC] = {
+@@ -235,6 +259,8 @@ static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &mt8173_rt5650_rt5676_card;
  	struct device_node *platform_node;
- 	struct device_node *np;
 +	struct device_node *cec_np;
 +	struct platform_device *cec_pdev;
- 	const char *codec_capture_dai;
  	int i, ret;
  
-@@ -313,6 +339,22 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
+ 	platform_node = of_parse_phandle(pdev->dev.of_node,
+@@ -281,6 +307,22 @@ static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
  	card->dev = &pdev->dev;
  	platform_set_drvdata(pdev, card);
  
