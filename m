@@ -1,78 +1,86 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC 01/14] SoundWire: Add SoundWire bus driver documentation
-Date: Tue, 15 Nov 2016 19:59:14 +0530
-Message-ID: <20161115142914.GN3000@localhost>
-References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
- <1477053673-16021-2-git-send-email-hardik.t.shah@intel.com>
- <20161114141548.GL1575@localhost.localdomain>
+From: mengdong.lin@linux.intel.com
+Subject: [RFC PATCH 1/3] ucm: Skip component directories when
+	scanning sound card configuration files
+Date: Tue, 15 Nov 2016 16:02:09 +0800
+Message-ID: <5d26bcb59c9dc3ef0b1e004b1e9bd5346160c54d.1479195801.git.mengdong.lin@linux.intel.com>
+References: <cover.1479195801.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20161114141548.GL1575@localhost.localdomain>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Hardik Shah <hardik.t.shah@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 25F36266FF1
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 09:00:24 +0100 (CET)
+In-Reply-To: <cover.1479195801.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 14, 2016 at 02:15:48PM +0000, Charles Keepax wrote:
-> > +static int my_sdw_register_master()
-> > +{
-> > +	struct sdw_master master;
-> > +	struct sdw_master_capabilities *m_cap;
-> > +
-> > +	m_cap = &master.mstr_capabilities;
-> > +
-> > +	/*
-> > +	 * Fill the Master device capability, this is required
-> > +	 * by bus driver to handle bus configurations.
-> > +	 */
-> > +	m_cap->highphy_capable = false;
-> > +	m_cap->monitor_handover_supported = false;
-> > +	m_cap->sdw_dp0_supported = 1;
-> > +	m_cap->num_data_ports = INTEL_SDW_MAX_PORTS;
-> > +
-> > +	return snd_sdw_master_add(&master);
-> > +}
-> > +
-> > +Master driver gets registered for controlling the Master device. It
-> > +provides the callback functions to the bus driver to control the bus in
-> > +device specific way. Device and Driver binds according to the standard
-> > +Linux device-driver bind model. Master driver is registered from the
-> > +driver init code. Below code shows the sample Master driver
-> > +registration.
-> > +
-> > +static struct sdw_master_driver intel_sdw_mstr_driver = {
-> > +	.driver_type = SDW_DRIVER_TYPE_MASTER,
-> > +	.driver = {
-> > +		.name   = "intel_sdw_mstr",
-> > +		.pm     = &intel_sdw_pm_ops,
-> > +	},
-> > +
-> > +	.probe          = intel_sdw_probe,
-> > +	.remove         = intel_sdw_remove,
-> > +	.mstr_ops       = &intel_sdw_master_ops,
-> > +	.mstr_port_ops = &intel_sdw_master_port_ops,
-> > +};
-> > +
-> > +static int __init intel_sdw_init(void) {
-> > +	return snd_sdw_master_register_driver(&intel_sdw_mstr_driver);
-> > +}
-> 
-> Would be good to hear some detail the reasoning for the design
-> choices here? Normally (I2C/SPI) the master sits on whatever bus
-> the host uses to talk to the master so often this might be the
-> platform bus for memory mapped devices, it then creates a bus and
-> slaves register to that. This also has the nice property that its
-> easy to create devices that sit behind other buses, for example
-> here we might want a SoundWire master that sits behind a SPI bus.
-> But you seem to have gone in the other direction and have the
-> master sitting on the same bus as the slaves.
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Since the controller on our SoC was enumerable, people went with this
-approach. In this hindsight that may not have been the best choice.
+Cards are defined by machines. DSPs embedded in SoC and off-soc codecs
+can be taken as components for machines, and can be reused by different
+machines/cards. Codec and SoC vendors can define their own UCM config
+files. If a codec or DSP is used by a machine, the card configuration file
+can include the conf file of the codec and DSP. Later patches will
+complete support for this feature.
 
-So it will be fixed in next rev.
+Two new directories will be used to store the UCM configuration files for
+a specific codec or DSP firmware:
+- /usr/share/alsa/ucm/dsps ... for DSP embedded in SoC
+- /usr/share/alsa/ucm/codecs ... for off-soc codecs
 
+These two directories will be skipped when UCM manager scans the card
+directories under /usr/share/alsa/ucm.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+
+diff --git a/src/ucm/parser.c b/src/ucm/parser.c
+index 13f62d7..5fc98a1 100644
+--- a/src/ucm/parser.c
++++ b/src/ucm/parser.c
+@@ -1259,7 +1259,18 @@ static int filename_filter(const struct dirent *dirent)
+ 	return 0;
+ }
+ 
+-/* scan all cards and comments */
++/* scan all cards and comments
++ *
++ * Cards are defined by machines. Each card/machine installs its UCM
++ * configuration files in a subdirectory with the same name as the sound
++ * card under /usr/share/alsa/ucm. This function will scan all the card
++ * directories.
++ * Two direcotries, 'codecs' and 'dsps', are skipped in the scanning. These
++ * two directories are used to store UCM configurations file for off-soc
++ * codecs and DSPs embedded in SoC, which are components of machines.
++ * Their configuration files can be included by different machines/cards,
++ * and alsaconf will import the included files automatically.
++ */
+ int uc_mgr_scan_master_configs(const char **_list[])
+ {
+ 	char filename[MAX_FILE], dfl[MAX_FILE];
+@@ -1309,6 +1320,13 @@ int uc_mgr_scan_master_configs(const char **_list[])
+ 	}
+ 
+ 	for (i = 0; i < cnt; i++) {
++
++		/* Skip the directories for component devices */
++		if (!strncmp(namelist[i]->d_name, "codecs", 6))
++			continue;
++		if (!strncmp(namelist[i]->d_name, "dsps", 4))
++			continue;
++
+ 		err = load_master_config(namelist[i]->d_name, &cfg);
+ 		if (err < 0)
+ 			goto __err;
 -- 
-~Vinod
+2.7.4
