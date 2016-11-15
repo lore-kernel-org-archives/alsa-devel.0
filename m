@@ -1,28 +1,42 @@
-From: bojan prtvar <prtvar.b@gmail.com>
-Subject: Re: [patch] ASoC: sh: dma-sh7760: fix a debug printf
-Date: Thu, 17 Nov 2016 14:31:06 +0100
-Message-ID: <CAOmT4fR2Y5BPdpM8KrtdVqTpg2ewGOVyzzBC_wij55NSzbOdfQ@mail.gmail.com>
-References: <20161117110046.GC32143@mwanda>
+From: Nicolae Rosia <nicolae.rosia.oss@gmail.com>
+Subject: Re: [PATCH 2/2] mfd: twl4030-audio: make module DT only
+Date: Tue, 15 Nov 2016 14:19:18 +0200
+Message-ID: <CAKP5S=02rfMtg6kV7g9b6E8qvFtK=_6qvQ2uP1XgEO=+Ne4RJA@mail.gmail.com>
+References: <1479196880-20344-3-git-send-email-Nicolae_Rosia@mentor.com>
+ <201611151739.4OqEsPhI%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20161117110046.GC32143@mwanda>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Manuel Lauss <mano@roarinelk.homelinux.net>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
+ [209.85.214.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C365267080
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 13:19:19 +0100 (CET)
+Received: by mail-it0-f68.google.com with SMTP id q124so22075705itd.1
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 04:19:19 -0800 (PST)
+In-Reply-To: <201611151739.4OqEsPhI%fengguang.wu@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: kbuild test robot <lkp@intel.com>
+Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Lee Jones <lee.jones@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, linux-omap@vger.kernel.org, Nicolae Rosia <Nicolae_Rosia@mentor.com>
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On Thu, Nov 17, 2016 at 12:00 PM, Dan Carpenter
-<dan.carpenter@oracle.com> wrote:
+On Tue, Nov 15, 2016 at 12:00 PM, kbuild test robot <lkp@intel.com> wrote:
+> Hi Nicolae,
+>
+> [auto build test ERROR on asoc/for-next]
+> [also build test ERROR on v4.9-rc5 next-20161115]
+> [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+Thanks, I forgot to convert twl4030-vibra, will send v2.
 
-> -       pr_debug("PCM data: addr 0x%08ulx len %d\n",
-> +       pr_debug("PCM data: addr 0x%08lx len %d\n",
->                  (u32)runtime->dma_addr, runtime->dma_bytes);
-
-While there, why not using %pad as suggested by
-Documentation/printk-formats.txt?
-
-Regards,
-Bojan
+Best regards,
+Nicolae Rosia
