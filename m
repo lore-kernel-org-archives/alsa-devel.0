@@ -1,56 +1,69 @@
-From: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Subject: [PATCH v9 0/3] ASoC: MT8173 HDMI jack detection
-Date: Tue, 15 Nov 2016 19:52:37 +0100
-Message-ID: <1479235960-23696-1-git-send-email-p.zabel@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm8580: tidyup Kconfig tristate title
+Date: Tue, 15 Nov 2016 15:04:59 +0000
+Message-ID: <20161115150459.vaxlgy6kugink4oy@sirena.org.uk>
+References: <8737it9z67.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hans Verkuil <hans.verkuil-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, PC Liao <pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============3135128798457198234=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7D902665AB
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 16:05:08 +0100 (CET)
+In-Reply-To: <8737it9z67.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-now that a new HDMI state notifier RFC has been posted [1], I've updated this
-series to use it instead of the previous prototype. I've also sent the
-drm/mediatek part of this series separately [2], which is needed to actually
-generate the events the hdmi-codec driver listens for.
+--===============3135128798457198234==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="is73pojh7dkzv4ip"
+Content-Disposition: inline
 
-Changes since v8:
- - Dropped the HDMI notification prototype patch
- - Rebased onto the "video: add HDMI state notifier support" patch by
-   Hans Verkuil, based on Russell King's earlier version.
- - Dropped the drm/mediatek patch
 
-regards
-Philipp
+--is73pojh7dkzv4ip
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1] https://patchwork.linuxtv.org/patch/38109/
-[2] https://patchwork.kernel.org/patch/9430337/
+On Tue, Nov 15, 2016 at 03:54:18AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> It is WM8580, not WM8523
 
-Philipp Zabel (3):
-  ASoC: hdmi-codec: use HDMI state notifier to add jack support
-  ASoC: mediatek: Add jack detection support to mt8173-rt5650-rt5676
-    machine driver
-  ASoC: mediatek: Add jack detection support to the mt8173-rt5650
-    machine driver
+This doesn't apply against current code, please check and resend.
 
- include/sound/hdmi-codec.h                       |   7 ++
- sound/soc/codecs/Kconfig                         |   1 +
- sound/soc/codecs/hdmi-codec.c                    | 107 +++++++++++++++++++++--
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c |  42 +++++++++
- sound/soc/mediatek/mt8173/mt8173-rt5650.c        |  42 +++++++++
- 5 files changed, 191 insertions(+), 8 deletions(-)
+--is73pojh7dkzv4ip
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-2.10.2
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJYKyQWAAoJECTWi3JdVIfQq3IH/0hFVHdC20GuM0duRM3i5CTz
+Gd0zoLEU2knT6pU13iS5OYzDGUYlBHaHLbtJALsv67ayJNrYQR5JRyTJB6Mz+kc9
+yQDP1bUUBYpCr+idJbeyOlIV2RSoyXoX/Wan9jd4VPVVGaIxG4vwweMPjLrDbxDV
+KUJ79XqkId22RkjK5M81UYLpdaAUGwy8aO3OuM3mdg6KDtsVZCS3Mw36f9GoBYDY
+IPNMATIF72MmYD/cOM/GQKTW1HZ+ITSMdNhR/hgEwLOslndgduH0+SKVze4icymA
+YSDm0m29/3k2E7mY77rxHBkLxDVEv6Llr+RX9skJasQYf1IsfpwpQhaBj2BgXiU=
+=YzSi
+-----END PGP SIGNATURE-----
+
+--is73pojh7dkzv4ip--
+
+--===============3135128798457198234==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3135128798457198234==--
