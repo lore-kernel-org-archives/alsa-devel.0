@@ -1,18 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 05/19] ASoC: wm8510: Convert to
- module_i2c/spi_driver()
-Date: Tue, 15 Nov 2016 09:33:11 +0100
-Message-ID: <1132b3b4-4576-07e0-1fce-4a4ba255eb57@metafoo.de>
-References: <871syd9vq9.wl%kuninori.morimoto.gx@renesas.com>
- <87twb98h2o.wl%kuninori.morimoto.gx@renesas.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [RFC PATCH 1/3] ucm: Skip component directories
+ when scanning sound card configuration files
+Date: Tue, 15 Nov 2016 08:45:45 +0000
+Message-ID: <1479199545.7823.10.camel@loki>
+References: <cover.1479195801.git.mengdong.lin@linux.intel.com>
+ <5d26bcb59c9dc3ef0b1e004b1e9bd5346160c54d.1479195801.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id CF69726661C
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 09:33:18 +0100 (CET)
-In-Reply-To: <87twb98h2o.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7048926661C
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 09:45:49 +0100 (CET)
+In-Reply-To: <5d26bcb59c9dc3ef0b1e004b1e9bd5346160c54d.1479195801.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
+To: mengdong.lin@linux.intel.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, mengdong.lin@intel.com, vinod.koul@intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/15/2016 06:10 AM, Kuninori Morimoto wrote:
+On Tue, 2016-11-15 at 16:02 +0800, mengdong.lin@linux.intel.com wrote:
+> From: Mengdong Lin <mengdong.lin@linux.intel.com>
 > 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Cards are defined by machines. DSPs embedded in SoC and off-soc codecs
+> can be taken as components for machines, and can be reused by different
+> machines/cards. Codec and SoC vendors can define their own UCM config
+> files. If a codec or DSP is used by a machine, the card configuration file
+> can include the conf file of the codec and DSP. Later patches will
+> complete support for this feature.
 > 
-> Let's use module_i2c/spi_driver()
+> Two new directories will be used to store the UCM configuration files for
+> a specific codec or DSP firmware:
+> - /usr/share/alsa/ucm/dsps ... for DSP embedded in SoC
+> - /usr/share/alsa/ucm/codecs ... for off-soc codecs
 > 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  sound/soc/codecs/wm8510.c | 34 ++--------------------------------
->  1 file changed, 2 insertions(+), 32 deletions(-)
+> These two directories will be skipped when UCM manager scans the card
+> directories under /usr/share/alsa/ucm.
 > 
-> diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
-> index 119ceac..2455606 100644
-> --- a/sound/soc/codecs/wm8510.c
-> +++ b/sound/soc/codecs/wm8510.c
-> @@ -651,6 +651,7 @@ static int wm8510_spi_remove(struct spi_device *spi)
->  	.probe		= wm8510_spi_probe,
->  	.remove		= wm8510_spi_remove,
->  };
-> +module_spi_driver(wm8510_spi_driver);
->  #endif /* CONFIG_SPI_MASTER */
+> Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+> 
+> diff --git a/src/ucm/parser.c b/src/ucm/parser.c
+> index 13f62d7..5fc98a1 100644
+> --- a/src/ucm/parser.c
+> +++ b/src/ucm/parser.c
+> @@ -1259,7 +1259,18 @@ static int filename_filter(const struct dirent *dirent)
+>  	return 0;
+>  }
 >  
->  #if IS_ENABLED(CONFIG_I2C)
-> @@ -698,40 +699,9 @@ static int wm8510_i2c_remove(struct i2c_client *client)
->  	.remove =   wm8510_i2c_remove,
->  	.id_table = wm8510_i2c_id,
->  };
-> +module_i2c_driver(wm8510_i2c_driver);
->  #endif
+> -/* scan all cards and comments */
+> +/* scan all cards and comments
+> + *
+> + * Cards are defined by machines. Each card/machine installs its UCM
+> + * configuration files in a subdirectory with the same name as the sound
+> + * card under /usr/share/alsa/ucm. This function will scan all the card
+> + * directories.
+> + * Two direcotries, 'codecs' and 'dsps', are skipped in the scanning. These
+> + * two directories are used to store UCM configurations file for off-soc
+> + * codecs and DSPs embedded in SoC, which are components of machines.
+> + * Their configuration files can be included by different machines/cards,
+> + * and alsaconf will import the included files automatically.
+> + */
+>  int uc_mgr_scan_master_configs(const char **_list[])
+>  {
+>  	char filename[MAX_FILE], dfl[MAX_FILE];
+> @@ -1309,6 +1320,13 @@ int uc_mgr_scan_master_configs(const char **_list[])
+>  	}
+>  
+>  	for (i = 0; i < cnt; i++) {
+> +
+> +		/* Skip the directories for component devices */
+> +		if (!strncmp(namelist[i]->d_name, "codecs", 6))
+> +			continue;
+> +		if (!strncmp(namelist[i]->d_name, "dsps", 4))
+> +			continue;
 
+Maybe we should have an array of strings that denote directories that
+contain non master components, that way we could easily add other
+directories for components.
 
-This wont work when the driver is built as a module as this creates multiple
-module init and exit entry points.
-
-Ideally the driver would be split into submodules for i2c and spi, like
-we've already done for a few drivers.
+Liam 
