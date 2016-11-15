@@ -1,51 +1,78 @@
-From: mengdong.lin@linux.intel.com
-Subject: [RFC PATCH 0/3] Add support for component devices
-Date: Tue, 15 Nov 2016 15:57:43 +0800
-Message-ID: <cover.1479195801.git.mengdong.lin@linux.intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [RFC 01/14] SoundWire: Add SoundWire bus driver documentation
+Date: Tue, 15 Nov 2016 19:59:14 +0530
+Message-ID: <20161115142914.GN3000@localhost>
+References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
+ <1477053673-16021-2-git-send-email-hardik.t.shah@intel.com>
+ <20161114141548.GL1575@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id CF4DB266FF1
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2016 08:55:58 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20161114141548.GL1575@localhost.localdomain>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Hardik Shah <hardik.t.shah@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+On Mon, Nov 14, 2016 at 02:15:48PM +0000, Charles Keepax wrote:
+> > +static int my_sdw_register_master()
+> > +{
+> > +	struct sdw_master master;
+> > +	struct sdw_master_capabilities *m_cap;
+> > +
+> > +	m_cap = &master.mstr_capabilities;
+> > +
+> > +	/*
+> > +	 * Fill the Master device capability, this is required
+> > +	 * by bus driver to handle bus configurations.
+> > +	 */
+> > +	m_cap->highphy_capable = false;
+> > +	m_cap->monitor_handover_supported = false;
+> > +	m_cap->sdw_dp0_supported = 1;
+> > +	m_cap->num_data_ports = INTEL_SDW_MAX_PORTS;
+> > +
+> > +	return snd_sdw_master_add(&master);
+> > +}
+> > +
+> > +Master driver gets registered for controlling the Master device. It
+> > +provides the callback functions to the bus driver to control the bus in
+> > +device specific way. Device and Driver binds according to the standard
+> > +Linux device-driver bind model. Master driver is registered from the
+> > +driver init code. Below code shows the sample Master driver
+> > +registration.
+> > +
+> > +static struct sdw_master_driver intel_sdw_mstr_driver = {
+> > +	.driver_type = SDW_DRIVER_TYPE_MASTER,
+> > +	.driver = {
+> > +		.name   = "intel_sdw_mstr",
+> > +		.pm     = &intel_sdw_pm_ops,
+> > +	},
+> > +
+> > +	.probe          = intel_sdw_probe,
+> > +	.remove         = intel_sdw_remove,
+> > +	.mstr_ops       = &intel_sdw_master_ops,
+> > +	.mstr_port_ops = &intel_sdw_master_port_ops,
+> > +};
+> > +
+> > +static int __init intel_sdw_init(void) {
+> > +	return snd_sdw_master_register_driver(&intel_sdw_mstr_driver);
+> > +}
+> 
+> Would be good to hear some detail the reasoning for the design
+> choices here? Normally (I2C/SPI) the master sits on whatever bus
+> the host uses to talk to the master so often this might be the
+> platform bus for memory mapped devices, it then creates a bus and
+> slaves register to that. This also has the nice property that its
+> easy to create devices that sit behind other buses, for example
+> here we might want a SoundWire master that sits behind a SPI bus.
+> But you seem to have gone in the other direction and have the
+> master sitting on the same bus as the slaves.
 
-Sound cards are defined by machines. And off-soc codecs and DSPs embedded
-in DSP can be taken as the components and resued by different machines/
-sound cards. This series allows codec and SOC vendors to install UCM
-configuration files for a specific codec or DSP, and sound card verb
-files can just include these conf files of components, and trigger enable/
-disable sequence defined by the component devices.
+Since the controller on our SoC was enumerable, people went with this
+approach. In this hindsight that may not have been the best choice.
 
-Component devices will not be exposed to applications for backward
-compatibility. So audio servers like PulseAudio and CRAS still only see
-the machine devices.
-
-Mengdong Lin (3):
-  ucm: Skip component directories when scanning sound card configuration
-    files
-  ucm: Parse sequence of component devices
-  ucm: Execute sequence of component devices
-
- src/ucm/main.c      |  98 ++++++++++++++++++++++++++++++++++++-----
- src/ucm/parser.c    | 122 +++++++++++++++++++++++++++++++++++++++++++++++++++-
- src/ucm/ucm_local.h |  11 +++++
- src/ucm/utils.c     |   1 +
- 4 files changed, 220 insertions(+), 12 deletions(-)
+So it will be fixed in next rev.
 
 -- 
-2.7.4
+~Vinod
