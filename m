@@ -1,1583 +1,543 @@
-From: Norbert Preining <preining@logic.at>
-Subject: Lenovo Dock + Thinkpad X260 -> no HDMI audio output
-Date: Wed, 16 Nov 2016 11:38:21 +0900
-Message-ID: <20161116023821.hcwg4u2iconuc5d6@burischnitzel.preining.info>
+From: kbuild test robot <lkp-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v9 1/3] ASoC: hdmi-codec: use HDMI state
+ notifier to add jack support
+Date: Wed, 16 Nov 2016 11:16:56 +0800
+Message-ID: <201611161130.tb9R5fmj%fengguang.wu@intel.com>
+References: <1479235960-23696-2-git-send-email-p.zabel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="f4d26ltqphyiycna"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="OXfL5xGRrasGEqWY"
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <1479235960-23696-2-git-send-email-p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hans Verkuil <hans.verkuil-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, kbuild-all-JC7UmRfGjtg@public.gmane.org, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, PC Liao <pc.liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Cawa Cheng <cawa.cheng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---f4d26ltqphyiycna
+--OXfL5xGRrasGEqWY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Dear all,
-
-(please cc)
-
-I am trying to get HDMI audio output via a Lenovo Dock Ultra in
-combination with a Lenovo Thinkpad X260.
-
-When plugging the HDMI device (screen) directly into the laptop, 
-audio output can be selected in pavucontrol / Configuration, but
-when the laptop is connected via the dock all the HDMI devices
-appear as unplugged.
-
-I have googled a bit and found a similar case for T430:
-http://permalink.gmane.org/gmane.linux.alsa.user/36896
-and checking the source code of snd_hda_intel it seems that
-	options snd-hda-intel model=lenovo-dock
-should help, but indeed it didn't.
-
-I am running Debian/sid, on today's git kernel (4.9.0-rc5+).
-
-I attach the output of alsa-info.
-
-Please let me know whether I can try some more tweaks. 
-
-Thanks a lot
-
-Norbert
-
---
-PREINING Norbert + TeX Live & Debian Developer + http://www.preining.info
-GPG: 0x860CDC13    fp: F7D8 A928 26E3 16A1 9FA0  ACF0 6CAC A448 860C DC13
-
---f4d26ltqphyiycna
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="alsa-info.txt.rf6TVtwFdP"
-
-upload=true&script=true&cardinfo=
-!!################################
-!!ALSA Information Script v 0.4.64
-!!################################
-
-!!Script ran on: Wed Nov 16 02:30:55 UTC 2016
-
-
-!!Linux Distribution
-!!------------------
-
-Debian GNU/Linux stretch/sid \n \l PRETTY_NAME="Debian GNU/Linux stretch/sid" NAME="Debian GNU/Linux" ID=debian HOME_URL="https://www.debian.org/" SUPPORT_URL="https://www.debian.org/support" BUG_REPORT_URL="https://bugs.debian.org/"
-
-
-!!DMI Information
-!!---------------
-
-Manufacturer:      LENOVO
-Product Name:      20F5CTO1WW
-Product Version:   ThinkPad X260
-Firmware Version:  R02ET48W (1.21 )
-
-
-!!Kernel Information
-!!------------------
-
-Kernel release:    4.9.0-rc5+
-Operating System:  GNU/Linux
-Architecture:      x86_64
-Processor:         unknown
-SMP Enabled:       Yes
-
-
-!!ALSA Version
-!!------------
-
-Driver version:     k4.9.0-rc5+
-Library version:    1.1.2
-Utilities version:  1.1.2
-
-
-!!Loaded ALSA modules
-!!-------------------
-
-snd_hda_intel
-
-
-!!Sound Servers on this system
-!!----------------------------
-
-Pulseaudio:
-      Installed - Yes (/usr/bin/pulseaudio)
-      Running - Yes
-
-Jack:
-      Installed - Yes (/usr/bin/jackd)
-      Running - No
-
-
-!!Soundcards recognised by ALSA
-!!-----------------------------
-
- 0 [PCH            ]: HDA-Intel - HDA Intel PCH
-                      HDA Intel PCH at 0xf1240000 irq 128
-
-
-!!PCI Soundcards installed in the system
-!!--------------------------------------
-
-00:1f.3 Audio device: Intel Corporation Sunrise Point-LP HD Audio (rev 21)
-
-
-!!Advanced information - PCI Vendor/Device/Subsystem ID's
-!!-------------------------------------------------------
-
-00:1f.3 0403: 8086:9d70 (rev 21)
-	Subsystem: 17aa:504a
-
-
-!!Modprobe options (Sound related)
-!!--------------------------------
-
-snd_pcsp: index=-2
-snd_usb_audio: index=-2
-snd_atiixp_modem: index=-2
-snd_intel8x0m: index=-2
-snd_via82xx_modem: index=-2
-snd_hda_intel: model=lenovo-dock
-
-
-!!Loaded sound module options
-!!---------------------------
-
-!!Module: snd_hda_intel
-	align_buffer_size : -1
-	bdl_pos_adj : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	beep_mode : Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y
-	enable : Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y
-	enable_msi : -1
-	id : (null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null)
-	index : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	jackpoll_ms : 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	model : lenovo-dock,(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null)
-	patch : (null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null)
-	position_fix : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	power_save : 0
-	power_save_controller : N
-	probe_mask : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	probe_only : 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	single_cmd : N
-	snoop : -1
-
-
-!!HDA-Intel Codec information
-!!---------------------------
---startcollapse--
-
-Codec: Realtek ALC293
-Address: 0
-AFG Function Id: 0x1 (unsol 1)
-Vendor Id: 0x10ec0293
-Subsystem Id: 0x17aa504b
-Revision Id: 0x100003
-No Modem Function Group found
-Default PCM:
-    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-State of AFG node 0x01:
-  Power states:  D0 D1 D2 D3 D3cold CLKSTOP EPSS
-  Power: setting=D0, actual=D0
-GPIO: io=5, o=0, i=0, unsolicited=1, wake=0
-  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[4]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-Node 0x02 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Control: name="Speaker Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Device: name="ALC293 Analog", type="Audio", device=0
-  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
-  Amp-Out vals:  [0x57 0x57]
-  Converter: stream=1, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x03 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Control: name="Headphone Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Converter: stream=1, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x06 [Audio Output] wcaps 0x611: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  IEC Coding Type: 0x0
-  PCM:
-    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D3, actual=D3
-Node 0x07 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x3f, stepsize=0x02, mute=1
-  Amp-In vals:  [0x97 0x97]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D3, actual=D3
-  Connection: 1
-     0x24
-Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x3f, stepsize=0x02, mute=1
-  Amp-In vals:  [0x97 0x97]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D3, actual=D3
-  Connection: 1
-     0x23
-Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Control: name="Capture Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Capture Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Device: name="ALC293 Analog", type="Audio", device=0
-  Amp-In caps: ofs=0x17, nsteps=0x3f, stepsize=0x02, mute=1
-  Amp-In vals:  [0x26 0x26]
-  Converter: stream=1, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x22
-Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Control: name="Dock Mic Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=1, ofs=0
-  Control: name="Dock Mic Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=1, ofs=0
-  Control: name="Mic Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=2, ofs=0
-  Control: name="Mic Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=2, ofs=0
-  Control: name="Beep Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=4, ofs=0
-  Control: name="Beep Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=4, ofs=0
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 5
-     0x18 0x19 0x1a 0x1b 0x1d
-Node 0x0c [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80]
-  Connection: 2
-     0x02 0x0b
-Node 0x0d [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80]
-  Connection: 2
-     0x03 0x0b
-Node 0x0e [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x12 [Pin Complex] wcaps 0x40040b: Stereo Amp-In
-  Control: name="Internal Mic Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Pincap 0x00000020: IN
-  Pin Default 0x90a60130: [Fixed] Mic at Int N/A
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x3, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x13 [Pin Complex] wcaps 0x40040b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Pincap 0x00000020: IN
-  Pin Default 0x40000000: [N/A] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0x0, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D3, actual=D3
-Node 0x14 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Control: name="Speaker Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x00010010: OUT EAPD
-  EAPD 0x2: EAPD
-  Pin Default 0x90170110: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x0c
-Node 0x15 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Control: name="Headphone Playback Switch", index=1, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0001001c: OUT HP EAPD Detect
-  EAPD 0x2: EAPD
-  Pin Default 0x03211040: [Jack] HP Out at Ext Left
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x4, Sequence = 0x0
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=02, enabled=1
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D3, actual=D3
-  Connection: 2
-     0x0c 0x0d*
-Node 0x16 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0001001c: OUT HP EAPD Detect
-  EAPD 0x2: EAPD
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D3, actual=D3
-  Connection: 2
-     0x0c* 0x0d
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000373c: IN OUT HP Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00: VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D3, actual=D3
-  Connection: 2
-     0x0c* 0x0d
-Node 0x19 [Pin Complex] wcaps 0x40048b: Stereo Amp-In
-  Control: name="Dock Mic Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Pincap 0x00000024: IN Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-  Unsolicited: tag=03, enabled=1
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D3, actual=D3
-Node 0x1a [Pin Complex] wcaps 0x40048b: Stereo Amp-In
-  Control: name="Mic Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Pincap 0x00003724: IN Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x03a11020: [Jack] Mic at Ext Left
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x2, Sequence = 0x0
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=04, enabled=1
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D3, actual=D3
-Node 0x1b [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-  Control: name="Headphone Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000373c: IN OUT HP Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0xc0: OUT HP VREF_HIZ
-  Unsolicited: tag=01, enabled=1
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D3, actual=D3
-  Connection: 2
-     0x0c 0x0d*
-Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1d [Pin Complex] wcaps 0x400400: Mono
-  Pincap 0x00000020: IN
-  Pin Default 0x40738105: [N/A] Modem Hand at Ext N/A
-    Conn = ATAPI, Color = Purple
-    DefAssociation = 0x0, Sequence = 0x5
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D3, actual=D3
-Node 0x1e [Pin Complex] wcaps 0x400781: Stereo Digital
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D1 D2 D3 EPSS
-  Power: setting=D3, actual=D3
-  Connection: 1
-     0x06
-Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-  Processing caps: benign=0, ncoeff=90
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 8
-     0x18 0x19 0x1a 0x1b 0x1d 0x0b 0x12* 0x13
-Node 0x23 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 6
-     0x18* 0x19 0x1a 0x1b 0x1d 0x0b
-Node 0x24 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x12* 0x13
-Codec: Intel Skylake HDMI
-Address: 2
-AFG Function Id: 0x1 (unsol 0)
-Vendor Id: 0x80862809
-Subsystem Id: 0x80860101
-Revision Id: 0x100000
-No Modem Function Group found
-Default PCM:
-    rates [0x0]:
-    bits [0x0]:
-    formats [0x0]:
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-State of AFG node 0x01:
-  Power states:  D0 D3 CLKSTOP EPSS
-  Power: setting=D0, actual=D0, Clock-stop-OK
-GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
-Node 0x02 [Audio Output] wcaps 0x6611: 8-Channels Digital
-  Converter: stream=0, channel=0
-  Digital: Enabled KAE
-  Digital category: 0x0
-  IEC Coding Type: 0x0
-  PCM:
-    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
-    bits [0x1a]: 16 24 32
-    formats [0x5]: PCM AC3
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x03 [Audio Output] wcaps 0x6611: 8-Channels Digital
-  Converter: stream=0, channel=0
-  Digital: Enabled KAE
-  Digital category: 0x0
-  IEC Coding Type: 0x0
-  PCM:
-    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
-    bits [0x1a]: 16 24 32
-    formats [0x5]: PCM AC3
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x04 [Audio Output] wcaps 0x6611: 8-Channels Digital
-  Converter: stream=0, channel=0
-  Digital: Enabled KAE
-  Digital category: 0x0
-  IEC Coding Type: 0x0
-  PCM:
-    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
-    bits [0x1a]: 16 24 32
-    formats [0x5]: PCM AC3
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x05 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
-  Control: name="IEC958 Playback Con Mask", index=0, device=0
-  Control: name="IEC958 Playback Pro Mask", index=0, device=0
-  Control: name="IEC958 Playback Default", index=0, device=0
-  Control: name="IEC958 Playback Switch", index=0, device=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0b000094: OUT Detect HBR HDMI DP
-  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-  Devices: 0
-  Connection: 0
-  In-driver Connection: 3
-     0x02 0x03 0x04
-Node 0x06 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
-  Control: name="IEC958 Playback Con Mask", index=1, device=0
-  Control: name="IEC958 Playback Pro Mask", index=1, device=0
-  Control: name="IEC958 Playback Default", index=1, device=0
-  Control: name="IEC958 Playback Switch", index=1, device=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0b000094: OUT Detect HBR HDMI DP
-  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-  Devices: 3
-     Dev 00: PD = 0, ELDV = 0, IA = 0
-     Dev 01: PD = 0, ELDV = 0, IA = 0
-     Dev 02: PD = 0, ELDV = 0, IA = 0
-  Connection: 0
-  In-driver Connection: 3
-     0x02 0x03 0x04
-Node 0x07 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
-  Control: name="IEC958 Playback Con Mask", index=2, device=0
-  Control: name="IEC958 Playback Pro Mask", index=2, device=0
-  Control: name="IEC958 Playback Default", index=2, device=0
-  Control: name="IEC958 Playback Switch", index=2, device=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0b000094: OUT Detect HBR HDMI DP
-  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-  Devices: 0
-  Connection: 0
-  In-driver Connection: 3
-     0x02 0x03 0x04
-Node 0x08 [Vendor Defined Widget] wcaps 0xf00000: Mono
---endcollapse--
-
-
-!!ALSA Device nodes
-!!-----------------
-
-crw-rw----+ 1 root audio 116,  2 Nov 16 11:22 /dev/snd/controlC0
-crw-rw----+ 1 root audio 116,  8 Nov 16 11:22 /dev/snd/hwC0D0
-crw-rw----+ 1 root audio 116,  9 Nov 16 11:22 /dev/snd/hwC0D2
-crw-rw----+ 1 root audio 116,  4 Nov 16 11:30 /dev/snd/pcmC0D0c
-crw-rw----+ 1 root audio 116,  3 Nov 16 11:29 /dev/snd/pcmC0D0p
-crw-rw----+ 1 root audio 116,  5 Nov 16 11:24 /dev/snd/pcmC0D3p
-crw-rw----+ 1 root audio 116,  6 Nov 16 11:26 /dev/snd/pcmC0D7p
-crw-rw----+ 1 root audio 116,  7 Nov 16 11:24 /dev/snd/pcmC0D8p
-crw-rw----+ 1 root audio 116,  1 Nov 16 11:22 /dev/snd/seq
-crw-rw----+ 1 root audio 116, 33 Nov 16 11:22 /dev/snd/timer
-
-/dev/snd/by-path:
-total 0
-drwxr-xr-x 2 root root  60 Nov 16 11:22 .
-drwxr-xr-x 3 root root 260 Nov 16 11:22 ..
-lrwxrwxrwx 1 root root  12 Nov 16 11:22 pci-0000:00:1f.3 -> ../controlC0
-
-
-!!Aplay/Arecord output
-!!--------------------
-
-APLAY
-
-**** List of PLAYBACK Hardware Devices ****
-card 0: PCH [HDA Intel PCH], device 0: ALC293 Analog [ALC293 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: PCH [HDA Intel PCH], device 3: HDMI 0 [HDMI 0]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: PCH [HDA Intel PCH], device 7: HDMI 1 [HDMI 1]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: PCH [HDA Intel PCH], device 8: HDMI 2 [HDMI 2]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-ARECORD
-
-**** List of CAPTURE Hardware Devices ****
-card 0: PCH [HDA Intel PCH], device 0: ALC293 Analog [ALC293 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-!!Amixer output
-!!-------------
-
-!!-------Mixer controls for card 0 [PCH]
-
-Card hw:0 'PCH'/'HDA Intel PCH at 0xf1240000 irq 128'
-  Mixer name	: 'Realtek ALC293'
-  Components	: 'HDA:10ec0293,17aa504b,00100003 HDA:80862809,80860101,00100000'
-  Controls      : 50
-  Simple ctrls  : 17
-Simple mixer control 'Master',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 87
-  Mono: Playback 87 [100%] [0.00dB] [on]
-Simple mixer control 'Headphone',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 87
-  Mono:
-  Front Left: Playback 0 [0%] [-65.25dB] [off]
-  Front Right: Playback 0 [0%] [-65.25dB] [off]
-Simple mixer control 'Headphone',1
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'Speaker',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 87
-  Mono:
-  Front Left: Playback 87 [100%] [0.00dB] [on]
-  Front Right: Playback 87 [100%] [0.00dB] [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 255 [100%] [0.00dB]
-  Front Right: Playback 255 [100%] [0.00dB]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 0 [0%] [-34.50dB] [off]
-  Front Right: Playback 0 [0%] [-34.50dB] [off]
-Simple mixer control 'Mic Boost',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 3
-  Front Left: 0 [0%] [0.00dB]
-  Front Right: 0 [0%] [0.00dB]
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'IEC958',1
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958',2
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Beep',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 0 [0%] [-34.50dB] [off]
-  Front Right: Playback 0 [0%] [-34.50dB] [off]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 63
-  Front Left: Capture 38 [60%] [11.25dB] [on]
-  Front Right: Capture 38 [60%] [11.25dB] [on]
-Simple mixer control 'Auto-Mute Mode',0
-  Capabilities: enum
-  Items: 'Disabled' 'Enabled'
-  Item0: 'Enabled'
-Simple mixer control 'Dock Mic',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 0 [0%] [-34.50dB] [off]
-  Front Right: Playback 0 [0%] [-34.50dB] [off]
-Simple mixer control 'Dock Mic Boost',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 3
-  Front Left: 0 [0%] [0.00dB]
-  Front Right: 0 [0%] [0.00dB]
-Simple mixer control 'Internal Mic Boost',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 3
-  Front Left: 0 [0%] [0.00dB]
-  Front Right: 0 [0%] [0.00dB]
-Simple mixer control 'Loopback Mixing',0
-  Capabilities: enum
-  Items: 'Disabled' 'Enabled'
-  Item0: 'Disabled'
-
-
-!!Alsactl output
-!!--------------
-
---startcollapse--
-state.PCH {
-	control.1 {
-		iface MIXER
-		name 'Speaker Playback Volume'
-		value.0 87
-		value.1 87
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 87'
-			dbmin -6525
-			dbmax 0
-			dbvalue.0 0
-			dbvalue.1 0
-		}
-	}
-	control.2 {
-		iface MIXER
-		name 'Speaker Playback Switch'
-		value.0 true
-		value.1 true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.3 {
-		iface MIXER
-		name 'Headphone Playback Volume'
-		value.0 0
-		value.1 0
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 87'
-			dbmin -6525
-			dbmax 0
-			dbvalue.0 -6525
-			dbvalue.1 -6525
-		}
-	}
-	control.4 {
-		iface MIXER
-		name 'Headphone Playback Switch'
-		value.0 false
-		value.1 false
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.5 {
-		iface MIXER
-		name 'Headphone Playback Switch'
-		index 1
-		value.0 true
-		value.1 true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.6 {
-		iface MIXER
-		name 'Loopback Mixing'
-		value Disabled
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 Disabled
-			item.1 Enabled
-		}
-	}
-	control.7 {
-		iface MIXER
-		name 'Dock Mic Playback Volume'
-		value.0 0
-		value.1 0
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 31'
-			dbmin -3450
-			dbmax 1200
-			dbvalue.0 -3450
-			dbvalue.1 -3450
-		}
-	}
-	control.8 {
-		iface MIXER
-		name 'Dock Mic Playback Switch'
-		value.0 false
-		value.1 false
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.9 {
-		iface MIXER
-		name 'Mic Playback Volume'
-		value.0 0
-		value.1 0
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 31'
-			dbmin -3450
-			dbmax 1200
-			dbvalue.0 -3450
-			dbvalue.1 -3450
-		}
-	}
-	control.10 {
-		iface MIXER
-		name 'Mic Playback Switch'
-		value.0 false
-		value.1 false
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.11 {
-		iface MIXER
-		name 'Auto-Mute Mode'
-		value Enabled
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 Disabled
-			item.1 Enabled
-		}
-	}
-	control.12 {
-		iface MIXER
-		name 'Capture Volume'
-		value.0 38
-		value.1 38
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 63'
-			dbmin -1725
-			dbmax 3000
-			dbvalue.0 1125
-			dbvalue.1 1125
-		}
-	}
-	control.13 {
-		iface MIXER
-		name 'Capture Switch'
-		value.0 true
-		value.1 true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.14 {
-		iface MIXER
-		name 'Dock Mic Boost Volume'
-		value.0 0
-		value.1 0
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 3'
-			dbmin 0
-			dbmax 3000
-			dbvalue.0 0
-			dbvalue.1 0
-		}
-	}
-	control.15 {
-		iface MIXER
-		name 'Mic Boost Volume'
-		value.0 0
-		value.1 0
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 3'
-			dbmin 0
-			dbmax 3000
-			dbvalue.0 0
-			dbvalue.1 0
-		}
-	}
-	control.16 {
-		iface MIXER
-		name 'Internal Mic Boost Volume'
-		value.0 0
-		value.1 0
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 3'
-			dbmin 0
-			dbmax 3000
-			dbvalue.0 0
-			dbvalue.1 0
-		}
-	}
-	control.17 {
-		iface MIXER
-		name 'Master Playback Volume'
-		value 87
-		comment {
-			access 'read write'
-			type INTEGER
-			count 1
-			range '0 - 87'
-			dbmin -6525
-			dbmax 0
-			dbvalue.0 0
-		}
-	}
-	control.18 {
-		iface MIXER
-		name 'Master Playback Switch'
-		value true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.19 {
-		iface CARD
-		name 'Dock Mic Jack'
-		value false
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.20 {
-		iface CARD
-		name 'Mic Jack'
-		value false
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.21 {
-		iface CARD
-		name 'Internal Mic Phantom Jack'
-		value true
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.22 {
-		iface CARD
-		name 'Speaker Phantom Jack'
-		value true
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.23 {
-		iface CARD
-		name 'Dock Headphone Jack'
-		value false
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.24 {
-		iface CARD
-		name 'Headphone Jack'
-		value false
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.25 {
-		iface MIXER
-		name 'Beep Playback Volume'
-		value.0 0
-		value.1 0
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 31'
-			dbmin -3450
-			dbmax 1200
-			dbvalue.0 -3450
-			dbvalue.1 -3450
-		}
-	}
-	control.26 {
-		iface MIXER
-		name 'Beep Playback Switch'
-		value.0 false
-		value.1 false
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.27 {
-		iface PCM
-		name 'Playback Channel Map'
-		value.0 0
-		value.1 0
-		value.2 0
-		value.3 0
-		comment {
-			access read
-			type INTEGER
-			count 4
-			range '0 - 36'
-		}
-	}
-	control.28 {
-		iface PCM
-		name 'Capture Channel Map'
-		value.0 0
-		value.1 0
-		comment {
-			access read
-			type INTEGER
-			count 2
-			range '0 - 36'
-		}
-	}
-	control.29 {
-		iface CARD
-		name 'HDMI/DP,pcm=3 Jack'
-		value false
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.30 {
-		iface MIXER
-		name 'IEC958 Playback Con Mask'
-		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access read
-			type IEC958
-			count 1
-		}
-	}
-	control.31 {
-		iface MIXER
-		name 'IEC958 Playback Pro Mask'
-		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access read
-			type IEC958
-			count 1
-		}
-	}
-	control.32 {
-		iface MIXER
-		name 'IEC958 Playback Default'
-		value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access 'read write'
-			type IEC958
-			count 1
-		}
-	}
-	control.33 {
-		iface MIXER
-		name 'IEC958 Playback Switch'
-		value false
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.34 {
-		iface PCM
-		device 3
-		name ELD
-		value ''
-		comment {
-			access 'read volatile'
-			type BYTES
-			count 0
-		}
-	}
-	control.35 {
-		iface CARD
-		name 'HDMI/DP,pcm=7 Jack'
-		value false
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.36 {
-		iface MIXER
-		name 'IEC958 Playback Con Mask'
-		index 1
-		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access read
-			type IEC958
-			count 1
-		}
-	}
-	control.37 {
-		iface MIXER
-		name 'IEC958 Playback Pro Mask'
-		index 1
-		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access read
-			type IEC958
-			count 1
-		}
-	}
-	control.38 {
-		iface MIXER
-		name 'IEC958 Playback Default'
-		index 1
-		value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access 'read write'
-			type IEC958
-			count 1
-		}
-	}
-	control.39 {
-		iface MIXER
-		name 'IEC958 Playback Switch'
-		index 1
-		value true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.40 {
-		iface PCM
-		device 7
-		name ELD
-		value ''
-		comment {
-			access 'read volatile'
-			type BYTES
-			count 0
-		}
-	}
-	control.41 {
-		iface CARD
-		name 'HDMI/DP,pcm=8 Jack'
-		value false
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.42 {
-		iface MIXER
-		name 'IEC958 Playback Con Mask'
-		index 2
-		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access read
-			type IEC958
-			count 1
-		}
-	}
-	control.43 {
-		iface MIXER
-		name 'IEC958 Playback Pro Mask'
-		index 2
-		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access read
-			type IEC958
-			count 1
-		}
-	}
-	control.44 {
-		iface MIXER
-		name 'IEC958 Playback Default'
-		index 2
-		value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access 'read write'
-			type IEC958
-			count 1
-		}
-	}
-	control.45 {
-		iface MIXER
-		name 'IEC958 Playback Switch'
-		index 2
-		value true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.46 {
-		iface PCM
-		device 8
-		name ELD
-		value ''
-		comment {
-			access 'read volatile'
-			type BYTES
-			count 0
-		}
-	}
-	control.47 {
-		iface PCM
-		device 3
-		name 'Playback Channel Map'
-		value.0 0
-		value.1 0
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		comment {
-			access 'read write'
-			type INTEGER
-			count 8
-			range '0 - 36'
-		}
-	}
-	control.48 {
-		iface PCM
-		device 7
-		name 'Playback Channel Map'
-		value.0 0
-		value.1 0
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		comment {
-			access 'read write'
-			type INTEGER
-			count 8
-			range '0 - 36'
-		}
-	}
-	control.49 {
-		iface PCM
-		device 8
-		name 'Playback Channel Map'
-		value.0 0
-		value.1 0
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		comment {
-			access 'read write'
-			type INTEGER
-			count 8
-			range '0 - 36'
-		}
-	}
-	control.50 {
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 255
-		value.1 255
-		comment {
-			access 'read write user'
-			type INTEGER
-			count 2
-			range '0 - 255'
-			tlv '0000000100000008ffffec1400000014'
-			dbmin -5100
-			dbmax 0
-			dbvalue.0 0
-			dbvalue.1 0
-		}
-	}
-}
---endcollapse--
-
-
-!!All Loaded Modules
-!!------------------
-
-Module
-hid_microsoft
-rfcomm
-ccm
-cpufreq_userspace
-cpufreq_powersave
-cpufreq_conservative
-cmac
-bnep
-toshiba_acpi
-sparse_keymap
-industrialio
-toshiba_haps
-hp_accel
-lis3lv02d
-input_polldev
-binfmt_misc
-nls_ascii
-nls_cp437
-fuse
-uvcvideo
-videobuf2_vmalloc
-btusb
-videobuf2_memops
-btrtl
-videobuf2_v4l2
-btbcm
-videobuf2_core
-btintel
-videodev
-bluetooth
-arc4
-iwlmvm
-snd_hda_codec_hdmi
-mac80211
-snd_hda_codec_realtek
-snd_hda_codec_generic
-intel_rapl
-x86_pkg_temp_thermal
-coretemp
-iTCO_wdt
-kvm_intel
-iTCO_vendor_support
-kvm
-iwlwifi
-joydev
-i915
-snd_soc_skl
-evdev
-serio_raw
-snd_soc_skl_ipc
-snd_soc_sst_ipc
-irqbypass
-cfg80211
-snd_soc_sst_dsp
-snd_hda_ext_core
-snd_soc_sst_match
-pcspkr
-efi_pstore
-efivars
-thinkpad_acpi
-sg
-wmi
-i2c_algo_bit
-battery
-nvram
-snd_soc_core
-snd_compress
-rfkill
-snd_hda_intel
-drm_kms_helper
-snd_hda_codec
-ac
-tpm_crb
-drm
-video
-mei_me
-mei
-shpchp
-snd_hwdep
-tpm_tis
-tpm_tis_core
-i2c_i801
-i2c_smbus
-tpm
-intel_pch_thermal
-snd_hda_core
-snd_pcm
-snd_timer
-button
-snd
-soundcore
-sunrpc
-efivarfs
-ip_tables
-x_tables
-autofs4
-algif_skcipher
-af_alg
-dm_crypt
-dm_mod
-hid_generic
-usbhid
-hid
-sd_mod
-crct10dif_pclmul
-crc32_pclmul
-crc32c_intel
-ghash_clmulni_intel
-rtsx_pci_sdmmc
-mmc_core
-ahci
-aesni_intel
-libahci
-aes_x86_64
-lrw
-glue_helper
-libata
-ablk_helper
-cryptd
-psmouse
-xhci_pci
-xhci_hcd
-scsi_mod
-rtsx_pci
-usbcore
-mfd_core
-thermal
-fjes
-
-
-!!Sysfs Files
-!!-----------
-
-/sys/class/sound/hwC0D0/init_pin_configs:
-0x12 0x90a60130
-0x13 0x40000000
-0x14 0x90170110
-0x15 0x03211040
-0x16 0x411111f0
-0x18 0x411111f0
-0x19 0x411111f0
-0x1a 0x03a11020
-0x1b 0x411111f0
-0x1d 0x40738105
-0x1e 0x411111f0
-
-/sys/class/sound/hwC0D0/driver_pin_configs:
-0x19 0x23a11040
-0x1b 0x2121103f
-
-/sys/class/sound/hwC0D0/user_pin_configs:
-
-/sys/class/sound/hwC0D0/init_verbs:
-
-/sys/class/sound/hwC0D0/hints:
-
-/sys/class/sound/hwC0D2/init_pin_configs:
-0x05 0x18560010
-0x06 0x18560010
-0x07 0x18560010
-
-/sys/class/sound/hwC0D2/driver_pin_configs:
-
-/sys/class/sound/hwC0D2/user_pin_configs:
-
-/sys/class/sound/hwC0D2/init_verbs:
-
-/sys/class/sound/hwC0D2/hints:
-
-
-!!ALSA/HDA dmesg
-!!--------------
-
-[   33.418545] input: Video Bus as /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/LNXVIDEO:00/input/input12
-[   33.418639] snd_hda_intel 0000:00:1f.3: bound 0000:00:02.0 (ops i915_audio_component_bind_ops [i915])
-[   33.418646] [drm] Initialized i915 1.6.0 20160919 for 0000:00:02.0 on minor 0
---
-[   34.853511] intel_rapl: Found RAPL domain dram
-[   35.803952] snd_hda_codec_realtek hdaudioC0D0: autoconfig for ALC293: line_outs=1 (0x14/0x0/0x0/0x0/0x0) type:speaker
-[   35.804262] snd_hda_codec_realtek hdaudioC0D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-[   35.804470] snd_hda_codec_realtek hdaudioC0D0:    hp_outs=2 (0x1b/0x15/0x0/0x0/0x0)
-[   35.804617] snd_hda_codec_realtek hdaudioC0D0:    mono: mono_out=0x0
-[   35.804712] snd_hda_codec_realtek hdaudioC0D0:    inputs:
-[   35.804816] snd_hda_codec_realtek hdaudioC0D0:      Dock Mic=0x19
-[   35.804919] snd_hda_codec_realtek hdaudioC0D0:      Mic=0x1a
-[   35.805012] snd_hda_codec_realtek hdaudioC0D0:      Internal Mic=0x12
-[   35.928099] input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1f.3/sound/card0/input13
-[   35.930424] input: HDA Intel PCH Dock Mic as /devices/pci0000:00/0000:00:1f.3/sound/card0/input14
-[   35.930834] input: HDA Intel PCH Mic as /devices/pci0000:00/0000:00:1f.3/sound/card0/input15
-[   35.931179] input: HDA Intel PCH Dock Headphone as /devices/pci0000:00/0000:00:1f.3/sound/card0/input16
-[   35.931550] input: HDA Intel PCH Headphone as /devices/pci0000:00/0000:00:1f.3/sound/card0/input17
-[   35.931886] input: HDA Intel PCH HDMI/DP,pcm=3 as /devices/pci0000:00/0000:00:1f.3/sound/card0/input18
-[   35.941062] input: HDA Intel PCH HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:1f.3/sound/card0/input19
-[   35.949010] input: HDA Intel PCH HDMI/DP,pcm=8 as /devices/pci0000:00/0000:00:1f.3/sound/card0/input20
-[   36.270027] iwlwifi 0000:04:00.0: Detected Intel(R) Dual Band Wireless AC 8260, REV=0x208
-
-
-
---f4d26ltqphyiycna--
+Hi Philipp,
+
+[auto build test ERROR on asoc/for-next]
+[also build test ERROR on v4.9-rc5 next-20161115]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+
+url:    https://github.com/0day-ci/linux/commits/Philipp-Zabel/ASoC-MT8173-HDMI-jack-detection/20161116-103551
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+config: i386-randconfig-n0-201646 (attached as .config)
+compiler: gcc-6 (Debian 6.2.0-3) 6.2.0 20160901
+reproduce:
+        # save the attached .config to linux build tree
+        make ARCH=i386 
+
+All errors (new ones prefixed by >>):
+
+>> sound/soc/codecs/hdmi-codec.c:15:33: fatal error: linux/hdmi-notifier.h: No such file or directory
+    #include <linux/hdmi-notifier.h>
+                                    ^
+   compilation terminated.
+
+vim +15 sound/soc/codecs/hdmi-codec.c
+
+     9	 *
+    10	 * This program is distributed in the hope that it will be useful, but
+    11	 * WITHOUT ANY WARRANTY; without even the implied warranty of
+    12	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+    13	 * General Public License for more details.
+    14	 */
+  > 15	#include <linux/hdmi-notifier.h>
+    16	#include <linux/module.h>
+    17	#include <linux/notifier.h>
+    18	#include <linux/string.h>
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+
+--OXfL5xGRrasGEqWY
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Linux-mediatek mailing list
+Linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+http://lists.infradead.org/mailman/listinfo/linux-mediatek
+
+--OXfL5xGRrasGEqWY--
