@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 3/7] topology: Parse physical DAIs in text conf
-	file
-Date: Wed, 16 Nov 2016 14:42:33 +0800
-Message-ID: <1f422f8b916c098f4cab848790ba06d3d4847c3b.1479277829.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 4/7] topology: Support configuring physical
+	DAIs by C API
+Date: Wed, 16 Nov 2016 14:42:41 +0800
+Message-ID: <a71ff8763f7036cd8b17885cbd37be558c02a548.1479277829.git.mengdong.lin@linux.intel.com>
 References: <cover.1479277829.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BDDE266C3D
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 07:40:47 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 228C0266C4D
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 07:40:54 +0100 (CET)
 In-Reply-To: <cover.1479277829.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,293 +25,134 @@ To: alsa-devel@alsa-project.org
 Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
 
-Add support for parsing physical DAIs in the text configuration file.
-The syntax of physical DAIs is described in document in topology.h
+In addition to text conf file, physical DAIs can also be configured
+by C API. This patch defines the template to add physical DAI
+configurations from C API.
 
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
 diff --git a/include/topology.h b/include/topology.h
-index c52c580..0581b1c 100644
+index 0581b1c..c5d0080 100644
 --- a/include/topology.h
 +++ b/include/topology.h
-@@ -663,6 +663,36 @@ extern "C" {
-  * }
-  * </pre>
-  *
-+ * <h4>Physical DAI</h4>
-+ * A physical DAI (e.g. backend DAI for DPCM) is defined as a new section
-+ * that can include a unique ID, playback and capture stream capabilities,
-+ * optional flags, and private data. <br>
-+ * Its PCM stream capablities are same as those for PCM objects,
-+ * please refer to section 'PCM Capabilities'.
-+ *
-+ * <pre>
-+ * SectionDAI."name" {
-+ *
-+ *	index "1"			# Index number
-+ *
-+ *	id "0"				# used for binding to the Backend DAI
-+ *
-+ *	pcm."playback" {
-+ *		capabilities "capabilities1"	# capabilities for playback
-+ *	}
-+ *
-+ *	pcm."capture" {
-+ *		capabilities "capabilities2"	# capabilities for capture
-+ *	}
-+ *
-+ *	symmetric_rates "true"			# optional flags
-+ *	symmetric_channels "true"
-+ *	symmetric_sample_bits "false"
-+ *
-+ *	data "name"			# optional private data
-+ * }
-+ * </pre>
-+ *
-  * <h4>Manifest Private Data</h4>
-  * Manfiest may have private data. Users need to define a manifest section
-  * and add the references to 1 or multiple data sections. Please refer to
-@@ -735,6 +765,7 @@ enum snd_tplg_type {
- 	SND_TPLG_TYPE_TUPLE,		/*!< Vendor tuples */
- 	SND_TPLG_TYPE_LINK,		/*!< Physical DAI link */
- 	SND_TPLG_TYPE_HW_CONFIG,	/*!< Link HW config */
-+	SND_TPLG_TYPE_DAI,		/*!< Physical DAI */
+@@ -1014,6 +1014,22 @@ struct snd_tplg_hw_config_template {
+ 	unsigned int *rx_chanmap;       /* array of slot number */
  };
  
- /**
-diff --git a/src/topology/data.c b/src/topology/data.c
-index 59bc970..0d5c430 100644
---- a/src/topology/data.c
-+++ b/src/topology/data.c
-@@ -46,6 +46,10 @@ struct snd_soc_tplg_private *get_priv_data(struct tplg_elem *elem)
- 		priv = &elem->widget->priv;
- 		break;
- 
-+	case SND_TPLG_TYPE_DAI:
-+		priv = &elem->dai->priv;
-+		break;
++/** \struct snd_tplg_dai_template
++ * \brief Template type for physical DAI.
++ * It can be used to configure backend DAIs for DPCM.
++ */
++struct snd_tplg_dai_template {
++	const char *dai_name;	/*!< DAI name */
++	unsigned int dai_id;	/*!< unique ID - used to match */
++	unsigned int playback;	/*!< supports playback mode */
++	unsigned int capture;	/*!< supports capture mode */
++	struct snd_tplg_stream_caps_template *caps[2]; /*!< playback & capture for DAI */
++	unsigned int flag_mask; /*!< bitmask of flags to configure */
++	unsigned int flags;	/*!< SND_SOC_TPLG_DAI_FLGBIT_* */
++	struct snd_soc_tplg_private *priv;	/*!< private data */
 +
- 	default:
- 		SNDERR("error: '%s': no support for private data for type %d\n",
- 			elem->id, elem->type);
-diff --git a/src/topology/elem.c b/src/topology/elem.c
-index 01dce1f..1a5ac84 100644
---- a/src/topology/elem.c
-+++ b/src/topology/elem.c
-@@ -192,6 +192,10 @@ struct tplg_elem* tplg_elem_new_common(snd_tplg_t *tplg,
- 		list_add_tail(&elem->list, &tplg->pcm_list);
- 		obj_size = sizeof(struct snd_soc_tplg_pcm);
- 		break;
-+	case SND_TPLG_TYPE_DAI:
-+		list_add_tail(&elem->list, &tplg->dai_list);
-+		obj_size = sizeof(struct snd_soc_tplg_dai);
-+		break;
- 	case SND_TPLG_TYPE_BE:
- 	case SND_TPLG_TYPE_LINK:
- 		list_add_tail(&elem->list, &tplg->be_list);
++};
++
+ /** \struct snd_tplg_link_template
+  * \brief Template type for BE and CC DAI Links.
+  */
+@@ -1050,6 +1066,7 @@ typedef struct snd_tplg_obj_template {
+ 		struct snd_tplg_graph_template *graph;		/*!< Graph elements */
+ 		struct snd_tplg_pcm_template *pcm;		/*!< PCM elements */
+ 		struct snd_tplg_link_template *link;		/*!< BE and CC Links */
++		struct snd_tplg_dai_template *dai;		/*!< Physical DAI */
+ 	};
+ } snd_tplg_obj_template_t;
+ 
 diff --git a/src/topology/parser.c b/src/topology/parser.c
-index 7d0486c..72efef4 100644
+index 72efef4..4afa576 100644
 --- a/src/topology/parser.c
 +++ b/src/topology/parser.c
-@@ -133,6 +133,14 @@ static int tplg_parse_config(snd_tplg_t *tplg, snd_config_t *cfg)
- 			continue;
- 		}
- 
-+		if (strcmp(id, "SectionDAI") == 0) {
-+			err = tplg_parse_compound(tplg, n,
-+				tplg_parse_dai, NULL);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
- 		if (strcmp(id, "SectionHWConfig") == 0) {
- 			err = tplg_parse_compound(tplg, n, tplg_parse_hw_config,
- 				NULL);
-@@ -450,6 +458,7 @@ snd_tplg_t *snd_tplg_new(void)
- 	INIT_LIST_HEAD(&tplg->tlv_list);
- 	INIT_LIST_HEAD(&tplg->widget_list);
- 	INIT_LIST_HEAD(&tplg->pcm_list);
-+	INIT_LIST_HEAD(&tplg->dai_list);
- 	INIT_LIST_HEAD(&tplg->be_list);
- 	INIT_LIST_HEAD(&tplg->cc_list);
- 	INIT_LIST_HEAD(&tplg->route_list);
-@@ -476,6 +485,7 @@ void snd_tplg_free(snd_tplg_t *tplg)
- 	tplg_elem_free_list(&tplg->tlv_list);
- 	tplg_elem_free_list(&tplg->widget_list);
- 	tplg_elem_free_list(&tplg->pcm_list);
-+	tplg_elem_free_list(&tplg->dai_list);
- 	tplg_elem_free_list(&tplg->be_list);
- 	tplg_elem_free_list(&tplg->cc_list);
- 	tplg_elem_free_list(&tplg->route_list);
+@@ -364,6 +364,8 @@ int snd_tplg_add_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 		return tplg_add_graph_object(tplg, t);
+ 	case SND_TPLG_TYPE_PCM:
+ 		return tplg_add_pcm_object(tplg, t);
++	case SND_TPLG_TYPE_DAI:
++		return tplg_add_dai_object(tplg, t);
+ 	case SND_TPLG_TYPE_LINK:
+ 	case SND_TPLG_TYPE_BE:
+ 	case SND_TPLG_TYPE_CC:
 diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index a9d3277..4093e2f 100644
+index 4093e2f..9f60e4b 100644
 --- a/src/topology/pcm.c
 +++ b/src/topology/pcm.c
-@@ -341,6 +341,7 @@ static int tplg_parse_streams(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
- 	snd_config_t *n;
- 	struct tplg_elem *elem = private;
- 	struct snd_soc_tplg_pcm *pcm;
-+	struct snd_soc_tplg_dai *dai;
- 	unsigned int *playback, *capture;
- 	struct snd_soc_tplg_stream_caps *caps;
- 	const char *id, *value;
-@@ -357,6 +358,14 @@ static int tplg_parse_streams(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
- 		capture = &pcm->capture;
- 		caps = pcm->caps;
- 		break;
-+
-+	case SND_TPLG_TYPE_DAI:
-+		dai = elem->dai;
-+		playback = &dai->playback;
-+		capture = &dai->capture;
-+		caps = dai->caps;
-+		break;
-+
- 	default:
- 		return -EINVAL;
- 	}
-@@ -557,6 +566,109 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
+@@ -1201,3 +1201,58 @@ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
+ 
  	return 0;
  }
- 
-+/* Parse physical DAI */
-+int tplg_parse_dai(snd_tplg_t *tplg,
-+	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
-+{
-+	struct snd_soc_tplg_dai *dai;
-+	struct tplg_elem *elem;
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	const char *id, *val = NULL;
-+	int err;
 +
-+	elem = tplg_elem_new_common(tplg, cfg, NULL, SND_TPLG_TYPE_DAI);
++int tplg_add_dai_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t)
++{
++	struct snd_tplg_dai_template *dai_tpl = t->dai;
++	struct snd_soc_tplg_dai *dai, *_dai;
++	struct tplg_elem *elem;
++	int i;
++
++	tplg_dbg("DAI %s\n", dai_tpl->dai_name);
++
++	elem = tplg_elem_new_common(tplg, NULL, dai_tpl->dai_name,
++		SND_TPLG_TYPE_DAI);
 +	if (!elem)
 +		return -ENOMEM;
 +
 +	dai = elem->dai;
 +	dai->size = elem->size;
-+	elem_copy_text(dai->dai_name, elem->id,
++
++	elem_copy_text(dai->dai_name, dai_tpl->dai_name,
 +		SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++	dai->dai_id = dai_tpl->dai_id;
 +
-+	tplg_dbg(" DAI: %s\n", elem->id);
++	/* stream caps */
++	dai->playback = dai_tpl->playback;
++	dai->capture = dai_tpl->capture;
 +
-+	snd_config_for_each(i, next, cfg) {
++	for (i = 0; i < 2; i++) {
++		if (dai_tpl->caps[i])
++			tplg_add_stream_caps(&dai->caps[i], dai_tpl->caps[i]);
++	}
 +
-+		n = snd_config_iterator_entry(i);
-+		if (snd_config_get_id(n, &id) < 0)
-+			continue;
++	/* flags */
++	dai->flag_mask = dai_tpl->flag_mask;
++	dai->flags = dai_tpl->flags;
 +
-+		/* skip comments */
-+		if (strcmp(id, "comment") == 0)
-+			continue;
-+		if (id[0] == '#')
-+			continue;
-+
-+		if (strcmp(id, "index") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return -EINVAL;
-+
-+			elem->index = atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, elem->index);
-+			continue;
++	/* private data */
++	if (dai_tpl->priv != NULL) {
++		_dai = realloc(dai,
++			elem->size + dai_tpl->priv->size);
++		if (!_dai) {
++			tplg_elem_free(elem);
++			return -ENOMEM;
 +		}
 +
-+		if (strcmp(id, "id") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return -EINVAL;
++		dai = _dai;
++		dai->priv.size = dai_tpl->priv->size;
 +
-+			dai->dai_id = atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, dai->dai_id);
-+			continue;
-+		}
-+
-+		/* stream capabilities */
-+		if (strcmp(id, "pcm") == 0) {
-+			err = tplg_parse_compound(tplg, n,
-+				tplg_parse_streams, elem);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		/* flags */
-+		if (strcmp(id, "symmetric_rates") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_RATES,
-+				&dai->flag_mask, &dai->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		if (strcmp(id, "symmetric_channels") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS,
-+				&dai->flag_mask, &dai->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		if (strcmp(id, "symmetric_sample_bits") == 0) {
-+			err = parse_flag(n,
-+				SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS,
-+				&dai->flag_mask, &dai->flags);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+
-+		/* private data */
-+		if (strcmp(id, "data") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return -EINVAL;
-+
-+			tplg_ref_add(elem, SND_TPLG_TYPE_DATA, val);
-+			tplg_dbg("\t%s: %s\n", id, val);
-+			continue;
-+		}
++		elem->dai = dai;
++		elem->size += dai->priv.size;
++		memcpy(dai->priv.data, dai_tpl->priv->data,
++		       dai->priv.size);
 +	}
 +
 +	return 0;
 +}
-+
- /* parse physical link runtime supported HW configs in text conf file */
- static int parse_hw_config_refs(snd_tplg_t *tplg, snd_config_t *cfg,
- 				struct tplg_elem *elem)
 diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index 9e67bf8..eeeb0f1 100644
+index eeeb0f1..807462b 100644
 --- a/src/topology/tplg_local.h
 +++ b/src/topology/tplg_local.h
-@@ -64,6 +64,7 @@ struct snd_tplg {
- 	struct list_head tlv_list;
- 	struct list_head widget_list;
- 	struct list_head pcm_list;
-+	struct list_head dai_list;
- 	struct list_head be_list;
- 	struct list_head cc_list;
- 	struct list_head route_list;
-@@ -145,6 +146,7 @@ struct tplg_elem {
- 		struct snd_soc_tplg_bytes_control *bytes_ext;
- 		struct snd_soc_tplg_dapm_widget *widget;
- 		struct snd_soc_tplg_pcm *pcm;
-+		struct snd_soc_tplg_dai *dai;
- 		struct snd_soc_tplg_link_config *link;/* physical link */
- 		struct snd_soc_tplg_dapm_graph_elem *route;
- 		struct snd_soc_tplg_stream *stream_cfg;
-@@ -222,6 +224,9 @@ int tplg_parse_stream_caps(snd_tplg_t *tplg,
- int tplg_parse_pcm(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
- 
-+int tplg_parse_dai(snd_tplg_t *tplg, snd_config_t *cfg,
-+		   void *private ATTRIBUTE_UNUSED);
-+
- int tplg_parse_link(snd_tplg_t *tplg,
- 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED);
- 
+@@ -297,3 +297,4 @@ int tplg_build_pcms(snd_tplg_t *tplg, unsigned int type);
+ int tplg_build_links(snd_tplg_t *tplg, unsigned int type);
+ int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
+ int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
++int tplg_add_dai_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
 -- 
 2.5.0
