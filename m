@@ -1,14 +1,17 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 0/7] topology: Add support for physical DAIs
-Date: Wed, 16 Nov 2016 14:36:06 +0800
-Message-ID: <cover.1479277829.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 1/7] topology: ABI - Update manifest and pump
+	ABI version to 5
+Date: Wed, 16 Nov 2016 14:42:15 +0800
+Message-ID: <578dfb4942e50e270c8d8f1b87552c2faab1aaa0.1479277829.git.mengdong.lin@linux.intel.com>
+References: <cover.1479277829.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id B2EE6266639
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 07:34:20 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5E01266C3D
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 07:40:30 +0100 (CET)
+In-Reply-To: <cover.1479277829.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +27,41 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-This is the last series for topology user space atm.
+Pump ABI version to 5.
 
-This series adds support for physical DAIs and includes a few minor fixes.
-All ABI updates here can be supported by kernel in a backward compatible
-way.
+To support physical DAIs and furture extension, add the following fields
+to manifest:
+- the count of physical DAIs. Later patches will add new ABI types for
+  physical DAIs.
+- some reserved fields for new ABI objects in the future.
 
-Guneshwor Singh (3):
-  topology: ABI - Define new types for physical DAI
-  topology: Support configuring physical DAIs by C API
-  topology: Export physical DAIs to the binary for kernel
+Kerel will handle this ABI update in a backward compatible way, via patch
+'ASoC: topology: Make manifest backward compatible from ABI v4'.
 
-Mengdong Lin (4):
-  topology: ABI - Update manifest and pump ABI version to 5
-  topology: Parse physical DAIs in text conf file
-  topology: ABI - Add voice wake up flag for DAI links
-  topology: Revise document and comments for ABI v5
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
- include/sound/asoc.h      |  37 +++++++-
- include/topology.h        |  94 ++++++++++++-------
- src/topology/builder.c    |  11 +++
- src/topology/data.c       |   4 +
- src/topology/elem.c       |   4 +
- src/topology/parser.c     |  16 ++++
- src/topology/pcm.c        | 223 +++++++++++++++++++++++++++++++++++++++++++++-
- src/topology/tplg_local.h |   7 ++
- 8 files changed, 362 insertions(+), 34 deletions(-)
-
+diff --git a/include/sound/asoc.h b/include/sound/asoc.h
+index 039ef3e..e14843b 100644
+--- a/include/sound/asoc.h
++++ b/include/sound/asoc.h
+@@ -79,7 +79,8 @@
+ #define SND_SOC_TPLG_NUM_TEXTS		16
+ 
+ /* ABI version */
+-#define SND_SOC_TPLG_ABI_VERSION	0x4
++#define SND_SOC_TPLG_ABI_VERSION	0x5	/* current version */
++#define SND_SOC_TPLG_ABI_VERSION_MIN	0x4	/* oldest version supported */
+ 
+ /* Max size of TLV data */
+ #define SND_SOC_TPLG_TLV_SIZE		32
+@@ -331,6 +332,8 @@ struct snd_soc_tplg_manifest {
+ 	__le32 graph_elems;	/* number of graph elements */
+ 	__le32 pcm_elems;	/* number of PCM elements */
+ 	__le32 dai_link_elems;	/* number of DAI link elements */
++	__le32 dai_elems;	/* number of physical DAI elements */
++	__le32 reserved[20];	/* reserved for new ABI element types */
+ 	struct snd_soc_tplg_private priv;
+ } __attribute__((packed));
+ 
 -- 
 2.5.0
