@@ -1,19 +1,19 @@
 From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [RFC PATCH 1/3] ucm: Skip component directories
- when scanning sound card configuration files
-Date: Wed, 16 Nov 2016 07:07:39 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8819A6FBA@shsmsx102.ccr.corp.intel.com>
+Subject: Re: [RFC PATCH 2/3] ucm: Parse sequence of component
+	devices
+Date: Wed, 16 Nov 2016 07:16:54 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8819A6FD5@shsmsx102.ccr.corp.intel.com>
 References: <cover.1479195801.git.mengdong.lin@linux.intel.com>
- <5d26bcb59c9dc3ef0b1e004b1e9bd5346160c54d.1479195801.git.mengdong.lin@linux.intel.com>
- <1479199545.7823.10.camel@loki>
+ <9baaf7a3d55a86e417826715e8e63d1a76582156.1479195801.git.mengdong.lin@linux.intel.com>
+ <1479199551.7823.11.camel@loki>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 749F12665CC
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 08:07:43 +0100 (CET)
-In-Reply-To: <1479199545.7823.10.camel@loki>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CC082665B6
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 08:16:59 +0100 (CET)
+In-Reply-To: <1479199551.7823.11.camel@loki>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,74 +32,32 @@ List-Id: alsa-devel@alsa-project.org
 > From: Liam Girdwood [mailto:liam.r.girdwood@linux.intel.com]
 > Sent: Tuesday, November 15, 2016 4:46 PM
  
-> On Tue, 2016-11-15 at 16:02 +0800, mengdong.lin@linux.intel.com wrote:
-> > From: Mengdong Lin <mengdong.lin@linux.intel.com>
+> > @@ -306,6 +381,30 @@ static int parse_sequence(snd_use_case_mgr_t
+> *uc_mgr ATTRIBUTE_UNUSED,
+> >  			continue;
+> >  		}
 > >
-> > Cards are defined by machines. DSPs embedded in SoC and off-soc codecs
-> > can be taken as components for machines, and can be reused by
-> > different machines/cards. Codec and SoC vendors can define their own
-> > UCM config files. If a codec or DSP is used by a machine, the card
-> > configuration file can include the conf file of the codec and DSP.
-> > Later patches will complete support for this feature.
-> >
-> > Two new directories will be used to store the UCM configuration files
-> > for a specific codec or DSP firmware:
-> > - /usr/share/alsa/ucm/dsps ... for DSP embedded in SoC
-> > - /usr/share/alsa/ucm/codecs ... for off-soc codecs
-> >
-> > These two directories will be skipped when UCM manager scans the card
-> > directories under /usr/share/alsa/ucm.
-> >
-> > Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-> >
-> > diff --git a/src/ucm/parser.c b/src/ucm/parser.c index
-> > 13f62d7..5fc98a1 100644
-> > --- a/src/ucm/parser.c
-> > +++ b/src/ucm/parser.c
-> > @@ -1259,7 +1259,18 @@ static int filename_filter(const struct dirent
-> *dirent)
-> >  	return 0;
-> >  }
-> >
-> > -/* scan all cards and comments */
-> > +/* scan all cards and comments
-> > + *
-> > + * Cards are defined by machines. Each card/machine installs its UCM
-> > + * configuration files in a subdirectory with the same name as the
-> > +sound
-> > + * card under /usr/share/alsa/ucm. This function will scan all the
-> > +card
-> > + * directories.
-> > + * Two direcotries, 'codecs' and 'dsps', are skipped in the scanning.
-> > +These
-> > + * two directories are used to store UCM configurations file for
-> > +off-soc
-> > + * codecs and DSPs embedded in SoC, which are components of machines.
-> > + * Their configuration files can be included by different
-> > +machines/cards,
-> > + * and alsaconf will import the included files automatically.
-> > + */
-> >  int uc_mgr_scan_master_configs(const char **_list[])  {
-> >  	char filename[MAX_FILE], dfl[MAX_FILE]; @@ -1309,6 +1320,13 @@
-> int
-> > uc_mgr_scan_master_configs(const char **_list[])
-> >  	}
-> >
-> >  	for (i = 0; i < cnt; i++) {
+> > +		if (strcmp(cmd, "enadev") == 0) {
+> > +			/* need to enable a component device */
+> > +			curr->type = SEQUENCE_ELEMENT_TYPE_CMPT_SEQ;
+> > +			err = parse_component_seq(uc_mgr, n, 1,
+> > +						&curr->data.cmpt_seq);
+> > +			if (err < 0) {
+> > +				uc_error("error: enadev requires a valid
+> device!");
+> > +				return err;
+> > +			}
+> > +			continue;
+> > +		}
 > > +
-> > +		/* Skip the directories for component devices */
-> > +		if (!strncmp(namelist[i]->d_name, "codecs", 6))
-> > +			continue;
-> > +		if (!strncmp(namelist[i]->d_name, "dsps", 4))
-> > +			continue;
+> > +		if (strcmp(cmd, "disdev") == 0) {
 > 
-> Maybe we should have an array of strings that denote directories that
-> contain non master components, that way we could easily add other
-> directories for components.
+> Do we need to document enadev and disdev anywhere ?
 > 
 > Liam
 
-Yes, an array will be nice. I'll revise the patch.
+Maybe we could document this in the description of function parse_sequence() and parse_verb()?
+parse_verb() has an example of EnableSequence and DisableSequence.
 
-Thanks for your review!
+Thanks
 Mengdong
