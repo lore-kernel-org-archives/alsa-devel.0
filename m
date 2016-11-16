@@ -1,19 +1,36 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [RFC PATCH 3/3] ucm: Execute sequence of component
-	devices
-Date: Wed, 16 Nov 2016 07:36:58 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8819A700B@shsmsx102.ccr.corp.intel.com>
-References: <cover.1479195801.git.mengdong.lin@linux.intel.com>
- <b610787835a8530f0b3105321e8f15661fc55b0b.1479195801.git.mengdong.lin@linux.intel.com>
- <1479199798.7823.14.camel@loki>
+From: Hermes Zhang <chenhui.zhang@axis.com>
+Subject: Alsa io plugin crash question
+Date: Wed, 16 Nov 2016 07:52:22 +0000
+Message-ID: <644abd4f8a344e6a86cbc80807f935d1@XBOX03.axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 42F822665B6
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 08:37:04 +0100 (CET)
-In-Reply-To: <1479199798.7823.14.camel@loki>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6EE22614A0
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 08:52:24 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by bastet.se.axis.com (Postfix) with ESMTP id 0FC941818D
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 08:52:24 +0100 (CET)
+Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id 3Rn0XicEwCCn for <alsa-devel@alsa-project.org>;
+ Wed, 16 Nov 2016 08:52:23 +0100 (CET)
+Received: from boulder02.se.axis.com (boulder02.se.axis.com [10.0.8.16])
+ by bastet.se.axis.com (Postfix) with ESMTPS id F1E6518153
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 08:52:22 +0100 (CET)
+Received: from boulder02.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id D6AC11A082
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 08:52:22 +0100 (CET)
+Received: from boulder02.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id CB8B21A07F
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 08:52:22 +0100 (CET)
+Received: from seth.se.axis.com (unknown [10.0.2.172])
+ by boulder02.se.axis.com (Postfix) with ESMTP
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 08:52:22 +0100 (CET)
+Received: from XBOX04.axis.com (xbox04.axis.com [10.0.5.18])
+ by seth.se.axis.com (Postfix) with ESMTP id BFB42375
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 08:52:22 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,122 +41,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Liam Girdwood [mailto:liam.r.girdwood@linux.intel.com]
-> Sent: Tuesday, November 15, 2016 4:50 PM
+Hi all,
 
-> > @@ -341,13 +348,22 @@ static int execute_cset(snd_ctl_t *ctl, const char
-> *cset, unsigned int type)
-> >   * \brief Execute the sequence
-> >   * \param uc_mgr Use case manager
-> >   * \param seq Sequence
-> > + * \param cdev_in input cdev,  parenet's cdev for a component device,
-> > + *				or NULL for a machine device.
-> >   * \return zero on success, otherwise a negative error code
-> > + *
-> > + * A machine device's sequence can enable or disable a component device.
-> > + * But the enable/disable sequence of a component device does not
-> > + define
-> > + * cdev, the card device. So when executing a component device's
-> > + sequence,
-> > + * we need to pass the cdev defined by the sequence of its parent,
-> > + the
-> > + * machine device. And for machine device, cdev should be set to NULL.
-> >   */
-> >  static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
-> >  			    struct list_head *seq,
-> >  			    struct list_head *value_list1,
-> >  			    struct list_head *value_list2,
-> > -			    struct list_head *value_list3)
-> > +			    struct list_head *value_list3,
-> > +			    char *cdev_in)
-> 
-> Could the current cdev be embedded in uc_mgr ?
+I am try to write a plugin in alsa io plugin mode
 
-Yes, it could and there will be less code change. 
-Actually I found the machine devices always set the same cdev name in their sequences.
+static snd_pcm_sframes_t
+my_read (snd_pcm_ioplug_t * io,
+     const snd_pcm_channel_area_t * areas,
+     snd_pcm_uframes_t offset, snd_pcm_uframes_t size)
+{
 
-> > @@ -366,7 +382,16 @@ static int execute_sequence(snd_use_case_mgr_t
-> *uc_mgr,
-> >  		case SEQUENCE_ELEMENT_TYPE_CSET:
-> >  		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
-> >  		case SEQUENCE_ELEMENT_TYPE_CSET_TLV:
-> > -			if (cdev == NULL) {
-> > +			if (cdev == NULL && cdev_in) {
-> > +				/* Sequence of a component device, should
-> use
-> > +				 * the input cdev defined by sequence of its
-> > +				 * parent, the machine device.
-> > +				 */
-> > +				cdev = strdup(cdev_in);
-> > +				if (cdev == NULL)
-> > +					goto __fail_nomem;
-> > +
-> > +			} else if (cdev == NULL) {
-> >  				char *playback_ctl = NULL;
-> >  				char *capture_ctl = NULL;
-> >
-> > @@ -405,7 +430,9 @@ static int execute_sequence(snd_use_case_mgr_t
-> *uc_mgr,
-> >  					free(capture_ctl);
-> >  				} else
-> >  					cdev = capture_ctl;
-> > +
-> >  			}
-> > +
-> 
-> Looks like this formatting change was added by mistake ?
+ }
 
-Yes, it was added by mistake. I'll remove it.
+In above function, I will copy the audio data to areas with calculate the offset like this:
 
-> > +/* Execute enable or disable sequence of a component device.
-> > + *
-> > + * For a component device (a codec or embedded DSP), its sequence
-> > +doesn't
-> > + * specify the sound card device 'cdev', because a component can be
-> > +reused
-> > + * by different sound cards (machines). So when executing its
-> > +sequence, a
-> > + * parameter 'cdev_in' is used to pass cdev defined by the sequence
-> > +of its
-> > + * parent, the machine device.
-> > + */
-> > +static int execute_component_seq(snd_use_case_mgr_t *uc_mgr,
-> > +				 struct component_sequence *cmpt_seq,
-> > +				 struct list_head *value_list1,
-> > +				 struct list_head *value_list2,
-> > +				 struct list_head *value_list3,
-> > +				 char *cdev_in)
-> > +{
-> > +	struct use_case_device *device = cmpt_seq->device;
-> > +	struct list_head *seq;
-> > +	int err;
-> > +
-> > +
-> > +	if (cmpt_seq->enable)
-> > +		seq = &device->enable_list;
-> > +	else
-> > +		seq = &device->disable_list;
-> 
-> What happens here if there is only an enable sequence and no disable
-> sequence ? i.e. will seq be NULL ?
+memcpy((char *) areas->addr + (areas->first + areas->step * offset) / 8, data, size);
 
-The device's enable_list or disable_list will be empty, assured by the UCM parser.
-And so 'seq' will be an empty list and the following execute_sequence() will exit without doing anything.
-> 
-> > +
-> > +	err = execute_sequence(uc_mgr, seq,
-> > +			       &device->value_list,
-> > +			       &uc_mgr->active_verb->value_list,
-> > +			       &uc_mgr->value_list,
-> > +			       cdev_in);
-> > +	return err;
-> > +}
-> > +
+But after serveral calls, the application crash, and I print the "offset" value, it seem always increase, when reach one number (e.g. 66560) it crash. So my question is: is the "offset" value always increase is expected? Or does it should like a ring buffer, so it should start from begin again? I see there is hw_pointer and app_pointer, but they are both read_only, right? How could we adjust the read pointer? Thanks.
 
-Thanks
-Mengdong
+BTW, I test the plugin in this way:
+
+arecord -D my_plug -c 1 -f S16_LE raw
+
+Best Regards,
+Hermes
