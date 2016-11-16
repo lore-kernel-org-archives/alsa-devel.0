@@ -1,63 +1,58 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [RFC PATCH 2/3] ucm: Parse sequence of component
-	devices
-Date: Wed, 16 Nov 2016 07:16:54 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8819A6FD5@shsmsx102.ccr.corp.intel.com>
-References: <cover.1479195801.git.mengdong.lin@linux.intel.com>
- <9baaf7a3d55a86e417826715e8e63d1a76582156.1479195801.git.mengdong.lin@linux.intel.com>
- <1479199551.7823.11.camel@loki>
+From: Sebastian Reichel <sre@kernel.org>
+Subject: Re: Lenovo Dock + Thinkpad X260 -> no HDMI audio output
+Date: Wed, 16 Nov 2016 13:07:54 +0100
+Message-ID: <20161116120753.4wuw5feaoklqajf5@earth>
+References: <20161116023821.hcwg4u2iconuc5d6@burischnitzel.preining.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CC082665B6
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 08:16:59 +0100 (CET)
-In-Reply-To: <1479199551.7823.11.camel@loki>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zkxs6u7j3zmxdcii"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20161116023821.hcwg4u2iconuc5d6@burischnitzel.preining.info>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Norbert Preining <preining@logic.at>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Liam Girdwood [mailto:liam.r.girdwood@linux.intel.com]
-> Sent: Tuesday, November 15, 2016 4:46 PM
- 
-> > @@ -306,6 +381,30 @@ static int parse_sequence(snd_use_case_mgr_t
-> *uc_mgr ATTRIBUTE_UNUSED,
-> >  			continue;
-> >  		}
-> >
-> > +		if (strcmp(cmd, "enadev") == 0) {
-> > +			/* need to enable a component device */
-> > +			curr->type = SEQUENCE_ELEMENT_TYPE_CMPT_SEQ;
-> > +			err = parse_component_seq(uc_mgr, n, 1,
-> > +						&curr->data.cmpt_seq);
-> > +			if (err < 0) {
-> > +				uc_error("error: enadev requires a valid
-> device!");
-> > +				return err;
-> > +			}
-> > +			continue;
-> > +		}
-> > +
-> > +		if (strcmp(cmd, "disdev") == 0) {
-> 
-> Do we need to document enadev and disdev anywhere ?
-> 
-> Liam
 
-Maybe we could document this in the description of function parse_sequence() and parse_verb()?
-parse_verb() has an example of EnableSequence and DisableSequence.
+--zkxs6u7j3zmxdcii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks
-Mengdong
+Hi Norbert,
+
+On Wed, Nov 16, 2016 at 11:38:21AM +0900, Norbert Preining wrote:
+> I am trying to get HDMI audio output via a Lenovo Dock Ultra in
+> combination with a Lenovo Thinkpad X260.
+>
+> [...]
+
+Lenovo Dock Ultra contains a DP-MST Hub to provide all those
+HDMI/DVI/DP ports. Audio over DP-MST is currently not supported
+by the i915 driver, but there are patches (developed since ~2014):
+
+https://lists.freedesktop.org/archives/intel-gfx/2016-November/111353.html
+
+-- Sebastian
+
+--zkxs6u7j3zmxdcii
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAlgsTBcACgkQ2O7X88g7
++posBRAAqVtkdL9hcDBNieX6qXTXBHGMlKaKZQQ0cUaMTtdoM5H/X90BdphQMkwK
+InXPePxyC2zQpQXBc9malzxv+K7LRdIPA5NSZnbZ4dPfWcIU29JOOmNwzGUorLmt
+oLmEV5hY0SrbENq1ivpr54tYQS2mxnj+pOAbTJdTYzAPWkWTDXwaZ3MclR2CVXUg
+4EokdI/zFQOMo/8upulWe9MsSSz+gIn8g1GmxCq3ixfBn8Lxd/sTE8zC957rJ5gY
+U4ZBjjkgMmcRkD2Po2YtMs/Uc6+Xt2flI3XhL4bdIgqLBKNyS091+wV1kUqNTmom
+WK2jh+m75Bf2gTPQG0D+A9LKvDKCcxYYUi7akfZSyCqU1NWK1z+foBuOxdK3KXvw
+Dss85OHFvQOilkxdLDK5dAPVbjZgR0oiUj31yDq10bh7qNFPbn8wfdZQ+99rHqW1
+v4Gocj4/oS3er2guI6lDg8CQij0TF8oqm8vn6SDpvoPu1nXQIyZQB+h+7nRu4mID
+o3Jj8eb5Rr5zXTqfkHBnEBL3FfNPp1hkg+7LXAyVd22+DGYDkkV6VfXiugBSEwmM
+lefWZ5UKR2vYnsInJodtle+MnK+TiktxSScj4hdHV60ligknNOXiuuK/UxNGE1tb
+hl1nUh99FxbYUAXPFBTrwJhej0j0FLAAPwUgh5hZIbsWcpQIu2I=
+=P+zb
+-----END PGP SIGNATURE-----
+
+--zkxs6u7j3zmxdcii--
