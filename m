@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 5/7] topology: Export physical DAIs to the
-	binary for kernel
-Date: Wed, 16 Nov 2016 14:42:49 +0800
-Message-ID: <71c700b0477cb17e8ccc9622c1b8e96ff30125cf.1479277829.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 6/7] topology: ABI - Add voice wake up flag for
+	DAI links
+Date: Wed, 16 Nov 2016 14:42:58 +0800
+Message-ID: <feebc45326e95cd8c090877b3e2e4c8f8f9ac997.1479277829.git.mengdong.lin@linux.intel.com>
 References: <cover.1479277829.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B4A2266C3D
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 07:41:04 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 27B92266C3D
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 07:41:11 +0100 (CET)
 In-Reply-To: <cover.1479277829.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,136 +25,28 @@ To: alsa-devel@alsa-project.org
 Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Export the physical DAI objects to the binary output file for kernel.
-For physical DAIs defined by the text conf file, find and merge their
-stream capablities and private data before exporting.
+Add a new flag bit SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP to link flags.
+If a link is used for voice wake up, users can set this flag bit and
+topology will set the link's 'ignore_suspend' to true.
 
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+This ABI update is backward compatible and applied in kernel. We may
+rename this flag when we find a better name for this.
+
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/src/topology/builder.c b/src/topology/builder.c
-index b0ba54e..20fa925 100644
---- a/src/topology/builder.c
-+++ b/src/topology/builder.c
-@@ -204,6 +204,9 @@ static int write_block(snd_tplg_t *tplg, struct list_head *base,
- 	case SND_TPLG_TYPE_DATA:
- 		return write_elem_block(tplg, base, size,
- 			SND_SOC_TPLG_TYPE_PDATA, "data");
-+	case SND_TPLG_TYPE_DAI:
-+		return write_elem_block(tplg, base, size,
-+			SND_SOC_TPLG_TYPE_DAI, "dai");
- 	default:
- 		return -EINVAL;
- 	}
-@@ -293,6 +296,14 @@ int tplg_write_data(snd_tplg_t *tplg)
- 		return ret;
- 	}
+diff --git a/include/sound/asoc.h b/include/sound/asoc.h
+index 1232f1e..082c542 100644
+--- a/include/sound/asoc.h
++++ b/include/sound/asoc.h
+@@ -146,6 +146,7 @@
+ #define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES         (1 << 0)
+ #define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
+ #define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
++#define SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP            (1 << 3)
  
-+	/* write physical dai elems */
-+	ret = write_block(tplg, &tplg->dai_list,
-+		SND_TPLG_TYPE_DAI);
-+	if (ret < 0) {
-+		SNDERR("failed to write physical dai elems %d\n", ret);
-+		return ret;
-+	}
-+
- 	/* write be elems */
- 	ret = write_block(tplg, &tplg->be_list,
- 		SND_TPLG_TYPE_BE);
-diff --git a/src/topology/parser.c b/src/topology/parser.c
-index 4afa576..c5f9757 100644
---- a/src/topology/parser.c
-+++ b/src/topology/parser.c
-@@ -288,6 +288,10 @@ static int tplg_build_integ(snd_tplg_t *tplg)
- 	if (err <  0)
- 		return err;
- 
-+	err = tplg_build_dais(tplg, SND_TPLG_TYPE_DAI);
-+	if (err <  0)
-+		return err;
-+
- 	err = tplg_build_links(tplg, SND_TPLG_TYPE_BE);
- 	if (err <  0)
- 		return err;
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 9f60e4b..d7c04c2 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -129,6 +129,61 @@ int tplg_build_pcms(snd_tplg_t *tplg, unsigned int type)
- 	return 0;
- }
- 
-+/* build a physical DAI */
-+static int tplg_build_dai(snd_tplg_t *tplg, struct tplg_elem *elem)
-+{
-+	struct tplg_ref *ref;
-+	struct list_head *base, *pos;
-+	int err = 0;
-+
-+	/* get playback & capture stream caps */
-+	err = tplg_build_stream_caps(tplg, elem->id, elem->dai->caps);
-+	if (err < 0)
-+		return err;
-+
-+	/* get private data */
-+	base = &elem->ref_list;
-+	list_for_each(pos, base) {
-+
-+		ref = list_entry(pos, struct tplg_ref, list);
-+
-+		if (ref->type == SND_TPLG_TYPE_DATA) {
-+			err = tplg_copy_data(tplg, elem, ref);
-+			if (err < 0)
-+				return err;
-+		}
-+	}
-+
-+	/* add DAI to manifest */
-+	tplg->manifest.dai_elems++;
-+
-+	return 0;
-+}
-+
-+/* build physical DAIs*/
-+int tplg_build_dais(snd_tplg_t *tplg, unsigned int type)
-+{
-+	struct list_head *base, *pos;
-+	struct tplg_elem *elem;
-+	int err = 0;
-+
-+	base = &tplg->dai_list;
-+	list_for_each(pos, base) {
-+
-+		elem = list_entry(pos, struct tplg_elem, list);
-+		if (elem->type != type) {
-+			SNDERR("error: invalid elem '%s'\n", elem->id);
-+			return -EINVAL;
-+		}
-+
-+		err = tplg_build_dai(tplg, elem);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- static int tplg_build_stream_cfg(snd_tplg_t *tplg,
- 	struct snd_soc_tplg_stream *stream, int num_streams)
- {
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index 807462b..f913563 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -294,6 +294,7 @@ int tplg_add_bytes(snd_tplg_t *tplg, struct snd_tplg_bytes_template *bytes_ctl,
- 		   struct tplg_elem **e);
- 
- int tplg_build_pcms(snd_tplg_t *tplg, unsigned int type);
-+int tplg_build_dais(snd_tplg_t *tplg, unsigned int type);
- int tplg_build_links(snd_tplg_t *tplg, unsigned int type);
- int tplg_add_link_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
- int tplg_add_pcm_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
+ /*
+  * Block Header.
 -- 
 2.5.0
