@@ -1,44 +1,81 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 05/19] ASoC: wm8510: Convert to
- module_i2c/spi_driver()
-Date: Wed, 16 Nov 2016 09:44:54 +0000
-Message-ID: <20161116094454.GV1575@localhost.localdomain>
-References: <871syd9vq9.wl%kuninori.morimoto.gx@renesas.com>
- <87twb98h2o.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A5C32665B0
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 10:44:40 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <87twb98h2o.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: [PATCH v4 2/3] media: change au0828 to use Media Device Allocator API
+Date: Wed, 16 Nov 2016 07:29:10 -0700
+Message-ID: <fdd68ce1fc71dae7504e9e9acd2877dbf970e8c6.1479271294.git.shuahkh@osg.samsung.com>
+References: <cover.1479271294.git.shuahkh@osg.samsung.com>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <cover.1479271294.git.shuahkh@osg.samsung.com>
+In-Reply-To: <cover.1479271294.git.shuahkh@osg.samsung.com>
+References: <cover.1479271294.git.shuahkh@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: mchehab@kernel.org, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, javier@osg.samsung.com, chehabrafael@gmail.com, g.liakhovetski@gmx.de, ONeukum@suse.com, k@oikw.org, daniel@zonque.org, mahasler@gmail.com, clemens@ladisch.de, geliangtang@163.com, vdronov@redhat.com, laurent.pinchart@ideasonboard.com
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 15, 2016 at 05:10:33AM +0000, Kuninori Morimoto wrote:
-> 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> Let's use module_i2c/spi_driver()
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
+Change au0828 to use Media Device Allocator API to allocate media device
+with the parent usb struct device as the key, so it can be shared with the
+snd_usb_audio driver.
 
-Yeah I think from here on in the series these have the I2C/SPI
-issues Lars mentions.
+Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+---
+Changes since v2:
+- Updated media_device_delete() to pass in module name.
 
-Thanks,
-Charles
+ drivers/media/usb/au0828/au0828-core.c | 12 ++++--------
+ drivers/media/usb/au0828/au0828.h      |  1 +
+ 2 files changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+index bf53553..582f31f 100644
+--- a/drivers/media/usb/au0828/au0828-core.c
++++ b/drivers/media/usb/au0828/au0828-core.c
+@@ -157,9 +157,7 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
+ 	dev->media_dev->enable_source = NULL;
+ 	dev->media_dev->disable_source = NULL;
+ 
+-	media_device_unregister(dev->media_dev);
+-	media_device_cleanup(dev->media_dev);
+-	kfree(dev->media_dev);
++	media_device_delete(dev->media_dev, KBUILD_MODNAME);
+ 	dev->media_dev = NULL;
+ #endif
+ }
+@@ -212,14 +210,10 @@ static int au0828_media_device_init(struct au0828_dev *dev,
+ #ifdef CONFIG_MEDIA_CONTROLLER
+ 	struct media_device *mdev;
+ 
+-	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
++	mdev = media_device_usb_allocate(udev, KBUILD_MODNAME);
+ 	if (!mdev)
+ 		return -ENOMEM;
+ 
+-	/* check if media device is already initialized */
+-	if (!mdev->dev)
+-		media_device_usb_init(mdev, udev, udev->product);
+-
+ 	dev->media_dev = mdev;
+ #endif
+ 	return 0;
+@@ -487,6 +481,8 @@ static int au0828_media_device_register(struct au0828_dev *dev,
+ 		/* register media device */
+ 		ret = media_device_register(dev->media_dev);
+ 		if (ret) {
++			media_device_delete(dev->media_dev, KBUILD_MODNAME);
++			dev->media_dev = NULL;
+ 			dev_err(&udev->dev,
+ 				"Media Device Register Error: %d\n", ret);
+ 			return ret;
+diff --git a/drivers/media/usb/au0828/au0828.h b/drivers/media/usb/au0828/au0828.h
+index dd7b378..4bf1b0c 100644
+--- a/drivers/media/usb/au0828/au0828.h
++++ b/drivers/media/usb/au0828/au0828.h
+@@ -35,6 +35,7 @@
+ #include <media/v4l2-ctrls.h>
+ #include <media/v4l2-fh.h>
+ #include <media/media-device.h>
++#include <media/media-dev-allocator.h>
+ 
+ /* DVB */
+ #include "demux.h"
+-- 
+2.7.4
