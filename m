@@ -1,20 +1,19 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] crec: Add option to specify codec ID
-Date: Wed, 16 Nov 2016 14:53:21 +0000
-Message-ID: <1479308001.18450.25.camel@rf-debian.wolfsonmicro.main>
-References: <1479296649-18278-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <20161116130508.GZ3000@localhost>
- <1479301675.18450.18.camel@rf-debian.wolfsonmicro.main>
- <20161116134835.GW1575@localhost.localdomain>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [MINUTES] Linux Plumbers Audio Mini Conference -
+	Santa Fe 2016
+Date: Wed, 16 Nov 2016 16:23:32 +0000
+Message-ID: <20161116162332.3j5o3k2fstr6wrrx@sirena.org.uk>
+References: <1478213478.21597.13.camel@loki> <58289B1F.2010109@codeaurora.org>
+ <20161114140830.rqibtdy4xjat7uis@sirena.org.uk>
+ <327e8d7d-d567-f984-5c35-bd9dc1f6abaa@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2385113183499592442=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F589266CC1
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 15:53:27 +0100 (CET)
-In-Reply-To: <20161116134835.GW1575@localhost.localdomain>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20EE626664F
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 17:23:49 +0100 (CET)
+In-Reply-To: <327e8d7d-d567-f984-5c35-bd9dc1f6abaa@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,42 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin" <mengdong.lin@linux.intel.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, Patrick Lai <plai@codeaurora.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Lai,
+ Patrick" <plai@quicinc.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>, Eric Laurent <elaurent@google.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Dylan Reid <dgreid@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2016-11-16 at 13:48 +0000, Charles Keepax wrote:
-> On Wed, Nov 16, 2016 at 01:07:55PM +0000, Richard Fitzgerald wrote:
-> > On Wed, 2016-11-16 at 18:35 +0530, Vinod Koul wrote:
-> > > On Wed, Nov 16, 2016 at 11:44:09AM +0000, Richard Fitzgerald wrote:
-> > > > This patch adds a -I command line option to set the codec ID,
-> > > > either from a defined set of string values or as a number.
-> > > 
-> > > Can you explain why you want to add this? The utility cant really record a
-> > > mp3 file!
-> > > 
-> > > 
-> > 
-> > You need to be able to pass a codec ID that the driver supports, and to
-> > indicate which codec you're trying to use. It's not useful to only be
-> > able to open the "PCM" codec. It doesn't really matter whether crec
-> > understands the content of the data, we're just pulling raw data, most
-> > likely for test/debug.
-> > 
-> > The wm_adsp driver on Wolfson/Cirrus codecs uses the new BESPOKE stream
-> > ID so we need a way to pass that. And we'd also need it for any drivers
-> > that had streams using other codec IDs.
-> > 
-> 
-> Is the objection here not that crec is wrapping the data with
-> a WAV file? Should we perhaps just expand this so that if you
-> request a different format it uses the raw data mode that it uses
-> when you let the output go to stdout.
-> 
 
-Funny I thought we'd already added a flag for saving to the file raw.
-It's raw when you pipe it to stdout.
+--===============2385113183499592442==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bcrtfhtjjbeaeors"
+Content-Disposition: inline
 
 
-> Thanks,
-> Charles
+--bcrtfhtjjbeaeors
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Nov 15, 2016 at 08:03:19AM +0900, Takashi Sakamoto wrote:
+> On 2016=E5=B9=B411=E6=9C=8814=E6=97=A5 23:08, Mark Brown wrote:
+
+> > There's no central place for uploading slides - guess sending them in
+> > e-mail in followup to the minutes is as good as anything?
+
+> Let us upload our resources and add the minutes to plumbers' wiki page you
+> created?
+> http://wiki.linuxplumbersconf.org/2016:audio
+
+Sure, seems sensible - we can always copy them over to the ALSA wiki if
+things get set up there.
+
+--bcrtfhtjjbeaeors
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJYLIgEAAoJECTWi3JdVIfQPoUH/R6uBxe3HrMjDjFz+dbw9Adh
+UD8jRyKK0DiAuRg8DrEIsqeoTa+6d4TTlxNJHK00Eoy/G/MQXnIfrmrnwuTYh/w7
+eiAy8STpS0AJM5uaBOFjm6cky1ucojRhI6KyJdyekwwDulTYSMl6uGDfp7/BNw5t
+fvoKDRFFaU58tz0qRS0958CEzp+Z2L/YMgtRgg/eA6ApJHZ84ZSjp7e+7qXwTTCr
+DZGOWr7G2+SdBIyE62GKBtlvPKO1kMoLt0Dmn7oIPkrJnio8Gx3GHGAjOYBz2ruk
+kYfvhnVDoIb8tpzZbH6S8vj1eczz85aXsU/JBifMEnOYV2rcQyN9u+gvZM6VA14=
+=EW2X
+-----END PGP SIGNATURE-----
+
+--bcrtfhtjjbeaeors--
+
+--===============2385113183499592442==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2385113183499592442==--
