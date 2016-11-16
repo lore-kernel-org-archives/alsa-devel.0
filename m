@@ -1,59 +1,55 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] crec: Add option to specify codec ID
-Date: Wed, 16 Nov 2016 13:48:35 +0000
-Message-ID: <20161116134835.GW1575@localhost.localdomain>
-References: <1479296649-18278-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <20161116130508.GZ3000@localhost>
- <1479301675.18450.18.camel@rf-debian.wolfsonmicro.main>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC 01/14] SoundWire: Add SoundWire bus driver documentation
+Date: Wed, 16 Nov 2016 17:59:29 +0000
+Message-ID: <20161116175929.kf7lfkcnqjdhasjk@sirena.org.uk>
+References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
+ <1477053673-16021-2-git-send-email-hardik.t.shah@intel.com>
+ <20161114141548.GL1575@localhost.localdomain>
+ <20161115142914.GN3000@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id B48FB26664F
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 14:48:24 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dgw7jizuamgbgtoi"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1479301675.18450.18.camel@rf-debian.wolfsonmicro.main>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+In-Reply-To: <20161115142914.GN3000@localhost>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Hardik Shah <hardik.t.shah@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 16, 2016 at 01:07:55PM +0000, Richard Fitzgerald wrote:
-> On Wed, 2016-11-16 at 18:35 +0530, Vinod Koul wrote:
-> > On Wed, Nov 16, 2016 at 11:44:09AM +0000, Richard Fitzgerald wrote:
-> > > This patch adds a -I command line option to set the codec ID,
-> > > either from a defined set of string values or as a number.
-> > 
-> > Can you explain why you want to add this? The utility cant really record a
-> > mp3 file!
-> > 
-> > 
-> 
-> You need to be able to pass a codec ID that the driver supports, and to
-> indicate which codec you're trying to use. It's not useful to only be
-> able to open the "PCM" codec. It doesn't really matter whether crec
-> understands the content of the data, we're just pulling raw data, most
-> likely for test/debug.
-> 
-> The wm_adsp driver on Wolfson/Cirrus codecs uses the new BESPOKE stream
-> ID so we need a way to pass that. And we'd also need it for any drivers
-> that had streams using other codec IDs.
-> 
 
-Is the objection here not that crec is wrapping the data with
-a WAV file? Should we perhaps just expand this so that if you
-request a different format it uses the raw data mode that it uses
-when you let the output go to stdout.
+--dgw7jizuamgbgtoi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Charles
+On Tue, Nov 15, 2016 at 07:59:14PM +0530, Vinod Koul wrote:
+> On Mon, Nov 14, 2016 at 02:15:48PM +0000, Charles Keepax wrote:
+
+> > slaves register to that. This also has the nice property that its
+> > easy to create devices that sit behind other buses, for example
+> > here we might want a SoundWire master that sits behind a SPI bus.
+> > But you seem to have gone in the other direction and have the
+> > master sitting on the same bus as the slaves.
+
+> Since the controller on our SoC was enumerable, people went with this
+> approach. In this hindsight that may not have been the best choice.
+
+Doing buses properly isn't an obstacle to doing enumeration, indeed I'd
+expect it to make it a lot easier - just have your driver for your
+controller do the enumeration at probe time.
+
+--dgw7jizuamgbgtoi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJYLJ6AAAoJECTWi3JdVIfQ2VMH+QE9m6hKCzVw4UWGR7O40Zm9
+R5r5VdB3nSLv2z5rhNlp/yuy0JLWR94lJ1vDWIZLbXClQ1IFq2U9LYiuDwvK4GCH
+51fcyFBlifKuhepeBEhlOlra02Dph4nf52XqL8nBbb2QdObfe/SMG/EJZWgt6/Wc
+w0kj3/gZAbDTaWnycGr/ewQGMjN4xnFDu7H83QQPDR+xYFdj8jM6xv4PSZCVW2uc
+zC6Qlq8BXrk1EboOaEu146gzH2MlMWte6Cev+ZwKG2uYoNpLaZ9ZbnRfEpowmYbO
+AJ5ZEpXedxBnP1kboQkiIQ/Ki39BccRyOYXTYyIjBiRWc2MGOVHn3cthiIEWYk0=
+=ayun
+-----END PGP SIGNATURE-----
+
+--dgw7jizuamgbgtoi--
