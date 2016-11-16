@@ -1,18 +1,18 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 2/2] ASoC: rt5665: Use devm_gpio_request_one()
-Date: Wed, 16 Nov 2016 21:08:42 +0800
-Message-ID: <20161116130842.28182-2-axel.lin@ingics.com>
-References: <20161116130842.28182-1-axel.lin@ingics.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] crec: Correct name of output binary to crec
+Date: Wed, 16 Nov 2016 13:14:21 +0000
+Message-ID: <1479302061.18450.24.camel@rf-debian.wolfsonmicro.main>
+References: <1479294405-17471-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <20161116130241.GY3000@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f68.google.com (mail-pg0-f68.google.com [74.125.83.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 085602606F8
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 14:10:26 +0100 (CET)
-Received: by mail-pg0-f68.google.com with SMTP id e9so14355509pgc.1
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 05:10:26 -0800 (PST)
-In-Reply-To: <20161116130842.28182-1-axel.lin@ingics.com>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CF39266552
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 14:14:23 +0100 (CET)
+In-Reply-To: <20161116130241.GY3000@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Axel Lin <axel.lin@ingics.com>, Liam Girdwood <lgirdwood@gmail.com>, Julia Lawall <julia.lawall@lip6.fr>, Bard Liao <bardliao@realtek.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Simplify the code a bit.
+On Wed, 2016-11-16 at 18:32 +0530, Vinod Koul wrote:
+> On Wed, Nov 16, 2016 at 11:06:45AM +0000, Richard Fitzgerald wrote:
+> > For some reason when the build system was converted to
+> > automake by this patch
+> > 
+> >     "Convert the build system to autotools"
+> > 
+> > the name of the output binary for crec was changed
+> > from 'crec' to 'crecord'.
+> > 
+> > This patch corrects it back to 'crec'
+> 
+> That implies crecord is incorrect, I do not think so.
+> 
+> Can you explain why you would want to rename this back.
+> 
+> The motivation for this was to make it proper like cplay. Also similar to
+> aplay and arecord.
+> 
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/rt5665.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+I don't really see a need for that, or why "crec" is wrong.
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index 7dfaaf1..324461e 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -4677,11 +4677,9 @@ static int rt5665_i2c_probe(struct i2c_client *i2c,
- 	}
- 
- 	if (gpio_is_valid(rt5665->pdata.ldo1_en)) {
--		if (devm_gpio_request(&i2c->dev, rt5665->pdata.ldo1_en,
--			"rt5665"))
-+		if (devm_gpio_request_one(&i2c->dev, rt5665->pdata.ldo1_en,
-+					  GPIOF_OUT_INIT_HIGH, "rt5665"))
- 			dev_err(&i2c->dev, "Fail gpio_request gpio_ldo\n");
--		else if (gpio_direction_output(rt5665->pdata.ldo1_en, 1))
--			dev_err(&i2c->dev, "Fail gpio_direction gpio_ldo\n");
- 	}
- 
- 	/* Sleep for 300 ms miniumum */
--- 
-2.9.3
+In any case if you did want to change that name 
+
+a) it should be an explicit patch, not sneaked in as an undocumented and
+unexpected side-effect of some other patch
+
+b) the source file should have been renamed to match, if the name "crec"
+is a massive problem then it should also be a problem that
+"cplay.c->cplay" but "crec.c->crecord". If it's ok to have the source
+file called crec.c what's wrong with the binary it builds being called
+crec?
+
+c) it's a nuisance to have to change existing test systems and apps that
+launch "crec", or to create symlinks from crec->crecord.
