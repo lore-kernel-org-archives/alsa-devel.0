@@ -1,18 +1,17 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] crec: Add option to specify codec ID
-Date: Wed, 16 Nov 2016 13:07:55 +0000
-Message-ID: <1479301675.18450.18.camel@rf-debian.wolfsonmicro.main>
-References: <1479296649-18278-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <20161116130508.GZ3000@localhost>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH 1/2] ASoC: rt5665: Fix missing mutex_unlock in
+	rt5665_calibrate
+Date: Wed, 16 Nov 2016 21:08:41 +0800
+Message-ID: <20161116130842.28182-1-axel.lin@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 44F6D2659AA
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 14:07:59 +0100 (CET)
-In-Reply-To: <20161116130508.GZ3000@localhost>
+Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 024A22606F8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 14:10:23 +0100 (CET)
+Received: by mail-pg0-f66.google.com with SMTP id p66so14724525pga.2
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2016 05:10:23 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,121 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Axel Lin <axel.lin@ingics.com>, Liam Girdwood <lgirdwood@gmail.com>, Julia Lawall <julia.lawall@lip6.fr>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2016-11-16 at 18:35 +0530, Vinod Koul wrote:
-> On Wed, Nov 16, 2016 at 11:44:09AM +0000, Richard Fitzgerald wrote:
-> > This patch adds a -I command line option to set the codec ID,
-> > either from a defined set of string values or as a number.
-> 
-> Can you explain why you want to add this? The utility cant really record a
-> mp3 file!
-> 
-> 
+Reported-by: Julia Lawall <julia.lawall@lip6.fr>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/rt5665.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-You need to be able to pass a codec ID that the driver supports, and to
-indicate which codec you're trying to use. It's not useful to only be
-able to open the "PCM" codec. It doesn't really matter whether crec
-understands the content of the data, we're just pulling raw data, most
-likely for test/debug.
-
-The wm_adsp driver on Wolfson/Cirrus codecs uses the new BESPOKE stream
-ID so we need a way to pass that. And we'd also need it for any drivers
-that had streams using other codec IDs.
-
-> > 
-> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> > ---
-> >  src/utils/crec.c | 66 ++++++++++++++++++++++++++++++++++++++++++++++++++------
-> >  1 file changed, 59 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/src/utils/crec.c b/src/utils/crec.c
-> > index 8d5b7b0..a586fc4 100644
-> > --- a/src/utils/crec.c
-> > +++ b/src/utils/crec.c
-> > @@ -83,6 +83,27 @@ static bool streamed;
-> >  static const unsigned int DEFAULT_CHANNELS = 1;
-> >  static const unsigned int DEFAULT_RATE = 44100;
-> >  static const unsigned int DEFAULT_FORMAT = SNDRV_PCM_FORMAT_S16_LE;
-> > +static const unsigned int DEFAULT_CODEC_ID = SND_AUDIOCODEC_PCM;
-> > +
-> > +static const struct {
-> > +	const char *name;
-> > +	unsigned int id;
-> > +} codec_ids[] = {
-> > +	{ "PCM", SND_AUDIOCODEC_PCM },
-> > +	{ "MP3", SND_AUDIOCODEC_MP3 },
-> > +	{ "AMR", SND_AUDIOCODEC_AMR },
-> > +	{ "AMRWB", SND_AUDIOCODEC_AMRWB },
-> > +	{ "ARMWBPLUS", SND_AUDIOCODEC_AMRWBPLUS },
-> > +	{ "AAC", SND_AUDIOCODEC_AAC },
-> > +	{ "WMA", SND_AUDIOCODEC_WMA },
-> > +	{ "REAL", SND_AUDIOCODEC_REAL },
-> > +	{ "VORBIS", SND_AUDIOCODEC_VORBIS },
-> > +	{ "FLAC", SND_AUDIOCODEC_FLAC },
-> > +	{ "IEC61937", SND_AUDIOCODEC_IEC61937 },
-> > +	{ "G723_1", SND_AUDIOCODEC_G723_1 },
-> > +	{ "G729", SND_AUDIOCODEC_G729 },
-> > +};
-> > +#define CREC_NUM_CODEC_IDS (sizeof(codec_ids) / sizeof(codec_ids[0]))
-> >  
-> >  struct riff_chunk {
-> >  	char desc[4];
-> > @@ -153,6 +174,8 @@ static void size_wave_header(struct wave_header *header, uint32_t size)
-> >  
-> >  static void usage(void)
-> >  {
-> > +	int i;
-> > +
-> >  	fprintf(stderr, "usage: crec [OPTIONS] [filename]\n"
-> >  		"-c\tcard number\n"
-> >  		"-d\tdevice node\n"
-> > @@ -163,14 +186,22 @@ static void usage(void)
-> >  		"-h\tPrints this help list\n\n"
-> >  		"-C\tSpecify the number of channels (default %u)\n"
-> >  		"-R\tSpecify the sample rate (default %u)\n"
-> > -		"-F\tSpecify the format: S16_LE, S32_LE (default S16_LE)\n\n"
-> > +		"-F\tSpecify the format: S16_LE, S32_LE (default S16_LE)\n"
-> > +		"-I\tSpecify codec ID (default PCM)\n\n"
-> >  		"If filename is not given the output is\n"
-> >  		"written to stdout\n\n"
-> >  		"Example:\n"
-> >  		"\tcrec -c 1 -d 2 test.wav\n"
-> > -		"\tcrec -f 5 test.wav\n",
-> > +		"\tcrec -f 5 test.wav\n\n"
-> > +		"Valid codec IDs:\n",
-> >  		DEFAULT_CHANNELS, DEFAULT_RATE);
-> >  
-> > +	for (i = 0; i < CREC_NUM_CODEC_IDS; ++i)
-> > +		fprintf(stderr, "%s%c", codec_ids[i].name,
-> > +			(i % 8) ? ' ' : '\n');
-> > +
-> > +	fprintf(stderr, "\nor the value in decimal or hex\n");
-> > +
-> >  	exit(EXIT_FAILURE);
-> >  }
-> >  
-> > @@ -239,7 +270,8 @@ static int finish_record(void)
-> >  static void capture_samples(char *name, unsigned int card, unsigned int device,
-> >  		     unsigned long buffer_size, unsigned int frag,
-> >  		     unsigned int length, unsigned int rate,
-> > -		     unsigned int channels, unsigned int format)
-> > +		     unsigned int channels, unsigned int format,
-> > +		     unsigned int codec_id)
-> >  {
-> >  	struct compr_config config;
-> >  	struct snd_codec codec;
-> > @@ -288,7 +320,7 @@ static void capture_samples(char *name, unsigned int card, unsigned int device,
-> >  
-> >  	memset(&codec, 0, sizeof(codec));
-> >  	memset(&config, 0, sizeof(config));
-> > -	codec.id = SND_AUDIOCODEC_PCM;
-> > +	codec.id = codec_id;
-> 
-> 
-> So we are going to dump raw encoded data. I am not sure thats a smart
-> choice.. We should really support format headers and save proper files
-> 
-> 
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index 34254fd..7dfaaf1 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -4587,7 +4587,7 @@ static void rt5665_calibrate(struct rt5665_priv *rt5665)
+ 			pr_err("HP Calibration Failure\n");
+ 			regmap_write(rt5665->regmap, RT5665_RESET, 0);
+ 			regcache_cache_bypass(rt5665->regmap, false);
+-			return;
++			goto out_unlock;
+ 		}
+ 
+ 		count++;
+@@ -4606,7 +4606,7 @@ static void rt5665_calibrate(struct rt5665_priv *rt5665)
+ 			pr_err("MONO Calibration Failure\n");
+ 			regmap_write(rt5665->regmap, RT5665_RESET, 0);
+ 			regcache_cache_bypass(rt5665->regmap, false);
+-			return;
++			goto out_unlock;
+ 		}
+ 
+ 		count++;
+@@ -4621,6 +4621,7 @@ static void rt5665_calibrate(struct rt5665_priv *rt5665)
+ 	regmap_write(rt5665->regmap, RT5665_BIAS_CUR_CTRL_8, 0xa602);
+ 	regmap_write(rt5665->regmap, RT5665_ASRC_8, 0x0120);
+ 
++out_unlock:
+ 	mutex_unlock(&rt5665->calibrate_mutex);
+ }
+ 
+-- 
+2.9.3
