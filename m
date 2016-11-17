@@ -1,66 +1,196 @@
-From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-Subject: Re: sound: bebop: strncmp length oddity
-Date: Thu, 17 Nov 2016 22:34:39 +0100
-Message-ID: <6ad63c31-5faf-41e9-525b-b9bf089439ef@m4x.org>
-References: <1477777020.23018.8.camel@perches.com>
- <s5hr36awcow.wl-tiwai@suse.de>
- <ecac8bec-ade6-0dc6-08b5-e8be06531e0c@sakamocchi.jp>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: bebob: compare whole string for model
+	name so that readers are not confused
+Date: Fri, 18 Nov 2016 06:11:24 +0900
+Message-ID: <20161117211124.31520-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <ecac8bec-ade6-0dc6-08b5-e8be06531e0c@sakamocchi.jp>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Takashi Iwai <tiwai@suse.de>, Joe Perches <joe@perches.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>, LKML <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 6EF502675E6
+ for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2016 22:11:28 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: joe@perches.com, nicolas.iooss_linux@m4x.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 17/11/16 21:07, Takashi Sakamoto wrote:
-> On Nov 17 2016 20:47, Takashi Iwai wrote:
->> On Sat, 29 Oct 2016 23:37:00 +0200,
->> Joe Perches wrote:
->>>
->>> 15 isn't the length of the string, is that really what's desired?
->>>
->>> linux/next/sound/firewire/bebob/bebop.c
->>>
->>> -----------------------------
->>>
->>> static bool
->>> check_audiophile_booted(struct fw_unit *unit)
->>> {
->>>     char name[24] = {0};
->>>
->>>     if (fw_csr_string(unit->directory, CSR_MODEL, name, sizeof(name))
->>> < 0)
->>>         return false;
->>>
->>>     return strncmp(name, "FW Audiophile Bootloader", 15) != 0;
->>> }
->>
->> Indeed it looks bogus.  Even "FW...." string is already 24 letters, so
->> it's over name[] array size.
->>
->> Sakamoto-san, could you fix it properly?
-> 
-> It's OK just to compare first a few characters, while I left whole
-> string for our information because model-specific information is easily
-> lost.
-> 
-> For M-Audio's FireWire Audiophile, modalias of
-> 'ieee1394:ven00000D6Cmo00010060sp' hits this unit only. However the unit
-> has two states relevant to loaded firmware. Initial firmware returns 'FW
-> Audiophile Bootloader', while functional firmware returns 'FW
-> Audiophile'. Just comparing the first 15 characters is the shortest way
-> to defferentiate them. (Actually 14 characters. I guess that I did avoid
-> comparison based on LWS...)
-> 
-> Therefore, changing comparison range is not for bug fix, just for
-> readers. But I agree with these patches because the code is a bit
-> confusing. I'll post a patch soon for this aim with appropriate
-> information, sorry for Nicolas.
+A modalias of 'ieee1394:ven00000D6Cmo00010060sp' hits units for M-Audio
+FireWire Audiophile only. However the unit has two states relevant to
+loaded firmware. Initial firmware returns 'FW Audiophile Bootloader',
+while functional firmware returns 'FW Audiophile'.
 
-All right, so long as the code is modified in a way that makes it more
-consistent, I am all right. It is one patch less I need to care about :)
+ALSA bebob driver compares the units' model name to strings of 24 characters
+by the first 15 characters. This is shorter way to differentiate these two
+states but confusing to readers.
 
-Nicolas
+This commit improves the code for this point. Kernel stack is consumed more in
+call of check_audiophile_booted() by a bit.
+
+With initial firmware:
+$ ./linux-firewire-utils/src/crpp < /sys/bus/firewire/devices/fw1/config_rom
+               ROM header and bus information block
+               -----------------------------------------------------------------
+400  04276da6  bus_info_length 4, crc_length 39, crc 28070
+404  31333934  bus_name "1394"
+408  006481f2  irmc 0, cmc 0, isc 0, bmc 0, pmc 0, cyc_clk_acc 100,
+               max_rec 8 (512), max_rom 1, gen 15, spd 2 (S400)
+40c  000d6c03  company_id 000d6c     |
+410  102b7e2e  device_id 03102b7e2e  | EUI-64 000d6c03102b7e2e
+
+               root directory
+               -----------------------------------------------------------------
+414  00067414  directory_length 6, crc 29716
+418  0c0083c0  node capabilities per IEEE 1394
+41c  03000d6c  vendor
+420  81000009  --> descriptor leaf at 444
+424  17010060  model
+428  8100000c  --> descriptor leaf at 458
+42c  d1000001  --> unit directory at 430
+
+               unit directory at 430
+               -----------------------------------------------------------------
+430  00049da1  directory_length 4, crc 40353 (should be 48611)
+434  1200a02d  specifier id: 1394 TA
+438  13014001  version: Vender Unique and AV/C
+43c  17010060  model
+440  8100000f  --> descriptor leaf at 47c
+
+               descriptor leaf at 444
+               -----------------------------------------------------------------
+444  0004073e  leaf_length 4, crc 1854
+448  00000000  textual descriptor
+44c  00000000  minimal ASCII
+450  4d2d4155  "M-AU"
+454  44494f00  "DIO"
+
+               descriptor leaf at 458
+               -----------------------------------------------------------------
+458  00086f21  leaf_length 8, crc 28449
+45c  00000000  textual descriptor
+460  00000000  minimal ASCII
+464  46572041  "FW A"
+468  7564696f  "udio"
+46c  7068696c  "phil"
+470  6520426f  "e Bo"
+474  6f746c6f  "otlo"
+478  61646572  "ader"
+
+               descriptor leaf at 47c
+               -----------------------------------------------------------------
+47c  00086f21  leaf_length 8, crc 28449
+480  00000000  textual descriptor
+484  00000000  minimal ASCII
+488  46572041  "FW A"
+48c  7564696f  "udio"
+490  7068696c  "phil"
+494  6520426f  "e Bo"
+498  6f746c6f  "otlo"
+49c  61646572  "ader"
+
+With functional firmware:
+$ ./linux-firewire-utils/src/crpp < /sys/bus/firewire/devices/fw1/config_rom
+               ROM header and bus information block
+               -----------------------------------------------------------------
+400  042de16f  bus_info_length 4, crc_length 45, crc 57711
+404  31333934  bus_name "1394"
+408  f0648122  irmc 1, cmc 1, isc 1, bmc 1, pmc 0, cyc_clk_acc 100,
+               max_rec 8 (512), max_rom 1, gen 2, spd 2 (S400)
+40c  000d6c03  company_id 000d6c     |
+410  002b7e2e  device_id 03002b7e2e  | EUI-64 000d6c03002b7e2e
+
+               root directory
+               -----------------------------------------------------------------
+414  0009dac4  directory_length 9, crc 56004
+418  0400000d  hardware version
+41c  0c0083c0  node capabilities per IEEE 1394
+420  03000d6c  vendor
+424  81000012  --> descriptor leaf at 46c
+428  17010060  model
+42c  81000015  --> descriptor leaf at 480
+430  13ffffff  version
+434  d1000002  --> unit directory at 43c
+438  d4000006  --> dependent info directory at 450
+
+               unit directory at 43c
+               -----------------------------------------------------------------
+43c  00041eb9  directory_length 4, crc 7865
+440  1200a02d  specifier id: 1394 TA
+444  13014001  version: Vender Unique and AV/C
+448  17010060  model
+44c  81000014  --> descriptor leaf at 49c
+
+               dependent info directory at 450
+               -----------------------------------------------------------------
+450  000637c7  directory_length 6, crc 14279
+454  120007f5  specifier id
+458  13000001  version
+45c  3affffc7  (immediate value)
+460  3b100000  (immediate value)
+464  3cffffc7  (immediate value)
+468  3d600000  (immediate value)
+
+               descriptor leaf at 46c
+               -----------------------------------------------------------------
+46c  0004b8e4  leaf_length 4, crc 47332
+470  00000000  textual descriptor
+474  00000000  minimal ASCII
+478  4d2d4175  "M-Au"
+47c  64696f00  "dio"
+
+               descriptor leaf at 480
+               -----------------------------------------------------------------
+480  0006194b  leaf_length 6, crc 6475
+484  00000000  textual descriptor
+488  00000000  minimal ASCII
+48c  46572041  "FW A"
+490  7564696f  "udio"
+494  7068696c  "phil"
+498  65000000  "e"
+
+               descriptor leaf at 49c
+               -----------------------------------------------------------------
+49c  0006194b  leaf_length 6, crc 6475
+4a0  00000000  textual descriptor
+4a4  00000000  minimal ASCII
+4a8  46572041  "FW A"
+4ac  7564696f  "udio"
+4b0  7068696c  "phil"
+4b4  65000000  "e"
+
+Reported-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+Reported-by: Joe Perches <joe@perches.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/bebob/bebob.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 3469ac14..730ea91 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -172,12 +172,12 @@ get_saffire_spec(struct fw_unit *unit)
+ static bool
+ check_audiophile_booted(struct fw_unit *unit)
+ {
+-	char name[24] = {0};
++	char name[28] = {0};
+ 
+ 	if (fw_csr_string(unit->directory, CSR_MODEL, name, sizeof(name)) < 0)
+ 		return false;
+ 
+-	return strncmp(name, "FW Audiophile Bootloader", 15) != 0;
++	return strncmp(name, "FW Audiophile Bootloader", 24) != 0;
+ }
+ 
+ static void
+-- 
+2.9.3
