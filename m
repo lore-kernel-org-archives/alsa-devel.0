@@ -1,11 +1,11 @@
 From: Florian Fainelli <f.fainelli@gmail.com>
 Subject: [PATCH] sound: Add dependency on DMA
-Date: Thu, 17 Nov 2016 10:50:39 -0800
-Message-ID: <20161117185039.6909-1-f.fainelli@gmail.com>
+Date: Thu, 17 Nov 2016 10:52:37 -0800
+Message-ID: <20161117185237.7070-1-f.fainelli@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, tiwaki@suse.com, perex@preex.cz, arnd@arndb.de, Florian Fainelli <f.fainelli@gmail.com>
+Cc: arnd@arndb.de, Florian Fainelli <f.fainelli@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "moderated list:SOUND" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 Architectures like m32r do not have a proper DMA-API implementation,
