@@ -1,169 +1,66 @@
-From: Alan Young <Alan.Young@IEE.org>
-Subject: Re: [PATCH RESEND] pcm_rate: Do not discard slave
- reported delay in status result.
-Date: Thu, 17 Nov 2016 17:12:57 +0000
-Message-ID: <52e39131-9141-b466-e92a-ff19ffab6d3a@IEE.org>
-References: <bdb7665c-5747-8888-fa2e-552e852fa375@IEE.org>
+From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+Subject: Re: sound: bebop: strncmp length oddity
+Date: Thu, 17 Nov 2016 22:34:39 +0100
+Message-ID: <6ad63c31-5faf-41e9-525b-b9bf089439ef@m4x.org>
+References: <1477777020.23018.8.camel@perches.com>
+ <s5hr36awcow.wl-tiwai@suse.de>
+ <ecac8bec-ade6-0dc6-08b5-e8be06531e0c@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------473CE5BEDBDCCA99FBE9B2F7"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E6B52663E8
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2016 18:12:59 +0100 (CET)
-Received: by mail-wm0-f68.google.com with SMTP id m203so23128049wma.3
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2016 09:12:59 -0800 (PST)
-In-Reply-To: <bdb7665c-5747-8888-fa2e-552e852fa375@IEE.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <ecac8bec-ade6-0dc6-08b5-e8be06531e0c@sakamocchi.jp>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Takashi Iwai <tiwai@suse.de>, Joe Perches <joe@perches.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------473CE5BEDBDCCA99FBE9B2F7
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On 17/11/16 21:07, Takashi Sakamoto wrote:
+> On Nov 17 2016 20:47, Takashi Iwai wrote:
+>> On Sat, 29 Oct 2016 23:37:00 +0200,
+>> Joe Perches wrote:
+>>>
+>>> 15 isn't the length of the string, is that really what's desired?
+>>>
+>>> linux/next/sound/firewire/bebob/bebop.c
+>>>
+>>> -----------------------------
+>>>
+>>> static bool
+>>> check_audiophile_booted(struct fw_unit *unit)
+>>> {
+>>>     char name[24] = {0};
+>>>
+>>>     if (fw_csr_string(unit->directory, CSR_MODEL, name, sizeof(name))
+>>> < 0)
+>>>         return false;
+>>>
+>>>     return strncmp(name, "FW Audiophile Bootloader", 15) != 0;
+>>> }
+>>
+>> Indeed it looks bogus.  Even "FW...." string is already 24 letters, so
+>> it's over name[] array size.
+>>
+>> Sakamoto-san, could you fix it properly?
+> 
+> It's OK just to compare first a few characters, while I left whole
+> string for our information because model-specific information is easily
+> lost.
+> 
+> For M-Audio's FireWire Audiophile, modalias of
+> 'ieee1394:ven00000D6Cmo00010060sp' hits this unit only. However the unit
+> has two states relevant to loaded firmware. Initial firmware returns 'FW
+> Audiophile Bootloader', while functional firmware returns 'FW
+> Audiophile'. Just comparing the first 15 characters is the shortest way
+> to defferentiate them. (Actually 14 characters. I guess that I did avoid
+> comparison based on LWS...)
+> 
+> Therefore, changing comparison range is not for bug fix, just for
+> readers. But I agree with these patches because the code is a bit
+> confusing. I'll post a patch soon for this aim with appropriate
+> information, sorry for Nicolas.
 
-On 17/11/16 15:24, Alan Young wrote:
->
-> Similar to recent dshare patch.
->
-Update with sign-off
+All right, so long as the code is modified in a way that makes it more
+consistent, I am all right. It is one patch less I need to care about :)
 
-
---------------473CE5BEDBDCCA99FBE9B2F7
-Content-Type: text/x-patch;
- name="0001-pcm_rate-Do-not-discard-slave-reported-delay-in-stat.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-pcm_rate-Do-not-discard-slave-reported-delay-in-stat.pa";
- filename*1="tch"
-
->From 6f93ee59846d2c0058ef702c1fa68d723bfb14f6 Mon Sep 17 00:00:00 2001
-From: Alan Young <consult.awy@gmail.com>
-Date: Tue, 14 Jun 2016 10:15:01 +0100
-Subject: [PATCH] pcm_rate: Do not discard slave reported delay in status
- result.
-
-snd_pcm_rate_status() gets the underlying status from the slave PCM.
-This may contain a delay value that includes elements such as codec and
-other transfer delays. Use this as the base for the returned delay
-value, adjusted for any frames buffered locally (within the rate
-plugin).
-
-Also update snd_pcm_rate_delay() similarly.
-
-Signed-off-by: Alan Young <consult.awy@gmail.com>
----
- src/pcm/pcm_rate.c | 46 ++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 40 insertions(+), 6 deletions(-)
-
-diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
-index 6184def..15383ae 100644
---- a/src/pcm/pcm_rate.c
-+++ b/src/pcm/pcm_rate.c
-@@ -559,10 +559,9 @@ snd_pcm_rate_read_areas1(snd_pcm_t *pcm,
- 		   pcm->channels, rate);
- }
- 
--static inline void snd_pcm_rate_sync_hwptr(snd_pcm_t *pcm)
-+static inline void snd_pcm_rate_sync_hwptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_ptr)
- {
- 	snd_pcm_rate_t *rate = pcm->private_data;
--	snd_pcm_uframes_t slave_hw_ptr = *rate->gen.slave->hw.ptr;
- 
- 	if (pcm->stream != SND_PCM_STREAM_PLAYBACK)
- 		return;
-@@ -576,6 +575,12 @@ static inline void snd_pcm_rate_sync_hwptr(snd_pcm_t *pcm)
- 	rate->hw_ptr %= pcm->boundary;
- }
- 
-+static inline void snd_pcm_rate_sync_hwptr(snd_pcm_t *pcm)
-+{
-+	snd_pcm_rate_t *rate = pcm->private_data;
-+	snd_pcm_rate_sync_hwptr0(pcm, *rate->gen.slave->hw.ptr);
-+}
-+
- static int snd_pcm_rate_hwsync(snd_pcm_t *pcm)
- {
- 	snd_pcm_rate_t *rate = pcm->private_data;
-@@ -586,10 +591,37 @@ static int snd_pcm_rate_hwsync(snd_pcm_t *pcm)
- 	return 0;
- }
- 
-+static snd_pcm_uframes_t snd_pcm_rate_playback_internal_delay(snd_pcm_t *pcm)
-+{
-+	snd_pcm_rate_t *rate = pcm->private_data;
-+
-+	if (rate->appl_ptr < rate->last_commit_ptr) {
-+		return rate->appl_ptr - rate->last_commit_ptr + pcm->boundary;
-+	} else {
-+		return rate->appl_ptr - rate->last_commit_ptr;
-+	}
-+}
-+
- static int snd_pcm_rate_delay(snd_pcm_t *pcm, snd_pcm_sframes_t *delayp)
- {
-+	snd_pcm_rate_t *rate = pcm->private_data;
-+	snd_pcm_sframes_t slave_delay;
-+	int err;
-+
- 	snd_pcm_rate_hwsync(pcm);
--	*delayp = snd_pcm_mmap_hw_avail(pcm);
-+
-+	err = snd_pcm_delay(rate->gen.slave, &slave_delay);
-+	if (err < 0) {
-+		return err;
-+	}
-+
-+	if (pcm->stream == SND_PCM_STREAM_PLAYBACK) {
-+		*delayp = rate->ops.input_frames(rate->obj, slave_delay)
-+				+ snd_pcm_rate_playback_internal_delay(pcm);
-+	} else {
-+		*delayp = rate->ops.output_frames(rate->obj, slave_delay)
-+				+ snd_pcm_mmap_capture_hw_avail(pcm);
-+	}
- 	return 0;
- }
- 
-@@ -1083,15 +1115,17 @@ static int snd_pcm_rate_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
- 			status->state = SND_PCM_STATE_RUNNING;
- 		status->trigger_tstamp = rate->trigger_tstamp;
- 	}
--	snd_pcm_rate_sync_hwptr(pcm);
-+	snd_pcm_rate_sync_hwptr0(rate, status->hw_ptr);
- 	status->appl_ptr = *pcm->appl.ptr;
- 	status->hw_ptr = *pcm->hw.ptr;
- 	if (pcm->stream == SND_PCM_STREAM_PLAYBACK) {
--		status->delay = snd_pcm_mmap_playback_hw_avail(pcm);
-+		status->delay = rate->ops.input_frames(rate->obj, status->delay)
-+					+ snd_pcm_rate_playback_internal_delay(pcm);
- 		status->avail = snd_pcm_mmap_playback_avail(pcm);
- 		status->avail_max = rate->ops.input_frames(rate->obj, status->avail_max);
- 	} else {
--		status->delay = snd_pcm_mmap_capture_hw_avail(pcm);
-+		status->delay = rate->ops.output_frames(rate->obj, status->delay)
-+					+ snd_pcm_mmap_capture_hw_avail(pcm);
- 		status->avail = snd_pcm_mmap_capture_avail(pcm);
- 		status->avail_max = rate->ops.output_frames(rate->obj, status->avail_max);
- 	}
--- 
-2.5.5
-
-
-
---------------473CE5BEDBDCCA99FBE9B2F7
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------473CE5BEDBDCCA99FBE9B2F7--
+Nicolas
