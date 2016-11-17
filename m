@@ -1,21 +1,23 @@
 From: Alan Young <Alan.Young@IEE.org>
-Subject: [PATCH] pcm_rate: Do not discard slave reported delay
- in status result.
-Date: Thu, 17 Nov 2016 15:24:23 +0000
-Message-ID: <bdb7665c-5747-8888-fa2e-552e852fa375@IEE.org>
+Subject: Re: [PATCH] pcm_rate: Do not discard slave reported
+ delay in status result.
+Date: Thu, 17 Nov 2016 15:26:00 +0000
+Message-ID: <98eabe32-669e-c65a-70f4-a419fee31851@IEE.org>
+References: <bdb7665c-5747-8888-fa2e-552e852fa375@IEE.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------6DCEE2E28F1945DF61572FFD"
+Content-Type: multipart/mixed; boundary="------------9A8E2898865A65CB752804DC"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f45.google.com (mail-wm0-f45.google.com [74.125.82.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 80141267569
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2016 16:24:25 +0100 (CET)
-Received: by mail-wm0-f45.google.com with SMTP id g23so317606881wme.1
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2016 07:24:25 -0800 (PST)
+Received: from mail-wm0-f50.google.com (mail-wm0-f50.google.com [74.125.82.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id E0F70267566
+ for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2016 16:26:01 +0100 (CET)
+Received: by mail-wm0-f50.google.com with SMTP id a197so317253791wmd.0
+ for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2016 07:26:01 -0800 (PST)
 Received: from [192.168.11.11] (178.55.208.46.dyn.plus.net. [46.208.55.178])
- by smtp.googlemail.com with ESMTPSA id r138sm16156423wme.9.2016.11.17.07.24.23
+ by smtp.googlemail.com with ESMTPSA id n17sm3827407wjq.6.2016.11.17.07.26.00
  for <alsa-devel@alsa-project.org>
  (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 17 Nov 2016 07:24:24 -0800 (PST)
+ Thu, 17 Nov 2016 07:26:00 -0800 (PST)
+In-Reply-To: <bdb7665c-5747-8888-fa2e-552e852fa375@IEE.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,14 +31,18 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------6DCEE2E28F1945DF61572FFD
+--------------9A8E2898865A65CB752804DC
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Similar to recent dshare patch.
+On 17/11/16 15:24, Alan Young wrote:
+>
+> Similar to recent dshare patch.
+>
+Update with sign-off
 
 
---------------6DCEE2E28F1945DF61572FFD
+--------------9A8E2898865A65CB752804DC
 Content-Type: text/x-patch;
  name="0001-pcm_rate-Do-not-discard-slave-reported-delay-in-stat.patch"
 Content-Transfer-Encoding: 7bit
@@ -44,7 +50,7 @@ Content-Disposition: attachment;
  filename*0="0001-pcm_rate-Do-not-discard-slave-reported-delay-in-stat.pa";
  filename*1="tch"
 
->From da687e77261f5cdd3c4b373156fb68ed83d98a26 Mon Sep 17 00:00:00 2001
+>From 6f93ee59846d2c0058ef702c1fa68d723bfb14f6 Mon Sep 17 00:00:00 2001
 From: Alan Young <consult.awy@gmail.com>
 Date: Tue, 14 Jun 2016 10:15:01 +0100
 Subject: [PATCH] pcm_rate: Do not discard slave reported delay in status
@@ -57,6 +63,8 @@ value, adjusted for any frames buffered locally (within the rate
 plugin).
 
 Also update snd_pcm_rate_delay() similarly.
+
+Signed-off-by: Alan Young <consult.awy@gmail.com>
 ---
  src/pcm/pcm_rate.c | 46 ++++++++++++++++++++++++++++++++++++++++------
  1 file changed, 40 insertions(+), 6 deletions(-)
@@ -154,11 +162,11 @@ index 6184def..15383ae 100644
 2.5.5
 
 
---------------6DCEE2E28F1945DF61572FFD
+--------------9A8E2898865A65CB752804DC
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---------------6DCEE2E28F1945DF61572FFD--
+--------------9A8E2898865A65CB752804DC--
