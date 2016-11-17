@@ -1,41 +1,129 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC 01/14] SoundWire: Add SoundWire bus driver documentation
-Date: Thu, 17 Nov 2016 10:35:52 +0530
-Message-ID: <20161117050552.GA2698@localhost>
-References: <1477053673-16021-1-git-send-email-hardik.t.shah@intel.com>
- <1477053673-16021-2-git-send-email-hardik.t.shah@intel.com>
- <20161114141548.GL1575@localhost.localdomain>
- <20161115142914.GN3000@localhost>
- <20161116175929.kf7lfkcnqjdhasjk@sirena.org.uk>
+From: Alan Young <Alan.Young@IEE.org>
+Subject: [PATCH] pcm_dshare: Do not discard slave reported
+ delay in status result.
+Date: Thu, 17 Nov 2016 08:20:16 +0000
+Message-ID: <ccd82798-b3be-7a4f-444d-47e8d5408324@IEE.org>
+References: <5810BDF9.1020204@IEE.org> <s5hinseoygk.wl-tiwai@suse.de>
+ <5819F566.2000404@IEE.org> <581A23B9.3050609@IEE.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20161116175929.kf7lfkcnqjdhasjk@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Hardik Shah <hardik.t.shah@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, plai@codeaurora.org, patches.audio@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 828C32614A0
+ for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2016 09:20:18 +0100 (CET)
+Received: by mail-wm0-f66.google.com with SMTP id a20so18812028wme.2
+ for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2016 00:20:18 -0800 (PST)
+In-Reply-To: <581A23B9.3050609@IEE.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 16, 2016 at 05:59:29PM +0000, Mark Brown wrote:
-> On Tue, Nov 15, 2016 at 07:59:14PM +0530, Vinod Koul wrote:
-> > On Mon, Nov 14, 2016 at 02:15:48PM +0000, Charles Keepax wrote:
-> 
-> > > slaves register to that. This also has the nice property that its
-> > > easy to create devices that sit behind other buses, for example
-> > > here we might want a SoundWire master that sits behind a SPI bus.
-> > > But you seem to have gone in the other direction and have the
-> > > master sitting on the same bus as the slaves.
-> 
-> > Since the controller on our SoC was enumerable, people went with this
-> > approach. In this hindsight that may not have been the best choice.
-> 
-> Doing buses properly isn't an obstacle to doing enumeration, indeed I'd
-> expect it to make it a lot easier - just have your driver for your
-> controller do the enumeration at probe time.
+snd_pcm_dshare_status() gets the underlying status from the slave PCM.
+This may contain a delay value that includes elements such as codec and
+other transfer delays. Use this as the base for the returned delay
+value, adjusted for any frames buffered locally (within the dshare
+plugin).
 
-Yes it is not :) This is somthing we are fixing now..
+Note: snd_pcm_dshare_delay() is not updated.
+---
+  src/pcm/pcm_dshare.c | 45 ++++++++++++++++++++++++++++-----------------
+  1 file changed, 28 insertions(+), 17 deletions(-)
 
+diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
+index c5b3178..9b478a7 100644
+--- a/src/pcm/pcm_dshare.c
++++ b/src/pcm/pcm_dshare.c
+@@ -157,23 +157,14 @@ static void snd_pcm_dshare_sync_area(snd_pcm_t *pcm)
+  /*
+   *  synchronize hardware pointer (hw_ptr) with ours
+   */
+-static int snd_pcm_dshare_sync_ptr(snd_pcm_t *pcm)
++static int snd_pcm_dshare_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_ptr)
+  {
+  	snd_pcm_direct_t *dshare = pcm->private_data;
+-	snd_pcm_uframes_t slave_hw_ptr, old_slave_hw_ptr, avail;
++	snd_pcm_uframes_t old_slave_hw_ptr, avail;
+  	snd_pcm_sframes_t diff;
+  	
+-	switch (snd_pcm_state(dshare->spcm)) {
+-	case SND_PCM_STATE_DISCONNECTED:
+-		dshare->state = SNDRV_PCM_STATE_DISCONNECTED;
+-		return -ENODEV;
+-	default:
+-		break;
+-	}
+-	if (dshare->slowptr)
+-		snd_pcm_hwsync(dshare->spcm);
+  	old_slave_hw_ptr = dshare->slave_hw_ptr;
+-	slave_hw_ptr = dshare->slave_hw_ptr = *dshare->spcm->hw.ptr;
++	dshare->slave_hw_ptr = slave_hw_ptr;
+  	diff = slave_hw_ptr - old_slave_hw_ptr;
+  	if (diff == 0)		/* fast path */
+  		return 0;
+@@ -207,6 +198,24 @@ static int snd_pcm_dshare_sync_ptr(snd_pcm_t *pcm)
+  	return 0;
+  }
+  
++static int snd_pcm_dshare_sync_ptr(snd_pcm_t *pcm)
++{
++	snd_pcm_direct_t *dshare = pcm->private_data;
++
++	switch (snd_pcm_state(dshare->spcm)) {
++	case SND_PCM_STATE_DISCONNECTED:
++		dshare->state = SNDRV_PCM_STATE_DISCONNECTED;
++		return -ENODEV;
++	default:
++		break;
++	}
++
++	if (dshare->slowptr)
++		snd_pcm_hwsync(dshare->spcm);
++
++	return snd_pcm_dshare_sync_ptr0(pcm, *dshare->spcm->hw.ptr);
++}
++
+  /*
+   *  plugin implementation
+   */
+@@ -215,22 +224,24 @@ static int snd_pcm_dshare_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
+  {
+  	snd_pcm_direct_t *dshare = pcm->private_data;
+  
++	memset(status, 0, sizeof(*status));
++	snd_pcm_status(dshare->spcm, status);
++
+  	switch (dshare->state) {
+  	case SNDRV_PCM_STATE_DRAINING:
+  	case SNDRV_PCM_STATE_RUNNING:
+-		snd_pcm_dshare_sync_ptr(pcm);
++		snd_pcm_dshare_sync_ptr0(pcm, status->hw_ptr);
++		status->delay += snd_pcm_mmap_playback_delay(pcm)
++				+ status->avail - dshare->spcm->buffer_size;
+  		break;
+  	default:
+  		break;
+  	}
+-	memset(status, 0, sizeof(*status));
+-	snd_pcm_status(dshare->spcm, status);
+-	status->state = snd_pcm_state(dshare->spcm);
++
+  	status->trigger_tstamp = dshare->trigger_tstamp;
+  	status->avail = snd_pcm_mmap_playback_avail(pcm);
+  	status->avail_max = status->avail > dshare->avail_max ? status->avail : dshare->avail_max;
+  	dshare->avail_max = 0;
+-	status->delay = snd_pcm_mmap_playback_delay(pcm);
+  	return 0;
+  }
+  
 -- 
-~Vinod
+2.5.5
