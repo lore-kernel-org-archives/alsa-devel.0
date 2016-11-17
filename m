@@ -1,19 +1,20 @@
-From: Frederique <auspicious@inventati.org>
-Subject: Sound Blaster Z works but ports are a mess
-Date: Thu, 17 Nov 2016 10:01:51 +0100
-Message-ID: <528fa7f8-051e-83c5-3e84-437317f3ead5@inventati.org>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 3/4] ASoC: wm8580: Remove #if
+	IS_ENABLED(CONFIG_I2C)
+Date: Thu, 17 Nov 2016 09:29:21 +0000
+Message-ID: <20161117092921.GX1575@localhost.localdomain>
+References: <87d1hu7vz4.wl%kuninori.morimoto.gx@renesas.com>
+ <878tsi7vv1.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fragranza.investici.org (fragranza.investici.org
- [178.175.144.26])
- by alsa0.perex.cz (Postfix) with ESMTP id 39B402614A0
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2016 10:01:52 +0100 (CET)
-Received: from [178.175.144.26] (fragranza [178.175.144.26]) (Authenticated
- sender: auspicious@inventati.org) by localhost (Postfix) with ESMTPSA id
- DDE932C00CC
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2016 09:01:51 +0000 (UTC)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63D4E2614A0
+ for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2016 10:29:09 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <878tsi7vv1.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,38 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, patches@opensource.wolfsonmicro.com, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-Dear mailing list individuals,
+On Thu, Nov 17, 2016 at 01:13:18AM +0000, Kuninori Morimoto wrote:
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> wm8580 driver doesn't work without CONFIG_I2C anyway.
+> Let's remove #if IS_ENABLED(CONFIG_I2C), and use module_i2c_driver().
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
 
-I currently own a Sound Blaster Z from Creative. Testing on Linux Mint 
-18 64-bit with the stock Linux 4.4 kernel, ALSA 1.0.25+dfsg-0ubuntu5 and 
-ALSA utilities 1.1.0-0ubuntu5.
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-Output only works from the front panel headphone port when HP/Speaker is 
-enabled. All audio enhancements available work as well.
-
-Input only works via the microphone port on the card itself, and all 
-audio enhancements like voice clarity and voice transformation work as well.
-
-It seems only the ports are a mess. I do not know how to do any audio 
-driver development so I not sure if it would require a lot of work to fix.
-
-Does the team have any of these cards? They come in Z, Zx and ZxR 
-editions, with the last card being significantly different port-wise. 
-Would it help if this hardware would be donated possibly by Creative 
-themselves?
-
-A screenshot of alsamixer: http://i.imgur.com/OosqrER.png
-
-Currently I only have the headset connected to the front panel 
-headphones port as I am awaiting an extension cable to arrive to be able 
-to connect it to the microphone port in the back.
-
-A user called voron00 has been attempting development for the card 
-series if it might help at all: 
-http://forums.creative.com/showthread.php?t=741501
-
-Sincerely yours,
-Frederique
+Thanks,
+Charles
