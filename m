@@ -1,196 +1,372 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: bebob: compare whole string for model
-	name so that readers are not confused
-Date: Fri, 18 Nov 2016 06:11:24 +0900
-Message-ID: <20161117211124.31520-1-o-takashi@sakamocchi.jp>
+From: Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [PATCH v4 1/3] media: Media Device Allocator API
+Date: Fri, 18 Nov 2016 01:12:06 +0200
+Message-ID: <20161117231206.GC13965@valkosipuli.retiisi.org.uk>
+References: <cover.1479271294.git.shuahkh@osg.samsung.com>
+ <448169cd2db0ba7c8a455bd672e6709e6bada2aa.1479271294.git.shuahkh@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 6EF502675E6
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2016 22:11:28 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: joe@perches.com, nicolas.iooss_linux@m4x.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-media-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <448169cd2db0ba7c8a455bd672e6709e6bada2aa.1479271294.git.shuahkh@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: mchehab@kernel.org, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, javier@osg.samsung.com, chehabrafael@gmail.com, g.liakhovetski@gmx.de, ONeukum@suse.com, k@oikw.org, daniel@zonque.org, mahasler@gmail.com, clemens@ladisch.de, geliangtang@163.com, vdronov@redhat.com, laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A modalias of 'ieee1394:ven00000D6Cmo00010060sp' hits units for M-Audio
-FireWire Audiophile only. However the unit has two states relevant to
-loaded firmware. Initial firmware returns 'FW Audiophile Bootloader',
-while functional firmware returns 'FW Audiophile'.
+Hi Shuah,
 
-ALSA bebob driver compares the units' model name to strings of 24 characters
-by the first 15 characters. This is shorter way to differentiate these two
-states but confusing to readers.
+On Wed, Nov 16, 2016 at 07:29:09AM -0700, Shuah Khan wrote:
+> Media Device Allocator API to allows multiple drivers share a media device.
+> Using this API, drivers can allocate a media device with the shared struct
+> device as the key. Once the media device is allocated by a driver, other
+> drivers can get a reference to it. The media device is released when all
+> the references are released.
+> 
+> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+> Reviewed-by: Hans Verkuil <hans.verkuil@cisco.com>
+> ---
+> Changes since v3:
+> - Fixed undefined reference to `__media_device_usb_init compile error when
+>   CONFIG_USB is disabled.
+> - Fixed kernel paging error when accessing /dev/mediaX after rmmod of the
+>   module that owns the media_device. The fix bumps the reference count for
+>   the owner when second driver comes along to share the media_device. If
+>   au0828 owns the media_device, then snd_usb_audio will bump the refcount
+>   for au0828, so it won't get deleted and vice versa.
+> 
+>  drivers/media/Makefile              |   3 +-
+>  drivers/media/media-dev-allocator.c | 146 ++++++++++++++++++++++++++++++++++++
+>  include/media/media-dev-allocator.h |  87 +++++++++++++++++++++
+>  3 files changed, 235 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/media/media-dev-allocator.c
+>  create mode 100644 include/media/media-dev-allocator.h
+> 
+> diff --git a/drivers/media/Makefile b/drivers/media/Makefile
+> index 0deaa93..7c0701d 100644
+> --- a/drivers/media/Makefile
+> +++ b/drivers/media/Makefile
+> @@ -6,7 +6,8 @@ ifeq ($(CONFIG_MEDIA_CEC_EDID),y)
+>    obj-$(CONFIG_MEDIA_SUPPORT) += cec-edid.o
+>  endif
+>  
+> -media-objs	:= media-device.o media-devnode.o media-entity.o
+> +media-objs	:= media-device.o media-devnode.o media-entity.o \
+> +		   media-dev-allocator.o
+>  
+>  #
+>  # I2C drivers should come before other drivers, otherwise they'll fail
+> diff --git a/drivers/media/media-dev-allocator.c b/drivers/media/media-dev-allocator.c
+> new file mode 100644
+> index 0000000..014a317
+> --- /dev/null
+> +++ b/drivers/media/media-dev-allocator.c
+> @@ -0,0 +1,146 @@
+> +/*
+> + * media-dev-allocator.c - Media Controller Device Allocator API
+> + *
+> + * Copyright (c) 2016 Shuah Khan <shuahkh@osg.samsung.com>
+> + * Copyright (c) 2016 Samsung Electronics Co., Ltd.
+> + *
+> + * This file is released under the GPLv2.
+> + * Credits: Suggested by Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> + */
+> +
+> +/*
+> + * This file adds a global refcounted Media Controller Device Instance API.
+> + * A system wide global media device list is managed and each media device
+> + * includes a kref count. The last put on the media device releases the media
+> + * device instance.
+> + *
+> + */
+> +
+> +#include <linux/slab.h>
+> +#include <linux/kref.h>
+> +#include <linux/usb.h>
+> +#include <linux/module.h>
+> +#include <media/media-device.h>
 
-This commit improves the code for this point. Kernel stack is consumed more in
-call of check_audiophile_booted() by a bit.
+Alphabetical order, please.
 
-With initial firmware:
-$ ./linux-firewire-utils/src/crpp < /sys/bus/firewire/devices/fw1/config_rom
-               ROM header and bus information block
-               -----------------------------------------------------------------
-400  04276da6  bus_info_length 4, crc_length 39, crc 28070
-404  31333934  bus_name "1394"
-408  006481f2  irmc 0, cmc 0, isc 0, bmc 0, pmc 0, cyc_clk_acc 100,
-               max_rec 8 (512), max_rom 1, gen 15, spd 2 (S400)
-40c  000d6c03  company_id 000d6c     |
-410  102b7e2e  device_id 03102b7e2e  | EUI-64 000d6c03102b7e2e
+> +
+> +static LIST_HEAD(media_device_list);
+> +static DEFINE_MUTEX(media_device_lock);
+> +
+> +struct media_device_instance {
+> +	struct media_device mdev;
+> +	struct module *owner;
+> +	struct list_head list;
+> +	struct device *dev;
 
-               root directory
-               -----------------------------------------------------------------
-414  00067414  directory_length 6, crc 29716
-418  0c0083c0  node capabilities per IEEE 1394
-41c  03000d6c  vendor
-420  81000009  --> descriptor leaf at 444
-424  17010060  model
-428  8100000c  --> descriptor leaf at 458
-42c  d1000001  --> unit directory at 430
+We've got a struct device pointer in struct media_device. Should we have the
+same here, or use the value in struct media_device?
 
-               unit directory at 430
-               -----------------------------------------------------------------
-430  00049da1  directory_length 4, crc 40353 (should be 48611)
-434  1200a02d  specifier id: 1394 TA
-438  13014001  version: Vender Unique and AV/C
-43c  17010060  model
-440  8100000f  --> descriptor leaf at 47c
+> +	struct kref refcount;
+> +};
+> +
+> +static inline struct media_device_instance *
+> +to_media_device_instance(struct media_device *mdev)
+> +{
+> +	return container_of(mdev, struct media_device_instance, mdev);
+> +}
+> +
+> +static void media_device_instance_release(struct kref *kref)
+> +{
+> +	struct media_device_instance *mdi =
+> +		container_of(kref, struct media_device_instance, refcount);
+> +
+> +	dev_dbg(mdi->mdev.dev, "%s: mdev=%p\n", __func__, &mdi->mdev);
+> +
+> +	mutex_lock(&media_device_lock);
 
-               descriptor leaf at 444
-               -----------------------------------------------------------------
-444  0004073e  leaf_length 4, crc 1854
-448  00000000  textual descriptor
-44c  00000000  minimal ASCII
-450  4d2d4155  "M-AU"
-454  44494f00  "DIO"
+Do you need the lock during unregister / cleanup? Isn't it just to serialise
+the access to the linked list?
 
-               descriptor leaf at 458
-               -----------------------------------------------------------------
-458  00086f21  leaf_length 8, crc 28449
-45c  00000000  textual descriptor
-460  00000000  minimal ASCII
-464  46572041  "FW A"
-468  7564696f  "udio"
-46c  7068696c  "phil"
-470  6520426f  "e Bo"
-474  6f746c6f  "otlo"
-478  61646572  "ader"
+> +
+> +	media_device_unregister(&mdi->mdev);
+> +	media_device_cleanup(&mdi->mdev);
+> +
+> +	list_del(&mdi->list);
+> +	mutex_unlock(&media_device_lock);
+> +
+> +	kfree(mdi);
+> +}
+> +
+> +/* Callers should hold media_device_lock when calling this function */
+> +static struct media_device *__media_device_get(struct device *dev,
+> +					       char *module_name)
+> +{
+> +	struct media_device_instance *mdi;
+> +
+> +	list_for_each_entry(mdi, &media_device_list, list) {
+> +		if (mdi->dev == dev) {
 
-               descriptor leaf at 47c
-               -----------------------------------------------------------------
-47c  00086f21  leaf_length 8, crc 28449
-480  00000000  textual descriptor
-484  00000000  minimal ASCII
-488  46572041  "FW A"
-48c  7564696f  "udio"
-490  7068696c  "phil"
-494  6520426f  "e Bo"
-498  6f746c6f  "otlo"
-49c  61646572  "ader"
+You could make this look nicer if you continue here if mdi->dev != dev.
 
-With functional firmware:
-$ ./linux-firewire-utils/src/crpp < /sys/bus/firewire/devices/fw1/config_rom
-               ROM header and bus information block
-               -----------------------------------------------------------------
-400  042de16f  bus_info_length 4, crc_length 45, crc 57711
-404  31333934  bus_name "1394"
-408  f0648122  irmc 1, cmc 1, isc 1, bmc 1, pmc 0, cyc_clk_acc 100,
-               max_rec 8 (512), max_rom 1, gen 2, spd 2 (S400)
-40c  000d6c03  company_id 000d6c     |
-410  002b7e2e  device_id 03002b7e2e  | EUI-64 000d6c03002b7e2e
+> +			kref_get(&mdi->refcount);
+> +			/* get module reference for the media_device owner */
+> +			if (find_module(module_name) != mdi->owner &&
+> +			    !try_module_get(mdi->owner))
+> +				dev_err(dev, "%s: try_module_get() error\n",
+> +					__func__);
+> +			dev_dbg(dev, "%s: get mdev=%p module_name %s\n",
+> +				__func__, &mdi->mdev, module_name);
+> +			return &mdi->mdev;
+> +		}
+> +	}
+> +
+> +	mdi = kzalloc(sizeof(*mdi), GFP_KERNEL);
+> +	if (!mdi)
+> +		return NULL;
+> +
+> +	mdi->dev = dev;
+> +	mdi->owner = find_module(module_name);
+> +	kref_init(&mdi->refcount);
+> +	list_add_tail(&mdi->list, &media_device_list);
+> +
+> +	dev_dbg(dev, "%s: alloc mdev=%p module_name %s\n", __func__,
 
-               root directory
-               -----------------------------------------------------------------
-414  0009dac4  directory_length 9, crc 56004
-418  0400000d  hardware version
-41c  0c0083c0  node capabilities per IEEE 1394
-420  03000d6c  vendor
-424  81000012  --> descriptor leaf at 46c
-428  17010060  model
-42c  81000015  --> descriptor leaf at 480
-430  13ffffff  version
-434  d1000002  --> unit directory at 43c
-438  d4000006  --> dependent info directory at 450
+Does the pointer value provide useful information here? The media device is
+specific to a device and there's just one per device. The device name is
+already printed anyway.
 
-               unit directory at 43c
-               -----------------------------------------------------------------
-43c  00041eb9  directory_length 4, crc 7865
-440  1200a02d  specifier id: 1394 TA
-444  13014001  version: Vender Unique and AV/C
-448  17010060  model
-44c  81000014  --> descriptor leaf at 49c
+> +		&mdi->mdev, module_name);
+> +	return &mdi->mdev;
+> +}
+> +
+> +#if IS_ENABLED(CONFIG_USB)
+> +struct media_device *media_device_usb_allocate(struct usb_device *udev,
+> +					       char *module_name)
 
-               dependent info directory at 450
-               -----------------------------------------------------------------
-450  000637c7  directory_length 6, crc 14279
-454  120007f5  specifier id
-458  13000001  version
-45c  3affffc7  (immediate value)
-460  3b100000  (immediate value)
-464  3cffffc7  (immediate value)
-468  3d600000  (immediate value)
+How about adding a macro bearing this name, and using KBUILD_MODNAME there?
+It'd look cleaner in drivers. That's what e.g. media_device_register() does,
+for instance.
 
-               descriptor leaf at 46c
-               -----------------------------------------------------------------
-46c  0004b8e4  leaf_length 4, crc 47332
-470  00000000  textual descriptor
-474  00000000  minimal ASCII
-478  4d2d4175  "M-Au"
-47c  64696f00  "dio"
+> +{
+> +	struct media_device *mdev;
+> +
+> +	if (!module_name) {
+> +		dev_err(&udev->dev, "%s Module Name is null\n", __func__);
 
-               descriptor leaf at 480
-               -----------------------------------------------------------------
-480  0006194b  leaf_length 6, crc 6475
-484  00000000  textual descriptor
-488  00000000  minimal ASCII
-48c  46572041  "FW A"
-490  7564696f  "udio"
-494  7068696c  "phil"
-498  65000000  "e"
+You use colon (":") elsewhere after the function name, how about here as
+well? "Name" could begin with lowercase letter, too.
 
-               descriptor leaf at 49c
-               -----------------------------------------------------------------
-49c  0006194b  leaf_length 6, crc 6475
-4a0  00000000  textual descriptor
-4a4  00000000  minimal ASCII
-4a8  46572041  "FW A"
-4ac  7564696f  "udio"
-4b0  7068696c  "phil"
-4b4  65000000  "e"
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	mutex_lock(&media_device_lock);
+> +	mdev = __media_device_get(&udev->dev, module_name);
+> +	if (!mdev) {
+> +		mutex_unlock(&media_device_lock);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+> +	/* check if media device is already initialized */
+> +	if (!mdev->dev)
 
-Reported-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-Reported-by: Joe Perches <joe@perches.com>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I think I would look up a device explicitly, and allocate one if needed.
+This would mean splitting __media_device_get(), you could return the device
+early if found, and then initialise without a need to check anything.
 
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 3469ac14..730ea91 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -172,12 +172,12 @@ get_saffire_spec(struct fw_unit *unit)
- static bool
- check_audiophile_booted(struct fw_unit *unit)
- {
--	char name[24] = {0};
-+	char name[28] = {0};
- 
- 	if (fw_csr_string(unit->directory, CSR_MODEL, name, sizeof(name)) < 0)
- 		return false;
- 
--	return strncmp(name, "FW Audiophile Bootloader", 15) != 0;
-+	return strncmp(name, "FW Audiophile Bootloader", 24) != 0;
- }
- 
- static void
+> +		__media_device_usb_init(mdev, udev, udev->product,
+> +					module_name);
+
+When is the media device registered and by which party?
+
+I guess you can register entities once the media device is registered.
+Nothing I can think of should prevent that, but I don't think it's been done
+before. There could be bugs.
+
+> +	mutex_unlock(&media_device_lock);
+> +
+> +	dev_dbg(&udev->dev, "%s\n", __func__);
+
+This was probably nice to have during development time but should be removed
+now.
+
+> +	return mdev;
+> +}
+> +EXPORT_SYMBOL_GPL(media_device_usb_allocate);
+> +#endif
+> +
+> +void media_device_delete(struct media_device *mdev, char *module_name)
+> +{
+> +	struct media_device_instance *mdi = to_media_device_instance(mdev);
+> +
+> +	if (!module_name) {
+> +		dev_err(mdi->mdev.dev, "%s Module Name is null\n", __func__);
+
+Can this happen? If so, why? What if the driver is linked to the kernel
+instead?
+
+> +		return;
+> +	}
+> +
+> +	dev_dbg(mdi->mdev.dev, "%s: mdev=%p module_name %s\n",
+> +		__func__, &mdi->mdev, module_name);
+> +
+> +	mutex_lock(&media_device_lock);
+> +	/* put module reference if media_device owner is not THIS_MODULE */
+> +	if (mdi->owner != find_module(module_name)) {
+> +		module_put(mdi->owner);
+> +		dev_dbg(mdi->mdev.dev,
+> +			"%s decremented owner module reference\n", __func__);
+> +	}
+> +	mutex_unlock(&media_device_lock);
+> +	kref_put(&mdi->refcount, media_device_instance_release);
+> +}
+> +EXPORT_SYMBOL_GPL(media_device_delete);
+> diff --git a/include/media/media-dev-allocator.h b/include/media/media-dev-allocator.h
+> new file mode 100644
+> index 0000000..45c437d
+> --- /dev/null
+> +++ b/include/media/media-dev-allocator.h
+> @@ -0,0 +1,87 @@
+> +/*
+> + * media-dev-allocator.h - Media Controller Device Allocator API
+> + *
+> + * Copyright (c) 2016 Shuah Khan <shuahkh@osg.samsung.com>
+> + * Copyright (c) 2016 Samsung Electronics Co., Ltd.
+> + *
+> + * This file is released under the GPLv2.
+> + * Credits: Suggested by Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> + */
+> +
+> +/*
+> + * This file adds a global ref-counted Media Controller Device Instance API.
+> + * A system wide global media device list is managed and each media device
+> + * includes a kref count. The last put on the media device releases the media
+> + * device instance.
+> + */
+> +
+> +#ifndef _MEDIA_DEV_ALLOCTOR_H
+> +#define _MEDIA_DEV_ALLOCTOR_H
+> +
+> +struct usb_device;
+> +
+> +#ifdef CONFIG_MEDIA_CONTROLLER
+> +/**
+> + * DOC: Media Controller Device Allocator API
+> + *
+> + * When media device belongs to more than one driver, the shared media device
+> + * is allocated with the shared struct device as the key for look ups.
+> + *
+> + * Shared media device should stay in registered state until the last driver
+> + * unregisters it. In addition, media device should be released when all the
+
+The last or the first?
+
+Presumably any driver that acquires the media device this way can create
+entities, and these entities would be removed when that driver releases the
+media device. We don't refcount graph objects at the moment, so if these
+objects are referred to elsewhere in the kernel while that driver goes away,
+bad things will follow.
+
+It's not the only place this kind of problems exist at the moment though, so
+the solution could perhaps be left for later as well. The patchset I've been
+pushing solves, as far as I understand, the ones that pre-exist w/o this
+patchset. The solutions need some reworking if this set is applied, as
+there's no longer a single driver responsible for a media device.
+
+> + * references are released. Each driver gets a reference to the media device
+> + * during probe, when it allocates the media device. If media device is already
+> + * allocated, allocate API bumps up the refcount and return the existing media
+> + * device. Driver puts the reference back from its disconnect routine when it
+> + * calls media_device_delete().
+> + *
+> + * Media device is unregistered and cleaned up from the kref put handler to
+> + * ensure that the media device stays in registered state until the last driver
+> + * unregisters the media device.
+> + *
+> + * Driver Usage:
+> + *
+> + * Drivers should use the media-core routines to get register reference and
+> + * call media_device_delete() routine to make sure the shared media device
+> + * delete is handled correctly.
+> + *
+> + * driver probe:
+> + *	Call media_device_usb_allocate() to allocate or get a reference
+> + *	Call media_device_register(), if media devnode isn't registered
+> + *
+> + * driver disconnect:
+> + *	Call media_device_delete() to free the media_device. Free'ing is
+> + *	handled by the put handler.
+> + *
+> + */
+> +
+> +/**
+> + * media_device_usb_allocate() - Allocate and return media device
+> + *
+> + * @udev - struct usb_device pointer
+> + * @module_name
+> + *
+> + * This interface should be called to allocate a media device when multiple
+> + * drivers share usb_device and the media device. This interface allocates
+> + * media device and calls media_device_usb_init() to initialize it.
+> + *
+> + */
+> +struct media_device *media_device_usb_allocate(struct usb_device *udev,
+> +					       char *module_name);
+> +/**
+> + * media_device_delete() - Release media device. Calls kref_put().
+> + *
+> + * @mdev - struct media_device pointer
+> + * @module_name
+> + *
+> + * This interface should be called to put Media Device Instance kref.
+> + */
+> +void media_device_delete(struct media_device *mdev, char *driver_name);
+> +#else
+> +static inline struct media_device *media_device_usb_allocate(
+> +			struct usb_device *udev, char *driver_name)
+> +			{ return NULL; }
+> +static inline void media_device_delete(
+> +			struct media_device *mdev, char *module_name) { }
+> +#endif /* CONFIG_MEDIA_CONTROLLER */
+> +#endif
+
 -- 
-2.9.3
+Kind regards,
+
+Sakari Ailus
+e-mail: sakari.ailus@iki.fi	XMPP: sailus@retiisi.org.uk
