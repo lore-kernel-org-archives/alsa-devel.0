@@ -1,20 +1,20 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] crec: Correct name of output binary to crec
-Date: Fri, 18 Nov 2016 10:13:10 +0000
-Message-ID: <1479463990.18450.31.camel@rf-debian.wolfsonmicro.main>
-References: <1479294405-17471-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <20161116130241.GY3000@localhost>
- <1479302061.18450.24.camel@rf-debian.wolfsonmicro.main>
- <20161118035603.GH2698@localhost>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] CHROMIUM: ASoC: Intel: boards: Use FS as
+ nau8825 sysclk in nau88l25_max98357a machine
+Date: Fri, 18 Nov 2016 15:55:06 +0530
+Message-ID: <20161118102506.GQ2698@localhost>
+References: <1479364515-29019-1-git-send-email-grace.kao@intel.com>
+ <20161118052846.GJ2698@localhost>
+ <20161118094810.GA1575@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id AF1FA266B17
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 11:13:13 +0100 (CET)
-In-Reply-To: <20161118035603.GH2698@localhost>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3138A2666AC
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 11:15:39 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20161118094810.GA1575@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,57 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Grace Kao <grace.kao@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2016-11-18 at 09:26 +0530, Vinod Koul wrote:
-> On Wed, Nov 16, 2016 at 01:14:21PM +0000, Richard Fitzgerald wrote:
-> > On Wed, 2016-11-16 at 18:32 +0530, Vinod Koul wrote:
-> > > On Wed, Nov 16, 2016 at 11:06:45AM +0000, Richard Fitzgerald wrote:
-> > > > For some reason when the build system was converted to
-> > > > automake by this patch
-> > > > 
-> > > >     "Convert the build system to autotools"
-> > > > 
-> > > > the name of the output binary for crec was changed
-> > > > from 'crec' to 'crecord'.
-> > > > 
-> > > > This patch corrects it back to 'crec'
-> > > 
-> > > That implies crecord is incorrect, I do not think so.
-> > > 
-> > > Can you explain why you would want to rename this back.
-> > > 
-> > > The motivation for this was to make it proper like cplay. Also similar to
-> > > aplay and arecord.
-> > > 
+On Fri, Nov 18, 2016 at 09:48:10AM +0000, Charles Keepax wrote:
+> > > +
+> > > +	switch (cmd) {
+> > > +	case SNDRV_PCM_TRIGGER_START:
+> > > +		ret = snd_soc_dai_set_sysclk(codec_dai,	NAU8825_CLK_FLL_FS, 0,
+> > > +			SND_SOC_CLOCK_IN);
+> > > +		if (ret < 0)
+> > > +			dev_err(codec_dai->dev, "can't set FS clock %d\n", ret);
+> > > +		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, runtime->rate,
+> > > +			runtime->rate * 256);
+> > > +		if (ret < 0)
+> > > +			dev_err(codec_dai->dev, "can't set FLL: %d\n", ret);
+> > > +		break;
 > > 
-> > I don't really see a need for that, or why "crec" is wrong.
+> > starting clock on trigger doesnt sound right to me..
 > > 
-> > In any case if you did want to change that name 
-> > 
-> > a) it should be an explicit patch, not sneaked in as an undocumented and
-> > unexpected side-effect of some other patch
 > 
-> This part I agree. Unfortunately this was not done transparently...
-> 
-> > b) the source file should have been renamed to match, if the name "crec"
-> > is a massive problem then it should also be a problem that
-> > "cplay.c->cplay" but "crec.c->crecord". If it's ok to have the source
-> > file called crec.c what's wrong with the binary it builds being called
-> > crec?
-> 
-> I dont mind renaming source as well..
-> 
-> I think bigger question is should we continue crec or crecord, my preference
-> is latter.
-> 
-> > c) it's a nuisance to have to change existing test systems and apps that
-> > launch "crec", or to create symlinks from crec->crecord.
-> 
-> Yeah agree, lets decide on one and stick to that, forever hopefully :)
-> 
+> Me neither can't trigger be called from an atomic context? In
+> which case I would expect operations on an external CODEC to be
+> very likely to cause issues.
 
-Ok let's change to crecord for consistency with arecord, and I'll do a
-patch to rename the source to match.
+Not in this case :) We use non atomic triggers.. But that doesnt make this
+correct :)
+
+-- 
+~Vinod
