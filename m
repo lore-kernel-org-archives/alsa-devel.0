@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: mfld: Make static string arrays
-	'const 'char * const []'" to the asoc tree
-Date: Fri, 18 Nov 2016 12:01:49 +0000
-Message-ID: <E1c7hrZ-0005Gp-2v@debutante>
-References: <1479242445-12069-1-git-send-email-lars@metafoo.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] crec: Add option to specify codec ID
+Date: Fri, 18 Nov 2016 08:39:38 -0600
+Message-ID: <fe7dcb27-fda9-47bc-7766-2896e1954218@linux.intel.com>
+References: <1479296649-18278-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <20161116130508.GZ3000@localhost>
+ <1479301675.18450.18.camel@rf-debian.wolfsonmicro.main>
+ <20161116134835.GW1575@localhost.localdomain>
+ <1479308001.18450.25.camel@rf-debian.wolfsonmicro.main>
+ <20161118035333.GG2698@localhost>
+ <1479463868.18450.29.camel@rf-debian.wolfsonmicro.main>
+ <20161118102903.GS2698@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ACDAC266DC0
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 13:02:05 +0100 (CET)
-In-Reply-To: <1479242445-12069-1-git-send-email-lars@metafoo.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80722266DBC
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 15:39:32 +0100 (CET)
+In-Reply-To: <20161118102903.GS2698@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,87 +27,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Vinod Koul <vinod.koul@intel.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: intel: mfld: Make static string arrays 'const 'char * const []'
+>> If you're debugging you may not care about the file format, you're
+>> actually interested in the raw data you get from the codec so dumping
+>> the output to a raw file would be useful even if you can't load that
+>> file into a music player.
+>
+> While I agree with you on this, am worried that adding codecs may make
+> people think that we can record mp3 file for exmaple, which is not the case.
+>
+> I think we can add pcm and bespoke as formats supported and allow any format to
+> be dumped to stdio. That way it is pretty clear to people ...
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 266c618d67dd4a42f798baaab47634018cb1db4b Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Tue, 15 Nov 2016 21:40:45 +0100
-Subject: [PATCH] ASoC: intel: mfld: Make static string arrays 'const 'char *
- const []'
-
-const char * const [] is the preferred type for static string arrays since
-this states explicitly that the individual entries are not going to be
-changed. Due to limitations in the ASoC API it was not possible to use it
-for enum text arrays. Commit 87023ff74b23 ("ASoC: Declare const properly
-for enum texts") changed this, but most drivers still use 'const char
-* []' as the type for their enum text arrays.
-
-Change these occurrences of 'static * const char * []' to 'static const
-char * const []'.
-
-The conversion was done automatically using the following coccinelle
-semantic patch:
-// <smpl>
-@disable optional_qualifier@
-identifier s;
-@@
- static
--const char *
-+const char * const
- s[] = ...;
-// </smpl>
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/mfld_machine.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/boards/mfld_machine.c b/sound/soc/intel/boards/mfld_machine.c
-index 34f46c72a0e2..4e08885f37aa 100644
---- a/sound/soc/intel/boards/mfld_machine.c
-+++ b/sound/soc/intel/boards/mfld_machine.c
-@@ -81,9 +81,9 @@ static struct snd_soc_jack_zone mfld_zones[] = {
- };
- 
- /* sound card controls */
--static const char *headset_switch_text[] = {"Earpiece", "Headset"};
-+static const char * const headset_switch_text[] = {"Earpiece", "Headset"};
- 
--static const char *lo_text[] = {"Vibra", "Headset", "IHF", "None"};
-+static const char * const lo_text[] = {"Vibra", "Headset", "IHF", "None"};
- 
- static const struct soc_enum headset_enum =
- 	SOC_ENUM_SINGLE_EXT(2, headset_switch_text);
--- 
-2.10.2
+Crec as is it is pretty useless with PCM only...If we added the profile 
+selection and things like bitrate information it'd be straightforward to 
+support elementary bitstreams like MP3 or AAC ADTS, you just dump the 
+data to a file. Things that require a header or MP4 integration would 
+require additional libraries, this is no longer 'tiny'.
