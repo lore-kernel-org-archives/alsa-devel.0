@@ -1,20 +1,22 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] CHROMIUM: ASoC: Intel: boards: Use FS as
- nau8825 sysclk in nau88l25_max98357a machine
-Date: Fri, 18 Nov 2016 09:48:10 +0000
-Message-ID: <20161118094810.GA1575@localhost.localdomain>
-References: <1479364515-29019-1-git-send-email-grace.kao@intel.com>
- <20161118052846.GJ2698@localhost>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] crec: Add option to specify codec ID
+Date: Fri, 18 Nov 2016 10:11:08 +0000
+Message-ID: <1479463868.18450.29.camel@rf-debian.wolfsonmicro.main>
+References: <1479296649-18278-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <20161116130508.GZ3000@localhost>
+ <1479301675.18450.18.camel@rf-debian.wolfsonmicro.main>
+ <20161116134835.GW1575@localhost.localdomain>
+ <1479308001.18450.25.camel@rf-debian.wolfsonmicro.main>
+ <20161118035333.GG2698@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id D76962666AC
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 10:47:58 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20161118052846.GJ2698@localhost>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F9312666AC
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 11:11:14 +0100 (CET)
+In-Reply-To: <20161118035333.GG2698@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,46 +27,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Grace Kao <grace.kao@intel.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 18, 2016 at 10:58:46AM +0530, Vinod Koul wrote:
-> On Thu, Nov 17, 2016 at 02:35:15PM +0800, Grace Kao wrote:
-> > 256FS sysclk gives the best audio quality per nau8825 datasheet.
+On Fri, 2016-11-18 at 09:23 +0530, Vinod Koul wrote:
+> On Wed, Nov 16, 2016 at 02:53:21PM +0000, Richard Fitzgerald wrote:
+> > On Wed, 2016-11-16 at 13:48 +0000, Charles Keepax wrote:
+> > > On Wed, Nov 16, 2016 at 01:07:55PM +0000, Richard Fitzgerald wrote:
+> > > > On Wed, 2016-11-16 at 18:35 +0530, Vinod Koul wrote:
+> > > > > On Wed, Nov 16, 2016 at 11:44:09AM +0000, Richard Fitzgerald wrote:
+> > > > > > This patch adds a -I command line option to set the codec ID,
+> > > > > > either from a defined set of string values or as a number.
+> > > > > 
+> > > > > Can you explain why you want to add this? The utility cant really record a
+> > > > > mp3 file!
+> > > > 
+> > > > You need to be able to pass a codec ID that the driver supports, and to
+> > > > indicate which codec you're trying to use. It's not useful to only be
+> > > > able to open the "PCM" codec. It doesn't really matter whether crec
+> > > > understands the content of the data, we're just pulling raw data, most
+> > > > likely for test/debug.
+> > > > 
+> > > > The wm_adsp driver on Wolfson/Cirrus codecs uses the new BESPOKE stream
+> > > > ID so we need a way to pass that. And we'd also need it for any drivers
+> > > > that had streams using other codec IDs.
+> 
+> Ah that was my guess too.
+> 
+> I am okay to be able to add bespoke format and use that to dump raw data.
+> But I am not okay to add codec formats which we dont support..
+> 
+
+Well a raw dump would support MP3 because that is doesn't require any
+header and the framing is part of the data stream. So no special
+handling needed there. This may also apply to some of the other formats
+(I'm not an expert on them) so I'd rather have the option to be able to
+raw-dump any format and leave it to the user to decide whether that's
+sensible.
+
+If you're debugging you may not care about the file format, you're
+actually interested in the raw data you get from the codec so dumping
+the output to a raw file would be useful even if you can't load that
+file into a music player.
+
+> > > Is the objection here not that crec is wrapping the data with
+> > > a WAV file? Should we perhaps just expand this so that if you
+> > > request a different format it uses the raw data mode that it uses
+> > > when you let the output go to stdout.
+> > > 
 > > 
-> > Loud headphone pop happens if there is no sysclk during nau8825
-> > playback power up sequence. Currently Skylake does not output MCLK/FS
-> > when the back-end DAI op hw_param is called, so we cannot switch to
-> > MCLK/FS in hw_param. This patch reduces pop by leting nau8825 keep
-> > using its internal VCO clock during widget power up sequence, until
-> > SNDRV_PCM_TRIGGER_START when MCLK/FS is available.
-<snip>
+> > Funny I thought we'd already added a flag for saving to the file raw.
+> > It's raw when you pipe it to stdout.
 > 
-> > +static int skylake_nau8825_trigger(struct snd_pcm_substream *substream, int cmd)
-> > +{
-> > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> > +	struct snd_pcm_runtime *runtime = substream->runtime;
-> > +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> > +	int ret = 0;
-> > +
-> > +	switch (cmd) {
-> > +	case SNDRV_PCM_TRIGGER_START:
-> > +		ret = snd_soc_dai_set_sysclk(codec_dai,	NAU8825_CLK_FLL_FS, 0,
-> > +			SND_SOC_CLOCK_IN);
-> > +		if (ret < 0)
-> > +			dev_err(codec_dai->dev, "can't set FS clock %d\n", ret);
-> > +		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, runtime->rate,
-> > +			runtime->rate * 256);
-> > +		if (ret < 0)
-> > +			dev_err(codec_dai->dev, "can't set FLL: %d\n", ret);
-> > +		break;
-> 
-> starting clock on trigger doesnt sound right to me..
-> 
-
-Me neither can't trigger be called from an atomic context? In
-which case I would expect operations on an external CODEC to be
-very likely to cause issues.
-
-Thanks,
-Charles
