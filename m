@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5665: Fix missing mutex_unlock in
-	rt5665_calibrate" to the asoc tree
-Date: Fri, 18 Nov 2016 12:01:36 +0000
-Message-ID: <E1c7hrM-0005Co-Pm@debutante>
-References: <20161116130842.28182-1-axel.lin@ingics.com>
+Subject: Applied "ASoC: intel: mfld: Make static string arrays
+	'const 'char * const []'" to the asoc tree
+Date: Fri, 18 Nov 2016 12:01:49 +0000
+Message-ID: <E1c7hrZ-0005Gp-2v@debutante>
+References: <1479242445-12069-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A22F266DC0
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 13:01:44 +0100 (CET)
-In-Reply-To: <20161116130842.28182-1-axel.lin@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id ACDAC266DC0
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 13:02:05 +0100 (CET)
+In-Reply-To: <1479242445-12069-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Julia Lawall <julia.lawall@lip6.fr>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5665: Fix missing mutex_unlock in rt5665_calibrate
+   ASoC: intel: mfld: Make static string arrays 'const 'char * const []'
 
 has been applied to the asoc tree at
 
@@ -53,47 +53,56 @@ to this mail.
 Thanks,
 Mark
 
->From 0c95666f0d7364e364ab53e068f7891c98e90012 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Wed, 16 Nov 2016 21:08:41 +0800
-Subject: [PATCH] ASoC: rt5665: Fix missing mutex_unlock in rt5665_calibrate
+>From 266c618d67dd4a42f798baaab47634018cb1db4b Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Tue, 15 Nov 2016 21:40:45 +0100
+Subject: [PATCH] ASoC: intel: mfld: Make static string arrays 'const 'char *
+ const []'
 
-Reported-by: Julia Lawall <julia.lawall@lip6.fr>
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+const char * const [] is the preferred type for static string arrays since
+this states explicitly that the individual entries are not going to be
+changed. Due to limitations in the ASoC API it was not possible to use it
+for enum text arrays. Commit 87023ff74b23 ("ASoC: Declare const properly
+for enum texts") changed this, but most drivers still use 'const char
+* []' as the type for their enum text arrays.
+
+Change these occurrences of 'static * const char * []' to 'static const
+char * const []'.
+
+The conversion was done automatically using the following coccinelle
+semantic patch:
+// <smpl>
+@disable optional_qualifier@
+identifier s;
+@@
+ static
+-const char *
++const char * const
+ s[] = ...;
+// </smpl>
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5665.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/mfld_machine.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index 34254fd47efe..7dfaaf1c2d14 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -4587,7 +4587,7 @@ static void rt5665_calibrate(struct rt5665_priv *rt5665)
- 			pr_err("HP Calibration Failure\n");
- 			regmap_write(rt5665->regmap, RT5665_RESET, 0);
- 			regcache_cache_bypass(rt5665->regmap, false);
--			return;
-+			goto out_unlock;
- 		}
+diff --git a/sound/soc/intel/boards/mfld_machine.c b/sound/soc/intel/boards/mfld_machine.c
+index 34f46c72a0e2..4e08885f37aa 100644
+--- a/sound/soc/intel/boards/mfld_machine.c
++++ b/sound/soc/intel/boards/mfld_machine.c
+@@ -81,9 +81,9 @@ static struct snd_soc_jack_zone mfld_zones[] = {
+ };
  
- 		count++;
-@@ -4606,7 +4606,7 @@ static void rt5665_calibrate(struct rt5665_priv *rt5665)
- 			pr_err("MONO Calibration Failure\n");
- 			regmap_write(rt5665->regmap, RT5665_RESET, 0);
- 			regcache_cache_bypass(rt5665->regmap, false);
--			return;
-+			goto out_unlock;
- 		}
+ /* sound card controls */
+-static const char *headset_switch_text[] = {"Earpiece", "Headset"};
++static const char * const headset_switch_text[] = {"Earpiece", "Headset"};
  
- 		count++;
-@@ -4621,6 +4621,7 @@ static void rt5665_calibrate(struct rt5665_priv *rt5665)
- 	regmap_write(rt5665->regmap, RT5665_BIAS_CUR_CTRL_8, 0xa602);
- 	regmap_write(rt5665->regmap, RT5665_ASRC_8, 0x0120);
+-static const char *lo_text[] = {"Vibra", "Headset", "IHF", "None"};
++static const char * const lo_text[] = {"Vibra", "Headset", "IHF", "None"};
  
-+out_unlock:
- 	mutex_unlock(&rt5665->calibrate_mutex);
- }
- 
+ static const struct soc_enum headset_enum =
+ 	SOC_ENUM_SINGLE_EXT(2, headset_switch_text);
 -- 
 2.10.2
