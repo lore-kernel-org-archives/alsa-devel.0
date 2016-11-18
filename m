@@ -1,23 +1,17 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] crec: Add option to specify codec ID
-Date: Fri, 18 Nov 2016 15:59:03 +0530
-Message-ID: <20161118102903.GS2698@localhost>
-References: <1479296649-18278-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <20161116130508.GZ3000@localhost>
- <1479301675.18450.18.camel@rf-debian.wolfsonmicro.main>
- <20161116134835.GW1575@localhost.localdomain>
- <1479308001.18450.25.camel@rf-debian.wolfsonmicro.main>
- <20161118035333.GG2698@localhost>
- <1479463868.18450.29.camel@rf-debian.wolfsonmicro.main>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: boards: Use FS as nau8825
+ sysclk in nau88l25_max98357a machine
+Date: Fri, 18 Nov 2016 10:38:55 +0000
+Message-ID: <20161118103855.z5gcfc5fnsfxsx26@sirena.org.uk>
+References: <1479448032-18248-1-git-send-email-grace.kao@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3545511764671980421=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 03A4A266B17
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 11:19:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1479463868.18450.29.camel@rf-debian.wolfsonmicro.main>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8446E266B17
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 11:39:05 +0100 (CET)
+In-Reply-To: <1479448032-18248-1-git-send-email-grace.kao@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,57 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+To: Grace Kao <grace.kao@intel.com>
+Cc: Vinod.koul@intel.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 18, 2016 at 10:11:08AM +0000, Richard Fitzgerald wrote:
-> On Fri, 2016-11-18 at 09:23 +0530, Vinod Koul wrote:
-> > On Wed, Nov 16, 2016 at 02:53:21PM +0000, Richard Fitzgerald wrote:
-> > > On Wed, 2016-11-16 at 13:48 +0000, Charles Keepax wrote:
-> > > > On Wed, Nov 16, 2016 at 01:07:55PM +0000, Richard Fitzgerald wrote:
-> > > > > On Wed, 2016-11-16 at 18:35 +0530, Vinod Koul wrote:
-> > > > > > On Wed, Nov 16, 2016 at 11:44:09AM +0000, Richard Fitzgerald wrote:
-> > > > > > > This patch adds a -I command line option to set the codec ID,
-> > > > > > > either from a defined set of string values or as a number.
-> > > > > > 
-> > > > > > Can you explain why you want to add this? The utility cant really record a
-> > > > > > mp3 file!
-> > > > > 
-> > > > > You need to be able to pass a codec ID that the driver supports, and to
-> > > > > indicate which codec you're trying to use. It's not useful to only be
-> > > > > able to open the "PCM" codec. It doesn't really matter whether crec
-> > > > > understands the content of the data, we're just pulling raw data, most
-> > > > > likely for test/debug.
-> > > > > 
-> > > > > The wm_adsp driver on Wolfson/Cirrus codecs uses the new BESPOKE stream
-> > > > > ID so we need a way to pass that. And we'd also need it for any drivers
-> > > > > that had streams using other codec IDs.
-> > 
-> > Ah that was my guess too.
-> > 
-> > I am okay to be able to add bespoke format and use that to dump raw data.
-> > But I am not okay to add codec formats which we dont support..
-> > 
-> 
-> Well a raw dump would support MP3 because that is doesn't require any
-> header and the framing is part of the data stream. So no special
-> handling needed there. This may also apply to some of the other formats
-> (I'm not an expert on them) so I'd rather have the option to be able to
-> raw-dump any format and leave it to the user to decide whether that's
-> sensible.
-> 
-> If you're debugging you may not care about the file format, you're
-> actually interested in the raw data you get from the codec so dumping
-> the output to a raw file would be useful even if you can't load that
-> file into a music player.
 
-While I agree with you on this, am worried that adding codecs may make
-people think that we can record mp3 file for exmaple, which is not the case.
+--===============3545511764671980421==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="voi5u3jphg64fyuj"
+Content-Disposition: inline
 
-I think we can add pcm and bespoke as formats supported and allow any format to
-be dumped to stdio. That way it is pretty clear to people ...
 
-Thanks
--- 
-~Vinod
+--voi5u3jphg64fyuj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Nov 18, 2016 at 01:47:12PM +0800, Grace Kao wrote:
+> 256FS sysclk gives the best audio quality per nau8825 datasheet.
+>=20
+> Loud headphone pop happens if there is no sysclk during nau8825
+> playback power up sequence. Currently Skylake does not output MCLK/FS
+> when the back-end DAI op hw_param is called, so we cannot switch to
+> MCLK/FS in hw_param. This patch reduces pop by leting nau8825 keep
+> using its internal VCO clock during widget power up sequence, until
+> SNDRV_PCM_TRIGGER_START when MCLK/FS is available.
+>=20
+> ---
+>=20
+> diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/=
+intel/boards/skl_nau88l25_max98357a.c
+
+I can't do anything with this without a Signed-off-by, please see
+Documentation/SubmittingPatches for an explanation of what this means.
+
+--voi5u3jphg64fyuj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAABCAAGBQJYLto/AAoJECTWi3JdVIfQ7HAH/0MAHH8L4oYPHmcOYInJE8Z+
+9K4HE75t9blrpP2Ks3enHKc6ows2cB6u1l9V1ZqnrNIh0T1uvoGZLyE2u7WK6/of
+OOUDkflo48deutO29mW9bmalG22fA8+t9DztK6pa6LrS9Enak2ATP6M4vJhxQywK
+rLvcMrYKXgptdYLs+wHPhfnMv7UP9S9huynNCNdJkILr4F/cPStRSiTDbsfwo0Bv
+E/4+FRZfF3C70qbbYJ2oy7u83xbWTO7iANyKWrnF/VmlUWg/1+/xQObJMW2fWUjJ
+J4no/jfz2HIVrvvKx1na2QzDpa6ZeYEXtXCT2dKznr9T4aRT1qdxnLB4ri+xjiY=
+=roRr
+-----END PGP SIGNATURE-----
+
+--voi5u3jphg64fyuj--
+
+--===============3545511764671980421==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3545511764671980421==--
