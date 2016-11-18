@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Remove superfluous
-	linux/kthread.h inclusion" to the asoc tree
-Date: Fri, 18 Nov 2016 12:01:24 +0000
-Message-ID: <E1c7hrA-0005Aq-7C@debutante>
-References: <20161114211745.21761-1-tiwai@suse.de>
+Subject: Applied "ASoC: rt5665: Fix missing mutex_unlock in
+	rt5665_calibrate" to the asoc tree
+Date: Fri, 18 Nov 2016 12:01:36 +0000
+Message-ID: <E1c7hrM-0005Co-Pm@debutante>
+References: <20161116130842.28182-1-axel.lin@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BA163266DE1
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 13:01:33 +0100 (CET)
-In-Reply-To: <20161114211745.21761-1-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A22F266DC0
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 13:01:44 +0100 (CET)
+In-Reply-To: <20161116130842.28182-1-axel.lin@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Julia Lawall <julia.lawall@lip6.fr>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: Remove superfluous linux/kthread.h inclusion
+   ASoC: rt5665: Fix missing mutex_unlock in rt5665_calibrate
 
 has been applied to the asoc tree at
 
@@ -53,30 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From 6342ad66d117cfdaa3ad02043e9b3a753788a971 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 14 Nov 2016 22:17:44 +0100
-Subject: [PATCH] ASoC: rt5514: Remove superfluous linux/kthread.h inclusion
+>From 0c95666f0d7364e364ab53e068f7891c98e90012 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Wed, 16 Nov 2016 21:08:41 +0800
+Subject: [PATCH] ASoC: rt5665: Fix missing mutex_unlock in rt5665_calibrate
 
-It's nowhere used in this driver code.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reported-by: Julia Lawall <julia.lawall@lip6.fr>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514-spi.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/rt5665.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 09103aab0cb2..0901e25d6db6 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -20,7 +20,6 @@
- #include <linux/slab.h>
- #include <linux/gpio.h>
- #include <linux/sched.h>
--#include <linux/kthread.h>
- #include <linux/uaccess.h>
- #include <linux/miscdevice.h>
- #include <linux/regulator/consumer.h>
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index 34254fd47efe..7dfaaf1c2d14 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -4587,7 +4587,7 @@ static void rt5665_calibrate(struct rt5665_priv *rt5665)
+ 			pr_err("HP Calibration Failure\n");
+ 			regmap_write(rt5665->regmap, RT5665_RESET, 0);
+ 			regcache_cache_bypass(rt5665->regmap, false);
+-			return;
++			goto out_unlock;
+ 		}
+ 
+ 		count++;
+@@ -4606,7 +4606,7 @@ static void rt5665_calibrate(struct rt5665_priv *rt5665)
+ 			pr_err("MONO Calibration Failure\n");
+ 			regmap_write(rt5665->regmap, RT5665_RESET, 0);
+ 			regcache_cache_bypass(rt5665->regmap, false);
+-			return;
++			goto out_unlock;
+ 		}
+ 
+ 		count++;
+@@ -4621,6 +4621,7 @@ static void rt5665_calibrate(struct rt5665_priv *rt5665)
+ 	regmap_write(rt5665->regmap, RT5665_BIAS_CUR_CTRL_8, 0xa602);
+ 	regmap_write(rt5665->regmap, RT5665_ASRC_8, 0x0120);
+ 
++out_unlock:
+ 	mutex_unlock(&rt5665->calibrate_mutex);
+ }
+ 
 -- 
 2.10.2
