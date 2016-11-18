@@ -1,22 +1,20 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] crec: Add option to specify codec ID
-Date: Fri, 18 Nov 2016 10:11:08 +0000
-Message-ID: <1479463868.18450.29.camel@rf-debian.wolfsonmicro.main>
-References: <1479296649-18278-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <20161116130508.GZ3000@localhost>
- <1479301675.18450.18.camel@rf-debian.wolfsonmicro.main>
- <20161116134835.GW1575@localhost.localdomain>
- <1479308001.18450.25.camel@rf-debian.wolfsonmicro.main>
- <20161118035333.GG2698@localhost>
+Subject: Re: [PATCH] crec: Correct name of output binary to crec
+Date: Fri, 18 Nov 2016 10:13:10 +0000
+Message-ID: <1479463990.18450.31.camel@rf-debian.wolfsonmicro.main>
+References: <1479294405-17471-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <20161116130241.GY3000@localhost>
+ <1479302061.18450.24.camel@rf-debian.wolfsonmicro.main>
+ <20161118035603.GH2698@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F9312666AC
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 11:11:14 +0100 (CET)
-In-Reply-To: <20161118035333.GG2698@localhost>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF1FA266B17
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 11:13:13 +0100 (CET)
+In-Reply-To: <20161118035603.GH2698@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,55 +25,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2016-11-18 at 09:23 +0530, Vinod Koul wrote:
-> On Wed, Nov 16, 2016 at 02:53:21PM +0000, Richard Fitzgerald wrote:
-> > On Wed, 2016-11-16 at 13:48 +0000, Charles Keepax wrote:
-> > > On Wed, Nov 16, 2016 at 01:07:55PM +0000, Richard Fitzgerald wrote:
-> > > > On Wed, 2016-11-16 at 18:35 +0530, Vinod Koul wrote:
-> > > > > On Wed, Nov 16, 2016 at 11:44:09AM +0000, Richard Fitzgerald wrote:
-> > > > > > This patch adds a -I command line option to set the codec ID,
-> > > > > > either from a defined set of string values or as a number.
-> > > > > 
-> > > > > Can you explain why you want to add this? The utility cant really record a
-> > > > > mp3 file!
+On Fri, 2016-11-18 at 09:26 +0530, Vinod Koul wrote:
+> On Wed, Nov 16, 2016 at 01:14:21PM +0000, Richard Fitzgerald wrote:
+> > On Wed, 2016-11-16 at 18:32 +0530, Vinod Koul wrote:
+> > > On Wed, Nov 16, 2016 at 11:06:45AM +0000, Richard Fitzgerald wrote:
+> > > > For some reason when the build system was converted to
+> > > > automake by this patch
 > > > > 
-> > > > You need to be able to pass a codec ID that the driver supports, and to
-> > > > indicate which codec you're trying to use. It's not useful to only be
-> > > > able to open the "PCM" codec. It doesn't really matter whether crec
-> > > > understands the content of the data, we're just pulling raw data, most
-> > > > likely for test/debug.
+> > > >     "Convert the build system to autotools"
 > > > > 
-> > > > The wm_adsp driver on Wolfson/Cirrus codecs uses the new BESPOKE stream
-> > > > ID so we need a way to pass that. And we'd also need it for any drivers
-> > > > that had streams using other codec IDs.
-> 
-> Ah that was my guess too.
-> 
-> I am okay to be able to add bespoke format and use that to dump raw data.
-> But I am not okay to add codec formats which we dont support..
-> 
-
-Well a raw dump would support MP3 because that is doesn't require any
-header and the framing is part of the data stream. So no special
-handling needed there. This may also apply to some of the other formats
-(I'm not an expert on them) so I'd rather have the option to be able to
-raw-dump any format and leave it to the user to decide whether that's
-sensible.
-
-If you're debugging you may not care about the file format, you're
-actually interested in the raw data you get from the codec so dumping
-the output to a raw file would be useful even if you can't load that
-file into a music player.
-
-> > > Is the objection here not that crec is wrapping the data with
-> > > a WAV file? Should we perhaps just expand this so that if you
-> > > request a different format it uses the raw data mode that it uses
-> > > when you let the output go to stdout.
+> > > > the name of the output binary for crec was changed
+> > > > from 'crec' to 'crecord'.
+> > > > 
+> > > > This patch corrects it back to 'crec'
+> > > 
+> > > That implies crecord is incorrect, I do not think so.
+> > > 
+> > > Can you explain why you would want to rename this back.
+> > > 
+> > > The motivation for this was to make it proper like cplay. Also similar to
+> > > aplay and arecord.
 > > > 
 > > 
-> > Funny I thought we'd already added a flag for saving to the file raw.
-> > It's raw when you pipe it to stdout.
+> > I don't really see a need for that, or why "crec" is wrong.
+> > 
+> > In any case if you did want to change that name 
+> > 
+> > a) it should be an explicit patch, not sneaked in as an undocumented and
+> > unexpected side-effect of some other patch
 > 
+> This part I agree. Unfortunately this was not done transparently...
+> 
+> > b) the source file should have been renamed to match, if the name "crec"
+> > is a massive problem then it should also be a problem that
+> > "cplay.c->cplay" but "crec.c->crecord". If it's ok to have the source
+> > file called crec.c what's wrong with the binary it builds being called
+> > crec?
+> 
+> I dont mind renaming source as well..
+> 
+> I think bigger question is should we continue crec or crecord, my preference
+> is latter.
+> 
+> > c) it's a nuisance to have to change existing test systems and apps that
+> > launch "crec", or to create symlinks from crec->crecord.
+> 
+> Yeah agree, lets decide on one and stick to that, forever hopefully :)
+> 
+
+Ok let's change to crecord for consistency with arecord, and I'll do a
+patch to rename the source to match.
