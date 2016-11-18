@@ -1,19 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] crec: Correct name of output binary to crec
-Date: Fri, 18 Nov 2016 09:26:03 +0530
-Message-ID: <20161118035603.GH2698@localhost>
-References: <1479294405-17471-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <20161116130241.GY3000@localhost>
- <1479302061.18450.24.camel@rf-debian.wolfsonmicro.main>
+From: Grace Kao <grace.kao@intel.com>
+Subject: [PATCH] CHROMIUM: ASoC: Intel: boards: Use FS as
+	nau8825 sysclk in nau88l25_max98357a machine
+Date: Fri, 18 Nov 2016 13:16:52 +0800
+Message-ID: <1479446212-17707-1-git-send-email-grace.kao@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 49CB9266937
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 04:46:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1479302061.18450.24.camel@rf-debian.wolfsonmicro.main>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id A84FB265823
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2016 06:14:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,55 +19,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org
+Cc: Vinod.koul@intel.com, Grace Kao <grace.kao@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 16, 2016 at 01:14:21PM +0000, Richard Fitzgerald wrote:
-> On Wed, 2016-11-16 at 18:32 +0530, Vinod Koul wrote:
-> > On Wed, Nov 16, 2016 at 11:06:45AM +0000, Richard Fitzgerald wrote:
-> > > For some reason when the build system was converted to
-> > > automake by this patch
-> > > 
-> > >     "Convert the build system to autotools"
-> > > 
-> > > the name of the output binary for crec was changed
-> > > from 'crec' to 'crecord'.
-> > > 
-> > > This patch corrects it back to 'crec'
-> > 
-> > That implies crecord is incorrect, I do not think so.
-> > 
-> > Can you explain why you would want to rename this back.
-> > 
-> > The motivation for this was to make it proper like cplay. Also similar to
-> > aplay and arecord.
-> > 
-> 
-> I don't really see a need for that, or why "crec" is wrong.
-> 
-> In any case if you did want to change that name 
-> 
-> a) it should be an explicit patch, not sneaked in as an undocumented and
-> unexpected side-effect of some other patch
+256FS sysclk gives the best audio quality per nau8825 datasheet.
 
-This part I agree. Unfortunately this was not done transparently...
+Loud headphone pop happens if there is no sysclk during nau8825
+playback power up sequence. Currently Skylake does not output MCLK/FS
+when the back-end DAI op hw_param is called, so we cannot switch to
+MCLK/FS in hw_param. This patch reduces pop by leting nau8825 keep
+using its internal VCO clock during widget power up sequence, until
+SNDRV_PCM_TRIGGER_START when MCLK/FS is available.
 
-> b) the source file should have been renamed to match, if the name "crec"
-> is a massive problem then it should also be a problem that
-> "cplay.c->cplay" but "crec.c->crecord". If it's ok to have the source
-> file called crec.c what's wrong with the binary it builds being called
-> crec?
+This is a temporary fix before Intel ADSP can output MCLK/FS early.
 
-I dont mind renaming source as well..
+BUG=chrome-os-partner:50471
+TEST=`emerge-sentry sys-kernel/chromeos-kernel-3_18`. Verified a local
+build that could reduce the pop sound.
 
-I think bigger question is should we continue crec or crecord, my preference
-is latter.
+Change-Id: I4943fffa8eb1c874cc66b50f0897092bf48dd579
+Signed-off-by: Grace Kao <grace.kao@intel.com>
+Reviewed-on: https://chromium-review.googlesource.com/333180
+Reviewed-by: Ben Zhang <benzh@chromium.org>
 
-> c) it's a nuisance to have to change existing test systems and apps that
-> launch "crec", or to create symlinks from crec->crecord.
+Series-to: alsa-devel@alsa-project.org
+Series-cc: Vinod.koul@intel.com
+---
 
-Yeah agree, lets decide on one and stick to that, forever hopefully :)
-
--- 
-~Vinod
+diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+index 0f89602..6ad8f52 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
++++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+@@ -70,14 +70,7 @@
+ 		return -EIO;
+ 	}
+ 
+-	if (SND_SOC_DAPM_EVENT_ON(event)) {
+-		ret = snd_soc_dai_set_sysclk(codec_dai,
+-				NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
+-		if (ret < 0) {
+-			dev_err(card->dev, "set sysclk err = %d\n", ret);
+-			return -EIO;
+-		}
+-	} else {
++	if (!SND_SOC_DAPM_EVENT_ON(event)) {
+ 		ret = snd_soc_dai_set_sysclk(codec_dai,
+ 				NAU8825_CLK_INTERNAL, 0, SND_SOC_CLOCK_IN);
+ 		if (ret < 0) {
+@@ -272,25 +265,7 @@
+ 	.startup = skl_fe_startup,
+ };
+ 
+-static int skylake_nau8825_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	int ret;
+ 
+-	ret = snd_soc_dai_set_sysclk(codec_dai,
+-			NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
+-
+-	if (ret < 0)
+-		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
+-
+-	return ret;
+-}
+-
+-static struct snd_soc_ops skylake_nau8825_ops = {
+-	.hw_params = skylake_nau8825_hw_params,
+-};
+ 
+ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		struct snd_pcm_hw_params *params)
+@@ -306,6 +281,33 @@
+ 	return 0;
+ }
+ 
++static int skylake_nau8825_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int ret = 0;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		ret = snd_soc_dai_set_sysclk(codec_dai,	NAU8825_CLK_FLL_FS, 0,
++			SND_SOC_CLOCK_IN);
++		if (ret < 0)
++			dev_err(codec_dai->dev, "can't set FS clock %d\n", ret);
++		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, runtime->rate,
++			runtime->rate * 256);
++		if (ret < 0)
++			dev_err(codec_dai->dev, "can't set FLL: %d\n", ret);
++		break;
++	}
++
++	return ret;
++}
++
++static struct snd_soc_ops skylake_nau8825_ops = {
++	.trigger = skylake_nau8825_trigger,
++};
++
+ static unsigned int channels_dmic[] = {
+ 	2, 4,
+ };
