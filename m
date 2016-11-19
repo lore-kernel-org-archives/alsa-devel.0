@@ -1,35 +1,42 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 6/6] ARM: s5pv210_defconfig: Remove old MACHs
-Date: Sat, 19 Nov 2016 16:48:31 +0200
-Message-ID: <1479566911-5580-7-git-send-email-krzk@kernel.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/6] ASoC: samsung: smdk_wm8580: Remove old platforms and
+ drop mach-types usage
+Date: Sat, 19 Nov 2016 16:42:33 +0100
+Message-ID: <8248c49a-1108-7fce-ed99-01653e11c670@metafoo.de>
 References: <1479566911-5580-1-git-send-email-krzk@kernel.org>
+ <1479566911-5580-3-git-send-email-krzk@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1479566911-5580-1-git-send-email-krzk@kernel.org>
+In-Reply-To: <1479566911-5580-3-git-send-email-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Remove non-existing MACH symbols from S5PV210 defconfig.
+On 11/19/2016 03:48 PM, Krzysztof Kozlowski wrote:
+[...]
+> @@ -206,15 +204,10 @@ static int __init smdk_audio_init(void)
+>  	int ret;
+>  	char *str;
+>  
+> -	if (machine_is_smdkc100()
+> -			|| machine_is_smdkv210() || machine_is_smdkc110()) {
+> -		smdk.num_links = 3;
+> -	} else if (machine_is_smdk6410()) {
+> -		str = (char *)smdk_dai[PRI_PLAYBACK].cpu_dai_name;
+> -		str[strlen(str) - 1] = '2';
+> -		str = (char *)smdk_dai[PRI_CAPTURE].cpu_dai_name;
+> -		str[strlen(str) - 1] = '2';
+> -	}
+> +	str = (char *)smdk_dai[PRI_PLAYBACK].cpu_dai_name;
+> +	str[strlen(str) - 1] = '2';
+> +	str = (char *)smdk_dai[PRI_CAPTURE].cpu_dai_name;
+> +	str[strlen(str) - 1] = '2';
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm/configs/s5pv210_defconfig | 4 ----
- 1 file changed, 4 deletions(-)
+This could be further simplified by just updating the initial cpu_dai_name
+string in the dai_link struct.
 
-diff --git a/arch/arm/configs/s5pv210_defconfig b/arch/arm/configs/s5pv210_defconfig
-index fa989902236d..c51f0f02012b 100644
---- a/arch/arm/configs/s5pv210_defconfig
-+++ b/arch/arm/configs/s5pv210_defconfig
-@@ -9,10 +9,6 @@ CONFIG_ARCH_S5PV210=y
- CONFIG_S3C_LOWLEVEL_UART_PORT=1
- CONFIG_S3C_DEV_FB=y
- CONFIG_S5PV210_SETUP_FB_24BPP=y
--CONFIG_MACH_AQUILA=y
--CONFIG_MACH_GONI=y
--CONFIG_MACH_SMDKC110=y
--CONFIG_MACH_SMDKV210=y
- CONFIG_NO_HZ=y
- CONFIG_HIGH_RES_TIMERS=y
- CONFIG_VMSPLIT_2G=y
--- 
-2.7.4
+Especially considering that the cpu_dai_name is a string literal and the ARM
+kernel now has rodata write protection enabled by default, so modifying it
+will crash the kernel.
