@@ -1,117 +1,39 @@
-From: Andrej Krutak <dev@andree.sk>
-Subject: [PATCH] ALSA: line6: Claim POD X3 USB data interface
-Date: Sat, 19 Nov 2016 13:01:29 +0100
-Message-ID: <1479556889-17601-1-git-send-email-dev@andree.sk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id E5E3A26658E
- for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2016 13:01:45 +0100 (CET)
-Received: by mail-wm0-f65.google.com with SMTP id g23so12688415wme.1
- for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2016 04:01:45 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.com, perex@perex.cz, stefanha@gmail.com, grabner@icg.tugraz.at, alsa-devel@alsa-project.org
-Cc: Andrej Krutak <dev@andree.sk>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 0/6] ASoC: samsung: Minor cleanup for old machines
+Date: Sat, 19 Nov 2016 16:48:25 +0200
+Message-ID: <1479566911-5580-1-git-send-email-krzk@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Deny userspace from using the interface concurrently.
+Hi,
 
-Signed-off-by: Andrej Krutak <dev@andree.sk>
----
- sound/usb/line6/driver.h |  1 +
- sound/usb/line6/podhd.c  | 24 ++++++++++++++++++++++++
- 2 files changed, 25 insertions(+)
+Few patches removing dead code (machines not supported).
 
-diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index 7e3a3aa..5d18957 100644
---- a/sound/usb/line6/driver.h
-+++ b/sound/usb/line6/driver.h
-@@ -98,6 +98,7 @@ struct line6_properties {
- 
- 	int altsetting;
- 
-+	unsigned ctrl_if;
- 	unsigned ep_ctrl_r;
- 	unsigned ep_ctrl_w;
- 	unsigned ep_audio_r;
-diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
-index 49cd4a6..6c53b87 100644
---- a/sound/usb/line6/podhd.c
-+++ b/sound/usb/line6/podhd.c
-@@ -153,6 +153,7 @@ struct usb_line6_podhd {
- 			    .rats = &podhd_ratden},
- 	.bytes_per_channel = 3 /* SNDRV_PCM_FMTBIT_S24_3LE */
- };
-+static struct usb_driver podhd_driver;
- 
- static void podhd_startup_start_workqueue(unsigned long data);
- static void podhd_startup_workqueue(struct work_struct *work);
-@@ -291,8 +292,13 @@ static void podhd_disconnect(struct usb_line6 *line6)
- 	struct usb_line6_podhd *pod = (struct usb_line6_podhd *)line6;
- 
- 	if (pod->line6.properties->capabilities & LINE6_CAP_CONTROL) {
-+		struct usb_interface *intf;
-+
- 		del_timer_sync(&pod->startup_timer);
- 		cancel_work_sync(&pod->startup_work);
-+
-+		intf = usb_ifnum_to_if(line6->usbdev, pod->line6.properties->ctrl_if);
-+		usb_driver_release_interface(&podhd_driver, intf);
- 	}
- }
- 
-@@ -304,10 +310,26 @@ static int podhd_init(struct usb_line6 *line6,
- {
- 	int err;
- 	struct usb_line6_podhd *pod = (struct usb_line6_podhd *) line6;
-+	struct usb_interface *intf;
- 
- 	line6->disconnect = podhd_disconnect;
- 
- 	if (pod->line6.properties->capabilities & LINE6_CAP_CONTROL) {
-+		/* claim the data interface */
-+		intf = usb_ifnum_to_if(line6->usbdev, pod->line6.properties->ctrl_if);
-+		if (!intf) {
-+			dev_err(pod->line6.ifcdev, "interface %d not found\n",
-+			        pod->line6.properties->ctrl_if);
-+			return -ENODEV;
-+		}
-+
-+		err = usb_driver_claim_interface(&podhd_driver, intf, NULL);
-+		if (err != 0) {
-+			dev_err(pod->line6.ifcdev, "can't claim interface %d, error %d\n",
-+			        pod->line6.properties->ctrl_if, err);
-+			return err;
-+		}
-+
- 		/* create sysfs entries: */
- 		err = snd_card_add_dev_attr(line6->card, &podhd_dev_attr_group);
- 		if (err < 0)
-@@ -406,6 +428,7 @@ static int podhd_init(struct usb_line6 *line6,
- 		.altsetting = 1,
- 		.ep_ctrl_r = 0x81,
- 		.ep_ctrl_w = 0x01,
-+		.ctrl_if = 1,
- 		.ep_audio_r = 0x86,
- 		.ep_audio_w = 0x02,
- 	},
-@@ -417,6 +440,7 @@ static int podhd_init(struct usb_line6 *line6,
- 		.altsetting = 1,
- 		.ep_ctrl_r = 0x81,
- 		.ep_ctrl_w = 0x01,
-+		.ctrl_if = 1,
- 		.ep_audio_r = 0x86,
- 		.ep_audio_w = 0x02,
- 	},
+The third patch ([RFT 3/6] ASoC: samsung: smdk_wm8580: Remove machine
+specific quirks) requires testing. I hope I understood the code
+correctly.
+
+The last ARM patch is independent. I will take it through samsung-soc
+tree. I put it here for reference.
+
+Best regards,
+Krzysztof
+
+Krzysztof Kozlowski (6):
+  ASoC: samsung: Remove non-existing MACH dependencies
+  ASoC: samsung: smdk_wm8580: Remove old platforms and drop mach-types
+    usage
+  ASoC: samsung: smdk_wm8580: Remove machine specific quirks
+  ASoC: samsung: Enable COMPILE_TEST for SmartQ and WM8580
+  ASoC: samsung: Enable COMPILE_TEST for entire Samsung ASoc
+  ARM: s5pv210_defconfig: Remove old MACHs
+
+ arch/arm/configs/s5pv210_defconfig |  4 ----
+ sound/soc/samsung/Kconfig          |  8 +++++---
+ sound/soc/samsung/smdk_wm8580.c    | 17 ++---------------
+ 3 files changed, 7 insertions(+), 22 deletions(-)
+
 -- 
-1.9.1
+2.7.4
