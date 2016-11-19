@@ -1,54 +1,40 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 2/6] ASoC: samsung: smdk_wm8580: Remove old platforms and
- drop mach-types usage
-Date: Sat, 19 Nov 2016 16:48:26 +0100
-Message-ID: <9ef6c39c-e7a2-4591-380f-07f92317313b@metafoo.de>
-References: <1479566911-5580-1-git-send-email-krzk@kernel.org>
- <1479566911-5580-3-git-send-email-krzk@kernel.org>
- <8248c49a-1108-7fce-ed99-01653e11c670@metafoo.de>
- <90e0f455-fa24-f643-fa07-67efe217188a@metafoo.de>
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: question about sound/soc/intel/boards/mfld_machine.c
+Date: Sat, 19 Nov 2016 18:34:01 +0100 (CET)
+Message-ID: <alpine.DEB.2.20.1611191827190.1925@hadrien>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <90e0f455-fa24-f643-fa07-67efe217188a@metafoo.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, yang.jie@intel.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/19/2016 04:45 PM, Lars-Peter Clausen wrote:
-> On 11/19/2016 04:42 PM, Lars-Peter Clausen wrote:
->> On 11/19/2016 03:48 PM, Krzysztof Kozlowski wrote:
->> [...]
->>> @@ -206,15 +204,10 @@ static int __init smdk_audio_init(void)
->>>  	int ret;
->>>  	char *str;
->>>  
->>> -	if (machine_is_smdkc100()
->>> -			|| machine_is_smdkv210() || machine_is_smdkc110()) {
->>> -		smdk.num_links = 3;
->>> -	} else if (machine_is_smdk6410()) {
->>> -		str = (char *)smdk_dai[PRI_PLAYBACK].cpu_dai_name;
->>> -		str[strlen(str) - 1] = '2';
->>> -		str = (char *)smdk_dai[PRI_CAPTURE].cpu_dai_name;
->>> -		str[strlen(str) - 1] = '2';
->>> -	}
->>> +	str = (char *)smdk_dai[PRI_PLAYBACK].cpu_dai_name;
->>> +	str[strlen(str) - 1] = '2';
->>> +	str = (char *)smdk_dai[PRI_CAPTURE].cpu_dai_name;
->>> +	str[strlen(str) - 1] = '2';
->>
->> This could be further simplified by just updating the initial cpu_dai_name
->> string in the dai_link struct.
->>
->> Especially considering that the cpu_dai_name is a string literal and the ARM
->> kernel now has rodata write protection enabled by default, so modifying it
->> will crash the kernel.
-> 
-> Spoke too soon, you fix this up in the next patch. But I'd just squash that
-> change into this patch. I think it is pretty safe to assume that it is correct.
-> 
+Hello,
 
-And another thing. Since num_links is always 2 now the last entry from the
-smdk_dai array can be removed and num_links can be initialized using
-ARRAY_SIZE().
+I wonder if the file sound/soc/intel/boards/mfld_machine.c is useful?
+Until:
+
+commit e56c72d5f201044b14191c5b83a25e17f2d68ccf
+Author: Jie Yang <yang.jie@intel.com>
+Date:   Thu Apr 2 15:37:02 2015 +0800
+
+    ASoC: Intel: create boards folder and move sst boards files in
+
+it was in the directory sound/soc/intel and mentioned in
+sound/soc/intel/Makefile.  The above patch moved it to
+sound/soc/intel/boards/, but didn't adjust its Makefile entry.  The patch:
+
+commit b97169da06992ef04081e66ed22bbdb23dbf6610
+Author: Jie Yang <yang.jie@intel.com>
+Date:   Thu Apr 2 15:37:04 2015 +0800
+
+    ASoC: Intel: create atom folder and move atom platform files in
+
+removed it from sound/soc/intel/Makefile, but didn't move it anywhere.
+As far as I can tell, there is currently no make information for the file
+in the kernel.
+
+Should the file be dropped?
+
+julia
