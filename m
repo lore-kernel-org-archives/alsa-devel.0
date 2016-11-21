@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8523: Remove #if
+Subject: Applied "ASoC: wm9081: Remove #if
 	IS_ENABLED(CONFIG_I2C)" to the asoc tree
-Date: Mon, 21 Nov 2016 19:20:23 +0000
-Message-ID: <E1c8u8d-0007rS-7y@debutante>
-References: <87vavp8h36.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 21 Nov 2016 19:20:29 +0000
+Message-ID: <E1c8u8j-0007tP-9K@debutante>
+References: <87y40l8h47.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CADF8266552
- for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2016 20:20:35 +0100 (CET)
-In-Reply-To: <87vavp8h36.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F1FFF26658E
+ for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2016 20:20:36 +0100 (CET)
+In-Reply-To: <87y40l8h47.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8523: Remove #if IS_ENABLED(CONFIG_I2C)
+   ASoC: wm9081: Remove #if IS_ENABLED(CONFIG_I2C)
 
 has been applied to the asoc tree at
 
@@ -53,63 +53,55 @@ to this mail.
 Thanks,
 Mark
 
->From f196e9ac07ed1212ce7d106c07a25019c9c1ee18 Mon Sep 17 00:00:00 2001
+>From e2d575918bf38d16cacaac789ba05d5e5a649b6f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 17 Nov 2016 01:13:35 +0000
-Subject: [PATCH] ASoC: wm8523: Remove #if IS_ENABLED(CONFIG_I2C)
+Date: Thu, 17 Nov 2016 01:13:00 +0000
+Subject: [PATCH] ASoC: wm9081: Remove #if IS_ENABLED(CONFIG_I2C)
 
-wm8523 driver doesn't work without CONFIG_I2C anyway.
-Let's remove #if IS_ENABLED(CONFIG_I2C), and use module_i2c_driver().
+wm9081 driver doesn't work without CONFIG_I2C anyway.
+Let's remove #if IS_ENABLED(CONFIG_I2C)
+
+And, this patch adds "depends on I2C" to Kconfig
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8523.c | 24 +-----------------------
- 1 file changed, 1 insertion(+), 23 deletions(-)
+ sound/soc/codecs/Kconfig  | 1 +
+ sound/soc/codecs/wm9081.c | 2 --
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
-index deb2e075428e..6d0a2723bfde 100644
---- a/sound/soc/codecs/wm8523.c
-+++ b/sound/soc/codecs/wm8523.c
-@@ -446,7 +446,6 @@ static const struct regmap_config wm8523_regmap = {
- 	.volatile_reg = wm8523_volatile_register,
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index c67667bb970f..5efcd9b2152f 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1048,6 +1048,7 @@ config SND_SOC_WM8998
+ 
+ config SND_SOC_WM9081
+ 	tristate
++	depends on I2C
+ 
+ config SND_SOC_WM9090
+ 	tristate
+diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+index 856867ec2813..6febef337dd2 100644
+--- a/sound/soc/codecs/wm9081.c
++++ b/sound/soc/codecs/wm9081.c
+@@ -1304,7 +1304,6 @@ static const struct regmap_config wm9081_regmap = {
+ 	.cache_type = REGCACHE_RBTREE,
  };
  
 -#if IS_ENABLED(CONFIG_I2C)
- static int wm8523_i2c_probe(struct i2c_client *i2c,
+ static int wm9081_i2c_probe(struct i2c_client *i2c,
  			    const struct i2c_device_id *id)
  {
-@@ -543,29 +542,8 @@ static struct i2c_driver wm8523_i2c_driver = {
- 	.remove =   wm8523_i2c_remove,
- 	.id_table = wm8523_i2c_id,
+@@ -1384,7 +1383,6 @@ static struct i2c_driver wm9081_i2c_driver = {
+ 	.remove =   wm9081_i2c_remove,
+ 	.id_table = wm9081_i2c_id,
  };
 -#endif
  
--static int __init wm8523_modinit(void)
--{
--	int ret;
--#if IS_ENABLED(CONFIG_I2C)
--	ret = i2c_add_driver(&wm8523_i2c_driver);
--	if (ret != 0) {
--		printk(KERN_ERR "Failed to register WM8523 I2C driver: %d\n",
--		       ret);
--	}
--#endif
--	return 0;
--}
--module_init(wm8523_modinit);
--
--static void __exit wm8523_exit(void)
--{
--#if IS_ENABLED(CONFIG_I2C)
--	i2c_del_driver(&wm8523_i2c_driver);
--#endif
--}
--module_exit(wm8523_exit);
-+module_i2c_driver(wm8523_i2c_driver);
+ module_i2c_driver(wm9081_i2c_driver);
  
- MODULE_DESCRIPTION("ASoC WM8523 driver");
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
 -- 
 2.10.2
