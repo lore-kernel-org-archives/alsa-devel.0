@@ -1,80 +1,49 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 03/10] mfd: sun6i-prcm: Add codec analog controls
- sub-device for Allwinner A23
-Date: Mon, 21 Nov 2016 13:23:28 +0000
-Message-ID: <20161121132328.GG3917@dell>
-References: <20161112064648.26779-1-wens@csie.org>
- <20161112064648.26779-4-wens@csie.org>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [RFC 0/4] ALSA controls management using
+ index/device/sub-devices fields
+Date: Mon, 21 Nov 2016 15:06:46 +0100
+Message-ID: <6ea6acec-b0b2-1a61-17c4-8096cbaf8759@st.com>
+References: <1478592675-23092-1-git-send-email-arnaud.pouliquen@st.com>
+ <c28a3623-3cf1-5fc1-1ba8-e6785fb967ca@sakamocchi.jp>
+ <cb9cf7f0-ae86-307b-c4d6-b4d3120d4e88@st.com>
+ <a92aab32-03a1-5d89-0f3b-c080cc6bb938@sakamocchi.jp>
+ <3c7b55b7-0b7f-fd55-9c30-745822a21d33@st.com>
+ <44555039-d85f-2de6-ec04-0ecf214ca0e9@sakamocchi.jp>
+ <d5c84110-3c72-dc8f-4839-134334cb448f@st.com>
+ <6ca1935a-76b1-ac19-0950-9eab14f35c25@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20161112064648.26779-4-wens@csie.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Mylene Josserand <mylene.josserand@free-electrons.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 8A124261A1A
+ for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2016 15:06:50 +0100 (CET)
+In-Reply-To: <6ca1935a-76b1-ac19-0950-9eab14f35c25@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 12 Nov 2016, Chen-Yu Tsai wrote:
-
-> The PRCM block on the A23 contains a message box like interface to
-> the registers for the analog path controls of the internal codec.
+>> If we are aligned on direction, what is your suggestion to continue
+>> discussion?
+>> Do you want to continue discussion based on [RFC 1/4] ASoC: core: allow
+>> PCM control binding to PCM device?
+>> Other?
 > 
-> Add a sub-device for it.
+> If you focused on ALSA SoC part only, I'd not continue this discussion 
+> more. I'm not a developer for the part, and join in this discussion just 
+> for ALSA control interface.
 > 
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> ---
->  drivers/mfd/sun6i-prcm.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/drivers/mfd/sun6i-prcm.c b/drivers/mfd/sun6i-prcm.c
-> index 011fcc555945..4abbf2ede944 100644
-> --- a/drivers/mfd/sun6i-prcm.c
-> +++ b/drivers/mfd/sun6i-prcm.c
-> @@ -12,6 +12,9 @@
->  #include <linux/init.h>
->  #include <linux/of.h>
->  
-> +#define SUN8I_CODEC_ANALOG_BASE	0x1c0
-> +#define SUN8I_CODEC_ANALOG_END	(SUN8I_CODEC_ANALOG_BASE + 0x4 - 1)
-> +
->  struct prcm_data {
->  	int nsubdevs;
->  	const struct mfd_cell *subdevs;
-> @@ -57,6 +60,14 @@ static const struct resource sun6i_a31_apb0_rstc_res[] = {
->  	},
->  };
->  
-> +static const struct resource sun8i_codec_analog_res[] = {
-> +	{
-> +		.start	= SUN8I_CODEC_ANALOG_BASE,
-> +		.end	= SUN8I_CODEC_ANALOG_END,
-> +		.flags	= IORESOURCE_MEM,
-> +	},
-> +};
 
-Use the DEVICE_RES_* macros.
+Anyway thanks for your time and your support.
 
->  static const struct mfd_cell sun6i_a31_prcm_subdevs[] = {
->  	{
->  		.name = "sun6i-a31-ar100-clk",
-> @@ -109,6 +120,12 @@ static const struct mfd_cell sun8i_a23_prcm_subdevs[] = {
->  		.num_resources = ARRAY_SIZE(sun6i_a31_apb0_rstc_res),
->  		.resources = sun6i_a31_apb0_rstc_res,
->  	},
-> +	{
-> +		.name		= "sun8i-codec-analog",
-> +		.of_compatible	= "allwinner,sun8i-a23-codec-analog",
-> +		.num_resources	= ARRAY_SIZE(sun8i_codec_analog_res),
-> +		.resources	= sun8i_codec_analog_res,
-> +	},
->  };
->  
->  static const struct prcm_data sun6i_a31_prcm_data = {
-
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Regards
+Arnaud
