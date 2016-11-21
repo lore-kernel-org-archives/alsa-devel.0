@@ -1,36 +1,61 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 5/5] ARM: s5pv210_defconfig: Remove old MACHs
-Date: Sun, 20 Nov 2016 21:24:55 +0200
-Message-ID: <1479669895-19124-6-git-send-email-krzk@kernel.org>
-References: <1479669895-19124-1-git-send-email-krzk@kernel.org>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: RE: question about sound/soc/intel/boards/mfld_machine.c
+Date: Mon, 21 Nov 2016 01:49:43 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A95240D83F@SHSMSX101.ccr.corp.intel.com>
+References: <alpine.DEB.2.20.1611191827190.1925@hadrien>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1479669895-19124-1-git-send-email-krzk@kernel.org>
+In-Reply-To: <alpine.DEB.2.20.1611191827190.1925@hadrien>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
-Cc: Lars-Peter Clausen <lars@metafoo.de>
+To: Julia Lawall <julia.lawall@lip6.fr>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "Koul, Vinod" <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Remove non-existing MACH symbols from S5PV210 defconfig.
+> -----Original Message-----
+> From: Julia Lawall [mailto:julia.lawall@lip6.fr]
+> Sent: Sunday, November 20, 2016 1:34 AM
+> To: lgirdwood@gmail.com; broonie@kernel.org; perex@perex.cz;
+> tiwai@suse.com; Jie, Yang <yang.jie@intel.com>
+> Cc: alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org
+> Subject: question about sound/soc/intel/boards/mfld_machine.c
+> 
+> Hello,
+> 
+> I wonder if the file sound/soc/intel/boards/mfld_machine.c is useful?
+> Until:
+> 
+> commit e56c72d5f201044b14191c5b83a25e17f2d68ccf
+> Author: Jie Yang <yang.jie@intel.com>
+> Date:   Thu Apr 2 15:37:02 2015 +0800
+> 
+>     ASoC: Intel: create boards folder and move sst boards files in
+> 
+> it was in the directory sound/soc/intel and mentioned in
+> sound/soc/intel/Makefile.  The above patch moved it to
+> sound/soc/intel/boards/, but didn't adjust its Makefile entry.  The patch:
+> 
+> commit b97169da06992ef04081e66ed22bbdb23dbf6610
+> Author: Jie Yang <yang.jie@intel.com>
+> Date:   Thu Apr 2 15:37:04 2015 +0800
+> 
+>     ASoC: Intel: create atom folder and move atom platform files in
+> 
+> removed it from sound/soc/intel/Makefile, but didn't move it anywhere.
+> As far as I can tell, there is currently no make information for the file in the
+> kernel.
+> 
+> Should the file be dropped?
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm/configs/s5pv210_defconfig | 4 ----
- 1 file changed, 4 deletions(-)
+Thanks for reporting, Julia. I believe this is missed during the folder
+restruction. 
 
-diff --git a/arch/arm/configs/s5pv210_defconfig b/arch/arm/configs/s5pv210_defconfig
-index fa989902236d..c51f0f02012b 100644
---- a/arch/arm/configs/s5pv210_defconfig
-+++ b/arch/arm/configs/s5pv210_defconfig
-@@ -9,10 +9,6 @@ CONFIG_ARCH_S5PV210=y
- CONFIG_S3C_LOWLEVEL_UART_PORT=1
- CONFIG_S3C_DEV_FB=y
- CONFIG_S5PV210_SETUP_FB_24BPP=y
--CONFIG_MACH_AQUILA=y
--CONFIG_MACH_GONI=y
--CONFIG_MACH_SMDKC110=y
--CONFIG_MACH_SMDKV210=y
- CONFIG_NO_HZ=y
- CONFIG_HIGH_RES_TIMERS=y
- CONFIG_VMSPLIT_2G=y
--- 
-2.7.4
+Hi Vinod, what do you think? If needed, I can add it to intel/Kconfig.
+
+Thanks,
+~Keyon
+
+> 
+> julia
