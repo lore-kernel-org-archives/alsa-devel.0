@@ -1,16 +1,18 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [RFC v2 0/3] ALSA controls management using
-	index/device/sub-devices fields
-Date: Tue, 22 Nov 2016 11:53:13 +0100
-Message-ID: <1479811996-2238-1-git-send-email-arnaud.pouliquen@st.com>
+Subject: [RFC v2 1/3] ASoC: core: allow DAI PCM controls bound
+	to PCM device
+Date: Tue, 22 Nov 2016 11:53:14 +0100
+Message-ID: <1479811996-2238-2-git-send-email-arnaud.pouliquen@st.com>
+References: <1479811996-2238-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 230E1266801
+ by alsa0.perex.cz (Postfix) with ESMTP id 232DF26690D
  for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2016 11:53:37 +0100 (CET)
+In-Reply-To: <1479811996-2238-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,66 +26,88 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-V2:
+In case of several instances of the same PCM control (e.g IEC controls).
+Application should be able to address the control using the
+device field number, according to the PCM character device.
+This patch allows to link DAI PCM controls to the PCM device.
+During DAI_link probe, PCM controls are added after device field is forced
+to the PCM device number.
 
-Aim of this version is to continue discussion on DAI PCM control focused on ASoC drivers.
-In this V2  implementation in Soc-core is simplified to limit impact on existing code.
-Proposal is to add field in DAI driver struct to declare PCM controls that
-need to be linked to PCM character device on DAI link probing.
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+ include/sound/soc-dai.h |  4 ++++
+ sound/soc/soc-core.c    | 37 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
- Update of the RFC V1 based on discussions:
- - [RFC 4/4] iecset: allow to select control with device and sub-device numbers
- 	no more part of the RFC V2, will be discussed in a separate thread
- - [RFC 2/4] ALSA: control: increment index field for duplicated control.
- 	no more part of the RFC V2, no more need as RFC subject is PCM controls
-   
-- [RFC V2 1/3] ASoC: core: allow DAI PCM controls bound to PCM device
-	Patch reworked from V1 to simplify implementation
-        - Binding is not done for Dai links tagged with no_pcm (DPCM).
-        - no more possibility to add the controls after the DAI link probing.
-
-- [RFC V2 2/3]   ASoC: sti: bind PCM controls to PCM device.
-- [RFC V2 3/3]   ASoC: hdmi-codec: Example of PCM control bound to PCM device for multi
-        Example of implementation in STI DAI driver and HDMI-codec drivers
-        
-V1: 
- http://www.spinics.net/lists/alsa-devel/msg56479.html
-
- 1) Alsa-utils patch
-
-- iecset: allow to select control with device and sub-device numbers
-  This patch allows to access to 2 iec controls differentiated by
-  device/sub-devices numbers
-=> For me, this patch is mandatory to be able to address the ASoC IEC
-   controls, in case of no fix is implemented to allows index field
-   update in ASoC.
-
-2) Alsa driver patches
-  - ASoC: core: allow PCM control binding to PCM device
-  	Add relationship between DAIs PCM controls and PCM device.
-
-  - ALSA: control: increment index field for duplicated control.
-   	Generic implementation of the patch proposed in HDA driver
-        (http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/?id=ea9b43add)
-
-  - ASoC: sti: use bind_pcm_ctl
-  	implementation of bind_pcm_ctl for sti driver.
-
-Arnaud Pouliquen (3):
-  ASoC: core: allow DAI PCM controls bound to PCM device
-  ASoC: sti: bind pcm controls to pcm device.
-  ASoC: hdmi-codec: Example of PCM control bound to PCM device for multi
-    HDMI DAIs.
-
-Regards,
-
-Arnaud
-
- include/sound/soc-dai.h       |  4 ++++
- sound/soc/codecs/hdmi-codec.c |  4 ++--
- sound/soc/soc-core.c          | 37 +++++++++++++++++++++++++++++++++++++
- sound/soc/sti/sti_uniperif.c  | 33 ++++-----------------------------
- 4 files changed, 47 insertions(+), 31 deletions(-)
-
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 200e1f0..3ff1a86 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -273,6 +273,10 @@ struct snd_soc_dai_driver {
+ 	/* probe ordering - for components with runtime dependencies */
+ 	int probe_order;
+ 	int remove_order;
++
++	/* Optional PCM controls to bind to PCM device on DAIs link*/
++	const struct snd_kcontrol_new *pcm_controls;
++	int num_pcm_controls;
+ };
+ 
+ /*
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index aaab26a..a494287 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1598,6 +1598,25 @@ static int soc_probe_dai(struct snd_soc_dai *dai, int order)
+ 	return 0;
+ }
+ 
++static int soc_link_dai_pcm_controls(struct snd_soc_card *card,
++				     struct snd_soc_dai *dai,
++				     struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_kcontrol_new kctl;
++	struct snd_soc_dai_driver *drv = dai->driver;
++	int i, err;
++
++	for (i = 0; i < drv->num_pcm_controls; i++) {
++		kctl = drv->pcm_controls[i];
++		if (!rtd->dai_link->no_pcm)
++			kctl.device = rtd->pcm->device;
++		if (snd_soc_add_dai_controls(dai, &kctl, 1))
++			return err;
++	}
++
++	return 0;
++}
++
+ static int soc_link_dai_widgets(struct snd_soc_card *card,
+ 				struct snd_soc_dai_link *dai_link,
+ 				struct snd_soc_pcm_runtime *rtd)
+@@ -1709,6 +1728,24 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+ 				       dai_link->stream_name, ret);
+ 				return ret;
+ 			}
++
++			/* Bind DAIs pcm controls to the PCM device */
++			if (cpu_dai->driver->pcm_controls) {
++				ret = soc_link_dai_pcm_controls(card, cpu_dai,
++								rtd);
++				if (ret < 0)
++					return ret;
++			}
++			for (i = 0; i < rtd->num_codecs; i++) {
++				struct snd_soc_dai *dai = rtd->codec_dais[i];
++
++				if (dai->driver->pcm_controls)
++					ret = soc_link_dai_pcm_controls(card,
++									dai,
++									rtd);
++				if (ret < 0)
++					return ret;
++			}
+ 		} else {
+ 			INIT_DELAYED_WORK(&rtd->delayed_work,
+ 						codec2codec_close_delayed_work);
 -- 
 1.9.1
