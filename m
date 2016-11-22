@@ -1,82 +1,71 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: Enable COMPILE_TEST for entire Samsung ASoc"
- to the asoc tree
-Date: Tue, 22 Nov 2016 17:26:28 +0000
-Message-ID: <E1c9Epw-0005mh-9x@debutante>
-References: <1479566911-5580-6-git-send-email-krzk@kernel.org>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ASoC: cht_bsw_rt5645: Fix leftover kmalloc
+Date: Tue, 22 Nov 2016 18:11:08 +0100
+Message-ID: <20161122171108.27238-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1479566911-5580-6-git-send-email-krzk@kernel.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F626266D61
+ for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2016 18:11:14 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+cht_bsw_rt5645 driver allocates the own codec_id string but doesn't
+release it.  For simplicity, put the string in cht_mc_private; then
+the string is allocated in a shot and released altogether.
 
-   ASoC: samsung: Enable COMPILE_TEST for entire Samsung ASoc
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From a41dcdeee5d87cf3852b857cc3a8507832ec8b42 Mon Sep 17 00:00:00 2001
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Date: Sun, 20 Nov 2016 21:24:54 +0200
-Subject: [PATCH] ASoC: samsung: Enable COMPILE_TEST for entire Samsung ASoc
-
-Instead of build time, Samsung ASoC drivers have rather runtime
-dependency on Exynos or other Samsung platforms.  For building they
-require Common Clock Framework.  If it is provided they could be compile
-tested to increase build coverage.
-
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: c8560b7c917f ("ASoC: cht_bsw_rt5645: Fix writing to string literal")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/samsung/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index ea0fa9971a0c..48dcd3dd9ec7 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -1,6 +1,7 @@
- menuconfig SND_SOC_SAMSUNG
- 	tristate "ASoC support for Samsung"
--	depends on (PLAT_SAMSUNG || ARCH_EXYNOS)
-+	depends on PLAT_SAMSUNG || ARCH_EXYNOS || COMPILE_TEST
-+	depends on COMMON_CLK
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	---help---
- 	  Say Y or M if you want to add support for codecs attached to
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 56056ed7fcfd..16c94c45ce50 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -44,6 +44,7 @@ struct cht_acpi_card {
+ struct cht_mc_private {
+ 	struct snd_soc_jack jack;
+ 	struct cht_acpi_card *acpi_card;
++	char codec_name[16];
+ };
+ 
+ static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
+@@ -354,7 +355,6 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	int i;
+ 	struct cht_mc_private *drv;
+ 	struct snd_soc_card *card = snd_soc_cards[0].soc_card;
+-	char codec_name[16];
+ 	struct sst_acpi_mach *mach;
+ 	const char *i2c_name = NULL;
+ 	int dai_index = 0;
+@@ -374,12 +374,12 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	}
+ 	card->dev = &pdev->dev;
+ 	mach = card->dev->platform_data;
+-	sprintf(codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
++	sprintf(drv->codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
+ 
+ 	/* set correct codec name */
+ 	for (i = 0; i < ARRAY_SIZE(cht_dailink); i++)
+ 		if (!strcmp(card->dai_link[i].codec_name, "i2c-10EC5645:00")) {
+-			card->dai_link[i].codec_name = kstrdup(codec_name, GFP_KERNEL);
++			card->dai_link[i].codec_name = drv->codec_name;
+ 			dai_index = i;
+ 		}
+ 
 -- 
 2.10.2
