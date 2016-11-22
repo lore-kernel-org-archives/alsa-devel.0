@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: Remove non-existing MACH dependencies" to the asoc tree
-Date: Tue, 22 Nov 2016 17:26:34 +0000
-Message-ID: <E1c9Eq2-0005p0-CW@debutante>
-References: <1479566911-5580-2-git-send-email-krzk@kernel.org>
+Subject: Applied "ASoC: samsung: smdk_wm8580: Remove old platforms and drop mach-types usage" to the asoc tree
+Date: Tue, 22 Nov 2016 17:26:31 +0000
+Message-ID: <E1c9Epz-0005o0-BN@debutante>
+References: <1479669895-19124-3-git-send-email-krzk@kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1479566911-5580-2-git-send-email-krzk@kernel.org>
+In-Reply-To: <1479669895-19124-3-git-send-email-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: Remove non-existing MACH dependencies
+   ASoC: samsung: smdk_wm8580: Remove old platforms and drop mach-types usage
 
 has been applied to the asoc tree at
 
@@ -37,33 +37,105 @@ to this mail.
 Thanks,
 Mark
 
->From f8cbab42d98298ab9c4878dc9105d350b0b902ff Mon Sep 17 00:00:00 2001
+>From cd9e2b62768c21c051c585f9d4935b4fa6e9603e Mon Sep 17 00:00:00 2001
 From: Krzysztof Kozlowski <krzk@kernel.org>
-Date: Sun, 20 Nov 2016 21:24:51 +0200
-Subject: [PATCH] ASoC: samsung: Remove non-existing MACH dependencies
+Date: Sun, 20 Nov 2016 21:24:52 +0200
+Subject: [PATCH] ASoC: samsung: smdk_wm8580: Remove old platforms and drop
+ mach-types usage
 
-MACH_SMDKC100 was removed in commit b8529ec1c1b0 ("ARM: S5PC100: no more
-support S5PC100 SoC"). MACH_SMDKV210 and MACH_SMDKC110 in commit
-28c8331d386 ("ARM: S5PV210: Remove support for board files").
+MACH_SMDKC100, MACH_SMDKV210 and MACH_SMDKC110 are no longer supported
+so we can drop the dead code.  After this the driver no longer
+differentiates between machines (S3C24xx machines are not supported by
+it) so there is no need to override I2S device id in cpu_dai_name and
+SEC_PLAYBACK dai_link can be removed as well.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/samsung/smdk_wm8580.c | 30 +++---------------------------
+ 1 file changed, 3 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 79ae6a7c93ff..ea0fa9971a0c 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -49,7 +49,7 @@ config SND_SOC_SAMSUNG_JIVE_WM8750
+diff --git a/sound/soc/samsung/smdk_wm8580.c b/sound/soc/samsung/smdk_wm8580.c
+index 548bfd993788..de724ce7b955 100644
+--- a/sound/soc/samsung/smdk_wm8580.c
++++ b/sound/soc/samsung/smdk_wm8580.c
+@@ -14,8 +14,6 @@
+ #include <sound/soc.h>
+ #include <sound/pcm_params.h>
  
- config SND_SOC_SAMSUNG_SMDK_WM8580
- 	tristate "SoC I2S Audio support for WM8580 on SMDK"
--	depends on MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110
-+	depends on MACH_SMDK6410
- 	depends on I2C
- 	select SND_SOC_WM8580
- 	select SND_SAMSUNG_I2S
+-#include <asm/mach-types.h>
+-
+ #include "../codecs/wm8580.h"
+ #include "i2s.h"
+ 
+@@ -147,7 +145,6 @@ static int smdk_wm8580_init_paiftx(struct snd_soc_pcm_runtime *rtd)
+ enum {
+ 	PRI_PLAYBACK = 0,
+ 	PRI_CAPTURE,
+-	SEC_PLAYBACK,
+ };
+ 
+ #define SMDK_DAI_FMT (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | \
+@@ -157,7 +154,7 @@ static struct snd_soc_dai_link smdk_dai[] = {
+ 	[PRI_PLAYBACK] = { /* Primary Playback i/f */
+ 		.name = "WM8580 PAIF RX",
+ 		.stream_name = "Playback",
+-		.cpu_dai_name = "samsung-i2s.0",
++		.cpu_dai_name = "samsung-i2s.2",
+ 		.codec_dai_name = "wm8580-hifi-playback",
+ 		.platform_name = "samsung-i2s.0",
+ 		.codec_name = "wm8580.0-001b",
+@@ -167,7 +164,7 @@ static struct snd_soc_dai_link smdk_dai[] = {
+ 	[PRI_CAPTURE] = { /* Primary Capture i/f */
+ 		.name = "WM8580 PAIF TX",
+ 		.stream_name = "Capture",
+-		.cpu_dai_name = "samsung-i2s.0",
++		.cpu_dai_name = "samsung-i2s.2",
+ 		.codec_dai_name = "wm8580-hifi-capture",
+ 		.platform_name = "samsung-i2s.0",
+ 		.codec_name = "wm8580.0-001b",
+@@ -175,23 +172,13 @@ static struct snd_soc_dai_link smdk_dai[] = {
+ 		.init = smdk_wm8580_init_paiftx,
+ 		.ops = &smdk_ops,
+ 	},
+-	[SEC_PLAYBACK] = { /* Sec_Fifo Playback i/f */
+-		.name = "Sec_FIFO TX",
+-		.stream_name = "Playback",
+-		.cpu_dai_name = "samsung-i2s-sec",
+-		.codec_dai_name = "wm8580-hifi-playback",
+-		.platform_name = "samsung-i2s-sec",
+-		.codec_name = "wm8580.0-001b",
+-		.dai_fmt = SMDK_DAI_FMT,
+-		.ops = &smdk_ops,
+-	},
+ };
+ 
+ static struct snd_soc_card smdk = {
+ 	.name = "SMDK-I2S",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = smdk_dai,
+-	.num_links = 2,
++	.num_links = ARRAY_SIZE(smdk_dai),
+ 
+ 	.dapm_widgets = smdk_wm8580_dapm_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(smdk_wm8580_dapm_widgets),
+@@ -204,17 +191,6 @@ static struct platform_device *smdk_snd_device;
+ static int __init smdk_audio_init(void)
+ {
+ 	int ret;
+-	char *str;
+-
+-	if (machine_is_smdkc100()
+-			|| machine_is_smdkv210() || machine_is_smdkc110()) {
+-		smdk.num_links = 3;
+-	} else if (machine_is_smdk6410()) {
+-		str = (char *)smdk_dai[PRI_PLAYBACK].cpu_dai_name;
+-		str[strlen(str) - 1] = '2';
+-		str = (char *)smdk_dai[PRI_CAPTURE].cpu_dai_name;
+-		str[strlen(str) - 1] = '2';
+-	}
+ 
+ 	smdk_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!smdk_snd_device)
 -- 
 2.10.2
