@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Remove unused wm_coeff_ctl.kcontrol" to the asoc tree
-Date: Tue, 22 Nov 2016 17:26:14 +0000
-Message-ID: <E1c9Epi-0005iv-KR@debutante>
-References: <1479833937-5238-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: samsung: Enable COMPILE_TEST for SmartQ and WM8580" to the asoc tree
+Date: Tue, 22 Nov 2016 17:26:22 +0000
+Message-ID: <E1c9Epq-0005lX-10@debutante>
+References: <1479566911-5580-5-git-send-email-krzk@kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1479833937-5238-1-git-send-email-rf@opensource.wolfsonmicro.com>
+In-Reply-To: <1479566911-5580-5-git-send-email-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Remove unused wm_coeff_ctl.kcontrol
+   ASoC: samsung: Enable COMPILE_TEST for SmartQ and WM8580
 
 has been applied to the asoc tree at
 
@@ -37,39 +37,42 @@ to this mail.
 Thanks,
 Mark
 
->From 1db51e6fb0f5596518975fd1b2f7ef050e9d58ef Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Date: Tue, 22 Nov 2016 16:58:56 +0000
-Subject: [PATCH] ASoC: wm_adsp: Remove unused wm_coeff_ctl.kcontrol
+>From 95f5609d223d661419061bd6231da01a317c30d9 Mon Sep 17 00:00:00 2001
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Date: Sun, 20 Nov 2016 21:24:53 +0200
+Subject: [PATCH] ASoC: samsung: Enable COMPILE_TEST for SmartQ and WM8580
 
-The kcontrol pointer in wm_coeff_ctl is not used now.
+The I2S sound drivers for SmartQ board and WM8580 codec can be compile
+tested to increase build coverage.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/samsung/Kconfig | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 404466d2ae51..6e6b9d838332 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -451,7 +451,6 @@ struct wm_coeff_ctl {
- 	unsigned int offset;
- 	size_t len;
- 	unsigned int set:1;
--	struct snd_kcontrol *kcontrol;
- 	struct soc_bytes_ext bytes_ext;
- 	unsigned int flags;
- 	unsigned int type;
-@@ -1138,8 +1137,6 @@ static int wmfw_add_ctl(struct wm_adsp *dsp, struct wm_coeff_ctl *ctl)
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 48dcd3dd9ec7..a6cc6ca93fa7 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -50,7 +50,7 @@ config SND_SOC_SAMSUNG_JIVE_WM8750
  
- 	kfree(kcontrol);
+ config SND_SOC_SAMSUNG_SMDK_WM8580
+ 	tristate "SoC I2S Audio support for WM8580 on SMDK"
+-	depends on MACH_SMDK6410
++	depends on MACH_SMDK6410 || COMPILE_TEST
+ 	depends on I2C
+ 	select SND_SOC_WM8580
+ 	select SND_SAMSUNG_I2S
+@@ -110,7 +110,8 @@ config SND_SOC_SAMSUNG_RX1950_UDA1380
  
--	ctl->kcontrol = snd_soc_card_get_kcontrol(dsp->card, ctl->name);
--
- 	return 0;
+ config SND_SOC_SMARTQ
+ 	tristate "SoC I2S Audio support for SmartQ board"
+-	depends on MACH_SMARTQ && I2C
++	depends on MACH_SMARTQ || COMPILE_TEST
++	depends on I2C
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM8750
  
- err_kcontrol:
 -- 
 2.10.2
