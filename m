@@ -1,18 +1,15 @@
-From: Andrej Krutak <dev@andree.sk>
-Subject: [PATCH v2] ALSA: line6: Claim POD X3 USB data interface
-Date: Tue, 22 Nov 2016 10:04:02 +0100
-Message-ID: <1479805444-11819-1-git-send-email-dev@andree.sk>
-References: <1479556889-17601-1-git-send-email-dev@andree.sk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: Make return type of dpcm_state_string()
+	const char *
+Date: Tue, 22 Nov 2016 11:29:14 +0100
+Message-ID: <1479810554-24289-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id AA553266849
- for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2016 10:05:37 +0100 (CET)
-Received: by mail-wm0-f66.google.com with SMTP id a20so2210701wme.2
- for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2016 01:05:37 -0800 (PST)
-In-Reply-To: <1479556889-17601-1-git-send-email-dev@andree.sk>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4EF90266801
+ for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2016 11:29:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,101 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.com, perex@perex.cz, stefanha@gmail.com, grabner@icg.tugraz.at, alsa-devel@alsa-project.org
-Cc: Andrej Krutak <dev@andree.sk>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Userspace apps have to claim USB interfaces before using endpoints in
-them (drivers/usb/core/devio.c:checkintf()). It's a lock mechanism so
-that two "drivers" don't steal data from each other. Kernel drivers don't
-have to claim interfaces to work - but they should, to lock out userspace...
+dpcm_state_string() returns a pointer to a string literal. Modifying a
+string literal causes undefined behaviour. So make the return type of the
+function const char * to make it explicit that the returned value should
+not be modified.
 
-Signed-off-by: Andrej Krutak <dev@andree.sk>
+This patch is purely cosmetic, none of the users of dpcm_state_string()
+attempt to modify the returned content.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/usb/line6/driver.h |  1 +
- sound/usb/line6/podhd.c  | 24 ++++++++++++++++++++++++
- 2 files changed, 25 insertions(+)
+ sound/soc/soc-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index 7e3a3aa..5d18957 100644
---- a/sound/usb/line6/driver.h
-+++ b/sound/usb/line6/driver.h
-@@ -98,6 +98,7 @@ struct line6_properties {
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index d56a16a..e7a1eaa 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2882,7 +2882,7 @@ int snd_soc_platform_trigger(struct snd_pcm_substream *substream,
+ EXPORT_SYMBOL_GPL(snd_soc_platform_trigger);
  
- 	int altsetting;
- 
-+	unsigned ctrl_if;
- 	unsigned ep_ctrl_r;
- 	unsigned ep_ctrl_w;
- 	unsigned ep_audio_r;
-diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
-index 49cd4a6..6c53b87 100644
---- a/sound/usb/line6/podhd.c
-+++ b/sound/usb/line6/podhd.c
-@@ -153,6 +153,7 @@ struct usb_line6_podhd {
- 			    .rats = &podhd_ratden},
- 	.bytes_per_channel = 3 /* SNDRV_PCM_FMTBIT_S24_3LE */
- };
-+static struct usb_driver podhd_driver;
- 
- static void podhd_startup_start_workqueue(unsigned long data);
- static void podhd_startup_workqueue(struct work_struct *work);
-@@ -291,8 +292,13 @@ static void podhd_disconnect(struct usb_line6 *line6)
- 	struct usb_line6_podhd *pod = (struct usb_line6_podhd *)line6;
- 
- 	if (pod->line6.properties->capabilities & LINE6_CAP_CONTROL) {
-+		struct usb_interface *intf;
-+
- 		del_timer_sync(&pod->startup_timer);
- 		cancel_work_sync(&pod->startup_work);
-+
-+		intf = usb_ifnum_to_if(line6->usbdev, pod->line6.properties->ctrl_if);
-+		usb_driver_release_interface(&podhd_driver, intf);
- 	}
- }
- 
-@@ -304,10 +310,26 @@ static int podhd_init(struct usb_line6 *line6,
+ #ifdef CONFIG_DEBUG_FS
+-static char *dpcm_state_string(enum snd_soc_dpcm_state state)
++static const char *dpcm_state_string(enum snd_soc_dpcm_state state)
  {
- 	int err;
- 	struct usb_line6_podhd *pod = (struct usb_line6_podhd *) line6;
-+	struct usb_interface *intf;
- 
- 	line6->disconnect = podhd_disconnect;
- 
- 	if (pod->line6.properties->capabilities & LINE6_CAP_CONTROL) {
-+		/* claim the data interface */
-+		intf = usb_ifnum_to_if(line6->usbdev, pod->line6.properties->ctrl_if);
-+		if (!intf) {
-+			dev_err(pod->line6.ifcdev, "interface %d not found\n",
-+			        pod->line6.properties->ctrl_if);
-+			return -ENODEV;
-+		}
-+
-+		err = usb_driver_claim_interface(&podhd_driver, intf, NULL);
-+		if (err != 0) {
-+			dev_err(pod->line6.ifcdev, "can't claim interface %d, error %d\n",
-+			        pod->line6.properties->ctrl_if, err);
-+			return err;
-+		}
-+
- 		/* create sysfs entries: */
- 		err = snd_card_add_dev_attr(line6->card, &podhd_dev_attr_group);
- 		if (err < 0)
-@@ -406,6 +428,7 @@ static int podhd_init(struct usb_line6 *line6,
- 		.altsetting = 1,
- 		.ep_ctrl_r = 0x81,
- 		.ep_ctrl_w = 0x01,
-+		.ctrl_if = 1,
- 		.ep_audio_r = 0x86,
- 		.ep_audio_w = 0x02,
- 	},
-@@ -417,6 +440,7 @@ static int podhd_init(struct usb_line6 *line6,
- 		.altsetting = 1,
- 		.ep_ctrl_r = 0x81,
- 		.ep_ctrl_w = 0x01,
-+		.ctrl_if = 1,
- 		.ep_audio_r = 0x86,
- 		.ep_audio_w = 0x02,
- 	},
+ 	switch (state) {
+ 	case SND_SOC_DPCM_STATE_NEW:
 -- 
-1.9.1
+2.1.4
