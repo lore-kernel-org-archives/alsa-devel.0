@@ -1,8 +1,8 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [RFC v2 1/3] ASoC: core: allow DAI PCM controls bound
-	to PCM device
-Date: Tue, 22 Nov 2016 11:53:14 +0100
-Message-ID: <1479811996-2238-2-git-send-email-arnaud.pouliquen@st.com>
+Subject: [RFC v2 2/3] ASoC: sti: bind pcm controls to pcm
+	device.
+Date: Tue, 22 Nov 2016 11:53:15 +0100
+Message-ID: <1479811996-2238-3-git-send-email-arnaud.pouliquen@st.com>
 References: <1479811996-2238-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 232DF26690D
- for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2016 11:53:37 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F894266949
+ for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2016 11:53:38 +0100 (CET)
 In-Reply-To: <1479811996-2238-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,88 +26,71 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-In case of several instances of the same PCM control (e.g IEC controls).
-Application should be able to address the control using the
-device field number, according to the PCM character device.
-This patch allows to link DAI PCM controls to the PCM device.
-During DAI_link probe, PCM controls are added after device field is forced
-to the PCM device number.
+Move PCM control list in DAI driver struct, to
+bind PCM control to PCM device created during DAI linking.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- include/sound/soc-dai.h |  4 ++++
- sound/soc/soc-core.c    | 37 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 41 insertions(+)
+ sound/soc/sti/sti_uniperif.c | 33 ++++-----------------------------
+ 1 file changed, 4 insertions(+), 29 deletions(-)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 200e1f0..3ff1a86 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -273,6 +273,10 @@ struct snd_soc_dai_driver {
- 	/* probe ordering - for components with runtime dependencies */
- 	int probe_order;
- 	int remove_order;
-+
-+	/* Optional PCM controls to bind to PCM device on DAIs link*/
-+	const struct snd_kcontrol_new *pcm_controls;
-+	int num_pcm_controls;
- };
- 
- /*
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index aaab26a..a494287 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1598,6 +1598,25 @@ static int soc_probe_dai(struct snd_soc_dai *dai, int order)
- 	return 0;
+diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
+index 98eb205..cf42982 100644
+--- a/sound/soc/sti/sti_uniperif.c
++++ b/sound/soc/sti/sti_uniperif.c
+@@ -248,34 +248,6 @@ int sti_uniperiph_get_tdm_word_pos(struct uniperif *uni,
  }
  
-+static int soc_link_dai_pcm_controls(struct snd_soc_card *card,
-+				     struct snd_soc_dai *dai,
-+				     struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_kcontrol_new kctl;
-+	struct snd_soc_dai_driver *drv = dai->driver;
-+	int i, err;
-+
-+	for (i = 0; i < drv->num_pcm_controls; i++) {
-+		kctl = drv->pcm_controls[i];
-+		if (!rtd->dai_link->no_pcm)
-+			kctl.device = rtd->pcm->device;
-+		if (snd_soc_add_dai_controls(dai, &kctl, 1))
-+			return err;
-+	}
-+
+ /*
+- * sti_uniperiph_dai_create_ctrl
+- * This function is used to create Ctrl associated to DAI but also pcm device.
+- * Request is done by front end to associate ctrl with pcm device id
+- */
+-static int sti_uniperiph_dai_create_ctrl(struct snd_soc_dai *dai)
+-{
+-	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
+-	struct uniperif *uni = priv->dai_data.uni;
+-	struct snd_kcontrol_new *ctrl;
+-	int i;
+-
+-	if (!uni->num_ctrls)
+-		return 0;
+-
+-	for (i = 0; i < uni->num_ctrls; i++) {
+-		/*
+-		 * Several Control can have same name. Controls are indexed on
+-		 * Uniperipheral instance ID
+-		 */
+-		ctrl = &uni->snd_ctrls[i];
+-		ctrl->index = uni->id;
+-		ctrl->device = uni->id;
+-	}
+-
+-	return snd_soc_add_dai_controls(dai, uni->snd_ctrls, uni->num_ctrls);
+-}
+-
+-/*
+  * DAI
+  */
+ int sti_uniperiph_dai_hw_params(struct snd_pcm_substream *substream,
+@@ -365,7 +337,7 @@ static int sti_uniperiph_dai_probe(struct snd_soc_dai *dai)
+ 	dai_data->dma_data.addr = dai_data->uni->fifo_phys_address;
+ 	dai_data->dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 
+-	return sti_uniperiph_dai_create_ctrl(dai);
 +	return 0;
-+}
+ }
+ 
+ static const struct snd_soc_dai_driver sti_uniperiph_dai_template = {
+@@ -487,6 +459,9 @@ static int sti_uniperiph_probe(struct platform_device *pdev)
+ 
+ 	ret = sti_uniperiph_cpu_dai_of(node, priv);
+ 
++	priv->dai->pcm_controls = priv->dai_data.uni->snd_ctrls;
++	priv->dai->num_pcm_controls = priv->dai_data.uni->num_ctrls;
 +
- static int soc_link_dai_widgets(struct snd_soc_card *card,
- 				struct snd_soc_dai_link *dai_link,
- 				struct snd_soc_pcm_runtime *rtd)
-@@ -1709,6 +1728,24 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
- 				       dai_link->stream_name, ret);
- 				return ret;
- 			}
-+
-+			/* Bind DAIs pcm controls to the PCM device */
-+			if (cpu_dai->driver->pcm_controls) {
-+				ret = soc_link_dai_pcm_controls(card, cpu_dai,
-+								rtd);
-+				if (ret < 0)
-+					return ret;
-+			}
-+			for (i = 0; i < rtd->num_codecs; i++) {
-+				struct snd_soc_dai *dai = rtd->codec_dais[i];
-+
-+				if (dai->driver->pcm_controls)
-+					ret = soc_link_dai_pcm_controls(card,
-+									dai,
-+									rtd);
-+				if (ret < 0)
-+					return ret;
-+			}
- 		} else {
- 			INIT_DELAYED_WORK(&rtd->delayed_work,
- 						codec2codec_close_delayed_work);
+ 	dev_set_drvdata(&pdev->dev, priv);
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
 -- 
 1.9.1
