@@ -1,40 +1,93 @@
-From: Enrico Mioso <mrkiko.rs@gmail.com>
-Subject: Re: Intel HDA audio on EEE PC 1101HGo
-Date: Tue, 22 Nov 2016 17:41:11 +0100 (CET)
-Message-ID: <alpine.LNX.2.20.1611221739110.1886@localhost.localdomain>
-References: <alpine.LNX.2.20.1504082130290.1715@localhost.localdomain>
- <s5hegntl2cs.wl-tiwai@suse.de>
- <alpine.LNX.2.20.1504111011090.1174@localhost.localdomain>
- <s5hvbh13mxe.wl-tiwai@suse.de>
- <alpine.LNX.2.20.1611221406590.1908@localhost.localdomain>
- <046CEDB3-19C3-406A-B094-6665E5FBC32B@gmail.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: wm_adsp: Firmware controls should be added as codec controls
+Date: Tue, 22 Nov 2016 16:58:57 +0000
+Message-ID: <1479833937-5238-2-git-send-email-rf@opensource.wolfsonmicro.com>
+References: <1479833937-5238-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id CF573266D22
- for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2016 17:41:17 +0100 (CET)
-Received: by mail-wm0-f68.google.com with SMTP id m203so4996439wma.3
- for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2016 08:41:17 -0800 (PST)
-In-Reply-To: <046CEDB3-19C3-406A-B094-6665E5FBC32B@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mrkiko Rs <mrkiko.rs@gmail.com>
-Cc: alsa-devel@alsa-project.org, kailang@realtek.com, Takashi Iwai <tiwai@suse.de>, hui.wang@canonical.com, david.henningsson@canonical.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1479833937-5238-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
-Now I am trying setting single_cmd to 1, lots of things overflow my logs as advertised, including this interesting message any time I cause a beep on the terminal:
-snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x170a00
+We were adding firmware controls as card controls (using
+snd_soc_add_codec_controls). The DSP is part of a specific codec so
+we should be adding them as codec controls. Adding as codec controls
+also means that if the codec has a name_prefix it will be added to
+the control name, which won't happen when adding as a card control.
 
-I know lots more infos would be needed... consider this just the result of a curious guy. Right now I don't know if I'll be ever able to work "well" on this system, regarding fixing those problems.
-Tank you for all,
-Enrico
+As that was the only use of the card pointer in struct wm_adsp it can
+be removed.
+
+For ADSP2 codecs a wm_adsp2_codec_probe() was added since the original
+control handling was written, and that's the logical place to store a
+pointer to the codec rather than delaying it until the codec is
+powered-up.
+
+For ADSP1 we don't use a codec_probe() stage so the codec pointer
+initialization replaces the original card pointer initialization in
+wm_adsp1_event().
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm_adsp.c | 8 ++++----
+ sound/soc/codecs/wm_adsp.h | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 7698273..6e6b9d8 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1131,7 +1131,7 @@ static int wmfw_add_ctl(struct wm_adsp *dsp, struct wm_coeff_ctl *ctl)
+ 		break;
+ 	}
+ 
+-	ret = snd_soc_add_card_controls(dsp->card, kcontrol, 1);
++	ret = snd_soc_add_codec_controls(dsp->codec, kcontrol, 1);
+ 	if (ret < 0)
+ 		goto err_kcontrol;
+ 
+@@ -2298,7 +2298,7 @@ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
+ 	int ret;
+ 	unsigned int val;
+ 
+-	dsp->card = codec->component.card;
++	dsp->codec = codec;
+ 
+ 	mutex_lock(&dsp->pwr_lock);
+ 
+@@ -2509,8 +2509,6 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ 	struct wm_adsp *dsp = &dsps[w->shift];
+ 	struct wm_coeff_ctl *ctl;
+ 
+-	dsp->card = codec->component.card;
+-
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+ 		wm_adsp2_set_dspclk(dsp, freq);
+@@ -2628,6 +2626,8 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 
+ int wm_adsp2_codec_probe(struct wm_adsp *dsp, struct snd_soc_codec *codec)
+ {
++	dsp->codec = codec;
++
+ 	wm_adsp2_init_debugfs(dsp, codec);
+ 
+ 	return snd_soc_add_codec_controls(codec,
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 362dd7c..3f7c8ee 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -44,7 +44,7 @@ struct wm_adsp {
+ 	int type;
+ 	struct device *dev;
+ 	struct regmap *regmap;
+-	struct snd_soc_card *card;
++	struct snd_soc_codec *codec;
+ 
+ 	int base;
+ 	int sysclk_reg;
+-- 
+1.9.1
