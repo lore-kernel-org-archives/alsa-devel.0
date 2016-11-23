@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: uda1380: Remove unused DAI ID defines"
-	to the asoc tree
-Date: Wed, 23 Nov 2016 12:38:17 +0000
-Message-ID: <E1c9Wob-0007Ck-8Q@debutante>
-References: <1479893411-32011-1-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: uda1380: Request GPIOs at bus probe
+	time" to the asoc tree
+Date: Wed, 23 Nov 2016 12:38:14 +0000
+Message-ID: <E1c9WoY-0007Br-AY@debutante>
+References: <1479893411-32011-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CF8B2666AC
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2016 13:38:31 +0100 (CET)
-In-Reply-To: <1479893411-32011-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 600D6266649
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2016 13:38:28 +0100 (CET)
+In-Reply-To: <1479893411-32011-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: uda1380: Remove unused DAI ID defines
+   ASoC: uda1380: Request GPIOs at bus probe time
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,117 @@ to this mail.
 Thanks,
 Mark
 
->From 4185d4be22a3fbf8e065437883ced195e692642b Mon Sep 17 00:00:00 2001
+>From 222e728ca29b5976accd1fc520a716d168ee2ca5 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Wed, 23 Nov 2016 10:30:10 +0100
-Subject: [PATCH] ASoC: uda1380: Remove unused DAI ID defines
+Date: Wed, 23 Nov 2016 10:30:11 +0100
+Subject: [PATCH] ASoC: uda1380: Request GPIOs at bus probe time
 
-The DAI ID defines are back from the time when DAIs were referenced by a
-numerical ID. These days a string is used for matching instead and the
-defines are unused. The last user of these defines was removed in commit
-f0fba2ad1b6b ("ASoC: multi-component - ASoC Multi-Component Support"). So
-remove the defines as well.
+Resources should be requested when the device is probed on the control bus
+rather then when the CODEC is bound to the sound card. This allows things
+like probe deferring and device managed allocations to work.
+
+So move the GPIO request calls from the CODEC probe to the bus probe and
+also make them managed along the way.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/uda1380.h | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/codecs/uda1380.c | 55 +++++++++++++++++-----------------------------
+ 1 file changed, 20 insertions(+), 35 deletions(-)
 
-diff --git a/sound/soc/codecs/uda1380.h b/sound/soc/codecs/uda1380.h
-index 942e3927c72b..69a326ac3c1a 100644
---- a/sound/soc/codecs/uda1380.h
-+++ b/sound/soc/codecs/uda1380.h
-@@ -72,8 +72,4 @@
- #define R22_SKIP_DCFIL	0x0002
- #define R23_AGC_EN	0x0001
+diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+index 8e52439a58fd..2918fdb95e58 100644
+--- a/sound/soc/codecs/uda1380.c
++++ b/sound/soc/codecs/uda1380.c
+@@ -698,25 +698,10 @@ static int uda1380_probe(struct snd_soc_codec *codec)
+ 	codec->hw_write = (hw_write_t)i2c_master_send;
+ 	codec->control_data = uda1380->control_data;
  
--#define UDA1380_DAI_DUPLEX	0 /* playback and capture on single DAI */
--#define UDA1380_DAI_PLAYBACK	1 /* playback DAI */
--#define UDA1380_DAI_CAPTURE	2 /* capture DAI */
+-	if (!pdata)
+-		return -EINVAL;
 -
- #endif /* _UDA1380_H */
+-	if (gpio_is_valid(pdata->gpio_reset)) {
+-		ret = gpio_request_one(pdata->gpio_reset, GPIOF_OUT_INIT_LOW,
+-				       "uda1380 reset");
+-		if (ret)
+-			goto err_out;
+-	}
+-
+-	if (gpio_is_valid(pdata->gpio_power)) {
+-		ret = gpio_request_one(pdata->gpio_power, GPIOF_OUT_INIT_LOW,
+-				   "uda1380 power");
+-		if (ret)
+-			goto err_free_gpio;
+-	} else {
++	if (!gpio_is_valid(pdata->gpio_power)) {
+ 		ret = uda1380_reset(codec);
+ 		if (ret)
+-			goto err_free_gpio;
++			return ret;
+ 	}
+ 
+ 	INIT_WORK(&uda1380->work, uda1380_flush_work);
+@@ -733,28 +718,10 @@ static int uda1380_probe(struct snd_soc_codec *codec)
+ 	}
+ 
+ 	return 0;
+-
+-err_free_gpio:
+-	if (gpio_is_valid(pdata->gpio_reset))
+-		gpio_free(pdata->gpio_reset);
+-err_out:
+-	return ret;
+-}
+-
+-/* power down chip */
+-static int uda1380_remove(struct snd_soc_codec *codec)
+-{
+-	struct uda1380_platform_data *pdata =codec->dev->platform_data;
+-
+-	gpio_free(pdata->gpio_reset);
+-	gpio_free(pdata->gpio_power);
+-
+-	return 0;
+ }
+ 
+ static struct snd_soc_codec_driver soc_codec_dev_uda1380 = {
+ 	.probe =	uda1380_probe,
+-	.remove =	uda1380_remove,
+ 	.read =		uda1380_read_reg_cache,
+ 	.write =	uda1380_write,
+ 	.set_bias_level = uda1380_set_bias_level,
+@@ -778,14 +745,32 @@ static struct snd_soc_codec_driver soc_codec_dev_uda1380 = {
+ static int uda1380_i2c_probe(struct i2c_client *i2c,
+ 			     const struct i2c_device_id *id)
+ {
++	struct uda1380_platform_data *pdata = i2c->dev.platform_data;
+ 	struct uda1380_priv *uda1380;
+ 	int ret;
+ 
++	if (!pdata)
++		return -EINVAL;
++
+ 	uda1380 = devm_kzalloc(&i2c->dev, sizeof(struct uda1380_priv),
+ 			       GFP_KERNEL);
+ 	if (uda1380 == NULL)
+ 		return -ENOMEM;
+ 
++	if (gpio_is_valid(pdata->gpio_reset)) {
++		ret = devm_gpio_request_one(&i2c->dev, pdata->gpio_reset,
++			GPIOF_OUT_INIT_LOW, "uda1380 reset");
++		if (ret)
++			return ret;
++	}
++
++	if (gpio_is_valid(pdata->gpio_power)) {
++		ret = devm_gpio_request_one(&i2c->dev, pdata->gpio_power,
++			GPIOF_OUT_INIT_LOW, "uda1380 power");
++		if (ret)
++			return ret;
++	}
++
+ 	i2c_set_clientdata(i2c, uda1380);
+ 	uda1380->control_data = i2c;
+ 
 -- 
 2.10.2
