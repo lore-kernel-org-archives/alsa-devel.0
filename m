@@ -1,19 +1,14 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 3/3] ASoC: Intel: atom: Add sysfs entry
- in order to store FW version
-Date: Wed, 23 Nov 2016 13:38:47 +0530
-Message-ID: <20161123080847.GH2698@localhost>
-References: <20161123074513.28661-1-sebastien.guiriec@intel.com>
- <20161123074513.28661-4-sebastien.guiriec@intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/2] ASoC: uda1380: Remove unused DAI ID defines
+Date: Wed, 23 Nov 2016 10:30:10 +0100
+Message-ID: <1479893411-32011-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 75667266731
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2016 08:59:17 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20161123074513.28661-4-sebastien.guiriec@intel.com>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A669266F37
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2016 10:30:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,44 +18,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 23, 2016 at 08:45:13AM +0100, Sebastien Guiriec wrote:
+The DAI ID defines are back from the time when DAIs were referenced by a
+numerical ID. These days a string is used for matching instead and the
+defines are unused. The last user of these defines was removed in commit
+f0fba2ad1b6b ("ASoC: multi-component - ASoC Multi-Component Support"). So
+remove the defines as well.
 
-> +static ssize_t firmware_version_show(struct device *dev,
-> +			    struct device_attribute *attr, char *buf)
-> +{
-> +	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
-> +
-> +	if (ctx->fw_version.type == 0 && ctx->fw_version.major == 0 &&
-> +	    ctx->fw_version.minor == 0 && ctx->fw_version.build == 0)
-> +		return sprintf(buf, "FW not yet loaded\n");
-> +	else
-> +		return sprintf(buf, "v%02x.%02x.%02x.%02x\n",
-> +			       ctx->fw_version.type, ctx->fw_version.major,
-> +			       ctx->fw_version.minor, ctx->fw_version.build);
-> +
-> +}
-> +
-> +DEVICE_ATTR_RO(firmware_version);
-> +
-> +static const struct attribute *sst_fw_version_attrs[] = {
-> +	&dev_attr_firmware_version.attr,
-> +	NULL,
-> +};
-> +
-> +static const struct attribute_group sst_fw_version_attr_group = {
-> +	.attrs = (struct attribute **)sst_fw_version_attrs,
-> +};
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/uda1380.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Hi Seb,
-
-With each sysfs file (which is an ABI) we are supposed to update
-Documentation/ABI/ as well, can you please add it
-
-Sorry should have told you in last rev :(
-
+diff --git a/sound/soc/codecs/uda1380.h b/sound/soc/codecs/uda1380.h
+index 942e392..69a326a 100644
+--- a/sound/soc/codecs/uda1380.h
++++ b/sound/soc/codecs/uda1380.h
+@@ -72,8 +72,4 @@
+ #define R22_SKIP_DCFIL	0x0002
+ #define R23_AGC_EN	0x0001
+ 
+-#define UDA1380_DAI_DUPLEX	0 /* playback and capture on single DAI */
+-#define UDA1380_DAI_PLAYBACK	1 /* playback DAI */
+-#define UDA1380_DAI_CAPTURE	2 /* capture DAI */
+-
+ #endif /* _UDA1380_H */
 -- 
-~Vinod
+2.1.4
