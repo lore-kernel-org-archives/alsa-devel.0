@@ -1,46 +1,63 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH 1/2] ALSA: hda - ignore the assoc and seq when comparing pin configurations
-Date: Wed, 23 Nov 2016 16:05:37 +0800
-Message-ID: <1479888338-5085-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: stable@vger.kernel.org, hui.wang@canonical.com
+From: Sebastien Guiriec <sebastien.guiriec@intel.com>
+Subject: [PATCH v3 1/3] ASoC: intel: atom: Add debug
+	information related to FW version
+Date: Wed, 23 Nov 2016 08:45:11 +0100
+Message-ID: <20161123074513.28661-2-sebastien.guiriec@intel.com>
+References: <20161123074513.28661-1-sebastien.guiriec@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B1A926674A
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2016 08:49:16 +0100 (CET)
+In-Reply-To: <20161123074513.28661-1-sebastien.guiriec@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com
+Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-More and more pin configurations have been adding to the pin quirk
-table, lots of them are only different from assoc and seq, but they
-all apply to the same QUIRK_FIXUP, if we don't compare assoc and seq
-when matching pin configurations, it will greatly reduce the pin
-quirk table size.
+This patch is adding debug information related to SST FW version.
 
-We have tested this change on a couple of Dell laptops, it worked
-well.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 ---
-No hurry to cleanup the existing pin quirk table, if this patch
-run well for a period of time, then I will do the cleanup little
-by little.
+ sound/soc/intel/atom/sst/sst_ipc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-If this patch introduce some problem, we just need to revert this
-patch.
- sound/pci/hda/hda_auto_parser.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
-index 7f57a14..4ad29f8 100644
---- a/sound/pci/hda/hda_auto_parser.c
-+++ b/sound/pci/hda/hda_auto_parser.c
-@@ -901,7 +901,7 @@ static bool pin_config_match(struct hda_codec *codec,
- 		for (; t_pins->nid; t_pins++) {
- 			if (t_pins->nid == nid) {
- 				found = 1;
--				if (t_pins->val == cfg)
-+				if ((t_pins->val & 0xfffffff0) == (cfg & 0xfffffff0))
- 					break;
- 				else if ((cfg & 0xf0000000) == 0x40000000 && (t_pins->val & 0xf0000000) == 0x40000000)
- 					break;
+diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
+index 8afa6fe..92ffeaa 100644
+--- a/sound/soc/intel/atom/sst/sst_ipc.c
++++ b/sound/soc/intel/atom/sst/sst_ipc.c
+@@ -236,6 +236,9 @@ static void process_fw_init(struct intel_sst_drv *sst_drv_ctx,
+ 		retval = init->result;
+ 		goto ret;
+ 	}
++	dev_info(sst_drv_ctx->dev, "FW Version %02x.%02x.%02x.%02x\n",
++			init->fw_version.type, init->fw_version.major,
++			init->fw_version.minor, init->fw_version.build);
+ 
+ ret:
+ 	sst_wake_up_block(sst_drv_ctx, retval, FW_DWNL_ID, 0 , NULL, 0);
 -- 
-1.9.1
+2.9.3
+
+---------------------------------------------------------------------
+Intel Corporation SAS (French simplified joint stock company)
+Registered headquarters: "Les Montalets"- 2, rue de Paris, 
+92196 Meudon Cedex, France
+Registration Number:  302 456 199 R.C.S. NANTERRE
+Capital: 4,572,000 Euros
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
