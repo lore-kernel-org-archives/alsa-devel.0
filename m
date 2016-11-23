@@ -1,61 +1,37 @@
-From: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Subject: [PATCH v3 0/3] ASoC: intel: atom: Add FW version
-	information
-Date: Wed, 23 Nov 2016 08:45:10 +0100
-Message-ID: <20161123074513.28661-1-sebastien.guiriec@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id DB45A266731
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2016 08:49:14 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com
-Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH 2/2] ALSA: hda - fix headset-mic problem on a Dell laptop
+Date: Wed, 23 Nov 2016 16:05:38 +0800
+Message-ID: <1479888338-5085-2-git-send-email-hui.wang@canonical.com>
+References: <1479888338-5085-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1479888338-5085-1-git-send-email-hui.wang@canonical.com>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch series is adding FW version information of SST. Version is both
-log as dev_info and sysfs entry.
+This group of new pins is not in the pin quirk table yet, adding
+them to the pin quirk table to fix the headset-mic problem.
 
-Update since V1:
-- sysfs entry is set to "FW not yet loaded" in case we do not have
-loaded the FW once
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Update since V2:
-- Add Vinod ack.
-   https://www.spinics.net/lists/alsa-devel/msg56521.html
-
-
-Sebastien Guiriec (3):
-  ASoC: intel: atom: Add debug information related to FW version
-  ASoC: Intel: atom: save FW version
-  ASoC: Intel: atom: Add sysfs entry in order to store FW version
-
- sound/soc/intel/atom/sst/sst.c     | 39 ++++++++++++++++++++++++++++++++++++++
- sound/soc/intel/atom/sst/sst.h     |  1 +
- sound/soc/intel/atom/sst/sst_ipc.c | 10 +++++++++-
- 3 files changed, 49 insertions(+), 1 deletion(-)
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 48b8701..64c22cc 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5917,6 +5917,9 @@ enum {
+ 		{0x12, 0x90a60180},
+ 		{0x14, 0x90170120},
+ 		{0x21, 0x02211030}),
++	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		{0x1b, 0x01011020},
++		{0x21, 0x02211010}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		{0x12, 0x90a60160},
+ 		{0x14, 0x90170120},
 -- 
-2.9.3
-
----------------------------------------------------------------------
-Intel Corporation SAS (French simplified joint stock company)
-Registered headquarters: "Les Montalets"- 2, rue de Paris, 
-92196 Meudon Cedex, France
-Registration Number:  302 456 199 R.C.S. NANTERRE
-Capital: 4,572,000 Euros
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+1.9.1
