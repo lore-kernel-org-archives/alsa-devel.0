@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ab8500: Remove explicit initialization
-	of driver callbacks to NULL" to the asoc tree
-Date: Wed, 23 Nov 2016 16:31:22 +0000
-Message-ID: <E1c9aSA-0006Wf-B3@debutante>
-References: <1479851388-17593-1-git-send-email-lars@metafoo.de>
+From: jeeja.kp@intel.com
+Subject: [PATCH 2/2] ASoC: Intel: Skylake: Removed the unused
+	I2S blob structure
+Date: Wed, 23 Nov 2016 22:46:27 +0530
+Message-ID: <1479921387-31248-2-git-send-email-jeeja.kp@intel.com>
+References: <1479921387-31248-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C0301266649
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2016 17:31:41 +0100 (CET)
-In-Reply-To: <1479851388-17593-1-git-send-email-lars@metafoo.de>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id B67AD266735
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2016 18:06:33 +0100 (CET)
+In-Reply-To: <1479921387-31248-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,67 +21,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, GuruprasadX Pawse <guruprasadx.pawse@intel.com>, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+From: GuruprasadX Pawse <guruprasadx.pawse@intel.com>
 
-   ASoC: ab8500: Remove explicit initialization of driver callbacks to NULL
+Now that I2S conflig blob structure is no longer in use, remove it.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 0a69516cd8b9878c4040c35294443ac18338febd Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Tue, 22 Nov 2016 22:49:48 +0100
-Subject: [PATCH] ASoC: ab8500: Remove explicit initialization of driver
- callbacks to NULL
-
-Fields of structs with global storage are implicitly initialized to 0/NULL,
-there is usually no need to do this explicitly.
-
-Removing the initialization of the legacy suspend/resume callback fields
-also gets the driver ready for the day when they are eventually removed.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: GuruprasadX Pawse <guruprasadx.pawse@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/codecs/ab8500-codec.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/intel/skylake/skl-topology.h | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index 935ff7cb71c5..312b2a11abb6 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -2587,8 +2587,6 @@ static struct platform_driver ab8500_codec_platform_driver = {
- 	},
- 	.probe		= ab8500_codec_driver_probe,
- 	.remove		= ab8500_codec_driver_remove,
--	.suspend	= NULL,
--	.resume		= NULL,
- };
- module_platform_driver(ab8500_codec_platform_driver);
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 3b962d8..08d3928 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -113,23 +113,6 @@ struct skl_cpr_gtw_cfg {
+ 	u32 config_data[1];
+ } __packed;
  
+-struct skl_i2s_config_blob {
+-	u32 gateway_attrib;
+-	u32 tdm_ts_group[8];
+-	u32 ssc0;
+-	u32 ssc1;
+-	u32 sscto;
+-	u32 sspsp;
+-	u32 sstsa;
+-	u32 ssrsa;
+-	u32 ssc2;
+-	u32 sspsp2;
+-	u32 ssc3;
+-	u32 ssioc;
+-	u32 mdivc;
+-	u32 mdivr;
+-} __packed;
+-
+ struct skl_dma_control {
+ 	u32 node_id;
+ 	u32 config_length;
 -- 
-2.10.2
+2.5.0
