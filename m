@@ -1,37 +1,46 @@
 From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH 2/2] ALSA: hda - fix headset-mic problem on a Dell laptop
-Date: Wed, 23 Nov 2016 16:05:38 +0800
-Message-ID: <1479888338-5085-2-git-send-email-hui.wang@canonical.com>
-References: <1479888338-5085-1-git-send-email-hui.wang@canonical.com>
+Subject: [PATCH 1/2] ALSA: hda - ignore the assoc and seq when comparing pin configurations
+Date: Wed, 23 Nov 2016 16:05:37 +0800
+Message-ID: <1479888338-5085-1-git-send-email-hui.wang@canonical.com>
 Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1479888338-5085-1-git-send-email-hui.wang@canonical.com>
 Sender: stable-owner@vger.kernel.org
 To: tiwai@suse.de, alsa-devel@alsa-project.org
 Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-This group of new pins is not in the pin quirk table yet, adding
-them to the pin quirk table to fix the headset-mic problem.
+More and more pin configurations have been adding to the pin quirk
+table, lots of them are only different from assoc and seq, but they
+all apply to the same QUIRK_FIXUP, if we don't compare assoc and seq
+when matching pin configurations, it will greatly reduce the pin
+quirk table size.
+
+We have tested this change on a couple of Dell laptops, it worked
+well.
 
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/pci/hda/patch_realtek.c | 3 +++
- 1 file changed, 3 insertions(+)
+No hurry to cleanup the existing pin quirk table, if this patch
+run well for a period of time, then I will do the cleanup little
+by little.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 48b8701..64c22cc 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5917,6 +5917,9 @@ enum {
- 		{0x12, 0x90a60180},
- 		{0x14, 0x90170120},
- 		{0x21, 0x02211030}),
-+	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x1b, 0x01011020},
-+		{0x21, 0x02211010}),
- 	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		{0x12, 0x90a60160},
- 		{0x14, 0x90170120},
+If this patch introduce some problem, we just need to revert this
+patch.
+ sound/pci/hda/hda_auto_parser.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+index 7f57a14..4ad29f8 100644
+--- a/sound/pci/hda/hda_auto_parser.c
++++ b/sound/pci/hda/hda_auto_parser.c
+@@ -901,7 +901,7 @@ static bool pin_config_match(struct hda_codec *codec,
+ 		for (; t_pins->nid; t_pins++) {
+ 			if (t_pins->nid == nid) {
+ 				found = 1;
+-				if (t_pins->val == cfg)
++				if ((t_pins->val & 0xfffffff0) == (cfg & 0xfffffff0))
+ 					break;
+ 				else if ((cfg & 0xf0000000) == 0x40000000 && (t_pins->val & 0xf0000000) == 0x40000000)
+ 					break;
 -- 
 1.9.1
