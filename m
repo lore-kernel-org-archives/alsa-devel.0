@@ -1,17 +1,27 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/2] ASoC: uda1380: Request GPIOs at bus probe
-	time
-Date: Wed, 23 Nov 2016 10:30:11 +0100
-Message-ID: <1479893411-32011-2-git-send-email-lars@metafoo.de>
-References: <1479893411-32011-1-git-send-email-lars@metafoo.de>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] crec: Add option to specify codec ID
+Date: Wed, 23 Nov 2016 10:21:58 +0000
+Message-ID: <1479896518.4317.7.camel@rf-debian.wolfsonmicro.main>
+References: <1479296649-18278-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <20161116130508.GZ3000@localhost>
+ <1479301675.18450.18.camel@rf-debian.wolfsonmicro.main>
+ <20161116134835.GW1575@localhost.localdomain>
+ <1479308001.18450.25.camel@rf-debian.wolfsonmicro.main>
+ <20161118035333.GG2698@localhost>
+ <1479463868.18450.29.camel@rf-debian.wolfsonmicro.main>
+ <20161118102903.GS2698@localhost>
+ <fe7dcb27-fda9-47bc-7766-2896e1954218@linux.intel.com>
+ <20161118161737.GB1575@localhost.localdomain>
+ <20161123034103.GZ2698@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A2E5266C4B
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2016 10:30:21 +0100 (CET)
-In-Reply-To: <1479893411-32011-1-git-send-email-lars@metafoo.de>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FFC6266B22
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2016 11:22:04 +0100 (CET)
+In-Reply-To: <20161123034103.GZ2698@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,115 +31,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Resources should be requested when the device is probed on the control bus
-rather then when the CODEC is bound to the sound card. This allows things
-like probe deferring and device managed allocations to work.
+On Wed, 2016-11-23 at 09:11 +0530, Vinod Koul wrote:
+> On Fri, Nov 18, 2016 at 04:17:37PM +0000, Charles Keepax wrote:
+> > On Fri, Nov 18, 2016 at 08:39:38AM -0600, Pierre-Louis Bossart wrote:
+> > > 
+> > > >>If you're debugging you may not care about the file format, you're
+> > > >>actually interested in the raw data you get from the codec so dumping
+> > > >>the output to a raw file would be useful even if you can't load that
+> > > >>file into a music player.
+> > > >
+> > > >While I agree with you on this, am worried that adding codecs may make
+> > > >people think that we can record mp3 file for exmaple, which is not the case.
+> > > >
+> > > >I think we can add pcm and bespoke as formats supported and allow any format to
+> > > >be dumped to stdio. That way it is pretty clear to people ...
+> > > 
+> > > Crec as is it is pretty useless with PCM only...If we added the profile
+> > > selection and things like bitrate information it'd be straightforward to
+> > > support elementary bitstreams like MP3 or AAC ADTS, you just dump the data
+> > > to a file. Things that require a header or MP4 integration would require
+> > > additional libraries, this is no longer 'tiny'.
+> > 
+> > What about this as a suggestion, if we remove the code that adds
+> > the WAV header. Then all the output from crecord is raw data and
+> > the addition of any headers or additional wrapping is up to the
+> > user. That keeps crecord 'tiny' and allows us to support all the
+> > formats in a consistent way so no one gets confused.
+> 
+> Naah, crecord is a utility. If you need to do above you have tinycompress
+> APIs to get the data and pack it the way you like.. You don't and shouldn't
+> use crecord for that.
+> 
 
-So move the GPIO request calls from the CODEC probe to the bus probe and
-also make them managed along the way.
+But you can't call APIs from a shell command line, it needs a tool. For
+debugging and testing we need a utility that can extract the raw data
+from a codec. It's not the case that you _must_ have this data wrapped
+in a file format just because normally it would be - for debugging the
+raw dump may be sufficient, you aren't necessarily only interested in
+playing it in a music app, for debugging you are likely to be more
+interested in the actual bytes and in fact it could be preferable to
+have it raw and not modified into a container file.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/uda1380.c | 55 +++++++++++++++++-----------------------------
- 1 file changed, 20 insertions(+), 35 deletions(-)
+> > We haven't actually used the WAV header stuff since the very
+> > early versions of our firmware that didn't use compression on the
+> > stream and actually did output PCM data and I don't think anyone
+> > else has ever used the compressed interface for PCM.
+> 
+> Thats fine by me. The only reason we have a WAV header is that we can pack
+> PCM files, for rest of the formats it become tricky as Pierre mention so lets
+> not go that road :)
+> 
 
-diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-index 8e52439..2918fdb 100644
---- a/sound/soc/codecs/uda1380.c
-+++ b/sound/soc/codecs/uda1380.c
-@@ -698,25 +698,10 @@ static int uda1380_probe(struct snd_soc_codec *codec)
- 	codec->hw_write = (hw_write_t)i2c_master_send;
- 	codec->control_data = uda1380->control_data;
- 
--	if (!pdata)
--		return -EINVAL;
--
--	if (gpio_is_valid(pdata->gpio_reset)) {
--		ret = gpio_request_one(pdata->gpio_reset, GPIOF_OUT_INIT_LOW,
--				       "uda1380 reset");
--		if (ret)
--			goto err_out;
--	}
--
--	if (gpio_is_valid(pdata->gpio_power)) {
--		ret = gpio_request_one(pdata->gpio_power, GPIOF_OUT_INIT_LOW,
--				   "uda1380 power");
--		if (ret)
--			goto err_free_gpio;
--	} else {
-+	if (!gpio_is_valid(pdata->gpio_power)) {
- 		ret = uda1380_reset(codec);
- 		if (ret)
--			goto err_free_gpio;
-+			return ret;
- 	}
- 
- 	INIT_WORK(&uda1380->work, uda1380_flush_work);
-@@ -733,28 +718,10 @@ static int uda1380_probe(struct snd_soc_codec *codec)
- 	}
- 
- 	return 0;
--
--err_free_gpio:
--	if (gpio_is_valid(pdata->gpio_reset))
--		gpio_free(pdata->gpio_reset);
--err_out:
--	return ret;
--}
--
--/* power down chip */
--static int uda1380_remove(struct snd_soc_codec *codec)
--{
--	struct uda1380_platform_data *pdata =codec->dev->platform_data;
--
--	gpio_free(pdata->gpio_reset);
--	gpio_free(pdata->gpio_power);
--
--	return 0;
- }
- 
- static struct snd_soc_codec_driver soc_codec_dev_uda1380 = {
- 	.probe =	uda1380_probe,
--	.remove =	uda1380_remove,
- 	.read =		uda1380_read_reg_cache,
- 	.write =	uda1380_write,
- 	.set_bias_level = uda1380_set_bias_level,
-@@ -778,14 +745,32 @@ static struct snd_soc_codec_driver soc_codec_dev_uda1380 = {
- static int uda1380_i2c_probe(struct i2c_client *i2c,
- 			     const struct i2c_device_id *id)
- {
-+	struct uda1380_platform_data *pdata = i2c->dev.platform_data;
- 	struct uda1380_priv *uda1380;
- 	int ret;
- 
-+	if (!pdata)
-+		return -EINVAL;
-+
- 	uda1380 = devm_kzalloc(&i2c->dev, sizeof(struct uda1380_priv),
- 			       GFP_KERNEL);
- 	if (uda1380 == NULL)
- 		return -ENOMEM;
- 
-+	if (gpio_is_valid(pdata->gpio_reset)) {
-+		ret = devm_gpio_request_one(&i2c->dev, pdata->gpio_reset,
-+			GPIOF_OUT_INIT_LOW, "uda1380 reset");
-+		if (ret)
-+			return ret;
-+	}
-+
-+	if (gpio_is_valid(pdata->gpio_power)) {
-+		ret = devm_gpio_request_one(&i2c->dev, pdata->gpio_power,
-+			GPIOF_OUT_INIT_LOW, "uda1380 power");
-+		if (ret)
-+			return ret;
-+	}
-+
- 	i2c_set_clientdata(i2c, uda1380);
- 	uda1380->control_data = i2c;
- 
--- 
-2.1.4
+I'm confused now about what you want.
+If we don't want to allow raw dumps in crecord we need another tool -
+say cdump - that can dump raw, but obviously it would be 99% identical
+to crecord except that it's blessed with the ability to dump raw, and I
+don't see the point of having two near-identical tools.
+
+The alternative is that Cirrus maintains its own branched version of
+tinycompress with useful tools but that doesn't seem like a sensible
+road to go down either.
