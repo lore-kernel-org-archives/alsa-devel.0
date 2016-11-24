@@ -1,123 +1,60 @@
-From: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Subject: [PATCH v4 3/4] ASoC: Intel: atom: Add sysfs entry in
-	order to store FW version
-Date: Thu, 24 Nov 2016 09:49:21 +0100
-Message-ID: <20161124084922.9623-4-sebastien.guiriec@intel.com>
-References: <20161124084922.9623-1-sebastien.guiriec@intel.com>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [patch] ASoC: sunxi: Uninitialized variable in probe()
+Date: Thu, 24 Nov 2016 11:29:19 +0100
+Message-ID: <20161124102919.mvmq4znw6juxucvn@lukather>
+References: <20161123222906.GA27895@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BC4F266A4E
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2016 09:53:25 +0100 (CET)
-In-Reply-To: <20161124084922.9623-1-sebastien.guiriec@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org
-Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="hyw7ylok4jr7lrmf"
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20161123222906.GA27895@mwanda>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch is adding a sysfs entry in order to be able to get
-access to SST FW version.
 
-Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/atom/sst/sst.c | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+--hyw7ylok4jr7lrmf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-index a4b458e..9d35706 100644
---- a/sound/soc/intel/atom/sst/sst.c
-+++ b/sound/soc/intel/atom/sst/sst.c
-@@ -27,6 +27,7 @@
- #include <linux/pm_qos.h>
- #include <linux/async.h>
- #include <linux/acpi.h>
-+#include <linux/sysfs.h>
- #include <sound/core.h>
- #include <sound/soc.h>
- #include <asm/platform_sst_audio.h>
-@@ -241,6 +242,32 @@ int sst_alloc_drv_context(struct intel_sst_drv **ctx,
- }
- EXPORT_SYMBOL_GPL(sst_alloc_drv_context);
- 
-+static ssize_t firmware_version_show(struct device *dev,
-+			    struct device_attribute *attr, char *buf)
-+{
-+	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
-+
-+	if (ctx->fw_version.type == 0 && ctx->fw_version.major == 0 &&
-+	    ctx->fw_version.minor == 0 && ctx->fw_version.build == 0)
-+		return sprintf(buf, "FW not yet loaded\n");
-+	else
-+		return sprintf(buf, "v%02x.%02x.%02x.%02x\n",
-+			       ctx->fw_version.type, ctx->fw_version.major,
-+			       ctx->fw_version.minor, ctx->fw_version.build);
-+
-+}
-+
-+DEVICE_ATTR_RO(firmware_version);
-+
-+static const struct attribute *sst_fw_version_attrs[] = {
-+	&dev_attr_firmware_version.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group sst_fw_version_attr_group = {
-+	.attrs = (struct attribute **)sst_fw_version_attrs,
-+};
-+
- int sst_context_init(struct intel_sst_drv *ctx)
- {
- 	int ret = 0, i;
-@@ -314,8 +341,19 @@ int sst_context_init(struct intel_sst_drv *ctx)
- 		dev_err(ctx->dev, "Firmware download failed:%d\n", ret);
- 		goto do_free_mem;
- 	}
-+
-+	ret = sysfs_create_group(&ctx->dev->kobj,
-+				 &sst_fw_version_attr_group);
-+	if (ret) {
-+		dev_err(ctx->dev,
-+			"Unable to create sysfs\n");
-+		goto err_sysfs;
-+	}
-+
- 	sst_register(ctx->dev);
- 	return 0;
-+err_sysfs:
-+	sysfs_remove_group(&ctx->dev->kobj, &sst_fw_version_attr_group);
- 
- do_free_mem:
- 	destroy_workqueue(ctx->post_msg_wq);
-@@ -329,6 +367,7 @@ void sst_context_cleanup(struct intel_sst_drv *ctx)
- 	pm_runtime_disable(ctx->dev);
- 	sst_unregister(ctx->dev);
- 	sst_set_fw_state_locked(ctx, SST_SHUTDOWN);
-+	sysfs_remove_group(&ctx->dev->kobj, &sst_fw_version_attr_group);
- 	flush_scheduled_work();
- 	destroy_workqueue(ctx->post_msg_wq);
- 	pm_qos_remove_request(ctx->qos);
--- 
-2.9.3
+On Thu, Nov 24, 2016 at 01:29:06AM +0300, Dan Carpenter wrote:
+> Oddly enough, my version of GCC misses this uninitialized variable.
+>=20
+> Fixes: ba2ff3027b5a ("ASoC: sunxi: Add support for A23/A33/H3 codec's ana=
+log path controls")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
----------------------------------------------------------------------
-Intel Corporation SAS (French simplified joint stock company)
-Registered headquarters: "Les Montalets"- 2, rue de Paris, 
-92196 Meudon Cedex, France
-Registration Number:  302 456 199 R.C.S. NANTERRE
-Capital: 4,572,000 Euros
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+Thanks!
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+
+--hyw7ylok4jr7lrmf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYNsD3AAoJEBx+YmzsjxAgOVcP+wRo8vBl24Zomfl04eg05gZx
+ZTrCNcPBBKw/Zkama/E7TRuaw3SBD+Pkxz9Ogq1LkDXCuTDS+SFkNcCH17wZaNib
+4leT3o2lr1LgOLiAhd801QhASObgxH4eNRUpFNS6koRyLxB0ZLn63GaE3ZQCk2gc
+o+Dj6Qdm7Oa6LeaCKIK/9drfxRagrqoLElctxNyvxKrKc4BFWCvue5Ej3a5rzSMS
+P1Nt3Ag6N8nbA5e6rDtFrEYFH6ecB3qHlu0rsbZKtHIlSN8ZlR5EXfSAqAcjrxci
+iZC1nU0Dp9f7Ps99p20+ecINHYDbTHgwZOaQMxwyvDFifRexP3Ks4Dov37y8coLH
+poKRpwTb/u4ULmk2H8kl8aAxllpIvtpU5jGZitHONP4KpepIRJBKDb7CoeQehzSR
+dormAxk4aKkWWPEq5zj9jtOuRZeWzOjt6XYGE0mtSUD/BgaapEgGyK1tIasTy1bn
+qCROr95Q3jaiFRhFu2g45Ioz1KfeuVmtbxVyM6w46/TjDlJmpn6Zenw2JrBzQwVZ
+1BR97hVqp3F4nA83HI9g9JDlCM/fPn1O0iygchZFTH3NlQeMHaa1PIZW/HF12P3g
+aAHmp3Jh4KX/nu+nbl0dOofnE9UxkXwsWt2aYTrSaGQnsIJgVZOtSqBKlNg18qdT
+JwhQyYnyyn+7KRBEpBCV
+=yh3l
+-----END PGP SIGNATURE-----
+
+--hyw7ylok4jr7lrmf--
