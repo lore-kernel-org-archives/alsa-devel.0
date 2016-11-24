@@ -1,73 +1,48 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [RFC v2 1/3] ASoC: core: allow DAI PCM controls
- bound to PCM device
-Date: Thu, 24 Nov 2016 10:52:59 +0100
-Message-ID: <c20f7a0f-0860-3d3b-f518-6a33661cd11e@st.com>
-References: <1479811996-2238-1-git-send-email-arnaud.pouliquen@st.com>
- <1479811996-2238-2-git-send-email-arnaud.pouliquen@st.com>
- <20161124045513.GS2698@localhost>
- <1f53b56a-719c-4711-59eb-ba11a42f3773@sakamocchi.jp>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ALSA: emu10k1: shift wrapping bug in snd_emu10k1_ptr_read()
+Date: Thu, 24 Nov 2016 14:23:33 +0300
+Message-ID: <20161124112333.GL17225@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 551AC2670CF
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2016 10:53:03 +0100 (CET)
-In-Reply-To: <1f53b56a-719c-4711-59eb-ba11a42f3773@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Vinod Koul <vinod.koul@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Vinod
+Static analysis says "size" is a number 0-63.  So we really want to be
+doing the shift as a u64 and not a int type.  Presumably "size" is never
+actually more than 31 otherwise the shift wrap would have been detected
+in testing.  The "mask" is a u32 so we only care about the bottom 32
+bits which also implies that "size" is less than 32.
 
-On 11/24/2016 06:14 AM, Takashi Sakamoto wrote:
+This code pre-dates git.  I haven't tested this change, it's to fix a
+static analysis warning.  I can't think that shift wrapping is the
+correct behavior so presumably this change is harmless but it definitely
+changes how the code works when size is larger than 32.
 
->> The same problem (same control names IIUC) existis on codec and SoC's, now
->> that both have DSP, we can have DSP "Volume control"...
->>
->> Would this solve that as well..?
-> 
-> No. It's not the aim of this patchset and out of its scope.
-> 
-> However, in fact, we should seek good solution for the issue of
-> 'conflict of identification information of control element set added by
-> ALSA SoC part automatically'.
->
-Solution only solves issue for DAIs that are statically linked to a PCM
-device on probe,
-In you case, link to PCM device is done during runtime through adpcm, right?
-Have you an example of a PCM control that you need to link to the PCM
-character device?
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
->>> Application should be able to address the control using the
->>> device field number, according to the PCM character device.
->>> This patch allows to link DAI PCM controls to the PCM device.
->>
->> why is that part required..? Is the problem being solved to address a
->> control uniquely or something else?
-It treats a PCM control uniquely,
- what do you have in mind when you say "or something else"?
->>
->>> During DAI_link probe, PCM controls are added after device field is forced
->>> to the PCM device number.
->>>
->>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
->>> ---
->>>  include/sound/soc-dai.h |  4 ++++
->>>  sound/soc/soc-core.c    | 37 +++++++++++++++++++++++++++++++++++++
->>>  2 files changed, 41 insertions(+)
-
-Regards,
-
-Arnaud
+diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
+index 706b4f0..fd204f3 100644
+--- a/sound/pci/emu10k1/io.c
++++ b/sound/pci/emu10k1/io.c
+@@ -46,7 +46,7 @@ unsigned int snd_emu10k1_ptr_read(struct snd_emu10k1 * emu, unsigned int reg, un
+ 		
+ 		size = (reg >> 24) & 0x3f;
+ 		offset = (reg >> 16) & 0x1f;
+-		mask = ((1 << size) - 1) << offset;
++		mask = ((1ULL << size) - 1) << offset;
+ 		
+ 		spin_lock_irqsave(&emu->emu_lock, flags);
+ 		outl(regptr, emu->port + PTR);
+@@ -81,7 +81,7 @@ void snd_emu10k1_ptr_write(struct snd_emu10k1 *emu, unsigned int reg, unsigned i
+ 
+ 		size = (reg >> 24) & 0x3f;
+ 		offset = (reg >> 16) & 0x1f;
+-		mask = ((1 << size) - 1) << offset;
++		mask = ((1ULL << size) - 1) << offset;
+ 		data = (data << offset) & mask;
+ 
+ 		spin_lock_irqsave(&emu->emu_lock, flags);
