@@ -1,48 +1,52 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: emu10k1: shift wrapping bug in snd_emu10k1_ptr_read()
-Date: Thu, 24 Nov 2016 14:23:33 +0300
-Message-ID: <20161124112333.GL17225@mwanda>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: [PATCH resend v3] ASoC: sun4i-codec: Add "Right Mixer"
+ to "Line Out Mono Diff." route
+Date: Thu, 24 Nov 2016 19:46:49 +0800
+Message-ID: <20161124114649.5188-1-wens@csie.org>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBM5G3PAQKGQEYLICJZY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Static analysis says "size" is a number 0-63.  So we really want to be
-doing the shift as a u64 and not a int type.  Presumably "size" is never
-actually more than 31 otherwise the shift wrap would have been detected
-in testing.  The "mask" is a u32 so we only care about the bottom 32
-bits which also implies that "size" is less than 32.
+The mono differential output for "Line Out" downmixes the stereo audio
+from the mixer, instead of just taking the left channel.
 
-This code pre-dates git.  I haven't tested this change, it's to fix a
-static analysis warning.  I can't think that shift wrapping is the
-correct behavior so presumably this change is harmless but it definitely
-changes how the code works when size is larger than 32.
+Add a route from the "Right Mixer" to "Line Out Source Playback Route"
+through the "Mono Differential" path, so DAPM doesn't shut down
+everything if the left channel is muted.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 0f909f98d7cb ("ASoC: sun4i-codec: Add support for A31 Line Out
+		      playback")
+Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+---
 
-diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
-index 706b4f0..fd204f3 100644
---- a/sound/pci/emu10k1/io.c
-+++ b/sound/pci/emu10k1/io.c
-@@ -46,7 +46,7 @@ unsigned int snd_emu10k1_ptr_read(struct snd_emu10k1 * emu, unsigned int reg, un
- 		
- 		size = (reg >> 24) & 0x3f;
- 		offset = (reg >> 16) & 0x1f;
--		mask = ((1 << size) - 1) << offset;
-+		mask = ((1ULL << size) - 1) << offset;
- 		
- 		spin_lock_irqsave(&emu->emu_lock, flags);
- 		outl(regptr, emu->port + PTR);
-@@ -81,7 +81,7 @@ void snd_emu10k1_ptr_write(struct snd_emu10k1 *emu, unsigned int reg, unsigned i
+This patch seems to have fallen through the cracks.
+
+---
+ sound/soc/sunxi/sun4i-codec.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 092fdcf6de95..b11b0ad4dfbe 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -1047,6 +1047,7 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
+ 	{ "Line Out Source Playback Route", "Stereo", "Left Mixer" },
+ 	{ "Line Out Source Playback Route", "Stereo", "Right Mixer" },
+ 	{ "Line Out Source Playback Route", "Mono Differential", "Left Mixer" },
++	{ "Line Out Source Playback Route", "Mono Differential", "Right Mixer" },
+ 	{ "LINEOUT", NULL, "Line Out Source Playback Route" },
  
- 		size = (reg >> 24) & 0x3f;
- 		offset = (reg >> 16) & 0x1f;
--		mask = ((1 << size) - 1) << offset;
-+		mask = ((1ULL << size) - 1) << offset;
- 		data = (data << offset) & mask;
- 
- 		spin_lock_irqsave(&emu->emu_lock, flags);
+ 	/* ADC Routes */
+-- 
+2.10.2
