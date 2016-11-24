@@ -1,51 +1,63 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 0/2] ASoC: cq93vc: enable compiling on COMPILE_TEST
-Date: Thu, 24 Nov 2016 08:48:09 +0000
-Message-ID: <20161124084809.GT10134@dell.home>
-References: <878ttafb84.wl%kuninori.morimoto.gx@renesas.com>
- <8760ndei6k.wl%kuninori.morimoto.gx@renesas.com>
- <87wpftcw2v.wl%kuninori.morimoto.gx@renesas.com>
+From: Sebastien Guiriec <sebastien.guiriec@intel.com>
+Subject: [PATCH v4 1/4] ASoC: intel: atom: Add debug
+	information related to FW version
+Date: Thu, 24 Nov 2016 09:49:19 +0100
+Message-ID: <20161124084922.9623-2-sebastien.guiriec@intel.com>
+References: <20161124084922.9623-1-sebastien.guiriec@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87wpftcw2v.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Arnd Bergmann <arnd@arndb.de>, anish kumar <yesanishhere@gmail.com>, Michael Trimarchi <michael@amarulasolutions.com>, Jacob Siverskog <jacob@teenage.engineering>, "Damien.Horsley" <Damien.Horsley@imgtec.com>, Jeremy McDermond <nh6z@nh6z.net>, Bard Liao <bardliao@realtek.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B34E266A4E
+ for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2016 09:53:22 +0100 (CET)
+In-Reply-To: <20161124084922.9623-1-sebastien.guiriec@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org
+Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 24 Nov 2016, Kuninori Morimoto wrote:
+This patch is adding debug information related to SST FW version.
 
-> 
-> Hi Lee, Mark
-> 
-> > > Current cq93vc sound codec indicates that it has
-> > > MFD_DAVINCI_VOICECODEC dependency, but it doesn't.
-> > > This means we can compile it from non DAVINCE environment
-> > > by COMPILE_TEST.
-> > > These patches solve this issue.
-> > > I tested this on ARCH=x86 + make allyesconfig, and
-> > > ARCH=ARM + shmobile_defconfig + COMPILE_TEST.
-> > > 
-> > > Kuninori Morimoto (2):
-> > >       mfd: davinci_voicecodec: tidyup header difinitions
-> > >       ASoC: cq93vc: remove MFD_DAVINCI_VOICECODEC dependency for CQ0093VC
-> > 
-> > I know [2/2] had Acked-by from Mark, and [1/2] was accepted by Lee.
-> > I could find [1/2] patch on linux-next tree today.
-> > But, I'm afraid I can't find [2/2] patch on linux-next.
-> 
-> I mean, I (and Mark too?) thought Lee can handle [2/2] patch,
-> but it seems not (?). So, my question is who can handle it ?
+Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/atom/sst/sst_ipc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I didn't see anything build-time dependant.
-
-Unless I missed something?
-
+diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
+index 8afa6fe..92ffeaa 100644
+--- a/sound/soc/intel/atom/sst/sst_ipc.c
++++ b/sound/soc/intel/atom/sst/sst_ipc.c
+@@ -236,6 +236,9 @@ static void process_fw_init(struct intel_sst_drv *sst_drv_ctx,
+ 		retval = init->result;
+ 		goto ret;
+ 	}
++	dev_info(sst_drv_ctx->dev, "FW Version %02x.%02x.%02x.%02x\n",
++			init->fw_version.type, init->fw_version.major,
++			init->fw_version.minor, init->fw_version.build);
+ 
+ ret:
+ 	sst_wake_up_block(sst_drv_ctx, retval, FW_DWNL_ID, 0 , NULL, 0);
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.9.3
+
+---------------------------------------------------------------------
+Intel Corporation SAS (French simplified joint stock company)
+Registered headquarters: "Les Montalets"- 2, rue de Paris, 
+92196 Meudon Cedex, France
+Registration Number:  302 456 199 R.C.S. NANTERRE
+Capital: 4,572,000 Euros
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
