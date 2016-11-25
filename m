@@ -1,7 +1,8 @@
 From: sutar.mounesh@gmail.com
-Subject: [PATCH] alsa-lib: update linked hw_ptr and appl_ptr
-Date: Fri, 25 Nov 2016 15:55:05 +0530
-Message-ID: <1480069505-16668-1-git-send-email-sutar.mounesh@gmail.com>
+Subject: [PATCH] alsa-lib: alsa dshare endless playback of
+	buffer
+Date: Fri, 25 Nov 2016 16:43:34 +0530
+Message-ID: <1480072414-17398-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -16,41 +17,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
+Cc: alsa-devel@alsa-project.org, Anant Agrawal <Anant_Agrawal@mentor.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Andreas Pape <apape@de.adit-jv.com>
+From: Anant Agrawal <Anant_Agrawal@mentor.com>
 
-Plugin file provides no private hw_ptr and appl_ptr but instead links them to the slave pcm.
-If the slave pcm itself changes its hw_ptr or app_prt this needs to be done in file plugin, too.
-Plugin 'plug' is such a candidate changing the hw_ptr and app_ptr in hw_params call dependent on the automatically inserted plugins.
-ALSA unfortunately has no support for automatically updating chained pointers.
-A notification on pointer change seems to be prepared inside the snd_pcm_set_ptr() routine via
-rbptr->changed(), but it is not (yet) implemented so that we need to care for it manually.
+On snd_pcm_drain() the slave PCM driven via plugin DSHARE is not filled with
+silence. Result is endless playback of buffer content until pcm is closed.
+In ALSA pcm dshare plugin, called do_silence method to fix the issue.
 
-Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+Signed-off-by: Anant Agrawal <Anant_Agrawal@mentor.com>
+
 ---
- src/pcm/pcm_file.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
-index fec76eb..1e3d35b 100644
---- a/src/pcm/pcm_file.c
-+++ b/src/pcm/pcm_file.c
-@@ -634,6 +634,14 @@ static int snd_pcm_file_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t * params)
- 			return err;
- 		}
- 	}
-+
-+	/* pointer may have changed - e.g if plug is used. */
-+	snd_pcm_unlink_hw_ptr(pcm, file->gen.slave);
-+	snd_pcm_unlink_appl_ptr(pcm, file->gen.slave);
-+
-+	snd_pcm_link_hw_ptr(pcm, file->gen.slave);
-+	snd_pcm_link_appl_ptr(pcm, file->gen.slave);
-+
- 	return 0;
- }
- 
--- 
-1.7.9.5
+--- alsa-lib-1.0.29.orig/src/pcm/pcm_dshare.c	2015-04-28 08:20:44.662995477 -0700
++++ alsa-lib-1.0.29/src/pcm/pcm_dshare.c	2015-04-28 08:20:59.603077419 -0700
+@@ -195,6 +195,7 @@
+ 		dshare->avail_max = avail;
+ 	if (avail >= pcm->stop_threshold) {
+ 		snd_timer_stop(dshare->timer);
++		do_silence(pcm);
+ 		gettimestamp(&dshare->trigger_tstamp, pcm->tstamp_type);
+ 		if (dshare->state == SND_PCM_STATE_RUNNING) {
+ 			dshare->state = SND_PCM_STATE_XRUN;
