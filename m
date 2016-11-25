@@ -1,100 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Removed the unused I2S
-	blob structure" to the asoc tree
-Date: Fri, 25 Nov 2016 13:09:52 +0000
-Message-ID: <E1cAGGG-00052v-RJ@debutante>
-References: <1479921387-31248-2-git-send-email-jeeja.kp@intel.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH v3] dbri: Fix compiler warning
+Date: Fri, 25 Nov 2016 11:54:47 -0500 (EST)
+Message-ID: <20161125.115447.967164976172058750.davem@davemloft.net>
+References: <1480019716-14225-1-git-send-email-tushar.n.dave@oracle.com>
+        <s5ha8cn9a9j.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E33202672AE
- for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2016 14:10:04 +0100 (CET)
-In-Reply-To: <1479921387-31248-2-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: GuruprasadX Pawse <guruprasadx.pawse@intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+Content-Type: Text/Plain; charset=iso-8859-7
+Content-Transfer-Encoding: base64
+Return-path: <sparclinux-owner@vger.kernel.org>
+In-Reply-To: <s5ha8cn9a9j.wl-tiwai@suse.de>
+Sender: sparclinux-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: tushar.n.dave@oracle.com, alsa-devel@alsa-project.org, thomas.tai@oracle.com, perex@perex.cz, sparclinux@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: Intel: Skylake: Removed the unused I2S blob structure
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 48458cc891232ba6cb0270ba03520f54536d590a Mon Sep 17 00:00:00 2001
-From: GuruprasadX Pawse <guruprasadx.pawse@intel.com>
-Date: Wed, 23 Nov 2016 22:46:27 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Removed the unused I2S blob structure
-
-Now that I2S conflig blob structure is no longer in use, remove it.
-
-Signed-off-by: GuruprasadX Pawse <guruprasadx.pawse@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-topology.h | 17 -----------------
- 1 file changed, 17 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 3b962d84bcb8..08d39280b07b 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -113,23 +113,6 @@ struct skl_cpr_gtw_cfg {
- 	u32 config_data[1];
- } __packed;
- 
--struct skl_i2s_config_blob {
--	u32 gateway_attrib;
--	u32 tdm_ts_group[8];
--	u32 ssc0;
--	u32 ssc1;
--	u32 sscto;
--	u32 sspsp;
--	u32 sstsa;
--	u32 ssrsa;
--	u32 ssc2;
--	u32 sspsp2;
--	u32 ssc3;
--	u32 ssioc;
--	u32 mdivc;
--	u32 mdivr;
--} __packed;
--
- struct skl_dma_control {
- 	u32 node_id;
- 	u32 config_length;
--- 
-2.10.2
+RnJvbTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPg0KRGF0ZTogRnJpLCAyNSBOb3YgMjAx
+NiAxMDozMDo0OCArMDEwMA0KDQo+IE9uIFRodSwgMjQgTm92IDIwMTYgMjE6MzU6MTYgKzAxMDAs
+DQo+IFR1c2hhciBEYXZlIHdyb3RlOg0KPj4gDQo+PiBkYnJpIHVzZXMgJ3UzMicgZm9yIGRtYSBo
+YW5kbGUgd2hpbGUgaW52b2tpbmcga2VybmVsIERNQSBBUElzLA0KPj4gaW5zdGVhZCBvZiB1c2lu
+ZyBkbWFfYWRkcl90LiBUaGlzIGhhc24ndCBjYXVzZWQgYW55ICdpbmNvbXBhdGlibGUNCj4+IHBv
+aW50ZXIgdHlwZScgd2FybmluZyBvbiBTUEFSQyBiZWNhdXNlIHVudGlsIG5vdyBkbWFfYWRkcl90
+IGlzIG9mDQo+PiB0eXBlIHUzMi4gSG93ZXZlciwgcmVjZW50IGNoYW5nZXMgaW4gU1BBUkMgQVRV
+IChpb21tdSkgZW5hYmxlZCA2NGJpdA0KPj4gRE1BIGFuZCB0aGVyZWZvcmUgZG1hX2FkZHJfdCBi
+ZWNhbWUgb2YgdHlwZSB1NjQuIFRoaXMgbWFrZXMNCj4+ICdpbmNvbXBhdGlibGUgcG9pbnRlciB0
+eXBlJyB3YXJuaW5ncyBpbmV2aXRhYmxlLg0KPj4gDQo+PiBlLmcuDQo+PiBzb3VuZC9zcGFyYy9k
+YnJpLmM6IEluIGZ1bmN0aW9uIKFzbmRfZGJyaV9jcmVhdGWiOg0KPj4gc291bmQvc3BhcmMvZGJy
+aS5jOjI1Mzg6IHdhcm5pbmc6IHBhc3NpbmcgYXJndW1lbnQgMyBvZiChZG1hX3phbGxvY19jb2hl
+cmVudKIgZnJvbSBpbmNvbXBhdGlibGUgcG9pbnRlciB0eXBlDQo+PiAuL2luY2x1ZGUvbGludXgv
+ZG1hLW1hcHBpbmcuaDo2MDg6IG5vdGU6IGV4cGVjdGVkIKFkbWFfYWRkcl90ICqiIGJ1dCBhcmd1
+bWVudCBpcyBvZiB0eXBlIKF1MzIgKqINCj4+IA0KPj4gRm9yIHRoZSByZWNvcmQsIGRicmkoc2J1
+cykgZHJpdmVyIG5ldmVyIGV4ZWN1dGVzIG9uIHN1bjR2LiBUaGVyZWZvcmUNCj4+IGV2ZW4gdGhv
+dWdoIDY0Yml0IERNQSBpcyBlbmFibGVkIG9uIFNQQVJDLCBkYnJpIGNvbnRpbnVlcyB0byB1c2UN
+Cj4+IGxlZ2FjeSBpb21tdSB0aGF0IGd1YXJhbnRlZXMgRE1BIGFkZHJlc3MgaXMgYWx3YXlzIGlu
+IDMyYml0IHJhbmdlLg0KPj4gDQo+PiBUaGlzIHBhdGNoIHJlc29sdmVzIGFib3ZlIGNvbXBpbGVy
+IHdhcm5pbmcuDQo+PiANCj4+IFNpZ25lZC1vZmYtYnk6IFR1c2hhciBEYXZlIDx0dXNoYXIubi5k
+YXZlQG9yYWNsZS5jb20+DQo+PiBSZXZpZXdlZC1ieTogdGhvbWFzIHRhaSA8dGhvbWFzLnRhaUBv
+cmFjbGUuY29tPg0KPj4gLS0tDQo+PiB2Mi0+djM6DQo+PiAtIFVzZSAlcGFkIHRvIHByaW50IGRt
+YV9hZGRyX3QuIENvbW1lbnQgYnkgVGFrYXNoaSBJd2FpLg0KPiANCj4gQXBwbGllZCBub3cuICBU
+aGFua3MhDQoNClRoaXMgcGF0Y2ggaXMgYWJzb2x1dGVseSBub3QgYXBwcm9wcmlhdGUgZm9yIHlv
+dXIgdHJlZSBUYWthc2hpLg0KDQpJdCdzIGZvciB0aGUgc3BhcmMgdHJlZSBiZWNhdXNlIHRoYXQn
+cyB3aGVyZSB0aGUgZG1hX2FkZHJfdA0KdHlwZSB3YXMgY2hhbmdlZCBmcm9tIDMyLWJpdCB0byA2
+NC1iaXQgb24gc3BhcmM2NCwgd2hpY2ggaXMNCndoYXQgY2F1c2VkIHRoaXMgYnVpbGQgd2Fybmlu
+Zy4NCg0KRGF2ZSwgcGxlYXNlIG9ubHkgc2VuZCBzcGFyYyBzcGVjaWZpYyBkcml2ZXIgcGF0Y2hl
+cyB0bw0Kc3BhcmNsaW51eEB2Z2VyLmtlcm5lbC5vcmcgaW4gdGhlIGZ1dHVyZSBzbyB3ZSBjYW4g
+YXZvaWQNCnRoaXMga2luZCBvZiBwcm9ibGVtLiAgVGhlIHdob2xlIGhhbmRsaW5nIG9mIHRoZSBk
+bWFfYWRkcl90DQp0eXBlIGNoYW5nZSBvbiBzcGFyYzY0IGhhcyBiZWVuIGEgcmVhbCBtZXNzLCBx
+dWl0ZSBob25lc3RseS4NCg==
