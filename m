@@ -1,774 +1,153 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH 02/10] ASoC: sunxi: Add support for A23/A33/H3 codec's
- analog path controls
-Date: Fri, 25 Nov 2016 13:45:37 +0800
-Message-ID: <CAGb2v66Zb9-UdimKDn5tq9UPRY7wBZNNCCn-52bf=evP914sPg@mail.gmail.com>
-References: <20161112064648.26779-1-wens@csie.org>
- <20161112064648.26779-3-wens@csie.org>
- <901011480052591@web1j.yandex.ru>
+From: "Anand, Jerome" <jerome.anand@intel.com>
+Subject: Re: [RFC PATCH v3 2/7] drm/i915: Add support for audio
+ driver notifications
+Date: Fri, 25 Nov 2016 05:51:00 +0000
+Message-ID: <F6867404AABACB4D8EC371BF802A4B7C14925ABA@fmsmsx101.amr.corp.intel.com>
+References: <20161124235548.16440-1-jerome.anand@intel.com>
+ <20161124235548.16440-3-jerome.anand@intel.com>
+ <20161124133240.GR31595@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <901011480052591@web1j.yandex.ru>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Icenowy Zheng <icenowy@aosc.xyz>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, Mylene Josserand <mylene.josserand@free-electrons.com>, Lee Jones <lee.jones@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20161124133240.GR31595@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "broonie@kernel.org" <broonie@kernel.org>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 25, 2016 at 1:43 PM, Icenowy Zheng <icenowy@aosc.xyz> wrote:
->
->
-> 12.11.2016, 14:57, "Chen-Yu Tsai" <wens@csie.org>:
->> The internal codec on A23/A33/H3 is split into 2 parts. The
->> analog path controls are routed through an embedded custom register
->> bus accessed through the PRCM block.
->>
->> The SoCs share a common set of inputs, outputs, and audio paths.
->> The following table lists the differences.
->>
->>     ----------------------------------------
->>     | Feature \ SoC | A23 | A33 | H3 |
->>     ----------------------------------------
->>     | Headphone | v | v | |
->>     ----------------------------------------
->>     | Line Out | | | v |
->>     ----------------------------------------
->>     | Phone In/Out | v | v | |
->>     ----------------------------------------
->>
->> Add an ASoC component driver for it. This should be tied to the codec
->> audio card as an auxiliary device. This patch adds the commont paths
->> and controls, and variant specific headphone out and line out.
->>
->> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
->> ---
->>  sound/soc/sunxi/Kconfig | 8 +
->>  sound/soc/sunxi/Makefile | 1 +
->>  sound/soc/sunxi/sun8i-codec-analog.c | 665 +++++++++++++++++++++++++++++++++++
->>  3 files changed, 674 insertions(+)
->>  create mode 100644 sound/soc/sunxi/sun8i-codec-analog.c
->>
->> diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
->> index dd2368297fd3..6c344e16aca4 100644
->> --- a/sound/soc/sunxi/Kconfig
->> +++ b/sound/soc/sunxi/Kconfig
->> @@ -9,6 +9,14 @@ config SND_SUN4I_CODEC
->>            Select Y or M to add support for the Codec embedded in the Allwinner
->>            A10 and affiliated SoCs.
->>
->> +config SND_SUN8I_CODEC_ANALOG
->> + tristate "Allwinner sun8i Codec Analog Controls Support"
->> + depends on MACH_SUN8I || COMPILE_TEST
->
-> sun50i-a64 has a similar (or the same?) codec to A33.
->
-
-I think the register offsets/fields were moved around again.
-Why does Allwinner always do that... :/
-
-ChenYu
-
->> + select REGMAP
->> + help
->> + Say Y or M if you want to add support for the analog controls for
->> + the codec embedded in newer Allwinner SoCs.
->> +
->>  config SND_SUN4I_I2S
->>          tristate "Allwinner A10 I2S Support"
->>          select SND_SOC_GENERIC_DMAENGINE_PCM
->> diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
->> index 604c7b842837..241c0df9ca0c 100644
->> --- a/sound/soc/sunxi/Makefile
->> +++ b/sound/soc/sunxi/Makefile
->> @@ -1,3 +1,4 @@
->>  obj-$(CONFIG_SND_SUN4I_CODEC) += sun4i-codec.o
->>  obj-$(CONFIG_SND_SUN4I_I2S) += sun4i-i2s.o
->>  obj-$(CONFIG_SND_SUN4I_SPDIF) += sun4i-spdif.o
->> +obj-$(CONFIG_SND_SUN8I_CODEC_ANALOG) += sun8i-codec-analog.o
->> diff --git a/sound/soc/sunxi/sun8i-codec-analog.c b/sound/soc/sunxi/sun8i-codec-analog.c
->> new file mode 100644
->> index 000000000000..222bbd440b1e
->> --- /dev/null
->> +++ b/sound/soc/sunxi/sun8i-codec-analog.c
->> @@ -0,0 +1,665 @@
->> +/*
->> + * This driver supports the analog controls for the internal codec
->> + * found in Allwinner's A31s, A23, A33 and H3 SoCs.
->> + *
->> + * Copyright 2016 Chen-Yu Tsai <wens@csie.org>
->> + *
->> + * This program is free software; you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License as published by
->> + * the Free Software Foundation; either version 2 of the License, or
->> + * (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
->> + * GNU General Public License for more details.
->> + */
->> +
->> +#include <linux/io.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/of.h>
->> +#include <linux/of_device.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/regmap.h>
->> +
->> +#include <sound/soc.h>
->> +#include <sound/soc-dapm.h>
->> +#include <sound/tlv.h>
->> +
->> +/* Codec analog control register offsets and bit fields */
->> +#define SUN8I_ADDA_HP_VOLC 0x00
->> +#define SUN8I_ADDA_HP_VOLC_PA_CLK_GATE 7
->> +#define SUN8I_ADDA_HP_VOLC_HP_VOL 0
->> +#define SUN8I_ADDA_LOMIXSC 0x01
->> +#define SUN8I_ADDA_LOMIXSC_MIC1 6
->> +#define SUN8I_ADDA_LOMIXSC_MIC2 5
->> +#define SUN8I_ADDA_LOMIXSC_PHONE 4
->> +#define SUN8I_ADDA_LOMIXSC_PHONEN 3
->> +#define SUN8I_ADDA_LOMIXSC_LINEINL 2
->> +#define SUN8I_ADDA_LOMIXSC_DACL 1
->> +#define SUN8I_ADDA_LOMIXSC_DACR 0
->> +#define SUN8I_ADDA_ROMIXSC 0x02
->> +#define SUN8I_ADDA_ROMIXSC_MIC1 6
->> +#define SUN8I_ADDA_ROMIXSC_MIC2 5
->> +#define SUN8I_ADDA_ROMIXSC_PHONE 4
->> +#define SUN8I_ADDA_ROMIXSC_PHONEP 3
->> +#define SUN8I_ADDA_ROMIXSC_LINEINR 2
->> +#define SUN8I_ADDA_ROMIXSC_DACR 1
->> +#define SUN8I_ADDA_ROMIXSC_DACL 0
->> +#define SUN8I_ADDA_DAC_PA_SRC 0x03
->> +#define SUN8I_ADDA_DAC_PA_SRC_DACAREN 7
->> +#define SUN8I_ADDA_DAC_PA_SRC_DACALEN 6
->> +#define SUN8I_ADDA_DAC_PA_SRC_RMIXEN 5
->> +#define SUN8I_ADDA_DAC_PA_SRC_LMIXEN 4
->> +#define SUN8I_ADDA_DAC_PA_SRC_RHPPAMUTE 3
->> +#define SUN8I_ADDA_DAC_PA_SRC_LHPPAMUTE 2
->> +#define SUN8I_ADDA_DAC_PA_SRC_RHPIS 1
->> +#define SUN8I_ADDA_DAC_PA_SRC_LHPIS 0
->> +#define SUN8I_ADDA_PHONEIN_GCTRL 0x04
->> +#define SUN8I_ADDA_PHONEIN_GCTRL_PHONEPG 4
->> +#define SUN8I_ADDA_PHONEIN_GCTRL_PHONENG 0
->> +#define SUN8I_ADDA_LINEIN_GCTRL 0x05
->> +#define SUN8I_ADDA_LINEIN_GCTRL_LINEING 4
->> +#define SUN8I_ADDA_LINEIN_GCTRL_PHONEG 0
->> +#define SUN8I_ADDA_MICIN_GCTRL 0x06
->> +#define SUN8I_ADDA_MICIN_GCTRL_MIC1G 4
->> +#define SUN8I_ADDA_MICIN_GCTRL_MIC2G 0
->> +#define SUN8I_ADDA_PAEN_HP_CTRL 0x07
->> +#define SUN8I_ADDA_PAEN_HP_CTRL_HPPAEN 7
->> +#define SUN8I_ADDA_PAEN_HP_CTRL_LINEOUTEN 7 /* H3 specific */
->> +#define SUN8I_ADDA_PAEN_HP_CTRL_HPCOM_FC 5
->> +#define SUN8I_ADDA_PAEN_HP_CTRL_COMPTEN 4
->> +#define SUN8I_ADDA_PAEN_HP_CTRL_PA_ANTI_POP_CTRL 2
->> +#define SUN8I_ADDA_PAEN_HP_CTRL_LTRNMUTE 1
->> +#define SUN8I_ADDA_PAEN_HP_CTRL_RTLNMUTE 0
->> +#define SUN8I_ADDA_PHONEOUT_CTRL 0x08
->> +#define SUN8I_ADDA_PHONEOUT_CTRL_PHONEOUTG 5
->> +#define SUN8I_ADDA_PHONEOUT_CTRL_PHONEOUTEN 4
->> +#define SUN8I_ADDA_PHONEOUT_CTRL_PHONEOUT_MIC1 3
->> +#define SUN8I_ADDA_PHONEOUT_CTRL_PHONEOUT_MIC2 2
->> +#define SUN8I_ADDA_PHONEOUT_CTRL_PHONEOUT_RMIX 1
->> +#define SUN8I_ADDA_PHONEOUT_CTRL_PHONEOUT_LMIX 0
->> +#define SUN8I_ADDA_PHONE_GAIN_CTRL 0x09
->> +#define SUN8I_ADDA_PHONE_GAIN_CTRL_LINEOUT_VOL 3
->> +#define SUN8I_ADDA_PHONE_GAIN_CTRL_PHONEPREG 0
->> +#define SUN8I_ADDA_MIC2G_CTRL 0x0a
->> +#define SUN8I_ADDA_MIC2G_CTRL_MIC2AMPEN 7
->> +#define SUN8I_ADDA_MIC2G_CTRL_MIC2BOOST 4
->> +#define SUN8I_ADDA_MIC2G_CTRL_LINEOUTLEN 3
->> +#define SUN8I_ADDA_MIC2G_CTRL_LINEOUTREN 2
->> +#define SUN8I_ADDA_MIC2G_CTRL_LINEOUTLSRC 1
->> +#define SUN8I_ADDA_MIC2G_CTRL_LINEOUTRSRC 0
->> +#define SUN8I_ADDA_MIC1G_MICBIAS_CTRL 0x0b
->> +#define SUN8I_ADDA_MIC1G_MICBIAS_CTRL_HMICBIASEN 7
->> +#define SUN8I_ADDA_MIC1G_MICBIAS_CTRL_MMICBIASEN 6
->> +#define SUN8I_ADDA_MIC1G_MICBIAS_CTRL_HMICBIAS_MODE 5
->> +#define SUN8I_ADDA_MIC1G_MICBIAS_CTRL_MIC1AMPEN 3
->> +#define SUN8I_ADDA_MIC1G_MICBIAS_CTRL_MIC1BOOST 0
->> +#define SUN8I_ADDA_LADCMIXSC 0x0c
->> +#define SUN8I_ADDA_LADCMIXSC_MIC1 6
->> +#define SUN8I_ADDA_LADCMIXSC_MIC2 5
->> +#define SUN8I_ADDA_LADCMIXSC_PHONE 4
->> +#define SUN8I_ADDA_LADCMIXSC_PHONEN 3
->> +#define SUN8I_ADDA_LADCMIXSC_LINEINL 2
->> +#define SUN8I_ADDA_LADCMIXSC_OMIXRL 1
->> +#define SUN8I_ADDA_LADCMIXSC_OMIXRR 0
->> +#define SUN8I_ADDA_RADCMIXSC 0x0d
->> +#define SUN8I_ADDA_RADCMIXSC_MIC1 6
->> +#define SUN8I_ADDA_RADCMIXSC_MIC2 5
->> +#define SUN8I_ADDA_RADCMIXSC_PHONE 4
->> +#define SUN8I_ADDA_RADCMIXSC_PHONEP 3
->> +#define SUN8I_ADDA_RADCMIXSC_LINEINR 2
->> +#define SUN8I_ADDA_RADCMIXSC_OMIXR 1
->> +#define SUN8I_ADDA_RADCMIXSC_OMIXL 0
->> +#define SUN8I_ADDA_RES 0x0e
->> +#define SUN8I_ADDA_RES_MMICBIAS_SEL 4
->> +#define SUN8I_ADDA_RES_PA_ANTI_POP_CTRL 0
->> +#define SUN8I_ADDA_ADC_AP_EN 0x0f
->> +#define SUN8I_ADDA_ADC_AP_EN_ADCREN 7
->> +#define SUN8I_ADDA_ADC_AP_EN_ADCLEN 6
->> +#define SUN8I_ADDA_ADC_AP_EN_ADCG 0
->> +
->> +/* Analog control register access bits */
->> +#define ADDA_PR 0x0 /* PRCM base + 0x1c0 */
->> +#define ADDA_PR_RESET BIT(28)
->> +#define ADDA_PR_WRITE BIT(24)
->> +#define ADDA_PR_ADDR_SHIFT 16
->> +#define ADDA_PR_ADDR_MASK GENMASK(4, 0)
->> +#define ADDA_PR_DATA_IN_SHIFT 8
->> +#define ADDA_PR_DATA_IN_MASK GENMASK(7, 0)
->> +#define ADDA_PR_DATA_OUT_SHIFT 0
->> +#define ADDA_PR_DATA_OUT_MASK GENMASK(7, 0)
->> +
->> +/* regmap access bits */
->> +static int adda_reg_read(void *context, unsigned int reg, unsigned int *val)
->> +{
->> + void __iomem *base = (void __iomem *)context;
->> + u32 tmp;
->> +
->> + /* De-assert reset */
->> + writel(readl(base) | ADDA_PR_RESET, base);
->> +
->> + /* Clear write bit */
->> + writel(readl(base) & ~ADDA_PR_WRITE, base);
->> +
->> + /* Set register address */
->> + tmp = readl(base);
->> + tmp &= ~(ADDA_PR_ADDR_MASK << ADDA_PR_ADDR_SHIFT);
->> + tmp |= (reg & ADDA_PR_ADDR_MASK) << ADDA_PR_ADDR_SHIFT;
->> + writel(tmp, base);
->> +
->> + /* Read back value */
->> + *val = readl(base) & ADDA_PR_DATA_OUT_MASK;
->> +
->> + return 0;
->> +}
->> +
->> +static int adda_reg_write(void *context, unsigned int reg, unsigned int val)
->> +{
->> + void __iomem *base = (void __iomem *)context;
->> + u32 tmp;
->> +
->> + /* De-assert reset */
->> + writel(readl(base) | ADDA_PR_RESET, base);
->> +
->> + /* Set register address */
->> + tmp = readl(base);
->> + tmp &= ~(ADDA_PR_ADDR_MASK << ADDA_PR_ADDR_SHIFT);
->> + tmp |= (reg & ADDA_PR_ADDR_MASK) << ADDA_PR_ADDR_SHIFT;
->> + writel(tmp, base);
->> +
->> + /* Set data to write */
->> + tmp = readl(base);
->> + tmp &= ~(ADDA_PR_DATA_IN_MASK << ADDA_PR_DATA_IN_SHIFT);
->> + tmp |= (val & ADDA_PR_DATA_IN_MASK) << ADDA_PR_DATA_IN_SHIFT;
->> + writel(tmp, base);
->> +
->> + /* Set write bit to signal a write */
->> + writel(readl(base) | ADDA_PR_WRITE, base);
->> +
->> + /* Clear write bit */
->> + writel(readl(base) & ~ADDA_PR_WRITE, base);
->> +
->> + return 0;
->> +}
->> +
->> +static const struct regmap_config adda_pr_regmap_cfg = {
->> + .name = "adda-pr",
->> + .reg_bits = 5,
->> + .reg_stride = 1,
->> + .val_bits = 8,
->> + .reg_read = adda_reg_read,
->> + .reg_write = adda_reg_write,
->> + .fast_io = true,
->> + .max_register = 24,
->> +};
->> +
->> +/* mixer controls */
->> +static const struct snd_kcontrol_new sun8i_codec_mixer_controls[] = {
->> + SOC_DAPM_DOUBLE_R("DAC Playback Switch",
->> + SUN8I_ADDA_LOMIXSC,
->> + SUN8I_ADDA_ROMIXSC,
->> + SUN8I_ADDA_LOMIXSC_DACL, 1, 0),
->> + SOC_DAPM_DOUBLE_R("DAC Reversed Playback Switch",
->> + SUN8I_ADDA_LOMIXSC,
->> + SUN8I_ADDA_ROMIXSC,
->> + SUN8I_ADDA_LOMIXSC_DACR, 1, 0),
->> + SOC_DAPM_DOUBLE_R("Line In Playback Switch",
->> + SUN8I_ADDA_LOMIXSC,
->> + SUN8I_ADDA_ROMIXSC,
->> + SUN8I_ADDA_LOMIXSC_LINEINL, 1, 0),
->> + SOC_DAPM_DOUBLE_R("Mic1 Playback Switch",
->> + SUN8I_ADDA_LOMIXSC,
->> + SUN8I_ADDA_ROMIXSC,
->> + SUN8I_ADDA_LOMIXSC_MIC1, 1, 0),
->> + SOC_DAPM_DOUBLE_R("Mic2 Playback Switch",
->> + SUN8I_ADDA_LOMIXSC,
->> + SUN8I_ADDA_ROMIXSC,
->> + SUN8I_ADDA_LOMIXSC_MIC2, 1, 0),
->> +};
->> +
->> +/* ADC mixer controls */
->> +static const struct snd_kcontrol_new sun8i_codec_adc_mixer_controls[] = {
->> + SOC_DAPM_DOUBLE_R("Mixer Capture Switch",
->> + SUN8I_ADDA_LADCMIXSC,
->> + SUN8I_ADDA_RADCMIXSC,
->> + SUN8I_ADDA_LADCMIXSC_OMIXRL, 1, 0),
->> + SOC_DAPM_DOUBLE_R("Mixer Reversed Capture Switch",
->> + SUN8I_ADDA_LADCMIXSC,
->> + SUN8I_ADDA_RADCMIXSC,
->> + SUN8I_ADDA_LADCMIXSC_OMIXRR, 1, 0),
->> + SOC_DAPM_DOUBLE_R("Line In Capture Switch",
->> + SUN8I_ADDA_LADCMIXSC,
->> + SUN8I_ADDA_RADCMIXSC,
->> + SUN8I_ADDA_LADCMIXSC_LINEINL, 1, 0),
->> + SOC_DAPM_DOUBLE_R("Mic1 Capture Switch",
->> + SUN8I_ADDA_LADCMIXSC,
->> + SUN8I_ADDA_RADCMIXSC,
->> + SUN8I_ADDA_LADCMIXSC_MIC1, 1, 0),
->> + SOC_DAPM_DOUBLE_R("Mic2 Capture Switch",
->> + SUN8I_ADDA_LADCMIXSC,
->> + SUN8I_ADDA_RADCMIXSC,
->> + SUN8I_ADDA_LADCMIXSC_MIC2, 1, 0),
->> +};
->> +
->> +/* volume / mute controls */
->> +static const DECLARE_TLV_DB_SCALE(sun8i_codec_out_mixer_pregain_scale,
->> + -450, 150, 0);
->> +static const DECLARE_TLV_DB_RANGE(sun8i_codec_mic_gain_scale,
->> + 0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
->> + 1, 7, TLV_DB_SCALE_ITEM(2400, 300, 0),
->> +);
->> +
->> +static const struct snd_kcontrol_new sun8i_codec_common_controls[] = {
->> + /* Mixer pre-gains */
->> + SOC_SINGLE_TLV("Line In Playback Volume", SUN8I_ADDA_LINEIN_GCTRL,
->> + SUN8I_ADDA_LINEIN_GCTRL_LINEING,
->> + 0x7, 0, sun8i_codec_out_mixer_pregain_scale),
->> + SOC_SINGLE_TLV("Mic1 Playback Volume", SUN8I_ADDA_MICIN_GCTRL,
->> + SUN8I_ADDA_MICIN_GCTRL_MIC1G,
->> + 0x7, 0, sun8i_codec_out_mixer_pregain_scale),
->> + SOC_SINGLE_TLV("Mic2 Playback Volume",
->> + SUN8I_ADDA_MICIN_GCTRL, SUN8I_ADDA_MICIN_GCTRL_MIC2G,
->> + 0x7, 0, sun8i_codec_out_mixer_pregain_scale),
->> +
->> + /* Microphone Amp boost gains */
->> + SOC_SINGLE_TLV("Mic1 Boost Volume", SUN8I_ADDA_MIC1G_MICBIAS_CTRL,
->> + SUN8I_ADDA_MIC1G_MICBIAS_CTRL_MIC1BOOST, 0x7, 0,
->> + sun8i_codec_mic_gain_scale),
->> + SOC_SINGLE_TLV("Mic2 Boost Volume", SUN8I_ADDA_MIC2G_CTRL,
->> + SUN8I_ADDA_MIC2G_CTRL_MIC2BOOST, 0x7, 0,
->> + sun8i_codec_mic_gain_scale),
->> +
->> + /* ADC */
->> + SOC_SINGLE_TLV("ADC Gain Capture Volume", SUN8I_ADDA_ADC_AP_EN,
->> + SUN8I_ADDA_ADC_AP_EN_ADCG, 0x7, 0,
->> + sun8i_codec_out_mixer_pregain_scale),
->> +};
->> +
->> +static const struct snd_soc_dapm_widget sun8i_codec_common_widgets[] = {
->> + /* ADC */
->> + SND_SOC_DAPM_ADC("Left ADC", NULL, SUN8I_ADDA_ADC_AP_EN,
->> + SUN8I_ADDA_ADC_AP_EN_ADCLEN, 0),
->> + SND_SOC_DAPM_ADC("Right ADC", NULL, SUN8I_ADDA_ADC_AP_EN,
->> + SUN8I_ADDA_ADC_AP_EN_ADCREN, 0),
->> +
->> + /* DAC */
->> + SND_SOC_DAPM_DAC("Left DAC", NULL, SUN8I_ADDA_DAC_PA_SRC,
->> + SUN8I_ADDA_DAC_PA_SRC_DACALEN, 0),
->> + SND_SOC_DAPM_DAC("Right DAC", NULL, SUN8I_ADDA_DAC_PA_SRC,
->> + SUN8I_ADDA_DAC_PA_SRC_DACAREN, 0),
->> + /*
->> + * Due to this component and the codec belonging to separate DAPM
->> + * contexts, we need to manually link the above widgets to their
->> + * stream widgets at the card level.
->> + */
->> +
->> + /* Line In */
->> + SND_SOC_DAPM_INPUT("LINEIN"),
->> +
->> + /* Microphone inputs */
->> + SND_SOC_DAPM_INPUT("MIC1"),
->> + SND_SOC_DAPM_INPUT("MIC2"),
->> +
->> + /* Microphone Bias */
->> + SND_SOC_DAPM_SUPPLY("MBIAS", SUN8I_ADDA_MIC1G_MICBIAS_CTRL,
->> + SUN8I_ADDA_MIC1G_MICBIAS_CTRL_MMICBIASEN,
->> + 0, NULL, 0),
->> +
->> + /* Mic input path */
->> + SND_SOC_DAPM_PGA("Mic1 Amplifier", SUN8I_ADDA_MIC1G_MICBIAS_CTRL,
->> + SUN8I_ADDA_MIC1G_MICBIAS_CTRL_MIC1AMPEN, 0, NULL, 0),
->> + SND_SOC_DAPM_PGA("Mic2 Amplifier", SUN8I_ADDA_MIC2G_CTRL,
->> + SUN8I_ADDA_MIC2G_CTRL_MIC2AMPEN, 0, NULL, 0),
->> +
->> + /* Mixers */
->> + SND_SOC_DAPM_MIXER("Left Mixer", SUN8I_ADDA_DAC_PA_SRC,
->> + SUN8I_ADDA_DAC_PA_SRC_LMIXEN, 0,
->> + sun8i_codec_mixer_controls,
->> + ARRAY_SIZE(sun8i_codec_mixer_controls)),
->> + SND_SOC_DAPM_MIXER("Right Mixer", SUN8I_ADDA_DAC_PA_SRC,
->> + SUN8I_ADDA_DAC_PA_SRC_RMIXEN, 0,
->> + sun8i_codec_mixer_controls,
->> + ARRAY_SIZE(sun8i_codec_mixer_controls)),
->> + SND_SOC_DAPM_MIXER("Left ADC Mixer", SUN8I_ADDA_ADC_AP_EN,
->> + SUN8I_ADDA_ADC_AP_EN_ADCLEN, 0,
->> + sun8i_codec_adc_mixer_controls,
->> + ARRAY_SIZE(sun8i_codec_adc_mixer_controls)),
->> + SND_SOC_DAPM_MIXER("Right ADC Mixer", SUN8I_ADDA_ADC_AP_EN,
->> + SUN8I_ADDA_ADC_AP_EN_ADCREN, 0,
->> + sun8i_codec_adc_mixer_controls,
->> + ARRAY_SIZE(sun8i_codec_adc_mixer_controls)),
->> +};
->> +
->> +static const struct snd_soc_dapm_route sun8i_codec_common_routes[] = {
->> + /* Microphone Routes */
->> + { "Mic1 Amplifier", NULL, "MIC1"},
->> + { "Mic2 Amplifier", NULL, "MIC2"},
->> +
->> + /* Left Mixer Routes */
->> + { "Left Mixer", "DAC Playback Switch", "Left DAC" },
->> + { "Left Mixer", "DAC Reversed Playback Switch", "Right DAC" },
->> + { "Left Mixer", "Line In Playback Switch", "LINEIN" },
->> + { "Left Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
->> + { "Left Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
->> +
->> + /* Right Mixer Routes */
->> + { "Right Mixer", "DAC Playback Switch", "Right DAC" },
->> + { "Right Mixer", "DAC Reversed Playback Switch", "Left DAC" },
->> + { "Right Mixer", "Line In Playback Switch", "LINEIN" },
->> + { "Right Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
->> + { "Right Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
->> +
->> + /* Left ADC Mixer Routes */
->> + { "Left ADC Mixer", "Mixer Capture Switch", "Left Mixer" },
->> + { "Left ADC Mixer", "Mixer Reversed Capture Switch", "Right Mixer" },
->> + { "Left ADC Mixer", "Line In Capture Switch", "LINEIN" },
->> + { "Left ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
->> + { "Left ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
->> +
->> + /* Right ADC Mixer Routes */
->> + { "Right ADC Mixer", "Mixer Capture Switch", "Right Mixer" },
->> + { "Right ADC Mixer", "Mixer Reversed Capture Switch", "Left Mixer" },
->> + { "Right ADC Mixer", "Line In Capture Switch", "LINEIN" },
->> + { "Right ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
->> + { "Right ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
->> +
->> + /* ADC Routes */
->> + { "Left ADC", NULL, "Left ADC Mixer" },
->> + { "Right ADC", NULL, "Right ADC Mixer" },
->> +};
->> +
->> +/* headphone specific controls, widgets, and routes */
->> +static const DECLARE_TLV_DB_SCALE(sun8i_codec_hp_vol_scale, -6300, 100, 1);
->> +static const struct snd_kcontrol_new sun8i_codec_headphone_controls[] = {
->> + SOC_SINGLE_TLV("Headphone Playback Volume",
->> + SUN8I_ADDA_HP_VOLC,
->> + SUN8I_ADDA_HP_VOLC_HP_VOL, 0x3f, 0,
->> + sun8i_codec_hp_vol_scale),
->> + SOC_DOUBLE("Headphone Playback Switch",
->> + SUN8I_ADDA_DAC_PA_SRC,
->> + SUN8I_ADDA_DAC_PA_SRC_LHPPAMUTE,
->> + SUN8I_ADDA_DAC_PA_SRC_RHPPAMUTE, 1, 0),
->> +};
->> +
->> +static const char * const sun8i_codec_hp_src_enum_text[] = {
->> + "DAC", "Mixer",
->> +};
->> +
->> +static SOC_ENUM_DOUBLE_DECL(sun8i_codec_hp_src_enum,
->> + SUN8I_ADDA_DAC_PA_SRC,
->> + SUN8I_ADDA_DAC_PA_SRC_LHPIS,
->> + SUN8I_ADDA_DAC_PA_SRC_RHPIS,
->> + sun8i_codec_hp_src_enum_text);
->> +
->> +static const struct snd_kcontrol_new sun8i_codec_hp_src[] = {
->> + SOC_DAPM_ENUM("Headphone Source Playback Route",
->> + sun8i_codec_hp_src_enum),
->> +};
->> +
->> +static const struct snd_soc_dapm_widget sun8i_codec_headphone_widgets[] = {
->> + SND_SOC_DAPM_MUX("Headphone Source Playback Route",
->> + SND_SOC_NOPM, 0, 0, sun8i_codec_hp_src),
->> + SND_SOC_DAPM_OUT_DRV("Headphone Amp", SUN8I_ADDA_PAEN_HP_CTRL,
->> + SUN8I_ADDA_PAEN_HP_CTRL_HPPAEN, 0, NULL, 0),
->> + SND_SOC_DAPM_SUPPLY("HPCOM Protection", SUN8I_ADDA_PAEN_HP_CTRL,
->> + SUN8I_ADDA_PAEN_HP_CTRL_COMPTEN, 0, NULL, 0),
->> + SND_SOC_DAPM_REG(snd_soc_dapm_supply, "HPCOM", SUN8I_ADDA_PAEN_HP_CTRL,
->> + SUN8I_ADDA_PAEN_HP_CTRL_HPCOM_FC, 0x3, 0x3, 0),
->> + SND_SOC_DAPM_OUTPUT("HP"),
->> +};
->> +
->> +static const struct snd_soc_dapm_route sun8i_codec_headphone_routes[] = {
->> + { "Headphone Source Playback Route", "DAC", "Left DAC" },
->> + { "Headphone Source Playback Route", "DAC", "Right DAC" },
->> + { "Headphone Source Playback Route", "Mixer", "Left Mixer" },
->> + { "Headphone Source Playback Route", "Mixer", "Right Mixer" },
->> + { "Headphone Amp", NULL, "Headphone Source Playback Route" },
->> + { "HPCOM", NULL, "HPCOM Protection" },
->> + { "HP", NULL, "Headphone Amp" },
->> +};
->> +
->> +static int sun8i_codec_add_headphone(struct snd_soc_component *cmpnt)
->> +{
->> + struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(cmpnt);
->> + struct device *dev = cmpnt->dev;
->> + int ret;
->> +
->> + ret = snd_soc_add_component_controls(cmpnt,
->> + sun8i_codec_headphone_controls,
->> + ARRAY_SIZE(sun8i_codec_headphone_controls));
->> + if (ret) {
->> + dev_err(dev, "Failed to add Headphone controls: %d\n", ret);
->> + return ret;
->> + }
->> +
->> + ret = snd_soc_dapm_new_controls(dapm, sun8i_codec_headphone_widgets,
->> + ARRAY_SIZE(sun8i_codec_headphone_widgets));
->> + if (ret) {
->> + dev_err(dev, "Failed to add Headphone DAPM widgets: %d\n", ret);
->> + return ret;
->> + }
->> +
->> + ret = snd_soc_dapm_add_routes(dapm, sun8i_codec_headphone_routes,
->> + ARRAY_SIZE(sun8i_codec_headphone_routes));
->> + if (ret) {
->> + dev_err(dev, "Failed to add Headphone DAPM routes: %d\n", ret);
->> + return ret;
->> + }
->> +
->> + return 0;
->> +}
->> +
->> +/* hmic specific widget */
->> +static const struct snd_soc_dapm_widget sun8i_codec_hmic_widgets[] = {
->> + SND_SOC_DAPM_SUPPLY("HBIAS", SUN8I_ADDA_MIC1G_MICBIAS_CTRL,
->> + SUN8I_ADDA_MIC1G_MICBIAS_CTRL_HMICBIASEN,
->> + 0, NULL, 0),
->> +};
->> +
->> +static int sun8i_codec_add_hmic(struct snd_soc_component *cmpnt)
->> +{
->> + struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(cmpnt);
->> + struct device *dev = cmpnt->dev;
->> + int ret;
->> +
->> + ret = snd_soc_dapm_new_controls(dapm, sun8i_codec_hmic_widgets,
->> + ARRAY_SIZE(sun8i_codec_hmic_widgets));
->> + if (ret)
->> + dev_err(dev, "Failed to add Mic3 DAPM widgets: %d\n", ret);
->> +
->> + return ret;
->> +}
->> +
->> +/* line out specific controls, widgets and routes */
->> +static const DECLARE_TLV_DB_RANGE(sun8i_codec_lineout_vol_scale,
->> + 0, 1, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
->> + 2, 31, TLV_DB_SCALE_ITEM(-4350, 150, 0),
->> +);
->> +static const struct snd_kcontrol_new sun8i_codec_lineout_controls[] = {
->> + SOC_SINGLE_TLV("Line Out Playback Volume",
->> + SUN8I_ADDA_PHONE_GAIN_CTRL,
->> + SUN8I_ADDA_PHONE_GAIN_CTRL_LINEOUT_VOL, 0x1f, 0,
->> + sun8i_codec_lineout_vol_scale),
->> + SOC_DOUBLE("Line Out Playback Switch",
->> + SUN8I_ADDA_MIC2G_CTRL,
->> + SUN8I_ADDA_MIC2G_CTRL_LINEOUTLEN,
->> + SUN8I_ADDA_MIC2G_CTRL_LINEOUTREN, 1, 0),
->> +};
->> +
->> +static const char * const sun8i_codec_lineout_src_enum_text[] = {
->> + "Stereo", "Mono Differential",
->> +};
->> +
->> +static SOC_ENUM_DOUBLE_DECL(sun8i_codec_lineout_src_enum,
->> + SUN8I_ADDA_MIC2G_CTRL,
->> + SUN8I_ADDA_MIC2G_CTRL_LINEOUTLSRC,
->> + SUN8I_ADDA_MIC2G_CTRL_LINEOUTRSRC,
->> + sun8i_codec_lineout_src_enum_text);
->> +
->> +static const struct snd_kcontrol_new sun8i_codec_lineout_src[] = {
->> + SOC_DAPM_ENUM("Line Out Source Playback Route",
->> + sun8i_codec_lineout_src_enum),
->> +};
->> +
->> +static const struct snd_soc_dapm_widget sun8i_codec_lineout_widgets[] = {
->> + SND_SOC_DAPM_MUX("Line Out Source Playback Route",
->> + SND_SOC_NOPM, 0, 0, sun8i_codec_lineout_src),
->> + /* It is unclear if this is a buffer or gate, model it as a supply */
->> + SND_SOC_DAPM_SUPPLY("Line Out Enable", SUN8I_ADDA_PAEN_HP_CTRL,
->> + SUN8I_ADDA_PAEN_HP_CTRL_LINEOUTEN, 0, NULL, 0),
->> + SND_SOC_DAPM_OUTPUT("LINEOUT"),
->> +};
->> +
->> +static const struct snd_soc_dapm_route sun8i_codec_lineout_routes[] = {
->> + { "Line Out Source Playback Route", "Stereo", "Left Mixer" },
->> + { "Line Out Source Playback Route", "Stereo", "Right Mixer" },
->> + { "Line Out Source Playback Route", "Mono Differential", "Left Mixer" },
->> + { "Line Out Source Playback Route", "Mono Differential", "Right Mixer" },
->> + { "LINEOUT", NULL, "Line Out Source Playback Route" },
->> + { "LINEOUT", NULL, "Line Out Enable", },
->> +};
->> +
->> +static int sun8i_codec_add_lineout(struct snd_soc_component *cmpnt)
->> +{
->> + struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(cmpnt);
->> + struct device *dev = cmpnt->dev;
->> + int ret;
->> +
->> + ret = snd_soc_add_component_controls(cmpnt,
->> + sun8i_codec_lineout_controls,
->> + ARRAY_SIZE(sun8i_codec_lineout_controls));
->> + if (ret) {
->> + dev_err(dev, "Failed to add Line Out controls: %d\n", ret);
->> + return ret;
->> + }
->> +
->> + ret = snd_soc_dapm_new_controls(dapm, sun8i_codec_lineout_widgets,
->> + ARRAY_SIZE(sun8i_codec_lineout_widgets));
->> + if (ret) {
->> + dev_err(dev, "Failed to add Line Out DAPM widgets: %d\n", ret);
->> + return ret;
->> + }
->> +
->> + ret = snd_soc_dapm_add_routes(dapm, sun8i_codec_lineout_routes,
->> + ARRAY_SIZE(sun8i_codec_lineout_routes));
->> + if (ret) {
->> + dev_err(dev, "Failed to add Line Out DAPM routes: %d\n", ret);
->> + return ret;
->> + }
->> +
->> + return 0;
->> +}
->> +
->> +struct sun8i_codec_analog_quirks {
->> + bool has_headphone;
->> + bool has_hmic;
->> + bool has_lineout;
->> +};
->> +
->> +static const struct sun8i_codec_analog_quirks sun8i_a23_quirks = {
->> + .has_headphone = true,
->> + .has_hmic = true,
->> +};
->> +
->> +static const struct sun8i_codec_analog_quirks sun8i_h3_quirks = {
->> + .has_lineout = true,
->> +};
->> +
->> +static int sun8i_codec_analog_cmpnt_probe(struct snd_soc_component *cmpnt)
->> +{
->> + struct device *dev = cmpnt->dev;
->> + const struct sun8i_codec_analog_quirks *quirks;
->> + int ret;
->> +
->> + /*
->> + * This would never return NULL unless someone directly registers a
->> + * platform device matching this driver's name, without specifying a
->> + * device tree node.
->> + */
->> + quirks = of_device_get_match_data(dev);
->> +
->> + /* Add controls, widgets, and routes for individual features */
->> +
->> + if (quirks->has_headphone) {
->> + ret = sun8i_codec_add_headphone(cmpnt);
->> + if (ret)
->> + return ret;
->> + }
->> +
->> + if (quirks->has_hmic) {
->> + sun8i_codec_add_hmic(cmpnt);
->> + if (ret)
->> + return ret;
->> + }
->> +
->> + if (quirks->has_lineout) {
->> + ret = sun8i_codec_add_lineout(cmpnt);
->> + if (ret)
->> + return ret;
->> + }
->> +
->> + return 0;
->> +}
->> +
->> +static const struct snd_soc_component_driver sun8i_codec_analog_cmpnt_drv = {
->> + .controls = sun8i_codec_common_controls,
->> + .num_controls = ARRAY_SIZE(sun8i_codec_common_controls),
->> + .dapm_widgets = sun8i_codec_common_widgets,
->> + .num_dapm_widgets = ARRAY_SIZE(sun8i_codec_common_widgets),
->> + .dapm_routes = sun8i_codec_common_routes,
->> + .num_dapm_routes = ARRAY_SIZE(sun8i_codec_common_routes),
->> + .probe = sun8i_codec_analog_cmpnt_probe,
->> +};
->> +
->> +static const struct of_device_id sun8i_codec_analog_of_match[] = {
->> + {
->> + .compatible = "allwinner,sun8i-a23-codec-analog",
->> + .data = &sun8i_a23_quirks,
->> + },
->> + {
->> + .compatible = "allwinner,sun8i-h3-codec-analog",
->> + .data = &sun8i_h3_quirks,
->> + },
->> + {}
->> +};
->> +MODULE_DEVICE_TABLE(of, sun8i_codec_analog_of_match);
->> +
->> +static int sun8i_codec_analog_probe(struct platform_device *pdev)
->> +{
->> + struct resource *res;
->> + struct regmap *regmap;
->> + void __iomem *base;
->> +
->> + res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> + base = devm_ioremap_resource(&pdev->dev, res);
->> + if (IS_ERR(base)) {
->> + dev_err(&pdev->dev, "Failed to map the registers\n");
->> + return PTR_ERR(base);
->> + }
->> +
->> + regmap = devm_regmap_init(&pdev->dev, NULL, base, &adda_pr_regmap_cfg);
->> + if (IS_ERR(regmap)) {
->> + dev_err(&pdev->dev, "Failed to create regmap\n");
->> + return PTR_ERR(regmap);
->> + }
->> +
->> + return devm_snd_soc_register_component(&pdev->dev,
->> + &sun8i_codec_analog_cmpnt_drv,
->> + NULL, 0);
->> +}
->> +
->> +static struct platform_driver sun8i_codec_analog_driver = {
->> + .driver = {
->> + .name = "sun8i-codec-analog",
->> + .of_match_table = sun8i_codec_analog_of_match,
->> + },
->> + .probe = sun8i_codec_analog_probe,
->> +};
->> +module_platform_driver(sun8i_codec_analog_driver);
->> +
->> +MODULE_DESCRIPTION("Allwinner internal codec analog controls driver");
->> +MODULE_AUTHOR("Chen-Yu Tsai <wens@csie.org>");
->> +MODULE_LICENSE("GPL");
->> +MODULE_ALIAS("platform:sun8i-codec-analog");
->> --
->> 2.10.2
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogVmlsbGUgU3lyasOkbMOkIFtt
+YWlsdG86dmlsbGUuc3lyamFsYUBsaW51eC5pbnRlbC5jb21dCj4gU2VudDogVGh1cnNkYXksIE5v
+dmVtYmVyIDI0LCAyMDE2IDc6MDMgUE0KPiBUbzogQW5hbmQsIEplcm9tZSA8amVyb21lLmFuYW5k
+QGludGVsLmNvbT4KPiBDYzogaW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgYWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnOwo+IGJyb29uaWVAa2VybmVsLm9yZzsgdGl3YWlAc3VzZS5k
+ZTsgcGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tOwo+IFVnaHJlamEsIFJha2Vz
+aCBBIDxyYWtlc2guYS51Z2hyZWphQGludGVsLmNvbT4KPiBTdWJqZWN0OiBSZTogW1JGQyBQQVRD
+SCB2MyAyLzddIGRybS9pOTE1OiBBZGQgc3VwcG9ydCBmb3IgYXVkaW8gZHJpdmVyCj4gbm90aWZp
+Y2F0aW9ucwo+IAo+IE9uIEZyaSwgTm92IDI1LCAyMDE2IGF0IDA1OjI1OjQzQU0gKzA1MzAsIEpl
+cm9tZSBBbmFuZCB3cm90ZToKPiA+IE5vdGlmaWF0aW9ucyBsaWtlIG1vZGUgY2hhbmdlLCBob3Qg
+cGx1ZyBhbmQgZWRpZCB0byB0aGUgYXVkaW8gZHJpdmVyCj4gPiBhcmUgYWRkZWQuIFRoaXMgaXMg
+aW50dXJuIHVzZWQgYnkgdGhlIGF1ZGlvIGRyaXZlciBmb3IgaXRzCj4gPiBmdW5jdGlvbmFsaXR5
+Lgo+ID4KPiA+IEEgbmV3IGludGVyZmFjZSBmaWxlIGNhcHR1cmluZyB0aGUgbm90aWZpY2F0aW9u
+cyBuZWVkZWQgYnkgdGhlIGF1ZGlvCj4gPiBkcml2ZXIgaXMgYWRkZWQKPiA+Cj4gPiBTaWduZWQt
+b2ZmLWJ5OiBQaWVycmUtTG91aXMgQm9zc2FydAo+ID4gPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxp
+bnV4LmludGVsLmNvbT4KPiA+IFNpZ25lZC1vZmYtYnk6IEplcm9tZSBBbmFuZCA8amVyb21lLmFu
+YW5kQGludGVsLmNvbT4KPiA+IC0tLQo+ID4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2
+LmggICAgICAgIHwgIDMgKysrCj4gPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8u
+YyAgICAgfCAgOCArKysrKysKPiA+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9oZG1pLmMg
+ICAgICB8ICAxICsKPiA+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9scGVfYXVkaW8uYyB8
+IDQ5Cj4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ID4gIGluY2x1ZGUvZHJt
+L2ludGVsX2xwZV9hdWRpby5oICAgICAgICAgIHwgIDEgKwo+ID4gIDUgZmlsZXMgY2hhbmdlZCwg
+NjIgaW5zZXJ0aW9ucygrKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkx
+NS9pOTE1X2Rydi5oCj4gPiBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmggaW5kZXgg
+MmE3OTA0OC4uMzNiYzQ0YyAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5
+MTVfZHJ2LmgKPiA+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmgKPiA+IEBA
+IC0zNTYxLDYgKzM1NjEsOSBAQCBpbnQgIGludGVsX2xwZV9hdWRpb19zZXR1cChzdHJ1Y3QKPiA+
+IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2KTsgIHZvaWQgaW50ZWxfbHBlX2F1ZGlvX3RlYXJk
+b3duKHN0cnVjdAo+ID4gZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpOyAgdm9pZCBpbnRlbF9s
+cGVfYXVkaW9faXJxX2hhbmRsZXIoc3RydWN0Cj4gPiBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJp
+dik7ICBib29sIGludGVsX2xwZV9hdWRpb19kZXRlY3Qoc3RydWN0Cj4gPiBkcm1faTkxNV9wcml2
+YXRlICpkZXZfcHJpdik7Cj4gPiArdm9pZCBpbnRlbF9scGVfYXVkaW9fbm90aWZ5KHN0cnVjdCBk
+cm1faTkxNV9wcml2YXRlICpkZXZfcHJpdiwKPiA+ICsJCQl2b2lkICplbGQsIGludCBwb3J0LCBp
+bnQgdG1kc19jbGtfc3BlZWQsCj4gPiArCQkJYm9vbCBjb25uZWN0ZWQpOwo+ID4KPiA+ICAvKiBp
+bnRlbF9pMmMuYyAqLwo+ID4gIGV4dGVybiBpbnQgaW50ZWxfc2V0dXBfZ21idXMoc3RydWN0IGRy
+bV9kZXZpY2UgKmRldik7IGRpZmYgLS1naXQKPiA+IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50
+ZWxfYXVkaW8uYwo+ID4gYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4gPiBp
+bmRleCAxYzUwOWY3Li41NWE2ODMxIDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5
+MTUvaW50ZWxfYXVkaW8uYwo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVk
+aW8uYwo+ID4gQEAgLTI0LDYgKzI0LDcgQEAKPiA+ICAjaW5jbHVkZSA8bGludXgva2VybmVsLmg+
+Cj4gPiAgI2luY2x1ZGUgPGxpbnV4L2NvbXBvbmVudC5oPgo+ID4gICNpbmNsdWRlIDxkcm0vaTkx
+NV9jb21wb25lbnQuaD4KPiA+ICsjaW5jbHVkZSA8ZHJtL2ludGVsX2xwZV9hdWRpby5oPgo+ID4g
+ICNpbmNsdWRlICJpbnRlbF9kcnYuaCIKPiA+Cj4gPiAgI2luY2x1ZGUgPGRybS9kcm1QLmg+Cj4g
+PiBAQCAtNjI3LDYgKzYyOCwxMCBAQCB2b2lkIGludGVsX2F1ZGlvX2NvZGVjX2VuYWJsZShzdHJ1
+Y3QKPiBpbnRlbF9lbmNvZGVyICppbnRlbF9lbmNvZGVyLAo+ID4gIAlpZiAoYWNvbXAgJiYgYWNv
+bXAtPmF1ZGlvX29wcyAmJiBhY29tcC0+YXVkaW9fb3BzLQo+ID5waW5fZWxkX25vdGlmeSkKPiA+
+ICAJCWFjb21wLT5hdWRpb19vcHMtPnBpbl9lbGRfbm90aWZ5KGFjb21wLT5hdWRpb19vcHMtCj4g
+PmF1ZGlvX3B0ciwKPiA+ICAJCQkJCQkgKGludCkgcG9ydCwgKGludCkgcGlwZSk7Cj4gPiArCj4g
+PiArCWlmIChIQVNfTFBFX0FVRElPKGRldl9wcml2KSkKPiA+ICsJCWludGVsX2xwZV9hdWRpb19u
+b3RpZnkoZGV2X3ByaXYsIGNvbm5lY3Rvci0+ZWxkLCBwb3J0LAo+ID4gKwkJCWNydGNfc3RhdGUt
+PnBvcnRfY2xvY2ssIHRydWUpOwo+ID4gIH0KPiA+Cj4gPiAgLyoqCj4gPiBAQCAtNjYwLDYgKzY2
+NSw5IEBAIHZvaWQgaW50ZWxfYXVkaW9fY29kZWNfZGlzYWJsZShzdHJ1Y3QKPiBpbnRlbF9lbmNv
+ZGVyICppbnRlbF9lbmNvZGVyKQo+ID4gIAlpZiAoYWNvbXAgJiYgYWNvbXAtPmF1ZGlvX29wcyAm
+JiBhY29tcC0+YXVkaW9fb3BzLQo+ID5waW5fZWxkX25vdGlmeSkKPiA+ICAJCWFjb21wLT5hdWRp
+b19vcHMtPnBpbl9lbGRfbm90aWZ5KGFjb21wLT5hdWRpb19vcHMtCj4gPmF1ZGlvX3B0ciwKPiA+
+ICAJCQkJCQkgKGludCkgcG9ydCwgKGludCkgcGlwZSk7Cj4gPiArCj4gPiArCWlmIChIQVNfTFBF
+X0FVRElPKGRldl9wcml2KSkKPiA+ICsJCWludGVsX2xwZV9hdWRpb19ub3RpZnkoZGV2X3ByaXYs
+IE5VTEwsIHBvcnQsIDAsIHRydWUpOwo+ID4gIH0KPiA+Cj4gPiAgLyoqCj4gPiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfaGRtaS5jCj4gPiBiL2RyaXZlcnMvZ3B1L2Ry
+bS9pOTE1L2ludGVsX2hkbWkuYwo+ID4gaW5kZXggZmI4OGUzMi4uMDJkNTBlMyAxMDA2NDQKPiA+
+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2hkbWkuYwo+ID4gKysrIGIvZHJpdmVy
+cy9ncHUvZHJtL2k5MTUvaW50ZWxfaGRtaS5jCj4gPiBAQCAtMzYsNiArMzYsNyBAQAo+ID4gICNp
+bmNsdWRlIDxkcm0vZHJtX2VkaWQuaD4KPiA+ICAjaW5jbHVkZSAiaW50ZWxfZHJ2LmgiCj4gPiAg
+I2luY2x1ZGUgPGRybS9pOTE1X2RybS5oPgo+ID4gKyNpbmNsdWRlIDxkcm0vaW50ZWxfbHBlX2F1
+ZGlvLmg+Cj4gPiAgI2luY2x1ZGUgImk5MTVfZHJ2LmgiCj4gPgo+ID4gIHN0YXRpYyBzdHJ1Y3Qg
+ZHJtX2RldmljZSAqaW50ZWxfaGRtaV90b19kZXYoc3RydWN0IGludGVsX2hkbWkKPiA+ICppbnRl
+bF9oZG1pKSBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlv
+LmMKPiA+IGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMKPiA+IGluZGV4
+IDUzMzVmYzYuLjkzZjgzY2IgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
+bnRlbF9scGVfYXVkaW8uYwo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBl
+X2F1ZGlvLmMKPiA+IEBAIC0zNjcsMyArMzY3LDUyIEBAIHZvaWQgaW50ZWxfbHBlX2F1ZGlvX3Rl
+YXJkb3duKHN0cnVjdAo+ID4gZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpCj4gPgo+ID4gIAlz
+cGluX3VubG9ja19pcnFyZXN0b3JlKCZkZXZfcHJpdi0+aXJxX2xvY2ssIGlycWZsYWdzKTsgIH0K
+PiA+ICsKPiA+ICsKPiA+ICsvKioKPiA+ICsgKiBpbnRlbF9scGVfYXVkaW9fbm90aWZ5KCkgLSBu
+b3RpZnkgbHBlIGF1ZGlvIGV2ZW50Cj4gPiArICogYXVkaW8gZHJpdmVyIGFuZCBpOTE1Cj4gPiAr
+ICogQGRldl9wcml2OiB0aGUgaTkxNSBkcm0gZGV2aWNlIHByaXZhdGUgZGF0YQo+ID4gKyAqIEBl
+bGQgOiBFTEQgZGF0YQo+ID4gKyAqIEBwb3J0OiBwb3J0IGlkCj4gPiArICogQHRtZHNfY2xrX3Nw
+ZWVkOiB0bWRzIGNsb2NrIGZyZXF1ZW5jeSBpbiBIego+ID4gKyAqIEBjb25uZWN0ZWQ6IGhkbWkg
+Y29ubmVjdGVkL2Rpc2Nvbm5lY3RlZAo+ID4gKyAqCj4gPiArICogTm90aWZ5IGxwZSBhdWRpbyBk
+cml2ZXIgb2YgZWxkIGNoYW5nZS4KPiA+ICsgKi8KPiA+ICt2b2lkIGludGVsX2xwZV9hdWRpb19u
+b3RpZnkoc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2LAo+ID4gKwkJCXZvaWQgKmVs
+ZCwgaW50IHBvcnQsIGludCB0bWRzX2Nsa19zcGVlZCwKPiA+ICsJCQlib29sIGNvbm5lY3RlZCkK
+PiA+ICt7Cj4gPiArCXVuc2lnbmVkIGxvbmcgaXJxX2ZsYWdzOwo+ID4gKwo+ID4gKwlpZiAoSEFT
+X0xQRV9BVURJTyhkZXZfcHJpdikpIHsKPiA+ICsJCXN0cnVjdCBpbnRlbF9oZG1pX2xwZV9hdWRp
+b19wZGF0YSAqcGRhdGEgPQo+IGRldl9nZXRfcGxhdGRhdGEoCj4gPiArCQkJJihkZXZfcHJpdi0+
+bHBlX2F1ZGlvLnBsYXRkZXYtPmRldikpOwo+ID4gKwo+ID4gKwkJaWYgKHBkYXRhKSB7Cj4gCj4g
+SG93IGNvdWxkIHRoZSAhcGRhdGEgY2FzZSBoYXBwZW4/IElmIGl0IGNhbid0IHdlIHNob3VsZG4n
+dCBjYXRlciBmb3IgaXQuCj4gCgpJdCBjYW4gaGFwcGVuIGlmIHRoZXJlIGlzIGEgbm90aWZpY2F0
+aW9uIGJlZm9yZSBhdWRpbyBkcml2ZXIgaXMgaW5pdGlhbGl6ZWQKCj4gPiArCQkJc3Bpbl9sb2Nr
+X2lycXNhdmUoJnBkYXRhLT5scGVfYXVkaW9fc2xvY2ssCj4gPiArCQkJCWlycV9mbGFncyk7Cj4g
+PiArCj4gPiArCQkJaWYgKGVsZCAhPSBOVUxMKSB7Cj4gPiArCQkJCW1lbWNweShwZGF0YS0+ZWxk
+LmVsZF9kYXRhLCBlbGQsCj4gPiArCQkJCQlIRE1JX01BWF9FTERfQllURVMpOwo+ID4gKwkJCQlw
+ZGF0YS0+ZWxkLnBvcnRfaWQgPSBwb3J0Owo+ID4gKwo+ID4gKwkJCQlpZiAodG1kc19jbGtfc3Bl
+ZWQpCj4gCj4gV2h5IHRoZSBpZj8KPiAKClRtZHMgb2YgemVybyBpcyBzZW50IGluIGNvZGVjX2Rp
+c2FibGUuIEhlbmNlIGFkZGVkLCBqdXN0IHRvIGF2b2lkIHVubmVjZXNzYXJ5IG5vdGlmaWNhdGlv
+biB0byBhdWRpbyBkcml2ZXIKCj4gPiArCQkJCQlwZGF0YS0+dG1kc19jbG9ja19zcGVlZCA9Cj4g
+PiArCQkJCQkJdG1kc19jbGtfc3BlZWQ7Cj4gPiArCQkJfQo+ID4gKwkJCXBkYXRhLT5oZG1pX2Nv
+bm5lY3RlZCA9IGNvbm5lY3RlZDsKPiAKPiBBbHNvIGNhbid0IHJlYWxseSBzZWUgbXVjaCBuZWVk
+IGZvciB0aGlzLiBBbnkgb25lIG9mIHRoZSBwb3J0L3RtZHMgY2xvY2svZWxkCj4gc2hvdWxkIGJl
+IHN1ZmZpY2llbnQuCgpFbGQgYW5kIHRtZHMgYXJlIG5lZWRlZCB0byBjYXRlciB0byBob3RwbHVn
+IGFuZCBkaXNwbGF5IG1vZGUgY2hhbmdlIG5vdGlmaWNhdGlvbnMuIFBvcnQgY2FuIGJlIGF2b2lk
+ZWQgYnV0IGtlcHQgZm9yIGRlYnVnCgo+IAo+ID4gKwkJCWlmIChwZGF0YS0+bm90aWZ5X2F1ZGlv
+X2xwZSkKPiA+ICsJCQkJcGRhdGEtPm5vdGlmeV9hdWRpb19scGUoCj4gPiArCQkJCQkoZWxkICE9
+IE5VTEwpID8gJnBkYXRhLT5lbGQgOiBOVUxMKTsKPiA+ICsJCQllbHNlCj4gPiArCQkJCXBkYXRh
+LT5ub3RpZnlfcGVuZGluZyA9IHRydWU7Cj4gCj4gU3RpbGwgbm90IHN1cmUgd2h5IHRoZSAicGVu
+ZGluZyIgdGhpbmcgaXMgdXNlZnVsLiBDYW4ndCB0aGUgYXVkaW8gZHJpdmVyIGp1c3QgZG8KPiBp
+dHMgdGhpbmcgKHdoYXRldmVyIGl0IGlzKSB1bmNvbmRpdGlvbmFsbHk/Cj4gCgpUaGlzIGlzIGFk
+ZGVkIHRvIGF2b2lkIHJhY2Ugd2hlbiBhdWRpbyBkcml2ZXIgbG9hZHMgbGF0ZSBhbmQgdGhlIG5v
+dGlmaWNhdGlvbiBmcm9tIGRpc3BsYXkgaGFzIGFscmVhZHkgcGFzc2VkLgoKPiBXaGVuIGRpc2Fi
+bGluZyBqdXN0IGNsZWFyIHRoZSBwb3J0IHRvIElOVkFMSUQsIGVsZCB0byB6ZXJvLCBhbmQgdG1k
+cyBjbG9jayB0bwo+IDAsIGFuZCBpdCBzaG91bGQgYWxsIGJlIGZpbmUgbm8/Cj4gCgpZZXMsIHRo
+YXQncyB3aGF0IGlzIGJlaW5nIGRvbmUuCgo+ID4gKwo+ID4gKwkJCXNwaW5fdW5sb2NrX2lycXJl
+c3RvcmUoJnBkYXRhLT5scGVfYXVkaW9fc2xvY2ssCj4gPiArCQkJCWlycV9mbGFncyk7Cj4gPiAr
+CQl9IGVsc2UKPiA+ICsJCQlEUk1fREVCVUdfRFJJVkVSKCJubyBhdWRpbyBub3RpZmljYXRpb25c
+biIpOwo+ID4gKwl9Cj4gPiArfQo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvZHJtL2ludGVsX2xw
+ZV9hdWRpby5oCj4gPiBiL2luY2x1ZGUvZHJtL2ludGVsX2xwZV9hdWRpby5oIGluZGV4IGE2NGM0
+NDkuLjk1MmRlMDUgMTAwNjQ0Cj4gPiAtLS0gYS9pbmNsdWRlL2RybS9pbnRlbF9scGVfYXVkaW8u
+aAo+ID4gKysrIGIvaW5jbHVkZS9kcm0vaW50ZWxfbHBlX2F1ZGlvLmgKPiA+IEBAIC0yNSw2ICsy
+NSw3IEBACj4gPiAgI2RlZmluZSBfSU5URUxfTFBFX0FVRElPX0hfCj4gPgo+ID4gICNpbmNsdWRl
+IDxsaW51eC90eXBlcy5oPgo+ID4gKyNpbmNsdWRlIDxsaW51eC9zcGlubG9ja190eXBlcy5oPgo+
+ID4KPiA+ICAjZGVmaW5lIEhETUlfTUFYX0VMRF9CWVRFUwkxMjgKPiA+Cj4gPiAtLQo+ID4gMi45
+LjMKPiAKPiAtLQo+IFZpbGxlIFN5cmrDpGzDpAo+IEludGVsIE9UQwpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0Cklu
+dGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
