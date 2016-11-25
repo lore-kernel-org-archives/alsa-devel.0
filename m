@@ -1,56 +1,56 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH v3] dbri: Fix compiler warning
-Date: Fri, 25 Nov 2016 12:03:10 -0500 (EST)
-Message-ID: <20161125.120310.376952430424787326.davem@davemloft.net>
-References: <s5ha8cn9a9j.wl-tiwai@suse.de>
-        <20161125.115447.967164976172058750.davem@davemloft.net>
-        <s5hy4075weq.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda/ca0132 - Add quirk for Alienware 15
+	R2 2016
+Date: Fri, 25 Nov 2016 14:18:30 +0100
+Message-ID: <20161125131830.26999-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-7
-Content-Transfer-Encoding: base64
-Return-path: <sparclinux-owner@vger.kernel.org>
-In-Reply-To: <s5hy4075weq.wl-tiwai@suse.de>
-Sender: sparclinux-owner@vger.kernel.org
-To: tiwai@suse.de
-Cc: tushar.n.dave@oracle.com, alsa-devel@alsa-project.org, thomas.tai@oracle.com, perex@perex.cz, sparclinux@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9865E2671FF
+ for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2016 14:18:33 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 60C1DAB03
+ for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2016 13:18:32 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPg0KRGF0ZTogRnJpLCAyNSBOb3YgMjAx
-NiAxNzo1ODoyMSArMDEwMA0KDQo+IE9uIEZyaSwgMjUgTm92IDIwMTYgMTc6NTQ6NDcgKzAxMDAs
-DQo+IERhdmlkIE1pbGxlciB3cm90ZToNCj4+IA0KPj4gRnJvbTogVGFrYXNoaSBJd2FpIDx0aXdh
-aUBzdXNlLmRlPg0KPj4gRGF0ZTogRnJpLCAyNSBOb3YgMjAxNiAxMDozMDo0OCArMDEwMA0KPj4g
-DQo+PiA+IE9uIFRodSwgMjQgTm92IDIwMTYgMjE6MzU6MTYgKzAxMDAsDQo+PiA+IFR1c2hhciBE
-YXZlIHdyb3RlOg0KPj4gPj4gDQo+PiA+PiBkYnJpIHVzZXMgJ3UzMicgZm9yIGRtYSBoYW5kbGUg
-d2hpbGUgaW52b2tpbmcga2VybmVsIERNQSBBUElzLA0KPj4gPj4gaW5zdGVhZCBvZiB1c2luZyBk
-bWFfYWRkcl90LiBUaGlzIGhhc24ndCBjYXVzZWQgYW55ICdpbmNvbXBhdGlibGUNCj4+ID4+IHBv
-aW50ZXIgdHlwZScgd2FybmluZyBvbiBTUEFSQyBiZWNhdXNlIHVudGlsIG5vdyBkbWFfYWRkcl90
-IGlzIG9mDQo+PiA+PiB0eXBlIHUzMi4gSG93ZXZlciwgcmVjZW50IGNoYW5nZXMgaW4gU1BBUkMg
-QVRVIChpb21tdSkgZW5hYmxlZCA2NGJpdA0KPj4gPj4gRE1BIGFuZCB0aGVyZWZvcmUgZG1hX2Fk
-ZHJfdCBiZWNhbWUgb2YgdHlwZSB1NjQuIFRoaXMgbWFrZXMNCj4+ID4+ICdpbmNvbXBhdGlibGUg
-cG9pbnRlciB0eXBlJyB3YXJuaW5ncyBpbmV2aXRhYmxlLg0KPj4gPj4gDQo+PiA+PiBlLmcuDQo+
-PiA+PiBzb3VuZC9zcGFyYy9kYnJpLmM6IEluIGZ1bmN0aW9uIKFzbmRfZGJyaV9jcmVhdGWiOg0K
-Pj4gPj4gc291bmQvc3BhcmMvZGJyaS5jOjI1Mzg6IHdhcm5pbmc6IHBhc3NpbmcgYXJndW1lbnQg
-MyBvZiChZG1hX3phbGxvY19jb2hlcmVudKIgZnJvbSBpbmNvbXBhdGlibGUgcG9pbnRlciB0eXBl
-DQo+PiA+PiAuL2luY2x1ZGUvbGludXgvZG1hLW1hcHBpbmcuaDo2MDg6IG5vdGU6IGV4cGVjdGVk
-IKFkbWFfYWRkcl90ICqiIGJ1dCBhcmd1bWVudCBpcyBvZiB0eXBlIKF1MzIgKqINCj4+ID4+IA0K
-Pj4gPj4gRm9yIHRoZSByZWNvcmQsIGRicmkoc2J1cykgZHJpdmVyIG5ldmVyIGV4ZWN1dGVzIG9u
-IHN1bjR2LiBUaGVyZWZvcmUNCj4+ID4+IGV2ZW4gdGhvdWdoIDY0Yml0IERNQSBpcyBlbmFibGVk
-IG9uIFNQQVJDLCBkYnJpIGNvbnRpbnVlcyB0byB1c2UNCj4+ID4+IGxlZ2FjeSBpb21tdSB0aGF0
-IGd1YXJhbnRlZXMgRE1BIGFkZHJlc3MgaXMgYWx3YXlzIGluIDMyYml0IHJhbmdlLg0KPj4gPj4g
-DQo+PiA+PiBUaGlzIHBhdGNoIHJlc29sdmVzIGFib3ZlIGNvbXBpbGVyIHdhcm5pbmcuDQo+PiA+
-PiANCj4+ID4+IFNpZ25lZC1vZmYtYnk6IFR1c2hhciBEYXZlIDx0dXNoYXIubi5kYXZlQG9yYWNs
-ZS5jb20+DQo+PiA+PiBSZXZpZXdlZC1ieTogdGhvbWFzIHRhaSA8dGhvbWFzLnRhaUBvcmFjbGUu
-Y29tPg0KPj4gPj4gLS0tDQo+PiA+PiB2Mi0+djM6DQo+PiA+PiAtIFVzZSAlcGFkIHRvIHByaW50
-IGRtYV9hZGRyX3QuIENvbW1lbnQgYnkgVGFrYXNoaSBJd2FpLg0KPj4gPiANCj4+ID4gQXBwbGll
-ZCBub3cuICBUaGFua3MhDQo+PiANCj4+IFRoaXMgcGF0Y2ggaXMgYWJzb2x1dGVseSBub3QgYXBw
-cm9wcmlhdGUgZm9yIHlvdXIgdHJlZSBUYWthc2hpLg0KPj4gDQo+PiBJdCdzIGZvciB0aGUgc3Bh
-cmMgdHJlZSBiZWNhdXNlIHRoYXQncyB3aGVyZSB0aGUgZG1hX2FkZHJfdA0KPj4gdHlwZSB3YXMg
-Y2hhbmdlZCBmcm9tIDMyLWJpdCB0byA2NC1iaXQgb24gc3BhcmM2NCwgd2hpY2ggaXMNCj4+IHdo
-YXQgY2F1c2VkIHRoaXMgYnVpbGQgd2FybmluZy4NCj4+IA0KPj4gRGF2ZSwgcGxlYXNlIG9ubHkg
-c2VuZCBzcGFyYyBzcGVjaWZpYyBkcml2ZXIgcGF0Y2hlcyB0bw0KPj4gc3BhcmNsaW51eEB2Z2Vy
-Lmtlcm5lbC5vcmcgaW4gdGhlIGZ1dHVyZSBzbyB3ZSBjYW4gYXZvaWQNCj4+IHRoaXMga2luZCBv
-ZiBwcm9ibGVtLiAgVGhlIHdob2xlIGhhbmRsaW5nIG9mIHRoZSBkbWFfYWRkcl90DQo+PiB0eXBl
-IGNoYW5nZSBvbiBzcGFyYzY0IGhhcyBiZWVuIGEgcmVhbCBtZXNzLCBxdWl0ZSBob25lc3RseS4N
-Cj4gDQo+IEZhaXIgZW5vdWdoLiAgQ291bGQgeW91IHRha2UgaXQgdGhyb3VnaCB5b3VyIHRyZWU/
-DQo+IEZlZWwgZnJlZSB0byB0YWtlIG15IGFjazoNCj4gICBSZXZpZXdlZC1ieTogVGFrYXNoaSBJ
-d2FpIDx0aXdhaUBzdXNlLmRlPg0KDQpJIHdpbGwsIHRoYW5rIHlvdS4NCg==
+From: Sven Hahne <hahne@zeitkunst.eu>
+
+I'm using an Alienware 15 R2 and had to use the alienware quirks to
+get my headphone output working.
+
+I fixed it by adding, SND_PCI_QUIRK(0x1028, 0x0708, "Alienware 15 R2
+2016", QUIRK_ALIENWARE) to the patch.
+
+Signed-off-by: Sven Hahne <hahne@zeitkunst.eu>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_ca0132.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index ad06866d7c69..11b9b2f17a2e 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -780,6 +780,7 @@ static const struct hda_pintbl alienware_pincfgs[] = {
+ static const struct snd_pci_quirk ca0132_quirks[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15 2015", QUIRK_ALIENWARE),
+ 	SND_PCI_QUIRK(0x1028, 0x0688, "Alienware 17 2015", QUIRK_ALIENWARE),
++	SND_PCI_QUIRK(0x1028, 0x0708, "Alienware 15 R2 2016", QUIRK_ALIENWARE),
+ 	{}
+ };
+ 
+-- 
+2.10.2
