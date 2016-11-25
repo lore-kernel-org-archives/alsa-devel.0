@@ -1,38 +1,56 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [RFC PATCH v3 1/7] drm/i915: setup bridge for HDMI
-	LPE audio driver
-Date: Fri, 25 Nov 2016 12:52:11 +0200
-Message-ID: <8760nbvnl0.fsf@intel.com>
-References: <20161124235548.16440-1-jerome.anand@intel.com>
- <20161124235548.16440-2-jerome.anand@intel.com>
- <20161124133154.GQ31595@intel.com>
- <F6867404AABACB4D8EC371BF802A4B7C14925AAA@fmsmsx101.amr.corp.intel.com>
+From: sutar.mounesh@gmail.com
+Subject: [PATCH] alsa-lib: update linked hw_ptr and appl_ptr
+Date: Fri, 25 Nov 2016 15:55:05 +0530
+Message-ID: <1480069505-16668-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <F6867404AABACB4D8EC371BF802A4B7C14925AAA@fmsmsx101.amr.corp.intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: "Anand, Jerome" <jerome.anand@intel.com>, Ville =?utf-8?B?U3lyasOk?= =?utf-8?B?bMOk?= <ville.syrjala@linux.intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Ughreja,
- Rakesh A" <rakesh.a.ughreja@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-Ckplcm9tZSAtCgpUaGUgc2FtZSBhcyBsYXN0IHRpbWUsIEkgZGlkbid0IHJlY2VpdmUgYW55IG9m
-IHRoZSBwYXRjaGVzLCBuZWl0aGVyIHRoZQppbnRlbC1nZnggbm9yIGFsc2EtZGV2ZWwgbGlzdCBh
-cmNoaXZlcyBoYXZlIHRoZW0sIHBhdGNod29yayBkb2Vzbid0IGhhdmUKdGhlbSwgdGhleSdyZSBu
-b3QgaW4gaW50ZWwtZ2Z4IG1vZGVyYXRpb24gcXVldWV1LiBJIG9ubHkgaGF2ZSB0aGUKcmVwbGll
-cy4KClBsZWFzZSBjaGVjayB5b3VyIHNldHVwLCBhbmQgbWFrZSBzdXJlIHlvdXIgcGF0Y2hlcyBh
-Y3R1YWxseSBoaXQgdGhlCmxpc3RzLgoKVGhhbmtzLApKYW5pLgoKCi0tIApKYW5pIE5pa3VsYSwg
-SW50ZWwgT3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50ZXIKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1n
-ZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
-aWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+From: Andreas Pape <apape@de.adit-jv.com>
+
+Plugin file provides no private hw_ptr and appl_ptr but instead links them to the slave pcm.
+If the slave pcm itself changes its hw_ptr or app_prt this needs to be done in file plugin, too.
+Plugin 'plug' is such a candidate changing the hw_ptr and app_ptr in hw_params call dependent on the automatically inserted plugins.
+ALSA unfortunately has no support for automatically updating chained pointers.
+A notification on pointer change seems to be prepared inside the snd_pcm_set_ptr() routine via
+rbptr->changed(), but it is not (yet) implemented so that we need to care for it manually.
+
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+---
+ src/pcm/pcm_file.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
+index fec76eb..1e3d35b 100644
+--- a/src/pcm/pcm_file.c
++++ b/src/pcm/pcm_file.c
+@@ -634,6 +634,14 @@ static int snd_pcm_file_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t * params)
+ 			return err;
+ 		}
+ 	}
++
++	/* pointer may have changed - e.g if plug is used. */
++	snd_pcm_unlink_hw_ptr(pcm, file->gen.slave);
++	snd_pcm_unlink_appl_ptr(pcm, file->gen.slave);
++
++	snd_pcm_link_hw_ptr(pcm, file->gen.slave);
++	snd_pcm_link_appl_ptr(pcm, file->gen.slave);
++
+ 	return 0;
+ }
+ 
+-- 
+1.7.9.5
