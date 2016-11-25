@@ -1,8 +1,8 @@
 From: sutar.mounesh@gmail.com
-Subject: [PATCH] alsa-lib: alsa dshare endless playback of
-	buffer
-Date: Fri, 25 Nov 2016 16:43:34 +0530
-Message-ID: <1480072414-17398-1-git-send-email-sutar.mounesh@gmail.com>
+Subject: [PATCH] alsa-lib: Add htimestamp operation in plugin
+	file
+Date: Fri, 25 Nov 2016 17:06:37 +0530
+Message-ID: <1480073797-17667-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -17,25 +17,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Anant Agrawal <Anant_Agrawal@mentor.com>, mounesh_sutar@mentor.com
+Cc: alsa-devel@alsa-project.org, Joshua Frkuska <joshua_frkuska@mentor.com>, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Anant Agrawal <Anant_Agrawal@mentor.com>
+From: Andreas Pape <apape@de.adit-jv.com>
 
-On snd_pcm_drain() the slave PCM driven via plugin DSHARE is not filled with
-silence. Result is endless playback of buffer content until pcm is closed.
-In ALSA pcm dshare plugin, called do_silence method to fix the issue.
+PCM operation htimestamp is not implemented in plugin file.
+Calling snd_pcm_htimestamp() on a plugin file crashes. This scenario
+is considered now.
 
-Signed-off-by: Anant Agrawal <Anant_Agrawal@mentor.com>
-
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+Signed-off-by: Joshua Frkuska <joshua_frkuska@mentor.com>
 ---
---- alsa-lib-1.0.29.orig/src/pcm/pcm_dshare.c	2015-04-28 08:20:44.662995477 -0700
-+++ alsa-lib-1.0.29/src/pcm/pcm_dshare.c	2015-04-28 08:20:59.603077419 -0700
-@@ -195,6 +195,7 @@
- 		dshare->avail_max = avail;
- 	if (avail >= pcm->stop_threshold) {
- 		snd_timer_stop(dshare->timer);
-+		do_silence(pcm);
- 		gettimestamp(&dshare->trigger_tstamp, pcm->tstamp_type);
- 		if (dshare->state == SND_PCM_STATE_RUNNING) {
- 			dshare->state = SND_PCM_STATE_XRUN;
+
+--- a/src/pcm/pcm_file.c	2013-07-08 14:31:36.000000000 +0200
++++ b/src/pcm/pcm_file.c	2015-05-04 16:26:10.413615403 +0200
+@@ -698,6 +698,7 @@
+ 	.readi = snd_pcm_file_readi,
+ 	.readn = snd_pcm_file_readn,
+ 	.avail_update = snd_pcm_generic_avail_update,
++	.htimestamp = snd_pcm_generic_htimestamp,
+ 	.mmap_commit = snd_pcm_file_mmap_commit,
+ 	.poll_descriptors_count = snd_pcm_generic_poll_descriptors_count,
+ 	.poll_descriptors = snd_pcm_generic_poll_descriptors,
