@@ -1,35 +1,69 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [alsa-devel] [PATCH 2/9] ALSA: ac97: add an ac97 bus
-Date: Fri, 25 Nov 2016 20:58:11 +0100
-Message-ID: <8760nbqqlo.fsf@belgarion.home>
-References: <1477510907-23495-1-git-send-email-robert.jarzmik@free.fr>
-        <1477510907-23495-3-git-send-email-robert.jarzmik@free.fr>
-        <d57cdfba-da22-652d-3d75-6d1b754cf1d5@metafoo.de>
-        <87eg2ly8k6.fsf@belgarion.home>
-        <5ae15e01-eaaf-4996-27ec-1179041c0268@metafoo.de>
-        <87mvh8uywm.fsf@belgarion.home>
-        <6b97a129-bd10-b9be-616d-a3ea3b91b103@metafoo.de>
+From: tndave <tushar.n.dave@oracle.com>
+Subject: Re: [PATCH v3] dbri: Fix compiler warning
+Date: Fri, 25 Nov 2016 12:23:04 -0800
+Message-ID: <9d1c84e8-253d-c78b-db5f-6aa37f098d37@oracle.com>
+References: <1480019716-14225-1-git-send-email-tushar.n.dave@oracle.com>
+ <s5ha8cn9a9j.wl-tiwai@suse.de>
+ <20161125.115447.967164976172058750.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-pm-owner@vger.kernel.org>
-In-Reply-To: <6b97a129-bd10-b9be-616d-a3ea3b91b103@metafoo.de> (Lars-Peter
-        Clausen's message of "Thu, 10 Nov 2016 12:38:40 +0100")
-Sender: linux-pm-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Sebastian Reichel <sre@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-pm@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=iso-8859-7; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <sparclinux-owner@vger.kernel.org>
+In-Reply-To: <20161125.115447.967164976172058750.davem@davemloft.net>
+Sender: sparclinux-owner@vger.kernel.org
+To: David Miller <davem@davemloft.net>, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, thomas.tai@oracle.com, perex@perex.cz, sparclinux@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Lars-Peter Clausen <lars@metafoo.de> writes:
-...
 
-Ok Lars, let's do this : I integrate as many of your remarks as I can, and I
-respin this serie, limited to patches 1, 2, 3, 4 and 5.
 
-Then we'll iterate, that will enable me to settle the serie, as I was on
-holidays and lost a bit my track. I'll send it hopefully next week once I've
-gathered my thoughts.
+On 11/25/2016 08:54 AM, David Miller wrote:
+> From: Takashi Iwai <tiwai@suse.de>
+> Date: Fri, 25 Nov 2016 10:30:48 +0100
+>
+>> On Thu, 24 Nov 2016 21:35:16 +0100,
+>> Tushar Dave wrote:
+>>>
+>>> dbri uses 'u32' for dma handle while invoking kernel DMA APIs,
+>>> instead of using dma_addr_t. This hasn't caused any 'incompatible
+>>> pointer type' warning on SPARC because until now dma_addr_t is of
+>>> type u32. However, recent changes in SPARC ATU (iommu) enabled 64bit
+>>> DMA and therefore dma_addr_t became of type u64. This makes
+>>> 'incompatible pointer type' warnings inevitable.
+>>>
+>>> e.g.
+>>> sound/sparc/dbri.c: In function ¡snd_dbri_create¢:
+>>> sound/sparc/dbri.c:2538: warning: passing argument 3 of ¡dma_zalloc_coherent¢ from incompatible pointer type
+>>> ./include/linux/dma-mapping.h:608: note: expected ¡dma_addr_t *¢ but argument is of type ¡u32 *¢
+>>>
+>>> For the record, dbri(sbus) driver never executes on sun4v. Therefore
+>>> even though 64bit DMA is enabled on SPARC, dbri continues to use
+>>> legacy iommu that guarantees DMA address is always in 32bit range.
+>>>
+>>> This patch resolves above compiler warning.
+>>>
+>>> Signed-off-by: Tushar Dave <tushar.n.dave@oracle.com>
+>>> Reviewed-by: thomas tai <thomas.tai@oracle.com>
+>>> ---
+>>> v2->v3:
+>>> - Use %pad to print dma_addr_t. Comment by Takashi Iwai.
+>>
+>> Applied now.  Thanks!
+>
+> This patch is absolutely not appropriate for your tree Takashi.
+>
+> It's for the sparc tree because that's where the dma_addr_t
+> type was changed from 32-bit to 64-bit on sparc64, which is
+> what caused this build warning.
+>
+> Dave, please only send sparc specific driver patches to
+> sparclinux@vger.kernel.org in the future so we can avoid
+> this kind of problem.  The whole handling of the dma_addr_t
+> type change on sparc64 has been a real mess, quite honestly.
+I got your point. I will keep it in mind in future submission.
 
-Cheers.
+Thanks.
 
---
-Robert
+-Tushar
+
+>
