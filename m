@@ -1,98 +1,38 @@
-From: sutar.mounesh@gmail.com
-Subject: [PATCH] alsa-lib: Protect from freeing semaphore when
-	already in use
-Date: Fri, 25 Nov 2016 15:43:40 +0530
-Message-ID: <1480068821-16568-1-git-send-email-sutar.mounesh@gmail.com>
+From: Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [RFC PATCH v3 1/7] drm/i915: setup bridge for HDMI
+	LPE audio driver
+Date: Fri, 25 Nov 2016 12:52:11 +0200
+Message-ID: <8760nbvnl0.fsf@intel.com>
+References: <20161124235548.16440-1-jerome.anand@intel.com>
+ <20161124235548.16440-2-jerome.anand@intel.com>
+ <20161124133154.GQ31595@intel.com>
+ <F6867404AABACB4D8EC371BF802A4B7C14925AAA@fmsmsx101.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Joshua Frkuska <joshua_frkuska@mentor.com>, mounesh_sutar@mentor.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <F6867404AABACB4D8EC371BF802A4B7C14925AAA@fmsmsx101.amr.corp.intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "Anand, Jerome" <jerome.anand@intel.com>, Ville =?utf-8?B?U3lyasOk?= =?utf-8?B?bMOk?= <ville.syrjala@linux.intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Joshua Frkuska <joshua_frkuska@mentor.com>
-
-In the case of dshare, dsnoop, and dmix when a device is opened twice
-and fails the second time, the semaphore is completely discarded. This
-creates dangling semaphore data.
-
-This patch removes the possibility for the semaphore to be destroyed during
-a typical open failure by first checking if the shared memory can be destroyed
-or not. If the shared memory cannot be released it means both it and the
-semaphore are still in use and therefore the semaphore is just released.
-
-Signed-off-by: Joshua Frkuska <joshua_frkuska@mentor.com>
----
- src/pcm/pcm_dmix.c   |    7 ++++---
- src/pcm/pcm_dshare.c |    7 ++++---
- src/pcm/pcm_dsnoop.c |    8 +++++---
- 3 files changed, 13 insertions(+), 9 deletions(-)
-
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index 2bd5d39..b17f759 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -1128,9 +1128,10 @@ int snd_pcm_dmix_open(snd_pcm_t **pcmp, const char *name,
- 		snd_pcm_close(spcm);
- 	if (dmix->u.dmix.shmid_sum >= 0)
- 		shm_sum_discard(dmix);
--	if (dmix->shmid >= 0)
--		snd_pcm_direct_shm_discard(dmix);
--	if (snd_pcm_direct_semaphore_discard(dmix) < 0)
-+	if ((dmix->shmid >= 0) && (snd_pcm_direct_shm_discard(dmix))) {
-+		if (snd_pcm_direct_semaphore_discard(dmix))
-+			snd_pcm_direct_semaphore_final(dmix, DIRECT_IPC_SEM_CLIENT);
-+	} else
- 		snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);
-  _err_nosem:
- 	if (dmix) {
-diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index 5b32951..c080e7a 100644
---- a/src/pcm/pcm_dshare.c
-+++ b/src/pcm/pcm_dshare.c
-@@ -813,9 +813,10 @@ int snd_pcm_dshare_open(snd_pcm_t **pcmp, const char *name,
- 		snd_pcm_direct_client_discard(dshare);
- 	if (spcm)
- 		snd_pcm_close(spcm);
--	if (dshare->shmid >= 0)
--		snd_pcm_direct_shm_discard(dshare);
--	if (snd_pcm_direct_semaphore_discard(dshare) < 0)
-+	if ((dshare->shmid >= 0) && (snd_pcm_direct_shm_discard(dshare))) {
-+		if (snd_pcm_direct_semaphore_discard(dshare))
-+			snd_pcm_direct_semaphore_final(dshare, DIRECT_IPC_SEM_CLIENT);
-+	} else
- 		snd_pcm_direct_semaphore_up(dshare, DIRECT_IPC_SEM_CLIENT);
-  _err_nosem:
- 	if (dshare) {
-diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index 055e4f4..74a3531 100644
---- a/src/pcm/pcm_dsnoop.c
-+++ b/src/pcm/pcm_dsnoop.c
-@@ -712,10 +712,12 @@ int snd_pcm_dsnoop_open(snd_pcm_t **pcmp, const char *name,
- 		snd_pcm_direct_client_discard(dsnoop);
- 	if (spcm)
- 		snd_pcm_close(spcm);
--	if (dsnoop->shmid >= 0)
--		snd_pcm_direct_shm_discard(dsnoop);
--	if (snd_pcm_direct_semaphore_discard(dsnoop) < 0)
-+	if ((dsnoop->shmid >= 0) && (snd_pcm_direct_shm_discard(dsnoop))) {
-+		if (snd_pcm_direct_semaphore_discard(dsnoop))
-+			snd_pcm_direct_semaphore_final(dsnoop, DIRECT_IPC_SEM_CLIENT);
-+	} else
- 		snd_pcm_direct_semaphore_up(dsnoop, DIRECT_IPC_SEM_CLIENT);
-+
-  _err_nosem:
- 	if (dsnoop) {
- 		free(dsnoop->bindings);
--- 
-1.7.9.5
+Ckplcm9tZSAtCgpUaGUgc2FtZSBhcyBsYXN0IHRpbWUsIEkgZGlkbid0IHJlY2VpdmUgYW55IG9m
+IHRoZSBwYXRjaGVzLCBuZWl0aGVyIHRoZQppbnRlbC1nZnggbm9yIGFsc2EtZGV2ZWwgbGlzdCBh
+cmNoaXZlcyBoYXZlIHRoZW0sIHBhdGNod29yayBkb2Vzbid0IGhhdmUKdGhlbSwgdGhleSdyZSBu
+b3QgaW4gaW50ZWwtZ2Z4IG1vZGVyYXRpb24gcXVldWV1LiBJIG9ubHkgaGF2ZSB0aGUKcmVwbGll
+cy4KClBsZWFzZSBjaGVjayB5b3VyIHNldHVwLCBhbmQgbWFrZSBzdXJlIHlvdXIgcGF0Y2hlcyBh
+Y3R1YWxseSBoaXQgdGhlCmxpc3RzLgoKVGhhbmtzLApKYW5pLgoKCi0tIApKYW5pIE5pa3VsYSwg
+SW50ZWwgT3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50ZXIKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1n
+ZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
+aWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
