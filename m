@@ -1,69 +1,93 @@
-From: tndave <tushar.n.dave@oracle.com>
-Subject: Re: [PATCH v3] dbri: Fix compiler warning
-Date: Fri, 25 Nov 2016 12:23:04 -0800
-Message-ID: <9d1c84e8-253d-c78b-db5f-6aa37f098d37@oracle.com>
-References: <1480019716-14225-1-git-send-email-tushar.n.dave@oracle.com>
- <s5ha8cn9a9j.wl-tiwai@suse.de>
- <20161125.115447.967164976172058750.davem@davemloft.net>
+From: marve <marve@xs4all.nl>
+Subject: Re: problem with the driver for ALC3260 sound chip
+Date: Fri, 25 Nov 2016 22:22:59 +0100
+Message-ID: <763c7ae9-9f12-484d-e1ec-0bc7a09cb066@xs4all.nl>
+References: <5e459889-c43b-6327-9928-b5a890a3c65e@xs4all.nl>
+ <s5htwav5vyg.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-7; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <sparclinux-owner@vger.kernel.org>
-In-Reply-To: <20161125.115447.967164976172058750.davem@davemloft.net>
-Sender: sparclinux-owner@vger.kernel.org
-To: David Miller <davem@davemloft.net>, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, thomas.tai@oracle.com, perex@perex.cz, sparclinux@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lb3-smtp-cloud3.xs4all.net (lb3-smtp-cloud3.xs4all.net
+ [194.109.24.30])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35F70266685
+ for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2016 22:23:00 +0100 (CET)
+In-Reply-To: <s5htwav5vyg.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
-
-On 11/25/2016 08:54 AM, David Miller wrote:
-> From: Takashi Iwai <tiwai@suse.de>
-> Date: Fri, 25 Nov 2016 10:30:48 +0100
->
->> On Thu, 24 Nov 2016 21:35:16 +0100,
->> Tushar Dave wrote:
->>>
->>> dbri uses 'u32' for dma handle while invoking kernel DMA APIs,
->>> instead of using dma_addr_t. This hasn't caused any 'incompatible
->>> pointer type' warning on SPARC because until now dma_addr_t is of
->>> type u32. However, recent changes in SPARC ATU (iommu) enabled 64bit
->>> DMA and therefore dma_addr_t became of type u64. This makes
->>> 'incompatible pointer type' warnings inevitable.
->>>
->>> e.g.
->>> sound/sparc/dbri.c: In function ¡snd_dbri_create¢:
->>> sound/sparc/dbri.c:2538: warning: passing argument 3 of ¡dma_zalloc_coherent¢ from incompatible pointer type
->>> ./include/linux/dma-mapping.h:608: note: expected ¡dma_addr_t *¢ but argument is of type ¡u32 *¢
->>>
->>> For the record, dbri(sbus) driver never executes on sun4v. Therefore
->>> even though 64bit DMA is enabled on SPARC, dbri continues to use
->>> legacy iommu that guarantees DMA address is always in 32bit range.
->>>
->>> This patch resolves above compiler warning.
->>>
->>> Signed-off-by: Tushar Dave <tushar.n.dave@oracle.com>
->>> Reviewed-by: thomas tai <thomas.tai@oracle.com>
->>> ---
->>> v2->v3:
->>> - Use %pad to print dma_addr_t. Comment by Takashi Iwai.
+On 11/25/2016 06:08 PM, Takashi Iwai wrote:
+> On Wed, 23 Nov 2016 21:42:26 +0100,
+> marve wrote:
+>> Dear all,
 >>
->> Applied now.  Thanks!
+>> Here a rephrase of my issue with TOSLINK SPDIF output of my Dell XPS One
+>> 2710 system running Linux.
+>>
+>>
+>> First: I have tried other hardware with my DTS receiver and the receiver
+>> worked fine. Also I have checked the HDMI output of my computer, also
+>> working!
+>>
+>> Second: The SPDIF output worked fine on a Windows 7 installation with
+>> PCM and DTS. I stopped using Windows privately.
+>>
+>> Most success I got with debugging the SPDIF TOSLINK is:
+>> - With the HDA Intel sound cards Jack Retasking tool:
+>>      - Check Showing unconnected pins. Actually, the TOSLINK is
+>> connected but shows "not connected" in the tool.
+>>      - Manually override Pin ID 0x1e
+>>      - Select "SPDIF Out" and "Apply Now"
+> You're sure that this pin is correct?  I mean, did you get *any*
+> signal from the SPDIF I/O by enabling this pin?
 >
-> This patch is absolutely not appropriate for your tree Takashi.
+ No signal at all from the SPDIF Toslink port! The reason trying this
+pin is that when overridden, it shows "SPDIF Out".
+>> - Then with PulseAudio Volume Control:
+>>     -  In the Configuration Tab, select "Profile: Digital Stereo
+>> (IEC958) Output"
+>>     -  In the Output Devices "Digital Output (S/PDIF)" appears and is
+>> the only option and in the advanced tab PCM, DTS, AC3, MPEG, EAC3, AAC
+>> are selected
+>>
+>>  - I check if in alsamixer tool that the SPDIF channel is unmuted
+>>
+>> When I play a sound, the vumeter of PulseAudio Volume Control does
+>> react, see png attachment (https://postimg.org/image/5tu4rax9t/), but my
+>> external DTS receiver doesn't get input!
+> First off, you should try the normal audio PCM stream instead of DTS
+> or such.  It's possible that the SPDIF status bits aren't properly set
+> and the receiver doesn't accept the non-audio signals.
+ Ok, I deselected all other streams except PCM, no signal.. (Will do
+this in future tests).
+
+> And, as a primary testing, please test with aplay.  You can pass
+> -Dspdif or -Dspdif:1 option to transmit over the SPDIF device.
+ I was able to run "aplay -Dspdif" without errors. I also checked in
+another terminal if the alsamixer showed the s/pdif channels unmuted.
+They are unmuted, but I didn't get a signal to my audio receiver. 
+
+"aplay -Dspdif:1" didn't work: "Cannot find card".
+> Last but not least, check the IEC958 status bits of the assigned PCM.
+> You can use iecset program in alsa-utils for checking / setting the
+> bits.
 >
-> It's for the sparc tree because that's where the dma_addr_t
-> type was changed from 32-bit to 64-bit on sparc64, which is
-> what caused this build warning.
->
-> Dave, please only send sparc specific driver patches to
-> sparclinux@vger.kernel.org in the future so we can avoid
-> this kind of problem.  The whole handling of the dma_addr_t
-> type change on sparc64 has been a real mess, quite honestly.
-I got your point. I will keep it in mind in future submission.
+iecset -x shows:
 
-Thanks.
+AES0=0x05,AES1=0x82,AES2=0x00,AES3=0x00
 
--Tushar
-
+Best,
+Marijn
+> Takashi
 >
