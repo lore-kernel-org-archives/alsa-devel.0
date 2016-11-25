@@ -1,92 +1,71 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH v2 6/8] ASoC: sun4i-codec: Add support for H3 codec
-Date: Fri, 25 Nov 2016 13:58:19 +0100
-Message-ID: <20161125125819.2tillw7khiu42epe@lukather>
-References: <20161125123442.28410-1-wens@csie.org>
- <20161125123442.28410-7-wens@csie.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6665123836601225916=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20161125123442.28410-7-wens@csie.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Mylene Josserand <mylene.josserand@free-electrons.com>, Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: sunxi: Uninitialized variable in probe()" to the asoc tree
+Date: Fri, 25 Nov 2016 13:09:58 +0000
+Message-ID: <E1cAGGM-00054x-Q1@debutante>
+References: <20161123222906.GA27895@mwanda>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <20161123222906.GA27895@mwanda>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6665123836601225916==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2cwe4dwuj7bfqjzl"
-Content-Disposition: inline
+   ASoC: sunxi: Uninitialized variable in probe()
 
+has been applied to the asoc tree at
 
---2cwe4dwuj7bfqjzl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Nov 25, 2016 at 08:34:40PM +0800, Chen-Yu Tsai wrote:
-> The codec on the H3 is similar to the one found on the A31. One key
-> difference is the analog path controls are routed through the PRCM
-> block. This is supported by the sun8i-codec-analog driver, and tied
-> into this codec driver with the audio card's aux_dev.
->=20
-> In addition, the H3 has no HP (headphone) and HBIAS support, and no
-> MIC3 input. The FIFO related registers are slightly rearranged.
->=20
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> Acked-by: Rob Herring <robh@kernel.org>
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Maxime
+Mark
 
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+>From 999982ef7c7f8aa131d32ef551897804443a40a1 Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Thu, 24 Nov 2016 01:29:06 +0300
+Subject: [PATCH] ASoC: sunxi: Uninitialized variable in probe()
 
---2cwe4dwuj7bfqjzl
-Content-Type: application/pgp-signature; name="signature.asc"
+Oddly enough, my version of GCC misses this uninitialized variable.
 
------BEGIN PGP SIGNATURE-----
+Fixes: ba2ff3027b5a ("ASoC: sunxi: Add support for A23/A33/H3 codec's analog path controls")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sunxi/sun8i-codec-analog.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-iQIcBAEBCAAGBQJYODVrAAoJEBx+YmzsjxAgJNQQAJuM5+OLxQLU6/+henLp2cBs
-FfbFBzIge/1LG+GOrI71q93U5D13fOD6lOYahanKzlLEI7MHXz+e9CcTF2N/8l+H
-OXC+8fvnwlgvOKNy2+UQRQswOp7KH3EL0ZGFG9pclkemuDhqYIciaEYFnsKWYjWv
-0K1cWIQ0IPpwlVerWrWn8iZIl+oRAM2qiuRNkv+1ysdwdEgmkbGpjZexz9xgQoqT
-zO3EYG4zJJ/vZcQ97EXM0JiDhtqfTEcQVbszX0uJ/THBMKjGVwWi+cSH4vhvD/3e
-5lGyfR2bGYJZx5aXPe52Sk0iD1YzfD5VPb643K8Ua1GVYOR/x4Y8KeLXKE/QB+86
-68PnxGfLZ3Gp0oHANC2+3Plouey0huhrmfio52bcD2BQ1wnA9NEGoqmaFo3GF/vl
-2n4O/7fR8INu9NX4NeBKBmhRjQx/FIpYGM2AOWZ+j/ZcDaan5CE0xxJOo//7wSK8
-mSe23aFr2GVWsvWu4aSQlbwO9MDav/vuSCYddEL29T2RcSd/8D19GWBDrZuvMmBt
-cTj0qeNtP3TCm0sArxfIuf+DUvzy2bJj2TpsGMwXHMGImcRGnYywQd/2pr5N833W
-EZSCb8UPJFQRJ7yUGsPbvGO6b8mKzgTF7MaVQrMBKBcwwUZ9VC11QHJZGVdTEmfM
-HD6GDPivwdUXuIFhYi3z
-=L0Gh
------END PGP SIGNATURE-----
+diff --git a/sound/soc/sunxi/sun8i-codec-analog.c b/sound/soc/sunxi/sun8i-codec-analog.c
+index 222bbd440b1e..af02290ebe49 100644
+--- a/sound/soc/sunxi/sun8i-codec-analog.c
++++ b/sound/soc/sunxi/sun8i-codec-analog.c
+@@ -589,7 +589,7 @@ static int sun8i_codec_analog_cmpnt_probe(struct snd_soc_component *cmpnt)
+ 	}
+ 
+ 	if (quirks->has_hmic) {
+-		sun8i_codec_add_hmic(cmpnt);
++		ret = sun8i_codec_add_hmic(cmpnt);
+ 		if (ret)
+ 			return ret;
+ 	}
+-- 
+2.10.2
 
---2cwe4dwuj7bfqjzl--
-
-
---===============6665123836601225916==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============6665123836601225916==--
