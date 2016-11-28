@@ -1,39 +1,41 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: atom: Make some messages to
-	debug level
-Date: Mon, 28 Nov 2016 21:23:32 +0530
-Message-ID: <20161128155331.GH6408@localhost>
-References: <20161128152640.29566-1-tiwai@suse.de>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH 5/5] Input: arizona-haptics - Use SoC component pin
+ control functions
+Date: Mon, 28 Nov 2016 10:53:57 -0800
+Message-ID: <20161128185357.GA28810@dtor-glaptop>
+References: <1480354350-24978-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1480354350-24978-6-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 911D3266E65
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 16:43:54 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-input-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20161128152640.29566-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <1480354350-24978-6-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: broonie@kernel.org, cw00.choi@samsung.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, myungjoo.ham@samsung.com, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 28, 2016 at 04:26:40PM +0100, Takashi Iwai wrote:
-> Intel sst driver spews lots of kernel messages in INFO level;
-> typically, it gives a kernel message at each time it allocates or
-> frees a stream, or at each time when a stream is started or stopped.
-> This will piles up quickly, and it's almost useless for normal users,
-> so let's hide them to KERN_DEBUG level.
+Hi Richard,
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+On Mon, Nov 28, 2016 at 05:32:30PM +0000, Richard Fitzgerald wrote:
+> The name of a codec pin can have an optional prefix string, which is
+> defined by the SoC machine driver. The snd_soc_dapm_x_pin functions
+> take the fully-specified name including the prefix and so the existing
+> code would fail to find the pin if the audio machine driver had added
+> a prefix.
+> 
+> Switch to using the snd_soc_component_x_pin equivalent functions that
+> take a specified SoC component and automatically add the name prefix to
+> the provided pin name.
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+
+If ASOC folks are fine with this then I am otto. Please merge with the rest of
+Arizona changes.
+
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+
+Thanks.
 
 -- 
-~Vinod
+Dmitry
