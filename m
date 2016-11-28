@@ -1,139 +1,92 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/5] ASoC: arizona: Use component pin control functions
-Date: Tue, 29 Nov 2016 09:25:21 +0000
-Message-ID: <20161129092521.GF1867@localhost.localdomain>
-References: <1480354350-24978-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1480354350-24978-3-git-send-email-rf@opensource.wolfsonmicro.com>
+From: <manohar.narkhede@imgtec.com>
+Subject: [PATCH - alsa-lib 1/1] conf/cards: add support for
+	pistachio-card.
+Date: Mon, 28 Nov 2016 15:03:11 +0530
+Message-ID: <1480325591-4681-1-git-send-email-manohar.narkhede@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1480354350-24978-3-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: broonie@kernel.org, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, myungjoo.ham@samsung.com, linux-input@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: Manohar Narkhede <Manohar.Narkhede@imgtec.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 28, 2016 at 05:32:27PM +0000, Richard Fitzgerald wrote:
-> We need to modify the state of some of our own pins and are currently
-> not taking account that the pin name may have a name_prefix applied
-> to it.
-> 
-> Replace the snd_soc_dapm_x_pin functions with the equivalent
-> snd_soc_component_x_pin functions so that any name_prefix will be
-> handled automatically.
-> 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/arizona.c | 13 ++++++++-----
->  sound/soc/codecs/cs47l24.c |  2 +-
->  sound/soc/codecs/wm5102.c  |  2 +-
->  sound/soc/codecs/wm5110.c  |  2 +-
->  sound/soc/codecs/wm8998.c  |  2 +-
->  5 files changed, 12 insertions(+), 9 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-> index ca5ca9e..01f6ec7 100644
-> --- a/sound/soc/codecs/arizona.c
-> +++ b/sound/soc/codecs/arizona.c
-> @@ -256,7 +256,7 @@ int arizona_init_mono(struct snd_soc_codec *codec)
->  
->  int arizona_init_gpio(struct snd_soc_codec *codec)
->  {
-> -	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-> +	struct snd_soc_component *component = &codec->component;
+From: Manohar Narkhede <Manohar.Narkhede@imgtec.com>
 
-We should probably use snd_soc_dapm_to_component(dapm); here.
+Signed-off-by: Manohar Narkhede <Manohar.Narkhede@imgtec.com>
 
->  	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
->  	struct arizona *arizona = priv->arizona;
->  	int i;
-> @@ -264,21 +264,24 @@ int arizona_init_gpio(struct snd_soc_codec *codec)
->  	switch (arizona->type) {
->  	case WM5110:
->  	case WM8280:
-> -		snd_soc_dapm_disable_pin(dapm, "DRC2 Signal Activity");
-> +		snd_soc_component_disable_pin(component,
-> +					      "DRC2 Signal Activity");
->  		break;
->  	default:
->  		break;
->  	}
->  
-> -	snd_soc_dapm_disable_pin(dapm, "DRC1 Signal Activity");
-> +	snd_soc_component_disable_pin(component, "DRC1 Signal Activity");
->  
->  	for (i = 0; i < ARRAY_SIZE(arizona->pdata.gpio_defaults); i++) {
->  		switch (arizona->pdata.gpio_defaults[i] & ARIZONA_GPN_FN_MASK) {
->  		case ARIZONA_GP_FN_DRC1_SIGNAL_DETECT:
-> -			snd_soc_dapm_enable_pin(dapm, "DRC1 Signal Activity");
-> +			snd_soc_component_enable_pin(component,
-> +						     "DRC1 Signal Activity");
->  			break;
->  		case ARIZONA_GP_FN_DRC2_SIGNAL_DETECT:
-> -			snd_soc_dapm_enable_pin(dapm, "DRC2 Signal Activity");
-> +			snd_soc_component_enable_pin(component,
-> +						     "DRC2 Signal Activity");
->  			break;
->  		default:
->  			break;
-> diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-> index 1ed1329..275c58a 100644
-> --- a/sound/soc/codecs/cs47l24.c
-> +++ b/sound/soc/codecs/cs47l24.c
-> @@ -1138,7 +1138,7 @@ static int cs47l24_codec_probe(struct snd_soc_codec *codec)
->  	if (ret)
->  		goto err_adsp2_codec_probe;
->  
-> -	snd_soc_dapm_disable_pin(dapm, "HAPTICS");
-> +	snd_soc_component_disable_pin(&codec->component, "HAPTICS");
-
-ditto for these calls as well.
-
->  
->  	return 0;
->  
-> diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-> index 72ff291..aa590ed 100644
-> --- a/sound/soc/codecs/wm5102.c
-> +++ b/sound/soc/codecs/wm5102.c
-> @@ -1947,7 +1947,7 @@ static int wm5102_codec_probe(struct snd_soc_codec *codec)
->  	arizona_init_gpio(codec);
->  	arizona_init_notifiers(codec);
->  
-> -	snd_soc_dapm_disable_pin(dapm, "HAPTICS");
-> +	snd_soc_component_disable_pin(&codec->component, "HAPTICS");
->  
->  	priv->core.arizona->dapm = dapm;
->  
-> diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-> index a9a8bc9..45815b9 100644
-> --- a/sound/soc/codecs/wm5110.c
-> +++ b/sound/soc/codecs/wm5110.c
-> @@ -2295,7 +2295,7 @@ static int wm5110_codec_probe(struct snd_soc_codec *codec)
->  	if (ret)
->  		goto err_adsp2_codec_probe;
->  
-> -	snd_soc_dapm_disable_pin(dapm, "HAPTICS");
-> +	snd_soc_component_disable_pin(&codec->component, "HAPTICS");
->  
->  	return 0;
->  
-> diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
-> index 1e1d9c1..7ccc931 100644
-> --- a/sound/soc/codecs/wm8998.c
-> +++ b/sound/soc/codecs/wm8998.c
-> @@ -1327,7 +1327,7 @@ static int wm8998_codec_probe(struct snd_soc_codec *codec)
->  	arizona_init_gpio(codec);
->  	arizona_init_notifiers(codec);
->  
-> -	snd_soc_dapm_disable_pin(dapm, "HAPTICS");
-> +	snd_soc_component_disable_pin(&codec->component, "HAPTICS");
->  
->  	return 0;
->  }
-> -- 
-> 1.9.1
-
-Thanks,
-Charles
+diff --git a/src/conf/cards/Makefile.am b/src/conf/cards/Makefile.am
+index 008d399..60b5309 100644
+--- a/src/conf/cards/Makefile.am
++++ b/src/conf/cards/Makefile.am
+@@ -39,6 +39,7 @@ cfg_files = aliases.conf \
+ 	Maestro3.conf \
+ 	NFORCE.conf \
+ 	PC-Speaker.conf \
++	pistachio-card.conf \
+ 	PMac.conf \
+ 	PMacToonie.conf \
+ 	PS3.conf \
+diff --git a/src/conf/cards/aliases.conf b/src/conf/cards/aliases.conf
+index 4a92fb2..60f9d26 100644
+--- a/src/conf/cards/aliases.conf
++++ b/src/conf/cards/aliases.conf
+@@ -55,6 +55,7 @@ AV100 cards.CMI8788
+ AV200 cards.CMI8788
+ CMI8786 cards.CMI8788
+ CMI8787 cards.CMI8788
++pistachio cards.pistachio-card
+ 
+ <confdir:pcm/default.conf>
+ <confdir:pcm/dmix.conf>
+diff --git a/src/conf/cards/pistachio-card.conf b/src/conf/cards/pistachio-card.conf
+new file mode 100644
+index 0000000..9c0318d
+--- /dev/null
++++ b/src/conf/cards/pistachio-card.conf
+@@ -0,0 +1,34 @@
++#
++# Configuration for the pistachio chip
++#
++
++pistachio-card.pcm.default{
++        @args [ CARD ]
++        @args.CARD {
++                type string
++                default "pistachio"
++        }
++        @args.DEVICE {
++                type integer
++                default 2
++        }
++
++        type asym
++        capture.pcm {
++                type multi
++                slaves.a.pcm "hw:0,4"
++                slaves.a.channels 12
++                bindings.0.slave a
++                bindings.0.channel 4
++                bindings.1.slave a
++                bindings.1.channel 5
++        }
++
++        playback.pcm {
++                type hw
++                card $CARD
++                device $DEVICE
++
++        }
++
++}
+-- 
+2.1.0
