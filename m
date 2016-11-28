@@ -1,72 +1,107 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt298: disable IRQ when jack is NULL
-Date: Mon, 28 Nov 2016 13:24:06 +0800
-Message-ID: <1480310646-16354-1-git-send-email-bardliao@realtek.com>
+From: Russell King - ARM Linux <linux@armlinux.org.uk>
+Subject: Re: [PATCH v2] clkdev: add devm_of_clk_get()
+Date: Mon, 28 Nov 2016 09:14:56 +0000
+Message-ID: <20161128091456.GR14217@n2100.armlinux.org.uk>
+References: <8737icayac.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 396F7266A76
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 06:24:28 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, vinod.koul@intel.com, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <8737icayac.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Stephen Boyd <sboyd@codeaurora.org>, Rob Herring <robh@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Linux-DT <devicetree@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, Linux-Kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org, Linux-ARM <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Disable IRQ when jack is NULL in rt298_mic_detect. So machine driver
-can use it in suspend/resume.
+On Mon, Nov 28, 2016 at 06:56:52AM +0000, Kuninori Morimoto wrote:
+> Current Linux has of_clk_get(), but doesn't have devm_of_clk_get().
+> This patch adds it. This is based on devm_clk_get()
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt298.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+Please put this in drivers/clk/clk-devres.c, where you'll find that
+we have devm_clk_release() which is identical to your
+devm_of_clk_release().  It'll also not need the dummy definition of
+devm_of_clk_get().
 
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index 2db8179..7150a40 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -326,11 +326,31 @@ static void rt298_jack_detect_work(struct work_struct *work)
- int rt298_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
- {
- 	struct rt298_priv *rt298 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_dapm_context *dapm;
-+	bool hp = false;
-+	bool mic = false;
-+	int status = 0;
-+
-+	/* If jack in NULL, disable HS jack */
-+	if (!jack) {
-+		regmap_update_bits(rt298->regmap, RT298_IRQ_CTRL, 0x2, 0x0);
-+		dapm = snd_soc_codec_get_dapm(codec);
-+		snd_soc_dapm_disable_pin(dapm, "LDO1");
-+		snd_soc_dapm_sync(dapm);
-+		return 0;
-+	}
- 
- 	rt298->jack = jack;
-+	regmap_update_bits(rt298->regmap, RT298_IRQ_CTRL, 0x2, 0x2);
- 
--	/* Send an initial empty report */
--	snd_soc_jack_report(rt298->jack, 0,
-+	rt298_jack_detect(rt298, &hp, &mic);
-+	if (hp == true)
-+		status |= SND_JACK_HEADPHONE;
-+
-+	if (mic == true)
-+		status |= SND_JACK_MICROPHONE;
-+
-+	snd_soc_jack_report(rt298->jack, status,
- 		SND_JACK_MICROPHONE | SND_JACK_HEADPHONE);
- 
- 	return 0;
+Thanks.
+
+> ---
+> v1 -> v2
+> 
+>  - update git log
+> 
+>  drivers/clk/clkdev.c | 26 ++++++++++++++++++++++++++
+>  include/linux/clk.h  |  7 +++++++
+>  2 files changed, 33 insertions(+)
+> 
+> diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
+> index 89cc700..93a613b 100644
+> --- a/drivers/clk/clkdev.c
+> +++ b/drivers/clk/clkdev.c
+> @@ -55,6 +55,32 @@ struct clk *of_clk_get(struct device_node *np, int index)
+>  }
+>  EXPORT_SYMBOL(of_clk_get);
+>  
+> +static void devm_of_clk_release(struct device *dev, void *res)
+> +{
+> +	clk_put(*(struct clk **)res);
+> +}
+> +
+> +struct clk *devm_of_clk_get(struct device *dev,
+> +			    struct device_node *np, int index)
+> +{
+> +	struct clk **ptr, *clk;
+> +
+> +	ptr = devres_alloc(devm_of_clk_release, sizeof(*ptr), GFP_KERNEL);
+> +	if (!ptr)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	clk = of_clk_get(np, index);
+> +	if (!IS_ERR(clk)) {
+> +		*ptr = clk;
+> +		devres_add(dev, ptr);
+> +	} else {
+> +		devres_free(ptr);
+> +	}
+> +
+> +	return clk;
+> +}
+> +EXPORT_SYMBOL(devm_of_clk_get);
+> +
+>  static struct clk *__of_clk_get_by_name(struct device_node *np,
+>  					const char *dev_id,
+>  					const char *name)
+> diff --git a/include/linux/clk.h b/include/linux/clk.h
+> index a89ba4e..33cd540 100644
+> --- a/include/linux/clk.h
+> +++ b/include/linux/clk.h
+> @@ -502,6 +502,8 @@ struct of_phandle_args;
+>  
+>  #if defined(CONFIG_OF) && defined(CONFIG_COMMON_CLK)
+>  struct clk *of_clk_get(struct device_node *np, int index);
+> +struct clk *devm_of_clk_get(struct device *dev,
+> +			    struct device_node *np, int index);
+>  struct clk *of_clk_get_by_name(struct device_node *np, const char *name);
+>  struct clk *of_clk_get_from_provider(struct of_phandle_args *clkspec);
+>  #else
+> @@ -509,6 +511,11 @@ static inline struct clk *of_clk_get(struct device_node *np, int index)
+>  {
+>  	return ERR_PTR(-ENOENT);
+>  }
+> +static inline struct clk *devm_of_clk_get(struct device *dev,
+> +			    struct device_node *np, int index)
+> +{
+> +	return ERR_PTR(-ENOENT);
+> +}
+>  static inline struct clk *of_clk_get_by_name(struct device_node *np,
+>  					     const char *name)
+>  {
+> -- 
+> 1.9.1
+> 
+
 -- 
-1.8.1.1.439.g50a6b54
+RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
