@@ -1,35 +1,71 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: rt298: disable IRQ when jack is NULL
-Date: Mon, 28 Nov 2016 21:25:47 +0530
-Message-ID: <20161128155547.GJ6408@localhost>
-References: <1480310646-16354-1-git-send-email-bardliao@realtek.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH v3 2/7] drm/i915: Add support for audio
+ driver notifications
+Date: Mon, 28 Nov 2016 13:13:31 -0600
+Message-ID: <bd87ae9c-cbde-87f3-8b0d-700df08b2585@linux.intel.com>
+References: <20161124235548.16440-1-jerome.anand@intel.com>
+ <20161124235548.16440-3-jerome.anand@intel.com>
+ <20161124133240.GR31595@intel.com>
+ <F6867404AABACB4D8EC371BF802A4B7C14925ABA@fmsmsx101.amr.corp.intel.com>
+ <20161128140008.GB31595@intel.com>
+ <F6867404AABACB4D8EC371BF802A4B7C14927355@fmsmsx101.amr.corp.intel.com>
+ <20161128170108.GK31595@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 39B5B266E65
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 16:46:11 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1480310646-16354-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20161128170108.GK31595@intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, "Anand, Jerome" <jerome.anand@intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "broonie@kernel.org" <broonie@kernel.org>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 28, 2016 at 01:24:06PM +0800, Bard Liao wrote:
-> Disable IRQ when jack is NULL in rt298_mic_detect. So machine driver
-> can use it in suspend/resume.
-
-Reviewed-by: Vinod Koul <vinod.koul@intel.com>
-
--- 
-~Vinod
+Ck9uIDExLzI4LzE2IDExOjAxIEFNLCBWaWxsZSBTeXJqw6Rsw6Qgd3JvdGU6Cj4+Pj4+PiArCQkJ
+aWYgKHBkYXRhLT5ub3RpZnlfYXVkaW9fbHBlKQo+Pj4+Pj4gKwkJCQlwZGF0YS0+bm90aWZ5X2F1
+ZGlvX2xwZSgKPj4+Pj4+ICsJCQkJCShlbGQgIT0gTlVMTCkgPyAmcGRhdGEtPmVsZCA6IE5VTEwp
+Owo+Pj4+Pj4gKwkJCWVsc2UKPj4+Pj4+ICsJCQkJcGRhdGEtPm5vdGlmeV9wZW5kaW5nID0gdHJ1
+ZTsKPj4+Pj4gU3RpbGwgbm90IHN1cmUgd2h5IHRoZSAicGVuZGluZyIgdGhpbmcgaXMgdXNlZnVs
+LiBDYW4ndCB0aGUgYXVkaW8KPj4+Pj4gZHJpdmVyIGp1c3QgZG8gaXRzIHRoaW5nICh3aGF0ZXZl
+ciBpdCBpcykgdW5jb25kaXRpb25hbGx5Pwo+Pj4+Pgo+Pj4+IFRoaXMgaXMgYWRkZWQgdG8gYXZv
+aWQgcmFjZSB3aGVuIGF1ZGlvIGRyaXZlciBsb2FkcyBsYXRlIGFuZCB0aGUgbm90aWZpY2F0aW9u
+Cj4+PiBmcm9tIGRpc3BsYXkgaGFzIGFscmVhZHkgcGFzc2VkLgo+Pj4KPj4+IFlvdSBrZWVwIHNh
+eWluZyB0aGF0IGJ1dCBJIGNhbid0IHNlZSBpdC4KPj4+Cj4+IEkgaGF2ZSBzZWVuIHRoaXMgaGFw
+cGVuIC0gYmVmb3JlIGF1ZGlvIGRyaXZlciBpcyBsb2FkZWQsIGNvZGVjIGVuYWJsZSBjb21wbGV0
+ZXMgYW5kIG5vdGlmaWNhdGlvbiBpcyBzZW50IHRvIHRoZSBhdWRpbyBkcml2ZXIuCj4+IFNpbmNl
+IHRoZSBhdWRpbyBjYWxsYmFja3MgYXJlIG5vdCBpbml0aWFsaXplZCwgbm90aWZpY2F0aW9uIGdl
+dHMgbWlzc2VkLgo+IFN1cmUuIEJ1dCB3aGF0IGRvZXMgdGhlIGV4dHJhIG5vdGlmaWNhdGlvbl9w
+ZW5kaW5nIGZsYWcgYnV5IHVzPyBUaGUKPiBhdWRpbyBkcml2ZXIgY291bGQganVzdCBjaGVjayB0
+aGUgZWxkL3RtZHNfY2xvY2svcG9ydCBkaXJlY3RseS4KPgo+Pj4+PiBXaGVuIGRpc2FibGluZyBq
+dXN0IGNsZWFyIHRoZSBwb3J0IHRvIElOVkFMSUQsIGVsZCB0byB6ZXJvLCBhbmQgdG1kcwo+Pj4+
+PiBjbG9jayB0byAwLCBhbmQgaXQgc2hvdWxkIGFsbCBiZSBmaW5lIG5vPwo+Pj4+Pgo+Pj4+IFll
+cywgdGhhdCdzIHdoYXQgaXMgYmVpbmcgZG9uZS4KPj4+IFdoZXJlPwo+Pj4KPj4gTm90aWZ5IGNh
+bGxiYWNrIHdpbGwgaGF2ZSBlbGQgdG8gTlVMTCBhbmQgdG1kcyB0byB6ZXJvIHNlbnQgaW4gY29k
+ZWNfZGlzYWJsZQo+IEJ1dCB0aGUgZHJpdmVyIGNhbiBsb29rIHRob3NlIHRoaWducyB1cCBkaXJl
+Y3RseSBhcyB3ZWxsIGl0IHNlZW1zLiBTbwo+IHRoaXMgd2hvbGUgdGhpbmcgaXMgYSBiaXQgb2Yg
+YSBtZXNzIG9uIGFjY291bnQgb2Ygc2hhcmluZyB0aGUgcGxhdGZvcm0KPiBhcyBhIGNvbW11bmlj
+YXRpb24gY2hhbm5lbCBhbmQgYWxzbyB0cnlpbmcgdG8gcGFzcyB0aGUgdGhpbmdzIGFzCj4gcGFy
+YWFtZXRlcnMgdG8gdGhlIG5vdGlmeSBob29rLiBJIHRoaW5rIHdlIG5lZWQgdG8gcGljayBvbmUg
+b3IgdGhlIG90aGVyCj4gYXBwcm9hY2gsIG5vdCBzb21lIG1pc21hc2ggb2YgYm90aC4KCkluZGVl
+ZCBpdCBsb29rcyB3ZWlyZCB0byBoYXZlIGJvdGggYSBwYXJhbWV0ZXIgZm9yIHRtZHNfY2xvY2sg
+aW4gdGhlIApwZGF0YSBBTkQgdGhlIG5vdGlmeSBwYXJhbWV0ZXIsIHRoaXMgY2FuIHByb2JhYmx5
+IGJlIGNsZWFuZWQtdXAuCgpUaGF0IHNhaWQsIEkgYW0gbm90IHN1cmUgSSBjb21wbGV0ZWx5IHVu
+ZGVyc3RhbmQgdGhlIGZlZWRiYWNrIHRoYXQgdGhlIAphdWRpbyBkcml2ZXIgY2FuIGdldCBhbGwg
+dGhlIGVsZC90bWRzL3BvcnQgaW5mb3JtYXRpb24gZGlyZWN0bHkuIFdlIGFyZSAKdHJ5aW5nIHRv
+IGF2b2lkIGFjY2Vzc2luZyB0aGUgZGF0YSBzdHJ1Y3R1cmVzIG9mIHRoZSBpOTE1IGRyaXZlci4g
+QXJlIAp5b3Ugc3VnZ2VzdGluZyBhIHNjaGVtZSB3aGVyZSB0aGUgaTkxNSBkcml2ZXIgd291bGQg
+anVzdCBwcm92aWRlIGEgCmRvb3ItYmVsbCBsaWtlIG5vdGlmaWNhdGlvbiBhbmQgdGhlIGF1ZGlv
+IGRyaXZlciB3b3VsZCB1c2UgYSAKZ2V0X2VsZC90bWRzL3BvcnQgaW50ZXJmYWNlIGV4cG9zZWQg
+YnkgdGhlIGk5MTUgZHJpdmVyIG9uIHN0YXJ0dXAgYW5kIAp1cG9uIHJlY2VpdmluZyB0aGlzIG5v
+dGlmaWNhdGlvbj8KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5v
+cmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1n
+ZngK
