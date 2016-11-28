@@ -1,17 +1,28 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v3 2/2] ASoC: sti: bind pcm controls to pcm
-	device.
-Date: Mon, 28 Nov 2016 10:33:54 +0100
-Message-ID: <1480325634-23320-3-git-send-email-arnaud.pouliquen@st.com>
-References: <1480325634-23320-1-git-send-email-arnaud.pouliquen@st.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] crec: Add option to specify codec ID
+Date: Mon, 28 Nov 2016 09:47:19 +0000
+Message-ID: <1480326439.4317.11.camel@rf-debian.wolfsonmicro.main>
+References: <1479301675.18450.18.camel@rf-debian.wolfsonmicro.main>
+ <20161116134835.GW1575@localhost.localdomain>
+ <1479308001.18450.25.camel@rf-debian.wolfsonmicro.main>
+ <20161118035333.GG2698@localhost>
+ <1479463868.18450.29.camel@rf-debian.wolfsonmicro.main>
+ <20161118102903.GS2698@localhost>
+ <fe7dcb27-fda9-47bc-7766-2896e1954218@linux.intel.com>
+ <20161118161737.GB1575@localhost.localdomain>
+ <20161123034103.GZ2698@localhost>
+ <1479896518.4317.7.camel@rf-debian.wolfsonmicro.main>
+ <20161123103820.GI2698@localhost>
+ <106771ee-bc16-377a-c1c0-8499c554c165@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 63F1D266D48
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 10:34:15 +0100 (CET)
-In-Reply-To: <1480325634-23320-1-git-send-email-arnaud.pouliquen@st.com>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 281E9266D36
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 10:47:46 +0100 (CET)
+In-Reply-To: <106771ee-bc16-377a-c1c0-8499c554c165@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,75 +32,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Move PCM control list in DAI driver struct, to
-bind PCM control to PCM device created during DAI linking.
+On Sun, 2016-11-27 at 11:52 -0600, Pierre-Louis Bossart wrote:
+> > I am not Ok to add support for any other format apart from bespoke (file
+> > dump) and PCM wav header and save to file.
+> >
+> > I am okay to add support to dump data to stdio for any format, so that we
+> > dont bother to support those file formats.
+> 
+> it's not clear to me why you would make an exception for bespoke, just 
+> dump everything to stdio and use a file indirection if you want the raw 
+> data in all cases?
+> 
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- sound/soc/sti/sti_uniperif.c | 33 ++++-----------------------------
- 1 file changed, 4 insertions(+), 29 deletions(-)
+Yes, I think that's best. For one thing it's easier to explain in the -h
+help: PCM can go to wav file, everything can go to stdout, stdout is
+always raw.
 
-diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
-index 549fac3..db8bab5 100644
---- a/sound/soc/sti/sti_uniperif.c
-+++ b/sound/soc/sti/sti_uniperif.c
-@@ -225,34 +225,6 @@ int sti_uniperiph_get_tdm_word_pos(struct uniperif *uni,
- }
- 
- /*
-- * sti_uniperiph_dai_create_ctrl
-- * This function is used to create Ctrl associated to DAI but also pcm device.
-- * Request is done by front end to associate ctrl with pcm device id
-- */
--static int sti_uniperiph_dai_create_ctrl(struct snd_soc_dai *dai)
--{
--	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
--	struct uniperif *uni = priv->dai_data.uni;
--	struct snd_kcontrol_new *ctrl;
--	int i;
--
--	if (!uni->num_ctrls)
--		return 0;
--
--	for (i = 0; i < uni->num_ctrls; i++) {
--		/*
--		 * Several Control can have same name. Controls are indexed on
--		 * Uniperipheral instance ID
--		 */
--		ctrl = &uni->snd_ctrls[i];
--		ctrl->index = uni->id;
--		ctrl->device = uni->id;
--	}
--
--	return snd_soc_add_dai_controls(dai, uni->snd_ctrls, uni->num_ctrls);
--}
--
--/*
-  * DAI
-  */
- int sti_uniperiph_dai_hw_params(struct snd_pcm_substream *substream,
-@@ -342,7 +314,7 @@ static int sti_uniperiph_dai_probe(struct snd_soc_dai *dai)
- 	dai_data->dma_data.addr = dai_data->uni->fifo_phys_address;
- 	dai_data->dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 
--	return sti_uniperiph_dai_create_ctrl(dai);
-+	return 0;
- }
- 
- static const struct snd_soc_dai_driver sti_uniperiph_dai_template = {
-@@ -460,6 +432,9 @@ static int sti_uniperiph_probe(struct platform_device *pdev)
- 
- 	ret = sti_uniperiph_cpu_dai_of(node, priv);
- 
-+	priv->dai->pcm_controls = priv->dai_data.uni->snd_ctrls;
-+	priv->dai->num_pcm_controls = priv->dai_data.uni->num_ctrls;
-+
- 	dev_set_drvdata(&pdev->dev, priv);
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev,
--- 
-1.9.1
+> >
+> > Is this clear enough, does that work for you folks?
+> >
+> >>
+> >> The alternative is that Cirrus maintains its own branched version of
+> >> tinycompress with useful tools but that doesn't seem like a sensible
+> >> road to go down either.
+> >
+> > Agreed
+> >
