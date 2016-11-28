@@ -1,85 +1,38 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [RFC PATCH v3 2/7] drm/i915: Add support for audio
- driver notifications
-Date: Mon, 28 Nov 2016 21:30:55 +0200
-Message-ID: <20161128193055.GL31595@intel.com>
-References: <20161124235548.16440-1-jerome.anand@intel.com>
- <20161124235548.16440-3-jerome.anand@intel.com>
- <20161124133240.GR31595@intel.com>
- <F6867404AABACB4D8EC371BF802A4B7C14925ABA@fmsmsx101.amr.corp.intel.com>
- <20161128140008.GB31595@intel.com>
- <F6867404AABACB4D8EC371BF802A4B7C14927355@fmsmsx101.amr.corp.intel.com>
- <20161128170108.GK31595@intel.com>
- <bd87ae9c-cbde-87f3-8b0d-700df08b2585@linux.intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v4 0/4] ASoC: intel: atom: Add FW version
+	information
+Date: Mon, 28 Nov 2016 21:31:48 +0530
+Message-ID: <20161128160147.GM6408@localhost>
+References: <20161124084922.9623-1-sebastien.guiriec@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C42D266E65
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 16:52:10 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <bd87ae9c-cbde-87f3-8b0d-700df08b2585@linux.intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "broonie@kernel.org" <broonie@kernel.org>, "Ughreja,
- Rakesh A" <rakesh.a.ughreja@intel.com>
+In-Reply-To: <20161124084922.9623-1-sebastien.guiriec@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sebastien Guiriec <sebastien.guiriec@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBOb3YgMjgsIDIwMTYgYXQgMDE6MTM6MzFQTSAtMDYwMCwgUGllcnJlLUxvdWlzIEJv
-c3NhcnQgd3JvdGU6Cj4gCj4gT24gMTEvMjgvMTYgMTE6MDEgQU0sIFZpbGxlIFN5cmrDpGzDpCB3
-cm90ZToKPiA+Pj4+Pj4gKwkJCWlmIChwZGF0YS0+bm90aWZ5X2F1ZGlvX2xwZSkKPiA+Pj4+Pj4g
-KwkJCQlwZGF0YS0+bm90aWZ5X2F1ZGlvX2xwZSgKPiA+Pj4+Pj4gKwkJCQkJKGVsZCAhPSBOVUxM
-KSA/ICZwZGF0YS0+ZWxkIDogTlVMTCk7Cj4gPj4+Pj4+ICsJCQllbHNlCj4gPj4+Pj4+ICsJCQkJ
-cGRhdGEtPm5vdGlmeV9wZW5kaW5nID0gdHJ1ZTsKPiA+Pj4+PiBTdGlsbCBub3Qgc3VyZSB3aHkg
-dGhlICJwZW5kaW5nIiB0aGluZyBpcyB1c2VmdWwuIENhbid0IHRoZSBhdWRpbwo+ID4+Pj4+IGRy
-aXZlciBqdXN0IGRvIGl0cyB0aGluZyAod2hhdGV2ZXIgaXQgaXMpIHVuY29uZGl0aW9uYWxseT8K
-PiA+Pj4+Pgo+ID4+Pj4gVGhpcyBpcyBhZGRlZCB0byBhdm9pZCByYWNlIHdoZW4gYXVkaW8gZHJp
-dmVyIGxvYWRzIGxhdGUgYW5kIHRoZSBub3RpZmljYXRpb24KPiA+Pj4gZnJvbSBkaXNwbGF5IGhh
-cyBhbHJlYWR5IHBhc3NlZC4KPiA+Pj4KPiA+Pj4gWW91IGtlZXAgc2F5aW5nIHRoYXQgYnV0IEkg
-Y2FuJ3Qgc2VlIGl0Lgo+ID4+Pgo+ID4+IEkgaGF2ZSBzZWVuIHRoaXMgaGFwcGVuIC0gYmVmb3Jl
-IGF1ZGlvIGRyaXZlciBpcyBsb2FkZWQsIGNvZGVjIGVuYWJsZSBjb21wbGV0ZXMgYW5kIG5vdGlm
-aWNhdGlvbiBpcyBzZW50IHRvIHRoZSBhdWRpbyBkcml2ZXIuCj4gPj4gU2luY2UgdGhlIGF1ZGlv
-IGNhbGxiYWNrcyBhcmUgbm90IGluaXRpYWxpemVkLCBub3RpZmljYXRpb24gZ2V0cyBtaXNzZWQu
-Cj4gPiBTdXJlLiBCdXQgd2hhdCBkb2VzIHRoZSBleHRyYSBub3RpZmljYXRpb25fcGVuZGluZyBm
-bGFnIGJ1eSB1cz8gVGhlCj4gPiBhdWRpbyBkcml2ZXIgY291bGQganVzdCBjaGVjayB0aGUgZWxk
-L3RtZHNfY2xvY2svcG9ydCBkaXJlY3RseS4KPiA+Cj4gPj4+Pj4gV2hlbiBkaXNhYmxpbmcganVz
-dCBjbGVhciB0aGUgcG9ydCB0byBJTlZBTElELCBlbGQgdG8gemVybywgYW5kIHRtZHMKPiA+Pj4+
-PiBjbG9jayB0byAwLCBhbmQgaXQgc2hvdWxkIGFsbCBiZSBmaW5lIG5vPwo+ID4+Pj4+Cj4gPj4+
-PiBZZXMsIHRoYXQncyB3aGF0IGlzIGJlaW5nIGRvbmUuCj4gPj4+IFdoZXJlPwo+ID4+Pgo+ID4+
-IE5vdGlmeSBjYWxsYmFjayB3aWxsIGhhdmUgZWxkIHRvIE5VTEwgYW5kIHRtZHMgdG8gemVybyBz
-ZW50IGluIGNvZGVjX2Rpc2FibGUKPiA+IEJ1dCB0aGUgZHJpdmVyIGNhbiBsb29rIHRob3NlIHRo
-aWducyB1cCBkaXJlY3RseSBhcyB3ZWxsIGl0IHNlZW1zLiBTbwo+ID4gdGhpcyB3aG9sZSB0aGlu
-ZyBpcyBhIGJpdCBvZiBhIG1lc3Mgb24gYWNjb3VudCBvZiBzaGFyaW5nIHRoZSBwbGF0Zm9ybQo+
-ID4gYXMgYSBjb21tdW5pY2F0aW9uIGNoYW5uZWwgYW5kIGFsc28gdHJ5aW5nIHRvIHBhc3MgdGhl
-IHRoaW5ncyBhcwo+ID4gcGFyYWFtZXRlcnMgdG8gdGhlIG5vdGlmeSBob29rLiBJIHRoaW5rIHdl
-IG5lZWQgdG8gcGljayBvbmUgb3IgdGhlIG90aGVyCj4gPiBhcHByb2FjaCwgbm90IHNvbWUgbWlz
-bWFzaCBvZiBib3RoLgo+IAo+IEluZGVlZCBpdCBsb29rcyB3ZWlyZCB0byBoYXZlIGJvdGggYSBw
-YXJhbWV0ZXIgZm9yIHRtZHNfY2xvY2sgaW4gdGhlIAo+IHBkYXRhIEFORCB0aGUgbm90aWZ5IHBh
-cmFtZXRlciwgdGhpcyBjYW4gcHJvYmFibHkgYmUgY2xlYW5lZC11cC4KPiAKPiBUaGF0IHNhaWQs
-IEkgYW0gbm90IHN1cmUgSSBjb21wbGV0ZWx5IHVuZGVyc3RhbmQgdGhlIGZlZWRiYWNrIHRoYXQg
-dGhlIAo+IGF1ZGlvIGRyaXZlciBjYW4gZ2V0IGFsbCB0aGUgZWxkL3RtZHMvcG9ydCBpbmZvcm1h
-dGlvbiBkaXJlY3RseS4gV2UgYXJlIAo+IHRyeWluZyB0byBhdm9pZCBhY2Nlc3NpbmcgdGhlIGRh
-dGEgc3RydWN0dXJlcyBvZiB0aGUgaTkxNSBkcml2ZXIuCgpJSVJDIHdoYXQgSSBwcm9wb3NlZCBv
-cmlnaW5hbGx5IGRpZG4ndCBldmVuIGV4cG9zZSB0aGUgc2FtZSBzdHJ1Y3R1cmUKdG8gYm90aCBz
-aWRlcywgYnV0IHRoYXQncyBub3Qgd2hhdCB3ZSBzZWVtIHRvIGhhdmUgYXRtLgoKPiBBcmUgCj4g
-eW91IHN1Z2dlc3RpbmcgYSBzY2hlbWUgd2hlcmUgdGhlIGk5MTUgZHJpdmVyIHdvdWxkIGp1c3Qg
-cHJvdmlkZSBhIAo+IGRvb3ItYmVsbCBsaWtlIG5vdGlmaWNhdGlvbiBhbmQgdGhlIGF1ZGlvIGRy
-aXZlciB3b3VsZCB1c2UgYSAKPiBnZXRfZWxkL3RtZHMvcG9ydCBpbnRlcmZhY2UgZXhwb3NlZCBi
-eSB0aGUgaTkxNSBkcml2ZXIgb24gc3RhcnR1cCBhbmQgCj4gdXBvbiByZWNlaXZpbmcgdGhpcyBu
-b3RpZmljYXRpb24/Cj4gCgpXZWxsLCB3ZSBjb3VsZCBkbyBpdCB0aGF0IHdheSwgb3Igd2UnZCBk
-byBpdCB0aGUgb3RoZXIgd2F5IHRoYXQgdGhlCmF1ZGlvIGRyaXZlciBqdXN0IGNhbGxzIGk5MTUg
-dG8gdHJpZ2dlcnMgYSBzaW5nbGUgaTkxNS0+YXVkaW8gbm90aWZ5CmNhbGwgYWZ0ZXIgdGhlIGF1
-ZGlvIGRyaXZlciBoYXMgZmluaXNoZWQgaXRzIHByb2JlLiBPciB3ZSBjb3VsZApkbyB3aGF0ZXZl
-ciB3ZSBzZWVtIHRvIGhhdmUgbm93IGlzIHdoZXJlIHRoZSBhdWRpbyBkcml2ZXIgY2FuIGp1c3QK
-cm9vdCBhcm91bmQgZGlyZWN0bHkgaW4gdGhlIHN0cnVjdHVyZSAoYXQgd2hpY2ggcG9pbnQgcGFz
-c2luZyBhbnkKcGFyYW1ldGVycyBpbiB0aGUgbm90aWZ5IGNhbGxzIHNlZW1zIHJlZHVuZGFudCBh
-cyB3ZWxsKS4KCi0tIApWaWxsZSBTeXJqw6Rsw6QKSW50ZWwgT1RDCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50
-ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+On Thu, Nov 24, 2016 at 09:49:18AM +0100, Sebastien Guiriec wrote:
+> This patch series is adding FW version information of SST. Version is both
+> log as dev_info and sysfs entry.
+
+Whole series:
+
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+
+-- 
+~Vinod
