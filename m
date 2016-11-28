@@ -1,17 +1,18 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v3 3/3] ucm: Execute sequence of component
-	devices
-Date: Mon, 28 Nov 2016 13:34:21 +0800
-Message-ID: <dcfe20086be514cc044735956b00377f41eab495.1480309753.git.mengdong.lin@linux.intel.com>
-References: <cover.1480309753.git.mengdong.lin@linux.intel.com>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: Re: [PATCH 0/2] alsa-lib: dynamically adapt the
+ avail_min on the slave
+Date: Mon, 28 Nov 2016 17:31:07 +0900
+Message-ID: <533868aa-2182-d712-11ae-d236243d1eb7@mentor.com>
+References: <20161110073443.1192-1-jiada_wang@mentor.com>
+ <s5h7f8a6zn9.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 79ADC2669E3
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 06:32:16 +0100 (CET)
-In-Reply-To: <cover.1480309753.git.mengdong.lin@linux.intel.com>
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id 886AE266A39
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 09:31:09 +0100 (CET)
+In-Reply-To: <s5h7f8a6zn9.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,164 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: wens@csie.org, broonie@kernel.org, apape@de.adit-jv.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Hello Takashi-san
 
-A machine device's sequence can enable or disable a component device. So
-when executing a machine device's sequence, the enable or disable sequence
-of its component devices will also be excecuted.
+On 11/11/2016 08:10 PM, Takashi Iwai wrote:
+> On Thu, 10 Nov 2016 08:34:41 +0100,
+> Jiada Wang wrote:
+>>
+>> When configuring avail_min to multiple of slave period size it can happen
+>> that user waits one slave period longer than needed for available data.
+>> Root cause is implicit grabbing of slave samples in avail_update operation.
+>> On next entering poll, the slave will wait for the avail_min threshold
+>> reached again, as he is not aware that there are already pending samples
+>> in the above layer which are not yet provided to user.
+>> Solution is to dynamically adapt the avail_min on the slave.
+>
+> Can you give a test case?  Then it's easier to check what's going on.
+>
+Sorry, I missed your comment
+Following is the error scenario
+use plugin which uses the generic plugin implementation from pcm_plugin.c
+(e.g linear plugin or the easiest one: 'copy' plugin)
+-use MMAP capture access on that plugin
+-configure slave hardware to 4ms period
+-configure avail_min to 8ms
+-enter snd_pcm_wait after 4ms are already available.
+-->user may unexpectedly wait for 4ms too long
 
-Components don't define card device cdev in their sequences. So before
-executing a component device sequence, UCM manager will
-- store cdev defined by the sequence of its parent, the machine device;
-- mark itself entering 'component domain'.
+> In general, I prefer having this only in the rate plugin, as the rate
+> plugin is the only one that suffers from the problem for now.
+> If the issue is really reproduced on other plugins, make it generic in
+> the plugin code later.
+>
+> About your fix: the dynamic changing sw_params is hackish, so I wonder
+> whether it's the best solution.  Let's see.
+>
+> Last but not least, please try to fit within 80 chars like kernel
+> patches.  It's not strictly required for alsa-lib codes, but still the
+> too long lines like in your patches are difficult to read.
+>
+Sure, I will update commit message in next update
 
-Then this cdev will be used to excute the sequence of the component
-device.
+Thanks,
+Jiada
 
-When UCM manager completes executing the sequence of the component device,
-it will leave 'compnent domain' and reset the saved cdev to NULL.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 8cc9208..750e65d 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -35,6 +35,7 @@
- #include <stdarg.h>
- #include <pthread.h>
- #include <sys/stat.h>
-+#include <limits.h>
- 
- /*
-  * misc
-@@ -48,6 +49,13 @@ static int get_value3(char **value,
- 		      struct list_head *value_list2,
- 		      struct list_head *value_list3);
- 
-+static int execute_component_seq(snd_use_case_mgr_t *uc_mgr,
-+				 struct component_sequence *cmpt_seq,
-+				 struct list_head *value_list1,
-+				 struct list_head *value_list2,
-+				 struct list_head *value_list3,
-+				 char *cdev);
-+
- static int check_identifier(const char *identifier, const char *prefix)
- {
- 	int len;
-@@ -366,7 +374,19 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 		case SEQUENCE_ELEMENT_TYPE_CSET:
- 		case SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE:
- 		case SEQUENCE_ELEMENT_TYPE_CSET_TLV:
--			if (cdev == NULL) {
-+			if (cdev == NULL && uc_mgr->in_component_domain) {
-+				/* For sequence of a component device, use
-+				 * its parent's cdev stored by ucm manager.
-+				 */
-+				if (uc_mgr->cdev == NULL) {
-+					uc_error("cdev is not defined!");
-+					return err;
-+				}
-+
-+				cdev = strndup(uc_mgr->cdev, PATH_MAX);
-+				if (!cdev)
-+					return -ENOMEM;
-+			} else if (cdev == NULL) {
- 				char *playback_ctl = NULL;
- 				char *capture_ctl = NULL;
- 
-@@ -427,6 +447,19 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 			if (err < 0)
- 				goto __fail;
- 			break;
-+		case SEQUENCE_ELEMENT_TYPE_CMPT_SEQ:
-+			/* Execute enable or disable sequence of a component
-+			 * device. Pass the cdev defined by the machine device.
-+			 */
-+			err = execute_component_seq(uc_mgr,
-+						    &s->data.cmpt_seq,
-+						    value_list1,
-+						    value_list2,
-+						    value_list3,
-+						    cdev);
-+			if (err < 0)
-+				goto __fail;
-+			break;
- 		default:
- 			uc_error("unknown sequence command %i", s->type);
- 			break;
-@@ -442,6 +475,49 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 
- }
- 
-+/* Execute enable or disable sequence of a component device.
-+ *
-+ * For a component device (a codec or embedded DSP), its sequence doesn't
-+ * specify the sound card device 'cdev', because a component can be reused
-+ * by different sound cards (machines). So when executing its sequence, a
-+ * parameter 'cdev' is used to pass cdev defined by the sequence of its
-+ * parent, the machine device. UCM manger will store the cdev when entering
-+ * the component domain.
-+ */
-+static int execute_component_seq(snd_use_case_mgr_t *uc_mgr,
-+				 struct component_sequence *cmpt_seq,
-+				 struct list_head *value_list1,
-+				 struct list_head *value_list2,
-+				 struct list_head *value_list3,
-+				 char *cdev)
-+{
-+	struct use_case_device *device = cmpt_seq->device;
-+	struct list_head *seq;
-+	int err;
-+
-+	/* enter component domain and store cdev for the component */
-+	uc_mgr->in_component_domain = 1;
-+	uc_mgr->cdev = cdev;
-+
-+	/* choose enable or disable sequence of the component device */
-+	if (cmpt_seq->enable)
-+		seq = &device->enable_list;
-+	else
-+		seq = &device->disable_list;
-+
-+	/* excecute the sequence of the component dev */
-+	err = execute_sequence(uc_mgr, seq,
-+			       &device->value_list,
-+			       &uc_mgr->active_verb->value_list,
-+			       &uc_mgr->value_list);
-+
-+	/* exit component domain and clear cdev */
-+	uc_mgr->in_component_domain = 0;
-+	uc_mgr->cdev = NULL;
-+
-+	return err;
-+}
-+
- /**
-  * \brief Import master config and execute the default sequence
-  * \param uc_mgr Use case manager
-diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
-index 3bfdd67..6d3302f 100644
---- a/src/ucm/ucm_local.h
-+++ b/src/ucm/ucm_local.h
-@@ -212,6 +212,14 @@ struct snd_use_case_mgr {
- 	/* change to list of ctl handles */
- 	snd_ctl_t *ctl;
- 	char *ctl_dev;
-+
-+	/* Components don't define cdev, the card device. When executing
-+	 * a sequence of a component device, ucm manager enters component
-+	 * domain and needs to provide cdev to the component. This cdev
-+	 * should be defined by the machine, parent of the component.
-+	 */
-+	int in_component_domain;
-+	char *cdev;
- };
- 
- #define uc_error SNDERR
--- 
-2.7.4
+>
+> thanks,
+>
+> Takashi
+>
