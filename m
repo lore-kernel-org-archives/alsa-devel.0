@@ -1,40 +1,36 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [PATCH RESEND] linux-firmware: update BYT audio
-	firmware
-Date: Mon, 28 Nov 2016 11:24:29 -0500
-Message-ID: <20161128162429.GP7853@merlin.infradead.org>
-References: <20161123075919.28886-1-sebastien.guiriec@intel.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH v3] dbri: Fix compiler warning
+Date: Mon, 28 Nov 2016 15:55:37 -0500 (EST)
+Message-ID: <20161128.155537.1838307526305634016.davem@davemloft.net>
+References: <1480019716-14225-1-git-send-email-tushar.n.dave@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
- by alsa0.perex.cz (Postfix) with ESMTP id B1016266DD4
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 17:24:32 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20161123075919.28886-1-sebastien.guiriec@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+Content-Type: Text/Plain; charset=iso-8859-7
+Content-Transfer-Encoding: base64
+Return-path: <sparclinux-owner@vger.kernel.org>
+In-Reply-To: <1480019716-14225-1-git-send-email-tushar.n.dave@oracle.com>
+Sender: sparclinux-owner@vger.kernel.org
+To: tushar.n.dave@oracle.com
+Cc: perex@perex.cz, tiwai@suse.com, thomas.tai@oracle.com, alsa-devel@alsa-project.org, sparclinux@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 23, 2016 at 08:59:19AM +0100, Sebastien Guiriec wrote:
-> From: Vinod Koul <vinod.koul@intel.com>
-> 
-> This updates BYT audio firmware binary to latest version 01_0C_00_01 and
-> also adds binary for SSP0 port used in many BYT variants
-> 
-> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
-
-applied, thanks.
-
-regards, --kyle
+RnJvbTogVHVzaGFyIERhdmUgPHR1c2hhci5uLmRhdmVAb3JhY2xlLmNvbT4NCkRhdGU6IFRodSwg
+MjQgTm92IDIwMTYgMTI6MzU6MTYgLTA4MDANCg0KPiBkYnJpIHVzZXMgJ3UzMicgZm9yIGRtYSBo
+YW5kbGUgd2hpbGUgaW52b2tpbmcga2VybmVsIERNQSBBUElzLA0KPiBpbnN0ZWFkIG9mIHVzaW5n
+IGRtYV9hZGRyX3QuIFRoaXMgaGFzbid0IGNhdXNlZCBhbnkgJ2luY29tcGF0aWJsZQ0KPiBwb2lu
+dGVyIHR5cGUnIHdhcm5pbmcgb24gU1BBUkMgYmVjYXVzZSB1bnRpbCBub3cgZG1hX2FkZHJfdCBp
+cyBvZg0KPiB0eXBlIHUzMi4gSG93ZXZlciwgcmVjZW50IGNoYW5nZXMgaW4gU1BBUkMgQVRVIChp
+b21tdSkgZW5hYmxlZCA2NGJpdA0KPiBETUEgYW5kIHRoZXJlZm9yZSBkbWFfYWRkcl90IGJlY2Ft
+ZSBvZiB0eXBlIHU2NC4gVGhpcyBtYWtlcw0KPiAnaW5jb21wYXRpYmxlIHBvaW50ZXIgdHlwZScg
+d2FybmluZ3MgaW5ldml0YWJsZS4NCj4gDQo+IGUuZy4NCj4gc291bmQvc3BhcmMvZGJyaS5jOiBJ
+biBmdW5jdGlvbiChc25kX2RicmlfY3JlYXRlojoNCj4gc291bmQvc3BhcmMvZGJyaS5jOjI1Mzg6
+IHdhcm5pbmc6IHBhc3NpbmcgYXJndW1lbnQgMyBvZiChZG1hX3phbGxvY19jb2hlcmVudKIgZnJv
+bSBpbmNvbXBhdGlibGUgcG9pbnRlciB0eXBlDQo+IC4vaW5jbHVkZS9saW51eC9kbWEtbWFwcGlu
+Zy5oOjYwODogbm90ZTogZXhwZWN0ZWQgoWRtYV9hZGRyX3QgKqIgYnV0IGFyZ3VtZW50IGlzIG9m
+IHR5cGUgoXUzMiAqog0KPiANCj4gRm9yIHRoZSByZWNvcmQsIGRicmkoc2J1cykgZHJpdmVyIG5l
+dmVyIGV4ZWN1dGVzIG9uIHN1bjR2LiBUaGVyZWZvcmUNCj4gZXZlbiB0aG91Z2ggNjRiaXQgRE1B
+IGlzIGVuYWJsZWQgb24gU1BBUkMsIGRicmkgY29udGludWVzIHRvIHVzZQ0KPiBsZWdhY3kgaW9t
+bXUgdGhhdCBndWFyYW50ZWVzIERNQSBhZGRyZXNzIGlzIGFsd2F5cyBpbiAzMmJpdCByYW5nZS4N
+Cj4gDQo+IFRoaXMgcGF0Y2ggcmVzb2x2ZXMgYWJvdmUgY29tcGlsZXIgd2FybmluZy4NCj4gDQo+
+IFNpZ25lZC1vZmYtYnk6IFR1c2hhciBEYXZlIDx0dXNoYXIubi5kYXZlQG9yYWNsZS5jb20+DQo+
+IFJldmlld2VkLWJ5OiB0aG9tYXMgdGFpIDx0aG9tYXMudGFpQG9yYWNsZS5jb20+DQoNCkFwcGxp
+ZWQsIHRoYW5rcy4NCg==
