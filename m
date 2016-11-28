@@ -1,17 +1,14 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v2 2/2] ASoC: topology: Only free TLV for
- volume mixers of a widget
-Date: Mon, 28 Nov 2016 12:32:13 +0900
-Message-ID: <fd05c5d2-7960-82d2-ea9a-8f9ffcb60177@sakamocchi.jp>
-References: <1480298009-2750-1-git-send-email-mengdong.lin@linux.intel.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt298: disable IRQ when jack is NULL
+Date: Mon, 28 Nov 2016 13:24:06 +0800
+Message-ID: <1480310646-16354-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id CC4D1266A1A
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 04:32:16 +0100 (CET)
-In-Reply-To: <1480298009-2750-1-git-send-email-mengdong.lin@linux.intel.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 396F7266A76
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 06:24:28 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,103 +18,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, mengdong.lin@intel.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, vinod.koul@intel.com, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-TWVuZG9uZyBMaW4sCgpPbiAyMDE25bm0MTHmnIgyOOaXpSAxMDo1MywgbWVuZ2RvbmcubGluQGxp
-bnV4LmludGVsLmNvbSB3cm90ZToKPiBGcm9tOiBNZW5nZG9uZyBMaW4gPG1lbmdkb25nLmxpbkBs
-aW51eC5pbnRlbC5jb20+Cj4KPiBSZXBsYWNlIGZsYWcgJ2tjb250cm9sX2VudW0nIHdpdGggYSB0
-eXBlIHZhbHVlIG9mIGVtYmVkZGVkIGNvbnRyb2xzIGZvcgo+IGEgd2lkZ2V0LiBTbyB0b3BvbG9n
-eSBjYW4gY2hlY2sgdGhlIHR5cGUgb2YgaXRzIGVtYmVkZGVkIGNvbnRyb2xzIHdoZW4KPiByZW1v
-dmluZyB0aGUgd2lkZ2V0LCBhbmQgb25seSBmcmVlIHRoZSBUTFYgb2Ygdm9sdW1lIG1peGVycy4g
-Qnl0ZXMKPiBjb250cm9scyBkb24ndCBoYXZlIFRMVi4KPgo+IEFuZCB3aGVuIHJlbW92aW5nIGEg
-d2lkZ2V0IGNyZWF0ZWQgYnkgdG9wb2xvZ3ksIGp1c3QgZnJlZSB0aGUgcHJpdmF0ZQo+IHZhbHVl
-IHdoaWNoIGlzIHVzZWQgYXMgc3RydWN0IHNvY19taXhlcl9jb250cm9sIGZvciB2b2x1bWUgbWl4
-ZXJzIG9yCj4gc29jX2J5dGVzX2V4dCBmb3IgYnl0ZXMgY29udHJvbHMuIE5vIG5lZWQgdG8gY2Fz
-dCB0aGUgcHJpdmF0ZSBkYXRhIHRvCj4gY29udHJvbC1zcGVjaWZpYyBzdHJ1Y3QgcG9pbnRlcnMg
-YmVmb3JlIGZyZWVpbmcgaXQuCj4KPiBTaWduZWQtb2ZmLWJ5OiBNZW5nZG9uZyBMaW4gPG1lbmdk
-b25nLmxpbkBsaW51eC5pbnRlbC5jb20+Cj4KPiAtLS0KPiB2MjogZml4IGxrcCB3YXJuaW5nOiAn
-a2NvbnRyb2xfdHlwZScgbWF5IGJlIHVzZWQgdW5pbml0aWFsaXplZCBpbiB0aGlzCj4gICAgIGZ1
-bmN0aW9uIFstV21heWJlLXVuaW5pdGlhbGl6ZWRdCj4gICAgICB3aWRnZXQtPmRvYmoud2lkZ2V0
-Lmtjb250cm9sX3R5cGUgPSBrY29udHJvbF90eXBlOwo+IC0tLQo+Cj4gZGlmZiAtLWdpdCBhL2lu
-Y2x1ZGUvc291bmQvc29jLXRvcG9sb2d5LmggYi9pbmNsdWRlL3NvdW5kL3NvYy10b3BvbG9neS5o
-Cj4gaW5kZXggZDMxOGZlNC4uODZjODg0YSAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL3NvdW5kL3Nv
-Yy10b3BvbG9neS5oCj4gKysrIGIvaW5jbHVkZS9zb3VuZC9zb2MtdG9wb2xvZ3kuaAo+IEBAIC01
-Myw3ICs1Myw3IEBAIHN0cnVjdCBzbmRfc29jX2RvYmpfY29udHJvbCB7Cj4KPiAgLyogZHluYW1p
-YyB3aWRnZXQgb2JqZWN0ICovCj4gIHN0cnVjdCBzbmRfc29jX2RvYmpfd2lkZ2V0IHsKPiAtCXVu
-c2lnbmVkIGludCBrY29udHJvbF9lbnVtOjE7CS8qIHRoaXMgd2lkZ2V0IGlzIGFuIGVudW0ga2Nv
-bnRyb2wgKi8KPiArCXVuc2lnbmVkIGludCBrY29udHJvbF90eXBlOwkvKiBrY29udHJvbCB0eXBl
-OiBtaXhlciwgZW51bSwgYnl0ZXMgKi8KPiAgfTsKCklmIHlvdSBoYXZlIGEgcGxhbiB0byBhc3Np
-Z24gYW55IHZhbHVlcyBvZiAnc25kX3NvY19kb2JqX3R5cGUnIAplbnVtZXJhdG9yLCBpdCdzIGJl
-dHRlciB0byB1c2UgaXQgYXMgdHlwZSBvZiB0aGlzIG1lbWJlciBzbyB0aGF0IApkZXZlbG9wZXJz
-IGNhbiBlYXNpbHkgdW5kZXJzdGFuZCBhY3R1YWwgdmFsdWUgZm9yIHRoaXMgbWVtYmVyLgoKVGhl
-biwgSSB3b25kZXIgdGhlIHJlYXNvbiB0aGF0ICdzdHJ1Y3Qgc25kX3NvY19kb2JqJyBpbmNsdWRl
-cyB0d28gbWVtYmVyIApvZiB0aGUgdHlwZTsgJ3N0cnVjdCBzbmRfc29jX2RvYmoudHlwZScgYW5k
-ICdzdHJ1Y3QgCnNuZF9zb2NfZG9iai53aWRnZXQua2NvbnRyb2xfdHlvZScuIFdvdWxkIEkgYXNr
-IHlvdSBleHBsYWluIGFib3V0IHRoZSAKZnJhbWV3b3JrIHlvdSB3b3JrIGZvciBpbiB0aGlzIHBv
-aW50PyBJcyBpdCBzb21ldGhpbmcgZm9yIGJhY2t3YXJkIApjb21wYXRpYmlsaXR5PwoKPiAgLyog
-Z2VuZXJpYyBkeW5hbWljIG9iamVjdCAtIGFsbCBkeW5hbWljIG9iamVjdHMgYmVsb25nIHRvIHRo
-aXMgc3RydWN0ICovCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2MtdG9wb2xvZ3kuYyBiL3Nv
-dW5kL3NvYy9zb2MtdG9wb2xvZ3kuYwo+IGluZGV4IDYzZTFhNTAuLjZmN2M3YTQgMTAwNjQ0Cj4g
-LS0tIGEvc291bmQvc29jL3NvYy10b3BvbG9neS5jCj4gKysrIGIvc291bmQvc29jL3NvYy10b3Bv
-bG9neS5jCj4gQEAgLTQ4OSw3ICs0ODksNyBAQCBzdGF0aWMgdm9pZCByZW1vdmVfd2lkZ2V0KHN0
-cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcCwKPiAgCSAqIER5bmFtaWMgV2lkZ2V0cyBlaXRo
-ZXIgaGF2ZSAxLi5OIGVudW0ga2NvbnRyb2xzIG9yIG1peGVycy4KPiAgCSAqIFRoZSBlbnVtIG1h
-eSBlaXRoZXIgaGF2ZSBhbiBhcnJheSBvZiB2YWx1ZXMgb3Igc3RyaW5ncy4KPiAgCSAqLwo+IC0J
-aWYgKGRvYmotPndpZGdldC5rY29udHJvbF9lbnVtKSB7Cj4gKwlpZiAoZG9iai0+d2lkZ2V0Lmtj
-b250cm9sX3R5cGUgPT0gU05EX1NPQ19UUExHX1RZUEVfRU5VTSkgewo+ICAJCS8qIGVudW1lcmF0
-ZWQgd2lkZ2V0IG1peGVyICovCj4gIAkJZm9yIChpID0gMDsgaSA8IHctPm51bV9rY29udHJvbHM7
-IGkrKykgewo+ICAJCQlzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCA9IHctPmtjb250cm9s
-c1tpXTsKPiBAQCAtNTA2LDE2ICs1MDYsMjEgQEAgc3RhdGljIHZvaWQgcmVtb3ZlX3dpZGdldChz
-dHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKmNvbXAsCj4gIAkJfQo+ICAJCWtmcmVlKHctPmtjb250
-cm9sX25ld3MpOwo+ICAJfSBlbHNlIHsKPiAtCQkvKiBub24gZW51bWVyYXRlZCB3aWRnZXQgbWl4
-ZXIgKi8KPiArCQkvKiB2b2x1bWUgbWl4ZXIgb3IgYnl0ZXMgY29udHJvbHMgKi8KPiAgCQlmb3Ig
-KGkgPSAwOyBpIDwgdy0+bnVtX2tjb250cm9sczsgaSsrKSB7Cj4gIAkJCXN0cnVjdCBzbmRfa2Nv
-bnRyb2wgKmtjb250cm9sID0gdy0+a2NvbnRyb2xzW2ldOwo+IC0JCQlzdHJ1Y3Qgc29jX21peGVy
-X2NvbnRyb2wgKnNtID0KPiAtCQkJKHN0cnVjdCBzb2NfbWl4ZXJfY29udHJvbCAqKSBrY29udHJv
-bC0+cHJpdmF0ZV92YWx1ZTsKPgo+IC0JCQlrZnJlZSh3LT5rY29udHJvbHNbaV0tPnRsdi5wKTsK
-PiArCQkJaWYgKGRvYmotPndpZGdldC5rY29udHJvbF90eXBlCj4gKwkJCSAgICA9PSBTTkRfU09D
-X1RQTEdfVFlQRV9NSVhFUikKPiArCQkJCWtmcmVlKGtjb250cm9sLT50bHYucCk7Cj4KPiAtCQkJ
-c25kX2N0bF9yZW1vdmUoY2FyZCwgdy0+a2NvbnRyb2xzW2ldKTsKPiAtCQkJa2ZyZWUoc20pOwo+
-ICsJCQlzbmRfY3RsX3JlbW92ZShjYXJkLCBrY29udHJvbCk7Cj4gKwo+ICsJCQkvKiBQcml2YXRl
-IHZhbHVlIGlzIHVzZWQgYXMgc3RydWN0IHNvY19taXhlcl9jb250cm9sCj4gKwkJCSAqIGZvciB2
-b2x1bWUgbWl4ZXJzIG9yIHNvY19ieXRlc19leHQgZm9yIGJ5dGVzCj4gKwkJCSAqIGNvbnRyb2xz
-Lgo+ICsJCQkgKi8KPiArCQkJa2ZyZWUoKHZvaWQgKilrY29udHJvbC0+cHJpdmF0ZV92YWx1ZSk7
-Cj4gIAkJfQo+ICAJCWtmcmVlKHctPmtjb250cm9sX25ld3MpOwo+ICAJfQo+IEBAIC0xNDM5LDYg
-KzE0NDQsNyBAQCBzdGF0aWMgaW50IHNvY190cGxnX2RhcG1fd2lkZ2V0X2NyZWF0ZShzdHJ1Y3Qg
-c29jX3RwbGcgKnRwbGcsCj4gIAlzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCB0ZW1wbGF0ZSwg
-KndpZGdldDsKPiAgCXN0cnVjdCBzbmRfc29jX3RwbGdfY3RsX2hkciAqY29udHJvbF9oZHI7Cj4g
-IAlzdHJ1Y3Qgc25kX3NvY19jYXJkICpjYXJkID0gdHBsZy0+Y29tcC0+Y2FyZDsKPiArCXVuc2ln
-bmVkIGludCBrY29udHJvbF90eXBlID0gU05EX1NPQ19UUExHX1RZUEVfTUlYRVI7Cj4gIAlpbnQg
-cmV0ID0gMDsKPgo+ICAJaWYgKHN0cm5sZW4ody0+bmFtZSwgU05EUlZfQ1RMX0VMRU1fSURfTkFN
-RV9NQVhMRU4pID09Cj4gQEAgLTE0OTQsNiArMTUwMCw3IEBAIHN0YXRpYyBpbnQgc29jX3RwbGdf
-ZGFwbV93aWRnZXRfY3JlYXRlKHN0cnVjdCBzb2NfdHBsZyAqdHBsZywKPiAgCWNhc2UgU05EX1NP
-Q19UUExHX0NUTF9WT0xTV19YUl9TWDoKPiAgCWNhc2UgU05EX1NPQ19UUExHX0NUTF9SQU5HRToK
-PiAgCWNhc2UgU05EX1NPQ19UUExHX0RBUE1fQ1RMX1ZPTFNXOgo+ICsJCWtjb250cm9sX3R5cGUg
-PSBTTkRfU09DX1RQTEdfVFlQRV9NSVhFUjsgIC8qIHZvbHVtZSBtaXhlciAqLwo+ICAJCXRlbXBs
-YXRlLm51bV9rY29udHJvbHMgPSB3LT5udW1fa2NvbnRyb2xzOwo+ICAJCXRlbXBsYXRlLmtjb250
-cm9sX25ld3MgPQo+ICAJCQlzb2NfdHBsZ19kYXBtX3dpZGdldF9kbWl4ZXJfY3JlYXRlKHRwbGcs
-Cj4gQEAgLTE1MDgsNyArMTUxNSw3IEBAIHN0YXRpYyBpbnQgc29jX3RwbGdfZGFwbV93aWRnZXRf
-Y3JlYXRlKHN0cnVjdCBzb2NfdHBsZyAqdHBsZywKPiAgCWNhc2UgU05EX1NPQ19UUExHX0RBUE1f
-Q1RMX0VOVU1fRE9VQkxFOgo+ICAJY2FzZSBTTkRfU09DX1RQTEdfREFQTV9DVExfRU5VTV9WSVJU
-Ogo+ICAJY2FzZSBTTkRfU09DX1RQTEdfREFQTV9DVExfRU5VTV9WQUxVRToKPiAtCQl0ZW1wbGF0
-ZS5kb2JqLndpZGdldC5rY29udHJvbF9lbnVtID0gMTsKPiArCQlrY29udHJvbF90eXBlID0gU05E
-X1NPQ19UUExHX1RZUEVfRU5VTTsJLyogZW51bWVyYXRlZCBtaXhlciAqLwo+ICAJCXRlbXBsYXRl
-Lm51bV9rY29udHJvbHMgPSB3LT5udW1fa2NvbnRyb2xzOwo+ICAJCXRlbXBsYXRlLmtjb250cm9s
-X25ld3MgPQo+ICAJCQlzb2NfdHBsZ19kYXBtX3dpZGdldF9kZW51bV9jcmVhdGUodHBsZywKPiBA
-QCAtMTUxOSw2ICsxNTI2LDcgQEAgc3RhdGljIGludCBzb2NfdHBsZ19kYXBtX3dpZGdldF9jcmVh
-dGUoc3RydWN0IHNvY190cGxnICp0cGxnLAo+ICAJCX0KPiAgCQlicmVhazsKPiAgCWNhc2UgU05E
-X1NPQ19UUExHX0NUTF9CWVRFUzoKPiArCQlrY29udHJvbF90eXBlID0gU05EX1NPQ19UUExHX1RZ
-UEVfQllURVM7IC8qIGJ5dGVzIGNvbnRyb2wgKi8KPiAgCQl0ZW1wbGF0ZS5udW1fa2NvbnRyb2xz
-ID0gdy0+bnVtX2tjb250cm9sczsKPiAgCQl0ZW1wbGF0ZS5rY29udHJvbF9uZXdzID0KPiAgCQkJ
-c29jX3RwbGdfZGFwbV93aWRnZXRfZGJ5dGVzX2NyZWF0ZSh0cGxnLAo+IEBAIC0xNTU1LDYgKzE1
-NjMsNyBAQCBzdGF0aWMgaW50IHNvY190cGxnX2RhcG1fd2lkZ2V0X2NyZWF0ZShzdHJ1Y3Qgc29j
-X3RwbGcgKnRwbGcsCj4gIAl9Cj4KPiAgCXdpZGdldC0+ZG9iai50eXBlID0gU05EX1NPQ19ET0JK
-X1dJREdFVDsKPiArCXdpZGdldC0+ZG9iai53aWRnZXQua2NvbnRyb2xfdHlwZSA9IGtjb250cm9s
-X3R5cGU7Cj4gIAl3aWRnZXQtPmRvYmoub3BzID0gdHBsZy0+b3BzOwo+ICAJd2lkZ2V0LT5kb2Jq
-LmluZGV4ID0gdHBsZy0+aW5kZXg7Cj4gIAlrZnJlZSh0ZW1wbGF0ZS5zbmFtZSk7CgoKUmVnYXJk
-cwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+Disable IRQ when jack is NULL in rt298_mic_detect. So machine driver
+can use it in suspend/resume.
+
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt298.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index 2db8179..7150a40 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -326,11 +326,31 @@ static void rt298_jack_detect_work(struct work_struct *work)
+ int rt298_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
+ {
+ 	struct rt298_priv *rt298 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm;
++	bool hp = false;
++	bool mic = false;
++	int status = 0;
++
++	/* If jack in NULL, disable HS jack */
++	if (!jack) {
++		regmap_update_bits(rt298->regmap, RT298_IRQ_CTRL, 0x2, 0x0);
++		dapm = snd_soc_codec_get_dapm(codec);
++		snd_soc_dapm_disable_pin(dapm, "LDO1");
++		snd_soc_dapm_sync(dapm);
++		return 0;
++	}
+ 
+ 	rt298->jack = jack;
++	regmap_update_bits(rt298->regmap, RT298_IRQ_CTRL, 0x2, 0x2);
+ 
+-	/* Send an initial empty report */
+-	snd_soc_jack_report(rt298->jack, 0,
++	rt298_jack_detect(rt298, &hp, &mic);
++	if (hp == true)
++		status |= SND_JACK_HEADPHONE;
++
++	if (mic == true)
++		status |= SND_JACK_MICROPHONE;
++
++	snd_soc_jack_report(rt298->jack, status,
+ 		SND_JACK_MICROPHONE | SND_JACK_HEADPHONE);
+ 
+ 	return 0;
+-- 
+1.8.1.1.439.g50a6b54
