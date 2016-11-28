@@ -1,52 +1,264 @@
-From: "Anand, Jerome" <jerome.anand@intel.com>
-Subject: Re: [RFC PATCH v3 1/7] drm/i915: setup bridge for HDMI
- LPE audio driver
-Date: Mon, 28 Nov 2016 01:50:14 +0000
-Message-ID: <F6867404AABACB4D8EC371BF802A4B7C149269C2@fmsmsx101.amr.corp.intel.com>
-References: <20161124235548.16440-1-jerome.anand@intel.com>
- <20161124235548.16440-2-jerome.anand@intel.com>
- <20161124133154.GQ31595@intel.com>
- <F6867404AABACB4D8EC371BF802A4B7C14925AAA@fmsmsx101.amr.corp.intel.com>
- <8760nbvnl0.fsf@intel.com>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v2 1/2] ASoC: topology: Allow a widget to have
+	multiple enum controls
+Date: Mon, 28 Nov 2016 09:53:13 +0800
+Message-ID: <1480297993-2687-1-git-send-email-mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <8760nbvnl0.fsf@intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jani Nikula <jani.nikula@linux.intel.com>, =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Ughreja,
- Rakesh A" <rakesh.a.ughreja@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DC662659AA
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 02:51:09 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-SmFuaSwKCkxhc3QgdGltZSAsIGl0IHRvb2sgY2xvc2UgdG8gMTAgZGF5cyB3aGVuIG15IHBhdGNo
-ZXMgd2VyZSByZWZsZWN0ZWQgb24gdGhlIGdmeCBtYWlsaW5nIGxpc3QuIE5vdCBzdXJlIHdoYXQg
-aXMgdGhlIHByb2JsZW0gPz8gTGV0IG1lIHRyeSBzZW5kaW5nIGl0IGFnYWluID8/CgpSZWdhcmRz
-LApKZXJvbWUKCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPiBGcm9tOiBKYW5pIE5pa3Vs
-YSBbbWFpbHRvOmphbmkubmlrdWxhQGxpbnV4LmludGVsLmNvbV0KPiBTZW50OiBGcmlkYXksIE5v
-dmVtYmVyIDI1LCAyMDE2IDQ6MjIgUE0KPiBUbzogQW5hbmQsIEplcm9tZSA8amVyb21lLmFuYW5k
-QGludGVsLmNvbT47IFZpbGxlIFN5cmrDpGzDpAo+IDx2aWxsZS5zeXJqYWxhQGxpbnV4LmludGVs
-LmNvbT4KPiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyB0aXdhaUBzdXNlLmRlOyBp
-bnRlbC0KPiBnZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBicm9vbmllQGtlcm5lbC5vcmc7IFVn
-aHJlamEsIFJha2VzaCBBCj4gPHJha2VzaC5hLnVnaHJlamFAaW50ZWwuY29tPgo+IFN1YmplY3Q6
-IFJlOiBbSW50ZWwtZ2Z4XSBbUkZDIFBBVENIIHYzIDEvN10gZHJtL2k5MTU6IHNldHVwIGJyaWRn
-ZSBmb3IgSERNSQo+IExQRSBhdWRpbyBkcml2ZXIKPiAKPiAKPiBKZXJvbWUgLQo+IAo+IFRoZSBz
-YW1lIGFzIGxhc3QgdGltZSwgSSBkaWRuJ3QgcmVjZWl2ZSBhbnkgb2YgdGhlIHBhdGNoZXMsIG5l
-aXRoZXIgdGhlIGludGVsLQo+IGdmeCBub3IgYWxzYS1kZXZlbCBsaXN0IGFyY2hpdmVzIGhhdmUg
-dGhlbSwgcGF0Y2h3b3JrIGRvZXNuJ3QgaGF2ZSB0aGVtLAo+IHRoZXkncmUgbm90IGluIGludGVs
-LWdmeCBtb2RlcmF0aW9uIHF1ZXVldS4gSSBvbmx5IGhhdmUgdGhlIHJlcGxpZXMuCj4gCj4gUGxl
-YXNlIGNoZWNrIHlvdXIgc2V0dXAsIGFuZCBtYWtlIHN1cmUgeW91ciBwYXRjaGVzIGFjdHVhbGx5
-IGhpdCB0aGUgbGlzdHMuCj4gCj4gVGhhbmtzLAo+IEphbmkuCj4gCj4gCj4gLS0KPiBKYW5pIE5p
-a3VsYSwgSW50ZWwgT3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50ZXIKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJ
-bnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Au
-b3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+
+This patch can create multiple enumerated mixer controls for a widget.
+
+Previously topology kernel driver assumes a widget can have only one
+emumerated mixer control. We need to remove this restriction for Broxton.
+Its firmware modules (widgets) may need multiple enum controls based on
+the channel and MIC combination.
+
+No ABI change is needed. The ABI allows a widget to embed multiple
+controls.
+
+Reported-by: G Kranthi <gudishax.kranthikumar@intel.com>
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 4dfdc65..63e1a50 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -486,21 +486,24 @@ static void remove_widget(struct snd_soc_component *comp,
+ 		dobj->ops->widget_unload(comp, dobj);
+ 
+ 	/*
+-	 * Dynamic Widgets either have 1 enum kcontrol or 1..N mixers.
++	 * Dynamic Widgets either have 1..N enum kcontrols or mixers.
+ 	 * The enum may either have an array of values or strings.
+ 	 */
+ 	if (dobj->widget.kcontrol_enum) {
+ 		/* enumerated widget mixer */
+-		struct soc_enum *se =
+-			(struct soc_enum *)w->kcontrols[0]->private_value;
++		for (i = 0; i < w->num_kcontrols; i++) {
++			struct snd_kcontrol *kcontrol = w->kcontrols[i];
++			struct soc_enum *se =
++				(struct soc_enum *)kcontrol->private_value;
+ 
+-		snd_ctl_remove(card, w->kcontrols[0]);
++			snd_ctl_remove(card, kcontrol);
+ 
+-		kfree(se->dobj.control.dvalues);
+-		for (i = 0; i < se->items; i++)
+-			kfree(se->dobj.control.dtexts[i]);
++			kfree(se->dobj.control.dvalues);
++			for (i = 0; i < se->items; i++)
++				kfree(se->dobj.control.dtexts[i]);
+ 
+-		kfree(se);
++			kfree(se);
++		}
+ 		kfree(w->kcontrol_news);
+ 	} else {
+ 		/* non enumerated widget mixer */
+@@ -1256,98 +1259,105 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
+ }
+ 
+ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
+-	struct soc_tplg *tplg)
++	struct soc_tplg *tplg, int num_kcontrols)
+ {
+ 	struct snd_kcontrol_new *kc;
+ 	struct snd_soc_tplg_enum_control *ec;
+ 	struct soc_enum *se;
+-	int i, err;
+-
+-	ec = (struct snd_soc_tplg_enum_control *)tplg->pos;
+-	tplg->pos += (sizeof(struct snd_soc_tplg_enum_control) +
+-		ec->priv.size);
+-
+-	/* validate kcontrol */
+-	if (strnlen(ec->hdr.name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
+-		SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
+-		return NULL;
++	int i, j, err;
+ 
+-	kc = kzalloc(sizeof(*kc), GFP_KERNEL);
++	kc = kcalloc(num_kcontrols, sizeof(*kc), GFP_KERNEL);
+ 	if (kc == NULL)
+ 		return NULL;
+ 
+-	se = kzalloc(sizeof(*se), GFP_KERNEL);
+-	if (se == NULL)
+-		goto err;
++	for (i = 0; i < num_kcontrols; i++) {
++		ec = (struct snd_soc_tplg_enum_control *)tplg->pos;
++		/* validate kcontrol */
++		if (strnlen(ec->hdr.name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
++			    SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
++			return NULL;
++
++		se = kzalloc(sizeof(*se), GFP_KERNEL);
++		if (se == NULL)
++			goto err;
+ 
+-	dev_dbg(tplg->dev, " adding DAPM widget enum control %s\n",
+-		ec->hdr.name);
++		dev_dbg(tplg->dev, " adding DAPM widget enum control %s\n",
++			ec->hdr.name);
+ 
+-	kc->name = ec->hdr.name;
+-	kc->private_value = (long)se;
+-	kc->iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+-	kc->access = ec->hdr.access;
++		kc[i].name = ec->hdr.name;
++		kc[i].private_value = (long)se;
++		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
++		kc[i].access = ec->hdr.access;
+ 
+-	/* we only support FL/FR channel mapping atm */
+-	se->reg = tplc_chan_get_reg(tplg, ec->channel, SNDRV_CHMAP_FL);
+-	se->shift_l = tplc_chan_get_shift(tplg, ec->channel, SNDRV_CHMAP_FL);
+-	se->shift_r = tplc_chan_get_shift(tplg, ec->channel, SNDRV_CHMAP_FR);
++		/* we only support FL/FR channel mapping atm */
++		se->reg = tplc_chan_get_reg(tplg, ec->channel, SNDRV_CHMAP_FL);
++		se->shift_l = tplc_chan_get_shift(tplg, ec->channel,
++						  SNDRV_CHMAP_FL);
++		se->shift_r = tplc_chan_get_shift(tplg, ec->channel,
++						  SNDRV_CHMAP_FR);
+ 
+-	se->items = ec->items;
+-	se->mask = ec->mask;
+-	se->dobj.index = tplg->index;
++		se->items = ec->items;
++		se->mask = ec->mask;
++		se->dobj.index = tplg->index;
+ 
+-	switch (ec->hdr.ops.info) {
+-	case SND_SOC_TPLG_CTL_ENUM_VALUE:
+-	case SND_SOC_TPLG_DAPM_CTL_ENUM_VALUE:
+-		err = soc_tplg_denum_create_values(se, ec);
+-		if (err < 0) {
+-			dev_err(tplg->dev, "ASoC: could not create values for %s\n",
+-				ec->hdr.name);
++		switch (ec->hdr.ops.info) {
++		case SND_SOC_TPLG_CTL_ENUM_VALUE:
++		case SND_SOC_TPLG_DAPM_CTL_ENUM_VALUE:
++			err = soc_tplg_denum_create_values(se, ec);
++			if (err < 0) {
++				dev_err(tplg->dev, "ASoC: could not create values for %s\n",
++					ec->hdr.name);
++				goto err_se;
++			}
++			/* fall through to create texts */
++		case SND_SOC_TPLG_CTL_ENUM:
++		case SND_SOC_TPLG_DAPM_CTL_ENUM_DOUBLE:
++		case SND_SOC_TPLG_DAPM_CTL_ENUM_VIRT:
++			err = soc_tplg_denum_create_texts(se, ec);
++			if (err < 0) {
++				dev_err(tplg->dev, "ASoC: could not create texts for %s\n",
++					ec->hdr.name);
++				goto err_se;
++			}
++			break;
++		default:
++			dev_err(tplg->dev, "ASoC: invalid enum control type %d for %s\n",
++				ec->hdr.ops.info, ec->hdr.name);
+ 			goto err_se;
+ 		}
+-		/* fall through to create texts */
+-	case SND_SOC_TPLG_CTL_ENUM:
+-	case SND_SOC_TPLG_DAPM_CTL_ENUM_DOUBLE:
+-	case SND_SOC_TPLG_DAPM_CTL_ENUM_VIRT:
+-		err = soc_tplg_denum_create_texts(se, ec);
++
++		/* map io handlers */
++		err = soc_tplg_kcontrol_bind_io(&ec->hdr, &kc[i], tplg);
++		if (err) {
++			soc_control_err(tplg, &ec->hdr, ec->hdr.name);
++			goto err_se;
++		}
++
++		/* pass control to driver for optional further init */
++		err = soc_tplg_init_kcontrol(tplg, &kc[i],
++			(struct snd_soc_tplg_ctl_hdr *)ec);
+ 		if (err < 0) {
+-			dev_err(tplg->dev, "ASoC: could not create texts for %s\n",
++			dev_err(tplg->dev, "ASoC: failed to init %s\n",
+ 				ec->hdr.name);
+ 			goto err_se;
+ 		}
+-		break;
+-	default:
+-		dev_err(tplg->dev, "ASoC: invalid enum control type %d for %s\n",
+-			ec->hdr.ops.info, ec->hdr.name);
+-		goto err_se;
+-	}
+ 
+-	/* map io handlers */
+-	err = soc_tplg_kcontrol_bind_io(&ec->hdr, kc, tplg);
+-	if (err) {
+-		soc_control_err(tplg, &ec->hdr, ec->hdr.name);
+-		goto err_se;
+-	}
+-
+-	/* pass control to driver for optional further init */
+-	err = soc_tplg_init_kcontrol(tplg, kc,
+-		(struct snd_soc_tplg_ctl_hdr *)ec);
+-	if (err < 0) {
+-		dev_err(tplg->dev, "ASoC: failed to init %s\n",
+-			ec->hdr.name);
+-		goto err_se;
++		tplg->pos += (sizeof(struct snd_soc_tplg_enum_control) +
++				ec->priv.size);
+ 	}
+ 
+ 	return kc;
+ 
+ err_se:
+-	/* free values and texts */
+-	kfree(se->dobj.control.dvalues);
+-	for (i = 0; i < ec->items; i++)
+-		kfree(se->dobj.control.dtexts[i]);
++	for (; i >= 0; i--) {
++		/* free values and texts */
++		se = (struct soc_enum *)kc[i].private_value;
++		kfree(se->dobj.control.dvalues);
++		for (j = 0; j < ec->items; j++)
++			kfree(se->dobj.control.dtexts[j]);
+ 
+-	kfree(se);
++		kfree(se);
++	}
+ err:
+ 	kfree(kc);
+ 
+@@ -1499,9 +1509,10 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
+ 	case SND_SOC_TPLG_DAPM_CTL_ENUM_VIRT:
+ 	case SND_SOC_TPLG_DAPM_CTL_ENUM_VALUE:
+ 		template.dobj.widget.kcontrol_enum = 1;
+-		template.num_kcontrols = 1;
++		template.num_kcontrols = w->num_kcontrols;
+ 		template.kcontrol_news =
+-			soc_tplg_dapm_widget_denum_create(tplg);
++			soc_tplg_dapm_widget_denum_create(tplg,
++			template.num_kcontrols);
+ 		if (!template.kcontrol_news) {
+ 			ret = -ENOMEM;
+ 			goto hdr_err;
+-- 
+2.5.0
