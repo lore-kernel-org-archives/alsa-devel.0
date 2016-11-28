@@ -1,43 +1,55 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH v3 1/7] drm/i915: setup
- bridge for HDMI LPE audio driver
-Date: Mon, 28 Nov 2016 15:43:07 +0200
-Message-ID: <20161128134307.GY31595@intel.com>
-References: <20161124235548.16440-1-jerome.anand@intel.com>
- <20161124235548.16440-2-jerome.anand@intel.com>
- <20161124133154.GQ31595@intel.com>
- <86def769-e4ea-199d-59c9-168f8eab7795@linux.intel.com>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: [PATCH] hiface: Fix sample rate changes
+Date: Mon, 28 Nov 2016 10:51:34 +0100
+Message-ID: <CAOf5uw=YOqJQpLbLE7RhMVE=kzHxR6jhEvEAm8n4dWfPVFWPWg@mail.gmail.com>
+References: <ee24b066-41d2-ad24-8598-f15a26a743a8@sonarnerd.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <86def769-e4ea-199d-59c9-168f8eab7795@linux.intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, broonie@kernel.org, rakesh.a.ughreja@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-io0-f174.google.com (mail-io0-f174.google.com
+ [209.85.223.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 38C95266D36
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 10:51:38 +0100 (CET)
+Received: by mail-io0-f174.google.com with SMTP id c21so215467969ioj.1
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 01:51:38 -0800 (PST)
+In-Reply-To: <ee24b066-41d2-ad24-8598-f15a26a743a8@sonarnerd.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jussi Laako <jussi@sonarnerd.net>, Antonio Ospite <ao2@ao2.it>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBOb3YgMjcsIDIwMTYgYXQgMTI6MjA6MzBQTSAtMDYwMCwgUGllcnJlLUxvdWlzIEJv
-c3NhcnQgd3JvdGU6Cj4gT24gMTEvMjQvMTYgNzozMSBBTSwgVmlsbGUgU3lyasOkbMOkIHdyb3Rl
-Ogo+ID4+ICtzdGF0aWMgdm9pZCBscGVfYXVkaW9faXJxX3VubWFzayhzdHJ1Y3QgaXJxX2RhdGEg
-KmQpCj4gPj4gK3sKPiA+PiArCXN0cnVjdCBkcm1fZGV2aWNlICpkZXYgPSBkLT5jaGlwX2RhdGE7
-Cj4gPj4gKwlzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYgPSB0b19pOTE1KGRldik7
-Cj4gPj4gKwl1bnNpZ25lZCBsb25nIGlycWZsYWdzOwo+ID4+ICsJdTMyIHZhbCA9IChJOTE1X0xQ
-RV9QSVBFX0FfSU5URVJSVVBUIHwKPiA+PiArCQlJOTE1X0xQRV9QSVBFX0JfSU5URVJSVVBUIHwK
-PiA+PiArCQlJOTE1X0xQRV9QSVBFX0NfSU5URVJSVVBUKTsKPiA+IE5vIHBpcGUgQyBvbiB2bHYu
-Cj4gCj4gWWVzIGJ1dCBkb2VzIGl0IGh1cnQgdG8gc2V0IHRoaXMgYml0PyBJZiB0aGUgaGFyZHdh
-cmUgaXMgbm90IHByZXNlbnQgCj4gdGhlbiB0aGVyZSBpcyBubyBzaWRlIGVmZmVjdCwgaXMgdGhl
-cmU/CgpJJ20gdG9vIGxhenkgdG8gY2hlY2sgaWYgdGhlIGJpdCBpcyBhbHJlYWR5IHRha2VuLgoK
-LS0gClZpbGxlIFN5cmrDpGzDpApJbnRlbCBPVEMKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4v
-bGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+Hi
+
+On Mon, Nov 28, 2016 at 10:27 AM, Jussi Laako <jussi@sonarnerd.net> wrote:
+> When attempting to change sample rate for the interface after first set-play
+> cycle, the change is not reflected to the hardware, while from user space
+> everything seems to go fine.
+>
+> This patch fixes the issue and the driver now behaves the same way as for
+> example the USB Audio Class driver.
+>
+
+Can you please sent it inline? Not having access at the hardware now
+but Antonio should have it
+
+Michael
+
+
+>
+
+
+
+-- 
+| Michael Nazzareno Trimarchi                     Amarula Solutions BV |
+| COO  -  Founder                                      Cruquiuskade 47 |
+| +31(0)851119172                                 Amsterdam 1018 AM NL |
+|                  [`as] http://www.amarulasolutions.com               |
