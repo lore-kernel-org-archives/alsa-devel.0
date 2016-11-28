@@ -1,78 +1,49 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: Re: [PATCH] ASoC: nau8825: erase pop noise by soft mute
-Date: Mon, 28 Nov 2016 11:22:40 +0800
-Message-ID: <583BA300.9030307@nuvoton.com>
-References: <1473839252-18868-1-git-send-email-KCHSU0@nuvoton.com>
- <20160924191156.e6mu2vlhhaltkeua@sirena.org.uk> <57F23F44.40308@nuvoton.com>
+From: Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [RFC PATCH v3 1/7] drm/i915: setup bridge for HDMI
+	LPE audio driver
+Date: Mon, 28 Nov 2016 10:06:48 +0200
+Message-ID: <871sxw2fl3.fsf@intel.com>
+References: <20161124235548.16440-1-jerome.anand@intel.com>
+ <20161124235548.16440-2-jerome.anand@intel.com>
+ <20161124133154.GQ31595@intel.com>
+ <F6867404AABACB4D8EC371BF802A4B7C14925AAA@fmsmsx101.amr.corp.intel.com>
+ <8760nbvnl0.fsf@intel.com>
+ <F6867404AABACB4D8EC371BF802A4B7C149269C2@fmsmsx101.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 143D7266A1A
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 04:22:45 +0100 (CET)
-In-Reply-To: <57F23F44.40308@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, AC30 WTLi <WTLI@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, Mark Brown <broonie@kernel.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>, MS40 MHKuo <MHKuo@nuvoton.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <F6867404AABACB4D8EC371BF802A4B7C149269C2@fmsmsx101.amr.corp.intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "Anand, Jerome" <jerome.anand@intel.com>, Ville =?utf-8?B?U3lyasOk?= =?utf-8?B?bMOk?= <ville.syrjala@linux.intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/3/2016 7:21 PM, John Hsu wrote:
-> On 9/25/2016 3:11 AM, Mark Brown wrote:
->> On Wed, Sep 14, 2016 at 03:47:32PM +0800, John Hsu wrote:
->>
->>  
->>> + * Enable soft mute to gradually lower DAC volume to zero;
->>> + * Soft unmute will gradually increase DAC volume to volume setting.
->>>     
->>
->>  
->>> +        regmap_write(nau8825->regmap, NAU8825_REG_DAC_DGAIN_CTRL, 0);
->>> +        regmap_update_bits(nau8825->regmap, NAU8825_REG_MUTE_CTRL,
->>> +            NAU8825_DAC_SOFT_MUTE, NAU8825_DAC_SOFT_MUTE);
->>>     
->>
->> Why are we not just exposing soft mute as a userspace control like other
->> drivers do?  It seems like there's some weird interaction between
->> sidetones and the soft mute which this is trying to work around but
->> that's not really explained, it seems to be the main point here.
->> Basically I can't figure out what's intended here.
->>
->>   
->
-> The issue only happens in the begin of playback. The amplitude of
-> output signal has abnormal change in a short time and then recover
-> to the level by user configuration. The amplitude change makes pop
-> noise. For the reason, we use soft mute to fix the pop noise because
-> the signal will output from small to normal case gradually. But the
-> steps of soft mute is not enough to cover the period of amplitude
-> change. Thus, we need to defer the soft mute and put the triggered
-> point near the signal output. The userspace control can't catch the
-> point as we wish.
->
->>> +EXPORT_SYMBOL_GPL(nau8825_soft_mute);
->>>     
->>
->> Why is this exported, how will it be used?  The function seems to be
->> called from inside this driver as well...
->>   
->
-> The function is exported for the machine driver. When the platform
-> stops the playback and it makes soft mute. When the playback starts,
-> the playform makes soft unmute in trigger start function. The trigger
-> function is the closest point of output signal, and the codec driver
-> can make the soft unmute deferring as short as possible.
->
->
-
-We want to abandon the patch under reviewing because there is another
-study and solution for the pop noise. What should I do to abandon the
-patch? Thank you for the advice.
+T24gTW9uLCAyOCBOb3YgMjAxNiwgIkFuYW5kLCBKZXJvbWUiIDxqZXJvbWUuYW5hbmRAaW50ZWwu
+Y29tPiB3cm90ZToKPiBMYXN0IHRpbWUgLCBpdCB0b29rIGNsb3NlIHRvIDEwIGRheXMgd2hlbiBt
+eSBwYXRjaGVzIHdlcmUgcmVmbGVjdGVkIG9uCj4gdGhlIGdmeCBtYWlsaW5nIGxpc3QuIE5vdCBz
+dXJlIHdoYXQgaXMgdGhlIHByb2JsZW0gPz8gTGV0IG1lIHRyeQo+IHNlbmRpbmcgaXQgYWdhaW4g
+Pz8KCkkgZ3Vlc3MgdGhlIGxhc3QgdGltZSB0aGV5IG9ubHkgZXZlciBzaG93ZWQgdXAgYmVjYXVz
+ZSBWaWxsZSBib3VuY2VkCnRoZW0gdG8gdGhlIGxpc3QgYWZ0ZXIgSSdkIHdvbmRlcmVkIHdoZXJl
+IHRoZSBwYXRjaGVzIHdlcmUuLi4KCkNsZWFybHkgdGhlIHBhdGNoZXMgZ28gdGhyb3VnaCB0byBw
+ZW9wbGUgZGlyZWN0bHksIGF0IGxlYXN0IFZpbGxlLCBhbmQKeW91ciByZXBsaWVzIG9uIHRoZSBs
+aXN0IGdvIHRocm91Z2gsIGJ1dCB0aGVyZSdzIGdvdCB0byBiZSBzb21ldGhpbmcKZ29pbmcgb24g
+d2l0aCBob3cgeW91IHNlbmQgcGF0Y2hlcyB0byB0aGUgbGlzdHMuIChJJ2Qgc3VzcGVjdApmcmVl
+ZGVza3RvcC5vcmcsIGJ1dCB0aGUgcGF0Y2hlcyB3ZXJlbid0IG9uIGFsc2EtZGV2ZWwgYXJjaGl2
+ZSBlaXRoZXIuKQpZb3UgYWxyZWFkeSBzZWVtIHRvIGJlIHVzaW5nICdnaXQgc2VuZC1lbWFpbCcu
+IEkgZG9uJ3Qga25vdyB3aGF0IHRvCnN1Z2dlc3QgbmV4dCwgZXhjZXB0IHRvIG1heWJlIHRyeSB0
+byBzZW5kIGEgdGVzdCBtYWlsIHRvIHRoZSBsaXN0IHVzaW5nCidnaXQgc2VuZC1lbWFpbCcgYW5k
+IHNlZSBpZiBpdCBnb2VzIHRocm91Z2guCgpCUiwKSmFuaS4KCgotLSAKSmFuaSBOaWt1bGEsIElu
+dGVsIE9wZW4gU291cmNlIFRlY2hub2xvZ3kgQ2VudGVyCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4
+QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
