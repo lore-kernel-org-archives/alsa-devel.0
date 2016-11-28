@@ -1,243 +1,111 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v3 2/3] ucm: Parse sequence of component devices
-Date: Mon, 28 Nov 2016 13:33:54 +0800
-Message-ID: <7efc58e307fce50c6db6326e5e25dfe8403c11a6.1480309753.git.mengdong.lin@linux.intel.com>
-References: <cover.1480309753.git.mengdong.lin@linux.intel.com>
+From: Russell King - ARM Linux <linux@armlinux.org.uk>
+Subject: Re: [PATCH v3] clkdev: add devm_of_clk_get()
+Date: Mon, 28 Nov 2016 10:10:36 +0000
+Message-ID: <20161128101036.GS14217@n2100.armlinux.org.uk>
+References: <87vav89chw.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id EF9022669E3
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2016 06:31:49 +0100 (CET)
-In-Reply-To: <cover.1480309753.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <87vav89chw.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Linux-DT <devicetree@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Linux-Kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org, Linux-ARM <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+On Mon, Nov 28, 2016 at 09:32:51AM +0000, Kuninori Morimoto wrote:
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> Current Linux has of_clk_get(), but doesn't have devm_of_clk_get().
+> This patch adds it.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+> v2 -> v3
+> 
+>  - implement in clk-devres.c, and reused existing devm_clk_release()
+> 
+>  drivers/clk/clk-devres.c | 21 +++++++++++++++++++++
+>  include/linux/clk.h      |  7 +++++++
+>  2 files changed, 28 insertions(+)
+> 
+> diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c
+> index 8f57154..2449b25 100644
+> --- a/drivers/clk/clk-devres.c
+> +++ b/drivers/clk/clk-devres.c
+> @@ -53,3 +53,24 @@ void devm_clk_put(struct device *dev, struct clk *clk)
+>  	WARN_ON(ret);
+>  }
+>  EXPORT_SYMBOL(devm_clk_put);
+> +
+> +struct clk *devm_of_clk_get(struct device *dev,
+> +			    struct device_node *np, int index)
+> +{
+> +	struct clk **ptr, *clk;
+> +
+> +	ptr = devres_alloc(devm_clk_release, sizeof(*ptr), GFP_KERNEL);
+> +	if (!ptr)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	clk = of_clk_get(np, index);
+> +	if (!IS_ERR(clk)) {
+> +		*ptr = clk;
+> +		devres_add(dev, ptr);
+> +	} else {
+> +		devres_free(ptr);
+> +	}
+> +
+> +	return clk;
+> +}
+> +EXPORT_SYMBOL(devm_of_clk_get);
+> diff --git a/include/linux/clk.h b/include/linux/clk.h
+> index 123c027..1b713db 100644
+> --- a/include/linux/clk.h
+> +++ b/include/linux/clk.h
+> @@ -506,6 +506,8 @@ static inline void clk_disable_unprepare(struct clk *clk)
+>  
+>  #if defined(CONFIG_OF) && defined(CONFIG_COMMON_CLK)
+>  struct clk *of_clk_get(struct device_node *np, int index);
+> +struct clk *devm_of_clk_get(struct device *dev,
+> +			    struct device_node *np, int index);
 
-A machine device's sequence can enable or disable a component device by
-keyword 'enadev' and 'disdev' followed the name of the component device.
+No need for this to be within the ifdef.
 
-UCM sequence parser will find the component device and mark if its enable
-or disable sequence is needed by the parent, the machine device.
+>  struct clk *of_clk_get_by_name(struct device_node *np, const char *name);
+>  struct clk *of_clk_get_from_provider(struct of_phandle_args *clkspec);
+>  #else
+> @@ -513,6 +515,11 @@ static inline struct clk *of_clk_get(struct device_node *np, int index)
+>  {
+>  	return ERR_PTR(-ENOENT);
+>  }
+> +static inline struct clk *devm_of_clk_get(struct device *dev,
+> +			    struct device_node *np, int index)
+> +{
+> +	return ERR_PTR(-ENOENT);
+> +}
 
-New element type and struct are defined for the sequence of a component
-device. Component devices will be removed from the machine device list
-'device_list' of a verb, since we don't want to expose them to audio
-servers with original API to list devices for backward compatibility.
-A new list 'cmpt_device_list' is used for the component devices of a verb.
+and so no need for this either.  In any case, this will cause !OF ||
+!COMMON_CLK builds to fail because this definition will conflict with
+that in clk-devres.c
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+>  static inline struct clk *of_clk_get_by_name(struct device_node *np,
+>  					     const char *name)
+>  {
+> -- 
+> 1.9.1
+> 
 
-diff --git a/src/ucm/parser.c b/src/ucm/parser.c
-index 5c99ab4..c98373a 100644
---- a/src/ucm/parser.c
-+++ b/src/ucm/parser.c
-@@ -254,6 +254,82 @@ static int parse_device_list(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
- 	return 0;
- }
- 
-+/* Find a component device by its name, and remove it from machine device
-+ * list.
-+ *
-+ * Component devices are defined by machine components (usually off-soc
-+ * codes or DSP embeded in SoC). Since alsaconf imports their configuration
-+ * files automatically, we don't know which devices are component devices
-+ * until they are referenced by a machine device sequence. So here when we
-+ * find a referenced device, we move it from the machine device list to the
-+ * component device list. Component devices will not be exposed to applications
-+ * by the original API to list devices for backward compatibility. So sound
-+ * servers can only see the machine devices.
-+ */
-+struct use_case_device *find_component_dev(snd_use_case_mgr_t *uc_mgr,
-+	const char *name)
-+{
-+	struct list_head *pos, *posdev, *_posdev;
-+	struct use_case_verb *verb;
-+	struct use_case_device *dev;
-+
-+	list_for_each(pos, &uc_mgr->verb_list) {
-+		verb = list_entry(pos, struct use_case_verb, list);
-+
-+		/* search in the component device list */
-+		list_for_each(posdev, &verb->cmpt_device_list) {
-+			dev = list_entry(posdev, struct use_case_device, list);
-+			if (!strcmp(dev->name, name))
-+				return dev;
-+		}
-+
-+		/* search the machine device list */
-+		list_for_each_safe(posdev, _posdev, &verb->device_list) {
-+			dev = list_entry(posdev, struct use_case_device, list);
-+			if (!strcmp(dev->name, name)) {
-+				/* find the component device, move it from the
-+				 * machine device list to the component device
-+				 * list.
-+				 */
-+				list_del(&dev->list);
-+				list_add_tail(&dev->list,
-+					      &verb->cmpt_device_list);
-+				return dev;
-+			}
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+/* parse sequence of a component device
-+ *
-+ * This function will find the component device and mark if its enable or
-+ * disable sequence is needed by its parenet device.
-+ */
-+static int parse_component_seq(snd_use_case_mgr_t *uc_mgr,
-+			  snd_config_t *n, int enable,
-+			  struct component_sequence *cmpt_seq)
-+{
-+	const char *val;
-+	int err;
-+
-+	err = snd_config_get_string(n, &val);
-+	if (err < 0)
-+		return err;
-+
-+	cmpt_seq->device = find_component_dev(uc_mgr, val);
-+	if (!cmpt_seq->device) {
-+		uc_error("error: Cannot find component device %s", val);
-+		return -EINVAL;
-+	}
-+
-+	/* Parent needs its enable or disable sequence */
-+	cmpt_seq->enable = enable;
-+
-+	return 0;
-+}
-+
- /*
-  * Parse sequences.
-  *
-@@ -263,12 +339,16 @@ static int parse_device_list(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
-  * cset "element_id_syntax value_syntax"
-  * usleep time
-  * exec "any unix command with arguments"
-+ * enadev "component device name"
-+ * disdev "component device name"
-  *
-  * e.g.
-  *	cset "name='Master Playback Switch' 0,0"
-  *      cset "iface=PCM,name='Disable HDMI',index=1 0"
-+ *	enadev "rt286:Headphones"
-+ *	disdev "rt286:Speaker"
-  */
--static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
-+static int parse_sequence(snd_use_case_mgr_t *uc_mgr,
- 			  struct list_head *base,
- 			  snd_config_t *cfg)
- {
-@@ -325,6 +405,30 @@ static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
- 			continue;
- 		}
- 
-+		if (strcmp(cmd, "enadev") == 0) {
-+			/* need to enable a component device */
-+			curr->type = SEQUENCE_ELEMENT_TYPE_CMPT_SEQ;
-+			err = parse_component_seq(uc_mgr, n, 1,
-+						&curr->data.cmpt_seq);
-+			if (err < 0) {
-+				uc_error("error: enadev requires a valid device!");
-+				return err;
-+			}
-+			continue;
-+		}
-+
-+		if (strcmp(cmd, "disdev") == 0) {
-+			/* need to disable a component device */
-+			curr->type = SEQUENCE_ELEMENT_TYPE_CMPT_SEQ;
-+			err = parse_component_seq(uc_mgr, n, 0,
-+						&curr->data.cmpt_seq);
-+			if (err < 0) {
-+				uc_error("error: disdev requires a valid device!");
-+				return err;
-+			}
-+			continue;
-+		}
-+
- 		if (strcmp(cmd, "cset-bin-file") == 0) {
- 			curr->type = SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE;
- 			err = parse_string(n, &curr->data.cset);
-@@ -957,6 +1061,7 @@ static int parse_verb_file(snd_use_case_mgr_t *uc_mgr,
- 	INIT_LIST_HEAD(&verb->disable_list);
- 	INIT_LIST_HEAD(&verb->transition_list);
- 	INIT_LIST_HEAD(&verb->device_list);
-+	INIT_LIST_HEAD(&verb->cmpt_device_list);
- 	INIT_LIST_HEAD(&verb->modifier_list);
- 	INIT_LIST_HEAD(&verb->value_list);
- 	list_add_tail(&verb->list, &uc_mgr->verb_list);
-diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
-index b89de2a..3bfdd67 100644
---- a/src/ucm/ucm_local.h
-+++ b/src/ucm/ucm_local.h
-@@ -49,6 +49,7 @@
- #define SEQUENCE_ELEMENT_TYPE_EXEC	4
- #define SEQUENCE_ELEMENT_TYPE_CSET_BIN_FILE	5
- #define SEQUENCE_ELEMENT_TYPE_CSET_TLV	6
-+#define SEQUENCE_ELEMENT_TYPE_CMPT_SEQ	7
- 
- struct ucm_value {
-         struct list_head list;
-@@ -56,6 +57,12 @@ struct ucm_value {
-         char *data;
- };
- 
-+/* sequence of a component device */
-+struct component_sequence {
-+	struct use_case_device *device; /* component device */
-+	int enable; /* flag to choose enable or disable list of the device */
-+};
-+
- struct sequence_element {
- 	struct list_head list;
- 	unsigned int type;
-@@ -64,6 +71,7 @@ struct sequence_element {
- 		char *cdev;
- 		char *cset;
- 		char *exec;
-+		struct component_sequence cmpt_seq; /* component sequence */
- 	} data;
- };
- 
-@@ -167,6 +175,9 @@ struct use_case_verb {
- 	/* hardware devices that can be used with this use case */
- 	struct list_head device_list;
- 
-+	/* component device list */
-+	struct list_head cmpt_device_list;
-+
- 	/* modifiers that can be used with this use case */
- 	struct list_head modifier_list;
- 
-diff --git a/src/ucm/utils.c b/src/ucm/utils.c
-index 45307b0..0fba85a 100644
---- a/src/ucm/utils.c
-+++ b/src/ucm/utils.c
-@@ -210,6 +210,7 @@ void uc_mgr_free_verb(snd_use_case_mgr_t *uc_mgr)
- 		uc_mgr_free_transition(&verb->transition_list);
- 		uc_mgr_free_value(&verb->value_list);
- 		uc_mgr_free_device(&verb->device_list);
-+		uc_mgr_free_device(&verb->cmpt_device_list);
- 		uc_mgr_free_modifier(&verb->modifier_list);
- 		list_del(&verb->list);
- 		free(verb);
 -- 
-2.7.4
+RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
