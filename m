@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH alsa-lib] pcm: Add the PCM state checks to
-	plugins
-Date: Tue, 29 Nov 2016 14:41:20 +0100
-Message-ID: <20161129134120.32234-1-tiwai@suse.de>
+Subject: [PATCH] pcm: dmix: Do not discard slave reported delay
+	in status result
+Date: Tue, 29 Nov 2016 15:03:07 +0100
+Message-ID: <20161129140307.8335-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 58ABA2667C9
- for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 14:41:25 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id CF5BFABC3
- for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 13:41:23 +0000 (UTC)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BD672667C9
+ for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 15:03:09 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id F1937ABC3
+ for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 14:03:08 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,217 +25,99 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I noticed that some plugin codes have no proper PCM state checks and
-it results in expected outcomes.  For example, when snd_pcm_drain() is
-called for a dmix PCM after calling snd_pcm_drop(), it stalls
-unexpectedly.  It's just because its drain callback doesn't expect the
-SND_PCM_SETUP state.
-
-We can fix such a bug in each place one by one, but a safer way would
-be to filter out all such cases commonly in the PCM API functions
-themselves.  This patch adds the PCM state sanity checks to major API
-functions so that they return -EBADFD when called in the unexpected
-PCM states.
-
-As well as for the thread-safety extension, it'd be a question of the
-performance; again at this time, the hw PCM is considered as an
-exception, and it has pcm->own_state_check flag set, which means that
-the common PCM state checks are skipped.
+Like the change done for dshare plugin, we can calculate the delay
+more precisely from the slave PCM.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- src/pcm/pcm.c       | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
- src/pcm/pcm_hw.c    |  1 +
- src/pcm/pcm_local.h |  1 +
- 3 files changed, 50 insertions(+)
+ src/pcm/pcm_dmix.c | 45 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 28 insertions(+), 17 deletions(-)
 
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index cd87bc759ded..f2ca02b55973 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -655,6 +655,23 @@ playback devices.
- #include <limits.h>
- #include "pcm_local.h"
+diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+index 2fedb1c14a3b..825677ffeb3f 100644
+--- a/src/pcm/pcm_dmix.c
++++ b/src/pcm/pcm_dmix.c
+@@ -391,23 +391,14 @@ static void snd_pcm_dmix_sync_area(snd_pcm_t *pcm)
+ /*
+  *  synchronize hardware pointer (hw_ptr) with ours
+  */
+-static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
++static int snd_pcm_dmix_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_ptr)
+ {
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
+-	snd_pcm_uframes_t slave_hw_ptr, old_slave_hw_ptr, avail;
++	snd_pcm_uframes_t old_slave_hw_ptr, avail;
+ 	snd_pcm_sframes_t diff;
+ 	
+-	switch (snd_pcm_state(dmix->spcm)) {
+-	case SND_PCM_STATE_DISCONNECTED:
+-		dmix->state = SND_PCM_STATE_DISCONNECTED;
+-		return -ENODEV;
+-	default:
+-		break;
+-	}
+-	if (dmix->slowptr)
+-		snd_pcm_hwsync(dmix->spcm);
+ 	old_slave_hw_ptr = dmix->slave_hw_ptr;
+-	slave_hw_ptr = dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
++	dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
+ 	diff = slave_hw_ptr - old_slave_hw_ptr;
+ 	if (diff == 0)		/* fast path */
+ 		return 0;
+@@ -440,6 +431,24 @@ static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
+ 	return 0;
+ }
  
-+#ifndef DOC_HIDDEN
-+#define P_STATE(x)	(1U << SND_PCM_STATE_ ## x)
-+#define P_STATE_RUNNABLE (P_STATE(PREPARED) | \
-+			  P_STATE(RUNNING) | \
-+			  P_STATE(XRUN) | \
-+			  P_STATE(PAUSED) | \
-+			  P_STATE(DRAINING))
-+
-+/* check whether the PCM is in the unexpected state */
-+static int bad_pcm_state(snd_pcm_t *pcm, unsigned int supported_states)
++static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
 +{
-+	if (pcm->own_state_check)
-+		return 0; /* don't care, the plugin checks by itself */
-+	return !(supported_states & (1U << snd_pcm_state(pcm)));
-+}
-+#endif
++	snd_pcm_direct_t *dmix = pcm->private_data;
 +
- /**
-  * \brief get identifier of PCM handle
-  * \param pcm PCM handle
-@@ -1120,6 +1137,8 @@ int snd_pcm_prepare(snd_pcm_t *pcm)
- 		SNDMSG("PCM not set up");
- 		return -EIO;
- 	}
-+	if (bad_pcm_state(pcm, ~P_STATE(DISCONNECTED)))
-+		return -EBADFD;
- 	snd_pcm_lock(pcm);
- 	err = pcm->fast_ops->prepare(pcm->fast_op_arg);
- 	snd_pcm_unlock(pcm);
-@@ -1166,6 +1185,8 @@ int snd_pcm_start(snd_pcm_t *pcm)
- 		SNDMSG("PCM not set up");
- 		return -EIO;
- 	}
-+	if (bad_pcm_state(pcm, P_STATE(PREPARED)))
-+		return -EBADFD;
- 	snd_pcm_lock(pcm);
- 	err = __snd_pcm_start(pcm);
- 	snd_pcm_unlock(pcm);
-@@ -1194,6 +1215,9 @@ int snd_pcm_drop(snd_pcm_t *pcm)
- 		SNDMSG("PCM not set up");
- 		return -EIO;
- 	}
-+	if (bad_pcm_state(pcm, P_STATE_RUNNABLE | P_STATE(SETUP) |
-+			     P_STATE(SUSPENDED)))
-+		return -EBADFD;
- 	snd_pcm_lock(pcm);
- 	err = pcm->fast_ops->drop(pcm->fast_op_arg);
- 	snd_pcm_unlock(pcm);
-@@ -1222,6 +1246,8 @@ int snd_pcm_drain(snd_pcm_t *pcm)
- 		SNDMSG("PCM not set up");
- 		return -EIO;
- 	}
-+	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
-+		return -EBADFD;
- 	/* lock handled in the callback */
- 	return pcm->fast_ops->drain(pcm->fast_op_arg);
- }
-@@ -1247,6 +1273,8 @@ int snd_pcm_pause(snd_pcm_t *pcm, int enable)
- 		SNDMSG("PCM not set up");
- 		return -EIO;
- 	}
-+	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
-+		return -EBADFD;
- 	snd_pcm_lock(pcm);
- 	err = pcm->fast_ops->pause(pcm->fast_op_arg, enable);
- 	snd_pcm_unlock(pcm);
-@@ -1273,6 +1301,8 @@ snd_pcm_sframes_t snd_pcm_rewindable(snd_pcm_t *pcm)
- 		SNDMSG("PCM not set up");
- 		return -EIO;
- 	}
-+	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
-+		return -EBADFD;
- 	snd_pcm_lock(pcm);
- 	result = pcm->fast_ops->rewindable(pcm->fast_op_arg);
- 	snd_pcm_unlock(pcm);
-@@ -1299,6 +1329,8 @@ snd_pcm_sframes_t snd_pcm_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
- 	}
- 	if (frames == 0)
- 		return 0;
-+	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
-+		return -EBADFD;
- 	snd_pcm_lock(pcm);
- 	result = pcm->fast_ops->rewind(pcm->fast_op_arg, frames);
- 	snd_pcm_unlock(pcm);
-@@ -1325,6 +1357,8 @@ snd_pcm_sframes_t snd_pcm_forwardable(snd_pcm_t *pcm)
- 		SNDMSG("PCM not set up");
- 		return -EIO;
- 	}
-+	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
-+		return -EBADFD;
- 	snd_pcm_lock(pcm);
- 	result = pcm->fast_ops->forwardable(pcm->fast_op_arg);
- 	snd_pcm_unlock(pcm);
-@@ -1355,6 +1389,8 @@ snd_pcm_sframes_t snd_pcm_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
- 	}
- 	if (frames == 0)
- 		return 0;
-+	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
-+		return -EBADFD;
- 	snd_pcm_lock(pcm);
- 	result = pcm->fast_ops->forward(pcm->fast_op_arg, frames);
- 	snd_pcm_unlock(pcm);
-@@ -1393,6 +1429,8 @@ snd_pcm_sframes_t snd_pcm_writei(snd_pcm_t *pcm, const void *buffer, snd_pcm_ufr
- 		SNDMSG("invalid access type %s", snd_pcm_access_name(pcm->access));
- 		return -EINVAL;
- 	}
-+	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
-+		return -EBADFD;
- 	return _snd_pcm_writei(pcm, buffer, size);
- }
- 
-@@ -1427,6 +1465,8 @@ snd_pcm_sframes_t snd_pcm_writen(snd_pcm_t *pcm, void **bufs, snd_pcm_uframes_t
- 		SNDMSG("invalid access type %s", snd_pcm_access_name(pcm->access));
- 		return -EINVAL;
- 	}
-+	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
-+		return -EBADFD;
- 	return _snd_pcm_writen(pcm, bufs, size);
- }
- 
-@@ -1461,6 +1501,8 @@ snd_pcm_sframes_t snd_pcm_readi(snd_pcm_t *pcm, void *buffer, snd_pcm_uframes_t
- 		SNDMSG("invalid access type %s", snd_pcm_access_name(pcm->access));
- 		return -EINVAL;
- 	}
-+	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
-+		return -EBADFD;
- 	return _snd_pcm_readi(pcm, buffer, size);
- }
- 
-@@ -1495,6 +1537,8 @@ snd_pcm_sframes_t snd_pcm_readn(snd_pcm_t *pcm, void **bufs, snd_pcm_uframes_t s
- 		SNDMSG("invalid access type %s", snd_pcm_access_name(pcm->access));
- 		return -EINVAL;
- 	}
-+	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
-+		return -EBADFD;
- 	return _snd_pcm_readn(pcm, bufs, size);
- }
- 
-@@ -6938,6 +6982,8 @@ int snd_pcm_mmap_begin(snd_pcm_t *pcm,
++	switch (snd_pcm_state(dmix->spcm)) {
++	case SND_PCM_STATE_DISCONNECTED:
++		dmix->state = SND_PCM_STATE_DISCONNECTED;
++		return -ENODEV;
++	default:
++		break;
++	}
++
++	if (dmix->slowptr)
++		snd_pcm_hwsync(dmix->spcm);
++
++	return snd_pcm_dmix_sync_ptr0(pcm, *dmix->spcm->hw.ptr);
++}
++
+ /*
+  *  plugin implementation
+  */
+@@ -467,22 +476,24 @@ static int snd_pcm_dmix_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
  {
- 	int err;
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
  
-+	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
-+		return -EBADFD;
- 	snd_pcm_lock(pcm);
- 	err = __snd_pcm_mmap_begin(pcm, areas, offset, frames);
- 	snd_pcm_unlock(pcm);
-@@ -7033,6 +7079,8 @@ snd_pcm_sframes_t snd_pcm_mmap_commit(snd_pcm_t *pcm,
- {
- 	snd_pcm_sframes_t result;
++	memset(status, 0, sizeof(*status));
++	snd_pcm_status(dmix->spcm, status);
++
+ 	switch (dmix->state) {
+ 	case SNDRV_PCM_STATE_DRAINING:
+ 	case SNDRV_PCM_STATE_RUNNING:
+-		snd_pcm_dmix_sync_ptr(pcm);
++		snd_pcm_dmix_sync_ptr0(pcm, status->hw_ptr);
++		status->delay += snd_pcm_mmap_playback_delay(pcm)
++				+ status->avail - dmix->spcm->buffer_size;
+ 		break;
+ 	default:
+ 		break;
+ 	}
+-	memset(status, 0, sizeof(*status));
+-	snd_pcm_status(dmix->spcm, status);
+-	status->state = snd_pcm_dmix_state(pcm);
++
+ 	status->trigger_tstamp = dmix->trigger_tstamp;
+ 	status->avail = snd_pcm_mmap_playback_avail(pcm);
+ 	status->avail_max = status->avail > dmix->avail_max ? status->avail : dmix->avail_max;
+ 	dmix->avail_max = 0;
+-	status->delay = snd_pcm_mmap_playback_delay(pcm);
+ 	return 0;
+ }
  
-+	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
-+		return -EBADFD;
- 	snd_pcm_lock(pcm);
- 	result = __snd_pcm_mmap_commit(pcm, offset, frames);
- 	snd_pcm_unlock(pcm);
-diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index 56e88b6bf6c0..30cd5d0f6503 100644
---- a/src/pcm/pcm_hw.c
-+++ b/src/pcm/pcm_hw.c
-@@ -1516,6 +1516,7 @@ int snd_pcm_hw_open_fd(snd_pcm_t **pcmp, const char *name,
- #ifdef THREAD_SAFE_API
- 	pcm->need_lock = 0;	/* hw plugin is thread-safe */
- #endif
-+	pcm->own_state_check = 1; /* skip the common state check */
- 
- 	ret = snd_pcm_hw_mmap_status(pcm);
- 	if (ret < 0) {
-diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
-index bba2f15ac463..32e6dcdf6fcd 100644
---- a/src/pcm/pcm_local.h
-+++ b/src/pcm/pcm_local.h
-@@ -234,6 +234,7 @@ struct _snd_pcm {
- 					 * use the mmaped buffer of the slave
- 					 */
- 	unsigned int donot_close: 1;	/* don't close this PCM */
-+	unsigned int own_state_check:1; /* plugin has own PCM state check */
- 	snd_pcm_channel_info_t *mmap_channels;
- 	snd_pcm_channel_area_t *running_areas;
- 	snd_pcm_channel_area_t *stopped_areas;
 -- 
 2.10.2
