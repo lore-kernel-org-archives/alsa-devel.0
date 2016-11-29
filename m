@@ -1,18 +1,18 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] pcm: dmix: Do not discard slave reported delay
-	in status result
-Date: Tue, 29 Nov 2016 15:03:07 +0100
-Message-ID: <20161129140307.8335-1-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] alsa-lib: Add htimestamp operation in
+	plugin file
+Date: Wed, 30 Nov 2016 00:15:57 +0900
+Message-ID: <f3796efe-5870-2f87-77b5-6f932b4b5bac@sakamocchi.jp>
+References: <1480073797-17667-1-git-send-email-sutar.mounesh@gmail.com>
+ <s5hmvgj5s6n.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BD672667C9
- for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 15:03:09 +0100 (CET)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id F1937ABC3
- for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 14:03:08 +0000 (UTC)
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 77E20266A7A
+ for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 16:16:02 +0100 (CET)
+In-Reply-To: <s5hmvgj5s6n.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,102 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, sutar.mounesh@gmail.com
+Cc: alsa-devel@alsa-project.org, mounesh_sutar@mentor.com, Andreas Pape <apape@de.adit-jv.com>, Joshua Frkuska <joshua_frkuska@mentor.com>
 List-Id: alsa-devel@alsa-project.org
 
-Like the change done for dshare plugin, we can calculate the delay
-more precisely from the slave PCM.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- src/pcm/pcm_dmix.c | 45 ++++++++++++++++++++++++++++-----------------
- 1 file changed, 28 insertions(+), 17 deletions(-)
+On Nov 29 2016 04:18, Takashi Iwai wrote:
+> On Fri, 25 Nov 2016 12:36:37 +0100,
+> sutar.mounesh@gmail.com wrote:
+>>
+>> From: Andreas Pape <apape@de.adit-jv.com>
+>>
+>> PCM operation htimestamp is not implemented in plugin file.
+>> Calling snd_pcm_htimestamp() on a plugin file crashes. This scenario
+>> is considered now.
+>>
+>> Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+>> Signed-off-by: Joshua Frkuska <joshua_frkuska@mentor.com>
+>
+> Applied, thanks.
+>
+>
+> Takashi
+>
+>> ---
+>>
+>> --- a/src/pcm/pcm_file.c	2013-07-08 14:31:36.000000000 +0200
+>> +++ b/src/pcm/pcm_file.c	2015-05-04 16:26:10.413615403 +0200
+>> @@ -698,6 +698,7 @@
+>>  	.readi = snd_pcm_file_readi,
+>>  	.readn = snd_pcm_file_readn,
+>>  	.avail_update = snd_pcm_generic_avail_update,
+>> +	.htimestamp = snd_pcm_generic_htimestamp,
+>>  	.mmap_commit = snd_pcm_file_mmap_commit,
+>>  	.poll_descriptors_count = snd_pcm_generic_poll_descriptors_count,
+>>  	.poll_descriptors = snd_pcm_generic_poll_descriptors,
 
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index 2fedb1c14a3b..825677ffeb3f 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -391,23 +391,14 @@ static void snd_pcm_dmix_sync_area(snd_pcm_t *pcm)
- /*
-  *  synchronize hardware pointer (hw_ptr) with ours
-  */
--static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
-+static int snd_pcm_dmix_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_ptr)
- {
- 	snd_pcm_direct_t *dmix = pcm->private_data;
--	snd_pcm_uframes_t slave_hw_ptr, old_slave_hw_ptr, avail;
-+	snd_pcm_uframes_t old_slave_hw_ptr, avail;
- 	snd_pcm_sframes_t diff;
- 	
--	switch (snd_pcm_state(dmix->spcm)) {
--	case SND_PCM_STATE_DISCONNECTED:
--		dmix->state = SND_PCM_STATE_DISCONNECTED;
--		return -ENODEV;
--	default:
--		break;
--	}
--	if (dmix->slowptr)
--		snd_pcm_hwsync(dmix->spcm);
- 	old_slave_hw_ptr = dmix->slave_hw_ptr;
--	slave_hw_ptr = dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
-+	dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
- 	diff = slave_hw_ptr - old_slave_hw_ptr;
- 	if (diff == 0)		/* fast path */
- 		return 0;
-@@ -440,6 +431,24 @@ static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
- 	return 0;
- }
- 
-+static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
-+{
-+	snd_pcm_direct_t *dmix = pcm->private_data;
-+
-+	switch (snd_pcm_state(dmix->spcm)) {
-+	case SND_PCM_STATE_DISCONNECTED:
-+		dmix->state = SND_PCM_STATE_DISCONNECTED;
-+		return -ENODEV;
-+	default:
-+		break;
-+	}
-+
-+	if (dmix->slowptr)
-+		snd_pcm_hwsync(dmix->spcm);
-+
-+	return snd_pcm_dmix_sync_ptr0(pcm, *dmix->spcm->hw.ptr);
-+}
-+
- /*
-  *  plugin implementation
-  */
-@@ -467,22 +476,24 @@ static int snd_pcm_dmix_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
- {
- 	snd_pcm_direct_t *dmix = pcm->private_data;
- 
-+	memset(status, 0, sizeof(*status));
-+	snd_pcm_status(dmix->spcm, status);
-+
- 	switch (dmix->state) {
- 	case SNDRV_PCM_STATE_DRAINING:
- 	case SNDRV_PCM_STATE_RUNNING:
--		snd_pcm_dmix_sync_ptr(pcm);
-+		snd_pcm_dmix_sync_ptr0(pcm, status->hw_ptr);
-+		status->delay += snd_pcm_mmap_playback_delay(pcm)
-+				+ status->avail - dmix->spcm->buffer_size;
- 		break;
- 	default:
- 		break;
- 	}
--	memset(status, 0, sizeof(*status));
--	snd_pcm_status(dmix->spcm, status);
--	status->state = snd_pcm_dmix_state(pcm);
-+
- 	status->trigger_tstamp = dmix->trigger_tstamp;
- 	status->avail = snd_pcm_mmap_playback_avail(pcm);
- 	status->avail_max = status->avail > dmix->avail_max ? status->avail : dmix->avail_max;
- 	dmix->avail_max = 0;
--	status->delay = snd_pcm_mmap_playback_delay(pcm);
- 	return 0;
- }
- 
--- 
-2.10.2
+I oppose this application, because designated initialization is already 
+applied to the .htimestamp member.
+
+...
+         .poll_descriptors = snd_pcm_generic_poll_descriptors,
+         .poll_revents = snd_pcm_generic_poll_revents,
+         .htimestamp = snd_pcm_generic_htimestamp,
+};
+
+Please see below commit:
+pcm:file: add the missing htimestamp callback
+http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=68ae0c72a53704d416fe77d4c612d1f88d791e02
+
+This mistake causes below warning with -Woverride-init option.
+pcm_file.c:714:16: warning: initialized field overwritten [-Woverride-init]
+   .htimestamp = snd_pcm_generic_real_htimestamp,
+                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+I guess mentor/ADIT developers works for former snapshot, then missed to 
+rebase to current mainline of alsa-lib. I suggest them to di 
+re-evaluation with current mainline without this patch.
+
+
+Regards
+
+Takashi Sakamoto
