@@ -1,15 +1,15 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: nau8825: lock longer to avoid playback
-	pop upon resume
-Date: Tue, 29 Nov 2016 10:05:16 +0800
-Message-ID: <1480385116-11900-1-git-send-email-KCHSU0@nuvoton.com>
+From: Kailang <kailang@realtek.com>
+Subject: Add headset Mic support
+Date: Tue, 29 Nov 2016 06:53:31 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A48BB5@RTITMBSV09.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="_004_6FAB7C47BCF00940BB0999A99BE3547A17A48BB5RTITMBSV09realt_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C0970266FD9
- for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 03:05:39 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45195267006
+ for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 07:53:35 +0100 (CET)
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,88 +19,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-There is an issue about pop noise in NAU88L25 as follows.
-Issue 54078: Chell_headphone pop back from S3
-(1)Play directly to hw, bypassing CRAS:
-sox -b 16 -n -t alsa hw:0,0 synth sine 200 sine 200
-(2)Close lid or powerd_dbus_suspend, then press a key to resume.
-(3)no audio after resume
-(4)Audio will be back after close then reopen the pcm device.
+--_004_6FAB7C47BCF00940BB0999A99BE3547A17A48BB5RTITMBSV09realt_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-After verification, we find one defect is that semaphone lock is not
-long enough and expired. In this situation, the playback comes back
-early but pauses a while to wait for the crosstalk detection done.
-But the detection spends too much time and lock time is up. Therefore,
-the playback and jack detection sequence interfere to each other.
-That breaks sequence and makes noise. The driver extends the lock
-time for the issue.
+Hi Takashi,
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- sound/soc/codecs/nau8825.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+This patch was turn on support Headset Mic for ALC622.
+It is USI ODM platform.
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 3f9137f..2b89569 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -1233,7 +1233,7 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
- 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int val_len = 0, osr;
- 
--	nau8825_sema_acquire(nau8825, 2 * HZ);
-+	nau8825_sema_acquire(nau8825, 3 * HZ);
- 
- 	/* CLK_DAC or CLK_ADC = OSR * FS
- 	 * DAC or ADC clock frequency is defined as Over Sampling Rate (OSR)
-@@ -1293,7 +1293,7 @@ static int nau8825_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int ctrl1_val = 0, ctrl2_val = 0;
- 
--	nau8825_sema_acquire(nau8825, 2 * HZ);
-+	nau8825_sema_acquire(nau8825, 3 * HZ);
- 
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM:
-@@ -2121,7 +2121,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 		 * fered by cross talk process, the driver make the playback
- 		 * preparation halted until cross talk process finish.
- 		 */
--		nau8825_sema_acquire(nau8825, 2 * HZ);
-+		nau8825_sema_acquire(nau8825, 3 * HZ);
- 		nau8825_configure_mclk_as_sysclk(regmap);
- 		/* MCLK not changed by clock tree */
- 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
-@@ -2169,7 +2169,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 		 * fered by cross talk process, the driver make the playback
- 		 * preparation halted until cross talk process finish.
- 		 */
--		nau8825_sema_acquire(nau8825, 2 * HZ);
-+		nau8825_sema_acquire(nau8825, 3 * HZ);
- 		/* Higher FLL reference input frequency can only set lower
- 		 * gain error, such as 0000 for input reference from MCLK
- 		 * 12.288Mhz.
-@@ -2191,7 +2191,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 		 * fered by cross talk process, the driver make the playback
- 		 * preparation halted until cross talk process finish.
- 		 */
--		nau8825_sema_acquire(nau8825, 2 * HZ);
-+		nau8825_sema_acquire(nau8825, 3 * HZ);
- 		/* If FLL reference input is from low frequency source,
- 		 * higher error gain can apply such as 0xf which has
- 		 * the most sensitive gain error correction threshold,
-@@ -2217,7 +2217,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 		 * fered by cross talk process, the driver make the playback
- 		 * preparation halted until cross talk process finish.
- 		 */
--		nau8825_sema_acquire(nau8825, 2 * HZ);
-+		nau8825_sema_acquire(nau8825, 3 * HZ);
- 		/* If FLL reference input is from low frequency source,
- 		 * higher error gain can apply such as 0xf which has
- 		 * the most sensitive gain error correction threshold,
--- 
-2.6.4
+Many Thanks.
+
+BR,
+Kailang
+
+--_004_6FAB7C47BCF00940BB0999A99BE3547A17A48BB5RTITMBSV09realt_
+Content-Type: application/octet-stream;
+	name="0000-add-headset-mic-for-USI-alc622.patch"
+Content-Description: 0000-add-headset-mic-for-USI-alc622.patch
+Content-Disposition: attachment;
+	filename="0000-add-headset-mic-for-USI-alc622.patch"; size=2823;
+	creation-date="Fri, 25 Nov 2016 08:22:00 GMT";
+	modification-date="Fri, 25 Nov 2016 08:18:45 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSAzN2JjMTk3ZWFlMGFlNjFlZDM5MWQ5NDY4NmY0ZTQ3ZDk1ODUwOTdjIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IEZyaSwgMjUgTm92IDIwMTYgMTY6MTU6MTcgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGEvcmVhbHRlayAtIEFkZCBzdXBwb3J0IGZvciBoZWFkc2V0IE1JQyBmb3IgQUxDNjIyCgpB
+ZGQgaGVhZHNldCBNSUMgc3VwcG9ydCBmb3IgQUxDNjIyIG9mIFVTSSBwbGF0Zm9ybS4KSXQgb25s
+eSBzdXBwb3J0IGhlYWRzZXQgb2YgaXBob25lIHR5cGUuCgpTaWduZWQtb2ZmLWJ5OiBLYWlsYW5n
+IFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9w
+YXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwppbmRleCA0OGI4
+NzAxLi41N2NiMjkxIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwor
+KysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwpAQCAtNjU2MSw2ICs2NTYxLDMwIEBA
+IHN0YXRpYyB2b2lkIGFsYzY2Ml9maXh1cF9sZWRfZ3BpbzEoc3RydWN0IGhkYV9jb2RlYyAqY29k
+ZWMsCiAJfQogfQogCitzdGF0aWMgdm9pZCBhbGM2NjJfdXNpX2F1dG9tdXRlX2hvb2soc3RydWN0
+IGhkYV9jb2RlYyAqY29kZWMsCisJCQkJCSBzdHJ1Y3QgaGRhX2phY2tfY2FsbGJhY2sgKmphY2sp
+Cit7CisJc3RydWN0IGFsY19zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CisJaW50IHZyZWY7CisJ
+bXNsZWVwKDIwMCk7CisJc25kX2hkYV9nZW5faHBfYXV0b211dGUoY29kZWMsIGphY2spOworCisJ
+dnJlZiA9IHNwZWMtPmdlbi5ocF9qYWNrX3ByZXNlbnQgPyBQSU5fVlJFRjgwIDogMDsKKwltc2xl
+ZXAoMTAwKTsKKwlzbmRfaGRhX2NvZGVjX3dyaXRlKGNvZGVjLCAweDE5LCAwLCBBQ19WRVJCX1NF
+VF9QSU5fV0lER0VUX0NPTlRST0wsCisJCQkgICAgdnJlZik7Cit9CisKK3N0YXRpYyB2b2lkIGFs
+YzY2Ml9maXh1cF91c2lfaGVhZHNldF9taWMoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsCisJCQkJ
+ICAgICBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwICpmaXgsIGludCBhY3Rpb24pCit7CisJc3RydWN0
+IGFsY19zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CisJaWYgKGFjdGlvbiA9PSBIREFfRklYVVBf
+QUNUX1BSRV9QUk9CRSkgeworCQlzcGVjLT5wYXJzZV9mbGFncyB8PSBIREFfUElOQ0ZHX0hFQURT
+RVRfTUlDOworCQlzcGVjLT5nZW4uaHBfYXV0b211dGVfaG9vayA9IGFsYzY2Ml91c2lfYXV0b211
+dGVfaG9vazsKKwl9Cit9CisKIHN0YXRpYyBzdHJ1Y3QgY29lZl9mdyBhbGM2NjhfY29lZnNbXSA9
+IHsKIAlXUklURV9DT0VGKDB4MDEsIDB4YmViZSksIFdSSVRFX0NPRUYoMHgwMiwgMHhhYWFhKSwg
+V1JJVEVfQ09FRigweDAzLCAgICAweDApLAogCVdSSVRFX0NPRUYoMHgwNCwgMHgwMTgwKSwgV1JJ
+VEVfQ09FRigweDA2LCAgICAweDApLCBXUklURV9DT0VGKDB4MDcsIDB4MGY4MCksCkBAIC02NjI2
+LDYgKzY2NTAsOCBAQCBlbnVtIHsKIAlBTEM4OTFfRklYVVBfREVMTF9NSUNfTk9fUFJFU0VOQ0Us
+CiAJQUxDNjYyX0ZJWFVQX0FDRVJfVkVSSVRPTiwKIAlBTEM4OTJfRklYVVBfQVNST0NLX01PQk8s
+CisJQUxDNjYyX0ZJWFVQX1VTSV9GVU5DLAorCUFMQzY2Ml9GSVhVUF9VU0lfSEVBRFNFVF9NT0RF
+LAogfTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFfZml4dXAgYWxjNjYyX2ZpeHVwc1tdID0g
+ewpAQCAtNjkxMCw2ICs2OTM2LDIwIEBAIGVudW0gewogCQkJeyB9CiAJCX0KIAl9LAorCVtBTEM2
+NjJfRklYVVBfVVNJX0ZVTkNdID0geworCQkudHlwZSA9IEhEQV9GSVhVUF9GVU5DLAorCQkudi5m
+dW5jID0gYWxjNjYyX2ZpeHVwX3VzaV9oZWFkc2V0X21pYywKKwl9LAorCVtBTEM2NjJfRklYVVBf
+VVNJX0hFQURTRVRfTU9ERV0gPSB7CisJCS50eXBlID0gSERBX0ZJWFVQX1BJTlMsCisJCS52LnBp
+bnMgPSAoY29uc3Qgc3RydWN0IGhkYV9waW50YmxbXSkgeworCQkJeyAweDE5LCAweDAyYTE5MTNj
+IH0sIC8qIHVzZSBhcyBoZWFkc2V0IG1pYywgd2l0aG91dCBpdHMgb3duIGphY2sgZGV0ZWN0ICov
+CisJCQl7IDB4MTgsIDB4MDFhMTkwM2QgfSwKKwkJCXsgfQorCQl9LAorCQkuY2hhaW5lZCA9IHRy
+dWUsCisJCS5jaGFpbl9pZCA9IEFMQzY2Ml9GSVhVUF9VU0lfRlVOQworCX0sCiB9OwogCiBzdGF0
+aWMgY29uc3Qgc3RydWN0IHNuZF9wY2lfcXVpcmsgYWxjNjYyX2ZpeHVwX3RibFtdID0gewpAQCAt
+Njk0NSw2ICs2OTg1LDcgQEAgZW51bSB7CiAJU05EX1BDSV9RVUlSSygweDEwNDMsIDB4ODQ2OSwg
+IkFTVVMgbW9ibyIsIEFMQzY2Ml9GSVhVUF9OT19KQUNLX0RFVEVDVCksCiAJU05EX1BDSV9RVUlS
+SygweDEwNWIsIDB4MGNkNiwgIkZveGNvbm4iLCBBTEM2NjJfRklYVVBfQVNVU19NT0RFMiksCiAJ
+U05EX1BDSV9RVUlSSygweDE0NGQsIDB4YzA1MSwgIlNhbXN1bmcgUjcyMCIsIEFMQzY2Ml9GSVhV
+UF9JREVBUEFEKSwKKwlTTkRfUENJX1FVSVJLKDB4MTRjZCwgMHg1MDAzLCAiVVNJIiwgQUxDNjYy
+X0ZJWFVQX1VTSV9IRUFEU0VUX01PREUpLAogCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDM4YWYs
+ICJMZW5vdm8gSWRlYXBhZCBZNTUwUCIsIEFMQzY2Ml9GSVhVUF9JREVBUEFEKSwKIAlTTkRfUENJ
+X1FVSVJLKDB4MTdhYSwgMHgzYTBkLCAiTGVub3ZvIElkZWFwYWQgWTU1MCIsIEFMQzY2Ml9GSVhV
+UF9JREVBUEFEKSwKIAlTTkRfUENJX1FVSVJLKDB4MTg0OSwgMHg1ODkyLCAiQVNSb2NrIEIxNTBN
+IiwgQUxDODkyX0ZJWFVQX0FTUk9DS19NT0JPKSwK
+
+--_004_6FAB7C47BCF00940BB0999A99BE3547A17A48BB5RTITMBSV09realt_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_004_6FAB7C47BCF00940BB0999A99BE3547A17A48BB5RTITMBSV09realt_--
