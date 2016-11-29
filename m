@@ -1,18 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: intel: Replace kthread with work
-Date: Tue, 29 Nov 2016 19:13:41 +0530
-Message-ID: <20161129134340.GS6408@localhost>
-References: <20161128153219.31289-1-tiwai@suse.de>
- <20161128155236.GF6408@localhost>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH alsa-lib] pcm: Add the PCM state checks to
+	plugins
+Date: Tue, 29 Nov 2016 14:41:20 +0100
+Message-ID: <20161129134120.32234-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A64C2667C9
- for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 14:34:06 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20161128155236.GF6408@localhost>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58ABA2667C9
+ for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 14:41:25 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id CF5BFABC3
+ for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 13:41:23 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,36 +22,220 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 28, 2016 at 09:22:36PM +0530, Vinod Koul wrote:
-> On Mon, Nov 28, 2016 at 04:32:19PM +0100, Takashi Iwai wrote:
-> > The usage pattern of kthread worker in Intel SST drivers can be
-> > replaced gracefully with the normal workqueue, which is more light-
-> > weight and easier to manage in general.  Let's do it.
-> > 
-> > While in the replacement, move the schedule_work() call inside the
-> > spinlock for excluding the race, too.
-> > 
-> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > ---
-> > 
-> > Vinod, I tested this only lightly, so it'd be helpful if the patch is
-> > checked on the affected devices before merging.
-> 
-> We had  apatch done last week internally for this, but this one is fine too.
-> 
-> I will get it verfied on SKL tomorrow and get back
+I noticed that some plugin codes have no proper PCM state checks and
+it results in expected outcomes.  For example, when snd_pcm_drain() is
+called for a dmix PCM after calling snd_pcm_drop(), it stalls
+unexpectedly.  It's just because its drain callback doesn't expect the
+SND_PCM_SETUP state.
 
-Hi Takashi,
+We can fix such a bug in each place one by one, but a safer way would
+be to filter out all such cases commonly in the PCM API functions
+themselves.  This patch adds the PCM state sanity checks to major API
+functions so that they return -EBADFD when called in the unexpected
+PCM states.
 
-Works fine :)
+As well as for the thread-safety extension, it'd be a question of the
+performance; again at this time, the hw PCM is considered as an
+exception, and it has pcm->own_state_check flag set, which means that
+the common PCM state checks are skipped.
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Tested-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ src/pcm/pcm.c       | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ src/pcm/pcm_hw.c    |  1 +
+ src/pcm/pcm_local.h |  1 +
+ 3 files changed, 50 insertions(+)
 
-Thanks
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index cd87bc759ded..f2ca02b55973 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -655,6 +655,23 @@ playback devices.
+ #include <limits.h>
+ #include "pcm_local.h"
+ 
++#ifndef DOC_HIDDEN
++#define P_STATE(x)	(1U << SND_PCM_STATE_ ## x)
++#define P_STATE_RUNNABLE (P_STATE(PREPARED) | \
++			  P_STATE(RUNNING) | \
++			  P_STATE(XRUN) | \
++			  P_STATE(PAUSED) | \
++			  P_STATE(DRAINING))
++
++/* check whether the PCM is in the unexpected state */
++static int bad_pcm_state(snd_pcm_t *pcm, unsigned int supported_states)
++{
++	if (pcm->own_state_check)
++		return 0; /* don't care, the plugin checks by itself */
++	return !(supported_states & (1U << snd_pcm_state(pcm)));
++}
++#endif
++
+ /**
+  * \brief get identifier of PCM handle
+  * \param pcm PCM handle
+@@ -1120,6 +1137,8 @@ int snd_pcm_prepare(snd_pcm_t *pcm)
+ 		SNDMSG("PCM not set up");
+ 		return -EIO;
+ 	}
++	if (bad_pcm_state(pcm, ~P_STATE(DISCONNECTED)))
++		return -EBADFD;
+ 	snd_pcm_lock(pcm);
+ 	err = pcm->fast_ops->prepare(pcm->fast_op_arg);
+ 	snd_pcm_unlock(pcm);
+@@ -1166,6 +1185,8 @@ int snd_pcm_start(snd_pcm_t *pcm)
+ 		SNDMSG("PCM not set up");
+ 		return -EIO;
+ 	}
++	if (bad_pcm_state(pcm, P_STATE(PREPARED)))
++		return -EBADFD;
+ 	snd_pcm_lock(pcm);
+ 	err = __snd_pcm_start(pcm);
+ 	snd_pcm_unlock(pcm);
+@@ -1194,6 +1215,9 @@ int snd_pcm_drop(snd_pcm_t *pcm)
+ 		SNDMSG("PCM not set up");
+ 		return -EIO;
+ 	}
++	if (bad_pcm_state(pcm, P_STATE_RUNNABLE | P_STATE(SETUP) |
++			     P_STATE(SUSPENDED)))
++		return -EBADFD;
+ 	snd_pcm_lock(pcm);
+ 	err = pcm->fast_ops->drop(pcm->fast_op_arg);
+ 	snd_pcm_unlock(pcm);
+@@ -1222,6 +1246,8 @@ int snd_pcm_drain(snd_pcm_t *pcm)
+ 		SNDMSG("PCM not set up");
+ 		return -EIO;
+ 	}
++	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
++		return -EBADFD;
+ 	/* lock handled in the callback */
+ 	return pcm->fast_ops->drain(pcm->fast_op_arg);
+ }
+@@ -1247,6 +1273,8 @@ int snd_pcm_pause(snd_pcm_t *pcm, int enable)
+ 		SNDMSG("PCM not set up");
+ 		return -EIO;
+ 	}
++	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
++		return -EBADFD;
+ 	snd_pcm_lock(pcm);
+ 	err = pcm->fast_ops->pause(pcm->fast_op_arg, enable);
+ 	snd_pcm_unlock(pcm);
+@@ -1273,6 +1301,8 @@ snd_pcm_sframes_t snd_pcm_rewindable(snd_pcm_t *pcm)
+ 		SNDMSG("PCM not set up");
+ 		return -EIO;
+ 	}
++	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
++		return -EBADFD;
+ 	snd_pcm_lock(pcm);
+ 	result = pcm->fast_ops->rewindable(pcm->fast_op_arg);
+ 	snd_pcm_unlock(pcm);
+@@ -1299,6 +1329,8 @@ snd_pcm_sframes_t snd_pcm_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
+ 	}
+ 	if (frames == 0)
+ 		return 0;
++	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
++		return -EBADFD;
+ 	snd_pcm_lock(pcm);
+ 	result = pcm->fast_ops->rewind(pcm->fast_op_arg, frames);
+ 	snd_pcm_unlock(pcm);
+@@ -1325,6 +1357,8 @@ snd_pcm_sframes_t snd_pcm_forwardable(snd_pcm_t *pcm)
+ 		SNDMSG("PCM not set up");
+ 		return -EIO;
+ 	}
++	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
++		return -EBADFD;
+ 	snd_pcm_lock(pcm);
+ 	result = pcm->fast_ops->forwardable(pcm->fast_op_arg);
+ 	snd_pcm_unlock(pcm);
+@@ -1355,6 +1389,8 @@ snd_pcm_sframes_t snd_pcm_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
+ 	}
+ 	if (frames == 0)
+ 		return 0;
++	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
++		return -EBADFD;
+ 	snd_pcm_lock(pcm);
+ 	result = pcm->fast_ops->forward(pcm->fast_op_arg, frames);
+ 	snd_pcm_unlock(pcm);
+@@ -1393,6 +1429,8 @@ snd_pcm_sframes_t snd_pcm_writei(snd_pcm_t *pcm, const void *buffer, snd_pcm_ufr
+ 		SNDMSG("invalid access type %s", snd_pcm_access_name(pcm->access));
+ 		return -EINVAL;
+ 	}
++	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
++		return -EBADFD;
+ 	return _snd_pcm_writei(pcm, buffer, size);
+ }
+ 
+@@ -1427,6 +1465,8 @@ snd_pcm_sframes_t snd_pcm_writen(snd_pcm_t *pcm, void **bufs, snd_pcm_uframes_t
+ 		SNDMSG("invalid access type %s", snd_pcm_access_name(pcm->access));
+ 		return -EINVAL;
+ 	}
++	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
++		return -EBADFD;
+ 	return _snd_pcm_writen(pcm, bufs, size);
+ }
+ 
+@@ -1461,6 +1501,8 @@ snd_pcm_sframes_t snd_pcm_readi(snd_pcm_t *pcm, void *buffer, snd_pcm_uframes_t
+ 		SNDMSG("invalid access type %s", snd_pcm_access_name(pcm->access));
+ 		return -EINVAL;
+ 	}
++	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
++		return -EBADFD;
+ 	return _snd_pcm_readi(pcm, buffer, size);
+ }
+ 
+@@ -1495,6 +1537,8 @@ snd_pcm_sframes_t snd_pcm_readn(snd_pcm_t *pcm, void **bufs, snd_pcm_uframes_t s
+ 		SNDMSG("invalid access type %s", snd_pcm_access_name(pcm->access));
+ 		return -EINVAL;
+ 	}
++	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
++		return -EBADFD;
+ 	return _snd_pcm_readn(pcm, bufs, size);
+ }
+ 
+@@ -6938,6 +6982,8 @@ int snd_pcm_mmap_begin(snd_pcm_t *pcm,
+ {
+ 	int err;
+ 
++	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
++		return -EBADFD;
+ 	snd_pcm_lock(pcm);
+ 	err = __snd_pcm_mmap_begin(pcm, areas, offset, frames);
+ 	snd_pcm_unlock(pcm);
+@@ -7033,6 +7079,8 @@ snd_pcm_sframes_t snd_pcm_mmap_commit(snd_pcm_t *pcm,
+ {
+ 	snd_pcm_sframes_t result;
+ 
++	if (bad_pcm_state(pcm, P_STATE_RUNNABLE))
++		return -EBADFD;
+ 	snd_pcm_lock(pcm);
+ 	result = __snd_pcm_mmap_commit(pcm, offset, frames);
+ 	snd_pcm_unlock(pcm);
+diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
+index 56e88b6bf6c0..30cd5d0f6503 100644
+--- a/src/pcm/pcm_hw.c
++++ b/src/pcm/pcm_hw.c
+@@ -1516,6 +1516,7 @@ int snd_pcm_hw_open_fd(snd_pcm_t **pcmp, const char *name,
+ #ifdef THREAD_SAFE_API
+ 	pcm->need_lock = 0;	/* hw plugin is thread-safe */
+ #endif
++	pcm->own_state_check = 1; /* skip the common state check */
+ 
+ 	ret = snd_pcm_hw_mmap_status(pcm);
+ 	if (ret < 0) {
+diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
+index bba2f15ac463..32e6dcdf6fcd 100644
+--- a/src/pcm/pcm_local.h
++++ b/src/pcm/pcm_local.h
+@@ -234,6 +234,7 @@ struct _snd_pcm {
+ 					 * use the mmaped buffer of the slave
+ 					 */
+ 	unsigned int donot_close: 1;	/* don't close this PCM */
++	unsigned int own_state_check:1; /* plugin has own PCM state check */
+ 	snd_pcm_channel_info_t *mmap_channels;
+ 	snd_pcm_channel_area_t *running_areas;
+ 	snd_pcm_channel_area_t *stopped_areas;
 -- 
-~Vinod
+2.10.2
