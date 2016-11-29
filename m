@@ -1,18 +1,15 @@
-From: Rob Nertney <rob@rob-otics.com>
-Subject: Re: --max-file-time producing incorrect results
-Date: Tue, 29 Nov 2016 17:34:35 +0000
-Message-ID: <CALAeOVNLV+3QL=dFFJ8Er_0ugDJZkAAzvfdWU6vjjU+s5YWbcQ@mail.gmail.com>
-References: <CALAeOVOjBUJ2rYQ4ph9xuScwM0-K2fSrg5JROKeHK_vxP5zPHw@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: echoaudio: Fix improper return value in
+	function load_asic
+Date: Tue, 29 Nov 2016 20:00:29 +0100
+Message-ID: <20161129190029.31414-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f54.google.com (mail-wm0-f54.google.com [74.125.82.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 658442668B3
- for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 18:34:46 +0100 (CET)
-Received: by mail-wm0-f54.google.com with SMTP id u144so48784319wmu.1
- for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 09:34:46 -0800 (PST)
-In-Reply-To: <CALAeOVOjBUJ2rYQ4ph9xuScwM0-K2fSrg5JROKeHK_vxP5zPHw@mail.gmail.com>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A67B2668DC
+ for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 20:00:31 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,24 +20,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Pan Bian <bianpan2016@163.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sorry. Only losing a single frame. Not 128.
+From: Pan Bian <bianpan2016@163.com>
 
-On Tue, Nov 29, 2016 at 8:52 AM Rob Nertney <rob@rob-otics.com> wrote:
+When the second call to load_asic_generic() fails in function
+load_asic(), "false" is returned. The real value of "false" is 0, which
+indicates success in the context. As a result, the execution status and
+the return value may be inconsistent. This patch fixes the bug.
 
-> I have a diagnostic mode for my hardware, which gives me a known pattern
-> in 1 second increments (for my predetermined frame size/rate). If I simply
-> pass a -d duration flag over and over with arecord, every capture is
-> perfect when I inspect it.
->
-> When I use the --max-file-time=1, my first PCM is perfect, then the
-> following ones aren't. It appears that in between these 1-second PCM files,
-> I am losing 128 frames between the 1-second files.
->
-> I'm not sure what could be causing this type of error; any thoughts?
->
-> Thanks,
-> Rob
->
->
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=188761
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/echoaudio/layla24_dsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/echoaudio/layla24_dsp.c b/sound/pci/echoaudio/layla24_dsp.c
+index df28e5117359..c02bc1dcc170 100644
+--- a/sound/pci/echoaudio/layla24_dsp.c
++++ b/sound/pci/echoaudio/layla24_dsp.c
+@@ -135,7 +135,7 @@ static int load_asic(struct echoaudio *chip)
+ 	err = load_asic_generic(chip, DSP_FNC_LOAD_LAYLA24_EXTERNAL_ASIC,
+ 				FW_LAYLA24_2S_ASIC);
+ 	if (err < 0)
+-		return false;
++		return err;
+ 
+ 	/* Now give the external ASIC a little time to set up */
+ 	mdelay(10);
+-- 
+2.10.2
