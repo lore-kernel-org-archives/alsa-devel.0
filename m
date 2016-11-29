@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Remove redundant extern
-	declarations" to the asoc tree
-Date: Tue, 29 Nov 2016 11:45:15 +0000
-Message-ID: <E1cBgqZ-0004OC-1d@debutante>
-References: <1480416382-8655-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: Intel: atom: Make some messages to
+	debug level" to the asoc tree
+Date: Tue, 29 Nov 2016 11:45:09 +0000
+Message-ID: <E1cBgqT-0004MQ-2Z@debutante>
+References: <20161128152640.29566-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 28E7C267098
- for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 12:45:21 +0100 (CET)
-In-Reply-To: <1480416382-8655-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 434F1267094
+ for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 12:45:19 +0100 (CET)
+In-Reply-To: <20161128152640.29566-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Remove redundant extern declarations
+   ASoC: Intel: atom: Make some messages to debug level
 
 has been applied to the asoc tree at
 
@@ -53,126 +53,59 @@ to this mail.
 Thanks,
 Mark
 
->From 739507159e4e135a0a21df5a947753f44b0789b8 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 29 Nov 2016 10:46:22 +0000
-Subject: [PATCH] ASoC: arizona: Remove redundant extern declarations
+>From 91197a9230e852eeefdb79b1bddc3cd9505d4248 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Mon, 28 Nov 2016 16:26:40 +0100
+Subject: [PATCH] ASoC: Intel: atom: Make some messages to debug level
 
-Functions are given external linkage by default making the extern's
-unnecessary, as such remove them.
+Intel sst driver spews lots of kernel messages in INFO level;
+typically, it gives a kernel message at each time it allocates or
+frees a stream, or at each time when a stream is started or stopped.
+This will piles up quickly, and it's almost useless for normal users,
+so let's hide them to KERN_DEBUG level.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.h | 80 ++++++++++++++++++++++------------------------
- 1 file changed, 38 insertions(+), 42 deletions(-)
+ sound/soc/intel/atom/sst-atom-controls.c | 2 +-
+ sound/soc/intel/atom/sst/sst_stream.c    | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index 813f1cdb565d..56707860657c 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -256,28 +256,24 @@ extern const struct soc_enum arizona_output_anc_src[];
+diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
+index 0838478c4c3f..c7b3cbf92faf 100644
+--- a/sound/soc/intel/atom/sst-atom-controls.c
++++ b/sound/soc/intel/atom/sst-atom-controls.c
+@@ -937,7 +937,7 @@ int send_ssp_cmd(struct snd_soc_dai *dai, const char *id, bool enable)
+ 	struct sst_data *drv = snd_soc_dai_get_drvdata(dai);
+ 	int ssp_id;
  
- extern const struct snd_kcontrol_new arizona_voice_trigger_switch[];
+-	dev_info(dai->dev, "Enter: enable=%d port_name=%s\n", enable, id);
++	dev_dbg(dai->dev, "Enter: enable=%d port_name=%s\n", enable, id);
  
--extern int arizona_in_ev(struct snd_soc_dapm_widget *w,
--			 struct snd_kcontrol *kcontrol,
--			 int event);
--extern int arizona_out_ev(struct snd_soc_dapm_widget *w,
--			  struct snd_kcontrol *kcontrol,
--			  int event);
--extern int arizona_hp_ev(struct snd_soc_dapm_widget *w,
--			 struct snd_kcontrol *kcontrol,
--			 int event);
--extern int arizona_anc_ev(struct snd_soc_dapm_widget *w,
--			  struct snd_kcontrol *kcontrol,
--			  int event);
--
--extern int arizona_eq_coeff_put(struct snd_kcontrol *kcontrol,
--				struct snd_ctl_elem_value *ucontrol);
--extern int arizona_lhpf_coeff_put(struct snd_kcontrol *kcontrol,
--				  struct snd_ctl_elem_value *ucontrol);
--
--extern int arizona_clk_ev(struct snd_soc_dapm_widget *w,
--			  struct snd_kcontrol *kcontrol, int event);
--extern int arizona_set_sysclk(struct snd_soc_codec *codec, int clk_id,
--			      int source, unsigned int freq, int dir);
-+int arizona_in_ev(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
-+		  int event);
-+int arizona_out_ev(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
-+		   int event);
-+int arizona_hp_ev(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
-+		  int event);
-+int arizona_anc_ev(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
-+		   int event);
-+
-+int arizona_eq_coeff_put(struct snd_kcontrol *kcontrol,
-+			 struct snd_ctl_elem_value *ucontrol);
-+int arizona_lhpf_coeff_put(struct snd_kcontrol *kcontrol,
-+			   struct snd_ctl_elem_value *ucontrol);
-+
-+int arizona_clk_ev(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
-+		   int event);
-+int arizona_set_sysclk(struct snd_soc_codec *codec, int clk_id, int source,
-+		       unsigned int freq, int dir);
+ 	if (strcmp(id, "ssp0-port") == 0)
+ 		ssp_id = SSP_MODEM;
+diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
+index 4ccc80e5e8cc..51bdeeecb7c8 100644
+--- a/sound/soc/intel/atom/sst/sst_stream.c
++++ b/sound/soc/intel/atom/sst/sst_stream.c
+@@ -104,7 +104,7 @@ int sst_alloc_stream_mrfld(struct intel_sst_drv *sst_drv_ctx, void *params)
+ 	sst_init_stream(&sst_drv_ctx->streams[str_id], alloc_param.codec_type,
+ 			str_id, alloc_param.operation, 0);
  
- extern const struct snd_soc_dai_ops arizona_dai_ops;
- extern const struct snd_soc_dai_ops arizona_simple_dai_ops;
-@@ -300,35 +296,35 @@ struct arizona_fll {
- 	char clock_ok_name[ARIZONA_FLL_NAME_LEN];
- };
+-	dev_info(sst_drv_ctx->dev, "Alloc for str %d pipe %#x\n",
++	dev_dbg(sst_drv_ctx->dev, "Alloc for str %d pipe %#x\n",
+ 			str_id, pipe_id);
+ 	ret = sst_prepare_and_post_msg(sst_drv_ctx, task_id, IPC_CMD,
+ 			IPC_IA_ALLOC_STREAM_MRFLD, pipe_id, sizeof(alloc_param),
+@@ -415,7 +415,7 @@ int sst_free_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
+ 		str_info->status = STREAM_UN_INIT;
+ 		mutex_unlock(&str_info->lock);
  
--extern int arizona_dvfs_up(struct snd_soc_codec *codec, unsigned int flags);
--extern int arizona_dvfs_down(struct snd_soc_codec *codec, unsigned int flags);
--extern int arizona_dvfs_sysclk_ev(struct snd_soc_dapm_widget *w,
--				  struct snd_kcontrol *kcontrol, int event);
--extern void arizona_init_dvfs(struct arizona_priv *priv);
--
--extern int arizona_init_fll(struct arizona *arizona, int id, int base,
--			    int lock_irq, int ok_irq, struct arizona_fll *fll);
--extern int arizona_set_fll_refclk(struct arizona_fll *fll, int source,
--				  unsigned int Fref, unsigned int Fout);
--extern int arizona_set_fll(struct arizona_fll *fll, int source,
-+int arizona_dvfs_up(struct snd_soc_codec *codec, unsigned int flags);
-+int arizona_dvfs_down(struct snd_soc_codec *codec, unsigned int flags);
-+int arizona_dvfs_sysclk_ev(struct snd_soc_dapm_widget *w,
-+			   struct snd_kcontrol *kcontrol, int event);
-+void arizona_init_dvfs(struct arizona_priv *priv);
-+
-+int arizona_init_fll(struct arizona *arizona, int id, int base,
-+		     int lock_irq, int ok_irq, struct arizona_fll *fll);
-+int arizona_set_fll_refclk(struct arizona_fll *fll, int source,
- 			   unsigned int Fref, unsigned int Fout);
-+int arizona_set_fll(struct arizona_fll *fll, int source,
-+		    unsigned int Fref, unsigned int Fout);
- 
--extern int arizona_init_spk(struct snd_soc_codec *codec);
--extern int arizona_init_gpio(struct snd_soc_codec *codec);
--extern int arizona_init_mono(struct snd_soc_codec *codec);
--extern int arizona_init_notifiers(struct snd_soc_codec *codec);
-+int arizona_init_spk(struct snd_soc_codec *codec);
-+int arizona_init_gpio(struct snd_soc_codec *codec);
-+int arizona_init_mono(struct snd_soc_codec *codec);
-+int arizona_init_notifiers(struct snd_soc_codec *codec);
- 
--extern int arizona_init_spk_irqs(struct arizona *arizona);
--extern int arizona_free_spk_irqs(struct arizona *arizona);
-+int arizona_init_spk_irqs(struct arizona *arizona);
-+int arizona_free_spk_irqs(struct arizona *arizona);
- 
--extern int arizona_init_dai(struct arizona_priv *priv, int dai);
-+int arizona_init_dai(struct arizona_priv *priv, int dai);
- 
- int arizona_set_output_mode(struct snd_soc_codec *codec, int output,
- 			    bool diff);
- 
--extern bool arizona_input_analog(struct snd_soc_codec *codec, int shift);
-+bool arizona_input_analog(struct snd_soc_codec *codec, int shift);
- 
--extern const char *arizona_sample_rate_val_to_name(unsigned int rate_val);
-+const char *arizona_sample_rate_val_to_name(unsigned int rate_val);
- 
- static inline int arizona_register_notifier(struct snd_soc_codec *codec,
- 					    struct notifier_block *nb,
+-		dev_info(sst_drv_ctx->dev, "Free for str %d pipe %#x\n",
++		dev_dbg(sst_drv_ctx->dev, "Free for str %d pipe %#x\n",
+ 				str_id, str_info->pipe_id);
+ 		retval = sst_prepare_and_post_msg(sst_drv_ctx, str_info->task_id, IPC_CMD,
+ 				IPC_IA_FREE_STREAM_MRFLD, str_info->pipe_id, 0,
 -- 
 2.10.2
