@@ -1,48 +1,62 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH][alsa-lib] topology: fix unused-const-variable
-	warning
-Date: Wed, 30 Nov 2016 00:44:32 +0900
-Message-ID: <20161129154432.8299-1-o-takashi@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id BA70F2667C9
- for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2016 16:44:35 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
+From: Florian Vaussard <florian.vaussard@gmail.com>
+Subject: [PATCH] ASoC: cs42l56: Fix misuse of regmap_update_bits
+Date: Tue, 29 Nov 2016 18:10:49 +0100
+Message-ID: <1480439449-15975-1-git-send-email-florian.vaussard@heig-vd.ch>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Florian Vaussard <florian.vaussard@heig-vd.ch>
 List-Id: alsa-devel@alsa-project.org
 
-TGFzdCB5ZWFyLCB1bnVzZWQgc3RhdGljIGNvbnN0IHZhcmlhYmxlIHdhcyBhZGRlZCwgdGhlbiBj
-b21waWxlciBnZW5lcmF0ZXMKYSBiZWxvdyB3YXJuaW5nLgoKZGFwbS5jOjQzOjMwOiB3YXJuaW5n
-OiDigJh3aWRnZXRfY29udHJvbF9tYXDigJkgZGVmaW5lZCBidXQgbm90IHVzZWQgWy1XdW51c2Vk
-LWNvbnN0LXZhcmlhYmxlPV0KIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbWFwX2VsZW0gd2lkZ2V0X2Nv
-bnRyb2xfbWFwW10gPSB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+
-fn5+fn5+fgoKVGhpcyBjb21taXQgcmVtb3ZlcyBpdC4KCkZpeGVzOiAwMWEwZTFhMWMyMTkgKCJ0
-b3BvbG9neTogQWRkIERBUE0gb2JqZWN0IHBhcnNlciIpClNpZ25lZC1vZmYtYnk6IFRha2FzaGkg
-U2FrYW1vdG8gPG8tdGFrYXNoaUBzYWthbW9jY2hpLmpwPgotLS0KIHNyYy90b3BvbG9neS9kYXBt
-LmMgfCA4IC0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgOCBkZWxldGlvbnMoLSkKCmRpZmYgLS1n
-aXQgYS9zcmMvdG9wb2xvZ3kvZGFwbS5jIGIvc3JjL3RvcG9sb2d5L2RhcG0uYwppbmRleCBlODMw
-NzUxLi44YzU4NWE3IDEwMDY0NAotLS0gYS9zcmMvdG9wb2xvZ3kvZGFwbS5jCisrKyBiL3NyYy90
-b3BvbG9neS9kYXBtLmMKQEAgLTM5LDE0ICszOSw2IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbWFw
-X2VsZW0gd2lkZ2V0X21hcFtdID0gewogCXsiZGFpX2xpbmsiLCBTTkRfU09DX1RQTEdfREFQTV9E
-QUlfTElOS30sCiB9OwogCi0vKiBtYXBwaW5nIG9mIHdpZGdldCBrY29udHJvbCB0ZXh0IG5hbWVz
-IHRvIHR5cGVzICovCi1zdGF0aWMgY29uc3Qgc3RydWN0IG1hcF9lbGVtIHdpZGdldF9jb250cm9s
-X21hcFtdID0gewotCXsidm9sc3ciLCBTTkRfU09DX1RQTEdfREFQTV9DVExfVk9MU1d9LAotCXsi
-ZW51bV9kb3VibGUiLCBTTkRfU09DX1RQTEdfREFQTV9DVExfRU5VTV9ET1VCTEV9LAotCXsiZW51
-bV92aXJ0IiwgU05EX1NPQ19UUExHX0RBUE1fQ1RMX0VOVU1fVklSVH0sCi0JeyJlbnVtX3ZhbHVl
-IiwgU05EX1NPQ19UUExHX0RBUE1fQ1RMX0VOVU1fVkFMVUV9LAotfTsKLQogc3RhdGljIGludCBs
-b29rdXBfd2lkZ2V0KGNvbnN0IGNoYXIgKncpCiB7CiAJdW5zaWduZWQgaW50IGk7Ci0tIAoyLjku
-MwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Using regmap_update_bits(..., mask, 1) with 'mask' following (1 << k)
+and k greater than 0 is wrong. Indeed, _regmap_update_bits will perform
+(mask & 1), which results in 0 if LSB of mask is 0. Thus the call
+regmap_update_bits(..., mask, 1) is in reality equivalent to
+regmap_update_bits(..., mask, 0).
+
+In such a case, the correct use is regmap_update_bits(..., mask, mask).
+
+This driver is performing such a mistake with the CS42L56_AIN*_REF_MASK
+masks, which equal 0x10, 0x20, 0x40 and 0x80. Fix the driver to make it
+consistent with the API. Please note that this change is untested,
+as I do not have this piece of hardware. Testers are welcome!
+
+Signed-off-by: Florian Vaussard <florian.vaussard@heig-vd.ch>
+---
+ sound/soc/codecs/cs42l56.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+index 3e2c046..cb6ca85 100644
+--- a/sound/soc/codecs/cs42l56.c
++++ b/sound/soc/codecs/cs42l56.c
+@@ -1277,19 +1277,23 @@ static int cs42l56_i2c_probe(struct i2c_client *i2c_client,
+ 
+ 	if (cs42l56->pdata.ain1a_ref_cfg)
+ 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
+-				   CS42L56_AIN1A_REF_MASK, 1);
++				   CS42L56_AIN1A_REF_MASK,
++				   CS42L56_AIN1A_REF_MASK);
+ 
+ 	if (cs42l56->pdata.ain1b_ref_cfg)
+ 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
+-				   CS42L56_AIN1B_REF_MASK, 1);
++				   CS42L56_AIN1B_REF_MASK,
++				   CS42L56_AIN1B_REF_MASK);
+ 
+ 	if (cs42l56->pdata.ain2a_ref_cfg)
+ 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
+-				   CS42L56_AIN2A_REF_MASK, 1);
++				   CS42L56_AIN2A_REF_MASK,
++				   CS42L56_AIN2A_REF_MASK);
+ 
+ 	if (cs42l56->pdata.ain2b_ref_cfg)
+ 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
+-				   CS42L56_AIN2B_REF_MASK, 1);
++				   CS42L56_AIN2B_REF_MASK,
++				   CS42L56_AIN2B_REF_MASK);
+ 
+ 	if (cs42l56->pdata.micbias_lvl)
+ 		regmap_update_bits(cs42l56->regmap, CS42L56_GAIN_BIAS_CTL,
+-- 
+2.5.5
