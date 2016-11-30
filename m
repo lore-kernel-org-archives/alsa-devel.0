@@ -1,300 +1,72 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v6 1/3] media: Media Device Allocator API
-Date: Wed, 30 Nov 2016 15:01:14 -0700
-Message-ID: <bbf5768787cff051e4d9adb83a920bc3a7e21fd1.1480539942.git.shuahkh@osg.samsung.com>
-References: <cover.1480539942.git.shuahkh@osg.samsung.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 2/3 v2] ALSA: usb-audio: avoid setting of sample rate
+ multiple times on bus
+Date: Thu, 1 Dec 2016 07:19:52 +0900
+Message-ID: <3e73cbb9-e19e-97d7-3ca0-fe7a8f018270@sakamocchi.jp>
+References: <20161130075923.15205-1-jiada_wang@mentor.com>
+ <20161130075923.15205-3-jiada_wang@mentor.com>
+ <c4579c3f-4798-7096-2c05-b0670ccbad08@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1480539942.git.shuahkh@osg.samsung.com>
-In-Reply-To: <cover.1480539942.git.shuahkh@osg.samsung.com>
-References: <cover.1480539942.git.shuahkh@osg.samsung.com>
+In-Reply-To: <c4579c3f-4798-7096-2c05-b0670ccbad08@sakamocchi.jp>
 Sender: linux-kernel-owner@vger.kernel.org
-To: mchehab@kernel.org, perex@perex.cz, tiwai@suse.com, hans.verkuil@cisco.com, javier@osg.samsung.com, chehabrafael@gmail.com, g.liakhovetski@gmx.de, ONeukum@suse.com, k@oikw.org, daniel@zonque.org, mahasler@gmail.com, clemens@ladisch.de, geliangtang@163.com, vdronov@redhat.com, laurent.pinchart@ideasonboard.com, sakari.ailus@iki.fi
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+To: Jiada Wang <jiada_wang@mentor.com>, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, apape@de.adit-jv.com, linux-kernel@vger.kernel.org, Mark_Craske@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-Media Device Allocator API to allows multiple drivers share a media device.
-Using this API, drivers can allocate a media device with the shared struct
-device as the key. Once the media device is allocated by a driver, other
-drivers can get a reference to it. The media device is released when all
-the references are released.
+On Nov 30 2016 19:45, Takashi Sakamoto wrote:
+> Hi Jiada,
+>
+> I don't oppose this patch. Nevertheless, your description is not
+> necessarily correct.
+>
+> On Nov 30 2016 16:59, Jiada Wang wrote:
+>> From: Daniel Girnus <dgirnus@de.adit-jv.com>
+>>
+>> ALSA usually calls the prepare function twice before starting the
+>> playback:
+>> 1. On hw_params call from userland and
+>> 2. internally when starting the stream.
+>
+> ALSA PCM core in kernel land doesn't perform like this.
+>
+> In alsa-lib, 'snd_pcm_hw_params()' calls 'snd_pcm_hw_params_internal()'
+> and 'snd_pcm_prepare()' sequentially.
+> http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm.c;h=cd87bc759ded95953e332b7e8d56b0f2d5b4185d;hb=HEAD#l853
+>
+>
+> In system call level (e.g. see by strace(1)), this looks like two
+> ioctl(2)s with 'SNDRV_PCM_IOCTL_HW_PARAMS' and 'SNDRV_PCM_IOCTL_PREPARE'.
+>
+> Well, when applications are written to execute 'snd_pcm_hw_params()' and
+> 'snd_pcm_hw_prepare()' sequentially, additional ioctl(2) with
+> 'SNDRV_PCM_IOCTL_PREPARE' appears. PulseAudio is this kind of
+> application. I indicated the useless in 2014, but it still remains:
+> https://lists.freedesktop.org/archives/pulseaudio-discuss/2014-January/019773.html
+>
+>
+> You have the misunderstanding due to a nature of alsa-lib and tendency
+> of major applications, from my point of view.
 
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
-Reviewed-by: Hans Verkuil <hans.verkuil@cisco.com>
----
-Changes to patch 0001 since v5: (comments from Mauro and Sakari)
-- Removed struct device from media_device_instance. mdev.dev is used instead.
-- Added documentation.
+So here you should mention that current USB Audio device class driver 
+somewhat ignores state machine of ALSA PCM runtime.
 
- Documentation/media/kapi/mc-core.rst |  37 ++++++++++
- drivers/media/Makefile               |   3 +-
- drivers/media/media-dev-allocator.c  | 133 +++++++++++++++++++++++++++++++++++
- include/media/media-dev-allocator.h  |  54 ++++++++++++++
- 4 files changed, 226 insertions(+), 1 deletion(-)
- create mode 100644 drivers/media/media-dev-allocator.c
- create mode 100644 include/media/media-dev-allocator.h
+In ALSA PCM core, state of the runtime is described in 'struct 
+snd_pcm_runtime.status.state' with macros of 'SNDRV_PCM_STATE_XXX'. 
+Applications are allowed to handle the runtime according to the state.
 
-diff --git a/Documentation/media/kapi/mc-core.rst b/Documentation/media/kapi/mc-core.rst
-index 1a738e5..4942cdd 100644
---- a/Documentation/media/kapi/mc-core.rst
-+++ b/Documentation/media/kapi/mc-core.rst
-@@ -257,8 +257,45 @@ Subsystems should facilitate link validation by providing subsystem specific
- helper functions to provide easy access for commonly needed information, and
- in the end provide a way to use driver-specific callbacks.
- 
-+Media Controller Device Allocator API
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+
-+When media device belongs to more than one driver, the shared media device
-+is allocated with the shared struct device as the key for look ups.
-+
-+Shared media device should stay in registered state until the last driver
-+unregisters it. In addition, media device should be released when all the
-+references are released. Each driver gets a reference to the media device
-+during probe, when it allocates the media device. If media device is already
-+allocated, allocate API bumps up the refcount and return the existing media
-+device. Driver puts the reference back from its disconnect routine when it
-+calls :c:func:`media_device_delete()`.
-+
-+Media device is unregistered and cleaned up from the kref put handler to
-+ensure that the media device stays in registered state until the last driver
-+unregisters the media device.
-+
-+**Driver Usage**
-+
-+Drivers should use the media-core routines to get register reference and
-+call :c:func:`media_device_delete()` routine to make sure the shared media
-+device delete is handled correctly.
-+
-+**driver probe:**
-+Call :c:func:`media_device_usb_allocate()` to allocate or get a reference
-+Call :c:func:`media_device_register()`, if media devnode isn't registered
-+
-+**driver disconnect:**
-+Call :c:func:`media_device_delete()` to free the media_device. Free'ing is
-+handled by the kref put handler.
-+
-+API Definitions
-+^^^^^^^^^^^^^^^
-+
- .. kernel-doc:: include/media/media-device.h
- 
- .. kernel-doc:: include/media/media-devnode.h
- 
- .. kernel-doc:: include/media/media-entity.h
-+
-+.. kernel-doc:: include/media/media-dev-allocator.h
-diff --git a/drivers/media/Makefile b/drivers/media/Makefile
-index 0deaa93..7c0701d 100644
---- a/drivers/media/Makefile
-+++ b/drivers/media/Makefile
-@@ -6,7 +6,8 @@ ifeq ($(CONFIG_MEDIA_CEC_EDID),y)
-   obj-$(CONFIG_MEDIA_SUPPORT) += cec-edid.o
- endif
- 
--media-objs	:= media-device.o media-devnode.o media-entity.o
-+media-objs	:= media-device.o media-devnode.o media-entity.o \
-+		   media-dev-allocator.o
- 
- #
- # I2C drivers should come before other drivers, otherwise they'll fail
-diff --git a/drivers/media/media-dev-allocator.c b/drivers/media/media-dev-allocator.c
-new file mode 100644
-index 0000000..0ecf152
---- /dev/null
-+++ b/drivers/media/media-dev-allocator.c
-@@ -0,0 +1,133 @@
-+/*
-+ * media-dev-allocator.c - Media Controller Device Allocator API
-+ *
-+ * Copyright (c) 2016 Shuah Khan <shuahkh@osg.samsung.com>
-+ * Copyright (c) 2016 Samsung Electronics Co., Ltd.
-+ *
-+ * This file is released under the GPLv2.
-+ * Credits: Suggested by Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-+ */
-+
-+/*
-+ * This file adds a global refcounted Media Controller Device Instance API.
-+ * A system wide global media device list is managed and each media device
-+ * includes a kref count. The last put on the media device releases the media
-+ * device instance.
-+ *
-+ */
-+
-+#include <linux/kref.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/usb.h>
-+
-+#include <media/media-device.h>
-+
-+static LIST_HEAD(media_device_list);
-+static DEFINE_MUTEX(media_device_lock);
-+
-+struct media_device_instance {
-+	struct media_device mdev;
-+	struct module *owner;
-+	struct list_head list;
-+	struct kref refcount;
-+};
-+
-+static inline struct media_device_instance *
-+to_media_device_instance(struct media_device *mdev)
-+{
-+	return container_of(mdev, struct media_device_instance, mdev);
-+}
-+
-+static void media_device_instance_release(struct kref *kref)
-+{
-+	struct media_device_instance *mdi =
-+		container_of(kref, struct media_device_instance, refcount);
-+
-+	dev_dbg(mdi->mdev.dev, "%s: mdev=%p\n", __func__, &mdi->mdev);
-+
-+	mutex_lock(&media_device_lock);
-+
-+	media_device_unregister(&mdi->mdev);
-+	media_device_cleanup(&mdi->mdev);
-+
-+	list_del(&mdi->list);
-+	mutex_unlock(&media_device_lock);
-+
-+	kfree(mdi);
-+}
-+
-+/* Callers should hold media_device_lock when calling this function */
-+static struct media_device *__media_device_get(struct device *dev,
-+					       char *module_name)
-+{
-+	struct media_device_instance *mdi;
-+
-+	list_for_each_entry(mdi, &media_device_list, list) {
-+		if (mdi->mdev.dev != dev)
-+			continue;
-+
-+		kref_get(&mdi->refcount);
-+		/* get module reference for the media_device owner */
-+		if (find_module(module_name) != mdi->owner &&
-+		    !try_module_get(mdi->owner))
-+			dev_err(dev, "%s: try_module_get() error\n", __func__);
-+		dev_dbg(dev, "%s: get mdev=%p module_name %s\n",
-+			__func__, &mdi->mdev, module_name);
-+		return &mdi->mdev;
-+	}
-+
-+	mdi = kzalloc(sizeof(*mdi), GFP_KERNEL);
-+	if (!mdi)
-+		return NULL;
-+
-+	mdi->owner = find_module(module_name);
-+	kref_init(&mdi->refcount);
-+	list_add_tail(&mdi->list, &media_device_list);
-+
-+	dev_dbg(dev, "%s: alloc mdev=%p module_name %s\n", __func__,
-+		&mdi->mdev, module_name);
-+	return &mdi->mdev;
-+}
-+
-+#if IS_ENABLED(CONFIG_USB)
-+struct media_device *media_device_usb_allocate(struct usb_device *udev,
-+					       char *module_name)
-+{
-+	struct media_device *mdev;
-+
-+	mutex_lock(&media_device_lock);
-+	mdev = __media_device_get(&udev->dev, module_name);
-+	if (!mdev) {
-+		mutex_unlock(&media_device_lock);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	/* check if media device is already initialized */
-+	if (!mdev->dev)
-+		__media_device_usb_init(mdev, udev, udev->product,
-+					module_name);
-+	mutex_unlock(&media_device_lock);
-+	return mdev;
-+}
-+EXPORT_SYMBOL_GPL(media_device_usb_allocate);
-+#endif
-+
-+void media_device_delete(struct media_device *mdev, char *module_name)
-+{
-+	struct media_device_instance *mdi = to_media_device_instance(mdev);
-+
-+	dev_dbg(mdi->mdev.dev, "%s: mdev=%p module_name %s\n",
-+		__func__, &mdi->mdev, module_name);
-+
-+	mutex_lock(&media_device_lock);
-+	/* put module reference if media_device owner is not THIS_MODULE */
-+	if (mdi->owner != find_module(module_name)) {
-+		module_put(mdi->owner);
-+		dev_dbg(mdi->mdev.dev,
-+			"%s decremented owner module reference\n", __func__);
-+	}
-+	mutex_unlock(&media_device_lock);
-+	kref_put(&mdi->refcount, media_device_instance_release);
-+}
-+EXPORT_SYMBOL_GPL(media_device_delete);
-diff --git a/include/media/media-dev-allocator.h b/include/media/media-dev-allocator.h
-new file mode 100644
-index 0000000..6731d825
---- /dev/null
-+++ b/include/media/media-dev-allocator.h
-@@ -0,0 +1,54 @@
-+/*
-+ * media-dev-allocator.h - Media Controller Device Allocator API
-+ *
-+ * Copyright (c) 2016 Shuah Khan <shuahkh@osg.samsung.com>
-+ * Copyright (c) 2016 Samsung Electronics Co., Ltd.
-+ *
-+ * This file is released under the GPLv2.
-+ * Credits: Suggested by Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-+ */
-+
-+/*
-+ * This file adds a global ref-counted Media Controller Device Instance API.
-+ * A system wide global media device list is managed and each media device
-+ * includes a kref count. The last put on the media device releases the media
-+ * device instance.
-+ */
-+
-+#ifndef _MEDIA_DEV_ALLOCTOR_H
-+#define _MEDIA_DEV_ALLOCTOR_H
-+
-+struct usb_device;
-+
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+/**
-+ * media_device_usb_allocate() - Allocate and return struct &media device
-+ *
-+ * @udev:		struct &usb_device pointer
-+ * @module_name:	should be filled with %KBUILD_MODNAME
-+ *
-+ * This interface should be called to allocate a Media Device when multiple
-+ * drivers share usb_device and the media device. This interface allocates
-+ * &media_device structure and calls media_device_usb_init() to initialize
-+ * it.
-+ *
-+ */
-+struct media_device *media_device_usb_allocate(struct usb_device *udev,
-+					       char *module_name);
-+/**
-+ * media_device_delete() - Release media device. Calls kref_put().
-+ *
-+ * @mdev:		struct &media_device pointer
-+ * @module_name:	should be filled with %KBUILD_MODNAME
-+ *
-+ * This interface should be called to put Media Device Instance kref.
-+ */
-+void media_device_delete(struct media_device *mdev, char *module_name);
-+#else
-+static inline struct media_device *media_device_usb_allocate(
-+			struct usb_device *udev, char *module_name)
-+			{ return NULL; }
-+static inline void media_device_delete(
-+			struct media_device *mdev, char *module_name) { }
-+#endif /* CONFIG_MEDIA_CONTROLLER */
-+#endif
--- 
-2.7.4
+In your issue, the driver is programmed ignoring a case that double 
+calls of snd_pcm_prepare(), in short, ioctl(PREPARE) is called in 
+'PREPARED' state. This is not only an issue for snd-usb-audio, but also 
+for snd-usb-hiface.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-November/115174.html
+
+For these issue, I have no patch proposals because I have few test 
+devices, sorry.
+
+
+Regards
+
+Takashi Sakamoto
