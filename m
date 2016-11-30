@@ -1,99 +1,45 @@
-From: "Sutar, Mounesh" <Mounesh_Sutar@mentor.com>
-Subject: Re: [PATCH] alsa-lib: Add htimestamp operation in
-	plugin file
-Date: Wed, 30 Nov 2016 07:26:37 +0000
-Message-ID: <ebd6c0a3190d458184063bf9de845bd3@SVR-IES-MBX-04.mgc.mentorg.com>
-References: <1480073797-17667-1-git-send-email-sutar.mounesh@gmail.com>
- <s5hmvgj5s6n.wl-tiwai@suse.de>
- <f3796efe-5870-2f87-77b5-6f932b4b5bac@sakamocchi.jp>
- <s5hfuma5n1d.wl-tiwai@suse.de>
- <3c31a911-bf5d-777c-e0a7-f78be000612f@sakamocchi.jp>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: [PATCH 1/3 v1] ALSA: usb-audio: more tolerant packetsize
+Date: Wed, 30 Nov 2016 16:59:21 +0900
+Message-ID: <20161130075923.15205-2-jiada_wang@mentor.com>
+References: <20161130075923.15205-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 5475D266B88
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2016 08:26:44 +0100 (CET)
-In-Reply-To: <3c31a911-bf5d-777c-e0a7-f78be000612f@sakamocchi.jp>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Takashi Iwai <tiwai@suse.de>
-Cc: "sutar.mounesh@gmail.com" <sutar.mounesh@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andreas Pape <apape@de.adit-jv.com>, "Frkuska,
- Joshua" <Joshua_Frkuska@mentor.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20161130075923.15205-1-jiada_wang@mentor.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Mark_Craske@mentor.com, apape@de.adit-jv.com
 List-Id: alsa-devel@alsa-project.org
 
-SGksDQpJIGRpZCByZWJhc2UgbXkgcmVwbyBiZWZvcmUgYXBwbHlpbmcgdGhpcyBwYXRjaC4gSXQg
-YXBwbGllZCB3aXRob3V0IGFueSBjb25mbGljdHMuDQoNCmNvbW1pdCAwZDFkMjVmMTY2YTAyOTRi
-ZjU5NmRkMmU2ZjU1NTc5ZTVlMDQxODZlDQpBdXRob3I6IEFuZHJlYXMgUGFwZSA8YXBhcGVAZGUu
-YWRpdC1qdi5jb20+DQpEYXRlOiAgIFdlZCBOb3YgMzAgMTI6MDY6MTQgMjAxNiArMDUzMA0KDQog
-ICAgYWxzYS1saWI6IEFkZCBodGltZXN0YW1wIG9wZXJhdGlvbiBpbiBwbHVnaW4gZmlsZQ0KICAg
-IA0KICAgIFBDTSBvcGVyYXRpb24gaHRpbWVzdGFtcCBpcyBub3QgaW1wbGVtZW50ZWQgaW4gcGx1
-Z2luIGZpbGUuDQogICAgQ2FsbGluZyBzbmRfcGNtX2h0aW1lc3RhbXAoKSBvbiBhIHBsdWdpbiBm
-aWxlIGNyYXNoZXMuIFRoaXMgc2NlbmFyaW8NCiAgICBpcyBjb25zaWRlcmVkIG5vdy4NCiAgICAN
-CiAgICBTaWduZWQtb2ZmLWJ5OiBBbmRyZWFzIFBhcGUgPGFwYXBlQGRlLmFkaXQtanYuY29tPg0K
-ICAgIFNpZ25lZC1vZmYtYnk6IEpvc2h1YSBGcmt1c2thIDxqb3NodWFfZnJrdXNrYUBtZW50b3Iu
-Y29tPg0KDQpNICAgICAgIHNyYy9wY20vcGNtX2ZpbGUuYw0KDQpjb21taXQgMmVmN2E1M2MzMWRl
-NDdmNWYzMzEyN2E4OTA1NGE2NjFhMzFiZDMxMA0KQXV0aG9yOiBNZW5nZG9uZyBMaW4gPG1lbmdk
-b25nLmxpbkBsaW51eC5pbnRlbC5jb20+DQpEYXRlOiAgIEZyaSBOb3YgMjUgMTM6MjA6MDIgMjAx
-NiArMDgwMA0KDQogICAgdG9wb2xvZ3k6IFVwZGF0ZSBwaHlzaWNhbCBsaW5rIGNvbmZpZ3VyYXRp
-b25zIGluIEJyb2Fkd2VsbCB0ZXh0IGNvbmYgZmlsZQ0KICAgIA0KICAgIFRvIG1ha2UgdGhpcyBj
-b25mIGZpbGUgYSBiZXR0ZXIgZXhhbXBsZSwgYWRkIGNvbmZpZ3VyYXRpb25zIGZvciB0aGUNCiAg
-ICBwaHlzaWNhbCBsaW5rICJDb2RlYyIsIHNhbWUgYXMgdGhhdCBkZWZpbmVkIGJ5IEludGVsIEJy
-b2Fkd2VsbCB1cHN0cmVhbQ0KICAgIG1hY2hpbmUgZHJpdmVyLg0KICAgIA0KICAgIFNpZ25lZC1v
-ZmYtYnk6IE1lbmdkb25nIExpbiA8bWVuZ2RvbmcubGluQGxpbnV4LmludGVsLmNvbT4NCiAgICBT
-aWduZWQtb2ZmLWJ5OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+DQoNCk0gICAgICAgc3Jj
-L2NvbmYvdG9wb2xvZ3kvYnJvYWR3ZWxsL2Jyb2Fkd2VsbC5jb25mDQoNCg0KSXQgYXBwZWFycyBh
-cywgc291cmNlIGNoYW5nZXMgYXJlIGF0IGRpZmZlcmVudCBsb2NhdGlvbnMsIGl0IGRpZG7igJl0
-IHJlcG9ydCBhbnkgY29uZmxpY3RzLg0KU29ycnkgZm9yIG5vdCBvYnNlcnZpbmcgdGhpcyBzb3Vy
-Y2UgY2hhbmdlcywgYmVmb3JlIGFwcGx5aW5nIHRoZSBwYXRjaCBhbmQgcHVzaGluZyBpdCB0byBt
-YWlsaW5nIGxpc3QuDQpBbmQgVGhhbmtzIGZvciBwb2ludGluZyBpdCB0byBpbmNsdWRlZCBmaXgg
-Y29tbWl0Lg0KDQpSZWdhcmRzLA0KTW91bmVzaA0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0t
-LQ0KRnJvbTogVGFrYXNoaSBTYWthbW90byBbbWFpbHRvOm8tdGFrYXNoaUBzYWthbW9jY2hpLmpw
-XSANClNlbnQ6IDI5IE5vdmVtYmVyIDIwMTYgMjE6MDQNClRvOiBUYWthc2hpIEl3YWkgPHRpd2Fp
-QHN1c2UuZGU+DQpDYzogc3V0YXIubW91bmVzaEBnbWFpbC5jb207IGFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZzsgRnJrdXNrYSwgSm9zaHVhIDxKb3NodWFfRnJrdXNrYUBtZW50b3IuY29tPjsg
-QW5kcmVhcyBQYXBlIDxhcGFwZUBkZS5hZGl0LWp2LmNvbT47IFN1dGFyLCBNb3VuZXNoIDxNb3Vu
-ZXNoX1N1dGFyQG1lbnRvci5jb20+DQpTdWJqZWN0OiBSZTogW1BBVENIXSBhbHNhLWxpYjogQWRk
-IGh0aW1lc3RhbXAgb3BlcmF0aW9uIGluIHBsdWdpbiBmaWxlDQoNCk9uIDIwMTblubQxMeaciDMw
-5pelIDAwOjIyLCBUYWthc2hpIEl3YWkgd3JvdGU6DQo+IE9uIFR1ZSwgMjkgTm92IDIwMTYgMTY6
-MTU6NTcgKzAxMDAsDQo+Pj4+IC0tLSBhL3NyYy9wY20vcGNtX2ZpbGUuYwkyMDEzLTA3LTA4IDE0
-OjMxOjM2LjAwMDAwMDAwMCArMDIwMA0KPj4+PiArKysgYi9zcmMvcGNtL3BjbV9maWxlLmMJMjAx
-NS0wNS0wNCAxNjoyNjoxMC40MTM2MTU0MDMgKzAyMDANCj4+Pj4gQEAgLTY5OCw2ICs2OTgsNyBA
-QA0KPj4+PiAgCS5yZWFkaSA9IHNuZF9wY21fZmlsZV9yZWFkaSwNCj4+Pj4gIAkucmVhZG4gPSBz
-bmRfcGNtX2ZpbGVfcmVhZG4sDQo+Pj4+ICAJLmF2YWlsX3VwZGF0ZSA9IHNuZF9wY21fZ2VuZXJp
-Y19hdmFpbF91cGRhdGUsDQo+Pj4+ICsJLmh0aW1lc3RhbXAgPSBzbmRfcGNtX2dlbmVyaWNfaHRp
-bWVzdGFtcCwNCj4+Pj4gIAkubW1hcF9jb21taXQgPSBzbmRfcGNtX2ZpbGVfbW1hcF9jb21taXQs
-DQo+Pj4+ICAJLnBvbGxfZGVzY3JpcHRvcnNfY291bnQgPSBzbmRfcGNtX2dlbmVyaWNfcG9sbF9k
-ZXNjcmlwdG9yc19jb3VudCwNCj4+Pj4gIAkucG9sbF9kZXNjcmlwdG9ycyA9IHNuZF9wY21fZ2Vu
-ZXJpY19wb2xsX2Rlc2NyaXB0b3JzLA0KPj4NCj4+IEkgb3Bwb3NlIHRoaXMgYXBwbGljYXRpb24s
-IGJlY2F1c2UgZGVzaWduYXRlZCBpbml0aWFsaXphdGlvbiBpcyANCj4+IGFscmVhZHkgYXBwbGll
-ZCB0byB0aGUgLmh0aW1lc3RhbXAgbWVtYmVyLg0KPj4NCj4+IC4uLg0KPj4gICAgICAgICAucG9s
-bF9kZXNjcmlwdG9ycyA9IHNuZF9wY21fZ2VuZXJpY19wb2xsX2Rlc2NyaXB0b3JzLA0KPj4gICAg
-ICAgICAucG9sbF9yZXZlbnRzID0gc25kX3BjbV9nZW5lcmljX3BvbGxfcmV2ZW50cywNCj4+ICAg
-ICAgICAgLmh0aW1lc3RhbXAgPSBzbmRfcGNtX2dlbmVyaWNfaHRpbWVzdGFtcCwNCg0KT29wcywg
-J3NuZF9wY21fZ2VuZXJpY19yZWFsX2h0aW1lc3RhbXAnIGlzIHByb3BlciBoZXJlLi4uDQoNCj4+
-IH07DQo+Pg0KPj4gUGxlYXNlIHNlZSBiZWxvdyBjb21taXQ6DQo+PiBwY206ZmlsZTogYWRkIHRo
-ZSBtaXNzaW5nIGh0aW1lc3RhbXAgY2FsbGJhY2sNCj4+IGh0dHA6Ly9naXQuYWxzYS1wcm9qZWN0
-Lm9yZy8/cD1hbHNhLWxpYi5naXQ7YT1jb21taXQ7aD02OGFlMGM3MmE1MzcwNA0KPj4gZDQxNmZl
-NzdkNGM2MTJkMWY4OGQ3OTFlMDINCj4+DQo+PiBUaGlzIG1pc3Rha2UgY2F1c2VzIGJlbG93IHdh
-cm5pbmcgd2l0aCAtV292ZXJyaWRlLWluaXQgb3B0aW9uLg0KPj4gcGNtX2ZpbGUuYzo3MTQ6MTY6
-IHdhcm5pbmc6IGluaXRpYWxpemVkIGZpZWxkIG92ZXJ3cml0dGVuIFstV292ZXJyaWRlLWluaXRd
-DQo+PiAgIC5odGltZXN0YW1wID0gc25kX3BjbV9nZW5lcmljX3JlYWxfaHRpbWVzdGFtcCwNCj4+
-ICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+DQo+Pg0KPj4g
-SSBndWVzcyBtZW50b3IvQURJVCBkZXZlbG9wZXJzIHdvcmtzIGZvciBmb3JtZXIgc25hcHNob3Qs
-IHRoZW4gbWlzc2VkIA0KPj4gdG8gcmViYXNlIHRvIGN1cnJlbnQgbWFpbmxpbmUgb2YgYWxzYS1s
-aWIuIEkgc3VnZ2VzdCB0aGVtIHRvIGRpIA0KPj4gcmUtZXZhbHVhdGlvbiB3aXRoIGN1cnJlbnQg
-bWFpbmxpbmUgd2l0aG91dCB0aGlzIHBhdGNoLg0KPg0KPiBJIG92ZXJsb29rZWQgaXQsIHRvby4g
-IE5vdyB0aGUgY29tbWl0IGdvdCByZXZlcnRlZC4NCg0KVGhhbmtzLg0KDQoNClRha2FzaGkgU2Fr
-YW1vdG8NCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+From: Andreas Pape <apape@de.adit-jv.com>
+
+since commit 57e6dae1087bbaa6b33d3dd8a8e90b63888939a3 the expected packetsize is always limited to
+nominal + 25%. It was discovered, that some devices have a much higher jitter
+in used packetsizes than 25% which would result in BABBLE condition and dropping of packets.
+A better solution is so assume the jitter to be the nominal packetsize:
+-one nearly empty packet followed by a almost double sized one.
+
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+---
+ sound/usb/endpoint.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index c470251..2f592dd 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -632,8 +632,8 @@ static int data_ep_set_params(struct snd_usb_endpoint *ep,
+ 	ep->stride = frame_bits >> 3;
+ 	ep->silence_value = pcm_format == SNDRV_PCM_FORMAT_U8 ? 0x80 : 0;
+ 
+-	/* assume max. frequency is 25% higher than nominal */
+-	ep->freqmax = ep->freqn + (ep->freqn >> 2);
++	/* assume max. frequency is double than nominal */
++	ep->freqmax = ep->freqn * 2;
+ 	/* Round up freqmax to nearest integer in order to calculate maximum
+ 	 * packet size, which must represent a whole number of frames.
+ 	 * This is accomplished by adding 0x0.ffff before converting the
+-- 
+2.9.3
