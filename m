@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cht_bsw_rt5672: Use HID translation
-	unit" to the asoc tree
-Date: Wed, 30 Nov 2016 18:07:25 +0000
-Message-ID: <E1cC9Hx-0008BT-B9@debutante>
-References: <20161125144018.28896-1-tiwai@suse.de>
+Subject: Applied "ASoC: nau8825: lock longer to avoid playback
+	pop upon resume" to the asoc tree
+Date: Wed, 30 Nov 2016 18:07:31 +0000
+Message-ID: <E1cC9I3-0008DX-CZ@debutante>
+References: <1480385116-11900-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B2C23266B93
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2016 19:07:35 +0100 (CET)
-In-Reply-To: <20161125144018.28896-1-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id E8140266BA4
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2016 19:07:37 +0100 (CET)
+In-Reply-To: <1480385116-11900-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com, yong.zhi@intel.com, mhkuo@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cht_bsw_rt5672: Use HID translation unit
+   ASoC: nau8825: lock longer to avoid playback pop upon resume
 
 has been applied to the asoc tree at
 
@@ -53,94 +53,90 @@ to this mail.
 Thanks,
 Mark
 
->From fee3244cd1f5af813a24537950e211eee4f33297 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Fri, 25 Nov 2016 15:40:18 +0100
-Subject: [PATCH] ASoC: cht_bsw_rt5672: Use HID translation unit
+>From 2263fddcd0ba9d8e75a90b1359f92d3b9d0b78b3 Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Tue, 29 Nov 2016 10:05:16 +0800
+Subject: [PATCH] ASoC: nau8825: lock longer to avoid playback pop upon resume
 
-Instead of hard-coded "i2c-10EC5670:00", use the translation helper to
-avoid the mismatch between i2c-codec and ACPI strings just like what
-we've done for bytcr_rt5640.  This gives more robust binding on funky
-devices like Dell Wyse 3040.
+There is an issue about pop noise in NAU88L25 as follows.
+Issue 54078: Chell_headphone pop back from S3
+(1)Play directly to hw, bypassing CRAS:
+sox -b 16 -n -t alsa hw:0,0 synth sine 200 sine 200
+(2)Close lid or powerd_dbus_suspend, then press a key to resume.
+(3)no audio after resume
+(4)Audio will be back after close then reopen the pcm device.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+After verification, we find one defect is that semaphone lock is not
+long enough and expired. In this situation, the playback comes back
+early but pauses a while to wait for the crosstalk detection done.
+But the detection spends too much time and lock time is up. Therefore,
+the playback and jack detection sequence interfere to each other.
+That breaks sequence and makes noise. The driver extends the lock
+time for the issue.
+
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5672.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+ sound/soc/codecs/nau8825.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index df9d254baa18..fe607d8701a0 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -25,12 +25,14 @@
- #include <sound/jack.h>
- #include "../../codecs/rt5670.h"
- #include "../atom/sst-atom-controls.h"
-+#include "../common/sst-acpi.h"
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 3f9137f60c0d..2b89569333a1 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -1233,7 +1233,7 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
+ 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int val_len = 0, osr;
  
- /* The platform clock #3 outputs 19.2Mhz clock to codec as I2S MCLK */
- #define CHT_PLAT_CLK_3_HZ	19200000
- #define CHT_CODEC_DAI	"rt5670-aif1"
+-	nau8825_sema_acquire(nau8825, 2 * HZ);
++	nau8825_sema_acquire(nau8825, 3 * HZ);
  
- static struct snd_soc_jack cht_bsw_headset;
-+static char cht_bsw_codec_name[16];
+ 	/* CLK_DAC or CLK_ADC = OSR * FS
+ 	 * DAC or ADC clock frequency is defined as Over Sampling Rate (OSR)
+@@ -1293,7 +1293,7 @@ static int nau8825_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int ctrl1_val = 0, ctrl2_val = 0;
  
- /* Headset jack detection DAPM pins */
- static struct snd_soc_jack_pin cht_bsw_headset_pins[] = {
-@@ -295,7 +297,7 @@ static int cht_suspend_pre(struct snd_soc_card *card)
- 	struct snd_soc_codec *codec;
+-	nau8825_sema_acquire(nau8825, 2 * HZ);
++	nau8825_sema_acquire(nau8825, 3 * HZ);
  
- 	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
--		if (!strcmp(codec->component.name, "i2c-10EC5670:00")) {
-+		if (!strcmp(codec->component.name, cht_bsw_codec_name)) {
- 			dev_dbg(codec->dev, "disabling jack detect before going to suspend.\n");
- 			rt5670_jack_suspend(codec);
- 			break;
-@@ -309,7 +311,7 @@ static int cht_resume_post(struct snd_soc_card *card)
- 	struct snd_soc_codec *codec;
- 
- 	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
--		if (!strcmp(codec->component.name, "i2c-10EC5670:00")) {
-+		if (!strcmp(codec->component.name, cht_bsw_codec_name)) {
- 			dev_dbg(codec->dev, "enabling jack detect for resume.\n");
- 			rt5670_jack_resume(codec);
- 			break;
-@@ -335,9 +337,33 @@ static struct snd_soc_card snd_soc_card_cht = {
- 	.resume_post = cht_resume_post,
- };
- 
-+#define RT5672_I2C_DEFAULT	"i2c-10EC5670:00"
-+
- static int snd_cht_mc_probe(struct platform_device *pdev)
- {
- 	int ret_val = 0;
-+	struct sst_acpi_mach *mach = pdev->dev.platform_data;
-+	const char *i2c_name;
-+	int i;
-+
-+	strcpy(cht_bsw_codec_name, RT5672_I2C_DEFAULT);
-+
-+	/* fixup codec name based on HID */
-+	if (mach) {
-+		i2c_name = sst_acpi_find_name_from_hid(mach->id);
-+		if (i2c_name) {
-+			snprintf(cht_bsw_codec_name, sizeof(cht_bsw_codec_name),
-+				 "i2c-%s", i2c_name);
-+			for (i = 0; i < ARRAY_SIZE(cht_dailink); i++) {
-+				if (!strcmp(cht_dailink[i].codec_name,
-+					    RT5672_I2C_DEFAULT)) {
-+					cht_dailink[i].codec_name =
-+						cht_bsw_codec_name;
-+					break;
-+				}
-+			}
-+		}
-+	}
- 
- 	/* register the soc card */
- 	snd_soc_card_cht.dev = &pdev->dev;
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+@@ -2121,7 +2121,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 		 * fered by cross talk process, the driver make the playback
+ 		 * preparation halted until cross talk process finish.
+ 		 */
+-		nau8825_sema_acquire(nau8825, 2 * HZ);
++		nau8825_sema_acquire(nau8825, 3 * HZ);
+ 		nau8825_configure_mclk_as_sysclk(regmap);
+ 		/* MCLK not changed by clock tree */
+ 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
+@@ -2169,7 +2169,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 		 * fered by cross talk process, the driver make the playback
+ 		 * preparation halted until cross talk process finish.
+ 		 */
+-		nau8825_sema_acquire(nau8825, 2 * HZ);
++		nau8825_sema_acquire(nau8825, 3 * HZ);
+ 		/* Higher FLL reference input frequency can only set lower
+ 		 * gain error, such as 0000 for input reference from MCLK
+ 		 * 12.288Mhz.
+@@ -2191,7 +2191,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 		 * fered by cross talk process, the driver make the playback
+ 		 * preparation halted until cross talk process finish.
+ 		 */
+-		nau8825_sema_acquire(nau8825, 2 * HZ);
++		nau8825_sema_acquire(nau8825, 3 * HZ);
+ 		/* If FLL reference input is from low frequency source,
+ 		 * higher error gain can apply such as 0xf which has
+ 		 * the most sensitive gain error correction threshold,
+@@ -2217,7 +2217,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
+ 		 * fered by cross talk process, the driver make the playback
+ 		 * preparation halted until cross talk process finish.
+ 		 */
+-		nau8825_sema_acquire(nau8825, 2 * HZ);
++		nau8825_sema_acquire(nau8825, 3 * HZ);
+ 		/* If FLL reference input is from low frequency source,
+ 		 * higher error gain can apply such as 0xf which has
+ 		 * the most sensitive gain error correction threshold,
 -- 
 2.10.2
