@@ -1,18 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: sun4i-codec: Add support for A23 codec" to the asoc tree
-Date: Wed, 30 Nov 2016 18:07:22 +0000
-Message-ID: <E1cC9Hu-0008Ab-AA@debutante>
-References: <20161112064648.26779-5-wens@csie.org>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20161112064648.26779-5-wens-jdAy2FN1RRM@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mylene Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: arizona: Use component pin control functions" to the asoc tree
+Date: Wed, 30 Nov 2016 18:07:37 +0000
+Message-ID: <E1cC9I9-0008Fj-G3@debutante>
+References: <1480434282-26389-3-git-send-email-rf@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1480434282-26389-3-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, cw00.choi@samsung.com, dmitry.torokhov@gmail.com, myungjoo.ham@samsung.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-codec: Add support for A23 codec
+   ASoC: arizona: Use component pin control functions
 
 has been applied to the asoc tree at
 
@@ -37,231 +37,173 @@ to this mail.
 Thanks,
 Mark
 
->From dac5f86bc9e60eae87a28512f025362d1e2574e3 Mon Sep 17 00:00:00 2001
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Date: Fri, 25 Nov 2016 20:34:36 +0800
-Subject: [PATCH] ASoC: sun4i-codec: Add support for A23 codec
+>From 35f4403edb21d8b162beb3ab82b2087f4063f19d Mon Sep 17 00:00:00 2001
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Date: Tue, 29 Nov 2016 15:44:39 +0000
+Subject: [PATCH] ASoC: arizona: Use component pin control functions
 
-The codec in the A23 is similar to the one found on the A31. One key
-difference is the analog path controls are routed through the PRCM
-block. This is supported by the sun8i-codec-analog driver, and tied
-into this codec driver with the audio card's aux_dev.
+We need to modify the state of some of our own pins and are currently
+not taking account that the pin name may have a name_prefix applied
+to it.
 
-In addition, the A23 does not have LINEOUT, and it does not support
-headset jack detection or buttons.
+Replace the snd_soc_dapm_x_pin functions with the equivalent
+snd_soc_component_x_pin functions so that any name_prefix will be
+handled automatically.
 
-Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/sun4i-codec.txt      |  11 ++-
- sound/soc/sunxi/sun4i-codec.c                      | 108 +++++++++++++++++++++
- 2 files changed, 117 insertions(+), 2 deletions(-)
+ sound/soc/codecs/arizona.c | 12 ++++++++----
+ sound/soc/codecs/cs47l24.c |  3 ++-
+ sound/soc/codecs/wm5102.c  |  3 ++-
+ sound/soc/codecs/wm5110.c  |  3 ++-
+ sound/soc/codecs/wm8997.c  |  3 ++-
+ sound/soc/codecs/wm8998.c  |  3 ++-
+ 6 files changed, 18 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-codec.txt b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-index d91a95377f49..f7a548b604fc 100644
---- a/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-+++ b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-@@ -5,6 +5,7 @@ Required properties:
- 		- "allwinner,sun4i-a10-codec"
- 		- "allwinner,sun6i-a31-codec"
- 		- "allwinner,sun7i-a20-codec"
-+		- "allwinner,sun8i-a23-codec"
- - reg: must contain the registers location and length
- - interrupts: must contain the codec interrupt
- - dmas: DMA channels for tx and rx dma. See the DMA client binding,
-@@ -21,6 +22,7 @@ Optional properties:
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index ca5ca9eac272..0a734d910850 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -257,6 +257,7 @@ EXPORT_SYMBOL_GPL(arizona_init_mono);
+ int arizona_init_gpio(struct snd_soc_codec *codec)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
+ 	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
+ 	struct arizona *arizona = priv->arizona;
+ 	int i;
+@@ -264,21 +265,24 @@ int arizona_init_gpio(struct snd_soc_codec *codec)
+ 	switch (arizona->type) {
+ 	case WM5110:
+ 	case WM8280:
+-		snd_soc_dapm_disable_pin(dapm, "DRC2 Signal Activity");
++		snd_soc_component_disable_pin(component,
++					      "DRC2 Signal Activity");
+ 		break;
+ 	default:
+ 		break;
+ 	}
  
- Required properties for the following compatibles:
- 		- "allwinner,sun6i-a31-codec"
-+		- "allwinner,sun8i-a23-codec"
- - resets: phandle to the reset control for this device
- - allwinner,audio-routing: A list of the connections between audio components.
- 			   Each entry is a pair of strings, the first being the
-@@ -31,10 +33,10 @@ Required properties for the following compatibles:
- 			   "HP"
- 			   "HPCOM"
- 			   "LINEIN"
--			   "LINEOUT"
-+			   "LINEOUT"	(not on sun8i-a23)
- 			   "MIC1"
- 			   "MIC2"
--			   "MIC3"
-+			   "MIC3"	(sun6i-a31 only)
+-	snd_soc_dapm_disable_pin(dapm, "DRC1 Signal Activity");
++	snd_soc_component_disable_pin(component, "DRC1 Signal Activity");
  
- 			   Microphone biases from the SoC:
- 			   "HBIAS"
-@@ -48,6 +50,11 @@ Required properties for the following compatibles:
- 			   "Mic"
- 			   "Speaker"
+ 	for (i = 0; i < ARRAY_SIZE(arizona->pdata.gpio_defaults); i++) {
+ 		switch (arizona->pdata.gpio_defaults[i] & ARIZONA_GPN_FN_MASK) {
+ 		case ARIZONA_GP_FN_DRC1_SIGNAL_DETECT:
+-			snd_soc_dapm_enable_pin(dapm, "DRC1 Signal Activity");
++			snd_soc_component_enable_pin(component,
++						     "DRC1 Signal Activity");
+ 			break;
+ 		case ARIZONA_GP_FN_DRC2_SIGNAL_DETECT:
+-			snd_soc_dapm_enable_pin(dapm, "DRC2 Signal Activity");
++			snd_soc_component_enable_pin(component,
++						     "DRC2 Signal Activity");
+ 			break;
+ 		default:
+ 			break;
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index 1ed1329c31cc..73559ae864b6 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -1115,6 +1115,7 @@ static irqreturn_t cs47l24_adsp2_irq(int irq, void *data)
+ static int cs47l24_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
+ 	struct cs47l24_priv *priv = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
  
-+Required properties for the following compatibles:
-+		- "allwinner,sun8i-a23-codec"
-+- allwinner,codec-analog-controls: A phandle to the codec analog controls
-+				   block in the PRCM.
-+
- Example:
- codec: codec@01c22c00 {
- 	#sound-dai-cells = <0>;
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 092fdcf6de95..ada5fa055950 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -213,6 +213,10 @@
+@@ -1138,7 +1139,7 @@ static int cs47l24_codec_probe(struct snd_soc_codec *codec)
+ 	if (ret)
+ 		goto err_adsp2_codec_probe;
  
- /* TODO sun6i DAP (Digital Audio Processing) bits */
+-	snd_soc_dapm_disable_pin(dapm, "HAPTICS");
++	snd_soc_component_disable_pin(component, "HAPTICS");
  
-+/* FIFO counters moved on A23 */
-+#define SUN8I_A23_CODEC_DAC_TXCNT		(0x1c)
-+#define SUN8I_A23_CODEC_ADC_RXCNT		(0x20)
-+
- struct sun4i_codec {
- 	struct device	*dev;
- 	struct regmap	*regmap;
-@@ -1067,6 +1071,32 @@ static struct snd_soc_codec_driver sun6i_codec_codec = {
- 	},
- };
+ 	return 0;
  
-+/* sun8i A23 codec */
-+static const struct snd_kcontrol_new sun8i_a23_codec_codec_controls[] = {
-+	SOC_SINGLE_TLV("DAC Playback Volume", SUN4I_CODEC_DAC_DPC,
-+		       SUN4I_CODEC_DAC_DPC_DVOL, 0x3f, 1,
-+		       sun6i_codec_dvol_scale),
-+};
-+
-+static const struct snd_soc_dapm_widget sun8i_a23_codec_codec_widgets[] = {
-+	/* Digital parts of the ADCs */
-+	SND_SOC_DAPM_SUPPLY("ADC Enable", SUN6I_CODEC_ADC_FIFOC,
-+			    SUN6I_CODEC_ADC_FIFOC_EN_AD, 0, NULL, 0),
-+	/* Digital parts of the DACs */
-+	SND_SOC_DAPM_SUPPLY("DAC Enable", SUN4I_CODEC_DAC_DPC,
-+			    SUN4I_CODEC_DAC_DPC_EN_DA, 0, NULL, 0),
-+
-+};
-+
-+static struct snd_soc_codec_driver sun8i_a23_codec_codec = {
-+	.component_driver = {
-+		.controls		= sun8i_a23_codec_codec_controls,
-+		.num_controls		= ARRAY_SIZE(sun8i_a23_codec_codec_controls),
-+		.dapm_widgets		= sun8i_a23_codec_codec_widgets,
-+		.num_dapm_widgets	= ARRAY_SIZE(sun8i_a23_codec_codec_widgets),
-+	},
-+};
-+
- static const struct snd_soc_component_driver sun4i_codec_component = {
- 	.name = "sun4i-codec",
- };
-@@ -1206,6 +1236,63 @@ static struct snd_soc_card *sun6i_codec_create_card(struct device *dev)
- 	return card;
- };
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index 72ff291a85be..e7ab37d0dd32 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -1931,6 +1931,7 @@ static irqreturn_t wm5102_adsp2_irq(int irq, void *data)
+ static int wm5102_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
+ 	struct wm5102_priv *priv = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
  
-+/* Connect digital side enables to analog side widgets */
-+static const struct snd_soc_dapm_route sun8i_codec_card_routes[] = {
-+	/* ADC Routes */
-+	{ "Left ADC", NULL, "ADC Enable" },
-+	{ "Right ADC", NULL, "ADC Enable" },
-+	{ "Codec Capture", NULL, "Left ADC" },
-+	{ "Codec Capture", NULL, "Right ADC" },
-+
-+	/* DAC Routes */
-+	{ "Left DAC", NULL, "DAC Enable" },
-+	{ "Right DAC", NULL, "DAC Enable" },
-+	{ "Left DAC", NULL, "Codec Playback" },
-+	{ "Right DAC", NULL, "Codec Playback" },
-+};
-+
-+static struct snd_soc_aux_dev aux_dev = {
-+	.name = "Codec Analog Controls",
-+};
-+
-+static struct snd_soc_card *sun8i_a23_codec_create_card(struct device *dev)
-+{
-+	struct snd_soc_card *card;
-+	int ret;
-+
-+	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
-+	if (!card)
-+		return ERR_PTR(-ENOMEM);
-+
-+	aux_dev.codec_of_node = of_parse_phandle(dev->of_node,
-+						 "allwinner,codec-analog-controls",
-+						 0);
-+	if (!aux_dev.codec_of_node) {
-+		dev_err(dev, "Can't find analog controls for codec.\n");
-+		return ERR_PTR(-EINVAL);
-+	};
-+
-+	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
-+	if (!card->dai_link)
-+		return ERR_PTR(-ENOMEM);
-+
-+	card->dev		= dev;
-+	card->name		= "A23 Audio Codec";
-+	card->dapm_widgets	= sun6i_codec_card_dapm_widgets;
-+	card->num_dapm_widgets	= ARRAY_SIZE(sun6i_codec_card_dapm_widgets);
-+	card->dapm_routes	= sun8i_codec_card_routes;
-+	card->num_dapm_routes	= ARRAY_SIZE(sun8i_codec_card_routes);
-+	card->aux_dev		= &aux_dev;
-+	card->num_aux_devs	= 1;
-+	card->fully_routed	= true;
-+
-+	ret = snd_soc_of_parse_audio_routing(card, "allwinner,audio-routing");
-+	if (ret)
-+		dev_warn(dev, "failed to parse audio-routing: %d\n", ret);
-+
-+	return card;
-+};
-+
- static const struct regmap_config sun4i_codec_regmap_config = {
- 	.reg_bits	= 32,
- 	.reg_stride	= 4,
-@@ -1227,6 +1314,13 @@ static const struct regmap_config sun7i_codec_regmap_config = {
- 	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
- };
+@@ -1947,7 +1948,7 @@ static int wm5102_codec_probe(struct snd_soc_codec *codec)
+ 	arizona_init_gpio(codec);
+ 	arizona_init_notifiers(codec);
  
-+static const struct regmap_config sun8i_a23_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= SUN8I_A23_CODEC_ADC_RXCNT,
-+};
-+
- struct sun4i_codec_quirks {
- 	const struct regmap_config *regmap_config;
- 	const struct snd_soc_codec_driver *codec;
-@@ -1265,6 +1359,16 @@ static const struct sun4i_codec_quirks sun7i_codec_quirks = {
- 	.reg_adc_rxdata	= SUN4I_CODEC_ADC_RXDATA,
- };
+-	snd_soc_dapm_disable_pin(dapm, "HAPTICS");
++	snd_soc_component_disable_pin(component, "HAPTICS");
  
-+static const struct sun4i_codec_quirks sun8i_a23_codec_quirks = {
-+	.regmap_config	= &sun8i_a23_codec_regmap_config,
-+	.codec		= &sun8i_a23_codec_codec,
-+	.create_card	= sun8i_a23_codec_create_card,
-+	.reg_adc_fifoc	= REG_FIELD(SUN6I_CODEC_ADC_FIFOC, 0, 31),
-+	.reg_dac_txdata	= SUN4I_CODEC_DAC_TXDATA,
-+	.reg_adc_rxdata	= SUN6I_CODEC_ADC_RXDATA,
-+	.has_reset	= true,
-+};
-+
- static const struct of_device_id sun4i_codec_of_match[] = {
- 	{
- 		.compatible = "allwinner,sun4i-a10-codec",
-@@ -1278,6 +1382,10 @@ static const struct of_device_id sun4i_codec_of_match[] = {
- 		.compatible = "allwinner,sun7i-a20-codec",
- 		.data = &sun7i_codec_quirks,
- 	},
-+	{
-+		.compatible = "allwinner,sun8i-a23-codec",
-+		.data = &sun8i_a23_codec_quirks,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
+ 	priv->core.arizona->dapm = dapm;
+ 
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index a9a8bc98fb29..585fc706c1b0 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2273,6 +2273,7 @@ static irqreturn_t wm5110_adsp2_irq(int irq, void *data)
+ static int wm5110_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
+ 	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(codec);
+ 	int i, ret;
+ 
+@@ -2295,7 +2296,7 @@ static int wm5110_codec_probe(struct snd_soc_codec *codec)
+ 	if (ret)
+ 		goto err_adsp2_codec_probe;
+ 
+-	snd_soc_dapm_disable_pin(dapm, "HAPTICS");
++	snd_soc_component_disable_pin(component, "HAPTICS");
+ 
+ 	return 0;
+ 
+diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
+index ea8b1bfdf5a0..ee0c8639c743 100644
+--- a/sound/soc/codecs/wm8997.c
++++ b/sound/soc/codecs/wm8997.c
+@@ -1060,12 +1060,13 @@ static struct snd_soc_dai_driver wm8997_dai[] = {
+ static int wm8997_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
+ 	struct wm8997_priv *priv = snd_soc_codec_get_drvdata(codec);
+ 
+ 	arizona_init_spk(codec);
+ 	arizona_init_notifiers(codec);
+ 
+-	snd_soc_dapm_disable_pin(dapm, "HAPTICS");
++	snd_soc_component_disable_pin(component, "HAPTICS");
+ 
+ 	priv->core.arizona->dapm = dapm;
+ 
+diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
+index 1e1d9c1f0371..3694f5958d86 100644
+--- a/sound/soc/codecs/wm8998.c
++++ b/sound/soc/codecs/wm8998.c
+@@ -1320,6 +1320,7 @@ static int wm8998_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct wm8998_priv *priv = snd_soc_codec_get_drvdata(codec);
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
+ 
+ 	priv->core.arizona->dapm = dapm;
+ 
+@@ -1327,7 +1328,7 @@ static int wm8998_codec_probe(struct snd_soc_codec *codec)
+ 	arizona_init_gpio(codec);
+ 	arizona_init_notifiers(codec);
+ 
+-	snd_soc_dapm_disable_pin(dapm, "HAPTICS");
++	snd_soc_component_disable_pin(component, "HAPTICS");
+ 
+ 	return 0;
+ }
 -- 
 2.10.2
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
