@@ -1,94 +1,110 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/3 v2] ALSA: usb-audio: avoid setting of sample rate
- multiple times on bus
-Date: Wed, 30 Nov 2016 19:45:45 +0900
-Message-ID: <c4579c3f-4798-7096-2c05-b0670ccbad08@sakamocchi.jp>
-References: <20161130075923.15205-1-jiada_wang@mentor.com>
- <20161130075923.15205-3-jiada_wang@mentor.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH v4 1/2] ASoC: core: allow DAI PCM controls
+	bound to PCM device
+Date: Wed, 30 Nov 2016 11:24:09 +0100
+Message-ID: <1480501450-10780-2-git-send-email-arnaud.pouliquen@st.com>
+References: <1480501450-10780-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161130075923.15205-3-jiada_wang@mentor.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jiada Wang <jiada_wang@mentor.com>, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, apape@de.adit-jv.com, linux-kernel@vger.kernel.org, Mark_Craske@mentor.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id CC9C026720E
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2016 11:24:16 +0100 (CET)
+In-Reply-To: <1480501450-10780-1-git-send-email-arnaud.pouliquen@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jiada,
+In case of several instances of the same PCM control (e.g IEC controls).
+Application should be able to address the control using the
+device field number, according to the PCM character device.
+This patch allows to link DAI PCM controls to the PCM device.
+During DAI_link probe, PCM controls are added after device field is forced
+to the PCM device number.
 
-I don't oppose this patch. Nevertheless, your description is not 
-necessarily correct.
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+ include/sound/soc-dai.h |  4 ++++
+ sound/soc/soc-core.c    | 35 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 39 insertions(+)
 
-On Nov 30 2016 16:59, Jiada Wang wrote:
-> From: Daniel Girnus <dgirnus@de.adit-jv.com>
->
-> ALSA usually calls the prepare function twice before starting the playback:
-> 1. On hw_params call from userland and
-> 2. internally when starting the stream.
-
-ALSA PCM core in kernel land doesn't perform like this.
-
-In alsa-lib, 'snd_pcm_hw_params()' calls 'snd_pcm_hw_params_internal()' 
-and 'snd_pcm_prepare()' sequentially.
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm.c;h=cd87bc759ded95953e332b7e8d56b0f2d5b4185d;hb=HEAD#l853
-
-In system call level (e.g. see by strace(1)), this looks like two 
-ioctl(2)s with 'SNDRV_PCM_IOCTL_HW_PARAMS' and 'SNDRV_PCM_IOCTL_PREPARE'.
-
-Well, when applications are written to execute 'snd_pcm_hw_params()' and 
-'snd_pcm_hw_prepare()' sequentially, additional ioctl(2) with 
-'SNDRV_PCM_IOCTL_PREPARE' appears. PulseAudio is this kind of 
-application. I indicated the useless in 2014, but it still remains:
-https://lists.freedesktop.org/archives/pulseaudio-discuss/2014-January/019773.html
-
-You have the misunderstanding due to a nature of alsa-lib and tendency 
-of major applications, from my point of view.
-
-> Some device are not able to manage this and they will stop playback
-> if the sample rate will be configured several times over USB protocol.
->
-> Signed-off-by: Jens Lorenz <jlorenz@de.adit-jv.com>
-> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-> ---
->  sound/usb/pcm.c | 21 +++++++++++----------
->  1 file changed, 11 insertions(+), 10 deletions(-)
->
-> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-> index 44d178e..a522c9a 100644
-> --- a/sound/usb/pcm.c
-> +++ b/sound/usb/pcm.c
-> @@ -806,17 +806,18 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
->  	if (ret < 0)
->  		goto unlock;
->
-> -	iface = usb_ifnum_to_if(subs->dev, subs->cur_audiofmt->iface);
-> -	alts = &iface->altsetting[subs->cur_audiofmt->altset_idx];
-> -	ret = snd_usb_init_sample_rate(subs->stream->chip,
-> -				       subs->cur_audiofmt->iface,
-> -				       alts,
-> -				       subs->cur_audiofmt,
-> -				       subs->cur_rate);
-> -	if (ret < 0)
-> -		goto unlock;
-> -
->  	if (subs->need_setup_ep) {
-> +
-> +		iface = usb_ifnum_to_if(subs->dev, subs->cur_audiofmt->iface);
-> +		alts = &iface->altsetting[subs->cur_audiofmt->altset_idx];
-> +		ret = snd_usb_init_sample_rate(subs->stream->chip,
-> +					       subs->cur_audiofmt->iface,
-> +					       alts,
-> +					       subs->cur_audiofmt,
-> +					       subs->cur_rate);
-> +		if (ret < 0)
-> +			goto unlock;
-> +
->  		ret = configure_endpoint(subs);
->  		if (ret < 0)
->  			goto unlock;
-
-
-Regards
-
-Takashi Sakamoto
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 200e1f0..3ff1a86 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -273,6 +273,10 @@ struct snd_soc_dai_driver {
+ 	/* probe ordering - for components with runtime dependencies */
+ 	int probe_order;
+ 	int remove_order;
++
++	/* Optional PCM controls to bind to PCM device on DAIs link*/
++	const struct snd_kcontrol_new *pcm_controls;
++	int num_pcm_controls;
+ };
+ 
+ /*
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index aaab26a..7b79a31 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1598,6 +1598,32 @@ static int soc_probe_dai(struct snd_soc_dai *dai, int order)
+ 	return 0;
+ }
+ 
++static int soc_link_dai_pcm_controls(struct snd_soc_dai **dais, int num_dais,
++				     struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_kcontrol_new kctl;
++	int i, j, ret;
++
++	for (i = 0; i < num_dais; ++i) {
++		for (j = 0; j < dais[i]->driver->num_pcm_controls; j++) {
++			kctl = dais[i]->driver->pcm_controls[j];
++			if (kctl.iface != SNDRV_CTL_ELEM_IFACE_PCM ||
++			    rtd->dai_link->no_pcm) {
++				dev_err(dais[i]->dev,
++					"Failed to bind control: %s\n",
++					kctl.name);
++				return -EINVAL;
++			}
++			kctl.device = rtd->pcm->device;
++			ret = snd_soc_add_dai_controls(dais[i], &kctl, 1);
++			if (ret < 0)
++				return ret;
++		}
++	}
++
++	return 0;
++}
++
+ static int soc_link_dai_widgets(struct snd_soc_card *card,
+ 				struct snd_soc_dai_link *dai_link,
+ 				struct snd_soc_pcm_runtime *rtd)
+@@ -1709,6 +1735,15 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+ 				       dai_link->stream_name, ret);
+ 				return ret;
+ 			}
++
++			/* Bind DAIs pcm controls to the PCM device */
++			ret = soc_link_dai_pcm_controls(&cpu_dai, 1, rtd);
++			if (ret < 0)
++				return ret;
++			ret = soc_link_dai_pcm_controls(rtd->codec_dais,
++							rtd->num_codecs, rtd);
++			if (ret < 0)
++				return ret;
+ 		} else {
+ 			INIT_DELAYED_WORK(&rtd->delayed_work,
+ 						codec2codec_close_delayed_work);
+-- 
+1.9.1
