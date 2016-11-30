@@ -1,54 +1,90 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2] ALSA SoC MAX98927 driver - Revision
-Date: Wed, 30 Nov 2016 18:15:44 +0000
-Message-ID: <20161130181544.lod25su6xu6ozcws@sirena.org.uk>
-References: <1479877026-5172-1-git-send-email-RyanS.Lee@maximintegrated.com>
- <1480050167-83444-1-git-send-email-RyanS.Lee@maximintegrated.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5670: Enable Braswell platform
+	workaround for Dell Wyse 3040" to the asoc tree
+Date: Wed, 30 Nov 2016 17:16:38 +0000
+Message-ID: <E1cC8Uo-0005uo-2o@debutante>
+References: <20161130161920.10817-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ijt4atgsdyjkmzm7"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1480050167-83444-1-git-send-email-RyanS.Lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Ryan Lee <RyanS.Lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
-Cc: yesanishhere-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org, oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, jacob-EZCvousvhKUZux3j3Bed6dkegs52MxvZ@public.gmane.org, Damien.Horsley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, nh6z-fFIq/eER6g8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C3A0266AF1
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2016 18:16:48 +0100 (CET)
+In-Reply-To: <20161130161920.10817-1-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---ijt4atgsdyjkmzm7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: rt5670: Enable Braswell platform workaround for Dell Wyse 3040
 
-On Fri, Nov 25, 2016 at 02:02:47PM +0900, Ryan Lee wrote:
+has been applied to the asoc tree at
 
-> Signed-off-by: Ryan Lee <RyanS.Lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/max98927.txt         |   33 +-
->  sound/soc/codecs/max98927.c                        |  839 +++++------
->  sound/soc/codecs/max98927.h                        | 1463 ++++----------------
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-This is modifying existing code, you need to at least attempt to supply
-a description of the changes you are trying to make and most likely send
-a series of individual, split out changes.  Please, review the patch
-submission process in SubmittingPatches before sending anything further.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---ijt4atgsdyjkmzm7
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEcBAABCAAGBQJYPxdQAAoJECTWi3JdVIfQxmAH/37fML9TBkAHI4XgnlSFiQNj
-xGKKNSABhau/nQmPlxqlAmD7K1OPTgvxZYV3d3KLHtijEG3h1v/Dm0EW3mFjdezL
-z6PQNftTvyi+8IWnqmj0avfTjnxsbi/yyDkU4VPU3VFbaqbX8N5loaIWBkXi5ys9
-9l/yAggIygaXG/UYiauFp6assMrrpAi3z4rjKNZ7XIuAFN1ss9DS4aID3YzE9dOW
-X/rIMD7rGB2OmoB1nHS3c8kX7/I9nDh7KAOFSERF3jtcSsSui7OclnUb49AW2tgQ
-cZKVumFWrFA3Y1zRKTHANMW3URvLIDbrCuMrXARficFX+9U+6RE63cFLRVstN/s=
-=6C9O
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---ijt4atgsdyjkmzm7--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Mark
+
+>From b4ff47d2843f7df61b956c8ee4a576bf83b11fab Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 30 Nov 2016 17:19:20 +0100
+Subject: [PATCH] ASoC: rt5670: Enable Braswell platform workaround for Dell
+ Wyse 3040
+
+Dell Wyse 3040 requires the platform workaround for enabling dmic and
+jack detection as defined for Braswell CRB.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5670.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 12d3bc14a558..d32ebe73c2c9 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -2826,6 +2826,13 @@ static const struct dmi_system_id dmi_platform_intel_braswell[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "Braswell CRB"),
+ 		},
+ 	},
++	{
++		.ident = "Dell Wyse 3040",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Wyse 3040"),
++		},
++	},
+ 	{}
+ };
+ 
+-- 
+2.10.2
