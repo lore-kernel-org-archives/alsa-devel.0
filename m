@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: Fix crash at suspend/resume without card registration" to the asoc tree
-Date: Wed, 30 Nov 2016 18:07:28 +0000
-Message-ID: <E1cC9I0-0008CW-B5@debutante>
-References: <20161125155406.7617-1-tiwai@suse.de>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20161125155406.7617-1-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgMark Brown <broonie@kernel.org>Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: sun4i-codec: Add support for A23 codec" to the asoc tree
+Date: Wed, 30 Nov 2016 18:07:22 +0000
+Message-ID: <E1cC9Hu-0008Ab-AA@debutante>
+References: <20161112064648.26779-5-wens@csie.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20161112064648.26779-5-wens-jdAy2FN1RRM@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mylene Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: Fix crash at suspend/resume without card registration
+   ASoC: sun4i-codec: Add support for A23 codec
 
 has been applied to the asoc tree at
 
@@ -37,70 +37,231 @@ to this mail.
 Thanks,
 Mark
 
->From 2fc995a87f2efcd803438f07bfecd35cc3d90d32 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Fri, 25 Nov 2016 16:54:06 +0100
-Subject: [PATCH] ASoC: intel: Fix crash at suspend/resume without card
- registration
+>From dac5f86bc9e60eae87a28512f025362d1e2574e3 Mon Sep 17 00:00:00 2001
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Date: Fri, 25 Nov 2016 20:34:36 +0800
+Subject: [PATCH] ASoC: sun4i-codec: Add support for A23 codec
 
-When ASoC Intel SST Medfield driver is probed but without codec / card
-assigned, it causes an Oops and freezes the kernel at suspend/resume,
+The codec in the A23 is similar to the one found on the A31. One key
+difference is the analog path controls are routed through the PRCM
+block. This is supported by the sun8i-codec-analog driver, and tied
+into this codec driver with the audio card's aux_dev.
 
- PM: Suspending system (freeze)
- Suspending console(s) (use no_console_suspend to debug)
- BUG: unable to handle kernel NULL pointer dereference at 0000000000000018
- IP: [<ffffffffc09d9409>] sst_soc_prepare+0x19/0xa0 [snd_soc_sst_mfld_platform]
- Oops: 0000 [#1] PREEMPT SMP
- CPU: 0 PID: 1552 Comm: systemd-sleep Tainted: G W 4.9.0-rc6-1.g5f5c2ad-default #1
- Call Trace:
-  [<ffffffffb45318f9>] dpm_prepare+0x209/0x460
-  [<ffffffffb4531b61>] dpm_suspend_start+0x11/0x60
-  [<ffffffffb40d3cc2>] suspend_devices_and_enter+0xb2/0x710
-  [<ffffffffb40d462e>] pm_suspend+0x30e/0x390
-  [<ffffffffb40d2eba>] state_store+0x8a/0x90
-  [<ffffffffb43c670f>] kobj_attr_store+0xf/0x20
-  [<ffffffffb42b0d97>] sysfs_kf_write+0x37/0x40
-  [<ffffffffb42b02bc>] kernfs_fop_write+0x11c/0x1b0
-  [<ffffffffb422be68>] __vfs_write+0x28/0x140
-  [<ffffffffb43728a8>] ? apparmor_file_permission+0x18/0x20
-  [<ffffffffb433b2ab>] ? security_file_permission+0x3b/0xc0
-  [<ffffffffb422d095>] vfs_write+0xb5/0x1a0
-  [<ffffffffb422e3d6>] SyS_write+0x46/0xa0
-  [<ffffffffb4719fbb>] entry_SYSCALL_64_fastpath+0x1e/0xad
+In addition, the A23 does not have LINEOUT, and it does not support
+headset jack detection or buttons.
 
-Add proper NULL checks in the PM code of mdfld driver.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: <stable@vger.kernel.org>
+Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ .../devicetree/bindings/sound/sun4i-codec.txt      |  11 ++-
+ sound/soc/sunxi/sun4i-codec.c                      | 108 +++++++++++++++++++++
+ 2 files changed, 117 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 25c6d87c818e..f5a8050351b5 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -771,6 +771,9 @@ static int sst_soc_prepare(struct device *dev)
- 	struct sst_data *drv = dev_get_drvdata(dev);
- 	struct snd_soc_pcm_runtime *rtd;
+diff --git a/Documentation/devicetree/bindings/sound/sun4i-codec.txt b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
+index d91a95377f49..f7a548b604fc 100644
+--- a/Documentation/devicetree/bindings/sound/sun4i-codec.txt
++++ b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
+@@ -5,6 +5,7 @@ Required properties:
+ 		- "allwinner,sun4i-a10-codec"
+ 		- "allwinner,sun6i-a31-codec"
+ 		- "allwinner,sun7i-a20-codec"
++		- "allwinner,sun8i-a23-codec"
+ - reg: must contain the registers location and length
+ - interrupts: must contain the codec interrupt
+ - dmas: DMA channels for tx and rx dma. See the DMA client binding,
+@@ -21,6 +22,7 @@ Optional properties:
  
-+	if (!drv->soc_card)
-+		return 0;
-+
- 	/* suspend all pcms first */
- 	snd_soc_suspend(drv->soc_card->dev);
- 	snd_soc_poweroff(drv->soc_card->dev);
-@@ -793,6 +796,9 @@ static void sst_soc_complete(struct device *dev)
- 	struct sst_data *drv = dev_get_drvdata(dev);
- 	struct snd_soc_pcm_runtime *rtd;
+ Required properties for the following compatibles:
+ 		- "allwinner,sun6i-a31-codec"
++		- "allwinner,sun8i-a23-codec"
+ - resets: phandle to the reset control for this device
+ - allwinner,audio-routing: A list of the connections between audio components.
+ 			   Each entry is a pair of strings, the first being the
+@@ -31,10 +33,10 @@ Required properties for the following compatibles:
+ 			   "HP"
+ 			   "HPCOM"
+ 			   "LINEIN"
+-			   "LINEOUT"
++			   "LINEOUT"	(not on sun8i-a23)
+ 			   "MIC1"
+ 			   "MIC2"
+-			   "MIC3"
++			   "MIC3"	(sun6i-a31 only)
  
-+	if (!drv->soc_card)
-+		return;
+ 			   Microphone biases from the SoC:
+ 			   "HBIAS"
+@@ -48,6 +50,11 @@ Required properties for the following compatibles:
+ 			   "Mic"
+ 			   "Speaker"
+ 
++Required properties for the following compatibles:
++		- "allwinner,sun8i-a23-codec"
++- allwinner,codec-analog-controls: A phandle to the codec analog controls
++				   block in the PRCM.
 +
- 	/* restart SSPs */
- 	list_for_each_entry(rtd, &drv->soc_card->rtd_list, list) {
- 		struct snd_soc_dai *dai = rtd->cpu_dai;
+ Example:
+ codec: codec@01c22c00 {
+ 	#sound-dai-cells = <0>;
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 092fdcf6de95..ada5fa055950 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -213,6 +213,10 @@
+ 
+ /* TODO sun6i DAP (Digital Audio Processing) bits */
+ 
++/* FIFO counters moved on A23 */
++#define SUN8I_A23_CODEC_DAC_TXCNT		(0x1c)
++#define SUN8I_A23_CODEC_ADC_RXCNT		(0x20)
++
+ struct sun4i_codec {
+ 	struct device	*dev;
+ 	struct regmap	*regmap;
+@@ -1067,6 +1071,32 @@ static struct snd_soc_codec_driver sun6i_codec_codec = {
+ 	},
+ };
+ 
++/* sun8i A23 codec */
++static const struct snd_kcontrol_new sun8i_a23_codec_codec_controls[] = {
++	SOC_SINGLE_TLV("DAC Playback Volume", SUN4I_CODEC_DAC_DPC,
++		       SUN4I_CODEC_DAC_DPC_DVOL, 0x3f, 1,
++		       sun6i_codec_dvol_scale),
++};
++
++static const struct snd_soc_dapm_widget sun8i_a23_codec_codec_widgets[] = {
++	/* Digital parts of the ADCs */
++	SND_SOC_DAPM_SUPPLY("ADC Enable", SUN6I_CODEC_ADC_FIFOC,
++			    SUN6I_CODEC_ADC_FIFOC_EN_AD, 0, NULL, 0),
++	/* Digital parts of the DACs */
++	SND_SOC_DAPM_SUPPLY("DAC Enable", SUN4I_CODEC_DAC_DPC,
++			    SUN4I_CODEC_DAC_DPC_EN_DA, 0, NULL, 0),
++
++};
++
++static struct snd_soc_codec_driver sun8i_a23_codec_codec = {
++	.component_driver = {
++		.controls		= sun8i_a23_codec_codec_controls,
++		.num_controls		= ARRAY_SIZE(sun8i_a23_codec_codec_controls),
++		.dapm_widgets		= sun8i_a23_codec_codec_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(sun8i_a23_codec_codec_widgets),
++	},
++};
++
+ static const struct snd_soc_component_driver sun4i_codec_component = {
+ 	.name = "sun4i-codec",
+ };
+@@ -1206,6 +1236,63 @@ static struct snd_soc_card *sun6i_codec_create_card(struct device *dev)
+ 	return card;
+ };
+ 
++/* Connect digital side enables to analog side widgets */
++static const struct snd_soc_dapm_route sun8i_codec_card_routes[] = {
++	/* ADC Routes */
++	{ "Left ADC", NULL, "ADC Enable" },
++	{ "Right ADC", NULL, "ADC Enable" },
++	{ "Codec Capture", NULL, "Left ADC" },
++	{ "Codec Capture", NULL, "Right ADC" },
++
++	/* DAC Routes */
++	{ "Left DAC", NULL, "DAC Enable" },
++	{ "Right DAC", NULL, "DAC Enable" },
++	{ "Left DAC", NULL, "Codec Playback" },
++	{ "Right DAC", NULL, "Codec Playback" },
++};
++
++static struct snd_soc_aux_dev aux_dev = {
++	.name = "Codec Analog Controls",
++};
++
++static struct snd_soc_card *sun8i_a23_codec_create_card(struct device *dev)
++{
++	struct snd_soc_card *card;
++	int ret;
++
++	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
++	if (!card)
++		return ERR_PTR(-ENOMEM);
++
++	aux_dev.codec_of_node = of_parse_phandle(dev->of_node,
++						 "allwinner,codec-analog-controls",
++						 0);
++	if (!aux_dev.codec_of_node) {
++		dev_err(dev, "Can't find analog controls for codec.\n");
++		return ERR_PTR(-EINVAL);
++	};
++
++	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
++	if (!card->dai_link)
++		return ERR_PTR(-ENOMEM);
++
++	card->dev		= dev;
++	card->name		= "A23 Audio Codec";
++	card->dapm_widgets	= sun6i_codec_card_dapm_widgets;
++	card->num_dapm_widgets	= ARRAY_SIZE(sun6i_codec_card_dapm_widgets);
++	card->dapm_routes	= sun8i_codec_card_routes;
++	card->num_dapm_routes	= ARRAY_SIZE(sun8i_codec_card_routes);
++	card->aux_dev		= &aux_dev;
++	card->num_aux_devs	= 1;
++	card->fully_routed	= true;
++
++	ret = snd_soc_of_parse_audio_routing(card, "allwinner,audio-routing");
++	if (ret)
++		dev_warn(dev, "failed to parse audio-routing: %d\n", ret);
++
++	return card;
++};
++
+ static const struct regmap_config sun4i_codec_regmap_config = {
+ 	.reg_bits	= 32,
+ 	.reg_stride	= 4,
+@@ -1227,6 +1314,13 @@ static const struct regmap_config sun7i_codec_regmap_config = {
+ 	.max_register	= SUN7I_CODEC_AC_MIC_PHONE_CAL,
+ };
+ 
++static const struct regmap_config sun8i_a23_codec_regmap_config = {
++	.reg_bits	= 32,
++	.reg_stride	= 4,
++	.val_bits	= 32,
++	.max_register	= SUN8I_A23_CODEC_ADC_RXCNT,
++};
++
+ struct sun4i_codec_quirks {
+ 	const struct regmap_config *regmap_config;
+ 	const struct snd_soc_codec_driver *codec;
+@@ -1265,6 +1359,16 @@ static const struct sun4i_codec_quirks sun7i_codec_quirks = {
+ 	.reg_adc_rxdata	= SUN4I_CODEC_ADC_RXDATA,
+ };
+ 
++static const struct sun4i_codec_quirks sun8i_a23_codec_quirks = {
++	.regmap_config	= &sun8i_a23_codec_regmap_config,
++	.codec		= &sun8i_a23_codec_codec,
++	.create_card	= sun8i_a23_codec_create_card,
++	.reg_adc_fifoc	= REG_FIELD(SUN6I_CODEC_ADC_FIFOC, 0, 31),
++	.reg_dac_txdata	= SUN4I_CODEC_DAC_TXDATA,
++	.reg_adc_rxdata	= SUN6I_CODEC_ADC_RXDATA,
++	.has_reset	= true,
++};
++
+ static const struct of_device_id sun4i_codec_of_match[] = {
+ 	{
+ 		.compatible = "allwinner,sun4i-a10-codec",
+@@ -1278,6 +1382,10 @@ static const struct of_device_id sun4i_codec_of_match[] = {
+ 		.compatible = "allwinner,sun7i-a20-codec",
+ 		.data = &sun7i_codec_quirks,
+ 	},
++	{
++		.compatible = "allwinner,sun8i-a23-codec",
++		.data = &sun8i_a23_codec_quirks,
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
 -- 
 2.10.2
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
