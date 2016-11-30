@@ -1,38 +1,86 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH V2 5/5] Input: arizona-haptics - Use SoC component pin
- control functions
-Date: Wed, 30 Nov 2016 10:30:06 -0800
-Message-ID: <20161130183006.GC31934@dtor-ws>
-References: <1480434282-26389-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1480434282-26389-6-git-send-email-rf@opensource.wolfsonmicro.com>
- <20161130014135.GE20680@dtor-ws>
- <20161130172823.ihmk6jaw2khtyzek@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: Add missing 10EC5672 ACPI ID
+	matching for Cherry Trail" to the asoc tree
+Date: Wed, 30 Nov 2016 17:16:41 +0000
+Message-ID: <E1cC8Ur-0005vw-0w@debutante>
+References: <20161130135747.22485-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20161130172823.ihmk6jaw2khtyzek@sirena.org.uk>
-Sender: linux-input-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, cw00.choi@samsung.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, myungjoo.ham@samsung.com, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 173E2266AF1
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2016 18:16:49 +0100 (CET)
+In-Reply-To: <20161130135747.22485-1-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 30, 2016 at 05:28:23PM +0000, Mark Brown wrote:
-> On Tue, Nov 29, 2016 at 05:41:35PM -0800, Dmitry Torokhov wrote:
-> > On Tue, Nov 29, 2016 at 03:44:42PM +0000, Richard Fitzgerald wrote:
-> 
-> > > Switch to using the snd_soc_component_x_pin equivalent functions that
-> > > take a specified SoC component and automatically add the name prefix to
-> > > the provided pin name.
-> 
-> > Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> 
-> Do you want me to apply this or do you want to apply it in your tree?
+The patch
 
-Please apply though your tree, I should not have anything conflicting in
-mine, and grouped on the same branch the changes make more sense.
+   ASoC: Intel: Add missing 10EC5672 ACPI ID matching for Cherry Trail
 
-Thanks!
+has been applied to the asoc tree at
 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 6648eb8666af7681e6ff3830ca715e8255f17078 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 30 Nov 2016 14:56:26 +0100
+Subject: [PATCH] ASoC: Intel: Add missing 10EC5672 ACPI ID matching for Cherry
+ Trail
+
+Add the missing ACPI ID 10EC5672 for Cherry Trail, which bounds with
+cht-bsw-rt5672 driver.  This combination was found on Dell Wyse 3040.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/atom/sst/sst_acpi.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index ba5c0d71720a..4461b6521740 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -451,6 +451,8 @@ static struct sst_acpi_mach sst_acpi_bytcr[] = {
+ static struct sst_acpi_mach sst_acpi_chv[] = {
+ 	{"10EC5670", "cht-bsw-rt5672", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+ 						&chv_platform_data },
++	{"10EC5672", "cht-bsw-rt5672", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
++						&chv_platform_data },
+ 	{"10EC5645", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+ 						&chv_platform_data },
+ 	{"10EC5650", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
 -- 
-Dmitry
+2.10.2
