@@ -1,19 +1,18 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [RFC] ASOC: HDMI audio info frame speaker allocation
-Date: Wed, 30 Nov 2016 18:54:32 +0100
-Message-ID: <5007d5a5-1f3b-b7ae-f923-43e839be381e@st.com>
-References: <1480325634-23320-1-git-send-email-arnaud.pouliquen@st.com>
- <1480325634-23320-2-git-send-email-arnaud.pouliquen@st.com>
- <b6cf1216-7408-584f-6966-2d2a7cb20df3@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: cht_bsw_rt5672: Use HID translation
+	unit" to the asoc tree
+Date: Wed, 30 Nov 2016 18:07:25 +0000
+Message-ID: <E1cC9Hx-0008BT-B9@debutante>
+References: <20161125144018.28896-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 07684266912
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2016 18:54:40 +0100 (CET)
-In-Reply-To: <b6cf1216-7408-584f-6966-2d2a7cb20df3@sakamocchi.jp>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2C23266B93
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2016 19:07:35 +0100 (CET)
+In-Reply-To: <20161125144018.28896-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +22,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Vinod Koul <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+The patch
 
-I'm trying to understand how to implement the speaker allocation for
-HDMI output.
+   ASoC: cht_bsw_rt5672: Use HID translation unit
 
-input:
- - HDMI sink provides the speaker presence in ELD structure
- - audio source can also contain channels position.
+has been applied to the asoc tree at
 
-output:
- Audio info frame (IF) should contain audio channel allocation (
-hdmi_audio_infoframe structure).
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-So if i well understand the concept, application should be in charge of
-aligning channels with HDMI sink speakers...
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Regarding HDA driver, audio IF channel allocation is computing based on
-"Playback Channel Map"control . Application set the speaker information
-of the audio IF through this control.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-On ASOC side, in hdmi-codec,
- -'ELD" control exists  to export speaker information to application
- - info frame channel allocation is hardware coded in
-hdmi_codec_hw_params. The configuration is set by default depending on
-the number of channels. Drawback is that application is not aware of the
-configuration selected by the driver.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-So it seems that something is missing to do the link between EDID
-information and audio source channel mapping on one side and audio IF
-configuration on other side.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-What should be the best strategy to support feature in ASoC?
-- No update in hdmi-codec, consider that application should know
-the configuration available for 2,4,6 and 8 channels
-  => seems not very flexible...
+Thanks,
+Mark
 
-- Update hdmi-codec to implement "Playback Channel Map" in read-only, to
-provide channel mapping information to application.
- => impact is light, but application can get the correct mapping only
-after the update of the number of channels (so after hw_params ops call)
+>From fee3244cd1f5af813a24537950e211eee4f33297 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Fri, 25 Nov 2016 15:40:18 +0100
+Subject: [PATCH] ASoC: cht_bsw_rt5672: Use HID translation unit
 
-- Update hdmi-codec to implement "Playback Channel Map" in read and
-write access.
- => HDA implementation. Seems the more flexible solution from my windows...
+Instead of hard-coded "i2c-10EC5670:00", use the translation helper to
+avoid the mismatch between i2c-codec and ACPI strings just like what
+we've done for bytcr_rt5640.  This gives more robust binding on funky
+devices like Dell Wyse 3040.
 
-- Implement control in drm drivers
-  => seems not reasonable.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 30 ++++++++++++++++++++++++++++--
+ 1 file changed, 28 insertions(+), 2 deletions(-)
 
-- Other?
-
-Thanks in advance for your answers.
-
-Regards
-Arnaud
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index df9d254baa18..fe607d8701a0 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -25,12 +25,14 @@
+ #include <sound/jack.h>
+ #include "../../codecs/rt5670.h"
+ #include "../atom/sst-atom-controls.h"
++#include "../common/sst-acpi.h"
+ 
+ /* The platform clock #3 outputs 19.2Mhz clock to codec as I2S MCLK */
+ #define CHT_PLAT_CLK_3_HZ	19200000
+ #define CHT_CODEC_DAI	"rt5670-aif1"
+ 
+ static struct snd_soc_jack cht_bsw_headset;
++static char cht_bsw_codec_name[16];
+ 
+ /* Headset jack detection DAPM pins */
+ static struct snd_soc_jack_pin cht_bsw_headset_pins[] = {
+@@ -295,7 +297,7 @@ static int cht_suspend_pre(struct snd_soc_card *card)
+ 	struct snd_soc_codec *codec;
+ 
+ 	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
+-		if (!strcmp(codec->component.name, "i2c-10EC5670:00")) {
++		if (!strcmp(codec->component.name, cht_bsw_codec_name)) {
+ 			dev_dbg(codec->dev, "disabling jack detect before going to suspend.\n");
+ 			rt5670_jack_suspend(codec);
+ 			break;
+@@ -309,7 +311,7 @@ static int cht_resume_post(struct snd_soc_card *card)
+ 	struct snd_soc_codec *codec;
+ 
+ 	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
+-		if (!strcmp(codec->component.name, "i2c-10EC5670:00")) {
++		if (!strcmp(codec->component.name, cht_bsw_codec_name)) {
+ 			dev_dbg(codec->dev, "enabling jack detect for resume.\n");
+ 			rt5670_jack_resume(codec);
+ 			break;
+@@ -335,9 +337,33 @@ static struct snd_soc_card snd_soc_card_cht = {
+ 	.resume_post = cht_resume_post,
+ };
+ 
++#define RT5672_I2C_DEFAULT	"i2c-10EC5670:00"
++
+ static int snd_cht_mc_probe(struct platform_device *pdev)
+ {
+ 	int ret_val = 0;
++	struct sst_acpi_mach *mach = pdev->dev.platform_data;
++	const char *i2c_name;
++	int i;
++
++	strcpy(cht_bsw_codec_name, RT5672_I2C_DEFAULT);
++
++	/* fixup codec name based on HID */
++	if (mach) {
++		i2c_name = sst_acpi_find_name_from_hid(mach->id);
++		if (i2c_name) {
++			snprintf(cht_bsw_codec_name, sizeof(cht_bsw_codec_name),
++				 "i2c-%s", i2c_name);
++			for (i = 0; i < ARRAY_SIZE(cht_dailink); i++) {
++				if (!strcmp(cht_dailink[i].codec_name,
++					    RT5672_I2C_DEFAULT)) {
++					cht_dailink[i].codec_name =
++						cht_bsw_codec_name;
++					break;
++				}
++			}
++		}
++	}
+ 
+ 	/* register the soc card */
+ 	snd_soc_card_cht.dev = &pdev->dev;
+-- 
+2.10.2
