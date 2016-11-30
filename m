@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Add missing 10EC5672 ACPI ID
-	matching for Cherry Trail" to the asoc tree
-Date: Wed, 30 Nov 2016 17:16:41 +0000
-Message-ID: <E1cC8Ur-0005vw-0w@debutante>
-References: <20161130135747.22485-1-tiwai@suse.de>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [RFC] ASOC: HDMI audio info frame speaker allocation
+Date: Wed, 30 Nov 2016 18:54:32 +0100
+Message-ID: <5007d5a5-1f3b-b7ae-f923-43e839be381e@st.com>
+References: <1480325634-23320-1-git-send-email-arnaud.pouliquen@st.com>
+ <1480325634-23320-2-git-send-email-arnaud.pouliquen@st.com>
+ <b6cf1216-7408-584f-6966-2d2a7cb20df3@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 173E2266AF1
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2016 18:16:49 +0100 (CET)
-In-Reply-To: <20161130135747.22485-1-tiwai@suse.de>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07684266912
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2016 18:54:40 +0100 (CET)
+In-Reply-To: <b6cf1216-7408-584f-6966-2d2a7cb20df3@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Vinod Koul <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hello,
 
-   ASoC: Intel: Add missing 10EC5672 ACPI ID matching for Cherry Trail
+I'm trying to understand how to implement the speaker allocation for
+HDMI output.
 
-has been applied to the asoc tree at
+input:
+ - HDMI sink provides the speaker presence in ELD structure
+ - audio source can also contain channels position.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+output:
+ Audio info frame (IF) should contain audio channel allocation (
+hdmi_audio_infoframe structure).
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+So if i well understand the concept, application should be in charge of
+aligning channels with HDMI sink speakers...
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Regarding HDA driver, audio IF channel allocation is computing based on
+"Playback Channel Map"control . Application set the speaker information
+of the audio IF through this control.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+On ASOC side, in hdmi-codec,
+ -'ELD" control exists  to export speaker information to application
+ - info frame channel allocation is hardware coded in
+hdmi_codec_hw_params. The configuration is set by default depending on
+the number of channels. Drawback is that application is not aware of the
+configuration selected by the driver.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+So it seems that something is missing to do the link between EDID
+information and audio source channel mapping on one side and audio IF
+configuration on other side.
 
-Thanks,
-Mark
+What should be the best strategy to support feature in ASoC?
+- No update in hdmi-codec, consider that application should know
+the configuration available for 2,4,6 and 8 channels
+  => seems not very flexible...
 
->From 6648eb8666af7681e6ff3830ca715e8255f17078 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Wed, 30 Nov 2016 14:56:26 +0100
-Subject: [PATCH] ASoC: Intel: Add missing 10EC5672 ACPI ID matching for Cherry
- Trail
+- Update hdmi-codec to implement "Playback Channel Map" in read-only, to
+provide channel mapping information to application.
+ => impact is light, but application can get the correct mapping only
+after the update of the number of channels (so after hw_params ops call)
 
-Add the missing ACPI ID 10EC5672 for Cherry Trail, which bounds with
-cht-bsw-rt5672 driver.  This combination was found on Dell Wyse 3040.
+- Update hdmi-codec to implement "Playback Channel Map" in read and
+write access.
+ => HDA implementation. Seems the more flexible solution from my windows...
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/atom/sst/sst_acpi.c | 2 ++
- 1 file changed, 2 insertions(+)
+- Implement control in drm drivers
+  => seems not reasonable.
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index ba5c0d71720a..4461b6521740 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -451,6 +451,8 @@ static struct sst_acpi_mach sst_acpi_bytcr[] = {
- static struct sst_acpi_mach sst_acpi_chv[] = {
- 	{"10EC5670", "cht-bsw-rt5672", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
- 						&chv_platform_data },
-+	{"10EC5672", "cht-bsw-rt5672", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
-+						&chv_platform_data },
- 	{"10EC5645", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
- 						&chv_platform_data },
- 	{"10EC5650", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
--- 
-2.10.2
+- Other?
+
+Thanks in advance for your answers.
+
+Regards
+Arnaud
