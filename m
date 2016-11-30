@@ -1,71 +1,94 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/1] ALSA: SOC: DMA: increment buffer pointer atomically
-Date: Wed, 30 Nov 2016 10:16:08 +0100
-Message-ID: <73b575c4-685f-7658-bd2b-3e517d9fbed4@metafoo.de>
-References: <20161130082221.15399-1-jiada_wang@mentor.com>
- <36d5025d-d327-878d-7f2e-5bf0c457581d@metafoo.de>
- <ef0cef5f-4f79-919c-c040-5d67b9280977@metafoo.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 2/3 v2] ALSA: usb-audio: avoid setting of sample rate
+ multiple times on bus
+Date: Wed, 30 Nov 2016 19:45:45 +0900
+Message-ID: <c4579c3f-4798-7096-2c05-b0670ccbad08@sakamocchi.jp>
+References: <20161130075923.15205-1-jiada_wang@mentor.com>
+ <20161130075923.15205-3-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <ef0cef5f-4f79-919c-c040-5d67b9280977@metafoo.de>
+In-Reply-To: <20161130075923.15205-3-jiada_wang@mentor.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jiada Wang <jiada_wang@mentor.com>, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, apape@de.adit-jv.com
+Cc: alsa-devel@alsa-project.org, apape@de.adit-jv.com, linux-kernel@vger.kernel.org, Mark_Craske@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-On 11/30/2016 09:36 AM, Lars-Peter Clausen wrote:
-> On 11/30/2016 09:30 AM, Lars-Peter Clausen wrote:
->> On 11/30/2016 09:22 AM, Jiada Wang wrote:
->>> From: Andreas Pape <apape@de.adit-jv.com>
->>>
->>> Setting pointer and afterwards check for wrap around leads
->>> to the possibility of returning the inconsistent pointer position.
->>> This patch increments buffer pointer atomically to avoid this issue.
->>
->> Makes sense.
->>
->>>
->>> Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
->>> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
->>> ---
->>>  sound/core/pcm_dmaengine.c | 8 +++++---
->>>  1 file changed, 5 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
->>> index 8eb58c7..6f6da11 100644
->>> --- a/sound/core/pcm_dmaengine.c
->>> +++ b/sound/core/pcm_dmaengine.c
->>> @@ -139,12 +139,14 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_set_config_from_dai_data);
->>>  
->>>  static void dmaengine_pcm_dma_complete(void *arg)
->>>  {
->>> +	unsigned int new_pos;
->>>  	struct snd_pcm_substream *substream = arg;
->>>  	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
->>>  
->>> -	prtd->pos += snd_pcm_lib_period_bytes(substream);
->>> -	if (prtd->pos >= snd_pcm_lib_buffer_bytes(substream))
->>> -		prtd->pos = 0;
->>> +	new_pos = prtd->pos + snd_pcm_lib_period_bytes(substream);
->>> +	if (new_pos >= snd_pcm_lib_buffer_bytes(substream))
->>> +		new_pos = 0;
->>> +	prtd->pos = new_pos;
->>
->> But to really make it atomic I think this needs READ_ONCE/WRITE_ONCE.
-> 
-> And the access to prtd->pos in snd_dmaengine_pcm_pointer_no_residue() should
-> also use READ_ONCE(). It is very unlikely that the code gets mis-compiled to
-> generate more than one access, but having READ_ONCE() acts as a annotation
-> that makes it explicit that this is data that can be updated concurrently
-> without further synchronization.
+Hi Jiada,
 
-Having given this some additional thoughts, I think a READ_ONCE() in
-dmaengine_pcm_dma_complete() is not necessary. dmaengine_pcm_dma_complete()
-is the only writer of prtd->pos and it is not running concurrently to
-itself. So we'll always observe consistent state, even if the compiler
-decides to issue multiple reads. The WRITE_ONCE() is required to make sure
-that the prtd->pos state stays consistent to concurrent readers. And the
-READ_ONCE() in snd_dmaengine_pcm_pointer_no_residue() is required to make
-sure that consistent state is observed from concurrent writers.
+I don't oppose this patch. Nevertheless, your description is not 
+necessarily correct.
+
+On Nov 30 2016 16:59, Jiada Wang wrote:
+> From: Daniel Girnus <dgirnus@de.adit-jv.com>
+>
+> ALSA usually calls the prepare function twice before starting the playback:
+> 1. On hw_params call from userland and
+> 2. internally when starting the stream.
+
+ALSA PCM core in kernel land doesn't perform like this.
+
+In alsa-lib, 'snd_pcm_hw_params()' calls 'snd_pcm_hw_params_internal()' 
+and 'snd_pcm_prepare()' sequentially.
+http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm.c;h=cd87bc759ded95953e332b7e8d56b0f2d5b4185d;hb=HEAD#l853
+
+In system call level (e.g. see by strace(1)), this looks like two 
+ioctl(2)s with 'SNDRV_PCM_IOCTL_HW_PARAMS' and 'SNDRV_PCM_IOCTL_PREPARE'.
+
+Well, when applications are written to execute 'snd_pcm_hw_params()' and 
+'snd_pcm_hw_prepare()' sequentially, additional ioctl(2) with 
+'SNDRV_PCM_IOCTL_PREPARE' appears. PulseAudio is this kind of 
+application. I indicated the useless in 2014, but it still remains:
+https://lists.freedesktop.org/archives/pulseaudio-discuss/2014-January/019773.html
+
+You have the misunderstanding due to a nature of alsa-lib and tendency 
+of major applications, from my point of view.
+
+> Some device are not able to manage this and they will stop playback
+> if the sample rate will be configured several times over USB protocol.
+>
+> Signed-off-by: Jens Lorenz <jlorenz@de.adit-jv.com>
+> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+> ---
+>  sound/usb/pcm.c | 21 +++++++++++----------
+>  1 file changed, 11 insertions(+), 10 deletions(-)
+>
+> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+> index 44d178e..a522c9a 100644
+> --- a/sound/usb/pcm.c
+> +++ b/sound/usb/pcm.c
+> @@ -806,17 +806,18 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+>  	if (ret < 0)
+>  		goto unlock;
+>
+> -	iface = usb_ifnum_to_if(subs->dev, subs->cur_audiofmt->iface);
+> -	alts = &iface->altsetting[subs->cur_audiofmt->altset_idx];
+> -	ret = snd_usb_init_sample_rate(subs->stream->chip,
+> -				       subs->cur_audiofmt->iface,
+> -				       alts,
+> -				       subs->cur_audiofmt,
+> -				       subs->cur_rate);
+> -	if (ret < 0)
+> -		goto unlock;
+> -
+>  	if (subs->need_setup_ep) {
+> +
+> +		iface = usb_ifnum_to_if(subs->dev, subs->cur_audiofmt->iface);
+> +		alts = &iface->altsetting[subs->cur_audiofmt->altset_idx];
+> +		ret = snd_usb_init_sample_rate(subs->stream->chip,
+> +					       subs->cur_audiofmt->iface,
+> +					       alts,
+> +					       subs->cur_audiofmt,
+> +					       subs->cur_rate);
+> +		if (ret < 0)
+> +			goto unlock;
+> +
+>  		ret = configure_endpoint(subs);
+>  		if (ret < 0)
+>  			goto unlock;
+
+
+Regards
+
+Takashi Sakamoto
