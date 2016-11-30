@@ -1,14 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ASoC: rt5670: Add missing 10EC5072 ACPI ID
-Date: Wed, 30 Nov 2016 14:55:29 +0100
-Message-ID: <20161130135529.22163-1-tiwai@suse.de>
+Subject: [PATCH resend] ASoC: Intel: Add missing 10EC5672 ACPI
+	ID matching for Cherry Trail
+Date: Wed, 30 Nov 2016 14:57:47 +0100
+Message-ID: <20161130135747.22485-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A4A4266912
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2016 14:55:32 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 56E8E266912
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2016 14:57:52 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,28 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-rt5670 driver supports also RT5672 codec, but its ACPI ID is missing.
-This was found on Dell Wyse 3040 box.
+Add the missing ACPI ID 10EC5672 for Cherry Trail, which bounds with
+cht-bsw-rt5672 driver.  This combination was found on Dell Wyse 3040.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/rt5670.c | 1 +
- 1 file changed, 1 insertion(+)
+Resent, as I forgot Cc to alsa-devel ML, sorry!
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 12d3bc14a558..98c7efbc6ee0 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2813,6 +2813,7 @@ MODULE_DEVICE_TABLE(i2c, rt5670_i2c_id);
- #ifdef CONFIG_ACPI
- static const struct acpi_device_id rt5670_acpi_match[] = {
- 	{ "10EC5670", 0},
-+	{ "10EC5672", 0},
- 	{ },
- };
- MODULE_DEVICE_TABLE(acpi, rt5670_acpi_match);
+ sound/soc/intel/atom/sst/sst_acpi.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 0a88537ca58a..f4d92bbc5373 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -452,6 +452,8 @@ static struct sst_acpi_mach sst_acpi_bytcr[] = {
+ static struct sst_acpi_mach sst_acpi_chv[] = {
+ 	{"10EC5670", "cht-bsw-rt5672", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+ 						&chv_platform_data },
++	{"10EC5672", "cht-bsw-rt5672", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
++						&chv_platform_data },
+ 	{"10EC5645", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+ 						&chv_platform_data },
+ 	{"10EC5650", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
 -- 
 2.10.2
