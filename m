@@ -1,65 +1,63 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: rt5670: Enable Braswell platform
- workaround for Dell Wyse 3040
-Date: Thu, 1 Dec 2016 09:00:58 +0530
-Message-ID: <20161201033058.GI6408@localhost>
-References: <20161130161920.10817-1-tiwai@suse.de>
- <20161130163615.GG6408@localhost> <s5h60n52an2.wl-tiwai@suse.de>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: [PATCH v2 1/1] ALSA: SOC: DMA: access buffer pointer atomically
+Date: Thu, 1 Dec 2016 14:24:22 +0900
+Message-ID: <20161201052422.18775-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 471A7266685
- for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2016 04:21:19 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h60n52an2.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lars@metafoo.de, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, apape@de.adit-jv.com, jiada_wang@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 30, 2016 at 05:30:25PM +0100, Takashi Iwai wrote:
-> On Wed, 30 Nov 2016 17:36:15 +0100,
-> Vinod Koul wrote:
-> > 
-> > On Wed, Nov 30, 2016 at 05:19:20PM +0100, Takashi Iwai wrote:
-> > > Dell Wyse 3040 requires the platform workaround for enabling dmic and
-> > > jack detection as defined for Braswell CRB.
-> > > 
-> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > > 
-> > > ---
-> > > 
-> > > I guess the platform data should be applied generically to all CHT
-> > > machines instead of DMI matching?  DMI matching doesn't scale,
-> > > obviously.
-> > 
-> > we ahve been doing this on other RT codecs like RT286/298 as well for combo
-> > jack to work. Yeah a better solution would be welcomed :)
-> 
-> Well, the question is how generic the given platform-specific setup
-> is.  I guess we can keep the dmi thingy for a while, although we'll
-> need more generic solution (or a pattern matching for a wider range of
-> machines). 
+From: Andreas Pape <apape@de.adit-jv.com>
 
-Mostly if people stuck to Intel ref designs, then it would same, which has
-been a problem on embedded side, but who knows.. :(
+Setting pointer and afterwards check for wrap around leads
+to the possibility of returning the inconsistent pointer position.
 
-> So, if you think the addition of DMI entries is OK, give
-> your ack :)
+This patch accesses buffer pointer atomically to avoid this issue.
 
-Absolutely atm :)
+v2: use READ_ONCE and WRITE_ONCE to ensure read/write of buffer pointer in
+    only one access
+    also updates snd_dmaengine_pcm_pointer_no_residue to ensure atomic
+    access
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+---
+ sound/core/pcm_dmaengine.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+index 8eb58c7..b6255fd 100644
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
+@@ -139,12 +139,14 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_set_config_from_dai_data);
+ 
+ static void dmaengine_pcm_dma_complete(void *arg)
+ {
++	unsigned int new_pos;
+ 	struct snd_pcm_substream *substream = arg;
+ 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
+ 
+-	prtd->pos += snd_pcm_lib_period_bytes(substream);
+-	if (prtd->pos >= snd_pcm_lib_buffer_bytes(substream))
+-		prtd->pos = 0;
++	new_pos = prtd->pos + snd_pcm_lib_period_bytes(substream);
++	if (new_pos >= snd_pcm_lib_buffer_bytes(substream))
++		new_pos = 0;
++	WRITE_ONCE(prtd->pos, new_pos);
+ 
+ 	snd_pcm_period_elapsed(substream);
+ }
+@@ -235,7 +237,7 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_trigger);
+ snd_pcm_uframes_t snd_dmaengine_pcm_pointer_no_residue(struct snd_pcm_substream *substream)
+ {
+ 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
+-	return bytes_to_frames(substream->runtime, prtd->pos);
++	return bytes_to_frames(substream->runtime, READ_ONCE(prtd->pos));
+ }
+ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_pointer_no_residue);
+ 
 -- 
-~Vinod
+2.9.3
