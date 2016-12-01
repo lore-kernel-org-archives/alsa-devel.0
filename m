@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "Input: arizona-haptics - Use SoC component pin control functions" to the asoc tree
-Date: Thu, 01 Dec 2016 21:48:19 +0000
-Message-ID: <E1cCZDH-00083Z-My@debutante>
-References: <1480354350-24978-6-git-send-email-rf@opensource.wolfsonmicro.com>
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <1480354350-24978-6-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Mark Brown <broonie@kernel.org>broonie@kernel.org, cw00.choi@samsung.comdmitry.torokhov@gmail.com, myungjoo.ham@samsung.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: Applied "ASoC: samsung: Add DT bindings documentation for TM2 sound subsystem" to the asoc tree
+Date: Thu, 01 Dec 2016 21:54:49 +0000
+Message-ID: <E1cCZJZ-0000uP-Ru@debutante>
+References: <1470752514-11409-1-git-send-email-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1470752514-11409-1-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, k.kozlowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   Input: arizona-haptics - Use SoC component pin control functions
+   ASoC: samsung: Add DT bindings documentation for TM2 sound subsystem
 
 has been applied to the asoc tree at
 
@@ -37,77 +37,66 @@ to this mail.
 Thanks,
 Mark
 
->From 931afc4114c59b8fe8386db9fcdfe69a1322cae6 Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Date: Tue, 29 Nov 2016 15:44:42 +0000
-Subject: [PATCH] Input: arizona-haptics - Use SoC component pin control
- functions
+>From 48a760279ba31c59b8cfb14c5be9ed1c8e191038 Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Wed, 2 Nov 2016 17:02:37 +0100
+Subject: [PATCH] ASoC: samsung: Add DT bindings documentation for TM2 sound
+ subsystem
 
-The name of a codec pin can have an optional prefix string, which is
-defined by the SoC machine driver. The snd_soc_dapm_x_pin functions
-take the fully-specified name including the prefix and so the existing
-code would fail to find the pin if the audio machine driver had added
-a prefix.
+This patch adds DT binding documentation for Exnos5433 based TM2
+and TM2E boards sound subsystem.
 
-Switch to using the snd_soc_component_x_pin equivalent functions that
-take a specified SoC component and automatically add the name prefix to
-the provided pin name.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/input/misc/arizona-haptics.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ .../bindings/sound/samsung,tm2-audio.txt           | 38 ++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
 
-diff --git a/drivers/input/misc/arizona-haptics.c b/drivers/input/misc/arizona-haptics.c
-index 982936334537..07ec465f1095 100644
---- a/drivers/input/misc/arizona-haptics.c
-+++ b/drivers/input/misc/arizona-haptics.c
-@@ -37,6 +37,8 @@ static void arizona_haptics_work(struct work_struct *work)
- 						       struct arizona_haptics,
- 						       work);
- 	struct arizona *arizona = haptics->arizona;
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_to_component(arizona->dapm);
- 	int ret;
- 
- 	if (!haptics->arizona->dapm) {
-@@ -66,7 +68,7 @@ static void arizona_haptics_work(struct work_struct *work)
- 			return;
- 		}
- 
--		ret = snd_soc_dapm_enable_pin(arizona->dapm, "HAPTICS");
-+		ret = snd_soc_component_enable_pin(component, "HAPTICS");
- 		if (ret != 0) {
- 			dev_err(arizona->dev, "Failed to start HAPTICS: %d\n",
- 				ret);
-@@ -81,7 +83,7 @@ static void arizona_haptics_work(struct work_struct *work)
- 		}
- 	} else {
- 		/* This disable sequence will be a noop if already enabled */
--		ret = snd_soc_dapm_disable_pin(arizona->dapm, "HAPTICS");
-+		ret = snd_soc_component_disable_pin(component, "HAPTICS");
- 		if (ret != 0) {
- 			dev_err(arizona->dev, "Failed to disable HAPTICS: %d\n",
- 				ret);
-@@ -140,11 +142,14 @@ static int arizona_haptics_play(struct input_dev *input, void *data,
- static void arizona_haptics_close(struct input_dev *input)
- {
- 	struct arizona_haptics *haptics = input_get_drvdata(input);
-+	struct snd_soc_component *component;
- 
- 	cancel_work_sync(&haptics->work);
- 
--	if (haptics->arizona->dapm)
--		snd_soc_dapm_disable_pin(haptics->arizona->dapm, "HAPTICS");
-+	if (haptics->arizona->dapm) {
-+		component = snd_soc_dapm_to_component(haptics->arizona->dapm);
-+		snd_soc_component_disable_pin(component, "HAPTICS");
-+	}
- }
- 
- static int arizona_haptics_probe(struct platform_device *pdev)
+diff --git a/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt b/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
+new file mode 100644
+index 000000000000..94442e5673b3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
+@@ -0,0 +1,38 @@
++Samsung Exynos5433 TM2(E) audio complex with WM5110 codec
++
++Required properties:
++
++ - compatible		 : "samsung,tm2-audio"
++ - model		 : the user-visible name of this sound complex
++ - audio-codec		 : the phandle of the wm5110 audio codec node,
++			   as described in ../mfd/arizona.txt
++ - i2s-controller	 : the phandle of the I2S controller
++ - audio-amplifier	 : the phandle of the MAX98504 amplifier
++ - samsung,audio-routing : a list of the connections between audio components;
++			   each entry is a pair of strings, the first being the
++			   connection's sink, the second being the connection's
++			   source; valid names for sources and sinks are the
++			   WM5110's and MAX98504's pins and the jacks on the
++			   board: HP, SPK, Main Mic, Sub Mic, Third Mic,
++			   Headset Mic
++ - mic-bias-gpios	 : GPIO pin that enables the Main Mic bias regulator
++
++
++Example:
++
++sound {
++	compatible = "samsung,tm2-audio";
++	audio-codec = <&wm5110>;
++	i2s-controller = <&i2s0>;
++	audio-amplifier = <&max98504>;
++	mic-bias-gpios = <&gpr3 2 0>;
++	model = "wm5110";
++	samsung,audio-routing =
++		"HP", "HPOUT1L",
++		"HP", "HPOUT1R",
++		"SPK", "SPKOUT",
++		"SPKOUT", "HPOUT2L",
++		"SPKOUT", "HPOUT2R",
++		"Main Mic", "MICBIAS2",
++		"IN1R", "Main Mic";
++};
 -- 
 2.10.2
-
