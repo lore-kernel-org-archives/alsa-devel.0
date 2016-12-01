@@ -1,20 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 1/4] ASoC: intel: atom: Add debug
- information related to FW version
-Date: Thu, 1 Dec 2016 20:17:45 +0000
-Message-ID: <20161201201745.q6medvzujnyrct63@sirena.org.uk>
-References: <20161124084922.9623-1-sebastien.guiriec@intel.com>
- <20161124084922.9623-2-sebastien.guiriec@intel.com>
- <20161130181712.tmbx6zfokapucg6f@sirena.org.uk>
- <5117a187-3a7d-74f6-a043-621963b88cc6@intel.com>
+From: Li Xu <li.xu@cirrus.com>
+Subject: [PATCH] ALSA: core: update supported sample rates
+Date: Thu, 1 Dec 2016 15:16:08 -0600
+Message-ID: <c372493a-cbd1-4750-86c1-10c1fff178b2@EX4.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6328526014167719876=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 15559266522
- for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2016 21:17:57 +0100 (CET)
-In-Reply-To: <5117a187-3a7d-74f6-a043-621963b88cc6@intel.com>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8398F265823
+ for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2016 22:15:39 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,61 +19,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Cc: vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+To: alsa-devel@alsa-project.org
+Cc: brian.austin@cirrus.com, tiwai@suse.com, paul.handrigan@cirrus.com, o-takashi@sakamocchi.jp, jeeja.kp@intel.com, ckeepax@opensource.wolfsonmicro.com, li.xu@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
+Add 12KHz, 24KHz, 352.8KHz and 384KHz audio sample rates
 
---===============6328526014167719876==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="s34m3myl454ws2wr"
-Content-Disposition: inline
+Signed-off-by: Li Xu <li.xu@cirrus.com>
+---
+ include/sound/pcm.h     | 27 +++++++++++++++++----------
+ sound/core/pcm_native.c |  7 ++++---
+ 2 files changed, 21 insertions(+), 13 deletions(-)
 
-
---s34m3myl454ws2wr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Dec 01, 2016 at 09:56:07AM +0100, Sebastien Guiriec wrote:
-> Hi Mark,
-
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
-
-> So whereas you just skip patch 0001 and aplly the next 3 to add the sysfs or
-> I can send update without the first patch.
-
-> What is you prefer option?
-
-As I said:
-
-> > This doesn't apply against current code, please check and resend.
-
-please resend with patches that apply against current code.
-
---s34m3myl454ws2wr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAABCAAGBQJYQIVpAAoJECTWi3JdVIfQnvsH/jzJNzDb4BJRDcFqRmhDzTFm
-RqBIAg0noA1rnyTQ8bpXvxT96VDBj9M92KnKZ+0Ce8I05SkuyHu985937dQviyE/
-M+6shBLDrbgXxiWnnct6PuptLio9GWPSfdJK/kQ3vqb4W5wFlLIEQxA/cl7Tbpj+
-E4X9LC8NxCCNg87tolJ7gxu0XYero3KNuoB35mhX7+KVN2rwvortIHQWz+1X+I+R
-DJ91Fj0Jlcy6V9VaIJlJlNDUS7nDby/Wx1fL+2zuoj9KIRQdAZp/iCOur4ZcuAOE
-QHdE8y0eGRRJxo7hr7BwJs9tlMbdbYMmYBGF8xLz9TCtPD/XXvF4Ipo5yLZv/bg=
-=tL4J
------END PGP SIGNATURE-----
-
---s34m3myl454ws2wr--
-
---===============6328526014167719876==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6328526014167719876==--
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index af1fb37..3ce4ad9 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -119,16 +119,20 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_RATE_5512		(1<<0)		/* 5512Hz */
+ #define SNDRV_PCM_RATE_8000		(1<<1)		/* 8000Hz */
+ #define SNDRV_PCM_RATE_11025		(1<<2)		/* 11025Hz */
+-#define SNDRV_PCM_RATE_16000		(1<<3)		/* 16000Hz */
+-#define SNDRV_PCM_RATE_22050		(1<<4)		/* 22050Hz */
+-#define SNDRV_PCM_RATE_32000		(1<<5)		/* 32000Hz */
+-#define SNDRV_PCM_RATE_44100		(1<<6)		/* 44100Hz */
+-#define SNDRV_PCM_RATE_48000		(1<<7)		/* 48000Hz */
+-#define SNDRV_PCM_RATE_64000		(1<<8)		/* 64000Hz */
+-#define SNDRV_PCM_RATE_88200		(1<<9)		/* 88200Hz */
+-#define SNDRV_PCM_RATE_96000		(1<<10)		/* 96000Hz */
+-#define SNDRV_PCM_RATE_176400		(1<<11)		/* 176400Hz */
+-#define SNDRV_PCM_RATE_192000		(1<<12)		/* 192000Hz */
++#define SNDRV_PCM_RATE_12000		(1<<3)		/* 12000Hz */
++#define SNDRV_PCM_RATE_16000		(1<<4)		/* 16000Hz */
++#define SNDRV_PCM_RATE_22050		(1<<5)		/* 22050Hz */
++#define SNDRV_PCM_RATE_24000		(1<<6)		/* 24000Hz */
++#define SNDRV_PCM_RATE_32000		(1<<7)		/* 32000Hz */
++#define SNDRV_PCM_RATE_44100		(1<<8)		/* 44100Hz */
++#define SNDRV_PCM_RATE_48000		(1<<9)		/* 48000Hz */
++#define SNDRV_PCM_RATE_64000		(1<<10)		/* 64000Hz */
++#define SNDRV_PCM_RATE_88200		(1<<11)		/* 88200Hz */
++#define SNDRV_PCM_RATE_96000		(1<<12)		/* 96000Hz */
++#define SNDRV_PCM_RATE_176400		(1<<13)		/* 176400Hz */
++#define SNDRV_PCM_RATE_192000		(1<<14)		/* 192000Hz */
++#define SNDRV_PCM_RATE_352800		(1<<15)		/* 352800Hz */
++#define SNDRV_PCM_RATE_384000		(1<<16)		/* 384000Hz */
+ 
+ #define SNDRV_PCM_RATE_CONTINUOUS	(1<<30)		/* continuous range */
+ #define SNDRV_PCM_RATE_KNOT		(1<<31)		/* supports more non-continuos rates */
+@@ -141,6 +145,9 @@ struct snd_pcm_ops {
+ 					 SNDRV_PCM_RATE_88200|SNDRV_PCM_RATE_96000)
+ #define SNDRV_PCM_RATE_8000_192000	(SNDRV_PCM_RATE_8000_96000|SNDRV_PCM_RATE_176400|\
+ 					 SNDRV_PCM_RATE_192000)
++#define SNDRV_PCM_RATE_8000_384000	(SNDRV_PCM_RATE_8000_192000|\
++					 SNDRV_PCM_RATE_384000)
++
+ #define _SNDRV_PCM_FMTBIT(fmt)		(1ULL << (__force int)SNDRV_PCM_FORMAT_##fmt)
+ #define SNDRV_PCM_FMTBIT_S8		_SNDRV_PCM_FMTBIT(S8)
+ #define SNDRV_PCM_FMTBIT_U8		_SNDRV_PCM_FMTBIT(U8)
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 9d33c1e..9bc1011 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -1981,12 +1981,13 @@ static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
+ 	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
+ }
+ 
+-#if SNDRV_PCM_RATE_5512 != 1 << 0 || SNDRV_PCM_RATE_192000 != 1 << 12
++#if SNDRV_PCM_RATE_5512 != 1 << 0 || SNDRV_PCM_RATE_384000 != 1 << 16
+ #error "Change this table"
+ #endif
+ 
+-static unsigned int rates[] = { 5512, 8000, 11025, 16000, 22050, 32000, 44100,
+-                                 48000, 64000, 88200, 96000, 176400, 192000 };
++static unsigned int rates[] = { 5512, 8000, 11025, 12000, 16000, 22050,
++				24000, 32000, 44100, 48000, 64000, 88200,
++				96000, 176400, 192000, 352800, 384000 };
+ 
+ const struct snd_pcm_hw_constraint_list snd_pcm_known_rates = {
+ 	.count = ARRAY_SIZE(rates),
+-- 
+1.9.1
