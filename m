@@ -1,82 +1,57 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5670: Enable Braswell platform
- workaround for Dell Wyse 3040
-Date: Thu, 1 Dec 2016 10:50:27 +0000
-Message-ID: <20161201105027.tdndbcmnorkb6tkq@sirena.org.uk>
-References: <20161130161920.10817-1-tiwai@suse.de>
- <20161130163615.GG6408@localhost> <s5h60n52an2.wl-tiwai@suse.de>
- <20161201033058.GI6408@localhost>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-devel] [PATCH 1/3 v1] ALSA: usb-audio: more tolerant
+ packetsize
+Date: Thu, 1 Dec 2016 12:16:47 +0100
+Message-ID: <76fa143e-7092-0bc9-7d55-6a5605d4704a@ladisch.de>
+References: <20161130075923.15205-1-jiada_wang@mentor.com>
+ <20161130075923.15205-2-jiada_wang@mentor.com>
+ <1cb0aa49-62d5-b2ac-a473-bbce3f491d59@ladisch.de>
+ <s5hy40010w5.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5926857789040694245=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F25426648D
- for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2016 11:50:42 +0100 (CET)
-In-Reply-To: <20161201033058.GI6408@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Bard Liao <bardliao@realtek.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hy40010w5.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jiada Wang <jiada_wang@mentor.com>, alsa-devel@alsa-project.org, apape@de.adit-jv.com, linux-kernel@vger.kernel.org, Mark_Craske@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> Clemens Ladisch wrote:
+>> Jiada Wang wrote:
+>>> since commit 57e6dae1087bbaa6b33d3dd8a8e90b63888939a3 the expected packetsize is always limited to
+>>> nominal + 25%. It was discovered, that some devices
+>>
+>> Which devices?
+>>
+>>> have a much higher jitter in used packetsizes than 25%
+>>
+>> How high?  (Please note that the USB specification restricts the jitter
+>> to at most one frame in consecutive packets.)
+>>
+>>> which would result in BABBLE condition and dropping of packets.
+>>> A better solution is so assume the jitter to be the nominal packetsize
+>>
+>> This solution is better for this one particular device, but how does it
+>> affect normal devices, or the Scarlett 2i4 on EHCI affected?
+>
+> Actually, which value does this affected device in ep->maxpacksize?
+> In the commit mentioned above, we changed the logic to take +25%
+> frequency as the basis, and it my *reduce* if ep->maxpacksize is lower
+> than that.
+>
+> OTOH, if ep->maxpacksize is sane, we can rely on it rather than the
+> implicit +25% frequency.  That said, maybe we can check
+> ep->maxpacksize whether it fits within the expected range, then adapt
+> it, or take +25% freq as fallback?
 
---===============5926857789040694245==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fbcqfemcad2dgprk"
-Content-Disposition: inline
-
-
---fbcqfemcad2dgprk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Dec 01, 2016 at 09:00:58AM +0530, Vinod Koul wrote:
-> On Wed, Nov 30, 2016 at 05:30:25PM +0100, Takashi Iwai wrote:
-
-> > Well, the question is how generic the given platform-specific setup
-> > is.  I guess we can keep the dmi thingy for a while, although we'll
-> > need more generic solution (or a pattern matching for a wider range of
-> > machines).=20
-
-> Mostly if people stuck to Intel ref designs, then it would same, which has
-> been a problem on embedded side, but who knows.. :(
-
-That's just not at all realistic - if the systems are only going to be
-supportable when people copy the reference designs verbatim then we're
-going to have serious problems, that's just not how things work in the
-real world (especially at the higher end of the market where there's a
-greater desire for differentiation).
-
---fbcqfemcad2dgprk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEcBAABCAAGBQJYQABvAAoJECTWi3JdVIfQFnsH/1U+DnSCniFQMAJibkbo8D4G
-DWNEWg3TEozD2LXR/iws/b/WCTbGo51Zm9PrShGwGV/0xqt+RVEcQDchS6eh3C6f
-8eaWVK6uAqCTtBkvB8uRS/ecwWDILuZcZX+HfBbU6DL1Jc0Ap/6nmuLKqLRmeZCU
-ZzGsIF8N73Iz1HDxdRGBV4D8+i+Bf3R6b5CZspXBrpDhQs0xbzU6aSS+4+GEBuvd
-QBNeM8UMrObZn/17IL2IsFZ8H1L0AChDkOHnz4R2V6FFauAnP7mSYLNgd7AveuP3
-/+6ST+Pmh9D4PlWMSWEvY8NxSPln3m+KP0ICTZtJ0hXTrepbfYf9n2/bt4iMVb4=
-=ef0V
------END PGP SIGNATURE-----
-
---fbcqfemcad2dgprk--
-
---===============5926857789040694245==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+You are describing how the current code behaves.  The +25% limit _is_
+what the code takes as the expected range.
 
 
---===============5926857789040694245==--
+I'm wondering if that unknown device just declares a wrong interval value.
+
+
+Regards,
+Clemens
