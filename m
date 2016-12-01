@@ -1,63 +1,42 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: [PATCH v2 1/1] ALSA: SOC: DMA: access buffer pointer atomically
-Date: Thu, 1 Dec 2016 14:24:22 +0900
-Message-ID: <20161201052422.18775-1-jiada_wang@mentor.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] dbri: move dereference after check for NULL
+Date: Thu, 1 Dec 2016 08:48:30 +0300
+Message-ID: <20161201054830.GA20077@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lars@metafoo.de, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, apape@de.adit-jv.com, jiada_wang@mentor.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: kernel-janitors-owner@vger.kernel.org
+To: "David S. Miller" <davem@davemloft.net>, Tushar Dave <tushar.n.dave@oracle.com>
+Cc: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, thomas tai <thomas.tai@oracle.com>, alsa-devel@alsa-project.org, sparclinux@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Andreas Pape <apape@de.adit-jv.com>
+We accidentally introduced a dereference before the NULL check in
+xmit_descs() as part of silencing a GCC warning.
 
-Setting pointer and afterwards check for wrap around leads
-to the possibility of returning the inconsistent pointer position.
-
-This patch accesses buffer pointer atomically to avoid this issue.
-
-v2: use READ_ONCE and WRITE_ONCE to ensure read/write of buffer pointer in
-    only one access
-    also updates snd_dmaengine_pcm_pointer_no_residue to ensure atomic
-    access
-
-Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Fixes: 16f46050e709 ("dbri: Fix compiler warning")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- sound/core/pcm_dmaengine.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Goes into the sparc tree.
 
-diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
-index 8eb58c7..b6255fd 100644
---- a/sound/core/pcm_dmaengine.c
-+++ b/sound/core/pcm_dmaengine.c
-@@ -139,12 +139,14 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_set_config_from_dai_data);
- 
- static void dmaengine_pcm_dma_complete(void *arg)
+diff --git a/sound/sparc/dbri.c b/sound/sparc/dbri.c
+index 3fe4468..52063b2 100644
+--- a/sound/sparc/dbri.c
++++ b/sound/sparc/dbri.c
+@@ -1702,7 +1702,7 @@ interrupts are disabled.
+ static void xmit_descs(struct snd_dbri *dbri)
  {
-+	unsigned int new_pos;
- 	struct snd_pcm_substream *substream = arg;
- 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
+ 	struct dbri_streaminfo *info;
+-	u32 dvma_addr = (u32)dbri->dma_dvma;
++	u32 dvma_addr;
+ 	s32 *cmd;
+ 	unsigned long flags;
+ 	int first_td;
+@@ -1710,6 +1710,7 @@ static void xmit_descs(struct snd_dbri *dbri)
+ 	if (dbri == NULL)
+ 		return;		/* Disabled */
  
--	prtd->pos += snd_pcm_lib_period_bytes(substream);
--	if (prtd->pos >= snd_pcm_lib_buffer_bytes(substream))
--		prtd->pos = 0;
-+	new_pos = prtd->pos + snd_pcm_lib_period_bytes(substream);
-+	if (new_pos >= snd_pcm_lib_buffer_bytes(substream))
-+		new_pos = 0;
-+	WRITE_ONCE(prtd->pos, new_pos);
++	dvma_addr = (u32)dbri->dma_dvma;
+ 	info = &dbri->stream_info[DBRI_REC];
+ 	spin_lock_irqsave(&dbri->lock, flags);
  
- 	snd_pcm_period_elapsed(substream);
- }
-@@ -235,7 +237,7 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_trigger);
- snd_pcm_uframes_t snd_dmaengine_pcm_pointer_no_residue(struct snd_pcm_substream *substream)
- {
- 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
--	return bytes_to_frames(substream->runtime, prtd->pos);
-+	return bytes_to_frames(substream->runtime, READ_ONCE(prtd->pos));
- }
- EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_pointer_no_residue);
- 
--- 
-2.9.3
