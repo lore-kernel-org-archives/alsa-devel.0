@@ -1,91 +1,37 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [PATCH 2/3 v2] ALSA: usb-audio: avoid setting of sample rate
- multiple times on bus
-Date: Thu, 1 Dec 2016 16:07:07 +0900
-Message-ID: <2c6bb9a2-89d8-f163-ec97-5d2feed858e9@mentor.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-devel] [PATCH 1/3 v1] ALSA: usb-audio: more tolerant
+ packetsize
+Date: Thu, 1 Dec 2016 08:41:17 +0100
+Message-ID: <1cb0aa49-62d5-b2ac-a473-bbce3f491d59@ladisch.de>
 References: <20161130075923.15205-1-jiada_wang@mentor.com>
- <20161130075923.15205-3-jiada_wang@mentor.com> <s5hy4012vvf.wl-tiwai@suse.de>
+ <20161130075923.15205-2-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hy4012vvf.wl-tiwai@suse.de>
+In-Reply-To: <20161130075923.15205-2-jiada_wang@mentor.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: perex@perex.cz, alsa-devel@alsa-project.org, apape@de.adit-jv.com, Mark_Craske@mentor.com, linux-kernel@vger.kernel.org
+To: Jiada Wang <jiada_wang@mentor.com>, apape@de.adit-jv.com
+Cc: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Mark_Craske@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi
+Jiada Wang wrote:
+> since commit 57e6dae1087bbaa6b33d3dd8a8e90b63888939a3 the expected packetsize is always limited to
+> nominal + 25%. It was discovered, that some devices
 
-On 11/30/2016 05:51 PM, Takashi Iwai wrote:
-> On Wed, 30 Nov 2016 08:59:22 +0100,
-> Jiada Wang wrote:
->>
->> From: Daniel Girnus <dgirnus@de.adit-jv.com>
->>
->> ALSA usually calls the prepare function twice before starting the playback:
->> 1. On hw_params call from userland and
->> 2. internally when starting the stream.
->> Some device are not able to manage this and they will stop playback
->> if the sample rate will be configured several times over USB protocol.
->>
->> Signed-off-by: Jens Lorenz <jlorenz@de.adit-jv.com>
->> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
->
-> The sign-off from Daniel seems missing?
->
-> The code change looks OK, but it'd be nice to mention in the changelog
-> that, after this patch, snd_usb_init_sample_rate() is still called
-> properly whenever the parameter is changed since ep->need_setup_ep is
-> set in snd_hsb_hw_params().
->
-I will add missing sign-off and related information in changelog in v2
+Which devices?
 
-Thanks,
-Jiada
->
-> thanks,
->
-> Takashi
->
->> ---
->>  sound/usb/pcm.c | 21 +++++++++++----------
->>  1 file changed, 11 insertions(+), 10 deletions(-)
->>
->> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
->> index 44d178e..a522c9a 100644
->> --- a/sound/usb/pcm.c
->> +++ b/sound/usb/pcm.c
->> @@ -806,17 +806,18 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
->>  	if (ret < 0)
->>  		goto unlock;
->>
->> -	iface = usb_ifnum_to_if(subs->dev, subs->cur_audiofmt->iface);
->> -	alts = &iface->altsetting[subs->cur_audiofmt->altset_idx];
->> -	ret = snd_usb_init_sample_rate(subs->stream->chip,
->> -				       subs->cur_audiofmt->iface,
->> -				       alts,
->> -				       subs->cur_audiofmt,
->> -				       subs->cur_rate);
->> -	if (ret < 0)
->> -		goto unlock;
->> -
->>  	if (subs->need_setup_ep) {
->> +
->> +		iface = usb_ifnum_to_if(subs->dev, subs->cur_audiofmt->iface);
->> +		alts = &iface->altsetting[subs->cur_audiofmt->altset_idx];
->> +		ret = snd_usb_init_sample_rate(subs->stream->chip,
->> +					       subs->cur_audiofmt->iface,
->> +					       alts,
->> +					       subs->cur_audiofmt,
->> +					       subs->cur_rate);
->> +		if (ret < 0)
->> +			goto unlock;
->> +
->>  		ret = configure_endpoint(subs);
->>  		if (ret < 0)
->>  			goto unlock;
->> --
->> 2.9.3
->>
->>
+> have a much higher jitter in used packetsizes than 25%
+
+How high?  (Please note that the USB specification restricts the jitter
+to at most one frame in consecutive packets.)
+
+> which would result in BABBLE condition and dropping of packets.
+> A better solution is so assume the jitter to be the nominal packetsize
+
+This solution is better for this one particular device, but how does it
+affect normal devices, or the Scarlett 2i4 on EHCI affected?
+
+
+Regards,
+Clemens
