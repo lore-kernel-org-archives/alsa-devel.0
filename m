@@ -1,17 +1,17 @@
 From: David Howells <dhowells@redhat.com>
-Subject: [PATCH 38/39] Annotate hardware config module parameters in
- sound/oss/
-Date: Thu, 01 Dec 2016 12:34:42 +0000
-Message-ID: <148059568276.31612.9777079677130906123.stgit@warthog.procyon.org.uk>
+Subject: [PATCH 39/39] Annotate hardware config module parameters in
+ sound/pci/
+Date: Thu, 01 Dec 2016 12:34:52 +0000
+Message-ID: <148059569231.31612.6348897065301653096.stgit@warthog.procyon.org.uk>
 References: <148059537897.31612.9461043954611464597.stgit@warthog.procyon.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-security-module-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <148059537897.31612.9461043954611464597.stgit@warthog.procyon.org.uk>
-Sender: owner-linux-security-module@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: gnomes@lxorguk.ukuu.org.uk, alsa-devel@alsa-project.org, minyard@acm.org, Andrew Veliath <andrewtv@usa.net>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, dhowells@redhat.com, linux-security-module@vger.kernel.org, keyrings@vger.kernel.org, Riccardo Facchetti <fizban@tin.it>
+Cc: gnomes@lxorguk.ukuu.org.uk, alsa-devel@alsa-project.org, minyard@acm.org, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, dhowells@redhat.com, linux-security-module@vger.kernel.org, keyrings@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 When the kernel is running in secure boot mode, we lock down the kernel to
@@ -32,302 +32,135 @@ drivers have viable defaults set in case parameters aren't specified and
 some drivers support automatic configuration (e.g. PNP or PCI) in addition
 to manually coded parameters.
 
-This patch annotates drivers in sound/oss/.
+This patch annotates drivers in sound/pci/.
 
 Suggested-by: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>
 Signed-off-by: David Howells <dhowells@redhat.com>
 cc: Jaroslav Kysela <perex@perex.cz>
 cc: Takashi Iwai <tiwai@suse.com>
-cc: Riccardo Facchetti <fizban@tin.it>
-cc: Andrew Veliath <andrewtv@usa.net>
 cc: alsa-devel@alsa-project.org
 ---
 
- sound/oss/ad1848.c        |    8 ++++----
- sound/oss/aedsp16.c       |   12 ++++++------
- sound/oss/mpu401.c        |    4 ++--
- sound/oss/msnd_pinnacle.c |   20 ++++++++++----------
- sound/oss/opl3.c          |    2 +-
- sound/oss/pas2_card.c     |   18 +++++++++---------
- sound/oss/pss.c           |   14 +++++++-------
- sound/oss/sb_card.c       |   10 +++++-----
- sound/oss/trix.c          |   18 +++++++++---------
- sound/oss/uart401.c       |    4 ++--
- sound/oss/uart6850.c      |    4 ++--
- sound/oss/waveartist.c    |    8 ++++----
- 12 files changed, 61 insertions(+), 61 deletions(-)
+ sound/pci/als4000.c         |    2 +-
+ sound/pci/cmipci.c          |    6 +++---
+ sound/pci/ens1370.c         |    2 +-
+ sound/pci/riptide/riptide.c |    6 +++---
+ sound/pci/sonicvibes.c      |    2 +-
+ sound/pci/via82xx.c         |    2 +-
+ sound/pci/ymfpci/ymfpci.c   |    6 +++---
+ 7 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/sound/oss/ad1848.c b/sound/oss/ad1848.c
-index 6368e5c7d0ba..6cae59c4e3c4 100644
---- a/sound/oss/ad1848.c
-+++ b/sound/oss/ad1848.c
-@@ -2810,10 +2810,10 @@ static int __initdata dma = -1;
- static int __initdata dma2 = -1;
- static int __initdata type = 0;
- 
--module_param(io, int, 0);		/* I/O for a raw AD1848 card */
--module_param(irq, int, 0);		/* IRQ to use */
--module_param(dma, int, 0);		/* First DMA channel */
--module_param(dma2, int, 0);		/* Second DMA channel */
-+module_param_hw(io, int, ioport, 0);	/* I/O for a raw AD1848 card */
-+module_param_hw(irq, int, irq, 0);	/* IRQ to use */
-+module_param_hw(dma, int, dma, 0);	/* First DMA channel */
-+module_param_hw(dma2, int, dma, 0);	/* Second DMA channel */
- module_param(type, int, 0);		/* Card type */
- module_param(deskpro_xl, bool, 0);	/* Special magic for Deskpro XL boxen */
- module_param(deskpro_m, bool, 0);	/* Special magic for Deskpro M box */
-diff --git a/sound/oss/aedsp16.c b/sound/oss/aedsp16.c
-index bb477d5c8528..f058ed6bdb69 100644
---- a/sound/oss/aedsp16.c
-+++ b/sound/oss/aedsp16.c
-@@ -1303,17 +1303,17 @@ static int __initdata mpu_irq = -1;
- static int __initdata mss_base = -1;
- static int __initdata mpu_base = -1;
- 
--module_param(io, int, 0);
-+module_param_hw(io, int, ioport, 0);
- MODULE_PARM_DESC(io, "I/O base address (0x220 0x240)");
--module_param(irq, int, 0);
-+module_param_hw(irq, int, irq, 0);
- MODULE_PARM_DESC(irq, "IRQ line (5 7 9 10 11)");
--module_param(dma, int, 0);
-+module_param_hw(dma, int, dma, 0);
- MODULE_PARM_DESC(dma, "dma line (0 1 3)");
--module_param(mpu_irq, int, 0);
-+module_param_hw(mpu_irq, int, irq, 0);
- MODULE_PARM_DESC(mpu_irq, "MPU-401 IRQ line (5 7 9 10 0)");
--module_param(mss_base, int, 0);
-+module_param_hw(mss_base, int, ioport, 0);
- MODULE_PARM_DESC(mss_base, "MSS emulation I/O base address (0x530 0xE80)");
--module_param(mpu_base, int, 0);
-+module_param_hw(mpu_base, int, ioport, 0);
- MODULE_PARM_DESC(mpu_base,"MPU-401 I/O base address (0x300 0x310 0x320 0x330)");
- MODULE_AUTHOR("Riccardo Facchetti <fizban@tin.it>");
- MODULE_DESCRIPTION("Audio Excel DSP 16 Driver Version " VERSION);
-diff --git a/sound/oss/mpu401.c b/sound/oss/mpu401.c
-index 862735005b43..20e8fa46f647 100644
---- a/sound/oss/mpu401.c
-+++ b/sound/oss/mpu401.c
-@@ -1748,8 +1748,8 @@ static struct address_info cfg;
- static int io = -1;
- static int irq = -1;
- 
--module_param(irq, int, 0);
--module_param(io, int, 0);
-+module_param_hw(irq, int, irq, 0);
-+module_param_hw(io, int, ioport, 0);
- 
- static int __init init_mpu401(void)
- {
-diff --git a/sound/oss/msnd_pinnacle.c b/sound/oss/msnd_pinnacle.c
-index a8bb4a06ba6f..8e5221d15066 100644
---- a/sound/oss/msnd_pinnacle.c
-+++ b/sound/oss/msnd_pinnacle.c
-@@ -1725,22 +1725,22 @@ static int
- calibrate_signal __initdata =		CONFIG_MSND_CALSIGNAL;
- #endif /* MODULE */
- 
--module_param				(io, int, 0);
--module_param				(irq, int, 0);
--module_param				(mem, int, 0);
-+module_param_hw				(io, int, ioport, 0);
-+module_param_hw				(irq, int, irq, 0);
-+module_param_hw				(mem, int, iomem, 0);
- module_param				(write_ndelay, int, 0);
- module_param				(fifosize, int, 0);
- module_param				(calibrate_signal, int, 0);
- #ifndef MSND_CLASSIC
- module_param				(digital, bool, 0);
--module_param				(cfg, int, 0);
-+module_param_hw				(cfg, int, ioport, 0);
- module_param				(reset, int, 0);
--module_param				(mpu_io, int, 0);
--module_param				(mpu_irq, int, 0);
--module_param				(ide_io0, int, 0);
--module_param				(ide_io1, int, 0);
--module_param				(ide_irq, int, 0);
--module_param				(joystick_io, int, 0);
-+module_param_hw				(mpu_io, int, ioport, 0);
-+module_param_hw				(mpu_irq, int, irq, 0);
-+module_param_hw				(ide_io0, int, ioport, 0);
-+module_param_hw				(ide_io1, int, ioport, 0);
-+module_param_hw				(ide_irq, int, irq, 0);
-+module_param_hw				(joystick_io, int, ioport, 0);
+diff --git a/sound/pci/als4000.c b/sound/pci/als4000.c
+index edabe1371660..e17d1742057d 100644
+--- a/sound/pci/als4000.c
++++ b/sound/pci/als4000.c
+@@ -102,7 +102,7 @@ MODULE_PARM_DESC(id, "ID string for ALS4000 soundcard.");
+ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "Enable ALS4000 soundcard.");
+ #ifdef SUPPORT_JOYSTICK
+-module_param_array(joystick_port, int, NULL, 0444);
++module_param_hw_array(joystick_port, int, ioport, NULL, 0444);
+ MODULE_PARM_DESC(joystick_port, "Joystick port address for ALS4000 soundcard. (0 = disabled)");
  #endif
  
- static int __init msnd_init(void)
-diff --git a/sound/oss/opl3.c b/sound/oss/opl3.c
-index b6d19adf8f41..f0f5b5be6314 100644
---- a/sound/oss/opl3.c
-+++ b/sound/oss/opl3.c
-@@ -1200,7 +1200,7 @@ static int me;
- 
- static int io = -1;
- 
--module_param(io, int, 0);
-+module_param_hw(io, int, ioport, 0);
- 
- static int __init init_opl3 (void)
- {
-diff --git a/sound/oss/pas2_card.c b/sound/oss/pas2_card.c
-index b07954a79536..769fca692d2a 100644
---- a/sound/oss/pas2_card.c
-+++ b/sound/oss/pas2_card.c
-@@ -383,15 +383,15 @@ static int __initdata sb_irq	= -1;
- static int __initdata sb_dma	= -1;
- static int __initdata sb_dma16	= -1;
- 
--module_param(io, int, 0);
--module_param(irq, int, 0);
--module_param(dma, int, 0);
--module_param(dma16, int, 0);
--
--module_param(sb_io, int, 0);
--module_param(sb_irq, int, 0);
--module_param(sb_dma, int, 0);
--module_param(sb_dma16, int, 0);
-+module_param_hw(io, int, ioport, 0);
-+module_param_hw(irq, int, irq, 0);
-+module_param_hw(dma, int, dma, 0);
-+module_param_hw(dma16, int, dma, 0);
-+
-+module_param_hw(sb_io, int, ioport, 0);
-+module_param_hw(sb_irq, int, irq, 0);
-+module_param_hw(sb_dma, int, dma, 0);
-+module_param_hw(sb_dma16, int, dma, 0);
- 
- module_param(joystick, bool, 0);
- module_param(symphony, bool, 0);
-diff --git a/sound/oss/pss.c b/sound/oss/pss.c
-index 81314f9e2ccb..33c3a442e162 100644
---- a/sound/oss/pss.c
-+++ b/sound/oss/pss.c
-@@ -1139,19 +1139,19 @@ static bool pss_no_sound = 0;	/* Just configure non-sound components */
- static bool pss_keep_settings  = 1;	/* Keep hardware settings at module exit */
- static char *pss_firmware = "/etc/sound/pss_synth";
- 
--module_param(pss_io, int, 0);
-+module_param_hw(pss_io, int, ioport, 0);
- MODULE_PARM_DESC(pss_io, "Set i/o base of PSS card (probably 0x220 or 0x240)");
--module_param(mss_io, int, 0);
-+module_param_hw(mss_io, int, ioport, 0);
- MODULE_PARM_DESC(mss_io, "Set WSS (audio) i/o base (0x530, 0x604, 0xE80, 0xF40, or other. Address must end in 0 or 4 and must be from 0x100 to 0xFF4)");
--module_param(mss_irq, int, 0);
-+module_param_hw(mss_irq, int, irq, 0);
- MODULE_PARM_DESC(mss_irq, "Set WSS (audio) IRQ (3, 5, 7, 9, 10, 11, 12)");
--module_param(mss_dma, int, 0);
-+module_param_hw(mss_dma, int, dma, 0);
- MODULE_PARM_DESC(mss_dma, "Set WSS (audio) DMA (0, 1, 3)");
--module_param(mpu_io, int, 0);
-+module_param_hw(mpu_io, int, ioport, 0);
- MODULE_PARM_DESC(mpu_io, "Set MIDI i/o base (0x330 or other. Address must be on 4 location boundaries and must be from 0x100 to 0xFFC)");
--module_param(mpu_irq, int, 0);
-+module_param_hw(mpu_irq, int, irq, 0);
- MODULE_PARM_DESC(mpu_irq, "Set MIDI IRQ (3, 5, 7, 9, 10, 11, 12)");
--module_param(pss_cdrom_port, int, 0);
-+module_param_hw(pss_cdrom_port, int, ioport, 0);
- MODULE_PARM_DESC(pss_cdrom_port, "Set the PSS CDROM port i/o base (0x340 or other)");
- module_param(pss_enable_joystick, bool, 0);
- MODULE_PARM_DESC(pss_enable_joystick, "Enables the PSS joystick port (1 to enable, 0 to disable)");
-diff --git a/sound/oss/sb_card.c b/sound/oss/sb_card.c
-index fb5d7250de38..2a92cfe6cfe9 100644
---- a/sound/oss/sb_card.c
-+++ b/sound/oss/sb_card.c
-@@ -61,15 +61,15 @@ static int __initdata uart401	= 0;
- static int __initdata pnp       = 0;
+diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
+index 73f593526b2d..8a217752a5f8 100644
+--- a/sound/pci/cmipci.c
++++ b/sound/pci/cmipci.c
+@@ -68,14 +68,14 @@ module_param_array(id, charp, NULL, 0444);
+ MODULE_PARM_DESC(id, "ID string for C-Media PCI soundcard.");
+ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "Enable C-Media PCI soundcard.");
+-module_param_array(mpu_port, long, NULL, 0444);
++module_param_hw_array(mpu_port, long, ioport, NULL, 0444);
+ MODULE_PARM_DESC(mpu_port, "MPU-401 port.");
+-module_param_array(fm_port, long, NULL, 0444);
++module_param_hw_array(fm_port, long, ioport, NULL, 0444);
+ MODULE_PARM_DESC(fm_port, "FM port.");
+ module_param_array(soft_ac3, bool, NULL, 0444);
+ MODULE_PARM_DESC(soft_ac3, "Software-conversion of raw SPDIF packets (model 033 only).");
+ #ifdef SUPPORT_JOYSTICK
+-module_param_array(joystick_port, int, NULL, 0444);
++module_param_hw_array(joystick_port, int, ioport, NULL, 0444);
+ MODULE_PARM_DESC(joystick_port, "Joystick port address.");
  #endif
  
--module_param(io, int, 000);
-+module_param_hw(io, int, ioport, 000);
- MODULE_PARM_DESC(io,       "Soundblaster i/o base address (0x220,0x240,0x260,0x280)");
--module_param(irq, int, 000);
-+module_param_hw(irq, int, irq, 000);
- MODULE_PARM_DESC(irq,	   "IRQ (5,7,9,10)");
--module_param(dma, int, 000);
-+module_param_hw(dma, int, dma, 000);
- MODULE_PARM_DESC(dma,	   "8-bit DMA channel (0,1,3)");
--module_param(dma16, int, 000);
-+module_param_hw(dma16, int, dma, 000);
- MODULE_PARM_DESC(dma16,	   "16-bit DMA channel (5,6,7)");
--module_param(mpu_io, int, 000);
-+module_param_hw(mpu_io, int, ioport, 000);
- MODULE_PARM_DESC(mpu_io,   "MPU base address");
- module_param(type, int, 000);
- MODULE_PARM_DESC(type,	   "You can set this to specific card type (doesn't " \
-diff --git a/sound/oss/trix.c b/sound/oss/trix.c
-index 3c494dc93b93..a57bc635d758 100644
---- a/sound/oss/trix.c
-+++ b/sound/oss/trix.c
-@@ -413,15 +413,15 @@ static int __initdata sb_irq	= -1;
- static int __initdata mpu_io	= -1;
- static int __initdata mpu_irq	= -1;
- 
--module_param(io, int, 0);
--module_param(irq, int, 0);
--module_param(dma, int, 0);
--module_param(dma2, int, 0);
--module_param(sb_io, int, 0);
--module_param(sb_dma, int, 0);
--module_param(sb_irq, int, 0);
--module_param(mpu_io, int, 0);
--module_param(mpu_irq, int, 0);
-+module_param_hw(io, int, ioport, 0);
-+module_param_hw(irq, int, irq, 0);
-+module_param_hw(dma, int, dma, 0);
-+module_param_hw(dma2, int, dma, 0);
-+module_param_hw(sb_io, int, ioport, 0);
-+module_param_hw(sb_dma, int, dma, 0);
-+module_param_hw(sb_irq, int, irq, 0);
-+module_param_hw(mpu_io, int, ioport, 0);
-+module_param_hw(mpu_irq, int, irq, 0);
- module_param(joystick, bool, 0);
- 
- static int __init init_trix(void)
-diff --git a/sound/oss/uart401.c b/sound/oss/uart401.c
-index dae4d4344407..83dcc85b8688 100644
---- a/sound/oss/uart401.c
-+++ b/sound/oss/uart401.c
-@@ -429,8 +429,8 @@ static struct address_info cfg_mpu;
- static int io = -1;
- static int irq = -1;
- 
--module_param(io, int, 0444);
--module_param(irq, int, 0444);
-+module_param_hw(io, int, ioport, 0444);
-+module_param_hw(irq, int, irq, 0444);
- 
- 
- static int __init init_uart401(void)
-diff --git a/sound/oss/uart6850.c b/sound/oss/uart6850.c
-index 1079133dd6ab..eda32d7eddbd 100644
---- a/sound/oss/uart6850.c
-+++ b/sound/oss/uart6850.c
-@@ -315,8 +315,8 @@ static struct address_info cfg_mpu;
- static int __initdata io = -1;
- static int __initdata irq = -1;
- 
--module_param(io, int, 0);
--module_param(irq, int, 0);
-+module_param_hw(io, int, ioport, 0);
-+module_param_hw(irq, int, irq, 0);
- 
- static int __init init_uart6850(void)
- {
-diff --git a/sound/oss/waveartist.c b/sound/oss/waveartist.c
-index 0b8d0de87273..4f0c3a232e41 100644
---- a/sound/oss/waveartist.c
-+++ b/sound/oss/waveartist.c
-@@ -2036,8 +2036,8 @@ __setup("waveartist=", setup_waveartist);
+diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
+index 7e760fed0728..cdb3637a2bb1 100644
+--- a/sound/pci/ens1370.c
++++ b/sound/pci/ens1370.c
+@@ -106,7 +106,7 @@ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "Enable Ensoniq AudioPCI soundcard.");
+ #ifdef SUPPORT_JOYSTICK
+ #ifdef CHIP1371
+-module_param_array(joystick_port, int, NULL, 0444);
++module_param_hw_array(joystick_port, int, ioport, NULL, 0444);
+ MODULE_PARM_DESC(joystick_port, "Joystick port address.");
+ #else
+ module_param_array(joystick, bool, NULL, 0444);
+diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
+index ada5f01d479c..8b39f03f2144 100644
+--- a/sound/pci/riptide/riptide.c
++++ b/sound/pci/riptide/riptide.c
+@@ -137,12 +137,12 @@ MODULE_PARM_DESC(id, "ID string for Riptide soundcard.");
+ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "Enable Riptide soundcard.");
+ #ifdef SUPPORT_JOYSTICK
+-module_param_array(joystick_port, int, NULL, 0444);
++module_param_hw_array(joystick_port, int, ioport, NULL, 0444);
+ MODULE_PARM_DESC(joystick_port, "Joystick port # for Riptide soundcard.");
  #endif
+-module_param_array(mpu_port, int, NULL, 0444);
++module_param_hw_array(mpu_port, int, ioport, NULL, 0444);
+ MODULE_PARM_DESC(mpu_port, "MPU401 port # for Riptide driver.");
+-module_param_array(opl3_port, int, NULL, 0444);
++module_param_hw_array(opl3_port, int, ioport, NULL, 0444);
+ MODULE_PARM_DESC(opl3_port, "OPL3 port # for Riptide driver.");
  
- MODULE_DESCRIPTION("Rockwell WaveArtist RWA-010 sound driver");
--module_param(io, int, 0);		/* IO base */
--module_param(irq, int, 0);		/* IRQ */
--module_param(dma, int, 0);		/* DMA */
--module_param(dma2, int, 0);		/* DMA2 */
-+module_param_hw(io, int, ioport, 0);		/* IO base */
-+module_param_hw(irq, int, irq, 0);		/* IRQ */
-+module_param_hw(dma, int, dma, 0);		/* DMA */
-+module_param_hw(dma2, int, dma, 0);		/* DMA2 */
- MODULE_LICENSE("GPL");
-
+ /*
+diff --git a/sound/pci/sonicvibes.c b/sound/pci/sonicvibes.c
+index e1a13870bb80..01ace45d9405 100644
+--- a/sound/pci/sonicvibes.c
++++ b/sound/pci/sonicvibes.c
+@@ -66,7 +66,7 @@ module_param_array(reverb, bool, NULL, 0444);
+ MODULE_PARM_DESC(reverb, "Enable reverb (SRAM is present) for S3 SonicVibes soundcard.");
+ module_param_array(mge, bool, NULL, 0444);
+ MODULE_PARM_DESC(mge, "MIC Gain Enable for S3 SonicVibes soundcard.");
+-module_param(dmaio, uint, 0444);
++module_param_hw(dmaio, uint, ioport, 0444);
+ MODULE_PARM_DESC(dmaio, "DDMA i/o base address for S3 SonicVibes soundcard.");
+ 
+ /*
+diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
+index 38a17b4342a6..2dc8f1a86aa2 100644
+--- a/sound/pci/via82xx.c
++++ b/sound/pci/via82xx.c
+@@ -92,7 +92,7 @@ module_param(index, int, 0444);
+ MODULE_PARM_DESC(index, "Index value for VIA 82xx bridge.");
+ module_param(id, charp, 0444);
+ MODULE_PARM_DESC(id, "ID string for VIA 82xx bridge.");
+-module_param(mpu_port, long, 0444);
++module_param_hw(mpu_port, long, ioport, 0444);
+ MODULE_PARM_DESC(mpu_port, "MPU-401 port. (VT82C686x only)");
+ #ifdef SUPPORT_JOYSTICK
+ module_param(joystick, bool, 0444);
+diff --git a/sound/pci/ymfpci/ymfpci.c b/sound/pci/ymfpci/ymfpci.c
+index 812e27a1bcbc..4faf3e1ed06a 100644
+--- a/sound/pci/ymfpci/ymfpci.c
++++ b/sound/pci/ymfpci/ymfpci.c
+@@ -55,12 +55,12 @@ module_param_array(id, charp, NULL, 0444);
+ MODULE_PARM_DESC(id, "ID string for the Yamaha DS-1 PCI soundcard.");
+ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "Enable Yamaha DS-1 soundcard.");
+-module_param_array(mpu_port, long, NULL, 0444);
++module_param_hw_array(mpu_port, long, ioport, NULL, 0444);
+ MODULE_PARM_DESC(mpu_port, "MPU-401 Port.");
+-module_param_array(fm_port, long, NULL, 0444);
++module_param_hw_array(fm_port, long, ioport, NULL, 0444);
+ MODULE_PARM_DESC(fm_port, "FM OPL-3 Port.");
+ #ifdef SUPPORT_JOYSTICK
+-module_param_array(joystick_port, long, NULL, 0444);
++module_param_hw_array(joystick_port, long, ioport, NULL, 0444);
+ MODULE_PARM_DESC(joystick_port, "Joystick port address");
+ #endif
+ module_param_array(rear_switch, bool, NULL, 0444);
