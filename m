@@ -1,101 +1,106 @@
-From: Li Xu <li.xu@cirrus.com>
-Subject: [PATCH] ALSA: core: update supported sample rates
-Date: Thu, 1 Dec 2016 15:16:08 -0600
-Message-ID: <c372493a-cbd1-4750-86c1-10c1fff178b2@EX4.ad.cirrus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 8398F265823
- for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2016 22:15:39 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: brian.austin@cirrus.com, tiwai@suse.com, paul.handrigan@cirrus.com, o-takashi@sakamocchi.jp, jeeja.kp@intel.com, ckeepax@opensource.wolfsonmicro.com, li.xu@cirrus.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "extcon: arizona: Use SoC component pin control functions" to the asoc tree
+Date: Thu, 01 Dec 2016 21:46:01 +0000
+Message-ID: <E1cCZB3-0007bH-2t@debutante>
+References: <1480354350-24978-5-git-send-email-rf@opensource.wolfsonmicro.com>
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <1480354350-24978-5-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Chanwoo Choi <cw00.choi@samsung.com>, Mark Brown <broonie@kernel.org>broonie@kernel.orgcw00.choi@samsung.com, dmitry.torokhov@gmail.com, myungjoo.ham@samsung.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add 12KHz, 24KHz, 352.8KHz and 384KHz audio sample rates
+The patch
 
-Signed-off-by: Li Xu <li.xu@cirrus.com>
+   extcon: arizona: Use SoC component pin control functions
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From efd95c71f4892ad5d0d33099db25085763f4c6c3 Mon Sep 17 00:00:00 2001
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Date: Tue, 29 Nov 2016 15:44:41 +0000
+Subject: [PATCH] extcon: arizona: Use SoC component pin control functions
+
+The name of a codec pin can have an optional prefix string, which is
+defined by the SoC machine driver. The snd_soc_dapm_x_pin functions
+take the fully-specified name including the prefix and so the existing
+code would fail to find the pin if the audio machine driver had added
+a prefix.
+
+Switch to using the snd_soc_component_x_pin equivalent functions that
+take a specified SoC component and automatically add the name prefix to
+the provided pin name.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/pcm.h     | 27 +++++++++++++++++----------
- sound/core/pcm_native.c |  7 ++++---
- 2 files changed, 21 insertions(+), 13 deletions(-)
+ drivers/extcon/extcon-arizona.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index af1fb37..3ce4ad9 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -119,16 +119,20 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_RATE_5512		(1<<0)		/* 5512Hz */
- #define SNDRV_PCM_RATE_8000		(1<<1)		/* 8000Hz */
- #define SNDRV_PCM_RATE_11025		(1<<2)		/* 11025Hz */
--#define SNDRV_PCM_RATE_16000		(1<<3)		/* 16000Hz */
--#define SNDRV_PCM_RATE_22050		(1<<4)		/* 22050Hz */
--#define SNDRV_PCM_RATE_32000		(1<<5)		/* 32000Hz */
--#define SNDRV_PCM_RATE_44100		(1<<6)		/* 44100Hz */
--#define SNDRV_PCM_RATE_48000		(1<<7)		/* 48000Hz */
--#define SNDRV_PCM_RATE_64000		(1<<8)		/* 64000Hz */
--#define SNDRV_PCM_RATE_88200		(1<<9)		/* 88200Hz */
--#define SNDRV_PCM_RATE_96000		(1<<10)		/* 96000Hz */
--#define SNDRV_PCM_RATE_176400		(1<<11)		/* 176400Hz */
--#define SNDRV_PCM_RATE_192000		(1<<12)		/* 192000Hz */
-+#define SNDRV_PCM_RATE_12000		(1<<3)		/* 12000Hz */
-+#define SNDRV_PCM_RATE_16000		(1<<4)		/* 16000Hz */
-+#define SNDRV_PCM_RATE_22050		(1<<5)		/* 22050Hz */
-+#define SNDRV_PCM_RATE_24000		(1<<6)		/* 24000Hz */
-+#define SNDRV_PCM_RATE_32000		(1<<7)		/* 32000Hz */
-+#define SNDRV_PCM_RATE_44100		(1<<8)		/* 44100Hz */
-+#define SNDRV_PCM_RATE_48000		(1<<9)		/* 48000Hz */
-+#define SNDRV_PCM_RATE_64000		(1<<10)		/* 64000Hz */
-+#define SNDRV_PCM_RATE_88200		(1<<11)		/* 88200Hz */
-+#define SNDRV_PCM_RATE_96000		(1<<12)		/* 96000Hz */
-+#define SNDRV_PCM_RATE_176400		(1<<13)		/* 176400Hz */
-+#define SNDRV_PCM_RATE_192000		(1<<14)		/* 192000Hz */
-+#define SNDRV_PCM_RATE_352800		(1<<15)		/* 352800Hz */
-+#define SNDRV_PCM_RATE_384000		(1<<16)		/* 384000Hz */
+diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
+index 56e6c4c7c60d..d836d4ce5ee4 100644
+--- a/drivers/extcon/extcon-arizona.c
++++ b/drivers/extcon/extcon-arizona.c
+@@ -274,9 +274,10 @@ static void arizona_extcon_pulse_micbias(struct arizona_extcon_info *info)
+ 	struct arizona *arizona = info->arizona;
+ 	const char *widget = arizona_extcon_get_micbias(info);
+ 	struct snd_soc_dapm_context *dapm = arizona->dapm;
++	struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
+ 	int ret;
  
- #define SNDRV_PCM_RATE_CONTINUOUS	(1<<30)		/* continuous range */
- #define SNDRV_PCM_RATE_KNOT		(1<<31)		/* supports more non-continuos rates */
-@@ -141,6 +145,9 @@ struct snd_pcm_ops {
- 					 SNDRV_PCM_RATE_88200|SNDRV_PCM_RATE_96000)
- #define SNDRV_PCM_RATE_8000_192000	(SNDRV_PCM_RATE_8000_96000|SNDRV_PCM_RATE_176400|\
- 					 SNDRV_PCM_RATE_192000)
-+#define SNDRV_PCM_RATE_8000_384000	(SNDRV_PCM_RATE_8000_192000|\
-+					 SNDRV_PCM_RATE_384000)
-+
- #define _SNDRV_PCM_FMTBIT(fmt)		(1ULL << (__force int)SNDRV_PCM_FORMAT_##fmt)
- #define SNDRV_PCM_FMTBIT_S8		_SNDRV_PCM_FMTBIT(S8)
- #define SNDRV_PCM_FMTBIT_U8		_SNDRV_PCM_FMTBIT(U8)
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 9d33c1e..9bc1011 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -1981,12 +1981,13 @@ static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
- 	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
- }
+-	ret = snd_soc_dapm_force_enable_pin(dapm, widget);
++	ret = snd_soc_component_force_enable_pin(component, widget);
+ 	if (ret != 0)
+ 		dev_warn(arizona->dev, "Failed to enable %s: %d\n",
+ 			 widget, ret);
+@@ -284,7 +285,7 @@ static void arizona_extcon_pulse_micbias(struct arizona_extcon_info *info)
+ 	snd_soc_dapm_sync(dapm);
  
--#if SNDRV_PCM_RATE_5512 != 1 << 0 || SNDRV_PCM_RATE_192000 != 1 << 12
-+#if SNDRV_PCM_RATE_5512 != 1 << 0 || SNDRV_PCM_RATE_384000 != 1 << 16
- #error "Change this table"
- #endif
+ 	if (!arizona->pdata.micd_force_micbias) {
+-		ret = snd_soc_dapm_disable_pin(arizona->dapm, widget);
++		ret = snd_soc_component_disable_pin(component, widget);
+ 		if (ret != 0)
+ 			dev_warn(arizona->dev, "Failed to disable %s: %d\n",
+ 				 widget, ret);
+@@ -349,6 +350,7 @@ static void arizona_stop_mic(struct arizona_extcon_info *info)
+ 	struct arizona *arizona = info->arizona;
+ 	const char *widget = arizona_extcon_get_micbias(info);
+ 	struct snd_soc_dapm_context *dapm = arizona->dapm;
++	struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
+ 	bool change;
+ 	int ret;
  
--static unsigned int rates[] = { 5512, 8000, 11025, 16000, 22050, 32000, 44100,
--                                 48000, 64000, 88200, 96000, 176400, 192000 };
-+static unsigned int rates[] = { 5512, 8000, 11025, 12000, 16000, 22050,
-+				24000, 32000, 44100, 48000, 64000, 88200,
-+				96000, 176400, 192000, 352800, 384000 };
+@@ -356,7 +358,7 @@ static void arizona_stop_mic(struct arizona_extcon_info *info)
+ 				 ARIZONA_MICD_ENA, 0,
+ 				 &change);
  
- const struct snd_pcm_hw_constraint_list snd_pcm_known_rates = {
- 	.count = ARRAY_SIZE(rates),
+-	ret = snd_soc_dapm_disable_pin(dapm, widget);
++	ret = snd_soc_component_disable_pin(component, widget);
+ 	if (ret != 0)
+ 		dev_warn(arizona->dev,
+ 			 "Failed to disable %s: %d\n",
 -- 
-1.9.1
+2.10.2
+
