@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: Add DT bindings documentation for TM2 sound subsystem" to the asoc tree
-Date: Thu, 01 Dec 2016 21:54:49 +0000
-Message-ID: <E1cCZJZ-0000uP-Ru@debutante>
-References: <1470752514-11409-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1470752514-11409-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, k.kozlowski@samsung.com
+Subject: Applied "ASoC: core: replace aux_comp_list to
+	component_dev_list" to the asoc tree
+Date: Thu, 01 Dec 2016 21:46:07 +0000
+Message-ID: <E1cCZB9-0007da-A5@debutante>
+References: <87vaw6399u.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 15588266539
+ for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2016 22:46:15 +0100 (CET)
+In-Reply-To: <87vaw6399u.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: Add DT bindings documentation for TM2 sound subsystem
+   ASoC: core: replace aux_comp_list to component_dev_list
 
 has been applied to the asoc tree at
 
@@ -37,66 +53,95 @@ to this mail.
 Thanks,
 Mark
 
->From 48a760279ba31c59b8cfb14c5be9ed1c8e191038 Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Wed, 2 Nov 2016 17:02:37 +0100
-Subject: [PATCH] ASoC: samsung: Add DT bindings documentation for TM2 sound
- subsystem
+>From 1a653aa44725668590b36bbe2d7fe4736a69f055 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 30 Nov 2016 06:22:55 +0000
+Subject: [PATCH] ASoC: core: replace aux_comp_list to component_dev_list
 
-This patch adds DT binding documentation for Exnos5433 based TM2
-and TM2E boards sound subsystem.
+Now, Card has component_dev_list, we can replace aux_comp_list
+to component_dev_list with new auxiliary flags
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/samsung,tm2-audio.txt           | 38 ++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
+ include/sound/soc.h  |  4 +---
+ sound/soc/soc-core.c | 17 ++++++++++++-----
+ 2 files changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt b/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
-new file mode 100644
-index 000000000000..94442e5673b3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
-@@ -0,0 +1,38 @@
-+Samsung Exynos5433 TM2(E) audio complex with WM5110 codec
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index b5544e2287b8..0bd57b77d010 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -807,9 +807,9 @@ struct snd_soc_component {
+ 
+ 	unsigned int ignore_pmdown_time:1; /* pmdown_time is ignored at stop */
+ 	unsigned int registered_as_component:1;
++	unsigned int auxiliary:1; /* for auxiliary component of the card */
+ 
+ 	struct list_head list;
+-	struct list_head list_aux; /* for auxiliary component of the card */
+ 	struct list_head card_list;
+ 
+ 	struct snd_soc_dai_driver *dai_drv;
+@@ -1148,7 +1148,6 @@ struct snd_soc_card {
+ 	 */
+ 	struct snd_soc_aux_dev *aux_dev;
+ 	int num_aux_devs;
+-	struct list_head aux_comp_list;
+ 
+ 	const struct snd_kcontrol_new *controls;
+ 	int num_controls;
+@@ -1543,7 +1542,6 @@ static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
+ 	INIT_LIST_HEAD(&card->widgets);
+ 	INIT_LIST_HEAD(&card->paths);
+ 	INIT_LIST_HEAD(&card->dapm_list);
+-	INIT_LIST_HEAD(&card->aux_comp_list);
+ 	INIT_LIST_HEAD(&card->component_dev_list);
+ }
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index d204bb772f00..ba8e000faaf1 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1710,7 +1710,8 @@ static int soc_bind_aux_dev(struct snd_soc_card *card, int num)
+ 	}
+ 
+ 	component->init = aux_dev->init;
+-	list_add(&component->list_aux, &card->aux_comp_list);
++	component->auxiliary = 1;
 +
-+Required properties:
+ 	return 0;
+ 
+ err_defer:
+@@ -1726,7 +1727,10 @@ static int soc_probe_aux_devices(struct snd_soc_card *card)
+ 
+ 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+ 		order++) {
+-		list_for_each_entry(comp, &card->aux_comp_list, list_aux) {
++		list_for_each_entry(comp, &card->component_dev_list, card_list) {
++			if (!comp->auxiliary)
++				continue;
 +
-+ - compatible		 : "samsung,tm2-audio"
-+ - model		 : the user-visible name of this sound complex
-+ - audio-codec		 : the phandle of the wm5110 audio codec node,
-+			   as described in ../mfd/arizona.txt
-+ - i2s-controller	 : the phandle of the I2S controller
-+ - audio-amplifier	 : the phandle of the MAX98504 amplifier
-+ - samsung,audio-routing : a list of the connections between audio components;
-+			   each entry is a pair of strings, the first being the
-+			   connection's sink, the second being the connection's
-+			   source; valid names for sources and sinks are the
-+			   WM5110's and MAX98504's pins and the jacks on the
-+			   board: HP, SPK, Main Mic, Sub Mic, Third Mic,
-+			   Headset Mic
-+ - mic-bias-gpios	 : GPIO pin that enables the Main Mic bias regulator
+ 			if (comp->driver->probe_order == order) {
+ 				ret = soc_probe_component(card,	comp);
+ 				if (ret < 0) {
+@@ -1750,11 +1754,14 @@ static void soc_remove_aux_devices(struct snd_soc_card *card)
+ 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+ 		order++) {
+ 		list_for_each_entry_safe(comp, _comp,
+-			&card->aux_comp_list, list_aux) {
++			&card->component_dev_list, card_list) {
 +
++			if (!comp->auxiliary)
++				continue;
 +
-+Example:
-+
-+sound {
-+	compatible = "samsung,tm2-audio";
-+	audio-codec = <&wm5110>;
-+	i2s-controller = <&i2s0>;
-+	audio-amplifier = <&max98504>;
-+	mic-bias-gpios = <&gpr3 2 0>;
-+	model = "wm5110";
-+	samsung,audio-routing =
-+		"HP", "HPOUT1L",
-+		"HP", "HPOUT1R",
-+		"SPK", "SPKOUT",
-+		"SPKOUT", "HPOUT2L",
-+		"SPKOUT", "HPOUT2R",
-+		"Main Mic", "MICBIAS2",
-+		"IN1R", "Main Mic";
-+};
+ 			if (comp->driver->remove_order == order) {
+ 				soc_remove_component(comp);
+-				/* remove it from the card's aux_comp_list */
+-				list_del(&comp->list_aux);
++				comp->auxiliary = 0;
+ 			}
+ 		}
+ 	}
 -- 
 2.10.2
