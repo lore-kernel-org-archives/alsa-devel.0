@@ -1,40 +1,65 @@
-From: Chanwoo Choi <cw00.choi@samsung.com>
-Subject: Re: [PATCH V2 4/5] extcon: arizona: Use SoC component pin control
- functions
-Date: Thu, 01 Dec 2016 10:56:58 +0900
-Message-ID: <583F836A.5030808@samsung.com>
-References: <1480434282-26389-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <CGME20161129154455epcas3p2f983a463ce7e9de35e78cb8625dcb200@epcas3p2.samsung.com>
- <1480434282-26389-5-git-send-email-rf@opensource.wolfsonmicro.com>
- <583E1B02.4040000@samsung.com> <20161130172753.rua3vb4nly42imxh@sirena.org.uk>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: rt5670: Enable Braswell platform
+ workaround for Dell Wyse 3040
+Date: Thu, 1 Dec 2016 09:00:58 +0530
+Message-ID: <20161201033058.GI6408@localhost>
+References: <20161130161920.10817-1-tiwai@suse.de>
+ <20161130163615.GG6408@localhost> <s5h60n52an2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-input-owner@vger.kernel.org>
-In-reply-to: <20161130172753.rua3vb4nly42imxh@sirena.org.uk>
-Sender: linux-input-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, dmitry.torokhov@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, myungjoo.ham@samsung.com, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 471A7266685
+ for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2016 04:21:19 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h60n52an2.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Mark,
-
-On 2016년 12월 01일 02:27, Mark Brown wrote:
-> On Wed, Nov 30, 2016 at 09:19:14AM +0900, Chanwoo Choi wrote:
+On Wed, Nov 30, 2016 at 05:30:25PM +0100, Takashi Iwai wrote:
+> On Wed, 30 Nov 2016 17:36:15 +0100,
+> Vinod Koul wrote:
+> > 
+> > On Wed, Nov 30, 2016 at 05:19:20PM +0100, Takashi Iwai wrote:
+> > > Dell Wyse 3040 requires the platform workaround for enabling dmic and
+> > > jack detection as defined for Braswell CRB.
+> > > 
+> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > > 
+> > > ---
+> > > 
+> > > I guess the platform data should be applied generically to all CHT
+> > > machines instead of DMI matching?  DMI matching doesn't scale,
+> > > obviously.
+> > 
+> > we ahve been doing this on other RT codecs like RT286/298 as well for combo
+> > jack to work. Yeah a better solution would be welcomed :)
 > 
->> But, the patch4 is dependent on patch1.
->> After finished the review of patch1,
->> I'll add acekd-by tag. 
-> 
-> Or you can just pull in that patch, whichever is easiest - I've created
-> a tag:
+> Well, the question is how generic the given platform-specific setup
+> is.  I guess we can keep the dmi thingy for a while, although we'll
+> need more generic solution (or a pattern matching for a wider range of
+> machines). 
 
-I hope that you apply this patch on your tree with my Acked tag.
+Mostly if people stuck to Intel ref designs, then it would same, which has
+been a problem on embedded side, but who knows.. :(
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+> So, if you think the addition of DMI entries is OK, give
+> your ack :)
 
-[snip]
+Absolutely atm :)
+
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
 -- 
-Best Regards,
-Chanwoo Choi
+~Vinod
