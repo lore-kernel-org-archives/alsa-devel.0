@@ -1,57 +1,57 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-devel] [PATCH 1/3 v1] ALSA: usb-audio: more tolerant
- packetsize
-Date: Thu, 1 Dec 2016 12:50:39 +0100
-Message-ID: <c503960d-7a94-c9ef-d98a-72945c2a44a9@ladisch.de>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: Re: [PATCH 1/3 v1] ALSA: usb-audio: more tolerant
+	packetsize
+Date: Thu, 1 Dec 2016 03:36:26 -0800
+Message-ID: <58400B3A.7080806@mentor.com>
 References: <20161130075923.15205-1-jiada_wang@mentor.com>
  <20161130075923.15205-2-jiada_wang@mentor.com>
  <1cb0aa49-62d5-b2ac-a473-bbce3f491d59@ladisch.de>
- <s5hy40010w5.wl-tiwai@suse.de>
- <76fa143e-7092-0bc9-7d55-6a5605d4704a@ladisch.de>
- <s5heg1r28rp.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5heg1r28rp.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jiada Wang <jiada_wang@mentor.com>, alsa-devel@alsa-project.org, apape@de.adit-jv.com, linux-kernel@vger.kernel.org, Mark_Craske@mentor.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45409266619
+ for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2016 12:36:28 +0100 (CET)
+In-Reply-To: <1cb0aa49-62d5-b2ac-a473-bbce3f491d59@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org, Mark_Craske@mentor.com, apape@de.adit-jv.com
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Clemens Ladisch wrote:
->> Takashi Iwai wrote:
->>> [...]
->>> In the commit mentioned above, we changed the logic to take +25%
->>> frequency as the basis, and it my *reduce* if ep->maxpacksize is lower
->>> than that.
->>>
->>> OTOH, if ep->maxpacksize is sane, we can rely on it rather than the
->>> implicit +25% frequency.  That said, maybe we can check
->>> ep->maxpacksize whether it fits within the expected range, then adapt
->>> it, or take +25% freq as fallback?
->>
->> You are describing how the current code behaves.  The +25% limit _is_
->> what the code takes as the expected range.
+Hello Clemens
+
+On 11/30/2016 11:41 PM, Clemens Ladisch wrote:
+> Jiada Wang wrote:
+>> since commit 57e6dae1087bbaa6b33d3dd8a8e90b63888939a3 the expected packetsize is always limited to
+>> nominal + 25%. It was discovered, that some devices
+> Which devices?
+It was a LG nexus
 >
-> Well, the question is what is the "sane" range.  +25% doesn't fit for
-> some devices.
+>> have a much higher jitter in used packetsizes than 25%
+> How high?  (Please note that the USB specification restricts the jitter
+> to at most one frame in consecutive packets.)
+the nominal packet size was somewhere around 176bytes
++25% would result in max expected packets to be ~220bytes
+We observed some packets exceeding this size (256byte)
+which caused the babble and dropping of that packets.
 
-The USB audio specification _requires_ that there is as little jitter
-as possible.
+Thanks,
+Jiada
 
-It's no surprise that some device violates the specification.  But
-we don't know what the actual error is; whether we could adjust the
-packet size for this particular device only, or increase the limit
-for all devices, or use a completely different workaround.
-
-> If maxpacksize fits without +100% as this patch suggests, can we rely
-> on it instead?
-
-The packet size affect the following computations, like the number of
-packets per URB.  I don't know how bad the effects would be.
-
-
-Regards,
-Clemens
+>> which would result in BABBLE condition and dropping of packets.
+>> A better solution is so assume the jitter to be the nominal packetsize
+> This solution is better for this one particular device, but how does it
+> affect normal devices, or the Scarlett 2i4 on EHCI affected?
+>
+>
+> Regards,
+> Clemens
