@@ -1,52 +1,96 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-devel] [PATCH 1/3 v1] ALSA: usb-audio: more tolerant
- packetsize
-Date: Thu, 1 Dec 2016 13:15:39 +0100
-Message-ID: <b869176e-54e4-a47c-98ab-11be08ca0e61@ladisch.de>
-References: <20161130075923.15205-1-jiada_wang@mentor.com>
- <20161130075923.15205-2-jiada_wang@mentor.com>
- <1cb0aa49-62d5-b2ac-a473-bbce3f491d59@ladisch.de>
- <58400B3A.7080806@mentor.com>
+From: David Howells <dhowells@redhat.com>
+Subject: [PATCH 36/39] Annotate hardware config module parameters in
+ sound/drivers/
+Date: Thu, 01 Dec 2016 12:34:26 +0000
+Message-ID: <148059566616.31612.15350723843400605385.stgit@warthog.procyon.org.uk>
+References: <148059537897.31612.9461043954611464597.stgit@warthog.procyon.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <58400B3A.7080806@mentor.com>
+In-Reply-To: <148059537897.31612.9461043954611464597.stgit@warthog.procyon.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jiada Wang <jiada_wang@mentor.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org, Mark_Craske@mentor.com, apape@de.adit-jv.com
+To: linux-kernel@vger.kernel.org
+Cc: gnomes@lxorguk.ukuu.org.uk, alsa-devel@alsa-project.org, minyard@acm.org, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, dhowells@redhat.com, linux-security-module@vger.kernel.org, keyrings@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Jiada Wang wrote:
-> On 11/30/2016 11:41 PM, Clemens Ladisch wrote:
->> Jiada Wang wrote:
->>> since commit 57e6dae1087bbaa6b33d3dd8a8e90b63888939a3 the expected packetsize is always limited to
->>> nominal + 25%. It was discovered, that some devices
->>
->> Which devices?
->
-> It was a LG nexus
+When the kernel is running in secure boot mode, we lock down the kernel to
+prevent userspace from modifying the running kernel image.  Whilst this
+includes prohibiting access to things like /dev/mem, it must also prevent
+access by means of configuring driver modules in such a way as to cause a
+device to access or modify the kernel image.
 
-So it was the Android audio accessory mode.
+To this end, annotate module_param* statements that refer to hardware
+configuration and indicate for future reference what type of parameter they
+specify.  The parameter parser in the core sees this information and can
+skip such parameters with an error message if the kernel is locked down.
+The module initialisation then runs as normal, but just sees whatever the
+default values for those parameters is.
 
->>> have a much higher jitter in used packetsizes than 25%
->>
->> How high?
->
-> the nominal packet size was somewhere around 176bytes
-> +25% would result in max expected packets to be ~220bytes
-> We observed some packets exceeding this size (256byte)
+Note that we do still need to do the module initialisation because some
+drivers have viable defaults set in case parameters aren't specified and
+some drivers support automatic configuration (e.g. PNP or PCI) in addition
+to manually coded parameters.
 
-256 bytes per USB frame would correspond to 64 kHz, instead of the
-nominal 44.1 kHz.
+This patch annotates drivers in sound/drivers/.
 
-The audio accessory sample format is fixed, and that mode is no longer
-developed, so increasing the limit to +50% would be sufficient to work
-around this problem.
+Suggested-by: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Jaroslav Kysela <perex@perex.cz>
+cc: Takashi Iwai <tiwai@suse.com>
+cc: alsa-devel@alsa-project.org
+---
 
-I don't know if this is a bug in Google's generic AOA code, or if LG did
-some changes; I have not heard any other report so far ...
+ sound/drivers/mpu401/mpu401.c |    4 ++--
+ sound/drivers/mtpav.c         |    4 ++--
+ sound/drivers/serial-u16550.c |    4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-
-Regards,
-Clemens
+diff --git a/sound/drivers/mpu401/mpu401.c b/sound/drivers/mpu401/mpu401.c
+index fed7e7e2177b..9b86e00d7d95 100644
+--- a/sound/drivers/mpu401/mpu401.c
++++ b/sound/drivers/mpu401/mpu401.c
+@@ -53,9 +53,9 @@ MODULE_PARM_DESC(enable, "Enable MPU-401 device.");
+ module_param_array(pnp, bool, NULL, 0444);
+ MODULE_PARM_DESC(pnp, "PnP detection for MPU-401 device.");
+ #endif
+-module_param_array(port, long, NULL, 0444);
++module_param_hw_array(port, long, ioport, NULL, 0444);
+ MODULE_PARM_DESC(port, "Port # for MPU-401 device.");
+-module_param_array(irq, int, NULL, 0444);
++module_param_hw_array(irq, int, irq, NULL, 0444);
+ MODULE_PARM_DESC(irq, "IRQ # for MPU-401 device.");
+ module_param_array(uart_enter, bool, NULL, 0444);
+ MODULE_PARM_DESC(uart_enter, "Issue UART_ENTER command at open.");
+diff --git a/sound/drivers/mtpav.c b/sound/drivers/mtpav.c
+index 30e8a1d5bc87..c6bab7cf4fe7 100644
+--- a/sound/drivers/mtpav.c
++++ b/sound/drivers/mtpav.c
+@@ -86,9 +86,9 @@ module_param(index, int, 0444);
+ MODULE_PARM_DESC(index, "Index value for MotuMTPAV MIDI.");
+ module_param(id, charp, 0444);
+ MODULE_PARM_DESC(id, "ID string for MotuMTPAV MIDI.");
+-module_param(port, long, 0444);
++module_param_hw(port, long, ioport, 0444);
+ MODULE_PARM_DESC(port, "Parallel port # for MotuMTPAV MIDI.");
+-module_param(irq, int, 0444);
++module_param_hw(irq, int, irq, 0444);
+ MODULE_PARM_DESC(irq, "Parallel IRQ # for MotuMTPAV MIDI.");
+ module_param(hwports, int, 0444);
+ MODULE_PARM_DESC(hwports, "Hardware ports # for MotuMTPAV MIDI.");
+diff --git a/sound/drivers/serial-u16550.c b/sound/drivers/serial-u16550.c
+index 1927b89e1d1f..04be126fe4e6 100644
+--- a/sound/drivers/serial-u16550.c
++++ b/sound/drivers/serial-u16550.c
+@@ -84,9 +84,9 @@ module_param_array(id, charp, NULL, 0444);
+ MODULE_PARM_DESC(id, "ID string for Serial MIDI.");
+ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "Enable UART16550A chip.");
+-module_param_array(port, long, NULL, 0444);
++module_param_hw_array(port, long, ioport, NULL, 0444);
+ MODULE_PARM_DESC(port, "Port # for UART16550A chip.");
+-module_param_array(irq, int, NULL, 0444);
++module_param_hw_array(irq, int, irq, NULL, 0444);
+ MODULE_PARM_DESC(irq, "IRQ # for UART16550A chip.");
+ module_param_array(speed, int, NULL, 0444);
+ MODULE_PARM_DESC(speed, "Speed in bauds.");
