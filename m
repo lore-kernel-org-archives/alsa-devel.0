@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add Component level suspend/resume" to
-	the asoc tree
-Date: Thu, 01 Dec 2016 21:46:04 +0000
-Message-ID: <E1cCZB6-0007cP-7t@debutante>
-References: <87twbq399f.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: core: replace codec_dev_list to
+	component_dev_list on Card" to the asoc tree
+Date: Thu, 01 Dec 2016 21:46:10 +0000
+Message-ID: <E1cCZBC-0007ei-Ih@debutante>
+References: <87wpgm39ad.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A3DD2665CC
- for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2016 22:46:16 +0100 (CET)
-In-Reply-To: <87twbq399f.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 14506265823
+ for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2016 22:46:18 +0100 (CET)
+In-Reply-To: <87wpgm39ad.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: add Component level suspend/resume
+   ASoC: core: replace codec_dev_list to component_dev_list on Card
 
 has been applied to the asoc tree at
 
@@ -53,180 +53,212 @@ to this mail.
 Thanks,
 Mark
 
->From 9178feb4538e055bf22be44c38b90cc31d2baf99 Mon Sep 17 00:00:00 2001
+>From d9fc40639dc1b87915426d2ef489a591b0fd650b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 30 Nov 2016 06:23:13 +0000
-Subject: [PATCH] ASoC: add Component level suspend/resume
+Date: Wed, 30 Nov 2016 06:22:36 +0000
+Subject: [PATCH] ASoC: core: replace codec_dev_list to component_dev_list on
+ Card
 
-In current ALSA SoC, Codec only has suspend/resume feature,
-but it should be supported on Component level. This patch adds it.
+Current Card has Codec list (= codec_dev_list), but Codec will be
+removed in the future. Because of this reason, this patch adds
+new Component list in Card, and replace Codec list.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  6 ++++-
- sound/soc/soc-core.c | 63 ++++++++++++++++++++++++++++++----------------------
- 2 files changed, 42 insertions(+), 27 deletions(-)
+ include/sound/soc.h                     |  6 +++---
+ sound/soc/intel/boards/broadwell.c      | 16 ++++++++++------
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 16 ++++++++++------
+ sound/soc/soc-core.c                    | 28 ++++++++++++++++------------
+ 4 files changed, 39 insertions(+), 27 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 0bd57b77d010..13cc64e5bb77 100644
+index 1ed9371ece0d..b5544e2287b8 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -782,6 +782,8 @@ struct snd_soc_component_driver {
- 
- 	int (*probe)(struct snd_soc_component *);
- 	void (*remove)(struct snd_soc_component *);
-+	int (*suspend)(struct snd_soc_component *);
-+	int (*resume)(struct snd_soc_component *);
- 
- 	/* DT */
- 	int (*of_xlate_dai_name)(struct snd_soc_component *component,
-@@ -808,6 +810,7 @@ struct snd_soc_component {
- 	unsigned int ignore_pmdown_time:1; /* pmdown_time is ignored at stop */
- 	unsigned int registered_as_component:1;
- 	unsigned int auxiliary:1; /* for auxiliary component of the card */
-+	unsigned int suspended:1; /* is in suspend PM state */
+@@ -810,6 +810,7 @@ struct snd_soc_component {
  
  	struct list_head list;
- 	struct list_head card_list;
-@@ -853,6 +856,8 @@ struct snd_soc_component {
+ 	struct list_head list_aux; /* for auxiliary component of the card */
++	struct list_head card_list;
  
- 	int (*probe)(struct snd_soc_component *);
- 	void (*remove)(struct snd_soc_component *);
-+	int (*suspend)(struct snd_soc_component *);
-+	int (*resume)(struct snd_soc_component *);
+ 	struct snd_soc_dai_driver *dai_drv;
+ 	int num_dai;
+@@ -868,7 +869,6 @@ struct snd_soc_codec {
+ 	const struct snd_soc_codec_driver *driver;
  
- 	/* machine specific init */
- 	int (*init)(struct snd_soc_component *component);
-@@ -872,7 +877,6 @@ struct snd_soc_codec {
+ 	struct list_head list;
+-	struct list_head card_list;
  
  	/* runtime */
  	unsigned int cache_bypass:1; /* Suppress access to the cache */
--	unsigned int suspended:1; /* Codec is in suspend PM state */
- 	unsigned int cache_init:1; /* codec cache has been initialized */
+@@ -1170,7 +1170,7 @@ struct snd_soc_card {
+ 	struct work_struct deferred_resume_work;
  
- 	/* codec IO */
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index ba8e000faaf1..f35ec5bf3b78 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -702,43 +702,39 @@ int snd_soc_suspend(struct device *dev)
- 	dapm_mark_endpoints_dirty(card);
- 	snd_soc_dapm_sync(&card->dapm);
+ 	/* lists of probed devices belonging to this card */
+-	struct list_head codec_dev_list;
++	struct list_head component_dev_list;
  
--	/* suspend all CODECs */
-+	/* suspend all COMPONENTs */
- 	list_for_each_entry(component, &card->component_dev_list, card_list) {
- 		struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
--		struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
+ 	struct list_head widgets;
+ 	struct list_head paths;
+@@ -1540,11 +1540,11 @@ static inline void *snd_soc_platform_get_drvdata(struct snd_soc_platform *platfo
  
--		if (!codec)
--			continue;
--
--		/* If there are paths active then the CODEC will be held with
-+		/* If there are paths active then the COMPONENT will be held with
- 		 * bias _ON and should not be suspended. */
--		if (!codec->suspended) {
-+		if (!component->suspended) {
- 			switch (snd_soc_dapm_get_bias_level(dapm)) {
- 			case SND_SOC_BIAS_STANDBY:
- 				/*
--				 * If the CODEC is capable of idle
-+				 * If the COMPONENT is capable of idle
- 				 * bias off then being in STANDBY
- 				 * means it's doing something,
- 				 * otherwise fall through.
- 				 */
- 				if (dapm->idle_bias_off) {
--					dev_dbg(codec->dev,
-+					dev_dbg(component->dev,
- 						"ASoC: idle_bias_off CODEC on over suspend\n");
- 					break;
- 				}
- 
- 			case SND_SOC_BIAS_OFF:
--				if (codec->driver->suspend)
--					codec->driver->suspend(codec);
--				codec->suspended = 1;
--				if (codec->component.regmap)
--					regcache_mark_dirty(codec->component.regmap);
-+				if (component->suspend)
-+					component->suspend(component);
-+				component->suspended = 1;
-+				if (component->regmap)
-+					regcache_mark_dirty(component->regmap);
- 				/* deactivate pins to sleep state */
--				pinctrl_pm_select_sleep_state(codec->dev);
-+				pinctrl_pm_select_sleep_state(component->dev);
- 				break;
- 			default:
--				dev_dbg(codec->dev,
--					"ASoC: CODEC is on over suspend\n");
-+				dev_dbg(component->dev,
-+					"ASoC: COMPONENT is on over suspend\n");
- 				break;
- 			}
- 		}
-@@ -799,15 +795,10 @@ static void soc_resume_deferred(struct work_struct *work)
- 	}
- 
- 	list_for_each_entry(component, &card->component_dev_list, card_list) {
--		struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
--
--		if (!codec)
--			continue;
--
--		if (codec->suspended) {
--			if (codec->driver->resume)
--				codec->driver->resume(codec);
--			codec->suspended = 0;
-+		if (component->suspended) {
-+			if (component->resume)
-+				component->resume(component);
-+			component->suspended = 0;
- 		}
- 	}
- 
-@@ -2937,6 +2928,8 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
- 	component->driver = driver;
- 	component->probe = component->driver->probe;
- 	component->remove = component->driver->remove;
-+	component->suspend = component->driver->suspend;
-+	component->resume = component->driver->resume;
- 
- 	dapm = &component->dapm;
- 	dapm->dev = dev;
-@@ -3286,6 +3279,20 @@ static void snd_soc_codec_drv_remove(struct snd_soc_component *component)
- 	codec->driver->remove(codec);
+ static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
+ {
+-	INIT_LIST_HEAD(&card->codec_dev_list);
+ 	INIT_LIST_HEAD(&card->widgets);
+ 	INIT_LIST_HEAD(&card->paths);
+ 	INIT_LIST_HEAD(&card->dapm_list);
+ 	INIT_LIST_HEAD(&card->aux_comp_list);
++	INIT_LIST_HEAD(&card->component_dev_list);
  }
  
-+static int snd_soc_codec_drv_suspend(struct snd_soc_component *component)
-+{
-+	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
+ static inline bool snd_soc_volsw_is_stereo(struct soc_mixer_control *mc)
+diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
+index 7486a0022fde..80f3a2d95737 100644
+--- a/sound/soc/intel/boards/broadwell.c
++++ b/sound/soc/intel/boards/broadwell.c
+@@ -220,10 +220,12 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
+ };
+ 
+ static int broadwell_suspend(struct snd_soc_card *card){
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
 +
-+	return codec->driver->suspend(codec);
-+}
++	list_for_each_entry(component, &card->component_dev_list, card_list) {
++		if (!strcmp(component->name, "i2c-INT343A:00")) {
++			struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
+ 
+-	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
+-		if (!strcmp(codec->component.name, "i2c-INT343A:00")) {
+ 			dev_dbg(codec->dev, "disabling jack detect before going to suspend.\n");
+ 			rt286_mic_detect(codec, NULL);
+ 			break;
+@@ -233,10 +235,12 @@ static int broadwell_suspend(struct snd_soc_card *card){
+ }
+ 
+ static int broadwell_resume(struct snd_soc_card *card){
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
 +
-+static int snd_soc_codec_drv_resume(struct snd_soc_component *component)
-+{
-+	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
-+
-+	return codec->driver->resume(codec);
-+}
-+
- static int snd_soc_codec_drv_write(struct snd_soc_component *component,
- 	unsigned int reg, unsigned int val)
++	list_for_each_entry(component, &card->component_dev_list, card_list) {
++		if (!strcmp(component->name, "i2c-INT343A:00")) {
++			struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
+ 
+-	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
+-		if (!strcmp(codec->component.name, "i2c-INT343A:00")) {
+ 			dev_dbg(codec->dev, "enabling jack detect for resume.\n");
+ 			rt286_mic_detect(codec, &broadwell_headset);
+ 			break;
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index df9d254baa18..dfae9cfa0ac6 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -292,10 +292,12 @@ static struct snd_soc_dai_link cht_dailink[] = {
+ 
+ static int cht_suspend_pre(struct snd_soc_card *card)
  {
-@@ -3347,6 +3354,10 @@ int snd_soc_register_codec(struct device *dev,
- 		codec->component.probe = snd_soc_codec_drv_probe;
- 	if (codec_drv->remove)
- 		codec->component.remove = snd_soc_codec_drv_remove;
-+	if (codec_drv->suspend)
-+		codec->component.suspend = snd_soc_codec_drv_suspend;
-+	if (codec_drv->resume)
-+		codec->component.resume = snd_soc_codec_drv_resume;
- 	if (codec_drv->write)
- 		codec->component.write = snd_soc_codec_drv_write;
- 	if (codec_drv->read)
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
++
++	list_for_each_entry(component, &card->component_dev_list, card_list) {
++		if (!strcmp(component->name, "i2c-10EC5670:00")) {
++			struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
+ 
+-	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
+-		if (!strcmp(codec->component.name, "i2c-10EC5670:00")) {
+ 			dev_dbg(codec->dev, "disabling jack detect before going to suspend.\n");
+ 			rt5670_jack_suspend(codec);
+ 			break;
+@@ -306,10 +308,12 @@ static int cht_suspend_pre(struct snd_soc_card *card)
+ 
+ static int cht_resume_post(struct snd_soc_card *card)
+ {
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
++
++	list_for_each_entry(component, &card->component_dev_list, card_list) {
++		if (!strcmp(component->name, "i2c-10EC5670:00")) {
++			struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
+ 
+-	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
+-		if (!strcmp(codec->component.name, "i2c-10EC5670:00")) {
+ 			dev_dbg(codec->dev, "enabling jack detect for resume.\n");
+ 			rt5670_jack_resume(codec);
+ 			break;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c0bbcd903261..d204bb772f00 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -626,7 +626,7 @@ static void codec2codec_close_delayed_work(struct work_struct *work)
+ int snd_soc_suspend(struct device *dev)
+ {
+ 	struct snd_soc_card *card = dev_get_drvdata(dev);
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
+ 	struct snd_soc_pcm_runtime *rtd;
+ 	int i;
+ 
+@@ -703,8 +703,12 @@ int snd_soc_suspend(struct device *dev)
+ 	snd_soc_dapm_sync(&card->dapm);
+ 
+ 	/* suspend all CODECs */
+-	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
+-		struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	list_for_each_entry(component, &card->component_dev_list, card_list) {
++		struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++		struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
++
++		if (!codec)
++			continue;
+ 
+ 		/* If there are paths active then the CODEC will be held with
+ 		 * bias _ON and should not be suspended. */
+@@ -768,7 +772,7 @@ static void soc_resume_deferred(struct work_struct *work)
+ 	struct snd_soc_card *card =
+ 			container_of(work, struct snd_soc_card, deferred_resume_work);
+ 	struct snd_soc_pcm_runtime *rtd;
+-	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
+ 	int i;
+ 
+ 	/* our power state is still SNDRV_CTL_POWER_D3hot from suspend time,
+@@ -794,7 +798,12 @@ static void soc_resume_deferred(struct work_struct *work)
+ 			cpu_dai->driver->resume(cpu_dai);
+ 	}
+ 
+-	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
++	list_for_each_entry(component, &card->component_dev_list, card_list) {
++		struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
++
++		if (!codec)
++			continue;
++
+ 		if (codec->suspended) {
+ 			if (codec->driver->resume)
+ 				codec->driver->resume(codec);
+@@ -1072,9 +1081,7 @@ static void soc_remove_component(struct snd_soc_component *component)
+ 	if (!component->card)
+ 		return;
+ 
+-	/* This is a HACK and will be removed soon */
+-	if (component->codec)
+-		list_del(&component->codec->card_list);
++	list_del(&component->card_list);
+ 
+ 	if (component->remove)
+ 		component->remove(component);
+@@ -1443,10 +1450,7 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 					component->num_dapm_routes);
+ 
+ 	list_add(&dapm->list, &card->dapm_list);
+-
+-	/* This is a HACK and will be removed soon */
+-	if (component->codec)
+-		list_add(&component->codec->card_list, &card->codec_dev_list);
++	list_add(&component->card_list, &card->component_dev_list);
+ 
+ 	return 0;
+ 
 -- 
 2.10.2
