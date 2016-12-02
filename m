@@ -1,121 +1,65 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v5 11/14] ASoC: add simple-graph-card document
-Date: Fri, 2 Dec 2016 07:50:48 -0600
-Message-ID: <20161202135048.tzvrv7pzv2dubcy3@rob-hp-laptop>
-References: <87k2bowckx.wl%kuninori.morimoto.gx@renesas.com>
- <874m2swcbx.wl%kuninori.morimoto.gx@renesas.com>
+From: jeeja.kp@intel.com
+Subject: [PATCH 00/12] ASoC: Intel: Skylake: Driver updates
+Date: Fri,  2 Dec 2016 23:11:37 +0530
+Message-ID: <1480700509-23380-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <874m2swcbx.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Laurent <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, Guennadi <g.liakhovetski-Mmb7MZpHnFY@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-Kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DA00267814
+ for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 18:32:04 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 28, 2016 at 02:47:57AM +0000, Kuninori Morimoto wrote:
-> 
-> From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-> ---
->  .../bindings/sound/simple-graph-card.txt           | 67 ++++++++++++++++++++++
->  1 file changed, 67 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/simple-graph-card.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/simple-graph-card.txt b/Documentation/devicetree/bindings/sound/simple-graph-card.txt
-> new file mode 100644
-> index 0000000..3d4c5a8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/simple-graph-card.txt
-> @@ -0,0 +1,67 @@
-> +Simple-Graph-Card:
+From: Jeeja KP <jeeja.kp@intel.com>
 
-There's nothing simple about this. graph-audio-card or audio-card-graph.
+This patch series includes driver updates for the handling scenarios 
+during System S0/S3 transitions when audio stream is stopped during
+system.
+o move DMA configuration in DSP Gateway Module widget event handler to
+ensure DMA is configured after resume. 
+o Enable SSP MLCK using Supply widget. This will ensure the MCLK is
+enabled when the widget is power on.
+o Check DMA decouple register state before coupling/decoupling the DMA.
+o In case of HDMI pass-through pipe, reset only the FE Pipe when stream
+in in XRUN state.
+o Resume the stream from HW renderer position.
+o HDMI Codec pin and converter state need to be restored when stream
+is resumed.
 
-> +
-> +Simple-Graph-Card specifies audio DAI connections of SoC <-> codec.
-> +It is based on common bindings for device graphs.
-> +see ${LINUX}/Documentation/devicetree/bindings/graph.txt
-> +
-> +Basically, Simple-Graph-Card property is same as Simple-Card.
-> +see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.txt
-> +
-> +Below are same as Simple-Card.
-> +
-> +- simple-audio-card,name
-> +- simple-audio-card,widgets
-> +- simple-audio-card,routing
-> +- simple-audio-card,mclk-fs
-> +- simple-audio-card,hp-det-gpio
-> +- simple-audio-card,mic-det-gpio
-> +- simple-audio-card,format
-> +- simple-audio-card,frame-master
-> +- simple-audio-card,bitclock-master
-> +- simple-audio-card,bitclock-inversion
-> +- simple-audio-card,frame-inversion
-> +- simple-audio-card,mclk-fs
-> +- simple-audio-card,dai-tdm-slot-num
-> +- simple-audio-card,dai-tdm-slot-width
+Jeeja KP (12):
+  ASoC: Intel: Skylake: Add helper function to setup host/link dma
+  ASoC: Intel: Skylake: Configure DMA in PRE_PMD handler of Mixer
+  ASoC: Intel: Skylake: Removed unused skl_get_format()
+  ALSA: hda: check stream decoupled register state
+  ASoC: Intel: Skylake: Add set_tristate DAI ops to enable SSP MCLK
+  ASoC: Intel: Skylake: Remove unused SSP BE prepare DAI ops
+  ASoC: Intel: Skylake: Add supply widget as non DSP widget
+  ASoC: Intel: Skylake: Add supply widget in skl_nau_max machine
+  ASoC: Intel: Skylake: Add supply widget in bxt_da_max machine
+  ASoC: Intel: Skylake: Don't reset pass-through pipe in BE prepare
+  ASoC: Intel: Skylake: set the resume point to LPIB
+  ASoC: hdac_hdmi: Enable pin and converter in prepare
 
-The simple-audio-card prefix is pointless. It's fine to reuse, but don't 
-add to it.
+ sound/hda/ext/hdac_ext_stream.c                 |  15 +-
+ sound/soc/codecs/hdac_hdmi.c                    |  28 ++--
+ sound/soc/intel/boards/bxt_da7219_max98357a.c   |  34 ++++
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c |  34 ++++
+ sound/soc/intel/skylake/skl-pcm.c               | 210 +++++++++++++-----------
+ sound/soc/intel/skylake/skl-topology.c          |  27 ++-
+ sound/soc/intel/skylake/skl-topology.h          |   6 +
+ 7 files changed, 240 insertions(+), 114 deletions(-)
 
-> +- clocks / system-clock-frequency
-> +
-> +In Simple-Graph-Card, above properties need in CPU side port on DT.
-> +And it needs to have "compatible" property too.
-> +In addition, CPU side driver needs to call asoc_simple_card_try_to_probe_graph_card().
-> +It will probe specified Card driver if it could find "compatible" property on port.
-> +Otherwise, it will do nothing.
-> +
-> +Required properties:
-> +
-> +- compatible				: "asoc-simple-graph-card";
-> +- type					: "sound";
-> +
-> +Example
-> +
-> +ak4643: codec@12 {
-> +	compatible = "asahi-kasei,ak4643";
-> +	...
-> +	port {
-> +		type = "sound";
-> +		ak4643_port: endpoint {
-> +			remote-endpoint = <&rcar_ak4643_port>;
-> +			...
-> +		};
-> +	};
-> +};
-> +
-> +rcar_sound {
-> +	...
-> +	port {
-> +		compatible = "asoc-simple-graph-card";
-
-Do you have an example where you'd have multiple ports? If not, this 
-should go up a level.
-
-> +
-> +		simple-audio-card,format = "left_j";
-> +		simple-audio-card,bitclock-master = <&ak4643_port>;
-> +		simple-audio-card,frame-master = <&ak4643_port>;
-
-If you follow video-interfaces.txt, these should all go in the endpoint 
-node.
-
-> +		type = "sound";
-> +		rcar_ak4643_port: endpoint {
-> +			remote-endpoint = <&ak4643_port>;
-> +			...
-> +		};
-> +	};
-> +};
-> -- 
-> 1.9.1
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+2.5.0
