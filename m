@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 06/12] ASoC: Intel: Skylake: Remove unused SSP
-	BE prepare DAI ops
-Date: Fri,  2 Dec 2016 23:11:43 +0530
-Message-ID: <1480700509-23380-7-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH 07/12] ASoC: Intel: Skylake: Add supply widget
+	as non DSP widget
+Date: Fri,  2 Dec 2016 23:11:44 +0530
+Message-ID: <1480700509-23380-8-git-send-email-jeeja.kp@intel.com>
 References: <1480700509-23380-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id EA16F267814
- for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 18:32:09 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C6254267814
+ for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 18:32:11 +0100 (CET)
 In-Reply-To: <1480700509-23380-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,41 +27,50 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Removed unused prepare DAI ops as previous patch uses set_tristate
-ops and this is no longer in use so remove the BE DAI prepare opd.
+Supply widgets to model clock supplies for SSP and add this widget type
+dapm supply widget as non DSP widget to bypass while parsing the source
+and sink dapm widget list.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 17 -----------------
- 1 file changed, 17 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 3c16d41..688d6f7 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -259,23 +259,6 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int skl_be_prepare(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	struct skl *skl = get_skl_ctx(dai->dev);
--	struct skl_sst *ctx = skl->skl_sst;
--	struct skl_module_cfg *mconfig;
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 9cf8c51..edd0c60 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -87,6 +87,7 @@ static int is_skl_dsp_widget_type(struct snd_soc_dapm_widget *w)
+ 	case snd_soc_dapm_aif_out:
+ 	case snd_soc_dapm_dai_out:
+ 	case snd_soc_dapm_switch:
++	case snd_soc_dapm_supply:
+ 		return false;
+ 	default:
+ 		return true;
+@@ -1484,12 +1485,13 @@ static int skl_tplg_be_set_src_pipe_params(struct snd_soc_dai *dai,
+ 	snd_soc_dapm_widget_for_each_source_path(w, p) {
+ 		if (p->connect && is_skl_dsp_widget_type(p->source) &&
+ 						p->source->priv) {
 -
--	if (dai->playback_widget->power || dai->capture_widget->power)
--		return 0;
--
--	mconfig = skl_tplg_be_get_cpr_module(dai, substream->stream);
--	if (mconfig == NULL)
--		return -EINVAL;
--
--	return skl_dsp_set_dma_control(ctx, mconfig);
--}
--
- static int skl_pcm_prepare(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
+ 			ret = skl_tplg_be_fill_pipe_params(dai,
+ 						p->source->priv, params);
+ 			if (ret < 0)
+ 				return ret;
+ 		} else {
++			if (p->source->id == snd_soc_dapm_supply)
++				continue;
+ 			ret = skl_tplg_be_set_src_pipe_params(dai,
+ 						p->source, params);
+ 			if (ret < 0)
+@@ -1515,6 +1517,8 @@ static int skl_tplg_be_set_sink_pipe_params(struct snd_soc_dai *dai,
+ 			if (ret < 0)
+ 				return ret;
+ 		} else {
++			if (p->sink->id == snd_soc_dapm_supply)
++				continue;
+ 			ret = skl_tplg_be_set_sink_pipe_params(
+ 						dai, p->sink, params);
+ 			if (ret < 0)
 -- 
 2.5.0
