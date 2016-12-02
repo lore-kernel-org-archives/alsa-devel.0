@@ -1,21 +1,16 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [PATCH 1/3 v1] ALSA: usb-audio: more tolerant
-	packetsize
-Date: Thu, 1 Dec 2016 21:53:20 -0800
-Message-ID: <58410C50.2090401@mentor.com>
-References: <20161130075923.15205-1-jiada_wang@mentor.com>
- <20161130075923.15205-2-jiada_wang@mentor.com>
- <1cb0aa49-62d5-b2ac-a473-bbce3f491d59@ladisch.de>
- <58400B3A.7080806@mentor.com>
- <b869176e-54e4-a47c-98ab-11be08ca0e61@ladisch.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] ALSA: core: update supported sample rates
+Date: Fri, 2 Dec 2016 08:36:22 +0100
+Message-ID: <b67d6159-2e33-fba8-b9b4-5c01efd7634d@ladisch.de>
+References: <c372493a-cbd1-4750-86c1-10c1fff178b2@EX4.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D59D266539
- for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 06:53:30 +0100 (CET)
-In-Reply-To: <b869176e-54e4-a47c-98ab-11be08ca0e61@ladisch.de>
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id B3643266942
+ for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 08:36:25 +0100 (CET)
+In-Reply-To: <c372493a-cbd1-4750-86c1-10c1fff178b2@EX4.ad.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +20,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Mark_Craske@mentor.com, apape@de.adit-jv.com, tiwai@suse.com, linux-kernel@vger.kernel.org
+To: Li Xu <li.xu@cirrus.com>, alsa-devel@alsa-project.org
+Cc: brian.austin@cirrus.com, tiwai@suse.com, paul.handrigan@cirrus.com, o-takashi@sakamocchi.jp, jeeja.kp@intel.com, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello Clemens
-
-On 12/01/2016 04:15 AM, Clemens Ladisch wrote:
-> Jiada Wang wrote:
->> On 11/30/2016 11:41 PM, Clemens Ladisch wrote:
->>> Jiada Wang wrote:
->>>> since commit 57e6dae1087bbaa6b33d3dd8a8e90b63888939a3 the expected packetsize is always limited to
->>>> nominal + 25%. It was discovered, that some devices
->>> Which devices?
->> It was a LG nexus
-> So it was the Android audio accessory mode.
+Li Xu wrote:
+> Add 12KHz, 24KHz, 352.8KHz and 384KHz audio sample rates
 >
->>>> have a much higher jitter in used packetsizes than 25%
->>> How high?
->> the nominal packet size was somewhere around 176bytes
->> +25% would result in max expected packets to be ~220bytes
->> We observed some packets exceeding this size (256byte)
-> 256 bytes per USB frame would correspond to 64 kHz, instead of the
-> nominal 44.1 kHz.
->
-> The audio accessory sample format is fixed, and that mode is no longer
-> developed, so increasing the limit to +50% would be sufficient to work
-> around this problem.
->
-> I don't know if this is a bug in Google's generic AOA code, or if LG did
-> some changes; I have not heard any other report so far ...
->
-We also reproduced the same issue with following android devices,
-* Samsung S4, Android 4.2.2, model GT-I9505
-* Sony Xperia Z, Android 4.2.2, model number CC6603
-* LGE Nexus 4, Android 4.2.2
-so it most likely not a LG specific issue.
+> +#define SNDRV_PCM_RATE_12000		(1<<3)		/* 12000Hz */
+> +#define SNDRV_PCM_RATE_24000		(1<<6)		/* 24000Hz */
+> +#define SNDRV_PCM_RATE_352800		(1<<15)		/* 352800Hz */
+> +#define SNDRV_PCM_RATE_384000		(1<<16)		/* 384000Hz */
 
-I agree to increase to +50% would be sufficient to avoid this issue.
+To quote <http://mailman.alsa-project.org/pipermail/alsa-devel/2013-July/064461.html>:
+You don't need such symbols to use a rate.  These symbols are intended
+for often-used rates.  As long as only one or two drivers use a rate,
+they can just set KNOT and install a constraint.
 
-Thanks,
-Jiada
+How many driver would actually use it?
 
 
-> Regards,
-> Clemens
+Regards,
+Clemens
