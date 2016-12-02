@@ -1,15 +1,15 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 04/12] ALSA: hda: check stream decoupled
-	register state
-Date: Fri,  2 Dec 2016 23:11:41 +0530
-Message-ID: <1480700509-23380-5-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH 05/12] ASoC: Intel: Skylake: Add set_tristate
+	DAI ops to enable SSP MCLK
+Date: Fri,  2 Dec 2016 23:11:42 +0530
+Message-ID: <1480700509-23380-6-git-send-email-jeeja.kp@intel.com>
 References: <1480700509-23380-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D8A1267814
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B038267826
  for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 18:32:08 +0100 (CET)
 In-Reply-To: <1480700509-23380-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,41 +27,63 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Check stream decoupled register value with requested value
-before decoupling/coupling the stream.
+Some machine requires MCLK to be enabled before SSP start up, so add
+set_tristate() DAI ops to enable/disable SSP MCLK. This ops will be
+called from machine which requires early MCLK and removes the usage of
+enabling early MLCK in platform DAI prepare by default which is not
+machine specific.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/hda/ext/hdac_ext_stream.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 29 ++++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
 
-diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
-index 3be051a..bd8187b 100644
---- a/sound/hda/ext/hdac_ext_stream.c
-+++ b/sound/hda/ext/hdac_ext_stream.c
-@@ -128,14 +128,17 @@ void snd_hdac_ext_stream_decouple(struct hdac_ext_bus *ebus,
- {
- 	struct hdac_stream *hstream = &stream->hstream;
- 	struct hdac_bus *bus = &ebus->bus;
-+	u32 val;
-+	int mask = AZX_PPCTL_PROCEN(hstream->index);
- 
- 	spin_lock_irq(&bus->reg_lock);
--	if (decouple)
--		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, 0,
--				AZX_PPCTL_PROCEN(hstream->index));
--	else
--		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL,
--					AZX_PPCTL_PROCEN(hstream->index), 0);
-+	val = ((readw(bus->ppcap + AZX_REG_PP_PPCTL) & mask) >> mask);
-+
-+	if (decouple && (val == 0))
-+		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, 0, mask);
-+	else if (!decouple && (val > 0))
-+		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, mask, 0);
-+
- 	stream->decoupled = decouple;
- 	spin_unlock_irq(&bus->reg_lock);
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 10fa10d..3c16d41 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -396,6 +396,33 @@ static int skl_be_hw_params(struct snd_pcm_substream *substream,
+ 	return skl_tplg_be_update_params(dai, &p_params);
  }
+ 
++static int skl_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate)
++{
++	struct skl *skl = get_skl_ctx(dai->dev);
++	struct skl_sst *ctx = skl->skl_sst;
++	struct skl_module_cfg *mconfig;
++	int stream;
++
++	if (dai->playback_active)
++		stream = SNDRV_PCM_STREAM_PLAYBACK;
++	else
++		stream = SNDRV_PCM_STREAM_CAPTURE;
++
++	mconfig = skl_tplg_be_get_cpr_module(dai, stream);
++	if (!mconfig)
++		return -EINVAL;
++
++	/*
++	 * To enable ssp clk explicitly before gateway copier is configured,
++	 * need to use dma control IPC.
++	 * Disable will be done when DSP gateway copier modules are deleted.
++	 */
++	if (!tristate)
++		return skl_dsp_set_dma_control(ctx, mconfig);
++
++	return 0;
++}
++
+ static int skl_decoupled_trigger(struct snd_pcm_substream *substream,
+ 		int cmd)
+ {
+@@ -646,7 +673,7 @@ static struct snd_soc_dai_ops skl_dmic_dai_ops = {
+ 
+ static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
+ 	.hw_params = skl_be_hw_params,
+-	.prepare = skl_be_prepare,
++	.set_tristate = skl_soc_dai_set_tristate,
+ };
+ 
+ static struct snd_soc_dai_ops skl_link_dai_ops = {
 -- 
 2.5.0
