@@ -1,15 +1,17 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] ASoC: Intel: Add pre & post suspend calls in
-	bxt machine
-Date: Fri,  2 Dec 2016 15:33:44 +0530
-Message-ID: <1480673024-28608-1-git-send-email-vinod.koul@intel.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH v3 0/3] ucm: Add support for component
+	devices
+Date: Fri, 02 Dec 2016 11:30:21 +0000
+Message-ID: <1480678221.4636.108.camel@loki>
+References: <cover.1480309753.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F95B267783
- for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 10:54:07 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E345226774D
+ for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 12:30:29 +0100 (CET)
+In-Reply-To: <cover.1480309753.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,70 +21,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
+To: mengdong.lin@linux.intel.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, mengdong.lin@intel.com, vinod.koul@intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-We need to disable jack detection before entering suspend and
-enable it after resume.
+On Mon, 2016-11-28 at 13:33 +0800, mengdong.lin@linux.intel.com wrote:
+> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+> 
+> Sound cards are defined by machines. And off-soc codecs and DSPs embedded
+> in DSP can be taken as the components and resued by different machines/
+> sound cards. This series allows codec and SOC vendors to install UCM
+> configuration files for a specific codec or DSP, and sound card verb
+> files can include these conf files of components.
+> 
+> Component devices will not be exposed to applications for backward
+> compatibility. So audio servers like PulseAudio and CRAS still only see
+> the machine devices.
+> 
+> History:
+> v2: Use an array to define component directories. Document syntax to
+>     enable/disable a component device. Hide cdev defined by the parent
+>     device in ucm manager for executing a component sequence.
+> 
+> v3: No longer use macros for UCM manager to enter/exit component domain,
+>     to make code simpler.
+> 
+> Mengdong Lin (3):
+>   ucm: Skip component directories when scanning sound card configuration
+>     files
+>   ucm: Parse sequence of component devices
+>   ucm: Execute sequence of component devices
+> 
+>  src/ucm/main.c      |  78 +++++++++++++++++++++++++-
+>  src/ucm/parser.c    | 154 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+>  src/ucm/ucm_local.h |  19 +++++++
+>  src/ucm/utils.c     |   1 +
+>  4 files changed, 249 insertions(+), 3 deletions(-)
+> 
 
-This was essential as headphone jack widget will always
-remain ON if a jack is inserted and this results in no audio
-after system resumes from a suspend.
+All 
 
-Signed-off-by: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/boards/bxt_rt298.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index 1309405b3808..b272b72e6a77 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -432,6 +432,33 @@ static int bxt_fe_startup(struct snd_pcm_substream *substream)
- 	},
- };
- 
-+static int bxt_suspend_pre(struct snd_soc_card *card)
-+{
-+	struct snd_soc_codec *codec;
-+
-+	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
-+		if (!strcmp(codec->component.name, "i2c-INT343A:00")) {
-+			rt298_mic_detect(codec, NULL);
-+			break;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int bxt_resume_post(struct snd_soc_card *card)
-+{
-+	struct snd_soc_codec *codec;
-+
-+	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
-+		if (!strcmp(codec->component.name, "i2c-INT343A:00")) {
-+			rt298_mic_detect(codec, &broxton_headset);
-+			break;
-+		}
-+	}
-+	return 0;
-+}
-+
-+
- /* broxton audio machine driver for SPT + RT298S */
- static struct snd_soc_card broxton_rt298 = {
- 	.name = "broxton-rt298",
-@@ -445,6 +472,9 @@ static int bxt_fe_startup(struct snd_pcm_substream *substream)
- 	.dapm_routes = broxton_rt298_map,
- 	.num_dapm_routes = ARRAY_SIZE(broxton_rt298_map),
- 	.fully_routed = true,
-+	.suspend_pre = bxt_suspend_pre,
-+	.resume_post = bxt_resume_post,
-+
- };
- 
- static int broxton_audio_probe(struct platform_device *pdev)
--- 
-1.9.1
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
