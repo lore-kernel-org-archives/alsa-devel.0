@@ -1,17 +1,21 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v3 0/3] ucm: Add support for component
-	devices
-Date: Fri, 02 Dec 2016 11:30:21 +0000
-Message-ID: <1480678221.4636.108.camel@loki>
-References: <cover.1480309753.git.mengdong.lin@linux.intel.com>
+From: Antonio Ospite <ao2@ao2.it>
+Subject: Re: [alsa-utils] alsaucm should come with a man page
+Date: Fri, 2 Dec 2016 13:11:05 +0100
+Message-ID: <20161202131105.44ce78fcfda5ff151d0a3a8b@ao2.it>
+References: <20160727114828.9d6c709d80084b659426e6cc@ao2.it>
+ <s5hmvkt975u.wl-tiwai@suse.de>
+ <20160808183041.783253de1e523d05bb529760@ao2.it>
+ <20160923183710.c7b5f2c0cc248472b9ce7f5e@ao2.it>
+ <s5h1t035e4v.wl-tiwai@suse.de>
+ <20161026190131.f991c5650c1b0382124200dc@ao2.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id E345226774D
- for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 12:30:29 +0100 (CET)
-In-Reply-To: <cover.1480309753.git.mengdong.lin@linux.intel.com>
+Received: from ao2.it (ao2.it [92.243.12.208])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E0A826774D
+ for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 13:11:07 +0100 (CET)
+In-Reply-To: <20161026190131.f991c5650c1b0382124200dc@ao2.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,44 +25,277 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, mengdong.lin@intel.com, vinod.koul@intel.com, broonie@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2016-11-28 at 13:33 +0800, mengdong.lin@linux.intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+On Wed, 26 Oct 2016 19:01:31 +0200
+Antonio Ospite <ao2@ao2.it> wrote:
+
+> On Thu, 29 Sep 2016 10:00:48 +0200
+> Takashi Iwai <tiwai@suse.de> wrote:
 > 
-> Sound cards are defined by machines. And off-soc codecs and DSPs embedded
-> in DSP can be taken as the components and resued by different machines/
-> sound cards. This series allows codec and SOC vendors to install UCM
-> configuration files for a specific codec or DSP, and sound card verb
-> files can include these conf files of components.
+[...]
+> >
+> > Liam, could you review the content?
+> >
 > 
-> Component devices will not be exposed to applications for backward
-> compatibility. So audio servers like PulseAudio and CRAS still only see
-> the machine devices.
-> 
-> History:
-> v2: Use an array to define component directories. Document syntax to
->     enable/disable a component device. Hide cdev defined by the parent
->     device in ucm manager for executing a component sequence.
-> 
-> v3: No longer use macros for UCM manager to enter/exit component domain,
->     to make code simpler.
-> 
-> Mengdong Lin (3):
->   ucm: Skip component directories when scanning sound card configuration
->     files
->   ucm: Parse sequence of component devices
->   ucm: Execute sequence of component devices
-> 
->  src/ucm/main.c      |  78 +++++++++++++++++++++++++-
->  src/ucm/parser.c    | 154 +++++++++++++++++++++++++++++++++++++++++++++++++++-
->  src/ucm/ucm_local.h |  19 +++++++
->  src/ucm/utils.c     |   1 +
->  4 files changed, 249 insertions(+), 3 deletions(-)
+> Ping, plus adding Liam's Intel address just in case.
 > 
 
-All 
+Re-ping.
 
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+The man page content is below but I can resend it if it's easier to
+review.
+
+Thanks,
+   Antonio
+
+> 
+> > > =========
+> > >  alsaucm
+> > > =========
+> > > 
+> > > ---------------------
+> > > ALSA Use Case Manager
+> > > ---------------------
+> > > 
+> > > :Author: Antonio Ospite <ao2@ao2.it>
+> > > :Date:   2016-09-22
+> > > :Copyright: GPLv2+
+> > > :Manual section: 1
+> > > :Manual group: General Commands Manual
+> > > 
+> > > SYNOPSIS
+> > > ========
+> > > 
+> > > *alsaucm* <options> [command]
+> > > 
+> > > DESCRIPTION
+> > > ===========
+> > > 
+> > > alsaucm (ALSA Use Case Manager) is a program to use the ALSA `Use Case
+> > > Interface`_ from the command line.
+> > > 
+> > > On complex sound cards, setting up audio routes is not trivial and mixer
+> > > settings can conflict one another preventing the audio card to work at all.
+> > > 
+> > > The ALSA Use Case Manager is a mechanism for controlling complex audio
+> > > hardware establishing a relationship between hardware configurations and
+> > > meaningful use cases that the end-user can relate with.
+> > > 
+> > > The use case manager can also be used to switch between use cases when
+> > > necessary, in a consistent way.
+> > > 
+> > > At a lower level, the use case manager works by configuring the sound card
+> > > ALSA kcontrols to change the hardware digital and analog audio routing to
+> > > match the requested device use case.
+> > > 
+> > > The use case manager kcontrol configurations are stored in easy to modify text
+> > > files. An audio use case can be defined by a **verb** and **device** parameter.
+> > > 
+> > > The verb describes the use case action i.e. a phone call, listening to music,
+> > > recording a conversation etc. The device describes the physical audio capture
+> > > and playback hardware i.e. headphones, phone handset, bluetooth headset, etc.
+> > > 
+> > > 
+> > > OPTIONS
+> > > =======
+> > > 
+> > > Available options:
+> > > 
+> > >   **-h**, **--help**
+> > >     this help
+> > > 
+> > >   **-c**, **--card** `NAME`
+> > >     open card NAME
+> > > 
+> > >   **-i**, **--interactive**
+> > >     interactive mode
+> > > 
+> > >   **-b**, **--batch** `FILE`
+> > >     batch mode (use ``'-'`` for the stdin input)
+> > > 
+> > >   **-n**, **--no-open**
+> > >     do not open first card found
+> > > 
+> > > 
+> > > Available commands:
+> > > 
+> > >   ``open`` `NAME`
+> > >     open card NAME.
+> > > 
+> > >     valid names are sound card names as listed in ``/usr/share/alsa/ucm``.
+> > > 
+> > >   ``reset``
+> > >     reset sound card to default state.
+> > > 
+> > >   ``reload``
+> > >     reload configuration.
+> > > 
+> > >   ``listcards``
+> > >     list available cards.
+> > > 
+> > >   ``list`` `IDENTIFIER`
+> > >     list command, for items returning two entries (value+comment).
+> > > 
+> > >     the value of the `IDENTIFIER` argument can can be:
+> > > 
+> > >     - ``_verbs`` - get verb list (in pair verb+comment)
+> > >     - ``_devices[/{verb}]`` - get list of supported devices (in pair device+comment)
+> > >     - ``_modifiers[/{verb}]`` - get list of supported modifiers (in pair modifier+comment)
+> > > 
+> > >     The forms without the trailing ``/{verb}`` are valid only after a specific
+> > >     verb has been set.
+> > > 
+> > >   ``list1`` `IDENTIFIER`
+> > >     list command, for lists returning one item per entry.
+> > > 
+> > >     the value of the `IDENTIFIER` argument can vary depending on the context,
+> > >     it can be:
+> > > 
+> > >     - ``TQ[/{verb}]`` - get list of Tone Quality identifiers
+> > >     - ``_enadevs`` - get list of enabled devices
+> > >     - ``_enamods`` - get list of enabled modifiers
+> > >     - ``_supporteddevs/{modifier}|{device}[/{verb}]`` - list of supported devices
+> > >     - ``_conflictingdevs/{modifier}|{device}[/{verb}]`` - list of conflicting devices
+> > > 
+> > >   ``get`` `IDENTIFIER`
+> > >     get string value.
+> > > 
+> > >     the value of the `IDENTIFIER` argument can can be:
+> > > 
+> > >     - ``_verb`` - return current verb
+> > >     - ``[=]{NAME}[/[{modifier}|{/device}][/{verb}]]`` (For valid NAMEs look at the
+> > >       ALSA `Use Case Interface`_)
+> > > 
+> > > 
+> > >   ``geti`` `IDENTIFIER`
+> > >     get integer value.
+> > > 
+> > >     the value of the `IDENTIFIER` argument can can be:
+> > > 
+> > >     - ``_devstatus/{device}``
+> > >     - ``_modtstaus/{device}``
+> > > 
+> > >   ``set`` `IDENTIFIER` `VALUE`
+> > >     set string value
+> > > 
+> > >     The value of the `IDENTIFIER` argument can can be:
+> > > 
+> > >     - ``_verb`` - set the verb to `VALUE`
+> > >     - ``_enadev`` - enable the device specified by `VALUE`
+> > >     - ``_disdev`` - disable the device specified by `VALUE`
+> > >     - ``_swdev/{old_device}`` - switche device:
+> > > 
+> > >       - disable `old_device` and then enable the device specified by
+> > >         `VALUE`
+> > >       - if no device was enabled just return
+> > > 
+> > >     - ``_enamod`` - enable the modifier specified by `VALUE`
+> > >     - ``_dismod`` - disable the modifier specified by `VALUE`
+> > >     - ``_swmod/{old_modifier}`` - switch modifier:
+> > > 
+> > >       - disable `old_modifier` and then enable the modifier specified by
+> > >         `VALUE`
+> > >       - if no modifier was enabled just return
+> > > 
+> > >     Note that the identifiers referring to devices and modifiers are valid
+> > >     only after setting a verb.
+> > > 
+> > >   ``h``, ``help``
+> > >     help
+> > > 
+> > >   ``q``, ``quit``
+> > >     quit
+> > > 
+> > > 
+> > > FILES
+> > > =====
+> > > 
+> > > The master use case files for each supported sound card are in ``/usr/share/alsa/ucm``.
+> > > 
+> > > For example, the master use case file for the `Pandaboard` card is in
+> > > ``/usr/share/alsa/ucm/PandaBoard/PandaBoard.conf``, this file lists all the
+> > > supported use cases, e.g.
+> > > 
+> > > ::
+> > > 
+> > >   SectionUseCase."HiFi" {
+> > >                   File "hifi"
+> > >                   Comment "Play HiFi quality Music."
+> > >   }
+> > >   ...
+> > > 
+> > > 
+> > > Each use case defines a _verb, which is described in the file specified in
+> > > the ``File`` directive, like above.
+> > > 
+> > > The ``HiFi`` verb above is described in
+> > > ``/usr/share/alsa/ucm/PandaBoard/hifi``.
+> > > 
+> > > For more details on the syntax of UCM files, see the alsa-lib source code:
+> > > http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/ucm/parser.c
+> > > 
+> > > 
+> > > EXAMPLES OF USE
+> > > ===============
+> > > 
+> > > Some commands, like for instance ``list _devices``,
+> > > can only work after setting a ``_verb`` in the **same execution**, for
+> > > instance this sequence doesn't work:
+> > > 
+> > > ::
+> > > 
+> > >   # alsaucm -c bytcr-rt5640 set _verb HiFi
+> > >   # alsaucm -c bytcr-rt5640 list _devices
+> > > 
+> > > 
+> > > However this command does:
+> > > 
+> > > ::
+> > > 
+> > >   # alsaucm -n -b - <<EOM
+> > >   open bytcr-rt5640
+> > >   set _verb HiFi
+> > >   list _devices
+> > >   EOM
+> > > 
+> > > 
+> > > An example of setting the `Speaker` device for the `HiFi` verb of the
+> > > `bytcr-rt5640` card:
+> > > 
+> > > ::
+> > > 
+> > >   # alsaucm -n -b - <<EOM
+> > >   open bytcr-rt5640
+> > >   reset
+> > >   set _verb HiFi
+> > >   set _enadev Speaker
+> > >   EOM
+> > > 
+> > > 
+> > > 
+> > > SEE ALSO
+> > > ========
+> > > 
+> > > * Use Case Interface: http://www.alsa-project.org/alsa-doc/alsa-lib/group__ucm.html
+> > > 
+> > > .. _Use Case Interface: http://www.alsa-project.org/alsa-doc/alsa-lib/group__ucm.html
+> > > 
+> > > BUGS
+> > > ====
+> > > 
+> > > None known.
+> > > 
+> > > 
+> 
+
+-- 
+Antonio Ospite
+https://ao2.it
+https://twitter.com/ao2it
+
+A: Because it messes up the order in which people normally read text.
+   See http://en.wikipedia.org/wiki/Posting_style
+Q: Why is top-posting such a bad thing?
