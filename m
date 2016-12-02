@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 09/12] ASoC: Intel: Skylake: Add supply widget
-	in bxt_da_max machine
-Date: Fri,  2 Dec 2016 23:11:46 +0530
-Message-ID: <1480700509-23380-10-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH 10/12] ASoC: Intel: Skylake: Don't reset
+	pass-through pipe in BE prepare
+Date: Fri,  2 Dec 2016 23:11:47 +0530
+Message-ID: <1480700509-23380-11-git-send-email-jeeja.kp@intel.com>
 References: <1480700509-23380-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 547EB267814
- for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 18:32:15 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 965CF26782B
+ for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 18:32:19 +0100 (CET)
 In-Reply-To: <1480700509-23380-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,73 +27,29 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Maxim codec needs clock to be configured before the SSP startup, so we
-need to model the MLCK from SSP5 and turn it on before SSP port is
-enabled, so model this in DSP widget parsing.
+When pipe is pass-through, BE and FE modules are defined inside
+a pipe, reset of pipe will be done in FE DAI prepare. So don't
+reset in the BE prepare.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 34 +++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ sound/soc/intel/skylake/skl-pcm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index bff80b4..c702967 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -43,6 +43,36 @@ enum {
- 	BXT_DPCM_AUDIO_HDMI3_PB,
- };
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 688d6f7..800fdad 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -582,8 +582,8 @@ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
  
-+static struct snd_soc_dai *skl_get_dai_widget(struct snd_soc_dapm_widget *w)
-+{
-+	struct snd_soc_dapm_path *p = NULL;
-+
-+	snd_soc_dapm_widget_for_each_sink_path(w, p) {
-+		if (p->sink->id == snd_soc_dapm_dai_in)
-+			return p->sink->priv;
-+
-+		return skl_get_dai_widget(p->sink);
-+	}
-+
-+	return NULL;
-+}
-+
-+static int ssp_set_clk(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *k, int  event)
-+{
-+	struct snd_soc_dai *cpu_dai = NULL;
-+
-+	cpu_dai = skl_get_dai_widget(w);
-+	if (!cpu_dai)
-+		return -EIO;
-+
-+	/* Enable/Disable the SSP clk */
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		return snd_soc_dai_set_tristate(cpu_dai, 0);
-+	else
-+		return snd_soc_dai_set_tristate(cpu_dai, 1);
-+}
-+
- static const struct snd_kcontrol_new broxton_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-@@ -57,6 +87,9 @@ static const struct snd_soc_dapm_widget broxton_widgets[] = {
- 	SND_SOC_DAPM_SPK("HDMI1", NULL),
- 	SND_SOC_DAPM_SPK("HDMI2", NULL),
- 	SND_SOC_DAPM_SPK("HDMI3", NULL),
-+	SND_SOC_DAPM_SUPPLY("ssp5 mclk", SND_SOC_NOPM, 0, 0,
-+			ssp_set_clk, SND_SOC_DAPM_PRE_PMU |
-+			SND_SOC_DAPM_POST_PMD),
- };
+ 	/* In case of XRUN recovery, reset the FW pipe to clean state */
+ 	mconfig = skl_tplg_be_get_cpr_module(dai, substream->stream);
+-	if (mconfig && (substream->runtime->status->state ==
+-					SNDRV_PCM_STATE_XRUN))
++	if (mconfig && !mconfig->pipe->passthru &&
++		(substream->runtime->status->state == SNDRV_PCM_STATE_XRUN))
+ 		skl_reset_pipe(skl->skl_sst, mconfig->pipe);
  
- static const struct snd_soc_dapm_route broxton_map[] = {
-@@ -76,6 +109,7 @@ static const struct snd_soc_dapm_route broxton_map[] = {
- 	/* CODEC BE connections */
- 	{"HiFi Playback", NULL, "ssp5 Tx"},
- 	{"ssp5 Tx", NULL, "codec0_out"},
-+	{ "codec0_out", NULL, "ssp5 mclk"},
- 
- 	{"Playback", NULL, "ssp1 Tx"},
- 	{"ssp1 Tx", NULL, "codec1_out"},
+ 	return 0;
 -- 
 2.5.0
