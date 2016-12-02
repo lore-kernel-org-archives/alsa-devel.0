@@ -1,44 +1,62 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] ALSA: core: update supported sample rates
-Date: Fri, 2 Dec 2016 08:36:22 +0100
-Message-ID: <b67d6159-2e33-fba8-b9b4-5c01efd7634d@ladisch.de>
-References: <c372493a-cbd1-4750-86c1-10c1fff178b2@EX4.ad.cirrus.com>
+From: Jerome Anand <jerome.anand@intel.com>
+Subject: [RFC PATCH v4 0/7] Add support for Legacy HDMI audio
+	drivers
+Date: Sat,  3 Dec 2016 01:31:30 +0530
+Message-ID: <20161202200130.28084-1-jerome.anand@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id B3643266942
- for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 08:36:25 +0100 (CET)
-In-Reply-To: <c372493a-cbd1-4750-86c1-10c1fff178b2@EX4.ad.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Li Xu <li.xu@cirrus.com>, alsa-devel@alsa-project.org
-Cc: brian.austin@cirrus.com, tiwai@suse.com, paul.handrigan@cirrus.com, o-takashi@sakamocchi.jp, jeeja.kp@intel.com, ckeepax@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, rakesh.a.ughreja@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Li Xu wrote:
-> Add 12KHz, 24KHz, 352.8KHz and 384KHz audio sample rates
->
-> +#define SNDRV_PCM_RATE_12000		(1<<3)		/* 12000Hz */
-> +#define SNDRV_PCM_RATE_24000		(1<<6)		/* 24000Hz */
-> +#define SNDRV_PCM_RATE_352800		(1<<15)		/* 352800Hz */
-> +#define SNDRV_PCM_RATE_384000		(1<<16)		/* 384000Hz */
-
-To quote <http://mailman.alsa-project.org/pipermail/alsa-devel/2013-July/064461.html>:
-You don't need such symbols to use a rate.  These symbols are intended
-for often-used rates.  As long as only one or two drivers use a rate,
-they can just set KNOT and install a constraint.
-
-How many driver would actually use it?
-
-
-Regards,
-Clemens
+TGVnYWN5IChDaGVycnlUcmFpbC8gQmF5dHJhaWwpIEhETUkgYXVkaW8gZHJpdmVycyBhZGRlZAoK
+TGVnYWN5IGhkbWkgYXVkaW8tR2Z4IGludGVyYWN0aW9uLyBpbnRlcmZhY2luZyBpcyB1cGRhdGVk
+IHRvIHVzZQppcnEgY2hpcCBmcmFtZXdvcmsKCkplcm9tZSBBbmFuZCAoNyk6CiAgZHJtL2k5MTU6
+IHNldHVwIGJyaWRnZSBmb3IgSERNSSBMUEUgYXVkaW8gZHJpdmVyCiAgZHJtL2k5MTU6IEFkZCBz
+dXBwb3J0IGZvciBhdWRpbyBkcml2ZXIgbm90aWZpY2F0aW9ucwogIEFMU0E6IGFkZCBzaGVsbCBm
+b3IgSW50ZWwgSERNSSBMUEUgYXVkaW8gZHJpdmVyCiAgQUxTQTogeDg2OiBoZG1pOiBBZGQgYXVk
+aW8gc3VwcG9ydCBmb3IgQllUIGFuZCBDSFQKICBBTFNBOiB4ODY6IGhkbWk6IEltcHJvdmUgcG9z
+aXRpb24gcmVwb3J0aW5nCiAgQUxTQTogeDg2OiBoZG1pOiBGaXh1cCBzb21lIG1vbml0b3IKICBB
+TFNBOiB4ODY6IGhkbWk6IGNvbnRpbnVlIHBsYXliYWNrIGV2ZW4gd2hlbiBkaXNwbGF5ICByZXNv
+bHV0aW9uCiAgICBjaGFuZ2VzCgogRG9jdW1lbnRhdGlvbi9ncHUvaTkxNS5yc3QgICAgICAgICAg
+ICAgfCAgICA5ICsKIGRyaXZlcnMvZ3B1L2RybS9pOTE1L01ha2VmaWxlICAgICAgICAgIHwgICAg
+MyArCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jICAgICAgICB8ICAgIDggKy0KIGRy
+aXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmggICAgICAgIHwgICAxOCArCiBkcml2ZXJzL2dw
+dS9kcm0vaTkxNS9pOTE1X2lycS5jICAgICAgICB8ICAgMjcgKwogZHJpdmVycy9ncHUvZHJtL2k5
+MTUvaTkxNV9yZWcuaCAgICAgICAgfCAgICAzICsKIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVs
+X2F1ZGlvLmMgICAgIHwgICAgOCArCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9oZG1pLmMg
+ICAgICB8ICAgIDEgKwogZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMgfCAg
+NDA5ICsrKysrKysKIGluY2x1ZGUvZHJtL2ludGVsX2xwZV9hdWRpby5oICAgICAgICAgIHwgICA0
+NiArCiBzb3VuZC9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDIgKwogc291
+bmQvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAyICstCiBzb3VuZC94ODYv
+S2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICB8ICAgMTYgKwogc291bmQveDg2L01ha2VmaWxl
+ICAgICAgICAgICAgICAgICAgICAgfCAgIDEwICsKIHNvdW5kL3g4Ni9pbnRlbF9oZG1pX2F1ZGlv
+LmMgICAgICAgICAgIHwgMTkzMiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogc291
+bmQveDg2L2ludGVsX2hkbWlfYXVkaW8uaCAgICAgICAgICAgfCAgMjAxICsrKysKIHNvdW5kL3g4
+Ni9pbnRlbF9oZG1pX2F1ZGlvX2lmLmMgICAgICAgIHwgIDU1MSArKysrKysrKysKIHNvdW5kL3g4
+Ni9pbnRlbF9oZG1pX2xwZV9hdWRpby5jICAgICAgIHwgIDYyNiArKysrKysrKysrKwogc291bmQv
+eDg2L2ludGVsX2hkbWlfbHBlX2F1ZGlvLmggICAgICAgfCAgNjkyICsrKysrKysrKysrKwogMTkg
+ZmlsZXMgY2hhbmdlZCwgNDU2MSBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQogY3JlYXRl
+IG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2xwZV9hdWRpby5jCiBjcmVh
+dGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kcm0vaW50ZWxfbHBlX2F1ZGlvLmgKIGNyZWF0ZSBtb2Rl
+IDEwMDY0NCBzb3VuZC94ODYvS2NvbmZpZwogY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3g4Ni9N
+YWtlZmlsZQogY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3g4Ni9pbnRlbF9oZG1pX2F1ZGlvLmMK
+IGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC94ODYvaW50ZWxfaGRtaV9hdWRpby5oCiBjcmVhdGUg
+bW9kZSAxMDA2NDQgc291bmQveDg2L2ludGVsX2hkbWlfYXVkaW9faWYuYwogY3JlYXRlIG1vZGUg
+MTAwNjQ0IHNvdW5kL3g4Ni9pbnRlbF9oZG1pX2xwZV9hdWRpby5jCiBjcmVhdGUgbW9kZSAxMDA2
+NDQgc291bmQveDg2L2ludGVsX2hkbWlfbHBlX2F1ZGlvLmgKCi0tIAoyLjkuMwoKYmFzZS1jb21t
+aXQ6IGIzNGYyN2UwMGM5YTIxZDIwNzgwNjJkYTc2MGUyNGZkNGE2MjAzOTEKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlz
+dApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0
+b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
