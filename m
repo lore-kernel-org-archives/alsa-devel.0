@@ -1,76 +1,121 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: Re: [alsa-utils] alsaucm should come with a man page
-Date: Fri, 2 Dec 2016 14:47:08 +0100
-Message-ID: <20161202144708.910cff72cfa594248c139c9b@ao2.it>
-References: <20160727114828.9d6c709d80084b659426e6cc@ao2.it>
- <s5hmvkt975u.wl-tiwai@suse.de>
- <20160808183041.783253de1e523d05bb529760@ao2.it>
- <20160923183710.c7b5f2c0cc248472b9ce7f5e@ao2.it>
- <s5h1t035e4v.wl-tiwai@suse.de>
- <20161026190131.f991c5650c1b0382124200dc@ao2.it>
- <20161202131105.44ce78fcfda5ff151d0a3a8b@ao2.it>
- <1480683567.4636.153.camel@loki> <s5h37i6zcqh.wl-tiwai@suse.de>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v5 11/14] ASoC: add simple-graph-card document
+Date: Fri, 2 Dec 2016 07:50:48 -0600
+Message-ID: <20161202135048.tzvrv7pzv2dubcy3@rob-hp-laptop>
+References: <87k2bowckx.wl%kuninori.morimoto.gx@renesas.com>
+ <874m2swcbx.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ao2.it (ao2.it [92.243.12.208])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F6F12677EF
- for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2016 14:47:10 +0100 (CET)
-In-Reply-To: <s5h37i6zcqh.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, "mengdong.lin" <mengdong.lin@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <874m2swcbx.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Laurent <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, Guennadi <g.liakhovetski-Mmb7MZpHnFY@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-Kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 02 Dec 2016 14:23:18 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
-
-> On Fri, 02 Dec 2016 13:59:27 +0100,
-> Liam Girdwood wrote:
-> > 
-> > On Fri, 2016-12-02 at 13:11 +0100, Antonio Ospite wrote:
-> > > On Wed, 26 Oct 2016 19:01:31 +0200
-> > > Antonio Ospite <ao2@ao2.it> wrote:
-> > > 
-> > > > On Thu, 29 Sep 2016 10:00:48 +0200
-> > > > Takashi Iwai <tiwai@suse.de> wrote:
-> > > > 
-> > > [...]
-> > > > >
-> > > > > Liam, could you review the content?
-> > 
-> > Apologies. Looks good :)
-> > 
-> > Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+On Mon, Nov 28, 2016 at 02:47:57AM +0000, Kuninori Morimoto wrote:
 > 
-> Thanks.  Antonio, could you submit as a proper patch?
-> Since we have no rst conversion so far in alsa-utils package, I prefer
-> the raw *roff format at this time.
+> From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 > 
-> Or, you can introduce the configure change to support ReST in the
-> patchset.  It's up to you :)
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+> ---
+>  .../bindings/sound/simple-graph-card.txt           | 67 ++++++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/simple-graph-card.txt
 > 
+> diff --git a/Documentation/devicetree/bindings/sound/simple-graph-card.txt b/Documentation/devicetree/bindings/sound/simple-graph-card.txt
+> new file mode 100644
+> index 0000000..3d4c5a8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/simple-graph-card.txt
+> @@ -0,0 +1,67 @@
+> +Simple-Graph-Card:
+
+There's nothing simple about this. graph-audio-card or audio-card-graph.
+
+> +
+> +Simple-Graph-Card specifies audio DAI connections of SoC <-> codec.
+> +It is based on common bindings for device graphs.
+> +see ${LINUX}/Documentation/devicetree/bindings/graph.txt
+> +
+> +Basically, Simple-Graph-Card property is same as Simple-Card.
+> +see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.txt
+> +
+> +Below are same as Simple-Card.
+> +
+> +- simple-audio-card,name
+> +- simple-audio-card,widgets
+> +- simple-audio-card,routing
+> +- simple-audio-card,mclk-fs
+> +- simple-audio-card,hp-det-gpio
+> +- simple-audio-card,mic-det-gpio
+> +- simple-audio-card,format
+> +- simple-audio-card,frame-master
+> +- simple-audio-card,bitclock-master
+> +- simple-audio-card,bitclock-inversion
+> +- simple-audio-card,frame-inversion
+> +- simple-audio-card,mclk-fs
+> +- simple-audio-card,dai-tdm-slot-num
+> +- simple-audio-card,dai-tdm-slot-width
+
+The simple-audio-card prefix is pointless. It's fine to reuse, but don't 
+add to it.
+
+> +- clocks / system-clock-frequency
+> +
+> +In Simple-Graph-Card, above properties need in CPU side port on DT.
+> +And it needs to have "compatible" property too.
+> +In addition, CPU side driver needs to call asoc_simple_card_try_to_probe_graph_card().
+> +It will probe specified Card driver if it could find "compatible" property on port.
+> +Otherwise, it will do nothing.
+> +
+> +Required properties:
+> +
+> +- compatible				: "asoc-simple-graph-card";
+> +- type					: "sound";
+> +
+> +Example
+> +
+> +ak4643: codec@12 {
+> +	compatible = "asahi-kasei,ak4643";
+> +	...
+> +	port {
+> +		type = "sound";
+> +		ak4643_port: endpoint {
+> +			remote-endpoint = <&rcar_ak4643_port>;
+> +			...
+> +		};
+> +	};
+> +};
+> +
+> +rcar_sound {
+> +	...
+> +	port {
+> +		compatible = "asoc-simple-graph-card";
+
+Do you have an example where you'd have multiple ports? If not, this 
+should go up a level.
+
+> +
+> +		simple-audio-card,format = "left_j";
+> +		simple-audio-card,bitclock-master = <&ak4643_port>;
+> +		simple-audio-card,frame-master = <&ak4643_port>;
+
+If you follow video-interfaces.txt, these should all go in the endpoint 
+node.
+
+> +		type = "sound";
+> +		rcar_ak4643_port: endpoint {
+> +			remote-endpoint = <&ak4643_port>;
+> +			...
+> +		};
+> +	};
+> +};
+> -- 
+> 1.9.1
 > 
-
-I'll look into adding the configure changes, and report back next week.
-
-Thanks,
-   Antonio
-
--- 
-Antonio Ospite
-https://ao2.it
-https://twitter.com/ao2it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
