@@ -1,138 +1,95 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [PATCH 3/3 v3] ALSA: usb-audio: fix race in snd_usb_endpoint_stop
-Date: Mon, 5 Dec 2016 02:10:59 -0800
-Message-ID: <58453D33.5000006@mentor.com>
-References: <20161130075923.15205-1-jiada_wang@mentor.com> <20161130075923.15205-4-jiada_wang@mentor.com> <s5hvav52vg8.wl-tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3] ASoC: omap-mcbsp: Add PM QoS support
+ for McBSP to prevent glitches
+Date: Mon, 5 Dec 2016 11:35:04 +0200
+Message-ID: <730ed491-ebe7-86c1-b131-5d9441ae2b7c@ti.com>
+References: <1480555145-8300-1-git-send-email-matt@ranostay.consulting>
+ <e8e9a552-14d9-15eb-bf9a-48fdc79965e2@ti.com>
+ <CAJ_EiSToYsRyxKF47WEZjcr5Jb4LC-3x310=JNdA7vSrYNoAdw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hvav52vg8.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: perex@perex.cz, alsa-devel@alsa-project.org, apape@de.adit-jv.com, Mark_Craske@mentor.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24C04266B9F
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 10:34:40 +0100 (CET)
+In-Reply-To: <CAJ_EiSToYsRyxKF47WEZjcr5Jb4LC-3x310=JNdA7vSrYNoAdw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Matt Ranostay <matt@ranostay.consulting>
+Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, Linux OMAP List <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Takashi
-
-On 11/30/2016 01:00 AM, Takashi Iwai wrote:
-> On Wed, 30 Nov 2016 08:59:23 +0100,
-> Jiada Wang wrote:
->> From: Mark Craske<Mark_Craske@mentor.com>
->>
->> Kernel crash seen once:
->>
->> Unable to handle kernel NULL pointer dereference at virtual address 00000008
->> pgd = a1d7c000
->> [00000008] *pgd=31c93831, *pte=00000000, *ppte=00000000
->> Internal error: Oops: 17 [#1] PREEMPT SMP ARM
->> CPU: 0 PID: 250 Comm: dbus-daemon Not tainted 3.14.51-03479-gf50bdf4 #1
->> task: a3ae61c0 ti: a08c8000 task.ti: a08c8000
->> PC is at retire_capture_urb+0x10/0x1f4 [snd_usb_audio]
->> LR is at snd_complete_urb+0x140/0x1f0 [snd_usb_audio]
->> pc : [<7f0eb22c>]    lr : [<7f0e57fc>]    psr: 200e0193
->> sp : a08c9c98  ip : a08c9ce8  fp : a08c9ce4
->> r10: 0000000a  r9 : 00000102  r8 : 94cb3000
->> r7 : 94cb3000  r6 : 94d0f000  r5 : 94d0e8e8  r4 : 94d0e000
->> r3 : 7f0eb21c  r2 : 00000000  r1 : 94cb3000  r0 : 00000000
->> Flags: nzCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
->> Control: 10c5387d  Table: 31d7c04a  DAC: 00000015
->> Process dbus-daemon (pid: 250, stack limit = 0xa08c8238)
->> Stack: (0xa08c9c98 to 0xa08ca000)
->> ...
->> Backtrace:
->> [<7f0eb21c>] (retire_capture_urb [snd_usb_audio]) from [<7f0e57fc>] (snd_complete_urb+0x140/0x1f0 [snd_usb_audio])
->> [<7f0e56bc>] (snd_complete_urb [snd_usb_audio]) from [<80371118>] (__usb_hcd_giveback_urb+0x78/0xf4)
->> [<803710a0>] (__usb_hcd_giveback_urb) from [<80371514>] (usb_giveback_urb_bh+0x8c/0xc0)
->> [<80371488>] (usb_giveback_urb_bh) from [<80028e3c>] (tasklet_hi_action+0xc4/0x148)
->> [<80028d78>] (tasklet_hi_action) from [<80028358>] (__do_softirq+0x190/0x380)
->> [<800281c8>] (__do_softirq) from [<80028858>] (irq_exit+0x8c/0xfc)
->> [<800287cc>] (irq_exit) from [<8000ea88>] (handle_IRQ+0x8c/0xc8)
->> [<8000e9fc>] (handle_IRQ) from [<800085e8>] (gic_handle_irq+0xbc/0xf8)
->> [<8000852c>] (gic_handle_irq) from [<80509044>] (__irq_svc+0x44/0x78)
->> [<80508820>] (_raw_spin_unlock_irq) from [<8004b880>] (finish_task_switch+0x5c/0x100)
->> [<8004b824>] (finish_task_switch) from [<805052f0>] (__schedule+0x48c/0x6d8)
->> [<80504e64>] (__schedule) from [<805055d4>] (schedule+0x98/0x9c)
->> [<8050553c>] (schedule) from [<800116c8>] (do_work_pending+0x30/0xd0)
->> [<80011698>] (do_work_pending) from [<8000e160>] (work_pending+0xc/0x20)
->> Code: e1a0c00d e92ddff0 e24cb004 e24dd024 (e5902008)
->> Kernel panic - not syncing: Fatal exception in interrupt
->>
->> There is a race between retire_capture_urb()&  stop_endpoints() which is
->> setting ep->data_subs to NULL. The underlying cause is in
->> snd_usb_endpoint_stop(), which sets
->>    ep->data_subs = NULL;
->>    ep->sync_slave = NULL;
->>    ep->retire_data_urb = NULL;
->>    ep->prepare_data_urb = NULL;
->>
->> An improvement, suggested by Andreas Pape (ADIT) is to read parameters
->> into local variables. This should solve race between stop and retire
->> where it is legal to store the pointers to local variable as they are
->> not freed in stop path but just set to NULL.
-> Well, it's tricky.  A saner way would be to clear the stuff really
-> after all users are gone.
->
-> An untested patch is below.  Let me know if it really works.
-Thanks for your proposal, I am afraid, we only found the race issue once 
-during
-our automation test, so I can't test for your patch,
-but from what I can see, your patch makes sense to me.
-
-The only difference when apply with your patch is, now in case 
-stop_endpoints() is called
-from TRIGGER_STOP, these stuff won't get cleared, but I think this isn't 
-an issue, is it?
-
-Thanks,
-Jiada
->
->> However, additional races may still happen in close+hw_free against
->> retire, as there pointers may be freed in addition. For example, while
->> in retire_capture_urb() runtime->dma_area might be freed/nulled.
-> This shouldn't be a problem, as stop_endpoints() waits until all
-> active URBS get killed.
->
->
-> thanks,
->
-> Takashi
->
-> ---
-> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-> index c470251cea4b..f3fce9abece9 100644
-> --- a/sound/usb/endpoint.c
-> +++ b/sound/usb/endpoint.c
-> @@ -384,6 +384,9 @@ static void snd_complete_urb(struct urb *urb)
->   	if (unlikely(atomic_read(&ep->chip->shutdown)))
->   		goto exit_clear;
->
-> +	if (unlikely(!test_bit(EP_FLAG_RUNNING,&ep->flags)))
-> +		goto exit_clear;
-> +
->   	if (usb_pipeout(ep->pipe)) {
->   		retire_outbound_urb(ep, ctx);
->   		/* can be stopped during retire callback */
-> @@ -534,6 +537,11 @@ static int wait_clear_urbs(struct snd_usb_endpoint *ep)
->   			alive, ep->ep_num);
->   	clear_bit(EP_FLAG_STOPPING,&ep->flags);
->
-> +	ep->data_subs = NULL;
-> +	ep->sync_slave = NULL;
-> +	ep->retire_data_urb = NULL;
-> +	ep->prepare_data_urb = NULL;
-> +
->   	return 0;
->   }
->
-> @@ -1006,10 +1014,6 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep)
->
->   	if (--ep->use_count == 0) {
->   		deactivate_urbs(ep, false);
-> -		ep->data_subs = NULL;
-> -		ep->sync_slave = NULL;
-> -		ep->retire_data_urb = NULL;
-> -		ep->prepare_data_urb = NULL;
->   		set_bit(EP_FLAG_STOPPING,&ep->flags);
->   	}
->   }
+T24gMTIvMDQvMjAxNiAwMzozMyBBTSwgTWF0dCBSYW5vc3RheSB3cm90ZToKPj4+ICsgKgo+Pj4g
+KyAqIEFsc28gc2V0dGluZyBvZiB0aGUgUW9TIGxhdGVuY3kgZm9yIHRoZSBGSUZPIHdoaWNoIHZh
+cmllcyB1cG9uIHRoZSBidWZmZXIKPj4+ICsgKiBzaXplLiBBcHByb3hpbWF0ZWx5IDIuMyBtaWxs
+aXNlY29uZHMgcGVyIEZJRk8gbG9jYXRpb24uCj4+PiAgICovCj4+PiAgdm9pZCBvbWFwX21jYnNw
+X3N0YXJ0KHN0cnVjdCBvbWFwX21jYnNwICptY2JzcCwgaW50IHR4LCBpbnQgcngpCj4+PiAgewo+
+Pj4gICAgICAgaW50IGVuYWJsZV9zcmcgPSAwOwo+Pj4gKyAgICAgaW50IGxhdGVuY3kgPSBtY2Jz
+cC0+cGRhdGEtPmJ1ZmZlcl9zaXplICogMjM7Cj4+Cj4+IEkgdGhpbmsgdGhpcyBpcyBub3QgY29y
+cmVjdC4KPj4gVGhlIE1jQlNQIEZJRk8gdGltZSBkZXBlbmRzIG9uIHRoZSBzYW1wbGUgcmF0ZSBh
+bmQgb24gdGhlIG51bWJlciBvZgo+PiBjaGFubmVscyB0aGUgYXVkaW8gaXMgdXNpbmcuIFdpdGgg
+OEtIeiBtb25vIHlvdSBoYXZlIDEyIHRpbWVzIG1vcmUgdGltZQo+PiBwZXIgRklGTyBlbGVtZW50
+IGNvbXBhcmVkIHRvIDQ4S0h6IHN0ZXJlby4KPj4KPj4gQXMgaXQgaGFzIGJlZW4gZGlzY3Vzc2Vk
+IHdpdGggVG9ueSB3ZSBzaG91bGQgY2FsY3VsYXRlIHRoZSBRb1MgbGF0ZW5jeQo+PiBpbiBod19w
+YXJhbXM6Cj4+Cj4gCj4gT2sgeWVhaCBtaXNzZWQgdGhhdCBwYXJ0IG9mIHRoZSB0aHJlYWQgYnV0
+IGl0IG1ha2VzIHNlbnNlLiBKdXN0IG9uZQo+IHF1ZXN0aW9uIHNob3VsZCB0aGUgbGF0ZW5jeSB2
+YWx1ZSBiZSBvbmx5IGJhc2VkIG9uIHRoZSBUWCBGSUZPCj4gdGhyZXNob2xkPyBJIGFzc3VtZSBj
+YXB0dXJlIGFuZCB0cmFuc21pdCBoYXZlIHR3byBkaWZmZXJlbnQgc2V0dGluZ3MuCgpZZXMsIEkg
+YmVsaWV2ZSB3ZSBzaG91bGQgYXBwbHkgdGhlIGxvd2VzdCBRb1Mgd2hlbiBib3RoIGRpcmVjdGlv
+biBpcwphY3RpdmUuIElmIHRoZSBzZWNvbmQgc3RyZWFtIG5lZWRzIGxvd2VyIFFvUywgd2Ugc2hv
+dWxkIHN3aXRjaCB0byB1c2UKdGhhdCwgaWYgaXQgd291bGQgbmVlZCBsb25nZXIsIHdlIHNob3Vs
+ZCBrZWVwIHRoZSBRb1MgcGxhY2VkIGZvciB0aGUKZmlyc3Qgc3RyZWFtLgoKPj4gbGF0ZW5jeV9t
+cyA9ICgoRklGT3NpemUgLSBGSUZPdGhyZXNob2xkKSAvIGNoYW5uZWxzKSAqIDEwMDAvc2FtcGxp
+bmctcmF0ZQo+Pgo+PiBPbiBPTUFQMy5NY0JTUDIgZm9yIGV4YW1wbGUgKDQ0LjFLSHosIHN0ZXJl
+byk6Cj4+IEZJRk8gdGhyZXNob2xkIDEyOAo+PiAgLSBETUEgcmVxdWVzdCB3aWxsIGJlIHRyaWdn
+ZXJlZCB3aGVuIDEyOCBzbG90cyBhcmUgZnJlZSBpbiB0aGUgRklGTwo+PiAgLSBhdCB0aGF0IHBv
+aW50IHdlIGhhdmUgc3RpbGwgMTE1MiB3b3JkcyBpbiB0aGUgRklGTy4KPj4gIC0gaWYgdGhlIEMg
+d2FrZXVwIGxhdGVuY3kgaXMgbG9uZ2VyIHRoZW4gd2hhdCBpdCB0YWtlcyB0byBwbGF5IG91dCB0
+aGUKPj4gc2FtcGxlcyBmcm9tIHRoZSBGSUZPICgxMy4wNm1zKSwgd2Ugd2lsbCBkcmFpbiB0aGUg
+RklGTyBhbmQgZ290IHVuZGVyZmxvdy4KPj4gIC0gaW4gdGhpcyBjYXNlIHRoZSBRT1Mgc2hvdWxk
+IGJlIHNldCBhcyAxMy4wNm1zCj4+Cj4+IEZJRk8gdGhyZXNob2xkIDEwMjQKPj4gIC0gRE1BIHJl
+cXVlc3Qgd2lsbCBiZSB0cmlnZ2VyZWQgd2hlbiAxMDI0IHNsb3RzIGFyZSBmcmVlIGluIHRoZSBG
+SUZPCj4+ICAtIGF0IHRoYXQgcG9pbnQgd2UgaGF2ZSBzdGlsbCAyNTYgd29yZHMgaW4gdGhlIEZJ
+Rk8uCj4+ICAtIGlmIHRoZSBDIHdha2V1cCBsYXRlbmN5IGlzIGxvbmdlciB0aGVuIHdoYXQgaXQg
+dGFrZXMgdG8gcGxheSBvdXQgdGhlCj4+IHNhbXBsZXMgZnJvbSB0aGUgRklGTyAoMi45bXMpLCB3
+ZSB3aWxsIGRyYWluIHRoZSBGSUZPIGFuZCBnb3QgdW5kZXJmbG93Lgo+PiAgLSBpbiB0aGlzIGNh
+c2UgdGhlIFFPUyBzaG91bGQgYmUgMi45bXMKPj4KPj4gT24gb3RoZXIgTWNCU1BzIHdpdGggMTI4
+IHdvcmQgRklGTyB0aGUgcmVxdWlyZWQgbGF0ZW5jeSBpcyBzaG9ydGVyIHRvIGVuc3VyZQo+PiB3
+ZSBkb24ndCBkcmFpbiB0aGUgRklGTy4KPj4KPj4KPj4+ICAgICAgIHUxNiB3Owo+Pj4KPj4+ICsg
+ICAgIC8qIFByZXZlbnQgb21hcCBoYXJkd2FyZSBmcm9tIGhpdHRpbmcgb2ZmIGJldHdlZW4gZmlm
+byBmaWxscyAqLwo+Pj4gKyAgICAgaWYgKGxhdGVuY3kpCj4+PiArICAgICAgICAgICAgIHBtX3Fv
+c19hZGRfcmVxdWVzdCgmbWNic3AtPnBtX3Fvc19yZXEsCj4+PiArICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBQTV9RT1NfQ1BVX0RNQV9MQVRFTkNZLCBsYXRlbmN5KTsKPj4+ICsKPj4+
+ICAgICAgIGlmIChtY2JzcC0+c3RfZGF0YSkKPj4+ICAgICAgICAgICAgICAgb21hcF9zdF9zdGFy
+dChtY2JzcCk7Cj4+Pgo+Pj4gQEAgLTczMSw2ICs3NDEsOCBAQCB2b2lkIG9tYXBfbWNic3Bfc3Rv
+cChzdHJ1Y3Qgb21hcF9tY2JzcCAqbWNic3AsIGludCB0eCwgaW50IHJ4KQo+Pj4KPj4+ICAgICAg
+IGlmIChtY2JzcC0+c3RfZGF0YSkKPj4+ICAgICAgICAgICAgICAgb21hcF9zdF9zdG9wKG1jYnNw
+KTsKPj4+ICsKPj4+ICsgICAgIHBtX3Fvc19yZW1vdmVfcmVxdWVzdCgmbWNic3AtPnBtX3Fvc19y
+ZXEpOwo+Pj4gIH0KPj4+Cj4+PiAgaW50IG9tYXAyX21jYnNwX3NldF9jbGtzX3NyYyhzdHJ1Y3Qg
+b21hcF9tY2JzcCAqbWNic3AsIHU4IGZja19zcmNfaWQpCj4+PiBAQCAtMTA5OCw2ICsxMTEwLDkg
+QEAgaW50IG9tYXBfbWNic3BfaW5pdChzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+Pj4K
+Pj4+ICB2b2lkIG9tYXBfbWNic3BfY2xlYW51cChzdHJ1Y3Qgb21hcF9tY2JzcCAqbWNic3ApCj4+
+PiAgewo+Pj4gKyAgICAgaWYgKHBtX3Fvc19yZXF1ZXN0X2FjdGl2ZSgmbWNic3AtPnBtX3Fvc19y
+ZXEpKQo+Pj4gKyAgICAgICAgICAgICBwbV9xb3NfcmVtb3ZlX3JlcXVlc3QoJm1jYnNwLT5wbV9x
+b3NfcmVxKTsKPj4+ICsKPj4+ICAgICAgIGlmIChtY2JzcC0+cGRhdGEtPmJ1ZmZlcl9zaXplKQo+
+Pj4gICAgICAgICAgICAgICBzeXNmc19yZW1vdmVfZ3JvdXAoJm1jYnNwLT5kZXYtPmtvYmosICZh
+ZGRpdGlvbmFsX2F0dHJfZ3JvdXApOwo+Pj4KPj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvb21h
+cC9tY2JzcC5oIGIvc291bmQvc29jL29tYXAvbWNic3AuaAo+Pj4gaW5kZXggNjFlOTNiMWMxODVk
+Li5lNjAzZjMzZjQwODIgMTAwNjQ0Cj4+PiAtLS0gYS9zb3VuZC9zb2Mvb21hcC9tY2JzcC5oCj4+
+PiArKysgYi9zb3VuZC9zb2Mvb21hcC9tY2JzcC5oCj4+PiBAQCAtMzI1LDYgKzMyNSw4IEBAIHN0
+cnVjdCBvbWFwX21jYnNwIHsKPj4+ICAgICAgIHVuc2lnbmVkIGludCBpbl9mcmVxOwo+Pj4gICAg
+ICAgaW50IGNsa19kaXY7Cj4+PiAgICAgICBpbnQgd2xlbjsKPj4+ICsKPj4+ICsgICAgIHN0cnVj
+dCBwbV9xb3NfcmVxdWVzdCBwbV9xb3NfcmVxOwo+Pj4gIH07Cj4+Pgo+Pj4gIHZvaWQgb21hcF9t
+Y2JzcF9jb25maWcoc3RydWN0IG9tYXBfbWNic3AgKm1jYnNwLAo+Pj4KPj4KPj4gLS0KPj4gUMOp
+dGVyCgotLSAKUMOpdGVyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
