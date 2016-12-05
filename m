@@ -1,99 +1,99 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l56: Fix misuse of regmap_update_bits" to the asoc tree
-Date: Mon, 05 Dec 2016 13:53:43 +0000
-Message-ID: <E1cDtiB-00066q-5w@finisterre>
-References: <1480439449-15975-1-git-send-email-florian.vaussard@heig-vd.ch>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1480439449-15975-1-git-send-email-florian.vaussard@heig-vd.ch>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Florian Vaussard <florian.vaussard@gmail.com>
-Cc: Florian Vaussard <florian.vaussard@heig-vd.ch>, Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.orgFlorian Vaussard <florian.vaussard@heig-vd.ch>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: ProjectMix IO Feedback
+Date: Mon, 5 Dec 2016 21:10:44 +0900
+Message-ID: <7415d24b-216d-a2a0-fb2d-3e1ef89ca3ca@sakamocchi.jp>
+References: <CAMGupfgbpK37w6KY23gzQn=udpweXDs8i6EdiBJ-SD8+6Kgnww@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 68818266C72
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 13:10:48 +0100 (CET)
+In-Reply-To: <CAMGupfgbpK37w6KY23gzQn=udpweXDs8i6EdiBJ-SD8+6Kgnww@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Darren Anderson <darrena092@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "ffado-user@lists.sourceforge.net" <FFADO-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+  \Hi Darren,
+(C.C.ed to alsa-devel and ffado-user)
 
-   ASoC: cs42l56: Fix misuse of regmap_update_bits
+On Dec 1 2016 19:47, Darren Anderson wrote:
+> Hi Takashi,
+>
+> Just wanted to give you some feedback on how the ProjectMix IO is working
+> with your changes that were merged into the Linux Kernel.
+>
+> Out of the box, on Ubuntu with kernel version 4.4.0-31, on boot, the
+> interface makes its distinctive popping sound as it sets the clock rate,
+> showing that the driver is loading fine. It is also now detected by
+> PulseAudio (without using a jack sink, as I previously had to). I'm then
+> able to use ffado-mixer to control the device.
 
-has been applied to the asoc tree at
+Thanks for your feedback to ALSA bebob driver. But it's better to post 
+this kind of report to public mailing list, instead of personal address. 
+There might be people who need the information.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> There are, however, three issues.
+>
+> Firstly, the sample rate seems to be set every time an audio stream is
+> about to begin. This can be quite irritating at times, due to the
+> aforementioned distinctive popping sound and lag in the starting of audio
+> streams. Would it be possible to set the sample rate once at boot time, and
+> leave it at this unless the user specifically instructs otherwise?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Applications can set sampling rate as they want, by ALSA PCM interface. 
+I think it better to keep it what it is unless there's few special cases.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+For example, ALSA dice driver performs what you expected, due to 
+hardware restriction. Application can't set sampling rate by ALSA PCM 
+interface and they require the other application for this purpose.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> Secondly, the main audio seems to be routed from Pulse through the "Aux
+> 1/2" channel, as opposed to "Mixer 1/2". The device will output no audio
+> until the "Analog 1/2" output is set to use "Aux 1/2" in FFADO mixer.
+> However in fixing this issue, a separate issue may be created. As most
+> distributions play some sort of "start-up sound", and the device seems to
+> initialize to full volume unless instructed otherwise, the fact that the
+> output channel needs to be changed may actually save some ear drums. It may
+> be wise to ask the device to reduce to something reasonable like 25% volume
+> when the driver is loaded. Or perhaps just mute all outputs by default.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Just after booting up, your device has no routing configuration, 
+therefore it generates no sound till configured with use space 
+applications. Default settings of gain/volume are 0dB, perhaps. But this 
+can also be configured from user space applications.
 
-Thanks,
-Mark
+What I can do is to produce a way to control devices for applications in 
+user land, and actual way to use the device is left to application 
+developers. If users have something to do, they would do it.
 
->From 8c317fafdd4e3b988c44d986022c66cebf71fc41 Mon Sep 17 00:00:00 2001
-From: Florian Vaussard <florian.vaussard@gmail.com>
-Date: Tue, 29 Nov 2016 18:10:49 +0100
-Subject: [PATCH] ASoC: cs42l56: Fix misuse of regmap_update_bits
+> And finally, I've have found that the quality of the audio output from the
+> device is of a somewhat lower fidelity than the equivalent output on
+> Windows. I'm currently testing the interface using my KRK Rokit monitor
+> speakers and finding that the output is lacking in low frequencies. It
+> sounds as if there is some high pass filtering going on.
 
-Using regmap_update_bits(..., mask, 1) with 'mask' following (1 << k)
-and k greater than 0 is wrong. Indeed, _regmap_update_bits will perform
-(mask & 1), which results in 0 if LSB of mask is 0. Thus the call
-regmap_update_bits(..., mask, 1) is in reality equivalent to
-regmap_update_bits(..., mask, 0).
+ALSA bebob driver allows applications to use the device with both of 16 
+bit sample and 24bit sample with adjusted 8 bit, for playbacking. I 
+guess that your trial is to playback 16 bit PCM sample and looks with 
+highpass filter. Please check the property of PCM substream.
 
-In such a case, the correct use is regmap_update_bits(..., mask, mask).
+> I hope that you find this feedback useful to your ongoing efforts. You're
+> doing great work.
+>
+> If I can do anything else to help, don't hesitate to ask.
 
-This driver is performing such a mistake with the CS42L56_AIN*_REF_MASK
-masks, which equal 0x10, 0x20, 0x40 and 0x80. Fix the driver to make it
-consistent with the API. Please note that this change is untested,
-as I do not have this piece of hardware. Testers are welcome!
 
-Signed-off-by: Florian Vaussard <florian.vaussard@heig-vd.ch>
-Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Acked-by: Brian Austin <brian.austin@cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/cs42l56.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+Cheers
 
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index 3e2c04642f1e..cb6ca85f1536 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -1277,19 +1277,23 @@ static int cs42l56_i2c_probe(struct i2c_client *i2c_client,
- 
- 	if (cs42l56->pdata.ain1a_ref_cfg)
- 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
--				   CS42L56_AIN1A_REF_MASK, 1);
-+				   CS42L56_AIN1A_REF_MASK,
-+				   CS42L56_AIN1A_REF_MASK);
- 
- 	if (cs42l56->pdata.ain1b_ref_cfg)
- 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
--				   CS42L56_AIN1B_REF_MASK, 1);
-+				   CS42L56_AIN1B_REF_MASK,
-+				   CS42L56_AIN1B_REF_MASK);
- 
- 	if (cs42l56->pdata.ain2a_ref_cfg)
- 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
--				   CS42L56_AIN2A_REF_MASK, 1);
-+				   CS42L56_AIN2A_REF_MASK,
-+				   CS42L56_AIN2A_REF_MASK);
- 
- 	if (cs42l56->pdata.ain2b_ref_cfg)
- 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
--				   CS42L56_AIN2B_REF_MASK, 1);
-+				   CS42L56_AIN2B_REF_MASK,
-+				   CS42L56_AIN2B_REF_MASK);
- 
- 	if (cs42l56->pdata.micbias_lvl)
- 		regmap_update_bits(cs42l56->regmap, CS42L56_GAIN_BIAS_CTL,
--- 
-2.10.2
+Takashi Sakamoto
