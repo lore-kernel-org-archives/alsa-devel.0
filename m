@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: atom: Add sysfs entry in order
-	to store FW version" to the asoc tree
-Date: Mon, 05 Dec 2016 17:23:26 +0000
-Message-ID: <E1cDwz8-0007bE-Rj@finisterre>
-References: <20161109084736.28265-4-sebastien.guiriec@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Cherry trail and Nau 88l24 codec
+Date: Mon, 5 Dec 2016 12:10:09 -0600
+Message-ID: <30f62f0d-1e3e-0839-8d85-df9e209b5cf9@linux.intel.com>
+References: <CAPoeEY_Tve2TAgBqY+MqPEUGnbadYHg9Z90DQ=YQumWebfW++A@mail.gmail.com>
+ <62e35b1dac6b4000beb73d857f780f04@NTHCML01B.nuvoton.com>
+ <CAPoeEY8=A949-cuVwfyov2GfpQc=hAjPsDG-suXmT_TDytOKBQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BA2DC266DBC
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 18:23:35 +0100 (CET)
-In-Reply-To: <20161109084736.28265-4-sebastien.guiriec@intel.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22EAA266B78
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 19:10:11 +0100 (CET)
+In-Reply-To: <CAPoeEY8=A949-cuVwfyov2GfpQc=hAjPsDG-suXmT_TDytOKBQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,125 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Cc: vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, pierre-louis.bossart@linux.intel.com
+To: Joseph Wang <joequant@gmail.com>, KCHSU0@nuvoton.com
+Cc: alsa-devel@alsa-project.org, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 12/5/16 12:45 AM, Joseph Wang wrote:
+>>
+>> [    2.681633] snd_intel_sst: Requesting FW fw_sst_22a8.bin now...
+>>
+>
+> Hi,
+>
+> This is the firmware that I am using.  Right now the problem is that I'm
+> getting timeouts.  I've confirmed that the device runs fine under the
+> Windows WDM Audio drivers and the Windows NAUL88 codec.  So what appears to
+> be happening is that machine driver is doing something incorrectly.
+>
+> If you can look at
+>
+> https://github.com/joequant/nau8824/blob/master/linux-4.8/cht_bsw_nau8824.c
 
-   ASoC: Intel: atom: Add sysfs entry in order to store FW version
+The only thing that comes to my mind and that might tie firmware with 
+the machine driver is the use of this:
 
-has been applied to the asoc tree at
+fmt = SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF
+				| SND_SOC_DAIFMT_CBS_CFS;
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+I am not aware of any other drivers using LEFT_J, why can't you use I2S 
+for 2ch links?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From fade74dfab7cdba55a197db08f3d15cf2319bf4c Mon Sep 17 00:00:00 2001
-From: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Date: Mon, 5 Dec 2016 17:45:02 +0100
-Subject: [PATCH] ASoC: Intel: atom: Add sysfs entry in order to store FW
- version
-
-This patch is adding a sysfs entry in order to be able to get
-access to SST FW version.
-
-Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/atom/sst/sst.c | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
-
-diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-index 9b6e27385dc9..f9ba71315e33 100644
---- a/sound/soc/intel/atom/sst/sst.c
-+++ b/sound/soc/intel/atom/sst/sst.c
-@@ -27,6 +27,7 @@
- #include <linux/pm_qos.h>
- #include <linux/async.h>
- #include <linux/acpi.h>
-+#include <linux/sysfs.h>
- #include <sound/core.h>
- #include <sound/soc.h>
- #include <asm/platform_sst_audio.h>
-@@ -242,6 +243,32 @@ int sst_alloc_drv_context(struct intel_sst_drv **ctx,
- }
- EXPORT_SYMBOL_GPL(sst_alloc_drv_context);
- 
-+static ssize_t firmware_version_show(struct device *dev,
-+			    struct device_attribute *attr, char *buf)
-+{
-+	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
-+
-+	if (ctx->fw_version.type == 0 && ctx->fw_version.major == 0 &&
-+	    ctx->fw_version.minor == 0 && ctx->fw_version.build == 0)
-+		return sprintf(buf, "FW not yet loaded\n");
-+	else
-+		return sprintf(buf, "v%02x.%02x.%02x.%02x\n",
-+			       ctx->fw_version.type, ctx->fw_version.major,
-+			       ctx->fw_version.minor, ctx->fw_version.build);
-+
-+}
-+
-+DEVICE_ATTR_RO(firmware_version);
-+
-+static const struct attribute *sst_fw_version_attrs[] = {
-+	&dev_attr_firmware_version.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group sst_fw_version_attr_group = {
-+	.attrs = (struct attribute **)sst_fw_version_attrs,
-+};
-+
- int sst_context_init(struct intel_sst_drv *ctx)
- {
- 	int ret = 0, i;
-@@ -315,8 +342,19 @@ int sst_context_init(struct intel_sst_drv *ctx)
- 		dev_err(ctx->dev, "Firmware download failed:%d\n", ret);
- 		goto do_free_mem;
- 	}
-+
-+	ret = sysfs_create_group(&ctx->dev->kobj,
-+				 &sst_fw_version_attr_group);
-+	if (ret) {
-+		dev_err(ctx->dev,
-+			"Unable to create sysfs\n");
-+		goto err_sysfs;
-+	}
-+
- 	sst_register(ctx->dev);
- 	return 0;
-+err_sysfs:
-+	sysfs_remove_group(&ctx->dev->kobj, &sst_fw_version_attr_group);
- 
- do_free_mem:
- 	destroy_workqueue(ctx->post_msg_wq);
-@@ -330,6 +368,7 @@ void sst_context_cleanup(struct intel_sst_drv *ctx)
- 	pm_runtime_disable(ctx->dev);
- 	sst_unregister(ctx->dev);
- 	sst_set_fw_state_locked(ctx, SST_SHUTDOWN);
-+	sysfs_remove_group(&ctx->dev->kobj, &sst_fw_version_attr_group);
- 	flush_scheduled_work();
- 	destroy_workqueue(ctx->post_msg_wq);
- 	pm_qos_remove_request(ctx->qos);
--- 
-2.10.2
+>
+> And check to see how the initialization is different than the Windows
+> driver, this would be very useful.  I don't know how the device is wired,
+> but I do know that it appears to work with the Cherry Trail windows
+> drivers.  That being the case, I think the issue is my misinitialization
+> rather than device quirk.
+>
+> Also to answer your other question.  I am no longer getting kernel errors
+> in the codec.  I believe that at one point I was loading old versions of
+> the codec, but once I did a clean build with the sources that you've
+> provided me, I get no issues with the codec, and I've removed the
+> workaround code.  The problems that I'm having with the firmware appear to
+> arise from the machine drivers.
+>
+> One other thing, I was wondering if you have a Cherry Trail dev environment
+> that you can test to see if you can load in my machine driver and replicate
+> the firmware time outs.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
