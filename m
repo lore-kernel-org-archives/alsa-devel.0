@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: rsnd_get_dalign() needs to care
-	SSIU, not SSI" to the asoc tree
-Date: Mon, 05 Dec 2016 12:09:33 +0000
-Message-ID: <E1cDs5N-0003nS-Lj@finisterre>
-References: <87vav3uk3q.wl-kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B1CE266C72
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 13:09:41 +0100 (CET)
-In-Reply-To: <87vav3uk3q.wl-kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
+Subject: Applied "ASoC: cs42l56: Fix misuse of regmap_update_bits" to the asoc tree
+Date: Mon, 05 Dec 2016 13:53:43 +0000
+Message-ID: <E1cDtiB-00066q-5w@finisterre>
+References: <1480439449-15975-1-git-send-email-florian.vaussard@heig-vd.ch>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1480439449-15975-1-git-send-email-florian.vaussard@heig-vd.ch>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Florian Vaussard <florian.vaussard@gmail.com>
+Cc: Florian Vaussard <florian.vaussard@heig-vd.ch>, Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.orgFlorian Vaussard <florian.vaussard@heig-vd.ch>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: rsnd_get_dalign() needs to care SSIU, not SSI
+   ASoC: cs42l56: Fix misuse of regmap_update_bits
 
 has been applied to the asoc tree at
 
@@ -53,67 +37,63 @@ to this mail.
 Thanks,
 Mark
 
->From 3ce2959d162a8f2d69a83582df619a20ff3f6645 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 2 Dec 2016 02:44:23 +0000
-Subject: [PATCH] ASoC: rsnd: rsnd_get_dalign() needs to care SSIU, not SSI
+>From 8c317fafdd4e3b988c44d986022c66cebf71fc41 Mon Sep 17 00:00:00 2001
+From: Florian Vaussard <florian.vaussard@gmail.com>
+Date: Tue, 29 Nov 2016 18:10:49 +0100
+Subject: [PATCH] ASoC: cs42l56: Fix misuse of regmap_update_bits
 
-SSIU was controlled by SSI before, but
-commit c7f69ab53("ASoC: rsnd: use mod base common method on SSIU")
-separated it into ssiu.c
+Using regmap_update_bits(..., mask, 1) with 'mask' following (1 << k)
+and k greater than 0 is wrong. Indeed, _regmap_update_bits will perform
+(mask & 1), which results in 0 if LSB of mask is 0. Thus the call
+regmap_update_bits(..., mask, 1) is in reality equivalent to
+regmap_update_bits(..., mask, 0).
 
-But, it didn't care about rsnd_get_dalign() for judging SSI_BUSIF_DALIGN
-register value which changes the stream data order.
-This function will be called from cmd/src/ssiu now, but current code
-still cares ssi, not ssiu.
-This patch fix it up
+In such a case, the correct use is regmap_update_bits(..., mask, mask).
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+This driver is performing such a mistake with the CS42L56_AIN*_REF_MASK
+masks, which equal 0x10, 0x20, 0x40 and 0x80. Fix the driver to make it
+consistent with the API. Please note that this change is untested,
+as I do not have this piece of hardware. Testers are welcome!
+
+Signed-off-by: Florian Vaussard <florian.vaussard@heig-vd.ch>
+Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Acked-by: Brian Austin <brian.austin@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 6 +++---
- sound/soc/sh/rcar/rsnd.h | 1 +
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/codecs/cs42l56.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 912dc62ff9c7..825635aaf30e 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -306,7 +306,7 @@ u32 rsnd_get_adinr_bit(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
-  */
- u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
- {
--	struct rsnd_mod *ssi = rsnd_io_to_mod_ssi(io);
-+	struct rsnd_mod *ssiu = rsnd_io_to_mod_ssiu(io);
- 	struct rsnd_mod *target;
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
- 	u32 val = 0x76543210;
-@@ -315,11 +315,11 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
- 	if (rsnd_io_is_play(io)) {
- 		struct rsnd_mod *src = rsnd_io_to_mod_src(io);
+diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+index 3e2c04642f1e..cb6ca85f1536 100644
+--- a/sound/soc/codecs/cs42l56.c
++++ b/sound/soc/codecs/cs42l56.c
+@@ -1277,19 +1277,23 @@ static int cs42l56_i2c_probe(struct i2c_client *i2c_client,
  
--		target = src ? src : ssi;
-+		target = src ? src : ssiu;
- 	} else {
- 		struct rsnd_mod *cmd = rsnd_io_to_mod_cmd(io);
+ 	if (cs42l56->pdata.ain1a_ref_cfg)
+ 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
+-				   CS42L56_AIN1A_REF_MASK, 1);
++				   CS42L56_AIN1A_REF_MASK,
++				   CS42L56_AIN1A_REF_MASK);
  
--		target = cmd ? cmd : ssi;
-+		target = cmd ? cmd : ssiu;
- 	}
+ 	if (cs42l56->pdata.ain1b_ref_cfg)
+ 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
+-				   CS42L56_AIN1B_REF_MASK, 1);
++				   CS42L56_AIN1B_REF_MASK,
++				   CS42L56_AIN1B_REF_MASK);
  
- 	mask <<= runtime->channels * 4;
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index d9e550211c09..71158c8bc254 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -428,6 +428,7 @@ struct rsnd_dai_stream {
- };
- #define rsnd_io_to_mod(io, i)	((i) < RSND_MOD_MAX ? (io)->mod[(i)] : NULL)
- #define rsnd_io_to_mod_ssi(io)	rsnd_io_to_mod((io), RSND_MOD_SSI)
-+#define rsnd_io_to_mod_ssiu(io)	rsnd_io_to_mod((io), RSND_MOD_SSIU)
- #define rsnd_io_to_mod_ssip(io)	rsnd_io_to_mod((io), RSND_MOD_SSIP)
- #define rsnd_io_to_mod_src(io)	rsnd_io_to_mod((io), RSND_MOD_SRC)
- #define rsnd_io_to_mod_ctu(io)	rsnd_io_to_mod((io), RSND_MOD_CTU)
+ 	if (cs42l56->pdata.ain2a_ref_cfg)
+ 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
+-				   CS42L56_AIN2A_REF_MASK, 1);
++				   CS42L56_AIN2A_REF_MASK,
++				   CS42L56_AIN2A_REF_MASK);
+ 
+ 	if (cs42l56->pdata.ain2b_ref_cfg)
+ 		regmap_update_bits(cs42l56->regmap, CS42L56_AIN_REFCFG_ADC_MUX,
+-				   CS42L56_AIN2B_REF_MASK, 1);
++				   CS42L56_AIN2B_REF_MASK,
++				   CS42L56_AIN2B_REF_MASK);
+ 
+ 	if (cs42l56->pdata.micbias_lvl)
+ 		regmap_update_bits(cs42l56->regmap, CS42L56_GAIN_BIAS_CTL,
 -- 
 2.10.2
