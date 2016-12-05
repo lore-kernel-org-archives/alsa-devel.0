@@ -1,69 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 1/4] ASoC: intel: atom: Add debug
- information related to FW version
-Date: Mon, 5 Dec 2016 10:31:04 +0000
-Message-ID: <20161205103104.p63dsyml2jmi42yl@sirena.org.uk>
-References: <20161205081841.19322-1-sebastien.guiriec@intel.com>
- <20161205081841.19322-2-sebastien.guiriec@intel.com>
+Subject: Re: [PATCH] ASoC: cq93vc: enable compiling on COMPILE_TEST
+Date: Mon, 5 Dec 2016 11:37:07 +0000
+Message-ID: <20161205113707.3f2qum7coazy2jrg@sirena.org.uk>
+References: <87r35rugmc.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5429994659920236944=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 33AB2266BF5
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 11:31:14 +0100 (CET)
-In-Reply-To: <20161205081841.19322-2-sebastien.guiriec@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Cc: vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="54pxtl6x5nlia56v"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87r35rugmc.wl-kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Arnd Bergmann <arnd@arndb.de>, anish kumar <yesanishhere@gmail.com>, Michael Trimarchi <michael@amarulasolutions.com>, Jacob Siverskog <jacob@teenage.engineering>, "Damien.Horsley" <Damien.Horsley@imgtec.com>, Jeremy McDermond <nh6z@nh6z.net>, Bard Liao <bardliao@realtek.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5429994659920236944==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="f562jffviplffd6q"
-Content-Disposition: inline
-
-
---f562jffviplffd6q
+--54pxtl6x5nlia56v
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 05, 2016 at 09:18:38AM +0100, Sebastien Guiriec wrote:
-> This patch is adding debug information related to SST FW version.
+On Fri, Dec 02, 2016 at 03:59:36AM +0000, Kuninori Morimoto wrote:
+>=20
+> Hi Mark
+>=20
+> I posted cq93vc dependency fixup (=3D no depend to MFD_DAVINCI_VOICECODEC)
+> patch which were 2 patches.
 
-This doesn't apply against current code, please check and resend.
+Please don't send cover letters for single patches, if there is anything
+that needs saying put it in the changelog of the patch or after the ---
+if it's administrative stuff.  This reduces mail volume and ensures that=20
+any important information is recorded in the changelog rather than being
+lost.=20
 
---f562jffviplffd6q
+--54pxtl6x5nlia56v
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhFQecACgkQJNaLcl1U
-h9Cc3Qf9HUQQ8osfG2X5IgGUpziLaUfbmCUc3xRvY4c5xhwC9qOob/MEA7mnRFKB
-khaPdP2yjAcUvm8w+Onx+DngItJrhseOLGdY/BySV3VDsxefppXc4uzGdg+uapZY
-yJrTARjJ74fRIe2tSdRuJPE+qNnDGbpCtpLRrIALVRJkE15ilPjM6F3pdvC7gAkX
-/VBbsKXohVA2YMHV7R7HuXTjTRFPNzHXF8QBs0kHIzzxh1+OOPG3W9sEKTifzfzZ
-y/CCdYI3YPfGcRLLIB41xBoMfgzBgD3igOdkxpWtfuleSqTGdJ2vM9eVCd+xW1Nl
-xgVTxqQD3IAuh9SwH8sLt0le1MJFEg==
-=ON97
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhFUWIACgkQJNaLcl1U
+h9BUtAf/Udez+jEQ1AkbI1gS991oZXixhyvDgXlRm5qUkulKuUMf6IdH4Z+klemd
+TK9A2eS1yz9CTcdIdJ1AJJisLpsB9JeB+oEzaHodToiaxn7k2TzCRxU2mtEX4hQf
+07Es6hvIsyuoFZL1U646x0lcm0WqP8Vq98p1oOIbGUN020CFW/Y62+KzNYBsyoG1
+Ipt9pkzodRnAwbD/x1VB4LYmRXge+w79LB4/6+fv5JBduhl4MNGlOY+pEix3Fcsp
+BBlsVOT5OystrrPWF1SvPDTd92+Eg3rbpoHbQbLLXcl5evR7FcteAF2/qAZqR536
+sGBUlcJz4K+seYxgWg+mx0rrzec65Q==
+=hMMR
 -----END PGP SIGNATURE-----
 
---f562jffviplffd6q--
-
---===============5429994659920236944==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5429994659920236944==--
+--54pxtl6x5nlia56v--
