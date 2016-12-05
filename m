@@ -1,20 +1,15 @@
-From: Joseph Wang <joequant@gmail.com>
-Subject: Re: Cherry trail and Nau 88l24 codec
-Date: Mon, 5 Dec 2016 14:45:54 +0800
-Message-ID: <CAPoeEY8=A949-cuVwfyov2GfpQc=hAjPsDG-suXmT_TDytOKBQ@mail.gmail.com>
-References: <CAPoeEY_Tve2TAgBqY+MqPEUGnbadYHg9Z90DQ=YQumWebfW++A@mail.gmail.com>
- <62e35b1dac6b4000beb73d857f780f04@NTHCML01B.nuvoton.com>
+From: Sebastien Guiriec <sebastien.guiriec@intel.com>
+Subject: [PATCH v6 0/3] ASoC: intel: atom: Add FW version
+	information
+Date: Mon,  5 Dec 2016 17:45:00 +0100
+Message-ID: <20161205164503.20983-1-sebastien.guiriec@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f179.google.com (mail-qt0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 726E8266AE1
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 07:45:55 +0100 (CET)
-Received: by mail-qt0-f179.google.com with SMTP id n6so305725591qtd.1
- for <alsa-devel@alsa-project.org>; Sun, 04 Dec 2016 22:45:54 -0800 (PST)
-In-Reply-To: <62e35b1dac6b4000beb73d857f780f04@NTHCML01B.nuvoton.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 380C3261A1A
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 17:48:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,38 +19,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: KCHSU0@nuvoton.com
-Cc: alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org
+Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
->
-> [    2.681633] snd_intel_sst: Requesting FW fw_sst_22a8.bin now...
->
+This patch series is adding FW version information of SST. Version is both
+log as dev_info and sysfs entry.
 
-Hi,
+Update since V1:
+- sysfs entry is set to "FW not yet loaded" in case we do not have
+loaded the FW once
 
-This is the firmware that I am using.  Right now the problem is that I'm
-getting timeouts.  I've confirmed that the device runs fine under the
-Windows WDM Audio drivers and the Windows NAUL88 codec.  So what appears to
-be happening is that machine driver is doing something incorrectly.
+Update since V2:
+- Add Vinod ack.
+   https://www.spinics.net/lists/alsa-devel/msg56521.html
 
-If you can look at
+Update since V3:
+- Add sysfs entry description.
 
-https://github.com/joequant/nau8824/blob/master/linux-4.8/cht_bsw_nau8824.c
+Update since V4:
+- Add ack from vinod on documentation
+- Resend on top of v4.9-rc1.
 
-And check to see how the initialization is different than the Windows
-driver, this would be very useful.  I don't know how the device is wired,
-but I do know that it appears to work with the Cherry Trail windows
-drivers.  That being the case, I think the issue is my misinitialization
-rather than device quirk.
+Update since V5:
+- Resend on top of topic/intel
+- Remove first patch as the first version was already applied inside
+  topic/intel without getting "Applied" notifiaction.
+   https://www.spinics.net/lists/alsa-devel/msg56122.html
 
-Also to answer your other question.  I am no longer getting kernel errors
-in the codec.  I believe that at one point I was loading old versions of
-the codec, but once I did a clean build with the sources that you've
-provided me, I get no issues with the codec, and I've removed the
-workaround code.  The problems that I'm having with the firmware appear to
-arise from the machine drivers.
+Sebastien Guiriec (3):
+  ASoC: Intel: atom: save FW version
+  ASoC: Intel: atom: Add sysfs entry in order to store FW version
+  Documentation: ABI: Add ASoC Intel SST Atom sysfs description
 
-One other thing, I was wondering if you have a Cherry Trail dev environment
-that you can test to see if you can load in my machine driver and replicate
-the firmware time outs.
+ Documentation/ABI/testing/sysfs-platform-sst-atom | 17 ++++++++++
+ sound/soc/intel/atom/sst/sst.c                    | 39 +++++++++++++++++++++++
+ sound/soc/intel/atom/sst/sst.h                    |  1 +
+ sound/soc/intel/atom/sst/sst_ipc.c                |  6 ++++
+ 4 files changed, 63 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-sst-atom
+
+-- 
+2.9.3
+
+---------------------------------------------------------------------
+Intel Corporation SAS (French simplified joint stock company)
+Registered headquarters: "Les Montalets"- 2, rue de Paris, 
+92196 Meudon Cedex, France
+Registration Number:  302 456 199 R.C.S. NANTERRE
+Capital: 4,572,000 Euros
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
