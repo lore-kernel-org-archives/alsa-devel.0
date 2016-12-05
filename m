@@ -1,70 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cq93vc: remove MFD_DAVINCI_VOICECODEC dependency for CQ0093VC" to the asoc tree
-Date: Mon, 05 Dec 2016 12:09:30 +0000
-Message-ID: <E1cDs5K-0003md-2z@finisterre>
-References: <8760oefb59.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <8760oefb59.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Michael Trimarchi <michael@amarulasolutions.com>, Arnd Bergmann <arnd@arndb.de>, anish kumar <yesanishhere@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jeremy McDermond <nh6z@nh6z.net>, Liam Girdwood <lgirdwood@gmail.com>, Jacob Siverskog <jacob@teenage.engineering>, Simon <horms@verge.net.au>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, "Damien.Horsley" <Damien.Horsley@imgtec.com>alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: Intel: Add pre & post suspend calls
+	in bxt machine
+Date: Mon, 5 Dec 2016 11:44:13 +0000
+Message-ID: <20161205114413.kzjm5w7s6bc7qnig@sirena.org.uk>
+References: <1480673024-28608-1-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============5913796494412309254=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8578266C72
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 12:44:20 +0100 (CET)
+In-Reply-To: <1480673024-28608-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: cq93vc: remove MFD_DAVINCI_VOICECODEC dependency for CQ0093VC
+--===============5913796494412309254==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ytjocpgup6obvmx3"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--ytjocpgup6obvmx3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Dec 02, 2016 at 03:33:44PM +0530, Vinod Koul wrote:
+> We need to disable jack detection before entering suspend and
+> enable it after resume.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> This was essential as headphone jack widget will always
+> remain ON if a jack is inserted and this results in no audio
+> after system resumes from a suspend.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+This needs clarification - a lot of systems do keep jack detection
+active during suspend and use it as a wake source in order to have
+things like play/pause functionality via headset available.  This sounds
+like there's some limitation with one of the drivers in the system that
+is being worked around here instead.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--ytjocpgup6obvmx3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From 4de429888c5b534f43a3d693e3627021b17e900c Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 2 Dec 2016 04:01:22 +0000
-Subject: [PATCH] ASoC: cq93vc: remove MFD_DAVINCI_VOICECODEC dependency for
- CQ0093VC
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhFUwwACgkQJNaLcl1U
+h9BNwQf/Qc1cnrzNahiWwDlZqwyscPjH/YHNSBkbxgqjs+9MkujPfhmVAcv54qIf
+ZAJYqJPtH4NBS9Wl+u+sudiWfKkkjAGxovr7ZBSwG1dtkTko2g1LP2YAT+UzKGwx
+VQv8+TZR7XgWmYiwtgRk56y4qiGZ10AwfVmgvg6kt+yo4vp/m3rcpB0OCILuzrw2
+xiI+OIE7xe2Jmf6EBVmHIgVsouC+bKmv9YfZIHxhY7mYz7VJw24EDH1YrO5Dckls
+uBK83MuGzDHsGStycMvURot41fAFzip3JWqyMOm4ZSov8XPzjvo3w+BtjCp7I8lO
+vuJRahKalvcQKLdRBEe83C1SjTtXxA==
+=YTS6
+-----END PGP SIGNATURE-----
 
-CQ0093VC is no longer dependent on MFD_DAVINCI_VOICECODEC,
-let's remove it. Otherwise, we can't compile it by COMPILE_TEST
-on non-DAVINCE platform
+--ytjocpgup6obvmx3--
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--===============5913796494412309254==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index c67667bb970f..cb195b07e7d2 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -45,7 +45,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_ALC5623 if I2C
- 	select SND_SOC_ALC5632 if I2C
- 	select SND_SOC_BT_SCO
--	select SND_SOC_CQ0093VC if MFD_DAVINCI_VOICECODEC
-+	select SND_SOC_CQ0093VC
- 	select SND_SOC_CS35L32 if I2C
- 	select SND_SOC_CS35L33 if I2C
- 	select SND_SOC_CS42L51_I2C if I2C
--- 
-2.10.2
+
+--===============5913796494412309254==--
