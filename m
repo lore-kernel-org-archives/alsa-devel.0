@@ -1,15 +1,16 @@
 From: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Subject: [PATCH v5 2/4] ASoC: Intel: atom: save FW version
-Date: Mon,  5 Dec 2016 09:18:39 +0100
-Message-ID: <20161205081841.19322-3-sebastien.guiriec@intel.com>
+Subject: [PATCH v5 4/4] Documentation: ABI: Add ASoC Intel SST
+	Atom sysfs description
+Date: Mon,  5 Dec 2016 09:18:41 +0100
+Message-ID: <20161205081841.19322-5-sebastien.guiriec@intel.com>
 References: <20161205081841.19322-1-sebastien.guiriec@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D1672668C0
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 09:22:34 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D39F7266B81
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 09:22:35 +0100 (CET)
 In-Reply-To: <20161205081841.19322-1-sebastien.guiriec@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,45 +25,40 @@ To: alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linu
 Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-After the boot of the SST FW the firmware version is send back
-to the driver. This patch is saving the FW version inside the
-driver.
+For ASoC Intel SST Atom based devices a sysfs entry is created
+in order to track FW version. The FW version is useful in order to
+check the different Version of LPE DSP FW across Intel SoCs.
 
 Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/atom/sst/sst.h     | 1 +
- sound/soc/intel/atom/sst/sst_ipc.c | 5 +++++
- 2 files changed, 6 insertions(+)
+ Documentation/ABI/testing/sysfs-platform-sst-atom | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-sst-atom
 
-diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
-index 3f49386..5c9a51cc 100644
---- a/sound/soc/intel/atom/sst/sst.h
-+++ b/sound/soc/intel/atom/sst/sst.h
-@@ -436,6 +436,7 @@ struct intel_sst_drv {
- 	 */
- 	char firmware_name[FW_NAME_SIZE];
- 
-+	struct snd_sst_fw_version fw_version;
- 	struct sst_fw_save	*fw_save;
- };
- 
-diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
-index 5d035d9..98505e4 100644
---- a/sound/soc/intel/atom/sst/sst_ipc.c
-+++ b/sound/soc/intel/atom/sst/sst_ipc.c
-@@ -240,6 +240,11 @@ static void process_fw_init(struct intel_sst_drv *sst_drv_ctx,
- 			init->fw_version.type, init->fw_version.major,
- 			init->fw_version.minor, init->fw_version.build);
- 
-+	/* Save FW version */
-+	sst_drv_ctx->fw_version.type = init->fw_version.type;
-+	sst_drv_ctx->fw_version.major = init->fw_version.major;
-+	sst_drv_ctx->fw_version.minor = init->fw_version.minor;
-+	sst_drv_ctx->fw_version.build = init->fw_version.build;
- ret:
- 	sst_wake_up_block(sst_drv_ctx, retval, FW_DWNL_ID, 0 , NULL, 0);
- }
+diff --git a/Documentation/ABI/testing/sysfs-platform-sst-atom b/Documentation/ABI/testing/sysfs-platform-sst-atom
+new file mode 100644
+index 0000000..0d07c03
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-platform-sst-atom
+@@ -0,0 +1,17 @@
++What:		/sys/devices/platform/8086%x:00/firmware_version
++Date:		November 2016
++KernelVersion:	4.10
++Contact:	"Sebastien Guiriec" <sebastien.guiriec@intel.com>
++Description:
++		LPE Firmware version for SST driver on all atom
++		plaforms (BYT/CHT/Merrifield/BSW).
++		If the FW has never been loaded it will display:
++			"FW not yet loaded"
++		If FW has been loaded it will display:
++			"v01.aa.bb.cc"
++		aa: Major version is reflecting SoC version:
++			0d: BYT FW
++			0b: BSW FW
++			07: Merrifield FW
++		bb: Minor version
++		cc: Build version
 -- 
 2.9.3
 
