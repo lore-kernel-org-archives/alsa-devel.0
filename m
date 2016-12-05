@@ -1,15 +1,17 @@
 From: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Subject: [PATCH v5 0/4] ASoC: intel: atom: Add FW version
-	information
-Date: Mon,  5 Dec 2016 09:18:37 +0100
-Message-ID: <20161205081841.19322-1-sebastien.guiriec@intel.com>
+Subject: [PATCH v5 1/4] ASoC: intel: atom: Add debug
+	information related to FW version
+Date: Mon,  5 Dec 2016 09:18:38 +0100
+Message-ID: <20161205081841.19322-2-sebastien.guiriec@intel.com>
+References: <20161205081841.19322-1-sebastien.guiriec@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C71C2664EB
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 09:22:31 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 714D0266B57
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 09:22:33 +0100 (CET)
+In-Reply-To: <20161205081841.19322-1-sebastien.guiriec@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,37 +25,28 @@ To: alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linu
 Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch series is adding FW version information of SST. Version is both
-log as dev_info and sysfs entry.
+This patch is adding debug information related to SST FW version.
 
-Update since V1:
-- sysfs entry is set to "FW not yet loaded" in case we do not have
-loaded the FW once
+Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/atom/sst/sst_ipc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Update since V2:
-- Add Vinod ack.
-   https://www.spinics.net/lists/alsa-devel/msg56521.html
-
-Update since V3:
-- Add sysfs entry description.
-
-Update since V4:
-- Add ack from vinod on documentation
-- Resend on top of v4.9-rc1.
-
-Sebastien Guiriec (4):
-  ASoC: intel: atom: Add debug information related to FW version
-  ASoC: Intel: atom: save FW version
-  ASoC: Intel: atom: Add sysfs entry in order to store FW version
-  Documentation: ABI: Add ASoC Intel SST Atom sysfs description
-
- Documentation/ABI/testing/sysfs-platform-sst-atom | 17 ++++++++++
- sound/soc/intel/atom/sst/sst.c                    | 39 +++++++++++++++++++++++
- sound/soc/intel/atom/sst/sst.h                    |  1 +
- sound/soc/intel/atom/sst/sst_ipc.c                | 10 +++++-
- 4 files changed, 66 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/ABI/testing/sysfs-platform-sst-atom
-
+diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
+index bfc8899..5d035d9 100644
+--- a/sound/soc/intel/atom/sst/sst_ipc.c
++++ b/sound/soc/intel/atom/sst/sst_ipc.c
+@@ -236,6 +236,9 @@ static void process_fw_init(struct intel_sst_drv *sst_drv_ctx,
+ 		retval = init->result;
+ 		goto ret;
+ 	}
++	dev_info(sst_drv_ctx->dev, "FW Version %02x.%02x.%02x.%02x\n",
++			init->fw_version.type, init->fw_version.major,
++			init->fw_version.minor, init->fw_version.build);
+ 
+ ret:
+ 	sst_wake_up_block(sst_drv_ctx, retval, FW_DWNL_ID, 0 , NULL, 0);
 -- 
 2.9.3
 
