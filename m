@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple_card_utils: tidyup file
-	comment/define" to the asoc tree
-Date: Mon, 05 Dec 2016 12:09:26 +0000
-Message-ID: <E1cDs5G-0003lS-13@finisterre>
-References: <87lgvyvr4c.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: rsnd_get_dalign() needs to care
+	SSIU, not SSI" to the asoc tree
+Date: Mon, 05 Dec 2016 12:09:33 +0000
+Message-ID: <E1cDs5N-0003nS-Lj@finisterre>
+References: <87vav3uk3q.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3FEBF266C72
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 13:09:37 +0100 (CET)
-In-Reply-To: <87lgvyvr4c.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B1CE266C72
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 13:09:41 +0100 (CET)
+In-Reply-To: <87vav3uk3q.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple_card_utils: tidyup file comment/define
+   ASoC: rsnd: rsnd_get_dalign() needs to care SSIU, not SSI
 
 has been applied to the asoc tree at
 
@@ -53,59 +53,67 @@ to this mail.
 Thanks,
 Mark
 
->From 29a43aa9b4b609eba73e76c5fd92d435fc6e35ce Mon Sep 17 00:00:00 2001
+>From 3ce2959d162a8f2d69a83582df619a20ff3f6645 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 2 Dec 2016 05:27:30 +0000
-Subject: [PATCH] ASoC: simple_card_utils: tidyup file comment/define
+Date: Fri, 2 Dec 2016 02:44:23 +0000
+Subject: [PATCH] ASoC: rsnd: rsnd_get_dalign() needs to care SSIU, not SSI
 
-simple_card_utils was created as simple_card_core in 1st prototype,
-and current code still have it. Let's tidyup
+SSIU was controlled by SSI before, but
+commit c7f69ab53("ASoC: rsnd: use mod base common method on SSIU")
+separated it into ssiu.c
+
+But, it didn't care about rsnd_get_dalign() for judging SSI_BUSIF_DALIGN
+register value which changes the stream data order.
+This function will be called from cmd/src/ssiu now, but current code
+still cares ssi, not ssiu.
+This patch fix it up
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/simple_card_utils.h     | 8 ++++----
- sound/soc/generic/simple-card-utils.c | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/sh/rcar/core.c | 6 +++---
+ sound/soc/sh/rcar/rsnd.h | 1 +
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index fd6412551145..64e90ca9ad32 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -1,5 +1,5 @@
- /*
-- * simple_card_core.h
-+ * simple_card_utils.h
-  *
-  * Copyright (c) 2016 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-  *
-@@ -7,8 +7,8 @@
-  * it under the terms of the GNU General Public License version 2 as
-  * published by the Free Software Foundation.
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 912dc62ff9c7..825635aaf30e 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -306,7 +306,7 @@ u32 rsnd_get_adinr_bit(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
   */
--#ifndef __SIMPLE_CARD_CORE_H
--#define __SIMPLE_CARD_CORE_H
-+#ifndef __SIMPLE_CARD_UTILS_H
-+#define __SIMPLE_CARD_UTILS_H
+ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ {
+-	struct rsnd_mod *ssi = rsnd_io_to_mod_ssi(io);
++	struct rsnd_mod *ssiu = rsnd_io_to_mod_ssiu(io);
+ 	struct rsnd_mod *target;
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+ 	u32 val = 0x76543210;
+@@ -315,11 +315,11 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ 	if (rsnd_io_is_play(io)) {
+ 		struct rsnd_mod *src = rsnd_io_to_mod_src(io);
  
- #include <sound/soc.h>
+-		target = src ? src : ssi;
++		target = src ? src : ssiu;
+ 	} else {
+ 		struct rsnd_mod *cmd = rsnd_io_to_mod_cmd(io);
  
-@@ -68,4 +68,4 @@ void asoc_simple_card_canonicalize_cpu(struct snd_soc_dai_link *dai_link,
+-		target = cmd ? cmd : ssi;
++		target = cmd ? cmd : ssiu;
+ 	}
  
- int asoc_simple_card_clean_reference(struct snd_soc_card *card);
- 
--#endif /* __SIMPLE_CARD_CORE_H */
-+#endif /* __SIMPLE_CARD_UTILS_H */
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index e5b80f53093a..cf026252cd4a 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -1,5 +1,5 @@
- /*
-- * simple-card-core.c
-+ * simple-card-utils.c
-  *
-  * Copyright (c) 2016 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-  *
+ 	mask <<= runtime->channels * 4;
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index d9e550211c09..71158c8bc254 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -428,6 +428,7 @@ struct rsnd_dai_stream {
+ };
+ #define rsnd_io_to_mod(io, i)	((i) < RSND_MOD_MAX ? (io)->mod[(i)] : NULL)
+ #define rsnd_io_to_mod_ssi(io)	rsnd_io_to_mod((io), RSND_MOD_SSI)
++#define rsnd_io_to_mod_ssiu(io)	rsnd_io_to_mod((io), RSND_MOD_SSIU)
+ #define rsnd_io_to_mod_ssip(io)	rsnd_io_to_mod((io), RSND_MOD_SSIP)
+ #define rsnd_io_to_mod_src(io)	rsnd_io_to_mod((io), RSND_MOD_SRC)
+ #define rsnd_io_to_mod_ctu(io)	rsnd_io_to_mod((io), RSND_MOD_CTU)
 -- 
 2.10.2
