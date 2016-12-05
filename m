@@ -1,20 +1,20 @@
 From: Joseph Wang <joequant@gmail.com>
 Subject: Re: Cherry trail and Nau 88l24 codec
-Date: Sun, 4 Dec 2016 22:19:22 +0800
-Message-ID: <CAPoeEY-7vu=JaYg9GkUkpLhUbm2upYsJbESeb+DHKZDq81LQkw@mail.gmail.com>
+Date: Mon, 5 Dec 2016 14:45:54 +0800
+Message-ID: <CAPoeEY8=A949-cuVwfyov2GfpQc=hAjPsDG-suXmT_TDytOKBQ@mail.gmail.com>
 References: <CAPoeEY_Tve2TAgBqY+MqPEUGnbadYHg9Z90DQ=YQumWebfW++A@mail.gmail.com>
- <b9189409-fc01-ae32-538f-a7a03610263c@linux.intel.com>
+ <62e35b1dac6b4000beb73d857f780f04@NTHCML01B.nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f170.google.com (mail-qt0-f170.google.com
- [209.85.216.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 8EA66266656
- for <alsa-devel@alsa-project.org>; Sun,  4 Dec 2016 15:19:24 +0100 (CET)
-Received: by mail-qt0-f170.google.com with SMTP id c47so292778091qtc.2
- for <alsa-devel@alsa-project.org>; Sun, 04 Dec 2016 06:19:24 -0800 (PST)
-In-Reply-To: <b9189409-fc01-ae32-538f-a7a03610263c@linux.intel.com>
+Received: from mail-qt0-f179.google.com (mail-qt0-f179.google.com
+ [209.85.216.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 726E8266AE1
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 07:45:55 +0100 (CET)
+Received: by mail-qt0-f179.google.com with SMTP id n6so305725591qtd.1
+ for <alsa-devel@alsa-project.org>; Sun, 04 Dec 2016 22:45:54 -0800 (PST)
+In-Reply-To: <62e35b1dac6b4000beb73d857f780f04@NTHCML01B.nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,22 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, KCHSU0@nuvoton.com
+To: KCHSU0@nuvoton.com
+Cc: alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-I've dumped the DSDT into a github gist
+>
+> [    2.681633] snd_intel_sst: Requesting FW fw_sst_22a8.bin now...
+>
 
-https://gist.github.com/joequant/8fbdcbb71204562505b6647b18c608ef
+Hi,
 
-Nothing particularly strange to me stands out.  I'm trying to get in touch
-twith the manufacturer, and I'm here in HK so if I get really bored or
-adventurous, I might just walk over to the factory and see if I can meet
-the designers directly.
+This is the firmware that I am using.  Right now the problem is that I'm
+getting timeouts.  I've confirmed that the device runs fine under the
+Windows WDM Audio drivers and the Windows NAUL88 codec.  So what appears to
+be happening is that machine driver is doing something incorrectly.
 
-Also, just a note of thanks for the support for open source by Intel.  I
-realize that driver design is a pain, but it's really useful.  The reason
-that I'm extremely keen to get this working is that they've put together a
-new laptop configuration that I've never seen before.  What they've done is
-to rip out the hard drive and replace it with an MMC device.  That
-recreates a device that is both superlight and supercheap.
+If you can look at
+
+https://github.com/joequant/nau8824/blob/master/linux-4.8/cht_bsw_nau8824.c
+
+And check to see how the initialization is different than the Windows
+driver, this would be very useful.  I don't know how the device is wired,
+but I do know that it appears to work with the Cherry Trail windows
+drivers.  That being the case, I think the issue is my misinitialization
+rather than device quirk.
+
+Also to answer your other question.  I am no longer getting kernel errors
+in the codec.  I believe that at one point I was loading old versions of
+the codec, but once I did a clean build with the sources that you've
+provided me, I get no issues with the codec, and I've removed the
+workaround code.  The problems that I'm having with the firmware appear to
+arise from the machine drivers.
+
+One other thing, I was wondering if you have a Cherry Trail dev environment
+that you can test to see if you can load in my machine driver and replicate
+the firmware time outs.
