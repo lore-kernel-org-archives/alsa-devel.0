@@ -1,15 +1,15 @@
 From: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Subject: [PATCH v5 4/4] Documentation: ABI: Add ASoC Intel SST
-	Atom sysfs description
-Date: Mon,  5 Dec 2016 09:18:41 +0100
-Message-ID: <20161205081841.19322-5-sebastien.guiriec@intel.com>
+Subject: [PATCH v5 3/4] ASoC: Intel: atom: Add sysfs entry in
+	order to store FW version
+Date: Mon,  5 Dec 2016 09:18:40 +0100
+Message-ID: <20161205081841.19322-4-sebastien.guiriec@intel.com>
 References: <20161205081841.19322-1-sebastien.guiriec@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id D39F7266B81
+ by alsa0.perex.cz (Postfix) with ESMTP id 60537266B69
  for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 09:22:35 +0100 (CET)
 In-Reply-To: <20161205081841.19322-1-sebastien.guiriec@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,40 +25,88 @@ To: alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linu
 Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-For ASoC Intel SST Atom based devices a sysfs entry is created
-in order to track FW version. The FW version is useful in order to
-check the different Version of LPE DSP FW across Intel SoCs.
+This patch is adding a sysfs entry in order to be able to get
+access to SST FW version.
 
 Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 ---
- Documentation/ABI/testing/sysfs-platform-sst-atom | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-platform-sst-atom
+ sound/soc/intel/atom/sst/sst.c | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/Documentation/ABI/testing/sysfs-platform-sst-atom b/Documentation/ABI/testing/sysfs-platform-sst-atom
-new file mode 100644
-index 0000000..0d07c03
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-platform-sst-atom
-@@ -0,0 +1,17 @@
-+What:		/sys/devices/platform/8086%x:00/firmware_version
-+Date:		November 2016
-+KernelVersion:	4.10
-+Contact:	"Sebastien Guiriec" <sebastien.guiriec@intel.com>
-+Description:
-+		LPE Firmware version for SST driver on all atom
-+		plaforms (BYT/CHT/Merrifield/BSW).
-+		If the FW has never been loaded it will display:
-+			"FW not yet loaded"
-+		If FW has been loaded it will display:
-+			"v01.aa.bb.cc"
-+		aa: Major version is reflecting SoC version:
-+			0d: BYT FW
-+			0b: BSW FW
-+			07: Merrifield FW
-+		bb: Minor version
-+		cc: Build version
+diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
+index 9b6e273..f9ba713 100644
+--- a/sound/soc/intel/atom/sst/sst.c
++++ b/sound/soc/intel/atom/sst/sst.c
+@@ -27,6 +27,7 @@
+ #include <linux/pm_qos.h>
+ #include <linux/async.h>
+ #include <linux/acpi.h>
++#include <linux/sysfs.h>
+ #include <sound/core.h>
+ #include <sound/soc.h>
+ #include <asm/platform_sst_audio.h>
+@@ -242,6 +243,32 @@ int sst_alloc_drv_context(struct intel_sst_drv **ctx,
+ }
+ EXPORT_SYMBOL_GPL(sst_alloc_drv_context);
+ 
++static ssize_t firmware_version_show(struct device *dev,
++			    struct device_attribute *attr, char *buf)
++{
++	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++
++	if (ctx->fw_version.type == 0 && ctx->fw_version.major == 0 &&
++	    ctx->fw_version.minor == 0 && ctx->fw_version.build == 0)
++		return sprintf(buf, "FW not yet loaded\n");
++	else
++		return sprintf(buf, "v%02x.%02x.%02x.%02x\n",
++			       ctx->fw_version.type, ctx->fw_version.major,
++			       ctx->fw_version.minor, ctx->fw_version.build);
++
++}
++
++DEVICE_ATTR_RO(firmware_version);
++
++static const struct attribute *sst_fw_version_attrs[] = {
++	&dev_attr_firmware_version.attr,
++	NULL,
++};
++
++static const struct attribute_group sst_fw_version_attr_group = {
++	.attrs = (struct attribute **)sst_fw_version_attrs,
++};
++
+ int sst_context_init(struct intel_sst_drv *ctx)
+ {
+ 	int ret = 0, i;
+@@ -315,8 +342,19 @@ int sst_context_init(struct intel_sst_drv *ctx)
+ 		dev_err(ctx->dev, "Firmware download failed:%d\n", ret);
+ 		goto do_free_mem;
+ 	}
++
++	ret = sysfs_create_group(&ctx->dev->kobj,
++				 &sst_fw_version_attr_group);
++	if (ret) {
++		dev_err(ctx->dev,
++			"Unable to create sysfs\n");
++		goto err_sysfs;
++	}
++
+ 	sst_register(ctx->dev);
+ 	return 0;
++err_sysfs:
++	sysfs_remove_group(&ctx->dev->kobj, &sst_fw_version_attr_group);
+ 
+ do_free_mem:
+ 	destroy_workqueue(ctx->post_msg_wq);
+@@ -330,6 +368,7 @@ void sst_context_cleanup(struct intel_sst_drv *ctx)
+ 	pm_runtime_disable(ctx->dev);
+ 	sst_unregister(ctx->dev);
+ 	sst_set_fw_state_locked(ctx, SST_SHUTDOWN);
++	sysfs_remove_group(&ctx->dev->kobj, &sst_fw_version_attr_group);
+ 	flush_scheduled_work();
+ 	destroy_workqueue(ctx->post_msg_wq);
+ 	pm_qos_remove_request(ctx->qos);
 -- 
 2.9.3
 
