@@ -1,20 +1,21 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH v4 1/2] ASoC: core: allow DAI PCM controls
- bound to PCM device
-Date: Mon, 5 Dec 2016 14:51:23 +0100
-Message-ID: <81880022-628a-ad29-ed8c-80b7b3a41639@st.com>
-References: <1480501450-10780-1-git-send-email-arnaud.pouliquen@st.com>
- <1480501450-10780-2-git-send-email-arnaud.pouliquen@st.com>
- <775f733c-3440-ec9e-51a7-ea9c62b2bbc7@sakamocchi.jp>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v3] ASoC: omap-mcbsp: Add PM QoS support
+ for McBSP to prevent glitches
+Date: Mon, 5 Dec 2016 07:30:29 -0800
+Message-ID: <20161205153028.GK4705@atomide.com>
+References: <1480555145-8300-1-git-send-email-matt@ranostay.consulting>
+ <e8e9a552-14d9-15eb-bf9a-48fdc79965e2@ti.com>
+ <CAJ_EiSToYsRyxKF47WEZjcr5Jb4LC-3x310=JNdA7vSrYNoAdw@mail.gmail.com>
+ <730ed491-ebe7-86c1-b131-5d9441ae2b7c@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 322EF266D05
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 14:51:28 +0100 (CET)
-In-Reply-To: <775f733c-3440-ec9e-51a7-ea9c62b2bbc7@sakamocchi.jp>
+Received: from muru.com (muru.com [72.249.23.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3A8D266D2A
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 16:30:33 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <730ed491-ebe7-86c1-b131-5d9441ae2b7c@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,122 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Linux OMAP List <linux-omap@vger.kernel.org>, Matt Ranostay <matt@ranostay.consulting>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [161205 01:35]:
+> On 12/04/2016 03:33 AM, Matt Ranostay wrote:
+> >>> + *
+> >>> + * Also setting of the QoS latency for the FIFO which varies upon the buffer
+> >>> + * size. Approximately 2.3 milliseconds per FIFO location.
+> >>>   */
+> >>>  void omap_mcbsp_start(struct omap_mcbsp *mcbsp, int tx, int rx)
+> >>>  {
+> >>>       int enable_srg = 0;
+> >>> +     int latency = mcbsp->pdata->buffer_size * 23;
+> >>
+> >> I think this is not correct.
+> >> The McBSP FIFO time depends on the sample rate and on the number of
+> >> channels the audio is using. With 8KHz mono you have 12 times more time
+> >> per FIFO element compared to 48KHz stereo.
+> >>
+> >> As it has been discussed with Tony we should calculate the QoS latency
+> >> in hw_params:
+> >>
+> > 
+> > Ok yeah missed that part of the thread but it makes sense. Just one
+> > question should the latency value be only based on the TX FIFO
+> > threshold? I assume capture and transmit have two different settings.
+> 
+> Yes, I believe we should apply the lowest QoS when both direction is
+> active. If the second stream needs lower QoS, we should switch to use
+> that, if it would need longer, we should keep the QoS placed for the
+> first stream.
 
-Takashi (Sakamoto): Thanks for the remarks, i will integrate them in V5
-
-Liam, Marc, Takashi (Iwai),
-I was wondering if you have any comment and/or feedback about this
-patch-set. That's would help to determine if i have to continue to
-evolve the patch-set in this way, or if you see bocking point in the
-concept.
+Sounds good to me.
 
 Regards,
 
-Arnaud
-
-On 12/05/2016 12:48 PM, Takashi Sakamoto wrote:
-> Hi,
-> 
-> On Nov 30 2016 19:24, Arnaud Pouliquen wrote:
->> In case of several instances of the same PCM control (e.g IEC controls).
->> Application should be able to address the control using the
->> device field number, according to the PCM character device.
->> This patch allows to link DAI PCM controls to the PCM device.
->> During DAI_link probe, PCM controls are added after device field is forced
->> to the PCM device number.
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
->> ---
->>  include/sound/soc-dai.h |  4 ++++
->>  sound/soc/soc-core.c    | 35 +++++++++++++++++++++++++++++++++++
->>  2 files changed, 39 insertions(+)
->>
->> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
->> index 200e1f0..3ff1a86 100644
->> --- a/include/sound/soc-dai.h
->> +++ b/include/sound/soc-dai.h
->> @@ -273,6 +273,10 @@ struct snd_soc_dai_driver {
->>  	/* probe ordering - for components with runtime dependencies */
->>  	int probe_order;
->>  	int remove_order;
->> +
->> +	/* Optional PCM controls to bind to PCM device on DAIs link*/
-> 
-> In this patchset, you newly request developers to pay enough attention 
-> to 'iface' field of identification information for the control element 
-> set. This is logically correct, however such kind of special requirement 
-> should be described in code comment for the other developers to start 
-> using this feature easily.
-> 
->> +	const struct snd_kcontrol_new *pcm_controls;
->> +	int num_pcm_controls;
->>  };
->>
->>  /*
->> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
->> index aaab26a..7b79a31 100644
->> --- a/sound/soc/soc-core.c
->> +++ b/sound/soc/soc-core.c
->> @@ -1598,6 +1598,32 @@ static int soc_probe_dai(struct snd_soc_dai *dai, int order)
->>  	return 0;
->>  }
->>
->> +static int soc_link_dai_pcm_controls(struct snd_soc_dai **dais, int num_dais,
->> +				     struct snd_soc_pcm_runtime *rtd)
->> +{
->> +	struct snd_kcontrol_new kctl;
->> +	int i, j, ret;
->> +
->> +	for (i = 0; i < num_dais; ++i) {
->> +		for (j = 0; j < dais[i]->driver->num_pcm_controls; j++) {
->> +			kctl = dais[i]->driver->pcm_controls[j];
->> +			if (kctl.iface != SNDRV_CTL_ELEM_IFACE_PCM ||
->> +			    rtd->dai_link->no_pcm) {
->> +				dev_err(dais[i]->dev,
->> +					"Failed to bind control: %s\n",
->> +					kctl.name);
-> 
-> It's better to output name of the DAI driver, to make it easy to 
-> identify which driver causes this issue, as well.
-> 
->> +				return -EINVAL;
->> +			}
->> +			kctl.device = rtd->pcm->device;
->> +			ret = snd_soc_add_dai_controls(dais[i], &kctl, 1);
->> +			if (ret < 0)
->> +				return ret;
->> +		}
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->>  static int soc_link_dai_widgets(struct snd_soc_card *card,
->>  				struct snd_soc_dai_link *dai_link,
->>  				struct snd_soc_pcm_runtime *rtd)
->> @@ -1709,6 +1735,15 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
->>  				       dai_link->stream_name, ret);
->>  				return ret;
->>  			}
->> +
->> +			/* Bind DAIs pcm controls to the PCM device */
->> +			ret = soc_link_dai_pcm_controls(&cpu_dai, 1, rtd);
->> +			if (ret < 0)
->> +				return ret;
->> +			ret = soc_link_dai_pcm_controls(rtd->codec_dais,
->> +							rtd->num_codecs, rtd);
->> +			if (ret < 0)
->> +				return ret;
->>  		} else {
->>  			INIT_DELAYED_WORK(&rtd->delayed_work,
->>  						codec2codec_close_delayed_work);
-> 
-> Regards
-> 
-> Takashi Sakamoto
-> 
+Tony
