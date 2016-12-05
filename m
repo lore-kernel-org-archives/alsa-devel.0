@@ -1,71 +1,138 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/3 v2] ALSA: usb-audio: avoid setting of sample rate
- multiple times on bus
-Date: Mon, 5 Dec 2016 18:58:09 +0900
-Message-ID: <120588a7-e7a7-bf8e-4e5d-c89f2fbe8563@sakamocchi.jp>
-References: <20161130075923.15205-1-jiada_wang@mentor.com>
- <20161130075923.15205-3-jiada_wang@mentor.com>
- <c4579c3f-4798-7096-2c05-b0670ccbad08@sakamocchi.jp>
- <58451823.8040207@mentor.com>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: Re: [PATCH 3/3 v3] ALSA: usb-audio: fix race in snd_usb_endpoint_stop
+Date: Mon, 5 Dec 2016 02:10:59 -0800
+Message-ID: <58453D33.5000006@mentor.com>
+References: <20161130075923.15205-1-jiada_wang@mentor.com> <20161130075923.15205-4-jiada_wang@mentor.com> <s5hvav52vg8.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <58451823.8040207@mentor.com>
+In-Reply-To: <s5hvav52vg8.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jiada Wang <jiada_wang@mentor.com>
-Cc: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, apape@de.adit-jv.com, linux-kernel@vger.kernel.org, Mark_Craske@mentor.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@perex.cz, alsa-devel@alsa-project.org, apape@de.adit-jv.com, Mark_Craske@mentor.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 5 2016 16:32, Jiada Wang wrote:
-> Hi Sakamoto
+Hi, Takashi
+
+On 11/30/2016 01:00 AM, Takashi Iwai wrote:
+> On Wed, 30 Nov 2016 08:59:23 +0100,
+> Jiada Wang wrote:
+>> From: Mark Craske<Mark_Craske@mentor.com>
+>>
+>> Kernel crash seen once:
+>>
+>> Unable to handle kernel NULL pointer dereference at virtual address 00000008
+>> pgd = a1d7c000
+>> [00000008] *pgd=31c93831, *pte=00000000, *ppte=00000000
+>> Internal error: Oops: 17 [#1] PREEMPT SMP ARM
+>> CPU: 0 PID: 250 Comm: dbus-daemon Not tainted 3.14.51-03479-gf50bdf4 #1
+>> task: a3ae61c0 ti: a08c8000 task.ti: a08c8000
+>> PC is at retire_capture_urb+0x10/0x1f4 [snd_usb_audio]
+>> LR is at snd_complete_urb+0x140/0x1f0 [snd_usb_audio]
+>> pc : [<7f0eb22c>]    lr : [<7f0e57fc>]    psr: 200e0193
+>> sp : a08c9c98  ip : a08c9ce8  fp : a08c9ce4
+>> r10: 0000000a  r9 : 00000102  r8 : 94cb3000
+>> r7 : 94cb3000  r6 : 94d0f000  r5 : 94d0e8e8  r4 : 94d0e000
+>> r3 : 7f0eb21c  r2 : 00000000  r1 : 94cb3000  r0 : 00000000
+>> Flags: nzCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
+>> Control: 10c5387d  Table: 31d7c04a  DAC: 00000015
+>> Process dbus-daemon (pid: 250, stack limit = 0xa08c8238)
+>> Stack: (0xa08c9c98 to 0xa08ca000)
+>> ...
+>> Backtrace:
+>> [<7f0eb21c>] (retire_capture_urb [snd_usb_audio]) from [<7f0e57fc>] (snd_complete_urb+0x140/0x1f0 [snd_usb_audio])
+>> [<7f0e56bc>] (snd_complete_urb [snd_usb_audio]) from [<80371118>] (__usb_hcd_giveback_urb+0x78/0xf4)
+>> [<803710a0>] (__usb_hcd_giveback_urb) from [<80371514>] (usb_giveback_urb_bh+0x8c/0xc0)
+>> [<80371488>] (usb_giveback_urb_bh) from [<80028e3c>] (tasklet_hi_action+0xc4/0x148)
+>> [<80028d78>] (tasklet_hi_action) from [<80028358>] (__do_softirq+0x190/0x380)
+>> [<800281c8>] (__do_softirq) from [<80028858>] (irq_exit+0x8c/0xfc)
+>> [<800287cc>] (irq_exit) from [<8000ea88>] (handle_IRQ+0x8c/0xc8)
+>> [<8000e9fc>] (handle_IRQ) from [<800085e8>] (gic_handle_irq+0xbc/0xf8)
+>> [<8000852c>] (gic_handle_irq) from [<80509044>] (__irq_svc+0x44/0x78)
+>> [<80508820>] (_raw_spin_unlock_irq) from [<8004b880>] (finish_task_switch+0x5c/0x100)
+>> [<8004b824>] (finish_task_switch) from [<805052f0>] (__schedule+0x48c/0x6d8)
+>> [<80504e64>] (__schedule) from [<805055d4>] (schedule+0x98/0x9c)
+>> [<8050553c>] (schedule) from [<800116c8>] (do_work_pending+0x30/0xd0)
+>> [<80011698>] (do_work_pending) from [<8000e160>] (work_pending+0xc/0x20)
+>> Code: e1a0c00d e92ddff0 e24cb004 e24dd024 (e5902008)
+>> Kernel panic - not syncing: Fatal exception in interrupt
+>>
+>> There is a race between retire_capture_urb()&  stop_endpoints() which is
+>> setting ep->data_subs to NULL. The underlying cause is in
+>> snd_usb_endpoint_stop(), which sets
+>>    ep->data_subs = NULL;
+>>    ep->sync_slave = NULL;
+>>    ep->retire_data_urb = NULL;
+>>    ep->prepare_data_urb = NULL;
+>>
+>> An improvement, suggested by Andreas Pape (ADIT) is to read parameters
+>> into local variables. This should solve race between stop and retire
+>> where it is legal to store the pointers to local variable as they are
+>> not freed in stop path but just set to NULL.
+> Well, it's tricky.  A saner way would be to clear the stuff really
+> after all users are gone.
 >
-> On 11/30/2016 02:45 AM, Takashi Sakamoto wrote:
->> Hi Jiada,
->>
->> I don't oppose this patch. Nevertheless, your description is not
->> necessarily correct.
->>
->> On Nov 30 2016 16:59, Jiada Wang wrote:
->>> From: Daniel Girnus <dgirnus@de.adit-jv.com>
->>>
->>> ALSA usually calls the prepare function twice before starting the
->>> playback:
->>> 1. On hw_params call from userland and
->>> 2. internally when starting the stream.
->>
->> ALSA PCM core in kernel land doesn't perform like this.
->>
->> In alsa-lib, 'snd_pcm_hw_params()' calls
->> 'snd_pcm_hw_params_internal()' and 'snd_pcm_prepare()' sequentially.
->> http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm.c;h=cd87bc759ded95953e332b7e8d56b0f2d5b4185d;hb=HEAD#l853
->>
->>
->> In system call level (e.g. see by strace(1)), this looks like two
->> ioctl(2)s with 'SNDRV_PCM_IOCTL_HW_PARAMS' and 'SNDRV_PCM_IOCTL_PREPARE'.
->>
->> Well, when applications are written to execute 'snd_pcm_hw_params()'
->> and 'snd_pcm_hw_prepare()' sequentially, additional ioctl(2) with
->> 'SNDRV_PCM_IOCTL_PREPARE' appears. PulseAudio is this kind of
->> application. I indicated the useless in 2014, but it still remains:
->> https://lists.freedesktop.org/archives/pulseaudio-discuss/2014-January/019773.html
->>
->>
->> You have the misunderstanding due to a nature of alsa-lib and tendency
->> of major applications, from my point of view.
->>
-> Thanks for your indication, so because some of userland applications
-> call 'snd_pcm_hw_params()' and
-> 'snd_pcm_hw_prepare()' sequentially, means the second
-> 'SNDRV_PCM_IOCTL_PREPARE' be called in 'SNDRV_PCM_STATE_PREPARED' state,
+> An untested patch is below.  Let me know if it really works.
+Thanks for your proposal, I am afraid, we only found the race issue once 
+during
+our automation test, so I can't test for your patch,
+but from what I can see, your patch makes sense to me.
 
-Exactly. Furthermore, ALSA PCM core has no code to call .prepare() in 
-contexts unrelated to SNDRV_PCM_IOCTL_PREPARE.
+The only difference when apply with your patch is, now in case 
+stop_endpoints() is called
+from TRIGGER_STOP, these stuff won't get cleared, but I think this isn't 
+an issue, is it?
 
-> some devices are unable to manage this and stop working.
-> I will update Changelog in v2 Patchset.
-
-
-Regards
-
-Takashi Sakamoto
+Thanks,
+Jiada
+>
+>> However, additional races may still happen in close+hw_free against
+>> retire, as there pointers may be freed in addition. For example, while
+>> in retire_capture_urb() runtime->dma_area might be freed/nulled.
+> This shouldn't be a problem, as stop_endpoints() waits until all
+> active URBS get killed.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+> index c470251cea4b..f3fce9abece9 100644
+> --- a/sound/usb/endpoint.c
+> +++ b/sound/usb/endpoint.c
+> @@ -384,6 +384,9 @@ static void snd_complete_urb(struct urb *urb)
+>   	if (unlikely(atomic_read(&ep->chip->shutdown)))
+>   		goto exit_clear;
+>
+> +	if (unlikely(!test_bit(EP_FLAG_RUNNING,&ep->flags)))
+> +		goto exit_clear;
+> +
+>   	if (usb_pipeout(ep->pipe)) {
+>   		retire_outbound_urb(ep, ctx);
+>   		/* can be stopped during retire callback */
+> @@ -534,6 +537,11 @@ static int wait_clear_urbs(struct snd_usb_endpoint *ep)
+>   			alive, ep->ep_num);
+>   	clear_bit(EP_FLAG_STOPPING,&ep->flags);
+>
+> +	ep->data_subs = NULL;
+> +	ep->sync_slave = NULL;
+> +	ep->retire_data_urb = NULL;
+> +	ep->prepare_data_urb = NULL;
+> +
+>   	return 0;
+>   }
+>
+> @@ -1006,10 +1014,6 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep)
+>
+>   	if (--ep->use_count == 0) {
+>   		deactivate_urbs(ep, false);
+> -		ep->data_subs = NULL;
+> -		ep->sync_slave = NULL;
+> -		ep->retire_data_urb = NULL;
+> -		ep->prepare_data_urb = NULL;
+>   		set_bit(EP_FLAG_STOPPING,&ep->flags);
+>   	}
+>   }
