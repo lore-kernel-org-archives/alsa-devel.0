@@ -1,18 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v4 1/2] ASoC: core: allow DAI PCM controls
- bound to PCM device
-Date: Mon, 5 Dec 2016 20:48:22 +0900
-Message-ID: <775f733c-3440-ec9e-51a7-ea9c62b2bbc7@sakamocchi.jp>
-References: <1480501450-10780-1-git-send-email-arnaud.pouliquen@st.com>
- <1480501450-10780-2-git-send-email-arnaud.pouliquen@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: nau8825: disable sinc filter for
+	high THD of ADC
+Date: Mon, 5 Dec 2016 11:50:09 +0000
+Message-ID: <20161205115009.ri5qpgzlfszumvo7@sirena.org.uk>
+References: <1480643338-9423-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4506005244624678816=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 8006D266667
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 12:48:28 +0100 (CET)
-In-Reply-To: <1480501450-10780-2-git-send-email-arnaud.pouliquen@st.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4129B2668C0
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 12:50:17 +0100 (CET)
+In-Reply-To: <1480643338-9423-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,106 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, broonie@kernel.org, lgirdwood@gmail.com
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Nov 30 2016 19:24, Arnaud Pouliquen wrote:
-> In case of several instances of the same PCM control (e.g IEC controls).
-> Application should be able to address the control using the
-> device field number, according to the PCM character device.
-> This patch allows to link DAI PCM controls to the PCM device.
-> During DAI_link probe, PCM controls are added after device field is forced
-> to the PCM device number.
->
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> ---
->  include/sound/soc-dai.h |  4 ++++
->  sound/soc/soc-core.c    | 35 +++++++++++++++++++++++++++++++++++
->  2 files changed, 39 insertions(+)
->
-> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-> index 200e1f0..3ff1a86 100644
-> --- a/include/sound/soc-dai.h
-> +++ b/include/sound/soc-dai.h
-> @@ -273,6 +273,10 @@ struct snd_soc_dai_driver {
->  	/* probe ordering - for components with runtime dependencies */
->  	int probe_order;
->  	int remove_order;
-> +
-> +	/* Optional PCM controls to bind to PCM device on DAIs link*/
+--===============4506005244624678816==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="msm4emquga2blywh"
+Content-Disposition: inline
 
-In this patchset, you newly request developers to pay enough attention 
-to 'iface' field of identification information for the control element 
-set. This is logically correct, however such kind of special requirement 
-should be described in code comment for the other developers to start 
-using this feature easily.
 
-> +	const struct snd_kcontrol_new *pcm_controls;
-> +	int num_pcm_controls;
->  };
->
->  /*
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index aaab26a..7b79a31 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1598,6 +1598,32 @@ static int soc_probe_dai(struct snd_soc_dai *dai, int order)
->  	return 0;
->  }
->
-> +static int soc_link_dai_pcm_controls(struct snd_soc_dai **dais, int num_dais,
-> +				     struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	struct snd_kcontrol_new kctl;
-> +	int i, j, ret;
-> +
-> +	for (i = 0; i < num_dais; ++i) {
-> +		for (j = 0; j < dais[i]->driver->num_pcm_controls; j++) {
-> +			kctl = dais[i]->driver->pcm_controls[j];
-> +			if (kctl.iface != SNDRV_CTL_ELEM_IFACE_PCM ||
-> +			    rtd->dai_link->no_pcm) {
-> +				dev_err(dais[i]->dev,
-> +					"Failed to bind control: %s\n",
-> +					kctl.name);
+--msm4emquga2blywh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It's better to output name of the DAI driver, to make it easy to 
-identify which driver causes this issue, as well.
+On Fri, Dec 02, 2016 at 09:48:58AM +0800, John Hsu wrote:
 
-> +				return -EINVAL;
-> +			}
-> +			kctl.device = rtd->pcm->device;
-> +			ret = snd_soc_add_dai_controls(dais[i], &kctl, 1);
-> +			if (ret < 0)
-> +				return ret;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int soc_link_dai_widgets(struct snd_soc_card *card,
->  				struct snd_soc_dai_link *dai_link,
->  				struct snd_soc_pcm_runtime *rtd)
-> @@ -1709,6 +1735,15 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
->  				       dai_link->stream_name, ret);
->  				return ret;
->  			}
-> +
-> +			/* Bind DAIs pcm controls to the PCM device */
-> +			ret = soc_link_dai_pcm_controls(&cpu_dai, 1, rtd);
-> +			if (ret < 0)
-> +				return ret;
-> +			ret = soc_link_dai_pcm_controls(rtd->codec_dais,
-> +							rtd->num_codecs, rtd);
-> +			if (ret < 0)
-> +				return ret;
->  		} else {
->  			INIT_DELAYED_WORK(&rtd->delayed_work,
->  						codec2codec_close_delayed_work);
+> This bit will enable 4th order SINC filter. =20
+> =3D1, filter will enable;  but it consumes higher power.
+> =3D0, the sinc filter is disable, and it should always keep 0 value to
+> get high THD.
 
-Regards
+> Therefor, disable the filter when codec initiation for better
+> performance when recording.
 
-Takashi Sakamoto
+This looks like something that users should be able to control at
+runtime - while some users are going to prefer lower power there will
+most likely also be some users who prefer the better performance (or
+perhaps even users who switch depending on if they're running on battery
+or something).
+
+--msm4emquga2blywh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhFVHAACgkQJNaLcl1U
+h9Dm1wf+Mxg+9qMcRcjAC+auKgYJ6AbnDTuJOx/K4ydOadT7r4qznGHugCXuq1lC
+36CDRvA3VS57HEMOmgyZSpz2eeNktf4RtjjHxw9hVmJ/y9ZBNnXYQJcA/QjFFhbL
+VJiKUx8FGVQ2PYWdR6jgjEnnJxTrNh1fXi2UWWL1GfmW8CV1EtkL9+Ank0mwKS1k
+IFQuoGZFxMZvS/wdjVw4BWsTuJc6kBEylmLhH4Bu8AZNRrqp+ueH1OhEg+wGKpXZ
+MStjdZjKK/D/GyLpesYTkwpiWpVL0syWUnvHr24GCVe/5YnGHmA0wenFN4UvYBrd
+gXXVV5YKAd/b91rxDz0Gl4xm0PKuNw==
+=8BYu
+-----END PGP SIGNATURE-----
+
+--msm4emquga2blywh--
+
+--===============4506005244624678816==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4506005244624678816==--
