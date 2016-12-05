@@ -1,75 +1,57 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Cherry trail and Nau 88l24 codec
-Date: Mon, 5 Dec 2016 12:10:09 -0600
-Message-ID: <30f62f0d-1e3e-0839-8d85-df9e209b5cf9@linux.intel.com>
-References: <CAPoeEY_Tve2TAgBqY+MqPEUGnbadYHg9Z90DQ=YQumWebfW++A@mail.gmail.com>
- <62e35b1dac6b4000beb73d857f780f04@NTHCML01B.nuvoton.com>
- <CAPoeEY8=A949-cuVwfyov2GfpQc=hAjPsDG-suXmT_TDytOKBQ@mail.gmail.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v5 13/14] ASoC: add simple-graph-scu-card document
+Date: Mon, 5 Dec 2016 16:40:38 -0600
+Message-ID: <20161205224038.obcrqcvsruaajexy@rob-hp-laptop>
+References: <87k2bowckx.wl%kuninori.morimoto.gx@renesas.com>
+ <871sxwwcas.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 22EAA266B78
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2016 19:10:11 +0100 (CET)
-In-Reply-To: <CAPoeEY8=A949-cuVwfyov2GfpQc=hAjPsDG-suXmT_TDytOKBQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Joseph Wang <joequant@gmail.com>, KCHSU0@nuvoton.com
-Cc: alsa-devel@alsa-project.org, CTLIN0@nuvoton.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <871sxwwcas.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Laurent <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, Guennadi <g.liakhovetski-Mmb7MZpHnFY@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-Kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/5/16 12:45 AM, Joseph Wang wrote:
->>
->> [    2.681633] snd_intel_sst: Requesting FW fw_sst_22a8.bin now...
->>
->
-> Hi,
->
-> This is the firmware that I am using.  Right now the problem is that I'm
-> getting timeouts.  I've confirmed that the device runs fine under the
-> Windows WDM Audio drivers and the Windows NAUL88 codec.  So what appears to
-> be happening is that machine driver is doing something incorrectly.
->
-> If you can look at
->
-> https://github.com/joequant/nau8824/blob/master/linux-4.8/cht_bsw_nau8824.c
+On Mon, Nov 28, 2016 at 02:48:37AM +0000, Kuninori Morimoto wrote:
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+> ---
+>  .../bindings/sound/simple-graph-scu-card.txt       | 69 ++++++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/simple-graph-scu-card.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/simple-graph-scu-card.txt b/Documentation/devicetree/bindings/sound/simple-graph-scu-card.txt
+> new file mode 100644
+> index 0000000..b0e46ba
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/simple-graph-scu-card.txt
+> @@ -0,0 +1,69 @@
+> +Simple-Graph-SCU-Card:
+> +
+> +Simple-Graph-SCU-Card specifies audio DAI connections of SoC <-> codec.
+> +It is based on common bindings for device graphs.
+> +see ${LINUX}/Documentation/devicetree/bindings/graph.txt
+> +
+> +Basically, Simple-Graph-SCU-Card property is same as Simple-Card / Simple-Graph-Card.
+> +see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.txt
+> +    ${LINUX}/Documentation/devicetree/bindings/sound/simple-graph-card.txt
+> +
+> +Main difference between Simple-Graph-Card and Simple-Graph-SCU-Card is that
+> +Simple-Graph-SCU-Card can use multi CPU.
 
-The only thing that comes to my mind and that might tie firmware with 
-the machine driver is the use of this:
+So it can have more that 1 port? At least for the bindings, I think you 
+should combine these 2 bindings. Whether the driver should be combined 
+is separate question. I imagine you have 2 compatible strings because 
+you have 2 drivers, but that isn't really a reason to have 2.
 
-fmt = SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF
-				| SND_SOC_DAIFMT_CBS_CFS;
+I still have no idea what SCU is.
 
-I am not aware of any other drivers using LEFT_J, why can't you use I2S 
-for 2ch links?
-
->
-> And check to see how the initialization is different than the Windows
-> driver, this would be very useful.  I don't know how the device is wired,
-> but I do know that it appears to work with the Cherry Trail windows
-> drivers.  That being the case, I think the issue is my misinitialization
-> rather than device quirk.
->
-> Also to answer your other question.  I am no longer getting kernel errors
-> in the codec.  I believe that at one point I was loading old versions of
-> the codec, but once I did a clean build with the sources that you've
-> provided me, I get no issues with the codec, and I've removed the
-> workaround code.  The problems that I'm having with the firmware appear to
-> arise from the machine drivers.
->
-> One other thing, I was wondering if you have a Cherry Trail dev environment
-> that you can test to see if you can load in my machine driver and replicate
-> the firmware time outs.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Rob
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
