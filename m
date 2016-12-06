@@ -1,75 +1,104 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v6 3/3] sound/usb: Use Media Controller API to share media resources
-Date: Tue, 06 Dec 2016 15:17:23 +0200
-Message-ID: <1539078.id5hGWOO3T@avalon>
-References: <cover.1480539942.git.shuahkh@osg.samsung.com> <2368883.8y0L28vD2m@avalon> <d0a8e556-915c-4f14-d45e-a36a11fb5c6d@osg.samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: nau8825: disable sinc filter for high
+	THD of ADC" to the asoc tree
+Date: Tue, 06 Dec 2016 14:35:57 +0000
+Message-ID: <E1cEGqb-0003a6-Au@finisterre>
+References: <1480643338-9423-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <d0a8e556-915c-4f14-d45e-a36a11fb5c6d@osg.samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shuah Khan <shuahkh@osg.samsung.com>
-Cc: mchehab@kernel.org, tiwai@suse.com, perex@perex.cz, hans.verkuil@cisco.com, javier@osg.samsung.com, chehabrafael@gmail.com, g.liakhovetski@gmx.de, ONeukum@suse.com, k@oikw.org, daniel@zonque.org, mahasler@gmail.com, clemens@ladisch.de, geliangtang@163.com, vdronov@redhat.com, sakari.ailus@iki.fi, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8B15266619
+ for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2016 15:36:14 +0100 (CET)
+In-Reply-To: <1480643338-9423-1-git-send-email-KCHSU0@nuvoton.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com, yong.zhi@intel.com, mhkuo@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shuah,
+The patch
 
-On Monday 05 Dec 2016 17:38:23 Shuah Khan wrote:
-> On 12/05/2016 04:21 PM, Laurent Pinchart wrote:
-> > On Monday 05 Dec 2016 15:44:30 Shuah Khan wrote:
-> >> On 11/30/2016 03:01 PM, Shuah Khan wrote:
-> >>> Change ALSA driver to use Media Controller API to share media resources
-> >>> with DVB, and V4L2 drivers on a AU0828 media device.
-> >>> 
-> >>> Media Controller specific initialization is done after sound card is
-> >>> registered. ALSA creates Media interface and entity function graph
-> >>> nodes for Control, Mixer, PCM Playback, and PCM Capture devices.
-> >>> 
-> >>> snd_usb_hw_params() will call Media Controller enable source handler
-> >>> interface to request the media resource. If resource request is granted,
-> >>> it will release it from snd_usb_hw_free(). If resource is busy, -EBUSY
-> >>> is returned.
-> >>> 
-> >>> Media specific cleanup is done in usb_audio_disconnect().
-> >>> 
-> >>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
-> >> 
-> >> Hi Takashi,
-> >> 
-> >> If you are good with this patch, could you please Ack it, so Mauro
-> >> can pull it into media tree with the other two patches in this series,
-> >> when he is ready to do so.
-> > 
-> > I *really* want to address the concerns raised by Sakari before pulling
-> > more code that makes fixing the race conditions more difficult. Please,
-> > let's all work on fixing the core code to build a stable base on which we
-> > can build additional features. V4L2 and MC need teamwork, it's time to
-> > give the subsystem the love it deserves.
-> 
-> Hi Laurent,
-> 
-> The issue Sakari brought up is specific to using devm for video_device in
-> omap3 and vsp1. I tried reproducing the problem on two different drivers
-> and couldn't on Linux 4.9-rc7.
-> 
-> After sharing that with Sakari, I suggested to Sakari to pull up his patch
-> that removes the devm usage and see if he still needs all the patches in his
-> patch series. He didn't back to me on that. I also requested him to rebase
-> on top of media dev allocator because the allocator routines he has don't
-> address the shared media device need.
-> 
-> He also didn't respond to my response regarding the reasons for choosing
-> graph_mutex to protect enable_source and disable_source handlers.
-> 
-> So I am not sure how to move forward at the moment without a concrete plan
-> for Sakari's RFC series. Sakari's patch series is still RFC and doesn't
-> address shared media_device and requires all drivers to change.
+   ASoC: nau8825: disable sinc filter for high THD of ADC
 
-Today is a public holiday in Finland, I don't expect Sakari to be available. 
-Let's check this with him tomorrow.
+has been applied to the asoc tree at
 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 5f1516d52f9287a94dc3b9d57c370ed01802a911 Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Fri, 2 Dec 2016 09:48:58 +0800
+Subject: [PATCH] ASoC: nau8825: disable sinc filter for high THD of ADC
+
+This bit will enable 4th order SINC filter.
+=1, filter will enable;  but it consumes higher power.
+=0, the sinc filter is disable, and it should always keep 0 value to
+get high THD.
+
+Therefor, disable the filter when codec initiation for better
+performance when recording.
+
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/nau8825.c | 3 ++-
+ sound/soc/codecs/nau8825.h | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 2b89569333a1..efe3a44658d5 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -1846,7 +1846,8 @@ static void nau8825_init_regs(struct nau8825 *nau8825)
+ 	 * (audible hiss). Set it to something better.
+ 	 */
+ 	regmap_update_bits(regmap, NAU8825_REG_ADC_RATE,
+-		NAU8825_ADC_SYNC_DOWN_MASK, NAU8825_ADC_SYNC_DOWN_64);
++		NAU8825_ADC_SYNC_DOWN_MASK | NAU8825_ADC_SINC4_EN,
++		NAU8825_ADC_SYNC_DOWN_64);
+ 	regmap_update_bits(regmap, NAU8825_REG_DAC_CTRL1,
+ 		NAU8825_DAC_OVERSAMPLE_MASK, NAU8825_DAC_OVERSAMPLE_64);
+ 	/* Disable DACR/L power */
+diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
+index 0672a25617b9..5d1704e73241 100644
+--- a/sound/soc/codecs/nau8825.h
++++ b/sound/soc/codecs/nau8825.h
+@@ -269,6 +269,8 @@
+ #define NAU8825_BIQ_PATH_DAC   (1 << NAU8825_BIQ_PATH_SFT)
+ 
+ /* ADC_RATE (0x2b) */
++#define NAU8825_ADC_SINC4_SFT		4
++#define NAU8825_ADC_SINC4_EN		(1 << NAU8825_ADC_SINC4_SFT)
+ #define NAU8825_ADC_SYNC_DOWN_SFT	0
+ #define NAU8825_ADC_SYNC_DOWN_MASK	0x3
+ #define NAU8825_ADC_SYNC_DOWN_32	0
 -- 
-Regards,
-
-Laurent Pinchart
+2.10.2
