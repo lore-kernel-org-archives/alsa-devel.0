@@ -1,69 +1,45 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v5 11/14] ASoC: add simple-graph-card document
-Date: Tue, 6 Dec 2016 09:03:21 -0600
-Message-ID: <CAL_JsqLyYE_nmGfPEF_H9NxKK1HX1BbwWkUmw-PSWo6TANr5ZQ@mail.gmail.com>
-References: <87k2bowckx.wl%kuninori.morimoto.gx@renesas.com>
- <874m2swcbx.wl%kuninori.morimoto.gx@renesas.com> <20161202135048.tzvrv7pzv2dubcy3@rob-hp-laptop>
- <87lgvvw92p.wl%kuninori.morimoto.gx@renesas.com> <20161205225802.ye4tcjwpjmarbfxh@rob-hp-laptop>
- <87h96hc1us.wl%kuninori.morimoto.gx@renesas.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/2] misc: atmel-ssc: register as sound DAI if
+ #sound-dai-cells is present
+Date: Tue, 6 Dec 2016 09:16:35 -0600
+Message-ID: <20161206151635.psckjlu2pyzjm7k6@rob-hp-laptop>
+References: <1480593549-6464-1-git-send-email-peda@axentia.se>
+ <1480593549-6464-2-git-send-email-peda@axentia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <87h96hc1us.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Laurent <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>, Guennadi <g.liakhovetski-Mmb7MZpHnFY@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-Kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <1480593549-6464-2-git-send-email-peda@axentia.se>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Peter Rosin <peda@axentia.se>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 5, 2016 at 6:57 PM, Kuninori Morimoto
-<kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org> wrote:
->
-> Hi Rob
->
->> I'd expect the top level node to be the card node that knows how to find
->> all the components. The graph should reflect the data flow. For example,
->> the data goes to audio DSP to I2S host to codec to amp.
->
-> Do you mean, is this OK for OF graph ?
+On Thu, Dec 01, 2016 at 12:59:08PM +0100, Peter Rosin wrote:
+> The SSC is currently not usable with the ASoC simple-audio-card, as
+> every SSC audio user has to build a platform driver that may do as
+> little as calling atmel_ssc_set_audio/atmel_ssc_put_audio (which
+> allocates the SSC and registers a DAI with the ASoC subsystem).
+> 
+> So, have that happen automatically, if the #sound-dai-cells property
+> is present in devicetree, which it has to be anyway for simple audio
+> card to work.
+> 
+> Signed-off-by: Peter Rosin <peda@axentia.se>
+> ---
+>  .../devicetree/bindings/misc/atmel-ssc.txt         |  2 +
 
-Yes, something like this.
+Acked-by: Rob Herring <robh@kernel.org>
 
-> in driver point of view, "I2S" is sound card here.
-
-Well, that seems odd to me because I2S should just be the h/w block
-that interfaces to I2S/SSI signals. I'd expect you still have a card
-node that references these nodes. Maybe it just references the DSP and
-then you walk the graph from there to find the I2S controller and
-codec.
-
->
-> I2S {
->         port {
->                 i2s-dsp: endpoint {
->                         remote-endpoint = <&dsp>;
->                 }
->                 i2s-codec: endpoint {
->                         remote-endpoint = <&codec>;
->                 }
->         }
-> }
->
-> DSP {
->         port {
->                 dsp: endpoint {
->                         remote-endpoint = <&i2s-dsp>;
->                 }
->         }
-> }
->
-> Codec {
->         port {
->                 codec: endpoint {
->                         remote-endpoint = <&i2s-codec>;
->                 }
->         }
-> }
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>  drivers/misc/atmel-ssc.c                           | 50 ++++++++++++++++++++++
+>  include/linux/atmel-ssc.h                          |  1 +
+>  3 files changed, 53 insertions(+)
