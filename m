@@ -1,98 +1,75 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs35l34: Simplify the logic to set
-	CS35L34_MCLK_CTL setting" to the asoc tree
-Date: Tue, 06 Dec 2016 12:23:32 +0000
-Message-ID: <E1cEEmS-0001d2-Vh@finisterre>
-References: <20161203071050.17811-1-axel.lin@ingics.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v6 3/3] sound/usb: Use Media Controller API to share media resources
+Date: Tue, 06 Dec 2016 15:17:23 +0200
+Message-ID: <1539078.id5hGWOO3T@avalon>
+References: <cover.1480539942.git.shuahkh@osg.samsung.com> <2368883.8y0L28vD2m@avalon> <d0a8e556-915c-4f14-d45e-a36a11fb5c6d@osg.samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 71C0C2668CC
- for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2016 13:23:45 +0100 (CET)
-In-Reply-To: <20161203071050.17811-1-axel.lin@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <d0a8e556-915c-4f14-d45e-a36a11fb5c6d@osg.samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: mchehab@kernel.org, tiwai@suse.com, perex@perex.cz, hans.verkuil@cisco.com, javier@osg.samsung.com, chehabrafael@gmail.com, g.liakhovetski@gmx.de, ONeukum@suse.com, k@oikw.org, daniel@zonque.org, mahasler@gmail.com, clemens@ladisch.de, geliangtang@163.com, vdronov@redhat.com, sakari.ailus@iki.fi, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi Shuah,
 
-   ASoC: cs35l34: Simplify the logic to set CS35L34_MCLK_CTL setting
+On Monday 05 Dec 2016 17:38:23 Shuah Khan wrote:
+> On 12/05/2016 04:21 PM, Laurent Pinchart wrote:
+> > On Monday 05 Dec 2016 15:44:30 Shuah Khan wrote:
+> >> On 11/30/2016 03:01 PM, Shuah Khan wrote:
+> >>> Change ALSA driver to use Media Controller API to share media resources
+> >>> with DVB, and V4L2 drivers on a AU0828 media device.
+> >>> 
+> >>> Media Controller specific initialization is done after sound card is
+> >>> registered. ALSA creates Media interface and entity function graph
+> >>> nodes for Control, Mixer, PCM Playback, and PCM Capture devices.
+> >>> 
+> >>> snd_usb_hw_params() will call Media Controller enable source handler
+> >>> interface to request the media resource. If resource request is granted,
+> >>> it will release it from snd_usb_hw_free(). If resource is busy, -EBUSY
+> >>> is returned.
+> >>> 
+> >>> Media specific cleanup is done in usb_audio_disconnect().
+> >>> 
+> >>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+> >> 
+> >> Hi Takashi,
+> >> 
+> >> If you are good with this patch, could you please Ack it, so Mauro
+> >> can pull it into media tree with the other two patches in this series,
+> >> when he is ready to do so.
+> > 
+> > I *really* want to address the concerns raised by Sakari before pulling
+> > more code that makes fixing the race conditions more difficult. Please,
+> > let's all work on fixing the core code to build a stable base on which we
+> > can build additional features. V4L2 and MC need teamwork, it's time to
+> > give the subsystem the love it deserves.
+> 
+> Hi Laurent,
+> 
+> The issue Sakari brought up is specific to using devm for video_device in
+> omap3 and vsp1. I tried reproducing the problem on two different drivers
+> and couldn't on Linux 4.9-rc7.
+> 
+> After sharing that with Sakari, I suggested to Sakari to pull up his patch
+> that removes the devm usage and see if he still needs all the patches in his
+> patch series. He didn't back to me on that. I also requested him to rebase
+> on top of media dev allocator because the allocator routines he has don't
+> address the shared media device need.
+> 
+> He also didn't respond to my response regarding the reasons for choosing
+> graph_mutex to protect enable_source and disable_source handlers.
+> 
+> So I am not sure how to move forward at the moment without a concrete plan
+> for Sakari's RFC series. Sakari's patch series is still RFC and doesn't
+> address shared media_device and requires all drivers to change.
 
-has been applied to the asoc tree at
+Today is a public holiday in Finland, I don't expect Sakari to be available. 
+Let's check this with him tomorrow.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 914657c2be09fb89a50c7841e98186301c93767e Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Sat, 3 Dec 2016 15:10:50 +0800
-Subject: [PATCH] ASoC: cs35l34: Simplify the logic to set CS35L34_MCLK_CTL
- setting
-
-The logic of "value = ~CS35L34_MCLK_DIV & CS35L34_MCLK_RATE_XXXXXX;" is
-unnecessary complex. By setting CS35L34_MCLK_DIV | CS35L34_MCLK_RATE_MASK
-as the mask for regmap_update_bits() call, what the code does is exactly
-the same as setting value = CS35L34_MCLK_RATE_XXXXXX.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/cs35l34.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/cs35l34.c b/sound/soc/codecs/cs35l34.c
-index e0f672af1d84..7c5d1510cf2c 100644
---- a/sound/soc/codecs/cs35l34.c
-+++ b/sound/soc/codecs/cs35l34.c
-@@ -610,15 +610,15 @@ static int cs35l34_dai_set_sysclk(struct snd_soc_dai *dai,
- 
- 	switch (freq) {
- 	case CS35L34_MCLK_5644:
--		value = ~CS35L34_MCLK_DIV & CS35L34_MCLK_RATE_5P6448;
-+		value = CS35L34_MCLK_RATE_5P6448;
- 		cs35l34->mclk_int = freq;
- 	break;
- 	case CS35L34_MCLK_6:
--		value = ~CS35L34_MCLK_DIV & CS35L34_MCLK_RATE_6P0000;
-+		value = CS35L34_MCLK_RATE_6P0000;
- 		cs35l34->mclk_int = freq;
- 	break;
- 	case CS35L34_MCLK_6144:
--		value = ~CS35L34_MCLK_DIV & CS35L34_MCLK_RATE_6P1440;
-+		value = CS35L34_MCLK_RATE_6P1440;
- 		cs35l34->mclk_int = freq;
- 	break;
- 	case CS35L34_MCLK_11289:
 -- 
-2.10.2
+Regards,
+
+Laurent Pinchart
