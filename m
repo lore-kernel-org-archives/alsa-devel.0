@@ -1,67 +1,68 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH v4 0/3] support DP MST audio
-Date: Tue, 6 Dec 2016 02:58:21 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D194FA69699@SHSMSX103.ccr.corp.intel.com>
-References: <1480992519-108079-1-git-send-email-libin.yang@intel.com>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: [PATCH 2/2] ALSA: usb-audio: avoid setting of sample rate multiple times on bus
+Date: Tue, 6 Dec 2016 14:46:15 +0900
+Message-ID: <20161206054615.29187-3-jiada_wang@mentor.com>
+References: <20161206054615.29187-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id ADEBC266686
- for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2016 03:58:27 +0100 (CET)
-In-Reply-To: <1480992519-108079-1-git-send-email-libin.yang@intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20161206054615.29187-1-jiada_wang@mentor.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com, o-takashi@sakamocchi.jp, clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, jiada_wang@mentor.com, apape@de.adit-jv.com
 List-Id: alsa-devel@alsa-project.org
 
-The patchset is based on drm-tip branch in
-git://anongit.freedesktop.org/drm-tip
+From: Daniel Girnus <dgirnus@de.adit-jv.com>
 
-Regards,
-Libin
+Some of userland applications call 'snd_pcm_hw_params()' and
+'snd_pcm_hw_prepare()' sequentially, which means 'snd_pcm_hw_prepare()'
+is called twice and the second 'snd_pcm_hw_prepare()' is called in
+'SNDRV_PCM_STATE_PREPARED' state.
 
+Some devices are not able to manage this and they will stop playback
+if the sample rate will be configured several times over USB protocol.
 
->-----Original Message-----
->From: Yang, Libin
->Sent: Tuesday, December 6, 2016 10:49 AM
->To: alsa-devel@alsa-project.org; tiwai@suse.de
->Cc: Lin, Mengdong <mengdong.lin@intel.com>; Yang, Libin
-><libin.yang@intel.com>
->Subject: [alsa-devel] [PATCH v4 0/3] support DP MST audio
->
->From: Libin Yang <libin.yang@intel.com>
->
->This patchset starts to support DP MST audio.
->
->This patchset is based on drm-tip on
->git://anongit.freedesktop.org/drm-tip
->
->change log:
->v4: refine some comments in 0001 and 0002 patches.
->    refine the 0003 patch for the new ALSA-Configuration document
->
->Libin Yang (3):
->  ALSA: hda - add DP mst verb support
->  ALSA: hda - add DP MST audio support
->  ALSA: Documentation about HDA DP MST pin init and connection
->
-> Documentation/sound/hd-audio/dp-mst.rst |  17 +++
-> sound/pci/hda/hda_codec.c               |  76 +++++++++-
-> sound/pci/hda/hda_codec.h               |   3 +
-> sound/pci/hda/patch_hdmi.c              | 245 +++++++++++++++++++++++++------
->-
-> 4 files changed, 285 insertions(+), 56 deletions(-)
->
->--
->2.7.4
+V2: updated Changelog
+
+Signed-off-by: Daniel Girnus <dgirnus@de.adit-jv.com>
+Signed-off-by: Jens Lorenz <jlorenz@de.adit-jv.com>
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+---
+ sound/usb/pcm.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
+
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 44d178e..a522c9a 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -806,17 +806,18 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+ 	if (ret < 0)
+ 		goto unlock;
+ 
+-	iface = usb_ifnum_to_if(subs->dev, subs->cur_audiofmt->iface);
+-	alts = &iface->altsetting[subs->cur_audiofmt->altset_idx];
+-	ret = snd_usb_init_sample_rate(subs->stream->chip,
+-				       subs->cur_audiofmt->iface,
+-				       alts,
+-				       subs->cur_audiofmt,
+-				       subs->cur_rate);
+-	if (ret < 0)
+-		goto unlock;
+-
+ 	if (subs->need_setup_ep) {
++
++		iface = usb_ifnum_to_if(subs->dev, subs->cur_audiofmt->iface);
++		alts = &iface->altsetting[subs->cur_audiofmt->altset_idx];
++		ret = snd_usb_init_sample_rate(subs->stream->chip,
++					       subs->cur_audiofmt->iface,
++					       alts,
++					       subs->cur_audiofmt,
++					       subs->cur_rate);
++		if (ret < 0)
++			goto unlock;
++
+ 		ret = configure_endpoint(subs);
+ 		if (ret < 0)
+ 			goto unlock;
+-- 
+2.9.3
