@@ -1,45 +1,94 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 1/2] misc: atmel-ssc: register as sound DAI if
- #sound-dai-cells is present
-Date: Tue, 6 Dec 2016 09:16:35 -0600
-Message-ID: <20161206151635.psckjlu2pyzjm7k6@rob-hp-laptop>
-References: <1480593549-6464-1-git-send-email-peda@axentia.se>
- <1480593549-6464-2-git-send-email-peda@axentia.se>
+From: sathyanarayana.nujella@intel.com
+Subject: [PATCH] ASoC: Intel: update bxt_da7219_max98357a to
+	support quad ch dmic capture
+Date: Tue,  6 Dec 2016 07:08:36 -0800
+Message-ID: <20161206150836.32526-1-sathyanarayana.nujella@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <1480593549-6464-2-git-send-email-peda@axentia.se>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Peter Rosin <peda@axentia.se>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5574C26705F
+ for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2016 16:08:56 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, harshapriya.n@intel.com, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 01, 2016 at 12:59:08PM +0100, Peter Rosin wrote:
-> The SSC is currently not usable with the ASoC simple-audio-card, as
-> every SSC audio user has to build a platform driver that may do as
-> little as calling atmel_ssc_set_audio/atmel_ssc_put_audio (which
-> allocates the SSC and registers a DAI with the ASoC subsystem).
-> 
-> So, have that happen automatically, if the #sound-dai-cells property
-> is present in devicetree, which it has to be anyway for simple audio
-> card to work.
-> 
-> Signed-off-by: Peter Rosin <peda@axentia.se>
-> ---
->  .../devicetree/bindings/misc/atmel-ssc.txt         |  2 +
+From: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 
-Acked-by: Rob Herring <robh@kernel.org>
+This patch updates FE channel constraints & BE fixup to support
+quad channel DMIC capture.
+DMIC pin's BE fixup is configured based on channel input, i.e.
+either stereo or quad.
 
->  drivers/misc/atmel-ssc.c                           | 50 ++++++++++++++++++++++
->  include/linux/atmel-ssc.h                          |  1 +
->  3 files changed, 53 insertions(+)
+Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index bff80b4..3a8c24a 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -30,6 +30,7 @@
+ #define BXT_DIALOG_CODEC_DAI	"da7219-hifi"
+ #define BXT_MAXIM_CODEC_DAI	"HiFi"
+ #define DUAL_CHANNEL		2
++#define QUAD_CHANNEL		4
+ 
+ static struct snd_soc_jack broxton_headset;
+ 
+@@ -182,6 +183,16 @@ static struct snd_pcm_hw_constraint_list constraints_channels = {
+ 	.mask = 0,
+ };
+ 
++static unsigned int channels_quad[] = {
++	QUAD_CHANNEL,
++};
++
++static struct snd_pcm_hw_constraint_list constraints_channels_quad = {
++	.count = ARRAY_SIZE(channels_quad),
++	.list = channels_quad,
++	.mask = 0,
++};
++
+ static int bxt_fe_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -258,7 +269,10 @@ static int broxton_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
+-	channels->min = channels->max = DUAL_CHANNEL;
++	if (params_channels(params) == 2)
++		channels->min = channels->max = 2;
++	else
++		channels->min = channels->max = 4;
+ 
+ 	return 0;
+ }
+@@ -267,9 +281,9 @@ static int broxton_dmic_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 
+-	runtime->hw.channels_max = DUAL_CHANNEL;
++	runtime->hw.channels_min = runtime->hw.channels_max = QUAD_CHANNEL;
+ 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+-			&constraints_channels);
++			&constraints_channels_quad);
+ 
+ 	return snd_pcm_hw_constraint_list(substream->runtime, 0,
+ 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
+-- 
+2.8.4
