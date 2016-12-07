@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: enable/disable ADG when
-	suspend/resume timing" to the asoc tree
-Date: Wed, 07 Dec 2016 15:50:18 +0000
-Message-ID: <E1cEeU6-0000mt-KI@finisterre>
-References: <87r35k37np.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: tidyup ssi->usrcnt counter check
+	in hw_params" to the asoc tree
+Date: Wed, 07 Dec 2016 15:50:23 +0000
+Message-ID: <E1cEeUB-0000nm-1N@finisterre>
+References: <87oa0oqyuq.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ACFFC267211
- for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2016 16:50:30 +0100 (CET)
-In-Reply-To: <87r35k37np.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 58A1426721A
+ for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2016 16:50:31 +0100 (CET)
+In-Reply-To: <87oa0oqyuq.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>, Gaku Inami <gaku.inami.xw@bp.renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>, Nguyen Viet Dung <nv-dung@jinso.co.jp>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: enable/disable ADG when suspend/resume timing
+   ASoC: rsnd: tidyup ssi->usrcnt counter check in hw_params
 
 has been applied to the asoc tree at
 
@@ -53,149 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From c2d3171847611e8a33d3e10a9942f6c065d05c1f Mon Sep 17 00:00:00 2001
+>From 6bf66b1c35870e08359cb03c49a94e7fef529ef5 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 7 Dec 2016 00:29:02 +0000
-Subject: [PATCH] ASoC: rsnd: enable/disable ADG when suspend/resume timing
+Date: Wed, 7 Dec 2016 02:05:22 +0000
+Subject: [PATCH] ASoC: rsnd: tidyup ssi->usrcnt counter check in hw_params
 
-Current rsnd driver enables ADG clock when .probe timing,
-but it breaks sound after Suspend/Resume. These should be setups
-every suspend/resume timing too.
-This patch is tested on R-Car Gen3 Salvator-X board
+ssi->usrcnt will be updated on snd_soc_dai_ops::trigger,
+but snd_pcm_ops::hw_params will be called *before* it.
+Thus, ssi->usrcnt is still 0 when 1st call.
+rsnd_ssi_hw_params() needs to check its called count, this means
+trigger should be if (ssi->usrcnt) instead of if (ssi->usrcnt > 1).
 
+Reported-by: Nguyen Viet Dung <nv-dung@jinso.co.jp>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Gaku Inami <gaku.inami.xw@bp.renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c  | 38 ++++++++++++++++++++++++--------------
- sound/soc/sh/rcar/core.c | 24 ++++++++++++++++++++++++
- sound/soc/sh/rcar/rsnd.h |  3 +++
- 3 files changed, 51 insertions(+), 14 deletions(-)
+ sound/soc/sh/rcar/ssi.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 545377dc15ed..54b28fd502ef 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -376,6 +376,25 @@ int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate)
- 	return 0;
- }
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index e23e07b54d8c..411bda2387ad 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -417,11 +417,14 @@ static int rsnd_ssi_hw_params(struct rsnd_mod *mod,
+ 	int chan = params_channels(params);
  
-+void rsnd_adg_clk_control(struct rsnd_priv *priv, int enable)
-+{
-+	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
-+	struct device *dev = rsnd_priv_to_dev(priv);
-+	struct clk *clk;
-+	int i, ret;
-+
-+	for_each_rsnd_clk(clk, adg, i) {
-+		ret = 0;
-+		if (enable)
-+			ret = clk_prepare_enable(clk);
-+		else
-+			clk_disable_unprepare(clk);
-+
-+		if (ret < 0)
-+			dev_warn(dev, "can't use clk %d\n", i);
-+	}
-+}
-+
- static void rsnd_adg_get_clkin(struct rsnd_priv *priv,
- 			       struct rsnd_adg *adg)
- {
-@@ -387,20 +406,15 @@ static void rsnd_adg_get_clkin(struct rsnd_priv *priv,
- 		[CLKC]	= "clk_c",
- 		[CLKI]	= "clk_i",
- 	};
--	int i, ret;
-+	int i;
- 
- 	for (i = 0; i < CLKMAX; i++) {
- 		clk = devm_clk_get(dev, clk_name[i]);
- 		adg->clk[i] = IS_ERR(clk) ? NULL : clk;
- 	}
- 
--	for_each_rsnd_clk(clk, adg, i) {
--		ret = clk_prepare_enable(clk);
--		if (ret < 0)
--			dev_warn(dev, "can't use clk %d\n", i);
--
-+	for_each_rsnd_clk(clk, adg, i)
- 		dev_dbg(dev, "clk %d : %p : %ld\n", i, clk, clk_get_rate(clk));
--	}
- }
- 
- static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
-@@ -565,16 +579,12 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
- 
- 	priv->adg = adg;
- 
-+	rsnd_adg_clk_enable(priv);
-+
- 	return 0;
- }
- 
- void rsnd_adg_remove(struct rsnd_priv *priv)
- {
--	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
--	struct clk *clk;
--	int i;
--
--	for_each_rsnd_clk(clk, adg, i) {
--		clk_disable_unprepare(clk);
--	}
-+	rsnd_adg_clk_disable(priv);
- }
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 825635aaf30e..4bd68de76130 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1308,9 +1308,33 @@ static int rsnd_remove(struct platform_device *pdev)
- 	return ret;
- }
- 
-+static int rsnd_suspend(struct device *dev)
-+{
-+	struct rsnd_priv *priv = dev_get_drvdata(dev);
-+
-+	rsnd_adg_clk_disable(priv);
-+
-+	return 0;
-+}
-+
-+static int rsnd_resume(struct device *dev)
-+{
-+	struct rsnd_priv *priv = dev_get_drvdata(dev);
-+
-+	rsnd_adg_clk_enable(priv);
-+
-+	return 0;
-+}
-+
-+static struct dev_pm_ops rsnd_pm_ops = {
-+	.suspend		= rsnd_suspend,
-+	.resume			= rsnd_resume,
-+};
-+
- static struct platform_driver rsnd_driver = {
- 	.driver	= {
- 		.name	= "rcar_sound",
-+		.pm	= &rsnd_pm_ops,
- 		.of_match_table = rsnd_of_match,
- 	},
- 	.probe		= rsnd_probe,
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 71158c8bc254..b90df77662df 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -499,6 +499,9 @@ int rsnd_adg_set_src_timesel_gen2(struct rsnd_mod *src_mod,
- 				  unsigned int out_rate);
- int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *mod,
- 				 struct rsnd_dai_stream *io);
-+#define rsnd_adg_clk_enable(priv)	rsnd_adg_clk_control(priv, 1)
-+#define rsnd_adg_clk_disable(priv)	rsnd_adg_clk_control(priv, 0)
-+void rsnd_adg_clk_control(struct rsnd_priv *priv, int enable);
- 
- /*
-  *	R-Car sound priv
+ 	/*
+-	 * Already working.
+-	 * It will happen if SSI has parent/child connection.
++	 * snd_pcm_ops::hw_params will be called *before*
++	 * snd_soc_dai_ops::trigger. Thus, ssi->usrcnt is 0
++	 * in 1st call.
+ 	 */
+-	if (ssi->usrcnt > 1) {
++	if (ssi->usrcnt) {
+ 		/*
++		 * Already working.
++		 * It will happen if SSI has parent/child connection.
+ 		 * it is error if child <-> parent SSI uses
+ 		 * different channels.
+ 		 */
 -- 
 2.10.2
