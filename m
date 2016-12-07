@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH v2 04/13] ASoC: Intel: Skylake: Removed unused
-	skl_get_format()
-Date: Wed,  7 Dec 2016 19:14:26 +0530
-Message-ID: <1481118275-30715-5-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH v2 05/13] ALSA: hda: check stream decoupled
+	register state
+Date: Wed,  7 Dec 2016 19:14:27 +0530
+Message-ID: <1481118275-30715-6-git-send-email-jeeja.kp@intel.com>
 References: <1481118275-30715-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 20D4C2671B8
- for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2016 14:34:32 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D4CD2671B8
+ for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2016 14:34:35 +0100 (CET)
 In-Reply-To: <1481118275-30715-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,50 +27,41 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Removed the unused function skl_get_format as the format is calculated
-directly using the HDA core API.
+Check stream decoupled register value with requested value
+before decoupling/coupling the stream.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 26 --------------------------
- 1 file changed, 26 deletions(-)
+ sound/hda/ext/hdac_ext_stream.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 1abff8e..10fa10d 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -259,32 +259,6 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int skl_get_format(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
--	struct skl_dma_params *dma_params;
--	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
--	int format_val = 0;
--
--	if ((ebus_to_hbus(ebus))->ppcap) {
--		struct snd_pcm_runtime *runtime = substream->runtime;
--
--		format_val = snd_hdac_calc_stream_format(runtime->rate,
--						runtime->channels,
--						runtime->format,
--						32, 0);
--	} else {
--		struct snd_soc_dai *codec_dai = rtd->codec_dai;
--
--		dma_params = snd_soc_dai_get_dma_data(codec_dai, substream);
--		if (dma_params)
--			format_val = dma_params->format;
--	}
--
--	return format_val;
--}
--
- static int skl_be_prepare(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
+diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
+index 3be051a..f35b006 100644
+--- a/sound/hda/ext/hdac_ext_stream.c
++++ b/sound/hda/ext/hdac_ext_stream.c
+@@ -128,14 +128,17 @@ void snd_hdac_ext_stream_decouple(struct hdac_ext_bus *ebus,
  {
+ 	struct hdac_stream *hstream = &stream->hstream;
+ 	struct hdac_bus *bus = &ebus->bus;
++	u32 val;
++	int mask = AZX_PPCTL_PROCEN(hstream->index);
+ 
+ 	spin_lock_irq(&bus->reg_lock);
+-	if (decouple)
+-		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, 0,
+-				AZX_PPCTL_PROCEN(hstream->index));
+-	else
+-		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL,
+-					AZX_PPCTL_PROCEN(hstream->index), 0);
++	val = ((readw(bus->ppcap + AZX_REG_PP_PPCTL) & mask) >> mask);
++
++	if (decouple && (val == 0))
++		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, mask, mask);
++	else if (!decouple && (val > 0))
++		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, mask, 0);
++
+ 	stream->decoupled = decouple;
+ 	spin_unlock_irq(&bus->reg_lock);
+ }
 -- 
 2.5.0
