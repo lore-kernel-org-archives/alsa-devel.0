@@ -1,76 +1,77 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH] speaker-test: Fix chmap wav file selection.
-Date: Wed, 7 Dec 2016 17:44:26 +0100
-Message-ID: <1481129066-15961-1-git-send-email-arnaud.pouliquen@st.com>
+From: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH 2/2] ASoC: cs43130: Add devicetree bindings for CS43130
+Date: Wed, 7 Dec 2016 14:17:28 -0600
+Message-ID: <81e7d974-68d3-41ef-bd75-ce59b3515d9d@EX4.ad.cirrus.com>
+References: <1481141848-6695-1-git-send-email-li.xu@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 6E757267234
- for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2016 17:45:13 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, broonie@kernel.org, Anssi Hannula <anssi.hannula@iki.fi>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1481141848-6695-1-git-send-email-li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The channel selection currently does not work properly when a channel
-map control is provided but no manual channel map was explicitly
-requested with "-m".
+Add devicetree bindings documentation file for Cirrus
+Logic CS43130 codec.
 
-For example, the CEA/HDMI 6ch (surround 5.1) map is:
- FL, FR, LFE, FC, RL, RR.
-
-Tested command: speaker-test -D hdmi -c 6 -t wav
-
-Speaker-test tries to play channels in this following order:
- 0 - Front Left
- 3 - Front Center
- 1 - Front Right
- 5 - Rear Right
- 4 - Rear Left
- 2 - LFE
-
-But wav file played on associated speakers are not aligned. Here are
-the real files played:
- 0- /usr/share/sounds/alsa/Front_Left.wav => OK
- 3- /usr/share/sounds/alsa/Rear_Right.wav  => OK
- 1- /usr/share/sounds/alsa/Front_Right.wav  => OK
- 5- /usr/share/sounds/alsa/Rear_Center.wav => KO
- 4- found file /usr/share/sounds/alsa/Front_Center.wav => KO
- 2- /usr/share/sounds/alsa/Rear_Left.wav  => KO
-
-Issue is that associated wav files ordering is reworked only if
-channel_map_set variable is set.
-
-Fix consists in allowing wavs re-ordering if a channel mapping as been
-get or set, i.e. channel_map is not null.
-
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Signed-off-by: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 ---
- speaker-test/speaker-test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/cs43130.txt          | 41 ++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs43130.txt
 
-diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c
-index 5b9cbec..46b0589 100644
---- a/speaker-test/speaker-test.c
-+++ b/speaker-test/speaker-test.c
-@@ -843,7 +843,7 @@ static int setup_wav_file(int chn)
-     return check_wav_file(chn, given_test_wav_file);
- 
- #ifdef CONFIG_SUPPORT_CHMAP
--  if (channel_map_set && chn < channel_map->channels) {
-+  if (channel_map && chn < channel_map->channels) {
-     int channel = channel_map->pos[chn] - SND_CHMAP_FL;
-     if (channel >= 0 && channel < MAX_CHANNELS)
-       return check_wav_file(chn, wavs[channel]);
+diff --git a/Documentation/devicetree/bindings/sound/cs43130.txt b/Documentation/devicetree/bindings/sound/cs43130.txt
+new file mode 100644
+index 0000000..9a2a22a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs43130.txt
+@@ -0,0 +1,41 @@
++CS43130 DAC
++
++Required properties:
++
++  - compatible : "cirrus,cs43130"
++
++  - reg : the I2C address of the device for I2C
++
++  - VA-supply, VP-supply, VL-supply, VCP-supply, VD-supply:
++	power supplies for the device, as covered in
++	Documentation/devicetree/bindings/regulator/regulator.txt.
++
++
++Optional properties:
++
++  - reset-gpios : gpio used to reset the Device
++
++  - cirrus,xtal-ibias:
++   When external MCLK is generated by external crystal
++   oscillator, CS43130 can be used to provide bias current
++   for external crystal.  Amount of bias current sent is
++   set as:
++   1 = 7.5uA
++   2 = 12.5uA
++   3 = 15uA
++
++Example:
++
++cs43130: cs43130@30 {
++	compatible = "cirrus,cs43130";
++	reg = <0x30>;
++	reset-gpios = <&axi_gpio 54 0>;
++   VA-supply = <&dummy_vreg>;
++   VP-supply = <&dummy_vreg>;
++   VL-supply = <&dummy_vreg>;
++   VCP-supply = <&dummy_vreg>;
++   VD-supply = <&dummy_vreg>;
++   cirrus,xtal-ibias = <2>;
++   interrupt-parent = <&gpio0>;
++   interrupts = <55 8>;
++};
 -- 
 1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
