@@ -1,57 +1,87 @@
-From: Kirtika Ruchandani <kirtika@chromium.org>
-Subject: [PATCH] ASoC: Intel: Skylake: remove unused 'out_fmt' variable
-Date: Wed,  7 Dec 2016 22:01:42 -0800
-Message-ID: <1481176902-131803-1-git-send-email-kirtika@chromium.org>
+From: Jeeja KP <jeeja.kp@intel.com>
+Subject: Re: [PATCH v2 05/13] ALSA: hda: check stream decoupled
+	register state
+Date: Thu, 8 Dec 2016 12:01:12 +0530
+Message-ID: <20161208063111.GA7931@kpjeeja-desk>
+References: <1481118275-30715-1-git-send-email-jeeja.kp@intel.com>
+ <1481118275-30715-6-git-send-email-jeeja.kp@intel.com>
+ <s5hk2bbq2jc.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: tiwai@suse.com
-Cc: Kirtika Ruchandani <kirtika@chromium.org>, arnd@arndb.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Hardik T Shah <hardik.t.shah@intel.com>, Omair M Abdullah <omair.m.abdullah@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 741D5267364
+ for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 07:20:56 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hk2bbq2jc.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Commit 4cd9899f0d16 introduced struct skl_module_fmt* out_fmt without
-using it. Compiling with W=1 gives the below warning, fix it.
+On Wed, Dec 07, 2016 at 02:41:59PM +0100, Takashi Iwai wrote:
+> On Wed, 07 Dec 2016 14:44:27 +0100,
+> jeeja.kp@intel.com wrote:
+> > 
+> > From: Jeeja KP <jeeja.kp@intel.com>
+> > 
+> > Check stream decoupled register value with requested value
+> > before decoupling/coupling the stream.
+> > 
+> > Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+> > ---
+> >  sound/hda/ext/hdac_ext_stream.c | 15 +++++++++------
+> >  1 file changed, 9 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
+> > index 3be051a..f35b006 100644
+> > --- a/sound/hda/ext/hdac_ext_stream.c
+> > +++ b/sound/hda/ext/hdac_ext_stream.c
+> > @@ -128,14 +128,17 @@ void snd_hdac_ext_stream_decouple(struct hdac_ext_bus *ebus,
+> >  {
+> >  	struct hdac_stream *hstream = &stream->hstream;
+> >  	struct hdac_bus *bus = &ebus->bus;
+> > +	u32 val;
+> > +	int mask = AZX_PPCTL_PROCEN(hstream->index);
+> >  
+> >  	spin_lock_irq(&bus->reg_lock);
+> > -	if (decouple)
+> > -		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, 0,
+> > -				AZX_PPCTL_PROCEN(hstream->index));
+> > -	else
+> > -		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL,
+> > -					AZX_PPCTL_PROCEN(hstream->index), 0);
+> > +	val = ((readw(bus->ppcap + AZX_REG_PP_PPCTL) & mask) >> mask);
+> 
+> This looks wrong.
+> And you just need to know whether it's zero or not in below, so the
+> shift is anyway superfluous.
+Yes, shift is superfluous here. I will fix this.
 
-sound/soc/intel/skylake/skl-topology.c: In function ‘skl_tplg_update_buffer_size’:
-sound/soc/intel/skylake/skl-topology.c:301:34: warning: variable ‘out_fmt’ set but not used [-Wunused-but-set-variable]
+> 
+> 
+> Takashi
+> 
+> 
+> > +	if (decouple && (val == 0))
+> > +		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, mask, mask);
+> > +	else if (!decouple && (val > 0))
+> > +		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, mask, 0);
+> > +
+> >  	stream->decoupled = decouple;
+> >  	spin_unlock_irq(&bus->reg_lock);
+> >  }
+> > -- 
+> > 2.5.0
+> > 
 
-This is a harmless warning and is only being fixed to reduce the noise
-with W=1 in the kernel.
-
-Fixes: 4cd9899f0d16 ("ASoC: Intel: Skylake: Add multiple pin formats")
-Cc: Hardik T Shah <hardik.t.shah@intel.com>
-Cc: Omair M Abdullah <omair.m.abdullah@intel.com>
-Cc: Jeeja KP <jeeja.kp@intel.com>
-Cc: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>
-Cc: Mark Brown <broonie@kernel.org>
-Signed-off-by: Kirtika Ruchandani <kirtika@chromium.org>
----
- sound/soc/intel/skylake/skl-topology.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index bd313c9..4352236a 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -298,7 +298,7 @@ static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
-				struct skl_module_cfg *mcfg)
- {
-	int multiplier = 1;
--	struct skl_module_fmt *in_fmt, *out_fmt;
-+	struct skl_module_fmt *in_fmt;
-	int in_rate, out_rate;
-
-
-@@ -306,7 +306,6 @@ static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
-	 * change for pin 0 only
-	 */
-	in_fmt = &mcfg->in_fmt[0];
--	out_fmt = &mcfg->out_fmt[0];
-
-	if (mcfg->m_type == SKL_MODULE_TYPE_SRCINT)
-		multiplier = 5;
---
-2.8.0.rc3.226.g39d4020
+-- 
