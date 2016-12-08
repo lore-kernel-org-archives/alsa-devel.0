@@ -1,134 +1,130 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v5 0/2] ALSA controls management using
- index/device/sub-devices fields
-Date: Fri, 9 Dec 2016 05:39:07 +0900
-Message-ID: <b2475f37-3ace-e9ee-5553-746eb8efa754@sakamocchi.jp>
-References: <1481206526-28830-1-git-send-email-arnaud.pouliquen@st.com>
+From: Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [PATCH v6 3/3] sound/usb: Use Media Controller API to share
+ media resources
+Date: Fri, 9 Dec 2016 01:44:07 +0200
+Message-ID: <20161208234407.GK16630@valkosipuli.retiisi.org.uk>
+References: <cover.1480539942.git.shuahkh@osg.samsung.com>
+ <ebeaa42019b102f76d87a2fc4aa7793e1f87072c.1480539942.git.shuahkh@osg.samsung.com>
+ <69ad05a8-8572-43e7-ef76-7510edd904c6@osg.samsung.com>
+ <2368883.8y0L28vD2m@avalon>
+ <d0a8e556-915c-4f14-d45e-a36a11fb5c6d@osg.samsung.com>
+ <20161207105207.GW16630@valkosipuli.retiisi.org.uk>
+ <f83b60c1-9e1a-df5c-b1ec-de2ddd219307@osg.samsung.com>
+ <20161207222738.GY16630@valkosipuli.retiisi.org.uk>
+ <5566cc23-62c3-7a4a-073d-7c340a22e984@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id CC89826750C
- for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 21:39:19 +0100 (CET)
-In-Reply-To: <1481206526-28830-1-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org
-Cc: kernel@stlinux.com, Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-media-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5566cc23-62c3-7a4a-073d-7c340a22e984@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, mchehab@kernel.org, tiwai@suse.com, perex@perex.cz, hans.verkuil@cisco.com, javier@osg.samsung.com, chehabrafael@gmail.com, g.liakhovetski@gmx.de, ONeukum@suse.com, k@oikw.org, daniel@zonque.org, mahasler@gmail.com, clemens@ladisch.de, geliangtang@163.com, vdronov@redhat.com, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 8 2016 23:15, Arnaud Pouliquen wrote:
-> Previous discussions summary:
->  - Topic of  the patchset:
->  	Patch concerns ASoc DAI drivers.
->         Aim is to be able to instantiate PCM control using device field according
->         to the associated PCM char device.  For this, a relationship between DAIs PCM
->         control and PCM char device needs to be establish.
->         => Proposal is to add field in DAI driver struct to declare PCM controls that
-> 	need to be linked to PCM character device on DAI link probing.
->
->   - Limitation of the patchset:
->   	This patchset seems only a first step as 2 concerns are been highlighted:
->          - Patch is limited to "static" DAI-link. This not responds to backend (no_pcm dai links) and
->          some none-DAI codecs, that could register PCm controls.
->          In theses cases it is not possible to establish relationship during probe.
->          	=> No solution proposed for time beeing.
->
->          - This patchset does not fix conflict of 2 "identical" PCM controls declared by 2 drivers.
->           For instance, a conflict can exist between a  PCM control created in DAI driver
->           and the same control declared in a codec driver. As index field is forced to 0, prefix
->           should be used in codec.
->         	=> To discuss solution in a separate thread as issue already present without this patchset
->                 	several approaches seem possible like using index field ( control auto indexation in
->                         ASoC) or prefix in Naming.
->
-> V5:
->  - [PATCH v5 1/2] ASoC: core: allow DAI PCM controls bound to PCM device
->  	Minor fixes in comment and error message.
->  - [PATCH v5 2/2] ASoC: sti: bind pcm controls to pcm device.
->  	No change since V2.
->
-> V4:
->  - [PATCH v4 1/2] ASoC: core: allow DAI PCM controls bound to PCM device
->  	Fix and rework error management in soc_link_dai_pcm_controls function.
->  - [PATCH v4 2/2] ASoC: sti: bind pcm controls to pcm device.
->  	No change since V2.
->
-> V3:
->  - [PATCH v3 1/2] ASoC: core: allow DAI PCM controls bound to PCM device
->  	Code optimization based on Takashi Sakamoto suggestion
->  - [RFC V2 3/3]   ASoC: hdmi-codec: Example of PCM control bound to PCM device for multi
-> 	patch suppressed as it was send as example in previous version. Patch is valid but
->         can have impact on existing drivers as control device field value is updated
->   - [PATCH v3 2/2] ASoC: sti: bind pcm controls to pcm device.
->  	No change vs V2
->
-> V2:
-> http://www.spinics.net/lists/alsa-devel/msg57045.html
->
-> Aim of this version is to continue discussion on DAI PCM control focused on ASoC drivers.
-> In this V2  implementation in Soc-core is simplified to limit impact on existing code.
->
->  Update of the RFC V1 based on discussions:
->  - [RFC 4/4] iecset: allow to select control with device and sub-device numbers
->  	no more part of the RFC V2, will be discussed in a separate thread
->  - [RFC 2/4] ALSA: control: increment index field for duplicated control.
->  	no more part of the RFC V2, no more need as RFC subject is PCM controls
->
-> - [RFC V2 1/3] ASoC: core: allow DAI PCM controls bound to PCM device
-> 	Patch reworked from V1 to simplify implementation
->         - Binding is not done for Dai links tagged with no_pcm (DPCM).
->         - no more possibility to add the controls after the DAI link probing.
->
-> - [RFC V2 2/3]   ASoC: sti: bind PCM controls to PCM device.
-> - [RFC V2 3/3]   ASoC: hdmi-codec: Example of PCM control bound to PCM device for multi
->         Example of implementation in STI DAI driver and HDMI-codec drivers
->
-> V1:
->  http://www.spinics.net/lists/alsa-devel/msg56479.html
->
->  1) Alsa-utils patch
->
-> - iecset: allow to select control with device and sub-device numbers
->   This patch allows to access to 2 iec controls differentiated by
->   device/sub-devices numbers
-> => For me, this patch is mandatory to be able to address the ASoC IEC
->    controls, in case of no fix is implemented to allows index field
->    update in ASoC.
->
-> 2) Alsa driver patches
->   - ASoC: core: allow PCM control binding to PCM device
->   	Add relationship between DAIs PCM controls and PCM device.
->
->   - ALSA: control: increment index field for duplicated control.
->    	Generic implementation of the patch proposed in HDA driver
->         (http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/?id=ea9b43add)
->
->   - ASoC: sti: use bind_pcm_ctl
->   	implementation of bind_pcm_ctl for sti driver.
->
-> Arnaud Pouliquen (2):
->   ASoC: core: allow DAI PCM controls bound to PCM device
->   ASoC: sti: bind pcm controls to pcm device.
+Hi Shuah,
 
-I reviewed both patches.
+On Thu, Dec 08, 2016 at 07:46:03AM -0700, Shuah Khan wrote:
+> Hi Sakari,
+> 
+> On 12/07/2016 03:27 PM, Sakari Ailus wrote:
+> > Hi Shuah,
+> > 
+> > On Wed, Dec 07, 2016 at 01:03:59PM -0700, Shuah Khan wrote:
+> >> Hi Sakari,
+> >>
+> >> On 12/07/2016 03:52 AM, Sakari Ailus wrote:
+> >>> Hi Shuah,
+> >>>
+> >>> On Mon, Dec 05, 2016 at 05:38:23PM -0700, Shuah Khan wrote:
+> >>>> On 12/05/2016 04:21 PM, Laurent Pinchart wrote:
+> >>>>> Hi Shuah,
+> >>>>>
+> >>>>> On Monday 05 Dec 2016 15:44:30 Shuah Khan wrote:
+> >>>>>> On 11/30/2016 03:01 PM, Shuah Khan wrote:
+> >>>>>>> Change ALSA driver to use Media Controller API to share media resources
+> >>>>>>> with DVB, and V4L2 drivers on a AU0828 media device.
+> >>>>>>>
+> >>>>>>> Media Controller specific initialization is done after sound card is
+> >>>>>>> registered. ALSA creates Media interface and entity function graph
+> >>>>>>> nodes for Control, Mixer, PCM Playback, and PCM Capture devices.
+> >>>>>>>
+> >>>>>>> snd_usb_hw_params() will call Media Controller enable source handler
+> >>>>>>> interface to request the media resource. If resource request is granted,
+> >>>>>>> it will release it from snd_usb_hw_free(). If resource is busy, -EBUSY is
+> >>>>>>> returned.
+> >>>>>>>
+> >>>>>>> Media specific cleanup is done in usb_audio_disconnect().
+> >>>>>>>
+> >>>>>>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+> >>>>>>
+> >>>>>> Hi Takashi,
+> >>>>>>
+> >>>>>> If you are good with this patch, could you please Ack it, so Mauro
+> >>>>>> can pull it into media tree with the other two patches in this series,
+> >>>>>> when he is ready to do so.
+> >>>>>
+> >>>>> I *really* want to address the concerns raised by Sakari before pulling more 
+> >>>>> code that makes fixing the race conditions more difficult. Please, let's all 
+> >>>>> work on fixing the core code to build a stable base on which we can build 
+> >>>>> additional features. V4L2 and MC need teamwork, it's time to give the 
+> >>>>> subsystem the love it deserves.
+> >>>>>
+> >>>>
+> >>>> Hi Laurent,
+> >>>>
+> >>>> The issue Sakari brought up is specific to using devm for video_device in
+> >>>> omap3 and vsp1. I tried reproducing the problem on two different drivers
+> >>>> and couldn't on Linux 4.9-rc7.
+> >>>>
+> >>>> After sharing that with Sakari, I suggested to Sakari to pull up his patch
+> >>>> that removes the devm usage and see if he still needs all the patches in his
+> >>>> patch series. He didn't back to me on that. I also requested him to rebase on
+> >>>
+> >>> Just to see what remains, I made a small hack to test this with omap3isp by
+> >>> just replacing the devm_() functions by their plain counterparts. The memory
+> >>> is thus never released, for there is no really a proper moment to release it
+> >>> --- something which the patchset resolves. The result is here:
+> >>>
+> >>> <URL:http://www.retiisi.org.uk/v4l2/tmp/media-ref-dmesg.txt>
+> >>
+> >> Did you test this on 4.9-rc7 without any of your other patches? If you
+> >> haven't could you please run this test with just the removing devm usage
+> >> from omap3isp?
+> >>
+> >> It would be good to get a baseline on the current with just the not using
+> >> devm first and then see what needs fixing.
+> >>
+> >> Also, could you please send me the complete dmesg.
+> > 
+> > Updated from v4.9-rc6 to rc7 and with increased CONFIG_LOG_BUF_SHIFT. The
+> > diff and dmesg are here:
+> > 
+> > <URL:http://www.retiisi.org.uk/v4l2/tmp/media-ref-diff2.txt>
+> > <URL:http://www.retiisi.org.uk/v4l2/tmp/media-ref-dmesg2.txt>
+> > 
+> 
+> Does unbind work on this even without streaming? Could you suppress
 
-Reviewd-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+It's been working as long as I remember. There are caveats though --- the
+clock to the sensor is provided by the ISP, so obviously things will not
+work until the sensor is rebound as well. That is unrelated to the media
+framework though; just FYI.
 
->  include/sound/soc-dai.h      |  8 ++++++++
->  sound/soc/soc-core.c         | 35 +++++++++++++++++++++++++++++++++++
->  sound/soc/sti/sti_uniperif.c | 33 ++++-----------------------------
->  3 files changed, 47 insertions(+), 29 deletions(-)
+> debug messages and run unbind without streaming. It might fail. Let
+> me know if what you see with just unbind on this driver.
 
+I don't think disabling debug messages makes a difference but sure I can
+provide you a log on that. But that'll be tomorrow.
 
-Regards
+> 
+> I unearthed an old Gumstix Overo that was hiding in my hardware stash
+> and I am setting it up to test.
 
-Takashi Sakamoto
+Is it supported in mainline? I have a Nokia N9...
+
+-- 
+Kind regards,
+
+Sakari Ailus
+e-mail: sakari.ailus@iki.fi	XMPP: sailus@retiisi.org.uk
