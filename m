@@ -1,95 +1,114 @@
-From: Jacek Anaszewski <j.anaszewski@samsung.com>
-Subject: Re: [PATCH 0/7] Move dell-led to drivers/platform/x86
-Date: Thu, 08 Dec 2016 15:26:37 +0100
-Message-ID: <327c8edc-5a1e-8a94-85b2-4a2febc03352@samsung.com>
-References: <CGME20161208123909epcas3p23229f5e0d337e19a27b272211798d364@epcas3p2.samsung.com>
- <20161208123618.28603-1-kernel@kempniu.pl>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH v5 1/2] ASoC: core: allow DAI PCM controls
+	bound to PCM device
+Date: Thu, 8 Dec 2016 15:15:25 +0100
+Message-ID: <1481206526-28830-2-git-send-email-arnaud.pouliquen@st.com>
+References: <1481206526-28830-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-leds-owner@vger.kernel.org>
-In-reply-to: <20161208123618.28603-1-kernel@kempniu.pl>
-Sender: linux-leds-owner@vger.kernel.org
-To: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>, Richard Purdie <rpurdie@rpsys.net>, Matthew Garrett <mjg59@srcf.ucam.org>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Bob Rodgers <Robert_Rodgers@dell.com>, Louis Davis <Louis_Davis@dell.com>, Jim Dailey <Jim_Dailey@dell.com>, Alex Hung <alex.hung@canonical.com>, Hui Wang <hui.wang@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 1D9BC2673E2
+ for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 15:15:48 +0100 (CET)
+In-Reply-To: <1481206526-28830-1-git-send-email-arnaud.pouliquen@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: kernel@stlinux.com, Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Michał,
+In case of several instances of the same PCM control (e.g IEC controls).
+Application should be able to address the control using the
+device field number, according to the PCM character device.
+This patch allows to link DAI PCM controls to the PCM device.
+During DAI_link probe, PCM controls are added after device field is forced
+to the PCM device number.
 
-Thanks for the patch set.
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+ include/sound/soc-dai.h |  8 ++++++++
+ sound/soc/soc-core.c    | 35 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 43 insertions(+)
 
-On 12/08/2016 01:36 PM, Michał Kępień wrote:
-> This patch series moves the dell-led driver from the LED subsystem to
-> the x86 platform driver subsystem.  I decided to also CC the sound
-> subsystem contacts for the whole series as
-> sound/pci/hda/dell_wmi_helper.c is also affected.
->
-> The original motivation behind this effort was to move all code using
-> the dell-smbios module to the x86 platform driver subsystem.  While I
-> was investigating the possibilites to do that, it quickly emerged that
-> dell-led can and in fact should be moved to the x86 platform driver
-> subsystem in its entirety.
->
-> dell-led consists of two major parts:
->
->   - the part exposing a microphone mute LED interface, introduced in
->     db6d8cc ("dell-led: add mic mute led interface"); this interface is
->     used by sound/pci/hda/dell_wmi_helper.c; while the original
->     implementation used a WMI interface, it was changed to use
->     dell-smbios in cf0d7ea ("dell-led: use dell_smbios_find_token() for
->     finding mic DMI tokens") and 0c41a08 ("dell-led: use
->     dell_smbios_send_request() for performing SMBIOS calls"),
->
->   - the part handling an activity LED present in Dell Latitude 2100
->     netbooks, introduced in 72dcd8d ("leds: Add Dell Business Class
->     Netbook LED driver"); it binds to a specific WMI GUID and then
->     registers a LED device which is controlled using WMI (i.e. it is
->     basically a WMI driver).
->
-> Patches 1-4 clean up the microphone mute LED interface to minimize the
-> amount of code moved around.
->
-> Patch 5 moves the microphone mute LED interface to
-> drivers/platform/x86/dell-laptop.c, effectively causing
-> sound/pci/hda/dell_wmi_helper.c to depend on CONFIG_DELL_LAPTOP instead
-> of CONFIG_LEDS_DELL_NETBOOKS.
->
-> Patch 6 reverts dell-led to the state it was in after its initial commit
-> 72dcd8d ("leds: Add Dell Business Class Netbook LED driver") by removing
-> all remnants of the microphone mute LED handling code.
->
-> Patch 7 moves all that is left of dell-led (i.e. the activity LED part,
-> as originally implemented), to a new module which is placed in
-> drivers/platform/x86/dell-wmi-led.c.
->
-> This patch series is based on linux-leds/for-4.11 as the LED subsystem
-> is affected by all patches except patch 3.
->
-> If anyone reading this has access to a Dell device which has an activity
-> LED and/or a microphone mute LED currently supported by dell-led, I
-> would love to hear from you as I do not have the hardware needed to
-> practically test this patch series.
-
-I think that it is necessary to find someone who will give their
-Tested-by.
-
-What I can accept immediately is moving the driver in the current
-shape to x86 platform drivers. I could expose a stable branch with
-that patch for the x86 platform maintainers then.
-
->  drivers/leds/Kconfig                               |  9 ---
->  drivers/leds/Makefile                              |  1 -
->  drivers/platform/x86/Kconfig                       |  8 +++
->  drivers/platform/x86/Makefile                      |  1 +
->  drivers/platform/x86/dell-laptop.c                 | 28 ++++++++
->  .../dell-led.c => platform/x86/dell-wmi-led.c}     | 75 +++-------------------
->  include/linux/dell-led.h                           |  6 +-
->  sound/pci/hda/dell_wmi_helper.c                    | 18 +++---
->  8 files changed, 55 insertions(+), 91 deletions(-)
->  rename drivers/{leds/dell-led.c => platform/x86/dell-wmi-led.c} (73%)
->
-
-
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 200e1f0..375533a 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -273,6 +273,14 @@ struct snd_soc_dai_driver {
+ 	/* probe ordering - for components with runtime dependencies */
+ 	int probe_order;
+ 	int remove_order;
++
++	/*
++	 * Optional PCM controls to bind to PCM device on DAIs link
++	 * Note: only  SNDRV_CTL_ELEM_IFACE_PCM controls can be declared in
++	 * the pcm_controls table.
++	 */
++	const struct snd_kcontrol_new *pcm_controls;
++	int num_pcm_controls;
+ };
+ 
+ /*
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index aaab26a..1f8ef2c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1598,6 +1598,32 @@ static int soc_probe_dai(struct snd_soc_dai *dai, int order)
+ 	return 0;
+ }
+ 
++static int soc_link_dai_pcm_controls(struct snd_soc_dai **dais, int num_dais,
++				     struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_kcontrol_new kctl;
++	int i, j, ret;
++
++	for (i = 0; i < num_dais; ++i) {
++		for (j = 0; j < dais[i]->driver->num_pcm_controls; j++) {
++			kctl = dais[i]->driver->pcm_controls[j];
++			if (kctl.iface != SNDRV_CTL_ELEM_IFACE_PCM ||
++			    rtd->dai_link->no_pcm) {
++				dev_err(dais[i]->dev,
++					"ASoC: Failed to bind %s control: %s\n",
++					dais[i]->name, kctl.name);
++				return -EINVAL;
++			}
++			kctl.device = rtd->pcm->device;
++			ret = snd_soc_add_dai_controls(dais[i], &kctl, 1);
++			if (ret < 0)
++				return ret;
++		}
++	}
++
++	return 0;
++}
++
+ static int soc_link_dai_widgets(struct snd_soc_card *card,
+ 				struct snd_soc_dai_link *dai_link,
+ 				struct snd_soc_pcm_runtime *rtd)
+@@ -1709,6 +1735,15 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+ 				       dai_link->stream_name, ret);
+ 				return ret;
+ 			}
++
++			/* Bind DAIs pcm controls to the PCM device */
++			ret = soc_link_dai_pcm_controls(&cpu_dai, 1, rtd);
++			if (ret < 0)
++				return ret;
++			ret = soc_link_dai_pcm_controls(rtd->codec_dais,
++							rtd->num_codecs, rtd);
++			if (ret < 0)
++				return ret;
+ 		} else {
+ 			INIT_DELAYED_WORK(&rtd->delayed_work,
+ 						codec2codec_close_delayed_work);
 -- 
-Best regards,
-Jacek Anaszewski
+1.9.1
