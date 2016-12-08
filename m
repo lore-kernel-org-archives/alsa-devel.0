@@ -1,122 +1,68 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: zte: spdif and i2s drivers are not zx296702 specific"
- to the asoc tree
-Date: Thu, 08 Dec 2016 16:55:12 +0000
-Message-ID: <E1cF1yS-0004xY-9Y@finisterre>
-References: <1481186655-8213-1-git-send-email-shawnguo@kernel.org>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH 1/2] DRM: add help to get ELD speaker allocation
+Date: Thu, 8 Dec 2016 17:37:46 +0100
+Message-ID: <1481215067-19362-2-git-send-email-arnaud.pouliquen@st.com>
+References: <1481215067-19362-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1481186655-8213-1-git-send-email-shawnguo@kernel.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Baoyou Xie <xie.baoyou@zte.com.cn>, Mark Brown <broonie@kernel.org>, Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19F0B2674ED
+ for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 17:37:55 +0100 (CET)
+In-Reply-To: <1481215067-19362-1-git-send-email-arnaud.pouliquen@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
+Cc: kernel@stlinux.com, Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, David Airlie <airlied@linux.ie>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Add helper to allow users to retrieve the speaker allocations without
+knowledge of the ELD structure.
 
-   ASoC: zte: spdif and i2s drivers are not zx296702 specific
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From de7975c2a42de889e2b3fd2f7d46f899ad8ccd45 Mon Sep 17 00:00:00 2001
-From: Shawn Guo <shawn.guo@linaro.org>
-Date: Thu, 8 Dec 2016 16:44:14 +0800
-Subject: [PATCH] ASoC: zte: spdif and i2s drivers are not zx296702 specific
-
-ZTE ZX SPDIF and I2S drivers can work on not only ZX296702 but also
-other ZTE ZX family SoCs like ZX296718, which is an arm64 platform.
-Let's make a few renaming and tweak the Kconfig a bit to get the drivers
-available for other ZTE ZX platforms.
-
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Reviewed-by: Jun Nie <jun.nie@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- sound/soc/zte/Kconfig                          | 16 ++++++++--------
- sound/soc/zte/Makefile                         |  4 ++--
- sound/soc/zte/{zx296702-i2s.c => zx-i2s.c}     |  0
- sound/soc/zte/{zx296702-spdif.c => zx-spdif.c} |  0
- 4 files changed, 10 insertions(+), 10 deletions(-)
- rename sound/soc/zte/{zx296702-i2s.c => zx-i2s.c} (100%)
- rename sound/soc/zte/{zx296702-spdif.c => zx-spdif.c} (100%)
+ include/drm/drm_edid.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/soc/zte/Kconfig b/sound/soc/zte/Kconfig
-index c47eb25e441f..6d8a90d36315 100644
---- a/sound/soc/zte/Kconfig
-+++ b/sound/soc/zte/Kconfig
-@@ -1,17 +1,17 @@
--config ZX296702_SPDIF
--	tristate "ZX296702 spdif"
--	depends on SOC_ZX296702 || COMPILE_TEST
-+config ZX_SPDIF
-+	tristate "ZTE ZX SPDIF Driver Support"
-+	depends on ARCH_ZX || COMPILE_TEST
- 	depends on COMMON_CLK
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
- 	  Say Y or M if you want to add support for codecs attached to the
--	  zx296702 spdif interface
-+	  ZTE ZX SPDIF interface
+diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
+index 919933d..0706cc6 100644
+--- a/include/drm/drm_edid.h
++++ b/include/drm/drm_edid.h
+@@ -245,6 +245,7 @@ struct detailed_timing {
+ # define DRM_ELD_AUD_SYNCH_DELAY_MAX	0xfa	/* 500 ms */
  
--config ZX296702_I2S
--	tristate "ZX296702 i2s"
--	depends on SOC_ZX296702 || COMPILE_TEST
-+config ZX_I2S
-+	tristate "ZTE ZX I2S Driver Support"
-+	depends on ARCH_ZX || COMPILE_TEST
- 	depends on COMMON_CLK
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
- 	  Say Y or M if you want to add support for codecs attached to the
--	  zx296702 i2s interface
-+	  ZTE ZX I2S interface
-diff --git a/sound/soc/zte/Makefile b/sound/soc/zte/Makefile
-index 254ed2c8c1a0..77768f5fd10c 100644
---- a/sound/soc/zte/Makefile
-+++ b/sound/soc/zte/Makefile
-@@ -1,2 +1,2 @@
--obj-$(CONFIG_ZX296702_SPDIF)	+= zx296702-spdif.o
--obj-$(CONFIG_ZX296702_I2S)	+= zx296702-i2s.o
-+obj-$(CONFIG_ZX_SPDIF)	+= zx-spdif.o
-+obj-$(CONFIG_ZX_I2S)	+= zx-i2s.o
-diff --git a/sound/soc/zte/zx296702-i2s.c b/sound/soc/zte/zx-i2s.c
-similarity index 100%
-rename from sound/soc/zte/zx296702-i2s.c
-rename to sound/soc/zte/zx-i2s.c
-diff --git a/sound/soc/zte/zx296702-spdif.c b/sound/soc/zte/zx-spdif.c
-similarity index 100%
-rename from sound/soc/zte/zx296702-spdif.c
-rename to sound/soc/zte/zx-spdif.c
+ #define DRM_ELD_SPEAKER			7
++# define DRM_ELD_SPEAKER_MASK		0x7f
+ # define DRM_ELD_SPEAKER_RLRC		(1 << 6)
+ # define DRM_ELD_SPEAKER_FLRC		(1 << 5)
+ # define DRM_ELD_SPEAKER_RC		(1 << 4)
+@@ -412,6 +413,18 @@ static inline int drm_eld_size(const uint8_t *eld)
+ }
+ 
+ /**
++ * drm_eld_get_spk_alloc - Get speaker allocation
++ * @eld: pointer to an ELD memory structure
++ *
++ * The returned value is the speakers mask. User has to use %DRM_ELD_SPEAKER
++ * field definitions to identify speakers.
++ */
++static inline u8 drm_eld_get_spk_alloc(const uint8_t *eld)
++{
++	return eld[DRM_ELD_SPEAKER] & DRM_ELD_SPEAKER_MASK;
++}
++
++/**
+  * drm_eld_get_conn_type - Get device type hdmi/dp connected
+  * @eld: pointer to an ELD memory structure
+  *
 -- 
-2.10.2
+1.9.1
