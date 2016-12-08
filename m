@@ -1,51 +1,60 @@
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
-Subject: Re: [PATCH 1/7] dell-led: remove GUID check from
- dell_micmute_led_set()
-Date: Fri, 9 Dec 2016 10:20:25 +0100
-Message-ID: <20161209092025.GC9959@pali>
-References: <20161208123618.28603-1-kernel@kempniu.pl>
- <20161208123618.28603-2-kernel@kempniu.pl>
+From: Alberto Aguirre <albaguirre@gmail.com>
+Subject: [PATCH] ALSA: usb-audio: add implicit fb quirk for
+	Axe-Fx II
+Date: Thu,  8 Dec 2016 00:36:48 -0600
+Message-ID: <20161208063648.28856-1-albaguirre@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20161208123618.28603-2-kernel@kempniu.pl>
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
-Cc: Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <j.anaszewski@samsung.com>, Matthew Garrett <mjg59@srcf.ucam.org>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bob Rodgers <Robert_Rodgers@dell.com>, Louis Davis <Louis_Davis@dell.com>, Jim Dailey <Jim_Dailey@dell.com>, Alex Hung <alex.hung@canonical.com>, Hui Wang <hui.wang@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f66.google.com (mail-oi0-f66.google.com
+ [209.85.218.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8FBB92673A1
+ for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 07:37:06 +0100 (CET)
+Received: by mail-oi0-f66.google.com with SMTP id v84so48765985oie.2
+ for <alsa-devel@alsa-project.org>; Wed, 07 Dec 2016 22:37:06 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Alberto Aguirre <albaguirre@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 08 December 2016 13:36:12 Michał Kępień wrote:
-> As dell_micmute_led_set() no longer uses the dell_wmi_perform_query()
-> method, which was removed in 0c41a08 ("dell-led: use
-> dell_smbios_send_request() for performing SMBIOS calls"), the
-> DELL_APP_GUID check is redundant and thus can be safely removed.
-> 
-> Signed-off-by: Michał Kępień <kernel@kempniu.pl>
-> ---
->  drivers/leds/dell-led.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/drivers/leds/dell-led.c b/drivers/leds/dell-led.c
-> index b3d6e9c..e8e8f67 100644
-> --- a/drivers/leds/dell-led.c
-> +++ b/drivers/leds/dell-led.c
-> @@ -51,9 +51,6 @@ static int dell_micmute_led_set(int state)
->  	struct calling_interface_buffer *buffer;
->  	struct calling_interface_token *token;
->  
-> -	if (!wmi_has_guid(DELL_APP_GUID))
-> -		return -ENODEV;
-> -
->  	if (state == 0)
->  		token = dell_smbios_find_token(GLOBAL_MIC_MUTE_DISABLE);
->  	else if (state == 1)
+The Axe-Fx II implicit feedback end point and the data sync endpoint
+are in different interface descriptors. Add quirk to ensure a sync
+endpoint is properly configured.
 
-Reviewed-by: Pali Rohár <pali.rohar@gmail.com>
+Signed-off-by: Alberto Aguirre <albaguirre@gmail.com>
+---
+ sound/usb/pcm.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Anyway, you can remove DELL_APP_GUID from other places too...
-
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 44d178e..0fe2d56 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -348,6 +348,16 @@ static int set_sync_ep_implicit_fb_quirk(struct snd_usb_substream *subs,
+ 
+ 		alts = &iface->altsetting[1];
+ 		goto add_sync_ep;
++	case USB_ID(0x2466, 0x8003):
++		ep = 0x86;
++		iface = usb_ifnum_to_if(dev, 2);
++
++		if (!iface || iface->num_altsetting == 0)
++			return -EINVAL;
++
++		alts = &iface->altsetting[1];
++		goto add_sync_ep;
++
+ 	}
+ 	if (attr == USB_ENDPOINT_SYNC_ASYNC &&
+ 	    altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC &&
 -- 
-Pali Rohár
-pali.rohar@gmail.com
+2.9.3
