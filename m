@@ -1,44 +1,110 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: remove unused 'out_fmt' variable
-Date: Thu, 8 Dec 2016 16:15:09 +0000
-Message-ID: <20161208161509.34obcoanbsp5educ@sirena.org.uk>
-References: <1481176902-131803-1-git-send-email-kirtika@chromium.org>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/2] ASoC: Add support for CS43130 codec
+Date: Thu, 8 Dec 2016 16:23:36 +0000
+Message-ID: <20161208162336.l5g5cbcc2bzt65ke@sirena.org.uk>
+References: <09a77398-831b-4be7-9089-f7ac4fcfc16a@EX4.ad.cirrus.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="czgko5yrvwl5deqz"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+        protocol="application/pgp-signature"; boundary="jmalvq2pta2m4xz7"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1481176902-131803-1-git-send-email-kirtika@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kirtika Ruchandani <kirtika@chromium.org>
-Cc: tiwai@suse.com, arnd@arndb.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Hardik T Shah <hardik.t.shah@intel.com>, Omair M Abdullah <omair.m.abdullah@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>
+In-Reply-To: <09a77398-831b-4be7-9089-f7ac4fcfc16a-k7YZYYsDncjfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---czgko5yrvwl5deqz
+--jmalvq2pta2m4xz7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Dec 07, 2016 at 10:01:42PM -0800, Kirtika Ruchandani wrote:
-> Commit 4cd9899f0d16 introduced struct skl_module_fmt* out_fmt without
-> using it. Compiling with W=1 gives the below warning, fix it.
+On Wed, Dec 07, 2016 at 02:17:27PM -0600, Li Xu wrote:
 
-git can't parse this or your second patch, I can't immediately see
-what's wrong but please check how you're sending things and retry.
+Overall this looks pretty good - there's a fair number of issues below
+but they're all fairly simple stylistic things rather than anything
+majorly wrong so hopefully should be easy to correct.
 
---czgko5yrvwl5deqz
+>  	select SND_SOC_CS53L30 if I2C
+> +	select SND_SOC_CS43130 if I2C
+>  	select SND_SOC_CX20442 if TTY
+
+Please keep Kconfig and Makefile sorted.
+
+> +static bool cs43130_volatile_register(struct device *dev, unsigned int reg)
+> +{
+> +	switch (reg) {
+> +	case CS43130_DEVID_AB ... CS43130_SUBREV_ID:
+> +	case CS43130_INT_STATUS_1 ... CS43130_INT_STATUS_5:
+> +		return true;
+
+You don't need to mark the device ID volatile, just don't provide
+defaults and regmap will cache it the first time it reads it.  If the
+device ID is volatile you've got bigger problems.
+
+> +			/*PDN_PLL= 0,enable*/
+
+Please use the standard kernel coding style, need spaces here.
+
+> +			regmap_update_bits(cs43130->regmap, CS43130_PLL_SET_9,
+> +					    CS43130_PLL_REF_PREDIV_MASK,
+> +						pll_ratio_table[i].sclk_prediv
+> +						);
+
+There's no need for the ); to be on a new line here, nor for the extra
+indentation on the line before.  There are lots more coding style
+issues, checkpatch will probably pick up many of them.
+
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		if (cs43130->pll_bypass)
+> +			cs43130_change_clksrc(codec, CS43130_MCLK_SRC_XTAL);
+> +		else
+> +			cs43130_change_clksrc(codec, CS43130_MCLK_SRC_PLL);
+> +
+> +		usleep_range(10000, 10050);
+> +		/*ASP_3ST = 0 in master mode*/
+> +		if (cs43130->dai_mode)
+> +			regmap_update_bits(cs43130->regmap, CS43130_PAD_INT_CFG,
+> +						    0x01, 0x00);
+
+No need to undo this in slave mode?
+
+> +	if (stickies[0] & CS43130_XTAL_ERR_INT)
+> +		pr_debug("%s: Crystal err\n", __func__);
+
+dev_ prints and shouldn't this one be an error?
+
+> +	/* Enable HP detect */
+> +	regmap_update_bits(cs43130->regmap, CS43130_HP_DETECT,
+> +		CS43130_HP_DETECT_CTRL_MASK, CS43130_HP_DETECT_CTRL_MASK);
+
+Why enable this when the only handling is a couple of log messages?
+
+> +#ifdef CONFIG_PM
+> +static int cs43130_runtime_suspend(struct device *dev)
+> +{
+> +	return 0;
+> +}
+
+Remove empty functions, they don't serve any purpose.
+
+--jmalvq2pta2m4xz7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhJhwwACgkQJNaLcl1U
-h9DFQwf+Ki6nrtGLGFbBnhHnTBXrDYWct3TSAh/EYgd/zrP7Am0wViuE0JD/8znc
-ajcPBnqfXy48E8BOeMTtrrgD05/eKBZL2LaMokjJHbCmUWvopv/LvouMEx/H6u4H
-g+i8e5NqVxDglqkQ5/Q6GW3wmYO58Qvs7Td34vjDjs0mUYNtZEoyNYAshEC0jW+v
-W8m8j3rRhMlvWXJbeZ0qGvrP2GZ/O0dM1ayfMs6bio5Hv6Ay3mZVEZAciTzaVDIA
-UrMZKVl4pvS9wnEYlls2vmS9zpDIfR7glwwMTNRSdn8dVR3j5QAtg5LAhuY0VLMA
-ubeOYfcpVExqgjUSmuzx7e0NgtL2hA==
-=gFnj
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhJiQcACgkQJNaLcl1U
+h9AYEgf8D83r8tso3rD+U8nmJ54K8BarXdYcyG12O6lvk7IlOFZResk3FE7VJVoh
+Py61GlRwoMil8J9qtewABCUr3V1PbZ90o0j5Dx4E1xsIvl/KyzRXjjKHCq9Mgb8n
+9CIrK5t3pzS8aZBzB+ObJNdihtD4zu2nRdY9g9ofK8e71oItMh0bS0YHgixo+AUs
+WBthzs4dsSLnoU/170Wb18WoCISzJy29+nlQKtMQEUI0jlxKwzf2w9l5mhgUiJNX
+OBZ6YmE/62KZy/crQrLOV/StEYkR04pF4STxWlWjZ760sNX4GHMAZtF9frexBDt9
+lFolhnvfTqrvrX55hzj9I8mxk6AElg==
+=NRlR
 -----END PGP SIGNATURE-----
 
---czgko5yrvwl5deqz--
+--jmalvq2pta2m4xz7--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
