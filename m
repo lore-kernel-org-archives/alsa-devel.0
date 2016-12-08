@@ -1,67 +1,51 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH V2 2/2] ASoC: samsung: add GPIOLIB dependency
-Date: Thu, 8 Dec 2016 22:51:19 +0200
-Message-ID: <20161208205119.GB17693@kozik-lap>
-References: <1481229799-17532-1-git-send-email-fabf@skynet.be>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 06/14] ASoC: max98090: remove superflous check
+	for 'micbias'
+Date: Thu,  8 Dec 2016 23:01:29 +0530
+Message-ID: <1481218297-17568-7-git-send-email-vinod.koul@intel.com>
+References: <1481218297-17568-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1481229799-17532-1-git-send-email-fabf@skynet.be>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fabian Frederick <fabf@skynet.be>
-Cc: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Geert Uytterhoeven <geert@linux-m68k.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 681432674ED
+ for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 18:32:30 +0100 (CET)
+In-Reply-To: <1481218297-17568-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 08, 2016 at 09:43:19PM +0100, Fabian Frederick wrote:
-> Both SND_SOC_SMARTQ and SND_SOC_SAMSUNG_TM2_WM5110
-> use gpio/consumer.h
-> This patch adds GPIOLIB || COMPILE_TEST to Kconfig entries
-> to avoid any build errors.
-
-I think that is not entirely correct. There won't be build errors here
-because build dependency is satisfied by header (for both cases: GPIOLIB
-and !GPIOLIB). However this fixes runtime dependency - the driver
-requires GPIOLIB to work.
-
-Beside the commit msg, it is okay:
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Best regards,
-Krzysztof
-
-> 
-> See commit 638f958baeaf
-> ("extcon: Allow compile test of GPIO consumers if !GPIOLIB")
-> 
-> for similar problem and explanations.
-> 
-> Reported-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Signed-off-by: Fabian Frederick <fabf@skynet.be>
-> ---
->  sound/soc/samsung/Kconfig | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-> index 7c42315..f1f1d79 100644
-> --- a/sound/soc/samsung/Kconfig
-> +++ b/sound/soc/samsung/Kconfig
-> @@ -111,6 +111,7 @@ config SND_SOC_SAMSUNG_RX1950_UDA1380
->  config SND_SOC_SMARTQ
->  	tristate "SoC I2S Audio support for SmartQ board"
->  	depends on MACH_SMARTQ || COMPILE_TEST
-> +	depends on GPIOLIB || COMPILE_TEST
->  	depends on I2C
->  	select SND_SAMSUNG_I2S
->  	select SND_SOC_WM8750
-> @@ -193,6 +194,7 @@ config SND_SOC_ARNDALE_RT5631_ALC5631
->  config SND_SOC_SAMSUNG_TM2_WM5110
->  	tristate "SoC I2S Audio support for WM5110 on TM2 board"
->  	depends on SND_SOC_SAMSUNG && MFD_ARIZONA && I2C && SPI_MASTER
-> +	depends on GPIOLIB || COMPILE_TEST
->  	select SND_SOC_MAX98504
->  	select SND_SOC_WM5110
->  	select SND_SAMSUNG_I2S
-> -- 
-> 2.7.4
-> 
+SW4gbWF4OTgwOTBfcHJvYmUoKSwgY29kZSBjaGVja3MgZm9yIG1pY2JpYXMgYmVpbmcgb3V0IG9m
+IHJhbmdlLiBUaGUKJ21pY2JpYXMnIHZhcmlhYmxlIGluIHVuc2lnbmVkIGFuZCBjaGVja2VkIGFn
+YWluc3QgTTk4MDkwX01CVlNFTF8yVjIgd2hpY2gKaXMgemVybywgc28gcmVtb3ZlIHRoaXMgY2hl
+Y2suCgpzb3VuZC9zb2MvY29kZWNzL21heDk4MDkwLmM6IEluIGZ1bmN0aW9uIOKAmG1heDk4MDkw
+X3Byb2Jl4oCZOgpzb3VuZC9zb2MvY29kZWNzL21heDk4MDkwLmM6MjQ1OToyOiB3YXJuaW5nOiBj
+b21wYXJpc29uIG9mIHVuc2lnbmVkIGV4cHJlc3Npb24gPCAwIGlzIGFsd2F5cyBmYWxzZSBbLVd0
+eXBlLWxpbWl0c10KICB9IGVsc2UgaWYgKG1pY2JpYXMgPCBNOTgwOTBfTUJWU0VMXzJWMiB8fCBt
+aWNiaWFzID4gTTk4MDkwX01CVlNFTF8yVjgpIHsKClNpZ25lZC1vZmYtYnk6IFZpbm9kIEtvdWwg
+PHZpbm9kLmtvdWxAaW50ZWwuY29tPgotLS0KIHNvdW5kL3NvYy9jb2RlY3MvbWF4OTgwOTAuYyB8
+IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQoKZGlm
+ZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwOTAuYyBiL3NvdW5kL3NvYy9jb2RlY3Mv
+bWF4OTgwOTAuYwppbmRleCA1ODRhYWI4M2U0NzguLjY2ODI4NDgwZDQ4NCAxMDA2NDQKLS0tIGEv
+c291bmQvc29jL2NvZGVjcy9tYXg5ODA5MC5jCisrKyBiL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgw
+OTAuYwpAQCAtMjQ1Niw3ICsyNDU2LDcgQEAgc3RhdGljIGludCBtYXg5ODA5MF9wcm9iZShzdHJ1
+Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMpCiAJaWYgKGVycikgewogCQltaWNiaWFzID0gTTk4MDkw
+X01CVlNFTF8yVjg7CiAJCWRldl9pbmZvKGNvZGVjLT5kZXYsICJ1c2UgZGVmYXVsdCAyLjh2IG1p
+Y2JpYXNcbiIpOwotCX0gZWxzZSBpZiAobWljYmlhcyA8IE05ODA5MF9NQlZTRUxfMlYyIHx8IG1p
+Y2JpYXMgPiBNOTgwOTBfTUJWU0VMXzJWOCkgeworCX0gZWxzZSBpZiAobWljYmlhcyA+IE05ODA5
+MF9NQlZTRUxfMlY4KSB7CiAJCWRldl9lcnIoY29kZWMtPmRldiwgIm1pY2JpYXMgb3V0IG9mIHJh
+bmdlIDB4JXhcbiIsIG1pY2JpYXMpOwogCQltaWNiaWFzID0gTTk4MDkwX01CVlNFTF8yVjg7CiAJ
+fQotLSAKMS45LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
