@@ -1,106 +1,77 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH v3 13/13] ASoC: hdac_hdmi: Enable pin and
-	converter in prepare
-Date: Thu,  8 Dec 2016 13:41:24 +0530
-Message-ID: <1481184684-9620-14-git-send-email-jeeja.kp@intel.com>
-References: <1481184684-9620-1-git-send-email-jeeja.kp@intel.com>
+From: =?UTF-8?q?Micha=C5=82=20K=C4=99pie=C5=84?= <kernel@kempniu.pl>
+Subject: [PATCH 0/7] Move dell-led to drivers/platform/x86
+Date: Thu,  8 Dec 2016 13:36:11 +0100
+Message-ID: <20161208123618.28603-1-kernel@kempniu.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id EC0CA2667B2
- for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 09:02:03 +0100 (CET)
-In-Reply-To: <1481184684-9620-1-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Sachin Mokashi <sachinx.mokashi@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <j.anaszewski@samsung.com>, Matthew Garrett <mjg59@srcf.ucam.org>, =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Bob Rodgers <Robert_Rodgers@dell.com>, Louis Davis <Louis_Davis@dell.com>, Jim Dailey <Jim_Dailey@dell.com>, Alex Hung <alex.hung@canonical.com>, Hui Wang <hui.wang@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+This patch series moves the dell-led driver from the LED subsystem to
+the x86 platform driver subsystem.  I decided to also CC the sound
+subsystem contacts for the whole series as
+sound/pci/hda/dell_wmi_helper.c is also affected.
 
-Instead of enabling pin and cvt in pcm_open(), need to restore pin and
-cvt state after system resume to restart the playback which is
-paused/stopped before system suspend.
-So enable pin and cvt in playback_prepare and call prepare when trigger
-cmd is paused/started and resume to reconfigure pin and cvt.
+The original motivation behind this effort was to move all code using
+the dell-smbios module to the x86 platform driver subsystem.  While I
+was investigating the possibilites to do that, it quickly emerged that
+dell-led can and in fact should be moved to the x86 platform driver
+subsystem in its entirety.
 
-Signed-off-by: Sachin Mokashi <sachinx.mokashi@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c | 28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+dell-led consists of two major parts:
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index c602c49..8d47505 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -114,6 +114,12 @@ struct hdac_hdmi_priv {
- 	struct hdac_chmap chmap;
- };
- 
-+static void hdac_hdmi_enable_cvt(struct hdac_ext_device *edev,
-+			struct hdac_hdmi_dai_pin_map *dai_map);
-+
-+static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
-+			struct hdac_hdmi_dai_pin_map *dai_map);
-+
- static struct hdac_hdmi_pcm *get_hdmi_pcm_from_id(struct hdac_hdmi_priv *hdmi,
- 						int pcm_idx)
- {
-@@ -411,6 +417,10 @@ static int hdac_hdmi_playback_prepare(struct snd_pcm_substream *substream,
- 	dev_dbg(&hdac->hdac.dev, "stream tag from cpu dai %d format in cvt 0x%x\n",
- 			dd->stream_tag,	dd->format);
- 
-+	hdac_hdmi_enable_cvt(hdac, dai_map);
-+	ret = hdac_hdmi_enable_pin(hdac, dai_map);
-+	if (ret < 0)
-+		return ret;
- 	mutex_lock(&pin->lock);
- 	pin->channels = substream->runtime->channels;
- 
-@@ -622,11 +632,6 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 
- 	dai_map->pin = pin;
- 
--	hdac_hdmi_enable_cvt(hdac, dai_map);
--	ret = hdac_hdmi_enable_pin(hdac, dai_map);
--	if (ret < 0)
--		return ret;
--
- 	ret = hdac_hdmi_eld_limit_formats(substream->runtime,
- 				pin->eld.eld_buffer);
- 	if (ret < 0)
-@@ -642,15 +647,16 @@ static int hdac_hdmi_trigger(struct snd_pcm_substream *substream, int cmd,
- 	struct hdac_hdmi_dai_pin_map *dai_map;
- 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
--	int ret;
- 
- 	dai_map = &hdmi->dai_map[dai->id];
--	if (cmd == SNDRV_PCM_TRIGGER_RESUME) {
--		ret = hdac_hdmi_enable_pin(hdac, dai_map);
--		if (ret < 0)
--			return ret;
--
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		return hdac_hdmi_playback_prepare(substream, dai);
-+
-+	default:
-+		return 0;
- 	}
- 
- 	return 0;
+  - the part exposing a microphone mute LED interface, introduced in
+    db6d8cc ("dell-led: add mic mute led interface"); this interface is
+    used by sound/pci/hda/dell_wmi_helper.c; while the original
+    implementation used a WMI interface, it was changed to use
+    dell-smbios in cf0d7ea ("dell-led: use dell_smbios_find_token() for
+    finding mic DMI tokens") and 0c41a08 ("dell-led: use
+    dell_smbios_send_request() for performing SMBIOS calls"),
+
+  - the part handling an activity LED present in Dell Latitude 2100
+    netbooks, introduced in 72dcd8d ("leds: Add Dell Business Class
+    Netbook LED driver"); it binds to a specific WMI GUID and then
+    registers a LED device which is controlled using WMI (i.e. it is
+    basically a WMI driver).
+
+Patches 1-4 clean up the microphone mute LED interface to minimize the
+amount of code moved around.
+  
+Patch 5 moves the microphone mute LED interface to
+drivers/platform/x86/dell-laptop.c, effectively causing
+sound/pci/hda/dell_wmi_helper.c to depend on CONFIG_DELL_LAPTOP instead
+of CONFIG_LEDS_DELL_NETBOOKS.
+    
+Patch 6 reverts dell-led to the state it was in after its initial commit
+72dcd8d ("leds: Add Dell Business Class Netbook LED driver") by removing
+all remnants of the microphone mute LED handling code.
+
+Patch 7 moves all that is left of dell-led (i.e. the activity LED part,
+as originally implemented), to a new module which is placed in
+drivers/platform/x86/dell-wmi-led.c.
+
+This patch series is based on linux-leds/for-4.11 as the LED subsystem
+is affected by all patches except patch 3.
+
+If anyone reading this has access to a Dell device which has an activity
+LED and/or a microphone mute LED currently supported by dell-led, I
+would love to hear from you as I do not have the hardware needed to
+practically test this patch series.
+
+ drivers/leds/Kconfig                               |  9 ---
+ drivers/leds/Makefile                              |  1 -
+ drivers/platform/x86/Kconfig                       |  8 +++
+ drivers/platform/x86/Makefile                      |  1 +
+ drivers/platform/x86/dell-laptop.c                 | 28 ++++++++
+ .../dell-led.c => platform/x86/dell-wmi-led.c}     | 75 +++-------------------
+ include/linux/dell-led.h                           |  6 +-
+ sound/pci/hda/dell_wmi_helper.c                    | 18 +++---
+ 8 files changed, 55 insertions(+), 91 deletions(-)
+ rename drivers/{leds/dell-led.c => platform/x86/dell-wmi-led.c} (73%)
+
 -- 
-2.5.0
+2.10.2
