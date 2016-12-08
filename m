@@ -1,95 +1,44 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v5 2/2] ASoC: sti: bind pcm controls to pcm
-	device.
-Date: Thu, 8 Dec 2016 15:15:26 +0100
-Message-ID: <1481206526-28830-3-git-send-email-arnaud.pouliquen@st.com>
-References: <1481206526-28830-1-git-send-email-arnaud.pouliquen@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: Skylake: remove unused 'out_fmt' variable
+Date: Thu, 8 Dec 2016 16:15:09 +0000
+Message-ID: <20161208161509.34obcoanbsp5educ@sirena.org.uk>
+References: <1481176902-131803-1-git-send-email-kirtika@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 22BED26748F
- for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 15:15:48 +0100 (CET)
-In-Reply-To: <1481206526-28830-1-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: kernel@stlinux.com, Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="czgko5yrvwl5deqz"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1481176902-131803-1-git-send-email-kirtika@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kirtika Ruchandani <kirtika@chromium.org>
+Cc: tiwai@suse.com, arnd@arndb.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Hardik T Shah <hardik.t.shah@intel.com>, Omair M Abdullah <omair.m.abdullah@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Move PCM control list in DAI driver struct, to
-bind PCM control to PCM device created during DAI linking.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- sound/soc/sti/sti_uniperif.c | 33 ++++-----------------------------
- 1 file changed, 4 insertions(+), 29 deletions(-)
+--czgko5yrvwl5deqz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
-index 98eb205..cf42982 100644
---- a/sound/soc/sti/sti_uniperif.c
-+++ b/sound/soc/sti/sti_uniperif.c
-@@ -248,34 +248,6 @@ int sti_uniperiph_get_tdm_word_pos(struct uniperif *uni,
- }
- 
- /*
-- * sti_uniperiph_dai_create_ctrl
-- * This function is used to create Ctrl associated to DAI but also pcm device.
-- * Request is done by front end to associate ctrl with pcm device id
-- */
--static int sti_uniperiph_dai_create_ctrl(struct snd_soc_dai *dai)
--{
--	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
--	struct uniperif *uni = priv->dai_data.uni;
--	struct snd_kcontrol_new *ctrl;
--	int i;
--
--	if (!uni->num_ctrls)
--		return 0;
--
--	for (i = 0; i < uni->num_ctrls; i++) {
--		/*
--		 * Several Control can have same name. Controls are indexed on
--		 * Uniperipheral instance ID
--		 */
--		ctrl = &uni->snd_ctrls[i];
--		ctrl->index = uni->id;
--		ctrl->device = uni->id;
--	}
--
--	return snd_soc_add_dai_controls(dai, uni->snd_ctrls, uni->num_ctrls);
--}
--
--/*
-  * DAI
-  */
- int sti_uniperiph_dai_hw_params(struct snd_pcm_substream *substream,
-@@ -365,7 +337,7 @@ static int sti_uniperiph_dai_probe(struct snd_soc_dai *dai)
- 	dai_data->dma_data.addr = dai_data->uni->fifo_phys_address;
- 	dai_data->dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 
--	return sti_uniperiph_dai_create_ctrl(dai);
-+	return 0;
- }
- 
- static const struct snd_soc_dai_driver sti_uniperiph_dai_template = {
-@@ -487,6 +459,9 @@ static int sti_uniperiph_probe(struct platform_device *pdev)
- 
- 	ret = sti_uniperiph_cpu_dai_of(node, priv);
- 
-+	priv->dai->pcm_controls = priv->dai_data.uni->snd_ctrls;
-+	priv->dai->num_pcm_controls = priv->dai_data.uni->num_ctrls;
-+
- 	dev_set_drvdata(&pdev->dev, priv);
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev,
--- 
-1.9.1
+On Wed, Dec 07, 2016 at 10:01:42PM -0800, Kirtika Ruchandani wrote:
+> Commit 4cd9899f0d16 introduced struct skl_module_fmt* out_fmt without
+> using it. Compiling with W=1 gives the below warning, fix it.
+
+git can't parse this or your second patch, I can't immediately see
+what's wrong but please check how you're sending things and retry.
+
+--czgko5yrvwl5deqz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhJhwwACgkQJNaLcl1U
+h9DFQwf+Ki6nrtGLGFbBnhHnTBXrDYWct3TSAh/EYgd/zrP7Am0wViuE0JD/8znc
+ajcPBnqfXy48E8BOeMTtrrgD05/eKBZL2LaMokjJHbCmUWvopv/LvouMEx/H6u4H
+g+i8e5NqVxDglqkQ5/Q6GW3wmYO58Qvs7Td34vjDjs0mUYNtZEoyNYAshEC0jW+v
+W8m8j3rRhMlvWXJbeZ0qGvrP2GZ/O0dM1ayfMs6bio5Hv6Ay3mZVEZAciTzaVDIA
+UrMZKVl4pvS9wnEYlls2vmS9zpDIfR7glwwMTNRSdn8dVR3j5QAtg5LAhuY0VLMA
+ubeOYfcpVExqgjUSmuzx7e0NgtL2hA==
+=gFnj
+-----END PGP SIGNATURE-----
+
+--czgko5yrvwl5deqz--
