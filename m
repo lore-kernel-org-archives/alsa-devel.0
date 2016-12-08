@@ -1,111 +1,53 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH v6 3/3] sound/usb: Use Media Controller API to share media
- resources
-Date: Thu, 8 Dec 2016 07:46:03 -0700
-Message-ID: <5566cc23-62c3-7a4a-073d-7c340a22e984@osg.samsung.com>
-References: <cover.1480539942.git.shuahkh@osg.samsung.com>
- <ebeaa42019b102f76d87a2fc4aa7793e1f87072c.1480539942.git.shuahkh@osg.samsung.com>
- <69ad05a8-8572-43e7-ef76-7510edd904c6@osg.samsung.com>
- <2368883.8y0L28vD2m@avalon>
- <d0a8e556-915c-4f14-d45e-a36a11fb5c6d@osg.samsung.com>
- <20161207105207.GW16630@valkosipuli.retiisi.org.uk>
- <f83b60c1-9e1a-df5c-b1ec-de2ddd219307@osg.samsung.com>
- <20161207222738.GY16630@valkosipuli.retiisi.org.uk>
+From: Jun Nie <jun.nie@linaro.org>
+Subject: Re: [PATCH 2/2] ASoC: zte: spdif: correct ZX_SPDIF_CLK_RAT define
+Date: Thu, 8 Dec 2016 22:58:02 +0800
+Message-ID: <CABymUCNG1XfcsnRi+w5R6k4YvWP9-f8TMpWHMe7fZ6wRxNGGFA@mail.gmail.com>
+References: <1481186655-8213-1-git-send-email-shawnguo@kernel.org>
+ <1481186655-8213-2-git-send-email-shawnguo@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161207222738.GY16630@valkosipuli.retiisi.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sakari Ailus <sakari.ailus@iki.fi>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, mchehab@kernel.org, tiwai@suse.com, perex@perex.cz, hans.verkuil@cisco.com, javier@osg.samsung.com, chehabrafael@gmail.com, g.liakhovetski@gmx.de, ONeukum@suse.com, k@oikw.org, daniel@zonque.org, mahasler@gmail.com, clemens@ladisch.de, geliangtang@163.com, vdronov@redhat.com, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Shuah Khan <shuahkh@osg.samsung.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1481186655-8213-2-git-send-email-shawnguo@kernel.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Shawn Guo <shawnguo@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Baoyou Xie <xie.baoyou@zte.com.cn>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sakari,
+2016-12-08 16:44 GMT+08:00 Shawn Guo <shawnguo@kernel.org>:
+> From: Shawn Guo <shawn.guo@linaro.org>
+>
+> The macro ZX_SPDIF_CLK_RAT should be 2 instead of 4.  With this
+> fix, we can get correct audio output on HDMI through SPDIF interface.
+>
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> ---
+>  sound/soc/zte/zx-spdif.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/zte/zx-spdif.c b/sound/soc/zte/zx-spdif.c
+> index 26265ce4caca..9fa6463ce5d7 100644
+> --- a/sound/soc/zte/zx-spdif.c
+> +++ b/sound/soc/zte/zx-spdif.c
+> @@ -71,7 +71,7 @@
+>  #define ZX_VALID_RIGHT_TRACK           (2 << 0)
+>  #define ZX_VALID_TRACK_MASK            (3 << 0)
+>
+> -#define ZX_SPDIF_CLK_RAT               (4 * 32)
+> +#define ZX_SPDIF_CLK_RAT               (2 * 32)
+>
+>  struct zx_spdif_info {
+>         struct snd_dmaengine_dai_dma_data       dma_data;
+> --
+> 1.9.1
+>
 
-On 12/07/2016 03:27 PM, Sakari Ailus wrote:
-> Hi Shuah,
-> 
-> On Wed, Dec 07, 2016 at 01:03:59PM -0700, Shuah Khan wrote:
->> Hi Sakari,
->>
->> On 12/07/2016 03:52 AM, Sakari Ailus wrote:
->>> Hi Shuah,
->>>
->>> On Mon, Dec 05, 2016 at 05:38:23PM -0700, Shuah Khan wrote:
->>>> On 12/05/2016 04:21 PM, Laurent Pinchart wrote:
->>>>> Hi Shuah,
->>>>>
->>>>> On Monday 05 Dec 2016 15:44:30 Shuah Khan wrote:
->>>>>> On 11/30/2016 03:01 PM, Shuah Khan wrote:
->>>>>>> Change ALSA driver to use Media Controller API to share media resources
->>>>>>> with DVB, and V4L2 drivers on a AU0828 media device.
->>>>>>>
->>>>>>> Media Controller specific initialization is done after sound card is
->>>>>>> registered. ALSA creates Media interface and entity function graph
->>>>>>> nodes for Control, Mixer, PCM Playback, and PCM Capture devices.
->>>>>>>
->>>>>>> snd_usb_hw_params() will call Media Controller enable source handler
->>>>>>> interface to request the media resource. If resource request is granted,
->>>>>>> it will release it from snd_usb_hw_free(). If resource is busy, -EBUSY is
->>>>>>> returned.
->>>>>>>
->>>>>>> Media specific cleanup is done in usb_audio_disconnect().
->>>>>>>
->>>>>>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
->>>>>>
->>>>>> Hi Takashi,
->>>>>>
->>>>>> If you are good with this patch, could you please Ack it, so Mauro
->>>>>> can pull it into media tree with the other two patches in this series,
->>>>>> when he is ready to do so.
->>>>>
->>>>> I *really* want to address the concerns raised by Sakari before pulling more 
->>>>> code that makes fixing the race conditions more difficult. Please, let's all 
->>>>> work on fixing the core code to build a stable base on which we can build 
->>>>> additional features. V4L2 and MC need teamwork, it's time to give the 
->>>>> subsystem the love it deserves.
->>>>>
->>>>
->>>> Hi Laurent,
->>>>
->>>> The issue Sakari brought up is specific to using devm for video_device in
->>>> omap3 and vsp1. I tried reproducing the problem on two different drivers
->>>> and couldn't on Linux 4.9-rc7.
->>>>
->>>> After sharing that with Sakari, I suggested to Sakari to pull up his patch
->>>> that removes the devm usage and see if he still needs all the patches in his
->>>> patch series. He didn't back to me on that. I also requested him to rebase on
->>>
->>> Just to see what remains, I made a small hack to test this with omap3isp by
->>> just replacing the devm_() functions by their plain counterparts. The memory
->>> is thus never released, for there is no really a proper moment to release it
->>> --- something which the patchset resolves. The result is here:
->>>
->>> <URL:http://www.retiisi.org.uk/v4l2/tmp/media-ref-dmesg.txt>
->>
->> Did you test this on 4.9-rc7 without any of your other patches? If you
->> haven't could you please run this test with just the removing devm usage
->> from omap3isp?
->>
->> It would be good to get a baseline on the current with just the not using
->> devm first and then see what needs fixing.
->>
->> Also, could you please send me the complete dmesg.
-> 
-> Updated from v4.9-rc6 to rc7 and with increased CONFIG_LOG_BUF_SHIFT. The
-> diff and dmesg are here:
-> 
-> <URL:http://www.retiisi.org.uk/v4l2/tmp/media-ref-diff2.txt>
-> <URL:http://www.retiisi.org.uk/v4l2/tmp/media-ref-dmesg2.txt>
-> 
-
-Does unbind work on this even without streaming? Could you suppress
-debug messages and run unbind without streaming. It might fail. Let
-me know if what you see with just unbind on this driver.
-
-I unearthed an old Gumstix Overo that was hiding in my hardware stash
-and I am setting it up to test.
-
-thanks,
--- Shuah
+Acked-by: Jun Nie <jun.nie@linaro.org>
