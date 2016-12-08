@@ -1,41 +1,67 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: remove unused 'out_fmt' variable
-Date: Thu, 8 Dec 2016 15:48:27 +0530
-Message-ID: <20161208101826.GZ6408@localhost>
-References: <1481176902-131803-1-git-send-email-kirtika@chromium.org>
- <20161208095959.GY6408@localhost>
+From: jeeja.kp@intel.com
+Subject: [PATCH v3 07/13] ASoC: Intel: Skylake: Remove unused
+	SSP BE prepare DAI ops
+Date: Thu,  8 Dec 2016 13:41:18 +0530
+Message-ID: <1481184684-9620-8-git-send-email-jeeja.kp@intel.com>
+References: <1481184684-9620-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20161208095959.GY6408@localhost>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kirtika Ruchandani <kirtika@chromium.org>
-Cc: tiwai@suse.com, arnd@arndb.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Hardik T Shah <hardik.t.shah@intel.com>, Omair M Abdullah <omair.m.abdullah@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AD672667B2
+ for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 09:01:36 +0100 (CET)
+In-Reply-To: <1481184684-9620-1-git-send-email-jeeja.kp@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 08, 2016 at 03:30:01PM +0530, Vinod Koul wrote:
-> On Wed, Dec 07, 2016 at 10:01:42PM -0800, Kirtika Ruchandani wrote:
-> > Commit 4cd9899f0d16 introduced struct skl_module_fmt* out_fmt without
-> > using it. Compiling with W=1 gives the below warning, fix it.
-> > 
-> > sound/soc/intel/skylake/skl-topology.c: In function ‘skl_tplg_update_buffer_size’:
-> > sound/soc/intel/skylake/skl-topology.c:301:34: warning: variable ‘out_fmt’ set but not used [-Wunused-but-set-variable]
-> > 
-> > This is a harmless warning and is only being fixed to reduce the noise
-> > with W=1 in the kernel.
-> 
-> Heya,
-> 
-> Can you please tell me which tree this warning was found on? At least this
-> doesn't exist upstream. The out_fmt is very well used.
+From: Jeeja KP <jeeja.kp@intel.com>
 
-Sorry I messed up, got confused mcfg->out_fmt variable :(
+Removed unused prepare DAI ops as previous patch uses set_tristate
+ops and this is no longer in use so remove the BE DAI prepare opd.
 
-This looks fine:
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+---
+ sound/soc/intel/skylake/skl-pcm.c | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 3c16d41..688d6f7 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -259,23 +259,6 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int skl_be_prepare(struct snd_pcm_substream *substream,
+-		struct snd_soc_dai *dai)
+-{
+-	struct skl *skl = get_skl_ctx(dai->dev);
+-	struct skl_sst *ctx = skl->skl_sst;
+-	struct skl_module_cfg *mconfig;
+-
+-	if (dai->playback_widget->power || dai->capture_widget->power)
+-		return 0;
+-
+-	mconfig = skl_tplg_be_get_cpr_module(dai, substream->stream);
+-	if (mconfig == NULL)
+-		return -EINVAL;
+-
+-	return skl_dsp_set_dma_control(ctx, mconfig);
+-}
+-
+ static int skl_pcm_prepare(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
 -- 
-~Vinod
+2.5.0
