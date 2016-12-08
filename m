@@ -1,89 +1,60 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH v3 06/13] ASoC: Intel: Skylake: Add
-	set_tristate DAI ops to enable SSP MCLK
-Date: Thu,  8 Dec 2016 13:41:17 +0530
-Message-ID: <1481184684-9620-7-git-send-email-jeeja.kp@intel.com>
-References: <1481184684-9620-1-git-send-email-jeeja.kp@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Skylake: remove unused 'out_fmt' variable
+Date: Thu, 8 Dec 2016 15:30:01 +0530
+Message-ID: <20161208095959.GY6408@localhost>
+References: <1481176902-131803-1-git-send-email-kirtika@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id D1BF02667B2
- for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 09:01:32 +0100 (CET)
-In-Reply-To: <1481184684-9620-1-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1481176902-131803-1-git-send-email-kirtika@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kirtika Ruchandani <kirtika@chromium.org>
+Cc: tiwai@suse.com, arnd@arndb.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Hardik T Shah <hardik.t.shah@intel.com>, Omair M Abdullah <omair.m.abdullah@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+On Wed, Dec 07, 2016 at 10:01:42PM -0800, Kirtika Ruchandani wrote:
+> Commit 4cd9899f0d16 introduced struct skl_module_fmt* out_fmt without
+> using it. Compiling with W=1 gives the below warning, fix it.
+> 
+> sound/soc/intel/skylake/skl-topology.c: In function ‘skl_tplg_update_buffer_size’:
+> sound/soc/intel/skylake/skl-topology.c:301:34: warning: variable ‘out_fmt’ set but not used [-Wunused-but-set-variable]
+> 
+> This is a harmless warning and is only being fixed to reduce the noise
+> with W=1 in the kernel.
 
-Some machine requires MCLK to be enabled before SSP start up, so add
-set_tristate() DAI ops to enable/disable SSP MCLK. This ops will be
-called from machine which requires early MCLK and removes the usage of
-enabling early MLCK in platform DAI prepare by default which is not
-machine specific.
+Heya,
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/soc/intel/skylake/skl-pcm.c | 29 ++++++++++++++++++++++++++++-
- 1 file changed, 28 insertions(+), 1 deletion(-)
+Can you please tell me which tree this warning was found on? At least this
+doesn't exist upstream. The out_fmt is very well used.
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 10fa10d..3c16d41 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -396,6 +396,33 @@ static int skl_be_hw_params(struct snd_pcm_substream *substream,
- 	return skl_tplg_be_update_params(dai, &p_params);
- }
- 
-+static int skl_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate)
-+{
-+	struct skl *skl = get_skl_ctx(dai->dev);
-+	struct skl_sst *ctx = skl->skl_sst;
-+	struct skl_module_cfg *mconfig;
-+	int stream;
-+
-+	if (dai->playback_active)
-+		stream = SNDRV_PCM_STREAM_PLAYBACK;
-+	else
-+		stream = SNDRV_PCM_STREAM_CAPTURE;
-+
-+	mconfig = skl_tplg_be_get_cpr_module(dai, stream);
-+	if (!mconfig)
-+		return -EINVAL;
-+
-+	/*
-+	 * To enable ssp clk explicitly before gateway copier is configured,
-+	 * need to use dma control IPC.
-+	 * Disable will be done when DSP gateway copier modules are deleted.
-+	 */
-+	if (!tristate)
-+		return skl_dsp_set_dma_control(ctx, mconfig);
-+
-+	return 0;
-+}
-+
- static int skl_decoupled_trigger(struct snd_pcm_substream *substream,
- 		int cmd)
- {
-@@ -646,7 +673,7 @@ static struct snd_soc_dai_ops skl_dmic_dai_ops = {
- 
- static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
- 	.hw_params = skl_be_hw_params,
--	.prepare = skl_be_prepare,
-+	.set_tristate = skl_soc_dai_set_tristate,
- };
- 
- static struct snd_soc_dai_ops skl_link_dai_ops = {
+If you saw this in Chromium tree then it might be due to some missing
+backports..
+
+> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+> index bd313c9..4352236a 100644
+> --- a/sound/soc/intel/skylake/skl-topology.c
+> +++ b/sound/soc/intel/skylake/skl-topology.c
+> @@ -298,7 +298,7 @@ static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
+> 				struct skl_module_cfg *mcfg)
+>  {
+> 	int multiplier = 1;
+> -	struct skl_module_fmt *in_fmt, *out_fmt;
+> +	struct skl_module_fmt *in_fmt;
+> 	int in_rate, out_rate;
+> 
+> 
+> @@ -306,7 +306,6 @@ static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
+> 	 * change for pin 0 only
+> 	 */
+> 	in_fmt = &mcfg->in_fmt[0];
+> -	out_fmt = &mcfg->out_fmt[0];
+> 
+> 	if (mcfg->m_type == SKL_MODULE_TYPE_SRCINT)
+> 		multiplier = 5;
+> --
+> 2.8.0.rc3.226.g39d4020
+
 -- 
-2.5.0
+~Vinod
