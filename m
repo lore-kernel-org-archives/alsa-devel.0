@@ -1,114 +1,111 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v5 1/2] ASoC: core: allow DAI PCM controls
-	bound to PCM device
-Date: Thu, 8 Dec 2016 15:15:25 +0100
-Message-ID: <1481206526-28830-2-git-send-email-arnaud.pouliquen@st.com>
-References: <1481206526-28830-1-git-send-email-arnaud.pouliquen@st.com>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH v6 3/3] sound/usb: Use Media Controller API to share media
+ resources
+Date: Thu, 8 Dec 2016 07:46:03 -0700
+Message-ID: <5566cc23-62c3-7a4a-073d-7c340a22e984@osg.samsung.com>
+References: <cover.1480539942.git.shuahkh@osg.samsung.com>
+ <ebeaa42019b102f76d87a2fc4aa7793e1f87072c.1480539942.git.shuahkh@osg.samsung.com>
+ <69ad05a8-8572-43e7-ef76-7510edd904c6@osg.samsung.com>
+ <2368883.8y0L28vD2m@avalon>
+ <d0a8e556-915c-4f14-d45e-a36a11fb5c6d@osg.samsung.com>
+ <20161207105207.GW16630@valkosipuli.retiisi.org.uk>
+ <f83b60c1-9e1a-df5c-b1ec-de2ddd219307@osg.samsung.com>
+ <20161207222738.GY16630@valkosipuli.retiisi.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 1D9BC2673E2
- for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 15:15:48 +0100 (CET)
-In-Reply-To: <1481206526-28830-1-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: kernel@stlinux.com, Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20161207222738.GY16630@valkosipuli.retiisi.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sakari Ailus <sakari.ailus@iki.fi>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, mchehab@kernel.org, tiwai@suse.com, perex@perex.cz, hans.verkuil@cisco.com, javier@osg.samsung.com, chehabrafael@gmail.com, g.liakhovetski@gmx.de, ONeukum@suse.com, k@oikw.org, daniel@zonque.org, mahasler@gmail.com, clemens@ladisch.de, geliangtang@163.com, vdronov@redhat.com, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Shuah Khan <shuahkh@osg.samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-In case of several instances of the same PCM control (e.g IEC controls).
-Application should be able to address the control using the
-device field number, according to the PCM character device.
-This patch allows to link DAI PCM controls to the PCM device.
-During DAI_link probe, PCM controls are added after device field is forced
-to the PCM device number.
+Hi Sakari,
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- include/sound/soc-dai.h |  8 ++++++++
- sound/soc/soc-core.c    | 35 +++++++++++++++++++++++++++++++++++
- 2 files changed, 43 insertions(+)
+On 12/07/2016 03:27 PM, Sakari Ailus wrote:
+> Hi Shuah,
+> 
+> On Wed, Dec 07, 2016 at 01:03:59PM -0700, Shuah Khan wrote:
+>> Hi Sakari,
+>>
+>> On 12/07/2016 03:52 AM, Sakari Ailus wrote:
+>>> Hi Shuah,
+>>>
+>>> On Mon, Dec 05, 2016 at 05:38:23PM -0700, Shuah Khan wrote:
+>>>> On 12/05/2016 04:21 PM, Laurent Pinchart wrote:
+>>>>> Hi Shuah,
+>>>>>
+>>>>> On Monday 05 Dec 2016 15:44:30 Shuah Khan wrote:
+>>>>>> On 11/30/2016 03:01 PM, Shuah Khan wrote:
+>>>>>>> Change ALSA driver to use Media Controller API to share media resources
+>>>>>>> with DVB, and V4L2 drivers on a AU0828 media device.
+>>>>>>>
+>>>>>>> Media Controller specific initialization is done after sound card is
+>>>>>>> registered. ALSA creates Media interface and entity function graph
+>>>>>>> nodes for Control, Mixer, PCM Playback, and PCM Capture devices.
+>>>>>>>
+>>>>>>> snd_usb_hw_params() will call Media Controller enable source handler
+>>>>>>> interface to request the media resource. If resource request is granted,
+>>>>>>> it will release it from snd_usb_hw_free(). If resource is busy, -EBUSY is
+>>>>>>> returned.
+>>>>>>>
+>>>>>>> Media specific cleanup is done in usb_audio_disconnect().
+>>>>>>>
+>>>>>>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+>>>>>>
+>>>>>> Hi Takashi,
+>>>>>>
+>>>>>> If you are good with this patch, could you please Ack it, so Mauro
+>>>>>> can pull it into media tree with the other two patches in this series,
+>>>>>> when he is ready to do so.
+>>>>>
+>>>>> I *really* want to address the concerns raised by Sakari before pulling more 
+>>>>> code that makes fixing the race conditions more difficult. Please, let's all 
+>>>>> work on fixing the core code to build a stable base on which we can build 
+>>>>> additional features. V4L2 and MC need teamwork, it's time to give the 
+>>>>> subsystem the love it deserves.
+>>>>>
+>>>>
+>>>> Hi Laurent,
+>>>>
+>>>> The issue Sakari brought up is specific to using devm for video_device in
+>>>> omap3 and vsp1. I tried reproducing the problem on two different drivers
+>>>> and couldn't on Linux 4.9-rc7.
+>>>>
+>>>> After sharing that with Sakari, I suggested to Sakari to pull up his patch
+>>>> that removes the devm usage and see if he still needs all the patches in his
+>>>> patch series. He didn't back to me on that. I also requested him to rebase on
+>>>
+>>> Just to see what remains, I made a small hack to test this with omap3isp by
+>>> just replacing the devm_() functions by their plain counterparts. The memory
+>>> is thus never released, for there is no really a proper moment to release it
+>>> --- something which the patchset resolves. The result is here:
+>>>
+>>> <URL:http://www.retiisi.org.uk/v4l2/tmp/media-ref-dmesg.txt>
+>>
+>> Did you test this on 4.9-rc7 without any of your other patches? If you
+>> haven't could you please run this test with just the removing devm usage
+>> from omap3isp?
+>>
+>> It would be good to get a baseline on the current with just the not using
+>> devm first and then see what needs fixing.
+>>
+>> Also, could you please send me the complete dmesg.
+> 
+> Updated from v4.9-rc6 to rc7 and with increased CONFIG_LOG_BUF_SHIFT. The
+> diff and dmesg are here:
+> 
+> <URL:http://www.retiisi.org.uk/v4l2/tmp/media-ref-diff2.txt>
+> <URL:http://www.retiisi.org.uk/v4l2/tmp/media-ref-dmesg2.txt>
+> 
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 200e1f0..375533a 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -273,6 +273,14 @@ struct snd_soc_dai_driver {
- 	/* probe ordering - for components with runtime dependencies */
- 	int probe_order;
- 	int remove_order;
-+
-+	/*
-+	 * Optional PCM controls to bind to PCM device on DAIs link
-+	 * Note: only  SNDRV_CTL_ELEM_IFACE_PCM controls can be declared in
-+	 * the pcm_controls table.
-+	 */
-+	const struct snd_kcontrol_new *pcm_controls;
-+	int num_pcm_controls;
- };
- 
- /*
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index aaab26a..1f8ef2c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1598,6 +1598,32 @@ static int soc_probe_dai(struct snd_soc_dai *dai, int order)
- 	return 0;
- }
- 
-+static int soc_link_dai_pcm_controls(struct snd_soc_dai **dais, int num_dais,
-+				     struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_kcontrol_new kctl;
-+	int i, j, ret;
-+
-+	for (i = 0; i < num_dais; ++i) {
-+		for (j = 0; j < dais[i]->driver->num_pcm_controls; j++) {
-+			kctl = dais[i]->driver->pcm_controls[j];
-+			if (kctl.iface != SNDRV_CTL_ELEM_IFACE_PCM ||
-+			    rtd->dai_link->no_pcm) {
-+				dev_err(dais[i]->dev,
-+					"ASoC: Failed to bind %s control: %s\n",
-+					dais[i]->name, kctl.name);
-+				return -EINVAL;
-+			}
-+			kctl.device = rtd->pcm->device;
-+			ret = snd_soc_add_dai_controls(dais[i], &kctl, 1);
-+			if (ret < 0)
-+				return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int soc_link_dai_widgets(struct snd_soc_card *card,
- 				struct snd_soc_dai_link *dai_link,
- 				struct snd_soc_pcm_runtime *rtd)
-@@ -1709,6 +1735,15 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
- 				       dai_link->stream_name, ret);
- 				return ret;
- 			}
-+
-+			/* Bind DAIs pcm controls to the PCM device */
-+			ret = soc_link_dai_pcm_controls(&cpu_dai, 1, rtd);
-+			if (ret < 0)
-+				return ret;
-+			ret = soc_link_dai_pcm_controls(rtd->codec_dais,
-+							rtd->num_codecs, rtd);
-+			if (ret < 0)
-+				return ret;
- 		} else {
- 			INIT_DELAYED_WORK(&rtd->delayed_work,
- 						codec2codec_close_delayed_work);
--- 
-1.9.1
+Does unbind work on this even without streaming? Could you suppress
+debug messages and run unbind without streaming. It might fail. Let
+me know if what you see with just unbind on this driver.
+
+I unearthed an old Gumstix Overo that was hiding in my hardware stash
+and I am setting it up to test.
+
+thanks,
+-- Shuah
