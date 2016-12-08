@@ -1,18 +1,16 @@
-From: "Sutar, Mounesh" <Mounesh_Sutar@mentor.com>
-Subject: Re: [PATCH] alsa-lib: update linked hw_ptr and appl_ptr
-Date: Thu, 8 Dec 2016 10:56:12 +0000
-Message-ID: <a3e36d70c04349d79c2aa36a2f384aff@SVR-IES-MBX-04.mgc.mentorg.com>
-References: <1480069505-16668-1-git-send-email-sutar.mounesh@gmail.com>
- <s5hpolf5saf.wl-tiwai@suse.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ASoC: topology: Only free TLV for volume
+ mixers of a widget
+Date: Thu, 8 Dec 2016 16:32:36 +0300
+Message-ID: <20161208133236.GA10418@elgon.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 099DA2673E2
- for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 11:56:17 +0100 (CET)
-In-Reply-To: <s5hpolf5saf.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70E1A26747F
+ for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 14:41:01 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,77 +20,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "sutar.mounesh@gmail.com" <sutar.mounesh@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andreas Pape <apape@de.adit-jv.com>
+To: mengdong.lin@linux.intel.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-This is the update I got from Andreas:
+Hello Mengdong Lin,
 
-"This is not a generic problem, but can be observed in plugins which use manual linking method.
-The plugins such as PLUG, FILE, METER, MULTI and HOOK use manual linkage.
-PLUG is the 'bad guy' which might change the linking in hw_param operation.
-METER and MULTI might need to be fixed as well.
-HOOKS does not use transfer/processing of frames, so seems harmless (but not 100% sure- linkage should be updated for completeness) 
+The patch eea3dd4f1247: "ASoC: topology: Only free TLV for volume
+mixers of a widget" from Nov 25, 2016, leads to the following static
+checker warning:
 
-The current fix is provided for FILE plugin ONLY"
+	sound/soc/soc-topology.c:1566 soc_tplg_dapm_widget_create()
+	error: uninitialized symbol 'kcontrol_type'.
 
-Regards,
-Mounesh
+sound/soc/soc-topology.c
+  1440  static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
+  1441          struct snd_soc_tplg_dapm_widget *w)
+  1442  {
+  1443          struct snd_soc_dapm_context *dapm = &tplg->comp->dapm;
+  1444          struct snd_soc_dapm_widget template, *widget;
+  1445          struct snd_soc_tplg_ctl_hdr *control_hdr;
+  1446          struct snd_soc_card *card = tplg->comp->card;
+  1447          unsigned int kcontrol_type;
+                             ^^^^^^^^^^^^^
+  1448          int ret = 0;
+  1449  
+  1450          if (strnlen(w->name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
+  1451                  SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
+  1452                  return -EINVAL;
+  1453          if (strnlen(w->sname, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
+  1454                  SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
+  1455                  return -EINVAL;
+  1456  
+  1457          dev_dbg(tplg->dev, "ASoC: creating DAPM widget %s id %d\n",
+  1458                  w->name, w->id);
+  1459  
+  1460          memset(&template, 0, sizeof(template));
+  1461  
+  1462          /* map user to kernel widget ID */
+  1463          template.id = get_widget_id(w->id);
+  1464          if (template.id < 0)
+  1465                  return template.id;
+  1466  
+  1467          template.name = kstrdup(w->name, GFP_KERNEL);
+  1468          if (!template.name)
+  1469                  return -ENOMEM;
+  1470          template.sname = kstrdup(w->sname, GFP_KERNEL);
+  1471          if (!template.sname) {
+  1472                  ret = -ENOMEM;
+  1473                  goto err;
+  1474          }
+  1475          template.reg = w->reg;
+  1476          template.shift = w->shift;
+  1477          template.mask = w->mask;
+  1478          template.subseq = w->subseq;
+  1479          template.on_val = w->invert ? 0 : 1;
+  1480          template.off_val = w->invert ? 1 : 0;
+  1481          template.ignore_suspend = w->ignore_suspend;
+  1482          template.event_flags = w->event_flags;
+  1483          template.dobj.index = tplg->index;
+  1484  
+  1485          tplg->pos +=
+  1486                  (sizeof(struct snd_soc_tplg_dapm_widget) + w->priv.size);
+  1487          if (w->num_kcontrols == 0) {
+  1488                  template.num_kcontrols = 0;
+  1489                  goto widget;
 
+Assume we hit this goto.
 
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: 29 November 2016 00:46
-To: sutar.mounesh@gmail.com
-Cc: alsa-devel@alsa-project.org; Sutar, Mounesh <Mounesh_Sutar@mentor.com>; Andreas Pape <apape@de.adit-jv.com>
-Subject: Re: [PATCH] alsa-lib: update linked hw_ptr and appl_ptr
+  1490          }
+  1491  
+  1492          control_hdr = (struct snd_soc_tplg_ctl_hdr *)tplg->pos;
+  1493          dev_dbg(tplg->dev, "ASoC: template %s has %d controls of type %x\n",
+  1494                  w->name, w->num_kcontrols, control_hdr->type);
 
-On Fri, 25 Nov 2016 11:25:05 +0100,
-sutar.mounesh@gmail.com wrote:
-> 
-> From: Andreas Pape <apape@de.adit-jv.com>
-> 
-> Plugin file provides no private hw_ptr and appl_ptr but instead links them to the slave pcm.
-> If the slave pcm itself changes its hw_ptr or app_prt this needs to be done in file plugin, too.
-> Plugin 'plug' is such a candidate changing the hw_ptr and app_ptr in hw_params call dependent on the automatically inserted plugins.
-> ALSA unfortunately has no support for automatically updating chained pointers.
-> A notification on pointer change seems to be prepared inside the 
-> snd_pcm_set_ptr() routine via
-> rbptr->changed(), but it is not (yet) implemented so that we need to care for it manually.
-> 
-> Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+[ snip ]
 
-Judging from the description, isn't it a generic problem, not specific to file plugin?
+  1546  
+  1547  widget:
+  1548          ret = soc_tplg_widget_load(tplg, &template, w);
+  1549          if (ret < 0)
+  1550                  goto hdr_err;
+  1551  
+  1552          /* card dapm mutex is held by the core if we are loading topology
+  1553           * data during sound card init. */
+  1554          if (card->instantiated)
+  1555                  widget = snd_soc_dapm_new_control(dapm, &template);
+  1556          else
+  1557                  widget = snd_soc_dapm_new_control_unlocked(dapm, &template);
+  1558          if (widget == NULL) {
+  1559                  dev_err(tplg->dev, "ASoC: failed to create widget %s controls\n",
+  1560                          w->name);
+  1561                  ret = -ENOMEM;
+  1562                  goto hdr_err;
+  1563          }
+  1564  
+  1565          widget->dobj.type = SND_SOC_DOBJ_WIDGET;
+  1566          widget->dobj.widget.kcontrol_type = kcontrol_type;
 
+Then it's not initialized here.  I don't know if this causes an issue
+beyond the static checker warning.
 
-thanks,
+  1567          widget->dobj.ops = tplg->ops;
+  1568          widget->dobj.index = tplg->index;
+  1569          kfree(template.sname);
 
-Takashi
-
-> ---
->  src/pcm/pcm_file.c |    8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c index 
-> fec76eb..1e3d35b 100644
-> --- a/src/pcm/pcm_file.c
-> +++ b/src/pcm/pcm_file.c
-> @@ -634,6 +634,14 @@ static int snd_pcm_file_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t * params)
->  			return err;
->  		}
->  	}
-> +
-> +	/* pointer may have changed - e.g if plug is used. */
-> +	snd_pcm_unlink_hw_ptr(pcm, file->gen.slave);
-> +	snd_pcm_unlink_appl_ptr(pcm, file->gen.slave);
-> +
-> +	snd_pcm_link_hw_ptr(pcm, file->gen.slave);
-> +	snd_pcm_link_appl_ptr(pcm, file->gen.slave);
-> +
->  	return 0;
->  }
->  
-> --
-> 1.7.9.5
-> 
+regards,
+dan carpenter
