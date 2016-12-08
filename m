@@ -1,61 +1,60 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/2] Generic HDMI codec: Add channel mapping control
-Date: Fri, 9 Dec 2016 06:13:24 +0900
-Message-ID: <ca1cfca3-3f2a-3935-536d-5d92cc4d0a67@sakamocchi.jp>
-References: <1481215067-19362-1-git-send-email-arnaud.pouliquen@st.com>
- <f4d0e685-51f0-5831-e087-67d2ba276422@sakamocchi.jp>
+From: Alberto Aguirre <albaguirre@gmail.com>
+Subject: [PATCH] ALSA: usb-audio: add implicit fb quirk for
+	Axe-Fx II
+Date: Thu,  8 Dec 2016 15:38:27 -0600
+Message-ID: <20161208213827.32518-1-albaguirre@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <f4d0e685-51f0-5831-e087-67d2ba276422@sakamocchi.jp>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
-Cc: kernel@stlinux.com, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f68.google.com (mail-oi0-f68.google.com
+ [209.85.218.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F282267590
+ for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 22:38:52 +0100 (CET)
+Received: by mail-oi0-f68.google.com with SMTP id m75so51813355oig.1
+ for <alsa-devel@alsa-project.org>; Thu, 08 Dec 2016 13:38:52 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Alberto Aguirre <albaguirre@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRGVjIDkgMjAxNiAwNTo1MiwgVGFrYXNoaSBTYWthbW90byB3cm90ZToKPiBPbiBEZWMgOSAy
-MDE2IDAxOjM3LCBBcm5hdWQgUG91bGlxdWVuIHdyb3RlOgo+PiBBaW0gb2YgdGhpcyBwYXRjaCBp
-cyB0byBhZGQgICdQbGF5YmFjayBDaGFubmVsIE1hcCcgY29udHJvbCB0byBleHBvcnQKPj4gYXVk
-aW8gY2FwYWJpbGl0aWVzIGluIHRlcm0gb2YgSERNSSBzaW5rIHNwZWFrZXJzIGFsbG9jYXRpb24u
-Cj4+IFRoaXMgcGF0Y2ggZm9sbG93IGRpc2N1c3Npb24gaW5pdGlhdGVzIGhlcmU6Cj4+IFtSRkNd
-IEFTT0M6IEhETUkgYXVkaW8gaW5mbyBmcmFtZSBzcGVha2VyIGFsbG9jYXRpb24KPj4gaHR0cDov
-L3d3dy5zcGluaWNzLm5ldC9saXN0cy9hbHNhLWRldmVsL21zZzU3MzYzLmh0bWwKPj4KPj4gVGhl
-IGNvZGUgaXMgZnVsbHkgaW5zcGlyZWQgZnJvbSBIREEgZHJpdmVyLgo+PiBPbiBod19wYXJhbSwg
-SERNSSBzaW5rIHNwZWFrZXIgY2FwYWJpbGl0aWVzIGFyZSBleHBvcnRlZCB2aWEgVExWIG9wcwo+
-PiBhbmQgIGEgQ0VBIGFsbG9jYXRpb24gaXMgY2hvc29uLCBiYXNlZCBvbiBFTEQgaW5mb3JtYXRp
-b24gYW5kIHRoZQo+PiBudW1iZXIgb2YKPj4gY2hhbm5lbHMgcmVxdWVzdGVkIGJ5IHVzZXIuCj4+
-Cj4+IE1haW5zIGRpZmZlcmVuY2VzIHdpdGggSERBIGltcGxlbWVudGF0aW9uIGFyZToKPj4gIC0g
-Q29udHJvbCBpcyByZWFkIG9ubHkKPj4gIC0gQ2hhbm5lbCBzd2FwIGlzIG5vdCBzdXBwb3J0ZWQu
-IENvbnNlcXVlbmNlIGlzIHRoYXQgdW51c2VkIGNoYW5uZWwgaW4KPj4gICAgdGhlIG1pZCBvZiBD
-RUEgYXVkaW8gaW5mb2ZyYW1lIGNoYW5uZWwgbWFwcGluZyBhcmUgY29uc2lkZXJlZCBhcwo+PiAg
-ICBhY3RpdmUuCj4+ICAgIGV4YW1wbGUgZm9yIGNoYW5uZWwgYWxsb2NhdGlvbiAweDAyOiBGTCwg
-RlIsIDAsIEZDKQo+PiAgICAgVGhpcyBjb25maWd1cmF0aW9uIGlzIG9ubHkgYXZhaWxhYmxlIGZv
-ciBhIDQgY2hhbm5lbHMgc3RyZWFtLgo+PiAgIC0gQ2hhbm5lbCBhbGxvY2F0aW9uIHRhYmxlIGhh
-cyBiZWVuIHJlb3JkZXJlZCBhbmQgSERNSSAyLjAgaXMgbm90Cj4+ICAgICBzdXBwb3J0ZWQuCj4+
-Cj4+IEFybmF1ZCBQb3VsaXF1ZW4gKDIpOgo+PiAgIERSTTogYWRkIGhlbHAgdG8gZ2V0IEVMRCBz
-cGVha2VyIGFsbG9jYXRpb24KPj4gICBBU29DOiBoZG1pLWNvZGVjOiBhZGQgY2hhbm5lbCBtYXBw
-aW5nIGNvbnRyb2wKPj4KPj4gIGluY2x1ZGUvZHJtL2RybV9lZGlkLmggICAgICAgIHwgIDEzICsr
-Cj4+ICBzb3VuZC9zb2MvY29kZWNzL2hkbWktY29kZWMuYyB8IDM0Ngo+PiArKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKy0KPj4gIDIgZmlsZXMgY2hhbmdlZCwgMzU4IGlu
-c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPgo+IFBsZWFzZSBwYXkgZW5vdWdoIGF0dGVudGlv
-biB0byBkZXZlbG9wbWVudCBjeWNsZSBmb3IgTGludXgga2VybmVsLgo+Cj4gV2UncmUgbW9zdGx5
-IG9uIHRoZSBlbmQgb2YgZGV2ZWxvcG1lbnQgZm9yIDQuOSBjeWNsZSwgYW5kIHJldmlldyBwcm9j
-ZXNzCj4gZm9yIG5ldyBmZWF0dXJlIG1pZ2h0IGJlIGRlbGF5IGZvciBuZXh0IGN5Y2xlLCB0aWxs
-IDQuOSByZWxlYXNlLCB0d28KPiB3ZWVrcyBsYXRlci4KCk9vcHMuIEkgd2FzIHN0dXBpZCBqdXN0
-IGFmdGVyIGF3YWtlbmluZy4uLgoKQW55d2F5LCB3ZSdyZSBtb3N0bHkgb24gdGhlIGVuZCBvZiBk
-ZXZlbG9wbWVudCBmb3IgNC4xMCBjeWNsZSwgYW5kIHRoZSAKcmV2aWV3IHByb2Nlc3MgZm9yIG5l
-dyBmZWF0dXJlIG1pZ2h0IGJlIGRlbGF5IHRpbGwgNC4xMC1yYzEgcmVsZWFzZSwgdHdvIAp3ZWVr
-cyBsYXRlci4gRHVyaW5nIHRoZSB3ZWVrcy4gYnVnIGZpeGVzIGFyZSBwcmVmZXJhYmxlIHRvIGJl
-IGFwcGxpZWQuCgoKUmVnYXJkcwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1k
-ZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+The Axe-Fx II implicit feedback end point and the data sink endpoint
+are in different interface descriptors. Add quirk to ensure a sync
+endpoint is properly configured.
+
+Signed-off-by: Alberto Aguirre <albaguirre@gmail.com>
+---
+ sound/usb/pcm.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 44d178e..584f2a6 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -348,6 +348,16 @@ static int set_sync_ep_implicit_fb_quirk(struct snd_usb_substream *subs,
+ 
+ 		alts = &iface->altsetting[1];
+ 		goto add_sync_ep;
++	case USB_ID(0x2466, 0x8003): /* Fractal Audio Axe-Fx II */
++		ep = 0x86;
++		iface = usb_ifnum_to_if(dev, 2);
++
++		if (!iface || iface->num_altsetting == 0)
++			return -EINVAL;
++
++		alts = &iface->altsetting[1];
++		goto add_sync_ep;
++
+ 	}
+ 	if (attr == USB_ENDPOINT_SYNC_ASYNC &&
+ 	    altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC &&
+-- 
+2.9.3
