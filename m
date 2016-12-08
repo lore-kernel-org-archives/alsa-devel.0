@@ -1,67 +1,61 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/2] Generic HDMI codec: Add channel
-	mapping control
-Date: Fri, 9 Dec 2016 05:52:35 +0900
-Message-ID: <f4d0e685-51f0-5831-e087-67d2ba276422@sakamocchi.jp>
+Subject: Re: [PATCH 0/2] Generic HDMI codec: Add channel mapping control
+Date: Fri, 9 Dec 2016 06:13:24 +0900
+Message-ID: <ca1cfca3-3f2a-3935-536d-5d92cc4d0a67@sakamocchi.jp>
 References: <1481215067-19362-1-git-send-email-arnaud.pouliquen@st.com>
+ <f4d0e685-51f0-5831-e087-67d2ba276422@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 7E90226750C
- for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 21:52:40 +0100 (CET)
-In-Reply-To: <1481215067-19362-1-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <f4d0e685-51f0-5831-e087-67d2ba276422@sakamocchi.jp>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
 To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
-Cc: kernel@stlinux.com, Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>
+Cc: kernel@stlinux.com, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 9 2016 01:37, Arnaud Pouliquen wrote:
-> Aim of this patch is to add  'Playback Channel Map' control to export
-> audio capabilities in term of HDMI sink speakers allocation.
-> This patch follow discussion initiates here:
-> [RFC] ASOC: HDMI audio info frame speaker allocation
-> http://www.spinics.net/lists/alsa-devel/msg57363.html
->
-> The code is fully inspired from HDA driver.
-> On hw_param, HDMI sink speaker capabilities are exported via TLV ops
-> and  a CEA allocation is choson, based on ELD information and the number of
-> channels requested by user.
->
-> Mains differences with HDA implementation are:
->  - Control is read only
->  - Channel swap is not supported. Consequence is that unused channel in
->    the mid of CEA audio infoframe channel mapping are considered as
->    active.
->    example for channel allocation 0x02: FL, FR, 0, FC)
-> 	This configuration is only available for a 4 channels stream.
->   - Channel allocation table has been reordered and HDMI 2.0 is not
->     supported.
->
-> Arnaud Pouliquen (2):
->   DRM: add help to get ELD speaker allocation
->   ASoC: hdmi-codec: add channel mapping control
->
->  include/drm/drm_edid.h        |  13 ++
->  sound/soc/codecs/hdmi-codec.c | 346 +++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 358 insertions(+), 1 deletion(-)
-
-Please pay enough attention to development cycle for Linux kernel.
-
-We're mostly on the end of development for 4.9 cycle, and review process 
-for new feature might be delay for next cycle, till 4.9 release, two 
-weeks later.
-
-
-Regards
-
-Takashi Sakamoto
+T24gRGVjIDkgMjAxNiAwNTo1MiwgVGFrYXNoaSBTYWthbW90byB3cm90ZToKPiBPbiBEZWMgOSAy
+MDE2IDAxOjM3LCBBcm5hdWQgUG91bGlxdWVuIHdyb3RlOgo+PiBBaW0gb2YgdGhpcyBwYXRjaCBp
+cyB0byBhZGQgICdQbGF5YmFjayBDaGFubmVsIE1hcCcgY29udHJvbCB0byBleHBvcnQKPj4gYXVk
+aW8gY2FwYWJpbGl0aWVzIGluIHRlcm0gb2YgSERNSSBzaW5rIHNwZWFrZXJzIGFsbG9jYXRpb24u
+Cj4+IFRoaXMgcGF0Y2ggZm9sbG93IGRpc2N1c3Npb24gaW5pdGlhdGVzIGhlcmU6Cj4+IFtSRkNd
+IEFTT0M6IEhETUkgYXVkaW8gaW5mbyBmcmFtZSBzcGVha2VyIGFsbG9jYXRpb24KPj4gaHR0cDov
+L3d3dy5zcGluaWNzLm5ldC9saXN0cy9hbHNhLWRldmVsL21zZzU3MzYzLmh0bWwKPj4KPj4gVGhl
+IGNvZGUgaXMgZnVsbHkgaW5zcGlyZWQgZnJvbSBIREEgZHJpdmVyLgo+PiBPbiBod19wYXJhbSwg
+SERNSSBzaW5rIHNwZWFrZXIgY2FwYWJpbGl0aWVzIGFyZSBleHBvcnRlZCB2aWEgVExWIG9wcwo+
+PiBhbmQgIGEgQ0VBIGFsbG9jYXRpb24gaXMgY2hvc29uLCBiYXNlZCBvbiBFTEQgaW5mb3JtYXRp
+b24gYW5kIHRoZQo+PiBudW1iZXIgb2YKPj4gY2hhbm5lbHMgcmVxdWVzdGVkIGJ5IHVzZXIuCj4+
+Cj4+IE1haW5zIGRpZmZlcmVuY2VzIHdpdGggSERBIGltcGxlbWVudGF0aW9uIGFyZToKPj4gIC0g
+Q29udHJvbCBpcyByZWFkIG9ubHkKPj4gIC0gQ2hhbm5lbCBzd2FwIGlzIG5vdCBzdXBwb3J0ZWQu
+IENvbnNlcXVlbmNlIGlzIHRoYXQgdW51c2VkIGNoYW5uZWwgaW4KPj4gICAgdGhlIG1pZCBvZiBD
+RUEgYXVkaW8gaW5mb2ZyYW1lIGNoYW5uZWwgbWFwcGluZyBhcmUgY29uc2lkZXJlZCBhcwo+PiAg
+ICBhY3RpdmUuCj4+ICAgIGV4YW1wbGUgZm9yIGNoYW5uZWwgYWxsb2NhdGlvbiAweDAyOiBGTCwg
+RlIsIDAsIEZDKQo+PiAgICAgVGhpcyBjb25maWd1cmF0aW9uIGlzIG9ubHkgYXZhaWxhYmxlIGZv
+ciBhIDQgY2hhbm5lbHMgc3RyZWFtLgo+PiAgIC0gQ2hhbm5lbCBhbGxvY2F0aW9uIHRhYmxlIGhh
+cyBiZWVuIHJlb3JkZXJlZCBhbmQgSERNSSAyLjAgaXMgbm90Cj4+ICAgICBzdXBwb3J0ZWQuCj4+
+Cj4+IEFybmF1ZCBQb3VsaXF1ZW4gKDIpOgo+PiAgIERSTTogYWRkIGhlbHAgdG8gZ2V0IEVMRCBz
+cGVha2VyIGFsbG9jYXRpb24KPj4gICBBU29DOiBoZG1pLWNvZGVjOiBhZGQgY2hhbm5lbCBtYXBw
+aW5nIGNvbnRyb2wKPj4KPj4gIGluY2x1ZGUvZHJtL2RybV9lZGlkLmggICAgICAgIHwgIDEzICsr
+Cj4+ICBzb3VuZC9zb2MvY29kZWNzL2hkbWktY29kZWMuYyB8IDM0Ngo+PiArKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKy0KPj4gIDIgZmlsZXMgY2hhbmdlZCwgMzU4IGlu
+c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPgo+IFBsZWFzZSBwYXkgZW5vdWdoIGF0dGVudGlv
+biB0byBkZXZlbG9wbWVudCBjeWNsZSBmb3IgTGludXgga2VybmVsLgo+Cj4gV2UncmUgbW9zdGx5
+IG9uIHRoZSBlbmQgb2YgZGV2ZWxvcG1lbnQgZm9yIDQuOSBjeWNsZSwgYW5kIHJldmlldyBwcm9j
+ZXNzCj4gZm9yIG5ldyBmZWF0dXJlIG1pZ2h0IGJlIGRlbGF5IGZvciBuZXh0IGN5Y2xlLCB0aWxs
+IDQuOSByZWxlYXNlLCB0d28KPiB3ZWVrcyBsYXRlci4KCk9vcHMuIEkgd2FzIHN0dXBpZCBqdXN0
+IGFmdGVyIGF3YWtlbmluZy4uLgoKQW55d2F5LCB3ZSdyZSBtb3N0bHkgb24gdGhlIGVuZCBvZiBk
+ZXZlbG9wbWVudCBmb3IgNC4xMCBjeWNsZSwgYW5kIHRoZSAKcmV2aWV3IHByb2Nlc3MgZm9yIG5l
+dyBmZWF0dXJlIG1pZ2h0IGJlIGRlbGF5IHRpbGwgNC4xMC1yYzEgcmVsZWFzZSwgdHdvIAp3ZWVr
+cyBsYXRlci4gRHVyaW5nIHRoZSB3ZWVrcy4gYnVnIGZpeGVzIGFyZSBwcmVmZXJhYmxlIHRvIGJl
+IGFwcGxpZWQuCgoKUmVnYXJkcwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1k
+ZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
