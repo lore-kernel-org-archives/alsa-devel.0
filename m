@@ -1,60 +1,54 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [PATCH 2/3] ASoC: simple-card: use devm_get_clk_from_child()
-Date: Thu, 8 Dec 2016 14:09:42 -0800
-Message-ID: <20161208220942.GO5423@codeaurora.org>
-References: <874m2jvtmw.wl%kuninori.morimoto.gx@renesas.com>
- <871sxnvtkp.wl%kuninori.morimoto.gx@renesas.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: =?utf-8?q?=5BPATCH_09/14=5D_ASoC=3A_max9867=3A_remov?=
+	=?utf-8?b?ZSB1bnVzZWQg4oCYcmV04oCZ?=
+Date: Thu,  8 Dec 2016 23:01:32 +0530
+Message-ID: <1481218297-17568-10-git-send-email-vinod.koul@intel.com>
+References: <1481218297-17568-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <871sxnvtkp.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Russell King - ARM Linux <linux@armlinux.org.uk>, Rob Herring <robh@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Linux-DT <devicetree@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, Linux-Kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org, Linux-ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44C4F26751A
+ for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 18:32:38 +0100 (CET)
+In-Reply-To: <1481218297-17568-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/05, Kuninori Morimoto wrote:
-> diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-> index cf02625..4924575 100644
-> --- a/sound/soc/generic/simple-card-utils.c
-> +++ b/sound/soc/generic/simple-card-utils.c
-> @@ -98,7 +98,8 @@ int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
->  }
->  EXPORT_SYMBOL_GPL(asoc_simple_card_parse_card_name);
->  
-> -int asoc_simple_card_parse_clk(struct device_node *node,
-> +int asoc_simple_card_parse_clk(struct device *dev,
-> +			       struct device_node *node,
->  			       struct device_node *dai_of_node,
->  			       struct asoc_simple_dai *simple_dai)
->  {
-> @@ -111,14 +112,13 @@ int asoc_simple_card_parse_clk(struct device_node *node,
->  	 *  or "system-clock-frequency = <xxx>"
->  	 *  or device's module clock.
->  	 */
-> -	clk = of_clk_get(node, 0);
-> +	clk = devm_get_clk_from_child(dev, node, NULL);
->  	if (!IS_ERR(clk)) {
->  		simple_dai->sysclk = clk_get_rate(clk);
-> -		simple_dai->clk = clk;
->  	} else if (!of_property_read_u32(node, "system-clock-frequency", &val)) {
->  		simple_dai->sysclk = val;
->  	} else {
-> -		clk = of_clk_get(dai_of_node, 0);
-> +		clk = devm_get_clk_from_child(dev, dai_of_node, NULL);
-
-
-I was confused for a minute about how the second of_clk_get()
-call with the dai_link node could work. Is that documented
-anywhere or used by anyone? It seems like it's at least another
-child node of the sound node (which is dev here) so it seems ok.
-
-
->  		if (!IS_ERR(clk))
->  			simple_dai->sysclk = clk_get_rate(clk);
->  	}
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+SW4gbWF4OTg2N19kYWlfc2V0X2ZtdCgpLCAncmV0JyBpcyBpbml0aWFsaXplZCBhcyByZXR1cm4g
+dmFsdWUgb2YKcmVnbWFwX3Jhd193cml0ZSgpIGJ1dCBuZXZlciBjaGVja2VkLCBzbyByZW1vdmUg
+dGhpcyBhbmQgYXNzaWduZW1lbnQuCgpzb3VuZC9zb2MvY29kZWNzL21heDk4NjcuYzogSW4gZnVu
+Y3Rpb24g4oCYbWF4OTg2N19kYWlfc2V0X2ZtdOKAmToKc291bmQvc29jL2NvZGVjcy9tYXg5ODY3
+LmM6MzEyOjY6IHdhcm5pbmc6IHZhcmlhYmxlIOKAmHJldOKAmSBzZXQgYnV0IG5vdCB1c2VkIFst
+V3VudXNlZC1idXQtc2V0LXZhcmlhYmxlXQogIGludCByZXQ7CgpTaWduZWQtb2ZmLWJ5OiBWaW5v
+ZCBLb3VsIDx2aW5vZC5rb3VsQGludGVsLmNvbT4KLS0tCiBzb3VuZC9zb2MvY29kZWNzL21heDk4
+NjcuYyB8IDUgKystLS0KIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDMgZGVsZXRp
+b25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9tYXg5ODY3LmMgYi9zb3VuZC9z
+b2MvY29kZWNzL21heDk4NjcuYwppbmRleCA0MmUyZTQwN2UyODcuLjZjZGYxNWFiNDZkZSAxMDA2
+NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9tYXg5ODY3LmMKKysrIGIvc291bmQvc29jL2NvZGVj
+cy9tYXg5ODY3LmMKQEAgLTMwOSw3ICszMDksNiBAQCBzdGF0aWMgaW50IG1heDk4NjdfZGFpX3Nl
+dF9mbXQoc3RydWN0IHNuZF9zb2NfZGFpICpjb2RlY19kYWksCiAJc3RydWN0IHNuZF9zb2NfY29k
+ZWMgKmNvZGVjID0gY29kZWNfZGFpLT5jb2RlYzsKIAlzdHJ1Y3QgbWF4OTg2N19wcml2ICptYXg5
+ODY3ID0gc25kX3NvY19jb2RlY19nZXRfZHJ2ZGF0YShjb2RlYyk7CiAJdTggaWZhY2UxQSA9IDAs
+IGlmYWNlMUIgPSAwOwotCWludCByZXQ7CiAKIAlzd2l0Y2ggKGZtdCAmIFNORF9TT0NfREFJRk1U
+X01BU1RFUl9NQVNLKSB7CiAJY2FzZSBTTkRfU09DX0RBSUZNVF9DQk1fQ0ZNOgpAQCAtMzQ2LDgg
+KzM0NSw4IEBAIHN0YXRpYyBpbnQgbWF4OTg2N19kYWlfc2V0X2ZtdChzdHJ1Y3Qgc25kX3NvY19k
+YWkgKmNvZGVjX2RhaSwKIAkJcmV0dXJuIC1FSU5WQUw7CiAJfQogCi0JcmV0ID0gcmVnbWFwX3dy
+aXRlKG1heDk4NjctPnJlZ21hcCwgTUFYOTg2N19JRkMxQSwgaWZhY2UxQSk7Ci0JcmV0ID0gcmVn
+bWFwX3dyaXRlKG1heDk4NjctPnJlZ21hcCwgTUFYOTg2N19JRkMxQiwgaWZhY2UxQik7CisJcmVn
+bWFwX3dyaXRlKG1heDk4NjctPnJlZ21hcCwgTUFYOTg2N19JRkMxQSwgaWZhY2UxQSk7CisJcmVn
+bWFwX3dyaXRlKG1heDk4NjctPnJlZ21hcCwgTUFYOTg2N19JRkMxQiwgaWZhY2UxQik7CiAJcmV0
+dXJuIDA7CiB9CiAKLS0gCjEuOS4xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
