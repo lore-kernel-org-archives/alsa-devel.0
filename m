@@ -1,110 +1,81 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] ASoC: Add support for CS43130 codec
-Date: Thu, 8 Dec 2016 16:23:36 +0000
-Message-ID: <20161208162336.l5g5cbcc2bzt65ke@sirena.org.uk>
-References: <09a77398-831b-4be7-9089-f7ac4fcfc16a@EX4.ad.cirrus.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: zte: spdif: correct ZX_SPDIF_CLK_RAT define" to the
+ asoc tree
+Date: Thu, 08 Dec 2016 16:55:08 +0000
+Message-ID: <E1cF1yO-0004we-Kg@finisterre>
+References: <1481186655-8213-2-git-send-email-shawnguo@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jmalvq2pta2m4xz7"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <09a77398-831b-4be7-9089-f7ac4fcfc16a-k7YZYYsDncjfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1481186655-8213-2-git-send-email-shawnguo@kernel.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, Baoyou Xie <xie.baoyou@zte.com.cn>, Mark Brown <broonie@kernel.org>, Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---jmalvq2pta2m4xz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: zte: spdif: correct ZX_SPDIF_CLK_RAT define
 
-On Wed, Dec 07, 2016 at 02:17:27PM -0600, Li Xu wrote:
+has been applied to the asoc tree at
 
-Overall this looks pretty good - there's a fair number of issues below
-but they're all fairly simple stylistic things rather than anything
-majorly wrong so hopefully should be easy to correct.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
->  	select SND_SOC_CS53L30 if I2C
-> +	select SND_SOC_CS43130 if I2C
->  	select SND_SOC_CX20442 if TTY
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Please keep Kconfig and Makefile sorted.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> +static bool cs43130_volatile_register(struct device *dev, unsigned int reg)
-> +{
-> +	switch (reg) {
-> +	case CS43130_DEVID_AB ... CS43130_SUBREV_ID:
-> +	case CS43130_INT_STATUS_1 ... CS43130_INT_STATUS_5:
-> +		return true;
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-You don't need to mark the device ID volatile, just don't provide
-defaults and regmap will cache it the first time it reads it.  If the
-device ID is volatile you've got bigger problems.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> +			/*PDN_PLL= 0,enable*/
+Thanks,
+Mark
 
-Please use the standard kernel coding style, need spaces here.
+>From 44b1c9a6e7a2692e761e35ada2ffe84b20c2a377 Mon Sep 17 00:00:00 2001
+From: Shawn Guo <shawn.guo@linaro.org>
+Date: Thu, 8 Dec 2016 16:44:15 +0800
+Subject: [PATCH] ASoC: zte: spdif: correct ZX_SPDIF_CLK_RAT define
 
-> +			regmap_update_bits(cs43130->regmap, CS43130_PLL_SET_9,
-> +					    CS43130_PLL_REF_PREDIV_MASK,
-> +						pll_ratio_table[i].sclk_prediv
-> +						);
+The macro ZX_SPDIF_CLK_RAT should be 2 instead of 4.  With this
+fix, we can get correct audio output on HDMI through SPDIF interface.
 
-There's no need for the ); to be on a new line here, nor for the extra
-indentation on the line before.  There are lots more coding style
-issues, checkpatch will probably pick up many of them.
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Acked-by: Jun Nie <jun.nie@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/zte/zx-spdif.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +	case SND_SOC_DAPM_PRE_PMU:
-> +		if (cs43130->pll_bypass)
-> +			cs43130_change_clksrc(codec, CS43130_MCLK_SRC_XTAL);
-> +		else
-> +			cs43130_change_clksrc(codec, CS43130_MCLK_SRC_PLL);
-> +
-> +		usleep_range(10000, 10050);
-> +		/*ASP_3ST = 0 in master mode*/
-> +		if (cs43130->dai_mode)
-> +			regmap_update_bits(cs43130->regmap, CS43130_PAD_INT_CFG,
-> +						    0x01, 0x00);
-
-No need to undo this in slave mode?
-
-> +	if (stickies[0] & CS43130_XTAL_ERR_INT)
-> +		pr_debug("%s: Crystal err\n", __func__);
-
-dev_ prints and shouldn't this one be an error?
-
-> +	/* Enable HP detect */
-> +	regmap_update_bits(cs43130->regmap, CS43130_HP_DETECT,
-> +		CS43130_HP_DETECT_CTRL_MASK, CS43130_HP_DETECT_CTRL_MASK);
-
-Why enable this when the only handling is a couple of log messages?
-
-> +#ifdef CONFIG_PM
-> +static int cs43130_runtime_suspend(struct device *dev)
-> +{
-> +	return 0;
-> +}
-
-Remove empty functions, they don't serve any purpose.
-
---jmalvq2pta2m4xz7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhJiQcACgkQJNaLcl1U
-h9AYEgf8D83r8tso3rD+U8nmJ54K8BarXdYcyG12O6lvk7IlOFZResk3FE7VJVoh
-Py61GlRwoMil8J9qtewABCUr3V1PbZ90o0j5Dx4E1xsIvl/KyzRXjjKHCq9Mgb8n
-9CIrK5t3pzS8aZBzB+ObJNdihtD4zu2nRdY9g9ofK8e71oItMh0bS0YHgixo+AUs
-WBthzs4dsSLnoU/170Wb18WoCISzJy29+nlQKtMQEUI0jlxKwzf2w9l5mhgUiJNX
-OBZ6YmE/62KZy/crQrLOV/StEYkR04pF4STxWlWjZ760sNX4GHMAZtF9frexBDt9
-lFolhnvfTqrvrX55hzj9I8mxk6AElg==
-=NRlR
------END PGP SIGNATURE-----
-
---jmalvq2pta2m4xz7--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/zte/zx-spdif.c b/sound/soc/zte/zx-spdif.c
+index 26265ce4caca..9fa6463ce5d7 100644
+--- a/sound/soc/zte/zx-spdif.c
++++ b/sound/soc/zte/zx-spdif.c
+@@ -71,7 +71,7 @@
+ #define ZX_VALID_RIGHT_TRACK		(2 << 0)
+ #define ZX_VALID_TRACK_MASK		(3 << 0)
+ 
+-#define ZX_SPDIF_CLK_RAT		(4 * 32)
++#define ZX_SPDIF_CLK_RAT		(2 * 32)
+ 
+ struct zx_spdif_info {
+ 	struct snd_dmaengine_dai_dma_data	dma_data;
+-- 
+2.10.2
