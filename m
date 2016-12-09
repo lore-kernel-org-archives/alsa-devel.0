@@ -1,118 +1,194 @@
 From: Irina Tirdea <irina.tirdea@intel.com>
-Subject: [PATCH v6 2/3] arch/x86/platform/atom: Move pmc_atom to drivers/platform/x86
-Date: Fri,  9 Dec 2016 20:01:49 +0200
-Message-ID: <1481306510-7471-3-git-send-email-irina.tirdea@intel.com>
+Subject: [PATCH v6 3/3] platform/x86: Enable Atom PMC platform clocks
+Date: Fri,  9 Dec 2016 20:01:50 +0200
+Message-ID: <1481306510-7471-4-git-send-email-irina.tirdea@intel.com>
 References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-acpi-owner@vger.kernel.org>
 In-Reply-To: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-acpi-owner@vger.kernel.org
 To: linux-clk@vger.kernel.org, x86@kernel.org, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc: Michael Turquette <mturquette@baylibre.com>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Irina Tirdea <irina.tirdea@intel.com>, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Michael Turquette <mturquette@baylibre.com>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Irina Tirdea <irina.tirdea@intel.com>, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The pmc_atom driver does not contain any architecture specific
-code. It only enables the SOC Power Management Controller Driver
-for BayTrail and CherryTrail platforms.
+The BayTrail and CherryTrail platforms provide platform clocks
+through their Power Management Controller (PMC).
 
-Move the pmc_atom driver from arch/x86/platform/atom to
-drivers/platform/x86.
+The SoC supports up to 6 clocks (PMC_PLT_CLK[5:0]) with a
+frequency of either 19.2 MHz (PLL) or 25 MHz (XTAL) for BayTrail
+an a frequency of 19.2 MHz (XTAL) for CherryTrail. These clocks
+are available for general system use, where appropriate. For example,
+the usage for platform clocks suggested in the datasheet is the
+following:
+  PLT_CLK[2:0] - Camera
+  PLT_CLK[3] - Audio Codec
+  PLT_CLK[4] -
+  PLT_CLK[5] - COMMs
 
 Signed-off-by: Irina Tirdea <irina.tirdea@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- arch/x86/Kconfig                                                     | 4 ----
- arch/x86/platform/atom/Makefile                                      | 1 -
- drivers/acpi/acpi_lpss.c                                             | 2 +-
- drivers/platform/x86/Kconfig                                         | 4 ++++
- drivers/platform/x86/Makefile                                        | 1 +
- {arch/x86/platform/atom => drivers/platform/x86}/pmc_atom.c          | 3 +--
- {arch/x86/include/asm => include/linux/platform_data/x86}/pmc_atom.h | 0
- 7 files changed, 7 insertions(+), 8 deletions(-)
- rename {arch/x86/platform/atom => drivers/platform/x86}/pmc_atom.c (99%)
- rename {arch/x86/include/asm => include/linux/platform_data/x86}/pmc_atom.h (100%)
+ drivers/platform/x86/Kconfig               |  1 +
+ drivers/platform/x86/pmc_atom.c            | 78 ++++++++++++++++++++++++++++--
+ include/linux/platform_data/x86/pmc_atom.h |  3 ++
+ 3 files changed, 79 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index bada636..5a009f0 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2753,10 +2753,6 @@ config X86_DMA_REMAP
- 	bool
- 	depends on STA2X11
- 
--config PMC_ATOM
--	def_bool y
--        depends on PCI
--
- source "net/Kconfig"
- 
- source "drivers/Kconfig"
-diff --git a/arch/x86/platform/atom/Makefile b/arch/x86/platform/atom/Makefile
-index 40983f5..57be88f 100644
---- a/arch/x86/platform/atom/Makefile
-+++ b/arch/x86/platform/atom/Makefile
-@@ -1,2 +1 @@
--obj-$(CONFIG_PMC_ATOM)		+= pmc_atom.o
- obj-$(CONFIG_PUNIT_ATOM_DEBUG)	+= punit_atom_debug.o
-diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
-index 373657f..3e4c566 100644
---- a/drivers/acpi/acpi_lpss.c
-+++ b/drivers/acpi/acpi_lpss.c
-@@ -18,6 +18,7 @@
- #include <linux/mutex.h>
- #include <linux/platform_device.h>
- #include <linux/platform_data/clk-lpss.h>
-+#include <linux/platform_data/x86/pmc_atom.h>
- #include <linux/pm_domain.h>
- #include <linux/pm_runtime.h>
- #include <linux/delay.h>
-@@ -31,7 +32,6 @@
- #include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
- #include <asm/iosf_mbi.h>
--#include <asm/pmc_atom.h>
- 
- #define LPSS_ADDR(desc) ((unsigned long)&desc)
- 
 diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index b8a21d7..21dce1e 100644
+index 21dce1e..c1b07ed 100644
 --- a/drivers/platform/x86/Kconfig
 +++ b/drivers/platform/x86/Kconfig
-@@ -1028,3 +1028,7 @@ config INTEL_TELEMETRY
- 	  directly via debugfs files. Various tools may use
- 	  this interface for SoC state monitoring.
- endif # X86_PLATFORM_DEVICES
-+
-+config PMC_ATOM
-+	def_bool y
-+        depends on PCI
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index 2efa86d..8568d74 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -71,3 +71,4 @@ obj-$(CONFIG_INTEL_TELEMETRY)	+= intel_telemetry_core.o \
- 				   intel_telemetry_pltdrv.o \
- 				   intel_telemetry_debugfs.o
- obj-$(CONFIG_INTEL_PMC_CORE)    += intel_pmc_core.o
-+obj-$(CONFIG_PMC_ATOM)		+= pmc_atom.o
-diff --git a/arch/x86/platform/atom/pmc_atom.c b/drivers/platform/x86/pmc_atom.c
-similarity index 99%
-rename from arch/x86/platform/atom/pmc_atom.c
-rename to drivers/platform/x86/pmc_atom.c
-index 964ff4f..b53fbc1 100644
---- a/arch/x86/platform/atom/pmc_atom.c
+@@ -1032,3 +1032,4 @@ endif # X86_PLATFORM_DEVICES
+ config PMC_ATOM
+ 	def_bool y
+         depends on PCI
++	select COMMON_CLK
+diff --git a/drivers/platform/x86/pmc_atom.c b/drivers/platform/x86/pmc_atom.c
+index b53fbc1..324c44f 100644
+--- a/drivers/platform/x86/pmc_atom.c
 +++ b/drivers/platform/x86/pmc_atom.c
-@@ -21,8 +21,7 @@
- #include <linux/debugfs.h>
+@@ -22,6 +22,8 @@
  #include <linux/seq_file.h>
  #include <linux/io.h>
--
--#include <asm/pmc_atom.h>
-+#include <linux/platform_data/x86/pmc_atom.h>
+ #include <linux/platform_data/x86/pmc_atom.h>
++#include <linux/platform_device.h>
++#include <linux/platform_data/x86/clk-byt-plt.h>
  
  struct pmc_bit_map {
  	const char *name;
-diff --git a/arch/x86/include/asm/pmc_atom.h b/include/linux/platform_data/x86/pmc_atom.h
-similarity index 100%
-rename from arch/x86/include/asm/pmc_atom.h
-rename to include/linux/platform_data/x86/pmc_atom.h
+@@ -36,6 +38,11 @@ struct pmc_reg_map {
+ 	const struct pmc_bit_map *pss;
+ };
+ 
++struct pmc_data {
++	const struct pmc_reg_map *map;
++	const struct pmc_clk *clks;
++};
++
+ struct pmc_dev {
+ 	u32 base_addr;
+ 	void __iomem *regmap;
+@@ -49,6 +56,29 @@ struct pmc_dev {
+ static struct pmc_dev pmc_device;
+ static u32 acpi_base_addr;
+ 
++static const struct pmc_clk byt_clks[] = {
++	{
++		.name = "xtal",
++		.freq = 25000000,
++		.parent_name = NULL,
++	},
++	{
++		.name = "pll",
++		.freq = 19200000,
++		.parent_name = "xtal",
++	},
++	{},
++};
++
++static const struct pmc_clk cht_clks[] = {
++	{
++		.name = "xtal",
++		.freq = 19200000,
++		.parent_name = NULL,
++	},
++	{},
++};
++
+ static const struct pmc_bit_map d3_sts_0_map[] = {
+ 	{"LPSS1_F0_DMA",	BIT_LPSS1_F0_DMA},
+ 	{"LPSS1_F1_PWM1",	BIT_LPSS1_F1_PWM1},
+@@ -168,6 +198,16 @@ struct pmc_dev {
+ 	.pss		= cht_pss_map,
+ };
+ 
++static const struct pmc_data byt_data = {
++	.map = &byt_reg_map,
++	.clks = byt_clks,
++};
++
++static const struct pmc_data cht_data = {
++	.map = &cht_reg_map,
++	.clks = cht_clks,
++};
++
+ static inline u32 pmc_reg_read(struct pmc_dev *pmc, int reg_offset)
+ {
+ 	return readl(pmc->regmap + reg_offset);
+@@ -381,10 +421,36 @@ static int pmc_dbgfs_register(struct pmc_dev *pmc)
+ }
+ #endif /* CONFIG_DEBUG_FS */
+ 
++static int pmc_setup_clks(struct pci_dev *pdev, void __iomem *pmc_regmap,
++			  const struct pmc_data *pmc_data)
++{
++	struct platform_device *clkdev;
++	struct pmc_clk_data *clk_data;
++
++	clk_data = kzalloc(sizeof(*clk_data), GFP_KERNEL);
++	if (!clk_data)
++		return -ENOMEM;
++
++	clk_data->base = pmc_regmap + PMC_CLK_CTL_0;
++	clk_data->clks = pmc_data->clks;
++
++	clkdev = platform_device_register_data(&pdev->dev, "clk-byt-plt", -1,
++					       clk_data, sizeof(*clk_data));
++	if (IS_ERR(clkdev)) {
++		kfree(clk_data);
++		return PTR_ERR(clkdev);
++	}
++
++	kfree(clk_data);
++
++	return 0;
++}
++
+ static int pmc_setup_dev(struct pci_dev *pdev, const struct pci_device_id *ent)
+ {
+ 	struct pmc_dev *pmc = &pmc_device;
+-	const struct pmc_reg_map *map = (struct pmc_reg_map *)ent->driver_data;
++	const struct pmc_data *data = (struct pmc_data *)ent->driver_data;
++	const struct pmc_reg_map *map = data->map;
+ 	int ret;
+ 
+ 	/* Obtain ACPI base address */
+@@ -413,6 +479,12 @@ static int pmc_setup_dev(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (ret)
+ 		dev_warn(&pdev->dev, "debugfs register failed\n");
+ 
++	/* Register platform clocks - PMC_PLT_CLK [5:0] */
++	ret = pmc_setup_clks(pdev, pmc->regmap, data);
++	if (ret)
++		dev_warn(&pdev->dev, "platform clocks register failed: %d\n",
++			 ret);
++
+ 	pmc->init = true;
+ 	return ret;
+ }
+@@ -423,8 +495,8 @@ static int pmc_setup_dev(struct pci_dev *pdev, const struct pci_device_id *ent)
+  * used by pci_match_id() call below.
+  */
+ static const struct pci_device_id pmc_pci_ids[] = {
+-	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_VLV_PMC), (kernel_ulong_t)&byt_reg_map },
+-	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_CHT_PMC), (kernel_ulong_t)&cht_reg_map },
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_VLV_PMC), (kernel_ulong_t)&byt_data },
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_CHT_PMC), (kernel_ulong_t)&cht_data },
+ 	{ 0, },
+ };
+ 
+diff --git a/include/linux/platform_data/x86/pmc_atom.h b/include/linux/platform_data/x86/pmc_atom.h
+index aa8744c..2d310cf 100644
+--- a/include/linux/platform_data/x86/pmc_atom.h
++++ b/include/linux/platform_data/x86/pmc_atom.h
+@@ -50,6 +50,9 @@
+ 				BIT_ORED_DEDICATED_IRQ_GPSC | \
+ 				BIT_SHARED_IRQ_GPSS)
+ 
++/* Platform clock control registers */
++#define PMC_CLK_CTL_0		0x60
++
+ /* The timers acumulate time spent in sleep state */
+ #define	PMC_S0IR_TMR		0x80
+ #define	PMC_S0I1_TMR		0x84
 -- 
 1.9.1
+
