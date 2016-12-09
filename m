@@ -1,65 +1,118 @@
 From: Irina Tirdea <irina.tirdea@intel.com>
-Subject: [PATCH v6 0/3] Add platform clock for BayTrail platforms
-Date: Fri,  9 Dec 2016 20:01:47 +0200
-Message-ID: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
+Subject: [PATCH v6 2/3] arch/x86/platform/atom: Move pmc_atom to drivers/platform/x86
+Date: Fri,  9 Dec 2016 20:01:49 +0200
+Message-ID: <1481306510-7471-3-git-send-email-irina.tirdea@intel.com>
+References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-clk@vger.kernel.org, x86@kernel.org, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
 Cc: Michael Turquette <mturquette@baylibre.com>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Irina Tirdea <irina.tirdea@intel.com>, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-These patches specifically enable the audio MCLK required by Baytrail CR
-devices. It is the remaining part of a bigger set of patches
-(already merged in Mark's tree) that enable sound for Baytrail CR devices
-(especially Asus T100TAF) [1]. They include the clock driver and enabling
-the clock in the pmc_atom code (along with moving of the non-architectural
-pmc_atom driver code into drivers/platform/x86).
+The pmc_atom driver does not contain any architecture specific
+code. It only enables the SOC Power Management Controller Driver
+for BayTrail and CherryTrail platforms.
 
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111704.html
+Move the pmc_atom driver from arch/x86/platform/atom to
+drivers/platform/x86.
 
-Changes from v5:
- - fix build error reported by kbuild test robot
- - split the clk driver code from x86 platform changes
+Signed-off-by: Irina Tirdea <irina.tirdea@intel.com>
+---
+ arch/x86/Kconfig                                                     | 4 ----
+ arch/x86/platform/atom/Makefile                                      | 1 -
+ drivers/acpi/acpi_lpss.c                                             | 2 +-
+ drivers/platform/x86/Kconfig                                         | 4 ++++
+ drivers/platform/x86/Makefile                                        | 1 +
+ {arch/x86/platform/atom => drivers/platform/x86}/pmc_atom.c          | 3 +--
+ {arch/x86/include/asm => include/linux/platform_data/x86}/pmc_atom.h | 0
+ 7 files changed, 7 insertions(+), 8 deletions(-)
+ rename {arch/x86/platform/atom => drivers/platform/x86}/pmc_atom.c (99%)
+ rename {arch/x86/include/asm => include/linux/platform_data/x86}/pmc_atom.h (100%)
 
-Changes from v4:
- - move the pmc_atom driver from arch/x86/platform/atom to
-drivers/platform/x86
-
-Changes from v3:
- - replace devm_kzalloc with devm_kcalloc
- - add x86 architecture maintainers
-
-Changes from v2:
- - move clk platform data structures to a separate include file
- - store clk_hw pointer for the fixed rate clocks
-
-Changes from v1:
- - register the clk device as child of pmc device
- - pass iomem pointer from pmc driver to clk driver to avoid using
-pmc_atom_read()/write() and use readl/writel API instead
- - use devm_clk_hw_register/clkdev_hw_create instead of
-clk_register/clkdev_create
-
-Irina Tirdea (3):
-  clk: x86: Add Atom PMC platform clocks
-  arch/x86/platform/atom: Move pmc_atom to drivers/platform/x86
-  platform/x86: Enable Atom PMC platform clocks
-
- arch/x86/Kconfig                                   |   4 -
- arch/x86/platform/atom/Makefile                    |   1 -
- drivers/acpi/acpi_lpss.c                           |   2 +-
- drivers/clk/x86/Makefile                           |   3 +
- drivers/clk/x86/clk-byt-plt.c                      | 380 +++++++++++++++++++++
- drivers/platform/x86/Kconfig                       |   5 +
- drivers/platform/x86/Makefile                      |   1 +
- .../atom => drivers/platform/x86}/pmc_atom.c       |  81 ++++-
- include/linux/platform_data/x86/clk-byt-plt.h      |  31 ++
- .../linux/platform_data/x86}/pmc_atom.h            |   3 +
- 10 files changed, 500 insertions(+), 11 deletions(-)
- create mode 100644 drivers/clk/x86/clk-byt-plt.c
- rename {arch/x86/platform/atom => drivers/platform/x86}/pmc_atom.c (88%)
- create mode 100644 include/linux/platform_data/x86/clk-byt-plt.h
- rename {arch/x86/include/asm => include/linux/platform_data/x86}/pmc_atom.h (98%)
-
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index bada636..5a009f0 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2753,10 +2753,6 @@ config X86_DMA_REMAP
+ 	bool
+ 	depends on STA2X11
+ 
+-config PMC_ATOM
+-	def_bool y
+-        depends on PCI
+-
+ source "net/Kconfig"
+ 
+ source "drivers/Kconfig"
+diff --git a/arch/x86/platform/atom/Makefile b/arch/x86/platform/atom/Makefile
+index 40983f5..57be88f 100644
+--- a/arch/x86/platform/atom/Makefile
++++ b/arch/x86/platform/atom/Makefile
+@@ -1,2 +1 @@
+-obj-$(CONFIG_PMC_ATOM)		+= pmc_atom.o
+ obj-$(CONFIG_PUNIT_ATOM_DEBUG)	+= punit_atom_debug.o
+diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
+index 373657f..3e4c566 100644
+--- a/drivers/acpi/acpi_lpss.c
++++ b/drivers/acpi/acpi_lpss.c
+@@ -18,6 +18,7 @@
+ #include <linux/mutex.h>
+ #include <linux/platform_device.h>
+ #include <linux/platform_data/clk-lpss.h>
++#include <linux/platform_data/x86/pmc_atom.h>
+ #include <linux/pm_domain.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/delay.h>
+@@ -31,7 +32,6 @@
+ #include <asm/cpu_device_id.h>
+ #include <asm/intel-family.h>
+ #include <asm/iosf_mbi.h>
+-#include <asm/pmc_atom.h>
+ 
+ #define LPSS_ADDR(desc) ((unsigned long)&desc)
+ 
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index b8a21d7..21dce1e 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -1028,3 +1028,7 @@ config INTEL_TELEMETRY
+ 	  directly via debugfs files. Various tools may use
+ 	  this interface for SoC state monitoring.
+ endif # X86_PLATFORM_DEVICES
++
++config PMC_ATOM
++	def_bool y
++        depends on PCI
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index 2efa86d..8568d74 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -71,3 +71,4 @@ obj-$(CONFIG_INTEL_TELEMETRY)	+= intel_telemetry_core.o \
+ 				   intel_telemetry_pltdrv.o \
+ 				   intel_telemetry_debugfs.o
+ obj-$(CONFIG_INTEL_PMC_CORE)    += intel_pmc_core.o
++obj-$(CONFIG_PMC_ATOM)		+= pmc_atom.o
+diff --git a/arch/x86/platform/atom/pmc_atom.c b/drivers/platform/x86/pmc_atom.c
+similarity index 99%
+rename from arch/x86/platform/atom/pmc_atom.c
+rename to drivers/platform/x86/pmc_atom.c
+index 964ff4f..b53fbc1 100644
+--- a/arch/x86/platform/atom/pmc_atom.c
++++ b/drivers/platform/x86/pmc_atom.c
+@@ -21,8 +21,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/seq_file.h>
+ #include <linux/io.h>
+-
+-#include <asm/pmc_atom.h>
++#include <linux/platform_data/x86/pmc_atom.h>
+ 
+ struct pmc_bit_map {
+ 	const char *name;
+diff --git a/arch/x86/include/asm/pmc_atom.h b/include/linux/platform_data/x86/pmc_atom.h
+similarity index 100%
+rename from arch/x86/include/asm/pmc_atom.h
+rename to include/linux/platform_data/x86/pmc_atom.h
 -- 
 1.9.1
