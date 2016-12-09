@@ -1,53 +1,58 @@
-From: Fabian Frederick <fabf@skynet.be>
-Subject: [PATCH V3 2/2] ASoC: samsung: add GPIOLIB dependency
-Date: Fri,  9 Dec 2016 19:13:26 +0100
-Message-ID: <1481307206-3649-1-git-send-email-fabf@skynet.be>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, fabf@skynet.be
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] alsactl: Fix potential NULL dereferences in
+	daemon mode
+Date: Fri,  9 Dec 2016 17:31:28 +0100
+Message-ID: <20161209163128.22291-1-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 361CD2677F6
+ for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2016 17:31:29 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 74D79ACC9
+ for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2016 16:31:29 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Both SND_SOC_SMARTQ and SND_SOC_SAMSUNG_TM2_WM5110
-use gpio/consumer.h
-This patch adds GPIOLIB || COMPILE_TEST to Kconfig entries
-to fix runtime dependency.
+The code releasing the each card object may access to NULL when a
+bogus count is given.  Add a NULL check just to make sure.
 
-See commit 638f958baeaf
-("extcon: Allow compile test of GPIO consumers if !GPIOLIB")
-
-for similar problem and explanations.
-
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reported-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Fabian Frederick <fabf@skynet.be>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
-V3:
-   -Fix commit message (suggested by Krzysztof Kozlowski)
-   -Add reviewed-by
 
- sound/soc/samsung/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+Something I forgot to merge, casually found in the working directory...
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 7c42315..f1f1d79 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -111,6 +111,7 @@ config SND_SOC_SAMSUNG_RX1950_UDA1380
- config SND_SOC_SMARTQ
- 	tristate "SoC I2S Audio support for SmartQ board"
- 	depends on MACH_SMARTQ || COMPILE_TEST
-+	depends on GPIOLIB || COMPILE_TEST
- 	depends on I2C
- 	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM8750
-@@ -193,6 +194,7 @@ config SND_SOC_ARNDALE_RT5631_ALC5631
- config SND_SOC_SAMSUNG_TM2_WM5110
- 	tristate "SoC I2S Audio support for WM5110 on TM2 board"
- 	depends on SND_SOC_SAMSUNG && MFD_ARIZONA && I2C && SPI_MASTER
-+	depends on GPIOLIB || COMPILE_TEST
- 	select SND_SOC_MAX98504
- 	select SND_SOC_WM5110
- 	select SND_SAMSUNG_I2S
+ alsactl/daemon.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/alsactl/daemon.c b/alsactl/daemon.c
+index 127701efaf0f..4f0a935a3987 100644
+--- a/alsactl/daemon.c
++++ b/alsactl/daemon.c
+@@ -451,8 +451,10 @@ save:
+ out:
+ 	free(pfd);
+ 	remove(pidfile);
+-	for (i = 0; i < count; i++)
+-		card_free(&cards[i]);
+-	free(cards);
++	if (cards) {
++		for (i = 0; i < count; i++)
++			card_free(&cards[i]);
++		free(cards);
++	}
+ 	return 0;
+ }
 -- 
-2.7.4
+2.11.0
