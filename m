@@ -1,263 +1,62 @@
-From: Dennis Wassenberg <dennis.wassenberg@secunet.com>
-Subject: [PATCH 4/4] hda: thinkpad_helper: Add support for hid-lenovo LED
- control
-Date: Fri, 9 Dec 2016 16:06:20 +0100
-Message-ID: <def3f975-9579-c2fe-9411-fb7522dd46a9@secunet.com>
+From: Antonio Ospite <ao2@ao2.it>
+Subject: [alsa-utils][PATCH 0/5] Add man page for alsaucm +
+	other fixes
+Date: Fri,  9 Dec 2016 14:02:27 +0100
+Message-ID: <20161209130232.19457-1-ao2@ao2.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-input-owner@vger.kernel.org>
-Sender: linux-input-owner@vger.kernel.org
-To: linux-input@vger.kernel.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, lukas@wunner.de, Benjamin Tissoires <benjamin.tissoires@redhat.com>, Andrew Duggan <aduggan@synaptics.com>, perex@perex.cz, vinod.koul@intel.com, hui.wang@canonical.com, rafael.j.wysocki@intel.com, jikos@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp207.alice.it (smtp207.alice.it [82.57.200.103])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FCEB267718
+ for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2016 14:02:52 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Antonio Ospite <ao2@ao2.it>
 List-Id: alsa-devel@alsa-project.org
 
-Make the thinkpad_helper able to support not only led control over
-acpi with thinkpad_acpi driver but also led control over hid-lenovo.
-The hid-lenovo driver adapted the led control api of thinkpad_acpi.
-Make the thinkpad_acpi and hid-lenovo able to work combined to
-support connected Lenovo USB keyboards at Lenovo Thinkpad devices.
+Hi,
 
-Signed-off-by: Dennis Wassenberg <dennis.wassenberg@secunet.com>
----
+while adding the alsaucm man page (patch 4/5) I noticed some other
+things worth fixing, so here is the whole patch set.
 
- sound/pci/hda/thinkpad_helper.c | 182 +++++++++++++++++++++++++++++++---------
- 1 file changed, 144 insertions(+), 38 deletions(-)
+In patch 4/5 the reStructuredText content is exactly the same reviewed
+by Liam, so I put his ACK in the commit message.
 
-diff --git a/sound/pci/hda/thinkpad_helper.c b/sound/pci/hda/thinkpad_helper.c
-index f0955fd..0d98624 100644
---- a/sound/pci/hda/thinkpad_helper.c
-+++ b/sound/pci/hda/thinkpad_helper.c
-@@ -1,83 +1,188 @@
- /* Helper functions for Thinkpad LED control;
-  * to be included from codec driver
-+ *
-+ * These helper functions include both LED control over thinkpad_acpi and
-+ * hid-lenovo
-  */
- 
--#if IS_ENABLED(CONFIG_THINKPAD_ACPI)
-+#if IS_ENABLED(CONFIG_THINKPAD_ACPI) || IS_ENABLED(CONFIG_HID_LENOVO)
- #include <linux/acpi.h>
-+#include <linux/hid-lenovo.h>
- #include <linux/thinkpad_acpi.h>
- 
--static int (*led_set_func)(int, bool);
-+static int (*led_set_func_tpacpi)(int, bool);
-+static int (*led_set_func_hid_lenovo)(int, bool);
- static void (*old_vmaster_hook)(void *, int);
- 
- static bool is_thinkpad(struct hda_codec *codec)
- {
-+	return (codec->core.subsystem_id >> 16 == 0x17aa);
-+}
-+
-+static bool is_thinkpad_acpi(struct hda_codec *codec)
-+{
- 	return is_thinkpad(codec) &&
- 	       (acpi_dev_found("LEN0068") || acpi_dev_found("IBM0068"));
- }
- 
--static void update_tpacpi_mute_led(void *private_data, int enabled)
-+static void update_thinkpad_mute_led(void *private_data, int enabled)
- {
- 	if (old_vmaster_hook)
- 		old_vmaster_hook(private_data, enabled);
- 
--	if (led_set_func)
--		led_set_func(TPACPI_LED_MUTE, !enabled);
-+#if IS_ENABLED(CONFIG_THINKPAD_ACPI)
-+	if (led_set_func_tpacpi)
-+		led_set_func_tpacpi(TPACPI_LED_MUTE, !enabled);
-+#endif
-+#if IS_ENABLED(CONFIG_HID_LENOVO)
-+	if (led_set_func_hid_lenovo)
-+		led_set_func_hid_lenovo(HID_LENOVO_LED_MUTE, !enabled);
-+#endif
- }
- 
--static void update_tpacpi_micmute_led(struct hda_codec *codec,
-+
-+
-+static void update_thinkpad_micmute_led(struct hda_codec *codec,
- 				      struct snd_kcontrol *kcontrol,
- 				      struct snd_ctl_elem_value *ucontrol)
- {
--	if (!ucontrol || !led_set_func)
-+	if (!ucontrol)
- 		return;
- 	if (strcmp("Capture Switch", ucontrol->id.name) == 0 && ucontrol->id.index == 0) {
- 		/* TODO: How do I verify if it's a mono or stereo here? */
- 		bool val = ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1];
--		led_set_func(TPACPI_LED_MICMUTE, !val);
-+#if IS_ENABLED(CONFIG_THINKPAD_ACPI)
-+		if (led_set_func_tpacpi)
-+			led_set_func_tpacpi(TPACPI_LED_MICMUTE, !val);
-+#endif
-+#if IS_ENABLED(CONFIG_HID_LENOVO)
-+		if (led_set_func_hid_lenovo)
-+			led_set_func_hid_lenovo(HID_LENOVO_LED_MICMUTE, !val);
-+#endif
- 	}
- }
- 
--static void hda_fixup_thinkpad_acpi(struct hda_codec *codec,
--				    const struct hda_fixup *fix, int action)
-+#if IS_ENABLED(CONFIG_THINKPAD_ACPI)
-+static int hda_fixup_thinkpad_acpi_prepare(struct hda_codec *codec)
- {
- 	struct hda_gen_spec *spec = codec->spec;
--	bool removefunc = false;
-+	int ret = -ENXIO;
- 
--	if (action == HDA_FIXUP_ACT_PROBE) {
--		if (!is_thinkpad(codec))
--			return;
--		if (!led_set_func)
--			led_set_func = symbol_request(tpacpi_led_set);
--		if (!led_set_func) {
--			codec_warn(codec,
--				   "Failed to find thinkpad-acpi symbol tpacpi_led_set\n");
--			return;
--		}
-+	if (!is_thinkpad(codec))
-+		return -ENODEV;
-+	if (!is_thinkpad_acpi(codec))
-+		return -ENODEV;
-+	if (!led_set_func_tpacpi)
-+		led_set_func_tpacpi = symbol_request(tpacpi_led_set);
-+	if (!led_set_func_tpacpi) {
-+		codec_warn(codec,
-+			   "Failed to find thinkpad-acpi symbol tpacpi_led_set\n");
-+		return -ENOENT;
-+	}
- 
--		removefunc = true;
--		if (led_set_func(TPACPI_LED_MUTE, false) >= 0) {
--			old_vmaster_hook = spec->vmaster_mute.hook;
--			spec->vmaster_mute.hook = update_tpacpi_mute_led;
--			removefunc = false;
--		}
--		if (led_set_func(TPACPI_LED_MICMUTE, false) >= 0) {
--			if (spec->num_adc_nids > 1)
--				codec_dbg(codec,
--					  "Skipping micmute LED control due to several ADCs");
--			else {
--				spec->cap_sync_hook = update_tpacpi_micmute_led;
--				removefunc = false;
--			}
-+	if (led_set_func_tpacpi(TPACPI_LED_MUTE, false) >= 0) {
-+		old_vmaster_hook = spec->vmaster_mute.hook;
-+		spec->vmaster_mute.hook = update_thinkpad_mute_led;
-+		ret = 0;
-+	}
-+
-+	if (led_set_func_tpacpi(TPACPI_LED_MICMUTE, false) >= 0) {
-+		if (spec->num_adc_nids > 1)
-+			codec_dbg(codec,
-+				  "Skipping micmute LED control due to several ADCs");
-+		else {
-+			spec->cap_sync_hook = update_thinkpad_micmute_led;
-+			ret = 0;
- 		}
- 	}
- 
--	if (led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
-+	return ret;
-+}
-+
-+static void hda_fixup_thinkpad_acpi_setup(struct hda_codec *codec, int action)
-+{
-+	int ret = 0;
-+
-+	if (action == HDA_FIXUP_ACT_PROBE) {
-+		ret = hda_fixup_thinkpad_acpi_prepare(codec);
-+	}
-+
-+	if (led_set_func_tpacpi &&
-+		(action == HDA_FIXUP_ACT_FREE || ret)) {
-+
- 		symbol_put(tpacpi_led_set);
--		led_set_func = NULL;
-+		led_set_func_tpacpi = NULL;
-+		old_vmaster_hook = NULL;
-+	}
-+}
-+#else
-+static void hda_fixup_thinkpad_acpi_setup(struct hda_codec *codec, int action)
-+{
-+	return 0;
-+}
-+#endif
-+
-+#if IS_ENABLED(CONFIG_HID_LENOVO)
-+static int hda_fixup_thinkpad_hid_prepare(struct hda_codec *codec)
-+{
-+	struct hda_gen_spec *spec = codec->spec;
-+	int ret = 0;
-+
-+	if (!is_thinkpad(codec))
-+		return -ENODEV;
-+	if (!led_set_func_hid_lenovo)
-+		led_set_func_hid_lenovo = symbol_request(hid_lenovo_led_set);
-+	if (!led_set_func_hid_lenovo) {
-+		codec_warn(codec,
-+			   "Failed to find hid-lenovo symbol hid_lenovo_led_set\n");
-+		return -ENOENT;
-+	}
-+
-+	if (update_thinkpad_mute_led != spec->vmaster_mute.hook)
-+		old_vmaster_hook = spec->vmaster_mute.hook;
-+
-+	/* do not remove hook if setting delay does not work currently because
-+	 * it is a usb hid devices which is not connected right now
-+	 * maybe is will be connected later
-+	 */
-+	led_set_func_hid_lenovo(HID_LENOVO_LED_MUTE, false);
-+	spec->vmaster_mute.hook = update_thinkpad_mute_led;
-+
-+	led_set_func_hid_lenovo(HID_LENOVO_LED_MICMUTE, false);
-+	spec->cap_sync_hook = update_thinkpad_micmute_led;
-+
-+	return ret;
-+}
-+
-+static void hda_fixup_thinkpad_hid_setup(struct hda_codec *codec, int action)
-+{
-+	int ret = 0;
-+
-+	if (action == HDA_FIXUP_ACT_PROBE) {
-+		ret = hda_fixup_thinkpad_hid_prepare(codec);
-+	}
-+
-+	if (led_set_func_hid_lenovo &&
-+		(action == HDA_FIXUP_ACT_FREE || ret)) {
-+
-+		symbol_put(hid_lenovo_led_set);
-+		led_set_func_hid_lenovo = NULL;
- 		old_vmaster_hook = NULL;
- 	}
- }
-+#else
-+static void hda_fixup_thinkpad_hid_setup(struct hda_codec *codec, int action)
-+{
-+}
-+#endif
-+
-+/** this fixup is not for acpi case only, it will handle hid-lenovo as well */
-+static void hda_fixup_thinkpad_acpi(struct hda_codec *codec,
-+				    const struct hda_fixup *fix, int action)
-+{
-+	hda_fixup_thinkpad_acpi_setup(codec, action);
-+	hda_fixup_thinkpad_hid_setup(codec, action);
-+}
- 
- #else /* CONFIG_THINKPAD_ACPI */
- 
-@@ -87,3 +192,4 @@ static void hda_fixup_thinkpad_acpi(struct hda_codec *codec,
- }
- 
- #endif /* CONFIG_THINKPAD_ACPI */
-+
+Thanks,
+   Antonio
+
+Antonio Ospite (5):
+  alsaucm: mention the "list1" command in the usage output
+  configure.ac: fix the check for xmlto availability
+  configure.ac: add a check for rst2man, a reStructuredText man page
+    generator
+  alsaucm: add a man page, generated from reStructuredText
+  INSTALL: document how to configure a build for installation in a local
+    dir
+
+ .gitignore          |   1 +
+ INSTALL             |   7 ++
+ alsaucm/Makefile.am |   7 ++
+ alsaucm/alsaucm.rst | 235 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ alsaucm/usecase.c   |   3 +-
+ configure.ac        |  15 +++-
+ 6 files changed, 264 insertions(+), 4 deletions(-)
+ create mode 100644 alsaucm/alsaucm.rst
+
 -- 
-1.9.1
---
+Antonio Ospite
+https://ao2.it
+https://twitter.com/ao2it
+
+A: Because it messes up the order in which people normally read text.
+   See http://en.wikipedia.org/wiki/Posting_style
+Q: Why is top-posting such a bad thing?
