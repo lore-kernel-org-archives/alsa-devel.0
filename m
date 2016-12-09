@@ -1,7 +1,7 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 Subject: Re: [PATCH 3/3] ASoC: simple-card-utils: enable clocks/clock-names/clock-ranges
-Date: Fri, 9 Dec 2016 00:21:58 +0000
-Message-ID: <8760muymuo.wl%kuninori.morimoto.gx@renesas.com>
+Date: Fri, 9 Dec 2016 00:22:21 +0000
+Message-ID: <874m2eymu3.wl%kuninori.morimoto.gx@renesas.com>
 References: <874m2jvtmw.wl%kuninori.morimoto.gx@renesas.com>
         <87zikbuezr.wl%kuninori.morimoto.gx@renesas.com>
         <20161208220901.GN5423@codeaurora.org>
@@ -60,7 +60,7 @@ Hi Stephen
 > based on some sort of other knowledge.
 
 OK, thanks. Let's skip this patch.
-But I believe this idea itself is not wrong (?)
+But I believe this idea/method itself is not wrong (?)
 
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
