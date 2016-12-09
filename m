@@ -1,50 +1,48 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re:
-	=?utf-8?q?=5BPATCH_09/14=5D_ASoC=3A_max9867=3A_remov?=
-	=?utf-8?b?ZSB1bnVzZWQg4oCYcmV04oCZ?=
-Date: Thu, 8 Dec 2016 20:48:49 -0200
-Message-ID: <CAOMZO5C5WHW+a4F5gTV2T5xw3pMjrvkr4JsfS7rxU7d2=-tbKA@mail.gmail.com>
-References: <1481218297-17568-1-git-send-email-vinod.koul@intel.com>
- <1481218297-17568-10-git-send-email-vinod.koul@intel.com>
+From: Con Kolivas <con@kolivas.org>
+Subject: [PATCH SND/USB]: Add QuickCam Communicate Deluxe/S7500 to  volume_control_quirks.
+Date: Fri, 09 Dec 2016 15:15:57 +1100
+Message-ID: <2208242.ISe40cRj8e@hex>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f65.google.com (mail-oi0-f65.google.com
- [209.85.218.65])
- by alsa0.perex.cz (Postfix) with ESMTP id D46142675B4
- for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2016 23:48:50 +0100 (CET)
-Received: by mail-oi0-f65.google.com with SMTP id f201so102206oib.0
- for <alsa-devel@alsa-project.org>; Thu, 08 Dec 2016 14:48:50 -0800 (PST)
-In-Reply-To: <1481218297-17568-10-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 8, 2016 at 3:31 PM, Vinod Koul <vinod.koul@intel.com> wrote:
+The Logitech QuickCam Communicate Deluxe/S7500 microphone fails with the
+following warning.
 
-> -       ret = regmap_write(max9867->regmap, MAX9867_IFC1A, iface1A);
-> -       ret = regmap_write(max9867->regmap, MAX9867_IFC1B, iface1B);
-> +       regmap_write(max9867->regmap, MAX9867_IFC1A, iface1A);
-> +       regmap_write(max9867->regmap, MAX9867_IFC1B, iface1B);
+[    6.778995] usb 2-1.2.2.2: Warning! Unlikely big volume range (=3072),
+cval->res is probably wrong.
+[    6.778996] usb 2-1.2.2.2: [5] FU [Mic Capture Volume] ch = 1, val =
+4608/7680/1
 
-What about doing like this instead?
+Adding it to the list of devices in volume_control_quirks makes it work
+properly, fixing related typo.
 
-ret = regmap_write(max9867->regmap, MAX9867_IFC1A, iface1A);
-if (ret)
-    return ret;
+Signed-off-by: Con Kolivas <kernel@kolivas.org>
 
-ret = regmap_write(max9867->regmap, MAX9867_IFC1B, iface1B);
-if (ret)
-  return ret;
+---
+ sound/usb/mixer.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-return 0;
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 2f8c388..4703cae 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -932,9 +932,10 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 	case USB_ID(0x046d, 0x0826): /* HD Webcam c525 */
+ 	case USB_ID(0x046d, 0x08ca): /* Logitech Quickcam Fusion */
+ 	case USB_ID(0x046d, 0x0991):
++	case USB_ID(0x046d, 0x09a2): /* QuickCam Communicate Deluxe/S7500 */
+ 	/* Most audio usb devices lie about volume resolution.
+ 	 * Most Logitech webcams have res = 384.
+-	 * Proboly there is some logitech magic behind this number --fishor
++	 * Probably there is some logitech magic behind this number --fishor
+ 	 */
+ 		if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
+ 			usb_audio_info(chip,
+-- 
+2.7.4
