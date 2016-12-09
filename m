@@ -1,16 +1,16 @@
 From: Antonio Ospite <ao2@ao2.it>
-Subject: [alsa-utils][PATCH 4/5] alsaucm: add a man page,
-	generated from reStructuredText
-Date: Fri,  9 Dec 2016 14:02:31 +0100
-Message-ID: <20161209130232.19457-5-ao2@ao2.it>
+Subject: [alsa-utils][PATCH 5/5] INSTALL: document how to
+	configure a build for installation in a local dir
+Date: Fri,  9 Dec 2016 14:02:32 +0100
+Message-ID: <20161209130232.19457-6-ao2@ao2.it>
 References: <20161209130232.19457-1-ao2@ao2.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp206.alice.it (smtp206.alice.it [82.57.200.102])
- by alsa0.perex.cz (Postfix) with ESMTP id 9167E2677A5
- for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2016 14:02:53 +0100 (CET)
+Received: from smtp205.alice.it (smtp205.alice.it [82.57.200.101])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8EE0F2677A5
+ for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2016 14:02:58 +0100 (CET)
 In-Reply-To: <20161209130232.19457-1-ao2@ao2.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,287 +26,26 @@ Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Antonio Ospite <ao2@ao2.it>
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- .gitignore          |   1 +
- alsaucm/Makefile.am |   7 ++
- alsaucm/alsaucm.rst | 235 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 243 insertions(+)
- create mode 100644 alsaucm/alsaucm.rst
+ INSTALL | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/.gitignore b/.gitignore
-index f7e3e23..bc08f4f 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -46,6 +46,7 @@ seq/aseqnet/aseqnet
- speaker-test/speaker-test
- alsaloop/alsaloop
- alsaucm/alsaucm
-+alsaucm/alsaucm.1
- topology/alsatplg
+diff --git a/INSTALL b/INSTALL
+index 544d5d2..d95bb97 100644
+--- a/INSTALL
++++ b/INSTALL
+@@ -42,5 +42,12 @@ For compilation you can use these commands:
  
- include/aconfig.h*
-diff --git a/alsaucm/Makefile.am b/alsaucm/Makefile.am
-index 39a27b1..7047215 100644
---- a/alsaucm/Makefile.am
-+++ b/alsaucm/Makefile.am
-@@ -1,9 +1,16 @@
- bin_PROGRAMS = \
-         alsaucm
+ The included gitcompile script does this job for you.
  
-+if USE_RST2MAN
-+man_MANS = alsaucm.1
-+endif
-+
- alsaucm_SOURCES = usecase.c
- 
- AM_CPPFLAGS = \
-          -Wall -I$(top_srcdir)/include
- 
- alsaucm_LDADD = -lasound
-+
-+%.1: %.rst
-+	rst2man $< > $@
-diff --git a/alsaucm/alsaucm.rst b/alsaucm/alsaucm.rst
-new file mode 100644
-index 0000000..7890ba5
---- /dev/null
-+++ b/alsaucm/alsaucm.rst
-@@ -0,0 +1,235 @@
-+=========
-+ alsaucm
-+=========
-+
-+---------------------
-+ALSA Use Case Manager
-+---------------------
-+
-+:Author: Antonio Ospite <ao2@ao2.it>
-+:Date:   2016-09-22
-+:Copyright: GPLv2+
-+:Manual section: 1
-+:Manual group: General Commands Manual
-+
-+SYNOPSIS
-+========
-+
-+*alsaucm* <options> [command]
-+
-+DESCRIPTION
-+===========
-+
-+alsaucm (ALSA Use Case Manager) is a program to use the ALSA `Use Case
-+Interface`_ from the command line.
-+
-+On complex sound cards, setting up audio routes is not trivial and mixer
-+settings can conflict one another preventing the audio card to work at all.
-+
-+The ALSA Use Case Manager is a mechanism for controlling complex audio
-+hardware establishing a relationship between hardware configurations and
-+meaningful use cases that the end-user can relate with.
-+
-+The use case manager can also be used to switch between use cases when
-+necessary, in a consistent way.
-+
-+At a lower level, the use case manager works by configuring the sound card
-+ALSA kcontrols to change the hardware digital and analog audio routing to
-+match the requested device use case.
-+
-+The use case manager kcontrol configurations are stored in easy to modify text
-+files. An audio use case can be defined by a **verb** and **device** parameter.
-+
-+The verb describes the use case action i.e. a phone call, listening to music,
-+recording a conversation etc. The device describes the physical audio capture
-+and playback hardware i.e. headphones, phone handset, bluetooth headset, etc.
-+
-+
-+OPTIONS
-+=======
-+
-+Available options:
-+
-+  **-h**, **--help**
-+    this help
-+
-+  **-c**, **--card** `NAME`
-+    open card NAME
-+
-+  **-i**, **--interactive**
-+    interactive mode
-+
-+  **-b**, **--batch** `FILE`
-+    batch mode (use ``'-'`` for the stdin input)
-+
-+  **-n**, **--no-open**
-+    do not open first card found
-+
-+
-+Available commands:
-+
-+  ``open`` `NAME`
-+    open card NAME.
-+
-+    valid names are sound card names as listed in ``/usr/share/alsa/ucm``.
-+
-+  ``reset``
-+    reset sound card to default state.
-+
-+  ``reload``
-+    reload configuration.
-+
-+  ``listcards``
-+    list available cards.
-+
-+  ``list`` `IDENTIFIER`
-+    list command, for items returning two entries (value+comment).
-+
-+    the value of the `IDENTIFIER` argument can can be:
-+
-+    - ``_verbs`` - get verb list (in pair verb+comment)
-+    - ``_devices[/{verb}]`` - get list of supported devices (in pair device+comment)
-+    - ``_modifiers[/{verb}]`` - get list of supported modifiers (in pair modifier+comment)
-+
-+    The forms without the trailing ``/{verb}`` are valid only after a specific
-+    verb has been set.
-+
-+  ``list1`` `IDENTIFIER`
-+    list command, for lists returning one item per entry.
-+
-+    the value of the `IDENTIFIER` argument can vary depending on the context,
-+    it can be:
-+
-+    - ``TQ[/{verb}]`` - get list of Tone Quality identifiers
-+    - ``_enadevs`` - get list of enabled devices
-+    - ``_enamods`` - get list of enabled modifiers
-+    - ``_supporteddevs/{modifier}|{device}[/{verb}]`` - list of supported devices
-+    - ``_conflictingdevs/{modifier}|{device}[/{verb}]`` - list of conflicting devices
-+
-+  ``get`` `IDENTIFIER`
-+    get string value.
-+
-+    the value of the `IDENTIFIER` argument can can be:
-+
-+    - ``_verb`` - return current verb
-+    - ``[=]{NAME}[/[{modifier}|{/device}][/{verb}]]`` (For valid NAMEs look at the
-+      ALSA `Use Case Interface`_)
-+
-+
-+  ``geti`` `IDENTIFIER`
-+    get integer value.
-+
-+    the value of the `IDENTIFIER` argument can can be:
-+
-+    - ``_devstatus/{device}``
-+    - ``_modtstaus/{device}``
-+
-+  ``set`` `IDENTIFIER` `VALUE`
-+    set string value
-+
-+    The value of the `IDENTIFIER` argument can can be:
-+
-+    - ``_verb`` - set the verb to `VALUE`
-+    - ``_enadev`` - enable the device specified by `VALUE`
-+    - ``_disdev`` - disable the device specified by `VALUE`
-+    - ``_swdev/{old_device}`` - switche device:
-+
-+      - disable `old_device` and then enable the device specified by
-+        `VALUE`
-+      - if no device was enabled just return
-+
-+    - ``_enamod`` - enable the modifier specified by `VALUE`
-+    - ``_dismod`` - disable the modifier specified by `VALUE`
-+    - ``_swmod/{old_modifier}`` - switch modifier:
-+
-+      - disable `old_modifier` and then enable the modifier specified by
-+        `VALUE`
-+      - if no modifier was enabled just return
-+
-+    Note that the identifiers referring to devices and modifiers are valid
-+    only after setting a verb.
-+
-+  ``h``, ``help``
-+    help
-+
-+  ``q``, ``quit``
-+    quit
-+
-+
-+FILES
-+=====
-+
-+The master use case files for each supported sound card are in ``/usr/share/alsa/ucm``.
-+
-+For example, the master use case file for the `Pandaboard` card is in
-+``/usr/share/alsa/ucm/PandaBoard/PandaBoard.conf``, this file lists all the
-+supported use cases, e.g.
-+
-+::
-+
-+  SectionUseCase."HiFi" {
-+                  File "hifi"
-+                  Comment "Play HiFi quality Music."
-+  }
-+  ...
-+
-+
-+Each use case defines a _verb, which is described in the file specified in
-+the ``File`` directive, like above.
-+
-+The ``HiFi`` verb above is described in
-+``/usr/share/alsa/ucm/PandaBoard/hifi``.
-+
-+For more details on the syntax of UCM files, see the alsa-lib source code:
-+http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/ucm/parser.c
-+
-+
-+EXAMPLES OF USE
-+===============
-+
-+Some commands, like for instance ``list _devices``,
-+can only work after setting a ``_verb`` in the **same execution**, for
-+instance this sequence doesn't work:
-+
-+::
-+
-+  # alsaucm -c bytcr-rt5640 set _verb HiFi
-+  # alsaucm -c bytcr-rt5640 list _devices
-+
-+
-+However this command does:
-+
-+::
-+
-+  # alsaucm -n -b - <<EOM
-+  open bytcr-rt5640
-+  set _verb HiFi
-+  list _devices
-+  EOM
-+
-+
-+An example of setting the `Speaker` device for the `HiFi` verb of the
-+`bytcr-rt5640` card:
-+
-+::
-+
-+  # alsaucm -n -b - <<EOM
-+  open bytcr-rt5640
-+  reset
-+  set _verb HiFi
-+  set _enadev Speaker
-+  EOM
-+
-+
-+
-+SEE ALSO
-+========
-+
-+* Use Case Interface: http://www.alsa-project.org/alsa-doc/alsa-lib/group__ucm.html
-+
-+.. _Use Case Interface: http://www.alsa-project.org/alsa-doc/alsa-lib/group__ucm.html
-+
-+BUGS
-+====
-+
-+None known.
++To configure the build to install in a local directory, a command like the
++following can be used:
++
++	./gitcompile --prefix="$PWD/build" \
++	  --with-systemdsystemunitdir="$PWD/build/$(pkg-config systemd --variable=systemdsystemunitdir)" \
++	  --with-udev-rules-dir="$PWD/build/$(pkg-config udev --variable=udevdir)"
++
+ Note: Some automake packages have missing aclocal program. Use newer version
+       in the case.
 -- 
 2.11.0
