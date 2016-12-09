@@ -1,76 +1,40 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v2 1/8] mfd: sun6i-prcm: Add codec analog controls
- sub-device for Allwinner A23
-Date: Fri, 9 Dec 2016 11:22:38 +0000
-Message-ID: <20161209112238.GM3625@dell.home>
-References: <20161125123442.28410-1-wens@csie.org>
- <20161125123442.28410-2-wens@csie.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: topology: avoid uninitialized kcontrol_type
+Date: Fri,  9 Dec 2016 12:51:46 +0100
+Message-ID: <20161209115207.3885433-1-arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20161125123442.28410-2-wens@csie.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Mylene Josserand <mylene.josserand@free-electrons.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, Mengdong Lin <mengdong.lin@linux.intel.com>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 25 Nov 2016, Chen-Yu Tsai wrote:
+When num_kcontrols is zero, widget->dobj.widget.kcontrol_type
+gets set to an uninitialized local variable:
 
-> The PRCM block on the A23 contains a message box like interface to
-> the registers for the analog path controls of the internal codec.
-> 
-> Add a sub-device for it.
-> 
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> ---
->  drivers/mfd/sun6i-prcm.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+sound/soc/soc-topology.c: In function 'soc_tplg_dapm_widget_create':
+sound/soc/soc-topology.c:1566:36: error: 'kcontrol_type' may be used uninitialized in this function [-Werror=maybe-uninitialized]
 
-Applied for v4.11, thanks.
+I could not figure out which of the valid types would be appropriate
+here, so this sets it to '0', which is invalid but at least well-defined
+here. There is probably a better way to address the issue.
 
-> diff --git a/drivers/mfd/sun6i-prcm.c b/drivers/mfd/sun6i-prcm.c
-> index 011fcc555945..2b658bed47db 100644
-> --- a/drivers/mfd/sun6i-prcm.c
-> +++ b/drivers/mfd/sun6i-prcm.c
-> @@ -12,6 +12,9 @@
->  #include <linux/init.h>
->  #include <linux/of.h>
->  
-> +#define SUN8I_CODEC_ANALOG_BASE	0x1c0
-> +#define SUN8I_CODEC_ANALOG_SIZE	0x4
-> +
->  struct prcm_data {
->  	int nsubdevs;
->  	const struct mfd_cell *subdevs;
-> @@ -57,6 +60,10 @@ static const struct resource sun6i_a31_apb0_rstc_res[] = {
->  	},
->  };
->  
-> +static const struct resource sun8i_codec_analog_res[] = {
-> +	DEFINE_RES_MEM(SUN8I_CODEC_ANALOG_BASE, SUN8I_CODEC_ANALOG_SIZE),
-> +};
-> +
->  static const struct mfd_cell sun6i_a31_prcm_subdevs[] = {
->  	{
->  		.name = "sun6i-a31-ar100-clk",
-> @@ -109,6 +116,12 @@ static const struct mfd_cell sun8i_a23_prcm_subdevs[] = {
->  		.num_resources = ARRAY_SIZE(sun6i_a31_apb0_rstc_res),
->  		.resources = sun6i_a31_apb0_rstc_res,
->  	},
-> +	{
-> +		.name		= "sun8i-codec-analog",
-> +		.of_compatible	= "allwinner,sun8i-a23-codec-analog",
-> +		.num_resources	= ARRAY_SIZE(sun8i_codec_analog_res),
-> +		.resources	= sun8i_codec_analog_res,
-> +	},
->  };
->  
->  static const struct prcm_data sun6i_a31_prcm_data = {
+Fixes: eea3dd4f1247 ("ASoC: topology: Only free TLV for volume mixers of a widget")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/soc/soc-topology.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 11feb19e9730..65670b2b408c 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1485,6 +1485,7 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
+ 	tplg->pos +=
+ 		(sizeof(struct snd_soc_tplg_dapm_widget) + w->priv.size);
+ 	if (w->num_kcontrols == 0) {
++		kcontrol_type = 0;
+ 		template.num_kcontrols = 0;
+ 		goto widget;
+ 	}
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.9.0
