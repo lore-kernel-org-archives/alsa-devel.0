@@ -1,38 +1,65 @@
-From: Joseph Wang <joequant@gmail.com>
-Subject: Re: Cherry trail and Nau 88l24 codec
-Date: Fri, 9 Dec 2016 09:14:57 -0500
-Message-ID: <CAPoeEY9TcuhRbdz87ARd6V9ri3hkNvpNesDh+i2oJhRsfGkqEw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f171.google.com (mail-qk0-f171.google.com
- [209.85.220.171])
- by alsa0.perex.cz (Postfix) with ESMTP id A62F8267786
- for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2016 15:14:59 +0100 (CET)
-Received: by mail-qk0-f171.google.com with SMTP id n204so18373469qke.2
- for <alsa-devel@alsa-project.org>; Fri, 09 Dec 2016 06:14:59 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, KCHSU0@nuvoton.com
+From: Irina Tirdea <irina.tirdea@intel.com>
+Subject: [PATCH v6 0/3] Add platform clock for BayTrail platforms
+Date: Fri,  9 Dec 2016 20:01:47 +0200
+Message-ID: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-clk@vger.kernel.org, x86@kernel.org, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc: Michael Turquette <mturquette@baylibre.com>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Irina Tirdea <irina.tirdea@intel.com>, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-YES!!!!
+These patches specifically enable the audio MCLK required by Baytrail CR
+devices. It is the remaining part of a bigger set of patches
+(already merged in Mark's tree) that enable sound for Baytrail CR devices
+(especially Asus T100TAF) [1]. They include the clock driver and enabling
+the clock in the pmc_atom code (along with moving of the non-architectural
+pmc_atom driver code into drivers/platform/x86).
 
-Thank you Intel and Nuvoton.
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111704.html
 
-I'm getting beautiful sound in the external speakers.
+Changes from v5:
+ - fix build error reported by kbuild test robot
+ - split the clk driver code from x86 platform changes
 
-The jack detection is a bit flaky, but I can work on that.
+Changes from v4:
+ - move the pmc_atom driver from arch/x86/platform/atom to
+drivers/platform/x86
 
-The code is available at
+Changes from v3:
+ - replace devm_kzalloc with devm_kcalloc
+ - add x86 architecture maintainers
 
-https://github.com/joequant/nau8824
+Changes from v2:
+ - move clk platform data structures to a separate include file
+ - store clk_hw pointer for the fixed rate clocks
+
+Changes from v1:
+ - register the clk device as child of pmc device
+ - pass iomem pointer from pmc driver to clk driver to avoid using
+pmc_atom_read()/write() and use readl/writel API instead
+ - use devm_clk_hw_register/clkdev_hw_create instead of
+clk_register/clkdev_create
+
+Irina Tirdea (3):
+  clk: x86: Add Atom PMC platform clocks
+  arch/x86/platform/atom: Move pmc_atom to drivers/platform/x86
+  platform/x86: Enable Atom PMC platform clocks
+
+ arch/x86/Kconfig                                   |   4 -
+ arch/x86/platform/atom/Makefile                    |   1 -
+ drivers/acpi/acpi_lpss.c                           |   2 +-
+ drivers/clk/x86/Makefile                           |   3 +
+ drivers/clk/x86/clk-byt-plt.c                      | 380 +++++++++++++++++++++
+ drivers/platform/x86/Kconfig                       |   5 +
+ drivers/platform/x86/Makefile                      |   1 +
+ .../atom => drivers/platform/x86}/pmc_atom.c       |  81 ++++-
+ include/linux/platform_data/x86/clk-byt-plt.h      |  31 ++
+ .../linux/platform_data/x86}/pmc_atom.h            |   3 +
+ 10 files changed, 500 insertions(+), 11 deletions(-)
+ create mode 100644 drivers/clk/x86/clk-byt-plt.c
+ rename {arch/x86/platform/atom => drivers/platform/x86}/pmc_atom.c (88%)
+ create mode 100644 include/linux/platform_data/x86/clk-byt-plt.h
+ rename {arch/x86/include/asm => include/linux/platform_data/x86}/pmc_atom.h (98%)
+
+-- 
+1.9.1
