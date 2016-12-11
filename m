@@ -1,60 +1,54 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ASoC: topology: avoid uninitialized kcontrol_type
-Date: Sun, 11 Dec 2016 00:45:02 +0900
-Message-ID: <20fcf0c4-260f-7cfd-98b0-07045722efc8@sakamocchi.jp>
-References: <20161209115207.3885433-1-arnd@arndb.de>
+Subject: Re: [PATCH 0/2] Generic HDMI codec: Add channel
+	mapping control
+Date: Sun, 11 Dec 2016 10:16:16 +0900
+Message-ID: <773cb1e2-cdd2-fee9-4d2b-fa6580b18b47@sakamocchi.jp>
+References: <1481215067-19362-1-git-send-email-arnaud.pouliquen@st.com>
+ <f4d0e685-51f0-5831-e087-67d2ba276422@sakamocchi.jp>
+ <ca1cfca3-3f2a-3935-536d-5d92cc4d0a67@sakamocchi.jp>
+ <fffbf15e-ac95-a203-357f-01044614372a@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161209115207.3885433-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 094D6265823
+ for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2016 02:16:26 +0100 (CET)
+In-Reply-To: <fffbf15e-ac95-a203-357f-01044614372a@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
+Cc: kernel@stlinux.com, Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Arnd,
-
-On Dec 9 2016 20:51, Arnd Bergmann wrote:
-> When num_kcontrols is zero, widget->dobj.widget.kcontrol_type
-> gets set to an uninitialized local variable:
+On Dec 9 2016 23:06, Arnaud Pouliquen wrote:
+>> Anyway, we're mostly on the end of development for 4.10 cycle, and the
+>> review process for new feature might be delay till 4.10-rc1 release, two
+>> weeks later. During the weeks. bug fixes are preferable to be applied.
 >
-> sound/soc/soc-topology.c: In function 'soc_tplg_dapm_widget_create':
-> sound/soc/soc-topology.c:1566:36: error: 'kcontrol_type' may be used uninitialized in this function [-Werror=maybe-uninitialized]
->
-> I could not figure out which of the valid types would be appropriate
-> here, so this sets it to '0', which is invalid but at least well-defined
-> here. There is probably a better way to address the issue.
->
-> Fixes: eea3dd4f1247 ("ASoC: topology: Only free TLV for volume mixers of a widget")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  sound/soc/soc-topology.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-> index 11feb19e9730..65670b2b408c 100644
-> --- a/sound/soc/soc-topology.c
-> +++ b/sound/soc/soc-topology.c
-> @@ -1485,6 +1485,7 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
->  	tplg->pos +=
->  		(sizeof(struct snd_soc_tplg_dapm_widget) + w->priv.size);
->  	if (w->num_kcontrols == 0) {
-> +		kcontrol_type = 0;
->  		template.num_kcontrols = 0;
->  		goto widget;
->  	}
+> Thank you for warning me. No problem for the delay, i fully understand
+> that focus is on bug fixes.
+> Notice that it is quite difficult for developers to find the best timing
+> to address this kind of patch, as integration process is not always
+> simple to follow... this probably come with experience.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+ALSA is a development project for sound subsystem of Linux operating 
+system, and our work is a part of Linux kernel. Therefore, it's better 
+to follow generic behavior in Linux kernel development.
 
-This bug was already reported but not fixed yet:
-[alsa-devel] [bug report] ASoC: topology: Only free TLV for volume 
-mixers of a widget
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-December/115577.html
+> So if i well understand your remark the best windows to integrate a
+> feature for the version N+1, is to propose patch from N-rc1 tag.
+> (expecting that patch-set is enough mature to be integrated in N+1...)
 
-As you said, this solution looks band-aid, however we have no 
-alternatives to fix the warning...
+It's a better way if you're aware of maintainers' work and your task 
+allows you to do things steadily.
 
 
 Regards
