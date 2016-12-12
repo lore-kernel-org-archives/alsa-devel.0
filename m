@@ -1,41 +1,102 @@
-From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH] ASoC: samsung: Remove tests of member address
-Date: Mon, 12 Dec 2016 14:35:41 +0100
-Message-ID: <2863148.52BcI6omVF@amdc3058>
-References: <1481363471-21364-1-git-send-email-krzk@kernel.org>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH 2/2] ASoC: hdmi-codec: add channel mapping
+	control
+Date: Mon, 12 Dec 2016 14:46:17 +0100
+Message-ID: <6589c8e0-f918-10c3-3d7b-39d50b429850@st.com>
+References: <1481215067-19362-1-git-send-email-arnaud.pouliquen@st.com>
+ <1481215067-19362-3-git-send-email-arnaud.pouliquen@st.com>
+ <1cc79b45-d45c-35da-8e85-b349f0338866@sakamocchi.jp>
+ <d9d775e9-b077-ae53-6b3f-6c4d6f40c0c3@st.com>
+ <be85377b-5aae-5f3a-76da-8f2b851e5cfa@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1481363471-21364-1-git-send-email-krzk@kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Kukjin Kim <kgene@kernel.org>, Javier Martinez Canillas <javier@osg.samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 376C1266B0A
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2016 14:46:25 +0100 (CET)
+In-Reply-To: <be85377b-5aae-5f3a-76da-8f2b851e5cfa@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Cc: "kernel@stlinux.com" <kernel@stlinux.com>, Takashi Iwai <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>, "broonie@kernel.org" <broonie@kernel.org>, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-Hi,
-
-On Saturday, December 10, 2016 11:51:11 AM Krzysztof Kozlowski wrote:
-> The driver was checking for non-NULL address of struct's members:
->  - s3c_audio_pdata->type (union),
->  - s3c_audio_pdata->type.i2s (embedded struct).
-> 
-> This is pointless as these will be always non-NULL.  The 's3c_audio_pdata'
-> is always initialized in static memory so it will be zeroed.
-> Additionally the 'type' member was an union with only one member.
-> 
-> It is safe to reorganize the structures to get rid of useless union and
-> checks for addresses to fix the coccinelle warning:
-> 	>> sound/soc/samsung/i2s.c:1270:2-4: ERROR: test of a variable/field address
-> 
-> Reported-by: kbuild test robot <fengguang.wu@intel.com>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Reviewed-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
+CgpPbiAxMi8xMi8yMDE2IDAxOjAzIFBNLCBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+IE9uIDIw
+MTblubQxMuaciDEy5pelIDE4OjM4LCBBcm5hdWQgUG91bGlxdWVuIHdyb3RlOgo+Pj4+ICsgKi8K
+Pj4+PiArc3RhdGljIHN0cnVjdCBoZG1pX2NvZGVjX2NlYV9zcGtfYWxsb2MgaGRtaV9jb2RlY19j
+aGFubmVsX2FsbG9jW10gPSB7Cj4+Pj4gKy8qCQkJICBjaGFubmVsOiAgIDcgICAgIDYgICAgNSAg
+ICA0ICAgIDMgICAgIDIgICAgMSAgICAwICAqLwo+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MDAsICAu
+c3BlYWtlcnMgPSB7ICAgMCwgICAgMCwgICAwLCAgIDAsICAgMCwgICAgMCwgIEZSLCAgRkwgfSB9
+LAo+Pj4+ICsJCQkJIC8qIDIuMSAqLwo+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MDEsICAuc3BlYWtl
+cnMgPSB7ICAgMCwgICAgMCwgICAwLCAgIDAsICAgMCwgIExGRSwgIEZSLCAgRkwgfSB9LAo+Pj4+
+ICsJCQkJIC8qIERvbGJ5IFN1cnJvdW5kICovCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwMiwgIC5z
+cGVha2VycyA9IHsgICAwLCAgICAwLCAgIDAsICAgMCwgIEZDLCAgICAwLCAgRlIsICBGTCB9IH0s
+Cj4+Pj4gKwkJCQkgLyogc3Vycm91bmQ1MSAqLwo+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MGIsICAu
+c3BlYWtlcnMgPSB7ICAgMCwgICAgMCwgIFJSLCAgUkwsICBGQywgIExGRSwgIEZSLCAgRkwgfSB9
+LAo+Pj4+ICsJCQkJIC8qIHN1cnJvdW5kNDAgKi8KPj4+PiAreyAuY2FfaW5kZXggPSAweDA4LCAg
+LnNwZWFrZXJzID0geyAgIDAsICAgIDAsICBSUiwgIFJMLCAgIDAsICAgIDAsICBGUiwgIEZMIH0g
+fSwKPj4+PiArCQkJCSAvKiBzdXJyb3VuZDQxICovCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwOSwg
+IC5zcGVha2VycyA9IHsgICAwLCAgICAwLCAgUlIsICBSTCwgICAwLCAgTEZFLCAgRlIsICBGTCB9
+IH0sCj4+Pj4gKwkJCQkgLyogc3Vycm91bmQ1MCAqLwo+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MGEs
+ICAuc3BlYWtlcnMgPSB7ICAgMCwgICAgMCwgIFJSLCAgUkwsICBGQywgICAgMCwgIEZSLCAgRkwg
+fSB9LAo+Pj4+ICsJCQkJIC8qIDYuMSAqLwo+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MGYsICAuc3Bl
+YWtlcnMgPSB7ICAgMCwgICBSQywgIFJSLCAgUkwsICBGQywgIExGRSwgIEZSLCAgRkwgfSB9LAo+
+Pj4+ICsJCQkJIC8qIHN1cnJvdW5kNzEgKi8KPj4+PiAreyAuY2FfaW5kZXggPSAweDEzLCAgLnNw
+ZWFrZXJzID0geyBSUkMsICBSTEMsICBSUiwgIFJMLCAgRkMsICBMRkUsICBGUiwgIEZMIH0gfSwK
+Pj4+PiArCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwMywgIC5zcGVha2VycyA9IHsgICAwLCAgICAw
+LCAgIDAsICAgMCwgIEZDLCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0g
+MHgwNCwgIC5zcGVha2VycyA9IHsgICAwLCAgICAwLCAgIDAsICBSQywgICAwLCAgICAwLCAgRlIs
+ICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwNSwgIC5zcGVha2VycyA9IHsgICAwLCAg
+ICAwLCAgIDAsICBSQywgICAwLCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4
+ID0gMHgwNiwgIC5zcGVha2VycyA9IHsgICAwLCAgICAwLCAgIDAsICBSQywgIEZDLCAgICAwLCAg
+RlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwNywgIC5zcGVha2VycyA9IHsgICAw
+LCAgICAwLCAgIDAsICBSQywgIEZDLCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2lu
+ZGV4ID0gMHgwYywgIC5zcGVha2VycyA9IHsgICAwLCAgIFJDLCAgUlIsICBSTCwgICAwLCAgICAw
+LCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwZCwgIC5zcGVha2VycyA9IHsg
+ICAwLCAgIFJDLCAgUlIsICBSTCwgICAwLCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNh
+X2luZGV4ID0gMHgwZSwgIC5zcGVha2VycyA9IHsgICAwLCAgIFJDLCAgUlIsICBSTCwgIEZDLCAg
+ICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxMCwgIC5zcGVha2VycyA9
+IHsgUlJDLCAgUkxDLCAgUlIsICBSTCwgICAwLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sg
+LmNhX2luZGV4ID0gMHgxMSwgIC5zcGVha2VycyA9IHsgUlJDLCAgUkxDLCAgUlIsICBSTCwgICAw
+LCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxMiwgIC5zcGVha2Vy
+cyA9IHsgUlJDLCAgUkxDLCAgUlIsICBSTCwgIEZDLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4g
+K3sgLmNhX2luZGV4ID0gMHgxNCwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgIDAsICAgMCwg
+ICAwLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxNSwgIC5zcGVh
+a2VycyA9IHsgRlJDLCAgRkxDLCAgIDAsICAgMCwgICAwLCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+
+Pj4gK3sgLmNhX2luZGV4ID0gMHgxNiwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgIDAsICAg
+MCwgIEZDLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxNywgIC5z
+cGVha2VycyA9IHsgRlJDLCAgRkxDLCAgIDAsICAgMCwgIEZDLCAgTEZFLCAgRlIsICBGTCB9IH0s
+Cj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxOCwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgIDAs
+ICBSQywgICAwLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxOSwg
+IC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgIDAsICBSQywgICAwLCAgTEZFLCAgRlIsICBGTCB9
+IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxYSwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAg
+IDAsICBSQywgIEZDLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgx
+YiwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgIDAsICBSQywgIEZDLCAgTEZFLCAgRlIsICBG
+TCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxYywgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxD
+LCAgUlIsICBSTCwgICAwLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0g
+MHgxZCwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgUlIsICBSTCwgICAwLCAgTEZFLCAgRlIs
+ICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxZSwgIC5zcGVha2VycyA9IHsgRlJDLCAg
+RkxDLCAgUlIsICBSTCwgIEZDLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4
+ID0gMHgxZiwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgUlIsICBSTCwgIEZDLCAgTEZFLCAg
+RlIsICBGTCB9IH0sCj4+Pj4gK307Cj4+Pgo+Pj4gRGl0dG8uCj4+IFNvcnJ5IG5vdCB1bmRlcnN0
+YW5kIHRoaXMgY29tbWVudCB2cyB0aGUgcHJldmlvdXMgb25lLCBjb3VsZCB5b3UgcGxlYXNlCj4+
+IGNsYXJpZnk/Cj4gCj4gVGhpcyB0YWJsZSBpcyBpbnZhcmlhbnQgaW4gbGlmZXRpbWUgb2YgdGhl
+IHN0b3JhZ2Ugb2JqZWN0LCBhcyB3ZWxsLiAKPiBMZXQncyBwdXQgaW50byAucm9kYXRhIHNlY3Rp
+b24sIHRvby4KPgpUaGlzIHRhYmxlIGlzIHVwZGF0ZWQgaW4gaGRtaV9jb2RlY19jZWFfaW5pdF9j
+aGFubmVsX2FsbG9jIHNvIGNhbiBub3QgYmUKY29uc3RhbnQuIEluIHRoZW9yeSBpIGNvdWxkIGRl
+Y2xhcmUgYWxsIGZpZWxkIGluc3RlYWQgb2YgY29tcHV0aW5nIHNvbWUuCkJ1dCBmb3IgbGlzaWJp
+bGl0eSwgaSB3b3VsZCBwcmVmZXIgdG8ganVzdCBkZWNsYXJlIGNhX2luZGV4ICBhbmQKc3BlYWtl
+cnMgYWxsb2NhdGlvbiBmaWVsZCBpbiB0aGlzIHRhYmxlIChpIHdpbGwgZGVjbGFyZWQgYm90aCBh
+cyBjb25zdCkKClJlZ2FyZHMsCgpBcm5hdWQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
