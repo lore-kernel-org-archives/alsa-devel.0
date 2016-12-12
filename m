@@ -1,67 +1,61 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-lib][PATCH] pcm: fix wrong document references
-	to PCM APIs which perform direct memory access with frame copying
-Date: Sun, 11 Dec 2016 20:31:38 +0900
-Message-ID: <20161211113138.32468-1-o-takashi@sakamocchi.jp>
+From: Jerome Anand <jerome.anand@intel.com>
+Subject: [PATCH 0/7] Add support for Legacy HDMI audio drivers
+Date: Mon, 12 Dec 2016 23:40:36 +0530
+Message-ID: <20161212181043.12512-1-jerome.anand@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 2DA612666D7
- for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2016 12:31:47 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, rakesh.a.ughreja@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-In a design of ALSA PCM interface, for PCM frame transmission to/from
-kernel space, applications can select from two options; direct memory access
-or ioctl(2). Available options are decided depending on device capacity and
-machine architecture. Applications can get available options by the first
-entry of 'struct snd_pcm_hw_params.masks'.
-
-When the mask includes 'SNDRV_PCM_ACCESS_MMAP_xxx', applications can use
-direct memory access. For this use case, userspace library has two types
-of PCM API. One is to expose a pointer over the memory to start
-reading/writing PCM frames. Another is to copy PCM frames between the
-memory and a given buffer.
-
-Current documentation includes wrong references to these APIs to describe
-their advantages/disadvantages. This confuses application developers
-because the references indicate PCM APIs to execute ioctl(2) operation to
-read/write PCM frames.
-
-This commit fixes the bug.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- src/pcm/pcm.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index f2ca02b..0cf740f 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -260,8 +260,9 @@ If you like to use the compatibility functions in mmap mode, there are
- read / write routines equaling to standard read / write transfers. Using
- these functions discards the benefits of direct access to memory region.
- See the #snd_pcm_mmap_readi(),
--#snd_pcm_writei(), #snd_pcm_readn()
--and #snd_pcm_writen() functions.
-+#snd_pcm_mmap_writei(), #snd_pcm_mmap_readn()
-+and #snd_pcm_mmap_writen() functions. These functions use
-+#snd_pcm_areas_copy() internally.
- 
- \section pcm_errors Error codes
- 
--- 
-2.9.3
+TGVnYWN5IChDaGVycnlUcmFpbC8gQmF5dHJhaWwpIEhETUkgYXVkaW8gZHJpdmVycyBhZGRlZAoK
+TGVnYWN5IGhkbWkgYXVkaW8tR2Z4IGludGVyYWN0aW9uLyBpbnRlcmZhY2luZyBpcyB1cGRhdGVk
+IHRvIHVzZQppcnEgY2hpcCBmcmFtZXdvcmsKCkplcm9tZSBBbmFuZCAoNyk6CiAgZHJtL2k5MTU6
+IHNldHVwIGJyaWRnZSBmb3IgSERNSSBMUEUgYXVkaW8gZHJpdmVyCiAgZHJtL2k5MTU6IEFkZCBz
+dXBwb3J0IGZvciBhdWRpbyBkcml2ZXIgbm90aWZpY2F0aW9ucwogIEFMU0E6IGFkZCBzaGVsbCBm
+b3IgSW50ZWwgSERNSSBMUEUgYXVkaW8gZHJpdmVyCiAgQUxTQTogeDg2OiBoZG1pOiBBZGQgYXVk
+aW8gc3VwcG9ydCBmb3IgQllUIGFuZCBDSFQKICBBTFNBOiB4ODY6IGhkbWk6IEltcHJvdmUgcG9z
+aXRpb24gcmVwb3J0aW5nCiAgQUxTQTogeDg2OiBoZG1pOiBGaXh1cCBzb21lIG1vbml0b3IKICBB
+TFNBOiB4ODY6IGhkbWk6IGNvbnRpbnVlIHBsYXliYWNrIGV2ZW4gd2hlbiBkaXNwbGF5ICByZXNv
+bHV0aW9uCiAgICBjaGFuZ2VzCgogRG9jdW1lbnRhdGlvbi9ncHUvaTkxNS5yc3QgICAgICAgICAg
+ICAgfCAgICA5ICsKIGRyaXZlcnMvZ3B1L2RybS9pOTE1L01ha2VmaWxlICAgICAgICAgIHwgICAg
+MyArCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jICAgICAgICB8ICAgIDggKy0KIGRy
+aXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmggICAgICAgIHwgICAxOCArCiBkcml2ZXJzL2dw
+dS9kcm0vaTkxNS9pOTE1X2lycS5jICAgICAgICB8ICAgMjcgKwogZHJpdmVycy9ncHUvZHJtL2k5
+MTUvaTkxNV9yZWcuaCAgICAgICAgfCAgICAzICsKIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVs
+X2F1ZGlvLmMgICAgIHwgICAgOCArCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9oZG1pLmMg
+ICAgICB8ICAgIDEgKwogZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMgfCAg
+NDA5ICsrKysrKysKIGluY2x1ZGUvZHJtL2ludGVsX2xwZV9hdWRpby5oICAgICAgICAgIHwgICA0
+NiArCiBzb3VuZC9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDIgKwogc291
+bmQvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAyICstCiBzb3VuZC94ODYv
+S2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICB8ICAgMTYgKwogc291bmQveDg2L01ha2VmaWxl
+ICAgICAgICAgICAgICAgICAgICAgfCAgIDEwICsKIHNvdW5kL3g4Ni9pbnRlbF9oZG1pX2F1ZGlv
+LmMgICAgICAgICAgIHwgMTkzMiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogc291
+bmQveDg2L2ludGVsX2hkbWlfYXVkaW8uaCAgICAgICAgICAgfCAgMjAxICsrKysKIHNvdW5kL3g4
+Ni9pbnRlbF9oZG1pX2F1ZGlvX2lmLmMgICAgICAgIHwgIDU1MSArKysrKysrKysKIHNvdW5kL3g4
+Ni9pbnRlbF9oZG1pX2xwZV9hdWRpby5jICAgICAgIHwgIDYyNiArKysrKysrKysrKwogc291bmQv
+eDg2L2ludGVsX2hkbWlfbHBlX2F1ZGlvLmggICAgICAgfCAgNjkyICsrKysrKysrKysrKwogMTkg
+ZmlsZXMgY2hhbmdlZCwgNDU2MSBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQogY3JlYXRl
+IG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2xwZV9hdWRpby5jCiBjcmVh
+dGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kcm0vaW50ZWxfbHBlX2F1ZGlvLmgKIGNyZWF0ZSBtb2Rl
+IDEwMDY0NCBzb3VuZC94ODYvS2NvbmZpZwogY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3g4Ni9N
+YWtlZmlsZQogY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3g4Ni9pbnRlbF9oZG1pX2F1ZGlvLmMK
+IGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC94ODYvaW50ZWxfaGRtaV9hdWRpby5oCiBjcmVhdGUg
+bW9kZSAxMDA2NDQgc291bmQveDg2L2ludGVsX2hkbWlfYXVkaW9faWYuYwogY3JlYXRlIG1vZGUg
+MTAwNjQ0IHNvdW5kL3g4Ni9pbnRlbF9oZG1pX2xwZV9hdWRpby5jCiBjcmVhdGUgbW9kZSAxMDA2
+NDQgc291bmQveDg2L2ludGVsX2hkbWlfbHBlX2F1ZGlvLmgKCi0tIAoyLjkuMwoKYmFzZS1jb21t
+aXQ6IGY2YTI0OGUyNTA3Zjk4ZDdlYjFmNGZlYzhjZmNiZjY4NWEzM2QyODkKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlz
+dApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0
+b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
