@@ -1,76 +1,77 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH 2/2] ASoC: hdmi-codec: add channel mapping
-	control
-Date: Mon, 12 Dec 2016 16:12:19 +0100
-Message-ID: <53da5d1b-830b-8613-9cdf-fb7a96777ee5@st.com>
-References: <1481215067-19362-1-git-send-email-arnaud.pouliquen@st.com>
- <1481215067-19362-3-git-send-email-arnaud.pouliquen@st.com>
- <1cc79b45-d45c-35da-8e85-b349f0338866@sakamocchi.jp>
- <d9d775e9-b077-ae53-6b3f-6c4d6f40c0c3@st.com> <s5hmvg1jwvg.wl-tiwai@suse.de>
- <562a83ef-0dab-9d30-5d5e-b4446bed96b8@sakamocchi.jp>
- <s5hbmwhjogw.wl-tiwai@suse.de>
- <856e7dc5-18b1-85c7-59f2-0b93b754014d@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id C285D26699F
- for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2016 16:12:24 +0100 (CET)
-In-Reply-To: <856e7dc5-18b1-85c7-59f2-0b93b754014d@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kernel@stlinux.com" <kernel@stlinux.com>, David Airlie <airlied@linux.ie>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "broonie@kernel.org" <broonie@kernel.org>, Jyri Sarha <jsarha@ti.com>, Daniel Vetter <daniel.vetter@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: topology: avoid uninitialized kcontrol_type" to the asoc tree
+Date: Mon, 12 Dec 2016 15:43:23 +0000
+Message-ID: <E1cGSl9-0002Zs-2c@debutante>
+References: <20161209115207.3885433-1-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20161209115207.3885433-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
+   ASoC: topology: avoid uninitialized kcontrol_type
 
-On 12/12/2016 03:05 PM, Takashi Sakamoto wrote:
-> On Dec 12 2016 21:55, Takashi Iwai wrote:
->> On Mon, 12 Dec 2016 13:12:16 +0100,
->> Takashi Sakamoto wrote:
->>>
->>> On Dec 12 2016 18:54, Takashi Iwai wrote:
->>>>>>> +enum hdmi_codec_cea_spk_placement {
->>>>>>> +	FL  = (1 <<  0),	/* Front Left           */
->>>>>>> +	FC  = (1 <<  1),	/* Front Center         */
->>>>>>> +	FR  = (1 <<  2),	/* Front Right          */
->>>>>>> +	FLC = (1 <<  3),	/* Front Left Center    */
->>>>>>> +	FRC = (1 <<  4),	/* Front Right Center   */
->>>>>>> +	RL  = (1 <<  5),	/* Rear Left            */
->>>>>>> +	RC  = (1 <<  6),	/* Rear Center          */
->>>>>>> +	RR  = (1 <<  7),	/* Rear Right           */
->>>>>>> +	RLC = (1 <<  8),	/* Rear Left Center     */
->>>>>>> +	RRC = (1 <<  9),	/* Rear Right Center    */
->>>>>>> +	LFE = (1 << 10),	/* Low Frequency Effect */
->>>>>>> +};
->>>>>>
->>>>>> BIT() macro in "linux/bitops.h" is available.
->>>>> will be corrected in a v2
->>>>
->>>> One slight caution: BIT() expands to an unsigned long type.
->>>
->>> Mmm, indeed. This is my wrong indication, sorry.
->>> Thanks for your correction.
->>
->> Well, it's not necessarily wrong.  My point is that it requires
->> caution sometimes, as it's not blindly convertible.
->> In short: it depends on the code.
-> 
-> Hm. Here, I prefer to avoiding needless type-coversions, especially 
-> between 'signed' and 'unsigned'. In C semantics of enumerator 
-> specifiers, these values are handled as 'int' type. On the other hand, 
-> the BIT() macro has 'UL' suffix.
-> 
-> In short: carefulness.
-I will have a look if reasonable or not to integrate use of BIT ...
+has been applied to the asoc tree at
 
-Arnaud
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From dd5abb742071a962be4403f171063ed1e9d4202d Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 9 Dec 2016 12:51:46 +0100
+Subject: [PATCH] ASoC: topology: avoid uninitialized kcontrol_type
+
+When num_kcontrols is zero, widget->dobj.widget.kcontrol_type
+gets set to an uninitialized local variable:
+
+sound/soc/soc-topology.c: In function 'soc_tplg_dapm_widget_create':
+sound/soc/soc-topology.c:1566:36: error: 'kcontrol_type' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+
+I could not figure out which of the valid types would be appropriate
+here, so this sets it to '0', which is invalid but at least well-defined
+here. There is probably a better way to address the issue.
+
+Fixes: eea3dd4f1247 ("ASoC: topology: Only free TLV for volume mixers of a widget")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-topology.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 11feb19e9730..65670b2b408c 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1485,6 +1485,7 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
+ 	tplg->pos +=
+ 		(sizeof(struct snd_soc_tplg_dapm_widget) + w->priv.size);
+ 	if (w->num_kcontrols == 0) {
++		kcontrol_type = 0;
+ 		template.num_kcontrols = 0;
+ 		goto widget;
+ 	}
+-- 
+2.11.0
