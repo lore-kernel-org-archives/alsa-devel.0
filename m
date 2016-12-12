@@ -1,89 +1,124 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: cs43130: Add devicetree bindings for CS43130
-Date: Mon, 12 Dec 2016 11:04:25 -0600
-Message-ID: <20161212170425.zbmh4yu5dr65iwir@rob-hp-laptop>
-References: <1481141848-6695-1-git-send-email-li.xu@cirrus.com>
- <81e7d974-68d3-41ef-bd75-ce59b3515d9d@EX4.ad.cirrus.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH 2/2] ASoC: hdmi-codec: add channel mapping
+	control
+Date: Mon, 12 Dec 2016 18:16:15 +0100
+Message-ID: <60f5274f-abbd-4aff-c2e4-e17f4a496ea7@st.com>
+References: <1481215067-19362-1-git-send-email-arnaud.pouliquen@st.com>
+ <1481215067-19362-3-git-send-email-arnaud.pouliquen@st.com>
+ <1cc79b45-d45c-35da-8e85-b349f0338866@sakamocchi.jp>
+ <d9d775e9-b077-ae53-6b3f-6c4d6f40c0c3@st.com>
+ <be85377b-5aae-5f3a-76da-8f2b851e5cfa@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <81e7d974-68d3-41ef-bd75-ce59b3515d9d-k7YZYYsDncjfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2294266499
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2016 18:16:21 +0100 (CET)
+In-Reply-To: <be85377b-5aae-5f3a-76da-8f2b851e5cfa@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Cc: "kernel@stlinux.com" <kernel@stlinux.com>, Takashi Iwai <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>, "broonie@kernel.org" <broonie@kernel.org>, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 07, 2016 at 02:17:28PM -0600, Li Xu wrote:
-> Add devicetree bindings documentation file for Cirrus
-> Logic CS43130 codec.
+>>>>  static const struct snd_kcontrol_new hdmi_controls[] = {
+>>>>  	{
+>>>>  		.access = SNDRV_CTL_ELEM_ACCESS_READ |
+>>>> @@ -79,6 +400,17 @@ static const struct snd_kcontrol_new hdmi_controls[] = {
+>>>>  		.info = hdmi_eld_ctl_info,
+>>>>  		.get = hdmi_eld_ctl_get,
+>>>>  	},
+>>>> +	{
+>>>> +		.access = SNDRV_CTL_ELEM_ACCESS_READ |
+>>>> +			  SNDRV_CTL_ELEM_ACCESS_TLV_READ |
+>>>> +			  SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK |
+>>>> +			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
+>>>> +		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
+>>>> +		.name = "Playback Channel Map",
+>>>> +		.info = hdmi_codec_chmap_ctl_info,
+>>>> +		.get = hdmi_codec_chmap_ctl_get,
+>>>> +		.tlv.c = hdmi_codec_chmap_ctl_tlv,
+>>>> +	},
+>>>>  };
+>>>
+>>> If you can keep the same interface for applications as
+>>> 'snd_pcm_add_chmap_ctls()' have, it's better to integrate the function
+>>> to have different tables/callbacks depending on drivers.
+>>>
+>> I had a look before define it. Unfortunately i cannot use
+>> snd_pcm_add_chmap_ctls. snd_pcm_add_chmap_ctls requests "snd_pcm"
+>> structure as input param. ASoC codec not aware of it.
+>> i could add an helper for ASoC, but hdmi-codec should be used for HDMI
+>> drivers and i'm not sure that there is another need in ASoC.
 > 
-> Signed-off-by: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/cs43130.txt          | 41 ++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/cs43130.txt
+> For example, splitting the function to two parts; one gets the parameter 
+> for pcm instance, another deal with adding control element sets. Symbols 
+> of both functions are going to be exported and your code can reuse the 
+> latter.
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/cs43130.txt b/Documentation/devicetree/bindings/sound/cs43130.txt
-> new file mode 100644
-> index 0000000..9a2a22a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/cs43130.txt
-> @@ -0,0 +1,41 @@
-> +CS43130 DAC
-> +
-> +Required properties:
-> +
-> +  - compatible : "cirrus,cs43130"
-> +
-> +  - reg : the I2C address of the device for I2C
-> +
-> +  - VA-supply, VP-supply, VL-supply, VCP-supply, VD-supply:
-> +	power supplies for the device, as covered in
-> +	Documentation/devicetree/bindings/regulator/regulator.txt.
-> +
-> +
-> +Optional properties:
-> +
-> +  - reset-gpios : gpio used to reset the Device
-
-Please state the active state and set that in the flag cell.
-
-> +
-> +  - cirrus,xtal-ibias:
-> +   When external MCLK is generated by external crystal
-> +   oscillator, CS43130 can be used to provide bias current
-> +   for external crystal.  Amount of bias current sent is
-> +   set as:
-> +   1 = 7.5uA
-> +   2 = 12.5uA
-> +   3 = 15uA
-> +
-> +Example:
-> +
-> +cs43130: cs43130@30 {
-
-audio-codec@30
-
-> +	compatible = "cirrus,cs43130";
-> +	reg = <0x30>;
-> +	reset-gpios = <&axi_gpio 54 0>;
-> +   VA-supply = <&dummy_vreg>;
-
-Some whitespace problems here.
-
-> +   VP-supply = <&dummy_vreg>;
-> +   VL-supply = <&dummy_vreg>;
-> +   VCP-supply = <&dummy_vreg>;
-> +   VD-supply = <&dummy_vreg>;
-> +   cirrus,xtal-ibias = <2>;
-> +   interrupt-parent = <&gpio0>;
-> +   interrupts = <55 8>;
-> +};
-> -- 
-> 1.9.1
+> My motivation for this idea is to use the same code for control element 
+> sets with the same name of 'Playback Channel Map'. In this case, usage 
+> of the same code brings us an merit. We can produce the consist way for 
+> applications to handle the control element sets, even if long term 
+> development brings much code changes. It has an advantage to reduce 
+> maintaining effort.
 > 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> This is merely my initial idea. If it's impossible, your idea is preferable.
+> 
+
+I checked you proposal. I see 2 blocking points:
+- ASoC core set the control private_data field to snd_soc_component so
+it is not possible to reuse pcm_chmap_ctl_get/set/tlv that request
+snd_pcm_chmap type for the private_data
+
+- The control is a PCM control, so for multi instances it could have to
+migrate to the pcm_controls field if following patch is accepted:
+[PATCH v5 0/2] ALSA controls management using index/device/sub-devices
+fields (http://www.spinics.net/lists/alsa-devel/msg57639.html)
+in this case it must be created by the ASoC core and not the driver itself
+
+Alternative could be to treat the control in soc-core:
+In soc_link_dai_pcm_controls that is created in patch-set mentioned above.
+
+I have to improve and test it(dirty code for concept...) but this would
+be something like that :
+
+static int soc_link_dai_pcm_controls(struct snd_soc_dai **dais, int
+num_dais,
+				     struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_kcontrol_new kctl;
+	int i, j, ret;
+
+	for (i = 0; i < num_dais; ++i) {
+		for (j = 0; j < dais[i]->driver->num_pcm_controls; j++) {
+			kctl = dais[i]->driver->pcm_controls[j];
+
++			/* TODO test also capture */
++			if(!strcmp(kctl->name, "Playback Channel Map") {
++				ret = snd_pcm_add_chmap_ctls(rtd->pcm,
++				  SNDRV_PCM_STREAM_PLAYBACK,
++				  /* Not very clean: chmap pointer is stored in private_value */
++				  (const struct snd_pcm_chmap_elem *) kctl.private_value,
++			   	  dai->driver->playback.max_channels,
++				  0, NULL);
++				continue;
++			}
+			if (kctl.iface != SNDRV_CTL_ELEM_IFACE_PCM ||
+			    rtd->dai_link->no_pcm) {
+				dev_err(dais[i]->dev,
+					"ASoC: Failed to bind %s control: %s\n",
+					dais[i]->name, kctl.name);
+				return -EINVAL;
+			}
+Regards
+Arnaud
