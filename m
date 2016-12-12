@@ -1,77 +1,105 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: avoid uninitialized kcontrol_type" to the asoc tree
-Date: Mon, 12 Dec 2016 15:43:23 +0000
-Message-ID: <E1cGSl9-0002Zs-2c@debutante>
-References: <20161209115207.3885433-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161209115207.3885433-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+From: Nobutaka Okabe <nob77413@gmail.com>
+Subject: [PATCH] ALSA: usb-audio: Add native DSD support for
+	TEAC 501/503 DAC
+Date: Tue, 13 Dec 2016 01:24:08 +0900
+Message-ID: <1481559848-27750-1-git-send-email-nob77413@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C552266B71
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2016 17:24:22 +0100 (CET)
+Received: by mail-pg0-f65.google.com with SMTP id e9so1411527pgc.1
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2016 08:24:22 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Nobutaka Okabe <nob77413@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+This patch adds native DSD support for the following devices.
 
-   ASoC: topology: avoid uninitialized kcontrol_type
+- TEAC NT-503
+- TEAC UD-503
+- TEAC UD-501
 
-has been applied to the asoc tree at
+(1)Add quirks for native DSD support for TEAC devices.
+(2)A specific vendor command is needed to switch between PCM/DOP and DSD mode, same as Denon/Marantz devices.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From dd5abb742071a962be4403f171063ed1e9d4202d Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 9 Dec 2016 12:51:46 +0100
-Subject: [PATCH] ASoC: topology: avoid uninitialized kcontrol_type
-
-When num_kcontrols is zero, widget->dobj.widget.kcontrol_type
-gets set to an uninitialized local variable:
-
-sound/soc/soc-topology.c: In function 'soc_tplg_dapm_widget_create':
-sound/soc/soc-topology.c:1566:36: error: 'kcontrol_type' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-
-I could not figure out which of the valid types would be appropriate
-here, so this sets it to '0', which is invalid but at least well-defined
-here. There is probably a better way to address the issue.
-
-Fixes: eea3dd4f1247 ("ASoC: topology: Only free TLV for volume mixers of a widget")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Nobutaka Okabe <nob77413@gmail.com>
 ---
- sound/soc/soc-topology.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/usb/quirks.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 11feb19e9730..65670b2b408c 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1485,6 +1485,7 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
- 	tplg->pos +=
- 		(sizeof(struct snd_soc_tplg_dapm_widget) + w->priv.size);
- 	if (w->num_kcontrols == 0) {
-+		kcontrol_type = 0;
- 		template.num_kcontrols = 0;
- 		goto widget;
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 2782155..b3fd238 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1165,6 +1165,18 @@ static bool is_marantz_denon_dac(unsigned int id)
+ 	return false;
+ }
+ 
++/* TEAC UD-501/UD-503/NT-503 USB DACs need a vendor cmd to switch
++ * between PCM/DOP and native DSD mode
++ */
++static bool is_teac_50X_dac(unsigned int id)
++{
++	switch (id) {
++	case USB_ID(0x0644, 0x8043): /* TEAC UD-501/UD-503/NT-503 */
++		return true;
++	}
++	return false;
++}
++
+ int snd_usb_select_mode_quirk(struct snd_usb_substream *subs,
+ 			      struct audioformat *fmt)
+ {
+@@ -1192,6 +1204,26 @@ int snd_usb_select_mode_quirk(struct snd_usb_substream *subs,
+ 			break;
+ 		}
+ 		mdelay(20);
++	} else if (is_teac_50X_dac(subs->stream->chip->usb_id)) {
++		/* Vendor mode switch cmd is required. */
++		switch (fmt->altsetting) {
++		case 3: /* DSD mode (DSD_U32) requested */
++			err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 0,
++					      USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++					      1, 1, NULL, 0);
++			if (err < 0)
++				return err;
++			break;
++
++		case 2: /* PCM or DOP mode (S32) requested */
++		case 1: /* PCM mode (S16) requested */
++			err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 0,
++					      USB_DIR_OUT|USB_TYPE_VENDOR|USB_RECIP_INTERFACE,
++					      0, 1, NULL, 0);
++			if (err < 0)
++				return err;
++			break;
++		}
  	}
+ 	return 0;
+ }
+@@ -1337,5 +1369,11 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+ 	}
+ 
++	/* TEAC devices with USB DAC functionality */
++	if (is_teac_50X_dac(chip->usb_id)) {
++		if (fp->altsetting == 3)
++			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
++	}
++
+ 	return 0;
+ }
 -- 
-2.11.0
+2.7.4
