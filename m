@@ -1,22 +1,23 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Subject: Re: [PATCH 2/2] ASoC: hdmi-codec: add channel mapping
 	control
-Date: Mon, 12 Dec 2016 23:05:41 +0900
-Message-ID: <856e7dc5-18b1-85c7-59f2-0b93b754014d@sakamocchi.jp>
+Date: Mon, 12 Dec 2016 16:12:19 +0100
+Message-ID: <53da5d1b-830b-8613-9cdf-fb7a96777ee5@st.com>
 References: <1481215067-19362-1-git-send-email-arnaud.pouliquen@st.com>
  <1481215067-19362-3-git-send-email-arnaud.pouliquen@st.com>
  <1cc79b45-d45c-35da-8e85-b349f0338866@sakamocchi.jp>
  <d9d775e9-b077-ae53-6b3f-6c4d6f40c0c3@st.com> <s5hmvg1jwvg.wl-tiwai@suse.de>
  <562a83ef-0dab-9d30-5d5e-b4446bed96b8@sakamocchi.jp>
  <s5hbmwhjogw.wl-tiwai@suse.de>
+ <856e7dc5-18b1-85c7-59f2-0b93b754014d@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id A56A2266B04
- for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2016 15:05:47 +0100 (CET)
-In-Reply-To: <s5hbmwhjogw.wl-tiwai@suse.de>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id C285D26699F
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2016 16:12:24 +0100 (CET)
+In-Reply-To: <856e7dc5-18b1-85c7-59f2-0b93b754014d@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,49 +27,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kernel@stlinux.com" <kernel@stlinux.com>, David Airlie <airlied@linux.ie>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "broonie@kernel.org" <broonie@kernel.org>, Jyri Sarha <jsarha@ti.com>, Daniel Vetter <daniel.vetter@intel.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kernel@stlinux.com" <kernel@stlinux.com>, David Airlie <airlied@linux.ie>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "broonie@kernel.org" <broonie@kernel.org>, Jyri Sarha <jsarha@ti.com>, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 12 2016 21:55, Takashi Iwai wrote:
-> On Mon, 12 Dec 2016 13:12:16 +0100,
-> Takashi Sakamoto wrote:
->>
->> On Dec 12 2016 18:54, Takashi Iwai wrote:
->>>>>> +enum hdmi_codec_cea_spk_placement {
->>>>>> +	FL  = (1 <<  0),	/* Front Left           */
->>>>>> +	FC  = (1 <<  1),	/* Front Center         */
->>>>>> +	FR  = (1 <<  2),	/* Front Right          */
->>>>>> +	FLC = (1 <<  3),	/* Front Left Center    */
->>>>>> +	FRC = (1 <<  4),	/* Front Right Center   */
->>>>>> +	RL  = (1 <<  5),	/* Rear Left            */
->>>>>> +	RC  = (1 <<  6),	/* Rear Center          */
->>>>>> +	RR  = (1 <<  7),	/* Rear Right           */
->>>>>> +	RLC = (1 <<  8),	/* Rear Left Center     */
->>>>>> +	RRC = (1 <<  9),	/* Rear Right Center    */
->>>>>> +	LFE = (1 << 10),	/* Low Frequency Effect */
->>>>>> +};
->>>>>
->>>>> BIT() macro in "linux/bitops.h" is available.
->>>> will be corrected in a v2
+
+
+On 12/12/2016 03:05 PM, Takashi Sakamoto wrote:
+> On Dec 12 2016 21:55, Takashi Iwai wrote:
+>> On Mon, 12 Dec 2016 13:12:16 +0100,
+>> Takashi Sakamoto wrote:
 >>>
->>> One slight caution: BIT() expands to an unsigned long type.
+>>> On Dec 12 2016 18:54, Takashi Iwai wrote:
+>>>>>>> +enum hdmi_codec_cea_spk_placement {
+>>>>>>> +	FL  = (1 <<  0),	/* Front Left           */
+>>>>>>> +	FC  = (1 <<  1),	/* Front Center         */
+>>>>>>> +	FR  = (1 <<  2),	/* Front Right          */
+>>>>>>> +	FLC = (1 <<  3),	/* Front Left Center    */
+>>>>>>> +	FRC = (1 <<  4),	/* Front Right Center   */
+>>>>>>> +	RL  = (1 <<  5),	/* Rear Left            */
+>>>>>>> +	RC  = (1 <<  6),	/* Rear Center          */
+>>>>>>> +	RR  = (1 <<  7),	/* Rear Right           */
+>>>>>>> +	RLC = (1 <<  8),	/* Rear Left Center     */
+>>>>>>> +	RRC = (1 <<  9),	/* Rear Right Center    */
+>>>>>>> +	LFE = (1 << 10),	/* Low Frequency Effect */
+>>>>>>> +};
+>>>>>>
+>>>>>> BIT() macro in "linux/bitops.h" is available.
+>>>>> will be corrected in a v2
+>>>>
+>>>> One slight caution: BIT() expands to an unsigned long type.
+>>>
+>>> Mmm, indeed. This is my wrong indication, sorry.
+>>> Thanks for your correction.
 >>
->> Mmm, indeed. This is my wrong indication, sorry.
->> Thanks for your correction.
->
-> Well, it's not necessarily wrong.  My point is that it requires
-> caution sometimes, as it's not blindly convertible.
-> In short: it depends on the code.
+>> Well, it's not necessarily wrong.  My point is that it requires
+>> caution sometimes, as it's not blindly convertible.
+>> In short: it depends on the code.
+> 
+> Hm. Here, I prefer to avoiding needless type-coversions, especially 
+> between 'signed' and 'unsigned'. In C semantics of enumerator 
+> specifiers, these values are handled as 'int' type. On the other hand, 
+> the BIT() macro has 'UL' suffix.
+> 
+> In short: carefulness.
+I will have a look if reasonable or not to integrate use of BIT ...
 
-Hm. Here, I prefer to avoiding needless type-coversions, especially 
-between 'signed' and 'unsigned'. In C semantics of enumerator 
-specifiers, these values are handled as 'int' type. On the other hand, 
-the BIT() macro has 'UL' suffix.
-
-In short: carefulness.
-
-
-Regards
-
-Takashi Sakamoto
+Arnaud
