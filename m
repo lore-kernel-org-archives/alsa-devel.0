@@ -1,22 +1,22 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: [PATCH 2/2] ASoC: hdmi-codec: add channel mapping
 	control
-Date: Mon, 12 Dec 2016 14:46:17 +0100
-Message-ID: <6589c8e0-f918-10c3-3d7b-39d50b429850@st.com>
+Date: Mon, 12 Dec 2016 23:05:41 +0900
+Message-ID: <856e7dc5-18b1-85c7-59f2-0b93b754014d@sakamocchi.jp>
 References: <1481215067-19362-1-git-send-email-arnaud.pouliquen@st.com>
  <1481215067-19362-3-git-send-email-arnaud.pouliquen@st.com>
  <1cc79b45-d45c-35da-8e85-b349f0338866@sakamocchi.jp>
- <d9d775e9-b077-ae53-6b3f-6c4d6f40c0c3@st.com>
- <be85377b-5aae-5f3a-76da-8f2b851e5cfa@sakamocchi.jp>
+ <d9d775e9-b077-ae53-6b3f-6c4d6f40c0c3@st.com> <s5hmvg1jwvg.wl-tiwai@suse.de>
+ <562a83ef-0dab-9d30-5d5e-b4446bed96b8@sakamocchi.jp>
+ <s5hbmwhjogw.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 376C1266B0A
- for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2016 14:46:25 +0100 (CET)
-In-Reply-To: <be85377b-5aae-5f3a-76da-8f2b851e5cfa@sakamocchi.jp>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id A56A2266B04
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2016 15:05:47 +0100 (CET)
+In-Reply-To: <s5hbmwhjogw.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,77 +26,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Cc: "kernel@stlinux.com" <kernel@stlinux.com>, Takashi Iwai <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>, "broonie@kernel.org" <broonie@kernel.org>, Daniel Vetter <daniel.vetter@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kernel@stlinux.com" <kernel@stlinux.com>, David Airlie <airlied@linux.ie>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "broonie@kernel.org" <broonie@kernel.org>, Jyri Sarha <jsarha@ti.com>, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAxMi8xMi8yMDE2IDAxOjAzIFBNLCBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+IE9uIDIw
-MTblubQxMuaciDEy5pelIDE4OjM4LCBBcm5hdWQgUG91bGlxdWVuIHdyb3RlOgo+Pj4+ICsgKi8K
-Pj4+PiArc3RhdGljIHN0cnVjdCBoZG1pX2NvZGVjX2NlYV9zcGtfYWxsb2MgaGRtaV9jb2RlY19j
-aGFubmVsX2FsbG9jW10gPSB7Cj4+Pj4gKy8qCQkJICBjaGFubmVsOiAgIDcgICAgIDYgICAgNSAg
-ICA0ICAgIDMgICAgIDIgICAgMSAgICAwICAqLwo+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MDAsICAu
-c3BlYWtlcnMgPSB7ICAgMCwgICAgMCwgICAwLCAgIDAsICAgMCwgICAgMCwgIEZSLCAgRkwgfSB9
-LAo+Pj4+ICsJCQkJIC8qIDIuMSAqLwo+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MDEsICAuc3BlYWtl
-cnMgPSB7ICAgMCwgICAgMCwgICAwLCAgIDAsICAgMCwgIExGRSwgIEZSLCAgRkwgfSB9LAo+Pj4+
-ICsJCQkJIC8qIERvbGJ5IFN1cnJvdW5kICovCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwMiwgIC5z
-cGVha2VycyA9IHsgICAwLCAgICAwLCAgIDAsICAgMCwgIEZDLCAgICAwLCAgRlIsICBGTCB9IH0s
-Cj4+Pj4gKwkJCQkgLyogc3Vycm91bmQ1MSAqLwo+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MGIsICAu
-c3BlYWtlcnMgPSB7ICAgMCwgICAgMCwgIFJSLCAgUkwsICBGQywgIExGRSwgIEZSLCAgRkwgfSB9
-LAo+Pj4+ICsJCQkJIC8qIHN1cnJvdW5kNDAgKi8KPj4+PiAreyAuY2FfaW5kZXggPSAweDA4LCAg
-LnNwZWFrZXJzID0geyAgIDAsICAgIDAsICBSUiwgIFJMLCAgIDAsICAgIDAsICBGUiwgIEZMIH0g
-fSwKPj4+PiArCQkJCSAvKiBzdXJyb3VuZDQxICovCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwOSwg
-IC5zcGVha2VycyA9IHsgICAwLCAgICAwLCAgUlIsICBSTCwgICAwLCAgTEZFLCAgRlIsICBGTCB9
-IH0sCj4+Pj4gKwkJCQkgLyogc3Vycm91bmQ1MCAqLwo+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MGEs
-ICAuc3BlYWtlcnMgPSB7ICAgMCwgICAgMCwgIFJSLCAgUkwsICBGQywgICAgMCwgIEZSLCAgRkwg
-fSB9LAo+Pj4+ICsJCQkJIC8qIDYuMSAqLwo+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MGYsICAuc3Bl
-YWtlcnMgPSB7ICAgMCwgICBSQywgIFJSLCAgUkwsICBGQywgIExGRSwgIEZSLCAgRkwgfSB9LAo+
-Pj4+ICsJCQkJIC8qIHN1cnJvdW5kNzEgKi8KPj4+PiAreyAuY2FfaW5kZXggPSAweDEzLCAgLnNw
-ZWFrZXJzID0geyBSUkMsICBSTEMsICBSUiwgIFJMLCAgRkMsICBMRkUsICBGUiwgIEZMIH0gfSwK
-Pj4+PiArCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwMywgIC5zcGVha2VycyA9IHsgICAwLCAgICAw
-LCAgIDAsICAgMCwgIEZDLCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0g
-MHgwNCwgIC5zcGVha2VycyA9IHsgICAwLCAgICAwLCAgIDAsICBSQywgICAwLCAgICAwLCAgRlIs
-ICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwNSwgIC5zcGVha2VycyA9IHsgICAwLCAg
-ICAwLCAgIDAsICBSQywgICAwLCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4
-ID0gMHgwNiwgIC5zcGVha2VycyA9IHsgICAwLCAgICAwLCAgIDAsICBSQywgIEZDLCAgICAwLCAg
-RlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwNywgIC5zcGVha2VycyA9IHsgICAw
-LCAgICAwLCAgIDAsICBSQywgIEZDLCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2lu
-ZGV4ID0gMHgwYywgIC5zcGVha2VycyA9IHsgICAwLCAgIFJDLCAgUlIsICBSTCwgICAwLCAgICAw
-LCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwZCwgIC5zcGVha2VycyA9IHsg
-ICAwLCAgIFJDLCAgUlIsICBSTCwgICAwLCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNh
-X2luZGV4ID0gMHgwZSwgIC5zcGVha2VycyA9IHsgICAwLCAgIFJDLCAgUlIsICBSTCwgIEZDLCAg
-ICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxMCwgIC5zcGVha2VycyA9
-IHsgUlJDLCAgUkxDLCAgUlIsICBSTCwgICAwLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sg
-LmNhX2luZGV4ID0gMHgxMSwgIC5zcGVha2VycyA9IHsgUlJDLCAgUkxDLCAgUlIsICBSTCwgICAw
-LCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxMiwgIC5zcGVha2Vy
-cyA9IHsgUlJDLCAgUkxDLCAgUlIsICBSTCwgIEZDLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4g
-K3sgLmNhX2luZGV4ID0gMHgxNCwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgIDAsICAgMCwg
-ICAwLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxNSwgIC5zcGVh
-a2VycyA9IHsgRlJDLCAgRkxDLCAgIDAsICAgMCwgICAwLCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+
-Pj4gK3sgLmNhX2luZGV4ID0gMHgxNiwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgIDAsICAg
-MCwgIEZDLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxNywgIC5z
-cGVha2VycyA9IHsgRlJDLCAgRkxDLCAgIDAsICAgMCwgIEZDLCAgTEZFLCAgRlIsICBGTCB9IH0s
-Cj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxOCwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgIDAs
-ICBSQywgICAwLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxOSwg
-IC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgIDAsICBSQywgICAwLCAgTEZFLCAgRlIsICBGTCB9
-IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxYSwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAg
-IDAsICBSQywgIEZDLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgx
-YiwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgIDAsICBSQywgIEZDLCAgTEZFLCAgRlIsICBG
-TCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxYywgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxD
-LCAgUlIsICBSTCwgICAwLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0g
-MHgxZCwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgUlIsICBSTCwgICAwLCAgTEZFLCAgRlIs
-ICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxZSwgIC5zcGVha2VycyA9IHsgRlJDLCAg
-RkxDLCAgUlIsICBSTCwgIEZDLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4gK3sgLmNhX2luZGV4
-ID0gMHgxZiwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgUlIsICBSTCwgIEZDLCAgTEZFLCAg
-RlIsICBGTCB9IH0sCj4+Pj4gK307Cj4+Pgo+Pj4gRGl0dG8uCj4+IFNvcnJ5IG5vdCB1bmRlcnN0
-YW5kIHRoaXMgY29tbWVudCB2cyB0aGUgcHJldmlvdXMgb25lLCBjb3VsZCB5b3UgcGxlYXNlCj4+
-IGNsYXJpZnk/Cj4gCj4gVGhpcyB0YWJsZSBpcyBpbnZhcmlhbnQgaW4gbGlmZXRpbWUgb2YgdGhl
-IHN0b3JhZ2Ugb2JqZWN0LCBhcyB3ZWxsLiAKPiBMZXQncyBwdXQgaW50byAucm9kYXRhIHNlY3Rp
-b24sIHRvby4KPgpUaGlzIHRhYmxlIGlzIHVwZGF0ZWQgaW4gaGRtaV9jb2RlY19jZWFfaW5pdF9j
-aGFubmVsX2FsbG9jIHNvIGNhbiBub3QgYmUKY29uc3RhbnQuIEluIHRoZW9yeSBpIGNvdWxkIGRl
-Y2xhcmUgYWxsIGZpZWxkIGluc3RlYWQgb2YgY29tcHV0aW5nIHNvbWUuCkJ1dCBmb3IgbGlzaWJp
-bGl0eSwgaSB3b3VsZCBwcmVmZXIgdG8ganVzdCBkZWNsYXJlIGNhX2luZGV4ICBhbmQKc3BlYWtl
-cnMgYWxsb2NhdGlvbiBmaWVsZCBpbiB0aGlzIHRhYmxlIChpIHdpbGwgZGVjbGFyZWQgYm90aCBh
-cyBjb25zdCkKClJlZ2FyZHMsCgpBcm5hdWQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+On Dec 12 2016 21:55, Takashi Iwai wrote:
+> On Mon, 12 Dec 2016 13:12:16 +0100,
+> Takashi Sakamoto wrote:
+>>
+>> On Dec 12 2016 18:54, Takashi Iwai wrote:
+>>>>>> +enum hdmi_codec_cea_spk_placement {
+>>>>>> +	FL  = (1 <<  0),	/* Front Left           */
+>>>>>> +	FC  = (1 <<  1),	/* Front Center         */
+>>>>>> +	FR  = (1 <<  2),	/* Front Right          */
+>>>>>> +	FLC = (1 <<  3),	/* Front Left Center    */
+>>>>>> +	FRC = (1 <<  4),	/* Front Right Center   */
+>>>>>> +	RL  = (1 <<  5),	/* Rear Left            */
+>>>>>> +	RC  = (1 <<  6),	/* Rear Center          */
+>>>>>> +	RR  = (1 <<  7),	/* Rear Right           */
+>>>>>> +	RLC = (1 <<  8),	/* Rear Left Center     */
+>>>>>> +	RRC = (1 <<  9),	/* Rear Right Center    */
+>>>>>> +	LFE = (1 << 10),	/* Low Frequency Effect */
+>>>>>> +};
+>>>>>
+>>>>> BIT() macro in "linux/bitops.h" is available.
+>>>> will be corrected in a v2
+>>>
+>>> One slight caution: BIT() expands to an unsigned long type.
+>>
+>> Mmm, indeed. This is my wrong indication, sorry.
+>> Thanks for your correction.
+>
+> Well, it's not necessarily wrong.  My point is that it requires
+> caution sometimes, as it's not blindly convertible.
+> In short: it depends on the code.
+
+Hm. Here, I prefer to avoiding needless type-coversions, especially 
+between 'signed' and 'unsigned'. In C semantics of enumerator 
+specifiers, these values are handled as 'int' type. On the other hand, 
+the BIT() macro has 'UL' suffix.
+
+In short: carefulness.
+
+
+Regards
+
+Takashi Sakamoto
