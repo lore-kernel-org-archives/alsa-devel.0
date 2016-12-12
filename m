@@ -1,151 +1,94 @@
-From: <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Subject: RE: [PATCH 1/2] ASoC: Add support for CS43130 codec
-Date: Mon, 12 Dec 2016 14:21:03 -0600
-Message-ID: <148597dd-ce8d-4684-8f39-149e780d2b3b@EX3.ad.cirrus.com>
-References: <09a77398-831b-4be7-9089-f7ac4fcfc16a@EX4.ad.cirrus.com>
- <20161208162336.l5g5cbcc2bzt65ke@sirena.org.uk>
+From: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH 2/2] ASoC: cs43130: Add devicetree bindings for CS43130
+Date: Mon, 12 Dec 2016 14:41:34 -0600
+Message-ID: <cd2957c1-538c-468d-bc1d-c6e2939183a9@EX4.ad.cirrus.com>
+References: <1481141848-6695-1-git-send-email-li.xu@cirrus.com>
+ <81e7d974-68d3-41ef-bd75-ce59b3515d9d@EX4.ad.cirrus.com>
+ <20161212170425.zbmh4yu5dr65iwir@rob-hp-laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <20161208162336.l5g5cbcc2bzt65ke-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Content-Language: en-US
+In-Reply-To: <20161212170425.zbmh4yu5dr65iwir@rob-hp-laptop>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "tiwai-IBi9RG/b67k@public.gmane.org" <tiwai-IBi9RG/b67k@public.gmane.org>, "Austin, Brian" <Brian.Austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, "Handrigan, Paul" <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Thank you for timely feedback.
+Thank you for your feedback.
 
-I have fixed all except following.
+All issues have been fixed.  See v2 patch
 
----------------------------------------------------------------------------------------------------------------------------------------------------
-> +     case SND_SOC_DAPM_PRE_PMU:
-> +             if (cs43130->pll_bypass)
-> +                     cs43130_change_clksrc(codec, CS43130_MCLK_SRC_XTAL);
-> +             else
-> +                     cs43130_change_clksrc(codec, CS43130_MCLK_SRC_PLL);
-> +
-> +             usleep_range(10000, 10050);
-> +             /*ASP_3ST = 0 in master mode*/
-> +             if (cs43130->dai_mode)
-> +                     regmap_update_bits(cs43130->regmap, CS43130_PAD_INT_CFG,
-> +                                                 0x01, 0x00);
-
-No need to undo this in slave mode?
-
-Master mode specific configuration
-
----------------------------------------------------------------------------------------------------------------------------------------------------
-> +     /* Enable HP detect */
-> +     regmap_update_bits(cs43130->regmap, CS43130_HP_DETECT,
-> +             CS43130_HP_DETECT_CTRL_MASK, CS43130_HP_DETECT_CTRL_MASK);
-
-Why enable this when the only handling is a couple of log messages?
-
-Placeholder for driver modification when the driver is integrated to system such as Android OS.
-
-I suppose I could remove it, but when the driver is integrated into actual system, it may not be clear to system integrators,
-where to add HP DET IRQ hooks
-
----------------------------------------------------------------------------------------------------------------------------------------------------
-> +                     regmap_update_bits(cs43130->regmap, CS43130_PLL_SET_9,
-> +                                         CS43130_PLL_REF_PREDIV_MASK,
-> +                                             pll_ratio_table[i].sclk_prediv
-> +                                             );
-
-There's no need for the ); to be on a new line here, nor for the extra
-indentation on the line before.  There are lots more coding style
-issues, checkpatch will probably pick up many of them.
-
-Fixed.  
-
-Regarding regmap_update_bits(), while I could make this API call in two lines,
-often the two lines exceed 80 character limit, mandated by Linux.
-If exceeding 80 char limit is ok, then I can certainly modify the API call.
-
-checkpatch.pl did not flag additional formatting issues except for 
-
-"Possible switch case/default not preceeded by break or fallthrough comment"
-
-which I believe should be ok
-
-________________________________________
-From: Mark Brown [broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org]
-Sent: Thursday, December 08, 2016 10:23 AM
-To: Xu, Li
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org; devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org; robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org; mark.rutland-5wv7dgnIgG8@public.gmane.org; perex-/Fr2/VpizcU@public.gmane.org; tiwai-IBi9RG/b67k@public.gmane.org; Austin, Brian; Handrigan, Paul
-Subject: Re: [PATCH 1/2] ASoC: Add support for CS43130 codec
-
-On Wed, Dec 07, 2016 at 02:17:27PM -0600, Li Xu wrote:
-
-Overall this looks pretty good - there's a fair number of issues below
-but they're all fairly simple stylistic things rather than anything
-majorly wrong so hopefully should be easy to correct.
-
->       select SND_SOC_CS53L30 if I2C
-> +     select SND_SOC_CS43130 if I2C
->       select SND_SOC_CX20442 if TTY
-
-Please keep Kconfig and Makefile sorted.
-
-> +static bool cs43130_volatile_register(struct device *dev, unsigned int reg)
-> +{
-> +     switch (reg) {
-> +     case CS43130_DEVID_AB ... CS43130_SUBREV_ID:
-> +     case CS43130_INT_STATUS_1 ... CS43130_INT_STATUS_5:
-> +             return true;
-
-You don't need to mark the device ID volatile, just don't provide
-defaults and regmap will cache it the first time it reads it.  If the
-device ID is volatile you've got bigger problems.
-
-> +                     /*PDN_PLL= 0,enable*/
-
-Please use the standard kernel coding style, need spaces here.
-
-> +                     regmap_update_bits(cs43130->regmap, CS43130_PLL_SET_9,
-> +                                         CS43130_PLL_REF_PREDIV_MASK,
-> +                                             pll_ratio_table[i].sclk_prediv
-> +                                             );
-
-There's no need for the ); to be on a new line here, nor for the extra
-indentation on the line before.  There are lots more coding style
-issues, checkpatch will probably pick up many of them.
-
-> +     case SND_SOC_DAPM_PRE_PMU:
-> +             if (cs43130->pll_bypass)
-> +                     cs43130_change_clksrc(codec, CS43130_MCLK_SRC_XTAL);
-> +             else
-> +                     cs43130_change_clksrc(codec, CS43130_MCLK_SRC_PLL);
-> +
-> +             usleep_range(10000, 10050);
-> +             /*ASP_3ST = 0 in master mode*/
-> +             if (cs43130->dai_mode)
-> +                     regmap_update_bits(cs43130->regmap, CS43130_PAD_INT_CFG,
-> +                                                 0x01, 0x00);
-
-No need to undo this in slave mode?
-
-> +     if (stickies[0] & CS43130_XTAL_ERR_INT)
-> +             pr_debug("%s: Crystal err\n", __func__);
-
-dev_ prints and shouldn't this one be an error?
-
-> +     /* Enable HP detect */
-> +     regmap_update_bits(cs43130->regmap, CS43130_HP_DETECT,
-> +             CS43130_HP_DETECT_CTRL_MASK, CS43130_HP_DETECT_CTRL_MASK);
-
-Why enable this when the only handling is a couple of log messages?
-
-> +#ifdef CONFIG_PM
-> +static int cs43130_runtime_suspend(struct device *dev)
-> +{
-> +     return 0;
-> +}
-
-Remove empty functions, they don't serve any purpose.
-
+On Mon, Dec 12, 2016 at 11:04:25AM -0600, Rob Herring wrote:
+> On Wed, Dec 07, 2016 at 02:17:28PM -0600, Li Xu wrote:
+> > Add devicetree bindings documentation file for Cirrus
+> > Logic CS43130 codec.
+> > 
+> > Signed-off-by: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+> > ---
+> >  .../devicetree/bindings/sound/cs43130.txt          | 41 ++++++++++++++++++++++
+> >  1 file changed, 41 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/sound/cs43130.txt
+> > 
+> > diff --git a/Documentation/devicetree/bindings/sound/cs43130.txt b/Documentation/devicetree/bindings/sound/cs43130.txt
+> > new file mode 100644
+> > index 0000000..9a2a22a
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/sound/cs43130.txt
+> > @@ -0,0 +1,41 @@
+> > +CS43130 DAC
+> > +
+> > +Required properties:
+> > +
+> > +  - compatible : "cirrus,cs43130"
+> > +
+> > +  - reg : the I2C address of the device for I2C
+> > +
+> > +  - VA-supply, VP-supply, VL-supply, VCP-supply, VD-supply:
+> > +	power supplies for the device, as covered in
+> > +	Documentation/devicetree/bindings/regulator/regulator.txt.
+> > +
+> > +
+> > +Optional properties:
+> > +
+> > +  - reset-gpios : gpio used to reset the Device
+> 
+> Please state the active state and set that in the flag cell.
+> 
+> > +
+> > +  - cirrus,xtal-ibias:
+> > +   When external MCLK is generated by external crystal
+> > +   oscillator, CS43130 can be used to provide bias current
+> > +   for external crystal.  Amount of bias current sent is
+> > +   set as:
+> > +   1 = 7.5uA
+> > +   2 = 12.5uA
+> > +   3 = 15uA
+> > +
+> > +Example:
+> > +
+> > +cs43130: cs43130@30 {
+> 
+> audio-codec@30
+> 
+> > +	compatible = "cirrus,cs43130";
+> > +	reg = <0x30>;
+> > +	reset-gpios = <&axi_gpio 54 0>;
+> > +   VA-supply = <&dummy_vreg>;
+> 
+> Some whitespace problems here.
+> 
+> > +   VP-supply = <&dummy_vreg>;
+> > +   VL-supply = <&dummy_vreg>;
+> > +   VCP-supply = <&dummy_vreg>;
+> > +   VD-supply = <&dummy_vreg>;
+> > +   cirrus,xtal-ibias = <2>;
+> > +   interrupt-parent = <&gpio0>;
+> > +   interrupts = <55 8>;
+> > +};
+> > -- 
+> > 1.9.1
+> > 
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
