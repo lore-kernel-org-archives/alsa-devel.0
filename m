@@ -1,755 +1,1520 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC updates for v4.10
-Date: Mon, 12 Dec 2016 18:25:55 +0000
-Message-ID: <20161212182555.742hlkphnseihnk7@sirena.org.uk>
+From: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v2 1/2] ASoC: Add support for CS43130 codec
+Date: Mon, 12 Dec 2016 14:17:30 -0600
+Message-ID: <57223c0a-d169-4642-8427-292cd4ead15c@EX3.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4002985814324196069=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D4BF266499
- for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2016 19:26:04 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4002985814324196069==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rsa3u7v44hh3ul22"
-Content-Disposition: inline
-
-
---rsa3u7v44hh3ul22
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-The following changes since commit 69973b830859bc6529a7a0468ba0d80ee5117826:
-
-  Linux 4.9 (2016-12-11 11:17:54 -0800)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v4.10
-
-for you to fetch changes up to a5de5b74a50113564a1e0850e2da96c37c35e55d:
-
-  Merge remote-tracking branches 'asoc/topic/wm9712', 'asoc/topic/wm9713' and 'asoc/topic/zte' into asoc-next (2016-12-12 15:53:32 +0000)
-
-----------------------------------------------------------------
-ASoC: Updates for v4.10
-
-There's been a few bits of framework work this time around and quite a
-lot of cleanups and improvements to existing code:
-
- - Support for stereo DAPM controls from Chen-yu Tsai.
- - Some initial work on the of-graph sound card from Morimoto-san, the
-   main bulk of this is currently in binding review.
- - Lots of Renesas cleanups from Morimoto-san and sunxi work from
-   Chen-yu Tsai.
- - regmap conversions of the remaining AC'97 drivers from Lars-Peter
-   Clausen.
- - A new version of the topology ABI from Mengdong Lin.
- - New drivers for Cirrus Logic CS42L42, Qualcomm MSM8916-WCD, and Realtek
-   RT5665.
-
-----------------------------------------------------------------
-Adam Thomson (1):
-      ASoC: da7219: Improve pop/click performance for sensitive HPs
-
-Alexey Khoroshilov (1):
-      SoC: mxs-saif: check validity of ids in mxs_saif_probe()
-
-Arnaud Pouliquen (5):
-      ASoC: sti: fix errors management
-      ASoC: sti: reset refactoring
-      ASoC: sti: clean unused include
-      ASoC: sti-sas: clean legacy in sti-sas
-      ASoC: sti-sas: add missing return in messages strings
-
-Arnd Bergmann (2):
-      ASoC: lpass-platform: initialize dma channel number
-      ASoC: topology: avoid uninitialized kcontrol_type
-
-Axel Lin (6):
-      regulator: rk808: Use rdev_get_id() to access id of regulator
-      ASoC: cs35l34: Remove CS35L34_CHIP_ID from cs35l34_readable_register
-      ASoC: msm8916-wcd-analog: Update correct register setting for MIC BIAS Internal1
-      ASoC: rt5665: Fix missing mutex_unlock in rt5665_calibrate
-      ASoC: rt5665: Use devm_gpio_request_one()
-      ASoC: cs35l34: Simplify the logic to set CS35L34_MCLK_CTL setting
-
-Bard Liao (10):
-      ASoC: rt5663: rename rt5668 as rt5663 v2
-      ASoC: rt5660: enable MCLK detection
-      ASoC: rt5640: enable MCLK detection
-      ASoC: rt5670: Enable MCLK detection
-      ASoC: rt5670: increse LDO power
-      ASoC: rt5640: add Mono ADC Capture Switch control
-      ASoC: rt286: remove unnecessary selection in Kconfig
-      ASoC: add rt5665 codec driver
-      ASoC: rl6231: add 19.2M to 4.096M pll preset table
-      ASoC: rt298: disable IRQ when jack is NULL
-
-Charles Keepax (18):
-      ASoC: arizona: Add gating for clock when used for direct MCLK
-      ASoC: arizona: Add gating for source clocks of the FLLs
-      ASoC: samsung: i2s: Fixup last IRQ unsafe spin lock call
-      ASoC: cs42xx8: Mark chip ID as volatile and remove cache bypass
-      ASoC: cs42l56: Make ID registers volatile and remove cache bypass
-      ASoC: cs42l73: Remove cache bypass for read of ID registers
-      ASoC: arizona: Move request of speaker IRQs into bus probe
-      ASoC: arizona: Move request of DSP IRQ into bus probe
-      ASoC: cs47l24: Fixup missing variable typo
-      ASoC: arizona: Access driver data through platform from compressed ops
-      ASoC: core: If a platform doesn't have an of_node use parent's node
-      ASoC: wm2200: Correct types of mixer texts and values
-      ASoC: arizona: Move notifier functions to header and make inline
-      ASoC: arizona: Call arizona_init_notifiers for all CODECs
-      ASoC: wm_adsp: Only write shutdown controls for active firmwares
-      ASoC: wm_adsp: Check return value from wm_adsp_buffer_init
-      ASoC: arizona: Remove redundant extern declarations
-      ASoC: wm_adsp: Remove redundant extern declarations
-
-Chen-Yu Tsai (19):
-      ASoC: dapm: Support second register for DAPM control updates
-      ASoC: dapm: Implement stereo mixer control support
-      ASoC: dapm: Introduce DAPM_DOUBLE dual channel control type
-      ASoC: dapm: Introduce DAPM_DOUBLE_R dual channel dual register control type
-      ASoC: sun4i-codec: Move data structures to add create_card call to quirks
-      ASoC: sun4i-codec: Revise comments for register definition macros
-      ASoC: sun4i-codec: Expand quirks to handle register offsets and card creation
-      ASoC: sun4i-codec: Increase DMA max burst to 8
-      ASoC: sun4i-codec: Add support for A31 playback through headphone output
-      ASoC: sun4i-codec: Add support for A31 Line In playback
-      ASoC: sun4i-codec: Add support for A31 Line Out playback
-      ASoC: sun4i-codec: Add support for A31 analog microphone inputs
-      ASoC: sun4i-codec: Add support for A31 board level audio routing
-      ASoC: sun4i-codec: Add support for A31 ADC capture path
-      ASoC: sun4i-codec: Add support for optional reset control to quirks
-      ASoC: sunxi: Add bindings for A23/A33/H3 codec's analog path controls
-      ASoC: sunxi: Add support for A23/A33/H3 codec's analog path controls
-      ASoC: sun4i-codec: Add support for A23 codec
-      ASoC: sun4i-codec: Add support for H3 codec
-
-Colin Ian King (2):
-      ASoC: sst-bxt-da7219_max98357a: fix obsoleted initializer for array
-      ASoC: mioa701_wm9713: add missing white space in dev_err message
-
-Dan Carpenter (2):
-      ASoC: Intel: Skylake: Fix a shift wrapping bug
-      ASoC: sunxi: Uninitialized variable in probe()
-
-Dharageswari R (2):
-      ASoC: Intel: Skylake: Use DPIB to update position for Playback stream
-      ASoC: Intel: Skylake: Use DPIB to update position for Playback stream
-
-Florian Vaussard (1):
-      ASoC: cs42l56: Fix misuse of regmap_update_bits
-
-Geert Uytterhoeven (1):
-      ASoC: davinci-mcbsp: DT fix s/interrupts-names/interrupt-names/
-
-GuruprasadX Pawse (2):
-      ASoC: Intel: Skylake: Don't use dma I2S config structure in kernel
-      ASoC: Intel: Skylake: Removed the unused I2S blob structure
-
-Jack Yu (1):
-      ASoC: Add jd function for rt5663.
-
-James Schulman (2):
-      ASoC: Add support for CS42L42 codec
-      ASoC: cs42l42: Add devicetree bindings for CS42L42
-
-Jarkko Nikula (2):
-      ASoC: rl6347a: Use dev_err for I2C communication error prints
-      ASoC: rl6347a: Use dev_err for I2C communication error prints
-
-Jayachandran B (3):
-      ASoC: Intel: Skylake: Add D0iX callbacks
-      ASoC: Intel: Skylake: remove pci device enabling calls on suspend
-      ASoC: Intel: Skylake: Flush pending D0i3 request on suspend
-
-John Hsu (5):
-      ASoC: nau8825: Disable short Frame Sync detection logic
-      ASoC: nau8825: AD/DA over sampling rate configuration
-      ASoC: nau8825: FLL parameters finetune
-      ASoC: nau8825: lock longer to avoid playback pop upon resume
-      ASoC: nau8825: disable sinc filter for high THD of ADC
-
-Julia Lawall (7):
-      ASoC: intel: broadwell: constify snd_soc_ops structures
-      ASoC: atmel_wm8904: constify snd_soc_ops structures
-      ASoC: rockchip: constify snd_soc_ops structures
-      ASoC: qcom: storm: constify snd_soc_ops structures
-      ASoC: tegra: constify snd_soc_ops structures
-      ASoC: constify snd_soc_ops structures
-      ASoC: constify snd_soc_ops structures
-
-Krzysztof Kozlowski (4):
-      ASoC: samsung: Remove non-existing MACH dependencies
-      ASoC: samsung: smdk_wm8580: Remove old platforms and drop mach-types usage
-      ASoC: samsung: Enable COMPILE_TEST for entire Samsung ASoc
-      ASoC: samsung: Enable COMPILE_TEST for SmartQ and WM8580
-
-Kuninori Morimoto (47):
-      ASoC: soc.h: use bit field for playback/capture_only
-      ASoC: bunch up bit field for snd_soc_pcm_runtime
-      ASoC: bunch up bit field for snd_soc_dai
-      ASoC: remove component from snd_soc_pcm_runtime
-      ASoC: rsnd: remove duplicate define of rsnd_dvc_of_node()
-      ASoC: rsnd: amend .probe/.remove call for DPCM
-      ASoC: rsnd: add rsnd_mod_next() for for_each_rsnd_mod_xxx()
-      ASoC: rsnd: use for_each_rsnd_mod_xxx() on rsnd_dai_call()
-      ASoC: rsnd: use for_each_rsnd_mod_xxx() on rsnd_rdai_continuance_probe()
-      ASoC: rsnd: add rsnd_parse_of_node() and integrate rsnd_xxx_of_node
-      ASoC: rsnd: remove non DT support for DMA
-      ASoC: rsnd: don't use devm_request_irq() for SSI
-      ASoC: rsnd: remove rsnd_dma_detach()
-      ASoC: rsnd: don't call unneeded of_node_put() on dma.c
-      ASoC: rsnd: add nolock_start/stop callback
-      ASoC: rsnd: depends on OF
-      ASoC: rsnd: enable COMPILE_TEST
-      ASoC: rsnd: remove "Gen2 only" comment
-      ASoC: rsnd: rsnd_reg cleanup for SSIU
-      ASoC: rsnd: fixup SCU_SYS_STATUSx access
-      ASoC: rsnd: clear SSI_SYS_STATUSx every time
-      ASoC: rsnd: enable SRC sync even FIN = FOUT
-      ASoC: max98504: Add missing MAX98504 on SND_SOC_ALL_CODECS
-      ASoC: rsnd: use BRGCKR instead of SSICKR
-      ASoC: simple-scu-card: code sync: follow to simple family style
-      ASoC: simple-scu-card: code sync: rename asoc_simple_card_priv
-      ASoC: simple-scu-card: code sync: tidyup props/link naming
-      ASoC: simple-card-utils: remove unnecessary cpu/codec pointer check
-      ASoC: soc-core: adjust for graph on snd_soc_of_parse_audio_routing
-      ASoC: soc-core: snd_soc_get_dai_name() become non static
-      ASoC: soc-core: adjust for graph on snd_soc_of_parse_audio_prefix
-      ASoC: soc-core: adjust for graph on snd_soc_of_parse_card_name
-      ASoC: soc-core: adjust for graph on snd_soc_of_parse_audio_simple_widgets
-      ASoC: uda1380: Remove #if IS_ENABLED(CONFIG_I2C)
-      ASoC: wm9081: Remove #if IS_ENABLED(CONFIG_I2C)
-      ASoC: wm8523: Remove #if IS_ENABLED(CONFIG_I2C)
-      ASoC: wm8580: Remove #if IS_ENABLED(CONFIG_I2C)
-      ASoC: rsnd: Request/Release DMA channel each time
-      ASoC: rsnd: use dma_sync_single_for_xxx() for IOMMU
-      ASoC: core: replace codec_dev_list to component_dev_list on Card
-      ASoC: core: replace aux_comp_list to component_dev_list
-      ASoC: add Component level suspend/resume
-      ASoC: rsnd: rsnd_get_dalign() needs to care SSIU, not SSI
-      ASoC: simple_card_utils: tidyup file comment/define
-      ASoC: rsnd: tidyup ssi->usrcnt counter check in hw_params
-      ASoC: rsnd: enable/disable ADG when suspend/resume timing
-      ASoC: rsnd: setup BRGCKR/BRRA/BRRB when starting
-
-Lars-Peter Clausen (27):
-      ASoC: wm9712: Convert to regmap
-      ASoC: wm9712: Remove ac97_read/ac97_write wrappers
-      ASoC: wm9705: Convert to regmap
-      ASoC: wm9705: Remove ac97_read/ac97_write wrappers
-      ASoC: wm9712: Remove unused DAI ID defines
-      ASoC: wm9713: Remove unused DAI ID defines
-      ASoC: wm8753: Remove unused DAI ID defines
-      ASoC: wm9705: Remove unused DAI ID defines
-      ASoC: pxa2xx-i2s: Remove unused DAI ID defines
-      ASoC: pxa-ssp: Remove unused DAI ID defines
-      ASoC: es8328: Remove some unused defines
-      ASoC: ak4641: Remove unused DAI ID defines
-      ASoC: ak4641: Remove unused AK4641_CACHEREGNUM define
-      ASoC: ak4641: Move register defines to main source
-      ASoC: stac9766: Remove unused DAI ID defines
-      ASoC: stac9766: Remove register paging support
-      ASoC: stac9766: Move register defines to main source file
-      ASoC: stac9766: Convert to regmap
-      ASoC: stac9766: Remove ac97_read/ac97_write wrappers
-      ASoC: samsung: Remove unselectable smdk_wm8580pcm
-      ASoC: pxa: Make static string arrays 'const 'char * const []'
-      ASoC: rt5616: Don't use rtd->codec
-      ASoC: intel: mfld: Make static string arrays 'const 'char * const []'
-      ASoC: Make return type of dpcm_state_string() const char *
-      ASoC: uda1380: Remove unused DAI ID defines
-      ASoC: uda1380: Request GPIOs at bus probe time
-      ASoC: ab8500: Remove explicit initialization of driver callbacks to NULL
-
-Mark Brown (31):
-      Merge branch 'topic/dmaengine' of git://git.kernel.org/.../broonie/sound into asoc-samsung
-      Merge remote-tracking branch 'asoc/topic/rl6347a' into asoc-rl6347a
-      Merge branch 'fix/samsung' of git://git.kernel.org/.../broonie/sound into asoc-samsung
-      Merge branch 'fix/qcom' of git://git.kernel.org/.../broonie/sound into asoc-qcom
-      Merge branch 'fix/sunxi' of git://git.kernel.org/.../broonie/sound into asoc-sunxi
-      Merge branch 'topic/dapm' of git://git.kernel.org/.../broonie/sound into asoc-sunxi
-      Merge branch 'topic/dapm-pin' of git://git.kernel.org/.../broonie/sound into asoc-arizona
-      Merge branch 'topic/component' of git://git.kernel.org/.../broonie/sound into asoc-intel
-      Merge remote-tracking branch 'asoc/fix/intel' into asoc-linus
-      Merge remote-tracking branches 'asoc/fix/da7219-pops' and 'asoc/fix/qcom' into asoc-linus
-      Merge remote-tracking branch 'asoc/topic/component' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/core' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/dapm' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/dapm-pin' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/dmaengine' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/intel' into asoc-next
-      Merge remote-tracking branch 'asoc/topic/rcar' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/ab8500', 'asoc/topic/arizona', 'asoc/topic/atmel', 'asoc/topic/bcm' and 'asoc/topic/bitfield' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/compress', 'asoc/topic/const' and 'asoc/topic/cs35l34' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/cs42l42', 'asoc/topic/cs42l56', 'asoc/topic/cs42l73' and 'asoc/topic/cs42xx8' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/davinci' and 'asoc/topic/doc' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/dpcm', 'asoc/topic/es8328', 'asoc/topic/extcon' and 'asoc/topic/fsl' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/inntel', 'asoc/topic/input', 'asoc/topic/max98504' and 'asoc/topic/nau8825' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/of-graph', 'asoc/topic/pxa', 'asoc/topic/qcom' and 'asoc/topic/rk808' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/rl6231', 'asoc/topic/rl6347a', 'asoc/topic/rockchip', 'asoc/topic/rt286' and 'asoc/topic/rt298' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/rt5514', 'asoc/topic/rt5616', 'asoc/topic/rt5640', 'asoc/topic/rt5660' and 'asoc/topic/rt5663' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/rt5665', 'asoc/topic/rt5670', 'asoc/topic/rt5677', 'asoc/topic/samsung' and 'asoc/topic/simple' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/stac9766', 'asoc/topic/sti', 'asoc/topic/sti-codec', 'asoc/topic/sunxi' and 'asoc/topic/tegra' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/tlv320aic31xx', 'asoc/topic/topology', 'asoc/topic/uda1380', 'asoc/topic/wm2200' and 'asoc/topic/wm8523' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/wm8580', 'asoc/topic/wm8753', 'asoc/topic/wm8978', 'asoc/topic/wm9081' and 'asoc/topic/wm9705' into asoc-next
-      Merge remote-tracking branches 'asoc/topic/wm9712', 'asoc/topic/wm9713' and 'asoc/topic/zte' into asoc-next
-
-Matt Flax (1):
-      ASoC: wm8580: Add the wm8581 codec to the driver
-
-Maxime Ripard (3):
-      ASoC: sun4i-i2s: Implement capture support
-      ASoC: sunxi: i2s: Implement set_sysclk
-      ASoC: wm8978: Adjust clock indices so that simple card works
-
-Mengdong Lin (17):
-      ASoC: topology: ABI - Define DAI physical PCM data formats
-      ASoC: topology: Make manifest backward compatible from ABI v4
-      ASoC: topology: Make PCM backward compatible from ABI v4
-      ASoC: topology: Only use valid names of PCM for the kernel DAI & DAI link
-      ASoC: topology: Support topology file of ABI v4
-      ASoC: topology: ABI - Add flags and private data to PCM
-      ASoC: topology: ABI - Update physical DAI link configuration for version 5
-      ASoC: Define API to find a dai link
-      ASoC: topology: Add support to configure existing physical DAI links
-      ASoC: topology: Rename the function to create a FE link
-      ASoC: topology: ABI - Rename struct and type for physical DAIs
-      ASoC: topology: Rename functions & variables for physical DAIs
-      ASoC: topology: ABI - Add voice wake up flag for DAI links
-      ASoC: topology: Check name strings of physical DAI links
-      ASoC: topology: ABI - Rename be_dai_elems to dai_elems in manifest
-      ASoC: topology: Allow a widget to have multiple enum controls
-      ASoC: topology: Only free TLV for volume mixers of a widget
-
-Oder Chiou (1):
-      ASoC: rt5514: Add the DMIC initial delay to wait it ready.
-
-Pardha Saradhi K (2):
-      ASoC: Intel: Skylake: Add D0iX IPCs
-      ASoC: Intel: Skylake: Add support for programming D0i3C
-
-Paul Handrigan (2):
-      ASoC: cs35l34: Add device tree bindings file for cs35l34
-      ASoC: cs35l34: Initial commit of the cs35l34 CODEC driver.
-
-Peter Rosin (3):
-      ASoC: atmel_ssc_dai: if not provided, default to sensible dividers
-      ASoC: tse850: document axentia,tse850-pcm5142 bindings
-      ASoC: atmel: tse850: add ASoC driver for the Axentia TSE-850
-
-Peter Ujfalusi (2):
-      ASoC: tlv320aic31xx: Add missing of_device_id for dac3100
-      ASoC: tlv320aic31xx: Add support for tlv320dac3101
-
-Pierre-Louis Bossart (3):
-      ASoC: Intel: common: add ACPI package extraction utility
-      ASoC: Intel: detect audio routing with CHAN package
-      ASoC: Intel: bytct_rt5640: change default capture settings
-
-Randy Dunlap (1):
-      ASoC: fsl: fix fsl_spdif.c build errors
-
-Richard Fitzgerald (12):
-      ASoC: wm_adsp: Remove duplicate set of kcontrol->iface
-      ASoC: wm_adsp: Signal firmware shutdown through event control
-      ASoC: wm_adsp: factor out getting region name from type
-      ASoC: wm_adsp: Support acknowledged controls
-      ASoC: wm_adsp: factor out getting base register for a control
-      ASoC: wm_adsp: Firmware controls should be added as codec controls
-      ASoC: wm_adsp: Remove unused wm_coeff_ctl.kcontrol
-      ASoC: core: Add component pin control functions
-      ASoC: arizona: Use component pin control functions
-      extcon: arizona: Use SoC component pin control functions
-      Input: arizona-haptics - Use SoC component pin control functions
-      ASoC: wm_adsp: wm_adsp_buf_alloc should use kfree in error path
-
-Sathyanarayana Nujella (2):
-      ASoC: Intel: report JACK_LINEOUT event
-      ASoC: Intel: update bxt_da7219_max98357a to support quad ch dmic capture
-
-Scott Branden (1):
-      ASoC: bcm: add depends on HAS_DMA
-
-Sebastien Guiriec (4):
-      ASoC: Intel: atom: Add debug information related to FW version
-      ASoC: Intel: atom: Add sysfs entry in order to store FW version
-      ASoC: Intel: atom: save FW version
-      ASoC: Intel: Add ASoC Intel SST Atom sysfs description
-
-Shawn Guo (2):
-      ASoC: zte: spdif and i2s drivers are not zx296702 specific
-      ASoC: zte: spdif: correct ZX_SPDIF_CLK_RAT define
-
-Srinivas Kandagatla (7):
-      ASoC: codecs: Add msm8916-wcd analog codec
-      ASoC: codecs: Add msm8916-wcd digital codec
-      ASoC: apq8016-sbc: dt bindings: remove incorrect property
-      ASoC: qcom: apq8016-sbc: Add support to multi codec.
-      ASoC: lpass-platform: use dma_ch instead of rdma_ch/wrdma_ch
-      ASoC: codecs: msm8916-wcd-analog: clean parse_dt()
-      ASoC: codecs: msm8916-wcd-digital: rename parse_dt to get_clks
-
-Stuart Henderson (1):
-      ASoC: wm_adsp: Add support for SYSTEM firmware controls
-
-Sylwester Nawrocki (11):
-      ASoC: s3c24xx_uda134x: Move global variables to driver's data structure
-      ASoC: samsung: Remove unneeded initialization of chan_name
-      ASoC: Drop SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag
-      ASoC: samsung: s3c24xx-i2s: Don't use platform_data for DMA parameters
-      ASoC: samsung: s3c24xx-i2s: Debug/error trace cleanup
-      ASoC: samsung: pcm: Conversion to use devm_ioremap_resource()
-      ASoC: samsung: s2c24xx-i2s: remove redundant error message
-      ASoC: samsung: Drop AC97 drivers
-      ASoC: samsung: s3c24xx-i2s.c merge fixup
-      ASoC: samsung: Add DT bindings documentation for TM2 sound subsystem
-      ASoC: samsung: Add machine driver for Exynos5433 based TM2 board
-
-Takashi Iwai (10):
-      ASoC: rt5514: Remove superfluous linux/kthread.h inclusion
-      ASoC: rt5677: Remove superfluous linux/kthread.h inclusion
-      ASoC: cht_bsw_rt5645: Fix leftover kmalloc
-      ASoC: Intel: atom: Make some messages to debug level
-      ASoC: Intel: Add missing 10EC5672 ACPI ID matching for Cherry Trail
-      ASoC: rt5670: Enable Braswell platform workaround for Dell Wyse 3040
-      ASoC: rt5670: Add missing 10EC5072 ACPI ID
-      ASoC: intel: Replace kthread with work
-      ASoC: intel: Fix crash at suspend/resume without card registration
-      ASoC: cht_bsw_rt5672: Use HID translation unit
-
-Valentin Rothberg (1):
-      ASoC: samsung: Makefile cleanup
-
-Vinod Koul (6):
-      ASoC: Intel: Add check_dsp_lp_on callback on IPC
-      ASoC: Intel: Add sst_ipc_tx_message_nopm
-      ASoC: Intel: Skylake: Add support for LPMode
-      ASoC: Intel: Skylake: Add support for specifying D0i3 configuration
-      ASoC: Intel: Skylake: Add D0i3 mode ref counting
-      ASoC: compress: Add support for compress dai ops
-
-Wei Yongjun (2):
-      ASoC: rk3399_gru_sound: Fix non static symbol warning
-      ASoC: wm8580: Fix non static symbol warnings
-
-anish kumar (1):
-      ASoC: Codec to codec dai link description
-
-kbuild test robot (2):
-      ASoC: sun4i-codec: fix semicolon.cocci warnings
-      ASoC: fix platform_no_drv_owner.cocci warnings
-
- Documentation/ABI/testing/sysfs-platform-sst-atom  |   17 +
- .../bindings/sound/axentia,tse850-pcm5142.txt      |   88 +
- .../devicetree/bindings/sound/cs35l34.txt          |   64 +
- .../devicetree/bindings/sound/cs42l42.txt          |  110 +
- .../devicetree/bindings/sound/davinci-mcbsp.txt    |    2 +-
- .../devicetree/bindings/sound/qcom,apq8016-sbc.txt |    5 +-
- .../bindings/sound/qcom,msm8916-wcd-analog.txt     |   85 +
- .../bindings/sound/qcom,msm8916-wcd-digital.txt    |   20 +
- Documentation/devicetree/bindings/sound/rt5514.txt |    3 +
- Documentation/devicetree/bindings/sound/rt5663.txt |    6 +-
- Documentation/devicetree/bindings/sound/rt5665.txt |   68 +
- .../bindings/sound/samsung,tm2-audio.txt           |   38 +
- .../devicetree/bindings/sound/sun4i-codec.txt      |   65 +-
- .../bindings/sound/sun8i-codec-analog.txt          |   16 +
- .../devicetree/bindings/sound/tlv320aic31xx.txt    |    1 +
- Documentation/devicetree/bindings/sound/wm8580.txt |    4 +-
- Documentation/sound/alsa/soc/codec_to_codec.txt    |  103 +
- MAINTAINERS                                        |    7 +
- drivers/extcon/extcon-arizona.c                    |    8 +-
- drivers/input/misc/arizona-haptics.c               |   13 +-
- drivers/regulator/rk808-regulator.c                |    9 +-
- include/dt-bindings/sound/cs42l42.h                |   73 +
- include/sound/cs35l34.h                            |   35 +
- include/sound/dmaengine_pcm.h                      |    6 -
- include/sound/rt5514.h                             |   20 +
- include/sound/rt5665.h                             |   47 +
- include/sound/simple_card_utils.h                  |    8 +-
- include/sound/soc-dai.h                            |   43 +-
- include/sound/soc-dapm.h                           |   14 +
- include/sound/soc-topology.h                       |    2 +-
- include/sound/soc.h                                |   87 +-
- include/uapi/sound/asoc.h                          |   90 +-
- include/uapi/sound/snd_sst_tokens.h                |    8 +-
- sound/soc/atmel/Kconfig                            |   10 +
- sound/soc/atmel/Makefile                           |    2 +
- sound/soc/atmel/atmel_ssc_dai.c                    |   83 +-
- sound/soc/atmel/atmel_ssc_dai.h                    |    1 +
- sound/soc/atmel/atmel_wm8904.c                     |    2 +-
- sound/soc/atmel/tse850-pcm5142.c                   |  472 ++
- sound/soc/bcm/Kconfig                              |    1 +
- sound/soc/codecs/Kconfig                           |   31 +-
- sound/soc/codecs/Makefile                          |   11 +-
- sound/soc/codecs/ab8500-codec.c                    |    2 -
- sound/soc/codecs/adau17x1.c                        |    2 +-
- sound/soc/codecs/ak4641.c                          |   22 +-
- sound/soc/codecs/ak4641.h                          |   47 -
- sound/soc/codecs/arizona.c                         |  153 +-
- sound/soc/codecs/arizona.h                         |  109 +-
- sound/soc/codecs/cs35l34.c                         | 1251 +++++
- sound/soc/codecs/cs35l34.h                         |  269 ++
- sound/soc/codecs/cs42l42.c                         | 1986 ++++++++
- sound/soc/codecs/cs42l42.h                         |  776 ++++
- sound/soc/codecs/cs42l56.c                         |   18 +-
- sound/soc/codecs/cs42l73.c                         |    4 -
- sound/soc/codecs/cs42xx8.c                         |   10 -
- sound/soc/codecs/cs47l24.c                         |   55 +-
- sound/soc/codecs/da7219-aad.c                      |   18 +-
- sound/soc/codecs/da7219.c                          |  139 +-
- sound/soc/codecs/da7219.h                          |    5 +
- sound/soc/codecs/es8328.h                          |   37 -
- sound/soc/codecs/msm8916-wcd-analog.c              |  890 ++++
- sound/soc/codecs/msm8916-wcd-digital.c             |  923 ++++
- sound/soc/codecs/nau8825.c                         |  142 +-
- sound/soc/codecs/nau8825.h                         |   16 +
- sound/soc/codecs/rl6231.c                          |    1 +
- sound/soc/codecs/rl6347a.c                         |    2 +-
- sound/soc/codecs/rt298.c                           |   24 +-
- sound/soc/codecs/rt5514-spi.c                      |    1 -
- sound/soc/codecs/rt5514.c                          |   17 +
- sound/soc/codecs/rt5514.h                          |    2 +
- sound/soc/codecs/rt5616.c                          |    3 +-
- sound/soc/codecs/rt5640.c                          |    5 +
- sound/soc/codecs/rt5640.h                          |    6 +
- sound/soc/codecs/rt5660.c                          |    4 +
- sound/soc/codecs/rt5660.h                          |    3 +
- sound/soc/codecs/rt5663.c                          | 1137 ++---
- sound/soc/codecs/rt5663.h                          | 1162 ++---
- sound/soc/codecs/rt5665.c                          | 4874 ++++++++++++++++++++
- sound/soc/codecs/rt5665.h                          | 1990 ++++++++
- sound/soc/codecs/rt5670.c                          |   16 +-
- sound/soc/codecs/rt5670.h                          |    1 +
- sound/soc/codecs/rt5677-spi.c                      |    1 -
- sound/soc/codecs/stac9766.c                        |  162 +-
- sound/soc/codecs/stac9766.h                        |   17 -
- sound/soc/codecs/sti-sas.c                         |  179 +-
- sound/soc/codecs/tlv320aic31xx.c                   |    3 +
- sound/soc/codecs/tlv320aic31xx.h                   |    1 +
- sound/soc/codecs/tlv320aic3x.c                     |    2 +-
- sound/soc/codecs/uda1380.c                         |   77 +-
- sound/soc/codecs/uda1380.h                         |    4 -
- sound/soc/codecs/wm2200.c                          |    4 +-
- sound/soc/codecs/wm5102.c                          |   59 +-
- sound/soc/codecs/wm5110.c                          |   61 +-
- sound/soc/codecs/wm8523.c                          |   24 +-
- sound/soc/codecs/wm8580.c                          |  123 +-
- sound/soc/codecs/wm8753.h                          |    3 -
- sound/soc/codecs/wm8978.h                          |    2 +-
- sound/soc/codecs/wm8997.c                          |   39 +-
- sound/soc/codecs/wm8998.c                          |   38 +-
- sound/soc/codecs/wm9081.c                          |    2 -
- sound/soc/codecs/wm9705.c                          |  138 +-
- sound/soc/codecs/wm9705.h                          |   11 -
- sound/soc/codecs/wm9712.c                          |  177 +-
- sound/soc/codecs/wm9712.h                          |   11 -
- sound/soc/codecs/wm9713.c                          |    2 +-
- sound/soc/codecs/wm9713.h                          |    4 -
- sound/soc/codecs/wm_adsp.c                         |  354 +-
- sound/soc/codecs/wm_adsp.h                         |   27 +-
- sound/soc/codecs/wmfw.h                            |    4 +
- sound/soc/fsl/Kconfig                              |    1 +
- sound/soc/fsl/efika-audio-fabric.c                 |    1 -
- sound/soc/fsl/fsl-asoc-card.c                      |    2 +-
- sound/soc/fsl/imx-wm8962.c                         |    2 +-
- sound/soc/generic/simple-card-utils.c              |    5 +-
- sound/soc/generic/simple-card.c                    |    2 +-
- sound/soc/generic/simple-scu-card.c                |  115 +-
- sound/soc/intel/atom/sst-atom-controls.c           |    2 +-
- sound/soc/intel/atom/sst-mfld-platform-pcm.c       |    6 +
- sound/soc/intel/atom/sst/sst.c                     |   39 +
- sound/soc/intel/atom/sst/sst.h                     |    1 +
- sound/soc/intel/atom/sst/sst_acpi.c                |    2 +
- sound/soc/intel/atom/sst/sst_ipc.c                 |   11 +
- sound/soc/intel/atom/sst/sst_stream.c              |    4 +-
- sound/soc/intel/baytrail/sst-baytrail-ipc.c        |    3 +-
- sound/soc/intel/boards/bdw-rt5677.c                |    2 +-
- sound/soc/intel/boards/broadwell.c                 |   18 +-
- sound/soc/intel/boards/bxt_da7219_max98357a.c      |   26 +-
- sound/soc/intel/boards/bxt_rt298.c                 |    4 +-
- sound/soc/intel/boards/bytcr_rt5640.c              |   68 +-
- sound/soc/intel/boards/bytcr_rt5651.c              |    4 +-
- sound/soc/intel/boards/cht_bsw_max98090_ti.c       |    4 +-
- sound/soc/intel/boards/cht_bsw_rt5645.c            |   10 +-
- sound/soc/intel/boards/cht_bsw_rt5672.c            |   46 +-
- sound/soc/intel/boards/haswell.c                   |    2 +-
- sound/soc/intel/boards/mfld_machine.c              |    4 +-
- sound/soc/intel/boards/skl_nau88l25_max98357a.c    |    6 +-
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c      |    6 +-
- sound/soc/intel/boards/skl_rt286.c                 |    4 +-
- sound/soc/intel/common/sst-acpi.h                  |   17 +-
- sound/soc/intel/common/sst-ipc.c                   |   85 +-
- sound/soc/intel/common/sst-ipc.h                   |    8 +-
- sound/soc/intel/common/sst-match-acpi.c            |   57 +
- sound/soc/intel/haswell/sst-haswell-ipc.c          |    3 +-
- sound/soc/intel/skylake/bxt-sst.c                  |  145 +
- sound/soc/intel/skylake/skl-messages.c             |   39 +-
- sound/soc/intel/skylake/skl-pcm.c                  |   28 +-
- sound/soc/intel/skylake/skl-sst-cldma.c            |    1 -
- sound/soc/intel/skylake/skl-sst-dsp.h              |   12 +
- sound/soc/intel/skylake/skl-sst-ipc.c              |   71 +-
- sound/soc/intel/skylake/skl-sst-ipc.h              |   37 +-
- sound/soc/intel/skylake/skl-sst-utils.c            |    2 +-
- sound/soc/intel/skylake/skl-topology.c             |   47 +
- sound/soc/intel/skylake/skl-topology.h             |   28 +-
- sound/soc/intel/skylake/skl.c                      |   59 +-
- sound/soc/intel/skylake/skl.h                      |    6 +
- sound/soc/kirkwood/armada-370-db.c                 |    2 +-
- sound/soc/mxs/mxs-saif.c                           |   13 +-
- sound/soc/mxs/mxs-sgtl5000.c                       |    2 +-
- sound/soc/pxa/corgi.c                              |    6 +-
- sound/soc/pxa/e740_wm9705.c                        |    1 -
- sound/soc/pxa/e750_wm9705.c                        |    1 -
- sound/soc/pxa/e800_wm9712.c                        |    1 -
- sound/soc/pxa/em-x270.c                            |    1 -
- sound/soc/pxa/hx4700.c                             |    2 -
- sound/soc/pxa/magician.c                           |    2 +-
- sound/soc/pxa/mioa701_wm9713.c                     |    2 +-
- sound/soc/pxa/palm27x.c                            |    1 -
- sound/soc/pxa/poodle.c                             |    4 +-
- sound/soc/pxa/pxa-ssp.h                            |    6 -
- sound/soc/pxa/pxa2xx-i2s.h                         |    3 -
- sound/soc/pxa/spitz.c                              |    6 +-
- sound/soc/pxa/tosa.c                               |    7 +-
- sound/soc/qcom/apq8016_sbc.c                       |   11 +-
- sound/soc/qcom/lpass-platform.c                    |   49 +-
- sound/soc/qcom/storm.c                             |    2 +-
- sound/soc/rockchip/rk3399_gru_sound.c              |    8 +-
- sound/soc/rockchip/rockchip_max98090.c             |    2 +-
- sound/soc/rockchip/rockchip_rt5645.c               |    2 +-
- sound/soc/samsung/Kconfig                          |   58 +-
- sound/soc/samsung/Makefile                         |    9 +-
- sound/soc/samsung/ac97.c                           |  437 --
- sound/soc/samsung/dmaengine.c                      |    8 +-
- sound/soc/samsung/i2s.c                            |    8 +-
- sound/soc/samsung/ln2440sbc_alc650.c               |   72 -
- sound/soc/samsung/pcm.c                            |   60 +-
- sound/soc/samsung/regs-ac97.h                      |   66 -
- sound/soc/samsung/s3c2412-i2s.c                    |    2 -
- sound/soc/samsung/s3c24xx-i2s.c                    |   51 +-
- sound/soc/samsung/s3c24xx_uda134x.c                |   79 +-
- sound/soc/samsung/smdk2443_wm9710.c                |   68 -
- sound/soc/samsung/smdk_wm8580.c                    |   30 +-
- sound/soc/samsung/smdk_wm8580pcm.c                 |  175 -
- sound/soc/samsung/smdk_wm9713.c                    |  108 -
- sound/soc/samsung/tm2_wm5110.c                     |  552 +++
- sound/soc/sh/Kconfig                               |    3 +-
- sound/soc/sh/rcar/adg.c                            |   61 +-
- sound/soc/sh/rcar/core.c                           |  175 +-
- sound/soc/sh/rcar/dma.c                            |  295 +-
- sound/soc/sh/rcar/dvc.c                            |    2 -
- sound/soc/sh/rcar/gen.c                            |   12 +-
- sound/soc/sh/rcar/rsnd.h                           |  156 +-
- sound/soc/sh/rcar/src.c                            |   13 +-
- sound/soc/sh/rcar/ssi.c                            |   28 +-
- sound/soc/sh/rcar/ssiu.c                           |   20 +
- sound/soc/soc-compress.c                           |   98 +-
- sound/soc/soc-core.c                               |  181 +-
- sound/soc/soc-dapm.c                               |  154 +-
- sound/soc/soc-generic-dmaengine-pcm.c              |   13 +-
- sound/soc/soc-pcm.c                                |    2 +-
- sound/soc/soc-topology.c                           |  751 ++-
- sound/soc/soc-utils.c                              |  199 +
- sound/soc/sti/sti_uniperif.c                       |   43 +-
- sound/soc/sti/uniperif.h                           |    2 +
- sound/soc/sti/uniperif_player.c                    |   91 +-
- sound/soc/sti/uniperif_reader.c                    |   41 +-
- sound/soc/sunxi/Kconfig                            |    8 +
- sound/soc/sunxi/Makefile                           |    1 +
- sound/soc/sunxi/sun4i-codec.c                      |  867 +++-
- sound/soc/sunxi/sun4i-i2s.c                        |  105 +-
- sound/soc/sunxi/sun8i-codec-analog.c               |  665 +++
- sound/soc/tegra/tegra_alc5632.c                    |    2 +-
- sound/soc/tegra/tegra_max98090.c                   |    2 +-
- sound/soc/tegra/tegra_rt5640.c                     |    2 +-
- sound/soc/tegra/tegra_rt5677.c                     |    2 +-
- sound/soc/tegra/tegra_sgtl5000.c                   |    2 +-
- sound/soc/tegra/tegra_wm8753.c                     |    2 +-
- sound/soc/tegra/tegra_wm8903.c                     |    2 +-
- sound/soc/tegra/trimslice.c                        |    2 +-
- sound/soc/zte/Kconfig                              |   16 +-
- sound/soc/zte/Makefile                             |    4 +-
- sound/soc/zte/{zx296702-i2s.c => zx-i2s.c}         |    0
- sound/soc/zte/{zx296702-spdif.c => zx-spdif.c}     |    2 +-
- 232 files changed, 22048 insertions(+), 4367 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-platform-sst-atom
- create mode 100644 Documentation/devicetree/bindings/sound/axentia,tse850-pcm5142.txt
- create mode 100644 Documentation/devicetree/bindings/sound/cs35l34.txt
- create mode 100644 Documentation/devicetree/bindings/sound/cs42l42.txt
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-digital.txt
- create mode 100755 Documentation/devicetree/bindings/sound/rt5665.txt
- create mode 100644 Documentation/devicetree/bindings/sound/samsung,tm2-audio.txt
- create mode 100644 Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
- create mode 100644 Documentation/sound/alsa/soc/codec_to_codec.txt
- create mode 100644 include/dt-bindings/sound/cs42l42.h
- create mode 100644 include/sound/cs35l34.h
- create mode 100644 include/sound/rt5514.h
- create mode 100755 include/sound/rt5665.h
- create mode 100644 sound/soc/atmel/tse850-pcm5142.c
- delete mode 100644 sound/soc/codecs/ak4641.h
- create mode 100644 sound/soc/codecs/cs35l34.c
- create mode 100644 sound/soc/codecs/cs35l34.h
- create mode 100644 sound/soc/codecs/cs42l42.c
- create mode 100644 sound/soc/codecs/cs42l42.h
- create mode 100644 sound/soc/codecs/msm8916-wcd-analog.c
- create mode 100644 sound/soc/codecs/msm8916-wcd-digital.c
- create mode 100644 sound/soc/codecs/rt5665.c
- create mode 100644 sound/soc/codecs/rt5665.h
- delete mode 100644 sound/soc/codecs/stac9766.h
- delete mode 100644 sound/soc/codecs/wm9705.h
- delete mode 100644 sound/soc/codecs/wm9712.h
- delete mode 100644 sound/soc/samsung/ac97.c
- delete mode 100644 sound/soc/samsung/ln2440sbc_alc650.c
- delete mode 100644 sound/soc/samsung/regs-ac97.h
- delete mode 100644 sound/soc/samsung/smdk2443_wm9710.c
- delete mode 100644 sound/soc/samsung/smdk_wm8580pcm.c
- delete mode 100644 sound/soc/samsung/smdk_wm9713.c
- create mode 100644 sound/soc/samsung/tm2_wm5110.c
- create mode 100644 sound/soc/sunxi/sun8i-codec-analog.c
- rename sound/soc/zte/{zx296702-i2s.c => zx-i2s.c} (100%)
- rename sound/soc/zte/{zx296702-spdif.c => zx-spdif.c} (99%)
-
---rsa3u7v44hh3ul22
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhO67IACgkQJNaLcl1U
-h9ClzQf+Igxg8pz309Gu4hydEG2KiozzRJygbkIkVbTL0rO4m/AmdaWCwwMHx5i3
-vikS32hxrB0OrZ0IJ3HtzOQ1zqdqGJgYZqAztc4o7rRuQ3eJbZdCmnPpeGn63ngK
-iS9SJyIQjcM7FX5wqv5E3VedlkRYAcvkAOMnxll0p4BybCCpnNoh+vKex3aAshJi
-7JJvZQgn0NPBoKDhifo321NY+Zlzirruwh5pRUDycgl1rwJIXLsVn6fa6Dl+04ol
-T6qNJgKMwr7HSpwWGT+zuA12BCb+/6fRfI2boJ+AnPqgfepIviakqQBkRcbBR/gR
-ItZ0iI8H8LwBvf9N+nVpy72v1cp7ag==
-=LY6G
------END PGP SIGNATURE-----
-
---rsa3u7v44hh3ul22--
-
---===============4002985814324196069==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4002985814324196069==--
+Add support for Cirrus Logic CS43130 codec.
+Support I2C control and I2S audio playback.
+
+Signed-off-by: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+---
+ sound/soc/codecs/Kconfig   |    6 +
+ sound/soc/codecs/Makefile  |    2 +
+ sound/soc/codecs/cs43130.c | 1164 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/cs43130.h |  268 ++++++++++
+ 4 files changed, 1440 insertions(+)
+ create mode 100644 sound/soc/codecs/cs43130.c
+ create mode 100644 sound/soc/codecs/cs43130.h
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 9e1718a..d6ede2b 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -59,6 +59,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_CS4271_I2C if I2C
+ 	select SND_SOC_CS4271_SPI if SPI_MASTER
+ 	select SND_SOC_CS42XX8_I2C if I2C
++	select SND_SOC_CS43130 if I2C
+ 	select SND_SOC_CS4349 if I2C
+ 	select SND_SOC_CS47L24 if MFD_CS47L24
+ 	select SND_SOC_CS53L30 if I2C
+@@ -473,6 +474,11 @@ config SND_SOC_CS42XX8_I2C
+ 	select SND_SOC_CS42XX8
+ 	select REGMAP_I2C
+ 
++# Cirrus Logic CS43130 HiFi DAC
++config SND_SOC_CS43130
++        tristate "Cirrus Logic CS43130 CODEC"
++        depends on I2C
++
+ # Cirrus Logic CS4349 HiFi DAC
+ config SND_SOC_CS4349
+ 	tristate "Cirrus Logic CS4349 CODEC"
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 7e1dad7..2f15228 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -52,6 +52,7 @@ snd-soc-cs4271-i2c-objs := cs4271-i2c.o
+ snd-soc-cs4271-spi-objs := cs4271-spi.o
+ snd-soc-cs42xx8-objs := cs42xx8.o
+ snd-soc-cs42xx8-i2c-objs := cs42xx8-i2c.o
++snd-soc-cs43130-objs := cs43130.o
+ snd-soc-cs4349-objs := cs4349.o
+ snd-soc-cs47l24-objs := cs47l24.o
+ snd-soc-cs53l30-objs := cs53l30.o
+@@ -281,6 +282,7 @@ obj-$(CONFIG_SND_SOC_CS4271_I2C)	+= snd-soc-cs4271-i2c.o
+ obj-$(CONFIG_SND_SOC_CS4271_SPI)	+= snd-soc-cs4271-spi.o
+ obj-$(CONFIG_SND_SOC_CS42XX8)	+= snd-soc-cs42xx8.o
+ obj-$(CONFIG_SND_SOC_CS42XX8_I2C) += snd-soc-cs42xx8-i2c.o
++obj-$(CONFIG_SND_SOC_CS43130)   += snd-soc-cs43130.o
+ obj-$(CONFIG_SND_SOC_CS4349)	+= snd-soc-cs4349.o
+ obj-$(CONFIG_SND_SOC_CS47L24)	+= snd-soc-cs47l24.o
+ obj-$(CONFIG_SND_SOC_CS53L30)	+= snd-soc-cs53l30.o
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+new file mode 100644
+index 0000000..79e4d2a
+--- /dev/null
++++ b/sound/soc/codecs/cs43130.c
+@@ -0,0 +1,1164 @@
++/*
++ * cs43130.c  --  CS43130 ALSA Soc Audio driver
++ *
++ * Copyright 2016 Cirrus Logic, Inc.
++ *
++ * Authors: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
++#include <linux/platform_device.h>
++#include <linux/pm.h>
++#include <linux/i2c.h>
++#include <linux/of_device.h>
++#include <linux/regmap.h>
++#include <linux/slab.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/initval.h>
++#include <sound/tlv.h>
++#include <linux/of_gpio.h>
++#include <linux/regulator/consumer.h>
++#include <linux/pm_runtime.h>
++#include <linux/of_irq.h>
++
++#include "cs43130.h"
++
++
++static const struct reg_default cs43130_reg_defaults[] = {
++	{ CS43130_SYS_CLK_CTL_1, 0x06 },
++	{ CS43130_SP_SRATE, 0x01 },
++	{ CS43130_SP_BITSIZE, 0x05 },
++	{ CS43130_PAD_INT_CFG, 0x03 },
++	{ CS43130_PWDN_CTL, 0xFE },
++	{ CS43130_CRYSTAL_SET, 0x04 },
++	{ CS43130_PLL_SET_1, 0x00 },
++	{ CS43130_PLL_SET_2, 0x00 },
++	{ CS43130_PLL_SET_3, 0x00 },
++	{ CS43130_PLL_SET_4, 0x00 },
++	{ CS43130_PLL_SET_5, 0x40 },
++	{ CS43130_PLL_SET_6, 0x10 },
++	{ CS43130_PLL_SET_7, 0x80 },
++	{ CS43130_PLL_SET_8, 0x03 },
++	{ CS43130_PLL_SET_9, 0x02 },
++	{ CS43130_PLL_SET_10, 0x02 },
++	{ CS43130_CLKOUT_CTL, 0x00 },
++	{ CS43130_ASP_NUM_1, 0x01 },
++	{ CS43130_ASP_NUM_2, 0x00 },
++	{ CS43130_ASP_DENOM_1, 0x08 },
++	{ CS43130_ASP_DENOM_2, 0x00 },
++	{ CS43130_ASP_LRCK_HI_TIME_1, 0x1F },
++	{ CS43130_ASP_LRCK_HI_TIME_2, 0x00 },
++	{ CS43130_ASP_LRCK_PERIOD_1, 0x3F },
++	{ CS43130_ASP_LRCK_PERIOD_2, 0x00 },
++	{ CS43130_ASP_CLOCK_CONF, 0x0C },
++	{ CS43130_ASP_FRAME_CONF, 0x0A },
++	{ CS43130_XSP_NUM_1, 0x01 },
++	{ CS43130_XSP_NUM_2, 0x00 },
++	{ CS43130_XSP_DENOM_1, 0x02 },
++	{ CS43130_XSP_DENOM_2, 0x00 },
++	{ CS43130_XSP_LRCK_HI_TIME_1, 0x1F },
++	{ CS43130_XSP_LRCK_HI_TIME_2, 0x00 },
++	{ CS43130_XSP_LRCK_PERIOD_1, 0x3F },
++	{ CS43130_XSP_LRCK_PERIOD_2, 0x00 },
++	{ CS43130_XSP_CLOCK_CONF, 0x0C },
++	{ CS43130_XSP_FRAME_CONF, 0x0A },
++	{ CS43130_ASP_CH_1_LOC, 0x00 },
++	{ CS43130_ASP_CH_2_LOC, 0x00 },
++	{ CS43130_ASP_CH_1_SZ_EN, 0x06 },
++	{ CS43130_ASP_CH_2_SZ_EN, 0x0E },
++	{ CS43130_XSP_CH_1_LOC, 0x00 },
++	{ CS43130_XSP_CH_2_LOC, 0x00 },
++	{ CS43130_XSP_CH_1_SZ_EN, 0x06 },
++	{ CS43130_XSP_CH_2_SZ_EN, 0x0E },
++	{ CS43130_DSD_VOL_B, 0x78 },
++	{ CS43130_DSD_VOL_A, 0x78 },
++	{ CS43130_DSD_PATH_CTL_1, 0xA8 },
++	{ CS43130_DSD_INT_CFG, 0x00 },
++	{ CS43130_DSD_PATH_CTL_2, 0x00 },
++	{ CS43130_DSD_PCM_MIX_CTL, 0x00 },
++	{ CS43130_DSD_PATH_CTL_3, 0x40 },
++	{ CS43130_HP_OUT_CTL_1, 0x30 },
++	{ CS43130_PCM_FILT_OPT, 0x02 },
++	{ CS43130_PCM_VOL_B, 0x78 },
++	{ CS43130_PCM_VOL_A, 0x78 },
++	{ CS43130_PCM_PATH_CTL_1, 0xA8 },
++	{ CS43130_PCM_PATH_CTL_2, 0x00 },
++	{ CS43130_CLASS_H_CTL, 0x1E },
++	{ CS43130_HP_DETECT, 0x04 },
++	{ CS43130_HP_LOAD_1, 0x00 },
++	{ CS43130_HP_MEAS_LOAD_1, 0x00 },
++	{ CS43130_HP_MEAS_LOAD_2, 0x00 },
++	{ CS43130_INT_MASK_1, 0xFF },
++	{ CS43130_INT_MASK_2, 0xFF },
++	{ CS43130_INT_MASK_3, 0xFF },
++	{ CS43130_INT_MASK_4, 0xFF },
++	{ CS43130_INT_MASK_5, 0xFF },
++};
++
++static bool cs43130_volatile_register(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case CS43130_INT_STATUS_1 ... CS43130_INT_STATUS_5:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool cs43130_readable_register(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case CS43130_DEVID_AB ... CS43130_SYS_CLK_CTL_1:
++	case CS43130_SP_SRATE ... CS43130_PAD_INT_CFG:
++	case CS43130_DXD1:
++	case CS43130_PWDN_CTL:
++	case CS43130_DXD2:
++	case CS43130_CRYSTAL_SET:
++	case CS43130_PLL_SET_1 ... CS43130_PLL_SET_5:
++	case CS43130_PLL_SET_6:
++	case CS43130_PLL_SET_7:
++	case CS43130_PLL_SET_8:
++	case CS43130_PLL_SET_9:
++	case CS43130_PLL_SET_10:
++	case CS43130_CLKOUT_CTL:
++	case CS43130_ASP_NUM_1 ... CS43130_ASP_FRAME_CONF:
++	case CS43130_XSP_NUM_1 ... CS43130_XSP_FRAME_CONF:
++	case CS43130_ASP_CH_1_LOC:
++	case CS43130_ASP_CH_2_LOC:
++	case CS43130_ASP_CH_1_SZ_EN:
++	case CS43130_ASP_CH_2_SZ_EN:
++	case CS43130_XSP_CH_1_LOC:
++	case CS43130_XSP_CH_2_LOC:
++	case CS43130_XSP_CH_1_SZ_EN:
++	case CS43130_XSP_CH_2_SZ_EN:
++	case CS43130_DSD_VOL_B ... CS43130_DSD_PATH_CTL_3:
++	case CS43130_HP_OUT_CTL_1:
++	case CS43130_PCM_FILT_OPT ... CS43130_PCM_PATH_CTL_2:
++	case CS43130_CLASS_H_CTL:
++	case CS43130_HP_DETECT:
++	case CS43130_HP_STATUS:
++	case CS43130_HP_LOAD_1:
++	case CS43130_HP_MEAS_LOAD_1:
++	case CS43130_HP_MEAS_LOAD_2:
++	case CS43130_HP_DC_STAT_1:
++	case CS43130_HP_DC_STAT_2:
++	case CS43130_HP_AC_STAT_1:
++	case CS43130_HP_AC_STAT_2:
++	case CS43130_HP_LOAD_STAT:
++	case CS43130_INT_STATUS_1 ... CS43130_INT_STATUS_5:
++	case CS43130_INT_MASK_1 ... CS43130_INT_MASK_5:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool cs43130_precious_register(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case CS43130_INT_STATUS_1 ... CS43130_INT_STATUS_5:
++		return true;
++	default:
++		return false;
++	}
++}
++
++struct cs43130_pll_params {
++	u32 pll_in;
++	u8 mclk_int;
++	u8 sclk_prediv;
++	u8 pll_div_int;
++	u32 pll_div_frac;
++	u8 pll_mode;
++	u8 pll_divout;
++	u32 pll_out;
++	u8 pll_cal_ratio;
++};
++
++static const struct cs43130_pll_params pll_ratio_table[] = {
++	{ 9600000, 1, 0x02, 0x49, 0x800000, 0x00, 0x08, 22579200, 151 },
++	{ 9600000, 0, 0x02, 0x50, 0x000000, 0x00, 0x08, 24576000, 164 },
++
++	{ 11289600, 1, 0x02, 0X40, 0, 0x01, 0x08, 22579200, 128 },
++	{ 11289600, 0, 0x02, 0x44, 0x06F700, 0x0, 0x08, 24576000, 139 },
++
++	{ 12000000, 1, 0x02, 0x49, 0x800000, 0x00, 0x0A, 22579200, 120 },
++	{ 12000000, 0, 0x02, 0x40, 0x000000, 0x00, 0x08, 24576000, 131 },
++
++	{ 12288000, 1, 0x02, 0x49, 0x800000, 0x01, 0x0A, 22579200, 118 },
++	{ 12288000, 0, 0x02, 0x40, 0x000000, 0x01, 0x08, 24576000, 128 },
++
++	{ 13000000, 1, 0x02, 0x49, 0x800000, 0x01, 0x0A, 22579200, 118 },
++	{ 13000000, 0, 0x02, 0x40, 0x000000, 0x01, 0x08, 24576000, 128 },
++
++	{ 19200000, 1, 0x02, 0x45, 0x797680, 0x01, 0x0A, 22579200, 111 },
++	{ 19200000, 0, 0x02, 0x3C, 0x7EA940, 0x01, 0x08, 24576000, 121 },
++
++	{ 22579200, 1, 0, 0, 0, 0, 0, 22579200, 0 },
++	{ 22579200, 0, 0x03, 0x44, 0x06F700, 0x00, 0x08, 24576000, 139 },
++
++	{ 24000000, 1, 0x03, 0x49, 0x800000, 0x00, 0x0A, 22579200, 120 },
++	{ 24000000, 0, 0x03, 0x40, 0x000000, 0x00, 0x08, 24576000, 131 },
++
++	{ 24576000, 1, 0x03, 0x49, 0x800000, 0x01, 0x0A, 22579200, 128 },
++	{ 24576000, 0, 0, 0, 0, 0, 0, 24576000, 0 },
++
++	{ 26000000, 1, 0x03, 0x45, 0x797680, 0x01, 0x0A, 22579200, 111 },
++	{ 26000000, 0, 0x03, 0x3C, 0x7EA940, 0x01, 0x08, 24576000, 121 },
++};
++
++static int cs43130_pll_config(struct snd_soc_codec *codec)
++{
++	struct cs43130_private *cs43130 = snd_soc_codec_get_drvdata(codec);
++	int i;
++
++	dev_dbg(codec->dev, "%s: cs43130->mclk = %d, cs43130->pll_out = %d",
++		__func__, cs43130->mclk, cs43130->pll_out);
++	for (i = 0; i < ARRAY_SIZE(pll_ratio_table); i++) {
++		if (pll_ratio_table[i].pll_in == cs43130->mclk &&
++			pll_ratio_table[i].pll_out == cs43130->pll_out) {
++
++			cs43130->mclk_int = pll_ratio_table[i].mclk_int;
++
++			if (pll_ratio_table[i].pll_cal_ratio == 0) {
++				if (cs43130->xtal_ibias > 0) {
++					usleep_range(1000, 1050);
++					/*PDN_XTAL = 0,enable*/
++					regmap_update_bits(cs43130->regmap,
++						CS43130_PWDN_CTL,
++						CS43130_PDN_XTAL_MASK,
++						0 << CS43130_PDN_XTAL_SHIFT);
++				}
++
++				/* PLL_START = 0, disable PLL_START */
++				regmap_update_bits(cs43130->regmap,
++					CS43130_PLL_SET_1,
++					CS43130_PLL_START_MASK,
++				    0 << CS43130_PLL_START_MASK);
++
++				cs43130->pll_bypass = true;
++				return 0;
++			}
++
++			/* PDN_PLL= 0,enable */
++			regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
++				CS43130_PDN_PLL_MASK,
++				0 << CS43130_PDN_PLL_SHIFT);
++
++			regmap_update_bits(cs43130->regmap, CS43130_PLL_SET_9,
++				CS43130_PLL_REF_PREDIV_MASK,
++				pll_ratio_table[i].sclk_prediv);
++
++			regmap_write(cs43130->regmap, CS43130_PLL_SET_5,
++				pll_ratio_table[i].pll_div_int);
++
++			regmap_write(cs43130->regmap, CS43130_PLL_SET_2,
++				pll_ratio_table[i].pll_div_frac &
++				CS43130_7_0_MASK);
++
++			regmap_write(cs43130->regmap, CS43130_PLL_SET_3,
++				(pll_ratio_table[i].pll_div_frac &
++				CS43130_15_8_MASK) >> 8);
++
++			regmap_write(cs43130->regmap, CS43130_PLL_SET_4,
++				(pll_ratio_table[i].pll_div_frac &
++				CS43130_23_16_MASK) >> 16);
++
++			regmap_update_bits(cs43130->regmap, CS43130_PLL_SET_8,
++				CS43130_PLL_MODE_MASK,
++				pll_ratio_table[i].pll_mode
++				<< CS43130_PLL_MODE_SHIFT);
++
++			regmap_write(cs43130->regmap, CS43130_PLL_SET_6,
++				pll_ratio_table[i].pll_divout);
++
++			regmap_write(cs43130->regmap, CS43130_PLL_SET_7,
++				pll_ratio_table[i].pll_cal_ratio);
++
++			/* PLL_START = 1, enable PLL_START */
++			regmap_update_bits(cs43130->regmap, CS43130_PLL_SET_1,
++				CS43130_PLL_START_MASK, CS43130_PLL_START_MASK);
++			cs43130->pll_bypass = false;
++			return 0;
++		}
++	}
++	return -EINVAL;
++}
++
++static int cs43130_format_config(struct snd_soc_codec *codec)
++{
++	struct cs43130_private *cs43130 = snd_soc_codec_get_drvdata(codec);
++
++	int period_size = 0;
++	int pulse_width = 0;
++	int asp_fsd;
++	int asp_stp;
++	int bick_inv;
++	int asp_m = 0;
++	int asp_sprate = 0;
++	int ret = 0;
++	unsigned int bitwidth_sclk = (cs43130->sclk / cs43130->fs) / 2;
++	unsigned int bitwidth_dai = (cs43130->dai_bit + 1) * 8;
++
++	if (cs43130->fs) {
++		if (bitwidth_sclk < bitwidth_dai) {
++			dev_err(codec->dev, "Format not supported\n");
++			return -EINVAL;
++		}
++		period_size = cs43130->sclk / cs43130->fs;
++		pulse_width = period_size/2;
++
++		if (cs43130->sclk != 0)
++			asp_m = cs43130->pll_out / cs43130->sclk;
++	}
++	dev_dbg(codec->dev, "%s: cs43130->sclk = %d, cs43130->fs = %d, cs43130->dai_bit = %d",
++		__func__, cs43130->sclk, cs43130->fs, cs43130->dai_bit);
++	dev_dbg(codec->dev, "%s: period_size = %d, pulse_width = %d, asp_m = %d",
++		__func__, period_size, pulse_width, asp_m);
++
++	if (cs43130->dai_format) {
++		/*MSB*/
++		bick_inv = 0;
++		asp_fsd = 0;
++		asp_stp = 1;
++
++	} else {
++		/*I2S*/
++		bick_inv = 1;
++		asp_fsd = 2; /* one bick delay */
++		asp_stp = 0;
++	}
++	dev_dbg(codec->dev,
++		"%s: cs43130->dai_format = %d, bick_inv = %d, asp_fsd = %d, asp_stp = %d",
++		__func__, cs43130->dai_format, bick_inv, asp_fsd, asp_stp);
++
++	switch (cs43130->fs) {
++	case 32000:
++		asp_sprate = CS43130_ASP_SPRATE_32K;
++		break;
++	case 44100:
++		asp_sprate = CS43130_ASP_SPRATE_44_1K;
++		break;
++	case 48000:
++		asp_sprate = CS43130_ASP_SPRATE_48K;
++		break;
++	case 88200:
++		asp_sprate = CS43130_ASP_SPRATE_88_2K;
++		break;
++	case 96000:
++		asp_sprate = CS43130_ASP_SPRATE_96K;
++		break;
++	case 176400:
++		asp_sprate = CS43130_ASP_SPRATE_176_4K;
++		break;
++	case 192000:
++		asp_sprate = CS43130_ASP_SPRATE_192K;
++		break;
++	case 352800:
++		asp_sprate = CS43130_ASP_SPRATE_352_8K;
++		break;
++	case 384000:
++		asp_sprate = CS43130_ASP_SPRATE_384K;
++		break;
++	default:
++		dev_err(codec->dev, "sample rate(%d) not supported\n",
++				cs43130->fs);
++		return -EINVAL;
++	}
++	dev_dbg(codec->dev, "%s: asp_sprate = %d, cs43130->asp_size = %d",
++		__func__, asp_sprate, cs43130->asp_size);
++
++	/* ASP_SPRATE = fs*/
++	regmap_write(cs43130->regmap, CS43130_SP_SRATE, asp_sprate);
++	/*ASP_SPSIZE*/
++	regmap_update_bits(cs43130->regmap, CS43130_SP_BITSIZE,
++		CS43130_SP_BITSIZE_ASP_MASK, cs43130->asp_size);
++
++
++	/* Set up slave mode */
++	/*BICK = ASP_N/ASP_M * PLL_OUT */
++	/* ASP_N = 1 */
++	regmap_write(cs43130->regmap, CS43130_ASP_NUM_1, 1);
++	regmap_write(cs43130->regmap, CS43130_ASP_NUM_2, 0);
++
++	/*ASP_M*/
++	regmap_write(cs43130->regmap, CS43130_ASP_DENOM_1, asp_m & 0xff);
++	regmap_write(cs43130->regmap, CS43130_ASP_DENOM_2, (asp_m >> 8) & 0x3f);
++
++
++	/* H / L ratio of LRCK*/
++	regmap_write(cs43130->regmap, CS43130_ASP_LRCK_HI_TIME_1,
++	    (pulse_width-1)  & 0xff);
++	regmap_write(cs43130->regmap, CS43130_ASP_LRCK_HI_TIME_2,
++	    ((pulse_width-1) >> 8) & 0xff);
++
++	/* the period of LRCK*/
++	regmap_write(cs43130->regmap, CS43130_ASP_LRCK_PERIOD_1,
++	    (period_size-1) & 0xff);
++	regmap_write(cs43130->regmap, CS43130_ASP_LRCK_PERIOD_2,
++	    ((period_size-1) >> 8) & 0xff);
++
++	/*resolution*/
++	regmap_update_bits(cs43130->regmap, CS43130_ASP_CH_1_SZ_EN,
++		CS43130_SP_BITSIZE_ASP_MASK, cs43130->dai_bit);
++	regmap_update_bits(cs43130->regmap, CS43130_ASP_CH_2_SZ_EN,
++		CS43130_SP_BITSIZE_ASP_MASK, cs43130->dai_bit);
++
++	regmap_update_bits(cs43130->regmap, CS43130_ASP_FRAME_CONF,
++		CS43130_ASP_FSD_MASK, asp_fsd << CS43130_ASP_FSD_SHIFT);
++
++	regmap_update_bits(cs43130->regmap, CS43130_ASP_FRAME_CONF,
++		CS43130_ASP_STP_MASK, asp_stp << CS43130_ASP_STP_SHIFT);
++
++	/* set clk master/slave */
++	dev_dbg(codec->dev, "%s: cs43130->dai_mode = %d",
++	    __func__, cs43130->dai_mode);
++	regmap_update_bits(cs43130->regmap, CS43130_ASP_CLOCK_CONF,
++	    CS43130_ASP_MODE_MASK, cs43130->dai_mode << CS43130_ASP_MODE_SHIFT);
++
++	return ret;
++}
++
++static int cs43130_change_clksrc(struct snd_soc_codec *codec,
++	enum cs43130_mclk_src_sel src)
++{
++	int ret = 0;
++	struct cs43130_private *cs43130 = snd_soc_codec_get_drvdata(codec);
++
++	regmap_update_bits(cs43130->regmap, CS43130_SYS_CLK_CTL_1,
++	    CS43130_MCLK_SRC_SEL_MASK, src << CS43130_MCLK_SRC_SEL_SHIFT);
++	regmap_update_bits(cs43130->regmap, CS43130_SYS_CLK_CTL_1,
++	    CS43130_MCLK_INT_MASK, cs43130->mclk_int << CS43130_MCLK_INT_SHIFT);
++
++	usleep_range(150, 200);
++
++	return ret;
++}
++
++static int cs43130_pcm_hw_params(struct snd_pcm_substream *substream,
++			    struct snd_pcm_hw_params *params,
++			    struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct cs43130_private *cs43130 = snd_soc_codec_get_drvdata(codec);
++	unsigned int bitwidth;
++	int ret = 0;
++
++	cs43130->fs = params_rate(params);
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S8:
++		cs43130->dai_bit = CS43130_SP_BIT_SIZE_8;
++		cs43130->asp_size = CS43130_SP_BIT_SIZE_32;
++		break;
++	case SNDRV_PCM_FORMAT_S16_LE:
++		cs43130->dai_bit = CS43130_SP_BIT_SIZE_16;
++		cs43130->asp_size = CS43130_SP_BIT_SIZE_24;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		cs43130->dai_bit = CS43130_SP_BIT_SIZE_24;
++		cs43130->asp_size = CS43130_SP_BIT_SIZE_16;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		cs43130->dai_bit = CS43130_SP_BIT_SIZE_32;
++		cs43130->asp_size = CS43130_SP_BIT_SIZE_8;
++		break;
++	default:
++		dev_err(codec->dev, "Format(%d) not supported",
++				params_format(params));
++		return -EINVAL;
++	}
++
++	bitwidth = (cs43130->dai_bit+1)*8;
++	dev_dbg(codec->dev, "(data bit)%d: (rate)%d",
++		bitwidth, cs43130->fs);
++
++	ret = cs43130_format_config(codec);
++	return ret;
++}
++
++static const DECLARE_TLV_DB_SCALE(pcm_vol_tlv, -12750, 50, 1);
++
++static const struct snd_kcontrol_new cs43130_snd_controls[] = {
++	SOC_DOUBLE_R_TLV("Master Playback Volume",
++			CS43130_PCM_VOL_A, CS43130_PCM_VOL_B, 0, 0xFF, 1,
++			pcm_vol_tlv),
++	SOC_SINGLE("Swap L/R", CS43130_PCM_PATH_CTL_2, 1, 1, 0),
++	SOC_SINGLE("Copy L/R", CS43130_PCM_PATH_CTL_2, 0, 1, 0),
++};
++
++static int cs43130_aspin_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct cs43130_private *cs43130 = snd_soc_codec_get_drvdata(codec);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		if (cs43130->pll_bypass)
++			cs43130_change_clksrc(codec, CS43130_MCLK_SRC_XTAL);
++		else
++			cs43130_change_clksrc(codec, CS43130_MCLK_SRC_PLL);
++
++		usleep_range(10000, 10050);
++		/* ASP_3ST = 0 in master mode */
++		if (cs43130->dai_mode)
++			regmap_update_bits(cs43130->regmap, CS43130_PAD_INT_CFG,
++						    0x01, 0x00);
++
++		regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
++						    CS43130_PDN_CLKOUT_MASK, 0
++						   << CS43130_PDN_CLKOUT_SHIFT);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		break;
++	default:
++		dev_err(codec->dev, "Invalid ASPOUT event = 0x%x\n", event);
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int cs43130_dac_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct cs43130_private *cs43130 = snd_soc_codec_get_drvdata(codec);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMD:
++		cs43130_change_clksrc(codec, CS43130_MCLK_SRC_RCO);
++
++		regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
++						    CS43130_PDN_XTAL_MASK, 1
++						   << CS43130_PDN_XTAL_SHIFT);
++		regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
++						    CS43130_PDN_PLL_MASK, 1
++						   << CS43130_PDN_PLL_SHIFT);
++		break;
++	default:
++		dev_err(codec->dev, "Invalid DAC event = 0x%x\n", event);
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int cs43130_hpin_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct cs43130_private *cs43130 = snd_soc_codec_get_drvdata(codec);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMD:
++		regmap_write(cs43130->regmap, CS43130_DXD1, 0x99);
++		regmap_update_bits(cs43130->regmap, CS43130_HP_OUT_CTL_1,
++			CS43130_HP_IN_EN_MASK, 0 << CS43130_HP_IN_EN_SHIFT);
++		regmap_write(cs43130->regmap, CS43130_DXD2, 0x00);
++		regmap_write(cs43130->regmap, CS43130_DXD1, 0x00);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		regmap_write(cs43130->regmap, CS43130_DXD1, 0x99);
++		regmap_write(cs43130->regmap, CS43130_DXD2, 0x01);
++		regmap_update_bits(cs43130->regmap, CS43130_HP_OUT_CTL_1,
++			CS43130_HP_IN_EN_MASK, 1 << CS43130_HP_IN_EN_SHIFT);
++		regmap_write(cs43130->regmap, CS43130_DXD1, 0x00);
++		break;
++	default:
++		dev_err(codec->dev, "Invalid HPIN event = 0x%x\n", event);
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget cs43130_dapm_widgets[] = {
++
++	SND_SOC_DAPM_OUTPUT("HPOUTA"),
++	SND_SOC_DAPM_OUTPUT("HPOUTB"),
++
++	SND_SOC_DAPM_AIF_IN_E("ASPIN", NULL, 0, CS43130_PWDN_CTL,
++		CS43130_PDN_ASP_SHIFT, 1, cs43130_aspin_event,
++		(SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD)),
++
++	 SND_SOC_DAPM_DAC_E("HiFi DAC",
++		NULL, CS43130_PWDN_CTL, CS43130_PDN_HP_SHIFT, 1,
++		cs43130_dac_event,
++		(SND_SOC_DAPM_PRE_PMD)
++		),
++
++	SND_SOC_DAPM_LINE("Analog Playback", cs43130_hpin_event),
++};
++
++static const struct snd_soc_dapm_route cs43130_routes[] = {
++	{"ASPIN", NULL, "DAC Playback"},
++	{"HiFi DAC", NULL, "ASPIN"},
++
++	{"HPOUTA", NULL, "HiFi DAC"},
++	{"HPOUTB", NULL, "HiFi DAC"},
++	{"HPOUTA", NULL, "Analog Playback"},
++	{"HPOUTB", NULL, "Analog Playback"},
++};
++
++static const unsigned int cs43130_src_rates[] = {
++	32000, 44100, 48000, 88200, 96000, 176400, 192000, 352800, 384000
++};
++
++static const struct snd_pcm_hw_constraint_list cs43130_constraints = {
++	.count	= ARRAY_SIZE(cs43130_src_rates),
++	.list	= cs43130_src_rates,
++};
++
++static int cs43130_pcm_startup(struct snd_pcm_substream *substream,
++			       struct snd_soc_dai *dai)
++{
++	snd_pcm_hw_constraint_list(substream->runtime, 0,
++				SNDRV_PCM_HW_PARAM_RATE, &cs43130_constraints);
++	return 0;
++}
++
++static int cs43130_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct cs43130_private *cs43130 = snd_soc_codec_get_drvdata(codec);
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++		cs43130->dai_mode = CS43130_SLAVE_MODE;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFM:
++		cs43130->dai_mode = CS43130_MASTER_MODE;
++		break;
++	default:
++		dev_err(codec->dev, "unsupported i2s master mode\n");
++		return -EINVAL;
++	}
++
++	 /* interface format */
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		cs43130->dai_format = 0;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		cs43130->dai_format = 1;
++		break;
++	default:
++		dev_err(codec->dev, "unsupported audio format except I2S and MSB\n");
++		return -EINVAL;
++	}
++
++	/* BICK/LRCK pority */
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		cs43130->bick_invert = false;
++		cs43130->lrck_invert = false;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		cs43130->bick_invert = true;
++		cs43130->lrck_invert = false;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		cs43130->bick_invert = false;
++		cs43130->lrck_invert = true;
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		cs43130->bick_invert = true;
++		cs43130->lrck_invert = true;
++		break;
++	default:
++		dev_err(codec->dev, "unsupported audio polarity\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++
++static int cs43130_set_mute(struct snd_soc_dai *dai, int mute)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct cs43130_private *cs43130 = snd_soc_codec_get_drvdata(codec);
++	int ret = 0;
++	unsigned int reg;
++	u8 mute_reg;
++
++	regmap_read(cs43130->regmap, CS43130_PCM_PATH_CTL_1, &reg);
++	mute_reg = reg & 0xfc;
++	if (mute)
++		regmap_write(cs43130->regmap, CS43130_PCM_PATH_CTL_1,
++			mute_reg | 0x03);
++	else
++		regmap_write(cs43130->regmap, CS43130_PCM_PATH_CTL_1, mute_reg);
++
++	return ret;
++}
++
++static int cs43130_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct cs43130_private *cs43130 = snd_soc_codec_get_drvdata(codec);
++
++
++	switch (div_id) {
++	case CS43130_AIF_BICK_RATE:
++		cs43130->bick = div;
++		break;
++	default:
++		dev_err(codec->dev,
++			"Unsupported divide value: div_id = %d", div_id);
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int cs43130_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
++		unsigned int freq_in, unsigned int freq_out)
++{
++	int ret = 0;
++	struct cs43130_private *cs43130 = snd_soc_codec_get_drvdata(codec);
++
++	if (freq_in < 9600000 || freq_in > 26000000) {
++		dev_err(codec->dev,
++			"unsupported pll input reference clock:%d\n", freq_in);
++		return -EINVAL;
++	}
++
++	switch (freq_in) {
++	case 9600000:
++	case 11289600:
++	case 12000000:
++	case 12288000:
++	case 13000000:
++	case 19200000:
++	case 22579200:
++	case 24000000:
++	case 24576000:
++	case 26000000:
++		cs43130->mclk = freq_in;
++		break;
++	default:
++		dev_err(codec->dev,
++			"unsupported pll input reference clock:%d\n", freq_in);
++		return -EINVAL;
++	}
++
++	switch (freq_out) {
++	case 22579200:
++		cs43130->pll_out = freq_out;
++		cs43130->mclk_int = 1;
++		break;
++	case 24576000:
++		cs43130->pll_out = freq_out;
++		cs43130->mclk_int = 0;
++		break;
++	default:
++		dev_err(codec->dev,
++			"unsupported pll output reference clock:%d\n",
++			freq_out);
++		return -EINVAL;
++	}
++
++	ret = cs43130_pll_config(codec);
++	dev_dbg(codec->dev, "%s: cs43130->pll_bypass = %d",
++		__func__, cs43130->pll_bypass);
++	return ret;
++}
++
++static int cs43130_dai_set_sysclk(struct snd_soc_dai *codec_dai,
++		int clk_id, unsigned int freq, int dir)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct cs43130_private *cs43130 = snd_soc_codec_get_drvdata(codec);
++
++	dev_dbg(codec->dev, "%s: clk_id =  %d, freq = %d, dir = %d",
++		__func__, clk_id, freq, dir);
++	cs43130->sclk = freq;
++	return 0;
++}
++
++static const struct snd_soc_dai_ops cs43130_dai_ops = {
++	.startup	= cs43130_pcm_startup,
++	.hw_params	= cs43130_pcm_hw_params,
++	.set_sysclk	= cs43130_dai_set_sysclk,
++	.set_fmt	= cs43130_set_dai_fmt,
++	.digital_mute = cs43130_set_mute,
++	.set_clkdiv = cs43130_set_clkdiv,
++};
++
++static struct snd_soc_dai_driver cs43130_dai[] = {
++	{
++		.name = "cs43130_hifi",
++		.id = 0,
++		.playback = {
++			.stream_name = "DAC Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_KNOT,
++			.formats = CS43130_ASP_FORMATS,
++		},
++		.ops = &cs43130_dai_ops,
++		.symmetric_rates = 1,
++	},
++	{
++		.name = "cs43130-xsp",
++		.id = 1,
++		.playback = {
++			.stream_name = "XSP Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_KNOT,
++			.formats = CS43130_XSP_FORMATS,
++		},
++		.symmetric_rates = 1,
++	 },
++};
++
++static int cs43130_codec_set_sysclk(struct snd_soc_codec *codec,
++		int clk_id, int source, unsigned int freq, int dir)
++{
++	/* 24576000 is not supported */
++	unsigned int mclk_int_freq = 22579200;
++
++	dev_dbg(codec->dev, "%s: clk_id = %d, source = %d, freq = %d, dir = %d\n",
++		__func__, clk_id, source, freq, dir);
++	/*
++	 * freq is external mclk freq
++	 * if freq == mclk_int_freq, pll is bypassed
++	 * modify mclk_int_freq as needed for application
++	 */
++	cs43130_set_pll(codec, 0, 0, freq, mclk_int_freq);
++	return 0;
++}
++
++static irqreturn_t cs43130_irq_thread(int irq, void *data)
++{
++	struct cs43130_private *cs43130 =
++		(struct cs43130_private *)data;
++	struct snd_soc_codec *codec = cs43130->codec;
++	unsigned int stickies[CS43130_NUM_INT];
++	unsigned int masks[CS43130_NUM_INT];
++	unsigned int i;
++
++	/* Read all INT status and mask reg */
++	regmap_bulk_read(cs43130->regmap, CS43130_INT_STATUS_1,
++		stickies, CS43130_NUM_INT * sizeof(unsigned int));
++	regmap_bulk_read(cs43130->regmap, CS43130_INT_MASK_1,
++		masks, CS43130_NUM_INT * sizeof(unsigned int));
++
++	for (i = 0; i < ARRAY_SIZE(stickies); i++)
++		stickies[i] = stickies[i] & (~masks[i]);
++
++	if (stickies[0] & CS43130_XTAL_RDY_INT)
++		dev_dbg(codec->dev, "%s: Crystal ready", __func__);
++
++	if (stickies[0] & CS43130_XTAL_ERR_INT)
++		dev_err(codec->dev, "%s: Crystal err", __func__);
++
++	if (stickies[0] & CS43130_HP_PLUG_INT)
++		dev_dbg(codec->dev, "%s: HP plugged", __func__);
++
++	if (stickies[0] & CS43130_HP_UNPLUG_INT)
++		dev_dbg(codec->dev, "%s: HP unplugged", __func__);
++
++	return IRQ_HANDLED;
++}
++
++static int cs43130_probe(struct snd_soc_codec *codec)
++{
++	struct cs43130_private *cs43130 = snd_soc_codec_get_drvdata(codec);
++
++	cs43130->codec = codec;
++
++	return 0;
++}
++
++static struct snd_soc_codec_driver soc_codec_dev_cs43130 = {
++	.probe			= cs43130_probe,
++	.component_driver = {
++		.controls		= cs43130_snd_controls,
++		.num_controls		= ARRAY_SIZE(cs43130_snd_controls),
++		.dapm_widgets		= cs43130_dapm_widgets,
++		.num_dapm_widgets	= ARRAY_SIZE(cs43130_dapm_widgets),
++		.dapm_routes		= cs43130_routes,
++		.num_dapm_routes	= ARRAY_SIZE(cs43130_routes),
++	},
++	.set_sysclk		= cs43130_codec_set_sysclk,
++	.set_pll		= cs43130_set_pll,
++};
++
++static const struct regmap_config cs43130_regmap = {
++	.reg_bits		= 24,
++	.pad_bits		= 8,
++	.val_bits		= 8,
++
++	.max_register		= CS43130_LASTREG,
++	.reg_defaults		= cs43130_reg_defaults,
++	.num_reg_defaults	= ARRAY_SIZE(cs43130_reg_defaults),
++	.readable_reg		= cs43130_readable_register,
++	.precious_reg		= cs43130_precious_register,
++	.volatile_reg		= cs43130_volatile_register,
++	.cache_type		= REGCACHE_RBTREE,
++};
++
++static int cs43130_handle_device_data(
++	struct i2c_client *i2c_client, struct cs43130_private *cs43130)
++{
++	struct device_node *np = i2c_client->dev.of_node;
++	unsigned int val;
++	int ret = 0;
++
++	of_property_read_u32(np, "cirrus,xtal-ibias", &val);
++	switch (val) {
++	case 1:
++		cs43130->xtal_ibias = CS43130_XTAL_IBIAS_7_5UA;
++		break;
++	case 2:
++		cs43130->xtal_ibias = CS43130_XTAL_IBIAS_12_5UA;
++		break;
++	case 3:
++		cs43130->xtal_ibias = CS43130_XTAL_IBIAS_15UA;
++		break;
++	default:
++		dev_info(&i2c_client->dev,
++			"cirrus,xtal-ibias value or xtal unused %d",
++			val);
++	}
++	return ret;
++}
++
++static int cs43130_i2c_probe(struct i2c_client *client,
++				      const struct i2c_device_id *id)
++{
++	struct cs43130_private *cs43130;
++	int ret;
++	unsigned int devid = 0;
++	unsigned int reg;
++	int i;
++
++	cs43130 = devm_kzalloc(&client->dev, sizeof(*cs43130), GFP_KERNEL);
++	if (cs43130 == NULL)
++		return -ENOMEM;
++
++	i2c_set_clientdata(client, cs43130);
++
++	cs43130->regmap = devm_regmap_init_i2c(client, &cs43130_regmap);
++	if (IS_ERR(cs43130->regmap)) {
++		ret = PTR_ERR(cs43130->regmap);
++		return ret;
++	}
++
++	if (client->dev.of_node) {
++		ret = cs43130_handle_device_data(client, cs43130);
++		if (ret != 0)
++			return ret;
++	}
++	for (i = 0; i < ARRAY_SIZE(cs43130->supplies); i++)
++		cs43130->supplies[i].supply = cs43130_supply_names[i];
++
++	ret = devm_regulator_bulk_get(&client->dev,
++				      ARRAY_SIZE(cs43130->supplies),
++				      cs43130->supplies);
++	if (ret != 0) {
++		dev_err(&client->dev,
++			"Failed to request supplies: %d\n", ret);
++		return ret;
++	}
++	ret = regulator_bulk_enable(ARRAY_SIZE(cs43130->supplies),
++					cs43130->supplies);
++	if (ret != 0) {
++		dev_err(&client->dev,
++			"Failed to enable supplies: %d\n", ret);
++		return ret;
++	}
++
++	cs43130->reset_gpio = devm_gpiod_get_optional(&client->dev,
++		"reset", GPIOD_OUT_LOW);
++	if (IS_ERR(cs43130->reset_gpio))
++		return PTR_ERR(cs43130->reset_gpio);
++
++	gpiod_set_value_cansleep(cs43130->reset_gpio, 1);
++
++	usleep_range(2000, 2050);
++
++	/* initialize codec */
++	ret = regmap_read(cs43130->regmap, CS43130_DEVID_AB, &reg);
++
++	devid = (reg & 0xFF) << 12;
++	ret = regmap_read(cs43130->regmap, CS43130_DEVID_CD, &reg);
++	devid |= (reg & 0xFF) << 4;
++	ret = regmap_read(cs43130->regmap, CS43130_DEVID_E, &reg);
++	devid |= (reg & 0xF0) >> 4;
++
++	switch (devid) {
++	case CS43130_CHIP_ID:
++		break;
++	case CS4399_CHIP_ID:
++		break;
++	default:
++		dev_err(&client->dev,
++			"CS43130 Device ID (%X). Expected ID %X or %X\n",
++			devid, CS43130_CHIP_ID, CS4399_CHIP_ID);
++		ret = -ENODEV;
++		goto err;
++	}
++
++	cs43130->dev_id = devid;
++	ret = regmap_read(cs43130->regmap, CS43130_REV_ID, &reg);
++	if (ret < 0) {
++		dev_err(&client->dev, "Get Revision ID failed\n");
++		goto err;
++	}
++
++	dev_info(&client->dev,
++		 "Cirrus Logic CS43130 (%x), Revision: %02X\n", devid,
++		reg & 0xFF);
++
++	/* Enable interrupt handler */
++	ret = devm_request_threaded_irq(&client->dev,
++			client->irq,
++			NULL, cs43130_irq_thread,
++			IRQF_ONESHOT | IRQF_TRIGGER_LOW,
++			"cs43130", cs43130);
++	if (ret != 0) {
++		dev_err(&client->dev, "Failed to request IRQ: %d\n", ret);
++		return ret;
++	}
++
++	/* Unmask INT */
++	regmap_update_bits(cs43130->regmap, CS43130_INT_MASK_1,
++		CS43130_XTAL_RDY_INT | CS43130_XTAL_ERR_INT |
++		CS43130_HP_PLUG_INT | CS43130_HP_UNPLUG_INT, 0);
++
++	/* Enable HP detect */
++	regmap_update_bits(cs43130->regmap, CS43130_HP_DETECT,
++		CS43130_HP_DETECT_CTRL_MASK, CS43130_HP_DETECT_CTRL_MASK);
++
++	regmap_write(cs43130->regmap,
++		CS43130_CRYSTAL_SET, cs43130->xtal_ibias);
++	ret = snd_soc_register_codec(&client->dev,
++			&soc_codec_dev_cs43130, cs43130_dai,
++			ARRAY_SIZE(cs43130_dai));
++
++	if (ret < 0) {
++		dev_err(&client->dev,
++			"%s: snd_soc_register_codec failed with ret = %d\n",
++			__func__, ret);
++		goto err;
++	}
++	return 0;
++err:
++	return ret;
++
++}
++
++static int cs43130_i2c_remove(struct i2c_client *client)
++{
++	struct cs43130_private *cs43130 = i2c_get_clientdata(client);
++
++	snd_soc_unregister_codec(&client->dev);
++
++	if (cs43130->reset_gpio)
++		gpiod_set_value_cansleep(cs43130->reset_gpio, 0);
++
++	pm_runtime_disable(&client->dev);
++	regulator_bulk_disable(CS43130_NUM_SUPPLIES,
++		cs43130->supplies);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int cs43130_runtime_suspend(struct device *dev)
++{
++	struct cs43130_private *cs43130 = dev_get_drvdata(dev);
++
++	regcache_cache_only(cs43130->regmap, true);
++	regcache_mark_dirty(cs43130->regmap);
++
++	gpiod_set_value_cansleep(cs43130->reset_gpio, 0);
++
++	regulator_bulk_disable(CS43130_NUM_SUPPLIES,
++		cs43130->supplies);
++	return 0;
++}
++
++static int cs43130_runtime_resume(struct device *dev)
++{
++	struct cs43130_private *cs43130 = dev_get_drvdata(dev);
++	int ret;
++
++	ret = regulator_bulk_enable(CS43130_NUM_SUPPLIES,
++		cs43130->supplies);
++	if (ret != 0) {
++		dev_err(dev, "Failed to enable supplies: %d\n",
++			ret);
++		return ret;
++	}
++
++	regcache_cache_only(cs43130->regmap, false);
++
++	gpiod_set_value_cansleep(cs43130->reset_gpio, 1);
++
++	usleep_range(2000, 2050);
++
++	ret = regcache_sync(cs43130->regmap);
++	if (ret != 0) {
++		dev_err(dev, "Failed to restore register cache\n");
++		goto err;
++	}
++	return 0;
++err:
++	regcache_cache_only(cs43130->regmap, true);
++	regulator_bulk_disable(CS43130_NUM_SUPPLIES,
++		cs43130->supplies);
++
++	return ret;
++}
++#endif
++
++static const struct dev_pm_ops cs43130_runtime_pm = {
++	SET_RUNTIME_PM_OPS(cs43130_runtime_suspend, cs43130_runtime_resume,
++			   NULL)
++};
++
++static const struct of_device_id cs43130_of_match[] = {
++	{ .compatible = "cirrus,cs43130", },
++	{},
++};
++
++MODULE_DEVICE_TABLE(of, cs43130_of_match);
++
++static const struct i2c_device_id cs43130_i2c_id[] = {
++	{"cs43130", 0},
++	{}
++};
++
++MODULE_DEVICE_TABLE(i2c, cs43130_i2c_id);
++
++static struct i2c_driver cs43130_i2c_driver = {
++	.driver = {
++		.name		= "cs43130",
++		.of_match_table	= cs43130_of_match,
++	},
++	.id_table	= cs43130_i2c_id,
++	.probe		= cs43130_i2c_probe,
++	.remove		= cs43130_i2c_remove,
++};
++
++module_i2c_driver(cs43130_i2c_driver);
++
++MODULE_AUTHOR("Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>");
++MODULE_DESCRIPTION("Cirrus Logic CS43130 ALSA SoC Codec Driver");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/cs43130.h b/sound/soc/codecs/cs43130.h
+new file mode 100644
+index 0000000..bceae76
+--- /dev/null
++++ b/sound/soc/codecs/cs43130.h
+@@ -0,0 +1,268 @@
++/*
++ * ALSA SoC CS43130 codec driver
++ *
++ * Copyright 2016 Cirrus Logic, Inc.
++ *
++ * Author: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ */
++
++#ifndef __CS43130_H__
++#define __CS43130_H__
++
++/* CS43130 registers addresses */
++/* all reg address is shifted by a byte for control byte to be LSB */
++#define CS43130_FIRSTREG	0x010000
++#define CS43130_LASTREG		0x0F0014
++#define CS43130_CHIP_ID		0x00043130
++#define CS4399_CHIP_ID		0x00043990
++#define CS43130_DEVID_AB	0x010000         /*Device ID A & B [RO]*/
++#define CS43130_DEVID_CD	0x010001         /*Device ID C & D [RO]*/
++#define CS43130_DEVID_E		0x010002         /*Device ID E [RO]*/
++#define CS43130_FAB_ID		0x010003         /*Fab ID [RO]*/
++#define CS43130_REV_ID		0x010004         /*Revision ID [RO]*/
++#define CS43130_SUBREV_ID	0x010005         /*Subrevision ID*/
++#define CS43130_SYS_CLK_CTL_1	0x010006      /*System Clocking Ctl 1*/
++#define CS43130_SP_SRATE	0x01000B         /*Serial Port Sample Rate*/
++#define CS43130_SP_BITSIZE	0x01000C         /*Serial Port Bit Size*/
++#define CS43130_PAD_INT_CFG	0x01000D      /*Pad Interface Config*/
++#define CS43130_DXD1            0x010010        /*DXD1*/
++#define CS43130_PWDN_CTL	0x020000         /*Power Down Ctl*/
++#define CS43130_DXD2            0x020019        /*DXD2*/
++#define CS43130_CRYSTAL_SET	0x020052      /*Crystal Setting*/
++#define CS43130_PLL_SET_1	0x030001         /*PLL Setting 1*/
++#define CS43130_PLL_SET_2	0x030002         /*PLL Setting 2*/
++#define CS43130_PLL_SET_3	0x030003         /*PLL Setting 3*/
++#define CS43130_PLL_SET_4	0x030004         /*PLL Setting 4*/
++#define CS43130_PLL_SET_5	0x030005         /*PLL Setting 5*/
++#define CS43130_PLL_SET_6	0x030008         /*PLL Setting 6*/
++#define CS43130_PLL_SET_7	0x03000A         /*PLL Setting 7*/
++#define CS43130_PLL_SET_8	0x03001B         /*PLL Setting 8*/
++#define CS43130_PLL_SET_9	0x040002         /*PLL Setting 9*/
++#define CS43130_PLL_SET_10	0x040003         /*PLL Setting 10*/
++#define CS43130_CLKOUT_CTL	0x040004         /*CLKOUT Ctl*/
++#define CS43130_ASP_NUM_1	0x040010         /*ASP Numerator 1*/
++#define CS43130_ASP_NUM_2	0x040011         /*ASP Numerator 2*/
++#define CS43130_ASP_DENOM_1	0x040012      /*ASP Denominator 1*/
++#define CS43130_ASP_DENOM_2	0x040013      /*ASP Denominator 2*/
++#define CS43130_ASP_LRCK_HI_TIME_1 0x040014 /*ASP LRCK High Time 1*/
++#define CS43130_ASP_LRCK_HI_TIME_2 0x040015 /*ASP LRCK High Time 2*/
++#define CS43130_ASP_LRCK_PERIOD_1  0x040016 /*ASP LRCK Period 1*/
++#define CS43130_ASP_LRCK_PERIOD_2  0x040017 /*ASP LRCK Period 2*/
++#define CS43130_ASP_CLOCK_CONF	0x040018   /*ASP Clock Config*/
++#define CS43130_ASP_FRAME_CONF	0x040019   /*ASP Frame Config*/
++#define CS43130_XSP_NUM_1	0x040020         /*XSP Numerator 1*/
++#define CS43130_XSP_NUM_2	0x040021         /*XSP Numerator 2*/
++#define CS43130_XSP_DENOM_1	0x040022      /*XSP Denominator 1*/
++#define CS43130_XSP_DENOM_2	0x040023      /*XSP Denominator 2*/
++#define CS43130_XSP_LRCK_HI_TIME_1 0x040024 /*XSP LRCK High Time 1*/
++#define CS43130_XSP_LRCK_HI_TIME_2 0x040025 /*XSP LRCK High Time 2*/
++#define CS43130_XSP_LRCK_PERIOD_1  0x040026 /*XSP LRCK Period 1*/
++#define CS43130_XSP_LRCK_PERIOD_2  0x040027 /*XSP LRCK Period 2*/
++#define CS43130_XSP_CLOCK_CONF	0x040028   /*XSP Clock Config*/
++#define CS43130_XSP_FRAME_CONF	0x040029   /*XSP Frame Config*/
++#define CS43130_ASP_CH_1_LOC	0x050000      /*ASP Chan 1 Location*/
++#define CS43130_ASP_CH_2_LOC	0x050001      /*ASP Chan 2 Location*/
++#define CS43130_ASP_CH_1_SZ_EN	0x05000A   /*ASP Chan 1 Size, Enable*/
++#define CS43130_ASP_CH_2_SZ_EN	0x05000B   /*ASP Chan 2 Size, Enable*/
++#define CS43130_XSP_CH_1_LOC	0x060000      /*XSP Chan 1 Location*/
++#define CS43130_XSP_CH_2_LOC	0x060001      /*XSP Chan 2 Location*/
++#define CS43130_XSP_CH_1_SZ_EN	0x06000A   /*XSP Chan 1 Size, Enable*/
++#define CS43130_XSP_CH_2_SZ_EN	0x06000B   /*XSP Chan 2 Size, Enable*/
++#define CS43130_DSD_VOL_B	0x070000         /*DSD Volume B*/
++#define CS43130_DSD_VOL_A	0x070001         /*DSD Volume A*/
++#define CS43130_DSD_PATH_CTL_1	0x070002   /*DSD Proc Path Sig Ctl 1*/
++#define CS43130_DSD_INT_CFG	0x070003      /*DSD Interface Config*/
++#define CS43130_DSD_PATH_CTL_2	0x070004   /*DSD Proc Path Sig Ctl 2*/
++#define CS43130_DSD_PCM_MIX_CTL	0x070005   /*DSD and PCM Mixing Ctl*/
++#define CS43130_DSD_PATH_CTL_3	0x070006   /*DSD Proc Path Sig Ctl 3*/
++#define CS43130_HP_OUT_CTL_1	0x080000      /*HP Output Ctl 1*/
++#define CS43130_PCM_FILT_OPT	0x090000      /*PCM Filter Option*/
++#define CS43130_PCM_VOL_B	0x090001         /*PCM Volume B*/
++#define CS43130_PCM_VOL_A	0x090002         /*PCM Volume A*/
++#define CS43130_PCM_PATH_CTL_1	0x090003   /*PCM Path Signal Ctl 1*/
++#define CS43130_PCM_PATH_CTL_2	0x090004   /*PCM Path Signal Ctl 2*/
++#define CS43130_CLASS_H_CTL	0x0B0000      /*Class H Ctl*/
++#define CS43130_HP_DETECT	0x0D0000         /*HP Detect*/
++#define CS43130_HP_STATUS	0x0D0001         /*HP Status [RO]*/
++#define CS43130_HP_LOAD_1	0x0E0000         /*HP Load 1*/
++#define CS43130_HP_MEAS_LOAD_1	0x0E0003   /*HP Load Measurement 1*/
++#define CS43130_HP_MEAS_LOAD_2	0x0E0004   /*HP Load Measurement 2*/
++#define CS43130_HP_DC_STAT_1	0x0E000D      /*HP DC Load Status 0 [RO]*/
++#define CS43130_HP_DC_STAT_2	0x0E000E      /*HP DC Load Status 1 [RO]*/
++#define CS43130_HP_AC_STAT_1	0x0E0010      /*HP AC Load Status 0 [RO]*/
++#define CS43130_HP_AC_STAT_2	0x0E0011      /*HP AC Load Status 1 [RO]*/
++#define CS43130_HP_LOAD_STAT	0x0E001A      /*HP Load Status [RO]*/
++#define CS43130_INT_STATUS_1	0x0F0000      /*Interrupt Status 1*/
++#define CS43130_INT_STATUS_2	0x0F0001      /*Interrupt Status 2*/
++#define CS43130_INT_STATUS_3	0x0F0002      /*Interrupt Status 3*/
++#define CS43130_INT_STATUS_4	0x0F0003      /*Interrupt Status 4*/
++#define CS43130_INT_STATUS_5	0x0F0004      /*Interrupt Status 5*/
++#define CS43130_INT_MASK_1	0x0F0010         /*Interrupt Mask 1*/
++#define CS43130_INT_MASK_2	0x0F0011         /*Interrupt Mask 2*/
++#define CS43130_INT_MASK_3	0x0F0012         /*Interrupt Mask 3*/
++#define CS43130_INT_MASK_4	0x0F0013         /*Interrupt Mask 4*/
++#define CS43130_INT_MASK_5	0x0F0014         /*Interrupt Mask 5*/
++
++#define CS43130_MCLK_SRC_SEL_MASK		0x03
++#define CS43130_MCLK_SRC_SEL_SHIFT		0
++#define CS43130_MCLK_INT_MASK			0x04
++#define CS43130_MCLK_INT_SHIFT			2
++#define CS43130_SP_SRATE_MASK			0x0F
++#define CS43130_SP_SRATE_SHIFT			0
++#define CS43130_SP_BITSIZE_ASP_MASK		0x03
++#define CS43130_SP_BITSIZE_ASP_SHIFT	0
++#define CS43130_HP_DETECT_CTRL_SHIFT            6
++#define CS43130_HP_DETECT_CTRL_MASK     (0x03 << CS43130_HP_DETECT_CTRL_SHIFT)
++#define CS43130_HP_DETECT_INV_SHIFT             5
++#define CS43130_HP_DETECT_INV_MASK      (1 << CS43130_HP_DETECT_INV_SHIFT)
++
++/* CS43130_INT_MASK_1 */
++#define CS43130_HP_PLUG_INT_SHIFT       6
++#define CS43130_HP_PLUG_INT             (1 << CS43130_HP_PLUG_INT_SHIFT)
++#define CS43130_HP_UNPLUG_INT_SHIFT     5
++#define CS43130_HP_UNPLUG_INT           (1 << CS43130_HP_UNPLUG_INT_SHIFT)
++#define CS43130_XTAL_RDY_INT_SHIFT      4
++#define CS43130_XTAL_RDY_INT            (1 << CS43130_XTAL_RDY_INT_SHIFT)
++#define CS43130_XTAL_ERR_INT_SHIFT      3
++#define CS43130_XTAL_ERR_INT            (1 << CS43130_XTAL_ERR_INT_SHIFT)
++
++/*Reg CS43130_SP_BITSIZE*/
++#define CS43130_SP_BIT_SIZE_8			0x00
++#define CS43130_SP_BIT_SIZE_16			0x01
++#define CS43130_SP_BIT_SIZE_24			0x02
++#define CS43130_SP_BIT_SIZE_32			0x03
++
++/*PLL*/
++#define CS43130_PLL_START_MASK (0x1<<0)
++#define CS43130_PLL_MODE_MASK  0x02
++#define CS43130_PLL_MODE_SHIFT 1
++
++#define CS43130_PLL_REF_PREDIV_MASK 0x3
++
++#define CS43130_ASP_STP_MASK	0x10
++#define CS43130_ASP_STP_SHIFT	4
++#define CS43130_ASP_5050_MASK	0x08
++#define CS43130_ASP_5050_SHIFT	3
++#define CS43130_ASP_FSD_MASK	0x07
++#define CS43130_ASP_FSD_SHIFT	0
++
++#define CS43130_ASP_MODE_MASK	0x10
++#define CS43130_ASP_MODE_SHIFT	4
++#define CS43130_ASP_SCPOL_OUT_MASK	0x08
++#define CS43130_ASP_SCPOL_OUT_SHIFT	3
++#define CS43130_ASP_SCPOL_IN_MASK	0x04
++#define CS43130_ASP_SCPOL_IN_SHIFT	2
++#define CS43130_ASP_LCPOL_OUT_MASK	0x02
++#define CS43130_ASP_LCPOL_OUT_SHIFT	1
++#define CS43130_ASP_LCPOL_IN_MASK	0x01
++#define CS43130_ASP_LCPOL_IN_SHIFT	0
++
++/*Reg CS43130_PWDN_CTL*/
++#define CS43130_PDN_XSP_MASK	0x80
++#define CS43130_PDN_XSP_SHIFT	7
++#define CS43130_PDN_ASP_MASK	0x40
++#define CS43130_PDN_ASP_SHIFT	6
++#define CS43130_PDN_DSPIF_MASK	0x20
++#define CS43130_PDN_DSDIF_SHIFT	5
++#define CS43130_PDN_HP_MASK	0x10
++#define CS43130_PDN_HP_SHIFT	4
++#define CS43130_PDN_XTAL_MASK	0x08
++#define CS43130_PDN_XTAL_SHIFT	3
++#define CS43130_PDN_PLL_MASK	0x04
++#define CS43130_PDN_PLL_SHIFT	2
++#define CS43130_PDN_CLKOUT_MASK	0x02
++#define CS43130_PDN_CLKOUT_SHIFT	1
++
++#define CS43130_7_0_MASK		0xFF
++#define CS43130_15_8_MASK		0xFF00
++#define CS43130_23_16_MASK		0xFF0000
++
++/* Reg CS43130_HP_OUT_CTL_1 */
++#define CS43130_HP_IN_EN_SHIFT		3
++#define CS43130_HP_IN_EN_MASK		0x08
++
++#define CS43130_ASP_FORMATS (SNDRV_PCM_FMTBIT_S8  | \
++			SNDRV_PCM_FMTBIT_S16_LE | \
++			SNDRV_PCM_FMTBIT_S24_LE | \
++			SNDRV_PCM_FMTBIT_S32_LE)
++
++#define CS43130_XSP_FORMATS (SNDRV_PCM_FMTBIT_S24_LE | \
++			SNDRV_PCM_FMTBIT_S32_LE)
++
++enum cs43130_asp_rate {
++	CS43130_ASP_SPRATE_32K = 0,
++	CS43130_ASP_SPRATE_44_1K,
++	CS43130_ASP_SPRATE_48K,
++	CS43130_ASP_SPRATE_88_2K,
++	CS43130_ASP_SPRATE_96K,
++	CS43130_ASP_SPRATE_176_4K,
++	CS43130_ASP_SPRATE_192K,
++	CS43130_ASP_SPRATE_352_8K,
++	CS43130_ASP_SPRATE_384K,
++};
++
++enum cs43130_mclk_src_sel {
++	CS43130_MCLK_SRC_XTAL = 0,
++	CS43130_MCLK_SRC_PLL,
++	CS43130_MCLK_SRC_RCO
++};
++
++enum cs43130_mode {
++	CS43130_SLAVE_MODE = 0,
++	CS43130_MASTER_MODE
++};
++
++enum cs43130_xtal_ibias {
++	CS43130_XTAL_IBIAS_15UA = 2,
++	CS43130_XTAL_IBIAS_12_5UA = 4,
++	CS43130_XTAL_IBIAS_7_5UA = 6,
++};
++
++#define CS43130_AIF_BICK_RATE 1
++#define CS43130_SYSCLK_MCLK 1
++#define CS43130_NUM_SUPPLIES 5
++static const char *const cs43130_supply_names[CS43130_NUM_SUPPLIES] = {
++	"VA",
++	"VP",
++	"VCP",
++	"VD",
++	"VL",
++};
++
++#define CS43130_NUM_INT 5       /* number of interrupt status reg */
++
++struct	cs43130_private {
++	struct snd_soc_codec		*codec;
++	struct regmap			*regmap;
++	struct regulator_bulk_data supplies[CS43130_NUM_SUPPLIES];
++	/* codec device ID */
++	unsigned int dev_id;
++	int				mclk;
++	int				sclk;
++	int xtal_ibias;
++
++	bool pll_bypass;
++	int pll_out;
++	int mclk_int;
++	int dai_format;
++	int dai_mode;
++	int dai_bit;
++	int asp_size;
++	int fs;
++	bool bick_invert;
++	bool lrck_invert;
++	int bick;
++	struct gpio_desc *reset_gpio;
++};
++
++#endif	/* __CS43130_H__ */
+-- 
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
