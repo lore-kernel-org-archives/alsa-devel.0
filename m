@@ -1,77 +1,55 @@
-From: Jose Abreu <Jose.Abreu@synopsys.com>
-Subject: [PATCH] ASoC: dwc: Fix PIO mode initialization
-Date: Tue, 13 Dec 2016 11:03:49 +0000
-Message-ID: <1ded72e27be422c2591fb252ea30b87cdbb7e7b1.1481626830.git.joabreu@synopsys.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+From: Alexander Shiyan <shc_work@mail.ru>
+Subject: [PATCH] ASoC: wm8753: Add control to allow swapping
+	HiFi DAC channels
+Date: Tue, 13 Dec 2016 13:56:19 +0300
+Message-ID: <1481626579-23642-1-git-send-email-shc_work@mail.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp47.i.mail.ru (smtp47.i.mail.ru [94.100.177.107])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9DD73261A1A
+ for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2016 11:56:30 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Jose Abreu <Jose.Abreu@synopsys.com>, Carlos Palminha <CARLOS.PALMINHA@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Cc: Alexander Shiyan <shc_work@mail.ru>, patches@opensource.wolfsonmicro.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-We can no longer rely on the return value of
-devm_snd_dmaengine_pcm_register(...) to check if the DMA
-handle is declared in the DT.
+This patch adds a control to allow swapping HiFi DAC Left/Right channels.
 
-Previously this check activated PIO mode but currently
-dma_request_chan returns either a valid channel or -EPROBE_DEFER.
-
-In order to activate PIO mode check instead if the interrupt
-line is declared. This reflects better what is documented in
-the DT bindings (see Documentation/devicetree/bindings/sound/
-designware-i2s.txt).
-
-Also, initialize use_pio variable which was never being set
-causing PIO mode to never work.
-
-Signed-off-by: Jose Abreu <joabreu@synopsys.com>
-Cc: Carlos Palminha <palminha@synopsys.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 ---
- sound/soc/dwc/designware_i2s.c | 25 +++++++++++--------------
- 1 file changed, 11 insertions(+), 14 deletions(-)
+ sound/soc/codecs/wm8753.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index 2998954..bdf8398 100644
---- a/sound/soc/dwc/designware_i2s.c
-+++ b/sound/soc/dwc/designware_i2s.c
-@@ -681,22 +681,19 @@ static int dw_i2s_probe(struct platform_device *pdev)
- 	}
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index 9bdf544..d05d76e 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -280,6 +280,7 @@ static const DECLARE_TLV_DB_SCALE(voice_mix_tlv, -1200, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(pga_tlv, -1725, 75, 0);
  
- 	if (!pdata) {
--		ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
--		if (ret == -EPROBE_DEFER) {
--			dev_err(&pdev->dev,
--				"failed to register PCM, deferring probe\n");
--			return ret;
--		} else if (ret) {
--			dev_err(&pdev->dev,
--				"Could not register DMA PCM: %d\n"
--				"falling back to PIO mode\n", ret);
-+		if (irq >= 0) {
- 			ret = dw_pcm_register(pdev);
--			if (ret) {
--				dev_err(&pdev->dev,
--					"Could not register PIO PCM: %d\n",
-+			dev->use_pio = true;
-+		} else {
-+			ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL,
-+					0);
-+			dev->use_pio = false;
-+		}
-+
-+		if (ret) {
-+			dev_err(&pdev->dev, "could not register pcm: %d\n",
- 					ret);
--				goto err_clk_disable;
--			}
-+			goto err_clk_disable;
- 		}
- 	}
+ static const struct snd_kcontrol_new wm8753_snd_controls[] = {
++SOC_SINGLE("Hi-Fi DAC Left/Right channel Swap", WM8753_HIFI, 5, 1, 0),
+ SOC_DOUBLE_R_TLV("PCM Volume", WM8753_LDAC, WM8753_RDAC, 0, 255, 0, dac_tlv),
  
+ SOC_DOUBLE_R_TLV("ADC Capture Volume", WM8753_LADC, WM8753_RADC, 0, 255, 0,
+@@ -1087,7 +1088,7 @@ static int wm8753_i2s_set_dai_fmt(struct snd_soc_codec *codec,
+ {
+ 	u16 ioctl, hifi;
+ 
+-	hifi = snd_soc_read(codec, WM8753_HIFI) & 0x011f;
++	hifi = snd_soc_read(codec, WM8753_HIFI) & 0x013f;
+ 	ioctl = snd_soc_read(codec, WM8753_IOCTL) & 0x00ae;
+ 
+ 	/* set master/slave audio interface */
 -- 
-1.9.1
+2.4.9
