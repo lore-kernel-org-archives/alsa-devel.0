@@ -1,16 +1,16 @@
 From: Li Xu <li.xu@cirrus.com>
-Subject: [PATCH 1/2] ASoC: cs35l35: Add support for Cirrus
+Subject: [PATCH v2 1/2] ASoC: cs35l35: Add support for Cirrus
 	CS35L35 Amplifier
-Date: Tue, 13 Dec 2016 10:08:50 -0600
-Message-ID: <ad824398-5534-495c-91d3-656341bf8212@EX4.ad.cirrus.com>
+Date: Tue, 13 Dec 2016 10:26:43 -0600
+Message-ID: <ee0191cf-f117-4763-b0d5-b1b27dc154a1@EX3.ad.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id E5A55266E2D
- for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2016 17:09:06 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EED3266E69
+ for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2016 17:26:46 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,9 +32,9 @@ Signed-off-by: Li Xu <li.xu@cirrus.com>
  include/sound/cs35l35.h    |  104 ++++
  sound/soc/codecs/Kconfig   |    5 +
  sound/soc/codecs/Makefile  |    2 +
- sound/soc/codecs/cs35l35.c | 1355 ++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/cs35l35.h |  284 ++++++++++
- 5 files changed, 1750 insertions(+)
+ sound/soc/codecs/cs35l35.c | 1357 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/cs35l35.h |  285 ++++++++++
+ 5 files changed, 1753 insertions(+)
  create mode 100644 include/sound/cs35l35.h
  create mode 100644 sound/soc/codecs/cs35l35.c
  create mode 100644 sound/soc/codecs/cs35l35.h
@@ -194,16 +194,17 @@ index 7e1dad7..a5622f6 100644
  obj-$(CONFIG_SND_SOC_CS42L51_I2C)	+= snd-soc-cs42l51-i2c.o
 diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
 new file mode 100644
-index 0000000..b05e900
+index 0000000..ea84430
 --- /dev/null
 +++ b/sound/soc/codecs/cs35l35.c
-@@ -0,0 +1,1355 @@
+@@ -0,0 +1,1357 @@
 +/*
 + * cs35l35.c -- CS35L35 ALSA SoC audio driver
 + *
 + * Copyright 2016 Cirrus Logic, Inc.
 + *
-+ * Author: Li Xu <li.xu@cirrus.com>
++ * Author: Brian Austin <brian.austin@cirrus.com>
++ *         Li Xu <li.xu@cirrus.com>
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License version 2 as
@@ -1551,20 +1552,22 @@ index 0000000..b05e900
 +module_i2c_driver(cs35l35_i2c_driver);
 +
 +MODULE_DESCRIPTION("ASoC CS35L35 driver");
++MODULE_AUTHOR("Brian Austin, Cirrus Logic Inc, <brian.austin@cirrus.com>");
 +MODULE_AUTHOR("Li Xu, Cirrus Logic Inc, <li.xu@cirrus.com>");
 +MODULE_LICENSE("GPL");
 diff --git a/sound/soc/codecs/cs35l35.h b/sound/soc/codecs/cs35l35.h
 new file mode 100644
-index 0000000..fb02785
+index 0000000..767227e
 --- /dev/null
 +++ b/sound/soc/codecs/cs35l35.h
-@@ -0,0 +1,284 @@
+@@ -0,0 +1,285 @@
 +/*
 + * cs35l35.h -- CS35L35 ALSA SoC audio driver
 + *
 + * Copyright 2016 Cirrus Logic, Inc.
 + *
-+ * Author: Li Xu <li.xu@cirrus.com>
++ * Author: Brian Austin <brian.austin@cirrus.com>
++ *         Li Xu <li.xu@cirrus.com>
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License version 2 as
