@@ -1,31 +1,84 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 2/2] ASoC: cs43130: Add devicetree bindings for CS43130
-Date: Tue, 13 Dec 2016 13:46:46 -0600
-Message-ID: <20161213194646.546pdlysycajvlde@rob-hp-laptop>
-References: <1481573851-1421-1-git-send-email-li.xu@cirrus.com>
- <63e40838-0226-4f9d-ab41-5815c724e9ef@EX3.ad.cirrus.com>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH v6 1/3] clk: x86: Add Atom PMC platform clocks
+Date: Tue, 13 Dec 2016 15:25:24 -0800
+Message-ID: <20161213232524.GQ5423@codeaurora.org>
+References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
+ <1481306510-7471-2-git-send-email-irina.tirdea@intel.com>
+ <CAHp75Vdaw4yvTPP2JZc+ti-AVNsisRQ+WG=JxPQ1jv-r7DADQA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <linux-acpi-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <63e40838-0226-4f9d-ab41-5815c724e9ef-XU/xxMRwCJnfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
+In-Reply-To: <CAHp75Vdaw4yvTPP2JZc+ti-AVNsisRQ+WG=JxPQ1jv-r7DADQA@mail.gmail.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Irina Tirdea <irina.tirdea@intel.com>, linux-clk@vger.kernel.org, "x86@kernel.org" <x86@kernel.org>, platform-driver-x86@vger.kernel.org, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Michael Turquette <mturquette@baylibre.com>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 12, 2016 at 02:17:31PM -0600, Li Xu wrote:
-> Add devicetree bindings documentation file for Cirrus
-> Logic CS43130 codec.
+On 12/13, Andy Shevchenko wrote:
+> On Fri, Dec 9, 2016 at 8:01 PM, Irina Tirdea <irina.tirdea@intel.com> wrote:
 > 
-> Signed-off-by: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/cs43130.txt          | 41 ++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/cs43130.txt
+> > --- a/drivers/clk/x86/Makefile
+> > +++ b/drivers/clk/x86/Makefile
+> > @@ -1,2 +1,5 @@
+> >  clk-x86-lpss-objs              := clk-lpt.o
+> >  obj-$(CONFIG_X86_INTEL_LPSS)   += clk-x86-lpss.o
+> 
+> > +ifeq ($(CONFIG_COMMON_CLK), y)
+> 
+> Hmm... I think (I didn't check) we don't go here otherwise.
 
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+We should move this statement to drivers/clk/Makefile around the
+x86 line.
+
+> > +                                       void __iomem *base,
+> > +                                       const char **parent_names,
+> > +                                       int num_parents)
+> > +{
+> > +       struct clk_plt *pclk;
+> > +       struct clk_init_data init;
+> > +       int ret;
+> > +
+> > +       pclk = devm_kzalloc(&pdev->dev, sizeof(*pclk), GFP_KERNEL);
+> > +       if (!pclk)
+> > +               return ERR_PTR(-ENOMEM);
+> > +
+> > +       init.name =  kasprintf(GFP_KERNEL, "%s%d", PLT_CLK_NAME_BASE, id);
+> 
+> devm_kasprintf()
+
+Please no.
+
+> 
+> > +       init.ops = &plt_clk_ops;
+> > +       init.flags = 0;
+> > +       init.parent_names = parent_names;
+> > +       init.num_parents = num_parents;
+> > +
+> > +       pclk->hw.init = &init;
+> > +       pclk->reg = base + id * PMC_CLK_CTL_SIZE;
+> > +       spin_lock_init(&pclk->lock);
+> > +
+> > +       ret = devm_clk_hw_register(&pdev->dev, &pclk->hw);
+> > +       if (ret)
+> > +               goto err_free_init;
+> > +
+> > +       pclk->lookup = clkdev_hw_create(&pclk->hw, init.name, NULL);
+> > +       if (!pclk->lookup) {
+> > +               ret = -ENOMEM;
+> > +               goto err_free_init;
+> > +       }
+> > +
+> 
+> > +       kfree(init.name);
+> 
+> devm_kfree();
+
+It's all local to this function, devm isn't helping anything.
+Having one kfree() would be good though. And using init.name for
+the clkdev lookup is probably wrong and should be replaced with
+something more generic along with an associated device name.
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
