@@ -1,20 +1,22 @@
-From: Alan Young <Alan.Young@IEE.org>
-Subject: Re: [PATCH RESEND] pcm_rate: Do not discard slave
- reported delay in status result.
-Date: Tue, 13 Dec 2016 13:05:36 +0000
-Message-ID: <29c0939c-685e-375f-73d6-167e40f6a388@IEE.org>
-References: <bdb7665c-5747-8888-fa2e-552e852fa375@IEE.org>
- <52e39131-9141-b466-e92a-ff19ffab6d3a@IEE.org> <s5hshqb5sj1.wl-tiwai@suse.de>
- <372cbe9d-2456-75e0-cdaf-056df21a4b31@IEE.org> <s5hshpsgibl.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 2/2] ASoC: hdmi-codec: add channel mapping
+	control
+Date: Tue, 13 Dec 2016 22:23:54 +0900
+Message-ID: <636ed854-e80c-e18c-314d-54c870d2c1bc@sakamocchi.jp>
+References: <1481215067-19362-1-git-send-email-arnaud.pouliquen@st.com>
+ <1481215067-19362-3-git-send-email-arnaud.pouliquen@st.com>
+ <1cc79b45-d45c-35da-8e85-b349f0338866@sakamocchi.jp>
+ <d9d775e9-b077-ae53-6b3f-6c4d6f40c0c3@st.com>
+ <be85377b-5aae-5f3a-76da-8f2b851e5cfa@sakamocchi.jp>
+ <6589c8e0-f918-10c3-3d7b-39d50b429850@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------41CCA3E482A419D2FCE8CD03"
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f41.google.com (mail-wm0-f41.google.com [74.125.82.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 20970266DEC
- for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2016 14:05:39 +0100 (CET)
-Received: by mail-wm0-f41.google.com with SMTP id a197so108773098wmd.0
- for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2016 05:05:39 -0800 (PST)
-In-Reply-To: <s5hshpsgibl.wl-tiwai@suse.de>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 0D311261A1A
+ for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2016 14:24:00 +0100 (CET)
+In-Reply-To: <6589c8e0-f918-10c3-3d7b-39d50b429850@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,155 +26,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Cc: "kernel@stlinux.com" <kernel@stlinux.com>, Takashi Iwai <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>, "broonie@kernel.org" <broonie@kernel.org>, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------41CCA3E482A419D2FCE8CD03
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 13/12/16 11:49, Takashi Iwai wrote:
-> Compare the argument you passed there and the function definition,
-> it's obvious:)
-
-!$$"%%! Ouch. Sorry about that. One of those things that can happen when 
-a patch is cherry-picked and "fixed". Not really sure why it compiles 
-with just a warning.
-
-Fixed patch attached.
-
-Alan.
-
---------------41CCA3E482A419D2FCE8CD03
-Content-Type: text/x-patch;
- name="0001-pcm_rate-Do-not-discard-slave-reported-delay-in-stat.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-pcm_rate-Do-not-discard-slave-reported-delay-in-stat.pa";
- filename*1="tch"
-
->From b3aacdcee7431142748d675ebc8792cb0ca02630 Mon Sep 17 00:00:00 2001
-From: Alan Young <consult.awy@gmail.com>
-Date: Tue, 14 Jun 2016 10:15:01 +0100
-Subject: [PATCH] pcm_rate: Do not discard slave reported delay in status
- result.
-
-snd_pcm_rate_status() gets the underlying status from the slave PCM.
-This may contain a delay value that includes elements such as codec and
-other transfer delays. Use this as the base for the returned delay
-value, adjusted for any frames buffered locally (within the rate
-plugin).
-
-Also update snd_pcm_rate_delay() similarly.
-
-Signed-off-by: Alan Young <consult.awy@gmail.com>
----
- src/pcm/pcm_rate.c | 49 +++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 43 insertions(+), 6 deletions(-)
-
-diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
-index 6184def..f340b67 100644
---- a/src/pcm/pcm_rate.c
-+++ b/src/pcm/pcm_rate.c
-@@ -559,10 +559,9 @@ snd_pcm_rate_read_areas1(snd_pcm_t *pcm,
- 		   pcm->channels, rate);
- }
- 
--static inline void snd_pcm_rate_sync_hwptr(snd_pcm_t *pcm)
-+static inline void snd_pcm_rate_sync_hwptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_ptr)
- {
- 	snd_pcm_rate_t *rate = pcm->private_data;
--	snd_pcm_uframes_t slave_hw_ptr = *rate->gen.slave->hw.ptr;
- 
- 	if (pcm->stream != SND_PCM_STREAM_PLAYBACK)
- 		return;
-@@ -576,6 +575,12 @@ static inline void snd_pcm_rate_sync_hwptr(snd_pcm_t *pcm)
- 	rate->hw_ptr %= pcm->boundary;
- }
- 
-+static inline void snd_pcm_rate_sync_hwptr(snd_pcm_t *pcm)
-+{
-+	snd_pcm_rate_t *rate = pcm->private_data;
-+	snd_pcm_rate_sync_hwptr0(pcm, *rate->gen.slave->hw.ptr);
-+}
-+
- static int snd_pcm_rate_hwsync(snd_pcm_t *pcm)
- {
- 	snd_pcm_rate_t *rate = pcm->private_data;
-@@ -586,10 +591,37 @@ static int snd_pcm_rate_hwsync(snd_pcm_t *pcm)
- 	return 0;
- }
- 
-+static snd_pcm_uframes_t snd_pcm_rate_playback_internal_delay(snd_pcm_t *pcm)
-+{
-+	snd_pcm_rate_t *rate = pcm->private_data;
-+
-+	if (rate->appl_ptr < rate->last_commit_ptr) {
-+		return rate->appl_ptr - rate->last_commit_ptr + pcm->boundary;
-+	} else {
-+		return rate->appl_ptr - rate->last_commit_ptr;
-+	}
-+}
-+
- static int snd_pcm_rate_delay(snd_pcm_t *pcm, snd_pcm_sframes_t *delayp)
- {
-+	snd_pcm_rate_t *rate = pcm->private_data;
-+	snd_pcm_sframes_t slave_delay;
-+	int err;
-+
- 	snd_pcm_rate_hwsync(pcm);
--	*delayp = snd_pcm_mmap_hw_avail(pcm);
-+
-+	err = snd_pcm_delay(rate->gen.slave, &slave_delay);
-+	if (err < 0) {
-+		return err;
-+	}
-+
-+	if (pcm->stream == SND_PCM_STREAM_PLAYBACK) {
-+		*delayp = rate->ops.input_frames(rate->obj, slave_delay)
-+				+ snd_pcm_rate_playback_internal_delay(pcm);
-+	} else {
-+		*delayp = rate->ops.output_frames(rate->obj, slave_delay)
-+				+ snd_pcm_mmap_capture_hw_avail(pcm);
-+	}
- 	return 0;
- }
- 
-@@ -1083,15 +1115,20 @@ static int snd_pcm_rate_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
- 			status->state = SND_PCM_STATE_RUNNING;
- 		status->trigger_tstamp = rate->trigger_tstamp;
- 	}
--	snd_pcm_rate_sync_hwptr(pcm);
-+	snd_pcm_rate_sync_hwptr0(pcm, status->hw_ptr);
- 	status->appl_ptr = *pcm->appl.ptr;
- 	status->hw_ptr = *pcm->hw.ptr;
- 	if (pcm->stream == SND_PCM_STREAM_PLAYBACK) {
--		status->delay = snd_pcm_mmap_playback_hw_avail(pcm);
-+		status->delay = rate->ops.input_frames(rate->obj, status->delay)
-+					+ snd_pcm_rate_playback_internal_delay(pcm);
- 		status->avail = snd_pcm_mmap_playback_avail(pcm);
- 		status->avail_max = rate->ops.input_frames(rate->obj, status->avail_max);
- 	} else {
--		status->delay = snd_pcm_mmap_capture_hw_avail(pcm);
-+		status->delay = rate->ops.output_frames(rate->obj, status->delay)
-+					+ snd_pcm_mmap_capture_hw_avail(pcm);
-+					// Maybe possible to somthing similar to
-+					// snd_pcm_rate_playback_internal_delay()
-+					// for the capture case.
- 		status->avail = snd_pcm_mmap_capture_avail(pcm);
- 		status->avail_max = rate->ops.output_frames(rate->obj, status->avail_max);
- 	}
--- 
-2.5.5
-
-
---------------41CCA3E482A419D2FCE8CD03
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------41CCA3E482A419D2FCE8CD03--
+SGkgQXJuYXVkLAoKT24gRGVjIDEyIDIwMTYgMjI6NDYsIEFybmF1ZCBQb3VsaXF1ZW4gd3JvdGU6
+Cj4gT24gMTIvMTIvMjAxNiAwMTowMyBQTSwgVGFrYXNoaSBTYWthbW90byB3cm90ZToKPj4gT24g
+MjAxNuW5tDEy5pyIMTLml6UgMTg6MzgsIEFybmF1ZCBQb3VsaXF1ZW4gd3JvdGU6Cj4+Pj4+ICsg
+Ki8KPj4+Pj4gK3N0YXRpYyBzdHJ1Y3QgaGRtaV9jb2RlY19jZWFfc3BrX2FsbG9jIGhkbWlfY29k
+ZWNfY2hhbm5lbF9hbGxvY1tdID0gewo+Pj4+PiArLyoJCQkgIGNoYW5uZWw6ICAgNyAgICAgNiAg
+ICA1ICAgIDQgICAgMyAgICAgMiAgICAxICAgIDAgICovCj4+Pj4+ICt7IC5jYV9pbmRleCA9IDB4
+MDAsICAuc3BlYWtlcnMgPSB7ICAgMCwgICAgMCwgICAwLCAgIDAsICAgMCwgICAgMCwgIEZSLCAg
+RkwgfSB9LAo+Pj4+PiArCQkJCSAvKiAyLjEgKi8KPj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwMSwg
+IC5zcGVha2VycyA9IHsgICAwLCAgICAwLCAgIDAsICAgMCwgICAwLCAgTEZFLCAgRlIsICBGTCB9
+IH0sCj4+Pj4+ICsJCQkJIC8qIERvbGJ5IFN1cnJvdW5kICovCj4+Pj4+ICt7IC5jYV9pbmRleCA9
+IDB4MDIsICAuc3BlYWtlcnMgPSB7ICAgMCwgICAgMCwgICAwLCAgIDAsICBGQywgICAgMCwgIEZS
+LCAgRkwgfSB9LAo+Pj4+PiArCQkJCSAvKiBzdXJyb3VuZDUxICovCj4+Pj4+ICt7IC5jYV9pbmRl
+eCA9IDB4MGIsICAuc3BlYWtlcnMgPSB7ICAgMCwgICAgMCwgIFJSLCAgUkwsICBGQywgIExGRSwg
+IEZSLCAgRkwgfSB9LAo+Pj4+PiArCQkJCSAvKiBzdXJyb3VuZDQwICovCj4+Pj4+ICt7IC5jYV9p
+bmRleCA9IDB4MDgsICAuc3BlYWtlcnMgPSB7ICAgMCwgICAgMCwgIFJSLCAgUkwsICAgMCwgICAg
+MCwgIEZSLCAgRkwgfSB9LAo+Pj4+PiArCQkJCSAvKiBzdXJyb3VuZDQxICovCj4+Pj4+ICt7IC5j
+YV9pbmRleCA9IDB4MDksICAuc3BlYWtlcnMgPSB7ICAgMCwgICAgMCwgIFJSLCAgUkwsICAgMCwg
+IExGRSwgIEZSLCAgRkwgfSB9LAo+Pj4+PiArCQkJCSAvKiBzdXJyb3VuZDUwICovCj4+Pj4+ICt7
+IC5jYV9pbmRleCA9IDB4MGEsICAuc3BlYWtlcnMgPSB7ICAgMCwgICAgMCwgIFJSLCAgUkwsICBG
+QywgICAgMCwgIEZSLCAgRkwgfSB9LAo+Pj4+PiArCQkJCSAvKiA2LjEgKi8KPj4+Pj4gK3sgLmNh
+X2luZGV4ID0gMHgwZiwgIC5zcGVha2VycyA9IHsgICAwLCAgIFJDLCAgUlIsICBSTCwgIEZDLCAg
+TEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4+ICsJCQkJIC8qIHN1cnJvdW5kNzEgKi8KPj4+Pj4gK3sg
+LmNhX2luZGV4ID0gMHgxMywgIC5zcGVha2VycyA9IHsgUlJDLCAgUkxDLCAgUlIsICBSTCwgIEZD
+LCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4+ICsKPj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwMywg
+IC5zcGVha2VycyA9IHsgICAwLCAgICAwLCAgIDAsICAgMCwgIEZDLCAgTEZFLCAgRlIsICBGTCB9
+IH0sCj4+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MDQsICAuc3BlYWtlcnMgPSB7ICAgMCwgICAgMCwg
+ICAwLCAgUkMsICAgMCwgICAgMCwgIEZSLCAgRkwgfSB9LAo+Pj4+PiAreyAuY2FfaW5kZXggPSAw
+eDA1LCAgLnNwZWFrZXJzID0geyAgIDAsICAgIDAsICAgMCwgIFJDLCAgIDAsICBMRkUsICBGUiwg
+IEZMIH0gfSwKPj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgwNiwgIC5zcGVha2VycyA9IHsgICAwLCAg
+ICAwLCAgIDAsICBSQywgIEZDLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4+ICt7IC5jYV9pbmRl
+eCA9IDB4MDcsICAuc3BlYWtlcnMgPSB7ICAgMCwgICAgMCwgICAwLCAgUkMsICBGQywgIExGRSwg
+IEZSLCAgRkwgfSB9LAo+Pj4+PiAreyAuY2FfaW5kZXggPSAweDBjLCAgLnNwZWFrZXJzID0geyAg
+IDAsICAgUkMsICBSUiwgIFJMLCAgIDAsICAgIDAsICBGUiwgIEZMIH0gfSwKPj4+Pj4gK3sgLmNh
+X2luZGV4ID0gMHgwZCwgIC5zcGVha2VycyA9IHsgICAwLCAgIFJDLCAgUlIsICBSTCwgICAwLCAg
+TEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MGUsICAuc3BlYWtlcnMg
+PSB7ICAgMCwgICBSQywgIFJSLCAgUkwsICBGQywgICAgMCwgIEZSLCAgRkwgfSB9LAo+Pj4+PiAr
+eyAuY2FfaW5kZXggPSAweDEwLCAgLnNwZWFrZXJzID0geyBSUkMsICBSTEMsICBSUiwgIFJMLCAg
+IDAsICAgIDAsICBGUiwgIEZMIH0gfSwKPj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxMSwgIC5zcGVh
+a2VycyA9IHsgUlJDLCAgUkxDLCAgUlIsICBSTCwgICAwLCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+
+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MTIsICAuc3BlYWtlcnMgPSB7IFJSQywgIFJMQywgIFJSLCAg
+UkwsICBGQywgICAgMCwgIEZSLCAgRkwgfSB9LAo+Pj4+PiAreyAuY2FfaW5kZXggPSAweDE0LCAg
+LnNwZWFrZXJzID0geyBGUkMsICBGTEMsICAgMCwgICAwLCAgIDAsICAgIDAsICBGUiwgIEZMIH0g
+fSwKPj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxNSwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAg
+IDAsICAgMCwgICAwLCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4+ICt7IC5jYV9pbmRleCA9IDB4
+MTYsICAuc3BlYWtlcnMgPSB7IEZSQywgIEZMQywgICAwLCAgIDAsICBGQywgICAgMCwgIEZSLCAg
+RkwgfSB9LAo+Pj4+PiAreyAuY2FfaW5kZXggPSAweDE3LCAgLnNwZWFrZXJzID0geyBGUkMsICBG
+TEMsICAgMCwgICAwLCAgRkMsICBMRkUsICBGUiwgIEZMIH0gfSwKPj4+Pj4gK3sgLmNhX2luZGV4
+ID0gMHgxOCwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgIDAsICBSQywgICAwLCAgICAwLCAg
+RlIsICBGTCB9IH0sCj4+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MTksICAuc3BlYWtlcnMgPSB7IEZS
+QywgIEZMQywgICAwLCAgUkMsICAgMCwgIExGRSwgIEZSLCAgRkwgfSB9LAo+Pj4+PiAreyAuY2Ff
+aW5kZXggPSAweDFhLCAgLnNwZWFrZXJzID0geyBGUkMsICBGTEMsICAgMCwgIFJDLCAgRkMsICAg
+IDAsICBGUiwgIEZMIH0gfSwKPj4+Pj4gK3sgLmNhX2luZGV4ID0gMHgxYiwgIC5zcGVha2VycyA9
+IHsgRlJDLCAgRkxDLCAgIDAsICBSQywgIEZDLCAgTEZFLCAgRlIsICBGTCB9IH0sCj4+Pj4+ICt7
+IC5jYV9pbmRleCA9IDB4MWMsICAuc3BlYWtlcnMgPSB7IEZSQywgIEZMQywgIFJSLCAgUkwsICAg
+MCwgICAgMCwgIEZSLCAgRkwgfSB9LAo+Pj4+PiAreyAuY2FfaW5kZXggPSAweDFkLCAgLnNwZWFr
+ZXJzID0geyBGUkMsICBGTEMsICBSUiwgIFJMLCAgIDAsICBMRkUsICBGUiwgIEZMIH0gfSwKPj4+
+Pj4gK3sgLmNhX2luZGV4ID0gMHgxZSwgIC5zcGVha2VycyA9IHsgRlJDLCAgRkxDLCAgUlIsICBS
+TCwgIEZDLCAgICAwLCAgRlIsICBGTCB9IH0sCj4+Pj4+ICt7IC5jYV9pbmRleCA9IDB4MWYsICAu
+c3BlYWtlcnMgPSB7IEZSQywgIEZMQywgIFJSLCAgUkwsICBGQywgIExGRSwgIEZSLCAgRkwgfSB9
+LAo+Pj4+PiArfTsKPj4+Pgo+Pj4+IERpdHRvLgo+Pj4gU29ycnkgbm90IHVuZGVyc3RhbmQgdGhp
+cyBjb21tZW50IHZzIHRoZSBwcmV2aW91cyBvbmUsIGNvdWxkIHlvdSBwbGVhc2UKPj4+IGNsYXJp
+Znk/Cj4+Cj4+IFRoaXMgdGFibGUgaXMgaW52YXJpYW50IGluIGxpZmV0aW1lIG9mIHRoZSBzdG9y
+YWdlIG9iamVjdCwgYXMgd2VsbC4KPj4gTGV0J3MgcHV0IGludG8gLnJvZGF0YSBzZWN0aW9uLCB0
+b28uCj4+Cj4gVGhpcyB0YWJsZSBpcyB1cGRhdGVkIGluIGhkbWlfY29kZWNfY2VhX2luaXRfY2hh
+bm5lbF9hbGxvYyBzbyBjYW4gbm90IGJlCj4gY29uc3RhbnQuIEluIHRoZW9yeSBpIGNvdWxkIGRl
+Y2xhcmUgYWxsIGZpZWxkIGluc3RlYWQgb2YgY29tcHV0aW5nIHNvbWUuCj4gQnV0IGZvciBsaXNp
+YmlsaXR5LCBpIHdvdWxkIHByZWZlciB0byBqdXN0IGRlY2xhcmUgY2FfaW5kZXggIGFuZAo+IHNw
+ZWFrZXJzIGFsbG9jYXRpb24gZmllbGQgaW4gdGhpcyB0YWJsZSAoaSB3aWxsIGRlY2xhcmVkIGJv
+dGggYXMgY29uc3QpCgpZb3Ugc2hvdWxkIHBheSBlbm91Z2ggYXR0ZW50aW9uIHRvIGEgY2FzZSB0
+aGF0IG9uZSBzeXN0ZW0gaGFzIHNldmVyYWwgCkdQVXMgdG8gd2hpY2ggcmVsZXZhbnQgR1BVIGRy
+aXZlcnMgcmVnaXN0ZXIgSERNSV9DT0RFQ19EUlZfTkFNRSBwbGF0Zm9ybSAKZGV2aWNlLiBUaGUg
+J3N0YXRpYycgbW9kaWZpZXIgaGFzIGFuIGVmZmVjdCB0byBrZWVwIGp1c3Qgb25lIHN0b3JhZ2Ug
+Cm9iamVjdCwgdGh1cyB5b3VyIGNvZGUgY2F1c2VzIGJ1Z3MgaW4gdGhlIGNhc2UuCgoKUmVnYXJk
+cwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
