@@ -1,48 +1,62 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v6 1/3] clk: x86: Add Atom PMC platform clocks
-Date: Tue, 13 Dec 2016 03:16:05 +0200
-Message-ID: <CAHp75VfW3T=GC2nY6jSa-vF841AeML_job603AAUm97vFb59cg@mail.gmail.com>
-References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
- <1481306510-7471-2-git-send-email-irina.tirdea@intel.com> <CAHp75Vdaw4yvTPP2JZc+ti-AVNsisRQ+WG=JxPQ1jv-r7DADQA@mail.gmail.com>
- <1a98dcda-a662-958e-307f-5fe3f281ed9f@linux.intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] pcm: fix wrong document references to PCM
+ APIs which perform direct memory access with frame copying
+Date: Tue, 13 Dec 2016 09:03:30 +0900
+Message-ID: <ebc3d442-d2ca-b6c3-3b72-77c9d6974911@sakamocchi.jp>
+References: <20161211113138.32468-1-o-takashi@sakamocchi.jp>
+ <s5hy3zkzv63.wl-tiwai@suse.de>
+ <acda020e-47d2-f1a2-603e-a16999355324@sakamocchi.jp>
+ <s5hk2b4zqhf.wl-tiwai@suse.de> <s5hh968zq4v.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
-In-Reply-To: <1a98dcda-a662-958e-307f-5fe3f281ed9f@linux.intel.com>
-Sender: platform-driver-x86-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Irina Tirdea <irina.tirdea@intel.com>, linux-clk@vger.kernel.org, "x86@kernel.org" <x86@kernel.org>, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Michael Turquette <mturquette@baylibre.com>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 5A15026658E
+ for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2016 01:03:55 +0100 (CET)
+In-Reply-To: <s5hh968zq4v.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 13, 2016 at 2:15 AM, Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
+On Dec 13 2016 08:25, Takashi Iwai wrote:
+> Actually I took the second one (the removal of unused variables), as
+> it's a good cleanup.
 >
->>> +#include <linux/platform_data/x86/clk-byt-plt.h>
+> But the first one, the change of the type, is in a gray zone, and I'd
+> like to leave such a thing.  Changing the loop variable like i to
+> unsigned int is rather confusing, and it may be a source of bugs if
+> anyone reuses i for another loop.  The warning is merely an annoyance,
+> and IMO, we just should suppress the compile warning like the kernel
+> does.
 >
->
-> This was a suggestion of Darren Hart in agreement with Thomas Gleixner.
-> see
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-October/113936.html
->
-> Darren, did we get your proposal right?
->
->> Is it indeed platform data? I would not create platform_data/x86
->> without strong argument.
->> Perhaps include/linux/clk/x86_pmc.h? (Yes, I know about clk-lpss.h
->> which is old enough and was basically first try of clk stuff on x86)
+> The third patch, the removal of the unused table, is postponed because
+> I don't know whether it's intentional or overlook unless confirmation
+> from Intel people.
 
-Looking more into the patch I got another question. Do we really need
-a platform driver for that?
+OK. I wait for their ack about these two patches. Thanks for your reviewing!
 
-That's what I think motivated me for the header location. And that's
-why I asked about use of the driver/clock provider in the latter
-patch.
+>>> [alsa-devel] [PATCH][alsa-lib] topology: fix sign-compare warning
+>>> introduced to set_link_hw_config() and tplg_add_link_object()
+>>> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-November/115245.html
+>>>
+>>> [alsa-devel] [PATCH][alsa-lib] topology: fix unused-variable warnings
+>>> introduced to build_link()
+>>> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-November/115246.html
+>>>
+>>> [alsa-devel] [PATCH][alsa-lib] topology: fix unused-const-variable warning
+>>> http://mailman.alsa-project.org/pipermail/alsa-devel/2016-November/115247.html
 
-If the answer is yes, then I doubt which location is preferable,
-otherwise include/clk/x86_*.h looks appropriate.
 
-Sorry if I wasn't clear in the first place.
+Gute Nacht.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Takashi Sakamoto
