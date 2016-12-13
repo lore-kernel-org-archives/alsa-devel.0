@@ -1,83 +1,208 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH 2/2] ASoC: hdmi-codec: add channel mapping
-	control
-Date: Tue, 13 Dec 2016 15:49:49 +0100
-Message-ID: <3943870f-c98b-da0e-e4e7-0a4a3fd337c7@st.com>
-References: <1481215067-19362-1-git-send-email-arnaud.pouliquen@st.com>
- <1481215067-19362-3-git-send-email-arnaud.pouliquen@st.com>
- <1cc79b45-d45c-35da-8e85-b349f0338866@sakamocchi.jp>
- <d9d775e9-b077-ae53-6b3f-6c4d6f40c0c3@st.com>
- <be85377b-5aae-5f3a-76da-8f2b851e5cfa@sakamocchi.jp>
- <6589c8e0-f918-10c3-3d7b-39d50b429850@st.com>
- <636ed854-e80c-e18c-314d-54c870d2c1bc@sakamocchi.jp>
- <d8b4e5cf-f297-f075-801f-6517393d9ca7@sakamocchi.jp>
+From: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH 2/2] ASoC: cs35l35: Add device tree documentation for CS35L35
+Date: Tue, 13 Dec 2016 10:08:51 -0600
+Message-ID: <1b0cca7d-007f-4b8d-b184-838d36ba3a9c@EX4.ad.cirrus.com>
+References: <1481645331-15114-1-git-send-email-li.xu@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id D6D21266E04
- for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2016 15:50:01 +0100 (CET)
-In-Reply-To: <d8b4e5cf-f297-f075-801f-6517393d9ca7@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Cc: "kernel@stlinux.com" <kernel@stlinux.com>, Takashi Iwai <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>, "broonie@kernel.org" <broonie@kernel.org>, Daniel Vetter <daniel.vetter@intel.com>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1481645331-15114-1-git-send-email-li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAxMi8xMy8yMDE2IDAyOjU4IFBNLCBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+IE9uIDIw
-MTblubQxMuaciDEz5pelIDIyOjIzLCBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+PiBIaSBBcm5h
-dWQsCj4+Pj4gVGhpcyB0YWJsZSBpcyBpbnZhcmlhbnQgaW4gbGlmZXRpbWUgb2YgdGhlIHN0b3Jh
-Z2Ugb2JqZWN0LCBhcyB3ZWxsLgo+Pj4+IExldCdzIHB1dCBpbnRvIC5yb2RhdGEgc2VjdGlvbiwg
-dG9vLgo+Pj4+Cj4+PiBUaGlzIHRhYmxlIGlzIHVwZGF0ZWQgaW4gaGRtaV9jb2RlY19jZWFfaW5p
-dF9jaGFubmVsX2FsbG9jIHNvIGNhbiBub3QgYmUKPj4+IGNvbnN0YW50LiBJbiB0aGVvcnkgaSBj
-b3VsZCBkZWNsYXJlIGFsbCBmaWVsZCBpbnN0ZWFkIG9mIGNvbXB1dGluZyBzb21lLgo+Pj4gQnV0
-IGZvciBsaXNpYmlsaXR5LCBpIHdvdWxkIHByZWZlciB0byBqdXN0IGRlY2xhcmUgY2FfaW5kZXgg
-IGFuZAo+Pj4gc3BlYWtlcnMgYWxsb2NhdGlvbiBmaWVsZCBpbiB0aGlzIHRhYmxlIChpIHdpbGwg
-ZGVjbGFyZWQgYm90aCBhcyBjb25zdCkKPj4KPj4gWW91IHNob3VsZCBwYXkgZW5vdWdoIGF0dGVu
-dGlvbiB0byBhIGNhc2UgdGhhdCBvbmUgc3lzdGVtIGhhcyBzZXZlcmFsCj4+IEdQVXMgdG8gd2hp
-Y2ggcmVsZXZhbnQgR1BVIGRyaXZlcnMgcmVnaXN0ZXIgSERNSV9DT0RFQ19EUlZfTkFNRSBwbGF0
-Zm9ybQo+PiBkZXZpY2UuIFRoZSAnc3RhdGljJyBtb2RpZmllciBoYXMgYW4gZWZmZWN0IHRvIGtl
-ZXAganVzdCBvbmUgc3RvcmFnZQo+PiBvYmplY3QsIHRodXMgeW91ciBjb2RlIGNhdXNlcyBidWdz
-IGluIHRoZSBjYXNlLgo+IAo+IE9vcHMsIHRoZSBidWcgaXMgdW5yZWxhdGVkIHRvIHRoZSBzdGF0
-aWMgbW9kaWZpZXIuIFRoZSBtb2RpZmllciBpcyBmb3IgCj4gcmVmZXJlbmNlIHNjb3BlLiBJJ2xs
-IGNvcnJlY3QgYXMgdGhlIGZpbGUgbG9jYWwgc3ltYm9sIGhhcyBqdXN0IG9uZSAKPiBzdG9yYWdl
-IG9iamVjdC4KPiAKPiAoSSBtaWdodCBiZSB0aXJlZCB0b25pZ2h0Li4uKQo+IAppIHVuZGVyc3Rv
-b2QgaW4gdGhpcyB3YXkgOi0pCkFzICdjYV9pbmRleCcgYW5kICJzcGVha2VycyIgZmllbCBhcmUg
-Y29uc3RhbnRzCnRoZSBmaWVsZHMgY29tcHV0ZWQgaW4gaGRtaV9jb2RlY19jZWFfaW5pdF9jaGFu
-bmVsX2FsbG9jIHdpbGwKbm90IGNoYW5nZSBpZiB0aGUgZnVuY3Rpb25zIGlzIGNhbGxlZCBzZXZl
-cmFsIHRpbWUgKCBtdWx0aS1pbnN0YW5jZXMpLgpidXQgYWdyZWUgdGhhdCBpdCBpcyBub3QgdmVy
-eSBjbGVhbiwgYnV0IHRoaXMgc2hvdWxkIHdvcmsuClRvIGF2b2lkIHRvIGNvbXB1dGUgc2V2ZXJh
-bCB0aW1lLCBpIGNhbiBhbHNvIGFkZCBhIHRlc3QgaW4KaGRtaV9jb2RlY19jZWFfaW5pdF9jaGFu
-bmVsX2FsbG9jIHRvIGRvIGl0IG9ubHkgb25lIHRpbWUgKGJ5IHRlc3RpbmcKaGRtaV9jb2RlY19j
-aGFubmVsX2FsbG9jWzBdLmNoYW5uZWxzKSwgb3IgcGVyaGFwcyBiZXR0ZXIgYW4gYXRvbWljIGxv
-Y2FsCnZhcmlhYmxlIHRvIGF2b2lkIHNpZGUgZWZmZWN0IGZvciBNdWx0aXByb2Nlc3NvciBhcmNo
-cy4KCk5vdyB0aGUgc2Vjb25kIGFwcHJvYWNoIGlzIHRvIGRlZmluZSBhbGwgdGhlIGZpZWxkLiBU
-aGlzIGluZGVlZHMgYSBiaWcKdGFibGUgKGFyb3VuZCAyNTYgbGluZXMgaW5zdGVhZCBvZiAzMiBs
-aW5lcyk6CgpzdGF0aWMgY29uc3Qgc3RydWN0IGhkbWlfY29kZWNfY2VhX3Nwa19hbGxvYyBoZG1p
-X2NvZGVjX2NoYW5uZWxfYWxsb2NbXSA9IHsKCXsKCQkuY2FfaW5kZXggPSAweDAwLAoJCS5zcGVh
-a2VycyA9IHsgICAwLCAgICAwLCAgIDAsICAgMCwgICAwLCAgICAwLCAgRlIsICBGTCB9IH0sCgkJ
-LmNoYW5uZWxzID0gMiwKCQkuc3BrX21hc2sgPSBGUiB8IEZMLAoJCS5zcGtfbmFfbWFzayA9IDB4
-MDAsCgl9LAoJeyAvKiAyLjEgKi8KCQkuY2FfaW5kZXggPSAweDAxLAoJCS5zcGVha2VycyA9IHsg
-ICAwLCAgICAwLCAgIDAsICAgMCwgICAwLCAgTEZFLCAgRlIsICBGTCB9IH0sCgkJLmNoYW5uZWxz
-ID0gMywKCQkuc3BrX21hc2sgPSBGUiB8IEZMIHwgTEZFLAoJCS5zcGtfbmFfbWFzayA9IDB4MDAs
-Cgl9LAoJeyAvKiBEb2xieSBTdXJyb3VuZCAqLwoJCS5jYV9pbmRleCA9IDB4MDIsCgkJLnNwZWFr
-ZXJzID0geyAgIDAsICAgIDAsICAgMCwgICAwLCAgRkMsICAgIDAsICBGUiwgIEZMIH0gfSwKCQku
-Y2hhbm5lbHMgPSA0LAoJCS5zcGtfbWFzayA9IEZSIHwgRkwgfCBGQywKCQkuc3BrX25hX21hc2sg
-PSBCSVQoMiksCgl9LApbLi4uXQoKCXsKCQkuY2FfaW5kZXggPSAweDFmLAoJCS5zcGVha2VycyA9
-IHsgRlJDLCAgRkxDLCAgUlIsICBSTCwgIEZDLCAgTEZFLCAgRlIsICBGTCB9IH0sCgkJLmNoYW5u
-ZWxzID0gOCwKCQkuc3BrX21hc2sgPSBGUkMgfCBGTEMgfCBSUiB8IFJMIHwgRkMgfCBMRkUgfCBG
-UiB8IEZMLAoJCS5zcGtfbmFfbWFzayA9IDB4MCwKCX0sCgpJIHdvdWxkIHByZWZlciB0aGUgZmly
-c3Qgb25lIHRvIHNhdmUgbGluZXMsIGJ1dCBpIGNhbiBpbXBsZW1lbnQgdGhlCnNlY29uZCBvbmUg
-KG9yIGFub3RoZXIgb25lIGlmIHlvdSBoYXZlIGFuIGFsdGVybmF0aXZlIHRvIHByb3Bvc2UpLgoK
-UmVnYXJkcwpBcm5hdWQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+Add device tree documentation for Cirrus Logic CS35L35
+speaker amplifier
+
+Signed-off-by: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+---
+ .../devicetree/bindings/sound/cs35l35.txt          | 172 +++++++++++++++++++++
+ 1 file changed, 172 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs35l35.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/cs35l35.txt b/Documentation/devicetree/bindings/sound/cs35l35.txt
+new file mode 100644
+index 0000000..8b13f67
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs35l35.txt
+@@ -0,0 +1,172 @@
++CS35L35 Speaker Amplifier
++
++Required properties:
++
++  - compatible : "cirrus,cs35l35"
++
++  - reg : the I2C address of the device for I2C
++
++  - VA-supply, VP-supply : power supplies for the device,
++    as covered in
++    Documentation/devicetree/bindings/regulator/regulator.txt.
++
++  - interrupt-parent : Specifies the phandle of the interrupt controller to
++    which the IRQs from CS35L35 are delivered to.
++  - interrupts : IRQ line info CS35L35.
++    (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
++    for further information relating to interrupt properties)
++
++Optional properties:
++  - cirrus,reset-gpios : Active low GPIO used to reset the amplifier
++
++  - cirrus,stereo-config : Boolean to determine if there are 2 AMPs for a
++  Stereo configuration
++
++  - cirrus,audio-channel : Set Location of Audio Signal on Serial Port
++  0 = Data Packet received on Left I2S Channel
++  1 = Data Packet received on Right I2S Channel
++
++  - cirrus,advisory-channel : Set Location of Advisory Signal on Serial Port
++  0 = Data Packet received on Left I2S Channel
++  1 = Data Packet received on Right I2S Channel
++
++  - cirrus,shared-boost : Boolean to enable ClassH tracking of Advisory Signal
++  if 2 Devices share Boost BST_CTL
++
++  - cirrus,sp-drv-strength : Value for setting the Serial Port drive strength
++  Table 3-10 of the datasheet lists drive-strength specifications
++  0 = 1x (Default)
++  1 = .5x
++
++  - cirrus,bst-pdn-fet-on : Boolean to determine if the Boost PDN control
++  powers down with a rectification FET On or Off. If VSPK is supplied
++  externally then FET is off.
++
++  - cirrus,boost-ctl-millivolt : Boost Converter control word. Step Size of 100mV
++  0x00 = (Default) VP
++  0x01 = 2600mV
++  0x41 = 9000mV
++
++  - cirrus,boost-ipk-milliamp : Boost-converter peak current limit.
++  Configures the peak current by monitoring the current through the boost FET.
++  Step size: 112mA
++  0x00 = 1680mA
++  0x19 = 4480mA
++
++  - cirrus,amp-gain-zc : Boolean to determine if to use Amplifier gain-change
++  zero-cross
++
++Optional H/G Algorithm sub-node:
++
++  The cs35l35 node can have a single "cirrus,classh-internal-algo" sub-node
++  that will disable automatic control of the internal H/G Algorithm.
++
++  It is strongly recommended that the Datasheet be referenced when adjusting
++  or using these Class H Algorithm controls over the internal Algorithm.
++  Serious damage can occur to the Device and surrounding components.
++
++  - cirrus,classh-internal-algo : Sub-node for the Internal Class H Algorithm
++  See Section 4.3 Internal Class H Algorithm in the Datasheet.
++  If not used, the device manages the ClassH Algorithm internally.
++
++Optional properties for the "cirrus,classh-internal-algo" Sub-node
++
++  Section 7.29 Class H Control
++  - cirrus,classh-bst-overide : Boolean
++  - cirrus,classh-bst-max-limit
++  - cirrus,classh-mem-depth
++
++  Section 7.30 Class H Headroom Control
++  - cirrus,classh-headroom
++
++  Section 7.31 Class H Release Rate
++  - cirrus,classh-release-rate
++
++  Section 7.32 Class H Weak FET Drive Control
++  - cirrus,classh-wk-fet-disable
++  - cirrus,classh-wk-fet-delay
++  - cirrus,classh-wk-fet-thld
++
++  Section 7.34 Class H VP Control
++  - cirrus,classh-vpch-auto
++  - cirrus,classh-vpch-rate
++  - cirrus,classh-vpch-man
++
++Optional Monitor Signal Format sub-node:
++
++  The cs35l35 node can have a single "cirrus,monitor-signal-format" sub-node
++  for adjusting the Depth, Location and Frame of the Monitoring Signals
++  for Algorithms.
++
++  See Sections 4.8.2 through 4.8.4 Serial-Port Control in the Datasheet
++
++  -cirrus,monitor-signal-format : Sub-node for the Monitor Signaling Formating
++  on the I2S Port. Each of the 3 8 bit values in the array contain the settings
++  for depth, location, and frame.
++
++  If not used, the defaults for the 6 monitor signals is used.
++
++  Sections 7.44 - 7.53 lists values for the depth, location, and frame
++  for each monitoring signal.
++
++  - cirrus,imon : 3 8 bit values to set the depth, location, and frame
++  of the IMON monitor signal.
++
++  - cirrus,vmon : 3 8 bit values to set the depth, location, and frame
++  of the VMON monitor signal.
++
++  - cirrus,vpmon : 3 8 bit values to set the depth, location, and frame
++  of the VPMON monitor signal.
++
++  - cirrus,vbstmon : 3 8 bit values to set the depth, location, and frame
++  of the VBSTMON monitor signal
++
++  - cirrus,vpbrstat : 3 8 bit values to set the depth, location, and frame
++  of the VPBRSTAT monitor signal
++
++  - cirrus,zerofill : 3 8 bit values to set the depth, location, and frame\
++  of the ZEROFILL packet in the monitor signal
++
++Example:
++
++cs35l35: audio-codec@20 {
++	compatible = "cirrus,cs35l35";
++	reg = <0x20>;
++	VA-supply = <&dummy_vreg>;
++	VP-supply = <&dummy_vreg>;
++	reset-gpios = <&axi_gpio 54 1>;
++	interrupt-parent = <&gpio8>;
++	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
++	cirrus,boost-ctl = <0x41>;
++
++	cirrus,stereo-config {
++		cirrus,audio-channel = <0x00>;
++		cirrus,advisory-channel = <0x01>;
++		cirrus,shared-boost;
++	};
++
++	cirrus,classh-internal-algo {
++		cirrus,classh-bst-overide;
++		cirrus,classh-bst-max-limit = <0x01>;
++		cirrus,classh-mem-depth = <0x01>;
++		cirrus,classh-release-rate = <0x08>;
++		cirrus,classh-headroom-millivolt = <0x0B>;
++		cirrus,classh-wk-fet-disable = <0x01>;
++		cirrus,classh-wk-fet-delay = <0x04>;
++		cirrus,classh-wk-fet-thld = <0x01>;
++		cirrus,classh-vpch-auto = <0x01>;
++		cirrus,classh-vpch-rate = <0x02>;
++		cirrus,classh-vpch-man = <0x05>;
++	};
++
++	/* Depth, Location, Frame */
++	cirrus,monitor-signal-format {
++		cirrus,imon = /bits/ 8 <0x03 0x00 0x01>;
++		cirrus,vmon = /bits/ 8 <0x03 0x00 0x00>;
++		cirrus,vpmon = /bits/ 8 <0x03 0x04 0x00>;
++		cirrus,vbstmon = /bits/ 8 <0x03 0x04 0x01>;
++		cirrus,vpbrstat = /bits/ 8 <0x00 0x04 0x00>;
++		cirrus,zerofill = /bits/ 8 <0x00 0x00 0x00>;
++	};
++
++};
+-- 
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
