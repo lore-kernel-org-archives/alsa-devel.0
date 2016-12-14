@@ -1,16 +1,16 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: 1.1.3 release?
-Date: Wed, 14 Dec 2016 16:36:21 +0100
-Message-ID: <7d78346b-79e7-18fe-04db-99388ae027ed@perex.cz>
-References: <s5hoa0ed07p.wl-tiwai@suse.de>
+From: Imre Deak <imre.deak@intel.com>
+Subject: snd_hda_intel/snd_hda_codec_hdmi module load/unload
+	race
+Date: Wed, 14 Dec 2016 23:00:50 +0200
+Message-ID: <1481749250.8172.5.camel@intel.com>
+Reply-To: imre.deak@intel.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F150266FDE
- for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2016 16:36:25 +0100 (CET)
-In-Reply-To: <s5hoa0ed07p.wl-tiwai@suse.de>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id BAFF7267064
+ for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2016 22:01:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,23 +20,166 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
-
-Dne 14.12.2016 v 16:00 Takashi Iwai napsal(a):
-> Hi Jaroslav,
-> 
-> shall we release v1.1.3 now?
-> We've gathered quite a lot of changes since the last release.
 
 Hi,
 
-  a good idea. I will release packages in next few days.
+I got the trace below while trying to unload (unbind) snd_hda_intel, while
+its still loading the HDMI codec driver. IIUC what happens is:
 
-			Thanks,
-				Jaroslav
+Task1                                    Task2                                    Task3
+modprobe snd_hda_intel
+  schedule(azx_probe_work)
+unbind snd_hda_intel via sysfs
+  device_release_driver()
+    device_lock(snd_hda_intel)
+    azx_remove()
+      cancel_work_sync(azx_probe_work)
+                                         azx_probe_work()
+                                           request_module(snd-hda-codec-hdmi)
+                                                                                  hdmi_driver_init()
+                                                                                    __driver_attach()
+                                                                                      device_lock(snd_hda_intel)
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Deadlock, since azx_probe_work() will never finish and the snd_hda_intel device
+lock will never get released.
+
+--Imre
+
+[  246.805268] INFO: task drv_module_relo:1684 blocked for more than 120 seconds.
+[  246.805834]       Tainted: G        W       4.9.0-CI-CI_DRM_1946+ #158
+[  246.806284] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  246.806779] drv_module_relo D    0  1684   1597 0x00000000
+[  246.807171]  ffff8802703cbac0 ffff8802643926c0 000000000000479d ffff8802713b0040
+[  246.807706]  ffff88027fc98118 ffffc90003cffa58 ffffffff8181d429 0000000000000046
+[  246.808217]  ffffffff827d2470 0000000000000001 ffff88027fc98118 ffff88027fc98100
+[  246.808739] Call Trace:
+[  246.808945]  [<ffffffff8181d429>] ? __schedule+0x2c9/0xa30
+[  246.809281]  [<ffffffff8181dbcb>] schedule+0x3b/0x90
+[  246.809618]  [<ffffffff8182227b>] schedule_timeout+0x25b/0x4c0
+[  246.810021]  [<ffffffff810d6c9f>] ? mark_held_locks+0x6f/0xa0
+[  246.810370]  [<ffffffff81823987>] ? _raw_spin_unlock_irq+0x27/0x50
+[  246.810759]  [<ffffffff810d6df2>] ? trace_hardirqs_on_caller+0x122/0x1b0
+[  246.811963]  [<ffffffff8181e730>] wait_for_common+0xf0/0x160
+[  246.812463]  [<ffffffff810af5d0>] ? wake_up_q+0x70/0x70
+[  246.812795]  [<ffffffff8181e7b8>] wait_for_completion+0x18/0x20
+[  246.813389]  [<ffffffff8109b9e3>] flush_work+0x203/0x2e0
+[  246.813714]  [<ffffffff8109ba86>] ? flush_work+0x2a6/0x2e0
+[  246.814088]  [<ffffffff81099410>] ? flush_workqueue_prep_pwqs+0x220/0x220
+[  246.814790]  [<ffffffff8109d290>] __cancel_work_timer+0x110/0x1d0
+[  246.815346]  [<ffffffff810d6df2>] ? trace_hardirqs_on_caller+0x122/0x1b0
+[  246.815742]  [<ffffffff810d6e8d>] ? trace_hardirqs_on+0xd/0x10
+[  246.816096]  [<ffffffff8109d35b>] cancel_work_sync+0xb/0x10
+[  246.816566]  [<ffffffffa00d4fa4>] azx_remove+0x24/0x30 [snd_hda_intel]
+[  246.816956]  [<ffffffff81485864>] pci_device_remove+0x34/0xb0
+[  246.817373]  [<ffffffff81584cfc>] __device_release_driver+0x9c/0x150
+[  246.817717]  [<ffffffff81584dd0>] device_release_driver+0x20/0x30
+[  246.818077]  [<ffffffff815836aa>] unbind_store+0x10a/0x150
+[  246.818549]  [<ffffffff81582d70>] drv_attr_store+0x20/0x30
+[  246.818885]  [<ffffffff812775a0>] sysfs_kf_write+0x40/0x50
+[  246.819290]  [<ffffffff812768e0>] kernfs_fop_write+0x130/0x1b0
+[  246.819639]  [<ffffffff811f6383>] __vfs_write+0x23/0x120
+[  246.819963]  [<ffffffff810f48c0>] ? rcu_read_lock_sched_held+0x70/0x80
+[  246.820476]  [<ffffffff810f4caa>] ? rcu_sync_lockdep_assert+0x2a/0x50
+[  246.820859]  [<ffffffff811f9a68>] ? __sb_start_write+0xf8/0x200
+[  246.821292]  [<ffffffff811f7129>] ? vfs_write+0x169/0x1b0
+[  246.821597]  [<ffffffff811f7073>] vfs_write+0xb3/0x1b0
+[  246.821907]  [<ffffffff810d6df2>] ? trace_hardirqs_on_caller+0x122/0x1b0
+[  246.822405]  [<ffffffff811f83b4>] SyS_write+0x44/0xb0
+[  246.822684]  [<ffffffff8182412e>] entry_SYSCALL_64_fastpath+0x1c/0xb1
+[  246.823064] 
+               Showing all locks held in the system:
+[  246.823568] 2 locks held by kworker/u8:0/6:
+[  246.823817]  #0:  ("events_unbound"){.+.+.+}, at: [<ffffffff8109c1f6>] process_one_work+0x166/0x6b0
+[  246.824400]  #1:  ((&sub_info->work)){+.+.+.}, at: [<ffffffff8109c1f6>] process_one_work+0x166/0x6b0
+[  246.824940] 2 locks held by khungtaskd/34:
+[  246.825210]  #0:  (rcu_read_lock){......}, at: [<ffffffff811329cc>] watchdog+0x9c/0x600
+[  246.825726]  #1:  (tasklist_lock){.+.+..}, at: [<ffffffff810d536d>] debug_show_all_locks+0x3d/0x1a0
+[  246.826303] 2 locks held by kworker/3:1/50:
+[  246.826535]  #0:  ("events"){++++.+}, at: [<ffffffff8109c1f6>] process_one_work+0x166/0x6b0
+[  246.827104]  #1:  ((&hda->probe_work)){+.+.+.}, at: [<ffffffff8109c1f6>] process_one_work+0x166/0x6b0
+[  246.827706] 5 locks held by drv_module_relo/1684:
+[  246.827963]  #0:  (sb_writers#6){.+.+.+}, at: [<ffffffff811f7129>] vfs_write+0x169/0x1b0
+[  246.828507]  #1:  (&of->mutex){+.+.+.}, at: [<ffffffff812768ac>] kernfs_fop_write+0xfc/0x1b0
+[  246.829083]  #2:  (s_active#186){++++.+}, at: [<ffffffff812768b4>] kernfs_fop_write+0x104/0x1b0
+[  246.829663]  #3:  (&dev->mutex){......}, at: [<ffffffff8158369a>] unbind_store+0xfa/0x150
+[  246.830204]  #4:  (&dev->mutex){......}, at: [<ffffffff81584dc8>] device_release_driver+0x18/0x30
+[  246.830772] 1 lock held by modprobe/1685:
+[  246.830992]  #0:  (&dev->mutex){......}, at: [<ffffffff8158561a>] __driver_attach+0x5a/0xe0
+[  246.831575] 2 locks held by bash/1727:
+[  246.831782]  #0:  (&tty->ldisc_sem){++++.+}, at: [<ffffffff81822d3d>] ldsem_down_read+0x2d/0x40
+[  246.832344]  #1:  (&ldata->atomic_read_lock){+.+...}, at: [<ffffffff81506529>] n_tty_read+0xa9/0x880
+
+[  246.833050] =============================================
+
+[  246.833436] INFO: task modprobe:1685 blocked for more than 120 seconds.
+[  246.833829]       Tainted: G        W       4.9.0-CI-CI_DRM_1946+ #158
+[  246.834221] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  246.834680] modprobe        D    0  1685      6 0x00000000
+[  246.835029]  ffff8802703c9a40 ffff8802760e4d40 00000000000091ba ffff8802559e26c0
+[  246.835522]  ffff88027fd18118 ffffc900032bbb70 ffffffff8181d429 0000000000000000
+[  246.835967]  ffffc900032bbb98 0000000000000292 ffff88027fd18118 ffff88027fd18100
+[  246.836462] Call Trace:
+[  246.836628]  [<ffffffff8181d429>] ? __schedule+0x2c9/0xa30
+[  246.836924]  [<ffffffff8181dbcb>] schedule+0x3b/0x90
+[  246.837243]  [<ffffffff8181e043>] schedule_preempt_disabled+0x13/0x20
+[  246.837629]  [<ffffffff8181ecbc>] mutex_lock_nested+0x16c/0x400
+[  246.837946]  [<ffffffff8158561a>] ? __driver_attach+0x5a/0xe0
+[  246.838298]  [<ffffffff815855c0>] ? driver_probe_device+0x430/0x430
+[  246.838676]  [<ffffffff8158561a>] __driver_attach+0x5a/0xe0
+[  246.839008]  [<ffffffff815855c0>] ? driver_probe_device+0x430/0x430
+[  246.839354]  [<ffffffff81582fc1>] bus_for_each_dev+0x61/0xa0
+[  246.839704]  [<ffffffff81584b89>] driver_attach+0x19/0x20
+[  246.840029]  [<ffffffff815846cb>] bus_add_driver+0x1fb/0x270
+[  246.840346]  [<ffffffffa014a000>] ? 0xffffffffa014a000
+[  246.840645]  [<ffffffff8158629b>] driver_register+0x5b/0xd0
+[  246.840977]  [<ffffffffa048f0d5>] __hda_codec_driver_register+0x55/0x60 [snd_hda_codec]
+[  246.841417]  [<ffffffffa014a01e>] hdmi_driver_init+0x1e/0x20 [snd_hda_codec_hdmi]
+[  246.841861]  [<ffffffff81000428>] do_one_initcall+0x38/0x150
+[  246.842177]  [<ffffffff810f48c0>] ? rcu_read_lock_sched_held+0x70/0x80
+[  246.842566]  [<ffffffff811d7804>] ? kmem_cache_alloc_trace+0x274/0x2e0
+[  246.842951]  [<ffffffff81176161>] ? do_init_module+0x22/0x1d1
+[  246.843307]  [<ffffffff81176199>] do_init_module+0x5a/0x1d1
+[  246.843617]  [<ffffffff8111cb15>] load_module+0x2275/0x27d0
+[  246.843951]  [<ffffffff81119e60>] ? symbol_put_addr+0x60/0x60
+[  246.844306]  [<ffffffff811fd7d5>] ? kernel_read_file+0x105/0x190
+[  246.844637]  [<ffffffff8111d29c>] SyS_finit_module+0xbc/0xf0
+[  246.844979]  [<ffffffff8182412e>] entry_SYSCALL_64_fastpath+0x1c/0xb1
+[  246.845368] 
+               Showing all locks held in the system:
+[  246.845745] 2 locks held by kworker/u8:0/6:
+[  246.845974]  #0:  ("events_unbound"){.+.+.+}, at: [<ffffffff8109c1f6>] process_one_work+0x166/0x6b0
+[  246.846553]  #1:  ((&sub_info->work)){+.+.+.}, at: [<ffffffff8109c1f6>] process_one_work+0x166/0x6b0
+[  246.847133] 2 locks held by khungtaskd/34:
+[  246.847399]  #0:  (rcu_read_lock){......}, at: [<ffffffff811329cc>] watchdog+0x9c/0x600
+[  246.847913]  #1:  (tasklist_lock){.+.+..}, at: [<ffffffff810d536d>] debug_show_all_locks+0x3d/0x1a0
+[  246.848488] 2 locks held by kworker/3:1/50:
+[  246.848747]  #0:  ("events"){++++.+}, at: [<ffffffff8109c1f6>] process_one_work+0x166/0x6b0
+[  246.849286]  #1:  ((&hda->probe_work)){+.+.+.}, at: [<ffffffff8109c1f6>] process_one_work+0x166/0x6b0
+[  246.849875] 1 lock held by in:imklog/491:
+[  246.850094]  #0:  (&f->f_pos_lock){+.+.+.}, at: [<ffffffff8121854e>] __fdget_pos+0x3e/0x50
+[  246.850657] 5 locks held by drv_module_relo/1684:
+[  246.850931]  #0:  (sb_writers#6){.+.+.+}, at: [<ffffffff811f7129>] vfs_write+0x169/0x1b0
+[  246.851474]  #1:  (&of->mutex){+.+.+.}, at: [<ffffffff812768ac>] kernfs_fop_write+0xfc/0x1b0
+[  246.852013]  #2:  (s_active#186){++++.+}, at: [<ffffffff812768b4>] kernfs_fop_write+0x104/0x1b0
+[  246.852577]  #3:  (&dev->mutex){......}, at: [<ffffffff8158369a>] unbind_store+0xfa/0x150
+[  246.853103]  #4:  (&dev->mutex){......}, at: [<ffffffff81584dc8>] device_release_driver+0x18/0x30
+[  246.853714] 1 lock held by modprobe/1685:
+[  246.853934]  #0:  (&dev->mutex){......}, at: [<ffffffff8158561a>] __driver_attach+0x5a/0xe0
+[  246.854473] 2 locks held by bash/1727:
+[  246.854713]  #0:  (&tty->ldisc_sem){++++.+}, at: [<ffffffff81822d3d>] ldsem_down_read+0x2d/0x40
+[  246.855272]  #1:  (&ldata->atomic_read_lock){+.+...}, at: [<ffffffff81506529>] n_tty_read+0xa9/0x880
+
+Stack trace of kworker/50:
+[<ffffffff810979e3>] call_usermodehelper_exec+0x133/0x1d0
+[<ffffffff81097c0f>] __request_module+0x18f/0x360
+[<ffffffffa048f182>] request_codec_module+0x52/0x60 [snd_hda_codec]
+[<ffffffffa048f21d>] snd_hda_codec_configure+0x5d/0x170 [snd_hda_codec]
+[<ffffffffa0499693>] azx_codec_configure+0x23/0x40 [snd_hda_codec]
+[<ffffffffa00d6700>] azx_probe_work+0x5d0/0x8d0 [snd_hda_intel]
+[<ffffffff8109c27c>] process_one_work+0x1ec/0x6b0
+[<ffffffff8109c789>] worker_thread+0x49/0x490
+[<ffffffff810a2aab>] kthread+0xeb/0x110
+[<ffffffff818243a7>] ret_from_fork+0x27/0x40
+[<ffffffffffffffff>] 0xffffffffffffffff
