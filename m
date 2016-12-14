@@ -1,62 +1,55 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: fallback
- mechanism if MCLK is not enabled
-Date: Wed, 14 Dec 2016 16:08:45 -0600
-Message-ID: <a565e81d-1488-df9f-5999-283c6d5d9789@linux.intel.com>
-References: <1481654490-31846-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <20161214131948.e3gqnbauv7762jrf@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH 5/7] ALSA: x86: hdmi: Improve
+ position reporting
+Date: Wed, 14 Dec 2016 17:39:20 -0600
+Message-ID: <9391a916-431e-71a5-04e3-9e73b431e232@linux.intel.com>
+References: <20161212181043.12512-1-jerome.anand@intel.com>
+ <20161212181043.12512-6-jerome.anand@intel.com>
+ <s5hr35aekim.wl-tiwai@suse.de>
+ <5d237318-61b3-fb22-be28-dfcc88554d20@linux.intel.com>
+ <s5hy3zid1d7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id C94C0267064
- for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2016 23:09:06 +0100 (CET)
-In-Reply-To: <20161214131948.e3gqnbauv7762jrf@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hy3zid1d7.wl-tiwai@suse.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, broonie@kernel.org, rakesh.a.ughreja@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 12/14/16 7:19 AM, Mark Brown wrote:
-> On Tue, Dec 13, 2016 at 12:41:30PM -0600, Pierre-Louis Bossart wrote:
->> Commit df1a2776a795 ("ASoC: Intel: bytcr_rt5640: add MCLK support")
->> was merged but the corresponding clock framework patches have not,
->> after being bumped from audio to clock to x86 domains. The missing
->> clock-related patches result in a regression starting with 4.9 with
->> the audio card not being created.
->
-> When I asked about this previously you said that this only affected new
-> boards?
-
-see 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111865.html
-all boards will be affected but newer boards never worked before. Only 
-older BYT-T are affected by a regression. And given the hair-splitting 
-debates on what constitutes pdata or what the locations of the PMC files 
-should be I am no longer expecting a quick resolution. At this rate 
-it'll take 9 months to program 2 registers.
-
->
->>  			dev_err(&pdev->dev,
->>  				"Failed to get MCLK from pmc_plt_clk_3: %ld\n",
->>  				PTR_ERR(priv->mclk));
->> -			return PTR_ERR(priv->mclk);
->> +
->> +			/* Fall back to bitclock only */
->> +			byt_rt5640_quirk &= ~BYT_RT5640_MCLK_EN;
->
-> This is broken for probe deferral, I'd expect this to be explicitly
-> checking for a no clock mapped error code (probably -ENOENT) rather than
-> just ignoring all errors.
-
-I don't understand the probe deferral concept here. Are you saying fall 
-back to the bit clock mode if the status is -ENOENT and fail otherwise?
+T24gMTIvMTQvMTYgODozNiBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFdlZCwgMTQgRGVj
+IDIwMTYgMTU6MDk6MjAgKzAxMDAsCj4gUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4+Cj4+
+IE9uIDEyLzE0LzE2IDY6NTcgQU0sIFRha2FzaGkgSXdhaSB3cm90ZToKPj4+IE9uIE1vbiwgMTIg
+RGVjIDIwMTYgMTk6MTA6NDEgKzAxMDAsCj4+PiBKZXJvbWUgQW5hbmQgd3JvdGU6Cj4+Pj4KPj4+
+PiBVc2UgYSBodyByZWdpc3RlciB0byBjYWxjdWxhdGUgc3ViLXBlcmlvZCBwb3NpdGlvbiByZXBv
+cnRzLgo+Pj4+IFRoaXMgbWFrZXMgUHVsc2VBdWRpbyBoYXBwaWVyLgo+Pj4+Cj4+Pj4gU2lnbmVk
+LW9mZi1ieTogRGF2aWQgSGVubmluZ3Nzb24gPGRhdmlkLmhlbm5pbmdzc29uQGNhbm9uaWNhbC5j
+b20+Cj4+Pj4gU2lnbmVkLW9mZi1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vp
+cy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbT4KPj4+PiBTaWduZWQtb2ZmLWJ5OiBKZXJvbWUgQW5h
+bmQgPGplcm9tZS5hbmFuZEBpbnRlbC5jb20+Cj4+Pgo+Pj4gVGhlcmUgaXMgbm8gYmlnIG1lcml0
+IHRvIGtlZXAgdGhpcyBhIHNlcGFyYXRlIHBhdGNoLgo+Pj4gUGxlYXNlIGZvbGQgaW50byB0aGUg
+bWFpbiBwYXRjaC4KPj4+IFlvdSBjYW4gcHV0IHNvbWUgY29tbWVudCBpbiB0aGUgY29kZSBmb3Ig
+ZXhwbGFuYXRpb24uCj4+Cj4+IFRoZSByZWFzb24gd2Uga2VwdCB0aGlzIHBhdGNoIGFuZCB0aGUg
+bmV4dCBzZXBhcmF0ZSBpcyBwdXJlbHkKPj4gcHJvY2VkdXJhbDogdGhleSB3ZXJlIGNvbnRyaWJ1
+dGVkIGJ5IENhbm9uaWNhbCBpbiB0aGVpciBCYXl0cmFpbAo+PiBDb21wdXRlIFN0aWNrIGtlcm5l
+bCwgYW5kIHdlIGRpZG4ndCB3YW50IHRvIHNxdWFzaCB0aGlzIGJsaW5kbHksCj4+IGVzcGVjaWFs
+bHkgc2luY2UgRGF2aWQgaGFzIGdvbmUgc2lsZW50Lgo+PiBJIGRvbid0IG1pbmQgZm9sZGluZyB0
+aGlzIGNvZGUgaW50byB0aGUgSW50ZWwgcGF0Y2hlcyBidXQgSSB3YXNuJ3QKPj4gc3VyZSB0aGlz
+IHdhcyBhcHByb3ByaWF0ZSBvciBldmVuIGFsbG93ZWQuCj4KPiBNZXJnaW5nIHRoZSBjb2RlIG11
+c3QgYmUgT0ssIHRoYXQncyB0aGUgcG9pbnQgb2YgdGhlIG9yaWdpbmFsIHBhdGNoCj4gaGF2aW5n
+IERhdmlkJ3Mgc2lnbi1vZmYuICAoSWYgdGhlIGNvZGUgbWVyZ2UgaXNuJ3QgYWxsb3dlZCwgaG93
+IGNhbiB3ZQo+IHdvcmsgb24gdGhlIGtlcm5lbCB0cmVlIGF0IGFsbD8gOykKPiBJdCdkIGJlIGJl
+dHRlciwgdGhvdWdoLCB0byBtZW50aW9uIGFib3V0IHRoZSBtZXJnZWQgY29kZSBhbmQgaGlzCj4g
+c2lnbi1vZmYgcG9ydGlvbiBpbiB0aGUgY29tbWl0IGxvZy4KCm9rLCB0aGF0J3MgZmluZS4KX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1h
+aWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMu
+ZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
